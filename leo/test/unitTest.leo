@@ -233,8 +233,8 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"
-marks="ekr.20100131171342.5599,ekr.20090529141856.4682,ekr.20100131171342.5604,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"
+marks="ekr.20140712142620.4458,ekr.20100131171342.5610,ekr.20091219122958.5066,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -295,824 +295,6 @@ marks="ekr.20100131171342.5599,ekr.20090529141856.4682,ekr.20100131171342.5604,"
 </v>
 </v>
 <v t="ekr.20170504122245.1"><vh>@ignore recent</vh>
-<v t="ekr.20090529141856.4682" a="M"><vh>leoImport</vh>
-<v t="ekr.20090529141856.4684"><vh>Export tests</vh>
-<v t="ekr.20090529141856.4685"><vh>@suite Export tests</vh></v>
-</v>
-<v t="ekr.20090529141856.4698"><vh>Import tests</vh>
-<v t="ekr.20090529141856.4699"><vh>@suite Import tests</vh></v>
-</v>
-<v t="ekr.20090529141856.4716"><vh>Tests of @auto</vh>
-<v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
-<v t="ekr.20090529141856.4717"><vh>C tests</vh>
-<v t="ekr.20090529141856.4718"><vh>@test c class 1</vh></v>
-<v t="ekr.20090529141856.4719"><vh>@test c class--underindented line</vh></v>
-<v t="ekr.20090529141856.4721"><vh>@test c comment follows arg list</vh></v>
-<v t="ekr.20090529141856.4722"><vh>@test c comment follows block delim</vh></v>
-<v t="ekr.20090529141856.4723"><vh>@test c intermixed blanks and tabs</vh></v>
-<v t="ekr.20090529141856.4724"><vh>@test c old-style decl 1</vh></v>
-<v t="ekr.20090529141856.4725"><vh>@test c old-style decl 2</vh></v>
-<v t="ekr.20090529141856.4726"><vh>@test c extern</vh></v>
-</v>
-<v t="ekr.20090529141856.4727"><vh>c# tests</vh>
-<v t="ekr.20090529141856.4728"><vh>@test c# namespace indent</vh></v>
-<v t="ekr.20090529141856.4729"><vh>@test c# namespace no indent</vh></v>
-<v t="ekr.20090529141856.4730"><vh>@@test c# ref card</vh></v>
-</v>
-<v t="ekr.20161108034116.1"><vh>coffeescript tests</vh>
-<v t="ekr.20161108034138.1"><vh>@test coffeescript-1</vh></v>
-<v t="ekr.20161109084732.1"><vh>@test coffeescript-2</vh></v>
-<v t="ekr.20161118144658.1"><vh>@test coffeescript-3</vh></v>
-</v>
-<v t="ekr.20161123115047.1"><vh>dart tests</vh>
-<v t="ekr.20161123120652.1"><vh>@test dart hello world</vh></v>
-</v>
-<v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
-<v t="ekr.20090529141856.4733"><vh>@test elisp</vh></v>
-</v>
-<v t="ekr.20111029112647.4099"><vh>html tests</vh>
-<v t="ekr.20111107102431.3849"><vh>@@test html whitespace bug</vh></v>
-<v t="ekr.20111029112647.4101"><vh>@test html: lowercase tags</vh></v>
-<v t="ekr.20111109143012.3839"><vh>@test html: multiple tags on a line</vh></v>
-<v t="ekr.20140218122321.4349"><vh>@test html: multple node completed on a line</vh></v>
-<v t="ekr.20170416085619.1"><vh>@test html: multple node starts on a line</vh></v>
-<v t="ekr.20111102164107.3975"><vh>@test html: underindented comment</vh></v>
-<v t="ekr.20111029120441.3982"><vh>@test html: uppercase tags</vh></v>
-<v t="ekr.20111112103320.3849"><vh>@test html: improperly nested tags</vh></v>
-<v t="ekr.20111112103320.3887"><vh>@test html: improperly terminated tags</vh></v>
-<v t="ekr.20111112103320.3893"><vh>@test html: improperly terminated tags2</vh></v>
-</v>
-<v t="ekr.20100803234640.5804"><vh>ini tests</vh>
-<v t="ekr.20100803234640.5805"><vh>@test ini-test-1</vh></v>
-</v>
-<v t="ekr.20090529141856.4766"><vh>Java tests</vh>
-<v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
-<v t="ekr.20090529141856.4769"><vh>@@test constants.java</vh></v>
-<v t="ekr.20090529141856.4770"><vh>@test from AdminPermission.java</vh></v>
-<v t="ekr.20090529141856.4773"><vh>@test from BundleException.java</vh></v>
-<v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
-<v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
-</v>
-<v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
-<v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
-<v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
-<v t="ekr.20090529141856.4777"><vh>@@test JSON</vh></v>
-<v t="ekr.20090529141856.4778"><vh>@test Javascript-3</vh></v>
-<v t="ekr.20140218042220.4347"><vh>@test Javascript-4</vh></v>
-<v t="ekr.20140218151418.4353"><vh>@test Javascript-5</vh></v>
-</v>
-<v t="ekr.20161123202857.1"><vh>org tests</vh>
-<v t="ekr.20161123202924.1"><vh>@test org-1</vh></v>
-</v>
-<v t="ekr.20161124040933.1"><vh>otl (vim-outline) tests</vh>
-<v t="ekr.20161124040933.2"><vh>@test otl-1</vh></v>
-</v>
-<v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
-<v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
-</v>
-<v t="ekr.20161103015908.1"><vh>Perl tests</vh>
-<v t="ekr.20161103015940.1"><vh>@test perl-1</vh></v>
-<v t="ekr.20161103021621.1"><vh>@test perlpod comment</vh></v>
-<v t="ekr.20161103021420.1"><vh>@test perl multi-line string</vh></v>
-<v t="ekr.20161119031833.1"><vh>@test perl regex-1</vh></v>
-<v t="ekr.20161119032623.1"><vh>@test perl regex-2</vh></v>
-</v>
-<v t="ekr.20100219080213.5365"><vh>PHP tests</vh>
-<v t="ekr.20100219080213.5366"><vh>@test php import class</vh></v>
-<v t="ekr.20100219080213.5367"><vh>@test php import conditional class</vh></v>
-<v t="ekr.20100219080213.5368"><vh>@test php import classes &amp; functions</vh></v>
-<v t="ekr.20161129222003.1"><vh>@test php here doc</vh>
-<v t="ekr.20161130042452.50"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161130042452.51"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161130050706.29"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161130050706.30"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161202053644.21"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161202053644.22"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161202083956.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161202083956.11"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161202093505.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161202093505.11"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161204034138.15"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161204034138.16"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161204035447.20"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161204035447.21"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161204041306.21"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161204041306.22"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161204041354.25"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161204041354.26"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161204041426.33"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161204041426.34"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161204041641.25"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161204041641.26"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161204041720.21"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161204041720.22"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161204041755.29"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161204041755.30"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161204041842.20"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161204041842.21"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161204041902.25"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161204041902.26"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161204041920.33"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161204041920.34"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161204042116.25"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161204042116.26"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161204042155.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161204042155.8"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161204042301.25"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161204042301.26"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161204042714.33"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161204042714.34"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161204042739.15"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161204042739.16"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161204043013.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161204043013.2"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161204043028.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161204043028.11"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161204043342.40"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161204043342.41"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161204045827.15"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161204045827.16"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161204045955.21"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161204045955.22"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161204154852.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161204154852.11"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161204155218.25"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161204155218.26"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161206135449.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161206135449.11"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161206165824.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161206165824.11"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161216141227.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161216141227.2"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161218104646.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161218104646.2"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161220185154.21"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161220185154.22"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161221062411.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161221062411.2"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161221063734.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161221063734.11"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161221065216.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161221065216.8"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161221080848.25"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161221080848.26"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161221091453.20"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161221091453.21"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161221091950.20"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161221091950.21"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161221092230.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161221092230.11"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161222122038.3"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161222122038.4"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161222123534.3"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161222123534.4"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161222123751.3"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161222123751.4"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161223153848.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161223153848.2"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20161231115630.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20161231115630.11"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20170101085120.25"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20170101085120.26"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20170101131839.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20170101131839.11"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20170101134221.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20170101134221.8"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20170105122516.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20170105122516.11"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20170112111339.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20170112111339.8"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20170112111900.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20170112111900.11"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20170113162613.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20170113162613.8"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20170114055256.3"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20170114055256.4"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20170114080041.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20170114080041.2"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20170114200550.3"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20170114200550.4"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20170115052901.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20170115052901.11"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20170302201859.3"><vh>@@file c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20170302201859.4"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20170401122030.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/php here doc</vh>
-<v t="ekr.20170401122030.2"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20170409174529.27"><vh>@@file @test php here doc</vh>
-<v t="ekr.20170409174529.28"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20170409174632.19"><vh>@@file @test php here doc</vh>
-<v t="ekr.20170409174632.20"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20170410190519.53"><vh>@@file @test php here doc</vh>
-<v t="ekr.20170410190519.54"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20170415061122.50"><vh>@@file @test php here doc</vh>
-<v t="ekr.20170415061122.51"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20170426033159.40"><vh>@@file @test php here doc</vh>
-<v t="ekr.20170426033159.41"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20170502211859.15"><vh>@@file @test php here doc</vh>
-<v t="ekr.20170502211859.16"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20170503133125.21"><vh>@@file @test php here doc</vh>
-<v t="ekr.20170503133125.22"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20170503133258.21"><vh>@@file @test php here doc</vh>
-<v t="ekr.20170503133258.22"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20170503133608.21"><vh>@@file @test php here doc</vh>
-<v t="ekr.20170503133608.22"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20170520193219.85"><vh>@@file @test php here doc</vh>
-<v t="ekr.20170520193219.86"><vh>class foo</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
-<v t="ekr.20161204042938.1"><vh>@@test print('end python tests')</vh></v>
-<v t="ekr.20161204042916.1"><vh>@@test print('start python tests')</vh></v>
-<v t="ekr.20161115092708.1"><vh>@test i.scan_state (for python)</vh></v>
-<v t="ekr.20161224145026.1"><vh>@test leoApp fail</vh></v>
-<v t="ekr.20161115063144.3"><vh>@test python bad class test</vh></v>
-<v t="ekr.20161115063144.34"><vh>@test python basic nesting test</vh></v>
-<v t="ekr.20161218103650.1"><vh>@test python bug #346</vh></v>
-<v t="ekr.20161228070933.1"><vh>@test python bug #354</vh></v>
-<v t="ekr.20170122033034.1"><vh>@test python bug #357</vh></v>
-<v t="ekr.20170122032242.1"><vh>@test python bug #360</vh></v>
-<v t="ekr.20170306041801.1"><vh>@test python bug @390</vh></v>
-<v t="ekr.20161115063144.4"><vh>@test python bug 603720</vh></v>
-<v t="ekr.20161115063144.5"><vh>@test python class test 2</vh></v>
-<v t="ekr.20161115063144.6"><vh>@test python class tests 1</vh></v>
-<v t="ekr.20161115063144.7"><vh>@test python comment after dict assign</vh></v>
-<v t="ekr.20161115063144.8"><vh>@test python decls test 1</vh></v>
-<v t="ekr.20161115063144.9"><vh>@test python decorator</vh></v>
-<v t="ekr.20161224101046.1"><vh>@test python decorator 2</vh></v>
-<v t="ekr.20161115063144.10"><vh>@test python def inside def</vh></v>
-<v t="ekr.20161115063144.11"><vh>@test python def test 1</vh></v>
-<v t="ekr.20161115063144.12"><vh>@test python def test 2</vh></v>
-<v t="ekr.20161115063144.13"><vh>@test python docstring only</vh></v>
-<v t="ekr.20161115063144.14"><vh>@test python empty decls</vh></v>
-<v t="ekr.20161115063144.15"><vh>@test python extra leading ws test</vh></v>
-<v t="ekr.20161115063144.16"><vh>@test python indent decls</vh></v>
-<v t="ekr.20161117000902.1"><vh>@test python leoImport.py (small)</vh></v>
-<v t="ekr.20161115063144.18"><vh>@test python looks like section ref</vh></v>
-<v t="ekr.20161115063144.19"><vh>@test python minimal class 1</vh></v>
-<v t="ekr.20161115063144.20"><vh>@test python minimal class 2</vh></v>
-<v t="ekr.20161115063144.21"><vh>@test python minimal class 3</vh></v>
-<v t="ekr.20161115063144.22"><vh>@test python overindent def--no following def</vh></v>
-<v t="ekr.20161115063144.23"><vh>@test python overindent def--one following def</vh></v>
-<v t="ekr.20161115063144.24"><vh>@test python overindented def 3</vh></v>
-<v t="ekr.20161115063144.25"><vh>@test python string test: extra indent</vh></v>
-<v t="ekr.20161115063144.26"><vh>@test python string underindent lines</vh></v>
-<v t="ekr.20161115063144.27"><vh>@test python string underindent lines 2</vh></v>
-<v t="ekr.20161222064421.1"><vh>@test python top-level later decl</vh></v>
-<v t="ekr.20161115063144.28"><vh>@test python trailing comment</vh></v>
-<v t="ekr.20161115063144.29"><vh>@test python trailing comment--outer levels</vh></v>
-<v t="ekr.20161115063144.30"><vh>@test python two functions</vh></v>
-<v t="ekr.20161115063144.31"><vh>@test python underindent method</vh></v>
-<v t="ekr.20161115063144.32"><vh>@test python unindent in triple string does not end function</vh></v>
-<v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
-</v>
-<v t="ekr.20121011094154.3906"><vh>TypeScript tests</vh>
-<v t="ekr.20121011094154.3911"><vh>@test TypeScript class</vh></v>
-<v t="ekr.20121011100210.4035"><vh>@test TypeScript module</vh></v>
-</v>
-<v t="ekr.20090529141856.4780"><vh>xml tests</vh>
-<v t="ekr.20170416060817.1"><vh>@test xml with standard opening elements</vh></v>
-<v t="ekr.20090529141856.4781"><vh>@test xml 1</vh></v>
-<v t="ekr.20111026105935.3966"><vh>@test xml 2</vh></v>
-<v t="ekr.20120306173116.3933"><vh>@test xml non-ascii tags</vh></v>
-</v>
-</v>
-<v t="ekr.20160410152100.1"><vh>Tests of @auto-md</vh>
-<v t="ekr.20160410152100.2"><vh>@test md-import-test</vh>
-<v t="ekr.20160411034540.1"><vh>&lt;&lt; define s &gt;&gt; (md-import-test)</vh></v>
-<v t="ekr.20161202093709.1"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
-<v t="ekr.20161202093709.2"><vh>!Declarations</vh>
-<v t="ekr.20161202093709.3"><vh>Section 1</vh></v>
-<v t="ekr.20161202093709.4"><vh>Section 2</vh>
-<v t="ekr.20161202093709.5"><vh>Section 2.1</vh>
-<v t="ekr.20161202093709.6"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161202093709.7"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161202093709.8"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204034142.19"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
-<v t="ekr.20161204034142.20"><vh>Top</vh>
-<v t="ekr.20161204034142.21"><vh>Section 1</vh></v>
-<v t="ekr.20161204034142.22"><vh>Section 2</vh>
-<v t="ekr.20161204034142.23"><vh>Section 2.1</vh>
-<v t="ekr.20161204034142.24"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204034142.25"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204034142.26"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204034207.1"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
-<v t="ekr.20161204034207.2"><vh>Top</vh>
-<v t="ekr.20161204034207.3"><vh>Section 1</vh></v>
-<v t="ekr.20161204034207.4"><vh>Section 2</vh>
-<v t="ekr.20161204034207.5"><vh>Section 2.1</vh>
-<v t="ekr.20161204034207.6"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204034207.7"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204034207.8"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204035451.19"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
-<v t="ekr.20161204035451.20"><vh>Top</vh>
-<v t="ekr.20161204035451.21"><vh>Section 1</vh></v>
-<v t="ekr.20161204035451.22"><vh>Section 2</vh>
-<v t="ekr.20161204035451.23"><vh>Section 2.1</vh>
-<v t="ekr.20161204035451.24"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204035451.25"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204035451.26"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204041310.53"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
-<v t="ekr.20161204041310.54"><vh>Top</vh>
-<v t="ekr.20161204041310.55"><vh>Section 1</vh></v>
-<v t="ekr.20161204041310.56"><vh>Section 2</vh>
-<v t="ekr.20161204041310.57"><vh>Section 2.1</vh>
-<v t="ekr.20161204041310.58"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204041310.59"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204041310.60"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204041358.103"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
-<v t="ekr.20161204041358.104"><vh>Top</vh>
-<v t="ekr.20161204041358.105"><vh>Section 1</vh></v>
-<v t="ekr.20161204041358.106"><vh>Section 2</vh>
-<v t="ekr.20161204041358.107"><vh>Section 2.1</vh>
-<v t="ekr.20161204041358.108"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204041358.109"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204041358.110"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204041418.1"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
-<v t="ekr.20161204041418.2"><vh>Top</vh>
-<v t="ekr.20161204041418.3"><vh>Section 1</vh></v>
-<v t="ekr.20161204041418.4"><vh>Section 2</vh>
-<v t="ekr.20161204041418.5"><vh>Section 2.1</vh>
-<v t="ekr.20161204041418.6"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204041418.7"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204041418.8"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204041645.103"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
-<v t="ekr.20161204041645.104"><vh>Top</vh>
-<v t="ekr.20161204041645.105"><vh>Section 1</vh></v>
-<v t="ekr.20161204041645.106"><vh>Section 2</vh>
-<v t="ekr.20161204041645.107"><vh>Section 2.1</vh>
-<v t="ekr.20161204041645.108"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204041645.109"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204041645.110"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204041724.1"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
-<v t="ekr.20161204041724.2"><vh>Top</vh>
-<v t="ekr.20161204041724.3"><vh>Section 1</vh></v>
-<v t="ekr.20161204041724.4"><vh>Section 2</vh>
-<v t="ekr.20161204041724.5"><vh>Section 2.1</vh>
-<v t="ekr.20161204041724.6"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204041724.7"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204041724.8"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204041800.1"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
-<v t="ekr.20161204041800.2"><vh>Top</vh>
-<v t="ekr.20161204041800.3"><vh>Section 1</vh></v>
-<v t="ekr.20161204041800.4"><vh>Section 2</vh>
-<v t="ekr.20161204041800.5"><vh>Section 2.1</vh>
-<v t="ekr.20161204041800.6"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204041800.7"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204041800.8"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204042305.96"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
-<v t="ekr.20161204042305.97"><vh>Top</vh>
-<v t="ekr.20161204042305.98"><vh>Section 1</vh></v>
-<v t="ekr.20161204042305.99"><vh>Section 2</vh>
-<v t="ekr.20161204042305.100"><vh>Section 2.1</vh>
-<v t="ekr.20161204042305.101"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204042305.102"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204042305.103"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204042719.4"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
-<v t="ekr.20161204042719.5"><vh>Top</vh>
-<v t="ekr.20161204042719.6"><vh>Section 1</vh></v>
-<v t="ekr.20161204042719.7"><vh>Section 2</vh>
-<v t="ekr.20161204042719.8"><vh>Section 2.1</vh>
-<v t="ekr.20161204042719.9"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204042719.10"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204042719.11"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204042822.1"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
-<v t="ekr.20161204042822.2"><vh>Top</vh>
-<v t="ekr.20161204042822.3"><vh>Section 1</vh></v>
-<v t="ekr.20161204042822.4"><vh>Section 2</vh>
-<v t="ekr.20161204042822.5"><vh>Section 2.1</vh>
-<v t="ekr.20161204042822.6"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204042822.7"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204042822.8"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204043017.19"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
-<v t="ekr.20161204043017.20"><vh>Top</vh>
-<v t="ekr.20161204043017.21"><vh>Section 1</vh></v>
-<v t="ekr.20161204043017.22"><vh>Section 2</vh>
-<v t="ekr.20161204043017.23"><vh>Section 2.1</vh>
-<v t="ekr.20161204043017.24"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204043017.25"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204043017.26"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204043032.96"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
-<v t="ekr.20161204043032.97"><vh>Top</vh>
-<v t="ekr.20161204043032.98"><vh>Section 1</vh></v>
-<v t="ekr.20161204043032.99"><vh>Section 2</vh>
-<v t="ekr.20161204043032.100"><vh>Section 2.1</vh>
-<v t="ekr.20161204043032.101"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204043032.102"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204043032.103"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204043346.4"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
-<v t="ekr.20161204043346.5"><vh>Top</vh>
-<v t="ekr.20161204043346.6"><vh>Section 1</vh></v>
-<v t="ekr.20161204043346.7"><vh>Section 2</vh>
-<v t="ekr.20161204043346.8"><vh>Section 2.1</vh>
-<v t="ekr.20161204043346.9"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204043346.10"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204043346.11"><vh>Section 3</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20160411033840.1"><vh>@test md-import-test-rst-style</vh>
-<v t="ekr.20161125230415.1"><vh>&lt;&lt; define s &gt;&gt; (md-import-test-rst-style)</vh></v>
-<v t="ekr.20161202093319.1"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
-<v t="ekr.20161202093319.2"><vh>Top</vh>
-<v t="ekr.20161202093319.3"><vh>Section 1</vh></v>
-<v t="ekr.20161202093319.4"><vh>Section 2</vh>
-<v t="ekr.20161202093319.5"><vh>Section 2.1</vh>
-<v t="ekr.20161202093319.6"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161202093319.7"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161202093319.8"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161202093322.9"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
-<v t="ekr.20161202093322.10"><vh>Top</vh>
-<v t="ekr.20161202093322.11"><vh>Section 1</vh></v>
-<v t="ekr.20161202093322.12"><vh>Section 2</vh>
-<v t="ekr.20161202093322.13"><vh>Section 2.1</vh>
-<v t="ekr.20161202093322.14"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161202093322.15"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161202093322.16"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161202093409.1"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
-<v t="ekr.20161202093409.2"><vh>Top</vh>
-<v t="ekr.20161202093409.3"><vh>Section 1</vh></v>
-<v t="ekr.20161202093409.4"><vh>Section 2</vh>
-<v t="ekr.20161202093409.5"><vh>Section 2.1</vh>
-<v t="ekr.20161202093409.6"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161202093409.7"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161202093409.8"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161202093410.1"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
-<v t="ekr.20161202093410.2"><vh>Top</vh>
-<v t="ekr.20161202093410.3"><vh>Section 1</vh></v>
-<v t="ekr.20161202093410.4"><vh>Section 2</vh>
-<v t="ekr.20161202093410.5"><vh>Section 2.1</vh>
-<v t="ekr.20161202093410.6"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161202093410.7"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161202093410.8"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161202093509.22"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
-<v t="ekr.20161202093509.23"><vh>Top</vh>
-<v t="ekr.20161202093509.24"><vh>Section 1</vh></v>
-<v t="ekr.20161202093509.25"><vh>Section 2</vh>
-<v t="ekr.20161202093509.26"><vh>Section 2.1</vh>
-<v t="ekr.20161202093509.27"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161202093509.28"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161202093509.29"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204034142.27"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
-<v t="ekr.20161204034142.28"><vh>Top</vh>
-<v t="ekr.20161204034142.29"><vh>Section 1</vh></v>
-<v t="ekr.20161204034142.30"><vh>Section 2</vh>
-<v t="ekr.20161204034142.31"><vh>Section 2.1</vh>
-<v t="ekr.20161204034142.32"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204034142.33"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204034142.34"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204034207.9"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
-<v t="ekr.20161204034207.10"><vh>Top</vh>
-<v t="ekr.20161204034207.11"><vh>Section 1</vh></v>
-<v t="ekr.20161204034207.12"><vh>Section 2</vh>
-<v t="ekr.20161204034207.13"><vh>Section 2.1</vh>
-<v t="ekr.20161204034207.14"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204034207.15"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204034207.16"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204035451.27"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
-<v t="ekr.20161204035451.28"><vh>Top</vh>
-<v t="ekr.20161204035451.29"><vh>Section 1</vh></v>
-<v t="ekr.20161204035451.30"><vh>Section 2</vh>
-<v t="ekr.20161204035451.31"><vh>Section 2.1</vh>
-<v t="ekr.20161204035451.32"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204035451.33"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204035451.34"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204041310.61"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
-<v t="ekr.20161204041310.62"><vh>Top</vh>
-<v t="ekr.20161204041310.63"><vh>Section 1</vh></v>
-<v t="ekr.20161204041310.64"><vh>Section 2</vh>
-<v t="ekr.20161204041310.65"><vh>Section 2.1</vh>
-<v t="ekr.20161204041310.66"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204041310.67"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204041310.68"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204041359.1"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
-<v t="ekr.20161204041359.2"><vh>Top</vh>
-<v t="ekr.20161204041359.3"><vh>Section 1</vh></v>
-<v t="ekr.20161204041359.4"><vh>Section 2</vh>
-<v t="ekr.20161204041359.5"><vh>Section 2.1</vh>
-<v t="ekr.20161204041359.6"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204041359.7"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204041359.8"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204041418.9"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
-<v t="ekr.20161204041418.10"><vh>Top</vh>
-<v t="ekr.20161204041418.11"><vh>Section 1</vh></v>
-<v t="ekr.20161204041418.12"><vh>Section 2</vh>
-<v t="ekr.20161204041418.13"><vh>Section 2.1</vh>
-<v t="ekr.20161204041418.14"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204041418.15"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204041418.16"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204041646.1"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
-<v t="ekr.20161204041646.2"><vh>Top</vh>
-<v t="ekr.20161204041646.3"><vh>Section 1</vh></v>
-<v t="ekr.20161204041646.4"><vh>Section 2</vh>
-<v t="ekr.20161204041646.5"><vh>Section 2.1</vh>
-<v t="ekr.20161204041646.6"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204041646.7"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204041646.8"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204041724.9"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
-<v t="ekr.20161204041724.10"><vh>Top</vh>
-<v t="ekr.20161204041724.11"><vh>Section 1</vh></v>
-<v t="ekr.20161204041724.12"><vh>Section 2</vh>
-<v t="ekr.20161204041724.13"><vh>Section 2.1</vh>
-<v t="ekr.20161204041724.14"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204041724.15"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204041724.16"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204041800.9"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
-<v t="ekr.20161204041800.10"><vh>Top</vh>
-<v t="ekr.20161204041800.11"><vh>Section 1</vh></v>
-<v t="ekr.20161204041800.12"><vh>Section 2</vh>
-<v t="ekr.20161204041800.13"><vh>Section 2.1</vh>
-<v t="ekr.20161204041800.14"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204041800.15"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204041800.16"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204042305.104"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
-<v t="ekr.20161204042305.105"><vh>Top</vh>
-<v t="ekr.20161204042305.106"><vh>Section 1</vh></v>
-<v t="ekr.20161204042305.107"><vh>Section 2</vh>
-<v t="ekr.20161204042305.108"><vh>Section 2.1</vh>
-<v t="ekr.20161204042305.109"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204042305.110"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204042305.111"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204042719.12"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
-<v t="ekr.20161204042719.13"><vh>Top</vh>
-<v t="ekr.20161204042719.14"><vh>Section 1</vh></v>
-<v t="ekr.20161204042719.15"><vh>Section 2</vh>
-<v t="ekr.20161204042719.16"><vh>Section 2.1</vh>
-<v t="ekr.20161204042719.17"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204042719.18"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204042719.19"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204042822.9"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
-<v t="ekr.20161204042822.10"><vh>Top</vh>
-<v t="ekr.20161204042822.11"><vh>Section 1</vh></v>
-<v t="ekr.20161204042822.12"><vh>Section 2</vh>
-<v t="ekr.20161204042822.13"><vh>Section 2.1</vh>
-<v t="ekr.20161204042822.14"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204042822.15"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204042822.16"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204043017.27"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
-<v t="ekr.20161204043017.28"><vh>Top</vh>
-<v t="ekr.20161204043017.29"><vh>Section 1</vh></v>
-<v t="ekr.20161204043017.30"><vh>Section 2</vh>
-<v t="ekr.20161204043017.31"><vh>Section 2.1</vh>
-<v t="ekr.20161204043017.32"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204043017.33"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204043017.34"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204043032.104"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
-<v t="ekr.20161204043032.105"><vh>Top</vh>
-<v t="ekr.20161204043032.106"><vh>Section 1</vh></v>
-<v t="ekr.20161204043032.107"><vh>Section 2</vh>
-<v t="ekr.20161204043032.108"><vh>Section 2.1</vh>
-<v t="ekr.20161204043032.109"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204043032.110"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204043032.111"><vh>Section 3</vh></v>
-</v>
-</v>
-<v t="ekr.20161204043346.12"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
-<v t="ekr.20161204043346.13"><vh>Top</vh>
-<v t="ekr.20161204043346.14"><vh>Section 1</vh></v>
-<v t="ekr.20161204043346.15"><vh>Section 2</vh>
-<v t="ekr.20161204043346.16"><vh>Section 2.1</vh>
-<v t="ekr.20161204043346.17"><vh>Section 2.1.1</vh></v>
-</v>
-<v t="ekr.20161204043346.18"><vh>Section 2.2</vh></v>
-</v>
-<v t="ekr.20161204043346.19"><vh>Section 3</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20161125134815.1"><vh>@test markdown importer-basic</vh></v>
-<v t="ekr.20161126111517.1"><vh>@test markdown importer-implicit section</vh></v>
-<v t="ekr.20161216141315.1"><vh>@test markdown importer-@@-section-name</vh></v>
-<v t="ekr.20161127181028.1"><vh>@test markdown github syntax</vh></v>
-</v>
-<v t="ekr.20090529141856.4784"><vh>Tests of @auto-rst</vh>
-<v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
-<v t="ekr.20140725132959.4593"><vh>@test rST import test: simple</vh></v>
-<v t="ekr.20090529141856.4786"><vh>@test rST import test: no double-underlines</vh></v>
-<v t="ekr.20090529141856.4787"><vh>@test rST import test: long underlines</vh></v>
-<v t="ekr.20090529141856.4788"><vh>@test rST import test: long overlines</vh></v>
-<v t="ekr.20090529141856.4789"><vh>@test rST import test: trailing whitespace</vh></v>
-<v t="ekr.20161129104243.1"><vh>@test leo_rst</vh></v>
-</v>
-<v t="ekr.20140724220921.5199"><vh>Tests of individual methods</vh>
-<v t="ekr.20111214100515.3921"><vh>@@@test ic.createOutline: at-auto with lines that look like section references</vh></v>
-<v t="ekr.20140206132559.4567"></v>
-<v t="ekr.20150919074122.1"></v>
-</v>
-<v t="ekr.20161204041557.1"><vh>All other tests</vh>
-<v t="ekr.20090529141856.4793"><vh>@@test test imports for modes</vh></v>
-<v t="ekr.20140723134017.4464"><vh>@test @auto importers</vh></v>
-<v t="ekr.20161109065940.1"><vh>@test Importer.get_leading_indent</vh></v>
-<v t="ekr.20161117011147.1"><vh>@test Importer.get_str_lws</vh></v>
-<v t="ekr.20161109065949.1"><vh>@test Importer.is_ws_line</vh></v>
-<v t="ekr.20161011052016.1"><vh>@test importers.javascript.scan_line</vh></v>
-<v t="ekr.20170407065952.1"><vh>@test importers.javascript.op_pattern</vh></v>
-</v>
-<v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
-</v>
 <v t="ekr.20170504062625.1"><vh>Found:leoQt</vh>
 <v t="ekr.20140904060337.4476"><vh>@test interfaces using API classes</vh></v>
 <v t="ekr.20111123214629.3941"><vh>@test unbound Alt-9 key is completely ignored</vh></v>
@@ -1158,7 +340,7 @@ marks="ekr.20100131171342.5599,ekr.20090529141856.4682,ekr.20100131171342.5604,"
 <v t="ekr.20071113202153.1"><vh>@test zz end of leoFrame tests</vh></v>
 <v t="ekr.20071113202153.2"><vh>@test zz end of leoGlobals tests</vh></v>
 <v t="ekr.20100131171342.5603"><vh>@test zz end of leoGui tests</vh></v>
-<v t="ekr.20140724164600.4590"></v>
+<v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
 <v t="ekr.20100131171342.5609"><vh>@test zz end of leoKeys tests</vh></v>
 <v t="ekr.20071113202452"><vh>@test zz end of leoNodes tests</vh></v>
 <v t="ekr.20071113202510"><vh>@test zz end of leoUndo tests</vh></v>
@@ -1317,7 +499,7 @@ marks="ekr.20100131171342.5599,ekr.20090529141856.4682,ekr.20100131171342.5604,"
 </v>
 <v t="ekr.20080503132221.1"><vh>@test chapter-create-from-node</vh></v>
 </v>
-<v t="ekr.20090615053403.4876"><vh>leoColorizer (to do)</vh>
+<v t="ekr.20090615053403.4876"><vh>@ignore leoColorizer (to do)</vh>
 <v t="ekr.20090615053403.4877"><vh>@test @comment after @language plain</vh>
 <v t="ekr.20090615053403.4878"><vh>plain code</vh></v>
 </v>
@@ -1458,7 +640,7 @@ marks="ekr.20100131171342.5599,ekr.20090529141856.4682,ekr.20100131171342.5604,"
 </v>
 <v t="ekr.20090615053403.4957"></v>
 </v>
-<v t="ekr.20071113193624"><vh>leoCommands (to do)</vh>
+<v t="ekr.20071113193624"><vh>@ignore leoCommands (to do)</vh>
 <v t="ekr.20090104053806.1"><vh>@@@test c.checkFileTimeStamp &amp; c.setFileTimeStamp</vh></v>
 <v t="ekr.20100203103015.5356"><vh>@@@test c.openTempFileInExternalEditor</vh></v>
 <v t="ekr.20100209155559.5386"><vh>@@@test efc.create_temp_file</vh></v>
@@ -1537,10 +719,10 @@ marks="ekr.20100131171342.5599,ekr.20090529141856.4682,ekr.20100131171342.5604,"
 <v t="ekr.20050203001146"><vh>@test local settings (c.page_width)</vh></v>
 <v t="ekr.20071113201854"></v>
 </v>
-<v t="ekr.20100131171342.5592"><vh>leoDialogs (to do)</vh>
+<v t="ekr.20100131171342.5592"><vh>@ignore leoDialogs (to do)</vh>
 <v t="ekr.20100131171342.5593"><vh>@test ctors for all dialogs</vh></v>
 </v>
-<v t="ekr.20071113192611"><vh>leoEditCommands (to do)</vh>
+<v t="ekr.20071113192611"><vh>@ignore leoEditCommands (to do)</vh>
 <v t="ekr.20070131175538"><vh> Commands A-B</vh>
 <v t="ekr.20061101121602.78"><vh>@test add-space-to-lines</vh>
 <v t="ekr.20061101121602.79"><vh>work</vh></v>
@@ -2480,7 +1662,7 @@ marks="ekr.20100131171342.5599,ekr.20090529141856.4682,ekr.20100131171342.5604,"
 <v t="ekr.20050208135429"><vh>@test pre-definition of g in scripts</vh></v>
 <v t="ekr.20071113202153.2"></v>
 </v>
-<v t="ekr.20100131171342.5599" a="M"><vh>leoGui &amp; leoQtGui</vh>
+<v t="ekr.20100131171342.5599"><vh>leoGui &amp; leoQtGui (passed)</vh>
 <v t="ekr.20111120124051.3992"></v>
 <v t="ekr.20111003145300.3466"><vh>@test illegal drag gives warning</vh>
 <v t="ekr.20111003145300.3467"><vh>a</vh></v>
@@ -2488,8 +1670,825 @@ marks="ekr.20100131171342.5599,ekr.20090529141856.4682,ekr.20100131171342.5604,"
 <v t="ekr.20111123214629.3941"></v>
 <v t="ekr.20100131171342.5603"></v>
 </v>
-<v t="ekr.20090529141856.4682" a="M"></v>
-<v t="ekr.20100131171342.5604" a="M"><vh>leoKeys</vh>
+<v t="ekr.20090529141856.4682"><vh>leoImport (passed)</vh>
+<v t="ekr.20090529141856.4684"><vh>Export tests</vh>
+<v t="ekr.20090529141856.4685"><vh>@suite Export tests</vh></v>
+</v>
+<v t="ekr.20090529141856.4698"><vh>Import tests</vh>
+<v t="ekr.20090529141856.4699"><vh>@suite Import tests</vh></v>
+</v>
+<v t="ekr.20090529141856.4716"><vh>Tests of @auto</vh>
+<v t="ekr.20090529141856.4783"><vh>@test collapse-all</vh></v>
+<v t="ekr.20090529141856.4717"><vh>C tests</vh>
+<v t="ekr.20090529141856.4718"><vh>@test c class 1</vh></v>
+<v t="ekr.20090529141856.4719"><vh>@test c class--underindented line</vh></v>
+<v t="ekr.20090529141856.4721"><vh>@test c comment follows arg list</vh></v>
+<v t="ekr.20090529141856.4722"><vh>@test c comment follows block delim</vh></v>
+<v t="ekr.20090529141856.4723"><vh>@test c intermixed blanks and tabs</vh></v>
+<v t="ekr.20090529141856.4724"><vh>@test c old-style decl 1</vh></v>
+<v t="ekr.20090529141856.4725"><vh>@test c old-style decl 2</vh></v>
+<v t="ekr.20090529141856.4726"><vh>@test c extern</vh></v>
+</v>
+<v t="ekr.20090529141856.4727"><vh>c# tests</vh>
+<v t="ekr.20090529141856.4728"><vh>@test c# namespace indent</vh></v>
+<v t="ekr.20090529141856.4729"><vh>@test c# namespace no indent</vh></v>
+<v t="ekr.20090529141856.4730"><vh>@@test c# ref card</vh></v>
+</v>
+<v t="ekr.20161108034116.1"><vh>coffeescript tests</vh>
+<v t="ekr.20161108034138.1"><vh>@test coffeescript-1</vh></v>
+<v t="ekr.20161109084732.1"><vh>@test coffeescript-2</vh></v>
+<v t="ekr.20161118144658.1"><vh>@test coffeescript-3</vh></v>
+</v>
+<v t="ekr.20161123115047.1"><vh>dart tests</vh>
+<v t="ekr.20161123120652.1"><vh>@test dart hello world</vh></v>
+</v>
+<v t="ekr.20090529141856.4731"><vh>elisp tests</vh>
+<v t="ekr.20090529141856.4733"><vh>@test elisp</vh></v>
+</v>
+<v t="ekr.20111029112647.4099"><vh>html tests</vh>
+<v t="ekr.20111107102431.3849"><vh>@@test html whitespace bug</vh></v>
+<v t="ekr.20111029112647.4101"><vh>@test html: lowercase tags</vh></v>
+<v t="ekr.20111109143012.3839"><vh>@test html: multiple tags on a line</vh></v>
+<v t="ekr.20140218122321.4349"><vh>@test html: multple node completed on a line</vh></v>
+<v t="ekr.20170416085619.1"><vh>@test html: multple node starts on a line</vh></v>
+<v t="ekr.20111102164107.3975"><vh>@test html: underindented comment</vh></v>
+<v t="ekr.20111029120441.3982"><vh>@test html: uppercase tags</vh></v>
+<v t="ekr.20111112103320.3849"><vh>@test html: improperly nested tags</vh></v>
+<v t="ekr.20111112103320.3887"><vh>@test html: improperly terminated tags</vh></v>
+<v t="ekr.20111112103320.3893"><vh>@test html: improperly terminated tags2</vh></v>
+</v>
+<v t="ekr.20100803234640.5804"><vh>ini tests</vh>
+<v t="ekr.20100803234640.5805"><vh>@test ini-test-1</vh></v>
+</v>
+<v t="ekr.20090529141856.4766"><vh>Java tests</vh>
+<v t="ekr.20090529141856.4771"><vh>@@test AdminPermission.java</vh></v>
+<v t="ekr.20090529141856.4769"><vh>@@test constants.java</vh></v>
+<v t="ekr.20090529141856.4770"><vh>@test from AdminPermission.java</vh></v>
+<v t="ekr.20090529141856.4773"><vh>@test from BundleException.java</vh></v>
+<v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
+<v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
+</v>
+<v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
+<v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
+<v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
+<v t="ekr.20090529141856.4777"><vh>@@test JSON</vh></v>
+<v t="ekr.20090529141856.4778"><vh>@test Javascript-3</vh></v>
+<v t="ekr.20140218042220.4347"><vh>@test Javascript-4</vh></v>
+<v t="ekr.20140218151418.4353"><vh>@test Javascript-5</vh></v>
+</v>
+<v t="ekr.20161123202857.1"><vh>org tests</vh>
+<v t="ekr.20161123202924.1"><vh>@test org-1</vh></v>
+</v>
+<v t="ekr.20161124040933.1"><vh>otl (vim-outline) tests</vh>
+<v t="ekr.20161124040933.2"><vh>@test otl-1</vh></v>
+</v>
+<v t="ekr.20090529141856.4734"><vh>Pascal tests</vh>
+<v t="ekr.20090529141856.4735"><vh>@test pascal-to-delphi interface</vh></v>
+</v>
+<v t="ekr.20161103015908.1"><vh>Perl tests</vh>
+<v t="ekr.20161103015940.1"><vh>@test perl-1</vh></v>
+<v t="ekr.20161103021621.1"><vh>@test perlpod comment</vh></v>
+<v t="ekr.20161103021420.1"><vh>@test perl multi-line string</vh></v>
+<v t="ekr.20161119031833.1"><vh>@test perl regex-1</vh></v>
+<v t="ekr.20161119032623.1"><vh>@test perl regex-2</vh></v>
+</v>
+<v t="ekr.20100219080213.5365"><vh>PHP tests</vh>
+<v t="ekr.20100219080213.5366"><vh>@test php import class</vh></v>
+<v t="ekr.20100219080213.5367"><vh>@test php import conditional class</vh></v>
+<v t="ekr.20100219080213.5368"><vh>@test php import classes &amp; functions</vh></v>
+<v t="ekr.20161129222003.1"><vh>@test php here doc</vh>
+<v t="ekr.20161130042452.50"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161130042452.51"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161130050706.29"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161130050706.30"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161202053644.21"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161202053644.22"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161202083956.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161202083956.11"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161202093505.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161202093505.11"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204034138.15"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204034138.16"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204035447.20"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204035447.21"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204041306.21"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204041306.22"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204041354.25"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204041354.26"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204041426.33"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204041426.34"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204041641.25"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204041641.26"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204041720.21"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204041720.22"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204041755.29"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204041755.30"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204041842.20"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204041842.21"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204041902.25"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204041902.26"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204041920.33"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204041920.34"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204042116.25"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204042116.26"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204042155.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204042155.8"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204042301.25"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204042301.26"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204042714.33"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204042714.34"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204042739.15"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204042739.16"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204043013.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204043013.2"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204043028.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204043028.11"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204043342.40"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204043342.41"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204045827.15"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204045827.16"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204045955.21"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204045955.22"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204154852.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204154852.11"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161204155218.25"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161204155218.26"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161206135449.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161206135449.11"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161206165824.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161206165824.11"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161216141227.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161216141227.2"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161218104646.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161218104646.2"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161220185154.21"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161220185154.22"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161221062411.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161221062411.2"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161221063734.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161221063734.11"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161221065216.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161221065216.8"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161221080848.25"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161221080848.26"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161221091453.20"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161221091453.21"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161221091950.20"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161221091950.21"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161221092230.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161221092230.11"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161222122038.3"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161222122038.4"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161222123534.3"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161222123534.4"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161222123751.3"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161222123751.4"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161223153848.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161223153848.2"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20161231115630.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20161231115630.11"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170101085120.25"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20170101085120.26"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170101131839.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20170101131839.11"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170101134221.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20170101134221.8"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170105122516.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20170105122516.11"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170112111339.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20170112111339.8"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170112111900.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20170112111900.11"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170113162613.7"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20170113162613.8"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170114055256.3"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20170114055256.4"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170114080041.1"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20170114080041.2"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170114200550.3"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20170114200550.4"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170115052901.10"><vh>@@clean c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20170115052901.11"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170302201859.3"><vh>@@file c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20170302201859.4"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170401122030.1"><vh>@@file c:/leo.repo/leo-editor/leo/test/php here doc</vh>
+<v t="ekr.20170401122030.2"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170409174529.27"><vh>@@file @test php here doc</vh>
+<v t="ekr.20170409174529.28"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170409174632.19"><vh>@@file @test php here doc</vh>
+<v t="ekr.20170409174632.20"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170410190519.53"><vh>@@file @test php here doc</vh>
+<v t="ekr.20170410190519.54"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170415061122.50"><vh>@@file @test php here doc</vh>
+<v t="ekr.20170415061122.51"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170426033159.40"><vh>@@file @test php here doc</vh>
+<v t="ekr.20170426033159.41"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170502211859.15"><vh>@@file @test php here doc</vh>
+<v t="ekr.20170502211859.16"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170503133125.21"><vh>@@file @test php here doc</vh>
+<v t="ekr.20170503133125.22"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170503133258.21"><vh>@@file @test php here doc</vh>
+<v t="ekr.20170503133258.22"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170503133608.21"><vh>@@file @test php here doc</vh>
+<v t="ekr.20170503133608.22"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170520193219.85"><vh>@@file @test php here doc</vh>
+<v t="ekr.20170520193219.86"><vh>class foo</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20090529141856.4736"><vh>Python tests</vh>
+<v t="ekr.20161204042938.1"><vh>@@test print('end python tests')</vh></v>
+<v t="ekr.20161204042916.1"><vh>@@test print('start python tests')</vh></v>
+<v t="ekr.20161115092708.1"><vh>@test i.scan_state (for python)</vh></v>
+<v t="ekr.20161224145026.1"><vh>@test leoApp fail</vh></v>
+<v t="ekr.20161115063144.3"><vh>@test python bad class test</vh></v>
+<v t="ekr.20161115063144.34"><vh>@test python basic nesting test</vh></v>
+<v t="ekr.20161218103650.1"><vh>@test python bug #346</vh></v>
+<v t="ekr.20161228070933.1"><vh>@test python bug #354</vh></v>
+<v t="ekr.20170122033034.1"><vh>@test python bug #357</vh></v>
+<v t="ekr.20170122032242.1"><vh>@test python bug #360</vh></v>
+<v t="ekr.20170306041801.1"><vh>@test python bug @390</vh></v>
+<v t="ekr.20161115063144.4"><vh>@test python bug 603720</vh></v>
+<v t="ekr.20161115063144.5"><vh>@test python class test 2</vh></v>
+<v t="ekr.20161115063144.6"><vh>@test python class tests 1</vh></v>
+<v t="ekr.20161115063144.7"><vh>@test python comment after dict assign</vh></v>
+<v t="ekr.20161115063144.8"><vh>@test python decls test 1</vh></v>
+<v t="ekr.20161115063144.9"><vh>@test python decorator</vh></v>
+<v t="ekr.20161224101046.1"><vh>@test python decorator 2</vh></v>
+<v t="ekr.20161115063144.10"><vh>@test python def inside def</vh></v>
+<v t="ekr.20161115063144.11"><vh>@test python def test 1</vh></v>
+<v t="ekr.20161115063144.12"><vh>@test python def test 2</vh></v>
+<v t="ekr.20161115063144.13"><vh>@test python docstring only</vh></v>
+<v t="ekr.20161115063144.14"><vh>@test python empty decls</vh></v>
+<v t="ekr.20161115063144.15"><vh>@test python extra leading ws test</vh></v>
+<v t="ekr.20161115063144.16"><vh>@test python indent decls</vh></v>
+<v t="ekr.20161117000902.1"><vh>@test python leoImport.py (small)</vh></v>
+<v t="ekr.20161115063144.18"><vh>@test python looks like section ref</vh></v>
+<v t="ekr.20161115063144.19"><vh>@test python minimal class 1</vh></v>
+<v t="ekr.20161115063144.20"><vh>@test python minimal class 2</vh></v>
+<v t="ekr.20161115063144.21"><vh>@test python minimal class 3</vh></v>
+<v t="ekr.20161115063144.22"><vh>@test python overindent def--no following def</vh></v>
+<v t="ekr.20161115063144.23"><vh>@test python overindent def--one following def</vh></v>
+<v t="ekr.20161115063144.24"><vh>@test python overindented def 3</vh></v>
+<v t="ekr.20161115063144.25"><vh>@test python string test: extra indent</vh></v>
+<v t="ekr.20161115063144.26"><vh>@test python string underindent lines</vh></v>
+<v t="ekr.20161115063144.27"><vh>@test python string underindent lines 2</vh></v>
+<v t="ekr.20161222064421.1"><vh>@test python top-level later decl</vh></v>
+<v t="ekr.20161115063144.28"><vh>@test python trailing comment</vh></v>
+<v t="ekr.20161115063144.29"><vh>@test python trailing comment--outer levels</vh></v>
+<v t="ekr.20161115063144.30"><vh>@test python two functions</vh></v>
+<v t="ekr.20161115063144.31"><vh>@test python underindent method</vh></v>
+<v t="ekr.20161115063144.32"><vh>@test python unindent in triple string does not end function</vh></v>
+<v t="ekr.20161115063144.33"><vh>@test python unittest/perfectImport/formatter.py</vh></v>
+</v>
+<v t="ekr.20121011094154.3906"><vh>TypeScript tests</vh>
+<v t="ekr.20121011094154.3911"><vh>@test TypeScript class</vh></v>
+<v t="ekr.20121011100210.4035"><vh>@test TypeScript module</vh></v>
+</v>
+<v t="ekr.20090529141856.4780"><vh>xml tests</vh>
+<v t="ekr.20170416060817.1"><vh>@test xml with standard opening elements</vh></v>
+<v t="ekr.20090529141856.4781"><vh>@test xml 1</vh></v>
+<v t="ekr.20111026105935.3966"><vh>@test xml 2</vh></v>
+<v t="ekr.20120306173116.3933"><vh>@test xml non-ascii tags</vh></v>
+</v>
+</v>
+<v t="ekr.20160410152100.1"><vh>Tests of @auto-md</vh>
+<v t="ekr.20160410152100.2"><vh>@test md-import-test</vh>
+<v t="ekr.20160411034540.1"><vh>&lt;&lt; define s &gt;&gt; (md-import-test)</vh></v>
+<v t="ekr.20161202093709.1"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161202093709.2"><vh>!Declarations</vh>
+<v t="ekr.20161202093709.3"><vh>Section 1</vh></v>
+<v t="ekr.20161202093709.4"><vh>Section 2</vh>
+<v t="ekr.20161202093709.5"><vh>Section 2.1</vh>
+<v t="ekr.20161202093709.6"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161202093709.7"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161202093709.8"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204034142.19"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204034142.20"><vh>Top</vh>
+<v t="ekr.20161204034142.21"><vh>Section 1</vh></v>
+<v t="ekr.20161204034142.22"><vh>Section 2</vh>
+<v t="ekr.20161204034142.23"><vh>Section 2.1</vh>
+<v t="ekr.20161204034142.24"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204034142.25"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204034142.26"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204034207.1"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204034207.2"><vh>Top</vh>
+<v t="ekr.20161204034207.3"><vh>Section 1</vh></v>
+<v t="ekr.20161204034207.4"><vh>Section 2</vh>
+<v t="ekr.20161204034207.5"><vh>Section 2.1</vh>
+<v t="ekr.20161204034207.6"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204034207.7"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204034207.8"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204035451.19"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204035451.20"><vh>Top</vh>
+<v t="ekr.20161204035451.21"><vh>Section 1</vh></v>
+<v t="ekr.20161204035451.22"><vh>Section 2</vh>
+<v t="ekr.20161204035451.23"><vh>Section 2.1</vh>
+<v t="ekr.20161204035451.24"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204035451.25"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204035451.26"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204041310.53"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204041310.54"><vh>Top</vh>
+<v t="ekr.20161204041310.55"><vh>Section 1</vh></v>
+<v t="ekr.20161204041310.56"><vh>Section 2</vh>
+<v t="ekr.20161204041310.57"><vh>Section 2.1</vh>
+<v t="ekr.20161204041310.58"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204041310.59"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204041310.60"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204041358.103"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204041358.104"><vh>Top</vh>
+<v t="ekr.20161204041358.105"><vh>Section 1</vh></v>
+<v t="ekr.20161204041358.106"><vh>Section 2</vh>
+<v t="ekr.20161204041358.107"><vh>Section 2.1</vh>
+<v t="ekr.20161204041358.108"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204041358.109"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204041358.110"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204041418.1"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204041418.2"><vh>Top</vh>
+<v t="ekr.20161204041418.3"><vh>Section 1</vh></v>
+<v t="ekr.20161204041418.4"><vh>Section 2</vh>
+<v t="ekr.20161204041418.5"><vh>Section 2.1</vh>
+<v t="ekr.20161204041418.6"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204041418.7"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204041418.8"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204041645.103"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204041645.104"><vh>Top</vh>
+<v t="ekr.20161204041645.105"><vh>Section 1</vh></v>
+<v t="ekr.20161204041645.106"><vh>Section 2</vh>
+<v t="ekr.20161204041645.107"><vh>Section 2.1</vh>
+<v t="ekr.20161204041645.108"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204041645.109"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204041645.110"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204041724.1"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204041724.2"><vh>Top</vh>
+<v t="ekr.20161204041724.3"><vh>Section 1</vh></v>
+<v t="ekr.20161204041724.4"><vh>Section 2</vh>
+<v t="ekr.20161204041724.5"><vh>Section 2.1</vh>
+<v t="ekr.20161204041724.6"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204041724.7"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204041724.8"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204041800.1"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204041800.2"><vh>Top</vh>
+<v t="ekr.20161204041800.3"><vh>Section 1</vh></v>
+<v t="ekr.20161204041800.4"><vh>Section 2</vh>
+<v t="ekr.20161204041800.5"><vh>Section 2.1</vh>
+<v t="ekr.20161204041800.6"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204041800.7"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204041800.8"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204042305.96"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204042305.97"><vh>Top</vh>
+<v t="ekr.20161204042305.98"><vh>Section 1</vh></v>
+<v t="ekr.20161204042305.99"><vh>Section 2</vh>
+<v t="ekr.20161204042305.100"><vh>Section 2.1</vh>
+<v t="ekr.20161204042305.101"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204042305.102"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204042305.103"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204042719.4"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204042719.5"><vh>Top</vh>
+<v t="ekr.20161204042719.6"><vh>Section 1</vh></v>
+<v t="ekr.20161204042719.7"><vh>Section 2</vh>
+<v t="ekr.20161204042719.8"><vh>Section 2.1</vh>
+<v t="ekr.20161204042719.9"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204042719.10"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204042719.11"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204042822.1"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204042822.2"><vh>Top</vh>
+<v t="ekr.20161204042822.3"><vh>Section 1</vh></v>
+<v t="ekr.20161204042822.4"><vh>Section 2</vh>
+<v t="ekr.20161204042822.5"><vh>Section 2.1</vh>
+<v t="ekr.20161204042822.6"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204042822.7"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204042822.8"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204043017.19"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204043017.20"><vh>Top</vh>
+<v t="ekr.20161204043017.21"><vh>Section 1</vh></v>
+<v t="ekr.20161204043017.22"><vh>Section 2</vh>
+<v t="ekr.20161204043017.23"><vh>Section 2.1</vh>
+<v t="ekr.20161204043017.24"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204043017.25"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204043017.26"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204043032.96"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204043032.97"><vh>Top</vh>
+<v t="ekr.20161204043032.98"><vh>Section 1</vh></v>
+<v t="ekr.20161204043032.99"><vh>Section 2</vh>
+<v t="ekr.20161204043032.100"><vh>Section 2.1</vh>
+<v t="ekr.20161204043032.101"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204043032.102"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204043032.103"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204043346.4"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test</vh>
+<v t="ekr.20161204043346.5"><vh>Top</vh>
+<v t="ekr.20161204043346.6"><vh>Section 1</vh></v>
+<v t="ekr.20161204043346.7"><vh>Section 2</vh>
+<v t="ekr.20161204043346.8"><vh>Section 2.1</vh>
+<v t="ekr.20161204043346.9"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204043346.10"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204043346.11"><vh>Section 3</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20160411033840.1"><vh>@test md-import-test-rst-style</vh>
+<v t="ekr.20161125230415.1"><vh>&lt;&lt; define s &gt;&gt; (md-import-test-rst-style)</vh></v>
+<v t="ekr.20161202093319.1"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161202093319.2"><vh>Top</vh>
+<v t="ekr.20161202093319.3"><vh>Section 1</vh></v>
+<v t="ekr.20161202093319.4"><vh>Section 2</vh>
+<v t="ekr.20161202093319.5"><vh>Section 2.1</vh>
+<v t="ekr.20161202093319.6"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161202093319.7"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161202093319.8"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161202093322.9"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161202093322.10"><vh>Top</vh>
+<v t="ekr.20161202093322.11"><vh>Section 1</vh></v>
+<v t="ekr.20161202093322.12"><vh>Section 2</vh>
+<v t="ekr.20161202093322.13"><vh>Section 2.1</vh>
+<v t="ekr.20161202093322.14"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161202093322.15"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161202093322.16"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161202093409.1"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161202093409.2"><vh>Top</vh>
+<v t="ekr.20161202093409.3"><vh>Section 1</vh></v>
+<v t="ekr.20161202093409.4"><vh>Section 2</vh>
+<v t="ekr.20161202093409.5"><vh>Section 2.1</vh>
+<v t="ekr.20161202093409.6"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161202093409.7"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161202093409.8"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161202093410.1"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161202093410.2"><vh>Top</vh>
+<v t="ekr.20161202093410.3"><vh>Section 1</vh></v>
+<v t="ekr.20161202093410.4"><vh>Section 2</vh>
+<v t="ekr.20161202093410.5"><vh>Section 2.1</vh>
+<v t="ekr.20161202093410.6"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161202093410.7"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161202093410.8"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161202093509.22"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161202093509.23"><vh>Top</vh>
+<v t="ekr.20161202093509.24"><vh>Section 1</vh></v>
+<v t="ekr.20161202093509.25"><vh>Section 2</vh>
+<v t="ekr.20161202093509.26"><vh>Section 2.1</vh>
+<v t="ekr.20161202093509.27"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161202093509.28"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161202093509.29"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204034142.27"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204034142.28"><vh>Top</vh>
+<v t="ekr.20161204034142.29"><vh>Section 1</vh></v>
+<v t="ekr.20161204034142.30"><vh>Section 2</vh>
+<v t="ekr.20161204034142.31"><vh>Section 2.1</vh>
+<v t="ekr.20161204034142.32"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204034142.33"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204034142.34"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204034207.9"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204034207.10"><vh>Top</vh>
+<v t="ekr.20161204034207.11"><vh>Section 1</vh></v>
+<v t="ekr.20161204034207.12"><vh>Section 2</vh>
+<v t="ekr.20161204034207.13"><vh>Section 2.1</vh>
+<v t="ekr.20161204034207.14"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204034207.15"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204034207.16"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204035451.27"><vh>@@auto-markdown c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204035451.28"><vh>Top</vh>
+<v t="ekr.20161204035451.29"><vh>Section 1</vh></v>
+<v t="ekr.20161204035451.30"><vh>Section 2</vh>
+<v t="ekr.20161204035451.31"><vh>Section 2.1</vh>
+<v t="ekr.20161204035451.32"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204035451.33"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204035451.34"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204041310.61"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204041310.62"><vh>Top</vh>
+<v t="ekr.20161204041310.63"><vh>Section 1</vh></v>
+<v t="ekr.20161204041310.64"><vh>Section 2</vh>
+<v t="ekr.20161204041310.65"><vh>Section 2.1</vh>
+<v t="ekr.20161204041310.66"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204041310.67"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204041310.68"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204041359.1"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204041359.2"><vh>Top</vh>
+<v t="ekr.20161204041359.3"><vh>Section 1</vh></v>
+<v t="ekr.20161204041359.4"><vh>Section 2</vh>
+<v t="ekr.20161204041359.5"><vh>Section 2.1</vh>
+<v t="ekr.20161204041359.6"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204041359.7"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204041359.8"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204041418.9"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204041418.10"><vh>Top</vh>
+<v t="ekr.20161204041418.11"><vh>Section 1</vh></v>
+<v t="ekr.20161204041418.12"><vh>Section 2</vh>
+<v t="ekr.20161204041418.13"><vh>Section 2.1</vh>
+<v t="ekr.20161204041418.14"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204041418.15"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204041418.16"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204041646.1"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204041646.2"><vh>Top</vh>
+<v t="ekr.20161204041646.3"><vh>Section 1</vh></v>
+<v t="ekr.20161204041646.4"><vh>Section 2</vh>
+<v t="ekr.20161204041646.5"><vh>Section 2.1</vh>
+<v t="ekr.20161204041646.6"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204041646.7"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204041646.8"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204041724.9"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204041724.10"><vh>Top</vh>
+<v t="ekr.20161204041724.11"><vh>Section 1</vh></v>
+<v t="ekr.20161204041724.12"><vh>Section 2</vh>
+<v t="ekr.20161204041724.13"><vh>Section 2.1</vh>
+<v t="ekr.20161204041724.14"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204041724.15"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204041724.16"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204041800.9"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204041800.10"><vh>Top</vh>
+<v t="ekr.20161204041800.11"><vh>Section 1</vh></v>
+<v t="ekr.20161204041800.12"><vh>Section 2</vh>
+<v t="ekr.20161204041800.13"><vh>Section 2.1</vh>
+<v t="ekr.20161204041800.14"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204041800.15"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204041800.16"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204042305.104"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204042305.105"><vh>Top</vh>
+<v t="ekr.20161204042305.106"><vh>Section 1</vh></v>
+<v t="ekr.20161204042305.107"><vh>Section 2</vh>
+<v t="ekr.20161204042305.108"><vh>Section 2.1</vh>
+<v t="ekr.20161204042305.109"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204042305.110"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204042305.111"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204042719.12"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204042719.13"><vh>Top</vh>
+<v t="ekr.20161204042719.14"><vh>Section 1</vh></v>
+<v t="ekr.20161204042719.15"><vh>Section 2</vh>
+<v t="ekr.20161204042719.16"><vh>Section 2.1</vh>
+<v t="ekr.20161204042719.17"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204042719.18"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204042719.19"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204042822.9"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204042822.10"><vh>Top</vh>
+<v t="ekr.20161204042822.11"><vh>Section 1</vh></v>
+<v t="ekr.20161204042822.12"><vh>Section 2</vh>
+<v t="ekr.20161204042822.13"><vh>Section 2.1</vh>
+<v t="ekr.20161204042822.14"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204042822.15"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204042822.16"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204043017.27"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204043017.28"><vh>Top</vh>
+<v t="ekr.20161204043017.29"><vh>Section 1</vh></v>
+<v t="ekr.20161204043017.30"><vh>Section 2</vh>
+<v t="ekr.20161204043017.31"><vh>Section 2.1</vh>
+<v t="ekr.20161204043017.32"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204043017.33"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204043017.34"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204043032.104"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204043032.105"><vh>Top</vh>
+<v t="ekr.20161204043032.106"><vh>Section 1</vh></v>
+<v t="ekr.20161204043032.107"><vh>Section 2</vh>
+<v t="ekr.20161204043032.108"><vh>Section 2.1</vh>
+<v t="ekr.20161204043032.109"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204043032.110"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204043032.111"><vh>Section 3</vh></v>
+</v>
+</v>
+<v t="ekr.20161204043346.12"><vh>@@auto-md c:/leo.repo/leo-editor/leo/test/md-import-test-rst-style</vh>
+<v t="ekr.20161204043346.13"><vh>Top</vh>
+<v t="ekr.20161204043346.14"><vh>Section 1</vh></v>
+<v t="ekr.20161204043346.15"><vh>Section 2</vh>
+<v t="ekr.20161204043346.16"><vh>Section 2.1</vh>
+<v t="ekr.20161204043346.17"><vh>Section 2.1.1</vh></v>
+</v>
+<v t="ekr.20161204043346.18"><vh>Section 2.2</vh></v>
+</v>
+<v t="ekr.20161204043346.19"><vh>Section 3</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20161125134815.1"><vh>@test markdown importer-basic</vh></v>
+<v t="ekr.20161126111517.1"><vh>@test markdown importer-implicit section</vh></v>
+<v t="ekr.20161216141315.1"><vh>@test markdown importer-@@-section-name</vh></v>
+<v t="ekr.20161127181028.1"><vh>@test markdown github syntax</vh></v>
+</v>
+<v t="ekr.20090529141856.4784"><vh>Tests of @auto-rst</vh>
+<v t="ekr.20090529141856.4785"><vh>@test rST import test</vh></v>
+<v t="ekr.20140725132959.4593"><vh>@test rST import test: simple</vh></v>
+<v t="ekr.20090529141856.4786"><vh>@test rST import test: no double-underlines</vh></v>
+<v t="ekr.20090529141856.4787"><vh>@test rST import test: long underlines</vh></v>
+<v t="ekr.20090529141856.4788"><vh>@test rST import test: long overlines</vh></v>
+<v t="ekr.20090529141856.4789"><vh>@test rST import test: trailing whitespace</vh></v>
+<v t="ekr.20161129104243.1"><vh>@test leo_rst</vh></v>
+</v>
+<v t="ekr.20140724220921.5199"><vh>Tests of individual methods</vh>
+<v t="ekr.20111214100515.3921"><vh>@@@test ic.createOutline: at-auto with lines that look like section references</vh></v>
+<v t="ekr.20140206132559.4567"></v>
+<v t="ekr.20150919074122.1"></v>
+</v>
+<v t="ekr.20161204041557.1"><vh>All other tests</vh>
+<v t="ekr.20090529141856.4793"><vh>@@test test imports for modes</vh></v>
+<v t="ekr.20140723134017.4464"><vh>@test @auto importers</vh></v>
+<v t="ekr.20161109065940.1"><vh>@test Importer.get_leading_indent</vh></v>
+<v t="ekr.20161117011147.1"><vh>@test Importer.get_str_lws</vh></v>
+<v t="ekr.20161109065949.1"><vh>@test Importer.is_ws_line</vh></v>
+<v t="ekr.20161011052016.1"><vh>@test importers.javascript.scan_line</vh></v>
+<v t="ekr.20170407065952.1"><vh>@test importers.javascript.op_pattern</vh></v>
+</v>
+<v t="ekr.20140724164600.4590"></v>
+</v>
+<v t="ekr.20100131171342.5604"><vh>leoKeys (passed)</vh>
 <v t="ekr.20100131171342.5606"><vh>@@test k.autoCompleterClass.calltip</vh></v>
 <v t="ekr.20110509104953.3474"><vh>@test k.get_leo_completions</vh></v>
 <v t="ekr.20111121224307.3934"></v>
@@ -2499,7 +2498,7 @@ marks="ekr.20100131171342.5599,ekr.20090529141856.4682,ekr.20100131171342.5604,"
 <v t="ekr.20100131171342.5608"><vh>@test k.strokeFromSetting</vh></v>
 <v t="ekr.20100131171342.5609"></v>
 </v>
-<v t="ekr.20071113194424.1"><vh>leoNodes  (several failures)</vh>
+<v t="ekr.20071113194424.1"><vh>@ignore leoNodes  (several failures)</vh>
 <v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
 <v t="ekr.20040712101754.182"><vh>parent</vh>
 <v t="ekr.20040712101754.183"><vh>@test consistency between parents_iter and v.parents</vh></v>
@@ -2650,7 +2649,7 @@ marks="ekr.20100131171342.5599,ekr.20090529141856.4682,ekr.20100131171342.5604,"
 <v t="ekr.20081001094920.7"><vh>@test "others" directive</vh></v>
 </v>
 </v>
-<v t="ekr.20140712142620.4458"><vh>leoPersistence tests (do not clone)</vh>
+<v t="ekr.20140712142620.4458" a="M"><vh>leoPersistence tests (do not clone)</vh>
 <v t="ekr.20140712142620.4537"><vh>@@@test pd.find_absolute_unl_node</vh></v>
 <v t="ekr.20140712142620.4583"><vh>@@@test pd.pack &amp; pd.unpack</vh>
 <v t="ekr.20140712142620.4587"><vh>clone</vh></v>
@@ -2725,11 +2724,11 @@ marks="ekr.20100131171342.5599,ekr.20090529141856.4682,ekr.20100131171342.5604,"
 </v>
 <v t="ekr.20150216111306.25"><vh>@test delete all children of @persistence node</vh></v>
 </v>
-<v t="ekr.20100131171342.5610"><vh>leoPlugins</vh>
+<v t="ekr.20100131171342.5610" a="M"><vh>leoPlugins</vh>
 <v t="ekr.20100131171342.5611"><vh>@test getHandlersForTag</vh></v>
 <v t="ekr.20100909082308.5990"><vh>@test regularizeName</vh></v>
 </v>
-<v t="ekr.20091219122958.5066"><vh>leoRst</vh>
+<v t="ekr.20091219122958.5066" a="M"><vh>leoRst</vh>
 <v t="ekr.20100813100841.5825"><vh>@@@test show_doc_parts_in_rst_mode</vh></v>
 <v t="ekr.20100813100841.5847"><vh>@ignore</vh>
 <v t="ekr.20100812213445.5824"><vh>@test code_mode: rst3 show_doc_parts_as_paragraphs</vh>
