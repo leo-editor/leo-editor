@@ -6616,7 +6616,9 @@ import sys
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 elif sys.platform.startswith('linux'):
-    self.skipTest('skip cycle-all-focus')
+    self.skipTest('Linux')
+elif g.app.gui.guiName() == 'curses':
+    self.skipTest('Curses gui')
 else:
     log = c.frame.log
     c.bodyWantsFocusNow()
