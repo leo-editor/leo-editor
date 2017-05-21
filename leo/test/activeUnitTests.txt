@@ -27576,7 +27576,7 @@ class test:
 
 X = test()
 sendEmail(X)
-#@+node:ekr.20071113193729: *3* leoUndo
+#@+node:ekr.20071113193729: *3* leoUndo (something is spoiling these tests)
 @
 
 9 failures with Alt-5.
