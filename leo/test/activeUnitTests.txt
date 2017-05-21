@@ -1272,7 +1272,7 @@ else:
             ratio,f.ratio,name)
         assert closeEnough(ratio2,f.secondary_ratio),'fail 4 %s != %s: %s' % (
             ratio2,f.secondary_ratio,name)
-#@+node:ekr.20100131171342.5506: *3* leoApp
+#@+node:ekr.20100131171342.5506: *3* leoApp (passed)
 #@+node:ekr.20100131171342.5507: *4* @test consistency of leoApp tables
 @
 language_delims_dict 
@@ -1350,7 +1350,7 @@ for lang in lang_d:
 for ext in ext_d:
     lang = ext_d.get(ext)
     assert lang in lang_d,'fail 3: %s' % lang
-#@+node:ekr.20160318094003.1: *3* leoAst
+#@+node:ekr.20160318094003.1: *3* leoAst (passed)
 #@+node:ekr.20160318094009.1: *4* @test Python3 features
 if not g.isPython3:
     self.skipTest('python 3 test')
@@ -1389,7 +1389,7 @@ msf.unit_test(raise_on_fail=True)
 import leo.external.py2cs as py2cs
 py2cs.unit_test(raise_on_fail=True)
 
-#@+node:ekr.20050112095306.1: *3* leoAtFile
+#@+node:ekr.20050112095306.1: *3* leoAtFile (passed)
 #@+node:ekr.20041021065844: *4* @test @asis
 c.testManager.runAtFileTest(p)
 #@+node:ekr.20041021065903: *5* #@asis
@@ -2383,7 +2383,7 @@ table = (
 for p2,h2 in table:
     assert p2.h == h2
     assert len(p2.b) > 10
-#@+node:ekr.20150521123343.1: *3* leoBeautify
+#@+node:ekr.20150521123343.1: *3* leoBeautify (passed)
 #@+node:ekr.20111104171708.3843: *4* @test leoBeautify.CPrettyPrinter
 import leo.core.leoBeautify as leoBeautify
 cpp = leoBeautify.CPrettyPrinter(c)
@@ -2670,7 +2670,7 @@ def spam():
 def spam():
     if -1 < 2:
         pass
-#@+node:ekr.20100131171342.5508: *3* leoBridge
+#@+node:ekr.20100131171342.5508: *3* leoBridge (passed)
 #@+node:ekr.20100131171342.5509: *4* @test leoBridge init logic
 import leo.core.leoBridge as leoBridge
 
@@ -2691,7 +2691,7 @@ if g.app.isExternalUnitTest:
     assert c.rootPosition()
 else:
     self.skipTest('Can not be run locally')
-#@+node:ekr.20110608135658.3377: *3* leoChapters
+#@+node:ekr.20110608135658.3377: *3* leoChapters (passed)
 #@+node:ekr.20110608162543.3363: *4* @test chapter-create/remove & undo
 # cc will be None when unit tests run dynamically.
 import leo.core.leoChapters as leoChapters
@@ -2834,7 +2834,7 @@ elif cc and not g.app.isExternalUnitTest:
 else:
     self.skipTest('Can not be run locally')
 
-#@+node:ekr.20090615053403.4876: *3* leoColorizer
+#@+node:ekr.20090615053403.4876: *3* leoColorizer (to do)
 #@+node:ekr.20090615053403.4877: *4* @test @comment after @language plain
 p = c.p.firstChild()
 c.selectPosition(p) # Sets body text.
@@ -4853,7 +4853,7 @@ IF
 #@+node:ekr.20090615053403.4957: *4* @test zz end of leoColor tests
 # Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoColor tests')
-#@+node:ekr.20071113193624: *3* leoCommands
+#@+node:ekr.20071113193624: *3* leoCommands (to do)
 # 7 failures with Alt-5
 #@+node:ekr.20090104053806.1: *4* @@@test c.checkFileTimeStamp & c.setFileTimeStamp
 # Disabled because modifying errorTest.py creates annoying bzr conflicts.
@@ -5450,7 +5450,7 @@ for obj,val in table:
 #@+node:ekr.20071113201833: *4* @test zz end of leoCommands tests
 # Print does not work with the curses gui: it is redirected.
 g.pr('End of leoCommands tests')
-#@+node:ekr.20071113194216: *3* leoConfig
+#@+node:ekr.20071113194216: *3* leoConfig (passed)
 # 3 failurs with Alt-5
 #@+node:ekr.20120201125738.3958: *4* @@@test g.app.config.getShortcuts works when no local shortcuts
 # This tests is valid only if not g.new_config.
@@ -5558,7 +5558,7 @@ assert c.page_width == c.config.getInt('page_width'),c.page_width
 #@+node:ekr.20071113201854: *4* @test zz end of leoConfig tests
 # Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoConfig tests')
-#@+node:ekr.20100131171342.5592: *3* leoDialogs
+#@+node:ekr.20100131171342.5592: *3* leoDialogs (to do)
 #@+node:ekr.20100131171342.5593: *4* @test ctors for all dialogs
 # For some reason these don't select the dialog properly when run as a script.
 # However, the main reason for the tests is to make sure the ctors don't crash.
@@ -5580,7 +5580,7 @@ for gui in guis:
     # gui.runCompareDialog(c) # Removed.
 
 g.app.gui = oldGui
-#@+node:ekr.20071113192611: *3* leoEditCommands
+#@+node:ekr.20071113192611: *3* leoEditCommands (to do)
 #@+node:ekr.20070131175538: *4*  Commands A-B
 #@+node:ekr.20061101121602.78: *5* @test add-space-to-lines
 c.testManager.runEditCommandTest(p)
@@ -11207,7 +11207,7 @@ c.frame.tree.OnIconDoubleClick(p)
 #@+node:ekr.20071113202153.1: *4* @test zz end of leoFrame tests
 # Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoFrame tests.')
-#@+node:ekr.20071113194033.3: *3* leoGlobals
+#@+node:ekr.20071113194033.3: *3* leoGlobals (passed)
 # No failures with Alt-5 but warnings about no tnode lists.
 #@+node:ekr.20100131180007.5398: *4* @test g.adjustTripleString
 if 1: # The following must be indented.
