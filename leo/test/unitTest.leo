@@ -2,14 +2,14 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="140" left="247" height="815" width="1205"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.60">
+	<global_window_position top="67" left="601" height="890" width="1099"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20070417092935"><vh>Startup</vh>
+<v t="ekr.20070417092935"><vh>Startup</vh></v>
 <v t="ekr.20140716121225.4354"><vh>@@button print-gnx</vh></v>
 <v t="ekr.20161123080832.1"><vh>@button make-table</vh></v>
 <v t="ekr.20111112092813.4154"><vh>@command cls</vh></v>
@@ -76,7 +76,7 @@
 <v t="ekr.20091206090247.5063"><vh>Clear all uAs (unknown attributes)</vh></v>
 </v>
 </v>
-</v>
+<v t="ekr.20070417092935"></v>
 <v t="ekr.20051012104957"><vh>@ignore Docs</vh>
 <v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
 <v t="ekr.20050618061835"><vh>How to use the @test directive, by Roger Erens</vh>
@@ -233,7 +233,8 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"
+marks="ekr.20100131171342.5599,ekr.20090529141856.4682,ekr.20100131171342.5604,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -294,7 +295,7 @@
 </v>
 </v>
 <v t="ekr.20170504122245.1"><vh>@ignore recent</vh>
-<v t="ekr.20090529141856.4682"><vh>leoImport</vh>
+<v t="ekr.20090529141856.4682" a="M"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh>Export tests</vh>
 <v t="ekr.20090529141856.4685"><vh>@suite Export tests</vh></v>
 </v>
@@ -581,6 +582,9 @@
 </v>
 <v t="ekr.20170503133608.21"><vh>@@file @test php here doc</vh>
 <v t="ekr.20170503133608.22"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20170520193219.85"><vh>@@file @test php here doc</vh>
+<v t="ekr.20170520193219.86"><vh>class foo</vh></v>
 </v>
 </v>
 </v>
@@ -2476,7 +2480,7 @@
 <v t="ekr.20050208135429"><vh>@test pre-definition of g in scripts</vh></v>
 <v t="ekr.20071113202153.2"></v>
 </v>
-<v t="ekr.20100131171342.5599"><vh>leoGui &amp; leoQtGui</vh>
+<v t="ekr.20100131171342.5599" a="M"><vh>leoGui &amp; leoQtGui</vh>
 <v t="ekr.20111120124051.3992"></v>
 <v t="ekr.20111003145300.3466"><vh>@test illegal drag gives warning</vh>
 <v t="ekr.20111003145300.3467"><vh>a</vh></v>
@@ -2484,8 +2488,8 @@
 <v t="ekr.20111123214629.3941"></v>
 <v t="ekr.20100131171342.5603"></v>
 </v>
-<v t="ekr.20090529141856.4682"></v>
-<v t="ekr.20100131171342.5604"><vh>leoKeys</vh>
+<v t="ekr.20090529141856.4682" a="M"></v>
+<v t="ekr.20100131171342.5604" a="M"><vh>leoKeys</vh>
 <v t="ekr.20100131171342.5606"><vh>@@test k.autoCompleterClass.calltip</vh></v>
 <v t="ekr.20110509104953.3474"><vh>@test k.get_leo_completions</vh></v>
 <v t="ekr.20111121224307.3934"></v>
@@ -2495,7 +2499,7 @@
 <v t="ekr.20100131171342.5608"><vh>@test k.strokeFromSetting</vh></v>
 <v t="ekr.20100131171342.5609"></v>
 </v>
-<v t="ekr.20071113194424.1"><vh>leoNodes</vh>
+<v t="ekr.20071113194424.1"><vh>leoNodes  (several failures)</vh>
 <v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
 <v t="ekr.20040712101754.182"><vh>parent</vh>
 <v t="ekr.20040712101754.183"><vh>@test consistency between parents_iter and v.parents</vh></v>
@@ -2542,9 +2546,9 @@
 </v>
 <v t="ekr.20090130133404.2"><vh>@test leoNodes properties</vh></v>
 <v t="ekr.20130524112342.4137"><vh>@test new vnodes methods</vh>
-<v t="ekr.20140724164208.5505"><vh>insertAsFirstChild</vh></v>
-<v t="ekr.20140724164208.5507"><vh>insertAsNthChild(1)</vh></v>
-<v t="ekr.20140724164208.5506"><vh>insertAsLastChild</vh></v>
+<v t="ekr.20170520193221.1"><vh>insertAsFirstChild</vh></v>
+<v t="ekr.20170520193221.3"><vh>insertAsNthChild(1)</vh></v>
+<v t="ekr.20170520193221.2"><vh>insertAsLastChild</vh></v>
 </v>
 <v t="ekr.20141020110954.4750"><vh>@test newlines in headlines</vh></v>
 <v t="ekr.20041013062906"><vh>@test onHyperLinkControlClick</vh></v>
@@ -2617,14 +2621,21 @@
 <v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
 <v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
 <v t="ekr.20080423110627.13"><vh>@test deleting the root should select another node</vh></v>
-<v t="ekr.20080503082625.5"><vh>@test demote</vh></v>
+<v t="ekr.20080503082625.5"><vh>@test demote</vh>
+<v t="ekr.20170520193223.7"><vh>C</vh></v>
+<v t="ekr.20170520193223.8"><vh>D</vh></v>
+<v t="ekr.20170520193223.7"></v>
+<v t="ekr.20170520193223.8"></v>
+<v t="ekr.20170520193223.7"></v>
+<v t="ekr.20170520193223.8"></v>
+</v>
 <v t="ekr.20080501121449.3"><vh>@test insert node</vh>
-<v t="ekr.20140923083354.6274"><vh>A</vh></v>
-<v t="ekr.20140923083354.6276"><vh>inserted</vh></v>
-<v t="ekr.20140923083354.6275"><vh>B</vh></v>
+<v t="ekr.20170520193223.9"><vh>A</vh></v>
+<v t="ekr.20170520193223.10"><vh>B</vh></v>
 </v>
 <v t="ekr.20080423110627.11"><vh>@test move-outline-down &amp; undo/redo</vh></v>
 <v t="ekr.20080503073030.1"><vh>@test move-outline-left</vh></v>
+<v t="ekr.20170520193223.16"><vh>A</vh></v>
 <v t="ekr.20080503073030.2"><vh>@test move-outline-right</vh></v>
 <v t="ekr.20080423110627.12"><vh>@test move-outline-up</vh></v>
 <v t="ekr.20080423110627.5"><vh>@test paste-node</vh></v>
@@ -3417,6 +3428,9 @@
 <v t="ekr.20140217055617.4230"><vh>@test c.theScriptingController.atScriptNodes</vh></v>
 <v t="ekr.20100131171342.5501"></v>
 </v>
+</v>
+<v t="ekr.20170520204621.1"><vh>Curses gui failures</vh>
+<v t="ekr.20080501121449.1"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -8236,7 +8250,7 @@ b
 
 b
 </t>
-<t tx="ekr.20070417092935" str_leo_pos="7,14">@nosearch</t>
+<t tx="ekr.20070417092935">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -19898,6 +19912,8 @@ for name in commandNames:
 import sys
 if sys.platform.startswith('linux'):
     self.skipTest('linux test')
+elif g.app.gui.guiName() == 'curses':
+    self.skipTest('not valid for curses gui')
 else:
     fn = '&lt;file name&gt;'
     p2 = p.firstChild()
@@ -23613,9 +23629,6 @@ for fn in glob.glob(pattern):
     m = importlib.import_module('leo.plugins.importers.%s' % sfn[:-3])
     assert m
 </t>
-<t tx="ekr.20140724164208.5505"></t>
-<t tx="ekr.20140724164208.5506"></t>
-<t tx="ekr.20140724164208.5507"></t>
 <t tx="ekr.20140724164600.4590"># Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoImport tests.')
 </t>
@@ -23750,9 +23763,6 @@ else:
      self.skipTest('Requires Qt Gui')
 </t>
 <t tx="ekr.20140923080452.6565"></t>
-<t tx="ekr.20140923083354.6274"></t>
-<t tx="ekr.20140923083354.6275"></t>
-<t tx="ekr.20140923083354.6276"></t>
 <t tx="ekr.20141016101308.4747">assert c.hiddenRootNode.fileIndex.startswith('hidden-root-vnode-gnx'), c.hiddenRootNode.fileIndex
 </t>
 <t tx="ekr.20141020110954.4750"># Bug https://bugs.launchpad.net/leo-editor/+bug/1245535
@@ -35629,6 +35639,28 @@ And this.
 <t tx="ekr.20170504124637.1"></t>
 <t tx="ekr.20170504124652.1"></t>
 <t tx="ekr.20170504124842.1"></t>
+<t tx="ekr.20170520193219.85">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20170520193219.86">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20170520193221.1"></t>
+<t tx="ekr.20170520193221.2"></t>
+<t tx="ekr.20170520193221.3"></t>
+<t tx="ekr.20170520193223.10"></t>
+<t tx="ekr.20170520193223.16"></t>
+<t tx="ekr.20170520193223.7"></t>
+<t tx="ekr.20170520193223.8"></t>
+<t tx="ekr.20170520193223.9"></t>
+<t tx="ekr.20170520204621.1"></t>
 <t tx="sps.20100531034136.20110">p2 = p.firstChild().firstChild().firstChild()
 aList = g.get_directives_dict_list(p2)
 path = c.scanAtPathDirectives(aList)

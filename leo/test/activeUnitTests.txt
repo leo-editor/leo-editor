@@ -12066,6 +12066,8 @@ else:
 import sys
 if sys.platform.startswith('linux'):
     self.skipTest('linux test')
+elif g.app.gui.guiName() == 'curses':
+    self.skipTest('not valid for curses gui')
 else:
     fn = '<file name>'
     p2 = p.firstChild()
@@ -15585,6 +15587,19 @@ EOT;
 @language php
 @tabwidth -4
 #@+node:ekr.20170503133608.22: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20170520193219.85: *7* @@file @test php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20170520193219.86: *8* class foo
 class foo {
     public $bar = <<<EOT
 a test.
@@ -20781,7 +20796,7 @@ for setting, result in table:
 #@+node:ekr.20100131171342.5609: *4* @test zz end of leoKeys tests
 # Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoKeys tests.')
-#@+node:ekr.20071113194424.1: *3* leoNodes
+#@+node:ekr.20071113194424.1: *3* leoNodes  (several failures)
 #@+node:ekr.20040712101754.181: *4*  inner @test: Test consistency between parents iter and v.parents
 # The actual test is in a child node.
 #@+node:ekr.20040712101754.182: *5* parent
@@ -21176,9 +21191,9 @@ if 1:
     v2.h = 'insertAsNthChild(1)'
 p.expand()
 c.redraw()
-#@+node:ekr.20140724164208.5505: *5* insertAsFirstChild
-#@+node:ekr.20140724164208.5507: *5* insertAsNthChild(1)
-#@+node:ekr.20140724164208.5506: *5* insertAsLastChild
+#@+node:ekr.20170520193221.1: *5* insertAsFirstChild
+#@+node:ekr.20170520193221.3: *5* insertAsNthChild(1)
+#@+node:ekr.20170520193221.2: *5* insertAsLastChild
 #@+node:ekr.20141020110954.4750: *4* @test newlines in headlines
 # Bug https://bugs.launchpad.net/leo-editor/+bug/1245535
 h = p.h
@@ -21762,6 +21777,12 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
+#@+node:ekr.20170520193223.7: *6* C
+#@+node:ekr.20170520193223.8: *6* D
+#@+node:ekr.20170520193223.7: *6* C
+#@+node:ekr.20170520193223.8: *6* D
+#@+node:ekr.20170520193223.7: *6* C
+#@+node:ekr.20170520193223.8: *6* D
 #@+node:ekr.20080501121449.3: *5* @test insert node
 assert p.h == '@test insert node',repr(p.h)
 root = p.copy()
@@ -21813,9 +21834,8 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-#@+node:ekr.20140923083354.6274: *6* A
-#@+node:ekr.20140923083354.6276: *6* inserted
-#@+node:ekr.20140923083354.6275: *6* B
+#@+node:ekr.20170520193223.9: *6* A
+#@+node:ekr.20170520193223.10: *6* B
 #@+node:ekr.20080423110627.11: *5* @test move-outline-down & undo/redo
 root = p.copy()
 while p.hasChildren():
@@ -21890,6 +21910,7 @@ finally:
         while p.hasChildren():
             p.firstChild().doDelete(newNode=None)
         c.redraw_now(p)
+#@+node:ekr.20170520193223.16: *5* A
 #@+node:ekr.20080503073030.2: *5* @test move-outline-right
 while p.hasChildren():
     p.firstChild().doDelete(newNode=None)
