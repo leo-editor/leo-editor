@@ -168,9 +168,8 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
-marks="ekr.20090529115704.4396,ekr.20100131171342.5612,ekr.20071113193729,ekr.20140802074328.4471,ekr.20050120095423,"
-expanded="ekr.20071113194858,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
+marks="ekr.20071113194858,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -297,7 +296,7 @@ expanded="ekr.20071113194858,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20071113194858"><vh>Organized by file</vh>
+<v t="ekr.20071113194858" a="M"><vh>Organized by file</vh>
 <v t="ekr.20100223123103.5382"><vh>@test expand/contract-pane</vh></v>
 <v t="ekr.20100131171342.5506"><vh>leoApp (passed)</vh>
 <v t="ekr.20100131171342.5507"><vh>@test consistency of leoApp tables</vh></v>
@@ -2776,7 +2775,7 @@ expanded="ekr.20071113194858,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20090529115704.4396" a="M"><vh>leoShadow</vh>
+<v t="ekr.20090529115704.4396"><vh>leoShadow (passed)</vh>
 <v t="ekr.20090529115704.4560"><vh>@@test (minitest) x.show_error</vh></v>
 <v t="ekr.20090529115704.4397"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh>
 <v t="ekr.20090529115704.4398"><vh>@shadow-tests</vh>
@@ -3245,12 +3244,12 @@ expanded="ekr.20071113194858,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20090529115704.4553"><vh>@test x.shadowPathName</vh></v>
 <v t="ekr.20090529115704.4556"><vh>@test x.unlink</vh></v>
 </v>
-<v t="ekr.20100131171342.5612" a="M"><vh>leoTest</vh>
+<v t="ekr.20100131171342.5612"><vh>leoTest (passed)</vh>
 <v t="ekr.20111102122424.3975"><vh>@test all unit tests have access to sources</vh></v>
 <v t="ekr.20111105221757.3833"><vh>@test TM.findAllUnitTestNodes</vh></v>
 <v t="ekr.20100131171342.5613"><vh>@test unit testing with embedded class</vh></v>
 </v>
-<v t="ekr.20071113193729" a="M"><vh>leoUndo</vh>
+<v t="ekr.20071113193729"><vh>leoUndo (passed)</vh>
 <v t="ekr.20040712101754.37"><vh>@suite Edit body tests</vh>
 <v t="ekr.20040712101754.38"><vh>editBodyTests</vh>
 <v t="ekr.20060127120604"><vh>tempNode</vh></v>
@@ -3322,12 +3321,12 @@ expanded="ekr.20071113194858,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20071113202510"></v>
 </v>
-<v t="ekr.20140802074328.4471" a="M"><vh>leoVim.py</vh>
+<v t="ekr.20140802074328.4471"><vh>leoVim.py (passed)</vh>
 <v t="ekr.20140802074328.4472"><vh>@test vc.on_same_line</vh></v>
 <v t="ekr.20140802074328.4473"><vh>@test vc.to_bol</vh></v>
 <v t="ekr.20140802074328.4474"><vh>@test vc.to_eol</vh></v>
 </v>
-<v t="ekr.20050120095423" a="M"><vh>Plugins</vh>
+<v t="ekr.20050120095423"><vh>Plugins (passed)</vh>
 <v t="ekr.20110610082755.3362"><vh> qt gui</vh>
 <v t="ekr.20100131171342.5503"><vh>@test c.vnode2position</vh></v>
 <v t="ekr.20100131171342.5504"><vh>@test position2Item</vh></v>
@@ -8029,7 +8028,7 @@ b
 
 b
 </t>
-<t tx="ekr.20070417092935" str_leo_pos="4,0,6,27">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="7">@nosearch</t>
 <t tx="ekr.20070611071101">p1 = p.copy()
 a = p.firstChild()
 b = a.firstChild()

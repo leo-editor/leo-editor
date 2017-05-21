@@ -26388,7 +26388,7 @@ hr { /* EKR */
 </div>
 </body>
 </html>
-#@+node:ekr.20090529115704.4396: *3* leoShadow
+#@+node:ekr.20090529115704.4396: *3* leoShadow (passed)
 #@+node:ekr.20090529115704.4560: *4* @@test (minitest) x.show_error
 x = c.shadowController
 
@@ -27528,7 +27528,7 @@ x.unlink('xyzzy',silent=True)
 assert x.errors == n+1
 assert x.last_error.startswith('can not delete xyzzy'), x.last_error
 
-#@+node:ekr.20100131171342.5612: *3* leoTest
+#@+node:ekr.20100131171342.5612: *3* leoTest (passed)
 #@+node:ekr.20111102122424.3975: *4* @test all unit tests have access to sources
 if c.shortFileName() == 'dynamicUnitTest.leo':
     
@@ -27563,7 +27563,7 @@ class test:
 
 X = test()
 sendEmail(X)
-#@+node:ekr.20071113193729: *3* leoUndo
+#@+node:ekr.20071113193729: *3* leoUndo (passed)
 @
 
 9 failures with Alt-5.
@@ -27845,7 +27845,7 @@ after
 #@+node:ekr.20071113202510: *4* @test zz end of leoUndo tests
 # Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoUndo tests.')
-#@+node:ekr.20140802074328.4471: *3* leoVim.py
+#@+node:ekr.20140802074328.4471: *3* leoVim.py (passed)
 #@+node:ekr.20140802074328.4472: *4* @test vc.on_same_line
 vc = c.vimCommands
 s = '''
@@ -27897,7 +27897,7 @@ for a,b,in table:
     result = vc.to_eol(s,i1)
     assert result == i2,'%s expected: %s got: %s' % (
         s[i1:i2],expected,got)
-#@+node:ekr.20050120095423: *3* Plugins
+#@+node:ekr.20050120095423: *3* Plugins (passed)
 # Do this last.
 #@+node:ekr.20110610082755.3362: *4*  qt gui
 #@+node:ekr.20100131171342.5503: *5* @test c.vnode2position
