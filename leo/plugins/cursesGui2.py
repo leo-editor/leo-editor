@@ -704,7 +704,7 @@ class LeoTreeData(npyscreen.TreeData):
                 d += 1
                 parent = parent.get_parent()
             return d
-    #@+node:ekr.20170516085427.2: *5* LeoTreeData.get_children (test)
+    #@+node:ekr.20170516085427.2: *5* LeoTreeData.get_children
     def get_children(self):
         
         if native:
@@ -712,7 +712,7 @@ class LeoTreeData(npyscreen.TreeData):
             return p.children()
         else:
             return self._children
-    #@+node:ekr.20170518103807.11: *5* LeoTreeData.get_parent (ok)
+    #@+node:ekr.20170518103807.11: *5* LeoTreeData.get_parent
     def get_parent(self):
         # g.trace('LeoTreeData', g.callers())
         if native:
@@ -757,7 +757,7 @@ class LeoTreeData(npyscreen.TreeData):
         self._children.insert(index, child)
         ### return weakref.proxy(child)
         return child
-    #@+node:ekr.20170516085427.5: *5* LeoTreeData.remove_child (test)
+    #@+node:ekr.20170516085427.5: *5* LeoTreeData.remove_child
     def remove_child(self, child):
         
         if native:
@@ -768,7 +768,7 @@ class LeoTreeData(npyscreen.TreeData):
         else:
             self._children = [z for z in self._children if z != child]
                 # May be useful when child is cloned.
-    #@+node:ekr.20170518103807.21: *5* LeoTreeData.set_content (ok)
+    #@+node:ekr.20170518103807.21: *5* LeoTreeData.set_content
     def set_content(self, content):
 
         # g.trace('LeoTreeData', content, g.callers())
@@ -785,7 +785,7 @@ class LeoTreeData(npyscreen.TreeData):
                 self.content = content.copy()
         else:
             self.content = content
-    #@+node:ekr.20170516085427.6: *5* LeoTreeData.set_parent (ok)
+    #@+node:ekr.20170516085427.6: *5* LeoTreeData.set_parent
     def set_parent(self, parent):
 
         # g.trace('LeoTreeData', parent, g.callers())
@@ -3912,7 +3912,7 @@ class LeoMLTree(npyscreen.MLTree):
             content = line.value.content
             s = content.h if native else content
             g.trace(i, n, s)
-    #@+node:ekr.20170516101203.1: *3* LeoMLTree.values Property (original only)
+    #@+node:ekr.20170516101203.1: *3* LeoMLTree.values
     if native:
         _myFullValues = LeoTreeData()
         values = []
