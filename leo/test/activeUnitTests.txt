@@ -2836,7 +2836,7 @@ elif cc and not g.app.isExternalUnitTest:
 else:
     self.skipTest('Can not be run locally')
 
-#@+node:ekr.20090615053403.4876: *3* @ignore leoColorizer (to do)
+#@+node:ekr.20090615053403.4876: *3* leoColorizer (to do)
 #@+node:ekr.20090615053403.4877: *4* @test @comment after @language plain
 p = c.p.firstChild()
 c.selectPosition(p) # Sets body text.
