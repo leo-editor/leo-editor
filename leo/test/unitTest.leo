@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.50" body_secondary_ratio="0.60">
-	<global_window_position top="67" left="601" height="890" width="1099"/>
+	<global_window_position top="94" left="349" height="890" width="1099"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -168,9 +168,9 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
-marks="ekr.20140712142620.4458,ekr.20100131171342.5610,ekr.20091219122958.5066,"
-expanded="ekr.20071113194858,ekr.20140712142620.4458,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
+marks="ekr.20090529115704.4396,ekr.20100131171342.5612,ekr.20071113193729,ekr.20140802074328.4471,ekr.20050120095423,"
+expanded="ekr.20071113194858,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -2585,7 +2585,7 @@ expanded="ekr.20071113194858,ekr.20140712142620.4458,"><vh>@file activeUnitTests
 <v t="ekr.20081001094920.7"><vh>@test "others" directive</vh></v>
 </v>
 </v>
-<v t="ekr.20140712142620.4458" a="M"><vh>leoPersistence tests (do not clone)</vh>
+<v t="ekr.20140712142620.4458"><vh>leoPersistence tests (do not clone) (passed)</vh>
 <v t="ekr.20140712142620.4537"><vh>@@@test pd.find_absolute_unl_node</vh></v>
 <v t="ekr.20140712142620.4583"><vh>@@@test pd.pack &amp; pd.unpack</vh>
 <v t="ekr.20140712142620.4587"><vh>clone</vh></v>
@@ -2660,11 +2660,11 @@ expanded="ekr.20071113194858,ekr.20140712142620.4458,"><vh>@file activeUnitTests
 </v>
 <v t="ekr.20150216111306.25"><vh>@test delete all children of @persistence node</vh></v>
 </v>
-<v t="ekr.20100131171342.5610" a="M"><vh>leoPlugins</vh>
+<v t="ekr.20100131171342.5610"><vh>leoPlugins (passed)</vh>
 <v t="ekr.20100131171342.5611"><vh>@test getHandlersForTag</vh></v>
 <v t="ekr.20100909082308.5990"><vh>@test regularizeName</vh></v>
 </v>
-<v t="ekr.20091219122958.5066" a="M"><vh>leoRst</vh>
+<v t="ekr.20091219122958.5066"><vh>leoRst (passed)</vh>
 <v t="ekr.20100813100841.5825"><vh>@@@test show_doc_parts_in_rst_mode</vh></v>
 <v t="ekr.20100813100841.5847"><vh>@ignore</vh>
 <v t="ekr.20100812213445.5824"><vh>@test code_mode: rst3 show_doc_parts_as_paragraphs</vh>
@@ -2776,7 +2776,7 @@ expanded="ekr.20071113194858,ekr.20140712142620.4458,"><vh>@file activeUnitTests
 </v>
 </v>
 </v>
-<v t="ekr.20090529115704.4396"><vh>leoShadow</vh>
+<v t="ekr.20090529115704.4396" a="M"><vh>leoShadow</vh>
 <v t="ekr.20090529115704.4560"><vh>@@test (minitest) x.show_error</vh></v>
 <v t="ekr.20090529115704.4397"><vh>@suite run @shadow-test nodes in the @shadow-tests tree</vh>
 <v t="ekr.20090529115704.4398"><vh>@shadow-tests</vh>
@@ -3245,12 +3245,12 @@ expanded="ekr.20071113194858,ekr.20140712142620.4458,"><vh>@file activeUnitTests
 <v t="ekr.20090529115704.4553"><vh>@test x.shadowPathName</vh></v>
 <v t="ekr.20090529115704.4556"><vh>@test x.unlink</vh></v>
 </v>
-<v t="ekr.20100131171342.5612"><vh>leoTest</vh>
+<v t="ekr.20100131171342.5612" a="M"><vh>leoTest</vh>
 <v t="ekr.20111102122424.3975"><vh>@test all unit tests have access to sources</vh></v>
 <v t="ekr.20111105221757.3833"><vh>@test TM.findAllUnitTestNodes</vh></v>
 <v t="ekr.20100131171342.5613"><vh>@test unit testing with embedded class</vh></v>
 </v>
-<v t="ekr.20071113193729"><vh>leoUndo</vh>
+<v t="ekr.20071113193729" a="M"><vh>leoUndo</vh>
 <v t="ekr.20040712101754.37"><vh>@suite Edit body tests</vh>
 <v t="ekr.20040712101754.38"><vh>editBodyTests</vh>
 <v t="ekr.20060127120604"><vh>tempNode</vh></v>
@@ -3322,12 +3322,12 @@ expanded="ekr.20071113194858,ekr.20140712142620.4458,"><vh>@file activeUnitTests
 </v>
 <v t="ekr.20071113202510"></v>
 </v>
-<v t="ekr.20140802074328.4471"><vh>leoVim.py</vh>
+<v t="ekr.20140802074328.4471" a="M"><vh>leoVim.py</vh>
 <v t="ekr.20140802074328.4472"><vh>@test vc.on_same_line</vh></v>
 <v t="ekr.20140802074328.4473"><vh>@test vc.to_bol</vh></v>
 <v t="ekr.20140802074328.4474"><vh>@test vc.to_eol</vh></v>
 </v>
-<v t="ekr.20050120095423"><vh>Plugins</vh>
+<v t="ekr.20050120095423" a="M"><vh>Plugins</vh>
 <v t="ekr.20110610082755.3362"><vh> qt gui</vh>
 <v t="ekr.20100131171342.5503"><vh>@test c.vnode2position</vh></v>
 <v t="ekr.20100131171342.5504"><vh>@test position2Item</vh></v>
@@ -8029,7 +8029,7 @@ b
 
 b
 </t>
-<t tx="ekr.20070417092935" str_leo_pos="4,0,6,20,6">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="4,0,6,27">@nosearch</t>
 <t tx="ekr.20070611071101">p1 = p.copy()
 a = p.firstChild()
 b = a.firstChild()

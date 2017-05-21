@@ -22186,7 +22186,7 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now()
-#@+node:ekr.20140712142620.4458: *3* leoPersistence tests (do not clone)
+#@+node:ekr.20140712142620.4458: *3* leoPersistence tests (do not clone) (passed)
 #@+node:ekr.20140712142620.4537: *4* @@@test pd.find_absolute_unl_node
 pd = c.persistenceController
 root = c.rootPosition().insertAfter()
@@ -22528,7 +22528,7 @@ else:
     assert pd.has_at_persistence_node()
     persistence.deleteAllChildren()
     assert persistence
-#@+node:ekr.20100131171342.5610: *3* leoPlugins
+#@+node:ekr.20100131171342.5610: *3* leoPlugins (passed)
 #@+node:ekr.20100131171342.5611: *4* @test getHandlersForTag
 pc = g.app.pluginsController
 
@@ -22555,7 +22555,7 @@ for fn,expected in table:
     # Make sure that calling regularizeName twice is benign.
     result2 = pc.regularizeName(result)
     assert result2==result
-#@+node:ekr.20091219122958.5066: *3* leoRst
+#@+node:ekr.20091219122958.5066: *3* leoRst (passed)
 # Warning: these depend on the .css files in leo\test\unittest.
 #@+node:ekr.20100813100841.5825: *4* @@@test show_doc_parts_in_rst_mode
 # Applies to options doc parts as well.
