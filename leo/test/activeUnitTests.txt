@@ -1247,6 +1247,8 @@ import leo.core.leoFrame as leoFrame
 # Do nothing when run externally.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+if g.app.gui.guiName() == 'curses':
+    self.skipTest('Not valid for curses gui')
 else:
     assert not isinstance(c.frame,leoFrame.NullFrame)
     def closeEnough(f1,f2):
@@ -5511,13 +5513,13 @@ nodes in myLeoSettings.leo.
 
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() == 'curses':
+    self.skipTest('Not valid for curses gui')
 else:
     strict = True # Set to False if you are not EKR.
-    
     table = ['leoSettings.leo','unitTest.leo']
     if strict:
         table.append('myLeoSettings.leo')
-    
     keys = ('config.doButtons-file-names','config.doCommands-file-names')
     d = g.app.config.unitTestDict # Always created for this unit test.
     
@@ -12109,7 +12111,7 @@ else:
 #@+node:ekr.20100131171342.5603: *4* @test zz end of leoGui tests
 # Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoGui tests.')
-#@+node:ekr.20090529141856.4682: *3* leoImport (passed)
+#@+node:ekr.20090529141856.4682: *3* leoImport (2 failures)
 #@+node:ekr.20090529141856.4684: *4* Export tests
 @language python
 @tabwidth -4

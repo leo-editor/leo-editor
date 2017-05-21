@@ -168,8 +168,8 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
-marks="ekr.20071113194858,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
+marks="ekr.20090529141856.4682,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -296,7 +296,7 @@ marks="ekr.20071113194858,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20071113194858" a="M"><vh>Organized by file</vh>
+<v t="ekr.20071113194858"><vh>Organized by file</vh>
 <v t="ekr.20100223123103.5382"><vh>@test expand/contract-pane</vh></v>
 <v t="ekr.20100131171342.5506"><vh>leoApp (passed)</vh>
 <v t="ekr.20100131171342.5507"><vh>@test consistency of leoApp tables</vh></v>
@@ -1605,7 +1605,7 @@ marks="ekr.20071113194858,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20111123214629.3941"></v>
 <v t="ekr.20100131171342.5603"></v>
 </v>
-<v t="ekr.20090529141856.4682"><vh>leoImport (passed)</vh>
+<v t="ekr.20090529141856.4682" a="M"><vh>leoImport (2 failures)</vh>
 <v t="ekr.20090529141856.4684"><vh>Export tests</vh>
 <v t="ekr.20090529141856.4685"><vh>@suite Export tests</vh></v>
 </v>
@@ -3365,6 +3365,8 @@ marks="ekr.20071113194858,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20170520204621.1"><vh>Curses gui failures</vh>
 <v t="ekr.20080501121449.1"></v>
+<v t="ekr.20111102164107.3975"></v>
+<v t="ekr.20111112103320.3849"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -15152,6 +15154,8 @@ c.importCommands.phpUnitTest(p,s=s,showTree=False)
 # Do nothing when run externally.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+if g.app.gui.guiName() == 'curses':
+    self.skipTest('Not valid for curses gui')
 else:
     assert not isinstance(c.frame,leoFrame.NullFrame)
     def closeEnough(f1,f2):
@@ -21050,13 +21054,13 @@ nodes in myLeoSettings.leo.
 
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() == 'curses':
+    self.skipTest('Not valid for curses gui')
 else:
     strict = True # Set to False if you are not EKR.
-    
     table = ['leoSettings.leo','unitTest.leo']
     if strict:
         table.append('myLeoSettings.leo')
-    
     keys = ('config.doButtons-file-names','config.doCommands-file-names')
     d = g.app.config.unitTestDict # Always created for this unit test.
     
