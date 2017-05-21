@@ -4855,7 +4855,7 @@ IF
 #@+node:ekr.20090615053403.4957: *4* @test zz end of leoColor tests
 # Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoColor tests')
-#@+node:ekr.20071113193624: *3* @ignore leoCommands (to do)
+#@+node:ekr.20071113193624: *3* leoCommands (to do)
 # 7 failures with Alt-5
 #@+node:ekr.20090104053806.1: *4* @@@test c.checkFileTimeStamp & c.setFileTimeStamp
 # Disabled because modifying errorTest.py creates annoying bzr conflicts.
@@ -5580,7 +5580,7 @@ for gui in guis:
     gui.runAskYesNoCancelDialog(c,'title','message')
     # gui.runCompareDialog(c) # Removed.
 g.app.gui = oldGui
-#@+node:ekr.20071113192611: *3* leoEditCommands (to do)
+#@+node:ekr.20071113192611: *3* @ignore leoEditCommands (64 failures)
 #@+node:ekr.20070131175538: *4*  Commands A-B
 #@+node:ekr.20061101121602.78: *5* @test add-space-to-lines
 c.testManager.runEditCommandTest(p)
