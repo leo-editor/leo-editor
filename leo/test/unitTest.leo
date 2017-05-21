@@ -168,8 +168,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"
-marks="ekr.20111006105711.3544,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -821,7 +820,7 @@ marks="ekr.20111006105711.3544,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20061101121602.160"><vh>before sel=2.4,4.4</vh></v>
 <v t="ekr.20061101121602.161"><vh>after sel=2.4,2.4</vh></v>
 </v>
-<v t="ekr.20111006105711.3544" a="M"><vh>@test clone-marked-nodes</vh></v>
+<v t="ekr.20111006105711.3544"><vh>@test clone-marked-nodes</vh></v>
 <v t="ekr.20061101121602.162"><vh>@test count-region</vh>
 <v t="ekr.20061101121602.163"><vh>work</vh></v>
 <v t="ekr.20061101121602.164"><vh>before sel=2.4,4.8</vh></v>
@@ -3373,8 +3372,9 @@ marks="ekr.20111006105711.3544,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20111102164107.3975"></v>
 <v t="ekr.20111026105935.3966"></v>
 <v t="ekr.20080501121449.1"></v>
+<v t="ekr.20111006105711.3544"></v>
+<v t="ekr.20111006072734.3641"><vh>setup_test</vh></v>
 </v>
-<v t="ekr.20111006105711.3544" a="M"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -8037,7 +8037,7 @@ b
 
 b
 </t>
-<t tx="ekr.20070417092935" str_leo_pos="9">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="8,10">@nosearch</t>
 <t tx="ekr.20070611071101">p1 = p.copy()
 a = p.firstChild()
 b = a.firstChild()
@@ -19663,6 +19663,41 @@ else:
         test(p)
     finally:
         tear_down(p,'Moved marked nodes')
+</t>
+<t tx="ekr.20111006072734.3641">def setup_test(target):
+    
+    c.unmarkAll() # Make sure we move only the test nodes!
+    
+    common = g.findNodeAnywhere(c,'@common x-marked-nodes test code')
+    assert common,'no common'
+    data = g.findNodeInTree(c,common,'data')
+    assert data,'no data'
+    
+    delete_children(target)
+
+    # Copy the nodes.
+    c.selectPosition(data)
+    c.copyOutline()
+    c.selectPosition(target)
+    c.pasteOutline()
+    c.moveOutlineRight()
+    c.promote()
+    c.deleteOutline()
+    c.redraw()
+        
+    for h in ('a','b','c'):
+        p2 = g.findNodeInTree(c,target,h)
+        assert p2,'not found: %s' % (h)
+        p2.setMarked()
+        
+    for child in target.children():
+        if child.h == 'a':
+            assert child.isCloned(),'not cloned!: %s' % (child)
+        else:
+            assert not child.isCloned(),'cloned!: %s' % (child)
+        
+    # g.trace('setup complete')
+    
 </t>
 <t tx="ekr.20111006105711.3544">if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
