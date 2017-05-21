@@ -6569,6 +6569,8 @@ last line
 #@+node:ekr.20111006105711.3544: *5* @test clone-marked-nodes
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+if g.app.gui.guiName() == 'curses':
+    assert False, 'Not ready yet: interferes with other tests'
 else:
 
     exec(g.findTestScript(c,'@common x-marked-nodes test code'))
@@ -6637,6 +6639,8 @@ else:
 
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() == 'curses':
+    self.skipTest('Curses gui')
 else:
     log = c.frame.log
     tabs = log.orderedTabNames()[1:]
