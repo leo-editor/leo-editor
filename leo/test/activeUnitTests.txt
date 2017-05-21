@@ -5560,17 +5560,16 @@ assert c.page_width == c.config.getInt('page_width'),c.page_width
 #@+node:ekr.20071113201854: *4* @test zz end of leoConfig tests
 # Print does not work with the curses gui: it is redirected.
 g.pr('\nEnd of leoConfig tests')
-#@+node:ekr.20100131171342.5592: *3* leoDialogs (to do)
+#@+node:ekr.20100131171342.5592: *3* leoDialogs
 #@+node:ekr.20100131171342.5593: *4* @test ctors for all dialogs
 # For some reason these don't select the dialog properly when run as a script.
 # However, the main reason for the tests is to make sure the ctors don't crash.
 # Also, for unit testing the value of c doesn't matter.
-
-oldGui = g.app.gui ; guis = [g.app.gui]
+oldGui = g.app.gui
+guis = [g.app.gui]
 
 import leo.core.leoGui as leoGui
 guis.append(leoGui.UnitTestGui())
-
 for gui in guis:
     gui.runAboutLeoDialog(c,'version','copyright','url','email')
     gui.runAskLeoIDDialog()
@@ -5580,9 +5579,8 @@ for gui in guis:
     gui.runAskYesNoDialog(c,'title','message')
     gui.runAskYesNoCancelDialog(c,'title','message')
     # gui.runCompareDialog(c) # Removed.
-
 g.app.gui = oldGui
-#@+node:ekr.20071113192611: *3* @ignore leoEditCommands (to do)
+#@+node:ekr.20071113192611: *3* leoEditCommands (to do)
 #@+node:ekr.20070131175538: *4*  Commands A-B
 #@+node:ekr.20061101121602.78: *5* @test add-space-to-lines
 c.testManager.runEditCommandTest(p)

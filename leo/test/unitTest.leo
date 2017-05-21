@@ -168,8 +168,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
-marks="ekr.20100131171342.5592,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -654,10 +653,10 @@ marks="ekr.20100131171342.5592,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20050203001146"><vh>@test local settings (c.page_width)</vh></v>
 <v t="ekr.20071113201854"></v>
 </v>
-<v t="ekr.20100131171342.5592" a="M"><vh>leoDialogs (to do)</vh>
+<v t="ekr.20100131171342.5592"><vh>leoDialogs</vh>
 <v t="ekr.20100131171342.5593"><vh>@test ctors for all dialogs</vh></v>
 </v>
-<v t="ekr.20071113192611"><vh>@ignore leoEditCommands (to do)</vh>
+<v t="ekr.20071113192611"><vh>leoEditCommands (to do)</vh>
 <v t="ekr.20070131175538"><vh> Commands A-B</vh>
 <v t="ekr.20061101121602.78"><vh>@test add-space-to-lines</vh>
 <v t="ekr.20061101121602.79"><vh>work</vh></v>
@@ -3363,25 +3362,15 @@ marks="ekr.20100131171342.5592,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20100131171342.5501"></v>
 </v>
 </v>
-<v t="ekr.20170520204621.1"><vh>Curses gui failures</vh>
-<v t="ekr.20080501121449.1"></v>
-<v t="ekr.20111102164107.3975"></v>
+<v t="ekr.20170520204621.1" a="M"><vh>Curses gui failures</vh>
+<v t="ekr.20071113193624"></v>
+<v t="ekr.20071113192611"></v>
+<v t="ekr.20090529141856.4682"></v>
+<v t="ekr.20071113194424.1"></v>
 <v t="ekr.20111112103320.3849"></v>
+<v t="ekr.20111102164107.3975"></v>
 <v t="ekr.20111026105935.3966"></v>
-</v>
-<v t="ekr.20170520211602.3"><vh>Recovered Nodes</vh>
-<v t="ekr.20170520211602.4"><vh>Recovered node "@thin ../test/unittest/at-path-test1.py" from @file activeUnitTests.txt</vh>
-<v t="ekr.20170520211602.5"><vh>old:@thin ../test/unittest/at-path-test1.py</vh></v>
-<v t="ekr.20170520211602.6"><vh>new:@thin ../test/unittest/at-path-test1.py</vh></v>
-</v>
-<v t="ekr.20170520211602.7"><vh>Recovered node "@thin at-path-test3.py" from @file activeUnitTests.txt</vh>
-<v t="ekr.20170520211602.8"><vh>old:@thin at-path-test3.py</vh></v>
-<v t="ekr.20170520211602.9"><vh>new:@thin at-path-test3.py</vh></v>
-</v>
-<v t="ekr.20170520211602.10"><vh>Recovered node "@thin at-path-test2.py" from @file activeUnitTests.txt</vh>
-<v t="ekr.20170520211602.11"><vh>old:@thin at-path-test2.py</vh></v>
-<v t="ekr.20170520211602.12"><vh>new:@thin at-path-test2.py</vh></v>
-</v>
+<v t="ekr.20080501121449.1"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -8045,7 +8034,7 @@ b
 
 b
 </t>
-<t tx="ekr.20070417092935" str_leo_pos="7,10">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="8,1">@nosearch</t>
 <t tx="ekr.20070611071101">p1 = p.copy()
 a = p.firstChild()
 b = a.firstChild()
@@ -14121,12 +14110,11 @@ else:
 <t tx="ekr.20100131171342.5593"># For some reason these don't select the dialog properly when run as a script.
 # However, the main reason for the tests is to make sure the ctors don't crash.
 # Also, for unit testing the value of c doesn't matter.
-
-oldGui = g.app.gui ; guis = [g.app.gui]
+oldGui = g.app.gui
+guis = [g.app.gui]
 
 import leo.core.leoGui as leoGui
 guis.append(leoGui.UnitTestGui())
-
 for gui in guis:
     gui.runAboutLeoDialog(c,'version','copyright','url','email')
     gui.runAskLeoIDDialog()
@@ -14136,7 +14124,6 @@ for gui in guis:
     gui.runAskYesNoDialog(c,'title','message')
     gui.runAskYesNoCancelDialog(c,'title','message')
     # gui.runCompareDialog(c) # Removed.
-
 g.app.gui = oldGui
 </t>
 <t tx="ekr.20100131171342.5599"></t>
@@ -35005,34 +34992,6 @@ EOT;
 <t tx="ekr.20170520193223.8"></t>
 <t tx="ekr.20170520193223.9"></t>
 <t tx="ekr.20170520204621.1"></t>
-<t tx="ekr.20170520211602.10">(uncached) ekr.20120228145505.4841
-Diff...
-- @language python
-- # unittest/at-path-test2.py
-</t>
-<t tx="ekr.20170520211602.11"></t>
-<t tx="ekr.20170520211602.12">@language python
-# unittest/at-path-test2.py
-</t>
-<t tx="ekr.20170520211602.3"></t>
-<t tx="ekr.20170520211602.4">(uncached) ekr.20120228145505.4834
-Diff...
-- @language python
-- # unittest/at-path-test1.py 
-</t>
-<t tx="ekr.20170520211602.5"></t>
-<t tx="ekr.20170520211602.6">@language python
-# unittest/at-path-test1.py 
-</t>
-<t tx="ekr.20170520211602.7">(uncached) ekr.20120228145505.4838
-Diff...
-- @language python
-- # unittest/at-path-test3.py 
-</t>
-<t tx="ekr.20170520211602.8"></t>
-<t tx="ekr.20170520211602.9">@language python
-# unittest/at-path-test3.py 
-</t>
 <t tx="sps.20100531034136.20110">p2 = p.firstChild().firstChild().firstChild()
 aList = g.get_directives_dict_list(p2)
 path = c.scanAtPathDirectives(aList)
