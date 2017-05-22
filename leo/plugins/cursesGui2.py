@@ -1106,7 +1106,7 @@ class CursesFrame (leoFrame.LeoFrame):
 
     def update(self, *args, **keys):
         pass
-    #@+node:ekr.20170522015906.1: *3* CFrame.pasteText (override)
+    #@+node:ekr.20170522015906.1: *3* CFrame.pasteText
     ### @cmd('paste-text')
     def pasteText(self, event=None, middleButton=False):
         '''
@@ -2003,7 +2003,7 @@ class HeadTextWrapper(leoFrame.StringTextWrapper):
         # self.setAllText(p.h)
 
     #@+others
-    #@+node:ekr.20170522014009.1: *3* hw.setAllText (override)
+    #@+node:ekr.20170522014009.1: *3* hw.setAllText
     def setAllText(self, s):
         '''HeadTextWrapper.setAllText'''
         self.s = s
@@ -2011,7 +2011,6 @@ class HeadTextWrapper(leoFrame.StringTextWrapper):
         self.ins = i
         self.sel = i, i
         self.p.v._headString = s
-            # This doesn't seem to stick.
     #@-others
 #@+node:ekr.20170502093200.1: ** class CursesTopFrame (object)
 class CursesTopFrame (object):
