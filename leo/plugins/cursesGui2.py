@@ -2593,7 +2593,6 @@ class CursesTree (leoFrame.LeoTree):
     def showPopupMenu(self, event):
         """Show a popup menu."""
     #@+node:ekr.20170511101300.1: *3* CTree.Items
-
     #@+node:ekr.20170511101300.2: *4*  CTree.item dict getters
     def itemHash(self, item):
         return '%s at %s' % (repr(item), str(id(item)))
@@ -2907,10 +2906,11 @@ class CursesTree (leoFrame.LeoTree):
                 # return None
         # else:
             # return None
-    #@+node:ekr.20170511095353.1: *4* CTree.editLabel & helper (REVISE)
+    #@+node:ekr.20170511095353.1: *4* CTree.editLabel & helper
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""
         trace = False and not g.unitTesting
+        if trace: g.trace('all', selectAll, p.h)
         if self.busy():
             if trace: g.trace('busy')
             return
@@ -2918,8 +2918,6 @@ class CursesTree (leoFrame.LeoTree):
         c.outerUpdate()
             # Do any scheduled redraw.
             # This won't do anything in the new redraw scheme.
-            
-        ### Does this do anything?
         item = self.position2item(p)
         if item:
             # if self.use_declutter:
@@ -2962,8 +2960,8 @@ class CursesTree (leoFrame.LeoTree):
                     start, n = i, j - i
                 else:
                     start = start, n = j, i - j
-                # g.trace('i',i,'j',j,'ins',ins,'-->start',start,'n',n)
-            elif selectAll: start, n, ins = 0, len_s, len_s
+            elif selectAll:
+                start, n, ins = 0, len_s, len_s
             else: start, n, ins = len_s, 0, len_s
             e.setObjectName('headline')
             e.setSelection(start, n)
