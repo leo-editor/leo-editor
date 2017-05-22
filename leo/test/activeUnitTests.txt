@@ -10410,8 +10410,11 @@ else:
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
         w.setSelectionRange('1.1','1.2')
-        k.manufactureKeyPressForCommandName(w,'paste-text')
-        g.app.gui.event_generate(c,'\n','Return',w)
+        if g.app.gui.guiName() == 'curses':
+            c.frame.pasteText(event=g.Bunch(widget=w))
+        else:
+            k.manufactureKeyPressForCommandName(w,'paste-text')
+            g.app.gui.event_generate(c,'\n','Return',w)
         assert p.h == h[0] + paste + h[2:]
         k.manufactureKeyPressForCommandName(w,'undo')
         assert p.h == h, 'head mismatch'
@@ -10433,7 +10436,6 @@ else:
     w = c.edit_widget(p)
     g.app.gui.set_focus(c,w)
     w2 = g.app.gui.get_focus(c)
-    
     try:
         assert w
         paste = 'ABC'
@@ -10441,8 +10443,11 @@ else:
         g.app.gui.set_focus(c,w)
         w2 = g.app.gui.get_focus(c)
         w.setSelectionRange('end','end')
-        k.manufactureKeyPressForCommandName(w,'paste-text')
-        g.app.gui.event_generate(c,'\n','Return',w)
+        if g.app.gui.guiName() == 'curses':
+            c.frame.pasteText(event=g.Bunch(widget=w))
+        else:
+            k.manufactureKeyPressForCommandName(w,'paste-text')
+            g.app.gui.event_generate(c,'\n','Return',w)
         assert p.h == h + paste,'Expected: %s, got %s' % (
             h + paste,p.h)
     finally:
@@ -10550,7 +10555,10 @@ else:
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
         w.setSelectionRange('end','end')
-        k.manufactureKeyPressForCommandName(w,'paste-text')
+        if g.app.gui.guiName() == 'curses':
+            c.frame.pasteText(event=g.Bunch(widget=w))
+        else:
+            k.manufactureKeyPressForCommandName(w,'paste-text')
         c.selectPosition(p.visBack(c))
         assert p.h == h + paste
         k.manufactureKeyPressForCommandName(w,'undo')
@@ -10564,6 +10572,9 @@ else:
 import sys
 if sys.platform.startswith('linux'):
     self.skipTest('skip headline test')
+elif g.app.gui.guiName() == 'curses':
+    ### This could be adapted, but not now.
+    self.skipTest('Not for curses gui')
 else:
     k = c.k
     if k.defaultUnboundKeyAction == 'insert':
@@ -10592,6 +10603,9 @@ else:
 import sys
 if sys.platform.startswith('linux'):
     self.skipTest('skip headline test')
+elif g.app.gui.guiName() == 'curses':
+    ### This could be adapted, but not now.
+    self.skipTest('Not for curses gui')
 else:
     k = c.k
     if k.defaultUnboundKeyAction == 'insert':

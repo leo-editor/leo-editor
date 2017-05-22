@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.40" body_secondary_ratio="0.64">
-	<global_window_position top="182" left="250" height="761" width="1080"/>
+	<global_window_position top="182" left="250" height="838" width="1080"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -233,7 +233,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -1580,7 +1580,6 @@ else:
     w = c.edit_widget(p)
     g.app.gui.set_focus(c,w)
     w2 = g.app.gui.get_focus(c)
-    
     try:
         assert w
         paste = 'ABC'
@@ -1588,8 +1587,11 @@ else:
         g.app.gui.set_focus(c,w)
         w2 = g.app.gui.get_focus(c)
         w.setSelectionRange('end','end')
-        k.manufactureKeyPressForCommandName(w,'paste-text')
-        g.app.gui.event_generate(c,'\n','Return',w)
+        if g.app.gui.guiName() == 'curses':
+            c.frame.pasteText(event=g.Bunch(widget=w))
+        else:
+            k.manufactureKeyPressForCommandName(w,'paste-text')
+            g.app.gui.event_generate(c,'\n','Return',w)
         assert p.h == h + paste,'Expected: %s, got %s' % (
             h + paste,p.h)
     finally:
@@ -1600,6 +1602,9 @@ else:
 <t tx="ekr.20051107115231.17">import sys
 if sys.platform.startswith('linux'):
     self.skipTest('skip headline test')
+elif g.app.gui.guiName() == 'curses':
+    ### This could be adapted, but not now.
+    self.skipTest('Not for curses gui')
 else:
     k = c.k
     if k.defaultUnboundKeyAction == 'insert':
@@ -1683,8 +1688,11 @@ else:
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
         w.setSelectionRange('1.1','1.2')
-        k.manufactureKeyPressForCommandName(w,'paste-text')
-        g.app.gui.event_generate(c,'\n','Return',w)
+        if g.app.gui.guiName() == 'curses':
+            c.frame.pasteText(event=g.Bunch(widget=w))
+        else:
+            k.manufactureKeyPressForCommandName(w,'paste-text')
+            g.app.gui.event_generate(c,'\n','Return',w)
         assert p.h == h[0] + paste + h[2:]
         k.manufactureKeyPressForCommandName(w,'undo')
         assert p.h == h, 'head mismatch'
@@ -1696,6 +1704,9 @@ else:
 <t tx="ekr.20051107115231.21">import sys
 if sys.platform.startswith('linux'):
     self.skipTest('skip headline test')
+elif g.app.gui.guiName() == 'curses':
+    ### This could be adapted, but not now.
+    self.skipTest('Not for curses gui')
 else:
     k = c.k
     if k.defaultUnboundKeyAction == 'insert':
@@ -1739,7 +1750,10 @@ else:
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
         w.setSelectionRange('end','end')
-        k.manufactureKeyPressForCommandName(w,'paste-text')
+        if g.app.gui.guiName() == 'curses':
+            c.frame.pasteText(event=g.Bunch(widget=w))
+        else:
+            k.manufactureKeyPressForCommandName(w,'paste-text')
         c.selectPosition(p.visBack(c))
         assert p.h == h + paste
         k.manufactureKeyPressForCommandName(w,'undo')
