@@ -115,9 +115,11 @@ class LeoTreeLine(npyscreen.TreeLine):
         if native:
             val = self._tree_real_value
             p = val and val.content
-            put('*' if p and p.isCloned() else ' ')
-            put(' ')
-        
+            if p:
+                put('C' if p and p.isCloned() else ' ')
+                put('M' if p and p.isMarked() else ' ')
+                put(' ')
+
         if self.highlight:
             self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
         super(npyscreen.TreeLine, self)._print()
