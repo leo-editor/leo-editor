@@ -27,7 +27,7 @@ class BaseColorizer(object):
         self.count = 0
         self.enabled = False
         self.full_recolor_count = 0
-        self.highlighter = None
+        self.highlighter = g.NullObject()
         self.showInvisibles = False
         
     def init(self, p):
