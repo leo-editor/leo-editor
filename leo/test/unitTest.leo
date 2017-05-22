@@ -2,15 +2,80 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.74">
-	<global_window_position top="169" left="238" height="786" width="1161"/>
+<globals body_outline_ratio="0.40" body_secondary_ratio="0.64">
+	<global_window_position top="220" left="616" height="761" width="1080"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20070417092935"><vh>Startup</vh>
+<v t="ekr.20140716121225.4354"><vh>@@button print-gnx</vh></v>
+<v t="ekr.20161123080832.1"><vh>@button make-table</vh></v>
+<v t="ekr.20111112092813.4154"><vh>@command cls</vh></v>
 <v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
+<v t="ekr.20150216110251.11"><vh>@persistence</vh></v>
+<v t="ekr.20041121151002"><vh>@settings</vh>
+<v t="ekr.20080324133327.2"><vh>@bool allow_middle_button_paste = True</vh></v>
+<v t="ekr.20161011095551.1"><vh>@bool allow_section_references_in_at_auto = True</vh></v>
+<v t="ekr.20101009105124.6195"><vh>@bool put_expansion_bits_in_leo_files = True</vh></v>
+<v t="ekr.20140902101931.4478"><vh>@bool qt-use-scintilla = False</vh></v>
+<v t="ekr.20161129030232.1"><vh>@bool run-pyflakes-on-write = False</vh></v>
+<v t="ekr.20140217055617.4231"><vh>@bool scriptingatscriptnodes = True</vh></v>
+<v t="ekr.20051013162226"><vh>@bool test_setting = True</vh></v>
+<v t="ekr.20150602215639.1"><vh>@bool tidy_autobeautify = False</vh></v>
+<v t="ekr.20070503064257"><vh>@bool use_chapters = True</vh></v>
+<v t="ekr.20150321155210.11"><vh>@bool verbose_check_outline = False</vh></v>
+<v t="ekr.20070528100318"><vh>@bool write_strips_blank_lines = False</vh></v>
+<v t="ekr.20170415084531.1"><vh>@data import_html_tags</vh></v>
+<v t="ekr.20111026111009.3972"><vh>@data import_xml_tags</vh></v>
+<v t="ekr.20111123042627.6654"><vh>@enabled-plugins</vh></v>
+<v t="ekr.20050328101834"><vh>@page http plugin</vh>
+<v t="ekr.20050328101834.1"><vh>@bool http_active = False</vh></v>
+<v t="ekr.20050328101834.2"><vh>@int  port = 8080</vh></v>
+<v t="ekr.20050328101834.3"><vh>@string rst_http_attributename = ''</vh></v>
+</v>
+<v t="ekr.20111112093605.4679"><vh>@shortcuts</vh></v>
+<v t="ekr.20110521073115.3494"><vh>colorizer colors</vh>
+<v t="ekr.20110521073115.3495"><vh>@@color keyword3_color = orange</vh></v>
+<v t="ekr.20110521073115.3496"><vh>@@color keyword4_color = pink</vh></v>
+</v>
+<v t="ekr.20111124094121.3941"><vh>Empty @buttons and @commands nodes</vh>
+<v t="ekr.20111124094121.3942"><vh>@buttons</vh></v>
+<v t="ekr.20111124094121.3943"><vh>@commands</vh></v>
+</v>
+<v t="ekr.20131111155830.4249"><vh>Vim settings</vh>
+<v t="ekr.20131111155830.4250"><vh>@@@data vim-control-character-commands</vh></v>
+<v t="ekr.20131111155830.4251"><vh>@data vim-command-tails</vh></v>
+<v t="ekr.20131111155830.4252"><vh>@data vim-commands</vh></v>
+<v t="ekr.20131111155830.4253"><vh>@data vim-motions</vh></v>
+<v t="ekr.20131111155830.4254"><vh>@data vim-motion-tails</vh></v>
+</v>
+</v>
+<v t="ekr.20100123172713.5114"><vh>Scripts</vh>
+<v t="ekr.20100102164959.5088"><vh>Count pages</vh></v>
+<v t="ekr.20100123172713.5116"><vh>Clean all tnodeLists</vh></v>
+<v t="ekr.20070217065840"><vh>Scripts that make unit tests</vh>
+<v t="ekr.20070217065840.1"><vh>@@command make-test @key = Alt-5</vh></v>
+<v t="ekr.20070217065840.2"><vh>@@command do-before @key = Alt-6</vh>
+<v t="ekr.20070217065840.3"><vh>getSel</vh></v>
+<v t="ekr.20070217065840.4"><vh>findNodes</vh></v>
+<v t="ekr.20070217065840.5"><vh>putSelectionInHeadline</vh></v>
+</v>
+<v t="ekr.20070217065840.6"><vh>@@command do-after @key = Alt-7</vh>
+<v t="ekr.20070217072822"><vh>getSel</vh></v>
+<v t="ekr.20070217065840.8"><vh>findNodes</vh></v>
+<v t="ekr.20070217065840.9"><vh>putSelectionInHeadline</vh></v>
+</v>
+</v>
+<v t="ekr.20070113145100"><vh>Create chinese folder</vh></v>
+<v t="ekr.20071113140035"><vh>Find unique @ test nodes</vh></v>
+<v t="ekr.20091206090247.5060"><vh>Clear all uA's, tnodeLists, etc.</vh>
+<v t="ekr.20091206090247.5061"><vh>Clean unused tnodeLists</vh></v>
+<v t="ekr.20091206090247.5062"><vh>Clear all timestamps</vh></v>
+<v t="ekr.20091206090247.5063"><vh>Clear all uAs (unknown attributes)</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20051012104957"><vh>@ignore Docs</vh>
 <v t="bwmulder.20050108100437.1"><vh>How to run unit tests</vh></v>
@@ -167,6 +232,10 @@
 <v t="ekr.20170101134417.1"><vh>@ignore Slow tests</vh>
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
+<v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
+marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
+</v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
 <v t="ekr.20161228071915.1"><vh>@@auto c:\test\bug-354-test.py</vh>
@@ -226,933 +295,7 @@
 </v>
 </v>
 <v t="ekr.20170504122245.1"><vh>@ignore recent</vh>
-<v t="ekr.20170504062625.1"><vh>Found:leoQt</vh>
-<v t="ekr.20140904060337.4476"><vh>@test interfaces using API classes</vh></v>
-<v t="ekr.20111123214629.3941"><vh>@test unbound Alt-9 key is completely ignored</vh></v>
-<v t="ekr.20111121142012.4030"><vh>@test c.frame.log relationships</vh></v>
-<v t="ekr.20141223125432.11"><vh>@test g.toUnicode(QString)</vh></v>
-<v t="ekr.20111120124051.3992"><vh>@test Ctrl-I inserts only one headline</vh></v>
-<v t="ekr.20111121224307.3934"><vh>@test k.handleDefaultChar from log pane</vh></v>
-</v>
-<v t="ekr.20170504102140.1"><vh>Found:print</vh>
-<v t="ekr.20170504102649.1"><vh>Real prints</vh>
-<v t="ekr.20110613143220.3314"><vh>@test All menus execute the proper command</vh></v>
-<v t="ekr.20100131171342.5509"><vh>@test leoBridge init logic</vh></v>
-<v t="ekr.20040712101754.188"><vh>@test p.iters and v.iters</vh>
-<v t="ekr.20040712101754.189"><vh>child1</vh>
-<v t="ekr.20040712101754.190"><vh>a</vh>
-<v t="ekr.20040712101754.191"><vh>b</vh></v>
-</v>
-<v t="ekr.20040712101754.192"><vh>c</vh></v>
-<v t="ekr.20040712101754.193"><vh>d</vh>
-<v t="ekr.20040712101754.194"><vh>e</vh></v>
-</v>
-</v>
-<v t="ekr.20040712101754.195"><vh>child2</vh></v>
-<v t="ekr.20040712101754.196"><vh>&lt;&lt; tests of consistency of p and v iters &gt;&gt;</vh></v>
-<v t="ekr.20040712101754.197"><vh>&lt;&lt; tests that node iterators return no duplicate nodes &gt;&gt;</vh></v>
-<v t="ekr.20040712101754.198"><vh>&lt;&lt; print nodes returned by iterators &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
-<v t="ekr.20100131171342.5487"><vh>checkFile</vh></v>
-<v t="ekr.20050120095423.20"><vh>class lastTestCase</vh></v>
-<v t="ekr.20100827194549.5963"><vh>report</vh></v>
-<v t="ekr.20050218015346.22"><vh>removeLeadingWs</vh></v>
-</v>
-<v t="ekr.20170504102726.1"><vh>zz tests</vh>
-<v t="ekr.20081111150402.11"><vh>@test zz end of all tests</vh></v>
-<v t="ekr.20071113201736"><vh>@test zz end of leoAtFile tests</vh></v>
-<v t="ekr.20090615053403.4957"><vh>@test zz end of leoColor tests</vh></v>
-<v t="ekr.20071113201833"><vh>@test zz end of leoCommands tests</vh></v>
-<v t="ekr.20071113201854"><vh>@test zz end of leoConfig tests</vh></v>
-<v t="ekr.20070306091949"><vh>@test zz end of leoEditCommands tests</vh></v>
-<v t="ekr.20071113202045"><vh>@test zz end of leoFile tests</vh></v>
-<v t="ekr.20071113202153"><vh>@test zz end of leoFind tests</vh></v>
-<v t="ekr.20071113202153.1"><vh>@test zz end of leoFrame tests</vh></v>
-<v t="ekr.20071113202153.2"><vh>@test zz end of leoGlobals tests</vh></v>
-<v t="ekr.20100131171342.5603"><vh>@test zz end of leoGui tests</vh></v>
-<v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
-<v t="ekr.20100131171342.5609"><vh>@test zz end of leoKeys tests</vh></v>
-<v t="ekr.20071113202452"><vh>@test zz end of leoNodes tests</vh></v>
-<v t="ekr.20071113202510"><vh>@test zz end of leoUndo tests</vh></v>
-<v t="ekr.20100131171342.5501"><vh>@test zz end of plugins unit tests</vh></v>
-<v t="ekr.20060131102450"><vh>@test zz print end of typing tests</vh></v>
-</v>
-</v>
-<v t="ekr.20161002020559.1"><vh>@test all generators return unique positions</vh>
-<v t="ekr.20170504124652.1"><vh>parent</vh>
-<v t="ekr.20170504124245.1"><vh>child1</vh>
-<v t="ekr.20170504124249.1"><vh>grandchild</vh>
-<v t="ekr.20170504124842.1"><vh>greatGrandChild</vh></v>
-</v>
-<v t="ekr.20170504124617.1"><vh>grandchild2</vh></v>
-</v>
-<v t="ekr.20170504124417.1"><vh>child2</vh></v>
-<v t="ekr.20170504124637.1"><vh>child3</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"
-marks="ekr.20071113192611,"><vh>@file activeUnitTests.txt</vh></v>
-</v>
-<v t="ekr.20170521062918.1"><vh>Curses gui failures (32 failures, 4 errors)</vh>
-<v t="ekr.20071113193624"><vh>leoCommands (1 failure)</vh>
-<v t="ekr.20090104053806.1"><vh>@@@test c.checkFileTimeStamp &amp; c.setFileTimeStamp</vh></v>
-<v t="ekr.20100203103015.5356"><vh>@@@test c.openTempFileInExternalEditor</vh></v>
-<v t="ekr.20100209155559.5386"><vh>@@@test efc.create_temp_file</vh></v>
-<v t="ekr.20120309155126.3949"><vh>@test add/delete comments with multiple @language directives</vh>
-<v t="ekr.20120309155126.3950"><vh>rest and python</vh></v>
-</v>
-<v t="ekr.20111112171235.3854"><vh>@test add/delete html comments</vh>
-<v t="ekr.20170128023431.1"><vh>@language html</vh>
-<v t="ekr.20111112171235.3855"><vh>html</vh></v>
-</v>
-</v>
-<v t="ekr.20111112171235.3858"><vh>@test add/delete python comments</vh>
-<v t="ekr.20111112171235.3859"><vh>python</vh></v>
-</v>
-<v t="ekr.20110510054817.3475"><vh>@test c.alert</vh></v>
-<v t="ekr.20050512084850"><vh>@test c.checkOutline</vh>
-<v t="ekr.20040713070526"><vh>Scripts</vh>
-<v t="ekr.20040713123617"><vh>tempNode</vh></v>
-<v t="ekr.20050726141158"><vh>before</vh></v>
-<v t="ekr.20040713123828.1"><vh>after</vh></v>
-</v>
-</v>
-<v t="ekr.20071113145804.10"><vh>@test c.contractAllHeadlines</vh></v>
-<v t="ekr.20070611105423.1"><vh>@test c.contractAllHeadlines</vh></v>
-<v t="ekr.20070611105728"><vh>@test c.demote: illegal clone demote</vh></v>
-<v t="ekr.20111121140833.3916"><vh>@test c.findMatchingBracket</vh></v>
-<v t="ekr.20141016101308.4747"><vh>@test c.hiddenRootNode.fileIndex</vh></v>
-<v t="ekr.20120310121839.3949"><vh>@test c.hoist @chapter node</vh></v>
-<v t="ekr.20120311124038.3951"><vh>@test c.hoist followed by goto-first-node</vh></v>
-<v t="ekr.20071113105654.1"><vh>@test c.hoist with no children</vh></v>
-<v t="ekr.20061106112522"><vh>@test c.insertBodyTime</vh></v>
-<v t="ekr.20050512083807.1"><vh>@test c.markAllAtFileNodesDirty</vh></v>
-<v t="ekr.20050512083822.1"><vh>@test c.markSubheads</vh>
-<v t="ekr.20050512084850.1"><vh>child 1</vh></v>
-<v t="ekr.20050512084850.2"><vh>child 2</vh></v>
-</v>
-<v t="ekr.20111212142649.3971"><vh>@test c.pasteOutline does not clone top node</vh>
-<v t="ekr.20111212142649.3972"><vh>child</vh></v>
-</v>
-<v t="ekr.20080917151620.9"><vh>@test c.scanAllDirectives</vh></v>
-<v t="ekr.20100131180007.5466"><vh>@test c.scanAtPathDirectives</vh>
-<v t="ekr.20100131180007.5467"><vh>@path one</vh>
-<v t="ekr.20100131180007.5468"><vh>@path two</vh>
-<v t="ekr.20100131180007.5469"><vh>xyz</vh></v>
-</v>
-</v>
-</v>
-<v t="sps.20100531034136.20110"><vh>@test c.scanAtPathDirectives same name subdirs</vh>
-<v t="sps.20100531034136.20111"><vh>@path again</vh>
-<v t="sps.20100531034136.20112"><vh>@path again</vh>
-<v t="sps.20100531034136.20113"><vh>xyz</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20040802065214"><vh>@test c.setHeadString marks descendent @thin nodes dirty</vh>
-<v t="ekr.20040802065214.1"><vh>bogus</vh></v>
-</v>
-<v t="ekr.20050512083822.2"><vh>@test c.unmarkAll</vh></v>
-<v t="ekr.20100131180007.5465"><vh>@test class StubConfig</vh></v>
-<v t="ekr.20100203103015.5353"><vh>@test efc.ask</vh></v>
-<v t="ekr.20100203103015.5355"><vh>@test efc.get_ext</vh></v>
-<v t="ekr.20100203103015.5354"><vh>@test efc.temp_file_path</vh></v>
-<v t="ville.20090602190735.4770"><vh>@test g.command decorator</vh></v>
-<v t="ekr.20100203103015.5357"><vh>@test g.isCallable</vh></v>
-<v t="ekr.20071113201833"></v>
-</v>
-<v t="ekr.20071113192611" a="M"><vh>leoEditCommands (12 failures)</vh>
-<v t="ekr.20070131175538"><vh> Commands A-B</vh>
-<v t="ekr.20061101121602.78"><vh>@test add-space-to-lines</vh>
-<v t="ekr.20061101121602.79"><vh>work</vh></v>
-<v t="ekr.20061101121602.80"><vh>before sel=2.0,4.6</vh></v>
-<v t="ekr.20061101121602.81"><vh>after sel=2.0,4.7</vh></v>
-</v>
-<v t="ekr.20061101121602.82"><vh>@test add-tab-to-lines</vh>
-<v t="ekr.20061101121602.83"><vh>work</vh></v>
-<v t="ekr.20061101121602.84"><vh>before sel=2.0,5.6</vh></v>
-<v t="ekr.20061101121602.85"><vh>after sel=2.0,5.10</vh></v>
-</v>
-<v t="ekr.20071113145804.16"><vh>@test helpForbindings</vh></v>
-<v t="ekr.20071113145804.17"><vh>@test helpForFindCommands</vh></v>
-<v t="ekr.20061101121602.86"><vh>@test back-char</vh>
-<v t="ekr.20061101121602.87"><vh>work</vh></v>
-<v t="ekr.20061101121602.88"><vh>before sel=3.8,3.8</vh></v>
-<v t="ekr.20061101121602.89"><vh>after sel=3.7,3.7</vh></v>
-</v>
-<v t="ekr.20061101121602.90"><vh>@test back-char-extend-selection</vh>
-<v t="ekr.20061101121602.91"><vh>work</vh></v>
-<v t="ekr.20061101121602.92"><vh>before sel=4.12,4.12</vh></v>
-<v t="ekr.20061101121602.93"><vh>after sel=4.11,4.12</vh></v>
-</v>
-<v t="ekr.20061101121602.94"><vh>@test back-paragraph</vh>
-<v t="ekr.20061101121602.95"><vh>work</vh></v>
-<v t="ekr.20061101121602.96"><vh>before sel=9.0,9.0</vh></v>
-<v t="ekr.20061101121602.97"><vh>after sel=6.7,6.7</vh></v>
-</v>
-<v t="ekr.20061101121602.98"><vh>@test back-paragraph-extend-selection</vh>
-<v t="ekr.20061101121602.99"><vh>work</vh></v>
-<v t="ekr.20061101121602.100"><vh>before sel=9.0,9.5</vh></v>
-<v t="ekr.20061101121602.101"><vh>after sel=6.7,9.5</vh></v>
-</v>
-<v t="ekr.20061101121602.102"><vh>@test back-sentence</vh>
-<v t="ekr.20061101121602.103"><vh>work</vh></v>
-<v t="ekr.20061101121602.104"><vh>before sel=3.169,3.169</vh></v>
-<v t="ekr.20061101121602.105"><vh>after sel=3.143,3.143</vh></v>
-</v>
-<v t="ekr.20061101121602.106"><vh>@test back-sentence-extend-selection</vh>
-<v t="ekr.20061101121602.107"><vh>work</vh></v>
-<v t="ekr.20061101121602.108"><vh>before sel=3.208,3.208</vh></v>
-<v t="ekr.20061101121602.109"><vh>after sel=3.143,3.208</vh></v>
-</v>
-<v t="ekr.20061101121602.110"><vh>@test back-to-indentation</vh>
-<v t="ekr.20061101121602.111"><vh>work</vh></v>
-<v t="ekr.20061101121602.112"><vh>before sel=4.13,4.13</vh></v>
-<v t="ekr.20061101121602.113"><vh>after sel=4.8,4.8</vh></v>
-</v>
-<v t="ekr.20090427104851.7"><vh>@test back-to-home (at start of line)</vh>
-<v t="ekr.20090427104851.8"><vh>work</vh></v>
-<v t="ekr.20090427104851.9"><vh>before sel=2.0,2.0</vh></v>
-<v t="ekr.20090427104851.10"><vh>after sel=2.4,2.4</vh></v>
-</v>
-<v t="ekr.20090427104851.15"><vh>@test back-to-home (at indentation</vh>
-<v t="ekr.20090427104851.16"><vh>work</vh></v>
-<v t="ekr.20090427104851.17"><vh>before sel=2.4,2.4</vh></v>
-<v t="ekr.20090427104851.18"><vh>after sel=2.0,2.0</vh></v>
-</v>
-<v t="ekr.20090427104851.11"><vh>@test back-to-home (at end of line)</vh>
-<v t="ekr.20090427104851.12"><vh>work</vh></v>
-<v t="ekr.20090427104851.13"><vh>before sel=2.12,2.12</vh></v>
-<v t="ekr.20090427104851.14"><vh>after sel=2.4,2.4</vh></v>
-</v>
-<v t="ekr.20061101121602.114"><vh>@test back-word</vh>
-<v t="ekr.20061101121602.115"><vh>work</vh></v>
-<v t="ekr.20061101121602.116"><vh>before sel=1.183,1.183</vh></v>
-<v t="ekr.20061101121602.117"><vh>after sel=1.178,1.178</vh></v>
-</v>
-<v t="ekr.20061101121602.118"><vh>@test back-word-extend-selection</vh>
-<v t="ekr.20061101121602.119"><vh>work</vh></v>
-<v t="ekr.20061101121602.120"><vh>before sel=3.342,3.342</vh></v>
-<v t="ekr.20061101121602.121"><vh>after sel=3.332,3.342</vh></v>
-</v>
-<v t="ekr.20061101121602.122"><vh>@test backward-delete-char</vh>
-<v t="ekr.20061101121602.123"><vh>work</vh></v>
-<v t="ekr.20061101121602.124"><vh>before sel=1.9,1.9</vh></v>
-<v t="ekr.20061101121602.125"><vh>after sel=1.8,1.8</vh></v>
-</v>
-<v t="ekr.20071007121529"><vh>@test backward-delete-char  (middle of line)</vh>
-<v t="ekr.20071007121529.1"><vh>work</vh></v>
-<v t="ekr.20071007121529.2"><vh>before sel=1.6,1.6</vh></v>
-<v t="ekr.20071007121529.3"><vh>after sel=1.5,1.5</vh></v>
-</v>
-<v t="ekr.20071007120947"><vh>@test backward-delete-char (last char)</vh>
-<v t="ekr.20071007120947.6"><vh>work</vh></v>
-<v t="ekr.20071007120947.7"><vh>before sel=2.9,2.9</vh></v>
-<v t="ekr.20071007120947.8"><vh>after sel=2.8,2.8</vh></v>
-</v>
-<v t="ekr.20100817131738.5886"><vh>@test backward-delete-word (no selection)</vh>
-<v t="ekr.20100817131738.5887"><vh>work</vh></v>
-<v t="ekr.20100817131738.5888"><vh>before sel=1.10,1.10</vh></v>
-<v t="ekr.20100817131738.5889"><vh>after sel=1.5,1.5</vh></v>
-</v>
-<v t="ekr.20100817131738.5894"><vh>@test backward-delete-word (selection)</vh>
-<v t="ekr.20100817131738.5895"><vh>work</vh></v>
-<v t="ekr.20100817131738.5896"><vh>before sel=1.7,1.12</vh></v>
-<v t="ekr.20100817131738.5897"><vh>after sel=1.7,1.7</vh></v>
-</v>
-<v t="ekr.20061101121602.126"><vh>@test backward-kill-paragraph</vh>
-<v t="ekr.20061101121602.127"><vh>work</vh></v>
-<v t="ekr.20061101121602.128"><vh>before sel=9.0,9.0</vh></v>
-<v t="ekr.20061101121602.129"><vh>after sel=7.0,7.0</vh></v>
-</v>
-<v t="ekr.20070131173932"><vh>@test backward-kill-sentence</vh>
-<v t="ekr.20070131173932.1"><vh>work</vh></v>
-<v t="ekr.20070131173932.2"><vh>before sel=3.2,3.2</vh></v>
-<v t="ekr.20070131173932.3"><vh>after sel=2.23,2.23</vh></v>
-</v>
-<v t="ekr.20081215084144.2"><vh>@test backward-kill-word</vh>
-<v t="ekr.20081215084144.3"><vh>work</vh></v>
-<v t="ekr.20081215084144.4"><vh>before sel=3.7,3.7</vh></v>
-<v t="ekr.20081215084144.5"><vh>after sel=3.5,3.5</vh></v>
-</v>
-<v t="ekr.20061101121602.130"><vh>@test beginning-of-buffer</vh>
-<v t="ekr.20061101121602.131"><vh>work</vh></v>
-<v t="ekr.20061101121602.132"><vh>before sel=5.56,5.56</vh></v>
-<v t="ekr.20061101121602.133"><vh>after sel=1.0,1.0</vh></v>
-</v>
-<v t="ekr.20061101121602.134"><vh>@test beginning-of-buffer-extend-selection</vh>
-<v t="ekr.20061101121602.135"><vh>work</vh></v>
-<v t="ekr.20061101121602.136"><vh>before sel=3.423,3.423</vh></v>
-<v t="ekr.20061101121602.137"><vh>after sel=1.0,3.423</vh></v>
-</v>
-<v t="ekr.20061101121602.138"><vh>@test beginning-of-line</vh>
-<v t="ekr.20061101121602.139"><vh>work</vh></v>
-<v t="ekr.20061101121602.140"><vh>before sel=3.10,3.10</vh></v>
-<v t="ekr.20061101121602.141"><vh>after sel=3.0,3.0</vh></v>
-</v>
-<v t="ekr.20061101121602.142"><vh>@test beginning-of-line-extend-selection</vh>
-<v t="ekr.20061101121602.143"><vh>work</vh></v>
-<v t="ekr.20061101121602.144"><vh>before sel=4.10,4.10</vh></v>
-<v t="ekr.20061101121602.145"><vh>after sel=4.0,4.10</vh></v>
-</v>
-</v>
-<v t="ekr.20081111084046.2"><vh> Commands C-E</vh>
-<v t="ekr.20111104171708.3847"><vh>@test c-to-python</vh>
-<v t="ekr.20111104171708.3848"><vh>c tokenize test</vh></v>
-</v>
-<v t="ekr.20061101121602.146"><vh>@test capitalize-word</vh>
-<v t="ekr.20061101121602.147"><vh>work</vh></v>
-<v t="ekr.20061101121602.148"><vh>before sel=3.6,3.6</vh></v>
-<v t="ekr.20061101121602.149"><vh>after sel=3.6,3.6</vh></v>
-</v>
-<v t="ekr.20061101121602.150"><vh>@test center-line</vh>
-<v t="ekr.20061101121602.151"><vh>work</vh></v>
-<v t="ekr.20061101121602.152"><vh>before sel=3.0,9.0</vh></v>
-<v t="ekr.20061101121602.153"><vh>after sel=3.0,9.0</vh></v>
-</v>
-<v t="ekr.20061101121602.154"><vh>@test center-region</vh>
-<v t="ekr.20061101121602.155"><vh>work</vh></v>
-<v t="ekr.20061101121602.156"><vh>before sel=1.0,7.0</vh></v>
-<v t="ekr.20061101121602.157"><vh>after sel=1.0,7.0</vh></v>
-</v>
-<v t="ekr.20120525072421.3889"><vh>@test clean-lines</vh>
-<v t="ekr.20120525072421.3890"><vh>work</vh></v>
-<v t="ekr.20120525072421.3891"><vh>before sel=1.0,1.0</vh></v>
-<v t="ekr.20120525072421.3892"><vh>after sel=1.0,1.0</vh></v>
-</v>
-<v t="ekr.20061101121602.158"><vh>@test clear-selected-text</vh>
-<v t="ekr.20061101121602.159"><vh>work</vh></v>
-<v t="ekr.20061101121602.160"><vh>before sel=2.4,4.4</vh></v>
-<v t="ekr.20061101121602.161"><vh>after sel=2.4,2.4</vh></v>
-</v>
-<v t="ekr.20111006105711.3544"><vh>@test clone-marked-nodes</vh></v>
-<v t="ekr.20061101121602.162"><vh>@test count-region</vh>
-<v t="ekr.20061101121602.163"><vh>work</vh></v>
-<v t="ekr.20061101121602.164"><vh>before sel=2.4,4.8</vh></v>
-<v t="ekr.20061101121602.165"><vh>after sel=2.4,4.8</vh></v>
-</v>
-<v t="ekr.20111120124051.3994"><vh>@test cycle-all-focus</vh></v>
-<v t="ekr.20111121164644.3928"><vh>@test cycle-tab-focus</vh></v>
-<v t="ekr.20150414144103.1"><vh>@test dabbrev-completion</vh></v>
-<v t="ekr.20150414144038.1"><vh>@test dabbrev-expand</vh></v>
-<v t="ekr.20061101121602.166"><vh>@test delete-char</vh>
-<v t="ekr.20061101121602.167"><vh>work</vh></v>
-<v t="ekr.20061101121602.168"><vh>before sel=1.5,1.5</vh></v>
-<v t="ekr.20061101121602.169"><vh>after sel=1.5,1.5</vh></v>
-</v>
-<v t="ekr.20071007120750.3"><vh>@test delete-indentation</vh>
-<v t="ekr.20071007121115.1"><vh>work</vh></v>
-<v t="ekr.20071007121115.2"><vh>before sel=2.8,2.8</vh></v>
-<v t="ekr.20071007121115.3"><vh>after sel=2.4,2.4</vh></v>
-</v>
-<v t="ekr.20111006064419.3491"><vh>@test delete-marked-nodes</vh></v>
-<v t="ekr.20070131162935"><vh>@test delete-spaces</vh>
-<v t="ekr.20070131162935.1"><vh>work</vh></v>
-<v t="ekr.20070131162935.2"><vh>before sel=3.2,3.2</vh></v>
-<v t="ekr.20070131162935.3"><vh>after sel=3.0,3.0</vh></v>
-</v>
-<v t="ekr.20100830113702.5969"><vh>@test delete-word (no selection)</vh>
-<v t="ekr.20100830113702.5970"><vh>work</vh></v>
-<v t="ekr.20100830113702.5971"><vh>before sel=1.10,1.10</vh></v>
-<v t="ekr.20100830113702.5972"><vh>after sel=1.10,1.10</vh></v>
-</v>
-<v t="ekr.20100830113702.5977"><vh>@test delete-word (selection)</vh>
-<v t="ekr.20100830113702.5978"><vh>work</vh></v>
-<v t="ekr.20100830113702.5979"><vh>before sel=1.7,1.12</vh></v>
-<v t="ekr.20100830113702.5980"><vh>after sel=1.7,1.7</vh></v>
-</v>
-<v t="ekr.20061101121602.170"><vh>@test do-nothing</vh>
-<v t="ekr.20061101121602.171"><vh>work</vh></v>
-<v t="ekr.20061101121602.172"><vh>before sel=1.0,1.0</vh></v>
-<v t="ekr.20061101121602.173"><vh>after sel=1.0,1.0</vh></v>
-</v>
-<v t="ekr.20061101121602.174"><vh>@test downcase-region</vh>
-<v t="ekr.20061101121602.175"><vh>work</vh></v>
-<v t="ekr.20061101121602.176"><vh>before sel=3.0,4.0</vh></v>
-<v t="ekr.20061101121602.177"><vh>after sel=3.0,4.0</vh></v>
-</v>
-<v t="ekr.20061101121602.178"><vh>@test downcase-word</vh>
-<v t="ekr.20061101121602.179"><vh>work</vh></v>
-<v t="ekr.20061101121602.180"><vh>before sel=1.4,1.4</vh></v>
-<v t="ekr.20061101121602.181"><vh>after sel=1.4,1.4</vh></v>
-</v>
-<v t="ekr.20061101121602.182"><vh>@test end-of-buffer</vh>
-<v t="ekr.20061101121602.183"><vh>work</vh></v>
-<v t="ekr.20061101121602.184"><vh>before sel=1.3,1.3</vh></v>
-<v t="ekr.20061101121602.185"><vh>after sel=7.0,7.0</vh></v>
-</v>
-<v t="ekr.20061101121602.186"><vh>@test end-of-buffer-extend-selection</vh>
-<v t="ekr.20061101121602.187"><vh>work</vh></v>
-<v t="ekr.20061101121602.188"><vh>before sel=1.0,1.0</vh></v>
-<v t="ekr.20061101121602.189"><vh>after sel=1.0,7.0</vh></v>
-</v>
-<v t="ekr.20061101121602.190"><vh>@test end-of-line</vh>
-<v t="ekr.20061101121602.191"><vh>work</vh></v>
-<v t="ekr.20061101121602.192"><vh>before sel=1.0,1.0</vh></v>
-<v t="ekr.20061101121602.193"><vh>after sel=1.10,1.10</vh></v>
-</v>
-<v t="ekr.20061128082002"><vh>@test end-of-line 2</vh>
-<v t="ekr.20061128082002.1"><vh>work</vh></v>
-<v t="ekr.20061128082002.2"><vh>before sel=6.0,6.0</vh></v>
-<v t="ekr.20061128082002.3"><vh>after sel=6.9,6.9</vh></v>
-</v>
-<v t="ekr.20061101121602.194"><vh>@test end-of-line-extend-selection</vh>
-<v t="ekr.20061101121602.195"><vh>work</vh></v>
-<v t="ekr.20061101121602.196"><vh>before sel=3.0,3.0</vh></v>
-<v t="ekr.20061101121602.197"><vh>after sel=3.0,3.10</vh></v>
-</v>
-<v t="ekr.20061101121602.198"><vh>@test exchange-point-mark</vh>
-<v t="ekr.20061101121602.199"><vh>work</vh></v>
-<v t="ekr.20061101121602.200"><vh>before sel=1.0,1.10</vh></v>
-<v t="ekr.20061101121602.201"><vh>after sel=1.0,1.10</vh></v>
-</v>
-<v t="ekr.20120303054735.3931"><vh>@test expand-and-go-right</vh>
-<v t="ekr.20120303054735.3932"><vh>child</vh></v>
-</v>
-<v t="ekr.20061101121602.202"><vh>@test extend-to-line</vh>
-<v t="ekr.20061101121602.203"><vh>work</vh></v>
-<v t="ekr.20061101121602.204"><vh>before sel=3.3,3.3</vh></v>
-<v t="ekr.20061101121602.205"><vh>after sel=3.0,3.10</vh></v>
-</v>
-<v t="ekr.20061101121602.206"><vh>@test extend-to-paragraph</vh>
-<v t="ekr.20061101121602.207"><vh>work</vh></v>
-<v t="ekr.20061101121602.208"><vh>before sel=9.0,9.0</vh></v>
-<v t="ekr.20061101121602.209"><vh>after sel=8.0,13.33</vh></v>
-</v>
-<v t="ekr.20061101121602.210"><vh>@test extend-to-sentence</vh>
-<v t="ekr.20061101121602.211"><vh>work</vh></v>
-<v t="ekr.20061101121602.212"><vh>before sel=3.5,3.5</vh></v>
-<v t="ekr.20061101121602.213"><vh>after sel=1.395,3.142</vh></v>
-</v>
-<v t="ekr.20061101121602.214"><vh>@test extend-to-word</vh>
-<v t="ekr.20061101121602.215"><vh>work</vh></v>
-<v t="ekr.20061101121602.216"><vh>before sel=3.10,3.10</vh></v>
-<v t="ekr.20061101121602.217"><vh>after sel=3.4,3.12</vh></v>
-</v>
-<v t="ekr.20120212130242.3942"><vh>data</vh>
-<v t="ekr.20120212130242.3948"><vh>a</vh>
-<v t="ekr.20120212130242.3949"><vh>b</vh></v>
-</v>
-<v t="ekr.20120212130242.3945"><vh>c</vh></v>
-<v t="ekr.20120212130242.3946"><vh>d</vh></v>
-<v t="ekr.20120212130242.3947"><vh>e</vh>
-<v t="ekr.20120212130242.3948"></v>
-</v>
-</v>
-</v>
-<v t="ekr.20070131175538.1"><vh> Commands F-L</vh>
-<v t="ekr.20071007120750.4"><vh>@@test fill-region (one paragraph)</vh>
-<v t="ekr.20071007121312.1"><vh>work</vh></v>
-<v t="ekr.20071007121312.2"><vh>before sel=1.0,9.7</vh></v>
-<v t="ekr.20071007121312.3"><vh>after sel=6.7,6.7</vh></v>
-</v>
-<v t="ekr.20071007124202"><vh>@@test fill-region (three paragraphs)</vh>
-<v t="ekr.20071007124202.1"><vh>work</vh></v>
-<v t="ekr.20071007124202.2"><vh>before sel=1.0,24.78</vh></v>
-<v t="ekr.20071007124202.3"><vh>after sel=18.19,18.19</vh></v>
-</v>
-<v t="ekr.20061101121602.218"><vh>@test fill-paragraph</vh>
-<v t="ekr.20061101121602.219"><vh>work</vh></v>
-<v t="ekr.20061101121602.220"><vh>before sel=3.0,3.7</vh></v>
-<v t="ekr.20061101121602.221"><vh>after sel=8.33,8.33</vh></v>
-</v>
-<v t="ekr.20061101121602.222"><vh>@test forward-char</vh>
-<v t="ekr.20061101121602.223"><vh>work</vh></v>
-<v t="ekr.20061101121602.224"><vh>before sel=1.2,1.2</vh></v>
-<v t="ekr.20061101121602.225"><vh>after sel=1.3,1.3</vh></v>
-</v>
-<v t="ekr.20061101121602.226"><vh>@test forward-char-extend-selection</vh>
-<v t="ekr.20061101121602.227"><vh>work</vh></v>
-<v t="ekr.20061101121602.228"><vh>before sel=1.1,1.1</vh></v>
-<v t="ekr.20061101121602.229"><vh>after sel=1.1,1.2</vh></v>
-</v>
-<v t="ekr.20061101121602.230"><vh>@test forward-end-word (end of line)</vh>
-<v t="ekr.20061101121602.231"><vh>work</vh></v>
-<v t="ekr.20061101121602.232"><vh>before sel=1.395,1.395</vh></v>
-<v t="ekr.20061101121602.233"><vh>after sel=3.4,3.4</vh></v>
-</v>
-<v t="ekr.20061101121602.234"><vh>@test forward-end-word (start of word)</vh>
-<v t="ekr.20061101121602.235"><vh>work</vh></v>
-<v t="ekr.20061101121602.236"><vh>before sel=1.310,1.310</vh></v>
-<v t="ekr.20061101121602.237"><vh>after sel=1.317,1.317</vh></v>
-</v>
-<v t="ekr.20061101121602.238"><vh>@test forward-end-word-extend-selection</vh>
-<v t="ekr.20061101121602.239"><vh>work</vh></v>
-<v t="ekr.20061101121602.240"><vh>before sel=3.20,3.20</vh></v>
-<v t="ekr.20061101121602.241"><vh>after sel=3.20,3.30</vh></v>
-</v>
-<v t="ekr.20061101121602.242"><vh>@test forward-paragraph</vh>
-<v t="ekr.20061101121602.243"><vh>work</vh></v>
-<v t="ekr.20061101121602.244"><vh>before sel=9.0,9.0</vh></v>
-<v t="ekr.20061101121602.245"><vh>after sel=15.0,15.0</vh></v>
-</v>
-<v t="ekr.20061101121602.246"><vh>@test forward-paragraph-extend-selection</vh>
-<v t="ekr.20061101121602.247"><vh>work</vh></v>
-<v t="ekr.20061101121602.248"><vh>before sel=10.0,10.0</vh></v>
-<v t="ekr.20061101121602.249"><vh>after sel=10.0,15.0</vh></v>
-</v>
-<v t="ekr.20061101121602.250"><vh>@test forward-sentence</vh>
-<v t="ekr.20061101121602.251"><vh>work</vh></v>
-<v t="ekr.20061101121602.252"><vh>before sel=3.17,3.17</vh></v>
-<v t="ekr.20061101121602.253"><vh>after sel=3.142,3.142</vh></v>
-</v>
-<v t="ekr.20061101121602.254"><vh>@test forward-sentence-extend-selection</vh>
-<v t="ekr.20061101121602.255"><vh>work</vh></v>
-<v t="ekr.20061101121602.256"><vh>before sel=1.264,1.264</vh></v>
-<v t="ekr.20061101121602.257"><vh>after sel=1.264,1.395</vh></v>
-</v>
-<v t="ekr.20061101121602.258"><vh>@test forward-word</vh>
-<v t="ekr.20061101121602.259"><vh>work</vh></v>
-<v t="ekr.20061101121602.260"><vh>before sel=1.261,1.261</vh></v>
-<v t="ekr.20061101121602.261"><vh>after sel=1.273,1.273</vh></v>
-</v>
-<v t="ekr.20061101121602.262"><vh>@test forward-word-extend-selection</vh>
-<v t="ekr.20061101121602.263"><vh>work</vh></v>
-<v t="ekr.20061101121602.264"><vh>before sel=1.395,1.395</vh></v>
-<v t="ekr.20061101121602.265"><vh>after sel=1.395,3.0</vh></v>
-</v>
-<v t="ekr.20070305095401"><vh>@test goNext/PrevVisitedNode</vh></v>
-<v t="ekr.20100212104817.5351"><vh>@test help-for-command</vh></v>
-<v t="ekr.20061101121602.266"><vh>@test indent-relative</vh>
-<v t="ekr.20061101121602.267"><vh>work</vh></v>
-<v t="ekr.20061101121602.268"><vh>before sel=5.0,5.0</vh></v>
-<v t="ekr.20061101121602.269"><vh>after sel=5.8,5.8</vh></v>
-</v>
-<v t="ekr.20061101121602.270"><vh>@test indent-rigidly</vh>
-<v t="ekr.20061101121602.271"><vh>work</vh></v>
-<v t="ekr.20061101121602.272"><vh>before sel=2.0,5.0</vh></v>
-<v t="ekr.20061101121602.273"><vh>after sel=2.0,5.1</vh></v>
-</v>
-<v t="ekr.20071007120750.5"><vh>@test indent-to-comment-column</vh>
-<v t="ekr.20071007121312.5"><vh>work</vh></v>
-<v t="ekr.20071007121312.6"><vh>before sel=2.0,2.0</vh></v>
-<v t="ekr.20071007121312.7"><vh>after sel=2.4,2.4</vh></v>
-</v>
-<v t="ekr.20061101121602.274"><vh>@test insert-newline</vh>
-<v t="ekr.20061101121602.275"><vh>work</vh></v>
-<v t="ekr.20061101121602.276"><vh>before sel=1.8,1.8</vh></v>
-<v t="ekr.20061101121602.277"><vh>after sel=2.0,2.0</vh></v>
-</v>
-<v t="ekr.20061101121602.278"><vh>@test insert-parentheses</vh>
-<v t="ekr.20061101121602.279"><vh>work</vh></v>
-<v t="ekr.20061101121602.280"><vh>before sel=1.5,1.5</vh></v>
-<v t="ekr.20061101121602.281"><vh>after sel=1.6,1.6</vh></v>
-</v>
-<v t="ekr.20061101121602.282"><vh>@test kill-paragraph</vh>
-<v t="ekr.20061101121602.283"><vh>work</vh></v>
-<v t="ekr.20061101121602.285"><vh>before sel=9.0,9.0</vh></v>
-<v t="ekr.20061101121602.284"><vh>after sel=8.0,8.0</vh></v>
-</v>
-<v t="ekr.20070131172706"><vh>@test kill-sentence</vh>
-<v t="ekr.20070131172706.1"><vh>work</vh></v>
-<v t="ekr.20070131172706.2"><vh>before sel=2.2,2.2</vh></v>
-<v t="ekr.20070131172706.3"><vh>after sel=1.27,1.27</vh></v>
-</v>
-<v t="ekr.20081215084144.7"><vh>@test kill-word</vh>
-<v t="ekr.20081215084144.8"><vh>work</vh></v>
-<v t="ekr.20081215084144.9"><vh>before sel=2.6,2.6</vh></v>
-<v t="ekr.20081215084144.10"><vh>after sel=2.7,2.7</vh></v>
-</v>
-<v t="ekr.20170401123840.1"><vh>goto-global-line tests</vh>
-<v t="ekr.20170401123840.2"><vh>@test c.goToScriptLineNumber</vh>
-<v t="ekr.20170401123840.3"><vh>syntax-error</vh></v>
-</v>
-<v t="ekr.20170401123840.4"><vh>@test find_file_line: @auto-md</vh></v>
-<v t="ekr.20170401123840.5"><vh>@test find_file_line: @auto-org</vh></v>
-<v t="ekr.20170401123840.6"><vh>@test find_file_line: @auto-otl</vh></v>
-<v t="ekr.20170401123840.7"><vh>@test find_file_line: @auto-py</vh></v>
-<v t="ekr.20170401123840.8"><vh>@@@test find_file_line: @auto-rst</vh></v>
-<v t="ekr.20170401123840.9"><vh>@test find_file_line: @clean-c</vh></v>
-<v t="ekr.20170401123840.10"><vh>@test find_file_line: @clean-python</vh></v>
-<v t="ekr.20170401123840.11"><vh>@test find_file_line: @file-c</vh></v>
-<v t="ekr.20170401123840.12"><vh>@test find_file_line: @file-python</vh></v>
-<v t="ekr.20170401123840.13"><vh>@test find_file_line: @nosent-python</vh></v>
-<v t="ekr.20170401123840.14"><vh>@test find_gnx @file</vh></v>
-<v t="ekr.20170401123840.15"><vh>@test goto_show_results not found</vh></v>
-</v>
-<v t="ekr.20130918043621.4172"><vh>kill-line tests</vh>
-<v t="ekr.20130918051958.4176"><vh>@test kill-line end-body-text</vh>
-<v t="ekr.20130918051958.4177"><vh>work</vh></v>
-<v t="ekr.20130918051958.4178"><vh>before sel=4.1,4.1</vh></v>
-<v t="ekr.20130918051958.4179"><vh>after sel=3.6,3.6</vh></v>
-</v>
-<v t="ekr.20061128090338"><vh>@test kill-line end-line-text</vh>
-<v t="ekr.20061128090338.1"><vh>work</vh></v>
-<v t="ekr.20061128090338.2"><vh>before sel=3.5,3.5</vh></v>
-<v t="ekr.20061128090338.3"><vh>after sel=3.0,3.0</vh></v>
-</v>
-<v t="ekr.20061128090021"><vh>@test kill-line start-line</vh>
-<v t="ekr.20061128090021.1"><vh>work</vh></v>
-<v t="ekr.20061128090021.2"><vh>before sel=3.0,3.0</vh></v>
-<v t="ekr.20061128090021.3"><vh>after sel=3.0,3.0</vh></v>
-</v>
-<v t="ekr.20061128090147"><vh>@test kill-line start-blank-line</vh>
-<v t="ekr.20061128090147.1"><vh>work</vh></v>
-<v t="ekr.20061128090147.2"><vh>before sel=3.0,3.0</vh></v>
-<v t="ekr.20061128090147.3"><vh>after sel=3.0,3.0</vh></v>
-</v>
-</v>
-<v t="ekr.20130918043621.4190"><vh>kill-to-end-of-line tests</vh>
-<v t="ekr.20130918043621.4195"><vh>@test kill-to-end-of-line end-body-text</vh>
-<v t="ekr.20130918043621.4196"><vh>work</vh></v>
-<v t="ekr.20130918043621.4197"><vh>before sel=4.1,4.1</vh></v>
-<v t="ekr.20130918043621.4198"><vh>after sel=3.6,3.6</vh></v>
-</v>
-<v t="ekr.20130918050446.4202"><vh>@test kill-to-end-of-line end-line</vh>
-<v t="ekr.20130918050446.4203"><vh>work</vh></v>
-<v t="ekr.20130918050446.4204"><vh>before sel=2.6,2.6</vh></v>
-<v t="ekr.20130918050446.4205"><vh>after sel=2.6,2.6</vh></v>
-</v>
-<v t="ekr.20130918052416.4180"><vh>@test kill-to-end-of-line after last visible char</vh>
-<v t="ekr.20130918052416.4181"><vh>work</vh></v>
-<v t="ekr.20130918052416.4182"><vh>before sel=3.6,3.6</vh></v>
-<v t="ekr.20130918052416.4183"><vh>after sel=3.6,3.6</vh></v>
-</v>
-<v t="ekr.20130918043621.4199"><vh>@test kill-to-end-of-line start-line</vh>
-<v t="ekr.20130918043621.4200"><vh>work</vh></v>
-<v t="ekr.20130918043621.4201"><vh>before sel=3.0,3.0</vh></v>
-<v t="ekr.20130918043621.4202"><vh>after sel=3.0,3.0</vh></v>
-</v>
-<v t="ekr.20130918050446.4210"><vh>@test kill-to-end-of-line start-blank-line</vh>
-<v t="ekr.20130918050446.4211"><vh>work</vh></v>
-<v t="ekr.20130918050446.4212"><vh>before sel=3.0,3.0</vh></v>
-<v t="ekr.20130918050446.4213"><vh>after sel=3.0,3.0</vh></v>
-</v>
-<v t="ekr.20130918043621.4203"><vh>@test kill-to-end-of-line middle-line</vh>
-<v t="ekr.20130918043621.4204"><vh>work</vh></v>
-<v t="ekr.20130918043621.4205"><vh>before sel=2.2,2.2</vh></v>
-<v t="ekr.20130918043621.4206"><vh>after sel=2.2,2.2</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20070131175646"><vh> Commands M-Z</vh>
-<v t="ekr.20070131171218.1"><vh>@@test zap-to-chararacter</vh>
-<v t="ekr.20070131171218.2"><vh>work</vh></v>
-</v>
-<v t="ekr.20061101121602.286"><vh>@test move-lines-down</vh>
-<v t="ekr.20061101121602.287"><vh>work</vh></v>
-<v t="ekr.20061101121602.288"><vh>before sel=3.3,4.3</vh></v>
-<v t="ekr.20061101121602.289"><vh>after sel=4.3,5.3</vh></v>
-</v>
-<v t="ekr.20061101121602.290"><vh>@test move-lines-up</vh>
-<v t="ekr.20061101121602.291"><vh>work</vh></v>
-<v t="ekr.20061101121602.292"><vh>before sel=2.2,2.2</vh></v>
-<v t="ekr.20061101121602.293"><vh>after sel=1.2,1.2</vh></v>
-</v>
-<v t="ekr.20120306201833.3942"><vh>@test move-lines-up (into docstring)</vh>
-<v t="ekr.20120306201833.3943"><vh>work</vh></v>
-<v t="ekr.20120306201833.3944"><vh>before sel=7.1,7.1</vh></v>
-<v t="ekr.20120306201833.3945"><vh>after sel=6.1,6.1</vh></v>
-</v>
-<v t="ekr.20111006064419.3493"><vh>@test move-marked-nodes</vh></v>
-<v t="ekr.20061101121602.294"><vh>@test move-past-close</vh>
-<v t="ekr.20061101121602.295"><vh>work</vh></v>
-<v t="ekr.20061101121602.296"><vh>before sel=1.10,1.10</vh></v>
-<v t="ekr.20061101121602.297"><vh>after sel=1.12,1.12</vh></v>
-</v>
-<v t="ekr.20061101121602.298"><vh>@test move-past-close-extend-selection</vh>
-<v t="ekr.20061101121602.299"><vh>work</vh></v>
-<v t="ekr.20061101121602.300"><vh>before sel=3.7,3.7</vh></v>
-<v t="ekr.20061101121602.301"><vh>after sel=3.7,3.11</vh></v>
-</v>
-<v t="ekr.20061101121602.302"><vh>@test newline-and-indent</vh>
-<v t="ekr.20061101121602.303"><vh>work</vh></v>
-<v t="ekr.20061101121602.304"><vh>before sel=2.6,2.6</vh></v>
-<v t="ekr.20061101121602.305"><vh>after sel=3.4,3.4</vh></v>
-</v>
-<v t="ekr.20070315065720"><vh>@test next-line</vh>
-<v t="ekr.20070315065720.1"><vh>work</vh></v>
-<v t="ekr.20070315065720.2"><vh>before sel=1.1,1.1</vh></v>
-<v t="ekr.20070315065720.3"><vh>after sel=2.0,2.0</vh></v>
-</v>
-<v t="ekr.20070315065849"><vh>@test previous-line</vh>
-<v t="ekr.20070315065849.1"><vh>work</vh></v>
-<v t="ekr.20070315065849.2"><vh>before sel=3.0,3.0</vh></v>
-<v t="ekr.20070315065849.3"><vh>after sel=2.0,2.0</vh></v>
-</v>
-<v t="ekr.20070217071121.1"><vh>@test rectangle-clear</vh>
-<v t="ekr.20070217071121.2"><vh>work</vh></v>
-<v t="ekr.20070217071121.3"><vh>before sel=2.3,5.6</vh></v>
-<v t="ekr.20070217071121.4"><vh>after sel=2.3,5.6</vh></v>
-</v>
-<v t="ekr.20070217071121.5"><vh>@test rectangle-close</vh>
-<v t="ekr.20070217071121.6"><vh>work</vh></v>
-<v t="ekr.20070217071121.7"><vh>before sel=2.3,5.6</vh></v>
-<v t="ekr.20070217071121.8"><vh>after sel=2.3,5.3</vh></v>
-</v>
-<v t="ekr.20070217071121.9"><vh>@test rectangle-delete</vh>
-<v t="ekr.20070217071121.10"><vh>work</vh></v>
-<v t="ekr.20070217071121.11"><vh>before sel=2.3,5.6</vh></v>
-<v t="ekr.20070217071121.12"><vh>after sel=2.3,5.3</vh></v>
-</v>
-<v t="ekr.20070217071121.17"><vh>@test rectangle-kill</vh>
-<v t="ekr.20070217071121.18"><vh>work</vh></v>
-<v t="ekr.20070217071121.19"><vh>before sel=2.3,5.6</vh></v>
-<v t="ekr.20070217071121.20"><vh>after sel=5.3,5.3</vh></v>
-</v>
-<v t="ekr.20070217071121.13"><vh>@test rectangle-open</vh>
-<v t="ekr.20070217071121.14"><vh>work</vh></v>
-<v t="ekr.20070217071121.15"><vh>before sel=2.3,5.6</vh></v>
-<v t="ekr.20070217071121.16"><vh>after sel=2.3,5.6</vh></v>
-</v>
-<v t="ekr.20070217071121.21"><vh>@test rectangle-string</vh>
-<v t="ekr.20070217071121.22"><vh>work</vh></v>
-<v t="ekr.20070217071121.23"><vh>before sel=2.3,5.6</vh></v>
-<v t="ekr.20070217071121.24"><vh>after sel=2.3,5.8</vh></v>
-</v>
-<v t="ekr.20070217071121.25"><vh>@test rectangle-yank</vh>
-<v t="ekr.20070217071121.26"><vh>work</vh></v>
-<v t="ekr.20070217071121.28"><vh>before sel=2.3,5.6</vh></v>
-<v t="ekr.20070217071121.27"><vh>after sel=2.3,5.6</vh></v>
-</v>
-<v t="ekr.20061101121602.306"><vh>@test remove-blank-lines</vh>
-<v t="ekr.20061101121602.307"><vh>work</vh></v>
-<v t="ekr.20061101121602.308"><vh>before sel=1.0,9.0</vh></v>
-<v t="ekr.20061101121602.309"><vh>after sel=1.0,6.9</vh></v>
-</v>
-<v t="ekr.20061101121602.310"><vh>@test remove-space-from-lines</vh>
-<v t="ekr.20061101121602.311"><vh>work</vh></v>
-<v t="ekr.20061101121602.312"><vh>before sel=1.0,9.0</vh></v>
-<v t="ekr.20061101121602.313"><vh>after sel=1.0,9.0</vh></v>
-</v>
-<v t="ekr.20061101121602.314"><vh>@test remove-tab-from-lines</vh>
-<v t="ekr.20061101121602.315"><vh>work</vh></v>
-<v t="ekr.20061101121602.316"><vh>before sel=1.0,7.0</vh></v>
-<v t="ekr.20061101121602.317"><vh>after sel=1.0,7.0</vh></v>
-</v>
-<v t="ekr.20061101121602.318"><vh>@test reverse-region</vh>
-<v t="ekr.20061101121602.319"><vh>work</vh></v>
-<v t="ekr.20061101121602.320"><vh>before sel=1.0,7.0</vh></v>
-<v t="ekr.20061101121602.321"><vh>after sel=7.10,7.10</vh></v>
-</v>
-<v t="ekr.20071113081247"><vh>@test reverse-sort-lines</vh>
-<v t="ekr.20071113081247.1"><vh>work</vh></v>
-<v t="ekr.20071113081247.2"><vh>before sel=1.0,5.1</vh></v>
-<v t="ekr.20071113081247.3"><vh>after sel=1.0,5.1</vh></v>
-</v>
-<v t="ekr.20071113082531"><vh>@test reverse-sort-lines-ignoring-case</vh>
-<v t="ekr.20071113082531.1"><vh>work</vh></v>
-<v t="ekr.20071113082531.2"><vh>before sel=1.0,6.1</vh></v>
-<v t="ekr.20071113082531.3"><vh>after sel=1.0,6.1</vh></v>
-</v>
-<v t="ekr.20071113145804.4"><vh>@test selfInsertCommand-1</vh></v>
-<v t="ekr.20071113145804.5"><vh>@test selfInsertCommand-2 (replacing tabs)</vh></v>
-<v t="ekr.20071007120750.6"><vh>@test set-fill-prefix</vh></v>
-<v t="ekr.20061101121602.322"><vh>@test sort-columns</vh>
-<v t="ekr.20061101121602.323"><vh>work</vh></v>
-<v t="ekr.20061101121602.324"><vh>before sel=1.0,6.2</vh></v>
-<v t="ekr.20061101121602.325"><vh>after sel=1.0,7.0</vh></v>
-</v>
-<v t="ekr.20061101121602.326"><vh>@test sort-lines</vh>
-<v t="ekr.20061101121602.327"><vh>work</vh></v>
-<v t="ekr.20061101121602.328"><vh>before sel=2.0,5.6</vh></v>
-<v t="ekr.20061101121602.329"><vh>after sel=2.0,5.6</vh></v>
-</v>
-<v t="ekr.20071113081247.8"><vh>@test sort-lines-ignoring-case</vh>
-<v t="ekr.20071113081247.9"><vh>work</vh></v>
-<v t="ekr.20071113081247.10"><vh>before sel=1.0,5.1</vh></v>
-<v t="ekr.20071113081247.11"><vh>after sel=1.0,5.1</vh></v>
-</v>
-<v t="ekr.20100212104817.5346"><vh>@test sort-recent-files (new)</vh></v>
-<v t="ekr.20100212104817.5347"><vh>@test sort-siblings (new)</vh>
-<v t="ekr.20100212104817.5348"><vh>b</vh></v>
-<v t="ekr.20100212104817.5349"><vh>a</vh></v>
-<v t="ekr.20100212104817.5350"><vh>c</vh></v>
-</v>
-<v t="ekr.20061101121602.330"><vh>@test split-line</vh>
-<v t="ekr.20061101121602.331"><vh>work</vh></v>
-<v t="ekr.20061101121602.332"><vh>before sel=1.5,1.5</vh></v>
-<v t="ekr.20061101121602.333"><vh>after sel=2.0,2.0</vh></v>
-</v>
-<v t="ekr.20061101121602.334"><vh>@test tabify</vh>
-<v t="ekr.20061101121602.335"><vh>work</vh></v>
-<v t="ekr.20061101121602.336"><vh>before sel=1.0,7.0</vh></v>
-<v t="ekr.20061101121602.337"><vh>after sel=7.0,7.0</vh></v>
-</v>
-<v t="ekr.20061101121602.338"><vh>@test transpose-chars</vh>
-<v t="ekr.20061101121602.339"><vh>work</vh></v>
-<v t="ekr.20061101121602.340"><vh>before sel=1.2,1.2</vh></v>
-<v t="ekr.20061101121602.341"><vh>after sel=1.2,1.2</vh></v>
-</v>
-<v t="ekr.20061101121602.342"><vh>@test transpose-lines</vh>
-<v t="ekr.20061101121602.343"><vh>work</vh></v>
-<v t="ekr.20061101121602.344"><vh>before sel=2.2,2.2</vh></v>
-<v t="ekr.20061101121602.345"><vh>after sel=2.10,2.10</vh></v>
-</v>
-<v t="ekr.20160314133351.1"><vh>@test transpose-words</vh>
-<v t="ekr.20160314133351.2"><vh>work</vh></v>
-<v t="ekr.20160314133351.3"><vh>before sel=2.9,2.9</vh></v>
-<v t="ekr.20160314133351.4"><vh>after sel=2.11,2.11</vh></v>
-</v>
-<v t="ekr.20121016134831.3906"><vh>@test typescript-to-python</vh>
-<v t="ekr.20121016134831.3907"><vh>typescript tokenize test</vh></v>
-</v>
-<v t="ekr.20061101121602.346"><vh>@test untabify</vh>
-<v t="ekr.20061101121602.347"><vh>work</vh></v>
-<v t="ekr.20061101121602.348"><vh>before sel=1.0,7.0</vh></v>
-<v t="ekr.20061101121602.349"><vh>after sel=7.0,7.0</vh></v>
-</v>
-<v t="ekr.20061101121602.350"><vh>@test upcase-region</vh>
-<v t="ekr.20061101121602.351"><vh>work</vh></v>
-<v t="ekr.20061101121602.352"><vh>before sel=3.0,4.0</vh></v>
-<v t="ekr.20061101121602.353"><vh>after sel=3.0,4.0</vh></v>
-</v>
-<v t="ekr.20061101121602.354"><vh>@test upcase-word</vh>
-<v t="ekr.20061101121602.355"><vh>work</vh></v>
-<v t="ekr.20061101121602.356"><vh>before sel=3.7,3.7</vh></v>
-<v t="ekr.20061101121602.357"><vh>after sel=3.7,3.7</vh></v>
-</v>
-<v t="ekr.20110118082508.3729"><vh>reformat-paragraph tests</vh>
-<v t="ekr.20110118082508.3793"><vh>@test reformat-paragraph list 1 of 5</vh>
-<v t="ekr.20110118082508.3799"><vh>work</vh></v>
-<v t="ekr.20110118082508.3800"><vh>before sel=1.0,1.0</vh></v>
-<v t="ekr.20110118082508.3803"><vh>after sel=2.21,2.21</vh></v>
-</v>
-<v t="ekr.20110118082508.3808"><vh>@test reformat-paragraph list 2 of 5</vh>
-<v t="ekr.20110118082508.3809"><vh>work</vh></v>
-<v t="ekr.20110118082508.3810"><vh>before sel=4.0,4.0</vh></v>
-<v t="ekr.20110118082508.3811"><vh>after sel=7.0,7.0</vh></v>
-</v>
-<v t="ekr.20110118082508.3816"><vh>@test reformat-paragraph list 3 of 5</vh>
-<v t="ekr.20110118082508.3817"><vh>work</vh></v>
-<v t="ekr.20110118082508.3818"><vh>before sel=7.0,7.0</vh></v>
-<v t="ekr.20110118082508.3819"><vh>after sel=8.29,8.29</vh></v>
-</v>
-<v t="ekr.20110118082508.3824"><vh>@test reformat-paragraph list 4 of 5</vh>
-<v t="ekr.20110118082508.3825"><vh>work</vh></v>
-<v t="ekr.20110118082508.3826"><vh>before sel=10.0,10.0</vh></v>
-<v t="ekr.20110118082508.3827"><vh>after sel=11.28,11.28</vh></v>
-</v>
-<v t="ekr.20110118082508.3832"><vh>@test reformat-paragraph list 5 of 5</vh>
-<v t="ekr.20110118082508.3833"><vh>work</vh></v>
-<v t="ekr.20110118082508.3834"><vh>before sel=13.0,13.0</vh></v>
-<v t="ekr.20110118082508.3835"><vh>after sel=14.19,14.19</vh></v>
-</v>
-<v t="ekr.20131103084038.4274"><vh>@test reformat-paragraph new code 1 of 8</vh>
-<v t="ekr.20131103084038.4275"><vh>work</vh></v>
-<v t="ekr.20131103084038.4276"><vh>before sel=1.0,1.0</vh></v>
-<v t="ekr.20131103084038.4277"><vh>after sel=2.0,2.0</vh></v>
-</v>
-<v t="ekr.20131103084038.4282"><vh>@test reformat-paragraph new code 2 of 8</vh>
-<v t="ekr.20131103084038.4283"><vh>work</vh></v>
-<v t="ekr.20131103084038.4284"><vh>before sel=2.0,2.0</vh></v>
-<v t="ekr.20131103084038.4285"><vh>after sel=3.0,3.0</vh></v>
-</v>
-<v t="ekr.20131103084038.4290"><vh>@test reformat-paragraph new code 3 of 8</vh>
-<v t="ekr.20131103084038.4291"><vh>work</vh></v>
-<v t="ekr.20131103084038.4292"><vh>before sel=3.1,4.1</vh></v>
-<v t="ekr.20131103084038.4293"><vh>after sel=3.26,3.26</vh></v>
-</v>
-<v t="ekr.20131103084038.4298"><vh>@test reformat-paragraph new code 4 of 8</vh>
-<v t="ekr.20131103084038.4299"><vh>work</vh></v>
-<v t="ekr.20131103084038.4300"><vh>before sel=1.0,1.0</vh></v>
-<v t="ekr.20131103084038.4301"><vh>after sel=2.10,2.10</vh></v>
-</v>
-<v t="ekr.20131103084038.4306"><vh>@test reformat-paragraph new code 5 of 8</vh>
-<v t="ekr.20131103084038.4307"><vh>work</vh></v>
-<v t="ekr.20131103084038.4308"><vh>before sel=1.0,2.0</vh></v>
-<v t="ekr.20131103084038.4309"><vh>after sel=2.11,2.11</vh></v>
-</v>
-<v t="ekr.20131103084038.4314"><vh>@test reformat-paragraph new code 6 of 8</vh>
-<v t="ekr.20131103084038.4315"><vh>work</vh></v>
-<v t="ekr.20131103084038.4316"><vh>before sel=1.0,1.0</vh></v>
-<v t="ekr.20131103084038.4317"><vh>after sel=2.11,2.11</vh></v>
-</v>
-<v t="ekr.20131103084038.4322"><vh>@test reformat-paragraph new code 7 of 8</vh>
-<v t="ekr.20131103084038.4323"><vh>work</vh></v>
-<v t="ekr.20131103084038.4324"><vh>before sel=2.11,2.11</vh></v>
-<v t="ekr.20131103084038.4325"><vh>after sel=3.1,3.1</vh></v>
-</v>
-<v t="ekr.20131103084038.4330"><vh>@test reformat-paragraph new code 8 of 8</vh>
-<v t="ekr.20131103084038.4331"><vh>work</vh></v>
-<v t="ekr.20131103084038.4332"><vh>before sel=1.0,1.0</vh></v>
-<v t="ekr.20131103084038.4333"><vh>after sel=3.0,3.0</vh></v>
-</v>
-<v t="ekr.20110118082508.3766"><vh>@test reformat-paragraph paragraph 1 of 3</vh>
-<v t="ekr.20110118082508.3772"><vh>work</vh></v>
-<v t="ekr.20110118082508.3773"><vh>before sel=1.0,1.0</vh></v>
-<v t="ekr.20110118082508.3792"><vh>after sel=11.14,11.14</vh></v>
-</v>
-<v t="ekr.20110118082508.3779"><vh>@test reformat-paragraph paragraph 2 of 3</vh>
-<v t="ekr.20110118082508.3780"><vh>work</vh></v>
-<v t="ekr.20110118082508.3781"><vh>before sel=13.0,13.0</vh></v>
-<v t="ekr.20110118082508.3782"><vh>after sel=23.33,23.33</vh></v>
-</v>
-<v t="ekr.20110118082508.3787"><vh>@test reformat-paragraph paragraph 3 of 3</vh>
-<v t="ekr.20110118082508.3788"><vh>work</vh></v>
-<v t="ekr.20110118082508.3789"><vh>before sel=25.10,25.10</vh></v>
-<v t="ekr.20110118082508.3790"><vh>after sel=32.11,32.11</vh></v>
-</v>
-<v t="ekr.20110118082508.3730"><vh>@test reformat-paragraph simple hanging indent</vh>
-<v t="ekr.20110118082508.3745"><vh>work</vh></v>
-<v t="ekr.20110118082508.3746"><vh>before sel= 1.0,1.0</vh></v>
-<v t="ekr.20110118082508.3747"><vh>after sel= 5.8,5.8</vh></v>
-</v>
-<v t="ekr.20110118082508.3748"><vh>@test reformat-paragraph simple hanging indent 2</vh>
-<v t="ekr.20110118082508.3754"><vh>work</vh></v>
-<v t="ekr.20110118082508.3755"><vh>before sel=2.0,2.0</vh></v>
-<v t="ekr.20110118082508.3756"><vh>after sel=5.8,5.8</vh></v>
-</v>
-<v t="ekr.20110118082508.3757"><vh>@test reformat-paragraph simple hanging indent 3</vh>
-<v t="ekr.20110118082508.3763"><vh>work</vh></v>
-<v t="ekr.20110118082508.3764"><vh>before sel=1.0,1.0</vh></v>
-<v t="ekr.20110118082508.3765"><vh>after sel=5.8,5.8</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20061104172236.1"><vh> Function tests</vh>
-<v t="ekr.20150430053825.1"><vh>@test abbrevCommands.next_place</vh>
-<v t="ekr.20150430061225.1"><vh>child</vh></v>
-</v>
-<v t="ekr.20100902074747.5970"><vh>@test addAbbrevHelper</vh></v>
-<v t="ekr.20061104172236.3"><vh>@test capitalizeHelper</vh></v>
-<v t="ekr.20100131180007.5453"><vh>@test dynamicExpandHelper</vh></v>
-<v t="ekr.20061104172236.5"><vh>@test extendHelper</vh></v>
-<v t="ekr.20080408094623.1"><vh>@test findWord</vh></v>
-<v t="ekr.20061104172236.2"><vh>@test findWordInLine</vh></v>
-<v t="ekr.20071113145804.15"><vh>@test helpForMinibuffer</vh></v>
-<v t="ekr.20061104172236.6"><vh>@test moveToHelper</vh></v>
-<v t="ekr.20061110094226"><vh>@test moveUpOrDownHelper</vh></v>
-<v t="ekr.20061104172236.7"><vh>@test scrollHelper</vh></v>
-<v t="ekr.20061104172236.4"><vh>@test setMoveCol</vh></v>
-</v>
-<v t="ekr.20100204165850.5371"><vh>Toggle commands</vh>
-<v t="ekr.20100119102849.5108"><vh>@test toggle-extend-mode</vh>
-<v t="ekr.20100119102849.5109"><vh>&lt;&lt; define table &gt;&gt;</vh></v>
-<v t="ekr.20100119102849.5110"><vh>work</vh></v>
-</v>
-<v t="ekr.20100204165850.5373"><vh>@test most toggle commands</vh></v>
-<v t="ekr.20100204173354.5375"><vh>@test toggle-find-x</vh></v>
-</v>
-<v t="ekr.20051107115231"><vh> Typing</vh>
-<v t="ekr.20060208072415"><vh>@test Delete key sticks in body</vh></v>
-<v t="ekr.20051125170139"><vh>@test Delete key sticks in headline</vh></v>
-<v t="ekr.20051109091333"><vh>@test deleting the last body character text redraws the screen (and icon)</vh></v>
-<v t="ekr.20051107115231.15"><vh>@test editLabel selects entire headline</vh></v>
-<v t="ekr.20051120110335"><vh>@test insert-node can be undone and redone</vh></v>
-<v t="ekr.20130923090601.4178"><vh>@test insert-node-before node can be undone and redone</vh></v>
-<v t="ekr.20051125155134"><vh>@test inserting a new node draws the screen exactly once</vh></v>
-<v t="ekr.20051107115231.18"><vh>@test paste and undo in headline - at end</vh></v>
-<v t="ekr.20051107115231.20"><vh>@test paste and undo in headline - with selection</vh></v>
-<v t="ekr.20051107115231.16"><vh>@test paste at end of headline</vh></v>
-<v t="ekr.20060208072307"><vh>@test paste from menu into body sticks</vh></v>
-<v t="ekr.20060208072331"><vh>@test paste from menu into headline sticks</vh></v>
-<v t="ekr.20051107115231.24"><vh>@test paste from menu to body recolors the body</vh></v>
-<v t="ekr.20051107115231.14"><vh>@test return ends editing of headline</vh></v>
-<v t="ekr.20051107115231.28"><vh>@test selecting new node retains paste in headline</vh></v>
-<v t="ekr.20051107115231.21"><vh>@test selecting new node retains typing in headline</vh></v>
-<v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
-<v t="ekr.20060208072358"><vh>@test typing in empty body text redraws the screen (and icon)</vh></v>
-<v t="ekr.20051109091731"><vh>@test typing in non-empty body text does not redraw the screen</vh></v>
-<v t="ekr.20051120115046"><vh>@test undoing insert node restores previous node's body text</vh></v>
-<v t="ekr.20060131102450"></v>
-</v>
-<v t="ekr.20070306091949"></v>
-</v>
-<v t="ekr.20090529141856.4682"><vh>leoImport (3 failures)</vh>
+<v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh>Export tests</vh>
 <v t="ekr.20090529141856.4685"><vh>@suite Export tests</vh></v>
 </v>
@@ -1192,7 +335,7 @@ marks="ekr.20071113192611,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20111029112647.4101"><vh>@test html: lowercase tags</vh></v>
 <v t="ekr.20111109143012.3839"><vh>@test html: multiple tags on a line</vh></v>
 <v t="ekr.20140218122321.4349"><vh>@test html: multple node completed on a line</vh></v>
-<v t="ekr.20170416085619.1"><vh>@test html: multple node starts on a line</vh></v>
+<v t="ekr.20170416085619.1" a="M"><vh>@test html: multple node starts on a line</vh></v>
 <v t="ekr.20111102164107.3975"><vh>@test html: underindented comment</vh></v>
 <v t="ekr.20111029120441.3982"><vh>@test html: uppercase tags</vh></v>
 <v t="ekr.20111112103320.3849"><vh>@test html: improperly nested tags</vh></v>
@@ -1439,9 +582,6 @@ marks="ekr.20071113192611,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20170503133608.21"><vh>@@file @test php here doc</vh>
 <v t="ekr.20170503133608.22"><vh>class foo</vh></v>
-</v>
-<v t="ekr.20170520193219.85"><vh>@@file @test php here doc</vh>
-<v t="ekr.20170520193219.86"><vh>class foo</vh></v>
 </v>
 </v>
 </v>
@@ -1968,236 +1108,72 @@ marks="ekr.20071113192611,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20161011052016.1"><vh>@test importers.javascript.scan_line</vh></v>
 <v t="ekr.20170407065952.1"><vh>@test importers.javascript.op_pattern</vh></v>
 </v>
+<v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
+</v>
+<v t="ekr.20170504062625.1"><vh>Found:leoQt</vh>
+<v t="ekr.20140904060337.4476"><vh>@test interfaces using API classes</vh></v>
+<v t="ekr.20111123214629.3941"><vh>@test unbound Alt-9 key is completely ignored</vh></v>
+<v t="ekr.20111121142012.4030"><vh>@test c.frame.log relationships</vh></v>
+<v t="ekr.20141223125432.11"><vh>@test g.toUnicode(QString)</vh></v>
+<v t="ekr.20111120124051.3992"><vh>@test Ctrl-I inserts only one headline</vh></v>
+<v t="ekr.20111121224307.3934"><vh>@test k.handleDefaultChar from log pane</vh></v>
+</v>
+<v t="ekr.20170504102140.1"><vh>Found:print</vh>
+<v t="ekr.20170504102649.1"><vh>Real prints</vh>
+<v t="ekr.20110613143220.3314"><vh>@test All menus execute the proper command</vh></v>
+<v t="ekr.20100131171342.5509"><vh>@test leoBridge init logic</vh></v>
+<v t="ekr.20040712101754.188"><vh>@test p.iters and v.iters</vh>
+<v t="ekr.20040712101754.189"><vh>child1</vh>
+<v t="ekr.20040712101754.190"><vh>a</vh>
+<v t="ekr.20040712101754.191"><vh>b</vh></v>
+</v>
+<v t="ekr.20040712101754.192"><vh>c</vh></v>
+<v t="ekr.20040712101754.193"><vh>d</vh>
+<v t="ekr.20040712101754.194"><vh>e</vh></v>
+</v>
+</v>
+<v t="ekr.20040712101754.195"><vh>child2</vh></v>
+<v t="ekr.20040712101754.196"><vh>&lt;&lt; tests of consistency of p and v iters &gt;&gt;</vh></v>
+<v t="ekr.20040712101754.197"><vh>&lt;&lt; tests that node iterators return no duplicate nodes &gt;&gt;</vh></v>
+<v t="ekr.20040712101754.198"><vh>&lt;&lt; print nodes returned by iterators &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
+<v t="ekr.20100131171342.5487"><vh>checkFile</vh></v>
+<v t="ekr.20050120095423.20"><vh>class lastTestCase</vh></v>
+<v t="ekr.20100827194549.5963"><vh>report</vh></v>
+<v t="ekr.20050218015346.22"><vh>removeLeadingWs</vh></v>
+</v>
+<v t="ekr.20170504102726.1"><vh>zz tests</vh>
+<v t="ekr.20081111150402.11"><vh>@test zz end of all tests</vh></v>
+<v t="ekr.20071113201736"><vh>@test zz end of leoAtFile tests</vh></v>
+<v t="ekr.20090615053403.4957"><vh>@test zz end of leoColor tests</vh></v>
+<v t="ekr.20071113201833"><vh>@test zz end of leoCommands tests</vh></v>
+<v t="ekr.20071113201854"><vh>@test zz end of leoConfig tests</vh></v>
+<v t="ekr.20070306091949"><vh>@test zz end of leoEditCommands tests</vh></v>
+<v t="ekr.20071113202045"><vh>@test zz end of leoFile tests</vh></v>
+<v t="ekr.20071113202153"><vh>@test zz end of leoFind tests</vh></v>
+<v t="ekr.20071113202153.1"><vh>@test zz end of leoFrame tests</vh></v>
+<v t="ekr.20071113202153.2"><vh>@test zz end of leoGlobals tests</vh></v>
+<v t="ekr.20100131171342.5603"><vh>@test zz end of leoGui tests</vh></v>
 <v t="ekr.20140724164600.4590"></v>
-</v>
-<v t="ekr.20071113194424.1"><vh>leoNodes  (5 failures, 3 errors)</vh>
-<v t="ekr.20040712101754.181"><vh> inner @test: Test consistency between parents iter and v.parents</vh>
-<v t="ekr.20040712101754.182"><vh>parent</vh>
-<v t="ekr.20040712101754.183"><vh>@test consistency between parents_iter and v.parents</vh></v>
-</v>
-</v>
-<v t="ville.20090312195309.2"><vh>@@@test find_h / find_b / filter_h / filter_b</vh></v>
-<v t="ekr.20080310073711.1"><vh>@@@test nodeIndices.toString(None) allocates a new index</vh></v>
-<v t="ekr.20040712101754.175"><vh>@@test p.t == p.v</vh></v>
-<v t="ekr.20040712101754.200"><vh>@@test that clones share subtrees</vh></v>
-<v t="ekr.20070611071101"><vh>@@test visback</vh>
-<v t="ekr.20070611071101.1"><vh>a</vh>
-<v t="ekr.20070611071101.2"><vh>b</vh>
-<v t="ekr.20070611071101.3"><vh>c2</vh></v>
+<v t="ekr.20100131171342.5609"><vh>@test zz end of leoKeys tests</vh></v>
+<v t="ekr.20071113202452"><vh>@test zz end of leoNodes tests</vh></v>
+<v t="ekr.20071113202510"><vh>@test zz end of leoUndo tests</vh></v>
+<v t="ekr.20100131171342.5501"><vh>@test zz end of plugins unit tests</vh></v>
+<v t="ekr.20060131102450"><vh>@test zz print end of typing tests</vh></v>
 </v>
 </v>
-<v t="ekr.20070611071101.4"><vh>limit</vh>
-<v t="ekr.20070611071101.5"><vh>d</vh></v>
+<v t="ekr.20161002020559.1"><vh>@test all generators return unique positions</vh>
+<v t="ekr.20170504124652.1"><vh>parent</vh>
+<v t="ekr.20170504124245.1"><vh>child1</vh>
+<v t="ekr.20170504124249.1"><vh>grandchild</vh>
+<v t="ekr.20170504124842.1"><vh>greatGrandChild</vh></v>
 </v>
-<v t="ekr.20070611071954"><vh>e</vh></v>
+<v t="ekr.20170504124617.1"><vh>grandchild2</vh></v>
 </v>
-<v t="ekr.20161002020559.1"></v>
-<v t="ekr.20040712101754.99"><vh>@test c iters</vh>
-<v t="ekr.20040712101754.100"><vh>&lt;&lt; coverage tests &gt;&gt;</vh></v>
-<v t="ekr.20040712101754.101"><vh>&lt;&lt; duplicate tests &gt;&gt;</vh></v>
+<v t="ekr.20170504124417.1"><vh>child2</vh></v>
+<v t="ekr.20170504124637.1"><vh>child3</vh></v>
 </v>
-<v t="ekr.20090102061858.2"><vh>@test c.positionExists</vh>
-<v t="ekr.20120212130242.4704"><vh>newHeadline</vh></v>
-</v>
-<v t="ekr.20090102062037.2"><vh>@test c.positionExists for all nodes</vh></v>
-<v t="ekr.20150317093233.11"><vh>@test c.safe_all_positions</vh></v>
-<v t="ekr.20141022175515.11"><vh>@test check all gnx's exist and are unique</vh></v>
-<v t="ekr.20040712101754.204"><vh>@test consistency of back/next links</vh></v>
-<v t="ekr.20040712101754.201"><vh>@test consistency of c.all_positions() and p.ThreadNext()</vh></v>
-<v t="ekr.20040712101754.202"><vh>@test consistency of firstChild &amp; children_iter()</vh></v>
-<v t="ekr.20040712101754.203"><vh>@test consistency of level</vh></v>
-<v t="ekr.20040712101754.205"><vh>@test consistency of parent &amp; parents_iter()</vh></v>
-<v t="ekr.20040712101754.206"><vh>@test consistency of parent/child links</vh></v>
-<v t="ekr.20040712101754.207"><vh>@test consistency of threadBack/Next links</vh></v>
-<v t="ekr.20040712101754.177"><vh>@test convertTreeToString and allies</vh>
-<v t="ekr.20040712101754.178"><vh>File Conversion</vh>
-<v t="ekr.20040712101754.179"><vh>moreHead</vh></v>
-<v t="ekr.20040712101754.180"><vh>moreBody</vh></v>
-</v>
-</v>
-<v t="ekr.20090130133404.2"><vh>@test leoNodes properties</vh></v>
-<v t="ekr.20130524112342.4137"><vh>@test new vnodes methods</vh>
-<v t="ekr.20170520193221.1"><vh>insertAsFirstChild</vh></v>
-<v t="ekr.20170520193221.3"><vh>insertAsNthChild(1)</vh></v>
-<v t="ekr.20170520193221.2"><vh>insertAsLastChild</vh></v>
-</v>
-<v t="ekr.20141020110954.4750"><vh>@test newlines in headlines</vh></v>
-<v t="ekr.20041013062906"><vh>@test onHyperLinkControlClick</vh></v>
-<v t="ekr.20160123044102.1"><vh>@test p.__eq__</vh></v>
-<v t="ekr.20131220083358.3982"><vh>@test p._relinkAsCloneOf</vh>
-<v t="ekr.20131220083358.3983"><vh>a</vh></v>
-<v t="ekr.20131220083358.3984"><vh>b</vh></v>
-</v>
-<v t="ekr.20100131180007.5369"><vh>@test p.adjustPositionBeforeUnlink</vh>
-<v t="ekr.20100131180007.5370"><vh>node 1</vh>
-<v t="ekr.20100131180007.5371"><vh>node 1-1</vh>
-<v t="ekr.20100131180007.5372"><vh>node 1-1-1</vh></v>
-<v t="ekr.20100131180007.5373"><vh>node 1-1-2</vh></v>
-</v>
-<v t="ekr.20100131180007.5374"><vh>node 1-2</vh>
-<v t="ekr.20100131180007.5375"><vh>node 1-2-1</vh></v>
-<v t="ekr.20100131180007.5376"><vh>node 1-2-2</vh></v>
-</v>
-</v>
-<v t="ekr.20100131180007.5377"><vh>node 2</vh>
-<v t="ekr.20100131180007.5378"><vh>node 2-1</vh>
-<v t="ekr.20100131180007.5379"><vh>node 2-1-1</vh></v>
-<v t="ekr.20100131180007.5380"><vh>node 2-1-2</vh></v>
-</v>
-<v t="ekr.20100131180007.5381"><vh>node 2-2</vh>
-<v t="ekr.20100131180007.5382"><vh>node 2-2-1</vh></v>
-<v t="ekr.20100131180007.5383"><vh>node 2-2-2</vh></v>
-</v>
-</v>
-<v t="ekr.20100131180007.5384"><vh>node 3</vh>
-<v t="ekr.20100131180007.5385"><vh>node 3-1</vh>
-<v t="ekr.20100131180007.5386"><vh>node 3-1-1</vh></v>
-<v t="ekr.20100131180007.5387"><vh>node 3-1-2</vh></v>
-</v>
-<v t="ekr.20100131180007.5388"><vh>node 3-2</vh>
-<v t="ekr.20100131180007.5389"><vh>node 3-2-1</vh></v>
-<v t="ekr.20100131180007.5390"><vh>node 3-2-2</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20040712101754.199"><vh>@test p.comparisons</vh></v>
-<v t="ekr.20130703132516.4188"><vh>@test p.deletePositionsInList</vh></v>
-<v t="ekr.20040712101754.209"><vh>@test p.hasNextBack</vh></v>
-<v t="ekr.20040712101754.210"><vh>@test p.hasParentChild</vh></v>
-<v t="ekr.20040712101754.211"><vh>@test p.hasThreadNextBack</vh></v>
-<v t="ekr.20040722055040"><vh>@test p.isAncestorOf</vh></v>
-<v t="ekr.20060106211922"><vh>@test p.isCurrentPosition</vh></v>
-<v t="ekr.20060106211922.1"><vh>@test p.isRootPosition</vh></v>
-<v t="ekr.20040712101754.188"></v>
-<v t="ekr.20111210104652.3958"><vh>@test p.moveToFirst/LastChild</vh>
-<v t="ekr.20111210104652.3959"><vh>child</vh></v>
-<v t="ekr.20120212130242.4755"><vh>test</vh></v>
-</v>
-<v t="ekr.20131227150324.3983"><vh>@test p.moveToVisBack in a chapter</vh></v>
-<v t="ekr.20140218045755.4348"><vh>@test p.nosentinels</vh></v>
-<v t="ekr.20040802071519"><vh>@test p.setBodyString</vh>
-<v t="ekr.20040802071519.1"><vh>child</vh></v>
-</v>
-<v t="ekr.20160129082128.1"><vh>@test p.u</vh></v>
-<v t="ekr.20110502130500.3471"><vh>@test p.unique_nodes</vh>
-<v t="ekr.20110502130500.3472"><vh>node 1</vh>
-<v t="ekr.20110502130500.3473"><vh>node 2</vh></v>
-</v>
-</v>
-<v t="ekr.20100131180007.5391"><vh>@test v.atAutoNodeName &amp; v.atAutoRstNodeName</vh></v>
-<v t="ekr.20060913084600"><vh>@test v/t.__hash__</vh></v>
-<v t="ekr.20071113202452"></v>
-<v t="ekr.20080501121449.1"><vh>Fundamental node operations (undo operations fail)</vh>
-<v t="ekr.20080423110627.2"><vh>@test at most one VNode has str_leo_pos attribute</vh></v>
-<v t="ekr.20080423110627.3"><vh>@test clone and move the clone to the root</vh></v>
-<v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
-<v t="ekr.20080423110627.13"><vh>@test deleting the root should select another node</vh></v>
-<v t="ekr.20080503082625.5"><vh>@test demote</vh>
-<v t="ekr.20170520193223.7"><vh>C</vh></v>
-<v t="ekr.20170520193223.8"><vh>D</vh></v>
-<v t="ekr.20170520193223.7"></v>
-<v t="ekr.20170520193223.8"></v>
-<v t="ekr.20170520193223.7"></v>
-<v t="ekr.20170520193223.8"></v>
-</v>
-<v t="ekr.20080501121449.3"><vh>@test insert node</vh>
-<v t="ekr.20170520193223.9"><vh>A</vh></v>
-<v t="ekr.20170520193223.10"><vh>B</vh></v>
-</v>
-<v t="ekr.20080423110627.11"><vh>@test move-outline-down &amp; undo/redo</vh></v>
-<v t="ekr.20080503073030.1"><vh>@test move-outline-left</vh></v>
-<v t="ekr.20170520193223.16"><vh>A</vh></v>
-<v t="ekr.20080503073030.2"><vh>@test move-outline-right</vh></v>
-<v t="ekr.20080423110627.12"><vh>@test move-outline-up</vh></v>
-<v t="ekr.20080423110627.5"><vh>@test paste-node</vh></v>
-<v t="ekr.20080423110627.8"><vh>@test paste-retaining-clones</vh></v>
-<v t="ekr.20080503082625.4"><vh>@test promote</vh></v>
-</v>
-<v t="ekr.20081001094920.2"><vh>tests for p.textOffset()</vh>
-<v t="ekr.20081001094920.3"><vh>@test node that doesn't belong to a derived file</vh></v>
-<v t="ekr.20081001094920.4"><vh>@test root of a derived file</vh></v>
-<v t="ekr.20081001094920.5"><vh>@test organizer node</vh></v>
-<v t="ekr.20081001094920.6"><vh>@test section node</vh></v>
-<v t="ekr.20081001094920.7"><vh>@test "others" directive</vh></v>
-</v>
-</v>
-<v t="ekr.20071113193729"><vh>leoUndo (something is spoiling these tests)</vh>
-<v t="ekr.20040712101754.37"><vh>@suite Edit body tests</vh>
-<v t="ekr.20040712101754.38"><vh>editBodyTests</vh>
-<v t="ekr.20060127120604"><vh>tempNode</vh></v>
-<v t="ekr.20050417202713"><vh>addComments</vh>
-<v t="ekr.20050417202713.1"><vh>before</vh></v>
-<v t="ekr.20050417202713.2"><vh>after</vh></v>
-<v t="ekr.20050417202713.3"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050417204940"><vh>convertAllBlanks</vh>
-<v t="ekr.20050417204940.1"><vh>before</vh></v>
-<v t="ekr.20050417204940.2"><vh>after</vh></v>
-<v t="ekr.20050417204940.3"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050417205012"><vh>convertAllTabs</vh>
-<v t="ekr.20050417205012.1"><vh>before</vh></v>
-<v t="ekr.20050417205012.2"><vh>after</vh></v>
-<v t="ekr.20050417205012.3"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050417203114"><vh>convertBlanks</vh>
-<v t="ekr.20050417203310"><vh>before</vh></v>
-<v t="ekr.20050417203310.1"><vh>after</vh></v>
-<v t="ekr.20050417203336"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050417203114.1"><vh>convertTabs</vh>
-<v t="ekr.20050417204834"><vh>before</vh></v>
-<v t="ekr.20050417204830"><vh>after</vh></v>
-<v t="ekr.20050417204901"><vh>selection</vh></v>
-</v>
-<v t="ekr.20040712101754.49"><vh>dedentBody</vh>
-<v t="ekr.20040712101754.50"><vh>before</vh></v>
-<v t="ekr.20040712101754.51"><vh>after</vh></v>
-<v t="ekr.20040712101754.52"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050417202817"><vh>deleteComments</vh>
-<v t="ekr.20050417202817.1"><vh>before</vh></v>
-<v t="ekr.20050417202817.2"><vh>after</vh></v>
-<v t="ekr.20050417202817.3"><vh>selection</vh></v>
-</v>
-<v t="ekr.20111112211307.3910"><vh>deleteComments</vh>
-<v t="ekr.20111112211307.3911"><vh>before</vh></v>
-<v t="ekr.20111112211307.3912"><vh>after</vh></v>
-<v t="ekr.20111112211307.3913"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050417201845"><vh>extract test1</vh>
-<v t="ekr.20050417201845.1"><vh>before</vh></v>
-<v t="ekr.20050417201845.2"><vh>after</vh>
-<v t="ekr.20050417201845.3"><vh>&lt;&lt; section &gt;&gt; @nonl</vh></v>
-</v>
-<v t="ekr.20050417201845.4"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050518070540"><vh>extract test2</vh>
-<v t="ekr.20050518070540.1"><vh>before</vh></v>
-<v t="ekr.20050518070545"><vh>after</vh></v>
-<v t="ekr.20050518070540.4"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050518070927"><vh>extractSection test1</vh>
-<v t="ekr.20050518070927.1"><vh>before</vh></v>
-<v t="ekr.20050518070927.2"><vh>after</vh>
-<v t="ekr.20050518070927.3"><vh>&lt;&lt; section &gt;&gt; @nonl</vh></v>
-</v>
-<v t="ekr.20050518070927.4"><vh>selection</vh></v>
-</v>
-<v t="ekr.20050518071251"><vh>extractSection test2</vh>
-<v t="ekr.20050518071251.1"><vh>before</vh></v>
-<v t="ekr.20050518071258"><vh>after</vh></v>
-<v t="ekr.20050518071251.4"><vh>selection</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20071113202510"></v>
-</v>
-<v t="ekr.20170521110106.1"><vh>Toxic unit tests</vh>
-<v t="ekr.20111006105711.3544"></v>
-<v t="ekr.20111006064419.3491"></v>
-<v t="ekr.20111006064419.3493"></v>
-<v t="ekr.20170521062918.1461"><vh>setup_test</vh></v>
 </v>
 </v>
 </vnodes>
@@ -2222,103 +1198,6 @@ Several nodes in the tree @thin ../src/leoTest.py (in test.leo) contain support
 code for @test, @suite, etc. so if you want all the gory details you can read
 the code. It's not complicated: Leo creates UnitTest classes automatically whose
 run method is the body of the @suite or @test node.
-</t>
-<t tx="ekr.20040712101754.100">v1 = [p.v for p in c.all_positions()]
-v2 = [v for v in c.all_nodes()]
-for v in v2: assert(v in v1)
-for v in v1: assert(v in v2)
-
-# print("coverage tests pass")
-</t>
-<t tx="ekr.20040712101754.101">nodes = []
-for v in c.all_unique_nodes():
-    assert v not in nodes
-    nodes.append(v)
-
-# print("duplicate tests pass")
-</t>
-<t tx="ekr.20040712101754.175"># p.__getattr__ must be enabled for this test to work.
-
-for p in c.all_positions():
-    assert(p.t == p.v)
-</t>
-<t tx="ekr.20040712101754.177">p = p.firstChild()
-assert(p.h=="File Conversion")
-p.convertTreeToString()
-</t>
-<t tx="ekr.20040712101754.178">@
-- convertTreeToString and moreHead can't be VNode methods because they uses level().
-- moreBody could be anywhere: it may as well be a postion method.
-</t>
-<t tx="ekr.20040712101754.179">def moreHead (self, firstLevel,useVerticalBar=False):
-
-    """Return the headline string in MORE format."""
-
-    p = self
-
-    level = self.level() - firstLevel
-    plusMinus = g.choose(p.hasChildren(), "+", "-")
-
-    return "%s%s %s" % ('\t'*level,plusMinus,p.h)
-</t>
-<t tx="ekr.20040712101754.180">@ 
-    + test line
-    - test line
-    \ test line
-    test line +
-    test line -
-    test line \
-    More lines...
-@c
-
-def moreBody (self):
-
-    """Returns the body string in MORE format.  
-
-    Inserts a backslash before any leading plus, minus or backslash."""
-
-    p = self ; list = []
-
-    # Only escape the first non-blank character of the line.
-    s =  p.b ; result = []
-    lines = string.split(s,'\n')
-    for s in lines:
-        i = g.skip_ws(s,0)
-        if i &lt; len(s):
-            ch = s[i]
-            if ch == '+' or ch == '-' or ch == '\\':
-                s = s[:i] + '\\' + s[i:]
-        result.append(s)
-    return string.join(result,'\n')
-</t>
-<t tx="ekr.20040712101754.181"># The actual test is in a child node.
-</t>
-<t tx="ekr.20040712101754.182"></t>
-<t tx="ekr.20040712101754.183">try:
-    for p in c.all_positions():
-        if 0: # Check all ancestors.  This is tricky and doesn't work yet.
-            parents1 = [parent.v for parent in p.parents_iter()]
-            parents2 = []
-            parent2 = p.v.directParents()
-            while parent2:
-                v = parent2[0]
-                parents2.append(v)
-                parent2 = v.directParents()
-        else:
-            parents1 = p.v.parents
-            parents2 = p.v.directParents()
-        assert len(parents1) == len(parents2), "length mismatch: %s" % (p)
-        for parent in parents1:
-            assert parent in parents2, "%s not in %s" % (parent,parent1)
-        for parent in parents2:
-            assert parent in parents1, "%s not in %s" % (parent,parent2)
-except AssertionError:
-    print('FAIL: @test consistency between parents_iter and v.parents')
-    print("parents1")
-    for parent in parents1: print(parent)
-    print("parents2")
-    for parent in parents2: print(parent)
-    raise
 </t>
 <t tx="ekr.20040712101754.188">import leo.core.leoNodes as leoNodes
 current = c.p
@@ -2386,303 +1265,7 @@ if 0: # child1's tree.  child2 should not be included.
     for v in child.vnodes_iter(): print(v)
     for t in child.tnodes_iter(): print(t)
 </t>
-<t tx="ekr.20040712101754.199">copy = p.copy()
-assert(p == copy)
-assert(p != p.threadNext())
-
-root = c.rootPosition()
-# assert p.equal(p.copy()) is True
-# assert p.equal(root) is False
-assert p.__eq__(copy) is True
-assert p.__ne__(copy) is False
-assert p.__eq__(root) is False
-assert p.__ne__(root) is True
-</t>
-<t tx="ekr.20040712101754.200">for p in c.all_positions():
-    if p.isCloned() and p.hasChildren():
-        childv = p.firstChild().v
-        firstChild = p.v.children[0]
-        assert childv == firstChild
-</t>
-<t tx="ekr.20040712101754.201">p2 = c.rootPosition()
-for p in c.all_positions():
-    assert p==p2, "%s != %s" % (p,p2)
-    p2.moveToThreadNext()
-
-assert not p2, repr(p2)
-</t>
-<t tx="ekr.20040712101754.202">for p in c.all_positions():
-    p2 = p.firstChild()
-    for p3 in p.children_iter():
-        assert p3==p2, "%s != %s" % (p3,p2)
-        p2.moveToNext()
-
-assert not p2, repr(p2)
-</t>
-<t tx="ekr.20040712101754.203">for p in c.all_positions():
-
-    if p.hasParent():
-        assert(p.parent().level() == p.level() - 1)
-
-    if p.hasChildren():
-        assert(p.firstChild().level() == p.level() + 1)
-
-    if p.hasNext():
-        assert(p.next().level() == p.level())
-
-    if p.hasBack():
-        assert(p.back().level() == p.level())
-</t>
-<t tx="ekr.20040712101754.204">for p in c.all_positions():
-
-    back = p.back()
-    next = p.next()
-    if back: assert(back.getNext() == p)
-    if next: assert(next.getBack() == p)
-</t>
-<t tx="ekr.20040712101754.205">for p in c.all_positions():
-    p2 = p.parent()
-    for p3 in p.parents_iter():
-        assert p3==p2, "%s != %s" % (p3,p2)
-        p2.moveToParent()
-
-    assert not p2, repr(p2)
-</t>
-<t tx="ekr.20040712101754.206"># Test consistency of p.parent, p.next, p.back and p.firstChild.
-for p in c.all_positions():
-
-    if p.hasParent():
-        n = p.childIndex()
-        assert(p == p.parent().moveToNthChild(n))
-
-    for child in p.children_iter():
-        assert(p == child.parent())
-
-    if p.hasNext():
-        assert(p.next().parent() == p.parent())
-
-    if p.hasBack():
-        assert(p.back().parent() == p.parent())
-</t>
-<t tx="ekr.20040712101754.207">for p in c.all_positions():
-
-    threadBack = p.threadBack()
-    threadNext = p.threadNext()
-
-    if threadBack:
-        assert(p == threadBack.getThreadNext())
-
-    if threadNext:
-        assert(p == threadNext.getThreadBack())
-</t>
-<t tx="ekr.20040712101754.209">for p in c.all_positions():
-
-    back = p.back()
-    next = p.next()
-
-    assert(
-        (back and p.hasBack()) or
-        (not back and not p.hasBack()))
-
-    assert(
-        (next and p.hasNext()) or
-        (not next and not p.hasNext()))
-</t>
-<t tx="ekr.20040712101754.210">for p in c.all_positions():
-
-    child = p.firstChild()
-    parent = p.parent()
-
-    assert(
-        (child and p.hasFirstChild()) or
-        (not child and not p.hasFirstChild()))
-
-    assert(
-        (parent and p.hasParent()) or
-        (not parent and not p.hasParent()))
-</t>
-<t tx="ekr.20040712101754.211">for p in c.all_positions():
-
-    threadBack = p.getThreadBack()
-    threadNext = p.getThreadNext()
-
-    assert(
-        (threadBack and p.hasThreadBack()) or
-        (not threadBack and not p.hasThreadBack()))
-
-    assert(
-        (threadNext and p.hasThreadNext()) or
-        (not threadNext and not p.hasThreadNext()))
-</t>
-<t tx="ekr.20040712101754.37"># Create unit tests in g.app.scriptDict["suite"]
-
-suite = c.testManager.makeEditBodySuite(p)
-
-# g.app.scriptDict['suite'] = suite
-</t>
-<t tx="ekr.20040712101754.38">@language plain
-@
-
-The names of child nodes are the names of commander methods to be called to do the test.
-
-Each child node will in turn have two or more children:
-
-- a "before" node
-- an "after" node
-- an optional selection node containing two lines giving the selection range in Tk coordinates.
-- An optional insert node containing one line giving the insert point in Tk coordinates.
-</t>
-<t tx="ekr.20040712101754.49"></t>
-<t tx="ekr.20040712101754.50">line 1
-    line 2
-    line 3
-line 4
-</t>
-<t tx="ekr.20040712101754.51">line 1
-line 2
-line 3
-line 4
-</t>
-<t tx="ekr.20040712101754.52">2.0
-3.5
-</t>
-<t tx="ekr.20040712101754.99">&lt;&lt; coverage tests &gt;&gt;
-&lt;&lt; duplicate tests &gt;&gt;
-
-if 0:
-    print("vnodes",len([v for v in c.all_vnodes_iter()]),len([v for v in c.all_unique_vnodes_iter()]))
-    print("tnodes",len([t for t in c.all_tnodes_iter()]),len([t for t in c.all_unique_tnodes_iter()]))
-
-if 0: # all nodes
-    for v in c.all_vnodes_iter(): print(v)
-    for t in c.all_tnodes_iter(): print(t)
-
-if 0: # unique nodes
-    for v in c.all_unique_vnodes_iter(): print(v)
-    for t in c.all_unique_tnodes_iter(): print(t)
-</t>
-<t tx="ekr.20040713070526">@language python 
-dump = False 
-all = False 
-tm = c.testManager
-if all:
-    c.prettyPrintAllPythonCode(dump=dump)
-else:
-    # Warning: at present the before and after text is unprotected:
-    # Running Pretty Print on these nodes will negate the value of the test.
-    temp = tm.findNodeInTree(p,"tempNode")
-    c.setBodyString(temp,"")
-    before = tm.findNodeInTree(p,"before")
-    after = tm.findNodeInTree(p,"after")
-    temp.scriptSetBodyString(before.b)
-    c.prettyPrintPythonCode(p=temp,dump=dump)
-    assert temp.b == after.b,"Pretty Print Test failed"
-</t>
-<t tx="ekr.20040713123617">@ This is a test of stuff.in doc parts.
-
-         I wonder what will happen.
-@c
-
-def spam (self):
-
-    """ This is a ' triple'   quoted string:
-        It should remain untouched."""
-
-    if a == 3:
-        g.pr("Ä á Û")
-
-    ''' Another ' triple'   quoted string:
-        It should remain untouched.'''
-
-    "yet another\
-    multi-line string"
-
-class eggs:
-
-    """ A typical doc string """
-
-    @others
-</t>
-<t tx="ekr.20040713123828.1">@ This is a test of stuff.in doc parts.
-
-         I wonder what will happen.
-@c
-
-def spam (self):
-
-    """ This is a ' triple'   quoted string:
-        It should remain untouched."""
-
-    if a == 3:
-        g.pr("Ä á Û")
-
-    ''' Another ' triple'   quoted string:
-        It should remain untouched.'''
-
-    "yet another\
-    multi-line string"
-
-class eggs:
-
-    """ A typical doc string """
-
-    @others
-</t>
-<t tx="ekr.20040722055040">for p in c.all_positions():
-
-    child = p.firstChild()
-    while child:
-        for parent in p.self_and_parents_iter():
-            assert parent.isAncestorOf(child)
-        child.moveToNext()
-
-    next = p.next()
-    assert not p.isAncestorOf(next)
-</t>
-<t tx="ekr.20040802065214"># Make sure that changing this headline marks descendant @thin nodes dirty.
-h = p.h
-
-try:
-    child = p.firstChild()
-    child.initHeadString("@thin bogus")
-    assert child.h == "@thin bogus", "setting headline failed"
-    child.clearDirty()
-    assert not child.isDirty(), "clearing dirty failed"
-    c.setHeadString(p,"changed")
-    assert child.isDirty(), "setting descendant @thin nodes dirty failed."
-finally:
-    try:
-        c.setHeadString(p,h)
-        c.setHeadString(child,"bogus")
-        p.clearDirty()
-        child.clearDirty()
-    finally: pass
-</t>
-<t tx="ekr.20040802065214.1">test
-</t>
-<t tx="ekr.20040802071519"># Tests that c.setBodyString works immediately.
-h = p.h
-
-try:
-    w = c.frame.body.wrapper
-    child = p.firstChild()
-    before = child.b
-    after = "after"
-    c.setBodyString(child,"after")
-    c.selectPosition(child)
-    s = w.get("1.0","end")
-    assert s.rstrip() == after.rstrip(), 'expected %s, got %s' % (
-        repr(after),repr(s))
-finally:
-    c.setBodyString(child,before)
-    c.selectPosition(p)
-</t>
-<t tx="ekr.20040802071519.1">before
-</t>
-<t tx="ekr.20041013062906"># This hack is needed only for tkinter gui.
-if g.app.gui.guiName() == 'tkinter':
-    p.OnHyperLinkControlClick(event=None)
-</t>
+<t tx="ekr.20041121151002"></t>
 <t tx="ekr.20050120095423.20">class lastTestCase(unittest.TestCase):
 
     '''A test case to print a message at the end of plugin tests.'''
@@ -2728,262 +1311,10 @@ if g.app.gui.guiName() == 'tkinter':
     result = ''.join(result)
     return result
 </t>
-<t tx="ekr.20050417201845"></t>
-<t tx="ekr.20050417201845.1">before
-    &lt;&lt; section &gt;&gt;
-    sec line 1
-        sec line 2 indented
-sec line 3
-after
-</t>
-<t tx="ekr.20050417201845.2">before
-    &lt;&lt; section &gt;&gt;
-after
-</t>
-<t tx="ekr.20050417201845.3">sec line 1
-    sec line 2 indented
-sec line 3
-</t>
-<t tx="ekr.20050417201845.4">2.0
-5.10
-</t>
-<t tx="ekr.20050417202713"></t>
-<t tx="ekr.20050417202713.1">@language python
-
-def addCommentTest():
-
-    if 1:
-        a = 2
-        b = 3
-
-    pass
-</t>
-<t tx="ekr.20050417202713.2">@language python
-
-def addCommentTest():
-
-    # if 1:
-        # a = 2
-        # b = 3
-
-    pass
-</t>
-<t tx="ekr.20050417202713.3">5.0
-7.8
-</t>
-<t tx="ekr.20050417202817"># created by new add-comments
-</t>
-<t tx="ekr.20050417202817.1">@language python
-
-def deleteCommentTest():
-
-#     if 1:
-#         a = 2
-#         b = 3
-
-    pass
-</t>
-<t tx="ekr.20050417202817.2">@language python
-
-def deleteCommentTest():
-
-    if 1:
-        a = 2
-        b = 3
-
-    pass
-</t>
-<t tx="ekr.20050417202817.3">5.0
-7.8
-</t>
-<t tx="ekr.20050417203114"></t>
-<t tx="ekr.20050417203114.1"></t>
-<t tx="ekr.20050417203310">@tabwidth -4
-
-line 1
-    line 2
-      line 3
-line4
-</t>
-<t tx="ekr.20050417203310.1">@tabwidth -4
-
-line 1
-	line 2
-	  line 3
-line4
-</t>
-<t tx="ekr.20050417203336">1.0
-6.5
-</t>
-<t tx="ekr.20050417204830">@tabwidth -4
-
-line 1
-    line 2
-      line 3
-line4
-</t>
-<t tx="ekr.20050417204834">@tabwidth -4
-
-line 1
-	line 2
-	  line 3
-line4
-</t>
-<t tx="ekr.20050417204901">1.0
-6.5
-</t>
-<t tx="ekr.20050417204940"></t>
-<t tx="ekr.20050417204940.1">@tabwidth -4
-
-line 1
-    line 2
-      line 3
-line4
-</t>
-<t tx="ekr.20050417204940.2">@tabwidth -4
-
-line 1
-	line 2
-	  line 3
-line4
-</t>
-<t tx="ekr.20050417204940.3">1.0
-6.5
-</t>
-<t tx="ekr.20050417205012"></t>
-<t tx="ekr.20050417205012.1">@tabwidth -4
-
-line 1
-	line 2
-	  line 3
-line4
-</t>
-<t tx="ekr.20050417205012.2">@tabwidth -4
-
-line 1
-    line 2
-      line 3
-line4
-</t>
-<t tx="ekr.20050417205012.3">1.0
-6.5
-</t>
-<t tx="ekr.20050512083807.1">marks = [p.v for p in c.all_positions() if p.isMarked()]
-try:
-    ok = True
-    try:
-        c.markAllAtFileNodesDirty()
-    except Exception:
-        ok = False
-finally:
-    for p in c.all_positions():
-        if p.v in marks:
-            if not p.isMarked():
-                c.setMarked(p)
-        else:
-            if p.isMarked():
-                c.clearMarked(p)
-
-if not ok: raise
-</t>
-<t tx="ekr.20050512083822.1">marks = [p.v for p in c.all_positions() if p.isMarked()]
-try:
-    ok = True
-    try:
-        c.markSubheads()
-    except Exception:
-        ok = False
-finally:
-    for p in c.all_positions():
-        if p.v in marks:
-            if not p.isMarked():
-                c.setMarked(p)
-        else:
-            if p.isMarked():
-                c.clearMarked(p)
-
-if not ok: raise
-</t>
-<t tx="ekr.20050512083822.2">marks = [p.v for p in c.all_positions() if p.isMarked()]
-try:
-    ok = True
-    try:
-        c.unmarkAll()
-    except Exception:
-        ok = False
-finally:
-    for p in c.all_positions():
-        if p.v in marks:
-            if not p.isMarked():
-                c.setMarked(p)
-        else:
-            if p.isMarked():
-                c.clearMarked(p)
-
-if not ok: raise
-</t>
-<t tx="ekr.20050512084850">errors = c.checkOutline()
-assert errors == 0, "Check Outline reported %d errors" % errors
-</t>
-<t tx="ekr.20050512084850.1">pass
-</t>
-<t tx="ekr.20050512084850.2">pass
-</t>
-<t tx="ekr.20050518070540"></t>
-<t tx="ekr.20050518070540.1">before
-    &lt;&lt; section &gt;&gt;
-    sec line 1
-        sec line 2 indented
-sec line 3
-after
-</t>
-<t tx="ekr.20050518070540.4">2.0
-2.16
-</t>
-<t tx="ekr.20050518070545">before
-    &lt;&lt; section &gt;&gt;
-    sec line 1
-        sec line 2 indented
-sec line 3
-after
-</t>
-<t tx="ekr.20050518070927"></t>
-<t tx="ekr.20050518070927.1">before
-    &lt;&lt; section &gt;&gt;
-    sec line 1
-        sec line 2 indented
-sec line 3
-after
-</t>
-<t tx="ekr.20050518070927.2">before
-    &lt;&lt; section &gt;&gt;
-after
-</t>
-<t tx="ekr.20050518070927.3">sec line 1
-    sec line 2 indented
-sec line 3
-</t>
-<t tx="ekr.20050518070927.4">2.0
-5.10
-</t>
-<t tx="ekr.20050518071251"></t>
-<t tx="ekr.20050518071251.1">before
-    &lt;&lt; section &gt;&gt;
-    sec line 1
-        sec line 2 indented
-sec line 3
-after
-</t>
-<t tx="ekr.20050518071251.4">2.0
-2.16
-</t>
-<t tx="ekr.20050518071258">before
-    &lt;&lt; section &gt;&gt;
-    sec line 1
-        sec line 2 indented
-sec line 3
-after
-</t>
+<t tx="ekr.20050328101834"></t>
+<t tx="ekr.20050328101834.1"></t>
+<t tx="ekr.20050328101834.2"></t>
+<t tx="ekr.20050328101834.3"></t>
 <t tx="ekr.20050618061835">@killcolor
 
 Here is a tutorial written by Roger Erens.
@@ -3219,2835 +1550,175 @@ Instead of a dot denoting success, we get an 'F' denoting a failure on the line 
 It also includes a trace back, but for AssertionErrors, it does not seem to offer much added value to me right now. On second thought: when you have multiple asserts in a test, the trace back can tell you which assert function failed. Still, I would choose for only one assert function per test and get rid of this trace back altogether. This would keep the console much cleaner, IMHO.</t>
 <t tx="ekr.20050618061835.9">@color
 assert('Spam' == 'Ham')</t>
-<t tx="ekr.20050726141158">@ This is    a test of stuff.in doc parts.
-
-         I wonder           what will happen.
-@c
-
-def        spam (self         )  :   
-
-    """ This is a ' triple'   quoted string:
-        It should remain untouched."""
-
-    if a==3:
-        g.pr("Ä á Û")
-
-    ''' Another ' triple'   quoted string:
-        It should remain untouched.'''
-
-    "yet another\
-    multi-line string"
-
-class eggs:
-
-    """ A typical doc string """
-
-    @others
-</t>
 <t tx="ekr.20051012104957"></t>
-<t tx="ekr.20051107115231"># These are mysteriously fragile tests, so they go first
-</t>
-<t tx="ekr.20051107115231.14">h = '@test return ends editing of headline'
-p = c.testManager.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.redraw(p) # To make node visible
-c.frame.tree.editLabel(p)
-w = c.edit_widget(p)
-guiName = g.app.gui.guiName()
-wName = g.app.gui.widget_name(w)
-assert wName.startswith('head'),'w.name:%s' % wName
-g.app.gui.event_generate(c,'\n','Return',w)
-c.outerUpdate()
-assert w != c.get_focus(),'oops2: focus in headline'
-</t>
-<t tx="ekr.20051107115231.15">k = c.keyHandler
-frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-h = '@test editLabel selects entire headline'
-p = c.testManager.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.redraw(p) # To make node visible
-tree.editLabel(p)
-w = c.edit_widget(p)
-assert w
-s = w.getAllText()
-selectAll = c.config.getBool('select_all_text_when_editing_headlines')
-# g.trace('editLabel selects entire headline',selectAll)
-i,j = w.getSelectionRange()
-if selectAll:
-    assert i == 0 and j == len(s),'oops1: i: %d, j: %d' % (i,j)
-else:
-    assert i == len(s) and j == len(s),'oops2: i: %d, j: %d' % (i,j)
-</t>
-<t tx="ekr.20051107115231.16">import sys
-if sys.platform.startswith('linux'):
-    self.skipTest('skip headline test')
-else:
-    k = c.keyHandler
-    frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-    h = 'Test headline abc'
-    p = c.testManager.findNodeAnywhere(h)
-    assert p,'node not found: %s' % h
-    c.redrawAndEdit(p) # To make node visible
-    w = c.edit_widget(p)
-    g.app.gui.set_focus(c,w)
-    w2 = g.app.gui.get_focus(c)
-    
-    try:
-        assert w
-        paste = 'ABC'
-        g.app.gui.replaceClipboardWith(paste)
-        g.app.gui.set_focus(c,w)
-        w2 = g.app.gui.get_focus(c)
-        w.setSelectionRange('end','end')
-        k.manufactureKeyPressForCommandName(w,'paste-text')
-        g.app.gui.event_generate(c,'\n','Return',w)
-        assert p.h == h + paste,'Expected: %s, got %s' % (
-            h + paste,p.h)
-    finally:
-        if 1:
-            c.setHeadString(p,h) # Essential
-            c.redraw(p)
-</t>
-<t tx="ekr.20051107115231.17">import sys
-if sys.platform.startswith('linux'):
-    self.skipTest('skip headline test')
-else:
-    k = c.k
-    if k.defaultUnboundKeyAction == 'insert':
-        frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-        h = 'Test headline abc'
-        p = c.testManager.findNodeAnywhere(h)
-        assert p,'node not found: %s' % h
-        c.redrawAndEdit(p) # To make the node visible.
-        w = c.edit_widget(p)
-        try:
-            assert w, 'oops1'
-            wName = g.app.gui.widget_name(w)
-            assert wName.startswith('head'),'w.name:%s' % wName
-            w.setSelectionRange('end','end')
-            g.app.gui.event_generate(c,'X','Shift+X',w)
-            g.app.gui.event_generate(c,'Y','Shift+Y',w)
-            g.app.gui.event_generate(c,'Z','Shift+Z',w)
-            g.app.gui.event_generate(c,'\n','Return',w)
-            assert p.h == h + 'XYZ',(
-                'oops2: expected: %s, got: %s' % (
-                    h + 'XYZ',p.h))
-            if g.app.gui.guiName() != 'nullGui':
-                assert c.undoer.undoMenuLabel == 'Undo Typing','oops3: %s' % (
-                    c.undoer.undoMenuLabel)
-            k.manufactureKeyPressForCommandName(w,'undo')
-            if g.app.gui.guiName() != 'nullGui':
-                assert c.undoer.redoMenuLabel == 'Redo Typing','oops4'
-            assert p.h == h,'oops5 got: %s, expected: %s' % (
-                p.h,h)
-        finally:
-            if 1:
-                c.setHeadString(p,h) # Essential
-                c.redraw(p)
-</t>
-<t tx="ekr.20051107115231.18">import sys
-if sys.platform.startswith('linux'):
-    self.skipTest('skip headline test')
-else:
-    k = c.keyHandler
-    h = 'Test headline abc'
-    p = c.testManager.findNodeAnywhere(h)
-    assert p,'node not found: %s' % h
-    frame = c.frame
-    tree = frame.tree
-    canvas = tree.canvas
-    c.redrawAndEdit(p) # To make node visible
-    w = c.edit_widget(p)
-    try:
-        assert w,'oops1'
-        w.setSelectionRange('end','end')
-        paste = 'ABC'
-        g.app.gui.replaceClipboardWith(paste)
-        w.setSelectionRange('end','end')
-        k.manufactureKeyPressForCommandName(w,'paste-text')
-        g.app.gui.event_generate(c,'\n','Return',w)
-        assert p.h == h + paste,'oops2 got: %s' % p.h
-        k.manufactureKeyPressForCommandName(w,'undo')
-        assert p.h == h,'oops3 got: %s' % p.h
-    finally:
-        if 1:
-            c.setHeadString(p,h) # Essential
-            c.redraw(p)
-</t>
-<t tx="ekr.20051107115231.20">import sys
-if sys.platform.startswith('linux'):
-    self.skipTest('skip headline test')
-else:
-    k = c.keyHandler
-    frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-    h = 'Test headline abc'
-    p = c.testManager.findNodeAnywhere(h)
-    assert p,'node not found: %s' % h
-    c.redraw(p) # To make node visible
-    tree.editLabel(p)
-    w = c.edit_widget(p)
-    try:
-        assert w, 'Null w'
-        paste = 'ABC'
-        g.app.gui.replaceClipboardWith(paste)
-        w.setSelectionRange('1.1','1.2')
-        k.manufactureKeyPressForCommandName(w,'paste-text')
-        g.app.gui.event_generate(c,'\n','Return',w)
-        assert p.h == h[0] + paste + h[2:]
-        k.manufactureKeyPressForCommandName(w,'undo')
-        assert p.h == h, 'head mismatch'
-    finally:
-        if 1:
-            c.setHeadString(p,h) # Essential
-            c.redraw(p)
-</t>
-<t tx="ekr.20051107115231.21">import sys
-if sys.platform.startswith('linux'):
-    self.skipTest('skip headline test')
-else:
-    k = c.k
-    if k.defaultUnboundKeyAction == 'insert':
-        frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-        h = 'Test headline abc'
-        p = c.testManager.findNodeAnywhere(h)
-        assert p,'node not found: %s' % h
-        c.redraw(p) # To make node visible
-        tree.editLabel(p)
-        w = c.edit_widget(p)
-        try:
-            assert w
-            w.setSelectionRange('end','end')
-            g.app.gui.event_generate(c,'X','Shift+X',w)
-            g.app.gui.event_generate(c,'Y','Shift+Y',w)
-            g.app.gui.event_generate(c,'Z','Shift+Z',w)
-            g.app.gui.event_generate(c,'\n','Return',w)
-            assert p.h == h + 'XYZ'
-            k.manufactureKeyPressForCommandName(w,'undo')
-            assert p.h == h
-        finally:
-            if 1:
-                c.setHeadString(p,h) # Essential
-                c.redraw(p)
-</t>
-<t tx="ekr.20051107115231.24"># Should be a comment
+<t tx="ekr.20051013162226"></t>
+<t tx="ekr.20060131102450">s = '\nEnd of typing tests'
 if g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
-else:
-    h = 'Test headline abc'
-    p = c.testManager.findNodeAnywhere(h)
-    w = c.frame.body.wrapper
-    n = c.frame.body.colorizer.recolorCount
-    assert p,'node not found: %s' % h
-    c.selectPosition(p)
-    c.bodyWantsFocus()
-    paste = '# Should be a comment'
-    g.app.gui.replaceClipboardWith(paste)
-    c.outerUpdate()
-    event = g.app.gui.create_key_event(c,None,None,c.frame.body.wrapper)
-    c.frame.pasteText(event)
-    try:
-        assert c.frame.body.colorizer.recolorCount &gt; n
-    finally:
-        if 1:
-            c.setBodyString(p,'')
-            c.redraw(p)
-</t>
-<t tx="ekr.20051107115231.28">import sys
-if sys.platform.startswith('linux'):
-    self.skipTest('skip headline test')
-else:
-    k = c.keyHandler
-    frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-    h = 'Test headline abc'
-    p = c.testManager.findNodeAnywhere(h)
-    assert p,'node not found: %s' % h
-    c.redraw(p) # To make node visible
-    tree.editLabel(p)
-    w = c.edit_widget(p)
-    try:
-        assert w,'oops1'
-        w.setSelectionRange('end','end')
-        paste = 'ABC'
-        g.app.gui.replaceClipboardWith(paste)
-        w.setSelectionRange('end','end')
-        k.manufactureKeyPressForCommandName(w,'paste-text')
-        c.selectPosition(p.visBack(c))
-        assert p.h == h + paste
-        k.manufactureKeyPressForCommandName(w,'undo')
-        assert p.h == h,'expected: %s, got: %s' % (
-            h,p.h)
-    finally:
-        if 1:
-            c.setHeadString(p,h) # Essential
-            c.redraw(p)
-</t>
-<t tx="ekr.20051109091333">if g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
-else:
-    h = 'Test headline abc'
-    p = c.testManager.findNodeAnywhere(h)
-    assert p,'node not found: %s' % h
-    c.selectPosition(p)
-    c.setBodyString(p,'a')
-    c.redraw_now() # To make node visible and to set the icon.
-    try:
-        c.bodyWantsFocus()
-        n = c.frame.tree.redrawCount
-        w = c.frame.body.wrapper
-        w.setInsertPoint('end')
-        g.app.gui.event_generate(c,'\b','BackSpace',w)
-        n2 = c.frame.tree.redrawCount
-        if not g.app.isExternalUnitTest:
-            # This test is meaningless with a nullGui.
-            assert n2 == n + 1,'too many or too few redraws: %d' % (n2-n)
-    finally:
-        if 1:
-            c.setBodyString(p,'')
-            c.redraw_now()
-</t>
-<t tx="ekr.20051109091731">h = 'Test headline abc'
-p = c.testManager.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.setBodyString(p,'a')
-c.redraw(p) # To make node visible
-c.bodyWantsFocus()
-n = c.frame.tree.redrawCount
-try:
-    w = c.frame.body.wrapper
-    g.app.gui.event_generate(c,'a','a',w)
-    n2 = c.frame.tree.redrawCount
-    assert n2 == n,'too many redraws: %d' % (n2-n)
-finally:
-    if 1:
-        c.setBodyString(p,'')
-        c.redraw(p)
-</t>
-<t tx="ekr.20051120110335">u = c.undoer
-assert u
-c.insertHeadline()
-assert u.undoMenuLabel == 'Undo Insert Node',repr(u.undoMenuLabel)
-c.undoer.undo()
-assert u.redoMenuLabel == 'Redo Insert Node',repr(u.undoMenuLabel)
-</t>
-<t tx="ekr.20051120115046">h = 'Test headline abc'
-p = c.testManager.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.selectPosition(p)
-body = 'This is a test'
-c.setBodyString(p,body)
-
-try:
-    assert p.b == body
-    c.insertHeadline()
-    c.undoer.undo()
-    assert p.b == body
-finally:
-    c.setBodyString(p,'')
-</t>
-<t tx="ekr.20051125155134">if g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
-else:
-    n = c.frame.tree.redrawCount
-    c.insertHeadline()
-    c.outerUpdate() # Not actually needed, but should not matter.
-    try:
-        n2 = c.frame.tree.redrawCount
-        if g.app.isExternalUnitTest:
-            self.skipTest('Can not be run externally')
-        else:
-            assert n2 == n + 1,'redraws: %d' % (n2 - n)
-    finally:
-        c.undoer.undo()
-</t>
-<t tx="ekr.20051125170139">h = 'Test headline abc'
-p = c.testManager.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.redraw(p) # To make node visible
-c.frame.tree.editLabel(p)
-w = c.edit_widget(p)
-try:
-    assert w
-    w.setSelectionRange('end','end')
-finally:
-    if 1:
-        c.setHeadString(p,h) # Essential
-        c.redraw(p)
-</t>
-<t tx="ekr.20060106211922">n = g.app.positions
-assert c.isCurrentPosition(None) is False
-assert c.isCurrentPosition(p) is True
-assert g.app.positions == n
-</t>
-<t tx="ekr.20060106211922.1">assert not c.isRootPosition(None),'fail 1'
-assert not c.isRootPosition(p),'fail 2'
-</t>
-<t tx="ekr.20060127120604"></t>
-<t tx="ekr.20060131102450"># Print does not work with the curses gui: it is redirected.
-s = '\nEnd of typing tests'
-if False and g.app.gui.guiName() == 'curses':
     import logging
     logging.info(s)
 else:
     g.pr(s)
 </t>
-<t tx="ekr.20060208072307">if c.k.defaultUnboundKeyAction == 'insert':
-    h = 'Test headline abc'
-    p = c.testManager.findNodeAnywhere(h)
-    assert p,'node not found: %s' % h
-    c.redraw(p)
-    c.bodyWantsFocus()
-    paste = 'ABC'
-    g.app.gui.replaceClipboardWith(paste)
-    event = g.app.gui.create_key_event(c,None,None,c.frame.body.wrapper)
-    c.frame.pasteText(event)
+<t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
+
+dir = g.os_path_join(g.app.loadDir,'..','test','unittest',g.u('chinese\u8116folder'),encoding='utf-8')
+s   = g.os_path_join(dir,g.u('chinese\u8116test.leo'),encoding='utf-8')
     
-    # Move around and and make sure it doesn't change.
-    try:
-        assert p.b == paste, 'paste1 failed'
-        c.selectPosition(p.threadBack())
-        assert p.b == paste, 'stick failed'
-        c.selectPosition(p)
-        assert p.b == paste, 'revisit failed'
-    finally:
-        if 1:
-            c.setBodyString(p,'')
-            c.redraw(p)
+if not g.os_path_exists(dir):
+    import os
+    os.mkdir(dir)
+    g.pr('created chinese folder')
+    
+if not g.os_path_exists(s):
+    f = file(s,'w')
+    f.close()
+    g.pr('created chinese file')
+    
 </t>
-<t tx="ekr.20060208072331">h = 'Test headline abc'
-p = c.testManager.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.frame.tree.editLabel(p)
-w = c.edit_widget(p)
-w.setSelectionRange('end','end',insert='end')
-paste = 'ABC'
-g.app.gui.replaceClipboardWith(paste)
-event = g.app.gui.create_key_event(c,None,None,w)
-c.frame.pasteText(event)
-# Move around and and make sure it doesn't change.
-try:
-    # g.trace('before select',w,w.getAllText())
-    c.selectPosition(p.threadBack())
-    assert p.h == h + paste,'oops1: expected: %s, got %s' % (h + paste,p.h)
-    c.selectPosition(p)
-    assert p.h == h + paste,'oops2: expected: %s, got %s' % (h + paste,p.h)
+<t tx="ekr.20070217065840">@nocolor-node
+
+@
+To make unit tests, do the following:
+    
+- Use the make-test script (Alt-5) to create a suboutline for a unit test.
+- Put text in the before node, selected desired text, then do the do-before script (Alt-6).
+- Execute the command, then do the do-after script (Alt-7).
+</t>
+<t tx="ekr.20070217065840.1">try:
+    p1 = p.insertAfter()
+    c.setHeadString(p1,'@test ')
+    body = 'c.testManager.runEditCommandTest(c,p)'
+    c.setBodyString(p1,body)
+    for s in ('work','before','after'):
+        p2 = p1.insertAsLastChild()
+        c.setHeadString(p2,s)
+    p1.expand()
 finally:
-    if 1:
-        c.setHeadString(p,h) # Essential
-        c.redraw(p)
-</t>
-<t tx="ekr.20060208072358">import sys
-if False and sys.platform.startswith('linux'):
-    # Fails for strange reasons.
-    self.skipTest('linux')
-elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
+    c.redraw()
+    c.editPosition(p1)</t>
+<t tx="ekr.20070217065840.2">@
+p should be in tree whose root is a @test node containing 'work', 'before' and
+'after' children. The work node should have body text. If all is as expected,
+copy the body text the work node to the before node, and represent the selection
+range of the work in the headline of the before node.
+@c
+
+@others
+
+sel = getSel(c)
+top,work,before,after = findNodes(p)
+if top and work.b:
+
+    c.setBodyString(before,work.b)
+    c.setBodyString(after,'')
+    putSelectionInHeadline(c,before,'before',sel)
+    c.redraw()
 else:
-    h = 'Test headline abc'
-    p = c.testManager.findNodeAnywhere(h)
-    assert p,'node not found: %s' % h
-    c.selectPosition(p)
-    c.bodyWantsFocus()
-    c.redraw(p) # To make node visible
-    n = c.frame.tree.redrawCount
-    assert not p.b, 'oops1'
-    try:
-        assert p == c.p,'position has changed!'
-        w = c.frame.body.wrapper
-        if c.vim_mode and c.vimCommands:
-            if c.vimCommands.state == 'normal':
-                # Enter insert mode ;-)
-                g.app.gui.event_generate(c,'i','i',w)
-        g.app.gui.event_generate(c,'a','a',w)
-        assert p.b == 'a', 'expected "a", got: %s' % repr(p.b)
-        if g.app.gui.guiName() != 'nullGui':
-            n2 = c.frame.tree.redrawCount
-            c.outerUpdate() # Force the coloring before doing the test.
-            assert n2 == n + 1,'too many or too few redraws: expected 1: got: %d' % (n2-n)
-    finally:
-        if 1:
-            c.setBodyString(p,'')
-            c.redraw(p)
-</t>
-<t tx="ekr.20060208072415">h = 'Test headline abc'
-p = c.testManager.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.selectPosition(p)
-s = 'ABC'
-c.setBodyString(p,s)
-try:
-    c.bodyWantsFocus()
-    w = c.frame.body.wrapper
-    w.setInsertPoint(2)
-    c.outerUpdate() # This fixed the problem.
-    if 1:
-        c.k.simulateCommand('delete-char')
-    else:
-        # This fails unless Delete is bound to delete-char
-        g.app.gui.event_generate(c,'Delete','Delete',w) # Calls c.outerUpdate()
-    assert p.b == s[:-1],'oops1: expected "AB", got %s' % p.b
-    c.selectPosition(p.threadBack())
-    c.selectPosition(p)
-    assert p.b == s[:-1],'oops2: expected "AB", got %s' % p.b
-finally:
-    if 0:
-        c.setBodyString(p,'')
-        c.redraw(p)
-</t>
-<t tx="ekr.20060913084600">import leo.core.leoNodes as leoNodes
-
-if leoNodes.use_zodb:
-    p.v.__hash__()
-</t>
-<t tx="ekr.20061101121602.100">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property– before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061101121602.101">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property– before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061101121602.102">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.103">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.104">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.105">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.106">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.107">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.108">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.109">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.110">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.111">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.112">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.113">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.114">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.115">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.116">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.117">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.118">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.119">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.120">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.121">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.122">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.123">first lie
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.124">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.125">first lie
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.126">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.127">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property– before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061101121602.128">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property– before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061101121602.129">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property– before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061101121602.130">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.131">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.132">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.133">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.134">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.135">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.136">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.137">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.138">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.139">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.140">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.141">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.142">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.143">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.144">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.145">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.146">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.147">first line
-line 1
-    Line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.148">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.149">first line
-line 1
-    Line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.150">@pagewidth 70 # Required for unit test.
-
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.151">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related,
-leading to around 500 deaths per year and nearly $14 billion in damage.
-StormReady, a program started in 1999 in Tulsa, OK,
-helps arm America's communities with the communication and safety
-skills needed to save lives and property– before and during the event.
-StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.152">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related,
-leading to around 500 deaths per year and nearly $14 billion in damage.
-StormReady, a program started in 1999 in Tulsa, OK,
-helps arm America's communities with the communication and safety
-skills needed to save lives and property– before and during the event.
-StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.153">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related,
-leading to around 500 deaths per year and nearly $14 billion in damage.
-StormReady, a program started in 1999 in Tulsa, OK,
-helps arm America's communities with the communication and safety
-skills needed to save lives and property– before and during the event.
-StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.154">@pagewidth 70 # Required for unit test.
-
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.155">Some 90% of all presidentially declared disasters are weather related,
-leading to around 500 deaths per year and nearly $14 billion in damage.
-         StormReady, a program started in 1999 in Tulsa, OK,
-  helps arm America's communities with the communication and safety
-skills needed to save lives and property– before and during the event.
-StormReady helps community leaders and emergency managers strengthen local safety programs.
-</t>
-<t tx="ekr.20061101121602.156">Some 90% of all presidentially declared disasters are weather related,
-leading to around 500 deaths per year and nearly $14 billion in damage.
-StormReady, a program started in 1999 in Tulsa, OK,
-helps arm America's communities with the communication and safety
-skills needed to save lives and property– before and during the event.
-StormReady helps community leaders and emergency managers strengthen local safety programs.
-</t>
-<t tx="ekr.20061101121602.157">Some 90% of all presidentially declared disasters are weather related,
-leading to around 500 deaths per year and nearly $14 billion in damage.
-         StormReady, a program started in 1999 in Tulsa, OK,
-  helps arm America's communities with the communication and safety
-skills needed to save lives and property– before and during the event.
-StormReady helps community leaders and emergency managers strengthen local safety programs.
-</t>
-<t tx="ekr.20061101121602.158">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.159">first line
-line    line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.160">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.161">first line
-line    line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.162">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.163">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.164">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.165">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.166">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.167">firstline
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.168">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.169">firstline
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.170">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.171">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.172">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.173">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.174">c.testManager.runEditCommandTest(p)
-assert g.app.unitTestDict.get('colorized')
-</t>
-<t tx="ekr.20061101121602.175">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. stormready, a program started in 1999 in tulsa, ok, helps arm america's communities with the communication and safety skills needed to save lives and property– before and during the event. stormready helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.176">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.177">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. stormready, a program started in 1999 in tulsa, ok, helps arm america's communities with the communication and safety skills needed to save lives and property– before and during the event. stormready helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.178">c.testManager.runEditCommandTest(p)
-assert g.app.unitTestDict.get('colorized')
-</t>
-<t tx="ekr.20061101121602.179">xyzzy line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.180">XYZZY line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.181">xyzzy line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.182">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.183">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.184">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.185">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.186">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.187">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.188">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.189">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.190">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.191">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.192">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.193">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.194">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.195">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.196">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.197">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.198">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.199">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.200">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.201">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.202">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.203">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.204">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.205">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.206">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.207">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property– before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061101121602.208">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property– before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061101121602.209">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property– before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061101121602.210">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.211">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.212">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.213">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.214">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.215">first line
-line 1
-    line_24a a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.216">first line
-line 1
-    line_24a a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.217">first line
-line 1
-    line_24a a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.218">@pagewidth 80
-    # Required for external unit test.
-
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.219">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Services StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property--before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.220">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Services StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially
-declared disasters are weather related,
-leading to around 500 deaths per year
-and nearly $14 billion in damage.
-StormReady, a program
-started in 1999 in Tulsa, OK,
-helps arm America's
-communities with the communication and
-safety skills needed to save lives and
-property--before and during the event.
-StormReady helps community leaders and
-emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.221">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Services StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property--before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.222">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.223">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.224">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.225">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.226">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.227">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.228">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.229">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.230">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.231">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.232">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.233">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.234">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.235">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.236">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.237">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.238">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.239">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.240">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.241">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.242">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.243">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property– before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061101121602.244">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property– before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061101121602.245">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property– before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061101121602.246">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.247">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property– before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061101121602.248">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property– before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061101121602.249">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property– before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061101121602.250">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.251">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.252">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.253">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.254">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.255">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.256">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.257">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.258">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.259">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.260">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.261">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.262">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.263">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.264">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.265">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.266">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.267">first line
-line 1
-    line a
-        line b
-        line c
-last line
-</t>
-<t tx="ekr.20061101121602.268">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.269">first line
-line 1
-    line a
-        line b
-        line c
-last line
-</t>
-<t tx="ekr.20061101121602.270">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.271">first line
-	line 1
-	    line a
-	        line b
-	line c
-last line
-</t>
-<t tx="ekr.20061101121602.272">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.273">first line
-	line 1
-	    line a
-	        line b
-	line c
-last line
-</t>
-<t tx="ekr.20061101121602.274">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.275">first li
-ne
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.276">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.277">first li
-ne
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.278">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.279">first() line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.280">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.281">first() line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.282">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.283">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061101121602.284">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061101121602.285">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property– before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061101121602.286">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.287">first line
-line 1
-line c
-    line a
-        line b
-last line
-</t>
-<t tx="ekr.20061101121602.288">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.289">first line
-line 1
-line c
-    line a
-        line b
-last line
-</t>
-<t tx="ekr.20061101121602.290">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.291">line 1
-first line
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.292">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.293">line 1
-first line
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.294">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.295">first (line)
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.296">first (line)
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.297">first (line)
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.298">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.299">first line
-line 1
-    (line )a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.300">first line
-line 1
-    (line )a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.301">first line
-line 1
-    (line )a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.302">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.303">first line
-line 1
+    g.es_print('do-before: not in a proper @test tree')</t>
+<t tx="ekr.20070217065840.3">def getSel(c):
     
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.304">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.305">first line
-line 1
+    w = c.frame.body.bodyCtrl
+    i,j= w.getSelectionRange()
+    if i == j:
+        i = j = w.getInsertPoint()
+        sel = (i,i)
+    return i,j</t>
+<t tx="ekr.20070217065840.4">def findNodes(p):
     
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.306">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.307">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.308">first line
-
-line 1
-    line a
-        line b
-
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.309">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.310">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.311">first line
-
-line 1
-   line a
-       line b
-
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.312">first line
-
-line 1
-    line a
-        line b
-
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.313">first line
-
-line 1
-   line a
-       line b
-
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.314">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.315">first line
-line 1
-line a
-    line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.316">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.317">first line
-line 1
-line a
-    line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.318">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.319">
-last line
-line c
-        line b
-    line a
-line 1
-first line
-</t>
-<t tx="ekr.20061101121602.320">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.321">
-last line
-line c
-        line b
-    line a
-line 1
-first line
-</t>
-<t tx="ekr.20061101121602.322">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.323">        line b
-    line a
-first line
-last line
-line 1
-line c
-</t>
-<t tx="ekr.20061101121602.324">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.325">        line b
-    line a
-first line
-last line
-line 1
-line c
-</t>
-<t tx="ekr.20061101121602.326">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.327">first line
-        line b
-    line a
-line 1
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.328">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.329">first line
-        line b
-    line a
-line 1
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.330">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.331">first
- line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.332">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.333">first
- line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.334">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.335">first line
-line 1
-	line a
-		line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.336">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.337">first line
-line 1
-	line a
-		line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.338">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.339">frist line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.340">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.341">frist line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.342">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.343">line 1
-first line
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.344">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.345">line 1
-first line
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.346">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.347">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.348">first line
-line 1
-	line a
-		line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.349">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.350">c.testManager.runEditCommandTest(p)
-assert g.app.unitTestDict.get('colorized')
-</t>
-<t tx="ekr.20061101121602.351">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-SOME 90% OF ALL PRESIDENTIALLY DECLARED DISASTERS ARE WEATHER RELATED, LEADING TO AROUND 500 DEATHS PER YEAR AND NEARLY $14 BILLION IN DAMAGE. STORMREADY, A PROGRAM STARTED IN 1999 IN TULSA, OK, HELPS ARM AMERICA'S COMMUNITIES WITH THE COMMUNICATION AND SAFETY SKILLS NEEDED TO SAVE LIVES AND PROPERTY– BEFORE AND DURING THE EVENT. STORMREADY HELPS COMMUNITY LEADERS AND EMERGENCY MANAGERS STRENGTHEN LOCAL SAFETY PROGRAMS.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.352">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.353">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-SOME 90% OF ALL PRESIDENTIALLY DECLARED DISASTERS ARE WEATHER RELATED, LEADING TO AROUND 500 DEATHS PER YEAR AND NEARLY $14 BILLION IN DAMAGE. STORMREADY, A PROGRAM STARTED IN 1999 IN TULSA, OK, HELPS ARM AMERICA'S COMMUNITIES WITH THE COMMUNICATION AND SAFETY SKILLS NEEDED TO SAVE LIVES AND PROPERTY– BEFORE AND DURING THE EVENT. STORMREADY HELPS COMMUNITY LEADERS AND EMERGENCY MANAGERS STRENGTHEN LOCAL SAFETY PROGRAMS.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20061101121602.354">c.testManager.runEditCommandTest(p)
-assert g.app.unitTestDict.get('colorized')
-</t>
-<t tx="ekr.20061101121602.355">first line
-line 1
-    LINE a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.356">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.357">first line
-line 1
-    LINE a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.78">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.79">first line
- line 1
-     line a
- line b
-last line
-</t>
-<t tx="ekr.20061101121602.80">first line
-line 1
-    line a
-line b
-last line
-</t>
-<t tx="ekr.20061101121602.81">first line
- line 1
-     line a
- line b
-last line
-</t>
-<t tx="ekr.20061101121602.82">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.83">first line
-    line 1
-        line a
-            line b
-    line c
-last line
-</t>
-<t tx="ekr.20061101121602.84">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.85">first line
-    line 1
-        line a
-            line b
-    line c
-last line
-</t>
-<t tx="ekr.20061101121602.86">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.87">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.88">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.89">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.90">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.91">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.92">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.93">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061101121602.94">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.95">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property– before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061101121602.96">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property– before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061101121602.97">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property– before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061101121602.98">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061101121602.99">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property– before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20061104172236.1"></t>
-<t tx="ekr.20061104172236.2"># targetWord
-e = c.editCommands
-k = c.k
-w = c.frame.body.wrapper
-for val in (True,False):
-    k.arg = 't' # 'targetWord'
-    w.setInsertPoint(0)
-    e.w = w
-    e.oneLineFlag = val
-    f = e.findWord1(event=None)
-    i,j = w.getSelectionRange()
-    assert i == 2, 'expected 2, got %s' % (i)
-    # s = w.getAllText()
-    # ch = s[i]
-    # assert word == 'targetWord', 'got: %s' % word
-
-</t>
-<t tx="ekr.20061104172236.3"># TARGETWORD
-
-w = c.frame.body.wrapper
-
-for (which,result) in (('cap','Targetword'),('low','targetword'),('up','TARGETWORD')):
-    w.setInsertPoint(5)
-    c.editCommands.capitalizeHelper(event=None,which=which,undoType=None)
-    s = w.getAllText()
-    word = s[2:12]
-    assert word == result, 'Expected %s, got: %s' % (result,repr(word))
-    i = w.getInsertPoint()
-    assert i == 5, 'Expected 5, got: %d' % i
-</t>
-<t tx="ekr.20061104172236.4">w = c.frame.body.wrapper
-ec = c.editCommands
-
-for spot,result in (('1.0',0),(5,5)):
-    ec.setMoveCol(w,spot)
-    assert ec.moveSpot == result
-    assert ec.moveCol == result
-</t>
-<t tx="ekr.20061104172236.5">ec = c.editCommands ; w = c.frame.body.wrapper
-
-for i,j,python in (
-    # ('1.0','4.5',False),
-    (5,50,True),
-):
-    extend = True
-    ec.moveSpot = None # It's hard to init this properly.
-    ec.extendHelper(w,extend,j)
-    i2,j2 = w.getSelectionRange()
-    #assert 0==i2, 'Expected i=%s, got %s' % (repr(i),repr(i2))
-    #assert j==j2, 'Expected j=%s, got %s' % (repr(j),repr(j2))
-</t>
-<t tx="ekr.20061104172236.6">ec = c.editCommands ; w = c.frame.body.wrapper
-
-for i,j,python in (
-    #('1.0','4.5',False),
-    (5,50,True),
-):
-    event = None ; extend = True ; ec.moveSpot = None
-    w.setInsertPoint(i)
-    ec.moveToHelper (event,j,extend)
-    i2,j2 = w.getSelectionRange()
-    assert i==i2, 'Expected %s, got %s' % (repr(i),repr(i2))
-    assert j==j2, 'Expected %s, got %s' % (repr(j),repr(j2))
-    w.setSelectionRange(0,0,insert=None)
-</t>
-<t tx="ekr.20061104172236.7">ec = c.editCommands
-w = c.frame.body.wrapper
-
-for direction in ('up','down'):
-    for distance in ('line','page','half-page'):
-        event = g.app.gui.create_key_event(c,None,None,w)
-        ec.scrollHelper(event,direction,distance)
-</t>
-<t tx="ekr.20061106112522">w = c.frame.body.wrapper
-s = w.getAllText()
-
-try:
-    w.setInsertPoint(len(s))
-    c.insertBodyTime()
-finally:
-    w.setAllText(s)
-    p.setBodyString(s)
-    # c.recolor()
-
-# end:
-</t>
-<t tx="ekr.20061110094226">ec = c.editCommands ; w = c.frame.body.wrapper
-
-for i,result,direction in (('5.8','4.8','up'),('5.8','6.8','down')):
-    event = None ; extend = False; ec.moveSpot = None
-    w.setInsertPoint(i)
-    ec.moveUpOrDownHelper (event,direction,extend)
-    i2,j2 = w.getSelectionRange()
-    if 1:
-        break
+    '''Find the top, work, before and after nodes.
+    p should be in tree whose root is a @test node containing
+    'work', 'before' and 'after' children.'''
+    
+    for p in p.self_and_parents_iter():
+        if p.h.startswith('@test '):
+            break
+    top    = p and p.copy()
+    work   = top and top.firstChild() 
+    before = work and work.next()     
+    after  = before and before.next()
+    if (
+        work   and work.h.startswith('work') and
+        before and before.h.startswith('before') and
+        after  and after.h.startswith('after')
+    ):
+        return top,work,before,after
     else:
-        assert i==i2, 'Expected %s, got %s' % (repr(i),repr(i2))
-        assert j==j2, 'Expected %s, got %s' % (repr(j),repr(j2))
-        w.setSelectionRange(0,0,insert=None)
-</t>
-<t tx="ekr.20061128082002">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061128082002.1">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061128082002.2">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061128082002.3">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20061128090021">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061128090021.1">line 1
-line 2
+        return None,None,None,None</t>
+<t tx="ekr.20070217065840.5">def putSelectionInHeadline (c,p,prefix,sel):
+    
+    # g.trace(p.h,repr(sel))
 
-line 4
+    w = c.frame.body.bodyCtrl
+    i,j = sel
+    i,j = w.toGuiIndex(i),w.toGuiIndex(j)
+    s = '%s sel=%s,%s' % (prefix,i,j)
+    c.setHeadString(p,s)
 </t>
-<t tx="ekr.20061128090021.2">line 1
-line 2
-line 3
-line 4
-</t>
-<t tx="ekr.20061128090021.3">line 1
-line 2
+<t tx="ekr.20070217065840.6">@
+p should be in tree whose root is a @test node containing 'work', 'before' and
+'after' children. If all is as expected, copy the work node to the after node,
+and represent the selection range of the work node in the headline of the after node.
+@c
 
-line 4
-</t>
-<t tx="ekr.20061128090147">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061128090147.1">line 1
-line 2
-line 4
-</t>
-<t tx="ekr.20061128090147.2">line 1
-line 2
+@others
 
-line 4
+sel = getSel(c)
+top,work,before,after = findNodes(p)
+if top:
+    c.setBodyString(after,work.b)
+    putSelectionInHeadline(c,after,'after',sel)
+    c.redraw()
+else:
+    g.es_print('do-after: not in @test tree')</t>
+<t tx="ekr.20070217065840.8">def findNodes(p):
+    
+    '''Find the top, work, before and after nodes.
+    p should be in tree whose root is a @test node containing
+    'work', 'before' and 'after' children.'''
+    
+    for p in p.self_and_parents_iter():
+        if p.h.startswith('@test '):
+            break
+    top    = p and p.copy()
+    work   = top and top.firstChild()
+    before = work and work.next()
+    after  = before and before.next()
+    if (
+        work   and work.h.startswith('work') and
+        before and before.h.startswith('before') and
+        after  and after.h.startswith('after')
+    ):
+        return top,work,before,after
+    else:
+        return None,None,None,None</t>
+<t tx="ekr.20070217065840.9">def putSelectionInHeadline (c,p,prefix,sel):
+    
+    # g.trace(p.h,repr(sel))
+    
+    w = c.frame.body.bodyCtrl
+    i,j = sel
+    i,j = w.toGuiIndex(i),w.toGuiIndex(j)
+    s = '%s sel=%s,%s' % (prefix,i,j)
+    c.setHeadString(p,s)
 </t>
-<t tx="ekr.20061128090147.3">line 1
-line 2
-line 4
+<t tx="ekr.20070217072822">def getSel(c):
+    
+    w = c.frame.body.bodyCtrl
+    i,j= w.getSelectionRange()
+    if i == j:
+        i = j = w.getInsertPoint()
+        sel = (i,i)
+    return i,j</t>
+<t tx="ekr.20070306091949">s = '\nEnd of leoEditCommands tests.'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
-<t tx="ekr.20061128090338">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20061128090338.1">line 1
-line 2
-
-</t>
-<t tx="ekr.20061128090338.2">line 1
-line 2
-line 3
-</t>
-<t tx="ekr.20061128090338.3">line 1
-line 2
-
-</t>
-<t tx="ekr.20070131162935">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20070131162935.1">first line
-line 1
-line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20070131162935.2">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20070131162935.3">first line
-line 1
-line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20070131171218.1"></t>
-<t tx="ekr.20070131171218.2">first line
-line 1
-    line a
-        line b
-line c
-last line
-</t>
-<t tx="ekr.20070131172706">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20070131172706.1">This is the first sentence.  And
-this is the last sentence.
-</t>
-<t tx="ekr.20070131172706.2">This is the first sentence.  This
-is the second sentence.  And
-this is the last sentence.
-</t>
-<t tx="ekr.20070131172706.3">This is the first sentence.  And
-this is the last sentence.
-</t>
-<t tx="ekr.20070131173932">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20070131173932.1">This is the first sentence.  This
-is the second sentence.
-</t>
-<t tx="ekr.20070131173932.2">This is the first sentence.  This
-is the second sentence.  And
-this is the last sentence.
-</t>
-<t tx="ekr.20070131173932.3">This is the first sentence.  This
-is the second sentence.
-</t>
-<t tx="ekr.20070131175538"></t>
-<t tx="ekr.20070131175538.1"></t>
-<t tx="ekr.20070131175646"></t>
-<t tx="ekr.20070217071121.1">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20070217071121.10">before
-aaabbb
-aaabbb
-aaabbb
-aaabbb
-after
-</t>
-<t tx="ekr.20070217071121.11">before
-aaaxxxbbb
-aaaxxxbbb
-aaaxxxbbb
-aaaxxxbbb
-after
-</t>
-<t tx="ekr.20070217071121.12">before
-aaabbb
-aaabbb
-aaabbb
-aaabbb
-after
-</t>
-<t tx="ekr.20070217071121.13">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20070217071121.14">before
-aaa   xxxbbb
-aaa   xxxbbb
-aaa   xxxbbb
-aaa   xxxbbb
-after
-</t>
-<t tx="ekr.20070217071121.15">before
-aaaxxxbbb
-aaaxxxbbb
-aaaxxxbbb
-aaaxxxbbb
-after
-</t>
-<t tx="ekr.20070217071121.16">before
-aaa   xxxbbb
-aaa   xxxbbb
-aaa   xxxbbb
-aaa   xxxbbb
-after
-</t>
-<t tx="ekr.20070217071121.17">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20070217071121.18">before
-aaabbb
-aaabbb
-aaabbb
-aaabbb
-after
-</t>
-<t tx="ekr.20070217071121.19">before
-aaaxxxbbb
-aaaxxxbbb
-aaaxxxbbb
-aaaxxxbbb
-after
-</t>
-<t tx="ekr.20070217071121.2">before
-aaa   bbb
-aaa   bbb
-aaa   bbb
-aaa   bbb
-after
-</t>
-<t tx="ekr.20070217071121.20">before
-aaabbb
-aaabbb
-aaabbb
-aaabbb
-after
-</t>
-<t tx="ekr.20070217071121.21">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20070217071121.22">before
-aaas...sbbb
-aaas...sbbb
-aaas...sbbb
-aaas...sbbb
-after
-</t>
-<t tx="ekr.20070217071121.23">before
-aaaxxxbbb
-aaaxxxbbb
-aaaxxxbbb
-aaaxxxbbb
-after
-</t>
-<t tx="ekr.20070217071121.24">before
-aaas...sbbb
-aaas...sbbb
-aaas...sbbb
-aaas...sbbb
-after
-</t>
-<t tx="ekr.20070217071121.25">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20070217071121.26">before
-aaaY1Ybbb
-aaaY2Ybbb
-aaaY3Ybbb
-aaaY4Ybbb
-after
-</t>
-<t tx="ekr.20070217071121.27">before
-aaaY1Ybbb
-aaaY2Ybbb
-aaaY3Ybbb
-aaaY4Ybbb
-after
-</t>
-<t tx="ekr.20070217071121.28">before
-aaaxxxbbb
-aaaxxxbbb
-aaaxxxbbb
-aaaxxxbbb
-after
-</t>
-<t tx="ekr.20070217071121.3">before
-aaaxxxbbb
-aaaxxxbbb
-aaaxxxbbb
-aaaxxxbbb
-after
-</t>
-<t tx="ekr.20070217071121.4">before
-aaa   bbb
-aaa   bbb
-aaa   bbb
-aaa   bbb
-after
-</t>
-<t tx="ekr.20070217071121.5">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20070217071121.6">before
-aaabbb
-aaabbb
-aaabbb
-aaabbb
-after
-</t>
-<t tx="ekr.20070217071121.7">before
-aaa   bbb
-aaa   bbb
-aaa   bbb
-aaa   bbb
-after
-</t>
-<t tx="ekr.20070217071121.8">before
-aaabbb
-aaabbb
-aaabbb
-aaabbb
-after
-</t>
-<t tx="ekr.20070217071121.9">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20070305095401">p = c.p.copy()
-c.selectPosition(p.threadBack())
-p1 = c.p
-c.goPrevVisitedNode()
-p2 = c.p
-c.goNextVisitedNode()
-p3 = c.p
-</t>
-<t tx="ekr.20070306091949"># Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of leoEditCommands tests.')
-</t>
-<t tx="ekr.20070315065720">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20070315065720.1">a
-
-b
-</t>
-<t tx="ekr.20070315065720.2">a
-
-b
-</t>
-<t tx="ekr.20070315065720.3">a
-
-b
-</t>
-<t tx="ekr.20070315065849">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20070315065849.1">a
-
-b
-</t>
-<t tx="ekr.20070315065849.2">a
-
-b
-</t>
-<t tx="ekr.20070315065849.3">a
-
-b
-</t>
-<t tx="ekr.20070417092935" str_leo_pos="7">@nosearch</t>
-<t tx="ekr.20070611071101">p1 = p.copy()
-a = p.firstChild()
-b = a.firstChild()
-c2 = b.firstChild()
-limit = a.next()
-d = limit.firstChild()
-e = limit.next()
-assert e.h == 'e'
-for p2,h in ((a,'a'),(b,'b'),(c2,'c2'),(d,'d'),(limit,'limit')):
-    p2.expand()
-    assert p2.h==h,'headString mismatch'
-
-try: # Tests without hoist...
-    p1.expand()
-    assert not c.hoistStack
-    c.selectPosition(limit)
-    result = limit.copy().moveToVisBack(c)
-    assert result==c2,'visBack != c2: %s' % result
-    #
-    result = limit.copy().moveToVisNext(c)
-    assert result==d,'visNext != d: %s' % result
-finally:
-    p1.contract()
-
-try: # Tests with hoist.
-    p1.expand()
-    c.selectPosition(limit)
-    c.hoist()
-    result = limit.copy().moveToVisBack(c)
-    assert not result,'limited visBack: %s' % result
-    #
-    result = limit.copy().moveToVisNext(c)
-    assert result==d,'limited visNext !=d: %s' % result
-finally:
-    c.dehoist()
-    c.selectPosition(p1)
-    p1.contract()
-    c.redraw_now()
-
-</t>
-<t tx="ekr.20070611071101.1"></t>
-<t tx="ekr.20070611071101.2"></t>
-<t tx="ekr.20070611071101.3"></t>
-<t tx="ekr.20070611071101.4"></t>
-<t tx="ekr.20070611071101.5"></t>
-<t tx="ekr.20070611071954"></t>
-<t tx="ekr.20070611105423.1">c.contractAllHeadlines()
-</t>
-<t tx="ekr.20070611105728"># Remove any previous children.
-while p.hasChildren():
-    p.firstChild().doDelete()
-# Create two cloned children.
-c.selectPosition(p)
-c.insertHeadline()
-p2 = c.p
-p2.moveToFirstChildOf(p)
-p2.setHeadString('aClone')
-c.selectPosition(p2)
-c.clone()
-assert 2 == p.numberOfChildren()
-
-# Select the first clone and demote (it should be illegal)
-c.selectPosition(p2)
-c.demote() # This should do nothing.
-assert g.app.unitTestDict.get('checkMoveWithParentWithWarning'),'fail 1'
-assert 0 == c.checkOutline(), 'fail 2'
-assert 2 == p.numberOfChildren(), 'fail 3'
-# Delete the children, but only if there are no errors.
-while p.hasChildren():
-    p.firstChild().doDelete()
+<t tx="ekr.20070417092935" str_leo_pos="4">@nosearch</t>
+<t tx="ekr.20070503064257"></t>
+<t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
 <t tx="ekr.20070627082044.808"># A file that contains functions with errors in them.
 # This is used to test error reporting in scripts
@@ -6088,895 +1759,98 @@ finally:
 
 assert(g.os_path_exists(path))
 </t>
-<t tx="ekr.20071007120750.3">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20071007120750.4">@pagewidth 80
-    # Required for external unit test.
+<t tx="ekr.20071113140035">fn = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','core','leoPy.leo'))
+assert g.os_path_exists(fn),fn
+c1 = c
+c2 = g.openWithFileName(fn,old_c=None,enableLog=False)
+assert c2
+c.frame.bringToFront()
+g.app.setLog(c.frame.log)
 
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20071007120750.5">c.editCommands.ccolumn = 4 # Set the comment column
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20071007120750.6"># xxxx.yyyy
+d1 = {} ; d2 = {}
+for c,d in ( (c1,d1),(c2,d2)):
+    for p in c.all_unique_positions():
+        if p.h.startswith('@test'):
+            d[p.h]=p.h
 
-s = p.b
-w = c.frame.body.wrapper
-w.setSelectionRange(2,11)
-c.editCommands.setFillPrefix(event=None)
-prefix = c.editCommands.fillPrefix
-assert prefix == 'xxxx.yyyy',repr(prefix)
-</t>
-<t tx="ekr.20071007120947">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20071007120947.6">first line
-last lin
-</t>
-<t tx="ekr.20071007120947.7">first line
-last line
-</t>
-<t tx="ekr.20071007120947.8">first line
-last lin
-</t>
-<t tx="ekr.20071007121115.1">first line
-line 1
-last line
-</t>
-<t tx="ekr.20071007121115.2">first line
-    line 1
-last line
-</t>
-<t tx="ekr.20071007121115.3">first line
-line 1
-last line
-</t>
-<t tx="ekr.20071007121312.1">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
+if 0: # not important
+    g.pr()
+    g.pr('----- Only in unitTest.leo')
+    for h in sorted(d1.keys()):
+        if not d2.get(h):
+            print(h)
 
-Some 90% of all presidentially declared disasters are weather related,
-leading to around 500 deaths per year and nearly
-$14 billion in damage.
-StormReady, a program started in 1999 in Tulsa,
-OK, helps arm America's communities with the communication
-and safety skills needed to save lives and property– before and during the event.
-StormReady helps community leaders
-and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared
-to save lives from the onslaught of severe
-weather through better planning, education, and awareness.
-No community is storm proof,
-but
-StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20071007121312.2">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms,
-2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes.
-Potentially deadly
-weather impacts every American.
-Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-Some 90% of all presidentially declared disasters are weather related,
-leading to around 500 deaths per year and nearly
-$14 billion in damage.
-StormReady, a program started in 1999 in Tulsa,
-OK, helps arm America's communities with the communication
-and safety skills needed to save lives and property– before and during the event.
-StormReady helps community leaders
-and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared
-to save lives from the onslaught of severe
-weather through better planning, education, and awareness.
-No community is storm proof,
-but
-StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20071007121312.3">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-Some 90% of all presidentially declared disasters are weather related,
-leading to around 500 deaths per year and nearly
-$14 billion in damage.
-StormReady, a program started in 1999 in Tulsa,
-OK, helps arm America's communities with the communication
-and safety skills needed to save lives and property– before and during the event.
-StormReady helps community leaders
-and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared
-to save lives from the onslaught of severe
-weather through better planning, education, and awareness.
-No community is storm proof,
-but
-StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20071007121312.5">first line
-    line b
-last line
-</t>
-<t tx="ekr.20071007121312.6">first line
-line b
-last line
-</t>
-<t tx="ekr.20071007121312.7">first line
-    line b
-last line
-</t>
-<t tx="ekr.20071007121529">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20071007121529.1">firstline
-last line
-</t>
-<t tx="ekr.20071007121529.2">first line
-last line
-</t>
-<t tx="ekr.20071007121529.3">firstline
-last line
-</t>
-<t tx="ekr.20071007124202">@pagewidth 80
-    # Required for external unit test.
-
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20071007124202.1">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property– before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20071007124202.2">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms,
-2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes.
-Potentially deadly
-weather impacts every American.
-Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-Some 90% of all presidentially declared disasters are weather related,
-leading to around 500 deaths per year and nearly
-$14 billion in damage.
-StormReady, a program started in 1999 in Tulsa,
-OK, helps arm America's communities with the communication
-and safety skills needed to save lives and property– before and during the event.
-StormReady helps community leaders
-and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared
-to save lives from the onslaught of severe
-weather through better planning, education, and awareness.
-No community is storm proof,
-but
-StormReady can help communities save lives. Does StormReady make a difference?
-</t>
-<t tx="ekr.20071007124202.3">Americans live in the most severe weather-prone country on Earth. Each year,
-Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000
-tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly
-weather impacts every American. Communities can now rely on the National Weather
-Service’s StormReady program to help them guard against the ravages of Mother
-Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading
-to around 500 deaths per year and nearly $14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK, helps arm America's communities with the
-communication and safety skills needed to save lives and property– before and
-during the event. StormReady helps community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of
-severe weather through better planning, education, and awareness. No community
-is storm proof, but StormReady can help communities save lives. Does StormReady
-make a difference?
-</t>
-<t tx="ekr.20071113081247">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20071113081247.1">z
-x
-e
-d
-a
-</t>
-<t tx="ekr.20071113081247.10">x
-z
-A
-c
-B
-</t>
-<t tx="ekr.20071113081247.11">A
-B
-c
-x
-z
-</t>
-<t tx="ekr.20071113081247.2">a
-d
-e
-z
-x
-</t>
-<t tx="ekr.20071113081247.3">z
-x
-e
-d
-a
-</t>
-<t tx="ekr.20071113081247.8">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20071113081247.9">A
-B
-c
-x
-z
-</t>
-<t tx="ekr.20071113082531">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20071113082531.1">z
-Y
-X
-c
-b
-A
-</t>
-<t tx="ekr.20071113082531.2">c
-A
-z
-X
-Y
-b
-</t>
-<t tx="ekr.20071113082531.3">z
-Y
-X
-c
-b
-A
-</t>
-<t tx="ekr.20071113105654.1">c.hoist()
-c.dehoist()
-</t>
-<t tx="ekr.20071113145804.10">c.contractAllHeadlines()
-p = c.rootPosition()
-while p.hasNext():
-    p.moveToNext()
-c.selectPosition(p)
-</t>
-<t tx="ekr.20071113145804.15">if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
+print('\n----- Only in leoPy.leo')
+for h in sorted(d2.keys()):
+    if not d1.get(h):
+        print(h)</t>
+<t tx="ekr.20071113201736">s = '\nEnd of leoAtFile tests'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
 else:
-    c.helpCommands.helpForMinibuffer()
+    g.pr(s)
 </t>
-<t tx="ekr.20071113145804.16"># vr plugin not loaded externally.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
+<t tx="ekr.20071113201833">s = '\nEnd of leoCommands tests'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
 else:
-    c.helpCommands.helpForBindings()
+    g.pr(s)
 </t>
-<t tx="ekr.20071113145804.17"># vr plugin not loaded externally.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
+<t tx="ekr.20071113201854">s = '\nEnd of leoConfig tests'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
 else:
-    c.helpCommands.helpForFindCommands()
+    g.pr(s)
 </t>
-<t tx="ekr.20071113145804.4">@first # -*- coding: utf-8 -*-
-@language python
-
-try:
-    ec = c.editCommands ; w = c.frame.body.wrapper
-    s = w.getAllText()
-
-    # This strings tests unicode, paren matching, and auto-indentation.
-    u = g.u('(a\u00c9\u03a9B\u3045\u4e7cz):\n') # '(aÉ©BE|cz):\n'
-    u = g.u('(pdq):\n')
-    w.setInsertPoint(len(s))
-    for char in u:
-        stroke = g.choose(char=='\n','Return',char)
-        event = g.app.gui.create_key_event(c,char,stroke,w)
-        ec.selfInsertCommand(event)
-    result = w.getAllText()
-    #g.trace('result',repr(result))
-    assert result.endswith('    '),'result:\n%s' % result
-    # Test of autocompleter.
-finally:
-    if 1:
-        w.setAllText(s)
-        p.setBodyString(s)
-        # g.trace(repr(s))
-        c.recolor()
-
-# end:
+<t tx="ekr.20071113202045">s = '\nEnd of leoFileCommands tests.'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
-<t tx="ekr.20071113145804.5">@language python
-@tabwidth -4
-
-try:
-    ec = c.editCommands ; w = c.frame.body.wrapper
-    s = w.getAllText()
-    w.setSelectionRange(len(s)-9,len(s)-6)
-    event = g.app.gui.create_key_event(c,'\t','Tab',w)
-    ec.selfInsertCommand(event)
-    result = w.getAllText()
-    assert result.endswith('\n    ###abcdef\n'),'result\n%s' % (repr(result))
-finally:
-    w.setAllText(s)
-    p.setBodyString(s)
-    c.recolor_now()
-    
-###abcdef
+<t tx="ekr.20071113202153">s = '\nEnd of leoFind tests.'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
-<t tx="ekr.20071113192611"></t>
-<t tx="ekr.20071113193624"># 7 failures with Alt-5
+<t tx="ekr.20071113202153.1">s = '\nEnd of leoFrame tests.'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
-<t tx="ekr.20071113193729">@
-
-9 failures with Alt-5.
-
-Any unit test that changes the structure of the outline should do the
-following:
-
-- The setUp method should do
-    self.undoMark = c.undoer.getMark()
-before altering the outline.
-
-- The tearDown method should do
-    c.undoer.rollBackToMark(self.undoMark)
-after restoring the outline.
-
-u.rollBackToMark deletes all entries in the undo stack following the saved mark.
-This eliminates references to nodes that no longer exist in the present outline.
+<t tx="ekr.20071113202153.2">s = '\nEnd of leoGlobals tests.'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
-<t tx="ekr.20071113194424.1"></t>
-<t tx="ekr.20071113201736"># Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of leoAtFile tests')
+<t tx="ekr.20071113202452">s = '\nEnd of leoNodes tests.'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
-<t tx="ekr.20071113201833"># Print does not work with the curses gui: it is redirected.
-g.pr('End of leoCommands tests')
-</t>
-<t tx="ekr.20071113201854"># Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of leoConfig tests')
-</t>
-<t tx="ekr.20071113202045"># Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of leoFileCommands tests.')
-</t>
-<t tx="ekr.20071113202153"># Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of leoFind tests.')
-</t>
-<t tx="ekr.20071113202153.1"># Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of leoFrame tests.')
-</t>
-<t tx="ekr.20071113202153.2"># Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of leoGlobals tests.')
-</t>
-<t tx="ekr.20071113202452"># Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of leoNodes tests.')
-</t>
-<t tx="ekr.20071113202510"># Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of leoUndo tests.')
+<t tx="ekr.20071113202510">s = '\nEnd of leoUndo tests.'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
 <t tx="ekr.20071113203234"></t>
-<t tx="ekr.20080310073711.1">gnx = g.app.nodeIndices.toString(None)
-assert(gnx not in (None,'None'))
-assert(len(gnx) &gt; 1)
-</t>
-<t tx="ekr.20080408094623.1"># start
-# targetWord
+<t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
-e = c.editCommands
-k = c.k
-w = c.frame.body.wrapper
-w.setInsertPoint(0)
-k.arg = 't' # 'targetWord'
-e.w = w
-e.oneLineFlag = False
-e.findWord1(event=None)
-i,j = w.getSelectionRange()
-assert i == 10, 'expected 10, got %s' % (i)
-</t>
-<t tx="ekr.20080423110627.11">root = p.copy()
-while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-
-try:
-    p2 = p.insertAsNthChild(0)
-    p2.setHeadString('A')
-    p3 = p.insertAsNthChild(1)
-    p3.setHeadString('B')
-    p4 = p.insertAsNthChild(2)
-    p4.setHeadString('C')
-    p5 = p.insertAsNthChild(3)
-    p5.setHeadString('D')
-    p.expand()
-    c.setCurrentPosition(p3)
-    c.moveOutlineDown()
-    moved = c.p
-    assert moved.h == 'B',          'fail 1: %s' % moved.h
-    assert moved.back().h == 'C',   'fail 2'
-    assert moved.next().h == 'D',   'fail 3'
-    # This assert fails because p4._childIndex != moved.back()._childIndex.
-    # assert moved.back() == p4, 'fail 4: %s != %s' % (moved.back(),p4)
-    assert moved.next() == p5,      'fail 5: %s != %s' % (moved.next(),p5)
-    c.undoer.undo()
-    moved = c.p
-    assert moved.back() == p2,      'fail 4'
-    assert moved.next() == p4,      'fail 5'
-    c.undoer.redo()
-    moved = c.p
-    assert moved.h == 'B',          'fail 1-2: %s' % moved.h
-    assert moved.back().h == 'C',   'fail 2-2'
-    assert moved.next().h == 'D',   'fail 3-2'
-    c.undoer.undo()
-    moved = c.p
-    assert moved.back() == p2,      'fail 4-2'
-    assert moved.next() == p4,      'fail 5-2'
-    c.undoer.redo()
-    moved = c.p
-    assert moved.h == 'B',          'fail 1-3'
-    assert moved.back().h == 'C',   'fail 2-3'
-    assert moved.next().h == 'D',   'fail 3-3'
-
-finally:
-    if 1:
-        while root.hasChildren():
-            root.firstChild().doDelete(newNode=None)
-    c.redraw_now(root)
-</t>
-<t tx="ekr.20080423110627.12">while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-
-try:
-    p2 = p.insertAsNthChild(0)
-    p2.setHeadString('A')
-    p3 = p.insertAsNthChild(1)
-    p3.setHeadString('B')
-    p4 = p.insertAsNthChild(2)
-    p4.setHeadString('C')
-    p5 = p.insertAsNthChild(3)
-    p5.setHeadString('D')
-    p.expand()
-    c.setCurrentPosition(p4)
-    c.moveOutlineUp()
-    moved = c.p
-    assert moved.h == 'C',          'fail 1'
-    assert moved.back().h == 'A',   'fail 2'
-    assert moved.next().h == 'B',   'fail 3'
-    assert moved.back() == p2,      'fail 4: %s != %s' % (moved.back(),p2)
-    # This assert fails because p4._childIndex != moved.back()._childIndex.
-    # assert moved.next() == p3,    'fail 5: %s != %s' % (moved.next(),p3)
-    c.undoer.undo()
-    c.undoer.redo()
-    c.undoer.undo()
-    c.undoer.redo()
-finally:
-    if 1:
-        while p.hasChildren():
-            p.firstChild().doDelete(newNode=None)
-    if 1:
-        c.redraw_now(p)
-</t>
-<t tx="ekr.20080423110627.13"># Do not change the root during external unit tests!
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-
-    import leo.core.leoNodes as leoNodes
-    
-    while p.hasChildren():
-        p.firstChild().doDelete(newNode=None)
-    
-    child = p.insertAsNthChild(0)
-    child.setHeadString('child')
-    
-    try:
-        oldRoot = c.rootPosition()
-        child.moveToRoot(oldRoot=oldRoot) # Does not change child position.
-        c.setRootPosition(child)
-        assert c.positionExists(child)
-        assert c.rootPosition().h == 'child', 'fail 1'
-        next = c.rootPosition().next()
-        assert next.h == 'Startup', 'fail 2: next: %s' % next
-        c.rootPosition().doDelete(newNode=next)
-        c.setRootPosition(next)
-    finally:
-        while p.hasChildren():
-            p.firstChild().doDelete(newNode=None)
-        # c.selectPosition(p)
-        c.redraw_now()
-</t>
-<t tx="ekr.20080423110627.2">n = 0
-for v in c.all_unique_vnodes_iter():
-    if hasattr(v,'unknownAttributes'):
-        d = v.unknownAttributes
-        if d.get('str_leo_pos'):
-            n += 1
-assert n &lt; 2
-</t>
-<t tx="ekr.20080423110627.3"># Delete all children.
-while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-
-child = p.insertAsNthChild(0)
-c.setHeadString(child,'child') # Force the headline to update.
-
-try:
-    assert child, 'no child'
-    c.selectPosition(child)
-    clone = c.clone()
-    assert clone == c.p
-    assert clone.h == 'child','fail headstring: %s' % clone.h
-    assert child.isCloned(), 'fail 1'
-    assert clone.isCloned(), 'fail 2'
-    assert child.isCloned(), 'fail 3'
-    assert clone.isCloned(), 'fail 4'
-    c.undoer.undo()
-    assert not child.isCloned(), 'fail 1-a'
-    c.undoer.redo()
-    assert child.isCloned(),    'fail 1-b'
-    c.undoer.undo()
-    assert not child.isCloned(), 'fail 1-c'
-    c.undoer.redo()
-    assert child.isCloned(),    'fail 1-d'
-    oldRoot = c.rootPosition()
-    clone.moveToRoot(oldRoot=oldRoot) # Does not change child position.
-    assert child.isCloned(),    'fail 3-2'
-    assert clone.isCloned(),    'fail 4-2'
-    assert not clone.parent(),  'fail 5'
-    assert not clone.back(),    'fail 6'
-    clone.doDelete()
-    assert not child.isCloned(), 'fail 7'
-finally:
-    # Delete all children.
-    if 1:
-        while p.hasChildren():
-            p.firstChild().doDelete(newNode=None)
-    c.redraw_now(p)
-</t>
-<t tx="ekr.20080423110627.5">while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-
-child = p.insertAsNthChild(0)
-child.setHeadString('child')
-child2 = p.insertAsNthChild(1)
-child2.setHeadString('child2')
-grandChild = child.insertAsNthChild(0)
-grandChild.setHeadString('grand child')
-c.selectPosition(grandChild)
-c.clone()
-c.selectPosition(child)
-
-try:
-    p.expand()
-    c.selectPosition(child)
-    assert c.p.h == 'child','fail 1'
-    c.copyOutline()
-    oldVnodes = [p2.v for p2 in child.self_and_subtree()]
-    c.selectPosition(child)
-    c.p.contract() # Essential
-    c.pasteOutline()
-    assert c.p != child, 'fail 2'
-    assert c.p.h == 'child','fail 3'
-    newVnodes = [p2.v for p2 in c.p.self_and_subtree()]
-    for v in newVnodes:
-        assert v not in oldVnodes, 'fail 4'
-    c.undoer.undo()
-    c.undoer.redo()
-    c.undoer.undo()
-    c.undoer.redo()
-
-finally:
-    if 1:
-        while p.hasChildren():
-            p.firstChild().doDelete(newNode=None)
-    if 1:
-        c.redraw_now(p)
-</t>
-<t tx="ekr.20080423110627.8">while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-
-child = p.insertAsNthChild(0)
-child.setHeadString('child')
-assert child, 'no child'
-grandChild = child.insertAsNthChild(0)
-grandChild.setHeadString('grand child')
-
-try:
-    c.selectPosition(child)
-    c.copyOutline()
-    oldVnodes = [p2.v for p2 in child.self_and_subtree()]
-    c.p.contract() # Essential
-    c.pasteOutlineRetainingClones()
-    assert c.p != child, 'fail 2'
-    newVnodes = [p2.v for p2 in c.p.self_and_subtree()]
-    for v in newVnodes:
-        assert v in oldVnodes, 'fail 3'
-finally:
-    if 1:
-        while p.hasChildren():
-            p.firstChild().doDelete(newNode=None)
-    if 1:
-        c.redraw_now(p)
-</t>
-<t tx="ekr.20080501121449.1"></t>
-<t tx="ekr.20080501121449.3">assert p.h == '@test insert node',repr(p.h)
-root = p.copy()
-while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-try:
-    assert p.h == '@test insert node',repr(p.h)
-    p2 = p.insertAsNthChild(0)
-    p2.setHeadString('A')
-    p3 = p.insertAsNthChild(1)
-    p3.setHeadString('B')
-    p.expand()
-    c.setCurrentPosition(p2)
-    p4 = c.insertHeadline()
-    assert p4 == c.p
-    p = c.p
-    assert p,'no p'
-    p.setHeadString('inserted')
-    assert p.back(),'no p.back(): %s' % (p)
-    assert p.back().h == 'A', 'fail 1'
-    assert p.next().h == 'B', 'fail 2'
-    c.undoer.undo()
-    # With the new undo logic, it takes 2 undoes.
-    # The first undo undoes the headline changes,
-    # the second undo undoes the insert node.
-    if g.app.isExternalUnitTest:
-        # The situation is different in a null Gui.
-        pass
-    else:
-        c.undoer.undo() 
-    p = c.p
-    assert p == p2,         'fail 3:\n p: %s\np2: %s' % (p,p2)
-    assert p.next() == p3,  'fail 4'
-    c.undoer.redo()
-    p = c.p
-    assert p.back(),          'fail 0-2'
-    assert p.back().h == 'A', 'fail 1-2'
-    assert p.next().h == 'B', 'fail 2-2'
-    c.undoer.undo()
-    p = c.p
-    assert p == p2,         'fail 3-2'
-    assert p.next() == p3,  'fail 3-2'
-    c.undoer.redo()
-    p = c.p
-    assert p.back().h == 'A', 'fail 1-3'
-    assert p.next().h == 'B', 'fail 2-3'
-finally:
-    if 0:
-        while root.hasChildren():
-            root.firstChild().doDelete(newNode=None)
-    c.redraw_now(root)
-</t>
-<t tx="ekr.20080503073030.1">while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-
-try:
-    p2 = p.insertAsNthChild(0)
-    p2.setHeadString('A')
-    p.expand()
-    c.setCurrentPosition(p2)
-    c.moveOutlineLeft()
-    moved = c.p
-    assert moved.h == 'A','fail 1'
-    # This assert fails because p4._childIndex != moved.back()._childIndex.
-    assert moved.back() == p, 'fail 2: %s != %s' % (moved.back(),p4)
-    c.undoer.undo()
-    c.undoer.redo()
-    c.undoer.undo()
-    c.undoer.redo()
-
-    moved.doDelete(newNode=p)
-
-finally:
-    if 1:
-        while p.hasChildren():
-            p.firstChild().doDelete(newNode=None)
-        c.redraw_now(p)
-</t>
-<t tx="ekr.20080503073030.2">while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-
-try:
-    p2 = p.insertAsNthChild(0)
-    p2.setHeadString('A')
-    p3 = p.insertAsNthChild(1)
-    p3.setHeadString('B')
-    p4 = p.insertAsNthChild(2)
-    p4.setHeadString('C')
-    p.expand()
-    c.setCurrentPosition(p3)
-    c.moveOutlineRight()
-    moved = c.p
-    assert moved.h == 'B', 'fail 1'
-    assert moved.parent() == p2
-    c.undoer.undo()
-    c.undoer.redo()
-    c.undoer.undo()
-    c.undoer.redo()
-finally:
-    if 1:
-        while p.hasChildren():
-            p.firstChild().doDelete(newNode=None)
-    if 1:
-        c.redraw_now(p)
-</t>
-<t tx="ekr.20080503082625.3">root = p.copy()
-while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-try:
-    p2 = p.insertAsNthChild(0)
-    p2.setHeadString('A')
-    p3 = p.insertAsNthChild(1)
-    p3.setHeadString('B')
-    p4 = p.insertAsNthChild(2)
-    p4.setHeadString('C')
-    p.expand()
-    c.selectPosition(p3)
-    c.deleteOutline()
-    c.redraw_now()
-    p = c.p
-    assert p.h == 'A', 'fail 1: got %s' % p.h
-    assert p.next().h == 'C', 'fail 2'
-    c.undoer.undo()
-    c.outerUpdate()
-    p = c.p
-    assert p.back() == p2, 'fail 4 %s' % p.back()
-    assert p.next() == p4, 'fail 5'
-    c.undoer.redo()
-    c.outerUpdate()
-    p = c.p
-    assert p.h == 'A',          'fail 1-2'
-    assert p.next().h == 'C',   'fail 2-2'
-    c.undoer.undo()
-    c.outerUpdate()
-    p = c.p
-    assert p.back() == p2,  'fail 4-2'
-    assert p.next() == p4,  'fail 5-2'
-    c.undoer.redo()
-    c.outerUpdate()
-    p = c.p
-    assert p.h == 'A',          'fail 1-3'
-    assert p.next().h == 'C',   'fail 2-3'
-
-finally:
-    if 1:
-        while root.hasChildren():
-            root.firstChild().doDelete(newNode=None)
-    c.redraw_now(root)
-</t>
-<t tx="ekr.20080503082625.4">root = p.copy()
-while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-
-try:
-    p2 = p.insertAsNthChild(0)
-    p2.setHeadString('A')
-    p3 = p.insertAsNthChild(1)
-    p3.setHeadString('B')
-    p4 = p3.insertAsNthChild(0)
-    p4.setHeadString('child 1')
-    p5 = p3.insertAsNthChild(1)
-    p5.setHeadString('child 2')
-    p.expand()
-    p6 = p.insertAsNthChild(2)
-    p6.setHeadString('C')
-    c.setCurrentPosition(p3)
-    c.promote()
-    p = c.p
-    assert p == p3,         'fail 1'
-    assert p.h == 'B',      'fail 2'
-    assert p.next().h=='child 1',            'fail 3'
-    assert p.next().next().h == 'child 2',   'fail child 1'
-    assert p.next().next().next().h == 'C',  'fail child 2'
-    c.undoer.undo()
-    p = c.p
-    assert p == p3
-    assert p.back() == p2,  'fail 5'
-    assert p.next() == p6,  'fail 6'
-    assert p.firstChild().h=='child 1',          'fail child 3'
-    assert p.firstChild().next().h == 'child 2', 'fail child 4'
-    c.undoer.redo()
-    p = c.p
-    assert p == p3,         'fail 1-2'
-    assert p.h == 'B',      'fail 2-2'
-    assert p.next().h=='child 1',            'fail 3-2'
-    assert p.next().next().h == 'child 2',   'fail child 1-2'
-    assert p.next().next().next().h == 'C',  'fail child 2-2'
-    c.undoer.undo()
-    p = c.p
-    assert p == p3
-    assert p.back() == p2,                      'fail 5-2'
-    assert p.next() == p6,                      'fail 6-2'
-    assert p.firstChild().h=='child 1',         'fail child 3-2'
-    assert p.firstChild().next().h == 'child 2','fail child 4-2'
-    c.undoer.redo()
-    p = c.p
-    assert p == p3,     'fail 1-3'
-    assert p.h == 'B',  'fail 2-3'
-    assert p.next().h=='child 1',            'fail 3-3'
-    assert p.next().next().h == 'child 2',   'fail child 1-3'
-    assert p.next().next().next().h == 'C',  'fail child 2-3'
-
-finally:
-    if 1:
-        while root.hasChildren():
-            root.firstChild().doDelete(newNode=None)
-    c.redraw_now(root)
-</t>
-<t tx="ekr.20080503082625.5">root = p.copy()
-while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-
-try:
-    p2 = p.insertAsNthChild(0)
-    p2.setHeadString('A')
-    p3 = p.insertAsNthChild(1)
-    p3.setHeadString('B')
-    p4 = p.insertAsNthChild(2)
-    p4.setHeadString('C')
-    p5 = p.insertAsNthChild(3)
-    p5.setHeadString('D')
-    p.expand()
-    c.setCurrentPosition(p3)
-    c.demote()
-    p = c.p
-    assert p == p3,         'fail 1'
-    assert p.h == 'B',      'fail 2'
-    assert not p.next(),    'fail 3'
-    assert p.firstChild().h == 'C',          'fail child 1'
-    assert p.firstChild().next().h == 'D',   'fail child 2'
-    c.undoer.undo()
-    p = c.p
-    assert p == p3
-    assert p.back() == p2, 'fail 5'
-    assert p.next() == p4, 'fail 6'
-    c.undoer.redo()
-    assert p == p3,         'fail 1-2'
-    assert p.h == 'B',      'fail 2-2'
-    assert not p.next(),    'fail 3-2'
-    assert p.firstChild().h == 'C',         'fail child 1-2'
-    assert p.firstChild().next().h == 'D',  'fail child 2-2'
-    c.undoer.undo()
-    p = c.p
-    assert p.back() == p2, 'fail 4-2'
-    assert p.next() == p4, 'fail 5-2'
-    c.undoer.redo()
-    assert p == p3,         'fail 1-3'
-    assert p.h == 'B',      'fail 2-3'
-    assert not p.next(),    'fail 3-3'
-    assert p.firstChild().h == 'C',         'fail child 1-3'
-    assert p.firstChild().next().h == 'D',  'fail child 2-3'
-
-finally:
-    if 1:
-        while root.hasChildren():
-            root.firstChild().doDelete(newNode=None)
-    c.redraw_now(root)
+Important: this may cause crashes on some platforms.
 </t>
 <t tx="ekr.20080904084223.1"># changed.
 @others
@@ -7006,262 +1880,17 @@ finally:
 <t tx="ekr.20080907123324.3">def spam(): # line 2
     pass
 </t>
-<t tx="ekr.20080917151620.9">@language python
-@comment a b c
-    # @comment must follow @language
-@tabwidth -4
-@pagewidth 72
-@encoding utf-8
-@lineending crlf
-
-d = c.scanAllDirectives(p)
-
-table = (
-    ('delims', ('a','b','c'),),
-    ('encoding','utf-8'),
-    ('language','python'),
-    ('lineending','\r\n'),
-    ('pagewidth',72),
-    ('tabwidth',-4),
-)
-
-for kind,expected in table:
-    got = d.get(kind)
-    assert got == expected, 'kind: %s, expected %s, got %s' % (
-        kind,repr(expected),repr(got))
-</t>
-<t tx="ekr.20081001094920.2"></t>
-<t tx="ekr.20081001094920.3"># Change @file activeUnitTests.txt to @@file activeUnitTests.txt
-for parent in p.parents():
-    if parent.isAnyAtFileNode():
-        parent.h = '@' + parent.h
-        break
+<t tx="ekr.20081111150402.11"># Print does not work: it is redirected.
+s = 'all unit tests done'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
 else:
-    parent = None
-root = p.copy()
-while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-try:
-    p1 = p.insertAsLastChild()
-    assert p1.textOffset() is None
-finally:
-    if 1:
-        while root.hasChildren():
-            root.firstChild().doDelete(newNode=None)
-    if parent:
-        parent.h = parent.h[1:]
-    c.redraw_now()
-</t>
-<t tx="ekr.20081001094920.4">root = p.copy()
-while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-try:
-    p1 = p.insertAsLastChild()
-    p1.setHeadString('@file zzz')
-    assert p1.textOffset() == 0
-finally:
-    if 1:
-        while root.hasChildren():
-            root.firstChild().doDelete(newNode=None)
-    c.redraw_now()
-</t>
-<t tx="ekr.20081001094920.5">root = p.copy()
-while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-try:
-    p1 = p.insertAsLastChild()
-    p1.setHeadString('@file zzz')
-    p2 = p1.insertAsLastChild()
-    assert p1.textOffset() == 0
-    assert p2.textOffset() == 0
-finally:
-    if 1:
-        while root.hasChildren():
-            root.firstChild().doDelete(newNode=None)
-    c.redraw_now()
-</t>
-<t tx="ekr.20081001094920.6">root = p.copy()
-while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-try:
-    p1 = p.insertAsLastChild()
-    p1.setHeadString('@file zzz')
-    body = '''   %s
-    ''' % (g.angleBrackets(' section '))
-    p1.setBodyString(body)
-    p2 = p1.insertAsLastChild()
-    head = g.angleBrackets(' section ')
-    p2.setHeadString(head)
-    assert p1.textOffset() == 0
-    assert p2.textOffset() == 3
-        # Section nodes can appear in with @others nodes,
-        # so they don't get special treatment.
-finally:
-    if 1:
-        while root.hasChildren():
-            root.firstChild().doDelete(newNode=None)
-    c.redraw_now()
-</t>
-<t tx="ekr.20081001094920.7">root = p.copy()
-while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-try:
-    p1 = p.insertAsLastChild()
-    p1.setHeadString('@file zzz')
-    body = '''     %s
-    ''' % (chr(64) + 'others') # ugly hack
-    p1.setBodyString(body)
-    p2 = p1.insertAsLastChild()
-    assert p1.textOffset() == 0
-    assert p2.textOffset() == 5
-    root.firstChild().doDelete(newNode=None)
-finally:
-    if 1:
-        while root.hasChildren():
-            root.firstChild().doDelete(newNode=None)
-    c.redraw_now()
-</t>
-<t tx="ekr.20081111084046.2"></t>
-<t tx="ekr.20081111150402.11"># Print does not work with the curses gui: it is redirected.
-g.pr('\nall unit tests done', color='blue')
-</t>
-<t tx="ekr.20081215084144.10">This is the first sentence.  This
-is the  sentence.  And
-this is the last sentence.
-</t>
-<t tx="ekr.20081215084144.2">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20081215084144.3">This is the first sentence.  This
-is the second sentence.  And
-this  the last sentence.
-</t>
-<t tx="ekr.20081215084144.4">This is the first sentence.  This
-is the second sentence.  And
-this is the last sentence.
-</t>
-<t tx="ekr.20081215084144.5">This is the first sentence.  This
-is the second sentence.  And
-this  the last sentence.
-</t>
-<t tx="ekr.20081215084144.7">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20081215084144.8">This is the first sentence.  This
-is the  sentence.  And
-this is the last sentence.
-</t>
-<t tx="ekr.20081215084144.9">This is the first sentence.  This
-is the second sentence.  And
-this is the last sentence.
-</t>
-<t tx="ekr.20090102061858.2">child = p.insertAsLastChild()
-assert c.positionExists(child)
-child.doDelete()
-assert not c.positionExists(child),'fail 1'
-
-# also check the same on root level
-child = c.rootPosition().insertAfter()
-assert c.positionExists(child)
-child.doDelete()
-assert not c.positionExists(child),'fail 2'
-</t>
-<t tx="ekr.20090102062037.2">for p in c.all_positions():
-    assert c.positionExists(p)
-        # 2012/03/08: If a root is given, the search is confined to that root only.
-
-</t>
-<t tx="ekr.20090104053806.1"># Disabled because modifying errorTest.py creates annoying bzr conflicts.
-
-import os
-
-path = g.os_path_finalize_join(g.app.testDir,'unittest','errorTest.py')
-assert g.os_path_exists(path),path
-timeStamp = c.timeStampDict.get(path)
-val = c.checkFileTimeStamp(path)
-assert val == True
-
-f = open(path)
-s = f.read()
-lines = g.splitLines(s)
-result = [] ; found = False
-tag = '# timestamp:'
-for line in lines:
-    if line.startswith(tag):
-        timeStamp = os.path.getmtime(path)
-        result.append('%s %s\n' % (tag,timeStamp))
-        found = True
-    else:
-        result.append(line)
-f.close()
-
-assert found,' no line starts with "%s"' % tag
-
-f = open(path,'w')
-f.write(''.join(result))
-f.close()
-
-timeStamp2 = os.path.getmtime(path)
-assert timeStamp != timeStamp2
-val = c.checkFileTimeStamp(path)
-assert not val,repr(val)
-c.setFileTimeStamp(path)
-val = c.checkFileTimeStamp(path)
-assert val,repr(val)
-</t>
-<t tx="ekr.20090130133404.2">v = p.v
-b = p.b
-p.b = b
-assert p.b == b
-v.b = b
-assert v.b == b
-
-h = p.h
-p.h = h
-assert p.h == h
-v.h = h
-assert v.h == h
-
-for p in c.all_positions():
-    assert p.b == p.bodyString()
-    assert p.v.b == p.v.bodyString()
-    assert p.h == p.headString()
-    assert p.v.h == p.v.headString()
+    g.pr(s,color='blue')
 </t>
 <t tx="ekr.20090306091634.1">tree = c.frame.tree
 if hasattr(tree,'redrawCount'):
     print('%s: %s' % (p.h,tree.redrawCount))
-</t>
-<t tx="ekr.20090427104851.10">if a:
-    b = 'xyz'
-</t>
-<t tx="ekr.20090427104851.11">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20090427104851.12">if a:
-    b = 'xyz'
-</t>
-<t tx="ekr.20090427104851.13">if a:
-    b = 'xyz'
-</t>
-<t tx="ekr.20090427104851.14">if a:
-    b = 'xyz'
-</t>
-<t tx="ekr.20090427104851.15">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20090427104851.16">if a:
-    b = 'xyz'
-</t>
-<t tx="ekr.20090427104851.17">if a:
-    b = 'xyz'
-</t>
-<t tx="ekr.20090427104851.18">if a:
-    b = 'xyz'
-</t>
-<t tx="ekr.20090427104851.7">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20090427104851.8">if a:
-    b = 'xyz'
-</t>
-<t tx="ekr.20090427104851.9">if a:
-    b = 'xyz'
 </t>
 <t tx="ekr.20090529141856.4682"></t>
 <t tx="ekr.20090529141856.4684">@language python
@@ -8554,8 +3183,12 @@ for ext in g.app.extension_dict.keys():
         if language is None:
             print('no language for ext=%s' % (ext))
 </t>
-<t tx="ekr.20090615053403.4957"># Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of leoColor tests')
+<t tx="ekr.20090615053403.4957">s = '\nEnd of leoColor tests'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
 <t tx="ekr.20090704085350.5014">@others</t>
 <t tx="ekr.20090704085350.5022">@language python
@@ -8587,59 +3220,60 @@ g.pr('\nEnd of leoColor tests')
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20100119102849.5108"># backward-find-character and find-character
-# can't be tested this way because they require k.getarg.
-# They pass hand tests.
+<t tx="ekr.20091206090247.5060"># Use these with caution.</t>
+<t tx="ekr.20091206090247.5061">count = 0
+for p in c.all_unique_positions():
+    count += 1
+    # Empty tnodeLists are not errors because they never get written to the .leo file.
+    v = p.v
+    if hasattr(v,"tnodeList") and len(v.tnodeList) &gt; 0 and not v.isAnyAtFileNode():
+        g.es("deleting tnodeList for " + `v`,color="blue")
+        delattr(v,"tnodeList")
+        c.setChanged(True)
 
-&lt;&lt; define table &gt;&gt;
+s = "%d nodes" % count
+print(s) ; g.es(s)</t>
+<t tx="ekr.20091206090247.5062"># About the only time you should run this script is when:
+# - changing the format of timestamps in nodeIndices.setTimestamp or
+# - when making a retroactive change to leoID.txt.
 
-w = c.frame.body.wrapper
-child = g.findNodeInChildren(c,p,'work')
-assert child
-c.selectPosition(child)
+if 0: # This is usually a very bad idea.
 
-for commandName in table:
-    # Put the cursor in the middle of the middle line
-    # so all cursor moves will actually do something.
-    w.setInsertPoint(15) # for move-past-close
-    try:
-        c.editCommands.extendMode = True
-        c.keyHandler.simulateCommand(commandName)
-        i,j = w.getSelectionRange()
-        assert i != j,'i == j: %s %s' % (i,commandName)
-    finally:
-        c.editCommands.extendMode = False
+    for p in c.all_positions():
+        p.v.fileIndex = None
 
-</t>
-<t tx="ekr.20100119102849.5109"># Cursor movement commands affected by extend mode.
-# The x-extend-selection commands are not so affected.
-table = (
-    'back-to-indentation',
-    'back-to-home',
-    'back-char',
-    'back-page',
-    'back-paragraph',
-    'back-sentence',
-    'back-word',
-    'beginning-of-buffer',
-    'beginning-of-line',
-    'end-of-buffer',
-    'end-of-line',
-    'forward-char',
-    'forward-page',
-    'forward-paragraph',
-    'forward-sentence',
-    'forward-end-word',
-    'forward-word',
-    'move-past-close',
-    'next-line',
-    'previous-line',
-)
-</t>
-<t tx="ekr.20100119102849.5110">line 1.
-line 2(xxx).
-line 3.
-</t>
+    g.es("all timestamps cleared")</t>
+<t tx="ekr.20091206090247.5063">doDelete = False
+put = g.es_print
+for p in c.all_positions():
+    if p.v.u:
+        put("found v.u:",p.h,
+            g.listToString(p.v.u.keys()))
+        if doDelete:
+            p.v.u = None
+put('done') 
+c.redraw()</t>
+<t tx="ekr.20100102164959.5088">nodes = 0 ; lines = 0
+for p in c.all_unique_positions():
+    nodes += 1
+    lines += len(g.splitLines(p.b))
+
+pages = ((nodes * 10) + lines) / 50
+s = "%d nodes,  %d lines, %d pages" % (nodes,lines,pages)
+print(s); g.es(s)</t>
+<t tx="ekr.20100123172713.5114"></t>
+<t tx="ekr.20100123172713.5116">count = 0
+for p in c.all_unique_positions():
+    count += 1
+    # Empty tnodeLists are not errors because they never get written to the .leo file.
+    v = p.v
+    if hasattr(v,"tnodeList"): # and len(v.tnodeList) &gt; 0 and not v.isAnyAtFileNode():
+        g.es("deleting tnodeList for " + `v`,color="blue")
+        delattr(v,"tnodeList")
+        c.setChanged(True)
+
+s = "%d nodes" % count
+print s ; g.es(s)</t>
 <t tx="ekr.20100131171342.5473"></t>
 <t tx="ekr.20100131171342.5474">if g.app.gui.guiName() == 'tkinter':
 
@@ -8816,8 +3450,12 @@ for tag,aList in table:
                         ok = False
     return ok
 </t>
-<t tx="ekr.20100131171342.5501" annotate="7d71002e"># Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of plugins unit tests')
+<t tx="ekr.20100131171342.5501" annotate="7d71002e">s = '\nEnd of plugins unit tests'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
 <t tx="ekr.20100131171342.5509">import leo.core.leoBridge as leoBridge
 
@@ -8839,291 +3477,19 @@ if g.app.isExternalUnitTest:
 else:
     self.skipTest('Can not be run locally')
 </t>
-<t tx="ekr.20100131171342.5603" annotate="7d71002e"># Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of leoGui tests.')
-</t>
-<t tx="ekr.20100131171342.5609" annotate="7d71002e"># Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of leoKeys tests.')
-</t>
-<t tx="ekr.20100131180007.5369">table = (
-    '1',
-    '1-1','1-1-1','1-1-2',
-    '1-2','1-2-1','1-2-2',
-    '2',
-    '2-1','2-1-1','2-1-2',
-    '2-2','2-2-1','2-2-2',
-    '3',
-    '3-1','3-1-1','3-1-2',
-    '3-2','3-2-1','3-2-2',
-)
-
-for suffix in table:
-    h = 'node %s' % suffix
-    p2 = g.findNodeInTree(c,p,h)
-    assert p2,h
-
-table2 = (
-    ('2-1-2','2-1-1','2-1-1'),
-    ('3','2','2'),
-)  
-
-for h1,h2,h3 in table2:
-    p1 = g.findNodeInTree(c,p,'node %s' % h1)
-    p2 = g.findNodeInTree(c,p,'node %s' % h2)
-    p3 = g.findNodeInTree(c,p,'node %s' % h3)
-    p1._adjustPositionBeforeUnlink(p2)
-    result = p1
-    assert result.stack == p3.stack,'expected %s got %s' % (
-        p3.h,result and result.h or '&lt;none&gt;')
-
-# Data.
-@others
-</t>
-<t tx="ekr.20100131180007.5370"># Node 1
-</t>
-<t tx="ekr.20100131180007.5371"># node 1-1
-</t>
-<t tx="ekr.20100131180007.5372"># node 1-1-1
-</t>
-<t tx="ekr.20100131180007.5373"># node 1-1-2
-</t>
-<t tx="ekr.20100131180007.5374"># node 1-2
-</t>
-<t tx="ekr.20100131180007.5375"># node 1-2-1
-</t>
-<t tx="ekr.20100131180007.5376"># node 1-2-2
-</t>
-<t tx="ekr.20100131180007.5377"># node 2
-</t>
-<t tx="ekr.20100131180007.5378"># node 2-1
-</t>
-<t tx="ekr.20100131180007.5379"># node 2-1-1
-</t>
-<t tx="ekr.20100131180007.5380"># node 2-1-2
-</t>
-<t tx="ekr.20100131180007.5381"># node 2-2
-</t>
-<t tx="ekr.20100131180007.5382"># node 2-2-1
-</t>
-<t tx="ekr.20100131180007.5383"># node 2-2-2
-</t>
-<t tx="ekr.20100131180007.5384"># node 3
-</t>
-<t tx="ekr.20100131180007.5385"># node 3-1
-</t>
-<t tx="ekr.20100131180007.5386"># node 3-1-1
-</t>
-<t tx="ekr.20100131180007.5387"># node 3-1-2
-</t>
-<t tx="ekr.20100131180007.5388"># node 3-2
-</t>
-<t tx="ekr.20100131180007.5389"># node 3-2-1
-</t>
-<t tx="ekr.20100131180007.5390"># node 3-2-2
-</t>
-<t tx="ekr.20100131180007.5391">table = (
-    ('@auto-rst rst-file','rst-file','rst-file'),
-    ('@auto x','x',''),
-    ('xyz','',''),
-)
-
-for s,expected1,expected2 in table:
-    result1 = p.v.atAutoNodeName(h=s)
-    result2 = p.v.atAutoRstNodeName(h=s)
-    assert result1 == expected1,'fail1: given %s expected %s got %s' % (
-        repr(s),repr(expected1),repr(result1))
-    assert result2 == expected2,'fail2: given %s expected %s got %s' % (
-        repr(s),repr(expected2),repr(result2))
-</t>
-<t tx="ekr.20100131180007.5453"># A totally wimpy test.
-# And it somehow prints a newline to the console.
-if 0:
-    c.abbrevCommands.dynamicExpandHelper(event=None,prefix='',aList=[],w=None)
-</t>
-<t tx="ekr.20100131180007.5465">class StubConfig(g.nullObject):
-    pass
-
-x = StubConfig()
-assert not x.getBool(c,'mySetting')
-assert not x.enabledPluginsFileName
-</t>
-<t tx="ekr.20100131180007.5466">p2 = p.firstChild().firstChild().firstChild()
-aList = g.get_directives_dict_list(p2)
-path = c.scanAtPathDirectives(aList)
-endpath = g.os_path_normpath('one/two')
-assert path and path.endswith(endpath),'expected ending %s got %s' % (
-    endpath,path)
-</t>
-<t tx="ekr.20100131180007.5467"></t>
-<t tx="ekr.20100131180007.5468"></t>
-<t tx="ekr.20100131180007.5469"></t>
-<t tx="ekr.20100203103015.5353"># Not a perfect test, but stil significant.
-efc = g.app.externalFilesController
-result = efc.ask(c,p.h)
-assert result in (True, False),result
-</t>
-<t tx="ekr.20100203103015.5354">efc = g.app.externalFilesController
-s = efc.temp_file_path(c,p,'.py')
-assert s.endswith('.py')
-</t>
-<t tx="ekr.20100203103015.5355">@language python
-
-efc = g.app.externalFilesController
-
-table = (
-    # (None,'.py'),
-    # ('','.py'),
-    ('txt','.txt'),
-    ('.txt','.txt'),
-)
-
-for ext,result in table:
-    result2 = efc.get_ext(c,p,ext)
-    assert result==result2,'ext: %s, expected %s, got %s' % (
-        repr(ext),repr(result),repr(result2))
-</t>
-<t tx="ekr.20100203103015.5356">arg = ''
-arg0 = 'one'
-fn = '&lt;fn&gt;'
-filename = '' # g.os.path.basename(arg)
-vtuple = [arg0,fn]
-
-table = (
-    #('os.system',       'os.system(%s)' % (arg+fn)),
-    #('os.startfile',    'os.startfile(%s)' % (arg+fn)),
-    #('exec',            'exec(%s)' % (arg+fn)),
-    #('os.spawnl',       'os.spawnl(%s,%s,%s)' % (arg,filename,fn)),
-    #('os.spawnv',       'os.spawnv(%s,%s)' % (arg0,vtuple)),
-    ('subprocess.Popen','subprocess.Popen(%s)' % vtuple),
-    ('huh?',            'bad command:'+'huh?'),
-)
-
-for openType,result in table:
-    if openType in ('os.spawnv','subprocess.Popen'):
-        arg2 = ['one']
-    else:
-        arg2 = None
-    result2 = c.openTempFileInExternalEditor(
-        arg2,fn,openType,testing=True)
-    assert result==result2,'expected %s, got %s' % (
-        repr(result),repr(result2))
-</t>
-<t tx="ekr.20100203103015.5357">def spam(): pass
-lam = lambda a: None
-class aCallable:
-    def __call__ (self):
-        pass
-c = aCallable()
-
-table = (
-    ('abc',False),
-    (spam,True),
-    (lam,True),
-    (c,True)
-)
-
-for obj,val in table:
-    val2 = g.isCallable(obj)
-    assert val == val2,'%s, expected %s, got %s' % (
-        repr(obj),val,val2)
-</t>
-<t tx="ekr.20100204165850.5371"># These tests will be important when revising config code.
-</t>
-<t tx="ekr.20100204165850.5373">k = c.k
-colorizer = c.frame.body.getColorizer()
-ed = c.editCommands
-# These don't set ivars
-    # 'toggle-active-pane'),
-    # 'toggle-angle-brackets',
-    # 'toggle-input-state'),
-    # 'toggle-mini-buffer'),
-    # 'toggle-split-direction'),
-table = [
-    (k,'abbrevOn','toggle-abbrev-mode'),
-    (ed,'extendMode','toggle-extend-mode'),
-]
-# Not valid for external tests.
-table2 = [
-    (k,'enable_autocompleter','toggle-autocompleter'),
-    (k,'enable_calltips','toggle-calltips'),
-    (c,'sparse_find','toggle-find-collapses-nodes'),
-    (colorizer,'showInvisibles','toggle-invisibles'),
-    (c,'sparse_move','toggle-sparse-move'),
-]
-if not g.app.isExternalUnitTest:
-    table.extend(table2)
-for obj,ivar,command in table:
-    val1 = getattr(obj,ivar)
-    try:
-        k.simulateCommand(command)
-        val2 = getattr(obj,ivar)
-        assert val2 == (not val1),'failed 1 %s' % command
-        k.simulateCommand(command)
-        val3 = getattr(obj,ivar)
-        assert val3 == val1,'failed 2 %s' % command
-    finally:
-        setattr(obj,ivar,val1)
-</t>
-<t tx="ekr.20100204173354.5375">if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
+<t tx="ekr.20100131171342.5603" annotate="7d71002e">s = '\nEnd of leoGui tests.'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
 else:
-    table = (
-        # ('ignore_case','toggle-find-ignore-case-option'),
-            # This option now can be set automagically.
-        ('search_body','toggle-find-in-body-option'),
-        ('search_headline','toggle-find-in-headline-option'),
-        ('mark_changes','toggle-find-mark-changes-option'),
-        ('mark_finds','toggle-find-mark-finds-option'),
-        ('pattern_match','toggle-find-regex-option'),
-        # ('reverse','toggle-find-reverse-option'),
-        ('whole_word','toggle-find-word-option'),
-        ('wrap','toggle-find-wrap-around-option'),
-    )
-    fc = c.findCommands
-    for ivar,command in table:
-        val1 = getattr(fc,ivar)
-        try:
-            c.k.simulateCommand(command)
-            val2 = getattr(fc,ivar)
-            assert val2 == (not val1),'failed 1 %s' % command
-            c.k.simulateCommand(command)
-            val3 = getattr(fc,ivar)
-            assert val3 == val1,'failed 2 %s' % command
-        finally:
-            setattr(fc,ivar,val1)
+    g.pr(s)
 </t>
-<t tx="ekr.20100209155559.5386">efc = g.app.externalFilesController
-d = {'ext':'.py',}
-fn = efc.create_temp_file(c,d,p)
-assert g.os_path_exists(fn),fn
-efc.shut_down()
-assert not g.os_path_exists(fn),fn
-</t>
-<t tx="ekr.20100212104817.5346">c.sortRecentFiles()
-</t>
-<t tx="ekr.20100212104817.5347">child = p.firstChild()
-assert child.h == 'b','fail 1'
-try:
-    c.selectPosition(child)
-    c.sortSiblings()
-    c.redraw_now()
-    child = p.firstChild()
-    assert child.h == 'a'
-    child = child.next()
-    assert child.h == 'b'
-    child = child.next()
-    assert child.h == 'c'
-    assert not child.next()
-finally:
-    c.undoer.undo()
-    p.contract()
-    c.redraw(p)
-</t>
-<t tx="ekr.20100212104817.5348"></t>
-<t tx="ekr.20100212104817.5349"></t>
-<t tx="ekr.20100212104817.5350"></t>
-<t tx="ekr.20100212104817.5351">result = c.helpCommands.getBindingsForCommand('help')
-assert result.strip().lower()=='f1'
+<t tx="ekr.20100131171342.5609" annotate="7d71002e">s = '\nEnd of leoKeys tests.'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
 <t tx="ekr.20100219080213.5365"></t>
 <t tx="ekr.20100219080213.5366">s = '''\
@@ -9241,22 +3607,6 @@ finally:
         c.redraw()
 
 </t>
-<t tx="ekr.20100817131738.5886">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20100817131738.5887">aaaa cccc dddd
-</t>
-<t tx="ekr.20100817131738.5888">aaaa bbbb cccc dddd
-</t>
-<t tx="ekr.20100817131738.5889">aaaa cccc dddd
-</t>
-<t tx="ekr.20100817131738.5894">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20100817131738.5895">aaaa bbcc dddd
-</t>
-<t tx="ekr.20100817131738.5896">aaaa bbbb cccc dddd
-</t>
-<t tx="ekr.20100817131738.5897">aaaa bbcc dddd
-</t>
 <t tx="ekr.20100827194549.5963">def report (self,expected,got):
     '''Report errors in an rst test.'''
     verbose = True
@@ -9271,666 +3621,24 @@ finally:
         if not verbose and not match:
             break
 </t>
-<t tx="ekr.20100830113702.5969">import sys
-if g.app.gui.guiName() == 'qt':
-    if sys.platform.startswith('linux'):
-        self.skipTest('skip headline test')
-    else:
-        exec(g.findTestScript(c,'@common leoEditCommands test code'))
-        runEditCommandTest(c,p,inHeadline=False)
-        runEditCommandTest(c,p,inHeadline=True)
-else:
-    self.skipTest('skip qt test')
-</t>
-<t tx="ekr.20100830113702.5970">aaaa bbbb dddd
-</t>
-<t tx="ekr.20100830113702.5971">aaaa bbbb cccc dddd
-</t>
-<t tx="ekr.20100830113702.5972">aaaa bbbb dddd
-</t>
-<t tx="ekr.20100830113702.5977">import sys
-if g.app.gui.guiName() == 'qt':
-    if sys.platform.startswith('linux'):
-        self.skipTest('skip headline test')
-    else:
-        exec(g.findTestScript(c,'@common leoEditCommands test code'))
-        runEditCommandTest(c,p,inHeadline=False)
-        runEditCommandTest(c,p,inHeadline=True)
-else:
-    self.skipTest('skip qt test')
-</t>
-<t tx="ekr.20100830113702.5978">aaaa bbcc dddd
-</t>
-<t tx="ekr.20100830113702.5979">aaaa bbbb cccc dddd
-</t>
-<t tx="ekr.20100830113702.5980">aaaa bbcc dddd
-</t>
-<t tx="ekr.20100902074747.5970">f = c.abbrevCommands.addAbbrevHelper
-d = c.abbrevCommands.abbrevs
+<t tx="ekr.20101009105124.6195">True (recommended):
+    Write "E" attribute bits in &lt;v&gt; elements.
+    Leo outlines will record the expansion state of all nodes.
 
-# New in Leo 4.10: whitespace (blank,tab,newline) *is* significant in definitions.
-table = (
-    ('ut1','ut1=aa','aa'),
-    # ('ut2','ut2 =bb','bb'),
-    ('ut3','ut3=cc=dd','cc=dd'),
-    ('ut4','ut4= ee',' ee'),
-    ('ut5','ut5= ff = gg',' ff = gg'),
-    ('ut6','ut6= hh==ii',' hh==ii'),
-    ('ut7','ut7=j=k','j=k'),
-    ('ut8','ut8=l==m','l==m'),
-    ('@ut1','@ut1=@a','@a'),
-)
-
-for name,s,expected in table:
-    for s2,kind in ((s,'(no nl)'),(s+'\n','(nl)')):
-        f(s2,tag='unit-test')
-        result,tag = d.get(name,(None,None),)
-        assert result==expected, '%s &lt;%s&gt; expected &lt;%s&gt;, got &lt;%s&gt;' % (
-            kind,s,expected,result)
+False:
+    (Good for files like unitTest.leo)
+    Suppress "E" attribute bits in &lt;v&gt; elements.
+    Only the ancestors of the presently selected node will
+    be expanded when Leo opens an outline.
 </t>
 <t tx="ekr.20101220161557.6016"># Nov. 17, 2016: 878 tests.
 
 # Some tests are disabled when g.app.isExternalUnitTest is True.
 # Using self.skipTest(reason) is now preferred.</t>
-<t tx="ekr.20110118082508.3729"></t>
-<t tx="ekr.20110118082508.3730"># Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
+<t tx="ekr.20110521073115.3494"></t>
+<t tx="ekr.20110521073115.3495">builtins, including cython builtins
 </t>
-<t tx="ekr.20110118082508.3745">Honor this line that has a hanging
-  indentation, please. Hanging
-  indentation is valuable for lists of
-  all kinds. But it is tricky to get
-  right.
-
-Next paragraph.
-</t>
-<t tx="ekr.20110118082508.3746">Honor this line that has a hanging indentation, please.  Hanging
-  indentation is valuable for lists of all kinds.  But it is tricky to get right.
-
-Next paragraph.
-</t>
-<t tx="ekr.20110118082508.3747">Honor this line that has a hanging
-  indentation, please. Hanging
-  indentation is valuable for lists of
-  all kinds. But it is tricky to get
-  right.
-
-Next paragraph.
-</t>
-<t tx="ekr.20110118082508.3748"># Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20110118082508.3754">Honor this line that has a hanging
-  indentation, please. Hanging
-  indentation is valuable for lists of
-  all kinds. But it is tricky to get
-  right.
-
-Next paragraph.
-</t>
-<t tx="ekr.20110118082508.3755">Honor this line that has
-  a hanging indentation, please.  Hanging
-    indentation is valuable for lists of all kinds.  But it is tricky to get right.
-
-Next paragraph.
-</t>
-<t tx="ekr.20110118082508.3756">Honor this line that has a hanging
-  indentation, please. Hanging
-  indentation is valuable for lists of
-  all kinds. But it is tricky to get
-  right.
-
-Next paragraph.
-</t>
-<t tx="ekr.20110118082508.3757"># Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20110118082508.3763">Honor this line that has a hanging
-  indentation, please. Hanging
-  indentation is valuable for lists of
-  all kinds. But it is tricky to get
-  right.
-
-Next Paragraph.
-</t>
-<t tx="ekr.20110118082508.3764">Honor this line that 
-  has a hanging indentation, 
-  please.  Hanging
-   indentation is valuable
-    for lists of all kinds.  But 
-    it is tricky to get right.
-
-Next Paragraph.
-</t>
-<t tx="ekr.20110118082508.3765">Honor this line that has a hanging
-  indentation, please. Hanging
-  indentation is valuable for lists of
-  all kinds. But it is tricky to get
-  right.
-
-Next Paragraph.
-</t>
-<t tx="ekr.20110118082508.3766"># Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20110118082508.3772">Americans live in the most severe
-weather-prone country on Earth. Each
-year, Americans cope with an average of
-10,000 thunderstorms, 2,500 floods,
-1,000 tornadoes, as well as an average
-of 6 deadly hurricanes. Potentially
-deadly weather impacts every American.
-Communities can now rely on the National
-Weather Service’s StormReady program to
-help them guard against the ravages of
-Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-Last paragraph.
-</t>
-<t tx="ekr.20110118082508.3773">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-Last paragraph.
-</t>
-<t tx="ekr.20110118082508.3779"># Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20110118082508.3780">Americans live in the most severe
-weather-prone country on Earth. Each
-year, Americans cope with an average of
-10,000 thunderstorms, 2,500 floods,
-1,000 tornadoes, as well as an average
-of 6 deadly hurricanes. Potentially
-deadly weather impacts every American.
-Communities can now rely on the National
-Weather Service’s StormReady program to
-help them guard against the ravages of
-Mother Nature.
-
-Some 90% of all presidentially declared
-disasters are weather related, leading
-to around 500 deaths per year and nearly
-$14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK,
-helps arm America's communities with the
-communication and safety skills needed
-to save lives and property– before and
-during the event. StormReady helps
-community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-Last paragraph.
-</t>
-<t tx="ekr.20110118082508.3781">Americans live in the most severe
-weather-prone country on Earth. Each
-year, Americans cope with an average of
-10,000 thunderstorms, 2,500 floods,
-1,000 tornadoes, as well as an average
-of 6 deadly hurricanes. Potentially
-deadly weather impacts every American.
-Communities can now rely on the National
-Weather Service’s StormReady program to
-help them guard against the ravages of
-Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-Last paragraph.
-</t>
-<t tx="ekr.20110118082508.3782">Americans live in the most severe
-weather-prone country on Earth. Each
-year, Americans cope with an average of
-10,000 thunderstorms, 2,500 floods,
-1,000 tornadoes, as well as an average
-of 6 deadly hurricanes. Potentially
-deadly weather impacts every American.
-Communities can now rely on the National
-Weather Service’s StormReady program to
-help them guard against the ravages of
-Mother Nature.
-
-Some 90% of all presidentially declared
-disasters are weather related, leading
-to around 500 deaths per year and nearly
-$14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK,
-helps arm America's communities with the
-communication and safety skills needed
-to save lives and property– before and
-during the event. StormReady helps
-community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-Last paragraph.
-</t>
-<t tx="ekr.20110118082508.3787"># Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20110118082508.3788">Americans live in the most severe
-weather-prone country on Earth. Each
-year, Americans cope with an average of
-10,000 thunderstorms, 2,500 floods,
-1,000 tornadoes, as well as an average
-of 6 deadly hurricanes. Potentially
-deadly weather impacts every American.
-Communities can now rely on the National
-Weather Service’s StormReady program to
-help them guard against the ravages of
-Mother Nature.
-
-Some 90% of all presidentially declared
-disasters are weather related, leading
-to around 500 deaths per year and nearly
-$14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK,
-helps arm America's communities with the
-communication and safety skills needed
-to save lives and property– before and
-during the event. StormReady helps
-community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better
-prepared to save lives from the
-onslaught of severe weather through
-better planning, education, and
-awareness. No community is storm proof,
-but StormReady can help communities save
-lives. Does StormReady make a
-difference?
-
-Last paragraph.
-</t>
-<t tx="ekr.20110118082508.3789">Americans live in the most severe
-weather-prone country on Earth. Each
-year, Americans cope with an average of
-10,000 thunderstorms, 2,500 floods,
-1,000 tornadoes, as well as an average
-of 6 deadly hurricanes. Potentially
-deadly weather impacts every American.
-Communities can now rely on the National
-Weather Service’s StormReady program to
-help them guard against the ravages of
-Mother Nature.
-
-Some 90% of all presidentially declared
-disasters are weather related, leading
-to around 500 deaths per year and nearly
-$14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK,
-helps arm America's communities with the
-communication and safety skills needed
-to save lives and property– before and
-during the event. StormReady helps
-community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-Last paragraph.
-</t>
-<t tx="ekr.20110118082508.3790">Americans live in the most severe
-weather-prone country on Earth. Each
-year, Americans cope with an average of
-10,000 thunderstorms, 2,500 floods,
-1,000 tornadoes, as well as an average
-of 6 deadly hurricanes. Potentially
-deadly weather impacts every American.
-Communities can now rely on the National
-Weather Service’s StormReady program to
-help them guard against the ravages of
-Mother Nature.
-
-Some 90% of all presidentially declared
-disasters are weather related, leading
-to around 500 deaths per year and nearly
-$14 billion in damage. StormReady, a
-program started in 1999 in Tulsa, OK,
-helps arm America's communities with the
-communication and safety skills needed
-to save lives and property– before and
-during the event. StormReady helps
-community leaders and emergency managers
-strengthen local safety programs.
-
-StormReady communities are better
-prepared to save lives from the
-onslaught of severe weather through
-better planning, education, and
-awareness. No community is storm proof,
-but StormReady can help communities save
-lives. Does StormReady make a
-difference?
-
-Last paragraph.
-</t>
-<t tx="ekr.20110118082508.3792">Americans live in the most severe
-weather-prone country on Earth. Each
-year, Americans cope with an average of
-10,000 thunderstorms, 2,500 floods,
-1,000 tornadoes, as well as an average
-of 6 deadly hurricanes. Potentially
-deadly weather impacts every American.
-Communities can now rely on the National
-Weather Service’s StormReady program to
-help them guard against the ravages of
-Mother Nature.
-
-Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
-
-StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
-
-Last paragraph.
-</t>
-<t tx="ekr.20110118082508.3793"># Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20110118082508.3799">This paragraph leads of this test. It is
-the "lead" paragraph.
-
-  1. This is item 
-     number 1.  It is the first item in the list.
-
-  2. This is item 
-     number 2.  It is the second item in the list.
-
-  3. This is item 
-     number 3.  It is the third item in the list.
-
-This paragraph ends the test.  It is the "final"
-paragraph.
-</t>
-<t tx="ekr.20110118082508.3800">This paragraph leads of this test.  It is the "lead"
-paragraph.
-
-  1. This is item 
-     number 1.  It is the first item in the list.
-
-  2. This is item 
-     number 2.  It is the second item in the list.
-
-  3. This is item 
-     number 3.  It is the third item in the list.
-
-This paragraph ends the test.  It is the "final"
-paragraph.
-</t>
-<t tx="ekr.20110118082508.3803">This paragraph leads of this test. It is
-the "lead" paragraph.
-
-  1. This is item 
-     number 1.  It is the first item in the list.
-
-  2. This is item 
-     number 2.  It is the second item in the list.
-
-  3. This is item 
-     number 3.  It is the third item in the list.
-
-This paragraph ends the test.  It is the "final"
-paragraph.
-</t>
-<t tx="ekr.20110118082508.3808"># Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20110118082508.3809">This paragraph leads of this test. It is
-the "lead" paragraph.
-
-  1. This is item number 1. It is the
-     first item in the list.
-
-  2. This is item 
-     number 2.  It is the second item in the list.
-
-  3. This is item 
-     number 3.  It is the third item in the list.
-
-This paragraph ends the test.  It is the "final"
-paragraph.
-</t>
-<t tx="ekr.20110118082508.3810">This paragraph leads of this test. It is
-the "lead" paragraph.
-
-  1. This is item number 1. It is the
-     first item in the list.
-
-  2. This is item 
-     number 2.  It is the second item in the list.
-
-  3. This is item 
-     number 3.  It is the third item in the list.
-
-This paragraph ends the test.  It is the "final"
-paragraph.
-</t>
-<t tx="ekr.20110118082508.3811">This paragraph leads of this test. It is
-the "lead" paragraph.
-
-  1. This is item number 1. It is the
-     first item in the list.
-
-  2. This is item 
-     number 2.  It is the second item in the list.
-
-  3. This is item 
-     number 3.  It is the third item in the list.
-
-This paragraph ends the test.  It is the "final"
-paragraph.
-</t>
-<t tx="ekr.20110118082508.3816"># Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20110118082508.3817">This paragraph leads of this test. It is
-the "lead" paragraph.
-
-  1. This is item number 1. It is the
-     first item in the list.
-
-  2. This is item number 2. It is the
-     second item in the list.
-
-  3. This is item 
-     number 3.  It is the third item in the list.
-
-This paragraph ends the test.  It is the "final"
-paragraph.
-</t>
-<t tx="ekr.20110118082508.3818">This paragraph leads of this test. It is
-the "lead" paragraph.
-
-  1. This is item number 1. It is the
-     first item in the list.
-
-  2. This is item 
-     number 2.  It is the second item in the list.
-
-  3. This is item 
-     number 3.  It is the third item in the list.
-
-This paragraph ends the test.  It is the "final"
-paragraph.
-</t>
-<t tx="ekr.20110118082508.3819">This paragraph leads of this test. It is
-the "lead" paragraph.
-
-  1. This is item number 1. It is the
-     first item in the list.
-
-  2. This is item number 2. It is the
-     second item in the list.
-
-  3. This is item 
-     number 3.  It is the third item in the list.
-
-This paragraph ends the test.  It is the "final"
-paragraph.
-</t>
-<t tx="ekr.20110118082508.3824"># Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20110118082508.3825">This paragraph leads of this test. It is
-the "lead" paragraph.
-
-  1. This is item number 1. It is the
-     first item in the list.
-
-  2. This is item number 2. It is the
-     second item in the list.
-
-  3. This is item number 3. It is the
-     third item in the list.
-
-This paragraph ends the test.  It is the "final"
-paragraph.
-</t>
-<t tx="ekr.20110118082508.3826">This paragraph leads of this test. It is
-the "lead" paragraph.
-
-  1. This is item number 1. It is the
-     first item in the list.
-
-  2. This is item number 2. It is the
-     second item in the list.
-
-  3. This is item 
-     number 3.  It is the third item in the list.
-
-This paragraph ends the test.  It is the "final"
-paragraph.
-</t>
-<t tx="ekr.20110118082508.3827">This paragraph leads of this test. It is
-the "lead" paragraph.
-
-  1. This is item number 1. It is the
-     first item in the list.
-
-  2. This is item number 2. It is the
-     second item in the list.
-
-  3. This is item number 3. It is the
-     third item in the list.
-
-This paragraph ends the test.  It is the "final"
-paragraph.
-</t>
-<t tx="ekr.20110118082508.3832"># Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20110118082508.3833">This paragraph leads of this test. It is
-the "lead" paragraph.
-
-  1. This is item number 1. It is the
-     first item in the list.
-
-  2. This is item number 2. It is the
-     second item in the list.
-
-  3. This is item number 3. It is the
-     third item in the list.
-
-This paragraph ends the test. It is the
-"final" paragraph.
-</t>
-<t tx="ekr.20110118082508.3834">This paragraph leads of this test. It is
-the "lead" paragraph.
-
-  1. This is item number 1. It is the
-     first item in the list.
-
-  2. This is item number 2. It is the
-     second item in the list.
-
-  3. This is item number 3. It is the
-     third item in the list.
-
-This paragraph ends the test.  It is the "final"
-paragraph.
-</t>
-<t tx="ekr.20110118082508.3835">This paragraph leads of this test. It is
-the "lead" paragraph.
-
-  1. This is item number 1. It is the
-     first item in the list.
-
-  2. This is item number 2. It is the
-     second item in the list.
-
-  3. This is item number 3. It is the
-     third item in the list.
-
-This paragraph ends the test. It is the
-"final" paragraph.
-</t>
-<t tx="ekr.20110502130500.3471">aList = [z for z in p.unique_nodes()]
-assert len(aList) == 3,len(aList)
-v1,v2,v3 = aList
-assert v1.h == p.h,p.h
-assert v2.h == 'node 1',v2.h
-assert v3.h == 'node 2',v3.h
-</t>
-<t tx="ekr.20110502130500.3472"># Node 1
-</t>
-<t tx="ekr.20110502130500.3473"># node 3
-</t>
-<t tx="ekr.20110510054817.3475">c.alert('test of c.alert')
+<t tx="ekr.20110521073115.3496">cython keywords
 </t>
 <t tx="ekr.20110610122533.3407">@others
 @language python
@@ -9985,88 +3693,6 @@ for name in commandNames:
 </t>
 <t tx="ekr.20110615130436.3317"># This was used by @test writing a .leo file retains orphan bits.
 # but this test is moot because Leo no longer writes orphan bits.</t>
-<t tx="ekr.20111006064419.3491">if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-elif g.app.gui.guiName() == 'curses':
-    # assert False, 'Not ready yet: interferes with other tests'
-    self.skipTest('Not for curses gui')
-else:
-
-    exec(g.findTestScript(c,'@common x-marked-nodes test code'))
-    
-    def test(p):
-        setup_test(p)
-        c.deleteMarked()
-        n = p.numberOfChildren()
-        assert n == 2 ,'delete: children: %s' % (n)
-        c.undoer.undo()
-        n = p.numberOfChildren()
-        assert n == 4,'undo: children: %s' % (n)
-        c.undoer.redo()
-        n = p.numberOfChildren()
-        assert n == 2 ,'delete: children: %s' % (n)
-    try:
-        test(p)
-    finally:
-        tear_down(p)
-</t>
-<t tx="ekr.20111006064419.3493">if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-elif g.app.gui.guiName() == 'curses':
-    # assert False, 'Not ready yet: interferes with other tests'
-    self.skipTest('Not for curses gui')
-else:
-
-    exec(g.findTestScript(c,'@common x-marked-nodes test code'))
-    
-    def test(p):
-        setup_test(p)
-        n = p.numberOfChildren()
-        assert n == 4 ,'delete: children: %s' % (n)
-        c.moveMarked()
-        assert c.p.h == 'Moved marked nodes'
-        n = p.numberOfChildren()
-        assert n == 2 ,'delete: children: %s' % (n)
-        if 0:
-            # The new move-marked-nodes command doesn't
-            # leave the result in the root node.
-            root = c.rootPosition()
-            assert root.h == 'Moved marked nodes',root.h
-        if 0: # The move-marked-nodes command is no longer undoable.
-            c.undoer.undo()
-            n = p.numberOfChildren()
-            assert n == 4,'undo: children: %s' % (n)
-            c.undoer.redo()
-            n = p.numberOfChildren()
-            assert n == 2 ,'delete: children: %s' % (n)
-    try:
-        test(p)
-    finally:
-        tear_down(p,'Moved marked nodes')
-</t>
-<t tx="ekr.20111006105711.3544">if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-elif g.app.gui.guiName() == 'curses':
-    # assert False, 'Not ready yet: interferes with other tests'
-    self.skipTest('Not for curses gui')
-else:
-
-    exec(g.findTestScript(c,'@common x-marked-nodes test code'))
-    
-    def test(p):
-        setup_test(p)
-        c.cloneMarked()
-        h = 'Clones of marked nodes'
-        assert c.p.h == h,c.p.h
-        c.undoer.undo()
-        assert not g.findNodeAnywhere(c,h)
-        c.undoer.redo()
-        assert c.p.h == h,c.p.h
-    try:
-        test(p)
-    finally:
-        tear_down(p,'Clones of marked nodes')
-</t>
 <t tx="ekr.20111021115306.3697">\begin{document}
 &lt;&lt; Document &gt;&gt;
 % hidden comment
@@ -10102,6 +3728,16 @@ try:
         test_node.deleteAllChildren()
 finally:
     c.redraw()
+</t>
+<t tx="ekr.20111026111009.3972"># lowercase xml tags, one per line.
+
+html
+body
+head
+div
+table
+nodeA
+nodeB
 </t>
 <t tx="ekr.20111029112647.4099"></t>
 <t tx="ekr.20111029112647.4101">s = '''\
@@ -10179,270 +3815,6 @@ try:
     p.deleteAllChildren()
 finally:
     c.redraw()
-</t>
-<t tx="ekr.20111104171708.3847">import leo.core.leoBeautify as leoBeautify
-import leo.commands.convertCommands as convertCommands
-cpp = leoBeautify.CPrettyPrinter(c)
-# c2p = convertCommands.C_To_Python(c)
-fn = 'c tokenize test'
-p2 = g.findNodeInTree(c,p,fn)
-assert p2,'not found: %s' % (fn)
-aList = cpp.tokenize(p2.b)
-assert aList
-# c2p.convertCodeList(aList)
-# s = ''.join(aList)
-</t>
-<t tx="ekr.20111104171708.3848">@language c
-
-static exit_values_ty indent_main_loop(void)
-{
-    codes_ty         hd_type         = code_eof;
-    char           * t_ptr           = NULL;
-    codes_ty         type_code       = start_token;
-    exit_values_ty   file_exit_value = total_success;
-    int              dec_ind         = 0; /* current indentation for declarations */
-
-    BOOLEAN          scase           = false; /* true when we've just see a "case";
-                                               * determines what to do with the
-                                               * following colon */
-    BOOLEAN          flushed_nl;              /* Used when buffering up comments to remember that
-                                               * a newline was passed over */
-    BOOLEAN          sp_sw           = false; /* true when in the expression part of if(...),
-                                               * while(...), etc. */
-    BOOLEAN          force_nl        = false;
-
-    /* last_token_ends_sp: True if we have just encountered the end of an if (...),
-     * etc. (i.e. the ')' of the if (...) was the last token).  The variable is
-     * set to 2 in the middle of the main token reading loop and is decremented
-     * at the beginning of the loop, so it will reach zero when the second token
-     * after the ')' is read.
-     */
-
-    BOOLEAN          last_token_ends_sp = false;
-
-    BOOLEAN          last_else = false; /* true if last keyword was an else */
-
-    for (;;)
-    {
-        /* this is the main loop.  it will go until
-         * we reach eof */
-
-        BOOLEAN is_procname_definition;
-        bb_code_ty can_break;
-
-        if (type_code != newline)
-        {
-            can_break = parser_state_tos-&gt;can_break;
-        }
-
-        parser_state_tos-&gt;last_saw_nl = false;
-        parser_state_tos-&gt;can_break = bb_none;
-
-        type_code = lexi ();    /* lexi reads one token.  "token" points to
-                                 * the actual characters. lexi returns a code
-                                 * indicating the type of token */
-
-        /* If the last time around we output an identifier or
-         * a paren, then consider breaking the line here if it's
-         * too long.
-         *
-         * A similar check is performed at the end of the loop, after
-         * we've put the token on the line. */
-
-        if ((settings.max_col &gt; 0) &amp;&amp;
-            (buf_break != NULL) &amp;&amp;
-            ( ( (parser_state_tos-&gt;last_token == ident) &amp;&amp;
-                (type_code != comma) &amp;&amp;
-                (type_code != semicolon) &amp;&amp;
-                (type_code != newline) &amp;&amp;
-                (type_code != form_feed) &amp;&amp;
-                (type_code != rparen) &amp;&amp;
-                (type_code != struct_delim)) ||
-              ( (parser_state_tos-&gt;last_token == rparen) &amp;&amp;
-                (type_code != comma) &amp;&amp;
-                (type_code != rparen) ) ) &amp;&amp;
-            (output_line_length () &gt; settings.max_col))
-        {
-            break_line = 1;
-        }
-
-        if (last_token_ends_sp &gt; 0)
-        {
-            last_token_ends_sp--;
-        }
-
-        is_procname_definition =
-                (((parser_state_tos-&gt;procname[0] != '\0') &amp;&amp;
-                  parser_state_tos-&gt;in_parameter_declaration) ||
-                 (parser_state_tos-&gt;classname[0] != '\0'));
-
-        /* The following code moves everything following an if (), while (),
-         * else, etc. up to the start of the following stmt to a buffer. This
-         * allows proper handling of both kinds of brace placement.
-         */
-
-        flushed_nl = false;
-
-        if (!search_brace(&amp;type_code, &amp;force_nl, &amp;flushed_nl, &amp;last_else, &amp;is_procname_definition))
-        {
-            /* Hit EOF unexpectedly in comment. */
-            return indent_punt;
-        }
-        
-        if (type_code == code_eof)
-        {
-            /* we got eof */
-            if (s_lab != e_lab || s_code != e_code || s_com != e_com)   /* must dump end of line */
-            {
-                dump_line(true, &amp;paren_target);
-            }
-
-            if (parser_state_tos-&gt;tos &gt; 1)      /* check for balanced braces */
-            {
-                ERROR (_("Unexpected end of file"), 0, 0);
-                file_exit_value = indent_error;
-            }
-
-            if (settings.verbose)
-            {
-                printf (_("There were %d non-blank output lines and %d comments\n"),
-                        (int) out_lines, (int) com_lines);
-                if (com_lines &gt; 0 &amp;&amp; code_lines &gt; 0)
-                {
-                    printf (_("(Lines with comments)/(Lines with code): %6.3f\n"),
-                            (1.0 * com_lines) / code_lines);
-                }
-            }
-            flush_output ();
-
-            return file_exit_value;                                              /* RETURN */
-        }
-
-        if ((type_code != comment) &amp;&amp;
-            (type_code != cplus_comment) &amp;&amp;
-            (type_code != newline) &amp;&amp;
-            (type_code != preesc) &amp;&amp;
-            (type_code != form_feed))
-        {
-            if (force_nl &amp;&amp;
-                (type_code != semicolon) &amp;&amp;
-                ( (type_code != lbrace) ||
-                  (!parser_state_tos-&gt;in_decl &amp;&amp; !settings.btype_2) ||
-                  (parser_state_tos-&gt;in_decl &amp;&amp; !settings.braces_on_struct_decl_line) ||
-                  (parser_state_tos-&gt;last_token == rbrace)))
-            {
-                if (settings.verbose &amp;&amp; !flushed_nl)
-                {
-                    WARNING (_("Line broken 2"), 0, 0);
-                }
-
-                flushed_nl = false;
-                dump_line(true, &amp;paren_target);
-                parser_state_tos-&gt;want_blank = false;
-                force_nl = false;
-            }
-
-            parser_state_tos-&gt;in_stmt = true;   /* turn on flag which causes
-                                                 * an extra level of
-                                                 * indentation. this is
-                                                 * turned off by a ; or } */
-            if (s_com != e_com)
-            {
-                /* the code has an embedded comment in the
-                 * line. Move it from the com buffer to the
-                 * code buffer.
-                 *
-                 * Do not add a space before the comment if it is the first
-                 * thing on the line.
-                 */
-
-                if (e_code != s_code)
-                {
-                    set_buf_break (bb_embedded_comment_start, paren_target);
-                    *e_code++ = ' ';
-                    embedded_comment_on_line = 2;
-                }
-                else
-                {
-                    embedded_comment_on_line = 1;
-                }
-
-                for (t_ptr = s_com; *t_ptr; ++t_ptr)
-                {
-                    check_code_size();
-                    *e_code++ = *t_ptr;
-                }
-
-                set_buf_break (bb_embedded_comment_end, paren_target);
-                *e_code++ = ' ';
-                *e_code = '\0'; /* null terminate code sect */
-                parser_state_tos-&gt;want_blank = false;
-                e_com = s_com;
-            }
-        }
-        else if ((type_code != comment) &amp;&amp;
-                 (type_code != cplus_comment) &amp;&amp;
-                 !(settings.break_function_decl_args &amp;&amp;
-                   (parser_state_tos-&gt;last_token == comma)) &amp;&amp;
-                 !( (parser_state_tos-&gt;last_token == comma) &amp;&amp;
-                    !settings.leave_comma))
-        {
-            /* preserve force_nl thru a comment but
-             * cancel forced newline after newline, form feed, etc.
-             * however, don't cancel if last thing seen was comma-newline
-             * and -bc flag is on. */
-
-            force_nl = false;
-        }
-
-        /* Main switch on type of token scanned */
-
-        check_code_size();
-        
-        /* now, decide what to do with the token */
-
-        handle_the_token(type_code, &amp;scase, &amp;force_nl, &amp;sp_sw, &amp;flushed_nl,
-                         &amp;hd_type, &amp;dec_ind, &amp;last_token_ends_sp, &amp;file_exit_value,
-                         can_break, &amp;last_else, is_procname_definition);
-        
-        *e_code = '\0';         /* make sure code section is null terminated */
-
-        if ((type_code != comment) &amp;&amp;
-            (type_code != cplus_comment) &amp;&amp;
-            (type_code != newline) &amp;&amp;
-            (type_code != preesc) &amp;&amp;
-            (type_code != form_feed))
-        {
-            parser_state_tos-&gt;last_token = type_code;
-        }
-
-        /* Now that we've put the token on the line (in most cases),
-         * consider breaking the line because it's too long.
-         *
-         * Don't consider the cases of `unary_op', newlines,
-         * declaration types (int, etc.), if, while, for,
-         * identifiers (handled at the beginning of the loop),
-         * periods, or preprocessor commands. */
-
-        if ((settings.max_col &gt; 0) &amp;&amp; (buf_break != NULL))
-        {
-            if ( ( (type_code == binary_op) ||
-                   (type_code == postop) ||
-                   (type_code == question) ||
-                   ((type_code == colon) &amp;&amp; (scase || (squest &lt;= 0))) ||
-                   (type_code == semicolon) ||
-                   (type_code == sp_nparen) ||
-                   (type_code == sp_else) ||
-                   ((type_code == ident) &amp;&amp; (*token == '\"')) ||
-                   (type_code == struct_delim) ||
-                   (type_code == comma)) &amp;&amp;
-                 (output_line_length () &gt; settings.max_col))
-            {
-                break_line = 1;
-            }
-        }
-    }                           /* end of main infinite loop */
-}
 </t>
 <t tx="ekr.20111107102431.3849"># A good test, but we don't want this large a file included in the distro.
 
@@ -10539,6 +3911,17 @@ try:
 finally:
     c.redraw()
 </t>
+<t tx="ekr.20111112092813.4154">g.cls()</t>
+<t tx="ekr.20111112093605.4679"># leoSettings.leo no longer sets any bindings for run-xxx-unit-test.
+# These are now EKR's preferred settings everywhere:
+# there should be little need to run unit tests externally.
+
+run-selected-unit-tests-locally     = Alt-4
+run-marked-unit-tests-locally       = Alt-5
+run-all-unit-tests-locally          = Alt-6
+
+# Important: Alt-9 is used by a unit test
+</t>
 <t tx="ekr.20111112103320.3849">s = '''\
 &lt;body&gt;
 
@@ -10626,109 +4009,6 @@ try:
 finally:
         c.redraw()
 </t>
-<t tx="ekr.20111112171235.3854">w = c.frame.body.wrapper
-p = g.findNodeInTree(c,p,'html')
-assert p,'no test node'
-s = p.b
-indent = c.config.getBool('indent_added_comments',default=True)
-try:
-    i = p.b.find('text')
-    assert i &gt; -1,'fail1: %s' % (repr(p.b))
-    c.selectPosition(p)
-    w.setSelectionRange(i,i+4)
-    c.addComments()
-    if indent:
-        i = p.b.find('&lt;!-- text')
-    else:
-        i = p.b.find('&lt;!--     text')
-    assert i &gt; -1,'fail2: %s' % (repr(p.b))
-    c.deleteComments()
-    assert p.b == s,'fail3: s\n%s\nresult\n%s' % (repr(s),repr(p.b))
-    # Add a comment delim without a blank.
-    c.addComments()
-    p.b = p.b.replace('&lt;!-- ','&lt;!--')
-    i = p.b.find('&lt;!--')
-    w.setSelectionRange(i,i+4)
-    c.deleteComments()
-    assert p.b == s,'fail5: s\n%s\nresult\n%s' % (repr(s),repr(p.b))
-finally:
-    p.b = s
-</t>
-<t tx="ekr.20111112171235.3855">@language html
-&lt;html&gt;
-    text 
-&lt;/html&gt;
-</t>
-<t tx="ekr.20111112171235.3858"># Can't be run externally.
-w = c.frame.body.wrapper
-p = g.findNodeInTree(c,p,'python')
-assert p,'no test node'
-s = p.b
-indent = c.config.getBool('indent_added_comments',default=True)
-
-try:
-    i = p.b.find('pass')
-    assert i &gt; -1,'fail1: %s' % (repr(p.b))
-    c.selectPosition(p)
-    w.setSelectionRange(i,i+4)
-    c.addComments()
-    if indent:
-        i = p.b.find('# pass')
-    else:
-        i = p.b.find('#     pass')
-    assert i &gt; -1,'fail2: %s' % (repr(p.b))
-    c.deleteComments()
-    assert p.b == s,'fail3: %s' % (repr(p.b))
-    # Add a comment delim without a blank.
-    c.addComments()
-    p.b = p.b.replace('# pass','#pass')
-    i = p.b.find('#')
-    w.setSelectionRange(i,i+4)
-    c.deleteComments()
-    assert p.b == s,'fail5: s\n%s\nresult\n%s' % (repr(s),repr(p.b))
-finally:
-    p.b = s
-</t>
-<t tx="ekr.20111112171235.3859">@language python
-
-def spam():
-    pass
-
-# after
-</t>
-<t tx="ekr.20111112211307.3910"># created by old and new add-comments.
-</t>
-<t tx="ekr.20111112211307.3911">@language python
-
-def deleteCommentTest():
-
-#     if 1:
-#         a = 2
-#         b = 3
-
-    # if 1:
-        # a = 2
-        # b = 3
-
-    pass
-</t>
-<t tx="ekr.20111112211307.3912">@language python
-
-def deleteCommentTest():
-
-    if 1:
-        a = 2
-        b = 3
-
-    if 1:
-        a = 2
-        b = 3
-
-    pass
-</t>
-<t tx="ekr.20111112211307.3913">5.0
-12.8
-</t>
 <t tx="ekr.20111115080347.3872"></t>
 <t tx="ekr.20111120124051.3992">from leo.core.leoQt import QtCore,QtGui,QtWidgets
 import leo.plugins.qt_events as qt_events
@@ -10783,37 +4063,6 @@ elif g.app.gui.guiName().startswith('qt'):
 else:
     self.skipTest('Requires Qt Gui')
 </t>
-<t tx="ekr.20111120124051.3994">'''Test that cycle-all-focus cycles through all tabs.'''
-
-import sys
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-elif sys.platform.startswith('linux'):
-    self.skipTest('Linux')
-elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
-else:
-    log = c.frame.log
-    c.bodyWantsFocusNow()
-    w_name = g.app.gui.widget_name
-    w = c.frame.body
-    seen = []
-    while w:
-        event = g.bunch(widget=w)
-        c.editCommands.cycleAllFocus(event=event)
-        w = g.app.gui.get_focus()
-        if w in seen: break
-        seen.append(w)
-    assert len(seen) &gt;2, "expected &gt;2, got %s" % len(seen)
-</t>
-<t tx="ekr.20111121140833.3916">w = c.frame.body.wrapper
-s = w.getAllText()
-i = s.find('(')
-w.setInsertPoint(i)
-c.findMatchingBracket(event=None)
-i,j = w.getSelectionRange()
-assert i &lt; j,'i: %s j: %s' % (i,j)
-</t>
 <t tx="ekr.20111121142012.4030">from leo.core.leoQt import QtGui,QtWidgets
 log = c.frame.log
 name = log.__class__.__name__
@@ -10832,23 +4081,6 @@ elif g.app.gui.guiName().startswith('qt'):
     assert wrapper == log.logCtrl
 else:
     self.skipTest('Requires Qt Gui')
-</t>
-<t tx="ekr.20111121164644.3928">'''Test that cycle-all-focus cycles through all tabs.'''
-
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
-else:
-    log = c.frame.log
-    tabs = log.orderedTabNames()[1:]
-    tabs.append('Log')
-    # Set up the initial state.
-    c.k.keyboardQuit()
-    c.bodyWantsFocusNow()
-    for tab in tabs:
-        log.cycleTabFocus(event=None)
-        assert log.tabName == tab,'expected %s, got %s' % (tab,log.tabName)
 </t>
 <t tx="ekr.20111121224307.3934">if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -10870,6 +4102,25 @@ elif g.app.gui.guiName().startswith('qt'):
         c.k.handleDefaultChar(event, stroke='a')
 else:
     self.skipTest('Requires Qt Gui')
+</t>
+<t tx="ekr.20111123042627.6654"># Leo loads plugins in the order they appear here.
+
+# **Important**: to change these defaults, put
+# an @enabled-plugins node in myLeoSettings.leo.
+
+# Highly-recommended plugins:
+plugins_menu.py
+free_layout.py # needs to be early
+viewrendered.py
+
+# Recommended plugins:
+### contextmenu.py
+# leo_to_html.py
+mod_scripting.py
+# nav_qt.py
+# quicksearch.py
+# stickynotes.py
+# todo.py
 </t>
 <t tx="ekr.20111123214629.3941">from leo.core.leoQt import QtCore,QtGui,QtWidgets
 import leo.plugins.qt_events as qt_events
@@ -10899,6 +4150,9 @@ elif g.app.gui.guiName().startswith('qt'):
 else:
      self.skipTest('Requires Qt Gui')
 </t>
+<t tx="ekr.20111124094121.3941"># These exist for a unit test.</t>
+<t tx="ekr.20111124094121.3942"></t>
+<t tx="ekr.20111124094121.3943"></t>
 <t tx="ekr.20111125182408.3947">def setup():
     while p.hasChildren():
         p.firstChild().doDelete()
@@ -10936,47 +4190,7 @@ try:
     assert child.h.lower() == h.lower(),child.h
 finally:
     setup()</t>
-<t tx="ekr.20111210104652.3958">def setup(p):
-    while p.hasChildren():
-        p.firstChild().doDelete()
-
-child = p.firstChild()
-assert child
-setup(child)
-p2 = child.insertAfter()
-p2.h = "test"
-try:
-    assert c.positionExists(p2),p2
-    p2.moveToFirstChildOf(child)
-    assert c.positionExists(p2),p2
-    p2.moveToLastChildOf(child)
-    assert c.positionExists(p2),p2
-finally:
-    if 1:
-        setup(child)
-    c.redraw(p)
-</t>
-<t tx="ekr.20111210104652.3959"></t>
 <t tx="ekr.20111211094936.3970"></t>
-<t tx="ekr.20111212142649.3971">import sys
-# g.openWithFileName *always* opens the file.
-if g.isPython3 and sys.platform.startswith('linux'):
-    # There is a PyQt issue: https://bugreports.qt.io/browse/QTBUG-35600
-    # The crash causes several other unit tests to fail.
-    pass
-else:
-    c.selectPosition(p)
-    c.copyOutline()
-    try:
-        p2 = c.pasteOutline()
-        assert p2
-        assert not p2.isCloned()
-    finally:
-        if p2: p2.doDelete()
-        c.redraw(p)
-</t>
-<t tx="ekr.20111212142649.3972"># child text.
-</t>
 <t tx="ekr.20111213122041.3930">@language python
 @tabwidth -4
 
@@ -11016,21 +4230,6 @@ finally:
 @others
 # end.
 </t>
-<t tx="ekr.20120212130242.3942"></t>
-<t tx="ekr.20120212130242.3945"></t>
-<t tx="ekr.20120212130242.3946"></t>
-<t tx="ekr.20120212130242.3947"></t>
-<t tx="ekr.20120212130242.3948"></t>
-<t tx="ekr.20120212130242.3949"></t>
-<t tx="ekr.20120212130242.4704"></t>
-<t tx="ekr.20120212130242.4755"></t>
-<t tx="ekr.20120303054735.3931"># Test of bug 930726: expandNodeAndGoToFirstChild only expands or only goes to first child .
-
-p.contract()
-c.expandNodeAndGoToFirstChild()
-assert c.p == p.firstChild()
-</t>
-<t tx="ekr.20120303054735.3932"></t>
 <t tx="ekr.20120306173116.3933">@first # -*- coding: utf-8 -*-
 
 s = '''\
@@ -11046,167 +4245,6 @@ try:
         test_node.deleteAllChildren()
 finally:
     c.redraw()
-</t>
-<t tx="ekr.20120306201833.3942"># Test of bug 799695: colorizer bug after move-lines-up into a docstring
-
-# import os ; os.system('cls')
-
-n = c.frame.body.colorizer.full_recolor_count
-
-c.testManager.runEditCommandTest(p)
-
-# Not an effective test, even though the bug fix was to call
-# c.recolor_now(incremental=False)
-
-# g.trace(n,c.frame.body.colorizer.full_recolor_count)
-
-# assert c.frame.body.colorizer.full_recolor_count &gt; n
-</t>
-<t tx="ekr.20120306201833.3943">@language python
-def test():
-    """ a
-    b
-    c
-    print 1
-    """
-    
-    print 2
-</t>
-<t tx="ekr.20120306201833.3944">@language python
-def test():
-    """ a
-    b
-    c
-    """
-    print 1
-    
-    print 2
-</t>
-<t tx="ekr.20120306201833.3945">@language python
-def test():
-    """ a
-    b
-    c
-    print 1
-    """
-    
-    print 2
-</t>
-<t tx="ekr.20120309155126.3949"># Can't be run externally.
-w = c.frame.body.wrapper
-p = g.findNodeInTree(c,p,'rest and python')
-assert p,'no test node'
-s = p.b
-indent = c.config.getBool('indent_added_comments',default=True)
-
-try:
-    i = p.b.find('pass')
-    assert i &gt; -1,'fail1: %s' % (repr(p.b))
-    c.selectPosition(p)
-    w.setSelectionRange(i,i+4)
-    c.addComments()
-    if indent:
-        i = p.b.find('# pass')
-    else:
-        i = p.b.find('#     pass')
-    assert i &gt; -1,'fail2: %s' % (repr(p.b))
-    c.deleteComments()
-    assert p.b == s,'fail3: %s' % (repr(p.b))
-    # Add a comment delim without a blank.
-    c.addComments()
-    p.b = p.b.replace('# pass','#pass')
-    i = p.b.find('#')
-    w.setSelectionRange(i,i+4)
-    c.deleteComments()
-    assert p.b == s,'fail5: s\n%s\nresult\n%s' % (repr(s),repr(p.b))
-finally:
-    p.b = s
-</t>
-<t tx="ekr.20120309155126.3950">@language rest
-
-This is rest text.
-
-@language python
-
-def spam():
-    pass
-
-# after
-</t>
-<t tx="ekr.20120310121839.3949"># Not valid when run externally: the chapter node will not exist.
-if not g.app.isExternalUnitTest:
-
-    p1 = g.findNodeAnywhere(c,'@chapter aaa')
-    assert p1
-    p2 = g.findNodeAnywhere(c,'aaa node 1')
-    assert p2
-    try:
-        # g.es_print('**1**', c.hoistStack)
-        assert not c.hoistStack, ('fail1', c.hoistStack)
-        c.selectPosition(p1)
-        assert c.p == p1, ('fail2', c.p, p1)
-        c.hoist()
-            # New in Leo 5.3: should do nothing
-        assert c.p == p1, ('fail3', c.p, p1)
-        # assert c.p == p2, ('fail3', c.p, p2)
-        c.dehoist()
-            # New in Leo 5.3: should do nothing:
-        assert c.p == p1, ('fail3', c.p, p1)
-        # assert c.p == p2, 'fail4\n%s\n%s' % (c.p, p2)
-        assert c.hoistStack == [], ('fail5', c.hoistStack)
-    finally:
-        c.hoistStack = []
-        c.selectPosition(p)
-        c.redraw()
-else:
-    self.skipTest('Can not be run locally')
-</t>
-<t tx="ekr.20120311124038.3951">p1 = p.copy()
-try:
-    assert not c.hoistStack
-    c.selectPosition(p1)
-    assert c.p == p1
-    c.hoist()
-    c.goToFirstNode()
-    assert not c.hoistStack
-        # The hoist stack must be cleared to show the first node.
-    assert c.p == c.rootPosition()
-    assert c.p.isVisible(c)
-finally:
-    c.selectPosition(p1)
-    c.redraw()
-</t>
-<t tx="ekr.20120525072421.3889">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20120525072421.3890"># Should remove all trailing whitespace.
-
-a = 2
-
-    b = 3
-    c  = 4
-d = 5
-e = 6
-x
-</t>
-<t tx="ekr.20120525072421.3891"># Should remove all trailing whitespace.
-
-a = 2   
-    
-    b = 3
-    c  = 4  
-d = 5
-e = 6  
-x
-</t>
-<t tx="ekr.20120525072421.3892"># Should remove all trailing whitespace.
-
-a = 2
-
-    b = 3
-    c  = 4
-d = 5
-e = 6
-x
 </t>
 <t tx="ekr.20121011094154.3906">@language python
 </t>
@@ -11264,470 +4302,280 @@ document.body.appendChild(button)
 
 c.importCommands.typeScriptUnitTest(p,s=s,showTree=False)
 </t>
-<t tx="ekr.20121016134831.3906">import leo.core.leoBeautify as leoBeautify
-cpp = leoBeautify.CPrettyPrinter(c)
-# ts2p = c.convertCommands.TS_To_Python(c)
-fn = 'typescript tokenize test'
-p2 = g.findNodeInTree(c,p,fn)
-assert p2,'not found: %s' % (fn)
-aList = cpp.tokenize(p2.b)
-assert aList
-# bts2p.convertCodeList(aList)
-# s = ''.join(aList)
-</t>
-<t tx="ekr.20121016134831.3907">@language javascript
-
-public attemptIncrementalUpdateUnit(previousScript: Script,scriptId: string,newSourceText: ISourceText,editRange: ScriptEditRange): UpdateUnitResult
-    self.logger.log("attemptIncrementalUpdateUnit(\"" + scriptId + "\")")
-    if editRange === None:
-        throw Error("editRange should be valid")
-    var scope1 = self.getEnclosingScopeContextIfSingleScopeEdit(previousScript,scriptId,newSourceText,editRange)
-    if scope1 === None:
-        return None
-    var newScopeLength = scope1.scopeStartAST.limChar - scope1.scopeStartAST.minChar + editRange.delta
-    # Heuristic: if the range to reparse is too big,bail out.
-    # This is because a full parse will be faster than an incremental parse followed by all the necessary fix-ups
-    if newScopeLength &gt;= newSourceText.getLength()/ 2:
-        self.logger.log("  Bailing out because range of scope to reparse(" + newScopeLength + " characters)is greater than half the size of the source text")
-        return None
-    # Capture parsing errors so that they are part of "updateResult"
-    var parseErrors: TypeScript.ErrorEntry:[] = []
-    var errorCapture = function(minChar: number,charLen: number,message: string,unitIndex: number): void
-        parseErrors.push(TypeScript.ErrorEntry:(unitIndex,minChar,minChar + charLen,message))
-    var quickParseResult = TypeScript.quickParse(self.logger,scope1.scopeStartAST,newSourceText,scope1.scopeStartAST.minChar,scope1.scopeStartAST.minChar + newScopeLength,errorCapture)
-    if quickParseResult.endLexState != TypeScript.LexState.Start:
-        self.logger.log("  Bailing out because scope contains unterminated comment")
-        return None
-    var scriptFragment = quickParseResult.Script
-    if scriptFragment.vars.members.length !== 0:
-        self.logger.log("  Bailing out because new source text defines variables")
-        return None
-    #if(scriptFragment.scopes.members.length !== 1)
-    #    logger.log("  Bailing out because new source text defines more than one scope(or none)");
-    #    return null;
-    #
-    # This detects adding close curlies,since they have the side effect of having the parser
-    # parse more members in the scope range.
-    if scriptFragment.bod.members.length !== 1:
-        self.logger.log("  Bailing out because new source text defines more than one scope(or none)")
-        return None
-    var oldScope = scope1.scopeStartAST
-    var newScope = scriptFragment.bod.members[0]
-    if oldScope.nodeType != newScope.nodeType:
-        self.logger.log("  Bailing out because new source text does not define the same scope type as the existing scope")
-        return None
-    if not (&lt;any&gt;oldScope).leftCurlyCount or not (&lt;any&gt;oldScope).rightCurlyCount:
-        self.logger.log("  Bailing out because sopce doesn't have left/right curly count")
-        return None
-    if(&lt;any&gt;oldScope).leftCurlyCount !==(&lt;any&gt;newScope).leftCurlyCount:
-        self.logger.log("  Bailing out because new source text contains more(or fewer)left curly braces")
-        return None
-    if(&lt;any&gt;oldScope).rightCurlyCount !==(&lt;any&gt;newScope).rightCurlyCount:
-        self.logger.log("  Bailing out because new source text contains more(or fewer)right curly braces")
-        return None
-    if newScope.minChar !== 0:
-        self.logger.log("  Bailing out because new function declaration does not start at position 0")
-        return None
-    if newScope.limChar !== newScopeLength:
-        self.logger.log("  Bailing out because new function declaration does not end at the new end position")
-        return None
-    return TypeScript.UpdateUnitResult.singleScopeEdits(previousScript,scriptFragment,oldScope,newScope,editRange,parseErrors)
-</t>
-<t tx="ekr.20130524112342.4137">parent_v = p.parent().v or c.hiddenRootNode
-while p.hasChildren():
-    p.firstChild().doDelete()
-if 0: # passes
-    p.v.cloneAsNthChild(parent_v,p.childIndex())
-if 1:
-    v2 = p.v.insertAsFirstChild()
-    v2.h = 'insertAsFirstChild'
-    v2 = p.v.insertAsLastChild()
-    v2.h = 'insertAsLastChild'
-    v2 = p.v.insertAsNthChild(1)
-    v2.h = 'insertAsNthChild(1)'
-p.expand()
-c.redraw()
-</t>
-<t tx="ekr.20130703132516.4188">p1 = p.copy()
-while p.hasChildren():
-    p.firstChild().doDelete()
-root = p.insertAsLastChild()
-root.h = 'root'
-# Top level
-a1 = root.insertAsLastChild()
-a1.h = 'a'
-a2 = a1.clone()
-d1 = a1.insertAfter()
-d1.h = 'd'
-b1 = root.insertAsLastChild()
-b1.h = 'b'
-# Children of a.
-b11 = b1.clone()
-b11.moveToLastChildOf(a1)
-b12 = b11.clone()
-c2 = b11.insertAfter()
-c2.h = 'c'
-# Children of d
-b11 = b1.clone()
-b11.moveToLastChildOf(d1)
-def parent(p):
-    return p.stack[-1][0].h
-n = root.level()
-aList = []
-nodes = 0
-for p in root.subtree():
-    nodes += 1
-    if p.h == 'b':
-        if 0:
-            parent = p.stack[-1][0]
-            print('found',p.level()-n,p.h,'childIndex',p.childIndex(),'parent:',parent.h)
-        aList.append(p.copy())
-n_aList = len(aList)
-assert n_aList == 6,n_aList
-try:
-    c.deletePositionsInList(aList)
-finally:
-    if 1:
-        while p1.hasChildren():
-            p1.firstChild().doDelete()
-c.redraw()
-</t>
 <t tx="ekr.20130912092638.4150">@first # -*- coding: utf-16 -*-
 @encoding utf-16
 
 Test of utf-16.
 </t>
-<t tx="ekr.20130918043621.4172"></t>
-<t tx="ekr.20130918043621.4190"></t>
-<t tx="ekr.20130918043621.4195"># First, we must remove the trailing newline from the 'after' line.
-h = 'after sel=3.6,3.6'
-p2 = g.findNodeInTree(c,p,h)
-assert p2,h
-s = p2.b
-if s.endswith('\n'):
-    p2.b = p2.b[:-1]
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20130918043621.4196">line 1
-line 2
-line 3
-</t>
-<t tx="ekr.20130918043621.4197">line 1
-line 2
-line 3
-</t>
-<t tx="ekr.20130918043621.4198">line 1
-line 2
-line 3
-</t>
-<t tx="ekr.20130918043621.4199">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20130918043621.4200">line 1
-line 2
+<t tx="ekr.20131111155830.4249"></t>
+<t tx="ekr.20131111155830.4250"># Not yet...
 
-line 4
-</t>
-<t tx="ekr.20130918043621.4201">line 1
-line 2
-line 3
-line 4
-</t>
-<t tx="ekr.20130918043621.4202">line 1
-line 2
+    &lt;BS&gt;        delete the character in front of the cursor
+N   &lt;Del&gt;       delete N characters under and after the cursor
+    &lt;Del&gt;       delete the character under the cursor
+    &lt;Del&gt;       while entering a count: delete last character
+    &lt;Down&gt;      recall newer command-line that starts with current command
+    &lt;Esc&gt;       abandon command-line (if 'wildchar' is &lt;Esc&gt;, type it twice)
+    &lt;Left&gt;      (motion) cursor left
+    &lt;Right&gt;     (motion) cursor right
+    &lt;S-Down&gt;    recall newer command-line from history
+    &lt;S-Left&gt;    (motion) cursor one word left
+    &lt;S-Right&gt;   (motion) cursor one word right
+    &lt;S-Up&gt;      recall older command-line from history
+    &lt;Up&gt;        recall older command-line that starts with current command
 
-line 4
+N   CTRL-^                  Edit alternate file N (equivalent to ":e #N").
+N   CTRL-A                  add N to the number at or after the cursor
+N   CTRL-B                  window N pages Backwards (upwards)
+    CTRL-B                  (motion?) cursor to beginning of command-line
+    CTRL-BREAK              MS-DOS: during searches: interrupt the search
+    CTRL-C                  during searches: interrupt the search
+N   CTRL-D                  window N lines Downwards (default: 1/2 window)
+N   CTRL-E                  window N lines downwards (default: 1)
+    CTRL-E                  (motion?) cursor to end of command-line
+N   CTRL-F                  (motion) window N pages Forwards (downwards)
+    CTRL-G                  show current file name (with path) and cursor position
+N   CTRL-I                  (motion) go to Nth newer position in jump list
+    CTRL-K {char1} {char2}  enter digraph
+    CTRL-L                  Clear and redraw the screen.
+N   CTRL-O                  (motion) go to Nth older position in jump list
+N   CTRL-R                  redo last N undone changes
+    CTRL-R &lt;0-9a-z"%:-&gt;     insert contents of register &lt;0-9a-z"%:-&gt;
+N   CTRL-T                  (motion) Jump back from Nth older tag in tag list
+N   CTRL-U                  window N lines Upwards (default: 1/2 window)
+    CTRL-U                  remove all characters
+    CTRL-V                  highlight blockwise or stop highlighting
+    CTRL-V                  start highlighting blockwise   }  highlighted text
+    CTRL-V {char}           insert {char} literally
+    CTRL-V {number}         enter decimal value of character (up to three digits)
+    CTRL-W                  delete the word in front of the cursor
+    CTRL-W +                Increase current window height
+    CTRL-W -                Decrease current window height
+    CTRL-W =                Make all windows equal height
+    CTRL-W CTRL-W           Move cursor to window below (wrap)
+    CTRL-W CTRL-^           Split window and edit alternate file
+    CTRL-W R                Rotate windows upwards
+    CTRL-W W                Move cursor to window above (wrap)
+    CTRL-W ]                Split window and jump to tag under cursor
+    CTRL-W _                Set current window height (default: very high)
+    CTRL-W b                Move cursor to bottom window
+    CTRL-W c  or :cl[ose]   Make buffer hidden and close window
+    CTRL-W f                Split window and edit file name under the cursor
+    CTRL-W j                Move cursor to window below
+    CTRL-W k                Move cursor to window above
+    CTRL-W n  or :new       Create new empty window
+    CTRL-W o  or :on[ly]    Make current window only one on the screen
+    CTRL-W p                Move cursor to previous active window
+    CTRL-W q  or :q[uit]    Quit editing and close window
+    CTRL-W r                Rotate windows downwards
+    CTRL-W s                Split window into two parts
+    CTRL-W t                Move cursor to top window
+    CTRL-W x                Exchange current window with next one
+N   CTRL-X                  subtract N from the number at or after the cursor
+N   CTRL-Y                  window N lines upwards (default: 1)
+    CTRL-Z                  Same as ":stop!"
+    CTRL-]                  Jump to the tag under cursor, unless changes have been made</t>
+<t tx="ekr.20131111155830.4251">char F
+char T
+char f
+char r
+char t
+letter m
+letter q
+motion &lt;
+motion &gt;
+motion c
+motion d
+motion gU
+motion gq
+motion gu
+motion g~
+motion y
+pattern /
+pattern ?
+register @
 </t>
-<t tx="ekr.20130918043621.4203">c.testManager.runEditCommandTest(p)
+<t tx="ekr.20131111155830.4252"># http://tnerual.eriogerg.free.fr/vimqrc.html
+vim_0 0
+vim_tilda ~
+vim_plus +
+vim_underscore _
+vim_minus -
+vim_comma ,
+vim_dot .
+vim_semicolon ;
+vim_lparen (
+vim_rparen )
+vim_lcurly {
+vim_rcurly }
+vim_vertical |
+vim_backtick `
+vim_dollar $
+vim_caret ^
+vim_percent %
+vim_langle &lt;
+vim_langle &lt;&lt;
+vim_rangle &gt;
+vim_rangle &gt;&gt;
+vim_pound #
+vim_star *
+vim_slash /\\n
+vim_slash /
+vim_question ?\\n
+vim_question ?
+vim_at @
+vim_at @@
+vim_dquote "
+vim_lsquare [#
+vim_lsquare [(
+vim_lsquare [*
+vim_lsquare [[
+vim_lsquare []
+vim_lsquare [p
+vim_lsquare [{
+vim_rsquare ]#
+vim_rsquare ])
+vim_rsquare ]*
+vim_rsquare ][
+vim_rsquare ]]
+vim_rsquare ]p
+vim_rsquare ]}
+vim_A A
+vim_B B
+vim_C C
+vim_D D
+vim_E E
+vim_F F
+vim_G G
+vim_H H
+vim_I I
+vim_J J
+vim_K K
+vim_M M
+vim_L L
+vim_N N
+vim_O O
+vim_P P
+vim_R R
+vim_S S
+vim_T T
+vim_U U
+vim_V V
+vim_W W
+vim_X X
+vim_Y Y
+vim_Z ZQ
+vim_Z ZZ
+vim_a a
+vim_b b
+vim_c c
+vim_d dd
+vim_d d
+vim_g g~
+vim_g g^
+vim_g g#
+vim_g g$
+vim_g g*
+vim_g g0
+vim_g gD
+vim_g gE
+vim_g gI
+vim_g gU
+vim_g ga
+vim_g gd
+vim_g ge
+vim_g gf
+vim_g gg
+vim_g gj
+vim_g gk
+vim_g gq
+vim_g gs
+vim_g gu
+vim_g gv
+vim_h h
+vim_i i
+vim_j j
+vim_k k
+vim_l l
+vim_n n
+vim_m m
+vim_o o
+vim_p p
+vim_q q
+vim_r r
+vim_s s
+vim_t t
+vim_u u
+vim_v v
+vim_w w
+vim_x x
+vim_y y
+vim_y yy
+vim_z z-
+vim_z z.
+vim_z z&lt;CR&gt;
+vim_z zb
+vim_z zh
+vim_z zl
+vim_z zt
+vim_z zz
 </t>
-<t tx="ekr.20130918043621.4204">line 1
-li
-line 3
-</t>
-<t tx="ekr.20130918043621.4205">line 1
-line 2
-line 3
-</t>
-<t tx="ekr.20130918043621.4206">line 1
-li
-line 3
-</t>
-<t tx="ekr.20130918050446.4202">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20130918050446.4203">line 1
-line 2line 3
-</t>
-<t tx="ekr.20130918050446.4204">line 1
-line 2
-line 3
-</t>
-<t tx="ekr.20130918050446.4205">line 1
-line 2line 3
-</t>
-<t tx="ekr.20130918050446.4210">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20130918050446.4211">line 1
-line 2
-line 4
-</t>
-<t tx="ekr.20130918050446.4212">line 1
-line 2
+<t tx="ekr.20131111155830.4253"># CR
+# Ctrl-End
+# Ctrl-Home
+# Ctrl-Left
+# Ctrl-M
+# Ctrl-N
+# Ctrl-P
+# Ctrl-Right
+# End
+# Home
+# Shift-Left
+# Shift-Right
 
-line 4
+( 	
+)
+{
+}
+[[
+[]
+][
+]]
+$
+^	
++
+,
+-
+;
+_
+0
+B
+E
+F
+G
+T
+W
+b
+e
+f
+g$
+g^
+g0
+gE
+# gEnd
+# gHome	
+ge
+gg
+h
+j
+k
+t
+w
 </t>
-<t tx="ekr.20130918050446.4213">line 1
-line 2
-line 4
-</t>
-<t tx="ekr.20130918051958.4176"># First, we must remove the trailing newline from the 'after' line.
-h = 'after sel=3.6,3.6'
-p2 = g.findNodeInTree(c,p,h)
-assert p2,h
-s = p2.b
-if s.endswith('\n'):
-    p2.b = p2.b[:-1]
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20130918051958.4177">line 1
-line 2
-line 3
-</t>
-<t tx="ekr.20130918051958.4178">line 1
-line 2
-line 3
-</t>
-<t tx="ekr.20130918051958.4179">line 1
-line 2
-line 3
-</t>
-<t tx="ekr.20130918052416.4180">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20130918052416.4181">line 1
-# The next line contains two trailing blanks.
-line 3line 4
-</t>
-<t tx="ekr.20130918052416.4182">line 1
-# The next line contains two trailing blanks.
-line 3  
-line 4
-</t>
-<t tx="ekr.20130918052416.4183">line 1
-# The next line contains two trailing blanks.
-line 3line 4
-</t>
-<t tx="ekr.20130923090601.4178">u = c.undoer
-assert u
-c.insertHeadlineBefore()
-assert u.undoMenuLabel == 'Undo Insert Node Before',repr(u.undoMenuLabel)
-c.undoer.undo()
-assert u.redoMenuLabel == 'Redo Insert Node Before',repr(u.undoMenuLabel)
-</t>
-<t tx="ekr.20131103084038.4274"># Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20131103084038.4275">@pagewidth 40
-'''
-docstring.
-'''
-</t>
-<t tx="ekr.20131103084038.4276">@pagewidth 40
-'''
-docstring.
-'''
-</t>
-<t tx="ekr.20131103084038.4277">@pagewidth 40
-'''
-docstring.
-'''
-</t>
-<t tx="ekr.20131103084038.4282"># Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20131103084038.4283">@pagewidth 40
-'''
-docstring.
-'''
-</t>
-<t tx="ekr.20131103084038.4284">@pagewidth 40
-'''
-docstring.
-'''
-</t>
-<t tx="ekr.20131103084038.4285">@pagewidth 40
-'''
-docstring.
-'''
-</t>
-<t tx="ekr.20131103084038.4290"># Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20131103084038.4291">@pagewidth 40
-'''
-docstring. more docstring.
-'''
-</t>
-<t tx="ekr.20131103084038.4292">@pagewidth 40
-'''
-docstring.
-more docstring.
-'''
-</t>
-<t tx="ekr.20131103084038.4293">@pagewidth 40
-'''
-docstring. more docstring.
-'''
-</t>
-<t tx="ekr.20131103084038.4298"># Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20131103084038.4299">- Point 1. xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-  Line 11.
-A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-</t>
-<t tx="ekr.20131103084038.4300">- Point 1. xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-Line 11.
-A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-</t>
-<t tx="ekr.20131103084038.4301">- Point 1. xxxxxxxxxxxxxxxxxxxxxxxxxxxx
-  Line 11.
-A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-</t>
-<t tx="ekr.20131103084038.4306"># Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20131103084038.4307">A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-   Line 22.
-1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-</t>
-<t tx="ekr.20131103084038.4308">A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-  Line 22.
-1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-</t>
-<t tx="ekr.20131103084038.4309">A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-   Line 22.
-1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-</t>
-<t tx="ekr.20131103084038.4314"># Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20131103084038.4315">1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-   Line 32.
-
-2. Point 4  xxxxxxxxxxxxxxxxxxxxxxxxxxx
-</t>
-<t tx="ekr.20131103084038.4316">1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-Line 32.
-
-2. Point 4  xxxxxxxxxxxxxxxxxxxxxxxxxxx
-</t>
-<t tx="ekr.20131103084038.4317">1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-   Line 32.
-
-2. Point 4  xxxxxxxxxxxxxxxxxxxxxxxxxxx
-</t>
-<t tx="ekr.20131103084038.4322"># Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20131103084038.4323">1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-   Line 32.
-
-2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
-        Line 41.
-</t>
-<t tx="ekr.20131103084038.4324">1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-   Line 32.
-
-2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
-        Line 41.
-</t>
-<t tx="ekr.20131103084038.4325">1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
-   Line 32.
-
-2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
-        Line 41.
-</t>
-<t tx="ekr.20131103084038.4330"># Required when running tests externally
-@language plain
-@pagewidth 40
-@tabwidth 8
-
-c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20131103084038.4331">2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
-        Line 41.
-</t>
-<t tx="ekr.20131103084038.4332">2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
-        Line 41.
-</t>
-<t tx="ekr.20131103084038.4333">2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
-        Line 41.
-</t>
-<t tx="ekr.20131220083358.3982">u = c.undoer
-p1 = g.findNodeInTree(c,p,'a')
-p2 = g.findNodeInTree(c,p,'b')
-assert p1 and p2
-assert not p1.isCloned()
-assert not p2.isCloned()
-bunch = u.beforeChangeTree(p)
-p1._relinkAsCloneOf(p2)
-u.afterChangeTree(p,'relink-clone',bunch)
-assert p.firstChild().isCloned()
-assert p.firstChild().next().isCloned()
-c.redraw()
-u.undo()
-c.redraw()
-p1 = g.findNodeInTree(c,p,'a')
-p2 = g.findNodeInTree(c,p,'b')
-assert not p1.isCloned()
-assert not p2.isCloned()
-assert p1 and p2
-u.clearUndoState()
-</t>
-<t tx="ekr.20131220083358.3983"></t>
-<t tx="ekr.20131220083358.3984">b text.
-</t>
-<t tx="ekr.20131227150324.3983"># Verify a fix for bug https://bugs.launchpad.net/leo-editor/+bug/1264350
-if g.app.isExternalUnitTest:
-    # There is no @chapter node in the copied file.
-    self.skipTest('Can not be run externally') 
-else:
-    aaa1 = g.findNodeAnywhere(c,'@chapter aaa')
-    assert aaa1
-    try:
-        c.chapterController.selectChapterByName('aaa',collapse=True)
-        aaa = c.p
-        assert aaa.h == 'aaa node 1',repr(aaa)
-        p2 = p.moveToVisBack(c)
-        assert p2 is None,p2
-    finally:
-        c.chapterController.selectChapterByName('main',collapse=True)
+<t tx="ekr.20131111155830.4254">char F
+char T
+char f
+char t
 </t>
 <t tx="ekr.20140206132559.4560">@others
 </t>
@@ -11749,6 +4597,7 @@ finally:
     before.h = 'before'
     c.redraw()
 </t>
+<t tx="ekr.20140217055617.4231"># For a unit test.</t>
 <t tx="ekr.20140218042220.4347">s = '''\
 
 var c3 = (function () {
@@ -11767,19 +4616,6 @@ var c3 = (function () {
 '''
 
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
-</t>
-<t tx="ekr.20140218045755.4348">@language python
-@tabwidth -4
-
-def not_a_sentinel(x):
-    pass
-@not_a_sentinel
-def spam():
-    pass
-
-s1 = ''.join(g.splitLines(p.b) [2:])
-s2 = p.nosentinels   
-assert s1 == s2,'expected:\n%s\ngot:\n%s' % (s1,s2)
 </t>
 <t tx="ekr.20140218122321.4349">@language html
 s = '''
@@ -11820,6 +4656,7 @@ console.log("Listening on " + port);
 
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 </t>
+<t tx="ekr.20140716121225.4354">print(p.v.gnx)</t>
 <t tx="ekr.20140723134017.4464"># This causes problems!
 import glob
 import importlib
@@ -11831,8 +4668,12 @@ for fn in glob.glob(pattern):
     m = importlib.import_module('leo.plugins.importers.%s' % sfn[:-3])
     assert m
 </t>
-<t tx="ekr.20140724164600.4590"># Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of leoImport tests.')
+<t tx="ekr.20140724164600.4590">s = '\nEnd of leoImport tests.'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s)
 </t>
 <t tx="ekr.20140724220921.5199"></t>
 <t tx="ekr.20140725132959.4593">s = '''\
@@ -11865,6 +4706,7 @@ finally:
         p.deleteAllChildren()
     c.redraw()
 </t>
+<t tx="ekr.20140902101931.4478"></t>
 <t tx="ekr.20140904060337.4476">if g.in_bridge or g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 elif g.app.gui.guiName().startswith('qt'):
@@ -11911,27 +4753,6 @@ elif g.app.gui.guiName().startswith('qt'):
 else:
      self.skipTest('Requires Qt Gui')
 </t>
-<t tx="ekr.20141016101308.4747">assert c.hiddenRootNode.fileIndex.startswith('hidden-root-vnode-gnx'), c.hiddenRootNode.fileIndex
-</t>
-<t tx="ekr.20141020110954.4750"># Bug https://bugs.launchpad.net/leo-editor/+bug/1245535
-h = p.h
-try:
-    p.h = '\nab\nxy\n'
-    assert p.h == 'abxy',p.h
-finally:
-    p.h = h
-</t>
-<t tx="ekr.20141022175515.11">d = {} # Keys are gnx's, values are lists of vnodes with that gnx.
-for p in c.all_positions():
-    gnx = p.v.fileIndex
-    assert gnx,p.v
-    aSet = d.get(gnx,set())
-    aSet.add(p.v)
-    d[gnx] = aSet
-for gnx in sorted(d.keys()):
-    aList = sorted(d.get(gnx))
-    assert len(aList) == 1,(gnx,aList)
-</t>
 <t tx="ekr.20141223125432.11">if not g.isPython3 and g.app.gui.guiName().startswith('qt'):
     import leo.core.leoQt as leoQt
     QString = leoQt.QString
@@ -11952,74 +4773,12 @@ else:
 </t>
 <t tx="ekr.20150208213643.19"># node 2 text B.
 </t>
-<t tx="ekr.20150317093233.11">aList1 = list(c.all_positions())
-aList2 = list(c.safe_all_positions())
-n1,n2 = len(aList1),len(aList2)
-assert n1 == n2,(n1,n2)
-</t>
-<t tx="ekr.20150414144038.1"># main after
-# mainto
+<t tx="ekr.20150216110251.11"># Do not delete this node.
+# It is used by unit tests.</t>
+<t tx="ekr.20150321155210.11"></t>
+<t tx="ekr.20150602215639.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.
 
-ac = c.abbrevCommands
-w = c.frame.body.wrapper
-s = w.getAllText()
-w.setInsertPoint(4)
-i,j = g.getWord(s,4)
-word = s[i:j]
-aList = ac.getDynamicList(w,word)
-c.k.arg = aList[1]
-event = g.bunch(char=None, stroke=None, widget=w)
-ac.dynamicExpandHelper(event)
-    # This *does* support undo.
-s = w.getAllText()
-try:
-    i = s.find('main')
-    assert i == 2,i
-finally:
-    if 0: ###
-        c.undoer.undo()
-</t>
-<t tx="ekr.20150414144103.1"># main after
-# mainto
-
-ac = c.abbrevCommands
-w = c.frame.body.wrapper
-s = w.getAllText()
-w.setInsertPoint(4)
-# i,j = g.getWord(s,4)
-# word = s[i:j]
-event = g.bunch(widget=w)
-ac.dynamicCompletion(event)
-try:
-    i = s.find('main')
-    assert i == 2,i
-finally:
-    if 1:
-        c.undoer.undo(event=event)
-
-</t>
-<t tx="ekr.20150430053825.1">ac = c.abbrevCommands
-assert ac
-child = g.findNodeInTree(c,p,'child')
-assert child
-old_b = child.b
-try:
-    i,j,val = 0,0,child.b
-    # ac.make_script_substitutions(i,j,val)
-    # ac.find_place_holder(child,True)
-    new_s,i,j = ac.next_place(child.b,offset=0)
-    assert i == 34 and j == 40,(i,j)
-    new_s2,i,j = ac.next_place(new_s,offset=40)
-    assert i == 54 and j == 58,(i,j)
-finally:
-    child.b = old_b
-</t>
-<t tx="ekr.20150430061225.1">def spam ():
-    """None - Return &lt;|return|&gt;
-    """
-
-    &lt;|code|&gt;
-</t>
+# This *must* be False in unitTest.leo!</t>
 <t tx="ekr.20150626093653.1"># Not valid for external tests: uses @&lt;file&gt; node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -12440,36 +5199,6 @@ def __init__(self, s: Type) -&gt; None:
 <t tx="ekr.20150919074321.3">def spam(self):
     pass
 </t>
-<t tx="ekr.20160123044102.1"># These must not return NotImplemented!
-root = c.rootPosition()
-assert p.__eq__(None) is False, p.__eq__(None)
-assert p.__ne__(None) is True, p.__ne__(None)
-assert p.__eq__(root) is False, p.__eq__(root)
-assert p.__ne__(root) is True, p.__ne__(root)
-</t>
-<t tx="ekr.20160129082128.1" my_plugin="580300000076616c71002e">assert p.u == p.v.u, (p.u, p.v.u)
-p.v.u = None
-assert p.u == {}, p.u
-assert p.v.u == {}, p.v.u
-d = {'my_plugin': 'val'}
-p.u = d
-assert p.u == d, (p.u, d)
-assert p.v.u == d, (p.v.u, d)
-</t>
-<t tx="ekr.20160314133351.1">c.testManager.runEditCommandTest(p)
-</t>
-<t tx="ekr.20160314133351.2">first line
-before foo += bar2 after
-last line
-</t>
-<t tx="ekr.20160314133351.3">first line
-before bar2 += foo after
-last line
-</t>
-<t tx="ekr.20160314133351.4">first line
-before foo += bar2 after
-last line
-</t>
 <t tx="ekr.20160403123754.1">@language c
 @tabwidth -4
 @others
@@ -12767,6 +5496,9 @@ for base, result, s in table:
 # This is valid Python, but it looks like a section reference.
 a = b &lt;&lt; c &gt;&gt; d
 
+</t>
+<t tx="ekr.20161011095551.1">True: (Experimental): The @auto write code expands section references.
+False: (Legacy):      The @auto write code ignores section references.
 </t>
 <t tx="ekr.20161103015908.1"></t>
 <t tx="ekr.20161103015940.1">s = '''\
@@ -15514,6 +8246,24 @@ finally:
         p.deleteAllChildren()
         c.redraw()
 </t>
+<t tx="ekr.20161123080832.1">'''
+Create a table of expected headlines in a unit test.
+
+Usage: select the desired subnode of an @test node.
+'''
+g.cls()
+# Proper escapes are tricky.
+if p.parent() and p.parent().h.startswith('@test'):
+    table = [
+        '(%s, "%s"),' % (
+            p.level()-c.p.level(),
+            p.h.replace('\\', '\\\\').replace('"', '\\"'),
+        )
+            for p in p.subtree()
+    ]
+    print("table = (\n    %s\n)" % '\n    '.join(table))
+else:
+    print('select a child of an @test node node')</t>
 <t tx="ekr.20161123115047.1"></t>
 <t tx="ekr.20161123120652.1">s = r'''
 var name = 'Bob';
@@ -15836,6 +8586,7 @@ finally:
         p.deleteAllChildren()
         c.redraw()
 </t>
+<t tx="ekr.20161129030232.1"></t>
 <t tx="ekr.20161129104243.1">if 0:
     # The preamble...
     # g.cls()
@@ -18793,8 +11544,6 @@ try:
         test_node.deleteAllChildren()
 finally:
     c.redraw()
-</t>
-<t tx="ekr.20170128023431.1">@language html
 </t>
 <t tx="ekr.20170302201859.3">&lt;?php
 @others
@@ -22387,273 +15136,6 @@ EOT;
 }
 ?&gt;
 </t>
-<t tx="ekr.20170401123840.1"># To do: use tables as in the clean-c test.
-</t>
-<t tx="ekr.20170401123840.10"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    root = p.parent().parent()
-    h = '@clean unittest/at-clean-line-number-test.py'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    s = c.gotoCommands.get_external_file_with_sentinels(target)
-    if trace:
-        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n+1, p=target)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % (n+1))
-            assert n == 6, n
-            break
-</t>
-<t tx="ekr.20170401123840.11"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    root = p.parent().parent()
-    h = '@file unittest/at-file-line-number-test.c'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    s = c.gotoCommands.get_external_file_with_sentinels(target)
-    if trace:
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n+1, p=target)
-        if found:
-            if trace: print('found %2s %2s %s' % (n+1, offset, p and p.h))
-        else:
-            assert n == 10, n
-            if trace: print('not found: %s' % n+1)
-            break
-</t>
-<t tx="ekr.20170401123840.12"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    root = p.parent().parent()
-    h = '@file unittest/at-file-line-number-test.py'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    s = c.gotoCommands.get_external_file_with_sentinels(target)
-    if trace:
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n+1, p=target)
-        if found:
-            if trace: print('found %2s %2s %s' % (n+1, offset, p and p.h))
-        else:
-            assert n == 10, n
-            if trace: print('not found: %s' % n+1)
-            break
-</t>
-<t tx="ekr.20170401123840.13"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    h = '@nosent unittest/at-nosent-line-number-test.py'
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    assert root.isAtNoSentFileNode(), root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % (n+1))
-            assert n == 6, n
-            break
-</t>
-<t tx="ekr.20170401123840.14"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    root = p.parent().parent()
-    h = '@file unittest/at-file-line-number-test.py'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    gnx = target.v.fileIndex
-    assert gnx
-    found = c.gotoCommands.find_gnx(root, gnx, h)
-    assert found, 'not found'
-</t>
-<t tx="ekr.20170401123840.15">c.gotoCommands.success(lines=['a', 'b'], n=3, n2=3, p=p)
-c.gotoCommands.fail(lines=['a', 'b'], n=3, root=p)
-
-</t>
-<t tx="ekr.20170401123840.2">child = g.findNodeInChildren(c, p, 'syntax-error')
-assert child, 'no child'
-try:
-    c.goToScriptLineNumber(1, child)
-finally:
-    p.contract()
-    c.selectPosition(p)
-    c.redraw()
-</t>
-<t tx="ekr.20170401123840.3">@language python
-def spam:
-    pass
-</t>
-<t tx="ekr.20170401123840.4">import sys
-# Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-elif sys.platform.startswith('win'):
-    trace = False
-    h = '@auto unittest/at-auto-md-line-number-test.md'
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % (n+1))
-            assert n == 6, n
-            break
-else:
-    self.skipTest('Skip on Linux')
-</t>
-<t tx="ekr.20170401123840.5"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    h = '@auto-org unittest/at-auto-org-line-number-test.py'
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % (n+1))
-            assert n == 4, n
-            break
-</t>
-<t tx="ekr.20170401123840.6"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    h = '@auto-otl unittest/at-auto-otl-line-number-test.py'
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % n)
-            assert n == 4, n
-            break
-</t>
-<t tx="ekr.20170401123840.7">import sys
-# Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-elif sys.platform.startswith('win'):
-    trace = False
-    root = p.parent().parent()
-    # h = '@auto unittest/at-auto-line-number-test.py'
-    h = '@auto unittest/at-auto-unit-test.py'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    s = c.gotoCommands.get_external_file_with_sentinels(target)
-    if trace:
-        print(''.join(['%3s %s' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(25):
-        p, offset, found = c.gotoCommands.find_file_line(n+1, p=target)
-        if found:
-            if trace: print('found %2s %2s %s' % (n+1, offset, p and p.h))
-        else:
-            assert n == 12, n
-            if trace: print('not found: %s' % (n+1))
-            break
-else:
-    self.skipTest('Skip on Linux')
-</t>
-<t tx="ekr.20170401123840.8"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    h = '@auto-rst unittest/at-auto-rst-line-number-test.txt'
-        # This must not be a python file
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    assert root.isAtAutoRstNode(), root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        print('get_external_file_with_sentinels returns...')
-        # print(''.join(['%3s %r' % (i, s) for i, s in enumerate(g.splitLines(s))]))
-        g.printList(g.splitLines(s))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % (n+1))
-            assert n == 9, n
-            break
-</t>
-<t tx="ekr.20170401123840.9"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    root = p.parent().parent()
-    h = '@clean unittest/at-clean-line-number-test.c'
-    target = g.findNodeAnywhere(c, h)
-    assert target, 'no target'
-    s = c.gotoCommands.get_external_file_with_sentinels(target)
-    lines = g.splitLines(s)
-    stripped_lines = [z for z in lines if not z.startswith('//@')]
-    if trace:
-        # g.printList(stripped_lines)
-        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(lines)]))
-    table = (
-        # n is the 1-based offset of the *stripped* lines.
-        # Directives do not appear in @clean files.
-        # (1,     '@language c'),
-        # (2,     '@tabwidth -4'),
-        (3,     '// before @others // line 1'),
-        # (4,     '@others'),
-        # spam node.
-        (1,     'def spam(): // line 2'),
-        (2,     '    pass'),
-        # eggs node.
-        (1,    'def eggs(): // line 4'),
-        (2,    '    pass'),
-        # resume top node.
-        (5,    '// last line: line 6'),
-    )
-    for n, data in enumerate(table):
-        offset, line = data
-        p, offset2, found = c.gotoCommands.find_file_line(n+1, p=target)
-        assert offset == offset2, 'expected offset %s, got %s %r' % (
-            offset, offset2, p and p.h)
-    p, offset, found = c.gotoCommands.find_file_line(15, p=target)
-    assert not found
-</t>
 <t tx="ekr.20170407065952.1">import imp
 import leo.plugins.importers.javascript as js
 imp.reload(js)
@@ -22726,6 +15208,16 @@ bar
 EOT;
 }
 ?&gt;
+</t>
+<t tx="ekr.20170415084531.1"># lowercase xml tags, one per line.
+
+html
+body
+head
+div
+table
+nodeA
+nodeB
 </t>
 <t tx="ekr.20170416060817.1">s = '''\
 &lt;?xml version="1.0" encoding="UTF-8"?&gt;
@@ -22922,147 +15414,5 @@ And this.
 <t tx="ekr.20170504124637.1"></t>
 <t tx="ekr.20170504124652.1"></t>
 <t tx="ekr.20170504124842.1"></t>
-<t tx="ekr.20170520193219.85">&lt;?php
-@others
-@language php
-@tabwidth -4
-</t>
-<t tx="ekr.20170520193219.86">class foo {
-    public $bar = &lt;&lt;&lt;EOT
-a test.
-bar
-EOT;
-}
-?&gt;
-</t>
-<t tx="ekr.20170520193221.1"></t>
-<t tx="ekr.20170520193221.2"></t>
-<t tx="ekr.20170520193221.3"></t>
-<t tx="ekr.20170520193223.10"></t>
-<t tx="ekr.20170520193223.16"></t>
-<t tx="ekr.20170520193223.7"></t>
-<t tx="ekr.20170520193223.8"></t>
-<t tx="ekr.20170520193223.9"></t>
-<t tx="ekr.20170521062918.1"></t>
-<t tx="ekr.20170521062918.1461">def setup_test(target):
-    
-    c.unmarkAll() # Make sure we move only the test nodes!
-    
-    common = g.findNodeAnywhere(c,'@common x-marked-nodes test code')
-    assert common,'no common'
-    data = g.findNodeInTree(c,common,'data')
-    assert data,'no data'
-    
-    delete_children(target)
-
-    # Copy the nodes.
-    c.selectPosition(data)
-    c.copyOutline()
-    c.selectPosition(target)
-    c.pasteOutline()
-    c.moveOutlineRight()
-    c.promote()
-    c.deleteOutline()
-    c.redraw()
-        
-    for h in ('a','b','c'):
-        p2 = g.findNodeInTree(c,target,h)
-        assert p2,'not found: %s' % (h)
-        p2.setMarked()
-        
-    for child in target.children():
-        if child.h == 'a':
-            assert child.isCloned(),'not cloned!: %s' % (child)
-        else:
-            assert not child.isCloned(),'cloned!: %s' % (child)
-        
-    # g.trace('setup complete')
-    
-</t>
-<t tx="ekr.20170521110106.1"></t>
-<t tx="sps.20100531034136.20110">p2 = p.firstChild().firstChild().firstChild()
-aList = g.get_directives_dict_list(p2)
-path = c.scanAtPathDirectives(aList)
-endpath = g.os_path_normpath('again/again')
-assert path and path.endswith(endpath),'expected ending %s got %s' % (
-    endpath,path)
-</t>
-<t tx="sps.20100531034136.20111"></t>
-<t tx="sps.20100531034136.20112"></t>
-<t tx="sps.20100531034136.20113"></t>
-<t tx="ville.20090312195309.2">#if this starts failing due to much refacting in unitTest.leo,
-# adjust accordingly
-
-# These seem to fail if various nodes are cloned.
-import random,fnmatch
-
-all_h = [z.copy().h for z in c.find_h('.')]
-
-assert len(all_h) &gt; 1000,'fail 1'
-
-sample = random.sample(all_h, 20)    
-
-# Test that all nodes are found at least once.
-for h in sample:
-    pat = fnmatch.translate(h)
-    pl = c.find_h(pat)
-    assert len(pl) &gt; 0 and len(pl) &lt; len(all_h),'fail 2'
-
-tests = c.find_h('@test(.*)')
-
-bm = tests.filter_b('(.*)all_positions')
-forloops = 0
-for node in bm:   
-    # many of these are for loops
-    for m in node.matchiter:
-        if 'for' in m.group(1):
-            forloops += 1
-
-assert forloops &gt; 10,'fail for'
-
-# all of these should also be found by find_b
-all_bm = c.find_b('(.*)all_positions')
-assert len(all_bm) &gt;= len(bm),'fail len'
-
-assert set(el.h for el in bm).issubset(set(el.h for el in all_bm)),'fail set'
-
-itertest = c.find_h('@test p.iters and v.iters')
-assert len(itertest) &gt;= 1,'fail 3'
-tn = itertest[0]
-assert tn.h == '@test p.iters and v.iters','fail h'
-assert len(itertest.filter_b('notfound, really')) == 0,'fail 4'
-assert len(itertest.filter_b('leoNodes')) == 1,'fail 5'
-chi = itertest.children().filter_h('child?')
-assert chi[0].h == 'child1','fail 6'
-assert chi[1].h == 'child2','fail 7'
-# twice, in clones
-chi_b = chi.children().filter_h('a').children().filter_h('b')
-
-if 0:
-    assert len(chi_b) == 2,'fail len 2: %s: %s' % (chi_b,len(chi_b))
-    assert chi_b[0].h == chi_b[1].h == 'b'
-    chi_e = chi.children().filter_h('d').children().filter_h('e')
-    assert len(chi_e) == 1,'fail 8'
-    assert chi_e[0].h == 'e','fail 9'
-
-</t>
-<t tx="ville.20090602190735.4770">_foo = 0
-
-@g.command('my-test-command')
-def mytestcommand(event):
-    global _foo
-    _foo = 1
-
-try:
-    c.k.simulateCommand('my-test-command')
-    assert _foo == 1
-    
-    # bonus test: c.app.commanders()
-    assert c in g.app.commanders()
-
-except AttributeError:
-    # Raised only for unit testing.
-    pass
-</t>
 </tnodes>
 </leo_file>

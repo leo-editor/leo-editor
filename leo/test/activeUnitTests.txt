@@ -403,7 +403,7 @@ if g.isPython3 and sys.platform.startswith('linux'):
     # The crash causes several other unit tests to fail.
     self.skipTest('Not for Linux.')
 elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
+    self.skipTest('Not for curses')
 else:
     c1 = c
     fn = g.os_path_finalize_join(g.app.loadDir,'..','test','save-new-test.py')
@@ -539,45 +539,42 @@ for name in commandNames:
                 assert False,'stroke %s not bound to %s in %s' % (
                     repr(stroke),repr(name),d2name)
 #@+node:ekr.20111221062755.3909: *3* @test all top-level read/write commands give proper read/write error dialogs
-if g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
-else:
-    child = p.firstChild()
-    assert child
-    assert child.h == 'child',child.h
-    c.selectPosition(child) 
-    table = (
-        'import-file',
-        'open-outline',
-        'read-at-auto-nodes',
-        'read-at-file-nodes',
-        'read-at-shadow-nodes',
-       # 'read-file-into-node',
-       # 'read-outline-only',
-       'save-file',
-       'save-file-as',
-       'save-file-to',
-        'write-at-auto-nodes',
-        'write-at-file-nodes',
-        'write-at-shadow-nodes',
-        'write-dirty-at-auto-nodes',
-        'write-dirty-at-file-nodes',
-        'write-dirty-at-shadow-nodes',
-        #'write-file-from-node',
-        'write-missing-at-file-nodes',
-        #'write-outline-only',
-    )
-    tags = (
-        ('init_error_dialogs',2),
-        ('raise_error_dialogs',1),
-    )
-    d = g.app.unitTestDict
-    for commandName in table:
-        for tag,n in tags:
-            d[tag] = 0
-        c.k.simulateCommand(commandName)
-        for tag,n in tags:
-            assert d.get(tag) == n,'commandName: %s,tag: %s, n: %s' % (commandName,tag,d.get(tag))
+child = p.firstChild()
+assert child
+assert child.h == 'child',child.h
+c.selectPosition(child)
+
+table = (
+    'import-file',
+    'open-outline',
+    'read-at-auto-nodes',
+    'read-at-file-nodes',
+    'read-at-shadow-nodes',
+   # 'read-file-into-node',
+   # 'read-outline-only',
+   'save-file',
+   'save-file-as',
+   'save-file-to',
+    'write-at-auto-nodes',
+    'write-at-file-nodes',
+    'write-at-shadow-nodes',
+    'write-dirty-at-auto-nodes',
+    'write-dirty-at-file-nodes',
+    'write-dirty-at-shadow-nodes',
+    #'write-file-from-node',
+    'write-missing-at-file-nodes',
+    #'write-outline-only',
+)
+
+tags = (('init_error_dialogs',2), ('raise_error_dialogs',1))
+
+d = g.app.unitTestDict
+for commandName in table:
+    for tag,n in tags:
+        d[tag] = 0
+    c.k.simulateCommand(commandName)
+    for tag,n in tags:
+        assert d.get(tag) == n,'commandName: %s,tag: %s, n: %s' % (commandName,tag,d.get(tag))
 #@+node:ekr.20111221062755.3910: *4* child
 #@+node:ekr.20100131171342.5483: *3* @test batch mode
 import os
@@ -1138,8 +1135,6 @@ try:
     c.pasteOutline()
     p2 = p1.next()
     # self.assertEqual(p1.b, p2.b) # 'self' defined only when unit-testing.
-    assert p1
-    assert p2
     assert p1.b == p2.b
 finally:
     if 1:
@@ -1247,8 +1242,6 @@ import leo.core.leoFrame as leoFrame
 # Do nothing when run externally.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-if g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
 else:
     assert not isinstance(c.frame,leoFrame.NullFrame)
     def closeEnough(f1,f2):
@@ -2072,8 +2065,12 @@ else:
 
 assert len(p.b) == 175,len(p.b)
 #@+node:ekr.20071113201736: *4* @test zz end of leoAtFile tests
-# Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of leoAtFile tests')
+s = '\nEnd of leoAtFile tests'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s)
 #@+node:ekr.20101021205258.6011: *4* at.Directives & directories
 #@+node:ekr.20100131180007.5454: *5* @test at.get/setPathUa
 at = c.atFileCommands
@@ -2859,17 +2856,11 @@ More plain text.
 #@+node:ekr.20170201143435.1: *4* @test bc.scanLanguageDirectives
 @language python
 import leo.core.leoColorizer as leoColorizer
-import leo.core.leoFrame as leoFrame
 # import imp
 # imp.reload(leoColorizer)
 wrapper = c.frame.body.wrapper
 widget = c.frame.body.widget
-assert wrapper, p.h
-assert widget, p.h
-if g.app.gui.guiName() == 'curses':
-    x = leoFrame.NullColorizer(c)
-else:
-    x = leoColorizer.JEditColorizer(c, widget, wrapper)
+x = leoColorizer.JEditColorizer(c, widget, wrapper)
 tables = p.firstChild()
 tables_s = tables.b
 child = p.firstChild().next()
@@ -4853,9 +4844,13 @@ c.selectPosition(p) # Sets body text.
 if
 IF
 #@+node:ekr.20090615053403.4957: *4* @test zz end of leoColor tests
-# Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of leoColor tests')
-#@+node:ekr.20071113193624: *3* leoCommands (1 failure)
+s = '\nEnd of leoColor tests'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s)
+#@+node:ekr.20071113193624: *3* leoCommands
 # 7 failures with Alt-5
 #@+node:ekr.20090104053806.1: *4* @@@test c.checkFileTimeStamp & c.setFileTimeStamp
 # Disabled because modifying errorTest.py creates annoying bzr conflicts.
@@ -5450,8 +5445,12 @@ for obj,val in table:
     assert val == val2,'%s, expected %s, got %s' % (
         repr(obj),val,val2)
 #@+node:ekr.20071113201833: *4* @test zz end of leoCommands tests
-# Print does not work with the curses gui: it is redirected.
-g.pr('End of leoCommands tests')
+s = '\nEnd of leoCommands tests'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s)
 #@+node:ekr.20071113194216: *3* leoConfig
 # 3 failurs with Alt-5
 #@+node:ekr.20120201125738.3958: *4* @@@test g.app.config.getShortcuts works when no local shortcuts
@@ -5513,13 +5512,13 @@ nodes in myLeoSettings.leo.
 
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
 else:
     strict = True # Set to False if you are not EKR.
+    
     table = ['leoSettings.leo','unitTest.leo']
     if strict:
         table.append('myLeoSettings.leo')
+    
     keys = ('config.doButtons-file-names','config.doCommands-file-names')
     d = g.app.config.unitTestDict # Always created for this unit test.
     
@@ -5558,18 +5557,23 @@ elif sys.platform== 'darwin':
 #@+node:ekr.20050203001146: *4* @test local settings (c.page_width)
 assert c.page_width == c.config.getInt('page_width'),c.page_width
 #@+node:ekr.20071113201854: *4* @test zz end of leoConfig tests
-# Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of leoConfig tests')
+s = '\nEnd of leoConfig tests'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s)
 #@+node:ekr.20100131171342.5592: *3* leoDialogs
 #@+node:ekr.20100131171342.5593: *4* @test ctors for all dialogs
 # For some reason these don't select the dialog properly when run as a script.
 # However, the main reason for the tests is to make sure the ctors don't crash.
 # Also, for unit testing the value of c doesn't matter.
-oldGui = g.app.gui
-guis = [g.app.gui]
+
+oldGui = g.app.gui ; guis = [g.app.gui]
 
 import leo.core.leoGui as leoGui
 guis.append(leoGui.UnitTestGui())
+
 for gui in guis:
     gui.runAboutLeoDialog(c,'version','copyright','url','email')
     gui.runAskLeoIDDialog()
@@ -5579,8 +5583,9 @@ for gui in guis:
     gui.runAskYesNoDialog(c,'title','message')
     gui.runAskYesNoCancelDialog(c,'title','message')
     # gui.runCompareDialog(c) # Removed.
+
 g.app.gui = oldGui
-#@+node:ekr.20071113192611: *3* leoEditCommands (12 failures)
+#@+node:ekr.20071113192611: *3* leoEditCommands
 #@+node:ekr.20070131175538: *4*  Commands A-B
 #@+node:ekr.20061101121602.78: *5* @test add-space-to-lines
 c.testManager.runEditCommandTest(p)
@@ -6569,9 +6574,6 @@ last line
 #@+node:ekr.20111006105711.3544: *5* @test clone-marked-nodes
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-elif g.app.gui.guiName() == 'curses':
-    # assert False, 'Not ready yet: interferes with other tests'
-    self.skipTest('Not for curses gui')
 else:
 
     exec(g.findTestScript(c,'@common x-marked-nodes test code'))
@@ -6619,9 +6621,7 @@ import sys
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 elif sys.platform.startswith('linux'):
-    self.skipTest('Linux')
-elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
+    self.skipTest('skip cycle-all-focus')
 else:
     log = c.frame.log
     c.bodyWantsFocusNow()
@@ -6640,8 +6640,6 @@ else:
 
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
 else:
     log = c.frame.log
     tabs = log.orderedTabNames()[1:]
@@ -6733,9 +6731,6 @@ last line
 #@+node:ekr.20111006064419.3491: *5* @test delete-marked-nodes
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-elif g.app.gui.guiName() == 'curses':
-    # assert False, 'Not ready yet: interferes with other tests'
-    self.skipTest('Not for curses gui')
 else:
 
     exec(g.findTestScript(c,'@common x-marked-nodes test code'))
@@ -8381,9 +8376,6 @@ def test():
 #@+node:ekr.20111006064419.3493: *5* @test move-marked-nodes
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-elif g.app.gui.guiName() == 'curses':
-    # assert False, 'Not ready yet: interferes with other tests'
-    self.skipTest('Not for curses gui')
 else:
 
     exec(g.findTestScript(c,'@common x-marked-nodes test code'))
@@ -10278,29 +10270,26 @@ finally:
         c.setHeadString(p,h) # Essential
         c.redraw(p)
 #@+node:ekr.20051109091333: *5* @test deleting the last body character text redraws the screen (and icon)
-if g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
-else:
-    h = 'Test headline abc'
-    p = c.testManager.findNodeAnywhere(h)
-    assert p,'node not found: %s' % h
-    c.selectPosition(p)
-    c.setBodyString(p,'a')
-    c.redraw_now() # To make node visible and to set the icon.
-    try:
-        c.bodyWantsFocus()
-        n = c.frame.tree.redrawCount
-        w = c.frame.body.wrapper
-        w.setInsertPoint('end')
-        g.app.gui.event_generate(c,'\b','BackSpace',w)
-        n2 = c.frame.tree.redrawCount
-        if not g.app.isExternalUnitTest:
-            # This test is meaningless with a nullGui.
-            assert n2 == n + 1,'too many or too few redraws: %d' % (n2-n)
-    finally:
-        if 1:
-            c.setBodyString(p,'')
-            c.redraw_now()
+h = 'Test headline abc'
+p = c.testManager.findNodeAnywhere(h)
+assert p,'node not found: %s' % h
+c.selectPosition(p)
+c.setBodyString(p,'a')
+c.redraw_now() # To make node visible and to set the icon.
+try:
+    c.bodyWantsFocus()
+    n = c.frame.tree.redrawCount
+    w = c.frame.body.wrapper
+    w.setInsertPoint('end')
+    g.app.gui.event_generate(c,'\b','BackSpace',w)
+    n2 = c.frame.tree.redrawCount
+    if not g.app.isExternalUnitTest:
+        # This test is meaningless with a nullGui.
+        assert n2 == n + 1,'too many or too few redraws: %d' % (n2-n)
+finally:
+    if 1:
+        c.setBodyString(p,'')
+        c.redraw_now()
 #@+node:ekr.20051107115231.15: *5* @test editLabel selects entire headline
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
@@ -10334,20 +10323,17 @@ assert u.undoMenuLabel == 'Undo Insert Node Before',repr(u.undoMenuLabel)
 c.undoer.undo()
 assert u.redoMenuLabel == 'Redo Insert Node Before',repr(u.undoMenuLabel)
 #@+node:ekr.20051125155134: *5* @test inserting a new node draws the screen exactly once
-if g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
-else:
-    n = c.frame.tree.redrawCount
-    c.insertHeadline()
-    c.outerUpdate() # Not actually needed, but should not matter.
-    try:
-        n2 = c.frame.tree.redrawCount
-        if g.app.isExternalUnitTest:
-            self.skipTest('Can not be run externally')
-        else:
-            assert n2 == n + 1,'redraws: %d' % (n2 - n)
-    finally:
-        c.undoer.undo()
+n = c.frame.tree.redrawCount
+c.insertHeadline()
+c.outerUpdate() # Not actually needed, but should not matter.
+try:
+    n2 = c.frame.tree.redrawCount
+    if g.app.isExternalUnitTest:
+        self.skipTest('Can not be run externally')
+    else:
+        assert n2 == n + 1,'redraws: %d' % (n2 - n)
+finally:
+    c.undoer.undo()
 #@+node:ekr.20051107115231.18: *5* @test paste and undo in headline - at end
 import sys
 if sys.platform.startswith('linux'):
@@ -10482,27 +10468,24 @@ finally:
         c.redraw(p)
 #@+node:ekr.20051107115231.24: *5* @test paste from menu to body recolors the body
 # Should be a comment
-if g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
-else:
-    h = 'Test headline abc'
-    p = c.testManager.findNodeAnywhere(h)
-    w = c.frame.body.wrapper
-    n = c.frame.body.colorizer.recolorCount
-    assert p,'node not found: %s' % h
-    c.selectPosition(p)
-    c.bodyWantsFocus()
-    paste = '# Should be a comment'
-    g.app.gui.replaceClipboardWith(paste)
-    c.outerUpdate()
-    event = g.app.gui.create_key_event(c,None,None,c.frame.body.wrapper)
-    c.frame.pasteText(event)
-    try:
-        assert c.frame.body.colorizer.recolorCount > n
-    finally:
-        if 1:
-            c.setBodyString(p,'')
-            c.redraw(p)
+h = 'Test headline abc'
+p = c.testManager.findNodeAnywhere(h)
+w = c.frame.body.wrapper
+n = c.frame.body.colorizer.recolorCount
+assert p,'node not found: %s' % h
+c.selectPosition(p)
+c.bodyWantsFocus()
+paste = '# Should be a comment'
+g.app.gui.replaceClipboardWith(paste)
+c.outerUpdate()
+event = g.app.gui.create_key_event(c,None,None,c.frame.body.wrapper)
+c.frame.pasteText(event)
+try:
+    assert c.frame.body.colorizer.recolorCount > n
+finally:
+    if 1:
+        c.setBodyString(p,'')
+        c.redraw(p)
 #@+node:ekr.20051107115231.14: *5* @test return ends editing of headline
 h = '@test return ends editing of headline'
 p = c.testManager.findNodeAnywhere(h)
@@ -10611,12 +10594,11 @@ else:
                 c.setHeadString(p,h) # Essential
                 c.redraw(p)
 #@+node:ekr.20060208072358: *5* @test typing in empty body text redraws the screen (and icon)
+# This test is too flaky for Tk.
 import sys
 if False and sys.platform.startswith('linux'):
     # Fails for strange reasons.
     self.skipTest('linux')
-elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
 else:
     h = 'Test headline abc'
     p = c.testManager.findNodeAnywhere(h)
@@ -10676,16 +10658,19 @@ try:
 finally:
     c.setBodyString(p,'')
 #@+node:ekr.20060131102450: *5* @test zz print end of typing tests
-# Print does not work with the curses gui: it is redirected.
 s = '\nEnd of typing tests'
-if False and g.app.gui.guiName() == 'curses':
+if g.app.gui.guiName() == 'curses':
     import logging
     logging.info(s)
 else:
     g.pr(s)
 #@+node:ekr.20070306091949: *4* @test zz end of leoEditCommands tests
-# Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of leoEditCommands tests.')
+s = '\nEnd of leoEditCommands tests.'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s)
 #@+node:ekr.20061001114637: *3* leoFileCommands
 # 3 failures with Alt-5
 #@+node:ekr.20100206165505.5386: *4* @@test fc.handleNodeConflicts
@@ -10976,8 +10961,12 @@ else:
     # old gnxs:
     # assert p.v.fileIndex == ('ekr', '20090507084947', 5152)
 #@+node:ekr.20071113202045: *4* @test zz end of leoFile tests
-# Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of leoFileCommands tests.')
+s = '\nEnd of leoFileCommands tests.'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s)
 #@+node:ekr.20071113193527: *3* leoFind
 # 4 failures with Alt-5
 #@+node:ekr.20051107115231.29: *4* @@test Find keeps focus in body & shows selected text
@@ -11046,8 +11035,12 @@ else:
         c.k.simulateCommand(command)
         c.k.simulateCommand(command)
 #@+node:ekr.20071113202153: *4* @test zz end of leoFind tests
-# Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of leoFind tests.')
+s = '\nEnd of leoFind tests.'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s)
 #@+node:ekr.20071113194424: *3* leoFrame
 # 3 failures with Alt-5
 #@+node:ekr.20060912091510.1: *4* @@test add-editor & delete-editor
@@ -11165,8 +11158,6 @@ else:
 
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
 else:
     d = g.app.unitTestDict
     tag = 'minimize-all'
@@ -11218,8 +11209,6 @@ finally:
 
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
 else:
     d = g.app.unitTestDict
     tag = 'resize-to-screen'
@@ -11229,8 +11218,12 @@ else:
 #@+node:ekr.20100131180007.5359: *4* @test c.frame.tree.OnIconDoubleClick
 c.frame.tree.OnIconDoubleClick(p)
 #@+node:ekr.20071113202153.1: *4* @test zz end of leoFrame tests
-# Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of leoFrame tests.')
+s = '\nEnd of leoFrame tests.'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s)
 #@+node:ekr.20071113194033.3: *3* leoGlobals
 # No failures with Alt-5 but warnings about no tnode lists.
 #@+node:ekr.20100131180007.5398: *4* @test g.adjustTripleString
@@ -11384,22 +11377,20 @@ for i in range(3):
         repr(val),repr(result))
 #@+node:ekr.20111110073834.3843: *4* @test g.es_print
 '''Make sure that g.trace doesn't add an extra newline.'''
-if g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
-else:
-    import sys
-    
-    def test():
-        g.es_print('a')
-        g.es_print('b')
-    
-    try:
-        sys.stdout = g.fileLikeObject()
-        test()
-        result = sys.stdout.get()
-        assert result == 'a\nb\n',repr(result)
-    finally:
-        sys.stdout = sys.__stdout__
+
+import sys
+
+def test():
+    g.es_print('a')
+    g.es_print('b')
+
+try:
+    sys.stdout = g.fileLikeObject()
+    test()
+    result = sys.stdout.get()
+    assert result == 'a\nb\n',repr(result)
+finally:
+    sys.stdout = sys.__stdout__
 #@+node:ekr.20071113145804.22: *4* @test g.es_trace
 @first # -*- coding: utf-8 -*-
 
@@ -11607,22 +11598,20 @@ except Exception:
     raise
 #@+node:ekr.20111110073528.3843: *4* @test g.pr
 '''Make sure that g.trace doesn't add an extra newline.'''
-if g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
-else:
-    import sys
 
-    def test():
-        g.pr('a')
-        g.pr('b')
+import sys
 
-    try:
-        sys.stdout = g.fileLikeObject()
-        test()
-        result = sys.stdout.get()
-        assert result == 'a\nb\n',repr(result)
-    finally:
-        sys.stdout = sys.__stdout__
+def test():
+    g.pr('a')
+    g.pr('b')
+
+try:
+    sys.stdout = g.fileLikeObject()
+    test()
+    result = sys.stdout.get()
+    assert result == 'a\nb\n',repr(result)
+finally:
+    sys.stdout = sys.__stdout__
 #@+node:ekr.20100212112056.5361: *4* @test g.printGcAll
 g.printGcAll()
 #@+node:ekr.20100131180007.5396: *4* @test g.removeBlankLines
@@ -11950,22 +11939,20 @@ else:
     self.skipTest('Requires Qt Gui')
 #@+node:ekr.20111110072415.3841: *4* @test g.trace
 '''Make sure that g.trace doesn't add an extra newline.'''
-if g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
-else:
-    import sys
 
-    def test():
-        g.trace('a')
-        g.trace('b')
+import sys
 
-    try:
-        sys.stdout = g.fileLikeObject()
-        test()
-        result = sys.stdout.get()
-        assert result == 'test a\ntest b\n',repr(result)
-    finally:
-        sys.stdout = sys.__stdout__
+def test():
+    g.trace('a')
+    g.trace('b')
+
+try:
+    sys.stdout = g.fileLikeObject()
+    test()
+    result = sys.stdout.get()
+    assert result == 'test a\ntest b\n',repr(result)
+finally:
+    sys.stdout = sys.__stdout__
 #@+node:ekr.20050105084757.1: *4* @test g.utils_remove
 import os
 
@@ -12025,8 +12012,12 @@ else:
 for ivar in ('c','g','p'):
     assert ivar in dir()
 #@+node:ekr.20071113202153.2: *4* @test zz end of leoGlobals tests
-# Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of leoGlobals tests.')
+s = '\nEnd of leoGlobals tests.'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s)
 #@+node:ekr.20100131171342.5599: *3* leoGui & leoQtGui
 #@+node:ekr.20111120124051.3992: *4* @test Ctrl-I inserts only one headline
 from leo.core.leoQt import QtCore,QtGui,QtWidgets
@@ -12086,8 +12077,6 @@ else:
 import sys
 if sys.platform.startswith('linux'):
     self.skipTest('linux test')
-elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
 else:
     fn = '<file name>'
     p2 = p.firstChild()
@@ -12127,9 +12116,13 @@ elif g.app.gui.guiName().startswith('qt'):
 else:
      self.skipTest('Requires Qt Gui')
 #@+node:ekr.20100131171342.5603: *4* @test zz end of leoGui tests
-# Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of leoGui tests.')
-#@+node:ekr.20090529141856.4682: *3* leoImport (3 failures)
+s = '\nEnd of leoGui tests.'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s)
+#@+node:ekr.20090529141856.4682: *3* leoImport
 #@+node:ekr.20090529141856.4684: *4* Export tests
 @language python
 @tabwidth -4
@@ -15607,19 +15600,6 @@ EOT;
 @language php
 @tabwidth -4
 #@+node:ekr.20170503133608.22: *8* class foo
-class foo {
-    public $bar = <<<EOT
-a test.
-bar
-EOT;
-}
-?>
-#@+node:ekr.20170520193219.85: *7* @@file @test php here doc
-<?php
-@others
-@language php
-@tabwidth -4
-#@+node:ekr.20170520193219.86: *8* class foo
 class foo {
     public $bar = <<<EOT
 a test.
@@ -20685,8 +20665,12 @@ for s in table:
     assert m, s
     assert m.group(0) == s, (s, m.group(0))
 #@+node:ekr.20140724164600.4590: *4* @test zz end of leoImport tests
-# Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of leoImport tests.')
+s = '\nEnd of leoImport tests.'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s)
 #@+node:ekr.20100131171342.5604: *3* leoKeys
 #@+node:ekr.20100131171342.5606: *4* @@test k.autoCompleterClass.calltip
 # This test is difficult to get right on all platforms.
@@ -20814,9 +20798,13 @@ for setting, result in table:
     val = c.k.strokeFromSetting(setting)
     assert val==result,'Expected %s, Got %s' % (result,val)
 #@+node:ekr.20100131171342.5609: *4* @test zz end of leoKeys tests
-# Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of leoKeys tests.')
-#@+node:ekr.20071113194424.1: *3* leoNodes  (5 failures, 3 errors)
+s = '\nEnd of leoKeys tests.'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s)
+#@+node:ekr.20071113194424.1: *3* leoNodes
 #@+node:ekr.20040712101754.181: *4*  inner @test: Test consistency between parents iter and v.parents
 # The actual test is in a child node.
 #@+node:ekr.20040712101754.182: *5* parent
@@ -21211,9 +21199,9 @@ if 1:
     v2.h = 'insertAsNthChild(1)'
 p.expand()
 c.redraw()
-#@+node:ekr.20170520193221.1: *5* insertAsFirstChild
-#@+node:ekr.20170520193221.3: *5* insertAsNthChild(1)
-#@+node:ekr.20170520193221.2: *5* insertAsLastChild
+#@+node:ekr.20140724164208.5505: *5* insertAsFirstChild
+#@+node:ekr.20140724164208.5507: *5* insertAsNthChild(1)
+#@+node:ekr.20140724164208.5506: *5* insertAsLastChild
 #@+node:ekr.20141020110954.4750: *4* @test newlines in headlines
 # Bug https://bugs.launchpad.net/leo-editor/+bug/1245535
 h = p.h
@@ -21623,8 +21611,12 @@ import leo.core.leoNodes as leoNodes
 if leoNodes.use_zodb:
     p.v.__hash__()
 #@+node:ekr.20071113202452: *4* @test zz end of leoNodes tests
-# Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of leoNodes tests.')
+s = '\nEnd of leoNodes tests.'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s)
 #@+node:ekr.20080501121449.1: *4* Fundamental node operations (undo operations fail)
 #@+node:ekr.20080423110627.2: *5* @test at most one VNode has str_leo_pos attribute
 n = 0
@@ -21797,12 +21789,6 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-#@+node:ekr.20170520193223.7: *6* C
-#@+node:ekr.20170520193223.8: *6* D
-#@+node:ekr.20170520193223.7: *6* C
-#@+node:ekr.20170520193223.8: *6* D
-#@+node:ekr.20170520193223.7: *6* C
-#@+node:ekr.20170520193223.8: *6* D
 #@+node:ekr.20080501121449.3: *5* @test insert node
 assert p.h == '@test insert node',repr(p.h)
 root = p.copy()
@@ -21854,8 +21840,9 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-#@+node:ekr.20170520193223.9: *6* A
-#@+node:ekr.20170520193223.10: *6* B
+#@+node:ekr.20140923083354.6274: *6* A
+#@+node:ekr.20140923083354.6276: *6* inserted
+#@+node:ekr.20140923083354.6275: *6* B
 #@+node:ekr.20080423110627.11: *5* @test move-outline-down & undo/redo
 root = p.copy()
 while p.hasChildren():
@@ -21930,7 +21917,6 @@ finally:
         while p.hasChildren():
             p.firstChild().doDelete(newNode=None)
         c.redraw_now(p)
-#@+node:ekr.20170520193223.16: *5* A
 #@+node:ekr.20080503073030.2: *5* @test move-outline-right
 while p.hasChildren():
     p.firstChild().doDelete(newNode=None)
@@ -22355,8 +22341,6 @@ for unl,expected in table:
 if g.app.isExternalUnitTest:
     # There will not be a proper cloned node in the copy of these tests.
     self.skipTest('Can not be run externally')
-elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
 else:
     pd = c.persistenceController
     root = g.findNodeInTree(c,p,'root')
@@ -27583,7 +27567,7 @@ class test:
 
 X = test()
 sendEmail(X)
-#@+node:ekr.20071113193729: *3* leoUndo (something is spoiling these tests)
+#@+node:ekr.20071113193729: *3* leoUndo
 @
 
 9 failures with Alt-5.
@@ -27863,8 +27847,12 @@ after
 2.0
 2.16
 #@+node:ekr.20071113202510: *4* @test zz end of leoUndo tests
-# Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of leoUndo tests.')
+s = '\nEnd of leoUndo tests.'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s)
 #@+node:ekr.20140802074328.4471: *3* leoVim.py
 #@+node:ekr.20140802074328.4472: *4* @test vc.on_same_line
 vc = c.vimCommands
@@ -28372,8 +28360,12 @@ if hasattr(c,'theScriptingController'):
     # mod_scripting may be disabled when running tests externally.
     assert not c.theScriptingController.atScriptNodes
 #@+node:ekr.20100131171342.5501: *4* @test zz end of plugins unit tests
-# Print does not work with the curses gui: it is redirected.
-g.pr('\nEnd of plugins unit tests')
+s = '\nEnd of plugins unit tests'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s)
 #@+node:ekr.20090306091634.1: ** @test print redraw count
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):
@@ -28383,8 +28375,13 @@ if 0:
     print('calls to jedit.setTag: %s' %
         c.frame.body.colorizer.highlighter.colorer.n_setTag)
 #@+node:ekr.20081111150402.11: ** @test zz end of all tests
-# Print does not work with the curses gui: it is redirected.
-g.pr('\nall unit tests done', color='blue')
+# Print does not work: it is redirected.
+s = 'all unit tests done'
+if g.app.gui.guiName() == 'curses':
+    import logging
+    logging.info(s)
+else:
+    g.pr(s,color='blue')
 #@+node:ekr.20140822063016.4474: ** @test zzz force a quit
 if 0:
     # These won't do any good if a unit test foolishly saves the outline!
@@ -28393,6 +28390,8 @@ if 0:
     
 if g.app.gui.guiName() == 'curses':
     import curses
+    import logging
+    logging.info('test')
     curses.endwin()
 else:
     c.k.simulateCommand(':q!')
