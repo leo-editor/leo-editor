@@ -3034,7 +3034,7 @@ class KeyHandlerClass(object):
     def manufactureKeyPressForCommandName(self, w, commandName):
         '''Implement a command by passing a keypress to the gui.'''
         trace = False and not g.unitTesting
-        k = self; c = k.c
+        c, k = self.c, self
         stroke = k.getShortcutForCommandName(commandName)
         if not stroke:
             shortcut = None
@@ -3047,11 +3047,11 @@ class KeyHandlerClass(object):
         if trace and shortcut: g.trace(
             'shortcut', repr(shortcut), 'commandName', commandName)
         if shortcut and w:
-            # g.trace(stroke)
             g.app.gui.set_focus(c, w)
             g.app.gui.event_generate(c, None, shortcut, w)
         else:
             message = 'no shortcut for %s' % (commandName)
+            if trace: g.trace(message)
             if g.app.unitTesting:
                 raise AttributeError(message)
             else:

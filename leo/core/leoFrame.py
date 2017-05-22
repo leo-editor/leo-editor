@@ -992,8 +992,8 @@ class LeoFrame(object):
         Paste the clipboard into a widget.
         If middleButton is True, support x-windows middle-mouse-button easter-egg.
         '''
-        trace = False and not g.unitTesting
-        f = self; c = f.c
+        trace = False # and not g.unitTesting
+        c = self.c
         w = event and event.widget
         wname = c.widget_name(w)
         if not w or not g.isTextWrapper(w):
@@ -1002,7 +1002,8 @@ class LeoFrame(object):
         if self.cursorStay and wname.startswith('body'):
             tCurPosition = w.getInsertPoint()
 
-        i, j = oldSel = w.getSelectionRange() # Returns insert point if no selection.
+        i, j = oldSel = w.getSelectionRange()
+            # Returns insert point if no selection.
         oldText = w.getAllText()
         if middleButton and c.k.previousSelection is not None:
             start, end = c.k.previousSelection
@@ -1012,7 +1013,7 @@ class LeoFrame(object):
         else:
             s = g.app.gui.getTextFromClipboard()
         s = g.toUnicode(s)
-        # g.trace('pasteText','wname',wname,'s',s,g.callers())
+        if trace: g.trace('pasteText','wname',wname)
         singleLine = wname.startswith('head') or wname.startswith('minibuffer')
         if singleLine:
             # Strip trailing newlines so the truncation doesn't cause confusion.
@@ -1375,7 +1376,7 @@ class LeoTree(object):
     def redraw_after_icons_changed(self): self.c.redraw()
 
     def redraw_after_select(self, p=None): self.c.redraw()
-    #@+node:ekr.20040803072955.91: *4* onHeadChanged (Used by the leoBridge module)
+    #@+node:ekr.20040803072955.91: *4* LeoTree.onHeadChanged (Used by the leoBridge module)
     # Tricky code: do not change without careful thought and testing.
     # Important: This code *is* used by the leoBridge module.
     # See also, nativeTree.onHeadChanged.
@@ -2294,7 +2295,7 @@ class StringTextWrapper(object):
         self.trace = False
 
     def __repr__(self):
-        return '<StringTextWrapper: %s>' % self.name
+        return '<StringTextWrapper: %s %s>' % (id(self), self.name)
 
     def getName(self):
         '''StringTextWrapper.'''
