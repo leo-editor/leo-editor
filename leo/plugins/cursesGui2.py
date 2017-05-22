@@ -81,9 +81,10 @@ class LeoTreeLine(npyscreen.TreeLine):
     __str__ = __repr__
 
     #@+others
-    #@+node:ekr.20170514104550.1: *4* LeoTreeLine._get_string_to_print (from TextfieldBase)
+    #@+node:ekr.20170514104550.1: *4* LeoTreeLine._get_string_to_print
     def _get_string_to_print(self):
         
+        # From TextfieldBase.
         if native:
             # g.trace('LeoTreeLine: value:', repr(self.value))
             if self.value:
@@ -97,15 +98,129 @@ class LeoTreeLine(npyscreen.TreeLine):
             s = self.value.content if self.value else None
         # g.trace(repr(s))
         return g.toUnicode(s) if s else None
+    #@+node:ekr.20170522032805.1: *4* LeoTreeLine._print
+    def _print(self, left_margin=0):
+        
+        # This is the same as TreeLine._print.
+        self.left_margin = left_margin
+        self.parent.curses_pad.bkgdset(' ',curses.A_NORMAL)
+        self.left_margin += self._print_tree(self.relx)
+        
+        def put(char):
+            self.parent.curses_pad.addch(
+                self.rely, self.relx+self.left_margin,
+                ord(char), curses.A_NORMAL)
+            self.left_margin += 1
+        
+        if native:
+            val = self._tree_real_value
+            p = val and val.content
+            put('*' if p and p.isCloned() else ' ')
+            put(' ')
+        
+        if self.highlight:
+            self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
+        super(npyscreen.TreeLine, self)._print()
+            # TextfieldBase._print
+    #@+node:ekr.20170522033303.1: *4* LeoTreeLine.XXX_print_tree
+    def XXX_print_tree(self, real_x):
+        if (not hasattr(self._tree_real_value, 'find_depth') and
+            not hasattr(self._tree_real_value, 'findDepth')
+        ):
+            margin_needed = 0
+            return margin_needed
+            
+        def put(char, x=None, y=None):
+            if x is None: x = real_x
+            y = self.rely + y if y else self.rely
+            self.parent.curses_pad.addch(y, x, char, curses.A_NORMAL)
+            
+        # val = self._tree_real_value
+        # if native:
+            # p = val and val.content
+            # if p is not None:
+                # assert p and isinstance(p, leoNodes.Position), repr(p)
+            # is_cloned = p.isCloned()
+            # if is_cloned: g.trace(is_cloned, p.h)
+        # else:
+            # is_cloned = False
+                    
+        VLINE = curses.ACS_VLINE
+        ACS_BTEE = curses.ACS_BTEE
+        ACS_HLINE = curses.ACS_HLINE
+        ACS_LLCORNER = curses.ACS_LLCORNER
+        ACS_LTEE = curses.ACS_LTEE
+        ACS_RARROW = curses.ACS_RARROW
+        ACS_RTEE = curses.ACS_RTEE
+        ACS_TTEE = curses.ACS_TTEE
+        ACS_VLINE = curses.ACS_VLINE
+        
+        control_chars_added = 0
+        this_safe_depth_display = self.safe_depth_display or ((self.width // 2) + 1)
+        if self._tree_depth_next:
+            _tree_depth_next = self._tree_depth_next
+        else:
+            _tree_depth_next = 0
+        assert _tree_depth_next is not None
+        dp = self._tree_depth
+        if self._tree_ignore_root:
+            dp -= 1
+        # g.trace('dp', dp, 'show_v_lines', self.show_v_lines)
+        if dp: # > 0:
+            if dp < this_safe_depth_display:                    
+                for i in range(dp-1):
+                    if (i < _tree_depth_next) and (not self._tree_last_line):
+                        put(VLINE)
+                        if self.height > 1:
+                            for h in range(self.height-1):
+                                put(VLINE, y=h+1)
+                    else:
+                        put(ACS_BTEE)
+                    real_x +=1
+                    put(ord(' '))
+                    real_x +=1
+                # After for loop.
+                if self._tree_sibling_next or _tree_depth_next > self._tree_depth:
+                    put(ACS_LTEE)
+                    if self.height > 1:
+                        for h in range(self.height-1):
+                            put(ACS_VLINE, y=h+1)
+                else:
+                    put(ACS_LLCORNER)
+                real_x += 1
+                put(ACS_HLINE)
+                real_x += 1
+            else: # dp >= this_safe_depth_display
+                put(ACS_HLINE)
+                real_x += 1
+                self.parent.curses_pad.addstr(
+                    self.rely, real_x,
+                    "[ %s ]" % (str(dp)),
+                    curses.A_NORMAL)
+                real_x += len(str(dp)) + 4
+                put(ACS_RTEE)
+                real_x += 1
+        # Put the children.
+        if self._tree_has_children:
+            if self._tree_expanded:
+                put(ACS_TTEE)
+                if self.height > 1:
+                    for h in range(self.height-1):
+                        put(ACS_VLINE, y=h+1)
+            else:
+                put(ACS_RARROW)
+        real_x +=1 # whether or not the tree has children
+        control_chars_added += real_x - self.relx
+        margin_needed = control_chars_added + 1
+        return margin_needed
     #@+node:ekr.20170514183049.1: *4* LeoTreeLine.display_value
     def display_value(self, vl):
         
-        # vl is a weakref proxy to a LeoTreeData.
+        # vl is a LeoTreeData.
         if native:
             p = vl.content
             assert p and isinstance(p, leoNodes.Position), repr(p)
             return p.h
-            # return vl.content.h if vl else ''
         else:
             return vl.content if vl else ''
     #@+node:ekr.20170510210908.1: *4* LeoTreeLine.edit
@@ -230,18 +345,6 @@ class LeoTreeLine(npyscreen.TreeLine):
                 # self.parent_widget.when_value_edited()
                 # self.parent_widget._internal_when_value_edited()
             # return True
-    #@+node:ekr.20170519024639.1: *4* LeoTreeLine.set_leo_headline (not used)
-    # if native:
-        
-        # def set_leo_headline(self, data):
-            
-            # assert isinstance(self.value, LeoTreeData)
-            # assert isinstance(data, LeoTreeData)
-            # p = data.content
-            # assert p and isinstance(p, leoNodes.Position), repr(p)
-            # # g.trace('self.value.content', self.value.content)
-            # # g.trace('      data.content', data.content)
-
     #@-others
 #@+node:ekr.20170511053143.1: *3*  class CursesTextMixin (object)
 class CursesTextMixin(object):
@@ -926,6 +1029,118 @@ def trace(*args, **keys):
     # s = d.get('before') + ''.join(result)
     s = ''.join(result)
     logging.info('trace: %s' % s.rstrip())
+#@+node:ekr.20170504034655.1: ** class BodyTextWrapper (leoFrame.StringTextWrapper)
+class BodyTextWrapper(leoFrame.StringTextWrapper):
+    '''
+    A Wrapper class for Leo's body.
+    This is c.frame.body.wrapper.
+    '''
+    
+    def __init__(self, c, name, w):
+        '''Ctor for BodyTextWrapper class'''
+        leoFrame.StringTextWrapper.__init__(self, c, name)
+        self.changingText = False
+            # A lockout for onTextChanged.
+        self.widget = w
+        self.injectIvars(c)
+            # These are used by Leo's core.
+
+    #@+others
+    #@+node:ekr.20170504034655.3: *3* cw.injectIvars
+    def injectIvars(self, name='1', parentFrame=None):
+        '''Inject standard leo ivars into the QTextEdit or QsciScintilla widget.'''
+        p = self.c.currentPosition()
+        if name == '1':
+            self.leo_p = None # Will be set when the second editor is created.
+        else:
+            self.leo_p = p and p.copy()
+        self.leo_active = True
+        # Inject the scrollbar items into the text widget.
+        self.leo_bodyBar = None
+        self.leo_bodyXBar = None
+        self.leo_chapter = None
+        self.leo_frame = None
+        self.leo_name = name
+        self.leo_label = None
+    #@+node:ekr.20170504034655.5: *3* cw.Event handlers (To do)
+    # These are independent of the kind of Qt widget.
+    #@+node:ekr.20170504034655.6: *4* cw.onCursorPositionChanged
+    def onCursorPositionChanged(self, event=None):
+        c = self.c
+        name = c.widget_name(self)
+        # Apparently, this does not cause problems
+        # because it generates no events in the body pane.
+        if name.startswith('body'):
+            if hasattr(c.frame, 'statusLine'):
+                c.frame.statusLine.update()
+    #@+node:ekr.20170504034655.7: *4* cw.onTextChanged
+    def onTextChanged(self):
+        '''
+        Update Leo after the body has been changed.
+
+        self.selecting is guaranteed to be True during
+        the entire selection process.
+        '''
+        g.trace('**********', g.callers())
+        return ######
+
+        # Important: usually w.changingText is True.
+        # This method very seldom does anything.
+        trace = False and not g.unitTesting
+        verbose = False
+        c = self.c; p = c.p
+        tree = c.frame.tree
+        if self.changingText:
+            if trace and verbose: g.trace('already changing')
+            return
+        if tree.tree_select_lockout:
+            if trace and verbose: g.trace('selecting lockout')
+            return
+        if tree.selecting:
+            if trace and verbose: g.trace('selecting')
+            return
+        if tree.redrawing:
+            if trace and verbose: g.trace('redrawing')
+            return
+        if not p:
+            if trace: g.trace('*** no p')
+            return
+        newInsert = self.getInsertPoint()
+        newSel = self.getSelectionRange()
+        newText = self.getAllText() # Converts to unicode.
+        # Get the previous values from the VNode.
+        oldText = p.b
+        if oldText == newText:
+            # This can happen as the result of undo.
+            # g.error('*** unexpected non-change')
+            return
+        # g.trace('**',len(newText),p.h,'\n',g.callers(8))
+        # oldIns  = p.v.insertSpot
+        i, j = p.v.selectionStart, p.v.selectionLength
+        oldSel = (i, i + j)
+        if trace: g.trace('oldSel', oldSel, 'newSel', newSel)
+        oldYview = None
+        undoType = 'Typing'
+        c.undoer.setUndoTypingParams(p, undoType,
+            oldText=oldText, newText=newText,
+            oldSel=oldSel, newSel=newSel, oldYview=oldYview)
+        # Update the VNode.
+        p.v.setBodyString(newText)
+        if True:
+            p.v.insertSpot = newInsert
+            i, j = newSel
+            i, j = self.toPythonIndex(i), self.toPythonIndex(j)
+            if i > j: i, j = j, i
+            p.v.selectionStart, p.v.selectionLength = (i, j - i)
+        # No need to redraw the screen.
+        c.recolor()
+        if g.app.qt_use_tabs:
+            if trace: g.trace(c.frame.top)
+        if not c.changed and c.frame.initComplete:
+            c.setChanged(True)
+        c.frame.body.updateEditors()
+        c.frame.tree.updateIcon(p)
+    #@-others
 #@+node:ekr.20170420054211.1: ** class CursesApp (npyscreen.NPSApp)
 class CursesApp(npyscreen.NPSApp):
     '''
@@ -1875,143 +2090,6 @@ class CursesMenu (leoMenu.LeoMenu):
         # g.pr("CursesMenu oops:", g.callers(4), "should be overridden in subclass")
 
         
-#@+node:ekr.20170504034655.1: ** class BodyTextWrapper (leoFrame.StringTextWrapper)
-class BodyTextWrapper(leoFrame.StringTextWrapper):
-    '''
-    A Wrapper class for Leo's body.
-    This is c.frame.body.wrapper.
-    '''
-    
-    def __init__(self, c, name, w):
-        '''Ctor for BodyTextWrapper class'''
-        leoFrame.StringTextWrapper.__init__(self, c, name)
-        self.changingText = False
-            # A lockout for onTextChanged.
-        self.widget = w
-        self.injectIvars(c)
-            # These are used by Leo's core.
-
-    #@+others
-    #@+node:ekr.20170504034655.3: *3* cw.injectIvars
-    def injectIvars(self, name='1', parentFrame=None):
-        '''Inject standard leo ivars into the QTextEdit or QsciScintilla widget.'''
-        p = self.c.currentPosition()
-        if name == '1':
-            self.leo_p = None # Will be set when the second editor is created.
-        else:
-            self.leo_p = p and p.copy()
-        self.leo_active = True
-        # Inject the scrollbar items into the text widget.
-        self.leo_bodyBar = None
-        self.leo_bodyXBar = None
-        self.leo_chapter = None
-        self.leo_frame = None
-        self.leo_name = name
-        self.leo_label = None
-    #@+node:ekr.20170504034655.5: *3* cw.Event handlers (To do)
-    # These are independent of the kind of Qt widget.
-    #@+node:ekr.20170504034655.6: *4* cw.onCursorPositionChanged
-    def onCursorPositionChanged(self, event=None):
-        c = self.c
-        name = c.widget_name(self)
-        # Apparently, this does not cause problems
-        # because it generates no events in the body pane.
-        if name.startswith('body'):
-            if hasattr(c.frame, 'statusLine'):
-                c.frame.statusLine.update()
-    #@+node:ekr.20170504034655.7: *4* cw.onTextChanged
-    def onTextChanged(self):
-        '''
-        Update Leo after the body has been changed.
-
-        self.selecting is guaranteed to be True during
-        the entire selection process.
-        '''
-        g.trace('**********', g.callers())
-        return ######
-
-        # Important: usually w.changingText is True.
-        # This method very seldom does anything.
-        trace = False and not g.unitTesting
-        verbose = False
-        c = self.c; p = c.p
-        tree = c.frame.tree
-        if self.changingText:
-            if trace and verbose: g.trace('already changing')
-            return
-        if tree.tree_select_lockout:
-            if trace and verbose: g.trace('selecting lockout')
-            return
-        if tree.selecting:
-            if trace and verbose: g.trace('selecting')
-            return
-        if tree.redrawing:
-            if trace and verbose: g.trace('redrawing')
-            return
-        if not p:
-            if trace: g.trace('*** no p')
-            return
-        newInsert = self.getInsertPoint()
-        newSel = self.getSelectionRange()
-        newText = self.getAllText() # Converts to unicode.
-        # Get the previous values from the VNode.
-        oldText = p.b
-        if oldText == newText:
-            # This can happen as the result of undo.
-            # g.error('*** unexpected non-change')
-            return
-        # g.trace('**',len(newText),p.h,'\n',g.callers(8))
-        # oldIns  = p.v.insertSpot
-        i, j = p.v.selectionStart, p.v.selectionLength
-        oldSel = (i, i + j)
-        if trace: g.trace('oldSel', oldSel, 'newSel', newSel)
-        oldYview = None
-        undoType = 'Typing'
-        c.undoer.setUndoTypingParams(p, undoType,
-            oldText=oldText, newText=newText,
-            oldSel=oldSel, newSel=newSel, oldYview=oldYview)
-        # Update the VNode.
-        p.v.setBodyString(newText)
-        if True:
-            p.v.insertSpot = newInsert
-            i, j = newSel
-            i, j = self.toPythonIndex(i), self.toPythonIndex(j)
-            if i > j: i, j = j, i
-            p.v.selectionStart, p.v.selectionLength = (i, j - i)
-        # No need to redraw the screen.
-        c.recolor()
-        if g.app.qt_use_tabs:
-            if trace: g.trace(c.frame.top)
-        if not c.changed and c.frame.initComplete:
-            c.setChanged(True)
-        c.frame.body.updateEditors()
-        c.frame.tree.updateIcon(p)
-    #@-others
-#@+node:ekr.20170522002403.1: ** class HeadTextWrapper (leoFrame.StringTextWrapper)
-class HeadTextWrapper(leoFrame.StringTextWrapper):
-    '''
-    A Wrapper class for headline widgets, returned by c.edit_widget(p)
-    '''
-    
-    def __init__(self, c, name, p):
-        '''Ctor for HeadTextWrapper class'''
-        # g.trace('HeadTextWrapper', p.h)
-        leoFrame.StringTextWrapper.__init__(self, c, name)
-        self.trace = False # Enable tracing in base class.
-        self.p = p.copy()
-        self.s = p.v._headString
-        # self.setAllText(p.h)
-
-    #@+others
-    #@+node:ekr.20170522014009.1: *3* hw.setAllText
-    def setAllText(self, s):
-        '''HeadTextWrapper.setAllText'''
-        self.s = s
-        i = len(self.s)
-        self.ins = i
-        self.sel = i, i
-        self.p.v._headString = s
-    #@-others
 #@+node:ekr.20170502093200.1: ** class CursesTopFrame (object)
 class CursesTopFrame (object):
     '''A representation of c.frame.top.'''
@@ -3249,6 +3327,31 @@ class CursesTree (leoFrame.LeoTree):
             # self.error('no p')
         # c.outerUpdate()
     #@-others
+#@+node:ekr.20170522002403.1: ** class HeadTextWrapper (leoFrame.StringTextWrapper)
+class HeadTextWrapper(leoFrame.StringTextWrapper):
+    '''
+    A Wrapper class for headline widgets, returned by c.edit_widget(p)
+    '''
+    
+    def __init__(self, c, name, p):
+        '''Ctor for HeadTextWrapper class'''
+        # g.trace('HeadTextWrapper', p.h)
+        leoFrame.StringTextWrapper.__init__(self, c, name)
+        self.trace = False # Enable tracing in base class.
+        self.p = p.copy()
+        self.s = p.v._headString
+        # self.setAllText(p.h)
+
+    #@+others
+    #@+node:ekr.20170522014009.1: *3* hw.setAllText
+    def setAllText(self, s):
+        '''HeadTextWrapper.setAllText'''
+        self.s = s
+        i = len(self.s)
+        self.ins = i
+        self.sel = i, i
+        self.p.v._headString = s
+    #@-others
 #@+node:ekr.20170507194035.1: ** class LeoForm (npyscreen.Form)
 class LeoForm (npyscreen.Form):
     
@@ -3489,7 +3592,6 @@ class LeoMLTree(npyscreen.MLTree):
         active_line.highlight = False
         active_line.edit()
         if native:
-            ### active_line.set_leo_headline(active_line.value)
             self.values.clear_cache()
         else:
             try:
