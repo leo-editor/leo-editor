@@ -539,42 +539,46 @@ for name in commandNames:
                 assert False,'stroke %s not bound to %s in %s' % (
                     repr(stroke),repr(name),d2name)
 #@+node:ekr.20111221062755.3909: *3* @test all top-level read/write commands give proper read/write error dialogs
-child = p.firstChild()
-assert child
-assert child.h == 'child',child.h
-c.selectPosition(child)
-
-table = (
-    'import-file',
-    'open-outline',
-    'read-at-auto-nodes',
-    'read-at-file-nodes',
-    'read-at-shadow-nodes',
-   # 'read-file-into-node',
-   # 'read-outline-only',
-   'save-file',
-   'save-file-as',
-   'save-file-to',
-    'write-at-auto-nodes',
-    'write-at-file-nodes',
-    'write-at-shadow-nodes',
-    'write-dirty-at-auto-nodes',
-    'write-dirty-at-file-nodes',
-    'write-dirty-at-shadow-nodes',
-    #'write-file-from-node',
-    'write-missing-at-file-nodes',
-    #'write-outline-only',
-)
-
-tags = (('init_error_dialogs',2), ('raise_error_dialogs',1))
-
-d = g.app.unitTestDict
-for commandName in table:
-    for tag,n in tags:
-        d[tag] = 0
-    c.k.simulateCommand(commandName)
-    for tag,n in tags:
-        assert d.get(tag) == n,'commandName: %s,tag: %s, n: %s' % (commandName,tag,d.get(tag))
+if g.app.gui.guiName() == 'curses':
+    ### This test might come back later.
+    self.skipTest('Not for curses gui')
+else:
+    child = p.firstChild()
+    assert child
+    assert child.h == 'child',child.h
+    c.selectPosition(child)
+    table = (
+        'import-file',
+        'open-outline',
+        'read-at-auto-nodes',
+        'read-at-file-nodes',
+        'read-at-shadow-nodes',
+       # 'read-file-into-node',
+       # 'read-outline-only',
+       'save-file',
+       'save-file-as',
+       'save-file-to',
+        'write-at-auto-nodes',
+        'write-at-file-nodes',
+        'write-at-shadow-nodes',
+        'write-dirty-at-auto-nodes',
+        'write-dirty-at-file-nodes',
+        'write-dirty-at-shadow-nodes',
+        #'write-file-from-node',
+        'write-missing-at-file-nodes',
+        #'write-outline-only',
+    )
+    tags = (
+        ('init_error_dialogs',2),
+        ('raise_error_dialogs',1),
+    )
+    d = g.app.unitTestDict
+    for commandName in table:
+        for tag,n in tags:
+            d[tag] = 0
+        c.k.simulateCommand(commandName)
+        for tag,n in tags:
+            assert d.get(tag) == n,'commandName: %s,tag: %s, n: %s' % (commandName,tag,d.get(tag))
 #@+node:ekr.20111221062755.3910: *4* child
 #@+node:ekr.20100131171342.5483: *3* @test batch mode
 import os
@@ -11182,9 +11186,10 @@ else:
 #@+node:ekr.20111107065245.3833: *4* @test c.frame.minimize-all
 # The actual code contains the unit test.
 # This test will have effect only when run locally.
-
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses gui')
 else:
     d = g.app.unitTestDict
     tag = 'minimize-all'
@@ -11236,6 +11241,8 @@ finally:
 
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses gui')
 else:
     d = g.app.unitTestDict
     tag = 'resize-to-screen'
@@ -11404,38 +11411,40 @@ for i in range(3):
         repr(val),repr(result))
 #@+node:ekr.20111110073834.3843: *4* @test g.es_print
 '''Make sure that g.trace doesn't add an extra newline.'''
+if g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses gui')
+else:
+    import sys
 
-import sys
-
-def test():
-    g.es_print('a')
-    g.es_print('b')
-
-try:
-    sys.stdout = g.fileLikeObject()
-    test()
-    result = sys.stdout.get()
-    assert result == 'a\nb\n',repr(result)
-finally:
-    sys.stdout = sys.__stdout__
+    def test():
+        g.es_print('a')
+        g.es_print('b')
+    
+    try:
+        sys.stdout = g.fileLikeObject()
+        test()
+        result = sys.stdout.get()
+        assert result == 'a\nb\n',repr(result)
+    finally:
+        sys.stdout = sys.__stdout__
 #@+node:ekr.20071113145804.22: *4* @test g.es_trace
 @first # -*- coding: utf-8 -*-
-
-import sys
-
-s = 'test ɯ'
-
-def test():
-    g.es_trace(s,color='red')
-
-try:
-    # Don't worry about the exact output.
-    # Just test that it doesn't throw an exception.
-    sys.stdout = g.fileLikeObject()
-    test()
-
-finally:
-    sys.stdout = sys.__stdout__
+if g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses gui')
+else:
+    import sys
+    s = 'test ɯ'
+    
+    def test():
+        g.es_trace(s,color='red')
+    
+    try:
+        # Don't worry about the exact output.
+        # Just test that it doesn't throw an exception.
+        sys.stdout = g.fileLikeObject()
+        test()
+    finally:
+        sys.stdout = sys.__stdout__
 #@+node:ekr.20140702101937.4245: *4* @test g.find_word
 table = (
     ('abc a bc x','bc',0,6),
@@ -11625,20 +11634,22 @@ except Exception:
     raise
 #@+node:ekr.20111110073528.3843: *4* @test g.pr
 '''Make sure that g.trace doesn't add an extra newline.'''
-
-import sys
-
-def test():
-    g.pr('a')
-    g.pr('b')
-
-try:
-    sys.stdout = g.fileLikeObject()
-    test()
-    result = sys.stdout.get()
-    assert result == 'a\nb\n',repr(result)
-finally:
-    sys.stdout = sys.__stdout__
+if g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses gui')
+else:
+    import sys
+    
+    def test():
+        g.pr('a')
+        g.pr('b')
+    
+    try:
+        sys.stdout = g.fileLikeObject()
+        test()
+        result = sys.stdout.get()
+        assert result == 'a\nb\n',repr(result)
+    finally:
+        sys.stdout = sys.__stdout__
 #@+node:ekr.20100212112056.5361: *4* @test g.printGcAll
 g.printGcAll()
 #@+node:ekr.20100131180007.5396: *4* @test g.removeBlankLines
@@ -12104,6 +12115,8 @@ else:
 import sys
 if sys.platform.startswith('linux'):
     self.skipTest('linux test')
+elif g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses gui')
 else:
     fn = '<file name>'
     p2 = p.firstChild()
