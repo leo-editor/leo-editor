@@ -1242,6 +1242,9 @@ import leo.core.leoFrame as leoFrame
 # Do nothing when run externally.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() == 'curses':
+    # assert False, 'Not ready yet: interferes with other tests'
+    self.skipTest('Not for curses gui')
 else:
     assert not isinstance(c.frame,leoFrame.NullFrame)
     def closeEnough(f1,f2):
@@ -6574,6 +6577,9 @@ last line
 #@+node:ekr.20111006105711.3544: *5* @test clone-marked-nodes
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() == 'curses':
+    ### toxic test?
+    self.skipTest('Not for curses gui')
 else:
 
     exec(g.findTestScript(c,'@common x-marked-nodes test code'))
@@ -6621,7 +6627,9 @@ import sys
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 elif sys.platform.startswith('linux'):
-    self.skipTest('skip cycle-all-focus')
+    self.skipTest('Not for linux')
+elif g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses gui')
 else:
     log = c.frame.log
     c.bodyWantsFocusNow()
@@ -6640,6 +6648,8 @@ else:
 
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses gui')
 else:
     log = c.frame.log
     tabs = log.orderedTabNames()[1:]
@@ -6731,6 +6741,9 @@ last line
 #@+node:ekr.20111006064419.3491: *5* @test delete-marked-nodes
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() == 'curses':
+    ### Toxic test?
+    self.skipTest('Not for curses gui')
 else:
 
     exec(g.findTestScript(c,'@common x-marked-nodes test code'))
@@ -8376,6 +8389,9 @@ def test():
 #@+node:ekr.20111006064419.3493: *5* @test move-marked-nodes
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() == 'curses':
+    ### Toxic test ?
+    self.skipTest('Not for curses gui')
 else:
 
     exec(g.findTestScript(c,'@common x-marked-nodes test code'))
@@ -10270,26 +10286,29 @@ finally:
         c.setHeadString(p,h) # Essential
         c.redraw(p)
 #@+node:ekr.20051109091333: *5* @test deleting the last body character text redraws the screen (and icon)
-h = 'Test headline abc'
-p = c.testManager.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.setBodyString(p,'a')
-c.redraw_now() # To make node visible and to set the icon.
-try:
-    c.bodyWantsFocus()
-    n = c.frame.tree.redrawCount
-    w = c.frame.body.wrapper
-    w.setInsertPoint('end')
-    g.app.gui.event_generate(c,'\b','BackSpace',w)
-    n2 = c.frame.tree.redrawCount
-    if not g.app.isExternalUnitTest:
-        # This test is meaningless with a nullGui.
-        assert n2 == n + 1,'too many or too few redraws: %d' % (n2-n)
-finally:
-    if 1:
-        c.setBodyString(p,'')
-        c.redraw_now()
+if g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses gui')
+else:
+    h = 'Test headline abc'
+    p = c.testManager.findNodeAnywhere(h)
+    assert p,'node not found: %s' % h
+    c.selectPosition(p)
+    c.setBodyString(p,'a')
+    c.redraw_now() # To make node visible and to set the icon.
+    try:
+        c.bodyWantsFocus()
+        n = c.frame.tree.redrawCount
+        w = c.frame.body.wrapper
+        w.setInsertPoint('end')
+        g.app.gui.event_generate(c,'\b','BackSpace',w)
+        n2 = c.frame.tree.redrawCount
+        if not g.app.isExternalUnitTest:
+            # This test is meaningless with a nullGui.
+            assert n2 == n + 1,'too many or too few redraws: %d' % (n2-n)
+    finally:
+        if 1:
+            c.setBodyString(p,'')
+            c.redraw_now()
 #@+node:ekr.20051107115231.15: *5* @test editLabel selects entire headline
 k = c.keyHandler
 frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
@@ -10323,17 +10342,20 @@ assert u.undoMenuLabel == 'Undo Insert Node Before',repr(u.undoMenuLabel)
 c.undoer.undo()
 assert u.redoMenuLabel == 'Redo Insert Node Before',repr(u.undoMenuLabel)
 #@+node:ekr.20051125155134: *5* @test inserting a new node draws the screen exactly once
-n = c.frame.tree.redrawCount
-c.insertHeadline()
-c.outerUpdate() # Not actually needed, but should not matter.
-try:
-    n2 = c.frame.tree.redrawCount
-    if g.app.isExternalUnitTest:
-        self.skipTest('Can not be run externally')
-    else:
-        assert n2 == n + 1,'redraws: %d' % (n2 - n)
-finally:
-    c.undoer.undo()
+if g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses gui')
+else:
+    n = c.frame.tree.redrawCount
+    c.insertHeadline()
+    c.outerUpdate() # Not actually needed, but should not matter.
+    try:
+        n2 = c.frame.tree.redrawCount
+        if g.app.isExternalUnitTest:
+            self.skipTest('Can not be run externally')
+        else:
+            assert n2 == n + 1,'redraws: %d' % (n2 - n)
+    finally:
+        c.undoer.undo()
 #@+node:ekr.20051107115231.18: *5* @test paste and undo in headline - at end
 import sys
 if sys.platform.startswith('linux'):
@@ -10468,24 +10490,27 @@ finally:
         c.redraw(p)
 #@+node:ekr.20051107115231.24: *5* @test paste from menu to body recolors the body
 # Should be a comment
-h = 'Test headline abc'
-p = c.testManager.findNodeAnywhere(h)
-w = c.frame.body.wrapper
-n = c.frame.body.colorizer.recolorCount
-assert p,'node not found: %s' % h
-c.selectPosition(p)
-c.bodyWantsFocus()
-paste = '# Should be a comment'
-g.app.gui.replaceClipboardWith(paste)
-c.outerUpdate()
-event = g.app.gui.create_key_event(c,None,None,c.frame.body.wrapper)
-c.frame.pasteText(event)
-try:
-    assert c.frame.body.colorizer.recolorCount > n
-finally:
-    if 1:
-        c.setBodyString(p,'')
-        c.redraw(p)
+if g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses gui')
+else:
+    h = 'Test headline abc'
+    p = c.testManager.findNodeAnywhere(h)
+    w = c.frame.body.wrapper
+    n = c.frame.body.colorizer.recolorCount
+    assert p,'node not found: %s' % h
+    c.selectPosition(p)
+    c.bodyWantsFocus()
+    paste = '# Should be a comment'
+    g.app.gui.replaceClipboardWith(paste)
+    c.outerUpdate()
+    event = g.app.gui.create_key_event(c,None,None,c.frame.body.wrapper)
+    c.frame.pasteText(event)
+    try:
+        assert c.frame.body.colorizer.recolorCount > n
+    finally:
+        if 1:
+            c.setBodyString(p,'')
+            c.redraw(p)
 #@+node:ekr.20051107115231.14: *5* @test return ends editing of headline
 h = '@test return ends editing of headline'
 p = c.testManager.findNodeAnywhere(h)
@@ -10599,6 +10624,8 @@ import sys
 if False and sys.platform.startswith('linux'):
     # Fails for strange reasons.
     self.skipTest('linux')
+elif g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses gui')
 else:
     h = 'Test headline abc'
     p = c.testManager.findNodeAnywhere(h)

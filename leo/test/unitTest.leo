@@ -233,7 +233,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -1175,6 +1175,11 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20170504124637.1"><vh>child3</vh></v>
 </v>
 </v>
+</v>
+<v t="ekr.20170522084542.1"><vh>Possibly toxic tests</vh>
+<v t="ekr.20111006105711.3544"><vh>@test clone-marked-nodes</vh></v>
+<v t="ekr.20111006064419.3491"><vh>@test delete-marked-nodes</vh></v>
+<v t="ekr.20111006064419.3493"><vh>@test move-marked-nodes</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -3693,6 +3698,88 @@ for name in commandNames:
 </t>
 <t tx="ekr.20110615130436.3317"># This was used by @test writing a .leo file retains orphan bits.
 # but this test is moot because Leo no longer writes orphan bits.</t>
+<t tx="ekr.20111006064419.3491">if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() == 'curses':
+    ### Toxic test?
+    self.skipTest('Not for curses gui')
+else:
+
+    exec(g.findTestScript(c,'@common x-marked-nodes test code'))
+    
+    def test(p):
+        setup_test(p)
+        c.deleteMarked()
+        n = p.numberOfChildren()
+        assert n == 2 ,'delete: children: %s' % (n)
+        c.undoer.undo()
+        n = p.numberOfChildren()
+        assert n == 4,'undo: children: %s' % (n)
+        c.undoer.redo()
+        n = p.numberOfChildren()
+        assert n == 2 ,'delete: children: %s' % (n)
+    try:
+        test(p)
+    finally:
+        tear_down(p)
+</t>
+<t tx="ekr.20111006064419.3493">if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() == 'curses':
+    ### Toxic test ?
+    self.skipTest('Not for curses gui')
+else:
+
+    exec(g.findTestScript(c,'@common x-marked-nodes test code'))
+    
+    def test(p):
+        setup_test(p)
+        n = p.numberOfChildren()
+        assert n == 4 ,'delete: children: %s' % (n)
+        c.moveMarked()
+        assert c.p.h == 'Moved marked nodes'
+        n = p.numberOfChildren()
+        assert n == 2 ,'delete: children: %s' % (n)
+        if 0:
+            # The new move-marked-nodes command doesn't
+            # leave the result in the root node.
+            root = c.rootPosition()
+            assert root.h == 'Moved marked nodes',root.h
+        if 0: # The move-marked-nodes command is no longer undoable.
+            c.undoer.undo()
+            n = p.numberOfChildren()
+            assert n == 4,'undo: children: %s' % (n)
+            c.undoer.redo()
+            n = p.numberOfChildren()
+            assert n == 2 ,'delete: children: %s' % (n)
+    try:
+        test(p)
+    finally:
+        tear_down(p,'Moved marked nodes')
+</t>
+<t tx="ekr.20111006105711.3544">if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() == 'curses':
+    ### toxic test?
+    self.skipTest('Not for curses gui')
+else:
+
+    exec(g.findTestScript(c,'@common x-marked-nodes test code'))
+    
+    def test(p):
+        setup_test(p)
+        c.cloneMarked()
+        h = 'Clones of marked nodes'
+        assert c.p.h == h,c.p.h
+        c.undoer.undo()
+        assert not g.findNodeAnywhere(c,h)
+        c.undoer.redo()
+        assert c.p.h == h,c.p.h
+    try:
+        test(p)
+    finally:
+        tear_down(p,'Clones of marked nodes')
+</t>
 <t tx="ekr.20111021115306.3697">\begin{document}
 &lt;&lt; Document &gt;&gt;
 % hidden comment
@@ -15414,5 +15501,6 @@ And this.
 <t tx="ekr.20170504124637.1"></t>
 <t tx="ekr.20170504124652.1"></t>
 <t tx="ekr.20170504124842.1"></t>
+<t tx="ekr.20170522084542.1"></t>
 </tnodes>
 </leo_file>
