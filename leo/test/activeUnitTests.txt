@@ -10380,8 +10380,11 @@ else:
         paste = 'ABC'
         g.app.gui.replaceClipboardWith(paste)
         w.setSelectionRange('end','end')
-        k.manufactureKeyPressForCommandName(w,'paste-text')
-        g.app.gui.event_generate(c,'\n','Return',w)
+        if g.app.gui.guiName() == 'curses':
+            c.frame.pasteText(event=g.Bunch(widget=w))
+        else:
+            k.manufactureKeyPressForCommandName(w,'paste-text')
+            g.app.gui.event_generate(c,'\n','Return',w)
         assert p.h == h + paste,'oops2 got: %s' % p.h
         k.manufactureKeyPressForCommandName(w,'undo')
         assert p.h == h,'oops3 got: %s' % p.h
