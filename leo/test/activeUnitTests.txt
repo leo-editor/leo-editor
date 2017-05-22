@@ -6581,7 +6581,7 @@ last line
 #@+node:ekr.20111006105711.3544: *5* @test clone-marked-nodes
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-elif g.app.gui.guiName() == 'curses':
+elif False and g.app.gui.guiName() == 'curses':
     ### toxic test?
     self.skipTest('Not for curses gui')
 else:
@@ -6745,7 +6745,7 @@ last line
 #@+node:ekr.20111006064419.3491: *5* @test delete-marked-nodes
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-elif g.app.gui.guiName() == 'curses':
+elif False and g.app.gui.guiName() == 'curses':
     ### Toxic test?
     self.skipTest('Not for curses gui')
 else:
@@ -8393,7 +8393,7 @@ def test():
 #@+node:ekr.20111006064419.3493: *5* @test move-marked-nodes
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-elif g.app.gui.guiName() == 'curses':
+elif False and g.app.gui.guiName() == 'curses':
     ### Toxic test ?
     self.skipTest('Not for curses gui')
 else:
