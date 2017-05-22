@@ -233,7 +233,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -1181,9 +1181,8 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20111006064419.3491"><vh>@test delete-marked-nodes</vh></v>
 <v t="ekr.20111006064419.3493"><vh>@test move-marked-nodes</vh></v>
 </v>
-<v t="ekr.20170522164635.1"><vh>Real failures in the curses gui</vh>
+<v t="ekr.20170522164635.1" a="E"><vh>Real failures in the curses gui</vh>
 <v t="ekr.20051107115231.15"><vh>@test editLabel selects entire headline</vh></v>
-<v t="ekr.20141020110954.4750"><vh>@test newlines in headlines</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1572,12 +1571,11 @@ w = c.edit_widget(p)
 assert w
 s = w.getAllText()
 selectAll = c.config.getBool('select_all_text_when_editing_headlines')
-# g.trace('editLabel selects entire headline',selectAll)
 i,j = w.getSelectionRange()
 if selectAll:
-    assert i == 0 and j == len(s),'oops1: i: %d, j: %d' % (i,j)
+    assert i == 0 and j == len(s),('oops1',i,j,len(s))
 else:
-    assert i == len(s) and j == len(s),'oops2: i: %d, j: %d' % (i,j)
+    assert i == len(s) and j == len(s),('oops2',i,j,len(s))
 </t>
 <t tx="ekr.20060131102450">s = '\nEnd of typing tests'
 if g.app.gui.guiName() == 'curses':
@@ -1743,7 +1741,7 @@ if g.app.gui.guiName() == 'curses':
 else:
     g.pr(s)
 </t>
-<t tx="ekr.20070417092935" str_leo_pos="4">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="8,0">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -4852,14 +4850,6 @@ elif g.app.gui.guiName().startswith('qt'):
             assert z in L_list,'In %s but not in %s: %s' % (name2,name1,z)
 else:
      self.skipTest('Requires Qt Gui')
-</t>
-<t tx="ekr.20141020110954.4750"># Bug https://bugs.launchpad.net/leo-editor/+bug/1245535
-h = p.h
-try:
-    p.h = '\nab\nxy\n'
-    assert p.h == 'abxy',p.h
-finally:
-    p.h = h
 </t>
 <t tx="ekr.20141223125432.11">if not g.isPython3 and g.app.gui.guiName().startswith('qt'):
     import leo.core.leoQt as leoQt

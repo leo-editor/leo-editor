@@ -10320,12 +10320,11 @@ w = c.edit_widget(p)
 assert w
 s = w.getAllText()
 selectAll = c.config.getBool('select_all_text_when_editing_headlines')
-# g.trace('editLabel selects entire headline',selectAll)
 i,j = w.getSelectionRange()
 if selectAll:
-    assert i == 0 and j == len(s),'oops1: i: %d, j: %d' % (i,j)
+    assert i == 0 and j == len(s),('oops1',i,j,len(s))
 else:
-    assert i == len(s) and j == len(s),'oops2: i: %d, j: %d' % (i,j)
+    assert i == len(s) and j == len(s),('oops2',i,j,len(s))
 #@+node:ekr.20051120110335: *5* @test insert-node can be undone and redone
 u = c.undoer
 assert u
