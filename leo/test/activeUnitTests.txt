@@ -10455,7 +10455,10 @@ else:
             c.setHeadString(p,h) # Essential
             c.redraw(p)
 #@+node:ekr.20060208072307: *5* @test paste from menu into body sticks
-if c.k.defaultUnboundKeyAction == 'insert':
+if g.app.gui.guiName() == 'curses':
+    ### This might come back later, but not now.
+    self.skipTest('Not for curses gui')
+elif c.k.defaultUnboundKeyAction == 'insert':
     h = 'Test headline abc'
     p = c.testManager.findNodeAnywhere(h)
     assert p,'node not found: %s' % h
@@ -11216,40 +11219,46 @@ else:
 #@+node:ekr.20061104172236.22: *4* @test c.frame.pasteText
 # target.
 
-try:
-    w = c.frame.body.wrapper
-    s = w.getAllText()
-    w.setInsertPoint(len(s))
-    c.k.previousSelection = 2,8
-    event = g.app.gui.create_key_event(c,None,None,w)
-    c.frame.pasteText(event=event,middleButton=True)
-    s2 = w.getAllText()
-    assert len(s2) == len(s) + len('target')
-finally:
-    w.setAllText(s)
-    p.setBodyString(s)
-    # g.trace(repr(s))
-    c.recolor()
+if g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses gui')
+else:
+    try:
+        w = c.frame.body.wrapper
+        s = w.getAllText()
+        w.setInsertPoint(len(s))
+        c.k.previousSelection = 2,8
+        event = g.app.gui.create_key_event(c,None,None,w)
+        c.frame.pasteText(event=event,middleButton=True)
+        s2 = w.getAllText()
+        assert len(s2) == len(s) + len('target')
+    finally:
+        w.setAllText(s)
+        p.setBodyString(s)
+        # g.trace(repr(s))
+        c.recolor()
 
 # end
 #@+node:ekr.20071113145804.33: *4* @test c.frame.pasteText 2
 # target
 
-try:
-    w = c.frame.body.wrapper
-    s2 = p.b
-    s = w.getAllText()
-    assert s == s2, 'w.getAllText() != p.b: len(w)=%d, len(p)=%d' % (len(s),len(s2))
-    w.setInsertPoint(len(s))
-    c.k.previousSelection = 2,8
-    event = g.app.gui.create_key_event(c,None,None,w)
-    c.frame.pasteText(event=event,middleButton=True)
-    s2 = w.getAllText()
-    assert len(s2) == len(s) + len('target')
-finally:
-    w.setAllText(s)
-    p.setBodyString(s)
-    c.recolor()
+if g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses gui')
+else:
+    try:
+        w = c.frame.body.wrapper
+        s2 = p.b
+        s = w.getAllText()
+        assert s == s2, 'w.getAllText() != p.b: len(w)=%d, len(p)=%d' % (len(s),len(s2))
+        w.setInsertPoint(len(s))
+        c.k.previousSelection = 2,8
+        event = g.app.gui.create_key_event(c,None,None,w)
+        c.frame.pasteText(event=event,middleButton=True)
+        s2 = w.getAllText()
+        assert len(s2) == len(s) + len('target')
+    finally:
+        w.setAllText(s)
+        p.setBodyString(s)
+        c.recolor()
 
 # end5target
 #@+node:ekr.20111107065530.3833: *4* @test c.frame.resize-to-screen

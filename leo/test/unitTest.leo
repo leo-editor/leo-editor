@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.40" body_secondary_ratio="0.64">
-	<global_window_position top="182" left="250" height="838" width="1080"/>
+	<global_window_position top="138" left="137" height="838" width="1080"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -233,7 +233,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -1181,16 +1181,7 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20111006064419.3491"><vh>@test delete-marked-nodes</vh></v>
 <v t="ekr.20111006064419.3493"><vh>@test move-marked-nodes</vh></v>
 </v>
-<v t="ekr.20170522091839.1"><vh>Found:manufactureKeyPressForCommandName</vh>
-<v t="ekr.20100830114008.5968"><vh>runEditCommandTest</vh></v>
-<v t="ekr.20051107115231.18"><vh>@test paste and undo in headline - at end</vh></v>
-<v t="ekr.20051107115231.21"><vh>@test selecting new node retains typing in headline</vh></v>
-<v t="ekr.20051107115231.16"><vh>@test paste at end of headline</vh></v>
-<v t="ekr.20051107115231.28"><vh>@test selecting new node retains paste in headline</vh></v>
-<v t="ekr.20051107115231.17"><vh>@test typing and undo in headline - at end</vh></v>
-<v t="ekr.20051107115231.20"><vh>@test paste and undo in headline - with selection</vh></v>
-<v t="ekr.20100131171342.5607"><vh>@test k.registerCommand</vh></v>
-</v>
+<v t="ekr.20141020110954.4750"><vh>@test newlines in headlines</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1567,203 +1558,6 @@ It also includes a trace back, but for AssertionErrors, it does not seem to offe
 assert('Spam' == 'Ham')</t>
 <t tx="ekr.20051012104957"></t>
 <t tx="ekr.20051013162226"></t>
-<t tx="ekr.20051107115231.16">import sys
-if sys.platform.startswith('linux'):
-    self.skipTest('skip headline test')
-else:
-    k = c.keyHandler
-    frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-    h = 'Test headline abc'
-    p = c.testManager.findNodeAnywhere(h)
-    assert p,'node not found: %s' % h
-    c.redrawAndEdit(p) # To make node visible
-    w = c.edit_widget(p)
-    g.app.gui.set_focus(c,w)
-    w2 = g.app.gui.get_focus(c)
-    try:
-        assert w
-        paste = 'ABC'
-        g.app.gui.replaceClipboardWith(paste)
-        g.app.gui.set_focus(c,w)
-        w2 = g.app.gui.get_focus(c)
-        w.setSelectionRange('end','end')
-        if g.app.gui.guiName() == 'curses':
-            c.frame.pasteText(event=g.Bunch(widget=w))
-        else:
-            k.manufactureKeyPressForCommandName(w,'paste-text')
-            g.app.gui.event_generate(c,'\n','Return',w)
-        assert p.h == h + paste,'Expected: %s, got %s' % (
-            h + paste,p.h)
-    finally:
-        if 1:
-            c.setHeadString(p,h) # Essential
-            c.redraw(p)
-</t>
-<t tx="ekr.20051107115231.17">import sys
-if sys.platform.startswith('linux'):
-    self.skipTest('skip headline test')
-elif g.app.gui.guiName() == 'curses':
-    ### This could be adapted, but not now.
-    self.skipTest('Not for curses gui')
-else:
-    k = c.k
-    if k.defaultUnboundKeyAction == 'insert':
-        frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-        h = 'Test headline abc'
-        p = c.testManager.findNodeAnywhere(h)
-        assert p,'node not found: %s' % h
-        c.redrawAndEdit(p) # To make the node visible.
-        w = c.edit_widget(p)
-        try:
-            assert w, 'oops1'
-            wName = g.app.gui.widget_name(w)
-            assert wName.startswith('head'),'w.name:%s' % wName
-            w.setSelectionRange('end','end')
-            g.app.gui.event_generate(c,'X','Shift+X',w)
-            g.app.gui.event_generate(c,'Y','Shift+Y',w)
-            g.app.gui.event_generate(c,'Z','Shift+Z',w)
-            g.app.gui.event_generate(c,'\n','Return',w)
-            assert p.h == h + 'XYZ',(
-                'oops2: expected: %s, got: %s' % (
-                    h + 'XYZ',p.h))
-            if g.app.gui.guiName() != 'nullGui':
-                assert c.undoer.undoMenuLabel == 'Undo Typing','oops3: %s' % (
-                    c.undoer.undoMenuLabel)
-            k.manufactureKeyPressForCommandName(w,'undo')
-            if g.app.gui.guiName() != 'nullGui':
-                assert c.undoer.redoMenuLabel == 'Redo Typing','oops4'
-            assert p.h == h,'oops5 got: %s, expected: %s' % (
-                p.h,h)
-        finally:
-            if 1:
-                c.setHeadString(p,h) # Essential
-                c.redraw(p)
-</t>
-<t tx="ekr.20051107115231.18">import sys
-if sys.platform.startswith('linux'):
-    self.skipTest('skip headline test')
-else:
-    k = c.keyHandler
-    h = 'Test headline abc'
-    p = c.testManager.findNodeAnywhere(h)
-    assert p,'node not found: %s' % h
-    frame = c.frame
-    tree = frame.tree
-    canvas = tree.canvas
-    c.redrawAndEdit(p) # To make node visible
-    w = c.edit_widget(p)
-    try:
-        assert w,'oops1'
-        w.setSelectionRange('end','end')
-        paste = 'ABC'
-        g.app.gui.replaceClipboardWith(paste)
-        w.setSelectionRange('end','end')
-        if g.app.gui.guiName() == 'curses':
-            c.frame.pasteText(event=g.Bunch(widget=w))
-        else:
-            k.manufactureKeyPressForCommandName(w,'paste-text')
-            g.app.gui.event_generate(c,'\n','Return',w)
-        assert p.h == h + paste,'oops2 got: %s' % p.h
-        k.manufactureKeyPressForCommandName(w,'undo')
-        assert p.h == h,'oops3 got: %s' % p.h
-    finally:
-        if 1:
-            c.setHeadString(p,h) # Essential
-            c.redraw(p)
-</t>
-<t tx="ekr.20051107115231.20">import sys
-if sys.platform.startswith('linux'):
-    self.skipTest('skip headline test')
-else:
-    k = c.keyHandler
-    frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-    h = 'Test headline abc'
-    p = c.testManager.findNodeAnywhere(h)
-    assert p,'node not found: %s' % h
-    c.redraw(p) # To make node visible
-    tree.editLabel(p)
-    w = c.edit_widget(p)
-    try:
-        assert w, 'Null w'
-        paste = 'ABC'
-        g.app.gui.replaceClipboardWith(paste)
-        w.setSelectionRange('1.1','1.2')
-        if g.app.gui.guiName() == 'curses':
-            c.frame.pasteText(event=g.Bunch(widget=w))
-        else:
-            k.manufactureKeyPressForCommandName(w,'paste-text')
-            g.app.gui.event_generate(c,'\n','Return',w)
-        assert p.h == h[0] + paste + h[2:]
-        k.manufactureKeyPressForCommandName(w,'undo')
-        assert p.h == h, 'head mismatch'
-    finally:
-        if 1:
-            c.setHeadString(p,h) # Essential
-            c.redraw(p)
-</t>
-<t tx="ekr.20051107115231.21">import sys
-if sys.platform.startswith('linux'):
-    self.skipTest('skip headline test')
-elif g.app.gui.guiName() == 'curses':
-    ### This could be adapted, but not now.
-    self.skipTest('Not for curses gui')
-else:
-    k = c.k
-    if k.defaultUnboundKeyAction == 'insert':
-        frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-        h = 'Test headline abc'
-        p = c.testManager.findNodeAnywhere(h)
-        assert p,'node not found: %s' % h
-        c.redraw(p) # To make node visible
-        tree.editLabel(p)
-        w = c.edit_widget(p)
-        try:
-            assert w
-            w.setSelectionRange('end','end')
-            g.app.gui.event_generate(c,'X','Shift+X',w)
-            g.app.gui.event_generate(c,'Y','Shift+Y',w)
-            g.app.gui.event_generate(c,'Z','Shift+Z',w)
-            g.app.gui.event_generate(c,'\n','Return',w)
-            assert p.h == h + 'XYZ'
-            k.manufactureKeyPressForCommandName(w,'undo')
-            assert p.h == h
-        finally:
-            if 1:
-                c.setHeadString(p,h) # Essential
-                c.redraw(p)
-</t>
-<t tx="ekr.20051107115231.28">import sys
-if sys.platform.startswith('linux'):
-    self.skipTest('skip headline test')
-else:
-    k = c.keyHandler
-    frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-    h = 'Test headline abc'
-    p = c.testManager.findNodeAnywhere(h)
-    assert p,'node not found: %s' % h
-    c.redraw(p) # To make node visible
-    tree.editLabel(p)
-    w = c.edit_widget(p)
-    try:
-        assert w,'oops1'
-        w.setSelectionRange('end','end')
-        paste = 'ABC'
-        g.app.gui.replaceClipboardWith(paste)
-        w.setSelectionRange('end','end')
-        if g.app.gui.guiName() == 'curses':
-            c.frame.pasteText(event=g.Bunch(widget=w))
-        else:
-            k.manufactureKeyPressForCommandName(w,'paste-text')
-        c.selectPosition(p.visBack(c))
-        assert p.h == h + paste
-        k.manufactureKeyPressForCommandName(w,'undo')
-        assert p.h == h,'expected: %s, got: %s' % (
-            h,p.h)
-    finally:
-        if 1:
-            c.setHeadString(p,h) # Essential
-            c.redraw(p)
-</t>
 <t tx="ekr.20060131102450">s = '\nEnd of typing tests'
 if g.app.gui.guiName() == 'curses':
     import logging
@@ -3696,24 +3490,6 @@ if g.app.gui.guiName() == 'curses':
 else:
     g.pr(s)
 </t>
-<t tx="ekr.20100131171342.5607">k = c.k ; p = c.p
-w = c.edit_widget(p)
-commandName = 'test-registerCommand'
-
-def callback (event=None,c=c): # Must have an event param to pass later unit test.
-    g.app.unitTestDict[commandName] = True
-
-# Test 1
-g.app.unitTestDict[commandName] = False
-k.registerCommand(commandName,'Alt-Ctrl-Shift-z',callback,pane='all',verbose=True)
-k.simulateCommand(commandName)
-assert g.app.unitTestDict.get(commandName)
-
-if 0: # Test 2
-    g.app.unitTestDict[commandName] = False
-    k.manufactureKeyPressForCommandName(w,commandName)
-    assert g.app.unitTestDict.get(commandName)
-</t>
 <t tx="ekr.20100131171342.5609" annotate="7d71002e">s = '\nEnd of leoKeys tests.'
 if g.app.gui.guiName() == 'curses':
     import logging
@@ -3850,107 +3626,6 @@ finally:
             print ('%3d%s %s' % (i,tag,repr(got_lines[i])))
         if not verbose and not match:
             break
-</t>
-<t tx="ekr.20100830114008.5968">@
-This is an updated version of c.testManager.runEditCommandTest,
-moved here to take advantage of EKR's new common-test-code-sharing
-mechanism. It should be okay to delete the old code and replace
-all uses with:
-
-    exec(g.findTestScript(c,'@common leoEditCommands test code'))
-    runEditCommandTest(c,p)
-@c
-
-def runEditCommandTest (c,p,inHeadline=False):
-    '''
-    This is a helper for testing edit commands. It takes the name of the
-    command from the title of the test and the before and after conditions
-    from child nodes.
-
-    :param inHeadline: if True, tests the command in the headline; if False,
-    tests the command in the body.
-    '''
-
-    tm = c.testManager
-    atTest = p.copy()
-
-    h = atTest.h
-    assert h.startswith('@test '),'expected head: %s, got: %s' % ('@test',h)
-    commandName = h[6:].strip()
-    # Ignore everything after the actual command name.
-    i = g.skip_id(commandName, 0, chars='-')
-    commandName = commandName[:i]
-    assert commandName, 'empty command name'
-    command = c.commandsDict.get(commandName)
-    assert command, 'no command: %s' % (commandName)
-
-    work,before,after = tm.findChildrenOf(atTest)
-    before_h = 'before sel='
-    after_h = 'after sel='
-    for node,h in ((work,'work'),(before,before_h),(after,after_h)):
-        h2 = node.h
-        assert h2.startswith(h),'expected head: %s, got: %s' % (h,h2)
-
-    sels = []
-    for node,h in ((before,before_h),(after,after_h)):
-        sel = node.h[len(h):].strip()
-        aList = [str(z) for z in sel.split(',')]
-        sels.append(tuple(aList))
-    sel1,sel2 = sels
-    #g.trace(repr(sels))
-
-    c.selectPosition(work)
-
-    if inHeadline:
-        c.setHeadString(work,before.b)
-        # To make the node visible, and edit the label
-        c.redrawAndEdit(work)
-        w = c.edit_widget(work)
-        g.app.gui.set_focus(c,w)
-    else:
-        w = c.frame.body.wrapper
-        c.setBodyString(work,before.b)
-
-    try:
-        #g.trace(repr(sel1[0]),repr(sel1[1]))
-        w.setSelectionRange(sel1[0],sel1[1],insert=sel1[1])
-        if inHeadline:
-            # simulateCommand doesn't seem to work when editing a headline
-            c.k.manufactureKeyPressForCommandName(w,commandName)
-        else:
-            c.k.simulateCommand(commandName)
-
-        # Exit headline-editing mode
-        if inHeadline:
-            g.app.gui.event_generate(c,'\n','Return',w)
-
-        location = 'headline' if inHeadline else 'body'
-        s1 = work.h if inHeadline else work.b
-        s2 = after.b
-        
-        # Strip '\n' from 'before' headline, as is now done in Leo.
-        if inHeadline and s2.endswith('\n'):
-            s2 = s2[:-1]
-
-        assert s1 == s2, 'mismatch in %s\nexpected: %s\n     got: %s' % (location,repr(s2),repr(s1))
-        sel3 = w.getSelectionRange()
-        ins = w.toPythonIndex(w.getInsertPoint())
-        #g.trace('ins',ins,'s1[j:...]',repr(s1[j:j+10]))
-        # Convert both selection ranges to gui indices.
-        sel2_orig = sel2
-        # g.trace(w)
-        assert len(sel2) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel2
-        i,j = sel2 ; sel2 = w.toPythonIndex(i),w.toPythonIndex(j)
-        assert len(sel3) == 2,'Bad headline index.  Expected index,index.  got: %s' % sel3
-        i,j = sel3 ; sel3 = w.toPythonIndex(i),w.toPythonIndex(j)
-        assert sel2 == sel3, 'mismatch in sel\nexpected: %s = %s, got: %s' % (sel2_orig,sel2,sel3)
-        c.selectPosition(atTest)
-        atTest.contract()
-        # Don't redraw.
-    finally:
-        # Make sure to restore the headline so it can be used for future tests
-        if inHeadline:
-            c.setHeadString(work,'work')
 </t>
 <t tx="ekr.20101009105124.6195">True (recommended):
     Write "E" attribute bits in &lt;v&gt; elements.
@@ -5165,6 +4840,14 @@ elif g.app.gui.guiName().startswith('qt'):
             assert z in L_list,'In %s but not in %s: %s' % (name2,name1,z)
 else:
      self.skipTest('Requires Qt Gui')
+</t>
+<t tx="ekr.20141020110954.4750"># Bug https://bugs.launchpad.net/leo-editor/+bug/1245535
+h = p.h
+try:
+    p.h = '\nab\nxy\n'
+    assert p.h == 'abxy',p.h
+finally:
+    p.h = h
 </t>
 <t tx="ekr.20141223125432.11">if not g.isPython3 and g.app.gui.guiName().startswith('qt'):
     import leo.core.leoQt as leoQt
@@ -15828,8 +15511,5 @@ And this.
 <t tx="ekr.20170504124652.1"></t>
 <t tx="ekr.20170504124842.1"></t>
 <t tx="ekr.20170522084542.1"></t>
-<t tx="ekr.20170522091839.1"># flattened, word, ignore-case, head, body
-
-# found 8 nodes</t>
 </tnodes>
 </leo_file>
