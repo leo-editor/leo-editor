@@ -233,7 +233,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -1176,7 +1176,7 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20170522084542.1" a="E"><vh>Possibly toxic tests</vh>
+<v t="ekr.20170522084542.1"><vh>The no-longer toxic tests</vh>
 <v t="ekr.20111006105711.3544"><vh>@test clone-marked-nodes</vh></v>
 <v t="ekr.20111006064419.3491"><vh>@test delete-marked-nodes</vh></v>
 <v t="ekr.20111006064419.3493"><vh>@test move-marked-nodes</vh></v>
@@ -1722,7 +1722,7 @@ if g.app.gui.guiName() == 'curses':
 else:
     g.pr(s)
 </t>
-<t tx="ekr.20070417092935" str_leo_pos="7,2">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="4">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -3701,9 +3701,6 @@ for name in commandNames:
 # but this test is moot because Leo no longer writes orphan bits.</t>
 <t tx="ekr.20111006064419.3491">if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-elif False and g.app.gui.guiName() == 'curses':
-    ### Toxic test?
-    self.skipTest('Not for curses gui')
 else:
 
     exec(g.findTestScript(c,'@common x-marked-nodes test code'))
@@ -3726,9 +3723,6 @@ else:
 </t>
 <t tx="ekr.20111006064419.3493">if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-elif False and g.app.gui.guiName() == 'curses':
-    ### Toxic test ?
-    self.skipTest('Not for curses gui')
 else:
 
     exec(g.findTestScript(c,'@common x-marked-nodes test code'))
@@ -3760,9 +3754,6 @@ else:
 </t>
 <t tx="ekr.20111006105711.3544">if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-elif False and g.app.gui.guiName() == 'curses':
-    ### toxic test?
-    self.skipTest('Not for curses gui')
 else:
 
     exec(g.findTestScript(c,'@common x-marked-nodes test code'))
