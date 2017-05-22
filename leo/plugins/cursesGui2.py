@@ -105,6 +105,7 @@ class LeoTreeLine(npyscreen.TreeLine):
         self.left_margin = left_margin
         self.parent.curses_pad.bkgdset(' ',curses.A_NORMAL)
         self.left_margin += self._print_tree(self.relx)
+            # Not sure why it works to print the tree first, but it does.
         
         def put(char):
             self.parent.curses_pad.addch(
