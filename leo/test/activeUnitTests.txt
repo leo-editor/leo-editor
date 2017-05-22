@@ -10214,6 +10214,10 @@ for obj,ivar,command in table:
 #@+node:ekr.20100204173354.5375: *5* @test toggle-find-x
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses')
+        # The commands exist, but don't do anything,
+        # which causes fail1.
 else:
     table = (
         # ('ignore_case','toggle-find-ignore-case-option'),
