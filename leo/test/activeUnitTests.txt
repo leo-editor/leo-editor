@@ -11977,20 +11977,22 @@ else:
     self.skipTest('Requires Qt Gui')
 #@+node:ekr.20111110072415.3841: *4* @test g.trace
 '''Make sure that g.trace doesn't add an extra newline.'''
-
-import sys
-
-def test():
-    g.trace('a')
-    g.trace('b')
-
-try:
-    sys.stdout = g.fileLikeObject()
-    test()
-    result = sys.stdout.get()
-    assert result == 'test a\ntest b\n',repr(result)
-finally:
-    sys.stdout = sys.__stdout__
+if g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses gui')
+else:
+    import sys
+    
+    def test():
+        g.trace('a')
+        g.trace('b')
+    
+    try:
+        sys.stdout = g.fileLikeObject()
+        test()
+        result = sys.stdout.get()
+        assert result == 'test a\ntest b\n',repr(result)
+    finally:
+        sys.stdout = sys.__stdout__
 #@+node:ekr.20050105084757.1: *4* @test g.utils_remove
 import os
 
