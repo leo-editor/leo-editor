@@ -904,11 +904,12 @@ class HeadWrapper(leoFrame.StringTextWrapper):
     #@+node:ekr.20170522014009.1: *4* hw.setAllText
     def setAllText(self, s):
         '''HeadWrapper.setAllText'''
-        self.s = s
+        # Don't allow newlines.
+        self.s = s.replace('\n','').replace('\r','')
         i = len(self.s)
         self.ins = i
         self.sel = i, i
-        self.p.v._headString = s
+        self.p.v._headString = self.s
     #@-others
 #@+node:ekr.20170511053048.1: *3* class CursesLineEditWrapper(CursesTextMixin)
 class CursesLineEditWrapper(CursesTextMixin):
@@ -2789,9 +2790,8 @@ class CursesTree (leoFrame.LeoTree):
     #@+node:ekr.20170511101300.20: *4* CTree.setItemText
     def setItemText(self, item, s):
         if item:
-            item.setText(0, s)
-            # if self.use_declutter:
-                # item._real_text = s
+            assert isinstance(item, HeadWrapper), repr(item)
+            item.setAllText(s)
     #@+node:ekr.20170511101300.21: *4* CTree.sizeTreeEditor
     @staticmethod
     def sizeTreeEditor(c, editor):
@@ -3005,6 +3005,7 @@ class CursesTree (leoFrame.LeoTree):
         e = self.edit_widget(p)
         if e:
             if trace: g.trace('e', s)
+            assert isinstance(e, HeadWrapper), repr(e)
             e.setAllText(s)
         else:
             item = self.position2item(p)
