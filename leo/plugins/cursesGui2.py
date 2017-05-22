@@ -2907,7 +2907,7 @@ class CursesTree (leoFrame.LeoTree):
                 # return None
         # else:
             # return None
-    #@+node:ekr.20170511095353.1: *4* CTree.editLabel & helper
+    #@+node:ekr.20170511095353.1: *4* CTree.editLabel & helper (REVISE)
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""
         trace = False and not g.unitTesting
@@ -2918,6 +2918,8 @@ class CursesTree (leoFrame.LeoTree):
         c.outerUpdate()
             # Do any scheduled redraw.
             # This won't do anything in the new redraw scheme.
+            
+        ### Does this do anything?
         item = self.position2item(p)
         if item:
             # if self.use_declutter:
