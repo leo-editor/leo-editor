@@ -10,6 +10,10 @@ import logging
 import logging.handlers
 # import re
 import sys
+try:
+    from tkinter import Tk # Python 3
+except ImportError:
+    from Tkinter import Tk # Python 2
 # import weakref
 import leo.core.leoGlobals as g
 import leo.core.leoFrame as leoFrame
@@ -1102,6 +1106,43 @@ class CursesFrame (leoFrame.LeoFrame):
 
     def update(self, *args, **keys):
         pass
+    #@+node:ekr.20170522015906.1: *3* CFrame.pasteText (override)
+    ### @cmd('paste-text')
+    def pasteText(self, event=None, middleButton=False):
+        '''
+        Paste the clipboard into a widget.
+        If middleButton is True, support x-windows middle-mouse-button easter-egg.
+        '''
+        trace = False # and not g.unitTesting
+        c = self.c
+        w = event and event.widget
+        wname = c.widget_name(w)
+        if not w or not g.isTextWrapper(w):
+            if trace: g.trace('not a text widget', w)
+            return
+        i, j = oldSel = w.getSelectionRange()
+            # Returns insert point if no selection.
+        oldText = w.getAllText()
+        s = g.app.gui.getTextFromClipboard()
+        s = g.toUnicode(s)
+        if trace: g.trace('pasteText: wname:',wname, s)
+        singleLine = wname.startswith('head') or wname.startswith('minibuffer')
+        if singleLine:
+            # Strip trailing newlines so the truncation doesn't cause confusion.
+            while s and s[-1] in ('\n', '\r'):
+                s = s[: -1]
+        # Update the widget.
+        if i != j:
+            w.delete(i, j)
+        w.insert(i, s)
+        w.see(i + len(s) + 2)
+        if wname.startswith('body'):
+            c.frame.body.onBodyChanged('Paste', oldSel=oldSel, oldText=oldText)
+        elif wname.startswith('head'):
+            c.frame.tree.onHeadChanged(w.p, 'Paste', s=w.getAllText())
+                # New for Curses gui.
+
+    OnPasteFromMenu = pasteText
     #@-others
 #@+node:ekr.20170419094731.1: ** class CursesGui (leoGui.LeoGui)
 class CursesGui(leoGui.LeoGui):
@@ -1136,48 +1177,27 @@ class CursesGui(leoGui.LeoGui):
         self.key_handler = CursesKeyHandler()
 
     #@+others
-    #@+node:ekr.20170504112655.1: *3* CGui.clipboard (to do)
-    #@+node:ekr.20170504112744.2: *4* CGui.replaceClipboardWith (to do)
-    def replaceClipboardWith(self, s):
-        '''Replace the clipboard with the string s.'''
-        pass
-        ###
-            # cb = self.qtApp.clipboard()
-            # if cb:
-                # s = g.toUnicode(s)
-                # QtWidgets.QApplication.processEvents()
-                # # Fix #241: QMimeData object error
-                # cb.setText(QString(s))
-                # QtWidgets.QApplication.processEvents()
-                # # g.trace(len(s), type(s), s[: 25])
-            # else:
-                # g.trace('no clipboard!')
+    #@+node:ekr.20170504112655.1: *3* CGui.clipboard
+    # Yes, using Tkinter seems to be the standard way.
     #@+node:ekr.20170504112744.3: *4* CGui.getTextFromClipboard
     def getTextFromClipboard(self):
         '''Get a unicode string from the clipboard.'''
-        return ''
-        ###
-            # cb = self.qtApp.clipboard()
-            # if cb:
-                # QtWidgets.QApplication.processEvents()
-                # s = cb.text()
-                # # g.trace(len(s), type(s), s[: 25])
-                # # Fix bug 147: Python 3 clipboard encoding
-                # s = g.u(s)
-                    # # Don't call g.toUnicode here!
-                    # # s is a QString, which isn't exactly a unicode string!
-                # return s
-            # else:
-                # g.trace('no clipboard!')
-                # return ''
-    #@+node:ekr.20170504112744.4: *4* CGui.setClipboardSelection
-    def setClipboardSelection(self, s):
-        '''Set the clipboard selection to s.'''
-        ###
-            # if s:
-                # # This code generates a harmless, but annoying warning on PyQt5.
-                # cb = self.qtApp.clipboard()
-                # cb.setText(QString(s), mode=cb.Selection)
+        root = Tk()
+        root.withdraw()
+        s = root.clipboard_get()
+        root.destroy()
+        return s
+    #@+node:ekr.20170504112744.2: *4* CGui.replaceClipboardWith
+    def replaceClipboardWith(self, s):
+        '''Replace the clipboard with the string s.'''
+        root = Tk()
+        root.withdraw()
+        root.clipboard_clear()
+        root.clipboard_append(s)
+        root.destroy()
+
+    # Do *not* define setClipboardSelection.
+    # setClipboardSelection = replaceClipboardWith
     #@+node:ekr.20170502083158.1: *3* CGui.createCursesTop & helpers
     def createCursesTop(self):
         '''Create the top-level curses Form.'''
@@ -1225,7 +1245,7 @@ class CursesGui(leoGui.LeoGui):
         c.frame.body_widget = w
         c.frame.body.widget = w
         assert c.frame.body.wrapper is None, repr(c.frame.body.wrapper)
-        c.frame.body.wrapper = CursesTextWrapper(c, 'body', w)
+        c.frame.body.wrapper = BodyTextWrapper(c, 'body', w)
     #@+node:ekr.20170502083613.1: *4* CGui.createCursesLog
     def createCursesLog(self, c, form):
         '''
@@ -1449,6 +1469,18 @@ class CursesGui(leoGui.LeoGui):
     def do_key(self, ch_i):
         
         return self.key_handler.do_key(ch_i)
+    #@+node:ekr.20170522005855.1: *3* CGui.event_generate
+    def event_generate(self, c, char, shortcut, w):
+
+        event = LeoKeyEvent(
+            c=c,
+            char=char,
+            event=g.NullObject(),
+            shortcut=shortcut,
+            w=w,
+        )
+        c.k.masterKeyHandler(event)
+        c.outerUpdate()
     #@+node:ekr.20170514060742.1: *3* CGui.fonts
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
         # g.trace('CursesGui', g.callers())
@@ -1843,28 +1875,24 @@ class CursesMenu (leoMenu.LeoMenu):
         # g.pr("CursesMenu oops:", g.callers(4), "should be overridden in subclass")
 
         
-#@+node:ekr.20170504034655.1: ** class CursesTextWrapper (leoFrame.StringTextWrapper)
-class CursesTextWrapper(leoFrame.StringTextWrapper):
+#@+node:ekr.20170504034655.1: ** class BodyTextWrapper (leoFrame.StringTextWrapper)
+class BodyTextWrapper(leoFrame.StringTextWrapper):
     '''
-    A Wrapper class for Curses edit widgets classes.
-    This is c.frame.body.wrapper or c.frame.log.wrapper.
+    A Wrapper class for Leo's body.
+    This is c.frame.body.wrapper.
     '''
-    #@+others
-    #@+node:ekr.20170504034655.2: *3* cw.ctor & helper
+    
     def __init__(self, c, name, w):
-        '''Ctor for CursesTextWrapper class'''
-        super(CursesTextWrapper, self).__init__(c, name)
-        ### self.c = c
-        ### self.name = name
-        ### self.supportsHighLevelInterface = True
-            # A flag for k.masterKeyHandler and isTextWrapper.
-        #
-        self.changingText = False # A lockout for onTextChanged.
-        self.enabled = True
-        self.w = self.widget = w
+        '''Ctor for BodyTextWrapper class'''
+        leoFrame.StringTextWrapper.__init__(self, c, name)
+        self.changingText = False
+            # A lockout for onTextChanged.
+        self.widget = w
         self.injectIvars(c)
             # These are used by Leo's core.
-    #@+node:ekr.20170504034655.3: *4* cw.injectIvars
+
+    #@+others
+    #@+node:ekr.20170504034655.3: *3* cw.injectIvars
     def injectIvars(self, name='1', parentFrame=None):
         '''Inject standard leo ivars into the QTextEdit or QsciScintilla widget.'''
         p = self.c.currentPosition()
@@ -1899,6 +1927,9 @@ class CursesTextWrapper(leoFrame.StringTextWrapper):
         self.selecting is guaranteed to be True during
         the entire selection process.
         '''
+        g.trace('**********', g.callers())
+        return ######
+
         # Important: usually w.changingText is True.
         # This method very seldom does anything.
         trace = False and not g.unitTesting
@@ -1955,6 +1986,32 @@ class CursesTextWrapper(leoFrame.StringTextWrapper):
             c.setChanged(True)
         c.frame.body.updateEditors()
         c.frame.tree.updateIcon(p)
+    #@-others
+#@+node:ekr.20170522002403.1: ** class HeadTextWrapper (leoFrame.StringTextWrapper)
+class HeadTextWrapper(leoFrame.StringTextWrapper):
+    '''
+    A Wrapper class for headline widgets, returned by c.edit_widget(p)
+    '''
+    
+    def __init__(self, c, name, p):
+        '''Ctor for HeadTextWrapper class'''
+        # g.trace('HeadTextWrapper', p.h)
+        leoFrame.StringTextWrapper.__init__(self, c, name)
+        self.trace = False # Enable tracing in base class.
+        self.p = p.copy()
+        self.s = p.v._headString
+        # self.setAllText(p.h)
+
+    #@+others
+    #@+node:ekr.20170522014009.1: *3* hw.setAllText (override)
+    def setAllText(self, s):
+        '''HeadTextWrapper.setAllText'''
+        self.s = s
+        i = len(self.s)
+        self.ins = i
+        self.sel = i, i
+        self.p.v._headString = s
+            # This doesn't seem to stick.
     #@-others
 #@+node:ekr.20170502093200.1: ** class CursesTopFrame (object)
 class CursesTopFrame (object):
@@ -2353,72 +2410,61 @@ class CursesTree (leoFrame.LeoTree):
 
     def onHeadChanged(self, p, undoType='Typing', s=None, e=None):
         '''Officially change a headline.'''
-        trace = False and not g.unitTesting
-        trace_hook = True
-        verbose = False
-        c = self.c; u = c.undoer
-        if not p:
-            if trace and verbose: g.trace('** no p')
+        trace = False # and not g.unitTesting
+        c, u = self.c, self.c.undoer
+        if not c.frame.body.wrapper:
+            return # Startup.
+        w = self.edit_widget(p)
+        if c.suppressHeadChanged:
+            if trace: g.trace('c.suppressHeadChanged')
             return
-        item = self.getCurrentItem()
-        if not item:
-            if trace and verbose: g.trace('** no item')
+        if not w:
+            if trace: g.trace('****** no w for p: %s', repr(p))
             return
-        if not e:
-            e = self.getTreeEditorForItem(item)
-        if not e:
-            if trace and verbose: g.trace('(nativeTree) ** not editing')
-            return
-        s = g.u(e.text())
-        self.closeEditorHelper(e, item)
-        oldHead = p.h
-        changed = s != oldHead
-        if trace and trace_hook:
-            g.trace('headkey1: changed %s' % (changed), g.callers())
-        if g.doHook("headkey1", c=c, p=c.p, v=c.p, s=s, changed=changed):
-            return
+        ch = '\n' # New in 4.4: we only report the final keystroke.
+        if s is None: s = w.getAllText()
+        if trace:
+            g.trace('*** CursesTree', p and p.h, 's', repr(s))
+        #@+<< truncate s if it has multiple lines >>
+        #@+node:ekr.20170511104533.13: *5* << truncate s if it has multiple lines >>
+        # Remove trailing newlines before warning of truncation.
+        while s and s[-1] == '\n':
+            s = s[: -1]
+        # Warn if there are multiple lines.
+        i = s.find('\n')
+        if i > -1:
+            s = s[: i]
+            # if s != oldHead:
+                # g.warning("truncating headline to one line")
+        limit = 1000
+        if len(s) > limit:
+            s = s[: limit]
+            # if s != oldHead:
+                # g.warning("truncating headline to", limit, "characters")
+        #@-<< truncate s if it has multiple lines >>
+        # Make the change official, but undo to the *old* revert point.
+        oldRevert = self.revertHeadline
+        changed = s != oldRevert
+        self.revertHeadline = s
+        p.initHeadString(s)
+        if trace: g.trace('changed', changed, 'new', repr(s))
+        if g.doHook("headkey1", c=c, p=p, v=p, ch=ch, changed=changed):
+            return # The hook claims to have handled the event.
         if changed:
-            # New in Leo 4.10.1.
-            if trace: g.trace('(nativeTree) new', repr(s), 'old', repr(p.h))
-            #@+<< truncate s if it has multiple lines >>
-            #@+node:ekr.20170511104533.13: *5* << truncate s if it has multiple lines >>
-            # Remove trailing newlines before warning of truncation.
-            while s and s[-1] == '\n':
-                s = s[: -1]
-            # Warn if there are multiple lines.
-            i = s.find('\n')
-            if i > -1:
-                s = s[: i]
-                if s != oldHead:
-                    g.warning("truncating headline to one line")
-            limit = 1000
-            if len(s) > limit:
-                s = s[: limit]
-                if s != oldHead:
-                    g.warning("truncating headline to", limit, "characters")
-            #@-<< truncate s if it has multiple lines >>
-            p.initHeadString(s)
-            item.setText(0, s) # Required to avoid full redraw.
-            undoData = u.beforeChangeNodeContents(p, oldHead=oldHead)
-            if not c.changed: c.setChanged(True)
+            undoData = u.beforeChangeNodeContents(p, oldHead=oldRevert)
+            if not c.changed:
+                c.setChanged(True)
             # New in Leo 4.4.5: we must recolor the body because
             # the headline may contain directives.
-            c.frame.body.recolor(p, incremental=True)
+            ### c.frame.scanForTabWidth(p)
+            ### c.frame.body.recolor(p, incremental=True)
             dirtyVnodeList = p.setDirty()
             u.afterChangeNodeContents(p, undoType, undoData,
-                dirtyVnodeList=dirtyVnodeList, inHead=True) # 2013/08/26.
-        g.doHook("headkey2", c=c, p=c.p, v=c.p, s=s, changed=changed)
-        # This is a crucial shortcut.
-        if g.unitTesting: return
-        if changed:
-            self.redraw_after_head_changed()
-        # Don't do this: it interferes with clicks, and is not needed.
-            # if self.stayInTree:
-                # c.treeWantsFocus()
-            # else:
-                # c.bodyWantsFocus()
-        p.v.contentModified()
-        c.outerUpdate()
+                dirtyVnodeList=dirtyVnodeList, inHead=True)
+        ### if changed:
+        ###    c.redraw_after_head_changed()
+            # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
+        g.doHook("headkey2", c=c, p=p, v=p, ch=ch, changed=changed)
     #@+node:ekr.20170511104533.18: *4* CTree.onTreeSelect
     def onTreeSelect(self):
         '''Select the proper position when a tree node is selected.'''
@@ -2779,26 +2825,21 @@ class CursesTree (leoFrame.LeoTree):
     #@+node:ekr.20170511105355.4: *4* CTree.edit_widget
     def edit_widget(self, p):
         """Returns the edit widget for position p."""
-        return CursesTextWrapper(c=self.c, name='head', w=None)
-        ### Old code.
-            # trace = False and not g.unitTesting
-            # verbose = False
-            # item = self.position2item(p)
-            # if item:
-                # e = self.getTreeEditorForItem(item)
-                # if e:
-                    # # Create a wrapper widget for Leo's core.
-                    # w = self.getWrapper(e, item)
-                    # if trace: g.trace(w, p and p.h)
-                    # return w
-                # else:
-                    # # This is not an error
-                    # # But warning: calling this method twice might not work!
-                    # if trace and verbose: g.trace('no e for %s' % (p))
-                    # return None
+        return HeadTextWrapper(c=self.c, name='head', p=p)
+
+        ###
+        # item = self.position2item(p)
+        # if item:
+            # e = self.getTreeEditorForItem(item)
+            # if e:
+                # # Create a wrapper widget for Leo's core.
+                # w = self.getWrapper(e, item)
+                # return w
             # else:
-                # if trace and verbose: self.error('no item for %s' % (p))
+                # # This is not an error
                 # return None
+        # else:
+            # return None
     #@+node:ekr.20170511095353.1: *4* CTree.editLabel & helper
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""
@@ -3225,7 +3266,7 @@ class LeoKeyEvent(object):
         y_root=None,
     ):
         '''Ctor for LeoKeyEvent class.'''
-        trace = True
+        trace = False
         assert not g.isStroke(shortcut), g.callers()
         stroke = g.KeyStroke(shortcut) if shortcut else None
         if trace: g.trace('LeoKeyEvent: stroke', stroke)
