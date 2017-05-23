@@ -2909,7 +2909,7 @@ class CursesTree (leoFrame.LeoTree):
     #@+node:ekr.20170511095353.1: *4* CTree.editLabel & helpers
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""
-        if 1: ### Experimental.
+        if 0: ### Experimental. Works, but getWrapper says "no e".
             # From NullTree.editLabel
             c = self.c
             self.endEditLabel()
@@ -2927,8 +2927,7 @@ class CursesTree (leoFrame.LeoTree):
                 return None, None
             
         else:
-            trace = True # and not g.unitTesting
-            # trace = trace and p.h == '@test editLabel selects entire headline'
+            trace = False # and not g.unitTesting
             if trace: g.trace('all', selectAll, p.h)
             if self.busy():
                 if trace: g.trace('busy')
