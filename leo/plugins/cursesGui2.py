@@ -2906,33 +2906,57 @@ class CursesTree (leoFrame.LeoTree):
                 # return None
         # else:
             # return None
-    #@+node:ekr.20170511095353.1: *4* CTree.editLabel & helper
+    #@+node:ekr.20170511095353.1: *4* CTree.editLabel & helpers
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""
-        trace = False and not g.unitTesting
-        if trace: g.trace('all', selectAll, p.h)
-        if self.busy():
-            if trace: g.trace('busy')
-            return
-        c = self.c
-        c.outerUpdate()
-            # Do any scheduled redraw.
-            # This won't do anything in the new redraw scheme.
-        item = self.position2item(p)
-        if item:
-            # if self.use_declutter:
-                # item.setText(0, item._real_text)
-            e, wrapper = self.editLabelHelper(item, selectAll, selection)
+        if 1: ### Experimental.
+            # From NullTree.editLabel
+            c = self.c
+            self.endEditLabel()
+            self.setEditPosition(p)
+                # That is, self._editPosition = p
+            if p:
+                self.revertHeadline = p.h
+                    # New in 4.4b2: helps undo.
+                ### wrapper = StringTextWrapper(c=self.c, name='head-wrapper')
+                wrapper = HeadWrapper(c, 'head-wrapper', p)
+                self.setSelectionHelper(p, selectAll, selection, wrapper)
+                e = None
+                return e, wrapper
+            else:
+                return None, None
+            
         else:
-            e, wrapper = None, None
-            self.error('no item for %s' % p)
-        if trace: g.trace('p: %s e: %s' % (p and p.h, e))
-        if e:
-            self.sizeTreeEditor(c, e)
-            # A nice hack: just set the focus request.
-            c.requestedFocusWidget = e
-        return e, wrapper
-    #@+node:ekr.20170511095244.22: *5* CTree.editLabelHelper
+            trace = True # and not g.unitTesting
+            # trace = trace and p.h == '@test editLabel selects entire headline'
+            if trace: g.trace('all', selectAll, p.h)
+            if self.busy():
+                if trace: g.trace('busy')
+                return
+            c = self.c
+            c.outerUpdate()
+                # Do any scheduled redraw.
+                # This won't do anything in the new redraw scheme.
+            if 1:
+                # Apparently, item is always None below!
+                return None, None
+            else:
+                # item is always None here.
+                item = self.position2item(p)
+                if item:
+                    # if self.use_declutter:
+                        # item.setText(0, item._real_text)
+                    e, wrapper = self.editLabelHelper(item, selectAll, selection)
+                else:
+                    e, wrapper = None, None
+                    self.error('no item for %s' % p)
+                if trace: g.trace('p: %s e: %s' % (p and p.h, e))
+                if e:
+                    self.sizeTreeEditor(c, e)
+                    # A nice hack: just set the focus request.
+                    c.requestedFocusWidget = e
+                return e, wrapper
+    #@+node:ekr.20170511095244.22: *5* CTree.editLabelHelper (Never called!)
     def editLabelHelper(self, item, selectAll=False, selection=None):
         '''
         Help nativeTree.editLabel do gui-specific stuff.
@@ -2945,11 +2969,13 @@ class CursesTree (leoFrame.LeoTree):
         w.editItem(item)
             # Generates focus-in event that tree doesn't report.
         e = w.itemWidget(item, 0) # A QLineEdit.
+        g.trace(repr(e))
         if e:
-            s = e.text(); len_s = len(s)
-            if s == 'newHeadline': selectAll = True
+            s = e.text()
+            len_s = len(s)
+            if s == 'newHeadline':
+                selectAll = True
             if selection:
-                # pylint: disable=unpacking-non-sequence
                 # Fix bug https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
                 # Note: negative lengths are allowed.
                 i, j, ins = selection
@@ -2959,7 +2985,10 @@ class CursesTree (leoFrame.LeoTree):
                 elif ins == j:
                     start, n = i, j - i
                 else:
-                    start = start, n = j, i - j
+                    # py---lint: disable=unpacking-non-sequence
+                    ### This was why pylint complained
+                    ### start = start, n = j, i - j
+                    start, n = j, i - j
             elif selectAll:
                 start, n, ins = 0, len_s, len_s
             else: start, n, ins = len_s, 0, len_s
@@ -2975,6 +3004,31 @@ class CursesTree (leoFrame.LeoTree):
                 else:
                     g.trace('not a text widget!', wrapper)
         return e, wrapper
+    #@+node:ekr.20170522191450.1: *5* CTree.setSelectionHelper
+    def setSelectionHelper(self, p, selectAll, selection, wrapper):
+        
+        s = p.h
+        if s == 'newHeadline':
+            selectAll = True
+        if selection:
+            i, j, ins = selection
+            if ins is None:
+                start, n = i, abs(i - j)
+                # This case doesn't happen for searches.
+            elif ins == j:
+                start, n = i, j - i
+            else:
+                # Huh??? This was the pylint complaint.
+                ### start = start, n = j, i - j
+                start, n = j, i - j
+        elif selectAll:
+            # start, n, ins = 0, len_s, len_s
+            start, n = 0, len(s)
+        else:
+            # start, n, ins = len_s, 0, len_s
+            start, n = len(s), 0
+        wrapper.setSelection(start, n)
+        
     #@+node:ekr.20170511105355.6: *4* CTree.editPosition
     def editPosition(self):
         c = self.c; p = c.currentPosition()

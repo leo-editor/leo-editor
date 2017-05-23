@@ -2048,6 +2048,7 @@ class Commands(object):
             k.setEditingState()
             k.showStateAndMode(w=wrapper)
         return e, wrapper
+            # Neither of these is used by any caller.
     #@+node:ekr.20031218072017.2290: *6* c.toggleAngleBrackets
     @cmd('toggle-angle-brackets')
     def toggleAngleBrackets(self, event=None):
