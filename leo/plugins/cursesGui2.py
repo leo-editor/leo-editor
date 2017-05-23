@@ -2918,9 +2918,9 @@ class CursesTree (leoFrame.LeoTree):
             if p:
                 self.revertHeadline = p.h
                     # New in 4.4b2: helps undo.
-                ### wrapper = StringTextWrapper(c=self.c, name='head-wrapper')
                 wrapper = HeadWrapper(c, 'head-wrapper', p)
-                self.setSelectionHelper(p, selectAll, selection, wrapper)
+                if 0: ### Fails miserably.
+                    self.setSelectionHelper(p, selectAll, selection, wrapper)
                 e = None
                 return e, wrapper
             else:
