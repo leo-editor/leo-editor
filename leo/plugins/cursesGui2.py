@@ -2507,20 +2507,6 @@ class CursesTree (leoFrame.LeoTree):
     def edit_widget(self, p):
         """Returns the edit widget for position p."""
         return HeadWrapper(c=self.c, name='head', p=p)
-
-        ###
-        # item = self.position2item(p)
-        # if item:
-            # e = self.getTreeEditorForItem(item)
-            # if e:
-                # # Create a wrapper widget for Leo's core.
-                # w = self.getWrapper(e, item)
-                # return w
-            # else:
-                # # This is not an error
-                # return None
-        # else:
-            # return None
     #@+node:ekr.20170511095353.1: *4* CTree.editLabel & helpers
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""
