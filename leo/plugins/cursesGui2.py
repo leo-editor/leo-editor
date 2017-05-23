@@ -304,13 +304,16 @@ class LeoTreeLine(npyscreen.TreeLine):
         self.parent.curses_pad.bkgdset(' ',curses.A_NORMAL)
         self.left_margin += self._print_tree(self.relx)
         if native:
+            c = getattr(self, 'leo_c', None)
             val = self._tree_real_value
             p = val and val.content
             if p:
-                put('T' if p and p.b else ' ')
+                put(':')
+                put('*' if c and p == c.p else ' ')
+                put('T' if p and p.b.strip() else ' ')
                 put('C' if p and p.isCloned() else ' ')
                 put('M' if p and p.isMarked() else ' ')
-                put(' ')
+                put(':')
         if self.highlight:
             self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
         super(npyscreen.TreeLine, self)._print()
@@ -2692,16 +2695,10 @@ class CursesTree (leoFrame.LeoTree):
     #@+node:ekr.20170523115818.1: *4* CTree.set_body_text_after_select
     def set_body_text_after_select(self, p, old_p, traceTime, force=False):
         '''Set the text after selecting a node.'''
-        trace = True and not g.unitTesting
         c = self.c
         wrapper = c.frame.body.wrapper
         widget = c.frame.body.widget
-        ### s = p.v.b # Guaranteed to be unicode.
-        ### old_s = wrapper.getAllText()
-        # if not force and p and p == old_p and s == old_s:
-            # if trace: g.trace('DO NOTHING', p.h)
-        # else:
-        if trace: g.trace('==== %d %s' % (len(p.b), p.h))
+        # g.trace('==== %d %s' % (len(p.b), p.h))
         c.setCurrentPosition(p)
             # Important: do this *before* setting text,
             # so that the colorizer will have the proper c.p.
@@ -3310,11 +3307,10 @@ class LeoMLTree(npyscreen.MLTree):
             self._contained_widget_height + self.start_display_at
         )
         # Now, set the correct position.
-        c = self.leo_c
-        p = self.get_nth_visible_position(self.cursor_line)
-        g.trace(self.cursor_line, p.h)
-        c.frame.tree.select(p)
-        self.display()
+        if native:
+            c = self.leo_c
+            p = self.get_nth_visible_position(self.cursor_line)
+            c.frame.tree.select(p)
     #@+node:ekr.20170516055435.4: *4* LeoMLTree.h_collapse_all
     def h_collapse_all(self, ch):
         
@@ -3359,31 +3355,31 @@ class LeoMLTree(npyscreen.MLTree):
         self.display()
     #@+node:ekr.20170513091821.1: *4* LeoMLTree.h_cursor_line_down
     def h_cursor_line_down(self, ch):
-        assert not self.scroll_exit
+        
+        c = self.leo_c
         self.cursor_line = min(len(self.values)-1, self.cursor_line+1)
+        if native:
+            p = self.get_nth_visible_position(self.cursor_line)
+            c.frame.tree.select(p)
     #@+node:ekr.20170513091928.1: *4* LeoMLTree.h_cursor_line_up
     def h_cursor_line_up(self, ch):
         
-        assert not self.scroll_exit
+        c = self.leo_c
         self.cursor_line = max(0, self.cursor_line-1)
-
-        # self.cursor_line -= 1
-        # if self.cursor_line < 0: 
-            # if self.scroll_exit:
-                # self.cursor_line = 0
-                # self.h_exit_up(ch)
-            # else: 
-                # self.cursor_line = 0
-
+        if native:
+            p = self.get_nth_visible_position(self.cursor_line)
+            c.frame.tree.select(p)
     #@+node:ekr.20170506044733.12: *4* LeoMLTree.h_delete
     def h_delete(self, ch):
 
+        c = self.leo_c
         self.delete_line()
+        if native:
+            p = self.get_nth_visible_position(self.cursor_line)
+            c.frame.tree.select(p)
     #@+node:ekr.20170506044733.10: *4* LeoMLTree.h_edit_headline
     def h_edit_headline(self, ch):
         '''Called when the user types "h".'''
-        
-        g.trace('=====')
         self.edit_headline()
     #@+node:ekr.20170516055435.5: *4* LeoMLTree.h_expand_all
     def h_expand_all(self, ch):
@@ -3422,7 +3418,11 @@ class LeoMLTree(npyscreen.MLTree):
     #@+node:ekr.20170506044733.11: *4* LeoMLTree.h_insert
     def h_insert(self, ch):
 
-        return self.insert_line()
+        self.insert_line()
+        if native:
+            c = self.leo_c
+            p = self.get_nth_visible_position(self.cursor_line)
+            c.frame.tree.select(p)
     #@+node:ekr.20170506035413.1: *4* LeoMLTree.h_move_left
     def h_move_left(self, ch):
         
@@ -3431,6 +3431,7 @@ class LeoMLTree(npyscreen.MLTree):
             g.trace('no node', self.cursor_line, repr(node))
             return
         if native:
+            c = self.leo_c
             p = node.content
             assert p and isinstance(p, leoNodes.Position), repr(p)
             if p.hasChildren() and p.isExpanded():
@@ -3452,6 +3453,7 @@ class LeoMLTree(npyscreen.MLTree):
                     i -= 1
                 self.cursor_line = max(0, i)
                 self.values.clear_cache()
+                c.frame.tree.select(p)
             else:
                 pass # This is what Leo does.
         else:
@@ -3644,6 +3646,8 @@ class LeoMLTree(npyscreen.MLTree):
         trace = False
         trace_ok = True
         trace_empty = True
+        line.leo_c = self.leo_c
+            # Inject the ivar.
         values = self.values
         n = len(values)
         val = values[i] if 0 <= i < n else None
