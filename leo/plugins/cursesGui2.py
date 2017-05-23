@@ -2459,19 +2459,16 @@ class CursesTree (leoFrame.LeoTree):
         '''Return True (actually, a debugging string)
         if any lockout is set.'''
         trace = False
-        table = (
-            (self.contracting, 'contracting'),
-            (self.expanding, 'expanding'),
-            (self.redrawing, 'redrawing'),
-            (self.selecting, 'selecting'))
-        item = self.getCurrentItem()
-        aList = []
-        for ivar, kind in table:
-            if ivar:
-                aList.append(kind)
-        kinds = ','.join(aList)
-        if aList and trace:
-            g.trace(self.traceItem(item), kinds, g.callers(4))
+        table = ('contracting','expanding','redrawing','selecting')
+        ### item = self.getCurrentItem()
+        kinds = ','.join([z for z in table if getattr(self, z)])
+        # aList = []
+        # for ivar in table:
+            # if getattr(self, ivar):
+                # aList.append(ivar)
+        # kinds = ','.join(aList)
+        if kinds and trace: g.trace(kinds)
+            ### g.trace(self.traceItem(item), kinds)
         return kinds # Return the string for debugging
     #@+node:ekr.20170511104533.12: *4* CTree.onHeadChanged
     # Tricky code: do not change without careful thought and testing.
@@ -2909,7 +2906,10 @@ class CursesTree (leoFrame.LeoTree):
     #@+node:ekr.20170511095353.1: *4* CTree.editLabel & helpers
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""
-        if 0: ### Experimental. Works, but getWrapper says "no e".
+        if 1:
+            self.c.outerUpdate()
+            return None, None
+        elif 0: ### Experimental. Works, but getWrapper says "no e".
             # From NullTree.editLabel
             c = self.c
             self.endEditLabel()
