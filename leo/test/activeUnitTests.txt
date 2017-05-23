@@ -27980,17 +27980,21 @@ for p in c.all_positions():
     assert p2.v == p.v,'p2.v: %s, p.v: %s' % (p2.v,v)
     assert c.positionExists(p2),'does not exist: %s' % p2
 #@+node:ekr.20100131171342.5504: *5* @test position2Item
-tree = c.frame.tree
-# position2item does not exist when running unit tests dynamically.
-if hasattr(tree,'position2item'):
-    c.redraw()
-    p = c.rootPosition()
-    while p:
-        item = tree.position2item(p)
-        v = tree.item2vnode(item)
-        if v: # New test needed with per-clone expansions.
-            assert v == p.v, 'item2: %s, p.v: %s' % (item,p.v)
-        p.moveToVisNext(c)
+if g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses')
+        # All "item" logic is for Qt only.
+else:
+    tree = c.frame.tree
+    # position2item does not exist when running unit tests dynamically.
+    if hasattr(tree,'position2item'):
+        c.redraw()
+        p = c.rootPosition()
+        while p:
+            item = tree.position2item(p)
+            v = tree.item2vnode(item)
+            if v: # New test needed with per-clone expansions.
+                assert v == p.v, 'item2: %s, p.v: %s' % (item,p.v)
+            p.moveToVisNext(c)
 #@+node:ekr.20100131171342.5505: *5* @@test item2position
 # This test is no longer valid because of per-position node expansions.
 def test_sibs(parent_p,parent_item):
