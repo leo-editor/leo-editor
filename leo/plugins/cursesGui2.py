@@ -10,6 +10,7 @@ import logging
 import logging.handlers
 # import re
 import sys
+# import time
 try:
     from tkinter import Tk # Python 3
 except ImportError:
@@ -306,6 +307,7 @@ class LeoTreeLine(npyscreen.TreeLine):
             val = self._tree_real_value
             p = val and val.content
             if p:
+                put('T' if p and p.b else ' ')
                 put('C' if p and p.isCloned() else ' ')
                 put('M' if p and p.isMarked() else ' ')
                 put(' ')
@@ -940,7 +942,7 @@ class CursesLineEditWrapper(CursesTextMixin):
         QLineEditWrapper.
         '''
         return True
-    #@+node:ekr.20170511053048.4: *4* clew.Widget-specific overrides (to do)
+    #@+node:ekr.20170511053048.4: *4* clew.Widget-specific overrides (xxx to do)
     # The CursesTextMixin class calls these methods.
     #@+node:ekr.20170511053048.5: *5* clew.getAllText (to do)
     def getAllText(self):
@@ -1197,7 +1199,6 @@ class CursesFrame (leoFrame.LeoFrame):
         assert self.tree is None, self.tree
         self.tree = CursesTree(c)
         # npyscreen widgets.
-        self.body_widget = None
         self.log_widget = None
         self.minibuffer_widget = None
         self.tree_widget = None
@@ -1435,7 +1436,7 @@ class CursesGui(leoGui.LeoGui):
         Create the curses body widget in the given curses Form.
         Populate it with c.p.b.
         '''
-        w = form.add(
+        box = form.add(
             npyscreen.MultiLineEditableBoxed,
             max_height=8, # Subtract 4 lines
             name='Body Pane',
@@ -1443,16 +1444,18 @@ class CursesGui(leoGui.LeoGui):
             values=g.splitLines(c.p.b), 
             slow_scroll=True,
         )
+        assert isinstance(box, npyscreen.MultiLineEditableBoxed), repr(box)
+        # Get the contained widget.
+        widgets = box._my_widgets
+        assert len(widgets) == 1
+        w = widgets[0]
+        g.trace('BODY WIDGET', w)
         # Link and check.
-        assert isinstance(w, npyscreen.MultiLineEditableBoxed), repr(w)
         assert isinstance(c.frame, leoFrame.LeoFrame), repr(c.frame)
             # The generic LeoFrame class
         assert isinstance(c.frame.body, leoFrame.LeoBody), repr(c.frame.body)
             # The generic LeoBody class
-        assert not hasattr(c.frame.tree, 'bodyWidget'), repr(c.frame.tree.bodyWidget)
-            # Used only by the Qt gui.
-        assert c.frame.body_widget is None, repr(c.frame.body_widget)
-        c.frame.body_widget = w
+        assert c.frame.body.widget is None, repr(c.frame.body.widget)
         c.frame.body.widget = w
         assert c.frame.body.wrapper is None, repr(c.frame.body.wrapper)
         c.frame.body.wrapper = BodyWrapper(c, 'body', w)
@@ -2297,7 +2300,7 @@ class CursesTree (leoFrame.LeoTree):
 
     def onHeadChanged(self, p, undoType='Typing', s=None, e=None):
         '''Officially change a headline.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c, u = self.c, self.c.undoer
         if not c.frame.body.wrapper:
             return # Startup.
@@ -2686,6 +2689,29 @@ class CursesTree (leoFrame.LeoTree):
             # # if trace: g.trace('item',repr(item))
             # if not item: g.trace('*** no item')
             # return item
+    #@+node:ekr.20170523115818.1: *4* CTree.set_body_text_after_select
+    def set_body_text_after_select(self, p, old_p, traceTime, force=False):
+        '''Set the text after selecting a node.'''
+        trace = True # and not g.unitTesting
+        c = self.c
+        wrapper = c.frame.body.wrapper
+        widget = c.frame.body.widget
+        g.trace(widget)
+        ### s = p.v.b # Guaranteed to be unicode.
+        ### old_s = wrapper.getAllText()
+        # if not force and p and p == old_p and s == old_s:
+            # if trace: g.trace('DO NOTHING', p.h)
+        # else:
+        if trace: g.trace('==== %d %s' % (len(p.b), p.h))
+        c.setCurrentPosition(p)
+            # Important: do this *before* setting text,
+            # so that the colorizer will have the proper c.p.
+        s = p.v.b
+        wrapper.setAllText(s)
+        widget.values = g.splitLines(s)
+        widget.update()
+        ### Now done after c.p has been changed.
+            # p.restoreCursorAndScroll()
     #@+node:ekr.20170511100548.1: *3* CTree.Unused
     #@+node:ekr.20170511104916.1: *4* Unused drawing code
     #@+node:ekr.20170511094217.2: *5* CTree.clear (do-nothing)
@@ -3285,8 +3311,10 @@ class LeoMLTree(npyscreen.MLTree):
             self._contained_widget_height + self.start_display_at
         )
         # Now, set the correct position.
+        c = self.leo_c
         p = self.get_nth_visible_position(self.cursor_line)
         g.trace(self.cursor_line, p.h)
+        c.frame.tree.select(p)
         self.display()
     #@+node:ekr.20170516055435.4: *4* LeoMLTree.h_collapse_all
     def h_collapse_all(self, ch):
