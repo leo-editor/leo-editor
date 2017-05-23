@@ -2460,15 +2460,8 @@ class CursesTree (leoFrame.LeoTree):
         if any lockout is set.'''
         trace = False
         table = ('contracting','expanding','redrawing','selecting')
-        ### item = self.getCurrentItem()
         kinds = ','.join([z for z in table if getattr(self, z)])
-        # aList = []
-        # for ivar in table:
-            # if getattr(self, ivar):
-                # aList.append(ivar)
-        # kinds = ','.join(aList)
         if kinds and trace: g.trace(kinds)
-            ### g.trace(self.traceItem(item), kinds)
         return kinds # Return the string for debugging
     #@+node:ekr.20170511104533.12: *4* CTree.onHeadChanged
     # Tricky code: do not change without careful thought and testing.

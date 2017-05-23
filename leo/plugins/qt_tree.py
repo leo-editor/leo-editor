@@ -569,22 +569,11 @@ class LeoQtTree(leoFrame.LeoTree):
         c.outerUpdate()
     #@+node:ekr.20110605121601.17886: *4* qtree.busy
     def busy(self):
-        '''Return True (actually, a debugging string)
-        if any lockout is set.'''
+        '''Return True (actually, a debugging string) if any lockout is set.'''
         trace = False
-        table = (
-            (self.contracting, 'contracting'),
-            (self.expanding, 'expanding'),
-            (self.redrawing, 'redrawing'),
-            (self.selecting, 'selecting'))
-        item = self.getCurrentItem()
-        aList = []
-        for ivar, kind in table:
-            if ivar:
-                aList.append(kind)
-        kinds = ','.join(aList)
-        if aList and trace:
-            g.trace(self.traceItem(item), kinds, g.callers(4))
+        table = ('contracting','expanding','redrawing','selecting')
+        kinds = ','.join([z for z in table if getattr(self, z)])
+        if kinds and trace: g.trace(kinds)
         return kinds # Return the string for debugging
     #@+node:ekr.20110605121601.18437: *4* qtree.onContextMenu
     def onContextMenu(self, point):
