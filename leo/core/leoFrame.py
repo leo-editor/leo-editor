@@ -807,6 +807,9 @@ class LeoFrame(object):
         Return True if the user vetos the quit or save operation.
         '''
         c = self.c
+        if g.app.gui.guiName() == 'curses':
+            g.trace('Saves disabled for curses gui')
+            return False
         theType = "quitting?" if g.app.quitting else "closing?"
         # See if we are in quick edit/save mode.
         root = c.rootPosition()
