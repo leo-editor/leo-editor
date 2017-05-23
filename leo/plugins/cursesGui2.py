@@ -3091,13 +3091,16 @@ class LeoMiniBuffer(npyscreen.Textfield):
         Send the contents to k.masterKeyHandler.
         '''
         c = self.leo_c
-        # g.trace('LeoMiniBuffer', repr(ch), repr(self.value))
+        commandName = self.value.strip()
+        self.value = ''
+        self.update()
         c.k.masterCommand(
-            commandName=self.value.strip(),
+            commandName=commandName,
             event=LeoKeyEvent(c,char='',event='',shortcut='',w=self),
             func=None,
             stroke=None,
         )
+       
     #@+node:ekr.20170510094104.1: *4* LeoMiniBuffer.set_handlers
     def set_handlers(self):
         
