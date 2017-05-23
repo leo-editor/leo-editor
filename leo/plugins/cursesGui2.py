@@ -2906,55 +2906,36 @@ class CursesTree (leoFrame.LeoTree):
     #@+node:ekr.20170511095353.1: *4* CTree.editLabel & helpers
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""
-        if 1:
-            self.c.outerUpdate()
-            return None, None
-        elif 0: ### Experimental. Works, but getWrapper says "no e".
-            # From NullTree.editLabel
-            c = self.c
-            self.endEditLabel()
-            self.setEditPosition(p)
-                # That is, self._editPosition = p
-            if p:
-                self.revertHeadline = p.h
-                    # New in 4.4b2: helps undo.
-                wrapper = HeadWrapper(c, 'head-wrapper', p)
-                if 0: ### Fails miserably.
-                    self.setSelectionHelper(p, selectAll, selection, wrapper)
-                e = None
-                return e, wrapper
-            else:
-                return None, None
-            
-        else:
-            trace = False # and not g.unitTesting
-            if trace: g.trace('all', selectAll, p.h)
-            if self.busy():
-                if trace: g.trace('busy')
-                return
-            c = self.c
-            c.outerUpdate()
-                # Do any scheduled redraw.
-                # This won't do anything in the new redraw scheme.
-            if 1:
-                # Apparently, item is always None below!
-                return None, None
-            else:
-                # item is always None here.
-                item = self.position2item(p)
-                if item:
-                    # if self.use_declutter:
-                        # item.setText(0, item._real_text)
-                    e, wrapper = self.editLabelHelper(item, selectAll, selection)
-                else:
-                    e, wrapper = None, None
-                    self.error('no item for %s' % p)
-                if trace: g.trace('p: %s e: %s' % (p and p.h, e))
-                if e:
-                    self.sizeTreeEditor(c, e)
-                    # A nice hack: just set the focus request.
-                    c.requestedFocusWidget = e
-                return e, wrapper
+        return None, None
+        ###
+            # trace = False and not g.unitTesting
+            # if trace: g.trace('all', selectAll, p.h)
+            # if self.busy():
+                # if trace: g.trace('busy')
+                # return
+            # c = self.c
+            # c.outerUpdate()
+                # # Do any scheduled redraw.
+                # # This won't do anything in the new redraw scheme.
+            # if 1:
+                # # Apparently, item is always None below!
+                # return None, None
+            # else:
+                # # item is always None here.
+                # item = self.position2item(p)
+                # if item:
+                    # # if self.use_declutter:
+                        # # item.setText(0, item._real_text)
+                    # e, wrapper = self.editLabelHelper(item, selectAll, selection)
+                # else:
+                    # e, wrapper = None, None
+                    # self.error('no item for %s' % p)
+                # if trace: g.trace('p: %s e: %s' % (p and p.h, e))
+                # if e:
+                    # self.sizeTreeEditor(c, e)
+                    # # A nice hack: just set the focus request.
+                    # c.requestedFocusWidget = e
+                # return e, wrapper
     #@+node:ekr.20170511095244.22: *5* CTree.editLabelHelper (Never called!)
     def editLabelHelper(self, item, selectAll=False, selection=None):
         '''
