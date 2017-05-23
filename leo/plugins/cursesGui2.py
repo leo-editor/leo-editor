@@ -2453,7 +2453,7 @@ class CursesTree (leoFrame.LeoTree):
         # if self.tree_widget:
             # self.tree_widget.update()
        
-    #@+node:ekr.20170511104533.1: *3* CTree.Event handlers (**LeoMLTree must generate these events)
+    #@+node:ekr.20170511104533.1: *3* CTree.Event handlers
     #@+node:ekr.20170511104533.10: *4* CTree.busy
     def busy(self):
         '''Return True (actually, a debugging string)
@@ -2523,10 +2523,11 @@ class CursesTree (leoFrame.LeoTree):
         ###    c.redraw_after_head_changed()
             # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
         g.doHook("headkey2", c=c, p=p, v=p, ch=ch, changed=changed)
-    #@+node:ekr.20170511104533.18: *4* CTree.onTreeSelect
+    #@+node:ekr.20170511104533.18: *4* CTree.onTreeSelect (not called yet)
     def onTreeSelect(self):
         '''Select the proper position when a tree node is selected.'''
         trace = False and not g.unitTesting
+        g.trace('=====', g.callers())
         if self.busy(): return
         c = self.c
         item = self.getCurrentItem()
@@ -2583,33 +2584,39 @@ class CursesTree (leoFrame.LeoTree):
     #@+node:ekr.20170511104533.23: *5* CTree.showPopupMenu
     def showPopupMenu(self, event):
         """Show a popup menu."""
-    #@+node:ekr.20170511101300.1: *3* CTree.Items
+    #@+node:ekr.20170511101300.1: *3* CTree.Items (NOT USED YET)
     #@+node:ekr.20170511101300.2: *4*  CTree.item dict getters
     def itemHash(self, item):
         return '%s at %s' % (repr(item), str(id(item)))
 
     def item2position(self, item):
+        g.trace(g.callers())
         itemHash = self.itemHash(item)
         p = self.item2positionDict.get(itemHash) # was item
-        # g.trace(item,p.h)
         return p
 
     def item2vnode(self, item):
+        ### This *is* called (during unit tests)
         itemHash = self.itemHash(item)
         return self.item2vnodeDict.get(itemHash) # was item
 
     def position2item(self, p):
+        ### This *is* called.
+        ### selectPosition,select,afterSelectHint,setItemForCurrentPosition
         item = self.position2itemDict.get(p.key())
         return item
 
     def vnode2items(self, v):
+        g.trace(g.callers())
         return self.vnode2itemsDict.get(v, [])
 
     def isValidItem(self, item):
+        g.trace(g.callers())
         itemHash = self.itemHash(item)
         return itemHash in self.item2vnodeDict # was item.
     #@+node:ekr.20170511101300.3: *4* CTree.childIndexOfItem
     def childIndexOfItem(self, item):
+        g.trace(g.callers())
         parent = item and item.parent()
         if parent:
             n = parent.indexOfChild(item)
@@ -2621,6 +2628,7 @@ class CursesTree (leoFrame.LeoTree):
     def childItems(self, parent_item):
         '''Return the list of child items of the parent item,
         or the top-level items if parent_item is None.'''
+        g.trace(g.callers())
         if parent_item:
             n = parent_item.childCount()
             items = [parent_item.child(z) for z in range(n)]
@@ -2631,9 +2639,9 @@ class CursesTree (leoFrame.LeoTree):
         return items
     #@+node:ekr.20170511101300.5: *4* CTree.closeEditorHelper
     def closeEditorHelper(self, e, item):
-        'End editing of the underlying QLineEdit widget for the headline.' ''
+        '''End editing of the underlying QLineEdit widget for the headline.'''
+        g.trace(g.callers())
         w = self.tree_widget
-        
         if e:
             ### w.closeEditor(e, QtWidgets.QAbstractItemDelegate.NoHint)
             try:
@@ -2648,8 +2656,10 @@ class CursesTree (leoFrame.LeoTree):
                 else:
                     # Recover silently even if there is a problem.
                     pass
-    #@+node:ekr.20170511101300.6: *4* CTree.connectEditorWidget & helper
+    #@+node:ekr.20170511101300.6: *4* CTree.connectEditorWidget
     def connectEditorWidget(self, e, item):
+        
+        g.trace('=====', g.callers())
         if not e:
             return g.trace('can not happen: no e')
         # Hook up the widget.
@@ -2666,17 +2676,17 @@ class CursesTree (leoFrame.LeoTree):
         return wrapper # 2011/02/12
     #@+node:ekr.20170511101300.7: *4* CTree.contractItem & expandItem
     def contractItem(self, item):
-        # g.trace(g.callers(4))
+        g.trace(g.callers(4))
         if self.tree_widget:
             self.tree_widget.collapseItem(item)
 
     def expandItem(self, item):
-        # g.trace(g.callers(4))
+        g.trace(g.callers(4))
         if self.tree_widget:
             self.tree_widget.expandItem(item)
     #@+node:ekr.20170511101300.8: *4* CTree.createTreeEditorForItem
     def createTreeEditorForItem(self, item):
-        trace = False and not g.unitTesting
+
         w = self.tree_widget
         w.setCurrentItem(item) # Must do this first.
         # if self.use_declutter:
@@ -2685,12 +2695,13 @@ class CursesTree (leoFrame.LeoTree):
         e = w.itemWidget(item, 0)
         e.setObjectName('headline')
         wrapper = self.connectEditorWidget(e, item)
-        if trace: g.trace(e, wrapper)
+        g.trace(e, wrapper, g.callers())
         self.sizeTreeEditor(self.c, e)
         return e, wrapper
     #@+node:ekr.20170511101300.9: *4* CTree.createTreeItem
     def createTreeItem(self, p, parent_item):
-        trace = False and not g.unitTesting
+        
+        g.trace(g.callers())
         c = self.c
         ###
             # w = self.tree_widget
@@ -2698,7 +2709,6 @@ class CursesTree (leoFrame.LeoTree):
             # item = QtWidgets.QTreeWidgetItem(itemOrTree)
             # item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
         item = g.NullObject() ###
-        if trace: g.trace(id(item), p.h, g.callers(4))
         try:
             g.visit_tree_item(c, p, item)
         except leoPlugins.TryNext:
@@ -2706,20 +2716,24 @@ class CursesTree (leoFrame.LeoTree):
         return item
     #@+node:ekr.20170511101300.11: *4* CTree.getCurrentItem
     def getCurrentItem(self):
+        g.trace(g.callers())
         w = self.tree_widget
         return w and w.currentItem
     #@+node:ekr.20170511101300.12: *4* CTree.getItemText
     def getItemText(self, item):
         '''Return the text of the item.'''
+        g.trace(g.callers())
         if item:
             return g.u(item.text(0))
         else:
             return '<no item>'
     #@+node:ekr.20170511101300.13: *4* CTree.getParentItem
     def getParentItem(self, item):
+        g.trace(g.callers())
         return item and item.parent()
     #@+node:ekr.20170511101300.14: *4* CTree.getSelectedItems
     def getSelectedItems(self):
+        g.trace(g.callers())
         w = self.tree_widget
         return w.selectedItems()
     #@+node:ekr.20170511101300.15: *4* CTree.getTreeEditorForItem
