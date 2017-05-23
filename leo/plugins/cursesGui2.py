@@ -2692,11 +2692,10 @@ class CursesTree (leoFrame.LeoTree):
     #@+node:ekr.20170523115818.1: *4* CTree.set_body_text_after_select
     def set_body_text_after_select(self, p, old_p, traceTime, force=False):
         '''Set the text after selecting a node.'''
-        trace = True # and not g.unitTesting
+        trace = True and not g.unitTesting
         c = self.c
         wrapper = c.frame.body.wrapper
         widget = c.frame.body.widget
-        g.trace(widget)
         ### s = p.v.b # Guaranteed to be unicode.
         ### old_s = wrapper.getAllText()
         # if not force and p and p == old_p and s == old_s:
