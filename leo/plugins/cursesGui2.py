@@ -2297,7 +2297,7 @@ class CursesTree (leoFrame.LeoTree):
 
     def onHeadChanged(self, p, undoType='Typing', s=None, e=None):
         '''Officially change a headline.'''
-        trace = False # and not g.unitTesting
+        trace = True and not g.unitTesting
         c, u = self.c, self.c.undoer
         if not c.frame.body.wrapper:
             return # Startup.
@@ -2352,41 +2352,22 @@ class CursesTree (leoFrame.LeoTree):
         ###    c.redraw_after_head_changed()
             # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
         g.doHook("headkey2", c=c, p=p, v=p, ch=ch, changed=changed)
-    #@+node:ekr.20170511104533.18: *4* CTree.onTreeSelect (not called yet)
-    # def onTreeSelect(self):
-        # '''Select the proper position when a tree node is selected.'''
-        # trace = False and not g.unitTesting
-        # g.trace('=====', g.callers())
-        # if self.busy(): return
-        # c = self.c
-        # item = self.getCurrentItem()
-        # p = self.item2position(item)
-        # if p:
-            # # Important: do not set lockouts here.
-            # # Only methods that actually generate events should set lockouts.
-            # if trace: g.trace(self.traceItem(item))
-            # self.select(p)
-                # # This is a call to LeoTree.select(!!)
-                # # Calls before/afterSelectHint.
-        # else:
-            # self.error('no p for item: %s' % item)
-        # c.outerUpdate()
-    #@+node:ekr.20170511104533.19: *4* CTree.OnPopup & allies
-    def OnPopup(self, p, event):
-        """Handle right-clicks in the outline.
+    #@+node:ekr.20170511104533.19: *4* CTree.OnPopup & allies (To be deleted)
+    # def OnPopup(self, p, event):
+        # """Handle right-clicks in the outline.
 
-        This is *not* an event handler: it is called from other event handlers."""
-        # Note: "headrclick" hooks handled by VNode callback routine.
-        if event:
-            c = self.c
-            c.setLog()
-            if not g.doHook("create-popup-menu", c=c, p=p, v=p, event=event):
-                self.createPopupMenu(event)
-            if not g.doHook("enable-popup-menu-items", c=c, p=p, v=p, event=event):
-                self.enablePopupMenuItems(p, event)
-            if not g.doHook("show-popup-menu", c=c, p=p, v=p, event=event):
-                self.showPopupMenu(event)
-        return "break"
+        # This is *not* an event handler: it is called from other event handlers."""
+        # # Note: "headrclick" hooks handled by VNode callback routine.
+        # if event:
+            # c = self.c
+            # c.setLog()
+            # if not g.doHook("create-popup-menu", c=c, p=p, v=p, event=event):
+                # self.createPopupMenu(event)
+            # if not g.doHook("enable-popup-menu-items", c=c, p=p, v=p, event=event):
+                # self.enablePopupMenuItems(p, event)
+            # if not g.doHook("show-popup-menu", c=c, p=p, v=p, event=event):
+                # self.showPopupMenu(event)
+        # return "break"
     #@+node:ekr.20170511104533.20: *5* CTree.OnPopupFocusLost
     #@+at
     # On Linux we must do something special to make the popup menu "unpost" if the
@@ -3224,6 +3205,19 @@ class LeoMLTree(npyscreen.MLTree):
         self.reset_display_cache()
         self.display()
         return True
+    #@+node:ekr.20170523113530.1: *4* LeoMLTree.get_nth_visible_position
+    def get_nth_visible_position(self, n):
+        '''Return the n'th visible position.'''
+        c = self.leo_c
+        i, p = 0, c.rootPosition()
+        while p:
+            if i == n:
+                return p
+            else:
+                p.moveToVisNext(c)
+                i += 1
+        g.trace('Can not happen', n)
+        return None
     #@+node:ekr.20170514065422.1: *4* LeoMLTree.intraFileDrop
     def intraFileDrop(self, fn, p1, p2):
         pass
@@ -3280,6 +3274,20 @@ class LeoMLTree(npyscreen.MLTree):
         self.edit_headline()
     #@+node:ekr.20170506045346.1: *3* LeoMLTree.Handlers
     # These insert or delete entire outline nodes.
+    #@+node:ekr.20170523112839.1: *4* LeoMLTree.handle_mouse_event
+    def handle_mouse_event(self, mouse_event):
+        '''Called from InputHandler.h_exit_mouse.'''
+        # From MultiLine...
+        data = self.interpret_mouse_event(mouse_event)
+        mouse_id, rel_x, rel_y, z, bstate = data
+        self.cursor_line = (
+            rel_y // 
+            self._contained_widget_height + self.start_display_at
+        )
+        # Now, set the correct position.
+        p = self.get_nth_visible_position(self.cursor_line)
+        g.trace(self.cursor_line, p.h)
+        self.display()
     #@+node:ekr.20170516055435.4: *4* LeoMLTree.h_collapse_all
     def h_collapse_all(self, ch):
         
@@ -3346,7 +3354,9 @@ class LeoMLTree(npyscreen.MLTree):
         self.delete_line()
     #@+node:ekr.20170506044733.10: *4* LeoMLTree.h_edit_headline
     def h_edit_headline(self, ch):
+        '''Called when the user types "h".'''
         
+        g.trace('=====')
         self.edit_headline()
     #@+node:ekr.20170516055435.5: *4* LeoMLTree.h_expand_all
     def h_expand_all(self, ch):
