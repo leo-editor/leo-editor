@@ -443,22 +443,7 @@ class LeoTreeLine(npyscreen.TreeLine):
                 self.parent_widget.when_value_edited()
                 self.parent_widget._internal_when_value_edited()
             return True
-        
-        ### This is Widget.when_check_value_changed.
-            # try:
-                # if self.value == self._old_value:
-                    # return False
-            # except AttributeError:
-                # self._old_value = copy.deepcopy(self.value)
-                # self.when_value_edited()
-            # # Value must have changed:
-            # self._old_value = copy.deepcopy(self.value)
-            # self._internal_when_value_edited()
-            # self.when_value_edited()
-            # if hasattr(self, 'parent_widget'):
-                # self.parent_widget.when_value_edited()
-                # self.parent_widget._internal_when_value_edited()
-            # return True
+
     #@-others
 #@-others
 #@-<< forward reference classes >>
@@ -765,7 +750,7 @@ class BodyWrapper(leoFrame.StringTextWrapper):
         if name.startswith('body'):
             if hasattr(c.frame, 'statusLine'):
                 c.frame.statusLine.update()
-    #@+node:ekr.20170504034655.7: *5* bw.onTextChanged
+    #@+node:ekr.20170504034655.7: *5* bw.onTextChanged (To do)
     def onTextChanged(self):
         '''
         Update Leo after the body has been changed.
@@ -984,6 +969,8 @@ class CursesLineEditWrapper(CursesTextMixin):
                 w.setSelection(i, length) ###
     # setSelectionRangeHelper = setSelectionRange
     #@-others
+    
+    ### Is this class used???
 #@-others
 #@-<< text classes >>
 #@+others
@@ -1136,7 +1123,7 @@ class CursesFrame (leoFrame.LeoFrame):
         self.body = CursesBody(c)
         self.menu = CursesMenu(c)
         self.miniBufferWidget = None
-        self.statusLine = g.NullObject() ###
+        self.statusLine = g.NullObject()
         assert self.tree is None, self.tree
         self.tree = CursesTree(c)
         # npyscreen widgets.
@@ -1718,7 +1705,7 @@ class CursesHeadlineWrapper(CursesLineEditWrapper):
 
     def __repr__(self):
         return 'CursesHeadlineWrapper: %s' % id(self)
-    #@+node:ekr.20170511053415.3: *3* chw.check
+    #@+node:ekr.20170511053415.3: *3* chw.check (needed? used?)
     def check(self):
         '''Return True if the tree item exists and its edit widget exists.'''
         return False ### Not ready yet.
@@ -2041,7 +2028,7 @@ class CursesTopFrame (object):
         
     def findChild(self, *args, **kwargs):
         # Called by nested_splitter.py.
-        return g.NullObject() ### Required, for now.
+        return g.NullObject() # Required, for now.
 
     def finishCreateLogPane(self, *args, **kwargs):
         pass # g.trace(args, kwargs)
@@ -2483,64 +2470,13 @@ class CursesTree (leoFrame.LeoTree):
         # Don't do this here: the caller should do it.
         # p.setHeadString(s)
         e = self.edit_widget(p)
-        ### edit_widget always returns a wrapper.
         assert isinstance(e, HeadWrapper), repr(e)
         e.setAllText(s)
-        
-        ###
-            # if e:
-                # if trace: g.trace('e', s)
-                # assert isinstance(e, HeadWrapper), repr(e)
-                # e.setAllText(s)
-            # else:
-                # item = self.position2item(p)
-                # if item:
-                    # if trace: g.trace('item', s)
-                    # self.setItemText(item, s)
-                # else:
-                    # if trace: g.trace('*** failed. no item for %s' % p.h)
-    #@+node:ekr.20170511105355.10: *4* CTree.setItemForCurrentPosition
+    #@+node:ekr.20170511105355.10: *4* CTree.setItemForCurrentPosition (to be deleted)
     def setItemForCurrentPosition(self, scroll=True):
         '''Select the item for c.p'''
         g.trace(g.callers())
-        ###
-            # trace = False and not g.unitTesting
-            # verbose = True
-            # c = self.c; p = c.currentPosition()
-            # if self.busy():
-                # if trace and verbose: g.trace('** busy')
-                # return None
-            # if not p:
-                # if trace and verbose: g.trace('** no p')
-                # return None
-            # item = self.position2item(p)
-            # if not item:
-                # # This is not necessarily an error.
-                # # We often attempt to select an item before redrawing it.
-                # if trace and verbose:
-                    # g.trace('** no item for', p)
-                    # g.trace(g.callers())
-                # return None
-            # item2 = self.getCurrentItem()
-            # if item == item2:
-                # if trace and verbose: g.trace('no change', self.traceItem(item), p.h)
-                # if scroll:
-                    # self.scrollToItem(item)
-            # else:
-                # try:
-                    # self.selecting = True
-                    # # This generates gui events, so we must use a lockout.
-                    # if trace and verbose: g.trace('setCurrentItem', self.traceItem(item), p.h)
-                    # self.setCurrentItemHelper(item)
-                        # # Just calls self.setCurrentItem(item)
-                    # if scroll:
-                        # if trace: g.trace(self.traceItem(item))
-                        # self.scrollToItem(item)
-                # finally:
-                    # self.selecting = False
-            # # if trace: g.trace('item',repr(item))
-            # if not item: g.trace('*** no item')
-            # return item
+        return None
     #@+node:ekr.20170523115818.1: *4* CTree.set_body_text_after_select
     def set_body_text_after_select(self, p, old_p, traceTime, force=False):
         '''Set the text after selecting a node.'''
@@ -3126,19 +3062,14 @@ class LeoMLTree(npyscreen.MLTree):
         if trace: g.trace('line: %r', n)
         if native:
             data = self.values[n] # data is a LeoTreeData
-            if 0: ### This doesn't seem to work.
-                c = self.leo_c
-                c.insertHeadline()
-                    # Calls LeoQtTree ?????
+            p = data.content
+            assert p and isinstance(p, leoNodes.Position)
+            if p.hasChildren() and p.isExpanded():
+                p2 = p.insertAsFirstChild()
             else:
-                p = data.content
-                assert p and isinstance(p, leoNodes.Position)
-                if p.hasChildren() and p.isExpanded():
-                    p2 = p.insertAsFirstChild()
-                else:
-                    p2 = p.insertAfter()
-                self.cursor_line += 1
-                p2.h = 'New Headline'
+                p2 = p.insertAfter()
+            self.cursor_line += 1
+            p2.h = 'New Headline'
             self.values.clear_cache()
         else:
             self.values.insert(n+1, self.new_mltree_node())
@@ -3471,7 +3402,7 @@ class LeoMLTree(npyscreen.MLTree):
     #@+node:ekr.20170513032717.1: *5* LeoMLTree._print_line
     def _print_line(self, line, i):
 
-        ###
+        #
         # if self.widgets_inherit_color and self.do_colors():
             # line.color = self.color
         
