@@ -3232,7 +3232,7 @@ class LeoMLTree(npyscreen.MLTree):
         '''Return the n'th visible position.'''
         c = self.leo_c
         limit, junk = c.visLimit()
-        p = limit or c.rootPosition()
+        p = limit.copy() if limit else c.rootPosition()
         i = 0
         while p:
             if i == n:
