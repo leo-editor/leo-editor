@@ -1010,7 +1010,7 @@ class LeoApp(object):
         except ImportError:
             ok = False
         if ok:
-            g.app.gui = cursesGui2.CursesGui()
+            g.app.gui = cursesGui2.LeoCursesGui()
         else:
             print('can not create curses gui.')
     #@+node:ekr.20090619065122.8593: *4* app.createDefaultGui

@@ -478,7 +478,7 @@ def es(*args, **keys):
     d = g.doKeywordArgs(keys, d)
     color = d.get('color')
     s = g.translateArgs(args, d)
-    if isinstance(g.app.gui, CursesGui):
+    if isinstance(g.app.gui, LeoCursesGui):
         if g.app.gui.log_inited:
             g.app.gui.log.put(s, color=color)
         else:
@@ -541,8 +541,8 @@ def trace(*args, **keys):
     s = ''.join(result)
     logging.info('trace: %s' % s.rstrip())
 #@+node:ekr.20170524123950.1: ** Gui classes
-#@+node:ekr.20170419094731.1: *3* class CursesGui (leoGui.LeoGui)
-class CursesGui(leoGui.LeoGui):
+#@+node:ekr.20170419094731.1: *3* class LeoCursesGui (leoGui.LeoGui)
+class LeoCursesGui(leoGui.LeoGui):
     '''
     Leo's curses gui wrapper.
     This is g.app.gui, when --gui=curses.
@@ -925,15 +925,21 @@ class CursesGui(leoGui.LeoGui):
     #@+node:ekr.20170419140914.1: *4* CGui.runMainLoop
     def runMainLoop(self):
         '''The curses gui main loop.'''
-        # Do NOT change g.app!
-        # g.trace('native', native)
-        self.curses_app = LeoApp()
-        self.curses_app.run()
-            # run calls CApp.main(), which calls CGui.run().
-        g.trace('DONE')
-        # pylint: disable=no-member
+        # py---lint: disable=no-member
         # endwin *does* exist.
-        curses.endwin()
+        #
+        # Do NOT change g.app!
+        self.curses_app = LeoApp()
+        stdscr = curses.initscr()
+        try:
+            self.curses_app.run()
+                # run calls CApp.main(), which calls CGui.run().
+            g.trace('DONE')
+        finally:
+            curses.nocbreak()
+            stdscr.keypad(0)
+            curses.echo()
+            curses.endwin()
     #@+node:ekr.20170510074755.1: *4* CGui.test
     def test(self):
         '''A place to put preliminary tests.'''
