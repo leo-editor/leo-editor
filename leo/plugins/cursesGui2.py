@@ -306,18 +306,18 @@ class LeoTreeLine(npyscreen.TreeLine):
             c = getattr(self, 'leo_c', None)
             val = self._tree_real_value
             p = val and val.content
-            if p:
-                self.left_margin += 2*p.level()
-                if p.hasChildren():
-                    put('-' if p.isExpanded() else '+')
-                else:
-                    put (' ')
-                put(':')
-                put('*' if c and p == c.p else ' ')
-                put('T' if p and p.b.strip() else ' ')
-                put('C' if p and p.isCloned() else ' ')
-                put('M' if p and p.isMarked() else ' ')
-                put(':')
+            if not p: return # sartup.
+            self.left_margin += 2*p.level()
+            if p.hasChildren():
+                put('-' if p.isExpanded() else '+')
+            else:
+                put (' ')
+            put(':')
+            put('*' if c and p == c.p else ' ')
+            put('C' if p and p.isCloned() else ' ')
+            put('M' if p and p.isMarked() else ' ')
+            put('T' if p and p.b.strip() else ' ')
+            put(':')
         else:
             self.left_margin += self._print_tree(self.relx)
         # Now draw the actual line.
