@@ -1248,7 +1248,7 @@ class Position(object):
                     p.moveToParent()
                 # not found.
         return p
-    #@+node:ekr.20080416161551.210: *4* p.moveToVisBack
+    #@+node:ekr.20080416161551.210: *4* p.moveToVisBack & helper
     def moveToVisBack(self, c):
         """Move a position to the position of the previous visible node."""
         trace = False and not g.unitTesting
@@ -1272,10 +1272,11 @@ class Position(object):
                 p.moveToParent() # Same as p.moveToThreadBack()
             if trace: g.trace(p.parent(), p)
             if p:
-                done, val = self.checkVisBackLimit(limit, limitIsVisible, p)
-                if done:
-                    if trace and verbose: g.trace('done', p)
-                    return val # A position or None
+                if limit:
+                    done, val = self.checkVisBackLimit(limit, limitIsVisible, p)
+                    if done:
+                        if trace and verbose: g.trace('done', p)
+                        return val # A position or None
                 if p.isVisible(c):
                     if trace and verbose: g.trace('isVisible', p)
                     return p
@@ -1285,24 +1286,22 @@ class Position(object):
         return p
     #@+node:ekr.20090715145956.6166: *5* checkVisBackLimit
     def checkVisBackLimit(self, limit, limitIsVisible, p):
-        '''Return done, return-val'''
+        '''Return done, p or None'''
         trace = False and not g.unitTesting
         c = p.v.context
-        if limit:
-            if limit == p:
-                if trace: g.trace('at limit', p)
-                if limitIsVisible and p.isVisible(c):
-                    return True, p
-                else:
-                    return True, None
-            elif limit.isAncestorOf(p):
-                return False, None
+        if limit == p:
+            if trace: g.trace('at limit', p)
+            if limitIsVisible and p.isVisible(c):
+                return True, p
             else:
-                if trace: g.trace('outside limit tree', limit, p)
                 return True, None
-        else:
+        elif limit.isAncestorOf(p):
             return False, None
-    #@+node:ekr.20080416161551.211: *4* p.moveToVisNext
+        else:
+            if trace: g.trace('outside limit tree', limit, p)
+            return True, None
+       
+    #@+node:ekr.20080416161551.211: *4* p.moveToVisNext & helper
     def moveToVisNext(self, c):
         """Move a position to the position of the next visible node."""
         trace = False and not g.unitTesting
@@ -1321,26 +1320,15 @@ class Position(object):
                 p.moveToThreadNext()
             if trace: g.trace('2', p and p.h)
             if p:
-                done, val = self.checkVisNextLimit(limit, p)
-                if done: return val
+                if limit and self.checkVisNextLimit(limit,p):
+                    return None
                 if p.isVisible(c):
                     return p.copy()
         return p
     #@+node:ekr.20090715145956.6167: *5* checkVisNextLimit
     def checkVisNextLimit(self, limit, p):
-        '''Return done, return-val'''
-        trace = False and not g.unitTesting
-        if limit:
-            # Unlike moveToVisBack, being at the limit does not terminate.
-            if limit == p:
-                return False, None
-            elif limit.isAncestorOf(p):
-                return False, None
-            else:
-                if trace: g.trace('outside limit tree')
-                return True, None
-        else:
-            return False, None
+        '''Return True is p is outside limit of visible nodes.'''
+        return limit != p and not limit.isAncestorOf(p)
     #@+node:ekr.20150316175921.6: *4* p.safeMoveToThreadNext
     def safeMoveToThreadNext(self):
         '''
