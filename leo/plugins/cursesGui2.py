@@ -925,8 +925,7 @@ class LeoCursesGui(leoGui.LeoGui):
     #@+node:ekr.20170419140914.1: *4* CGui.runMainLoop
     def runMainLoop(self):
         '''The curses gui main loop.'''
-        # py---lint: disable=no-member
-        # endwin *does* exist.
+        # pylint: disable=no-member
         #
         # Do NOT change g.app!
         self.curses_app = LeoApp()
