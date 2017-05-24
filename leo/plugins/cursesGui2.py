@@ -2063,24 +2063,17 @@ class CursesTree (leoFrame.LeoTree):
 
     def __init__(self, c):
 
-        ### Do we need to change the dummy frame???
         dummy_frame = self.DummyFrame(c)
         leoFrame.LeoTree.__init__(self, dummy_frame)
             # Init the base class.
         assert self.c
         assert not hasattr(self, 'tree_widget')
+        self.redrawCount = 0 # For unit tests.
         self.tree_widget = None
             # A LeoMLTree set by CGui.createCursesTree.
-        # Associating items with position and vnodes...
-        ###
-            # self.item2positionDict = {}
-            # self.item2vnodeDict = {}
-            # self.position2itemDict = {}
-            # self.vnode2itemsDict = {} # values are lists of items.
-            # self.editWidgetsDict = {} # keys are native edit widgets, values are wrappers.
         # self.setConfigIvars()
         self.setEditPosition(None) # Set positions returned by LeoTree.editPosition()
-        # Status flags...
+        # Status flags, for busy()
         self.contracting = False
         self.expanding = False
         self.redrawing = False
@@ -2102,130 +2095,48 @@ class CursesTree (leoFrame.LeoTree):
         # else:
             # return ''
     #@+node:ekr.20170511094217.1: *3* CTree.Drawing
-    #@+node:ekr.20170511094217.3: *4* CTree.redraw & helpers (Does NOTHING)
+    #@+node:ekr.20170511094217.3: *4* CTree.redraw
     def redraw(self, p=None, scroll=True, forceDraw=False):
         '''
         Redraw all visible nodes of the tree.
         Preserve the vertical scrolling unless scroll is True.
         '''
-        return
-        ###
-            # trace = False and not g.app.unitTesting
-            # verbose = False
-            # c = self.c
-            # if g.app.disable_redraw:
-                # if trace: g.trace('*** disabled', g.callers())
-                # return
-            # if self.busy():
-                # return g.trace('*** full_redraw: busy!', g.callers())
-            # if not p:
-                # p = c.currentPosition()
-            # elif c.hoistStack and p.h.startswith('@chapter') and p.hasChildren():
-                # # Make sure the current position is visible.
-                # # Part of fix of bug 875323: Hoist an @chapter node leaves a non-visible node selected.
-                # p = p.firstChild()
-                # if trace: g.trace('selecting', p.h)
-                # c.frame.tree.select(p)
-                # c.setCurrentPosition(p)
-            # else:
-                # c.setCurrentPosition(p)
-            # self.redrawCount += 1
-            # if trace: t1 = g.getTime()
-            # self.initData()
-            # self.nodeDrawCount = 0
-            # try:
-                # self.redrawing = True
-                # self.drawTopTree(p)
-            # finally:
-                # self.redrawing = False
-            # self.setItemForCurrentPosition(scroll=scroll)
-            # c.requestRedrawFlag = False
-            # if trace:
-                # if verbose:
-                    # theTime = g.timeSince(t1)
-                    # g.trace('** %s: scroll %5s drew %3s nodes in %s' % (
-                        # self.redrawCount, scroll, self.nodeDrawCount, theTime), g.callers())
-                # else:
-                    # g.trace('**', self.redrawCount, g.callers())
-            # return p # Return the position, which may have changed.
+        trace = True and not g.unitTesting
+        if g.unitTesting:
+            return # There is no need. At present, the tests hang.
+        if trace: g.trace(g.callers())
+        if self.tree_widget and not self.busy():
+            self.redrawCount += 1 # To keep a unit test happy.
+            self.tree_widget.update()
     # Compatibility
 
     full_redraw = redraw
     redraw_now = redraw
+    repaint = redraw
     #@+node:ekr.20170511100356.1: *4* CTree.redraw_after...
-    #@+node:ekr.20170511094217.14: *5* CTree.redraw_after_contract
     def redraw_after_contract(self, p=None):
-        
-        ### trace = False and not g.unitTesting
-        if self.redrawing:
-            return
-        else:
-            self.full_redraw(scroll=False)
-            ###
-                # item = self.position2item(p)
-                # if item:
-                    # if trace: g.trace('contracting item', item, p and p.h or '<no p>')
-                    # self.contractItem(item)
-                # else:
-                    # # This is not an error.
-                    # # We may have contracted a node that was not, in fact, visible.
-                    # if trace: g.trace('***full redraw', p and p.h or '<no p>')
-                    # self.full_redraw(scroll=False)
-    #@+node:ekr.20170511094217.15: *5* CTree.redraw_after_expand
-    def redraw_after_expand(self, p=None):
+        self.redraw(p=p, scroll=False)
 
-        self.full_redraw(p, scroll=True)
-    #@+node:ekr.20170511094217.16: *5* CTree.redraw_after_head_changed
+    def redraw_after_expand(self, p=None):
+        self.redraw(p=p)
+
     def redraw_after_head_changed(self):
-        
-        if not self.busy():
-            ###
-                # p = self.c.p
-                # if p:
-                    # for item in self.vnode2items(p.v):
-                        # if self.isValidItem(item):
-                            # self.setItemText(item, p.h)
-            self.redraw_after_icons_changed()
-    #@+node:ekr.20170511094217.17: *5* CTree.redraw_after_icons_changed
+        self.redraw()
+
     def redraw_after_icons_changed(self):
-        pass
-        ### No icons to draw.
-            # if self.busy(): return
-            # self.redrawCount += 1 # To keep a unit test happy.
-            # c = self.c
-            # # Suppress call to setHeadString in onItemChanged!
-            # self.redrawing = True
-            # try:
-                # self.getCurrentItem()
-                # for p in c.rootPosition().self_and_siblings():
-                    # # Updates icons in p and all visible descendants of p.
-                    # self.updateVisibleIcons(p)
-            # finally:
-                # self.redrawing = False
-    #@+node:ekr.20170511094217.18: *5* CTree.redraw_after_select
-    # Important: this can not replace before/afterSelectHint.
+        self.redraw()
 
     def redraw_after_select(self, p=None):
         '''Redraw the entire tree when an invisible node is selected.'''
-        trace = False and not g.unitTesting
-        if trace: g.trace('(LeoQtTree) busy? %s %s' % (
-            self.busy(), p and p.h or '<no p>'), g.callers(4))
         # Prevent the selecting lockout from disabling the redraw.
         oldSelecting = self.selecting
         self.selecting = False
         try:
             if not self.busy():
-                self.full_redraw(p, scroll=False)
+                self.redraw(p=p, scroll=False)
         finally:
             self.selecting = oldSelecting
-        # c.redraw_after_select calls tree.select indirectly.
-        # Do not call it again here.
-    #@+node:ekr.20170511094217.19: *4* CTree.repaint
-    def repaint(self):
-        '''Repaint the widget.'''
-        # if self.tree_widget:
-            # self.tree_widget.update()
-       
+        # Do *not* call redraw_after_select here!
     #@+node:ekr.20170511104533.1: *3* CTree.Event handlers
     #@+node:ekr.20170511104533.10: *4* CTree.busy
     def busy(self):
