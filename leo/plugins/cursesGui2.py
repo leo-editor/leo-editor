@@ -934,12 +934,12 @@ class LeoCursesGui(leoGui.LeoGui):
         try:
             self.curses_app.run()
                 # run calls CApp.main(), which calls CGui.run().
-            g.trace('DONE')
         finally:
             curses.nocbreak()
             stdscr.keypad(0)
             curses.echo()
             curses.endwin()
+            g.pr('Exiting Leo...')
     #@+node:ekr.20170510074755.1: *4* CGui.test
     def test(self):
         '''A place to put preliminary tests.'''
