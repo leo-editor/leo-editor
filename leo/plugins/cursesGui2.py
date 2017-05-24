@@ -302,20 +302,28 @@ class LeoTreeLine(npyscreen.TreeLine):
         
         self.left_margin = left_margin
         self.parent.curses_pad.bkgdset(' ',curses.A_NORMAL)
-        self.left_margin += self._print_tree(self.relx)
         if native:
             c = getattr(self, 'leo_c', None)
             val = self._tree_real_value
             p = val and val.content
             if p:
+                self.left_margin += 2*p.level()
+                if p.hasChildren():
+                    put('-' if p.isExpanded() else '+')
+                else:
+                    put (' ')
                 put(':')
                 put('*' if c and p == c.p else ' ')
                 put('T' if p and p.b.strip() else ' ')
                 put('C' if p and p.isCloned() else ' ')
                 put('M' if p and p.isMarked() else ' ')
                 put(':')
+        else:
+            self.left_margin += self._print_tree(self.relx)
+        # Now draw the actual line.
         if self.highlight:
             self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
+        # This draws the actual line.
         super(npyscreen.TreeLine, self)._print()
             # TextfieldBase._print
     #@+node:ekr.20170522033303.1: *4* LeoTreeLine.XXX_print_tree
@@ -325,12 +333,16 @@ class LeoTreeLine(npyscreen.TreeLine):
             not hasattr(self._tree_real_value, 'findDepth')
         ):
             return 0 # margin_needed.
-            
+
         def put(char, x=None, y=None):
             if x is None: x = real_x
             y = self.rely + y if y else self.rely
             self.parent.curses_pad.addch(y, x, char, curses.A_NORMAL)
-        
+            
+        def put_string(s):
+            self.parent.curses_pad.addstr(
+                self.rely, real_x, "[ %s ]" % s, curses.A_NORMAL)
+
         control_chars_added = 0
         this_safe_depth_display = self.safe_depth_display or ((self.width // 2) + 1)
         if self._tree_depth_next:
@@ -352,7 +364,7 @@ class LeoTreeLine(npyscreen.TreeLine):
                     else:
                         put(curses.ACS_BTEE)
                     real_x +=1
-                    put(ord(' '))
+                    put(' ')
                     real_x +=1
                 # After for loop.
                 if self._tree_sibling_next or _tree_depth_next > self._tree_depth:
@@ -368,10 +380,7 @@ class LeoTreeLine(npyscreen.TreeLine):
             else: # dp >= this_safe_depth_display
                 put(curses.ACS_HLINE)
                 real_x += 1
-                self.parent.curses_pad.addstr(
-                    self.rely, real_x,
-                    "[ %s ]" % (str(dp)),
-                    curses.A_NORMAL)
+                put_string(str(dp))
                 real_x += len(str(dp)) + 4
                 put(curses.ACS_RTEE)
                 real_x += 1
