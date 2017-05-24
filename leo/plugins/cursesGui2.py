@@ -2497,7 +2497,7 @@ class CursesTree (leoFrame.LeoTree):
     #@+node:ekr.20170511095353.1: *4* CTree.editLabel & helpers
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""
-        g.trace(p.h)
+        if not g.unitTesting: g.trace(p.h)
         return None, None
         ###
             # trace = False and not g.unitTesting
@@ -3120,9 +3120,9 @@ class LeoMLTree(npyscreen.MLTree):
     continuation_line = "- more -" # value of contination line.
     
     # def __init__ (self, *args, **kwargs):
-        # super(LeoMLTree, self).__init__(*args, **kwargs
+        # super(LeoMLTree, self).__init__(*args, **kwargs)
         
-    # Note: The startup sequence sets leo_c and value property/ivar.
+    # Note: The startup sequence sets leo_c and the value property/ivar.
            
     #@+others
     #@+node:ekr.20170510171826.1: *3* LeoMLTree.Entries
@@ -3231,7 +3231,9 @@ class LeoMLTree(npyscreen.MLTree):
     def get_nth_visible_position(self, n):
         '''Return the n'th visible position.'''
         c = self.leo_c
-        i, p = 0, c.rootPosition()
+        limit, junk = c.visLimit()
+        p = limit or c.rootPosition()
+        i = 0
         while p:
             if i == n:
                 return p
