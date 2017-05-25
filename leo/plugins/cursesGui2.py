@@ -705,8 +705,13 @@ class LeoCursesGui(leoGui.LeoGui):
         mini_buffer.leo_c = c
         assert isinstance(c.frame, leoFrame.LeoFrame), repr(c.frame)
             # The generic LeoFrame class
-        assert c.frame.minibuffer_widget is None
-        c.frame.minibuffer_widget = mini_buffer
+        assert c.frame.miniBufferWidget is None
+        wrapper = BodyWrapper(c, 'body', w)
+        c.frame.miniBufferWidget = wrapper
+        c.frame.miniBufferWidget.widget = w
+        # Inject the wrapper for get_focus.
+        box.leo_wrapper = wrapper
+        w.leo_wrapper = wrapper
     #@+node:ekr.20170502083754.1: *5* CGui.createCursesTree
     def createCursesTree(self, c, form):
         '''Create the curses tree widget in the given curses Form.'''
@@ -937,7 +942,7 @@ class LeoCursesGui(leoGui.LeoGui):
         # w is a wrapper
         widget = getattr(w, 'widget', None)
         if not widget:
-            g.trace('no widget', repr(w))
+            if trace or not w: g.trace('no widget', repr(w))
             return
         if not isinstance(widget, npyscreen.wgwidget.Widget):
             g.trace('not an npyscreen.Widget', repr(w))
@@ -1431,16 +1436,17 @@ class CoreFrame (leoFrame.LeoFrame):
         Paste the clipboard into a widget.
         If middleButton is True, support x-windows middle-mouse-button easter-egg.
         '''
-        trace = False # and not g.unitTesting
+        trace = True and not g.unitTesting
         c = self.c
         w = event and event.widget
         wname = c.widget_name(w)
-        if not w or not g.isTextWrapper(w):
-            if trace: g.trace('not a text widget', w)
+        wrapper = getattr(w, 'leo_wrapper', w)
+        if not wrapper:
+            g.trace('no wrapper', repr(w))
             return
-        i, j = oldSel = w.getSelectionRange()
+        i, j = oldSel = wrapper.getSelectionRange()
             # Returns insert point if no selection.
-        oldText = w.getAllText()
+        oldText = wrapper.getAllText()
         s = g.app.gui.getTextFromClipboard()
         s = g.toUnicode(s)
         if trace: g.trace('pasteText: wname:',wname, s)
@@ -1451,13 +1457,16 @@ class CoreFrame (leoFrame.LeoFrame):
                 s = s[: -1]
         # Update the widget.
         if i != j:
-            w.delete(i, j)
-        w.insert(i, s)
-        w.see(i + len(s) + 2)
+            wrapper.delete(i, j)
+        wrapper.insert(i, s)
+        wrapper.see(i + len(s) + 2)
         if wname.startswith('body'):
             c.frame.body.onBodyChanged('Paste', oldSel=oldSel, oldText=oldText)
         elif wname.startswith('head'):
-            c.frame.tree.onHeadChanged(w.p, 'Paste', s=w.getAllText())
+            c.frame.tree.onHeadChanged(
+                wrapper.p, 'Paste',
+                s=wrapper.getAllText(),
+            )
                 # New for Curses gui.
 
     OnPasteFromMenu = pasteText
@@ -3180,6 +3189,18 @@ class LogWrapper(leoFrame.StringTextWrapper):
     
     def __init__(self, c, name, w):
         '''Ctor for LogWrapper class'''
+        leoFrame.StringTextWrapper.__init__(self, c, name)
+        self.trace = False # For tracing in base class.
+        self.widget = w
+
+    #@+others
+    #@-others
+#@+node:ekr.20170525105707.1: *3* class MiniBufferWrapper (leoFrame.StringTextWrapper)
+class MiniBufferWrapper(leoFrame.StringTextWrapper):
+    '''A Wrapper class for the minibuffer.'''
+    
+    def __init__(self, c, name, w):
+        '''Ctor for MiniBufferWrapper class'''
         leoFrame.StringTextWrapper.__init__(self, c, name)
         self.trace = False # For tracing in base class.
         self.widget = w
