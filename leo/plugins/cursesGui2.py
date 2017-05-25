@@ -635,6 +635,7 @@ class LeoCursesGui(leoGui.LeoGui):
         widgets = box._my_widgets
         assert len(widgets) == 1
         w = widgets[0]
+        assert isinstance(w, npyscreen.wgmultilineeditable.MultiLineEditable), repr(w)
         # Link and check.
         assert isinstance(c.frame, leoFrame.LeoFrame), repr(c.frame)
             # The generic LeoFrame class
@@ -643,14 +644,18 @@ class LeoCursesGui(leoGui.LeoGui):
         assert c.frame.body.widget is None, repr(c.frame.body.widget)
         c.frame.body.widget = w
         assert c.frame.body.wrapper is None, repr(c.frame.body.wrapper)
-        c.frame.body.wrapper = BodyWrapper(c, 'body', w)
+        c.frame.body.wrapper = wrapper = BodyWrapper(c, 'body', w)
+        # Inject the wrapper for get_focus.
+        box.leo_wrapper = wrapper
+        w.leo_wrapper = wrapper
+            
     #@+node:ekr.20170502083613.1: *5* CGui.createCursesLog
     def createCursesLog(self, c, form):
         '''
         Create the curses log widget in the given curses Form.
         Populate the widget with the queued log messages.
         '''
-        w = form.add(
+        box = form.add(
             npyscreen.MultiLineEditableBoxed,
             max_height=8, # Subtract 4 lines
             name='Log Pane',
@@ -658,17 +663,25 @@ class LeoCursesGui(leoGui.LeoGui):
             values=[s for s, color in self.wait_list], 
             slow_scroll=False,
         )
+        assert isinstance(box, npyscreen.MultiLineEditableBoxed), repr(box)
         # Clear the wait list and disable it.
         self.wait_list = []
         self.log_inited = True
+        widgets = box._my_widgets
+        assert len(widgets) == 1
+        w = widgets[0]
+        assert isinstance(w, npyscreen.wgmultilineeditable.MultiLineEditable), repr(w)
         # Link and check...
-        assert isinstance(w, npyscreen.MultiLineEditableBoxed), repr(w)
         assert isinstance(self.log, CoreLog), repr(self.log)
         self.log.widget = w
         assert isinstance(c.frame, leoFrame.LeoFrame), repr(c.frame)
             # The generic LeoFrame class
         assert c.frame.log_widget is None, repr(c.frame.log_widget)
         c.frame.log_widget = w
+        c.frame.log.wrapper = wrapper = LogWrapper(c, 'log', w)
+        # Inject the wrapper for get_focus.
+        box.leo_wrapper = wrapper
+        w.leo_wrapper = wrapper
     #@+node:ekr.20170502084249.1: *5* CGui.createCursesMinibuffer
     def createCursesMinibuffer(self, c, form):
         '''Create the curses minibuffer widget in the given curses Form.'''
@@ -678,11 +691,13 @@ class LeoCursesGui(leoGui.LeoGui):
             # pylint: disable=used-before-assignment
             _contained_widget = LeoMiniBuffer
         
-        w = form.add(MiniBufferBox, name='Mini-buffer', max_height=3)
+        box = form.add(MiniBufferBox, name='Mini-buffer', max_height=3)
+        assert isinstance(box, MiniBufferBox)
         # Link and check...
-        assert isinstance(w, MiniBufferBox)
-        mini_buffer = w._my_widgets[0]
-        assert isinstance(mini_buffer, LeoMiniBuffer), repr(mini_buffer)
+        widgets = box._my_widgets
+        assert len(widgets) == 1
+        w = mini_buffer = widgets[0]
+        assert isinstance(w, LeoMiniBuffer), repr(w)
         mini_buffer.leo_c = c
         assert isinstance(c.frame, leoFrame.LeoFrame), repr(c.frame)
             # The generic LeoFrame class
@@ -708,7 +723,7 @@ class LeoCursesGui(leoGui.LeoGui):
                         grand_child = child.new_child(
                             content='grand-child %s.%s.%s' % (i, j, k))
                         assert grand_child # for pyflakes.
-        w = form.add(
+        box = form.add(
             BoxTitleTree,
             max_height=8, # Subtract 4 lines
             name='Tree Pane',
@@ -716,11 +731,12 @@ class LeoCursesGui(leoGui.LeoGui):
             values=hidden_root_node, 
             slow_scroll=False,
         )
+        assert isinstance(box, BoxTitleTree), repr(box)
         # Link and check...
-        assert isinstance(w, BoxTitleTree), w
-        leo_tree = w._my_widgets[0]
-        assert isinstance(leo_tree, LeoMLTree), repr(leo_tree)
-            # leo_tree is a LeoMLTree.
+        widgets = box._my_widgets
+        assert len(widgets) == 1
+        w = leo_tree = widgets[0]
+        assert isinstance(w, LeoMLTree), repr(w)
         leo_tree.leo_c = c
         if native:
             leo_tree.values = LeoValues(c=c, tree = leo_tree)
@@ -728,20 +744,26 @@ class LeoCursesGui(leoGui.LeoGui):
         leo_tree.hidden_root_node = hidden_root_node
         assert isinstance(c.frame, leoFrame.LeoFrame), repr(c.frame)
             # CoreFrame is a LeoFrame
-        assert isinstance(c.frame.tree, leoFrame.LeoTree), repr(c.frame.tree)
-            # CoreTree is a LeoTree
+        assert isinstance(c.frame.tree, CoreTree), repr(c.frame.tree)
         assert c.frame.tree.canvas is None, repr(c.frame.canvas)
             # A standard ivar, used by Leo's core.
         c.frame.canvas = leo_tree
             # A LeoMLTree.
         assert not hasattr(c.frame.tree, 'treeWidget'), repr(c.frame.tree.treeWidget)
         c.frame.tree.treeWidget = leo_tree
+            ### Required?
         assert c.frame.tree_widget is None, repr(c.frame.tree_widget)
+            ### Required?
         c.frame.tree_widget = leo_tree
-            # A LeoMLTree
-        assert c.frame.tree.tree_widget is None
-        c.frame.tree.tree_widget = leo_tree
-            # Set CoreTree.tree_widget.
+            ### Required?
+        assert c.frame.tree.widget is None
+        c.frame.tree.widget = leo_tree
+            # Set CoreTree.widget.
+        # Inject the wrapper for get_focus.
+        wrapper = c.frame.tree
+        assert wrapper
+        box.leo_wrapper = wrapper
+        w.leo_wrapper = wrapper
     #@+node:ekr.20170419110052.1: *4* CGui.createLeoFrame
     def createLeoFrame(self, c, title):
         '''
@@ -883,13 +905,25 @@ class LeoCursesGui(leoGui.LeoGui):
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
         # g.trace('CursesGui', g.callers())
         return None
-    #@+node:ekr.20170502101347.1: *4* CGui.get/set_focus (to do)
-    def get_focus(self, *args, **keys):
-        
+    #@+node:ekr.20170502101347.1: *4* CGui.get/set_focus (TEST)
+    def get_focus(self, c=None, raw=False, at_idle=False):
+        '''
+        Return the Leo wrapper for the npyscreen widget that is being edited.
+        '''
         # Careful during startup.
-        return getattr(g.app.gui.curses_form, 'editw', None)
+        editw = getattr(g.app.gui.curses_form, 'editw', None)
+        if editw is None:
+            return None
+        widget = self.curses_form._widgets__[editw]
+        if hasattr(widget, 'leo_wrapper'):
+            return widget.leo_wrapper
+        else:
+            g.trace('===== no leo_wrapper', widget)
+            return None
 
-    def set_focus(self, *args, **keys):
+    def set_focus(self, c, w):
+        ### All present calls have this form:
+        # set_focus <StringTextWrapper: 145095600 body>
         pass
     #@+node:ekr.20170501032447.1: *4* CGui.init_logger
     def init_logger(self):
@@ -1333,11 +1367,10 @@ class CoreFrame (leoFrame.LeoFrame):
 
     def update(self, *args, **keys):
         pass
-    #@+node:ekr.20170524144717.1: *4* CFrame.get_focus (to do)
+    #@+node:ekr.20170524144717.1: *4* CFrame.get_focus (test)
     def getFocus(self):
-        pass
-        ###
-            # return g.app.gui.get_focus(self.c)
+        
+        return g.app.gui.get_focus()
     #@+node:ekr.20170522015906.1: *4* CFrame.pasteText (finish)
     @cmd('paste-text')
     def pasteText(self, event=None, middleButton=False):
@@ -1345,7 +1378,7 @@ class CoreFrame (leoFrame.LeoFrame):
         Paste the clipboard into a widget.
         If middleButton is True, support x-windows middle-mouse-button easter-egg.
         '''
-        trace = True # and not g.unitTesting
+        trace = False # and not g.unitTesting
         c = self.c
         w = event and event.widget
         wname = c.widget_name(w)
@@ -1441,14 +1474,15 @@ class CoreLog (leoFrame.LeoLog):
     #@+node:ekr.20170419143731.15: *4* CLog.put
     def put(self, s, color=None, tabName='Log', from_redirect=False):
         '''All output to the log stream eventually comes here.'''
-        c, w = self.c, self.widget
+        c = self.c
+        w = self.widget
+            # This is the actual MultiLine widget
         if not c or not c.exists:
             # logging.info('CLog.put: no c: %r' % s)
             pass
         elif w:
-            values = w.get_values()
-            values.append(s)
-            w.set_values(values)
+            assert isinstance(w, npyscreen. MultiLineEditable), repr(w)
+            w.values.append(s)
             w.update()
         else:
             pass
@@ -1497,8 +1531,6 @@ class CoreTree (leoFrame.LeoTree):
     A class that represents curses tree pane.
     
     This is the c.frame.tree instance.
-    
-    CGui.createCursesTree sets the c.frame.tree_widget
     '''
         
     #@+others
@@ -1513,9 +1545,9 @@ class CoreTree (leoFrame.LeoTree):
         leoFrame.LeoTree.__init__(self, dummy_frame)
             # Init the base class.
         assert self.c
-        assert not hasattr(self, 'tree_widget')
+        assert not hasattr(self, 'widget')
         self.redrawCount = 0 # For unit tests.
-        self.tree_widget = None
+        self.widget = None
             # A LeoMLTree set by CGui.createCursesTree.
         # self.setConfigIvars()
         self.setEditPosition(None) # Set positions returned by LeoTree.editPosition()
@@ -1535,9 +1567,9 @@ class CoreTree (leoFrame.LeoTree):
         if g.unitTesting:
             return # There is no need. At present, the tests hang.
         if trace: g.trace(g.callers())
-        if self.tree_widget and not self.busy():
+        if self.widget and not self.busy():
             self.redrawCount += 1 # To keep a unit test happy.
-            self.tree_widget.update()
+            self.widget.update()
     # Compatibility
 
     full_redraw = redraw
@@ -1688,7 +1720,7 @@ class CoreTree (leoFrame.LeoTree):
     def getScroll(self):
         '''Return the hPos,vPos for the tree's scrollbars.'''
         return 0, 0
-        # w = self.tree_widget
+        # w = self.widget
         # hScroll = w.horizontalScrollBar()
         # vScroll = w.verticalScrollBar()
         # hPos = hScroll.sliderPosition()
@@ -1699,7 +1731,7 @@ class CoreTree (leoFrame.LeoTree):
         # '''Scroll a QTreeWidget up or down or right or left.
         # kind is in ('down-line','down-page','up-line','up-page', 'right', 'left')
         # '''
-        # c = self.c; w = self.tree_widget
+        # c = self.c; w = self.widget
         # if kind in ('left', 'right'):
             # hScroll = w.horizontalScrollBar()
             # if kind == 'right':
@@ -1727,13 +1759,13 @@ class CoreTree (leoFrame.LeoTree):
     #@+node:ekr.20170511104121.4: *5* Ctree.setH/VScroll
     def setHScroll(self, hPos):
         pass
-        # w = self.tree_widget
+        # w = self.widget
         # hScroll = w.horizontalScrollBar()
         # hScroll.setValue(hPos)
 
     def setVScroll(self, vPos):
         pass
-        # w = self.tree_widget
+        # w = self.widget
         # vScroll = w.verticalScrollBar()
         # vScroll.setValue(vPos)
     #@+node:ekr.20170511105355.1: *4* CTree.Selecting & editing
@@ -1781,7 +1813,7 @@ class CoreTree (leoFrame.LeoTree):
         # Help nativeTree.editLabel do gui-specific stuff.
         # '''
         # c, vc = self.c, self.c.vimCommands
-        # w = self.tree_widget
+        # w = self.widget
         # w.setCurrentItem(item)
             # # Must do this first.
             # # This generates a call to onTreeSelect.
@@ -2713,7 +2745,7 @@ class LeoValues(npyscreen.TreeData):
         self.data_cache = {}
         self.position_cache = {}
     #@-others
-#@+node:ekr.20170522081122.1: ** Text classes
+#@+node:ekr.20170522081122.1: ** Wrapper classes
 #@+others
 #@+node:ekr.20170511053143.1: *3*  class TextMixin (object)
 class TextMixin(object):
@@ -3097,6 +3129,18 @@ class HeadWrapper(leoFrame.StringTextWrapper):
         self.ins = i
         self.sel = i, i
         self.p.v._headString = self.s
+    #@-others
+#@+node:ekr.20170525062512.1: *3* class LogWrapper (leoFrame.StringTextWrapper)
+class LogWrapper(leoFrame.StringTextWrapper):
+    '''A Wrapper class for the log pane.'''
+    
+    def __init__(self, c, name, w):
+        '''Ctor for LogWrapper class'''
+        leoFrame.StringTextWrapper.__init__(self, c, name)
+        self.trace = False # For tracing in base class.
+        self.widget = w
+
+    #@+others
     #@-others
 #@-others
 #@-others
