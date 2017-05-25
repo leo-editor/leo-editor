@@ -622,6 +622,7 @@ class LeoCursesGui(leoGui.LeoGui):
         Create the curses body widget in the given curses Form.
         Populate it with c.p.b.
         '''
+        trace = False
         box = form.add(
             npyscreen.MultiLineEditableBoxed,
             max_height=8, # Subtract 4 lines
@@ -635,6 +636,7 @@ class LeoCursesGui(leoGui.LeoGui):
         widgets = box._my_widgets
         assert len(widgets) == 1
         w = widgets[0]
+        if trace: g.trace('\nBODY', w, '\nBOX', box)
         assert isinstance(w, npyscreen.wgmultilineeditable.MultiLineEditable), repr(w)
         # Link and check.
         assert isinstance(c.frame, leoFrame.LeoFrame), repr(c.frame)
@@ -685,6 +687,7 @@ class LeoCursesGui(leoGui.LeoGui):
     #@+node:ekr.20170502084249.1: *5* CGui.createCursesMinibuffer
     def createCursesMinibuffer(self, c, form):
         '''Create the curses minibuffer widget in the given curses Form.'''
+        trace = False
         
         class MiniBufferBox(npyscreen.BoxTitle):
             '''An npyscreen class representing Leo's minibuffer, with binding.'''
@@ -697,6 +700,7 @@ class LeoCursesGui(leoGui.LeoGui):
         widgets = box._my_widgets
         assert len(widgets) == 1
         w = mini_buffer = widgets[0]
+        if trace: g.trace('\nMINI', w, '\nBOX', box)
         assert isinstance(w, LeoMiniBuffer), repr(w)
         mini_buffer.leo_c = c
         assert isinstance(c.frame, leoFrame.LeoFrame), repr(c.frame)
@@ -905,7 +909,7 @@ class LeoCursesGui(leoGui.LeoGui):
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
         # g.trace('CursesGui', g.callers())
         return None
-    #@+node:ekr.20170502101347.1: *4* CGui.get/set_focus (TEST)
+    #@+node:ekr.20170502101347.1: *4* CGui.get/set_focus (finish)
     def get_focus(self, c=None, raw=False, at_idle=False):
         '''
         Return the Leo wrapper for the npyscreen widget that is being edited.
@@ -919,12 +923,61 @@ class LeoCursesGui(leoGui.LeoGui):
             return widget.leo_wrapper
         else:
             g.trace('===== no leo_wrapper', widget)
+                # At present, HeadWrappers have no widgets.
             return None
+            
+    set_focus_dict = {}
+        # Keys are wrappers, values are npyscreen.widgets.
+    set_focus_ok = []
+    set_focus_fail = []
 
     def set_focus(self, c, w):
-        ### All present calls have this form:
-        # set_focus <StringTextWrapper: 145095600 body>
-        pass
+        trace = False
+        trace_cache = False
+        # w is a wrapper
+        widget = getattr(w, 'widget', None)
+        if not widget:
+            g.trace('no widget', repr(w))
+            return
+        if not isinstance(widget, npyscreen.wgwidget.Widget):
+            g.trace('not an npyscreen.Widget', repr(w))
+            return
+        form = self.curses_form
+        d = self.set_focus_dict
+        if w in d:
+            i = d.get(w)
+            if trace and trace_cache and w not in self.set_focus_ok:
+                self.set_focus_ok.append(w)
+                g.trace('Cached', i, w)
+            form.edit_w = i
+            if not g.unitTesting:
+                form.display()
+            return
+        for i, widget2 in enumerate(form._widgets__):
+            if widget == widget2:
+                if trace: g.trace('FOUND', i, widget)
+                d [w] = form.editw = i
+                if not g.unitTesting:
+                    form.display()
+                    return
+            for j, widget3 in enumerate(getattr(widget2, '_my_widgets', [])):
+                if widget == widget3 or repr(widget) == repr(widget3):
+                    if trace: g.trace('FOUND INNER', i, j, widget)
+                    d [w] = form.editw = i # Not j!?
+                    if not g.unitTesting:
+                        form.display()
+                    return
+        if trace and widget not in self.set_focus_fail:
+            self.set_focus_fail.append(widget)
+            g.trace('Fail\n%r\n%r' % (widget, w))
+            ###
+                # g.printList(form._widgets__)
+                # for outer in form._widgets__:
+                    # g.trace('outer:', outer)
+                    # if hasattr(outer, '_my_widgets'):
+                        # g.printList(outer._my_widgets)
+                    # else:
+                        # g.trace('no inner widgets')
     #@+node:ekr.20170501032447.1: *4* CGui.init_logger
     def init_logger(self):
 
@@ -1367,7 +1420,7 @@ class CoreFrame (leoFrame.LeoFrame):
 
     def update(self, *args, **keys):
         pass
-    #@+node:ekr.20170524144717.1: *4* CFrame.get_focus (test)
+    #@+node:ekr.20170524144717.1: *4* CFrame.get_focus
     def getFocus(self):
         
         return g.app.gui.get_focus()
@@ -2887,17 +2940,8 @@ class TextMixin(object):
     #@+node:ekr.20170511053143.11: *5* tm.setFocus (to do)
     def setFocus(self):
         '''TextMixin.setFocus'''
-        ###
-            # trace = (False or g.app.trace_focus) and not g.unitTesting
-            # if trace: print('BaseQTextWrapper.setFocus', self.widget)
-            # # Call the base class
-            # assert isinstance(self.widget, (
-                # QtWidgets.QTextBrowser,
-                # QtWidgets.QLineEdit,
-                # QtWidgets.QTextEdit,
-                # Qsci and Qsci.QsciScintilla,
-            # )), self.widget
-            # QtWidgets.QTextBrowser.setFocus(self.widget)
+        ### g.app.gui.set_focus(self)
+        
     #@+node:ekr.20170511053143.25: *5* tm.tag_configure
     def tag_configure(self, *args, **keys):
 
