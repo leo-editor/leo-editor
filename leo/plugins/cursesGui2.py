@@ -678,8 +678,6 @@ class LeoCursesGui(leoGui.LeoGui):
         self.log.widget = w
         assert isinstance(c.frame, leoFrame.LeoFrame), repr(c.frame)
             # The generic LeoFrame class
-        assert c.frame.log_widget is None, repr(c.frame.log_widget)
-        c.frame.log_widget = w
         c.frame.log.wrapper = wrapper = LogWrapper(c, 'log', w)
         # Inject the wrapper for get_focus.
         box.leo_wrapper = wrapper
@@ -706,9 +704,9 @@ class LeoCursesGui(leoGui.LeoGui):
         assert isinstance(c.frame, leoFrame.LeoFrame), repr(c.frame)
             # The generic LeoFrame class
         assert c.frame.miniBufferWidget is None
-        wrapper = BodyWrapper(c, 'body', w)
+        wrapper = MiniBufferWrapper(c, 'minibuffer', w)
+        wrapper.widget = w
         c.frame.miniBufferWidget = wrapper
-        c.frame.miniBufferWidget.widget = w
         # Inject the wrapper for get_focus.
         box.leo_wrapper = wrapper
         w.leo_wrapper = wrapper
@@ -760,11 +758,7 @@ class LeoCursesGui(leoGui.LeoGui):
             # A LeoMLTree.
         assert not hasattr(c.frame.tree, 'treeWidget'), repr(c.frame.tree.treeWidget)
         c.frame.tree.treeWidget = leo_tree
-            ### Required?
-        assert c.frame.tree_widget is None, repr(c.frame.tree_widget)
-            ### Required?
-        c.frame.tree_widget = leo_tree
-            ### Required?
+            # treeWidget is an official ivar.
         assert c.frame.tree.widget is None
         c.frame.tree.widget = leo_tree
             # Set CoreTree.widget.
@@ -1300,13 +1294,10 @@ class CoreFrame (leoFrame.LeoFrame):
         self.body = CoreBody(c)
         self.menu = CoreMenu(c)
         self.miniBufferWidget = None
+            # Set later.
         self.statusLine = g.NullObject()
         assert self.tree is None, self.tree
         self.tree = CoreTree(c)
-        # npyscreen widgets.
-        self.log_widget = None
-        self.minibuffer_widget = None
-        self.tree_widget = None
         ### ===============
             # Official ivars...
             # self.iconBar = None
@@ -1429,7 +1420,7 @@ class CoreFrame (leoFrame.LeoFrame):
     def getFocus(self):
         
         return g.app.gui.get_focus()
-    #@+node:ekr.20170522015906.1: *4* CFrame.pasteText (finish)
+    #@+node:ekr.20170522015906.1: *4* CFrame.pasteText (dubious?)
     @cmd('paste-text')
     def pasteText(self, event=None, middleButton=False):
         '''
