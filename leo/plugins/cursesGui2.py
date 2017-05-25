@@ -1424,7 +1424,7 @@ class CoreFrame (leoFrame.LeoFrame):
     def getFocus(self):
         
         return g.app.gui.get_focus()
-    #@+node:ekr.20170522015906.1: *4* CFrame.pasteText (dubious?)
+    #@+node:ekr.20170522015906.1: *4* CFrame.pasteText
     @cmd('paste-text')
     def pasteText(self, event=None, middleButton=False):
         '''
