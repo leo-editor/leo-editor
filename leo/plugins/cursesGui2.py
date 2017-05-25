@@ -581,9 +581,12 @@ class LeoCursesGui(leoGui.LeoGui):
         '''Get a unicode string from the clipboard.'''
         root = Tk()
         root.withdraw()
-        s = root.clipboard_get()
+        try:
+            s = root.clipboard_get()
+        except Exception: # _tkinter.TclError:
+            s = ''
         root.destroy()
-        return s
+        return g.toUnicode(s)
     #@+node:ekr.20170504112744.2: *5* CGui.replaceClipboardWith
     def replaceClipboardWith(self, s):
         '''Replace the clipboard with the string s.'''
@@ -697,19 +700,20 @@ class LeoCursesGui(leoGui.LeoGui):
         # Link and check...
         widgets = box._my_widgets
         assert len(widgets) == 1
-        w = mini_buffer = widgets[0]
+        w = widgets[0]
         if trace: g.trace('\nMINI', w, '\nBOX', box)
         assert isinstance(w, LeoMiniBuffer), repr(w)
-        mini_buffer.leo_c = c
-        assert isinstance(c.frame, leoFrame.LeoFrame), repr(c.frame)
-            # The generic LeoFrame class
+        assert isinstance(c.frame, CoreFrame), repr(c.frame)
         assert c.frame.miniBufferWidget is None
         wrapper = MiniBufferWrapper(c, 'minibuffer', w)
-        wrapper.widget = w
+        assert wrapper.widget == w, repr(wrapper.widget)
         c.frame.miniBufferWidget = wrapper
         # Inject the wrapper for get_focus.
         box.leo_wrapper = wrapper
+        w.leo_c = c
         w.leo_wrapper = wrapper
+        g.trace(w)
+        g.trace(w.leo_wrapper)
     #@+node:ekr.20170502083754.1: *5* CGui.createCursesTree
     def createCursesTree(self, c, form):
         '''Create the curses tree widget in the given curses Form.'''
@@ -1427,11 +1431,11 @@ class CoreFrame (leoFrame.LeoFrame):
         Paste the clipboard into a widget.
         If middleButton is True, support x-windows middle-mouse-button easter-egg.
         '''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.c
         w = event and event.widget
-        wname = c.widget_name(w)
-        wrapper = getattr(w, 'leo_wrapper', w)
+        wrapper = getattr(w, 'leo_wrapper')
+        wname = c.widget_name(wrapper)
         if not wrapper:
             g.trace('no wrapper', repr(w))
             return
@@ -1440,7 +1444,7 @@ class CoreFrame (leoFrame.LeoFrame):
         oldText = wrapper.getAllText()
         s = g.app.gui.getTextFromClipboard()
         s = g.toUnicode(s)
-        if trace: g.trace('pasteText: wname:',wname, s)
+        if trace: g.trace('wname',wname, 'len(s)', len(s))
         singleLine = wname.startswith('head') or wname.startswith('minibuffer')
         if singleLine:
             # Strip trailing newlines so the truncation doesn't cause confusion.
@@ -1889,9 +1893,6 @@ class CoreTree (leoFrame.LeoTree):
                 # elif ins == j:
                     # start, n = i, j - i
                 # else:
-                    # # py---lint: disable=unpacking-non-sequence
-                    # ### This was why pylint complained
-                    # ### start = start, n = j, i - j
                     # start, n = j, i - j
             # elif selectAll:
                 # start, n, ins = 0, len_s, len_s
@@ -1922,8 +1923,6 @@ class CoreTree (leoFrame.LeoTree):
             elif ins == j:
                 start, n = i, j - i
             else:
-                # Huh??? This was the pylint complaint.
-                ### start = start, n = j, i - j
                 start, n = j, i - j
         elif selectAll:
             # start, n, ins = 0, len_s, len_s
@@ -2028,6 +2027,7 @@ class LeoMiniBuffer(npyscreen.Textfield):
     def __init__(self, *args, **kwargs):
         super(LeoMiniBuffer, self).__init__(*args, **kwargs)
         self.leo_c = None # Set later
+        self.leo_wrapper = None # Set later.
         self.set_handlers()
 
     #@+others

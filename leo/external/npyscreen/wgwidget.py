@@ -335,7 +335,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         else:
             _i_set_parent_editing = False
         while self.editing and self.parent.editing:
-            g.pr('Widget._edit_loop:', self.__class__.__name__, g.callers(2))
+            # g.pr('Widget._edit_loop:', self.__class__.__name__, g.callers(2))
             self.display()
             self.get_and_use_key_press()
         if _i_set_parent_editing:
