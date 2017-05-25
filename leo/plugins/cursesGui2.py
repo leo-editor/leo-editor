@@ -909,7 +909,7 @@ class LeoCursesGui(leoGui.LeoGui):
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
         # g.trace('CursesGui', g.callers())
         return None
-    #@+node:ekr.20170502101347.1: *4* CGui.get/set_focus (finish)
+    #@+node:ekr.20170502101347.1: *4* CGui.get/set_focus
     def get_focus(self, c=None, raw=False, at_idle=False):
         '''
         Return the Leo wrapper for the npyscreen widget that is being edited.
@@ -2937,10 +2937,10 @@ class TextMixin(object):
     def selectAllText(self, s=None):
         '''TextMixin.'''
         self.setSelectionRange(0, self.getLength(s))
-    #@+node:ekr.20170511053143.11: *5* tm.setFocus (to do)
+    #@+node:ekr.20170511053143.11: *5* tm.setFocus
     def setFocus(self):
         '''TextMixin.setFocus'''
-        ### g.app.gui.set_focus(self)
+        g.app.gui.set_focus(self)
         
     #@+node:ekr.20170511053143.25: *5* tm.tag_configure
     def tag_configure(self, *args, **keys):
