@@ -2052,23 +2052,28 @@ class LeoBody (npyscreen.MultiLineEditable):
     #@+node:ekr.20170526064136.1: *4* LeoBody.set_handlers
     def set_handlers(self):
 
-        ### super(LeoBody, self).set_up_handlers()
-        
-        g.trace('LeoBody')
-        aList = ['%3s %s' % (z, method_name(self.handlers.get(z))) for z in self.handlers]
-        g.printList(sorted(aList))
+        trace = True
+        if trace:
+            g.trace('LeoBody: keys')
+            aList = ['%3s %s' % (z, method_name(self.handlers.get(z)))
+                for z in self.handlers]
+            g.printList(sorted(aList))
+            g.trace('LeoBody: handlers')
+            aList = [method_name(self.handlers.get(z)) for z in self.handlers]
+            g.printList(sorted(set(aList)))
+            
+        # self.handlers = {} # Clear all bindings.
        
-        # self.handlers.update({
+        self.handlers.update({
             # curses.ascii.ESC:   self.h_exit_escape,
-        
-        # }
+            #
+        })
         
         def true(*args, **kwargs):
             return True
 
         self.complex_handlers = (
             (curses.ascii.isprint, self.h_addch),
-            # (true, self.h_addch),
         )
     #@+node:ekr.20170526065306.1: *4* LeoBody.h_addch
     def h_addch(self, ch_i):
@@ -2081,12 +2086,15 @@ class LeoBody (npyscreen.MultiLineEditable):
             try:
                 ch = g.toUnicode(chr(ch_i))
             except Exception:
+                g.es_exception() # Testing.
                 return
             i = w.cursor_position
-            w.value = w.value[:i] + ch + w.value[i:]
+            s = w.value
+            w.value = s[:i] + ch + s[i:]
             w.cursor_position += len(ch)
-            w.begin_at = w.cursor_position
+            # w.begin_at = w.cursor_position
             w.update()
+            self.update()
             # Update the body wrapper.
             bw = c.frame.body.wrapper
             assert isinstance(bw, BodyWrapper), repr(bw)
@@ -2094,9 +2102,10 @@ class LeoBody (npyscreen.MultiLineEditable):
             bw.ins = i
             bw.sel = i, i
             bw.s = w.value
+            g.trace(ch_i, ch, i, len(bw.s))
             # c.frame.body.onBodyChanged(undoType, oldSel=None, oldText=None, oldYview=None)
         else:
-            g.trace('can not happen: not editable')
+            g.trace('not editable')
             
     #@+node:ekr.20170526080455.1: *4* LeoBody.onBodyChanged
     # This is the only key handler for the body pane.
@@ -3321,7 +3330,7 @@ class BodyWrapper(leoFrame.StringTextWrapper):
         # if name.startswith('body'):
             # if hasattr(c.frame, 'statusLine'):
                 # c.frame.statusLine.update()
-    #@+node:ekr.20170504034655.7: *4* bw.onTextChanged (not called yet)
+    #@+node:ekr.20170504034655.7: *4* bw.onTextChanged (to be deleted)
     def onTextChanged(self):
         '''
         Update Leo after the body has been changed.
