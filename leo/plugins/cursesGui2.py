@@ -717,8 +717,7 @@ class LeoCursesGui(leoGui.LeoGui):
         box.leo_wrapper = wrapper
         w.leo_c = c
         w.leo_wrapper = wrapper
-        g.trace(w)
-        g.trace(w.leo_wrapper)
+
     #@+node:ekr.20170502083754.1: *5* CGui.createCursesTree
     def createCursesTree(self, c, form):
         '''Create the curses tree widget in the given curses Form.'''
@@ -1449,34 +1448,32 @@ class CoreFrame (leoFrame.LeoFrame):
         '''
         trace = False and not g.unitTesting
         c = self.c
-        wrapper = event and event.widget
-        wname = c.widget_name(wrapper)
-        if not wrapper:
-            g.trace('no wrapper', repr(wrapper))
+        w = event and event.widget
+        if not isinstance(w, leoFrame.StringTextWrapper):
+            g.trace('not a StringTextWrapper', repr(w))
             return
-        i, j = oldSel = wrapper.getSelectionRange()
+        wname = c.widget_name(w)
+        i, j = oldSel = w.getSelectionRange()
             # Returns insert point if no selection.
-        oldText = wrapper.getAllText()
+        oldText = w.getAllText()
         s = g.app.gui.getTextFromClipboard()
         s = g.toUnicode(s)
-        if trace: g.trace('wname',wname, 'len(s)', len(s))
-        singleLine = wname.startswith('head') or wname.startswith('minibuffer')
-        if singleLine:
+        if trace: g.trace('wname', wname, 'len(s)', len(s))
+        # singleLine = wname.startswith('head') or wname.startswith('minibuffer')
+        single_line = any([wname.startswith(z) for z in ('head', 'minibuffer')])
+        if single_line:
             # Strip trailing newlines so the truncation doesn't cause confusion.
             while s and s[-1] in ('\n', '\r'):
                 s = s[: -1]
         # Update the widget.
         if i != j:
-            wrapper.delete(i, j)
-        wrapper.insert(i, s)
-        wrapper.see(i + len(s) + 2)
+            w.delete(i, j)
+        w.insert(i, s)
+        w.see(i + len(s) + 2)
         if wname.startswith('body'):
             c.frame.body.onBodyChanged('Paste', oldSel=oldSel, oldText=oldText)
         elif wname.startswith('head'):
-            c.frame.tree.onHeadChanged(
-                wrapper.p, 'Paste',
-                s=wrapper.getAllText(),
-            )
+            c.frame.tree.onHeadChanged(w.p, 'Paste', s=w.getAllText())
                 # New for Curses gui.
 
     OnPasteFromMenu = pasteText
