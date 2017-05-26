@@ -8,7 +8,7 @@
 import copy
 import logging
 import logging.handlers
-# import re
+import re
 import sys
 # import time
 try:
@@ -540,6 +540,18 @@ def trace(*args, **keys):
     # s = d.get('before') + ''.join(result)
     s = ''.join(result)
     logging.info('trace: %s' % s.rstrip())
+#@+node:ekr.20170526075024.1: *3* method_name
+def method_name(f):
+    '''Print a method name is a simplified format.'''
+    pattern = r'<bound method ([\w\.]*\.)?(\w+) of <([\w\.]*\.)?(\w+) object at (.+)>>'
+    m = re.match(pattern, repr(f))
+    if m:
+        return '%20s%s' % (m.group(1), m.group(2))
+            # Shows actual method: very useful
+        # return '%s.%s' % (m.group(4), m.group(2))
+            # Always shows subclass: not useful.
+    else:
+        return repr(f)
 #@+node:ekr.20170524123950.1: ** Gui classes
 #@+node:ekr.20170419094731.1: *3* class LeoCursesGui (leoGui.LeoGui)
 class LeoCursesGui(leoGui.LeoGui):
@@ -658,6 +670,8 @@ class LeoCursesGui(leoGui.LeoGui):
         # Inject the wrapper for get_focus.
         box.leo_wrapper = wrapper
         w.leo_wrapper = wrapper
+        # Inject leo_c.
+        w.leo_c = c
             
     #@+node:ekr.20170502083613.1: *5* CGui.createCursesLog
     def createCursesLog(self, c, form):
@@ -2037,43 +2051,105 @@ class LeoBody (npyscreen.MultiLineEditable):
     #@+others
     #@+node:ekr.20170526064136.1: *4* LeoBody.set_handlers
     def set_handlers(self):
-        
-        ### super(LeoBody, self).set_up_handlers()
-        # d = {}
-        # self.handlers.update(d)
 
+        ### super(LeoBody, self).set_up_handlers()
+        
         g.trace('LeoBody')
+        aList = ['%3s %s' % (z, method_name(self.handlers.get(z))) for z in self.handlers]
+        g.printList(sorted(aList))
+       
+        # self.handlers.update({
+            # curses.ascii.ESC:   self.h_exit_escape,
+        
+        # }
+        
+        def true(*args, **kwargs):
+            return True
+
         self.complex_handlers = (
             (curses.ascii.isprint, self.h_addch),
+            # (true, self.h_addch),
         )
     #@+node:ekr.20170526065306.1: *4* LeoBody.h_addch
-    def h_addch(self, ch):
+    def h_addch(self, ch_i):
         '''Override Textfield.h_addch'''
-        g.trace(ch)
+        c = self.leo_c
+        assert c
+        w = self._my_widgets[0]
+        assert isinstance(w, npyscreen.Textfield)
         if self.editable:
-            ###
-                # # workaround for the metamode bug:
-                # if self._last_get_ch_was_unicode == True and isinstance(self.value, bytes):
-                    # # probably dealing with python2.
-                    # ch_adding = ch
-                    # self.value = self.value.decode()
-                # elif self._last_get_ch_was_unicode == True:
-                    # ch_adding = ch
-                # else:
-                    # try:
-                        # ch_adding = chr(ch)
-                    # except TypeError:
-                        # ### Huh???
-                        # ### ch_adding = input
-                        # g.trace(repr(ch)
-                        # return
-            ch_adding = g.toUnicode(ch)
-            self.value = (
-                self.value[:self.cursor_position] +
-                ch_adding
-                + self.value[self.cursor_position:]
-            )
-            self.cursor_position += len(ch_adding)
+            try:
+                ch = g.toUnicode(chr(ch_i))
+            except Exception:
+                return
+            i = w.cursor_position
+            w.value = w.value[:i] + ch + w.value[i:]
+            w.cursor_position += len(ch)
+            w.begin_at = w.cursor_position
+            w.update()
+            # Update the body wrapper.
+            bw = c.frame.body.wrapper
+            assert isinstance(bw, BodyWrapper), repr(bw)
+            i = w.cursor_position
+            bw.ins = i
+            bw.sel = i, i
+            bw.s = w.value
+            # c.frame.body.onBodyChanged(undoType, oldSel=None, oldText=None, oldYview=None)
+        else:
+            g.trace('can not happen: not editable')
+            
+    #@+node:ekr.20170526080455.1: *4* LeoBody.onBodyChanged
+    # This is the only key handler for the body pane.
+
+    def onBodyChanged(self, undoType, oldSel=None, oldText=None, oldYview=None):
+        '''Update Leo after the body has been changed.'''
+        trace = False and not g.unitTesting
+        c = self.c
+        body, w = self, self.wrapper
+        p = c.p
+        insert = w.getInsertPoint()
+        ch = '' if insert == 0 else w.get(insert - 1)
+        ch = g.toUnicode(ch)
+        newText = w.getAllText() # Note: getAllText converts to unicode.
+        newSel = w.getSelectionRange()
+        if not oldText:
+            oldText = p.b; changed = True
+        else:
+            changed = oldText != newText
+        if not changed: return
+        if trace:
+            # g.trace(repr(ch),'changed:',changed,'newText:',len(newText),'w',w)
+            g.trace('oldSel', oldSel, 'newSel', newSel)
+        c.undoer.setUndoTypingParams(p, undoType,
+            oldText=oldText, newText=newText, oldSel=oldSel, newSel=newSel, oldYview=oldYview)
+        p.v.setBodyString(newText)
+        p.v.insertSpot = w.getInsertPoint()
+        #@+<< recolor the body >>
+        #@+node:ekr.20170526080455.2: *5* << recolor the body >>
+        c.frame.scanForTabWidth(p)
+        body.recolor(p, incremental=not self.forceFullRecolorFlag)
+        self.forceFullRecolorFlag = False
+        if g.app.unitTesting:
+            g.app.unitTestDict['colorized'] = True
+        #@-<< recolor the body >>
+        if not c.changed: c.setChanged(True)
+        self.updateEditors()
+        p.v.contentModified()
+        #@+<< update icons if necessary >>
+        #@+node:ekr.20170526080455.3: *5* << update icons if necessary >>
+        redraw_flag = False
+        # Update dirty bits.
+        # p.setDirty() sets all cloned and @file dirty bits.
+        if not p.isDirty() and p.setDirty():
+            redraw_flag = True
+        # Update icons. p.v.iconVal may not exist during unit tests.
+        val = p.computeIcon()
+        if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
+            p.v.iconVal = val
+            redraw_flag = True
+        if redraw_flag:
+            c.redraw_after_icons_changed()
+        #@-<< update icons if necessary >>
     #@-others
 #@+node:ekr.20170507194035.1: *3* class LeoForm (npyscreen.Form)
 class LeoForm (npyscreen.Form):
@@ -2859,6 +2935,171 @@ class LeoValues(npyscreen.TreeData):
     #@-others
 #@+node:ekr.20170522081122.1: ** Wrapper classes
 #@+others
+#@+node:ekr.20170526080913.1: *3*  class REF_StringTextWrapper
+class REF_StringTextWrapper(object):
+    '''A class that represents text as a Python string.'''
+    #@+others
+    #@+node:ekr.20170526080913.2: *4* stw.ctor
+    def __init__(self, c, name):
+        '''Ctor for the StringTextWrapper class.'''
+        self.c = c
+        self.name = name
+        self.ins = 0
+        self.sel = 0, 0
+        self.s = ''
+        self.supportsHighLevelInterface = True
+        self.widget = None # This ivar must exist, and be None.
+        self.trace = False
+
+    def __repr__(self):
+        return '<StringTextWrapper: %s %s>' % (id(self), self.name)
+
+    def getName(self):
+        '''StringTextWrapper.'''
+        return self.name # Essential.
+    #@+node:ekr.20170526080913.3: *4* stw.Clipboard
+    def clipboard_clear(self):
+        g.app.gui.replaceClipboardWith('')
+
+    def clipboard_append(self, s):
+        s1 = g.app.gui.getTextFromClipboard()
+        g.app.gui.replaceClipboardWith(s1 + s)
+    #@+node:ekr.20170526080913.4: *4* stw.Do-nothings
+    # For StringTextWrapper.
+
+    def flashCharacter(self, i, bg='white', fg='red', flashes=3, delay=75): pass
+
+    def getXScrollPosition(self): return 0
+
+    def getYScrollPosition(self): return 0
+
+    def see(self, i): pass
+
+    def seeInsertPoint(self): pass
+
+    def setFocus(self): pass
+
+    def setXScrollPosition(self, i): pass
+
+    def setYScrollPosition(self, i): pass
+
+    def tag_configure(self, colorName, **keys): pass
+    #@+node:ekr.20170526080913.5: *4* stw.Text
+    #@+node:ekr.20170526080913.6: *5* stw.appendText
+    def appendText(self, s):
+        '''StringTextWrapper.'''
+        self.s = self.s + s
+        self.ins = len(self.s)
+        self.sel = self.ins, self.ins
+    #@+node:ekr.20170526080913.7: *5* stw.delete
+    def delete(self, i, j=None):
+        '''StringTextWrapper.'''
+        i = self.toPythonIndex(i)
+        if j is None: j = i + 1
+        j = self.toPythonIndex(j)
+        # This allows subclasses to use this base class method.
+        if i > j: i, j = j, i
+        s = self.getAllText()
+        self.setAllText(s[: i] + s[j:])
+        # Bug fix: 2011/11/13: Significant in external tests.
+        self.setSelectionRange(i, i, insert=i)
+    #@+node:ekr.20170526080913.8: *5* stw.deleteTextSelection
+    def deleteTextSelection(self):
+        '''StringTextWrapper.'''
+        i, j = self.getSelectionRange()
+        self.delete(i, j)
+    #@+node:ekr.20170526080913.9: *5* stw.get
+    def get(self, i, j=None):
+        '''StringTextWrapper.'''
+        i = self.toPythonIndex(i)
+        if j is None: j = i + 1
+        j = self.toPythonIndex(j)
+        s = self.s[i: j]
+        return g.toUnicode(s)
+    #@+node:ekr.20170526080913.10: *5* stw.getAllText
+    def getAllText(self):
+        '''StringTextWrapper.'''
+        s = self.s
+        return g.toUnicode(s)
+    #@+node:ekr.20170526080913.11: *5* stw.getInsertPoint
+    def getInsertPoint(self):
+        '''StringTextWrapper.'''
+        i = self.ins
+        if i is None:
+            if self.virtualInsertPoint is None:
+                i = 0
+            else:
+                i = self.virtualInsertPoint
+        self.virtualInsertPoint = i
+        # g.trace('BaseTextWrapper): i:',i,'virtual',self.virtualInsertPoint)
+        return i
+    #@+node:ekr.20170526080913.12: *5* stw.getSelectedText
+    def getSelectedText(self):
+        '''StringTextWrapper.'''
+        i, j = self.sel
+        s = self.s[i: j]
+        return g.toUnicode(s)
+    #@+node:ekr.20170526080913.13: *5* stw.getSelectionRange
+    def getSelectionRange(self, sort=True):
+        '''Return the selected range of the widget.'''
+        sel = self.sel
+        if len(sel) == 2 and sel[0] >= 0 and sel[1] >= 0:
+            i, j = sel
+            if sort and i > j: sel = j, i # Bug fix: 10/5/07
+            return sel
+        else:
+            i = self.ins
+            return i, i
+    #@+node:ekr.20170526080913.14: *5* stw.hasSelection
+    def hasSelection(self):
+        '''StringTextWrapper.'''
+        i, j = self.getSelectionRange()
+        return i != j
+    #@+node:ekr.20170526080913.15: *5* stw.insert
+    def insert(self, i, s):
+        '''StringTextWrapper.'''
+        i = self.toPythonIndex(i)
+        s1 = s
+        self.s = self.s[: i] + s1 + self.s[i:]
+        i += len(s1)
+        self.ins = i
+        self.sel = i, i
+    #@+node:ekr.20170526080913.16: *5* stw.selectAllText
+    def selectAllText(self, insert=None):
+        '''StringTextWrapper.'''
+        self.setSelectionRange(0, 'end', insert=insert)
+    #@+node:ekr.20170526080913.17: *5* stw.setAllText
+    def setAllText(self, s):
+        '''StringTextWrapper.'''
+        self.s = s
+        i = len(self.s)
+        self.ins = i
+        self.sel = i, i
+    #@+node:ekr.20170526080913.18: *5* stw.setInsertPoint
+    def setInsertPoint(self, pos, s=None):
+        '''StringTextWrapper.'''
+        self.virtualInsertPoint = i = self.toPythonIndex(pos)
+        self.ins = i
+        self.sel = i, i
+    #@+node:ekr.20170526080913.19: *5* stw.setSelectionRange
+    def setSelectionRange(self, i, j, insert=None):
+        '''StringTextWrapper.'''
+        i, j = self.toPythonIndex(i), self.toPythonIndex(j)
+        self.sel = i, j
+        self.ins = j if insert is None else self.toPythonIndex(insert)
+        if self.trace: g.trace('i', i, 'j', j, 'insert', repr(insert))
+    #@+node:ekr.20170526080913.20: *5* stw.toPythonIndex
+    def toPythonIndex(self, index):
+        '''StringTextWrapper.'''
+        return g.toPythonIndex(self.s, index)
+    #@+node:ekr.20170526080913.21: *5* stw.toPythonIndexRowCol
+    def toPythonIndexRowCol(self, index):
+        '''StringTextWrapper.'''
+        s = self.getAllText()
+        i = self.toPythonIndex(index)
+        row, col = g.convertPythonIndexToRowCol(s, i)
+        return i, row, col
+    #@-others
 #@+node:ekr.20170511053143.1: *3*  class TextMixin (object)
 class TextMixin(object):
     '''A minimal mixin class for QTextEditWrapper and QScintillaWrapper classes.'''
