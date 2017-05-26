@@ -626,15 +626,20 @@ class LeoCursesGui(leoGui.LeoGui):
         Populate it with c.p.b.
         '''
         trace = False
+        
+        class BoxTitleBody(npyscreen.BoxTitle):
+            # pylint: disable=used-before-assignment
+            _contained_widget = LeoBody
+            
         box = form.add(
-            npyscreen.MultiLineEditableBoxed,
+            BoxTitleBody,
             max_height=8, # Subtract 4 lines
             name='Body Pane',
             footer="Press i or o to insert text", 
             values=g.splitLines(c.p.b), 
             slow_scroll=True,
         )
-        assert isinstance(box, npyscreen.MultiLineEditableBoxed), repr(box)
+        assert isinstance(box, BoxTitleBody), repr(box)
         # Get the contained widget.
         widgets = box._my_widgets
         assert len(widgets) == 1
@@ -1444,11 +1449,10 @@ class CoreFrame (leoFrame.LeoFrame):
         '''
         trace = False and not g.unitTesting
         c = self.c
-        w = event and event.widget
-        wrapper = getattr(w, 'leo_wrapper')
+        wrapper = event and event.widget
         wname = c.widget_name(wrapper)
         if not wrapper:
-            g.trace('no wrapper', repr(w))
+            g.trace('no wrapper', repr(wrapper))
             return
         i, j = oldSel = wrapper.getSelectionRange()
             # Returns insert point if no selection.
@@ -1995,18 +1999,17 @@ class TopFrame (object):
     '''A representation of c.frame.top.'''
     
     def __init__(self, c):
-        # g.trace('TopFrame', c)
         self.c = c
         
     def select(self, *args, **kwargs):
-        pass # g.trace(args, kwargs)
+        pass
         
     def findChild(self, *args, **kwargs):
         # Called by nested_splitter.py.
-        return g.NullObject() # Required, for now.
+        return g.NullObject()
 
     def finishCreateLogPane(self, *args, **kwargs):
-        pass # g.trace(args, kwargs)
+        pass
 #@+node:ekr.20170524124449.1: ** Npyscreen classes
 # These are subclasses of npyscreen base classes.
 # These classes have "leo_c" ivars.
@@ -2027,6 +2030,9 @@ class LeoApp(npyscreen.NPSApp):
         Create and start Leo's singleton npyscreen window.
         '''
         g.app.gui.run()
+#@+node:ekr.20170526054750.1: *3* class LeoBody (npyscreen.MultiLineEditable)
+class LeoBody (npyscreen.MultiLineEditable):
+    pass
 #@+node:ekr.20170507194035.1: *3* class LeoForm (npyscreen.Form)
 class LeoForm (npyscreen.Form):
     
