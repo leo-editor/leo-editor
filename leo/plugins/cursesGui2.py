@@ -2028,7 +2028,53 @@ class LeoApp(npyscreen.NPSApp):
         g.app.gui.run()
 #@+node:ekr.20170526054750.1: *3* class LeoBody (npyscreen.MultiLineEditable)
 class LeoBody (npyscreen.MultiLineEditable):
-    pass
+    
+    def __init__ (self, *args, **kwargs):
+        super(LeoBody, self).__init__(*args, **kwargs)
+        self.set_handlers()
+        # The startup sequence sets the leo_c ivar.
+        
+    #@+others
+    #@+node:ekr.20170526064136.1: *4* LeoBody.set_handlers
+    def set_handlers(self):
+        
+        ### super(LeoBody, self).set_up_handlers()
+        # d = {}
+        # self.handlers.update(d)
+
+        g.trace('LeoBody')
+        self.complex_handlers = (
+            (curses.ascii.isprint, self.h_addch),
+        )
+    #@+node:ekr.20170526065306.1: *4* LeoBody.h_addch
+    def h_addch(self, ch):
+        '''Override Textfield.h_addch'''
+        g.trace(ch)
+        if self.editable:
+            ###
+                # # workaround for the metamode bug:
+                # if self._last_get_ch_was_unicode == True and isinstance(self.value, bytes):
+                    # # probably dealing with python2.
+                    # ch_adding = ch
+                    # self.value = self.value.decode()
+                # elif self._last_get_ch_was_unicode == True:
+                    # ch_adding = ch
+                # else:
+                    # try:
+                        # ch_adding = chr(ch)
+                    # except TypeError:
+                        # ### Huh???
+                        # ### ch_adding = input
+                        # g.trace(repr(ch)
+                        # return
+            ch_adding = g.toUnicode(ch)
+            self.value = (
+                self.value[:self.cursor_position] +
+                ch_adding
+                + self.value[self.cursor_position:]
+            )
+            self.cursor_position += len(ch_adding)
+    #@-others
 #@+node:ekr.20170507194035.1: *3* class LeoForm (npyscreen.Form)
 class LeoForm (npyscreen.Form):
     

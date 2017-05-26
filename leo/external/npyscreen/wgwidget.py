@@ -91,6 +91,7 @@ class InputHandler(object):
 
         trace = False
         trace_entry = False
+        trace_parent = False
         parent_widget = getattr(self, 'parent_widget', None)
         parent = getattr(self, 'parent', None)
         if trace and trace_entry:
@@ -106,7 +107,7 @@ class InputHandler(object):
             return True
         if i in self.handlers:
             f = self.handlers[i]
-            if trace: g.trace('handler', i, tell(f))
+            if trace: g.trace('handler: %3s %s' % (i, tell(f)))
             f(i)
             return True
         try:
@@ -116,26 +117,28 @@ class InputHandler(object):
         if _unctrl_input and (_unctrl_input in self.handlers):
             ### self.handlers[_unctrl_input](i)
             f = self.handlers[_unctrl_input]
-            if trace: g.trace('handler',  _unctrl_input, tell(f))
+            if trace: g.trace('handler: %3s %s' % (_unctrl_input, tell(f)))
             f(i)
             return True
         for test, handler in getattr(self, 'complex_handlers', []):
             if test(i): # was is not False.
-                if trace: g.trace('complex', i, tell(handler))
+                if trace: g.trace('complex: %3s %s' % (i, tell(handler)))
                 return handler(i)
                 ### return True
         if parent_widget and hasattr(parent_widget, 'handle_input'):
-            if trace: g.trace('parent_widget.handle_input', i, parent_widget)
+            if trace and trace_parent:
+                g.trace('parent_widget.handle_input', i, parent_widget)
             if parent_widget.handle_input(i):
                 return True
         if parent and hasattr(self.parent, 'handle_input'):
-            if trace: g.trace('parent.handle_input', i, parent_widget)
+            if trace and trace_parent:
+                g.trace('parent.handle_input', i, parent_widget)
             if parent.handle_input(i):
                 return True
         # Handle Leo bindings *last*.
-        # Important: g.app is a LeoApp instance, *not* a CursesApp.
+        # g.app is a LeoApp instance, *not* a CursesApp.
         if g.app and g.app.gui and hasattr(g.app.gui, 'do_key'):
-            if trace: g.trace('g.app.gui.do_key', i)
+            if trace: g.trace('    leo: %3s %s' % (i, tell(g.app.gui.do_key)))
             return g.app.gui.do_key(i)
         return False
     #@+node:ekr.20170428084208.406: *3* IH.set_up_handlers

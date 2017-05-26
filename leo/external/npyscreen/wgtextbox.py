@@ -388,7 +388,7 @@ class TextfieldBase(widget.Widget):
 #@+node:ekr.20170428084208.335: ** class Textfield (TextfieldBase)
 class Textfield(TextfieldBase):
     #@+others
-    #@+node:ekr.20170428084208.336: *3* show_brief_message
+    #@+node:ekr.20170428084208.336: *3* Textfield.show_brief_message
     def show_brief_message(self, message):
         curses.beep()
         keep_for_a_moment = self.value
@@ -425,42 +425,20 @@ class Textfield(TextfieldBase):
     ###########################################################################################
     # Handlers and methods
 
-    #@+node:ekr.20170428084208.338: *3* set_up_handlers
-    def set_up_handlers(self):
-        '''Textfield.set_up_handlers.'''
-        super(Textfield, self).set_up_handlers()    
-        # For OS X
-        # del_key = curses.ascii.alt('~')
-        self.handlers.update({
-            curses.KEY_LEFT:    self.h_cursor_left,
-            curses.KEY_RIGHT:   self.h_cursor_right,
-            curses.KEY_DC:      self.h_delete_right,
-            curses.ascii.DEL:   self.h_delete_left,
-            curses.ascii.BS:    self.h_delete_left,
-            curses.KEY_BACKSPACE: self.h_delete_left,
-            # mac os x curses reports DEL as escape oddly
-            # no solution yet                   
-            "^K":           self.h_erase_right,
-            "^U":           self.h_erase_left,
-        })
-        self.complex_handlers.extend((
-            (self.t_input_isprint, self.h_addch),
-            # (self.t_is_ck, self.h_erase_right),
-            # (self.t_is_cu, self.h_erase_left),
-        ))
-
-    #@+node:ekr.20170428084208.339: *3* t_input_isprint
+    #@+node:ekr.20170428084208.339: *3* Textfield.t_input_isprint
     def t_input_isprint(self, inp):
         if self._last_get_ch_was_unicode and inp not in '\n\t\r':
             return True
-        if curses.ascii.isprint(inp) and \
-        (chr(inp) not in '\n\t\r'): 
-            return True
-        else: 
-            return False
+        # if curses.ascii.isprint(inp) and \
+        # (chr(inp) not in '\n\t\r'): 
+            # return True
+        # else: 
+            # return False
+        return curses.ascii.isprint(inp) and chr(inp) not in '\n\t\r'
         
         
-    #@+node:ekr.20170428084208.340: *3* h_addch
+    #@+node:ekr.20170526065621.1: *3* Textfield handlers
+    #@+node:ekr.20170428084208.340: *4* Textfield.h_addch
     def h_addch(self, inp):
         if self.editable:
             #self.value = self.value[:self.cursor_position] + curses.keyname(input) \
@@ -488,15 +466,15 @@ class Textfield(TextfieldBase):
             #   + self.value[self.cursor_position:]
             #self.cursor_position += len(curses.ascii.unctrl(input))
 
-    #@+node:ekr.20170428084208.341: *3* h_cursor_left
+    #@+node:ekr.20170428084208.341: *4* Textfield.h_cursor_left
     def h_cursor_left(self, input):
         self.cursor_position -= 1
 
-    #@+node:ekr.20170428084208.342: *3* h_cursor_right
+    #@+node:ekr.20170428084208.342: *4* Textfield.h_cursor_right
     def h_cursor_right(self, input):
         self.cursor_position += 1
 
-    #@+node:ekr.20170428084208.343: *3* h_delete_left
+    #@+node:ekr.20170428084208.343: *4* Textfield.h_delete_left
     def h_delete_left(self, input):
         if self.editable and self.cursor_position > 0:
             self.value = self.value[:self.cursor_position-1] + self.value[self.cursor_position:]
@@ -505,25 +483,25 @@ class Textfield(TextfieldBase):
         self.begin_at -= 1
 
 
-    #@+node:ekr.20170428084208.344: *3* h_delete_right
+    #@+node:ekr.20170428084208.344: *4* Textfield.h_delete_right
     def h_delete_right(self, input):
         if self.editable:
             self.value = self.value[:self.cursor_position] + self.value[self.cursor_position+1:]
 
-    #@+node:ekr.20170428084208.345: *3* h_erase_left
+    #@+node:ekr.20170428084208.345: *4* Textfield.h_erase_left
     def h_erase_left(self, input):
         if self.editable:
             self.value = self.value[self.cursor_position:]
             self.cursor_position=0
 
-    #@+node:ekr.20170428084208.346: *3* h_erase_right
+    #@+node:ekr.20170428084208.346: *4* Textfield.h_erase_right
     def h_erase_right(self, input):
         if self.editable:
             self.value = self.value[:self.cursor_position]
             self.cursor_position = len(self.value)
             self.begin_at = 0
 
-    #@+node:ekr.20170428084208.347: *3* handle_mouse_event
+    #@+node:ekr.20170428084208.347: *4* Textfield.handle_mouse_event
     def handle_mouse_event(self, mouse_event):
         #mouse_id, x, y, z, bstate = mouse_event
         #rel_mouse_x = x - self.relx - self.parent.show_atx
@@ -531,6 +509,30 @@ class Textfield(TextfieldBase):
         self.cursor_position = rel_x + self.begin_at
         self.display()
 
+
+    #@+node:ekr.20170428084208.338: *4* Textfield.set_up_handlers
+    def set_up_handlers(self):
+        '''Textfield.set_up_handlers.'''
+        super(Textfield, self).set_up_handlers()    
+        # For OS X
+        # del_key = curses.ascii.alt('~')
+        self.handlers.update({
+            curses.KEY_LEFT:    self.h_cursor_left,
+            curses.KEY_RIGHT:   self.h_cursor_right,
+            curses.KEY_DC:      self.h_delete_right,
+            curses.ascii.DEL:   self.h_delete_left,
+            curses.ascii.BS:    self.h_delete_left,
+            curses.KEY_BACKSPACE: self.h_delete_left,
+            # mac os x curses reports DEL as escape oddly
+            # no solution yet                   
+            "^K":           self.h_erase_right,
+            "^U":           self.h_erase_left,
+        })
+        self.complex_handlers.extend((
+            (self.t_input_isprint, self.h_addch),
+            # (self.t_is_ck, self.h_erase_right),
+            # (self.t_is_cu, self.h_erase_left),
+        ))
 
     #@-others
 #@+node:ekr.20170428084208.348: ** class FixedText (TextfieldBase)

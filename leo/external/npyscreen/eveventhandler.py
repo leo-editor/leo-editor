@@ -27,7 +27,8 @@ class EventHandler(object):
     #@+node:ekr.20170428084207.117: *3* add_event_hander
     def add_event_hander(self, event_name, handler):
         if not event_name in self.event_handlers:
-            self.event_handlers[event_name] = set() # weakref.WeakSet() #Why doesn't the WeakSet work?
+            self.event_handlers[event_name] = set()
+                # weakref.WeakSet() #Why doesn't the WeakSet work?
         self.event_handlers[event_name].add(handler)
         
         parent_app = self.find_parent_app()
