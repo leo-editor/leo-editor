@@ -1459,7 +1459,6 @@ class CoreFrame (leoFrame.LeoFrame):
         s = g.app.gui.getTextFromClipboard()
         s = g.toUnicode(s)
         if trace: g.trace('wname', wname, 'len(s)', len(s))
-        # singleLine = wname.startswith('head') or wname.startswith('minibuffer')
         single_line = any([wname.startswith(z) for z in ('head', 'minibuffer')])
         if single_line:
             # Strip trailing newlines so the truncation doesn't cause confusion.
