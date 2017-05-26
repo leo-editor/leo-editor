@@ -2043,41 +2043,189 @@ class LeoApp(npyscreen.NPSApp):
 #@+node:ekr.20170526054750.1: *3* class LeoBody (npyscreen.MultiLineEditable)
 class LeoBody (npyscreen.MultiLineEditable):
     
+    continuation_line = "- more -" # value of contination line.
+    
     def __init__ (self, *args, **kwargs):
         super(LeoBody, self).__init__(*args, **kwargs)
         self.set_handlers()
         # The startup sequence sets the leo_c ivar.
         
     #@+others
-    #@+node:ekr.20170526064136.1: *4* LeoBody.set_handlers
-    def set_handlers(self):
+    #@+node:ekr.20170526120329.1: *4* Ref
+    #@+node:ekr.20170526120641.1: *5* IH.set_up_handlers (REF)
+    # def set_up_handlers(self):
 
-        trace = True
-        if trace:
-            g.trace('LeoBody: keys')
-            aList = ['%3s %s' % (z, method_name(self.handlers.get(z)))
-                for z in self.handlers]
-            g.printList(sorted(aList))
-            g.trace('LeoBody: handlers')
-            aList = [method_name(self.handlers.get(z)) for z in self.handlers]
-            g.printList(sorted(set(aList)))
-            
-        # self.handlers = {} # Clear all bindings.
-       
-        self.handlers.update({
-            # curses.ascii.ESC:   self.h_exit_escape,
-            #
-        })
+        # self.handlers = {
+            # curses.ascii.NL:     self.h_exit_down,
+            # curses.ascii.CR:     self.h_exit_down,
+            # curses.ascii.TAB:    self.h_exit_down,
+            # curses.KEY_BTAB:     self.h_exit_up,
+            # curses.KEY_DOWN:     self.h_exit_down,
+            # curses.KEY_UP:       self.h_exit_up,
+            # curses.KEY_LEFT:     self.h_exit_left,
+            # curses.KEY_RIGHT:    self.h_exit_right,
+            # "^P":                self.h_exit_up,
+            # "^N":                self.h_exit_down,
+            # curses.ascii.ESC:    self.h_exit_escape,
+            # curses.KEY_MOUSE:    self.h_exit_mouse,
+        # }
+        # self.complex_handlers = []
+
+    #@+node:ekr.20170526115131.18: *5* MultiLine.edit REF
+    # def edit(self):
         
-        def true(*args, **kwargs):
-            return True
+        # self.editing = True
+        # self.how_exited = None
+        # self.display()
+        # while self.editing:
+            # self.get_and_use_key_press()
+            # self.update(clear=None)
+            # self.parent.refresh()
+    #@+node:ekr.20170526115131.14: *5* MultiLine.h_exit (Ref)
+    # def h_exit(self, ch):
+        # '''From MultiLine.h_exit.'''
+        # self.editing = False
+        # self.how_exited = True
 
-        self.complex_handlers = (
-            (curses.ascii.isprint, self.h_addch),
-        )
-    #@+node:ekr.20170526065306.1: *4* LeoBody.h_addch
+    #@+node:ekr.20170526114040.9: *5* MultiLine.h_set_filter (REF)
+    # def h_set_filter(self, ch_i):
+        # '''From MultiLine.h_set_filter'''
+        # if not self.allow_filtering:
+            # return None
+        # P = FilterPopupHelper()
+        # P.owner_widget = weakref.proxy(self)
+        # P.display()
+        # P.filterbox.edit()
+        # self._remake_filter_cache()
+        # self.jump_to_first_filtered()
+    #@+node:ekr.20170526115131.2: *5* MultiLine.handle_mouse_event (REF)
+    # def handle_mouse_event(self, mouse_event):
+       
+        # mouse_id, rel_x, rel_y, z, bstate = self.interpret_mouse_event(mouse_event)
+        # self.cursor_line = rel_y // self._contained_widget_height + self.start_display_at
+        # self.display()
+    #@+node:ekr.20170526115131.3: *5* MultiLine.set_up_handlers REF
+    # def set_up_handlers(self):
+        # '''MultiLine.set_up_handlers.'''
+        # super(MultiLine, self).set_up_handlers()
+        # self.handlers.update ({
+            # curses.KEY_UP:      self.h_cursor_line_up,
+            # ord('k'):           self.h_cursor_line_up,
+            # curses.KEY_LEFT:    self.h_cursor_line_up,
+            # curses.KEY_DOWN:    self.h_cursor_line_down,
+            # ord('j'):           self.h_cursor_line_down,
+            # curses.KEY_RIGHT:   self.h_cursor_line_down,
+            # curses.KEY_NPAGE:   self.h_cursor_page_down,
+            # curses.KEY_PPAGE:   self.h_cursor_page_up,
+            # curses.ascii.TAB:   self.h_exit_down,
+            # curses.ascii.NL:    self.h_select_exit,
+            # curses.KEY_HOME:    self.h_cursor_beginning,
+            # curses.KEY_END:     self.h_cursor_end,
+            # ord('g'):           self.h_cursor_beginning,
+            # ord('G'):           self.h_cursor_end,
+            # ord('x'):           self.h_select,
+            # # "^L":        self.h_set_filtered_to_selected,
+            # curses.ascii.SP:    self.h_select,
+            # curses.ascii.ESC:   self.h_exit_escape,
+            # curses.ascii.CR:    self.h_select_exit,
+        # })  
+        # if self.allow_filtering:
+            # self.handlers.update ( {
+                # ord('l'):       self.h_set_filter,
+                # ord('L'):       self.h_clear_filter,
+                # ord('n'):       self.move_next_filtered,
+                # ord('N'):       self.move_previous_filtered,
+                # ord('p'):       self.move_previous_filtered,
+                # # "^L":        self.h_set_filtered_to_selected,
+            # } )   
+        # if self.exit_left:
+            # self.handlers.update({
+                # curses.KEY_LEFT:    self.h_exit_left
+            # })
+        # if self.exit_right:
+            # self.handlers.update({
+                # curses.KEY_RIGHT:   self.h_exit_right
+            # })
+        # self.complex_handlers = [
+            # # (self.t_input_isprint, self.h_find_char)
+        # ]
+    #@+node:ekr.20170526114609.6: *5* MultiLineEditable.set_up_handlers (REF)
+    # def set_up_handlers(self):
+
+        # super(MultiLineEditable, self).set_up_handlers()
+        # self.handlers.update ( {
+            # ord('i'):               self.h_insert_value,
+            # ord('o'):               self.h_insert_next_line,
+            # curses.ascii.CR:        self.h_edit_cursor_line_value,
+            # curses.ascii.NL:        self.h_edit_cursor_line_value,
+            # curses.ascii.SP:        self.h_edit_cursor_line_value,
+            # curses.ascii.DEL:       self.h_delete_line_value,
+            # curses.ascii.BS:        self.h_delete_line_value,
+            # curses.KEY_BACKSPACE:   self.h_delete_line_value,
+        # })
+    #@+node:ekr.20170526112233.1: *4* From InputHandler (test)
+    # InputHandler.h_exit_down
+    # InputHandler.h_exit_escape
+    # InputHandler.h_exit_mouse
+    # InputHandler.exit_up
+    #@+node:ekr.20170526114052.1: *5* LeoBody.h_exit_down
+    def h_exit_down(self, ch_i):
+        '''From InputHandler.h_exit_down'''
+        g.trace('LeoBody', ch_i)
+        from npyscreen.wgwidget import EXITED_DOWN
+        if not self._test_safe_to_exit():
+            return False
+        self.editing = False
+        self.how_exited = EXITED_DOWN
+
+    #@+node:ekr.20170526114052.2: *5* LeoBody.h_exit_escape
+    def h_exit_escape(self, ch_i):
+        '''From InputHandler.h_exit_escape'''
+        g.trace('LeoBody', ch_i)
+        from npyscreen.wgwidget import EXITED_ESCAPE
+        if not self._test_safe_to_exit():
+            return False
+        self.editing = False
+        self.how_exited = EXITED_ESCAPE
+    #@+node:ekr.20170526114052.3: *5* LeoBody.h_exit_mouse
+    def h_exit_mouse(self, ch_i):
+        '''From InputHandler.h_exit_mouse'''
+        # pylint: disable=no-member
+        g.trace('LeoBody', ch_i)
+        from npyscreen.wgwidget import EXITED_MOUSE
+        mouse_event = self.parent.safe_get_mouse_event()
+        if mouse_event and self.intersted_in_mouse_event(mouse_event):
+            self.handle_mouse_event(mouse_event)
+        else:
+            if mouse_event and self._test_safe_to_exit():
+                curses.ungetmouse(*mouse_event)
+                ch = self.parent.curses_pad.getch()
+                assert ch == curses.KEY_MOUSE
+            self.editing = False
+            self.how_exited = EXITED_MOUSE
+    #@+node:ekr.20170526114052.4: *5* LeoBody.h_exit_up
+    def h_exit_up(self, ch_i):
+        '''From InputHandler.h_exit_up'''
+        g.trace('LeoBody', ch_i)
+        from npyscreen.wgwidget import EXITED_UP
+        if not self._test_safe_to_exit():
+            return False
+        # Called when the user leaves the widget to the previous widget
+        self.editing = False
+        self.how_exited = EXITED_UP
+    #@+node:ekr.20170526112144.1: *4* From MultiLine (test)
+    # MultiLine.h_cursor_beginning
+    # MultiLine.h_cursor_end
+    # MultiLine.h_cursor_line_down
+    # MultiLine.h_cursor_line_up
+    # MultiLine.h_cursor_page_down
+    # MultiLine.h_cursor_page_up
+    # MultiLine.h_select
+
+    #@+node:ekr.20170526065306.1: *5* LeoBody.h_addch
     def h_addch(self, ch_i):
-        '''Override Textfield.h_addch'''
+        '''Override MultiLineEditable.h_addch'''
+        g.trace('LeoBody', ch_i)
         c = self.leo_c
         assert c
         w = self._my_widgets[0]
@@ -2092,7 +2240,8 @@ class LeoBody (npyscreen.MultiLineEditable):
             s = w.value
             w.value = s[:i] + ch + s[i:]
             w.cursor_position += len(ch)
-            # w.begin_at = w.cursor_position
+            if self.autowrap:
+                self.reformat_preserve_nl()
             w.update()
             self.update()
             # Update the body wrapper.
@@ -2107,6 +2256,109 @@ class LeoBody (npyscreen.MultiLineEditable):
         else:
             g.trace('not editable')
             
+    #@+node:ekr.20170526114040.2: *5* LeoBody.h_cursor_beginning
+    def h_cursor_beginning(self, ch_i):
+       '''From MultiLine.h_cursor_beginning'''
+       g.trace('LeoBody', ch_i)
+       self.cursor_line = 0
+    #@+node:ekr.20170526114040.3: *5* LeoBody.h_cursor_end
+    def h_cursor_end(self, ch_i):
+       '''From MultiLine.h_cursor_end'''
+       g.trace('LeoBody', ch_i)
+       self.cursor_line = (max (0, len(self.values)-1))
+    #@+node:ekr.20170526114040.4: *5* LeoBody.h_cursor_line_down
+    def h_cursor_line_down(self, ch_i):
+        '''From MultiLine.h_cursor_line_down'''
+        g.trace('LeoBody', ch_i)
+        self.cursor_line += 1
+        i = self.cursor_line
+        j = self.start_display_at
+        if i >= len(self.values):
+            if self.scroll_exit: 
+                self.cursor_line = len(self.values)-1
+                self.h_exit_down(ch_i)
+                return True
+            else: 
+                self.cursor_line -=1
+                return True
+        if self._my_widgets[i-j].task == self.continuation_line: 
+            if self.slow_scroll:
+                self.start_display_at += 1
+            else:
+                self.start_display_at = self.cursor_line
+    #@+node:ekr.20170526114040.5: *5* LeoBody.h_cursor_line_up
+    def h_cursor_line_up(self, ch_i):
+        '''From MultiLine.h_cursor_line_up'''
+        self.cursor_line -= 1
+        if self.cursor_line < 0: 
+            if self.scroll_exit:
+                self.cursor_line = 0
+                self.h_exit_up(ch_i)
+            else: 
+                self.cursor_line = 0
+    #@+node:ekr.20170526114040.6: *5* LeoBody.h_cursor_page_down
+    def h_cursor_page_down(self, ch_i):
+        '''From MultiLine.h_cursor_page_down'''
+        self.cursor_line += (len(self._my_widgets)-1)
+            # -1 because of the -more-
+        if self.cursor_line >= len(self.values)-1:
+            self.cursor_line = len(self.values) -1
+        if not (self.start_display_at + len(self._my_widgets) -1 ) > len(self.values):
+            self.start_display_at += (len(self._my_widgets)-1)
+            if self.start_display_at > len(self.values) - (len(self._my_widgets)-1):
+                self.start_display_at = len(self.values) - (len(self._my_widgets)-1)
+    #@+node:ekr.20170526114040.7: *5* LeoBody.h_cursor_page_up
+    def h_cursor_page_up(self, ch_i):
+        '''From MultiLine.h_cursor_page_up'''
+        self.cursor_line -= (len(self._my_widgets)-1)
+        self.cursor_line = max(0, self.cursor_line)
+        self.start_display_at -= (len(self._my_widgets)-1)
+        self.start_display_at = max(0, self.start_display_at)
+    #@+node:ekr.20170526114040.8: *5* LeoBody.h_select
+    def h_select(self, ch_i):
+        '''From MultiLine.h_select'''
+        self.value = self.cursor_line
+        if self.select_exit:
+            self.editing = False
+            self.how_exited = True
+    #@+node:ekr.20170526114402.1: *4* From MultiLineEditable (Test)
+    # MultiLineEditable.h_delete_line_value
+    # MultiLineEditable.h_edit_cursor_line_value
+    # MultiLineEditable.h_insert_next_line
+    # MultiLineEditable.h_insert_value
+    #@+node:ekr.20170526114452.1: *5* LeoBody.h_delete_line_value
+    def h_delete_line_value(self, ch_i):
+       '''From MultiLineEditable.h_delete_line_value'''
+       g.trace('LeoBody', ch_i)
+       self.delete_line_value()
+    #@+node:ekr.20170526114452.2: *5* LeoBody.h_edit_cursor_line_value
+    def h_edit_cursor_line_value(self, ch_i):
+       '''From MultiLineEditable.h_edit_cursor_line_value'''
+       g.trace('LeoBody', ch_i)
+       continue_line = self.edit_cursor_line_value()
+       if continue_line and self.CONTINUE_EDITING_AFTER_EDITING_ONE_LINE:
+           self._continue_editing()
+    #@+node:ekr.20170526114452.3: *5* LeoBody.h_insert_next_line
+    def h_insert_next_line(self, ch_i):
+        '''From MultiLineEditable.h_insert_next_line'''
+        g.trace('LeoBody', ch_i)
+        # pylint: disable=len-as-condition
+        if len(self.values) == self.cursor_line - 1 or len(self.values) == 0:
+            self.values.append(self.get_new_value())
+            self.cursor_line += 1
+            self.display()
+            cont = self.edit_cursor_line_value()
+            if cont and self.ALLOW_CONTINUE_EDITING:
+                self._continue_editing()
+        else:
+            self.cursor_line += 1
+            self.insert_line_value()
+
+    #@+node:ekr.20170526114452.4: *5* LeoBody.h_insert_value
+    def h_insert_value(self, ch_i):
+        '''From MultiLineEditable.h_insert_value'''
+        g.trace('LeoBody', ch_i)
+        return self.insert_line_value()
     #@+node:ekr.20170526080455.1: *4* LeoBody.onBodyChanged
     # This is the only key handler for the body pane.
 
@@ -2114,7 +2366,8 @@ class LeoBody (npyscreen.MultiLineEditable):
         '''Update Leo after the body has been changed.'''
         trace = False and not g.unitTesting
         c = self.c
-        body, w = self, self.wrapper
+        w = self.wrapper
+        ### body = self
         p = c.p
         insert = w.getInsertPoint()
         ch = '' if insert == 0 else w.get(insert - 1)
@@ -2136,8 +2389,8 @@ class LeoBody (npyscreen.MultiLineEditable):
         #@+<< recolor the body >>
         #@+node:ekr.20170526080455.2: *5* << recolor the body >>
         c.frame.scanForTabWidth(p)
-        body.recolor(p, incremental=not self.forceFullRecolorFlag)
-        self.forceFullRecolorFlag = False
+        ### body.recolor(p) ### , incremental=not self.forceFullRecolorFlag)
+        ### self.forceFullRecolorFlag = False
         if g.app.unitTesting:
             g.app.unitTestDict['colorized'] = True
         #@-<< recolor the body >>
@@ -2159,6 +2412,33 @@ class LeoBody (npyscreen.MultiLineEditable):
         if redraw_flag:
             c.redraw_after_icons_changed()
         #@-<< update icons if necessary >>
+    #@+node:ekr.20170526064136.1: *4* LeoBody.set_handlers
+    def set_handlers(self):
+
+        trace = True
+        if trace:
+            g.trace('LeoBody: keys')
+            aList = ['%3s %s' % (z, method_name(self.handlers.get(z)))
+                for z in self.handlers]
+            g.printList(sorted(aList))
+            g.trace('LeoBody: handlers')
+            aList = [method_name(self.handlers.get(z))
+                for z in self.handlers]
+            g.printList(sorted(set(aList)))
+            
+        # self.handlers = {} # Clear all bindings.
+       
+        self.handlers.update({
+            # curses.ascii.ESC:   self.h_exit_escape,
+            #
+        })
+        
+        def true(*args, **kwargs):
+            return True
+
+        self.complex_handlers = (
+            (curses.ascii.isprint, self.h_addch),
+        )
     #@-others
 #@+node:ekr.20170507194035.1: *3* class LeoForm (npyscreen.Form)
 class LeoForm (npyscreen.Form):
