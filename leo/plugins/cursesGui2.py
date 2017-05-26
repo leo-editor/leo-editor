@@ -896,6 +896,15 @@ class LeoCursesGui(leoGui.LeoGui):
     def do_key(self, ch_i):
         
         return self.key_handler.do_key(ch_i)
+    #@+node:ekr.20170526051256.1: *4* CGui.dump_keys
+    def dump_keys(self):
+        '''Show all defined curses.KEY_ constants.'''
+        if 0:
+            aList = ['%3s %s' % (getattr(curses,z), z)
+                for z in dir(curses)
+                    if isinstance(getattr(curses,z), int)]
+            g.trace()
+            g.printList(sorted(aList))
     #@+node:ekr.20170522005855.1: *4* CGui.event_generate
     def event_generate(self, c, char, shortcut, w):
 
@@ -1020,6 +1029,8 @@ class LeoCursesGui(leoGui.LeoGui):
         # Do NOT change g.app!
         self.curses_app = LeoApp()
         stdscr = curses.initscr()
+        if 1: # Must follow initscr.
+            self.dump_keys()
         try:
             self.curses_app.run()
                 # run calls CApp.main(), which calls CGui.run().
