@@ -3330,6 +3330,7 @@ class RecentFilesManager(object):
                 except Exception:
                     lines = None
         except IOError:
+            # The file exists, so FileNotFoundError is not possible.
             g.trace('can not open', fileName)
             return False
         if lines and self.sanitize(lines[0]) == 'readonly':
