@@ -4246,7 +4246,9 @@ def gitInfo(path=None):
         # Try to get a better commit number.
         path = g.os_path_finalize_join(git_dir, pointer)
         try:
-            s = open(path, 'r').read()
+            gfid = open(path, 'r')
+            s = gfid.read()
+            gfid.close()
             commit = s.strip()[0: 12]
             # shorten the hash to a unique shortname
         except IOError:
