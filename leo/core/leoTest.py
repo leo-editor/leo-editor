@@ -679,13 +679,18 @@ class TestManager(object):
             if found:
                 if g.app.gui.guiName() == 'curses':
                     logger, handler, stream = self.create_logging_stream()
+                    runner = unittest.TextTestRunner(
+                        stream=stream,
+                        failfast=g.app.failFast,
+                        verbosity=verbosity,
+                    )
                 else:
                     stream = None
-                runner = unittest.TextTestRunner(
-                    stream=stream,
-                    failfast=g.app.failFast,
-                    verbosity=verbosity,
-                )
+                    runner = unittest.TextTestRunner(
+                        # stream=stream, # Careful: doesn't work with Python 2.
+                        failfast=g.app.failFast,
+                        verbosity=verbosity,
+                    )
                 result = runner.run(suite)
                 if stream:
                     if stream.aList:
