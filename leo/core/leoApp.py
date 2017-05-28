@@ -3302,38 +3302,42 @@ class RecentFilesManager(object):
         - Leo's config directory second.'''
         for theDir in (g.app.homeLeoDir, g.app.globalConfigDir):
             if theDir:
+                fn = g.os_path_join(theDir, '.leoRecentFiles.txt')
                 try:
-                    fn = g.os_path_join(theDir, '.leoRecentFiles.txt')
-                    f = open(fn, 'w')
-                    f.close()
-                    g.red('created', fn)
-                    return
-                except Exception:
+                    with open(fn, 'w'):
+                        g.red('created', fn)
+                except IOError:
                     g.error('can not create', fn)
                     g.es_exception()
     #@+node:ekr.20050424115658: *4* rf.readRecentFilesFile
     def readRecentFilesFile(self, path):
         trace = False and not g.unitTesting
-        rf = self
         fileName = g.os_path_join(path, '.leoRecentFiles.txt')
-        ok = g.os_path_exists(fileName)
-        if ok:
-            try:
-                if g.isPython3:
-                    f = open(fileName, encoding='utf-8', mode='r')
-                else:
-                    f = open(fileName, 'r')
-            except IOError:
-                g.trace('can not open', fileName)
-                return False
-            if trace: g.trace(('reading %s' % fileName))
-            lines = f.readlines()
-            if lines and rf.sanitize(lines[0]) == 'readonly':
-                lines = lines[1:]
-            if lines:
-                lines = [g.toUnicode(g.os_path_normpath(line)) for line in lines]
-                rf.appendToRecentFiles(lines)
-        return ok
+        if not g.os_path_exists(fileName):
+            return False
+        if trace: g.trace(('reading %s' % fileName))
+        
+        def open_wrapper(fileName):
+            if g.isPython3:
+                return open(fileName, encoding='utf-8', mode='r')
+            else:
+                return open(fileName, 'r')
+            
+        try:
+            with open_wrapper(fileName) as f:
+                try: # Fix #471.
+                    lines = f.readlines()
+                except Exception:
+                    lines = None
+        except IOError:
+            g.trace('can not open', fileName)
+            return False
+        if lines and self.sanitize(lines[0]) == 'readonly':
+            lines = lines[1:]
+        if lines:
+            lines = [g.toUnicode(g.os_path_normpath(line)) for line in lines]
+            self.appendToRecentFiles(lines)
+        return True
     #@+node:ekr.20120225072226.10285: *3* rf.sanitize
     def sanitize(self, name):
         '''Return a sanitized file name.'''
@@ -3433,53 +3437,50 @@ class RecentFilesManager(object):
     def writeRecentFilesFileHelper(self, fileName):
         # Don't update the file if it begins with read-only.
         trace = False and not g.unitTesting
-        try:
-            theFile = None
-            # Attempt to fix #471:
+        #
+        # Part 1: Return False if the first line is "readonly".
+        #         It's ok if the file doesn't exist.
+
+        def open_read_wrapper(fn):
             if g.isPython3:
-                theFile = open(fileName, encoding='utf-8', mode='r')
+                return open(fn, encoding='utf-8', mode='r')
             else:
-                theFile = open(fileName, mode='r')
-            try:
-                # Protect against #471.
-                lines = theFile.readlines()
-            except Exception:
-                lines = None
-            if lines and self.sanitize(lines[0]) == 'readonly':
-                if trace: g.trace('read-only: %s' % fileName)
-                return False
-        except IOError:
-            # The user may have erased a file.  Not an error.
-            pass
-        finally:
-            if theFile: theFile.close()
-        try:
-            theFile = None
+                return open(fn, 'r')
+
+        if g.os_path_exists(fileName):
+            with open_read_wrapper(fileName) as f:
+                try:
+                    # Fix #471.
+                    lines = f.readlines()
+                except Exception:
+                    lines = None
+                if lines and self.sanitize(lines[0]) == 'readonly':
+                    if trace: g.trace('read-only: %s' % fileName)
+                    return False
+        #   
+        # Part 2: write the files.
+                    
+        def open_write_wrapper(fn):
             if g.isPython3:
-                theFile = open(fileName, encoding='utf-8', mode='w')
+                return open(fn, encoding='utf-8', mode='w')
             else:
-                theFile = open(fileName, mode='w')
-            if self.recentFiles:
-                s = '\n'.join(self.recentFiles)
-            else:
-                s = '\n'
-            if not g.isPython3:
-                s = g.toEncodedString(s, reportErrors=True)
-            theFile.write(s)
+                return open(fn, mode='w')
+                
+        try:
+            with open_write_wrapper(fileName) as f:
+                s = '\n'.join(self.recentFiles) if self.recentFiles else '\n'
+                if not g.isPython3:
+                    s = g.toEncodedString(s, reportErrors=True)
+                f.write(s)
+                return True
         except IOError:
-            # The user may have erased a file.  Not an error.
             g.error('error writing', fileName)
             g.es_exception()
-            theFile = None
         except Exception:
             g.error('unexpected exception writing', fileName)
             g.es_exception()
-            theFile = None
             if g.unitTesting: raise
-        finally:
-            if theFile:
-                theFile.close()
-        return bool(theFile)
+        return False
     #@-others
 #@+node:ekr.20150514125218.1: ** Top-level-commands
 #@+node:ekr.20150514125218.2: *3* ctrl-click-at-cursor
