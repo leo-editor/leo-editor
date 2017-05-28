@@ -6236,7 +6236,8 @@ def os_startfile(fname):
             os.system('open %s' % (quoted_fname))
     else:
         # Linux
-        wre = tempfile.NamedTemporaryFile(buffering=0)
+        # The buffering argument to NamedTempFile does not exist on Python 2.
+        wre = tempfile.NamedTemporaryFile()
         ree = io.open(wre.name, 'rb', buffering=0)
         try:
             subPopen = subprocess.Popen(['xdg-open', fname], stderr=wre, shell=False)

@@ -3116,6 +3116,8 @@ class LeoMLTree(npyscreen.MLTree):
         _myFullValues = LeoTreeData()
         values = None
     else:
+        # pylint: disable=property-on-old-class
+        #
         # This property converts the (possibly cached) result of converting
         # the root node (_myFullValues) and its *visible* decendants to a list.
         # To invalidate the cache, set __cached_tree = None
