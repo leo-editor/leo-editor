@@ -3303,7 +3303,7 @@ def readFileIntoUnicodeString(fn, encoding=None, silent=False):
     try:
         with open(fn, 'rb') as f:
             s = f.read()
-            return g.toUnicode(s, encoding=encoding)
+        return g.toUnicode(s, encoding=encoding)
     except IOError:
         if not silent:
             g.error('can not open', fn)
@@ -4222,7 +4222,7 @@ def gitInfo(path=None):
     
     Return the branch and commit number or ('', '').
     '''
-    trace = True and not g.unitTesting
+    trace = False and not g.unitTesting
     branch, commit = '', '' # Set defaults.
     # Does path/../ref exist?
     path = g.gitHeadPath(path)
@@ -4230,7 +4230,7 @@ def gitInfo(path=None):
         if trace: g.trace('no path')
         return branch, commit
     try:
-        with open(path, 'r') as f:
+        with open(path) as f:
             s = f.read()
             if not s.startswith('ref'):
                 if trace: g.trace('no ref', branch, commit)
@@ -4246,7 +4246,7 @@ def gitInfo(path=None):
     git_dir = g.os_path_finalize_join(path, '..')
     try:
         path = g.os_path_finalize_join(git_dir, pointer)
-        with open(path, 'r') as f:
+        with open(path) as f:
             s = f.read()
         commit = s.strip()[0: 12]
         # shorten the hash to a unique shortname
@@ -5557,9 +5557,8 @@ def log(s, fn=None):
     if not s.endswith('\n'):
         s = s + '\n'
     try:
-        f = open(fn, 'a')
-        f.write(s)
-        f.close()
+        with open(fn, 'a') as f:
+            f.write(s)
     except Exception:
         g.es_exception()
 #@+node:ekr.20080710101653.1: *3* g.pr
@@ -6235,19 +6234,26 @@ def os_startfile(fname):
     else:
         # Linux
         # The buffering argument to NamedTempFile does not exist on Python 2.
-        wre = tempfile.NamedTemporaryFile()
-        ree = io.open(wre.name, 'rb', buffering=0)
+        try:
+            ree = None
+            wre = tempfile.NamedTemporaryFile()
+            ree = io.open(wre.name, 'rb', buffering=0)
+        except IOError:
+            g.trace('error opening temp file for %r' % fname)
+            if ree: ree.close()
+            return
         try:
             subPopen = subprocess.Popen(['xdg-open', fname], stderr=wre, shell=False)
         except Exception:
-            g.es_print('error opening {0}'.format(fname))
+            g.es_print('error opening %r' % fname)
             g.es_exception()
-        else:
+        try:
             itoPoll = g.IdleTime((lambda ito: itPoll(fname, ree, subPopen, g, ito)), delay=1000)
             itoPoll.start()
             # Let the Leo-Editor process run
             # so that Leo-Editor is usable while the file is open.
-    
+        except Exception:
+            g.es_exception('exception executing g.startfile for %r' % fname)
 #@+node:ekr.20031218072017.2160: *3* g.toUnicodeFileEncoding
 def toUnicodeFileEncoding(path):
     # Fix bug 735938: file association crash
