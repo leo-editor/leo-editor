@@ -3306,6 +3306,7 @@ class RecentFilesManager(object):
                 try:
                     with open(fn, 'w'):
                         g.red('created', fn)
+                        return
                 except IOError:
                     g.error('can not create', fn)
                     g.es_exception()
