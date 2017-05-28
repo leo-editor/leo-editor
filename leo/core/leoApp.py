@@ -12,6 +12,7 @@ except ImportError:
     import __builtin__ as builtins # Python 2.
 import glob
 import importlib
+import io
 import os
 import optparse
 import string
@@ -21,7 +22,6 @@ import traceback
 import zipfile
 import platform
 if g.isPython3:
-    import io
     StringIO = io.StringIO
 else:
     import cStringIO
@@ -3316,15 +3316,8 @@ class RecentFilesManager(object):
         if not g.os_path_exists(fileName):
             return False
         if trace: g.trace(('reading %s' % fileName))
-        
-        def open_wrapper(fileName):
-            if g.isPython3:
-                return open(fileName, encoding='utf-8', mode='r')
-            else:
-                return open(fileName, 'r')
-            
         try:
-            with open_wrapper(fileName) as f:
+            with io.open(fileName, encoding='utf-8', mode='r') as f:
                 try: # Fix #471.
                     lines = f.readlines()
                 except Exception:
@@ -3438,18 +3431,10 @@ class RecentFilesManager(object):
     def writeRecentFilesFileHelper(self, fileName):
         # Don't update the file if it begins with read-only.
         trace = False and not g.unitTesting
-        #
         # Part 1: Return False if the first line is "readonly".
         #         It's ok if the file doesn't exist.
-
-        def open_read_wrapper(fn):
-            if g.isPython3:
-                return open(fn, encoding='utf-8', mode='r')
-            else:
-                return open(fn, 'r')
-
         if g.os_path_exists(fileName):
-            with open_read_wrapper(fileName) as f:
+            with io.open(fileName, encoding='utf-8', mode='r') as f:
                 try:
                     # Fix #471.
                     lines = f.readlines()
@@ -3458,21 +3443,11 @@ class RecentFilesManager(object):
                 if lines and self.sanitize(lines[0]) == 'readonly':
                     if trace: g.trace('read-only: %s' % fileName)
                     return False
-        #   
         # Part 2: write the files.
-                    
-        def open_write_wrapper(fn):
-            if g.isPython3:
-                return open(fn, encoding='utf-8', mode='w')
-            else:
-                return open(fn, mode='w')
-                
         try:
-            with open_write_wrapper(fileName) as f:
+            with io.open(fileName, encoding='utf-8', mode='w') as f:
                 s = '\n'.join(self.recentFiles) if self.recentFiles else '\n'
-                if not g.isPython3:
-                    s = g.toEncodedString(s, reportErrors=True)
-                f.write(s)
+                f.write(g.toUnicode(s))
                 return True
         except IOError:
             g.error('error writing', fileName)
