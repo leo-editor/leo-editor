@@ -3297,9 +3297,10 @@ class RecentFilesManager(object):
             rf.createRecentFiles()
     #@+node:ekr.20061010121944: *4* rf.createRecentFiles
     def createRecentFiles(self):
-        '''Trye to reate .leoRecentFiles.txt in
-        - the users home directory first,
-        - Leo's config directory second.'''
+        '''
+        Try to create .leoRecentFiles.txt, in the users home directory, or in
+        Leo's config directory if that fails.
+        '''
         for theDir in (g.app.homeLeoDir, g.app.globalConfigDir):
             if theDir:
                 fn = g.os_path_join(theDir, '.leoRecentFiles.txt')
