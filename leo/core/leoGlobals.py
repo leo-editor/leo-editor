@@ -1115,7 +1115,7 @@ class SherlockTracer(object):
                     if val:
                         result.append('%s=%s' % (name, val))
         return ','.join(result)
-    #@+node:ekr.20140402060647.16845: *4* do_line
+    #@+node:ekr.20140402060647.16845: *4* do_line (Sherlock)
     def do_line(self, frame, arg):
         '''print each line of enabled functions.'''
         code = frame.f_code
@@ -1128,7 +1128,8 @@ class SherlockTracer(object):
             d = self.contents_d
             lines = d.get(fn)
             if not lines:
-                s = open(fn).read()
+                with open(fn) as f:
+                    s = f.read()
                 lines = g.splitLines(s)
                 d[fn] = lines
             line = lines[n].rstrip() if n < len(lines) else '<EOF>'
@@ -3111,9 +3112,8 @@ def is_binary_file(f):
 
 def is_binary_external_file(fileName):
     try:
-        f = open(fileName, 'rb')
-        s = f.read(1024) # bytes, in Python 3.
-        f.close()
+        with open(fileName, 'rb') as f:
+            s = f.read(1024) # bytes, in Python 3.
         return g.is_binary_string(s)
     except IOError:
         return False
@@ -4222,46 +4222,44 @@ def gitInfo(path=None):
     
     Return the branch and commit number or ('', '').
     '''
-    trace = False and not g.unitTesting
+    trace = True and not g.unitTesting
     branch, commit = '', '' # Set defaults.
+    # Does path/../ref exist?
     path = g.gitHeadPath(path)
-    if not path:
+    if not path or not g.os_path_exists(path):
         if trace: g.trace('no path')
         return branch, commit
-    git_dir = g.os_path_finalize_join(path, '..')
     try:
-        f = open(path, 'r')
-    except IOError:
-        g.trace('can not open:', path)
-        return branch, commit
-    try:
-        s = f.read()
-        if not s.startswith('ref'):
-            if trace: g.trace('no ref', branch, commit)
-            return branch, commit
+        with open(path, 'r') as f:
+            s = f.read()
+            if not s.startswith('ref'):
+                if trace: g.trace('no ref', branch, commit)
+                return branch, commit
         # On a proper branch
         pointer = s.split()[1]
         dirs = pointer.split('/')
         branch = dirs[-1]
-        # Try to get a better commit number.
+    except IOError:
+        g.trace('can not open:', path)
+        return branch, commit
+    # Try to get a better commit number.
+    git_dir = g.os_path_finalize_join(path, '..')
+    try:
         path = g.os_path_finalize_join(git_dir, pointer)
+        with open(path, 'r') as f:
+            s = f.read()
+        commit = s.strip()[0: 12]
+        # shorten the hash to a unique shortname
+    except IOError:
         try:
-            gfid = open(path, 'r')
-            s = gfid.read()
-            gfid.close()
-            commit = s.strip()[0: 12]
-            # shorten the hash to a unique shortname
-        except IOError:
-            try:
-                path = g.os_path_finalize_join(git_dir, 'packed-refs')
-                for line in open(path):
+            path = g.os_path_finalize_join(git_dir, 'packed-refs')
+            with open(path) as f:
+                for line in f:
                     if line.strip().endswith(' '+pointer):
                         commit = line.split()[0][0: 12]
                         break
-            except IOError:
-                pass
-    finally:
-        f.close()
+        except IOError:
+            pass
     if trace: g.trace('returns:', branch, commit)
     return branch, commit
 #@+node:ekr.20170414041333.1: *3* g.jsonCommitInfo
@@ -6532,9 +6530,8 @@ def handleScriptException(c, p, script, script1):
     #@+<< dump the lines near the error >>
     #@+node:EKR.20040612215018: *4* << dump the lines near the error >>
     if g.os_path_exists(fileName):
-        f = open(fileName)
-        lines = f.readlines()
-        f.close()
+        with open(fileName) as f:
+            lines = f.readlines()
     else:
         lines = g.splitLines(script)
     s = '-' * 20
