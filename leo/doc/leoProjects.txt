@@ -54,6 +54,10 @@ Changed code in efc.on_idle and efc.idle_check_commander.
 https://github.com/leo-editor/leo-editor/issues/476
 .. @+node:ekr.20170428144545.1: *4* #487: g.IdleTime docstring
 https://github.com/leo-editor/leo-editor/issues/487
+.. @+node:ekr.20170528061812.1: *4* Ensure that .leo/.leoRecentFiles.txt is closed
+https://github.com/leo-editor/leo-editor/pull/497
+
+Rewrote rf.createRecentFiles, rf.readRecentFilesFile and rf.writeRecentFilesFileHelper.
 .. @+node:ekr.20170326054533.1: *4* Fixed bug in k.computeInverseBindingDict
 The bug gave way too many bindings for the move-lines commands.
 .. @+node:ekr.20170326113032.1: *4* Fixed bug in tab completion
