@@ -3433,9 +3433,8 @@ class RecentFilesManager(object):
     def writeRecentFilesFileHelper(self, fileName):
         # Don't update the file if it begins with read-only.
         trace = False and not g.unitTesting
-        rf = self
-        theFile = None
         try:
+            theFile = None
             # Attempt to fix #471:
             if g.isPython3:
                 theFile = open(fileName, encoding='utf-8', mode='r')
@@ -3446,7 +3445,7 @@ class RecentFilesManager(object):
                 lines = theFile.readlines()
             except Exception:
                 lines = None
-            if lines and rf.sanitize(lines[0]) == 'readonly':
+            if lines and self.sanitize(lines[0]) == 'readonly':
                 if trace: g.trace('read-only: %s' % fileName)
                 return False
         except IOError:
@@ -3454,14 +3453,14 @@ class RecentFilesManager(object):
             pass
         finally:
             if theFile: theFile.close()
-            theFile = None
         try:
+            theFile = None
             if g.isPython3:
                 theFile = open(fileName, encoding='utf-8', mode='w')
             else:
                 theFile = open(fileName, mode='w')
-            if rf.recentFiles:
-                s = '\n'.join(rf.recentFiles)
+            if self.recentFiles:
+                s = '\n'.join(self.recentFiles)
             else:
                 s = '\n'
             if not g.isPython3:
