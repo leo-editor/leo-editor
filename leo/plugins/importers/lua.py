@@ -132,7 +132,7 @@ class Lua_Importer(Importer):
                 break
         return line.startswith('function')
     #@-others
-#@+node:ekr.20170530024520.7: ** class class Lua_ScanState
+#@+node:ekr.20170530024520.7: ** class Lua_ScanState
 class Lua_ScanState:
     '''A class representing the state of the lua line-oriented scan.'''
     
@@ -164,10 +164,6 @@ class Lua_ScanState:
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         # All ScanState classes must have a context ivar.
         self.context = context
-        # self.curlies += delta_c  
-        # self.bs_nl = bs_nl
-        # self.parens += delta_p
-        # self.squares += delta_s
         return i
     #@-others
 
