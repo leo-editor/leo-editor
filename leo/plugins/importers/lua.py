@@ -113,8 +113,7 @@ class Lua_Importer(Importer):
             if self.start_stack:
                 top = self.start_stack.pop()
                 return top == 'function'
-            else:
-                g.trace('too many "end" statements')
+            # else: g.trace('too many "end" statements')
         return False
     #@+node:ekr.20170530031729.1: *3* lua_i.get_new_dict
     #@@nobeautify

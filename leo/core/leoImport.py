@@ -2035,7 +2035,8 @@ class RecursiveImportController(object):
         prefix = prefix.replace('\\', '/')
         if self.kind not in ('@auto', '@edit'):
             self.remove_empty_nodes(p)
-        self.minimize_headlines(p.firstChild(), prefix)
+        if p.firstChild():
+            self.minimize_headlines(p.firstChild(), prefix)
         self.clear_dirty_bits(p)
         if trace:
             t2 = time.time()
