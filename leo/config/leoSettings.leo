@@ -122,6 +122,7 @@
 </v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
 <v t="ekr.20161121044950.1"><vh>@outline-data tree-abbreviations</vh>
+<v t="ekr.20170530023956.1"><vh>importer;;</vh></v>
 <v t="ekr.20161121044950.2"><vh>per-commander-plugin;;</vh>
 <v t="ekr.20161121044950.3"><vh>@@file pluginname.py</vh>
 <v t="ekr.20161121044950.4"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
@@ -140,6 +141,18 @@
 <v t="ekr.20170208063901.3"><vh>script_string</vh></v>
 <v t="ekr.20170208063901.4"><vh>class myDemo</vh></v>
 <v t="ekr.20170208063901.5"><vh>wrappers</vh></v>
+</v>
+</v>
+<v t="ekr.20170530024409.2"><vh>@@file importers/{|{x=name}|}.py</vh>
+<v t="ekr.20170530024409.3"><vh>class {|{x=cap_name}|}_Importer</vh>
+<v t="ekr.20170530024409.4"><vh>{|{x=name}|}.Overrides</vh>
+<v t="ekr.20170530024409.5"><vh>{|{x=name}|}.clean_headline</vh></v>
+<v t="ekr.20170530024409.6"><vh>{|{x=name}|}.clean_nodes</vh></v>
+</v>
+</v>
+<v t="ekr.20170530024409.7"><vh>class class {|{x=cap_name}|}_ScanState</vh>
+<v t="ekr.20170530024409.8"><vh>{|{x=name}|}_state.level</vh></v>
+<v t="ekr.20170530024409.9"><vh>{|{x=name}|}_state.update</vh></v>
 </v>
 </v>
 </v>
@@ -11643,6 +11656,7 @@ https://github.com/karstenw/leo-shortcuts-osx/blob/master/myLeoSettings.leo</t>
 # When a tree abbreviation fires, Leo pastes all the descendants of
 # the abbreviation node as the last children of the presently selected node.
 
+importer;;
 per-commander-plugin;;
 demo;;
 </t>
@@ -11654,7 +11668,7 @@ demo;;
 <t tx="ekr.20161121044950.2"></t>
 <t tx="ekr.20161121044950.3">&lt;&lt; docstring &gt;&gt;
 ### From leoSettings.leo
-# Created {|{x=time.strftime("%Y/%m/%d")}|}
+# Created 2017/05/30
 @language python
 @tabwidth -4
 __version__ = '0.0'
@@ -14160,6 +14174,130 @@ QMenuBar::item:pressed {
 <t tx="ekr.20170509104949.1"></t>
 <t tx="ekr.20170509105101.1"></t>
 <t tx="ekr.20170509122306.1"></t>
+<t tx="ekr.20170530023956.1"></t>
+<t tx="ekr.20170530024409.2">'''
+The @auto importer for the no-language! language.
+
+Created 2017/05/30 by the `importer;;` abbreviation.
+'''
+import leo.plugins.importers.linescanner as linescanner
+Importer = linescanner.Importer
+@others
+importer_dict = {
+    'class': No-language!_Importer,
+    'extensions': [&lt;|comma-separated lists of extensions|&gt;],
+        # Example: ['.c', '.cc', '.c++', '.cpp', '.cxx', '.h', '.h++']
+}
+@language python
+@tabwidth -4
+
+
+</t>
+<t tx="ekr.20170530024409.3">class No-language!_Importer(Importer):
+    '''The importer for the no-language! lanuage.'''
+
+    def __init__(self, importCommands, atAuto):
+        '''No-language!_Importer.__init__'''
+        # Init the base class.
+        Importer.__init__(self,
+            importCommands,
+            atAuto = atAuto,
+            language = 'no-language!',
+            state_class = No-language!_ScanState,
+            strict = &lt;|True leading whitespace is significant. Otherwise False|&gt;,
+        )
+        
+    @others
+</t>
+<t tx="ekr.20170530024409.4"># These can be overridden in subclasses.
+</t>
+<t tx="ekr.20170530024409.5">### Define an override if desired...
+
+if 0: # The base class
+    def clean_headline(self, s):
+        '''Return a cleaned up headline s.'''
+        return s.strip()
+        
+if 0: # A more complex example, for the C language.
+    def clean_headline(self, s):
+        '''Return a cleaned up headline s.'''
+        import re
+        type1 = r'(static|extern)*'
+        type2 = r'(void|int|float|double|char)*'
+        class_pattern = r'\s*(%s)\s*class\s+(\w+)' % (type1)
+        pattern = r'\s*(%s)\s*(%s)\s*(\w+)' % (type1, type2)
+        m = re.match(class_pattern, s)
+        if m:
+            prefix1 = '%s ' % (m.group(1)) if m.group(1) else ''
+            return '%sclass %s' % (prefix1, m.group(2))
+        m = re.match(pattern, s)
+        if m:
+            prefix1 = '%s ' % (m.group(1)) if m.group(1) else ''
+            prefix2 = '%s ' % (m.group(2)) if m.group(2) else ''
+            h = m.group(3) or '&lt;no c function name&gt;'
+            return '%s%s%s' % (prefix1, prefix2, h)
+        else:
+            return s
+</t>
+<t tx="ekr.20170530024409.6">def clean_nodes(self, parent):
+    '''
+    Clean all nodes in parent's tree.
+    Subclasses override this as desired.
+    See perl_i.clean_nodes for an examplle.
+    '''
+    pass
+</t>
+<t tx="ekr.20170530024409.7">class No-language!_ScanState:
+    '''A class representing the state of the no-language! line-oriented scan.'''
+    
+    def __init__(self, d=None):
+        '''No-language!_ScanState.__init__'''
+        if d:
+            prev = d.get('prev')
+            self.context = prev.context
+            ### Adjust these by hand.
+            self.curlies = prev.curlies
+        else:
+            self.context = ''
+            ### Adjust these by hand.
+            self.curlies = 0
+
+    def __repr__(self):
+        '''No-language!_ScanState.__repr__'''
+        ### Adjust these by hand.
+        return "No-language!_ScanState context: %r curlies: %s" % (
+            self.context, self.curlies)
+
+    __str__ = __repr__
+
+    @others
+
+</t>
+<t tx="ekr.20170530024409.8">def level(self):
+    '''No-language!_ScanState.level.'''
+    return &lt;|self.curlies|&gt;
+        ### Examples:
+        # self.indent # for python, coffeescript.
+        # self.curlies
+        # (self, curlies, self.parens)
+</t>
+<t tx="ekr.20170530024409.9">def update(self, data):
+    '''
+    No-language!_ScanState.update
+
+    Update the state using the 6-tuple returned by v2_scan_line.
+    Return i = data[1]
+    '''
+    context, i, delta_c, delta_p, delta_s, bs_nl = data
+    # All ScanState classes must have a context ivar.
+    self.context = context
+    self.curlies += delta_c  
+    ### Update No-language!_ScanState ivars
+    # self.bs_nl = bs_nl
+    # self.parens += delta_p
+    # self.squares += delta_s
+    return i
+</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
