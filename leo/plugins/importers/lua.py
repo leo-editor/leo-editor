@@ -80,14 +80,6 @@ class Lua_Importer(Importer):
             else:
                 break
         return list(reversed(trailing_lines))
-    #@+node:ekr.20170530024520.6: *3* lua_i.clean_nodes
-    def clean_nodes(self, parent):
-        '''
-        Clean all nodes in parent's tree.
-        Subclasses override this as desired.
-        See perl_i.clean_nodes for an examplle.
-        '''
-        pass
     #@+node:ekr.20170530085347.1: *3* lua_i.cut_stack
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
