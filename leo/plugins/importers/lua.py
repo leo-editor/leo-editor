@@ -22,42 +22,50 @@ class Lua_Importer(Importer):
             state_class = Lua_ScanState,
             strict = False,
         )
+        self.start_stack = []
+            # Contains entries for all constructs that end with 'end'.
         
+    # Define necessary overrides.
     #@+others
     #@+node:ekr.20170530024520.5: *3* lua_i.clean_headline
-    if 0: # The base class
-        def clean_headline(self, s):
-            '''Return a cleaned up headline s.'''
-            return s.strip()
-            
-    ### A more complex example, for the C language.
-        # def clean_headline(self, s):
-            # '''Return a cleaned up headline s.'''
-            # import re
-            # type1 = r'(static|extern)*'
-            # type2 = r'(void|int|float|double|char)*'
-            # class_pattern = r'\s*(%s)\s*class\s+(\w+)' % (type1)
-            # pattern = r'\s*(%s)\s*(%s)\s*(\w+)' % (type1, type2)
-            # m = re.match(class_pattern, s)
-            # if m:
-                # prefix1 = '%s ' % (m.group(1)) if m.group(1) else ''
-                # return '%sclass %s' % (prefix1, m.group(2))
-            # m = re.match(pattern, s)
-            # if m:
-                # prefix1 = '%s ' % (m.group(1)) if m.group(1) else ''
-                # prefix2 = '%s ' % (m.group(2)) if m.group(2) else ''
-                # h = m.group(3) or '<no c function name>'
-                # return '%s%s%s' % (prefix1, prefix2, h)
-            # else:
-                # return s
-    #@+node:ekr.20170530024520.6: *3* lua_i.clean_nodes
-    def clean_nodes(self, parent):
-        '''
-        Clean all nodes in parent's tree.
-        Subclasses override this as desired.
-        See perl_i.clean_nodes for an examplle.
-        '''
-        pass
+    def clean_headline(self, s):
+        '''Return a cleaned up headline s.'''
+        s = s.strip()
+        tag = 'function'
+        if s.startswith(tag):
+            s = s[len(tag):]
+        i = s.find('(')
+        if i > -1:
+            s = s[:i]
+        return s.strip()
+    #@+node:ekr.20170530085347.1: *3* lua_i.cut_stack
+    def cut_stack(self, new_state, stack):
+        '''Cut back the stack until stack[-1] matches new_state.'''
+        trace = False # and g.unitTesting
+        if trace:
+            g.trace(new_state)
+            g.printList(stack)
+        assert len(stack) > 1 # Fail on entry.
+        # function/end's are strictly nested, so this suffices.
+        stack.pop()
+        # Restore the guard entry if necessary.
+        if len(stack) == 1:
+            if trace: g.trace('RECOPY:', stack)
+            stack.append(stack[-1])
+        assert len(stack) > 1 # Fail on exit.
+        if trace: g.trace('new target.p:', stack[-1].p.h)
+    #@+node:ekr.20170530040554.1: *3* lua_i.ends_block
+    def ends_block(self, line, new_state, prev_state, stack):
+        '''True if line ends the block.'''
+        if prev_state.context:
+            return False
+        if line.strip().startswith('end'):
+            if self.start_stack:
+                top = self.start_stack.pop()
+                return top == 'function'
+            else:
+                g.trace('too many "end" statements')
+        return False
     #@+node:ekr.20170530031729.1: *3* lua_i.get_new_dict
     #@@nobeautify
 
@@ -66,7 +74,6 @@ class Lua_Importer(Importer):
         trace = False and g.unitTesting
         comment, block1, block2 = self.single_comment, self.block1, self.block2
         assert comment
-        assert block1 and block2
         
         def add_key(d, pattern, data):
             key = pattern[0]
@@ -112,13 +119,24 @@ class Lua_Importer(Importer):
                 add_key(d, block1, ('len', block1, block1, None))
         if trace: g.trace('created %s dict for %4r state ' % (self.name, context))
         return d
+    #@+node:ekr.20170530035601.1: *3* lua_i.starts_block
+    def starts_block(self, i, lines, new_state, prev_state):
+        '''True if the new state starts a block.'''
+        if prev_state.context:
+            return False
+        line = lines[i].strip()
+        table = ('do', 'for', 'function', 'if')
+        for z in table:
+            if line.startswith(z):
+                self.start_stack.append(z)
+                break
+        return line.startswith('function')
     #@-others
 #@+node:ekr.20170530024520.7: ** class class Lua_ScanState
 class Lua_ScanState:
     '''A class representing the state of the lua line-oriented scan.'''
     
     def __init__(self, d=None):
-        '''Lua_ScanState.__init__'''
         if d:
             prev = d.get('prev')
             self.context = prev.context
@@ -126,9 +144,7 @@ class Lua_ScanState:
             self.context = ''
 
     def __repr__(self):
-        '''Lua_ScanState.__repr__'''
         return "Lua_ScanState context: %r " % (self.context)
-
     __str__ = __repr__
 
     #@+others
@@ -136,10 +152,7 @@ class Lua_ScanState:
     def level(self):
         '''Lua_ScanState.level.'''
         return 0
-            ### Examples:
-            # self.indent # for python, coffeescript.
-            # self.curlies
-            # (self, curlies, self.parens)
+            # Never used.
     #@+node:ekr.20170530024520.9: *3* lua_state.update
     def update(self, data):
         '''
