@@ -138,7 +138,10 @@ class Lua_Importer(Importer):
             # End Lua long brackets.
             for i in range(10):
                 open_pattern = '--[%s[' % ('='*i)
+                # Both --]] and ]]-- end the long bracket.
                 pattern = ']%s]--' % ('='*i)
+                add_key(d, pattern, ('len', pattern, context==open_pattern))
+                pattern = '--]%s]' % ('='*i)
                 add_key(d, pattern, ('len', pattern, context==open_pattern))
             if block1 and block2:
                 add_key(d, block2, ('len', block2, True))
