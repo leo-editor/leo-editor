@@ -7,6 +7,7 @@ Created 2017/05/30 by the `importer;;` abbreviation.
 '''
 import leo.core.leoGlobals as g
 import leo.plugins.importers.linescanner as linescanner
+import re
 Importer = linescanner.Importer
 Target = linescanner.Target
 #@+others
@@ -32,9 +33,9 @@ class Lua_Importer(Importer):
     def clean_headline(self, s):
         '''Return a cleaned up headline s.'''
         s = s.strip()
-        tag = 'function'
-        if s.startswith(tag):
-            s = s[len(tag):]
+        for tag in ('local', 'function'):
+            if s.startswith(tag):
+                s = s[len(tag):]
         i = s.find('(')
         if i > -1:
             s = s[:i]
@@ -66,7 +67,7 @@ class Lua_Importer(Importer):
                 return top == 'function'
             # else: g.trace('too many "end" statements')
         return False
-    #@+node:ekr.20170531052028.1: *3* lua_i.gen_lines NEW
+    #@+node:ekr.20170531052028.1: *3* lua_i.gen_lines
     def gen_lines(self, s, parent):
         '''
         Non-recursively parse all lines of s into parent, creating descendant
@@ -136,8 +137,8 @@ class Lua_Importer(Importer):
             }
             # End Lua long brackets.
             for i in range(10):
-                open_pattern = '[%s[' % ('='*i)
-                pattern = ']%s]' % ('='*i)
+                open_pattern = '--[%s[' % ('='*i)
+                pattern = ']%s]--' % ('='*i)
                 add_key(d, pattern, ('len', pattern, context==open_pattern))
             if block1 and block2:
                 add_key(d, block2, ('len', block2, True))
@@ -157,7 +158,7 @@ class Lua_Importer(Importer):
             }
             # Start Lua long brackets.
             for i in range(10):
-                pattern = '[%s[' % ('='*i)
+                pattern = '--[%s[' % ('='*i)
                 add_key(d, pattern, ('len', pattern, pattern, None))
             if comment:
                 add_key(d, comment, ('all', comment, '', None))
@@ -215,7 +216,7 @@ class Lua_Importer(Importer):
             lines = self.get_lines(p)
             lines = [z for z in lines if not z.isspace()]
             self.set_lines(p, lines)
-    #@+node:ekr.20170531052302.1: *3* lua_i.start_new_block NEW
+    #@+node:ekr.20170531052302.1: *3* lua_i.start_new_block
     def start_new_block(self, i, lines, new_state, prev_state, stack):
         '''Create a child node and update the stack.'''
         trace = False and g.unitTesting
@@ -235,17 +236,28 @@ class Lua_Importer(Importer):
             g.trace('=====', repr(line))
             g.printList(stack)
     #@+node:ekr.20170530035601.1: *3* lua_i.starts_block
+    function_pattern = re.compile(r'^(local\s+)?function')
+        # Buggy: this could appear in a string or comment.
+        # The function must be an "outer" function, without indentation.
+
     def starts_block(self, i, lines, new_state, prev_state):
         '''True if the new state starts a block.'''
         if prev_state.context:
             return False
-        line = lines[i].strip()
-        table = ('do', 'for', 'function', 'if')
-        for z in table:
-            if line.startswith(z):
-                self.start_stack.append(z)
-                break
-        return line.startswith('function')
+        line = lines[i]
+        m = self.function_pattern.match(line)
+        if m and line.find('end') < m.start():
+            self.start_stack.append('function')
+            return True
+        # Not a function. Handle constructs ending with 'end'.
+        line = line.strip()
+        if line.find('end') == -1:
+            # Buggy: 'end' could appear in a string or comment.
+            for z in ('do', 'for', 'if'):
+                if line.startswith(z):
+                    self.start_stack.append(z)
+                    break
+        return False
     #@-others
 #@+node:ekr.20170530024520.7: ** class Lua_ScanState
 class Lua_ScanState:
