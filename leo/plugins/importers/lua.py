@@ -179,9 +179,11 @@ class Lua_Importer(Importer):
         self.clean_all_headlines(parent)
         self.clean_all_nodes(parent)
         self.unindent_all_nodes(parent)
+        #
         # Lua specific...
         self.remove_all_blank_lines(parent)
-            ### self.move_trailing_comments(parent)
+        # self.move_trailing_comments(parent)
+        #
         # This should be the last sub-pass.
         self.delete_all_empty_nodes(parent)
     #@+node:ekr.20170530091817.1: *4* lua_i.move_trailing_comments & helper (not used)
