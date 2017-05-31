@@ -1967,7 +1967,7 @@ class RecursiveImportController(object):
         if g.os_path_isfile(dir_):
             files = [dir_]
         else:
-            g.es_print('\nimporting directory:', dir_)
+            g.es_print('importing directory:', dir_)
             files = os.listdir(dir_)
         dirs, files2 = [], []
         for path in files:
