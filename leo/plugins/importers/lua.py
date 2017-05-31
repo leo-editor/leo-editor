@@ -89,7 +89,8 @@ class Lua_Importer(Importer):
             if trace: self.trace_status(line, new_state, prev_state, stack, top)
             if self.skip > 0:
                 self.skip -= 1
-            elif line.isspace() and delete_blank_lines:
+            elif line.isspace() and delete_blank_lines and not prev_state.context:
+                # Delete blank lines, but not inside strings and --[[ comments.
                 pass
             elif self.is_ws_line(line):
                 if tail_p:
