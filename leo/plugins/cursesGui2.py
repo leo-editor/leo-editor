@@ -2367,7 +2367,6 @@ class LeoBody (npyscreen.MultiLineEditable):
         trace = False and not g.unitTesting
         c = self.c
         w = self.wrapper
-        ### body = self
         p = c.p
         insert = w.getInsertPoint()
         ch = '' if insert == 0 else w.get(insert - 1)

@@ -1967,7 +1967,7 @@ class RecursiveImportController(object):
         if g.os_path_isfile(dir_):
             files = [dir_]
         else:
-            g.es_print('\nimporting directory:', dir_)
+            g.es_print('importing directory:', dir_)
             files = os.listdir(dir_)
         dirs, files2 = [], []
         for path in files:
@@ -2035,7 +2035,8 @@ class RecursiveImportController(object):
         prefix = prefix.replace('\\', '/')
         if self.kind not in ('@auto', '@edit'):
             self.remove_empty_nodes(p)
-        self.minimize_headlines(p.firstChild(), prefix)
+        if p.firstChild():
+            self.minimize_headlines(p.firstChild(), prefix)
         self.clear_dirty_bits(p)
         if trace:
             t2 = time.time()
