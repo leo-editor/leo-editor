@@ -58,15 +58,19 @@ class Lua_Importer(Importer):
         assert len(stack) > 1 # Fail on exit.
         if trace: g.trace('new target.p:', stack[-1].p.h)
     #@+node:ekr.20170530040554.1: *3* lua_i.ends_block
-    def ends_block(self, line, new_state, prev_state, stack):
+    def ends_block(self, i, lines, new_state, prev_state, stack):
         '''True if line ends the block.'''
+        # pylint: disable=arguments-differ
         if prev_state.context:
             return False
-        if line.strip().startswith('end'):
+        line = lines[i]
+        # if line.strip().startswith('end'):
+        if g.match_word(line.strip(), 0, 'end'):
             if self.start_stack:
                 top = self.start_stack.pop()
                 return top == 'function'
-            # else: g.trace('too many "end" statements')
+            else:
+                g.trace('unmatched "end" statement at line', i)
         return False
     #@+node:ekr.20170531052028.1: *3* lua_i.gen_lines
     def gen_lines(self, s, parent):
@@ -100,7 +104,7 @@ class Lua_Importer(Importer):
             elif self.starts_block(i, lines, new_state, prev_state):
                 tail_p = None
                 self.start_new_block(i, lines, new_state, prev_state, stack)
-            elif self.ends_block(line, new_state, prev_state, stack):
+            elif self.ends_block(i, lines, new_state, prev_state, stack):
                 tail_p = self.end_block(line, new_state, stack)
             else:
                 if tail_p:
@@ -192,22 +196,38 @@ class Lua_Importer(Importer):
     function_pattern = re.compile(r'^(local\s+)?function')
         # Buggy: this could appear in a string or comment.
         # The function must be an "outer" function, without indentation.
+        
+    function_pattern2 = re.compile(r'(local\s+)?function')
 
     def starts_block(self, i, lines, new_state, prev_state):
         '''True if the new state starts a block.'''
+        
+        def end(line):
+            # Still buggy, but better.
+            i = line.find('end')
+            return i if i > -1 and g.match_word(line, i, 'end') else -1
+            # g.trace(val, line)
+            # return val
+
         if prev_state.context:
             return False
         line = lines[i]
         m = self.function_pattern.match(line)
-        if m and line.find('end') < m.start():
+        if m and end(line) < m.start():
             self.start_stack.append('function')
             return True
+        # Don't create separate nodes for assigned functions,
+        # but *do* push 'function2' on the start_stack for the later 'end' statement.
+        m = self.function_pattern2.search(line)
+        if m and end(line) < m.start():
+            self.start_stack.append('function2')
+            return False
         # Not a function. Handle constructs ending with 'end'.
         line = line.strip()
-        if line.find('end') == -1:
+        if end(line) == -1:
             # Buggy: 'end' could appear in a string or comment.
-            for z in ('do', 'for', 'if'):
-                if line.startswith(z):
+            for z in ('do', 'for', 'if', 'while',):
+                if g.match_word(line, 0, z):
                     self.start_stack.append(z)
                     break
         return False
