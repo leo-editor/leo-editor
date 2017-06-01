@@ -2460,36 +2460,45 @@ class KeyHandlerClass(object):
         if commandName in h:
             h.remove(commandName)
         h.append(commandName)
-        k.commandIndex = len(h) - 1
+        k.commandIndex = None
         # g.trace(commandName,h)
     #@+node:ekr.20150402165918.1: *4* k.commandHistoryDown
-    def commandHistoryDown(self):
+    def commandHistoryFwd(self):
         '''
-        Return the first entry if we are at the bottom
-        Otherwise, decrement the index and return that element.
+        Move down the Command History - fall off the bottom (return empty string)
+        if necessary
         '''
         k = self
         h, i = k.commandHistory, k.commandIndex
         if h:
-            if i > 0:
-                i -= 1
+            commandName = ''
+            if i == len(h) -1:
+                # fall off the bottom
+                i = None
+            elif i != None:
+                # move to next down in list
+                i += 1
+                commandName = h[i]
+            # (else i == None; no change to index, command == '')
             # g.trace(i,h)
             k.commandIndex = i
-            commandName = h[i]
             k.setLabel(k.mb_prefix + commandName)
     #@+node:ekr.20150402171131.1: *4* k.commandHistoryUp
-    def commandHistoryUp(self):
+    def commandHistoryBackwd(self):
         '''
-        Return the last entry if we are at the top.
-        Otherwise, increment the index and return that element.
+        Return the previous entry in the Command History - stay at the top
+        if we are there
         '''
         k = self
         h, i = k.commandHistory, k.commandIndex
         if h:
-            if i + 1 < len(h):
-                i += 1
-            k.commandIndex = i
+            if i == None:
+                # first time in - set to last entry
+                i = len(h) -1
+            elif i > 0:
+                i -= 1
             commandName = h[i]
+            k.commandIndex = i
             # g.trace(i,h)
             k.setLabel(k.mb_prefix + commandName)
     #@+node:ekr.20150425143043.1: *4* k.initCommandHistory
@@ -2499,12 +2508,19 @@ class KeyHandlerClass(object):
         aList = c.config.getData('history-list') or []
         for command in reversed(aList):
             k.addToCommandHistory(command)
+
+    def resetCommandHistory(self):
+        ''' reset the command history index to indicate that
+            we are pointing 'past' the last entry
+        '''
+        self.commandIndex = None
+        #
     #@+node:ekr.20150402111935.1: *4* k.sortCommandHistory
     def sortCommandHistory(self):
         '''Sort the command history.'''
         k = self
         k.commandHistory.sort()
-        k.commandIndex = len(k.commandHistory) - 1
+        k.commandIndex = None
     #@+node:ekr.20061031131434.104: *3* k.Dispatching
     #@+node:ekr.20061031131434.111: *4* k.fullCommand (alt-x) & helper
     @cmd('full-command')
@@ -2535,9 +2551,9 @@ class KeyHandlerClass(object):
             elif char == 'Escape':
                 k.keyboardQuit()
             elif char == 'Down':
-                k.commandHistoryDown()
+                k.commandHistoryFwd()
             elif char == 'Up':
-                k.commandHistoryUp()
+                k.commandHistoryBackwd()
             elif char in ('\n', 'Return'):
                 if trace and verbose: g.trace('***Return')
                 # if trace and trace_event:
@@ -3030,6 +3046,7 @@ class KeyHandlerClass(object):
         else:
             # This was what caused the unwanted scrolling.
             k.showStateAndMode(setFocus=setFocus)
+        k.resetCommandHistory()
     #@+node:ekr.20061031131434.126: *4* k.manufactureKeyPressForCommandName (changed)
     def manufactureKeyPressForCommandName(self, w, commandName):
         '''Implement a command by passing a keypress to the gui.'''
