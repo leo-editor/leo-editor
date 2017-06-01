@@ -4057,15 +4057,24 @@ def match_ignoring_case(s1, s2):
     return s1 and s2 and s1.lower() == s2.lower()
 #@+node:ekr.20031218072017.3184: *4* match_word
 def match_word(s, i, pattern):
-    if pattern is None: return False
-    j = len(pattern)
-    if j == 0: return False
-    if s.find(pattern, i, i + j) != i:
-        return False
-    if i + j >= len(s):
-        return True
-    ch = s[i + j]
-    return not g.isWordChar(ch)
+    if 0:
+        # Doesn't work (yet).
+        pattern = re.compile('\b' + pattern + '\b')
+        return pattern.match(s, i)
+    else:
+        if pattern is None:
+            return False
+        if i > 0 and g.isWordChar(s[i-1]): # Bug fix: 2017/06/01.
+            return False
+        j = len(pattern)
+        if j == 0:
+            return False
+        if s.find(pattern, i, i + j) != i:
+            return False
+        if i + j >= len(s):
+            return True
+        ch = s[i + j]
+        return not g.isWordChar(ch)
 #@+node:ekr.20031218072017.3185: *4* skip_blank_lines
 # This routine differs from skip_ws_and_nl in that
 # it does not advance over whitespace at the start

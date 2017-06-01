@@ -11611,7 +11611,23 @@ table = (
 for expected, s in table:
     result = g.isDirective(s)
     assert expected == bool(result), (expected, bool(result), repr(s))
-#@+node:ekr.20101021205258.6010: *4* @test g.makeAllNonExistentDirectories
+#@+node:ekr.20170601070526.1: *4* @test g.match_word
+table = (
+    (True, 0, 'a', 'a'),
+    (False, 0, 'a', 'b'),
+    (True, 0, 'a', 'a b'),
+    (False, 1, 'a', 'aa b'), # Tests bug fixed 2017/06/01.
+    (False, 1, 'a', '_a b'),
+    (False, 0, 'a', 'aw b'),
+    (False, 0, 'a', 'a_'),
+    (True, 2, 'a', 'b a c'),
+    (False, 0, 'a', 'b a c'),
+)
+for data in table:
+    expected, i, word, line = data
+    got = g.match_word(line + '\n', i, word)
+    assert expected == got, (expected, i, word, line)
+# print('done')
 #@+node:ekr.20111104112332.3953: *4* @test g.os_path_finalize_join with thumb drive
 import os
 
