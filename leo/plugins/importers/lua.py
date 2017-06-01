@@ -203,11 +203,10 @@ class Lua_Importer(Importer):
         '''True if the new state starts a block.'''
         
         def end(line):
-            # Still buggy, but better.
+            # Buggy: 'end' could appear in a string or comment.
+            # However, this code is much better than before.
             i = line.find('end')
             return i if i > -1 and g.match_word(line, i, 'end') else -1
-            # g.trace(val, line)
-            # return val
 
         if prev_state.context:
             return False
@@ -225,7 +224,6 @@ class Lua_Importer(Importer):
         # Not a function. Handle constructs ending with 'end'.
         line = line.strip()
         if end(line) == -1:
-            # Buggy: 'end' could appear in a string or comment.
             for z in ('do', 'for', 'if', 'while',):
                 if g.match_word(line, 0, z):
                     self.start_stack.append(z)
