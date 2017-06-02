@@ -49,11 +49,14 @@ native = True
 #@+others
 #@+node:ekr.20170602094648.1: *3* class LeoBodyTextfield (npyscreen.Textfield)
 class LeoBodyTextfield (npyscreen.Textfield):
-    '''MultiLines are *not* Textfields, the *contain* Textfields'''
+    '''
+    A class to allow an overridden h_addch for body text.
+    MultiLines are *not* Textfields, the *contain* Textfields.
+    '''
     
-    def __init__(self, *args, **kwargs):
-        npyscreen.Textfield.__init__(self, *args, **kwargs)
-        g.trace(g.callers())
+    # def __init__(self, *args, **kwargs):
+        # npyscreen.Textfield.__init__(self, *args, **kwargs)
+        # g.trace(g.callers())
 
     #@+others
     #@+node:ekr.20170602095236.1: *4* LeoBodyTextfield.h_addch
@@ -64,6 +67,7 @@ class LeoBodyTextfield (npyscreen.Textfield):
             return
         c = self.leo_parent.leo_c
         try:
+            # Careful: chr can fail.
             ch = g.toUnicode(chr(inp))
         except Exception:
             g.es_exception() ### Testing.
@@ -81,9 +85,9 @@ class LeoBodyTextfield (npyscreen.Textfield):
         bw.sel = i, i
         bw.s = self.value
         g.trace(inp, ch, i, len(bw.s))
-            # c.frame.body.onBodyChanged(undoType, oldSel=None, oldText=None, oldYview=None)
-        ###
-            # Blah, blah, blah, convert inp to ch_adding
+        c.frame.body.onBodyChanged(undoType='Typing')
+        ### Original code.
+            # Blah, blah, blah: convert inp to ch_adding
             # self.value = self.value[:self.cursor_position] + ch_adding \
                 # + self.value[self.cursor_position:]
             # self.cursor_position += len(ch_adding)
@@ -713,11 +717,6 @@ class LeoCursesGui(leoGui.LeoGui):
         w.leo_wrapper = wrapper
         # Inject leo_c.
         w.leo_c = c
-        
-        ###
-        # for textfield in w._my_widgets:
-            # assert isinstance(textfield, LeoBodyTextfield), repr(textfield)
-            # textfield.leo_c = c
     #@+node:ekr.20170502083613.1: *5* CGui.createCursesLog
     def createCursesLog(self, c, form):
         '''
@@ -2421,32 +2420,30 @@ class LeoBody (npyscreen.MultiLineEditable):
             oldText=oldText, newText=newText, oldSel=oldSel, newSel=newSel, oldYview=oldYview)
         p.v.setBodyString(newText)
         p.v.insertSpot = w.getInsertPoint()
-        #@+<< recolor the body >>
-        #@+node:ekr.20170526080455.2: *5* << recolor the body >>
-        c.frame.scanForTabWidth(p)
-        ### body.recolor(p) ### , incremental=not self.forceFullRecolorFlag)
-        ### self.forceFullRecolorFlag = False
+        # < < recolor the body > >
+        ###
+            # c.frame.scanForTabWidth(p)
+            # body.recolor(p) ### , incremental=not self.forceFullRecolorFlag)
+            # self.forceFullRecolorFlag = False
         if g.app.unitTesting:
             g.app.unitTestDict['colorized'] = True
-        #@-<< recolor the body >>
         if not c.changed: c.setChanged(True)
         self.updateEditors()
         p.v.contentModified()
-        #@+<< update icons if necessary >>
-        #@+node:ekr.20170526080455.3: *5* << update icons if necessary >>
-        redraw_flag = False
-        # Update dirty bits.
-        # p.setDirty() sets all cloned and @file dirty bits.
-        if not p.isDirty() and p.setDirty():
-            redraw_flag = True
-        # Update icons. p.v.iconVal may not exist during unit tests.
-        val = p.computeIcon()
-        if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
-            p.v.iconVal = val
-            redraw_flag = True
-        if redraw_flag:
-            c.redraw_after_icons_changed()
-        #@-<< update icons if necessary >>
+        # < < update icons if necessary > >
+        ###
+            # redraw_flag = False
+            # # Update dirty bits.
+            # # p.setDirty() sets all cloned and @file dirty bits.
+            # if not p.isDirty() and p.setDirty():
+                # redraw_flag = True
+            # # Update icons. p.v.iconVal may not exist during unit tests.
+            # val = p.computeIcon()
+            # if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
+                # p.v.iconVal = val
+                # redraw_flag = True
+            # if redraw_flag:
+                # c.redraw_after_icons_changed()
     #@+node:ekr.20170526064136.1: *4* LeoBody.set_handlers
     def set_handlers(self):
 
