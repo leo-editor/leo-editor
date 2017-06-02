@@ -89,7 +89,7 @@ class InputHandler(object):
             else:
                 return repr(f)
 
-        trace = False
+        trace = True
         trace_entry = False
         trace_parent = False
         parent_widget = getattr(self, 'parent_widget', None)
@@ -115,7 +115,6 @@ class InputHandler(object):
         except TypeError:
             _unctrl_input = None
         if _unctrl_input and (_unctrl_input in self.handlers):
-            ### self.handlers[_unctrl_input](i)
             f = self.handlers[_unctrl_input]
             if trace: g.trace('handler: %3s %s' % (_unctrl_input, tell(f)))
             f(i)
@@ -124,7 +123,6 @@ class InputHandler(object):
             if test(i): # was is not False.
                 if trace: g.trace('complex: %3s %s' % (i, tell(handler)))
                 return handler(i)
-                ### return True
         if parent_widget and hasattr(parent_widget, 'handle_input'):
             if trace and trace_parent:
                 g.trace('parent_widget.handle_input', i, parent_widget)
