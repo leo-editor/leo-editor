@@ -439,10 +439,12 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         return True
     #@+node:ekr.20170429213619.14: *3* Widget._test_safe_to_exit
     def _test_safe_to_exit(self):
-        if self._safe_to_exit() and self.safe_to_exit():
-            return True
-        else:
-            return False
+        # EKR: both these methods return True by default.
+        return self._safe_to_exit() and self.safe_to_exit()
+        # if self._safe_to_exit() and self.safe_to_exit():
+            # return True
+        # else:
+            # return False
     #@+node:ekr.20170428084208.421: *3* Widget.calculate_area_needed
     def calculate_area_needed(self): 
         """Classes should provide a function to
