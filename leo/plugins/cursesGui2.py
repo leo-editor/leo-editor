@@ -679,6 +679,32 @@ class LeoTreeLine(npyscreen.TreeLine):
 #@-<< forward reference classes >>
 #@+others
 #@+node:ekr.20170501043944.1: **   top-level functions
+#@+node:ekr.20170603110639.1: *3* dump_handlers
+def dump_handlers(obj,
+    dump_complex=False,
+    dump_handles=False,
+    dump_keys=False,
+):
+    tag = obj.__class__.__name__
+    if dump_keys:
+        g.trace('%s: keys' % tag)
+        aList = ['%3s %3s %4s %s' %
+            (
+                z, 
+                type(z).__name__,
+                repr(chr(z)) if isinstance(z, int) and 32 <= z < 127 else '',
+                method_name(obj.handlers.get(z))
+            ) for z in obj.handlers]
+        g.printList(sorted(aList))
+    if dump_handlers:
+        g.trace('%s: handlers' % tag)
+        aList = [method_name(obj.handlers.get(z))
+            for z in obj.handlers]
+        g.printList(sorted(set(aList)))
+    if dump_complex:
+        # There are no complex handlers.
+        g.trace('%s: complex_handlers' % tag)
+        g.trace(obj.complex_handlers)
 #@+node:ekr.20170419094705.1: *3* init (cursesGui2.py)
 def init():
     '''
@@ -2618,27 +2644,7 @@ class LeoBody (npyscreen.MultiLineEditable):
     #@+node:ekr.20170526064136.1: *5* LeoBody.set_handlers
     def set_handlers(self):
 
-        trace = True
-        if trace:
-            if 0:
-                g.trace('LeoBody: keys')
-                aList = ['%3s %3s %4s %s' %
-                    (
-                        z, 
-                        type(z).__name__,
-                        repr(chr(z)) if isinstance(z, int) and 32 <= z < 127 else '',
-                        method_name(self.handlers.get(z))
-                    ) for z in self.handlers]
-                g.printList(sorted(aList))
-            if 0:
-                g.trace('LeoBody: handlers')
-                aList = [method_name(self.handlers.get(z))
-                    for z in self.handlers]
-                g.printList(sorted(set(aList)))
-            if 0:
-                # There are no complex handlers.
-                g.trace('LeoBody: complex_handlers')
-                g.trace(self.complex_handlers)
+        # dump_handlers(self, dump_complex=True, dump_handles=True, dump_keys=True)
 
         # self.handlers = {} # Clear all bindings.
         self.handlers.update({
@@ -2741,7 +2747,7 @@ class LeoLog (npyscreen.MultiLineEditable):
     #@+others
     #@+node:ekr.20170603103946.2: *4* LeoLog handlers
     #@+node:ekr.20170603103946.11: *5* LeoLog optional handlers
-    if 1: # For study/debugging only.
+    if 0: # For study/debugging only.
         #@+others
         #@+node:ekr.20170603103946.12: *6* From InputHandler
         # InputHandler.h_exit_down
@@ -2916,20 +2922,7 @@ class LeoLog (npyscreen.MultiLineEditable):
                 if cont and self.ALLOW_CONTINUE_EDITING:
                     self._continue_editing()
         #@-others
-    #@+node:ekr.20170603103946.30: *5* LeoLog required handlers
-    #@+node:ekr.20170603103946.31: *6* LeoLog.h_cursor_line_up
-    def h_cursor_line_up(self, ch_i):
-        '''From MultiLine.h_cursor_line_up. Never exit here.'''
-        self.cursor_line = max(0, self.cursor_line-1)
-        ###
-            # self.cursor_line -= 1
-            # if self.cursor_line < 0: 
-                # if self.scroll_exit:
-                    # self.cursor_line = 0
-                    # self.h_exit_up(ch_i)
-                # else: 
-                    # self.cursor_line = 0
-    #@+node:ekr.20170603103946.32: *6* LeoLog.h_cursor_line_down
+    #@+node:ekr.20170603103946.32: *5* LeoLog.h_cursor_line_down
     def h_cursor_line_down(self, ch_i):
         '''
         From MultiLine.h_cursor_line_down. Never exit.
@@ -2953,41 +2946,23 @@ class LeoLog (npyscreen.MultiLineEditable):
                 self.start_display_at += 1
             else:
                 self.start_display_at = self.cursor_line
+    #@+node:ekr.20170603103946.31: *5* LeoLog.h_cursor_line_up
+    def h_cursor_line_up(self, ch_i):
+        '''From MultiLine.h_cursor_line_up. Never exit here.'''
+        self.cursor_line = max(0, self.cursor_line-1)
+        ###
+            # self.cursor_line -= 1
+            # if self.cursor_line < 0: 
+                # if self.scroll_exit:
+                    # self.cursor_line = 0
+                    # self.h_exit_up(ch_i)
+                # else: 
+                    # self.cursor_line = 0
     #@+node:ekr.20170603103946.33: *5* LeoLog.set_handlers
     def set_handlers(self):
-
-        trace = True
-        if trace:
-            if 0:
-                g.trace('LeoLog: keys')
-                aList = ['%3s %3s %4s %s' %
-                    (
-                        z, 
-                        type(z).__name__,
-                        repr(chr(z)) if isinstance(z, int) and 32 <= z < 127 else '',
-                        method_name(self.handlers.get(z))
-                    ) for z in self.handlers]
-                g.printList(sorted(aList))
-            if 0:
-                g.trace('LeoLog: handlers')
-                aList = [method_name(self.handlers.get(z))
-                    for z in self.handlers]
-                g.printList(sorted(set(aList)))
-            if 0:
-                # There are no complex handlers.
-                g.trace('LeoLog: complex_handlers')
-                g.trace(self.complex_handlers)
-
-        # self.handlers = {} # Clear all bindings.
-        self.handlers.update({
-        })
         
-        # def true(*args, **kwargs):
-            # return True
-
-        # self.complex_handlers = (
-            # (curses.ascii.isprint, self.h_addch),
-        # )
+        # dump_handlers(self, dump_complex=True, dump_handles=True, dump_keys=True)
+        self.handlers.update({})
     #@+node:ekr.20170603103946.34: *4* LeoLog.make_contained_widgets
     def make_contained_widgets(self):
         '''
