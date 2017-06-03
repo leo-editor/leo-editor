@@ -102,12 +102,14 @@ class LeoBodyTextfield (npyscreen.Textfield):
             return None
 
         #@-others
-    #@+node:ekr.20170602095236.1: *5* LeoBodyTextfield.h_addch
+    #@+node:ekr.20170602095236.1: *5* LeoBodyTextfield.h_addch (*** To do ***)
     def h_addch(self, inp):
         '''
         Update a single line of the body text, carefully recomputing c.p.b.
         Also, update v.insertSpot, v.selectionLength, and v.selectionStart.
         '''
+        # pylint: disable=no-member,access-member-before-definition
+        # value, cursor_line
         trace = True and not g.unitTesting
         if not self.editable:
             if trace: g.trace('LeoBodyTextfiedl: not editable')
