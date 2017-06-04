@@ -195,6 +195,7 @@ class InputHandler(object):
     #@+node:ekr.20170430114213.1: *4* InputHandler.h_exit_down
     def h_exit_down(self, _input):
         """Called when user leaves the widget to the next widget"""
+        g.trace('MultiLine')
         if not self._test_safe_to_exit():
             return False
         self.editing = False
