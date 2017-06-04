@@ -908,7 +908,6 @@ class LeoCursesGui(leoGui.LeoGui):
             BoxTitleBody,
             max_height=8, # Subtract 4 lines
             name='Body Pane',
-            # footer="Press i or o to insert text", 
             footer="Press e to edit line",
             values=g.splitLines(c.p.b), 
             slow_scroll=True,
@@ -949,7 +948,7 @@ class LeoCursesGui(leoGui.LeoGui):
             BoxTitleLog,
             max_height=8, # Subtract 4 lines
             name='Log Pane',
-            footer="Press i or o to insert text", 
+            footer="Press e to edit line",
             values=[s for s, color in self.wait_list], 
             slow_scroll=False,
         )
@@ -1384,7 +1383,7 @@ class KeyHandler (object):
         Return True if the event was completely handled.
         '''
         #  This is a rewrite of LeoQtEventFilter code.
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = g.app.log and g.app.log.c
         if not c:
             return True # We are shutting down.
@@ -2709,7 +2708,6 @@ class LeoBody (npyscreen.MultiLineEditable):
         From MultiLine.h_cursor_line_down. Never exit.
         '''
         g.trace('LeoBody', ch_i)
-        self.cursor_line += 1
         i = self.cursor_line
         j = self.start_display_at
         self.cursor_line = min(len(self.values)-1, i+1)
@@ -2750,6 +2748,7 @@ class LeoBody (npyscreen.MultiLineEditable):
     #@@nobeautify
     def set_handlers(self):
         '''LeoBody.set_handlers.'''
+        # Set all handlers explicitly.  Do not "inherit" any.
         self.handlers = {
             # From InputHandler...
             curses.KEY_BTAB:    self.h_exit_up,
@@ -2757,10 +2756,12 @@ class LeoBody (npyscreen.MultiLineEditable):
             curses.ascii.ESC:   self.h_exit_escape,
             curses.KEY_MOUSE:   self.h_exit_mouse,
             # From MultiLine...
+            curses.KEY_DOWN:    self.h_cursor_line_down,
             curses.KEY_END:     self.h_cursor_end,
             curses.KEY_HOME:    self.h_cursor_beginning,
             curses.KEY_NPAGE:   self.h_cursor_page_down,
             curses.KEY_PPAGE:   self.h_cursor_page_up,
+            curses.KEY_UP:      self.h_cursor_line_up,
             # From MultiLineEditable...
                 # ord('i'):     self.h_insert_value,
                 # ord('o'):     self.h_insert_next_line,
@@ -2768,30 +2769,6 @@ class LeoBody (npyscreen.MultiLineEditable):
             ord('e'):           self.h_edit_cursor_line_value,
         }
         # self.dump_handlers()
-
-        # Defaults, before changes.
-        #   8 int        MultiLineEditable.h_delete_line_value
-        #   9 int             InputHandler.h_exit_down
-        #  10 int                  LeoBody.h_edit_cursor_line_value
-        #  13 int                  LeoBody.h_edit_cursor_line_value
-        #  27 int             InputHandler.h_exit_escape
-        #  32 int                LeoBody.h_edit_cursor_line_value
-        #  ^N str             InputHandler.h_exit_down
-        #  ^P str             InputHandler.h_exit_up
-        # 101 int  'e'             LeoBody.h_edit_cursor_line_value
-        # 127 int        MultiLineEditable.h_delete_line_value
-        # 258 int                  LeoBody.h_cursor_line_down
-        # 259 int                  LeoBody.h_cursor_line_up
-        # 260 int                  LeoBody.h_cursor_line_up
-        # 261 int                  LeoBody.h_cursor_line_down
-        # 262 int                MultiLine.h_cursor_beginning
-        # 263 int        MultiLineEditable.h_delete_line_value
-        # 338 int                MultiLine.h_cursor_page_down
-        # 339 int                MultiLine.h_cursor_page_up
-        # 351 int             InputHandler.h_exit_up
-        # 358 int                MultiLine.h_cursor_end
-        # 539 int             InputHandler.h_exit_mouse
-        
     #@+node:ekr.20170602103122.1: *4* LeoBody.make_contained_widgets
     def make_contained_widgets(self):
         '''
@@ -3013,13 +2990,6 @@ class LeoLog (npyscreen.MultiLineEditable):
            '''From MultiLineEditable.h_delete_line_value'''
            g.trace('LeoLog', ch_i)
            self.delete_line_value()
-        #@+node:ekr.20170603103946.27: *7* LeoLog.h_edit_cursor_line_value
-        def h_edit_cursor_line_value(self, ch_i):
-           '''From MultiLineEditable.h_edit_cursor_line_value'''
-           g.trace('LeoLog', ch_i)
-           continue_line = self.edit_cursor_line_value()
-           if continue_line and self.CONTINUE_EDITING_AFTER_EDITING_ONE_LINE:
-               self._continue_editing()
         #@+node:ekr.20170603103946.28: *7* LeoLog.h_insert_next_line
         def h_insert_next_line(self, ch_i):
             '''From MultiLineEditable.h_insert_next_line'''
@@ -3064,19 +3034,9 @@ class LeoLog (npyscreen.MultiLineEditable):
         From MultiLine.h_cursor_line_down. Never exit.
         '''
         g.trace('LeoLog', ch_i)
-        self.cursor_line += 1
         i = self.cursor_line
         j = self.start_display_at
         self.cursor_line = min(len(self.values)-1, i+1)
-        ###
-            # if i >= len(self.values):
-                # if self.scroll_exit: 
-                    # self.cursor_line = len(self.values)-1
-                    # self.h_exit_down(ch_i)
-                    # return True
-                # else: 
-                    # self.cursor_line -=1
-                    # return True
         if self._my_widgets[i-j].task == self.continuation_line: 
             if self.slow_scroll:
                 self.start_display_at += 1
@@ -3085,20 +3045,39 @@ class LeoLog (npyscreen.MultiLineEditable):
     #@+node:ekr.20170603103946.31: *5* LeoLog.h_cursor_line_up
     def h_cursor_line_up(self, ch_i):
         '''From MultiLine.h_cursor_line_up. Never exit here.'''
+        g.trace('LeoLog', ch_i)
         self.cursor_line = max(0, self.cursor_line-1)
-        ###
-            # self.cursor_line -= 1
-            # if self.cursor_line < 0: 
-                # if self.scroll_exit:
-                    # self.cursor_line = 0
-                    # self.h_exit_up(ch_i)
-                # else: 
-                    # self.cursor_line = 0
+    #@+node:ekr.20170604061933.4: *5* LeoLog.h_edit_cursor_line_value
+    def h_edit_cursor_line_value(self, ch_i):
+       '''From MultiLineEditable.h_edit_cursor_line_value'''
+       g.trace('LeoLog', ch_i)
+       continue_line = self.edit_cursor_line_value()
+       if continue_line and self.CONTINUE_EDITING_AFTER_EDITING_ONE_LINE:
+           self._continue_editing()
     #@+node:ekr.20170603103946.33: *5* LeoLog.set_handlers
     def set_handlers(self):
-        
-        # dump_handlers(self, dump_complex=True, dump_handlers=True, dump_keys=True)
-        self.handlers.update({})
+        '''LeoLog.set_handlers.'''
+        # These are the same handlers as for LeoBody.
+        self.handlers.update({
+            # From InputHandler...
+            curses.KEY_BTAB:    self.h_exit_up,
+            curses.ascii.TAB:   self.h_exit_down,
+            curses.ascii.ESC:   self.h_exit_escape,
+            curses.KEY_MOUSE:   self.h_exit_mouse,
+            # From MultiLine...
+            curses.KEY_DOWN:    self.h_cursor_line_down,
+            curses.KEY_END:     self.h_cursor_end,
+            curses.KEY_HOME:    self.h_cursor_beginning,
+            curses.KEY_NPAGE:   self.h_cursor_page_down,
+            curses.KEY_PPAGE:   self.h_cursor_page_up,
+            curses.KEY_UP:      self.h_cursor_line_up,
+            # From MultiLineEditable...
+                # ord('i'):     self.h_insert_value,
+                # ord('o'):     self.h_insert_next_line,
+            # New bindings...
+            ord('e'):           self.h_edit_cursor_line_value,
+        })
+        # dump_handlers(self)
     #@+node:ekr.20170603103946.34: *4* LeoLog.make_contained_widgets
     def make_contained_widgets(self):
         '''
