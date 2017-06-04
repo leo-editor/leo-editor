@@ -216,7 +216,7 @@ class LeoLogTextfield (npyscreen.Textfield):
     #@+node:ekr.20170603104320.5: *5* LeoLogTextfield.h_exit_escape
     def h_exit_escape(self, ch_i):
         '''From InputHandler.h_exit_escape'''
-        g.trace('LeoLogTextfield', ch_i)
+        # g.trace('LeoLogTextfield', ch_i)
         parent_w = self.leo_parent
         parent_w.set_box_name('Log Pane')
         if not self._test_safe_to_exit():
@@ -264,12 +264,11 @@ class LeoLogTextfield (npyscreen.Textfield):
         parent_w = self.leo_parent
         # g.trace('LeoLogTextfield', ch_i, 'LeoLog.cursor_line:', parent_w.cursor_line)
         if not self._test_safe_to_exit():
-            g.trace('not safe: return False')
             return False
         parent_w.set_box_name('Log Pane')
         self.editing = False
         self.how_exited = EXITED_DOWN
-        g.trace('safe: return None')
+        return None
     #@+node:ekr.20170604075324.1: *4* LeoLogTextfield.set_handlers
     def set_handlers(self):
         
@@ -2649,7 +2648,7 @@ class LeoLog (npyscreen.MultiLineEditable):
         #@+node:ekr.20170603103946.14: *6* LeoLog.h_exit_escape
         def h_exit_escape(self, ch_i):
             '''From InputHandler.h_exit_escape'''
-            g.trace('LeoLog', ch_i)
+            # g.trace('LeoLog', ch_i)
             if not self._test_safe_to_exit():
                 return False
             self.editing = False
@@ -2658,7 +2657,7 @@ class LeoLog (npyscreen.MultiLineEditable):
         def h_exit_mouse(self, ch_i):
             '''From InputHandler.h_exit_mouse'''
             # pylint: disable=no-member
-            g.trace('LeoLog', ch_i)
+            # g.trace('LeoLog', ch_i)
             mouse_event = self.parent.safe_get_mouse_event()
             if mouse_event and self.intersted_in_mouse_event(mouse_event):
                 self.handle_mouse_event(mouse_event)
@@ -2690,17 +2689,17 @@ class LeoLog (npyscreen.MultiLineEditable):
         #@+node:ekr.20170603103946.18: *6* LeoLog.h_cursor_beginning
         def h_cursor_beginning(self, ch_i):
            '''From MultiLine.h_cursor_beginning'''
-           g.trace('LeoLog', ch_i)
+           # g.trace('LeoLog', ch_i)
            self.cursor_line = 0
         #@+node:ekr.20170603103946.19: *6* LeoLog.h_cursor_end
         def h_cursor_end(self, ch_i):
            '''From MultiLine.h_cursor_end'''
-           g.trace('LeoLog', ch_i)
+           # g.trace('LeoLog', ch_i)
            self.cursor_line = (max (0, len(self.values)-1))
         #@+node:ekr.20170603103946.20: *6* LeoLog.h_cursor_page_down
         def h_cursor_page_down(self, ch_i):
             '''From MultiLine.h_cursor_page_down'''
-            g.trace('LeoLog', ch_i)
+            # g.trace('LeoLog', ch_i)
             self.cursor_line += (len(self._my_widgets)-1)
                 # -1 because of the -more-
             if self.cursor_line >= len(self.values)-1:
@@ -2712,7 +2711,7 @@ class LeoLog (npyscreen.MultiLineEditable):
         #@+node:ekr.20170603103946.21: *6* LeoLog.h_cursor_page_up
         def h_cursor_page_up(self, ch_i):
             '''From MultiLine.h_cursor_page_up'''
-            g.trace('LeoLog', ch_i)
+            # g.trace('LeoLog', ch_i)
             self.cursor_line -= (len(self._my_widgets)-1)
             self.cursor_line = max(0, self.cursor_line)
             self.start_display_at -= (len(self._my_widgets)-1)
@@ -2729,7 +2728,7 @@ class LeoLog (npyscreen.MultiLineEditable):
         def h_addch(self, inp):
             
             # pylint: disable=no-member
-            g.trace('LeoLog: editable:', self.editable, inp)
+            # g.trace('LeoLog: editable:', self.editable, inp)
             if self.editable:
                 if self._last_get_ch_was_unicode == True and isinstance(self.value, bytes):
                     # probably dealing with python2.
@@ -2758,12 +2757,12 @@ class LeoLog (npyscreen.MultiLineEditable):
         #@+node:ekr.20170603103946.26: *6* LeoLog.h_delete_line_value
         def h_delete_line_value(self, ch_i):
            '''From MultiLineEditable.h_delete_line_value'''
-           g.trace('LeoLog', ch_i)
+           # g.trace('LeoLog', ch_i)
            self.delete_line_value()
         #@+node:ekr.20170603103946.28: *6* LeoLog.h_insert_next_line
         def h_insert_next_line(self, ch_i):
             '''From MultiLineEditable.h_insert_next_line'''
-            g.trace('LeoLog', ch_i)
+            # g.trace('LeoLog', ch_i)
             # pylint: disable=len-as-condition
             if len(self.values) == self.cursor_line - 1 or len(self.values) == 0:
                 self.values.append(self.get_new_value())
@@ -2803,7 +2802,7 @@ class LeoLog (npyscreen.MultiLineEditable):
         '''
         From MultiLine.h_cursor_line_down. Never exit.
         '''
-        g.trace('LeoLog', ch_i)
+        # g.trace('LeoLog', ch_i)
         self.set_box_name('Log Pane')
         i = self.cursor_line
         j = self.start_display_at
@@ -2816,13 +2815,13 @@ class LeoLog (npyscreen.MultiLineEditable):
     #@+node:ekr.20170603103946.31: *4* LeoLog.h_cursor_line_up
     def h_cursor_line_up(self, ch_i):
         '''From MultiLine.h_cursor_line_up. Never exit here.'''
-        g.trace('LeoLog', ch_i)
+        # g.trace('LeoLog', ch_i)
         self.set_box_name('Log Pane')
         self.cursor_line = max(0, self.cursor_line-1)
     #@+node:ekr.20170604061933.4: *4* LeoLog.h_edit_cursor_line_value
     def h_edit_cursor_line_value(self, ch_i):
        '''From MultiLineEditable.h_edit_cursor_line_value'''
-       g.trace('LeoLog', ch_i)
+       # g.trace('LeoLog', ch_i)
        self.set_box_name('Log Pane (Editing)')
        continue_line = self.edit_cursor_line_value()
        if continue_line and self.CONTINUE_EDITING_AFTER_EDITING_ONE_LINE:
@@ -2831,19 +2830,17 @@ class LeoLog (npyscreen.MultiLineEditable):
     def h_exit_down(self, ch_i):
         """Called when user leaves the widget to the next widget"""
         # Similar to MultiLine.h_exit_down.
-        g.trace('LeoLog', ch_i)
+        # g.trace('LeoLog', ch_i)
         if ch_i in (curses.ascii.CR, curses.ascii.NL):
             return False
         self.set_box_name('Log Pane')
         if not self._test_safe_to_exit():
-            g.trace('not safe: return False')
             return False
         self.editing = False
         self.how_exited = EXITED_DOWN
-        g.trace('safe: return None')
     #@+node:ekr.20170604113733.4: *4* LeoLog.h_exit_up (new)
     def h_exit_up(self, ch_i):
-        g.trace('LeoLog', ch_i)
+        # g.trace('LeoLog', ch_i)
         self.set_box_name('Log Pane')
         if not self._test_safe_to_exit():
             return False
