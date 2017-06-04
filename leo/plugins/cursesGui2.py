@@ -278,6 +278,8 @@ class LeoLogTextfield (npyscreen.Textfield):
             # From InputHandler...
             curses.ascii.NL:    self.h_exit_down,
             curses.ascii.CR:    self.h_exit_down,
+            curses.KEY_DOWN:    self.h_exit_down,
+            curses.KEY_UP:      self.h_exit_down,
             curses.ascii.ESC:   self.h_exit_escape,
             curses.KEY_MOUSE:   self.h_exit_mouse,
             # From Textfield...
@@ -289,8 +291,6 @@ class LeoLogTextfield (npyscreen.Textfield):
             curses.ascii.DEL:   self.h_delete_left,
             # New bindings...
             curses.ascii.TAB:   self.h_addch,
-            curses.KEY_DOWN:    self.h_exit_down,
-            curses.KEY_UP:      self.h_exit_down,
         }
         # dump_handlers(self)
     #@-others
@@ -2889,9 +2889,11 @@ class LeoLog (npyscreen.MultiLineEditable):
         self.handlers = {
             # From InputHandler...
             curses.KEY_BTAB:    self.h_exit_up,
-            curses.ascii.TAB:   self.h_exit_down,
-            curses.ascii.ESC:   self.h_exit_escape,
             curses.KEY_MOUSE:   self.h_exit_mouse,
+            curses.ascii.CR:    self.h_exit_down,
+            curses.ascii.ESC:   self.h_exit_escape,
+            curses.ascii.NL:    self.h_exit_down,
+            curses.ascii.TAB:   self.h_exit_down,
             # From MultiLine...
             curses.KEY_DOWN:    self.h_cursor_line_down,
             curses.KEY_END:     self.h_cursor_end,
@@ -2904,8 +2906,6 @@ class LeoLog (npyscreen.MultiLineEditable):
                 # ord('o'):     self.h_insert_next_line,
             # New bindings...
             ord('e'):           self.h_edit_cursor_line_value,
-            curses.ascii.NL:    self.h_exit_down,
-            curses.ascii.CR:    self.h_exit_down,
         }
         # dump_handlers(self)
     #@-others
