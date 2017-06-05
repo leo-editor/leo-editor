@@ -228,7 +228,7 @@ class LeoBodyTextfield (npyscreen.Textfield):
             # New bindings...
             curses.ascii.TAB:   self.h_addch,
         }
-        dump_handlers(self)
+        # dump_handlers(self)
     #@-others
 #@+node:ekr.20170603104320.1: *3* class LeoLogTextfield (npyscreen.Textfield)
 class LeoLogTextfield (npyscreen.Textfield):
@@ -736,13 +736,11 @@ def dump_handlers(obj,
     tag = obj.__class__.__name__
     if dump_keys:
         g.trace('%s: keys' % tag)
-        aList = ['%3s %3s %4s %s' %
-            (
-                z, 
-                type(z).__name__,
-                repr(chr(z)) if isinstance(z, int) and 32 <= z < 127 else '',
-                method_name(obj.handlers.get(z))
-            ) for z in obj.handlers]
+        aList = []
+        for z in obj.handlers:
+            kind = repr(chr(z)) if isinstance(z, int) and 32 <= z < 127 else ''
+            name = method_name(obj.handlers.get(z))
+            aList.append('%3s %3s %4s %s' % (z, type(z).__name__, kind, name))
         g.printList(sorted(aList))
     if dump_handlers:
         g.trace('%s: handlers' % tag)
@@ -750,14 +748,11 @@ def dump_handlers(obj,
             for z in obj.handlers]
         g.printList(sorted(set(aList)))
     if dump_complex:
-        # There are no complex handlers.
         g.trace('%s: complex_handlers' % tag)
-        # g.trace(obj.complex_handlers)
         aList = []
         for data in obj.complex_handlers:
             f1, f2 = data
             aList.append('%25s predicate: %s' % (method_name(f2), method_name(f1)))
-            # g.printList([method_name(f1), method_name(f2)])
         g.printList(sorted(set(aList)))
 #@+node:ekr.20170419094705.1: *3* init (cursesGui2.py)
 def init():
