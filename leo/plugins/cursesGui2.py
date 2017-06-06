@@ -516,12 +516,11 @@ class LeoTreeLine(npyscreen.TreeLine):
                 assert isinstance(self.value, LeoTreeData)
                 p = self.value.content
                 assert p and isinstance(p, leoNodes.Position), repr(p)
-                return p.h
+                return p.h or ' '
             else:
                 return ''
         else:
             s = self.value.content if self.value else None
-        # g.trace(repr(s))
         return g.toUnicode(s) if s else None
     #@+node:ekr.20170522032805.1: *4* LeoTreeLine._print
     def _print(self, left_margin=0):
@@ -539,8 +538,10 @@ class LeoTreeLine(npyscreen.TreeLine):
         if native:
             c = getattr(self, 'leo_c', None)
             val = self._tree_real_value
-            p = val and val.content
-            if not p: return # sartup.
+            if val is None:
+                return # startup
+            p = val.content
+            assert isinstance(p, leoNodes.Position), repr(p)
             self.left_margin += 2*p.level()
             if p.hasChildren():
                 put('-' if p.isExpanded() else '+')
@@ -559,7 +560,6 @@ class LeoTreeLine(npyscreen.TreeLine):
             self.parent.curses_pad.bkgdset(' ',curses.A_STANDOUT)
         # This draws the actual line.
         super(npyscreen.TreeLine, self)._print()
-            # TextfieldBase._print
     #@+node:ekr.20170514183049.1: *4* LeoTreeLine.display_value
     def display_value(self, vl):
         
@@ -567,7 +567,7 @@ class LeoTreeLine(npyscreen.TreeLine):
         if native:
             p = vl.content
             assert p and isinstance(p, leoNodes.Position), repr(p)
-            return p.h
+            return p.h or ' '
         else:
             return vl.content if vl else ''
     #@+node:ekr.20170510210908.1: *4* LeoTreeLine.edit
@@ -672,11 +672,19 @@ class LeoTreeLine(npyscreen.TreeLine):
     if native:
         
         def when_check_value_changed(self):
-            "Check whether the widget's value has changed and call when_valued_edited if so."
-            if hasattr(self, 'parent_widget'):
-                self.parent_widget.when_value_edited()
-                self.parent_widget._internal_when_value_edited()
+            '''Check whether the widget's value has changed and call when_valued_edited if so.'''
             return True
+            ###
+                # val = self._tree_real_value
+                # if val is not None:
+                    # p = val.content
+                    # assert isinstance(p, leoNodes.Position), repr(p)
+                # # Boilerplate.
+                # if hasattr(self, 'parent_widget'):
+                    # g.trace('LeoTreeLine.parent_widget', repr(self.parent_widget))
+                    # self.parent_widget.when_value_edited()
+                    # self.parent_widget._internal_when_value_edited()
+                # return True
 
     #@-others
 #@-others
@@ -1027,7 +1035,7 @@ class LeoCursesGui(leoGui.LeoGui):
             BoxTitleTree,
             max_height=8, # Subtract 4 lines
             name='Tree Pane',
-            footer="d: delete node; i: insert node; h: edit (return to end)",
+            footer="Press d to delete node, e to edit headline (return to end), i to insert node",
             values=hidden_root_node, 
             slow_scroll=False,
         )
@@ -3141,17 +3149,20 @@ class LeoMLTree(npyscreen.MLTree):
             else:
                 self.h_cursor_line_down(ch)
     #@+node:ekr.20170507175304.1: *5* LeoMLTree.set_handlers
+    #@@nobeautify
     def set_handlers(self):
         
         # pylint: disable=no-member
         d = {
-            curses.KEY_DOWN: self.h_cursor_line_down,
-            curses.KEY_LEFT: self.h_move_left,
-            curses.KEY_RIGHT: self.h_move_right,
-            curses.KEY_UP: self.h_cursor_line_up,
-            ord('d'): self.h_delete,
-            ord('h'): self.h_edit_headline,
-            ord('i'): self.h_insert,
+            curses.KEY_BTAB:    self.h_exit_up,
+            curses.KEY_DOWN:    self.h_cursor_line_down,
+            curses.KEY_LEFT:    self.h_move_left,
+            curses.KEY_RIGHT:   self.h_move_right,
+            curses.KEY_UP:      self.h_cursor_line_up,
+            curses.ascii.TAB:   self.h_exit_down,
+            ord('d'):           self.h_delete,
+            ord('e'):           self.h_edit_headline,
+            ord('i'):           self.h_insert,
             # curses.ascii.CR:        self.h_edit_cursor_line_value,
             # curses.ascii.NL:        self.h_edit_cursor_line_value,
             # curses.ascii.SP:        self.h_edit_cursor_line_value,
@@ -3167,7 +3178,8 @@ class LeoMLTree(npyscreen.MLTree):
             # ord('h'): self.h_collapse_tree,
             # ord('l'): self.h_expand_tree,   
         }
-        ### self.handlers.update(d)
+        # self.handlers.update(d)
+        # dump_handlers(self)
         self.handlers = d
     #@+node:ekr.20170516100256.1: *5* LeoMLTree.set_up_handlers
     def set_up_handlers(self):
@@ -3271,10 +3283,8 @@ class LeoMLTree(npyscreen.MLTree):
     #@+node:ekr.20170513032717.1: *6* LeoMLTree._print_line
     def _print_line(self, line, i):
 
-        #
         # if self.widgets_inherit_color and self.do_colors():
             # line.color = self.color
-        
         self._set_line_values(line, i)
             # Sets line.value
         if line.value is not None:
@@ -3302,7 +3312,8 @@ class LeoMLTree(npyscreen.MLTree):
         values = self.values
         n = len(values)
         val = values[i] if 0 <= i < n else None
-        if not val:
+        if trace: g.trace(repr(val))
+        if val is None:
             line._tree_depth        = False
             line._tree_depth_next   = False
             line._tree_expanded     = False
