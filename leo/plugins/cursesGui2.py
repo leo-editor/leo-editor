@@ -58,15 +58,13 @@ class LeoBodyTextfield (npyscreen.Textfield):
     #@+node:ekr.20170604182251.1: *4* LeoBodyTextfield handlers
     # All h_exit_* methods call self.leo_parent.set_box_name.
     # In addition, h_exit_down inserts a blank(!!) for '\n'.
-    #@+node:ekr.20170602095236.1: *5* LeoBodyTextfield.h_addch (finish)
-    def h_addch(self, inp):
+    #@+node:ekr.20170602095236.1: *5* LeoBodyTextfield.h_addch
+    def h_addch(self, ch_i):
         '''
         Update a single line of the body text, carefully recomputing c.p.b.
         Also, update v.insertSpot, v.selectionLength, and v.selectionStart.
         '''
-        # pylint: disable=no-member,access-member-before-definition
-        # value, cursor_line
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         if not self.editable:
             if trace: g.trace('LeoBodyTextfiedl: not editable')
             return
@@ -74,54 +72,34 @@ class LeoBodyTextfield (npyscreen.Textfield):
         assert isinstance(parent_w, LeoBody), repr(parent_w)
         c = parent_w.leo_c
         p = c.p
-        row = parent_w.cursor_line
-        if trace:
-            g.trace('LeoBodyTextfield. row: %s len(p.b): %4s inp: %s' % (
-                row, len(p.b), inp))
+        if trace: g.trace('LeoBodyTextfield. row: %s len(p.b): %4s ch_i: %s' % (
+            parent_w.cursor_line, len(p.b), ch_i))
         try:
             # Careful: chr can fail.
-            ch = g.toUnicode(chr(inp))
+            ch = g.toUnicode(chr(ch_i))
         except Exception:
             if trace: g.es_exception()
             return
+        # Update this line...
         i = self.cursor_position
         s = self.value
         self.value = s[:i] + ch + s[i:]
         self.cursor_position += len(ch)
         self.update()
-        # Update c.p.b and the parent's values arrays.
-        parent_w.update_body(self.value)
-        # Update the vnode ivars.
-            ### To do.
-            
-        ############ Update self.value???
-
-        # Update the body wrapper.
-        bw = c.frame.body.wrapper
-        assert isinstance(bw, BodyWrapper), repr(bw)
-        i = self.cursor_position
-        bw.ins = i ### Wrong
-        bw.sel = i, i ### Wrong
-        bw.s = p.b ### self.value ### Wrong
-        ### c.frame.body.onBodyChanged(undoType='Typing')
-
-        ### Original code.
-            # Blah, blah, blah: convert inp to ch_adding
-            # self.value = self.value[:self.cursor_position] + ch_adding \
-                # + self.value[self.cursor_position:]
-            # self.cursor_position += len(ch_adding)
-    #@+node:ekr.20170603131317.1: *5* LeoBodyTextfield.h_cursor_left (TO DO)
+        # Update the parent and Leo's data structures.
+        parent_w.update_body(self.cursor_position, self.value)
+    #@+node:ekr.20170603131317.1: *5* LeoBodyTextfield.h_cursor_left
     def h_cursor_left(self, ch_i):
-        
-        parent_w = self.leo_parent
-        g.trace('LeoBodyTextfield', ch_i, parent_w.cursor_line)
+
+        # g.trace('LeoBodyTextfield', ch_i, self.leo_parent.cursor_line)
         self.cursor_position -= 1
-            ### -1 Means something.
+            # -1 Means something.
 
     #@+node:ekr.20170603131253.1: *5* LeoBodyTextfield.h_delete_left
     def h_delete_left(self, ch_i):
         
         # g.trace('LeoBodyTextfield', ch_i, self.leo_parent.cursor_line)
+        # pylint: disable=no-member
         i = self.cursor_position
         if self.editable and i > 0:
             self.value = self.value[:i-1] + self.value[i:]
@@ -129,42 +107,28 @@ class LeoBodyTextfield (npyscreen.Textfield):
         self.begin_at -= 1
     #@+node:ekr.20170602110807.2: *5* LeoBodyTextfield.h_exit_down
     def h_exit_down(self, ch_i):
-        '''From InputHandler.h_exit_down'''
-        parent_w = self.leo_parent
+        '''
+        From InputHandler.h_exit_down
+        Terminate editing for *this* line, but not overall editing.
+        '''
+        # g.trace('LeoBodyTextfield', ch_i)
         if ch_i in (curses.ascii.CR, curses.ascii.NL):
-            # A pretty horrible kludge.
-            self.h_addch(ord(' '))
+            # A kludge, but much better than adding a blank.
+            self.h_addch(ord('\n'))
             self.cursor_position = 0
-        else:
-            parent_w.set_box_name('BODY Pane')
         if not self._test_safe_to_exit():
             return False
+        # Don't end overall editing.
+            # self.leo_parent.set_box_name('Body Pane')
         self.editing = False
         self.how_exited = EXITED_DOWN
-
-        ### OLD CODE
-            # trace = True and not g.unitTesting
-            # c = parent_w.leo_c
-            # lines = g.splitLines(c.p.b)
-            # limit = len(lines)
-            # n = parent_w.cursor_line
-            # ok = ch_i == ord('\n') or n < limit-1
-            # if trace:
-                # g.trace('LeoBodyTextfield ch: %s ok: %5s n: %s limit: %s %s' % (
-                    # ch_i, ok, n, limit, c.p and c.p.h))
-            # if ok:
-                # self.editing = False
-                # self.how_exited = EXITED_DOWN
-                # return None
-            # else:
-                # return False
-    #@+node:ekr.20170602110807.3: *5* LeoBodyTextfield.h_exit_escape (Fix)
+    #@+node:ekr.20170602110807.3: *5* LeoBodyTextfield.h_exit_escape
     def h_exit_escape(self, ch_i):
         '''From InputHandler.h_exit_escape'''
-        g.trace('LeoBodyTextfield', ch_i, repr(self.value))
-        parent_w = self.leo_parent
-        parent_w.set_box_name('Body Pane')
-        parent_w.update_body(self.value)
+        # g.trace('LeoBodyTextfield', ch_i)
+        # Leo-specific exit code.
+        self.leo_parent.set_box_name('Body Pane')
+        # Boilerplate exit code...
         if not self._test_safe_to_exit():
             return False
         self.editing = False
@@ -188,14 +152,12 @@ class LeoBodyTextfield (npyscreen.Textfield):
             self.editing = False
             self.how_exited = EXITED_MOUSE
         return None
-    #@+node:ekr.20170602110807.5: *5* LeoBodyTextfield.h_exit_up (test)
+    #@+node:ekr.20170602110807.5: *5* LeoBodyTextfield.h_exit_up
     def h_exit_up(self, ch_i):
         '''LeoBodyTextfield.h_exit_up.'''
-        parent_w = self.leo_parent
-        g.trace('LeoBodyTextfield', ch_i, parent_w.cursor_line)
-        if parent_w.cursor_line == 0:
-            return False
-        parent_w.set_box_name('Body Pane')
+        # g.trace('LeoBodyTextfield', ch_i)
+        # Don't end overall editing.
+            # self.leo_parent.set_box_name('Body Pane')
         self.editing = False
         self.how_exited = EXITED_UP
         return None
@@ -209,7 +171,7 @@ class LeoBodyTextfield (npyscreen.Textfield):
             curses.ascii.NL:    self.h_exit_down,
             curses.ascii.CR:    self.h_exit_down,
             curses.KEY_DOWN:    self.h_exit_down,
-            curses.KEY_UP:      self.h_exit_down,
+            curses.KEY_UP:      self.h_exit_up, # 2017/06/06.
             curses.ascii.ESC:   self.h_exit_escape,
             curses.KEY_MOUSE:   self.h_exit_mouse,
             # From Textfield...
@@ -304,7 +266,7 @@ class LeoLogTextfield (npyscreen.Textfield):
             curses.ascii.NL:    self.h_exit_down,
             curses.ascii.CR:    self.h_exit_down,
             curses.KEY_DOWN:    self.h_exit_down,
-            curses.KEY_UP:      self.h_exit_down,
+            curses.KEY_UP:      self.h_exit_up, # 2017/06/06.
             curses.ascii.ESC:   self.h_exit_escape,
             curses.KEY_MOUSE:   self.h_exit_mouse,
             # From Textfield...
@@ -2369,6 +2331,7 @@ class LeoBody (npyscreen.MultiLineEditable):
         super(LeoBody, self).__init__(*args, **kwargs)
         self.leo_box = None
         self.leo_c = None
+        self.leo_wrapper = None
         self.set_handlers()
         # createCursesBody  sets the leo_box and leo_c ivars.
         
@@ -2381,6 +2344,9 @@ class LeoBody (npyscreen.MultiLineEditable):
         '''
         # pylint: disable=access-member-before-definition
         # g.trace('LeoBody', ch_i)
+        # Reset editing mode.
+        self.set_box_name('Body Pane')
+        # Boilerplate...
         i = self.cursor_line
         j = self.start_display_at
         self.cursor_line = min(len(self.values)-1, i+1)
@@ -2392,6 +2358,9 @@ class LeoBody (npyscreen.MultiLineEditable):
     #@+node:ekr.20170526114040.5: *5* LeoBody.h_cursor_line_up
     def h_cursor_line_up(self, ch_i):
         '''From MultiLine.h_cursor_line_up. Never exit here.'''
+        # g.trace('LeoBody', ch_i)
+        # Reset editing mode.
+        self.set_box_name('Body Pane')
         self.cursor_line = max(0, self.cursor_line-1)
     #@+node:ekr.20170604181755.1: *5* LeoBody.h_exit_down
     def h_exit_down(self, ch_i):
@@ -2417,15 +2386,14 @@ class LeoBody (npyscreen.MultiLineEditable):
     #@+node:ekr.20170526114452.2: *5* LeoBody.h_edit_cursor_line_value
     def h_edit_cursor_line_value(self, ch_i):
        '''From MultiLineEditable.h_edit_cursor_line_value'''
-       g.trace('LeoBody', ch_i)
+       # g.trace('LeoBody', ch_i)
        self.set_box_name('Body Pane (Editing)')
        continue_line = self.edit_cursor_line_value()
        if continue_line and self.CONTINUE_EDITING_AFTER_EDITING_ONE_LINE:
            self._continue_editing()
-    #@+node:ekr.20170604185028.1: *4* LeoBody.delete_line_value (to do)
+    #@+node:ekr.20170604185028.1: *4* LeoBody.delete_line_value
     def delete_line_value(self, ch_i=None):
-        # g.trace(g.callers())
-        # _continue_editing,edit_cursor_line_value
+
         if self.values:
             del self.values[self.cursor_line]
             self.display()
@@ -2456,54 +2424,36 @@ class LeoBody (npyscreen.MultiLineEditable):
             g.printList(self._my_widgets)
             g.printList(['value: %r' % (z.value) for z in self._my_widgets])
     #@+node:ekr.20170526080455.1: *4* LeoBody.onBodyChanged
-    # This is the only key handler for the body pane.
-
     def onBodyChanged(self, undoType, oldSel=None, oldText=None, oldYview=None):
-        '''Update Leo after the body has been changed.'''
-        trace = False and not g.unitTesting
-        c = self.c
-        w = self.wrapper
+        '''
+        Update Leo after the body has been changed.
+        Called by LeoBodyTextfield.h_addch.
+        '''
+        trace = True and not g.unitTesting
+        c = self.leo_c
+        wrapper = self.leo_wrapper
         p = c.p
-        insert = w.getInsertPoint()
-        ch = '' if insert == 0 else w.get(insert - 1)
+        insert = wrapper.getInsertPoint()
+        ch = '' if insert == 0 else wrapper.get(insert - 1)
         ch = g.toUnicode(ch)
-        newText = w.getAllText() # Note: getAllText converts to unicode.
-        newSel = w.getSelectionRange()
+        newText = wrapper.getAllText() # Note: getAllText converts to unicode.
+        newSel = wrapper.getSelectionRange()
         if not oldText:
             oldText = p.b
         if oldText == newText:
             return
-        if trace:
-            # g.trace(repr(ch),'changed:',changed,'newText:',len(newText),'w',w)
-            g.trace('oldSel', oldSel, 'newSel', newSel)
+        if trace: g.trace('oldSel', oldSel, 'newSel', newSel)
         c.undoer.setUndoTypingParams(p, undoType,
             oldText=oldText, newText=newText, oldSel=oldSel, newSel=newSel, oldYview=oldYview)
         p.v.setBodyString(newText)
-        p.v.insertSpot = w.getInsertPoint()
-        # < < recolor the body > >
-        ###
-            # c.frame.scanForTabWidth(p)
-            # body.recolor(p) ### , incremental=not self.forceFullRecolorFlag)
-            # self.forceFullRecolorFlag = False
+        p.v.insertSpot = wrapper.getInsertPoint()
+        # Don't recolor the body.
         if g.app.unitTesting:
             g.app.unitTestDict['colorized'] = True
         if not c.changed: c.setChanged(True)
         self.updateEditors()
         p.v.contentModified()
-        # < < update icons if necessary > >
-        ###
-            # redraw_flag = False
-            # # Update dirty bits.
-            # # p.setDirty() sets all cloned and @file dirty bits.
-            # if not p.isDirty() and p.setDirty():
-                # redraw_flag = True
-            # # Update icons. p.v.iconVal may not exist during unit tests.
-            # val = p.computeIcon()
-            # if not hasattr(p.v, "iconVal") or val != p.v.iconVal:
-                # p.v.iconVal = val
-                # redraw_flag = True
-            # if redraw_flag:
-                # c.redraw_after_icons_changed()
+        # Don't update icons.
     #@+node:ekr.20170604073733.1: *4* LeoBody.set_box_name
     def set_box_name(self, name):
         '''Update the title of the Form surrounding the Leo Body.'''
@@ -2537,24 +2487,46 @@ class LeoBody (npyscreen.MultiLineEditable):
         }
         # self.dump_handlers()
     #@+node:ekr.20170606100707.1: *4* LeoBody.update_body
-    def update_body(self, s):
-        '''Update self.values and c.p.b after the present line changes.'''
+    def update_body(self, ins, s):
+        '''
+        Update self.values and p.b and vnode ivars after the present line changes.
+        '''
+        # pylint: disable=no-member,access-member-before-definition
+        trace = False and not g.unitTesting
         c = self.leo_c
+        p = c.p
+        v = p.v
         i = self.cursor_line
-        # g.trace(i, repr(s))
+        wrapper = c.frame.body.wrapper
+        assert isinstance(wrapper, BodyWrapper), repr(wrapper)
         lines = self.values
+        if trace: g.trace(i, len(lines), s.endswith('\n'), repr(s))
         head = lines[:i]
         tail = lines[i+1:]
         if i < len(lines):
             if not s.endswith('\n'):
                 s = s + '\n'
-            self.values = head + [s] + tail
-            c.p.b = ''.join(head + [s] + tail)
-        elif len(lines) == i:
-            self.values = head + [s]
-            c.p.b = ''.join(head) + s
+            aList = head + [s] + tail
+            self.values = aList
+            c.p.b = ''.join(aList)
+            v.selectionLength = 0
+            v.selectionStart = ins
+            wrapper.ins = ins
+            wrapper.sel = ins, ins
+            self.onBodyChanged(undoType='Typing')
+        elif i == len(lines):
+            aList = head + [s]
+            self.values = aList
+            c.p.b = ''.join(aList)
+            v.selectionLength = 0
+            v.selectionStart = ins
+            wrapper.ins = ins
+            wrapper.sel = ins, ins
+            self.onBodyChanged(undoType='Typing')
         else:
             g.trace('Can not happen', i, len(lines), repr(s))
+            v.selectionLength = 0
+            v.selectionStart = 0
         if g.splitLines(c.p.b) != self.values:
             g.trace('self.values')
             g.printList(self.values)
@@ -2586,6 +2558,7 @@ class LeoLog (npyscreen.MultiLineEditable):
         '''
         From MultiLine.h_cursor_line_down. Never exit.
         '''
+        # pylint: disable=no-member,access-member-before-definition
         # g.trace('LeoLog', ch_i)
         self.set_box_name('Log Pane')
         i = self.cursor_line
