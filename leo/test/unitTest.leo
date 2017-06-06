@@ -233,7 +233,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -1186,6 +1186,7 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20100131171342.5504"><vh>@test position2Item</vh></v>
 <v t="ekr.20170601070526.1"><vh>@test g.match_word</vh></v>
+<v t="ekr.20051107115231.15"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1562,22 +1563,26 @@ It also includes a trace back, but for AssertionErrors, it does not seem to offe
 assert('Spam' == 'Ham')</t>
 <t tx="ekr.20051012104957"></t>
 <t tx="ekr.20051013162226"></t>
-<t tx="ekr.20051107115231.15">k = c.keyHandler
-frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
-h = '@test editLabel selects entire headline'
-p = c.testManager.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.redraw(p) # To make node visible
-tree.editLabel(p)
-w = c.edit_widget(p)
-assert w
-s = w.getAllText()
-selectAll = c.config.getBool('select_all_text_when_editing_headlines')
-i,j = w.getSelectionRange()
-if selectAll:
-    assert i == 0 and j == len(s),('oops1',i,j,len(s))
+<t tx="ekr.20051107115231.15">if g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses')
+        # Apparently, there is no way to select headlline text!
 else:
-    assert i == len(s) and j == len(s),('oops2',i,j,len(s))
+    k = c.keyHandler
+    frame = c.frame ; tree = frame.tree ; canvas = tree.canvas
+    h = '@test editLabel selects entire headline'
+    p = c.testManager.findNodeAnywhere(h)
+    assert p,'node not found: %s' % h
+    c.redraw(p) # To make node visible
+    tree.editLabel(p)
+    w = c.edit_widget(p)
+    assert w
+    s = w.getAllText()
+    selectAll = c.config.getBool('select_all_text_when_editing_headlines')
+    i,j = w.getSelectionRange()
+    if selectAll:
+        assert i == 0 and j == len(s),('oops1',i,j,len(s))
+    else:
+        assert i == len(s) and j == len(s),('oops2',i,j,len(s))
 </t>
 <t tx="ekr.20060131102450">s = '\nEnd of typing tests'
 if g.app.gui.guiName() == 'curses':
