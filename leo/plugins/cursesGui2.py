@@ -58,7 +58,7 @@ class LeoBodyTextfield (npyscreen.Textfield):
     #@+node:ekr.20170604182251.1: *4* LeoBodyTextfield handlers
     # All h_exit_* methods call self.leo_parent.set_box_name.
     # In addition, h_exit_down inserts a blank(!!) for '\n'.
-    #@+node:ekr.20170602095236.1: *5* LeoBodyTextfield.h_addch (TO DO)
+    #@+node:ekr.20170602095236.1: *5* LeoBodyTextfield.h_addch (finish)
     def h_addch(self, inp):
         '''
         Update a single line of the body text, carefully recomputing c.p.b.
@@ -89,15 +89,8 @@ class LeoBodyTextfield (npyscreen.Textfield):
         self.value = s[:i] + ch + s[i:]
         self.cursor_position += len(ch)
         self.update()
-        # Update c.p.b
-        lines = g.splitLines(p.b)
-        s = self.value
-        head = lines[:i]
-        tail = lines[i+1:]
-        if tail and not s.endswith('\n'):
-            s = s + '\n'
-        lines = head + [s] + tail
-        p.b = ''.join(lines)
+        # Update c.p.b and the parent's values arrays.
+        parent_w.update_body(self.value)
         # Update the vnode ivars.
             ### To do.
             
@@ -134,7 +127,7 @@ class LeoBodyTextfield (npyscreen.Textfield):
             self.value = self.value[:i-1] + self.value[i:]
         self.cursor_position -= 1
         self.begin_at -= 1
-    #@+node:ekr.20170602110807.2: *5* LeoBodyTextfield.h_exit_down (Test)
+    #@+node:ekr.20170602110807.2: *5* LeoBodyTextfield.h_exit_down
     def h_exit_down(self, ch_i):
         '''From InputHandler.h_exit_down'''
         parent_w = self.leo_parent
@@ -165,12 +158,13 @@ class LeoBodyTextfield (npyscreen.Textfield):
                 # return None
             # else:
                 # return False
-    #@+node:ekr.20170602110807.3: *5* LeoBodyTextfield.h_exit_escape
+    #@+node:ekr.20170602110807.3: *5* LeoBodyTextfield.h_exit_escape (Fix)
     def h_exit_escape(self, ch_i):
         '''From InputHandler.h_exit_escape'''
-        # g.trace('LeoBodyTextfield', ch_i)
+        g.trace('LeoBodyTextfield', ch_i, repr(self.value))
         parent_w = self.leo_parent
         parent_w.set_box_name('Body Pane')
+        parent_w.update_body(self.value)
         if not self._test_safe_to_exit():
             return False
         self.editing = False
@@ -953,7 +947,7 @@ class LeoCursesGui(leoGui.LeoGui):
             BoxTitleBody,
             max_height=8, # Subtract 4 lines
             name='Body Pane',
-            footer="Press e to edit line, d to delete line",
+            footer="Press e to edit line, esc to end editing, d to delete line",
             values=g.splitLines(c.p.b), 
             slow_scroll=True,
         )
@@ -995,7 +989,7 @@ class LeoCursesGui(leoGui.LeoGui):
             BoxTitleLog,
             max_height=8, # Subtract 4 lines
             name='Log Pane',
-            footer="Press e to edit line, d to delete line",
+            footer="Press e to edit line, esc to end editing, d to delete line",
             values=[s for s, color in self.wait_list], 
             slow_scroll=False,
         )
@@ -2435,36 +2429,6 @@ class LeoBody (npyscreen.MultiLineEditable):
         if self.values:
             del self.values[self.cursor_line]
             self.display()
-    #@+node:ekr.20170604185553.1: *4* LeoBody.edit_cursor_line_value (CHANGED)
-    def edit_cursor_line_value(self):
-        # From MultiLineEditable
-        if not self.values:
-            self.insert_line_value()
-            return False
-        try:
-            active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
-        except IndexError:
-            self._my_widgets[0] ### Huh?
-            self.cursor_line = 0
-            self.insert_line_value()
-            return True
-        active_line.highlight = False
-        active_line.edit()
-        try:
-            self.values[self.cursor_line] = active_line.value
-        except IndexError:
-            self.values.append(active_line.value)
-            if not self.cursor_line:
-                self.cursor_line = 0
-            self.cursor_line = len(self.values) - 1
-        self.reset_display_cache()
-        if self.CHECK_VALUE:
-            if not self.check_line_value(self.values[self.cursor_line]):
-                self.delete_line_value()
-                return False
-        self.display()
-        return True
-
     #@+node:ekr.20170602103122.1: *4* LeoBody.make_contained_widgets
     def make_contained_widgets(self):
         '''
@@ -2506,10 +2470,9 @@ class LeoBody (npyscreen.MultiLineEditable):
         newText = w.getAllText() # Note: getAllText converts to unicode.
         newSel = w.getSelectionRange()
         if not oldText:
-            oldText = p.b; changed = True
-        else:
-            changed = oldText != newText
-        if not changed: return
+            oldText = p.b
+        if oldText == newText:
+            return
         if trace:
             # g.trace(repr(ch),'changed:',changed,'newText:',len(newText),'w',w)
             g.trace('oldSel', oldSel, 'newSel', newSel)
@@ -2573,6 +2536,30 @@ class LeoBody (npyscreen.MultiLineEditable):
             ord('e'):           self.h_edit_cursor_line_value,
         }
         # self.dump_handlers()
+    #@+node:ekr.20170606100707.1: *4* LeoBody.update_body
+    def update_body(self, s):
+        '''Update self.values and c.p.b after the present line changes.'''
+        c = self.leo_c
+        i = self.cursor_line
+        # g.trace(i, repr(s))
+        lines = self.values
+        head = lines[:i]
+        tail = lines[i+1:]
+        if i < len(lines):
+            if not s.endswith('\n'):
+                s = s + '\n'
+            self.values = head + [s] + tail
+            c.p.b = ''.join(head + [s] + tail)
+        elif len(lines) == i:
+            self.values = head + [s]
+            c.p.b = ''.join(head) + s
+        else:
+            g.trace('Can not happen', i, len(lines), repr(s))
+        if g.splitLines(c.p.b) != self.values:
+            g.trace('self.values')
+            g.printList(self.values)
+            g.trace('g.splitLines(c.p.b)')
+            g.printList(g.splitLines(c.p.b))
     #@-others
 #@+node:ekr.20170603103946.1: *3* class LeoLog (npyscreen.MultiLineEditable)
 class LeoLog (npyscreen.MultiLineEditable):
