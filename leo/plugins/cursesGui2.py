@@ -2768,7 +2768,7 @@ class LeoMLTree(npyscreen.MLTree):
     # pylint: disable=used-before-assignment
     _contained_widgets = LeoTreeLine
     continuation_line = "- more -" # value of contination line.
-    
+
     # def __init__ (self, *args, **kwargs):
         # super(LeoMLTree, self).__init__(*args, **kwargs)
         
@@ -2980,7 +2980,7 @@ class LeoMLTree(npyscreen.MLTree):
         if native:
             p = node.content
             assert p and isinstance(p, leoNodes.Position), repr(p)
-            p.v.contract()
+            p.contract()
             self.values.clear_cache()
         else:
             if node.expanded and self._has_children(node):
@@ -3073,6 +3073,7 @@ class LeoMLTree(npyscreen.MLTree):
     #@+node:ekr.20170506035413.1: *5* LeoMLTree.h_move_left
     def h_move_left(self, ch):
         
+        trace = False and not g.unitTesting
         node = self.values[self.cursor_line]
         if not node:
             g.trace('no node', self.cursor_line, repr(node))
@@ -3099,9 +3100,14 @@ class LeoMLTree(npyscreen.MLTree):
                         break
                     i -= 1
                 self.cursor_line = max(0, i)
+                if trace: g.trace('new line', self.cursor_line)
                 self.values.clear_cache()
-                c.frame.tree.select(p)
+                self._cached_tree = None
+                    # Invalidate the cache.
+                self.display()
+                c.frame.tree.select(parent)
             else:
+                if trace: g.trace('no parent')
                 pass # This is what Leo does.
         else:
             if self._has_children(node) and node.expanded:
@@ -3112,6 +3118,7 @@ class LeoMLTree(npyscreen.MLTree):
     def h_move_right(self, ch):
 
         node = self.values[self.cursor_line]
+        g.trace(ch, node)
         if not node:
             g.trace('no node')
             return
@@ -3138,8 +3145,10 @@ class LeoMLTree(npyscreen.MLTree):
         
         # pylint: disable=no-member
         d = {
+            curses.KEY_DOWN: self.h_cursor_line_down,
             curses.KEY_LEFT: self.h_move_left,
             curses.KEY_RIGHT: self.h_move_right,
+            curses.KEY_UP: self.h_cursor_line_up,
             ord('d'): self.h_delete,
             ord('h'): self.h_edit_headline,
             ord('i'): self.h_insert,
@@ -3149,8 +3158,17 @@ class LeoMLTree(npyscreen.MLTree):
             # curses.ascii.DEL:       self.h_delete_line_value,
             # curses.ascii.BS:        self.h_delete_line_value,
             # curses.KEY_BACKSPACE:   self.h_delete_line_value,
+            # ord('<'): self.h_collapse_tree,
+            # ord('>'): self.h_expand_tree,
+            # ord('['): self.h_collapse_tree,
+            # ord(']'): self.h_expand_tree,
+            # ord('{'): self.h_collapse_all,
+            # ord('}'): self.h_expand_all,
+            # ord('h'): self.h_collapse_tree,
+            # ord('l'): self.h_expand_tree,   
         }
-        self.handlers.update(d)
+        ### self.handlers.update(d)
+        self.handlers = d
     #@+node:ekr.20170516100256.1: *5* LeoMLTree.set_up_handlers
     def set_up_handlers(self):
         super(LeoMLTree, self).set_up_handlers()
@@ -3161,20 +3179,6 @@ class LeoMLTree(npyscreen.MLTree):
         self.hidden_root_node = None
         self.set_handlers()
 
-    #@+node:ekr.20170516055435.6: *5* LeoMLTree.set_up_handlers (REF)
-    # def set_up_handlers(self):
-        # '''TreeLineAnnotated.set_up_handlers.'''
-        # super(MLTree, self).set_up_handlers()
-        # self.handlers.update({
-            # ord('<'): self.h_collapse_tree,
-            # ord('>'): self.h_expand_tree,
-            # ord('['): self.h_collapse_tree,
-            # ord(']'): self.h_expand_tree,
-            # ord('{'): self.h_collapse_all,
-            # ord('}'): self.h_expand_all,
-            # ord('h'): self.h_collapse_tree,
-            # ord('l'): self.h_expand_tree,          
-        # })
     #@+node:ekr.20170513032502.1: *4* LeoMLTree.update & helpers
     def update(self, clear=True):
         '''Redraw the tree.'''
