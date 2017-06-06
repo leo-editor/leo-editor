@@ -610,7 +610,7 @@ class LeoTreeLine(npyscreen.TreeLine):
 
         self.cursor_position += 1
 
-    #@+node:ekr.20170508130349.1: *5* LeoTreeLine.h_delete_left (done)
+    #@+node:ekr.20170508130349.1: *5* LeoTreeLine.h_delete_left (changed)
     def h_delete_left(self, input):
 
         # self.value is a LeoTreeData.
@@ -620,13 +620,16 @@ class LeoTreeLine(npyscreen.TreeLine):
             assert p and isinstance(p, leoNodes.Position), repr(p)
             s = p.h
             if 0 <= n <= len(s):
-                p.h = s[:n] + s[n+1:]
+                c = p.v.context
+                h = s[:n] + s[n+1:]
+                c.frame.tree.onHeadChanged(p, s=h, undoType='Typing')
+                    # Sets p.h and handles undo.
         else:
             s = self.value.content
             if 0 <= n <= len(s):
                 self.value.content = s[:n] + s[n+1:]
         self.cursor_position -= 1
-    #@+node:ekr.20170510212007.1: *5* LeoTreeLine.h_end_editing (test)
+    #@+node:ekr.20170510212007.1: *5* LeoTreeLine.h_end_editing
     def h_end_editing(self, ch):
 
         # g.trace('LeoTreeLine', ch)
@@ -634,15 +637,18 @@ class LeoTreeLine(npyscreen.TreeLine):
         c.endEditing()
         self.editing = False
         self.how_exited = None
-    #@+node:ekr.20170508125632.1: *5* LeoTreeLine.h_insert (done)
+    #@+node:ekr.20170508125632.1: *5* LeoTreeLine.h_insert (to do: honor v.selection)
     def h_insert(self, i):
 
         # self.value is a LeoTreeData.
         n = self.cursor_position + 1
         if native:
             p = self.value.content
+            c = p.v.context
             s = p.h
-            p.h = s[:n] + chr(i) + s[n:]
+            h = s[:n] + chr(i) + s[n:]
+            c.frame.tree.onHeadChanged(p, s=h, undoType='Typing')
+                # Sets p.h and handles undo.
         else:
             s = self.value.content
             self.value.content = s[:n] + chr(i) + s[n:]
@@ -1775,7 +1781,7 @@ class CoreFrame (leoFrame.LeoFrame):
         if wname.startswith('body'):
             c.frame.body.onBodyChanged('Paste', oldSel=oldSel, oldText=oldText)
         elif wname.startswith('head'):
-            c.frame.tree.onHeadChanged(w.p, 'Paste', s=w.getAllText())
+            c.frame.tree.onHeadChanged(w.p, s=w.getAllText(), undoType='Paste')
                 # New for Curses gui.
 
     OnPasteFromMenu = pasteText
@@ -1987,8 +1993,11 @@ class CoreTree (leoFrame.LeoTree):
     #@+node:ekr.20170511104533.12: *5* CTree.onHeadChanged
     # Tricky code: do not change without careful thought and testing.
 
-    def onHeadChanged(self, p, undoType='Typing', s=None, e=None):
-        '''Officially change a headline.'''
+    def onHeadChanged(self, p, s=None, undoType='Typing'):
+        '''
+        Officially change a headline.
+        This is c.frame.tree.onHeadChanged.
+        '''
         trace = False and not g.unitTesting
         c, u = self.c, self.c.undoer
         if not c.frame.body.wrapper:
@@ -2001,9 +2010,9 @@ class CoreTree (leoFrame.LeoTree):
             if trace: g.trace('****** no w for p: %s', repr(p))
             return
         ch = '\n' # New in 4.4: we only report the final keystroke.
-        if s is None: s = w.getAllText()
-        if trace:
-            g.trace('*** CoreTree', p and p.h, 's', repr(s))
+        if s is None:
+            s = w.getAllText()
+        # if trace: g.trace('CoreTree: %r ==> %r' % (p and p.h, s))
         #@+<< truncate s if it has multiple lines >>
         #@+node:ekr.20170511104533.13: *6* << truncate s if it has multiple lines >>
         # Remove trailing newlines before warning of truncation.
@@ -2035,13 +2044,13 @@ class CoreTree (leoFrame.LeoTree):
                 c.setChanged(True)
             # New in Leo 4.4.5: we must recolor the body because
             # the headline may contain directives.
-            ### c.frame.scanForTabWidth(p)
-            ### c.frame.body.recolor(p, incremental=True)
+                # c.frame.scanForTabWidth(p)
+                # c.frame.body.recolor(p, incremental=True)
             dirtyVnodeList = p.setDirty()
             u.afterChangeNodeContents(p, undoType, undoData,
                 dirtyVnodeList=dirtyVnodeList, inHead=True)
-        ### if changed:
-        ###    c.redraw_after_head_changed()
+        # if changed:
+        #    c.redraw_after_head_changed()
             # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
         g.doHook("headkey2", c=c, p=p, v=p, ch=ch, changed=changed)
     #@+node:ekr.20170511104533.19: *5* CTree.OnPopup & allies (To be deleted)
@@ -2254,8 +2263,8 @@ class CoreTree (leoFrame.LeoTree):
     #@+node:ekr.20170511105355.7: *5* CTree.endEditLabel
     def endEditLabel(self):
         '''Override LeoTree.endEditLabel.
-
-        End editing of the presently-selected headline.'''
+        End editing of the presently-selected headline.
+        '''
         c = self.c
         p = c.currentPosition()
         self.onHeadChanged(p)
@@ -3116,7 +3125,7 @@ class LeoMLTree(npyscreen.MLTree):
                 c.frame.tree.select(parent)
             else:
                 if trace: g.trace('no parent')
-                pass # This is what Leo does.
+                # This is what Leo does.
         else:
             if self._has_children(node) and node.expanded:
                 self.h_collapse_tree(ch)
@@ -3851,69 +3860,6 @@ class BodyWrapper(leoFrame.StringTextWrapper):
         # if name.startswith('body'):
             # if hasattr(c.frame, 'statusLine'):
                 # c.frame.statusLine.update()
-    #@+node:ekr.20170504034655.7: *4* bw.onTextChanged (to be deleted)
-    def onTextChanged(self):
-        '''
-        Update Leo after the body has been changed.
-
-        self.selecting is guaranteed to be True during
-        the entire selection process.
-        '''
-        g.trace('**********', g.callers())
-        ###
-            # # Important: usually w.changingText is True.
-            # # This method very seldom does anything.
-            # trace = False and not g.unitTesting
-            # verbose = False
-            # c = self.c; p = c.p
-            # tree = c.frame.tree
-            # if self.changingText:
-                # if trace and verbose: g.trace('already changing')
-                # return
-            # if tree.tree_select_lockout:
-                # if trace and verbose: g.trace('selecting lockout')
-                # return
-            # if tree.selecting:
-                # if trace and verbose: g.trace('selecting')
-                # return
-            # if tree.redrawing:
-                # if trace and verbose: g.trace('redrawing')
-                # return
-            # if not p:
-                # if trace: g.trace('*** no p')
-                # return
-            # newInsert = self.getInsertPoint()
-            # newSel = self.getSelectionRange()
-            # newText = self.getAllText() # Converts to unicode.
-            # # Get the previous values from the VNode.
-            # oldText = p.b
-            # if oldText == newText:
-                # # This can happen as the result of undo.
-                # return
-            # i, j = p.v.selectionStart, p.v.selectionLength
-            # oldSel = (i, i + j)
-            # if trace: g.trace('oldSel', oldSel, 'newSel', newSel)
-            # oldYview = None
-            # undoType = 'Typing'
-            # c.undoer.setUndoTypingParams(p, undoType,
-                # oldText=oldText, newText=newText,
-                # oldSel=oldSel, newSel=newSel, oldYview=oldYview)
-            # # Update the VNode.
-            # p.v.setBodyString(newText)
-            # if True:
-                # p.v.insertSpot = newInsert
-                # i, j = newSel
-                # i, j = self.toPythonIndex(i), self.toPythonIndex(j)
-                # if i > j: i, j = j, i
-                # p.v.selectionStart, p.v.selectionLength = (i, j - i)
-            # # No need to redraw the screen.
-            # c.recolor()
-            # if g.app.qt_use_tabs:
-                # if trace: g.trace(c.frame.top)
-            # if not c.changed and c.frame.initComplete:
-                # c.setChanged(True)
-            # c.frame.body.updateEditors()
-            # c.frame.tree.updateIcon(p)
     #@+node:ekr.20170511053143.7: *4* tm.onTextChanged (REF)
     # def onTextChanged(self):
         # '''
