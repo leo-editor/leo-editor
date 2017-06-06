@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1531,6 +1531,7 @@
 </v>
 <v t="ekr.20170316061434.1"><vh>Settings and command-line options</vh></v>
 </v>
+<v t="ekr.20070814104719"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -6186,6 +6187,8 @@ The **Great Graph Aha**: Leo outlines can represent arbitrary directed graphs. T
 The body text of the @enabled-plugins node contains a list of enabled plugins. Notes:
 
 - Leo attempts to load all plugins every time an @enabled-plugins node is seen. If the plugin has already been loaded, Leo silently ignores the request to re-enable the plugin. Leo never attempts to disable a plugin while processing enabled plugin strings. Thus, plugins enabled in an @enabled-plugins node in leoSettings.leo *will* be enabled regardless of the contents of any other @enabled-plugins node.
+
+- You can enable plugins by file name or by module name.  File names end in .py and are resolved relative to the leo/plugins directory.  Module names do *not* end in .py and are found using Python's import mechanism--the module name must be on PYTHONPATH.
 
 - g.app.gui.getEnabledPlugins contains the last processed @enabled-plugins node.
 </t>
