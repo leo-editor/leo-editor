@@ -452,7 +452,12 @@ class LeoPluginsController(object):
     #@+node:ekr.20100909065501.5953: *3* plugins.Load & unload
     #@+node:ekr.20100908125007.6022: *4* plugins.loadHandlers
     def loadHandlers(self, tag, keys):
-        """Load all enabled plugins from the plugins directory"""
+        '''
+        Load all enabled plugins.
+        
+        Using a module name (without the trailing .py) allows a plugin to
+        be loaded from outside the leo/plugins directory.
+        '''
 
         def pr(*args, **keys):
             if not g.app.unitTesting:
@@ -470,7 +475,12 @@ class LeoPluginsController(object):
                 self.loadOnePlugin(plugin.strip(), tag=tag)
     #@+node:ekr.20100908125007.6024: *4* plugins.loadOnePlugin
     def loadOnePlugin(self, moduleOrFileName, tag='open0', verbose=False):
-        '''Load one plugin with extensive tracing if --trace-plugins is in effect.'''
+        '''
+        Load one plugin from a file name or module.
+        Use extensive tracing if --trace-plugins is in effect.
+
+        Using a module name allows plugins to be loaded from outside the leo/plugins directory.
+        '''
         global optional_modules
             # verbose is no longer used: all traces are verbose
         trace = g.app.trace_plugins
