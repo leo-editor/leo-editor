@@ -1200,6 +1200,7 @@ class LeoCursesGui(leoGui.LeoGui):
         
         # Ignore all printable characters.
         if 32 <= ch_i < 128:
+            g.trace('ignoring', chr(ch_i))
             return True
         return self.key_handler.do_key(ch_i)
     #@+node:ekr.20170526051256.1: *4* CGui.dump_keys
