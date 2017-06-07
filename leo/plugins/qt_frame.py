@@ -2912,7 +2912,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 aList = w.sizes()
                 if len(aList) == 2:
                     n1, n2 = aList
-                    ratio = float(n1) / float(n1 + n2)
+                    # 2017/06/07: guard against division by zero.
+                    ratio = 0.5 if n1 + n2 == 0 else float(n1) / float(n1 + n2)
                     if trace: g.trace('%s %s %4.2f' % (n1, n2, ratio))
                     return ratio
         if trace: g.trace('default: 0.5')

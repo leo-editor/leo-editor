@@ -1617,7 +1617,7 @@ class CoreFrame (leoFrame.LeoFrame):
         g.app.gui.log = self.log
         self.title = title
         # Standard ivars.
-        self.ratio = self.secondary_ratio = 0.0
+        self.ratio = self.secondary_ratio = 0.5
         # Widgets
         self.top = TopFrame(c)
         self.body = CoreBody(c)
