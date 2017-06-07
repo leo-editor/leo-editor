@@ -1699,10 +1699,9 @@ class CoreFrame (leoFrame.LeoFrame):
     def destroySelf(self):
         pass
 
-
-
     def get_window_info(self):
-        return 0, 0, 0, 0
+        '''Return width, height, left, top.'''
+        return 700, 500, 50, 50
 
     def iconify(self):
         pass
