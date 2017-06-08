@@ -2776,6 +2776,12 @@ class LeoForm (npyscreen.Form):
     
     OK_BUTTON_TEXT = 'Quit Leo'
     how_exited = None
+        
+    def display(self, *args, **kwargs):
+        changed = any([z.c.isChanged() for z in g.app.windowList])
+        # g.trace('LeoForm.display: changed:', changed, g.callers())
+        self.name = 'Welcome to Leo' + (' (changed)' if changed else '')
+        super(LeoForm, self).display(*args, **kwargs)
 #@+node:ekr.20170510092721.1: *3* class LeoMiniBuffer (npyscreen.Textfield)
 class LeoMiniBuffer(npyscreen.Textfield):
     '''An npyscreen class representing Leo's minibuffer, with binding.''' 
