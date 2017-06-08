@@ -773,8 +773,8 @@ class LeoFrame(object):
         '''Command decorator for the LeoFrame class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'frame',])
-    #@+node:ekr.20061109125528.1: *3* Must be defined in base class
-    #@+node:ekr.20031218072017.3689: *4* initialRatios (LeoFrame)
+    #@+node:ekr.20061109125528.1: *3* LeoFrame.Must be defined in base class
+    #@+node:ekr.20031218072017.3689: *4* LeoFrame.initialRatios
     def initialRatios(self):
         c = self.c
         s = c.config.get("initial_split_orientation", "string")
@@ -791,25 +791,25 @@ class LeoFrame(object):
             if r2 is None or r2 < 0.0 or r2 > 1.0: r2 = 0.8
         # g.trace(r,r2)
         return verticalFlag, r, r2
-    #@+node:ekr.20031218072017.3690: *4* longFileName & shortFileName
+    #@+node:ekr.20031218072017.3690: *4* LeoFrame.longFileName & shortFileName
     def longFileName(self):
         return self.c.mFileName
 
     def shortFileName(self):
         return g.shortFileName(self.c.mFileName)
-    #@+node:ekr.20031218072017.3691: *4* oops
+    #@+node:ekr.20031218072017.3691: *4* LeoFrame.oops
     def oops(self):
         g.pr("LeoFrame oops:", g.callers(4), "should be overridden in subclass")
-    #@+node:ekr.20031218072017.3692: *4* promptForSave (LeoFrame)
+    #@+node:ekr.20031218072017.3692: *4* LeoFrame.promptForSave
     def promptForSave(self):
         '''
         Prompt the user to save changes.
         Return True if the user vetos the quit or save operation.
         '''
         c = self.c
-        if g.app.gui.guiName() == 'curses':
-            g.trace('Saves disabled for curses gui')
-            return False
+        # if g.app.gui.guiName() == 'curses':
+            # g.trace('Saves disabled for curses gui')
+            # return False
         theType = "quitting?" if g.app.quitting else "closing?"
         # See if we are in quick edit/save mode.
         root = c.rootPosition()
@@ -822,42 +822,42 @@ class LeoFrame(object):
             title="Confirm",
             message='Save changes to %s before %s' % (
                 g.splitLongFileName(name), theType))
-        # g.pr(answer)
         if answer == "cancel":
             return True # Veto.
-        elif answer == "no":
+        if answer == "no":
             return False # Don't save and don't veto.
-        else:
-            if not c.mFileName:
-                root = c.rootPosition()
-                if not root.next() and root.isAtEditNode():
-                    # There is only a single @edit node in the outline.
-                    # A hack to allow "quick edit" of non-Leo files.
-                    # See https://bugs.launchpad.net/leo-editor/+bug/381527
-                    # Write the @edit node if needed.
-                    if root.isDirty():
-                        c.atFileCommands.writeOneAtEditNode(root,
-                            toString=False, force=True)
-                    return False # Don't save and don't veto.
-                else:
-                    c.mFileName = g.app.gui.runSaveFileDialog(c,
-                        initialfile='',
-                        title="Save",
-                        filetypes=[("Leo files", "*.leo")],
-                        defaultextension=".leo")
-                    c.bringToFront()
-            if c.mFileName:
-                ok = c.fileCommands.save(c.mFileName)
-                return not ok # New in 4.2: Veto if the save did not succeed.
+        if not c.mFileName:
+            root = c.rootPosition()
+            if not root.next() and root.isAtEditNode():
+                # There is only a single @edit node in the outline.
+                # A hack to allow "quick edit" of non-Leo files.
+                # See https://bugs.launchpad.net/leo-editor/+bug/381527
+                # Write the @edit node if needed.
+                if root.isDirty():
+                    c.atFileCommands.writeOneAtEditNode(root,
+                        toString=False, force=True)
+                return False # Don't save and don't veto.
             else:
-                return True # Veto.
-    #@+node:ekr.20031218072017.1375: *4* frame.scanForTabWidth
+                c.mFileName = g.app.gui.runSaveFileDialog(c,
+                    initialfile='',
+                    title="Save",
+                    filetypes=[("Leo files", "*.leo")],
+                    defaultextension=".leo")
+                c.bringToFront()
+        if c.mFileName:
+            if g.app.gui.guiName() == 'curses':
+                g.pr('Saving: %s' % c.mFileName)
+            ok = c.fileCommands.save(c.mFileName)
+            return not ok # New in 4.2: Veto if the save did not succeed.
+        else:
+            return True # Veto.
+    #@+node:ekr.20031218072017.1375: *4* LeoFrame.frame.scanForTabWidth
     def scanForTabWidth(self, p):
         '''Return the tab width in effect at p.'''
         c = self.c
         tab_width = c.getTabWidth(p)
         c.frame.setTabWidth(tab_width)
-    #@+node:ekr.20061119120006: *4* Icon area convenience methods
+    #@+node:ekr.20061119120006: *4* LeoFrame.Icon area convenience methods
     def addIconButton(self, *args, **keys):
         if self.iconBar: return self.iconBar.add(*args, **keys)
         else: return None
@@ -893,7 +893,7 @@ class LeoFrame(object):
 
     def showIconBar(self):
         if self.iconBar: self.iconBar.show()
-    #@+node:ekr.20041223105114.1: *4* Status line convenience methods
+    #@+node:ekr.20041223105114.1: *4* LeoFrame.Status line convenience methods
     def createStatusLine(self):
         if not self.statusLine:
             self.statusLine = self.statusLineClass(self.c, self.outerFrame)
@@ -925,8 +925,8 @@ class LeoFrame(object):
 
     def updateStatusLine(self):
         if self.statusLine: self.statusLine.update()
-    #@+node:ekr.20070130115927.4: *4* Cut/Copy/Paste (LeoFrame)
-    #@+node:ekr.20070130115927.5: *5* copyText (LeoFrame)
+    #@+node:ekr.20070130115927.4: *4* LeoFrame.Cut/Copy/Paste
+    #@+node:ekr.20070130115927.5: *5* LeoFrame.copyText
     @cmd('copy-text')
     def copyText(self, event=None):
         '''Copy the selected text from the widget to the clipboard.'''
@@ -1058,11 +1058,11 @@ class LeoFrame(object):
             w.setXScrollPosition(x_pos)
 
     OnPasteFromMenu = pasteText
-    #@+node:ekr.20061016071937: *5* OnPaste (To support middle-button paste)
+    #@+node:ekr.20061016071937: *5* LeoFrame.OnPaste (support middle-button paste)
     def OnPaste(self, event=None):
         return self.pasteText(event=event, middleButton=True)
-    #@+node:ekr.20031218072017.3980: *4* Edit Menu... (LeoFrame)
-    #@+node:ekr.20031218072017.3981: *5* abortEditLabelCommand (LeoFrame)
+    #@+node:ekr.20031218072017.3980: *4* LeoFrame.Edit Menu
+    #@+node:ekr.20031218072017.3981: *5* LeoFrame.abortEditLabelCommand
     @cmd('abort-edit-headline')
     def abortEditLabelCommand(self, event=None):
         '''End editing of a headline and revert to its previous value.'''
@@ -1076,7 +1076,7 @@ class LeoFrame(object):
         # Otherwise c.redraw would undo the change!
         c.setHeadString(p, tree.revertHeadline)
         c.redraw(p)
-    #@+node:ekr.20031218072017.3982: *5* frame.endEditLabelCommand
+    #@+node:ekr.20031218072017.3982: *5* LeoFrame.endEditLabelCommand
     @cmd('end-edit-headline')
     def endEditLabelCommand(self, event=None, p=None):
         '''End editing of a headline and move focus to the body pane.'''
@@ -1095,14 +1095,14 @@ class LeoFrame(object):
                 k.setDefaultInputState()
                 # Recolor the *body* text, **not** the headline.
                 k.showStateAndMode(w=c.frame.body.wrapper)
-    #@+node:ekr.20031218072017.3680: *3* Must be defined in subclasses
-    #@+node:ekr.20031218072017.3683: *4* Config...
+    #@+node:ekr.20031218072017.3680: *3* LeoFrame.Must be defined in subclasses
+    #@+node:ekr.20031218072017.3683: *4* LeoFrame.Config...
     def resizePanesToRatio(self, ratio, secondary_ratio): self.oops()
 
     def setInitialWindowGeometry(self): self.oops()
 
     def setTopGeometry(self, w, h, x, y, adjustSize=True): self.oops()
-    #@+node:ekr.20031218072017.3681: *4* Gui-dependent commands (LeoFrame)
+    #@+node:ekr.20031218072017.3681: *4* LeoFrame.Gui-dependent commands
     # In the Edit menu...
 
     def OnCopy(self, event=None): self.oops()
@@ -1161,7 +1161,7 @@ class LeoFrame(object):
     # In help menu...
 
     def leoHelp(self, event=None): self.oops()
-    #@+node:ekr.20031218072017.3682: *4* Window...
+    #@+node:ekr.20031218072017.3682: *4* LeoFrame.Window...
     # Important: nothing would be gained by calling gui versions of these methods:
     #            they can be defined in a gui-dependent way in a subclass.
 
@@ -1172,21 +1172,21 @@ class LeoFrame(object):
     def get_window_info(self): self.oops()
 
     def lift(self): self.oops()
-    #@+node:ekr.20061109125528: *3* May be defined in subclasses
-    #@+node:ekr.20071027150501: *4* event handlers (LeoFrame)
+    #@+node:ekr.20061109125528: *3* LeoFrame.May be defined in subclasses
+    #@+node:ekr.20071027150501: *4* LeoFrame.event handlers
     def OnBodyClick(self, event=None):
         pass
 
     def OnBodyRClick(self, event=None):
         pass
-    #@+node:ekr.20031218072017.3688: *4* getTitle & setTitle (LeoFrame)
+    #@+node:ekr.20031218072017.3688: *4* LeoFrame.getTitle & setTitle
     def getTitle(self):
         return self.title
 
     def setTitle(self, title):
         # g.trace('**(LeoFrame)',title)
         self.title = title
-    #@+node:ekr.20081005065934.3: *4* initAfterLoad  & initCompleteHint (LeoFrame)
+    #@+node:ekr.20081005065934.3: *4* LeoFrame.initAfterLoad  & initCompleteHint
     def initAfterLoad(self):
         '''Provide offical hooks for late inits of components of Leo frames.'''
         frame = self
@@ -1198,7 +1198,7 @@ class LeoFrame(object):
 
     def initCompleteHint(self):
         pass
-    #@+node:ekr.20031218072017.3687: *4* setTabWidth (LeoFrame)
+    #@+node:ekr.20031218072017.3687: *4* LeoFrame.setTabWidth
     def setTabWidth(self, w):
         '''Set the tab width in effect for this frame.'''
         # Subclasses may override this to affect drawing.

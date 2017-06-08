@@ -1215,13 +1215,6 @@ class LeoApp(object):
     @cmd('exit-leo')
     def onQuit(self, event=None):
         '''Exit Leo, prompting to save unsaved outlines first.'''
-        trace = False # self.trace_shutdown and not g.unitTesting
-        if trace:
-            if g.app.gui.guiName() == 'curses':
-                import logging
-                logging.info('onQuit')
-            else:
-                print('onQuit: %s' % g.callers())
         g.app.quitting = True
         # if trace: print('onQuit',g.app.save_session,g.app.sessionManager)
         if g.app.save_session and g.app.sessionManager:

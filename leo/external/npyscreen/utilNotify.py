@@ -9,7 +9,7 @@ from . import wgmultiline
 import curses
 import textwrap
 
-#@+node:ekr.20170428084207.466: ** class ConfirmCancelPopup
+#@+node:ekr.20170428084207.466: ** class ConfirmCancelPopup (fmPopup.ActionPopup)
 class ConfirmCancelPopup(fmPopup.ActionPopup):
     #@+others
     #@+node:ekr.20170428084207.467: *3* on_ok
@@ -20,7 +20,7 @@ class ConfirmCancelPopup(fmPopup.ActionPopup):
         self.value = False
 
     #@-others
-#@+node:ekr.20170428084207.469: ** class YesNoPopup
+#@+node:ekr.20170428084207.469: ** class YesNoPopup (ConfirmCancelPopup)
 class YesNoPopup(ConfirmCancelPopup):
     OK_BUTTON_TEXT = "Yes"
     CANCEL_BUTTON_TEXT = "No"

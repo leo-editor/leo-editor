@@ -896,6 +896,8 @@ class LeoCursesGui(leoGui.LeoGui):
     This is g.app.gui, when --gui=curses.
     '''
 
+    #@+others
+    #@+node:ekr.20170608112335.1: *4* CGui.__init__
     def __init__(self):
         '''Ctor for the CursesGui class.'''
         leoGui.LeoGui.__init__(self, 'curses')
@@ -907,6 +909,8 @@ class LeoCursesGui(leoGui.LeoGui):
         self.curses_form = None
             # The top-level curses Form instance.
             # Form.editw is the widget with focus.
+        self.in_dialog = False
+            # True: executing a modal dialog.
         self.log = None
             # The present log. Used by g.es
         self.log_inited = False
@@ -920,8 +924,6 @@ class LeoCursesGui(leoGui.LeoGui):
         self.top_form = None
             # The top-level form. Set in createCursesTop.
         self.key_handler = KeyHandler()
-
-    #@+others
     #@+node:ekr.20170504112655.1: *4* CGui.clipboard
     # Yes, using Tkinter seems to be the standard way.
     #@+node:ekr.20170504112744.3: *5* CGui.getTextFromClipboard
@@ -1158,7 +1160,9 @@ class LeoCursesGui(leoGui.LeoGui):
     def runAboutLeoDialog(self, c, version, theCopyright, url, email):
         """Create and run Leo's About Leo dialog."""
         if not g.unitTesting:
-            g.trace(version)
+            message =  '%s\n%s\n%s\n%s' % (version, theCopyright, url, email)
+            utilNotify.notify_confirm(message, title="About Leo")
+                # form_color='STANDOUT', wrap=True, wide=False, editw=0)
 
     def runAskLeoIDDialog(self):
         """Create and run a dialog to get g.app.LeoID."""
@@ -1175,8 +1179,9 @@ class LeoCursesGui(leoGui.LeoGui):
         if g.unitTesting:
             return False
         elif self.curses_app:
+            self.in_dialog = True
             val = utilNotify.notify_confirm(message=message,title=title)
-            g.trace(repr(val))
+            self.in_dialog = False
             return val
         else:
             return False
@@ -1189,10 +1194,9 @@ class LeoCursesGui(leoGui.LeoGui):
         if g.unitTesting:
             return False
         elif self.curses_app:
-            g.trace()
-            self.dialog_message(message)
+            self.in_dialog = True
             val = utilNotify.notify_ok_cancel(message=message,title=title)
-            g.trace(val)
+            self.in_dialog = False
             return val
         else:
             return False
@@ -1207,11 +1211,10 @@ class LeoCursesGui(leoGui.LeoGui):
         if g.unitTesting:
             return False
         else:
-            g.trace()
-            self.dialog_message(message)
+            self.in_dialog = True
             val = utilNotify.notify_ok_cancel(message=message,title=title)
-            g.trace(val)
-            return val
+            self.in_dialog = False
+            return 'yes' if val else 'no'
 
     def runAskYesNoDialog(self, c, title,
         message=None,
@@ -1222,7 +1225,9 @@ class LeoCursesGui(leoGui.LeoGui):
         if g.unitTesting:
             return False
         else:
+            self.in_dialog = True
             val = utilNotify.notify_ok_cancel(message=message,title=title)
+            self.in_dialog = False
             return 'yes' if val else 'no'
 
     def runAskYesNoCancelDialog(self, c, title,
@@ -1237,11 +1242,14 @@ class LeoCursesGui(leoGui.LeoGui):
         if g.unitTesting:
             return False
         else:
-            self.dialog_message(message)
+            self.in_dialog = True
+            val = utilNotify.notify_ok_cancel(message=message,title=title)
+            self.in_dialog = False
+            return 'yes' if val else 'no'
         
     def runOpenFileDialog(self, c, title, filetypes, defaultextension, multiple=False, startpath=None):
         if not g.unitTesting:
-            g.trace(title)
+            g.trace('not ready yet', title)
 
     def runPropertiesDialog(self,
         title='Properties',
@@ -1251,16 +1259,16 @@ class LeoCursesGui(leoGui.LeoGui):
     ):
         """Dispay a modal TkPropertiesDialog"""
         if not g.unitTesting:
-            g.trace(title)
+            g.trace('not ready yet', title)
         
     def runSaveFileDialog(self, c, initialfile, title, filetypes, defaultextension):
         if not g.unitTesting:
-            g.trace(title)
+            g.trace('not ready yet', title)
     #@+node:ekr.20170430114709.1: *4* CGui.do_key
     def do_key(self, ch_i):
         
         # Ignore all printable characters.
-        if 32 <= ch_i < 128:
+        if not self.in_dialog and 32 <= ch_i < 128:
             g.trace('ignoring', chr(ch_i))
             return True
         return self.key_handler.do_key(ch_i)
