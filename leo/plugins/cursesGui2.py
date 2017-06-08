@@ -40,15 +40,28 @@ reverts.
    
 - Deleting a line is not possible in edit mode. Use 'd' outside of edit
   mode to delete a line in the log or body panes.
-   
-
-- Code for cut/paste works, but in the absence of selections only paste
-  might work. And paste may work only in limited contexts...
-
+  
 - Some commands can be run from the minibuffer, but there is no tab
   completion and no indication of what the correct command names are.
 
-- Dialogs don't work well, or at all. They may overwrite the screen.
+- Code for cut/paste works, but in the absence of selections only paste
+  might work. And paste may work only in limited contexts...
+  
+- The body text is not syntax colored.
+  
+** To do**
+
+- Support dialogs.
+   
+- Shift-arrow in body/log panes should create selections. Alas, the base
+  npyscreen classes do not support selections, so this would be a big
+  project.
+
+- Shift arrows in outine should move nodes up/down.
+
+- Support tab completion in the minibuffer.
+
+
 '''
 #@-<< cursesGui2 docstring >>
 #@+<< cursesGui2 imports >>
