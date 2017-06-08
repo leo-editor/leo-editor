@@ -48,10 +48,10 @@ reverts.
   might work. And paste may work only in limited contexts...
   
 - The body text is not syntax colored.
-  
-** To do**
 
-- Show the outline-dirty bit in the outer frame.
+** To do**
+  
+- The changed indicator following "Welcome to Leo" is not updated immediately.
    
 - Shift-arrow in body/log panes should create selections. Alas, the base
   npyscreen classes do not support selections, so this would be a big
