@@ -1151,8 +1151,9 @@ class LeoCursesGui(leoGui.LeoGui):
         Leo's core calls this only if the user agrees to terminate the app.
         '''
         sys.exit(0)
-    #@+node:ekr.20170502021145.1: *4* CGui.dialogs (to do)
+    #@+node:ekr.20170502021145.1: *4* CGui.dialogs
     def dialog_message(self, message):
+        '''No longer used: a placeholder for dialogs.'''
         if not g.unitTesting:
             for s in g.splitLines(message):
                 g.pr(s.rstrip())
@@ -1167,15 +1168,24 @@ class LeoCursesGui(leoGui.LeoGui):
     def runAskLeoIDDialog(self):
         """Create and run a dialog to get g.app.LeoID."""
         if not g.unitTesting:
-            g.trace('not ready yet')
+            message = (
+                "leoID.txt not found\n\n" +
+                "The curses gui can not set this file." +
+                "Exiting..."
+            )
+            g.trace(message)
+            sys.exit(0)
+                # "Please enter an id that identifies you uniquely.\n" +
+                # "Your cvs/bzr login name is a good choice.\n\n" +
+                # "Leo uses this id to uniquely identify nodes.\n\n" +
+                # "Your id must contain only letters and numbers\n" +
+                # "and must be at least 3 characters in length."
 
     def runAskOkDialog(self, c, title,
         message=None,
         text="Ok",
     ):
         """Create and run an askOK dialog ."""
-        # Potentially dangerous dialog.
-        # self.dialog_message(message)
         if g.unitTesting:
             return False
         elif self.curses_app:
@@ -1262,8 +1272,22 @@ class LeoCursesGui(leoGui.LeoGui):
             g.trace('not ready yet', title)
         
     def runSaveFileDialog(self, c, initialfile, title, filetypes, defaultextension):
-        if not g.unitTesting:
-            g.trace('not ready yet', title)
+        if g.unitTesting:
+            return None
+        else:
+            # Not tested.
+            self.in_dialog = True
+            s = utilNotify.selectFile(
+                select_dir=False,
+                must_exist=False,
+                confirm_if_exists=True,
+                sort_by_extension=True,
+            )
+            self.in_dialog = False
+            s = g.u(s or '')
+            if s:
+                c.last_dir = g.os_path_dirname(s)
+            return s
     #@+node:ekr.20170430114709.1: *4* CGui.do_key
     def do_key(self, ch_i):
         
