@@ -58,6 +58,10 @@ https://github.com/leo-editor/leo-editor/issues/487
 https://github.com/leo-editor/leo-editor/pull/497
 
 Rewrote rf.createRecentFiles, rf.readRecentFilesFile and rf.writeRecentFilesFileHelper.
+.. @+node:ekr.20170608072053.84: *4* Ensure that .leo/.leoRecentFiles.txt is closed.
+https://github.com/leo-editor/leo-editor/pull/497
+
+Rewrote rf.createRecentFiles, rf.readRecentFilesFile and rf.writeRecentFilesFileHelper.
 .. @+node:ekr.20170326054533.1: *4* Fixed bug in k.computeInverseBindingDict
 The bug gave way too many bindings for the move-lines commands.
 .. @+node:ekr.20170326113032.1: *4* Fixed bug in tab completion
@@ -71,6 +75,12 @@ The fix was in xml_i.scan_tag & helper
 .. @+node:ekr.20170406095247.1: *4* Fixed serious bug in c.checkFileTimeStamp
 It must return True if g.app.externalFilesController is None.
 .. @+node:ekr.20170401132710.1: *4* Fixed several problems with goto-global-line
+.. @+node:ekr.20170608072053.88: *4* #498: --session-restore option fails if no leo.session exists
+https://github.com/leo-editor/leo-editor/issues/498
+
+With a new installation of Leo there is no leo.session file. It is apparently created only after using the --session-save command line option.
+
+If the --session-restore option is also used before that file is created, then Leo fails to open (splash screen displays, then nothing else happens).
 .. @+node:ekr.20170416063625.1: *4* Revised xml/html importers
 The new code is simpler and handles dubious html syntax.
 .. @+node:ekr.20170329145930.1: *4* The pylint command now warns if pylint has not been installed
@@ -122,6 +132,8 @@ Leo's cacher code will soon use the branch name returned by g.gitInfo() to ensur
 As a happy side effect, these methods completely collapse the complexity of leoVersion.py. 
 .. @+node:ekr.20170427171721.1: *4* Added traces to c.doCommand to detect multiple redraws
 These traces detected nothing unusual and have been disabled.
+.. @+node:ekr.20170608072053.74: *4* Use 'with' statement to simplify code
+Improved g.SherlockTracer.do_line, g.gitInfo, g.is_binary_external_file, g.log, g.readFileToUnicodeString.
 .. @+node:ekr.20170403190659.1: *3* docs
 .. @+node:ekr.20170325090029.1: *3* features
 .. @+node:ekr.20170325045838.1: *4* #448: Add abbreviations for commands
@@ -134,6 +146,8 @@ This took only a few lines of code in abbrev.expandAbbrev.
 https://github.com/leo-editor/leo-editor/issues/484
 
 Added submenus to Windows menu. This significantly simplifies and clarifies the Windows menu.
+.. @+node:ekr.20170608071935.1: *4* #488: Created a curses/npyscreen front end for Leo
+https://github.com/leo-editor/leo-editor/issues/488
 .. @+node:ekr.20170411191401.1: *4* Added  git branch name to backed-up files
 .. @+node:ekr.20170328143013.1: *4* Added --trace-focus command-line argument
 .. @+node:ekr.20170411092513.1: *4* Added goto-any-clone command

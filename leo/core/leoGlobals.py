@@ -3297,7 +3297,7 @@ def readFileIntoString(fn,
         g.error('readFileIntoString: unexpected exception reading %s' % (fn))
         g.es_exception()
     return None, None
-#@+node:ekr.20160504062833.1: *3* g.readFileToUnicodeString (new in Leo 5.4)
+#@+node:ekr.20160504062833.1: *3* g.readFileToUnicodeString
 def readFileIntoUnicodeString(fn, encoding=None, silent=False):
     '''Return the raw contents of the file whose full path is fn.'''
     try:
