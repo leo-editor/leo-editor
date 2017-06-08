@@ -51,7 +51,7 @@ reverts.
   
 ** To do**
 
-- Support dialogs.
+- Show the outline-dirty bit in the outer frame.
    
 - Shift-arrow in body/log panes should create selections. Alas, the base
   npyscreen classes do not support selections, so this would be a big
@@ -60,8 +60,6 @@ reverts.
 - Shift arrows in outine should move nodes up/down.
 
 - Support tab completion in the minibuffer.
-
-
 '''
 #@-<< cursesGui2 docstring >>
 #@+<< cursesGui2 imports >>
