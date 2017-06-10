@@ -712,7 +712,7 @@ class LeoTreeLine(npyscreen.TreeLine):
             s = self.value.content
             self.value.content = s[:n] + chr(i) + s[n:]
         self.cursor_position += 1
-    #@+node:ekr.20170508130025.1: *5* LeoTreeLine.set_handlers
+    #@+node:ekr.20170508130025.1: *5* LeoTreeLine.set_handlers (changed)
     #@@nobeautify
 
     def set_handlers(self):
@@ -732,6 +732,7 @@ class LeoTreeLine(npyscreen.TreeLine):
             curses.KEY_RIGHT:       self.h_cursor_right,
             curses.ascii.BS:        self.h_delete_left,
             curses.KEY_BACKSPACE:   self.h_delete_left,
+            curses.KEY_MOUSE:       self.h_exit_mouse, # New
         })
     #@+node:ekr.20170519023802.1: *4* LeoTreeLine.when_check_value_changed
     if native:
@@ -3254,12 +3255,13 @@ class LeoMLTree(npyscreen.MLTree):
                     self.h_expand_tree(ch)
             else:
                 self.h_cursor_line_down(ch)
-    #@+node:ekr.20170507175304.1: *5* LeoMLTree.set_handlers
+    #@+node:ekr.20170507175304.1: *5* LeoMLTree.set_handlers (changed)
     #@@nobeautify
     def set_handlers(self):
         
         # pylint: disable=no-member
         d = {
+            curses.KEY_MOUSE:   self.h_exit_mouse,
             curses.KEY_BTAB:    self.h_exit_up,
             curses.KEY_DOWN:    self.h_cursor_line_down,
             curses.KEY_LEFT:    self.h_move_left,
