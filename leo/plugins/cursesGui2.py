@@ -2173,77 +2173,10 @@ class CoreTree (leoFrame.LeoTree):
         """Returns the edit widget for position p."""
         wrapper = HeadWrapper(c=self.c, name='head', p=p)
         return wrapper
-    #@+node:ekr.20170511095353.1: *5* CTree.editLabel & helpers
+    #@+node:ekr.20170511095353.1: *5* CTree.editLabel
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""
         return None, None
-    #@+node:ekr.20170511095244.22: *6* CTree.editLabelHelper (Never called!)
-    # def editLabelHelper(self, item, selectAll=False, selection=None):
-        # '''
-        # Help nativeTree.editLabel do gui-specific stuff.
-        # '''
-        # c, vc = self.c, self.c.vimCommands
-        # w = self.widget
-        # w.setCurrentItem(item)
-            # # Must do this first.
-            # # This generates a call to onTreeSelect.
-        # w.editItem(item)
-            # # Generates focus-in event that tree doesn't report.
-        # e = w.itemWidget(item, 0) # A QLineEdit.
-        # g.trace(repr(e))
-        # if e:
-            # s = e.text()
-            # len_s = len(s)
-            # if s == 'newHeadline':
-                # selectAll = True
-            # if selection:
-                # # Fix bug https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
-                # # Note: negative lengths are allowed.
-                # i, j, ins = selection
-                # if ins is None:
-                    # start, n = i, abs(i - j)
-                    # # This case doesn't happen for searches.
-                # elif ins == j:
-                    # start, n = i, j - i
-                # else:
-                    # start, n = j, i - j
-            # elif selectAll:
-                # start, n, ins = 0, len_s, len_s
-            # else: start, n, ins = len_s, 0, len_s
-            # e.setObjectName('headline')
-            # e.setSelection(start, n)
-            # # e.setCursorPosition(ins) # Does not work.
-            # e.setFocus()
-            # wrapper = self.connectEditorWidget(e, item) # Hook up the widget.
-            # if vc and c.vim_mode: #  and selectAll
-                # # For now, *always* enter insert mode.
-                # if vc.is_text_wrapper(wrapper):
-                    # vc.begin_insert_mode(w=wrapper)
-                # else:
-                    # g.trace('not a text widget!', wrapper)
-        # return e, wrapper
-    #@+node:ekr.20170522191450.1: *6* CTree.setSelectionHelper
-    def setSelectionHelper(self, p, selectAll, selection, wrapper):
-        
-        s = p.h
-        if s == 'newHeadline':
-            selectAll = True
-        if selection:
-            i, j, ins = selection
-            if ins is None:
-                start, n = i, abs(i - j)
-                # This case doesn't happen for searches.
-            elif ins == j:
-                start, n = i, j - i
-            else:
-                start, n = j, i - j
-        elif selectAll:
-            # start, n, ins = 0, len_s, len_s
-            start, n = 0, len(s)
-        else:
-            # start, n, ins = len_s, 0, len_s
-            start, n = len(s), 0
-        wrapper.setSelection(start, n)
     #@+node:ekr.20170511105355.7: *5* CTree.endEditLabel
     def endEditLabel(self):
         '''Override LeoTree.endEditLabel.
@@ -2252,10 +2185,11 @@ class CoreTree (leoFrame.LeoTree):
         c = self.c
         p = c.currentPosition()
         self.onHeadChanged(p)
-    #@+node:ekr.20170511105355.8: *5* CTree.getSelectedPositions
+    #@+node:ekr.20170511105355.8: *5* CTree.getSelectedPositions (called from Leo's core)
     def getSelectedPositions(self):
         '''This can be called from Leo's core.'''
-        g.trace(self.c.p.h)
+        # Not called from unit tests.
+        # g.trace(self.c.p.h)
         return [self.c.p]
     #@+node:ekr.20170511105355.9: *5* CTree.setHeadline
     def setHeadline(self, p, s):
