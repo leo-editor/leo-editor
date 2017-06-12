@@ -1447,9 +1447,6 @@ class LeoCursesGui(leoGui.LeoGui):
             curses.echo()
             curses.endwin()
             g.pr('Exiting Leo...')
-    #@+node:ekr.20170510074755.1: *4* CGui.test
-    def test(self):
-        '''A place to put preliminary tests.'''
     #@-others
 #@+node:edward.20170428174322.1: *3* class KeyEvent (object)
 class KeyEvent(object):
