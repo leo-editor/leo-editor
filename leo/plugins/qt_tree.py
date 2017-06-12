@@ -161,6 +161,8 @@ class LeoQtTree(leoFrame.LeoTree):
         '''
         trace = False and not g.app.unitTesting
         verbose = False
+        if False and g.app.unitTesting:
+            return ### Experimental
         c = self.c
         if g.app.disable_redraw:
             if trace: g.trace('*** disabled', g.callers())

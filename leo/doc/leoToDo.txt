@@ -23,7 +23,6 @@ https://github.com/leo-editor/leo-editor/issues/480
 3. Support for rendering @language latex.  I am about to up code to render such nodes as plain text rather than the default.  Next, I'll add the actual rendering.
 .. @+node:ekr.20170325055951.1: *4* #414: Add p.drawer, p.results, etc.
 https://github.com/leo-editor/leo-editor/issues/414
-.. @+node:ekr.20170608114345.1: *4* ??? Disable redraws during qt unit tests???
 .. @+node:ekr.20170211190548.1: *3* Add org-mode features
 @language rest
 @wrap

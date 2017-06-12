@@ -290,8 +290,7 @@ class LeoKeyEvent(object):
 class NullGui(LeoGui):
     """Null gui class."""
     #@+others
-    #@+node:ekr.20031218072017.2224: *3* Birth & death (NullGui)
-    #@+node:ekr.20031218072017.2225: *4*  NullGui.__init__
+    #@+node:ekr.20031218072017.2225: *3* NullGui.__init__
     def __init__(self, guiName='nullGui'):
         '''ctor for the NullGui class.'''
         LeoGui.__init__(self, guiName)
@@ -307,89 +306,7 @@ class NullGui(LeoGui):
         self.isNullGui = True
         self.bodyTextWidget = leoFrame.StringTextWrapper
         self.plainTextWidget = leoFrame.StringTextWrapper
-    #@+node:ekr.20031218072017.2229: *4* NullGui.runMainLoop
-    def runMainLoop(self):
-        """Run the null gui's main loop."""
-        if self.script:
-            frame = self.lastFrame
-            g.app.log = frame.log
-            # g.es("start of batch script...\n")
-            self.lastFrame.c.executeScript(script=self.script)
-            # g.es("\nend of batch script")
-        else:
-            print('**** NullGui.runMainLoop: terminating Leo.')
-        # Getting here will terminate Leo.
-    #@+node:ekr.20070228155807: *3* NullGui.isTextWidget & isTextWrapper
-    def isTextWidget(self, w):
-        return True # Must be True for unit tests.
-
-    def isTextWrapper(self, w):
-        '''Return True if w is a Text widget suitable for text-oriented commands.'''
-        return w and hasattr(w, 'supportsHighLevelInterface') and w.supportsHighLevelInterface
-    #@+node:ekr.20031218072017.2230: *3* oops (NullGui)
-    def oops(self):
-        """Default do-nothing method for NullGui class.
-
-        It is NOT an error to use this method."""
-        # It is not usually an error to call methods of this class.
-        # However, this message is useful when writing gui plugins.
-        if 1:
-            g.trace("NullGui", g.callers(4))
-    #@+node:ekr.20070301171901: *3* do nothings (NullGui)
-    def alert(self, message):
-        pass
-
-    def attachLeoIcon(self, window):
-        pass
-
-    def destroySelf(self):
-        pass
-
-    def finishCreate(self):
-        pass
-
-    def getIconImage(self, name):
-        return None
-
-    def getImageImage(self, name):
-        return None
-
-    def getTreeImage(self, c, path):
-        return None
-
-    def getTextFromClipboard(self):
-        return self.clipboardContents
-
-    def get_focus(self, frame=None):
-        if not frame: return None
-        return self.focusWidget or (hasattr(frame, 'body') and frame.body.wrapper) or None
-
-    def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
-        return g.app.config.defaultFont
-
-    def get_window_info(self, window):
-        return 0, 0, 0, 0
-
-    def replaceClipboardWith(self, s):
-        self.clipboardContents = s
-
-    def set_focus(self, commander, widget):
-        self.focusWidget = widget
-    #@+node:ekr.20070301172456: *3* app.gui panels (NullGui)
-    def createComparePanel(self, c):
-        """Create Compare panel."""
-        self.oops()
-
-    def createFindTab(self, c, parentFrame):
-        """Create a find tab in the indicated frame."""
-        pass # Now always done during startup.
-
-    def createLeoFrame(self, c, title):
-        """Create a null Leo Frame."""
-        gui = self
-        self.lastFrame = leoFrame.NullFrame(c, title, gui)
-        return self.lastFrame
-    #@+node:ekr.20031218072017.3744: *3* dialogs (NullGui)
+    #@+node:ekr.20031218072017.3744: *3* NullGui.dialogs & helper
     def runAboutLeoDialog(self, c, version, theCopyright, url, email):
         return self.simulateDialog("aboutLeoDialog")
 
@@ -423,18 +340,99 @@ class NullGui(LeoGui):
         yesToAllMessage=None, defaultButton="Yes", cancelMessage=None,
     ):
         return self.simulateDialog("yesNoCancelDialog", "cancel")
-    #@+node:ekr.20100521090440.5893: *3* onActivateEvent/onDeactivateEvent (NullGui)
-    def onActivateEvent(self, *args, **keys):
-        pass
-
-    def onDeactivateEvent(self, *args, **keys):
-        pass
-    #@+node:ekr.20031218072017.3747: *3* simulateDialog
+    #@+node:ekr.20031218072017.3747: *4* NullGui.simulateDialog
     def simulateDialog(self, key, defaultVal=None):
         val = self.theDict.get(key, defaultVal)
         if self.trace:
             g.pr(key, val)
         return val
+    #@+node:ekr.20070301171901: *3* NullGui.do nothings
+    def alert(self, message):
+        pass
+
+    def attachLeoIcon(self, window):
+        pass
+
+    def destroySelf(self):
+        pass
+
+    def finishCreate(self):
+        pass
+
+    def getIconImage(self, name):
+        return None
+
+    def getImageImage(self, name):
+        return None
+
+    def getTreeImage(self, c, path):
+        return None
+
+    def getTextFromClipboard(self):
+        return self.clipboardContents
+
+    def get_focus(self, frame=None):
+        if not frame: return None
+        return self.focusWidget or (hasattr(frame, 'body') and frame.body.wrapper) or None
+
+    def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
+        return g.app.config.defaultFont
+
+    def get_window_info(self, window):
+        return 0, 0, 0, 0
+        
+    def onActivateEvent(self, *args, **keys):
+        pass
+
+    def onDeactivateEvent(self, *args, **keys):
+        pass
+
+    def replaceClipboardWith(self, s):
+        self.clipboardContents = s
+
+    def set_focus(self, commander, widget):
+        self.focusWidget = widget
+    #@+node:ekr.20070228155807: *3* NullGui.isTextWidget & isTextWrapper
+    def isTextWidget(self, w):
+        return True # Must be True for unit tests.
+
+    def isTextWrapper(self, w):
+        '''Return True if w is a Text widget suitable for text-oriented commands.'''
+        return w and getattr(w, 'supportsHighLevelInterface', None)
+    #@+node:ekr.20031218072017.2230: *3* NullGui.oops
+    def oops(self):
+        '''
+        Called when we expect the gui to override a base LeoGui method.
+
+        Useful when creating gui plugins.
+        '''
+        g.trace("NullGui", g.callers(4))
+    #@+node:ekr.20070301172456: *3* NullGui.panels
+    def createComparePanel(self, c):
+        """Create Compare panel."""
+        self.oops()
+
+    def createFindTab(self, c, parentFrame):
+        """Create a find tab in the indicated frame."""
+        pass # Now always done during startup.
+
+    def createLeoFrame(self, c, title):
+        """Create a null Leo Frame."""
+        gui = self
+        self.lastFrame = leoFrame.NullFrame(c, title, gui)
+        return self.lastFrame
+    #@+node:ekr.20031218072017.2229: *3* NullGui.runMainLoop
+    def runMainLoop(self):
+        """Run the null gui's main loop."""
+        if self.script:
+            frame = self.lastFrame
+            g.app.log = frame.log
+            # g.es("start of batch script...\n")
+            self.lastFrame.c.executeScript(script=self.script)
+            # g.es("\nend of batch script")
+        else:
+            print('**** NullGui.runMainLoop: terminating Leo.')
+        # Getting here will terminate Leo.
     #@-others
 #@+node:ekr.20080707150137.5: ** class NullScriptingControllerClass
 class NullScriptingControllerClass(object):
