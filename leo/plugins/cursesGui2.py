@@ -1412,6 +1412,10 @@ class LeoCursesGui(leoGui.LeoGui):
     def oops(self):
         '''Ignore do-nothing methods.'''
         g.pr("CursesGui oops:", g.callers(4), "should be overridden in subclass")
+    #@+node:ekr.20170612063102.1: *4* CGui.put_help
+    def put_help(self, s, short_title):
+        '''Put a help message in a dialog.'''
+        utilNotify.notify_confirm(message=s, title=short_title or 'Help')
     #@+node:ekr.20170502020354.1: *4* CGui.run
     def run(self):
         '''

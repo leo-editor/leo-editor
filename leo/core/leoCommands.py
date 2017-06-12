@@ -7020,6 +7020,9 @@ class Commands(object):
         s = g.adjustTripleString(s.rstrip(), c.tab_width)
         if s.startswith('<') and not s.startswith('<<'):
             pass # how to do selective replace??
+        if g.app.gui.guiName() == 'curses':
+            g.app.gui.put_help(s, short_title)
+            return
         pc = g.app.pluginsController
         table = (
             'viewrendered3.py',
