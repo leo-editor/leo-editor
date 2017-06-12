@@ -2150,48 +2150,6 @@ class CoreTree (leoFrame.LeoTree):
         #    c.redraw_after_head_changed()
             # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
         g.doHook("headkey2", c=c, p=p, v=p, ch=ch, changed=changed)
-    #@+node:ekr.20170511104533.19: *5* CTree.OnPopup & allies (To be deleted)
-    # def OnPopup(self, p, event):
-        # """Handle right-clicks in the outline.
-
-        # This is *not* an event handler: it is called from other event handlers."""
-        # # Note: "headrclick" hooks handled by VNode callback routine.
-        # if event:
-            # c = self.c
-            # c.setLog()
-            # if not g.doHook("create-popup-menu", c=c, p=p, v=p, event=event):
-                # self.createPopupMenu(event)
-            # if not g.doHook("enable-popup-menu-items", c=c, p=p, v=p, event=event):
-                # self.enablePopupMenuItems(p, event)
-            # if not g.doHook("show-popup-menu", c=c, p=p, v=p, event=event):
-                # self.showPopupMenu(event)
-        # return "break"
-    #@+node:ekr.20170511104533.20: *6* CTree.OnPopupFocusLost
-    #@+at
-    # On Linux we must do something special to make the popup menu "unpost" if the
-    # mouse is clicked elsewhere. So we have to catch the <FocusOut> event and
-    # explicitly unpost. In order to process the <FocusOut> event, we need to be able
-    # to find the reference to the popup window again, so this needs to be an
-    # attribute of the tree object; hence, "self.popupMenu".
-    # 
-    # Aside: though Qt tries to be muli-platform, the interaction with different
-    # window managers does cause small differences that will need to be compensated by
-    # system specific application code. :-(
-    #@@c
-    # 20-SEP-2002 DTHEIN: This event handler is only needed for Linux.
-
-    def OnPopupFocusLost(self, event=None):
-        # self.popupMenu.unpost()
-        pass
-    #@+node:ekr.20170511104533.21: *6* CTree.createPopupMenu
-    def createPopupMenu(self, event):
-        '''This might be a placeholder for plugins.  Or not :-)'''
-    #@+node:ekr.20170511104533.22: *6* CTree.enablePopupMenuItems
-    def enablePopupMenuItems(self, v, event):
-        """Enable and disable items in the popup menu."""
-    #@+node:ekr.20170511104533.23: *6* CTree.showPopupMenu
-    def showPopupMenu(self, event):
-        """Show a popup menu."""
     #@+node:ekr.20170511104121.1: *4* CTree.Scroll bars
     #@+node:ekr.20170511104121.2: *5* Ctree.getScroll
     def getScroll(self):
@@ -2213,11 +2171,11 @@ class CoreTree (leoFrame.LeoTree):
     #@+node:ekr.20170511105355.4: *5* CTree.edit_widget
     def edit_widget(self, p):
         """Returns the edit widget for position p."""
-        return HeadWrapper(c=self.c, name='head', p=p)
+        wrapper = HeadWrapper(c=self.c, name='head', p=p)
+        return wrapper
     #@+node:ekr.20170511095353.1: *5* CTree.editLabel & helpers
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""
-        # if not g.unitTesting: g.trace(p.h)
         return None, None
     #@+node:ekr.20170511095244.22: *6* CTree.editLabelHelper (Never called!)
     # def editLabelHelper(self, item, selectAll=False, selection=None):
@@ -2286,11 +2244,12 @@ class CoreTree (leoFrame.LeoTree):
             # start, n, ins = len_s, 0, len_s
             start, n = len(s), 0
         wrapper.setSelection(start, n)
-    #@+node:ekr.20170511105355.6: *5* CTree.editPosition
+    #@+node:ekr.20170511105355.6: *5* CTree.editPosition (not used?)
     def editPosition(self):
         c = self.c
         p = c.currentPosition()
         wrapper = self.edit_widget(p)
+        g.trace(p if wrapper else None)
         return p if wrapper else None
     #@+node:ekr.20170511105355.7: *5* CTree.endEditLabel
     def endEditLabel(self):
@@ -2303,6 +2262,7 @@ class CoreTree (leoFrame.LeoTree):
     #@+node:ekr.20170511105355.8: *5* CTree.getSelectedPositions
     def getSelectedPositions(self):
         '''This can be called from Leo's core.'''
+        g.trace(self.c.p.h)
         return [self.c.p]
     #@+node:ekr.20170511105355.9: *5* CTree.setHeadline
     def setHeadline(self, p, s):
@@ -2317,6 +2277,7 @@ class CoreTree (leoFrame.LeoTree):
         e = self.edit_widget(p)
         assert isinstance(e, HeadWrapper), repr(e)
         e.setAllText(s)
+        if trace: g.trace(e)
     #@+node:ekr.20170523115818.1: *5* CTree.set_body_text_after_select
     def set_body_text_after_select(self, p, old_p, traceTime, force=False):
         '''Set the text after selecting a node.'''
