@@ -1415,7 +1415,11 @@ class LeoCursesGui(leoGui.LeoGui):
     #@+node:ekr.20170612063102.1: *4* CGui.put_help
     def put_help(self, c, s, short_title):
         '''Put a help message in a dialog.'''
-        utilNotify.notify_confirm(message=s, title=short_title or 'Help')
+        if not g.unitTesting:
+            utilNotify.notify_confirm(
+                message=s,
+                title=short_title or 'Help',
+            )
     #@+node:ekr.20170502020354.1: *4* CGui.run
     def run(self):
         '''
@@ -2882,7 +2886,7 @@ class LeoMiniBuffer(npyscreen.Textfield):
         })
     #@-others
 #@+node:ekr.20170506035146.1: *3* class LeoMLTree (npyscreen.MLTree)
-class LeoMLTree(npyscreen.MLTree):
+class LeoMLTree(npyscreen.MLTree, object):
 
     # pylint: disable=used-before-assignment
     _contained_widgets = LeoTreeLine
