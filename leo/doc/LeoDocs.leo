@@ -1534,9 +1534,6 @@
 <v t="ekr.20170316061434.1"><vh>Settings and command-line options</vh></v>
 </v>
 <v t="ekr.20170608071626.1"><vh>Leo 5.6 release notes (in progress)</vh></v>
-<v t="ekr.20170612093546.1"><vh>** To do</vh></v>
-<v t="ekr.20170612101117.1"></v>
-<v t="ekr.20170217093636.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -23219,7 +23216,6 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
 </t>
-<t tx="ekr.20170612093546.1">- Document that section references are recognized everywhere.</t>
 <t tx="ekr.20170612093902.1">Use @others unless the contents of a node must appear in a certain spot, or in a certain order. For examples, most of Leo's source files start like this::
 
     @first # -*- coding: utf-8 -*-
