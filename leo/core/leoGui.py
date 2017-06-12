@@ -49,30 +49,30 @@ class LeoGui(object):
         self.utils = None
         # To keep pylint happy.
         self.ScriptingControllerClass = NullScriptingControllerClass
-    #@+node:ekr.20061109212618.1: *3* Must be defined only in base class
-    #@+node:ekr.20110605121601.18847: *4* create_key_event (LeoGui)
+    #@+node:ekr.20061109212618.1: *3* LeoGui: Must be defined only in base class
+    #@+node:ekr.20110605121601.18847: *4* LeoGui.create_key_event (LeoGui)
     def create_key_event(self, c, char, stroke, w, event=None, x=None, y=None, x_root=None, y_root=None):
         # Do not call strokeFromSetting here!
         # For example, this would wrongly convert Ctrl-C to Ctrl-c,
         # in effect, converting a user binding from Ctrl-Shift-C to Ctrl-C.
         return LeoKeyEvent(c, char, event, stroke, w, x, y, x_root, y_root)
-    #@+node:ekr.20031218072017.3740: *4* guiName
+    #@+node:ekr.20031218072017.3740: *4* LeoGui.guiName
     def guiName(self):
         try:
             return self.mGuiName
         except Exception:
             return "invalid gui name"
-    #@+node:ekr.20031218072017.2231: *4* setScript
+    #@+node:ekr.20031218072017.2231: *4* LeoGui.setScript
     def setScript(self, script=None, scriptFileName=None):
         self.script = script
         self.scriptFileName = scriptFileName
-    #@+node:ekr.20110605121601.18845: *4* event_generate (LeoGui)
+    #@+node:ekr.20110605121601.18845: *4* LeoGui.event_generate (LeoGui)
     def event_generate(self, c, char, shortcut, w):
         event = self.create_key_event(c, char, shortcut, w)
         c.k.masterKeyHandler(event)
         c.outerUpdate()
-    #@+node:ekr.20061109212618: *3* Must be defined in subclasses
-    #@+node:ekr.20031218072017.3723: *4* app.gui create & destroy
+    #@+node:ekr.20061109212618: *3* LeoGu: Must be defined in subclasses
+    #@+node:ekr.20031218072017.3723: *4* LeoGui.create & destroy
     #@+node:ekr.20031218072017.3725: *5* LeoGui.destroySelf
     def destroySelf(self):
         self.oops()
@@ -80,7 +80,7 @@ class LeoGui(object):
     def runMainLoop(self):
         """Run the gui's main loop."""
         self.oops()
-    #@+node:ekr.20031218072017.3730: *4* app.gui dialogs
+    #@+node:ekr.20031218072017.3730: *4* LeoGui.dialogs
     def runAboutLeoDialog(self, c, version, theCopyright, url, email):
         """Create and run Leo's About Leo dialog."""
         self.oops()
@@ -116,7 +116,7 @@ class LeoGui(object):
     def runPropertiesDialog(self, title='Properties', data=None, callback=None, buttons=None):
         """Dispay a modal TkPropertiesDialog"""
         self.oops()
-    #@+node:ekr.20031218072017.3731: *4* app.gui file dialogs
+    #@+node:ekr.20031218072017.3731: *4* LeoGui.file dialogs
     def runOpenFileDialog(self, c, title, filetypes, defaultextension, multiple=False, startpath=None):
         """Create and run an open file dialog ."""
         self.oops()
@@ -124,7 +124,7 @@ class LeoGui(object):
     def runSaveFileDialog(self, c, initialfile, title, filetypes, defaultextension):
         """Create and run a save file dialog ."""
         self.oops()
-    #@+node:ekr.20031218072017.3732: *4* app.gui panels
+    #@+node:ekr.20031218072017.3732: *4* LeoGui.panels
     def createColorPanel(self, c):
         """Create a color panel"""
         self.oops()
@@ -144,7 +144,7 @@ class LeoGui(object):
     def createLeoFrame(self, c, title):
         """Create a new Leo frame."""
         self.oops()
-    #@+node:ekr.20031218072017.3733: *4* app.gui utils
+    #@+node:ekr.20031218072017.3733: *4* LeoGui.utils
     #@+at Subclasses are expected to subclass all of the following methods.
     # 
     # These are all do-nothing methods: callers are expected to check for
@@ -204,26 +204,34 @@ class LeoGui(object):
         silent=False,
     ):
         self.oops()
-    #@+node:ekr.20070228154059: *3* May be defined in subclasses
-    #@+node:ekr.20110613103140.16423: *4* dismiss_spash_screen (LeoGui)
+    #@+node:ekr.20070228154059: *3* LeoGui: May be defined in subclasses
+    #@+node:ekr.20110613103140.16423: *4* LeoGui.dismiss_spash_screen
     def dismiss_splash_screen(self):
         pass # May be overridden in subclasses.
-    #@+node:ekr.20070219084912: *4* finishCreate (LeoGui)
+    #@+node:tbrown.20110618095626.22068: *4* LeoGui.ensure_commander_visible
+    def ensure_commander_visible(self, c):
+        """E.g. if commanders are in tabs, make sure c's tab is visible"""
+        pass
+    #@+node:ekr.20070219084912: *4* LeoGui.finishCreate
     def finishCreate(self):
         # This may be overridden in subclasses.
         pass
-    #@+node:ekr.20101028131948.5861: *4* killPopupMenu & postPopupMenu
+    #@+node:ekr.20101028131948.5861: *4* LeoGui.killPopupMenu & postPopupMenu
     # These definitions keep pylint happy.
 
     def postPopupMenu(self, *args, **keys):
         pass
-    #@+node:ekr.20031218072017.3741: *4* oops
+    #@+node:ekr.20031218072017.3741: *4* LeoGui.oops
     def oops(self):
         # It is not usually an error to call methods of this class.
         # However, this message is useful when writing gui plugins.
         if 1:
             g.pr("LeoGui oops", g.callers(4), "should be overridden in subclass")
-    #@+node:ekr.20051206103652: *4* widget_name (LeoGui)
+    #@+node:ekr.20170612065049.1: *4* LeoGui.put_help
+    def put_help(self, c, s, short_title):
+        pass
+
+    #@+node:ekr.20051206103652: *4* LeoGui.widget_name (LeoGui)
     def widget_name(self, w):
         # First try the widget's getName method.
         if not 'w':
@@ -234,10 +242,6 @@ class LeoGui(object):
             return w._name
         else:
             return repr(w)
-    #@+node:tbrown.20110618095626.22068: *4* ensure_commander_visible
-    def ensure_commander_visible(self, c):
-        """E.g. if commanders are in tabs, make sure c's tab is visible"""
-        pass
     #@-others
 #@+node:ekr.20070228160107: ** class LeoKeyEvent
 class LeoKeyEvent(object):

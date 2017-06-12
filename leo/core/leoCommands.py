@@ -7017,42 +7017,43 @@ class Commands(object):
     def putHelpFor(self, s, short_title=''):
         '''Helper for various help commands.'''
         c = self
-        s = g.adjustTripleString(s.rstrip(), c.tab_width)
-        if s.startswith('<') and not s.startswith('<<'):
-            pass # how to do selective replace??
-        if g.app.gui.guiName() == 'curses':
-            g.app.gui.put_help(s, short_title)
-            return
-        pc = g.app.pluginsController
-        table = (
-            'viewrendered3.py',
-            'viewrendered2.py',
-            'viewrendered.py',
-        )
-        for name in table:
-            if pc.isLoaded(name):
-                vr = pc.loadOnePlugin(name)
-                break
-        else:
-            vr = pc.loadOnePlugin('viewrendered.py')
-        if g.unitTesting:
-            assert vr # For unit testing.
-        if vr:
-            kw = {
-                'c': c,
-                'flags': 'rst',
-                'kind': 'rst',
-                'label': '',
-                'msg': s,
-                'name': 'Apropos',
-                'short_title': short_title,
-                'title': ''}
-            vr.show_scrolled_message(tag='Apropos', kw=kw)
-            c.bodyWantsFocus()
-            if g.unitTesting:
-                vr.close_rendering_pane(event={'c': c})
-        else:
-            g.es(s)
+        g.app.gui.put_help(c, s, short_title)
+        # s = g.adjustTripleString(s.rstrip(), c.tab_width)
+        # if s.startswith('<') and not s.startswith('<<'):
+            # pass # how to do selective replace??
+        # if g.app.gui.guiName() == 'curses':
+            # g.app.gui.put_help(s, short_title)
+            # return
+        # pc = g.app.pluginsController
+        # table = (
+            # 'viewrendered3.py',
+            # 'viewrendered2.py',
+            # 'viewrendered.py',
+        # )
+        # for name in table:
+            # if pc.isLoaded(name):
+                # vr = pc.loadOnePlugin(name)
+                # break
+        # else:
+            # vr = pc.loadOnePlugin('viewrendered.py')
+        # if g.unitTesting:
+            # assert vr # For unit testing.
+        # if vr:
+            # kw = {
+                # 'c': c,
+                # 'flags': 'rst',
+                # 'kind': 'rst',
+                # 'label': '',
+                # 'msg': s,
+                # 'name': 'Apropos',
+                # 'short_title': short_title,
+                # 'title': ''}
+            # vr.show_scrolled_message(tag='Apropos', kw=kw)
+            # c.bodyWantsFocus()
+            # if g.unitTesting:
+                # vr.close_rendering_pane(event={'c': c})
+        # else:
+            # g.es(s)
     #@+node:ekr.20140717074441.17770: *3* c.recreateGnxDict
     def recreateGnxDict(self):
         '''Recreate the gnx dict prior to refreshing nodes from disk.'''

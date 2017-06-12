@@ -1007,6 +1007,42 @@ class LeoQtGui(leoGui.LeoGui):
         # This will use any shortcut defined in an @shortcuts node.
         k.registerCommand(buttonCommandName, None, executeScriptCallback, pane='button', verbose=False)
         #@-<< create press-buttonText-button command >>
+    #@+node:ekr.20170612065255.1: *3* qt_gui.put_help
+    def put_help(self, c, s, short_title=''):
+        '''Put the help command.'''
+        s = g.adjustTripleString(s.rstrip(), c.tab_width)
+        if s.startswith('<') and not s.startswith('<<'):
+            pass # how to do selective replace??
+        pc = g.app.pluginsController
+        table = (
+            'viewrendered3.py',
+            'viewrendered2.py',
+            'viewrendered.py',
+        )
+        for name in table:
+            if pc.isLoaded(name):
+                vr = pc.loadOnePlugin(name)
+                break
+        else:
+            vr = pc.loadOnePlugin('viewrendered.py')
+        if g.unitTesting:
+            assert vr # For unit testing.
+        if vr:
+            kw = {
+                'c': c,
+                'flags': 'rst',
+                'kind': 'rst',
+                'label': '',
+                'msg': s,
+                'name': 'Apropos',
+                'short_title': short_title,
+                'title': ''}
+            vr.show_scrolled_message(tag='Apropos', kw=kw)
+            c.bodyWantsFocus()
+            if g.unitTesting:
+                vr.close_rendering_pane(event={'c': c})
+        else:
+            g.es(s)
     #@+node:ekr.20110605121601.18521: *3* qt_gui.runAtIdle
     def runAtIdle(self, aFunc):
         '''This can not be called in some contexts.'''
