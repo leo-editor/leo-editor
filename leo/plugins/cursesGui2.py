@@ -2885,7 +2885,7 @@ class LeoMiniBuffer(npyscreen.Textfield):
             curses.KEY_BACKSPACE:   self.h_delete_left,
         })
     #@-others
-#@+node:ekr.20170506035146.1: *3* class LeoMLTree (npyscreen.MLTree)
+#@+node:ekr.20170506035146.1: *3* class LeoMLTree (npyscreen.MLTree, object)
 class LeoMLTree(npyscreen.MLTree, object):
 
     # pylint: disable=used-before-assignment
