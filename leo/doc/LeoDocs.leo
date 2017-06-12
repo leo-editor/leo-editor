@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -522,6 +522,7 @@
 <v t="ekr.20131115075142.16636"><vh>How can I test settings easily?</vh></v>
 <v t="ekr.20141108064630.12"><vh>How can I use setuptools instead of .bat files?</vh></v>
 <v t="ekr.20141108064630.13"><vh>How can scripts call functions from Leo's core?</vh></v>
+<v t="ekr.20170612093902.1"><vh>How do I choose between @others and section references?</vh></v>
 <v t="ekr.20141108064630.10"><vh>How do I run unit tests from Leo?</vh></v>
 <v t="ekr.20141108064630.14"><vh>How to use leo to make mathematical notes?</vh></v>
 <v t="ekr.20160304081437.6"><vh>Tip: run unit tests locally using clones</vh></v>
@@ -1532,6 +1533,7 @@
 <v t="ekr.20170316061434.1"><vh>Settings and command-line options</vh></v>
 </v>
 <v t="ekr.20170608071626.1"><vh>Leo 5.6 release notes (in progress)</vh></v>
+<v t="ekr.20170612093546.1"><vh>** To do</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -23205,6 +23207,22 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20170612093546.1">- Document that section references are recognized everywhere.</t>
+<t tx="ekr.20170612093902.1">Use @others unless the contents of a node must appear in a certain spot, or in a certain order. For examples, most of Leo's source files start like this::
+
+    @first # -*- coding: utf-8 -*-
+    &lt;&lt; imports &gt;&gt;
+    @others
+
+The &lt;&lt; imports &gt;&gt; section reference ensures that imports appear first. Another example::
+
+    @first # -*- coding: utf-8 -*-
+    &lt;&lt; imports &gt;&gt;
+    &lt;&lt; base classes &gt;&gt;
+    @others
+    
+This ensures that base classes are defined before their subclasses.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
