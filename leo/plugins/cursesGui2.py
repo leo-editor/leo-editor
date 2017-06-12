@@ -2197,42 +2197,6 @@ class CoreTree (leoFrame.LeoTree):
     def getScroll(self):
         '''Return the hPos,vPos for the tree's scrollbars.'''
         return 0, 0
-        # w = self.widget
-        # hScroll = w.horizontalScrollBar()
-        # vScroll = w.verticalScrollBar()
-        # hPos = hScroll.sliderPosition()
-        # vPos = vScroll.sliderPosition()
-        # return hPos, vPos
-    #@+node:ekr.20170511104121.3: *5* Ctree.scrollDelegate
-    # def scrollDelegate(self, kind):
-        # '''Scroll a QTreeWidget up or down or right or left.
-        # kind is in ('down-line','down-page','up-line','up-page', 'right', 'left')
-        # '''
-        # c = self.c; w = self.widget
-        # if kind in ('left', 'right'):
-            # hScroll = w.horizontalScrollBar()
-            # if kind == 'right':
-                # delta = hScroll.pageStep()
-            # else:
-                # delta = -hScroll.pageStep()
-            # hScroll.setValue(hScroll.value() + delta)
-        # else:
-            # vScroll = w.verticalScrollBar()
-            # h = w.size().height()
-            # lineSpacing = w.fontMetrics().lineSpacing()
-            # n = h / lineSpacing
-            # if kind == 'down-half-page': delta = n / 2
-            # elif kind == 'down-line': delta = 1
-            # elif kind == 'down-page': delta = n
-            # elif kind == 'up-half-page': delta = -n / 2
-            # elif kind == 'up-line': delta = -1
-            # elif kind == 'up-page': delta = -n
-            # else:
-                # delta = 0; g.trace('bad kind:', kind)
-            # val = vScroll.value()
-            # # g.trace(kind,n,h,lineSpacing,delta,val)
-            # vScroll.setValue(val + delta)
-        # c.treeWantsFocus()
     #@+node:ekr.20170511104121.4: *5* Ctree.setH/VScroll
     def setHScroll(self, hPos):
         pass
@@ -2253,37 +2217,8 @@ class CoreTree (leoFrame.LeoTree):
     #@+node:ekr.20170511095353.1: *5* CTree.editLabel & helpers
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""
-        if not g.unitTesting: g.trace(p.h)
+        # if not g.unitTesting: g.trace(p.h)
         return None, None
-        ###
-            # trace = False and not g.unitTesting
-            # if trace: g.trace('all', selectAll, p.h)
-            # if self.busy():
-                # if trace: g.trace('busy')
-                # return
-            # c = self.c
-            # c.outerUpdate()
-                # # Do any scheduled redraw.
-                # # This won't do anything in the new redraw scheme.
-            # if 1:
-                # # Apparently, item is always None below!
-                # return None, None
-            # else:
-                # # item is always None here.
-                # item = self.position2item(p)
-                # if item:
-                    # # if self.use_declutter:
-                        # # item.setText(0, item._real_text)
-                    # e, wrapper = self.editLabelHelper(item, selectAll, selection)
-                # else:
-                    # e, wrapper = None, None
-                    # self.error('no item for %s' % p)
-                # if trace: g.trace('p: %s e: %s' % (p and p.h, e))
-                # if e:
-                    # self.sizeTreeEditor(c, e)
-                    # # A nice hack: just set the focus request.
-                    # c.requestedFocusWidget = e
-                # return e, wrapper
     #@+node:ekr.20170511095244.22: *6* CTree.editLabelHelper (Never called!)
     # def editLabelHelper(self, item, selectAll=False, selection=None):
         # '''
