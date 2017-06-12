@@ -2024,7 +2024,7 @@ class CoreTree (leoFrame.LeoTree):
         self.widget = None
             # A LeoMLTree set by CGui.createCursesTree.
         # self.setConfigIvars()
-        self.setEditPosition(None) # Set positions returned by LeoTree.editPosition()
+        #
         # Status flags, for busy()
         self.contracting = False
         self.expanding = False
@@ -2244,13 +2244,6 @@ class CoreTree (leoFrame.LeoTree):
             # start, n, ins = len_s, 0, len_s
             start, n = len(s), 0
         wrapper.setSelection(start, n)
-    #@+node:ekr.20170511105355.6: *5* CTree.editPosition (not used?)
-    def editPosition(self):
-        c = self.c
-        p = c.currentPosition()
-        wrapper = self.edit_widget(p)
-        g.trace(p if wrapper else None)
-        return p if wrapper else None
     #@+node:ekr.20170511105355.7: *5* CTree.endEditLabel
     def endEditLabel(self):
         '''Override LeoTree.endEditLabel.
