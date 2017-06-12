@@ -23,24 +23,26 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.18405: *4* qtree.__init__
     def __init__(self, c, frame):
         '''Ctor for the LeoQtTree class.'''
-        # Init the base class.
         leoFrame.LeoTree.__init__(self, frame)
             # Init the base class.
         self.c = c
+        #
         # Configuration.
         self.auto_edit = c.config.getBool('single_click_auto_edits_headline', False)
+        #
         # Widget independent status ivars...
         self.contracting = False
-        # self.dragging = False
         self.expanding = False
         self.prev_v = None
         self.redrawing = False
         self.redrawCount = 0 # Count for debugging.
         self.revertHeadline = None # Previous headline text for abortEditLabel.
         self.selecting = False
+        #
         # Debugging...
         self.nodeDrawCount = 0
         self.traceCallersFlag = False # Enable traceCallers method.
+        #
         # Associating items with position and vnodes...
         self.item2positionDict = {}
         self.item2vnodeDict = {}
@@ -48,13 +50,13 @@ class LeoQtTree(leoFrame.LeoTree):
         self.vnode2itemsDict = {} # values are lists of items.
         self.editWidgetsDict = {} # keys are native edit widgets, values are wrappers.
         self.setConfigIvars()
-        self.setEditPosition(None) # Set positions returned by LeoTree.editPosition()
+        #
         # Components.
         self.canvas = self # An official ivar used by Leo's core.
         self.headlineWrapper = qt_text.QHeadlineWrapper # This is a class.
         self.treeWidget = w = frame.top.leo_ui.treeWidget # An internal ivar.
             # w is a LeoQTreeWidget, a subclass of QTreeWidget.
-
+        #
         # "declutter", node appearance tweaking
         self.use_declutter = c.config.getBool('tree-declutter', default=False)
         self.declutter_patterns = None  # list of pairs of patterns for decluttering
@@ -79,8 +81,8 @@ class LeoQtTree(leoFrame.LeoTree):
 
                 def mimeData(self, indexes):
                     g.trace()
+        #
         # Early inits...
-
         try:
             w.headerItem().setHidden(True)
         except Exception:
@@ -1351,11 +1353,12 @@ class LeoQtTree(leoFrame.LeoTree):
             # A nice hack: just set the focus request.
             c.requestedFocusWidget = e
         return e, wrapper
-    #@+node:ekr.20110605121601.17910: *4* qtree.editPosition
-    def editPosition(self):
-        c = self.c; p = c.currentPosition()
-        ew = self.edit_widget(p)
-        return p if ew else None
+    #@+node:ekr.20110605121601.17910: *4* qtree.editPosition (no longer used)
+    # def editPosition(self):
+        # c = self.c
+        # p = c.currentPosition()
+        # ew = self.edit_widget(p)
+        # return p if ew else None
     #@+node:ekr.20110605121601.17911: *4* qtree.endEditLabel
     def endEditLabel(self):
         '''Override LeoTree.endEditLabel.

@@ -113,8 +113,6 @@ class TreeAPI(object):
 
     def OnIconCtrlClick(self, p): pass
 
-    def editPosition(self): return None
-
     def endEditLabel(self): pass
 
     def getEditTextDict(self, v): return None
@@ -124,8 +122,6 @@ class TreeAPI(object):
     def onHeadlineKey(self, event): pass
 
     def select(self, p, scroll=True): pass
-
-    def setEditPosition(self, p): pass
 
     def updateHead(self, event, w): pass
 #@+node:ekr.20140903025053.18631: *3* class WrapperAPI
@@ -1350,7 +1346,6 @@ class LeoTree(object):
             # New in 4.2: keys are vnodes, values are pairs (p,edit widgets).
         # "public" ivars: correspond to setters & getters.
         self.drag_p = None
-        self._editPosition = None
         self.redrawCount = 0 # For traces
         self.revertHeadline = None
         self.use_chapters = False # May be overridden in subclasses.
@@ -1453,7 +1448,6 @@ class LeoTree(object):
         trace = False and not g.unitTesting
         c = self.c; k = c.k; p = c.p
         if trace: g.trace('LeoTree', p and p.h, g.callers(4))
-        self.setEditPosition(None) # That is, self._editPosition = None
         # Important: this will redraw if necessary.
         self.onHeadChanged(p)
         if 0: # Can't call setDefaultUnboundKeyAction here: it might put us in ignore mode!
@@ -1461,16 +1455,10 @@ class LeoTree(object):
             k.showStateAndMode()
         if 0: # This interferes with the find command and interferes with focus generally!
             c.bodyWantsFocus()
-    #@+node:ekr.20031218072017.3716: *4* LeoTree.Getters/Setters
+    #@+node:ekr.20031218072017.3716: *4* LeoTree.getEditTextDict
     def getEditTextDict(self, v):
         # New in 4.2: the default is an empty list.
         return self.edit_text_dict.get(v, [])
-
-    def editPosition(self):
-        return self._editPosition
-
-    def setEditPosition(self, p):
-        self._editPosition = p
     #@+node:ekr.20040803072955.21: *4* LeoTree.injectCallbacks
     def injectCallbacks(self):
         c = self.c
@@ -1660,7 +1648,7 @@ class LeoTree(object):
         if unselect and old_p != p:
             if trace: g.trace(p.h)
             # Actually unselect the old node.
-            self.endEditLabel() # sets editPosition = None
+            self.endEditLabel()
         if call_event_handlers:
             g.doHook("unselect2", c=c, new_p=p, old_p=old_p, new_v=p, old_v=old_p)
         if traceTime:
@@ -2254,8 +2242,6 @@ class NullTree(LeoTree):
     def editLabel(self, p, selectAll=False, selection=None):
         '''Start editing p's headline.'''
         self.endEditLabel()
-        self.setEditPosition(p)
-            # That is, self._editPosition = p
         if p:
             self.revertHeadline = p.h
                 # New in 4.4b2: helps undo.
