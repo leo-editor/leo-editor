@@ -616,7 +616,7 @@
 <v t="ekr.20131001100335.15940"><vh>Configuring Leo</vh></v>
 <v t="ekr.20131009100732.19038"><vh>Plugins</vh></v>
 <v t="ekr.20170215082032.1"><vh>Scripting basics</vh>
-<v t="ekr.20170217093636.1"><vh>Markup</vh></v>
+<v t="ekr.20170217093636.1"><vh>Skipting markup</vh></v>
 <v t="ekr.20170217093639.1"><vh>c, g and p</vh></v>
 <v t="ekr.20170217093640.1"><vh>Accessing outline data</vh></v>
 <v t="ekr.20170217093640.2"><vh>\@button and @command nodes</vh></v>
@@ -1534,6 +1534,7 @@
 </v>
 <v t="ekr.20170608071626.1"><vh>Leo 5.6 release notes (in progress)</vh></v>
 <v t="ekr.20170612093546.1"><vh>** To do</vh></v>
+<v t="ekr.20170217093636.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -21147,7 +21148,9 @@ c.redraw()
 
 @language python
 @tabwidth -4</t>
-<t tx="ekr.20161120075731.1">pattern = re.compile(r'^(#+\s+)(.*)$')
+<t tx="ekr.20161120075731.1"># In @button make-md-heads
+
+pattern = re.compile(r'^(#+\s+)(.*)$')
 
 def markup(p, root):
     '''prepend p.b[0] with markdown section markup, if appropriate.'''
@@ -22327,7 +22330,9 @@ When in the minibuffer, the following keys are treated in special ways:
 ``DownArrow``
     Moves forward through command history.
 </t>
-<t tx="ekr.20170217093636.1">Leo's markup applies to scripts as well as external files. Leo's execute-script command **composes** the script from the selected node, using Leo's markup. For example: this body text defines the top-level part of a script::
+<t tx="ekr.20170217093636.1">.. in tutorial-basics.html (Scripting basics)
+
+Leo's markup applies to scripts as well as external files. Leo's execute-script command **composes** the script from the selected node, using Leo's markup. For example: this body text defines the top-level part of a script::
 
     '''My script'''
     &lt;&lt; imports &gt;&gt;
@@ -22335,6 +22340,23 @@ When in the minibuffer, the following keys are treated in special ways:
         # Child nodes define the methods of this class.
         @others
     Controller(c).run # c *is* defined.
+
+**Important**: Leo recognizes section references *everywhere*, even inside strings or comments. If a source code line contains &lt;&lt; followed by &gt;&gt; on the same line, you must rewrite the line.  For example, suppose your C code contains::
+
+    a = 1 &lt;&lt; 5 + 2 &gt;&gt; 3;
+    
+You could rewrite this as:
+
+    a = 1 &lt;&lt; 5 + \
+        2 &gt;&gt; 3;
+        
+g.angleBrackets(s) returns string s enclosed in angle brackets.  For instance::
+
+​   headline = g.angleBrackets("my section")
+
+sets headline to::
+
+    "&lt;&lt;my section&gt;&gt;"
 </t>
 <t tx="ekr.20170217093639.1">.. _`commander`: tutorial-basics.html#accessing-outline-data
 .. _`position`: tutorial-scripting.html#positions-and-vnodes
@@ -23002,7 +23024,9 @@ An **@file node** is a node whose headline starts with `@file` followed by a pat
     @file ../../notes.txt
 
 The @file node and its descendants represent an external file. Leo updates @file nodes when you change external files outside of Leo. When saving an outline, Leo writes all changed @file trees to their external files.</t>
-<t tx="ekr.20170314060926.1">.. index::
+<t tx="ekr.20170314060926.1">.. in tutorial-basics.html (External files)
+
+.. index::
     pair: Markup; Tutorial
 
 Leo's **markup** tells Leo how to create external files from @file trees. Markup may appear in any body text, and *must* appear in the body of the @file node itself.
@@ -23024,7 +23048,8 @@ When writing this file, Leo writes the first two lines::
     @first # -*- coding: utf-8 -*-
     '''whatever.py'''
     
-followed by the *body text* of the &lt;&lt; imports&gt;&gt; node, followed by the body text of all *other* nodes, in outline order, followed by the comment # That's all, folks.</t>
+followed by the *body text* of the &lt;&lt; imports&gt;&gt; node, followed by the body text of all *other* nodes, in outline order, followed by the comment # That's all, folks.
+</t>
 <t tx="ekr.20170314061000.1">.. index::
     pair: @clean; Tutorial
 
