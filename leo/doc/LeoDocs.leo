@@ -563,19 +563,20 @@
 <v t="ekr.20150415105956.1"><vh>Why is Alt-N (goto-next-clone) important?</vh></v>
 </v>
 <v t="ekr.20050830115714.76"><vh>Trouble shooting</vh>
-<v t="ekr.20090130144433.1"><vh>How do I get help?</vh></v>
-<v t="ekr.20090130144433.2"><vh>How do I report bugs?</vh></v>
-<v t="ekr.20080813064908.2"><vh>My old .leo files won't load using Leo 4.5 or later. What should I do?</vh></v>
 <v t="ekr.20050830115714.115"><vh>Error messages from the rst3 plugin aren't helpful. What can I do?</vh></v>
 <v t="ekr.20050906090012"><vh>How can I run Leo from a console window?</vh></v>
 <v t="ekr.20050830115714.77"><vh>How can I use Python's pdb debugger with Leo?</vh></v>
+<v t="ekr.20090130144433.1"><vh>How do I get help?</vh></v>
 <v t="ekr.20160123060917.1"><vh>How do I make Ctrl-Shift-0 work on Windows 8 or 10?</vh></v>
+<v t="ekr.20090130144433.2"><vh>How do I report bugs?</vh></v>
 <v t="ekr.20160318142213.1"><vh>I am having trouble installing Leo on MacOS. What should I do?</vh></v>
-<v t="ekr.20050830115714.17"><vh>I can't write Imported files.  What's going on?</vh></v>
-<v t="ekr.20060329101442"><vh>Nothing (or almost nothing) happens when I start Leo.  What should I do?</vh></v>
-<v t="ekr.20050830115714.117"><vh>The new Python decorator syntax causes problems.  What can I do?</vh></v>
-<v t="ekr.20070623145346.1"><vh>Running Python setup.py install from the leo directory doesn't work.  Why not?</vh></v>
 <v t="ekr.20070816092449"><vh>I can't run the LeoBridge module outside of leo/core.  What should I do?</vh></v>
+<v t="ekr.20050830115714.17"><vh>I can't write Imported files.  What's going on?</vh></v>
+<v t="ekr.20080813064908.2"><vh>My old .leo files won't load using Leo 4.5 or later. What should I do?</vh></v>
+<v t="ekr.20060329101442"><vh>Nothing (or almost nothing) happens when I start Leo.  What should I do?</vh></v>
+<v t="ekr.20070623145346.1"><vh>Running Python setup.py install from the leo directory doesn't work.  Why not?</vh></v>
+<v t="ekr.20050830115714.117"><vh>The new Python decorator syntax causes problems.  What can I do?</vh></v>
+<v t="ekr.20170612101117.1"><vh>What about code that looks like a section reference?</vh></v>
 <v t="ekr.20101026082911.5538"><vh>Why didn't Leo update my @clean outline as expected?</vh></v>
 <v t="ekr.20120229094652.15130"><vh>Why do Qt windows disappear in my scripts?</vh></v>
 </v>
@@ -616,7 +617,7 @@
 <v t="ekr.20131001100335.15940"><vh>Configuring Leo</vh></v>
 <v t="ekr.20131009100732.19038"><vh>Plugins</vh></v>
 <v t="ekr.20170215082032.1"><vh>Scripting basics</vh>
-<v t="ekr.20170217093636.1"><vh>Skipting markup</vh></v>
+<v t="ekr.20170217093636.1"><vh>Scripting markup</vh></v>
 <v t="ekr.20170217093639.1"><vh>c, g and p</vh></v>
 <v t="ekr.20170217093640.1"><vh>Accessing outline data</vh></v>
 <v t="ekr.20170217093640.2"><vh>\@button and @command nodes</vh></v>
@@ -1534,6 +1535,7 @@
 </v>
 <v t="ekr.20170608071626.1"><vh>Leo 5.6 release notes (in progress)</vh></v>
 <v t="ekr.20170612093546.1"><vh>** To do</vh></v>
+<v t="ekr.20170612101117.1"></v>
 <v t="ekr.20170217093636.1"></v>
 </vnodes>
 <tnodes>
@@ -22341,23 +22343,7 @@ Leo's markup applies to scripts as well as external files. Leo's execute-script 
         @others
     Controller(c).run # c *is* defined.
 
-**Important**: Leo recognizes section references *everywhere*, even inside strings or comments. If a source code line contains &lt;&lt; followed by &gt;&gt; on the same line, you must rewrite the line.  For example, suppose your C code contains::
-
-    a = 1 &lt;&lt; 5 + 2 &gt;&gt; 3;
-    
-You could rewrite this as:
-
-    a = 1 &lt;&lt; 5 + \
-        2 &gt;&gt; 3;
-        
-g.angleBrackets(s) returns string s enclosed in angle brackets.  For instance::
-
-​   headline = g.angleBrackets("my section")
-
-sets headline to::
-
-    "&lt;&lt;my section&gt;&gt;"
-</t>
+**Important**: Leo recognizes section references *everywhere*, even inside strings or comments. See `this FAQ entry &lt;http://leoeditor.com/FAQ.html#what-about-code-that-looks-like-a-section-reference&gt;`_.</t>
 <t tx="ekr.20170217093639.1">.. _`commander`: tutorial-basics.html#accessing-outline-data
 .. _`position`: tutorial-scripting.html#positions-and-vnodes
 
@@ -23248,6 +23234,23 @@ The &lt;&lt; imports &gt;&gt; section reference ensures that imports appear firs
     @others
     
 This ensures that base classes are defined before their subclasses.
+</t>
+<t tx="ekr.20170612101117.1">Leo recognizes section references *everywhere*, even inside strings or comments. If a source code line contains &lt;&lt; followed by &gt;&gt; on the same line, you must rewrite the line.  For example, suppose your C code contains::
+
+    a = 1 &lt;&lt; 5 + 2 &gt;&gt; 3;
+    
+You could rewrite this as:
+
+    a = 1 &lt;&lt; 5 + \
+        2 &gt;&gt; 3;
+        
+g.angleBrackets(s) returns string s enclosed in angle brackets.  For instance::
+
+​   headline = g.angleBrackets("my section")
+
+sets headline to::
+
+    "&lt;&lt;my section&gt;&gt;"
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
