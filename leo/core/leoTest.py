@@ -738,7 +738,6 @@ class TestManager(object):
                     self.logger.info(s.rstrip())
         def flush(self):
             pass
-
     #@+node:ekr.20170504130408.1: *5* create_logging_stream
     def create_logging_stream(self):
 
@@ -748,7 +747,6 @@ class TestManager(object):
             # Don't use debug: it includes Qt debug messages.
         for handler in logger.handlers or []:
             if isinstance(handler, logging.handlers.SocketHandler):
-                stream = None
                 break
         else:
             handler = logging.handlers.SocketHandler(

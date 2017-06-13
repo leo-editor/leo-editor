@@ -756,8 +756,8 @@ class LeoTreeLine(npyscreen.TreeLine):
 #@-others
 #@-<< forward reference classes >>
 #@+others
-#@+node:ekr.20170501043944.1: **   top-level functions
-#@+node:ekr.20170603110639.1: *3* dump_handlers
+#@+node:ekr.20170501043944.1: **   curses2: top-level functions
+#@+node:ekr.20170603110639.1: *3* curses2: dump_handlers
 def dump_handlers(obj,
     dump_complex=True,
     dump_handlers=True,
@@ -784,7 +784,7 @@ def dump_handlers(obj,
             f1, f2 = data
             aList.append('%25s predicate: %s' % (method_name(f2), method_name(f1)))
         g.printList(sorted(set(aList)))
-#@+node:ekr.20170419094705.1: *3* init (cursesGui2.py)
+#@+node:ekr.20170419094705.1: *3* curses2: init
 def init():
     '''
     top-level init for cursesGui2.py pseudo-plugin.
@@ -798,9 +798,9 @@ def init():
     else:
         return curses and not g.app.gui and not g.app.unitTesting
             # Not Ok for unit testing!
-#@+node:ekr.20170501032705.1: *3* leoGlobals replacements
+#@+node:ekr.20170501032705.1: *3* curses2: leoGlobals replacements
 # CGui.init_logger monkey-patches leoGlobals with these functions.
-#@+node:ekr.20170430112645.1: *4* es
+#@+node:ekr.20170430112645.1: *4* curses2: es
 def es(*args, **keys):
     '''Monkey-patch for g.es.'''
     d = {
@@ -819,15 +819,26 @@ def es(*args, **keys):
         else:
             g.app.gui.wait_list.append((s, color),)
     # else: logging.info(' KILL: %r' % s)
-#@+node:ekr.20170501043411.1: *4* pr
+#@+node:ekr.20170613144149.1: *4* curses2: has_logger (not used)
+def has_logger():
+    
+    logger = logging.getLogger()
+    return any([
+        isinstance(z, logging.handlers.SocketHandler) for z in logger.handlers or []
+    ])
+#@+node:ekr.20170501043411.1: *4* curses2: pr
 def pr(*args, **keys):
     '''Monkey-patch for g.pr.'''
     d = {'commas': False, 'newline': True, 'spaces': True}
     d = g.doKeywordArgs(keys, d)
     s = g.translateArgs(args, d)
     for line in g.splitLines(s):
-        logging.info('   pr: %s' % (line.rstrip()))
-#@+node:ekr.20170429165242.1: *4* trace
+        line = '   pr: %s' % line.rstrip()
+        if True: ### has_logger():
+            logging.info(line)
+        else:
+            print(line)
+#@+node:ekr.20170429165242.1: *4* curses2: trace
 def trace(*args, **keys):
     '''Monkey-patch for g.trace.'''
     d = {
@@ -872,9 +883,12 @@ def trace(*args, **keys):
             result.append(" " + arg)
         else:
             result.append(arg)
-    # s = d.get('before') + ''.join(result)
     s = ''.join(result)
-    logging.info('trace: %s' % s.rstrip())
+    line = 'trace: %s' % s.rstrip()
+    if True: ### has_logger():
+        logging.info(line)
+    else:
+        print(line)
 #@+node:ekr.20170526075024.1: *3* method_name
 def method_name(f):
     '''Print a method name is a simplified format.'''
@@ -1968,21 +1982,6 @@ class CoreLog (leoFrame.LeoLog):
         # print('CLog.put: %s' % g.callers())
         if g.app.quitting:
             return
-        # if tabName:
-            # self.selectTab(tabName)
-        # w = self.logCtrl.widget
-        # if w:
-            # sb = w.horizontalScrollBar()
-            # pos = sb.sliderPosition()
-            # # Not needed!
-                # # contents = w.toHtml()
-                # # w.setHtml(contents + '\n')
-            # w.moveCursor(QtGui.QTextCursor.End)
-            # sb.setSliderPosition(pos)
-            # w.repaint() # Slow, but essential.
-        # else:
-            # # put s to logWaiting and print  a newline
-            # g.app.logWaiting.append(('\n', 'black'),)
     #@-others
 #@+node:ekr.20170419111515.1: *3* class CoreMenu (leoMenu.LeoMenu)
 class CoreMenu (leoMenu.LeoMenu):
