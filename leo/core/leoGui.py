@@ -306,7 +306,7 @@ class NullGui(LeoGui):
             # The outer frame, used only to set the g.app.log in runMainLoop.
         self.isNullGui = True
         ### self.plainTextWidget = leoFrame.StringTextWrapper
-    #@+node:ekr.20031218072017.3744: *3* NullGui.dialogs & helper
+    #@+node:ekr.20031218072017.3744: *3* NullGui.dialogs
     def runAboutLeoDialog(self, c, version, theCopyright, url, email):
         return self.simulateDialog("aboutLeoDialog", None)
 
@@ -316,28 +316,46 @@ class NullGui(LeoGui):
     def runAskOkDialog(self, c, title, message=None, text="Ok"):
         return self.simulateDialog("okDialog", "Ok")
 
-    def runAskOkCancelNumberDialog(self, c, title, message, cancelButtonText=None, okButtonText=None):
+    def runAskOkCancelNumberDialog(self, c, title, message,
+        cancelButtonText=None,
+        okButtonText=None,
+    ):
         return self.simulateDialog("numberDialog", -1)
 
-    def runAskOkCancelStringDialog(self, c, title, message, cancelButtonText=None,
-                                   okButtonText=None, default="", wide=False):
+    def runAskOkCancelStringDialog(self, c, title, message,
+        cancelButtonText=None,
+        okButtonText=None,
+        default="",
+        wide=False,
+    ):
         return self.simulateDialog("stringDialog", '')
 
     def runCompareDialog(self, c):
         return self.simulateDialog("compareDialog", '')
 
-    def runOpenFileDialog(self, c, title, filetypes, defaultextension, multiple=False, startpath=None):
+    def runOpenFileDialog(self, c, title, filetypes, defaultextension,
+        multiple=False,
+        startpath=None,
+    ):
         return self.simulateDialog("openFileDialog", None)
 
     def runSaveFileDialog(self, c, initialfile, title, filetypes, defaultextension):
         return self.simulateDialog("saveFileDialog", None)
 
-    def runAskYesNoDialog(self, c, title, message=None, yes_all=False, no_all=False):
+    def runAskYesNoDialog(self, c, title,
+        message=None,
+        yes_all=False,
+        no_all=False,
+    ):
         return self.simulateDialog("yesNoDialog", "no")
 
     def runAskYesNoCancelDialog(self, c, title,
-        message=None, yesMessage="Yes", noMessage="No",
-        yesToAllMessage=None, defaultButton="Yes", cancelMessage=None,
+        message=None,
+        yesMessage="Yes",
+        noMessage="No",
+        yesToAllMessage=None,
+        defaultButton="Yes",
+        cancelMessage=None,
     ):
         return self.simulateDialog("yesNoCancelDialog", "cancel")
         
