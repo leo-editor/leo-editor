@@ -769,6 +769,37 @@ class LeoFrame(object):
         '''Command decorator for the LeoFrame class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'frame',])
+    #@+node:ekr.20061109125528: *3* LeoFrame.May be defined in subclasses
+    #@+node:ekr.20071027150501: *4* LeoFrame.event handlers
+    def OnBodyClick(self, event=None):
+        pass
+
+    def OnBodyRClick(self, event=None):
+        pass
+    #@+node:ekr.20031218072017.3688: *4* LeoFrame.getTitle & setTitle
+    def getTitle(self):
+        return self.title
+
+    def setTitle(self, title):
+        # g.trace('**(LeoFrame)',title)
+        self.title = title
+    #@+node:ekr.20081005065934.3: *4* LeoFrame.initAfterLoad  & initCompleteHint
+    def initAfterLoad(self):
+        '''Provide offical hooks for late inits of components of Leo frames.'''
+        frame = self
+        frame.body.initAfterLoad()
+        frame.log.initAfterLoad()
+        frame.menu.initAfterLoad()
+        # if frame.miniBufferWidget: frame.miniBufferWidget.initAfterLoad()
+        frame.tree.initAfterLoad()
+
+    def initCompleteHint(self):
+        pass
+    #@+node:ekr.20031218072017.3687: *4* LeoFrame.setTabWidth
+    def setTabWidth(self, w):
+        '''Set the tab width in effect for this frame.'''
+        # Subclasses may override this to affect drawing.
+        self.tab_width = w
     #@+node:ekr.20061109125528.1: *3* LeoFrame.Must be defined in base class
     #@+node:ekr.20031218072017.3689: *4* LeoFrame.initialRatios
     def initialRatios(self):
@@ -1000,7 +1031,6 @@ class LeoFrame(object):
             return
         if self.cursorStay and wname.startswith('body'):
             tCurPosition = w.getInsertPoint()
-
         i, j = oldSel = w.getSelectionRange()
             # Returns insert point if no selection.
         oldText = w.getAllText()
@@ -1034,7 +1064,6 @@ class LeoFrame(object):
                     offset = 0
                 newCurPosition = tCurPosition + offset
                 w.setSelectionRange(i=newCurPosition, j=newCurPosition)
-
             c.frame.body.forceFullRecolor()
             c.frame.body.onBodyChanged('Paste', oldSel=oldSel, oldText=oldText)
         elif singleLine:
@@ -1092,113 +1121,37 @@ class LeoFrame(object):
                 # Recolor the *body* text, **not** the headline.
                 k.showStateAndMode(w=c.frame.body.wrapper)
     #@+node:ekr.20031218072017.3680: *3* LeoFrame.Must be defined in subclasses
-    #@+node:ekr.20031218072017.3683: *4* LeoFrame.Config...
-    def resizePanesToRatio(self, ratio, secondary_ratio): self.oops()
-
-    def setInitialWindowGeometry(self): self.oops()
-
-    def setTopGeometry(self, w, h, x, y, adjustSize=True): self.oops()
-    #@+node:ekr.20031218072017.3681: *4* LeoFrame.Gui-dependent commands
-    # In the Edit menu...
-
-    def OnCopy(self, event=None): self.oops()
-
-    def OnCut(self, event=None): self.oops()
-    #def OnCutFromMenu  (self,event=None):     self.oops()
-    #def OnCopyFromMenu (self,event=None):     self.oops()
-    # Expanding and contracting panes.
-
-    def contractPane(self, event=None): self.oops()
-
-    def expandPane(self, event=None): self.oops()
-
-    def contractBodyPane(self, event=None): self.oops()
-
-    def contractLogPane(self, event=None): self.oops()
-
-    def contractOutlinePane(self, event=None): self.oops()
-
-    def expandBodyPane(self, event=None): self.oops()
-
-    def expandLogPane(self, event=None): self.oops()
-
-    def expandOutlinePane(self, event=None): self.oops()
-
-    def fullyExpandBodyPane(self, event=None): self.oops()
-
-    def fullyExpandLogPane(self, event=None): self.oops()
-
-    def fullyExpandPane(self, event=None): self.oops()
-
-    def fullyExpandOutlinePane(self, event=None): self.oops()
-
-    def hideBodyPane(self, event=None): self.oops()
-
-    def hideLogPane(self, event=None): self.oops()
-
-    def hidePane(self, event=None): self.oops()
-
-    def hideOutlinePane(self, event=None): self.oops()
-    # In the Window menu...
-
-    def cascade(self, event=None): self.oops()
-
-    def equalSizedPanes(self, event=None): self.oops()
-
-    def hideLogWindow(self, event=None): self.oops()
-
-    def minimizeAll(self, event=None): self.oops()
-
-    def resizeToScreen(self, event=None): self.oops()
-
-    def toggleActivePane(self, event=None): self.oops()
-
-    def toggleSplitDirection(self, event=None): self.oops()
-    # In help menu...
-
-    def leoHelp(self, event=None): self.oops()
-    #@+node:ekr.20031218072017.3682: *4* LeoFrame.Window...
-    # Important: nothing would be gained by calling gui versions of these methods:
-    #            they can be defined in a gui-dependent way in a subclass.
-
     def bringToFront(self): self.oops()
-
+    def cascade(self, event=None): self.oops()
+    def contractBodyPane(self, event=None): self.oops()
+    def contractLogPane(self, event=None): self.oops()
+    def contractOutlinePane(self, event=None): self.oops()
+    def contractPane(self, event=None): self.oops()
     def deiconify(self): self.oops()
-
+    def equalSizedPanes(self, event=None): self.oops()
+    def expandBodyPane(self, event=None): self.oops()
+    def expandLogPane(self, event=None): self.oops()
+    def expandOutlinePane(self, event=None): self.oops()
+    def expandPane(self, event=None): self.oops()
+    def fullyExpandBodyPane(self, event=None): self.oops()
+    def fullyExpandLogPane(self, event=None): self.oops()
+    def fullyExpandOutlinePane(self, event=None): self.oops()
+    def fullyExpandPane(self, event=None): self.oops()
     def get_window_info(self): self.oops()
-
+    def hideBodyPane(self, event=None): self.oops()
+    def hideLogPane(self, event=None): self.oops()
+    def hideLogWindow(self, event=None): self.oops()
+    def hideOutlinePane(self, event=None): self.oops()
+    def hidePane(self, event=None): self.oops()
+    def leoHelp(self, event=None): self.oops()
     def lift(self): self.oops()
-    #@+node:ekr.20061109125528: *3* LeoFrame.May be defined in subclasses
-    #@+node:ekr.20071027150501: *4* LeoFrame.event handlers
-    def OnBodyClick(self, event=None):
-        pass
-
-    def OnBodyRClick(self, event=None):
-        pass
-    #@+node:ekr.20031218072017.3688: *4* LeoFrame.getTitle & setTitle
-    def getTitle(self):
-        return self.title
-
-    def setTitle(self, title):
-        # g.trace('**(LeoFrame)',title)
-        self.title = title
-    #@+node:ekr.20081005065934.3: *4* LeoFrame.initAfterLoad  & initCompleteHint
-    def initAfterLoad(self):
-        '''Provide offical hooks for late inits of components of Leo frames.'''
-        frame = self
-        frame.body.initAfterLoad()
-        frame.log.initAfterLoad()
-        frame.menu.initAfterLoad()
-        # if frame.miniBufferWidget: frame.miniBufferWidget.initAfterLoad()
-        frame.tree.initAfterLoad()
-
-    def initCompleteHint(self):
-        pass
-    #@+node:ekr.20031218072017.3687: *4* LeoFrame.setTabWidth
-    def setTabWidth(self, w):
-        '''Set the tab width in effect for this frame.'''
-        # Subclasses may override this to affect drawing.
-        self.tab_width = w
+    def minimizeAll(self, event=None): self.oops()
+    def resizePanesToRatio(self, ratio, secondary_ratio): self.oops()
+    def resizeToScreen(self, event=None): self.oops()
+    def setInitialWindowGeometry(self): self.oops()
+    def setTopGeometry(self, w, h, x, y, adjustSize=True): self.oops()
+    def toggleActivePane(self, event=None): self.oops()
+    def toggleSplitDirection(self, event=None): self.oops()
     #@-others
 #@+node:ekr.20031218072017.3694: ** class LeoLog
 class LeoLog(object):
@@ -1895,7 +1848,7 @@ class NullColorizer(leoColorizer.BaseColorizer):
 class NullFrame(LeoFrame):
     '''A null frame class for tests and batch execution.'''
     #@+others
-    #@+node:ekr.20040327105706: *3*  ctor (NullFrame)
+    #@+node:ekr.20040327105706: *3* NullFrame. ctor (NullFrame)
     def __init__(self, c, title, gui):
         '''Ctor for the NullFrame class.'''
         # g.trace('NullFrame')
@@ -1920,89 +1873,42 @@ class NullFrame(LeoFrame):
         self.h = 500
         self.x = 40
         self.y = 40
-    #@+node:ekr.20041120073824: *3* destroySelf (NullFrame)
-    def destroySelf(self):
-        pass
-    #@+node:ekr.20040327105706.2: *3* finishCreate (NullFrame)
-    def finishCreate(self):
-        # This may be overridden in subclasses.
-        pass
-    #@+node:ekr.20061109124552: *3* Overrides
-    #@+node:ekr.20061109123828: *4* Config...
-    def resizePanesToRatio(self, ratio, secondary_ratio): pass
-
-    def setInitialWindowGeometry(self): pass
-    #@+node:ekr.20041130065718.1: *5* setTopGeometry
-    def setTopGeometry(self, w, h, x, y, adjustSize=True):
-        self.w = w
-        self.h = h
-        self.x = x
-        self.y = y
-    #@+node:ekr.20061109124129: *4* Gui-dependent commands (NullFrame)
-    # Expanding and contracting panes.
-
-    def contractPane(self, event=None): pass
-
-    def expandPane(self, event=None): pass
-
-    def contractBodyPane(self, event=None): pass
-
-    def contractLogPane(self, event=None): pass
-
-    def contractOutlinePane(self, event=None): pass
-
-    def expandBodyPane(self, event=None): pass
-
-    def expandLogPane(self, event=None): pass
-
-    def expandOutlinePane(self, event=None): pass
-
-    def fullyExpandBodyPane(self, event=None): pass
-
-    def fullyExpandLogPane(self, event=None): pass
-
-    def fullyExpandPane(self, event=None): pass
-
-    def fullyExpandOutlinePane(self, event=None): pass
-
-    def hideBodyPane(self, event=None): pass
-
-    def hideLogPane(self, event=None): pass
-
-    def hidePane(self, event=None): pass
-
-    def hideOutlinePane(self, event=None): pass
-    # In the Window menu...
-
-    def cascade(self, event=None): pass
-
-    def equalSizedPanes(self, event=None): pass
-
-    def hideLogWindow(self, event=None): pass
-
-    def minimizeAll(self, event=None): pass
-
-    def resizeToScreen(self, event=None): pass
-
-    def toggleActivePane(self, event=None): pass
-
-    def toggleSplitDirection(self, event=None): pass
-    # In help menu...
-
-    def leoHelp(self, event=None): pass
-    #@+node:ekr.20041130065921: *4* Window...
+    #@+node:ekr.20061109124552: *3* NullFrame.do nothings
     def bringToFront(self): pass
-
+    def cascade(self, event=None): pass
+    def contractBodyPane(self, event=None): pass
+    def contractLogPane(self, event=None): pass
+    def contractOutlinePane(self, event=None): pass
+    def contractPane(self, event=None): pass
     def deiconify(self): pass
-
-    def get_window_info(self):
-        # Set w,h,x,y to a reasonable size and position.
-        return 600, 500, 20, 20
-
+    def destroySelf(self): pass
+    def equalSizedPanes(self, event=None): pass
+    def expandBodyPane(self, event=None): pass
+    def expandLogPane(self, event=None): pass
+    def expandOutlinePane(self, event=None): pass
+    def expandPane(self, event=None): pass
+    def finishCreate(self): pass
+    def fullyExpandBodyPane(self, event=None): pass
+    def fullyExpandLogPane(self, event=None): pass
+    def fullyExpandOutlinePane(self, event=None): pass
+    def fullyExpandPane(self, event=None): pass
+    def get_window_info(self): return 600, 500, 20, 20
+    def hideBodyPane(self, event=None): pass
+    def hideLogPane(self, event=None): pass
+    def hideLogWindow(self, event=None): pass
+    def hideOutlinePane(self, event=None): pass
+    def hidePane(self, event=None): pass
+    def leoHelp(self, event=None): pass
     def lift(self): pass
-
+    def minimizeAll(self, event=None): pass
+    def oops(self): g.trace("NullFrame", g.callers(4))
+    def resizePanesToRatio(self, ratio, secondary_ratio): pass
+    def resizeToScreen(self, event=None): pass
+    def setInitialWindowGeometry(self): pass
+    def setTopGeometry(self, w, h, x, y, adjustSize=True): return 0, 0, 0, 0
     def setWrap(self, flag, force=False): pass
-
+    def toggleActivePane(self, event=None): pass
+    def toggleSplitDirection(self, event=None): pass
     def update(self): pass
     #@-others
 #@+node:ekr.20070301164543: ** class NullIconBarClass

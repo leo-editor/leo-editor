@@ -374,6 +374,8 @@ class SpellTabHandler(object):
     #@+node:ekr.20150514063305.501: *4* SpellTabHandler.__init__
     def __init__(self, c, tabName):
         """Ctor for SpellTabHandler class."""
+        if g.app.gui.isNullGui:
+            return ###
         self.c = c
         self.body = c.frame.body
         self.currentWord = None

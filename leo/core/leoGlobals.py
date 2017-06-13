@@ -5919,6 +5919,8 @@ def input_(message='', c=None):
     c.executeScriptHelper binds 'input' to be a wrapper that calls g.input_
     with c and handler bound properly.
     '''
+    if app.gui.isNullGui:
+        return ''
     if False: # c and app and not app.gui.isNullGui:
         # Use the minibuffer.
         

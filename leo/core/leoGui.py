@@ -30,7 +30,7 @@ class LeoGui(object):
         '''Ctor for the LeoGui class.'''
         # g.trace("LeoGui",guiName,g.callers())
         self.active = None # Used only by qt_gui.
-        self.bodyTextWidget = None
+        ### self.bodyTextWidget = None
         self.consoleOnly = True # True if g.es goes to console.
         self.globalFindTabManager = None
         self.globalFindDialog = None
@@ -42,6 +42,7 @@ class LeoGui(object):
         self.mGuiName = guiName
         self.mainLoop = None
         self.plainTextWidget = None
+            # For SpellTabHandler class only.
         self.root = None
         self.script = None
         self.splashScreen = None
@@ -304,7 +305,7 @@ class NullGui(LeoGui):
         self.script = None
         self.lastFrame = None
         self.isNullGui = True
-        self.bodyTextWidget = leoFrame.StringTextWrapper
+        ### self.bodyTextWidget = leoFrame.StringTextWrapper
         self.plainTextWidget = leoFrame.StringTextWrapper
     #@+node:ekr.20031218072017.3744: *3* NullGui.dialogs & helper
     def runAboutLeoDialog(self, c, version, theCopyright, url, email):
@@ -346,52 +347,36 @@ class NullGui(LeoGui):
         if self.trace:
             g.pr(key, val)
         return val
-    #@+node:ekr.20070301171901: *3* NullGui.do nothings
-    def alert(self, message):
-        pass
-
-    def attachLeoIcon(self, window):
-        pass
-
-    def destroySelf(self):
-        pass
-
-    def finishCreate(self):
-        pass
-
-    def getIconImage(self, name):
-        return None
-
-    def getImageImage(self, name):
-        return None
-
-    def getTreeImage(self, c, path):
-        return None
-
+    #@+node:ekr.20170613101737.1: *3* NullGui.clipboard
     def getTextFromClipboard(self):
         return self.clipboardContents
 
-    def get_focus(self, frame=None):
-        if not frame: return None
-        return self.focusWidget or (hasattr(frame, 'body') and frame.body.wrapper) or None
-
-    def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
-        return g.app.config.defaultFont
-
-    def get_window_info(self, window):
-        return 0, 0, 0, 0
-        
-    def onActivateEvent(self, *args, **keys):
-        pass
-
-    def onDeactivateEvent(self, *args, **keys):
-        pass
-
     def replaceClipboardWith(self, s):
         self.clipboardContents = s
+    #@+node:ekr.20070301171901: *3* NullGui.do nothings
+    def alert(self, message): pass
+    def attachLeoIcon(self, window): pass
+    def destroySelf(self): pass
+    def finishCreate(self): pass
+    def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
+        return g.app.config.defaultFont
+    def getIconImage(self, name): return None
+    def getImageImage(self, name): return None
+    def getTreeImage(self, c, path): return None
+    def get_window_info(self, window): return 600, 500, 20, 20
+    def onActivateEvent(self, *args, **keys): pass
+    def onDeactivateEvent(self, *args, **keys): pass
 
-    def set_focus(self, commander, widget):
-        self.focusWidget = widget
+    #@+node:ekr.20170613101809.1: *3* NullGui.focus
+    def get_focus(self, frame=None):
+        if not frame:
+            return None
+        return (
+            self.focusWidget or 
+            getattr(frame, 'body',None) and getattr(frame.body, 'wrapper', None)
+        )
+
+    def set_focus(self, commander, widget): self.focusWidget = widget
     #@+node:ekr.20070228155807: *3* NullGui.isTextWidget & isTextWrapper
     def isTextWidget(self, w):
         return True # Must be True for unit tests.
@@ -401,11 +386,6 @@ class NullGui(LeoGui):
         return w and getattr(w, 'supportsHighLevelInterface', None)
     #@+node:ekr.20031218072017.2230: *3* NullGui.oops
     def oops(self):
-        '''
-        Called when we expect the gui to override a base LeoGui method.
-
-        Useful when creating gui plugins.
-        '''
         g.trace("NullGui", g.callers(4))
     #@+node:ekr.20070301172456: *3* NullGui.panels
     def createComparePanel(self, c):
@@ -446,6 +426,32 @@ class NullScriptingControllerClass(object):
 
     def createAllButtons(self):
         pass
+#@+node:ekr.20170613095422.1: ** class StringGui (NullGui)
+class StringGui(LeoGui):
+    '''
+    A class representing all on-screen objects using subclasses of the
+    leoFrame.StringTextWrapper class.
+    '''
+    #@+others
+    #@+node:ekr.20170613095422.2: *3* StringGui.__init__
+    def __init__(self, guiName='StringGui'):
+        '''ctor for the StringGui class.'''
+        LeoGui.__init__(self, guiName)
+            # init the base class.
+        self.clipboardContents = ''
+        self.theDict = {}
+        self.focusWidget = None
+        self.frameFactory = g.NullObject()
+        self.iconimages = {}
+        self.insert_char_flag = False
+        self.script = None
+        self.isNullGui = True
+        ### self.bodyTextWidget = leoFrame.StringTextWrapper
+        self.plainTextWidget = leoFrame.StringTextWrapper
+    #@+node:ekr.20170613095422.7: *3* StringGui.oops
+    def oops(self):
+        g.trace("StringGui", g.callers(4))
+    #@-others
 #@+node:ekr.20031218072017.3742: ** class UnitTestGui (NullGui)
 class UnitTestGui(NullGui):
     '''A gui class for use by unit tests.'''
@@ -458,8 +464,8 @@ class UnitTestGui(NullGui):
         # Init the base class
         NullGui.__init__(self, "UnitTestGui")
         # Use the same kind of widgets as the old gui.
-        self.bodyTextWidget = self.oldGui.bodyTextWidget
-        self.plainTextWidget = self.oldGui.plainTextWidget
+        ### self.bodyTextWidget = self.oldGui.bodyTextWidget
+        ### self.plainTextWidget = self.oldGui.plainTextWidget
         if theDict is None: theDict = {}
         self.theDict = theDict
         self.trace = trace

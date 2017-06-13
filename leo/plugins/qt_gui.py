@@ -50,7 +50,7 @@ class LeoQtGui(leoGui.LeoGui):
         leoGui.LeoGui.__init__(self, 'qt')
              # Initialize the base class.
         self.qtApp = QtWidgets.QApplication(sys.argv)
-        self.bodyTextWidget = qt_text.QTextMixin
+        ### self.bodyTextWidget = qt_text.QTextMixin
         self.consoleOnly = False # Console is separate from the log.
         self.iconimages = {}
         self.idleTimeClass = qt_idle_time.IdleTime
