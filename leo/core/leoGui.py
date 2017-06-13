@@ -296,22 +296,22 @@ class NullGui(LeoGui):
         LeoGui.__init__(self, guiName)
             # init the base class.
         self.clipboardContents = ''
-        self.theDict = {}
+        ### self.theDict = {}
         self.focusWidget = None
-        self.frameFactory = g.NullObject()
-        self.iconimages = {}
-        self.insert_char_flag = False
+        ### self.frameFactory = g.NullObject()
+        ### self.iconimages = {}
+        ### self.insert_char_flag = False
         self.script = None
         self.lastFrame = None
             # The outer frame, used only to set the g.app.log in runMainLoop.
         self.isNullGui = True
-        self.plainTextWidget = leoFrame.StringTextWrapper
+        ### self.plainTextWidget = leoFrame.StringTextWrapper
     #@+node:ekr.20031218072017.3744: *3* NullGui.dialogs & helper
     def runAboutLeoDialog(self, c, version, theCopyright, url, email):
-        return self.simulateDialog("aboutLeoDialog")
+        return self.simulateDialog("aboutLeoDialog", None)
 
     def runAskLeoIDDialog(self):
-        return self.simulateDialog("leoIDDialog")
+        return self.simulateDialog("leoIDDialog", None)
 
     def runAskOkDialog(self, c, title, message=None, text="Ok"):
         return self.simulateDialog("okDialog", "Ok")
@@ -327,10 +327,10 @@ class NullGui(LeoGui):
         return self.simulateDialog("compareDialog", '')
 
     def runOpenFileDialog(self, c, title, filetypes, defaultextension, multiple=False, startpath=None):
-        return self.simulateDialog("openFileDialog")
+        return self.simulateDialog("openFileDialog", None)
 
     def runSaveFileDialog(self, c, initialfile, title, filetypes, defaultextension):
-        return self.simulateDialog("saveFileDialog")
+        return self.simulateDialog("saveFileDialog", None)
 
     def runAskYesNoDialog(self, c, title, message=None, yes_all=False, no_all=False):
         return self.simulateDialog("yesNoDialog", "no")
@@ -340,12 +340,9 @@ class NullGui(LeoGui):
         yesToAllMessage=None, defaultButton="Yes", cancelMessage=None,
     ):
         return self.simulateDialog("yesNoCancelDialog", "cancel")
-    #@+node:ekr.20031218072017.3747: *4* NullGui.simulateDialog
-    def simulateDialog(self, key, defaultVal=None):
-        val = self.theDict.get(key, defaultVal)
-        if self.trace:
-            g.pr(key, val)
-        return val
+        
+    def simulateDialog(self, key, defaultVal):
+        return defaultVal
     #@+node:ekr.20170613101737.1: *3* NullGui.clipboard & focus
     def get_focus(self, *args, **kwargs):
         return self.focusWidget
@@ -427,23 +424,26 @@ class StringGui(LeoGui):
     leoFrame.StringTextWrapper class.
     '''
     #@+others
-    #@+node:ekr.20170613095422.2: *3* StringGui.__init__
-    def __init__(self, guiName='StringGui'):
-        '''ctor for the StringGui class.'''
-        LeoGui.__init__(self, guiName)
-            # init the base class.
-        self.clipboardContents = ''
-        self.theDict = {}
-        self.focusWidget = None
-        self.frameFactory = g.NullObject()
-        self.iconimages = {}
-        self.insert_char_flag = False
-        self.script = None
-        self.isNullGui = True
-        self.plainTextWidget = leoFrame.StringTextWrapper
+    #@+node:ekr.20170613095422.2: *3* StringGui.__init__ (not used yet)
+    # def __init__(self, guiName='StringGui'):
+        # '''ctor for the StringGui class.'''
+        # LeoGui.__init__(self, guiName)
+            # # init the base class.
+        # self.clipboardContents = ''
+        # self.theDict = {}
+        # self.focusWidget = None
+        # self.frameFactory = g.NullObject()
+        # self.iconimages = {}
+        # ### self.insert_char_flag = False
+        # self.script = None
+        # self.isNullGui = True
+        # ### self.plainTextWidget = leoFrame.StringTextWrapper
     #@+node:ekr.20170613095422.7: *3* StringGui.oops
     def oops(self):
         g.trace("StringGui", g.callers(4))
+    #@+node:ekr.20170613114120.1: *3* StringGui.runMainLoop
+    def runMainLoop(self):
+        self.oops()
     #@-others
 #@+node:ekr.20031218072017.3742: ** class UnitTestGui (NullGui)
 class UnitTestGui(NullGui):
