@@ -153,13 +153,13 @@ class LeoGui(object):
     # The type of commander passed to methods depends on the type of frame
     # or dialog being created. The commander may be a Commands instance or
     # one of its subcommanders.
-    #@+node:ekr.20031218072017.3734: *5* Clipboard (LeoGui)
+    #@+node:ekr.20031218072017.3734: *5* LeoGui.Clipboard
     def replaceClipboardWith(self, s):
         self.oops()
 
     def getTextFromClipboard(self):
         self.oops()
-    #@+node:ekr.20031218072017.3735: *5* Dialog utils
+    #@+node:ekr.20031218072017.3735: *5* LeoGui.Dialog utils
     def attachLeoIcon(self, window):
         """Attach the Leo icon to a window."""
         self.oops()
@@ -175,22 +175,22 @@ class LeoGui(object):
     def get_window_info(self, window):
         """Return the window information."""
         self.oops()
-    #@+node:ekr.20070212145124: *5* getFullVersion (LeoGui)
-    def getFullVersion(self, c=None):
-        return 'LeoGui: dummy version'
-    #@+node:ekr.20031218072017.3737: *5* Focus
-    def get_focus(self, frame):
+    #@+node:ekr.20031218072017.3737: *5* LeoGui.Focus
+    def get_focus(self, *args, **kwargs):
         """Return the widget that has focus, or the body widget if None."""
         self.oops()
 
     def set_focus(self, commander, widget):
         """Set the focus of the widget in the given commander if it needs to be changed."""
         self.oops()
-    #@+node:ekr.20031218072017.3736: *5* Font (LeoGui)
+    #@+node:ekr.20031218072017.3736: *5* LeoGui.Font
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
         # g.trace('g.app.gui',g.callers()) # 'family',family,'size',size,'defaultSize',defaultSize,
         self.oops()
-    #@+node:ekr.20070212070820: *5* makeScriptButton
+    #@+node:ekr.20070212145124: *5* LeoGui.getFullVersion
+    def getFullVersion(self, c=None):
+        return 'LeoGui: dummy version'
+    #@+node:ekr.20070212070820: *5* LeoGui.makeScriptButton
     def makeScriptButton(self, c,
         args=None,
         p=None,
@@ -303,6 +303,7 @@ class NullGui(LeoGui):
         self.insert_char_flag = False
         self.script = None
         self.lastFrame = None
+            # The outer frame, used only to set the g.app.log in runMainLoop.
         self.isNullGui = True
         self.plainTextWidget = leoFrame.StringTextWrapper
     #@+node:ekr.20031218072017.3744: *3* NullGui.dialogs & helper
@@ -345,12 +346,18 @@ class NullGui(LeoGui):
         if self.trace:
             g.pr(key, val)
         return val
-    #@+node:ekr.20170613101737.1: *3* NullGui.clipboard
+    #@+node:ekr.20170613101737.1: *3* NullGui.clipboard & focus
+    def get_focus(self, *args, **kwargs):
+        return self.focusWidget
+
     def getTextFromClipboard(self):
         return self.clipboardContents
 
     def replaceClipboardWith(self, s):
         self.clipboardContents = s
+
+    def set_focus(self, commander, widget):
+        self.focusWidget = widget
     #@+node:ekr.20070301171901: *3* NullGui.do nothings
     def alert(self, message): pass
     def attachLeoIcon(self, window): pass
@@ -364,17 +371,6 @@ class NullGui(LeoGui):
     def get_window_info(self, window): return 600, 500, 20, 20
     def onActivateEvent(self, *args, **keys): pass
     def onDeactivateEvent(self, *args, **keys): pass
-
-    #@+node:ekr.20170613101809.1: *3* NullGui.focus
-    def get_focus(self, frame=None):
-        if not frame:
-            return None
-        return (
-            self.focusWidget or 
-            getattr(frame, 'body',None) and getattr(frame.body, 'wrapper', None)
-        )
-
-    def set_focus(self, commander, widget): self.focusWidget = widget
     #@+node:ekr.20070228155807: *3* NullGui.isTextWidget & isTextWrapper
     def isTextWidget(self, w):
         return True # Must be True for unit tests.
