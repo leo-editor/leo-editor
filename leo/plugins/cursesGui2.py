@@ -2340,6 +2340,7 @@ class LeoBody (npyscreen.MultiLineEditable):
         LeoBody.make_contained_widgets.
         Make widgets and inject the leo_parent ivar for later access to leo_c.
         '''
+        # pylint: disable=no-member
         trace = False
         trace_widgets = False
         self._my_widgets = []
@@ -2546,6 +2547,7 @@ class LeoLog (npyscreen.MultiLineEditable):
         LeoLog.make_contained_widgets.
         Make widgets and inject the leo_parent ivar for later access to leo_c.
         '''
+        # pylint: disable=no-member
         trace = False
         trace_widgets = False
         self._my_widgets = []
@@ -2889,6 +2891,8 @@ class LeoMLTree(npyscreen.MLTree, object):
     #@+node:ekr.20170523112839.1: *5* LeoMLTree.handle_mouse_event
     def handle_mouse_event(self, mouse_event):
         '''Called from InputHandler.h_exit_mouse.'''
+        # pylint: disable=no-member
+        #
         # From MultiLine...
         data = self.interpret_mouse_event(mouse_event)
         mouse_id, rel_x, rel_y, z, bstate = data
@@ -3185,6 +3189,8 @@ class LeoMLTree(npyscreen.MLTree, object):
     #@+node:ekr.20170513122427.1: *5* LeoMLTree._redraw & helpers
     def _redraw(self, clear):
         '''Do the actual redraw.'''
+        # pylint: disable=no-member
+        #
         # self.clear is Widget.clear. It does *not* use _myWidgets.
         if (clear is True or
             clear is None and self._last_start_display_at != self.start_display_at
