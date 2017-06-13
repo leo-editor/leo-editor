@@ -30,7 +30,6 @@ class LeoGui(object):
         '''Ctor for the LeoGui class.'''
         # g.trace("LeoGui",guiName,g.callers())
         self.active = None # Used only by qt_gui.
-        ### self.bodyTextWidget = None
         self.consoleOnly = True # True if g.es goes to console.
         self.globalFindTabManager = None
         self.globalFindDialog = None
@@ -305,7 +304,6 @@ class NullGui(LeoGui):
         self.script = None
         self.lastFrame = None
         self.isNullGui = True
-        ### self.bodyTextWidget = leoFrame.StringTextWrapper
         self.plainTextWidget = leoFrame.StringTextWrapper
     #@+node:ekr.20031218072017.3744: *3* NullGui.dialogs & helper
     def runAboutLeoDialog(self, c, version, theCopyright, url, email):
@@ -446,7 +444,6 @@ class StringGui(LeoGui):
         self.insert_char_flag = False
         self.script = None
         self.isNullGui = True
-        ### self.bodyTextWidget = leoFrame.StringTextWrapper
         self.plainTextWidget = leoFrame.StringTextWrapper
     #@+node:ekr.20170613095422.7: *3* StringGui.oops
     def oops(self):
@@ -461,13 +458,9 @@ class UnitTestGui(NullGui):
     def __init__(self, theDict=None, trace=False):
         '''ctor for the UnitTestGui class.'''
         self.oldGui = g.app.gui
-        # Init the base class
         NullGui.__init__(self, "UnitTestGui")
-        # Use the same kind of widgets as the old gui.
-        ### self.bodyTextWidget = self.oldGui.bodyTextWidget
-        ### self.plainTextWidget = self.oldGui.plainTextWidget
-        if theDict is None: theDict = {}
-        self.theDict = theDict
+            # Init the base class
+        self.theDict = {} if theDict is None else theDict
         self.trace = trace
         g.app.gui = self
 
