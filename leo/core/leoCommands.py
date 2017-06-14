@@ -5557,7 +5557,6 @@ class Commands(object):
             g.app.commandName = label
         if not g.doHook("command1", c=c, p=p, v=p, label=label):
             try:
-                # redrawCount = c.frame.tree.redrawCount
                 c.inCommand = True
                 if trace: g.trace('start', command)
                 val = command(event)
@@ -5581,10 +5580,6 @@ class Commands(object):
                 else:
                     if trace: g.trace('calling outerUpdate')
                     c.outerUpdate()
-                    # redrawCount2 = c.frame.tree.redrawCount
-                    # if redrawCount2 > redrawCount + 1:
-                        # g.trace('too many redraw', label, redrawCount2, redrawCount)
-
         # Be careful: the command could destroy c.
         if c and c.exists:
             p = c.p

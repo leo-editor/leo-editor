@@ -1304,7 +1304,7 @@ class LeoTree(object):
         self.use_chapters = False # May be overridden in subclasses.
         # Define these here to keep pylint happy.
         self.canvas = None
-        self.trace_select = None
+        ### self.trace_select = None
     #@+node:ekr.20081005065934.8: *3* LeoTree.May be defined in subclasses
     # These are new in Leo 4.6.
 
@@ -1775,70 +1775,24 @@ class NullBody(LeoBody):
         self.selection = 0, 0
         self.s = "" # The body text
         self.widget = None
-        self.wrapper = wrapper = StringTextWrapper(c=self.c, name='body')
-        self.editorWidgets['1'] = wrapper
+        self.wrapper = StringTextWrapper(c=self.c, name='body')
+        self.editorWidgets['1'] = self.wrapper
         self.colorizer = NullColorizer(self.c)
-    #@+node:ekr.20031218072017.2193: *3* Utils (internal use)
-    #@+node:ekr.20031218072017.2194: *4* findStartOfLine
-    def findStartOfLine(self, lineNumber):
-        lines = g.splitLines(self.s)
-        i = 0; index = 0
-        for line in lines:
-            if i == lineNumber: break
-            i += 1
-            index += len(line)
-        return index
-    #@+node:ekr.20031218072017.2195: *4* scanToStartOfLine
-    def scanToStartOfLine(self, i):
-        if i <= 0:
-            return 0
-        assert(self.s[i] != '\n')
-        while i >= 0:
-            if self.s[i] == '\n':
-                return i + 1
-        return 0
-    #@+node:ekr.20031218072017.2196: *4* scanToEndOfLine
-    def scanToEndOfLine(self, i):
-        if i >= len(self.s):
-            return len(self.s)
-        assert(self.s[i] != '\n')
-        while i < len(self.s):
-            if self.s[i] == '\n':
-                return i - 1
-        return i
     #@+node:ekr.20031218072017.2197: *3* NullBody: LeoBody interface
-    # Birth, death...
-
-    def createControl(self, parentFrame, p): pass
-    # Editors...
-
     def addEditor(self, event=None): pass
-
     def assignPositionToEditor(self, p): pass
-
+    def createControl(self, parentFrame, p): pass
     def createEditorFrame(self, w): return None
-
     def cycleEditorFocus(self, event=None): pass
-
     def deleteEditor(self, event=None): pass
-
-    def selectEditor(self, w): pass
-
-    def selectLabel(self, w): pass
-
-    def setEditorColors(self, bg, fg): pass
-
-    def unselectLabel(self, w): pass
-
-    def updateEditors(self): pass
-    # Events...
-
     def forceFullRecolor(self): pass
-
     def scheduleIdleTimeRoutine(self, function, *args, **keys): pass
-    # Low-level gui...
-
+    def selectEditor(self, w): pass
+    def selectLabel(self, w): pass
+    def setEditorColors(self, bg, fg): pass
     def setFocus(self): pass
+    def unselectLabel(self, w): pass
+    def updateEditors(self): pass
     #@-others
 #@+node:ekr.20031218072017.2218: ** class NullColorizer (BaseColorizer)
 class NullColorizer(leoColorizer.BaseColorizer):
@@ -1848,9 +1802,12 @@ class NullColorizer(leoColorizer.BaseColorizer):
 class NullFrame(LeoFrame):
     '''A null frame class for tests and batch execution.'''
     #@+others
-    #@+node:ekr.20040327105706: *3* NullFrame. ctor (NullFrame)
+    #@+node:ekr.20040327105706: *3* NullFrame.ctor
     def __init__(self, c, title, gui):
-        '''Ctor for the NullFrame class.'''
+        '''
+        Ctor for the NullFrame class.
+        Creates Null body, log, menu, tree.
+        '''
         # g.trace('NullFrame')
         LeoFrame.__init__(self, c, gui)
             # Init the base class.
@@ -2092,47 +2049,12 @@ class NullTree(LeoTree):
         LeoTree.__init__(self, frame) # Init the base class.
         assert(self.frame)
         self.c = frame.c
-        self.editWidgetsDict = {} # Keys are tnodes, values are StringTextWidgets.
-        self.font = None
-        self.fontName = None
+        self.editWidgetsDict = {}
+            ### To be deleted?
+            # Keys are tnodes, values are StringTextWidgets.
         self.canvas = None
         self.redrawCount = 0
-        self.trace_edit = False
-        self.trace_select = False
-        self.updateCount = 0
-    #@+node:ekr.20070228173611: *3* printWidgets
-    def printWidgets(self):
-        d = self.editWidgetsDict
-        for key in d:
-            # keys are vnodes, values are StringTextWidgets.
-            w = d.get(key)
-            g.pr('w', w, 'v.h:', key.headString, 's:', repr(w.s))
-    #@+node:ekr.20031218072017.2236: *3* Overrides
-    #@+node:ekr.20140921184356.17921: *4* NullTree.redraw
-    #@+node:ekr.20070228163350.1: *4* Drawing & scrolling (NullTree)
-    def drawIcon(self, p):
-        pass
-
-    def redraw(self, p=None, scroll=True, forceDraw=False):
-        self.redrawCount += 1
-        # g.trace(p and p.h, self.c.p.h)
-
-    def redraw_now(self, p=None, scroll=True, forceDraw=False):
-        self.redraw(p)
-
-    def redraw_after_contract(self, p=None): self.redraw()
-
-    def redraw_after_expand(self, p=None): self.redraw()
-
-    def redraw_after_head_changed(self): self.redraw()
-
-    def redraw_after_icons_changed(self): self.redraw()
-
-    def redraw_after_select(self, p=None): self.redraw()
-
-    def scrollTo(self, p):
-        pass
-    #@+node:ekr.20070228163350.2: *4* edit_widget (NullTree)
+    #@+node:ekr.20070228163350.2: *3* NullTree.edit_widget
     def edit_widget(self, p):
         d = self.editWidgetsDict
         if not p or not p.v:
@@ -2144,7 +2066,7 @@ class NullTree(LeoTree):
                 name='head-%d' % (1 + len(list(d.keys()))))
             w.setAllText(p.h)
         return w
-    #@+node:ekr.20070228164730: *5* editLabel (NullTree)
+    #@+node:ekr.20070228164730: *4* editLabel (NullTree)
     def editLabel(self, p, selectAll=False, selection=None):
         '''Start editing p's headline.'''
         self.endEditLabel()
@@ -2156,7 +2078,7 @@ class NullTree(LeoTree):
             return e, wrapper
         else:
             return None, None
-    #@+node:ekr.20070228160345: *5* setHeadline (NullTree)
+    #@+node:ekr.20070228160345: *4* setHeadline (NullTree)
     def setHeadline(self, p, s):
         '''Set the actual text of the headline widget.
 
@@ -2172,6 +2094,24 @@ class NullTree(LeoTree):
             # g.trace(repr(s),w.getAllText())
         else:
             g.trace('-' * 20, 'oops')
+    #@+node:ekr.20070228173611: *3* NullTree.printWidgets
+    def printWidgets(self):
+        d = self.editWidgetsDict
+        for key in d:
+            # keys are vnodes, values are StringTextWidgets.
+            w = d.get(key)
+            g.pr('w', w, 'v.h:', key.headString, 's:', repr(w.s))
+    #@+node:ekr.20031218072017.2236: *3* NullTree: do-nothings
+    def drawIcon(self, p): pass
+    def redraw(self, p=None, scroll=True, forceDraw=False): self.redrawCount += 1
+    def redraw_after_contract(self, p=None): self.redraw()
+    def redraw_after_expand(self, p=None): self.redraw()
+    def redraw_after_head_changed(self): self.redraw()
+    def redraw_after_icons_changed(self): self.redraw()
+    def redraw_after_select(self, p=None): self.redraw()
+    def scrollTo(self, p): pass
+
+    redraw_now = redraw
     #@-others
 #@+node:ekr.20070228074228.1: ** class StringTextWrapper
 class StringTextWrapper(object):
