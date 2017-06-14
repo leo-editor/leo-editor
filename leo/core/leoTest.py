@@ -507,7 +507,7 @@ class RunTestExternallyHelperClass(object):
                     kind, t2 - t1, self.fileName))
                 # g.blue('created %s unit tests' % (kind))
             # 2010/09/09: allow a way to specify the gui.
-            gui = g.app.UnitTestGui or 'nullGui'
+            gui = g.app.unitTestGui or 'nullGui'
             self.runUnitTestLeoFile(gui=gui, path='dynamicUnitTest.leo')
                 # Let runUitTestLeoFile determine most defaults.
             c.selectPosition(p.copy())
@@ -691,7 +691,24 @@ class TestManager(object):
                         failfast=g.app.failFast,
                         verbosity=verbosity,
                     )
-                result = runner.run(suite)
+                if 0: ### Experimental: use the null gui for all unit tests.
+                    import leo.core.leoFrame as leoFrame
+                    old_gui = g.app.gui
+                    old_frame = c.frame
+                    old_k_w = c.k.w
+                    try:
+                        g.app.gui = leoGui.NullGui(c=c)
+                        c.frame = leoFrame.NullFrame(c, title='<title>', gui=g.app.gui)
+                        c.k.w = None
+                            # A huge switcheroo.
+                        result = runner.run(suite)
+                    finally:
+                        g.app.gui = old_gui
+                        c.frame = old_frame
+                        c.k.w = old_k_w
+                else:
+                    g.trace(g.app.gui)
+                    result = runner.run(suite)
                 if stream:
                     if stream.aList:
                         logger.info('\n'+''.join(stream.aList))

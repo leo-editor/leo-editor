@@ -233,7 +233,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -1123,8 +1123,8 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20170612144311.1"><vh>Tests that fail when full_redraw is disabled</vh>
-<v t="ekr.20051107115231.14"><vh>@test return ends editing of headline</vh></v>
+<v t="ekr.20100131171342.5483"><vh>@test batch mode</vh>
+<v t="ekr.20100131171342.5484"><vh>removeFile</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1391,19 +1391,6 @@ It also includes a trace back, but for AssertionErrors, it does not seem to offe
 assert('Spam' == 'Ham')</t>
 <t tx="ekr.20051012104957"></t>
 <t tx="ekr.20051013162226"></t>
-<t tx="ekr.20051107115231.14">h = '@test return ends editing of headline'
-p = c.testManager.findNodeAnywhere(h)
-assert p,'node not found: %s' % h
-c.redraw(p) # To make node visible
-c.frame.tree.editLabel(p)
-w = c.edit_widget(p)
-guiName = g.app.gui.guiName()
-wName = g.app.gui.widget_name(w)
-assert wName.startswith('head'),'w.name:%s' % wName
-g.app.gui.event_generate(c,'\n','Return',w)
-c.outerUpdate()
-assert w != c.get_focus(),'oops2: focus in headline'
-</t>
 <t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
 
 dir = g.os_path_join(g.app.loadDir,'..','test','unittest',g.u('chinese\u8116folder'),encoding='utf-8')
@@ -1554,7 +1541,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="4">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="7">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -3182,6 +3169,42 @@ for tag,aList in table:
         d1 = inspect.getargspec(func)
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
+</t>
+<t tx="ekr.20100131171342.5483">import os
+import sys
+trace = False
+python_interp = sys.executable
+test_path = g.os_path_join(g.app.loadDir,"..","test","unittest")
+src_path  = g.os_path_join(g.app.loadDir,"..","..")
+
+leo_file   = g.os_path_join(src_path,"launchLeo.py")
+batch_file = g.os_path_join(test_path,"batchTest.py")
+test_file  = g.os_path_join(test_path,"createdFile.txt")
+
+# Execute this command: python launchLeo.py --script test\unittest\batchTest.py
+if 1:
+    command = r"%s %s --silent --script %s" % (python_interp,leo_file,batch_file)
+else:
+    command = r"%s %s --script %s" % (python_interp,leo_file,batch_file)
+
+@others
+
+if trace:
+    print('@test batch mode: loadDir: %s' % g.app.loadDir)
+removeFile(test_file)
+os.system(command)
+assert g.os_path_exists(test_file), repr(test_file)
+</t>
+<t tx="ekr.20100131171342.5484">def removeFile(path):
+
+    trace = False
+    if os.path.exists(test_file):
+        if trace:
+            print("@test batch mode: removeFile: deleting",test_file)
+        os.remove(test_file)
+    else:
+        if trace:
+            print("@test batch mode: removeFile: not found:",test_file)
 </t>
 <t tx="ekr.20100219080213.5365"></t>
 <t tx="ekr.20100219080213.5366">s = '''\
@@ -14862,6 +14885,5 @@ And this.
 <t tx="ekr.20170504124637.1"></t>
 <t tx="ekr.20170504124652.1"></t>
 <t tx="ekr.20170504124842.1"></t>
-<t tx="ekr.20170612144311.1"></t>
 </tnodes>
 </leo_file>

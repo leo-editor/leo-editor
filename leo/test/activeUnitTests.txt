@@ -604,7 +604,7 @@ if trace:
     print('@test batch mode: loadDir: %s' % g.app.loadDir)
 removeFile(test_file)
 os.system(command)
-assert(g.os_path_exists(test_file))
+assert g.os_path_exists(test_file), repr(test_file)
 #@+node:ekr.20100131171342.5484: *4* removeFile
 def removeFile(path):
 
@@ -5575,23 +5575,22 @@ else:
 # For some reason these don't select the dialog properly when run as a script.
 # However, the main reason for the tests is to make sure the ctors don't crash.
 # Also, for unit testing the value of c doesn't matter.
-
-oldGui = g.app.gui ; guis = [g.app.gui]
-
 import leo.core.leoGui as leoGui
-guis.append(leoGui.UnitTestGui())
-
-for gui in guis:
-    gui.runAboutLeoDialog(c,'version','copyright','url','email')
-    gui.runAskLeoIDDialog()
-    gui.runAskOkDialog(c,'title','message')
-    gui.runAskOkCancelNumberDialog(c,'title','message')
-    gui.runAskOkCancelStringDialog(c,'title','message')
-    gui.runAskYesNoDialog(c,'title','message')
-    gui.runAskYesNoCancelDialog(c,'title','message')
-    # gui.runCompareDialog(c) # Removed.
-
-g.app.gui = oldGui
+try:
+    oldGui = g.app.gui
+    guis = [g.app.gui]
+    guis.append(leoGui.UnitTestGui())
+    for gui in guis:
+        gui.runAboutLeoDialog(c,'version','copyright','url','email')
+        gui.runAskLeoIDDialog()
+        gui.runAskOkDialog(c,'title','message')
+        gui.runAskOkCancelNumberDialog(c,'title','message')
+        gui.runAskOkCancelStringDialog(c,'title','message')
+        gui.runAskYesNoDialog(c,'title','message')
+        gui.runAskYesNoCancelDialog(c,'title','message')
+        # gui.runCompareDialog(c) # Removed.
+finally:
+    g.app.gui = oldGui
 #@+node:ekr.20071113192611: *3* leoEditCommands
 #@+node:ekr.20070131175538: *4*  Commands A-B
 #@+node:ekr.20061101121602.78: *5* @test add-space-to-lines

@@ -290,15 +290,15 @@ class NullGui(LeoGui):
     """Null gui class."""
     #@+others
     #@+node:ekr.20031218072017.2225: *3* NullGui.__init__
-    def __init__(self, guiName='nullGui'):
+    def __init__(self, c=None, guiName='nullGui'):
         '''ctor for the NullGui class.'''
         LeoGui.__init__(self, guiName)
             # init the base class.
+        self.c = c if c else g.NullObject()
         self.clipboardContents = ''
         self.focusWidget = None
+        self.frameFactory = g.NullObject()
         self.script = None
-        self.lastFrame = None
-            # The outer frame, used only to set the g.app.log in runMainLoop.
         self.isNullGui = True
     #@+node:ekr.20031218072017.3744: *3* NullGui.dialogs
     def runAboutLeoDialog(self, c, version, theCopyright, url, email):
@@ -374,6 +374,7 @@ class NullGui(LeoGui):
     def finishCreate(self): pass
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
         return g.app.config.defaultFont
+    def getIcon(self, p): return None
     def getIconImage(self, name): return None
     def getImageImage(self, name): return None
     def getTreeImage(self, c, path): return None
@@ -408,10 +409,11 @@ class NullGui(LeoGui):
     def runMainLoop(self):
         """Run the null gui's main loop."""
         if self.script:
-            frame = self.lastFrame
+            c = self.c
+            frame = leoFrame.NullFrame(c, title='no title', gui=self)
             g.app.log = frame.log
             # g.es("start of batch script...\n")
-            self.lastFrame.c.executeScript(script=self.script)
+            frame.c.executeScript(script=self.script)
             # g.es("\nend of batch script")
         else:
             print('**** NullGui.runMainLoop: terminating Leo.')
@@ -457,25 +459,33 @@ class StringGui(LeoGui):
     #@-others
 #@+node:ekr.20031218072017.3742: ** class UnitTestGui (NullGui)
 class UnitTestGui(NullGui):
-    '''A gui class for use by unit tests.'''
-    # Presently used only by the import/export unit tests.
+    '''
+    A gui class for use by **external** unit tests.
+    
+    Among other things, simulateDialog uses the theDict ivar.
+    
+    **Note**: This class no longer saves/restores g.app.gui.
+    '''
+
     #@+others
-    #@+node:ekr.20031218072017.3743: *3*  ctor (UnitTestGui)
+    #@+node:ekr.20031218072017.3743: *3* UnitTestGui.__init__
     def __init__(self, theDict=None, trace=False):
         '''ctor for the UnitTestGui class.'''
-        self.oldGui = g.app.gui
+        ### self.oldGui = g.app.gui
         NullGui.__init__(self, "UnitTestGui")
             # Init the base class
         self.theDict = {} if theDict is None else theDict
-        self.trace = trace
-        g.app.gui = self
+            # For simulateDialog.
+        ### self.trace = trace
+        ### g.app.gui = self
 
-    def destroySelf(self):
-        g.app.gui = self.oldGui
-    #@+node:ekr.20071128094234.1: *3* createSpellTab
+    ### Not needed
+        # def destroySelf(self):
+            # g.app.gui = self.oldGui
+    #@+node:ekr.20071128094234.1: *3* UnitTestGui.createSpellTab
     def createSpellTab(self, c, spellHandler, tabName):
         pass # This method keeps pylint happy.
-    #@+node:ekr.20111001155050.15484: *3* runAtIdle
+    #@+node:ekr.20111001155050.15484: *3* UnitTestGui.runAtIdle
     if 1: # Huh?
 
         def runAtIdle(self, aFunc):
@@ -484,7 +494,12 @@ class UnitTestGui(NullGui):
             This is a kludge, but it is probably the best that can be done.
             '''
             aFunc()
-    #@+node:ekr.20081119083601.1: *3* toUnicode
+    #@+node:ekr.20170613191601.1: *3* UnitTestGui.simulateDialog
+    def simulateDialog(self, key, defaultVal):
+        val = self.theDict.get(key)
+        return defaultVal if val is None else val
+
+    #@+node:ekr.20081119083601.1: *3* UnitTestGui.toUnicode
     def toUnicode(self, s):
         # pylint: disable=no-member
         if g.isPython3:
