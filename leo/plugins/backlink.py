@@ -181,9 +181,9 @@ class backlinkController(object):
 
         if '_bklnk' not in v.u:
             v.u['_bklnk'] = {}
-
-        if 'links' not in v.u['_bklnk']:
-            v.u['_bklnk'].update({'links':[]})
+        for entry in 'links', 'urls':
+            if entry not in v.u['_bklnk']:
+                v.u['_bklnk'][entry] = []
 
         self.vnode[v.gnx] = v
     #@+node:ekr.20090616105756.3947: *3* initIvars
@@ -199,7 +199,10 @@ class backlinkController(object):
     #@+node:ekr.20090616105756.3948: *3* linkAction
     def linkAction(self, dir_, newChild=False):
         """link to/from current position from/to mark node"""
-        if not self.linkMark or not self.c.positionExists(self.linkMark):
+
+        if dir_ == 'url':
+            self.linkUrl()
+        elif not self.linkMark or not self.c.positionExists(self.linkMark):
             self.showMessage('Link mark not specified or no longer valid', color='red')
             return
 
@@ -209,7 +212,7 @@ class backlinkController(object):
                 p = self.linkMark.insertAsLastChild()
                 p.h = self.c.p.h
             self.link(self.c.p, p)
-        else:
+        elif dir_ == 'to':
             p = self.linkMark
             if newChild:
                 p = self.linkMark.insertAsLastChild()
@@ -323,6 +326,25 @@ class backlinkController(object):
         self.link(source, self.c.p, type_='undirected')
 
         self.updateTabInt()
+    #@+node:tbnorth.20170616103256.1: *3* linkUrl
+    def linkUrl(self):
+        """linkUrl - link from current position to an URL / UNL"""
+
+        c = self.c
+        url = g.app.gui.runAskOkCancelStringDialog(
+            c, "Link to URL/UNL",
+            "Enter URL / UNL to link to from this node",
+            default=g.app.gui.getTextFromClipboard()
+        )
+        if url is None or not url.strip():
+            return
+        self.initBacklink(c.p.v)
+        if url in c.p.v.u['_bklnk']['urls']:
+            g.es("Already linked from this node")
+            return
+        c.p.v.u['_bklnk']['urls'].append(url)
+        c.p.setDirty()
+        c.setChanged(True)
     #@+node:ekr.20090616105756.3957: *3* loadLinks
     def loadLinks(self, tag, keywords):
         """load links after file opened"""
@@ -660,6 +682,11 @@ if g.app.gui.guiName() == "qt":
             if self.UI.whatSel.currentText() == "mark, undirected":
                 self.owner.linkAction('undirected')
                 return
+
+            if self.UI.whatSel.currentText() == "URL / UNL":
+                self.owner.linkAction('url')
+                return
+
             newChild = self.UI.whatSel.currentText() == "new child of mark"
             if self.UI.dirLeftBtn.text() == "from":
                 self.owner.linkAction('from', newChild=newChild)
