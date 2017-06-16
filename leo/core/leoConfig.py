@@ -1486,6 +1486,8 @@ class GlobalConfigManager(object):
         suppressKind = ('shortcut', 'shortcuts', 'openwithtable')
         suppressKeys = (None, 'shortcut')
         d = c.config.settingsDict if c else lm.globalSettingsDict
+        if None in d.keys():
+            del d[None]
         for key in sorted(list(d.keys())):
             if key not in suppressKeys:
                 gs = d.get(key)
