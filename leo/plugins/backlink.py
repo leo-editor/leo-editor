@@ -230,7 +230,6 @@ class backlinkController(object):
         self.linkSource = None
         self.linkMark = None
         self.vnode = {}
-        #X self.positions = {}
         self.messageUsed = False
     #@+node:ekr.20090616105756.3948: *3* linkAction
     def linkAction(self, dir_, newChild=False):
@@ -468,6 +467,36 @@ class backlinkController(object):
         """Mark current position as 'source' (called by UI)"""
         self.linkSource = self.c.p.copy()
         self.showMessage('Source marked')
+    #@+node:tbnorth.20170616135915.1: *3* nextLink
+    def nextLink(self):
+        """nextLink - jump to next node with a link
+        """
+
+        c = self.c
+        hits = [[]]  # hits/including before the current node
+
+        current = c.p.v
+
+        for v in c.all_unique_nodes():
+
+            if '_bklnk' in v.u and (
+              v.u['_bklnk']['links'] or v.u['_bklnk']['urls']):
+                hits[-1].append(v)
+            # forgo this optimization in favor of total count
+            # if len(hits) > 1 and hits[-1]):
+            #     break  # got one after the current node
+            if v == current:
+                hits.append([])  # hits after the current node
+
+        total = sum(map(len, hits))
+        g.es("%d nodes with links" % total)
+        if hits[1]:
+            c.selectPosition(c.vnode2position(hits[1][0]))
+            return
+        if total == 0:
+            return
+        g.es("Search wrapped")
+        c.selectPosition(c.vnode2position(hits[0][0]))
     #@+node:ekr.20090616105756.3962: *3* positionExistsSomewhere
     def positionExistsSomewhere(self,p,root=None):
         """A local copy of c.positionExists so that when the
@@ -636,6 +665,12 @@ class backlinkController(object):
         self.deleteMode = False
         self.showMessage('', optional=True)
 
+        try:
+            if v.u['_bklnk']['urls']:
+                self.ui.enableDelete(True)
+        except KeyError:
+            pass
+
         texts = []
         if (v.u and '_bklnk' in v.u and 'links' in v.u['_bklnk']):
             i = 0
@@ -729,7 +764,7 @@ if g.app.gui.guiName() == "qt":
             u.dirRightBtn.clicked.connect( self.dirClicked)
             u.linkList.itemClicked.connect(self.listClicked)
             u.deleteBtn.stateChanged.connect(o.deleteSet)
-            
+            u.nextBtn.clicked.connect(o.nextLink)
         #@+node:ekr.20140920145803.17988: *3* dirClicked
         def dirClicked(self):
 

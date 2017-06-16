@@ -53,6 +53,16 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="nextBtn">
+         <property name="toolTip">
+          <string>Find next linked node</string>
+         </property>
+         <property name="text">
+          <string>Next</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QLabel" name="label_2">
          <property name="text">
           <string>Mark:</string>
