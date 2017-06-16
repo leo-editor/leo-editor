@@ -1274,7 +1274,10 @@ class AtFile(object):
         if hasattr(v, 'tempBodyList'): delattr(v, 'tempBodyList')
     #@+node:ekr.20100628124907.5816: *7* at.indicateNodeChanged
     def indicateNodeChanged(self, old, new, postPass, v):
-        '''Add an entry to c.nodeConflictList.'''
+        '''
+        Add an entry to c.nodeConflictList.
+        Called only from at.terminateBody.
+        '''
         at, c = self, self.c
         if at.perfectImportRoot:
             if not postPass:

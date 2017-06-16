@@ -745,12 +745,9 @@ class FileCommands(object):
         if not c.make_node_conflicts_node:
             g.es_print('suppressed node conflicts', color='red')
             return
-        # Find the last top-level node.
-        sib = c.rootPosition()
-        while sib.hasNext():
-            sib.moveToNext()
         # Create the 'Recovered Nodes' node.
-        root = sib.insertAfter()
+        last = c.lastTopLevel()
+        root = last.insertAfter()
         root.setHeadString('Recovered Nodes')
         root.expand()
         # For each conflict, create one child and two grandchildren.
@@ -763,16 +760,14 @@ class FileCommands(object):
             child = root.insertAsLastChild()
             h = 'Recovered node "%s" from %s' % (h1, g.shortFileName(fn))
             child.setHeadString(h)
-            # child.setBodyString('%s %s' % (tag,gnx))
             line1 = '%s %s\nDiff...\n' % (tag, gnx)
             d = difflib.Differ().compare(g.splitLines(b2), g.splitLines(b1))
-            # d = difflib.unified_diff(g.splitLines(b2),g.splitLines(b1))
             diffLines = [z for z in d]
             lines = [line1]
             lines.extend(diffLines)
             # There is less need to show trailing newlines because
             # we don't report changes involving only trailing newlines.
-            child.setBodyString(''.join(lines)) # .replace('\n','\\n\n'))
+            child.setBodyString(''.join(lines))
             n1 = child.insertAsNthChild(0)
             n2 = child.insertAsNthChild(1)
             n1.setHeadString('old:' + h1)

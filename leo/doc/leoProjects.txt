@@ -148,6 +148,12 @@ https://github.com/leo-editor/leo-editor/issues/484
 Added submenus to Windows menu. This significantly simplifies and clarifies the Windows menu.
 .. @+node:ekr.20170608071935.1: *4* #488: Created a curses/npyscreen front end for Leo
 https://github.com/leo-editor/leo-editor/issues/488
+.. @+node:ekr.20170614051052.1: *4* Added "yes/no to all" buttons for externally changed file dialog
+Rev 9c94fec36d adds Yes / no to all on external file changes.
+
+If you answer yes to all or no to all Leo remembers that
+answer for 3 seconds. As a result, another set of external
+changes will show the pop up again.
 .. @+node:ekr.20170411191401.1: *4* Added  git branch name to backed-up files
 .. @+node:ekr.20170328143013.1: *4* Added --trace-focus command-line argument
 .. @+node:ekr.20170411092513.1: *4* Added goto-any-clone command
@@ -199,6 +205,7 @@ These commands (bound to ctrl-up/down by default) now work at the top or bottom 
 
 
 Restored the abbreviation from f10fa02b8cb681, the previous commit.
+.. @+node:ekr.20170616100339.1: *4* Added tcl importer
 .. @+node:ekr.20170403192311.1: *3* plugins
 .. @+node:ekr.20170403192317.1: *4* screen_capture.py now enabled by default
 .. @+node:ekr.20170331043621.1: *3* settings
