@@ -6877,14 +6877,14 @@ def handleUnl(unl, c):
         # The path is empty.
         # Move to the unl in *this* commander.
         g.recursiveUNLSearch(unl.split("-->"), c, soft_idx=True)
-        return
+        return c
     else:
         path, unl = unl.split('#', 1)
     # if trace: g.trace('\nPATH: %r\nUNL: %r' % (path, unl))
     if not path:
         # Move to the unl in *this* commander.
         g.recursiveUNLSearch(unl.split("-->"), c, soft_idx=True)
-        return
+        return c
     if c:
         base = g.os_path_dirname(c.fileName())
         c_path = g.os_path_finalize_join(base, path)
@@ -6923,6 +6923,7 @@ def handleUnl(unl, c):
             g.recursiveUNLSearch(unl.split("-->"), c2 or c, soft_idx=True)
         if c2:
             c2.bringToFront()
+            return c2
 #@+node:ekr.20120311151914.9918: *3* g.isValidUrl
 def isValidUrl(url):
     '''Return true if url *looks* like a valid url.'''

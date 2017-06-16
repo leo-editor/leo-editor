@@ -76,6 +76,10 @@ where the extra information is the name of the linked node's parent.
 
 # **Important**: this plugin is gui-independent.
 import leo.core.leoGlobals as g
+try:
+    from leo.core.leoQt import QtCore
+except ImportError:
+    pass
 Tk = None
 Qt = None
 #@+others
@@ -182,7 +186,27 @@ class backlinkController(object):
         :param str url: URL for link
         """
         g.es(url)
-        g.handleUrl(url, c=self.c)
+        # UNL detection copied from g.handleUrl()
+        if (
+            url.lower().startswith('unl:' + '//') or
+            url.lower().startswith('file://') and url.find('-->') > -1 or
+            url.startswith('#')
+        ):
+            our_unl = self.c.p.get_UNL(with_proto=True)
+            new_c = g.handleUnl(url, self.c)
+            if new_c and hasattr(new_c, 'backlinkController'):
+                # new_c.p may not be ready yet, so defer
+                def later(c=new_c, url=our_unl):
+                    c.backlinkController.initBacklink(c.p.v)
+                    if url not in c.p.v.u['_bklnk']['urls']:
+                        c.p.v.u['_bklnk']['urls'].append(url)
+                        c.backlinkController.updateTabInt()
+                        c.p.setDirty()
+                        c.setChanged(True)
+                        g.es("NOTE: automatically created back link")
+                QtCore.QTimer.singleShot(3000, later)
+        else:
+            g.handleUrl(url, c=self.c)
     #@+node:ekr.20090616105756.3946: *3* initBacklink
     def initBacklink(self, v):
         """set up a vnode to support links"""
@@ -362,6 +386,7 @@ class backlinkController(object):
         c.p.v.u['_bklnk']['urls'].append(url)
         c.p.setDirty()
         c.setChanged(True)
+
     #@+node:ekr.20090616105756.3957: *3* loadLinks
     def loadLinks(self, tag, keywords):
         """load links after file opened"""
@@ -645,9 +670,25 @@ class backlinkController(object):
                     txt = {'S':'->','D':'<-','U':'--'}[i[0]] + ' ' + name
                     texts.append(txt)
 
-            texts.extend(v.u['_bklnk']['urls'])
+            urls = []
+            for url in v.u['_bklnk']['urls']:
+                # try and make URLs easier to read
+                # find the last part
+                name = url
+                for separator in '#', '/', '\\', '-->':
+                    # name = name.rstrip(separator)
+                    name = name.split(separator)[-1]
+                name = name.split(':')[0]  # for UNLs, remove index numbers
+                if name.strip():
+                    name = "%s @ %s" % (name, url)
+                else:
+                    name = url
+                url = url.replace('-->', ' > ')
+                urls.append((name, url))
+            texts.extend(urls)
 
         self.ui.loadList(texts)
+
     #@+node:ekr.20090616105756.3969: *3* vnodePosition
     def vnodePosition(self,v):
         """Return a position for vnode v, if there is one"""
@@ -714,7 +755,13 @@ if g.app.gui.guiName() == "qt":
         #@+node:ekr.20140920145803.17991: *3* loadList
         def loadList(self, lst):
             self.UI.linkList.clear()
-            self.UI.linkList.addItems(lst)
+            for item in lst:
+                if isinstance(item, (tuple, list)):
+                    list_item = QtWidgets.QListWidgetItem(item[0])
+                    list_item.setToolTip(item[1])
+                    self.UI.linkList.addItem(list_item)
+                else:
+                    self.UI.linkList.addItem(item)
         #@+node:ekr.20140920145803.17992: *3* showMessage
         def showMessage(self, msg, color='black'):
             '''Show the message in the label area.'''
