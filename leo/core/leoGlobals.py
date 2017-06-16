@@ -88,6 +88,7 @@ import urllib # py-lint: disable=E0611
 # Do NOT import pdb here!  We shall define pdb as a _function_ below.
 # import pdb
 import re
+import shlex
 import shutil
 import string
 import subprocess
@@ -4198,6 +4199,31 @@ def skip_ws_and_nl(s, i):
         i += 1
     return i
 #@+node:ekr.20170414034616.1: ** g.Git
+#@+node:ekr.20170616102324.1: *3* g.execGitCommand
+def execGitCommand(command, directory, limit=0, trace=False):
+    '''Execute the given git command in the given directory.'''
+    git_dir = g.os_path_finalize_join(directory, '.git')
+    if not g.os_path_exists(git_dir):
+        g.trace('not found:', git_dir)
+        return
+    os.chdir(directory)
+    p = subprocess.Popen(
+        shlex.split(command),
+        stdout=subprocess.PIPE,
+        stderr=None, # Shows error traces.
+        shell=False,
+    )
+    out, err = p.communicate()
+    lines = [g.toUnicode(z) for z in g.splitLines(out or [])]
+    if trace:
+        n = 0
+        for line in lines:
+            n += 1
+            s = g.toUnicode(line.rstrip())
+            if limit == 0 or n < limit:
+                g.trace(s)
+        g.trace('%s lines' % n)
+    return lines
 #@+node:ekr.20170414034616.2: *3* g.gitBranchName
 def gitBranchName(path=None):
     '''
