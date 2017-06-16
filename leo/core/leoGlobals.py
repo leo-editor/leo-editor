@@ -3579,6 +3579,12 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     Internal part of recursiveUNLSearch which doesn't change the
     selected position or call c.frame.bringToFront()
 
+    returns found, depth, p, where:
+
+        - found is True if a full match was found
+        - depth is the depth of the best match
+        - p is the position of the best match
+
     NOTE: maxdepth is max depth seen in recursion so far, not a limit on
           how far we will recurse.  So it should default to 0 (zero).
 
@@ -3638,6 +3644,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
         target = target.replace('--%3E', '-->')
         use_idx_mode = False # not ok to use hard/soft_idx
         # note, the above also fixes calling with soft_idx=True and an old UNL
+
     for ndi in order:
         nd = nds[ndi]
         if (

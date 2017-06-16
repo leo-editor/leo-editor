@@ -192,19 +192,23 @@ class backlinkController(object):
             url.lower().startswith('file://') and url.find('-->') > -1 or
             url.startswith('#')
         ):
-            our_unl = self.c.p.get_UNL(with_proto=True)
+            our_unl = 'unl://'+self.c.p.get_UNL(with_index=False)
+            # don't use .get_UNL(with_proto=True), that
+            # unecessarily does ' ' -> %20 conversion
             new_c = g.handleUnl(url, self.c)
             if new_c and hasattr(new_c, 'backlinkController'):
-                # new_c.p may not be ready yet, so defer
-                def later(c=new_c, url=our_unl):
-                    c.backlinkController.initBacklink(c.p.v)
-                    if url not in c.p.v.u['_bklnk']['urls']:
-                        c.p.v.u['_bklnk']['urls'].append(url)
-                        c.backlinkController.updateTabInt()
-                        c.p.setDirty()
-                        c.setChanged(True)
-                        g.es("NOTE: automatically created back link")
-                QtCore.QTimer.singleShot(3000, later)
+                unl = url.replace('%20', ' ').split('#', 1)[-1].split('-->')
+                found, _, new_p = g.recursiveUNLFind(unl, new_c)
+                if not found:
+                    g.es("No perfect match, not creating backlink")
+                    return
+                new_c.backlinkController.initBacklink(new_p.v)
+                if our_unl not in new_p.v.u['_bklnk']['urls']:
+                    new_p.v.u['_bklnk']['urls'].append(our_unl)
+                    new_c.backlinkController.updateTabInt()
+                    new_p.setDirty()
+                    new_c.setChanged(True)
+                    g.es("NOTE: created back link automatically")
         else:
             g.handleUrl(url, c=self.c)
     #@+node:ekr.20090616105756.3946: *3* initBacklink
@@ -379,6 +383,9 @@ class backlinkController(object):
         )
         if url is None or not url.strip():
             return
+        if '://' not in url:
+            url = 'unl://' + url
+            g.es("Assuming unl:// url, use file:// explicitly for files")
         self.initBacklink(c.p.v)
         if url in c.p.v.u['_bklnk']['urls']:
             g.es("Already linked from this node")
