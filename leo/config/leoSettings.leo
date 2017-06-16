@@ -14218,26 +14218,27 @@ if 0: # The base class
         '''Return a cleaned up headline s.'''
         return s.strip()
         
-if 0: # A more complex example, for the C language.
-    def clean_headline(self, s):
-        '''Return a cleaned up headline s.'''
-        import re
-        type1 = r'(static|extern)*'
-        type2 = r'(void|int|float|double|char)*'
-        class_pattern = r'\s*(%s)\s*class\s+(\w+)' % (type1)
-        pattern = r'\s*(%s)\s*(%s)\s*(\w+)' % (type1, type2)
-        m = re.match(class_pattern, s)
-        if m:
-            prefix1 = '%s ' % (m.group(1)) if m.group(1) else ''
-            return '%sclass %s' % (prefix1, m.group(2))
-        m = re.match(pattern, s)
-        if m:
-            prefix1 = '%s ' % (m.group(1)) if m.group(1) else ''
-            prefix2 = '%s ' % (m.group(2)) if m.group(2) else ''
-            h = m.group(3) or '&lt;no c function name&gt;'
-            return '%s%s%s' % (prefix1, prefix2, h)
-        else:
-            return s
+# A more complex example, for the C language.
+
+# def clean_headline(self, s):
+    # '''Return a cleaned up headline s.'''
+    # import re
+    # type1 = r'(static|extern)*'
+    # type2 = r'(void|int|float|double|char)*'
+    # class_pattern = r'\s*(%s)\s*class\s+(\w+)' % (type1)
+    # pattern = r'\s*(%s)\s*(%s)\s*(\w+)' % (type1, type2)
+    # m = re.match(class_pattern, s)
+    # if m:
+        # prefix1 = '%s ' % (m.group(1)) if m.group(1) else ''
+        # return '%sclass %s' % (prefix1, m.group(2))
+    # m = re.match(pattern, s)
+    # if m:
+        # prefix1 = '%s ' % (m.group(1)) if m.group(1) else ''
+        # prefix2 = '%s ' % (m.group(2)) if m.group(2) else ''
+        # h = m.group(3) or '&lt;no c function name&gt;'
+        # return '%s%s%s' % (prefix1, prefix2, h)
+    # else:
+        # return s
 </t>
 <t tx="ekr.20170530035032.6">def clean_nodes(self, parent):
     '''
