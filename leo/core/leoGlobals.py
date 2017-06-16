@@ -1531,6 +1531,9 @@ class TypedDict(object):
             self._name, obj.__class__.__name__, objType.__name__)
     #@+node:ekr.20120205022040.17774: *4* td.add & td.replace
     def add(self, key, val):
+        if key is None:
+            g.trace('TypeDict: None is not a valid key', g.callers())
+            return
         self._checkKeyType(key)
         self._checkValType(val)
         if self.isList:
@@ -1542,6 +1545,9 @@ class TypedDict(object):
             self.d[key] = val
 
     def replace(self, key, val):
+        if key is None:
+            g.trace('TypeDict: None is not a valid key', g.callers())
+            return
         self._checkKeyType(key)
         if self.isList:
             try:
