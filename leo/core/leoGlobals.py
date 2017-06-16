@@ -4200,7 +4200,7 @@ def skip_ws_and_nl(s, i):
     return i
 #@+node:ekr.20170414034616.1: ** g.Git
 #@+node:ekr.20170616102324.1: *3* g.execGitCommand
-def execGitCommand(command, directory, limit=0, trace=False):
+def execGitCommand(command, directory, limit=0, strip=False, trace=False):
     '''Execute the given git command in the given directory.'''
     git_dir = g.os_path_finalize_join(directory, '.git')
     if not g.os_path_exists(git_dir):
@@ -4215,6 +4215,8 @@ def execGitCommand(command, directory, limit=0, trace=False):
     )
     out, err = p.communicate()
     lines = [g.toUnicode(z) for z in g.splitLines(out or [])]
+    if strip:
+        lines = [z.rstrip() for z in lines]
     if trace:
         n = 0
         for line in lines:
