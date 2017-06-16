@@ -175,6 +175,14 @@ class backlinkController(object):
             self.showMessage('Click a link to DELETE it', color='red')
         else:
             self.showMessage('Click a link to follow it')
+    #@+node:tbnorth.20170616105931.1: *3* handleURL
+    def handleURL(self, url):
+        """handleUrl - user clicked an URL / UNL link
+
+        :param str url: URL for link
+        """
+        g.es(url)
+        g.handleUrl(url, c=self.c)
     #@+node:ekr.20090616105756.3946: *3* initBacklink
     def initBacklink(self, v):
         """set up a vnode to support links"""
@@ -259,6 +267,15 @@ class backlinkController(object):
     #@+node:ekr.20090616105756.3951: *3* linkClicked
     def linkClicked(self, selected):
         """UI informs us that link number 'selected' (zero based) was clicked"""
+
+        if selected >= len(self.dests):  # URL link
+            url = self.c.p.v.u['_bklnk']['urls'][selected-len(self.dests)]
+            if self.deleteMode:
+                self.c.p.v.u['_bklnk']['urls'].remove(url)
+                self.updateTabInt()
+            else:
+                self.handleURL(url)
+            return
 
         if not self.deleteMode:
             assert self.c.positionExists(self.dests[selected][1])
@@ -627,6 +644,8 @@ class backlinkController(object):
 
                     txt = {'S':'->','D':'<-','U':'--'}[i[0]] + ' ' + name
                     texts.append(txt)
+
+            texts.extend(v.u['_bklnk']['urls'])
 
         self.ui.loadList(texts)
     #@+node:ekr.20090616105756.3969: *3* vnodePosition
