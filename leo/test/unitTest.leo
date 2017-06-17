@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.50" body_secondary_ratio="0.64">
-	<global_window_position top="119" left="275" height="838" width="1245"/>
+	<global_window_position top="124" left="556" height="838" width="1245"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -233,7 +233,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -597,8 +597,9 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20161228070933.1"><vh>@test python bug #354</vh></v>
 <v t="ekr.20170122033034.1"><vh>@test python bug #357</vh></v>
 <v t="ekr.20170122032242.1"><vh>@test python bug #360</vh></v>
-<v t="ekr.20170306041801.1"><vh>@test python bug @390</vh></v>
+<v t="ekr.20170306041801.1"><vh>@test python bug #390</vh></v>
 <v t="ekr.20161115063144.4"><vh>@test python bug 603720</vh></v>
+<v t="ekr.20170617131333.1"><vh>@test python enhancement #481</vh></v>
 <v t="ekr.20161115063144.5"><vh>@test python class test 2</vh></v>
 <v t="ekr.20161115063144.6"><vh>@test python class tests 1</vh></v>
 <v t="ekr.20161115063144.7"><vh>@test python comment after dict assign</vh></v>
@@ -1128,6 +1129,8 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20051107115231.14"><vh>@test return ends editing of headline</vh></v>
 </v>
 <v t="ekr.20170617111001.1"></v>
+<v t="ekr.20090529141856.4736"></v>
+<v t="ekr.20170617131333.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1556,7 +1559,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="4">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -7402,12 +7405,12 @@ class Index:
 
 try:
     c.importCommands.pythonUnitTest(p,s=s,showTree=True) # Must be true.
-    index = g.findNodeInTree(c, p, 'index')
+    index = g.findNodeInTree(c, p, '@cherrypy.nocolor index')
     assert index
     lines = g.splitLines(index.b)
     assert lines[0] == '@cherrypy.nocolor\n', repr(lines[0])
     assert lines[1] == '@cherrypy.expose\n', repr(lines[1])
-    abc = g.findNodeInTree(c,p, 'abc')
+    abc = g.findNodeInTree(c,p, "@cmd('abc') abc")
     lines = g.splitLines(abc.b)
     assert lines[0] == "@cmd('abc')\n", repr(lines[0])
     if 1:
@@ -10247,7 +10250,7 @@ table = (
     (2, "mousePressEvent"),
     (2, "mouseMoveEvent"),
     (1, "command"),
-    (1, "exit_"),
+    (1, '@command("Exit") exit_'),
     (1, "main"),
 )
 try:
@@ -10265,7 +10268,7 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
-    target = g.findNodeInTree(c, root, 'exit_')
+    target = g.findNodeInTree(c, root, '@command("Exit") exit_')
     assert target
     lines = g.splitLines(target.b)
     assert lines[0] == '@command("Exit")\n', repr(lines[0])
@@ -10674,7 +10677,7 @@ def make_map():
     '''make_map - plot the Thompson / Bartsh / WHO map'''
 """
 table = (
-    (1, 'make_map'),
+    (1, '@base_task make_map'),
 )
 try:
     test_node = p.copy()
@@ -15022,6 +15025,34 @@ try:
         p.deleteAllChildren()
 finally:
         c.redraw()
+</t>
+<t tx="ekr.20170617131333.1">s = '''\
+@g.cmd('my-command')
+def myCommand(event=None):
+    pass
+'''
+table = (
+    # (1, '@g.cmd myCommand'),
+    (1, "@g.cmd('my-command') myCommand"),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    c.importCommands.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    test_node.deleteAllChildren()
+finally:
+    c.redraw()
 </t>
 </tnodes>
 </leo_file>

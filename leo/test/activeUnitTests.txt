@@ -16486,7 +16486,7 @@ def make_map():
     '''make_map - plot the Thompson / Bartsh / WHO map'''
 """
 table = (
-    (1, 'make_map'),
+    (1, '@base_task make_map'),
 )
 try:
     test_node = p.copy()
@@ -16507,7 +16507,7 @@ try:
         test_node.deleteAllChildren()
 finally:
     c.redraw()
-#@+node:ekr.20170306041801.1: *6* @test python bug @390
+#@+node:ekr.20170306041801.1: *6* @test python bug #390
 s = """\
 import sys
 
@@ -16568,6 +16568,34 @@ foo()
 '''
 
 tree = c.importCommands.pythonUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20170617131333.1: *6* @test python enhancement #481
+s = '''\
+@g.cmd('my-command')
+def myCommand(event=None):
+    pass
+'''
+table = (
+    # (1, '@g.cmd myCommand'),
+    (1, "@g.cmd('my-command') myCommand"),
+)
+try:
+    test_node = p.copy()
+    test_node.deleteAllChildren()
+    c.importCommands.pythonUnitTest(p,s=s,showTree=True)
+    after = p.nodeAfterTree()
+    root = p.lastChild()
+    assert root.h.startswith('@@'), root.h
+    p = root.firstChild()
+    if 1:
+        for n, h in table:
+            n2 = p.level() - root.level()
+            assert h == p.h, (h, p.h)
+            assert n == n2, (n, n2, p.h)
+            p.moveToThreadNext()
+        assert p == after, ('tree comp failed', p.h)
+    test_node.deleteAllChildren()
+finally:
+    c.redraw()
 #@+node:ekr.20161115063144.5: *6* @test python class test 2
 @tabwidth -4
     # Required when running unit tests externally.
@@ -16705,12 +16733,12 @@ class Index:
 
 try:
     c.importCommands.pythonUnitTest(p,s=s,showTree=True) # Must be true.
-    index = g.findNodeInTree(c, p, 'index')
+    index = g.findNodeInTree(c, p, '@cherrypy.nocolor index')
     assert index
     lines = g.splitLines(index.b)
     assert lines[0] == '@cherrypy.nocolor\n', repr(lines[0])
     assert lines[1] == '@cherrypy.expose\n', repr(lines[1])
-    abc = g.findNodeInTree(c,p, 'abc')
+    abc = g.findNodeInTree(c,p, "@cmd('abc') abc")
     lines = g.splitLines(abc.b)
     assert lines[0] == "@cmd('abc')\n", repr(lines[0])
     if 1:
@@ -16825,7 +16853,7 @@ table = (
     (2, "mousePressEvent"),
     (2, "mouseMoveEvent"),
     (1, "command"),
-    (1, "exit_"),
+    (1, '@command("Exit") exit_'),
     (1, "main"),
 )
 try:
@@ -16843,7 +16871,7 @@ try:
             assert n == n2, (n, n2, p.h)
             p.moveToThreadNext()
         assert p == after, ('tree comp failed', p.h)
-    target = g.findNodeInTree(c, root, 'exit_')
+    target = g.findNodeInTree(c, root, '@command("Exit") exit_')
     assert target
     lines = g.splitLines(target.b)
     assert lines[0] == '@command("Exit")\n', repr(lines[0])
