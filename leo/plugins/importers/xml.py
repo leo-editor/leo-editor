@@ -34,8 +34,6 @@ class Xml_Importer(Importer):
         self.tag_warning_given = False
             # True: a structure error has been detected.
             # Only warn once.
-
-
     #@+node:ekr.20161121204918.1: *3* xml_i.add_tags
     def add_tags(self):
         '''Add items to self.class/functionTags and from settings.'''
@@ -226,10 +224,8 @@ class Xml_Importer(Importer):
     #@+node:ekr.20161123005742.1: *3* xml_i.undent
     def undent(self, p):
         '''
-        Remove leading whitespace from *all* lines except @others.
-        Regularize lws before @others.
-        
-        i.check allows such drastic changes for all non-strict languages.
+        Regularize lws before @others, but preserve lws for all other lines.
+        This is needed to handle embedded brython code properly.
         '''
         result, w = [], self.tab_width
         indent = ' '*abs(w) if w < 0 else '\t'
@@ -241,7 +237,8 @@ class Xml_Importer(Importer):
                 else:
                     result.append(indent + ls)
             else:
-                result.append(ls)
+                # Fix #479: Preserve brython indentation when importing .html files.
+                result.append('\n' if s.isspace() else s)
         return result
     #@-others
 #@+node:ekr.20161121204146.7: ** class class Xml_ScanState
