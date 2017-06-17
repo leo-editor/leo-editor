@@ -3580,6 +3580,12 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     Internal part of recursiveUNLSearch which doesn't change the
     selected position or call c.frame.bringToFront()
 
+    returns found, depth, p, where:
+
+        - found is True if a full match was found
+        - depth is the depth of the best match
+        - p is the position of the best match
+
     NOTE: maxdepth is max depth seen in recursion so far, not a limit on
           how far we will recurse.  So it should default to 0 (zero).
 
@@ -3639,6 +3645,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
         target = target.replace('--%3E', '-->')
         use_idx_mode = False # not ok to use hard/soft_idx
         # note, the above also fixes calling with soft_idx=True and an old UNL
+
     for ndi in order:
         nd = nds[ndi]
         if (
@@ -4200,12 +4207,15 @@ def skip_ws_and_nl(s, i):
     return i
 #@+node:ekr.20170414034616.1: ** g.Git
 #@+node:ekr.20170616102324.1: *3* g.execGitCommand
-def execGitCommand(command, directory, limit=0, strip=False, trace=False):
+def execGitCommand(command, directory):
     '''Execute the given git command in the given directory.'''
     git_dir = g.os_path_finalize_join(directory, '.git')
     if not g.os_path_exists(git_dir):
         g.trace('not found:', git_dir)
         return
+    if '\n' in command:
+        g.trace('removing newline from', command)
+        command = command.replace('\n','')
     os.chdir(directory)
     p = subprocess.Popen(
         shlex.split(command),
@@ -4215,16 +4225,6 @@ def execGitCommand(command, directory, limit=0, strip=False, trace=False):
     )
     out, err = p.communicate()
     lines = [g.toUnicode(z) for z in g.splitLines(out or [])]
-    if strip:
-        lines = [z.rstrip() for z in lines]
-    if trace:
-        n = 0
-        for line in lines:
-            n += 1
-            s = g.toUnicode(line.rstrip())
-            if limit == 0 or n < limit:
-                g.trace(s)
-        g.trace('%s lines' % n)
     return lines
 #@+node:ekr.20170414034616.2: *3* g.gitBranchName
 def gitBranchName(path=None):
@@ -6909,14 +6909,14 @@ def handleUnl(unl, c):
         # The path is empty.
         # Move to the unl in *this* commander.
         g.recursiveUNLSearch(unl.split("-->"), c, soft_idx=True)
-        return
+        return c
     else:
         path, unl = unl.split('#', 1)
     # if trace: g.trace('\nPATH: %r\nUNL: %r' % (path, unl))
     if not path:
         # Move to the unl in *this* commander.
         g.recursiveUNLSearch(unl.split("-->"), c, soft_idx=True)
-        return
+        return c
     if c:
         base = g.os_path_dirname(c.fileName())
         c_path = g.os_path_finalize_join(base, path)
@@ -6955,6 +6955,7 @@ def handleUnl(unl, c):
             g.recursiveUNLSearch(unl.split("-->"), c2 or c, soft_idx=True)
         if c2:
             c2.bringToFront()
+            return c2
 #@+node:ekr.20120311151914.9918: *3* g.isValidUrl
 def isValidUrl(url):
     '''Return true if url *looks* like a valid url.'''
