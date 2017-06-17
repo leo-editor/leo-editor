@@ -433,6 +433,33 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 f.close()
             except IOError:
                 g.es('can not create', fileName)
+    #@+node:ekr.20170617152615.1: *3* efc.toggleAtAutoAtEdit & helpers
+    @cmd('toggle-at-auto-at-edit')
+    def toggleAtAutoAtEdit(self, event):
+        '''Toggle between @auto and @edit, preserving insert point, etc.'''
+        p = self.c.p
+        if p.isAtEditNode():
+            self.toAtAuto(p)
+            return
+        for p in p.self_and_parents():
+            if p.isAtAutoNode():
+                self.toAtEdit(p)
+                return
+        g.es_print('Not in an @auto or @edit tree.', color='blue')
+    #@+node:ekr.20170617153619.1: *4* efc.toAtAuto
+    def toAtAuto(self, p):
+        '''Convert p from @edit to @auto.'''
+        c = self.c
+        p.h = '@auto' + p.h[5:]
+        c.selectPosition(p, enableRedrawFlag=False)
+        c.refreshFromDisk()
+    #@+node:ekr.20170617153628.1: *4* efc.toAtEdit
+    def toAtEdit(self, p):
+        '''Convert p from @auto to @edit.'''
+        c = self.c
+        p.h = '@edit' + p.h[5:]
+        c.selectPosition(p, enableRedrawFlag=False)
+        c.refreshFromDisk()
     #@-others
 #@-others
 #@-leo
