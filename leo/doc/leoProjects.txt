@@ -87,6 +87,9 @@ The new code is simpler and handles dubious html syntax.
 The change was to pylint.run_pylint.
 
 This removes a major source of confusion.
+.. @+node:ekr.20170617113038.1: *4* #479: Preserve brython indentation...
+https://github.com/leo-editor/leo-editor/issues/479
+Preserve brython indentation when importing .html files
 .. @+node:ekr.20170325085907.1: *3* code
 .. @+node:ekr.20170325085939.1: *4* Added better checks in v.setBodyString & v.setHeadString
 .. @+node:ekr.20170331043509.1: *4* Improved @auto write code
