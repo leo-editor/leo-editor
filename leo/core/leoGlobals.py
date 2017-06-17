@@ -4200,12 +4200,15 @@ def skip_ws_and_nl(s, i):
     return i
 #@+node:ekr.20170414034616.1: ** g.Git
 #@+node:ekr.20170616102324.1: *3* g.execGitCommand
-def execGitCommand(command, directory, limit=0, strip=False, trace=False):
+def execGitCommand(command, directory):
     '''Execute the given git command in the given directory.'''
     git_dir = g.os_path_finalize_join(directory, '.git')
     if not g.os_path_exists(git_dir):
         g.trace('not found:', git_dir)
         return
+    if '\n' in command:
+        g.trace('removing newline from', command)
+        command = command.replace('\n','')
     os.chdir(directory)
     p = subprocess.Popen(
         shlex.split(command),
@@ -4215,16 +4218,6 @@ def execGitCommand(command, directory, limit=0, strip=False, trace=False):
     )
     out, err = p.communicate()
     lines = [g.toUnicode(z) for z in g.splitLines(out or [])]
-    if strip:
-        lines = [z.rstrip() for z in lines]
-    if trace:
-        n = 0
-        for line in lines:
-            n += 1
-            s = g.toUnicode(line.rstrip())
-            if limit == 0 or n < limit:
-                g.trace(s)
-        g.trace('%s lines' % n)
     return lines
 #@+node:ekr.20170414034616.2: *3* g.gitBranchName
 def gitBranchName(path=None):
