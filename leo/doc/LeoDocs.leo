@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1130,11 +1130,10 @@
 </v>
 <v t="ekr.20170618113437.1"><vh>Leo's console gui</vh>
 <v t="ekr.20170618113503.1"><vh>@rst html\console-gui.html</vh>
-<v t="ekr.20170618111245.1"><vh>Starting Leo-Console</vh></v>
-<v t="ekr.20170618111248.1"><vh>File operations</vh></v>
-<v t="ekr.20170618111248.3"><vh>Navigation</vh></v>
-<v t="ekr.20170618111248.4"><vh>Editing</vh></v>
-<v t="ekr.20170618111248.5"><vh>Keyboard commands</vh></v>
+<v t="ekr.20170618111245.1"><vh>Starting Leo with the console gui</vh></v>
+<v t="ekr.20170618162705.1"><vh>Exiting Leo &amp; saving files</vh></v>
+<v t="ekr.20170618111248.3"><vh>Navigation and editing</vh></v>
+<v t="ekr.20170618111248.5"><vh>Leo key bindings</vh></v>
 <v t="ekr.20170618115228.1"><vh>Broadcast and Listening</vh></v>
 <v t="ekr.20170618115641.1"><vh>Limitations</vh></v>
 </v>
@@ -23306,26 +23305,24 @@ You name it.
 You get the idea...
 
 And for me, that means everything.</t>
-<t tx="ekr.20170618111245.1">For optimal readability you should resize your console/terminal to a recommended minimum size of 100x35. Leo will crash on startup if the rows are less than 32.
-You need to specify the Console gui with the `--gui=console` command-line option::
+<t tx="ekr.20170618111245.1">1. Resize your console/terminal to a recommended minimum size of 100x35. **Leo will crash on startup if there are fewer than 32 rows**.
 
-    &gt;launchleo.py --gui=console
-
-If you give no file arguments on the command line Leo-Console will open ~/.leo/workbook.leo (Leo's workbook file). Initially, this file contains Leo’s cheat sheet and an example from the rst3 tutorial.
-</t>
-<t tx="ekr.20170618111248.1">There is no File menu and no way to open or create a new file from within Leo-Console. Instead, the path to the leo file must be included at the command line::
+2. Launch Leo with the `--gui=console` command-line option::
 
     &gt;launchleo.py --gui=console [path to leo file\file_name.leo]
 
-To exit Leo: click "Quit Leo" button and &lt;Enter&gt;. Ctrl-Q also works.</t>
-<t tx="ekr.20170618111248.3">::
+If no .leo file is given, Leo will open ~/.leo/workbook.leo (Leo's workbook file). Initially, this file contains Leo’s cheat sheet and an example from the rst3 tutorial.
+
+**Only one outline can be open at a time**. The only way to load .leo files is from the command line. (There are no menus).
+</t>
+<t tx="ekr.20170618111248.3">Moving around the main window::
 
     Mouse clicks properly switch nodes.
     Arrow-up and Arrow-down keys switch panes (when not editing).
     Tab: moves down from pane to pane.
     Shift-Tab: moves up from pane to pane.
-</t>
-<t tx="ekr.20170618111248.4">To edit a headline, select the node you wish to edit, then press e to edit the node headline (return to end)::
+
+To edit a headline, select the node you wish to edit, then press e to edit the node headline (return to end)::
 
     i: to insert a new node.
     d:  delete node
@@ -23340,10 +23337,8 @@ To edit body text, use Tab to move down to the Body Pane, or Shift-Tab to move u
 
     Ctrl-B (execute-script).
     Ctrl-F (find)
-    Ctrl-Q (quit-leo) See warning below.
+    Ctrl-Q (quit-leo)
     Ctrl-S (save) Works for windows cmd.exe, but not Consolez.
-    
-**Warning**: There is no way to cancel Ctrl-Q. A dialog box will appear. Press Enter to select "Cancel" and arrow keys to move between "Cancel" and "Ok". Press Enter to execute "Cancel" or "Ok". "OK" saves, then exits. **"Cancel" exits without saving**.
 
 Unsupported Ctrl commands::
 
@@ -23360,6 +23355,11 @@ Leo's Console Gui
 .. |ConsoleWindow| image:: screen-shots/console-window.png
 
 This chapter describes Leo's console gui. This allows Leo to be run remotely.
+
+.. contents:: Contents
+    :depth: 2
+    :local:
+
 Here is a screen shot:
 
 |ConsoleWindow|
@@ -23391,7 +23391,9 @@ To set this up:
 <t tx="ekr.20170618115641.1">Cut/paste is theoretically supported, but in the absence of selections only paste might work.  And paste may work only in limited contexts...
 
 Some commands can be run from the minibuffer, but there is no tab completion and no indication of what the correct command names are.</t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170618162705.1">To exit Leo: click "Quit Leo" button and &lt;Enter&gt;. Ctrl-Q also works. **There is no way to cancel Ctrl-Q**. A dialog box will appear. Press Enter to select "No". Press arrow keys to move between "Yes" and "No". "Yes" saves, then exits. "No" Exits without saving.
+</t>
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
