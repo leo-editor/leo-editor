@@ -753,6 +753,12 @@ class LeoTreeLine(npyscreen.TreeLine):
                 # return True
 
     #@-others
+#@+node:ekr.20170618103742.1: *3* class QuitButton (npyscreen.MiniButton)
+class QuitButton (npyscreen.MiniButtonPress):
+    '''Override the "Quit Leo" button so it prompts for save if needed.'''
+
+    def whenPressed(self):
+        g.app.onQuit()
 #@-others
 #@-<< forward reference classes >>
 #@+others
@@ -2605,11 +2611,11 @@ class LeoLog (npyscreen.MultiLineEditable):
 class LeoForm (npyscreen.Form):
     
     OK_BUTTON_TEXT = 'Quit Leo'
+    OKBUTTON_TYPE = QuitButton
     how_exited = None
         
     def display(self, *args, **kwargs):
         changed = any([z.c.isChanged() for z in g.app.windowList])
-        # g.trace('LeoForm.display: changed:', changed, g.callers())
         self.name = 'Welcome to Leo' + (' (changed)' if changed else '')
         super(LeoForm, self).display(*args, **kwargs)
 #@+node:ekr.20170510092721.1: *3* class LeoMiniBuffer (npyscreen.Textfield)
