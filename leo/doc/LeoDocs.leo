@@ -1546,6 +1546,7 @@
 </v>
 <v t="ekr.20170608071626.1"><vh>Leo 5.6 release notes (in progress)</vh></v>
 <v t="ekr.20170618113503.1"></v>
+<v t="ekr.20050831184021.4"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -3269,7 +3270,7 @@ August 28, 2002, on `slashdot`_.
 
 Hello, my full name is David Speed Ream. I am known as Speed to friends and enemies alike, but I gladly answer to David or most any other handle. I am an unabashed and biased fan of Leo, the fact that it was written by my brother Edward only slightly coloring my already colored glasses. I have been testing and using Leo in software production for over 4 years. My company currently has over 50,000 lines of code in over 100 source files that are written using Leo.
 
-My comments are from two points of view, the first being software project manager for a complicated, multi-module software product, and the second being as a production line coder. For me, Leo’s greatest and only real drawback is the learning curve. This learning curve can be shallow is if all that is required is that someone code using Leo. However, in our company we allocate 40 to 80 hours *on top* of the normal coding load for someone to come up to speed on Leo. The ROI (return on investment) is calculated by me to be on the order of 3 months. So if I hire a consultant for less than 3 months, I don’t teach him Leo, even though all source code in our company must reside in Leo files for the reasons I won’t go into now.
+My comments are from two points of view, the first being software project manager for a complicated, multi-module software product, and the second being as a production line coder. For me, Leo’s greatest and only real drawback is the learning curve. This learning curve can be shallow if all that is required is that someone code using Leo. However, in our company we allocate 40 to 80 hours *on top* of the normal coding load for someone to come up to speed on Leo. The ROI (return on investment) is calculated by me to be on the order of 3 months. So if I hire a consultant for less than 3 months, I don’t teach him Leo, even though all source code in our company must reside in Leo files for the reasons I won’t go into now.
 
 I consider that my coders are 15 to 30 percent more efficient in their daily operations than my competition’s people. This indefensible claim of mine is based on the changes in my productivity as Leo grew from a test document production tool to the primary production method for all our assembly, c and cpp source code.
 
@@ -20125,7 +20126,7 @@ For example, here is "@button compare vr-controller" in leoPluginsRef.leo::
 
 This script will compare the trees whose roots are p1 and p2 and show the results like "Recovered nodes".  That is, the script creates a node called "compare vr1 &amp; vr2".  This top-level node contains one child node for every node that is different.  Each child node contains a diff of the node.  The grand children are one or two clones of the changed or inserted node.
 </t>
-<t tx="ekr.20150923111606.1">A new user recently said to me, "Leo is powerful and flexible -- and complex and bewildering". This is true. I believe it is always the goal of developers to make their software less complex and bewildering but keep in mind that Leo has been in development for over 20 years...This puts it right up there with Vim and Emacs in terms of maturity. My own experience with Vim and Emacs have been quite similar to my experience with Leo. All three are powerful and flexible and complex and bewildering in their own right.
+<t tx="ekr.20150923111606.1">A new user recently said to me, "Leo is powerful and flexible--and complex and bewildering". This is true. I believe it is always the goal of developers to make their software less complex and bewildering but keep in mind that Leo has been in development for over 20 years...This puts it right up there with Vim and Emacs in terms of maturity. My own experience with Vim and Emacs have been quite similar to my experience with Leo. All three are powerful and flexible and complex and bewildering in their own right.
 
 I believe with tools of this weight and impact, there will always be an investment in learning them. They're all vast forests of features filled with hidden treasures and in the case of each of them he/she that invests in the tool will be rewarded for their effort. It is, however, the responsibility of the community (led by the developers) to help make that treasure hunt as enjoyable and adventurous as possible, as any good treasure hunt should be. 
 
@@ -20278,11 +20279,11 @@ Leo is a wild success on this score. I foresaw none of these developments 20 yea
 
 Edward K. Ream
 </t>
-<t tx="ekr.20160304081437.8">This idea of an always present outline has been key to me for organizing writings. Some coworkers have found in the past that this helps them when we're correcting their text.
+<t tx="ekr.20160304081437.8">This idea of an always-present outline has been key to me for organizing writings. Some coworkers have found in the past that this helps them when we're correcting their text.
 
 &gt; Leo's clones let you organize any data as you want, even if all folds are collapsed.
 
-For me this is the most powerful but misunderstood feature of Leo. Most of the people which compares it with other IDE rant about why Leo doesn't works more automatically imposing structure, but in Leo you're in charger. You impose infrastructure...
+For me this is the most powerful but misunderstood feature of Leo. Most of the people which compares it with other IDE rant about why Leo doesn't works more automatically imposing structure, but in Leo you're in charge. You impose infrastructure...
 
 For me the second main insight of Leo (besides emergent always present tree structure on almost any file) was to have a tree that is a programmable structure that can be understood and changed by any node inside that tree. I think that Leo brings structure and self-referentiality to the dumb flat file word. So you can create a tree from one (or several) files, deconstruct and reconstruct it they way you want and automatize the way in behaves and talks with the external world...The more I start to focus on interactive writing and going away of the unix inspired OS world, the more the second insight become important to me. I didn't need to deconstruct/reconstruct or impose structure over flat files but to use outlining for structure thought by (interactive) writing and I need the outline be a fully programmable object. That's the essence of most of my Leo experience...
 
@@ -23283,7 +23284,7 @@ sets headline to::
 
 **NOW**
 
-I am at an age now, and a point in my career where I want to make my life (and job) as simple as possible. Leo helps me do that.  It is hard to explain--the outlining gives the ability to mix thoughts with code--even life with code, in a very intuitive fashion.  Perhaps this is "literate programming".  I don't know.  They never mentioned that term in my CS classes.  Whatever it is, I like it.
+I am at an age now, and a point in my career where I want to make my life (and job) as simple as possible. Leo helps me do that.  It is hard to explain--the outlining gives the ability to mix thoughts with code--even life with code, in a very intuitive fashion. Perhaps this is "literate programming".  I don't know.  They never mentioned that term in my CS classes.  Whatever it is, I like it.
 
 Side benefit--my code has never been so well formatted and documented!
 
