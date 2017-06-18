@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1128,6 +1128,17 @@
 </v>
 </v>
 </v>
+<v t="ekr.20170618113437.1"><vh>Leo's console gui</vh>
+<v t="ekr.20170618113503.1"><vh>@rst html\console-gui.html</vh>
+<v t="ekr.20170618111245.1"><vh>Starting Leo-Console</vh></v>
+<v t="ekr.20170618111248.1"><vh>File operations</vh></v>
+<v t="ekr.20170618111248.3"><vh>Navigation</vh></v>
+<v t="ekr.20170618111248.4"><vh>Editing</vh></v>
+<v t="ekr.20170618111248.5"><vh>Keyboard commands</vh></v>
+<v t="ekr.20170618115228.1"><vh>Broadcast and Listening</vh></v>
+<v t="ekr.20170618115641.1"><vh>Limitations</vh></v>
+</v>
+</v>
 <v t="ekr.20131015104133.16763"><vh>A scripting miscellany</vh>
 <v t="ekr.20131015091948.16784"><vh>@rst html\scripting-miscellany.html</vh>
 <v t="ekr.20131014053720.16816"><vh>\@button example</vh></v>
@@ -1535,6 +1546,7 @@
 <v t="ekr.20170316061434.1"><vh>Settings and command-line options</vh></v>
 </v>
 <v t="ekr.20170608071626.1"><vh>Leo 5.6 release notes (in progress)</vh></v>
+<v t="ekr.20170618113503.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -14644,6 +14656,7 @@ Advanced Topics
    writingPlugins
    unitTesting
    debuggers
+   console-gui
    
 .. toctree::
    :maxdepth: 1
@@ -23293,7 +23306,92 @@ You name it.
 You get the idea...
 
 And for me, that means everything.</t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170618111245.1">For optimal readability you should resize your console/terminal to a recommended minimum size of 100x35. Leo will crash on startup if the rows are less than 32.
+You need to specify the Console gui with the `--gui=console` command-line option::
+
+    &gt;launchleo.py --gui=console
+
+If you give no file arguments on the command line Leo-Console will open ~/.leo/workbook.leo (Leo's workbook file). Initially, this file contains Leo’s cheat sheet and an example from the rst3 tutorial.
+</t>
+<t tx="ekr.20170618111248.1">There is no File menu and no way to open or create a new file from within Leo-Console. Instead, the path to the leo file must be included at the command line::
+
+    &gt;launchleo.py --gui=console [path to leo file\file_name.leo]
+
+To exit Leo: click "Quit Leo" button and &lt;Enter&gt;. Ctrl-Q also works.</t>
+<t tx="ekr.20170618111248.3">::
+
+    Mouse clicks properly switch nodes.
+    Arrow-up and Arrow-down keys switch panes (when not editing).
+    Tab: moves down from pane to pane.
+    Shift-Tab: moves up from pane to pane.
+</t>
+<t tx="ekr.20170618111248.4">To edit a headline, select the node you wish to edit, then press e to edit the node headline (return to end)::
+
+    i: to insert a new node.
+    d:  delete node
+
+To edit body text, use Tab to move down to the Body Pane, or Shift-Tab to move up to the Body Pane. Follow the prompts::
+
+    e to edit line (return to start a new line)
+    esc to end editing.
+    d to delete line.
+</t>
+<t tx="ekr.20170618111248.5">Supported Ctrl commands::
+
+    Ctrl-B (execute-script).
+    Ctrl-F (find)
+    Ctrl-Q (quit-leo) See warning below.
+    Ctrl-S (save) Works for windows cmd.exe, but not Consolez.
+    
+**Warning**: There is no way to cancel Ctrl-Q. A dialog box will appear. Press Enter to select "Cancel" and arrow keys to move between "Cancel" and "Ok". Press Enter to execute "Cancel" or "Ok". "OK" saves, then exits. **"Cancel" exits without saving**.
+
+Unsupported Ctrl commands::
+
+    Alt-S,
+    Ctrl-Shift-S
+    Ctrl-O
+    Shift arrows
+</t>
+<t tx="ekr.20170618113437.1"></t>
+<t tx="ekr.20170618113503.1">##################
+Leo's Console Gui
+##################
+
+.. |ConsoleWindow| image:: screen-shots/console-window.png
+
+This chapter describes Leo's console gui. This allows Leo to be run remotely.
+Here is a screen shot:
+
+|ConsoleWindow|
+
+The area between colons corresponds to Leo's icon box::
+
+    +:    : node has unexpanded children.
+    -:    : node is expanded.
+     :    : node has no children.
+     '*   : node is the selected node.
+     : C  : node is a clone.
+     :  M : node is marked.
+     :   T: node has body text.
+</t>
+<t tx="ekr.20170618115228.1">The console gui can broadcast print statements and traces to another console.  To do this, you must start a socket listener in the *other* console, listening to the broadcaster on localhost::
+
+    Leo Qt (listener) &lt;-- Leo console, (broadcaster)
+    
+To set this up:
+
+- In the **listener console**, start a regular Leo Qt session.
+- Start the listener with the 'listen-to-log' command.
+- In the **broadcast console**, start Leo with the console gui. This starts
+  the broadcaster.
+- Leo's log output will be displayed in the Leo Qt session console.
+- The 'kill-log-listener' command kills the listener, if it exists. Issue
+  this command in the Leo Qt session.
+</t>
+<t tx="ekr.20170618115641.1">Cut/paste is theoretically supported, but in the absence of selections only paste might work.  And paste may work only in limited contexts...
+
+Some commands can be run from the minibuffer, but there is no tab completion and no indication of what the correct command names are.</t>
+<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
