@@ -18,7 +18,7 @@ class GoToCommands(object):
     def find_file_line(self, n, p=None):
         '''
         Place the cursor on the n'th line (one-based) of an external file.
-        Return p, offset, found for unit testing.
+        Return (p, offset, found) for unit testing.
         '''
         trace = False and not g.unitTesting
             # It's usually better to look at the file in scite.

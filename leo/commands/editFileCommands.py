@@ -449,17 +449,35 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20170617153619.1: *4* efc.toAtAuto
     def toAtAuto(self, p):
         '''Convert p from @edit to @auto.'''
+        trace = True and not g.unitTesting
         c = self.c
+        # Change the headline.
         p.h = '@auto' + p.h[5:]
+        # Compute the position of the present line within the file.
+        w = c.frame.body.wrapper
+        ins = w.getInsertPoint()
+        # Remove all Leo directives from p.b.
+        lines = [z for z in g.splitLines(p.b) if not g.isDirective(z)]
+        s = ''.join(lines)
+        row, col = g.convertPythonIndexToRowCol(s, ins)
+        if trace:
+            g.trace('row', row)
+            g.printList(lines)
+        # Reload the file, creating new nodes.
         c.selectPosition(p, enableRedrawFlag=False)
         c.refreshFromDisk()
+        # Restore the line in the proper node.
+        c.gotoCommands.find_file_line(row)
+        c.bodyWantsFocus()
     #@+node:ekr.20170617153628.1: *4* efc.toAtEdit
     def toAtEdit(self, p):
         '''Convert p from @auto to @edit.'''
         c = self.c
         p.h = '@edit' + p.h[5:]
+        # Reload the file, creating new nodes.
         c.selectPosition(p, enableRedrawFlag=False)
         c.refreshFromDisk()
+        c.bodyWantsFocus()
     #@-others
 #@-others
 #@-leo
