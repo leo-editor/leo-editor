@@ -480,7 +480,7 @@ class backlinkController(object):
         for v in c.all_unique_nodes():
 
             if '_bklnk' in v.u and (
-              v.u['_bklnk']['links'] or v.u['_bklnk']['urls']):
+              v.u['_bklnk']['links'] or v.u['_bklnk'].get('urls')):
                 hits[-1].append(v)
             # forgo this optimization in favor of total count
             # if len(hits) > 1 and hits[-1]):
@@ -713,7 +713,7 @@ class backlinkController(object):
                     texts.append(txt)
 
             urls = []
-            for url in v.u['_bklnk']['urls']:
+            for url in v.u['_bklnk'].get('urls', []):
                 # try and make URLs easier to read
                 # find the last part
                 name = url
