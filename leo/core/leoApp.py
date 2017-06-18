@@ -2378,7 +2378,7 @@ class LoadManager(object):
         add('--fail-fast', action='store_true', dest='fail_fast',
             help='stop unit tests after the first failure')
         add('--gui',
-            help='gui to use (qt/qttabs)')
+            help='gui to use (qt/qttabs/console/null)')
         add('--load-type', dest='load_type',
             help='@<file> type for loading non-outlines from command line')
         add('--maximized', action='store_true',
