@@ -3621,7 +3621,6 @@ class KeyHandlerClass(object):
         if traceGC: g.printNewObjects('masterCom 1')
         if event: c.check_event(event)
         c.setLog()
-        c.startRedrawCount = c.frame.tree.redrawCount
         k.stroke = stroke # Set this global for general use.
         char = ch = event.char if event else ''
         # 2011/10/28: compute func if not given.
