@@ -449,34 +449,54 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20170617153619.1: *4* efc.toAtAuto
     def toAtAuto(self, p):
         '''Convert p from @edit to @auto.'''
-        trace = True and not g.unitTesting
         c = self.c
         # Change the headline.
         p.h = '@auto' + p.h[5:]
         # Compute the position of the present line within the file.
         w = c.frame.body.wrapper
         ins = w.getInsertPoint()
-        # Remove all Leo directives from p.b.
-        lines = [z for z in g.splitLines(p.b) if not g.isDirective(z)]
-        s = ''.join(lines)
-        row, col = g.convertPythonIndexToRowCol(s, ins)
-        if trace:
-            g.trace('row', row)
-            g.printList(lines)
+        row, col = g.convertPythonIndexToRowCol(p.b, ins)
+        # Ignore *preceding* directive lines.
+        directives = [z for z in g.splitLines(c.p.b)[:row] if g.isDirective(z)]
+        row -= len(directives)
+        row = max(0, row)
         # Reload the file, creating new nodes.
         c.selectPosition(p, enableRedrawFlag=False)
         c.refreshFromDisk()
         # Restore the line in the proper node.
-        c.gotoCommands.find_file_line(row)
+        c.gotoCommands.find_file_line(row+1)
+        p.setDirty()
+        c.setChanged()
+        c.redraw()
         c.bodyWantsFocus()
     #@+node:ekr.20170617153628.1: *4* efc.toAtEdit
     def toAtEdit(self, p):
         '''Convert p from @auto to @edit.'''
         c = self.c
+        w = c.frame.body.wrapper
         p.h = '@edit' + p.h[5:]
-        # Reload the file, creating new nodes.
+        # Compute the position of the present line within the *selected* node c.p
+        ins = w.getInsertPoint()
+        row, col = g.convertPythonIndexToRowCol(c.p.b, ins)
+        # Ignore directive lines.
+        directives = [z for z in g.splitLines(c.p.b)[:row] if g.isDirective(z)]
+        row -= len(directives)
+        row = max(0, row)
+        # Count preceding lines from p to c.p, again ignoring directives.
+        for p2 in p.self_and_subtree():
+            if p2 == c.p:
+                break
+            lines = [z for z in g.splitLines(p2.b) if not g.isDirective(z)]
+            row += len(lines)
+        # Reload the file into a single node.
         c.selectPosition(p, enableRedrawFlag=False)
         c.refreshFromDisk()
+        # Restore the line in the proper node.
+        ins = g.convertRowColToPythonIndex(p.b, row+1, 0)
+        w.setInsertPoint(ins)
+        p.setDirty()
+        c.setChanged()
+        c.redraw()
         c.bodyWantsFocus()
     #@-others
 #@-others
