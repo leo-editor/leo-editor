@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -430,6 +430,7 @@
 <v t="ekr.20141210095600.11"><vh>Dave Williams</vh></v>
 <v t="ekr.20150923111606.1"><vh>John Lunzer</vh></v>
 <v t="ekr.20170309071256.1"><vh>John Lunzer 2</vh></v>
+<v t="ekr.20170618015524.1"><vh>Adrian Calvin</vh></v>
 </v>
 <v t="ekr.20160304081437.7"><vh>Why Leo is noteworthy</vh>
 <v t="ekr.20160304081437.8"><vh>Offray Luna Cárdenas</vh></v>
@@ -23254,7 +23255,45 @@ sets headline to::
 
     "&lt;&lt;my section&gt;&gt;"
 </t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170618015524.1">I thought I would write my own testimonial. I don't ever do this, as I often roll my eyes at testimonials, but my enthusiasm is at such a degree about Leo, that I must give "props" where props are due.
+
+**BACKGROUND**
+
+**The Beginning**: Coming from being a Java professional in the early oughts, I was used to Netbeans. It was fine I guess. A few years later I decided I wanted to be a web developer.
+
+**Why I sought out a new editor**: I wanted something extensible in FULL. I wanted to make it my own. It is like your home. You move in, it is up to you to make it your "HOME". So is an editor. You spend all of your time with it. It must be YOURS I figure. Comfy like a pair of old shoes.
+
+**HISTORY**
+
+**Ultra-Edit**: This was my first non-ide, IDE. No disrespect to UltraEdit, I am sure it has many awesome features I never used.  I never really got the chance.  I wanted something lightweight and soon found Scite around 2006.
+
+**Notepad++**: Eventually  I found Notepad++ (which I still think is awesome, and would recommend to anyone).  I have been using it for 8 years, and I still do use it occasionally.  Mostly  because  I am still getting used to Leo.
+
+**NOW**
+
+I am at an age now, and a point in my career where I want to make my life (and job) as simple as possible. Leo helps me do that.  It is hard to explain--the outlining gives the ability to mix thoughts with code--even life with code, in a very intuitive fashion.  Perhaps this is "literate programming".  I don't know.  They never mentioned that term in my CS classes.  Whatever it is, I like it.
+
+Side benefit--my code has never been so well formatted and documented!
+
+**The thing I personally love most**
+
+As I alluded to, so much ability to extend.  At work, I work on what my boss wants, but at home, I spend most of my time extending Leo.  I have never seen an editor so easy to extend, and believe me, I have evaluated at least 20 editors in the past 5 months. 
+
+That's the thing--anything I want to work a different way, or anything I want to be better, I can do it on my own. I don't have to submit a request. If I at least have enough curiosity to google or ask for a bit of help, I can make it what I want.
+
+You name it.  
+
+- If I would like the log to work differently, or create my own output pane: no problem.
+- If I want to add PHP Unit tests to the menu, no problem.
+- If I want to make a personal organizer, mixed in with my work flow, no problem.
+- If I want to have my python, PHP code, journal, all integrated together so that everything makes sense from 20,000 feet, no problem.
+- If I want to change the entire look and feel...and I mean EVERYTHING...not just some things, no problem.
+- If I want to be able to easily explain the code to a non-technical colleague, no problem.  The outline can be followed by anyone with some degree of intelligence.
+
+You get the idea...
+
+And for me, that means everything.</t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
