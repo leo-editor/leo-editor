@@ -23364,7 +23364,7 @@ Here is a screen shot:
 
 |ConsoleWindow|
 
-The area between colons corresponds to Leo's icon box::
+The area between colons in the Tree pane corresponds to Leo's icon box::
 
     +:    : node has unexpanded children.
     -:    : node is expanded.
