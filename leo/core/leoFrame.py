@@ -2054,6 +2054,17 @@ class NullTree(LeoTree):
             # Keys are tnodes, values are StringTextWidgets.
         self.canvas = None
         self.redrawCount = 0
+    #@+node:ekr.20031218072017.2236: *3* NullTree.do-nothings
+    def drawIcon(self, p): pass
+    def redraw(self, p=None, scroll=True, forceDraw=False): self.redrawCount += 1
+    def redraw_after_contract(self, p=None): self.redraw()
+    def redraw_after_expand(self, p=None): self.redraw()
+    def redraw_after_head_changed(self): self.redraw()
+    def redraw_after_icons_changed(self): self.redraw()
+    def redraw_after_select(self, p=None): self.redraw()
+    def scrollTo(self, p): pass
+
+    redraw_now = redraw
     #@+node:ekr.20070228163350.2: *3* NullTree.edit_widget
     def edit_widget(self, p):
         d = self.editWidgetsDict
@@ -2066,7 +2077,7 @@ class NullTree(LeoTree):
                 name='head-%d' % (1 + len(list(d.keys()))))
             w.setAllText(p.h)
         return w
-    #@+node:ekr.20070228164730: *4* editLabel (NullTree)
+    #@+node:ekr.20070228164730: *3* NullTree.editLabel
     def editLabel(self, p, selectAll=False, selection=None):
         '''Start editing p's headline.'''
         self.endEditLabel()
@@ -2078,7 +2089,14 @@ class NullTree(LeoTree):
             return e, wrapper
         else:
             return None, None
-    #@+node:ekr.20070228160345: *4* setHeadline (NullTree)
+    #@+node:ekr.20070228173611: *3* NullTree.printWidgets
+    def printWidgets(self):
+        d = self.editWidgetsDict
+        for key in d:
+            # keys are vnodes, values are StringTextWidgets.
+            w = d.get(key)
+            g.pr('w', w, 'v.h:', key.headString, 's:', repr(w.s))
+    #@+node:ekr.20070228160345: *3* NullTree.setHeadline
     def setHeadline(self, p, s):
         '''Set the actual text of the headline widget.
 
@@ -2094,24 +2112,6 @@ class NullTree(LeoTree):
             # g.trace(repr(s),w.getAllText())
         else:
             g.trace('-' * 20, 'oops')
-    #@+node:ekr.20070228173611: *3* NullTree.printWidgets
-    def printWidgets(self):
-        d = self.editWidgetsDict
-        for key in d:
-            # keys are vnodes, values are StringTextWidgets.
-            w = d.get(key)
-            g.pr('w', w, 'v.h:', key.headString, 's:', repr(w.s))
-    #@+node:ekr.20031218072017.2236: *3* NullTree: do-nothings
-    def drawIcon(self, p): pass
-    def redraw(self, p=None, scroll=True, forceDraw=False): self.redrawCount += 1
-    def redraw_after_contract(self, p=None): self.redraw()
-    def redraw_after_expand(self, p=None): self.redraw()
-    def redraw_after_head_changed(self): self.redraw()
-    def redraw_after_icons_changed(self): self.redraw()
-    def redraw_after_select(self, p=None): self.redraw()
-    def scrollTo(self, p): pass
-
-    redraw_now = redraw
     #@-others
 #@+node:ekr.20070228074228.1: ** class StringTextWrapper
 class StringTextWrapper(object):

@@ -460,7 +460,7 @@ class UnitTestGui(NullGui):
     '''A gui class for use by unit tests.'''
     # Presently used only by the import/export unit tests.
     #@+others
-    #@+node:ekr.20031218072017.3743: *3*  ctor (UnitTestGui)
+    #@+node:ekr.20031218072017.3743: *3* UnitTestGui.__init__
     def __init__(self, theDict=None, trace=False):
         '''ctor for the UnitTestGui class.'''
         self.oldGui = g.app.gui
@@ -472,10 +472,10 @@ class UnitTestGui(NullGui):
 
     def destroySelf(self):
         g.app.gui = self.oldGui
-    #@+node:ekr.20071128094234.1: *3* createSpellTab
+    #@+node:ekr.20071128094234.1: *3* UnitTestGui.createSpellTab
     def createSpellTab(self, c, spellHandler, tabName):
         pass # This method keeps pylint happy.
-    #@+node:ekr.20111001155050.15484: *3* runAtIdle
+    #@+node:ekr.20111001155050.15484: *3* UnitTestGui.runAtIdle
     if 1: # Huh?
 
         def runAtIdle(self, aFunc):
@@ -484,7 +484,7 @@ class UnitTestGui(NullGui):
             This is a kludge, but it is probably the best that can be done.
             '''
             aFunc()
-    #@+node:ekr.20081119083601.1: *3* toUnicode
+    #@+node:ekr.20081119083601.1: *3* UnitTestGui.toUnicode
     def toUnicode(self, s):
         # pylint: disable=no-member
         if g.isPython3:
