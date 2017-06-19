@@ -219,7 +219,6 @@ import leo.core.leoGlobals as g
 
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')
-# pylint: disable=unused-import
 from leo.core.leoQt import QtCore, QtWidgets
 
 import hashlib
