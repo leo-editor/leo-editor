@@ -1299,6 +1299,9 @@ class LeoTree(object):
             # New in 4.2: keys are vnodes, values are pairs (p,edit widgets).
         # "public" ivars: correspond to setters & getters.
         self.drag_p = None
+        self.generation = 0
+            # Leo 5.6: low-level vnode methods increment
+            # this count whenever the tree changes.
         self.redrawCount = 0 # For traces
         self.revertHeadline = None
         self.use_chapters = False # May be overridden in subclasses.
@@ -1778,34 +1781,6 @@ class NullBody(LeoBody):
         self.wrapper = wrapper = StringTextWrapper(c=self.c, name='body')
         self.editorWidgets['1'] = wrapper
         self.colorizer = NullColorizer(self.c)
-    #@+node:ekr.20031218072017.2193: *3* Utils (internal use)
-    #@+node:ekr.20031218072017.2194: *4* findStartOfLine
-    def findStartOfLine(self, lineNumber):
-        lines = g.splitLines(self.s)
-        i = 0; index = 0
-        for line in lines:
-            if i == lineNumber: break
-            i += 1
-            index += len(line)
-        return index
-    #@+node:ekr.20031218072017.2195: *4* scanToStartOfLine
-    def scanToStartOfLine(self, i):
-        if i <= 0:
-            return 0
-        assert(self.s[i] != '\n')
-        while i >= 0:
-            if self.s[i] == '\n':
-                return i + 1
-        return 0
-    #@+node:ekr.20031218072017.2196: *4* scanToEndOfLine
-    def scanToEndOfLine(self, i):
-        if i >= len(self.s):
-            return len(self.s)
-        assert(self.s[i] != '\n')
-        while i < len(self.s):
-            if self.s[i] == '\n':
-                return i - 1
-        return i
     #@+node:ekr.20031218072017.2197: *3* NullBody: LeoBody interface
     # Birth, death...
 
@@ -1848,7 +1823,7 @@ class NullColorizer(leoColorizer.BaseColorizer):
 class NullFrame(LeoFrame):
     '''A null frame class for tests and batch execution.'''
     #@+others
-    #@+node:ekr.20040327105706: *3* NullFrame. ctor (NullFrame)
+    #@+node:ekr.20040327105706: *3* NullFrame.ctor
     def __init__(self, c, title, gui):
         '''Ctor for the NullFrame class.'''
         # g.trace('NullFrame')
@@ -2100,16 +2075,54 @@ class NullTree(LeoTree):
         self.trace_edit = False
         self.trace_select = False
         self.updateCount = 0
-    #@+node:ekr.20070228173611: *3* printWidgets
+    #@+node:ekr.20070228163350.2: *3* NullTree.edit_widget
+    def edit_widget(self, p):
+        d = self.editWidgetsDict
+        if not p or not p.v:
+            return None
+        w = d.get(p.v)
+        if not w:
+            d[p.v] = w = StringTextWrapper(
+                c=self.c,
+                name='head-%d' % (1 + len(list(d.keys()))))
+            w.setAllText(p.h)
+        return w
+    #@+node:ekr.20070228164730: *3* editLabel (NullTree)
+    def editLabel(self, p, selectAll=False, selection=None):
+        '''Start editing p's headline.'''
+        self.endEditLabel()
+        if p:
+            self.revertHeadline = p.h
+                # New in 4.4b2: helps undo.
+            wrapper = StringTextWrapper(c=self.c, name='head-wrapper')
+            e = None
+            return e, wrapper
+        else:
+            return None, None
+    #@+node:ekr.20070228160345: *3* setHeadline (NullTree)
+    def setHeadline(self, p, s):
+        '''Set the actual text of the headline widget.
+
+        This is called from the undo/redo logic to change the text before redrawing.'''
+        # g.trace('p',p.h,'s',repr(s),g.callers())
+        w = self.edit_widget(p)
+        if w:
+            w.delete(0, 'end')
+            if s.endswith('\n') or s.endswith('\r'):
+                s = s[: -1]
+            w.insert(0, s)
+            self.revertHeadline = s
+            # g.trace(repr(s),w.getAllText())
+        else:
+            g.trace('-' * 20, 'oops')
+    #@+node:ekr.20070228173611: *3* NullTree.printWidgets
     def printWidgets(self):
         d = self.editWidgetsDict
         for key in d:
             # keys are vnodes, values are StringTextWidgets.
             w = d.get(key)
             g.pr('w', w, 'v.h:', key.headString, 's:', repr(w.s))
-    #@+node:ekr.20031218072017.2236: *3* Overrides
-    #@+node:ekr.20140921184356.17921: *4* NullTree.redraw
-    #@+node:ekr.20070228163350.1: *4* Drawing & scrolling (NullTree)
+    #@+node:ekr.20070228163350.1: *3* Drawing & scrolling (NullTree)
     def drawIcon(self, p):
         pass
 
@@ -2132,46 +2145,6 @@ class NullTree(LeoTree):
 
     def scrollTo(self, p):
         pass
-    #@+node:ekr.20070228163350.2: *4* edit_widget (NullTree)
-    def edit_widget(self, p):
-        d = self.editWidgetsDict
-        if not p or not p.v:
-            return None
-        w = d.get(p.v)
-        if not w:
-            d[p.v] = w = StringTextWrapper(
-                c=self.c,
-                name='head-%d' % (1 + len(list(d.keys()))))
-            w.setAllText(p.h)
-        return w
-    #@+node:ekr.20070228164730: *5* editLabel (NullTree)
-    def editLabel(self, p, selectAll=False, selection=None):
-        '''Start editing p's headline.'''
-        self.endEditLabel()
-        if p:
-            self.revertHeadline = p.h
-                # New in 4.4b2: helps undo.
-            wrapper = StringTextWrapper(c=self.c, name='head-wrapper')
-            e = None
-            return e, wrapper
-        else:
-            return None, None
-    #@+node:ekr.20070228160345: *5* setHeadline (NullTree)
-    def setHeadline(self, p, s):
-        '''Set the actual text of the headline widget.
-
-        This is called from the undo/redo logic to change the text before redrawing.'''
-        # g.trace('p',p.h,'s',repr(s),g.callers())
-        w = self.edit_widget(p)
-        if w:
-            w.delete(0, 'end')
-            if s.endswith('\n') or s.endswith('\r'):
-                s = s[: -1]
-            w.insert(0, s)
-            self.revertHeadline = s
-            # g.trace(repr(s),w.getAllText())
-        else:
-            g.trace('-' * 20, 'oops')
     #@-others
 #@+node:ekr.20070228074228.1: ** class StringTextWrapper
 class StringTextWrapper(object):

@@ -2577,6 +2577,7 @@ class VNodeBase(object):
         '''Adjust links after adding a link to v.'''
         trace = False and not g.unitTesting
         v = self
+        v.context.frame.tree.generation += 1
         parent_v.childrenModified()
         # Update parent_v.children & v.parents.
         parent_v.children.insert(childIndex, v)
@@ -2609,6 +2610,7 @@ class VNodeBase(object):
     def _cutLink(self, childIndex, parent_v):
         '''Adjust links after cutting a link to v.'''
         v = self
+        v.context.frame.tree.generation += 1
         parent_v.childrenModified()
         assert parent_v.children[childIndex] == v
         del parent_v.children[childIndex]
