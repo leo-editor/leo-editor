@@ -76,10 +76,10 @@ where the extra information is the name of the linked node's parent.
 
 # **Important**: this plugin is gui-independent.
 import leo.core.leoGlobals as g
-try:
-    from leo.core.leoQt import QtCore
-except ImportError:
-    pass
+# try:
+    # from leo.core.leoQt import QtCore
+# except ImportError:
+    # pass
 Tk = None
 Qt = None
 #@+others
