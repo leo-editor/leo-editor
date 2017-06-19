@@ -2087,7 +2087,7 @@ class NullTree(LeoTree):
                 name='head-%d' % (1 + len(list(d.keys()))))
             w.setAllText(p.h)
         return w
-    #@+node:ekr.20070228164730: *3* editLabel (NullTree)
+    #@+node:ekr.20070228164730: *3* NullTree.editLabel
     def editLabel(self, p, selectAll=False, selection=None):
         '''Start editing p's headline.'''
         self.endEditLabel()
@@ -2099,22 +2099,6 @@ class NullTree(LeoTree):
             return e, wrapper
         else:
             return None, None
-    #@+node:ekr.20070228160345: *3* setHeadline (NullTree)
-    def setHeadline(self, p, s):
-        '''Set the actual text of the headline widget.
-
-        This is called from the undo/redo logic to change the text before redrawing.'''
-        # g.trace('p',p.h,'s',repr(s),g.callers())
-        w = self.edit_widget(p)
-        if w:
-            w.delete(0, 'end')
-            if s.endswith('\n') or s.endswith('\r'):
-                s = s[: -1]
-            w.insert(0, s)
-            self.revertHeadline = s
-            # g.trace(repr(s),w.getAllText())
-        else:
-            g.trace('-' * 20, 'oops')
     #@+node:ekr.20070228173611: *3* NullTree.printWidgets
     def printWidgets(self):
         d = self.editWidgetsDict
@@ -2122,7 +2106,7 @@ class NullTree(LeoTree):
             # keys are vnodes, values are StringTextWidgets.
             w = d.get(key)
             g.pr('w', w, 'v.h:', key.headString, 's:', repr(w.s))
-    #@+node:ekr.20070228163350.1: *3* Drawing & scrolling (NullTree)
+    #@+node:ekr.20070228163350.1: *3* NullTree.Drawing & scrolling
     def drawIcon(self, p):
         pass
 
@@ -2145,6 +2129,22 @@ class NullTree(LeoTree):
 
     def scrollTo(self, p):
         pass
+    #@+node:ekr.20070228160345: *3* NullTree.setHeadline
+    def setHeadline(self, p, s):
+        '''Set the actual text of the headline widget.
+
+        This is called from the undo/redo logic to change the text before redrawing.'''
+        # g.trace('p',p.h,'s',repr(s),g.callers())
+        w = self.edit_widget(p)
+        if w:
+            w.delete(0, 'end')
+            if s.endswith('\n') or s.endswith('\r'):
+                s = s[: -1]
+            w.insert(0, s)
+            self.revertHeadline = s
+            # g.trace(repr(s),w.getAllText())
+        else:
+            g.trace('-' * 20, 'oops')
     #@-others
 #@+node:ekr.20070228074228.1: ** class StringTextWrapper
 class StringTextWrapper(object):
