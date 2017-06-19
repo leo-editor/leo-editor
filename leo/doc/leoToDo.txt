@@ -8,6 +8,8 @@
 @language rest
 @wrap
 
+.. @+node:ekr.20170618205841.1: *4* #501: Create outline-oriented git diff
+https://github.com/leo-editor/leo-editor/issues/501
 .. @+node:ekr.20170509031503.1: *4* #480: Host Leo's web site on GitHub
 https://github.com/leo-editor/leo-editor/issues/480
 .. @+node:ekr.20170324083526.1: *4* Improve VR plugin
