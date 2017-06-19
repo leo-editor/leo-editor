@@ -2577,6 +2577,7 @@ class VNodeBase(object):
         '''Adjust links after adding a link to v.'''
         trace = False and not g.unitTesting
         v = self
+        # g.trace(v.context.frame.tree)
         v.context.frame.tree.generation += 1
         parent_v.childrenModified()
         # Update parent_v.children & v.parents.
