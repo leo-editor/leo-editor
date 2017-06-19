@@ -8,8 +8,8 @@
 @language rest
 @wrap
 
-.. @+node:ekr.20170509091737.1: *4* Ashland items
-https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&q=is%3Aopen%20is%3Aissue%20label%3AAshland%20
+.. @+node:ekr.20170618205841.1: *4* #501: Create outline-oriented git diff
+https://github.com/leo-editor/leo-editor/issues/501
 .. @+node:ekr.20170509031503.1: *4* #480: Host Leo's web site on GitHub
 https://github.com/leo-editor/leo-editor/issues/480
 .. @+node:ekr.20170324083526.1: *4* Improve VR plugin

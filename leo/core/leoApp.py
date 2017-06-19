@@ -1027,7 +1027,7 @@ class LeoApp(object):
             app.createQtGui(fileName, verbose=verbose)
         elif argName == 'null':
             g.app.gui = g.app.nullGui
-        elif argName == 'curses':
+        elif argName in ('console', 'curses'):
             app.createCursesGui()
         elif argName == 'text':
             app.createTextGui()
@@ -2378,7 +2378,7 @@ class LoadManager(object):
         add('--fail-fast', action='store_true', dest='fail_fast',
             help='stop unit tests after the first failure')
         add('--gui',
-            help='gui to use (qt/qttabs)')
+            help='gui to use (qt/qttabs/console/null)')
         add('--load-type', dest='load_type',
             help='@<file> type for loading non-outlines from command line')
         add('--maximized', action='store_true',
@@ -2435,7 +2435,7 @@ class LoadManager(object):
             gui = gui.lower()
             if gui == 'qttabs':
                 g.app.qt_use_tabs = True
-            elif gui in ('curses', 'text', 'qt', 'null'):
+            elif gui in ('console', 'curses', 'text', 'qt', 'null'):
                     # text: cursesGui.py, curses: cursesGui2.py.
                 g.app.qt_use_tabs = False
             else:

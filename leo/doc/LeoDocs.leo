@@ -430,6 +430,7 @@
 <v t="ekr.20141210095600.11"><vh>Dave Williams</vh></v>
 <v t="ekr.20150923111606.1"><vh>John Lunzer</vh></v>
 <v t="ekr.20170309071256.1"><vh>John Lunzer 2</vh></v>
+<v t="ekr.20170618015524.1"><vh>Adrian Calvin</vh></v>
 </v>
 <v t="ekr.20160304081437.7"><vh>Why Leo is noteworthy</vh>
 <v t="ekr.20160304081437.8"><vh>Offray Luna Cárdenas</vh></v>
@@ -1127,6 +1128,16 @@
 </v>
 </v>
 </v>
+<v t="ekr.20170618113437.1"><vh>Leo's console gui</vh>
+<v t="ekr.20170618113503.1"><vh>@rst html\console-gui.html</vh>
+<v t="ekr.20170618111245.1"><vh>Starting Leo with the console gui</vh></v>
+<v t="ekr.20170618162705.1"><vh>Exiting Leo &amp; saving files</vh></v>
+<v t="ekr.20170618111248.3"><vh>Navigation and editing</vh></v>
+<v t="ekr.20170618111248.5"><vh>Leo key bindings</vh></v>
+<v t="ekr.20170618115228.1"><vh>Broadcast and Listening</vh></v>
+<v t="ekr.20170618115641.1"><vh>Limitations</vh></v>
+</v>
+</v>
 <v t="ekr.20131015104133.16763"><vh>A scripting miscellany</vh>
 <v t="ekr.20131015091948.16784"><vh>@rst html\scripting-miscellany.html</vh>
 <v t="ekr.20131014053720.16816"><vh>\@button example</vh></v>
@@ -1534,6 +1545,7 @@
 <v t="ekr.20170316061434.1"><vh>Settings and command-line options</vh></v>
 </v>
 <v t="ekr.20170608071626.1"><vh>Leo 5.6 release notes (in progress)</vh></v>
+<v t="ekr.20170618113503.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -3257,7 +3269,7 @@ August 28, 2002, on `slashdot`_.
 
 Hello, my full name is David Speed Ream. I am known as Speed to friends and enemies alike, but I gladly answer to David or most any other handle. I am an unabashed and biased fan of Leo, the fact that it was written by my brother Edward only slightly coloring my already colored glasses. I have been testing and using Leo in software production for over 4 years. My company currently has over 50,000 lines of code in over 100 source files that are written using Leo.
 
-My comments are from two points of view, the first being software project manager for a complicated, multi-module software product, and the second being as a production line coder. For me, Leo’s greatest and only real drawback is the learning curve. This learning curve can be shallow is if all that is required is that someone code using Leo. However, in our company we allocate 40 to 80 hours *on top* of the normal coding load for someone to come up to speed on Leo. The ROI (return on investment) is calculated by me to be on the order of 3 months. So if I hire a consultant for less than 3 months, I don’t teach him Leo, even though all source code in our company must reside in Leo files for the reasons I won’t go into now.
+My comments are from two points of view, the first being software project manager for a complicated, multi-module software product, and the second being as a production line coder. For me, Leo’s greatest and only real drawback is the learning curve. This learning curve can be shallow if all that is required is that someone code using Leo. However, in our company we allocate 40 to 80 hours *on top* of the normal coding load for someone to come up to speed on Leo. The ROI (return on investment) is calculated by me to be on the order of 3 months. So if I hire a consultant for less than 3 months, I don’t teach him Leo, even though all source code in our company must reside in Leo files for the reasons I won’t go into now.
 
 I consider that my coders are 15 to 30 percent more efficient in their daily operations than my competition’s people. This indefensible claim of mine is based on the changes in my productivity as Leo grew from a test document production tool to the primary production method for all our assembly, c and cpp source code.
 
@@ -14643,6 +14655,7 @@ Advanced Topics
    writingPlugins
    unitTesting
    debuggers
+   console-gui
    
 .. toctree::
    :maxdepth: 1
@@ -19441,6 +19454,12 @@ Here is the output::
     handler2  9 ekr.leo 9.1300
     handler2 10 ekr.leo 10.1400
     handler2 done
+    
+**Recycling timers**
+
+The g.app.idle_timers list retrains references to all timers so they *won't* be recycled after being stopped.  This allows timers to be restarted safely.
+
+There is seldom a need to recycle a timer, but if you must, you can call its destroySelf method. This removes the reference to the timer in g.app.idle_timers. **Warning**: Accessing a timer after calling its destroySelf method can lead to a hard crash.
 </t>
 <t tx="ekr.20150323102918.1">.. Aliases.
 find-clone-all
@@ -20106,7 +20125,7 @@ For example, here is "@button compare vr-controller" in leoPluginsRef.leo::
 
 This script will compare the trees whose roots are p1 and p2 and show the results like "Recovered nodes".  That is, the script creates a node called "compare vr1 &amp; vr2".  This top-level node contains one child node for every node that is different.  Each child node contains a diff of the node.  The grand children are one or two clones of the changed or inserted node.
 </t>
-<t tx="ekr.20150923111606.1">A new user recently said to me, "Leo is powerful and flexible -- and complex and bewildering". This is true. I believe it is always the goal of developers to make their software less complex and bewildering but keep in mind that Leo has been in development for over 20 years...This puts it right up there with Vim and Emacs in terms of maturity. My own experience with Vim and Emacs have been quite similar to my experience with Leo. All three are powerful and flexible and complex and bewildering in their own right.
+<t tx="ekr.20150923111606.1">A new user recently said to me, "Leo is powerful and flexible--and complex and bewildering". This is true. I believe it is always the goal of developers to make their software less complex and bewildering but keep in mind that Leo has been in development for over 20 years...This puts it right up there with Vim and Emacs in terms of maturity. My own experience with Vim and Emacs have been quite similar to my experience with Leo. All three are powerful and flexible and complex and bewildering in their own right.
 
 I believe with tools of this weight and impact, there will always be an investment in learning them. They're all vast forests of features filled with hidden treasures and in the case of each of them he/she that invests in the tool will be rewarded for their effort. It is, however, the responsibility of the community (led by the developers) to help make that treasure hunt as enjoyable and adventurous as possible, as any good treasure hunt should be. 
 
@@ -20259,11 +20278,11 @@ Leo is a wild success on this score. I foresaw none of these developments 20 yea
 
 Edward K. Ream
 </t>
-<t tx="ekr.20160304081437.8">This idea of an always present outline has been key to me for organizing writings. Some coworkers have found in the past that this helps them when we're correcting their text.
+<t tx="ekr.20160304081437.8">This idea of an always-present outline has been key to me for organizing writings. Some coworkers have found in the past that this helps them when we're correcting their text.
 
 &gt; Leo's clones let you organize any data as you want, even if all folds are collapsed.
 
-For me this is the most powerful but misunderstood feature of Leo. Most of the people which compares it with other IDE rant about why Leo doesn't works more automatically imposing structure, but in Leo you're in charger. You impose infrastructure...
+For me this is the most powerful but misunderstood feature of Leo. Most of the people which compares it with other IDE rant about why Leo doesn't works more automatically imposing structure, but in Leo you're in charge. You impose infrastructure...
 
 For me the second main insight of Leo (besides emergent always present tree structure on almost any file) was to have a tree that is a programmable structure that can be understood and changed by any node inside that tree. I think that Leo brings structure and self-referentiality to the dumb flat file word. So you can create a tree from one (or several) files, deconstruct and reconstruct it they way you want and automatize the way in behaves and talks with the external world...The more I start to focus on interactive writing and going away of the unix inspired OS world, the more the second insight become important to me. I didn't need to deconstruct/reconstruct or impose structure over flat files but to use outlining for structure thought by (interactive) writing and I need the outline be a fully programmable object. That's the essence of most of my Leo experience...
 
@@ -23248,7 +23267,133 @@ sets headline to::
 
     "&lt;&lt;my section&gt;&gt;"
 </t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170618015524.1">I thought I would write my own testimonial. I don't ever do this, as I often roll my eyes at testimonials, but my enthusiasm is at such a degree about Leo, that I must give "props" where props are due.
+
+**BACKGROUND**
+
+**The Beginning**: Coming from being a Java professional in the early aughts, I was used to Netbeans. It was fine I guess. A few years later I decided I wanted to be a web developer.
+
+**Why I sought out a new editor**: I wanted something extensible in FULL. I wanted to make it my own. It is like your home. You move in, it is up to you to make it your "HOME". So is an editor. You spend all of your time with it. It must be YOURS I figure. Comfy like a pair of old shoes.
+
+**HISTORY**
+
+**Ultra-Edit**: This was my first non-ide, IDE. No disrespect to UltraEdit, I am sure it has many awesome features I never used.  I never really got the chance.  I wanted something lightweight and soon found Scite around 2006.
+
+**Notepad++**: Eventually  I found Notepad++ (which I still think is awesome, and would recommend to anyone).  I have been using it for 8 years, and I still do use it occasionally.  Mostly  because  I am still getting used to Leo.
+
+**NOW**
+
+I am at an age now, and a point in my career where I want to make my life (and job) as simple as possible. Leo helps me do that.  It is hard to explain--the outlining gives the ability to mix thoughts with code--even life with code, in a very intuitive fashion. Perhaps this is "literate programming".  I don't know.  They never mentioned that term in my CS classes.  Whatever it is, I like it.
+
+Side benefit--my code has never been so well formatted and documented!
+
+**The thing I personally love most**
+
+As I alluded to, so much ability to extend.  At work, I work on what my boss wants, but at home, I spend most of my time extending Leo.  I have never seen an editor so easy to extend, and believe me, I have evaluated at least 20 editors in the past 5 months. 
+
+That's the thing--anything I want to work a different way, or anything I want to be better, I can do it on my own. I don't have to submit a request. If I at least have enough curiosity to google or ask for a bit of help, I can make it what I want.
+
+You name it.  
+
+- If I would like the log to work differently, or create my own output pane: no problem.
+- If I want to add PHP Unit tests to the menu, no problem.
+- If I want to make a personal organizer, mixed in with my work flow, no problem.
+- If I want to have my python, PHP code, journal, all integrated together so that everything makes sense from 20,000 feet, no problem.
+- If I want to change the entire look and feel...and I mean EVERYTHING...not just some things, no problem.
+- If I want to be able to easily explain the code to a non-technical colleague, no problem.  The outline can be followed by anyone with some degree of intelligence.
+
+You get the idea...
+
+And for me, that means everything.</t>
+<t tx="ekr.20170618111245.1">1. Resize your console/terminal to a recommended minimum size of 100x35. **Leo will crash on startup if there are fewer than 32 rows**.
+
+2. Launch Leo with the `--gui=console` command-line option::
+
+    &gt;launchleo.py --gui=console [path to leo file\file_name.leo]
+
+If no .leo file is given, Leo will open ~/.leo/workbook.leo (Leo's workbook file). Initially, this file contains Leo’s cheat sheet and an example from the rst3 tutorial.
+
+**Only one outline can be open at a time**. The only way to load .leo files is from the command line. (There are no menus).
+</t>
+<t tx="ekr.20170618111248.3">Moving around the main window::
+
+    Mouse clicks properly switch nodes.
+    Arrow-up and Arrow-down keys switch panes (when not editing).
+    Tab: moves down from pane to pane.
+    Shift-Tab: moves up from pane to pane.
+
+To edit a headline, select the node you wish to edit, then press e to edit the node headline (return to end)::
+
+    i: to insert a new node.
+    d:  delete node
+
+To edit body text, use Tab to move down to the Body Pane, or Shift-Tab to move up to the Body Pane. Follow the prompts::
+
+    e to edit line (return to start a new line)
+    esc to end editing.
+    d to delete line.
+</t>
+<t tx="ekr.20170618111248.5">Supported Ctrl commands::
+
+    Ctrl-B (execute-script).
+    Ctrl-F (find)
+    Ctrl-Q (quit-leo)
+    Ctrl-S (save) Works for windows cmd.exe, but not Consolez.
+
+Unsupported Ctrl commands::
+
+    Alt-S,
+    Ctrl-Shift-S
+    Ctrl-O
+    Shift arrows
+</t>
+<t tx="ekr.20170618113437.1"></t>
+<t tx="ekr.20170618113503.1">##################
+Leo's Console Gui
+##################
+
+.. |ConsoleWindow| image:: screen-shots/console-window.png
+
+This chapter describes Leo's console gui. This allows Leo to be run remotely.
+
+.. contents:: Contents
+    :depth: 2
+    :local:
+
+Here is a screen shot:
+
+|ConsoleWindow|
+
+The area between colons in the Tree pane corresponds to Leo's icon box::
+
+    +:    : node has unexpanded children.
+    -:    : node is expanded.
+     :    : node has no children.
+     '*   : node is the selected node.
+     : C  : node is a clone.
+     :  M : node is marked.
+     :   T: node has body text.
+</t>
+<t tx="ekr.20170618115228.1">The console gui can broadcast print statements and traces to another console.  To do this, you must start a socket listener in the *other* console, listening to the broadcaster on localhost::
+
+    Leo Qt (listener) &lt;-- Leo console, (broadcaster)
+    
+To set this up:
+
+- In the **listener console**, start a regular Leo Qt session.
+- Start the listener with the 'listen-to-log' command.
+- In the **broadcast console**, start Leo with the console gui. This starts
+  the broadcaster.
+- Leo's log output will be displayed in the Leo Qt session console.
+- The 'kill-log-listener' command kills the listener, if it exists. Issue
+  this command in the Leo Qt session.
+</t>
+<t tx="ekr.20170618115641.1">Cut/paste is theoretically supported, but in the absence of selections only paste might work.  And paste may work only in limited contexts...
+
+Some commands can be run from the minibuffer, but there is no tab completion and no indication of what the correct command names are.</t>
+<t tx="ekr.20170618162705.1">To exit Leo: click "Quit Leo" button and &lt;Enter&gt;. Ctrl-Q also works. **There is no way to cancel Ctrl-Q**. A dialog box will appear. Press Enter to select "No". Press arrow keys to move between "Yes" and "No". "Yes" saves, then exits. "No" Exits without saving.
+</t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   

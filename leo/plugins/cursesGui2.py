@@ -753,6 +753,12 @@ class LeoTreeLine(npyscreen.TreeLine):
                 # return True
 
     #@-others
+#@+node:ekr.20170618103742.1: *3* class QuitButton (npyscreen.MiniButton)
+class QuitButton (npyscreen.MiniButtonPress):
+    '''Override the "Quit Leo" button so it prompts for save if needed.'''
+
+    def whenPressed(self):
+        g.app.onQuit()
 #@-others
 #@-<< forward reference classes >>
 #@+others
@@ -1265,8 +1271,10 @@ class LeoCursesGui(leoGui.LeoGui):
         if g.unitTesting:
             return False
         else:
+            g.trace()
             self.in_dialog = True
-            val = utilNotify.notify_ok_cancel(message=message,title=title)
+            val = utilNotify.notify_yes_no(message=message,title=title)
+                # Important: don't use notify_ok_cancel.
             self.in_dialog = False
             return 'yes' if val else 'no'
         
@@ -2605,11 +2613,11 @@ class LeoLog (npyscreen.MultiLineEditable):
 class LeoForm (npyscreen.Form):
     
     OK_BUTTON_TEXT = 'Quit Leo'
+    OKBUTTON_TYPE = QuitButton
     how_exited = None
         
     def display(self, *args, **kwargs):
         changed = any([z.c.isChanged() for z in g.app.windowList])
-        # g.trace('LeoForm.display: changed:', changed, g.callers())
         self.name = 'Welcome to Leo' + (' (changed)' if changed else '')
         super(LeoForm, self).display(*args, **kwargs)
 #@+node:ekr.20170510092721.1: *3* class LeoMiniBuffer (npyscreen.Textfield)
@@ -3064,7 +3072,6 @@ class LeoMLTree(npyscreen.MLTree, object):
     def h_move_right(self, ch):
 
         node = self.values[self.cursor_line]
-        g.trace(ch, node)
         if not node:
             g.trace('no node')
             return
@@ -3329,7 +3336,9 @@ class LeoValues(npyscreen.TreeData):
     A class to replace the MLTree.values property.
     This is formally an subclass of TreeData.
     '''
-    
+
+    #@+others
+    #@+node:ekr.20170619070717.1: *4* values.__init__
     def __init__(self, c, tree):
         '''Ctor for LeoValues class.'''
         super(LeoValues, self).__init__()
@@ -3338,12 +3347,14 @@ class LeoValues(npyscreen.TreeData):
             # The commander of this outline.
         self.data_cache = {}
             # Keys are ints, values are LeoTreeData objects.
-        self.position_cache = {}
-            # Keys are ints, values are copies of posiitions.
+        self.last_generation = -1
+            # The last value of c.frame.tree.generation.
+        self.last_len = 0
+            # The last computed value of the number of visible nodes.
+        self.n_refreshes = 0
+            # Number of calls to refresh_cache.
         self.tree = tree
-            # A LeoMLTree.
-
-    #@+others
+            # A LeoMLTree. (not used here)
     #@+node:ekr.20170517090738.1: *4* values.__getitem__ and get_data
     def __getitem__(self, n):
         '''Called from LeoMLTree._setLineValues.'''
@@ -3351,226 +3362,58 @@ class LeoValues(npyscreen.TreeData):
 
     def get_data(self, n):
         '''Return a LeoTreeData for the n'th visible position of the outline.'''
-        trace = False
         c = self.c
-        # Look for n or n-1 in the caches.
-        data = self.data_cache.get(n)
-        if data:
-            if trace: g.trace('cached', n, repr(data))
+        # This will almost always be true, because __len__ updates the cache.
+        if self.last_len > -1 and c.frame.tree.generation == self.last_generation:
+            return self.data_cache.get(n)
+        else:
+            self.refresh_cache()
+            data = self.data_cache.get(n)
+            g.trace('uncached', data)
             return data
-        p = self.position_cache.get(max(0,n-1))
-        if p:
-            p = p.copy()
-                # Never change the cached position!
-                # LeoTreeData(p) makes a copy of p.
-            p = p.moveToVisNext(c)
-            if p:
-                self.position_cache[n] = p
-                self.data_cache[n] = data = LeoTreeData(p)
-                if trace: g.trace(' after', n, repr(data))
-                return data
-            else:
-                if trace: g.trace(' fail1', n, repr(data))
-                return None
-        # Search the tree, caching the result.
-        i, p = 0, c.rootPosition()
-        while p:
-            if i == n:
-                self.position_cache[n] = p
-                self.data_cache[n] = data = LeoTreeData(p)
-                if trace: g.trace(' found', n, repr(data))
-                return data
-            else:
-                p.moveToVisNext(c)
-                i += 1
-        if trace: g.trace(' fail2', n, repr(data))
-        return None
     #@+node:ekr.20170518060014.1: *4* values.__len__
     def __len__(self):
         '''
         Return the putative length of the values array,
         that is, the number of visible nodes in the outline.
+        
+        Return self.last_len if the tree generations match.
+        Otherwise, find and cache all visible node.
+        
+        This is called often from the npyscreen core.
         '''
         c = self.c
-        n, p = 0, c.rootPosition()
-        while p:
-            n += 1
-            p.moveToVisNext(c)
-        # g.trace(n)
-        return n
+        tree_gen = c.frame.tree.generation
+        if self.last_len > -1 and  tree_gen == self.last_generation:
+            return self.last_len
+        else:
+            self.last_len = self.refresh_cache()
+            # g.trace('uncached', tree_gen, self.last_len)
+            return self.last_len
     #@+node:ekr.20170519041459.1: *4* values.clear_cache
     def clear_cache(self):
-        
+        '''Called only from this file.'''
         self.data_cache = {}
-        self.position_cache = {}
+        self.last_len = -1
+    #@+node:ekr.20170619072048.1: *4* values.refresh_cache
+    def refresh_cache(self):
+        '''Update all cached values.'''
+        c = self.c
+        self.n_refreshes += 1
+        self.clear_cache()
+        self.last_generation = c.frame.tree.generation
+        n, p = 0, c.rootPosition()
+        while p:
+            self.data_cache[n] = LeoTreeData(p)
+            n += 1
+            p.moveToVisNext(c)
+        self.last_len = n
+        g.trace('%3s vis: %3s generation: %s' % (
+            self.n_refreshes, n, c.frame.tree.generation))
+        return n
     #@-others
 #@+node:ekr.20170522081122.1: ** Wrapper classes
 #@+others
-#@+node:ekr.20170526080913.1: *3*  class REF_StringTextWrapper
-class REF_StringTextWrapper(object):
-    '''A class that represents text as a Python string.'''
-    #@+others
-    #@+node:ekr.20170526080913.2: *4* stw.ctor
-    def __init__(self, c, name):
-        '''Ctor for the StringTextWrapper class.'''
-        self.c = c
-        self.name = name
-        self.ins = 0
-        self.sel = 0, 0
-        self.s = ''
-        self.supportsHighLevelInterface = True
-        self.widget = None # This ivar must exist, and be None.
-        self.trace = False
-
-    def __repr__(self):
-        return '<StringTextWrapper: %s %s>' % (id(self), self.name)
-
-    def getName(self):
-        '''StringTextWrapper.'''
-        return self.name # Essential.
-    #@+node:ekr.20170526080913.3: *4* stw.Clipboard
-    def clipboard_clear(self):
-        g.app.gui.replaceClipboardWith('')
-
-    def clipboard_append(self, s):
-        s1 = g.app.gui.getTextFromClipboard()
-        g.app.gui.replaceClipboardWith(s1 + s)
-    #@+node:ekr.20170526080913.4: *4* stw.Do-nothings
-    # For StringTextWrapper.
-
-    def flashCharacter(self, i, bg='white', fg='red', flashes=3, delay=75): pass
-
-    def getXScrollPosition(self): return 0
-
-    def getYScrollPosition(self): return 0
-
-    def see(self, i): pass
-
-    def seeInsertPoint(self): pass
-
-    def setFocus(self): pass
-
-    def setXScrollPosition(self, i): pass
-
-    def setYScrollPosition(self, i): pass
-
-    def tag_configure(self, colorName, **keys): pass
-    #@+node:ekr.20170526080913.5: *4* stw.Text
-    #@+node:ekr.20170526080913.6: *5* stw.appendText
-    def appendText(self, s):
-        '''StringTextWrapper.'''
-        self.s = self.s + s
-        self.ins = len(self.s)
-        self.sel = self.ins, self.ins
-    #@+node:ekr.20170526080913.7: *5* stw.delete
-    def delete(self, i, j=None):
-        '''StringTextWrapper.'''
-        i = self.toPythonIndex(i)
-        if j is None: j = i + 1
-        j = self.toPythonIndex(j)
-        # This allows subclasses to use this base class method.
-        if i > j: i, j = j, i
-        s = self.getAllText()
-        self.setAllText(s[: i] + s[j:])
-        # Bug fix: 2011/11/13: Significant in external tests.
-        self.setSelectionRange(i, i, insert=i)
-    #@+node:ekr.20170526080913.8: *5* stw.deleteTextSelection
-    def deleteTextSelection(self):
-        '''StringTextWrapper.'''
-        i, j = self.getSelectionRange()
-        self.delete(i, j)
-    #@+node:ekr.20170526080913.9: *5* stw.get
-    def get(self, i, j=None):
-        '''StringTextWrapper.'''
-        i = self.toPythonIndex(i)
-        if j is None: j = i + 1
-        j = self.toPythonIndex(j)
-        s = self.s[i: j]
-        return g.toUnicode(s)
-    #@+node:ekr.20170526080913.10: *5* stw.getAllText
-    def getAllText(self):
-        '''StringTextWrapper.'''
-        s = self.s
-        return g.toUnicode(s)
-    #@+node:ekr.20170526080913.11: *5* stw.getInsertPoint
-    def getInsertPoint(self):
-        '''StringTextWrapper.'''
-        i = self.ins
-        if i is None:
-            if self.virtualInsertPoint is None:
-                i = 0
-            else:
-                i = self.virtualInsertPoint
-        self.virtualInsertPoint = i
-        # g.trace('BaseTextWrapper): i:',i,'virtual',self.virtualInsertPoint)
-        return i
-    #@+node:ekr.20170526080913.12: *5* stw.getSelectedText
-    def getSelectedText(self):
-        '''StringTextWrapper.'''
-        i, j = self.sel
-        s = self.s[i: j]
-        return g.toUnicode(s)
-    #@+node:ekr.20170526080913.13: *5* stw.getSelectionRange
-    def getSelectionRange(self, sort=True):
-        '''Return the selected range of the widget.'''
-        sel = self.sel
-        if len(sel) == 2 and sel[0] >= 0 and sel[1] >= 0:
-            i, j = sel
-            if sort and i > j: sel = j, i # Bug fix: 10/5/07
-            return sel
-        else:
-            i = self.ins
-            return i, i
-    #@+node:ekr.20170526080913.14: *5* stw.hasSelection
-    def hasSelection(self):
-        '''StringTextWrapper.'''
-        i, j = self.getSelectionRange()
-        return i != j
-    #@+node:ekr.20170526080913.15: *5* stw.insert
-    def insert(self, i, s):
-        '''StringTextWrapper.'''
-        i = self.toPythonIndex(i)
-        s1 = s
-        self.s = self.s[: i] + s1 + self.s[i:]
-        i += len(s1)
-        self.ins = i
-        self.sel = i, i
-    #@+node:ekr.20170526080913.16: *5* stw.selectAllText
-    def selectAllText(self, insert=None):
-        '''StringTextWrapper.'''
-        self.setSelectionRange(0, 'end', insert=insert)
-    #@+node:ekr.20170526080913.17: *5* stw.setAllText
-    def setAllText(self, s):
-        '''StringTextWrapper.'''
-        self.s = s
-        i = len(self.s)
-        self.ins = i
-        self.sel = i, i
-    #@+node:ekr.20170526080913.18: *5* stw.setInsertPoint
-    def setInsertPoint(self, pos, s=None):
-        '''StringTextWrapper.'''
-        self.virtualInsertPoint = i = self.toPythonIndex(pos)
-        self.ins = i
-        self.sel = i, i
-    #@+node:ekr.20170526080913.19: *5* stw.setSelectionRange
-    def setSelectionRange(self, i, j, insert=None):
-        '''StringTextWrapper.'''
-        i, j = self.toPythonIndex(i), self.toPythonIndex(j)
-        self.sel = i, j
-        self.ins = j if insert is None else self.toPythonIndex(insert)
-        if self.trace: g.trace('i', i, 'j', j, 'insert', repr(insert))
-    #@+node:ekr.20170526080913.20: *5* stw.toPythonIndex
-    def toPythonIndex(self, index):
-        '''StringTextWrapper.'''
-        return g.toPythonIndex(self.s, index)
-    #@+node:ekr.20170526080913.21: *5* stw.toPythonIndexRowCol
-    def toPythonIndexRowCol(self, index):
-        '''StringTextWrapper.'''
-        s = self.getAllText()
-        i = self.toPythonIndex(index)
-        row, col = g.convertPythonIndexToRowCol(s, i)
-        return i, row, col
-    #@-others
 #@+node:ekr.20170511053143.1: *3*  class TextMixin (object)
 class TextMixin(object):
     '''A minimal mixin class for QTextEditWrapper and QScintillaWrapper classes.'''

@@ -24,17 +24,31 @@ class Py_Importer(Importer):
 
     #@+others
     #@+node:ekr.20161110073751.1: *3* py_i.clean_headline
-    def clean_headline(self, s):
+    def clean_headline(self, h, p=None):
         '''Return a cleaned up headline s.'''
-        m = re.match(r'\s*def\s+(\w+)', s)
-        if m:
-            return m.group(1)
+        # pylint: disable=arguments-differ
+        if p: # Called from clean_all_headlines:
+            return self.get_decorator(p) + p.h
         else:
-            m = re.match(r'\s*class\s+(\w+)', s)
+            m = re.match(r'\s*def\s+(\w+)', h)
             if m:
-                return 'class %s' % m.group(1)
-            else:
-                return s.strip()
+                return m.group(1)
+            m = re.match(r'\s*class\s+(\w+)', h)
+            return 'class %s' % m.group(1) if m else h.strip()
+        
+    def get_decorator(self, p):
+        if g.unitTesting or self.c.config.getBool('put_python_decorators_in_imported_headlines'):
+            for s in self.get_lines(p):
+                if not s.isspace():
+                    m = re.match(r'\s*@\s*([\w\.]+)', s)
+                    if m:
+                        s = s.strip()
+                        if s.endswith('('):
+                            s = s[:-1].strip()
+                        return s + ' '
+                    else:
+                        return ''
+        return ''
     #@+node:ekr.20161128054630.1: *3* py_i.get_new_dict
     #@@nobeautify
 
@@ -391,6 +405,16 @@ class Py_Importer(Importer):
                     self.skip += 1
                     prev_state = new_state
         return False       
+    #@+node:ekr.20170617125213.1: *3* py_i.clean_all_headlines
+    def clean_all_headlines(self, parent):
+        '''
+        Clean all headlines in parent's tree by calling the language-specific
+        clean_headline method.
+        '''
+        for p in parent.subtree():
+            h = self.clean_headline(p.h, p=p)
+            if h and h != p.h:
+                p.h = h
     #@+node:ekr.20161119083054.1: *3* py_i.find_class & helper
     def find_class(self, parent):
         '''

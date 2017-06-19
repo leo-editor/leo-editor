@@ -743,6 +743,7 @@
 <v t="ekr.20101104191857.8345"><vh>@bool at_auto_separate_non_def_nodes = False</vh></v>
 <v t="ekr.20070803082435"><vh>@bool full_import_checks = True</vh></v>
 <v t="ekr.20161010085256.1"><vh>@bool js_importer_clean_lws = True</vh></v>
+<v t="ekr.20170617135317.1"><vh>@bool put_python_decorators_in_imported_headlines = False</vh></v>
 <v t="ekr.20161010172424.1"><vh>@int js_importer_min_rescan_size = 0</vh></v>
 <v t="ekr.20161010172441.1"><vh>@int js_importer_min_scan_size = 0</vh></v>
 <v t="ekr.20080811105020.2"><vh>@bool suppress_import_parsing = False</vh></v>
@@ -14299,6 +14300,10 @@ if 0: # The base class
     # self.squares += delta_s
     return i
 </t>
+<t tx="ekr.20170617135317.1">True: The python importer will copy the first decorator preceding a
+      function/method into the headline of the imported node.
+      
+**Note**: The importer will copy only the first line of a multiline decorator.</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
