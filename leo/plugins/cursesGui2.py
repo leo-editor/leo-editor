@@ -3337,7 +3337,9 @@ class LeoValues(npyscreen.TreeData):
     A class to replace the MLTree.values property.
     This is formally an subclass of TreeData.
     '''
-    
+
+    #@+others
+    #@+node:ekr.20170619070717.1: *4* values.__init__
     def __init__(self, c, tree):
         '''Ctor for LeoValues class.'''
         super(LeoValues, self).__init__()
@@ -3346,12 +3348,14 @@ class LeoValues(npyscreen.TreeData):
             # The commander of this outline.
         self.data_cache = {}
             # Keys are ints, values are LeoTreeData objects.
-        self.position_cache = {}
-            # Keys are ints, values are copies of posiitions.
+        self.last_generation = -1
+            # The last value of c.frame.tree.generation.
+        self.last_len = 0
+            # The last computed value of the number of visible nodes.
+        self.n_refreshes = 0
+            # Number of calls to refresh_cache.
         self.tree = tree
-            # A LeoMLTree.
-
-    #@+others
+            # A LeoMLTree. (not used here)
     #@+node:ekr.20170517090738.1: *4* values.__getitem__ and get_data
     def __getitem__(self, n):
         '''Called from LeoMLTree._setLineValues.'''
@@ -3359,58 +3363,55 @@ class LeoValues(npyscreen.TreeData):
 
     def get_data(self, n):
         '''Return a LeoTreeData for the n'th visible position of the outline.'''
-        trace = False
         c = self.c
-        # Look for n or n-1 in the caches.
-        data = self.data_cache.get(n)
-        if data:
-            if trace: g.trace('cached', n, repr(data))
+        # This will almost always be true, because __len__ updates the cache.
+        if self.last_len > -1 and c.frame.tree.generation == self.last_generation:
+            return self.data_cache.get(n)
+        else:
+            self.refresh_cache()
+            data = self.data_cache.get(n)
+            g.trace('uncached', data)
             return data
-        p = self.position_cache.get(max(0,n-1))
-        if p:
-            p = p.copy()
-                # Never change the cached position!
-                # LeoTreeData(p) makes a copy of p.
-            p = p.moveToVisNext(c)
-            if p:
-                self.position_cache[n] = p
-                self.data_cache[n] = data = LeoTreeData(p)
-                if trace: g.trace(' after', n, repr(data))
-                return data
-            else:
-                if trace: g.trace(' fail1', n, repr(data))
-                return None
-        # Search the tree, caching the result.
-        i, p = 0, c.rootPosition()
-        while p:
-            if i == n:
-                self.position_cache[n] = p
-                self.data_cache[n] = data = LeoTreeData(p)
-                if trace: g.trace(' found', n, repr(data))
-                return data
-            else:
-                p.moveToVisNext(c)
-                i += 1
-        if trace: g.trace(' fail2', n, repr(data))
-        return None
     #@+node:ekr.20170518060014.1: *4* values.__len__
     def __len__(self):
         '''
         Return the putative length of the values array,
         that is, the number of visible nodes in the outline.
+        
+        Return self.last_len if the tree generations match.
+        Otherwise, find and cache all visible node.
+        
+        This is called often from the npyscreen core.
         '''
         c = self.c
-        n, p = 0, c.rootPosition()
-        while p:
-            n += 1
-            p.moveToVisNext(c)
-        # g.trace(n)
-        return n
+        tree_gen = c.frame.tree.generation
+        if self.last_len > -1 and  tree_gen == self.last_generation:
+            return self.last_len
+        else:
+            self.last_len = self.refresh_cache()
+            # g.trace('uncached', tree_gen, self.last_len)
+            return self.last_len
     #@+node:ekr.20170519041459.1: *4* values.clear_cache
     def clear_cache(self):
-        
+        '''Called only from this file.'''
         self.data_cache = {}
-        self.position_cache = {}
+        self.last_len = -1
+    #@+node:ekr.20170619072048.1: *4* values.refresh_cache
+    def refresh_cache(self):
+        '''Update all cached values.'''
+        c = self.c
+        self.n_refreshes += 1
+        self.clear_cache()
+        self.last_generation = c.frame.tree.generation
+        n, p = 0, c.rootPosition()
+        while p:
+            self.data_cache[n] = LeoTreeData(p)
+            n += 1
+            p.moveToVisNext(c)
+        self.last_len = n
+        g.trace('%3s vis: %3s generation: %s' % (
+            self.n_refreshes, n, c.frame.tree.generation))
+        return n
     #@-others
 #@+node:ekr.20170522081122.1: ** Wrapper classes
 #@+others
