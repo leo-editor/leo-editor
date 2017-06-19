@@ -282,6 +282,8 @@ def toAtEdit(self, p):
     c.setChanged()
     c.redraw()
     c.bodyWantsFocus()
+.. @+node:ekr.20170619155533.1: *4* Improved operation of command history
+The first UP-arrow to gives the presvious command, the next up-arrow gives the next command, etc.
 .. @+node:ekr.20170403192311.1: *3* plugins
 .. @+node:ekr.20170403192317.1: *4* screen_capture.py now enabled by default
 .. @+node:ekr.20170331043621.1: *3* settings
