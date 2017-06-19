@@ -3622,8 +3622,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
     def dragMoveEvent(self, ev):
         pass
     #@+others
-    #@+node:ekr.20111022222228.16980: *3* Event handlers (LeoQTreeWidget)
-    #@+node:ekr.20110605121601.18364: *4* dragEnterEvent & helper
+    #@+node:ekr.20111022222228.16980: *3* LeoQTreeWidget: Event handlers
+    #@+node:ekr.20110605121601.18364: *4* LeoQTreeWidget.dragEnterEvent & helper
     def dragEnterEvent(self, ev):
         '''Export c.p's tree as a Leo mime-data.'''
         trace = False and not g.unitTesting
@@ -3649,7 +3649,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             if trace: self.dump(ev, c.p, 'enter')
         # Always accept the drag, even if we are already dragging.
         ev.accept()
-    #@+node:ekr.20110605121601.18384: *5* setText
+    #@+node:ekr.20110605121601.18384: *5* LeoQTreeWidget.setText
     def setText(self, md):
         c = self.c
         fn = self.fileName()
@@ -3658,7 +3658,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             s = g.toEncodedString(s, encoding='utf-8', reportErrors=True)
             fn = g.toEncodedString(fn, encoding='utf-8', reportErrors=True)
         md.setText('%s,%s' % (fn, s))
-    #@+node:ekr.20110605121601.18365: *4* dropEvent & helpers
+    #@+node:ekr.20110605121601.18365: *4* LeoQTreeWidget.dropEvent & helpers
     def dropEvent(self, ev):
         '''Handle a drop event in the QTreeWidget.'''
         trace = False and not g.unitTesting
@@ -3697,7 +3697,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             else:
                 self.nodeDrop(md, p)
         g.app.dragging = False
-    #@+node:ekr.20110605121601.18366: *5* nodeDrop & helpers
+    #@+node:ekr.20110605121601.18366: *5* LeoQTreeWidget.nodeDrop & helpers
     def nodeDrop(self, md, p):
         '''
         Handle a drop event when not md.urls().
@@ -3721,7 +3721,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         else:
             if trace: g.trace('inter-file drag')
             self.interFileDrop(fn, p, s)
-    #@+node:ekr.20110605121601.18367: *6* interFileDrop
+    #@+node:ekr.20110605121601.18367: *6* LeoQTreeWidget.interFileDrop
     def interFileDrop(self, fn, p, s):
         '''Paste the mime data after (or as the first child of) p.'''
         trace = False and not g.unitTesting
@@ -3770,7 +3770,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         u.afterInsertNode(pasted, undoType, undoData)
         c.redraw_now(pasted)
         c.recolor()
-    #@+node:ekr.20110605121601.18368: *6* intraFileDrop
+    #@+node:ekr.20110605121601.18368: *6* LeoQTreeWidget.intraFileDrop
     def intraFileDrop(self, fn, p1, p2):
         '''Move p1 after (or as the first child of) p2.'''
         trace = False and not g.unitTesting
@@ -3825,7 +3825,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             else:
                 c.redraw_now(p2)
         # elif trace: g.trace('** move failed')
-    #@+node:ekr.20110605121601.18383: *6* parseText
+    #@+node:ekr.20110605121601.18383: *6* LeoQTreeWidget.parseText
     def parseText(self, md):
         '''Parse md.text() into (fn,s)'''
         fn = ''
@@ -3841,7 +3841,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 fn = s[: i]
                 s = s[i + 1:]
         return fn, s
-    #@+node:ekr.20110605121601.18369: *5* urlDrop & helpers
+    #@+node:ekr.20110605121601.18369: *5* LeoQTreeWidget.urlDrop & helpers
     def urlDrop(self, md, p):
         '''Handle a drop when md.urls().'''
         trace = False and not g.unitTesting
@@ -3865,7 +3865,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             c.setChanged(True)
             u.afterChangeGroup(c.p, undoType, reportFlag=False, dirtyVnodeList=[])
             c.redraw_now()
-    #@+node:ekr.20110605121601.18370: *6* doFileUrl & helper
+    #@+node:ekr.20110605121601.18370: *6* LeoQTreeWidget.doFileUrl & helper
     def doFileUrl(self, p, url):
         '''Read the file given by the url and put it in the outline.'''
         # 2014/06/06: Work around a possible bug in QUrl.
@@ -3891,7 +3891,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 return self.doFileUrlHelper(fn, p, s)
         g.es_print('not found: %s' % (fn))
         return False
-    #@+node:ekr.20110605121601.18371: *7* doFileUrlHelper & helper
+    #@+node:ekr.20110605121601.18371: *7* LeoQTreeWidget.doFileUrlHelper & helper
     def doFileUrlHelper(self, fn, p, s):
         '''
         Insert s in an @file, @auto or @edit node after p.
@@ -3928,7 +3928,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             u.afterInsertNode(p2, undoType, undoData)
             c.selectPosition(p2)
             return True # The original .leo file has changed.
-    #@+node:ekr.20110605121601.18372: *8* createAtFileNode & helpers (QTreeWidget)
+    #@+node:ekr.20110605121601.18372: *8* LeoQTreeWidget.createAtFileNode & helpers (QTreeWidget)
     def createAtFileNode(self, fn, p, s):
         '''
         Set p's headline, body text and possibly descendants
@@ -3956,7 +3956,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             self.createAtEditNode(fn, p)
         self.warnIfNodeExists(p)
         c.raise_error_dialogs(kind='read')
-    #@+node:ekr.20110605121601.18373: *9* createAtAutoTree (QTreeWidget)
+    #@+node:ekr.20110605121601.18373: *9* LeoQTreeWidget.createAtAutoTree (QTreeWidget)
     def createAtAutoTree(self, fn, p):
         '''Make p an @auto node and create the tree using
         s, the file's contents.
@@ -3966,7 +3966,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         at.readOneAtAutoNode(fn, p)
         # No error recovery should be needed here.
         p.clearDirty() # Don't automatically rewrite this node.
-    #@+node:ekr.20110605121601.18374: *9* createAtEditNode
+    #@+node:ekr.20110605121601.18374: *9* LeoQTreeWidget.createAtEditNode
     def createAtEditNode(self, fn, p):
         c = self.c; at = c.atFileCommands
         # Use the full @edit logic, so dragging will be
@@ -3974,7 +3974,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         at.readOneAtEditNode(fn, p)
         p.h = '@edit %s' % (fn)
         p.clearDirty() # Don't automatically rewrite this node.
-    #@+node:ekr.20110605121601.18375: *9* createAtFileTree
+    #@+node:ekr.20110605121601.18375: *9* LeoQTreeWidget.createAtFileTree
     def createAtFileTree(self, fn, p, s):
         '''Make p an @file node and create the tree using
         s, the file's contents.
@@ -3991,7 +3991,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             g.error('Error reading', fn)
             p.b = '' # Safe: will not cause a write later.
             p.clearDirty() # Don't automatically rewrite this node.
-    #@+node:ekr.20141007223054.18004: *9* createLeoFileTree
+    #@+node:ekr.20141007223054.18004: *9* LeoQTreeWidget.createLeoFileTree
     def createLeoFileTree(self, fn, p):
         '''Copy all nodes from fn, a .leo file, to the children of p.'''
         c = self.c
@@ -4013,7 +4013,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         c2.close()
         g.app.forgetOpenFile(c2.fileName())
             # Necessary.
-    #@+node:ekr.20120309075544.9882: *9* createUrlForBinaryFile
+    #@+node:ekr.20120309075544.9882: *9* LeoQTreeWidget.createUrlForBinaryFile
     def createUrlForBinaryFile(self, fn, p):
         # Fix bug 1028986: create relative urls when dragging binary files to Leo.
         c = self.c
@@ -4024,13 +4024,13 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             p.h = abs_fn[len(prefix):].strip()
         else:
             p.h = '@url file://%s' % fn
-    #@+node:ekr.20110605121601.18377: *9* isAutoFile (LeoQTreeWidget)
+    #@+node:ekr.20110605121601.18377: *9* LeoQTreeWidget.isAutoFile (LeoQTreeWidget)
     def isAutoFile(self, fn):
         '''Return true if fn (a file name) can be parsed with an @auto parser.'''
         d = g.app.classDispatchDict
         junk, ext = g.os_path_splitext(fn)
         return d.get(ext)
-    #@+node:ekr.20120309075544.9881: *9* isBinaryFile
+    #@+node:ekr.20120309075544.9881: *9* LeoQTreeWidget.isBinaryFile
     def isBinaryFile(self, fn):
         # The default for unknown files is True. Not great, but safe.
         junk, ext = g.os_path_splitext(fn)
@@ -4048,11 +4048,11 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             val = ext not in keys
         # g.trace('binary',ext,val)
         return val
-    #@+node:ekr.20141007223054.18003: *9* isLeoFile
+    #@+node:ekr.20141007223054.18003: *9* LeoQTreeWidget.isLeoFile
     def isLeoFile(self, fn, s):
         '''Return true if fn (a file name) represents an entire .leo file.'''
         return fn.endswith('.leo') and s.startswith(g.app.prolog_prefix_string)
-    #@+node:ekr.20110605121601.18376: *9* isThinFile
+    #@+node:ekr.20110605121601.18376: *9* LeoQTreeWidget.isThinFile
     def isThinFile(self, fn, s):
         '''Return true if the file whose contents is s
         was created from an @thin or @file tree.'''
@@ -4068,14 +4068,14 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             valid, new_df, start, end, isThin = at.parseLeoSentinel(line)
             # g.trace('valid',valid,'new_df',new_df,'isThin',isThin)
             return valid and new_df and isThin
-    #@+node:ekr.20110605121601.18378: *9* warnIfNodeExists
+    #@+node:ekr.20110605121601.18378: *9* LeoQTreeWidget.warnIfNodeExists
     def warnIfNodeExists(self, p):
         c = self.c; h = p.h
         for p2 in c.all_unique_positions():
             if p2.h == h and p2 != p:
                 g.warning('Warning: duplicate node:', h)
                 break
-    #@+node:ekr.20110605121601.18379: *7* doPathUrlHelper
+    #@+node:ekr.20110605121601.18379: *7* LeoQTreeWidget.doPathUrlHelper
     def doPathUrlHelper(self, fn, p):
         '''Insert fn as an @path node after p.'''
         c = self.c
@@ -4088,7 +4088,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         p2.h = '@path ' + fn
         u.afterInsertNode(p2, undoType, undoData)
         c.selectPosition(p2)
-    #@+node:ekr.20110605121601.18380: *6* doHttpUrl
+    #@+node:ekr.20110605121601.18380: *6* LeoQTreeWidget.doHttpUrl
     def doHttpUrl(self, p, url):
         '''Insert the url in an @url node after p.'''
         c = self.c; u = c.undoer; undoType = 'Drag Url'
@@ -4108,8 +4108,8 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         p2.clearDirty() # Don't automatically rewrite this node.
         u.afterInsertNode(p2, undoType, undoData)
         return True
-    #@+node:ekr.20110605121601.18381: *3* utils (LeoQTreeWidget)
-    #@+node:ekr.20110605121601.18382: *4* dump (LeoQTreeWidget)
+    #@+node:ekr.20110605121601.18381: *3* LeoQTreeWidget: utils
+    #@+node:ekr.20110605121601.18382: *4* LeoQTreeWidget.dump
     def dump(self, ev, p, tag):
         if ev:
             md = ev.mimeData()
@@ -4121,7 +4121,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 g.trace('url.text:', url.toString())
         else:
             g.trace('', tag, '** no event!')
-    #@+node:ekr.20141007223054.18002: *4* fileName (LeoQTreeWidget)
+    #@+node:ekr.20141007223054.18002: *4* LeoQTreeWidget.fileName
     def fileName(self):
         '''Return the commander's filename.'''
         return self.c.fileName() or '<unsaved file>'

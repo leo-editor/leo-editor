@@ -3336,8 +3336,6 @@ class LeoValues(npyscreen.TreeData):
     A class to replace the MLTree.values property.
     This is formally an subclass of TreeData.
     '''
-    
- 
 
     #@+others
     #@+node:ekr.20170619070717.1: *4* values.__init__

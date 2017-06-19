@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -23271,7 +23271,7 @@ sets headline to::
 
 **BACKGROUND**
 
-**The Beginning**: Coming from being a Java professional in the early oughts, I was used to Netbeans. It was fine I guess. A few years later I decided I wanted to be a web developer.
+**The Beginning**: Coming from being a Java professional in the early aughts, I was used to Netbeans. It was fine I guess. A few years later I decided I wanted to be a web developer.
 
 **Why I sought out a new editor**: I wanted something extensible in FULL. I wanted to make it my own. It is like your home. You move in, it is up to you to make it your "HOME". So is an editor. You spend all of your time with it. It must be YOURS I figure. Comfy like a pair of old shoes.
 
@@ -23393,7 +23393,7 @@ To set this up:
 Some commands can be run from the minibuffer, but there is no tab completion and no indication of what the correct command names are.</t>
 <t tx="ekr.20170618162705.1">To exit Leo: click "Quit Leo" button and &lt;Enter&gt;. Ctrl-Q also works. **There is no way to cancel Ctrl-Q**. A dialog box will appear. Press Enter to select "No". Press arrow keys to move between "Yes" and "No". "Yes" saves, then exits. "No" Exits without saving.
 </t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
