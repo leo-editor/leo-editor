@@ -24,6 +24,8 @@ import yaml
 #@+node:ekr.20170619151859.4: ** onCreate
 def onCreate (tag, keys):
     '''auto_colorize onCreate handler.'''
+    # pylint: disable=no-member
+    # g.visit_tree_item does exist.
     try:
         c = keys.get('c')
         init_dict(c)
@@ -70,7 +72,6 @@ def init_dict(c):
                 g.app.permanentScriptDict[cs + 'formats'][k] = f         
     except Exception as e:
         g.es_error(e)      
-        pass
 #@+node:ekr.20170619151859.7: ** colorize
 def colorize(c,p, item):
     """Colorize by reading "Headline Formats" node, or symbol in headline"""
@@ -78,7 +79,7 @@ def colorize(c,p, item):
     font = item.font(0)      
     try:
         g.app.permanentScriptDict[cs  + 'formats']
-    except:
+    except Exception:
         g.app.permanentScriptDict[cs + 'formats'] = {}
     for k, f in g.app.permanentScriptDict[cs + 'formats'].items():
         def format_one(f): 
@@ -86,40 +87,38 @@ def colorize(c,p, item):
             try:
                 if f['color']:
                     item.setForeground(0, QBrush(QColor("#" + str(f['color']))))
-            except:
+            except Exception:
                 print(item)
-                pass
             #weight    
             try:
                 if f['font-weight']:
                     font.setBold(True)
-            except:
+            except Exception:
                 pass
             #icon
-            """ if f['icon']:
-                com = c.editCommands                        
-                allIcons = com.getIconList(p)                    
-                icons = [i for i in allIcons if f['icon'] not in i]
-                in_list = False
-                for i in icons:
-                    print("%s : %s" % (f['icon'], i))
-                    if f['icon'] in i:
-                        in_list = True
-                        break
+            # if f['icon']:
+                # com = c.editCommands                        
+                # allIcons = com.getIconList(p)                    
+                # icons = [i for i in allIcons if f['icon'] not in i]
+                # in_list = False
+                # for i in icons:
+                    # print("%s : %s" % (f['icon'], i))
+                    # if f['icon'] in i:
+                        # in_list = True
+                        # break
                 
-                if in_list != True:
-                    com.appendImageDictToList(icons, f['icon_dir'], f['icon'], 1)
-                    com.setIconList(p, icons, True)"""
+                # if in_list != True:
+                    # com.appendImageDictToList(icons, f['icon_dir'], f['icon'], 1)
+                    # com.setIconList(p, icons, True)
         if k == p.h:
             format_one(f)    
-        """ else:
-            if "++" in p.h:
-                color = "#999999"
-            try:
-                item.setForeground(0, QBrush(QColor(color)))
-            except:
-                pass
-        """
+        # else:
+            # if "++" in p.h:
+                # color = "#999999"
+            # try:
+                # item.setForeground(0, QBrush(QColor(color)))
+            # except:
+                # pass
     item.setFont(0, font)
     
 
