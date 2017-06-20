@@ -1279,10 +1279,12 @@ class AtFile(object):
         Called only from at.terminateBody.
         '''
         at, c = self, self.c
+        debug = False # Debug perfect import.
         if at.perfectImportRoot:
             if not postPass:
                 at.correctedLines += 1
-                at.reportCorrection(old, new, v)
+                if debug:
+                    at.reportCorrection(old, new, v)
                 v.setDirty()
                     # Just mark the vnode dirty.
                     # Ancestors will be marked dirty later.
@@ -1307,24 +1309,21 @@ class AtFile(object):
                 # Do *not* call c.setChanged(True) here: that would be too slow.
     #@+node:ekr.20100628124907.5818: *7* at.reportCorrection
     def reportCorrection(self, old, new, v):
+        '''Debugging only. Report changed perfect import lines.'''
         at = self
-        found = False
-        for p in at.perfectImportRoot.self_and_subtree():
-            if p.v == v:
-                found = True; break
+        found = any([p.v == v for p in at.perfectImportRoot.self_and_subtree()])
         if found:
-            if 0: # For debugging.
-                g.pr('\n', '-' * 40)
-                g.pr("old", len(old))
-                for line in g.splitLines(old):
-                    line = line.replace(' ', '< >').replace('\t', '<TAB>').replace('\n', '<NL>')
-                    g.pr(repr(str(line)))
-                g.pr('\n', '-' * 40)
-                g.pr("new", len(new))
-                for line in g.splitLines(new):
-                    #line = line.replace(' ','< >').replace('\t','<TAB>')
-                    g.pr(repr(str(line)))
-                g.pr('\n', '-' * 40)
+            g.pr('\n', '-' * 40)
+            g.pr("old", len(old))
+            for line in g.splitLines(old):
+                line = line.replace(' ', '< >').replace('\t', '<TAB>').replace('\n', '<NL>')
+                g.pr(repr(str(line)))
+            g.pr('\n', '-' * 40)
+            g.pr("new", len(new))
+            for line in g.splitLines(new):
+                #line = line.replace(' ','< >').replace('\t','<TAB>')
+                g.pr(repr(str(line)))
+            g.pr('\n', '-' * 40)
         else:
             # This should never happen.
             g.error("correcting hidden node: v=", repr(v))
