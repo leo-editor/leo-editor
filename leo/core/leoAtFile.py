@@ -1293,6 +1293,7 @@ class AtFile(object):
             # Do nothing if only trailing whitespace is involved.
             if new.endswith('\n') and old == new[: -1]: return
             if old.endswith('\n') and new == old[: -1]: return
+            g.trace('root', at.root.h)
             c.nodeConflictList.append(g.bunch(
                 tag='(uncached)',
                 gnx=v.gnx,
@@ -1328,7 +1329,7 @@ class AtFile(object):
         else:
             # This should never happen.
             g.error("correcting hidden node: v=", repr(v))
-    #@+node:ekr.20100702062857.5824: *7* at.terminateBody (detects changes)
+    #@+node:ekr.20100702062857.5824: *7* at.terminateBody (detects changes: last-clone-wins)
     def terminateBody(self, v, postPass=False):
         '''Terminate scanning of body text for node v. Set v.b.'''
         trace = False and not g.unitTesting
@@ -1343,6 +1344,7 @@ class AtFile(object):
         if v != at.root.v and at.bodyIsInited(v) and new != old:
             at.indicateNodeChanged(old, new, postPass, v)
         v.setBodyString(new)
+            # This is the evil "last-clone-wins" rule.
         at.bodySetInited(v)
         if trace:
             g.trace('%25s old %3s new %3s' % (v.gnx, len(old), len(new)), v.h)
@@ -1557,7 +1559,7 @@ class AtFile(object):
             at.thinNodeStack.append(v)
         at.lastThinNode = v
         return v
-    #@+node:ekr.20130121102015.10272: *9* at.createV5ThinNode & helper
+    #@+node:ekr.20130121102015.10272: *9* at.createV5ThinNode
     def createV5ThinNode(self, gnx, headline, level):
         '''Create a version 5 vnode.'''
         at = self
