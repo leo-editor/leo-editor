@@ -160,7 +160,7 @@ class Cacher(object):
             h, b, gnx, grandChildren = z
             isClone, child_v = self.fastAddLastChild(parent_v, gnx)
             if isClone:
-                self.reportChangedClone(child_v, b, h, gnx)
+                self.reportChangedClone(child_v, b, h, gnx, parent_v)
             else:
                 self.createOutlineFromCacheList(
                     child_v, z, fileName, top=False)
@@ -198,7 +198,7 @@ class Cacher(object):
         child_v.setVisited() # Supress warning/deletion of unvisited nodes.
         return is_clone, child_v
     #@+node:ekr.20100705083838.5740: *5* casher.reportChangedClone
-    def reportChangedClone(self, child_v, b, h, gnx):
+    def reportChangedClone(self, child_v, b, h, gnx, parent_v):
         trace = (False or g.app.debug) and not g.unitTesting
         c = self.c
         fileName = c.cacheListFileName
