@@ -198,7 +198,7 @@ class AtFile(object):
         at.pending = []
         at.raw = False # True: in @raw mode
         at.root = None # The root (a position) of tree being read or written.
-        at.root_seen = False # True: root VNode has been handled in this file.
+        ### at.root_seen = False # True: root VNode has been handled in this file.
         at.startSentinelComment = ""
         at.startSentinelComment = ""
         at.tab_width = c.tab_width or -4
@@ -1301,6 +1301,7 @@ class AtFile(object):
                 b_new=new,
                 h_old=v._headString,
                 h_new=v._headString,
+                root_p = at.root.copy(),
             ))
             v.setDirty()
                 # Just set the dirty bit. Ancestors will be marked dirty later.
@@ -1502,7 +1503,7 @@ class AtFile(object):
             at.v1.fileIndex = gnx
             at.v1 = None
         if not ok: return
-        at.root_seen = True
+        ### at.root_seen = True
         # Switch context.
         if at.readVersion5:
             # Terminate the *previous* doc part if it exists.
