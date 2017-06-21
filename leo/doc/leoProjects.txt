@@ -1504,7 +1504,6 @@ def readStartNode(self, s, i, middle=False):
         at.v1.fileIndex = gnx
         at.v1 = None
     if not ok: return
-    ### at.root_seen = True
     # Switch context.
     if at.readVersion5:
         # Terminate the *previous* doc part if it exists.

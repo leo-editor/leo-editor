@@ -200,7 +200,6 @@ class AtFile(object):
         at.pending = []
         at.raw = False # True: in @raw mode
         at.root = None # The root (a position) of tree being read or written.
-        ### at.root_seen = False # True: root VNode has been handled in this file.
         at.startSentinelComment = ""
         at.startSentinelComment = ""
         at.tab_width = c.tab_width or -4
@@ -1531,7 +1530,6 @@ class AtFile(object):
             at.v1.fileIndex = gnx
             at.v1 = None
         if not ok: return
-        ### at.root_seen = True
         # Switch context.
         if at.readVersion5:
             # Terminate the *previous* doc part if it exists.
