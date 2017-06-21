@@ -222,7 +222,7 @@ class Cacher(object):
             h_old=child_v.h,
             b_new=b,
             h_new=h,
-            parent_v=parent_v,
+            root_v=parent_v,
         ))
         # Always issue the warning.
         g.error("cached read node changed:", child_v.h)

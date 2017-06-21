@@ -757,10 +757,11 @@ class FileCommands(object):
             fn = bunch.get('fileName') or ''
             b1, h1 = bunch.get('b_old'), bunch.get('h_old')
             b2, h2 = bunch.get('b_new'), bunch.get('h_new')
+            root_v = bunch.get('root_v') or ''
             child = root.insertAsLastChild()
             h = 'Recovered node "%s" from %s' % (h1, g.shortFileName(fn))
             child.setHeadString(h)
-            line1 = '%s %s\nDiff...\n' % (tag, gnx)
+            line1 = '%s %s %s\nDiff...\n' % (tag, gnx, root_v and root.v)
             d = difflib.Differ().compare(g.splitLines(b1), g.splitLines(b2))
                 # 2017/06/19: reverse comparison order.
             diffLines = [z for z in d]

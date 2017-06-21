@@ -1301,7 +1301,7 @@ class AtFile(object):
                 b_new=new,
                 h_old=v._headString,
                 h_new=v._headString,
-                root_p = at.root.copy(),
+                root_v = at.root and at.root.v,
             ))
             v.setDirty()
                 # Just set the dirty bit. Ancestors will be marked dirty later.
