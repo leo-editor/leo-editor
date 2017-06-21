@@ -197,7 +197,7 @@ class Cacher(object):
         child_v._linkAsNthChild(parent_v, parent_v.numberOfChildren())
         child_v.setVisited() # Supress warning/deletion of unvisited nodes.
         return is_clone, child_v
-    #@+node:ekr.20100705083838.5740: *5* cashe.reportChangedClone
+    #@+node:ekr.20100705083838.5740: *5* casher.reportChangedClone
     def reportChangedClone(self, child_v, b, h, gnx):
         trace = (False or g.app.debug) and not g.unitTesting
         c = self.c
@@ -222,6 +222,7 @@ class Cacher(object):
             h_old=child_v.h,
             b_new=b,
             h_new=h,
+            # root_v=parent_v,
         ))
         # Always issue the warning.
         g.error("cached read node changed:", child_v.h)
