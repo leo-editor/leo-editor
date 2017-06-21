@@ -1340,7 +1340,7 @@ class AtFile(object):
         else:
             # This should never happen.
             g.error("correcting hidden node: v=", repr(v))
-    #@+node:ekr.20100702062857.5824: *7* at.terminateBody (detects changes: last-clone-wins)
+    #@+node:ekr.20100702062857.5824: *7* at.terminateBody (detects changes)
     def terminateBody(self, v, postPass=False):
         '''Terminate scanning of body text for node v. Set v.b.'''
         trace = False and not g.unitTesting
@@ -1351,7 +1351,7 @@ class AtFile(object):
             new = ''.join(at.out)
         new = g.toUnicode(new)
         if new_read:
-            ### *Do* allow changes to the root node.
+            # *Do* allow changes to the root node.
             if hasattr(v, 'tempRoots'):
                 g.trace('=====', list(v.tempRoots))
                 old = v.bodyString()
