@@ -584,20 +584,25 @@ class AtFile(object):
             v._p_changed = True
     #@+node:ekr.20071105164407: *6* at.deleteUnvisitedNodes & helpers
     def deleteUnvisitedNodes(self, root):
-        '''Delete unvisited nodes in root's subtree, not including root.
+        '''
+        Delete unvisited nodes in root's subtree, not including root.
 
-        Actually, instead of deleting the nodes, we move them to be children of the
-        'Resurrected Nodes' r.
+        Before Leo 5.6: Move unvisited node to be children of the 'Resurrected
+        Nodes'.
         '''
         at = self
         # Find the unvisited nodes.
         aList = [z for z in root.subtree() if not z.isVisited()]
         if aList:
-            r = at.createResurrectedNodesNode()
-            assert r not in aList
-            callback = at.defineResurrectedNodeCallback(r, root)
-            # Move the nodes using the callback.
-            at.c.deletePositionsInList(aList, callback)
+            if new_read:
+                # Never create resurrected nodes.
+                at.c.deletePositionsInList(aList)
+            else:
+                r = at.createResurrectedNodesNode()
+                assert r not in aList
+                callback = at.defineResurrectedNodeCallback(r, root)
+                # Move the nodes using the callback.
+                at.c.deletePositionsInList(aList, callback)
     #@+node:ekr.20100803073751.5817: *7* createResurrectedNodesNode
     def createResurrectedNodesNode(self):
         '''Create a 'Resurrected Nodes' node as the last top-level node.'''
