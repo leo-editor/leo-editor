@@ -4,6 +4,8 @@
 #@@first
     # Needed because of unicode characters in tests.
 """Classes to read and write @file nodes."""
+new_read = True
+    # True: attempt fixes for #505.
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
@@ -358,6 +360,8 @@ class AtFile(object):
     #@+<< Detecting clone conflicts >>
     #@+node:ekr.20100619222623.5918: *4* << Detecting clone conflicts >>
     #@+at
+    # **v.tempRoots**, a *temp* ivar, contains root @file nodes.
+    # 
     # **v.tempBodyString**, a *temporary* ivar, accumulates v.b.
     # The vnode ctor must not create this ivar!
     # 
@@ -1219,11 +1223,19 @@ class AtFile(object):
                 old_body = p.bodyString()
                 seen[v.gnx] = v
                 at.terminateNode(postPass=True, v=v)
-                new_body = p.bodyString()
-                if hasattr(v, 'tempBodyList'):
-                    delattr(v, 'tempBodyList')
-                if new_body != old_body:
-                    at.handleChangedNode(new_body, old_body, p, thinFile)
+                if new_read:
+                    # at.terminateNode has done all the work.
+                    if hasattr(v, 'tempBodyList'):
+                        delattr(v, 'tempBodyList')
+                    if hasattr(v, 'tempRoots'):
+                        delattr(v, 'tempRoots')
+                else:
+                    new_body = p.bodyString()
+                    if hasattr(v, 'tempBodyList'):
+                        delattr(v, 'tempBodyList')
+                    if new_body != old_body:
+                        at.handleChangedNode(new_body, old_body, p, thinFile)
+                    
     #@+node:ekr.20150309154506.27: *6* at.handleChangedNode
     def handleChangedNode(self, new_body, old_body, p, thinFile):
         '''Set ancestor files dirty and support mod_labels plugin.'''
@@ -1339,13 +1351,27 @@ class AtFile(object):
         else:
             new = ''.join(at.out)
         new = g.toUnicode(new)
-        old = v.bodyString()
-        # Warn if the body text has changed. Don't warn about the root node.
-        if v != at.root.v and at.bodyIsInited(v) and new != old:
-            at.indicateNodeChanged(old, new, postPass, v)
-        v.setBodyString(new)
-            # This is the evil "last-clone-wins" rule.
+        if new_read:
+            ### *Do* allow changes to the root node.
+            if hasattr(v, 'tempRoots'):
+                g.trace('=====', list(v.tempRoots))
+                old = v.bodyString()
+                at.indicateNodeChanged(old, new, postPass, v)
+            else:
+                # No other @file node has set this node.
+                # Just replace the body string
+                v.tempRoots = set()
+                v.setBodyString(new)
+            v.tempRoots.add(self.root)
+        else:
+            old = v.bodyString()
+            # Warn if the body text has changed. Don't warn about the root node.
+            if v != at.root.v and at.bodyIsInited(v) and new != old:
+                at.indicateNodeChanged(old, new, postPass, v)
+            v.setBodyString(new)
         at.bodySetInited(v)
+            # Note: the sax code also sets this, so we can't use
+            # this "bit" in place of v.tempRoots.
         if trace:
             g.trace('%25s old %3s new %3s' % (v.gnx, len(old), len(new)), v.h)
     #@+node:ekr.20041005105605.74: *5* at.scanText4 & allies
