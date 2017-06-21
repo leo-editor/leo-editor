@@ -1314,7 +1314,7 @@ def reportCorrection(self, old, new, v):
     else:
         # This should never happen.
         g.error("correcting hidden node: v=", repr(v))
-.. @+node:ekr.20100702062857.5824: *5* at.terminateBody (detects changes)
+.. @+node:ekr.20100702062857.5824: *5* at.terminateBody (changed)
 def terminateBody(self, v, postPass=False):
     '''Terminate scanning of body text for node v. Set v.b.'''
     trace = False and not g.unitTesting
@@ -1325,6 +1325,7 @@ def terminateBody(self, v, postPass=False):
         new = ''.join(at.out)
     new = g.toUnicode(new)
     if new_read:
+        # at.createThinChild4 creates v.tempRoots.
         # *Do* allow changes to the root node.
         if hasattr(v, 'tempRoots'):
             g.trace('=====', list(v.tempRoots))
@@ -1585,7 +1586,7 @@ def createV5ThinNode(self, gnx, headline, level):
         # This is the only place we call v.setVisited in the read logic.
         v.setVisited()
     return v
-.. @+node:ekr.20130121075058.10246: *7* at.new_createThinChild4
+.. @+node:ekr.20130121075058.10246: *7* at.new_createThinChild4 (changed)
 def new_createThinChild4(self, gnxString, headline, n, parent):
     """
     Find or create a new *vnode* whose parent (also a vnode)
@@ -1600,24 +1601,29 @@ def new_createThinChild4(self, gnxString, headline, n, parent):
     gnx = gnxString = g.toUnicode(gnxString)
     gnxDict = c.fileCommands.gnxDict
     v = gnxDict.get(gnxString)
+    if v and gnx != v.fileIndex:
+        g.internalError('v.fileIndex: %s gnx: %s' % (v.fileIndex, gnx))
+        return None
     if v:
-        if gnx == v.fileIndex:
+        if new_read:
+            if hasattr(v, 'tempRoots') and v.h != headline:
+                g.trace('changed headline', list(v.tempRoots))
+            # Honor the headline.
+            v.h = headline
+        else:
             # Always use v.h, regardless of headline.
             if trace and v.h != headline:
                 g.trace('read error v.h: %s headline: %s' % (v.h, headline))
-            child = v # The return value.
-            if n >= len(parent.children):
-                child._linkAsNthChild(parent, n)
-                if trace and trace_tree:
-                    g.trace('OLD n: %s parent: %s -> %s' % (n, parent.h, child.h))
-            elif trace:
-                if trace_tree: g.trace('DUP n: %s parent: %s -> %s' % (
-                    n, parent.h, child.h))
-                else:
-                    g.trace('CLONE', id(v), v.gnx, v.h)
-        else:
-            g.internalError('v.fileIndex: %s gnx: %s' % (v.fileIndex, gnx))
-            return None
+        child = v # The return value.
+        if n >= len(parent.children):
+            child._linkAsNthChild(parent, n)
+            if trace and trace_tree:
+                g.trace('OLD n: %s parent: %s -> %s' % (n, parent.h, child.h))
+        elif trace:
+            if trace_tree: g.trace('DUP n: %s parent: %s -> %s' % (
+                n, parent.h, child.h))
+            else:
+                g.trace('CLONE', id(v), v.gnx, v.h)
     else:
         v = leoNodes.VNode(context=c, gnx=gnx)
         v._headString = headline # Allowed use of v._headString.
