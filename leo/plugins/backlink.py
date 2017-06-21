@@ -203,8 +203,8 @@ class backlinkController(object):
                     g.es("No perfect match, not creating backlink")
                     return
                 new_c.backlinkController.initBacklink(new_p.v)
-                if our_unl not in new_p.v.u['_bklnk']['urls']:
-                    new_p.v.u['_bklnk']['urls'].append(our_unl)
+                if our_unl not in [i.rsplit('##', 1)[0] for i in new_p.v.u['_bklnk']['urls']]:
+                    new_p.v.u['_bklnk']['urls'].append("%s##%s" % (our_unl, self.c.p.h))
                     new_c.backlinkController.updateTabInt()
                     new_p.setDirty()
                     new_c.setChanged(True)
@@ -301,7 +301,7 @@ class backlinkController(object):
                 self.c.p.v.u['_bklnk']['urls'].remove(url)
                 self.updateTabInt()
             else:
-                self.handleURL(url)
+                self.handleURL(url.rsplit('##', 1)[0])
             return
 
         if not self.deleteMode:
@@ -386,7 +386,7 @@ class backlinkController(object):
             url = 'unl://' + url
             g.es("Assuming unl:// url, use file:// explicitly for files")
         self.initBacklink(c.p.v)
-        if url in c.p.v.u['_bklnk']['urls']:
+        if url in [i.rsplit('##', 1)[0] for i in c.p.v.u['_bklnk']['urls']]:
             g.es("Already linked from this node")
             return
         c.p.v.u['_bklnk']['urls'].append(url)
@@ -714,19 +714,17 @@ class backlinkController(object):
 
             urls = []
             for url in v.u['_bklnk'].get('urls', []):
-                # try and make URLs easier to read
-                # find the last part
-                name = url
-                for separator in '#', '/', '\\', '-->':
-                    # name = name.rstrip(separator)
-                    name = name.split(separator)[-1]
-                name = name.split(':')[0]  # for UNLs, remove index numbers
-                if name.strip():
-                    name = "%s @ %s" % (name, url)
+                url = url.rsplit('##', 1)
+                if len(url) > 1:
+                    url, description = url
                 else:
-                    name = url
+                    url, description = url[0], ''
+                if description.strip():
+                    description = "%s %s" % (description, url)
+                else:
+                    description = url
                 url = url.replace('-->', ' > ')
-                urls.append((name, url))
+                urls.append((description, url))
             texts.extend(urls)
 
         self.ui.loadList(texts)

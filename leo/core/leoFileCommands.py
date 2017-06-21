@@ -761,7 +761,7 @@ class FileCommands(object):
             child = root.insertAsLastChild()
             h = 'Recovered node "%s" from %s' % (h1, g.shortFileName(fn))
             child.setHeadString(h)
-            line1 = '%s %s %s\nDiff...\n' % (tag, gnx, root_v and root.v)
+            line1 = '%s gnx: %s root: %r\nDiff...\n' % (tag, gnx, root_v and root.v)
             d = difflib.Differ().compare(g.splitLines(b1), g.splitLines(b2))
                 # 2017/06/19: reverse comparison order.
             diffLines = [z for z in d]

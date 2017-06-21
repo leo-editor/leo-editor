@@ -724,7 +724,9 @@ class BookMarkDisplay(object):
         self.current = bm.v
         if up and not bm.url and bm.v != self.v:
             # folders are only current when you're in them
-            self.current = self.current.parents[0]
+            pass
+            # this causes bookmark position to go rootwards by two steps, disabled
+            # self.current = self.current.parents[0]
         # in case something we didn't see changed the bookmarks
         self.show_list(self.get_list(), up=up)
         if bm.url and not up and not no_move:
@@ -956,6 +958,10 @@ class BookMarkDisplay(object):
             layout = FlowLayout()
             layout.setSpacing(5)
             top.setLayout(layout)
+
+            if not links:
+                layout.addWidget(QtWidgets.QLabel("(empty bookmarks folder)"))
+
             for bm in links:
 
                 bm.v.u.setdefault('__bookmarks', {
@@ -1059,7 +1065,9 @@ class BookMarkDisplay(object):
         dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
 
         undoData = u.beforeDeleteNode(p)
-        p.doDelete(newNode)
+        if self.current == p.v:
+            self.current = p.v.parents[0]
+        p.doDelete(newNode)  # p is deleted, newNode is where to go afterwards
         c.setChanged(True)
         u.afterDeleteNode(newNode, "Bookmark deletion", undoData,
             dirtyVnodeList=dirtyVnodeList)
