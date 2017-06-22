@@ -351,7 +351,6 @@ class AtFile(object):
     #@+node:ekr.20130911110233.11286: *4* at.initReadLine
     def initReadLine(self, s):
         '''Init the ivars so that at.readLine will read all of s.'''
-        # This is part of the new_read logic.
         at = self
         at.read_i = 0
         at.read_lines = g.splitLines(s)
@@ -430,7 +429,6 @@ class AtFile(object):
             try:
                 # Open the file in binary mode to allow 0x1a in bodies & headlines.
                 at.inputFile = open(fn, 'rb')
-                # new_read_line logic.
                 at.readFileToUnicode(fn)
                     # Sets at.encoding...
                     #   From the BOM, if present.
@@ -2627,7 +2625,7 @@ class AtFile(object):
         self.root.setDirty()
             # 2010/10/22: the dirty bit gets cleared later, though.
         self.root.setOrphan()
-    #@+node:ekr.20041005105605.128: *5* at.readLine (unused args when new_read is True)
+    #@+node:ekr.20041005105605.128: *5* at.readLine
     def readLine(self):
         """
         Read one line from file using the present encoding.
