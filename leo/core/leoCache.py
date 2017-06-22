@@ -161,7 +161,7 @@ class Cacher(object):
             h, b, gnx, grandChildren = z
             isClone, child_v = self.fastAddLastChild(parent_v, gnx)
             if isClone:
-                if new_read:
+                if False and new_read:
                     pass
                 else:
                     self.reportChangedClone(child_v, b, h, gnx, parent_v)
