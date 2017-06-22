@@ -143,11 +143,13 @@ class Cacher(object):
         """
         new_read = True
         trace = False and not g.unitTesting
+        sfn = g.shortFileName(fileName)
+        # trace = trace and sfn == 'leoAtFile.py'
         c = self.c
         if not c:
             g.internalError('no c')
         if top:
-            if trace: g.trace(g.shortFileName(fileName))
+            if trace: g.trace(sfn)
             c.cacheListFileName = fileName
         if not aList:
             if trace: g.trace('no list')
@@ -157,17 +159,21 @@ class Cacher(object):
             v = parent_v
             v._headString = g.toUnicode(h) # 2017/01/16
             v._bodyString = g.toUnicode(b) # 2017/01/16
-        for child in children:
-            h, b, gnx, grandChildren = child
+        n = 0
+        for child_tuple in children:
+            h, b, gnx, grandChildren = child_tuple
+            if trace:
+                g.trace('%9s %3s %s' % (gnx, len(grandChildren), h.strip()))
             isClone, child_v = self.fastAddLastChild(parent_v, gnx)
             if isClone:
                 if new_read:
-                    self.updateChangedClone(child_v, child)
+                    n += self.updateChangedClone(child_tuple, trace=trace)
                 else:
                     self.reportChangedClone(child_v, b, h, gnx, parent_v)
             else:
                 self.createOutlineFromCacheList(
-                    child_v, child, fileName, top=False)
+                    child_v, child_tuple, fileName, top=False)
+        if top and trace: g.trace('%s nodes changed' % n)
     #@+node:ekr.20100208071151.5911: *5* cashe.fastAddLastChild
     # Similar to createThinChild4
 
@@ -234,10 +240,32 @@ class Cacher(object):
         child_v.setDirty()
         c.changed = True # Tell getLeoFile to propegate dirty nodes.
     #@+node:ekr.20170622112151.1: *5* cacher.updateChangedClone
-    def updateChangedClone(self, child_v, child):
+    def updateChangedClone(self, child_tuple, changed=0, level=0, trace=False):
         '''
         Update the child_v nodes and all descendants using child, its cacher list.
         '''
+        try:
+            h, b, gnx, grandChildren = child_tuple
+            v = self.c.fileCommands.gnxDict.get(gnx)
+            assert v
+            if v.b != b or v.h != h:
+                changed += 1
+            if trace:
+                g.trace('level: %s %s %s' % (level, ' '*level, h.strip()))
+            if v.b != b:
+                if trace: g.trace('CHANGED BODY:', h.strip())
+                v.b = b
+            if v.h != h:
+                if trace: g.trace('CHANGED HEAD:', h.strip())
+                v.h = h
+            for grand_child in grandChildren:
+                changed += self.updateChangedClone(grand_child,
+                            changed=changed,
+                            level=level+1,
+                            trace=trace)
+        except Exception:
+            g.es_exception()
+        return changed
     #@+node:ekr.20100208082353.5923: *4* cacher.getCachedGlobalFileRatios
     def getCachedGlobalFileRatios(self):
         trace = False and not g.unitTesting
