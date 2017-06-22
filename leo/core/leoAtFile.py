@@ -512,7 +512,7 @@ class AtFile(object):
             force = True # Disable caching.
         if loaded and not force:
             if trace: g.trace('cache hit', sfn)
-            # if sfn.startswith('leoAtFile'): g.trace(sfn, fileKey)
+            if sfn.startswith('leoAtFile'): g.trace(sfn, fileKey)
             at.inputFile.close()
             root.clearDirty()
             return True
