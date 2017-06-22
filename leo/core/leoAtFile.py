@@ -350,7 +350,6 @@ class AtFile(object):
     #@+node:ekr.20130911110233.11286: *4* at.initReadLine
     def initReadLine(self, s):
         '''Init the ivars so that at.readLine will read all of s.'''
-        # This is part of the new_read logic.
         at = self
         at.read_i = 0
         at.read_lines = g.splitLines(s)
@@ -427,7 +426,6 @@ class AtFile(object):
             try:
                 # Open the file in binary mode to allow 0x1a in bodies & headlines.
                 at.inputFile = open(fn, 'rb')
-                # new_read_line logic.
                 at.readFileToUnicode(fn)
                     # Sets at.encoding...
                     #   From the BOM, if present.
@@ -1328,7 +1326,7 @@ class AtFile(object):
         else:
             # This should never happen.
             g.error("correcting hidden node: v=", repr(v))
-    #@+node:ekr.20100702062857.5824: *7* at.terminateBody (detects changes)
+    #@+node:ekr.20100702062857.5824: *7* at.terminateBody (changed)
     def terminateBody(self, v, postPass=False):
         '''Terminate scanning of body text for node v. Set v.b.'''
         trace = False and not g.unitTesting
@@ -1557,7 +1555,7 @@ class AtFile(object):
             at.thinNodeStack.append(v)
         at.lastThinNode = v
         return v
-    #@+node:ekr.20130121102015.10272: *9* at.createV5ThinNode & helper
+    #@+node:ekr.20130121102015.10272: *9* at.createV5ThinNode
     def createV5ThinNode(self, gnx, headline, level):
         '''Create a version 5 vnode.'''
         at = self
@@ -1585,7 +1583,7 @@ class AtFile(object):
             # This is the only place we call v.setVisited in the read logic.
             v.setVisited()
         return v
-    #@+node:ekr.20130121075058.10246: *9* at.new_createThinChild4
+    #@+node:ekr.20130121075058.10246: *9* at.new_createThinChild4 (changed)
     def new_createThinChild4(self, gnxString, headline, n, parent):
         """
         Find or create a new *vnode* whose parent (also a vnode)
@@ -2589,7 +2587,7 @@ class AtFile(object):
         self.root.setDirty()
             # 2010/10/22: the dirty bit gets cleared later, though.
         self.root.setOrphan()
-    #@+node:ekr.20041005105605.128: *5* at.readLine (unused args when new_read is True)
+    #@+node:ekr.20041005105605.128: *5* at.readLine
     def readLine(self):
         """
         Read one line from file using the present encoding.
@@ -2823,7 +2821,7 @@ class AtFile(object):
                 g.error('openForWrite: exception opening file: %s' % (open_file_name))
                 g.es_exception()
             return 'error', None
-    #@+node:ekr.20041005105605.144: *5* at.write & helpers
+    #@+node:ekr.20041005105605.144: *5* at.write & helpers (changed)
     def write(self,
         root,
         kind='@unknown', # Should not happen.
@@ -2914,7 +2912,7 @@ class AtFile(object):
         # Delete the temp file.
         if at.outputFileName:
             self.remove(at.outputFileName)
-    #@+node:ekr.20041005105605.147: *5* at.writeAll & helpers
+    #@+node:ekr.20041005105605.147: *5* at.writeAll & helpers (changed)
     def writeAll(self,
         writeAtFileNodesFlag=False,
         writeDirtyAtFileNodesFlag=False,
