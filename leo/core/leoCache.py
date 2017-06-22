@@ -1,7 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20100208065621.5894: * @file leoCache.py
 '''A module encapsulating Leo's file caching'''
-new_read = True
 #@+<< imports >>
 #@+node:ekr.20100208223942.10436: ** << imports >> (leoCache)
 import sys
@@ -137,7 +136,7 @@ class Cacher(object):
         if trace: g.trace(m.hexdigest())
         return "fcache/" + m.hexdigest()
     #@+node:ekr.20100208082353.5925: *3* cacher.Reading
-    #@+node:ekr.20100208071151.5910: *4* cacher.createOutlineFromCacheList & helpers (changed)
+    #@+node:ekr.20100208071151.5910: *4* cacher.createOutlineFromCacheList & helpers
     def createOutlineFromCacheList(self, parent_v, aList, fileName, top=True):
         """
         Create outline structure from recursive aList built by makeCacheList.
@@ -165,7 +164,7 @@ class Cacher(object):
             else:
                 self.createOutlineFromCacheList(
                     child_v, z, fileName, top=False)
-    #@+node:ekr.20100208071151.5911: *5* casher.fastAddLastChild
+    #@+node:ekr.20100208071151.5911: *5* cashe.fastAddLastChild
     # Similar to createThinChild4
 
     def fastAddLastChild(self, parent_v, gnxString):
@@ -213,9 +212,8 @@ class Cacher(object):
             g.trace('same %s old %s new %s %s %s' % (
                 same, len(old), len(new), h, fileName))
         # This would make it impossible to clear nodes!
-            # if not new: return same
-        if same:
-            return
+        # if not new: return same
+        if same: return
         c.nodeConflictList.append(g.bunch(
             tag='(cached)',
             fileName=fileName,
