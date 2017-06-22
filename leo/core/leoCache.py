@@ -141,6 +141,7 @@ class Cacher(object):
         """
         Create outline structure from recursive aList built by makeCacheList.
         """
+        new_read = True
         trace = False and not g.unitTesting
         c = self.c
         if not c:
@@ -156,14 +157,17 @@ class Cacher(object):
             v = parent_v
             v._headString = g.toUnicode(h) # 2017/01/16
             v._bodyString = g.toUnicode(b) # 2017/01/16
-        for z in children:
-            h, b, gnx, grandChildren = z
+        for child in children:
+            h, b, gnx, grandChildren = child
             isClone, child_v = self.fastAddLastChild(parent_v, gnx)
             if isClone:
-                self.reportChangedClone(child_v, b, h, gnx, parent_v)
+                if new_read:
+                    self.updateChangedClone(child_v, child)
+                else:
+                    self.reportChangedClone(child_v, b, h, gnx, parent_v)
             else:
                 self.createOutlineFromCacheList(
-                    child_v, z, fileName, top=False)
+                    child_v, child, fileName, top=False)
     #@+node:ekr.20100208071151.5911: *5* cashe.fastAddLastChild
     # Similar to createThinChild4
 
@@ -229,6 +233,11 @@ class Cacher(object):
         child_v.h, child_v.b = h, b
         child_v.setDirty()
         c.changed = True # Tell getLeoFile to propegate dirty nodes.
+    #@+node:ekr.20170622112151.1: *5* cacher.updateChangedClone
+    def updateChangedClone(self, child_v, child):
+        '''
+        Update the child_v nodes and all descendants using child, its cacher list.
+        '''
     #@+node:ekr.20100208082353.5923: *4* cacher.getCachedGlobalFileRatios
     def getCachedGlobalFileRatios(self):
         trace = False and not g.unitTesting
