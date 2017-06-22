@@ -2965,7 +2965,7 @@ def computeStandardDirectories():
 #@+node:ekr.20031218072017.3103: *3* g.computeWindowTitle
 def computeWindowTitle(fileName):
     
-    branch = g.gitBranchName()
+    branch = g.gitBranchName(path=g.os_path_dirname(fileName))
     if not fileName:
         return branch + ": untitled" if branch else 'untitled'
     else:
