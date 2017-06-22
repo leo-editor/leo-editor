@@ -473,9 +473,9 @@ class AtFile(object):
     ):
         """Read an @thin or @file tree."""
         trace = (False or g.app.debug) and not g.unitTesting
-        # if trace: g.trace(root.h)
         at, c = self, self.c
         fileName = at.initFileName(fromString, importFileName, root)
+        sfn = g.shortFileName(fileName)
         if not fileName:
             at.error("Missing file name.  Restoring @file tree from .leo file.")
             return False
@@ -513,13 +513,14 @@ class AtFile(object):
             # if trace: g.trace('file-like file',fileName)
             force = True # Disable caching.
         if loaded and not force:
-            if trace: g.trace('cache hit', g.shortFileName(fileName))
+            if trace: g.trace('cache hit', sfn)
+            # if sfn.startswith('leoAtFile'): g.trace(sfn, fileKey)
             at.inputFile.close()
             root.clearDirty()
             return True
         if not g.unitTesting:
-            if trace: g.trace('***** cache miss', repr(at.encoding), g.shortFileName(fileName))
-            g.es("reading:", root.h)
+            if trace: g.trace('***** cache miss', repr(at.encoding), sfn)
+            g.es_print("reading:", root.h)
         if isFileLike:
             if g.unitTesting:
                 if 0: print("converting @file format in", root.h)
@@ -2860,7 +2861,7 @@ class AtFile(object):
                 g.error('openForWrite: exception opening file: %s' % (open_file_name))
                 g.es_exception()
             return 'error', None
-    #@+node:ekr.20041005105605.144: *5* at.write & helpers
+    #@+node:ekr.20041005105605.144: *5* at.write & helpers (changed)
     def write(self,
         root,
         kind='@unknown', # Should not happen.
@@ -2923,6 +2924,10 @@ class AtFile(object):
                     at.rememberReadPath(eventualFileName, root)
                     at.replaceTargetFileIfDifferent(root)
                         # Sets/clears dirty and orphan bits.
+                    # Leo 5.6: update the cache *here*, not just when reading.
+                    fileKey = c.cacher.fileKey(eventualFileName, at.outputContents)
+                    if trace: g.trace(g.shortFileName(eventualFileName), fileKey)
+                    c.cacher.writeFile(at.root, fileKey)
         except Exception:
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')
@@ -2951,7 +2956,7 @@ class AtFile(object):
         # Delete the temp file.
         if at.outputFileName:
             self.remove(at.outputFileName)
-    #@+node:ekr.20041005105605.147: *5* at.writeAll & helpers
+    #@+node:ekr.20041005105605.147: *5* at.writeAll & helpers (changed)
     def writeAll(self,
         writeAtFileNodesFlag=False,
         writeDirtyAtFileNodesFlag=False,
@@ -2980,6 +2985,8 @@ class AtFile(object):
             p = c.rootPosition()
             after = None
         at.clearAllOrphanBits(p)
+        # Leo 5.6: write files only once.
+        seen = set()
         while p and p != after:
             if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
                 if p.isAnyAtFileNode():
@@ -2987,17 +2994,19 @@ class AtFile(object):
                 # Note: @ignore not honored in @asis nodes.
                 p.moveToNodeAfterTree() # 2011/10/08: Honor @ignore!
             elif p.isAnyAtFileNode():
-                try:
-                    self.writeAllHelper(p, root, force, toString, writeAtFileNodesFlag, writtenFiles)
-                except Exception:
-                    # Fix bug 1260415: https://bugs.launchpad.net/leo-editor/+bug/1260415
-                    # Give a more urgent, more specific, more helpful message.
-                    g.es_exception()
-                    g.es('Internal error writing: %s' % (p.h), color='red')
-                    g.es('Please report this error to:', color='blue')
-                    g.es('https://groups.google.com/forum/#!forum/leo-editor', color='blue')
-                    g.es('Warning: changes to this file will be lost', color='red')
-                    g.es('unless you can save the file successfully.', color='red')
+                if p.v not in seen:
+                    seen.add(p.v)
+                    try:
+                        self.writeAllHelper(p, root, force, toString, writeAtFileNodesFlag, writtenFiles)
+                    except Exception:
+                        # Fix bug 1260415: https://bugs.launchpad.net/leo-editor/+bug/1260415
+                        # Give a more urgent, more specific, more helpful message.
+                        g.es_exception()
+                        g.es('Internal error writing: %s' % (p.h), color='red')
+                        g.es('Please report this error to:', color='blue')
+                        g.es('https://groups.google.com/forum/#!forum/leo-editor', color='blue')
+                        g.es('Warning: changes to this file will be lost', color='red')
+                        g.es('unless you can save the file successfully.', color='red')
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
