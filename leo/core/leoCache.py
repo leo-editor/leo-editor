@@ -161,10 +161,7 @@ class Cacher(object):
             h, b, gnx, grandChildren = z
             isClone, child_v = self.fastAddLastChild(parent_v, gnx)
             if isClone:
-                if False and new_read:
-                    pass
-                else:
-                    self.reportChangedClone(child_v, b, h, gnx, parent_v)
+                self.reportChangedClone(child_v, b, h, gnx, parent_v)
             else:
                 self.createOutlineFromCacheList(
                     child_v, z, fileName, top=False)
