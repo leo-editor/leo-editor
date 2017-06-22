@@ -358,6 +358,9 @@ class AtFile(object):
     #@+<< Detecting clone conflicts >>
     #@+node:ekr.20100619222623.5918: *4* << Detecting clone conflicts >>
     #@+at
+    # 
+    # Changed in new-read branch.
+    # 
     # **v.tempRoots**, a *temp* ivar, contains root @file nodes.
     # 
     # **v.tempBodyString**, a *temporary* ivar, accumulates v.b.
