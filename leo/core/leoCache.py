@@ -144,7 +144,7 @@ class Cacher(object):
         new_read = True
         trace = False and not g.unitTesting
         sfn = g.shortFileName(fileName)
-        trace = trace and sfn == 'leoAtFile.py'
+        trace = sfn == 'leoAtFile.py' ###
         c = self.c
         if not c:
             g.internalError('no c')
@@ -255,7 +255,6 @@ class Cacher(object):
         child_v.h, child_v.b = h, b
         child_v.setDirty()
         c.changed = True # Tell getLeoFile to propegate dirty nodes.
-      
     #@+node:ekr.20170622112151.1: *5* cacher.updateChangedClone
     update_warning_given = False
 

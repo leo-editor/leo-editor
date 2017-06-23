@@ -1567,7 +1567,11 @@ def read(self, root, importFileName=None,
         force = True # Disable caching.
     if loaded and not force:
         if trace: g.trace('cache hit', sfn)
-        if sfn.startswith('leoAtFile'): g.trace(sfn, fileKey)
+        if 1:
+            for z in ('leoAtFile.py', 'leoCache.py', 'leoProjects.txt'):
+                if sfn == z:
+                    g.trace(sfn, fileKey)
+                    break
         at.inputFile.close()
         root.clearDirty()
         return True
@@ -2297,7 +2301,6 @@ def readPostPass(self, root, thinFile):
                     delattr(v, 'tempBodyList')
                 if new_body != old_body:
                     at.handleChangedNode(new_body, old_body, p, thinFile)
-                
 .. @+node:ekr.20150309154506.27: *6* at.handleChangedNode
 def handleChangedNode(self, new_body, old_body, p, thinFile):
     '''Set ancestor files dirty and support mod_labels plugin.'''
@@ -2425,7 +2428,7 @@ def terminateBody(self, v, postPass=False):
             # Just replace the body string
             v.tempRoots = set()
             v.setBodyString(new)
-        v.tempRoots.add(self.root)
+        v.tempRoots.add(self.root.h)
     else:
         old = v.bodyString()
         # Warn if the body text has changed. Don't warn about the root node.
@@ -6429,7 +6432,7 @@ def createOutlineFromCacheList(self, parent_v, aList, fileName, top=True):
     new_read = True
     trace = False and not g.unitTesting
     sfn = g.shortFileName(fileName)
-    trace = trace and sfn == 'leoAtFile.py'
+    trace = sfn == 'leoAtFile.py' ###
     c = self.c
     if not c:
         g.internalError('no c')
@@ -6540,7 +6543,6 @@ def reportChangedClone(self, b, child_v, fileName, gnx, h, parent_v):
     child_v.h, child_v.b = h, b
     child_v.setDirty()
     c.changed = True # Tell getLeoFile to propegate dirty nodes.
-  
 .. @+node:ekr.20170622112151.1: *5* cacher.updateChangedClone
 update_warning_given = False
 
