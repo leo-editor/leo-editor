@@ -240,29 +240,36 @@ class Cacher(object):
         child_v.setDirty()
         c.changed = True # Tell getLeoFile to propegate dirty nodes.
     #@+node:ekr.20170622112151.1: *5* cacher.updateChangedClone
+    update_warning_given = False
+
     def updateChangedClone(self, child_tuple, changed=0, level=0, trace=False):
         '''
-        Update the child_v nodes and all descendants using child, its cacher list.
+        Update the child_v nodes and all descendants using child_tuple, an item
+        in the cacher list.
         '''
         try:
             h, b, gnx, grandChildren = child_tuple
             v = self.c.fileCommands.gnxDict.get(gnx)
-            assert v
-            if v.b != b or v.h != h:
-                changed += 1
-            if trace:
-                g.trace('level: %s %s %s' % (level, ' '*level, h.strip()))
-            if v.b != b:
-                if trace: g.trace('CHANGED BODY:', h.strip())
-                v.b = b
-            if v.h != h:
-                if trace: g.trace('CHANGED HEAD:', h.strip())
-                v.h = h
-            for grand_child in grandChildren:
-                changed += self.updateChangedClone(grand_child,
-                            changed=changed,
-                            level=level+1,
-                            trace=trace)
+            if v:
+                if v.b != b or v.h != h:
+                    changed += 1
+                if trace:
+                    g.trace('level: %s %s %s' % (level, ' '*level, h.strip()))
+                if v.b != b:
+                    if trace: g.trace('CHANGED BODY:', h.strip())
+                    v.b = b
+                if v.h != h:
+                    if trace: g.trace('CHANGED HEAD:', h.strip())
+                    v.h = h
+                for grand_child in grandChildren:
+                    changed += self.updateChangedClone(
+                        grand_child,
+                        changed=changed,
+                        level=level+1,
+                        trace=trace)
+            elif not self.update_warning_given:
+                self.update_warning_given = True
+                g.internalError('no vnode')
         except Exception:
             g.es_exception()
         return changed
