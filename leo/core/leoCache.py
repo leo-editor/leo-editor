@@ -144,7 +144,7 @@ class Cacher(object):
         new_read = True
         trace = False and not g.unitTesting
         sfn = g.shortFileName(fileName)
-        # trace = trace and sfn == 'leoAtFile.py'
+        trace = trace and sfn == 'leoAtFile.py'
         c = self.c
         if not c:
             g.internalError('no c')
