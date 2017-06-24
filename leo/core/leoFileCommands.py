@@ -736,7 +736,7 @@ class FileCommands(object):
                 c.alert(fc.mFileName + " is not a valid Leo file: " + str(message))
             ok = False
         return ok
-    #@+node:ekr.20100205060712.8314: *6* fc.handleNodeConflicts & helper
+    #@+node:ekr.20100205060712.8314: *6* fc.handleNodeConflicts
     def handleNodeConflicts(self):
         '''Create a 'Recovered Nodes' node for each entry in c.nodeConflictList.'''
         c = self.c

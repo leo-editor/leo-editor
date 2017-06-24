@@ -514,12 +514,8 @@ class AtFile(object):
             # if trace: g.trace('file-like file',fileName)
             force = True # Disable caching.
         if loaded and not force:
-            if trace: g.trace('cache hit', sfn)
-            if 1:
-                for z in ('leoAtFile.py', 'leoCache.py', 'leoProjects.txt'):
-                    if sfn == z:
-                        g.trace(sfn, fileKey)
-                        break
+            if trace:
+                g.trace('cache hit', fileKey, sfn)
             at.inputFile.close()
             root.clearDirty()
             return True
