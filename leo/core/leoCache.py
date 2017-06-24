@@ -234,6 +234,11 @@ class Cacher(object):
         if not hasattr(child_v, 'tempRoots'):
             child_v.tempRoots = set()
         child_v.tempRoots.add(fileName)
+        if must_warn:
+            self.warning('Warning: out-of-synch nodes in different external files')
+            for fn in sorted(list(child_v.tempRoots)):
+                g.es_print(fn)
+            self.warning('Retaining version found in\n%s' % (fileName))
         if always_warn or must_warn:
             c.nodeConflictList.append(g.bunch(
                 tag='(cached)',
@@ -245,8 +250,6 @@ class Cacher(object):
                 h_new=h,
                 root_v=parent_v,
             ))
-        if must_warn:
-            g.error("cached read node changed:", child_v.h)
         # Always update the node.
         child_v.h, child_v.b = h, b
         child_v.setDirty()
@@ -428,6 +431,10 @@ class Cacher(object):
         if 0: print(db.keys())
         db.clear()
         return True
+    #@+node:ekr.20170624135447.1: *3* cacher.warning
+    def warning(self, s):
+        '''Print a warning message in red.'''
+        g.es_print('Warning: %s' % s.lstrip(), color='red')
     #@-others
 #@+node:ekr.20100208223942.5967: ** class PickleShareDB
 _sentinel = object()
