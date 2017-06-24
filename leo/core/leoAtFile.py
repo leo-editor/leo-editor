@@ -1293,7 +1293,7 @@ class AtFile(object):
             at.terminateBody(v, postPass)
         # Delete tempBodyList. Do not leave this lying around!
         if hasattr(v, 'tempBodyList'): delattr(v, 'tempBodyList')
-    #@+node:ekr.20100628124907.5816: *7* at.indicateNodeChanged
+    #@+node:ekr.20100628124907.5816: *7* at.indicateNodeChanged (To do)
     def indicateNodeChanged(self, old, new, postPass, v):
         '''
         Add an entry to c.nodeConflictList.
@@ -1314,7 +1314,6 @@ class AtFile(object):
             # Do nothing if only trailing whitespace is involved.
             if new.endswith('\n') and old == new[: -1]: return
             if old.endswith('\n') and new == old[: -1]: return
-            g.trace('root', at.root.h)
             c.nodeConflictList.append(g.bunch(
                 tag='(uncached)',
                 gnx=v.gnx,
@@ -1350,7 +1349,7 @@ class AtFile(object):
         else:
             # This should never happen.
             g.error("correcting hidden node: v=", repr(v))
-    #@+node:ekr.20100702062857.5824: *7* at.terminateBody (changed)
+    #@+node:ekr.20100702062857.5824: *7* at.terminateBody (test)
     def terminateBody(self, v, postPass=False):
         '''Terminate scanning of body text for node v. Set v.b.'''
         trace = False and not g.unitTesting
@@ -1364,9 +1363,11 @@ class AtFile(object):
             # at.createThinChild4 creates v.tempRoots.
             # *Do* allow changes to the root node.
             if hasattr(v, 'tempRoots'):
-                g.trace('=====', list(v.tempRoots))
-                old = v.bodyString()
-                at.indicateNodeChanged(old, new, postPass, v)
+                pass
+                ###
+                    # g.trace('=====', list(v.tempRoots))
+                    # old = v.bodyString()
+                    # at.indicateNodeChanged(old, new, postPass, v)
             else:
                 # No other @file node has set this node.
                 # Just replace the body string
