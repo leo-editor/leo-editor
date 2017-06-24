@@ -154,23 +154,14 @@ class Cacher(object):
         h, b, gnx, children = aList
         if h is not None:
             v = parent_v
-            if False:
-                self.reportChangedClone(
-                    child_tuple = aList,
-                    child_v = v,
-                    fileName = fileName,
-                    parent_v = parent_v,
-                )
-            else:
-                v._headString = g.toUnicode(h)
-                v._bodyString = g.toUnicode(b)
+            v._headString = g.toUnicode(h)
+            v._bodyString = g.toUnicode(b)
         for child_tuple in children:
             h, b, gnx, grandChildren = child_tuple
             if trace:
                 g.trace('%9s %3s %s' % (gnx, len(grandChildren), h.strip()))
             isClone, child_v = self.fastAddLastChild(fileName, gnx, parent_v)
             if isClone:
-                ### self.reportChangedClone(child_tuple, child_v, fileName, parent_v)
                 self.checkForChangedNodes(child_tuple, fileName, parent_v)
             else:
                 self.createOutlineFromCacheList(child_v, child_tuple, fileName, top=False)
@@ -230,7 +221,7 @@ class Cacher(object):
         old_b, new_b = child_v.b, b
         old_h, new_h = child_v.h, h
         # Leo 5.6: test headlines.
-        same_head = old_h == new_h or old_h == 'newHeadline'
+        same_head = old_h == new_h
         same_body = (
             old_b == new_b or
             new_b.endswith('\n') and old_b == new_b[: -1] or
