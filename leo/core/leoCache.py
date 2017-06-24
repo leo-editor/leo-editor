@@ -213,7 +213,7 @@ class Cacher(object):
         
         It is only essential to warn of the rare case.
         '''
-        trace = (False or g.app.debug) and not g.unitTesting
+        trace = (True or g.app.debug) and not g.unitTesting
         always_warn = True # True always warn about changed nodes.
         c = self.c
         h, b, gnx, grandChildren = child_tuple
@@ -229,7 +229,7 @@ class Cacher(object):
         if same_head and same_body:
             return
         if trace:
-            g.trace(repr(old_h), repr(new_h))
+            g.trace('==========', repr(old_h), repr(new_h))
             g.trace('old %4s new %s %s' % (len(old_b), len(new_b), h))
         must_warn = hasattr(child_v, 'tempRoots') or not child_v.isCloned()
         if not hasattr(child_v, 'tempRoots'):
