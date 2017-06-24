@@ -4152,9 +4152,7 @@ class AtFile(object):
             ok = at.checkPythonSyntax(root, s)
             # Syntax checking catches most indentation problems.
             # if ok: at.tabNannyNode(root,s)
-            # if not ok:
-                # g.app.syntax_error_files.append(g.shortFileName(targetFn))
-            if at.runPyFlakesOnWrite and not g.unitTesting:
+            if ok and at.runPyFlakesOnWrite and not g.unitTesting:
                 ok2 = self.runPyflakes(root)
             else:
                 ok2 = True
