@@ -214,8 +214,8 @@ class Cacher(object):
         
         It is only essential to warn of the rare case.
         '''
-        trace = (True or g.app.debug) and not g.unitTesting
-        always_warn = True # True (testing): always warn about changed nodes.
+        trace = (False or g.app.debug) and not g.unitTesting
+        always_warn = True # True always warn about changed nodes.
         c = self.c
         h, b, gnx, grandChildren = child_tuple
         old_b, new_b = child_v.b, b
