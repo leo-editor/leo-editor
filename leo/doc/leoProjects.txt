@@ -1072,6 +1072,56 @@ gnx = property(
 .. @+node:ekr.20170619165453.1: *3* Branch: string-gui
 Attempt to run all unit tests without using Qt gui code.
 All gui-related code will be simulated with the StringTextWrapper class.
+.. @+node:ekr.20100705083838.5740: ** casher.reportChangedClone
+def reportChangedClone(self, child_tuple, child_v, fileName, parent_v):
+    '''
+    Report changes in a cloned node child_v *or* its descendants.
+    
+    Cashed nodes can be out-of-synch with other nodes in two ways:
+    
+    Common: When switching git branches (cloned nodes only)
+    Rare:   When external files have been changed outside Leo
+            (cloned OR uncloned nodes).
+    
+    It is only essential to warn of the rare case.
+    '''
+    trace = (False or g.app.debug) and not g.unitTesting
+    always_warn = True # True always warn about changed nodes.
+    c = self.c
+    h, b, gnx, grandChildren = child_tuple
+    old_b, new_b = child_v.b, b
+    old_h, new_h = child_v.h, h
+    # Leo 5.6: test headlines.
+    same_head = old_h == new_h
+    same_body = (
+        old_b == new_b or
+        new_b.endswith('\n') and old_b == new_b[: -1] or
+        old_b.endswith('\n') and new_b == old_b[: -1]
+    )
+    if same_head and same_body:
+        return
+    if trace: g.trace('old %4s new %s %s' % (len(old_b), len(new_b), h))
+    must_warn = hasattr(child_v, 'tempRoots')
+    if not hasattr(child_v, 'tempRoots'):
+        child_v.tempRoots = set()
+    child_v.tempRoots.add(fileName)
+    if always_warn or must_warn:
+        c.nodeConflictList.append(g.bunch(
+            tag='(cached)',
+            fileName=fileName,
+            gnx=gnx,
+            b_old=child_v.b,
+            h_old=child_v.h,
+            b_new=b,
+            h_new=h,
+            root_v=parent_v,
+        ))
+    if must_warn:
+        g.error("cached read node changed:", child_v.h)
+    # Always update the node.
+    child_v.h, child_v.b = h, b
+    child_v.setDirty()
+    c.changed = True # Tell getLeoFile to propegate dirty nodes.
 .. @-all
 .. @@nosearch
 .. @@killbeautify
