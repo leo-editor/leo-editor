@@ -235,10 +235,10 @@ class Cacher(object):
             child_v.tempRoots = set()
         child_v.tempRoots.add(fileName)
         if must_warn:
-            self.warning('Warning: out-of-synch nodes in different external files')
-            for fn in sorted(list(child_v.tempRoots)):
-                g.es_print(fn)
-            self.warning('Retaining version found in\n%s' % (fileName))
+            self.warning('Warning: out-of-synch node')
+            # for fn in sorted(list(child_v.tempRoots)):
+                # g.es_print(fn)
+            g.es_print('Retaining node in\n%s' % (fileName))
         if always_warn or must_warn:
             c.nodeConflictList.append(g.bunch(
                 tag='(cached)',
