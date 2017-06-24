@@ -744,7 +744,7 @@ class FileCommands(object):
             return
         if not c.make_node_conflicts_node:
             g.es_print('suppressed node conflicts', color='red')
-            return
+            return None
         # Create the 'Recovered Nodes' node.
         last = c.lastTopLevel()
         root = last.insertAfter()
@@ -761,21 +761,33 @@ class FileCommands(object):
             child = root.insertAsLastChild()
             h = 'Recovered node "%s" from %s' % (h1, g.shortFileName(fn))
             child.setHeadString(h)
-            line1 = '%s gnx: %s root: %r\nDiff...\n' % (tag, gnx, root_v and root.v)
-            d = difflib.Differ().compare(g.splitLines(b1), g.splitLines(b2))
-                # 2017/06/19: reverse comparison order.
-            diffLines = [z for z in d]
-            lines = [line1]
-            lines.extend(diffLines)
-            # There is less need to show trailing newlines because
-            # we don't report changes involving only trailing newlines.
-            child.setBodyString(''.join(lines))
-            n1 = child.insertAsNthChild(0)
-            n2 = child.insertAsNthChild(1)
-            n1.setHeadString('old:' + h1)
-            n1.setBodyString(b1)
-            n2.setHeadString('new:' + h2)
-            n2.setBodyString(b2)
+            if False and b1 == b2 and h1 == h2:
+                g.trace('All same')
+                return None
+            if b1 == b2:
+                lines = [
+                    'Headline changed...'
+                    '%s gnx: %s root: %r' % (tag, gnx, root_v and root.v),
+                    'old headline: %s' % (h1),
+                    'new headline: %s' % (h2),
+                ]
+                child.setBodyString('\n'.join(lines))
+            else:
+                line1 = '%s gnx: %s root: %r\nDiff...\n' % (tag, gnx, root_v and root.v)
+                d = difflib.Differ().compare(g.splitLines(b1), g.splitLines(b2))
+                    # 2017/06/19: reverse comparison order.
+                diffLines = [z for z in d]
+                lines = [line1]
+                lines.extend(diffLines)
+                # There is less need to show trailing newlines because
+                # we don't report changes involving only trailing newlines.
+                child.setBodyString(''.join(lines))
+                n1 = child.insertAsNthChild(0)
+                n2 = child.insertAsNthChild(1)
+                n1.setHeadString('old:' + h1)
+                n1.setBodyString(b1)
+                n2.setHeadString('new:' + h2)
+                n2.setBodyString(b2)
         return root
     #@+node:ekr.20100124110832.6212: *6* fc.propegateDirtyNodes
     def propegateDirtyNodes(self):
