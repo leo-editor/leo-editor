@@ -761,9 +761,6 @@ class FileCommands(object):
             child = root.insertAsLastChild()
             h = 'Recovered node "%s" from %s' % (h1, g.shortFileName(fn))
             child.setHeadString(h)
-            if False and b1 == b2 and h1 == h2:
-                g.trace('All same')
-                return None
             if b1 == b2:
                 lines = [
                     'Headline changed...'
