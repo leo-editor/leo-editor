@@ -201,16 +201,15 @@ class Cacher(object):
         child_v._linkAsNthChild(parent_v, parent_v.numberOfChildren())
         child_v.setVisited() # Supress warning/deletion of unvisited nodes.
         return is_clone, child_v
-    #@+node:ekr.20100705083838.5740: *5* casher.reportChangedClone
-    def reportChangedClone(self, child_tuple, child_v, fileName, parent_v):
+    #@+node:ekr.20100705083838.5740: *5* casher.reportChangedNode
+    def reportChangedNode(self, child_tuple, child_v, fileName, parent_v):
         '''
-        Report changes in a cloned node child_v *or* its descendants.
+        Report changes in a node child_v.
         
-        Cashed nodes can be out-of-synch with other nodes in two ways:
+        Nodes can be out-of-synch with other nodes in two ways:
         
-        Common: When switching git branches (cloned nodes only)
-        Rare:   When external files have been changed outside Leo
-                (cloned OR uncloned nodes).
+        Common: When switching git branches.
+        Rare:   When external files have been changed outside Leo.
         
         It is only essential to warn of the rare case.
         '''
@@ -229,7 +228,9 @@ class Cacher(object):
         )
         if same_head and same_body:
             return
-        if trace: g.trace('old %4s new %s %s' % (len(old_b), len(new_b), h))
+        if trace:
+            g.trace(repr(old_h), repr(new_h))
+            g.trace('old %4s new %s %s' % (len(old_b), len(new_b), h))
         must_warn = hasattr(child_v, 'tempRoots') or not child_v.isCloned()
         if not hasattr(child_v, 'tempRoots'):
             child_v.tempRoots = set()
@@ -262,7 +263,7 @@ class Cacher(object):
         junk_h, junk_b, gnx, grand_children = child_tuple
         child_v = self.c.fileCommands.gnxDict.get(gnx)
         if child_v:
-            self.reportChangedClone(child_tuple, child_v, fileName, parent_v)
+            self.reportChangedNode(child_tuple, child_v, fileName, parent_v)
             for grand_child in grand_children:
                 self.checkForChangedNodes(grand_child, fileName, child_v)
         elif not self.update_warning_given:
