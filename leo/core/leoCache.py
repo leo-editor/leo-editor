@@ -230,7 +230,7 @@ class Cacher(object):
         if same_head and same_body:
             return
         if trace: g.trace('old %4s new %s %s' % (len(old_b), len(new_b), h))
-        must_warn = hasattr(child_v, 'tempRoots')
+        must_warn = hasattr(child_v, 'tempRoots') or not child_v.isCloned()
         if not hasattr(child_v, 'tempRoots'):
             child_v.tempRoots = set()
         child_v.tempRoots.add(fileName)
