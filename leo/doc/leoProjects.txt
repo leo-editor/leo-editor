@@ -1072,6 +1072,126 @@ gnx = property(
 .. @+node:ekr.20170619165453.1: *3* Branch: string-gui
 Attempt to run all unit tests without using Qt gui code.
 All gui-related code will be simulated with the StringTextWrapper class.
+.. @+node:ekr.20100628072537.5814: ** at.terminateNode & helpers
+def terminateNode(self, middle=False, postPass=True, v=None):
+    '''
+    Set the body text of at.v, and issue warning if it has changed.
+
+    This is called as follows:
+
+    old sentinels: when handling a @-node sentinel.
+    new sentinels: from the post-pass when v.tempBodyList exists.
+    '''
+    at = self
+    trace = False and at.readVersion5 and not g.unitTesting
+    if not v: v = at.v
+    # Compute the new text.
+    if at.readVersion5:
+        s = ''.join(v.tempBodyList) if hasattr(v, 'tempBodyList') else ''
+    else:
+        s = ''.join(at.out)
+    s = g.toUnicode(s)
+    if trace: g.trace('%28s %s' % (v.h, repr(s)))
+    if at.importing:
+        v._bodyString = s # Allowed use of _bodyString.
+    elif middle:
+        pass # Middle sentinels never alter text.
+    else:
+        at.terminateBody(v, postPass)
+    # Delete tempBodyList. Do not leave this lying around!
+    if hasattr(v, 'tempBodyList'): delattr(v, 'tempBodyList')
+.. @+node:ekr.20100628124907.5816: *3* at.indicateNodeChanged
+def indicateNodeChanged(self, old, new, postPass, v):
+    '''
+    Add an entry to c.nodeConflictList.
+    Called only from at.terminateBody.
+    '''
+    at, c = self, self.c
+    debug = False # Debug perfect import.
+    if at.perfectImportRoot:
+        if not postPass:
+            at.correctedLines += 1
+            if debug:
+                at.reportCorrection(old, new, v)
+            v.setDirty()
+                # Just mark the vnode dirty.
+                # Ancestors will be marked dirty later.
+            c.setChanged(True)
+    else:
+        # Do nothing if only trailing whitespace is involved.
+        if new.endswith('\n') and old == new[: -1]: return
+        if old.endswith('\n') and new == old[: -1]: return
+        c.nodeConflictList.append(g.bunch(
+            tag='(uncached)',
+            gnx=v.gnx,
+            fileName=at.root.h,
+            b_old=old,
+            b_new=new,
+            h_old=v._headString,
+            h_new=v._headString,
+            root_v = at.root and at.root.v,
+        ))
+        v.setDirty()
+            # Just set the dirty bit. Ancestors will be marked dirty later.
+        c.changed = True
+            # Important: the dirty bits won't stick unless we set c.changed here.
+            # Do *not* call c.setChanged(True) here: that would be too slow.
+.. @+node:ekr.20100628124907.5818: *3* at.reportCorrection
+def reportCorrection(self, old, new, v):
+    '''Debugging only. Report changed perfect import lines.'''
+    at = self
+    found = any([p.v == v for p in at.perfectImportRoot.self_and_subtree()])
+    if found:
+        g.pr('\n', '-' * 40)
+        g.pr("old", len(old))
+        for line in g.splitLines(old):
+            line = line.replace(' ', '< >').replace('\t', '<TAB>').replace('\n', '<NL>')
+            g.pr(repr(str(line)))
+        g.pr('\n', '-' * 40)
+        g.pr("new", len(new))
+        for line in g.splitLines(new):
+            #line = line.replace(' ','< >').replace('\t','<TAB>')
+            g.pr(repr(str(line)))
+        g.pr('\n', '-' * 40)
+    else:
+        # This should never happen.
+        g.error("correcting hidden node: v=", repr(v))
+.. @+node:ekr.20100702062857.5824: *3* at.terminateBody (test)
+def terminateBody(self, v, postPass=False):
+    '''Terminate scanning of body text for node v. Set v.b.'''
+    trace = False and not g.unitTesting
+    at = self
+    if at.readVersion5:
+        new = ''.join(v.tempBodyList) if hasattr(v, 'tempBodyList') else ''
+    else:
+        new = ''.join(at.out)
+    new = g.toUnicode(new)
+    if new_read:
+        # at.createThinChild4 creates v.tempRoots.
+        # *Do* allow changes to the root node.
+        if hasattr(v, 'tempRoots'):
+            pass
+            ###
+                # g.trace('=====', list(v.tempRoots))
+                # old = v.bodyString()
+                # at.indicateNodeChanged(old, new, postPass, v)
+        else:
+            # No other @file node has set this node.
+            # Just replace the body string
+            v.tempRoots = set()
+            v.setBodyString(new)
+        v.tempRoots.add(self.root.h)
+    else:
+        old = v.bodyString()
+        # Warn if the body text has changed. Don't warn about the root node.
+        if v != at.root.v and at.bodyIsInited(v) and new != old:
+            at.indicateNodeChanged(old, new, postPass, v)
+        v.setBodyString(new)
+    at.bodySetInited(v)
+        # Note: the sax code also sets this, so we can't use
+        # this "bit" in place of v.tempRoots.
+    if trace:
+        g.trace('%25s old %3s new %3s' % (v.gnx, len(old), len(new)), v.h)
 .. @-all
 .. @@nosearch
 .. @@killbeautify

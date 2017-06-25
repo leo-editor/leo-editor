@@ -1293,7 +1293,7 @@ class AtFile(object):
             at.terminateBody(v, postPass)
         # Delete tempBodyList. Do not leave this lying around!
         if hasattr(v, 'tempBodyList'): delattr(v, 'tempBodyList')
-    #@+node:ekr.20100628124907.5816: *7* at.indicateNodeChanged (To do)
+    #@+node:ekr.20100628124907.5816: *7* at.indicateNodeChanged
     def indicateNodeChanged(self, old, new, postPass, v):
         '''
         Add an entry to c.nodeConflictList.
