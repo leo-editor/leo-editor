@@ -1363,11 +1363,10 @@ class AtFile(object):
             # at.createThinChild4 creates v.tempRoots.
             # *Do* allow changes to the root node.
             if hasattr(v, 'tempRoots'):
-                pass
-                ###
-                    # g.trace('=====', list(v.tempRoots))
-                    # old = v.bodyString()
-                    # at.indicateNodeChanged(old, new, postPass, v)
+                if 1: # Old code: seems to be necessary.
+                    g.trace('=====', list(v.tempRoots))
+                    old = v.bodyString()
+                    at.indicateNodeChanged(old, new, postPass, v)
             else:
                 # No other @file node has set this node.
                 # Just replace the body string
