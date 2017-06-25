@@ -4,8 +4,6 @@
 #@@first
     # Needed because of unicode characters in tests.
 """Classes to read and write @file nodes."""
-new_read = True
-    # True: attempt fixes for #505.
 #@+<< imports >>
 #@+node:ekr.20041005105605.2: ** << imports >> (leoAtFile)
 import leo.core.leoGlobals as g
@@ -600,7 +598,7 @@ class AtFile(object):
         # Find the unvisited nodes.
         aList = [z for z in root.subtree() if not z.isVisited()]
         if aList:
-            if new_read:
+            if g.new_read:
                 # Never create resurrected nodes.
                 at.c.deletePositionsInList(aList)
             else:
@@ -1233,7 +1231,7 @@ class AtFile(object):
                 old_body = p.bodyString()
                 seen[v.gnx] = v
                 at.terminateNode(postPass=True, v=v)
-                if new_read:
+                if g.new_read:
                     # at.terminateNode has done all the work.
                     if hasattr(v, 'tempBodyList'):
                         delattr(v, 'tempBodyList')
@@ -1267,6 +1265,7 @@ class AtFile(object):
             # g.warning("changed:",p.h)
     #@+node:ekr.20100628072537.5814: *6* at.terminateNode & helpers
     def terminateNode(self, middle=False, postPass=True, v=None):
+        # out-of-sync 2.
         '''
         Set the body text of at.v, and issue warning if it has changed.
 
@@ -1299,6 +1298,7 @@ class AtFile(object):
         Add an entry to c.nodeConflictList.
         Called only from at.terminateBody.
         '''
+        trace = True and not g.unitTesting
         at, c = self, self.c
         debug = False # Debug perfect import.
         if at.perfectImportRoot:
@@ -1314,6 +1314,8 @@ class AtFile(object):
             # Do nothing if only trailing whitespace is involved.
             if new.endswith('\n') and old == new[: -1]: return
             if old.endswith('\n') and new == old[: -1]: return
+            if trace:
+                g.es_print('Creating recovered node', v.h)
             c.nodeConflictList.append(g.bunch(
                 tag='(uncached)',
                 gnx=v.gnx,
@@ -1349,7 +1351,7 @@ class AtFile(object):
         else:
             # This should never happen.
             g.error("correcting hidden node: v=", repr(v))
-    #@+node:ekr.20100702062857.5824: *7* at.terminateBody
+    #@+node:ekr.20100702062857.5824: *7* at.terminateBody (sets tempRoots)
     def terminateBody(self, v, postPass=False):
         '''Terminate scanning of body text for node v. Set v.b.'''
         trace = False and not g.unitTesting
@@ -1359,14 +1361,21 @@ class AtFile(object):
         else:
             new = ''.join(at.out)
         new = g.toUnicode(new)
-        if new_read:
+        if g.new_read:
             # at.createThinChild4 creates v.tempRoots.
             # *Do* allow changes to the root node.
             if hasattr(v, 'tempRoots'):
-                if 1: # Old code: seems to be necessary.
-                    g.trace('=====', list(v.tempRoots))
-                    old = v.bodyString()
+                if trace:
+                    print('terminateBody: tempRoots: %20s %s' % (
+                        v.h,
+                        list([g.shortFileName(z) for z in v.tempRoots]),
+                    ))
+                old = v.bodyString()
+                if old != new:
+                    # This *always* creates a recovered node.
                     at.indicateNodeChanged(old, new, postPass, v)
+                    # The last external file wins.
+                    v.setBodyString(new)
             else:
                 # No other @file node has set this node.
                 # Just replace the body string
@@ -1641,7 +1650,8 @@ class AtFile(object):
             g.internalError('v.fileIndex: %s gnx: %s' % (v.fileIndex, gnx))
             return None
         if v:
-            if new_read:
+            if g.new_read:
+                if trace: g.trace(v, getattr(v, 'tempRoots', None))
                 if hasattr(v, 'tempRoots') and v.h != headline:
                     g.trace('changed headline', list(v.tempRoots))
                 # Honor the headline.

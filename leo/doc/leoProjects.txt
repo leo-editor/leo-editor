@@ -1072,8 +1072,11 @@ gnx = property(
 .. @+node:ekr.20170619165453.1: *3* Branch: string-gui
 Attempt to run all unit tests without using Qt gui code.
 All gui-related code will be simulated with the StringTextWrapper class.
-.. @+node:ekr.20100628072537.5814: ** at.terminateNode & helpers
+.. @+node:ekr.20170625143607.1: ** code
+@language python
+.. @+node:ekr.20100628072537.5814: *3* at.terminateNode & helpers
 def terminateNode(self, middle=False, postPass=True, v=None):
+    # out-of-sync 2.
     '''
     Set the body text of at.v, and issue warning if it has changed.
 
@@ -1100,12 +1103,13 @@ def terminateNode(self, middle=False, postPass=True, v=None):
         at.terminateBody(v, postPass)
     # Delete tempBodyList. Do not leave this lying around!
     if hasattr(v, 'tempBodyList'): delattr(v, 'tempBodyList')
-.. @+node:ekr.20100628124907.5816: *3* at.indicateNodeChanged
+.. @+node:ekr.20100628124907.5816: *4* at.indicateNodeChanged
 def indicateNodeChanged(self, old, new, postPass, v):
     '''
     Add an entry to c.nodeConflictList.
     Called only from at.terminateBody.
     '''
+    trace = True and not g.unitTesting
     at, c = self, self.c
     debug = False # Debug perfect import.
     if at.perfectImportRoot:
@@ -1121,6 +1125,8 @@ def indicateNodeChanged(self, old, new, postPass, v):
         # Do nothing if only trailing whitespace is involved.
         if new.endswith('\n') and old == new[: -1]: return
         if old.endswith('\n') and new == old[: -1]: return
+        if trace:
+            g.es_print('Creating recovered node', v.h)
         c.nodeConflictList.append(g.bunch(
             tag='(uncached)',
             gnx=v.gnx,
@@ -1136,7 +1142,7 @@ def indicateNodeChanged(self, old, new, postPass, v):
         c.changed = True
             # Important: the dirty bits won't stick unless we set c.changed here.
             # Do *not* call c.setChanged(True) here: that would be too slow.
-.. @+node:ekr.20100628124907.5818: *3* at.reportCorrection
+.. @+node:ekr.20100628124907.5818: *4* at.reportCorrection
 def reportCorrection(self, old, new, v):
     '''Debugging only. Report changed perfect import lines.'''
     at = self
@@ -1156,7 +1162,7 @@ def reportCorrection(self, old, new, v):
     else:
         # This should never happen.
         g.error("correcting hidden node: v=", repr(v))
-.. @+node:ekr.20100702062857.5824: *3* at.terminateBody
+.. @+node:ekr.20100702062857.5824: *4* at.terminateBody (sets tempRoots)
 def terminateBody(self, v, postPass=False):
     '''Terminate scanning of body text for node v. Set v.b.'''
     trace = False and not g.unitTesting
@@ -1166,14 +1172,21 @@ def terminateBody(self, v, postPass=False):
     else:
         new = ''.join(at.out)
     new = g.toUnicode(new)
-    if new_read:
+    if g.new_read:
         # at.createThinChild4 creates v.tempRoots.
         # *Do* allow changes to the root node.
         if hasattr(v, 'tempRoots'):
-            if 1: # Old code: seems to be necessary.
-                g.trace('=====', list(v.tempRoots))
-                old = v.bodyString()
+            if trace:
+                print('terminateBody: tempRoots: %20s %s' % (
+                    v.h,
+                    list([g.shortFileName(z) for z in v.tempRoots]),
+                ))
+            old = v.bodyString()
+            if old != new:
+                # This *always* creates a recovered node.
                 at.indicateNodeChanged(old, new, postPass, v)
+                # The last external file wins.
+                v.setBodyString(new)
         else:
             # No other @file node has set this node.
             # Just replace the body string
@@ -1191,7 +1204,7 @@ def terminateBody(self, v, postPass=False):
         # this "bit" in place of v.tempRoots.
     if trace:
         g.trace('%25s old %3s new %3s' % (v.gnx, len(old), len(new)), v.h)
-.. @+node:ekr.20100702062857.5824: ** at.terminateBody
+.. @+node:ekr.20100702062857.5824: *3* at.terminateBody (sets tempRoots)
 def terminateBody(self, v, postPass=False):
     '''Terminate scanning of body text for node v. Set v.b.'''
     trace = False and not g.unitTesting
@@ -1201,14 +1214,21 @@ def terminateBody(self, v, postPass=False):
     else:
         new = ''.join(at.out)
     new = g.toUnicode(new)
-    if new_read:
+    if g.new_read:
         # at.createThinChild4 creates v.tempRoots.
         # *Do* allow changes to the root node.
         if hasattr(v, 'tempRoots'):
-            if 1: # Old code: seems to be necessary.
-                g.trace('=====', list(v.tempRoots))
-                old = v.bodyString()
+            if trace:
+                print('terminateBody: tempRoots: %20s %s' % (
+                    v.h,
+                    list([g.shortFileName(z) for z in v.tempRoots]),
+                ))
+            old = v.bodyString()
+            if old != new:
+                # This *always* creates a recovered node.
                 at.indicateNodeChanged(old, new, postPass, v)
+                # The last external file wins.
+                v.setBodyString(new)
         else:
             # No other @file node has set this node.
             # Just replace the body string

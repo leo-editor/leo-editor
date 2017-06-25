@@ -15,6 +15,8 @@ import sys
 isPython3 = sys.version_info >= (3, 0, 0)
 #@+<< global switches >>
 #@+node:ekr.20120212060348.10374: **  << global switches >> (leoGlobals.py)
+new_read = True
+    # True: attempt fixes for #505.
 in_bridge = False
     # Set to True in leoBridge.py just before importing leo.core.leoApp.
     # This tells leoApp to load a null Gui.
