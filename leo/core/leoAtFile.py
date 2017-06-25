@@ -1366,7 +1366,7 @@ class AtFile(object):
             # *Do* allow changes to the root node.
             if hasattr(v, 'tempRoots'):
                 if trace:
-                    print('terminateBody: tempRoots: %20s %s' % (
+                    g.trace('tempRoots: %20s %s' % (
                         v.h,
                         list([g.shortFileName(z) for z in v.tempRoots]),
                     ))
@@ -1585,8 +1585,9 @@ class AtFile(object):
     def createNewThinNode(self, gnx, headline, level):
         '''Create a new (new-style) vnode.'''
         at = self
-        testFile = at.targetFileName.endswith('clone-revert-test.txt')
-        trace = (False and testFile) and not g.unitTesting
+        # testFile = at.targetFileName.endswith('clone-revert-test.txt')
+        # trace = (False and testFile) and not g.unitTesting
+        trace = False and not g.unitTesting
         if trace:
             g.trace('v5: %s level: %2s %-24s %s' % (at.readVersion5, level, gnx, headline))
             g.trace(at.thinNodeStack)
@@ -1623,7 +1624,6 @@ class AtFile(object):
         at.thinChildIndexStack.append(0)
         at.lastThinNode = v
         # Ensure that the body text is set only once.
-        # Huh?
         if v.isVisited():
             if hasattr(v, 'tempBodyList'):
                 delattr(v, 'tempBodyList')
@@ -1631,7 +1631,7 @@ class AtFile(object):
             # This is the only place we call v.setVisited in the read logic.
             v.setVisited()
         return v
-    #@+node:ekr.20130121075058.10246: *9* at.new_createThinChild4 (changed)
+    #@+node:ekr.20130121075058.10246: *9* at.new_createThinChild4
     def new_createThinChild4(self, gnxString, headline, n, parent):
         """
         Find or create a new *vnode* whose parent (also a vnode)
