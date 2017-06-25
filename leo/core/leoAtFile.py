@@ -4192,7 +4192,7 @@ class AtFile(object):
             at.onl()
     #@+node:ekr.20041005105605.196: *4* Writing 4.x utils...
     #@+node:ekr.20090514111518.5661: *5* at.checkPythonCode & helpers
-    def checkPythonCode(self, root, s=None, targetFn=None):
+    def checkPythonCode(self, root, s=None, targetFn=None, pyflakes_errors_only=False):
         '''Perform python-related checks on root.'''
         at = self
         if not targetFn:
@@ -4202,13 +4202,14 @@ class AtFile(object):
                 s = at.outputContents
                 if not s: return
             # It's too slow to check each node separately.
-            ok = at.checkPythonSyntax(root, s)
+            if pyflakes_errors_only:
+                ok = True
+            else:
+                ok = at.checkPythonSyntax(root, s)
             # Syntax checking catches most indentation problems.
-            # if ok: at.tabNannyNode(root,s)
-            # if not ok:
-                # g.app.syntax_error_files.append(g.shortFileName(targetFn))
-            if at.runPyFlakesOnWrite and not g.unitTesting:
-                ok2 = self.runPyflakes(root)
+                # if ok: at.tabNannyNode(root,s)
+            if ok and at.runPyFlakesOnWrite and not g.unitTesting:
+                ok2 = self.runPyflakes(root, pyflakes_errors_only=pyflakes_errors_only)
             else:
                 ok2 = True
             if not ok or not ok2:
@@ -4251,12 +4252,13 @@ class AtFile(object):
             if j == i:
                 g.es_print(' ' * (7 + offset) + '^')
     #@+node:ekr.20161021084954.1: *6* at.runPyflakes
-    def runPyflakes(self, root):
+    def runPyflakes(self, root, pyflakes_errors_only):
         '''Run pyflakes on the selected node.'''
         try:
             import leo.commands.checkerCommands as checkerCommands
             if checkerCommands.pyflakes:
-                ok = checkerCommands.PyflakesCommand(self.c).run(p=root)
+                x = checkerCommands.PyflakesCommand(self.c)
+                ok = x.run(p=root,pyflakes_errors_only=pyflakes_errors_only)
                 return ok
         except Exception:
             g.es_exception()
@@ -4747,6 +4749,8 @@ class AtFile(object):
                 if not g.unitTesting:
                     g.es('unchanged:', at.shortFileName)
                 at.fileChangedFlag = False
+                # Leo 5.6: Check unchanged files.
+                at.checkPythonCode(root, pyflakes_errors_only=True)
                 return False
             else:
                 # A mismatch. Report if the files differ only in line endings.
