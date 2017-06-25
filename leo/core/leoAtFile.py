@@ -1349,7 +1349,7 @@ class AtFile(object):
         else:
             # This should never happen.
             g.error("correcting hidden node: v=", repr(v))
-    #@+node:ekr.20100702062857.5824: *7* at.terminateBody (test)
+    #@+node:ekr.20100702062857.5824: *7* at.terminateBody
     def terminateBody(self, v, postPass=False):
         '''Terminate scanning of body text for node v. Set v.b.'''
         trace = False and not g.unitTesting
