@@ -182,7 +182,7 @@ class Cacher(object):
         elif not self.update_warning_given:
             self.update_warning_given = True
             g.internalError('no vnode', child_tuple)
-    #@+node:ekr.20100208071151.5911: *5* casher.fastAddLastChild (sets tempRoots)
+    #@+node:ekr.20100208071151.5911: *5* cacher.fastAddLastChild (sets tempRoots)
     # Similar to createThinChild4
 
     def fastAddLastChild(self, fileName, gnxString, parent_v):
@@ -221,7 +221,7 @@ class Cacher(object):
         child_v._linkAsNthChild(parent_v, parent_v.numberOfChildren())
         child_v.setVisited() # Supress warning/deletion of unvisited nodes.
         return is_clone, child_v
-    #@+node:ekr.20100705083838.5740: *5* casher.reportIfNodeChanged
+    #@+node:ekr.20100705083838.5740: *5* cacher.reportIfNodeChanged
     def reportIfNodeChanged(self, child_tuple, child_v, fileName, parent_v):
         # out-of-sync 1.2.
         '''
