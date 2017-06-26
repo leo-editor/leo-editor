@@ -201,10 +201,10 @@ class Cacher(object):
             'clone', '%-5s' % (is_clone),
             'parent_v', parent_v, 'gnx', gnxString, 'v', repr(v))
         if is_clone:
-            if g.new_read:
-                if not hasattr(v, 'tempRoots'):
-                    v.tempRoots = set()
-                v.tempRoots.add(fileName)
+            # new-read: update tempRoots.
+            if not hasattr(v, 'tempRoots'):
+                v.tempRoots = set()
+            v.tempRoots.add(fileName)
         else:
             if gnxString:
                 assert g.isUnicode(gnxString)

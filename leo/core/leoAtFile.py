@@ -598,15 +598,13 @@ class AtFile(object):
         # Find the unvisited nodes.
         aList = [z for z in root.subtree() if not z.isVisited()]
         if aList:
-            if g.new_read:
-                # Never create resurrected nodes.
-                at.c.deletePositionsInList(aList)
-            else:
-                r = at.createResurrectedNodesNode()
-                assert r not in aList
-                callback = at.defineResurrectedNodeCallback(r, root)
-                # Move the nodes using the callback.
-                at.c.deletePositionsInList(aList, callback)
+            # new-read: Never create resurrected nodes.
+                # r = at.createResurrectedNodesNode()
+                # assert r not in aList
+                # callback = at.defineResurrectedNodeCallback(r, root)
+                # # Move the nodes using the callback.
+                # at.c.deletePositionsInList(aList, callback)
+            at.c.deletePositionsInList(aList)
     #@+node:ekr.20100803073751.5817: *7* createResurrectedNodesNode
     def createResurrectedNodesNode(self):
         '''Create a 'Resurrected Nodes' node as the last top-level node.'''
@@ -1228,21 +1226,13 @@ class AtFile(object):
         for p in root.self_and_subtree():
             v = p.v
             if v.gnx not in seen:
-                old_body = p.bodyString()
                 seen[v.gnx] = v
                 at.terminateNode(postPass=True, v=v)
-                if g.new_read:
-                    # at.terminateNode has done all the work.
-                    if hasattr(v, 'tempBodyList'):
-                        delattr(v, 'tempBodyList')
-                    if hasattr(v, 'tempRoots'):
-                        delattr(v, 'tempRoots')
-                else:
-                    new_body = p.bodyString()
-                    if hasattr(v, 'tempBodyList'):
-                        delattr(v, 'tempBodyList')
-                    if new_body != old_body:
-                        at.handleChangedNode(new_body, old_body, p, thinFile)
+                # new-read: at.terminateNode has done all the work.
+                if hasattr(v, 'tempBodyList'):
+                    delattr(v, 'tempBodyList')
+                if hasattr(v, 'tempRoots'):
+                    delattr(v, 'tempRoots')
     #@+node:ekr.20150309154506.27: *6* at.handleChangedNode
     def handleChangedNode(self, new_body, old_body, p, thinFile):
         '''Set ancestor files dirty and support mod_labels plugin.'''
@@ -1265,7 +1255,6 @@ class AtFile(object):
             # g.warning("changed:",p.h)
     #@+node:ekr.20100628072537.5814: *6* at.terminateNode & helpers
     def terminateNode(self, middle=False, postPass=True, v=None):
-        # out-of-sync 2.
         '''
         Set the body text of at.v, and issue warning if it has changed.
 
@@ -1290,7 +1279,7 @@ class AtFile(object):
             pass # Middle sentinels never alter text.
         else:
             at.terminateBody(v, postPass)
-        # Delete tempBodyList. Do not leave this lying around!
+        # Delete tempBodyList.
         if hasattr(v, 'tempBodyList'): delattr(v, 'tempBodyList')
     #@+node:ekr.20100628124907.5816: *7* at.indicateNodeChanged
     def indicateNodeChanged(self, old, new, postPass, v):
@@ -1361,38 +1350,29 @@ class AtFile(object):
         else:
             new = ''.join(at.out)
         new = g.toUnicode(new)
-        if g.new_read:
-            # at.createThinChild4 creates v.tempRoots.
-            # *Do* allow changes to the root node.
-            if hasattr(v, 'tempRoots'):
-                if trace:
-                    g.trace('tempRoots: %20s %s' % (
-                        v.h,
-                        list([g.shortFileName(z) for z in v.tempRoots]),
-                    ))
-                old = v.bodyString()
-                if old != new:
-                    # This *always* creates a recovered node.
-                    at.indicateNodeChanged(old, new, postPass, v)
-                    # The last external file wins.
-                    v.setBodyString(new)
-            else:
-                # No other @file node has set this node.
-                # Just replace the body string
-                v.tempRoots = set()
-                v.setBodyString(new)
-            v.tempRoots.add(self.root.h)
-        else:
+        # new-read: at.createThinChild4 creates v.tempRoots.
+        # *Do* allow changes to the root node.
+        if hasattr(v, 'tempRoots'):
+            if trace:
+                g.trace('tempRoots: %20s %s' % (
+                    v.h,
+                    list([g.shortFileName(z) for z in v.tempRoots]),
+                ))
             old = v.bodyString()
-            # Warn if the body text has changed. Don't warn about the root node.
-            if v != at.root.v and at.bodyIsInited(v) and new != old:
+            if old != new:
+                # This *always* creates a recovered node.
                 at.indicateNodeChanged(old, new, postPass, v)
+                # The last external file wins.
+                v.setBodyString(new)
+        else:
+            # No other @file node has set this node.
+            # Just replace the body string
+            v.tempRoots = set()
             v.setBodyString(new)
+        v.tempRoots.add(self.root.h)
         at.bodySetInited(v)
             # Note: the sax code also sets this, so we can't use
             # this "bit" in place of v.tempRoots.
-        if trace:
-            g.trace('%25s old %3s new %3s' % (v.gnx, len(old), len(new)), v.h)
     #@+node:ekr.20041005105605.74: *5* at.scanText4 & allies
     def scanText4(self, fileName, p, verbose=False):
         """Scan a 4.x derived file non-recursively."""
@@ -1650,17 +1630,10 @@ class AtFile(object):
             g.internalError('v.fileIndex: %s gnx: %s' % (v.fileIndex, gnx))
             return None
         if v:
-            if g.new_read:
-                if trace: g.trace(v, getattr(v, 'tempRoots', None))
-                if hasattr(v, 'tempRoots') and v.h != headline:
-                    g.trace('changed headline', list(v.tempRoots))
-                # Honor the headline.
-                v.h = headline
-            else:
-                # Always use v.h, regardless of headline.
-                if trace and v.h != headline:
-                    g.trace('read error v.h: %s headline: %s' % (v.h, headline))
-            child = v # The return value.
+            # new-read: Always honor the healine.
+            v.h = headline
+            child = v
+                # The return value.
             if n >= len(parent.children):
                 child._linkAsNthChild(parent, n)
                 if trace and trace_tree:
