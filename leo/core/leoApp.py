@@ -127,6 +127,8 @@ class LeoApp(object):
             # True: trace changes in focus.
         self.trace_plugins = False
             # True: trace imports of plugins.
+        self.trace_setting = None
+            # The name of a setting to trace, or None.
         self.translateToUpperCase = False
             # Never set to True.
         self.useIpython = False
@@ -2409,6 +2411,8 @@ class LoadManager(object):
             help='trace changes of focus')
         add('--trace-plugins', action='store_true', dest='trace_plugins',
             help='trace imports of plugins')
+        add('--trace-setting', dest='trace_setting',
+            help='trace how setting is set')
         add('-v', '--version', action='store_true', dest='version',
             help='print version number and exit')
         add('--window-size', dest='window_size',
@@ -2511,6 +2515,9 @@ class LoadManager(object):
         g.app.trace_focus = options.trace_focus
         # --trace-plugins
         g.app.trace_plugins = options.trace_plugins
+        # --trace-setting=setting
+        g.app.trace_setting = options.trace_setting
+        # g.trace('trace_setting:', repr(options.trace_setting))
         # --version: print the version and exit.
         versionFlag = options.version
         # --window-size
