@@ -2517,7 +2517,8 @@ class LoadManager(object):
         g.app.trace_plugins = options.trace_plugins
         # --trace-setting=setting
         g.app.trace_setting = options.trace_setting
-        # g.trace('trace_setting:', repr(options.trace_setting))
+            # g.app.config does not exist yet.
+            # g.trace('trace_setting:', repr(options.trace_setting))
         # --version: print the version and exit.
         versionFlag = options.version
         # --window-size
