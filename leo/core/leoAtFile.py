@@ -1290,6 +1290,9 @@ class AtFile(object):
         trace = True and not g.unitTesting
         at, c = self, self.c
         debug = False # Debug perfect import.
+        # Ignore *all* trailing whitespace.
+        if new.rstrip() == old.rstrip():
+            return
         if at.perfectImportRoot:
             if not postPass:
                 at.correctedLines += 1
@@ -1300,9 +1303,6 @@ class AtFile(object):
                     # Ancestors will be marked dirty later.
                 c.setChanged(True)
         else:
-            # Do nothing if only trailing whitespace is involved.
-            if new.endswith('\n') and old == new[: -1]: return
-            if old.endswith('\n') and new == old[: -1]: return
             if trace:
                 g.es_print('Creating recovered node', v.h)
             c.nodeConflictList.append(g.bunch(
