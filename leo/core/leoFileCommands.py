@@ -717,10 +717,11 @@ class FileCommands(object):
                 inClipboard=False,
                 reassignIndices=False,
             )
-            # readSaxFile sets c.hiddenRootNode.
-            if v: # v is None for minimal .leo files.
+            if v:
+                # readSaxFile sets c.hiddenRootNode.
                 pass
             else:
+                # v is None for minimal .leo files.
                 v = leoNodes.VNode(context=c)
                 v.setHeadString('created root node')
                 p = leoNodes.Position(v)
