@@ -223,14 +223,13 @@ class Cacher(object):
         return is_clone, child_v
     #@+node:ekr.20100705083838.5740: *5* cacher.reportIfNodeChanged
     def reportIfNodeChanged(self, child_tuple, child_v, fileName, parent_v):
-        # out-of-sync 1.2.
         '''
         Schedule a recovered node if child_v is substantially different from an
         earlier version.
         
         Issue a (rare) warning if two different files are involved.
         '''
-        trace = (True or g.app.debug) and not g.unitTesting
+        trace = (False or g.app.debug) and not g.unitTesting
         always_warn = True # True always warn about changed nodes.
         c = self.c
         h, b, gnx, grandChildren = child_tuple

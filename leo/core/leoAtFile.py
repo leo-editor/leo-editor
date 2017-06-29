@@ -1287,7 +1287,7 @@ class AtFile(object):
         Add an entry to c.nodeConflictList.
         Called only from at.terminateBody.
         '''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         at, c = self, self.c
         debug = False # Debug perfect import.
         # Ignore *all* trailing whitespace.
