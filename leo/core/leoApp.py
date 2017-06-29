@@ -123,6 +123,8 @@ class LeoApp(object):
             # For qt_frame plugin.
         self.start_minimized = False
             # For qt_frame plugin.
+        self.trace_binding = None
+            # True: name of binding to trace, or None.
         self.trace_focus = False
             # True: trace changes in focus.
         self.trace_plugins = False
@@ -1804,6 +1806,14 @@ class LoadManager(object):
         assert shortcuts_d
         assert settings_d
         if settings_d2:
+            # #510:
+            if g.app.trace_setting:
+                key = g.app.config.munge(g.app.trace_setting)
+                val = settings_d2.d.get(key)
+                if val:
+                    fn = g.shortFileName(val.path)
+                    g.es_print('--trace-setting: in %20s: @%s %s=%s' %  (
+                        fn, val.kind, g.app.trace_setting, val.val))
             settings_d = settings_d.copy()
             settings_d.update(settings_d2)
         if shortcuts_d2:
@@ -1870,8 +1880,34 @@ class LoadManager(object):
             new_n, old_n = len(list(new_d.keys())), len(list(old_d.keys()))
             g.trace('new %4s %s %s' % (new_n, id(new_d), new_d.name()))
             g.trace('old %4s %s %s' % (old_n, id(old_d), old_d.name()))
+        # #510.
+        si_list = new_d.get(g.app.trace_setting)
+        if si_list:
+            for si in si_list:
+                fn = si.kind.split(' ')[-1]
+                stroke = c.k.prettyPrintKey(si.stroke)
+                if si.pane and si.pane != 'all':
+                    pane = ' in %s panes' % si.pane
+                else:
+                    pane = ''
+                g.es_print('--trace-setting: %20s binds %s to %-20s%s' %  (
+                    fn, g.app.trace_setting, stroke, pane))
         inverted_old_d = lm.invert(old_d)
         inverted_new_d = lm.invert(new_d)
+        # #510.
+        if g.app.trace_binding:
+            stroke = c.k.canonicalizeShortcut(g.app.trace_binding)
+            si_list = inverted_new_d. get(stroke)
+            if si_list:
+                for si in si_list:
+                    fn = si.kind.split(' ')[-1] # si.kind # 
+                    stroke2 = c.k.prettyPrintKey(stroke)
+                    if si.pane and si.pane != 'all':
+                        pane = ' in %s panes' % si.pane
+                    else:
+                        pane = ''
+                    g.es_print('--trace-binding: %20s binds %s to %-20s%s' %  (
+                        fn, stroke2, si.commandName, pane))
         # Fix bug 951921: check for duplicate shortcuts only in the new file.
         lm.checkForDuplicateShortcuts(c, inverted_new_d)
         inverted_old_d.update(inverted_new_d) # Updates inverted_old_d in place.
@@ -2407,12 +2443,14 @@ class LoadManager(object):
             help='save session tabs on exit')
         add('--silent', action='store_true', dest='silent',
             help='disable all log messages')
+        add('--trace-binding', dest='trace_binding',
+            help='trace key bindings')
         add('--trace-focus', action='store_true', dest='trace_focus',
             help='trace changes of focus')
         add('--trace-plugins', action='store_true', dest='trace_plugins',
             help='trace imports of plugins')
         add('--trace-setting', dest='trace_setting',
-            help='trace how setting is set')
+            help='trace where setting is set')
         add('-v', '--version', action='store_true', dest='version',
             help='print version number and exit')
         add('--window-size', dest='window_size',
@@ -2511,6 +2549,8 @@ class LoadManager(object):
         # --silent
         g.app.silentMode = options.silent
         # print('scanOptions: silentMode',g.app.silentMode)
+        # --trace-binding
+        g.app.trace_binding = options.trace_binding
         # --trace-focus
         g.app.trace_focus = options.trace_focus
         # --trace-plugins
