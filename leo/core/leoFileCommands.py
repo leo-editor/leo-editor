@@ -497,7 +497,6 @@ class FileCommands(object):
         self.descendentVnodeUaDictList = []
         self.ratio = 0.5
         self.currentVnode = None
-        self.rootVnode = None
         # For writing...
         self.read_only = False
         self.rootPosition = None
@@ -718,16 +717,14 @@ class FileCommands(object):
                 inClipboard=False,
                 reassignIndices=False,
             )
+            # readSaxFile sets c.hiddenRootNode.
             if v: # v is None for minimal .leo files.
-                c.setRootVnode(v)
-                fc.rootVnode = v
+                pass
             else:
                 v = leoNodes.VNode(context=c)
                 v.setHeadString('created root node')
                 p = leoNodes.Position(v)
                 p._linkAsRoot(oldRoot=None)
-                fc.rootVnode = v
-                # c.setRootPosition()
                 c.changed = False
         except BadLeoFile:
             junk, message, junk = sys.exc_info()
@@ -1396,9 +1393,10 @@ class FileCommands(object):
     #@+node:ekr.20070413045221.2: *4*  fc.Top-level
     #@+node:ekr.20031218072017.1720: *5* fc.save
     def save(self, fileName, silent=False):
-        c = self.c; v = c.currentVnode()
+        c = self.c
+        p = c.p
         # New in 4.2.  Return ok flag so shutdown logic knows if all went well.
-        ok = g.doHook("save1", c=c, p=v, v=v, fileName=fileName)
+        ok = g.doHook("save1", c=c, p=p, v=p, fileName=fileName)
         if ok is None:
             c.endEditing() # Set the current headline text.
             self.setDefaultDirectoryForNewFiles(fileName)
@@ -1414,11 +1412,12 @@ class FileCommands(object):
                     g.es("clearing undo")
                     c.undoer.clearUndoState()
             c.redraw_after_icons_changed()
-        g.doHook("save2", c=c, p=v, v=v, fileName=fileName)
+        g.doHook("save2", c=c, p=p, v=p, fileName=fileName)
         return ok
     #@+node:ekr.20031218072017.3043: *5* fc.saveAs
     def saveAs(self, fileName):
-        c = self.c; p = c.p
+        c = self.c
+        p = c.p
         if not g.doHook("save1", c=c, p=p, v=p, fileName=fileName):
             c.endEditing() # Set the current headline text.
             self.setDefaultDirectoryForNewFiles(fileName)
@@ -1435,7 +1434,8 @@ class FileCommands(object):
         g.doHook("save2", c=c, p=p, v=p, fileName=fileName)
     #@+node:ekr.20031218072017.3044: *5* fc.saveTo
     def saveTo(self, fileName):
-        c = self.c; p = c.p
+        c = self.c
+        p = c.p
         if not g.doHook("save1", c=c, p=p, v=p, fileName=fileName):
             c.endEditing() # Set the current headline text.
             self.setDefaultDirectoryForNewFiles(fileName)
