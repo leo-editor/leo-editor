@@ -181,8 +181,8 @@ def install_qt_quicksearch_tab(c):
     c.k.registerCommand(
         'find-quick',None,focus_quicksearch_entry)
     c.k.registerCommand(
-        'find-quick-selected','Ctrl-Shift-f',find_selected)
-        # 'find-quick-selected',None,find_selected)
+        # 'find-quick-selected','Ctrl-Shift-f',find_selected)
+        'find-quick-selected',None,find_selected)
     c.k.registerCommand(
         'focus-to-nav', None,focus_to_nav)
     c.k.registerCommand(
