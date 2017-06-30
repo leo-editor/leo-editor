@@ -3099,24 +3099,19 @@ class KeyHandlerClass(object):
 
         If wrap is True then func will be wrapped with c.universalCallback.
         source_c is the commander in which an @command or @button node is defined.
+        
+        **Important**: Bindings created here from plugins can not be overridden.
+        This includes @command and @button bindings created by mod_scripting.py.
         '''
-        trace = False and not g.unitTesting and commandName == 'help'
-        traceCommand = False
-        traceEntry = True
-        traceStroke = True
+        trace = False and not g.unitTesting and not g.app.silentMode and shortcut
         c, k = self.c, self
         is_local = c.shortFileName() not in ('myLeoSettings.leo', 'leoSettings.leo')
-        if trace and traceEntry:
-            # g.trace(pane, commandName, 'source_c:', source_c)
-            g.trace(pane, commandName, shortcut, g.callers())
         f = c.commandsDict.get(commandName)
         if f and f.__name__ != func.__name__:
             g.trace('redefining', commandName, f, '->', func)
-            # g.trace('f.__name__', f.__name__, 'func.__name__', func.__name__)
         assert not g.isStroke(shortcut)
         c.commandsDict[commandName] = func
         if shortcut:
-            if trace and traceStroke: g.trace('shortcut', shortcut)
             stroke = k.strokeFromSetting(shortcut)
         elif commandName.lower() == 'shortcut': # Causes problems.
             stroke = None
@@ -3131,23 +3126,19 @@ class KeyHandlerClass(object):
                 assert g.isShortcutInfo(si), si
                 assert g.isStrokeOrNone(si.stroke)
                 if si.stroke and not si.pane.endswith('-mode'):
-                    # if trace: g.trace('*** found',si)
                     stroke = si.stroke
                     pane = si.pane # 2015/05/11.
                     break
-        if trace and traceStroke:
-            g.trace('is_local', is_local, pane, stroke, commandName, c.shortFileName())
         if stroke:
-            ok = k.bindKey(pane, stroke, func, commandName, tag='register-command')
+            k.bindKey(pane, stroke, func, commandName, tag='register-command')
                 # Must be a stroke.
             k.makeMasterGuiBinding(stroke, trace=trace) # Must be a stroke.
-            if trace and traceCommand and ok and not g.app.silentMode:
-                g.blue('', '@command: %s = %s' % (
-                    commandName, k.prettyPrintKey(stroke)))
         elif is_local:
+            if trace: g.trace('KILL:', commandName)
             k.killBinding(commandName)
-        elif trace and traceCommand and not g.app.silentMode:
-                g.blue('', '@command: %s' % (commandName))
+        if trace:
+            pretty_stroke = stroke and k.prettyPrintKey(stroke) or 'None'
+            g.trace('@command %25s' % (commandName), pretty_stroke, g.callers(2))
         # Fixup any previous abbreviation to press-x-button commands.
         if commandName.startswith('press-') and commandName.endswith('-button'):
             d = c.config.getAbbrevDict()

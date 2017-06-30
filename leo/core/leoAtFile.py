@@ -198,7 +198,6 @@ class AtFile(object):
         at.pending = []
         at.raw = False # True: in @raw mode
         at.root = None # The root (a position) of tree being read or written.
-        at.root_seen = False # True: root VNode has been handled in this file.
         at.startSentinelComment = ""
         at.startSentinelComment = ""
         at.tab_width = c.tab_width or -4
@@ -357,6 +356,11 @@ class AtFile(object):
     #@+<< Detecting clone conflicts >>
     #@+node:ekr.20100619222623.5918: *4* << Detecting clone conflicts >>
     #@+at
+    # 
+    # Changed in new-read: 6.
+    # 
+    # **v.tempRoots**, a *temp* ivar, contains root @file nodes.
+    # 
     # **v.tempBodyString**, a *temporary* ivar, accumulates v.b.
     # The vnode ctor must not create this ivar!
     # 
@@ -468,9 +472,9 @@ class AtFile(object):
     ):
         """Read an @thin or @file tree."""
         trace = (False or g.app.debug) and not g.unitTesting
-        # if trace: g.trace(root.h)
         at, c = self, self.c
         fileName = at.initFileName(fromString, importFileName, root)
+        sfn = g.shortFileName(fileName)
         if not fileName:
             at.error("Missing file name.  Restoring @file tree from .leo file.")
             return False
@@ -498,7 +502,7 @@ class AtFile(object):
             if trace: g.trace('No inputFile')
             return False
         # Get the file from the cache if possible.
-        if fromString:
+        if fromString or not g.enableDB:
             s, loaded, fileKey = fromString, False, None
         else:
             s, loaded, fileKey = c.cacher.readFile(fileName, root)
@@ -508,13 +512,18 @@ class AtFile(object):
             # if trace: g.trace('file-like file',fileName)
             force = True # Disable caching.
         if loaded and not force:
-            if trace: g.trace('cache hit', g.shortFileName(fileName))
+            if trace:
+                g.trace('cache hit', fileKey, sfn)
             at.inputFile.close()
             root.clearDirty()
             return True
         if not g.unitTesting:
-            if trace: g.trace('***** cache miss', repr(at.encoding), g.shortFileName(fileName))
-            g.es("reading:", root.h)
+            if trace:
+                if g.enableDB:
+                    g.trace('cache miss', sfn)
+                else:
+                    g.trace('caching disabled', sfn)
+            g.es_print("reading:", root.h)
         if isFileLike:
             if g.unitTesting:
                 if 0: print("converting @file format in", root.h)
@@ -579,20 +588,23 @@ class AtFile(object):
             v._p_changed = True
     #@+node:ekr.20071105164407: *6* at.deleteUnvisitedNodes & helpers
     def deleteUnvisitedNodes(self, root):
-        '''Delete unvisited nodes in root's subtree, not including root.
+        '''
+        Delete unvisited nodes in root's subtree, not including root.
 
-        Actually, instead of deleting the nodes, we move them to be children of the
-        'Resurrected Nodes' r.
+        Before Leo 5.6: Move unvisited node to be children of the 'Resurrected
+        Nodes'.
         '''
         at = self
         # Find the unvisited nodes.
         aList = [z for z in root.subtree() if not z.isVisited()]
         if aList:
-            r = at.createResurrectedNodesNode()
-            assert r not in aList
-            callback = at.defineResurrectedNodeCallback(r, root)
-            # Move the nodes using the callback.
-            at.c.deletePositionsInList(aList, callback)
+            # new-read: Never create resurrected nodes.
+                # r = at.createResurrectedNodesNode()
+                # assert r not in aList
+                # callback = at.defineResurrectedNodeCallback(r, root)
+                # # Move the nodes using the callback.
+                # at.c.deletePositionsInList(aList, callback)
+            at.c.deletePositionsInList(aList)
     #@+node:ekr.20100803073751.5817: *7* createResurrectedNodesNode
     def createResurrectedNodesNode(self):
         '''Create a 'Resurrected Nodes' node as the last top-level node.'''
@@ -1214,14 +1226,13 @@ class AtFile(object):
         for p in root.self_and_subtree():
             v = p.v
             if v.gnx not in seen:
-                old_body = p.bodyString()
                 seen[v.gnx] = v
                 at.terminateNode(postPass=True, v=v)
-                new_body = p.bodyString()
+                # new-read: at.terminateNode has done all the work.
                 if hasattr(v, 'tempBodyList'):
                     delattr(v, 'tempBodyList')
-                if new_body != old_body:
-                    at.handleChangedNode(new_body, old_body, p, thinFile)
+                if hasattr(v, 'tempRoots'):
+                    delattr(v, 'tempRoots')
     #@+node:ekr.20150309154506.27: *6* at.handleChangedNode
     def handleChangedNode(self, new_body, old_body, p, thinFile):
         '''Set ancestor files dirty and support mod_labels plugin.'''
@@ -1268,7 +1279,7 @@ class AtFile(object):
             pass # Middle sentinels never alter text.
         else:
             at.terminateBody(v, postPass)
-        # Delete tempBodyList. Do not leave this lying around!
+        # Delete tempBodyList.
         if hasattr(v, 'tempBodyList'): delattr(v, 'tempBodyList')
     #@+node:ekr.20100628124907.5816: *7* at.indicateNodeChanged
     def indicateNodeChanged(self, old, new, postPass, v):
@@ -1276,19 +1287,24 @@ class AtFile(object):
         Add an entry to c.nodeConflictList.
         Called only from at.terminateBody.
         '''
+        trace = False and not g.unitTesting
         at, c = self, self.c
+        debug = False # Debug perfect import.
+        # Ignore *all* trailing whitespace.
+        if new.rstrip() == old.rstrip():
+            return
         if at.perfectImportRoot:
             if not postPass:
                 at.correctedLines += 1
-                at.reportCorrection(old, new, v)
+                if debug:
+                    at.reportCorrection(old, new, v)
                 v.setDirty()
                     # Just mark the vnode dirty.
                     # Ancestors will be marked dirty later.
                 c.setChanged(True)
         else:
-            # Do nothing if only trailing whitespace is involved.
-            if new.endswith('\n') and old == new[: -1]: return
-            if old.endswith('\n') and new == old[: -1]: return
+            if trace:
+                g.es_print('Creating recovered node', v.h)
             c.nodeConflictList.append(g.bunch(
                 tag='(uncached)',
                 gnx=v.gnx,
@@ -1297,6 +1313,7 @@ class AtFile(object):
                 b_new=new,
                 h_old=v._headString,
                 h_new=v._headString,
+                root_v = at.root and at.root.v,
             ))
             v.setDirty()
                 # Just set the dirty bit. Ancestors will be marked dirty later.
@@ -1305,28 +1322,25 @@ class AtFile(object):
                 # Do *not* call c.setChanged(True) here: that would be too slow.
     #@+node:ekr.20100628124907.5818: *7* at.reportCorrection
     def reportCorrection(self, old, new, v):
+        '''Debugging only. Report changed perfect import lines.'''
         at = self
-        found = False
-        for p in at.perfectImportRoot.self_and_subtree():
-            if p.v == v:
-                found = True; break
+        found = any([p.v == v for p in at.perfectImportRoot.self_and_subtree()])
         if found:
-            if 0: # For debugging.
-                g.pr('\n', '-' * 40)
-                g.pr("old", len(old))
-                for line in g.splitLines(old):
-                    line = line.replace(' ', '< >').replace('\t', '<TAB>').replace('\n', '<NL>')
-                    g.pr(repr(str(line)))
-                g.pr('\n', '-' * 40)
-                g.pr("new", len(new))
-                for line in g.splitLines(new):
-                    #line = line.replace(' ','< >').replace('\t','<TAB>')
-                    g.pr(repr(str(line)))
-                g.pr('\n', '-' * 40)
+            g.pr('\n', '-' * 40)
+            g.pr("old", len(old))
+            for line in g.splitLines(old):
+                line = line.replace(' ', '< >').replace('\t', '<TAB>').replace('\n', '<NL>')
+                g.pr(repr(str(line)))
+            g.pr('\n', '-' * 40)
+            g.pr("new", len(new))
+            for line in g.splitLines(new):
+                #line = line.replace(' ','< >').replace('\t','<TAB>')
+                g.pr(repr(str(line)))
+            g.pr('\n', '-' * 40)
         else:
             # This should never happen.
             g.error("correcting hidden node: v=", repr(v))
-    #@+node:ekr.20100702062857.5824: *7* at.terminateBody (changed)
+    #@+node:ekr.20100702062857.5824: *7* at.terminateBody (sets tempRoots)
     def terminateBody(self, v, postPass=False):
         '''Terminate scanning of body text for node v. Set v.b.'''
         trace = False and not g.unitTesting
@@ -1336,14 +1350,29 @@ class AtFile(object):
         else:
             new = ''.join(at.out)
         new = g.toUnicode(new)
-        old = v.bodyString()
-        # Warn if the body text has changed. Don't warn about the root node.
-        if v != at.root.v and at.bodyIsInited(v) and new != old:
-            at.indicateNodeChanged(old, new, postPass, v)
-        v.setBodyString(new)
+        # new-read: at.createThinChild4 creates v.tempRoots.
+        # *Do* allow changes to the root node.
+        if hasattr(v, 'tempRoots'):
+            if trace:
+                g.trace('tempRoots: %20s %s' % (
+                    v.h,
+                    list([g.shortFileName(z) for z in v.tempRoots]),
+                ))
+            old = v.bodyString()
+            if old != new:
+                # This *always* creates a recovered node.
+                at.indicateNodeChanged(old, new, postPass, v)
+                # The last external file wins.
+                v.setBodyString(new)
+        else:
+            # No other @file node has set this node.
+            # Just replace the body string
+            v.tempRoots = set()
+            v.setBodyString(new)
+        v.tempRoots.add(self.root.h)
         at.bodySetInited(v)
-        if trace:
-            g.trace('%25s old %3s new %3s' % (v.gnx, len(old), len(new)), v.h)
+            # Note: the sax code also sets this, so we can't use
+            # this "bit" in place of v.tempRoots.
     #@+node:ekr.20041005105605.74: *5* at.scanText4 & allies
     def scanText4(self, fileName, p, verbose=False):
         """Scan a 4.x derived file non-recursively."""
@@ -1501,7 +1530,6 @@ class AtFile(object):
             at.v1.fileIndex = gnx
             at.v1 = None
         if not ok: return
-        at.root_seen = True
         # Switch context.
         if at.readVersion5:
             # Terminate the *previous* doc part if it exists.
@@ -1537,8 +1565,9 @@ class AtFile(object):
     def createNewThinNode(self, gnx, headline, level):
         '''Create a new (new-style) vnode.'''
         at = self
-        testFile = at.targetFileName.endswith('clone-revert-test.txt')
-        trace = (False and testFile) and not g.unitTesting
+        # testFile = at.targetFileName.endswith('clone-revert-test.txt')
+        # trace = (False and testFile) and not g.unitTesting
+        trace = False and not g.unitTesting
         if trace:
             g.trace('v5: %s level: %2s %-24s %s' % (at.readVersion5, level, gnx, headline))
             g.trace(at.thinNodeStack)
@@ -1575,7 +1604,6 @@ class AtFile(object):
         at.thinChildIndexStack.append(0)
         at.lastThinNode = v
         # Ensure that the body text is set only once.
-        # Huh?
         if v.isVisited():
             if hasattr(v, 'tempBodyList'):
                 delattr(v, 'tempBodyList')
@@ -1583,7 +1611,7 @@ class AtFile(object):
             # This is the only place we call v.setVisited in the read logic.
             v.setVisited()
         return v
-    #@+node:ekr.20130121075058.10246: *9* at.new_createThinChild4 (changed)
+    #@+node:ekr.20130121075058.10246: *9* at.new_createThinChild4
     def new_createThinChild4(self, gnxString, headline, n, parent):
         """
         Find or create a new *vnode* whose parent (also a vnode)
@@ -1598,24 +1626,23 @@ class AtFile(object):
         gnx = gnxString = g.toUnicode(gnxString)
         gnxDict = c.fileCommands.gnxDict
         v = gnxDict.get(gnxString)
+        if v and gnx != v.fileIndex:
+            g.internalError('v.fileIndex: %s gnx: %s' % (v.fileIndex, gnx))
+            return None
         if v:
-            if gnx == v.fileIndex:
-                # Always use v.h, regardless of headline.
-                if trace and v.h != headline:
-                    g.trace('read error v.h: %s headline: %s' % (v.h, headline))
-                child = v # The return value.
-                if n >= len(parent.children):
-                    child._linkAsNthChild(parent, n)
-                    if trace and trace_tree:
-                        g.trace('OLD n: %s parent: %s -> %s' % (n, parent.h, child.h))
-                elif trace:
-                    if trace_tree: g.trace('DUP n: %s parent: %s -> %s' % (
-                        n, parent.h, child.h))
-                    else:
-                        g.trace('CLONE', id(v), v.gnx, v.h)
-            else:
-                g.internalError('v.fileIndex: %s gnx: %s' % (v.fileIndex, gnx))
-                return None
+            # new-read: Always honor the healine.
+            v.h = headline
+            child = v
+                # The return value.
+            if n >= len(parent.children):
+                child._linkAsNthChild(parent, n)
+                if trace and trace_tree:
+                    g.trace('OLD n: %s parent: %s -> %s' % (n, parent.h, child.h))
+            elif trace:
+                if trace_tree: g.trace('DUP n: %s parent: %s -> %s' % (
+                    n, parent.h, child.h))
+                else:
+                    g.trace('CLONE', id(v), v.gnx, v.h)
         else:
             v = leoNodes.VNode(context=c, gnx=gnx)
             v._headString = headline # Allowed use of v._headString.
@@ -2884,6 +2911,10 @@ class AtFile(object):
                     at.rememberReadPath(eventualFileName, root)
                     at.replaceTargetFileIfDifferent(root)
                         # Sets/clears dirty and orphan bits.
+                    # Leo 5.6: update the cache *here*, not just when reading.
+                    fileKey = c.cacher.fileKey(eventualFileName, at.outputContents)
+                    if trace: g.trace(g.shortFileName(eventualFileName), fileKey)
+                    c.cacher.writeFile(at.root, fileKey)
         except Exception:
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')
@@ -2941,6 +2972,8 @@ class AtFile(object):
             p = c.rootPosition()
             after = None
         at.clearAllOrphanBits(p)
+        # Leo 5.6: write files only once.
+        seen = set()
         while p and p != after:
             if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
                 if p.isAnyAtFileNode():
@@ -2948,17 +2981,19 @@ class AtFile(object):
                 # Note: @ignore not honored in @asis nodes.
                 p.moveToNodeAfterTree() # 2011/10/08: Honor @ignore!
             elif p.isAnyAtFileNode():
-                try:
-                    self.writeAllHelper(p, root, force, toString, writeAtFileNodesFlag, writtenFiles)
-                except Exception:
-                    # Fix bug 1260415: https://bugs.launchpad.net/leo-editor/+bug/1260415
-                    # Give a more urgent, more specific, more helpful message.
-                    g.es_exception()
-                    g.es('Internal error writing: %s' % (p.h), color='red')
-                    g.es('Please report this error to:', color='blue')
-                    g.es('https://groups.google.com/forum/#!forum/leo-editor', color='blue')
-                    g.es('Warning: changes to this file will be lost', color='red')
-                    g.es('unless you can save the file successfully.', color='red')
+                if p.v not in seen:
+                    seen.add(p.v)
+                    try:
+                        self.writeAllHelper(p, root, force, toString, writeAtFileNodesFlag, writtenFiles)
+                    except Exception:
+                        # Fix bug 1260415: https://bugs.launchpad.net/leo-editor/+bug/1260415
+                        # Give a more urgent, more specific, more helpful message.
+                        g.es_exception()
+                        g.es('Internal error writing: %s' % (p.h), color='red')
+                        g.es('Please report this error to:', color='blue')
+                        g.es('https://groups.google.com/forum/#!forum/leo-editor', color='blue')
+                        g.es('Warning: changes to this file will be lost', color='red')
+                        g.es('unless you can save the file successfully.', color='red')
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
