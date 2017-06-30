@@ -2078,7 +2078,8 @@ class FileCommands(object):
     #@+node:vitalije.20170630172118.1: *5* fc.exportToSqlite
     def exportToSqlite(self, fileName):
         '''Dump all vnodes to sqlite database. Returns True on success.'''
-        fc = self; c = self.c
+        # fc = self
+        c = self.c
         dbrow = lambda v:(
                 v.gnx,
                 v.h,
