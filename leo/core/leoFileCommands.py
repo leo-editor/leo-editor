@@ -1388,7 +1388,7 @@ class FileCommands(object):
                 v.statusBits = statusBits
                 v.u = ua
                 vnodes.append(v)
-        
+            
         except sqlite3.OperationalError as er:
             
             if er.message.find('no such table') < 0:
@@ -1408,8 +1408,18 @@ class FileCommands(object):
             v.parents = [findNode(x) for x in v.parents]
         
         c.hiddenRootNode.children = rootChildren
-        
+        geom = fc.getWindowGeometryFromDb(conn)
+        (w, h, x, y) = (geom[k] for k in ('width', 'height', 'left', 'top'))
+        c.frame.setTopGeometry(w, h, x, y, adjustSize=True)
         return rootChildren[0]
+    #@+node:vitalije.20170630200802.1: *6* fc.getWindowGeometryFromDb
+    def getWindowGeometryFromDb(self, conn):
+        try:
+            d = dict(conn.execute('''select * from extra_infos 
+                where name in ('width', 'height', 'top', 'left');''').fetchall())
+        except sqlite3.OperationalError:
+            d = {'width': 600, 'height': 400, 'top': 50, 'left': 50}
+        return d
     #@+node:ekr.20060919110638.13: *5* fc.setPositionsFromVnodes & helper (sax read)
     def setPositionsFromVnodes(self):
         trace = False and not g.unitTesting
@@ -2092,7 +2102,11 @@ class FileCommands(object):
                     iconVal,
                     statusBits,
                     ua);''')
+            conn.execute('''create table if not exists extra_infos(name primary key, value)''')
             
+            conn.executemany('''insert into extra_infos(name, value) values(?, ?)''',
+                zip(('width', 'height', 'left', 'top'), c.frame.get_window_info()))
+
             conn.executemany('''insert into vnodes
                 (gnx, head, body, children, parents,
                     iconVal, statusBits, ua)
