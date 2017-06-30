@@ -1900,7 +1900,7 @@ class FileCommands(object):
             g.error('Major structural errors! outline not written')
             return False
 
-        if (not g.SQLITE) and not outlineOnlyFlag or toOPML:
+        if not (g.SQLITE_OUTLINE_ONLY or outlineOnlyFlag) or toOPML:
             g.app.recentFilesManager.writeRecentFilesFile(c)
             fc.writeAllAtFileNodesHelper() # Ignore any errors.
 
