@@ -1389,7 +1389,7 @@ class FileCommands(object):
                 v.u = ua
                 vnodes.append(v)
         
-        except sqlite3.OperationalError, er:
+        except sqlite3.OperationalError as er:
             
             if er.message.find('no such table') < 0:
                 # there was an error raised but it is not the one we expect
