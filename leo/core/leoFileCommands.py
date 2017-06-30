@@ -2104,7 +2104,7 @@ class FileCommands(object):
                     ua);''')
             conn.execute('''create table if not exists extra_infos(name primary key, value)''')
             
-            conn.executemany('''insert into extra_infos(name, value) values(?, ?)''',
+            conn.executemany('''replace into extra_infos(name, value) values(?, ?)''',
                 zip(('width', 'height', 'left', 'top'), c.frame.get_window_info()))
 
             conn.executemany('''insert into vnodes
