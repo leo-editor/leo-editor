@@ -26,6 +26,7 @@ if g.isPython3:
 else:
     import cStringIO
     StringIO = cStringIO.StringIO
+import sqlite3
 #@-<< imports >>
 #@+others
 #@+node:ekr.20161026122804.1: ** class IdleTimeManager
@@ -1966,8 +1967,10 @@ class LoadManager(object):
             g.blue(s)
 
         theFile = lm.openLeoOrZipFile(fn)
+        
         if theFile:
             message('reading settings in %s' % (fn))
+            
         # Changing g.app.gui here is a major hack.  It is necessary.
         oldGui = g.app.gui
         g.app.gui = g.app.nullGui
@@ -1977,9 +1980,9 @@ class LoadManager(object):
         g.app.lockLog()
         g.app.openingSettingsFile = True
         try:
-            ok = c.fileCommands.openLeoFile(theFile, fn,
-                readAtFileNodesFlag=False, silent=True)
-                    # closes theFile.
+            ok =  c.fileCommands.openLeoFile(theFile, fn,
+                    readAtFileNodesFlag=False, silent=True)
+                        # closes theFile.
         finally:
             g.app.openingSettingsFile = False
         g.app.unlockLog()
@@ -3040,6 +3043,8 @@ class LoadManager(object):
         return c
     #@+node:ekr.20120223062418.10419: *6* LM.isLeoFile & LM.isZippedFile
     def isLeoFile(self, fn):
+        if g.SQLITE:
+            return fn and (zipfile.is_zipfile(fn) or fn.endswith('.leo') or fn.endswith('.db'))
         return fn and (zipfile.is_zipfile(fn) or fn.endswith('.leo'))
 
     def isZippedFile(self, fn):
@@ -3047,6 +3052,9 @@ class LoadManager(object):
     #@+node:ekr.20120224161905.10030: *6* LM.openLeoOrZipFile
     def openLeoOrZipFile(self, fn):
         lm = self
+        if g.SQLITE:
+            if fn.endswith('.db'):
+                return sqlite3.connect(fn)
         zipped = lm.isZippedFile(fn)
         if lm.isLeoFile(fn) and g.os_path_exists(fn):
             if zipped:
