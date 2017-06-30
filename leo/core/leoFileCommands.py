@@ -1889,11 +1889,17 @@ class FileCommands(object):
         if structure_errors:
             g.error('Major structural errors! outline not written')
             return False
-        if not outlineOnlyFlag or toOPML:
+
+        if (not g.SQLITE) and not outlineOnlyFlag or toOPML:
             g.app.recentFilesManager.writeRecentFilesFile(c)
             fc.writeAllAtFileNodesHelper() # Ignore any errors.
+
         if fc.isReadOnly(fileName):
             return False
+
+        if g.SQLITE and fileName and fileName.endswith('.db'):
+            return fc.exportToSqlite(fileName)
+
         try:
             fc.putCount = 0
             fc.toString = toString
@@ -2059,6 +2065,41 @@ class FileCommands(object):
         theFile = zipfile.ZipFile(fileName, 'w', zipfile.ZIP_DEFLATED)
         theFile.writestr(contentsName, s)
         theFile.close()
+    #@+node:vitalije.20170630172118.1: *5* fc.exportToSqlite
+    def exportToSqlite(self, fileName):
+        '''Dump all vnodes to sqlite database. Returns True on success.'''
+        fc = self; c = self.c
+        dbrow = lambda v:(
+                v.gnx,
+                v.h,
+                v.b,
+                ' '.join(x.gnx for x in v.children),
+                ' '.join(x.gnx for x in v.parents),
+                v.iconVal,
+                v.statusBits,
+                pickle.dumps(v.u)
+            )
+        ok = False
+        with sqlite3.connect(fileName, isolation_level='DEFERRED') as conn:
+            conn.execute('''drop table if exists vnodes;''')
+            conn.execute('''
+                create table if not exists vnodes(
+                    gnx primary key,
+                    head,
+                    body,
+                    children,
+                    parents,
+                    iconVal,
+                    statusBits,
+                    ua);''')
+            
+            conn.executemany('''insert into vnodes
+                (gnx, head, body, children, parents,
+                    iconVal, statusBits, ua)
+                values(?,?,?,?,?,?,?,?);''', (dbrow(v) for v in c.all_unique_vnodes_iter()))
+            conn.commit()
+            ok = True
+        return ok
     #@+node:ekr.20031218072017.2012: *4* fc.writeAtFileNodes
     @cmd('write-at-file-nodes')
     def writeAtFileNodes(self, event=None):

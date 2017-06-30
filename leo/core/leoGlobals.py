@@ -3002,6 +3002,8 @@ def ensure_extension(name, ext):
     theFile, old_ext = g.os_path_splitext(name)
     if not name:
         return name # don't add to an empty name.
+    elif g.SQLITE and old_ext == '.db':
+        return name
     elif old_ext and old_ext == ext:
         return name
     else:
