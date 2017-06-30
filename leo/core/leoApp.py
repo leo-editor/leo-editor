@@ -2443,13 +2443,13 @@ class LoadManager(object):
             help='save session tabs on exit')
         add('--silent', action='store_true', dest='silent',
             help='disable all log messages')
-        add('--trace-binding', dest='trace_binding',
+        add('--trace-binding', dest='binding',
             help='trace key bindings')
         add('--trace-focus', action='store_true', dest='trace_focus',
             help='trace changes of focus')
         add('--trace-plugins', action='store_true', dest='trace_plugins',
             help='trace imports of plugins')
-        add('--trace-setting', dest='trace_setting',
+        add('--trace-setting', dest='setting',
             help='trace where setting is set')
         add('-v', '--version', action='store_true', dest='version',
             help='print version number and exit')
@@ -2550,13 +2550,13 @@ class LoadManager(object):
         g.app.silentMode = options.silent
         # print('scanOptions: silentMode',g.app.silentMode)
         # --trace-binding
-        g.app.trace_binding = options.trace_binding
+        g.app.trace_binding = options.binding
         # --trace-focus
         g.app.trace_focus = options.trace_focus
         # --trace-plugins
         g.app.trace_plugins = options.trace_plugins
         # --trace-setting=setting
-        g.app.trace_setting = options.trace_setting
+        g.app.trace_setting = options.setting
             # g.app.config does not exist yet.
             # g.trace('trace_setting:', repr(options.trace_setting))
         # --version: print the version and exit.
