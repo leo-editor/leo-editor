@@ -45,7 +45,7 @@ if 0:
     if not enableDB:
         print('** leoGlobals.py: caching disabled')
 SQLITE = True
-SQLITE_ONLY_OUTLINE = True
+SQLITE_OUTLINE_ONLY = True
 #@-<< global switches >>
 #@+<< imports >>
 #@+node:ekr.20050208101229: ** << imports >> (leoGlobals)
