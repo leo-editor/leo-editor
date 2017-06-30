@@ -27,6 +27,7 @@ try:
     import xml.sax.saxutils
 except Exception:
     pass
+import sqlite3
 #@-<< imports >>
 #@+others
 #@+node:ekr.20060918164811: ** Exception classes
@@ -1278,6 +1279,14 @@ class FileCommands(object):
         '''Read the entire .leo file using the sax parser.'''
         dump = False and not g.unitTesting
         fc = self; c = fc.c
+        
+        if fileName.endswith('.db'):
+            # TODO: what should be done if theFile is connection
+            #       to newly created database? Database should be
+            #       initialized to empty leo tree or we should here
+            #       just return None
+            return fc.retrieveVnodesFromDb(theFile) # or fc.initNewDb(theFile) - not implemented yet
+            
         # Pass one: create the intermediate nodes.
         saxRoot = fc.parse_leo_file(theFile, fileName,
             silent=silent, inClipboard=inClipboard, s=s)
@@ -1291,6 +1300,7 @@ class FileCommands(object):
             return v
         else:
             return None
+                
     #@+node:ekr.20060919110638.11: *5* fc.resolveTnodeLists
     def resolveTnodeLists(self):
         '''
@@ -1343,6 +1353,63 @@ class FileCommands(object):
             else:
                 return oops('bad index="%s", len(children)="%s"' % (n, len(children)))
         return last_v
+    #@+node:vitalije.20170630152841.1: *5* fc.retrieveVnodesFromDb
+    def retrieveVnodesFromDb(self, conn):
+        '''Recreates tree from the data contained in table vnodes. This
+           method follows behavior of readSaxFile.'''
+        
+        fc = self; c = fc.c
+        sql = '''select gnx, head, 
+             body,
+             children,
+             parents,
+             iconVal,
+             statusBits,
+             ua from vnodes'''
+        vnodes = []
+        try:
+        
+            for row in conn.execute(sql):
+                (gnx,
+                    h,
+                    b,
+                    children,
+                    parents,
+                    iconVal,
+                    statusBits,
+                    ua) = row
+                ua = pickle.loads(ua)
+                v = leoNodes.VNode(context=c, gnx=gnx)
+                v._headString = h
+                v._bodyString = b
+                v.children = children.split()
+                v.parents = parents.split()
+                v.iconVal = iconVal
+                v.statusBits = statusBits
+                v.u = ua
+                vnodes.append(v)
+        
+        except sqlite3.OperationalError, er:
+            
+            if er.message.find('no such table') < 0:
+                # there was an error raised but it is not the one we expect
+                raise er
+                
+            # there is no vnodes table 
+            return None
+        
+        rootChildren = [x for x in vnodes if 'hidden-root-vnode-gnx' in x.parents]
+        
+        findNode = lambda x: fc.gnxDict.get(x, c.hiddenRootNode)
+        
+        # let us replace every gnx with the corresponding vnode
+        for v in vnodes:
+            v.children = [findNode(x) for x in v.children]
+            v.parents = [findNode(x) for x in v.parents]
+        
+        c.hiddenRootNode.children = rootChildren
+        
+        return rootChildren[0]
     #@+node:ekr.20060919110638.13: *5* fc.setPositionsFromVnodes & helper (sax read)
     def setPositionsFromVnodes(self):
         trace = False and not g.unitTesting
