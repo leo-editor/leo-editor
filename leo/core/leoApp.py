@@ -284,6 +284,8 @@ class LeoApp(object):
             # True: executing a script.
         self.initing = True
             # True: we are initiing the app.
+        self.initComplete = False
+            # True: late bindings are not allowed.
         self.killed = False
             # True: we are about to destroy the root window.
         self.openingSettingsFile = False

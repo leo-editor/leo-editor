@@ -3099,6 +3099,9 @@ class KeyHandlerClass(object):
 
         If wrap is True then func will be wrapped with c.universalCallback.
         source_c is the commander in which an @command or @button node is defined.
+        
+        **Important**: Bindings created here from plugins can not be overridden.
+        This includes @command and @button bindings created by mod_scripting.py.
         '''
         trace = False and not g.unitTesting and not g.app.silentMode and shortcut
         c, k = self.c, self
