@@ -92,6 +92,2538 @@ https://github.com/leo-editor/leo-editor/issues/479
 Preserve brython indentation when importing .html files
 .. @+node:ekr.20170618015241.1: *4* #481: The python importer optionally puts method decorators in headlines
 https://github.com/leo-editor/leo-editor/issues/481
+.. @+node:ekr.20170630073511.1: *4* #510: Improve how Leo handles settings
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/510
+
+No real changes were made. Plugins should not create bindings by calling k.registerCommand.  Such bindings happen "too late" in the startup process to be over-ridden in settings files.  Instead, plugins can define suggested bindings in leoSettings.leo.
+
+Note: The mod_scripting plugins creates bindings from @button and @command nodes. Again, these are "late" bindings that can not be over-ridden in settings files. I don't believe this is a big problem. The problem arises because Leo loads plugins after loading all outlines. It's not a direct consequence of using settings files.
+
+Leo now has two new command-line options. These provide more detail than the print-binding or print-settings commands, but only for a single setting or binding. Examples:
+
+    --trace-setting=http-port
+        # setting name
+    --trace-setting=cff
+        # command name
+    --trace-binding=shift-ctrl-f
+        # key binding
+
+@language python
+.. @+node:ekr.20170630073511.49: *5* << LeoApp: global data >>
+self.atAutoNames = set()
+    # The set of all @auto spellings.
+self.atFileNames = set()
+    # The set of all built-in @<file> spellings.
+self.globalKillBuffer = []
+    # The global kill buffer.
+self.globalRegisters = {}
+    # The global register list.
+self.leoID = None
+    # The id part of gnx's.
+self.lossage = []
+    # List of last 100 keystrokes.
+self.paste_c = None
+    # The commander that pasted the last outline.
+self.spellDict = None
+    # The singleton PyEnchant spell dict.
+self.numberOfUntitledWindows = 0
+    # Number of opened untitled windows.
+self.windowList = []
+    # Global list of all frames.
+self.realMenuNameDict = {}
+    # Translations of menu names.
+.. @+node:ekr.20170630073511.3: *5* LM.load & helpers
+def load(self, fileName=None, pymacs=None):
+    '''Load the indicated file'''
+    lm = self
+    # Phase 1: before loading plugins.
+    # Scan options, set directories and read settings.
+    if not lm.isValidPython(): return
+    lm.doPrePluginsInit(fileName, pymacs)
+        # sets lm.options and lm.files
+    if lm.options.get('version'):
+        print(g.app.signon)
+        return
+    if not g.app.gui:
+        return
+    # Phase 2: load plugins: the gui has already been set.
+    g.doHook("start1")
+    if g.app.killed: return
+    g.app.idleTimeManager.start()
+    # Phase 3: after loading plugins. Create one or more frames.
+    ok = lm.doPostPluginsInit()
+    if ok and g.app.diff:
+        lm.doDiff()
+    if ok:
+        g.es('') # Clears horizontal scrolling in the log pane.
+        g.app.gui.runMainLoop()
+        # For scripts, the gui is a nullGui.
+        # and the gui.setScript has already been called.
+.. @+node:ekr.20170630073511.4: *6* LM.doDiff
+def doDiff(self):
+    '''Support --diff option after loading Leo.'''
+    if len(self.old_argv[2:]) == 2:
+        pass # c.editFileCommands.compareAnyTwoFiles gives a message.
+    else:
+        # This is an unusual situation.
+        g.es('--diff mode. sys.argv[2:]...', color='red')
+        for z in self.old_argv[2:]:
+            g.es(g.shortFileName(z) if z else repr(z), color='blue')
+    commanders = g.app.commanders()
+    if len(commanders) == 2:
+        c = commanders[0]
+        c.editFileCommands.compareAnyTwoFiles(event=None)
+.. @+node:ekr.20170630073511.5: *6* LM.doPrePluginsInit & helpers
+def doPrePluginsInit(self, fileName, pymacs):
+    ''' Scan options, set directories and read settings.'''
+    # trace = False
+    lm = self
+    lm.computeStandardDirectories()
+    lm.adjustSysPath()
+        # A do-nothing.
+    # Scan the options as early as possible.
+    lm.options = options = lm.scanOptions(fileName, pymacs)
+        # also sets lm.files.
+    if options.get('version'):
+        g.app.computeSignon()
+        return
+    script = options.get('script')
+    verbose = script is None
+    # Init the app.
+    lm.initApp(verbose)
+    lm.reportDirectories(verbose)
+    # Read settings *after* setting g.app.config and *before* opening plugins.
+    # This means if-gui has effect only in per-file settings.
+    lm.readGlobalSettingsFiles()
+        # reads only standard settings files, using a null gui.
+        # uses lm.files[0] to compute the local directory
+        # that might contain myLeoSettings.leo.
+    # Read the recent files file.
+    localConfigFile = lm.files[0] if lm.files else None
+    g.app.recentFilesManager.readRecentFiles(localConfigFile)
+    g.app.setGlobalDb()
+    # Create the gui after reading options and settings.
+    lm.createGui(pymacs)
+    # We can't print the signon until we know the gui.
+    g.app.computeSignon() # Set app.signon/signon2 for commanders.
+.. @+node:ekr.20170630073511.6: *7* LM.createAllImporetersData & helpers (new)
+def createAllImporetersData(self):
+    '''
+    New in Leo 5.5:
+
+    Create global data structures describing importers and writers.
+    '''
+    assert g.app.loadDir
+        # This is the only data required.
+    self.createWritersData()
+        # Was an AtFile method.
+    self.createImporterData()
+        # Was a LeoImportCommands method.
+.. @+node:ekr.20170630073511.7: *8* LM.createImporterData & helper
+def createImporterData(self):
+    '''Create the data structures describing importer plugins.'''
+    trace = False and not g.unitTesting
+    trace_exception = False
+    # Allow plugins to be defined in ~/.leo/plugins.
+    plugins1 = g.os_path_finalize_join(g.app.homeDir, '.leo', 'plugins')
+    plugins2 = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins')
+    for kind, plugins in (('home', plugins1), ('leo', plugins2)):
+        pattern = g.os_path_finalize_join(
+            g.app.loadDir, '..', 'plugins', 'importers', '*.py')
+        for fn in glob.glob(pattern):
+            sfn = g.shortFileName(fn)
+            if sfn != '__init__.py':
+                try:
+                    module_name = sfn[: -3]
+                    # Important: use importlib to give imported modules
+                    # their fully qualified names.
+                    m = importlib.import_module(
+                        'leo.plugins.importers.%s' % module_name)
+                    self.parse_importer_dict(sfn, m)
+                except Exception:
+                    if trace and trace_exception:
+                        g.es_exception()
+                    g.warning('can not import leo.plugins.importers.%s' % (
+                        module_name))
+    if trace:
+        g.trace('g.app.atAutoDict')
+        g.printDict(g.app.atAutoDict)
+        g.trace('g.app.classDispatchDict')
+        g.printDict(g.app.classDispatchDict)
+.. @+node:ekr.20170630073511.8: *9* LM.parse_importer_dict
+def parse_importer_dict(self, sfn, m):
+    '''
+    Set entries in g.app.classDispatchDict, g.app.atAutoDict and
+    g.app.atAutoNames using entries in m.importer_dict.
+    '''
+    trace = False and not g.unitTesting
+    importer_d = getattr(m, 'importer_dict', None)
+    if importer_d:
+        at_auto = importer_d.get('@auto', [])
+        scanner_class = importer_d.get('class', None)
+        scanner_name = scanner_class.__name__
+        extensions = importer_d.get('extensions', [])
+        if trace:
+            g.trace('%20s: %20s %s' % (sfn, scanner_name, ', '.join(extensions)))
+        if at_auto:
+            # Make entries for each @auto type.
+            d = g.app.atAutoDict
+            for s in at_auto:
+                d[s] = scanner_class
+                g.app.atAutoDict[s] = scanner_class
+                g.app.atAutoNames.add(s)
+                if trace: g.trace(s)
+        if extensions:
+            # Make entries for each extension.
+            d = g.app.classDispatchDict
+            for ext in extensions:
+                d[ext] = scanner_class
+    elif sfn not in (
+        # These are base classes, not real plugins.
+        'basescanner.py',
+        'linescanner.py',
+    ):
+        g.warning('leo/plugins/importers/%s has no importer_dict' % sfn)
+.. @+node:ekr.20170630073511.9: *8* LM.createWritersData & helper
+def createWritersData(self):
+    '''Create the data structures describing writer plugins.'''
+    trace = False # and not g.unitTesting
+    trace = trace and 'createWritersData' not in g.app.debug_dict
+    if trace:
+        # Suppress multiple traces.
+        g.app.debug_dict['createWritersData'] = True
+    g.app.writersDispatchDict = {}
+    g.app.atAutoWritersDict = {}
+    plugins1 = g.os_path_finalize_join(g.app.homeDir, '.leo', 'plugins')
+    plugins2 = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins')
+    for kind, plugins in (('home', plugins1), ('leo', plugins2)):
+        pattern = g.os_path_finalize_join(g.app.loadDir,
+            '..', 'plugins', 'writers', '*.py')
+        for fn in glob.glob(pattern):
+            sfn = g.shortFileName(fn)
+            if sfn != '__init__.py':
+                try:
+                    # Important: use importlib to give imported modules their fully qualified names.
+                    m = importlib.import_module('leo.plugins.writers.%s' % sfn[: -3])
+                    self.parse_writer_dict(sfn, m)
+                except Exception:
+                    g.es_exception()
+                    g.warning('can not import leo.plugins.writers.%s' % sfn)
+    if trace:
+        g.trace('LM.writersDispatchDict')
+        g.printDict(g.app.writersDispatchDict)
+        g.trace('LM.atAutoWritersDict')
+        g.printDict(g.app.atAutoWritersDict)
+    # Creates problems: https://github.com/leo-editor/leo-editor/issues/40
+ 
+.. @+node:ekr.20170630073511.10: *9* LM.parse_writer_dict
+def parse_writer_dict(self, sfn, m):
+    '''
+    Set entries in g.app.writersDispatchDict and g.app.atAutoWritersDict
+    using entries in m.writers_dict.
+    '''
+    writer_d = getattr(m, 'writer_dict', None)
+    if writer_d:
+        at_auto = writer_d.get('@auto', [])
+        scanner_class = writer_d.get('class', None)
+        extensions = writer_d.get('extensions', [])
+        if at_auto:
+            # Make entries for each @auto type.
+            d = g.app.atAutoWritersDict
+            for s in at_auto:
+                aClass = d.get(s)
+                if aClass and aClass != scanner_class:
+                    g.trace('%s: duplicate %s class %s in %s:' % (
+                        sfn, s, aClass.__name__, m.__file__))
+                else:
+                    d[s] = scanner_class
+                    g.app.atAutoNames.add(s)
+        if extensions:
+            # Make entries for each extension.
+            d = g.app.writersDispatchDict
+            for ext in extensions:
+                aClass = d.get(ext)
+                if aClass and aClass != scanner_class:
+                    g.trace('%s: duplicate %s class' % (sfn, ext),
+                        aClass, scanner_class)
+                else:
+                    d[ext] = scanner_class
+    elif sfn not in ('basewriter.py',):
+        g.warning('leo/plugins/writers/%s has no writer_dict' % sfn)
+.. @+node:ekr.20170630073511.11: *7* LM.createGui
+def createGui(self, pymacs):
+    trace = (False or g.trace_startup) and not g.unitTesting
+    if trace: g.es_debug()
+    lm = self
+    gui_option = lm.options.get('gui')
+    windowFlag = lm.options.get('windowFlag')
+    script = lm.options.get('script')
+    if g.app.gui:
+        if g.app.gui == g.app.nullGui:
+            g.app.gui = None # Enable g.app.createDefaultGui
+            g.app.createDefaultGui(__file__)
+        else:
+            # This can happen when launching Leo from IPython.
+            g.trace('g.app.gui', g.app.gui, g.callers())
+    elif gui_option is None:
+        if script and not windowFlag:
+            # Always use null gui for scripts.
+            g.app.createNullGuiWithScript(script)
+        else:
+            g.app.createDefaultGui(__file__)
+    else:
+        lm.createSpecialGui(gui_option, pymacs, script, windowFlag)
+.. @+node:ekr.20170630073511.12: *7* LM.createSpecialGui
+def createSpecialGui(self, gui, pymacs, script, windowFlag):
+    # lm = self
+    if pymacs:
+        g.app.createNullGuiWithScript(script=None)
+    elif script:
+        if windowFlag:
+            g.app.createDefaultGui()
+            g.app.gui.setScript(script=script)
+            sys.args = []
+        else:
+            g.app.createNullGuiWithScript(script=script)
+    else:
+        # assert g.app.guiArgName
+        g.app.createDefaultGui()
+.. @+node:ekr.20170630073511.13: *7* LM.adjustSysPath
+def adjustSysPath(self):
+    '''Adjust sys.path to enable imports as usual with Leo.
+
+    This method is no longer needed:
+
+        1. g.importModule will import from the
+           'external' or 'extensions' folders as needed
+           without altering sys.path.
+
+        2.  Plugins now do fully qualified imports.
+    '''
+    pass
+.. @+node:ekr.20170630073511.14: *7* LM.getDefaultFile
+def getDefaultFile(self):
+    # Get the name of the workbook.
+    fn = g.app.config.getString('default_leo_file')
+    fn = g.os_path_finalize(fn)
+    if not fn: return
+    # g.trace(g.os_path_exists(fn),fn)
+    if g.os_path_exists(fn):
+        return fn
+    elif g.os_path_isabs(fn):
+        # Create the file.
+        g.error('Using default leo file name:\n%s' % (fn))
+        return fn
+    else:
+        # It's too risky to open a default file if it is relative.
+        return None
+.. @+node:ekr.20170630073511.15: *7* LM.initApp
+def initApp(self, verbose):
+    trace = (False or g.trace_startup) and not g.unitTesting
+    if trace: g.es_debug()
+    self.createAllImporetersData()
+        # Can be done early. Uses only g.app.loadDir
+    assert g.app.loadManager
+    import leo.core.leoBackground as leoBackground
+    import leo.core.leoConfig as leoConfig
+    import leo.core.leoNodes as leoNodes
+    import leo.core.leoPlugins as leoPlugins
+    import leo.core.leoSessions as leoSessions
+    # Import leoIPython only if requested.  The import is quite slow.
+    self.setStdStreams()
+    if g.app.useIpython:
+        import leo.core.leoIPython as leoIPython
+            # This launches the IPython Qt Console.  It *is* required.
+        assert leoIPython # suppress pyflakes/flake8 warning.
+    # Make sure we call the new leoPlugins.init top-level function.
+    leoPlugins.init()
+    # Force the user to set g.app.leoID.
+    g.app.setLeoID(verbose=verbose)
+    # Create early classes *after* doing plugins.init()
+    g.app.idleTimeManager = IdleTimeManager()
+    g.app.backgroundProcessManager = leoBackground.BackgroundProcessManager()
+    g.app.externalFilesController = leoExternalFiles.ExternalFilesController()
+    g.app.recentFilesManager = RecentFilesManager()
+    g.app.config = leoConfig.GlobalConfigManager()
+    g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
+    g.app.sessionManager = leoSessions.SessionManager()
+    # Complete the plugins class last.
+    g.app.pluginsController.finishCreate()
+.. @+node:ekr.20170630073511.78: *7* LM.scanOptions & helper
+def scanOptions(self, fileName, pymacs):
+    '''Handle all options, remove them from sys.argv and set lm.options.'''
+    trace = False
+    lm = self
+    # print('scanOptions',sys.argv)
+    lm.old_argv = sys.argv[:]
+    # Note: this automatically implements the --help option.
+    usage = "usage: launchLeo.py [options] file1, file2, ..."
+    parser = optparse.OptionParser(usage=usage)
+    add = parser.add_option
+    add('--debug', action='store_true',
+        help='enable debug mode')
+    add('--diff', action='store_true', dest='diff',
+        help='use Leo as an external git diff')
+    add('--fullscreen', action='store_true',
+        help='start fullscreen')
+    add('--ipython', action='store_true', dest='use_ipython',
+        help='enable ipython support')
+    add('--fail-fast', action='store_true', dest='fail_fast',
+        help='stop unit tests after the first failure')
+    add('--gui',
+        help='gui to use (qt/qttabs/console/null)')
+    add('--load-type', dest='load_type',
+        help='@<file> type for loading non-outlines from command line')
+    add('--maximized', action='store_true',
+        help='start maximized')
+    add('--minimized', action='store_true',
+        help='start minimized')
+    add('--no-cache', action='store_true', dest='no_cache',
+        help='disable reading of cached files')
+    add('--no-plugins', action='store_true', dest='no_plugins',
+        help='disable all plugins')
+    add('--no-splash', action='store_true', dest='no_splash_screen',
+        help='disable the splash screen')
+    add('--screen-shot', dest='screenshot_fn',
+        help='take a screen shot and then exit')
+    add('--script', dest='script',
+        help='execute a script and then exit')
+    add('--script-window', dest='script_window',
+        help='open a window for scripts')
+    add('--select', dest='select',
+        help='headline or gnx of node to select')
+    add('--session-restore', action='store_true', dest='session_restore',
+        help='restore previously saved session tabs at startup')
+    add('--session-save', action='store_true', dest='session_save',
+        help='save session tabs on exit')
+    add('--silent', action='store_true', dest='silent',
+        help='disable all log messages')
+    add('--trace-binding', dest='binding',
+        help='trace key bindings')
+    add('--trace-focus', action='store_true', dest='trace_focus',
+        help='trace changes of focus')
+    add('--trace-plugins', action='store_true', dest='trace_plugins',
+        help='trace imports of plugins')
+    add('--trace-setting', dest='setting',
+        help='trace where setting is set')
+    add('-v', '--version', action='store_true', dest='version',
+        help='print version number and exit')
+    add('--window-size', dest='window_size',
+        help='initial window size (height x width)')
+    # Parse the options, and remove them from sys.argv.
+    options, args = parser.parse_args()
+    sys.argv = [sys.argv[0]]; sys.argv.extend(args)
+    if trace:
+        # print('scanOptions:',sys.argv)
+        g.trace('options', options)
+    # Handle the args...
+    # --debug
+    g.app.debug = options.debug
+    # if g.app.debug: g.trace_startup = True
+    # --fail-fast
+    if options.fail_fast:
+        g.app.failFast = True
+    # --git-diff
+    if options.diff:
+        g.app.diff = options.diff
+    # --gui
+    gui = options.gui
+    if gui:
+        gui = gui.lower()
+        if gui == 'qttabs':
+            g.app.qt_use_tabs = True
+        elif gui in ('console', 'curses', 'text', 'qt', 'null'):
+                # text: cursesGui.py, curses: cursesGui2.py.
+            g.app.qt_use_tabs = False
+        else:
+            print('scanOptions: unknown gui: %s.  Using qt gui' % gui)
+            gui = 'qt'
+            g.app.qt_use_tabs = False
+    elif sys.platform == 'darwin':
+        gui = 'qt'
+        g.app.qt_use_tabs = False
+    else:
+        gui = 'qttabs'
+        g.app.qt_use_tabs = True
+    assert gui
+    g.app.guiArgName = gui
+    # --load-type
+    load_type = options.load_type
+    if load_type:
+        load_type = load_type.lower()
+    else:
+        load_type = 'edit'
+    load_type = '@' + load_type
+    # --ipython
+    g.app.useIpython = options.use_ipython
+    if trace: g.trace('g.app.useIpython', g.app.useIpython)
+    # --fullscreen
+    # --minimized
+    # --maximized
+    g.app.start_fullscreen = options.fullscreen
+    g.app.start_maximized = options.maximized
+    g.app.start_minimized = options.minimized
+    # --no-cache
+    if options.no_cache:
+        if trace: print('scanOptions: disabling caching')
+        g.enableDB = False
+    # --no-plugins
+    if options.no_plugins:
+        if trace: print('scanOptions: disabling plugins')
+        g.app.enablePlugins = False
+    # --no-splash: --minimized disables the splash screen
+    g.app.use_splash_screen = (
+        not options.no_splash_screen and
+        not options.minimized)
+    # --screen-shot=fn
+    screenshot_fn = options.screenshot_fn
+    if screenshot_fn:
+        screenshot_fn = screenshot_fn.strip('"')
+        if trace: print('scanOptions: screenshot_fn', screenshot_fn)
+    # --script
+    script_path = options.script
+    script_path_w = options.script_window
+    if script_path and script_path_w:
+        parser.error('--script and script-window are mutually exclusive')
+    script_name = script_path or script_path_w
+    if script_name:
+        script_name = g.os_path_finalize_join(g.app.loadDir, script_name)
+        script, e = g.readFileIntoString(script_name, kind='script:')
+        # print('script_name',repr(script_name))
+    else:
+        script = None
+        # if trace: print('scanOptions: no script')
+    # --select
+    select = options.select
+    if select:
+        select = select.strip('"')
+        if trace: print('scanOptions: select', repr(select))
+    # --session-restore & --session-save
+    g.app.restore_session = bool(options.session_restore)
+    g.app.save_session = bool(options.session_save)
+    # --silent
+    g.app.silentMode = options.silent
+    # print('scanOptions: silentMode',g.app.silentMode)
+    # --trace-binding
+    g.app.trace_binding = options.binding
+    # --trace-focus
+    g.app.trace_focus = options.trace_focus
+    # --trace-plugins
+    g.app.trace_plugins = options.trace_plugins
+    # --trace-setting=setting
+    g.app.trace_setting = options.setting
+        # g.app.config does not exist yet.
+        # g.trace('trace_setting:', repr(options.trace_setting))
+    # --version: print the version and exit.
+    versionFlag = options.version
+    # --window-size
+    windowSize = options.window_size
+    if windowSize:
+        if trace: print('windowSize', repr(windowSize))
+        try:
+            h, w = windowSize.split('x')
+            windowSize = int(h), int(w)
+        except ValueError:
+            windowSize = None
+            g.trace('bad --window-size:', windowSize)
+    # Compute lm.files
+    lm.files = lm.computeFilesList(fileName)
+    # if options.debug:
+    #    g.es_debug('lm.files',lm.files)
+    # Post-process the options.
+    if pymacs:
+        script = None
+        windowFlag = None
+    # Compute the return values.
+    windowFlag = script and script_path_w
+    d = {
+        'gui': gui,
+        'load_type': load_type,
+        'screenshot_fn': screenshot_fn,
+        'script': script,
+        'select': select,
+        'version': versionFlag,
+        'windowFlag': windowFlag,
+        'windowSize': windowSize,
+    }
+    if trace: g.trace(d)
+    return d
+.. @+node:ekr.20170630073511.79: *8* LM.computeFilesList
+def computeFilesList(self, fileName):
+    lm = self
+    files = []
+    if fileName:
+        files.append(fileName)
+    for arg in sys.argv[1:]:
+        if arg and not arg.startswith('-'):
+            files.append(arg)
+    result = []
+    for z in files:
+        # Fix #245: wrong: result.extend(glob.glob(lm.completeFileName(z)))
+        aList = glob.glob(lm.completeFileName(z))
+        if aList:
+            result.extend(aList)
+        else:
+            result.append(z)
+    return result
+.. @+node:ekr.20170630073511.18: *7* LM.setStdStreams
+def setStdStreams(self):
+    '''
+    Make sure that stdout and stderr exist.
+    This is an issue when running Leo with pythonw.exe.
+    '''
+    # pdb requires sys.stdin, which doesn't exist when using pythonw.exe.
+    # import pdb ; pdb.set_trace()
+    import sys
+    import leo.core.leoGlobals as g
+    
+    # Define class LeoStdOut
+    @others
+
+    if not sys.stdout:
+        sys.stdout = sys.__stdout__ = LeoStdOut('stdout')
+    if not sys.stderr:
+        sys.stderr = sys.__stderr__ = LeoStdOut('stderr')
+.. @+node:ekr.20170630073511.19: *8* class LeoStdOut
+class LeoStdOut:
+    '''A class to put stderr & stdout to Leo's log pane.'''
+
+    def __init__(self, kind):
+        self.kind = kind
+        g.es_print = self.write
+        g.pr = self.write
+
+    def flush(self, *args, **keys):
+        pass
+        
+    @others
+.. @+node:ekr.20170630073511.20: *9* LeoStdOut.write
+def write(self, *args, **keys):
+    '''Put all non-keyword args to the log pane, as in g.es.'''
+    trace = False
+        # Tracing will lead to unbounded recursion unless
+        # sys.stderr has been redirected on the command line.
+    if trace:
+        for z in args:
+            sys.stderr.write('arg: %r\n' % z)
+        for z in keys:
+            sys.stderr.write('key: %r\n' % z)
+    app = g.app
+    if not app or app.killed: return
+    if app.gui and app.gui.consoleOnly: return
+    log = app.log
+    # Compute the effective args.
+    d = {
+        'color': None,
+        'commas': False,
+        'newline': True,
+        'spaces': True,
+        'tabName': 'Log',
+    }
+    # Handle keywords for g.pr and g.es_print.
+    d = g.doKeywordArgs(keys, d)
+    color = d.get('color')
+    if color == 'suppress': return
+    elif log and color is None:
+        color = g.actualColor('black')
+    color = g.actualColor(color)
+    tabName = d.get('tabName') or 'Log'
+    s = g.translateArgs(args, d)
+    if app.batchMode:
+        if log:
+            log.put(s)
+    elif log and app.logInited:
+        # from_redirect is the big difference between this and g.es.
+        log.put(s, color=color, tabName=tabName, from_redirect=True)
+    else:
+        app.logWaiting.append((s, color),)
+.. @+node:ekr.20170630073511.70: *6* LM.doPostPluginsInit & helpers
+def doPostPluginsInit(self):
+    '''Create a Leo window for each file in the lm.files list.'''
+    # Clear g.app.initing _before_ creating commanders.
+    lm = self
+    g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
+    # Create the main frame.  Show it and all queued messages.
+    c = c1 = None
+    if lm.files:
+        for n, fn in enumerate(lm.files):
+            lm.more_cmdline_files = n < len(lm.files) - 1
+            c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
+                # Returns None if the file is open in another instance of Leo.
+            if not c1: c1 = c
+    if g.app.restore_session:
+        m = g.app.sessionManager
+        if m:
+            aList = m.load_snapshot()
+            if aList:
+                m.load_session(c1, aList)
+                c = c1 = g.app.windowList[0].c
+    if not c1 or not g.app.windowList:
+        c1 = lm.openEmptyWorkBook()
+    # Fix bug #199.
+    g.app.runAlreadyOpenDialog(c1)
+    # Put the focus in the first-opened file.
+    fileName = lm.files[0] if lm.files else None
+    c = c1
+    # For qttabs gui, select the first-loaded tab.
+    if hasattr(g.app.gui, 'frameFactory'):
+        factory = g.app.gui.frameFactory
+        if factory and hasattr(factory, 'setTabForCommander'):
+            factory.setTabForCommander(c)
+    if not c:
+        return False # Force an immediate exit.
+    # Fix bug 844953: tell Unity which menu to use.
+    if c: c.enableMenuBar()
+    # Do the final inits.
+    g.app.logInited = True
+    g.app.initComplete = True
+    if c: c.setLog()
+    # print('doPostPluginsInit: ***** set log')
+    p = c.p if c else None
+    g.doHook("start2", c=c, p=p, v=p, fileName=fileName)
+    if c: lm.initFocusAndDraw(c, fileName)
+    screenshot_fn = lm.options.get('screenshot_fn')
+    if screenshot_fn:
+        lm.make_screen_shot(screenshot_fn)
+        return False # Force an immediate exit.
+    else:
+        return True
+.. @+node:ekr.20170630073511.71: *7* LM.initFocusAndDraw
+def initFocusAndDraw(self, c, fileName):
+
+    def init_focus_handler(timer, c=c, p=c.p):
+        '''Idle-time handler for initFocusAndDraw'''
+        c.initialFocusHelper()
+        c.outerUpdate()
+        timer.stop()
+
+    # This must happen after the code in getLeoFile.
+    timer = g.IdleTime(init_focus_handler, delay=0.1, tag='getLeoFile')
+    if timer:
+        timer.start()
+    else:
+        # Default code.
+        c.selectPosition(c.p)
+        c.initialFocusHelper()
+        c.k.showStateAndMode()
+        c.outerUpdate()
+.. @+node:ekr.20170630073511.72: *7* LM.make_screen_shot
+def make_screen_shot(self, fn):
+    '''Create a screenshot of the present Leo outline and save it to path.'''
+    # g.trace('runLeo.py',fn)
+    if g.app.gui.guiName() == 'qt':
+        m = g.loadOnePlugin('screenshots')
+        m.make_screen_shot(fn)
+.. @+node:ekr.20170630073511.73: *7* LM.openEmptyWorkBook
+def openEmptyWorkBook(self):
+    '''Open an empty frame and paste the contents of CheatSheet.leo into it.'''
+    lm = self
+    # Create an empty frame.
+    fn = lm.computeWorkbookFileName()
+    c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
+    # Open the cheatsheet, but not in batch mode.
+    if not g.app.batchMode and not g.os_path_exists(fn):
+        # Paste the contents of CheetSheet.leo into c.
+        c2 = c.openCheatSheet(redraw=False)
+        if c2:
+            for p2 in c2.rootPosition().self_and_siblings():
+                c2.selectPosition(p2)
+                c2.copyOutline()
+                p = c.pasteOutline()
+                c.selectPosition(p)
+                p.contract()
+                p.clearDirty()
+            c2.close(new_c=c)
+            root = c.rootPosition()
+            if root.h == g.shortFileName(fn):
+                root.doDelete(newNode=root.next())
+            p = g.findNodeAnywhere(c, "Leo's cheat sheet")
+            if p:
+                c.selectPosition(p, enableRedrawFlag=False)
+                p.expand()
+            c.target_language = 'rest'
+                # Settings not parsed the first time.
+            c.setChanged(False)
+            c.redraw()
+    return c
+.. @+node:ekr.20170630073511.25: *6* LM.isValidPython & emergency (Tk) dialog class
+def isValidPython(self):
+    if sys.platform == 'cli':
+        return True
+    minimum_python_version = '2.6'
+    message = """\
+Leo requires Python %s or higher.
+You may download Python from
+http://python.org/download/
+""" % minimum_python_version
+    try:
+        version = '.'.join([str(sys.version_info[i]) for i in (0, 1, 2)])
+        ok = g.CheckVersion(version, minimum_python_version)
+        if not ok:
+            print(message)
+            try:
+                # g.app.gui does not exist yet.
+                import Tkinter as Tk
+                << define emergency dialog class >>
+                d = EmergencyDialog(
+                    title='Python Version Error',
+                    message=message)
+                d.run()
+            except Exception:
+                pass
+        return ok
+    except Exception:
+        print("isValidPython: unexpected exception: g.CheckVersion")
+        traceback.print_exc()
+        return 0
+.. @+node:ekr.20170630073511.26: *7* << define emergency dialog class >>
+class EmergencyDialog(object):
+    """A class that creates an Tkinter dialog with a single OK button."""
+    @others
+.. @+node:ekr.20170630073511.27: *8* __init__ (emergencyDialog)
+def __init__(self, title, message):
+    """Constructor for the leoTkinterDialog class."""
+    self.answer = None # Value returned from run()
+    self.title = title
+    self.message = message
+    self.buttonsFrame = None # Frame to hold typical dialog buttons.
+    self.defaultButtonCommand = None
+        # Command to call when user closes the window
+        # by clicking the close box.
+    self.frame = None # The outermost frame.
+    self.root = None # Created in createTopFrame.
+    self.top = None # The toplevel Tk widget.
+    self.createTopFrame()
+    buttons = {"text": "OK", "command": self.okButton, "default": True},
+        # Singleton tuple.
+    self.createButtons(buttons)
+    self.top.bind("<Key>", self.onKey)
+.. @+node:ekr.20170630073511.28: *8* createButtons
+def createButtons(self, buttons):
+    """Create a row of buttons.
+
+    buttons is a list of dictionaries containing
+    the properties of each button."""
+    assert(self.frame)
+    self.buttonsFrame = f = Tk.Frame(self.top)
+    f.pack(side="top", padx=30)
+    # Buttons is a list of dictionaries, with an empty dictionary
+    # at the end if there is only one entry.
+    buttonList = []
+    for d in buttons:
+        text = d.get("text", "<missing button name>")
+        isDefault = d.get("default", False)
+        underline = d.get("underline", 0)
+        command = d.get("command", None)
+        bd = 4 if isDefault else 2
+        b = Tk.Button(f, width=6, text=text, bd=bd,
+            underline=underline, command=command)
+        b.pack(side="left", padx=5, pady=10)
+        buttonList.append(b)
+        if isDefault and command:
+            self.defaultButtonCommand = command
+    return buttonList
+.. @+node:ekr.20170630073511.29: *8* createTopFrame
+def createTopFrame(self):
+    """Create the Tk.Toplevel widget for a leoTkinterDialog."""
+    self.root = Tk.Tk()
+    self.top = Tk.Toplevel(self.root)
+    self.top.title(self.title)
+    self.root.withdraw()
+    self.frame = Tk.Frame(self.top)
+    self.frame.pack(side="top", expand=1, fill="both")
+    label = Tk.Label(self.frame, text=message, bg='white')
+    label.pack(pady=10)
+.. @+node:ekr.20170630073511.30: *8* okButton
+def okButton(self):
+    """Do default click action in ok button."""
+    self.top.destroy()
+    self.top = None
+.. @+node:ekr.20170630073511.31: *8* onKey
+def onKey(self, event):
+    """Handle Key events in askOk dialogs."""
+    self.okButton()
+    return # (for Tk) "break"
+.. @+node:ekr.20170630073511.32: *8* run
+def run(self):
+    """Run the modal emergency dialog."""
+    self.top.geometry("%dx%d%+d%+d" % (300, 200, 50, 50))
+    self.top.lift()
+    self.top.grab_set() # Make the dialog a modal dialog.
+    self.root.wait_window(self.top)
+.. @+node:ekr.20170630073511.33: *6* LM.loadLocalFile & helper
+def loadLocalFile(self, fn, gui, old_c):
+    '''Completely read a file, creating the corresonding outline.
+
+    1. If fn is an existing .leo file (possibly zipped), read it twice:
+    the first time with a NullGui to discover settings,
+    the second time with the requested gui to create the outline.
+
+    2. If fn is an external file:
+    get settings from the leoSettings.leo and myLeoSetting.leo, then
+    create a "wrapper" outline continain an @file node for the external file.
+
+    3. If fn is empty:
+    get settings from the leoSettings.leo and myLeoSetting.leo or default settings,
+    or open an empty outline.
+    '''
+    trace = (False or g.trace_startup or g.app.debug) and not g.unitTesting
+    if trace: g.es_debug(fn)
+    lm = self
+    # Step 0: Return if the file is already open.
+    fn = g.os_path_finalize(fn)
+    if fn:
+        c = lm.findOpenFile(fn)
+        if c:
+            if trace: g.trace('Already open: %s' % (fn))
+            return c
+    # Step 1: get the previous settings.
+    # For .leo files (and zipped .leo files) this pre-reads the file in a null gui.
+    # Otherwise, get settings from leoSettings.leo, myLeoSettings.leo, or default settings.
+    previousSettings = lm.getPreviousSettings(fn)
+    # Step 2: open the outline in the requested gui.
+    # For .leo files (and zipped .leo file) this opens the file a second time.
+    c = lm.openFileByName(fn, gui, old_c, previousSettings)
+    return c
+.. @+node:ekr.20170630073511.34: *7* LM.openFileByName & helpers
+def openFileByName(self, fn, gui, old_c, previousSettings):
+    '''Read the local file whose full path is fn using the given gui.
+    fn may be a Leo file (including .leo or zipped file) or an external file.
+
+    This is not a pre-read: the previousSettings always exist and
+    the commander created here persists until the user closes the outline.
+
+    Reads the entire outline if fn exists and is a .leo file or zipped file.
+    Creates an empty outline if fn is a non-existent Leo file.
+    Creates an wrapper outline if fn is an external file, existing or not.
+    '''
+    trace = (False or g.trace_startup) and not g.unitTesting
+    if trace: g.es_debug(g.shortFileName(fn))
+    lm = self
+    # Disable the log.
+    g.app.setLog(None)
+    g.app.lockLog()
+    # Create the a commander for the .leo file.
+    # Important.  The settings don't matter for pre-reads!
+    # For second read, the settings for the file are *exactly* previousSettings.
+    c = g.app.newCommander(fileName=fn, gui=gui,
+        previousSettings=previousSettings)
+    assert c
+    # Open the file, if possible.
+    g.doHook('open0')
+    theFile = lm.openLeoOrZipFile(fn)
+    # Enable the log.
+    g.app.unlockLog()
+    c.frame.log.enable(True)
+    # Phase 2: Create the outline.
+    g.doHook("open1", old_c=None, c=c, new_c=c, fileName=fn)
+    if theFile:
+        readAtFileNodesFlag = bool(previousSettings)
+        # The log is not set properly here.
+        ok = lm.readOpenedLeoFile(c, fn, readAtFileNodesFlag, theFile)
+            # Call c.fileCommands.openLeoFile to read the .leo file.
+        if not ok: return None
+    else:
+        # Create a wrapper .leo file if:
+        # a) fn is a .leo file that does not exist or
+        # b) fn is an external file, existing or not.
+        lm.initWrapperLeoFile(c, fn)
+    g.doHook("open2", old_c=None, c=c, new_c=c, fileName=fn)
+    # Phase 3: Complete the initialization.
+    g.app.writeWaitingLog(c)
+    c.setLog()
+    lm.createMenu(c, fn)
+    lm.finishOpen(c)
+    return c
+.. @+node:ekr.20170630073511.35: *8* LM.createMenu
+def createMenu(self, c, fn=None):
+    # lm = self
+    # Create the menu as late as possible so it can use user commands.
+    if not g.doHook("menu1", c=c, p=c.p, v=c.p):
+        c.frame.menu.createMenuBar(c.frame)
+        g.app.recentFilesManager.updateRecentFiles(fn)
+        g.doHook("menu2", c=c, p=c.p, v=c.p)
+        g.doHook("after-create-leo-frame", c=c)
+        g.doHook("after-create-leo-frame2", c=c)
+        # Fix bug 844953: tell Unity which menu to use.
+        c.enableMenuBar()
+.. @+node:ekr.20170630073511.36: *8* LM.findOpenFile
+def findOpenFile(self, fn):
+    # lm = self
+
+    def munge(name):
+        return g.os_path_normpath(name or '').lower()
+
+    for frame in g.app.windowList:
+        c = frame.c
+        if g.os_path_realpath(munge(fn)) == g.os_path_realpath(munge(c.mFileName)):
+            # don't frame.bringToFront(), it breaks --minimize
+            c.setLog()
+            # 2011/11/21: selecting the new tab ensures focus is set.
+            master = hasattr(frame.top, 'leo_master') and frame.top.leo_master
+            if master: # frame.top.leo_master is a TabbedTopLevel.
+                master.select(frame.c)
+            c.outerUpdate()
+            return c
+    return None
+.. @+node:ekr.20170630073511.37: *8* LM.finishOpen
+def finishOpen(self, c):
+    # lm = self
+    k = c.k
+    assert k
+    # New in Leo 4.6: provide an official way for very late initialization.
+    c.frame.tree.initAfterLoad()
+    c.initAfterLoad()
+    c.redraw()
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.chapterController: c.chapterController.finishCreate()
+    if k: k.setDefaultInputState()
+    c.initialFocusHelper()
+    if k: k.showStateAndMode()
+    c.frame.initCompleteHint()
+    c.outerUpdate()
+        # Honor focus requests.
+        # This fixes bug 181: Focus remains in previous file
+        # https://github.com/leo-editor/leo-editor/issues/181
+.. @+node:ekr.20170630073511.38: *8* LM.initWrapperLeoFile
+def initWrapperLeoFile(self, c, fn):
+    '''
+    Create an empty file if the external fn is empty.
+
+    Otherwise, create an @edit or @file node for the external file.
+    '''
+    # lm = self
+    # Use the config params to set the size and location of the window.
+    frame = c.frame
+    frame.setInitialWindowGeometry()
+    frame.deiconify()
+    frame.lift()
+    frame.resizePanesToRatio(frame.ratio, frame.secondary_ratio)
+        # Resize the _new_ frame.
+    if not g.os_path_exists(fn):
+        p = c.rootPosition()
+        # Create an empty @edit node unless fn is an .leo file.
+        p.h = g.shortFileName(fn) if fn.endswith('.leo') else '@edit %s' % fn
+        c.selectPosition(p)
+    elif c.looksLikeDerivedFile(fn):
+        # 2011/10/10: Create an @file node.
+        p = c.importCommands.importDerivedFiles(parent=c.rootPosition(),
+            paths=[fn], command=None) # Not undoable.
+        if p and p.hasBack():
+            p.back().doDelete()
+            p = c.rootPosition()
+        if not p: return None
+    else:
+        # Create an @<file> node.
+        p = c.rootPosition()
+        if p:
+            load_type = self.options['load_type']
+            p.setHeadString('%s %s' % (load_type,fn))
+            c.refreshFromDisk()
+            c.selectPosition(p)
+                
+    # Fix critical bug 1184855: data loss with command line 'leo somefile.ext'
+    # Fix smallish bug 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo.
+    c.mFileName = fn if fn.endswith('.leo') else '%s.leo' % (fn)
+    c.wrappedFileName = fn
+    c.frame.title = c.computeWindowTitle(c.mFileName)
+    c.frame.setTitle(c.frame.title)
+    # chapterController.finishCreate must be called after the first real redraw
+    # because it requires a valid value for c.rootPosition().
+    if c.config.getBool('use_chapters') and c.chapterController:
+        c.chapterController.finishCreate()
+    frame.c.setChanged(False)
+        # Mark the outline clean.
+        # This makes it easy to open non-Leo files for quick study.
+    return c
+.. @+node:ekr.20170630073511.39: *8* LM.isLeoFile & LM.isZippedFile
+def isLeoFile(self, fn):
+    return fn and (zipfile.is_zipfile(fn) or fn.endswith('.leo'))
+
+def isZippedFile(self, fn):
+    return fn and zipfile.is_zipfile(fn)
+.. @+node:ekr.20170630073511.40: *8* LM.openLeoOrZipFile
+def openLeoOrZipFile(self, fn):
+    lm = self
+    zipped = lm.isZippedFile(fn)
+    if lm.isLeoFile(fn) and g.os_path_exists(fn):
+        if zipped:
+            theFile = lm.openZipFile(fn)
+        else:
+            theFile = lm.openLeoFile(fn)
+    else:
+        theFile = None
+    return theFile
+.. @+node:ekr.20170630073511.41: *8* LM.openLeoFile
+def openLeoFile(self, fn):
+    # lm = self
+    try:
+        theFile = open(fn, 'rb')
+        return theFile
+    except IOError:
+        # Do not use string + here: it will fail for non-ascii strings!
+        if not g.unitTesting:
+            g.error("can not open:", fn)
+        return None
+.. @+node:ekr.20170630073511.42: *8* LM.openZipFile
+def openZipFile(self, fn):
+    # lm = self
+    try:
+        theFile = zipfile.ZipFile(fn, 'r')
+        if not theFile: return None
+        # Read the file into an StringIO file.
+        aList = theFile.namelist()
+        name = aList and len(aList) == 1 and aList[0]
+        if not name: return None
+        s = theFile.read(name)
+        if g.isPython3: s = g.ue(s, 'utf-8')
+        return StringIO(s)
+    except IOError:
+        # Do not use string + here: it will fail for non-ascii strings!
+        if not g.unitTesting:
+            g.error("can not open:", fn)
+        return None
+.. @+node:ekr.20170630073511.43: *8* LM.readOpenedLeoFile
+def readOpenedLeoFile(self, c, fn, readAtFileNodesFlag, theFile):
+    # New in Leo 4.10: The open1 event does not allow an override of the init logic.
+    assert theFile
+    # lm = self
+    ok = c.fileCommands.openLeoFile(theFile, fn,
+        readAtFileNodesFlag=readAtFileNodesFlag)
+            # closes file.
+    if ok:
+        if not c.openDirectory:
+            theDir = c.os_path_finalize(g.os_path_dirname(fn))
+            c.openDirectory = c.frame.openDirectory = theDir
+    else:
+        g.app.closeLeoWindow(c.frame, finish_quit=self.more_cmdline_files is False)
+    return ok
+.. @+node:ekr.20170630073511.44: *5* app.__init__ (helpers contain language dicts)
+def __init__(self):
+    '''
+    Ctor for LeoApp class. These ivars are Leo's global vars.
+
+    leoGlobals.py contains global switches to be set by hand.
+    '''
+    # g.trace('LeoApp')
+    << LeoApp: command-line arguments >>
+    << LeoApp: Debugging & statistics >>
+    << LeoApp: error messages >>
+    << LeoApp: global directories >>
+    << LeoApp: global data >>
+    << LeoApp: global controller/manager objects >>
+    << LeoApp: global reader/writer data >>
+    << LeoApp: global status vars >>
+    << LeoApp: the global log >>
+    << LeoApp: global types >>
+    << LeoApp: plugins and event handlers >>
+    << LeoApp: scripting ivars >>
+    << LeoApp: unit testing ivars >>
+    # Define all global data.
+    self.init_at_auto_names()
+    self.init_at_file_names()
+    self.define_global_constants()
+    self.define_language_delims_dict()
+    self.define_language_extension_dict()
+    self.define_extension_dict()
+    self.define_delegate_language_dict()
+.. @+node:ekr.20170630073511.66: *6* << LeoApp: command-line arguments >>
+self.batchMode = False
+    # True: run in batch mode.
+self.debug = False
+    # True: run Leo in debug mode.
+self.diff = False
+    # True: run Leo in diff mode.
+self.enablePlugins = True
+    # True: run start1 hook to load plugins. --no-plugins
+self.failFast = False
+    # True: Use the failfast option in unit tests.
+self.gui = None
+    # The gui class.
+self.guiArgName = None
+    # The gui name given in --gui option.
+self.ipython_inited = False
+    # True if leoIpython.py imports succeeded.
+self.qt_use_tabs = False
+    # True: allow tabbed main window.
+self.restore_session = False
+    # True: restore session on startup.
+self.save_session = False
+    # True: save session on close.
+self.silentMode = False
+    # True: no signon.
+self.start_fullscreen = False
+    # For qt_frame plugin.
+self.start_maximized = False
+    # For qt_frame plugin.
+self.start_minimized = False
+    # For qt_frame plugin.
+self.trace_binding = None
+    # True: name of binding to trace, or None.
+self.trace_focus = False
+    # True: trace changes in focus.
+self.trace_plugins = False
+    # True: trace imports of plugins.
+self.trace_setting = None
+    # The name of a setting to trace, or None.
+self.translateToUpperCase = False
+    # Never set to True.
+self.useIpython = False
+    # True: add support for IPython.
+self.use_psyco = False
+    # True: use psyco optimization.
+self.use_splash_screen = True
+    # True: put up a splash screen.
+.. @+node:ekr.20170630073511.46: *6* << LeoApp: Debugging & statistics >>
+self.count = 0
+    # General purpose debugging count.
+self.debug_app = False
+    # True: Enable debugging (of widgets)
+self.debug_dict = {}
+    # For general use.
+self.debug_widgets = False
+    # True: enable verbose tracing of widgets.
+self.debugSwitch = 0
+    # For g.es_exception: 0: Brief; 1: Full.
+self.disable_redraw = False
+    # True: disable all redraws.
+self.disableSave = False
+    # May be set by plugins.
+self.idle_timers = []
+    # A list of IdleTime instances, so they persist.
+self.log_listener = None
+    # The process created by the 'listen-for-log' command.
+self.positions = 0
+    # The number of positions generated.
+self.scanErrors = 0
+    # The number of errors seen by g.scanError.
+self.structure_errors = 0
+    # Set by p.safeMoveToThreadNext.
+self.statsDict = {}
+    # dict used by g.stat, g.clear_stats, g.print_stats.
+self.trace_open_with = True
+    # True: trace open-with logic in core and vim and xemacs plugins.
+self.trace_shutdown = False
+    # True: trace shutdown logic.
+self.validate_outline = False
+    # True: enables c.validate_outline. (slow)
+.. @+node:ekr.20170630073511.47: *6* << LeoApp: error messages >>
+self.atPathInBodyWarning = None
+    # Set by get_directives_dict.
+self.menuWarningsGiven = False
+    # True: supress warnings in menu code.
+self.unicodeErrorGiven = True
+    # True: suppres unicode tracebacks.
+.. @+node:ekr.20170630073511.48: *6* << LeoApp: global directories >>
+self.extensionsDir = None
+    # The leo/extensions directory
+self.globalConfigDir = None
+    # leo/config directory
+self.globalOpenDir = None
+    # The directory last used to open a file.
+self.homeDir = None
+    # The user's home directory.
+self.homeLeoDir = None
+    # The user's home/.leo directory.
+self.loadDir = None
+    # The leo/core directory.
+self.machineDir = None
+    # The machine-specific directory.
+.. @+node:ekr.20170630073511.49: *6* << LeoApp: global data >>
+self.atAutoNames = set()
+    # The set of all @auto spellings.
+self.atFileNames = set()
+    # The set of all built-in @<file> spellings.
+self.globalKillBuffer = []
+    # The global kill buffer.
+self.globalRegisters = {}
+    # The global register list.
+self.leoID = None
+    # The id part of gnx's.
+self.lossage = []
+    # List of last 100 keystrokes.
+self.paste_c = None
+    # The commander that pasted the last outline.
+self.spellDict = None
+    # The singleton PyEnchant spell dict.
+self.numberOfUntitledWindows = 0
+    # Number of opened untitled windows.
+self.windowList = []
+    # Global list of all frames.
+self.realMenuNameDict = {}
+    # Translations of menu names.
+.. @+node:ekr.20170630073511.50: *6* << LeoApp: global controller/manager objects >>
+# Most of these are defined in initApp.
+self.backgroundProcessManager = None
+    # The singleton BackgroundProcessManager instance.
+self.config = None
+    # The singleton leoConfig instance.
+self.db = None
+    # The singleton leoCacher instance.
+self.externalFilesController = None
+    # The singleton ExternalFilesController instance.
+self.idleTimeManager = None
+    # The singleton IdleTimeManager instance.
+self.ipk = None
+    # python kernel instance
+self.loadManager = None
+    # The singleton LoadManager instance.
+# self.logManager = None
+    # The singleton LogManager instance.
+# self.openWithManager = None
+    # The singleton OpenWithManager instance.
+self.nodeIndices = None
+    # The singleton nodeIndices instance.
+self.pluginsController = None
+    # The singleton PluginsManager instance.
+self.sessionManager = None
+    # The singleton SessionManager instance.
+# The Commands class...
+self.commandName = None
+    # The name of the command being executed.
+self.commandInterruptFlag = False
+    # True: command within a command.
+.. @+node:ekr.20170630073511.51: *6* << LeoApp: global reader/writer data >>
+# From leoAtFile.py.
+self.atAutoWritersDict = {}
+self.writersDispatchDict = {}
+# From leoImport.py
+self.atAutoDict = {}
+    # Keys are @auto names, values are scanner classes.
+self.classDispatchDict = {}
+.. @+node:ekr.20170630073511.67: *6* << LeoApp: global status vars >>
+self.already_open_files = []
+    # A list of file names that *might* be open in another
+    # copy of Leo.
+self.dragging = False
+    # True: dragging.
+self.allow_delayed_see = False
+    # True: pqsh.reformat_blocks_helper calls w.seeInsertPoint
+self.inBridge = False
+    # True: running from leoBridge module.
+self.inScript = False
+    # True: executing a script.
+self.initing = True
+    # True: we are initiing the app.
+self.initComplete = False
+    # True: late bindings are not allowed.
+self.killed = False
+    # True: we are about to destroy the root window.
+self.openingSettingsFile = False
+    # True, opening a settings file.
+self.preReadFlag = False
+    # True: we are pre-reading a settings file.
+self.quitting = False
+    # True: quitting.  Locks out some events.
+self.reverting = False
+    # True: executing the revert command.
+self.syntax_error_files = []
+.. @+node:ekr.20170630073511.53: *6* << LeoApp: the global log >>
+# To be moved to the LogManager.
+self.log = None
+    # The LeoFrame containing the present log.
+self.logInited = False
+    # False: all log message go to logWaiting list.
+self.logIsLocked = False
+    # True: no changes to log are allowed.
+self.logWaiting = []
+    # List of messages waiting to go to a log.
+self.printWaiting = []
+    # Queue of messages to be sent to the printer.
+self.signon = ''
+self.signon2 = ''
+self.signon_printed = False
+.. @+node:ekr.20170630073511.54: *6* << LeoApp: global types >>
+import leo.core.leoFrame as leoFrame
+import leo.core.leoGui as leoGui
+self.nullGui = leoGui.NullGui()
+self.nullLog = leoFrame.NullLog()
+.. @+node:ekr.20170630073511.55: *6* << LeoApp: plugins and event handlers >>
+self.hookError = False
+    # True: suppress further calls to hooks.
+    # g.doHook sets g.app.hookError on all exceptions.
+    # Scripts may reset g.app.hookError to try again.
+self.hookFunction = None
+    # Application wide hook function.
+self.idle_time_hooks_enabled = True
+    # True: idle-time hooks are enabled.
+.. @+node:ekr.20170630073511.56: *6* << LeoApp: scripting ivars >>
+self.searchDict = {}
+    # For communication between find/change scripts.
+self.scriptDict = {}
+    # For use by scripts. Cleared before running each script.
+self.scriptResult = None
+    # For use by leoPymacs.
+self.permanentScriptDict = {}
+    # For use by scrips. Never cleared automatically.
+.. @+node:ekr.20170630073511.57: *6* << LeoApp: unit testing ivars >>
+self.isExternalUnitTest = False
+    # True: we are running a unit test externally.
+self.runningAllUnitTests = False
+    # True: we are running all unit tests (Only for local tests).
+self.suppressImportChecks = False
+    # Used only in basescanner.py
+    # True: suppress importCommands.check
+self.unitTestDict = {}
+    # For communication between unit tests and code.
+self.UnitTestGui = None
+    # A way to override the gui in external unit tests.
+self.unitTesting = False
+    # True if unit testing.
+self.unitTestMenusDict = {}
+    # Created in LeoMenu.createMenuEntries for a unit test.
+    # keys are command names. values are sets of strokes.
+.. @+node:ekr.20170630073511.58: *6* app.init_at_auto_names
+def init_at_auto_names(self):
+    '''Init the app.atAutoNames set.'''
+    self.atAutoNames = set([
+        "@auto-rst", "@auto",
+    ])
+.. @+node:ekr.20170630073511.59: *6* app.init_at_file_names
+def init_at_file_names(self):
+    '''Init the app.atFileNames set.'''
+    self.atFileNames = set([
+        "@asis",
+        "@edit",
+        "@file-asis", "@file-thin", "@file-nosent", "@file",
+        "@clean", "@nosent",
+        "@shadow",
+        "@thin",
+    ])
+.. @+node:ekr.20170630073511.60: *6* app.define_global_constants
+def define_global_constants(self):
+    # self.prolog_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+    self.prolog_prefix_string = "<?xml version=\"1.0\" encoding="
+    self.prolog_postfix_string = "?>"
+    self.prolog_namespace_string = 'xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"'
+.. @+node:ekr.20170630073511.61: *6* app.define_delegate_language_dict
+def define_delegate_language_dict(self):
+    self.delegate_language_dict = {
+        # Keys are new language names.
+        # Values are existing languages in leo/modes.
+        "less": "css",
+        "hbs": "html",
+        "handlebars": "html",
+    }
+.. @+node:ekr.20170630073511.62: *6* app.define_language_delims_dict
+@nobeautify
+
+def define_language_delims_dict(self):
+
+    self.language_delims_dict = {
+        # Internally, lower case is used for all language names.
+        # Keys are languages, values are 1,2 or 3-tuples of delims.
+        "actionscript"       : "// /* */", # jason 2003-07-03
+        "ada"                : "--",
+        "ada95"              : "--",
+        "ahk"                : ";",
+        "antlr"              : "// /* */",
+        "apacheconf"         : "#",
+        "apdl"               : "!",
+        "applescript"        : "-- (* *)",
+        "asp"                : "<!-- -->",
+        "aspect_j"           : "// /* */",
+        "assembly_macro32"   : ";",
+        "assembly_mcs51"     : ";",
+        "assembly_parrot"    : "#",
+        "assembly_r2000"     : "#",
+        "assembly_x86"       : ";",
+        "autohotkey"         : "; /* */", # TL - AutoHotkey language
+        "awk"                : "#",
+        "b"                  : "// /* */",
+        "batch"              : "REM_", # Use the REM hack.
+        "bbj"                : "/* */",
+        "bcel"               : "// /* */",
+        "bibtex"             : "%",
+        "c"                  : "// /* */", # C, C++ or objective C.
+        "chill"              : "/* */",
+        "clojure"            : ";", # 2013/09/25: Fix bug 879338.
+        "cobol"              : "*",
+        "coldfusion"         : "<!-- -->",
+        "coffeescript"       : "#", # 2016/02/26.
+        "config"             : "#", # Leo 4.5.1
+        "cplusplus"          : "// /* */",
+        "cpp"                : "// /* */",# C++.
+        "csharp"             : "// /* */", # C#
+        "css"                : "/* */", # 4/1/04
+        "cweb"               : "@q@ @>", # Use the "cweb hack"
+        "cython"             : "#",
+        "d"                  : "// /* */",
+        "dart"               : "// /* */", # Leo 5.0.
+        "doxygen"            : "#",
+        "eiffel"             : "--",
+        "elisp"              : ";",
+        "erlang"             : "%",
+        "factor"             : "!_ ( )", # Use the rem hack.
+        "forth"              : "\\_ _(_ _)", # Use the "REM hack"
+        "fortran"            : "C",
+        "fortran90"          : "!",
+        "foxpro"             : "&&",
+        "gettext"            : "# ",
+        "groovy"             : "// /* */",
+        "handlebars"         : "<!-- -->", # McNab: delegate to html.
+        "haskell"            : "--_ {-_ _-}",
+        "haxe"               : "// /* */",
+        "hbs"                : "<!-- -->", # McNab: delegate to html.
+        "html"               : "<!-- -->",
+        "i4gl"               : "-- { }",
+        "icon"               : "#",
+        "idl"                : "// /* */",
+        "inform"             : "!",
+        "ini"                : ";",
+        "inno_setup"         : ";",
+        "interlis"           : "/* */",
+        "io"                 : "// */",
+        "java"               : "// /* */",
+        "javascript"         : "// /* */", # EKR: 2011/11/12: For javascript import test.
+        "javaserverpage"     : "<%-- --%>", # EKR: 2011/11/25 (See also, jsp)
+        "jhtml"              : "<!-- -->",
+        "jmk"                : "#",
+        "jsp"                : "<%-- --%>",
+        "kivy"               : "#", # PeckJ 2014/05/05
+        "kshell"             : "#", # Leo 4.5.1.
+        "latex"              : "%",
+        "less"               : "/* */", # NcNab: delegate to css.
+        "lilypond"           : "% %{ %}",
+        "lisp"               : ";", # EKR: 2010/09/29
+        "lotos"              : "(* *)",
+        "lua"                : "--", # ddm 13/02/06
+        "mail"               : ">",
+        "makefile"           : "#",
+        "maple"              : "//",
+        "markdown"           : "", # EKR, 2016/11/25
+        "matlab"             : "%", # EKR: 2011/10/21
+        "md"                 : "<!-- -->", # PeckJ: 2013/02/08
+        "ml"                 : "(* *)",
+        "modula3"            : "(* *)",
+        "moin"               : "##",
+        "mqsc"               : "*",
+        "netrexx"            : "-- /* */",
+        "noweb"              : "%", # EKR: 2009-01-30. Use Latex for doc chunks.
+        "nqc"                : "// /* */",
+        "nsi"                : ";", # EKR: 2010/10/27
+        "nsis2"              : ";",
+        "objective_c"        : "// /* */",
+        "objectrexx"         : "-- /* */",
+        "occam"              : "--",
+        "omnimark"           : ";",
+        "pascal"             : "// { }",
+        "perl"               : "#",
+        "perlpod"            : "# __=pod__ __=cut__", # 9/25/02: The perlpod hack.
+        "php"                : "// /* */", # 6/23/07: was "//",
+        "pike"               : "// /* */",
+        "pl1"                : "/* */",
+        "plain"              : "#", # We must pick something.
+        "plsql"              : "-- /* */", # SQL scripts qt02537 2005-05-27
+        "pop11"              : ";;; /* */",
+        "postscript"         : "%",
+        "povray"             : "// /* */",
+        "powerdynamo"        : "// <!-- -->",
+        "prolog"             : "% /* */",
+        "psp"                : "<!-- -->",
+        "ptl"                : "#",
+        "pvwave"             : ";",
+        "pyrex"              : "#",
+        "python"             : "#",
+        "r"                  : "#",
+        "rapidq"             : "'", # fil 2004-march-11
+        "rebol"              : ";", # jason 2003-07-03
+        "redcode"            : ";",
+        "rest"               : ".._",
+        "rhtml"              : "<%# %>",
+        "rib"                : "#",
+        "rpmspec"            : "#",
+        "rst"                : ".._",
+        "ruby"               : "#", # thyrsus 2008-11-05
+        "rview"              : "// /* */",
+        "sas"                : "* /* */",
+        "scala"              : "// /* */",
+        "scheme"             : "; #| |#",
+        "sdl_pr"             : "/* */",
+        "sgml"               : "<!-- -->",
+        "shell"              : "#",     # shell scripts
+        "shellscript"        : "#",
+        "shtml"              : "<!-- -->",
+        "smalltalk"          : '" "', # Comments are enclosed in double quotes(!!)
+        "smi_mib"            : "--",
+        "splus"              : "#",
+        "sqr"                : "!",
+        "squidconf"          : "#",
+        "ssharp"             : "#",
+        "swig"               : "// /* */",
+        "tcl"                : "#",
+        "tcltk"              : "#",
+        "tex"                : "%", # Bug fix: 2008-1-30: Fixed Mark Edginton's bug.
+        "text"               : "#", # We must pick something.
+        "texinfo"            : "@c",
+        "tpl"                : "<!-- -->",
+        "tsql"               : "-- /* */",
+        "typescript"         : "// /* */", # For typescript import test.
+        "unknown"            : "#", # Set when @comment is seen.
+        "unknown_language"   : '#--unknown-language--', # For unknown extensions in @shadow files.
+        "uscript"            : "// /* */",
+        "vbscript"           : "'",
+        "velocity"           : "## #* *#",
+        "verilog"            : "// /* */",
+        "vhdl"               : "--",
+        "vim"                : "\"",
+        "vimoutline"         : "#", # TL 8/25/08 Vim's outline plugin
+        "xml"                : "<!-- -->",
+        "xsl"                : "<!-- -->",
+        "xslt"               : "<!-- -->",
+        "yaml"               : "#",
+        "zpt"                : "<!-- -->",
+
+        # These aren't real languages, or have no delims...
+        # "cvs_commit"         : "",
+        # "dsssl"              : "; <!-- -->",
+        # "embperl"            : "<!-- -->",  # Internal colorizing state.
+        # "freemarker"         : "",
+        # "hex"                : "",
+        # "jcl"                : "",
+        # "patch"              : "",
+        # "phpsection"         : "<!-- -->",  # Internal colorizing state.
+        # "props"              : "#",         # Unknown language.
+        # "pseudoplain"        : "",
+        # "relax_ng_compact"   : "#",         # An xml schema.
+        # "rtf"                : "",
+        # "svn_commit"         : "",
+    }
+.. @+node:ekr.20170630073511.63: *6* app.define_language_extension_dict
+@nobeautify
+
+def define_language_extension_dict(self):
+
+    # Used only by g.app.externalFilesController.get_ext.
+
+    # Keys are languages, values are extensions.
+    self.language_extension_dict = {
+        "actionscript"  : "as", # jason 2003-07-03
+        "ada"           : "ada",
+        "ada95"         : "ada",
+        "ahk"           : "ahk",
+        "antlr"         : "g",
+        "apacheconf"    : "conf",
+        "apdl"          : "apdl",
+        "applescript"   : "scpt",
+        "asp"           : "asp",
+        "aspect_j"      : "aj",
+        "autohotkey"    : "ahk", # TL - AutoHotkey language
+        "awk"           : "awk",
+        "b"             : "b",
+        "batch"         : "bat", # Leo 4.5.1.
+        "bbj"           : "bbj",
+        "bcel"          : "bcel",
+        "bibtex"        : "bib",
+        "c"             : "c",
+        "chill"         : "ch",  # Only one extension is valid: .c186, .c286
+        "clojure"       : "clj", # 2013/09/25: Fix bug 879338.
+        "cobol"         : "cbl", # Only one extension is valid: .cob
+        "coldfusion"    : "cfm",
+        "coffeescript"  : "coffee",
+        "config"        : "cfg",
+        "cplusplus"     : "c++",
+        "cpp"           : "cpp",
+        "css"           : "css", # 4/1/04
+        "cweb"          : "w",
+        "cython"        : "pyx", # Only one extension is valid at present: .pyi, .pyd.
+        "d"             : "d",
+        "dart"          : "dart",
+        "eiffel"        : "e",
+        "elisp"         : "el",
+        "erlang"        : "erl",
+        "factor"        : "factor",
+        "forth"         : "forth",
+        "fortran"       : "f",
+        "fortran90"     : "f90",
+        "foxpro"        : "prg",
+        "gettext"       : "po",
+        "groovy"        : "groovy",
+        "haskell"       : "hs",
+        "haxe"          : "hx",
+        "html"          : "html",
+        "i4gl"          : "i4gl",
+        "icon"          : "icn",
+        "idl"           : "idl",
+        "inform"        : "inf",
+        "ini"           : "ini",
+        "inno_setup"    : "iss",
+        "io"            : "io",
+        "java"          : "java",
+        "javascript"    : "js", # EKR: 2011/11/12: For javascript import test.
+        "javaserverpage": "jsp", # EKR: 2011/11/25
+        "jhtml"         : "jhtml",
+        "jmk"           : "jmk",
+        "jsp"           : "jsp",
+        "kivy"          : "kv", # PeckJ 2014/05/05
+        "kshell"        : "ksh", # Leo 4.5.1.
+        "latex"         : "tex", # 1/8/04
+        "lilypond"      : "ly",
+        "lua"           : "lua", # ddm 13/02/06
+        "mail"          : "eml",
+        "makefile"      : "mak",
+        "maple"         : "mpl",
+        "matlab"        : "m",
+        "md"            : "md", # PeckJ: 2013/02/07
+        "ml"            : "ml",
+        "modula3"       : "mod",
+        "moin"          : "wiki",
+        "mqsc"          : "mqsc",
+        "noweb"         : "nw",
+        "nqc"           : "nqc",
+        "nsi"           : "nsi", # EKR: 2010/10/27
+        "nsis2"         : "nsi",
+        "objective_c"   : "mm", # Only one extension is valid: .m
+        "objectrexx"    : "rex",
+        "occam"         : "occ",
+        "omnimark"      : "xom",
+        "pascal"        : "p",
+        "perl"          : "pl",
+        "perlpod"       : "pod",
+        "php"           : "php",
+        "pike"          : "pike",
+        "pl1"           : "pl1",
+        "plain"         : "txt",
+        "plsql"         : "sql", # qt02537 2005-05-27
+        # "pop11"       : "p", # Conflicts with pascall.
+        "postscript"    : "ps",
+        "povray"        : "pov",
+        "prolog"        : "pro",
+        "psp"           : "psp",
+        "ptl"           : "ptl",
+        "pyrex"         : "pyx",
+        "python"        : "py",
+        "r"             : "r",
+        "rapidq"        : "bas", # fil 2004-march-11
+        "rebol"         : "r", # jason 2003-07-03
+        "rhtml"         : "rhtml",
+        "rib"           : "rib",
+        "rst"           : "rest",
+        "ruby"          : "rb", # thyrsus 2008-11-05
+        "sas"           : "sas",
+        "scala"         : "scala",
+        "scheme"        : "scm",
+        "sgml"          : "sgml",
+        "shell"         : "sh", # DS 4/1/04
+        "shellscript"   : "bash",
+        "shtml"         : "ssi", # Only one extension is valid: .shtml
+        "smalltalk"     : "sm",
+        "splus"         : "splus",
+        "sqr"           : "sqr",
+        "ssharp"        : "ss",
+        "swig"          : "i",
+        "tcl"           : "tcl",
+        "tcltk"         : "tcl",
+        "tex"           : "tex",
+        "texinfo"       : "info",
+        "text"          : "txt",
+        "tpl"           : "tpl",
+        "tsql"          : "sql", # A guess.
+        "typescript"    : "ts",
+        "unknown"       : "txt", # Set when @comment is seen.
+        "uscript"       : "uc",
+        "vbscript"      : "vbs",
+        "velocity"      : "vtl",
+        "verilog"       : "v",
+        "vhdl"          : "vhd", # Only one extension is valid: .vhdl
+        "vim"           : "vim",
+        "vimoutline"    : "otl", # TL 8/25/08 Vim's outline plugin
+        "xml"           : "xml",
+        "xsl"           : "xsl",
+        "xslt"          : "xsl",
+        "yaml"          : "yaml",
+        "zpt"           : "zpt",
+    }
+
+    # These aren't real languages, or have no delims...
+        # cvs_commit, dsssl, embperl, freemarker, hex, jcl,
+        # patch, phpsection, progress, props, pseudoplain,
+        # relax_ng_compact, rtf, svn_commit.
+
+    # These have extensions which conflict with other languages.
+        # assembly_macro32: .asm or .a
+        # assembly_mcs51:   .asm or .a
+        # assembly_parrot:  .asm or .a
+        # assembly_r2000:   .asm or .a
+        # assembly_x86:     .asm or .a
+        # squidconf:        .conf
+        # rpmspec:          .rpm
+.. @+node:ekr.20170630073511.64: *6* app.define_extension_dict
+@nobeautify
+
+def define_extension_dict(self):
+
+    # Keys are extensions, values are languages
+    self.extension_dict = {
+        # "ada":    "ada",
+        "ada":      "ada95", # modes/ada95.py exists.
+        "ahk":      "autohotkey",
+        "aj":       "aspect_j",
+        "apdl":     "apdl",
+        "as":       "actionscript", # jason 2003-07-03
+        "asp":      "asp",
+        "awk":      "awk",
+        "b":        "b",
+        "bas":      "rapidq", # fil 2004-march-11
+        "bash":     "shellscript",
+        "bat":      "batch",
+        "bbj":      "bbj",
+        "bcel":     "bcel",
+        "bib":      "bibtex",
+        "c":        "c",
+        "c++":      "cplusplus",
+        "cbl":      "cobol", # Only one extension is valid: .cob
+        "cfg":      "config",
+        "cfm":      "coldfusion",
+        "clj":      "clojure", # 2013/09/25: Fix bug 879338.
+        "ch":       "chill", # Other extensions, .c186,.c286
+        "coffee":   "coffeescript",
+        "conf":     "apacheconf",
+        "cpp":      "cpp",
+        "css":      "css",
+        "d":        "d",
+        "dart":     "dart",
+        "e":        "eiffel",
+        "el":       "elisp",
+        "eml":      "mail",
+        "erl":      "erlang",
+        "f":        "fortran",
+        "f90":      "fortran90",
+        "factor":   "factor",
+        "forth":    "forth",
+        "g":        "antlr",
+        "groovy":   "groovy",
+        "h":        "c", # 2012/05/23.
+        "handlebars": "html", # McNab.
+        "hbs":      "html", # McNab.
+        "hs":       "haskell",
+        "html":     "html",
+        "hx":       "haxe",
+        "i":        "swig",
+        "i4gl":     "i4gl",
+        "icn":      "icon",
+        "idl":      "idl",
+        "inf":      "inform",
+        "info":     "texinfo",
+        "ini":      "ini",
+        "io":       "io",
+        "iss":      "inno_setup",
+        "java":     "java",
+        "jhtml":    "jhtml",
+        "jmk":      "jmk",
+        "js":       "javascript", # For javascript import test.
+        "jsp":      "javaserverpage",
+        # "jsp":      "jsp",
+        "ksh":      "kshell",
+        "kv":       "kivy", # PeckJ 2014/05/05
+        "less":     "css", # McNab
+        "lua":      "lua", # ddm 13/02/06
+        "ly":       "lilypond",
+        "m":        "matlab",
+        "mak":      "makefile",
+        "md":       "md", # PeckJ 2013/02/07
+        "ml":       "ml",
+        "mm":       "objective_c", # Only one extension is valid: .m
+        "mod":      "modula3",
+        "mpl":      "maple",
+        "mqsc":     "mqsc",
+        "nqc":      "nqc",
+        "nsi":      "nsi", # EKR: 2010/10/27
+        # "nsi":      "nsis2",
+        "nw":       "noweb",
+        "occ":      "occam",
+        "otl":      "vimoutline", # TL 8/25/08 Vim's outline plugin
+        "p":        "pascal",
+        # "p":      "pop11", # Conflicts with pascal.
+        "php":      "php",
+        "pike":     "pike",
+        "pl":       "perl",
+        "pl1":      "pl1",
+        "po":       "gettext",
+        "pod":      "perlpod",
+        "pov":      "povray",
+        "prg":      "foxpro",
+        "pro":      "prolog",
+        "ps":       "postscript",
+        "psp":      "psp",
+        "ptl":      "ptl",
+        "py":       "python",
+        "pyx":      "cython", # Other extensions, .pyd,.pyi
+        # "pyx":    "pyrex",
+        # "r":      "r", # modes/r.py does not exist.
+        "r":        "rebol", # jason 2003-07-03
+        "rb":       "ruby", # thyrsus 2008-11-05
+        "rest":     "rst",
+        "rex":      "objectrexx",
+        "rhtml":    "rhtml",
+        "rib":      "rib",
+        "sas":      "sas",
+        "scala":    "scala",
+        "scm":      "scheme",
+        "scpt":     "applescript",
+        "sgml":     "sgml",
+        "sh":       "shell", # DS 4/1/04. modes/shell.py exists.
+        "shtml":    "shtml",
+        "sm":       "smalltalk",
+        "splus":    "splus",
+        "sql":      "plsql", # qt02537 2005-05-27
+        "sqr":      "sqr",
+        "ss":       "ssharp",
+        "ssi":      "shtml",
+        "tcl":      "tcl", # modes/tcl.py exists.
+        # "tcl":    "tcltk",
+        "tex":      "latex",
+        # "tex":      "tex",
+        "tpl":      "tpl",
+        "ts":       "typescript",
+        "txt":      "plain",
+        # "txt":      "text",
+        # "txt":      "unknown", # Set when @comment is seen.
+        "uc":       "uscript",
+        "v":        "verilog",
+        "vbs":      "vbscript",
+        "vhd":      "vhdl",
+        "vhdl":     "vhdl",
+        "vim":      "vim",
+        "vtl":      "velocity",
+        "w":        "cweb",
+        "wiki":     "moin",
+        "xml":      "xml",
+        "xom":      "omnimark",
+        "xsl":      "xsl",
+        "yaml":     "yaml",
+        "zpt":      "zpt",
+    }
+
+    # These aren't real languages, or have no delims...
+        # cvs_commit, dsssl, embperl, freemarker, hex, jcl,
+        # patch, phpsection, progress, props, pseudoplain,
+        # relax_ng_compact, rtf, svn_commit.
+
+    # These have extensions which conflict with other languages.
+        # assembly_macro32: .asm or .a
+        # assembly_mcs51:   .asm or .a
+        # assembly_parrot:  .asm or .a
+        # assembly_r2000:   .asm or .a
+        # assembly_x86:     .asm or .a
+        # squidconf:        .conf
+        # rpmspec:          .rpm
+
+    # Extra language extensions, used to associate extensions with mode files.
+    # Used by importCommands.languageForExtension.
+    # Keys are extensions, values are corresponding mode file (without .py)
+    # A value of 'none' is a signal to unit tests that no extension file exists.
+    self.extra_extension_dict = {
+        'pod'   : 'perl',
+        'unknown_language': 'none',
+        'w'     : 'none', # cweb
+    }
+.. @+node:ekr.20170630073511.65: *5* Changed
+.. @+node:ekr.20170630073511.66: *6* << LeoApp: command-line arguments >>
+self.batchMode = False
+    # True: run in batch mode.
+self.debug = False
+    # True: run Leo in debug mode.
+self.diff = False
+    # True: run Leo in diff mode.
+self.enablePlugins = True
+    # True: run start1 hook to load plugins. --no-plugins
+self.failFast = False
+    # True: Use the failfast option in unit tests.
+self.gui = None
+    # The gui class.
+self.guiArgName = None
+    # The gui name given in --gui option.
+self.ipython_inited = False
+    # True if leoIpython.py imports succeeded.
+self.qt_use_tabs = False
+    # True: allow tabbed main window.
+self.restore_session = False
+    # True: restore session on startup.
+self.save_session = False
+    # True: save session on close.
+self.silentMode = False
+    # True: no signon.
+self.start_fullscreen = False
+    # For qt_frame plugin.
+self.start_maximized = False
+    # For qt_frame plugin.
+self.start_minimized = False
+    # For qt_frame plugin.
+self.trace_binding = None
+    # True: name of binding to trace, or None.
+self.trace_focus = False
+    # True: trace changes in focus.
+self.trace_plugins = False
+    # True: trace imports of plugins.
+self.trace_setting = None
+    # The name of a setting to trace, or None.
+self.translateToUpperCase = False
+    # Never set to True.
+self.useIpython = False
+    # True: add support for IPython.
+self.use_psyco = False
+    # True: use psyco optimization.
+self.use_splash_screen = True
+    # True: put up a splash screen.
+.. @+node:ekr.20170630073511.67: *6* << LeoApp: global status vars >>
+self.already_open_files = []
+    # A list of file names that *might* be open in another
+    # copy of Leo.
+self.dragging = False
+    # True: dragging.
+self.allow_delayed_see = False
+    # True: pqsh.reformat_blocks_helper calls w.seeInsertPoint
+self.inBridge = False
+    # True: running from leoBridge module.
+self.inScript = False
+    # True: executing a script.
+self.initing = True
+    # True: we are initiing the app.
+self.initComplete = False
+    # True: late bindings are not allowed.
+self.killed = False
+    # True: we are about to destroy the root window.
+self.openingSettingsFile = False
+    # True, opening a settings file.
+self.preReadFlag = False
+    # True: we are pre-reading a settings file.
+self.quitting = False
+    # True: quitting.  Locks out some events.
+self.reverting = False
+    # True: executing the revert command.
+self.syntax_error_files = []
+.. @+node:ekr.20170630073511.68: *6* k.registerCommand
+def registerCommand(self, commandName, shortcut, func,
+    pane='all', source_c=None, verbose=False
+):
+    '''
+    Make the function available as a minibuffer command,
+    and optionally attempt to bind a shortcut.
+
+    You can wrap any method in a callback function, so the
+    restriction to functions is not significant.
+
+    If wrap is True then func will be wrapped with c.universalCallback.
+    source_c is the commander in which an @command or @button node is defined.
+    
+    **Important**: Bindings created here from plugins can not be overridden.
+    This includes @command and @button bindings created by mod_scripting.py.
+    '''
+    trace = False and not g.unitTesting and not g.app.silentMode and shortcut
+    c, k = self.c, self
+    is_local = c.shortFileName() not in ('myLeoSettings.leo', 'leoSettings.leo')
+    f = c.commandsDict.get(commandName)
+    if f and f.__name__ != func.__name__:
+        g.trace('redefining', commandName, f, '->', func)
+    assert not g.isStroke(shortcut)
+    c.commandsDict[commandName] = func
+    if shortcut:
+        stroke = k.strokeFromSetting(shortcut)
+    elif commandName.lower() == 'shortcut': # Causes problems.
+        stroke = None
+    elif is_local:
+        # 327: Don't get defaults when handling a local file.
+        stroke = None
+    else:
+        # Try to get a stroke from leoSettings.leo.
+        stroke = None
+        junk, aList = c.config.getShortcut(commandName)
+        for si in aList:
+            assert g.isShortcutInfo(si), si
+            assert g.isStrokeOrNone(si.stroke)
+            if si.stroke and not si.pane.endswith('-mode'):
+                stroke = si.stroke
+                pane = si.pane # 2015/05/11.
+                break
+    if stroke:
+        k.bindKey(pane, stroke, func, commandName, tag='register-command')
+            # Must be a stroke.
+        k.makeMasterGuiBinding(stroke, trace=trace) # Must be a stroke.
+    elif is_local:
+        if trace: g.trace('KILL:', commandName)
+        k.killBinding(commandName)
+    if trace:
+        pretty_stroke = stroke and k.prettyPrintKey(stroke) or 'None'
+        g.trace('@command %25s' % (commandName), pretty_stroke, g.callers(2))
+    # Fixup any previous abbreviation to press-x-button commands.
+    if commandName.startswith('press-') and commandName.endswith('-button'):
+        d = c.config.getAbbrevDict()
+            # Keys are full command names, values are abbreviations.
+        if commandName in list(d.values()):
+            for key in d:
+                if d.get(key) == commandName:
+                    c.commandsDict[key] = c.commandsDict.get(commandName)
+                    break
+.. @+node:ekr.20170630073511.69: *6* LM.computeLocalSettings
+def computeLocalSettings(self, c, settings_d, shortcuts_d, localFlag):
+    '''Merge the settings dicts from c's outline into *new copies of*
+    settings_d and shortcuts_d.'''
+    trace = (False or g.trace_startup) and not g.unitTesting
+    if trace: g.es_debug('%s\n%s\n%s' % (
+        c.shortFileName(), settings_d, shortcuts_d))
+    lm = self
+    shortcuts_d2, settings_d2 = lm.createSettingsDicts(c, localFlag)
+    assert shortcuts_d
+    assert settings_d
+    if settings_d2:
+        # #510:
+        if g.app.trace_setting:
+            key = g.app.config.munge(g.app.trace_setting)
+            val = settings_d2.d.get(key)
+            if val:
+                fn = g.shortFileName(val.path)
+                g.es_print('--trace-setting: in %20s: @%s %s=%s' %  (
+                    fn, val.kind, g.app.trace_setting, val.val))
+        settings_d = settings_d.copy()
+        settings_d.update(settings_d2)
+    if shortcuts_d2:
+        shortcuts_d = lm.mergeShortcutsDicts(c, shortcuts_d, shortcuts_d2)
+    return settings_d, shortcuts_d
+.. @+node:ekr.20170630073511.70: *6* LM.doPostPluginsInit & helpers
+def doPostPluginsInit(self):
+    '''Create a Leo window for each file in the lm.files list.'''
+    # Clear g.app.initing _before_ creating commanders.
+    lm = self
+    g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
+    # Create the main frame.  Show it and all queued messages.
+    c = c1 = None
+    if lm.files:
+        for n, fn in enumerate(lm.files):
+            lm.more_cmdline_files = n < len(lm.files) - 1
+            c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
+                # Returns None if the file is open in another instance of Leo.
+            if not c1: c1 = c
+    if g.app.restore_session:
+        m = g.app.sessionManager
+        if m:
+            aList = m.load_snapshot()
+            if aList:
+                m.load_session(c1, aList)
+                c = c1 = g.app.windowList[0].c
+    if not c1 or not g.app.windowList:
+        c1 = lm.openEmptyWorkBook()
+    # Fix bug #199.
+    g.app.runAlreadyOpenDialog(c1)
+    # Put the focus in the first-opened file.
+    fileName = lm.files[0] if lm.files else None
+    c = c1
+    # For qttabs gui, select the first-loaded tab.
+    if hasattr(g.app.gui, 'frameFactory'):
+        factory = g.app.gui.frameFactory
+        if factory and hasattr(factory, 'setTabForCommander'):
+            factory.setTabForCommander(c)
+    if not c:
+        return False # Force an immediate exit.
+    # Fix bug 844953: tell Unity which menu to use.
+    if c: c.enableMenuBar()
+    # Do the final inits.
+    g.app.logInited = True
+    g.app.initComplete = True
+    if c: c.setLog()
+    # print('doPostPluginsInit: ***** set log')
+    p = c.p if c else None
+    g.doHook("start2", c=c, p=p, v=p, fileName=fileName)
+    if c: lm.initFocusAndDraw(c, fileName)
+    screenshot_fn = lm.options.get('screenshot_fn')
+    if screenshot_fn:
+        lm.make_screen_shot(screenshot_fn)
+        return False # Force an immediate exit.
+    else:
+        return True
+.. @+node:ekr.20170630073511.71: *7* LM.initFocusAndDraw
+def initFocusAndDraw(self, c, fileName):
+
+    def init_focus_handler(timer, c=c, p=c.p):
+        '''Idle-time handler for initFocusAndDraw'''
+        c.initialFocusHelper()
+        c.outerUpdate()
+        timer.stop()
+
+    # This must happen after the code in getLeoFile.
+    timer = g.IdleTime(init_focus_handler, delay=0.1, tag='getLeoFile')
+    if timer:
+        timer.start()
+    else:
+        # Default code.
+        c.selectPosition(c.p)
+        c.initialFocusHelper()
+        c.k.showStateAndMode()
+        c.outerUpdate()
+.. @+node:ekr.20170630073511.72: *7* LM.make_screen_shot
+def make_screen_shot(self, fn):
+    '''Create a screenshot of the present Leo outline and save it to path.'''
+    # g.trace('runLeo.py',fn)
+    if g.app.gui.guiName() == 'qt':
+        m = g.loadOnePlugin('screenshots')
+        m.make_screen_shot(fn)
+.. @+node:ekr.20170630073511.73: *7* LM.openEmptyWorkBook
+def openEmptyWorkBook(self):
+    '''Open an empty frame and paste the contents of CheatSheet.leo into it.'''
+    lm = self
+    # Create an empty frame.
+    fn = lm.computeWorkbookFileName()
+    c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
+    # Open the cheatsheet, but not in batch mode.
+    if not g.app.batchMode and not g.os_path_exists(fn):
+        # Paste the contents of CheetSheet.leo into c.
+        c2 = c.openCheatSheet(redraw=False)
+        if c2:
+            for p2 in c2.rootPosition().self_and_siblings():
+                c2.selectPosition(p2)
+                c2.copyOutline()
+                p = c.pasteOutline()
+                c.selectPosition(p)
+                p.contract()
+                p.clearDirty()
+            c2.close(new_c=c)
+            root = c.rootPosition()
+            if root.h == g.shortFileName(fn):
+                root.doDelete(newNode=root.next())
+            p = g.findNodeAnywhere(c, "Leo's cheat sheet")
+            if p:
+                c.selectPosition(p, enableRedrawFlag=False)
+                p.expand()
+            c.target_language = 'rest'
+                # Settings not parsed the first time.
+            c.setChanged(False)
+            c.redraw()
+    return c
+.. @+node:ekr.20170630073511.74: *6* LM.mergeShortcutsDicts & helpers
+def mergeShortcutsDicts(self, c, old_d, new_d):
+    '''Create a new dict by overriding all shortcuts in old_d by shortcuts in new_d.
+
+    Both old_d and new_d remain unchanged.'''
+    trace = False and not g.unitTesting
+    lm = self
+    if not old_d: return new_d
+    if not new_d: return old_d
+    if trace:
+        new_n, old_n = len(list(new_d.keys())), len(list(old_d.keys()))
+        g.trace('new %4s %s %s' % (new_n, id(new_d), new_d.name()))
+        g.trace('old %4s %s %s' % (old_n, id(old_d), old_d.name()))
+    # #510.
+    si_list = new_d.get(g.app.trace_setting)
+    if si_list:
+        for si in si_list:
+            fn = si.kind.split(' ')[-1]
+            stroke = c.k.prettyPrintKey(si.stroke)
+            if si.pane and si.pane != 'all':
+                pane = ' in %s panes' % si.pane
+            else:
+                pane = ''
+            g.es_print('--trace-setting: %20s binds %s to %-20s%s' %  (
+                fn, g.app.trace_setting, stroke, pane))
+    inverted_old_d = lm.invert(old_d)
+    inverted_new_d = lm.invert(new_d)
+    # #510.
+    if g.app.trace_binding:
+        stroke = c.k.canonicalizeShortcut(g.app.trace_binding)
+        si_list = inverted_new_d. get(stroke)
+        if si_list:
+            for si in si_list:
+                fn = si.kind.split(' ')[-1] # si.kind # 
+                stroke2 = c.k.prettyPrintKey(stroke)
+                if si.pane and si.pane != 'all':
+                    pane = ' in %s panes' % si.pane
+                else:
+                    pane = ''
+                g.es_print('--trace-binding: %20s binds %s to %-20s%s' %  (
+                    fn, stroke2, si.commandName, pane))
+    # Fix bug 951921: check for duplicate shortcuts only in the new file.
+    lm.checkForDuplicateShortcuts(c, inverted_new_d)
+    inverted_old_d.update(inverted_new_d) # Updates inverted_old_d in place.
+    result = lm.uninvert(inverted_old_d)
+    return result
+.. @+node:ekr.20170630073511.75: *7* LM.checkForDuplicateShortcuts
+def checkForDuplicateShortcuts(self, c, d):
+    '''Check for duplicates in an "inverted" dictionary d
+    whose keys are strokes and whose values are lists of ShortcutInfo nodes.
+
+    Duplicates happen only if panes conflict.
+    '''
+    # lm = self
+    # Fix bug 951921: check for duplicate shortcuts only in the new file.
+    for ks in sorted(list(d.keys())):
+        conflict, panes = False, ['all']
+        aList = d.get(ks)
+        aList2 = [si for si in aList if not si.pane.startswith('mode')]
+        if len(aList) > 1:
+            for si in aList2:
+                if si.pane in panes:
+                    conflict = True; break
+                else:
+                    panes.append(si.pane)
+        if conflict:
+            g.es_print('conflicting key bindings in %s' % (c.shortFileName()))
+            for si in aList2:
+                g.es_print('%6s %s %s' % (si.pane, si.stroke.s, si.commandName))
+.. @+node:ekr.20170630073511.76: *7* LM.invert
+def invert(self, d):
+    '''Invert a shortcut dict whose keys are command names,
+    returning a dict whose keys are strokes.'''
+    trace = False and not g.unitTesting; verbose = True
+    if trace: g.trace('*' * 40, d.name())
+    result = g.TypedDictOfLists(
+        name='inverted %s' % d.name(),
+        keyType=g.KeyStroke,
+        valType=g.ShortcutInfo)
+    for commandName in d.keys():
+        for si in d.get(commandName, []):
+            # This assert can fail if there is an exception in the ShortcutInfo ctor.
+            assert isinstance(si, g.ShortcutInfo), si
+            stroke = si.stroke # This is canonicalized.
+            si.commandName = commandName # Add info.
+            assert stroke
+            if trace and verbose:
+                g.trace('%40s %s' % (commandName, stroke))
+            result.add(stroke, si)
+    if trace: g.trace('returns  %4s %s %s' % (
+        len(list(result.keys())), id(d), result.name()))
+    return result
+.. @+node:ekr.20170630073511.77: *7* LM.uninvert
+def uninvert(self, d):
+    '''Uninvert an inverted shortcut dict whose keys are strokes,
+    returning a dict whose keys are command names.'''
+    trace = False and not g.unitTesting; verbose = True
+    if trace and verbose: g.trace('*' * 40)
+    assert d.keyType == g.KeyStroke, d.keyType
+    result = g.TypedDictOfLists(
+        name='uninverted %s' % d.name(),
+        keyType=type('commandName'),
+        valType=g.ShortcutInfo)
+    for stroke in d.keys():
+        for si in d.get(stroke, []):
+            assert isinstance(si, g.ShortcutInfo), si
+            commandName = si.commandName
+            if trace and verbose:
+                g.trace('uninvert %20s %s' % (stroke, commandName))
+            assert commandName
+            result.add(commandName, si)
+    if trace: g.trace('returns %4s %s %s' % (
+        len(list(result.keys())), id(d), result.name()))
+    return result
+.. @+node:ekr.20170630073511.78: *6* LM.scanOptions & helper
+def scanOptions(self, fileName, pymacs):
+    '''Handle all options, remove them from sys.argv and set lm.options.'''
+    trace = False
+    lm = self
+    # print('scanOptions',sys.argv)
+    lm.old_argv = sys.argv[:]
+    # Note: this automatically implements the --help option.
+    usage = "usage: launchLeo.py [options] file1, file2, ..."
+    parser = optparse.OptionParser(usage=usage)
+    add = parser.add_option
+    add('--debug', action='store_true',
+        help='enable debug mode')
+    add('--diff', action='store_true', dest='diff',
+        help='use Leo as an external git diff')
+    add('--fullscreen', action='store_true',
+        help='start fullscreen')
+    add('--ipython', action='store_true', dest='use_ipython',
+        help='enable ipython support')
+    add('--fail-fast', action='store_true', dest='fail_fast',
+        help='stop unit tests after the first failure')
+    add('--gui',
+        help='gui to use (qt/qttabs/console/null)')
+    add('--load-type', dest='load_type',
+        help='@<file> type for loading non-outlines from command line')
+    add('--maximized', action='store_true',
+        help='start maximized')
+    add('--minimized', action='store_true',
+        help='start minimized')
+    add('--no-cache', action='store_true', dest='no_cache',
+        help='disable reading of cached files')
+    add('--no-plugins', action='store_true', dest='no_plugins',
+        help='disable all plugins')
+    add('--no-splash', action='store_true', dest='no_splash_screen',
+        help='disable the splash screen')
+    add('--screen-shot', dest='screenshot_fn',
+        help='take a screen shot and then exit')
+    add('--script', dest='script',
+        help='execute a script and then exit')
+    add('--script-window', dest='script_window',
+        help='open a window for scripts')
+    add('--select', dest='select',
+        help='headline or gnx of node to select')
+    add('--session-restore', action='store_true', dest='session_restore',
+        help='restore previously saved session tabs at startup')
+    add('--session-save', action='store_true', dest='session_save',
+        help='save session tabs on exit')
+    add('--silent', action='store_true', dest='silent',
+        help='disable all log messages')
+    add('--trace-binding', dest='binding',
+        help='trace key bindings')
+    add('--trace-focus', action='store_true', dest='trace_focus',
+        help='trace changes of focus')
+    add('--trace-plugins', action='store_true', dest='trace_plugins',
+        help='trace imports of plugins')
+    add('--trace-setting', dest='setting',
+        help='trace where setting is set')
+    add('-v', '--version', action='store_true', dest='version',
+        help='print version number and exit')
+    add('--window-size', dest='window_size',
+        help='initial window size (height x width)')
+    # Parse the options, and remove them from sys.argv.
+    options, args = parser.parse_args()
+    sys.argv = [sys.argv[0]]; sys.argv.extend(args)
+    if trace:
+        # print('scanOptions:',sys.argv)
+        g.trace('options', options)
+    # Handle the args...
+    # --debug
+    g.app.debug = options.debug
+    # if g.app.debug: g.trace_startup = True
+    # --fail-fast
+    if options.fail_fast:
+        g.app.failFast = True
+    # --git-diff
+    if options.diff:
+        g.app.diff = options.diff
+    # --gui
+    gui = options.gui
+    if gui:
+        gui = gui.lower()
+        if gui == 'qttabs':
+            g.app.qt_use_tabs = True
+        elif gui in ('console', 'curses', 'text', 'qt', 'null'):
+                # text: cursesGui.py, curses: cursesGui2.py.
+            g.app.qt_use_tabs = False
+        else:
+            print('scanOptions: unknown gui: %s.  Using qt gui' % gui)
+            gui = 'qt'
+            g.app.qt_use_tabs = False
+    elif sys.platform == 'darwin':
+        gui = 'qt'
+        g.app.qt_use_tabs = False
+    else:
+        gui = 'qttabs'
+        g.app.qt_use_tabs = True
+    assert gui
+    g.app.guiArgName = gui
+    # --load-type
+    load_type = options.load_type
+    if load_type:
+        load_type = load_type.lower()
+    else:
+        load_type = 'edit'
+    load_type = '@' + load_type
+    # --ipython
+    g.app.useIpython = options.use_ipython
+    if trace: g.trace('g.app.useIpython', g.app.useIpython)
+    # --fullscreen
+    # --minimized
+    # --maximized
+    g.app.start_fullscreen = options.fullscreen
+    g.app.start_maximized = options.maximized
+    g.app.start_minimized = options.minimized
+    # --no-cache
+    if options.no_cache:
+        if trace: print('scanOptions: disabling caching')
+        g.enableDB = False
+    # --no-plugins
+    if options.no_plugins:
+        if trace: print('scanOptions: disabling plugins')
+        g.app.enablePlugins = False
+    # --no-splash: --minimized disables the splash screen
+    g.app.use_splash_screen = (
+        not options.no_splash_screen and
+        not options.minimized)
+    # --screen-shot=fn
+    screenshot_fn = options.screenshot_fn
+    if screenshot_fn:
+        screenshot_fn = screenshot_fn.strip('"')
+        if trace: print('scanOptions: screenshot_fn', screenshot_fn)
+    # --script
+    script_path = options.script
+    script_path_w = options.script_window
+    if script_path and script_path_w:
+        parser.error('--script and script-window are mutually exclusive')
+    script_name = script_path or script_path_w
+    if script_name:
+        script_name = g.os_path_finalize_join(g.app.loadDir, script_name)
+        script, e = g.readFileIntoString(script_name, kind='script:')
+        # print('script_name',repr(script_name))
+    else:
+        script = None
+        # if trace: print('scanOptions: no script')
+    # --select
+    select = options.select
+    if select:
+        select = select.strip('"')
+        if trace: print('scanOptions: select', repr(select))
+    # --session-restore & --session-save
+    g.app.restore_session = bool(options.session_restore)
+    g.app.save_session = bool(options.session_save)
+    # --silent
+    g.app.silentMode = options.silent
+    # print('scanOptions: silentMode',g.app.silentMode)
+    # --trace-binding
+    g.app.trace_binding = options.binding
+    # --trace-focus
+    g.app.trace_focus = options.trace_focus
+    # --trace-plugins
+    g.app.trace_plugins = options.trace_plugins
+    # --trace-setting=setting
+    g.app.trace_setting = options.setting
+        # g.app.config does not exist yet.
+        # g.trace('trace_setting:', repr(options.trace_setting))
+    # --version: print the version and exit.
+    versionFlag = options.version
+    # --window-size
+    windowSize = options.window_size
+    if windowSize:
+        if trace: print('windowSize', repr(windowSize))
+        try:
+            h, w = windowSize.split('x')
+            windowSize = int(h), int(w)
+        except ValueError:
+            windowSize = None
+            g.trace('bad --window-size:', windowSize)
+    # Compute lm.files
+    lm.files = lm.computeFilesList(fileName)
+    # if options.debug:
+    #    g.es_debug('lm.files',lm.files)
+    # Post-process the options.
+    if pymacs:
+        script = None
+        windowFlag = None
+    # Compute the return values.
+    windowFlag = script and script_path_w
+    d = {
+        'gui': gui,
+        'load_type': load_type,
+        'screenshot_fn': screenshot_fn,
+        'script': script,
+        'select': select,
+        'version': versionFlag,
+        'windowFlag': windowFlag,
+        'windowSize': windowSize,
+    }
+    if trace: g.trace(d)
+    return d
+.. @+node:ekr.20170630073511.79: *7* LM.computeFilesList
+def computeFilesList(self, fileName):
+    lm = self
+    files = []
+    if fileName:
+        files.append(fileName)
+    for arg in sys.argv[1:]:
+        if arg and not arg.startswith('-'):
+            files.append(arg)
+    result = []
+    for z in files:
+        # Fix #245: wrong: result.extend(glob.glob(lm.completeFileName(z)))
+        aList = glob.glob(lm.completeFileName(z))
+        if aList:
+            result.extend(aList)
+        else:
+            result.append(z)
+    return result
 .. @+node:ekr.20170325085907.1: *3* code
 .. @+node:ekr.20170325085939.1: *4* Added better checks in v.setBodyString & v.setHeadString
 .. @+node:ekr.20170331043509.1: *4* Improved @auto write code
