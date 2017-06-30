@@ -22829,33 +22829,6 @@ for fn,expected in table:
     # Make sure that calling regularizeName twice is benign.
     result2 = pc.regularizeName(result)
     assert result2==result
-#@+node:vitalije.20170406112012.1: *4* @test registerOneHandler
-pc = g.app.pluginsController
-def handler(**kw):
-    pass
-assert pc.handlers.get('testtag') is None, 'handlers for unsupported tag should be None by default'
-
-pc.registerOneHandler('testtag', handler)
-assert len(pc.handlers.get('testtag')) is 1, \
-    'handlers after first registration should have just one element'
-
-pc.registerOneHandler('testtag', handler)
-assert len(pc.handlers.get('testtag')) is 1, \
-    'registering same handler twice should have no effect'
-del pc.handlers['testtag']
-#@+node:vitalije.20170406113048.1: *4* @test registerOneExclusiveHandler
-pc = g.app.pluginsController
-g.app.unitTesting = False
-def handler(**kw):
-    pass
-check_1, m1 = pc.handlers.get('testtag') is None, 'handlers for unsupported tag should be None by default'
-
-pc.registerOneExclusiveHandler('testtag', handler)
-g.app.unitTesting = True
-assert check_1, m1
-assert len(pc.handlers.get('testtag')) is 1, \
-    'handlers after first registration should have just one element'
-
 #@+node:ekr.20091219122958.5066: *3* leoRst
 # Warning: these depend on the .css files in leo\test\unittest.
 #@+node:ekr.20100813100841.5825: *4* @@@test show_doc_parts_in_rst_mode
