@@ -15,6 +15,8 @@ import os
 import re
 import sys
 import time
+import hashlib
+import sqlite3
 #@-<< imports >>
 #@+others
 #@+node:ekr.20160514120655.1: ** class AtFile
@@ -504,6 +506,9 @@ class AtFile(object):
         # Get the file from the cache if possible.
         if fromString or not g.enableDB:
             s, loaded, fileKey = fromString, False, None
+        elif g.SQLITE and self.checkExternalFileAgainstDb(fileName, root):
+            # external file has not been modified since last db save
+            return True
         else:
             s, loaded, fileKey = c.cacher.readFile(fileName, root)
         # Never read an external file with file-like sentinels from the cache.
@@ -683,6 +688,24 @@ class AtFile(object):
             if trace: g.trace('found: True isThin:',
                 isThin, repr(line))
             return not isThin
+    #@+node:vitalije.20170701155512.1: *6* at.checkExternalFileAgainstDb
+    def checkExternalFileAgainstDb(self, fileName, root):
+        '''Returns True if file is not modified since last save in db'''
+        conn = self.c.sqlite_connection
+        ok = False
+        try:
+            hx = hashlib.md5(open(fileName, 'r').read()).hexdigest()
+            hx2 = conn.execute(
+                    '''select value from extra_infos
+                            where name=?''',
+                    ('md5_' + root.gnx,)
+                ).fetchone()
+            ok = hx2 and hx2[0] == hx
+        except sqlite3.OperationalError:
+            pass
+        except IOError:
+            pass
+        return ok
     #@+node:ekr.20041005105605.26: *5* at.readAll
     def readAll(self, root, force=False):
         """Scan positions, looking for @<file> nodes to read."""

@@ -123,6 +123,8 @@ class Commands(object):
         # For outline navigation.
         self.navPrefix = g.u('') # Must always be a string.
         self.navTime = None
+        
+        self.sqlite_connection = None
     #@+node:ekr.20120217070122.10466: *5* c.initDebugIvars
     def initDebugIvars(self):
         '''Init Commander debugging ivars.'''

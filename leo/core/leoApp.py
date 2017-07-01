@@ -2966,6 +2966,10 @@ class LoadManager(object):
         # Open the file, if possible.
         g.doHook('open0')
         theFile = lm.openLeoOrZipFile(fn)
+        if type(theFile) is sqlite3.Connection:
+            # this commander is associated with sqlite db
+            c.sqlite_connection = theFile
+            
         # Enable the log.
         g.app.unlockLog()
         c.frame.log.enable(True)

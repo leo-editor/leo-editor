@@ -28,6 +28,7 @@ try:
 except Exception:
     pass
 import sqlite3
+import hashlib
 #@-<< imports >>
 #@+others
 #@+node:ekr.20060918164811: ** Exception classes
@@ -695,7 +696,8 @@ class FileCommands(object):
                 # Must be called *after* ni.end_holding.
             c.loading = False
                 # reenable c.changed
-            theFile.close()
+            if type(theFile) is not sqlite3.Connection:
+                theFile.close()
                 # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1208942
                 # Leo holding directory/file handles after file close?
         if c.changed:
@@ -1408,18 +1410,21 @@ class FileCommands(object):
             v.parents = [findNode(x) for x in v.parents]
         
         c.hiddenRootNode.children = rootChildren
-        geom = fc.getWindowGeometryFromDb(conn)
-        (w, h, x, y) = (geom[k] for k in ('width', 'height', 'left', 'top'))
+        (w, h, x, y, r1, r2) = fc.getWindowGeometryFromDb(conn)
         c.frame.setTopGeometry(w, h, x, y, adjustSize=True)
+        c.frame.resizePanesToRatio(r1, r2)
         return rootChildren[0]
     #@+node:vitalije.20170630200802.1: *6* fc.getWindowGeometryFromDb
     def getWindowGeometryFromDb(self, conn):
+        geom = (600, 400, 50, 50 , 0.5, 0.5)
+        keys = ('width', 'height', 'left', 'top', 'ratio', 'secondary_ratio')
         try:
             d = dict(conn.execute('''select * from extra_infos 
-                where name in ('width', 'height', 'top', 'left');''').fetchall())
+                where name in (?, ?, ?, ?, ?, ?)''', keys).fetchall())
+            geom = (d.get(*x) for x in zip(keys, geom))
         except sqlite3.OperationalError:
-            d = {'width': 600, 'height': 400, 'top': 50, 'left': 50}
-        return d
+            pass
+        return geom
     #@+node:ekr.20060919110638.13: *5* fc.setPositionsFromVnodes & helper (sax read)
     def setPositionsFromVnodes(self):
         trace = False and not g.unitTesting
@@ -2079,7 +2084,7 @@ class FileCommands(object):
     def exportToSqlite(self, fileName):
         '''Dump all vnodes to sqlite database. Returns True on success.'''
         # fc = self
-        c = self.c
+        c = self.c; conn = c.sqlite_connection; fc = self
         dbrow = lambda v:(
                 v.gnx,
                 v.h,
@@ -2091,30 +2096,63 @@ class FileCommands(object):
                 pickle.dumps(v.u)
             )
         ok = False
-        with sqlite3.connect(fileName, isolation_level='DEFERRED') as conn:
-            conn.execute('''drop table if exists vnodes;''')
-            conn.execute('''
-                create table if not exists vnodes(
-                    gnx primary key,
-                    head,
-                    body,
-                    children,
-                    parents,
-                    iconVal,
-                    statusBits,
-                    ua);''')
-            conn.execute('''create table if not exists extra_infos(name primary key, value)''')
-            
-            conn.executemany('''replace into extra_infos(name, value) values(?, ?)''',
-                zip(('width', 'height', 'left', 'top'), c.frame.get_window_info()))
-
-            conn.executemany('''insert into vnodes
-                (gnx, head, body, children, parents,
-                    iconVal, statusBits, ua)
-                values(?,?,?,?,?,?,?,?);''', (dbrow(v) for v in c.all_unique_vnodes_iter()))
+        try:
+            fc.exportVnodesToSqlite(conn, (dbrow(v) for v in c.all_unique_vnodes_iter()))
+            fc.exportGeomToSqlite(conn)
+            fc.exportHashesToSqlite(conn)
             conn.commit()
             ok = True
+        except sqlite3.OperationalError as e:
+            g.internalError(e)
         return ok
+    #@+node:vitalije.20170701161851.1: *5* fc.exportVnodesToSqlite
+    def exportVnodesToSqlite(self, conn, rows):
+        c = self.c
+        conn.execute('''drop table if exists vnodes;''')
+        conn.execute('''
+            create table if not exists vnodes(
+                gnx primary key,
+                head,
+                body,
+                children,
+                parents,
+                iconVal,
+                statusBits,
+                ua);''')
+        conn.execute('''create table if not exists extra_infos(name primary key, value)''')
+        
+        conn.executemany('''insert into vnodes
+            (gnx, head, body, children, parents,
+                iconVal, statusBits, ua)
+            values(?,?,?,?,?,?,?,?);''', rows)
+    #@+node:vitalije.20170701162052.1: *5* fc.exportGeomToSqlite
+    def exportGeomToSqlite(self, conn):
+        c = self.c
+        data = zip(('width', 'height', 'left', 'top', 'ratio', 'secondary_ratio'),
+                   c.frame.get_window_info() + (c.frame.ratio, c.frame.secondary_ratio))
+        conn.executemany('replace into extra_infos(name, value) values(?, ?)', data)
+
+    #@+node:vitalije.20170701162204.1: *5* fc.exportHashesToSqlite
+    def exportHashesToSqlite(self, conn):
+        fc = self; c = self.c
+        md5 = lambda x:hashlib.md5(open(x,'rb').read()).hexdigest()
+        files = set()
+        
+        p = c.rootPosition()
+        while p:
+            if p.isAtIgnoreNode():
+                p.moveToNodeAfterTree()
+            elif p.isAtAutoNode() or p.isAtFileNode():
+                fn = c.getNodeFileName(p)
+                files.add((fn, 'md5_'+p.gnx))
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+        
+        conn.executemany(
+            'replace into extra_infos(name, value) values(?,?)',
+            map(lambda x:(x[1], md5(x[0])), files))
+        
     #@+node:ekr.20031218072017.2012: *4* fc.writeAtFileNodes
     @cmd('write-at-file-nodes')
     def writeAtFileNodes(self, event=None):
