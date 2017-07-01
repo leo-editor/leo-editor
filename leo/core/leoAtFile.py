@@ -692,6 +692,7 @@ class AtFile(object):
     def checkExternalFileAgainstDb(self, fileName, root):
         '''Returns True if file is not modified since last save in db'''
         conn = self.c.sqlite_connection
+        if conn is None: return False
         ok = False
         try:
             hx = hashlib.md5(open(fileName, 'r').read()).hexdigest()
