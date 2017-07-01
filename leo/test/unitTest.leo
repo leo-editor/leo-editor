@@ -233,7 +233,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3430710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -1131,6 +1131,15 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20170617111001.1"></v>
 <v t="ekr.20090529141856.4736"></v>
 <v t="ekr.20170617131333.1"></v>
+<v t="ekr.20170701153730.1"><vh>rst import test that fail for Terry</vh>
+<v t="ekr.20140725132959.4593"></v>
+<v t="ekr.20090529141856.4786"></v>
+<v t="ekr.20090529141856.4785"></v>
+<v t="ekr.20090529141856.4789"></v>
+<v t="ekr.20090529141856.4788"></v>
+<v t="ekr.20090529141856.4787"></v>
+<v t="ekr.20161129104243.1"></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1559,7 +1568,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="4">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="11">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -2650,7 +2659,11 @@ finally:
 c.contractAllHeadlines()
 </t>
 <t tx="ekr.20090529141856.4784"></t>
-<t tx="ekr.20090529141856.4785">if 0: # Preamble
+<t tx="ekr.20090529141856.4785">import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+
+if 0: # Preamble
     # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
@@ -2732,7 +2745,11 @@ finally:
         p.deleteAllChildren()
     c.redraw()
 </t>
-<t tx="ekr.20090529141856.4786">if 0: # Preamble
+<t tx="ekr.20090529141856.4786">import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+
+if 0: # Preamble
     # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
@@ -2813,7 +2830,11 @@ finally:
         p.deleteAllChildren()
     c.redraw()
 </t>
-<t tx="ekr.20090529141856.4787">if 0: # Preamble
+<t tx="ekr.20090529141856.4787">import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+
+if 0: # Preamble
     # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
@@ -2827,7 +2848,6 @@ finally:
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
-
 s = '''\
 .. toc
 
@@ -2855,7 +2875,11 @@ finally:
         p.deleteAllChildren()
     c.redraw()
 </t>
-<t tx="ekr.20090529141856.4788">if 0: # Preamble
+<t tx="ekr.20090529141856.4788">import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+
+if 0: # Preamble
     # g.cls()
     if c.isChanged(): c.save()
     import leo.core.leoImport as leoImport
@@ -2898,7 +2922,11 @@ finally:
         p.deleteAllChildren()
     c.redraw()
 </t>
-<t tx="ekr.20090529141856.4789">s = '''\
+<t tx="ekr.20090529141856.4789">import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+
+s = '''\
 .. toc
 
 .. The section name contains trailing whitespace.
@@ -4191,7 +4219,11 @@ else:
     g.pr(s)
 </t>
 <t tx="ekr.20140724220921.5199"></t>
-<t tx="ekr.20140725132959.4593">s = '''\
+<t tx="ekr.20140725132959.4593">import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+
+s = '''\
 .. toc
 
 .. The section name contains trailing whitespace.
@@ -8048,7 +8080,11 @@ finally:
         c.redraw()
 </t>
 <t tx="ekr.20161129030232.1"></t>
-<t tx="ekr.20161129104243.1">if 0:
+<t tx="ekr.20161129104243.1">import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+
+if 0:
     # The preamble...
     # g.cls()
     if c.isChanged(): c.save()
@@ -15054,5 +15090,6 @@ try:
 finally:
     c.redraw()
 </t>
+<t tx="ekr.20170701153730.1"></t>
 </tnodes>
 </leo_file>
