@@ -2107,7 +2107,6 @@ class FileCommands(object):
         return ok
     #@+node:vitalije.20170701161851.1: *5* fc.exportVnodesToSqlite
     def exportVnodesToSqlite(self, conn, rows):
-        c = self.c
         conn.execute('''drop table if exists vnodes;''')
         conn.execute('''
             create table if not exists vnodes(
@@ -2134,7 +2133,7 @@ class FileCommands(object):
 
     #@+node:vitalije.20170701162204.1: *5* fc.exportHashesToSqlite
     def exportHashesToSqlite(self, conn):
-        fc = self; c = self.c
+        c = self.c
         md5 = lambda x:hashlib.md5(open(x,'rb').read()).hexdigest()
         files = set()
         
