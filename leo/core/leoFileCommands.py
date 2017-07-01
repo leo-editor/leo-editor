@@ -1482,6 +1482,9 @@ class FileCommands(object):
         ok = g.doHook("save1", c=c, p=p, v=p.v, fileName=fileName)
         if ok is None:
             c.endEditing() # Set the current headline text.
+            if c.sqlite_connection:
+                c.sqlite_connection.close()
+                c.sqlite_connection = None
             self.setDefaultDirectoryForNewFiles(fileName)
             c.cacher.save(fileName, changeName=True)
             ok = c.checkFileTimeStamp(fileName)
@@ -1503,6 +1506,9 @@ class FileCommands(object):
         p = c.p
         if not g.doHook("save1", c=c, p=p, v=p.v, fileName=fileName):
             c.endEditing() # Set the current headline text.
+            if c.sqlite_connection:
+                c.sqlite_connection.close()
+                c.sqlite_connection = None
             self.setDefaultDirectoryForNewFiles(fileName)
             c.cacher.save(fileName, changeName=True)
             # Disable path-changed messages in writeAllHelper.
@@ -1521,6 +1527,9 @@ class FileCommands(object):
         p = c.p
         if not g.doHook("save1", c=c, p=p, v=p.v, fileName=fileName):
             c.endEditing() # Set the current headline text.
+            if c.sqlite_connection:
+                c.sqlite_connection.close()
+                c.sqlite_connection = None
             self.setDefaultDirectoryForNewFiles(fileName)
             c.cacher.save(fileName, changeName=False)
             # Disable path-changed messages in writeAllHelper.
@@ -2084,7 +2093,11 @@ class FileCommands(object):
     def exportToSqlite(self, fileName):
         '''Dump all vnodes to sqlite database. Returns True on success.'''
         # fc = self
-        c = self.c; conn = c.sqlite_connection; fc = self
+        c = self.c; fc = self
+        if c.sqlite_connection is None:
+            c.sqlite_connection = sqlite3.connect(fileName, 
+                                        isolation_level='DEFERRED')
+        conn = c.sqlite_connection
         dbrow = lambda v:(
                 v.gnx,
                 v.h,
