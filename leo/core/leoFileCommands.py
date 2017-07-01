@@ -1479,7 +1479,7 @@ class FileCommands(object):
         c = self.c
         p = c.p
         # New in 4.2.  Return ok flag so shutdown logic knows if all went well.
-        ok = g.doHook("save1", c=c, p=p, v=p, fileName=fileName)
+        ok = g.doHook("save1", c=c, p=p, v=p.v, fileName=fileName)
         if ok is None:
             c.endEditing() # Set the current headline text.
             self.setDefaultDirectoryForNewFiles(fileName)
@@ -1501,7 +1501,7 @@ class FileCommands(object):
     def saveAs(self, fileName):
         c = self.c
         p = c.p
-        if not g.doHook("save1", c=c, p=p, v=p, fileName=fileName):
+        if not g.doHook("save1", c=c, p=p, v=p.v, fileName=fileName):
             c.endEditing() # Set the current headline text.
             self.setDefaultDirectoryForNewFiles(fileName)
             c.cacher.save(fileName, changeName=True)
@@ -1519,7 +1519,7 @@ class FileCommands(object):
     def saveTo(self, fileName):
         c = self.c
         p = c.p
-        if not g.doHook("save1", c=c, p=p, v=p, fileName=fileName):
+        if not g.doHook("save1", c=c, p=p, v=p.v, fileName=fileName):
             c.endEditing() # Set the current headline text.
             self.setDefaultDirectoryForNewFiles(fileName)
             c.cacher.save(fileName, changeName=False)
