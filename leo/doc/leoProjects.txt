@@ -39,6 +39,17 @@ https://github.com/leo-editor/leo-editor/issues/466
 - Rewrote 'recolor' command (c.force_recolor).
 - Rewrote c.recolor_now.
 - Added calls to c.recolor_now to c.moveOutline*.
+
+Reverted leo_h.force_rehighlight.
+
+d4f481 on ​2017-04-28 06:34:10.
+
+leoColorizer.py:
+- Inserted force_rehighlight
+
+leoCommands.py:
+- Replaced c.updateSyntaxColor(p) with c.recolor_now(p) in 4 move commands.
+- Lines 4629, 4661, 4689, 4759, etc.
 .. @+node:ekr.20170411072038.1: *4* #471: UnicodeDecodeError in writeRecentFilesFileHelper
 UnicodeDecodeError in writeRecentFilesFileHelper
 https://github.com/leo-editor/leo-editor/issues/471
@@ -52,46 +63,19 @@ Solved: the checks are made only if @bool check_for_changed_external_files = Tru
 Changed code in efc.on_idle and efc.idle_check_commander.
 .. @+node:ekr.20170425070312.1: *4* #476: (error in cacher.fileKey)
 https://github.com/leo-editor/leo-editor/issues/476
+.. @+node:ekr.20170617113038.1: *4* #479: Preserve brython indentation...
+https://github.com/leo-editor/leo-editor/issues/479
+Preserve brython indentation when importing .html files
+.. @+node:ekr.20170618015241.1: *4* #481: The python importer optionally puts method decorators in headlines
+https://github.com/leo-editor/leo-editor/issues/481
 .. @+node:ekr.20170428144545.1: *4* #487: g.IdleTime docstring
 https://github.com/leo-editor/leo-editor/issues/487
-.. @+node:ekr.20170528061812.1: *4* Ensure that .leo/.leoRecentFiles.txt is closed
-https://github.com/leo-editor/leo-editor/pull/497
-
-Rewrote rf.createRecentFiles, rf.readRecentFilesFile and rf.writeRecentFilesFileHelper.
-.. @+node:ekr.20170608072053.84: *4* Ensure that .leo/.leoRecentFiles.txt is closed.
-https://github.com/leo-editor/leo-editor/pull/497
-
-Rewrote rf.createRecentFiles, rf.readRecentFilesFile and rf.writeRecentFilesFileHelper.
-.. @+node:ekr.20170326054533.1: *4* Fixed bug in k.computeInverseBindingDict
-The bug gave way too many bindings for the move-lines commands.
-.. @+node:ekr.20170326113032.1: *4* Fixed bug in tab completion
-ga.show_tab_list wasn't showing commands without any shortcuts!
-.. @+node:ekr.20170406091617.1: *4* Fixed bugs re plugins registration
-Fixed plugins.registerOneHandler and plugins.registerOneExclusiveHandler
-.. @+node:ekr.20170427164915.1: *4* Fixed html import problem
-The unit test "@test xml non-ascii tags" failed on Python 2, but not Python 3.
-
-The fix was in xml_i.scan_tag & helper
-.. @+node:ekr.20170406095247.1: *4* Fixed serious bug in c.checkFileTimeStamp
-It must return True if g.app.externalFilesController is None.
-.. @+node:ekr.20170401132710.1: *4* Fixed several problems with goto-global-line
 .. @+node:ekr.20170608072053.88: *4* #498: --session-restore option fails if no leo.session exists
 https://github.com/leo-editor/leo-editor/issues/498
 
 With a new installation of Leo there is no leo.session file. It is apparently created only after using the --session-save command line option.
 
 If the --session-restore option is also used before that file is created, then Leo fails to open (splash screen displays, then nothing else happens).
-.. @+node:ekr.20170416063625.1: *4* Revised xml/html importers
-The new code is simpler and handles dubious html syntax.
-.. @+node:ekr.20170329145930.1: *4* The pylint command now warns if pylint has not been installed
-The change was to pylint.run_pylint.
-
-This removes a major source of confusion.
-.. @+node:ekr.20170617113038.1: *4* #479: Preserve brython indentation...
-https://github.com/leo-editor/leo-editor/issues/479
-Preserve brython indentation when importing .html files
-.. @+node:ekr.20170618015241.1: *4* #481: The python importer optionally puts method decorators in headlines
-https://github.com/leo-editor/leo-editor/issues/481
 .. @+node:ekr.20170630073511.1: *4* #510: Improve how Leo handles settings
 @language rest
 @wrap
@@ -2624,6 +2608,33 @@ def computeFilesList(self, fileName):
         else:
             result.append(z)
     return result
+.. @+node:ekr.20170528061812.1: *4* Ensure that .leo/.leoRecentFiles.txt is closed
+https://github.com/leo-editor/leo-editor/pull/497
+
+Rewrote rf.createRecentFiles, rf.readRecentFilesFile and rf.writeRecentFilesFileHelper.
+.. @+node:ekr.20170608072053.84: *4* Ensure that .leo/.leoRecentFiles.txt is closed.
+https://github.com/leo-editor/leo-editor/pull/497
+
+Rewrote rf.createRecentFiles, rf.readRecentFilesFile and rf.writeRecentFilesFileHelper.
+.. @+node:ekr.20170326054533.1: *4* Fixed bug in k.computeInverseBindingDict
+The bug gave way too many bindings for the move-lines commands.
+.. @+node:ekr.20170326113032.1: *4* Fixed bug in tab completion
+ga.show_tab_list wasn't showing commands without any shortcuts!
+.. @+node:ekr.20170406091617.1: *4* Fixed bugs re plugins registration
+Fixed plugins.registerOneHandler and plugins.registerOneExclusiveHandler
+.. @+node:ekr.20170427164915.1: *4* Fixed html import problem
+The unit test "@test xml non-ascii tags" failed on Python 2, but not Python 3.
+
+The fix was in xml_i.scan_tag & helper
+.. @+node:ekr.20170406095247.1: *4* Fixed serious bug in c.checkFileTimeStamp
+It must return True if g.app.externalFilesController is None.
+.. @+node:ekr.20170401132710.1: *4* Fixed several problems with goto-global-line
+.. @+node:ekr.20170416063625.1: *4* Revised xml/html importers
+The new code is simpler and handles dubious html syntax.
+.. @+node:ekr.20170329145930.1: *4* The pylint command now warns if pylint has not been installed
+The change was to pylint.run_pylint.
+
+This removes a major source of confusion.
 .. @+node:ekr.20170325085907.1: *3* code
 .. @+node:ekr.20170325085939.1: *4* Added better checks in v.setBodyString & v.setHeadString
 .. @+node:ekr.20170331043509.1: *4* Improved @auto write code
@@ -2685,13 +2696,34 @@ https://github.com/leo-editor/leo-editor/issues/484
 Added submenus to Windows menu. This significantly simplifies and clarifies the Windows menu.
 .. @+node:ekr.20170608071935.1: *4* #488: Created a curses/npyscreen front end for Leo
 https://github.com/leo-editor/leo-editor/issues/488
+.. @+node:ekr.20170624151245.5536: *4* #505: new-read branch
+https://github.com/leo-editor/leo-editor/issues/505
+
+@language rest
+@wrap
+
+Changes to read/write code:
+- at.writeAll writes files at most once.
+- at.write updates cache. Previously only at.read updated the cache!
+- at.deleteUnvisitedNodes no longer creates resurrected nodes.
+- at.new_createThinChild4 *always* updates headlines.
+- at.terminateBody just sets v.tempRoots.
+  It no longer calls at.indicateNodeChanged.
+- fc.handleNodeConflicts reports changed headlines differently.
+
+Changes to cacher code:
+- Added cacher.checkForChangedNodes.
+- Added tempRoots logic.
+- Added always_warn switch to cacher.reportIfNodeChanged.
+
+@language python
+.. @+node:ekr.20170411191401.1: *4* Added  git branch name to backed-up files
 .. @+node:ekr.20170614051052.1: *4* Added "yes/no to all" buttons for externally changed file dialog
 Rev 9c94fec36d adds Yes / no to all on external file changes.
 
 If you answer yes to all or no to all Leo remembers that
 answer for 3 seconds. As a result, another set of external
 changes will show the pop up again.
-.. @+node:ekr.20170411191401.1: *4* Added  git branch name to backed-up files
 .. @+node:ekr.20170328143013.1: *4* Added --trace-focus command-line argument
 .. @+node:ekr.20170411092513.1: *4* Added goto-any-clone command
 Searches from c.p for *any* clone, not just a clone of c.p.  Useful for eliminating all clones from a .leo file.
@@ -2716,32 +2748,6 @@ leo/external/log_broadcast.py contains example code. leo/plugins/cursesGui2.py u
 
 
 .. @+node:ekr.20170325090032.1: *4* Added show-color-names command
-.. @+node:ekr.20170427173032.1: *4* clone-find commands report number of matches in root node
-Changed find.createCloneFindAllNodes and c.cloneFindMarkedHelper.
-.. @+node:ekr.20170327052423.1: *4* Improved "Write Existing File?" dialog
-at.promptForDangerousWrite puts up a dialog with a clearer cancel button.
-All tests pass.
-
-- It says "Cancel (No To All)".
-- Added cancelMessage keyword arg to x.promptForDangerousWrite.
-- Use keyword args in LeoFrame.promptForSave and ns_do_context.
-.. @+node:ekr.20170414103904.1: *4* Improved caching
-Rev b32259 transitions to a new caching scheme:
-
-1. All hashes now use the full path to the external file.  Previously, the headline of @file nodes was typically used instead. Surely this might have caused silent problems.
-
-2. Leo's hasher now includes the name of the present git branch in the hash. When switching git branches, this in essence disables hashing for all files changed in the previous branch.
-.. @+node:ekr.20170326091637.1: *4* Improved indent-region and unindent-region commands
-https://groups.google.com/d/msg/leo-editor/SUnqs1_YbeI/DIv0EbtFCgAJ
-
-The indent-region and unindent-region just move the insert point if there is no text selected.
-.. @+node:ekr.20170326052408.1: *4* Improved move-lines-up/down commands
-These commands (bound to ctrl-up/down by default) now work at the top or bottom of the body pane. The move-lines-up command inserts a new line below the moved line/lines when the lines are at the top of the body text.  Similarly, the move-lines-down command inserts a line before the moved lines when at the bottom of the body text. Imo, this is a natural and useful.
-.. @+node:ekr.20170530023214.1: *4* Restored importer;; abbreviation
-55b2037ac3a: 2016-11-22 06:33:17 Removed importer;; abbreviation(!!)
-
-
-Restored the abbreviation from f10fa02b8cb681, the previous commit.
 .. @+node:ekr.20170616100339.1: *4* Added tcl importer
 .. @+node:ekr.20170618083013.1: *4* Added toggle-auto-edit command
 https://github.com/leo-editor/leo-editor/issues/482
@@ -2814,11 +2820,40 @@ def toAtEdit(self, p):
     c.setChanged()
     c.redraw()
     c.bodyWantsFocus()
+.. @+node:ekr.20170427173032.1: *4* clone-find commands report number of matches in root node
+Changed find.createCloneFindAllNodes and c.cloneFindMarkedHelper.
+.. @+node:ekr.20170327052423.1: *4* Improved "Write Existing File?" dialog
+at.promptForDangerousWrite puts up a dialog with a clearer cancel button.
+All tests pass.
+
+- It says "Cancel (No To All)".
+- Added cancelMessage keyword arg to x.promptForDangerousWrite.
+- Use keyword args in LeoFrame.promptForSave and ns_do_context.
+.. @+node:ekr.20170414103904.1: *4* Improved caching
+Rev b32259 transitions to a new caching scheme:
+
+1. All hashes now use the full path to the external file.  Previously, the headline of @file nodes was typically used instead. Surely this might have caused silent problems.
+
+2. Leo's hasher now includes the name of the present git branch in the hash. When switching git branches, this in essence disables hashing for all files changed in the previous branch.
+.. @+node:ekr.20170326091637.1: *4* Improved indent-region and unindent-region commands
+https://groups.google.com/d/msg/leo-editor/SUnqs1_YbeI/DIv0EbtFCgAJ
+
+The indent-region and unindent-region just move the insert point if there is no text selected.
+.. @+node:ekr.20170326052408.1: *4* Improved move-lines-up/down commands
+These commands (bound to ctrl-up/down by default) now work at the top or bottom of the body pane. The move-lines-up command inserts a new line below the moved line/lines when the lines are at the top of the body text.  Similarly, the move-lines-down command inserts a line before the moved lines when at the bottom of the body text. Imo, this is a natural and useful.
 .. @+node:ekr.20170619155533.1: *4* Improved operation of command history
 The first UP-arrow to gives the presvious command, the next up-arrow gives the next command, etc.
+.. @+node:ekr.20170624151245.4039: *4* Indicate branch in Window title
+Changed g.computeWindowTitle.
+.. @+node:ekr.20170530023214.1: *4* Restored importer;; abbreviation
+55b2037ac3a: 2016-11-22 06:33:17 Removed importer;; abbreviation(!!)
+
+
+Restored the abbreviation from f10fa02b8cb681, the previous commit.
 .. @+node:ekr.20170403192311.1: *3* plugins
 .. @+node:ekr.20170403192317.1: *4* screen_capture.py now enabled by default
 .. @+node:ekr.20170331043621.1: *3* settings
+.. @+node:ekr.20170624173104.1: *4* Added @bool run_pyflakes_on_unchanged_files = True
 .. @+node:ekr.20170328043328.1: *4* Added ctrl-shift < and > bindings
 @language rest
 @wrap
