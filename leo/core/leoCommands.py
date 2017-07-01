@@ -7292,10 +7292,15 @@ class Commands(object):
         since Leo read it or if the user agrees to overwrite it.
         '''
         c = self
+        if c.sqlite_connection and fn == c.mFileName:
+            # sqlite database file is never actually overwriten by Leo
+            # so no need to check its timestamp. It is modified through
+            # sqlite methods.
+            return True
         if g.app.externalFilesController:
             return g.app.externalFilesController.check_overwrite(c, fn)
         else:
-            return True # Vitalije.
+            return True
     #@+node:ekr.20090103070824.9: *4* c.setFileTimeStamp
     def setFileTimeStamp(self, fn):
         '''Update the timestamp for fn..'''
