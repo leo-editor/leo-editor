@@ -19887,6 +19887,10 @@ finally:
         c.redraw()
 #@+node:ekr.20090529141856.4784: *4* Tests of @auto-rst
 #@+node:ekr.20090529141856.4785: *5* @test rST import test
+import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+
 if 0: # Preamble
     # g.cls()
     if c.isChanged(): c.save()
@@ -19969,6 +19973,10 @@ finally:
         p.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20140725132959.4593: *5* @test rST import test: simple
+import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+
 s = '''\
 .. toc
 
@@ -19999,6 +20007,10 @@ finally:
         p.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20090529141856.4786: *5* @test rST import test: no double-underlines
+import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+
 if 0: # Preamble
     # g.cls()
     if c.isChanged(): c.save()
@@ -20080,6 +20092,10 @@ finally:
         p.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20090529141856.4787: *5* @test rST import test: long underlines
+import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+
 if 0: # Preamble
     # g.cls()
     if c.isChanged(): c.save()
@@ -20094,7 +20110,6 @@ if 0: # Preamble
     ic = leoImport.LeoImportCommands(c)
 else:
     ic = c.importCommands
-
 s = '''\
 .. toc
 
@@ -20122,6 +20137,10 @@ finally:
         p.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20090529141856.4788: *5* @test rST import test: long overlines
+import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+
 if 0: # Preamble
     # g.cls()
     if c.isChanged(): c.save()
@@ -20165,6 +20184,10 @@ finally:
         p.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20090529141856.4789: *5* @test rST import test: trailing whitespace
+import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+
 s = '''\
 .. toc
 
@@ -20195,6 +20218,10 @@ finally:
         p.deleteAllChildren()
     c.redraw()
 #@+node:ekr.20161129104243.1: *5* @test leo_rst
+import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+
 if 0:
     # The preamble...
     # g.cls()
