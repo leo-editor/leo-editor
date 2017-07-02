@@ -185,7 +185,7 @@ class PyflakesCommand(object):
 
     #@+others
     #@+node:ekr.20160516072613.6: *3* pyflakes.check_all
-    def check_all(self, log_flag, paths):
+    def check_all(self, log_flag, paths, pyflakes_errors_only):
         '''Run pyflakes on all files in paths.'''
         from pyflakes import api, reporter
         total_errors = 0
@@ -194,18 +194,21 @@ class PyflakesCommand(object):
             sfn = g.shortFileName(fn)
             s = g.readFileIntoEncodedString(fn)
             if s.strip():
-                g.es('Pyflakes: %s' % sfn)
+                if not pyflakes_errors_only:
+                    g.es('Pyflakes: %s' % sfn)
                 # Send all output to the log pane.
+
                 class LogStream:
+
                     def write(self, s):
                         if s.strip():
                             g.es_print(s)
                                 # It *is* useful to send pyflakes errors to the console.
-        
+
                 r = reporter.Reporter(
-                    errorStream=LogStream(),
-                    warningStream=LogStream(),
-                )
+                        errorStream=LogStream(),
+                        warningStream=LogStream(),
+                    )
                 errors = api.check(s, sfn, r)
                 total_errors += errors
         return total_errors
@@ -232,7 +235,7 @@ class PyflakesCommand(object):
                     found = True
         return found
     #@+node:ekr.20160516072613.5: *3* pyflakes.run
-    def run(self, p=None, force=False):
+    def run(self, p=None, force=False, pyflakes_errors_only=False):
         '''Run Pyflakes on all Python @<file> nodes in c.p's tree.'''
         c = self.c
         root = p or c.p
@@ -250,14 +253,14 @@ class PyflakesCommand(object):
             paths = [self.finalize(z) for z in roots]
             # These messages are important for clarity.
             log_flag = not force
-            total_errors = self.check_all(log_flag, paths)
+            total_errors = self.check_all(log_flag, paths, pyflakes_errors_only)
             if total_errors > 0:
                 g.es('ERROR: pyflakes: %s error%s' % (
                     total_errors, g.plural(total_errors)))
             elif force:
                 g.es('OK: pyflakes: %s file%s in %s' % (
                     len(paths), g.plural(paths), g.timeSince(t1)))
-            else:
+            elif not pyflakes_errors_only:
                 g.es('OK: pyflakes')
             ok = total_errors == 0
         else:

@@ -123,10 +123,14 @@ class LeoApp(object):
             # For qt_frame plugin.
         self.start_minimized = False
             # For qt_frame plugin.
+        self.trace_binding = None
+            # True: name of binding to trace, or None.
         self.trace_focus = False
             # True: trace changes in focus.
         self.trace_plugins = False
             # True: trace imports of plugins.
+        self.trace_setting = None
+            # The name of a setting to trace, or None.
         self.translateToUpperCase = False
             # Never set to True.
         self.useIpython = False
@@ -280,6 +284,8 @@ class LeoApp(object):
             # True: executing a script.
         self.initing = True
             # True: we are initiing the app.
+        self.initComplete = False
+            # True: late bindings are not allowed.
         self.killed = False
             # True: we are about to destroy the root window.
         self.openingSettingsFile = False
@@ -1616,7 +1622,7 @@ class LoadManager(object):
         g.app.globalConfigDir = lm.computeGlobalConfigDir()
         g.app.extensionsDir = g.os_path_finalize_join(g.app.loadDir, '..', 'extensions')
         g.app.testDir = g.os_path_finalize_join(g.app.loadDir, '..', 'test')
-    #@+node:ekr.20120209051836.10253: *5* lm.computeGlobalConfigDir
+    #@+node:ekr.20120209051836.10253: *5* LM.computeGlobalConfigDir
     def computeGlobalConfigDir(self):
         leo_config_dir = getattr(sys, 'leo_config_directory', None)
         if leo_config_dir:
@@ -1632,7 +1638,7 @@ class LoadManager(object):
         ):
             theDir = None
         return theDir
-    #@+node:ekr.20120209051836.10254: *5* lm.computeHomeDir
+    #@+node:ekr.20120209051836.10254: *5* LM.computeHomeDir
     def computeHomeDir(self):
         """Returns the user's home directory."""
         home = os.path.expanduser("~")
@@ -1652,20 +1658,20 @@ class LoadManager(object):
                 home = None
         # g.trace(home)
         return home
-    #@+node:ekr.20120209051836.10260: *5* lm.computeHomeLeoDir
+    #@+node:ekr.20120209051836.10260: *5* LM.computeHomeLeoDir
     def computeHomeLeoDir(self):
         # lm = self
         homeLeoDir = g.os_path_finalize_join(g.app.homeDir, '.leo')
         if not g.os_path_exists(homeLeoDir):
             g.makeAllNonExistentDirectories(homeLeoDir, force=True)
         return homeLeoDir
-    #@+node:ekr.20120209051836.10255: *5* lm.computeLeoDir
+    #@+node:ekr.20120209051836.10255: *5* LM.computeLeoDir
     def computeLeoDir(self):
         # lm = self
         loadDir = g.app.loadDir
         return g.os_path_dirname(loadDir)
             # We don't want the result in sys.path
-    #@+node:ekr.20120209051836.10256: *5* lm.computeLoadDir
+    #@+node:ekr.20120209051836.10256: *5* LM.computeLoadDir
     def computeLoadDir(self):
         """Returns the directory containing leo.py."""
         import sys
@@ -1709,7 +1715,7 @@ class LoadManager(object):
         except Exception:
             print("Exception getting load directory")
             raise
-    #@+node:ekr.20120213164030.10697: *5* lm.computeMachineName
+    #@+node:ekr.20120213164030.10697: *5* LM.computeMachineName
     def computeMachineName(self):
         '''Return the name of the current machine, i.e, HOSTNAME.'''
         # This is prepended to leoSettings.leo or myLeoSettings.leo
@@ -1773,7 +1779,7 @@ class LoadManager(object):
                 val = getattr(g.app, ivar)
                 g.trace('%20s' % (ivar), val)
     #@+node:ekr.20120215062153.10740: *3* LM.Settings
-    #@+node:ekr.20120130101219.10182: *4* lm.computeBindingLetter
+    #@+node:ekr.20120130101219.10182: *4* LM.computeBindingLetter
     def computeBindingLetter(self, kind):
         # lm = self
         if not kind:
@@ -1790,7 +1796,7 @@ class LoadManager(object):
             return '@'
         else:
             return 'D'
-    #@+node:ekr.20120223062418.10421: *4* lm.computeLocalSettings
+    #@+node:ekr.20120223062418.10421: *4* LM.computeLocalSettings
     def computeLocalSettings(self, c, settings_d, shortcuts_d, localFlag):
         '''Merge the settings dicts from c's outline into *new copies of*
         settings_d and shortcuts_d.'''
@@ -1802,12 +1808,20 @@ class LoadManager(object):
         assert shortcuts_d
         assert settings_d
         if settings_d2:
+            # #510:
+            if g.app.trace_setting:
+                key = g.app.config.munge(g.app.trace_setting)
+                val = settings_d2.d.get(key)
+                if val:
+                    fn = g.shortFileName(val.path)
+                    g.es_print('--trace-setting: in %20s: @%s %s=%s' %  (
+                        fn, val.kind, g.app.trace_setting, val.val))
             settings_d = settings_d.copy()
             settings_d.update(settings_d2)
         if shortcuts_d2:
             shortcuts_d = lm.mergeShortcutsDicts(c, shortcuts_d, shortcuts_d2)
         return settings_d, shortcuts_d
-    #@+node:ekr.20121126202114.3: *4* lm.createDefaultSettingsDicts
+    #@+node:ekr.20121126202114.3: *4* LM.createDefaultSettingsDicts
     def createDefaultSettingsDicts(self):
         '''Create lm.globalSettingsDict & lm.globalShortcutsDict.'''
         settings_d = g.app.config.defaultsDict
@@ -1817,7 +1831,7 @@ class LoadManager(object):
             name='lm.globalShortcutsDict',
             keyType=type('s'), valType=g.ShortcutInfo)
         return settings_d, shortcuts_d
-    #@+node:ekr.20120214165710.10726: *4* lm.createSettingsDicts
+    #@+node:ekr.20120214165710.10726: *4* LM.createSettingsDicts
     def createSettingsDicts(self, c, localFlag):
         import leo.core.leoConfig as leoConfig
         parser = leoConfig.SettingsTreeParser(c, localFlag)
@@ -1855,7 +1869,7 @@ class LoadManager(object):
             d1 = lm.globalSettingsDict.copy(settingsName)
             d2 = lm.globalShortcutsDict.copy(shortcutsName)
         return PreviousSettings(d1, d2)
-    #@+node:ekr.20120214132927.10723: *4* lm.mergeShortcutsDicts & helpers
+    #@+node:ekr.20120214132927.10723: *4* LM.mergeShortcutsDicts & helpers
     def mergeShortcutsDicts(self, c, old_d, new_d):
         '''Create a new dict by overriding all shortcuts in old_d by shortcuts in new_d.
 
@@ -1868,14 +1882,40 @@ class LoadManager(object):
             new_n, old_n = len(list(new_d.keys())), len(list(old_d.keys()))
             g.trace('new %4s %s %s' % (new_n, id(new_d), new_d.name()))
             g.trace('old %4s %s %s' % (old_n, id(old_d), old_d.name()))
+        # #510.
+        si_list = new_d.get(g.app.trace_setting)
+        if si_list:
+            for si in si_list:
+                fn = si.kind.split(' ')[-1]
+                stroke = c.k.prettyPrintKey(si.stroke)
+                if si.pane and si.pane != 'all':
+                    pane = ' in %s panes' % si.pane
+                else:
+                    pane = ''
+                g.es_print('--trace-setting: %20s binds %s to %-20s%s' %  (
+                    fn, g.app.trace_setting, stroke, pane))
         inverted_old_d = lm.invert(old_d)
         inverted_new_d = lm.invert(new_d)
+        # #510.
+        if g.app.trace_binding:
+            stroke = c.k.canonicalizeShortcut(g.app.trace_binding)
+            si_list = inverted_new_d. get(stroke)
+            if si_list:
+                for si in si_list:
+                    fn = si.kind.split(' ')[-1] # si.kind # 
+                    stroke2 = c.k.prettyPrintKey(stroke)
+                    if si.pane and si.pane != 'all':
+                        pane = ' in %s panes' % si.pane
+                    else:
+                        pane = ''
+                    g.es_print('--trace-binding: %20s binds %s to %-20s%s' %  (
+                        fn, stroke2, si.commandName, pane))
         # Fix bug 951921: check for duplicate shortcuts only in the new file.
         lm.checkForDuplicateShortcuts(c, inverted_new_d)
         inverted_old_d.update(inverted_new_d) # Updates inverted_old_d in place.
         result = lm.uninvert(inverted_old_d)
         return result
-    #@+node:ekr.20120311070142.9904: *5* lm.checkForDuplicateShortcuts
+    #@+node:ekr.20120311070142.9904: *5* LM.checkForDuplicateShortcuts
     def checkForDuplicateShortcuts(self, c, d):
         '''Check for duplicates in an "inverted" dictionary d
         whose keys are strokes and whose values are lists of ShortcutInfo nodes.
@@ -1898,7 +1938,7 @@ class LoadManager(object):
                 g.es_print('conflicting key bindings in %s' % (c.shortFileName()))
                 for si in aList2:
                     g.es_print('%6s %s %s' % (si.pane, si.stroke.s, si.commandName))
-    #@+node:ekr.20120214132927.10724: *5* lm.invert
+    #@+node:ekr.20120214132927.10724: *5* LM.invert
     def invert(self, d):
         '''Invert a shortcut dict whose keys are command names,
         returning a dict whose keys are strokes.'''
@@ -1921,7 +1961,7 @@ class LoadManager(object):
         if trace: g.trace('returns  %4s %s %s' % (
             len(list(result.keys())), id(d), result.name()))
         return result
-    #@+node:ekr.20120214132927.10725: *5* lm.uninvert
+    #@+node:ekr.20120214132927.10725: *5* LM.uninvert
     def uninvert(self, d):
         '''Uninvert an inverted shortcut dict whose keys are strokes,
         returning a dict whose keys are command names.'''
@@ -1943,7 +1983,7 @@ class LoadManager(object):
         if trace: g.trace('returns %4s %s %s' % (
             len(list(result.keys())), id(d), result.name()))
         return result
-    #@+node:ekr.20120222103014.10312: *4* lm.openSettingsFile
+    #@+node:ekr.20120222103014.10312: *4* LM.openSettingsFile
     def openSettingsFile(self, fn):
         '''
         Open a settings file with a null gui.  Return the commander.
@@ -1986,7 +2026,7 @@ class LoadManager(object):
         c.openDirectory = frame.openDirectory = g.os_path_dirname(fn)
         g.app.gui = oldGui
         return c if ok else None
-    #@+node:ekr.20120213081706.10382: *4* lm.readGlobalSettingsFiles
+    #@+node:ekr.20120213081706.10382: *4* LM.readGlobalSettingsFiles
     def readGlobalSettingsFiles(self):
         '''Read leoSettings.leo and myLeoSettings.leo using a null gui.'''
         trace = (False or g.trace_startup) and not g.unitTesting
@@ -2018,7 +2058,7 @@ class LoadManager(object):
         for c in commanders:
             if c not in old_commanders:
                 g.app.forgetOpenFile(c.fileName())
-    #@+node:ekr.20120214165710.10838: *4* lm.traceSettingsDict
+    #@+node:ekr.20120214165710.10838: *4* LM.traceSettingsDict
     def traceSettingsDict(self, d, verbose=False):
         if verbose:
             print(d)
@@ -2028,7 +2068,7 @@ class LoadManager(object):
             if d: print('')
         else:
             print(d)
-    #@+node:ekr.20120214165710.10822: *4* lm.traceShortcutsDict
+    #@+node:ekr.20120214165710.10822: *4* LM.traceShortcutsDict
     def traceShortcutsDict(self, d, verbose=False):
         if verbose:
             print(d)
@@ -2405,10 +2445,14 @@ class LoadManager(object):
             help='save session tabs on exit')
         add('--silent', action='store_true', dest='silent',
             help='disable all log messages')
+        add('--trace-binding', dest='binding',
+            help='trace key bindings')
         add('--trace-focus', action='store_true', dest='trace_focus',
             help='trace changes of focus')
         add('--trace-plugins', action='store_true', dest='trace_plugins',
             help='trace imports of plugins')
+        add('--trace-setting', dest='setting',
+            help='trace where setting is set')
         add('-v', '--version', action='store_true', dest='version',
             help='print version number and exit')
         add('--window-size', dest='window_size',
@@ -2507,10 +2551,16 @@ class LoadManager(object):
         # --silent
         g.app.silentMode = options.silent
         # print('scanOptions: silentMode',g.app.silentMode)
+        # --trace-binding
+        g.app.trace_binding = options.binding
         # --trace-focus
         g.app.trace_focus = options.trace_focus
         # --trace-plugins
         g.app.trace_plugins = options.trace_plugins
+        # --trace-setting=setting
+        g.app.trace_setting = options.setting
+            # g.app.config does not exist yet.
+            # g.trace('trace_setting:', repr(options.trace_setting))
         # --version: print the version and exit.
         versionFlag = options.version
         # --window-size

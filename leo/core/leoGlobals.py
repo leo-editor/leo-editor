@@ -2964,8 +2964,10 @@ def computeStandardDirectories():
     return g.app.loadManager.computeStandardDirectories()
 #@+node:ekr.20031218072017.3103: *3* g.computeWindowTitle
 def computeWindowTitle(fileName):
+
+    branch = g.gitBranchName(path=g.os_path_dirname(fileName))
     if not fileName:
-        return "untitled"
+        return branch + ": untitled" if branch else 'untitled'
     else:
         path, fn = g.os_path_split(fileName)
         if path:
@@ -2975,6 +2977,8 @@ def computeWindowTitle(fileName):
         # Yet another fix for bug 1194209: regularize slashes.
         if os.sep in '/\\':
             title = title.replace('/', os.sep).replace('\\', os.sep)
+        if branch:
+            title = branch + ": " + title
         return title
 #@+node:ekr.20031218072017.3117: *3* g.create_temp_file
 def create_temp_file(textMode=False):
