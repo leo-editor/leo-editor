@@ -298,6 +298,9 @@ def run(self):
     root = source.firstChild()
     rc.preprocessTree(root)
     rc.processTree(p=root,ext='.html',toString=True,justOneFile=True)
+    assert rc.getOption(root, 'call_docutils'), 'call_docutils'
+    assert rc.source is not None, 'rc.source should not be None'
+    assert rc.stringOutput is not None, 'rc.stringOutput should not be None'
     rst = clean(rc.source)
     html = clean(rc.stringOutput)
     assert rst,'rst'
@@ -312,6 +315,7 @@ def run(self):
         html = html.replace('Docutils 0.7:','Docutils VER:')
         html = html.replace('Docutils 0.8:','Docutils VER:')
         html = html.replace('Docutils 0.10:','Docutils VER:')
+        html = html.replace('Docutils 0.12:','Docutils VER:')
     if expected.hasChildren():
         child1 = expected.firstChild()
         child2 = expected.firstChild().next()
@@ -23231,6 +23235,9 @@ if s:
 @language rest
 #@+node:ekr.20100813100841.5855: *6* @rst test.html
 @language rest
+@ @rst-options
+call_docutils=True
+@c
 
 #####
 Title
@@ -23794,6 +23801,9 @@ if s:
 @language rest
 #@+node:ekr.20100812182942.5807: *6* @rst test.html
 @language rest
+@ @rst-options
+call_docutils=True
+@c
 
 #####
 Title
@@ -24381,6 +24391,9 @@ if s:
 #@+node:ekr.20100813100841.5839: *5* source
 @language rest
 #@+node:ekr.20100813100841.5840: *6* @rst test.html
+@ @rst-options
+call_docutils=True
+@c
 #####
 Title
 #####
@@ -24967,6 +24980,9 @@ if s:
 #@+node:ekr.20100813124317.5880: *5* source
 @language rest
 #@+node:ekr.20100813124317.5881: *6* @rst test.html
+@ @rst-options
+call_docutils=True
+@c
 #####
 Title
 #####
@@ -25555,6 +25571,7 @@ if s:
 
 @ @rst-options
 show_leo_directives=False
+call_docutils=True
 @c
 
 #####
@@ -26147,6 +26164,9 @@ if s:
 @language rest
 #@+node:ekr.20120307070541.3942: *6* @rst test.html
 @language rest
+@ @rst-options
+call_docutils=True
+@c
 
 Test of unicode characters: ÀǋϢﻙ
 
@@ -26423,7 +26443,6 @@ hr { /* EKR */
 #@+node:ekr.20120307070541.3945: *5* got
 #@+node:ekr.20120307070541.3948: *6* rst
 .. rst3: filename: test.html
-
 
 Test of unicode characters: ÀǋϢﻙ
 
