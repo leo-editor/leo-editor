@@ -24,7 +24,7 @@ of prototyping it suffices.
 The next thing to address is keeping settings in document and syncing them with the settings
 files in specific folders that Leo currently uses.
 
-In far a way future one can imagine even stronger integration between Leo’s runtime data structures
+In far away future one can imagine even stronger integration between Leo’s runtime data structures
 and database. Data can be constantly stored in/retrieved from database while editing document.
 Save operation in that case would be just commit on connection object. Perhaps it could make
 possible permanent undo/redo history, displaying history of some node since its creation and maybe
