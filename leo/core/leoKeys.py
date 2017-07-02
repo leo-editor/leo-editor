@@ -3137,7 +3137,7 @@ class KeyHandlerClass(object):
             if trace: g.trace('KILL:', commandName)
             k.killBinding(commandName)
         if trace:
-            pretty_stroke = stroke and k.prettyPrintKey(stroke) or 'None'
+            pretty_stroke = k.prettyPrintKey(stroke) if stroke else 'None'
             g.trace('@command %25s' % (commandName), pretty_stroke, g.callers(2))
         # Fixup any previous abbreviation to press-x-button commands.
         if commandName.startswith('press-') and commandName.endswith('-button'):
