@@ -22,6 +22,20 @@ class EditCommandsClass(BaseEditCommandsClass):
     '''Editing commands with little or no state.'''
     # pylint: disable=eval-used
     #@+others
+    #@+node:ekr.20150514063305.190: *3* ec.cache
+    @cmd('clear-all-caches')
+    def clearAllCaches(self, event=None):
+        '''Clear all of Leo's file caches.'''
+        c = self.c
+        if c.cacher:
+            c.cacher.clearAllCaches()
+
+    @cmd('clear-cache')
+    def clearCache(self, event=None):
+        '''Clear the outline's file cache.'''
+        c = self.c
+        if c.cacher:
+            c.cacher.clearCache()
     #@+node:ekr.20150514063305.116: *3* ec.ctor
     def __init__(self, c):
         '''Ctor for EditCommandsClass class.'''
@@ -56,25 +70,200 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.openBracketsList = cf.getString('open_flash_brackets') or '([{'
         self.closeBracketsList = cf.getString('close_flash_brackets') or ')]}'
         self.initBracketMatcher(c)
+    #@+node:ekr.20160331191740.1: *3* ec.diff-marked-nodes
+    @cmd('diff-marked-nodes')
+    def diffMarkedNodes(self, event):
+        '''
+        This command does nothing unless exactly two nodes, say p1 and p2, are marked.
+
+        When two nodes *are* marked, this command does the following:
+
+        1. Creates a **diff node** as the last top-level node. The body of the
+           diff node shows the diffs between the two marked nodes, that is,
+           difflib.Differ().compare(p1.b, p2.b)
+
+        2. Move *clones* of p1 and p2 to be children of the diff node,
+           and unmarks all nodes. This is usually what is wanted.
+
+        To rerun the command, just mark two nodes again.
+        '''
+        c = self.c
+        aList = [z for z in c.all_unique_positions() if z.isMarked()]
+        if len(aList) == 2:
+            p1, p2 = aList[0], aList[1]
+            lines1 = g.splitLines(p1.b.rstrip()+'\n')
+            lines2 = g.splitLines(p2.b.rstrip()+'\n')
+            diffLines = difflib.Differ().compare(lines1, lines2)
+            s = ''.join(list(diffLines))
+            p = c.lastTopLevel().insertAfter()
+            p.h = 'Compare: %s, %s' % (g.truncate(p1.h, 22), g.truncate(p2.h, 22))
+            p.b = '1: %s\n2: %s\n%s' % (p1.h, p2.h, s)
+            for p2 in aList:
+                p3 = p2.clone()
+                p3.moveToLastChildOf(p)
+            p.expand()
+            c.unmarkAll()
+            c.selectPosition(p)
+            c.redraw()
+        else:
+            g.es_print('%s nodes marked instead of 2' % len(aList))
     #@+node:ekr.20150514063305.118: *3* ec.doNothing
     @cmd('do-nothing')
     def doNothing(self, event):
         '''A placeholder command, useful for testing bindings.'''
         pass
-    #@+node:ekr.20150514063305.190: *3* ec.cache
-    @cmd('clear-all-caches')
-    def clearAllCaches(self, event=None):
-        '''Clear all of Leo's file caches.'''
-        c = self.c
-        if c.cacher:
-            c.cacher.clearAllCaches()
+    #@+node:ekr.20150514063305.213: *3* ec.evalExpression
+    @cmd('eval-expression')
+    def evalExpression(self, event):
+        '''Evaluate a Python Expression entered in the minibuffer.'''
+        k = self.c.k
+        k.setLabelBlue('Eval: ')
+        k.get1Arg(event, handler=self.evalExpression1)
 
-    @cmd('clear-cache')
-    def clearCache(self, event=None):
-        '''Clear the outline's file cache.'''
+    def evalExpression1(self, event):
+        k = self.c.k
+        k.clearState()
+        try:
+            e = k.arg
+            result = str(eval(e, {}, {}))
+            k.setLabelGrey('Eval: %s -> %s' % (e, result))
+        except Exception:
+            k.setLabelGrey('Invalid Expression: %s' % e)
+    #@+node:ekr.20150514063305.278: *3* ec.insertFileName
+    @cmd('insert-file-name')
+    def insertFileName(self, event=None):
+        '''
+        Prompt for a file name, then insert it at the cursor position.
+        This operation is undoable if done in the body pane.
+
+        The initial path is made by concatenating path_for_p() and the selected
+        text, if there is any, or any path like text immediately preceding the
+        cursor.
+        '''
         c = self.c
-        if c.cacher:
-            c.cacher.clearCache()
+        w = self.editWidget(event)
+        if w:
+
+            def callback(arg, w=w):
+                i = w.getSelectionRange()[0]
+                w.deleteTextSelection()
+                w.insert(i, arg)
+                if g.app.gui.widget_name(w) == 'body':
+                    c.frame.body.onBodyChanged(undoType='Typing')
+
+            # see if the widget already contains the start of a path
+            start_text = w.getSelectedText()
+            if not start_text:  # look at text preceeding insert point
+                start_text = w.getAllText()[:w.getInsertPoint()]
+                if start_text:
+                    # make non-path characters whitespace
+                    start_text = ''.join(i if i not in '\'"`()[]{}<>!|*,@#$&' else ' '
+                                         for i in start_text)
+                    if start_text[-1].isspace():  # use node path if nothing typed
+                        start_text = ''
+                    else:
+                        start_text = start_text.rsplit(None, 1)[-1]
+                        # set selection range so w.deleteTextSelection() works in the callback
+                        w.setSelectionRange(
+                            w.getInsertPoint()-len(start_text), w.getInsertPoint())
+
+            c.k.functionTail = g.os_path_finalize_join(self.path_for_p(c, c.p), start_text or '')
+            c.k.getFileName(event, callback=callback)
+    #@+node:ekr.20150514063305.279: *3* ec.insertHeadlineTime
+    @cmd('insert-headline-time')
+    def insertHeadlineTime(self, event=None):
+        '''Insert a date/time stamp in the headline of the selected node.'''
+        frame = self
+        c, p = frame.c, self.c.p
+        if g.app.batchMode:
+            c.notValidInBatchMode("Insert Headline Time")
+            return
+        w = c.frame.tree.edit_widget(p)
+            # 2015/06/09: Fix bug 131: Insert time in headline now inserts time in body
+            # Get the wrapper from the tree itself.
+            # Do *not* set w = self.editWidget!
+        if w:
+            # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1185933
+            # insert-headline-time should insert at cursor.
+            # Note: The command must be bound to a key for this to work.
+            ins = w.getInsertPoint()
+            s = c.getTime(body=False)
+            w.insert(ins, s)
+        else:
+            c.endEditing()
+            time = c.getTime(body=False)
+            s = p.h.rstrip()
+            if s:
+                p.h = ' '.join([s, time])
+            else:
+                p.h = time
+            c.redrawAndEdit(p, selectAll=True)
+    #@+node:tbrown.20151118134307.1: *3* ec.path_for_p
+    def path_for_p(self, c, p):
+        """path_for_p - return the filesystem path (directory) containing
+        node `p`.
+
+        FIXME: this general purpose code should be somewhere else, and there
+        may already be functions that do some of the work, although perhaps
+        without handling so many corner cases (@auto-my-custom-type etc.)
+
+        :param outline c: outline containing p
+        :param position p: position to locate
+        :return: path
+        :rtype: str
+        """
+
+        def atfile(p):
+            """return True if p is an @<file> node *of any kind*"""
+            word0 = p.h.split()[0]
+            return (
+                word0 in g.app.atFileNames|set(['@auto']) or
+                word0.startswith('@auto-')
+            )
+
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        while c.positionExists(p):
+            if atfile(p):  # see if it's a @<file> node of some sort
+                nodepath = p.h.split(None, 1)[-1]
+                nodepath = g.os_path_join(path, nodepath)
+                if not g.os_path_isdir(nodepath):  # remove filename
+                    nodepath = g.os_path_dirname(nodepath)
+                if g.os_path_isdir(nodepath):  # append if it's a directory
+                    path = nodepath
+                break
+            p.moveToParent()
+
+        return path
+    #@+node:ekr.20150514063305.347: *3* ec.tabify & untabify
+    @cmd('tabify')
+    def tabify(self, event):
+        '''Convert 4 spaces to tabs in the selected text.'''
+        self.tabifyHelper(event, which='tabify')
+
+    @cmd('untabify')
+    def untabify(self, event):
+        '''Convert tabs to 4 spaces in the selected text.'''
+        self.tabifyHelper(event, which='untabify')
+
+    def tabifyHelper(self, event, which):
+        w = self.editWidget(event)
+        if not w or not w.hasSelection():
+            return
+        self.beginCommand(w, undoType=which)
+        i, end = w.getSelectionRange()
+        txt = w.getSelectedText()
+        if which == 'tabify':
+            pattern = re.compile(' {4,4}') # Huh?
+            ntxt = pattern.sub('\t', txt)
+        else:
+            pattern = re.compile('\t')
+            ntxt = pattern.sub('    ', txt)
+        w.delete(i, end)
+        w.insert(i, ntxt)
+        n = i + len(ntxt)
+        w.setSelectionRange(n, n, insert=n)
+        self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.191: *3* ec: capitalization & case
     #@+node:ekr.20150514063305.192: *4* ec.capitalizeWord & up/downCaseWord
     @cmd('capitalize-word')
@@ -357,43 +546,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             w.insert(i, line2)
         w.setInsertPoint(i + c1)
         self.endCommand(changed=True, setLabel=True)
-    #@+node:ekr.20160331191740.1: *3* ec.diff-marked-nodes
-    @cmd('diff-marked-nodes')
-    def diffMarkedNodes(self, event):
-        '''
-        This command does nothing unless exactly two nodes, say p1 and p2, are marked.
-
-        When two nodes *are* marked, this command does the following:
-
-        1. Creates a **diff node** as the last top-level node. The body of the
-           diff node shows the diffs between the two marked nodes, that is,
-           difflib.Differ().compare(p1.b, p2.b)
-
-        2. Move *clones* of p1 and p2 to be children of the diff node,
-           and unmarks all nodes. This is usually what is wanted.
-
-        To rerun the command, just mark two nodes again.
-        '''
-        c = self.c
-        aList = [z for z in c.all_unique_positions() if z.isMarked()]
-        if len(aList) == 2:
-            p1, p2 = aList[0], aList[1]
-            lines1 = g.splitLines(p1.b.rstrip()+'\n')
-            lines2 = g.splitLines(p2.b.rstrip()+'\n')
-            diffLines = difflib.Differ().compare(lines1, lines2)
-            s = ''.join(list(diffLines))
-            p = c.lastTopLevel().insertAfter()
-            p.h = 'Compare: %s, %s' % (g.truncate(p1.h, 22), g.truncate(p2.h, 22))
-            p.b = '1: %s\n2: %s\n%s' % (p1.h, p2.h, s)
-            for p2 in aList:
-                p3 = p2.clone()
-                p3.moveToLastChildOf(p)
-            p.expand()
-            c.unmarkAll()
-            c.selectPosition(p)
-            c.redraw()
-        else:
-            g.es_print('%s nodes marked instead of 2' % len(aList))
     #@+node:ekr.20150514063305.210: *3* ec: esc methods for Python evaluation
     #@+node:ekr.20150514063305.211: *4* ec.watchEscape
     @cmd('escape')
@@ -446,23 +598,6 @@ class EditCommandsClass(BaseEditCommandsClass):
                     k.setStatusLabel('Error: Invalid Expression')
         else:
             k.updateLabel(event)
-    #@+node:ekr.20150514063305.213: *3* ec.evalExpression
-    @cmd('eval-expression')
-    def evalExpression(self, event):
-        '''Evaluate a Python Expression entered in the minibuffer.'''
-        k = self.c.k
-        k.setLabelBlue('Eval: ')
-        k.get1Arg(event, handler=self.evalExpression1)
-
-    def evalExpression1(self, event):
-        k = self.c.k
-        k.clearState()
-        try:
-            e = k.arg
-            result = str(eval(e, {}, {}))
-            k.setLabelGrey('Eval: %s -> %s' % (e, result))
-        except Exception:
-            k.setLabelGrey('Invalid Expression: %s' % e)
     #@+node:ekr.20150514063305.214: *3* ec: fill column and centering
     #@+at
     # 
@@ -1751,112 +1886,6 @@ class EditCommandsClass(BaseEditCommandsClass):
                     self.doPlainTab(s, i, tab_width, w)
             else:
                 self.doPlainTab(s, i, tab_width, w)
-    #@+node:ekr.20150514063305.278: *3* ec.insertFileName
-    @cmd('insert-file-name')
-    def insertFileName(self, event=None):
-        '''
-        Prompt for a file name, then insert it at the cursor position.
-        This operation is undoable if done in the body pane.
-
-        The initial path is made by concatenating path_for_p() and the selected
-        text, if there is any, or any path like text immediately preceding the
-        cursor.
-        '''
-        c = self.c
-        w = self.editWidget(event)
-        if w:
-
-            def callback(arg, w=w):
-                i = w.getSelectionRange()[0]
-                w.deleteTextSelection()
-                w.insert(i, arg)
-                if g.app.gui.widget_name(w) == 'body':
-                    c.frame.body.onBodyChanged(undoType='Typing')
-
-            # see if the widget already contains the start of a path
-            start_text = w.getSelectedText()
-            if not start_text:  # look at text preceeding insert point
-                start_text = w.getAllText()[:w.getInsertPoint()]
-                if start_text:
-                    # make non-path characters whitespace
-                    start_text = ''.join(i if i not in '\'"`()[]{}<>!|*,@#$&' else ' '
-                                         for i in start_text)
-                    if start_text[-1].isspace():  # use node path if nothing typed
-                        start_text = ''
-                    else:
-                        start_text = start_text.rsplit(None, 1)[-1]
-                        # set selection range so w.deleteTextSelection() works in the callback
-                        w.setSelectionRange(
-                            w.getInsertPoint()-len(start_text), w.getInsertPoint())
-
-            c.k.functionTail = g.os_path_finalize_join(self.path_for_p(c, c.p), start_text or '')
-            c.k.getFileName(event, callback=callback)
-    #@+node:tbrown.20151118134307.1: *3* ec.path_for_p
-    def path_for_p(self, c, p):
-        """path_for_p - return the filesystem path (directory) containing
-        node `p`.
-
-        FIXME: this general purpose code should be somewhere else, and there
-        may already be functions that do some of the work, although perhaps
-        without handling so many corner cases (@auto-my-custom-type etc.)
-
-        :param outline c: outline containing p
-        :param position p: position to locate
-        :return: path
-        :rtype: str
-        """
-
-        def atfile(p):
-            """return True if p is an @<file> node *of any kind*"""
-            word0 = p.h.split()[0]
-            return (
-                word0 in g.app.atFileNames|set(['@auto']) or
-                word0.startswith('@auto-')
-            )
-
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        while c.positionExists(p):
-            if atfile(p):  # see if it's a @<file> node of some sort
-                nodepath = p.h.split(None, 1)[-1]
-                nodepath = g.os_path_join(path, nodepath)
-                if not g.os_path_isdir(nodepath):  # remove filename
-                    nodepath = g.os_path_dirname(nodepath)
-                if g.os_path_isdir(nodepath):  # append if it's a directory
-                    path = nodepath
-                break
-            p.moveToParent()
-
-        return path
-    #@+node:ekr.20150514063305.279: *3* ec.insertHeadlineTime
-    @cmd('insert-headline-time')
-    def insertHeadlineTime(self, event=None):
-        '''Insert a date/time stamp in the headline of the selected node.'''
-        frame = self
-        c, p = frame.c, self.c.p
-        if g.app.batchMode:
-            c.notValidInBatchMode("Insert Headline Time")
-            return
-        w = c.frame.tree.edit_widget(p)
-            # 2015/06/09: Fix bug 131: Insert time in headline now inserts time in body
-            # Get the wrapper from the tree itself.
-            # Do *not* set w = self.editWidget!
-        if w:
-            # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1185933
-            # insert-headline-time should insert at cursor.
-            # Note: The command must be bound to a key for this to work.
-            ins = w.getInsertPoint()
-            s = c.getTime(body=False)
-            w.insert(ins, s)
-        else:
-            c.endEditing()
-            time = c.getTime(body=False)
-            s = p.h.rstrip()
-            if s:
-                p.h = ' '.join([s, time])
-            else:
-                p.h = time
-            c.redrawAndEdit(p, selectAll=True)
     #@+node:ekr.20150514063305.280: *3* ec: line
     #@+node:ekr.20150514063305.281: *4* ec.flushLines (doesn't work)
     @cmd('flush-lines')
@@ -3522,35 +3551,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.endCommand(changed=True, setLabel=True)
 
     swapCharacters = transposeCharacters
-    #@+node:ekr.20150514063305.347: *3* ec.tabify & untabify
-    @cmd('tabify')
-    def tabify(self, event):
-        '''Convert 4 spaces to tabs in the selected text.'''
-        self.tabifyHelper(event, which='tabify')
-
-    @cmd('untabify')
-    def untabify(self, event):
-        '''Convert tabs to 4 spaces in the selected text.'''
-        self.tabifyHelper(event, which='untabify')
-
-    def tabifyHelper(self, event, which):
-        w = self.editWidget(event)
-        if not w or not w.hasSelection():
-            return
-        self.beginCommand(w, undoType=which)
-        i, end = w.getSelectionRange()
-        txt = w.getSelectedText()
-        if which == 'tabify':
-            pattern = re.compile(' {4,4}') # Huh?
-            ntxt = pattern.sub('\t', txt)
-        else:
-            pattern = re.compile('\t')
-            ntxt = pattern.sub('    ', txt)
-        w.delete(i, end)
-        w.insert(i, ntxt)
-        n = i + len(ntxt)
-        w.setSelectionRange(n, n, insert=n)
-        self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.348: *3* ec: uA's
     #@+node:ekr.20150514063305.349: *4* ec.clearNodeUas & clearAllUas
     @cmd('clear-node-uas')
