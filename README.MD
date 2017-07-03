@@ -30,4 +30,4 @@ Save operation in that case would be just commit on connection object. Perhaps i
 possible permanent undo/redo history, displaying history of some node since its creation and maybe
 even more cool features that are hard to imagine now.
 
-Who knows what the future would bring. 
+Who knows what the future would bring.

@@ -279,13 +279,14 @@ def report (self,expected,got):
 #@+node:ekr.20100827183358.5957: *5* run
 def run(self):
     '''run an rst test.'''
-    import sys
-    # import leo.core.leoRst as leoRst
-    if not sys.platform.startswith('win') and g.isPython3: return
-    try:
-        import docutils
-    except ImportError:
-        return
+    # Individual tests now make these tests explicitly.
+        # import sys
+        # # import leo.core.leoRst as leoRst
+        # if not sys.platform.startswith('win') and g.isPython3: return
+        # try:
+            # import docutils
+        # except ImportError:
+            # return
 
     def clean(s):
         s = s.replace('\r','')
@@ -298,6 +299,9 @@ def run(self):
     root = source.firstChild()
     rc.preprocessTree(root)
     rc.processTree(p=root,ext='.html',toString=True,justOneFile=True)
+    assert rc.getOption(root, 'call_docutils'), 'call_docutils'
+    assert rc.source is not None, 'rc.source should not be None'
+    assert rc.stringOutput is not None, 'rc.stringOutput should not be None'
     rst = clean(rc.source)
     html = clean(rc.stringOutput)
     assert rst,'rst'
@@ -312,6 +316,7 @@ def run(self):
         html = html.replace('Docutils 0.7:','Docutils VER:')
         html = html.replace('Docutils 0.8:','Docutils VER:')
         html = html.replace('Docutils 0.10:','Docutils VER:')
+        html = html.replace('Docutils 0.12:','Docutils VER:')
     if expected.hasChildren():
         child1 = expected.firstChild()
         child2 = expected.firstChild().next()
@@ -23223,14 +23228,21 @@ assert rst.underlines1 == '=+*^~"\'`-:><_', 'fail4 %s' % repr(rst.underlines1)
 assert rst.atAutoWriteUnderlines == '=+*^~"\'`-:><_', 'fail 5: %s' % (
     repr(rst.atAutoWriteUnderlines))
 #@+node:ekr.20100813100841.5850: *4* @test rst3Test @no-head
-s = g.findTestScript(c,'@common leoRst test code',warn=False)
-if s:
-    exec(s)
-    rst3Test(c,p)
+import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+s = g.findTestScript(c,'@common leoRst test code',warn=True)
+assert s, repr(p)
+exec(s)
+    # Defines rst3Test class.
+rst3Test(c,p)
 #@+node:ekr.20100813100841.5854: *5* source
 @language rest
 #@+node:ekr.20100813100841.5855: *6* @rst test.html
 @language rest
+@ @rst-options
+call_docutils=True
+@c
 
 #####
 Title
@@ -23786,14 +23798,21 @@ hr { /* EKR */
 </body>
 </html>
 #@+node:ekr.20100812172232.5801: *4* @test rst3Test default
-s = g.findTestScript(c,'@common leoRst test code',warn=False)
-if s:
-    exec(s)
-    rst3Test(c,p)
+import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+s = g.findTestScript(c,'@common leoRst test code',warn=True)
+assert s, repr(p)
+exec(s)
+    # Defines rst3Test class.
+rst3Test(c,p)
 #@+node:ekr.20100812182942.5805: *5* source
 @language rest
 #@+node:ekr.20100812182942.5807: *6* @rst test.html
 @language rest
+@ @rst-options
+call_docutils=True
+@c
 
 #####
 Title
@@ -24373,14 +24392,20 @@ This is the body of the section.</p>
 </body>
 </html>
 #@+node:ekr.20100813100841.5824: *4* @test rst3Test doc_only_mode (set in headline)
-# Skip test when running test dynamically.
-s = g.findTestScript(c,'@common leoRst test code',warn=False)
-if s:
-    exec(s)
-    rst3Test(c,p)
+import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+s = g.findTestScript(c,'@common leoRst test code',warn=True)
+assert s, repr(p)
+exec(s)
+    # Defines rst3Test class.
+rst3Test(c,p)
 #@+node:ekr.20100813100841.5839: *5* source
 @language rest
 #@+node:ekr.20100813100841.5840: *6* @rst test.html
+@ @rst-options
+call_docutils=True
+@c
 #####
 Title
 #####
@@ -24959,14 +24984,20 @@ This is the body of the section.</p>
 </body>
 </html>
 #@+node:ekr.20100813124317.5879: *4* @test rst3Test doc_only_mode (set in options doc part)
-# Skip test when running test dynamically.
-s = g.findTestScript(c,'@common leoRst test code',warn=False)
-if s:
-    exec(s)
-    rst3Test(c,p)
+import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+s = g.findTestScript(c,'@common leoRst test code',warn=True)
+assert s, repr(p)
+exec(s)
+    # Defines rst3Test class.
+rst3Test(c,p)
 #@+node:ekr.20100813124317.5880: *5* source
 @language rest
 #@+node:ekr.20100813124317.5881: *6* @rst test.html
+@ @rst-options
+call_docutils=True
+@c
 #####
 Title
 #####
@@ -25543,11 +25574,14 @@ This is the body of the section.</p>
 </body>
 </html>
 #@+node:ekr.20100827140832.5913: *4* @test rst3Test show_leo_directives=False
-# Skip test when running test dynamically.
-s = g.findTestScript(c,'@common leoRst test code',warn=False)
-if s:
-    exec(s)
-    rst3Test(c,p)
+import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+s = g.findTestScript(c,'@common leoRst test code',warn=True)
+assert s, repr(p)
+exec(s)
+    # Defines rst3Test class.
+rst3Test(c,p)
 #@+node:ekr.20100827140832.5917: *5* source
 @language rest
 #@+node:ekr.20100827140832.5918: *6* @rst test.html
@@ -25555,6 +25589,7 @@ if s:
 
 @ @rst-options
 show_leo_directives=False
+call_docutils=True
 @c
 
 #####
@@ -26138,15 +26173,21 @@ This is the body of the section.</p>
 #@+node:ekr.20120307070541.3937: *4* @test rst3Test unicode characters
 @first # -*- coding: utf-8 -*-
 
-# Skip test when running test dynamically.
-s = g.findTestScript(c,'@common leoRst test code',warn=False)
-if s:
-    exec(s)
-    rst3Test(c,p)
+import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+s = g.findTestScript(c,'@common leoRst test code',warn=True)
+assert s, repr(p)
+exec(s)
+    # Defines rst3Test class.
+rst3Test(c,p)
 #@+node:ekr.20120307070541.3941: *5* source
 @language rest
 #@+node:ekr.20120307070541.3942: *6* @rst test.html
 @language rest
+@ @rst-options
+call_docutils=True
+@c
 
 Test of unicode characters: ÀǋϢﻙ
 
@@ -26423,7 +26464,6 @@ hr { /* EKR */
 #@+node:ekr.20120307070541.3945: *5* got
 #@+node:ekr.20120307070541.3948: *6* rst
 .. rst3: filename: test.html
-
 
 Test of unicode characters: ÀǋϢﻙ
 
