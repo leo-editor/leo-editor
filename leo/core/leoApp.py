@@ -3514,6 +3514,37 @@ class RecentFilesManager(object):
             g.es_exception()
             if g.unitTesting: raise
         return False
+    #@+node:vitalije.20170703115609.1: *3* rf.editRecentFiles
+    def editRecentFiles(self, c):
+        '''dump recentFiles into new node appended as lastTopLevel,
+           selects it and request focus in body.
+           
+           NOTE: command write-edited-recent-files assume that
+                 headline of this node is not changed by user'''
+        rf = self
+        nl = '\n' if g.isPython3 else g.u('\n')
+        p1 = c.lastTopLevel().insertAfter()
+        p1.h = 'recent files do not change this headline'
+        p1.b = nl.join(rf.recentFiles)
+        c.redraw()
+        c.selectPosition(p1)
+        c.redraw()
+        c.bodyWantsFocusNow()
+        g.es('edit list and run write-rff to save recentFiles')
+
+    #@+node:vitalije.20170703115616.1: *3* rf.writeEditedRecentFiles
+    def writeEditedRecentFiles(self, c):
+        '''writes content of the node with the headline: 'recent files do
+           not change this headline' as recentFiles and recreates menues'''
+        rf = self; p = c.p
+        if p.h != 'recent files do not change this headline':
+            g.red('recent files... node must be selected first')
+            return
+        files = [z for z in p.b.splitlines() if z and g.os_path_exists(z)]
+        rf.recentFiles = files
+        rf.writeRecentFilesFile(c, force=False)
+        rf.updateRecentFiles(None)
+        c.deleteOutline()
     #@-others
 #@+node:ekr.20150514125218.1: ** Top-level-commands
 #@+node:ekr.20150514125218.2: *3* ctrl-click-at-cursor
