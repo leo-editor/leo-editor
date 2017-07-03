@@ -1025,8 +1025,6 @@ class LeoQtGui(leoGui.LeoGui):
                 break
         else:
             vr = pc.loadOnePlugin('viewrendered.py')
-        if g.unitTesting:
-            assert vr # For unit testing.
         if vr:
             kw = {
                 'c': c,
@@ -1041,8 +1039,11 @@ class LeoQtGui(leoGui.LeoGui):
             c.bodyWantsFocus()
             if g.unitTesting:
                 vr.close_rendering_pane(event={'c': c})
+        elif g.unitTesting:
+            pass
         else:
             g.es(s)
+        return vr # For unit tests
     #@+node:ekr.20110605121601.18521: *3* qt_gui.runAtIdle
     def runAtIdle(self, aFunc):
         '''This can not be called in some contexts.'''

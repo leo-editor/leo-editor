@@ -497,7 +497,6 @@ class FileCommands(object):
         self.descendentVnodeUaDictList = []
         self.ratio = 0.5
         self.currentVnode = None
-        self.rootVnode = None
         # For writing...
         self.read_only = False
         self.rootPosition = None
@@ -696,8 +695,8 @@ class FileCommands(object):
             c.loading = False
                 # reenable c.changed
             theFile.close()
-			# Fix bug https://bugs.launchpad.net/leo-editor/+bug/1208942
-			# Leo holding directory/file handles after file close?
+                # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1208942
+                # Leo holding directory/file handles after file close?
         if c.changed:
             fc.propegateDirtyNodes()
         c.setChanged(c.changed) # Refresh the changed marker.
@@ -718,16 +717,15 @@ class FileCommands(object):
                 inClipboard=False,
                 reassignIndices=False,
             )
-            if v: # v is None for minimal .leo files.
-                c.setRootVnode(v)
-                fc.rootVnode = v
+            if v:
+                # readSaxFile sets c.hiddenRootNode.
+                pass
             else:
+                # v is None for minimal .leo files.
                 v = leoNodes.VNode(context=c)
                 v.setHeadString('created root node')
                 p = leoNodes.Position(v)
                 p._linkAsRoot(oldRoot=None)
-                fc.rootVnode = v
-                # c.setRootPosition()
                 c.changed = False
         except BadLeoFile:
             junk, message, junk = sys.exc_info()
@@ -736,7 +734,7 @@ class FileCommands(object):
                 c.alert(fc.mFileName + " is not a valid Leo file: " + str(message))
             ok = False
         return ok
-    #@+node:ekr.20100205060712.8314: *6* fc.handleNodeConflicts & helper
+    #@+node:ekr.20100205060712.8314: *6* fc.handleNodeConflicts
     def handleNodeConflicts(self):
         '''Create a 'Recovered Nodes' node for each entry in c.nodeConflictList.'''
         c = self.c
@@ -744,7 +742,7 @@ class FileCommands(object):
             return
         if not c.make_node_conflicts_node:
             g.es_print('suppressed node conflicts', color='red')
-            return
+            return None
         # Create the 'Recovered Nodes' node.
         last = c.lastTopLevel()
         root = last.insertAfter()
@@ -761,21 +759,30 @@ class FileCommands(object):
             child = root.insertAsLastChild()
             h = 'Recovered node "%s" from %s' % (h1, g.shortFileName(fn))
             child.setHeadString(h)
-            line1 = '%s gnx: %s root: %r\nDiff...\n' % (tag, gnx, root_v and root.v)
-            d = difflib.Differ().compare(g.splitLines(b1), g.splitLines(b2))
-                # 2017/06/19: reverse comparison order.
-            diffLines = [z for z in d]
-            lines = [line1]
-            lines.extend(diffLines)
-            # There is less need to show trailing newlines because
-            # we don't report changes involving only trailing newlines.
-            child.setBodyString(''.join(lines))
-            n1 = child.insertAsNthChild(0)
-            n2 = child.insertAsNthChild(1)
-            n1.setHeadString('old:' + h1)
-            n1.setBodyString(b1)
-            n2.setHeadString('new:' + h2)
-            n2.setBodyString(b2)
+            if b1 == b2:
+                lines = [
+                    'Headline changed...'
+                    '%s gnx: %s root: %r' % (tag, gnx, root_v and root.v),
+                    'old headline: %s' % (h1),
+                    'new headline: %s' % (h2),
+                ]
+                child.setBodyString('\n'.join(lines))
+            else:
+                line1 = '%s gnx: %s root: %r\nDiff...\n' % (tag, gnx, root_v and root.v)
+                d = difflib.Differ().compare(g.splitLines(b1), g.splitLines(b2))
+                    # 2017/06/19: reverse comparison order.
+                diffLines = [z for z in d]
+                lines = [line1]
+                lines.extend(diffLines)
+                # There is less need to show trailing newlines because
+                # we don't report changes involving only trailing newlines.
+                child.setBodyString(''.join(lines))
+                n1 = child.insertAsNthChild(0)
+                n2 = child.insertAsNthChild(1)
+                n1.setHeadString('old:' + h1)
+                n1.setBodyString(b1)
+                n2.setHeadString('new:' + h2)
+                n2.setBodyString(b2)
         return root
     #@+node:ekr.20100124110832.6212: *6* fc.propegateDirtyNodes
     def propegateDirtyNodes(self):
@@ -1271,7 +1278,6 @@ class FileCommands(object):
         '''Read the entire .leo file using the sax parser.'''
         dump = False and not g.unitTesting
         fc = self; c = fc.c
-        
         # Pass one: create the intermediate nodes.
         saxRoot = fc.parse_leo_file(theFile, fileName,
             silent=silent, inClipboard=inClipboard, s=s)
@@ -1285,7 +1291,6 @@ class FileCommands(object):
             return v
         else:
             return None
-                
     #@+node:ekr.20060919110638.11: *5* fc.resolveTnodeLists
     def resolveTnodeLists(self):
         '''
@@ -1389,12 +1394,10 @@ class FileCommands(object):
     #@+node:ekr.20070413045221.2: *4*  fc.Top-level
     #@+node:ekr.20031218072017.1720: *5* fc.save
     def save(self, fileName, silent=False):
-        c = self.c; v = c.currentVnode()
-        # New in 4.2.  Return ok flag so shutdown logic knows if all went well.
+        c = self.c
         p = c.p
-		
-        ok = g.doHook("save1", c=c, p=p, v=p.v, fileName=fileName)
-
+        # New in 4.2.  Return ok flag so shutdown logic knows if all went well.
+        ok = g.doHook("save1", c=c, p=p, v=p, fileName=fileName)
         if ok is None:
             c.endEditing() # Set the current headline text.
             self.setDefaultDirectoryForNewFiles(fileName)
@@ -1410,13 +1413,13 @@ class FileCommands(object):
                     g.es("clearing undo")
                     c.undoer.clearUndoState()
             c.redraw_after_icons_changed()
-        g.doHook("save2", c=c, p=v, v=v, fileName=fileName)
+        g.doHook("save2", c=c, p=p, v=p, fileName=fileName)
         return ok
     #@+node:ekr.20031218072017.3043: *5* fc.saveAs
     def saveAs(self, fileName):
         c = self.c
         p = c.p
-        if not g.doHook("save1", c=c, p=p, v=p.v, fileName=fileName):
+        if not g.doHook("save1", c=c, p=p, v=p, fileName=fileName):
             c.endEditing() # Set the current headline text.
             self.setDefaultDirectoryForNewFiles(fileName)
             c.cacher.save(fileName, changeName=True)
@@ -1434,7 +1437,7 @@ class FileCommands(object):
     def saveTo(self, fileName):
         c = self.c
         p = c.p
-        if not g.doHook("save1", c=c, p=p, v=p.v, fileName=fileName):
+        if not g.doHook("save1", c=c, p=p, v=p, fileName=fileName):
             c.endEditing() # Set the current headline text.
             self.setDefaultDirectoryForNewFiles(fileName)
             c.cacher.save(fileName, changeName=False)
@@ -1819,14 +1822,11 @@ class FileCommands(object):
         if structure_errors:
             g.error('Major structural errors! outline not written')
             return False
-
         if not outlineOnlyFlag or toOPML:
             g.app.recentFilesManager.writeRecentFilesFile(c)
             fc.writeAllAtFileNodesHelper() # Ignore any errors.
-
         if fc.isReadOnly(fileName):
             return False
-
         try:
             fc.putCount = 0
             fc.toString = toString

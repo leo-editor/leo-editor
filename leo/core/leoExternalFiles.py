@@ -85,11 +85,6 @@ class ExternalFilesController(object):
         Return True if the file given by fn has not been changed
         since Leo read it or if the user agrees to overwrite it.
         '''
-        if c.sqlite_connection and c.mFileName == path:
-            # sqlite database file is never actually overwriten by Leo
-            # so no need to check its timestamp. It is modified through
-            # sqlite methods.
-            return True
         if self.has_changed(c, path):
             return self.ask(c, path)
         else:

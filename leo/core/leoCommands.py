@@ -123,8 +123,6 @@ class Commands(object):
         # For outline navigation.
         self.navPrefix = g.u('') # Must always be a string.
         self.navTime = None
-        
-        self.sqlite_connection = None
     #@+node:ekr.20120217070122.10466: *5* c.initDebugIvars
     def initDebugIvars(self):
         '''Init Commander debugging ivars.'''
@@ -7307,7 +7305,7 @@ class Commands(object):
         if g.app.externalFilesController:
             return g.app.externalFilesController.check_overwrite(c, fn)
         else:
-            return True
+            return True # Vitalije.
     #@+node:ekr.20090103070824.9: *4* c.setFileTimeStamp
     def setFileTimeStamp(self, fn):
         '''Update the timestamp for fn..'''

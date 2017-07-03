@@ -44,8 +44,6 @@ if 0:
     print('*** isPython3: %s' % isPython3)
     if not enableDB:
         print('** leoGlobals.py: caching disabled')
-SQLITE = True
-SQLITE_OUTLINE_ONLY = False # will write external files 
 #@-<< global switches >>
 #@+<< imports >>
 #@+node:ekr.20050208101229: ** << imports >> (leoGlobals)
@@ -2966,7 +2964,7 @@ def computeStandardDirectories():
     return g.app.loadManager.computeStandardDirectories()
 #@+node:ekr.20031218072017.3103: *3* g.computeWindowTitle
 def computeWindowTitle(fileName):
-    
+
     branch = g.gitBranchName(path=g.os_path_dirname(fileName))
     if not fileName:
         return branch + ": untitled" if branch else 'untitled'
@@ -3003,8 +3001,6 @@ def ensure_extension(name, ext):
     theFile, old_ext = g.os_path_splitext(name)
     if not name:
         return name # don't add to an empty name.
-    elif g.SQLITE and old_ext == '.db':
-        return name
     elif old_ext and old_ext == ext:
         return name
     else:
