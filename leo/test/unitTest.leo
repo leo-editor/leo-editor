@@ -233,7 +233,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343071117d711258090000006d795f706c7567696e7113580300000076616c711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -405,11 +405,11 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20100827183358.5959"><vh>set_got</vh></v>
 </v>
 </v>
-</v>
-<v t="ekr.20170703052459.1"><vh>Found:@test helpFor</vh>
+<v t="ekr.20170703052459.1"><vh>help-for-x test that previous failed when vr did not load</vh>
 <v t="ekr.20071113145804.15"><vh>@test helpForMinibuffer</vh></v>
 <v t="ekr.20071113145804.17"><vh>@test helpForFindCommands</vh></v>
 <v t="ekr.20071113145804.16"><vh>@test helpForbindings</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -839,7 +839,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="4">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="6">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -10114,8 +10114,6 @@ And this.
 <t tx="ekr.20170702173158.1"># flattened, ignore-case, head, body
 
 # found 7 nodes</t>
-<t tx="ekr.20170703052459.1"># flattened, ignore-case, head, body
-
-# found 3 nodes</t>
+<t tx="ekr.20170703052459.1"></t>
 </tnodes>
 </leo_file>
