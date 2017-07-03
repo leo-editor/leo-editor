@@ -167,6 +167,10 @@ These performance gotchas become important for repetitive commands, like cff, re
 Improved g.SherlockTracer.do_line, g.gitInfo, g.is_binary_external_file, g.log, g.readFileToUnicodeString.
 .. @+node:ekr.20170403190659.1: *3* docs
 .. @+node:ekr.20170325090029.1: *3* features
+.. @+node:ekr.20170703073608.1: *4* #185: edit leoRecentFiles.txt
+https://github.com/leo-editor/leo-editor/issues/185
+
+Added edit-recent-files and write-edited-recent-files commands
 .. @+node:ekr.20170325045838.1: *4* #448: Add abbreviations for commands
 https://github.com/leo-editor/leo-editor/issues/448
 
