@@ -2231,6 +2231,8 @@ if not g.app.isExternalUnitTest:
     s = g.adjustTripleString(s,c.tab_width)
     assert p.b == s, (repr(p.b), repr(s))
 #@+node:ekr.20100802220019.5795: *5* @test at.deleteUnvistedNodes
+self.skipTest('at.deleteUnvisitedNodes not used')
+
 def clone (p,parent,n):
     p2 = p.clone()
     p2.moveToNthChildOf(parent,n)
@@ -5643,17 +5645,13 @@ first line
     line c
 last line
 #@+node:ekr.20071113145804.16: *5* @test helpForbindings
-# vr plugin not loaded externally.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    c.helpCommands.helpForBindings()
+vr = c.helpCommands.helpForBindings()
+if not vr:
+    self.skipTest('no vr plugin')
 #@+node:ekr.20071113145804.17: *5* @test helpForFindCommands
-# vr plugin not loaded externally.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    c.helpCommands.helpForFindCommands()
+vr = c.helpCommands.helpForFindCommands()
+if not vr:
+    self.skipTest('no vr plugin')
 #@+node:ekr.20061101121602.86: *5* @test back-char
 c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.87: *6* work
@@ -10078,10 +10076,9 @@ for val in (True,False):
     # assert word == 'targetWord', 'got: %s' % word
 
 #@+node:ekr.20071113145804.15: *5* @test helpForMinibuffer
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    c.helpCommands.helpForMinibuffer()
+vr = c.helpCommands.helpForMinibuffer()
+if not vr:
+    self.skipTest('no vr plugin')
 #@+node:ekr.20061104172236.6: *5* @test moveToHelper
 ec = c.editCommands ; w = c.frame.body.wrapper
 
