@@ -2231,8 +2231,6 @@ if not g.app.isExternalUnitTest:
     s = g.adjustTripleString(s,c.tab_width)
     assert p.b == s, (repr(p.b), repr(s))
 #@+node:ekr.20100802220019.5795: *5* @test at.deleteUnvistedNodes
-self.skipTest('at.deleteUnvisitedNodes not used')
-
 def clone (p,parent,n):
     p2 = p.clone()
     p2.moveToNthChildOf(parent,n)

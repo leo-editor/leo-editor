@@ -27,8 +27,6 @@ try:
     import xml.sax.saxutils
 except Exception:
     pass
-import sqlite3
-import hashlib
 #@-<< imports >>
 #@+others
 #@+node:ekr.20060918164811: ** Exception classes
@@ -499,6 +497,7 @@ class FileCommands(object):
         self.descendentVnodeUaDictList = []
         self.ratio = 0.5
         self.currentVnode = None
+        self.rootVnode = None
         # For writing...
         self.read_only = False
         self.rootPosition = None
@@ -696,10 +695,9 @@ class FileCommands(object):
                 # Must be called *after* ni.end_holding.
             c.loading = False
                 # reenable c.changed
-            if type(theFile) is not sqlite3.Connection:
-                theFile.close()
-                # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1208942
-                # Leo holding directory/file handles after file close?
+            theFile.close()
+			# Fix bug https://bugs.launchpad.net/leo-editor/+bug/1208942
+			# Leo holding directory/file handles after file close?
         if c.changed:
             fc.propegateDirtyNodes()
         c.setChanged(c.changed) # Refresh the changed marker.
@@ -720,15 +718,16 @@ class FileCommands(object):
                 inClipboard=False,
                 reassignIndices=False,
             )
-            if v:
-                # readSaxFile sets c.hiddenRootNode.
-                pass
+            if v: # v is None for minimal .leo files.
+                c.setRootVnode(v)
+                fc.rootVnode = v
             else:
-                # v is None for minimal .leo files.
                 v = leoNodes.VNode(context=c)
                 v.setHeadString('created root node')
                 p = leoNodes.Position(v)
                 p._linkAsRoot(oldRoot=None)
+                fc.rootVnode = v
+                # c.setRootPosition()
                 c.changed = False
         except BadLeoFile:
             junk, message, junk = sys.exc_info()
@@ -737,7 +736,7 @@ class FileCommands(object):
                 c.alert(fc.mFileName + " is not a valid Leo file: " + str(message))
             ok = False
         return ok
-    #@+node:ekr.20100205060712.8314: *6* fc.handleNodeConflicts
+    #@+node:ekr.20100205060712.8314: *6* fc.handleNodeConflicts & helper
     def handleNodeConflicts(self):
         '''Create a 'Recovered Nodes' node for each entry in c.nodeConflictList.'''
         c = self.c
@@ -745,7 +744,7 @@ class FileCommands(object):
             return
         if not c.make_node_conflicts_node:
             g.es_print('suppressed node conflicts', color='red')
-            return None
+            return
         # Create the 'Recovered Nodes' node.
         last = c.lastTopLevel()
         root = last.insertAfter()
@@ -762,30 +761,21 @@ class FileCommands(object):
             child = root.insertAsLastChild()
             h = 'Recovered node "%s" from %s' % (h1, g.shortFileName(fn))
             child.setHeadString(h)
-            if b1 == b2:
-                lines = [
-                    'Headline changed...'
-                    '%s gnx: %s root: %r' % (tag, gnx, root_v and root.v),
-                    'old headline: %s' % (h1),
-                    'new headline: %s' % (h2),
-                ]
-                child.setBodyString('\n'.join(lines))
-            else:
-                line1 = '%s gnx: %s root: %r\nDiff...\n' % (tag, gnx, root_v and root.v)
-                d = difflib.Differ().compare(g.splitLines(b1), g.splitLines(b2))
-                    # 2017/06/19: reverse comparison order.
-                diffLines = [z for z in d]
-                lines = [line1]
-                lines.extend(diffLines)
-                # There is less need to show trailing newlines because
-                # we don't report changes involving only trailing newlines.
-                child.setBodyString(''.join(lines))
-                n1 = child.insertAsNthChild(0)
-                n2 = child.insertAsNthChild(1)
-                n1.setHeadString('old:' + h1)
-                n1.setBodyString(b1)
-                n2.setHeadString('new:' + h2)
-                n2.setBodyString(b2)
+            line1 = '%s gnx: %s root: %r\nDiff...\n' % (tag, gnx, root_v and root.v)
+            d = difflib.Differ().compare(g.splitLines(b1), g.splitLines(b2))
+                # 2017/06/19: reverse comparison order.
+            diffLines = [z for z in d]
+            lines = [line1]
+            lines.extend(diffLines)
+            # There is less need to show trailing newlines because
+            # we don't report changes involving only trailing newlines.
+            child.setBodyString(''.join(lines))
+            n1 = child.insertAsNthChild(0)
+            n2 = child.insertAsNthChild(1)
+            n1.setHeadString('old:' + h1)
+            n1.setBodyString(b1)
+            n2.setHeadString('new:' + h2)
+            n2.setBodyString(b2)
         return root
     #@+node:ekr.20100124110832.6212: *6* fc.propegateDirtyNodes
     def propegateDirtyNodes(self):
@@ -1282,13 +1272,6 @@ class FileCommands(object):
         dump = False and not g.unitTesting
         fc = self; c = fc.c
         
-        if fileName.endswith('.db'):
-            # TODO: what should be done if theFile is connection
-            #       to newly created database? Database should be
-            #       initialized to empty leo tree or we should here
-            #       just return None
-            return fc.retrieveVnodesFromDb(theFile) # or fc.initNewDb(theFile) - not implemented yet
-            
         # Pass one: create the intermediate nodes.
         saxRoot = fc.parse_leo_file(theFile, fileName,
             silent=silent, inClipboard=inClipboard, s=s)
@@ -1355,76 +1338,6 @@ class FileCommands(object):
             else:
                 return oops('bad index="%s", len(children)="%s"' % (n, len(children)))
         return last_v
-    #@+node:vitalije.20170630152841.1: *5* fc.retrieveVnodesFromDb
-    def retrieveVnodesFromDb(self, conn):
-        '''Recreates tree from the data contained in table vnodes. This
-           method follows behavior of readSaxFile.'''
-        
-        fc = self; c = fc.c
-        sql = '''select gnx, head, 
-             body,
-             children,
-             parents,
-             iconVal,
-             statusBits,
-             ua from vnodes'''
-        vnodes = []
-        try:
-        
-            for row in conn.execute(sql):
-                (gnx,
-                    h,
-                    b,
-                    children,
-                    parents,
-                    iconVal,
-                    statusBits,
-                    ua) = row
-                ua = pickle.loads(ua)
-                v = leoNodes.VNode(context=c, gnx=gnx)
-                v._headString = h
-                v._bodyString = b
-                v.children = children.split()
-                v.parents = parents.split()
-                v.iconVal = iconVal
-                v.statusBits = statusBits
-                v.u = ua
-                vnodes.append(v)
-            
-        except sqlite3.OperationalError as er:
-            
-            if er.message.find('no such table') < 0:
-                # there was an error raised but it is not the one we expect
-                raise er
-                
-            # there is no vnodes table 
-            return None
-        
-        rootChildren = [x for x in vnodes if 'hidden-root-vnode-gnx' in x.parents]
-        
-        findNode = lambda x: fc.gnxDict.get(x, c.hiddenRootNode)
-        
-        # let us replace every gnx with the corresponding vnode
-        for v in vnodes:
-            v.children = [findNode(x) for x in v.children]
-            v.parents = [findNode(x) for x in v.parents]
-        
-        c.hiddenRootNode.children = rootChildren
-        (w, h, x, y, r1, r2) = fc.getWindowGeometryFromDb(conn)
-        c.frame.setTopGeometry(w, h, x, y, adjustSize=True)
-        c.frame.resizePanesToRatio(r1, r2)
-        return rootChildren[0]
-    #@+node:vitalije.20170630200802.1: *6* fc.getWindowGeometryFromDb
-    def getWindowGeometryFromDb(self, conn):
-        geom = (600, 400, 50, 50 , 0.5, 0.5)
-        keys = ('width', 'height', 'left', 'top', 'ratio', 'secondary_ratio')
-        try:
-            d = dict(conn.execute('''select * from extra_infos 
-                where name in (?, ?, ?, ?, ?, ?)''', keys).fetchall())
-            geom = (d.get(*x) for x in zip(keys, geom))
-        except sqlite3.OperationalError:
-            pass
-        return geom
     #@+node:ekr.20060919110638.13: *5* fc.setPositionsFromVnodes & helper (sax read)
     def setPositionsFromVnodes(self):
         trace = False and not g.unitTesting
@@ -1476,15 +1389,13 @@ class FileCommands(object):
     #@+node:ekr.20070413045221.2: *4*  fc.Top-level
     #@+node:ekr.20031218072017.1720: *5* fc.save
     def save(self, fileName, silent=False):
-        c = self.c
-        p = c.p
+        c = self.c; v = c.currentVnode()
         # New in 4.2.  Return ok flag so shutdown logic knows if all went well.
+
         ok = g.doHook("save1", c=c, p=p, v=p.v, fileName=fileName)
+
         if ok is None:
             c.endEditing() # Set the current headline text.
-            if c.sqlite_connection:
-                c.sqlite_connection.close()
-                c.sqlite_connection = None
             self.setDefaultDirectoryForNewFiles(fileName)
             c.cacher.save(fileName, changeName=True)
             ok = c.checkFileTimeStamp(fileName)
@@ -1498,7 +1409,7 @@ class FileCommands(object):
                     g.es("clearing undo")
                     c.undoer.clearUndoState()
             c.redraw_after_icons_changed()
-        g.doHook("save2", c=c, p=p, v=p, fileName=fileName)
+        g.doHook("save2", c=c, p=v, v=v, fileName=fileName)
         return ok
     #@+node:ekr.20031218072017.3043: *5* fc.saveAs
     def saveAs(self, fileName):
@@ -1506,9 +1417,6 @@ class FileCommands(object):
         p = c.p
         if not g.doHook("save1", c=c, p=p, v=p.v, fileName=fileName):
             c.endEditing() # Set the current headline text.
-            if c.sqlite_connection:
-                c.sqlite_connection.close()
-                c.sqlite_connection = None
             self.setDefaultDirectoryForNewFiles(fileName)
             c.cacher.save(fileName, changeName=True)
             # Disable path-changed messages in writeAllHelper.
@@ -1527,9 +1435,6 @@ class FileCommands(object):
         p = c.p
         if not g.doHook("save1", c=c, p=p, v=p.v, fileName=fileName):
             c.endEditing() # Set the current headline text.
-            if c.sqlite_connection:
-                c.sqlite_connection.close()
-                c.sqlite_connection = None
             self.setDefaultDirectoryForNewFiles(fileName)
             c.cacher.save(fileName, changeName=False)
             # Disable path-changed messages in writeAllHelper.
@@ -1914,15 +1819,12 @@ class FileCommands(object):
             g.error('Major structural errors! outline not written')
             return False
 
-        if not (g.SQLITE_OUTLINE_ONLY or outlineOnlyFlag) or toOPML:
+        if not outlineOnlyFlag or toOPML:
             g.app.recentFilesManager.writeRecentFilesFile(c)
             fc.writeAllAtFileNodesHelper() # Ignore any errors.
 
         if fc.isReadOnly(fileName):
             return False
-
-        if g.SQLITE and fileName and fileName.endswith('.db'):
-            return fc.exportToSqlite(fileName)
 
         try:
             fc.putCount = 0
@@ -2089,82 +1991,6 @@ class FileCommands(object):
         theFile = zipfile.ZipFile(fileName, 'w', zipfile.ZIP_DEFLATED)
         theFile.writestr(contentsName, s)
         theFile.close()
-    #@+node:vitalije.20170630172118.1: *5* fc.exportToSqlite
-    def exportToSqlite(self, fileName):
-        '''Dump all vnodes to sqlite database. Returns True on success.'''
-        # fc = self
-        c = self.c; fc = self
-        if c.sqlite_connection is None:
-            c.sqlite_connection = sqlite3.connect(fileName, 
-                                        isolation_level='DEFERRED')
-        conn = c.sqlite_connection
-        dbrow = lambda v:(
-                v.gnx,
-                v.h,
-                v.b,
-                ' '.join(x.gnx for x in v.children),
-                ' '.join(x.gnx for x in v.parents),
-                v.iconVal,
-                v.statusBits,
-                pickle.dumps(v.u)
-            )
-        ok = False
-        try:
-            fc.exportVnodesToSqlite(conn, (dbrow(v) for v in c.all_unique_vnodes_iter()))
-            fc.exportGeomToSqlite(conn)
-            fc.exportHashesToSqlite(conn)
-            conn.commit()
-            ok = True
-        except sqlite3.OperationalError as e:
-            g.internalError(e)
-        return ok
-    #@+node:vitalije.20170701161851.1: *5* fc.exportVnodesToSqlite
-    def exportVnodesToSqlite(self, conn, rows):
-        conn.execute('''drop table if exists vnodes;''')
-        conn.execute('''
-            create table if not exists vnodes(
-                gnx primary key,
-                head,
-                body,
-                children,
-                parents,
-                iconVal,
-                statusBits,
-                ua);''')
-        conn.execute('''create table if not exists extra_infos(name primary key, value)''')
-        
-        conn.executemany('''insert into vnodes
-            (gnx, head, body, children, parents,
-                iconVal, statusBits, ua)
-            values(?,?,?,?,?,?,?,?);''', rows)
-    #@+node:vitalije.20170701162052.1: *5* fc.exportGeomToSqlite
-    def exportGeomToSqlite(self, conn):
-        c = self.c
-        data = zip(('width', 'height', 'left', 'top', 'ratio', 'secondary_ratio'),
-                   c.frame.get_window_info() + (c.frame.ratio, c.frame.secondary_ratio))
-        conn.executemany('replace into extra_infos(name, value) values(?, ?)', data)
-
-    #@+node:vitalije.20170701162204.1: *5* fc.exportHashesToSqlite
-    def exportHashesToSqlite(self, conn):
-        c = self.c
-        md5 = lambda x:hashlib.md5(open(x,'rb').read()).hexdigest()
-        files = set()
-        
-        p = c.rootPosition()
-        while p:
-            if p.isAtIgnoreNode():
-                p.moveToNodeAfterTree()
-            elif p.isAtAutoNode() or p.isAtFileNode():
-                fn = c.getNodeFileName(p)
-                files.add((fn, 'md5_'+p.gnx))
-                p.moveToNodeAfterTree()
-            else:
-                p.moveToThreadNext()
-        
-        conn.executemany(
-            'replace into extra_infos(name, value) values(?,?)',
-            map(lambda x:(x[1], md5(x[0])), files))
-        
     #@+node:ekr.20031218072017.2012: *4* fc.writeAtFileNodes
     @cmd('write-at-file-nodes')
     def writeAtFileNodes(self, event=None):
