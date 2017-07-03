@@ -361,6 +361,8 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):
 
         if t == g.u('m'):
             self.scon.doShowMarked()
+        elif t == g.u('h'):
+            self.scon.doSearchHistory()
         else:
             self.scon.doSearch(t)
 
@@ -424,6 +426,7 @@ class QuickSearchController(object):
                                "@auto-otl", "@auto-rst"]
 
         self.frozen = False
+        self._search_patterns = []
         def searcher(inp):
             #print("searcher", inp)
             if self.frozen:
@@ -523,7 +526,7 @@ class QuickSearchController(object):
     #@+node:ekr.20111015194452.15690: *3* addGeneric
     def addGeneric(self, text, f):
         """ Add generic callback """
-        it = id(QtWidgets.QListWidgetItem(text, self.lw))
+        it = QtWidgets.QListWidgetItem(text, self.lw)
         self.its[id(it)] = f
         return it
     #@+node:ekr.20111015194452.15688: *3* addHeadlineMatches
@@ -548,6 +551,23 @@ class QuickSearchController(object):
         nh.reverse()
         self.clear()
         self.addHeadlineMatches(nh)
+    #@+node:vitalije.20170703141041.1: *3* doSearchHistory
+    def doSearchHistory(self):
+        self.clear()
+        def sHistSelect(x):
+            def _f():
+                self.widgetUI.lineEdit.setText(x)
+                self.doSearch(x)
+            return _f
+        for pat in self._search_patterns:
+            self.addGeneric(pat, sHistSelect(pat))
+        
+
+    def pushSearchHistory(self, pat):
+        if pat in self._search_patterns:
+            return
+        self._search_patterns = ([pat] + self._search_patterns)[:30]
+        
     #@+node:tbrown.20120220091254.45207: *3* doTimeline
     def doTimeline(self):
 
@@ -567,7 +587,7 @@ class QuickSearchController(object):
     def doSearch(self, pat):
         hitBase = False
         self.clear()
-
+        self.pushSearchHistory(pat)
         if not pat.startswith('r:'):
             hpat = fnmatch.translate('*'+ pat + '*').replace(r"\Z(?ms)","")
             bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)","")
