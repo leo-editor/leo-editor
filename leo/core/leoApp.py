@@ -3184,6 +3184,9 @@ class RecentFilesManager(object):
     '''A class to manipulate leoRecentFiles.txt.'''
 
     def __init__(self):
+        
+        self.edit_headline = 'Recent files. Do not change this headline!'
+            # Headline used by 
         self.groupedMenus = []
             # Set in rf.createRecentFilesMenuItems.
         self.recentFiles = []
@@ -3304,6 +3307,25 @@ class RecentFilesManager(object):
         if groupedEntries: # store so we can delete them later
             rf.groupedMenus = [z for z in dirCount
                 if dirCount[z]['entry'] is not None]
+    #@+node:vitalije.20170703115609.1: *3* rf.editRecentFiles
+    def editRecentFiles(self, c):
+        '''
+        Dump recentFiles into new node appended as lastTopLevel, selects it and
+        request focus in body.
+           
+        NOTE: command write-edited-recent-files assume that headline of this
+        node is not changed by user.
+        '''
+        rf = self
+        nl = '\n' if g.isPython3 else g.u('\n')
+        p1 = c.lastTopLevel().insertAfter()
+        p1.h = self.edit_headline
+        p1.b = nl.join(rf.recentFiles)
+        c.redraw()
+        c.selectPosition(p1)
+        c.redraw()
+        c.bodyWantsFocusNow()
+        g.es('edit list and run write-rff to save recentFiles')
     #@+node:ekr.20120225072226.10286: *3* rf.getRecentFiles
     def getRecentFiles(self):
         # Fix #299: Leo loads a deleted file.
@@ -3395,11 +3417,15 @@ class RecentFilesManager(object):
     def sortRecentFiles(self, c):
         '''Sort the recent files list.'''
         rf = self
-        aList = rf.recentFiles
-        aList.sort(key=lambda s: g.os_path_basename(s).lower())
-        aList.reverse()
+            
+        def key(path):
+            # Sort only the base name.  That's what will appear in the menu.
+            s = g.os_path_basename(path)
+            return s.lower() if sys.platform.lower().startswith('win') else s
+
+        aList = sorted(rf.recentFiles, key=key)
         rf.recentFiles = []
-        for z in aList:
+        for z in reversed(aList):
             rf.updateRecentFiles(z)
         rf.writeRecentFilesFile(c, force=True)
             # Force the write message.
@@ -3430,6 +3456,23 @@ class RecentFilesManager(object):
         else:
             for frame in g.app.windowList:
                 rf.createRecentFilesMenuItems(frame.c)
+    #@+node:vitalije.20170703115616.1: *3* rf.writeEditedRecentFiles
+    def writeEditedRecentFiles(self, c):
+        '''
+        Write content of "edit_headline" node as recentFiles and recreates
+        menues.
+        '''
+        rf = self; p = c.p
+        p = g.findNodeAnywhere(c, self.edit_headline)
+        if p:
+            files = [z for z in p.b.splitlines() if z and g.os_path_exists(z)]
+            rf.recentFiles = files
+            rf.writeRecentFilesFile(c, force=False)
+            rf.updateRecentFiles(None)
+            c.selectPosition(p)
+            c.deleteOutline()
+        else:
+            g.red('not found:', self.edit_headline)
     #@+node:ekr.20050424114937.2: *3* rf.writeRecentFilesFile & helper
     def writeRecentFilesFile(self, c, force=False):
         '''
@@ -3502,37 +3545,6 @@ class RecentFilesManager(object):
             g.es_exception()
             if g.unitTesting: raise
         return False
-    #@+node:vitalije.20170703115609.1: *3* rf.editRecentFiles
-    def editRecentFiles(self, c):
-        '''dump recentFiles into new node appended as lastTopLevel,
-           selects it and request focus in body.
-           
-           NOTE: command write-edited-recent-files assume that
-                 headline of this node is not changed by user'''
-        rf = self
-        nl = '\n' if g.isPython3 else g.u('\n')
-        p1 = c.lastTopLevel().insertAfter()
-        p1.h = 'recent files do not change this headline'
-        p1.b = nl.join(rf.recentFiles)
-        c.redraw()
-        c.selectPosition(p1)
-        c.redraw()
-        c.bodyWantsFocusNow()
-        g.es('edit list and run write-rff to save recentFiles')
-
-    #@+node:vitalije.20170703115616.1: *3* rf.writeEditedRecentFiles
-    def writeEditedRecentFiles(self, c):
-        '''writes content of the node with the headline: 'recent files do
-           not change this headline' as recentFiles and recreates menues'''
-        rf = self; p = c.p
-        if p.h != 'recent files do not change this headline':
-            g.red('recent files... node must be selected first')
-            return
-        files = [z for z in p.b.splitlines() if z and g.os_path_exists(z)]
-        rf.recentFiles = files
-        rf.writeRecentFilesFile(c, force=False)
-        rf.updateRecentFiles(None)
-        c.deleteOutline()
     #@-others
 #@+node:ekr.20150514125218.1: ** Top-level-commands
 #@+node:ekr.20150514125218.2: *3* ctrl-click-at-cursor
