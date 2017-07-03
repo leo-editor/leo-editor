@@ -303,9 +303,9 @@ class CoffeeScriptTraverser(object):
             for keyword in node.keywords:
                 bases.append('%s=%s' % (keyword.arg, self.visit(keyword.value)))
         if getattr(node, 'starargs', None): # Python 3
-            bases.append('*%s', self.visit(node.starargs))
+            bases.append('*%s' % self.visit(node.starargs))
         if getattr(node, 'kwargs', None): # Python 3
-            bases.append('*%s', self.visit(node.kwargs))
+            bases.append('*%s' % self.visit(node.kwargs))
         if bases:
             s = 'class %s extends %s' % (name, ', '.join(bases))
         else:
