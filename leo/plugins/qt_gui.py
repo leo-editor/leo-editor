@@ -1043,6 +1043,7 @@ class LeoQtGui(leoGui.LeoGui):
             pass
         else:
             g.es(s)
+        return vr # For unit tests
     #@+node:ekr.20110605121601.18521: *3* qt_gui.runAtIdle
     def runAtIdle(self, aFunc):
         '''This can not be called in some contexts.'''

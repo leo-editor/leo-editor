@@ -5645,9 +5645,13 @@ first line
     line c
 last line
 #@+node:ekr.20071113145804.16: *5* @test helpForbindings
-c.helpCommands.helpForBindings()
+vr = c.helpCommands.helpForBindings()
+if not vr:
+    self.skipTest('no vr plugin')
 #@+node:ekr.20071113145804.17: *5* @test helpForFindCommands
-c.helpCommands.helpForFindCommands()
+vr = c.helpCommands.helpForFindCommands()
+if not vr:
+    self.skipTest('no vr plugin')
 #@+node:ekr.20061101121602.86: *5* @test back-char
 c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.87: *6* work
@@ -10072,7 +10076,9 @@ for val in (True,False):
     # assert word == 'targetWord', 'got: %s' % word
 
 #@+node:ekr.20071113145804.15: *5* @test helpForMinibuffer
-c.helpCommands.helpForMinibuffer()
+vr = c.helpCommands.helpForMinibuffer()
+if not vr:
+    self.skipTest('no vr plugin')
 #@+node:ekr.20061104172236.6: *5* @test moveToHelper
 ec = c.editCommands ; w = c.frame.body.wrapper
 
