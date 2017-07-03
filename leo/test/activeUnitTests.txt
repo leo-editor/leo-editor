@@ -5645,17 +5645,9 @@ first line
     line c
 last line
 #@+node:ekr.20071113145804.16: *5* @test helpForbindings
-# vr plugin not loaded externally.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    c.helpCommands.helpForBindings()
+c.helpCommands.helpForBindings()
 #@+node:ekr.20071113145804.17: *5* @test helpForFindCommands
-# vr plugin not loaded externally.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    c.helpCommands.helpForFindCommands()
+c.helpCommands.helpForFindCommands()
 #@+node:ekr.20061101121602.86: *5* @test back-char
 c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.87: *6* work
@@ -10080,10 +10072,7 @@ for val in (True,False):
     # assert word == 'targetWord', 'got: %s' % word
 
 #@+node:ekr.20071113145804.15: *5* @test helpForMinibuffer
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    c.helpCommands.helpForMinibuffer()
+c.helpCommands.helpForMinibuffer()
 #@+node:ekr.20061104172236.6: *5* @test moveToHelper
 ec = c.editCommands ; w = c.frame.body.wrapper
 
