@@ -1391,7 +1391,8 @@ class FileCommands(object):
     def save(self, fileName, silent=False):
         c = self.c; v = c.currentVnode()
         # New in 4.2.  Return ok flag so shutdown logic knows if all went well.
-
+        p = c.p
+		
         ok = g.doHook("save1", c=c, p=p, v=p.v, fileName=fileName)
 
         if ok is None:
