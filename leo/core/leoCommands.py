@@ -2638,6 +2638,18 @@ class Commands(object):
         '''Sort the recent files list.'''
         c = self
         g.app.recentFilesManager.sortRecentFiles(c)
+    #@+node:vitalije.20170703115710.1: *6* c.editRecentFiles
+    @cmd('edit-recent-files')
+    def editRecentFiles(self, event=None):
+        '''Sort the recent files list.'''
+        c = self
+        g.app.recentFilesManager.editRecentFiles(c)
+    #@+node:vitalije.20170703115710.2: *6* c.writeEditedRecentFiles
+    @cmd('write-edited-recent-files')
+    def writeEditedRecentFiles(self, event=None):
+        '''Sort the recent files list.'''
+        c = self
+        g.app.recentFilesManager.writeEditedRecentFiles(c)
     #@+node:ekr.20031218072017.2838: *5* Read/Write submenu
     #@+node:ekr.20070806105721.1: *6* c.readAtAutoNodes
     @cmd('read-at-auto-nodes')
