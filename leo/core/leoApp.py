@@ -3317,7 +3317,7 @@ class RecentFilesManager(object):
             "*clear-recent-files",
             "*clean-recent-files",
             "*sort-recent-files",
-            # ("-",None,None),
+            ("-",None,None),
         )
     #@+node:ekr.20070224115832: *3* rf.readRecentFiles & helpers
     def readRecentFiles(self, localConfigFile):
