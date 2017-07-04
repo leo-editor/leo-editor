@@ -44,6 +44,7 @@ if 0:
     print('*** isPython3: %s' % isPython3)
     if not enableDB:
         print('** leoGlobals.py: caching disabled')
+SQLITE = True
 #@-<< global switches >>
 #@+<< imports >>
 #@+node:ekr.20050208101229: ** << imports >> (leoGlobals)
@@ -3001,6 +3002,8 @@ def ensure_extension(name, ext):
     theFile, old_ext = g.os_path_splitext(name)
     if not name:
         return name # don't add to an empty name.
+    elif g.SQLITE and old_ext == '.db':
+        return name
     elif old_ext and old_ext == ext:
         return name
     else:

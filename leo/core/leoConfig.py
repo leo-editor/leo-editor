@@ -1913,7 +1913,7 @@ class LocalConfigManager(object):
     #@+node:ekr.20120215072959.12475: *3* c.config.set
     def set(self, p, kind, name, val):
         """Init the setting for name to val."""
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         if trace: g.trace(kind, name, val)
         c = self.c
         # Note: when kind is 'shortcut', name is a command name.
