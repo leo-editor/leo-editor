@@ -5607,7 +5607,6 @@ def log(s, fn=None):
         g.es_exception()
 #@+node:ekr.20080710101653.1: *3* g.pr
 # see: http://www.diveintopython.org/xml_processing/unicode.html
-pr_warning_given = False
 
 def pr(*args, **keys):
     '''
@@ -5616,16 +5615,6 @@ def pr(*args, **keys):
     The first, third, fifth, etc. arg translated by g.translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
-    print_immediately = True or not app # True: good for debugging.
-    
-    def write(s, encoding, newline):
-        '''Print s immediately to stdout.'''
-        func = g.toUnicode if g.isPython3 else g.toEncodedString
-        s = func(s, encoding=encoding, reportErrors=False)
-        if newline:
-            s += g.u('\n') if g.isPython3 else '\n'
-        stdout.write(s)
-    
     # Compute the effective args.
     d = {'commas': False, 'newline': True, 'spaces': True}
     d = doKeywordArgs(keys, d)
@@ -5634,20 +5623,20 @@ def pr(*args, **keys):
         # Unit tests require sys.stdout.
     if sys.platform.lower().startswith('win'):
         encoding = 'ascii' # 2011/11/9.
-    elif hasattr(stdout, 'encoding') and stdout.encoding:
+    elif getattr(stdout, 'encoding', None):
         # sys.stdout is a TextIOWrapper with a particular encoding.
         encoding = stdout.encoding
     else:
         encoding = 'utf-8'
-    s = translateArgs(args, d) # Translates everything to unicode.
-    if print_immediately:
-        # Good for debugging: prints messages immediately.
-        write(s, encoding, newline)
-    elif app.logInited and sys.stdout: # Bug fix: 2012/11/13.
-        # Good for production: queues 'reading settings' until after signon.
-        write(s, encoding, newline)
-    else:
-        app.printWaiting.append(s)
+    s = translateArgs(args, d)
+        # Translates everything to unicode.
+    func = g.toUnicode if g.isPython3 else g.toEncodedString
+    s = func(s, encoding=encoding, reportErrors=False)
+    if newline:
+        s += g.u('\n') if g.isPython3 else '\n'
+    # Python's print statement *can* handle unicode, but
+    # sitecustomize.py must have sys.setdefaultencoding('utf-8')
+    stdout.write(s)
 #@+node:ekr.20060221083356: *3* g.prettyPrintType
 def prettyPrintType(obj):
     # pylint: disable=no-member

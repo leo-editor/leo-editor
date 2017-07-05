@@ -313,7 +313,6 @@ class LeoApp(object):
             # Queue of messages to be sent to the printer.
         self.signon = ''
         self.signon2 = ''
-        self.signon_printed = False
         #@-<< LeoApp: the global log >>
         #@+<< LeoApp: global types >>
         #@+node:ekr.20161028040204.1: *5* << LeoApp: global types >>
@@ -1009,22 +1008,12 @@ class LeoApp(object):
             n1, n2, n3, guiVersion, sysVersion)
         # Leo 5.6: print the signon immediately:
         if not app.silentMode:
-            # print('')
-            # print('** isPython3: %s' % g.isPython3)
-            # if not g.enableDB:
-                # print('** caching disabled')
-            # print(app.signon)
-            # if app.signon1:
-                # print(app.signon1)
-            # print(app.signon2)
             print('')
-            g.es_print('** isPython3: %s' % g.isPython3)
-            if not g.enableDB:
-                g.es_print('** caching disabled')
-            g.es_print(app.signon)
-            if app.signon1:
-                g.es_print(app.signon1)
-            g.es_print(app.signon2)
+            print(app.signon)
+            print(app.signon1)
+            print(app.signon2)
+            print('** isPython3: %s' % g.isPython3)
+            print('** caching %s' % ('enabled' if g.enableDB else 'disabled'))
             print('')
     #@+node:ekr.20100831090251.5838: *3* app.createXGui
     #@+node:ekr.20100831090251.5840: *4* app.createCursesGui
@@ -1348,7 +1337,6 @@ class LeoApp(object):
         self.setIdFromDialog()
         if self.leoID:
             self.setIDFile()
-       
     #@+node:ekr.20031218072017.1979: *4* app.setIDFromSys
     def setIDFromSys(self, verbose):
         '''
@@ -1365,6 +1353,7 @@ class LeoApp(object):
     #@+node:ekr.20031218072017.1980: *4* app.setIDFromFile
     def setIDFromFile(self, verbose):
         '''Attempt to set g.app.leoID from leoID.txt.'''
+        trace = False
         tag = ".leoID.txt"
         for theDir in (self.homeLeoDir, self.globalConfigDir, self.loadDir):
             if theDir:
@@ -1375,7 +1364,10 @@ class LeoApp(object):
                     if s:
                         # Careful: periods in gnx will corrupt the .leo file!
                         self.leoID = s.replace('.', '-')
-                    g.es('leoID=%r (in %s)' % (self.leoID, theDir), color='red')
+                    if trace:
+                        g.es('leoID=%r (in %s)' % (self.leoID, theDir), color='red')
+                    else:
+                        g.es('leoID=%r' % (self.leoID), color='red')
                 except IOError:
                     pass
                 except Exception:
@@ -1461,41 +1453,26 @@ class LeoApp(object):
             # Do not call g.es, g.es_print, g.pr or g.trace here!
             print('***** writeWaitingLog: silent: %s c: %s' % (
                 app.silentMode, c and c.shortFileName() or '<no c>'))
-            # print('***** %s' % g.callers(8))
-            # print('***** writeWaitingLog: %s' % ''.join(app.printWaiting))
-            # import sys ; print('writeWaitingLog: argv',sys.argv)
         if not c or not c.exists:
             return
         if g.unitTesting:
-            app.printWaiting = []
             app.logWaiting = []
             g.app.setLog(None) # Prepare to requeue for other commanders.
             return
+        # Write the signon to the log: similar to self.computeSignon().
+        p3 = 'isPython3: %s' % g.isPython3
+        caching = 'caching %s' % ('enabled' if g.enableDB else 'disabled')
         table = [
             ('Leo Log Window', 'red'),
             (app.signon, None),
             (app.signon1, None),
-            (app.signon2, None)
+            (app.signon2, None),
+            (p3, None),
+            (caching, None),
         ]
         table.reverse()
         c.setLog()
         app.logInited = True # Prevent recursive call.
-        if not app.signon_printed:
-            app.signon_printed = True
-            if 0:
-                if not app.silentMode:
-                    print('')
-                    print('** isPython3: %s' % g.isPython3)
-                    if not g.enableDB:
-                        print('** caching disabled')
-                    print(app.signon)
-                    if app.signon1:
-                        print(app.signon1)
-                    print(app.signon2)
-        if not app.silentMode:
-            for s in app.printWaiting:
-                print(s)
-        app.printWaiting = []
         if not app.silentMode:
             for s, color in table:
                 if s:
@@ -2015,10 +1992,10 @@ class LoadManager(object):
 
         def message(s):
             # This occurs early in startup, so use the following.
-            if not giveMessage: return
-            if not g.isPython3:
-                s = g.toEncodedString(s, 'ascii')
-            g.blue(s)
+            if giveMessage:
+                if not g.isPython3:
+                    s = g.toEncodedString(s, 'ascii')
+                g.blue(s)
 
         theFile = lm.openLeoOrZipFile(fn)
         if theFile:
@@ -2100,6 +2077,7 @@ class LoadManager(object):
         lm = self
         # Phase 1: before loading plugins.
         # Scan options, set directories and read settings.
+        print('') # Give some separation for the coming traces.
         if not lm.isValidPython(): return
         lm.doPrePluginsInit(fileName, pymacs)
             # sets lm.options and lm.files
@@ -3518,7 +3496,8 @@ class RecentFilesManager(object):
                     if force or not rf.recentFileMessageWritten:
                         if ok:
                             if not g.app.silentMode:
-                                g.pr('wrote recent file: %s' % fileName)
+                                # Fix #459:
+                                g.es_print('wrote recent file: %s' % fileName)
                             written = True
                         else:
                             g.error('failed to write recent file: %s' % (fileName))
