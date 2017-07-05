@@ -5429,9 +5429,6 @@ def es(*args, **keys):
             else: log.newlines = 0
         if newline:
             g.ecnl(tabName=tabName) # only valid here
-    # 2012/05/20: Don't do this.
-    # elif app.logInited:
-        # print(s.rstrip()) # Happens only rarely.
     elif newline:
         app.logWaiting.append((s + '\n', color),)
     else:
@@ -5613,11 +5610,22 @@ def log(s, fn=None):
 pr_warning_given = False
 
 def pr(*args, **keys):
-    '''Print all non-keyword args, and put them to the log pane.
+    '''
+    Print all non-keyword args. This is a wrapper for the print statement.
+
     The first, third, fifth, etc. arg translated by g.translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
     print_immediately = True or not app # True: good for debugging.
+    
+    def write(s, encoding, newline):
+        '''Print s immediately to stdout.'''
+        func = g.toUnicode if g.isPython3 else g.toEncodedString
+        s = func(s, encoding=encoding, reportErrors=False)
+        if newline:
+            s += g.u('\n') if g.isPython3 else '\n'
+        stdout.write(s)
+    
     # Compute the effective args.
     d = {'commas': False, 'newline': True, 'spaces': True}
     d = doKeywordArgs(keys, d)
@@ -5632,28 +5640,14 @@ def pr(*args, **keys):
     else:
         encoding = 'utf-8'
     s = translateArgs(args, d) # Translates everything to unicode.
-    # Add a newline unless we are going to queue the message.
-    if newline and (print_immediately or app and app.logInited):
-        s = s + '\n'
-    if isPython3:
-        if encoding.lower() in ('utf-8', 'utf-16'):
-            s2 = s # There can be no problem.
-        else:
-            # Carefully convert s to the encoding.
-            s3 = toEncodedString(s, encoding=encoding, reportErrors=False)
-            s2 = toUnicode(s3, encoding=encoding, reportErrors=False)
-    else:
-        s2 = toEncodedString(s, encoding, reportErrors=False)
     if print_immediately:
         # Good for debugging: prints messages immediately.
-        stdout.write(s2)
-    else:
-        assert app
+        write(s, encoding, newline)
+    elif app.logInited and sys.stdout: # Bug fix: 2012/11/13.
         # Good for production: queues 'reading settings' until after signon.
-        if app.logInited and sys.stdout: # Bug fix: 2012/11/13.
-            stdout.write(s2)
-        else:
-            app.printWaiting.append(s2)
+        write(s, encoding, newline)
+    else:
+        app.printWaiting.append(s)
 #@+node:ekr.20060221083356: *3* g.prettyPrintType
 def prettyPrintType(obj):
     # pylint: disable=no-member

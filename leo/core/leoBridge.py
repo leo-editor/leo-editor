@@ -265,8 +265,8 @@ class BridgeController(object):
                         f.close()
                         if s:
                             g.app.leoID = s.strip()
-                            if verbose and not g.app.silentMode:
-                                g.red('leoID=', g.app.leoID, ' (in ', theDir, ')', spaces=False)
+                            # if verbose and not g.app.silentMode:
+                                # g.red('leoID=', g.app.leoID, ' (in ', theDir, ')', spaces=False)
                             break
                         elif verbose:
                             g.red('empty ', tag, ' (in ', theDir, ')', spaces=False)

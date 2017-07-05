@@ -968,8 +968,8 @@ class LeoApp(object):
         return [f.c for f in g.app.windowList]
     #@+node:ekr.20090717112235.6007: *3* app.computeSignon
     def computeSignon(self):
-        app = self
         import leo.core.leoVersion as leoVersion
+        app = self
         build, date = leoVersion.build, leoVersion.date
         guiVersion = app.gui.getFullVersion() if app.gui else 'no gui!'
         leoVer = leoVersion.version
@@ -1007,6 +1007,25 @@ class LeoApp(object):
             app.signon += ', '+date
         app.signon2 = 'Python %s.%s.%s, %s\n%s' % (
             n1, n2, n3, guiVersion, sysVersion)
+        # Leo 5.6: print the signon immediately:
+        if not app.silentMode:
+            # print('')
+            # print('** isPython3: %s' % g.isPython3)
+            # if not g.enableDB:
+                # print('** caching disabled')
+            # print(app.signon)
+            # if app.signon1:
+                # print(app.signon1)
+            # print(app.signon2)
+            print('')
+            g.es_print('** isPython3: %s' % g.isPython3)
+            if not g.enableDB:
+                g.es_print('** caching disabled')
+            g.es_print(app.signon)
+            if app.signon1:
+                g.es_print(app.signon1)
+            g.es_print(app.signon2)
+            print('')
     #@+node:ekr.20100831090251.5838: *3* app.createXGui
     #@+node:ekr.20100831090251.5840: *4* app.createCursesGui
     def createCursesGui(self, fileName='', verbose=False):
@@ -1349,8 +1368,8 @@ class LeoApp(object):
                         # Careful: periods in the id field of a gnx
                         # will corrupt the .leo file!
                         g.app.leoID = g.app.leoID.replace('.', '-')
-                        if verbose and not g.app.silentMode and not g.app.unitTesting:
-                            g.red('leoID=', g.app.leoID, ' (in ', theDir, ')', spaces=False)
+                        # if verbose and not g.app.silentMode and not g.app.unitTesting:
+                            # g.red('leoID=', g.app.leoID, ' (in ', theDir, ')', spaces=False)
                         return
                     elif verbose and not g.app.unitTesting:
                         g.red('empty ', tag, ' (in ', theDir, ')', spaces=False)
@@ -1468,15 +1487,16 @@ class LeoApp(object):
         app.logInited = True # Prevent recursive call.
         if not app.signon_printed:
             app.signon_printed = True
-            if not app.silentMode:
-                print('')
-                print('** isPython3: %s' % g.isPython3)
-                if not g.enableDB:
-                    print('** caching disabled')
-                print(app.signon)
-                if app.signon1:
-                    print(app.signon1)
-                print(app.signon2)
+            if 0:
+                if not app.silentMode:
+                    print('')
+                    print('** isPython3: %s' % g.isPython3)
+                    if not g.enableDB:
+                        print('** caching disabled')
+                    print(app.signon)
+                    if app.signon1:
+                        print(app.signon1)
+                    print(app.signon2)
         if not app.silentMode:
             for s in app.printWaiting:
                 print(s)
