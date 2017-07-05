@@ -1356,23 +1356,25 @@ class LeoApp(object):
         trace = False
         tag = ".leoID.txt"
         for theDir in (self.homeLeoDir, self.globalConfigDir, self.loadDir):
-            if theDir:
-                fn = g.os_path_join(theDir, tag)
-                try:
-                    with open(fn, 'r') as f:
-                        s = f.readline().strip()
-                    if s:
-                        # Careful: periods in gnx will corrupt the .leo file!
-                        self.leoID = s.replace('.', '-')
-                    if trace:
-                        g.es('leoID=%r (in %s)' % (self.leoID, theDir), color='red')
-                    else:
-                        g.es('leoID=%r' % (self.leoID), color='red')
-                except IOError:
-                    pass
-                except Exception:
-                    g.error('unexpected exception in app.setLeoID')
-                    g.es_exception()
+            if not theDir:
+                continue # Do not use the current directory!
+            fn = g.os_path_join(theDir, tag)
+            try:
+                with open(fn, 'r') as f:
+                    s = f.readline().strip()
+                if not s:
+                    continue
+                # Careful: periods in gnx will corrupt the .leo file!
+                self.leoID = s.replace('.', '-')
+                if trace:
+                    g.es('leoID=%r (in %s)' % (self.leoID, theDir), color='red')
+                else:
+                    g.es('leoID=%r' % (self.leoID), color='red')
+            except IOError:
+                pass
+            except Exception:
+                g.error('unexpected exception in app.setLeoID')
+                g.es_exception()
     #@+node:ekr.20060211140947.1: *4* app.setIDFromEnv
     def setIDFromEnv(self, verbose):
         '''Set leoID from environment vars.'''
