@@ -1410,17 +1410,21 @@ class FileCommands(object):
             v.parents = [findNode(x) for x in v.parents]
         
         c.hiddenRootNode.children = rootChildren
-        (w, h, x, y, r1, r2) = fc.getWindowGeometryFromDb(conn)
+        (w, h, x, y, r1, r2, encp) = fc.getWindowGeometryFromDb(conn)
         c.frame.setTopGeometry(w, h, x, y, adjustSize=True)
         c.frame.resizePanesToRatio(r1, r2)
+        p = fc.decodePosition(encp)
+        c.setCurrentPosition(p)
         return rootChildren[0]
     #@+node:vitalije.20170630200802.1: *6* fc.getWindowGeometryFromDb
     def getWindowGeometryFromDb(self, conn):
-        geom = (600, 400, 50, 50 , 0.5, 0.5)
-        keys = ('width', 'height', 'left', 'top', 'ratio', 'secondary_ratio')
+        geom = (600, 400, 50, 50 , 0.5, 0.5, '')
+        keys = (  'width', 'height', 'left', 'top',
+                  'ratio', 'secondary_ratio',
+                  'current_position')
         try:
             d = dict(conn.execute('''select * from extra_infos 
-                where name in (?, ?, ?, ?, ?, ?)''', keys).fetchall())
+                where name in (?, ?, ?, ?, ?, ?, ?)''', keys).fetchall())
             geom = (d.get(*x) for x in zip(keys, geom))
         except sqlite3.OperationalError:
             pass
@@ -1429,6 +1433,9 @@ class FileCommands(object):
     def setPositionsFromVnodes(self):
         trace = False and not g.unitTesting
         c, root = self.c, self.c.rootPosition()
+        if c.sqlite_connection:
+            # position is already selected
+            return
         current, str_pos = None, None
         use_db = g.enableDB and c.mFileName
         if use_db:
@@ -2118,7 +2125,26 @@ class FileCommands(object):
         except sqlite3.OperationalError as e:
             g.internalError(e)
         return ok
-    #@+node:vitalije.20170701161851.1: *5* fc.exportVnodesToSqlite
+    #@+node:vitalije.20170705075107.1: *6* fc.decodePosition
+    def decodePosition(self, s):
+        '''Creates position from its string representation encoded by fc.encodePosition.'''
+        fc = self
+        sep = g.u('<->')
+        comma = g.u(',')
+        stack = [x.split(comma) for x in s.split(sep)]
+        stack = [(fc.gnxDict[x], int(y)) for x,y in stack]
+        v, ci = stack[-1]
+        p = leoNodes.Position(v, ci, stack[:-1])
+        return p
+    #@+node:vitalije.20170705075117.1: *6* fc.encodePosition
+    def encodePosition(self, p):
+        '''New schema for encoding current position hopefully simplier one.'''
+        jn = g.u('<->')
+        mk = g.u('%s,%s')
+        res = [mk%(x.gnx, y) for x,y in p.stack]
+        res.append(mk%(p.gnx, p._childIndex))
+        return jn.join(res)
+    #@+node:vitalije.20170701161851.1: *6* fc.exportVnodesToSqlite
     def exportVnodesToSqlite(self, conn, rows):
         conn.execute('''drop table if exists vnodes;''')
         conn.execute('''
@@ -2137,14 +2163,24 @@ class FileCommands(object):
             (gnx, head, body, children, parents,
                 iconVal, statusBits, ua)
             values(?,?,?,?,?,?,?,?);''', rows)
-    #@+node:vitalije.20170701162052.1: *5* fc.exportGeomToSqlite
+    #@+node:vitalije.20170701162052.1: *6* fc.exportGeomToSqlite
     def exportGeomToSqlite(self, conn):
         c = self.c
-        data = zip(('width', 'height', 'left', 'top', 'ratio', 'secondary_ratio'),
-                   c.frame.get_window_info() + (c.frame.ratio, c.frame.secondary_ratio))
+        data = zip(
+            (
+                'width', 'height', 'left', 'top',
+                'ratio', 'secondary_ratio',
+                'current_position'
+            ),
+            c.frame.get_window_info() + 
+            (
+                c.frame.ratio, c.frame.secondary_ratio,
+                self.encodePosition(c.p)
+            )
+        )
         conn.executemany('replace into extra_infos(name, value) values(?, ?)', data)
 
-    #@+node:vitalije.20170701162204.1: *5* fc.exportHashesToSqlite
+    #@+node:vitalije.20170701162204.1: *6* fc.exportHashesToSqlite
     def exportHashesToSqlite(self, conn):
         c = self.c
         md5 = lambda x:hashlib.md5(open(x,'rb').read()).hexdigest()
