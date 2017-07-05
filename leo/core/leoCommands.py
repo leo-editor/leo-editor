@@ -2242,7 +2242,7 @@ class Commands(object):
         c.init_error_dialogs()
         ok = False
         if fileName:
-            if fileName.endswith('.leo'):
+            if g.app.loadManager.isLeoFile(fileName):
                 c2 = g.openWithFileName(fileName, old_c=c)
                 if c2:
                     g.chdir(fileName)
