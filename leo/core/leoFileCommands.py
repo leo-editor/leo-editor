@@ -1390,6 +1390,11 @@ class FileCommands(object):
                 v.statusBits = statusBits
                 v.u = ua
                 vnodes.append(v)
+        except ValueError as er:
+            if er.message.startswith("unsupported pickle protocol"):
+                g.error(er.message)
+            else:
+                raise
             
         except sqlite3.OperationalError as er:
             
@@ -1401,6 +1406,7 @@ class FileCommands(object):
             return None
         
         rootChildren = [x for x in vnodes if 'hidden-root-vnode-gnx' in x.parents]
+        assert rootChildren, 'there should be at least one top level node'
         
         findNode = lambda x: fc.gnxDict.get(x, c.hiddenRootNode)
         
@@ -1408,7 +1414,6 @@ class FileCommands(object):
         for v in vnodes:
             v.children = [findNode(x) for x in v.children]
             v.parents = [findNode(x) for x in v.parents]
-        
         c.hiddenRootNode.children = rootChildren
         (w, h, x, y, r1, r2, encp) = fc.getWindowGeometryFromDb(conn)
         c.frame.setTopGeometry(w, h, x, y, adjustSize=True)
