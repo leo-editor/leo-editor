@@ -163,6 +163,7 @@ def install_qt_quicksearch_tab(c):
             wdg.ui.lineEdit.setText(text)
             wdg.returnPressed()
             focus_to_nav(event)
+
         else:
             focus_quicksearch_entry(event)
 
@@ -482,6 +483,10 @@ class QuickSearchController(object):
     def freeze(self, val = True):
         self.frozen = val
 
+    #@+node:vitalije.20170705203722.1: *3* addItem
+    def addItem(self, it, val):
+        self.its[id(it)] = val
+        return len(self.its) > 300
     #@+node:ekr.20111015194452.15689: *3* addBodyMatches
     def addBodyMatches(self, poslist):
         lineMatchHits = 0
@@ -490,12 +495,12 @@ class QuickSearchController(object):
             f = it.font()
             f.setBold(True)
             it.setFont(f)
-            self.its[id(it)] = (p, None)
+            if self.addItem(it, (p, None)):return lineMatchHits
             ms = matchlines(p.b, p.matchiter)
             for ml, pos in ms:
                 lineMatchHits += 1
                 it = QtWidgets.QListWidgetItem("    "+ml, self.lw)
-                self.its[id(it)] = (p,pos)
+                if self.addItem(it, (p,pos)):return lineMatchHits
         return lineMatchHits
     #@+node:jlunz.20151027092130.1: *3* addParentMatches
     def addParentMatches(self, parent_list):
@@ -508,19 +513,19 @@ class QuickSearchController(object):
             f = it.font()
             f.setItalic(True)
             it.setFont(f)
-            self.its[id(it)] = (parent_key, None)
+            if self.addItem(it, (parent_key, None)): return lineMatchHits
             for p in parent_value:
                 it = QtWidgets.QListWidgetItem("    "+p.h, self.lw)
                 f = it.font()
                 f.setBold(True)
                 it.setFont(f)
-                self.its[id(it)] = (p, None)
+                if self.addItem(it, (p, None)):return lineMatchHits
                 if hasattr(p,"matchiter"): #p might be not have body matches
                     ms = matchlines(p.b, p.matchiter)
                     for ml, pos in ms:
                         lineMatchHits += 1
                         it = QtWidgets.QListWidgetItem("    "+"    "+ml, self.lw)
-                        self.its[id(it)] = (p,pos)
+                        if self.addItem(it, (p, pos)):return lineMatchHits
         return lineMatchHits
 
     #@+node:ekr.20111015194452.15690: *3* addGeneric
@@ -537,7 +542,7 @@ class QuickSearchController(object):
             f = it.font()
             f.setBold(True)
             it.setFont(f)
-            self.its[id(it)] = (p,None)
+            if self.addItem(it, (p, None)): return
     #@+node:ekr.20111015194452.15691: *3* clear
     def clear(self):
 
@@ -651,7 +656,6 @@ class QuickSearchController(object):
             bm_keys = [match.key() for match in bm]
             numOfHm = len(hm) #do this before trim to get accurate count
             hm = [match for match in hm if match.key() not in bm_keys]
-
             if self.widgetUI.showParents.isChecked():
                 parents = OrderedDefaultDict(lambda: [])
                 for nodeList in [hm,bm]:
@@ -667,6 +671,7 @@ class QuickSearchController(object):
 
             hits = numOfHm + lineMatchHits
             self.lw.insertItem(0, "{} hits".format(hits))
+
         else:
             if combo == "File":
                 self.lw.insertItem(0, "External file directive not found "+
