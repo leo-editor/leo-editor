@@ -368,7 +368,7 @@ def translateArgs(args, d):
     '''Return the concatenation of all args, with odd args translated.'''
     if not hasattr(g, 'consoleEncoding'):
         e = sys.getdefaultencoding()
-        g.consoleEncoding = isValidEncoding(e) and e or 'utf-8'
+        g.consoleEncoding = e if isValidEncoding(e) else 'utf-8'
         # print 'translateArgs',g.consoleEncoding
     result = []; n = 0; spaces = d.get('spaces')
     for arg in args:
@@ -405,6 +405,7 @@ def isCallable(obj):
 
 def isString(s):
     '''Return True if s is any string, but not bytes.'''
+    # pylint: disable=no-member
     if g.isPython3:
         return type(s) == type('a') # NOQA
     else:
@@ -412,6 +413,7 @@ def isString(s):
 
 def isUnicode(s):
     '''Return True if s is a unicode string.'''
+    # pylint: disable=no-member
     if g.isPython3:
         return type(s) == type('a') # NOQA
     else:
