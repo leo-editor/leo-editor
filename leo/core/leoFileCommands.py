@@ -2129,6 +2129,8 @@ class FileCommands(object):
     def decodePosition(self, s):
         '''Creates position from its string representation encoded by fc.encodePosition.'''
         fc = self
+        if not s:
+            return fc.c.rootPosition()
         sep = g.u('<->')
         comma = g.u(',')
         stack = [x.split(comma) for x in s.split(sep)]
