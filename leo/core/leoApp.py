@@ -1330,106 +1330,102 @@ class LeoApp(object):
         # Fixes bug 670108.
         import leo.core.leoCache as leoCache
         g.app.db = leoCache.Cacher().initGlobalDB()
-    #@+node:ekr.20031218072017.1978: *3* app.setLeoID
+    #@+node:ekr.20031218072017.1978: *3* app.setLeoID & helpers
     def setLeoID(self, verbose=True):
-        tag = ".leoID.txt"
-        homeLeoDir = g.app.homeLeoDir
-        globalConfigDir = g.app.globalConfigDir
-        loadDir = g.app.loadDir
-        verbose = not g.app.unitTesting
-        #@+<< return if we can set leoID from sys.leoID >>
-        #@+node:ekr.20031218072017.1979: *4* << return if we can set leoID from sys.leoID>>
-        # This would be set by in Python's sitecustomize.py file.
-        # Use hasattr & getattr to suppress pylint warning.
-        # Use a "non-constant" attribute to suppress another warning!
-        nonConstantAttr = "leoID"
-        if hasattr(sys, nonConstantAttr):
-            g.app.leoID = getattr(sys, nonConstantAttr)
-            if verbose and not g.app.silentMode and not g.app.unitTesting:
-                g.red("leoID=", g.app.leoID, spaces=False)
+        '''Get g.app.leoID from various sources.'''
+        self.leoID = None
+        assert self == g.app
+        verbose = verbose and not g.unitTesting and not self.silentMode
+        table = (
+            self.setIDFromSys,
+            self.setIDFromFile,
+            self.setIDFromEnv,
+        )
+        for func in table:
+            func(verbose)
+            if self.leoID:
+                return
+        self.setIdFromDialog()
+        if self.leoID:
+            self.setIDFile()
+       
+    #@+node:ekr.20031218072017.1979: *4* app.setIDFromSys
+    def setIDFromSys(self, verbose):
+        '''
+        Attempt to set g.app.leoID from sys.leoID.
+        
+        This might be set by in Python's sitecustomize.py file.
+        '''
+        id_ = getattr(sys, "leoID", None)
+        if id_:
             # Careful: periods in the id field of a gnx will corrupt the .leo file!
-            g.app.leoID = g.app.leoID.replace('.', '-')
-            return
-        else:
-            g.app.leoID = None
-        #@-<< return if we can set leoID from sys.leoID >>
-        #@+<< return if we can set leoID from "leoID.txt" >>
-        #@+node:ekr.20031218072017.1980: *4* << return if we can set leoID from "leoID.txt" >>
-        for theDir in (homeLeoDir, globalConfigDir, loadDir):
-            # N.B. We would use the _working_ directory if theDir is None!
+            self.leoID = id_.replace('.', '-')
+            if verbose:
+                g.red("leoID=", self.leoID, spaces=False)
+    #@+node:ekr.20031218072017.1980: *4* app.setIDFromFile
+    def setIDFromFile(self, verbose):
+        '''Attempt to set g.app.leoID from leoID.txt.'''
+        tag = ".leoID.txt"
+        for theDir in (self.homeLeoDir, self.globalConfigDir, self.loadDir):
             if theDir:
+                fn = g.os_path_join(theDir, tag)
                 try:
-                    fn = g.os_path_join(theDir, tag)
-                    f = open(fn, 'r')
-                    s = f.readline()
-                    f.close()
+                    with open(fn, 'r') as f:
+                        s = f.readline().strip()
                     if s:
-                        g.app.leoID = s.strip()
-                        # Careful: periods in the id field of a gnx
-                        # will corrupt the .leo file!
-                        g.app.leoID = g.app.leoID.replace('.', '-')
-                        # if verbose and not g.app.silentMode and not g.app.unitTesting:
-                            # g.red('leoID=', g.app.leoID, ' (in ', theDir, ')', spaces=False)
-                        return
-                    elif verbose and not g.app.unitTesting:
-                        g.red('empty ', tag, ' (in ', theDir, ')', spaces=False)
+                        # Careful: periods in gnx will corrupt the .leo file!
+                        self.leoID = s.replace('.', '-')
+                    g.es('leoID=%r (in %s)' % (self.leoID, theDir), color='red')
                 except IOError:
-                    g.app.leoID = None
+                    pass
                 except Exception:
-                    g.app.leoID = None
                     g.error('unexpected exception in app.setLeoID')
                     g.es_exception()
-        #@-<< return if we can set leoID from "leoID.txt" >>
-        #@+<< return if we can set leoID from os.getenv('USER') >>
-        #@+node:ekr.20060211140947.1: *4* << return if we can set leoID from os.getenv('USER') >>
+    #@+node:ekr.20060211140947.1: *4* app.setIDFromEnv
+    def setIDFromEnv(self, verbose):
+        '''Set leoID from environment vars.'''
         try:
-            theId = os.getenv('USER')
-            if theId:
-                if verbose and not g.app.unitTesting:
-                    g.blue("setting leoID from os.getenv('USER'):",
-                        repr(theId))
-                g.app.leoID = theId
-                # Careful: periods in the id field of a gnx
-                # will corrupt the .leo file!
-                g.app.leoID = g.app.leoID.replace('.', '-')
-                return
+            id_ = os.getenv('USER')
+            if id_:
+                if verbose:
+                    g.blue("setting leoID from os.getenv('USER'):", repr(id_))
+                # Careful: periods in the gnx would corrupt the .leo file!
+                self.leoID = id_.replace('.', '-')
         except Exception:
             pass
-        #@-<< return if we can set leoID from os.getenv('USER') >>
-        #@+<< put up a dialog requiring a valid id >>
-        #@+node:ekr.20031218072017.1981: *4* << put up a dialog requiring a valid id >>
-        # 2011/06/13: Don't put up a splash screen.
+    #@+node:ekr.20031218072017.1981: *4* app.setIdFromDialog
+    def setIdFromDialog(self):
+        '''Get leoID from a dialog.'''
+        # Don't put up a splash screen.
         # It would obscure the coming dialog.
-        g.app.use_splash_screen = False
+        self.use_splash_screen = False
         # New in 4.1: get an id for gnx's.  Plugins may set g.app.leoID.
-        if g.app.gui is None:
+        if self.gui is None:
             # Create the Qt gui if it exists.
-            g.app.createDefaultGui(fileName='g.app.setLeoId', verbose=True)
-        if g.app.gui is None: # Neither gui could be created: this should never happen.
+            self.createDefaultGui(fileName='g.app.setLeoId', verbose=False)
+        if self.gui is None: # Neither gui could be created: this should never happen.
             g.es_debug("Please enter LeoID (e.g. your username, 'johndoe'...)")
             # pylint: disable=no-member
             f = builtins.input if g.isPython3 else builtins.raw_input
                 # Suppress pyflakes complaint.
             leoid = f('LeoID: ')
         else:
-            leoid = g.app.gui.runAskLeoIDDialog()
+            leoid = self.gui.runAskLeoIDDialog()
         # Bug fix: 2/6/05: put result in g.app.leoID.
-        g.app.leoID = leoid
         # Careful: periods in the id field of a gnx will corrupt the .leo file!
-        g.app.leoID = g.app.leoID.replace('.', '-')
-        # g.trace(g.app.leoID)
-        g.blue('leoID=', repr(g.app.leoID), spaces=False)
-        #@-<< put up a dialog requiring a valid id >>
-        #@+<< attempt to create leoID.txt >>
-        #@+node:ekr.20031218072017.1982: *4* << attempt to create leoID.txt >> (changed)
-        for theDir in (homeLeoDir, globalConfigDir, loadDir):
-            # N.B. We would use the _working_ directory if theDir is None!
+        self.leoID = leoid.replace('.', '-')
+        g.blue('leoID=', repr(self.leoID), spaces=False)
+    #@+node:ekr.20031218072017.1982: *4* app.setIDFile
+    def setIDFile(self):
+        '''Create leoID.txt.'''
+        tag = ".leoID.txt"
+        for theDir in (self.homeLeoDir, self.globalConfigDir, self.loadDir):
             if theDir:
                 try:
                     fn = g.os_path_join(theDir, tag)
                     f = open(fn, 'w')
-                    s = g.app.leoID
-                    if not g.isPython3: # 2010/08/27
+                    s = self.leoID
+                    if not g.isPython3:
                         s = g.toEncodedString(s, encoding='utf-8', reportErrors=True)
                     f.write(s)
                     f.close()
@@ -1439,7 +1435,6 @@ class LeoApp(object):
                 except IOError:
                     pass
                 g.error('can not create', tag, 'in', theDir)
-        #@-<< attempt to create leoID.txt >>
     #@+node:ekr.20031218072017.1847: *3* app.setLog, lockLog, unlocklog
     def setLog(self, log):
         """set the frame to which log messages will go"""
@@ -2331,7 +2326,9 @@ class LoadManager(object):
                 g.app.createDefaultGui(__file__)
             else:
                 # This can happen when launching Leo from IPython.
-                g.trace('g.app.gui', g.app.gui, g.callers())
+                # This can also happen when leoID does not exist.
+                if trace:
+                    g.trace('g.app.gui', g.app.gui, g.callers())
         elif gui_option is None:
             if script and not windowFlag:
                 # Always use null gui for scripts.
