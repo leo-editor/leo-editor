@@ -263,9 +263,9 @@ class Cacher(object):
             # The node differs  in two different external files.
             self.warning('out-of-sync node: %s' % h)
             g.es_print('using node in %s' % fileName)
-        else:
-            g.es_print('creating recovered node:', h)
         if always_warn or must_warn:
+            if c.make_node_conflicts_node:
+                g.es_print('creating recovered node:', h)
             c.nodeConflictList.append(g.bunch(
                 tag='(cached)',
                 fileName=fileName,
