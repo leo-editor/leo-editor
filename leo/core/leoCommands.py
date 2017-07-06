@@ -2643,7 +2643,7 @@ class Commands(object):
     #@+node:vitalije.20170703115710.1: *6* c.editRecentFiles
     @cmd('edit-recent-files')
     def editRecentFiles(self, event=None):
-        '''Sort the recent files list.'''
+        '''Opens recent files list in a new node for editing.'''
         c = self
         g.app.recentFilesManager.editRecentFiles(c)
     #@+node:vitalije.20170703115710.2: *6* c.writeEditedRecentFiles
