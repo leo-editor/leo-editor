@@ -26,12 +26,12 @@
 <v t="ekr.20080412124815.1"><vh>@bool fixedWindow = False</vh></v>
 <v t="ekr.20101009114830.4723"><vh>@bool put_expansion_bits_in_leo_files = False</vh></v>
 </v>
-<v t="ekr.20050407144342"><vh>@page http plugin</vh>
+<v t="ekr.20050407144342"><vh>http plugin</vh>
 <v t="ekr.20050407144342.1"><vh>@bool http_active = False</vh></v>
 <v t="ekr.20050407144342.2"><vh>@int  port = 8080</vh></v>
 <v t="ekr.20050407144342.3"><vh>@string rst_http_attributename = rst_http_attribute</vh></v>
 </v>
-<v t="ekr.20050812123002"><vh>@page rst3 options</vh>
+<v t="ekr.20050812123002"><vh>rst3 options</vh>
 <v t="ekr.20131009050634.17658"><vh>@bool rst3_call_docutils = False</vh></v>
 <v t="ekr.20131009050634.17625"><vh>@bool rst3_code_mode = False</vh></v>
 <v t="ekr.20150319142303.4"><vh>@bool rst3_debug = False</vh></v>
@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -2894,11 +2894,7 @@ Here is how Leo associates uA's with &lt;v&gt; elements in .leo files:
 
 - Leo performs the usual xml escapes on these strings when reading or writing the unknownAttributes ivars.
 </t>
-<t tx="ekr.20050407144342">
-
-
-
-</t>
+<t tx="ekr.20050407144342"></t>
 <t tx="ekr.20050407144342.1"></t>
 <t tx="ekr.20050407144342.2"></t>
 <t tx="ekr.20050407144342.3"></t>
@@ -23393,7 +23389,7 @@ To set this up:
 Some commands can be run from the minibuffer, but there is no tab completion and no indication of what the correct command names are.</t>
 <t tx="ekr.20170618162705.1">To exit Leo: click "Quit Leo" button and &lt;Enter&gt;. Ctrl-Q also works. **There is no way to cancel Ctrl-Q**. A dialog box will appear. Press Enter to select "No". Press arrow keys to move between "Yes" and "No". "Yes" saves, then exits. "No" Exits without saving.
 </t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
