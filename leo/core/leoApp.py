@@ -2668,6 +2668,7 @@ class LoadManager(object):
                     color = g.actualColor('black')
                 color = g.actualColor(color)
                 tabName = d.get('tabName') or 'Log'
+                newline = d.get('newline')
                 s = g.translateArgs(args, d)
                 if app.batchMode:
                     if log:
