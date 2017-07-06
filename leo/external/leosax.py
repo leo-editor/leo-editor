@@ -14,7 +14,7 @@ from __future__ import print_function
 
 import leo.core.leoGlobals as g
 from xml.sax.handler import ContentHandler
-from xml.sax import parse
+from xml.sax import parseString
 from pickle import loads
 from binascii import unhexlify
 
@@ -198,7 +198,9 @@ class LeoReader(ContentHandler):
 def get_leo_data(source):
     """Return the root node for the specificed .leo file (path or file)"""
     parser = LeoReader()
-    parse(source, parser)
+    if g.os_path_isfile(source):
+        source = g.readFileIntoUnicodeString(source, 'utf-8')
+    parseString(source, parser)
     return parser.root
 
 #@-others
@@ -208,15 +210,12 @@ def get_leo_data(source):
 
 if __name__ == '__main__':
     import sys
-    import os
-    if len(sys.argv) > 1 and os.path.isfile(sys.argv[1]):
+    if len(sys.argv) > 1 and g.os_path_isfile(sys.argv[1]):
         wb = sys.argv[1]
     else:
-        wb = os.path.expanduser(
-            os.path.join('~', '.leo', 'workbook.leo')
+        wb = g.os_path_expanduser(
+            g.os_path_join('~', '.leo', 'workbook.leo')
         )
-    with open(wb, 'r') as inp:
-        src = g.u(inp.read())
-        leo_data = get_leo_data(src)
+    leo_data = get_leo_data(g.readFileIntoUnicodeString(wb))
     print(leo_data)
 #@-leo
