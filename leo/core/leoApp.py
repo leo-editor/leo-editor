@@ -976,8 +976,6 @@ class LeoApp(object):
         if sys.platform.startswith('win'):
             sysVersion = 'Windows '
             try:
-                # v = os.sys.getwindowsversion()
-                # sysVersion += ', '.join([str(z) for z in v])
                 # peckj 20140416: determine true OS architecture
                 # the following code should return the proper architecture
                 # regardless of whether or not the python architecture matches
@@ -989,7 +987,8 @@ class LeoApp(object):
                     true_platform = os.environ['PROCESSOR_ARCHITEw6432']
                 except KeyError:
                     pass
-                sysVersion = 'Windows %s %s (build %s) %s' % (release, true_platform, winbuild, sp)
+                sysVersion = 'Windows %s %s (build %s) %s' % (
+                    release, true_platform, winbuild, sp)
             except Exception:
                 pass
         else: sysVersion = sys.platform
@@ -3478,7 +3477,6 @@ class RecentFilesManager(object):
         Write the appropriate .leoRecentFiles.txt file.
 
         Write a message if force is True, or if it hasn't been written yet.
-
         '''
         tag = '.leoRecentFiles.txt'
         rf = self

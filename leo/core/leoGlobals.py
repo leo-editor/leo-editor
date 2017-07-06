@@ -5336,8 +5336,10 @@ def stripBlankLines(s):
 # g.es_print and related print to both the Log window and the console.
 #@+node:ekr.20080821073134.2: *3* g.doKeywordArgs
 def doKeywordArgs(keys, d=None):
-    '''Return a result dict that is a copy of the keys dict
-    with missing items replaced by defaults in d dict.'''
+    '''
+    Return a result dict that is a copy of the keys dict
+    with missing items replaced by defaults in d dict.
+    '''
     if d is None: d = {}
     result = {}
     for key, default_val in d.items():
@@ -5421,34 +5423,18 @@ def es(*args, **keys):
     elif g.unitTesting:
         if log and not log.isNull:
             # This makes the output of unit tests match the output of scripts.
-            # s = g.toEncodedString(s,'ascii')
             g.pr(s, newline=newline)
     elif log and app.logInited:
-        if 1: # Experimental
-            # QtLog.put always adds <br> at end.
-            if newline:
-                s += '\n'
-            log.put(s, color=color, tabName=tabName)
-            # Count the number of *trailing* newlines.
-            for ch in s:
-                if ch == '\n': log.newlines += 1
-                else: log.newlines = 0
-        else:
-            log.put(s, color=color, tabName=tabName)
-            # Count the number of *trailing* newlines.
-            for ch in s:
-                if ch == '\n': log.newlines += 1
-                else: log.newlines = 0
-            if newline:
-                g.ecnl(tabName=tabName) # only valid here
-                    # The only call to g.ecnl or g.ecnls in Leo's core.
+        if newline:
+            s += '\n'
+        log.put(s, color=color, tabName=tabName)
+        # Count the number of *trailing* newlines.
+        for ch in s:
+            if ch == '\n': log.newlines += 1
+            else: log.newlines = 0
     else:
         app.logWaiting.append((s, color, newline),)
-        ###
-        # elif newline:
-            # app.logWaiting.append((s + '\n', color),)
-        # else:
-            # app.logWaiting.append((s, color),)
+    
 #@+node:ekr.20141107085700.4: *3* g.es_debug
 def es_debug(*args, **keys):
     '''
