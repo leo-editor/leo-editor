@@ -3300,10 +3300,11 @@ class Commands(object):
         if s is None:
             s = g.app.gui.getTextFromClipboard()
         pasteAsClone = not reassignIndices
-        if pasteAsClone and g.app.paste_c != c:
-            g.es('illegal paste-retaining-clones', color='red')
-            g.es('only valid in same outline.')
-            return
+        # commenting following block fixes #478
+        #if pasteAsClone and g.app.paste_c != c:
+        #    g.es('illegal paste-retaining-clones', color='red')
+        #    g.es('only valid in same outline.')
+        #    return
         undoType = 'Paste Node' if reassignIndices else 'Paste As Clone'
         c.endEditing()
         if not s or not c.canPasteOutline(s):
