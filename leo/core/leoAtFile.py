@@ -506,10 +506,10 @@ class AtFile(object):
         # Get the file from the cache if possible.
         if fromString or not g.enableDB:
             s, loaded, fileKey = fromString, False, None
-        elif g.SQLITE and self.checkExternalFileAgainstDb(fileName, root):
-            # external file has not been modified since last db save
-            return True
         else:
+            if g.SQLITE and self.checkExternalFileAgainstDb(fileName, root):
+                # external file has not been modified since last db save
+                return True
             s, loaded, fileKey = c.cacher.readFile(fileName, root)
         # Never read an external file with file-like sentinels from the cache.
         isFileLike = loaded and at.isFileLike(s)
