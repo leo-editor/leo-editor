@@ -31,7 +31,9 @@ class ParserBaseClass(object):
         # 'if','ifgui',
         'ignore',
         'menus', 'mode', 'menuat',
-        'openwith', 'outlinedata', 'page', 'popup',
+        'openwith', 'outlinedata',
+        # 'page',
+        'popup',
         'settings', 'shortcuts',
         ]
     # Keys are settings names, values are (type,value) tuples.

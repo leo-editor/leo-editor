@@ -671,17 +671,20 @@
 <v t="tbnorth.20170111153430.1"><vh>@bool autojustify-on-at-start = False</vh></v>
 </v>
 <v t="ekr.20061003173413"><vh>Files &amp; directories</vh>
-<v t="ekr.20071110153046"><vh>@bool at_auto_warns_about_leading_whitespace = True</vh></v>
+<v t="ekr.20170706103545.1"><vh>@bool report_unchanged_files = True</vh></v>
 <v t="ekr.20061210091932"><vh>@bool chdir_to_relative_path = False</vh></v>
-<v t="ekr.20150403055250.1"><vh>@bool check_for_changed_external_files = True</vh></v>
-<v t="ekr.20090514111518.8379"><vh>@bool check_python_code_on_write = True</vh></v>
 <v t="ekr.20150216135059.1"><vh>@bool create-at-persistence-nodes-automatically = False</vh></v>
 <v t="ekr.20041119041304"><vh>@bool create_nonexistent_directories = False</vh></v>
 <v t="ekr.20041119034357.5"><vh>@bool read_only = False</vh></v>
-<v t="ekr.20161021095001.1"><vh>@bool run-pyflakes-on-write = False</vh></v>
-<v t="ekr.20150710084507.1"><vh>@bool syntax-error-popup = False</vh></v>
-<v t="ekr.20150321090958.1"><vh>@bool verbose_check_outline = False</vh></v>
 <v t="ekr.20041119041304.1"><vh>@string relative_path_base_directory = .</vh></v>
+<v t="ekr.20170706103843.1"><vh>Checking files</vh>
+<v t="ekr.20071110153046"><vh>@bool at_auto_warns_about_leading_whitespace = True</vh></v>
+<v t="ekr.20150403055250.1"><vh>@bool check_for_changed_external_files = True</vh></v>
+<v t="ekr.20090514111518.8379"><vh>@bool check_python_code_on_write = True</vh></v>
+<v t="ekr.20161021095001.1"><vh>@bool run-pyflakes-on-write = False</vh></v>
+<v t="ekr.20150321090958.1"><vh>@bool verbose_check_outline = False</vh></v>
+<v t="ekr.20150710084507.1"><vh>@bool syntax-error-popup = False</vh></v>
+</v>
 <v t="ekr.20041119034357.12"><vh>External files</vh>
 <v t="ekr.20070419103554"><vh>@bool force_newlines_in_at_nosent_bodies = True</vh></v>
 <v t="ekr.20041119041747.4"><vh>@bool write_strips_blank_lines = True</vh></v>
@@ -2255,7 +2258,6 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20150403055250.1"></v>
 <v t="ekr.20170304074559.1"><vh>Themes</vh>
 <v t="ekr.20140912072521.19160"></v>
 <v t="ekr.20170310072826.1"><vh>@theme base dark</vh>
@@ -2822,8 +2824,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20131213135427.21826"></v>
-<v t="ekr.20131213135427.22320"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -14304,6 +14304,8 @@ if 0: # The base class
       function/method into the headline of the imported node.
       
 **Note**: The importer will copy only the first line of a multiline decorator.</t>
+<t tx="ekr.20170706103545.1">True: Report unchanged written files.</t>
+<t tx="ekr.20170706103843.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

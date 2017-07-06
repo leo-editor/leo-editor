@@ -308,6 +308,7 @@ class AtFile(object):
         # at.output_newline:    set by scanAllDirectives() below.
         # at.page_width:        set by scanAllDirectives() below.
         at.outputContents = None
+        at.sameFiles = 0
         at.sentinels = not nosentinels
         at.shortFileName = "" # For messages.
         at.root = root
@@ -1326,7 +1327,8 @@ class AtFile(object):
                     # Just mark the vnode dirty.
                     # Ancestors will be marked dirty later.
                 c.setChanged(True)
-        else:
+            return
+        if c.make_node_conflicts_node:
             if trace:
                 g.es_print('Creating recovered node', v.h)
             c.nodeConflictList.append(g.bunch(
@@ -1339,11 +1341,12 @@ class AtFile(object):
                 h_new=v._headString,
                 root_v = at.root and at.root.v,
             ))
-            v.setDirty()
-                # Just set the dirty bit. Ancestors will be marked dirty later.
-            c.changed = True
-                # Important: the dirty bits won't stick unless we set c.changed here.
-                # Do *not* call c.setChanged(True) here: that would be too slow.
+        # Always do this.
+        v.setDirty()
+            # Just set the dirty bit. Ancestors will be marked dirty later.
+        c.changed = True
+            # Important: the dirty bits won't stick unless we set c.changed here.
+            # Do *not* call c.setChanged(True) here: that would be too slow.
     #@+node:ekr.20100628124907.5818: *7* at.reportCorrection
     def reportCorrection(self, old, new, v):
         '''Debugging only. Report changed perfect import lines.'''
@@ -2978,6 +2981,7 @@ class AtFile(object):
         at = self; c = at.c
         if trace: scanAtPathDirectivesCount = c.scanAtPathDirectivesCount
         writtenFiles = [] # Files that might be written again.
+        at.sameFiles = 0
         force = writeAtFileNodesFlag
         # This is the *only* place where these are set.
         # promptForDangerousWrite sets cancelFlag only if canCancelFlag is True.
@@ -3029,7 +3033,11 @@ class AtFile(object):
         if not g.unitTesting:
             if writeAtFileNodesFlag or writeDirtyAtFileNodesFlag:
                 if writtenFiles:
-                    g.es("finished")
+                    report = c.config.getBool('report_unchanged_files', default=True)
+                    if report:
+                        g.es("finished")
+                    elif at.sameFiles:
+                        g.es('finished. %s unchanged files' % at.sameFiles)
                 elif writeAtFileNodesFlag:
                     g.warning("no @<file> nodes in the selected tree")
                     # g.es("to write an unchanged @auto node,\nselect it directly.")
@@ -4679,14 +4687,16 @@ class AtFile(object):
         This is used only by the @shadow logic.
         '''
         trace = False and not g.unitTesting
-        at = self
+        at, c = self, self.c
         exists = g.os_path_exists(fn)
         if exists: # Read the file.  Return if it is the same.
             s2, e = g.readFileIntoString(fn)
             if s is None:
                 return False
             if s == s2:
-                if not g.unitTesting: g.es('unchanged:', fn)
+                report = c.config.getBool('report_unchanged_files', default=True)
+                if report and not g.unitTesting:
+                    g.es('unchanged:', fn)
                 return False
         # Issue warning if directory does not exist.
         theDir = g.os_path_dirname(fn)
@@ -4752,7 +4762,9 @@ class AtFile(object):
             ):
                 # Files are identical.
                 if trace: g.trace('files are identical')
-                if not g.unitTesting:
+                report = c.config.getBool('report_unchanged_files', default=True)
+                at.sameFiles += 1
+                if report and not g.unitTesting:
                     g.es('unchanged:', at.shortFileName)
                 at.fileChangedFlag = False
                 # Leo 5.6: Check unchanged files.
