@@ -3143,12 +3143,13 @@ class LeoQtLog(leoFrame.LeoLog):
     #@+node:ekr.20110605121601.18322: *4* LeoQtLog.put (changed: never adds <br>)
     def put(self, s, color=None, tabName='Log', from_redirect=False):
         '''All output to the log stream eventually comes here.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         trace_entry = True
         trace_s = False
         c = self.c
         if g.app.quitting or not c or not c.exists:
-            print('LeoQtLog.log.put fails', repr(s))
+            if trace:
+                print('LeoQtLog.log.put fails: %r' % s)
             return
         if color:
             color = leoColor.getColor(color, 'black')
@@ -3159,8 +3160,7 @@ class LeoQtLog(leoFrame.LeoLog):
         w = self.logCtrl.widget # w is a QTextBrowser
         if w:
             if trace and trace_entry:
-                # print(id(self.logCtrl), c.shortFileName())
-                print(repr(s))
+                print('LeoQtLog.log.put: %r' % s)
             sb = w.horizontalScrollBar()
             s = s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
             if not self.wrap: # 2010/02/21: Use &nbsp; only when not wrapping!
@@ -3187,7 +3187,7 @@ class LeoQtLog(leoFrame.LeoLog):
             sb.setSliderPosition(0) # Force the slider to the initial position.
         else:
             # put s to logWaiting and print s
-            g.app.logWaiting.append((s, color),)
+            g.app.logWaiting.append((s, color, True),)
             if g.isUnicode(s):
                 s = g.toEncodedString(s, "ascii")
             print(s)
@@ -3212,7 +3212,7 @@ class LeoQtLog(leoFrame.LeoLog):
             w.repaint() # Slow, but essential.
         else:
             # put s to logWaiting and print  a newline
-            g.app.logWaiting.append(('\n', 'black'),)
+            g.app.logWaiting.append(('\n', 'black', True),)
     #@+node:ekr.20150205181818.5: *4* LeoQtLog.scrollToEnd
     def scrollToEnd(self, tabName='Log'):
         '''Scroll the log to the end.'''

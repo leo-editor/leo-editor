@@ -308,7 +308,7 @@ class LeoApp(object):
         self.logIsLocked = False
             # True: no changes to log are allowed.
         self.logWaiting = []
-            # List of messages waiting to go to a log.
+            # List of tuples (s, color, newline) waiting to go to a log.
         self.printWaiting = []
             # Queue of messages to be sent to the printer.
         self.signon = ''
@@ -1479,11 +1479,10 @@ class LeoApp(object):
             # Write the signon.
             for s, color in table:
                 if s:
-                    app.logWaiting.insert(0, (s + '\n', color),)
+                    app.logWaiting.insert(0, (s, color, True),)
             # Write all the queued log entries.
-            for s, color in app.logWaiting:
-                g.es('', s, color=color, newline=False)
-                    # The caller must write the newlines.
+            for s, color, newline in app.logWaiting:
+                g.es('', s, color=color, newline=newline)
             if hasattr(c.frame.log, 'scrollToEnd'):
                 g.app.gui.runAtIdle(c.frame.log.scrollToEnd)
         app.logWaiting = []
@@ -2677,7 +2676,7 @@ class LoadManager(object):
                     # from_redirect is the big difference between this and g.es.
                     log.put(s, color=color, tabName=tabName, from_redirect=True)
                 else:
-                    app.logWaiting.append((s, color),)
+                    app.logWaiting.append((s, color, newline),)
             #@-others
         #@-others
 

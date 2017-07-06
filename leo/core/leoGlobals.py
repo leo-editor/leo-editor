@@ -5428,7 +5428,6 @@ def es(*args, **keys):
             # QtLog.put always adds <br> at end.
             if newline:
                 s += '\n'
-                log.newlines += 1
             log.put(s, color=color, tabName=tabName)
             # Count the number of *trailing* newlines.
             for ch in s:
@@ -5443,10 +5442,13 @@ def es(*args, **keys):
             if newline:
                 g.ecnl(tabName=tabName) # only valid here
                     # The only call to g.ecnl or g.ecnls in Leo's core.
-    elif newline:
-        app.logWaiting.append((s + '\n', color),)
     else:
-        app.logWaiting.append((s, color),)
+        app.logWaiting.append((s, color, newline),)
+        ###
+        # elif newline:
+            # app.logWaiting.append((s + '\n', color),)
+        # else:
+            # app.logWaiting.append((s, color),)
 #@+node:ekr.20141107085700.4: *3* g.es_debug
 def es_debug(*args, **keys):
     '''
