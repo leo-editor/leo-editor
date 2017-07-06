@@ -12,6 +12,7 @@ multiple .leo files quickly.
 
 from __future__ import print_function
 
+import leo.core.leoGlobals as g
 from xml.sax.handler import ContentHandler
 from xml.sax import parse
 from pickle import loads
@@ -120,14 +121,12 @@ class LeoReader(ContentHandler):
     """
     #@+others
     #@+node:ekr.20120519121124.9927: *3* __init__
-
-
     def __init__(self, *args, **kwargs):
         """Set ivars"""
         ContentHandler.__init__(self, *args, **kwargs)
         self.root = LeoNode()
 
-        self.root.h = 'ROOT'
+        self.root.h = g.u('ROOT')
         # changes type from [] to str, done by endElement() for other vnodes
 
         self.cur = self.root
@@ -167,7 +166,7 @@ class LeoReader(ContentHandler):
         # character collection, so it doesn't matter
 
         if name == 'v':
-            self.cur.h = ''.join(self.cur.h)
+            self.cur.h = g.u('').join(self.cur.h)
             self.cur = self.cur.parent
             if self.path:
                 del self.path[-1]
@@ -216,6 +215,8 @@ if __name__ == '__main__':
         wb = os.path.expanduser(
             os.path.join('~', '.leo', 'workbook.leo')
         )
-    leo_data = get_leo_data(wb)
+    with open(wb, 'r') as inp:
+        src = g.u(inp.read())
+        leo_data = get_leo_data(src)
     print(leo_data)
 #@-leo
