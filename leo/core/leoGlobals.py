@@ -5389,10 +5389,11 @@ def es(*args, **keys):
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
     trace = False
+    verbose = False
     if not app or app.killed: return
     if app.gui and app.gui.consoleOnly: return
     log = app.log
-    if trace: # Effective for debugging.
+    if trace and verbose: # Effective for debugging.
         print()
         print('***es', args, keys)
         print('***es', 'logInited', app.logInited, 'log', log and id(log))
@@ -5423,12 +5424,25 @@ def es(*args, **keys):
             # s = g.toEncodedString(s,'ascii')
             g.pr(s, newline=newline)
     elif log and app.logInited:
-        log.put(s, color=color, tabName=tabName)
-        for ch in s:
-            if ch == '\n': log.newlines += 1
-            else: log.newlines = 0
-        if newline:
-            g.ecnl(tabName=tabName) # only valid here
+        if 1: # Experimental
+            # QtLog.put always adds <br> at end.
+            if newline:
+                s += '\n'
+                log.newlines += 1
+            log.put(s, color=color, tabName=tabName)
+            # Count the number of *trailing* newlines.
+            for ch in s:
+                if ch == '\n': log.newlines += 1
+                else: log.newlines = 0
+        else:
+            log.put(s, color=color, tabName=tabName)
+            # Count the number of *trailing* newlines.
+            for ch in s:
+                if ch == '\n': log.newlines += 1
+                else: log.newlines = 0
+            if newline:
+                g.ecnl(tabName=tabName) # only valid here
+                    # The only call to g.ecnl or g.ecnls in Leo's core.
     elif newline:
         app.logWaiting.append((s + '\n', color),)
     else:

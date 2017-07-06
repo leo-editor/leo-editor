@@ -1476,11 +1476,13 @@ class LeoApp(object):
         c.setLog()
         app.logInited = True # Prevent recursive call.
         if not app.silentMode:
+            # Write the signon.
             for s, color in table:
                 if s:
                     app.logWaiting.insert(0, (s + '\n', color),)
+            # Write all the queued log entries.
             for s, color in app.logWaiting:
-                g.es('', s, color=color, newline=0)
+                g.es('', s, color=color, newline=False)
                     # The caller must write the newlines.
             if hasattr(c.frame.log, 'scrollToEnd'):
                 g.app.gui.runAtIdle(c.frame.log.scrollToEnd)

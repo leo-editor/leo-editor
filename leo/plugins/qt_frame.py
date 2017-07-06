@@ -3140,10 +3140,11 @@ class LeoQtLog(leoFrame.LeoLog):
             self.logCtrl = wrapper
         if trace: g.trace(idx, tabw.tabText(idx), self.c.frame.title) # wrapper and wrapper.widget)
     #@+node:ekr.20110605121601.18321: *3* LeoQtLog.put & putnl
-    #@+node:ekr.20110605121601.18322: *4* LeoQtLog.put
+    #@+node:ekr.20110605121601.18322: *4* LeoQtLog.put (changed: never adds <br>)
     def put(self, s, color=None, tabName='Log', from_redirect=False):
         '''All output to the log stream eventually comes here.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
+        trace_entry = True
         trace_s = False
         c = self.c
         if g.app.quitting or not c or not c.exists:
@@ -3157,22 +3158,21 @@ class LeoQtLog(leoFrame.LeoLog):
         # Must be done after the call to selectTab.
         w = self.logCtrl.widget # w is a QTextBrowser
         if w:
-            if trace:
-                g.trace(id(self.logCtrl), c.shortFileName())
+            if trace and trace_entry:
+                # print(id(self.logCtrl), c.shortFileName())
+                print(repr(s))
             sb = w.horizontalScrollBar()
             s = s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
             if not self.wrap: # 2010/02/21: Use &nbsp; only when not wrapping!
                 s = s.replace(' ', '&nbsp;')
-            if from_redirect:
+            if True: ### from_redirect:
                 s = s.replace('\n', '<br>')
             else:
                 s = s.rstrip().replace('\n', '<br>')
             s = '<font color="%s">%s</font>' % (color, s)
-            if trace and trace_s:
-                # print('LeoQtLog.put: %4s redirect: %5s\n  %s' % (
-                    # len(s), from_redirect, s))
-                print('LeoQtLog.put: %r' % (s))
-            if from_redirect:
+            if True: ### from_redirect:
+                if trace and trace_s:
+                    print('LeoQtLog.put: %r' % (s))
                 w.insertHtml(s)
             else:
                 # w.append(s)
@@ -3180,6 +3180,8 @@ class LeoQtLog(leoFrame.LeoLog):
                     # This works.
                 # This also works.  Use it to see if it fixes #301:
                 # Log window doesn't get line separators
+                if trace and trace_s:
+                    print('LeoQtLog.put: %r' % (s+'<br>'))
                 w.insertHtml(s+'<br>')
             w.moveCursor(QtGui.QTextCursor.End)
             sb.setSliderPosition(0) # Force the slider to the initial position.
