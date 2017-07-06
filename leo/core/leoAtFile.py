@@ -1302,7 +1302,8 @@ class AtFile(object):
                     # Just mark the vnode dirty.
                     # Ancestors will be marked dirty later.
                 c.setChanged(True)
-        else:
+            return
+        if c.make_node_conflicts_node:
             if trace:
                 g.es_print('Creating recovered node', v.h)
             c.nodeConflictList.append(g.bunch(
@@ -1315,11 +1316,12 @@ class AtFile(object):
                 h_new=v._headString,
                 root_v = at.root and at.root.v,
             ))
-            v.setDirty()
-                # Just set the dirty bit. Ancestors will be marked dirty later.
-            c.changed = True
-                # Important: the dirty bits won't stick unless we set c.changed here.
-                # Do *not* call c.setChanged(True) here: that would be too slow.
+        # Always do this.
+        v.setDirty()
+            # Just set the dirty bit. Ancestors will be marked dirty later.
+        c.changed = True
+            # Important: the dirty bits won't stick unless we set c.changed here.
+            # Do *not* call c.setChanged(True) here: that would be too slow.
     #@+node:ekr.20100628124907.5818: *7* at.reportCorrection
     def reportCorrection(self, old, new, v):
         '''Debugging only. Report changed perfect import lines.'''

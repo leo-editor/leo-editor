@@ -173,6 +173,8 @@ https://github.com/leo-editor/leo-editor/issues/448
 If the expansion of an abbrevitiation is a command name, that command will be executed. Alas, this isn't very useful: typing destroys selection ranges.
 
 This took only a few lines of code in abbrev.expandAbbrev.
+.. @+node:ekr.20170706073652.1: *4* #478: Allow paste-retaining-clones across different .leo files
+https://github.com/leo-editor/leo-editor/issues/478
 .. @+node:ekr.20170509091900.1: *4* #484: improve menus
 https://github.com/leo-editor/leo-editor/issues/484
 
