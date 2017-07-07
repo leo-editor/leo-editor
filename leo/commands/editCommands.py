@@ -1981,7 +1981,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         spot:   The *new* insert point.
         '''
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
         c, p = self.c, self.c.p
         extend = extend or self.extendMode
         ins = w.getInsertPoint()
@@ -1991,8 +1991,8 @@ class EditCommandsClass(BaseEditCommandsClass):
             'spot=', spot, 'moveSpot', self.moveSpot)
         # Reset the move spot if needed.
         if self.moveSpot is None or p.v != self.moveSpotNode:
-            if trace: g.trace('no spot')
             self.setMoveCol(w, ins if extend else spot) # sets self.moveSpot.
+            if trace: g.trace('no spot: new moveCol', self.moveCol)
         elif extend:
             # 2011/05/20: Fix bug 622819
             # Ctrl-Shift movement is incorrect when there is an unexpected selection.
@@ -2026,7 +2026,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 # g.trace('plain forward/back move')
                 self.setMoveCol(w, spot) # sets self.moveSpot.
         if extend:
-            if trace: g.trace('range', spot, self.moveSpot)
+            if trace: g.trace('range', 'spot:', spot, 'moveSpot', self.moveSpot)
             if spot < self.moveSpot:
                 w.setSelectionRange(spot, self.moveSpot, insert=spot)
             else:
