@@ -3179,10 +3179,12 @@ class LeoQtLog(leoFrame.LeoLog):
             w.insertHtml(s)
             w.moveCursor(QtGui.QTextCursor.End)
             sb.setSliderPosition(0) # Force the slider to the initial position.
-        else:
-            # Does this ever happen?
-            g.app.logWaiting.append((s, color, True),)
-            g.pr(s, color=color, newline=True)
+            w.repaint() # Slow, but essential.
+        #
+        # else:
+            # # Does this ever happen?
+            # g.app.logWaiting.append((s, color, True),)
+            # g.pr(s, color=color, newline=True)
     #@+node:ekr.20110605121601.18323: *4* LeoQtLog.putnl
     def putnl(self, tabName='Log'):
         '''Put a newline to the Qt log.'''
