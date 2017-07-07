@@ -2,6 +2,33 @@
 .. @+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 .. @+all
 .. @+node:ekr.20170325085902.1: ** 5.6
+.. @+node:ekr.20170707033839.1: *3* major features
+.. @+node:ekr.20170608071935.1: *4* Created a console gui for Leo
+https://github.com/leo-editor/leo-editor/issues/488
+.. @+node:ekr.20170614051052.1: *4* Added "yes/no to all" buttons for externally changed file dialog
+Rev 9c94fec36d adds Yes / no to all on external file changes.
+
+If you answer yes to all or no to all Leo remembers that
+answer for 3 seconds. As a result, another set of external
+changes will show the pop up again.
+.. @+node:ekr.20170624151245.5536: *4* Leo switches between git branches properly
+https://github.com/leo-editor/leo-editor/issues/505
+
+The new code eliminates hidden time bombs when switching branches.
+
+Changes to read/write code:
+- at.writeAll writes files at most once.
+- at.write updates cache. Previously only at.read updated the cache!
+- at.deleteUnvisitedNodes no longer creates resurrected nodes.
+- at.new_createThinChild4 *always* updates headlines.
+- at.terminateBody just sets v.tempRoots.
+  It no longer calls at.indicateNodeChanged.
+- fc.handleNodeConflicts reports changed headlines differently.
+
+Changes to cacher code:
+- Added cacher.checkForChangedNodes.
+- Added tempRoots logic.
+- Added always_warn switch to cacher.reportIfNodeChanged.
 .. @+node:ekr.20170326052206.1: *3* bugs
 .. @+node:ekr.20170403181726.1: *4* #385: Leo doesn't remember new headlines after saves
 https://github.com/leo-editor/leo-editor/issues/385
@@ -22,16 +49,35 @@ refresh-from-disk doesn't always restore focus to the correct node
 
 - at.readOneAtAutoNode returns the *new* position.
 - c.refreshFromDisk selects that position.
+.. @+node:ekr.20170703075034.1: *4* #452: goto-global-lines can fail
+https://github.com/leo-editor/leo-editor/issues/452
 .. @+node:ekr.20170401202930.1: *4* #453: Focus jumps to body when expanding abbrev in a headline
 https://github.com/leo-editor/leo-editor/issues/453
 Focus jumps to de body pane when expanding an abbreviation in a headline.
 
 The fix was in find_place_holder. It should not set focus if no placeholder found.
-.. @+node:ekr.20170402034115.1: *4* #456: replace-all is very slow
-Made several changes to find.batchChange.
 .. @+node:ekr.20170402035751.1: *4* #458: Chapters drop-down list is not automatically resized
 https://github.com/leo-editor/leo-editor/issues/458
 Set a Qt flag in tt.createControl.
+.. @+node:ekr.20170705072423.1: *4* #459: Missing end-of-line characters at the Log Pane 
+@language rest
+@wrap
+
+Missing end-of-line characters at the Log Pane
+https://github.com/leo-editor/leo-editor/issues/459
+
+fc.handleNodeConflicts now prints a prominent warning in the log and console
+if it *doesn't* create a recovered-nodes node.
+
+Simplified signon logic and g.pr.
+- Removed app.signon_printed ivar.
+- Changed (slightly), the print statements in app.computeSignon.
+- Changed log message in app.setIDFromFile.
+- Changed (slightly), the log messages in app.writeWaitingLog.
+- Greatly simplified g.pr and codewise variant. They no longer queue messages.
+- Rewrote bridge.getLeoID() and app.setLeoID() without using sections.
+    
+@language python
 .. @+node:ekr.20170428063311.1: *4* #466: Moving a node can cause temporary coloring issues
 https://github.com/leo-editor/leo-editor/issues/466
 
@@ -95,10 +141,6 @@ Leo now has two new command-line options. These provide more detail than the pri
 https://github.com/leo-editor/leo-editor/pull/497
 
 Rewrote rf.createRecentFiles, rf.readRecentFilesFile and rf.writeRecentFilesFileHelper.
-.. @+node:ekr.20170608072053.84: *4* Ensure that .leo/.leoRecentFiles.txt is closed.
-https://github.com/leo-editor/leo-editor/pull/497
-
-Rewrote rf.createRecentFiles, rf.readRecentFilesFile and rf.writeRecentFilesFileHelper.
 .. @+node:ekr.20170326054533.1: *4* Fixed bug in k.computeInverseBindingDict
 The bug gave way too many bindings for the move-lines commands.
 .. @+node:ekr.20170326113032.1: *4* Fixed bug in tab completion
@@ -112,8 +154,6 @@ The fix was in xml_i.scan_tag & helper
 .. @+node:ekr.20170406095247.1: *4* Fixed serious bug in c.checkFileTimeStamp
 It must return True if g.app.externalFilesController is None.
 .. @+node:ekr.20170401132710.1: *4* Fixed several problems with goto-global-line
-.. @+node:ekr.20170416063625.1: *4* Revised xml/html importers
-The new code is simpler and handles dubious html syntax.
 .. @+node:ekr.20170329145930.1: *4* The pylint command now warns if pylint has not been installed
 The change was to pylint.run_pylint.
 
@@ -165,49 +205,13 @@ Usually, code *should* use the p.b and p.h setters and p.setDirty(), despite the
 These performance gotchas become important for repetitive commands, like cff, replace-all and recursive import. In such situations, code should use p.v.b and p.v.h setters instead of p.b and p.h setters.
 .. @+node:ekr.20170608072053.74: *4* Use 'with' statement to simplify code
 Improved g.SherlockTracer.do_line, g.gitInfo, g.is_binary_external_file, g.log, g.readFileToUnicodeString.
-.. @+node:ekr.20170403190659.1: *3* docs
-.. @+node:ekr.20170325090029.1: *3* features
-.. @+node:ekr.20170325045838.1: *4* #448: Add abbreviations for commands
-https://github.com/leo-editor/leo-editor/issues/448
+.. @+node:ekr.20170707032706.1: *3* commands
+.. @+node:ekr.20170703073512.1: *4* Added edit-recent-files and write-edited-recent-files commands
+https://github.com/leo-editor/leo-editor/issues/185
 
-If the expansion of an abbrevitiation is a command name, that command will be executed. Alas, this isn't very useful: typing destroys selection ranges.
+The edit-recent-files command creates a new last top-level node containing a list of all recent files as they appear in the File:Recent File menu.
 
-This took only a few lines of code in abbrev.expandAbbrev.
-.. @+node:ekr.20170706073652.1: *4* #478: Allow paste-retaining-clones across different .leo files
-https://github.com/leo-editor/leo-editor/issues/478
-.. @+node:ekr.20170509091900.1: *4* #484: improve menus
-https://github.com/leo-editor/leo-editor/issues/484
-
-Added submenus to Windows menu. This significantly simplifies and clarifies the Windows menu.
-.. @+node:ekr.20170608071935.1: *4* #488: Created a curses/npyscreen front end for Leo
-https://github.com/leo-editor/leo-editor/issues/488
-
-.. @+node:ekr.20170624151245.5536: *4* #505: new-read branch
-https://github.com/leo-editor/leo-editor/issues/505
-
-The new code eliminates hidden time bombs when switching branches.
-
-Changes to read/write code:
-- at.writeAll writes files at most once.
-- at.write updates cache. Previously only at.read updated the cache!
-- at.deleteUnvisitedNodes no longer creates resurrected nodes.
-- at.new_createThinChild4 *always* updates headlines.
-- at.terminateBody just sets v.tempRoots.
-  It no longer calls at.indicateNodeChanged.
-- fc.handleNodeConflicts reports changed headlines differently.
-
-Changes to cacher code:
-- Added cacher.checkForChangedNodes.
-- Added tempRoots logic.
-- Added always_warn switch to cacher.reportIfNodeChanged.
-.. @+node:ekr.20170411191401.1: *4* Added  git branch name to backed-up files
-.. @+node:ekr.20170614051052.1: *4* Added "yes/no to all" buttons for externally changed file dialog
-Rev 9c94fec36d adds Yes / no to all on external file changes.
-
-If you answer yes to all or no to all Leo remembers that
-answer for 3 seconds. As a result, another set of external
-changes will show the pop up again.
-.. @+node:ekr.20170328143013.1: *4* Added --trace-focus command-line argument
+The write-edited-recent files command writes the body text node to leoRecentFiles.txt. The command assumes that the user has not changed the *headline* of the node created by the edit-recent-files command.
 .. @+node:ekr.20170411092513.1: *4* Added goto-any-clone command
 Searches from c.p for *any* clone, not just a clone of c.p.  Useful for eliminating all clones from a .leo file.
 
@@ -215,7 +219,6 @@ This command is different from goto-next-clone as follows:
 
 - goto-any-clone goes to the next clone, regardless of whether c.p is a clone.
 - goto-any-clone does not wrap. It prints a message when no clones remain.
-.. @+node:ekr.20170701092135.1: *4* Added importer for the lua language
 .. @+node:ekr.20170430033223.1: *4* Added listen-to-log and other commands
 How to debug npyscreen apps using two consoles:
 https://groups.google.com/forum/#!topic/npyscreen/nk2pjj71bok
@@ -232,7 +235,6 @@ leo/external/log_broadcast.py contains example code. leo/plugins/cursesGui2.py u
 
 
 .. @+node:ekr.20170325090032.1: *4* Added show-color-names command
-.. @+node:ekr.20170616100339.1: *4* Added tcl importer
 .. @+node:ekr.20170618083013.1: *4* Added toggle-auto-edit command
 https://github.com/leo-editor/leo-editor/issues/482
 
@@ -306,9 +308,40 @@ def toAtEdit(self, p):
     c.bodyWantsFocus()
 .. @+node:ekr.20170427173032.1: *4* clone-find commands report number of matches in root node
 Changed find.createCloneFindAllNodes and c.cloneFindMarkedHelper.
+.. @+node:ekr.20170326091637.1: *4* Improved indent-region and unindent-region commands
+https://groups.google.com/d/msg/leo-editor/SUnqs1_YbeI/DIv0EbtFCgAJ
+
+The indent-region and unindent-region just move the insert point if there is no text selected.
+.. @+node:ekr.20170326052408.1: *4* Improved move-lines-up/down commands
+These commands (bound to ctrl-up/down by default) now work at the top or bottom of the body pane. The move-lines-up command inserts a new line below the moved line/lines when the lines are at the top of the body text.  Similarly, the move-lines-down command inserts a line before the moved lines when at the bottom of the body text. Imo, this is a natural and useful.
+.. @+node:ekr.20170402034115.1: *4* replace-all command is much faster
+https://github.com/leo-editor/leo-editor/issues/456
+
+Made several changes to find.batchChange.
+.. @+node:ekr.20170707033203.1: *3* importers
+.. @+node:ekr.20170701092135.1: *4* Added importer for the lua language
+.. @+node:ekr.20170616100339.1: *4* Added tcl importer
+.. @+node:ekr.20170416063625.1: *4* Revised xml/html importers
+https://github.com/leo-editor/leo-editor/issues/479
+Preserve brython indentation when importing .html files
+
+The new code is simpler and handles dubious html syntax.
+.. @+node:ekr.20170325090029.1: *3* other features
+.. @+node:ekr.20170325045838.1: *4* #448: Add abbreviations for commands
+https://github.com/leo-editor/leo-editor/issues/448
+
+If the expansion of an abbrevitiation is a command name, that command will be executed. Alas, this isn't very useful: typing destroys selection ranges.
+
+This took only a few lines of code in abbrev.expandAbbrev.
+.. @+node:ekr.20170706073652.1: *4* #478: Allow paste-retaining-clones across different .leo files
+https://github.com/leo-editor/leo-editor/issues/478
+.. @+node:ekr.20170509091900.1: *4* #484: Improved Windows menu
+https://github.com/leo-editor/leo-editor/issues/484
+
+Added submenus to Windows menu. This significantly simplifies and clarifies the Windows menu.
+.. @+node:ekr.20170411191401.1: *4* Added  git branch name to backed-up files
 .. @+node:ekr.20170327052423.1: *4* Improved "Write Existing File?" dialog
 at.promptForDangerousWrite puts up a dialog with a clearer cancel button.
-All tests pass.
 
 - It says "Cancel (No To All)".
 - Added cancelMessage keyword arg to x.promptForDangerousWrite.
@@ -319,12 +352,6 @@ Rev b32259 transitions to a new caching scheme:
 1. All hashes now use the full path to the external file.  Previously, the headline of @file nodes was typically used instead. Surely this might have caused silent problems.
 
 2. Leo's hasher now includes the name of the present git branch in the hash. When switching git branches, this in essence disables hashing for all files changed in the previous branch.
-.. @+node:ekr.20170326091637.1: *4* Improved indent-region and unindent-region commands
-https://groups.google.com/d/msg/leo-editor/SUnqs1_YbeI/DIv0EbtFCgAJ
-
-The indent-region and unindent-region just move the insert point if there is no text selected.
-.. @+node:ekr.20170326052408.1: *4* Improved move-lines-up/down commands
-These commands (bound to ctrl-up/down by default) now work at the top or bottom of the body pane. The move-lines-up command inserts a new line below the moved line/lines when the lines are at the top of the body text.  Similarly, the move-lines-down command inserts a line before the moved lines when at the bottom of the body text. Imo, this is a natural and useful.
 .. @+node:ekr.20170619155533.1: *4* Improved operation of command history
 The first UP-arrow to gives the presvious command, the next up-arrow gives the next command, etc.
 .. @+node:ekr.20170624151245.4039: *4* Indicate branch in Window title
@@ -339,11 +366,12 @@ https://groups.google.com/d/msg/leo-editor/sBGJr_oHeyk/3eUjoBC0CQAJ
 .. @+node:ekr.20170403192311.1: *3* plugins
 .. @+node:ekr.20170403192317.1: *4* screen_capture.py now enabled by default
 .. @+node:ekr.20170701092305.1: *4* valuescript plugin now supports vs-eval-block command
-.. @+node:ekr.20170331043621.1: *3* settings
-.. @+node:ekr.20170706110151.1: *4* #518: Added @bool report_unchanged_files
+.. @+node:ekr.20170331043621.1: *3* settings & command-line arguments
+.. @+node:ekr.20170706110151.1: *4* Added @bool report_unchanged_files
 https://github.com/leo-editor/leo-editor/issues/518
 
 @bool report_unchanged_files = True
+.. @+node:ekr.20170328143013.1: *4* Added --trace-focus command-line argument
 .. @+node:ekr.20170624173104.1: *4* Added @bool run_pyflakes_on_unchanged_files = True
 .. @+node:ekr.20170328043328.1: *4* Added ctrl-shift < and > bindings
 These are bound to indent/unindent-region and can be used when no text is selected.
@@ -362,13 +390,6 @@ The disabled setting now contains this comment:
     without any complaint. As a result, there should be no problem if
     an imported code contains something that looks like a section
     reference but isn't.
-.. @+node:ekr.20170619154105.1: *3* Branch: tree-gen
-Adds c.frame.tree.generation count.
-- Update count in v._addLink and v._cutlink.
-- Use the count in LeoValues to avoid unnecessary recalcularion.
-.. @+node:ekr.20170619165453.1: *3* Branch: string-gui
-Attempt to run all unit tests without using Qt gui code.
-All gui-related code will be simulated with the StringTextWrapper class.
 .. @-all
 .. @@nosearch
 .. @@killbeautify
