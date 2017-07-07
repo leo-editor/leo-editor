@@ -739,11 +739,11 @@ class FileCommands(object):
         '''Create a 'Recovered Nodes' node for each entry in c.nodeConflictList.'''
         c = self.c
         if not c.nodeConflictList:
-            return
+            return None
         if not c.make_node_conflicts_node:
             s = 'suppressed %s node conflicts' % len(c.nodeConflictList)
             g.es(s, color='red')
-            g.pr('\n' + s)
+            g.pr('\n' + s + '\n')
             return None
         # Create the 'Recovered Nodes' node.
         last = c.lastTopLevel()

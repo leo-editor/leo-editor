@@ -354,29 +354,7 @@ class AtFile(object):
         at.read_i = 0
         at.read_lines = g.splitLines(s)
     #@+node:ekr.20041005105605.17: *3* at.Reading
-    #@+<< Detecting clone conflicts >>
-    #@+node:ekr.20100619222623.5918: *4* << Detecting clone conflicts >>
-    #@+at
-    # 
-    # Changed in new-read: 6.
-    # 
-    # **v.tempRoots**, a *temp* ivar, contains root @file nodes.
-    # 
-    # **v.tempBodyString**, a *temporary* ivar, accumulates v.b.
-    # The vnode ctor must not create this ivar!
-    # 
-    # at.terminateBody detects clone conflicts. The old value is
-    # v.b. The new value is::
-    # 
-    #     ''.join(v.tempBodyList)
-    # 
-    # at.terminateBody calls at.indicateNodeChanged when a
-    # mismatch is detected. at.indicateNodeChanged adds an entry
-    # in c.nodeConflictList for each clone conflict.
-    # 
-    # Finally, fc.handleNodeConflicts creates a 'Recovered Nodes'
-    # node for each entry in c.nodeConflictList.
-    #@-<< Detecting clone conflicts >>
+
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
     #@+at All reading happens in the readOpenFile logic, so plugins
     # should need to override only this method.
