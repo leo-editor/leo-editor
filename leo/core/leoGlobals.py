@@ -5339,8 +5339,10 @@ def stripBlankLines(s):
 # g.es_print and related print to both the Log window and the console.
 #@+node:ekr.20080821073134.2: *3* g.doKeywordArgs
 def doKeywordArgs(keys, d=None):
-    '''Return a result dict that is a copy of the keys dict
-    with missing items replaced by defaults in d dict.'''
+    '''
+    Return a result dict that is a copy of the keys dict
+    with missing items replaced by defaults in d dict.
+    '''
     if d is None: d = {}
     result = {}
     for key, default_val in d.items():
@@ -5392,10 +5394,11 @@ def es(*args, **keys):
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
     trace = False
+    verbose = False
     if not app or app.killed: return
     if app.gui and app.gui.consoleOnly: return
     log = app.log
-    if trace: # Effective for debugging.
+    if trace and verbose: # Effective for debugging.
         print()
         print('***es', args, keys)
         print('***es', 'logInited', app.logInited, 'log', log and id(log))
@@ -5423,22 +5426,18 @@ def es(*args, **keys):
     elif g.unitTesting:
         if log and not log.isNull:
             # This makes the output of unit tests match the output of scripts.
-            # s = g.toEncodedString(s,'ascii')
             g.pr(s, newline=newline)
     elif log and app.logInited:
+        if newline:
+            s += '\n'
         log.put(s, color=color, tabName=tabName)
+        # Count the number of *trailing* newlines.
         for ch in s:
             if ch == '\n': log.newlines += 1
             else: log.newlines = 0
-        if newline:
-            g.ecnl(tabName=tabName) # only valid here
-    # 2012/05/20: Don't do this.
-    # elif app.logInited:
-        # print(s.rstrip()) # Happens only rarely.
-    elif newline:
-        app.logWaiting.append((s + '\n', color),)
     else:
-        app.logWaiting.append((s, color),)
+        app.logWaiting.append((s, color, newline),)
+    
 #@+node:ekr.20141107085700.4: *3* g.es_debug
 def es_debug(*args, **keys):
     '''
@@ -5613,14 +5612,14 @@ def log(s, fn=None):
         g.es_exception()
 #@+node:ekr.20080710101653.1: *3* g.pr
 # see: http://www.diveintopython.org/xml_processing/unicode.html
-pr_warning_given = False
 
 def pr(*args, **keys):
-    '''Print all non-keyword args, and put them to the log pane.
+    '''
+    Print all non-keyword args. This is a wrapper for the print statement.
+
     The first, third, fifth, etc. arg translated by g.translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
-    print_immediately = True or not app # True: good for debugging.
     # Compute the effective args.
     d = {'commas': False, 'newline': True, 'spaces': True}
     d = doKeywordArgs(keys, d)
@@ -5629,34 +5628,20 @@ def pr(*args, **keys):
         # Unit tests require sys.stdout.
     if sys.platform.lower().startswith('win'):
         encoding = 'ascii' # 2011/11/9.
-    elif hasattr(stdout, 'encoding') and stdout.encoding:
+    elif getattr(stdout, 'encoding', None):
         # sys.stdout is a TextIOWrapper with a particular encoding.
         encoding = stdout.encoding
     else:
         encoding = 'utf-8'
-    s = translateArgs(args, d) # Translates everything to unicode.
-    # Add a newline unless we are going to queue the message.
-    if newline and (print_immediately or app and app.logInited):
-        s = s + '\n'
-    if isPython3:
-        if encoding.lower() in ('utf-8', 'utf-16'):
-            s2 = s # There can be no problem.
-        else:
-            # Carefully convert s to the encoding.
-            s3 = toEncodedString(s, encoding=encoding, reportErrors=False)
-            s2 = toUnicode(s3, encoding=encoding, reportErrors=False)
-    else:
-        s2 = toEncodedString(s, encoding, reportErrors=False)
-    if print_immediately:
-        # Good for debugging: prints messages immediately.
-        stdout.write(s2)
-    else:
-        assert app
-        # Good for production: queues 'reading settings' until after signon.
-        if app.logInited and sys.stdout: # Bug fix: 2012/11/13.
-            stdout.write(s2)
-        else:
-            app.printWaiting.append(s2)
+    s = translateArgs(args, d)
+        # Translates everything to unicode.
+    func = g.toUnicode if g.isPython3 else g.toEncodedString
+    s = func(s, encoding=encoding, reportErrors=False)
+    if newline:
+        s += g.u('\n') if g.isPython3 else '\n'
+    # Python's print statement *can* handle unicode, but
+    # sitecustomize.py must have sys.setdefaultencoding('utf-8')
+    stdout.write(s)
 #@+node:ekr.20060221083356: *3* g.prettyPrintType
 def prettyPrintType(obj):
     # pylint: disable=no-member
