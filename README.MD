@@ -1,5 +1,6 @@
 
-The mark-point branch, to add the following enhancements:
+The [mark-point branch](https://github.com/leo-editor/leo-editor/tree/mark-point),
+to add the following enhancements:
 
 [#495: Add mark and point](https://github.com/leo-editor/leo-editor/issues/495)
 
