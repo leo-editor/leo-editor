@@ -2052,6 +2052,28 @@ class EditCommandsClass(BaseEditCommandsClass):
             if spot < i: spot = i
             elif spot > j: spot = j
         self.extendHelper(w, extend, spot, upOrDown=False)
+    #@+node:ekr.20150514063305.305: *5* ec.moveWithinLineHelper
+    def moveWithinLineHelper(self, event, spot, extend):
+        w = self.editWidget(event)
+        if not w:
+            return
+        # Bug fix: 2012/02/28: don't use the Qt end-line logic:
+        # it apparently does not work for wrapped lines.
+        if hasattr(w, 'leoMoveCursorHelper') and spot != 'end-line':
+            extend = extend or self.extendMode
+            w.leoMoveCursorHelper(kind=spot, extend=extend)
+        else:
+            s = w.getAllText()
+            ins = w.getInsertPoint()
+            i, j = g.getLine(s, ins)
+            if spot == 'start-line':
+                self.moveToHelper(event, i, extend=extend)
+            elif spot == 'end-line':
+                # Bug fix: 2011/11/13: Significant in external tests.
+                if g.match(s, j - 1, '\n'): j -= 1
+                self.moveToHelper(event, j, extend=extend)
+            else:
+                g.trace('can not happen: bad spot: %s' % spot)
     #@+node:ekr.20150514063305.289: *5* ec.setMoveCol
     def setMoveCol(self, w, spot):
         '''Set the column to which an up or down arrow will attempt to move.'''
@@ -2060,30 +2082,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.moveSpot = i
         self.moveCol = col
         self.moveSpotNode = p.v
-    #@+node:ekr.20150514063305.290: *4* ec.backToHome/ExtendSelection
-    @cmd('back-to-home')
-    def backToHome(self, event, extend=False):
-        '''
-        Smart home:
-        Position the point at the first non-blank character on the line,
-        or the start of the line if already there.
-        '''
-        w = self.editWidget(event)
-        if not w: return
-        s = w.getAllText()
-        ins = w.getInsertPoint()
-        if s:
-            i, j = g.getLine(s, ins)
-            i1 = i
-            while i < j and s[i] in (' \t'):
-                i += 1
-            if i == ins:
-                i = i1
-            self.moveToHelper(event, i, extend=extend)
-
-    @cmd('back-to-home-extend-selection')
-    def backToHomeExtendSelection(self, event):
-        self.backToHome(event, extend=True)
     #@+node:ekr.20150514063305.291: *4* ec.backToIndentation
     @cmd('back-to-indentation')
     def backToIndentation(self, event):
@@ -2383,28 +2381,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             j2 += 1
         if i2 > j2: return
         self.moveToHelper(event, i2 + 1, extend)
-    #@+node:ekr.20150514063305.305: *4* ec.moveWithinLineHelper
-    def moveWithinLineHelper(self, event, spot, extend):
-        w = self.editWidget(event)
-        if not w:
-            return
-        # Bug fix: 2012/02/28: don't use the Qt end-line logic:
-        # it apparently does not work for wrapped lines.
-        if hasattr(w, 'leoMoveCursorHelper') and spot != 'end-line':
-            extend = extend or self.extendMode
-            w.leoMoveCursorHelper(kind=spot, extend=extend)
-        else:
-            s = w.getAllText()
-            ins = w.getInsertPoint()
-            i, j = g.getLine(s, ins)
-            if spot == 'start-line':
-                self.moveToHelper(event, i, extend=extend)
-            elif spot == 'end-line':
-                # Bug fix: 2011/11/13: Significant in external tests.
-                if g.match(s, j - 1, '\n'): j -= 1
-                self.moveToHelper(event, j, extend=extend)
-            else:
-                g.trace('can not happen: bad spot: %s' % spot)
     #@+node:ekr.20150514063305.306: *4* ec.pages & helper
     @cmd('back-page')
     def backPage(self, event):
@@ -2696,6 +2672,30 @@ class EditCommandsClass(BaseEditCommandsClass):
     def endOfLineExtendSelection(self, event):
         '''Extend the selection by moving the cursor to the end of the line.'''
         self.moveWithinLineHelper(event, 'end-line', extend=True)
+    #@+node:ekr.20150514063305.290: *5* ec.backToHome/ExtendSelection
+    @cmd('back-to-home')
+    def backToHome(self, event, extend=False):
+        '''
+        Smart home:
+        Position the point at the first non-blank character on the line,
+        or the start of the line if already there.
+        '''
+        w = self.editWidget(event)
+        if not w: return
+        s = w.getAllText()
+        ins = w.getInsertPoint()
+        if s:
+            i, j = g.getLine(s, ins)
+            i1 = i
+            while i < j and s[i] in (' \t'):
+                i += 1
+            if i == ins:
+                i = i1
+            self.moveToHelper(event, i, extend=extend)
+
+    @cmd('back-to-home-extend-selection')
+    def backToHomeExtendSelection(self, event):
+        self.backToHome(event, extend=True)
     #@+node:ekr.20150514063305.316: *4* ec.words & helper
     @cmd('back-word')
     def backwardWord(self, event):
