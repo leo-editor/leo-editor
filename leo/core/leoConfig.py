@@ -31,7 +31,9 @@ class ParserBaseClass(object):
         # 'if','ifgui',
         'ignore',
         'menus', 'mode', 'menuat',
-        'openwith', 'outlinedata', 'page', 'popup',
+        'openwith', 'outlinedata',
+        # 'page',
+        'popup',
         'settings', 'shortcuts',
         ]
     # Keys are settings names, values are (type,value) tuples.
@@ -55,7 +57,6 @@ class ParserBaseClass(object):
             # A list of dicts containing 'name','shortcut','command' keys.
         # Keys are canonicalized names.
         self.dispatchDict = {
-            'abbrev':       self.doAbbrev, # New in 4.4.1 b2.
             'bool':         self.doBool,
             'buttons':      self.doButtons, # New in 4.4.4
             'color':        self.doColor,
@@ -64,8 +65,6 @@ class ParserBaseClass(object):
             'directory':    self.doDirectory,
             'enabledplugins': self.doEnabledPlugins,
             'font':         self.doFont,
-            # 'if':         self.doIf, # Removed in 5.2 b1.
-            # 'ifgui':      self.doIfGui,  # Removed in 4.4 b3.
             'ifenv':        self.doIfEnv, # New in 5.2 b1.
             'ifhostname':   self.doIfHostname,
             'ifplatform':   self.doIfPlatform,
@@ -80,9 +79,7 @@ class ParserBaseClass(object):
             'openwith':     self.doOpenWith, # New in 4.4.3 b1.
             'outlinedata':  self.doOutlineData, # New in 4.11.1.
             'path':         self.doPath,
-            'page':         self.doPage,
             'ratio':        self.doRatio,
-            # 'shortcut':   self.doShortcut, # Removed in 4.4.1 b1.
             'shortcuts':    self.doShortcuts,
             'string':       self.doString,
             'strings':      self.doStrings,
@@ -122,17 +119,6 @@ class ParserBaseClass(object):
         # Does not work at present because we are using a null Gui.
         g.blue(s)
     #@+node:ekr.20041120094940: *3* kind handlers (ParserBaseClass)
-    #@+node:ekr.20060608221203: *4* doAbbrev
-    def doAbbrev(self, p, kind, name, val):
-        d = {}
-        s = p.b
-        lines = g.splitLines(s)
-        for line in lines:
-            line = line.strip()
-            if line and not g.match(line, 0, '#'):
-                name, val = self.parseAbbrevLine(line)
-                if name: d[val] = name
-        self.set(p, 'abbrev', 'abbrev', d)
     #@+node:ekr.20041120094940.1: *4* doBool
     def doBool(self, p, kind, name, val):
         if val in ('True', 'true', '1'):
@@ -236,6 +222,7 @@ class ParserBaseClass(object):
         # New in Leo 4.11: do not strip lines.
         data = self.getOutlineDataHelper(p)
         self.set(p, kind, name, data)
+        return 'skip'
     #@+node:ekr.20131114051702.16546: *5* getOutlineDataHelper
     def getOutlineDataHelper(self, p):
         c = self.c
@@ -297,13 +284,6 @@ class ParserBaseClass(object):
                 setKind = key
                 self.set(p, setKind, name, val)
                 if trace and val not in (None, 'none', 'None'): g.trace(key, val)
-    #@+node:ekr.20041120103933: *4* doIf (not supported)
-    if 0:
-        # Not supported. Use @ifenv instead.
-
-        def doIf(self, p, kind, name, val):
-            g.trace("'if' not supported yet")
-            return None
     #@+node:ekr.20150426034813.1: *4* doIfEnv
     def doIfEnv(self, p, kind, name, val):
         '''
@@ -325,20 +305,6 @@ class ParserBaseClass(object):
                 return None
         if trace: g.trace('disabled', name, env, aList[1:])
         return 'skip'
-    #@+node:ekr.20041121125416: *4* doIfGui (not supported)
-    if 0:
-        # This might work now that Leo supports the --gui command-line argument.
-        # However, it is not needed.
-
-        def doIfGui(self, p, kind, name, val):
-            if not g.app.gui or not g.app.gui.guiName():
-                s = '@if-gui has no effect: g.app.gui not defined yet'
-                g.warning(s)
-                return "skip"
-            elif g.app.gui.guiName().lower() == name.lower():
-                return None
-            else:
-                return "skip"
     #@+node:dan.20080410121257.2: *4* doIfHostname
     def doIfHostname(self, p, kind, name, val):
         '''
@@ -652,9 +618,6 @@ class ParserBaseClass(object):
         name = kind = 'openwithtable'
         self.openWithList.append(d)
         self.set(p, kind, name, self.openWithList)
-    #@+node:ekr.20041120104215.2: *4* doPage
-    def doPage(self, p, kind, name, val):
-        pass # Ignore @page this while parsing settings.
     #@+node:bobjack.20080324141020.4: *4* doPopup & helper
     def doPopup(self, p, kind, name, val):
         """
@@ -939,25 +902,6 @@ class ParserBaseClass(object):
         si = g.ShortcutInfo(kind=kind, nextMode=nextMode, pane=pane, stroke=stroke)
         if trace: g.trace('%25s %s' % (name, si))
         return name, si
-    #@+node:ekr.20060608222828: *4* parseAbbrevLine (ParserBaseClass)
-    def parseAbbrevLine(self, s):
-        '''Parse an abbreviation line:
-        command-name = abbreviation
-        return (command-name,abbreviation)
-        '''
-        i = j = g.skip_ws(s, 0)
-        i = g.skip_id(s, i, '-') # New in 4.4: allow Emacs-style shortcut names.
-        name = s[j: i]
-        if not name: return None, None
-        i = g.skip_ws(s, i)
-        if not g.match(s, i, '='): return None, None
-        i = g.skip_ws(s, i + 1)
-        val = s[i:].strip()
-        # Ignore comments after the shortcut.
-        i = val.find('#')
-        if i > -1: val = val[: i].strip()
-        if val: return name, val
-        else: return None, None
     #@+node:ekr.20041120094940.9: *3* set (ParserBaseClass)
     def set(self, p, kind, name, val):
         """Init the setting for name to val."""

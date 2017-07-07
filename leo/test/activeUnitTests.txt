@@ -5645,17 +5645,13 @@ first line
     line c
 last line
 #@+node:ekr.20071113145804.16: *5* @test helpForbindings
-# vr plugin not loaded externally.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    c.helpCommands.helpForBindings()
+vr = c.helpCommands.helpForBindings()
+if not vr:
+    self.skipTest('no vr plugin')
 #@+node:ekr.20071113145804.17: *5* @test helpForFindCommands
-# vr plugin not loaded externally.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    c.helpCommands.helpForFindCommands()
+vr = c.helpCommands.helpForFindCommands()
+if not vr:
+    self.skipTest('no vr plugin')
 #@+node:ekr.20061101121602.86: *5* @test back-char
 c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.87: *6* work
@@ -7160,6 +7156,75 @@ last line
 first line
 line 1
     line_24a a
+        line b
+line c
+last line
+#@+node:ekr.20170707091311.1: *5* @test finish-of-line
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20170707091311.2: *6* work
+first line
+line 1
+    line a   
+        line b
+line c
+last line
+#@+node:ekr.20170707091311.3: *6* before sel=3.12,3.12
+first line
+line 1
+    line a   
+        line b
+line c
+last line
+#@+node:ekr.20170707091311.4: *6* after sel=3.9,3.9
+first line
+line 1
+    line a   
+        line b
+line c
+last line
+#@+node:ekr.20170707091730.1: *5* @test finish-of-line (2)
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20170707091730.2: *6* work
+first line
+line 1
+    line a   
+        line b
+line c
+last line
+#@+node:ekr.20170707091730.3: *6* before sel=3.1,3.1
+first line
+line 1
+    line a   
+        line b
+line c
+last line
+#@+node:ekr.20170707091730.4: *6* after sel=3.9,3.9
+first line
+line 1
+    line a   
+        line b
+line c
+last line
+#@+node:ekr.20170707092257.1: *5* @test finish-of-line-extend-selection
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20170707092257.2: *6* work
+first line
+line 1
+    line a   
+        line b
+line c
+last line
+#@+node:ekr.20170707092257.3: *6* before sel=3.1,3.1
+first line
+line 1
+    line a   
+        line b
+line c
+last line
+#@+node:ekr.20170707092257.4: *6* after sel=3.1,3.9
+first line
+line 1
+    line a   
         line b
 line c
 last line
@@ -8996,6 +9061,98 @@ line 1
         line b
 line c
 last line
+#@+node:ekr.20170707085217.1: *5* @test start-of-line
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20170707085217.2: *6* work
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20170707085217.3: *6* before sel=3.10,3.10
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20170707085217.4: *6* after sel=3.4,3.4
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20170707091358.1: *5* @test start-of-line (2)
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20170707091358.2: *6* work
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20170707091358.3: *6* before sel=3.1,3.1
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20170707091358.4: *6* after sel=3.4,3.4
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20170707085319.1: *5* @test start-of-line-extend-selection
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20170707085319.2: *6* work
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20170707085319.3: *6* before sel=3.10,3.10
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20170707085319.4: *6* after sel=3.4,3.10
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20170707091814.1: *5* @test start-of-line-extend-selection (2)
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20170707091814.2: *6* work
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20170707091814.3: *6* before sel=3.1,3.1
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20170707091814.4: *6* after sel=3.1,3.4
+first line
+line 1
+    line a
+        line b
+line c
+last line
 #@+node:ekr.20061101121602.334: *5* @test tabify
 c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.335: *6* work
@@ -10080,10 +10237,9 @@ for val in (True,False):
     # assert word == 'targetWord', 'got: %s' % word
 
 #@+node:ekr.20071113145804.15: *5* @test helpForMinibuffer
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    c.helpCommands.helpForMinibuffer()
+vr = c.helpCommands.helpForMinibuffer()
+if not vr:
+    self.skipTest('no vr plugin')
 #@+node:ekr.20061104172236.6: *5* @test moveToHelper
 ec = c.editCommands ; w = c.frame.body.wrapper
 

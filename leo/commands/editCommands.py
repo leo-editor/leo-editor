@@ -22,26 +22,14 @@ class EditCommandsClass(BaseEditCommandsClass):
     '''Editing commands with little or no state.'''
     # pylint: disable=eval-used
     #@+others
-    #@+node:ekr.20150514063305.190: *3* ec.cache
-    @cmd('clear-all-caches')
-    def clearAllCaches(self, event=None):
-        '''Clear all of Leo's file caches.'''
-        c = self.c
-        if c.cacher:
-            c.cacher.clearAllCaches()
-
-    @cmd('clear-cache')
-    def clearCache(self, event=None):
-        '''Clear the outline's file cache.'''
-        c = self.c
-        if c.cacher:
-            c.cacher.clearCache()
-    #@+node:ekr.20150514063305.116: *3* ec.ctor
+    #@+node:ekr.20150514063305.116: *3* ec.__init__
     def __init__(self, c):
         '''Ctor for EditCommandsClass class.'''
         # pylint: disable=super-init-not-called
         self.c = c
         self.ccolumn = '0' # For comment column functions.
+        self.cursorStack = []
+            # Values are tuples, (i, j, ins)
         self.extendMode = False # True: all cursor move commands extend the selection.
         self.fillPrefix = '' # For fill prefix functions.
         self.fillColumn = 0 # For line centering.
@@ -70,6 +58,20 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.openBracketsList = cf.getString('open_flash_brackets') or '([{'
         self.closeBracketsList = cf.getString('close_flash_brackets') or ')]}'
         self.initBracketMatcher(c)
+    #@+node:ekr.20150514063305.190: *3* ec.cache
+    @cmd('clear-all-caches')
+    def clearAllCaches(self, event=None):
+        '''Clear all of Leo's file caches.'''
+        c = self.c
+        if c.cacher:
+            c.cacher.clearAllCaches()
+
+    @cmd('clear-cache')
+    def clearCache(self, event=None):
+        '''Clear the outline's file cache.'''
+        c = self.c
+        if c.cacher:
+            c.cacher.clearCache()
     #@+node:ekr.20160331191740.1: *3* ec.diff-marked-nodes
     @cmd('diff-marked-nodes')
     def diffMarkedNodes(self, event):
@@ -1981,7 +1983,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         spot:   The *new* insert point.
         '''
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
         c, p = self.c, self.c.p
         extend = extend or self.extendMode
         ins = w.getInsertPoint()
@@ -1991,8 +1993,8 @@ class EditCommandsClass(BaseEditCommandsClass):
             'spot=', spot, 'moveSpot', self.moveSpot)
         # Reset the move spot if needed.
         if self.moveSpot is None or p.v != self.moveSpotNode:
-            if trace: g.trace('no spot')
             self.setMoveCol(w, ins if extend else spot) # sets self.moveSpot.
+            if trace: g.trace('no spot: new moveCol', self.moveCol)
         elif extend:
             # 2011/05/20: Fix bug 622819
             # Ctrl-Shift movement is incorrect when there is an unexpected selection.
@@ -2026,7 +2028,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 # g.trace('plain forward/back move')
                 self.setMoveCol(w, spot) # sets self.moveSpot.
         if extend:
-            if trace: g.trace('range', spot, self.moveSpot)
+            if trace: g.trace('range', 'spot:', spot, 'moveSpot', self.moveSpot)
             if spot < self.moveSpot:
                 w.setSelectionRange(spot, self.moveSpot, insert=spot)
             else:
@@ -2059,19 +2061,32 @@ class EditCommandsClass(BaseEditCommandsClass):
             return
         # Bug fix: 2012/02/28: don't use the Qt end-line logic:
         # it apparently does not work for wrapped lines.
-        if hasattr(w, 'leoMoveCursorHelper') and spot != 'end-line':
+        spots = ('end-line', 'finish-line', 'start-line')
+        if hasattr(w, 'leoMoveCursorHelper') and spot not in spots:
             extend = extend or self.extendMode
             w.leoMoveCursorHelper(kind=spot, extend=extend)
         else:
             s = w.getAllText()
             ins = w.getInsertPoint()
             i, j = g.getLine(s, ins)
-            if spot == 'start-line':
+            line = s[i:j]
+            if spot == 'begin-line': # was 'start-line'
                 self.moveToHelper(event, i, extend=extend)
             elif spot == 'end-line':
                 # Bug fix: 2011/11/13: Significant in external tests.
                 if g.match(s, j - 1, '\n'): j -= 1
                 self.moveToHelper(event, j, extend=extend)
+            elif spot == 'finish-line':
+                if not line.isspace():
+                    if g.match(s, j - 1, '\n'): j -= 1
+                    while j >= 0 and s[j].isspace():
+                        j -= 1
+                self.moveToHelper(event, j, extend=extend)
+            elif spot == 'start-line': # new
+                if not line.isspace():
+                    while i < j and s[i].isspace():
+                        i += 1
+                self.moveToHelper(event, i, extend=extend)
             else:
                 g.trace('can not happen: bad spot: %s' % spot)
     #@+node:ekr.20150514063305.289: *5* ec.setMoveCol
@@ -2495,6 +2510,36 @@ class EditCommandsClass(BaseEditCommandsClass):
             if line.strip(): break
         w.setInsertPoint(ins) # Restore the original insert point.
         self.moveToHelper(event, i, extend)
+    #@+node:ekr.20170707093335.1: *4* ec.pushCursor and popCursor
+    @cmd('pop-cursor')
+    def popCursor(self, event=None):
+        '''Restore the node, selection range and insert point from the stack.'''
+        c = self.c
+        w = self.editWidget(event)
+        if w and self.cursorStack:
+            p, i, j, ins = self.cursorStack.pop()
+            if c.positionExists(p):
+                c.selectPosition(p)
+                c.redraw()
+                w.setSelectionRange(i, j, insert=ins)
+                c.bodyWantsFocus()
+            else:
+                g.es('invalid position', c.p.h)
+        elif not w:
+            g.es('no stacked cursor', color='blue')
+
+    @cmd('push-cursor')
+    def pushCursor(self, event=None):
+        '''Push the selection range and insert point on the stack.'''
+        c = self.c
+        w = self.editWidget(event)
+        if w:
+            p = c.p.copy()
+            i, j = w.getSelectionRange()
+            ins = w.getInsertPoint()
+            self.cursorStack.append((p, i, j, ins),)
+        else:
+            g.es('cursor not pushed', color='blue')
     #@+node:ekr.20150514063305.311: *4* ec.selectAllText
     @cmd('select-all')
     def selectAllText(self, event):
@@ -2653,25 +2698,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         if i > ins:
             self.moveToHelper(event, i, extend)
     #@+node:ekr.20150514063305.315: *4* ec.within lines
-    @cmd('beginning-of-line')
-    def beginningOfLine(self, event):
-        '''Move the cursor to the start of the line, extending the selection if in extend mode.'''
-        self.moveWithinLineHelper(event, 'start-line', extend=False)
-
-    @cmd('beginning-of-line-extend-selection')
-    def beginningOfLineExtendSelection(self, event):
-        '''Extend the selection by moving the cursor to the start of the line.'''
-        self.moveWithinLineHelper(event, 'start-line', extend=True)
-
-    @cmd('end-of-line')
-    def endOfLine(self, event):
-        '''Move the cursor to the end of the line, extending the selection if in extend mode.'''
-        self.moveWithinLineHelper(event, 'end-line', extend=False)
-
-    @cmd('end-of-line-extend-selection')
-    def endOfLineExtendSelection(self, event):
-        '''Extend the selection by moving the cursor to the end of the line.'''
-        self.moveWithinLineHelper(event, 'end-line', extend=True)
     #@+node:ekr.20150514063305.290: *5* ec.backToHome/ExtendSelection
     @cmd('back-to-home')
     def backToHome(self, event, extend=False):
@@ -2696,6 +2722,52 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('back-to-home-extend-selection')
     def backToHomeExtendSelection(self, event):
         self.backToHome(event, extend=True)
+    #@+node:ekr.20170707072347.1: *5* ec.beginningOfLine/ExtendSelection
+    @cmd('beginning-of-line')
+    def beginningOfLine(self, event):
+        '''Move the cursor to the first character of the line.'''
+        self.moveWithinLineHelper(event, 'begin-line', extend=False)
+
+    @cmd('beginning-of-line-extend-selection')
+    def beginningOfLineExtendSelection(self, event):
+        '''
+        Extend the selection by moving the cursor to the first character of the
+        line.
+        '''
+        self.moveWithinLineHelper(event, 'begin-line', extend=True)
+    #@+node:ekr.20170707072524.1: *5* ec.endOfLine/ExtendSelection
+    @cmd('end-of-line')
+    def endOfLine(self, event):
+        '''Move the cursor to the last character of the line.'''
+        self.moveWithinLineHelper(event, 'end-line', extend=False)
+
+    @cmd('end-of-line-extend-selection')
+    def endOfLineExtendSelection(self, event):
+        '''Extend the selection by moving the cursor to the last character of the line.'''
+        self.moveWithinLineHelper(event, 'end-line', extend=True)
+    #@+node:ekr.20170707072837.1: *5* ec.finishOfLine/ExtendSelection (new)
+    @cmd('finish-of-line')
+    def finishOfLine(self, event):
+        '''Move the cursor to the last character of the line.'''
+        self.moveWithinLineHelper(event, 'finish-line', extend=False)
+
+    @cmd('finish-of-line-extend-selection')
+    def finishOfLineExtendSelection(self, event):
+        '''Extend the selection by moving the cursor to the last character of the line.'''
+        self.moveWithinLineHelper(event, 'finish-line', extend=True)
+    #@+node:ekr.20170707072644.1: *5* ec.startOfLine/ExtendSelection (new)
+    @cmd('start-of-line')
+    def startOfLine(self, event):
+        '''Move the cursor to first non-blank character of the line.'''
+        self.moveWithinLineHelper(event, 'start-line', extend=False)
+
+    @cmd('start-of-line-extend-selection')
+    def startOfLineExtendSelection(self, event):
+        '''
+        Extend the selection by moving the cursor to first non-blank character
+        of the line.
+        '''
+        self.moveWithinLineHelper(event, 'start-line', extend=True)
     #@+node:ekr.20150514063305.316: *4* ec.words & helper
     @cmd('back-word')
     def backwardWord(self, event):

@@ -123,6 +123,8 @@ class Commands(object):
         # For outline navigation.
         self.navPrefix = g.u('') # Must always be a string.
         self.navTime = None
+        
+        self.sqlite_connection = None
     #@+node:ekr.20120217070122.10466: *5* c.initDebugIvars
     def initDebugIvars(self):
         '''Init Commander debugging ivars.'''
@@ -2240,7 +2242,7 @@ class Commands(object):
         c.init_error_dialogs()
         ok = False
         if fileName:
-            if fileName.endswith('.leo'):
+            if g.app.loadManager.isLeoFile(fileName):
                 c2 = g.openWithFileName(fileName, old_c=c)
                 if c2:
                     g.chdir(fileName)
@@ -2638,6 +2640,18 @@ class Commands(object):
         '''Sort the recent files list.'''
         c = self
         g.app.recentFilesManager.sortRecentFiles(c)
+    #@+node:vitalije.20170703115710.1: *6* c.editRecentFiles
+    @cmd('edit-recent-files')
+    def editRecentFiles(self, event=None):
+        '''Opens recent files list in a new node for editing.'''
+        c = self
+        g.app.recentFilesManager.editRecentFiles(c)
+    #@+node:vitalije.20170703115710.2: *6* c.writeEditedRecentFiles
+    @cmd('write-edited-recent-files')
+    def writeEditedRecentFiles(self, event=None):
+        '''Sort the recent files list.'''
+        c = self
+        g.app.recentFilesManager.writeEditedRecentFiles(c)
     #@+node:ekr.20031218072017.2838: *5* Read/Write submenu
     #@+node:ekr.20070806105721.1: *6* c.readAtAutoNodes
     @cmd('read-at-auto-nodes')
@@ -3286,10 +3300,11 @@ class Commands(object):
         if s is None:
             s = g.app.gui.getTextFromClipboard()
         pasteAsClone = not reassignIndices
-        if pasteAsClone and g.app.paste_c != c:
-            g.es('illegal paste-retaining-clones', color='red')
-            g.es('only valid in same outline.')
-            return
+        # commenting following block fixes #478
+        #if pasteAsClone and g.app.paste_c != c:
+        #    g.es('illegal paste-retaining-clones', color='red')
+        #    g.es('only valid in same outline.')
+        #    return
         undoType = 'Paste Node' if reassignIndices else 'Paste As Clone'
         c.endEditing()
         if not s or not c.canPasteOutline(s):
@@ -7293,7 +7308,7 @@ class Commands(object):
         if g.app.externalFilesController:
             return g.app.externalFilesController.check_overwrite(c, fn)
         else:
-            return True # Vitalije.
+            return True
     #@+node:ekr.20090103070824.9: *4* c.setFileTimeStamp
     def setFileTimeStamp(self, fn):
         '''Update the timestamp for fn..'''

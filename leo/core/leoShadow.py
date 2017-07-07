@@ -106,7 +106,9 @@ class ShadowController(object):
 
         Return True if theFile was changed.
         '''
-        trace = False and not g.unitTesting; verbose = False
+        trace = False and not g.unitTesting
+        verbose = False
+        c = self.c
         x = self
         exists = g.os_path_exists(fn)
         if exists:
@@ -115,7 +117,9 @@ class ShadowController(object):
             if s2 is None:
                 return False
             if s == s2:
-                if not g.unitTesting: g.es('unchanged:', fn)
+                report = c.config.getBool('report_unchanged_files', default=True)
+                if report and not g.unitTesting:
+                    g.es('unchanged:', fn)
                 return False
         # Issue warning if directory does not exist.
         theDir = g.os_path_dirname(fn)
