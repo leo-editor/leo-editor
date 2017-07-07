@@ -22,26 +22,14 @@ class EditCommandsClass(BaseEditCommandsClass):
     '''Editing commands with little or no state.'''
     # pylint: disable=eval-used
     #@+others
-    #@+node:ekr.20150514063305.190: *3* ec.cache
-    @cmd('clear-all-caches')
-    def clearAllCaches(self, event=None):
-        '''Clear all of Leo's file caches.'''
-        c = self.c
-        if c.cacher:
-            c.cacher.clearAllCaches()
-
-    @cmd('clear-cache')
-    def clearCache(self, event=None):
-        '''Clear the outline's file cache.'''
-        c = self.c
-        if c.cacher:
-            c.cacher.clearCache()
-    #@+node:ekr.20150514063305.116: *3* ec.ctor
+    #@+node:ekr.20150514063305.116: *3* ec.__init__
     def __init__(self, c):
         '''Ctor for EditCommandsClass class.'''
         # pylint: disable=super-init-not-called
         self.c = c
         self.ccolumn = '0' # For comment column functions.
+        self.cursorStack = []
+            # Values are tuples, (i, j, ins)
         self.extendMode = False # True: all cursor move commands extend the selection.
         self.fillPrefix = '' # For fill prefix functions.
         self.fillColumn = 0 # For line centering.
@@ -70,6 +58,20 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.openBracketsList = cf.getString('open_flash_brackets') or '([{'
         self.closeBracketsList = cf.getString('close_flash_brackets') or ')]}'
         self.initBracketMatcher(c)
+    #@+node:ekr.20150514063305.190: *3* ec.cache
+    @cmd('clear-all-caches')
+    def clearAllCaches(self, event=None):
+        '''Clear all of Leo's file caches.'''
+        c = self.c
+        if c.cacher:
+            c.cacher.clearAllCaches()
+
+    @cmd('clear-cache')
+    def clearCache(self, event=None):
+        '''Clear the outline's file cache.'''
+        c = self.c
+        if c.cacher:
+            c.cacher.clearCache()
     #@+node:ekr.20160331191740.1: *3* ec.diff-marked-nodes
     @cmd('diff-marked-nodes')
     def diffMarkedNodes(self, event):
@@ -2508,6 +2510,36 @@ class EditCommandsClass(BaseEditCommandsClass):
             if line.strip(): break
         w.setInsertPoint(ins) # Restore the original insert point.
         self.moveToHelper(event, i, extend)
+    #@+node:ekr.20170707093335.1: *4* ec.pushCursor and popCursor
+    @cmd('pop-cursor')
+    def popCursor(self, event=None):
+        '''Restore the node, selection range and insert point from the stack.'''
+        c = self.c
+        w = self.editWidget(event)
+        if w and self.cursorStack:
+            p, i, j, ins = self.cursorStack.pop()
+            if c.positionExists(p):
+                c.selectPosition(p)
+                c.redraw()
+                w.setSelectionRange(i, j, insert=ins)
+                c.bodyWantsFocus()
+            else:
+                g.es('invalid position', c.p.h)
+        elif not w:
+            g.es('no stacked cursor', color='blue')
+
+    @cmd('push-cursor')
+    def pushCursor(self, event=None):
+        '''Push the selection range and insert point on the stack.'''
+        c = self.c
+        w = self.editWidget(event)
+        if w:
+            p = c.p.copy()
+            i, j = w.getSelectionRange()
+            ins = w.getInsertPoint()
+            self.cursorStack.append((p, i, j, ins),)
+        else:
+            g.es('cursor not pushed', color='blue')
     #@+node:ekr.20150514063305.311: *4* ec.selectAllText
     @cmd('select-all')
     def selectAllText(self, event):
