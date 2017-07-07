@@ -279,13 +279,14 @@ def report (self,expected,got):
 #@+node:ekr.20100827183358.5957: *5* run
 def run(self):
     '''run an rst test.'''
-    import sys
-    # import leo.core.leoRst as leoRst
-    if not sys.platform.startswith('win') and g.isPython3: return
-    try:
-        import docutils
-    except ImportError:
-        return
+    # Individual tests now make these tests explicitly.
+        # import sys
+        # # import leo.core.leoRst as leoRst
+        # if not sys.platform.startswith('win') and g.isPython3: return
+        # try:
+            # import docutils
+        # except ImportError:
+            # return
 
     def clean(s):
         s = s.replace('\r','')
@@ -298,6 +299,9 @@ def run(self):
     root = source.firstChild()
     rc.preprocessTree(root)
     rc.processTree(p=root,ext='.html',toString=True,justOneFile=True)
+    assert rc.getOption(root, 'call_docutils'), 'call_docutils'
+    assert rc.source is not None, 'rc.source should not be None'
+    assert rc.stringOutput is not None, 'rc.stringOutput should not be None'
     rst = clean(rc.source)
     html = clean(rc.stringOutput)
     assert rst,'rst'
@@ -312,6 +316,7 @@ def run(self):
         html = html.replace('Docutils 0.7:','Docutils VER:')
         html = html.replace('Docutils 0.8:','Docutils VER:')
         html = html.replace('Docutils 0.10:','Docutils VER:')
+        html = html.replace('Docutils 0.12:','Docutils VER:')
     if expected.hasChildren():
         child1 = expected.firstChild()
         child2 = expected.firstChild().next()
@@ -5639,17 +5644,13 @@ first line
     line c
 last line
 #@+node:ekr.20071113145804.16: *5* @test helpForbindings
-# vr plugin not loaded externally.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    c.helpCommands.helpForBindings()
+vr = c.helpCommands.helpForBindings()
+if not vr:
+    self.skipTest('no vr plugin')
 #@+node:ekr.20071113145804.17: *5* @test helpForFindCommands
-# vr plugin not loaded externally.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    c.helpCommands.helpForFindCommands()
+vr = c.helpCommands.helpForFindCommands()
+if not vr:
+    self.skipTest('no vr plugin')
 #@+node:ekr.20061101121602.86: *5* @test back-char
 c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.87: *6* work
@@ -7154,6 +7155,75 @@ last line
 first line
 line 1
     line_24a a
+        line b
+line c
+last line
+#@+node:ekr.20170707091311.1: *5* @test finish-of-line
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20170707091311.2: *6* work
+first line
+line 1
+    line a   
+        line b
+line c
+last line
+#@+node:ekr.20170707091311.3: *6* before sel=3.12,3.12
+first line
+line 1
+    line a   
+        line b
+line c
+last line
+#@+node:ekr.20170707091311.4: *6* after sel=3.9,3.9
+first line
+line 1
+    line a   
+        line b
+line c
+last line
+#@+node:ekr.20170707091730.1: *5* @test finish-of-line (2)
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20170707091730.2: *6* work
+first line
+line 1
+    line a   
+        line b
+line c
+last line
+#@+node:ekr.20170707091730.3: *6* before sel=3.1,3.1
+first line
+line 1
+    line a   
+        line b
+line c
+last line
+#@+node:ekr.20170707091730.4: *6* after sel=3.9,3.9
+first line
+line 1
+    line a   
+        line b
+line c
+last line
+#@+node:ekr.20170707092257.1: *5* @test finish-of-line-extend-selection
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20170707092257.2: *6* work
+first line
+line 1
+    line a   
+        line b
+line c
+last line
+#@+node:ekr.20170707092257.3: *6* before sel=3.1,3.1
+first line
+line 1
+    line a   
+        line b
+line c
+last line
+#@+node:ekr.20170707092257.4: *6* after sel=3.1,3.9
+first line
+line 1
+    line a   
         line b
 line c
 last line
@@ -8990,6 +9060,98 @@ line 1
         line b
 line c
 last line
+#@+node:ekr.20170707085217.1: *5* @test start-of-line
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20170707085217.2: *6* work
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20170707085217.3: *6* before sel=3.10,3.10
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20170707085217.4: *6* after sel=3.4,3.4
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20170707091358.1: *5* @test start-of-line (2)
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20170707091358.2: *6* work
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20170707091358.3: *6* before sel=3.1,3.1
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20170707091358.4: *6* after sel=3.4,3.4
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20170707085319.1: *5* @test start-of-line-extend-selection
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20170707085319.2: *6* work
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20170707085319.3: *6* before sel=3.10,3.10
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20170707085319.4: *6* after sel=3.4,3.10
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20170707091814.1: *5* @test start-of-line-extend-selection (2)
+c.testManager.runEditCommandTest(p)
+#@+node:ekr.20170707091814.2: *6* work
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20170707091814.3: *6* before sel=3.1,3.1
+first line
+line 1
+    line a
+        line b
+line c
+last line
+#@+node:ekr.20170707091814.4: *6* after sel=3.1,3.4
+first line
+line 1
+    line a
+        line b
+line c
+last line
 #@+node:ekr.20061101121602.334: *5* @test tabify
 c.testManager.runEditCommandTest(p)
 #@+node:ekr.20061101121602.335: *6* work
@@ -10074,10 +10236,9 @@ for val in (True,False):
     # assert word == 'targetWord', 'got: %s' % word
 
 #@+node:ekr.20071113145804.15: *5* @test helpForMinibuffer
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    c.helpCommands.helpForMinibuffer()
+vr = c.helpCommands.helpForMinibuffer()
+if not vr:
+    self.skipTest('no vr plugin')
 #@+node:ekr.20061104172236.6: *5* @test moveToHelper
 ec = c.editCommands ; w = c.frame.body.wrapper
 
@@ -23222,14 +23383,21 @@ assert rst.underlines1 == '=+*^~"\'`-:><_', 'fail4 %s' % repr(rst.underlines1)
 assert rst.atAutoWriteUnderlines == '=+*^~"\'`-:><_', 'fail 5: %s' % (
     repr(rst.atAutoWriteUnderlines))
 #@+node:ekr.20100813100841.5850: *4* @test rst3Test @no-head
-s = g.findTestScript(c,'@common leoRst test code',warn=False)
-if s:
-    exec(s)
-    rst3Test(c,p)
+import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+s = g.findTestScript(c,'@common leoRst test code',warn=True)
+assert s, repr(p)
+exec(s)
+    # Defines rst3Test class.
+rst3Test(c,p)
 #@+node:ekr.20100813100841.5854: *5* source
 @language rest
 #@+node:ekr.20100813100841.5855: *6* @rst test.html
 @language rest
+@ @rst-options
+call_docutils=True
+@c
 
 #####
 Title
@@ -23785,14 +23953,21 @@ hr { /* EKR */
 </body>
 </html>
 #@+node:ekr.20100812172232.5801: *4* @test rst3Test default
-s = g.findTestScript(c,'@common leoRst test code',warn=False)
-if s:
-    exec(s)
-    rst3Test(c,p)
+import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+s = g.findTestScript(c,'@common leoRst test code',warn=True)
+assert s, repr(p)
+exec(s)
+    # Defines rst3Test class.
+rst3Test(c,p)
 #@+node:ekr.20100812182942.5805: *5* source
 @language rest
 #@+node:ekr.20100812182942.5807: *6* @rst test.html
 @language rest
+@ @rst-options
+call_docutils=True
+@c
 
 #####
 Title
@@ -24372,14 +24547,20 @@ This is the body of the section.</p>
 </body>
 </html>
 #@+node:ekr.20100813100841.5824: *4* @test rst3Test doc_only_mode (set in headline)
-# Skip test when running test dynamically.
-s = g.findTestScript(c,'@common leoRst test code',warn=False)
-if s:
-    exec(s)
-    rst3Test(c,p)
+import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+s = g.findTestScript(c,'@common leoRst test code',warn=True)
+assert s, repr(p)
+exec(s)
+    # Defines rst3Test class.
+rst3Test(c,p)
 #@+node:ekr.20100813100841.5839: *5* source
 @language rest
 #@+node:ekr.20100813100841.5840: *6* @rst test.html
+@ @rst-options
+call_docutils=True
+@c
 #####
 Title
 #####
@@ -24958,14 +25139,20 @@ This is the body of the section.</p>
 </body>
 </html>
 #@+node:ekr.20100813124317.5879: *4* @test rst3Test doc_only_mode (set in options doc part)
-# Skip test when running test dynamically.
-s = g.findTestScript(c,'@common leoRst test code',warn=False)
-if s:
-    exec(s)
-    rst3Test(c,p)
+import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+s = g.findTestScript(c,'@common leoRst test code',warn=True)
+assert s, repr(p)
+exec(s)
+    # Defines rst3Test class.
+rst3Test(c,p)
 #@+node:ekr.20100813124317.5880: *5* source
 @language rest
 #@+node:ekr.20100813124317.5881: *6* @rst test.html
+@ @rst-options
+call_docutils=True
+@c
 #####
 Title
 #####
@@ -25542,11 +25729,14 @@ This is the body of the section.</p>
 </body>
 </html>
 #@+node:ekr.20100827140832.5913: *4* @test rst3Test show_leo_directives=False
-# Skip test when running test dynamically.
-s = g.findTestScript(c,'@common leoRst test code',warn=False)
-if s:
-    exec(s)
-    rst3Test(c,p)
+import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+s = g.findTestScript(c,'@common leoRst test code',warn=True)
+assert s, repr(p)
+exec(s)
+    # Defines rst3Test class.
+rst3Test(c,p)
 #@+node:ekr.20100827140832.5917: *5* source
 @language rest
 #@+node:ekr.20100827140832.5918: *6* @rst test.html
@@ -25554,6 +25744,7 @@ if s:
 
 @ @rst-options
 show_leo_directives=False
+call_docutils=True
 @c
 
 #####
@@ -26137,15 +26328,21 @@ This is the body of the section.</p>
 #@+node:ekr.20120307070541.3937: *4* @test rst3Test unicode characters
 @first # -*- coding: utf-8 -*-
 
-# Skip test when running test dynamically.
-s = g.findTestScript(c,'@common leoRst test code',warn=False)
-if s:
-    exec(s)
-    rst3Test(c,p)
+import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+s = g.findTestScript(c,'@common leoRst test code',warn=True)
+assert s, repr(p)
+exec(s)
+    # Defines rst3Test class.
+rst3Test(c,p)
 #@+node:ekr.20120307070541.3941: *5* source
 @language rest
 #@+node:ekr.20120307070541.3942: *6* @rst test.html
 @language rest
+@ @rst-options
+call_docutils=True
+@c
 
 Test of unicode characters: ÀǋϢﻙ
 
@@ -26422,7 +26619,6 @@ hr { /* EKR */
 #@+node:ekr.20120307070541.3945: *5* got
 #@+node:ekr.20120307070541.3948: *6* rst
 .. rst3: filename: test.html
-
 
 Test of unicode characters: ÀǋϢﻙ
 

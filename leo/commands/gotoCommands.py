@@ -290,7 +290,12 @@ class GoToCommands(object):
     def get_delims(self, root):
         '''Return the deliminters in effect at root.'''
         c = self.c
-        d = c.scanAllDirectives(root)
+        old_target_language = c.target_language
+        try:
+            c.target_language = g.getLanguageAtPosition(c, root)
+            d = c.scanAllDirectives(root)
+        finally:
+            c.target_language = old_target_language
         delims1, delims2, delims3 = d.get('delims')
         # g.trace(root.h, d.get('language'), d.get('delims'))
         if delims1:
