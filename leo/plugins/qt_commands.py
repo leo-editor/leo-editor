@@ -3,6 +3,7 @@
 '''Leo's Qt-related commands defined by @g.command.'''
 import leo.core.leoGlobals as g
 import leo.core.leoColor as leoColor
+import leo.core.leoConfig as leoConfig
 from leo.core.leoQt import QtGui, QtWidgets
 #@+others
 #@+node:ekr.20110605121601.18000: ** init
@@ -166,20 +167,37 @@ def showColorWheel(event=None):
 @g.command('show-fonts')
 def showFonts(self, event=None):
     '''Open a tab in the log pane showing a font picker.'''
+    c = self.c; p = c.p
+    
     picker = QtWidgets.QFontDialog()
-    text = QtWidgets.QApplication.clipboard().text()
+    if p.h.startswith('@font'):
+        (name, family, weight, slant, size) = leoConfig.parseFont(p.b)
     try:
-        font = QtGui.QFont(text)
+        font = QtGui.QFont()
+        if family: font.setFamily(family)
+        font.setBold(weight)
+        font.setItalic(slant)
+        font.setPointSize(size)
         picker.setCurrentFont(font)
     except ValueError:
         pass
     if not picker.exec_():
         g.es("No font selected")
     else:
-        text = picker.selectedFont().family()
-        g.es('copied to clipboard:', text)
-        QtWidgets.QApplication.clipboard().setText(text)
-    
+        font = picker.selectedFont()
+        udata = c.undoer.beforeChangeNodeContents(p)
+        comments = [x for x in g.splitLines(p.b) if x.strip().startswith('#')]
+        
+        defs = [
+            '\n' if comments else '',
+            '%s_family = %s\n'%(name, font.family()),
+            '%s_weight = %s\n'%(name, 'bold' if font.bold() else 'normal'),
+            '%s_slant = %s\n'%(name, 'italic' if font.italic() else 'roman'),
+            '%s_size = %s\n'%(name, font.pointSizeF())
+        ]
+        
+        p.b = g.u('').join(comments + defs)
+        c.undoer.afterChangeNodeContents(p, 'change-font', udata)
 #@+node:ekr.20140918124632.17891: ** qt: style-reload
 @g.command('style-reload')
 def style_reload(event):
