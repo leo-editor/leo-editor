@@ -22,17 +22,15 @@ class ParserBaseClass(object):
     basic_types = [
         # Headlines have the form @kind name = var
         'bool', 'color', 'directory', 'int', 'ints',
-        'float', 'path', 'ratio', 'shortcut', 'string', 'strings']
+        'float', 'path', 'ratio', 'string', 'strings']
     control_types = [
-        'abbrev', 'buttons',
+        'buttons',
         'commands', 'data',
         'enabledplugins', 'font',
         'ifenv', 'ifhostname', 'ifplatform',
-        # 'if','ifgui',
         'ignore',
         'menus', 'mode', 'menuat',
         'openwith', 'outlinedata',
-        # 'page',
         'popup',
         'settings', 'shortcuts',
         ]
