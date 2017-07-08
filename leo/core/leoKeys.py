@@ -3331,6 +3331,9 @@ class KeyHandlerClass(object):
         trace = False and not g.unitTesting
         k = self
         # First, honor minibuffer bindings for all except user modes.
+        if state == 'input-shortcut':
+            k.handleInputShortcut(event, stroke)
+            return True
         if state in ('getArg', 'getFileName', 'full-command', 'auto-complete', 'vim-mode'):
             if k.handleMiniBindings(event, state, stroke):
                 return True
@@ -3376,6 +3379,32 @@ class KeyHandlerClass(object):
             else:
                 if trace: g.trace('No state handler for %s' % state)
             return True
+    #@+node:vitalije.20170708161511.1: *5* k.handleInputShortcut
+    _cmd_handle_input_pattern = re.compile(g.u('[A-Za-z0-9_\\-]+\\s*='))
+    def handleInputShortcut(self, event, stroke):
+        k = self; c = k.c; p = c.p
+        k.clearState()
+        if p.h.startswith(('@shortcuts', '@mode')):
+            # line of text in body
+            g.es('change line shortcut to', stroke)
+            w = c.frame.body
+            before, sel, after = w.getInsertLines()
+            m = k._cmd_handle_input_pattern.search(sel)
+            if not m:
+                g.es('malformed shortcut line', stroke, color='red')
+                return
+            sel = g.u('%s %s\n')%(m.group(0), stroke.s)
+            udata = c.undoer.beforeChangeNodeContents(p)
+            w.setSelectionAreas(before, sel, after)
+            c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
+            return
+        elif p.h.startswith(('@command', '@button')):
+            udata = c.undoer.beforeChangeNodeContents(p)
+            cmd = p.h.split(g.u('@key'),1)[0]
+            p.h = g.u('%s @key=%s')%(cmd, stroke.s)
+            c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
+        else:
+            g.es('not in settings node shortcut')
     #@+node:ekr.20091230094319.6240: *5* k.getPaneBinding
     def getPaneBinding(self, stroke, w):
         trace = False and not g.unitTesting
