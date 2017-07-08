@@ -199,7 +199,7 @@ def get_leo_data(source):
     """Return the root node for the specificed .leo file (path or file)"""
     parser = LeoReader()
     if g.os_path_isfile(source):
-        source = g.readFileIntoUnicodeString(source, 'utf-8')
+        source = g.readFileIntoEncodedString(source)
     parseString(source, parser)
     return parser.root
 
