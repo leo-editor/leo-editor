@@ -3398,6 +3398,7 @@ class LeoValues(npyscreen.TreeData):
     #@+node:ekr.20170619072048.1: *4* values.refresh_cache
     def refresh_cache(self):
         '''Update all cached values.'''
+        trace = False
         c = self.c
         self.n_refreshes += 1
         self.clear_cache()
@@ -3408,8 +3409,9 @@ class LeoValues(npyscreen.TreeData):
             n += 1
             p.moveToVisNext(c)
         self.last_len = n
-        g.trace('%3s vis: %3s generation: %s' % (
-            self.n_refreshes, n, c.frame.tree.generation))
+        if trace:
+            g.trace('%3s vis: %3s generation: %s' % (
+                self.n_refreshes, n, c.frame.tree.generation))
         return n
     #@-others
 #@+node:ekr.20170522081122.1: ** Wrapper classes
