@@ -1920,4 +1920,31 @@ class SettingsTreeParser(ParserBaseClass):
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
+def parseFont(b):
+    family = None
+    weight = None
+    slant = None
+    size = None
+    settings_name = None
+    for line in g.splitLines(b):
+        line = line.strip()
+        if line.startswith('#'): continue
+        i = line.find('=')
+        if i < 0: continue
+        name = line[:i].strip()
+        if name.endswith('_family'):
+            family = line[i+1:].strip()
+        elif name.endswith('_weight'):
+            weight = line[i+1:].strip()
+        elif name.endswith('_size'):
+            size = line[i+1:].strip()
+            try:
+                size = float(size)
+            except ValueError:
+                size = 12
+        elif name.endswith('_slant'):
+            slant = line[i+1:].strip()
+        if settings_name is None and name.endswith(('_family', '_slant', '_weight','_size')):
+            settings_name = name.rsplit('_', 1)[0]
+    return settings_name, family, weight == 'bold', slant in ('slant', 'italic'), size
 #@-leo
