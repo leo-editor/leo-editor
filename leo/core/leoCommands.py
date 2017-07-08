@@ -2314,6 +2314,7 @@ class Commands(object):
         c, p, u = self, self.p, self.undoer
         c.nodeConflictList = []
         fn = p.anyAtFileNodeName()
+        shouldDelete = (not g.SQLITE) or (c.sqlite_connection is None)
         if fn:
             b = u.beforeChangeTree(p)
             redraw_flag = True
@@ -2324,11 +2325,11 @@ class Commands(object):
             word = p.h[0: i]
             if word == '@auto':
                 # This includes @auto-*
-                p.deleteAllChildren()
+                if shouldDelete: p.deleteAllChildren()
                 # Fix #451: refresh-from-disk selects wrong node.
                 p = at.readOneAtAutoNode(fn, p)
             elif word in ('@thin', '@file'):
-                p.deleteAllChildren()
+                if shouldDelete: p.deleteAllChildren()
                 at.read(p, force=True)
             elif word in ('@clean',):
                 # Wishlist 148: use @auto parser if the node is empty.
@@ -2338,10 +2339,10 @@ class Commands(object):
                     # Fix #451: refresh-from-disk selects wrong node.
                     p = at.readOneAtAutoNode(fn, p)
             elif word == '@shadow ':
-                p.deleteAllChildren()
+                if shouldDelete: p.deleteAllChildren()
                 at.read(p, force=True, atShadow=True)
             elif word == '@edit':
-                p.deleteAllChildren()
+                if shouldDelete: p.deleteAllChildren()
                 at.readOneAtEditNode(fn, p)
             else:
                 g.es_print('can not refresh from disk\n%r' % p.h)
