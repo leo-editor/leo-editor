@@ -7316,6 +7316,11 @@ class Commands(object):
         # c = self
         if g.app.externalFilesController:
             g.app.externalFilesController.set_time(fn)
+    #@+node:vitalije.20170708172746.1: *3* c.editShortcut
+    @cmd('edit-shortcut')
+    def editShortcut(self, event=None):
+        self.k.setState('input-shortcut', 'input-shortcut')
+        g.es('Press desired key combination')
     #@+node:bobjack.20080509080123.2: *3* c.universalCallback & minibufferCallback
     def universalCallback(self, source_c, function):
         """Create a universal command callback.
