@@ -1978,7 +1978,9 @@ class CoreLog (leoFrame.LeoLog):
             pass
         elif w:
             assert isinstance(w, npyscreen. MultiLineEditable), repr(w)
-            w.values.append(s)
+            # Fix bugs #504 and #508:
+            for line in s.split('\n'):
+                w.values.append(line)
             w.update()
         else:
             pass
