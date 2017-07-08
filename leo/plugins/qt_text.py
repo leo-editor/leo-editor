@@ -1395,10 +1395,16 @@ class QTextEditWrapper(QTextMixin):
         w = self.widget
         tc = QtGui.QTextCursor
         d = {
+            'begin-line': tc.StartOfLine, # Was start-line
+            'down': tc.Down,
+            'end': tc.End,
+            'end-line': tc.EndOfLine, # Not used.
             'exchange': True, # Dummy.
-            'down': tc.Down, 'end': tc.End, 'end-line': tc.EndOfLine,
-            'home': tc.Start, 'left': tc.Left, 'page-down': tc.Down,
-            'page-up': tc.Up, 'right': tc.Right, 'start-line': tc.StartOfLine,
+            'home': tc.Start,
+            'left': tc.Left,
+            'page-down': tc.Down,
+            'page-up': tc.Up,
+            'right': tc.Right, 
             'up': tc.Up,
         }
         kind = kind.lower()

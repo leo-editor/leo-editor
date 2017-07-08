@@ -2,6 +2,9 @@
 .. @+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 .. @+all
 .. @+node:ekr.20170707035417.1: ** Leo 5.6
+.. @+node:ekr.20170619165453.1: ** Branch: string-gui
+Attempt to run all unit tests without using Qt gui code.
+All gui-related code will be simulated with the StringTextWrapper class.
 .. @-all
 .. @@nosearch
 .. @@killbeautify

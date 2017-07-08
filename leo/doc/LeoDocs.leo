@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1593,7 +1593,9 @@
 <v t="ekr.20170707034853.44"><vh>Added edit-recent-files and write-edited-recent-files commands</vh></v>
 <v t="ekr.20170707034853.45"><vh>Added goto-any-clone command</vh></v>
 <v t="ekr.20170707034853.46"><vh>Added listen-to-log and other commands</vh></v>
+<v t="ekr.20170708002743.1"><vh>Added push-cursor and pop-cursor</vh></v>
 <v t="ekr.20170707034853.47"><vh>Added show-color-names command</vh></v>
+<v t="ekr.20170708002922.1"><vh>Added start-of-line/finish-line commands</vh></v>
 <v t="ekr.20170707034853.48"><vh>Added toggle-auto-edit command</vh>
 <v t="ekr.20170707034853.49"><vh>efc.toggleAtAutoAtEdit &amp; helpers</vh>
 <v t="ekr.20170707034853.50"><vh>efc.toAtAuto</vh></v>
@@ -23865,7 +23867,16 @@ All changes made to leo/modes/md.py
 </t>
 <t tx="ekr.20170707034853.9">https://github.com/leo-editor/leo-editor/issues/438
 </t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170708002743.1">push-cursor     Saves the location of the cursor, including node(position) on a stack.
+pop-cursor      Restores the cursor position from the stack.
+</t>
+<t tx="ekr.20170708002922.1">start-of-line   Puts cursor at first non-blank character of the line.
+finish-line     Puts the cursor at before the last non-blank character of the line.
+
+The finish-line-extend-selection and start-of-line-extend-selection commands move the cursor and extend the selection range.
+
+The finish-line command could put the cursor after the last non-blank character of the line, but that's pretty much what end-of-line does.</t>
+<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
