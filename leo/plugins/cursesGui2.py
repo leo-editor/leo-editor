@@ -1062,6 +1062,7 @@ class LeoCursesGui(leoGui.LeoGui):
         # Link and check...
         assert isinstance(self.log, CoreLog), repr(self.log)
         self.log.widget = w
+        w.firstScroll()
         assert isinstance(c.frame, leoFrame.LeoFrame), repr(c.frame)
             # The generic LeoFrame class
         c.frame.log.wrapper = wrapper = LogWrapper(c, 'log', w)
@@ -1957,7 +1958,7 @@ class CoreLog (leoFrame.LeoLog):
     #@+node:ekr.20170420041119.1: *4* CLog.finishCreate
     def finishCreate(self):
         '''CoreLog.finishCreate.'''
-        pass
+
     #@+node:ekr.20170513183826.1: *4* CLog.isLogWidget
     def isLogWidget(self, w):
         return w == self or w in list(self.contentsDict.values())
@@ -1978,9 +1979,13 @@ class CoreLog (leoFrame.LeoLog):
             pass
         elif w:
             assert isinstance(w, npyscreen. MultiLineEditable), repr(w)
-            # Fix bugs #504 and #508:
-            for line in s.split('\n'):
+            # Fix #508: Part 1: Handle newlines correctly.
+            lines = s.split('\n')
+            for line in lines:
                 w.values.append(line)
+            # Fix #508: Part 2: Scroll last line into view.
+            w.cursor_line += len(lines)
+            w.start_display_at += len(lines)
             w.update()
         else:
             pass
@@ -2610,6 +2615,14 @@ class LeoLog (npyscreen.MultiLineEditable):
             ord('e'):           self.h_edit_cursor_line_value,
         }
         # dump_handlers(self)
+    #@+node:ekr.20170708181422.1: *4* LeoLog.firstScroll
+    def firstScroll(self):
+        '''Scroll the log pane so the last lines are in view.'''
+        # Fix #508: Part 0.
+        n = len(self.values)
+        self.cursor_line = max(0, n-2)
+        self.start_display_at = max(0, n - len(self._my_widgets))
+        self.update()   
     #@-others
 #@+node:ekr.20170507194035.1: *3* class LeoForm (npyscreen.Form)
 class LeoForm (npyscreen.Form):
