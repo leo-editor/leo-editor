@@ -1851,7 +1851,7 @@ class LocalConfigManager(object):
         if g.unitTesting:
             pass # print(''.join(result))
         else:
-            g.es('', ''.join(result), tabName='Settings')
+            g.es_print('', ''.join(result), tabName='Settings')
     #@+node:ekr.20120215072959.12475: *3* c.config.set
     def set(self, p, kind, name, val):
         """Init the setting for name to val."""

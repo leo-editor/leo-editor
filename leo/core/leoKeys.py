@@ -2740,7 +2740,7 @@ class KeyHandlerClass(object):
         result.append('***** Plain Keys...\n')
         self.printBindingsHelper(result, data, prefix=None)
         if not g.unitTesting:
-            g.es('', ''.join(result), tabName=tabName)
+            g.es_print('', ''.join(result), tabName=tabName)
         k.showStateAndMode()
         return result # for unit test.
     #@+node:ekr.20061031131434.120: *5* printBindingsHelper
