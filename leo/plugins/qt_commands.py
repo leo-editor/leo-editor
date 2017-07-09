@@ -172,6 +172,8 @@ def showFonts(self, event=None):
     picker = QtWidgets.QFontDialog()
     if p.h.startswith('@font'):
         (name, family, weight, slant, size) = leoConfig.parseFont(p.b)
+    else:
+        name, family, weight, slant, size = None, None, False, False, 12
     try:
         font = QtGui.QFont()
         if family: font.setFamily(family)
