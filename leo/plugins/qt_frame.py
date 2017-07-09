@@ -201,6 +201,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def createLogPane(self, parent):
         '''Create all parts of Leo's log pane.'''
         # Create widgets.
+        c = self.leo_c
         logFrame = self.createFrame(parent, 'logFrame',
             vPolicy=QtWidgets.QSizePolicy.Minimum)
         innerFrame = self.createFrame(logFrame, 'logInnerFrame',
@@ -218,7 +219,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Find tab.
         findTab = QtWidgets.QWidget()
         findTab.setObjectName('findTab')
-        tabWidget.addTab(findScrollArea, 'Find')
+        # Fix #516:
+        if c.config.getBool('minibuffer-find-mode', default=False):
+            tabWidget.addTab(findScrollArea, 'Find')
         # Do this later, in LeoFind.finishCreate
         self.findScrollArea = findScrollArea
         self.findTab = findTab
@@ -233,6 +236,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20131118172620.16858: *6* dw.finishCreateLogPane
     def finishCreateLogPane(self):
         '''It's useful to create this late, because c.config is now valid.'''
+        # self.findTab exists even if there is not Find tab in the Log pane.
+        assert self.findTab
         self.createFindTab(self.findTab, self.findScrollArea)
         self.findScrollArea.setWidget(self.findTab)
     #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout
