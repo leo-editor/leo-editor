@@ -2342,7 +2342,7 @@ class Commands(object):
                 if shouldDelete: p.deleteAllChildren()
                 at.read(p, force=True, atShadow=True)
             elif word == '@edit':
-                p.deleteAllChildren()
+                if shouldDelete: p.deleteAllChildren()
                 at.readOneAtEditNode(fn, p)
             else:
                 g.es_print('can not refresh from disk\n%r' % p.h)
