@@ -3393,6 +3393,13 @@ class KeyHandlerClass(object):
             udata = c.undoer.beforeChangeNodeContents(p)
             w.setSelectionAreas(before, sel, after)
             c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
+            w.onBodyChanged('change shortcut')
+            cmdname = m.group(0).rstrip('= ')
+            cmdfunc = c.commandsDict.get(cmdname)
+            
+            if cmdfunc:
+                k.bindKey('all', stroke, cmdfunc, cmdname)
+                g.es('bound', stroke, 'to command', cmdname)
             return
         elif p.h.startswith(('@command', '@button')):
             udata = c.undoer.beforeChangeNodeContents(p)
