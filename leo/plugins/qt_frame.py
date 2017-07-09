@@ -220,7 +220,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
         findTab = QtWidgets.QWidget()
         findTab.setObjectName('findTab')
         # Fix #516:
-        if c.config.getBool('minibuffer-find-mode', default=False):
+        use_minibuffer = c.config.getBool('minibuffer-find-mode', default=False)
+        use_dialog = c.config.getBool('use_find_dialog', default=False)
+        if not use_minibuffer and not use_dialog:
             tabWidget.addTab(findScrollArea, 'Find')
         # Do this later, in LeoFind.finishCreate
         self.findScrollArea = findScrollArea
