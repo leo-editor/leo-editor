@@ -7319,8 +7319,13 @@ class Commands(object):
     #@+node:vitalije.20170708172746.1: *3* c.editShortcut
     @cmd('edit-shortcut')
     def editShortcut(self, event=None):
-        self.k.setState('input-shortcut', 'input-shortcut')
-        g.es('Press desired key combination')
+        k = self.k
+        if k.isEditShortcutSensible():
+            self.k.setState('input-shortcut', 'input-shortcut')
+            g.es('Press desired key combination')
+        else:
+            g.es('No possible shortcut in selected body line/headline')
+            g.es('Select @button, @command, @shortcuts or @mode node and run it again.')
     #@+node:bobjack.20080509080123.2: *3* c.universalCallback & minibufferCallback
     def universalCallback(self, source_c, function):
         """Create a universal command callback.
