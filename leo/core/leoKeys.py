@@ -3380,19 +3380,15 @@ class KeyHandlerClass(object):
                 if trace: g.trace('No state handler for %s' % state)
             return True
     #@+node:vitalije.20170708161511.1: *5* k.handleInputShortcut
-    _cmd_handle_input_pattern = re.compile(g.u('[A-Za-z0-9_\\-]+\\s*='))
     def handleInputShortcut(self, event, stroke):
         k = self; c = k.c; p = c.p
         k.clearState()
         if p.h.startswith(('@shortcuts', '@mode')):
             # line of text in body
-            g.es('change line shortcut to', stroke)
             w = c.frame.body
             before, sel, after = w.getInsertLines()
             m = k._cmd_handle_input_pattern.search(sel)
-            if not m:
-                g.es('malformed shortcut line', stroke, color='red')
-                return
+            assert m # edit-shortcut was invoked on a malformed body line
             sel = g.u('%s %s\n')%(m.group(0), stroke.s)
             udata = c.undoer.beforeChangeNodeContents(p)
             w.setSelectionAreas(before, sel, after)
@@ -3404,7 +3400,23 @@ class KeyHandlerClass(object):
             p.h = g.u('%s @key=%s')%(cmd, stroke.s)
             c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
         else:
-            g.es('not in settings node shortcut')
+            # this should never happen
+            g.error('not in settings node shortcut')
+    #@+node:vitalije.20170709151653.1: *6* k.isInShortcutBodyLine
+    _cmd_handle_input_pattern = re.compile(g.u('[A-Za-z0-9_\\-]+\\s*='))
+    def isInShortcutBodyLine(self):
+        k = self; c = k.c; p = c.p
+        if p.h.startswith(('@shortcuts', '@mode')):
+            # line of text in body
+            w = c.frame.body
+            before, sel, after = w.getInsertLines()
+            m = k._cmd_handle_input_pattern.search(sel)
+            return bool(m)
+        return p.h.startswith(('@command', '@button'))
+    #@+node:vitalije.20170709151658.1: *6* k.isEditShortcutSensible
+    def isEditShortcutSensible(self):
+        k = self; c = k.c; p = c.p
+        return p.h.startswith(('@command', '@button')) or k.isInShortcutBodyLine()
     #@+node:ekr.20091230094319.6240: *5* k.getPaneBinding
     def getPaneBinding(self, stroke, w):
         trace = False and not g.unitTesting
