@@ -3395,20 +3395,23 @@ class KeyHandlerClass(object):
             c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
             w.onBodyChanged('change shortcut')
             cmdname = m.group(0).rstrip('= ')
-            cmdfunc = c.commandsDict.get(cmdname)
-            
-            if cmdfunc:
-                k.bindKey('all', stroke, cmdfunc, cmdname)
-                g.es('bound', stroke, 'to command', cmdname)
+            k.editShortcut_do_bind_helper(stroke, cmdname)
             return
         elif p.h.startswith(('@command', '@button')):
             udata = c.undoer.beforeChangeNodeContents(p)
             cmd = p.h.split(g.u('@key'),1)[0]
             p.h = g.u('%s @key=%s')%(cmd, stroke.s)
             c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
+            try:
+                cmdname = cmd.split(' ', 1)[1].strip()
+                k.editShortcut_do_bind_helper(stroke, cmdname)
+            except IndexError:
+                pass
+            return  
         else:
             # this should never happen
             g.error('not in settings node shortcut')
+            
     #@+node:vitalije.20170709151653.1: *6* k.isInShortcutBodyLine
     _cmd_handle_input_pattern = re.compile(g.u('[A-Za-z0-9_\\-]+\\s*='))
     def isInShortcutBodyLine(self):
@@ -3424,6 +3427,13 @@ class KeyHandlerClass(object):
     def isEditShortcutSensible(self):
         k = self; c = k.c; p = c.p
         return p.h.startswith(('@command', '@button')) or k.isInShortcutBodyLine()
+    #@+node:vitalije.20170709202924.1: *6* k.editShortcut_do_bind_helper
+    def editShortcut_do_bind_helper(self, stroke, cmdname):
+        k = self; c = k.c
+        cmdfunc = c.commandsDict.get(cmdname)
+        if cmdfunc:
+            k.bindKey('all', stroke, cmdfunc, cmdname)
+            g.es('bound', stroke, 'to command', cmdname)
     #@+node:ekr.20091230094319.6240: *5* k.getPaneBinding
     def getPaneBinding(self, stroke, w):
         trace = False and not g.unitTesting
