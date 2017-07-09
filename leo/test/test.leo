@@ -2,7 +2,7 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.52" body_secondary_ratio="0.65">
+<globals body_outline_ratio="0.52" body_secondary_ratio="0.42">
 	<global_window_position top="62" left="503" height="749" width="1249"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -11,11 +11,11 @@
 <vnodes>
 <v t="ekr.20070416075121"><vh>Startup</vh>
 <v t="ekr.20070224123943"><vh>@settings</vh>
+<v t="ekr.20071025193940"><vh>@@enabled-plugins</vh></v>
 <v t="ekr.20150618075639.1"><vh>@bool minibuffer_find_mode = False</vh></v>
-<v t="ekr.20150619071508.1"><vh>@bool use_find_dialog = False</vh></v>
+<v t="ekr.20170709101639.1"><vh>@bool use_find_dialog = True</vh></v>
 <v t="ekr.20140808094008.3549"><vh>@bool vim_mode = False</vh></v>
 <v t="ekr.20091230064146.1911"><vh>@data import_xml_tags</vh></v>
-<v t="ekr.20071025193940"><vh>@@enabled-plugins</vh></v>
 <v t="ekr.20160930062850.1"><vh>@int qweb_view_font_size = 30</vh></v>
 <v t="ekr.20110510110227.2439"><vh>Autocompleter settings</vh>
 <v t="ekr.20110512085154.2447"><vh>@bool auto_tab_complete = True</vh></v>
@@ -31,12 +31,6 @@
 <v t="ekr.20110521072459.2464"><vh>@@color keyword3_color = orange</vh></v>
 <v t="ekr.20110521072459.2465"><vh>@@color keyword4_color = pink</vh></v>
 </v>
-<v t="ekr.20120928143821.3161"><vh>Log pane colors</vh>
-<v t="ekr.20120928143821.3162"><vh>@@color log_error_color = orange</vh></v>
-<v t="ekr.20120928143821.3168"><vh>@@color log_warning_color = purple</vh></v>
-<v t="ekr.20120928143821.3163"><vh>@@color log_text_foreground_color = pink</vh></v>
-<v t="ekr.20120928143821.3164"><vh>@@color log_text_background_color = None</vh></v>
-</v>
 <v t="ekr.20100118190256.2015"><vh>Files &amp; directories</vh>
 <v t="ekr.20101009105505.2295"><vh>@bool put_expansion_bits_in_leo_files = False</vh></v>
 <v t="ekr.20080822153619.1"><vh>@string shadow_subdir = .leo/shadow</vh></v>
@@ -46,6 +40,12 @@
 <v t="ekr.20080729153237.2"><vh>@bool trace_gc = False</vh></v>
 <v t="ekr.20080729153237.3"><vh>@bool trace_gc_calls = False</vh></v>
 <v t="ekr.20080729153237.4"><vh>@bool trace_gc_verbose = False</vh></v>
+</v>
+<v t="ekr.20120928143821.3161"><vh>Log pane colors</vh>
+<v t="ekr.20120928143821.3162"><vh>@@color log_error_color = orange</vh></v>
+<v t="ekr.20120928143821.3168"><vh>@@color log_warning_color = purple</vh></v>
+<v t="ekr.20120928143821.3163"><vh>@@color log_text_foreground_color = pink</vh></v>
+<v t="ekr.20120928143821.3164"><vh>@@color log_text_background_color = None</vh></v>
 </v>
 <v t="ekr.20080529111617.1"><vh>Plugins</vh>
 <v t="ekr.20070723091227"><vh>http plugin</vh>
@@ -338,6 +338,7 @@
 </v>
 </v>
 <v t="ekr.20150618075639.1"></v>
+<v t="ekr.20170709101639.1"></v>
 <v t="ekr.20160420153653.1"><vh>Examples</vh>
 <v t="ekr.20131128115544.3333"><vh>display xml as Leo outlines using css</vh>
 <v t="ekr.20131106150237.3641"><vh>@button display css</vh>
@@ -1193,7 +1194,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="8"></t>
+<t tx="ekr.20070416075121" str_leo_pos="0,0,2"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -7829,7 +7830,6 @@ def selector(n):
 <t tx="ekr.20140808094008.3549">import meta
 print(meta)</t>
 <t tx="ekr.20150618075639.1"># Test #516</t>
-<t tx="ekr.20150619071508.1"></t>
 <t tx="ekr.20160401061847.1"></t>
 <t tx="ekr.20160401061847.10">@nocolor-node
 &lt;?xml version="1.0" standalone="no"?&gt;
@@ -9532,5 +9532,6 @@ $$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$
 &lt;/html&gt;
 </t>
 <t tx="ekr.20160930220426.1"></t>
+<t tx="ekr.20170709101639.1"># Test #516</t>
 </tnodes>
 </leo_file>
