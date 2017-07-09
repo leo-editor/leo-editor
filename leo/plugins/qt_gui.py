@@ -153,13 +153,14 @@ class LeoQtGui(leoGui.LeoGui):
         if not d:
             d = self.createFindDialog(c)
             self.globalFindDialog = d
-        d.setStyleSheet(c.active_stylesheet)
-        # Set the commander's FindTabManager.
-        assert g.app.globalFindTabManager
-        c.ftm = g.app.globalFindTabManager
-        fn = c.shortFileName() or 'Untitled'
-        d.setWindowTitle('Find in %s' % fn)
-        c.frame.top.find_status_edit.setText('')
+            # Fix #516: Do the following only once...
+            d.setStyleSheet(c.active_stylesheet)
+            # Set the commander's FindTabManager.
+            assert g.app.globalFindTabManager
+            c.ftm = g.app.globalFindTabManager
+            fn = c.shortFileName() or 'Untitled'
+            d.setWindowTitle('Find in %s' % fn)
+            c.frame.top.find_status_edit.setText('')
         c.inCommand = False
         if d.isVisible():
             # The order is important, and tricky.
@@ -178,7 +179,15 @@ class LeoQtGui(leoGui.LeoGui):
             # top is the DynamicWindow class.
         w = top.findTab
         top.find_status_label.setText('Find Status:')
+        
         d = QtWidgets.QDialog()
+        # Fix #516: Hide the dialog. Never delete it.
+        
+        def closeEvent(event, d=d):
+            event.ignore()
+            d.hide()
+
+        d.closeEvent = closeEvent
         layout = QtWidgets.QVBoxLayout(d)
         layout.addWidget(w)
         self.attachLeoIcon(d)
