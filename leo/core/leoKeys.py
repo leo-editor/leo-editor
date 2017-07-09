@@ -2740,7 +2740,7 @@ class KeyHandlerClass(object):
         result.append('***** Plain Keys...\n')
         self.printBindingsHelper(result, data, prefix=None)
         if not g.unitTesting:
-            g.es('', ''.join(result), tabName=tabName)
+            g.es_print('', ''.join(result), tabName=tabName)
         k.showStateAndMode()
         return result # for unit test.
     #@+node:ekr.20061031131434.120: *5* printBindingsHelper
@@ -2811,7 +2811,7 @@ class KeyHandlerClass(object):
                 data.append((s1, s2),)
         # This isn't perfect in variable-width fonts.
         lines = ['%*s %s\n' % (-n, z1, z2) for z1, z2 in data]
-        g.es('', ''.join(lines), tabName=tabName)
+        g.es_print('', ''.join(lines), tabName=tabName)
     #@+node:ekr.20061031131434.122: *4* k.repeatComplexCommand & helper
     @cmd('repeat-complex-command')
     def repeatComplexCommand(self, event):

@@ -6345,10 +6345,10 @@ def getDocStringForFunction(func):
     def get_defaults(func, i):
         args, varargs, keywords, defaults = inspect.getargspec(func)
         return defaults[i]
+
     # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
     # Minibuffer commands created by mod_scripting.py have no docstrings.
     # Do special cases first.
-
     s = ''
     if name(func) == 'minibufferCallback':
         func = get_defaults(func, 0)
@@ -6361,12 +6361,12 @@ def getDocStringForFunction(func):
             # Do a text scan for the function.
         if trace: g.trace('commonCallback.__doc__', repr(s))
     # Now the general cases.  Prefer __doc__ to docstring()
-    if not s and hasattr(func, 'docstring'):
-        s = func.docstring()
-        if trace: g.trace('func.docstring()', name(func), repr(s))
     if not s and hasattr(func, '__doc__'):
         s = func.__doc__
         if trace: g.trace('__doc__', name(func), repr(s))
+    if not s and hasattr(func, 'docstring'):
+        s = func.docstring
+        if trace: g.trace('func.docstring()', name(func), repr(s))
     if not s:
         if trace: g.trace('fail')
     return s
