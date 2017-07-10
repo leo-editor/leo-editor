@@ -2,6 +2,33 @@
 .. @+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 .. @+all
 .. @+node:ekr.20170707035417.1: ** Leo 5.6
+.. @+node:ekr.20170709020723.1: *3* Bugs
+.. @+node:ekr.20170707150222.1: *4* #505: Leo's read code must be rewritten 
+https://github.com/leo-editor/leo-editor/issues/505
+
+This was the new-read branch.
+
+The new code eliminates hidden time bombs when switching branches.
+
+Changes to read/write code:
+- at.writeAll writes files at most once.
+- at.write updates cache. Previously only at.read updated the cache!
+- at.deleteUnvisitedNodes no longer creates resurrected nodes.
+- at.new_createThinChild4 *always* updates headlines.
+- at.terminateBody just sets v.tempRoots.
+  It no longer calls at.indicateNodeChanged.
+- fc.handleNodeConflicts reports changed headlines differently.
+
+Changes to cacher code:
+- Added cacher.checkForChangedNodes.
+- Added tempRoots logic.
+- Added always_warn switch to cacher.reportIfNodeChanged.
+.. @+node:ekr.20170709020718.1: *4* #516: Content of find tab can disappear
+https://github.com/leo-editor/leo-editor/issues/516
+
+.. @+node:ekr.20170619165453.1: ** Branch: string-gui
+Attempt to run all unit tests without using Qt gui code.
+All gui-related code will be simulated with the StringTextWrapper class.
 .. @-all
 .. @@nosearch
 .. @@killbeautify

@@ -22,17 +22,15 @@ class ParserBaseClass(object):
     basic_types = [
         # Headlines have the form @kind name = var
         'bool', 'color', 'directory', 'int', 'ints',
-        'float', 'path', 'ratio', 'shortcut', 'string', 'strings']
+        'float', 'path', 'ratio', 'string', 'strings']
     control_types = [
-        'abbrev', 'buttons',
+        'buttons',
         'commands', 'data',
         'enabledplugins', 'font',
         'ifenv', 'ifhostname', 'ifplatform',
-        # 'if','ifgui',
         'ignore',
         'menus', 'mode', 'menuat',
         'openwith', 'outlinedata',
-        # 'page',
         'popup',
         'settings', 'shortcuts',
         ]
@@ -1853,11 +1851,11 @@ class LocalConfigManager(object):
         if g.unitTesting:
             pass # print(''.join(result))
         else:
-            g.es('', ''.join(result), tabName='Settings')
+            g.es_print('', ''.join(result), tabName='Settings')
     #@+node:ekr.20120215072959.12475: *3* c.config.set
     def set(self, p, kind, name, val):
         """Init the setting for name to val."""
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         if trace: g.trace(kind, name, val)
         c = self.c
         # Note: when kind is 'shortcut', name is a command name.
@@ -1922,4 +1920,31 @@ class SettingsTreeParser(ParserBaseClass):
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
+def parseFont(b):
+    family = None
+    weight = None
+    slant = None
+    size = None
+    settings_name = None
+    for line in g.splitLines(b):
+        line = line.strip()
+        if line.startswith('#'): continue
+        i = line.find('=')
+        if i < 0: continue
+        name = line[:i].strip()
+        if name.endswith('_family'):
+            family = line[i+1:].strip()
+        elif name.endswith('_weight'):
+            weight = line[i+1:].strip()
+        elif name.endswith('_size'):
+            size = line[i+1:].strip()
+            try:
+                size = float(size)
+            except ValueError:
+                size = 12
+        elif name.endswith('_slant'):
+            slant = line[i+1:].strip()
+        if settings_name is None and name.endswith(('_family', '_slant', '_weight','_size')):
+            settings_name = name.rsplit('_', 1)[0]
+    return settings_name, family, weight == 'bold', slant in ('slant', 'italic'), size
 #@-leo

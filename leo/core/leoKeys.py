@@ -2740,7 +2740,7 @@ class KeyHandlerClass(object):
         result.append('***** Plain Keys...\n')
         self.printBindingsHelper(result, data, prefix=None)
         if not g.unitTesting:
-            g.es('', ''.join(result), tabName=tabName)
+            g.es_print('', ''.join(result), tabName=tabName)
         k.showStateAndMode()
         return result # for unit test.
     #@+node:ekr.20061031131434.120: *5* printBindingsHelper
@@ -2811,7 +2811,7 @@ class KeyHandlerClass(object):
                 data.append((s1, s2),)
         # This isn't perfect in variable-width fonts.
         lines = ['%*s %s\n' % (-n, z1, z2) for z1, z2 in data]
-        g.es('', ''.join(lines), tabName=tabName)
+        g.es_print('', ''.join(lines), tabName=tabName)
     #@+node:ekr.20061031131434.122: *4* k.repeatComplexCommand & helper
     @cmd('repeat-complex-command')
     def repeatComplexCommand(self, event):
@@ -3331,6 +3331,9 @@ class KeyHandlerClass(object):
         trace = False and not g.unitTesting
         k = self
         # First, honor minibuffer bindings for all except user modes.
+        if state == 'input-shortcut':
+            k.handleInputShortcut(event, stroke)
+            return True
         if state in ('getArg', 'getFileName', 'full-command', 'auto-complete', 'vim-mode'):
             if k.handleMiniBindings(event, state, stroke):
                 return True
@@ -3376,6 +3379,61 @@ class KeyHandlerClass(object):
             else:
                 if trace: g.trace('No state handler for %s' % state)
             return True
+    #@+node:vitalije.20170708161511.1: *5* k.handleInputShortcut
+    def handleInputShortcut(self, event, stroke):
+        k = self; c = k.c; p = c.p
+        k.clearState()
+        if p.h.startswith(('@shortcuts', '@mode')):
+            # line of text in body
+            w = c.frame.body
+            before, sel, after = w.getInsertLines()
+            m = k._cmd_handle_input_pattern.search(sel)
+            assert m # edit-shortcut was invoked on a malformed body line
+            sel = g.u('%s %s\n')%(m.group(0), stroke.s)
+            udata = c.undoer.beforeChangeNodeContents(p)
+            w.setSelectionAreas(before, sel, after)
+            c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
+            w.onBodyChanged('change shortcut')
+            cmdname = m.group(0).rstrip('= ')
+            k.editShortcut_do_bind_helper(stroke, cmdname)
+            return
+        elif p.h.startswith(('@command', '@button')):
+            udata = c.undoer.beforeChangeNodeContents(p)
+            cmd = p.h.split(g.u('@key'),1)[0]
+            p.h = g.u('%s @key=%s')%(cmd, stroke.s)
+            c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
+            try:
+                cmdname = cmd.split(' ', 1)[1].strip()
+                k.editShortcut_do_bind_helper(stroke, cmdname)
+            except IndexError:
+                pass
+            return  
+        else:
+            # this should never happen
+            g.error('not in settings node shortcut')
+            
+    #@+node:vitalije.20170709151653.1: *6* k.isInShortcutBodyLine
+    _cmd_handle_input_pattern = re.compile(g.u('[A-Za-z0-9_\\-]+\\s*='))
+    def isInShortcutBodyLine(self):
+        k = self; c = k.c; p = c.p
+        if p.h.startswith(('@shortcuts', '@mode')):
+            # line of text in body
+            w = c.frame.body
+            before, sel, after = w.getInsertLines()
+            m = k._cmd_handle_input_pattern.search(sel)
+            return bool(m)
+        return p.h.startswith(('@command', '@button'))
+    #@+node:vitalije.20170709151658.1: *6* k.isEditShortcutSensible
+    def isEditShortcutSensible(self):
+        k = self; c = k.c; p = c.p
+        return p.h.startswith(('@command', '@button')) or k.isInShortcutBodyLine()
+    #@+node:vitalije.20170709202924.1: *6* k.editShortcut_do_bind_helper
+    def editShortcut_do_bind_helper(self, stroke, cmdname):
+        k = self; c = k.c
+        cmdfunc = c.commandsDict.get(cmdname)
+        if cmdfunc:
+            k.bindKey('all', stroke, cmdfunc, cmdname)
+            g.es('bound', stroke, 'to command', cmdname)
     #@+node:ekr.20091230094319.6240: *5* k.getPaneBinding
     def getPaneBinding(self, stroke, w):
         trace = False and not g.unitTesting

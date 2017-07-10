@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.64">
-	<global_window_position top="135" left="312" height="838" width="1245"/>
+<globals body_outline_ratio="0.84" body_secondary_ratio="0.64">
+	<global_window_position top="126" left="552" height="838" width="1245"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -233,7 +233,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -409,6 +409,43 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20071113145804.15"><vh>@test helpForMinibuffer</vh></v>
 <v t="ekr.20071113145804.17"><vh>@test helpForFindCommands</vh></v>
 <v t="ekr.20071113145804.16"><vh>@test helpForbindings</vh></v>
+</v>
+<v t="ekr.20170707085302.1"><vh>New edit commands</vh>
+<v t="ekr.20170707091311.1"><vh>@test finish-of-line</vh>
+<v t="ekr.20170707091311.2"><vh>work</vh></v>
+<v t="ekr.20170707091311.3"><vh>before sel=3.12,3.12</vh></v>
+<v t="ekr.20170707091311.4"><vh>after sel=3.9,3.9</vh></v>
+</v>
+<v t="ekr.20170707091730.1"><vh>@test finish-of-line (2)</vh>
+<v t="ekr.20170707091730.2"><vh>work</vh></v>
+<v t="ekr.20170707091730.3"><vh>before sel=3.1,3.1</vh></v>
+<v t="ekr.20170707091730.4"><vh>after sel=3.9,3.9</vh></v>
+</v>
+<v t="ekr.20170707092257.1"><vh>@test finish-of-line-extend-selection</vh>
+<v t="ekr.20170707092257.2"><vh>work</vh></v>
+<v t="ekr.20170707092257.3"><vh>before sel=3.1,3.1</vh></v>
+<v t="ekr.20170707092257.4"><vh>after sel=3.1,3.9</vh></v>
+</v>
+<v t="ekr.20170707085217.1"><vh>@test start-of-line</vh>
+<v t="ekr.20170707085217.2"><vh>work</vh></v>
+<v t="ekr.20170707085217.3"><vh>before sel=3.10,3.10</vh></v>
+<v t="ekr.20170707085217.4"><vh>after sel=3.4,3.4</vh></v>
+</v>
+<v t="ekr.20170707091358.1"><vh>@test start-of-line (2)</vh>
+<v t="ekr.20170707091358.2"><vh>work</vh></v>
+<v t="ekr.20170707091358.3"><vh>before sel=3.1,3.1</vh></v>
+<v t="ekr.20170707091358.4"><vh>after sel=3.4,3.4</vh></v>
+</v>
+<v t="ekr.20170707085319.1"><vh>@test start-of-line-extend-selection</vh>
+<v t="ekr.20170707085319.2"><vh>work</vh></v>
+<v t="ekr.20170707085319.3"><vh>before sel=3.10,3.10</vh></v>
+<v t="ekr.20170707085319.4"><vh>after sel=3.4,3.10</vh></v>
+</v>
+<v t="ekr.20170707091814.1"><vh>@test start-of-line-extend-selection (2)</vh>
+<v t="ekr.20170707091814.2"><vh>work</vh></v>
+<v t="ekr.20170707091814.3"><vh>before sel=3.1,3.1</vh></v>
+<v t="ekr.20170707091814.4"><vh>after sel=3.1,3.4</vh></v>
+</v>
 </v>
 </v>
 </vnodes>
@@ -10121,5 +10158,167 @@ And this.
 
 # found 7 nodes</t>
 <t tx="ekr.20170703052459.1"></t>
+<t tx="ekr.20170707085217.1">c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20170707085217.2">first line
+line 1
+    line a
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20170707085217.3">first line
+line 1
+    line a
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20170707085217.4">first line
+line 1
+    line a
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20170707085302.1"></t>
+<t tx="ekr.20170707085319.1">c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20170707085319.2">first line
+line 1
+    line a
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20170707085319.3">first line
+line 1
+    line a
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20170707085319.4">first line
+line 1
+    line a
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20170707091311.1">c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20170707091311.2">first line
+line 1
+    line a   
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20170707091311.3">first line
+line 1
+    line a   
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20170707091311.4">first line
+line 1
+    line a   
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20170707091358.1">c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20170707091358.2">first line
+line 1
+    line a
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20170707091358.3">first line
+line 1
+    line a
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20170707091358.4">first line
+line 1
+    line a
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20170707091730.1">c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20170707091730.2">first line
+line 1
+    line a   
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20170707091730.3">first line
+line 1
+    line a   
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20170707091730.4">first line
+line 1
+    line a   
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20170707091814.1">c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20170707091814.2">first line
+line 1
+    line a
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20170707091814.3">first line
+line 1
+    line a
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20170707091814.4">first line
+line 1
+    line a
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20170707092257.1">c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20170707092257.2">first line
+line 1
+    line a   
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20170707092257.3">first line
+line 1
+    line a   
+        line b
+line c
+last line
+</t>
+<t tx="ekr.20170707092257.4">first line
+line 1
+    line a   
+        line b
+line c
+last line
+</t>
 </tnodes>
 </leo_file>

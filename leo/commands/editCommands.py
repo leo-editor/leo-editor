@@ -22,26 +22,14 @@ class EditCommandsClass(BaseEditCommandsClass):
     '''Editing commands with little or no state.'''
     # pylint: disable=eval-used
     #@+others
-    #@+node:ekr.20150514063305.190: *3* ec.cache
-    @cmd('clear-all-caches')
-    def clearAllCaches(self, event=None):
-        '''Clear all of Leo's file caches.'''
-        c = self.c
-        if c.cacher:
-            c.cacher.clearAllCaches()
-
-    @cmd('clear-cache')
-    def clearCache(self, event=None):
-        '''Clear the outline's file cache.'''
-        c = self.c
-        if c.cacher:
-            c.cacher.clearCache()
-    #@+node:ekr.20150514063305.116: *3* ec.ctor
+    #@+node:ekr.20150514063305.116: *3* ec.__init__
     def __init__(self, c):
         '''Ctor for EditCommandsClass class.'''
         # pylint: disable=super-init-not-called
         self.c = c
         self.ccolumn = '0' # For comment column functions.
+        self.cursorStack = []
+            # Values are tuples, (i, j, ins)
         self.extendMode = False # True: all cursor move commands extend the selection.
         self.fillPrefix = '' # For fill prefix functions.
         self.fillColumn = 0 # For line centering.
@@ -70,6 +58,20 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.openBracketsList = cf.getString('open_flash_brackets') or '([{'
         self.closeBracketsList = cf.getString('close_flash_brackets') or ')]}'
         self.initBracketMatcher(c)
+    #@+node:ekr.20150514063305.190: *3* ec.cache
+    @cmd('clear-all-caches')
+    def clearAllCaches(self, event=None):
+        '''Clear all of Leo's file caches.'''
+        c = self.c
+        if c.cacher:
+            c.cacher.clearAllCaches()
+
+    @cmd('clear-cache')
+    def clearCache(self, event=None):
+        '''Clear the outline's file cache.'''
+        c = self.c
+        if c.cacher:
+            c.cacher.clearCache()
     #@+node:ekr.20160331191740.1: *3* ec.diff-marked-nodes
     @cmd('diff-marked-nodes')
     def diffMarkedNodes(self, event):
@@ -1886,7 +1888,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                     self.doPlainTab(s, i, tab_width, w)
             else:
                 self.doPlainTab(s, i, tab_width, w)
-    #@+node:ekr.20150514063305.280: *3* ec: line
+    #@+node:ekr.20150514063305.280: *3* ec: lines
     #@+node:ekr.20150514063305.281: *4* ec.flushLines (doesn't work)
     @cmd('flush-lines')
     def flushLines(self, event):
@@ -1970,7 +1972,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             w.setInsertPoint(ins + 1)
             self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.285: *3* ec: move cursor
-    #@+node:ekr.20150514063305.286: *4* ec. general helpers
+    #@+node:ekr.20150514063305.286: *4* ec. helpers
     #@+node:ekr.20150514063305.287: *5* ec.extendHelper
     def extendHelper(self, w, extend, spot, upOrDown=False):
         '''
@@ -1981,7 +1983,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         spot:   The *new* insert point.
         '''
         trace = False and not g.unitTesting
-        verbose = False
+        verbose = True
         c, p = self.c, self.c.p
         extend = extend or self.extendMode
         ins = w.getInsertPoint()
@@ -1991,8 +1993,8 @@ class EditCommandsClass(BaseEditCommandsClass):
             'spot=', spot, 'moveSpot', self.moveSpot)
         # Reset the move spot if needed.
         if self.moveSpot is None or p.v != self.moveSpotNode:
-            if trace: g.trace('no spot')
             self.setMoveCol(w, ins if extend else spot) # sets self.moveSpot.
+            if trace: g.trace('no spot: new moveCol', self.moveCol)
         elif extend:
             # 2011/05/20: Fix bug 622819
             # Ctrl-Shift movement is incorrect when there is an unexpected selection.
@@ -2026,7 +2028,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 # g.trace('plain forward/back move')
                 self.setMoveCol(w, spot) # sets self.moveSpot.
         if extend:
-            if trace: g.trace('range', spot, self.moveSpot)
+            if trace: g.trace('range', 'spot:', spot, 'moveSpot', self.moveSpot)
             if spot < self.moveSpot:
                 w.setSelectionRange(spot, self.moveSpot, insert=spot)
             else:
@@ -2052,6 +2054,148 @@ class EditCommandsClass(BaseEditCommandsClass):
             if spot < i: spot = i
             elif spot > j: spot = j
         self.extendHelper(w, extend, spot, upOrDown=False)
+    #@+node:ekr.20150514063305.305: *5* ec.moveWithinLineHelper
+    def moveWithinLineHelper(self, event, spot, extend):
+        w = self.editWidget(event)
+        if not w:
+            return
+        # Bug fix: 2012/02/28: don't use the Qt end-line logic:
+        # it apparently does not work for wrapped lines.
+        spots = ('end-line', 'finish-line', 'start-line')
+        if hasattr(w, 'leoMoveCursorHelper') and spot not in spots:
+            extend = extend or self.extendMode
+            w.leoMoveCursorHelper(kind=spot, extend=extend)
+        else:
+            s = w.getAllText()
+            ins = w.getInsertPoint()
+            i, j = g.getLine(s, ins)
+            line = s[i:j]
+            if spot == 'begin-line': # was 'start-line'
+                self.moveToHelper(event, i, extend=extend)
+            elif spot == 'end-line':
+                # Bug fix: 2011/11/13: Significant in external tests.
+                if g.match(s, j - 1, '\n'): j -= 1
+                self.moveToHelper(event, j, extend=extend)
+            elif spot == 'finish-line':
+                if not line.isspace():
+                    if g.match(s, j - 1, '\n'): j -= 1
+                    while j >= 0 and s[j].isspace():
+                        j -= 1
+                self.moveToHelper(event, j, extend=extend)
+            elif spot == 'start-line': # new
+                if not line.isspace():
+                    while i < j and s[i].isspace():
+                        i += 1
+                self.moveToHelper(event, i, extend=extend)
+            else:
+                g.trace('can not happen: bad spot: %s' % spot)
+    #@+node:ekr.20150514063305.317: *5* ec.moveWordHelper
+    def moveWordHelper(self, event, extend, forward, end=False, smart=False):
+        '''
+        Move the cursor to the next/previous word.
+        The cursor is placed at the start of the word unless end=True
+        '''
+        c = self.c
+        w = self.editWidget(event)
+        if not w:
+            return
+        c.widgetWantsFocusNow(w)
+        s = w.getAllText()
+        n = len(s)
+        i = w.getInsertPoint()
+        # pylint: disable=anomalous-backslash-in-string
+        alphanumeric_re = re.compile("\w")
+        whitespace_re = re.compile("\s")
+        simple_whitespace_re = re.compile("[ \t]")
+        #@+others
+        #@+node:ekr.20150514063305.318: *6* ec.moveWordHelper functions
+        def is_alphanumeric(c):
+            return alphanumeric_re.match(c) is not None
+
+        def is_whitespace(c):
+            return whitespace_re.match(c) is not None
+
+        def is_simple_whitespace(c):
+            return simple_whitespace_re.match(c) is not None
+
+        def is_line_break(c):
+            return is_whitespace(c) and not is_simple_whitespace(c)
+
+        def is_special(c):
+            return not is_alphanumeric(c) and not is_whitespace(c)
+
+        def seek_until_changed(i, match_function, step):
+            while 0 <= i < n and match_function(s[i]):
+                i += step
+            return i
+
+        def seek_word_end(i):
+            return seek_until_changed(i, is_alphanumeric, 1)
+
+        def seek_word_start(i):
+            return seek_until_changed(i, is_alphanumeric, -1)
+
+        def seek_simple_whitespace_end(i):
+            return seek_until_changed(i, is_simple_whitespace, 1)
+
+        def seek_simple_whitespace_start(i):
+            return seek_until_changed(i, is_simple_whitespace, -1)
+
+        def seek_special_end(i):
+            return seek_until_changed(i, is_special, 1)
+
+        def seek_special_start(i):
+            return seek_until_changed(i, is_special, -1)
+        #@-others
+        # g.trace('smart',smart,'forward',forward,'end',end)
+        if smart:
+            if forward:
+                if 0 <= i < n:
+                    if is_alphanumeric(s[i]):
+                        i = seek_word_end(i)
+                        i = seek_simple_whitespace_end(i)
+                    elif is_simple_whitespace(s[i]):
+                        i = seek_simple_whitespace_end(i)
+                    elif is_special(s[i]):
+                        i = seek_special_end(i)
+                        i = seek_simple_whitespace_end(i)
+                    else:
+                        i += 1 # e.g. for newlines
+            else:
+                i -= 1 # Shift cursor temporarily by -1 to get easy read access to the prev. char
+                if 0 <= i < n:
+                    if is_alphanumeric(s[i]):
+                        i = seek_word_start(i)
+                        # Do not seek further whitespace here
+                    elif is_simple_whitespace(s[i]):
+                        i = seek_simple_whitespace_start(i)
+                    elif is_special(s[i]):
+                        i = seek_special_start(i)
+                        # Do not seek further whitespace here
+                    else:
+                        i -= 1 # e.g. for newlines
+                i += 1
+        else:
+            if forward:
+                # Unlike backward-word moves, there are two options...
+                if end:
+                    while 0 <= i < n and not g.isWordChar(s[i]):
+                        i += 1
+                    while 0 <= i < n and g.isWordChar(s[i]):
+                        i += 1
+                else:
+                    while 0 <= i < n and g.isWordChar(s[i]):
+                        i += 1
+                    while 0 <= i < n and not g.isWordChar(s[i]):
+                        i += 1
+            else:
+                i -= 1
+                while 0 <= i < n and not g.isWordChar(s[i]):
+                    i -= 1
+                while 0 <= i < n and g.isWordChar(s[i]):
+                    i -= 1
+                i += 1 # 2015/04/30
+        self.moveToHelper(event, i, extend)
     #@+node:ekr.20150514063305.289: *5* ec.setMoveCol
     def setMoveCol(self, w, spot):
         '''Set the column to which an up or down arrow will attempt to move.'''
@@ -2097,6 +2241,41 @@ class EditCommandsClass(BaseEditCommandsClass):
         while i < j and s[i] in (' \t'):
             i += 1
         self.moveToHelper(event, i, extend=False)
+    #@+node:ekr.20150514063305.316: *4* ec.backward*/ExtendSelection
+    @cmd('back-word')
+    def backwardWord(self, event):
+        '''Move the cursor to the previous word.'''
+        self.moveWordHelper(event, extend=False, forward=False)
+
+    @cmd('back-word-extend-selection')
+    def backwardWordExtendSelection(self, event):
+        '''Extend the selection by moving the cursor to the previous word.'''
+        self.moveWordHelper(event, extend=True, forward=False)
+
+    @cmd('back-word-smart')
+    def backwardWordSmart(self, event):
+        '''Move the cursor to the beginning of the current or the end of the previous word.'''
+        self.moveWordHelper(event, extend=False, forward=False, smart=True)
+
+    @cmd('back-word-smart-extend-selection')
+    def backwardWordSmartExtendSelection(self, event):
+        '''Extend the selection by moving the cursor to the beginning of the current
+        or the end of the previous word.'''
+        self.moveWordHelper(event, extend=True, forward=False, smart=True)
+
+    #@+node:ekr.20170707072347.1: *4* ec.beginningOfLine/ExtendSelection
+    @cmd('beginning-of-line')
+    def beginningOfLine(self, event):
+        '''Move the cursor to the first character of the line.'''
+        self.moveWithinLineHelper(event, 'begin-line', extend=False)
+
+    @cmd('beginning-of-line-extend-selection')
+    def beginningOfLineExtendSelection(self, event):
+        '''
+        Extend the selection by moving the cursor to the first character of the
+        line.
+        '''
+        self.moveWithinLineHelper(event, 'begin-line', extend=True)
     #@+node:ekr.20150514063305.292: *4* ec.between lines & helper
     @cmd('next-line')
     def nextLine(self, event):
@@ -2253,6 +2432,16 @@ class EditCommandsClass(BaseEditCommandsClass):
                 # g.red('extend mode','on' if val else 'off'))
                 c.k.showStateAndMode()
             c.widgetWantsFocusNow(w)
+    #@+node:ekr.20170707072524.1: *4* ec.endOfLine/ExtendSelection
+    @cmd('end-of-line')
+    def endOfLine(self, event):
+        '''Move the cursor to the last character of the line.'''
+        self.moveWithinLineHelper(event, 'end-line', extend=False)
+
+    @cmd('end-of-line-extend-selection')
+    def endOfLineExtendSelection(self, event):
+        '''Extend the selection by moving the cursor to the last character of the line.'''
+        self.moveWithinLineHelper(event, 'end-line', extend=True)
     #@+node:ekr.20150514063305.299: *4* ec.exchangePointMark
     @cmd('exchange-point-mark')
     def exchangePointMark(self, event):
@@ -2341,6 +2530,47 @@ class EditCommandsClass(BaseEditCommandsClass):
             return i1, i
         else:
             return 0, 0
+    #@+node:ekr.20170707072837.1: *4* ec.finishOfLine/ExtendSelection (new)
+    @cmd('finish-of-line')
+    def finishOfLine(self, event):
+        '''Move the cursor to the last character of the line.'''
+        self.moveWithinLineHelper(event, 'finish-line', extend=False)
+
+    @cmd('finish-of-line-extend-selection')
+    def finishOfLineExtendSelection(self, event):
+        '''Extend the selection by moving the cursor to the last character of the line.'''
+        self.moveWithinLineHelper(event, 'finish-line', extend=True)
+    #@+node:ekr.20170707160947.1: *4* ec.forward*/ExtendSelection
+    @cmd('forward-end-word')
+    def forwardEndWord(self, event): # New in Leo 4.4.2
+        '''Move the cursor to the next word.'''
+        self.moveWordHelper(event, extend=False, forward=True, end=True)
+
+    @cmd('forward-end-word-extend-selection')
+    def forwardEndWordExtendSelection(self, event): # New in Leo 4.4.2
+        '''Extend the selection by moving the cursor to the next word.'''
+        self.moveWordHelper(event, extend=True, forward=True, end=True)
+
+    @cmd('forward-word')
+    def forwardWord(self, event):
+        '''Move the cursor to the next word.'''
+        self.moveWordHelper(event, extend=False, forward=True)
+
+    @cmd('forward-word-extend-selection')
+    def forwardWordExtendSelection(self, event):
+        '''Extend the selection by moving the cursor to the end of the next word.'''
+        self.moveWordHelper(event, extend=True, forward=True)
+        
+    @cmd('forward-word-smart')
+    def forwardWordSmart(self, event):
+        '''Move the cursor to the end of the current or the beginning of the next word.'''
+        self.moveWordHelper(event, extend=False, forward=True, smart=True)
+
+    @cmd('forward-word-smart-extend-selection')
+    def forwardWordSmartExtendSelection(self, event):
+        '''Extend the selection by moving the cursor to the end of the current
+        or the beginning of the next word.'''
+        self.moveWordHelper(event, extend=True, forward=True, smart=True)
     #@+node:ekr.20150514063305.303: *4* ec.movePastClose & helper
     @cmd('move-past-close')
     def movePastClose(self, event):
@@ -2383,28 +2613,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             j2 += 1
         if i2 > j2: return
         self.moveToHelper(event, i2 + 1, extend)
-    #@+node:ekr.20150514063305.305: *4* ec.moveWithinLineHelper
-    def moveWithinLineHelper(self, event, spot, extend):
-        w = self.editWidget(event)
-        if not w:
-            return
-        # Bug fix: 2012/02/28: don't use the Qt end-line logic:
-        # it apparently does not work for wrapped lines.
-        if hasattr(w, 'leoMoveCursorHelper') and spot != 'end-line':
-            extend = extend or self.extendMode
-            w.leoMoveCursorHelper(kind=spot, extend=extend)
-        else:
-            s = w.getAllText()
-            ins = w.getInsertPoint()
-            i, j = g.getLine(s, ins)
-            if spot == 'start-line':
-                self.moveToHelper(event, i, extend=extend)
-            elif spot == 'end-line':
-                # Bug fix: 2011/11/13: Significant in external tests.
-                if g.match(s, j - 1, '\n'): j -= 1
-                self.moveToHelper(event, j, extend=extend)
-            else:
-                g.trace('can not happen: bad spot: %s' % spot)
     #@+node:ekr.20150514063305.306: *4* ec.pages & helper
     @cmd('back-page')
     def backPage(self, event):
@@ -2519,6 +2727,36 @@ class EditCommandsClass(BaseEditCommandsClass):
             if line.strip(): break
         w.setInsertPoint(ins) # Restore the original insert point.
         self.moveToHelper(event, i, extend)
+    #@+node:ekr.20170707093335.1: *4* ec.pushCursor and popCursor
+    @cmd('pop-cursor')
+    def popCursor(self, event=None):
+        '''Restore the node, selection range and insert point from the stack.'''
+        c = self.c
+        w = self.editWidget(event)
+        if w and self.cursorStack:
+            p, i, j, ins = self.cursorStack.pop()
+            if c.positionExists(p):
+                c.selectPosition(p)
+                c.redraw()
+                w.setSelectionRange(i, j, insert=ins)
+                c.bodyWantsFocus()
+            else:
+                g.es('invalid position', c.p.h)
+        elif not w:
+            g.es('no stacked cursor', color='blue')
+
+    @cmd('push-cursor')
+    def pushCursor(self, event=None):
+        '''Push the selection range and insert point on the stack.'''
+        c = self.c
+        w = self.editWidget(event)
+        if w:
+            p = c.p.copy()
+            i, j = w.getSelectionRange()
+            ins = w.getInsertPoint()
+            self.cursorStack.append((p, i, j, ins),)
+        else:
+            g.es('cursor not pushed', color='blue')
     #@+node:ekr.20150514063305.311: *4* ec.selectAllText
     @cmd('select-all')
     def selectAllText(self, event):
@@ -2676,185 +2914,19 @@ class EditCommandsClass(BaseEditCommandsClass):
         i = min(i, len(s))
         if i > ins:
             self.moveToHelper(event, i, extend)
-    #@+node:ekr.20150514063305.315: *4* ec.within lines
-    @cmd('beginning-of-line')
-    def beginningOfLine(self, event):
-        '''Move the cursor to the start of the line, extending the selection if in extend mode.'''
+    #@+node:ekr.20170707072644.1: *4* ec.startOfLine/ExtendSelection (new)
+    @cmd('start-of-line')
+    def startOfLine(self, event):
+        '''Move the cursor to first non-blank character of the line.'''
         self.moveWithinLineHelper(event, 'start-line', extend=False)
 
-    @cmd('beginning-of-line-extend-selection')
-    def beginningOfLineExtendSelection(self, event):
-        '''Extend the selection by moving the cursor to the start of the line.'''
+    @cmd('start-of-line-extend-selection')
+    def startOfLineExtendSelection(self, event):
+        '''
+        Extend the selection by moving the cursor to first non-blank character
+        of the line.
+        '''
         self.moveWithinLineHelper(event, 'start-line', extend=True)
-
-    @cmd('end-of-line')
-    def endOfLine(self, event):
-        '''Move the cursor to the end of the line, extending the selection if in extend mode.'''
-        self.moveWithinLineHelper(event, 'end-line', extend=False)
-
-    @cmd('end-of-line-extend-selection')
-    def endOfLineExtendSelection(self, event):
-        '''Extend the selection by moving the cursor to the end of the line.'''
-        self.moveWithinLineHelper(event, 'end-line', extend=True)
-    #@+node:ekr.20150514063305.316: *4* ec.words & helper
-    @cmd('back-word')
-    def backwardWord(self, event):
-        '''Move the cursor to the previous word.'''
-        self.moveWordHelper(event, extend=False, forward=False)
-
-    @cmd('back-word-extend-selection')
-    def backwardWordExtendSelection(self, event):
-        '''Extend the selection by moving the cursor to the previous word.'''
-        self.moveWordHelper(event, extend=True, forward=False)
-
-    @cmd('forward-end-word')
-    def forwardEndWord(self, event): # New in Leo 4.4.2
-        '''Move the cursor to the next word.'''
-        self.moveWordHelper(event, extend=False, forward=True, end=True)
-
-    @cmd('forward-end-word-extend-selection')
-    def forwardEndWordExtendSelection(self, event): # New in Leo 4.4.2
-        '''Extend the selection by moving the cursor to the next word.'''
-        self.moveWordHelper(event, extend=True, forward=True, end=True)
-
-    @cmd('forward-word')
-    def forwardWord(self, event):
-        '''Move the cursor to the next word.'''
-        self.moveWordHelper(event, extend=False, forward=True)
-
-    @cmd('forward-word-extend-selection')
-    def forwardWordExtendSelection(self, event):
-        '''Extend the selection by moving the cursor to the end of the next word.'''
-        self.moveWordHelper(event, extend=True, forward=True)
-
-    @cmd('back-word-smart')
-    def backwardWordSmart(self, event):
-        '''Move the cursor to the beginning of the current or the end of the previous word.'''
-        self.moveWordHelper(event, extend=False, forward=False, smart=True)
-
-    @cmd('back-word-smart-extend-selection')
-    def backwardWordSmartExtendSelection(self, event):
-        '''Extend the selection by moving the cursor to the beginning of the current
-        or the end of the previous word.'''
-        self.moveWordHelper(event, extend=True, forward=False, smart=True)
-
-    @cmd('forward-word-smart')
-    def forwardWordSmart(self, event):
-        '''Move the cursor to the end of the current or the beginning of the next word.'''
-        self.moveWordHelper(event, extend=False, forward=True, smart=True)
-
-    @cmd('forward-word-smart-extend-selection')
-    def forwardWordSmartExtendSelection(self, event):
-        '''Extend the selection by moving the cursor to the end of the current
-        or the beginning of the next word.'''
-        self.moveWordHelper(event, extend=True, forward=True, smart=True)
-    #@+node:ekr.20150514063305.317: *5* ec.moveWordHelper
-    def moveWordHelper(self, event, extend, forward, end=False, smart=False):
-        '''
-        Move the cursor to the next/previous word.
-        The cursor is placed at the start of the word unless end=True
-        '''
-        c = self.c
-        w = self.editWidget(event)
-        if not w:
-            return
-        c.widgetWantsFocusNow(w)
-        s = w.getAllText()
-        n = len(s)
-        i = w.getInsertPoint()
-        # pylint: disable=anomalous-backslash-in-string
-        alphanumeric_re = re.compile("\w")
-        whitespace_re = re.compile("\s")
-        simple_whitespace_re = re.compile("[ \t]")
-        #@+others
-        #@+node:ekr.20150514063305.318: *6* ec.moveWordHelper functions
-        def is_alphanumeric(c):
-            return alphanumeric_re.match(c) is not None
-
-        def is_whitespace(c):
-            return whitespace_re.match(c) is not None
-
-        def is_simple_whitespace(c):
-            return simple_whitespace_re.match(c) is not None
-
-        def is_line_break(c):
-            return is_whitespace(c) and not is_simple_whitespace(c)
-
-        def is_special(c):
-            return not is_alphanumeric(c) and not is_whitespace(c)
-
-        def seek_until_changed(i, match_function, step):
-            while 0 <= i < n and match_function(s[i]):
-                i += step
-            return i
-
-        def seek_word_end(i):
-            return seek_until_changed(i, is_alphanumeric, 1)
-
-        def seek_word_start(i):
-            return seek_until_changed(i, is_alphanumeric, -1)
-
-        def seek_simple_whitespace_end(i):
-            return seek_until_changed(i, is_simple_whitespace, 1)
-
-        def seek_simple_whitespace_start(i):
-            return seek_until_changed(i, is_simple_whitespace, -1)
-
-        def seek_special_end(i):
-            return seek_until_changed(i, is_special, 1)
-
-        def seek_special_start(i):
-            return seek_until_changed(i, is_special, -1)
-        #@-others
-        # g.trace('smart',smart,'forward',forward,'end',end)
-        if smart:
-            if forward:
-                if 0 <= i < n:
-                    if is_alphanumeric(s[i]):
-                        i = seek_word_end(i)
-                        i = seek_simple_whitespace_end(i)
-                    elif is_simple_whitespace(s[i]):
-                        i = seek_simple_whitespace_end(i)
-                    elif is_special(s[i]):
-                        i = seek_special_end(i)
-                        i = seek_simple_whitespace_end(i)
-                    else:
-                        i += 1 # e.g. for newlines
-            else:
-                i -= 1 # Shift cursor temporarily by -1 to get easy read access to the prev. char
-                if 0 <= i < n:
-                    if is_alphanumeric(s[i]):
-                        i = seek_word_start(i)
-                        # Do not seek further whitespace here
-                    elif is_simple_whitespace(s[i]):
-                        i = seek_simple_whitespace_start(i)
-                    elif is_special(s[i]):
-                        i = seek_special_start(i)
-                        # Do not seek further whitespace here
-                    else:
-                        i -= 1 # e.g. for newlines
-                i += 1
-        else:
-            if forward:
-                # Unlike backward-word moves, there are two options...
-                if end:
-                    while 0 <= i < n and not g.isWordChar(s[i]):
-                        i += 1
-                    while 0 <= i < n and g.isWordChar(s[i]):
-                        i += 1
-                else:
-                    while 0 <= i < n and g.isWordChar(s[i]):
-                        i += 1
-                    while 0 <= i < n and not g.isWordChar(s[i]):
-                        i += 1
-            else:
-                i -= 1
-                while 0 <= i < n and not g.isWordChar(s[i]):
-                    i -= 1
-                while 0 <= i < n and g.isWordChar(s[i]):
-                    i -= 1
-                i += 1 # 2015/04/30
-        self.moveToHelper(event, i, extend)
     #@+node:ekr.20150514063305.319: *3* ec: paragraph
     #@+node:ekr.20150514063305.320: *4* ec.backwardKillParagraph
     @cmd('backward-kill-paragraph')
