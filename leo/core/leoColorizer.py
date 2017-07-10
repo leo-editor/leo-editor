@@ -396,7 +396,7 @@ class JEditColorizer(BaseColorizer):
         '''Put Leo-specific rules to theList.'''
         # pylint: disable=no-member
         # Python 2 uses rule.im_func. Python 3 uses rule.__func__.
-        table = (
+        table = [
             # Rules added at front are added in **reverse** order.
             ('@', self.match_leo_keywords, True), # Called after all other Leo matchers.
                 # Debatable: Leo keywords override langauge keywords.
@@ -421,9 +421,12 @@ class JEditColorizer(BaseColorizer):
             # Rules added at back are added in normal order.
             (' ', self.match_blanks, False),
             ('\t', self.match_tabs, False),
-            (' ', self.match_trailing_ws, True),
-            ('\t', self.match_trailing_ws, True),
-        )
+        ]
+        if self.c.config.getBool("color_trailing_whitespace"):
+            table += [
+                (' ', self.match_trailing_ws, True),
+                ('\t', self.match_trailing_ws, True),
+            ]
         for ch, rule, atFront, in table:
             # Replace the bound method by an unbound method.
             if g.isPython3:

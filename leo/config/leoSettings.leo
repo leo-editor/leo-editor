@@ -2137,6 +2137,7 @@
 <v t="ekr.20111004182631.15534"><vh>@bool color_cweb_comments_with_latex = True</vh></v>
 <v t="ekr.20111004182631.15535"><vh>@bool color_cweb_doc_parts_with_latex = True</vh></v>
 <v t="ekr.20111004182631.15536"><vh>@bool color_directives_in_plain_text = True</vh></v>
+<v t="tbrown.20170710093248.1"><vh>@bool color_trailing_whitespace = True</vh></v>
 <v t="ekr.20100102121150.6344"><vh>@bool show-invisibles-by-default = False</vh></v>
 <v t="ekr.20111004182631.15537"><vh>@bool underline_undefined_section_names = True</vh></v>
 <v t="ekr.20111004182631.15538"><vh>@bool use_hyperlinks = False</vh></v>
@@ -15012,6 +15013,8 @@ removing the &lt;| and |&gt;</t>
 <t tx="tbrown.20160130095933.3">Restore pane layout</t>
 <t tx="tbrown.20160130095933.4">Zoom pane</t>
 <t tx="tbrown.20160130100023.1">Pane layout help</t>
+<t tx="tbrown.20170710093248.1">If true, tailing whitespace (spaces and tabs) will be underlined
+with small dots in `trailing_whitespace_color` (default red).</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
