@@ -21168,7 +21168,7 @@ if g.app.isExternalUnitTest:
 if c.config.getBool('minibuffer_find_mode'):
     self.skipTest('No Find pane')
 elif g.app.gui.guiName().startswith('qt'):
-    tabs = ('Log','Find')
+    tabs = ('Log',) #'Find')
     log = c.frame.log
     c.bodyWantsFocusNow()
     last_widget = c.frame.body

@@ -250,6 +250,7 @@ class JEditColorizer(BaseColorizer):
             'keyword1', 'keyword2', 'keyword3', 'keyword4',
             'label', 'literal1', 'literal2', 'literal3', 'literal4',
             'markup', 'operator',
+            'trailing_whitespace',
         ]
         self.defineLeoKeywordsDict()
         self.defineDefaultColorsDict()
@@ -309,6 +310,7 @@ class JEditColorizer(BaseColorizer):
             'markup'    :('markup_color',   'red'),
             'null'      :('null_color',     None), #'black'),
             'operator'  :('operator_color', 'black'), # 2014/09/17
+            'trailing_whitespace': ('trailing_whitespace_color', '#808080'),
         }
     #@+node:ekr.20110605121601.18575: *5* jedit.defineDefaultFontDict
     #@@nobeautify
@@ -362,6 +364,7 @@ class JEditColorizer(BaseColorizer):
                 # 'nocolor' This tag is used, but never generates code.
                 'null'          :'null_font',
                 'operator'      :'operator_font',
+                'trailing_whitespace' :'trailing_whitespace_font',
         }
     #@+node:ekr.20110605121601.18576: *4* jedit.addImportedRules
     def addImportedRules(self, mode, rulesDict, rulesetName):
@@ -393,7 +396,7 @@ class JEditColorizer(BaseColorizer):
         '''Put Leo-specific rules to theList.'''
         # pylint: disable=no-member
         # Python 2 uses rule.im_func. Python 3 uses rule.__func__.
-        table = (
+        table = [
             # Rules added at front are added in **reverse** order.
             ('@', self.match_leo_keywords, True), # Called after all other Leo matchers.
                 # Debatable: Leo keywords override langauge keywords.
@@ -418,7 +421,12 @@ class JEditColorizer(BaseColorizer):
             # Rules added at back are added in normal order.
             (' ', self.match_blanks, False),
             ('\t', self.match_tabs, False),
-        )
+        ]
+        if self.c.config.getBool("color_trailing_whitespace"):
+            table += [
+                (' ', self.match_trailing_ws, True),
+                ('\t', self.match_trailing_ws, True),
+            ]
         for ch, rule, atFront, in table:
             # Replace the bound method by an unbound method.
             if g.isPython3:
@@ -1161,6 +1169,17 @@ class JEditColorizer(BaseColorizer):
                 return j - i
             else:
                 return 0
+    #@+node:tbrown.20170707150713.1: *5* jedit.match_tabs
+    def match_trailing_ws(self, s, i):
+        """match trailing whitespace"""
+        j = i; n = len(s)
+        while j < n and s[j] in ' \t':
+            j += 1
+        if j > i and j == n:
+            self.colorRangeWithTag(s, i, j, 'trailing_whitespace')
+            return j - i
+        else:
+            return 0
     #@+node:ekr.20170225103140.1: *5* jedit.match_unl
     def match_unl(self, s, i):
         if g.match(s.lower(), i, 'unl://'):
@@ -2056,7 +2075,7 @@ class JEditColorizer(BaseColorizer):
             format.setForeground(color)
             format.setUnderlineStyle(format.SingleUnderline)
             format.setFontUnderline(True)
-        elif dots:
+        elif dots or tag == 'trailing_whitespace':
             format.setForeground(color)
             format.setUnderlineStyle(format.DotLine)
         else:
