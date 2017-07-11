@@ -21165,12 +21165,13 @@ for expected,prefix in table:
 #@+node:ekr.20111121224307.3934: *4* @test k.handleDefaultChar from log pane
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+if c.config.getBool('minibuffer_find_mode'):
+    self.skipTest('No Find pane')
 elif g.app.gui.guiName().startswith('qt'):
     tabs = ('Log','Find')
     log = c.frame.log
     c.bodyWantsFocusNow()
     last_widget = c.frame.body
-        
     for tab in tabs:
         # A small hack: fudge up the widget to pass to the command.
         event = g.bunch(widget=last_widget)

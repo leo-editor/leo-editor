@@ -2,7 +2,7 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.84" body_secondary_ratio="0.64">
+<globals body_outline_ratio="0.49" body_secondary_ratio="0.64">
 	<global_window_position top="126" left="552" height="838" width="1245"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -233,7 +233,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -448,6 +448,7 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 </v>
 </v>
+<v t="ekr.20111121224307.3934"><vh>@test k.handleDefaultChar from log pane</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4644,6 +4645,28 @@ run-all-unit-tests-locally          = Alt-6
 # Important: Alt-9 is used by a unit test
 </t>
 <t tx="ekr.20111115080347.3872"></t>
+<t tx="ekr.20111121224307.3934">if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+if c.config.getBool('minibuffer_find_mode'):
+    self.skipTest('No Find pane')
+elif g.app.gui.guiName().startswith('qt'):
+    tabs = ('Log','Find')
+    log = c.frame.log
+    c.bodyWantsFocusNow()
+    last_widget = c.frame.body
+    for tab in tabs:
+        # A small hack: fudge up the widget to pass to the command.
+        event = g.bunch(widget=last_widget)
+        c.editCommands.cycleAllFocus(event=event)
+        assert log.tabName == tab,'expected %s, got %s' % (
+            tab,log.tabName)
+        last_widget = log.contentsDict.get(tab)
+        event = g.bunch(widget=last_widget)
+        # This throws exception: LeoQTextBrowser has no attribute logCtrl.
+        c.k.handleDefaultChar(event, stroke='a')
+else:
+    self.skipTest('Requires Qt Gui')
+</t>
 <t tx="ekr.20111123042627.6654"># Leo loads plugins in the order they appear here.
 
 # **Important**: to change these defaults, put

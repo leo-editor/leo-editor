@@ -1399,12 +1399,15 @@ class LeoQtBody(leoFrame.LeoBody):
         '''Add another editor to the body pane.'''
         trace = False and not g.unitTesting
         c, p = self.c, self.c.p
+        d = self.editorWidgets
         wrapper = c.frame.body.wrapper # A QTextEditWrapper
         widget = wrapper.widget
-        self.editorWidgets['1'] = wrapper
+        ### This was just crazy.
+        ### self.editorWidgets['1'] = wrapper
         self.totalNumberOfEditors += 1
         self.numberOfEditors += 1
         if self.totalNumberOfEditors == 2:
+            self.editorWidgets['1'] = wrapper ### New.
             # Pack the original body editor.
             self.packLabel(widget, n=1)
         name = '%d' % self.totalNumberOfEditors
@@ -1412,7 +1415,8 @@ class LeoQtBody(leoFrame.LeoBody):
         assert g.isTextWrapper(wrapper), wrapper
         assert g.isTextWidget(widget), widget
         assert isinstance(f, QtWidgets.QFrame), f
-        self.editorWidgets[name] = wrapper
+        d[name] = wrapper
+        # g.printDict(d)
         if trace: g.trace('name %s wrapper %s widget %s' % (
             name, id(wrapper), id(widget)))
         if self.numberOfEditors == 2:
@@ -1485,6 +1489,9 @@ class LeoQtBody(leoFrame.LeoBody):
         if len(list(d.keys())) <= 1: return
         name = w.leo_name if hasattr(w, 'leo_name') else '1'
             # Defensive programming.
+        if trace:
+            g.trace(name, w)
+            g.printDict(d)
         # At present, can not delete the first column.
         if name == '1':
             g.warning('can not delete leftmost editor')
@@ -1495,10 +1502,12 @@ class LeoQtBody(leoFrame.LeoBody):
         if trace: g.trace('**delete name %s id(wrapper) %s id(w) %s' % (
             name, id(wrapper), id(w)))
         del d[name]
+        if trace:
+            g.printDict(d)
         f = c.frame.top.leo_ui.leo_body_inner_frame
         layout = f.layout()
         for z in (w, w.leo_label):
-            if z: # 2011/11/12
+            if z:
                 self.unpackWidget(layout, z)
         w.leo_label = None # 2011/11/12
         # Select another editor.
