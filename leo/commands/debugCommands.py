@@ -144,7 +144,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
             g.es_print('killed log listener.')
         else:
             g.es_print('log listener not active.')
-        
+
     #@+node:ekr.20170429152049.1: *3* debug.listenToLog
     @cmd('listen-to-log')
     @cmd('log-listen')
@@ -152,9 +152,9 @@ class DebugCommandsClass(BaseEditCommandsClass):
         '''
         A socket listener, listening on localhost. See:
         https://docs.python.org/2/howto/logging-cookbook.html#sending-and-receiving-logging-events-across-a-network
-        
+
         Start this listener first, then start the broadcaster.
-        
+
         leo/plugins/cursesGui2.py is a typical broadcaster.
         '''
         # Kill any previous listener.
