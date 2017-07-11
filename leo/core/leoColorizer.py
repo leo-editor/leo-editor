@@ -310,7 +310,7 @@ class JEditColorizer(BaseColorizer):
             'markup'    :('markup_color',   'red'),
             'null'      :('null_color',     None), #'black'),
             'operator'  :('operator_color', 'black'), # 2014/09/17
-            'trailing_whitespace': ('trailing_whitespace_color', 'red'),
+            'trailing_whitespace': ('trailing_whitespace_color', '#808080'),
         }
     #@+node:ekr.20110605121601.18575: *5* jedit.defineDefaultFontDict
     #@@nobeautify
