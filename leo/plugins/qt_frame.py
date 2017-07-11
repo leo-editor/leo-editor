@@ -1370,7 +1370,7 @@ class LeoQtBody(leoFrame.LeoBody):
             self.wrapper = qt_text.QTextEditWrapper(self.widget, name='body', c=c)
             self.widget.setAcceptRichText(False)
             self.colorizer = leoColorizer.JEditColorizer(c, self.widget, self.wrapper)
-            
+
     #@+node:ekr.20110605121601.18183: *5* LeoQtBody.setWrap
     def setWrap(self, p=None, force=False):
         '''Set **only** the wrap bits in the body.'''
@@ -2394,7 +2394,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 else:
                     # Fix #367: complete the selection at idle time.
                     g.app.selectLeoWindow(c2)
-                
+
                     def handler(timer, c=c2, p=p):
                         c2.selectPosition(p)
                         timer.stop()
@@ -3161,7 +3161,7 @@ class LeoQtLog(leoFrame.LeoLog):
         '''
         Put s to the Qt Log widget, converting to html.
         All output to the log stream eventually comes here.
-        
+
         The from_redirect keyword argument is no longer used.
         '''
         trace = False and not g.unitTesting

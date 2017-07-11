@@ -179,10 +179,10 @@ class LeoQtGui(leoGui.LeoGui):
             # top is the DynamicWindow class.
         w = top.findTab
         top.find_status_label.setText('Find Status:')
-        
+
         d = QtWidgets.QDialog()
         # Fix #516: Hide the dialog. Never delete it.
-        
+
         def closeEvent(event, d=d):
             event.ignore()
             d.hide()
@@ -1286,7 +1286,7 @@ class StyleClassManager(object):
     #@+node:tbrown.20150724090431.7: *3* sclass_tests
     def sclass_tests(self):
         """Test style class property manipulation functions"""
-        
+
         # pylint: disable=len-as-condition
 
         class Test_W:
@@ -1770,7 +1770,7 @@ class StyleSheetManager(object):
     def reload_settings(self):
         '''
         Recompute and apply the stylesheet.
-        
+
         The name "reload_settings" makes this an official reload settings
         method. The reload-settings command calls all such methods
         automatically after re-reading all settings files.

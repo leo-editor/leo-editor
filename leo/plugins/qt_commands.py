@@ -33,7 +33,7 @@ def detach_editor_toggle(event):
         detach_editor(c)
     else:
         undetach_editor(c)
-        
+
 @g.command('detach-editor-toggle-max')
 def detach_editor_toggle_max(event):
     """ Detach editor, maximize """
@@ -122,14 +122,14 @@ def showColorNames(event=None):
     else:
         color_list = []
         box = QtWidgets.QComboBox()
-    
+
         def onActivated(n,*args,**keys):
             color = color_list[n]
             sheet = template % (color,color)
             box.setStyleSheet(sheet)
             g.es("copied to clipboard:", color)
             QtWidgets.QApplication.clipboard().setText(color)
-            
+
         box.activated.connect(onActivated)
         color_db = leoColor.leo_color_database
         for key in sorted(color_db):
@@ -168,7 +168,7 @@ def showColorWheel(event=None):
 def showFonts(self, event=None):
     '''Open a tab in the log pane showing a font picker.'''
     c = self.c; p = c.p
-    
+
     picker = QtWidgets.QFontDialog()
     if p.h.startswith('@font'):
         (name, family, weight, slant, size) = leoConfig.parseFont(p.b)
@@ -189,7 +189,7 @@ def showFonts(self, event=None):
         font = picker.selectedFont()
         udata = c.undoer.beforeChangeNodeContents(p)
         comments = [x for x in g.splitLines(p.b) if x.strip().startswith('#')]
-        
+
         defs = [
             '\n' if comments else '',
             '%s_family = %s\n'%(name, font.family()),
@@ -197,7 +197,7 @@ def showFonts(self, event=None):
             '%s_slant = %s\n'%(name, 'italic' if font.italic() else 'roman'),
             '%s_size = %s\n'%(name, font.pointSizeF())
         ]
-        
+
         p.b = g.u('').join(comments + defs)
         c.undoer.afterChangeNodeContents(p, 'change-font', udata)
 #@+node:ekr.20140918124632.17891: ** qt: style-reload
