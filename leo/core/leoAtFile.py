@@ -2406,7 +2406,7 @@ class AtFile(object):
         return p
     #@+node:ekr.20041005105605.120: *5* at.parseLeoSentinel
     if 1: # Experimental. All unit tests pass.
-        
+
         def parseLeoSentinel(self, s):
             '''
             Parse the sentinel line s.
@@ -2469,7 +2469,7 @@ class AtFile(object):
                 g.trace('valid: %s, isThin: %s, encoding: %r, start: %r, end: %r' % (
                     valid, isThin, encoding, start, end))
             return valid, new_df, start, end, isThin
-        
+
     else:
 
         def parseLeoSentinel(self, s):
@@ -3511,7 +3511,7 @@ class AtFile(object):
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20041005105605.152: *6* at.writeMissingNode
     def writeMissingNode(self, p):
-        
+
         at = self
         if p.isAtAsisFileNode():
             at.asisWrite(p)
@@ -3633,7 +3633,7 @@ class AtFile(object):
         '''
         Ensure a trailing newline in s.
         If we add a trailing newline, we'll generate an @nonl sentinel below.
-        
+
         - We always ensure a newline in @file and @thin trees.
         - This code is not used used in @asis trees.
         - New in Leo 4.4.3 b1: We add a newline in @clean/@nosent trees unless
@@ -4556,7 +4556,7 @@ class AtFile(object):
     def putDirective(self, s, i):
         r'''
         Output a sentinel a directive or reference s.
-        
+
         It is important for PHP and other situations that \@first and \@last
         directives get translated to verbatim lines that do *not* include what
         follows the @first & @last directives.

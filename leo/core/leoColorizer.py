@@ -20,7 +20,7 @@ import string
 #@+node:ekr.20170127141855.1: ** class BaseColorizer
 class BaseColorizer(object):
     '''The base class for all Leo colorizers.'''
-    
+
     def __init__ (self, c):
         '''ctor for BaseColorizer class.'''
         self.c = c
@@ -29,7 +29,7 @@ class BaseColorizer(object):
         self.full_recolor_count = 0
         self.highlighter = g.NullObject()
         self.showInvisibles = False
-        
+
     def init(self, p):
         '''May be over-ridden in subclasses.'''
         pass
@@ -101,7 +101,7 @@ class BaseColorizer(object):
                 return language
             elif trace: g.trace('not a valid language', language, p.h)
         return None
-        
+
     #@+node:ekr.20170127142001.6: *5* bc.isValidLanguage
     def isValidLanguage(self, language):
         '''True if language exists in leo/modes.'''
@@ -1801,7 +1801,7 @@ class JEditColorizer(BaseColorizer):
             not state.endswith('@killcolor'))
         return enabled
 
-      
+
     #@+node:ekr.20110605121601.18633: *4* jedit.setRestart
     def setRestart(self, f, **keys):
         n = self.computeState(f, keys)
@@ -2010,11 +2010,11 @@ class JEditColorizer(BaseColorizer):
         for leadins_list, pattern in zip(leadins, patterns):
             # g.trace('%3s %s' % (leadins_list, pattern))
             for ch in leadins_list:
-                
+
                 def wiki_rule(self, s, i, pattern=pattern):
                     '''Bind pattern and leadin for jedit.match_wiki_pattern.'''
                     return self.match_wiki_pattern(s, i, pattern)
-                
+
                 aList = d.get(ch, [])
                 if wiki_rule not in aList:
                     aList.insert(0, wiki_rule)
@@ -2113,7 +2113,7 @@ if QtGui:
                 '''
                 Override base rehighlight method.
                 Does nothing unless QSyntaxHighlighter.currentBlock exists.
-                
+
                 It appears that this method is seldom (never?) called!
                 '''
                 # pylint: disable=arguments-differ
@@ -2151,7 +2151,7 @@ if QtGui:
         #@+node:ekr.20170428054142.1: *3* leo_h.force_rehighlight
         if 0:
             # Part of the failed fix for #466.
-            
+
             def force_rehighlight(self, p):
                 '''Force a complete rehighlighting of p.b.'''
                 if hasattr(self, 'currentBlock') and self.colorizer.enabled:

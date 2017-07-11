@@ -33,16 +33,16 @@ class IdleTimeManager(object):
     '''
     A singleton class to manage idle-time handling. This class handles all
     details of running code at idle time, including running 'idle' hooks.
-    
+
     Any code can call g.app.idleTimeManager.add_callback(callback) to cause
     the callback to be called at idle time forever.
     '''
-    
+
     def __init__(self):
         '''Ctor for IdleTimeManager class.'''
         self.callback_list = []
         self.timer = None
-        
+
     #@+others
     #@+node:ekr.20161026125611.1: *3* itm.add_callback
     def add_callback(self, callback):
@@ -1259,7 +1259,7 @@ class LeoApp(object):
                         g.es_print('Exception running', aClass.__name__)
                         g.es_exception()
                         return None
-                        
+
                 scanner_for_at_auto_cb.scanner_name = aClass.__name__
                     # For traces in ic.createOutline.
                 if trace: g.trace('found', p.h)
@@ -1283,7 +1283,7 @@ class LeoApp(object):
                     g.es_print('Exception running', aClass.__name__)
                     g.es_exception()
                     return None
-                    
+
             scanner_for_ext_cb.scanner_name = aClass.__name__
                 # For traces in ic.createOutline.
             return scanner_for_ext_cb
@@ -1340,7 +1340,7 @@ class LeoApp(object):
     def setIDFromSys(self, verbose):
         '''
         Attempt to set g.app.leoID from sys.leoID.
-        
+
         This might be set by in Python's sitecustomize.py file.
         '''
         id_ = getattr(sys, "leoID", None)
@@ -2257,7 +2257,7 @@ class LoadManager(object):
             g.trace('LM.atAutoWritersDict')
             g.printDict(g.app.atAutoWritersDict)
         # Creates problems: https://github.com/leo-editor/leo-editor/issues/40
-     
+
     #@+node:ekr.20140728040812.17991: *7* LM.parse_writer_dict
     def parse_writer_dict(self, sfn, m):
         '''
@@ -2620,7 +2620,7 @@ class LoadManager(object):
         # import pdb ; pdb.set_trace()
         import sys
         import leo.core.leoGlobals as g
-        
+
         # Define class LeoStdOut
         #@+others
         #@+node:ekr.20160718091844.1: *6* class LeoStdOut
@@ -2634,7 +2634,7 @@ class LoadManager(object):
 
             def flush(self, *args, **keys):
                 pass
-                
+
             #@+others
             #@+node:ekr.20160718102306.1: *7* LeoStdOut.write
             def write(self, *args, **keys):
@@ -3071,7 +3071,7 @@ class LoadManager(object):
                 p.setHeadString('%s %s' % (load_type,fn))
                 c.refreshFromDisk()
                 c.selectPosition(p)
-                    
+
         # Fix critical bug 1184855: data loss with command line 'leo somefile.ext'
         # Fix smallish bug 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo.
         c.mFileName = fn if fn.endswith('.leo') else '%s.leo' % (fn)
@@ -3182,7 +3182,7 @@ class RecentFilesManager(object):
     '''A class to manipulate leoRecentFiles.txt.'''
 
     def __init__(self):
-        
+
         self.edit_headline = 'Recent files. Do not change this headline!'
             # Headline used by 
         self.groupedMenus = []
@@ -3310,7 +3310,7 @@ class RecentFilesManager(object):
         '''
         Dump recentFiles into new node appended as lastTopLevel, selects it and
         request focus in body.
-           
+
         NOTE: command write-edited-recent-files assume that headline of this
         node is not changed by user.
         '''
@@ -3415,7 +3415,7 @@ class RecentFilesManager(object):
     def sortRecentFiles(self, c):
         '''Sort the recent files list.'''
         rf = self
-            
+
         def key(path):
             # Sort only the base name.  That's what will appear in the menu.
             s = g.os_path_basename(path)

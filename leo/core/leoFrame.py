@@ -1555,7 +1555,7 @@ class LeoTree(object):
         if not p:
             # This is not an error! We may be changing roots.
             # Do *not* test c.positionExists(p) here!
-            
+
             return
         c = self.c
         if not c.frame.body.wrapper:

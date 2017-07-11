@@ -146,7 +146,7 @@ globalDirectiveList = [
 #     def cmd(name):
 #         '''Command decorator for the abbrevCommands class.'''
 #         return g.new_cmd_decorator(name, ['c', 'abbrevCommands',])
-#         
+# 
 # **Important**: All *new* commands should be defined using @g.command, but
 # this dict will remain forever so as not to break existing code.  See this
 # discussion https://github.com/leo-editor/leo-editor/issues/325
@@ -1904,9 +1904,9 @@ def run_pylint(fn, rc,
 ):
     '''
     Run pylint with the given args, with Sherlock tracing if requested.
-    
+
     **Do not assume g.app exists.**
-    
+
     run() in pylint-leo.py and PylintCommand.run_pylint *optionally* call this function.
     '''
     try:
@@ -2215,9 +2215,9 @@ def timeSince(start):
 def callback(func):
     '''
     A global decorator that protects Leo against crashes in callbacks.
-    
+
     This is the recommended way of defining all callback.
-        
+
         @g.callback
         def a_callback(...):
             c = event.get('c')
@@ -2251,10 +2251,10 @@ def check_cmd_instance_dict(c, g):
 class Command(object):
     '''
     A global decorator for creating commands.
-    
+
     This is the recommended way of defining all new commands, including
     commands that could befined inside a class. The typical usage is:
-        
+
         @g.command('command-name')
         def A_Command(event):
             c = event.get('c')
@@ -2591,7 +2591,7 @@ def isDirective(s):
             return bool(m.group(1) in g.globalDirectiveList)
     else:
         return False
-   
+
 #@+node:ekr.20080827175609.52: *3* g.scanAtCommentAndLanguageDirectives
 def scanAtCommentAndAtLanguageDirectives(aList):
     '''
@@ -3507,7 +3507,7 @@ def findRootsWithPredicate(c, root, predicate):
     '''
     Commands often want to find one or more **roots**, given a position p.
     A root is the position of any node matching a predicate.
-    
+
     This function formalizes the search order used by the pylint, pyflakes and
     the rst3 commands, returning a list of zero or more found roots.
     '''
@@ -3553,7 +3553,7 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
         return True, maxdepth, maxp
 
     def moveToP(c, p):
-        
+
         def focus_callback(timer, c=c, p=p.copy()):
             '''Idle-time handler for g.recursiveUNLSearch'''
             c.expandAllAncestors(p)
@@ -3567,7 +3567,7 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
 
         timer = g.IdleTime(focus_callback, delay=0.1, tag='g.recursiveUNLSearch')
         if timer: timer.start()
-        
+
     found, maxdepth, maxp = recursiveUNLFind(
         unlList, c, depth, p, maxdepth, maxp,
         soft_idx=soft_idx, hard_idx=hard_idx)
@@ -4266,7 +4266,7 @@ def gitHeadPath(path=None):
 def gitInfo(path=None):
     '''
     Path is a .git/HEAD directory, or None.
-    
+
     Return the branch and commit number or ('', '').
     '''
     trace = False and not g.unitTesting
@@ -5434,7 +5434,7 @@ def es(*args, **keys):
             else: log.newlines = 0
     else:
         app.logWaiting.append((s, color, newline),)
-    
+
 #@+node:ekr.20141107085700.4: *3* g.es_debug
 def es_debug(*args, **keys):
     '''
@@ -5938,7 +5938,7 @@ def init_zodb(pathToZodbStorage, verbose=True):
 def input_(message='', c=None):
     '''
     Safely execute python's input statement.
-    
+
     c.executeScriptHelper binds 'input' to be a wrapper that calls g.input_
     with c and handler bound properly.
     '''
@@ -5946,7 +5946,7 @@ def input_(message='', c=None):
         return ''
     if False: # c and app and not app.gui.isNullGui:
         # Use the minibuffer.
-        
+
         def handler(event, c=c):
             c.k.resetLabel()
             return c.k.arg
@@ -6543,7 +6543,7 @@ def composeScript(c, p, s, forcePythonSentinels=True, useSentinels=True):
 def extractExecutableString(c, p, s, language='python'):
     '''
     Return all lines for the given @language directive.
-    
+
     Ignore all lines under control of any other @language directive.
     '''
     if g.unitTesting:
@@ -6707,7 +6707,7 @@ url_regex = re.compile(r"""%s://[^\s'"]+[\w=/]""" % (kinds))
 def unquoteUrl(url):
     '''
     Replace special characters (especially %20, by their equivalent).
-    
+
     This function handles 2/3 issues and suppresses pylint complaints.
     '''
     # pylint: disable=no-member

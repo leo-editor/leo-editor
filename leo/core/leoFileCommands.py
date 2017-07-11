@@ -916,7 +916,7 @@ class FileCommands(object):
         self.c.nodeConflictFileName = None # 2010/01/05
     #@+node:EKR.20040627120120: *5* fc.restoreDescendentAttributes
     def restoreDescendentAttributes(self):
-        
+
         trace = False and not g.unitTesting
         trace_dict = False
         trace_expanded = False

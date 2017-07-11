@@ -437,10 +437,10 @@ class Position(object):
         A generator yielding all the root positions "near" p1 = self that
         satisfy the given predicate. p.isAnyAtFileNode is the default
         predicate.
-        
+
         The search first proceeds up the p's tree. If a root is found, this
         generator yields just that root.
-        
+
         Otherwise, the generator yields all nodes in p.subtree() that satisfy
         the predicate. Once a root is found, the generator skips its subtree.
         '''
@@ -472,10 +472,10 @@ class Position(object):
         A generator yielding all unique root positions "near" p1 = self that
         satisfy the given predicate. p.isAnyAtFileNode is the default
         predicate.
-        
+
         The search first proceeds up the p's tree. If a root is found, this
         generator yields just that root.
-        
+
         Otherwise, the generator yields all unique nodes in p.subtree() that
         satisfy the predicate. Once a root is found, the generator skips its
         subtree.
@@ -1300,7 +1300,7 @@ class Position(object):
         else:
             if trace: g.trace('outside limit tree', limit, p)
             return True, None
-       
+
     #@+node:ekr.20080416161551.211: *4* p.moveToVisNext & helper
     def moveToVisNext(self, c):
         """Move a position to the position of the next visible node."""
@@ -1609,10 +1609,10 @@ class Position(object):
     def __set_b(self, val):
         '''
         Set the body text of a position.
-        
+
         **Warning: the p.b = whatever is *expensive* because it calls
         c.setBodyString().
-        
+
         Usually, code *should* this setter, despite its cost, because it
         update's Leo's outline pane properly. Calling c.redraw() is *not*
         enough.
@@ -1637,10 +1637,10 @@ class Position(object):
     def __set_h(self, val):
         '''
         Set the headline text of a position.
-        
+
         **Warning: the p.h = whatever is *expensive* because it calls
         c.setHeadString().
-        
+
         Usually, code *should* this setter, despite its cost, because it
         update's Leo's outline pane properly. Calling c.redraw() is *not*
         enough.
@@ -1845,10 +1845,10 @@ class Position(object):
     def setDirty(self, setDescendentsDirty=True):
         '''
         Mark a node and all ancestor @file nodes dirty.
-        
+
         **Warning**: p.setDirty() is *expensive* because it calls
         p.setAllAncestorAtFileNodesDirty().
-        
+
         Usually, code *should* this setter, despite its cost, because it
         update's Leo's outline pane properly. Calling c.redraw() is *not*
         enough.

@@ -287,7 +287,7 @@ class AstFormatter(object):
             result.append(self.visit(z))
             self.level -= 1
         return ''.join(result)
-        
+
     def do_AsyncFunctionDef(self, node):
         return self.do_FunctionDef(node, async_flag=True)
     #@+node:ekr.20141012064706.18407: *4* f.Interactive
@@ -500,7 +500,7 @@ class AstFormatter(object):
     # SetComp(expr elt, comprehension* generators)
 
     def do_SetComp(self, node):
-        
+
         elt = self.visit(node.elt)
         gens = [self.visit(z) for z in node.generators]
         return '%s for %s' % (elt, ''.join(gens))
@@ -662,7 +662,7 @@ class AstFormatter(object):
                 result.append(self.visit(z))
                 self.level -= 1
         return ''.join(result)
-        
+
     def do_AsyncFor(self, node):
         return self.do_For(node, async_flag=True)
     #@+node:ekr.20141012064706.18452: *4* f.Global
@@ -883,7 +883,7 @@ class AstFormatter(object):
             self.level -= 1
         result.append('\n')
         return ''.join(result)
-        
+
     def do_AsyncWith(self, node):
         return self.do_With(node, async_flag=True)
     #@+node:ekr.20141012064706.18466: *4* f.Yield
@@ -969,7 +969,7 @@ class AstFullTraverser(object):
         for z in node.body:
             self.visit(z)
         self.context = old_context
-        
+
     do_AsyncFunctionDef = do_FunctionDef
     #@+node:ekr.20141012064706.18475: *4* ft.Interactive
     def do_Interactive(self, node):
@@ -1200,7 +1200,7 @@ class AstFullTraverser(object):
     def do_Name(self, node):
         # self.visit(node.ctx)
         pass
-        
+
     def do_NameConstant(self, node): # Python 3 only.
         pass
         # s = repr(node.value)
@@ -1221,7 +1221,7 @@ class AstFullTraverser(object):
     def do_Set(self, node):
         for z in node.elts:
             self.visit(z)
-            
+
     #@+node:ekr.20160523095142.1: *4* ft.SetComp (new)
     # SetComp(expr elt, comprehension* generators)
 
@@ -1384,7 +1384,7 @@ class AstFullTraverser(object):
     # Raise(expr? exc, expr? cause)                 Python 3
 
     def do_Raise(self, node):
-        
+
         attrs = ('exc', 'cause') if g.isPython3 else ('type', 'inst', 'tback')
         for attr in attrs:
             if getattr(node, attr, None):
@@ -1463,7 +1463,7 @@ class AstFullTraverser(object):
                         self.visit(item.optional_vars)
         for z in node.body:
             self.visit(z)
-            
+
     do_AsyncWith = do_With
     #@+node:ekr.20141012064706.18527: *4* ft.Yield, YieldFrom & Await (Python 3)
     # Yield(expr? value)
@@ -1519,7 +1519,7 @@ class AstPatternFormatter(AstFormatter):
 
     def do_Name(self, node):
         return 'Bool' if node.id in ('True', 'False') else node.id
-        
+
     def do_NameConstant(self, node): # Python 3 only.
         s = repr(node.value)
         return 'bool' if s in ('True', 'False') else s
@@ -2207,7 +2207,7 @@ class HTMLReportTraverser(object):
             rt.colon()
             rt.div_body(node.orelse)
         rt.end_div('statement')
-        
+
     def do_AsyncFor(rt, node):
         rt.do_For(node, async_flag=True)
     #@+node:ekr.20150722204300.69: *4* rt.FunctionDef
@@ -2236,7 +2236,7 @@ class HTMLReportTraverser(object):
         rt.visit_list(node.body)
         rt.end_div('body')
         rt.end_div('function')
-        
+
     def do_AsyncFunctionDef(rt, node):
         rt.do_FunctionDef(node, async_flag=True)
     #@+node:ekr.20150722204300.70: *4* rt.GeneratorExp
@@ -2461,7 +2461,7 @@ class HTMLReportTraverser(object):
     # SetComp(expr elt, comprehension* generators)
 
     def do_SetComp(self, node):
-        
+
         elt = self.visit(node.elt)
         gens = [self.visit(z) for z in node.generators]
         return '%s for %s' % (elt, ''.join(gens))
@@ -2616,7 +2616,7 @@ class HTMLReportTraverser(object):
         rt.colon()
         rt.div_body(node.body)
         rt.end_div('statement')
-        
+
     def do_AsyncWith(rt, node):
         rt.do_With(node, async_flag=True)
     #@+node:ekr.20150722204300.96: *4* rt.Yield

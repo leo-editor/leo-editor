@@ -517,14 +517,14 @@ class RstCommands(object):
     #@+node:ekr.20090502071837.62: *5* rst.processTopTree
     def processTopTree(self, p, justOneFile=False):
         '''Find and handle all @rst and @slides node associated with p.'''
-        
+
         def predicate(p):
             # pylint: disable=consider-using-ternary
             h = p.h if p else ''
             return (
                 h.startswith('@rst') and not h.startswith('@rst-') or
                 h.startswith('@slides'))
-            
+
         roots = g.findRootsWithPredicate(self.c, p, predicate)
         if roots:
             for p in roots:

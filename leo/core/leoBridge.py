@@ -237,7 +237,7 @@ class BridgeController(object):
         '''
         Attempt to set g.app.leoApp from various places, but do *not* ever set
         the leoID.txt file.
-        
+
         *Warning*: this code is similar to LeoApp.setLeoId, but here
         self is *not* g.app.
         '''
@@ -251,7 +251,7 @@ class BridgeController(object):
     def getIDFromSys(self):
         '''
         Attempt to set g.app.leoID from sys.leoID.
-        
+
         This might be set by in Python's sitecustomize.py file.
         '''
         import sys

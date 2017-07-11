@@ -25,7 +25,7 @@ class ExternalFile(object):
         return '<ExternalFile: %20s %s>' % (self.time, g.shortFilename(self.path))
 
     __str__ = __repr__
-    
+
     #@+others
     #@+node:ekr.20161011174757.1: *3* ef.shortFileName
     def shortFileName(self):

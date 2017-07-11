@@ -109,7 +109,7 @@ class ChapterController(object):
         g.es('Chapters:\n' + '\n'.join(names))
         k.setLabelBlue('Select chapter: ')
         k.get1Arg(event, handler=self.selectChapter1, tabList=names)
-            
+
     def selectChapter1(self, event):
         cc, k = self, self.c.k
         k.clearState()
@@ -125,7 +125,7 @@ class ChapterController(object):
         i = names.index(sel_name)
         new_name = names[i-1 if i > 0 else len(names)-1]
         cc.selectChapterByName(new_name)
-        
+
     @cmd('chapter-next')
     def nextChapter(self, event=None):
         cc = self

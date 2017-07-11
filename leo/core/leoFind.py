@@ -133,7 +133,7 @@ class LeoFind(object):
         self.frame = None
         self.k = c.k
         self.re_obj = None
-        
+
         # Options ivars: set once:
         self.ignore_dups = c.config.getBool('find-ignore-duplicates', default=False)
 
@@ -801,7 +801,7 @@ class LeoFind(object):
             self.stateZeroHelper(event,
                 prefix='Clone Find All: ',
                 handler=self.minibufferCloneFindAll1)
-                
+
     def minibufferCloneFindAll1(self, event):
         c, k = self.c, self.k
         k.clearState()
@@ -858,7 +858,7 @@ class LeoFind(object):
             self.stateZeroHelper(event,
                 prefix='Clone Find Tag: ',
                 handler=self.minibufferCloneFindTag1)
-                
+
     def minibufferCloneFindTag1(self, event):
         c, k = self.c, self.k
         k.clearState()
@@ -889,7 +889,7 @@ class LeoFind(object):
             self.stateZeroHelper(event,
                 prefix='Tag Children: ',
                 handler=self.minibufferTagChildren1)
-                
+
     def minibufferTagChildren1(self, event):
         c, k = self.c, self.k
         k.clearState()
@@ -994,7 +994,7 @@ class LeoFind(object):
         self.stateZeroHelper(event,
             'Regexp Search Backward:', self.reSearch1,
             escapes=['\t']) # The Tab Easter Egg.
-         
+
     @cmd('re-search-forward')
     def reSearchForward(self, event):
         self.setupArgs(forward=True, regexp=True, word=None)
@@ -1002,7 +1002,7 @@ class LeoFind(object):
             prefix='Regexp Search:',
             handler=self.reSearch1,
             escapes=['\t']) # The Tab Easter Egg.
-            
+
     def reSearch1(self, event):
         k = self.k
         if k.getArgEscapeFlag:
@@ -1027,7 +1027,7 @@ class LeoFind(object):
             prefix='Search: ',
             handler=self.search1,
             escapes=['\t']) # The Tab Easter Egg.
-            
+
     def search1(self, event):
         k = self.k
         if k.getArgEscapeFlag:
@@ -1075,7 +1075,7 @@ class LeoFind(object):
         self.stateZeroHelper(event,
             'Search: ', self.searchWithPresentOptions1,
             escapes=escapes) # The Tab Easter Egg.
-                
+
     def searchWithPresentOptions1(self, event):
         c, k = self.c, self.k
         # g.trace(k.getArgEscapeFlag, repr(k.arg), g.callers())
@@ -1171,7 +1171,7 @@ class LeoFind(object):
         self.stateZeroHelper(event,
             prefix='Word Search: ',
             handler=self.wordSearch1)
-            
+
     def wordSearch1(self, event):
         k = self.k
         self.lastStateHelper()
@@ -1300,7 +1300,7 @@ class LeoFind(object):
         '''
         Do a single batch change operation, updating the head or body string of
         p and leaving the result in s_ctrl.
-        
+
         s_ctrl contains the found text on entry and contains the changed text
         on exit. pos and pos2 indicate the selection. The selection will never
         be empty.

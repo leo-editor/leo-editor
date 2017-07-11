@@ -1450,7 +1450,7 @@ class GetArg(object):
                 ga.do_char(event, char)
     #@+node:ekr.20161019060054.1: *4* ga.cancel_after_state
     def cancel_after_state(ga):
-        
+
         ga.after_get_arg_state = None
     #@+node:ekr.20140816165728.18955: *4* ga.do_char
     def do_char(ga, event, char):
@@ -2889,7 +2889,7 @@ class KeyHandlerClass(object):
         '''
         # Replace the current handler.
         self.getArgInstance.after_get_arg_state = ('getarg', 1, handler)
-        
+
     # New in Leo 5.4  
     def get1Arg(self, event, handler,
         # returnKind=None, returnState=None,
@@ -2908,15 +2908,15 @@ class KeyHandlerClass(object):
 
         Before going into the many details, let's look at some examples. This
         code will work in any class having a 'c' ivar bound to a commander.
-            
+
         Example 1: get one argument from the user:
-            
+
             @cmd('my-command')
             def myCommand(self, event):
                 k = self.c.k
                 k.setLabelBlue('prompt: ')
                 k.get1Arg(event, handler=self.myCommand1)
-                    
+
             def myCommand1(self, event):
                 k = self.c.k
                 # k.arg contains the argument.
@@ -2926,21 +2926,21 @@ class KeyHandlerClass(object):
                 k.clearState()
                 k.resetLabel()
                 k.showStateAndMode()
-                
+
         Example 2: get two arguments from the user:
-            
+
             @cmd('my-command')
             def myCommand(self, event):
                 k = self.c.k
                 k.setLabelBlue('first prompt: ')
                 k.get1Arg(event, handler=self.myCommand1)
-                    
+
             def myCommand1(self, event):
                 k = self.c.k
                 self.arg1 = k.arg
                 k.setLabelBlue('second prompt: ')
                 k.getNextArg(handler=self.myCommand2)
-                
+
             def myCommand2(self, event):
                 k = self.c.k
                 # k.arg contains second argument.
@@ -2950,7 +2950,7 @@ class KeyHandlerClass(object):
                 k.clearState()
                 k.resetLabel()
                 k.showStateAndMode()
-                
+
         k.get1Arg and k.getNextArg are a convenience methods. They simply passes
         their arguments to the get_arg method of the singleton GetArg instance. This
         docstring describes k.get1arg and k.getNextArg as if they were the
@@ -2979,7 +2979,7 @@ class KeyHandlerClass(object):
 
         useMinibuffer=True: True: put focus in the minibuffer while accumulating arguments.
                             False allows sort-lines, for example, to show the selection range.
-            
+
         '''
         #@-<< docstring for k.get1arg >>
         returnKind, returnState = None, None
@@ -3099,7 +3099,7 @@ class KeyHandlerClass(object):
 
         If wrap is True then func will be wrapped with c.universalCallback.
         source_c is the commander in which an @command or @button node is defined.
-        
+
         **Important**: Bindings created here from plugins can not be overridden.
         This includes @command and @button bindings created by mod_scripting.py.
         '''
@@ -3411,7 +3411,7 @@ class KeyHandlerClass(object):
         else:
             # this should never happen
             g.error('not in settings node shortcut')
-            
+
     #@+node:vitalije.20170709151653.1: *6* k.isInShortcutBodyLine
     _cmd_handle_input_pattern = re.compile(g.u('[A-Za-z0-9_\\-]+\\s*='))
     def isInShortcutBodyLine(self):
@@ -3468,7 +3468,7 @@ class KeyHandlerClass(object):
                 if d:
                     g.trace('d.get(%s)' % (stroke))
                     g.trace(d.get(stroke))
-                
+
             if (
                 # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
                 name and w_name.startswith(name) or
