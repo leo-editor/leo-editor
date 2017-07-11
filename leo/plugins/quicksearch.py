@@ -566,13 +566,13 @@ class QuickSearchController(object):
             return _f
         for pat in self._search_patterns:
             self.addGeneric(pat, sHistSelect(pat))
-        
+
 
     def pushSearchHistory(self, pat):
         if pat in self._search_patterns:
             return
         self._search_patterns = ([pat] + self._search_patterns)[:30]
-        
+
     #@+node:tbrown.20120220091254.45207: *3* doTimeline
     def doTimeline(self):
 

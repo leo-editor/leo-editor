@@ -25,7 +25,7 @@ class Tcl_Importer(Importer):
             state_class = Tcl_ScanState,
             strict = False,
         )
-        
+
     #@+others
     #@+node:ekr.20170615155627.1: *3* tcl.starts_block
     starts_pattern = re.compile(r'\s*(proc)\s+')
@@ -57,7 +57,7 @@ class Tcl_Importer(Importer):
 #@+node:ekr.20170615153639.7: ** class class Tcl_ScanState
 class Tcl_ScanState:
     '''A class representing the state of the tcl line-oriented scan.'''
-    
+
     def __init__(self, d=None):
         '''Tcl_ScanState.__init__'''
         if d:

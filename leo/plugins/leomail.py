@@ -8,7 +8,7 @@ Sync local mailbox files over to Leo.
 Creates mail-refresh command, which can only be applied to @mbox nodes of the form:
 
     @mbox <path to .mbox file>
-    
+
 The command parses the .mbox file and creates a separate node for each thread.
 
 Replies to the original messages become children of that message.
@@ -58,7 +58,7 @@ def mail_refresh(event):
 class MLStripper(HTMLParser):
 
     # pylint: disable=abstract-method
-    
+
     def __init__(self):
         HTMLParser.__init__(self)
             # Can't use plain super in Python 2.

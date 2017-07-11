@@ -106,7 +106,7 @@ def colorize(c,p, item):
                     # if f['icon'] in i:
                         # in_list = True
                         # break
-                
+
                 # if in_list != True:
                     # com.appendImageDictToList(icons, f['icon_dir'], f['icon'], 1)
                     # com.setIconList(p, icons, True)
@@ -120,11 +120,11 @@ def colorize(c,p, item):
             # except:
                 # pass
     item.setFont(0, font)
-    
 
 
 
-    
+
+
 
 
 #@-others

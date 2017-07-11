@@ -483,7 +483,7 @@ class LeoFts(object):
             except Exception:
                 g.es_exception()
                 return None
-            
+
     #@+node:ekr.20140920041848.17945: *3* fts.statistics
     def statistics(self):
         r = {}

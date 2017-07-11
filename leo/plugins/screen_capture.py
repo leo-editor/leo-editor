@@ -89,7 +89,7 @@ class Recorder(object):
         # performance measuring
         # self.times.append(time.time() - self.last_time)
         # self.last_time = time.time()
-        
+
         # pylint: disable=no-member
         if isQt5:
             # screen = QtGui.QtGuiApplication.primaryScreen()

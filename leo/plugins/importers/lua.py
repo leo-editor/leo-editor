@@ -27,7 +27,7 @@ class Lua_Importer(Importer):
         )
         self.start_stack = []
             # Contains entries for all constructs that end with 'end'.
-        
+
     # Define necessary overrides.
     #@+others
     #@+node:ekr.20170530024520.5: *3* lua_i.clean_headline
@@ -116,7 +116,7 @@ class Lua_Importer(Importer):
             target = stack[-1]
             self.extend_lines(target.p, self.tail_lines)
             self.tail_lines = []
-            
+
     #@+node:ekr.20170530031729.1: *3* lua_i.get_new_dict
     #@@nobeautify
 
@@ -125,7 +125,7 @@ class Lua_Importer(Importer):
         trace = False and g.unitTesting
         comment, block1, block2 = self.single_comment, self.block1, self.block2
         assert comment
-        
+
         def add_key(d, pattern, data):
             key = pattern[0]
             aList = d.get(key,[])
@@ -196,12 +196,12 @@ class Lua_Importer(Importer):
     function_pattern = re.compile(r'^(local\s+)?function')
         # Buggy: this could appear in a string or comment.
         # The function must be an "outer" function, without indentation.
-        
+
     function_pattern2 = re.compile(r'(local\s+)?function')
 
     def starts_block(self, i, lines, new_state, prev_state):
         '''True if the new state starts a block.'''
-        
+
         def end(line):
             # Buggy: 'end' could appear in a string or comment.
             # However, this code is much better than before.
@@ -233,7 +233,7 @@ class Lua_Importer(Importer):
 #@+node:ekr.20170530024520.7: ** class Lua_ScanState
 class Lua_ScanState:
     '''A class representing the state of the lua line-oriented scan.'''
-    
+
     def __init__(self, d=None):
         if d:
             prev = d.get('prev')

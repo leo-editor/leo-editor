@@ -21,7 +21,7 @@ class Php_Importer(Importer):
         )
         self.here_doc_pattern = re.compile(r'<<<\s*([\w_]+)')
         self.here_doc_target = None
-        
+
     #@+others
     #@+node:ekr.20161129213243.4: *3* php_i.clean_headline
     def clean_headline(self, s):
@@ -37,7 +37,7 @@ class Php_Importer(Importer):
         '''
         trace = False and g.unitTesting
         comment, block1, block2 = self.single_comment, self.block1, self.block2
-        
+
         def add_key(d, key, data):
             aList = d.get(key,[])
             aList.append(data)
@@ -199,7 +199,7 @@ class Php_Importer(Importer):
 #@+node:ekr.20161129213243.6: ** class Php_ScanState
 class Php_ScanState:
     '''A class representing the state of the php line-oriented scan.'''
-    
+
     def __init__(self, d=None):
         '''Php_ScanState.__init__'''
         if d:

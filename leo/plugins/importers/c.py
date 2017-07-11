@@ -167,7 +167,7 @@ class C_Importer(Importer):
 #@+node:ekr.20161108223159.1: ** class C_ScanState
 class C_ScanState:
     '''A class representing the state of the C line-oriented scan.'''
-    
+
     def __init__(self, d=None):
         '''C_ScanSate ctor'''
         if d:

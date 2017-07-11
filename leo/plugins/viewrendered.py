@@ -891,7 +891,7 @@ if QtWidgets: # NOQA
                 w.setHtml(s)
                 w.show()
                 c.bodyWantsFocusNow()
-           
+
         #@+node:ekr.20170324085132.1: *5* vr.create_latex_html
         def create_latex_html(self, s):
             '''Create an html page embedding the latex code s.'''
@@ -1056,7 +1056,7 @@ if QtWidgets: # NOQA
                 raiseFlag=False)
         #@+node:ekr.20160928030257.1: *5* vr.embed_pyplot_widget (not ready yet)
         def embed_pyplot_widget(self):
-            
+
             pc = self
             c = pc.c
             # Careful: we may be unit testing.
@@ -1065,7 +1065,7 @@ if QtWidgets: # NOQA
                 if trace: g.trace('no splitter')
                 return
             if not pc.pyplot_canvas:
-               
+
                 # TODO Create the widgets.
                 w = None
                 ### Ref
@@ -1188,7 +1188,7 @@ if QtWidgets: # NOQA
                     wrapper = qt_text.QTextEditWrapper(w, name='vr-body', c=c)
                     event = g.Bunch(c=c, w=wrapper)
                     g.openUrlOnClick(event, url=url)
-                    
+
                 # if self.w and hasattr(self.w, 'anchorClicked'):
                     # try:
                         # self.w.anchorClicked.disconnect()

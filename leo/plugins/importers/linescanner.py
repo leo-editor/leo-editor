@@ -55,7 +55,7 @@ Type False, followed by two commas.
         # self.indent # for python, coffeescript.
         # self.curlies
         # (self, curlies, self.parens)
-   
+
 Only "level" is highlighted. The comments provide some hints about what to type.
 
 Let's type "self.curlies" followed by two commas.
@@ -91,10 +91,10 @@ import re
 class Importer(object):
     '''
     The new, unified, simplified, interface to Leo's importer code.
-    
+
     Eventually, all importers will create use this class.
     '''
-    
+
     #@+others
     #@+node:ekr.20161108155925.1: *3* i.__init__
     #@@nobeautify
@@ -176,10 +176,10 @@ class Importer(object):
         # *Never* change p unexpectedly!
         assert hasattr(p.v, '_import_lines'), (p and p.h, g.callers())
         return p.v._import_lines
-        
+
     def has_lines(self, p):
         return hasattr(p.v, '_import_lines')
-        
+
     def inject_lines_ivar(self, p):
         '''Inject _import_lines into p.v.'''
         # *Never* change p unexpectedly!
@@ -225,7 +225,7 @@ class Importer(object):
         '''
         trace = False and g.unitTesting
         comment, block1, block2 = self.single_comment, self.block1, self.block2
-        
+
         def add_key(d, pattern, data):
             key = pattern[0]
             aList = d.get(key,[])
@@ -269,7 +269,7 @@ class Importer(object):
     def get_table(self, context):
         '''
         Return the state table for the given context.
-        
+
         This method handles caching.  x.get_new_table returns the actual table.
         '''
         key = '%s.%s' % (self.name, context)
@@ -351,17 +351,17 @@ class Importer(object):
     def scan_line(self, s, prev_state):
         '''
         A generalized scan-line method.
-        
+
         SCAN STATE PROTOCOL:
-        
+
         The Importer class should have a state_class ivar that references a
         **state class**. This class probably should *not* be subclass of the
         ScanState class, but it should observe the following protocol:
-        
+
         1. The state class's ctor must have the following signature:
-            
+
             def __init__(self, d)
-            
+
         2. The state class must have an update method.
         '''
         trace = False and g.unitTesting
@@ -389,9 +389,9 @@ class Importer(object):
         Test x.scan_line or i.scan_line.
 
         `tests` is a list of g.Bunches with 'line' and 'ctx' fields.
-        
+
         A typical @command test:
-            
+
             if c.isChanged(): c.save()
             < < imp.reload importers.linescanner and importers.python > >
             importer = py.Py_Importer(c.importCommands)
@@ -724,7 +724,7 @@ class Importer(object):
         '''
         Optional Stage 2 of the importer pipeline, consisting of zero or more
         substages. Each substage alters nodes in various ways.
-        
+
         Subclasses may freely override this method, **provided** that all
         substages use the API for setting body text. Changing p.b directly will
         cause asserts to fail later in i.finish().
@@ -1004,14 +1004,14 @@ class Importer(object):
     def strip_blank_lines(self, lines):
         '''Strip all blank lines from s.'''
         return [z for z in lines if not z.isspace()]
-        
+
     def strip_lws(self, lines):
         '''Strip leading whitespace from all lines.'''
         return [self.lstrip_line(z) for z in lines]
         # This also works, but I prefer the "extra" call to lstrip().
         # return ['\n' if z.isspace() else z.lstrip() for z in lines].
 
-        
+
     #@+node:ekr.20161123210335.1: *5* i.trace_lines
     def trace_lines(self, lines1, lines2, parent):
         '''Show both s1 and s2.'''
@@ -1046,7 +1046,7 @@ class Importer(object):
     def all_contexts(self, table):
         '''
         Return a list of all contexts contained in the third column of the given table.
-        
+
         This is a support method for unit tests.
         '''
         contexts = set()
@@ -1222,7 +1222,7 @@ class Importer(object):
     def undent_by(self, s, undent_val):
         '''
         Remove leading whitespace equivalent to undent_val from each line.
-        
+
         Strict languages: prepend the underindent escape for underindented lines.
         '''
         trace = False and not g.app.unitTesting
@@ -1252,7 +1252,7 @@ class ScanState:
     The base class for classes representing the state of the line-oriented
     scan.
     '''
-    
+
     def __init__(self, d=None):
         '''ScanState ctor.'''
         if d:

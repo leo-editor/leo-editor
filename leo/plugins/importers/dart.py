@@ -18,13 +18,13 @@ class Dart_Importer(Importer):
             state_class = Dart_ScanState,
             strict = False,
         )
-        
+
     #@+others
     #@+node:ekr.20161123121021.1: *3* dart_i.clean_headline
     dart_pattern = re.compile(r'^\s*([\w_]+\s*)+\(')
 
     def clean_headline(self, s):
-        
+
         m = self.dart_pattern.match(s)
         if m:
             return m.group(0).strip('(').strip()
@@ -34,7 +34,7 @@ class Dart_Importer(Importer):
 #@+node:ekr.20161123120245.6: ** class class Dart_ScanState
 class Dart_ScanState:
     '''A class representing the state of the dart line-oriented scan.'''
-    
+
     def __init__(self, d=None):
         '''Dart_ScanState.__init__'''
         if d:

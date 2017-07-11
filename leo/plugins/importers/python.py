@@ -11,7 +11,7 @@ Target = linescanner.Target
 #@+node:ekr.20161029103615.1: ** class Py_Importer(Importer)
 class Py_Importer(Importer):
     '''A class to store and update scanning state.'''
-    
+
     def __init__(self, importCommands, language=None, alternate_language=None):
         '''Py_Importer.ctor.'''
         # Init the base class.
@@ -35,7 +35,7 @@ class Py_Importer(Importer):
                 return m.group(1)
             m = re.match(r'\s*class\s+(\w+)', h)
             return 'class %s' % m.group(1) if m else h.strip()
-        
+
     def get_decorator(self, p):
         if g.unitTesting or self.c.config.getBool('put_python_decorators_in_imported_headlines'):
             for s in self.get_lines(p):
@@ -59,7 +59,7 @@ class Py_Importer(Importer):
         '''
         trace = False and g.unitTesting
         comment, block1, block2 = self.single_comment, self.block1, self.block2
-        
+
         def add_key(d, key, data):
             aList = d.get(key,[])
             aList.append(data)
@@ -198,7 +198,7 @@ class Py_Importer(Importer):
         '''
         Handle a line that terminates the previous class/def. The line is
         neither a class/def line, and we are not in a multi-line token.
-        
+
         Skip all lines that are at the same level as the class/def.
         '''
         # pylint: disable=arguments-differ
@@ -381,7 +381,7 @@ class Py_Importer(Importer):
     def starts_decorator(self, i, lines, prev_state):
         '''
         True if the line looks like a decorator outside any context.
-        
+
         Puts the entire decorator into the self.decorator_lines list,
         and sets self.skip so that the next line to be handled is a class/def line.
         '''
@@ -419,7 +419,7 @@ class Py_Importer(Importer):
     def find_class(self, parent):
         '''
         Find the start and end of a class/def in a node.
-        
+
         Return (kind, i, j), where kind in (None, 'class', 'def')
         '''
         trace = True and not g.unitTesting
@@ -441,7 +441,7 @@ class Py_Importer(Importer):
         '''
         Find the end of a class/def starting at index
         on line i of lines.
-        
+
         Return (kind, i, j), where kind in (None, 'class', 'def')
         .'''
         trace = True and not g.unitTesting
@@ -470,7 +470,7 @@ class Py_Importer(Importer):
 #@+node:ekr.20161105100227.1: ** class Python_ScanState
 class Python_ScanState:
     '''A class representing the state of the python line-oriented scan.'''
-    
+
     def __init__(self, d=None):
         '''Python_ScanState ctor.'''
         if d:

@@ -21,7 +21,7 @@ try:
     import matplotlib.backend_bases as backend_bases
     from matplotlib.figure import Figure
     FigureManagerBase = backend_bases.FigureManagerBase
-        
+
 except ImportError:
     g.es_exception()
 #@-<< pyplot_backend imports >>
@@ -84,9 +84,9 @@ class LeoFigureManagerQT(backend_qt5.FigureManager):
         w.setLayout(QtWidgets.QVBoxLayout())
         w.layout().addWidget(self.canvas)
         vc.embed_widget(w)
-            
+
         class DummyWindow:
-            
+
             def __init__(self, c):
                 self.c = c
                 self._destroying = None

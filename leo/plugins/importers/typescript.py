@@ -8,7 +8,7 @@ Importer = linescanner.Importer
 #@+others
 #@+node:ekr.20161118093751.1: ** class TS_Importer(Importer)
 class TS_Importer(Importer):
-    
+
     def __init__(self, importCommands, language=None, alternate_language=None):
         '''The ctor for the JS_ImportController class.'''
         # Init the base class.
@@ -42,7 +42,7 @@ class TS_Importer(Importer):
                 else:
                     i += 1
                 assert progress < i
-        
+
         if trace: g.trace('returns', i, s[i] if i < len(s) else '')
         return i-1
     #@+node:ekr.20161118093751.5: *3* js_i.clean_headline
@@ -62,7 +62,7 @@ class TS_Importer(Importer):
 #@+node:ekr.20161118071747.14: ** class TS_ScanState
 class TS_ScanState:
     '''A class representing the state of the typescript line-oriented scan.'''
-    
+
     def __init__(self, d=None):
         '''TS_ScanState ctor.'''
         if d:
@@ -72,7 +72,7 @@ class TS_ScanState:
         else:
             self.context = ''
             self.curlies = 0
-        
+
     #@+others
     #@+node:ekr.20161118071747.15: *3* ts_state.__repr__
     def __repr__(self):

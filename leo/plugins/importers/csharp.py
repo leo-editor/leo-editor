@@ -17,7 +17,7 @@ class Csharp_Importer(Importer):
             state_class = Csharp_ScanState,
             strict = False,
         )
-        
+
     #@+others
     #@+node:ekr.20161121200106.5: *3* csharp.clean_headline
     def clean_headline(self, s):
@@ -30,7 +30,7 @@ class Csharp_Importer(Importer):
 #@+node:ekr.20161121200106.7: ** class class Csharp_ScanState
 class Csharp_ScanState:
     '''A class representing the state of the csharp line-oriented scan.'''
-    
+
     def __init__(self, d=None):
         '''Csharp_ScanState.__init__'''
         if d:

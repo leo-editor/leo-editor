@@ -46,7 +46,7 @@ def onCreate(tag, keys):
 #@+node:ekr.20170217164903.1: ** class TableController
 class TableController (object):
     '''A class to create and align tables.'''
-    
+
     def __init__ (self, c):
         '''Ctor for TableController class.'''
         self.c = c
@@ -72,7 +72,7 @@ class TableController (object):
     def default_key_handler(self, event, stroke):
         '''
         TableController: Override k.old_handleDefaultChar.
-        
+
         Important: the code must use event.ch, not stroke.
         '''
         w = self.ec.editWidget(event)
@@ -185,7 +185,7 @@ class TableController (object):
         self.enabled = not self.enabled
     #@+node:ekr.20170218134104.1: *3* table.update (not used)
     # def update(self, event, i, lines, stroke):
-        
+
         # ### Temp
         # # self.old_handleDefaultChar(event, stroke)
         # self.put(ch, w)

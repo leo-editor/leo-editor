@@ -25,7 +25,7 @@ class Rst_Importer(Importer):
             state_class = Rst_ScanState,
             strict = False,
         )
-        
+
     #@+others
     #@+node:ekr.20161204032455.1: *3* rst_i.check
     def check(self, unused_s, parent):
@@ -196,7 +196,7 @@ class Rst_Importer(Importer):
 #@+node:ekr.20161127192007.6: ** class Rst_ScanState
 class Rst_ScanState:
     '''A class representing the state of the rst line-oriented scan.'''
-    
+
     def __init__(self, d=None):
         '''Rst_ScanState.__init__'''
         if d:

@@ -8,7 +8,7 @@ Importer = linescanner.Importer
 #@+others
 #@+node:ekr.20140723122936.18049: ** class JS_Importer
 class JS_Importer(Importer):
-    
+
     def __init__(self, importCommands, language=None, alternate_language=None):
         '''The ctor for the JS_ImportController class.'''
         # Init the base class.
@@ -220,7 +220,7 @@ class JS_Importer(Importer):
 #@+node:ekr.20161105092745.1: ** class JS_ScanState
 class JS_ScanState:
     '''A class representing the state of the javascript line-oriented scan.'''
-    
+
     def __init__(self, d=None):
         '''JS_ScanState ctor'''
         if d:
@@ -231,12 +231,12 @@ class JS_ScanState:
         else:
             self.context = ''
             self.curlies = self.parens = 0
-        
+
     def __repr__(self):
         '''JS_ScanState.__repr__'''
         return 'JS_ScanState context: %r curlies: %s parens: %s' % (
             self.context, self.curlies, self.parens)
-            
+
     __str__ = __repr__
 
     #@+others
