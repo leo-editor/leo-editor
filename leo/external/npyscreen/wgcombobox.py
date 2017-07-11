@@ -22,7 +22,7 @@ class ComboBox(textbox.Textfield):
         if value is 0: 
             self.value = 0
         super(ComboBox, self).__init__(screen, **keywords)
-        
+
     #@+node:ekr.20170428084207.565: *3* ComboBox.display_value
     def display_value(self, vl):
         """Overload this function to change how values are displayed.  
@@ -87,7 +87,7 @@ class ComboBox(textbox.Textfield):
 #@+node:ekr.20170428084207.571: ** class TitleCombo
 class TitleCombo(titlefield.TitleText):
     _entry_type = ComboBox
-    
+
     #@+others
     #@+node:ekr.20170428084207.572: *3* get_values
     def get_values(self):
@@ -106,7 +106,7 @@ class TitleCombo(titlefield.TitleText):
         except Exception:
             # probably trying to set the value before the textarea is initialised
             self.__tmp_values = values
-            
+
     #@+node:ekr.20170428084207.574: *3* del_values
     def del_values(self):
         del self.entry_widget.values

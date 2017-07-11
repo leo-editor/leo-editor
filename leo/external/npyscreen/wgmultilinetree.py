@@ -89,7 +89,7 @@ class TreeLine(textbox.TextfieldBase):
                                 real_x,
                                 ' ',
                                 curses.A_NORMAL)
-                            
+
                     else:
                         if self.show_v_lines:
                             self.parent.curses_pad.addch(
@@ -155,7 +155,7 @@ class TreeLine(textbox.TextfieldBase):
                     curses.ACS_RTEE,
                     curses.A_NORMAL)
                 real_x += 1
-                
+
         if self._tree_has_children:
             if self._tree_expanded:
                 self.parent.curses_pad.addch(

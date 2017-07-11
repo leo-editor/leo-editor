@@ -23,7 +23,7 @@ class TitleText(widget.Widget):
         labelColor='LABEL',
         allow_override_begin_entry_at=True,
         **keywords):
-        
+
         self.text_field_begin_at = begin_entry_at
         self.field_width_request = field_width
         self.labelColor = labelColor
@@ -46,7 +46,7 @@ class TitleText(widget.Widget):
                 self._passon.pop(dangerous)
             except Exception:
                 pass
-                
+
         if self.field_width_request:
             self._passon['width'] = self.field_width_request
         else:
@@ -62,7 +62,7 @@ class TitleText(widget.Widget):
             #    raise ValueError("The maximum width specified %s is less than the text_field_begin_at value %s." % (self._passon['width'], self.text_field_begin_at))
             if self._passon['width'] > 0:
                 self._passon['width'] -= self.text_field_begin_at+1
-        
+
         if self.use_two_lines:
             if 'max_height' in self._passon and self._passon['max_height']:
                 if self._passon['max_height'] == 1:
@@ -71,13 +71,13 @@ class TitleText(widget.Widget):
             if 'height' in self._passon and self._passon['height']:
                 raise ValueError("I don't know how to resolve this: height == 1 but widget using 2 lines.")
                 self._passon['height'] -= 1
-        
+
 
         self.make_contained_widgets()
         self.set_value(value)
         self.hidden = hidden
-        
-        
+
+
 
     #@+node:ekr.20170428084208.385: *3* TitleText.resize
     def resize(self):
@@ -89,7 +89,7 @@ class TitleText(widget.Widget):
         self.label_widget._resize()
         self.entry_widget._resize()
         self.recalculate_size()
-        
+
     #@+node:ekr.20170428084208.386: *3* TitleText.make_contained_widgets
     def make_contained_widgets(self):
         self.label_widget = textbox.Textfield(self.parent, relx=self.relx, rely=self.rely, width=len(self.name)+1, value=self.name, color=self.labelColor)
@@ -107,14 +107,14 @@ class TitleText(widget.Widget):
             self._contained_rely_offset = 1
         else: 
             self._contained_rely_offset = 0
-                
+
         self.entry_widget = self.__class__._entry_type(self.parent, 
                                 relx=(self.relx + self.text_field_begin_at), 
                                 rely=(self.rely+self._contained_rely_offset), value = self.value,
                                 **self._passon)
         self.entry_widget.parent_widget = weakref.proxy(self)
         self.recalculate_size()
-        
+
 
     #@+node:ekr.20170428084208.387: *3* TitleText.recalculate_size
     def recalculate_size(self):
@@ -178,7 +178,7 @@ class TitleText(widget.Widget):
             return self.entry_widget.editable
         except AttributeError:
             return self._editable
-        
+
     #@+node:ekr.20170428084208.395: *3* TitleText.editable
     @editable.setter
     def editable(self, value):

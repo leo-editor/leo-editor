@@ -30,7 +30,7 @@ class Autocomplete(textbox.Textfield):
     #@+node:ekr.20170428084207.499: *3* get_choice
     def get_choice(self, values):
         # If auto_complete needs the user to select from a list of values, this function lets them do that.
-        
+
         #tmp_window = Form.TitleForm(name=self.name, framed=True)
         tmp_window = Popup.Popup(name=self.name, framed=True)
         sel = tmp_window.add_widget(multiline.MultiLine, 
@@ -109,7 +109,7 @@ class Filename(Autocomplete):
 
                 if os.path.isdir(filelist[index1]):
                     dirs_only.append(filelist[index1])
-            
+
                 else:
                     files_only.append(filelist[index1])
 

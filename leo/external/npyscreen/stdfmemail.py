@@ -35,7 +35,7 @@ class EmailTree(npyscreen.MultiLineTreeNew):
         if self.values[self.cursor_line].hasChildren():
             self.cursor_line += 1
             return False
-        
+
         try:
             value = [weakref.proxy(self.values[self.cursor_line]),]
         except TypeError:
@@ -47,7 +47,7 @@ class EmailTree(npyscreen.MultiLineTreeNew):
         self.editing = False
         self.how_exited=npyscreen.wgwidget.EXITED_UP
         self.hidden  = True
-        
+
     #@+node:ekr.20170428084207.441: *3* h_select_exit
     def h_select_exit(self, ch):
         self.h_select(ch)
@@ -59,7 +59,7 @@ class EmailTree(npyscreen.MultiLineTreeNew):
         self.handlers.update({
             ord('s'):   self.h_save_message_part,
         })
-        
+
     #@+node:ekr.20170428084207.443: *3* h_save_message_part
     def h_save_message_part(self, ch):
         self.parent.saveMessagePart()
@@ -100,7 +100,7 @@ class EmailViewFm(npyscreen.SplitFormWithMenus):
     BLANK_COLUMNS_RIGHT= 1
     SHORT_HEADER_LIST = ('from', 'to', 'cc', 'bcc' 'date', 'subject', 'reply-to')
     DOWNLOAD_DIR = os.path.expanduser("~/Downloads")
-    
+
     #@+others
     #@+node:ekr.20170428084207.449: *3* setEmail
     def setEmail(self, this_email):
@@ -115,9 +115,9 @@ class EmailViewFm(npyscreen.SplitFormWithMenus):
         self.wEmailBody.start_display_at = 0
         self.wMessageTree.hidden = False
         self.wMessageTree.cursor_line = 0
-                
+
         self.updateEmailTree()
-        
+
         self.wSubject.value     = this_email['subject']
         self.wFrom.value        = this_email['from']
         self.wDate.value        = this_email['date']
@@ -132,7 +132,7 @@ class EmailViewFm(npyscreen.SplitFormWithMenus):
     def updateEmailTree(self):
         self._parse_email_tree(self.this_email)
         self.wMessageTree.values = self._this_email_tree
-        
+
 
     #@+node:ekr.20170428084207.452: *3* set_up_handlers
     def set_up_handlers(self):
@@ -157,7 +157,7 @@ class EmailViewFm(npyscreen.SplitFormWithMenus):
                                         editable=False, name = "From:", ) #max_width=-8)
         self.wDate    = self.add(npyscreen.TitleText, begin_entry_at=10, 
                                         editable=False, name = "Date:")
-        
+
         self.draw_line_at   = self.nextrely
         self.nextrely      += 1
         _body_rely          = self.nextrely        
@@ -218,7 +218,7 @@ class EmailViewFm(npyscreen.SplitFormWithMenus):
                 for h in these_headers:
                     s_header_list.append(str(headers).capitalize() + ": " + h.strip())
         npyscreen.notify_confirm(s_header_list, wide=True, wrap=False)
-        
+
     #@+node:ekr.20170428084207.459: *3* saveMessagePart
     def saveMessagePart(self, vl=None):
         if vl == None:
@@ -263,7 +263,7 @@ class EmailViewFm(npyscreen.SplitFormWithMenus):
                 for h in these_headers:
                     s_header_list.append(str(headers).capitalize() + ": " + h.strip())
         npyscreen.notify_confirm(s_header_list, wide=True, wrap=True)
-            
+
 
     #@+node:ekr.20170428084207.462: *3* viewMessageTree
     def viewMessageTree(self,):

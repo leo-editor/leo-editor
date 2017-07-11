@@ -40,7 +40,7 @@ class Slider(widget.Widget):
         """What do different values mean?  If you subclass this object, and override this 
         method, you can change how the labels are displayed.  This method should return a
         unicode string, to be displayed to the user. You probably want to ensure this is a fixed width."""
-        
+
         stri = "%s / %s" %(self.value, self.out_of)
         if isinstance(stri, bytes):
             stri = stri.decode(self.encoding, 'replace')
@@ -72,7 +72,7 @@ class Slider(widget.Widget):
                 self.make_attributes_list(label_str, label_attributes),
                 len(label_str)
                 )
-            
+
             # If want to handle neg. numbers, this line would need changing.
         blocks_to_fill = (float(self.value) / float(self.out_of)) * int(blocks_on_screen)
 
@@ -89,7 +89,7 @@ class Slider(widget.Widget):
             #self.parent.curses_pad.bkgdset(curses.ACS_HLINE)
             BACKGROUND_CHAR = curses.ACS_HLINE
             BARCHAR         = " "
-        
+
 
         for n in range(blocks_on_screen):
             xoffset = self.relx

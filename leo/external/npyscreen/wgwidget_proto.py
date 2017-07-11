@@ -35,21 +35,21 @@ class _LinePrinter(object):
                 force_ascii=False):
         if isinstance(unicode_string, bytes):
             raise ValueError("This class prints unicode strings only.")
-        
+
         if len(unicode_string) != len(attributes_list):
             raise ValueError("Must supply an attribute for every character.")
 
         column = 0
         place_in_string = 0
-        
+
         if hasattr(self, 'curses_pad'):
             # we are a form
             print_on = self.curses_pad
         else:
             # we are a widget
             print_on = self.parent.curses_pad    
-        
-        
+
+
         while column <= (max_columns-1):
             try:
                 width_of_char_to_print = self.find_width_of_char(unicode_string[place_in_string])
@@ -73,7 +73,7 @@ class _LinePrinter(object):
         provided, with each entry of the list containing a copy of attribute."""
         if isinstance(unicode_string, bytes):
             raise ValueError("This class is intended for unicode strings only.")
-        
+
         atb_array = []
         ln = len(unicode_string)
         for x in range(ln):

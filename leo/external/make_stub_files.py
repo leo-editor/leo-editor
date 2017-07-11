@@ -252,7 +252,7 @@ class AstFormatter(object):
             result.append(self.visit(z))
             self.level -= 1
         return ''.join(result)
-        
+
     def do_AsyncFunctionDef(self, node):
         return self.do_FunctionDef(node, async=True)
     #@+node:ekr.20160317055215.9: *4* f.Interactive
@@ -512,7 +512,7 @@ class AstFormatter(object):
     def do_Set(self, node):
         for z in node.elts:
             self.visit(z)
-            
+
     #@+node:ekr.20160523135038.4: *4* f.SetComp (new)
     # SetComp(expr elt, comprehension* generators)
 
@@ -662,7 +662,7 @@ class AstFormatter(object):
                 result.append(self.visit(z))
                 self.level -= 1
         return ''.join(result)
-        
+
     def do_AsyncFor(self, node):
         return self.do_For(node, async=True)
 
@@ -1374,7 +1374,7 @@ class Pattern(object):
 class ReduceTypes:
     '''
     A helper class for the top-level reduce_types function.
-    
+
     This class reduces a list of type hints to a string containing the
     reduction of all types in the list.
     '''

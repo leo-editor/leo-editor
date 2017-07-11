@@ -20,9 +20,9 @@ class TextfieldCtrlChars(textbox.Textfield):
             _maximum_string_length = self.width - 1
         else:   
             _maximum_string_length = self.width
-        
+
         _maximum_string_length -= (len(self.ctr_chars) + 1)
-        
+
         return _maximum_string_length
 
     #@+node:ekr.20170428084208.364: *3* _set_maxiumum_string_length

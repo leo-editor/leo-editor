@@ -43,7 +43,7 @@ class ScreenArea(object):
     DEFAULT_COLUMNS    = 0
     SHOW_ATX           = 0
     SHOW_ATY           = 0
-    
+
     """A screen area that can be safely resized.  But this is a low-level class, not the
     object you are looking for."""
 
@@ -56,13 +56,13 @@ class ScreenArea(object):
             show_aty = 0,
              **keywords):
 
-        
+
     # Putting a default in here will override the system in _create_screen. For testing?
         if not lines:
             lines = self.__class__.DEFAULT_LINES
         if not columns:
             columns = self.__class__.DEFAULT_COLUMNS
-            
+
         if lines:   minimum_lines   = lines
         if columns: minimum_columns = columns
 
@@ -80,15 +80,15 @@ class ScreenArea(object):
         self.show_atx = show_atx or self.__class__.SHOW_ATX
         self.show_aty = show_aty or self.__class__.SHOW_ATY
         self.ALL_SHOWN = False
-        
+
         global APPLICATION_THEME_MANAGER
         if APPLICATION_THEME_MANAGER is None:
             self.theme_manager = ThemeManagers.ThemeManager()
         else:
             self.theme_manager = APPLICATION_THEME_MANAGER
-        
+
         self.keypress_timeout = None
-        
+
 
         self._create_screen()
 
@@ -100,7 +100,7 @@ class ScreenArea(object):
             if self.cols_were_auto_set: self.columns = None
         except Exception: pass
 
-        
+
         if not self.lines: 
             self.lines = self._max_physical()[0]+1
             self.lines_were_auto_set = True
@@ -155,7 +155,7 @@ class ScreenArea(object):
         self.curses_pad.move(0,0)
         # Since we can have pannels larger than the screen
         # let's allow for scrolling them
-        
+
         # Getting strange errors on OS X, with curses sometimes crashing at this point. 
         # Suspect screen size not updated in time. This try: seems to solve it with no ill effects.
         try:

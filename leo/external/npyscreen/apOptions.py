@@ -50,7 +50,7 @@ class OptionListDisplayLine(wgannotatetextbox.AnnotateTextboxBase):
     #@+node:ekr.20170428084207.58: *3* display_value
     def display_value(self, vl):
         return vl.get_for_single_line_display()
-        
+
     #@-others
 #@+node:ekr.20170428084207.59: ** class OptionListDisplay
 class OptionListDisplay(wgmultiline.MultiLineAction):
@@ -152,7 +152,7 @@ class OptionList(object):
     #@+node:ekr.20170428084207.73: *3* _decode_text_from_saved
     def _decode_text_from_saved(self, txt):
         return txt.decode('unicode-escape')
-        
+
     #@+node:ekr.20170428084207.74: *3* save_text
     def save_text(self, option):
         s = option.get()
@@ -170,7 +170,7 @@ class OptionList(object):
             return 'True'
         else:
             return 'False'
-            
+
     #@+node:ekr.20170428084207.77: *3* load_bool
     def load_bool(self, txt):
         txt = txt.decode()
@@ -198,7 +198,7 @@ class OptionList(object):
         for p in parts:
             rtn.append(p.encode('ascii').decode('unicode-escape'))
         return rtn
-        
+
     #@+node:ekr.20170428084207.80: *3* save_list
     def save_list(self, lst):
         pts_to_save = []
@@ -229,7 +229,7 @@ class OptionList(object):
             return None
 
 
-            
+
     #@-others
 #@+node:ekr.20170428084207.84: ** class Option
 class Option(object):
@@ -298,8 +298,8 @@ class Option(object):
                                                         )
             option_changing_form.nextrely += 1
             explanation_widget.values = self.documentation
-            
-        
+
+
         option_widget = option_changing_form.add(self.WIDGET_TO_USE, 
                                                     name=self.get_name_user(),
                                                     **self.option_widget_keywords 
@@ -341,7 +341,7 @@ class OptionLimitedChoices(Option):
         for v in vl:
             value.append(self.choices[v])
         self.set(value)
-        
+
     #@-others
 #@+node:ekr.20170428084207.101: ** class OptionFreeText
 class OptionFreeText(Option):
@@ -382,7 +382,7 @@ class OptionBoolean(Option):
 class OptionFilename(Option):
     DEFAULT = ''
     WIDGET_TO_USE = wgfilenamecombo.FilenameCombo
-    
+
 #@+node:ekr.20170428084207.110: ** class OptionDate
 class OptionDate(Option):
     DEFAULT = None

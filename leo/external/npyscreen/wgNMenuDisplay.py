@@ -26,7 +26,7 @@ class MenuViewerController(object):
     #@+node:ekr.20170428084208.257: *3* create
     def create(self):
         pass
-        
+
     #@+node:ekr.20170428084208.258: *3* setMenu
     def setMenu(self, mnu):
         self._menuStack = []
@@ -36,7 +36,7 @@ class MenuViewerController(object):
     def _setMenuWithoutResettingStack(self, mnu):
         self._menu = mnu
         self._DisplayArea._menuListWidget.value = None
-        
+
     #@+node:ekr.20170428084208.260: *3* _goToSubmenu
     def _goToSubmenu(self, mnu):
         self._menuStack.append(self._menu)
@@ -51,7 +51,7 @@ class MenuViewerController(object):
     def _executeSelection(self, sel):
         self._editing = False
         return sel()
-        
+
     #@+node:ekr.20170428084208.263: *3* edit
     def edit(self):
         try:
@@ -76,7 +76,7 @@ class MenuViewerController(object):
                 _actionsToTake.append((self._returnToPrevious, ))
             # else:
                 # _returnToPreviousSet = False
-            
+
             for itm in self._menu.getItemObjects():
                 if isinstance(itm, NewMenu.MenuItem):
                     _menulines.append(itm)
@@ -86,8 +86,8 @@ class MenuViewerController(object):
                     _actionsToTake.append((self._goToSubmenu, itm))
                 else:
                     raise ValueError("menu %s contains objects I don't know how to handle." % self._menu.name)
-            
-            
+
+
             self._DisplayArea._menuListWidget.values = _menulines
             self._DisplayArea.display()
             self._DisplayArea._menuListWidget.edit()
@@ -106,9 +106,9 @@ class MenuViewerController(object):
                     # Menu must be empty.
                     return False
             _return_value = _fctn(*_args)
-        
+
         return _return_value
-            
+
 
     #@-others
 #@+node:ekr.20170428084208.264: ** class PreviousMenu
@@ -168,7 +168,7 @@ class wgMenuLine(wgannotatetextbox.AnnotateTextboxBaseRight):
             return self.safe_string(self.value.getText())
         else:
             return self.safe_string(str(self.value))
-            
+
 
     #@-others
 #@+node:ekr.20170428084208.272: ** class wgMenuListWithSortCuts
@@ -207,7 +207,7 @@ class MenuDisplayScreen(Form.Form):
             ord('x'):       self._menuListWidget.h_select_exit,
             curses.ascii.SP:    self._menuListWidget.h_select_exit,
         })
-        
+
     #@-others
 #@+node:ekr.20170428084208.278: ** class HasMenus
 class HasMenus(object):
@@ -225,7 +225,7 @@ class HasMenus(object):
             self._NMenuList = []
         self._MainMenu  = NewMenu.NewMenu
         self.add_handlers({self.__class__.MENU_KEY: self.root_menu})
-        
+
     #@+node:ekr.20170428084208.280: *3* new_menu
     def new_menu(self, name=None, *args, **keywords):
         if not hasattr(self, '_NMenuList'):
@@ -237,7 +237,7 @@ class HasMenus(object):
     #@+node:ekr.20170428084208.281: *3* add_menu
     def add_menu(self, *args, **keywords):
         return self.new_menu(*args, **keywords)
-        
+
     #@+node:ekr.20170428084208.282: *3* root_menu
     def root_menu(self, *args):
         if len(self._NMenuList) == 1:
@@ -258,7 +258,7 @@ class HasMenus(object):
         self._NMenuList.append(_mnu)
         return weakref.proxy(_mnu)
 
-        
+
     #@+node:ekr.20170428084208.284: *3* popup_menu
     def popup_menu(self, menu):
         self._NMDisplay.setMenu(menu)
@@ -266,7 +266,7 @@ class HasMenus(object):
 
 
 
-        
+
     #@-others
 #@-others
 #@@language python

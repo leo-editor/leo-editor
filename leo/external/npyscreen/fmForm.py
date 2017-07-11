@@ -36,8 +36,8 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
     ALLOW_RESIZE = True
     FIX_MINIMUM_SIZE_WHEN_CREATED = True    
     WRAP_HELP = True
-    
-    
+
+
     #@+others
     #@+node:ekr.20170428084207.177: *3* __init__
     def __init__(self, name=None, parentApp=None, framed=None, help=None, color='FORMDEFAULT', 
@@ -66,7 +66,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
         self.help = help
 
         self.color = color
-        
+
         self.cycle_widgets = cycle_widgets
 
         self.set_up_handlers()
@@ -76,12 +76,12 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
         if widget_list:
             self.create_widgets_from_list(widget_list)
         self.create()
-        
+
         if self.FIX_MINIMUM_SIZE_WHEN_CREATED:
             self.min_l = self.lines
             self.min_c = self.columns
-        
-            
+
+
     #@+node:ekr.20170428084207.178: *3* resize
     def resize(self):
         pass
@@ -117,13 +117,13 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
         # EKR: This is an imported symbol, not a global!
         if DISABLE_RESIZE_SYSTEM:
             return False
-            
+
         if not self.ALLOW_RESIZE:
             return False
-            
+
         if hasattr(self, 'parentApp'):
             self.parentApp.resize()
-            
+
         self._create_screen()
         self.resize()
         for w in self._widgets__:
@@ -254,7 +254,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
     def h_display(self, input):
         self._resize()
         self.DISPLAY()
-        
+
     #@+node:ekr.20170428084207.195: *3* safe_get_mouse_event
     def safe_get_mouse_event(self):
         try:
@@ -268,7 +268,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
         mouse_event = self.safe_get_mouse_event()
         if mouse_event:
             self.use_mouse_event(mouse_event)
-        
+
     #@+node:ekr.20170428084207.197: *3* use_mouse_event
     def use_mouse_event(self, mouse_event):
         wg = self.find_mouse_handler(mouse_event)
@@ -289,7 +289,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
             except AttributeError:
                 pass
         return None
-        
+
     #@+node:ekr.20170428084207.199: *3* set_editing
     def set_editing(self, wdg):
         try:
@@ -463,9 +463,9 @@ class FormExpanded(form_edit_loop.FormDefaultEditLoop, _FormBase, ):
     #use the old-style edit loop
 
 
-    
-    
-    
+
+
+
 #@+node:ekr.20170428084207.213: ** class TitleForm
 class TitleForm(Form):
     """A form without a box, just a title line"""
@@ -482,7 +482,7 @@ class TitleForm(Form):
         MAXY, MAXX = self.curses_pad.getmaxyx()
         self.curses_pad.hline(0, 0, curses.ACS_HLINE, MAXX) 
         self.draw_title_and_help()
-        
+
     #@-others
 #@+node:ekr.20170428084207.215: ** class TitleFooterForm
 class TitleFooterForm(TitleForm):

@@ -18,19 +18,19 @@ class Event(object):
 #@+node:ekr.20170428084207.115: ** class EventHandler
 class EventHandler(object):
     # This partial base class provides the framework to handle events.
-    
+
     #@+others
     #@+node:ekr.20170428084207.116: *3* initialize_event_handling
     def initialize_event_handling(self):
         self.event_handlers = {}
-        
+
     #@+node:ekr.20170428084207.117: *3* add_event_hander
     def add_event_hander(self, event_name, handler):
         if not event_name in self.event_handlers:
             self.event_handlers[event_name] = set()
                 # weakref.WeakSet() #Why doesn't the WeakSet work?
         self.event_handlers[event_name].add(handler)
-        
+
         parent_app = self.find_parent_app()
         if parent_app:
             parent_app.register_for_event(self, event_name)
@@ -41,14 +41,14 @@ class EventHandler(object):
                 self.register_for_event(self, event_name)
             except AttributeError:
                 pass
-                
+
     #@+node:ekr.20170428084207.118: *3* remove_event_handler
     def remove_event_handler(self, event_name, handler):
         if event_name in self.event_handlers:
             self.event_handlers[event_name].remove(handler)
         if not self.event_handlers[event_name]:
             self.event_handlers.pop({})
-            
+
 
     #@+node:ekr.20170428084207.119: *3* handle_event
     def handle_event(self, event):
@@ -74,7 +74,7 @@ class EventHandler(object):
             return self.parent.parentApp
         else:
             return None
-            
+
     #@-others
 #@-others
 #@@language python

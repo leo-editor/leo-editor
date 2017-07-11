@@ -44,9 +44,9 @@ class FilterPopupHelper(Popup.Popup):
     def adjust_widgets(self):
         self.updatestatusline()
         self.statusline.display()
-        
-        
-        
+
+
+
 
     #@-others
 #@+node:ekr.20170428084208.74: ** class MultiLine (Widget)
@@ -304,7 +304,7 @@ class MultiLine(widget.Widget):
         pass
     #@+node:ekr.20170428084208.84: *3* MultiLine._print_line
     def _print_line(self, line, value_indexer):
-        
+
         trace = False ### LeoMLTree.update overrides this.
         if self.widgets_inherit_color and self.do_colors():
             line.color = self.color
@@ -579,7 +579,7 @@ class MultiLine(widget.Widget):
                 self.start_display_at = self.cursor_line
     #@+node:ekr.20170428084208.112: *4* MultiLine.h_exit
     def h_exit(self, ch):
-        
+
         # g.trace('MultiLine')
         self.editing = False
         self.how_exited = True
@@ -594,7 +594,7 @@ class MultiLine(widget.Widget):
             curses.beep()
     #@+node:ekr.20170428084208.114: *4* MultiLine.h_select
     def h_select(self, ch):
-        
+
         # g.trace('MultiLine')
         self.value = self.cursor_line
         if self.select_exit:
@@ -602,7 +602,7 @@ class MultiLine(widget.Widget):
             self.how_exited = True
     #@+node:ekr.20170428084208.115: *4* MultiLine.h_select_exit
     def h_select_exit(self, ch):
-        
+
         # g.trace('MultiLine')
         self.h_select(ch)
         if self.return_exit or self.select_exit:
@@ -610,7 +610,7 @@ class MultiLine(widget.Widget):
             self.how_exited=True
     #@+node:ekr.20170428084208.116: *4* MultiLine.edit
     def edit(self):
-        
+
         # g.trace('MultiLine')
         self.editing = True
         self.how_exited = None
@@ -648,7 +648,7 @@ class MultiLineAction(MultiLine):
                 raise
             else:
                 pass
-            
+
     #@+node:ekr.20170428084208.121: *3* MultiLineAction.set_up_handlers
     def set_up_handlers(self):
         '''MultiLineAction.set_up_handlers.'''
@@ -671,8 +671,8 @@ class MultiLineActionWithShortcuts(MultiLineAction):
         '''MultiLineActionWithShortcuts.set_up_handlers.'''
         super(MultiLineActionWithShortcuts, self).set_up_handlers()
         self.add_complex_handlers( ((self.h_find_shortcut_action, self.h_execute_shortcut_action),) )
-        
-        
+
+
     #@+node:ekr.20170428084208.124: *3* MultiLineActionWithShortcuts.h_find_shortcut_action
     def h_find_shortcut_action(self, _input):
         _input_decoded = curses.ascii.unctrl(_input)
@@ -694,7 +694,7 @@ class MultiLineActionWithShortcuts(MultiLineAction):
         self.h_act_on_highlighted(_input)
 
 
-        
+
 
     #@-others
 #@+node:ekr.20170428084208.126: ** class Pager
@@ -706,7 +706,7 @@ class Pager(MultiLine):
         self.autowrap = autowrap
         self.center = center
         self._values_cache_for_wrapping = []
-        
+
     #@+node:ekr.20170428084208.128: *3* Pager.reset_display_cache
     def reset_display_cache(self):
         super(Pager, self).reset_display_cache()
@@ -754,41 +754,41 @@ class Pager(MultiLine):
         #we look this up a lot. Let's have it here.
         if self.autowrap:
             self.setValuesWrap(list(self.values))
-        
+
         if self.center:
             self.centerValues()
-            
+
         display_length = len(self._my_widgets)
         values_len = len(self.values)
 
         if self.start_display_at > values_len - display_length: 
             self.start_display_at = values_len - display_length
         if self.start_display_at < 0: self.start_display_at = 0
-        
+
         indexer = 0 + self.start_display_at
         for line in self._my_widgets[:-1]: 
             self._print_line(line, indexer)
             indexer += 1
-        
+
         # Now do the final line
         line = self._my_widgets[-1]
-            
+
         if values_len <= indexer+1:
             self._print_line(line, indexer)
         else:
             line.value = MORE_LABEL
             line.highlight = False
             line.show_bold = False
-        
+
         for w in self._my_widgets: 
             # call update to avoid needless refreshes
             w.update(clear=True)
         # There is a bug somewhere that affects the first line.  This cures it.
         # Without this line, the first line inherits the color of the form when not editing. Not clear why.
         self._my_widgets[0].update()
-            
-            
-            
+
+
+
     #@+node:ekr.20170428084208.134: *3* Pager.edit
     def edit(self):
         # Make sure a value never gets set.
@@ -896,7 +896,7 @@ class TitlePager(TitleMultiLine):
 #@+node:ekr.20170428084208.149: ** class BufferPager
 class BufferPager(Pager):
     DEFAULT_MAXLEN = None
-    
+
     #@+others
     #@+node:ekr.20170428084208.150: *3* BufferPager.__init__
     def __init__(self, screen, maxlen=False, *args, **keywords):
@@ -917,7 +917,7 @@ class BufferPager(Pager):
             lines = lines.split('\n')
         except AttributeError:
             pass
-        
+
         self.clearBuffer()
         self.buffer(self._wrap_message_lines(lines, self.width-1))
         self._values_cache_for_wrapping = copy.deepcopy(self.values) 
@@ -931,12 +931,12 @@ class BufferPager(Pager):
                 self.start_display_at = len(self.values) - len(self._my_widgets)
             elif scroll_if_editing:
                 self.start_display_at = len(self.values) - len(self._my_widgets)
-                
+
     #@-others
 #@+node:ekr.20170428084208.154: ** class TitleBufferPager
 class TitleBufferPager(TitleMultiLine):
     _entry_type = BufferPager
-        
+
     #@+others
     #@+node:ekr.20170428084208.155: *3* clearBuffer
     def clearBuffer(self):
@@ -945,7 +945,7 @@ class TitleBufferPager(TitleMultiLine):
     #@+node:ekr.20170428084208.156: *3* buffer
     def buffer(self, *args, **values):
         return self.entry_widget.buffer(*args, **values)
-                
+
 
 
 

@@ -12,16 +12,16 @@ class AnnotateTextboxBase(wgwidget.Widget):
     """A base class intented for customization. Note in particular the annotationColor and annotationNoColor methods
     which you should override."""
     ANNOTATE_WIDTH = 5
-    
+
     #@+others
     #@+node:ekr.20170428084207.483: *3* __init__
     def __init__(self, screen, value = False, annotation_color='CONTROL', **keywords):
         self.value = value
         self.annotation_color = annotation_color
         super(AnnotateTextboxBase, self).__init__(screen, **keywords)
-        
+
         self._init_text_area(screen)
-        
+
         if hasattr(self, 'display_value'):
             self.text_area.display_value = self.display_value
         self.show_bold = False
@@ -37,7 +37,7 @@ class AnnotateTextboxBase(wgwidget.Widget):
     #@+node:ekr.20170428084207.485: *3* _display_annotation_at
     def _display_annotation_at(self):
         return (self.rely, self.relx)
-        
+
 
     #@+node:ekr.20170428084207.486: *3* getAnnotationAndColor
     def getAnnotationAndColor(self):
@@ -77,12 +77,12 @@ class AnnotateTextboxBase(wgwidget.Widget):
             self.text_area.highlight = True
         else:
             self.text_area.highlight = False
-        
+
         if self.show_bold: 
             self.text_area.show_bold = True
         else: 
             self.text_area.show_bold = False
-            
+
         if self.important:
             self.text_area.important = True
         else:
@@ -94,7 +94,7 @@ class AnnotateTextboxBase(wgwidget.Widget):
             self.text_area.highlight = False
 
         self.text_area.update(clear=clear)
-        
+
     #@+node:ekr.20170428084207.490: *3* calculate_area_needed
     def calculate_area_needed(self):
         return 1,0

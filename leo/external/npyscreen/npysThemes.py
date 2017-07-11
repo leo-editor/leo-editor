@@ -25,7 +25,7 @@ class DefaultTheme(ThemeManagers.ThemeManager):
         'CAUTION'     : 'YELLOW_BLACK',
         'CAUTIONHL'   : 'BLACK_YELLOW',
     }
-    
+
 #@+node:ekr.20170428084207.393: ** class ElegantTheme
 class ElegantTheme(ThemeManagers.ThemeManager):
     default_colors = {
@@ -110,7 +110,7 @@ class TransparentThemeDarkText(ThemeManagers.ThemeManager):
     ('MAGENTA_WHITE',    curses.COLOR_MAGENTA,    curses.COLOR_WHITE),
     ('RED_WHITE',        curses.COLOR_RED,        curses.COLOR_WHITE),
     ('YELLOW_WHITE',     curses.COLOR_YELLOW,     curses.COLOR_WHITE),
-     
+
     ('BLACK_ON_DEFAULT',   curses.COLOR_BLACK,      -1),
     ('WHITE_ON_DEFAULT',   curses.COLOR_WHITE,      -1),
     ('BLUE_ON_DEFAULT',    curses.COLOR_BLUE,       -1),
@@ -146,7 +146,7 @@ class TransparentThemeDarkText(ThemeManagers.ThemeManager):
     def __init__(self, *args, **keywords):
         curses.use_default_colors()
         super(TransparentThemeDarkText, self).__init__(*args, **keywords)
-        
+
     #@-others
 #@+node:ekr.20170428084207.398: ** class TransparentThemeLightText
 class TransparentThemeLightText(TransparentThemeDarkText):
@@ -168,7 +168,7 @@ class TransparentThemeLightText(TransparentThemeDarkText):
         'CAUTION'     : 'YELLOW_BLACK',
         'CAUTIONHL'   : 'BLACK_YELLOW',
     }
-    
+
 #@-others
 #@@language python
 #@@tabwidth -4

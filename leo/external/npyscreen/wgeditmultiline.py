@@ -47,7 +47,7 @@ class MultiLineEdit(widget.Widget):
                     s.append('?')
         s = ''.join(s)
         return s
-        
+
 
 
     #@+node:ekr.20170428084207.591: *3* MultiLineEdit.get_value_as_list
@@ -80,7 +80,7 @@ class MultiLineEdit(widget.Widget):
             y += 1
             x = 0
         return y, x
-            
+
     #@+node:ekr.20170428084207.593: *3* MultiLineEdit.calculate_area_needed
     def calculate_area_needed(self):
         return 0,0
@@ -146,7 +146,7 @@ class MultiLineEdit(widget.Widget):
                 place_in_string += 1
             # This needs altering using the methods from the textbox class
             # to properly deal with unicode.
-            
+
             #if self.do_colors():
             #    self.parent.curses_pad.addnstr(self.rely+line_counter, self.relx, 
             #        text_to_display[self.start_display_at+line_counter][xdisplay_offset:], display_width,
@@ -210,7 +210,7 @@ class MultiLineEdit(widget.Widget):
         #           word),
         #          text.split(' ')
         #         )
-        
+
         width=self.maximum_display_width
         text = self.value
         lines = []
@@ -236,7 +236,7 @@ class MultiLineEdit(widget.Widget):
     def full_reformat(self, *args):
         w = DocWrapper(width=self.maximum_display_width)
         self.value = w.fill(self.value)
-        
+
     #def handle_mouse_event(self, mouse_event):
         # unfinished
         #mouse_id, x, y, z, bstate = mouse_event
@@ -311,7 +311,7 @@ class MultiLineEdit(widget.Widget):
         self.value = self.value[:self.cursor_position] + chr(input) \
             + self.value[self.cursor_position:]
         self.cursor_position += len(chr(input))
-        
+
         if self.autowrap:
             self.reformat_preserve_nl()
 
@@ -333,7 +333,7 @@ class MultiLineEdit(widget.Widget):
                     break
                 else:
                     self.cursor_position += 1
-            
+
 
     #@+node:ekr.20170428084207.603: *4* MultiLineEdit.h_line_up
     def h_line_up(self, input):
@@ -361,7 +361,7 @@ class MultiLineEdit(widget.Widget):
     def h_cursor_left(self, input):
         if self.cursor_position > 0: 
             self.cursor_position -= 1
-        
+
 
     #@+node:ekr.20170428084207.606: *4* MultiLineEdit.h_cursor_right
     def h_cursor_right(self, input):
@@ -371,7 +371,7 @@ class MultiLineEdit(widget.Widget):
     def h_delete_left(self, input):
         if self.editable and self.cursor_position > 0:
             self.value = self.value[:self.cursor_position-1] + self.value[self.cursor_position:]
-        
+
         self.cursor_position -= 1
 
     #@+node:ekr.20170428084207.608: *4* MultiLineEdit.h_delete_right
@@ -409,7 +409,7 @@ class DocWrapper(textwrap.TextWrapper):
                 wrapped_lines.extend(textwrap.TextWrapper.wrap(self, para))
         return wrapped_lines
 
-        
+
     #@-others
 #@-others
 #@@language python

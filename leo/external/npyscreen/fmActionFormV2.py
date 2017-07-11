@@ -17,7 +17,7 @@ class ActionFormV2(fmForm.FormBaseNew):
         #@+node:ekr.20170428084207.135: *4* whenPressed
         def whenPressed(self):
             return self.parent._on_ok()
-            
+
         #@-others
     #@+node:ekr.20170428084207.136: *3* class Cancel_Button
     class Cancel_Button(wgbutton.MiniButtonPress):
@@ -25,7 +25,7 @@ class ActionFormV2(fmForm.FormBaseNew):
         #@+node:ekr.20170428084207.137: *4* whenPressed
         def whenPressed(self):
             return self.parent._on_cancel()
-            
+
         #@-others
     OKBUTTON_TYPE = OK_Button
     CANCELBUTTON_TYPE = Cancel_Button
@@ -48,7 +48,7 @@ class ActionFormV2(fmForm.FormBaseNew):
                         0 - self.__class__.OK_BUTTON_BR_OFFSET[1] - len(self.__class__.OK_BUTTON_TEXT),
                         None
                         )
-                        
+
         self._add_button('cancel_button', 
                         self.__class__.CANCELBUTTON_TYPE, 
                         self.__class__.CANCEL_BUTTON_TEXT,
@@ -107,7 +107,7 @@ class ActionFormV2(fmForm.FormBaseNew):
             self.editw = 0
         if not self._widgets__[self.editw].editable: 
             self.find_next_editable()
-        
+
     #@+node:ekr.20170428084207.148: *3* post_edit_loop
     def post_edit_loop(self):
         pass        

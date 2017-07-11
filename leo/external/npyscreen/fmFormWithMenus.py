@@ -84,7 +84,7 @@ class ActionFormWithMenus(fmActionForm.ActionForm, wgNMenuDisplay.HasMenus):
         super(ActionFormWithMenus, self).draw_form()
         menu_advert = " " + self.__class__.MENU_KEY + ": Menu "
         y, x = self.display_menu_advert_at()
-        
+
         if isinstance(menu_advert, bytes):
             menu_advert = menu_advert.decode('utf-8', 'replace')
         self.add_line(y, x, 
@@ -103,7 +103,7 @@ class ActionFormV2WithMenus(fmActionFormV2.ActionFormV2, wgNMenuDisplay.HasMenus
         self.initialize_menus()
 
 
-        
+
     #@-others
 #@+node:ekr.20170428084207.301: ** class SplitFormWithMenus
 class SplitFormWithMenus(fmForm.SplitForm, FormWithMenus):

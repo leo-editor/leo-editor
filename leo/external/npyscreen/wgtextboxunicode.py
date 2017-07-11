@@ -34,9 +34,9 @@ class TextfieldUnicode(wgtextbox.Textfield):
         else:
             return self.__class__.width_mapping[w]
 
-            
 
-        
+
+
 
     #@-others
 #@-others
