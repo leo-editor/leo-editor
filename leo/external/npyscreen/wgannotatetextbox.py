@@ -31,7 +31,7 @@ class AnnotateTextboxBase(wgwidget.Widget):
 
     #@+node:ekr.20170428084207.484: *3* _init_text_area
     def _init_text_area(self, screen):
-        self.text_area = Textfield(screen, rely=self.rely, relx=self.relx+self.ANNOTATE_WIDTH, 
+        self.text_area = Textfield(screen, rely=self.rely, relx=self.relx+self.ANNOTATE_WIDTH,
                       width=self.width-self.ANNOTATE_WIDTH, value=self.name)
 
     #@+node:ekr.20170428084207.485: *3* _display_annotation_at
@@ -57,17 +57,17 @@ class AnnotateTextboxBase(wgwidget.Widget):
 
     #@+node:ekr.20170428084207.489: *3* AnnotateTextboxBase.update
     def update(self, clear=True):
-        if clear: 
+        if clear:
             self.clear()
         if self.hidden:
             self.clear()
             return False
-        if self.hide: 
+        if self.hide:
             return True
 
         self.text_area.value = self.value
 
-        if self.do_colors():    
+        if self.do_colors():
             self.annotationColor()
         else:
             self.annotationNoColor()
@@ -78,9 +78,9 @@ class AnnotateTextboxBase(wgwidget.Widget):
         else:
             self.text_area.highlight = False
 
-        if self.show_bold: 
+        if self.show_bold:
             self.text_area.show_bold = True
-        else: 
+        else:
             self.text_area.show_bold = False
 
         if self.important:
@@ -88,9 +88,9 @@ class AnnotateTextboxBase(wgwidget.Widget):
         else:
             self.text_area.important = False
 
-        if self.highlight: 
+        if self.highlight:
             self.text_area.highlight = True
-        else: 
+        else:
             self.text_area.highlight = False
 
         self.text_area.update(clear=clear)
@@ -105,7 +105,7 @@ class AnnotateTextboxBaseRight(AnnotateTextboxBase):
     #@+others
     #@+node:ekr.20170428084207.492: *3* _init_text_area
     def _init_text_area(self, screen):
-        self.text_area = Textfield(screen, rely=self.rely, relx=self.relx, 
+        self.text_area = Textfield(screen, rely=self.rely, relx=self.relx,
                       width=self.width-self.ANNOTATE_WIDTH, value=self.name)
 
     #@+node:ekr.20170428084207.493: *3* _display_annotation_at

@@ -5057,7 +5057,7 @@ else:
     def ue(s, encoding):
         # Use builtins to suppress pyflakes complaint.
         # pylint: disable=no-member, undefined-variable
-        return builtins.unicode(s, encoding) 
+        return builtins.unicode(s, encoding)
 #@+node:ekr.20170108034643.1: *4* g.ustr (pyzo)
 def ustr(s):
     '''Define the pyzo ustr function.'''

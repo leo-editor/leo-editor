@@ -28,9 +28,9 @@ def wrapper_basic(call_function):
 #   screen = curses.initscr()
 #   curses.noecho()
 #   curses.cbreak()
-#   
+#
 #   return_code = call_function(screen)
-#   
+#
 #   curses.nocbreak()
 #   curses.echo()
 #   curses.endwin()
@@ -104,7 +104,7 @@ def wrapper_no_fork(call_function, reset=False):
     _SCREEN.keypad(1)
 
     try:
-        return_code = call_function(_SCREEN)    
+        return_code = call_function(_SCREEN)
     finally:
         _SCREEN.keypad(0)
         curses.echo()
@@ -113,7 +113,7 @@ def wrapper_no_fork(call_function, reset=False):
         curses.endwin()
         if reset:
             external_reset()
-    return return_code  
+    return return_code
 #@-others
 #@@language python
 #@@tabwidth -4

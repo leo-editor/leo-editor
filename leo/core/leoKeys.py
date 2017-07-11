@@ -2881,7 +2881,7 @@ class KeyHandlerClass(object):
         k.showStateAndMode()
     #@+node:ekr.20061031131434.125: *3* k.Externally visible helpers
     #@+node:ekr.20140816165728.18968: *4* Wrappers for GetArg methods
-    # New in Leo 5.4    
+    # New in Leo 5.4
     def getNextArg(self, handler):
         '''
         Get the next arg.  For example, after a Tab in the find commands.
@@ -2890,7 +2890,7 @@ class KeyHandlerClass(object):
         # Replace the current handler.
         self.getArgInstance.after_get_arg_state = ('getarg', 1, handler)
 
-    # New in Leo 5.4  
+    # New in Leo 5.4
     def get1Arg(self, event, handler,
         # returnKind=None, returnState=None,
         prefix=None, tabList=None, completion=True, oneCharacter=False,
@@ -3407,7 +3407,7 @@ class KeyHandlerClass(object):
                 k.editShortcut_do_bind_helper(stroke, cmdname)
             except IndexError:
                 pass
-            return  
+            return
         else:
             # this should never happen
             g.error('not in settings node shortcut')

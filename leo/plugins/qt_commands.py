@@ -115,7 +115,7 @@ def showColorNames(event=None):
             background-color: %s;
             selection-background-color: %s;
             selection-color: black;
-        }''' 
+        }'''
     ivar = 'leo_settings_color_picker'
     if getattr(c, ivar, None):
         g.es('The color picker already exists in the icon bar.')

@@ -29,9 +29,9 @@ class _LinePrinter(object):
             return ch.encode('utf-8', 'replace')
 
     #@+node:ekr.20170428084208.441: *3* add_line
-    def add_line(self, realy, realx, 
-                unicode_string, 
-                attributes_list, max_columns, 
+    def add_line(self, realy, realx,
+                unicode_string,
+                attributes_list, max_columns,
                 force_ascii=False):
         if isinstance(unicode_string, bytes):
             raise ValueError("This class prints unicode strings only.")
@@ -47,7 +47,7 @@ class _LinePrinter(object):
             print_on = self.curses_pad
         else:
             # we are a widget
-            print_on = self.parent.curses_pad    
+            print_on = self.parent.curses_pad
 
 
         while column <= (max_columns-1):
@@ -58,8 +58,8 @@ class _LinePrinter(object):
             if column - 1 + width_of_char_to_print > max_columns:
                 break
             try:
-                print_on.addstr(realy,realx+column, 
-                    self._print_unicode_char(unicode_string[place_in_string]), 
+                print_on.addstr(realy,realx+column,
+                    self._print_unicode_char(unicode_string[place_in_string]),
                     attributes_list[place_in_string]
                     )
             except IndexError:

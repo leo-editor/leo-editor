@@ -61,7 +61,7 @@ class ActionForm(fmForm.Form):
 
         while not self._widgets__[self.editw].editable:
             self.editw += 1
-            if self.editw > len(self._widgets__)-2: 
+            if self.editw > len(self._widgets__)-2:
                 self.editing = False
                 return False
 

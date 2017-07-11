@@ -41,7 +41,7 @@ def _wrap_message_lines(message, line_length):
     return lines
 
 #@+node:ekr.20170428084207.472: ** notify
-def notify(message, title="Message", form_color='STANDOUT', 
+def notify(message, title="Message", form_color='STANDOUT',
             wrap=True, wide=False,
             ):
     message = _prepare_message(message)
@@ -80,7 +80,7 @@ def notify_confirm(message, title="Message", form_color='STANDOUT', wrap=True, w
 def notify_wait(*args, **keywords):
     notify(*args, **keywords)
     curses.napms(3000)
-    curses.flushinp()    
+    curses.flushinp()
 
 
 #@+node:ekr.20170428084207.475: ** notify_ok_cancel

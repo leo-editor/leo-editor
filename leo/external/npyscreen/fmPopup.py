@@ -30,7 +30,7 @@ class MessagePopup(Popup):
     #@+others
     #@+node:ekr.20170428084207.308: *3* __init__
     def __init__(self, *args, **keywords):
-        from . import wgmultiline as multiline 
+        from . import wgmultiline as multiline
         super(MessagePopup, self).__init__(*args, **keywords)
         self.TextWidget = self.add(multiline.Pager, scroll_exit=True, max_height=self.widget_useable_space()[0]-2)
 

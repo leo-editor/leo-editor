@@ -67,7 +67,7 @@ class MiniButton(checkbox._ToggleControl):
                     button_attributes = self.parent.theme_manager.findPair(self, self.cursor_color)
                 else:
                     button_attributes  = self.parent.theme_manager.findPair(self, self.color)
-            else:    
+            else:
                 button_attributes = self.parent.theme_manager.findPair(self, self.color) | button_state
         else:
             button_attributes = button_state
@@ -83,7 +83,7 @@ class MiniButton(checkbox._ToggleControl):
 #@+node:ekr.20170428084207.530: ** class MiniButtonPress
 class MiniButtonPress(MiniButton):
     # NB.  The when_pressed_function functionality is potentially dangerous. It can set up
-    # a circular reference that the garbage collector will never free. 
+    # a circular reference that the garbage collector will never free.
     # If this is a risk for your program, it is best to subclass this object and
     # override when_pressed_function instead.  Otherwise your program will leak memory.
     #@+others

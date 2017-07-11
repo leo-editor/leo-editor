@@ -37,27 +37,27 @@ class FormMutt(fmForm.FormBaseNew):
     #@+node:ekr.20170428084207.252: *3* draw_form
     def draw_form(self):
         MAXY, MAXX = self.lines, self.columns #self.curses_pad.getmaxyx()
-        self.curses_pad.hline(0, 0, curses.ACS_HLINE, MAXX-1)  
-        self.curses_pad.hline(MAXY-2-self.BLANK_LINES_BASE, 0, curses.ACS_HLINE, MAXX-1)  
+        self.curses_pad.hline(0, 0, curses.ACS_HLINE, MAXX-1)
+        self.curses_pad.hline(MAXY-2-self.BLANK_LINES_BASE, 0, curses.ACS_HLINE, MAXX-1)
 
     #@+node:ekr.20170428084207.253: *3* create
     def create(self):
         ### MAXY, MAXX    = self.lines, self.columns
         MAXY = self.lines
 
-        self.wStatus1 = self.add(self.__class__.STATUS_WIDGET_CLASS,  rely=0, 
+        self.wStatus1 = self.add(self.__class__.STATUS_WIDGET_CLASS,  rely=0,
                                         relx=self.__class__.STATUS_WIDGET_X_OFFSET,
-                                        editable=False,  
+                                        editable=False,
                                         )
 
         if self.__class__.MAIN_WIDGET_CLASS:
-            self.wMain    = self.add(self.__class__.MAIN_WIDGET_CLASS,    
-                                            rely=self.__class__.MAIN_WIDGET_CLASS_START_LINE,  
+            self.wMain    = self.add(self.__class__.MAIN_WIDGET_CLASS,
+                                            rely=self.__class__.MAIN_WIDGET_CLASS_START_LINE,
                                             relx=0,     max_height = -2,
                                             )
-        self.wStatus2 = self.add(self.__class__.STATUS_WIDGET_CLASS,  rely=MAXY-2-self.BLANK_LINES_BASE, 
+        self.wStatus2 = self.add(self.__class__.STATUS_WIDGET_CLASS,  rely=MAXY-2-self.BLANK_LINES_BASE,
                                         relx=self.__class__.STATUS_WIDGET_X_OFFSET,
-                                        editable=False,  
+                                        editable=False,
                                         )
 
         if not self.__class__.COMMAND_WIDGET_BEGIN_ENTRY_AT:

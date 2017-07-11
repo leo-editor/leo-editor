@@ -33,8 +33,8 @@ class Autocomplete(textbox.Textfield):
 
         #tmp_window = Form.TitleForm(name=self.name, framed=True)
         tmp_window = Popup.Popup(name=self.name, framed=True)
-        sel = tmp_window.add_widget(multiline.MultiLine, 
-                values=values, 
+        sel = tmp_window.add_widget(multiline.MultiLine,
+                values=values,
                 value=self.value,
                 return_exit=True, select_exit=True)
         #sel = multiline.MultiLine(tmp_window, values=values, value=self.value)
@@ -58,11 +58,11 @@ class Filename(Autocomplete):
             # Let's have absolute paths.
             dir = os.path.abspath(dir)
 
-            if self.value == '': 
+            if self.value == '':
                 self.value=dir
                 break
 
-            try: 
+            try:
                 flist = os.listdir(dir)
             except Exception:
                 self.show_brief_message("Can't read directory!")

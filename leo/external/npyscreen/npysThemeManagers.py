@@ -20,14 +20,14 @@ class ThemeManager(object):
     # a tuple with (color_number, (r, g, b))
     # you can use this to redefine colour values.
     # This will only work on compatible terminals.
-    # Betware that effects will last beyond the end of the 
+    # Betware that effects will last beyond the end of the
     # application.
-    _color_values = ( 
-        #(curses.COLOR_GREEN, (150,250,100)), 
+    _color_values = (
+        #(curses.COLOR_GREEN, (150,250,100)),
     )
 
 
-    _colors_to_define = ( 
+    _colors_to_define = (
      # DO NOT DEFINE THE WHITE_BLACK COLOR - THINGS BREAK
      #('WHITE_BLACK',      DO_NOT_DO_THIS,      DO_NOT_DO_THIS),
      ('BLACK_WHITE',      curses.COLOR_BLACK,      curses.COLOR_WHITE),

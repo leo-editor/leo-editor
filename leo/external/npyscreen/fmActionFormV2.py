@@ -41,16 +41,16 @@ class ActionFormV2(fmForm.FormBaseNew):
 
     #@+node:ekr.20170428084207.139: *3* create_control_buttons
     def create_control_buttons(self):
-        self._add_button('ok_button', 
-                        self.__class__.OKBUTTON_TYPE, 
+        self._add_button('ok_button',
+                        self.__class__.OKBUTTON_TYPE,
                         self.__class__.OK_BUTTON_TEXT,
                         0 - self.__class__.OK_BUTTON_BR_OFFSET[0],
                         0 - self.__class__.OK_BUTTON_BR_OFFSET[1] - len(self.__class__.OK_BUTTON_TEXT),
                         None
                         )
 
-        self._add_button('cancel_button', 
-                        self.__class__.CANCELBUTTON_TYPE, 
+        self._add_button('cancel_button',
+                        self.__class__.CANCELBUTTON_TYPE,
                         self.__class__.CANCEL_BUTTON_TEXT,
                         0 - self.__class__.CANCEL_BUTTON_BR_OFFSET[0],
                         0 - self.__class__.CANCEL_BUTTON_BR_OFFSET[1] - len(self.__class__.CANCEL_BUTTON_TEXT),
@@ -71,7 +71,7 @@ class ActionFormV2(fmForm.FormBaseNew):
 
     #@+node:ekr.20170428084207.143: *3* _on_cancel
     def _on_cancel(self):
-        self.editing = self.on_cancel() 
+        self.editing = self.on_cancel()
 
     #@+node:ekr.20170428084207.144: *3* set_up_exit_condition_handlers
     def set_up_exit_condition_handlers(self):
@@ -88,8 +88,8 @@ class ActionFormV2(fmForm.FormBaseNew):
     def _add_button(self, button_name, button_type, button_text, button_rely, button_relx, button_function):
         tmp_rely, tmp_relx = self.nextrely, self.nextrelx
         this_button = self.add_widget(
-                        button_type, 
-                        name=button_text, 
+                        button_type,
+                        name=button_text,
                         rely=button_rely,
                         relx=button_relx,
                         when_pressed_function = button_function,
@@ -105,12 +105,12 @@ class ActionFormV2(fmForm.FormBaseNew):
         self._widgets__.sort(key=operator.attrgetter('rely'))
         if not self.preserve_selected_widget:
             self.editw = 0
-        if not self._widgets__[self.editw].editable: 
+        if not self._widgets__[self.editw].editable:
             self.find_next_editable()
 
     #@+node:ekr.20170428084207.148: *3* post_edit_loop
     def post_edit_loop(self):
-        pass        
+        pass
 
     #@+node:ekr.20170428084207.149: *3* _during_edit_loop
     def _during_edit_loop(self):

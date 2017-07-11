@@ -172,7 +172,7 @@ class JEditColorizer(BaseColorizer):
         self.showInvisibles = False
         # Step 2: create the highlighter.
         if isinstance(widget, QtWidgets.QTextEdit):
-            self.highlighter = LeoHighlighter(c, 
+            self.highlighter = LeoHighlighter(c,
                 colorizer = self,
                 document = widget.document(),
             )
@@ -1056,7 +1056,7 @@ class JEditColorizer(BaseColorizer):
 
     def match_image(self, s, i):
         '''Matcher for <img...>'''
-        m = self.image_url.match(s,i) 
+        m = self.image_url.match(s,i)
         if m:
             self.image_src = src = m.group(1)
             j = len(src)
@@ -1921,7 +1921,7 @@ class JEditColorizer(BaseColorizer):
                     i += -n
                     break
                 else: # Partial failure: Do not break or change i!
-                    pass 
+                    pass
             else:
                 i += 1
             assert i > progress
@@ -2220,7 +2220,7 @@ class QScintillaColorizer(BaseColorizer):
             # self.jeditColorizer.highlighter = self.highlighter
         # Alas QsciDocument is not a QDocument.
             # g.printList(sorted(dir(widget.document)))
-            # self.highlighter = LeoHighlighter(c, 
+            # self.highlighter = LeoHighlighter(c,
                 # colorizer = self,
                 # document = widget.document())
         widget.leo_colorizer = self
@@ -2332,9 +2332,9 @@ class QScintillaColorizer(BaseColorizer):
         table = (
             # 'Asm', 'Erlang', 'Forth', 'Haskell',
             # 'LaTeX', 'Lisp', 'Markdown', 'Nsis', 'R',
-            'Bash', 'Batch', 'CPP', 'CSS', 'CMake', 'CSharp', 'CoffeeScript', 
+            'Bash', 'Batch', 'CPP', 'CSS', 'CMake', 'CSharp', 'CoffeeScript',
             'D', 'Diff', 'Fortran', 'Fortran77', 'HTML',
-            'Java', 'JavaScript', 'Lua', 'Makefile', 'Matlab', 
+            'Java', 'JavaScript', 'Lua', 'Makefile', 'Matlab',
             'Pascal', 'Perl', 'Python', 'PostScript', 'Properties',
             'Ruby', 'SQL', 'TCL', 'TeX', 'XML', 'YAML',
         )

@@ -17,8 +17,8 @@ class SimpleGrid(widget.Widget):
     additional_x_offset   = 0
     #@+others
     #@+node:ekr.20170428084208.4: *3* SimpleGrid.__init__
-    def __init__(self, screen, columns = None, 
-            column_width = None, col_margin=1, row_height = 1, 
+    def __init__(self, screen, columns = None,
+            column_width = None, col_margin=1, row_height = 1,
             values = None,
             always_show_cursor = False,
             select_whole_line = False,
@@ -58,7 +58,7 @@ class SimpleGrid(widget.Widget):
                 col_number = 0
                 grid_values.append([])
                 row_number += 1
-            grid_values[row_number].append(f)    
+            grid_values[row_number].append(f)
             col_number += 1
         self.values = grid_values
         if reset_cursor:
@@ -92,7 +92,7 @@ class SimpleGrid(widget.Widget):
 
     #@+node:ekr.20170428084208.8: *3* SimpleGrid.display_value
     def display_value(self, vl):
-        """Overload this function to change how values are displayed.  
+        """Overload this function to change how values are displayed.
         Should accept one argument (the object to be represented), and return a string."""
         return str(vl)
 
@@ -133,7 +133,7 @@ class SimpleGrid(widget.Widget):
             cell.grid_current_value_index = -1
 
         cell.grid_current_value_index
-        self._cell_widget_show_value(cell, cell_value)        
+        self._cell_widget_show_value(cell, cell_value)
 
         if self.value:
             if cell.grid_current_value_index in self.value or cell.grid_current_value_index == self.value:

@@ -49,10 +49,10 @@ class ScreenArea(object):
 
     #@+others
     #@+node:ekr.20170428084207.427: *3* ScreenArea.__init__
-    def __init__(self, lines=0, columns=0, 
+    def __init__(self, lines=0, columns=0,
             minimum_lines = 24,
             minimum_columns = 80,
-            show_atx = 0, 
+            show_atx = 0,
             show_aty = 0,
              **keywords):
 
@@ -101,10 +101,10 @@ class ScreenArea(object):
         except Exception: pass
 
 
-        if not self.lines: 
+        if not self.lines:
             self.lines = self._max_physical()[0]+1
             self.lines_were_auto_set = True
-        if not self.columns: 
+        if not self.columns:
             self.columns = self._max_physical()[1]+1
             self.cols_were_auto_set = True
 
@@ -156,7 +156,7 @@ class ScreenArea(object):
         # Since we can have pannels larger than the screen
         # let's allow for scrolling them
 
-        # Getting strange errors on OS X, with curses sometimes crashing at this point. 
+        # Getting strange errors on OS X, with curses sometimes crashing at this point.
         # Suspect screen size not updated in time. This try: seems to solve it with no ill effects.
         try:
             self.curses_pad.refresh(

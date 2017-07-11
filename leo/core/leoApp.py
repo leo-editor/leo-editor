@@ -1896,7 +1896,7 @@ class LoadManager(object):
             si_list = inverted_new_d. get(stroke)
             if si_list:
                 for si in si_list:
-                    fn = si.kind.split(' ')[-1] # si.kind # 
+                    fn = si.kind.split(' ')[-1] # si.kind #
                     stroke2 = c.k.prettyPrintKey(stroke)
                     if si.pane and si.pane != 'all':
                         pane = ' in %s panes' % si.pane
@@ -3184,7 +3184,7 @@ class RecentFilesManager(object):
     def __init__(self):
 
         self.edit_headline = 'Recent files. Do not change this headline!'
-            # Headline used by 
+            # Headline used by
         self.groupedMenus = []
             # Set in rf.createRecentFilesMenuItems.
         self.recentFiles = []

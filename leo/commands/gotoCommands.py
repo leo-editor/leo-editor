@@ -58,7 +58,7 @@ class GoToCommands(object):
         '''Return the global line number of the first line of p.b'''
         # See #283: https://github.com/leo-editor/leo-editor/issues/283
         if 1: # Not ready yet, and probably will never be ready.
-            return None 
+            return None
         else: # Prototype code.
             trace = False and not g.unitTesting
             root, fileName = self.find_root(p)
@@ -312,7 +312,7 @@ class GoToCommands(object):
         '''
         c = self.c
         if root.isAtAutoNode():
-            # Special case @auto nodes: 
+            # Special case @auto nodes:
             # Leo does not write sentinels in the root @auto node.
             at = c.atFileCommands
             ivar = 'force_sentinels'

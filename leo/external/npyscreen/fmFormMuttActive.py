@@ -39,9 +39,9 @@ class ActionControllerSimple(object):
     #@+node:ekr.20170428084207.263: *3* add_action
     def add_action(self, ident, function, live):
         ident = re.compile(ident)
-        self._action_list.append({'identifier': ident, 
-                                  'function': function, 
-                                  'live': live 
+        self._action_list.append({'identifier': ident,
+                                  'function': function,
+                                  'live': live
                                   })
 
     #@+node:ekr.20170428084207.264: *3* process_command_live
@@ -66,14 +66,14 @@ class ActionControllerSimple(object):
 class TextCommandBox(wgtextbox.Textfield):
     #@+others
     #@+node:ekr.20170428084207.267: *3* __init__
-    def __init__(self, screen, 
-                    history=False, 
-                    history_max=100, 
+    def __init__(self, screen,
+                    history=False,
+                    history_max=100,
                     set_up_history_keys=False,
                     *args, **keywords):
         super(TextCommandBox, self).__init__(screen, *args, **keywords)
         self.history = history
-        self._history_store = collections.deque(maxlen=history_max)        
+        self._history_store = collections.deque(maxlen=history_max)
         self._current_history_index = False
         self._current_command = None
         if set_up_history_keys:
@@ -162,13 +162,13 @@ class TextCommandBoxTraditional(TextCommandBox):
     #@+others
     #@+node:ekr.20170428084207.275: *3* __init__
     def __init__(self, screen,
-                    history=True, 
-                    history_max=100, 
+                    history=True,
+                    history_max=100,
                     set_up_history_keys=True,
                     *args, **keywords):
         super(TextCommandBoxTraditional, self).__init__(screen,
          history=history,
-         history_max=history_max, 
+         history_max=history_max,
          set_up_history_keys=set_up_history_keys,
          *args, **keywords
         )
@@ -249,7 +249,7 @@ class FormMuttActiveTraditional(fmFormMutt.FormMutt):
     #@+others
     #@+node:ekr.20170428084207.282: *3* __init__
     def __init__(self, *args, **keywords):
-        # First create action_controller so that create methods of forms 
+        # First create action_controller so that create methods of forms
         # can use it.
         self.action_controller        = self.ACTION_CONTROLLER(parent=self)
         super(FormMuttActiveTraditional, self).__init__(*args, **keywords)
@@ -263,7 +263,7 @@ class FormMuttActiveTraditional(fmFormMutt.FormMutt):
 
     #@-others
 #@+node:ekr.20170428084207.283: ** class FormMuttActiveTraditionalWithMenus
-class FormMuttActiveTraditionalWithMenus(FormMuttActiveTraditional, 
+class FormMuttActiveTraditionalWithMenus(FormMuttActiveTraditional,
  fmFormWithMenus.FormBaseNewWithMenus):
     #@+others
     #@+node:ekr.20170428084207.284: *3* __init__

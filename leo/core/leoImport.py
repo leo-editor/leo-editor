@@ -478,7 +478,7 @@ class LeoImportCommands(object):
                 g.match_word(s, i, "@c") or
                 g.match_word(s, i, "@root") or
                 g.match_word(s, i, "@code") # 2/25/03
-            ): 
+            ):
                 return i, result
             elif(g.match(s, i, "<<") and # must be on separate lines.
                 g.find_on_line(s, i, ">>=") > -1

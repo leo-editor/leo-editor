@@ -18,7 +18,7 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
 
     #@+others
     #@+node:ekr.20170428084208.369: *3* TextTokens.__init__
-    def __init__(self, *args, **keywords):        
+    def __init__(self, *args, **keywords):
         super(TextTokens, self).__init__(*args, **keywords)
         self.begin_at        = 0 # which token to begin display with
         self.maximum_string_length = self.width - 2
@@ -31,7 +31,7 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
 
     #@+node:ekr.20170428084208.370: *3* TextTokens.find_cursor_offset_on_screen
     def find_cursor_offset_on_screen(self, position):
-        index  = self.begin_at 
+        index  = self.begin_at
         offset = 0
         while index < position:
             offset += len(self.decode_token(self.value[index]))
@@ -100,7 +100,7 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
         text, highlighting = self.get_literal_text_to_display(start_at=self.begin_at)
         if self.do_colors():
             if self.important:
-                color = self.parent.theme_manager.findPair(self, 'IMPORTANT') | curses.A_BOLD            
+                color = self.parent.theme_manager.findPair(self, 'IMPORTANT') | curses.A_BOLD
             else:
                 color = self.parent.theme_manager.findPair(self, self.color)
             if self.show_bold:
@@ -132,7 +132,7 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
 
     #@+node:ekr.20170428084208.375: *3* TextTokens._print
     def _print(self, text, highlighting):
-        self.add_line(self.rely, 
+        self.add_line(self.rely,
                       self.relx + self.left_margin,
                       text,
                       highlighting,
@@ -156,9 +156,9 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
         else:
             ATTR_LIST = curses.A_STANDOUT
 
-        self.add_line(self.rely, 
+        self.add_line(self.rely,
              self.begin_at + self.relx + self.left_margin + offset,
-            char_under_cur, 
+            char_under_cur,
             self.make_attributes_list(char_under_cur, ATTR_LIST),
             # I don't understand why the "- self.begin_at" is needed in the following line
             # but it is or the cursor can end up overrunning the end of the widget.

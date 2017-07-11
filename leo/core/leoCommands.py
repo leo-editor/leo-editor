@@ -34,7 +34,7 @@ def cmd(name):
 class Commands(object):
     """
     A per-outline class that implements most of Leo's commands. The
-    "c" predefined object is an instance of this class. 
+    "c" predefined object is an instance of this class.
 
     c.initObjects() creates sucommanders corresponding to files in the
     leo/core and leo/commands. All of Leo's core code is accessible
@@ -2063,7 +2063,7 @@ class Commands(object):
         s = p.h.strip()
         if (s[0: 2] == "<<" or
             s[-2:] == ">>" # Must be on separate line.
-        ): 
+        ):
             if s[0: 2] == "<<": s = s[2:]
             if s[-2:] == ">>": s = s[: -2]
             s = s.strip()
@@ -6463,7 +6463,7 @@ class Commands(object):
         c = self
         if predicate is None:
 
-            # pylint: disable=function-redefined    
+            # pylint: disable=function-redefined
             def predicate(p):
                 return p.isAnyAtFileNode()
 
@@ -6488,7 +6488,7 @@ class Commands(object):
         c = self
         if predicate is None:
 
-            # pylint: disable=function-redefined        
+            # pylint: disable=function-redefined
             def predicate(p):
                 return p.isAnyAtFileNode()
 

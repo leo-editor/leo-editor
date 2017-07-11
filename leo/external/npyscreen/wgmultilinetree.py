@@ -66,7 +66,7 @@ class TreeLine(textbox.TextfieldBase):
         if self._tree_ignore_root:
             dp -= 1
         if dp: # > 0:
-            if dp < this_safe_depth_display:                    
+            if dp < this_safe_depth_display:
                 for i in range(dp-1):
                     if (i < _tree_depth_next) and (not self._tree_last_line):
                             # was i+1 < # and not (_tree_depth_next==1):
@@ -231,7 +231,7 @@ class TreeLineAnnotated(TreeLine):
         self.left_margin = 0
         self.parent.curses_pad.bkgdset(' ',curses.A_NORMAL)
         self.left_margin += self._print_tree(self.relx)
-        if self.do_colors():    
+        if self.do_colors():
             self.left_margin += self.annotationColor(self.left_margin+self.relx)
         else:
             self.left_margin += self.annotationNoColor(self.left_margin+self.relx)
@@ -374,7 +374,7 @@ class MLTree(multiline.MultiLine):
     def _getApparentValues(self):
         try:
             if (
-                self._cached_tree is weakref.proxy(self._myFullValues) and 
+                self._cached_tree is weakref.proxy(self._myFullValues) and
                 (self._cached_sort == (self._myFullValues.sort, self._myFullValues.sort_function))
             ):
                 return self._cached_tree_as_list
@@ -458,7 +458,7 @@ class MLTree(multiline.MultiLine):
             ord('{'): self.h_collapse_all,
             ord('}'): self.h_expand_all,
             ord('h'): self.h_collapse_tree,
-            ord('l'): self.h_expand_tree,          
+            ord('l'): self.h_expand_tree,
         })
     #@-others
 #@+node:ekr.20170428084208.210: ** class MLTreeAnnotated

@@ -44,11 +44,11 @@ class FileCommand(wgautocomplete.Filename):
         # Let's have absolute paths.
         directory = os.path.abspath(directory)
 
-        if self.value == '': 
+        if self.value == '':
             self.value=directory
 
 
-        try: 
+        try:
             flist = os.listdir(directory)
         except Exception:
             self.show_brief_message("Can't read directory!")
@@ -278,7 +278,7 @@ def selectFile(starting_value=None, *args, **keywords):
         F.value = os.getcwd()
     F.update_grid()
     F.display()
-    F.edit()    
+    F.edit()
     return F.wCommand.value
 
 #@-others

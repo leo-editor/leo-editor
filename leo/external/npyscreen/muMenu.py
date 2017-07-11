@@ -48,7 +48,7 @@ class Menu(object):
         longest_text = 0
         #Slightly different layout if we are showing a title
         if self.name: longest_text=len(self.name)+2
-        for item in menu_text: 
+        for item in menu_text:
             if len(item) > longest_text:
                 longest_text = len(item)
 
@@ -58,18 +58,18 @@ class Menu(object):
         else:
             height +=2
 
-        if height > 14: 
+        if height > 14:
             height = 13
 
         atx = self.__show_atx or 20
         aty = self.__show_aty or 2
 
-        popup = fmForm.Form(name=self.name, 
+        popup = fmForm.Form(name=self.name,
             lines=height, columns=longest_text+4,
                 show_aty=aty, show_atx=atx, )
         if not self.name: popup.nextrely = 1
-        l = popup.add(wgmultiline.MultiLine, 
-                        values=menu_text, 
+        l = popup.add(wgmultiline.MultiLine,
+                        values=menu_text,
                         #exit_left=True,
                         return_exit=True)
 

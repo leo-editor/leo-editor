@@ -59,7 +59,7 @@ class TextfieldBase(widget.Widget):
     def set_text_widths(self):
         if self.on_last_line:
             self.maximum_string_length = self.width - 2  # Leave room for the cursor
-        else:   
+        else:
             self.maximum_string_length = self.width - 1  # Leave room for the cursor at the end of the string.
     #@+node:ekr.20170428084208.323: *3* resize
     def resize(self):
@@ -90,7 +90,7 @@ class TextfieldBase(widget.Widget):
         if clear: self.clear()
         if self.hidden:
             return True
-        value_to_use_for_calculations = self.value   
+        value_to_use_for_calculations = self.value
         if self.ENSURE_STRING_VALUE:
             if value_to_use_for_calculations in (None, False, True):
                 value_to_use_for_calculations = ''
@@ -204,7 +204,7 @@ class TextfieldBase(widget.Widget):
             except UnicodeEncodeError:
                 str_value = self.safe_string(value)
                 return str_value
-            except ReferenceError:                
+            except ReferenceError:
                 return ">*ERROR*ERROR*ERROR*<"
             return self.safe_string(str_value)
     #@+node:ekr.20170428084208.329: *3* TextFieldBase.find_width_of_char
@@ -264,15 +264,15 @@ class TextfieldBase(widget.Widget):
                     break
                 width_of_char_to_print = self.find_width_of_char(string_to_print[place_in_string])
                 if column - 1 + width_of_char_to_print > self.maximum_string_length:
-                    break 
+                    break
                 try:
                     highlight = self._highlightingdata[self.begin_at+place_in_string]
                 except Exception:
-                    highlight = curses.A_NORMAL                
+                    highlight = curses.A_NORMAL
                 self.parent.curses_pad.addstr(
                     self.rely,
-                    self.relx+column+self.left_margin, 
-                    self._print_unicode_char(string_to_print[place_in_string]), 
+                    self.relx+column+self.left_margin,
+                    self._print_unicode_char(string_to_print[place_in_string]),
                     highlight
                 )
                 column += self.find_width_of_char(string_to_print[place_in_string])
@@ -297,8 +297,8 @@ class TextfieldBase(widget.Widget):
                     if self.highlight_whole_widget:
                         self.parent.curses_pad.addstr(
                             self.rely,
-                            self.relx+column+self.left_margin, 
-                            ' ', 
+                            self.relx+column+self.left_margin,
+                            ' ',
                             color,
                         )
                         column += width_of_char_to_print
@@ -308,11 +308,11 @@ class TextfieldBase(widget.Widget):
                         break
                 width_of_char_to_print = self.find_width_of_char(string_to_print[place_in_string])
                 if column - 1 + width_of_char_to_print > self.maximum_string_length:
-                    break 
+                    break
                 self.parent.curses_pad.addstr(
                     self.rely,
-                    self.relx+column+self.left_margin, 
-                    self._print_unicode_char(string_to_print[place_in_string]), 
+                    self.relx+column+self.left_margin,
+                    self._print_unicode_char(string_to_print[place_in_string]),
                     color,
                 )
                 column += width_of_char_to_print
@@ -332,9 +332,9 @@ class TextfieldBase(widget.Widget):
                 except Exception:
                     highlight = curses.A_NORMAL
                 self.parent.curses_pad.addstr(
-                    self.rely,self.relx+i+self.left_margin, 
-                    string_to_print[self.begin_at+i], 
-                    highlight 
+                    self.rely,self.relx+i+self.left_margin,
+                    string_to_print[self.begin_at+i],
+                    highlight
                 )
         elif self.do_colors():
             coltofind = 'DEFAULT'
@@ -344,38 +344,38 @@ class TextfieldBase(widget.Widget):
                 self.parent.curses_pad.addstr(
                     self.rely,
                     self.relx+self.left_margin,
-                    string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin], 
+                    string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin],
                     self.parent.theme_manager.findPair(self, coltofind) | curses.A_BOLD)
             elif self.important:
                 coltofind = 'IMPORTANT'
                 self.parent.curses_pad.addstr(
                     self.rely,
                     self.relx+self.left_margin,
-                    string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin], 
+                    string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin],
                     self.parent.theme_manager.findPair(self, coltofind) | curses.A_BOLD)
             else:
                 self.parent.curses_pad.addstr(
                     self.rely,
                     self.relx+self.left_margin,
-                    string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin], 
+                    string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin],
                     self.parent.theme_manager.findPair(self))
         else:
             if self.important:
                 self.parent.curses_pad.addstr(
                     self.rely,
-                    self.relx+self.left_margin, 
+                    self.relx+self.left_margin,
                     string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin],
                     curses.A_BOLD)
             elif self.show_bold:
                 self.parent.curses_pad.addstr(
                     self.rely,
-                    self.relx+self.left_margin, 
+                    self.relx+self.left_margin,
                     string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin],
                     curses.A_BOLD)
             else:
                 self.parent.curses_pad.addstr(
                     self.rely,
-                    self.relx+self.left_margin, 
+                    self.relx+self.left_margin,
                     string_to_print[self.begin_at:self.maximum_string_length+self.begin_at-self.left_margin])
     #@+node:ekr.20170428084208.334: *3* update_highlighting
     def update_highlighting(self, start=None, end=None, clear=False):
@@ -430,9 +430,9 @@ class Textfield(TextfieldBase):
         if self._last_get_ch_was_unicode and inp not in '\n\t\r':
             return True
         # if curses.ascii.isprint(inp) and \
-        # (chr(inp) not in '\n\t\r'): 
+        # (chr(inp) not in '\n\t\r'):
             # return True
-        # else: 
+        # else:
             # return False
         return curses.ascii.isprint(inp) and chr(inp) not in '\n\t\r'
 
@@ -513,7 +513,7 @@ class Textfield(TextfieldBase):
     #@+node:ekr.20170428084208.338: *4* Textfield.set_up_handlers
     def set_up_handlers(self):
         '''Textfield.set_up_handlers.'''
-        super(Textfield, self).set_up_handlers()    
+        super(Textfield, self).set_up_handlers()
         # For OS X
         # del_key = curses.ascii.alt('~')
         self.handlers.update({
@@ -524,7 +524,7 @@ class Textfield(TextfieldBase):
             curses.ascii.BS:    self.h_delete_left,
             curses.KEY_BACKSPACE: self.h_delete_left,
             # mac os x curses reports DEL as escape oddly
-            # no solution yet                   
+            # no solution yet
             "^K":           self.h_erase_right,
             "^U":           self.h_erase_left,
         })

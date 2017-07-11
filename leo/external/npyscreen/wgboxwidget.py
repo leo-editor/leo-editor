@@ -59,8 +59,8 @@ class BoxBasic(Widget):
             if self.editing:
                 name_attributes = name_attributes | curses.A_BOLD
 
-            self.add_line(self.rely, self.relx+4, name, 
-                self.make_attributes_list(name, name_attributes), 
+            self.add_line(self.rely, self.relx+4, name,
+                self.make_attributes_list(name, name_attributes),
                 self.width-8)
             # end draw title
 
@@ -80,8 +80,8 @@ class BoxBasic(Widget):
             else:
                 placing = 4
 
-            self.add_line(self.rely+HEIGHT, self.relx+placing, footer_text, 
-                footer_attributes, 
+            self.add_line(self.rely+HEIGHT, self.relx+placing, footer_text,
+                footer_attributes,
                 self.width-placing-2)
 
 
@@ -133,9 +133,9 @@ class BoxTitle(BoxBasic):
         if contained_widget_arguments:
             self._my_widgets.append(
                 self._contained_widget(
-                    self.parent, 
+                    self.parent,
                     rely=self.rely+1,
-                    relx = self.relx+2, 
+                    relx = self.relx+2,
                     max_width=self.width-4,
                     max_height=self.height-2,
                     **contained_widget_arguments
@@ -143,9 +143,9 @@ class BoxTitle(BoxBasic):
         else:
             self._my_widgets.append(
                 self._contained_widget(
-                    self.parent, 
+                    self.parent,
                     rely=self.rely+1,
-                    relx = self.relx+2, 
+                    relx = self.relx+2,
                     max_width=self.width-4,
                     max_height=self.height-2,
             ))
@@ -201,7 +201,7 @@ class BoxTitle(BoxBasic):
 
     #@+node:ekr.20170428084207.518: *3* BoxTitle.get_values
     def get_values(self):
-        if hasattr(self, 'entry_widget'): 
+        if hasattr(self, 'entry_widget'):
             return self.entry_widget.values
         elif hasattr(self, '__tmp_value'):
             return self.__tmp_values
@@ -209,7 +209,7 @@ class BoxTitle(BoxBasic):
             return None
     #@+node:ekr.20170428084207.519: *3* BoxTitle.set_values
     def set_values(self, value):
-        if hasattr(self, 'entry_widget'): 
+        if hasattr(self, 'entry_widget'):
             self.entry_widget.values = value
         elif hasattr(self, '__tmp_value'):
             # probably trying to set the value before the textarea is initialised
@@ -221,13 +221,13 @@ class BoxTitle(BoxBasic):
 
     #@+node:ekr.20170428084207.521: *3* BoxTitle.get_editable
     def get_editable(self):
-        if hasattr(self, 'entry_widget'): 
+        if hasattr(self, 'entry_widget'):
             return self.entry_widget.editable
         else:
             return None
     #@+node:ekr.20170428084207.522: *3* BoxTitle.set_editable
     def set_editable(self, value):
-        if hasattr(self, 'entry_widget'): 
+        if hasattr(self, 'entry_widget'):
             self.entry_widget.editable = value
         elif hasattr(self, '__tmp_value'):
             # probably trying to set the value before the textarea is initialised

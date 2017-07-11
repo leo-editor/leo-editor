@@ -122,7 +122,7 @@ class LeoQtGui(leoGui.LeoGui):
         '''
         if isQt5:
             # Alas, returning reopens bug 218: https://github.com/leo-editor/leo-editor/issues/218
-            return 
+            return
         if s:
             # This code generates a harmless, but annoying warning on PyQt5.
             cb = self.qtApp.clipboard()
@@ -662,7 +662,7 @@ class LeoQtGui(leoGui.LeoGui):
         # if trace: g.trace(repr(w_name))
         # Fix #270: Vim keys don't always work after double Alt+Tab.
         # Fix #359: Leo hangs in LeoQtEventFilter.eventFilter
-        if c.exists and c.vimCommands and not self.active and not g.app.killed: 
+        if c.exists and c.vimCommands and not self.active and not g.app.killed:
             c.vimCommands.on_activate()
         self.active = True
             # Used only by c.idle_focus_helper.
@@ -675,7 +675,7 @@ class LeoQtGui(leoGui.LeoGui):
                 c.widgetWantsFocusNow(w)
             else:
                 if trace: g.trace(repr(w_name), '==> BODY')
-                c.bodyWantsFocusNow()   
+                c.bodyWantsFocusNow()
         if 0: # Cause problems elsewhere.
             trace = False and not g.unitTesting
             if c.exists and self.deactivated_name:

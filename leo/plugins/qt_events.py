@@ -528,7 +528,7 @@ class LeoQtEventFilter(QtCore.QObject):
                     ignore.append(n)
         for val, kind in show:
             if self.tag in exclude_names:
-                return 
+                return
             if eventType == val:
                 if traceKey:
                     g.trace(

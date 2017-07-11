@@ -7,7 +7,7 @@ from . import wgmultilinetree
 
 #@+node:ekr.20170428084208.215: ** class TreeLineSelectable
 class TreeLineSelectable(wgmultilinetree.TreeLine):
-    # NB - as print is currently defined, it is assumed that these will 
+    # NB - as print is currently defined, it is assumed that these will
     # NOT contain multi-width characters, and that len() will correctly
     # give an indication of the correct offset
     CAN_SELECT              = '[ ]'
@@ -46,7 +46,7 @@ class TreeLineSelectable(wgmultilinetree.TreeLine):
 
         self.add_line(self.rely,
                       self.left_margin+self.relx,
-                      SELECT_DISPLAY, 
+                      SELECT_DISPLAY,
                       self.make_attributes_list(SELECT_DISPLAY, attribute_list),
                       self.width-self.left_margin,
         )
@@ -82,7 +82,7 @@ class TreeLineSelectableAnnotated(TreeLineSelectable, wgmultilinetree.TreeLineAn
         self.parent.curses_pad.bkgdset(' ',curses.A_NORMAL)
         self.left_margin += self._print_tree(self.relx)
         self.left_margin += self._print_select_controls() + 1
-        if self.do_colors():    
+        if self.do_colors():
             self.left_margin += self.annotationColor(self.left_margin+self.relx)
         else:
             self.left_margin += self.annotationNoColor(self.left_margin+self.relx)

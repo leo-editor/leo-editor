@@ -2234,7 +2234,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 fcol = '' if offset is None else max(0, col + offset - fcol_offset)
             else:
                 row, col, fcol = 0, 0, ''
-            if 1: 
+            if 1:
                 self.put1("line: %d col: %d fcol: %s" % (row, col, fcol))
             else:
                 #283 is not ready yet, and probably will never be.

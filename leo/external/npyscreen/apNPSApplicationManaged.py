@@ -15,7 +15,7 @@ import weakref
 class NPSAppManaged(apNPSApplication.NPSApp):
     """This class is intended to make it easier to program applications with many screens:
 
-    1. The programmer should not now select which 'Form' to display himself.  Instead, he should set the NEXT_ACTIVE_FORM class variable.  
+    1. The programmer should not now select which 'Form' to display himself.  Instead, he should set the NEXT_ACTIVE_FORM class variable.
        See the registerForm method for details.
 
        Doing this will avoid accidentally exceeding the maximum recursion depth.  Forms themselves should be placed under the management
@@ -28,10 +28,10 @@ class NPSAppManaged(apNPSApplication.NPSApp):
 
     3. a Optionally, Forms managed by this class may be given an .activate method, which will be called instead of their .edit loop
 
-       b If not given an .activate method, any .afterEditing method which a form possesses will be called after .edit() has exited.  
+       b If not given an .activate method, any .afterEditing method which a form possesses will be called after .edit() has exited.
          3b is the preferred method to change NEXT_ACTIVE_FORM
 
-    4. The method onInMainLoop is called after each screen has exited. This can be overridden. 
+    4. The method onInMainLoop is called after each screen has exited. This can be overridden.
 
     5. This method should be able to see which screen was last active using the self._LAST_NEXT_ACTIVE_FORM attribute, which is only set
        just before each screen is displayed.
@@ -47,7 +47,7 @@ class NPSAppManaged(apNPSApplication.NPSApp):
     #@+others
     #@+node:ekr.20170428084207.32: *3* __init__
     def __init__(self):
-        super(NPSAppManaged, self).__init__()    
+        super(NPSAppManaged, self).__init__()
         self._FORM_VISIT_LIST = []
         self.NEXT_ACTIVE_FORM = self.__class__.STARTING_FORM
         self._LAST_NEXT_ACTIVE_FORM = None
@@ -144,19 +144,19 @@ class NPSAppManaged(apNPSApplication.NPSApp):
     #@+node:ekr.20170428084207.46: *3* main
     def main(self):
         """
-        This function starts the application. It is usually called indirectly through the function .run().  
+        This function starts the application. It is usually called indirectly through the function .run().
         You should not override this function, but override the onInMainLoop, onStart and
-        onCleanExit methods instead, if you need to modify the application's behaviour. 
+        onCleanExit methods instead, if you need to modify the application's behaviour.
 
         When this method is called, it will activate the form named by the class variable STARTING_FORM.  By default this Form will be called
-        'MAIN'.  
+        'MAIN'.
 
         When that form exits (user selecting an ok button or the like), the form named by object variable NEXT_ACTIVE_FORM will be activated.
 
         If NEXT_ACTIVE_FORM is None, the main() loop will exit.
 
         The form selected will be edited using it's .edit() method UNLESS it has been provided with an .activate() method,
-        in which case that method will be called instead.  This is done so that the same class of form can be made 
+        in which case that method will be called instead.  This is done so that the same class of form can be made
         NPSAppManaged aware and have the normal non-NPSAppManaged edit loop.
 
         After a Form has been edited, if it has an .afterEditing method, this will be called, unless it was invoked with the activate() method.
@@ -173,7 +173,7 @@ class NPSAppManaged(apNPSApplication.NPSApp):
             try:
                 Fm, a, k = self._Forms[self.NEXT_ACTIVE_FORM]
                 self._THISFORM = Fm( parentApp = self, *a, **k )
-            except TypeError:    
+            except TypeError:
                 self._THISFORM = self._Forms[self.NEXT_ACTIVE_FORM]
             self._THISFORM.FORM_NAME = self.NEXT_ACTIVE_FORM
             self.ACTIVE_FORM_NAME = self.NEXT_ACTIVE_FORM

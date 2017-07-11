@@ -1383,7 +1383,7 @@ class LeoFind(object):
         u.afterChangeGroup(p, undoType, reportFlag=True)
         t2 = time.clock()
         g.es('changed %s instances in %4.2f sec.' % (count, (t2-t1)))
-            # self.find_text, self.change_text, 
+            # self.find_text, self.change_text,
         c.recolor()
         c.redraw(p)
         self.restore(saveData)

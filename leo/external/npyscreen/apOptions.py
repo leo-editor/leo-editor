@@ -41,7 +41,7 @@ class SimpleOptionForm(fmForm.Form):
     #@-others
 #@+node:ekr.20170428084207.56: ** class OptionListDisplayLine
 class OptionListDisplayLine(wgannotatetextbox.AnnotateTextboxBase):
-    ANNOTATE_WIDTH = 25   
+    ANNOTATE_WIDTH = 25
     #@+others
     #@+node:ekr.20170428084207.57: *3* getAnnotationAndColor
     def getAnnotationAndColor(self):
@@ -236,9 +236,9 @@ class Option(object):
     DEFAULT = ''
     #@+others
     #@+node:ekr.20170428084207.85: *3* __init__
-    def __init__(self, name, 
-                    value=None, 
-                    documentation=None, 
+    def __init__(self, name,
+                    value=None,
+                    documentation=None,
                     short_explanation=None,
                     option_widget_keywords = None,
                     default = None,
@@ -291,7 +291,7 @@ class Option(object):
         option_changing_form = OptionChanger()
         option_changing_form.OPTION_TO_CHANGE = weakref.proxy(self)
         if self.documentation:
-            explanation_widget = option_changing_form.add(wgmultiline.Pager, 
+            explanation_widget = option_changing_form.add(wgmultiline.Pager,
                                                         editable=False, value=None,
                                                         max_height=(option_changing_form.lines - 3) // 2,
                                                         autowrap=True,
@@ -300,12 +300,12 @@ class Option(object):
             explanation_widget.values = self.documentation
 
 
-        option_widget = option_changing_form.add(self.WIDGET_TO_USE, 
+        option_widget = option_changing_form.add(self.WIDGET_TO_USE,
                                                     name=self.get_name_user(),
-                                                    **self.option_widget_keywords 
+                                                    **self.option_widget_keywords
                                                 )
         option_changing_form.OPTION_WIDGET = option_widget
-        self._set_up_widget_values(option_changing_form, option_widget)        
+        self._set_up_widget_values(option_changing_form, option_widget)
         option_changing_form.edit()
 
 

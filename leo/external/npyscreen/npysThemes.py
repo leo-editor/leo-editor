@@ -92,7 +92,7 @@ class BlackOnWhiteTheme(ThemeManagers.ThemeManager):
 
 #@+node:ekr.20170428084207.396: ** class TransparentThemeDarkText
 class TransparentThemeDarkText(ThemeManagers.ThemeManager):
-    _colors_to_define = ( 
+    _colors_to_define = (
     ('BLACK_WHITE',      curses.COLOR_BLACK,      curses.COLOR_WHITE),
     ('BLUE_BLACK',       curses.COLOR_BLUE,       curses.COLOR_BLACK),
     ('CYAN_BLACK',       curses.COLOR_CYAN,       curses.COLOR_BLACK),

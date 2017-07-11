@@ -775,7 +775,7 @@ class AtFile(object):
                 p,
                 forcePythonSentinels=False,
                 importing=True,
-                reading=True, 
+                reading=True,
             )
             if trace: g.trace(at.language, p.h)
             # For #451: return p.
@@ -2423,9 +2423,9 @@ class AtFile(object):
                 # The old code weirdly allowed '.' in version numbers.
             m = pattern.match(s)
             valid = bool(m)
-            if valid:  
+            if valid:
                 # set start delim: whitespace before @+leo is significant.
-                # group(1): \* 
+                # group(1): \*
                 start = m.group(1)
                 valid = bool(start)
             if valid:
@@ -3081,7 +3081,7 @@ class AtFile(object):
                 at.write(p, kind='@thin', toString=toString)
                 writtenFiles.append(p.v)
             elif p.isAtFileNode():
-                at.write(p, kind='@file', toString=toString) 
+                at.write(p, kind='@file', toString=toString)
                 writtenFiles.append(p.v)
             if p.v in writtenFiles:
                 # Clear the dirty bits in all descendant nodes.
@@ -3385,7 +3385,7 @@ class AtFile(object):
             forcePythonSentinels=True,
                 # A hack to suppress an error message.
                 # The actual sentinels will be set below.
-        )    
+        )
         #
         # Bug fix: Leo 4.5.1:
         # use x.markerFromFileName to force the delim to match
@@ -3611,7 +3611,7 @@ class AtFile(object):
             at_warning_given = False,
             has_at_others = False,
             in_code = True,
-        )   
+        )
         while i < len(s):
             next_i = g.skip_line(s, i)
             assert next_i > i, 'putBody'
@@ -3657,7 +3657,7 @@ class AtFile(object):
             if status.in_code:
                 if at.raw:
                     at.putCodeLine(s, i)
-                else: 
+                else:
                     name, n1, n2 = at.findSectionName(s, i)
                     if name:
                         at.putRefLine(s, i, n1, n2, name, p)

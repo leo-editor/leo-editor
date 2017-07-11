@@ -39,7 +39,7 @@ class EmailTree(npyscreen.MultiLineTreeNew):
         try:
             value = [weakref.proxy(self.values[self.cursor_line]),]
         except TypeError:
-            # Actually, this is inefficient, since with the NPSTree class (default) we will always be here - since by default we will 
+            # Actually, this is inefficient, since with the NPSTree class (default) we will always be here - since by default we will
             # try to create a weakref to a weakref, and that will fail with a type-error.  BUT we are only doing it on a keypress, so
             # it shouldn't create a huge performance hit, and is future-proof. Code replicated in h_select_exit
             value = [self.values[self.cursor_line],]
@@ -63,7 +63,7 @@ class EmailTree(npyscreen.MultiLineTreeNew):
     #@+node:ekr.20170428084207.443: *3* h_save_message_part
     def h_save_message_part(self, ch):
         self.parent.saveMessagePart()
-        npyscreen.notify_wait("Message part saved to your downloads folder: \n %s" % self.parent.DOWNLOAD_DIR)        
+        npyscreen.notify_wait("Message part saved to your downloads folder: \n %s" % self.parent.DOWNLOAD_DIR)
 
 
     #@-others
@@ -151,24 +151,24 @@ class EmailViewFm(npyscreen.SplitFormWithMenus):
             ('View Message Source',             self.viewMessageSource),
         ])
         self.nextrely = 1
-        self.wSubject = self.add(npyscreen.TitleText, begin_entry_at=10, editable=False, 
+        self.wSubject = self.add(npyscreen.TitleText, begin_entry_at=10, editable=False,
                                         use_two_lines=False, name = "Subject:")
-        self.wFrom    = self.add(npyscreen.TitleText, begin_entry_at=10, 
+        self.wFrom    = self.add(npyscreen.TitleText, begin_entry_at=10,
                                         editable=False, name = "From:", ) #max_width=-8)
-        self.wDate    = self.add(npyscreen.TitleText, begin_entry_at=10, 
+        self.wDate    = self.add(npyscreen.TitleText, begin_entry_at=10,
                                         editable=False, name = "Date:")
 
         self.draw_line_at   = self.nextrely
         self.nextrely      += 1
-        _body_rely          = self.nextrely        
+        _body_rely          = self.nextrely
         self.wEmailBody     = self.add(EmailPager, max_height=-1, scroll_exit=True, hidden=True)
         self.nextrely       = _body_rely
         self.wMessageTree   = self.add(EmailTree, max_height=-1, scroll_exit=True, hidden=False)
         self.nextrely      += 1
-        self.wStatusLine    = self.add(npyscreen.FixedText, 
-            editable=False, 
-            use_max_space=True, 
-            color='STANDOUT', 
+        self.wStatusLine    = self.add(npyscreen.FixedText,
+            editable=False,
+            use_max_space=True,
+            color='STANDOUT',
             value="Status Line-Status Line-Status Line-Status Line-Status Line-Status Line-Status Line-")
 
 
@@ -196,7 +196,7 @@ class EmailViewFm(npyscreen.SplitFormWithMenus):
     def when_select_part(self, vl):
         self.wEmailBody.hidden = False
         self.wEmailBody.setValuesWrap(vl[0].getContent().get_payload(decode=True).decode(errors='replace').split("\n"))
-        self.wEmailBody.start_display_at = 0       
+        self.wEmailBody.start_display_at = 0
         self.wMessageTree.hidden = True
 
     #@+node:ekr.20170428084207.457: *3* when_show_tree

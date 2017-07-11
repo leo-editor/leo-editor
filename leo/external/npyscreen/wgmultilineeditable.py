@@ -11,7 +11,7 @@ assert g
 #@+others
 #@+node:ekr.20170428084208.159: ** class MultiLineEditable (MultiLine)
 class MultiLineEditable(wgmultiline.MultiLine):
-    _contained_widgets      = textbox.Textfield 
+    _contained_widgets      = textbox.Textfield
     CHECK_VALUE             = True
     ALLOW_CONTINUE_EDITING  = True
     CONTINUE_EDITING_AFTER_EDITING_ONE_LINE = True

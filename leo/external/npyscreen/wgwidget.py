@@ -247,8 +247,8 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
 
     #@+others
     #@+node:ekr.20170428084208.412: *3* Widget.__init__
-    def __init__(self, screen, 
-            relx=0, rely=0, name=None, value=None, 
+    def __init__(self, screen,
+            relx=0, rely=0, name=None, value=None,
             width = False, height = False,
             max_height = False, max_width=False,
             editable=True,
@@ -282,7 +282,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             self.parent = weakref.proxy(screen)
         except TypeError:
             self.parent = screen
-        self.use_max_space = use_max_space    
+        self.use_max_space = use_max_space
         self.set_relyx(rely, relx)
         #self.relx = relx
         #self.rely = rely
@@ -372,22 +372,22 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
                 self._last_get_ch_was_unicode = False
                 return rtn_ch
             # if we are here, we need to read 1, 2 or 3 more bytes.
-            # all of the subsequent bytes should be in the range 128 - 191, 
+            # all of the subsequent bytes should be in the range 128 - 191,
             # but we'll risk not checking...
-            elif 194 <= ch <= 223: 
+            elif 194 <= ch <= 223:
                     # 2 bytes
                     _stored_bytes.append(ch)
                     _stored_bytes.append(self.parent.curses_pad.getch())
-            elif 224 <= ch <= 239: 
-                    # 3 bytes 
+            elif 224 <= ch <= 239:
+                    # 3 bytes
                     _stored_bytes.append(ch)
-                    _stored_bytes.append(self.parent.curses_pad.getch()) 
-                    _stored_bytes.append(self.parent.curses_pad.getch()) 
-            elif 240 <= ch <= 244: 
-                    # 4 bytes 
-                    _stored_bytes.append(ch) 
-                    _stored_bytes.append(self.parent.curses_pad.getch()) 
-                    _stored_bytes.append(self.parent.curses_pad.getch()) 
+                    _stored_bytes.append(self.parent.curses_pad.getch())
+                    _stored_bytes.append(self.parent.curses_pad.getch())
+            elif 240 <= ch <= 244:
+                    # 4 bytes
+                    _stored_bytes.append(ch)
+                    _stored_bytes.append(self.parent.curses_pad.getch())
+                    _stored_bytes.append(self.parent.curses_pad.getch())
                     _stored_bytes.append(self.parent.curses_pad.getch())
             elif ch >= 245:
                 # probably a control character
@@ -447,7 +447,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         # else:
             # return False
     #@+node:ekr.20170428084208.421: *3* Widget.calculate_area_needed
-    def calculate_area_needed(self): 
+    def calculate_area_needed(self):
         """Classes should provide a function to
         calculate the screen area they need, returning either y,x, or 0,0 if
         they want all the screen they can.  However, do not use this to say how
@@ -540,7 +540,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
                 #self.parent.curses_pad.timeout(1)
                 self.parent.curses_pad.nodelay(1)
                 ch2 = self.parent.curses_pad.getch()
-                if ch2 != -1: 
+                if ch2 != -1:
                     ch = curses.ascii.alt(ch2)
                 self.parent.curses_pad.timeout(-1) # back to blocking mode
                 #curses.flushinp()
@@ -653,7 +653,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         on python2
         """
         try:
-            if not this_string: 
+            if not this_string:
                 return ""
             #this_string = str(this_string)
             # In python 3
@@ -678,7 +678,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
                         # even on python3, in this case, we want a string that
                         # contains only ascii chars - but in unicode, so:
                         rtn_value = rtn_value.encode('ascii', 'replace').decode()
-                        return rtn_value     
+                        return rtn_value
                     else:
                         return rtn_value.encode('ascii', 'replace')
                 return rtn_value
@@ -693,7 +693,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
                         # Python2.6
                         rtn_value = rtn_value.decode(self.encoding, 'replace')
                 if sys.version_info[0] >= 3:
-                    return rtn_value     
+                    return rtn_value
                 else:
                     return rtn_value.encode('utf-8', 'replace')
             else:
@@ -715,9 +715,9 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
     def set_relyx(self, y, x):
         """
         Set the position of the widget on the Form.  If y or x is a negative value,
-        npyscreen will try to position it relative to the bottom or right edge of the 
+        npyscreen will try to position it relative to the bottom or right edge of the
         Form.  Note that this ignores any margins that the Form may have defined.
-        This is currently an experimental feature.  A future version of the API may 
+        This is currently an experimental feature.  A future version of the API may
         take account of the margins set by the parent Form.
         """
         self._requested_rely = y
@@ -733,7 +733,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             if self.rely < 0:
                 self.rely = 0
         if x >= 0:
-            self.relx = x            
+            self.relx = x
         else:
             self.relx = self.parent.curses_pad.getmaxyx()[1] + x
             # I don't think there is any real value in using these margins
@@ -757,21 +757,21 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             max_width = mx + max_width
 
         if max_height not in (None, False) and max_height <= 0:
-            raise NotEnoughSpaceForWidget("Not enough space for requested size")  
+            raise NotEnoughSpaceForWidget("Not enough space for requested size")
         if max_width not in (None, False) and max_width <= 0:
             raise NotEnoughSpaceForWidget("Not enough space for requested size")
 
         if ny > 0:
-            if my >= ny: 
+            if my >= ny:
                 self.height = ny
-            else: 
+            else:
                 self.height = RAISEERROR
         elif max_height:
-            if max_height <= my: 
+            if max_height <= my:
                 self.height = max_height
-            else: 
+            else:
                 self.height = self.request_height
-        else: 
+        else:
             self.height = (self.request_height or my)
 
         #if mx <= 0 or my <= 0:
@@ -779,16 +779,16 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
 
 
         if nx > 0:                 # if a minimum space is specified....
-            if mx >= nx:           # if max width is greater than needed space 
+            if mx >= nx:           # if max width is greater than needed space
                 self.width = nx    # width is needed space
-            else: 
+            else:
                 self.width = RAISEERROR    # else raise an error
         elif self.max_width:       # otherwise if a max width is speciied
-            if max_width <= mx: 
+            if max_width <= mx:
                 self.width = max_width
-            else: 
+            else:
                 self.width = RAISEERROR
-        else: 
+        else:
             self.width = self.request_width or mx
         if self.height == RAISEERROR or self.width == RAISEERROR:
             # Not enough space for widget

@@ -33,7 +33,7 @@ class FilterPopupHelper(Popup.Popup):
         len_f = len(filtered_lines)
         if self.filterbox.value == None or self.filterbox.value == '':
             self.statusline.value = ''
-        elif len_f == 0: 
+        elif len_f == 0:
             self.statusline.value = '(No Matches)'
         elif len_f == 1:
             self.statusline.value = '(1 Match)'
@@ -133,10 +133,10 @@ class MultiLine(widget.Widget):
             ### EKR: it's LeoMLTree._contained_widgets that we have to emulate.
             self._my_widgets.append(
                 self._contained_widgets(
-                    self.parent, 
-                    rely=(h*self._contained_widget_height)+self.rely, 
-                    relx = self.relx, 
-                    max_width=self.width, 
+                    self.parent,
+                    rely=(h*self._contained_widget_height)+self.rely,
+                    relx = self.relx,
+                    max_width=self.width,
                     max_height=self.__class__._contained_widget_height
             ))
         if trace and trace_widgets:
@@ -144,8 +144,8 @@ class MultiLine(widget.Widget):
             g.printList(['value: %r' % (z.value) for z in self._my_widgets])
     #@+node:ekr.20170428084208.78: *3* MultiLine.display_value
     def display_value(self, vl):
-        """Overload this function to change how values are displayed.  
-        Should accept one argument (the object to be represented), and return a string or the 
+        """Overload this function to change how values are displayed.
+        Should accept one argument (the object to be represented), and return a string or the
         object to be passed to the contained widget."""
         try:
             return self.safe_string(str(vl))
@@ -221,7 +221,7 @@ class MultiLine(widget.Widget):
         if trace:
             from . import npysTree as npysTree
             val = self.values[self.cursor_line]
-            # name = val.__class__.__name__ 
+            # name = val.__class__.__name__
             if isinstance(val, npysTree.TreeData):
                 val = val.get_content()
             g.trace('changed: %5s, cursor_line: %s %s' % (
@@ -341,7 +341,7 @@ class MultiLine(widget.Widget):
         if (value_indexer == self.value) and \
             (self.value is not None):
             self.set_is_line_bold(line, True)
-        else: 
+        else:
             self.set_is_line_bold(line, False)
         self.set_is_line_cursor(line, False)
     #@+node:ekr.20170428084208.88: *4* MultiLine.set_is_line_important
@@ -412,7 +412,7 @@ class MultiLine(widget.Widget):
                 break
         try:
             if self.cursor_line-self.start_display_at > len(self._my_widgets) or \
-            self._my_widgets[self.cursor_line-self.start_display_at].task == MORE_LABEL: 
+            self._my_widgets[self.cursor_line-self.start_display_at].task == MORE_LABEL:
                 if self.slow_scroll:
                     self.start_display_at += 1
                 else:
@@ -472,7 +472,7 @@ class MultiLine(widget.Widget):
             curses.ascii.SP:    self.h_select,
             curses.ascii.ESC:   self.h_exit_escape,
             curses.ascii.CR:    self.h_select_exit,
-        })  
+        })
         if self.allow_filtering:
             self.handlers.update ( {
                 ord('l'):       self.h_set_filter,
@@ -481,7 +481,7 @@ class MultiLine(widget.Widget):
                 ord('N'):       self.move_previous_filtered,
                 ord('p'):       self.move_previous_filtered,
                 # "^L":        self.h_set_filtered_to_selected,
-            } )   
+            } )
         if self.exit_left:
             self.handlers.update({
                 curses.KEY_LEFT:    self.h_exit_left
@@ -554,25 +554,25 @@ class MultiLine(widget.Widget):
     #@+node:ekr.20170428084208.110: *4* MultiLine.h_cursor_line_up
     def h_cursor_line_up(self, ch):
         self.cursor_line -= 1
-        if self.cursor_line < 0: 
+        if self.cursor_line < 0:
             if self.scroll_exit:
                 self.cursor_line = 0
                 self.h_exit_up(ch)
-            else: 
+            else:
                 self.cursor_line = 0
 
     #@+node:ekr.20170428084208.111: *4* MultiLine.h_cursor_line_down
     def h_cursor_line_down(self, ch):
         self.cursor_line += 1
         if self.cursor_line >= len(self.values):
-            if self.scroll_exit: 
+            if self.scroll_exit:
                 self.cursor_line = len(self.values)-1
                 self.h_exit_down(ch)
                 return True
-            else: 
+            else:
                 self.cursor_line -=1
                 return True
-        if self._my_widgets[self.cursor_line-self.start_display_at].task == MORE_LABEL: 
+        if self._my_widgets[self.cursor_line-self.start_display_at].task == MORE_LABEL:
             if self.slow_scroll:
                 self.start_display_at += 1
             else:
@@ -631,8 +631,8 @@ class MultiLineAction(MultiLine):
     #@+others
     #@+node:ekr.20170428084208.118: *3* MultiLineAction.__init__
     def __init__(self, *args, **keywords):
-        self.allow_multi_action = False  
-        super(MultiLineAction, self).__init__(*args, **keywords)  
+        self.allow_multi_action = False
+        super(MultiLineAction, self).__init__(*args, **keywords)
 
     #@+node:ekr.20170428084208.119: *3* MultiLineAction.actionHighlighted
     def actionHighlighted(self, act_on_this, key_press):
@@ -761,12 +761,12 @@ class Pager(MultiLine):
         display_length = len(self._my_widgets)
         values_len = len(self.values)
 
-        if self.start_display_at > values_len - display_length: 
+        if self.start_display_at > values_len - display_length:
             self.start_display_at = values_len - display_length
         if self.start_display_at < 0: self.start_display_at = 0
 
         indexer = 0 + self.start_display_at
-        for line in self._my_widgets[:-1]: 
+        for line in self._my_widgets[:-1]:
             self._print_line(line, indexer)
             indexer += 1
 
@@ -780,7 +780,7 @@ class Pager(MultiLine):
             line.highlight = False
             line.show_bold = False
 
-        for w in self._my_widgets: 
+        for w in self._my_widgets:
             # call update to avoid needless refreshes
             w.update(clear=True)
         # There is a bug somewhere that affects the first line.  This cures it.
@@ -820,7 +820,7 @@ class Pager(MultiLine):
 
     #@+node:ekr.20170428084208.139: *3* Pager.h_show_beginning
     def h_show_beginning(self, input):
-        self.start_display_at = 0   
+        self.start_display_at = 0
 
     #@+node:ekr.20170428084208.140: *3* Pager.h_show_end
     def h_show_end(self, input):
@@ -869,7 +869,7 @@ class TitleMultiLine(titlefield.TitleText):
 
     #@+node:ekr.20170428084208.145: *3* get_values
     def get_values(self):
-        if hasattr(self, 'entry_widget'): 
+        if hasattr(self, 'entry_widget'):
             return self.entry_widget.values
         elif hasattr(self, '__tmp_value'):
             return self.__tmp_values
@@ -877,7 +877,7 @@ class TitleMultiLine(titlefield.TitleText):
             return None
     #@+node:ekr.20170428084208.146: *3* set_values
     def set_values(self, value):
-        if hasattr(self, 'entry_widget'): 
+        if hasattr(self, 'entry_widget'):
             self.entry_widget.values = value
         elif hasattr(self, '__tmp_value'):
             # probably trying to set the value before the textarea is initialised
@@ -920,7 +920,7 @@ class BufferPager(Pager):
 
         self.clearBuffer()
         self.buffer(self._wrap_message_lines(lines, self.width-1))
-        self._values_cache_for_wrapping = copy.deepcopy(self.values) 
+        self._values_cache_for_wrapping = copy.deepcopy(self.values)
 
     #@+node:ekr.20170428084208.153: *3* BufferPager.buffer
     def buffer(self, lines, scroll_end=True, scroll_if_editing=False):

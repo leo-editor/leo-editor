@@ -121,10 +121,10 @@ class MenuDisplay(MenuViewerController):
     #@+others
     #@+node:ekr.20170428084208.266: *3* __init__
     def __init__(self, color='CONTROL', lines=15, columns=39, show_atx=5, show_aty=2, *args, **keywords):
-        self._DisplayArea = MenuDisplayScreen(lines=lines, 
-                                    columns=columns, 
-                                    show_atx=show_atx, 
-                                    show_aty=show_aty, 
+        self._DisplayArea = MenuDisplayScreen(lines=lines,
+                                    columns=columns,
+                                    show_atx=show_atx,
+                                    show_aty=show_aty,
                                     color=color)
         super(MenuDisplay, self).__init__(*args, **keywords)
 
@@ -243,10 +243,10 @@ class HasMenus(object):
         if len(self._NMenuList) == 1:
             self._NMDisplay.setMenu(self._NMenuList[0])
             self._NMDisplay.edit()
-        else:    
+        else:
             _root_menu = NewMenu.NewMenu(name="Menus")
             for mnu in self._NMenuList:
-                _root_menu.addSubmenu(mnu)            
+                _root_menu.addSubmenu(mnu)
             self._NMDisplay.setMenu(_root_menu)
             self._NMDisplay.edit()
         self.DISPLAY()

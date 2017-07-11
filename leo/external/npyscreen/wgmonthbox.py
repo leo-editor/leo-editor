@@ -13,7 +13,7 @@ import curses
 class DateEntryBase(widget.Widget):
     #@+others
     #@+node:ekr.20170428084208.46: *3* __init__
-    def __init__(self, screen, allowPastDate=True, allowTodaysDate=True, firstWeekDay=6, 
+    def __init__(self, screen, allowPastDate=True, allowTodaysDate=True, firstWeekDay=6,
                     use_datetime = False, allowClear=False, **keywords):
         super(DateEntryBase, self).__init__(screen, **keywords)
         self.allow_date_in_past = allowPastDate
@@ -40,7 +40,7 @@ class DateEntryBase(widget.Widget):
                 if self.allow_todays_date:
                     self.value = self.date_or_datetime().today()
                 else:
-                    self.value = self.date_or_datetime().today() + datetime.timedelta(1)      
+                    self.value = self.date_or_datetime().today() + datetime.timedelta(1)
 
     #@+node:ekr.20170428084208.49: *3* _check_today_validity
     def _check_today_validity(self, onErrorHigher=True):
@@ -156,7 +156,7 @@ class DateEntryBase(widget.Widget):
 
     #@+node:ekr.20170428084208.61: *3* h_find_today
     def h_find_today(self, *args):
-        self.value = self.date_or_datetime().today()  
+        self.value = self.date_or_datetime().today()
         self._check_date()
         self._check_today_validity(onErrorHigher=True)
 
@@ -164,7 +164,7 @@ class DateEntryBase(widget.Widget):
     def h_clear(self, *args):
         if self.allow_clear:
             self.value   = None
-            self.editing = None 
+            self.editing = None
 
     #@-others
 #@+node:ekr.20170428084208.63: ** class MonthBox
@@ -190,7 +190,7 @@ class MonthBox(DateEntryBase):
             self.clear()
             return False
 
-        # Title line        
+        # Title line
         if not self.value:
             _title_line = "No Value Set"
         else:
@@ -212,7 +212,7 @@ class MonthBox(DateEntryBase):
         else:
             title_attribute = curses.A_NORMAL
 
-        self.add_line(self.rely, self.relx, 
+        self.add_line(self.rely, self.relx,
             _title_line,
             self.make_attributes_list(_title_line, title_attribute),
             self.width-1

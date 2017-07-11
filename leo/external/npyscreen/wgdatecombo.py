@@ -58,7 +58,7 @@ class DateCombo(textbox.Textfield, monthbox.DateEntryBase):
         # Remember to leave extra space at the end of the popup, or the clear function can't work properly.
         # _old_date = self.value
         F = Popup.Popup(name = self.name,
-                        columns = (monthbox.MonthBox.DAY_FIELD_WIDTH * 7) + 4, 
+                        columns = (monthbox.MonthBox.DAY_FIELD_WIDTH * 7) + 4,
                         lines=13,
                         )
         #F = Form.Form()

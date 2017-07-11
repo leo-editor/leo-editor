@@ -21,8 +21,8 @@ from .eveventhandler import EventHandler
 from .globals import DISABLE_RESIZE_SYSTEM
 
 #@+node:ekr.20170428084207.176: ** class _FormBase
-class _FormBase(proto_fm_screen_area.ScreenArea, 
-        widget.InputHandler, 
+class _FormBase(proto_fm_screen_area.ScreenArea,
+        widget.InputHandler,
         wgwidget_proto._LinePrinter,
         EventHandler):
     BLANK_COLUMNS_RIGHT= 2
@@ -34,13 +34,13 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
     PRESERVE_SELECTED_WIDGET_DEFAULT = False # Preserve cursor location between displays?
     FRAMED = True
     ALLOW_RESIZE = True
-    FIX_MINIMUM_SIZE_WHEN_CREATED = True    
+    FIX_MINIMUM_SIZE_WHEN_CREATED = True
     WRAP_HELP = True
 
 
     #@+others
     #@+node:ekr.20170428084207.177: *3* __init__
-    def __init__(self, name=None, parentApp=None, framed=None, help=None, color='FORMDEFAULT', 
+    def __init__(self, name=None, parentApp=None, framed=None, help=None, color='FORMDEFAULT',
                     widget_list=None, cycle_widgets=False, *args, **keywords):
         super(_FormBase, self).__init__(*args, **keywords)
         self.initialize_event_handling()
@@ -141,7 +141,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
     def set_up_handlers(self):
         '''FormBase.set_up_handlers.'''
         self.complex_handlers = []
-        self.handlers = { 
+        self.handlers = {
             curses.KEY_F1: self.h_display_help,
             "KEY_F(1)":         self.h_display_help,
             "^O":               self.h_display_help,
@@ -197,7 +197,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
     def while_editing(self, *args, **keywords):
         """This function gets called during the edit loop, on each iteration
         of the loop.  It does nothing: it is here to make customising the loop
-        as easy as overriding this function. A proxy to the currently selected widget is 
+        as easy as overriding this function. A proxy to the currently selected widget is
         passed to the function."""
 
     #@+node:ekr.20170428084207.191: *3* on_screen
@@ -305,7 +305,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
         else:
             r = list(range(self.editw+1, len(self._widgets__))) + list(range(0, self.editw))
         for n in r:
-            if self._widgets__[n].editable and not self._widgets__[n].hidden: 
+            if self._widgets__[n].editable and not self._widgets__[n].hidden:
                 self.editw = n
                 break
         self.display()
@@ -313,11 +313,11 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
 
     #@+node:ekr.20170428084207.201: *3* find_previous_editable
     def find_previous_editable(self, *args):
-        if self.editw != 0:     
+        if self.editw != 0:
             # remember that xrange does not return the 'last' value,
             # so go to -1, not 0! (fence post error in reverse)
             for n in range(self.editw-1, -1, -1 ):
-                if self._widgets__[n].editable and not self._widgets__[n].hidden: 
+                if self._widgets__[n].editable and not self._widgets__[n].hidden:
                     self.editw = n
                     break
 
@@ -366,8 +366,8 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
                 #self.curses_pad.addstr(0,1, ' '+str(_title)+' ')
                 if isinstance(_title, bytes):
                     _title = _title.decode('utf-8', 'replace')
-                self.add_line(0,1, 
-                    _title, 
+                self.add_line(0,1,
+                    _title,
                     self.make_attributes_list(_title, curses.A_NORMAL),
                     self.columns-4
                     )
@@ -380,7 +380,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
                 if isinstance(help_advert, bytes):
                     help_advert = help_advert.decode('utf-8', 'replace')
                 self.add_line(
-                 0, self.curses_pad.getmaxyx()[1]-len(help_advert)-2, 
+                 0, self.curses_pad.getmaxyx()[1]-len(help_advert)-2,
                  help_advert,
                  self.make_attributes_list(help_advert, curses.A_NORMAL),
                  len(help_advert)
@@ -415,13 +415,13 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
         if max_height is False:
             max_height = self.curses_pad.getmaxyx()[0] - rely - 1
 
-        _w = widgetClass(self, 
-                rely=rely, 
-                relx=relx, 
-                max_height=max_height, 
+        _w = widgetClass(self,
+                rely=rely,
+                relx=relx,
+                max_height=max_height,
                 *args, **keywords)
 
-        self.nextrely = _w.height + _w.rely 
+        self.nextrely = _w.height + _w.rely
         self._widgets__.append(_w)
         w_proxy = weakref.proxy(_w)
         if not w_id:
@@ -480,7 +480,7 @@ class TitleForm(Form):
     #@+node:ekr.20170428084207.214: *3* draw_form
     def draw_form(self):
         MAXY, MAXX = self.curses_pad.getmaxyx()
-        self.curses_pad.hline(0, 0, curses.ACS_HLINE, MAXX) 
+        self.curses_pad.hline(0, 0, curses.ACS_HLINE, MAXX)
         self.draw_title_and_help()
 
     #@-others
@@ -493,7 +493,7 @@ class TitleFooterForm(TitleForm):
         MAXY, MAXX = self.curses_pad.getmaxyx()
 
         if self.editing:
-            self.curses_pad.hline(MAXY-1, 0, curses.ACS_HLINE, 
+            self.curses_pad.hline(MAXY-1, 0, curses.ACS_HLINE,
                     MAXX - self.__class__.OK_BUTTON_BR_OFFSET[1] - 1)
         else:
             self.curses_pad.hline(MAXY-1, 0, curses.ACS_HLINE, MAXX-1)

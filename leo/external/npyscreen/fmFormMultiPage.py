@@ -72,8 +72,8 @@ class FormMultiPage(fmForm.FormBaseNew):
                 maxy - 1,
                 maxx - len(display_text) - 2,
                 display_text,
-                self.make_attributes_list(display_text, 
-                     curses.A_NORMAL | self.theme_manager.findPair(self, 
+                self.make_attributes_list(display_text,
+                     curses.A_NORMAL | self.theme_manager.findPair(self,
                                                                   self.pages_label_color)),
                 maxx - len(display_text) - 2,
             )
@@ -121,7 +121,7 @@ class FormMultiPage(fmForm.FormBaseNew):
             else:
                 r = list(range(self.editw+1, len(self._widgets__))) + list(range(0, self.editw))
             for n in r:
-                if self._widgets__[n].editable and not self._widgets__[n].hidden: 
+                if self._widgets__[n].editable and not self._widgets__[n].hidden:
                     self.editw = n
                     value_changed = True
                     break
@@ -137,11 +137,11 @@ class FormMultiPage(fmForm.FormBaseNew):
             if self._active_page > 0:
                 self.switch_page(self._active_page-1)
 
-        if not self.editw == 0:     
+        if not self.editw == 0:
             # remember that xrange does not return the 'last' value,
             # so go to -1, not 0! (fence post error in reverse)
             for n in range(self.editw-1, -1, -1 ):
-                if self._widgets__[n].editable and not self._widgets__[n].hidden: 
+                if self._widgets__[n].editable and not self._widgets__[n].hidden:
                     self.editw = n
                     break
 
