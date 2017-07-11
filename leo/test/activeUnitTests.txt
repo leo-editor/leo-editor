@@ -21166,7 +21166,7 @@ for expected,prefix in table:
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 elif g.app.gui.guiName().startswith('qt'):
-    tabs = ('Log','Find')
+    tabs = ('Log',) #'Find')
     log = c.frame.log
     c.bodyWantsFocusNow()
     last_widget = c.frame.body

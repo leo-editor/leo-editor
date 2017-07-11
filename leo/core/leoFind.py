@@ -2243,6 +2243,8 @@ class LeoFind(object):
         fg = found_fg if found else not_found_fg
         if c.config.getBool("show-find-result-in-status") is not False:
             c.frame.putStatusLine(s, bg=bg, fg=fg)
+        if not found: # Fixes: #457
+            self.radioButtonsChanged = True
     #@+node:ekr.20031218072017.3082: *3* LeoFind.Initing & finalizing
     #@+node:ekr.20031218072017.3083: *4* find.checkArgs
     def checkArgs(self):
