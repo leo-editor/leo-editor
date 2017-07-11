@@ -44,7 +44,7 @@ def mail_refresh(event):
             n = 0
             root = p.copy()
             parent = None
-            for message in mailbox.mbox(mb):    
+            for message in mailbox.mbox(mb):
                 n += 1
                 parent = emit_message(c, parent, root, message)
             c.redraw()

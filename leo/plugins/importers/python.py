@@ -247,7 +247,7 @@ class Py_Importer(Importer):
         '''
         trace = False # and g.unitTesting
         indent_ws = self.get_str_lws(line)
-        h = self.clean_headline(line) 
+        h = self.clean_headline(line)
         if not target.at_others_flag:
             target.at_others_flag = True
             ref = '%s@others\n' % indent_ws
@@ -404,7 +404,7 @@ class Py_Importer(Importer):
                     self.decorator_lines.append(line)
                     self.skip += 1
                     prev_state = new_state
-        return False       
+        return False
     #@+node:ekr.20170617125213.1: *3* py_i.clean_all_headlines
     def clean_all_headlines(self, parent):
         '''
@@ -520,7 +520,7 @@ class Python_ScanState:
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         self.bs_nl = bs_nl
         self.context = context
-        self.curlies += delta_c  
+        self.curlies += delta_c
         self.parens += delta_p
         self.squares += delta_s
         return i

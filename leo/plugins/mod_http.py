@@ -347,7 +347,7 @@ def getData(setting):
         setting,
         strip_comments=False,
         strip_data=False,
-    ) 
+    )
     s = ''.join(aList or [])
     # g.trace(setting, len(s))
     return s
@@ -536,7 +536,7 @@ class leo_interface(object):
             '+' if p.hasChildren() else '-',
             p.computeIcon(),
             quoteattr(p.b),
-            escape(p.h),    
+            escape(p.h),
         ))
         for child in p.children():
             self.write_node_and_subtree(f, child)

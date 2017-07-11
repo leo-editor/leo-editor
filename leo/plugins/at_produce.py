@@ -130,7 +130,7 @@ def runList(c,aList):
                 # Replace popen3 per https://docs.python.org/2.4/lib/node245.html
                 # fi, fo, fe  = os.popen3(command)
                 p = subprocess.Popen(
-                    command, 
+                    command,
                     # bufsize=bufsize,
                     # close_fds=True, # Dubious to disable this.
                     stdin=PIPE, stdout=PIPE, stderr=PIPE,

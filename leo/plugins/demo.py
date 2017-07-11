@@ -916,7 +916,7 @@ class Title(Label):
         Label.__init__(self, text, font=font, pane=pane,
                 position=position, stylesheet=stylesheet)
         # Do this *after* initing the base class.
-        demo.set_position(w, position or 
+        demo.set_position(w, position or
             ('center', self.parent().geometry().height() - 50))
 #@+node:ekr.20170213132024.1: *3* Head
 #@@language python

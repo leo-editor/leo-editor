@@ -49,7 +49,7 @@ class QNCalendarWidget(QtWidgets.QCalendarWidget):
         x, y = size.width(), size.height()
         x *= min(n, columns)
         y *= 1 + ((n-1) // columns)
-        self.setMinimumSize(QtCore.QSize(x, y) )       
+        self.setMinimumSize(QtCore.QSize(x, y) )
 
         for i in range(n):
             calendar = QtWidgets.QCalendarWidget()
@@ -60,7 +60,7 @@ class QNCalendarWidget(QtWidgets.QCalendarWidget):
                 year += 1
                 month = 1
             calendar.currentPageChanged.connect(
-                lambda year, month, cal=calendar: 
+                lambda year, month, cal=calendar:
                     self.currentPageChanged(year, month, cal))
             calendar.clicked.connect(self.return_result)
             calendar.activated.connect(self.return_result)
@@ -68,7 +68,7 @@ class QNCalendarWidget(QtWidgets.QCalendarWidget):
             layout.addWidget(calendar, i//columns, i%columns)
 
     def currentPageChanged(self, year, month, cal):
-        """currentPageChanged - Handle change of view 
+        """currentPageChanged - Handle change of view
 
         :Parameters:
         - `self`: self

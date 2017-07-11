@@ -636,8 +636,8 @@ class QuickSearchController(object):
                         hitBase = True
                     else:
                         node = node.parent()
-            if hitBase: 
-                # If I hit the base then revert to all positions 
+            if hitBase:
+                # If I hit the base then revert to all positions
                 # this is basically the "main" chapter
                 hitBase = False #reset
                 hNodes = self.c.all_positions()

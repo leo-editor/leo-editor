@@ -35,8 +35,8 @@ class JS_Importer(Importer):
               '*=', '*',
               '/=', '/',
               '%=', '%',
-        '&&', '&=', '&', 
-        '||', '|=', '|', 
+        '&&', '&=', '&',
+        '||', '|=', '|',
                     '~',
                     '=',
                     '!', # Unary op can trigger regex.
@@ -109,7 +109,7 @@ class JS_Importer(Importer):
                 expect = 'div'
             elif ch.isdigit():
                 i += 1
-                # Only *approximately* correct. 
+                # Only *approximately* correct.
                 while i < len(s) and (s[i] in '.+-e' or s[i].isdigit()):
                     i += 1
                 # This should work even if the scan ends with '+' or '-'
@@ -253,7 +253,7 @@ class JS_ScanState:
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         # self.bs_nl = bs_nl
         self.context = context
-        self.curlies += delta_c  
+        self.curlies += delta_c
         self.parens += delta_p
         # self.squares += delta_s
         return i

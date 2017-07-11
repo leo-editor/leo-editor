@@ -60,7 +60,7 @@ class Java_Importer(Importer):
             if not self.java_types_pattern.match(word):
                 self.headline = word
     #@+node:ekr.20161205042019.3: *3* java_i.match_start_patterns
-    # Define patterns that can start a block        
+    # Define patterns that can start a block
     java_class_pattern = re.compile(r'\s*(%s\s*)*\s*class\s+(\w+)' % (java_types_list))
     java_func_pattern  = re.compile(r'\s*(%s\s*)+\s*([\w:]+)' % (java_types_list))
 
@@ -193,7 +193,7 @@ class Java_ScanState:
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         # All ScanState classes must have a context ivar.
         self.context = context
-        self.curlies += delta_c  
+        self.curlies += delta_c
         return i
     #@-others
 #@-others

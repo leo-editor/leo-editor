@@ -1006,7 +1006,7 @@ class LeoCursesGui(leoGui.LeoGui):
             max_height=8, # Subtract 4 lines
             name='Body Pane',
             footer="Press e to edit line, esc to end editing, d to delete line",
-            values=g.splitLines(c.p.b), 
+            values=g.splitLines(c.p.b),
             slow_scroll=True,
         )
         assert isinstance(box, BoxTitleBody), repr(box)
@@ -1048,7 +1048,7 @@ class LeoCursesGui(leoGui.LeoGui):
             max_height=8, # Subtract 4 lines
             name='Log Pane',
             footer="Press e to edit line, esc to end editing, d to delete line",
-            values=[s for s, color in self.wait_list], 
+            values=[s for s, color in self.wait_list],
             slow_scroll=False,
         )
         assert isinstance(box, BoxTitleLog), repr(box)
@@ -1125,7 +1125,7 @@ class LeoCursesGui(leoGui.LeoGui):
             max_height=8, # Subtract 4 lines
             name='Tree Pane',
             footer="Press d to delete node, e to edit headline (return to end), i to insert node",
-            values=hidden_root_node, 
+            values=hidden_root_node,
             slow_scroll=False,
         )
         assert isinstance(box, BoxTitleTree), repr(box)
@@ -2301,7 +2301,7 @@ class LeoBody (npyscreen.MultiLineEditable):
         i = self.cursor_line
         j = self.start_display_at
         self.cursor_line = min(len(self.values)-1, i+1)
-        if self._my_widgets[i-j].task == self.continuation_line: 
+        if self._my_widgets[i-j].task == self.continuation_line:
             if self.slow_scroll:
                 self.start_display_at += 1
             else:
@@ -2363,10 +2363,10 @@ class LeoBody (npyscreen.MultiLineEditable):
         for h in range(height):
             self._my_widgets.append(
                 self._contained_widgets(
-                    self.parent, 
-                    rely=(h*self._contained_widget_height)+self.rely, 
-                    relx = self.relx, 
-                    max_width=self.width, 
+                    self.parent,
+                    rely=(h*self._contained_widget_height)+self.rely,
+                    relx = self.relx,
+                    max_width=self.width,
                     max_height=self.__class__._contained_widget_height
             ))
         # Inject leo_parent ivar so the contained widgets can get leo_c later.
@@ -2516,7 +2516,7 @@ class LeoLog (npyscreen.MultiLineEditable):
         i = self.cursor_line
         j = self.start_display_at
         self.cursor_line = min(len(self.values)-1, i+1)
-        if self._my_widgets[i-j].task == self.continuation_line: 
+        if self._my_widgets[i-j].task == self.continuation_line:
             if self.slow_scroll:
                 self.start_display_at += 1
             else:
@@ -2570,10 +2570,10 @@ class LeoLog (npyscreen.MultiLineEditable):
         for h in range(height):
             self._my_widgets.append(
                 self._contained_widgets(
-                    self.parent, 
-                    rely=(h*self._contained_widget_height)+self.rely, 
-                    relx = self.relx, 
-                    max_width=self.width, 
+                    self.parent,
+                    rely=(h*self._contained_widget_height)+self.rely,
+                    relx = self.relx,
+                    max_width=self.width,
                     max_height=self.__class__._contained_widget_height
             ))
         # Inject leo_parent ivar so the contained widgets can get leo_c later.
@@ -2622,7 +2622,7 @@ class LeoLog (npyscreen.MultiLineEditable):
         n = len(self.values)
         self.cursor_line = max(0, n-2)
         self.start_display_at = max(0, n - len(self._my_widgets))
-        self.update()   
+        self.update()
     #@-others
 #@+node:ekr.20170507194035.1: *3* class LeoForm (npyscreen.Form)
 class LeoForm (npyscreen.Form):
@@ -2637,7 +2637,7 @@ class LeoForm (npyscreen.Form):
         super(LeoForm, self).display(*args, **kwargs)
 #@+node:ekr.20170510092721.1: *3* class LeoMiniBuffer (npyscreen.Textfield)
 class LeoMiniBuffer(npyscreen.Textfield):
-    '''An npyscreen class representing Leo's minibuffer, with binding.''' 
+    '''An npyscreen class representing Leo's minibuffer, with binding.'''
 
     def __init__(self, *args, **kwargs):
         super(LeoMiniBuffer, self).__init__(*args, **kwargs)
@@ -2919,7 +2919,7 @@ class LeoMLTree(npyscreen.MLTree, object):
         data = self.interpret_mouse_event(mouse_event)
         mouse_id, rel_x, rel_y, z, bstate = data
         self.cursor_line = (
-            rel_y // 
+            rel_y //
             self._contained_widget_height + self.start_display_at
         )
         # Now, set the correct position.
@@ -3137,7 +3137,7 @@ class LeoMLTree(npyscreen.MLTree, object):
             # ord('{'): self.h_collapse_all,
             # ord('}'): self.h_expand_all,
             # ord('h'): self.h_collapse_tree,
-            # ord('l'): self.h_expand_tree,   
+            # ord('l'): self.h_expand_tree,
         }
         # self.handlers.update(d)
         # dump_handlers(self)

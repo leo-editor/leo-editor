@@ -99,7 +99,7 @@ class TableController (object):
         starts_row1 = ch in ('|', 'return') and not s1[:i_col1].strip()
         if trace and trace_entry:
             g.trace('=====', repr(ch), i_row1, starts_row1, repr(s1))
-            g.printList(lines) 
+            g.printList(lines)
         if self.enabled and g.isTextWrapper(w):
             i1, i2 = None, None
             for i, s in enumerate(lines):
@@ -146,7 +146,7 @@ class TableController (object):
             elif i1 is None or i2 is None:
                 if trace and trace_fail: g.trace('end', repr(i1), repr(i2))
                 return -1, s1, []
-            else: 
+            else:
                 # Last line ends the table.
                 if trace:
                     g.trace('FOUND3', i1)

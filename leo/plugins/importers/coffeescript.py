@@ -308,7 +308,7 @@ class CS_ScanState:
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         # self.bs_nl = bs_nl
         self.context = context
-        # self.curlies += delta_c  
+        # self.curlies += delta_c
         # self.parens += delta_p
         # self.squares += delta_s
         return i

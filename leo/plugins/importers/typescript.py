@@ -99,7 +99,7 @@ class TS_ScanState:
         '''
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         self.context = context
-        self.curlies += delta_c  
+        self.curlies += delta_c
         return i
 
     #@-others

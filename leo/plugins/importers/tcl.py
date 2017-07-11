@@ -96,7 +96,7 @@ class Tcl_ScanState:
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         # All ScanState classes must have a context ivar.
         self.context = context
-        self.curlies += delta_c  
+        self.curlies += delta_c
         return i
     #@-others
 #@-others

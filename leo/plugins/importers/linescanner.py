@@ -100,7 +100,7 @@ class Importer(object):
     #@@nobeautify
 
     def __init__(self,
-        importCommands, 
+        importCommands,
         gen_refs=False, # True: generate section references,
         language = None, # For @language directive.
         name = None, # The kind of importer, usually the same as language
@@ -514,7 +514,7 @@ class Importer(object):
                 g.es('changed leading %s to %s in %s line%s in %s' % (
                     kind2, kind, count, g.plural(count), fn))
             if g.unitTesting: # Sets flag for unit tests.
-                self.report('changed %s lines' % count) 
+                self.report('changed %s lines' % count)
         return ''.join(result)
     #@+node:ekr.20161111024447.1: *5* i.generate_nodes
     def generate_nodes(self, s, parent):
@@ -528,7 +528,7 @@ class Importer(object):
         # Optional Stage 2, consisting of zero or more sub-stages.
         # Subclasses may freely override this method, **provided**
         # that all substages use the API for setting body text.
-        # Changing p.b directly will cause asserts to fail in i.finish(). 
+        # Changing p.b directly will cause asserts to fail in i.finish().
         self.post_pass(parent)
         #
         # Stage 3: Put directives in the root node and set p.b for all nodes.
@@ -1288,7 +1288,7 @@ class ScanState:
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         self.bs_nl = bs_nl
         self.context = context
-        self.curlies += delta_c  
+        self.curlies += delta_c
         self.parens += delta_p
         self.squares += delta_s
         return i

@@ -96,7 +96,7 @@ class Rst_Importer(Importer):
             child = self.create_child_node(
                 parent = top,
                 body = None,
-                headline = 'placeholder', 
+                headline = 'placeholder',
             )
             self.stack.append(child)
         # Create the desired node.
@@ -121,7 +121,7 @@ class Rst_Importer(Importer):
             ch1 = self.is_underline(line1)
             ch2 = self.is_underline(line2, extra='#')
             return (
-                ch0 and ch2 and ch0 == ch2 and 
+                ch0 and ch2 and ch0 == ch2 and
                 not ch1 and
                 len(line1) >= 4 and
                 len(line0) >= len(line1) and
@@ -137,7 +137,7 @@ class Rst_Importer(Importer):
             line1 = lines[i+1]
             ch0 = self.is_underline(line0)
             ch1 = self.is_underline(line1)
-            return not line0.isspace() and not ch0 and ch1 and 4 <= len(line1) 
+            return not line0.isspace() and not ch0 and ch1 and 4 <= len(line1)
         else:
             return False
     #@+node:ekr.20161129040921.8: *4* rst_i.is_underline
