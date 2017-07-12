@@ -279,6 +279,8 @@ latex_template = '''\
 #@-<< define html templates >>
 controllers = {}
     # Keys are c.hash(): values are PluginControllers
+layouts = {}
+    # Keys are c.hash(): values are tuples (layout_when_closed, layout_when_open)
 #@+others
 #@+node:ekr.20110320120020.14491: ** Top-level
 #@+node:tbrown.20100318101414.5994: *3* decorate_window
@@ -311,8 +313,6 @@ def onClose(tag, keys):
         del controllers[h]
         vr.deactivate()
         vr.deleteLater()
-    else:
-        g.trace('should never happen')
 #@+node:tbrown.20110629132207.8984: *3* show_scrolled_message
 def show_scrolled_message(tag, kw):
     if g.unitTesting:
@@ -346,11 +346,12 @@ def viewrendered(event):
     c = event.get('c')
     if not c:
         return None
-    global controllers
+    global controllers, layouts
     vr = controllers.get(c.hash())
     if vr:
         if trace: g.trace('** controller exists: %s' % (vr))
         vr.show()
+        vr.adjust_layout('open')
     else:
         controllers[c.hash()] = vr = ViewRenderedController(c)
         if trace: g.trace('** new controller: %s' % (vr))
@@ -359,9 +360,11 @@ def viewrendered(event):
             vr.splitter = splitter = c.free_layout.get_top_splitter()
             # Careful: we may be unit testing.
             if splitter:
+                vr.store_layout('closed')
                 ok = splitter.add_adjacent(vr, 'bodyFrame', 'right-of')
                 if not ok:
                     splitter.insert(0, vr)
+                vr.adjust_layout('open')
         else:
             vr.setWindowTitle("Rendered View")
             vr.resize(600, 600)
@@ -400,15 +403,17 @@ def expand_rendering_pane(event):
 @g.command('vr-hide')
 def hide_rendering_pane(event):
     '''Close the rendering pane.'''
-    global controllers
+    global controllers, layouts
     c = event.get('c')
     if c:
         vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
         if vr:
+            vr.store_layout('open')
             vr.deactivate()
             vr.deleteLater()
 
-            def at_idle(c=c):
+            def at_idle(c=c, _vr=vr):
+                _vr.adjust_layout('closed')
                 c.bodyWantsFocusNow()
 
             QtCore.QTimer.singleShot(0, at_idle)
@@ -507,6 +512,7 @@ class ViewRenderedProvider(object):
         if id_ == '_leo_viewrendered':
             c = self.c
             vr = controllers.get(c.hash()) or ViewRenderedController(c)
+            controllers[c.hash()] = vr
             # return ViewRenderedController(self.c)
             return vr
     #@-others
@@ -1284,6 +1290,28 @@ if QtWidgets: # NOQA
                         continue
                 result.append(s)
             return ''.join(result)
+        #@+node:vitalije.20170712183051.1: *3* vr.adjust_layout
+        def adjust_layout(self, which):
+            global layouts
+            c = self.c
+            splitter = self.splitter
+            (loc, loo) = layouts.get(c.hash(), (None, None))
+            if which == 'closed' and loc and splitter:
+                splitter.load_layout(loc)
+            elif which == 'open' and loo and splitter:
+                splitter.load_layout(loo)
+        #@+node:vitalije.20170712183618.1: *3* vr.store_layout
+        def store_layout(self, which):
+            global layouts
+            c = self.c; h = c.hash()
+            splitter = self.splitter
+            (loc, loo) = layouts.get(h, (None, None))
+            if which == 'closed' and splitter:
+                loc = splitter.get_saveable_layout()
+                layouts[h] = loc, loo
+            elif which == 'open' and splitter:
+                loo = splitter.get_saveable_layout()
+                layouts[h] = loc, loo
         #@-others
 #@-others
 #@@language python
