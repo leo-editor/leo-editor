@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.49" body_secondary_ratio="0.82">
-	<global_window_position top="68" left="706" height="824" width="1245"/>
+	<global_window_position top="82" left="446" height="824" width="985"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -233,7 +233,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -450,10 +450,10 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20111121224307.3934"><vh>@test k.handleDefaultChar from log pane</vh></v>
 </v>
 <v t="ekr.20170712045534.1"><vh>#512: Unit tests that fail for others</vh>
-<v t="ekr.20170712053944.1" a="E"><vh>Vitalije</vh>
+<v t="ekr.20170712053944.1"><vh>Vitalije</vh>
 <v t="ekr.20111121224307.3934"></v>
 </v>
-<v t="ekr.20170712045644.1" a="E"><vh>Terry's failures</vh>
+<v t="ekr.20170712045644.1"><vh>Terry's failures</vh>
 <v t="ekr.20090529115704.4557"><vh>@test x.makeShadowDirectory</vh>
 <v t="ekr.20090529115704.4558"><vh>deleteShadowDir</vh></v>
 </v>
@@ -482,6 +482,10 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20170712134948.3"><vh>python</vh></v>
 </v>
 </v>
+</v>
+<v t="ekr.20170712140759.1"><vh>xgid failures</vh>
+<v t="ekr.20111124090010.3939"><vh>@test g.app.config @buttons and @commands logic</vh></v>
+<v t="ekr.20111123214629.3941"><vh>@@test unbound Alt-9 key is completely ignored</vh></v>
 </v>
 </v>
 </vnodes>
@@ -4815,6 +4819,43 @@ mod_scripting.py
 # stickynotes.py
 # todo.py
 </t>
+<t tx="ekr.20111123214629.3941">from leo.core.leoQt import QtCore,QtGui,QtWidgets
+import leo.plugins.qt_events as qt_events
+import sys
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+elif sys.platform.startswith('linux'):
+    self.skipTest('linux test')
+elif g.app.gui.guiName().startswith('qt'):
+    wrapper = c.frame.body.wrapper
+    w = wrapper.widget
+    assert g.isTextWrapper(wrapper),wrapper
+    assert g.isTextWidget(w),w
+    filter_obj = qt_events.LeoQtEventFilter(c,w=w)
+    g.app.unitTestDict[p.h] = filter_obj
+        # keep a pointer to the filter.
+    for z in c.k.bindingsDict.keys():
+        if z.s == 'Alt+Key-9':
+            self.skipTest('Alt-Key-9 is bound')
+    if 0: # Too dangerous, and not useful enough.
+        # Create an Alt-9 key event.
+        ev = QtCore.QEvent
+        e = QtGui.QKeyEvent(ev.KeyPress,ord('9'),QtCore.Qt.AltModifier)
+        filter_obj.eventFilter(w,e)
+        # Assert that handleUnboundChar actually ignored it.
+        assert g.app.unitTestDict.get('handleUnboundChar-ignore-alt-or-ctrl')
+else:
+     self.skipTest('Requires Qt Gui')
+</t>
+<t tx="ekr.20111124090010.3939">if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+d = g.app.config.unitTestDict # Always created for this unit test.
+keys = ('config.doButtons-file-names','config.doCommands-file-names')
+for key in keys:
+    aList = d.get(key,[])
+    for fn in ['leoSettings.leo','unitTest.leo']:
+        assert fn in aList,'%s not in unitTestDict[%s]' % (fn,key)
+</t>
 <t tx="ekr.20111124094121.3941"># These exist for a unit test.</t>
 <t tx="ekr.20111124094121.3942"></t>
 <t tx="ekr.20111124094121.3943"></t>
@@ -5468,7 +5509,8 @@ rest text.
 @language python
 def spam():
     # pass
-# after</t>
+# after
+</t>
 <t tx="ekr.20130912092638.4150">@first # -*- coding: utf-16 -*-
 @encoding utf-16
 
@@ -10624,7 +10666,8 @@ assert old_indent == val, (repr(indent), repr(val))
 def spam():
 #     pass
 
-# after</t>
+# after
+</t>
 <t tx="ekr.20170712134948.1">w = c.frame.body.wrapper
 p = g.findNodeInTree(c,p,'python')
 assert p,'not found: python'
@@ -10663,7 +10706,8 @@ assert old_indent == val, (repr(indent), repr(val))
 def spam():
     pass
 
-# after</t>
+# after
+</t>
 <t tx="ekr.20170712135224.1">w = c.frame.body.wrapper
 p = g.findNodeInTree(c,p,'rest and python')
 assert p,'not found: rest and python'
@@ -10703,6 +10747,48 @@ rest text.
 @language python
 def spam():
     pass
-# after</t>
+# after
+</t>
+<t tx="ekr.20170712140759.1">@language rest
+@wrap
+
+I'm also having 3 failed tests with current master, some of those seem to be different from Terry's ones:
+
+Trying to create a QVariant instance of QMetaType::Void type, an invalid QVariant will be constructed instead
+
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test g.app.config @buttons and @commands logic
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\dev\Leo-5.4\leo\core\leoTest.py", line 209, in runTest
+    exec(compile(script, scriptFile, 'exec'), d)
+  File "C:\Users\sysadmin\.leo\scriptFile.py", line 26, in &lt;module&gt;
+    assert fn in aList,'%s not in unitTestDict[%s]' % (fn,key)
+AssertionError: myLeoSettings.leo not in unitTestDict[config.doCommands-file-names]
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test unbound Alt-9 key is completely ignored
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\dev\Leo-5.4\leo\core\leoTest.py", line 209, in runTest
+    exec(compile(script, scriptFile, 'exec'), d)
+  File "C:\Users\sysadmin\.leo\scriptFile.py", line 27, in &lt;module&gt;
+    assert g.app.unitTestDict.get('handleUnboundChar-ignore-alt-or-ctrl')
+AssertionError
+
+----------------------------------------------------------------------
+Ran 905 tests in 120.272s
+
+FAILED (failures=3, skipped=11)
+
+@language python
+
+
+</t>
 </tnodes>
 </leo_file>
