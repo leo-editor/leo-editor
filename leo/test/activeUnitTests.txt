@@ -476,7 +476,7 @@ import inspect
 
 d = c.commandsDict
 keys = sorted(d.keys())
-table = ('bookmark', 'screen-capture', 'stickynote')
+table = ('bookmark', 'quickmove_', 'screen-capture', 'stickynote')
 for key in keys:
     continue_flag = False
     for prefix in table:
@@ -4937,115 +4937,247 @@ fn = efc.create_temp_file(c,d,p)
 assert g.os_path_exists(fn),fn
 efc.shut_down()
 assert not g.os_path_exists(fn),fn
-#@+node:ekr.20120309155126.3949: *4* @test add/delete comments with multiple @language directives
-# Can't be run externally.
+#@+node:ekr.20170712132824.1: *4* add/delete comments
+#@+node:ekr.20120309155126.3949: *5* @test add comments with multiple @language directives
 w = c.frame.body.wrapper
 p = g.findNodeInTree(c,p,'rest and python')
-assert p,'no test node'
-s = p.b
-indent = c.config.getBool('indent_added_comments',default=True)
-
-try:
+assert p,'not found: rest and python'
+old_indent = c.config.getBool('indent_added_comments',default=True)
+table = (
+    (
+        False,
+        '@language rest\nrest text.\n@language python\ndef spam():\n    pass\n# after',
+        '@language rest\nrest text.\n@language python\ndef spam():\n#     pass\n# after',
+    ),
+    (
+        True,
+        '@language rest\nrest text.\n@language python\ndef spam():\n    pass\n# after',
+        '@language rest\nrest text.\n@language python\ndef spam():\n    # pass\n# after',
+    ),
+)
+for indent, s1, expected in table:
+    # Step 1: set the setting.
+    c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+    val = c.config.getBool('indent_added_comments')
+    assert indent == val, (repr(indent), repr(val))
+    # Step 2: set p.b and the insert point.
+    c.selectPosition(p)
+    p.b = s1
     i = p.b.find('pass')
     assert i > -1,'fail1: %s' % (repr(p.b))
-    c.selectPosition(p)
     w.setSelectionRange(i,i+4)
+    # Step 3: test add-comments
     c.addComments()
-    if indent:
-        i = p.b.find('# pass')
-    else:
-        i = p.b.find('#     pass')
-    assert i > -1,'fail2: %s' % (repr(p.b))
-    c.deleteComments()
-    assert p.b == s,'fail3: %s' % (repr(p.b))
-    # Add a comment delim without a blank.
-    c.addComments()
-    p.b = p.b.replace('# pass','#pass')
-    i = p.b.find('#')
-    w.setSelectionRange(i,i+4)
-    c.deleteComments()
-    assert p.b == s,'fail5: s\n%s\nresult\n%s' % (repr(s),repr(p.b))
-finally:
-    p.b = s
-#@+node:ekr.20120309155126.3950: *5* rest and python
+    assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+c.config.set(p, 'bool', 'indent_added_comments', old_indent)
+val = c.config.getBool('indent_added_comments')
+assert old_indent == val, (repr(indent), repr(val))
+#@+node:ekr.20120309155126.3950: *6* rest and python
 @language rest
-
-This is rest text.
-
+rest text.
 @language python
-
+def spam():
+    # pass
+# after
+#@+node:ekr.20170712135224.1: *5* @test delete comments with multiple @language directives
+w = c.frame.body.wrapper
+p = g.findNodeInTree(c,p,'rest and python')
+assert p,'not found: rest and python'
+old_indent = c.config.getBool('indent_added_comments',default=True)
+table = (
+    (
+        False,
+        '@language rest\nrest text.\n@language python\ndef spam():\n#     pass\n# after',
+        '@language rest\nrest text.\n@language python\ndef spam():\n    pass\n# after',
+    ),
+    (
+        True,
+        '@language rest\nrest text.\n@language python\ndef spam():\n    # pass\n# after',
+        '@language rest\nrest text.\n@language python\ndef spam():\n    pass\n# after',
+    ),
+)
+for indent, s1, expected in table:
+    # Step 1: set the setting.
+    c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+    val = c.config.getBool('indent_added_comments')
+    assert indent == val, (repr(indent), repr(val))
+    # Step 2: set p.b and the insert point.
+    c.selectPosition(p)
+    p.b = s1
+    i = p.b.find('pass')
+    assert i > -1,'fail1: %s' % (repr(p.b))
+    w.setSelectionRange(i,i+4)
+    # Step 3: test add-comments
+    c.deleteComments()
+    assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+c.config.set(p, 'bool', 'indent_added_comments', old_indent)
+val = c.config.getBool('indent_added_comments')
+assert old_indent == val, (repr(indent), repr(val))
+#@+node:ekr.20170712135224.2: *6* rest and python
+@language rest
+rest text.
+@language python
 def spam():
     pass
-
 # after
-#@+node:ekr.20111112171235.3854: *4* @test add/delete html comments
+#@+node:ekr.20111112171235.3854: *5* @test add html comments
 w = c.frame.body.wrapper
 p = g.findNodeInTree(c,p,'html')
-assert p,'no test node'
-s = p.b
-indent = c.config.getBool('indent_added_comments',default=True)
-try:
+assert p,'not found: html'
+old_indent = c.config.getBool('indent_added_comments',default=True)
+table = (
+    (
+        False,
+        '@language html\n<html>\ntext\n</html>\n',
+        '@language html\n<html>\n<!-- text -->\n</html>\n',
+    ),
+    (
+        True,
+        '@language html\n<html>\n    text\n</html>\n',
+        '@language html\n<html>\n    <!-- text -->\n</html>\n'
+    ),
+)
+for indent, s1, expected in table:
+    # Step 1: set the setting.
+    c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+    val = c.config.getBool('indent_added_comments')
+    assert indent == val, (repr(indent), repr(val))
+    # Step 2: set p.b and the insert point.
+    c.selectPosition(p)
+    p.b = s1
     i = p.b.find('text')
     assert i > -1,'fail1: %s' % (repr(p.b))
-    c.selectPosition(p)
     w.setSelectionRange(i,i+4)
+    # Step 3: test add-comments
     c.addComments()
-    if indent:
-        i = p.b.find('<!-- text')
-    else:
-        i = p.b.find('<!--     text')
-    assert i > -1,'fail2: %s' % (repr(p.b))
-    c.deleteComments()
-    assert p.b == s,'fail3: s\n%s\nresult\n%s' % (repr(s),repr(p.b))
-    # Add a comment delim without a blank.
-    c.addComments()
-    p.b = p.b.replace('<!-- ','<!--')
-    i = p.b.find('<!--')
-    w.setSelectionRange(i,i+4)
-    c.deleteComments()
-    assert p.b == s,'fail5: s\n%s\nresult\n%s' % (repr(s),repr(p.b))
-finally:
-    p.b = s
-#@+node:ekr.20170128023431.1: *5* @language html
+    assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+c.config.set(p, 'bool', 'indent_added_comments', old_indent)
+val = c.config.getBool('indent_added_comments')
+assert old_indent == val, (repr(indent), repr(val))
+#@+node:ekr.20170128023431.1: *6* @language html
 @language html
-#@+node:ekr.20111112171235.3855: *6* html
+#@+node:ekr.20111112171235.3855: *7* html
 @language html
 <html>
-    text 
+    <!-- text -->
 </html>
-#@+node:ekr.20111112171235.3858: *4* @test add/delete python comments
-# Can't be run externally.
+#@+node:ekr.20170712132900.1: *5* @test delete html comments
+w = c.frame.body.wrapper
+p = g.findNodeInTree(c,p,'html')
+assert p,'not found: html'
+old_indent = c.config.getBool('indent_added_comments',default=True)
+table = (
+    (
+        False,
+        '@language html\n<html>\n<!-- text -->\n</html>\n',
+        '@language html\n<html>\ntext\n</html>\n',
+    ),
+    (
+        True,
+        '@language html\n<html>\n    <!-- text -->\n</html>\n',
+        '@language html\n<html>\n    text\n</html>\n',
+    ),
+)
+for indent, s1, expected in table:
+    # Step 1: set the setting.
+    c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+    val = c.config.getBool('indent_added_comments')
+    assert indent == val, (repr(indent), repr(val))
+    # Step 2: set p.b and the insert point.
+    c.selectPosition(p)
+    p.b = s1
+    i = p.b.find('text')
+    assert i > -1,'fail1: %s' % (repr(p.b))
+    w.setSelectionRange(i,i+4)
+    # Step 3: test delete-comments
+    c.deleteComments()
+    assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+c.config.set(p, 'bool', 'indent_added_comments', old_indent)
+val = c.config.getBool('indent_added_comments')
+assert old_indent == val, (repr(indent), repr(val))
+#@+node:ekr.20170712132933.1: *6* @language html
+@language html
+#@+node:ekr.20170712132933.2: *7* html
+@language html
+<html>
+    text
+</html>
+#@+node:ekr.20170712134334.1: *5* @test add python comments
 w = c.frame.body.wrapper
 p = g.findNodeInTree(c,p,'python')
-assert p,'no test node'
-s = p.b
-indent = c.config.getBool('indent_added_comments',default=True)
-
-try:
+assert p,'not found: python'
+old_indent = c.config.getBool('indent_added_comments',default=True)
+table = (
+    (
+        True,
+        '@language python\ndef spam():\n    pass\n\n# after',
+        '@language python\ndef spam():\n    # pass\n\n# after',
+    ),
+    (
+        False,
+        '@language python\ndef spam():\n    pass\n\n# after',
+        '@language python\ndef spam():\n#     pass\n\n# after',
+    ),
+)
+for indent, s1, expected in table:
+    # Step 1: set the setting.
+    c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+    val = c.config.getBool('indent_added_comments')
+    assert indent == val, (repr(indent), repr(val))
+    # Step 2: set p.b and the insert point.
+    c.selectPosition(p)
+    p.b = s1
     i = p.b.find('pass')
     assert i > -1,'fail1: %s' % (repr(p.b))
-    c.selectPosition(p)
     w.setSelectionRange(i,i+4)
+    # Step 3: test add-comments
     c.addComments()
-    if indent:
-        i = p.b.find('# pass')
-    else:
-        i = p.b.find('#     pass')
-    assert i > -1,'fail2: %s' % (repr(p.b))
-    c.deleteComments()
-    assert p.b == s,'fail3: %s' % (repr(p.b))
-    # Add a comment delim without a blank.
-    c.addComments()
-    p.b = p.b.replace('# pass','#pass')
-    i = p.b.find('#')
-    w.setSelectionRange(i,i+4)
-    c.deleteComments()
-    assert p.b == s,'fail5: s\n%s\nresult\n%s' % (repr(s),repr(p.b))
-finally:
-    p.b = s
-#@+node:ekr.20111112171235.3859: *5* python
+    assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+c.config.set(p, 'bool', 'indent_added_comments', old_indent)
+val = c.config.getBool('indent_added_comments')
+assert old_indent == val, (repr(indent), repr(val))
+#@+node:ekr.20170712134334.2: *6* python
 @language python
+def spam():
+#     pass
 
+# after
+#@+node:ekr.20170712134948.1: *5* @test delete python comments
+w = c.frame.body.wrapper
+p = g.findNodeInTree(c,p,'python')
+assert p,'not found: python'
+old_indent = c.config.getBool('indent_added_comments',default=True)
+table = (
+    (
+        True,
+        '@language python\ndef spam():\n    # pass\n\n# after',
+        '@language python\ndef spam():\n    pass\n\n# after',
+    ),
+    (
+        False,
+        '@language python\ndef spam():\n#     pass\n\n# after',
+        '@language python\ndef spam():\n    pass\n\n# after',
+    ),
+)
+for indent, s1, expected in table:
+    # Step 1: set the setting.
+    c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+    val = c.config.getBool('indent_added_comments')
+    assert indent == val, (repr(indent), repr(val))
+    # Step 2: set p.b and the insert point.
+    c.selectPosition(p)
+    p.b = s1
+    i = p.b.find('pass')
+    assert i > -1,'fail1: %s' % (repr(p.b))
+    w.setSelectionRange(i,i+4)
+    # Step 3: test delete-comments
+    c.deleteComments()
+    assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+c.config.set(p, 'bool', 'indent_added_comments', old_indent)
+val = c.config.getBool('indent_added_comments')
+assert old_indent == val, (repr(indent), repr(val))
+#@+node:ekr.20170712134948.3: *6* python
+@language python
 def spam():
     pass
 
@@ -27894,14 +28026,12 @@ x = c.shadowController
 @others
 shadow_fn  = x.shadowPathName('unittest/xyzzy/test.py')
 shadow_dir = x.shadowDirName('unittest/xyzzy/test.py')
-
 if g.os_path_exists(shadow_fn):
     g.utils_remove(shadow_fn,verbose=True)
     # assert not os.path.exists(shadow_fn),'still exists: %s' % shadow_fn
     if os.path.exists(shadow_fn):
         # Fix bug #512: Just skip this test.
-        self.skipTest('Can delete the directory.')
-        
+        self.skipTest('Can not delete the directory.')
 deleteShadowDir(shadow_dir)
 x.makeShadowDirectory(shadow_dir)
 assert os.path.exists(shadow_dir)

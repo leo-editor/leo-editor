@@ -1308,7 +1308,10 @@ class GlobalConfigManager(object):
     #@+node:ekr.20041122070339: *4* gcm.getColor
     def getColor(self, setting):
         '''Return the value of @color setting.'''
-        return self.get(setting, "color")
+        col = self.get(setting, "color")
+        while col and col.startswith('@'):
+            col = self.get(col[1:], "color")
+        return col
     #@+node:ekr.20080312071248.7: *4* gcm.getCommonCommands
     def getCommonAtCommands(self):
         '''Return the list of tuples (headline,script) for common @command nodes.'''
@@ -1638,7 +1641,10 @@ class LocalConfigManager(object):
     #@+node:ekr.20120215072959.12525: *5* c.config.getColor
     def getColor(self, setting):
         '''Return the value of @color setting.'''
-        return self.get(setting, "color")
+        col = self.get(setting, "color")
+        while col and col.startswith('@'):
+            col = self.get(col[1:], "color")
+        return col
     #@+node:ekr.20120215072959.12527: *5* c.config.getData
     def getData(self, setting, strip_comments=True, strip_data=True):
         '''Return a list of non-comment strings in the body text of @data setting.'''
@@ -1853,7 +1859,7 @@ class LocalConfigManager(object):
         else:
             g.es_print('', ''.join(result), tabName='Settings')
     #@+node:ekr.20120215072959.12475: *3* c.config.set
-    def set(self, p, kind, name, val):
+    def set(self, p, kind, name, val, warn=True):
         """Init the setting for name to val."""
         trace = False and not g.unitTesting
         if trace: g.trace(kind, name, val)
@@ -1866,7 +1872,7 @@ class LocalConfigManager(object):
         if gs:
             assert g.isGeneralSetting(gs), gs
             path = gs.path
-            if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
+            if warn and c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
                 g.es("over-riding setting:", name, "from", path)
         gs = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting')
         d.replace(key, gs)
