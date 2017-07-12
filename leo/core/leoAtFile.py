@@ -674,7 +674,7 @@ class AtFile(object):
         if conn is None: return False
         ok = False
         try:
-            hx = hashlib.md5(open(fileName, 'r').read()).hexdigest()
+            hx = hashlib.md5(g.readFileIntoEncodedString(fileName)).hexdigest()
             hx2 = conn.execute(
                     '''select value from extra_infos
                             where name=?''',

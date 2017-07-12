@@ -1382,7 +1382,7 @@ class FileCommands(object):
                     iconVal,
                     statusBits,
                     ua) = row
-                ua = pickle.loads(ua)
+                ua = pickle.loads(g.toEncodedString(ua))
                 v = leoNodes.VNode(context=c, gnx=gnx)
                 v._headString = h
                 v._bodyString = b
