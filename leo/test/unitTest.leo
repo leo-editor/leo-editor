@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.49" body_secondary_ratio="0.64">
-	<global_window_position top="113" left="299" height="838" width="1245"/>
+<globals body_outline_ratio="0.49" body_secondary_ratio="0.82">
+	<global_window_position top="68" left="706" height="824" width="1245"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -233,7 +233,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -449,15 +449,39 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20111121224307.3934"><vh>@test k.handleDefaultChar from log pane</vh></v>
 </v>
-<v t="ekr.20170712045534.1" a="E"><vh>#512: Unit tests that fail for others</vh>
+<v t="ekr.20170712045534.1"><vh>#512: Unit tests that fail for others</vh>
 <v t="ekr.20170712053944.1" a="E"><vh>Vitalije</vh>
 <v t="ekr.20111121224307.3934"></v>
 </v>
-<v t="ekr.20170712045644.1"><vh>Terry's failures</vh>
+<v t="ekr.20170712045644.1" a="E"><vh>Terry's failures</vh>
 <v t="ekr.20090529115704.4557"><vh>@test x.makeShadowDirectory</vh>
 <v t="ekr.20090529115704.4558"><vh>deleteShadowDir</vh></v>
 </v>
 <v t="ekr.20100131171342.5485"><vh>@test all commands have an event arg</vh></v>
+<v t="ekr.20170712132824.1"><vh>add/delete comments</vh>
+<v t="ekr.20120309155126.3949"><vh>@test add comments with multiple @language directives</vh>
+<v t="ekr.20120309155126.3950"><vh>rest and python</vh></v>
+</v>
+<v t="ekr.20170712135224.1"><vh>@test delete comments with multiple @language directives</vh>
+<v t="ekr.20170712135224.2"><vh>rest and python</vh></v>
+</v>
+<v t="ekr.20111112171235.3854"><vh>@test add html comments</vh>
+<v t="ekr.20170128023431.1"><vh>@language html</vh>
+<v t="ekr.20111112171235.3855"><vh>html</vh></v>
+</v>
+</v>
+<v t="ekr.20170712132900.1"><vh>@test delete html comments</vh>
+<v t="ekr.20170712132933.1"><vh>@language html</vh>
+<v t="ekr.20170712132933.2"><vh>html</vh></v>
+</v>
+</v>
+<v t="ekr.20170712134334.1"><vh>@test add python comments</vh>
+<v t="ekr.20170712134334.2"><vh>python</vh></v>
+</v>
+<v t="ekr.20170712134948.1"><vh>@test delete python comments</vh>
+<v t="ekr.20170712134948.3"><vh>python</vh></v>
+</v>
+</v>
 </v>
 </v>
 </vnodes>
@@ -888,7 +912,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="7,0,0">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="4">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1007,14 +1031,12 @@ x = c.shadowController
 @others
 shadow_fn  = x.shadowPathName('unittest/xyzzy/test.py')
 shadow_dir = x.shadowDirName('unittest/xyzzy/test.py')
-
 if g.os_path_exists(shadow_fn):
     g.utils_remove(shadow_fn,verbose=True)
     # assert not os.path.exists(shadow_fn),'still exists: %s' % shadow_fn
     if os.path.exists(shadow_fn):
         # Fix bug #512: Just skip this test.
-        self.skipTest('Can delete the directory.')
-        
+        self.skipTest('Can not delete the directory.')
 deleteShadowDir(shadow_dir)
 x.makeShadowDirectory(shadow_dir)
 assert os.path.exists(shadow_dir)
@@ -1571,7 +1593,7 @@ for tag,aList in table:
 
 d = c.commandsDict
 keys = sorted(d.keys())
-table = ('bookmark', 'screen-capture', 'stickynote')
+table = ('bookmark', 'quickmove_', 'screen-capture', 'stickynote')
 for key in keys:
     continue_flag = False
     for prefix in table:
@@ -4712,6 +4734,45 @@ run-all-unit-tests-locally          = Alt-6
 
 # Important: Alt-9 is used by a unit test
 </t>
+<t tx="ekr.20111112171235.3854">w = c.frame.body.wrapper
+p = g.findNodeInTree(c,p,'html')
+assert p,'not found: html'
+old_indent = c.config.getBool('indent_added_comments',default=True)
+table = (
+    (
+        False,
+        '@language html\n&lt;html&gt;\ntext\n&lt;/html&gt;\n',
+        '@language html\n&lt;html&gt;\n&lt;!-- text --&gt;\n&lt;/html&gt;\n',
+    ),
+    (
+        True,
+        '@language html\n&lt;html&gt;\n    text\n&lt;/html&gt;\n',
+        '@language html\n&lt;html&gt;\n    &lt;!-- text --&gt;\n&lt;/html&gt;\n'
+    ),
+)
+for indent, s1, expected in table:
+    # Step 1: set the setting.
+    c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+    val = c.config.getBool('indent_added_comments')
+    assert indent == val, (repr(indent), repr(val))
+    # Step 2: set p.b and the insert point.
+    c.selectPosition(p)
+    p.b = s1
+    i = p.b.find('text')
+    assert i &gt; -1,'fail1: %s' % (repr(p.b))
+    w.setSelectionRange(i,i+4)
+    # Step 3: test add-comments
+    c.addComments()
+    assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+c.config.set(p, 'bool', 'indent_added_comments', old_indent)
+val = c.config.getBool('indent_added_comments')
+assert old_indent == val, (repr(indent), repr(val))
+</t>
+<t tx="ekr.20111112171235.3855">@language html
+&lt;html&gt;
+    &lt;!-- text --&gt;
+&lt;/html&gt;
+</t>
 <t tx="ekr.20111115080347.3872"></t>
 <t tx="ekr.20111121224307.3934">if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -5368,6 +5429,46 @@ hr { /* EKR */
 &lt;/body&gt;
 &lt;/html&gt;
 </t>
+<t tx="ekr.20120309155126.3949">w = c.frame.body.wrapper
+p = g.findNodeInTree(c,p,'rest and python')
+assert p,'not found: rest and python'
+old_indent = c.config.getBool('indent_added_comments',default=True)
+table = (
+    (
+        False,
+        '@language rest\nrest text.\n@language python\ndef spam():\n    pass\n# after',
+        '@language rest\nrest text.\n@language python\ndef spam():\n#     pass\n# after',
+    ),
+    (
+        True,
+        '@language rest\nrest text.\n@language python\ndef spam():\n    pass\n# after',
+        '@language rest\nrest text.\n@language python\ndef spam():\n    # pass\n# after',
+    ),
+)
+for indent, s1, expected in table:
+    # Step 1: set the setting.
+    c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+    val = c.config.getBool('indent_added_comments')
+    assert indent == val, (repr(indent), repr(val))
+    # Step 2: set p.b and the insert point.
+    c.selectPosition(p)
+    p.b = s1
+    i = p.b.find('pass')
+    assert i &gt; -1,'fail1: %s' % (repr(p.b))
+    w.setSelectionRange(i,i+4)
+    # Step 3: test add-comments
+    c.addComments()
+    assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+c.config.set(p, 'bool', 'indent_added_comments', old_indent)
+val = c.config.getBool('indent_added_comments')
+assert old_indent == val, (repr(indent), repr(val))
+</t>
+<t tx="ekr.20120309155126.3950">@language rest
+rest text.
+@language python
+def spam():
+    # pass
+# after</t>
 <t tx="ekr.20130912092638.4150">@first # -*- coding: utf-16 -*-
 @encoding utf-16
 
@@ -6655,6 +6756,8 @@ else:
         return builtins.unicode(s, encoding)
 </t>
 <t tx="ekr.20170101134417.1"></t>
+<t tx="ekr.20170128023431.1">@language html
+</t>
 <t tx="ekr.20170401122024.7">@language cweb
 @ % This file is part of CWEB.
 % This program by Silvio Levy and Donald E. Knuth
@@ -10417,18 +10520,6 @@ ERROR: runTest (leo.core.leoTest.GeneralTestCase)
 @test x.makeShadowDirectory
 @test all commands have an event arg
 
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/mnt/usr1/usr1/home/tbrown/t/Package/leo/git/leo-editor/leo/core/leoTest.py", line 211, in runTest
-    builtins.execfile(scriptFile, d)
-  File "/home/tbrown/.leo/scriptFile.py", line 26, in &lt;module&gt;
-    assert arg0 in expected or arg1 in expected, message
-AssertionError: 
-no event arg for command quickmove_bookmark_to_first_child, func: &lt;lambda&gt;
-args: ArgSpec(args=['e'], varargs=None, keywords=None, defaults=None)
-
-======================================================================
-FAIL: runTest (leo.core.leoTest.GeneralTestCase)
 @test add/delete html comments
 
 ----------------------------------------------------------------------
@@ -10453,5 +10544,165 @@ Traceback (most recent call last):
     compareHeadlines=False), '%s: before undo1' % commandName
 AssertionError: addComments: before undo1</t>
 <t tx="ekr.20170712053944.1"></t>
+<t tx="ekr.20170712132824.1"></t>
+<t tx="ekr.20170712132900.1">w = c.frame.body.wrapper
+p = g.findNodeInTree(c,p,'html')
+assert p,'not found: html'
+old_indent = c.config.getBool('indent_added_comments',default=True)
+table = (
+    (
+        False,
+        '@language html\n&lt;html&gt;\n&lt;!-- text --&gt;\n&lt;/html&gt;\n',
+        '@language html\n&lt;html&gt;\ntext\n&lt;/html&gt;\n',
+    ),
+    (
+        True,
+        '@language html\n&lt;html&gt;\n    &lt;!-- text --&gt;\n&lt;/html&gt;\n',
+        '@language html\n&lt;html&gt;\n    text\n&lt;/html&gt;\n',
+    ),
+)
+for indent, s1, expected in table:
+    # Step 1: set the setting.
+    c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+    val = c.config.getBool('indent_added_comments')
+    assert indent == val, (repr(indent), repr(val))
+    # Step 2: set p.b and the insert point.
+    c.selectPosition(p)
+    p.b = s1
+    i = p.b.find('text')
+    assert i &gt; -1,'fail1: %s' % (repr(p.b))
+    w.setSelectionRange(i,i+4)
+    # Step 3: test delete-comments
+    c.deleteComments()
+    assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+c.config.set(p, 'bool', 'indent_added_comments', old_indent)
+val = c.config.getBool('indent_added_comments')
+assert old_indent == val, (repr(indent), repr(val))
+</t>
+<t tx="ekr.20170712132933.1">@language html
+</t>
+<t tx="ekr.20170712132933.2">@language html
+&lt;html&gt;
+    text
+&lt;/html&gt;
+</t>
+<t tx="ekr.20170712134334.1">w = c.frame.body.wrapper
+p = g.findNodeInTree(c,p,'python')
+assert p,'not found: python'
+old_indent = c.config.getBool('indent_added_comments',default=True)
+table = (
+    (
+        True,
+        '@language python\ndef spam():\n    pass\n\n# after',
+        '@language python\ndef spam():\n    # pass\n\n# after',
+    ),
+    (
+        False,
+        '@language python\ndef spam():\n    pass\n\n# after',
+        '@language python\ndef spam():\n#     pass\n\n# after',
+    ),
+)
+for indent, s1, expected in table:
+    # Step 1: set the setting.
+    c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+    val = c.config.getBool('indent_added_comments')
+    assert indent == val, (repr(indent), repr(val))
+    # Step 2: set p.b and the insert point.
+    c.selectPosition(p)
+    p.b = s1
+    i = p.b.find('pass')
+    assert i &gt; -1,'fail1: %s' % (repr(p.b))
+    w.setSelectionRange(i,i+4)
+    # Step 3: test add-comments
+    c.addComments()
+    assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+c.config.set(p, 'bool', 'indent_added_comments', old_indent)
+val = c.config.getBool('indent_added_comments')
+assert old_indent == val, (repr(indent), repr(val))
+</t>
+<t tx="ekr.20170712134334.2">@language python
+def spam():
+#     pass
+
+# after</t>
+<t tx="ekr.20170712134948.1">w = c.frame.body.wrapper
+p = g.findNodeInTree(c,p,'python')
+assert p,'not found: python'
+old_indent = c.config.getBool('indent_added_comments',default=True)
+table = (
+    (
+        True,
+        '@language python\ndef spam():\n    # pass\n\n# after',
+        '@language python\ndef spam():\n    pass\n\n# after',
+    ),
+    (
+        False,
+        '@language python\ndef spam():\n#     pass\n\n# after',
+        '@language python\ndef spam():\n    pass\n\n# after',
+    ),
+)
+for indent, s1, expected in table:
+    # Step 1: set the setting.
+    c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+    val = c.config.getBool('indent_added_comments')
+    assert indent == val, (repr(indent), repr(val))
+    # Step 2: set p.b and the insert point.
+    c.selectPosition(p)
+    p.b = s1
+    i = p.b.find('pass')
+    assert i &gt; -1,'fail1: %s' % (repr(p.b))
+    w.setSelectionRange(i,i+4)
+    # Step 3: test delete-comments
+    c.deleteComments()
+    assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+c.config.set(p, 'bool', 'indent_added_comments', old_indent)
+val = c.config.getBool('indent_added_comments')
+assert old_indent == val, (repr(indent), repr(val))
+</t>
+<t tx="ekr.20170712134948.3">@language python
+def spam():
+    pass
+
+# after</t>
+<t tx="ekr.20170712135224.1">w = c.frame.body.wrapper
+p = g.findNodeInTree(c,p,'rest and python')
+assert p,'not found: rest and python'
+old_indent = c.config.getBool('indent_added_comments',default=True)
+table = (
+    (
+        False,
+        '@language rest\nrest text.\n@language python\ndef spam():\n#     pass\n# after',
+        '@language rest\nrest text.\n@language python\ndef spam():\n    pass\n# after',
+    ),
+    (
+        True,
+        '@language rest\nrest text.\n@language python\ndef spam():\n    # pass\n# after',
+        '@language rest\nrest text.\n@language python\ndef spam():\n    pass\n# after',
+    ),
+)
+for indent, s1, expected in table:
+    # Step 1: set the setting.
+    c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+    val = c.config.getBool('indent_added_comments')
+    assert indent == val, (repr(indent), repr(val))
+    # Step 2: set p.b and the insert point.
+    c.selectPosition(p)
+    p.b = s1
+    i = p.b.find('pass')
+    assert i &gt; -1,'fail1: %s' % (repr(p.b))
+    w.setSelectionRange(i,i+4)
+    # Step 3: test add-comments
+    c.deleteComments()
+    assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+c.config.set(p, 'bool', 'indent_added_comments', old_indent)
+val = c.config.getBool('indent_added_comments')
+assert old_indent == val, (repr(indent), repr(val))
+</t>
+<t tx="ekr.20170712135224.2">@language rest
+rest text.
+@language python
+def spam():
+    pass
+# after</t>
 </tnodes>
 </leo_file>
