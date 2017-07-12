@@ -69,11 +69,11 @@ class MenuItem(object):
         self.enabled = True
         self.arguments = arguments or ()
         self.keywords = keywords or {}
-        
+
     #@+node:ekr.20170428084207.344: *3* setText
     def setText(self, text):
         self._text = text
-        
+
     #@+node:ekr.20170428084207.345: *3* getText
     def getText(self):
         return self._text
@@ -81,7 +81,7 @@ class MenuItem(object):
     #@+node:ekr.20170428084207.346: *3* setOnSelect
     def setOnSelect(self, onSelect):
         self.onSelectFunction = onSelect
-        
+
     #@+node:ekr.20170428084207.347: *3* setDocumentation
     def setDocumentation(self, document):
         self._help = document

@@ -210,7 +210,7 @@ def isFileNode(p):
     return (
         not p.h.strip().startswith('@') and not p.hasChildren() and
         not isDirNode(p) and isDirNode(p.parent()) and
-        (not p.b.strip() or 
+        (not p.b.strip() or
         p.b.startswith("@language rest # AUTOLOADED DOCSTRING")  # no c!
             # p.b.startswith(c.__active_path['DS_SENTINEL']
       ))

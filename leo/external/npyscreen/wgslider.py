@@ -12,9 +12,9 @@ class Slider(widget.Widget):
     DEFAULT_BLOCK_COLOR = None
     #@+others
     #@+node:ekr.20170428084208.300: *3* Slider.__init__
-    def __init__(self, screen, value=0, 
+    def __init__(self, screen, value=0,
                 out_of=100, step=1, lowest=0,
-                label=True, 
+                label=True,
                 block_color = None,
                 **keywords):
         self.out_of = out_of
@@ -27,7 +27,7 @@ class Slider(widget.Widget):
         else: self.on_last_line = False
         if self.on_last_line:
             self.maximum_string_length = self.width - 1
-        else:   
+        else:
             self.maximum_string_length = self.width
         self.label = label
 
@@ -37,10 +37,10 @@ class Slider(widget.Widget):
 
     #@+node:ekr.20170428084208.302: *3* Slider.translate_value
     def translate_value(self):
-        """What do different values mean?  If you subclass this object, and override this 
+        """What do different values mean?  If you subclass this object, and override this
         method, you can change how the labels are displayed.  This method should return a
         unicode string, to be displayed to the user. You probably want to ensure this is a fixed width."""
-        
+
         stri = "%s / %s" %(self.value, self.out_of)
         if isinstance(stri, bytes):
             stri = stri.decode(self.encoding, 'replace')
@@ -72,7 +72,7 @@ class Slider(widget.Widget):
                 self.make_attributes_list(label_str, label_attributes),
                 len(label_str)
                 )
-            
+
             # If want to handle neg. numbers, this line would need changing.
         blocks_to_fill = (float(self.value) / float(self.out_of)) * int(blocks_on_screen)
 
@@ -89,7 +89,7 @@ class Slider(widget.Widget):
             #self.parent.curses_pad.bkgdset(curses.ACS_HLINE)
             BACKGROUND_CHAR = curses.ACS_HLINE
             BARCHAR         = " "
-        
+
 
         for n in range(blocks_on_screen):
             xoffset = self.relx
@@ -131,7 +131,7 @@ class Slider(widget.Widget):
     def set_up_handlers(self):
         '''Slider.set_up_handlers.'''
         super(widget.Widget, self).set_up_handlers()
-        self.handlers.update({ 
+        self.handlers.update({
             curses.KEY_LEFT: self.h_decrease,
             curses.KEY_RIGHT: self.h_increase,
             ord('+'): self.h_increase,
@@ -161,7 +161,7 @@ class SliderNoLabel(Slider):
     #@+others
     #@+node:ekr.20170428084208.311: *3* __init__
     def __init__(self, screen, label=False, *args, **kwargs):
-        super(SliderNoLabel, self).__init__(screen, label=label, *args, **kwargs)    
+        super(SliderNoLabel, self).__init__(screen, label=label, *args, **kwargs)
 
     #@+node:ekr.20170428084208.312: *3* translate_value
     def translate_value(self):

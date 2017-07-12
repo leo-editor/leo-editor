@@ -18,7 +18,7 @@ def cmd(name):
 #@+others
 #@+node:ekr.20160514095828.1: ** class ControlCommandsClass
 class ControlCommandsClass(BaseEditCommandsClass):
-    
+
     def __init__(self, c):
         '''Ctor for ControlCommandsClass.'''
         # pylint: disable=super-init-not-called
@@ -88,7 +88,7 @@ class ControlCommandsClass(BaseEditCommandsClass):
         k = self.c.k
         k.setLabelBlue('shell-command: ')
         k.get1Arg(event, self.shellCommand1)
-            
+
     def shellCommand1(self, event):
         k = self.c.k
         command = g.toUnicode(k.arg)

@@ -226,7 +226,7 @@ class Cacher(object):
         '''
         Schedule a recovered node if child_v is substantially different from an
         earlier version.
-        
+
         Issue a (rare) warning if two different files are involved.
         '''
         trace = (False or g.app.debug) and not g.unitTesting

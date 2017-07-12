@@ -154,7 +154,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
                 self.stringRect = self.getRectanglePoints(self.w)
                 k.setLabelBlue('String rectangle: ')
                 k.get1Arg(event, handler=self.stringRectangle1)
-                
+
     def stringRectangle1(self, event):
         c, k = self.c, self.c.k
         k.clearState()

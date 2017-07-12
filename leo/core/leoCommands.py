@@ -34,12 +34,12 @@ def cmd(name):
 class Commands(object):
     """
     A per-outline class that implements most of Leo's commands. The
-    "c" predefined object is an instance of this class. 
-    
+    "c" predefined object is an instance of this class.
+
     c.initObjects() creates sucommanders corresponding to files in the
     leo/core and leo/commands. All of Leo's core code is accessible
     via this class and its subcommanders.
-    
+
     g.app.pluginsController is Leo's plugins controller. Many plugins
     inject controllers objects into the Commands class. These are
     another kind of subcommander.
@@ -123,7 +123,7 @@ class Commands(object):
         # For outline navigation.
         self.navPrefix = g.u('') # Must always be a string.
         self.navTime = None
-        
+
         self.sqlite_connection = None
     #@+node:ekr.20120217070122.10466: *5* c.initDebugIvars
     def initDebugIvars(self):
@@ -681,7 +681,7 @@ class Commands(object):
     def reloadSettings(self, event=None):
         '''Reload all static abbreviations from all config files.'''
         self.reloadSettingsHelper(all=False)
-        
+
     @cmd('reload-all-settings')
     def reloadAllSettings(self, event=None):
         '''Reload all static abbreviations from all config files.'''
@@ -974,7 +974,7 @@ class Commands(object):
 
             # def g_input_wrapper(message, c=c):
                 # return g.input_(message, c=c)
-        
+
         d = {'c': c, 'g': g, 'input': g.input_, 'p': p} if define_g else {}
         if define_name: d['__name__'] = define_name
         d['script_args'] = args or []
@@ -2063,7 +2063,7 @@ class Commands(object):
         s = p.h.strip()
         if (s[0: 2] == "<<" or
             s[-2:] == ">>" # Must be on separate line.
-        ): 
+        ):
             if s[0: 2] == "<<": s = s[2:]
             if s[-2:] == ">>": s = s[: -2]
             s = s.strip()
@@ -6457,14 +6457,14 @@ class Commands(object):
         A generator yielding *all* the root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
         predicate.
-        
+
         The generator yields all **root** anywhere in the outline that satisfy
         the predicate. Once a root is found, the generator skips its subtree.
         '''
         c = self
         if predicate is None:
 
-            # pylint: disable=function-redefined    
+            # pylint: disable=function-redefined
             def predicate(p):
                 return p.isAnyAtFileNode()
 
@@ -6482,14 +6482,14 @@ class Commands(object):
         A generator yielding all unique root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
         predicate.
-        
+
         The generator yields all **root** anywhere in the outline that satisfy
         the predicate. Once a root is found, the generator skips its subtree.
         '''
         c = self
         if predicate is None:
 
-            # pylint: disable=function-redefined        
+            # pylint: disable=function-redefined
             def predicate(p):
                 return p.isAnyAtFileNode()
 
@@ -6645,14 +6645,14 @@ class Commands(object):
         '''
         New in Leo 5.5: Return None.
         Using empty positions masks problems in program logic.
-        
+
         In fact, there are no longer any calls to this method in Leo's core.
         '''
         # c = self
         g.trace('This method is deprecated. Instead, just use None.')
         return None
         # return leoNodes.Position(None)
-        
+
     #@+node:ekr.20040307104131.3: *5* c.positionExists
     def positionExists(self, p, root=None, trace=False):
         """Return True if a position exists in c's tree"""
@@ -6709,7 +6709,7 @@ class Commands(object):
             return leoNodes.Position(v, childIndex=0, stack=None)
         else:
             return None
-            
+
     # For compatibiility with old scripts...
     rootVnode = rootPosition
     findRootPosition = rootPosition

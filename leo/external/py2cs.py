@@ -351,7 +351,7 @@ class CoffeeScriptTraverser(object):
             result.append(self.visit(z))
             self.level -= 1
         return ''.join(result)
-        
+
     do_AsyncFunctionDef = do_FunctionDef
     #@+node:ekr.20160316091132.20: *4* cv.Interactive
 
@@ -834,7 +834,7 @@ class CoffeeScriptTraverser(object):
                 result.append(self.visit(z))
                 self.level -= 1
         return ''.join(result)
-        
+
     def do_AsyncFor(self, node):
         return self.do_For(node, async=True)
     #@+node:ekr.20160316091132.65: *4* cv.Global
@@ -1107,7 +1107,7 @@ class CoffeeScriptTraverser(object):
             result.append(self.visit(z))
             self.level -= 1
         return ''.join(result) + tail
-        
+
     def do_AsyncWith(self, node):
         return self.do_With(node, async=True)
 

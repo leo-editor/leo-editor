@@ -17,8 +17,8 @@ class SimpleGrid(widget.Widget):
     additional_x_offset   = 0
     #@+others
     #@+node:ekr.20170428084208.4: *3* SimpleGrid.__init__
-    def __init__(self, screen, columns = None, 
-            column_width = None, col_margin=1, row_height = 1, 
+    def __init__(self, screen, columns = None,
+            column_width = None, col_margin=1, row_height = 1,
             values = None,
             always_show_cursor = False,
             select_whole_line = False,
@@ -31,21 +31,21 @@ class SimpleGrid(widget.Widget):
         self.column_width_requested = column_width
         self.row_height = row_height
         self.make_contained_widgets()
-        
+
         self.begin_row_display_at = 0
         self.begin_col_display_at = 0
         self.on_empty_display = ''
         self.select_whole_line = select_whole_line
-        
+
         self.edit_cell = None
-        
+
         if not values:
             self.values = None
         else:
             self.values = values
 
         self.on_select_callback = on_select_callback
-            
+
     #@+node:ekr.20170428084208.5: *3* SimpleGrid.set_grid_values_from_flat_list
     def set_grid_values_from_flat_list(self, new_values, max_cols=None, reset_cursor=True):
         if not max_cols:
@@ -58,12 +58,12 @@ class SimpleGrid(widget.Widget):
                 col_number = 0
                 grid_values.append([])
                 row_number += 1
-            grid_values[row_number].append(f)    
+            grid_values[row_number].append(f)
             col_number += 1
         self.values = grid_values
         if reset_cursor:
             self.edit_cell = [0,0]
-        
+
     #@+node:ekr.20170428084208.6: *3* SimpleGrid.resize
     def resize(self):
         self.make_contained_widgets()
@@ -92,11 +92,11 @@ class SimpleGrid(widget.Widget):
 
     #@+node:ekr.20170428084208.8: *3* SimpleGrid.display_value
     def display_value(self, vl):
-        """Overload this function to change how values are displayed.  
+        """Overload this function to change how values are displayed.
         Should accept one argument (the object to be represented), and return a string."""
         return str(vl)
 
-        
+
     #@+node:ekr.20170428084208.9: *3* SimpleGrid.calculate_area_needed
     def calculate_area_needed(self):
         return 0,0
@@ -131,10 +131,10 @@ class SimpleGrid(widget.Widget):
         except TypeError:
             cell_value = self.on_empty_display
             cell.grid_current_value_index = -1
-            
+
         cell.grid_current_value_index
-        self._cell_widget_show_value(cell, cell_value)        
-        
+        self._cell_widget_show_value(cell, cell_value)
+
         if self.value:
             if cell.grid_current_value_index in self.value or cell.grid_current_value_index == self.value:
                 self._cell_widget_show_value_selected(cell, True)
@@ -142,7 +142,7 @@ class SimpleGrid(widget.Widget):
                 self._cell_widget_show_value_selected(cell, False)
         else:
             self._cell_widget_show_value_selected(cell, False)
-        
+
         if (self.editing or self.always_show_cursor) and cell.grid_current_value_index != -1:
             if self.select_whole_line:
                 if (self.edit_cell[0] == cell.grid_current_value_index[0]):
@@ -156,17 +156,17 @@ class SimpleGrid(widget.Widget):
                 self._cell_show_cursor(cell, False)
         else:
             self._cell_show_cursor(cell, False)
-            
+
         self.custom_print_cell(cell, cell_value)
-        
+
         cell.update() # <-------------------- WILL NEED TO OPTIMIZE THIS
-        
+
     #@+node:ekr.20170428084208.12: *3* SimpleGrid.custom_print_cell
     def custom_print_cell(self, actual_cell, cell_display_value):
         pass
-        
-        
-        
+
+
+
     #@+node:ekr.20170428084208.13: *3* SimpleGrid._cell_widget_show_value
     def _cell_widget_show_value(self, cell, value):
         cell.value = value
@@ -178,7 +178,7 @@ class SimpleGrid(widget.Widget):
     #@+node:ekr.20170428084208.15: *3* SimpleGrid._cell_show_cursor
     def _cell_show_cursor(self, cell, yes_no):
         cell.highlight = yes_no
-        
+
     #@+node:ekr.20170428084208.16: *3* SimpleGrid.handle_mouse_event
     def handle_mouse_event(self, mouse_event):
         # unfinished
@@ -189,7 +189,7 @@ class SimpleGrid(widget.Widget):
                         self.edit_cell = list(c.grid_current_value_index)
         self.display()
 
-        
+
     #@+node:ekr.20170428084208.17: *3* SimpleGrid.set_up_handlers
     def set_up_handlers(self):
         '''SimpleGrid.set_up_handlers.'''
@@ -241,7 +241,7 @@ class SimpleGrid(widget.Widget):
     def ensure_cursor_on_display_up(self, inpt=None):
         while self.begin_row_display_at  >  self.edit_cell[0]:
             self.h_scroll_display_up(inpt)
-        
+
     #@+node:ekr.20170428084208.21: *3* SimpleGrid.h_show_beginning
     def h_show_beginning(self, inpt):
         self.begin_col_display_at = 0
@@ -254,12 +254,12 @@ class SimpleGrid(widget.Widget):
         self.edit_cell = [len(self.values) - 1 , len(self.values[-1]) - 1]
         self.ensure_cursor_on_display_down_right()
         self.on_select(inpt)
-        
+
     #@+node:ekr.20170428084208.23: *3* SimpleGrid.h_move_cell_left
     def h_move_cell_left(self, inpt):
         if self.edit_cell[1] > 0:
             self.edit_cell[1] -= 1
-        
+
         if self.edit_cell[1] < self.begin_col_display_at:
             self.h_scroll_left(inpt)
         self.on_select(inpt)
@@ -268,7 +268,7 @@ class SimpleGrid(widget.Widget):
     def h_move_cell_right(self, inpt):
         if self.edit_cell[1] <= len(self.values[self.edit_cell[0]]) -2:   # Only allow move to end of current line
             self.edit_cell[1] += 1
-        
+
         if self.edit_cell[1] > self.begin_col_display_at + self.columns - 1:
             self.h_scroll_right(inpt)
         self.on_select(inpt)
@@ -286,7 +286,7 @@ class SimpleGrid(widget.Widget):
     def h_move_line_up(self, inpt):
         if self.edit_cell[0] > 0:
             self.edit_cell[0] -= 1
-            
+
         if self.edit_cell[0] < self.begin_row_display_at:
             self.h_scroll_display_up(inpt)
         self.on_select(inpt)
@@ -296,12 +296,12 @@ class SimpleGrid(widget.Widget):
         if self.begin_col_display_at + self.columns < len(self.values[self.edit_cell[0]]):
             self.begin_col_display_at += self.columns
         self.on_select(inpt)
-        
+
     #@+node:ekr.20170428084208.28: *3* SimpleGrid.h_scroll_left
     def h_scroll_left(self, inpt):
         if self.begin_col_display_at > 0:
             self.begin_col_display_at -= self.columns
-        
+
         if self.begin_col_display_at < 0:
             self.begin_col_display_at = 0
         self.on_select(inpt)
@@ -311,7 +311,7 @@ class SimpleGrid(widget.Widget):
         if self.begin_row_display_at + len(self._my_widgets) < len(self.values):
             self.begin_row_display_at += len(self._my_widgets)
         self.on_select(inpt)
-        
+
     #@+node:ekr.20170428084208.30: *3* SimpleGrid.h_scroll_display_up
     def h_scroll_display_up(self, inpt):
         if self.begin_row_display_at > 0:
@@ -327,13 +327,13 @@ class SimpleGrid(widget.Widget):
              self.edit_cell[0] = 0
         self.ensure_cursor_on_display_up()
         self.on_select(inpt)
-             
+
     #@+node:ekr.20170428084208.32: *3* SimpleGrid.h_move_page_down
     def h_move_page_down(self, inpt):
         self.edit_cell[0] += len(self._my_widgets)
         if self.edit_cell[0] > len(self.values) - 1:
              self.edit_cell[0] = len(self.values) -1
-        
+
         self.ensure_cursor_on_display_down_right()
         self.on_select(inpt)
 

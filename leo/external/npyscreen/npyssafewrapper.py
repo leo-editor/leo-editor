@@ -28,9 +28,9 @@ def wrapper_basic(call_function):
 #   screen = curses.initscr()
 #   curses.noecho()
 #   curses.cbreak()
-#   
+#
 #   return_code = call_function(screen)
-#   
+#
 #   curses.nocbreak()
 #   curses.echo()
 #   curses.endwin()
@@ -79,7 +79,7 @@ def wrapper_fork(call_function, reset=True):
 #@+node:ekr.20170428084207.375: ** external_reset
 def external_reset():
     subprocess.call(['reset', '-Q'])
-    
+
 #@+node:ekr.20170428084207.376: ** wrapper_no_fork
 def wrapper_no_fork(call_function, reset=False):
     global _NEVER_RUN_INITSCR
@@ -102,9 +102,9 @@ def wrapper_no_fork(call_function, reset=False):
     curses.noecho()
     curses.cbreak()
     _SCREEN.keypad(1)
-    
+
     try:
-        return_code = call_function(_SCREEN)    
+        return_code = call_function(_SCREEN)
     finally:
         _SCREEN.keypad(0)
         curses.echo()
@@ -113,7 +113,7 @@ def wrapper_no_fork(call_function, reset=False):
         curses.endwin()
         if reset:
             external_reset()
-    return return_code  
+    return return_code
 #@-others
 #@@language python
 #@@tabwidth -4

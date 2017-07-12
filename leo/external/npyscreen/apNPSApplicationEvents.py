@@ -29,7 +29,7 @@ class NPSEventQueue(object):
     #@+node:ekr.20170428084207.20: *3* put
     def put(self, event):
         self.interal_queue.append(event)
-        
+
     #@-others
 #@+node:ekr.20170428084207.21: ** class StandardApp
 class StandardApp(NPSAppManaged, EventHandler):
@@ -54,7 +54,7 @@ class StandardApp(NPSAppManaged, EventHandler):
         # Parent NPSAppManaged does not define this, so no need to call.
         self.process_event_queues(max_events_per_queue=self.max_events_per_queue)
 
-        
+
     #@+node:ekr.20170428084207.24: *3* initalize_application_event_queues
     def initalize_application_event_queues(self):
         # in the standard application the event queue is not threaded so...
@@ -72,11 +72,11 @@ class StandardApp(NPSAppManaged, EventHandler):
         if event_name not in self.event_directory:
             self.event_directory[event_name] = weakref.WeakSet()
         self.event_directory[event_name].add(registering_object)
-        
+
     #@+node:ekr.20170428084207.27: *3* queue_event
     def queue_event(self, event, queue='MAINQUEUE'):
         self.event_queues[queue].put(event)
-        
+
     #@+node:ekr.20170428084207.28: *3* process_event
     def process_event(self, event):
         discard_list = []
@@ -89,7 +89,7 @@ class StandardApp(NPSAppManaged, EventHandler):
             result = registered_object.handle_event(event)
             if result is False:
                 discard_list.append(registered_object)
-                
+
         for registered_object in discard_list:
             self.event_directory[event.name].discard(registered_object)
     #@-others

@@ -652,7 +652,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if self.w:
             k.setLabelBlue('Set Fill Column: ')
             k.get1Arg(event, handler=self.setFillColumn1)
-            
+
     def setFillColumn1(self, event):
         c, k, w = self.c, self.c.k, self.w
         k.clearState()
@@ -791,7 +791,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             k.setLabelBlue('Find word %sstarting with: ' % (
                 'in line ' if oneLine else ''))
             k.get1Arg(event, handler=self.findWord1, oneCharacter=True)
-            
+
     def findWord1(self, event):
         c, k = self.c, self.c.k
         ch = k.arg
@@ -836,7 +836,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if self.w:
             k.setLabelBlue("Goto n'th character: ")
             k.get1Arg(event, handler=self.gotoCharacter1)
-                
+
     def gotoCharacter1(self, event):
         c, k = self.c, self.c.k
         n = k.arg
@@ -862,7 +862,7 @@ class EditCommandsClass(BaseEditCommandsClass):
 
         For external files containing sentinels, there may be *several* lines
         in the file that correspond to the same line in the outline.
-        
+
         An Easter Egg: <Alt-x>number invokes this code.
         '''
         # Improved docstring for #253: Goto Global line (Alt-G) is inconsistent.
@@ -890,7 +890,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if self.w:
             k.setLabelBlue('Goto line: ')
             k.get1Arg(event, handler=self.gotoLine1)
-                
+
     def gotoLine1(self, event):
         c, k = self.c, self.c.k
         n, w = k.arg, self.w
@@ -1492,7 +1492,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def insertNewLine(self, event):
         '''Insert a newline at the cursor.'''
         self.insertNewlineBase(event)
-        
+
     insertNewline = insertNewLine
 
     def insertNewlineBase(self, event):
@@ -1902,7 +1902,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         k = self.c.k
         k.setLabelBlue('Flush lines regexp: ')
         k.get1Arg(event, handler=self.flushLines1)
-            
+
     def flushLines1(self, event):
         k = self.c.k
         k.clearState()
@@ -1922,7 +1922,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         k = self.c.k
         k.setLabelBlue('Keep lines regexp: ')
         k.get1Arg(event, handler=self.keepLines1)
-            
+
     def keepLines1(self, event):
         k = self.c.k
         k.clearState()
@@ -2560,7 +2560,7 @@ class EditCommandsClass(BaseEditCommandsClass):
     def forwardWordExtendSelection(self, event):
         '''Extend the selection by moving the cursor to the end of the next word.'''
         self.moveWordHelper(event, extend=True, forward=True)
-        
+
     @cmd('forward-word-smart')
     def forwardWordSmart(self, event):
         '''Move the cursor to the end of the current or the beginning of the next word.'''
@@ -3669,14 +3669,14 @@ class EditCommandsClass(BaseEditCommandsClass):
         if self.w:
             k.setLabelBlue('Set uA: ')
             k.get1Arg(event, handler=self.setUa1)
-                
+
     def setUa1(self, event):
         k = self.c.k
         self.uaName = k.arg
         s = 'Set uA: %s To: ' % (self.uaName)
         k.setLabelBlue(s)
         k.getNextArg(self.setUa2)
-            
+
     def setUa2(self, event):
         c, k = self.c, self.c.k
         val = k.arg

@@ -27,7 +27,7 @@ def init ():
 #@+node:ville.20110219221839.6560: ** createTrayIcon
 def createTrayIcon():
     g.trayIconMenu = QtWidgets.QMenu()
-    
+
     def new_note():
         c = g.app.commanders()[0]
         c.k.simulateCommand('stickynote-new')

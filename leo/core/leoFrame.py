@@ -343,10 +343,11 @@ class LeoBody(object):
         d = self.editorWidgets
         w = c.frame.body.wrapper
         values = list(d.values())
+        # g.printDict(d)
         if len(values) > 1:
             i = values.index(w) + 1
             if i == len(values): i = 0
-            w2 = list(d.values())[i]
+            w2 = values[i]
             assert(w != w2)
             self.selectEditor(w2)
             c.frame.body.wrapper = w2
@@ -1554,7 +1555,7 @@ class LeoTree(object):
         if not p:
             # This is not an error! We may be changing roots.
             # Do *not* test c.positionExists(p) here!
-            
+
             return
         c = self.c
         if not c.frame.body.wrapper:

@@ -454,7 +454,7 @@ class LeoPluginsController(object):
     def loadHandlers(self, tag, keys):
         '''
         Load all enabled plugins.
-        
+
         Using a module name (without the trailing .py) allows a plugin to
         be loaded from outside the leo/plugins directory.
         '''

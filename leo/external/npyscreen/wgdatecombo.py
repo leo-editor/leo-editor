@@ -45,20 +45,20 @@ class DateCombo(textbox.Textfield, monthbox.DateEntryBase):
                 return "-error-"
         else:
             return "-unset-"
-            
+
     #@+node:ekr.20170428084207.582: *3* _print
     def _print(self):
         if self.do_colors():
             self.parent.curses_pad.addnstr(self.rely, self.relx, self.display_value(self.value), self.width, self.parent.theme_manager.findPair(self,))
         else:
             self.parent.curses_pad.addnstr(self.rely, self.relx, self.display_value(self.value), self.width)
-            
+
     #@+node:ekr.20170428084207.583: *3* h_change_value
     def h_change_value(self, *arg):
         # Remember to leave extra space at the end of the popup, or the clear function can't work properly.
         # _old_date = self.value
         F = Popup.Popup(name = self.name,
-                        columns = (monthbox.MonthBox.DAY_FIELD_WIDTH * 7) + 4, 
+                        columns = (monthbox.MonthBox.DAY_FIELD_WIDTH * 7) + 4,
                         lines=13,
                         )
         #F = Form.Form()
@@ -104,7 +104,7 @@ class TitleDateCombo(titlefield.TitleText):
 
 
 
-        
+
 
 #@-others
 #@@language python

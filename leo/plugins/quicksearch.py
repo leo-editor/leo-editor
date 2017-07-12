@@ -566,13 +566,13 @@ class QuickSearchController(object):
             return _f
         for pat in self._search_patterns:
             self.addGeneric(pat, sHistSelect(pat))
-        
+
 
     def pushSearchHistory(self, pat):
         if pat in self._search_patterns:
             return
         self._search_patterns = ([pat] + self._search_patterns)[:30]
-        
+
     #@+node:tbrown.20120220091254.45207: *3* doTimeline
     def doTimeline(self):
 
@@ -636,8 +636,8 @@ class QuickSearchController(object):
                         hitBase = True
                     else:
                         node = node.parent()
-            if hitBase: 
-                # If I hit the base then revert to all positions 
+            if hitBase:
+                # If I hit the base then revert to all positions
                 # this is basically the "main" chapter
                 hitBase = False #reset
                 hNodes = self.c.all_positions()

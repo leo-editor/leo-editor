@@ -296,7 +296,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         k.setLabelBlue('Delete File: ')
         k.extendLabel(os.getcwd() + os.sep)
         k.get1Arg(event, handler=self.deleteFile1)
-            
+
     def deleteFile1(self, event):
         k = self.c.k
         k.keyboardQuit()
@@ -359,7 +359,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         k.setLabelBlue('Make Directory: ')
         k.extendLabel(os.getcwd() + os.sep)
         k.get1Arg(event, handler=self.makeDirectory1)
-            
+
     def makeDirectory1(self, event):
         k = self.c.k
         k.keyboardQuit()
@@ -400,7 +400,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         k.setLabelBlue('Remove Directory: ')
         k.extendLabel(os.getcwd() + os.sep)
         k.get1Arg(event, handler=self.removeDirectory1)
-            
+
     def removeDirectory1(self, event):
         k = self.c.k
         k.keyboardQuit()

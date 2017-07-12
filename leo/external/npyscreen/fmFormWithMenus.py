@@ -30,8 +30,8 @@ class FormBaseNewWithMenus(fmForm.FormBaseNew, wgNMenuDisplay.HasMenus):
         if isinstance(menu_advert, bytes):
             menu_advert = menu_advert.decode('utf-8', 'replace')
         y, x = self.display_menu_advert_at()
-        self.add_line(y, x, 
-            menu_advert, 
+        self.add_line(y, x,
+            menu_advert,
             self.make_attributes_list(menu_advert, curses.A_NORMAL),
             self.columns - x - 1
             )
@@ -58,14 +58,14 @@ class FormWithMenus(fmForm.Form, wgNMenuDisplay.HasMenus):
         y, x = self.display_menu_advert_at()
         if isinstance(menu_advert, bytes):
             menu_advert = menu_advert.decode('utf-8', 'replace')
-        self.add_line(y, x, 
-            menu_advert, 
+        self.add_line(y, x,
+            menu_advert,
             self.make_attributes_list(menu_advert, curses.A_NORMAL),
             self.columns - x - 1
             )
 
     #@-others
-# The following class does not inherit from FormWithMenus and so some code is duplicated.  
+# The following class does not inherit from FormWithMenus and so some code is duplicated.
 # The pig is getting to inherit edit() from ActionForm, but draw_form from FormWithMenus
 #@+node:ekr.20170428084207.295: ** class ActionFormWithMenus
 class ActionFormWithMenus(fmActionForm.ActionForm, wgNMenuDisplay.HasMenus):
@@ -84,11 +84,11 @@ class ActionFormWithMenus(fmActionForm.ActionForm, wgNMenuDisplay.HasMenus):
         super(ActionFormWithMenus, self).draw_form()
         menu_advert = " " + self.__class__.MENU_KEY + ": Menu "
         y, x = self.display_menu_advert_at()
-        
+
         if isinstance(menu_advert, bytes):
             menu_advert = menu_advert.decode('utf-8', 'replace')
-        self.add_line(y, x, 
-            menu_advert, 
+        self.add_line(y, x,
+            menu_advert,
             self.make_attributes_list(menu_advert, curses.A_NORMAL),
             self.columns - x - 1
             )
@@ -103,7 +103,7 @@ class ActionFormV2WithMenus(fmActionFormV2.ActionFormV2, wgNMenuDisplay.HasMenus
         self.initialize_menus()
 
 
-        
+
     #@-others
 #@+node:ekr.20170428084207.301: ** class SplitFormWithMenus
 class SplitFormWithMenus(fmForm.SplitForm, FormWithMenus):

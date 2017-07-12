@@ -357,7 +357,7 @@ class NullGui(LeoGui):
         cancelMessage=None,
     ):
         return self.simulateDialog("yesNoCancelDialog", "cancel")
-        
+
     def simulateDialog(self, key, defaultVal):
         return defaultVal
     #@+node:ekr.20170613101737.1: *3* NullGui.clipboard & focus

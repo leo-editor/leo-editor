@@ -216,7 +216,7 @@ if g.app.gui.guiName() == "qt":
             offsets = sorted(set(offsets), key=lambda x: (x[0],int(x[1:].strip('>').replace('<', '-'))))
             u.dueDateOffset.addItems(offsets)
             u.dueDateOffset.setCurrentIndex(self.date_offset_default)
-           
+
             if True: ### isQt5:
                 self.UI.dueDateOffset.activated.connect(
                     lambda v: o.set_date_offset(field='duedate'))

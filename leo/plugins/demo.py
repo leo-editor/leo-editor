@@ -30,7 +30,7 @@ def next_command(self, event=None, chain=False):
         g.app.demo.next()
     else:
         g.trace('no demo instance')
-        
+
 @g.command('demo-prev')
 def prev_command(self, event=None, chain=False):
     '''Run the next demo script.'''
@@ -38,7 +38,7 @@ def prev_command(self, event=None, chain=False):
         g.app.demo.prev()
     else:
         g.trace('no demo instance')
-        
+
 @g.command('demo-end')
 def demo_end(self, event=None, chain=False):
     '''End the present demo.'''
@@ -207,9 +207,9 @@ class Demo(object):
             self.teardown_script()
         if self.script_i >= len(self.script_list):
             self.end()
-            
+
     next_command = next
-            
+
     # def next_command(self):
         # self.chain_flag = False
         # self.next(chain=False)
@@ -226,9 +226,9 @@ class Demo(object):
             self.teardown_script()
         elif self.trace:
             g.trace('no previous script')
-            
+
     prev_command = prev
-            
+
     # def prev_command(self):
         # self.prev()
     #@+node:ekr.20170208094834.1: *4* demo.retain
@@ -242,7 +242,7 @@ class Demo(object):
         p is the root of the tree of demo scripts.
         May be over-ridden in subclasses.
         '''
-        
+
     def setup_script(self):
         '''
         Called before running each demo script.
@@ -326,7 +326,7 @@ class Demo(object):
         '''
         script_string is single string, representing a list of script strings
         separated by lines that start with delim.
-        
+
         Return a list of strings.
         '''
         aList = []
@@ -389,7 +389,7 @@ class Demo(object):
                 w.hide()
                 w.deleteLater()
         self.widgets = []
-        
+
     def delete_one_widget(self, w):
         if w in self.widgets:
             self.widgets.remove(w)
@@ -593,7 +593,7 @@ class Demo(object):
         r.setHeight(height)
         r.setWidth(width)
         widget.setGeometry(r)
-        
+
     #@+node:ekr.20170128213103.41: *4* demo.pane_widget
     def pane_widget(self, pane):
         '''Return the pane's widget, defaulting to the body pane.'''
@@ -704,7 +704,7 @@ class Demo(object):
         '''Return the two pane ratios.'''
         f = self.c.frame
         return  f.ratio,  f.secondary_ratio
-        
+
     def set_ratios(self, ratio1, ratio2):
         '''Set the two pane ratios.'''
         f = self.c.frame
@@ -717,14 +717,14 @@ class Demo(object):
         while w.parent():
             w = w.parent()
         w.resize(width, height)
-            
+
     def set_window_position(self, x, y):
         '''Set the x, y position of the top-most window's top-left corner.'''
         w = self.c.frame.top
         while w.parent():
             w = w.parent()
         w.move(x, y)
-        
+
     def set_youtube_position(self):
         w = self.c.frame.top
         while w.parent():
@@ -745,7 +745,7 @@ class Demo(object):
 #@+node:ekr.20170206203005.1: *3*  class Label (QLabel)
 class Label (QtWidgets.QLabel):
     '''A class for user-defined callouts in demo.py.'''
-        
+
     def __init__(self, text,
         font=None, pane=None, position=None, stylesheet=None
     ):
@@ -760,7 +760,7 @@ class Label (QtWidgets.QLabel):
         self.init(font, position, stylesheet)
         w.show()
         g.app.demo.widgets.append(w)
-        
+
     #@+others
     #@+node:ekr.20170208210507.1: *4* label.init
     def init(self, font, position, stylesheet):
@@ -814,7 +814,7 @@ class Callout(Label):
         demo.set_position(w, position or 'center')
 #@+node:ekr.20170208065111.1: *3* class Image (QLabel)
 class Image (QtWidgets.QLabel):
-    
+
     def __init__(self, fn,
         pane=None, magnification=None, position=None, size=None):
         '''Image.__init__.'''
@@ -861,7 +861,7 @@ class Image (QtWidgets.QLabel):
     #@-others
 #@+node:ekr.20170208095240.1: *3* class Text (QTextEdit)
 class Text (QtWidgets.QPlainTextEdit):
-    
+
     def __init__(self, text,
         font=None, pane=None, position=None, size=None, stylesheet=None
     ):
@@ -901,7 +901,7 @@ class Text (QtWidgets.QPlainTextEdit):
     #@-others
 #@+node:ekr.20170207080814.1: *3* class Title(Label)
 class Title(Label):
-    
+
     def __init__(self, text,
         font=None, pane=None, position=None, stylesheet=None
     ):
@@ -916,7 +916,7 @@ class Title(Label):
         Label.__init__(self, text, font=font, pane=pane,
                 position=position, stylesheet=stylesheet)
         # Do this *after* initing the base class.
-        demo.set_position(w, position or 
+        demo.set_position(w, position or
             ('center', self.parent().geometry().height() - 50))
 #@+node:ekr.20170213132024.1: *3* Head
 #@@language python

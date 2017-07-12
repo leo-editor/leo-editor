@@ -799,7 +799,7 @@ class AtFile(object):
                 p,
                 forcePythonSentinels=False,
                 importing=True,
-                reading=True, 
+                reading=True,
             )
             if trace: g.trace(at.language, p.h)
             # For #451: return p.
@@ -2430,7 +2430,7 @@ class AtFile(object):
         return p
     #@+node:ekr.20041005105605.120: *5* at.parseLeoSentinel
     if 1: # Experimental. All unit tests pass.
-        
+
         def parseLeoSentinel(self, s):
             '''
             Parse the sentinel line s.
@@ -2447,9 +2447,9 @@ class AtFile(object):
                 # The old code weirdly allowed '.' in version numbers.
             m = pattern.match(s)
             valid = bool(m)
-            if valid:  
+            if valid:
                 # set start delim: whitespace before @+leo is significant.
-                # group(1): \* 
+                # group(1): \*
                 start = m.group(1)
                 valid = bool(start)
             if valid:
@@ -2493,7 +2493,7 @@ class AtFile(object):
                 g.trace('valid: %s, isThin: %s, encoding: %r, start: %r, end: %r' % (
                     valid, isThin, encoding, start, end))
             return valid, new_df, start, end, isThin
-        
+
     else:
 
         def parseLeoSentinel(self, s):
@@ -3105,7 +3105,7 @@ class AtFile(object):
                 at.write(p, kind='@thin', toString=toString)
                 writtenFiles.append(p.v)
             elif p.isAtFileNode():
-                at.write(p, kind='@file', toString=toString) 
+                at.write(p, kind='@file', toString=toString)
                 writtenFiles.append(p.v)
             if p.v in writtenFiles:
                 # Clear the dirty bits in all descendant nodes.
@@ -3409,7 +3409,7 @@ class AtFile(object):
             forcePythonSentinels=True,
                 # A hack to suppress an error message.
                 # The actual sentinels will be set below.
-        )    
+        )
         #
         # Bug fix: Leo 4.5.1:
         # use x.markerFromFileName to force the delim to match
@@ -3535,7 +3535,7 @@ class AtFile(object):
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20041005105605.152: *6* at.writeMissingNode
     def writeMissingNode(self, p):
-        
+
         at = self
         if p.isAtAsisFileNode():
             at.asisWrite(p)
@@ -3635,7 +3635,7 @@ class AtFile(object):
             at_warning_given = False,
             has_at_others = False,
             in_code = True,
-        )   
+        )
         while i < len(s):
             next_i = g.skip_line(s, i)
             assert next_i > i, 'putBody'
@@ -3657,7 +3657,7 @@ class AtFile(object):
         '''
         Ensure a trailing newline in s.
         If we add a trailing newline, we'll generate an @nonl sentinel below.
-        
+
         - We always ensure a newline in @file and @thin trees.
         - This code is not used used in @asis trees.
         - New in Leo 4.4.3 b1: We add a newline in @clean/@nosent trees unless
@@ -3681,7 +3681,7 @@ class AtFile(object):
             if status.in_code:
                 if at.raw:
                     at.putCodeLine(s, i)
-                else: 
+                else:
                     name, n1, n2 = at.findSectionName(s, i)
                     if name:
                         at.putRefLine(s, i, n1, n2, name, p)
@@ -4580,7 +4580,7 @@ class AtFile(object):
     def putDirective(self, s, i):
         r'''
         Output a sentinel a directive or reference s.
-        
+
         It is important for PHP and other situations that \@first and \@last
         directives get translated to verbatim lines that do *not* include what
         follows the @first & @last directives.

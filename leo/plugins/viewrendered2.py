@@ -340,7 +340,7 @@ if import_ok:
             vr.show()
         else:
             vr = ViewRenderedController(c)
-            controllers[c.hash()] = vr 
+            controllers[c.hash()] = vr
             if trace: g.trace('** new controller: %s' % (vr))
             if hasattr(c, 'free_layout'):
                 vr._ns_id = '_leo_viewrendered' # for free_layout load/save

@@ -19,7 +19,7 @@ class Elisp_Importer(Importer):
             state_class = Elisp_ScanState,
             strict = False,
         )
-        
+
     #@+others
     #@+node:ekr.20170205195239.1: *3* elisp_i.get_new_dict
     #@@nobeautify
@@ -28,7 +28,7 @@ class Elisp_Importer(Importer):
         '''elisp state dictionary for the given context.'''
         trace = False and g.unitTesting
         comment, block1, block2 = self.single_comment, self.block1, self.block2
-        
+
         def add_key(d, pattern, data):
             key = pattern[0]
             aList = d.get(key,[])
@@ -99,7 +99,7 @@ class Elisp_Importer(Importer):
 #@+node:ekr.20161127184128.6: ** class Elisp_ScanState
 class Elisp_ScanState:
     '''A class representing the state of the elisp line-oriented scan.'''
-    
+
     def __init__(self, d=None):
         '''Elisp_ScanState.__init__'''
         if d:

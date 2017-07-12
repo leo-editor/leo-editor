@@ -133,7 +133,7 @@ class LeoFind(object):
         self.frame = None
         self.k = c.k
         self.re_obj = None
-        
+
         # Options ivars: set once:
         self.ignore_dups = c.config.getBool('find-ignore-duplicates', default=False)
 
@@ -198,6 +198,8 @@ class LeoFind(object):
         self.wrapPos = None
             # The starting position of the wrapped search.
             # Persists between calls.
+        self.state_on_start_of_search = None
+            # keeps all state data that should be restored once the search is exhausted
     #@+node:ekr.20150509032822.1: *4* LeoFind.cmd (decorator)
     def cmd(name):
         '''Command decorator for the findCommands class.'''
@@ -801,7 +803,7 @@ class LeoFind(object):
             self.stateZeroHelper(event,
                 prefix='Clone Find All: ',
                 handler=self.minibufferCloneFindAll1)
-                
+
     def minibufferCloneFindAll1(self, event):
         c, k = self.c, self.k
         k.clearState()
@@ -858,7 +860,7 @@ class LeoFind(object):
             self.stateZeroHelper(event,
                 prefix='Clone Find Tag: ',
                 handler=self.minibufferCloneFindTag1)
-                
+
     def minibufferCloneFindTag1(self, event):
         c, k = self.c, self.k
         k.clearState()
@@ -889,7 +891,7 @@ class LeoFind(object):
             self.stateZeroHelper(event,
                 prefix='Tag Children: ',
                 handler=self.minibufferTagChildren1)
-                
+
     def minibufferTagChildren1(self, event):
         c, k = self.c, self.k
         k.clearState()
@@ -994,7 +996,7 @@ class LeoFind(object):
         self.stateZeroHelper(event,
             'Regexp Search Backward:', self.reSearch1,
             escapes=['\t']) # The Tab Easter Egg.
-         
+
     @cmd('re-search-forward')
     def reSearchForward(self, event):
         self.setupArgs(forward=True, regexp=True, word=None)
@@ -1002,7 +1004,7 @@ class LeoFind(object):
             prefix='Regexp Search:',
             handler=self.reSearch1,
             escapes=['\t']) # The Tab Easter Egg.
-            
+
     def reSearch1(self, event):
         k = self.k
         if k.getArgEscapeFlag:
@@ -1027,7 +1029,7 @@ class LeoFind(object):
             prefix='Search: ',
             handler=self.search1,
             escapes=['\t']) # The Tab Easter Egg.
-            
+
     def search1(self, event):
         k = self.k
         if k.getArgEscapeFlag:
@@ -1075,7 +1077,7 @@ class LeoFind(object):
         self.stateZeroHelper(event,
             'Search: ', self.searchWithPresentOptions1,
             escapes=escapes) # The Tab Easter Egg.
-                
+
     def searchWithPresentOptions1(self, event):
         c, k = self.c, self.k
         # g.trace(k.getArgEscapeFlag, repr(k.arg), g.callers())
@@ -1171,7 +1173,7 @@ class LeoFind(object):
         self.stateZeroHelper(event,
             prefix='Word Search: ',
             handler=self.wordSearch1)
-            
+
     def wordSearch1(self, event):
         k = self.k
         self.lastStateHelper()
@@ -1300,7 +1302,7 @@ class LeoFind(object):
         '''
         Do a single batch change operation, updating the head or body string of
         p and leaving the result in s_ctrl.
-        
+
         s_ctrl contains the found text on entry and contains the changed text
         on exit. pos and pos2 indicate the selection. The selection will never
         be empty.
@@ -1383,7 +1385,7 @@ class LeoFind(object):
         u.afterChangeGroup(p, undoType, reportFlag=True)
         t2 = time.clock()
         g.es('changed %s instances in %4.2f sec.' % (count, (t2-t1)))
-            # self.find_text, self.change_text, 
+            # self.find_text, self.change_text,
         c.recolor()
         c.redraw(p)
         self.restore(saveData)
@@ -2245,6 +2247,10 @@ class LeoFind(object):
             c.frame.putStatusLine(s, bg=bg, fg=fg)
         if not found: # Fixes: #457
             self.radioButtonsChanged = True
+            was_wrap_search = self.wrap
+            self.reset_state_ivars()
+            if was_wrap_search and self.state_on_start_of_search is not None:
+                self.restore(self.state_on_start_of_search)
     #@+node:ekr.20031218072017.3082: *3* LeoFind.Initing & finalizing
     #@+node:ekr.20031218072017.3083: *4* find.checkArgs
     def checkArgs(self):
@@ -2401,7 +2407,7 @@ class LeoFind(object):
         '''Restore the screen and clear state after a search fails.'''
         trace = False and not g.unitTesting
         c = self.c
-        in_headline, editing, p, w, insert, start, end = data
+        in_headline, editing, p, w, insert, start, end, expanded = data
         self.was_in_headline = False # 2015/03/25
         if trace: g.trace('was_in_headline', self.was_in_headline)
         if 0: # Don't do this here.
@@ -2411,6 +2417,15 @@ class LeoFind(object):
             if hasattr(g.app.gui, 'hideFindDialog'):
                 g.app.gui.hideFindDialog()
         c.frame.bringToFront() # Needed on the Mac
+
+        # restore expanded/contracted state as it was before search
+        # because all ancestors of p will be expanded
+        # c.selectPosition won't call c.redraw automatically
+        # we need to provide redraw=True
+        if self.wrap:
+            self.restoreAllExpansionStates(expanded, redraw=True)
+        else:
+            p = c.p
         # Don't try to reedit headline.
         if p and c.positionExists(p): # 2013/11/22.
             c.selectPosition(p)
@@ -2429,6 +2444,18 @@ class LeoFind(object):
             w.setSelectionRange(start, end, insert=insert)
             w.seeInsertPoint()
             c.widgetWantsFocus(w)
+    #@+node:vitalije.20170712102153.1: *4* find.restoreAllExpansionStates
+    def restoreAllExpansionStates(self, expanded, redraw=False):
+        '''expanded is a set of gnx of nodes that should be expanded'''
+
+        c = self.c; gnxDict = c.fileCommands.gnxDict
+        for gnx, v in gnxDict.items():
+            if gnx in expanded:
+                v.expand()
+            else:
+                v.contract()
+        if redraw:
+            c.redraw()
     #@+node:ekr.20031218072017.3090: *4* find.save
     def save(self):
         '''Save everything needed to restore after a search fails.'''
@@ -2449,7 +2476,15 @@ class LeoFind(object):
             else:
                 start, end = None, None
         editing = e is not None
-        return self.in_headline, editing, p.copy(), w, insert, start, end
+        # g.trace('wrapping', self.wrapping, 'wrap', self.wrap)
+        if self.wrap:
+            expanded = set(gnx for gnx, v in c.fileCommands.gnxDict.items() if v.isExpanded())
+        else:
+            expanded = set()
+        # TODO: this is naive solution that treat all clones the same way if one is expanded
+        #       then every other clone is expanded too. A proper way would be to remember
+        #       each clone separately
+        return self.in_headline, editing, p.copy(), w, insert, start, end, expanded
     #@+node:ekr.20031218072017.3091: *4* find.showSuccess (headline hack)
     def showSuccess(self, pos, newpos, showState=True):
         '''Display the result of a successful find operation.'''
@@ -2516,6 +2551,7 @@ class LeoFind(object):
         if self.radioButtonsChanged or s != self.find_text:
             self.radioButtonsChanged = False
             # Reset ivars related to suboutline-only and wrapped searches.
+            self.state_on_start_of_search = self.save()
             self.reset_state_ivars()
         self.find_text = s
         # Disable part of https://github.com/leo-editor/leo-editor/issues/177

@@ -7,7 +7,7 @@
 Creates "back" and "forward" buttons on button bar. These navigate
 the node history.
 
-This plugin does not need specific setup. If the plugin is loaded, the buttons 
+This plugin does not need specific setup. If the plugin is loaded, the buttons
 will be available. The buttons use the icon specified in the active Qt style
 
 '''

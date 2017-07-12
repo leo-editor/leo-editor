@@ -66,7 +66,7 @@ def markup_inline(c, kind='unknown'):
     c.setChanged(True)
     p.setDirty(True)
     c.redraw()
-    c.bodyWantsFocusNow()        
+    c.bodyWantsFocusNow()
 
 def cmd_bold(c):
     markup_inline(c, kind='bold')

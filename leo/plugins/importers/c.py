@@ -46,7 +46,7 @@ class C_Importer(Importer):
             if not self.c_types_pattern.match(word):
                 self.headline = word
     #@+node:ekr.20161204165700.1: *3* c_i.match_start_patterns
-    # Define patterns that can start a block        
+    # Define patterns that can start a block
     c_extern_pattern = re.compile(r'\s*extern\s+(\"\w+\")')
     c_typedef_pattern = re.compile(r'\s*(\w+)\s*\*\s*$')
     c_class_pattern = re.compile(r'\s*(%s\s*)*\s*class\s+(\w+)' % (c_types_list))
@@ -167,7 +167,7 @@ class C_Importer(Importer):
 #@+node:ekr.20161108223159.1: ** class C_ScanState
 class C_ScanState:
     '''A class representing the state of the C line-oriented scan.'''
-    
+
     def __init__(self, d=None):
         '''C_ScanSate ctor'''
         if d:
@@ -198,7 +198,7 @@ class C_ScanState:
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         # self.bs_nl = bs_nl
         self.context = context
-        self.curlies += delta_c  
+        self.curlies += delta_c
         return i
 
     #@-others

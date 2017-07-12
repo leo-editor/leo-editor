@@ -46,14 +46,14 @@ class MultiSelect(selectone.SelectOne):
         if self.return_exit:
             self.editing = False
             self.how_exited=True
-            
+
     #@+node:ekr.20170428084208.233: *3* MultiSelect.get_selected_objects
     def get_selected_objects(self):
         if self.value == [] or self.value == None:
             return None
         else:
             return [self.values[x] for x in self.value]
-            
+
     #@-others
 #@+node:ekr.20170428084208.234: ** class MultiSelectAction
 class MultiSelectAction(MultiSelect):
@@ -93,7 +93,7 @@ class MultiSelectAction(MultiSelect):
         if self.vale:
             return self.actionSelected(self.get_selected_objects(), ch)
 
-        
+
     #@-others
 #@+node:ekr.20170428084208.240: ** class MultiSelectFixed
 class MultiSelectFixed(MultiSelect):
@@ -120,14 +120,14 @@ class MultiSelectFixed(MultiSelect):
 #@+node:ekr.20170428084208.243: ** class TitleMultiSelect
 class TitleMultiSelect(multiline.TitleMultiLine):
     _entry_type = MultiSelect
-            
-        
-        
+
+
+
 #@+node:ekr.20170428084208.244: ** class TitleMultiSelectFixed
 class TitleMultiSelectFixed(multiline.TitleMultiLine):
     _entry_type = MultiSelectFixed
-    
-    
+
+
 #@-others
 #@@language python
 #@@tabwidth -4

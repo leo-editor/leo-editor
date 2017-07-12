@@ -214,7 +214,7 @@ class PyflakesCommand(object):
         return total_errors
     #@+node:ekr.20170220114553.1: *3* pyflakes.finalize (new)
     def finalize(self, p):
-        
+
         aList = g.get_directives_dict_list(p)
         path = self.c.scanAtPathDirectives(aList)
         fn = p.anyAtFileNodeName()
@@ -244,10 +244,10 @@ class PyflakesCommand(object):
         if leo_path not in sys.path:
             sys.path.append(leo_path)
         t1 = time.time()
-        
+
         def predicate(p):
             return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
-            
+
         roots = g.findRootsWithPredicate(c, root, predicate)
         if root:
             paths = [self.finalize(z) for z in roots]
@@ -335,7 +335,7 @@ class PylintCommand(object):
 
         def predicate(p):
             return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
-            
+
         roots = g.findRootsWithPredicate(c, root, predicate)
         for p in roots:
             self.check(p, rc_fn)

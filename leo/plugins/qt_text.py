@@ -1404,7 +1404,7 @@ class QTextEditWrapper(QTextMixin):
             'left': tc.Left,
             'page-down': tc.Down,
             'page-up': tc.Up,
-            'right': tc.Right, 
+            'right': tc.Right,
             'up': tc.Up,
         }
         kind = kind.lower()

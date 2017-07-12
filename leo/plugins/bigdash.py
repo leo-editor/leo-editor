@@ -474,7 +474,7 @@ class LeoFts(object):
                         # return open_dir(idx_dir)
                     # except Exception as why:
                         # g.es_print(why)
-                        # return None 
+                        # return None
         else:
             try:
                 os.mkdir(idx_dir)
@@ -483,7 +483,7 @@ class LeoFts(object):
             except Exception:
                 g.es_exception()
                 return None
-            
+
     #@+node:ekr.20140920041848.17945: *3* fts.statistics
     def statistics(self):
         r = {}

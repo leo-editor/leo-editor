@@ -1370,7 +1370,7 @@ class LeoQtBody(leoFrame.LeoBody):
             self.wrapper = qt_text.QTextEditWrapper(self.widget, name='body', c=c)
             self.widget.setAcceptRichText(False)
             self.colorizer = leoColorizer.JEditColorizer(c, self.widget, self.wrapper)
-            
+
     #@+node:ekr.20110605121601.18183: *5* LeoQtBody.setWrap
     def setWrap(self, p=None, force=False):
         '''Set **only** the wrap bits in the body.'''
@@ -1399,12 +1399,15 @@ class LeoQtBody(leoFrame.LeoBody):
         '''Add another editor to the body pane.'''
         trace = False and not g.unitTesting
         c, p = self.c, self.c.p
+        d = self.editorWidgets
         wrapper = c.frame.body.wrapper # A QTextEditWrapper
         widget = wrapper.widget
-        self.editorWidgets['1'] = wrapper
+        ### This was just crazy.
+        ### self.editorWidgets['1'] = wrapper
         self.totalNumberOfEditors += 1
         self.numberOfEditors += 1
         if self.totalNumberOfEditors == 2:
+            self.editorWidgets['1'] = wrapper ### New.
             # Pack the original body editor.
             self.packLabel(widget, n=1)
         name = '%d' % self.totalNumberOfEditors
@@ -1412,7 +1415,8 @@ class LeoQtBody(leoFrame.LeoBody):
         assert g.isTextWrapper(wrapper), wrapper
         assert g.isTextWidget(widget), widget
         assert isinstance(f, QtWidgets.QFrame), f
-        self.editorWidgets[name] = wrapper
+        d[name] = wrapper
+        # g.printDict(d)
         if trace: g.trace('name %s wrapper %s widget %s' % (
             name, id(wrapper), id(widget)))
         if self.numberOfEditors == 2:
@@ -1485,6 +1489,9 @@ class LeoQtBody(leoFrame.LeoBody):
         if len(list(d.keys())) <= 1: return
         name = w.leo_name if hasattr(w, 'leo_name') else '1'
             # Defensive programming.
+        if trace:
+            g.trace(name, w)
+            g.printDict(d)
         # At present, can not delete the first column.
         if name == '1':
             g.warning('can not delete leftmost editor')
@@ -1495,10 +1502,12 @@ class LeoQtBody(leoFrame.LeoBody):
         if trace: g.trace('**delete name %s id(wrapper) %s id(w) %s' % (
             name, id(wrapper), id(w)))
         del d[name]
+        if trace:
+            g.printDict(d)
         f = c.frame.top.leo_ui.leo_body_inner_frame
         layout = f.layout()
         for z in (w, w.leo_label):
-            if z: # 2011/11/12
+            if z:
                 self.unpackWidget(layout, z)
         w.leo_label = None # 2011/11/12
         # Select another editor.
@@ -2225,7 +2234,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 fcol = '' if offset is None else max(0, col + offset - fcol_offset)
             else:
                 row, col, fcol = 0, 0, ''
-            if 1: 
+            if 1:
                 self.put1("line: %d col: %d fcol: %s" % (row, col, fcol))
             else:
                 #283 is not ready yet, and probably will never be.
@@ -2385,7 +2394,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 else:
                     # Fix #367: complete the selection at idle time.
                     g.app.selectLeoWindow(c2)
-                
+
                     def handler(timer, c=c2, p=p):
                         c2.selectPosition(p)
                         timer.stop()
@@ -3152,7 +3161,7 @@ class LeoQtLog(leoFrame.LeoLog):
         '''
         Put s to the Qt Log widget, converting to html.
         All output to the log stream eventually comes here.
-        
+
         The from_redirect keyword argument is no longer used.
         '''
         trace = False and not g.unitTesting

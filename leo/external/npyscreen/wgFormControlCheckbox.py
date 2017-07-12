@@ -24,14 +24,14 @@ class FormControlCheckbox(wgcheckbox.Checkbox):
     #@+node:ekr.20170428084207.623: *3* addInvisibleWhenSelected
     def addInvisibleWhenSelected(self, w):
         self._register(w, vws=False)
-        
+
     #@+node:ekr.20170428084207.624: *3* _register
     def _register(self, w, vws=True):
         if vws:
             working_list = self._visibleWhenSelected
         else:
             working_list = self._notVisibleWhenSelected
-            
+
         if w in working_list:
             pass
         else:
@@ -39,7 +39,7 @@ class FormControlCheckbox(wgcheckbox.Checkbox):
                 working_list.append(weakref.proxy(w))
             except TypeError:
                 working_list.append(w)
-        
+
         self.updateDependents()
 
     #@+node:ekr.20170428084207.625: *3* updateDependents
@@ -65,9 +65,9 @@ class FormControlCheckbox(wgcheckbox.Checkbox):
     def h_toggle(self, *args):
         super(FormControlCheckbox, self).h_toggle(*args)
         self.updateDependents()
-        
 
-        
+
+
     #@-others
 #@-others
 #@@language python

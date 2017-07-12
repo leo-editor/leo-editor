@@ -122,7 +122,7 @@ class EnchantClass(object):
         word = ''.join([i for i in word if not i.isdigit()])
             # Remove all digits.
         if d.check(word) or d.check(word.lower()):
-            return None 
+            return None
         if word.find('_') > -1:
             # Snake case.
             words = word.split('_')

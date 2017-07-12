@@ -14,7 +14,7 @@ By Jacob M. Peck
 
 This plugin requires the python module 'paramiko' to be installed.
 
-This plugin operates on @sftp nodes, which are defined as nodes 
+This plugin operates on @sftp nodes, which are defined as nodes
 with headlines that start with `@sftp` and follow one of the following
 patterns::
 
@@ -261,7 +261,7 @@ class SFTPController(object):
         # remotefile = params['remotefile']
         passwd = self.get_password(user, host)
         if passwd is None:
-            return (None,None)  
+            return (None,None)
         t = paramiko.Transport((host, port))
         t.connect(username=user, password=passwd)
         hostkey = t.get_remote_server_key()
@@ -288,7 +288,7 @@ class SFTPController(object):
     #@+node:peckj.20140218144401.6172: *3* commands
     #@+node:peckj.20140218144401.6173: *4* sftp_pull
     def sftp_pull(self, event=None, p=None):
-        """Replaces the body of the currently selected @sftp 
+        """Replaces the body of the currently selected @sftp
            node with the contents of the file on the remote server.
         """
         if p is None:
@@ -317,8 +317,8 @@ class SFTPController(object):
         self.log('Done pulling all @sftp nodes.', color='blue')
     #@+node:peckj.20140218144401.6175: *4* sftp_push
     def sftp_push(self, event=None, p=None):
-        """Overwrites the file on the remote server with 
-           the contents of the body of the currently selected 
+        """Overwrites the file on the remote server with
+           the contents of the body of the currently selected
            @sftp node.
         """
         if p is None:
@@ -331,7 +331,7 @@ class SFTPController(object):
                     remotefile = self.get_params(p.h)['remotefile']
                     data = p.b
                     sftp.open(remotefile, 'w').write(data)
-                    p.b = data 
+                    p.b = data
                     t.close()
             except Exception:
                 self.log('Communications error!', color='red')
