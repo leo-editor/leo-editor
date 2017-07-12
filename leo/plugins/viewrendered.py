@@ -492,6 +492,35 @@ def update_rendering_pane(event):
             vr = viewrendered(event)
         if vr:
             vr.update(tag='view', keywords={'c': c, 'force': True})
+#@+node:vitalije.20170712195827.1: *3* @g.command('vr-zoom')
+@g.command('vr-zoom')
+def zoom_rendering_pane(event):
+    c = event.get('c')
+    flc = c.free_layout
+    vr = controllers.get(c.hash())
+    if not vr: return
+    if vr.zoomed:
+        for ns in flc.get_top_splitter().top().self_and_descendants():
+            if hasattr(ns, '_unzoom'):
+                # this splitter could have been added since
+                ns.setSizes(ns._unzoom)
+    else:
+        parents = []
+        parent = vr
+        while parent:
+            parents.append(parent)
+            parent = parent.parent()
+        for ns in flc.get_top_splitter().top().self_and_descendants():
+            # FIXME - shouldn't be doing this across windows
+            ns._unzoom = ns.sizes()
+            for i in range(ns.count()):
+                w = ns.widget(i)
+                if w in parents:
+                    sizes = [0] * len(ns._unzoom)
+                    sizes[i] = sum(ns._unzoom)
+                    ns.setSizes(sizes)
+                    break
+    vr.zoomed = not vr.zoomed
 #@+node:tbrown.20110629084915.35149: ** class ViewRenderedProvider (vr)
 class ViewRenderedProvider(object):
     #@+others
@@ -560,6 +589,7 @@ if QtWidgets: # NOQA
             # Init.
             self.create_dispatch_dict()
             self.activate()
+            self.zoomed = False
         #@+node:ekr.20110320120020.14478: *4* vr.create_dispatch_dict
         def create_dispatch_dict(self):
             pc = self
