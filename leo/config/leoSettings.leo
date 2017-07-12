@@ -4147,7 +4147,9 @@ toggle-find-mark-changes-option     = Alt-Ctrl-c
 toggle-find-mark-finds-option       = Alt-Ctrl-f
 toggle-find-regex-option            = Alt-Ctrl-x
 toggle-find-word-option             = Alt-Ctrl-w
-toggle-find-wrap-around-option      = Alt-Ctrl-a</t>
+toggle-find-wrap-around-option      = Alt-Ctrl-a
+
+search-return-to-origin             = Alt+F3</t>
 <t tx="ekr.20060603215208.20">full-command            = Alt-x
 # negative-argument     = None      # Alt-minus conflicts with contract-all.
 repeat-complex-command  = Ctrl-P
