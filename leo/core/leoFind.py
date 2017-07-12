@@ -2247,8 +2247,9 @@ class LeoFind(object):
             c.frame.putStatusLine(s, bg=bg, fg=fg)
         if not found: # Fixes: #457
             self.radioButtonsChanged = True
+            was_wrap_search = self.wrap
             self.reset_state_ivars()
-            if self.state_on_start_of_search is not None:
+            if was_wrap_search and self.state_on_start_of_search is not None:
                 self.restore(self.state_on_start_of_search)
     #@+node:ekr.20031218072017.3082: *3* LeoFind.Initing & finalizing
     #@+node:ekr.20031218072017.3083: *4* find.checkArgs
