@@ -2212,7 +2212,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 offset = c.p.textOffset()
                 cr = te.textCursor()
                 bl = cr.block()
-                col = cr.columnNumber()
+                col = bl.position()
                 row = bl.blockNumber() + 1
                 line = g.u(bl.text())
                 # Fix bug #195: fcol when using @first directive is inaccurate
