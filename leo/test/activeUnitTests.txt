@@ -5648,30 +5648,14 @@ finally:
         p.h = h
         c.redraw()
 #@+node:ekr.20111124090010.3939: *4* @test g.app.config @buttons and @commands logic
-'''Test that the config parser visits @buttons and @commands nodes for
-leoSettings.leo and unitTest.leo.
-
-If strict is True, also test that the config parser vists the nodes in
-myLeoSettings.leo. This may fail on machines without @buttons and @commands
-nodes in myLeoSettings.leo.
-'''
-
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-else:
-    strict = True # Set to False if you are not EKR.
-    
-    table = ['leoSettings.leo','unitTest.leo']
-    if strict:
-        table.append('myLeoSettings.leo')
-    
-    keys = ('config.doButtons-file-names','config.doCommands-file-names')
-    d = g.app.config.unitTestDict # Always created for this unit test.
-    
-    for key in keys:
-        aList = d.get(key,[])
-        for fn in table:
-            assert fn in aList,'%s not in unitTestDict[%s]' % (fn,key)
+d = g.app.config.unitTestDict # Always created for this unit test.
+keys = ('config.doButtons-file-names','config.doCommands-file-names')
+for key in keys:
+    aList = d.get(key,[])
+    for fn in ['leoSettings.leo','unitTest.leo']:
+        assert fn in aList,'%s not in unitTestDict[%s]' % (fn,key)
 #@+node:ekr.20050203084930.1: *4* @test g.app.config.get
 w = g.app.config.get('global_setting_for_unit_tests','int')
 
@@ -12464,7 +12448,7 @@ else:
             tree.treeWidget.intraFileDrop(fn,p,p2)
             assert True==g.app.unitTestDict['checkMoveWithParentWithWarning']
 #@+node:ekr.20111003145300.3467: *5* a
-#@+node:ekr.20111123214629.3941: *4* @test unbound Alt-9 key is completely ignored
+#@+node:ekr.20111123214629.3941: *4* @@test unbound Alt-9 key is completely ignored
 from leo.core.leoQt import QtCore,QtGui,QtWidgets
 import leo.plugins.qt_events as qt_events
 import sys
@@ -12482,8 +12466,8 @@ elif g.app.gui.guiName().startswith('qt'):
         # keep a pointer to the filter.
     for z in c.k.bindingsDict.keys():
         if z.s == 'Alt+Key-9':
-            break
-    else:
+            self.skipTest('Alt-Key-9 is bound')
+    if 0: # Too dangerous, and not useful enough.
         # Create an Alt-9 key event.
         ev = QtCore.QEvent
         e = QtGui.QKeyEvent(ev.KeyPress,ord('9'),QtCore.Qt.AltModifier)
