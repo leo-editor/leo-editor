@@ -292,6 +292,7 @@ def init():
     ok = bool(QtSvg and QtWebKitWidgets)
     g.plugin_signon(__name__)
     g.registerHandler('after-create-leo-frame', onCreate)
+    g.registerHandler('close-frame', onClose)
     g.registerHandler('scrolledMessage', show_scrolled_message)
     return ok
 #@+node:ekr.20110317024548.14376: *3* onCreate (viewrendered.py)
@@ -300,6 +301,18 @@ def onCreate(tag, keys):
     if c:
         provider = ViewRenderedProvider(c)
         free_layout.register_provider(c, provider)
+#@+node:vitalije.20170712174157.1: *3* onClose
+def onClose(tag, keys):
+    c = keys.get('c')
+    h = c.hash()
+    vr = controllers.get(h)
+    if vr:
+        c.bodyWantsFocus()
+        del controllers[h]
+        vr.deactivate()
+        vr.deleteLater()
+    else:
+        g.trace('should never happen')
 #@+node:tbrown.20110629132207.8984: *3* show_scrolled_message
 def show_scrolled_message(tag, kw):
     if g.unitTesting:
