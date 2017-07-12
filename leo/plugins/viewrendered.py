@@ -350,6 +350,7 @@ def viewrendered(event):
     vr = controllers.get(c.hash())
     if vr:
         if trace: g.trace('** controller exists: %s' % (vr))
+        vr.activate()
         vr.show()
         vr.adjust_layout('open')
     else:
