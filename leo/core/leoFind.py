@@ -2422,8 +2422,10 @@ class LeoFind(object):
         # because all ancestors of p will be expanded
         # c.selectPosition won't call c.redraw automatically
         # we need to provide redraw=True
-        self.restoreAllExpansionStates(expanded, redraw=True)
-
+        if self.wrapping:
+            self.restoreAllExpansionStates(expanded, redraw=True)
+        else:
+            p = c.p
         # Don't try to reedit headline.
         if p and c.positionExists(p): # 2013/11/22.
             c.selectPosition(p)
@@ -2474,7 +2476,10 @@ class LeoFind(object):
             else:
                 start, end = None, None
         editing = e is not None
-        expanded = set(gnx for gnx, v in c.fileCommands.gnxDict.items() if v.isExpanded())
+        if self.wrapping:
+            expanded = set(gnx for gnx, v in c.fileCommands.gnxDict.items() if v.isExpanded())
+        else:
+            expanded = set()
         # TODO: this is naive solution that treat all clones the same way if one is expanded
         #       then every other clone is expanded too. A proper way would be to remember
         #       each clone separately
