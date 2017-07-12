@@ -2422,7 +2422,7 @@ class LeoFind(object):
         # because all ancestors of p will be expanded
         # c.selectPosition won't call c.redraw automatically
         # we need to provide redraw=True
-        if self.wrapping:
+        if self.wrap:
             self.restoreAllExpansionStates(expanded, redraw=True)
         else:
             p = c.p
@@ -2476,7 +2476,8 @@ class LeoFind(object):
             else:
                 start, end = None, None
         editing = e is not None
-        if self.wrapping:
+        # g.trace('wrapping', self.wrapping, 'wrap', self.wrap)
+        if self.wrap:
             expanded = set(gnx for gnx, v in c.fileCommands.gnxDict.items() if v.isExpanded())
         else:
             expanded = set()
