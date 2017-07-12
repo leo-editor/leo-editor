@@ -529,6 +529,14 @@ class LeoFind(object):
         else:
             self.openFindTab(event)
             self.ftm.init_focus()
+    #@+node:vitalije.20170712162056.1: *4* find.returnToOrigin
+    @cmd('search-return-to-origin')
+    def returnToOrigin(self, event):
+        data = self.state_on_start_of_search
+        if not data: return
+        self.restore(data)
+        self.restoreAllExpansionStates(data[-1], redraw=True)
+        
     #@+node:ekr.20131117164142.16939: *3* LeoFind.ISearch
     #@+node:ekr.20131117164142.16941: *4* find.isearchForward
     @cmd('isearch-forward')
@@ -2247,10 +2255,7 @@ class LeoFind(object):
             c.frame.putStatusLine(s, bg=bg, fg=fg)
         if not found: # Fixes: #457
             self.radioButtonsChanged = True
-            was_wrap_search = self.wrap
             self.reset_state_ivars()
-            if was_wrap_search and self.state_on_start_of_search is not None:
-                self.restore(self.state_on_start_of_search)
     #@+node:ekr.20031218072017.3082: *3* LeoFind.Initing & finalizing
     #@+node:ekr.20031218072017.3083: *4* find.checkArgs
     def checkArgs(self):
@@ -2407,7 +2412,7 @@ class LeoFind(object):
         '''Restore the screen and clear state after a search fails.'''
         trace = False and not g.unitTesting
         c = self.c
-        in_headline, editing, p, w, insert, start, end, expanded = data
+        in_headline, editing, p, w, insert, start, end, junk = data
         self.was_in_headline = False # 2015/03/25
         if trace: g.trace('was_in_headline', self.was_in_headline)
         if 0: # Don't do this here.
@@ -2417,15 +2422,6 @@ class LeoFind(object):
             if hasattr(g.app.gui, 'hideFindDialog'):
                 g.app.gui.hideFindDialog()
         c.frame.bringToFront() # Needed on the Mac
-
-        # restore expanded/contracted state as it was before search
-        # because all ancestors of p will be expanded
-        # c.selectPosition won't call c.redraw automatically
-        # we need to provide redraw=True
-        if self.wrap:
-            self.restoreAllExpansionStates(expanded, redraw=True)
-        else:
-            p = c.p
         # Don't try to reedit headline.
         if p and c.positionExists(p): # 2013/11/22.
             c.selectPosition(p)
@@ -2477,10 +2473,7 @@ class LeoFind(object):
                 start, end = None, None
         editing = e is not None
         # g.trace('wrapping', self.wrapping, 'wrap', self.wrap)
-        if self.wrap:
-            expanded = set(gnx for gnx, v in c.fileCommands.gnxDict.items() if v.isExpanded())
-        else:
-            expanded = set()
+        expanded = set(gnx for gnx, v in c.fileCommands.gnxDict.items() if v.isExpanded())
         # TODO: this is naive solution that treat all clones the same way if one is expanded
         #       then every other clone is expanded too. A proper way would be to remember
         #       each clone separately
@@ -2550,8 +2543,8 @@ class LeoFind(object):
             s = s[: -1]
         if self.radioButtonsChanged or s != self.find_text:
             self.radioButtonsChanged = False
-            # Reset ivars related to suboutline-only and wrapped searches.
             self.state_on_start_of_search = self.save()
+            # Reset ivars related to suboutline-only and wrapped searches.
             self.reset_state_ivars()
         self.find_text = s
         # Disable part of https://github.com/leo-editor/leo-editor/issues/177
