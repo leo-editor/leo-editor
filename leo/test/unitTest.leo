@@ -233,7 +233,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735809000000302e362e31392e343071097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -916,7 +916,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="7">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="4">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -5509,7 +5509,8 @@ rest text.
 @language python
 def spam():
     # pass
-# after</t>
+# after
+</t>
 <t tx="ekr.20130912092638.4150">@first # -*- coding: utf-16 -*-
 @encoding utf-16
 
@@ -10665,7 +10666,8 @@ assert old_indent == val, (repr(indent), repr(val))
 def spam():
 #     pass
 
-# after</t>
+# after
+</t>
 <t tx="ekr.20170712134948.1">w = c.frame.body.wrapper
 p = g.findNodeInTree(c,p,'python')
 assert p,'not found: python'
@@ -10704,7 +10706,8 @@ assert old_indent == val, (repr(indent), repr(val))
 def spam():
     pass
 
-# after</t>
+# after
+</t>
 <t tx="ekr.20170712135224.1">w = c.frame.body.wrapper
 p = g.findNodeInTree(c,p,'rest and python')
 assert p,'not found: rest and python'
@@ -10744,7 +10747,8 @@ rest text.
 @language python
 def spam():
     pass
-# after</t>
+# after
+</t>
 <t tx="ekr.20170712140759.1">@language rest
 @wrap
 
