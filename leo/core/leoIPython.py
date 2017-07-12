@@ -132,7 +132,7 @@ class InternalIPKernel(object):
     #@+node:ekr.20130930062914.15995: *3* ileo.print_namespace
     def print_namespace(self, event=None):
         print("\n***Variables in User namespace***")
-        for k, v in self.namespace.iteritems():
+        for k, v in self.namespace.items():
             if k not in self._init_keys and not k.startswith('_'):
                 print('%s -> %r' % (k, v))
         sys.stdout.flush()

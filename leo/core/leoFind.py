@@ -2446,7 +2446,7 @@ class LeoFind(object):
         '''expanded is a set of gnx of nodes that should be expanded'''
 
         c = self.c; gnxDict = c.fileCommands.gnxDict
-        for gnx, v in gnxDict.iteritems():
+        for gnx, v in gnxDict.items():
             if gnx in expanded:
                 v.expand()
             else:
