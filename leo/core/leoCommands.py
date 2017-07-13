@@ -929,7 +929,11 @@ class Commands(object):
         if not script:
             if c.forceExecuteEntireBody:
                 useSelectedText = False
-            script = g.getScript(c, p or c.p, useSelectedText=useSelectedText)
+            try:
+                c._allow_script_selection_by_language_directive = True
+                script = g.getScript(c, p or c.p, useSelectedText=useSelectedText)
+            finally:
+                del c._allow_script_selection_by_language_directive
         script_p = p or c.p
             # Only for error reporting below.
         self.redirectScriptOutput()
