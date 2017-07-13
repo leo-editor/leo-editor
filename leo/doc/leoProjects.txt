@@ -7,6 +7,8 @@
 https://github.com/leo-editor/leo-editor/issues/62
 .. @+node:ekr.20170713050028.1: *4* #317: Viewrendered pane loses live-render feature
 https://github.com/leo-editor/leo-editor/issues/317
+.. @+node:ekr.20170713051138.1: *4* #473: nav_qt buttons do not reload if file is re-opened
+https://github.com/leo-editor/leo-editor/issues/473
 .. @+node:ekr.20170707150222.1: *4* #505: Leo's read code must be rewritten
 https://github.com/leo-editor/leo-editor/issues/505
 
