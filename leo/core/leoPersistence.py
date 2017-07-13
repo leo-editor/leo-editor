@@ -81,7 +81,7 @@ class PersistenceDataController(object):
         Create @gnxs nodes and @uas trees as needed.
         '''
         # Delete all children of the @data node.
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         if trace:
             g.trace(root and root.h)
             g.printDict(root.v.u)
@@ -130,7 +130,7 @@ class PersistenceDataController(object):
     #@+node:ekr.20140711111623.17807: *4* pd.update_after_read_foreign_file & helpers
     def update_after_read_foreign_file(self, root):
         '''Restore gnx's, uAs and clone links using @gnxs nodes and @uas trees.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         self.at_persistence = self.find_at_persistence_node()
         if not self.at_persistence:
             if trace: g.trace('no @persistence node')
