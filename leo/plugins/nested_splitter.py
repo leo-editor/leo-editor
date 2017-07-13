@@ -918,6 +918,11 @@ if QtWidgets: # NOQA
                 psp.setSizes(sizes)
                 assert psp.widget(i + 2) is self
                 psp.remove(i + 3, 0)
+                psp.setSizes(sizes)
+            elif self is self.root and self.count() == 2:
+                self.rotate()
+            elif self.count() == 2:
+                self.setOrientation(self.other_orientation[self.orientation()])
             else:
                 orientation = self.other_orientation[self.orientation()]
                 prev = self.widget(index - 1)

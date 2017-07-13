@@ -1336,7 +1336,8 @@ if QtWidgets: # NOQA
             global layouts
             c = self.c
             splitter = self.splitter
-            (loc, loo) = layouts.get(c.hash(), (None, None))
+            deflo = c.cacher.db.get('viewrendered_default_layouts', (None, None))
+            (loc, loo) = layouts.get(c.hash(), deflo)
             if which == 'closed' and loc and splitter:
                 splitter.load_layout(loc)
             elif which == 'open' and loo and splitter:
@@ -1346,13 +1347,15 @@ if QtWidgets: # NOQA
             global layouts
             c = self.c; h = c.hash()
             splitter = self.splitter
-            (loc, loo) = layouts.get(h, (None, None))
+            deflo = c.cacher.db.get('viewrendered_default_layouts', (None, None))
+            (loc, loo) = layouts.get(c.hash(), deflo)
             if which == 'closed' and splitter:
                 loc = splitter.get_saveable_layout()
                 layouts[h] = loc, loo
             elif which == 'open' and splitter:
                 loo = splitter.get_saveable_layout()
                 layouts[h] = loc, loo
+            c.cacher.db['viewrendered_default_layouts'] = layouts[h]
         #@-others
 #@-others
 #@@language python
