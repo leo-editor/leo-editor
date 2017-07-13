@@ -7325,6 +7325,24 @@ class Commands(object):
         else:
             g.es('No possible shortcut in selected body line/headline')
             g.es('Select @button, @command, @shortcuts or @mode node and run it again.')
+    #@+node:vitalije.20170713174950.1: *3* c.editOneSetting
+    @cmd('edit-setting')
+    def editOneSetting(self, event=None):
+        '''Opens correct dialog for selected setting type'''
+        c = self; p = c.p; func = None
+        if p.h.startswith('@font'):
+            func = c.commandsDict.get('show-fonts')
+        elif p.h.startswith('@color '):
+            func = c.commandsDict.get('show-color-wheel')
+        elif p.h.startswith(('@shortcuts','@button','@command')):
+            c.editShortcut()
+            return
+        else:
+            g.es('not in a setting node')
+            return
+        if func:
+            event = g.app.gui.create_key_event(c, None, None, None)
+            func(event)
     #@+node:bobjack.20080509080123.2: *3* c.universalCallback & minibufferCallback
     def universalCallback(self, source_c, function):
         """Create a universal command callback.
