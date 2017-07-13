@@ -190,7 +190,7 @@ class PersistenceDataController(object):
         - Set p1.v.fileIndex = gnx.
         - If p2 exists, relink p1 so it is a clone of p2.
         '''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         p1 = self.find_position_for_relative_unl(root, unl)
         fn = self.c.shortFileName()
         if p1:
@@ -204,15 +204,18 @@ class PersistenceDataController(object):
                     if trace: g.trace(fn, 'clone:', old_gnx, '->', gnx, unl)
                 else:
                     g.es_print('mismatch in cloned node', p1.h)
-            elif trace:
-                g.trace(fn, ' node:', old_gnx, '->', gnx, unl)
+            else:
+                if trace:
+                    g.trace(fn, ' node:', old_gnx, '->', gnx, unl)
+                # p1.v.gnx = gnx ###
+                p1.v.fileIndex = gnx
             g.app.nodeIndices.updateLastIndex(g.toUnicode(gnx))
         else:
             if trace: g.trace('unl not found: %s' % unl)
     #@+node:ekr.20140711111623.17892: *5* pd.create_uas
     def create_uas(self, at_uas, root):
         '''Recreate uA's from the @ua nodes in the @uas tree.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         # Create an *inner* gnx dict.
         # Keys are gnx's, values are positions *within* root's tree.
         d = {}
@@ -239,9 +242,10 @@ class PersistenceDataController(object):
                         if trace: g.trace('set', p.h, ua)
                         p.v.u = ua
                     else:
-                        g.trace('Can not unpickle uA in', p.h, type(ua), ua[: 40])
+                        g.trace('Can not unpickle uA in',
+                            p.h, repr(unl), type(ua), ua[: 40])
                 elif trace:
-                    g.trace('no match for gnx:', repr(gnx), 'unl:', unl)
+                    g.trace('no match for gnx:', repr(gnx))
             elif trace:
                 g.trace('unexpected child of @uas node', at_ua)
     #@+node:ekr.20140712105818.16750: *3* pd.Helpers
