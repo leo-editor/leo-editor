@@ -333,6 +333,12 @@ def show_scrolled_message(tag, kw):
         keywords={'c': c, 'force': True, 's': s, 'flags': flags},
     )
     return True
+#@+node:vitalije.20170713082256.1: *3* split_last_sizes
+def split_last_sizes(sizes):
+    result = [2 * x for x in sizes[:-1]]
+    result.append(sizes[-1])
+    result.append(sizes[-1])
+    return result
 #@+node:ekr.20110320120020.14490: ** Commands
 #@+node:ekr.20131213163822.16471: *3* g.command('preview')
 @g.command('preview')
@@ -362,9 +368,13 @@ def viewrendered(event):
             # Careful: we may be unit testing.
             if splitter:
                 vr.store_layout('closed')
+                sizes = split_last_sizes(splitter.sizes())
                 ok = splitter.add_adjacent(vr, 'bodyFrame', 'right-of')
                 if not ok:
                     splitter.insert(0, vr)
+                else:
+                    if splitter.orientation() == QtCore.Qt.Horizontal:
+                        splitter.setSizes(sizes)
                 vr.adjust_layout('open')
         else:
             vr.setWindowTitle("Rendered View")
