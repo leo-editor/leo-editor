@@ -52,6 +52,18 @@ class DebugCommandsClass(BaseEditCommandsClass):
         g.trace_gc = True
         g.printGcVerbose()
         g.trace_gc = old
+    #@+node:ekr.20170713112849.1: *3* debug.dumpNode
+    @cmd('dump-node')
+    def dumpNode(self, event=None):
+        '''Dump c.p.v, including gnx, uA's, etc.'''
+        p = self.c.p
+        if p:
+            g.es_print('gnx: %s %s' % (p.v.gnx, p.v.h))
+            if p.v.u:
+                g.es_print('uAs')
+                g.printDict(p.v.u)
+            else:
+                g.es_print('no uAs')
     #@+node:ekr.20150514063305.107: *3* debug.enable/disableGcTrace
     @cmd('gc-trace-disable')
     def disableGcTrace(self, event=None):
