@@ -31,6 +31,8 @@ https://github.com/leo-editor/leo-editor/issues/516
 @bool color_trailing_whitespace = True
 
 @color trailing_whitespace_color = red
+.. @+node:ekr.20170713045600.1: *4* #446: Added vr-zoom command
+https://github.com/leo-editor/leo-editor/issues/446
 .. @+node:ekr.20170619165453.1: ** Branch: string-gui
 Attempt to run all unit tests without using Qt gui code.
 All gui-related code will be simulated with the StringTextWrapper class.
