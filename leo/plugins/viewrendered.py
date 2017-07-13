@@ -360,7 +360,9 @@ def viewrendered(event):
         vr.show()
         vr.adjust_layout('open')
     else:
-        controllers[c.hash()] = vr = ViewRenderedController(c)
+        h = c.hash()
+        controllers[h] = vr = ViewRenderedController(c)
+        layouts[h] = c.cacher.db.get('viewrendered_default_layouts', (None, None))
         if trace: g.trace('** new controller: %s' % (vr))
         if hasattr(c, 'free_layout'):
             vr._ns_id = '_leo_viewrendered' # for free_layout load/save
@@ -548,11 +550,14 @@ class ViewRenderedProvider(object):
         return [('Viewrendered', '_leo_viewrendered')]
     #@+node:tbrown.20110629084915.35151: *3* ns_provide
     def ns_provide(self, id_):
-        global controllers
+        global controllers, layouts
         if id_ == '_leo_viewrendered':
             c = self.c
             vr = controllers.get(c.hash()) or ViewRenderedController(c)
-            controllers[c.hash()] = vr
+            h = c.hash()
+            controllers[h] = vr
+            if not layouts.get(h):
+                layouts[h] = c.cacher.db.get('viewrendered_default_layouts', (None, None))
             # return ViewRenderedController(self.c)
             return vr
     #@-others
