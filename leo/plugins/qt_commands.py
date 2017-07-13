@@ -148,17 +148,27 @@ def showColorNames(event=None):
             # Do this last, so errors don't prevent re-execution.
 #@+node:ekr.20170324142416.1: ** qt: show-color-wheel
 @g.command('show-color-wheel')
-def showColorWheel(event=None):
+def showColorWheel(self, event=None):
     '''Show a Qt color dialog.'''
+    c = self.c; p = c.p
     picker = QtWidgets.QColorDialog()
+    in_color_setting = p.h.startswith('@color ')
     try:
         text = QtWidgets.QApplication.clipboard().text()
+        if in_color_setting:
+            text = p.h.split('=', 1)[1].strip()
         color = QtGui.QColor(text)
         picker.setCurrentColor(color)
-    except ValueError:
+    except (ValueError, IndexError) as e:
+        g.trace('error caught', e)
         pass
     if not picker.exec_():
         g.es("No color selected")
+    elif in_color_setting:
+        udata = c.undoer.beforeChangeNodeContents(p)
+        p.h = '%s = %s'%(p.h.split('=', 1)[0].strip(),
+                         g.u(picker.selectedColor().name()))
+        c.undoer.afterChangeNodeContents(p, 'change-color', udata)
     else:
         text = picker.selectedColor().name()
         g.es("copied to clipboard:", text)
