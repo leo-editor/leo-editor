@@ -4294,7 +4294,9 @@ tab-cycle-next      = Ctrl-Tab
 
 # Possible alternatives.
 # keyboard-quit     = Escape # Hard to type, interferes with dismissing dialogs.
-# focus-to-tree     = Ctrl-T</t>
+# focus-to-tree     = Ctrl-T
+edit-setting        = Ctrl+Key-0
+</t>
 <t tx="ekr.20060925060533.3">clone-node                  = Ctrl-`
 chapter-select              = None
 contract-node               = None
