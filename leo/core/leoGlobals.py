@@ -6510,6 +6510,24 @@ def getScript(c, p,
             s = w.getSelectedText()
         else:
             s = p.b
+            if hasattr(c, '_allow_script_selection_by_language_directive'):
+                i = w.getInsertPoint()
+                prevLines = s[:i].splitlines(True)
+                j = len(prevLines) - 1
+                while j > 0:
+                    if prevLines[j].startswith('@language'):
+                        prevLines = prevLines[j+1:]
+                        break
+                    j -= 1
+                nextLines = s[i:].splitlines(True)
+                j = 0
+                while j < len(nextLines) - 1:
+                    if nextLines[j].startswith('@language'):
+                        nextLines = nextLines[:j]
+                        break
+                    j += 1
+                s = ''.join(prevLines + nextLines)
+
         # Remove extra leading whitespace so the user may execute indented code.
         s = g.removeExtraLws(s, c.tab_width)
         s = g.extractExecutableString(c, p, s)
