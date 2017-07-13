@@ -3,6 +3,8 @@
 .. @+all
 .. @+node:ekr.20170707035417.1: ** Leo 5.6
 .. @+node:ekr.20170709020723.1: *3* Bugs
+.. @+node:ekr.20170713050028.1: *4* #317: Viewrendered pane loses live-render feature
+https://github.com/leo-editor/leo-editor/issues/317
 .. @+node:ekr.20170707150222.1: *4* #505: Leo's read code must be rewritten
 https://github.com/leo-editor/leo-editor/issues/505
 
