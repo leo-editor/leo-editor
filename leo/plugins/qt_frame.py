@@ -284,8 +284,33 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 self.parent().show()
                 QtWidgets.QLineEdit.focusInEvent(self, event)
                     # EKR: 2014/06/28: Call the base class method.
+            def restore_selection(self):
+                w = self
+                i, j, ins = self._sel_and_insert
+                if i == j:
+                    w.setCursorPosition(i)
+                else:
+                    length = j - i
+                    # Set selection is a QLineEditMethod
+                    if ins < j:
+                        w.setSelection(j, -length)
+                    else:
+                        w.setSelection(i, length)
+
+            def focusOutEvent(self, event):
+                w = self
+                ins = w.cursorPosition()
+                if w.hasSelectedText():
+                    i = w.selectionStart()
+                    s = w.selectedText()
+                    s = g.u(s)
+                    j = i + len(s)
+                else:
+                    i = j = ins
+                w._sel_and_insert = (i, j, ins)
 
         lineEdit = VisLineEdit(frame)
+        lineEdit._sel_and_insert = (0, 0, 0)
         lineEdit.setObjectName('lineEdit') # name important.
         # Pack.
         hLayout = self.createHLayout(frame, 'minibufferHLayout', spacing=4)

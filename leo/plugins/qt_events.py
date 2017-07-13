@@ -83,6 +83,9 @@ class LeoQtEventFilter(QtCore.QObject):
         # Important:
         # QLineEdit: ignore all key events except keyRelease events.
         # QTextEdit: ignore all key events except keyPress events.
+        if obj is c.frame.top.lineEdit and eventType == ev.FocusIn:
+            if k.getStateKind() == 'getArg':
+                c.frame.top.lineEdit.restore_selection()
         if eventType in lineEditKeyKinds:
             p = c.currentPosition()
             isEditWidget = obj == c.frame.tree.edit_widget(p)
