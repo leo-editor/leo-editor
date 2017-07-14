@@ -298,6 +298,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
                         w.setSelection(i, length)
 
             def focusOutEvent(self, event):
+                self.store_selection()
+                QtWidgets.QLineEdit.focusOutEvent(self, event)
+            def store_selection(self):
                 w = self
                 ins = w.cursorPosition()
                 if w.hasSelectedText():
