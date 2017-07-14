@@ -29,7 +29,7 @@ def init ():
     '''Return True if the plugin has loaded successfully.'''
     ok = g.app.gui.guiName() == "qt"
     if ok:
-        g.registerHandler('after-create-leo-frame',onCreate)
+        g.registerHandler(('new','open2'),onCreate)
         g.registerHandler('close-frame', onClose)
         g.plugin_signon(__name__)
     return ok
