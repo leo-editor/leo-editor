@@ -207,7 +207,7 @@ class PersistenceDataController(object):
             else:
                 if trace:
                     g.trace(fn, ' node:', old_gnx, '->', gnx, unl)
-                ### branch-persist: A major bug fix.
+                # Fix #526: A major bug: this was not set!
                 p1.v.fileIndex = gnx
             g.app.nodeIndices.updateLastIndex(g.toUnicode(gnx))
         else:
