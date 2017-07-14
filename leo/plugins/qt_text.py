@@ -938,6 +938,12 @@ class QMinibufferWrapper(QLineEditWrapper):
         # It may lag a bit when the style's edited, but the new top
         # level sheet will get pushed down quite frequently.
         self.widget.setStyleSheet(self.c.frame.top.styleSheet())
+
+    def setSelectionRange(self, i, j, insert=None, s=None):
+        QLineEditWrapper.setSelectionRange(self, i, j, insert, s)
+        insert = j if insert is None else insert
+        if self.widget:
+            self.widget._sel_and_insert = (i, j, insert)
 #@+node:ekr.20110605121601.18103: ** class QScintillaWrapper(QTextMixin)
 class QScintillaWrapper(QTextMixin):
     '''A wrapper for QsciScintilla supporting the high-level interface.
