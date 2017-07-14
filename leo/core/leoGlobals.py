@@ -3479,6 +3479,17 @@ def utils_stat(fileName):
     except Exception:
         mode = None
     return mode
+#@+node:vitalije.20170714085317.1: *3* g.fileFilters
+def fileFilters(key):
+    if key == 'LEOFILES' and g.SQLITE:
+        return ("Leo files", "*.leo *.db")
+    elif key == 'LEOFILES':
+        return ("Leo files", "*.leo")
+#@+node:vitalije.20170714085545.1: *3* g.defaultLeoFileExtension
+def defaultLeoFileExtension():
+    if g.SQLITE:
+        return '.db'
+    return '.leo'
 #@+node:ekr.20031218072017.3151: ** g.Finding & Scanning
 #@+node:ekr.20140602083643.17659: *3* g.find_word
 def find_word(s, word, i=0):

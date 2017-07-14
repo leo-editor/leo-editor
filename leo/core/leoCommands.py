@@ -2234,14 +2234,14 @@ class Commands(object):
         table = [
             # 2010/10/09: Fix an interface blunder. Show all files by default.
             ("All files", "*"),
-            ("Leo files", "*.leo"),
+            g.fileFilters("LEOFILES"),
             ("Python files", "*.py"),]
         fileName = ''.join(c.k.givenArgs)
         if not fileName:
             fileName = g.app.gui.runOpenFileDialog(c,
                 title="Open",
                 filetypes=table,
-                defaultextension=".leo")
+                defaultextension=g.defaultLeoFileExtension())
         c.bringToFront()
         c.init_error_dialogs()
         ok = False
@@ -2423,12 +2423,12 @@ class Commands(object):
                     fileName = g.app.gui.runSaveFileDialog(c,
                         initialfile=c.mFileName,
                         title="Save",
-                        filetypes=[("Leo files", "*.leo")],
-                        defaultextension=".leo")
+                        filetypes=[g.fileFilters('LEOFILES')],
+                        defaultextension=g.defaultLeoFileExtension())
             c.bringToFront()
             if fileName:
                 # Don't change mFileName until the dialog has suceeded.
-                c.mFileName = g.ensure_extension(fileName, ".leo")
+                c.mFileName = g.ensure_extension(fileName, g.defaultLeoFileExtension())
                 c.frame.title = c.computeWindowTitle(c.mFileName)
                 c.frame.setTitle(c.computeWindowTitle(c.mFileName))
                     # 2013/08/04: use c.computeWindowTitle.
@@ -2500,15 +2500,15 @@ class Commands(object):
             fileName = g.app.gui.runSaveFileDialog(c,
                 initialfile=c.mFileName,
                 title="Save As",
-                filetypes=[("Leo files", "*.leo")],
-                defaultextension=".leo")
+                filetypes=[g.fileFilters('LEOFILES')],
+                defaultextension=g.defaultLeoFileExtension())
         c.bringToFront()
         if fileName:
             # Fix bug 998090: save file as doesn't remove entry from open file list.
             if c.mFileName:
                 g.app.forgetOpenFile(c.mFileName)
             # Don't change mFileName until the dialog has suceeded.
-            c.mFileName = g.ensure_extension(fileName, ".leo")
+            c.mFileName = g.ensure_extension(fileName, g.defaultLeoFileExtension())
             # Part of the fix for https://bugs.launchpad.net/leo-editor/+bug/1194209
             c.frame.title = title = c.computeWindowTitle(c.mFileName)
             c.frame.setTitle(title)
@@ -2552,11 +2552,11 @@ class Commands(object):
             fileName = g.app.gui.runSaveFileDialog(c,
                 initialfile=c.mFileName,
                 title="Save To",
-                filetypes=[("Leo files", "*.leo")],
-                defaultextension=".leo")
+                filetypes=[g.fileFilters('LEOFILES')],
+                defaultextension=g.defaultLeoFileExtension())
         c.bringToFront()
         if fileName:
-            fileName = g.ensure_extension(fileName, ".leo")
+            fileName = g.ensure_extension(fileName, g.defaultLeoFileExtension())
             c.fileCommands.saveTo(fileName)
             g.app.recentFilesManager.updateRecentFiles(fileName)
             g.chdir(fileName)
