@@ -81,7 +81,7 @@ class PersistenceDataController(object):
         Create @gnxs nodes and @uas trees as needed.
         '''
         # Delete all children of the @data node.
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         if trace:
             g.trace(root and root.h)
             g.printDict(root.v.u)
@@ -130,7 +130,7 @@ class PersistenceDataController(object):
     #@+node:ekr.20140711111623.17807: *4* pd.update_after_read_foreign_file & helpers
     def update_after_read_foreign_file(self, root):
         '''Restore gnx's, uAs and clone links using @gnxs nodes and @uas trees.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         self.at_persistence = self.find_at_persistence_node()
         if not self.at_persistence:
             if trace: g.trace('no @persistence node')
@@ -204,8 +204,11 @@ class PersistenceDataController(object):
                     if trace: g.trace(fn, 'clone:', old_gnx, '->', gnx, unl)
                 else:
                     g.es_print('mismatch in cloned node', p1.h)
-            elif trace:
-                g.trace(fn, ' node:', old_gnx, '->', gnx, unl)
+            else:
+                if trace:
+                    g.trace(fn, ' node:', old_gnx, '->', gnx, unl)
+                # For now, don't change anything substantive in master.
+                # p1.v.fileIndex = gnx
             g.app.nodeIndices.updateLastIndex(g.toUnicode(gnx))
         else:
             if trace: g.trace('unl not found: %s' % unl)
@@ -239,9 +242,10 @@ class PersistenceDataController(object):
                         if trace: g.trace('set', p.h, ua)
                         p.v.u = ua
                     else:
-                        g.trace('Can not unpickle uA in', p.h, type(ua), ua[: 40])
+                        g.trace('Can not unpickle uA in',
+                            p.h, repr(unl), type(ua), ua[: 40])
                 elif trace:
-                    g.trace('no match for gnx:', repr(gnx), 'unl:', unl)
+                    g.trace('no match for gnx:', repr(gnx))
             elif trace:
                 g.trace('unexpected child of @uas node', at_ua)
     #@+node:ekr.20140712105818.16750: *3* pd.Helpers
