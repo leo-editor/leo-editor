@@ -10,6 +10,10 @@ the node history.
 This plugin does not need specific setup. If the plugin is loaded, the buttons
 will be available. The buttons use the icon specified in the active Qt style
 
+Note it may be practical to put this plugin before mod_scripting.py in 
+@enabled-plugins list. That way buttons "back" and "forward" will be placed on
+the left side of toolbar.
+
 '''
 #@-<< docstring >>
 #@+<< imports >>
@@ -29,7 +33,7 @@ def init ():
     '''Return True if the plugin has loaded successfully.'''
     ok = g.app.gui.guiName() == "qt"
     if ok:
-        g.registerHandler('after-create-leo-frame',onCreate)
+        g.registerHandler(('new','open2'),onCreate)
         g.registerHandler('close-frame', onClose)
         g.plugin_signon(__name__)
     return ok
