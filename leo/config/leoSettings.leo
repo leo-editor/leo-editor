@@ -4341,6 +4341,7 @@ delete-spaces                       = None
 indent-region                       = ctrl-greater # Ctrl-shift-&gt;
 kill-line                           = Ctrl-k
 kill-to-end-of-line                 = None
+newline-and-indent                  = Ctrl-j
 newline-and-indent                  !text = Tab
 focus-to-body                       !tree = Tab
 paste-text                          = Ctrl-v
