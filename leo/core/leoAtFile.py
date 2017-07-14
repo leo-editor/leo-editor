@@ -747,7 +747,7 @@ class AtFile(object):
     #@+node:ekr.20070909100252: *5* at.readOneAtAutoNode
     def readOneAtAutoNode(self, fileName, p):
         '''Read an @auto file into p. Return the *new* position.'''
-        trace = (False or g.app.debug) and not g.unitTesting
+        trace = (True or g.app.debug) and not g.unitTesting
         at, c, ic = self, self.c, self.c.importCommands
         oldChanged = c.isChanged()
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
@@ -777,7 +777,9 @@ class AtFile(object):
                 importing=True,
                 reading=True,
             )
-            if trace: g.trace(at.language, p.h)
+            if trace:
+                g.trace(at.language, p.h)
+                p.printDict(p.v.gnx)
             # For #451: return p.
             old_p = p.copy()
             p.v.b = '' # Required for @auto API checks.
