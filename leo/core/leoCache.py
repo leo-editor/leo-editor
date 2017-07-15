@@ -154,9 +154,12 @@ class Cacher(object):
         h, b, gnx, children = aList
         if h is not None:
             v = parent_v
-            ### Does this destroy the ability to handle the rare case???
+            # Does this destroy the ability to handle the rare case?
             v._headString = g.toUnicode(h)
             v._bodyString = g.toUnicode(b)
+        #### Highly experimental: delete all children first.
+        if 1:
+            parent_v.children = []
         for child_tuple in children:
             h, b, gnx, grandChildren = child_tuple
             if trace:
