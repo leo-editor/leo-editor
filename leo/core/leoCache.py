@@ -174,17 +174,18 @@ class Cacher(object):
         '''
         Update the outline described by child_tuple, including all descendants.
         '''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         h, junk_b, gnx, grand_children = child_tuple
         child_v = self.c.fileCommands.gnxDict.get(gnx)
         if child_v:
             self.reportIfNodeChanged(child_tuple, child_v, fileName, parent_v)
             for grand_child in grand_children:
                 self.checkForChangedNodes(grand_child, fileName, child_v)
-        elif trace:
-            g.trace('vnode does not exist: %25s %s' % (gnx, h))
-        ### This is probably not an error.
-            # elif not self.update_warning_given:
+        else:
+            # If the outline is out of sync, there may be write errors later,
+            # but the user should be handle them easily enough.
+            if trace: g.trace('vnode does not exist: %25s %s' % (gnx, h))
+            # if not self.update_warning_given: # not needed.
                 # self.update_warning_given = True
                 # g.internalError('no vnode', child_tuple)
     #@+node:ekr.20100208071151.5911: *5* cacher.fastAddLastChild (sets tempRoots)
