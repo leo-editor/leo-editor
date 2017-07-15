@@ -141,10 +141,11 @@ class Cacher(object):
         '''
         Create outline structure from recursive aList built by makeCacheList.
         '''
-        trace = False and not g.unitTesting
+        trace = False and not g.unitTesting # and fileName.endswith('leoFileCommands.py')
         c = self.c
         if not c:
             g.internalError('no c')
+            return
         if top:
             if trace: g.trace(g.shortFileName(fileName))
             c.cacheListFileName = fileName
@@ -157,34 +158,35 @@ class Cacher(object):
             # Does this destroy the ability to handle the rare case?
             v._headString = g.toUnicode(h)
             v._bodyString = g.toUnicode(b)
-        #### Highly experimental: delete all children first.
-        if 1:
-            parent_v.children = []
         for child_tuple in children:
             h, b, gnx, grandChildren = child_tuple
             if trace:
-                g.trace('%9s %3s %s' % (gnx, len(grandChildren), h.strip()))
+                g.trace('%30s %3s %s' % (gnx, len(grandChildren), h.strip()))
             isClone, child_v = self.fastAddLastChild(fileName, gnx, parent_v)
             if isClone:
                 self.checkForChangedNodes(child_tuple, fileName, parent_v)
             else:
                 self.createOutlineFromCacheList(child_v, child_tuple, fileName, top=False)
     #@+node:ekr.20170622112151.1: *5* cacher.checkForChangedNodes
-    update_warning_given = False
+    # update_warning_given = False
 
     def checkForChangedNodes(self, child_tuple, fileName, parent_v):
         '''
         Update the outline described by child_tuple, including all descendants.
         '''
-        junk_h, junk_b, gnx, grand_children = child_tuple
+        trace = True and not g.unitTesting
+        h, junk_b, gnx, grand_children = child_tuple
         child_v = self.c.fileCommands.gnxDict.get(gnx)
         if child_v:
             self.reportIfNodeChanged(child_tuple, child_v, fileName, parent_v)
             for grand_child in grand_children:
                 self.checkForChangedNodes(grand_child, fileName, child_v)
-        elif not self.update_warning_given:
-            self.update_warning_given = True
-            g.internalError('no vnode', child_tuple)
+        elif trace:
+            g.trace('vnode does not exist: %25s %s' % (gnx, h))
+        ### This is probably not an error.
+            # elif not self.update_warning_given:
+                # self.update_warning_given = True
+                # g.internalError('no vnode', child_tuple)
     #@+node:ekr.20100208071151.5911: *5* cacher.fastAddLastChild (sets tempRoots)
     # Similar to createThinChild4
 
