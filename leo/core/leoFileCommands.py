@@ -1785,10 +1785,11 @@ class FileCommands(object):
                 g.trace('can not happen: no VNode for', repr(index))
                 # This prevents the file from being written.
                 raise BadLeoFile('no VNode for %s' % repr(index))
-    #@+node:ekr.20031218072017.1863: *5* fc.putVnode
+    #@+node:ekr.20031218072017.1863: *5* fc.putVnode & helper
     def putVnode(self, p, isIgnore=False):
         """Write a <v> element corresponding to a VNode."""
-        fc = self; c = fc.c; v = p.v
+        fc = self
+        v = p.v
         isAuto = p.isAtAutoNode() and p.atAutoNodeName().strip()
         isEdit = p.isAtEditNode() and p.atEditNodeName().strip() and not p.hasChildren()
             # 2010/09/02: @edit nodes must not have children.
@@ -1810,53 +1811,8 @@ class FileCommands(object):
         gnx = v.fileIndex
         if forceWrite or self.usingClipboard:
             v.setWriteBit() # 4.2: Indicate we wrote the body text.
-        attrs = []
-        #@+<< Append attribute bits to attrs >>
-        #@+node:ekr.20031218072017.1865: *6* << Append attribute bits to attrs >> (fc.putVnode)
-        # These string catenations are benign because they rarely happen.
-        attr = ""
-        # New in Leo 4.5: support fixed .leo files.
-        if not c.fixed:
-            if v.isExpanded() and v.hasChildren() and c.putBitsFlag:
-                attr += "E"
-            if v.isMarked(): attr += "M"
-            # if v.isOrphan(): attr += "O"
-                # New in Leo 5.2: never write the orphan bit.
-                # It's useless in all cases.
-            if attr:
-                attrs.append(' a="%s"' % attr)
-        # Put the archived *current* position in the *root* positions <v> element.
-        if p == self.rootPosition:
-            aList = [str(z) for z in self.currentPosition.archivedPosition()]
-            d = v.u
-            str_pos = ','.join(aList)
-            if d.get('str_leo_pos'):
-                del d['str_leo_pos']
-            # Don't write the current position if we can cache it.
-            if g.enableDB and c.mFileName:
-                c.cacher.setCachedStringPosition(str_pos)
-            elif c.fixed:
-                pass
-            else:
-                d['str_leo_pos'] = str_pos
-            v.u = d
-        elif hasattr(v, "unknownAttributes"):
-            d = v.unknownAttributes
-            if d and not c.fixed and d.get('str_leo_pos'):
-                # g.trace("clearing str_leo_pos",v)
-                del d['str_leo_pos']
-                v.unknownAttributes = d
-        #@-<< Append attribute bits to attrs >>
-        #@+<< Append unKnownAttributes to attrs >>
-        #@+node:ekr.20040324082713: *6* << Append unKnownAttributes to attrs>> (fc.putVnode)
-        # v.unknownAttributes are now put in <t> elements.
-        if p.hasChildren() and not forceWrite and not self.usingClipboard:
-            # We put the entire tree when using the clipboard, so no need for this.
-            if not isAuto: # Bug fix: 2008/8/7.
-                attrs.append(self.putDescendentVnodeUas(p)) # New in Leo 4.5.
-                attrs.append(self.putDescendentAttributes(p))
-        #@-<< Append unKnownAttributes to attrs >>
-        attrs = ''.join(attrs)
+        attrs = fc.compute_attribute_bits(forceWrite, p)
+        # Write the node.
         v_head = '<v t="%s"%s>' % (gnx, attrs)
         if gnx in fc.vnodesDict:
             fc.put(v_head + '</v>\n')
@@ -1877,6 +1833,47 @@ class FileCommands(object):
                 fc.put('</v>\n')
             else:
                 fc.put('%s</v>\n' % v_head) # Call put only once.
+    #@+node:ekr.20031218072017.1865: *6* fc.compute_attribute_bits
+    def compute_attribute_bits(self, forceWrite, p):
+        '''Return the initial values of v's attributes.'''
+        c, v = self.c, p.v
+        attrs = []
+        # New in Leo 4.5: support fixed .leo files.
+        if not c.fixed:
+            bits = []
+            if v.isExpanded() and v.hasChildren() and c.putBitsFlag:
+                bits.append("E")
+            if v.isMarked():
+                bits.append("M")
+            if bits:
+                attrs.append(' a="%s"' % ''.join(bits))
+        # Put the archived *current* position in the *root* position's <v> element.
+        if p == self.rootPosition:
+            aList = [str(z) for z in self.currentPosition.archivedPosition()]
+            d = v.u
+            str_pos = ','.join(aList)
+            if d.get('str_leo_pos'):
+                del d['str_leo_pos']
+            # Don't write the current position if we can cache it.
+            if g.enableDB and c.mFileName:
+                c.cacher.setCachedStringPosition(str_pos)
+            elif c.fixed:
+                pass
+            else:
+                d['str_leo_pos'] = str_pos
+            v.u = d
+        elif hasattr(v, "unknownAttributes"):
+            d = v.unknownAttributes
+            if d and not c.fixed and d.get('str_leo_pos'):
+                # g.trace("clearing str_leo_pos",v)
+                del d['str_leo_pos']
+                v.unknownAttributes = d
+        # Append unKnownAttributes to attrs
+        if p.hasChildren() and not forceWrite and not self.usingClipboard:
+            # Fix #526: do this for @auto nodes as well.
+            attrs.append(self.putDescendentVnodeUas(p))
+            attrs.append(self.putDescendentAttributes(p))
+        return ''.join(attrs)
     #@+node:ekr.20031218072017.1579: *5* fc.putVnodes
     def putVnodes(self):
         """Puts all <v> elements in the order in which they appear in the outline."""

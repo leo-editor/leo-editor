@@ -207,8 +207,8 @@ class PersistenceDataController(object):
             else:
                 if trace:
                     g.trace(fn, ' node:', old_gnx, '->', gnx, unl)
-                # For now, don't change anything substantive in master.
-                # p1.v.fileIndex = gnx
+                # Fix #526: A major bug: this was not set!
+                p1.v.fileIndex = gnx
             g.app.nodeIndices.updateLastIndex(g.toUnicode(gnx))
         else:
             if trace: g.trace('unl not found: %s' % unl)

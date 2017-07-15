@@ -795,24 +795,21 @@ class AtFile(object):
         if not g.unitTesting:
             g.es("reading:", p.h)
         try:
+            # For #451: return p.
+            old_p = p.copy()
             at.scanAllDirectives(
                 p,
                 forcePythonSentinels=False,
                 importing=True,
                 reading=True,
             )
-            if trace: g.trace(at.language, p.h)
-            # For #451: return p.
-            old_p = p.copy()
             p.v.b = '' # Required for @auto API checks.
             p.deleteAllChildren()
             p = ic.createOutline(fileName, parent=p.copy())
             # Do *not* select a postion here.
             # That would improperly expand nodes.
                 # c.selectPosition(p)
-        except AssertionError:
-            p = old_p
-            ic.errors += 1
+            if trace: g.trace(at.language, p.h)
         except Exception:
             p = old_p
             ic.errors += 1
