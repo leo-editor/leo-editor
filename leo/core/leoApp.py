@@ -948,6 +948,7 @@ class LeoApp(object):
             if veto: return False
         g.app.setLog(None) # no log until we reactive a window.
         g.doHook("close-frame", c=c)
+        c.cacher.commit() # store cache
             # This may remove frame from the window list.
         if frame in g.app.windowList:
             g.app.destroyWindow(frame)
@@ -1184,6 +1185,7 @@ class LeoApp(object):
         if trace: print('finishQuit')
         if not g.app.killed:
             g.doHook("end1")
+            g.app.cacher.commit()
         if g.app.ipk:
             g.app.ipk.cleanup_consoles()
         self.destroyAllOpenWithFiles()
@@ -1317,7 +1319,8 @@ class LeoApp(object):
         """
         # Fixes bug 670108.
         import leo.core.leoCache as leoCache
-        g.app.db = leoCache.Cacher().initGlobalDB()
+        g.app.cacher = cacher = leoCache.Cacher()
+        g.app.db = cacher.initGlobalDB()
     #@+node:ekr.20031218072017.1978: *3* app.setLeoID & helpers
     def setLeoID(self, verbose=True):
         '''Get g.app.leoID from various sources.'''
