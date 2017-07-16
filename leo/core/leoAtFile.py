@@ -355,6 +355,7 @@ class AtFile(object):
         at = self
         at.read_i = 0
         at.read_lines = g.splitLines(s)
+        at._file_bytes = g.toEncodedString(s)
     #@+node:ekr.20041005105605.17: *3* at.Reading
 
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
@@ -423,6 +424,7 @@ class AtFile(object):
             except IOError:
                 at.error("can not open: '@file %s'" % (fn))
                 at.inputFile = None
+                at._file_bytes = g.toEncodedString('')
                 fn = None
         return fn
     #@+node:ekr.20150204165040.4: *6* at.openAtShadowFileForReading
@@ -467,14 +469,17 @@ class AtFile(object):
             # outline can be updated from the external file.
         at.initReadIvars(root, fileName,
             importFileName=importFileName, atShadow=atShadow)
+
         at.fromString = fromString
         if at.errors:
             if trace: g.trace('Init error')
             return False
+
         fileName = at.openFileForReading(fromString=fromString)
             # For @shadow files, calls x.updatePublicAndPrivateFiles.
             # Calls at.initReadLine(s), where s is the file contents.
             # This will be used only if not cached.
+
         if fileName and at.inputFile:
             c.setFileTimeStamp(fileName)
         elif fromString: # 2010/09/02.
@@ -482,13 +487,13 @@ class AtFile(object):
         else:
             if trace: g.trace('No inputFile')
             return False
-        # Get the file from the cache if possible.
-        if fromString or not g.enableDB:
+        if g.SQLITE and c.sqlite_connection:
+            loaded = at.checkExternalFileAgainstDb(root)
+            if loaded: return True
+            s, loaded, fileKey, force = at._file_bytes, False, None, True
+        elif fromString or not g.enableDB:
             s, loaded, fileKey = fromString, False, None
         else:
-            if g.SQLITE and self.checkExternalFileAgainstDb(fileName, root):
-                # external file has not been modified since last db save
-                return True
             s, loaded, fileKey = c.cacher.readFile(fileName, root)
         # Never read an external file with file-like sentinels from the cache.
         isFileLike = loaded and at.isFileLike(s)
@@ -552,7 +557,9 @@ class AtFile(object):
             root.clearOrphan()
         # There will be an internal error if fileKey is None.
         # This is not the cause of the bug.
-        if at.errors == 0 and not isFileLike and not fromString:
+        write_to_cache = (not (g.SQLITE and c.sqlite_connection)
+            and at.errors == 0 and not isFileLike and not fromString)
+        if write_to_cache:
             c.cacher.writeFile(root, fileKey)
         if trace: g.trace('at.errors', at.errors)
         return at.errors == 0
@@ -668,24 +675,28 @@ class AtFile(object):
                 isThin, repr(line))
             return not isThin
     #@+node:vitalije.20170701155512.1: *6* at.checkExternalFileAgainstDb
-    def checkExternalFileAgainstDb(self, fileName, root):
-        '''Returns True if file is not modified since last save in db'''
+    #@+at
+    #     This method assumes that file was already read and that
+    #     at.initReadLine was called, which did set at._file_bytes to
+    #     content of file as encoded string.
+    # 
+    #     This is also true if we are reading fromString.
+    #@@c
+    def checkExternalFileAgainstDb(self, root):
+        '''Returns True if file is not modified since last save in db.
+           Otherwise returns False.'''
         conn = self.c.sqlite_connection
         if conn is None: return False
-        ok = False
+        hx = hashlib.md5(self._file_bytes).hexdigest()
         try:
-            hx = hashlib.md5(g.readFileIntoEncodedString(fileName)).hexdigest()
             hx2 = conn.execute(
                     '''select value from extra_infos
                             where name=?''',
                     ('md5_' + root.gnx,)
                 ).fetchone()
-            ok = hx2 and hx2[0] == hx
         except sqlite3.OperationalError:
-            pass
-        except IOError:
-            pass
-        return ok
+            hx2 = False
+        return hx2 and hx2[0] == hx
     #@+node:ekr.20041005105605.26: *5* at.readAll
     def readAll(self, root, force=False):
         """Scan positions, looking for @<file> nodes to read."""
