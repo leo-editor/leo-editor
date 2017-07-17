@@ -116,6 +116,48 @@ from .apNPSApplicationEvents import StandardApp
 from .eveventhandler import Event
 
 
+#@+node:vitalije.20170717124737.1: ** pyflake silencer
+assert (DEBUG, DISABLE_RESIZE_SYSTEM, TEST_SETTINGS) != (ExhaustedTestInput,
+    add_test_input_from_iterable, add_test_input_ch, wrapper, wrapper_basic,
+    ThemeManager, disableColor, enableColor, Themes, NPSApp, NPSAppManaged,
+    setTheme, FormBaseNew, Form, TitleForm, TitleFooterForm, SplitForm,
+    FormExpanded, FormBaseNewExpanded, blank_terminal, ActionForm,
+    ActionFormExpanded, ActionFormV2, ActionFormExpandedV2,
+    ActionFormMinimal, FormWithMenus, ActionFormWithMenus, Popup,
+    MessagePopup, ActionPopup, PopupWide, ActionPopupWide, FormMutt,
+    FormMuttWithMenus, FileSelector, selectFile, ActionControllerSimple,
+    TextCommandBox, FormMuttActiveTraditional,
+    FormMuttActiveTraditionalWithMenus, FormMultiPage, FormMultiPageAction,
+    NPSFilteredDataBase, NPSFilteredDataList, MiniButton, MiniButtonPress,
+    Button, ButtonPress, Textfield, FixedText, TitleText, TitleFixedText,
+    PasswordEntry, TitlePassword, AnnotateTextboxBase,
+    AnnotateTextboxBaseRight, Slider, TitleSlider, SliderNoLabel,
+    TitleSliderNoLabel, SliderPercent, TitleSliderPercent, DummyWidget,
+    NotEnoughSpaceForWidget, widget, MultiLine, Pager, TitleMultiLine,
+    TitlePager, MultiLineAction, BufferPager, TitleBufferPager, MultiSelect,
+    TitleMultiSelect, MultiSelectFixed, MultiLineEdit, ComboBox,
+    TitleCombo, Checkbox, RoundCheckBox, CheckBoxMultiline,
+    RoundCheckBoxMultiline, CheckBox, CheckboxBare, FormControlCheckbox,
+    TitleFilename, Filename, Autocomplete, Menu, SelectOne, TitleSelectOne,
+    DateCombo, TitleDateCombo, TreeData, MLTree, MLTreeAnnotated,
+    MLTreeAction, MLTreeAnnotatedAction, MLTreeMultiSelect,
+    TreeLineSelectable, MLTreeMultiSelectAnnotated,
+    TreeLineSelectableAnnotated, MultiLineTree, SelectOneTree,
+    MultiLineTreeNew, MultiLineTreeNewAction, TreeLine, TreeLineAnnotated,
+    MultiLineTreeNewAnnotatedAction, MultiLineTreeNewAnnotated, NPSTreeData,
+    FilenameCombo, TitleFilenameCombo, BoxBasic, BoxTitle,
+    MultiLineActionWithShortcuts, MultiLineEditable, MultiLineEditableTitle,
+    MultiLineEditableBoxed, MonthBox, SimpleGrid, GridColTitles, NewMenu,
+    MenuItem, MenuDisplay, MenuDisplayScreen, CallSubShell, notify,
+    notify_confirm, notify_wait, notify_ok_cancel, notify_yes_no,
+    stdfmemail, TextfieldUnicode, TextTokens, TitleTextTokens,
+    SimpleOptionForm, OptionListDisplay, OptionChanger, OptionList,
+    OptionLimitedChoices, OptionListDisplayLine, OptionFreeText,
+    OptionSingleChoice, OptionMultiChoice, OptionMultiFreeList, StandardApp,
+    Event, ActionFormV2WithMenus, SplitFormWithMenus, FormBaseNewWithMenus,
+    FormMuttActiveWithMenus, FormMuttActive, FormMultiPageActionWithMenus,
+    FormMultiPageWithMenus, TitleMultiSelectFixed, MultiSelectAction, 
+    OptionBoolean, OptionMultiFreeText, OptionFilename, OptionDate)
 #@-others
 #@@language python
 #@@tabwidth -4
