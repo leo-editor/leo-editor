@@ -841,7 +841,7 @@ class SqlitePickleShare(object):
     #@+node:vitalije.20170716201700.9: *4* __setitem__
     def __setitem__(self, key, value):
         """ db['key'] = 5 """
-        trace = False and not g.unitTesting
+        #trace = False and not g.unitTesting
         try:
             data = self.dumper(value)
             self.conn.execute('''replace into cachevalues(key, data)
@@ -932,7 +932,7 @@ class SqlitePickleShare(object):
 
     def keys(self, globpat=None):
         """Return all keys in DB, or all keys matching a glob"""
-        if pattern is None:
+        if globpat is None:
             sql = 'select key from cachevalues;'
             args = tuple()
         else:
