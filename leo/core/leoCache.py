@@ -800,7 +800,7 @@ class SqlitePickleShare(object):
             except Exception:
                 # but use best available if that doesn't work (unlikely)
                 data = pickle.dumps(val, pickle.HIGHEST_PROTOCOL)
-            return zlib.compress(data)
+            return sqlite3.Binary(zlib.compress(data))
 
         self.loader = loadz
         self.dumper = dumpz
