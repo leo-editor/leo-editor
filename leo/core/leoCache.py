@@ -18,6 +18,7 @@ import os
 import stat
 # import time
 import zlib
+import sqlite3
 # try:
     # import marshal
 # except ImportError:
@@ -32,6 +33,7 @@ isfile = g.os_path_isfile
 join = g.os_path_join
 normcase = g.os_path_normcase
 split = g.os_path_split
+SQLITE = False
 #@+others
 #@+node:ekr.20100208062523.5885: ** class Cacher
 class Cacher(object):
@@ -65,7 +67,7 @@ class Cacher(object):
             # Thus, there will a separate top-level directory for every path.
             self.dbdirname = dbdirname = join(g.app.homeLeoDir, 'db',
                 '%s_%s' % (bname, hashlib.md5(fn).hexdigest()))
-            self.db = PickleShareDB(dbdirname)
+            self.db = SqlitePickleShare(dbdirname) if SQLITE else PickleShareDB(dbdirname)
             # Fixes bug 670108.
             self.c.db = self.db
             self.inited = True
@@ -77,7 +79,8 @@ class Cacher(object):
         # We always create the global db, even if caching is disabled.
         try:
             dbdirname = g.app.homeLeoDir + "/db/global"
-            self.db = db = PickleShareDB(dbdirname)
+            db = SqlitePickleShare(dbdirname) if SQLITE else PickleShareDB(dbdirname)
+            self.db = db
             if trace: g.trace(db, dbdirname)
             self.inited = True
             return db
@@ -141,10 +144,11 @@ class Cacher(object):
         '''
         Create outline structure from recursive aList built by makeCacheList.
         '''
-        trace = False and not g.unitTesting
+        trace = False and not g.unitTesting # and fileName.endswith('leoFileCommands.py')
         c = self.c
         if not c:
             g.internalError('no c')
+            return
         if top:
             if trace: g.trace(g.shortFileName(fileName))
             c.cacheListFileName = fileName
@@ -154,34 +158,39 @@ class Cacher(object):
         h, b, gnx, children = aList
         if h is not None:
             v = parent_v
-            ### Does this destroy the ability to handle the rare case???
+            # Does this destroy the ability to handle the rare case?
             v._headString = g.toUnicode(h)
             v._bodyString = g.toUnicode(b)
         for child_tuple in children:
             h, b, gnx, grandChildren = child_tuple
             if trace:
-                g.trace('%9s %3s %s' % (gnx, len(grandChildren), h.strip()))
+                g.trace('%30s %3s %s' % (gnx, len(grandChildren), h.strip()))
             isClone, child_v = self.fastAddLastChild(fileName, gnx, parent_v)
             if isClone:
                 self.checkForChangedNodes(child_tuple, fileName, parent_v)
             else:
                 self.createOutlineFromCacheList(child_v, child_tuple, fileName, top=False)
     #@+node:ekr.20170622112151.1: *5* cacher.checkForChangedNodes
-    update_warning_given = False
+    # update_warning_given = False
 
     def checkForChangedNodes(self, child_tuple, fileName, parent_v):
         '''
         Update the outline described by child_tuple, including all descendants.
         '''
-        junk_h, junk_b, gnx, grand_children = child_tuple
+        trace = False and not g.unitTesting
+        h, junk_b, gnx, grand_children = child_tuple
         child_v = self.c.fileCommands.gnxDict.get(gnx)
         if child_v:
             self.reportIfNodeChanged(child_tuple, child_v, fileName, parent_v)
             for grand_child in grand_children:
                 self.checkForChangedNodes(grand_child, fileName, child_v)
-        elif not self.update_warning_given:
-            self.update_warning_given = True
-            g.internalError('no vnode', child_tuple)
+        else:
+            # If the outline is out of sync, there may be write errors later,
+            # but the user should be handle them easily enough.
+            if trace: g.trace('vnode does not exist: %25s %s' % (gnx, h))
+            # if not self.update_warning_given: # not needed.
+                # self.update_warning_given = True
+                # g.internalError('no vnode', child_tuple)
     #@+node:ekr.20100208071151.5911: *5* cacher.fastAddLastChild (sets tempRoots)
     # Similar to createThinChild4
 
@@ -446,6 +455,10 @@ class Cacher(object):
         '''Print a warning message in red.'''
         g.es_print('Warning: %s' % s.lstrip(), color='red')
     #@-others
+    def commit(self):
+        # in some cases while unit testing self.db is python dict
+        if SQLITE and hasattr(self.db, 'conn'):
+            self.db.conn.commit()
 #@+node:ekr.20100208223942.5967: ** class PickleShareDB
 _sentinel = object()
 
@@ -740,6 +753,197 @@ class PickleShareDB(object):
             self.cache = {}
         for it in items:
             self.cache.pop(it, None)
+    #@-others
+#@+node:vitalije.20170716201700.1: ** class SqlitePickleShare
+_sentinel = object()
+
+class SqlitePickleShare(object):
+    """ The main 'connection' object for SqlitePickleShare database """
+    #@+others
+    #@+node:vitalije.20170716201700.2: *3*  Birth & special methods
+    def init_dbtables(self, conn):
+        sql = 'create table if not exists cachevalues(key text primary key, data blob);'
+        conn.execute(sql)
+    #@+node:vitalije.20170716201700.3: *4*  __init__ (SqlitePickleShare)
+    def __init__(self, root):
+        """
+        Init the SqlitePickleShare class.
+        root: The directory that contains the data. Created if it doesn't exist.
+        """
+        trace = False and not g.unitTesting
+        self.root = abspath(expanduser(root))
+        if trace: g.trace('(SqlitePickleShare)', self.root)
+        if not isdir(self.root) and not g.unitTesting:
+            self._makedirs(self.root)
+        dbfile = ':memory:' if g.unitTesting else join(root, 'cache.sqlite')
+        self.conn = sqlite3.connect(dbfile)
+        self.init_dbtables(self.conn)
+        self.cache = {}
+            # Keys are normalized file names.
+            # Values are tuples (obj, orig_mod_time)
+
+        def loadz(data):
+            if data:
+                try:
+                    val = pickle.loads(zlib.decompress(data))
+                except ValueError:
+                    g.es("Unpickling error - Python 3 data accessed from Python 2?")
+                    return None
+                return val
+            else:
+                return None
+
+        def dumpz(val):
+            try:
+                # use Python 2's highest protocol, 2, if possible
+                data = pickle.dumps(val, 2)
+            except Exception:
+                # but use best available if that doesn't work (unlikely)
+                data = pickle.dumps(val, pickle.HIGHEST_PROTOCOL)
+            return zlib.compress(data)
+
+        self.loader = loadz
+        self.dumper = dumpz
+    #@+node:vitalije.20170716201700.4: *4* __contains__(SqlitePickleShare)
+    def __contains__(self, key):
+        trace = False and g.unitTesting
+        if trace: g.trace('(PickleShareDB)', key)
+        return self.has_key(key) # NOQA
+    #@+node:vitalije.20170716201700.5: *4* __delitem__
+    def __delitem__(self, key):
+        """ del db["key"] """
+        try:
+            self.conn.execute('''delete from cachevalues
+                where key=?''', (key,))
+        except sqlite3.OperationalError:
+            pass
+
+    #@+node:vitalije.20170716201700.6: *4* __getitem__
+    def __getitem__(self, key):
+        """ db['key'] reading """
+        try:
+            obj = None
+            for row in self.conn.execute('''select data from cachevalues
+                where key=?''', (key,)):
+                obj = self.loader(row[0])
+        except sqlite3.OperationalError:
+            raise KeyError(key)
+        return obj
+    #@+node:vitalije.20170716201700.7: *4* __iter__
+    def __iter__(self):
+        trace = False and g.unitTesting
+        if trace: g.trace('(SqlitePickleShare)', list(self.keys()))
+        for k in list(self.keys()):
+            yield k
+    #@+node:vitalije.20170716201700.8: *4* __repr__
+    def __repr__(self):
+        return "SqlitePickleShare('%s')" % self.root
+    #@+node:vitalije.20170716201700.9: *4* __setitem__
+    def __setitem__(self, key, value):
+        """ db['key'] = 5 """
+        trace = False and not g.unitTesting
+        try:
+            data = self.dumper(value)
+            self.conn.execute('''replace into cachevalues(key, data)
+                values(?,?);''', (key, data))
+        except sqlite3.OperationalError as e:
+            raise
+    #@+node:vitalije.20170716201700.10: *3* _makedirs
+    def _makedirs(self, fn, mode=0o777):
+        trace = False and not g.unitTesting
+        if trace: g.trace(self.root)
+        os.makedirs(fn, mode)
+    #@+node:vitalije.20170716201700.11: *3* _openFile
+    def _openFile(self, fn, mode='r'):
+        """ Open this file.  Return a file object.
+
+        Do not print an error message.
+        It is not an error for this to fail.
+        """
+        try:
+            return open(fn, mode)
+        except Exception:
+            return None
+    #@+node:vitalije.20170716201700.12: *3* _walkfiles & helpers
+    def _walkfiles(self, s, pattern=None):
+        """ D.walkfiles() -> iterator over files in D, recursively.
+
+        The optional argument, pattern, limits the results to files
+        with names that match the pattern.  For example,
+        mydir.walkfiles('*.tmp') yields only files with the .tmp
+        extension.
+        """
+        
+    #@+node:vitalije.20170716201700.13: *4* _listdir
+    def _listdir(self, s, pattern=None):
+        """ D.listdir() -> List of items in this directory.
+
+        Use D.files() or D.dirs() instead if you want a listing
+        of just files or just subdirectories.
+
+        The elements of the list are path objects.
+
+        With the optional 'pattern' argument, this only lists
+        items whose names match the given pattern.
+        """
+        names = os.listdir(s)
+        if pattern is not None:
+            names = fnmatch.filter(names, pattern)
+        return [join(s, child) for child in names]
+    #@+node:vitalije.20170716201700.14: *4* _fn_match
+    def _fn_match(self, s, pattern):
+        """ Return True if self.name matches the given pattern.
+
+        pattern - A filename pattern with wildcards, for example '*.py'.
+        """
+        return fnmatch.fnmatch(basename(s), pattern)
+    #@+node:vitalije.20170716201700.15: *3* clear (SqlitePickleShare)
+    def clear(self, verbose=False):
+        # Deletes all files in the fcache subdirectory.
+        # It would be more thorough to delete everything
+        # below the root directory, but it's not necessary.
+        if verbose:
+            g.red('clearing cache at directory...\n')
+            g.es_print(self.root)
+        self.conn.execute('delete from cachevalues;')
+    #@+node:vitalije.20170716201700.16: *3* get
+    def get(self, key, default=None):
+        trace = False and not g.unitTesting
+        try:
+            val = self[key]
+            if trace: g.trace('(SqlitePickleShare) SUCCESS', key)
+            return val
+        except KeyError:
+            if trace: g.trace('(SqlitePickleShare) ERROR',  key)
+            return default
+    #@+node:vitalije.20170716201700.17: *3* has_key (PickleShareDB)
+    def has_key(self, key):
+        sql = 'select 1 from cachevalues where key=?;'
+        for row in self.conn.execute(sql, (key,)):
+            return True
+        return False
+    #@+node:vitalije.20170716201700.18: *3* items
+    def items(self):
+        sql = 'select key,data from cachevalues;'
+        for key,data in self.conn.execute(sql):
+            yield key, data
+    #@+node:vitalije.20170716201700.19: *3* keys
+    # Called by clear, and during unit testing.
+
+    def keys(self, globpat=None):
+        """Return all keys in DB, or all keys matching a glob"""
+        if pattern is None:
+            sql = 'select key from cachevalues;'
+            args = tuple()
+        else:
+            sql = "select key from cachevalues where key glob ?;"
+            args = globpat,
+        for key in self.conn.execute(sql, args):
+            yield key
+    #@+node:vitalije.20170716201700.23: *3* uncache
+    def uncache(self, *items):
+        """not used in SqlitePickleShare"""
+        pass
     #@-others
 #@-others
 #@@language python
