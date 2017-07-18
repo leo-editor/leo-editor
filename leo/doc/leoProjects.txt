@@ -39,6 +39,15 @@ https://github.com/leo-editor/leo-editor/issues/516
 @color trailing_whitespace_color = red
 .. @+node:ekr.20170713045600.1: *4* #446: Added vr-zoom command
 https://github.com/leo-editor/leo-editor/issues/446
+.. @+node:ekr.20170718061900.1: *4* #531: file timestamps
+https://github.com/leo-editor/leo-editor/issues/531
+
+Added new settings::
+
+    @bool log_show_save_time = False
+    @string log_timestamp_format = "%H%M%S"
+    
+Changed fc.putSavedMessage and at.replaceTargetFileIfDifferent.
 .. @+node:ekr.20170619165453.1: ** Branch: string-gui
 Attempt to run all unit tests without using Qt gui code.
 All gui-related code will be simulated with the StringTextWrapper class.
