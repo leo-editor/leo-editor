@@ -676,7 +676,7 @@
 <v t="ekr.20150216135059.1"><vh>@bool create-at-persistence-nodes-automatically = False</vh></v>
 <v t="ekr.20041119041304"><vh>@bool create_nonexistent_directories = False</vh></v>
 <v t="ekr.20041119034357.5"><vh>@bool read_only = False</vh></v>
-<v t="ekr.20170718054928.1"><vh>@bool log_show_save_time = True</vh></v>
+<v t="ekr.20170718054928.1"><vh>@bool log_show_save_time = False</vh></v>
 <v t="ekr.20170718054951.1"><vh>@string log_timestamp_format = %H:%M:%S</vh></v>
 <v t="ekr.20041119041304.1"><vh>@string relative_path_base_directory = .</vh></v>
 <v t="ekr.20170706103843.1"><vh>Checking files</vh>
@@ -2827,6 +2827,8 @@
 </v>
 </v>
 </v>
+<v t="ekr.20170718054928.1"></v>
+<v t="ekr.20170718054951.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
