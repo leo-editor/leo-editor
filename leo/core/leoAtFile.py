@@ -4631,7 +4631,8 @@ class AtFile(object):
                     self.putSentinel("@comment " + line)
     #@+node:ekr.20080712150045.1: *5* at.replaceFileWithString
     def replaceFileWithString(self, fn, s):
-        '''Replace the file with s if s is different from theFile's contents.
+        '''
+        Replace the file with s if s is different from theFile's contents.
 
         Return True if theFile was changed.
 
@@ -4704,6 +4705,12 @@ class AtFile(object):
             'ignoreBlankLines', ignoreBlankLines,
             'target exists', g.os_path_exists(at.targetFileName),
             at.outputFileName, at.targetFileName)
+        # #531: Optionally report timestamp...
+        if c.config.getBool('log_show_save_time', default=False):
+            format = c.config.getString('log_timestamp_format') or "%H:%M:%S"
+            timestamp = time.strftime(format) + ' '
+        else:
+            timestamp = ''
         if g.os_path_exists(at.targetFileName):
             if at.compareFiles(
                 at.outputFileName,
@@ -4716,7 +4723,7 @@ class AtFile(object):
                 report = c.config.getBool('report_unchanged_files', default=True)
                 at.sameFiles += 1
                 if report and not g.unitTesting:
-                    g.es('unchanged:', at.shortFileName)
+                    g.es('%sunchanged: %s' % (timestamp, at.shortFileName))
                 at.fileChangedFlag = False
                 # Leo 5.6: Check unchanged files.
                 at.checkPythonCode(root, pyflakes_errors_only=True)
@@ -4736,7 +4743,7 @@ class AtFile(object):
                 if ok:
                     c.setFileTimeStamp(at.targetFileName)
                     if not g.unitTesting:
-                        g.es('wrote:', at.shortFileName)
+                        g.es('%swrote: %s' % (timestamp, at.shortFileName))
                 else:
                     g.error('error writing', at.shortFileName)
                     g.es('not written:', at.shortFileName)
@@ -4753,7 +4760,7 @@ class AtFile(object):
             if ok:
                 c.setFileTimeStamp(at.targetFileName)
                 if not g.unitTesting:
-                    g.es('created:', at.targetFileName)
+                    g.es('%screated: %s' % (timestamp, at.targetFileName))
                 if root:
                     # Fix bug 889175: Remember the full fileName.
                     at.rememberReadPath(at.targetFileName, root)
