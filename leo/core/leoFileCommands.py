@@ -2121,7 +2121,7 @@ class FileCommands(object):
             )
         ok = False
         try:
-            fc.exportVnodesToSqlite(conn, (dbrow(v) for v in c.all_unique_vnodes_iter()))
+            fc.exportVnodesToSqlite(conn, (dbrow(v) for v in c.all_unique_nodes()))
             fc.exportGeomToSqlite(conn)
             fc.exportHashesToSqlite(conn)
             conn.commit()
