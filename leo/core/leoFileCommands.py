@@ -1496,13 +1496,13 @@ class FileCommands(object):
         ok = g.doHook("save1", c=c, p=p, v=p.v, fileName=fileName)
         if ok is None:
             c.endEditing() # Set the current headline text.
-            if c.sqlite_connection:
-                c.sqlite_connection.close()
-                c.sqlite_connection = None
             self.setDefaultDirectoryForNewFiles(fileName)
             c.cacher.save(fileName, changeName=True)
             ok = c.checkFileTimeStamp(fileName)
             if ok:
+                if c.sqlite_connection:
+                    c.sqlite_connection.close()
+                    c.sqlite_connection = None
                 ok = self.write_Leo_file(fileName, False) # outlineOnlyFlag
             if ok:
                 if not silent:
