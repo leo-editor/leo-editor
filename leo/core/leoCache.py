@@ -88,6 +88,8 @@ class Cacher(object):
             return {} # Use a plain dict as a dummy.
     #@+node:ekr.20100210163813.5747: *4* cacher.save
     def save(self, fn, changeName):
+        if SQLITE:
+            self.commit(True)
         if changeName or not self.inited:
             self.initFileDB(fn)
     #@+node:ekr.20100209160132.5759: *3* cacher.clearCache & clearAllCaches
@@ -455,10 +457,12 @@ class Cacher(object):
         '''Print a warning message in red.'''
         g.es_print('Warning: %s' % s.lstrip(), color='red')
     #@-others
-    def commit(self):
+    def commit(self, close=True):
         # in some cases while unit testing self.db is python dict
         if SQLITE and hasattr(self.db, 'conn'):
             self.db.conn.commit()
+            if close:
+                self.db.conn.close()
 #@+node:ekr.20100208223942.5967: ** class PickleShareDB
 _sentinel = object()
 
