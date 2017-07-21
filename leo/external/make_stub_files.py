@@ -390,6 +390,10 @@ class AstFormatter(object):
         # This is a keyword *arg*, not a Python keyword!
         return '%s=%s' % (node.arg, value)
 
+    #@+node:ekr.20170721092717.1: *4* f.Constant (Python 3.6+)
+    def do_Constant(self, node): # Python 3.6+ only.
+        assert g.isPython3
+        return str(node.s) # A guess.
     #@+node:ekr.20160317055215.24: *4* f.comprehension
     def do_comprehension(self, node):
         result = []
@@ -429,10 +433,28 @@ class AstFormatter(object):
     def do_ExtSlice(self, node):
         return ':'.join([self.visit(z) for z in node.dims])
 
+    #@+node:ekr.20170721093043.1: *4* f.FormattedValue (Python 3.6+)
+    # FormattedValue(expr value, int? conversion, expr? format_spec)
+
+    def do_FormattedValue(self, node): # Python 3.6+ only.
+        assert g.isPython3
+        return '%s%s%s' % (
+            self.visit(node.value),
+            self.visit(node.conversion) if node.conversion else '',
+            self.visit(node.format_spec) if node.format_spec else '')
     #@+node:ekr.20160317055215.28: *4* f.Index
     def do_Index(self, node):
         return self.visit(node.value)
 
+    #@+node:ekr.20170721093148.1: *4* f.JoinedStr (Python 3.6+)
+    # JoinedStr(expr* values)
+
+    def do_JoinedStr(self, node):
+        
+        if node.values:
+            for value in node.values:
+                self.visit(value)
+                
     #@+node:ekr.20160317055215.29: *4* f.List
     def do_List(self, node):
         # Not used: list context.
@@ -568,6 +590,15 @@ class AstFormatter(object):
 
     # Statements...
 
+    #@+node:ekr.20170721093003.1: *4* f.AnnAssign
+    # AnnAssign(expr target, expr annotation, expr? value, int simple)
+
+    def do_AnnAssign(self, node):
+        return self.indent('%s:%s=%s\n' % (
+            self.visit(node.target),
+            self.visit(node.annotation),
+            self.visit(node.value),
+        ))
     #@+node:ekr.20160317055215.45: *4* f.Assert
     def do_Assert(self, node):
         test = self.visit(node.test)
@@ -992,7 +1023,11 @@ class AstArgFormatter (AstFormatter):
         return 'bool'
 
     def do_Bytes(self, node): # Python 3.x only.
-        return 'bytes' # return str(node.s)
+        return 'bytes' 
+        
+    def do_Constant(self, node):
+        # Python 3.x only.
+        return 'constant' 
 
     def do_Name(self, node):
         return 'bool' if node.id in ('True', 'False') else node.id

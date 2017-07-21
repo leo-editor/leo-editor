@@ -475,7 +475,7 @@ class AstFormatter(object):
     #@+node:ekr.20141012064706.18426: *4* f.Index
     def do_Index(self, node):
         return self.visit(node.value)
-    #@+node:ekr.20170721080559.1: *4* f.JoinedStr
+    #@+node:ekr.20170721080559.1: *4* f.JoinedStr (Python 3.6)
     # JoinedStr(expr* values)
 
     def do_JoinedStr(self, node):
