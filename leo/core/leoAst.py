@@ -429,6 +429,10 @@ class AstFormatter(object):
         if ifs:
             result.append(' if %s' % (''.join(ifs)))
         return ''.join(result)
+    #@+node:ekr.20170721073056.1: *4* f.Constant (Python 3.6+)
+    def do_Constant(self, node): # Python 3.6+ only.
+        assert g.isPython3
+        return str(node.s) # A guess.
     #@+node:ekr.20141012064706.18423: *4* f.Dict
     def do_Dict(self, node):
         result = []
@@ -459,9 +463,27 @@ class AstFormatter(object):
     #@+node:ekr.20141012064706.18425: *4* f.ExtSlice
     def do_ExtSlice(self, node):
         return ':'.join([self.visit(z) for z in node.dims])
+    #@+node:ekr.20170721075130.1: *4* f.FormattedValue (Python 3.6+)
+    # FormattedValue(expr value, int? conversion, expr? format_spec)
+
+    def do_FormattedValue(self, node): # Python 3.6+ only.
+        assert g.isPython3
+        return '%s%s%s' % (
+            self.visit(node.value),
+            self.visit(node.conversion) if node.conversion else '',
+            self.visit(node.format_spec) if node.format_spec else '')
     #@+node:ekr.20141012064706.18426: *4* f.Index
     def do_Index(self, node):
         return self.visit(node.value)
+    #@+node:ekr.20170721080559.1: *4* f.JoinedStr
+    # JoinedStr(expr* values)
+
+    def do_JoinedStr(self, node):
+        
+        if node.values:
+            for value in node.values:
+                self.visit(value)
+                
     #@+node:ekr.20141012064706.18427: *4* f.List
     def do_List(self, node):
         # Not used: list context.
@@ -576,6 +598,15 @@ class AstFormatter(object):
             self.visit(node.test),
             self.visit(node.orelse))
     #@+node:ekr.20141012064706.18442: *3* f.Statements
+    #@+node:ekr.20170721074105.1: *4* f.AnnAssign
+    # AnnAssign(expr target, expr annotation, expr? value, int simple)
+
+    def do_AnnAssign(self, node):
+        return self.indent('%s:%s=%s\n' % (
+            self.visit(node.target),
+            self.visit(node.annotation),
+            self.visit(node.value),
+        ))
     #@+node:ekr.20141012064706.18443: *4* f.Assert
     def do_Assert(self, node):
         test = self.visit(node.test)
@@ -1124,6 +1155,9 @@ class AstFullTraverser(object):
         self.visit(node.iter) # An attribute.
         for z in node.ifs:
             self.visit(z)
+    #@+node:ekr.20170721073315.1: *4* ft.Constant (Python 3.6+)
+    def do_Constant(self, node): # Python 3.6+ only.
+        assert g.isPython3
     #@+node:ekr.20141012064706.18489: *4* ft.Dict
     # Dict(expr* keys, expr* values)
 
@@ -1158,6 +1192,16 @@ class AstFullTraverser(object):
     def do_ExtSlice(self, node):
         for z in node.dims:
             self.visit(z)
+    #@+node:ekr.20170721075714.1: *4* ft.FormattedValue (Python 3.6+)
+    # FormattedValue(expr value, int? conversion, expr? format_spec)
+
+    def do_FormattedValue(self, node): # Python 3.6+ only.
+        assert g.isPython3
+        self.visit(node.value)
+        if node.conversion:
+            self.visit(node.conversion)
+        if node.format_spec:
+            self.visit(node.format_spec)
     #@+node:ekr.20141012064706.18493: *4* ft.GeneratorExp
     # GeneratorExp(expr elt, comprehension* generators)
 
@@ -1175,6 +1219,13 @@ class AstFullTraverser(object):
     #@+node:ekr.20141012064706.18495: *4* ft.Index
     def do_Index(self, node):
         self.visit(node.value)
+    #@+node:ekr.20170721080935.1: *4* ft.JoinedStr (Python 3.6+)
+    # JoinedStr(expr* values)
+
+    def do_JoinedStr(self, node):
+        assert g.isPython3
+        for value in node.values or []:
+            self.visit(value)
     #@+node:ekr.20141012064706.18496: *4* ft.keyword
     # keyword = (identifier arg, expr value)
 
@@ -1270,6 +1321,13 @@ class AstFullTraverser(object):
         # if getattr(node,'asname')
             # self.visit(node.asname)
         pass
+    #@+node:ekr.20170721074528.1: *4* ft.AnnAssign
+    # AnnAssign(expr target, expr annotation, expr? value, int simple)
+
+    def do_AnnAssign(self, node):
+        self.visit(node.target)
+        self.visit(node.annotation)
+        self.visit(node.value)
     #@+node:ekr.20141012064706.18506: *4* ft.Assert
     # Assert(expr test, expr? msg)
 
@@ -1515,7 +1573,12 @@ class AstPatternFormatter(AstFormatter):
         return 'Bool'
 
     def do_Bytes(self, node): # Python 3.x only.
+        assert g.isPython3
         return 'Bytes' # return str(node.s)
+        
+    def do_Constant(self, node): # Python 3.6+ only.
+        assert g.isPython3
+        return 'Constant'
 
     def do_Name(self, node):
         return 'Bool' if node.id in ('True', 'False') else node.id
@@ -1889,6 +1952,18 @@ class HTMLReportTraverser(object):
                 rt.gen(sep)
             rt.clean(sep)
     #@+node:ekr.20150722204300.46: *3* rt.visitors
+    #@+node:ekr.20170721074613.1: *4* rt.AnnAssign
+    # AnnAssign(expr target, expr annotation, expr? value, int simple)
+
+    def do_AnnAssign(rt, node):
+
+        rt.div('statement')
+        rt.visit(node.target)
+        rt.op('=:', leading=True, trailing=True)
+        rt.visit(node.annotation)
+        rt.blank()
+        rt.visit(node.value)
+        rt.end_div('statement')
     #@+node:ekr.20150722204300.49: *4* rt.Assert
     # Assert(expr test, expr? msg)
 
@@ -2063,6 +2138,10 @@ class HTMLReportTraverser(object):
                 rt.blank()
             rt.clean(' ')
         # rt.end_span('collection')
+    #@+node:ekr.20170721073431.1: *4* rt.Constant (Python 3.6+)
+    def do_Constant(self, node): # Python 3.6+ only.
+        assert g.isPython3
+        return str(node.s) # A guess.
     #@+node:ekr.20150722204300.61: *4* rt.Continue
     def do_Continue(rt, node):
 
@@ -2210,6 +2289,18 @@ class HTMLReportTraverser(object):
 
     def do_AsyncFor(rt, node):
         rt.do_For(node, async_flag=True)
+    #@+node:ekr.20170721075845.1: *4* rf.FormattedValue (Python 3.6+: unfinished)
+    # FormattedValue(expr value, int? conversion, expr? format_spec)
+
+    def do_FormattedValue(rt, node): # Python 3.6+ only.
+        assert g.isPython3
+        rt.div('statement')
+        rt.visit(node.value)
+        if node.conversion:
+            rt.visit(node.conversion)
+        if node.format_spec:
+            rt.visit(node.format_spec)
+        rt.end_div('statement')
     #@+node:ekr.20150722204300.69: *4* rt.FunctionDef
     # 2: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
     # 3: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
@@ -2335,6 +2426,13 @@ class HTMLReportTraverser(object):
     def do_Index(rt, node):
 
         rt.visit(node.value)
+    #@+node:ekr.20170721080959.1: *4* rf.JoinedStr (Python 3.6+: unfinished)
+    # JoinedStr(expr* values)
+
+    def do_JoinedStr(rt, node):
+        assert g.isPython3
+        for value in node.values or []:
+            rt.visit(value)
     #@+node:ekr.20150722204300.77: *4* rt.Lambda
     def do_Lambda(rt, node):
 

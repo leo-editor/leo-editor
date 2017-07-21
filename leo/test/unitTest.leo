@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.49" body_secondary_ratio="0.82">
-	<global_window_position top="82" left="446" height="824" width="1373"/>
+	<global_window_position top="82" left="884" height="824" width="935"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -233,7 +233,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -488,6 +488,7 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20111123214629.3941"><vh>@@test unbound Alt-9 key is completely ignored</vh></v>
 </v>
 </v>
+<v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -5513,7 +5514,8 @@ rest text.
 @language python
 def spam():
     # pass
-# after</t>
+# after
+</t>
 <t tx="ekr.20130912092638.4150">@first # -*- coding: utf-16 -*-
 @encoding utf-16
 
@@ -6400,6 +6402,18 @@ else:
 </t>
 <t tx="ekr.20160403152507.1">def eggs(): # line 4
     pass</t>
+<t tx="ekr.20160523094102.1"># Great ast docs: http://greentreesnakes.readthedocs.io/en/latest/nodes.html
+
+import leo.core.leoAst as leoAst
+leoAst.unit_test(raise_on_fail=True)
+
+import leo.external.make_stub_files as msf
+msf.unit_test(raise_on_fail=True)
+
+import leo.external.py2cs as py2cs
+py2cs.unit_test(raise_on_fail=True)
+
+</t>
 <t tx="ekr.20161011092326.7"># ~/at-auto-test.py
 
 # This is valid Python, but it looks like a section reference.
@@ -10673,7 +10687,8 @@ finally:
 def spam():
 #     pass
 
-# after</t>
+# after
+</t>
 <t tx="ekr.20170712134948.1">w = c.frame.body.wrapper
 p = g.findNodeInTree(c,p,'python')
 assert p,'not found: python'
@@ -10714,7 +10729,8 @@ finally:
 def spam():
     pass
 
-# after</t>
+# after
+</t>
 <t tx="ekr.20170712135224.1">w = c.frame.body.wrapper
 p = g.findNodeInTree(c,p,'rest and python')
 assert p,'not found: rest and python'
@@ -10756,7 +10772,8 @@ rest text.
 @language python
 def spam():
     pass
-# after</t>
+# after
+</t>
 <t tx="ekr.20170712140759.1">@language rest
 @wrap
 
