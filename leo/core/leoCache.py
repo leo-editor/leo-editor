@@ -463,6 +463,7 @@ class Cacher(object):
             self.db.conn.commit()
             if close:
                 self.db.conn.close()
+                self.inited = False
 #@+node:ekr.20100208223942.5967: ** class PickleShareDB
 _sentinel = object()
 
