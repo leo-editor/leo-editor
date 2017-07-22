@@ -245,7 +245,7 @@ class BridgeController(object):
         for func in (self.getIDFromSys, self.getIDFromFile, self.getIDFromEnv):
             func()
             if g.app.leoID:
-                return
+                return g.app.leoID
         return g.app.leoID
     #@+node:ekr.20070227094232.1: *5* bridge.getIDFromSys
     def getIDFromSys(self):
