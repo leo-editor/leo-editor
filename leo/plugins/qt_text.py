@@ -819,16 +819,19 @@ class NumberBar(QtWidgets.QFrame):
         # Paint each visible block.
         painter = QtGui.QPainter(self)
         block = d.begin()
-        n = 0
+        n = i = 0
+        c = self.c
+        translation = c.user_dict.get('line_number_translation', [])
         while block.isValid():
+            i = translation[n] if n < len(translation) else n + 1
             n += 1
             top_left = layout.blockBoundingRect(block).topLeft()
             if top_left.y() > page_bottom:
                 break # Outside the visible area.
             bold = block == current_block
-            self.paintBlock(bold, n, painter, top_left, scroll_y)
+            self.paintBlock(bold, i, painter, top_left, scroll_y)
             block = block.next()
-        self.highest_line = n
+        self.highest_line = i
         painter.end()
         QtWidgets.QWidget.paintEvent(self, event)
             # Propagate the event.
