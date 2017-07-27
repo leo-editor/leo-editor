@@ -164,7 +164,7 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
             offset, size = check_line(p, line, st)
             f_lines.append(st + offset)
             st += size
-        f_lines.append(st)
+        f_lines.append(st+1)
         flines_data[pkey(p)] = tuple(f_lines), st
         return st
     #@+node:vitalije.20170726124944.1: *3* check_line
@@ -182,15 +182,17 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
             n = st + 1
             for p1 in p.subtree():
                 n += 1
-                flines = []
-                for x in vlines(p1):
-                    if is_verbatim(x): n+=1
-                    flines.append(n)
-                    n += 1
-                n += 1
-                flines.append(n)
+                if vlines(p1):
+                    flines = []
+                    for x in vlines(p1):
+                        n += 1
+                        if is_verbatim(x): n+=1
+                        flines.append(n)
+                    flines.append(n+1)
+                else:
+                    flines = [n]
                 flines_data[pkey(p1)] = tuple(flines), n
-            return 0, n - st
+            return 1, n - st
         #@+node:vitalije.20170726193920.1: *4* section reference
         m = section_pat.match(line)
         if m:
