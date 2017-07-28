@@ -781,7 +781,7 @@ class SqlitePickleShare(object):
         if not isdir(self.root) and not g.unitTesting:
             self._makedirs(self.root)
         dbfile = ':memory:' if g.unitTesting else join(root, 'cache.sqlite')
-        self.conn = sqlite3.connect(dbfile)
+        self.conn = sqlite3.connect(dbfile, isolation_level=None)
         self.init_dbtables(self.conn)
         self.cache = {}
             # Keys are normalized file names.
