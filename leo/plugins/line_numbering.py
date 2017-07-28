@@ -245,7 +245,7 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
         return tfirst + flines + tlast
     else:
         k = pkey(target_p)
-        return flines_data[k][0]
+        return flines_data.get(k, (tuple(), ))[0]
 #@-others
 #@@language python
 #@@tabwidth -4
