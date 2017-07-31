@@ -33,7 +33,7 @@ isfile = g.os_path_isfile
 join = g.os_path_join
 normcase = g.os_path_normcase
 split = g.os_path_split
-SQLITE = False
+SQLITE = True
 #@+others
 #@+node:ekr.20100208062523.5885: ** class Cacher
 class Cacher(object):
