@@ -831,7 +831,10 @@ class SqlitePickleShare(object):
             for row in self.conn.execute('''select data from cachevalues
                 where key=?''', (key,)):
                 obj = self.loader(row[0])
-        except sqlite3.OperationalError:
+                break
+            else:
+                raise KeyError(key)
+        except sqlite3.Error:
             raise KeyError(key)
         return obj
     #@+node:vitalije.20170716201700.7: *4* __iter__
