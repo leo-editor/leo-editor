@@ -855,7 +855,8 @@ class SqlitePickleShare(object):
             self.conn.execute('''replace into cachevalues(key, data)
                 values(?,?);''', (key, data))
         except sqlite3.OperationalError as e:
-            raise
+            g.es_exception(e)
+
     #@+node:vitalije.20170716201700.10: *3* _makedirs
     def _makedirs(self, fn, mode=0o777):
         trace = False and not g.unitTesting
