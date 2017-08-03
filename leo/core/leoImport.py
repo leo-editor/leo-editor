@@ -749,7 +749,7 @@ class LeoImportCommands(object):
             ext, func and func.__name__, func and func.scanner_name, p.h))
         # Call the scanning function.
         if g.unitTesting:
-            assert func or ext in ('.w', '.xxx'), (ext, p.h)
+            assert func or ext in ('.txt', '.w', '.xxx'), (ext, p.h)
         if func and not c.config.getBool('suppress_import_parsing', default=False):
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')

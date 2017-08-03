@@ -1322,7 +1322,7 @@ class LeoApp(object):
         g.app.cacher = cacher = leoCache.Cacher()
         g.app.db = cacher.initGlobalDB()
     #@+node:ekr.20031218072017.1978: *3* app.setLeoID & helpers
-    def setLeoID(self, verbose=True):
+    def setLeoID(self, useDialog=True, verbose=True):
         '''Get g.app.leoID from various sources.'''
         self.leoID = None
         assert self == g.app
@@ -1335,10 +1335,13 @@ class LeoApp(object):
         for func in table:
             func(verbose)
             if self.leoID:
-                return
-        self.setIdFromDialog()
-        if self.leoID:
-            self.setIDFile()
+                break
+        else:
+            if useDialog:
+                self.setIdFromDialog()
+                if self.leoID:
+                    self.setIDFile()
+        return self.leoID
     #@+node:ekr.20031218072017.1979: *4* app.setIDFromSys
     def setIDFromSys(self, verbose):
         '''

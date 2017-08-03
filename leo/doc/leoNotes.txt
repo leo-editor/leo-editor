@@ -26082,6 +26082,74 @@ def getGitBranchName(path=None, shorthand=True):
         g.es_exception()
         return None
 
+.. @+node:ekr.20070227094232: *3* bridge.getLeoID
+def getLeoID(self):
+    '''
+    Attempt to set g.app.leoApp from various places, but do *not* ever set
+    the leoID.txt file.
+
+    *Warning*: this code is similar to LeoApp.setLeoId, but here
+    self is *not* g.app.
+    '''
+    g = self.g
+    for func in (self.getIDFromSys, self.getIDFromFile, self.getIDFromEnv):
+        func()
+        if g.app.leoID:
+            return g.app.leoID
+    return g.app.leoID
+.. @+node:ekr.20070227094232.1: *4* bridge.getIDFromSys
+def getIDFromSys(self):
+    '''
+    Attempt to set g.app.leoID from sys.leoID.
+
+    This might be set by in Python's sitecustomize.py file.
+    '''
+    import sys
+    g = self.g
+    trace = False and not g.app.silentMode
+    id_ = getattr(sys, "leoID", None)
+    if id_:
+        g.app.leoID = id_
+        if trace: g.red("leoID=", id_, spaces=False)
+.. @+node:ekr.20070227094232.2: *4* bridge.getIDFromFile
+def getIDFromFile(self):
+    '''Attempt to set g.app.leoID from leoID.txt.'''
+    g = self.g
+    trace = False and not g.app.silentMode
+    tag = ".leoID.txt"
+    for theDir in (g.app.homeLeoDir, g.app.globalConfigDir, g.app.loadDir):
+        if not theDir:
+            continue # do *not* use the current directory!
+        fn = g.os_path_join(theDir, tag)
+        try:
+            with open(fn, 'r') as f:
+                s = f.readline().strip()
+            if not s:
+                continue
+            g.app.leoID = s
+            if trace:
+                g.es('leoID=%r (in %s)' % (s, theDir), color='red')
+            else:
+                g.es('leoID=%r' % (s), color='red')
+        except IOError:
+            g.app.leoID = None
+        except Exception:
+            g.app.leoID = None
+            g.error('unexpected exception in app.setLeoID')
+            g.es_exception()
+.. @+node:ekr.20070227094232.3: *4* bridge.getIDFromEnv
+def getIDFromEnv(self):
+    '''Set leoID from environment vars.'''
+    import os
+    g = self.g
+    trace = False and not g.app.silentMode
+    try:
+        id_ = os.getenv('USER') or os.getenv('USERNAME')
+        if id_:
+            if trace: g.red("using os.getenv('USER'):", repr(id_))
+            g.app.leoID = id_
+    except Exception:
+        pass
 .. @-all
 .. @@nosearch
 .. @-leo
