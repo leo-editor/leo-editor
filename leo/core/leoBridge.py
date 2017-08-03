@@ -268,7 +268,7 @@ class BridgeController(object):
         g = self.g
         trace = False and not g.app.silentMode
         tag = ".leoID.txt"
-        for theDir in (g.app.homeDir, g.app.globalConfigDir, g.app.loadDir):
+        for theDir in (g.app.homeLeoDir, g.app.globalConfigDir, g.app.loadDir):
             if not theDir:
                 continue # do *not* use the current directory!
             fn = g.os_path_join(theDir, tag)
@@ -295,7 +295,7 @@ class BridgeController(object):
         g = self.g
         trace = False and not g.app.silentMode
         try:
-            id_ = os.getenv('USER')
+            id_ = os.getenv('USER') or os.getenv('USERNAME')
             if id_:
                 if trace: g.red("using os.getenv('USER'):", repr(id_))
                 g.app.leoID = id_
