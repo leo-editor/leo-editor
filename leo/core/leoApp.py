@@ -1009,6 +1009,10 @@ class LeoApp(object):
         # Leo 5.6: print the signon immediately:
         if not app.silentMode:
             print('')
+            if sys.stdout.encoding.lower() != 'utf-8':
+                print('Note: sys.stdout.encoding is not UTF-8')
+                print('See: https://stackoverflow.com/questions/14109024')
+                print('')
             print(app.signon)
             print(app.signon1)
             print(app.signon2)
