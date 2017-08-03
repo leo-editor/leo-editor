@@ -138,7 +138,8 @@ class BridgeController(object):
         g.app.recentFilesManager = leoApp.RecentFilesManager()
         g.app.loadManager = lm = leoApp.LoadManager()
         g.app.loadManager.computeStandardDirectories()
-        if not self.getLeoID(): return
+        if not self.getLeoID():
+            raise ValueError("unable to set LeoID.")
         g.app.inBridge = True # Added 2007/10/21: support for g.getScript.
         g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
         g.app.config = leoConfig.GlobalConfigManager()
