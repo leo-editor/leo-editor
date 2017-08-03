@@ -26042,7 +26042,7 @@ def create_top_node(self, atAuto, atAutoKind, fileName, parent):
             p.initHeadString(fileName)
         u.afterInsertNode(p, 'Import', undoData)
     return p
-.. @+node:ekr.20170411155558.1: *3* OLD g.getGitBranchName
+.. @+node:ekr.20170411155558.1: *3* OLD g.getGitBranchName (no longer used)
 def getGitBranchName(path=None, shorthand=True):
     '''
     Return the name of leo-editor's git branch.
@@ -26082,7 +26082,7 @@ def getGitBranchName(path=None, shorthand=True):
         g.es_exception()
         return None
 
-.. @+node:ekr.20070227094232: *3* bridge.getLeoID
+.. @+node:ekr.20070227094232: *3* bridge.getLeoID (no longer used)
 def getLeoID(self):
     '''
     Attempt to set g.app.leoApp from various places, but do *not* ever set
