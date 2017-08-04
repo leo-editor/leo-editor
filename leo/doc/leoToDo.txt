@@ -3,16 +3,9 @@
 .. @@language rest
 .. @@wrap
 .. @+all
-.. @+node:ekr.20170308150422.1: ** To do: Leo 5.6
-.. @+node:ekr.20170427115510.1: *3* To do first
-@language rest
-@wrap
-
-.. @+node:ekr.20170618205841.1: *4* #501: Create outline-oriented git diff
-https://github.com/leo-editor/leo-editor/issues/501
-.. @+node:ekr.20170509031503.1: *4* #480: Host Leo's web site on GitHub
-https://github.com/leo-editor/leo-editor/issues/480
-.. @+node:ekr.20170324083526.1: *4* Improve VR plugin
+.. @+node:ekr.20170308150422.1: ** First
+# These should be separate issues.
+.. @+node:ekr.20170324083526.1: *3* Improve VR plugin
 @language rest
 @wrap
 
@@ -21,8 +14,6 @@ https://github.com/leo-editor/leo-editor/issues/480
 2. A new directive, say @rendertree would tell VR to render the node and its subtree.  This makes visible and explicit what would otherwise be a VR option.
 
 3. Support for rendering @language latex.  I am about to up code to render such nodes as plain text rather than the default.  Next, I'll add the actual rendering.
-.. @+node:ekr.20170325055951.1: *4* #414: Add p.drawer, p.results, etc.
-https://github.com/leo-editor/leo-editor/issues/414
 .. @+node:ekr.20170211190548.1: *3* Add org-mode features
 @language rest
 @wrap
