@@ -125,8 +125,11 @@
 </v>
 </v>
 </v>
-</v>
+<v t="ekr.20170804153254.1"><vh>Leo 5.6</vh>
 <v t="ekr.20170411105625.1"><vh>Script: get git branch name using pygit2</vh></v>
+<v t="ekr.20170804153229.1"><vh>script: find non-tracing g.unitTesting</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20061008055616"></t>
@@ -1452,5 +1455,20 @@ head = repo.head
 print(head.name)
 print(head.shorthand)
 </t>
+<t tx="ekr.20170804153229.1">def predicate(p):
+    return any([
+        s.find('g.unitTesting') &gt; -1 and s.find('trace') == -1
+            for s in g.splitLines(p.b)
+        ])
+        
+p = c.cloneFindByPredicate(
+    generator = c.all_unique_positions,
+    predicate = predicate,
+    flatten = True,
+)
+p.h = 'clone-find-predicate: real use of g.unitTesting'
+p.b = '%s nodes' % p.numberOfChildren()
+</t>
+<t tx="ekr.20170804153254.1"></t>
 </tnodes>
 </leo_file>

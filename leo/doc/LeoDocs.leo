@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1544,6 +1544,9 @@
 </v>
 <v t="ekr.20170316061434.1"><vh>Settings and command-line options</vh></v>
 </v>
+<v t="ekr.20170804153108.2"><vh>** Doc: Reload chapter</vh>
+<v t="ekr.20170804153108.3"><vh>Instant reload in Leo</vh></v>
+</v>
 <v t="ekr.20170608071626.1"><vh>Leo 5.6 release notes (in progress)</vh>
 <v t="ekr.20170707034853.2"><vh>major features</vh>
 <v t="ekr.20170707034853.3"><vh>Created a console gui for Leo</vh></v>
@@ -1551,6 +1554,7 @@
 <v t="ekr.20170707034853.5"><vh>Leo switches between git branches properly</vh></v>
 </v>
 <v t="ekr.20170707034853.6"><vh>bugs</vh>
+<v t="ekr.20170804155454.4"><vh>#317: Viewrendered pane loses live-render feature</vh></v>
 <v t="ekr.20170707034853.7"><vh>#385: Leo doesn't remember new headlines after saves</vh></v>
 <v t="ekr.20170707034853.8"><vh>#386: colorize markdown properly</vh></v>
 <v t="ekr.20170707034853.9"><vh>#438: Tree abbreviation placeholders in headlines...</vh></v>
@@ -1558,17 +1562,32 @@
 <v t="ekr.20170707034853.11"><vh>#451: refresh-from-disk selects wrong node</vh></v>
 <v t="ekr.20170707034853.12"><vh>#452: goto-global-lines can fail</vh></v>
 <v t="ekr.20170707034853.13"><vh>#453: Focus jumps to body when expanding abbrev in a headline</vh></v>
+<v t="ekr.20170804153108.154"><vh>#457: wrap around search</vh></v>
 <v t="ekr.20170707034853.14"><vh>#458: Chapters drop-down list is not automatically resized</vh></v>
 <v t="ekr.20170707034853.15"><vh>#459: Missing end-of-line characters at the Log Pane </vh></v>
 <v t="ekr.20170707034853.16"><vh>#466: Moving a node can cause temporary coloring issues</vh></v>
 <v t="ekr.20170707034853.17"><vh>#471: UnicodeDecodeError in writeRecentFilesFileHelper</vh></v>
 <v t="ekr.20170707034853.18"><vh>#472: @clean nodes stopped updating</vh></v>
+<v t="ekr.20170804155454.5"><vh>#473: nav_qt buttons do not reload if file is re-opened</vh></v>
 <v t="ekr.20170707034853.19"><vh>#476: (error in cacher.fileKey)</vh></v>
 <v t="ekr.20170707034853.20"><vh>#479: Preserve brython indentation...</vh></v>
 <v t="ekr.20170707034853.21"><vh>#481: The python importer optionally puts method decorators in headlines</vh></v>
 <v t="ekr.20170707034853.22"><vh>#487: g.IdleTime docstring</vh></v>
 <v t="ekr.20170707034853.23"><vh>#498: --session-restore option fails if no leo.session exists</vh></v>
+<v t="ekr.20170804155454.6"><vh>#505: Leo's read code must be rewritten</vh></v>
 <v t="ekr.20170707034853.24"><vh>#510: Improved how Leo handles settings</vh></v>
+<v t="ekr.20170804153108.184"><vh>#516: Content of find tab can disappear</vh></v>
+<v t="ekr.20170804155454.7"><vh>#516: Content of find tab can disappear</vh></v>
+<v t="ekr.20170804153108.198"><vh>#522: cycle-editor-focus raises ValueError</vh></v>
+<v t="ekr.20170804153108.135"><vh>#526: @persistence doesn't retain tags and links (uA's)</vh></v>
+<v t="ekr.20170804155213.1"><vh>#537: Non-ascii characters in leo.core.commit_timestamp.json crashes Leo</vh>
+<v t="ekr.20170804155213.2"><vh>g.jsonCommitInfo</vh></v>
+<v t="ekr.20170804155213.3"><vh>g.gitInfo</vh></v>
+<v t="ekr.20170804155213.4"><vh>g.toUnicode</vh></v>
+<v t="ekr.20170804155213.5"><vh>app.computeSignon</vh></v>
+<v t="ekr.20170804155213.6"><vh>print test</vh></v>
+</v>
+<v t="ekr.20170804155454.3"><vh>#62: Syntax @color settings don't dereference</vh></v>
 <v t="ekr.20170707034853.25"><vh>Ensure that .leo/.leoRecentFiles.txt is closed</vh></v>
 <v t="ekr.20170707034853.26"><vh>Fixed bug in k.computeInverseBindingDict</vh></v>
 <v t="ekr.20170707034853.27"><vh>Fixed bug in tab completion</vh></v>
@@ -1579,6 +1598,8 @@
 <v t="ekr.20170707034853.32"><vh>The pylint command now warns if pylint has not been installed</vh></v>
 </v>
 <v t="ekr.20170707034853.33"><vh>code</vh>
+<v t="ekr.20170804153108.4"><vh>#505: Leo's read code must be rewritten</vh></v>
+<v t="ekr.20170804153108.166"><vh>#512: unit tests are failing for Terry</vh></v>
 <v t="ekr.20170707034853.34"><vh>Added 'recursive' keyword arg to recursive import API</vh></v>
 <v t="ekr.20170707034853.35"><vh>Added better checks in v.setBodyString &amp; v.setHeadString</vh></v>
 <v t="ekr.20170707034853.36"><vh>Added g.Git functions</vh></v>
@@ -1590,6 +1611,7 @@
 <v t="ekr.20170707034853.42"><vh>Use 'with' statement to simplify code</vh></v>
 </v>
 <v t="ekr.20170707034853.43"><vh>commands</vh>
+<v t="ekr.20170804153108.157"><vh>#495 and #496: jump/push commands</vh></v>
 <v t="ekr.20170707034853.44"><vh>Added edit-recent-files and write-edited-recent-files commands</vh></v>
 <v t="ekr.20170707034853.45"><vh>Added goto-any-clone command</vh></v>
 <v t="ekr.20170707034853.46"><vh>Added listen-to-log and other commands</vh></v>
@@ -1617,6 +1639,7 @@
 <v t="ekr.20170707034853.61"><vh>#448: Add abbreviations for commands</vh></v>
 <v t="ekr.20170707034853.62"><vh>#478: Allow paste-retaining-clones across different .leo files</vh></v>
 <v t="ekr.20170707034853.63"><vh>#484: Improved Windows menu</vh></v>
+<v t="ekr.20170804153108.222"><vh>#531: file timestamps</vh></v>
 <v t="ekr.20170707034853.64"><vh>Added  git branch name to backed-up files</vh></v>
 <v t="ekr.20170707034853.65"><vh>Improved "Write Existing File?" dialog</vh></v>
 <v t="ekr.20170707034853.66"><vh>Improved caching</vh></v>
@@ -1624,18 +1647,21 @@
 <v t="ekr.20170707034853.68"><vh>Indicate branch in Window title</vh></v>
 <v t="ekr.20170707034853.69"><vh>Restored importer;; abbreviation</vh></v>
 <v t="ekr.20170707034853.70"><vh>VR renders LaTex (python 2 only)</vh></v>
+<v t="ekr.20170804155454.10"><vh>#446: Added vr-zoom command</vh></v>
+<v t="ekr.20170804155454.11"><vh>#531: file timestamps</vh></v>
 </v>
 <v t="ekr.20170707034853.74"><vh>settings &amp; command-line arguments</vh>
-<v t="ekr.20170707034853.75"><vh>Added @bool report_unchanged_files</vh></v>
 <v t="ekr.20170707034853.76"><vh>Added --trace-focus command-line argument</vh></v>
+<v t="ekr.20170804155454.9"><vh>Added @bool color_trailing_whitespace &amp; @color trailing_whitespace_color</vh></v>
+<v t="ekr.20170804154716.1"><vh>Added @bool log_show_save_time &amp; @string log_timestamp_format</vh></v>
+<v t="ekr.20170707034853.75"><vh>Added @bool report_unchanged_files</vh></v>
 <v t="ekr.20170707034853.77"><vh>Added @bool run_pyflakes_on_unchanged_files = True</vh></v>
-<v t="ekr.20170707034853.78"><vh>Added ctrl-shift &lt; and &gt; bindings</vh></v>
+<v t="ekr.20170707034853.78"><vh>Added Ctrl-Shift-&lt; and Ctrl-Shift-&gt; bindings</vh></v>
 <v t="ekr.20170707034853.79"><vh>Restored default: @bool check_for_changed_external_files = True</vh></v>
 <v t="ekr.20170707034853.80"><vh>Retired @bool allow_section_references_in_at_auto</vh></v>
 <v t="ekr.20170707034853.72"><vh>screen_capture.py now enabled by default</vh></v>
 </v>
 </v>
-<v t="ekr.20170618113503.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -23501,10 +23527,7 @@ The fix was in find_place_holder. It should not set focus if no placeholder foun
 <t tx="ekr.20170707034853.14">https://github.com/leo-editor/leo-editor/issues/458
 Set a Qt flag in tt.createControl.
 </t>
-<t tx="ekr.20170707034853.15">@language rest
-@wrap
-
-Missing end-of-line characters at the Log Pane
+<t tx="ekr.20170707034853.15">Missing end-of-line characters at the Log Pane
 https://github.com/leo-editor/leo-editor/issues/459
 
 fc.handleNodeConflicts now prints a prominent warning in the log and console
@@ -23517,8 +23540,6 @@ Simplified signon logic and g.pr.
 - Changed (slightly), the log messages in app.writeWaitingLog.
 - Greatly simplified g.pr and codewise variant. They no longer queue messages.
 - Rewrote bridge.getLeoID() and app.setLeoID() without using sections.
-    
-@language python
 </t>
 <t tx="ekr.20170707034853.16">https://github.com/leo-editor/leo-editor/issues/466
 
@@ -23595,6 +23616,12 @@ Rewrote rf.createRecentFiles, rf.readRecentFilesFile and rf.writeRecentFilesFile
 The fix was in xml_i.scan_tag &amp; helper
 </t>
 <t tx="ekr.20170707034853.3">https://github.com/leo-editor/leo-editor/issues/488
+
+https://github.com/leo-editor/leo-editor/issues/504
+console gui: console issues
+
+https://github.com/leo-editor/leo-editor/issues/508
+console gui: print-cmd-docstrings
 </t>
 <t tx="ekr.20170707034853.30">It must return True if g.app.externalFilesController is None.
 </t>
@@ -23875,7 +23902,416 @@ finish-line     Puts the cursor at before the last non-blank character of the li
 The finish-line-extend-selection and start-of-line-extend-selection commands move the cursor and extend the selection range.
 
 The finish-line command could put the cursor after the last non-blank character of the line, but that's pretty much what end-of-line does.</t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170804153108.135">https://github.com/leo-editor/leo-editor/issues/526
+
+Fixed #526 by writing and restoring uA's:
+    
+- fc.compute_attribute_bits writes uA's for @auto nodes.
+- pd.restore_gnx now actually sets gnx's(!)
+
+Other changes:
+- leoAtFile.py: fixed crasher in exception handling.
+- leoFileCommands.py: Refactored code into fc.compute_attribute_bits.
+</t>
+<t tx="ekr.20170804153108.154">https://github.com/leo-editor/leo-editor/issues/457
+Wrap around search now works properly.
+</t>
+<t tx="ekr.20170804153108.157">https://github.com/leo-editor/leo-editor/issues/495
+Leo already supports the point and mark.
+
+https://github.com/leo-editor/leo-editor/issues/496
+
+Added ec.pushCursor and ec.popCursor.
+Added ec.finishOfLine &amp; ec.startOfLine &amp; extend variants.
+Extended ec.moveWithinLineHelper.
+
+beginning of line is before first character in line
+start of line is first nonwhite space text
+finish of line is last nonwhite space text
+end of line is after last character in line
+
+navigating to these points is useful when using speech recognition and is frequently useful when creating macros to operate on text. Jump means you go to the location without remembering where you were. Push means remembering, in a stack, where you were and being able to return to that location with a pop command.
+
+The push/pop model works well with speech recognition becaause you don't have to give explicit navigation commands. You just go back to where you were.
+</t>
+<t tx="ekr.20170804153108.166">https://github.com/leo-editor/leo-editor/issues/512
+</t>
+<t tx="ekr.20170804153108.184">https://github.com/leo-editor/leo-editor/issues/516
+</t>
+<t tx="ekr.20170804153108.198">https://github.com/leo-editor/leo-editor/issues/522
+</t>
+<t tx="ekr.20170804153108.2">@language rest
+@wrap
+
+- Stupendous Aha FAQ.
+- All relevant discussions.
+- Recent post: https://groups.google.com/d/msg/leo-editor/rYF21GxraT4/xwGfOCoYBAAJ
+
+Here are step-by-step instructions for developing code in Leo without having to reload Leo.
+
+tl;dr: Read the summary.  But devs should consider reading all of this carefully ;-)
+
+1. Create a dev node
+
+This node (in the Leo outline) defines your development environment.  This can be an @test node, an @button node, or an @command node. Using a plain outline node would be less convenient because you won't be able to execute it so easily.
+
+The dev script is the script in the dev node itself.  The code under development is the code exercised by the dev script.
+
+This is (by far) the most important step! Once you say to yourself, "Ok, I'm going to be clever and develop my code using the Stupendous Aha", everything else in this post is going to happen naturally.  It may not always be easy, but the programming process itself will lead you to the next action.  Otoh, If you don't create a custom dev environment you will have to reload Leo to test your new code. That will be much slower.
+
+2. Set up your dev node so you can execute it quickly
+
+There are several ways to run your dev script easily:
+
+- Use a marked @test node and use run-marked-unit-tests-locally.
+- Disable or ignore all other @test nodes and then use run-all-unit-tests-locally.
+- Bind a keystroke to an @button or @command node.
+- Run an @button or @command node the first time from the minibuffer, and thereafter re-execute it with Ctrl-P (repeat-complex-command.
+
+Choose any way you like. What matters is being able to run your dev script with a single keystroke.
+
+2. Define or access the code under development
+
+There are two main ways to do this:
+
+A.  Define the code as (possibly cloned) children of the dev node, and access the code using @others in the top-level node.
+
+B. Import a module. Important: typically your dev script will use imp.reload to ensure that imported module is up-to-date.
+
+3. Create new instances of objects
+
+You must not use existing Leo objects when testing Leo code.  This includes all objects accessible via c, g and p, either directly or indirectly.  For example, you must not use c, c.frame, c.frame.body, etc., etc., even if you have reloaded all of Leo's modules!
+
+You can, however, use any Leo code when developing other (unmodified) code. 
+
+You will seldom need to worry about reloading code if you use @others to define the code under test.
+
+4. Run the test, edit, repeat
+
+After creating the dev node you simply run the dev script until everything works :-)  The details depend on the code being developed.  Otoh, we can safely assume that devs can handle problems as they arise.
+
+Summary
+
+@test, @command or @button can be thought of as defining an (almost) pristine dev environment. This is another way of describing the Stupendous Aha.
+
+Dev scripts should create a new, pristine environment every time it they are executed, using imp.reload as needed. Dev scripts should always create new objects for testing.  Dev scripts may use Leo's core objects provided they have not been modified.
+
+SmallTalk does most of this automagically.  However, dev scripts have their own advantages:
+
+- Dev scripts can access code using clones.
+- Dev scripts can use outlines to organize the code under development.
+- Dev scripts form a permanent record of completed work.
+- Dev scripts can morph into unit tests.
+- Dev scripts work for Python!
+
+Dev scripts bring most of the advantages of SmallTalk to Leo. The initial cost of creating dev nodes pays off immediately.
+
+@language python
+</t>
+<t tx="ekr.20170804153108.222">https://github.com/leo-editor/leo-editor/issues/531</t>
+<t tx="ekr.20170804153108.3">@language rest
+@wrap
+
+This post shows how to develop code without reloading or restarting Leo. Some easy setup work may be needed, but this work repays itself many times over.
+
+**Terminology**: A *Leonine Script* is a script in any Leo node, including @test, @button or @command nodes.
+
+The big idea is that Leo executes Leonine scripts in an (almost) pristine environment.
+
+The key idea is very simple
+
+
+
+**Prerequisites.
+
+ It's not always possible to do this, but 
+
+Today, right now, Leo devs and script writers can develop python code *more* easily in Leo than in SmallTalk. This post explains how.
+
+**Overview**
+
+This post shows how it is possible
+
+*tl;dr:* Re-read the first sentence ;-)
+
+This post gathers together various tips and techniques that arescattered throughout Leo's docs and conversations in leo-editor. This post will be pre-writing for an important new chapter in Leo's Users Guide.
+
+
+
+
+**The big picture**
+
+**Background**
+
+"stupendous Aha"
+http://leoeditor.com/FAQ.html#what-is-the-stupendous-aha-and-why-does-it-matter
+
+As I re-read the FAQ entry, I see that it doesn't explain that @test (or @button) can define the code under development/test in a child of the @test/@button node.  This is instant reload.
+
+After the initial development process the code typically migrates to an external file, which makes  instant reload a tad more difficult.  But not much! 
+
+**Instantiating objects**
+
+@test, @button and @command execute scripts in (almost) virgin namespaces.
+
+Within these scripts, simple imports usually suffice. There is no need for imp.reload.
+
+These scripts must instantiate any recently-changed objects. They *can not* use objects accessible from the "c", "g" or "p" pre-defined symbols (already loaded objects).
+
+
+- Reload
+
+**@button vs @test vs @command**
+
+The details of running the various kinds of scripts vary slightly.
+
+@button and @command scripts create corresponding commands, so Ctrl-P (repeat-complex-command) can be used to rerun them. In addition, you can attach key bindings to @button and @command nodes.  Otoh, @test nodes may be more convenient when running multiple tests.
+
+
+
+
+**Summary**
+
+After a bit of preparation, it is *easier* to develop code than in SmallTalk, especially for large scripts because you can organize your scripts using outlines, section references and @others.
+
+The preparation consists of preamble code that instantiates all objects under test. Preamble code will usually need to use imp.reload when importing the code to be tested.
+
+
+Using these techniques, you can write and debug Python code 
+
+The techniques discussed here have some limitations, but when applicable script writers (including devs) can write and debug Puthon code more easily in Leo than in SmallTalk.
+
+</t>
+<t tx="ekr.20170804153108.4">https://github.com/leo-editor/leo-editor/issues/505
+
+The new code eliminates hidden time bombs when switching branches.
+
+Changes to read/write code:
+- at.writeAll writes files at most once.
+- at.write updates cache. Previously only at.read updated the cache!
+- at.deleteUnvisitedNodes no longer creates resurrected nodes.
+- at.new_createThinChild4 *always* updates headlines.
+- at.terminateBody just sets v.tempRoots.
+  It no longer calls at.indicateNodeChanged.
+- fc.handleNodeConflicts reports changed headlines differently.
+
+Changes to cacher code:
+- Added cacher.checkForChangedNodes.
+- Added tempRoots logic.
+- Added always_warn switch to cacher.reportIfNodeChanged.
+</t>
+<t tx="ekr.20170804154716.1">Defaults are::
+
+    @bool log_show_save_time = False
+    @string log_timestamp_format = %H:%M:%S
+</t>
+<t tx="ekr.20170804155213.1">https://github.com/leo-editor/leo-editor/issues/537
+
+See also: How to make Unicode charset in cmd.exe by default?
+https://stackoverflow.com/questions/14109024
+</t>
+<t tx="ekr.20170804155213.2">def jsonCommitInfo():
+    '''
+    return asctime and timestamp from leo/core/commit_timestamp.json.
+    return ('', '') if the file does not exist or is not a valid .json file.
+    '''
+    trace = False and not g.unitTesting
+    import json
+    leo_core_path = g.os_path_dirname(g.os_path_realpath(__file__))
+    json_path = g.os_path_join(leo_core_path, 'commit_timestamp.json')
+    if not g.os_path_exists(json_path):
+        if trace: g.trace('not found', json_path)
+        return '', ''
+    try:
+        info = json.load(open(json_path))
+        if trace: g.trace('returns: asctime: %s timestamp: %s' % (
+            info['asctime'], info['timestamp']))
+        return info['asctime'], info['timestamp']
+    except Exception:
+        g.trace('error loading leo/core/commit_timestamp.json')
+        # g.es_exception()
+        return '', ''
+</t>
+<t tx="ekr.20170804155213.3">def gitInfo(path=None):
+    '''
+    Path is a .git/HEAD directory, or None.
+
+    Return the branch and commit number or ('', '').
+    '''
+    trace = False and not g.unitTesting
+    branch, commit = '', '' # Set defaults.
+    # Does path/../ref exist?
+    path = g.gitHeadPath(path)
+    if not path or not g.os_path_exists(path):
+        if trace: g.trace('no path')
+        return branch, commit
+    try:
+        with open(path) as f:
+            s = f.read()
+            if not s.startswith('ref'):
+                if trace: g.trace('no ref', branch, commit)
+                return branch, commit
+        # On a proper branch
+        pointer = s.split()[1]
+        dirs = pointer.split('/')
+        branch = dirs[-1]
+    except IOError:
+        g.trace('can not open:', path)
+        return branch, commit
+    # Try to get a better commit number.
+    git_dir = g.os_path_finalize_join(path, '..')
+    try:
+        path = g.os_path_finalize_join(git_dir, pointer)
+        with open(path) as f:
+            s = f.read()
+        commit = s.strip()[0: 12]
+        # shorten the hash to a unique shortname
+    except IOError:
+        try:
+            path = g.os_path_finalize_join(git_dir, 'packed-refs')
+            with open(path) as f:
+                for line in f:
+                    if line.strip().endswith(' '+pointer):
+                        commit = line.split()[0][0: 12]
+                        break
+        except IOError:
+            pass
+    if trace: g.trace('returns:', branch, commit)
+    return branch, commit
+</t>
+<t tx="ekr.20170804155213.4">def toUnicode(s, encoding='utf-8', reportErrors=False):
+    '''Connvert a non-unicode string with the given encoding to unicode.'''
+    trace = False and not g.unitTesting
+    if g.isUnicode(s):
+        return s
+    if not encoding:
+        encoding = 'utf-8'
+    # These are the only significant calls to s.decode in Leo.
+    # Tracing these calls directly yields thousands of calls.
+    # Never call g.trace here!
+    try:
+        s = s.decode(encoding, 'strict')
+    except (UnicodeDecodeError, UnicodeError):
+        # https://wiki.python.org/moin/UnicodeDecodeError
+        s = s.decode(encoding, 'replace')
+        if trace or reportErrors:
+            g.trace(g.callers())
+            g.error("toUnicode: Error converting %s... from %s encoding to unicode" % (
+                s[: 200], encoding))
+    except AttributeError:
+        if trace:
+            print('toUnicode: AttributeError!: %s' % s)
+        # May be a QString.
+        s = g.u(s)
+    if trace and encoding == 'cp1252':
+        print('toUnicode: returns %s' % s)
+    return s
+</t>
+<t tx="ekr.20170804155213.5">def computeSignon(self):
+    import leo.core.leoVersion as leoVersion
+    app = self
+    build, date = leoVersion.build, leoVersion.date
+    guiVersion = app.gui.getFullVersion() if app.gui else 'no gui!'
+    leoVer = leoVersion.version
+    n1, n2, n3, junk, junk = sys.version_info
+    if sys.platform.startswith('win'):
+        sysVersion = 'Windows '
+        try:
+            # peckj 20140416: determine true OS architecture
+            # the following code should return the proper architecture
+            # regardless of whether or not the python architecture matches
+            # the OS architecture (i.e. python 32-bit on windows 64-bit will return 64-bit)
+            v = platform.win32_ver()
+            release, winbuild, sp, ptype = v
+            true_platform = os.environ['PROCESSOR_ARCHITECTURE']
+            try:
+                true_platform = os.environ['PROCESSOR_ARCHITEw6432']
+            except KeyError:
+                pass
+            sysVersion = 'Windows %s %s (build %s) %s' % (
+                release, true_platform, winbuild, sp)
+        except Exception:
+            pass
+    else: sysVersion = sys.platform
+    branch, commit = g.gitInfo()
+    if not branch or not commit:
+        app.signon1 = 'Not running from a git repo'
+    else:
+        app.signon1 = 'Git repo info: branch = %s, commit = %s' % (
+            branch, commit)
+    app.signon = 'Leo %s' % leoVer
+    if build:
+        app.signon += ', build '+build
+    if date:
+        app.signon += ', '+date
+    app.signon2 = 'Python %s.%s.%s, %s\n%s' % (
+        n1, n2, n3, guiVersion, sysVersion)
+    # Leo 5.6: print the signon immediately:
+    if not app.silentMode:
+        print('')
+        if sys.stdout.encoding.lower() != 'utf-8':
+            print('Note: sys.stdout.encoding is not UTF-8')
+            print('See: https://stackoverflow.com/questions/14109024')
+            print('')
+        print(app.signon)
+        print(app.signon1)
+        print(app.signon2)
+        print('** isPython3: %s' % g.isPython3)
+        print('** caching %s' % ('enabled' if g.enableDB else 'disabled'))
+        print('')
+</t>
+<t tx="ekr.20170804155213.6"># -*- coding: utf-8 -*-
+# print(u"åäö".encode('utf-8'))
+import sys
+print(sys.stdout.encoding)
+# print("åäö")
+</t>
+<t tx="ekr.20170804155454.10">https://github.com/leo-editor/leo-editor/issues/446
+</t>
+<t tx="ekr.20170804155454.11">https://github.com/leo-editor/leo-editor/issues/531
+
+Added new settings::
+
+    @bool log_show_save_time = False
+    @string log_timestamp_format = "%H%M%S"
+    
+Changed fc.putSavedMessage and at.replaceTargetFileIfDifferent.
+</t>
+<t tx="ekr.20170804155454.3">https://github.com/leo-editor/leo-editor/issues/62
+</t>
+<t tx="ekr.20170804155454.4">https://github.com/leo-editor/leo-editor/issues/317
+</t>
+<t tx="ekr.20170804155454.5">https://github.com/leo-editor/leo-editor/issues/473
+</t>
+<t tx="ekr.20170804155454.6">https://github.com/leo-editor/leo-editor/issues/505
+
+This was the new-read branch.
+
+The new code eliminates hidden time bombs when switching branches.
+
+Changes to read/write code:
+- at.writeAll writes files at most once.
+- at.write updates cache. Previously only at.read updated the cache!
+- at.deleteUnvisitedNodes no longer creates resurrected nodes.
+- at.new_createThinChild4 *always* updates headlines.
+- at.terminateBody just sets v.tempRoots.
+  It no longer calls at.indicateNodeChanged.
+- fc.handleNodeConflicts reports changed headlines differently.
+
+Changes to cacher code:
+- Added cacher.checkForChangedNodes.
+- Added tempRoots logic.
+- Added always_warn switch to cacher.reportIfNodeChanged.
+</t>
+<t tx="ekr.20170804155454.7">https://github.com/leo-editor/leo-editor/issues/516
+
+</t>
+<t tx="ekr.20170804155454.9">Defaults are::
+
+    @bool color_trailing_whitespace = True
+    @color trailing_whitespace_color = red
+</t>
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
