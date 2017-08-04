@@ -946,6 +946,7 @@ class SqlitePickleShare(object):
             args = tuple()
         else:
             sql = "select key from cachevalues where key glob ?;"
+            # pylint: disable=trailing-comma-tuple
             args = globpat,
         for key in self.conn.execute(sql, args):
             yield key
