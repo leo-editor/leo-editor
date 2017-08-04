@@ -104,7 +104,7 @@ class BackgroundProcessManager(object):
             self.start_next() # Start the next process.
         elif trace and trace_inactive:
             self.put_log('%s inactive' % (self.data and self.data.kind or 'all'))
-    #@+node:ekr.20161028063557.1: *4* bm.end
+    #@+node:ekr.20161028063557.1: *4* bpm.end
     def end(self):
         '''End the present process.'''
         # Send the output to the log.
@@ -116,7 +116,7 @@ class BackgroundProcessManager(object):
         except OSError:
             pass
         self.pid = None
-    #@+node:ekr.20161028063800.1: *4* bm.start_next
+    #@+node:ekr.20161028063800.1: *4* bpm.start_next
     def start_next(self):
         '''The previous process has finished. Start the next one.'''
         if self.process_queue:
@@ -155,14 +155,15 @@ class BackgroundProcessManager(object):
         Put a string to the originating log.
         This is not what g.es_print does!
         '''
-        if s.strip():
+        s = s and s.rstrip()
+        if s:
             # Put the message to the originating log pane, if it still exists.
             c = self.data and self.data.c
             if c and c.exists:
-                c.frame.log.put(s)
-                print(s.rstrip())
+                c.frame.log.put(s + '\n')
+                print(s)
             else:
-                g.es_print(s.rstrip())
+                g.es_print(s)
     #@+node:ekr.20161026193609.5: *3* bpm.start_process
     def start_process(self, c, command, kind, fn=None, shell=False):
         '''Start or queue a process described by command and fn.'''
