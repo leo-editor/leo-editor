@@ -545,7 +545,6 @@ class GitDiffController:
             if p.isAnyAtFileNode():
                 fn2 = p.anyAtFileNodeName()
                 if fn2.endswith(fn):
-                    # g.trace('found', fn, p.h)
                     return p
         return None
     #@+node:ekr.20170805075533.4: *3* gdc.get_files
