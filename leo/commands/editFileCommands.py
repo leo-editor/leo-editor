@@ -225,7 +225,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150722080425.1: *3* efc.compareTrees
     def compareTrees(self, p1, p2, tag):
 
-        class Controller:
+        class CompareTreesController:
             #@+others
             #@+node:ekr.20150722080308.2: *4* ct.compare
             def compare(self, d1, d2, p1, p2, root):
@@ -287,7 +287,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
                 return d
             #@-others
 
-        Controller().run(self.c, p1, p2, tag)
+        CompareTreesController().run(self.c, p1, p2, tag)
     #@+node:ekr.20150514063305.363: *3* efc.deleteFile
     @cmd('file-delete')
     def deleteFile(self, event):
@@ -334,6 +334,12 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             filetypes=[("Text", "*.txt"), ("All files", "*")],
             defaultextension=".txt")
         return fn
+    #@+node:ekr.20170805074938.1: *3* efc.gitDiff
+    @cmd('git-diff')
+    def gitDiff(self, event):
+
+        #GitDiffController(self.c, 'HEAD~1', 'HEAD~2').run()
+        GitDiffController(self.c, 'HEAD', 'HEAD~1').run()
     #@+node:ekr.20150514063305.366: *3* efc.insertFile
     @cmd('file-insert')
     def insertFile(self, event):
@@ -498,6 +504,64 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         c.setChanged()
         c.redraw()
         c.bodyWantsFocus()
+    #@-others
+#@+node:ekr.20170805075657.1: ** class GitDiffController
+class GitDiffController:
+    '''A class to do git diffs.'''
+    #@+others
+    #@+node:ekr.20170805075446.1: *3* gdc.__init__
+    def __init__ (self, c, rev1, rev2):
+        '''Ctor for the GitDiffController class.'''
+        self.c = c
+        self.old_dir = g.os_path_abspath('.')
+        self.repo_dir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
+        self.rev1 = rev1
+        self.rev2 = rev2
+    #@+node:ekr.20170805075533.2: *3* gdc.diff_file
+    def diff_file(self, fn):
+        
+        c = self.c
+        command = 'git show %s:%s' % (self.rev2, fn)
+        lines = g.execGitCommand(command, self.repo_dir)
+        # Write p to lines2.
+        at = c.atFileCommands
+        p = self.find_file(fn)
+        if p and p.isAtFileNode():
+            at.write(p, nosentinels=False, toString=True)
+            lines2 = g.splitLines(at.stringOutput.replace('\r',''))
+            diff_list = list(difflib.unified_diff(lines, lines2, self.rev1, self.rev2))
+            g.trace(len(lines), len(lines2), fn)
+            g.printList(diff_list)
+        elif p:
+            g.trace('found', fn)
+        else:
+            g.trace('not found', fn)
+    #@+node:ekr.20170805075533.3: *3* gdc.find_file
+    def find_file(self, fn):
+        '''Return the @<file> node matching fn.'''
+        c = self.c
+        fn = g.os_path_basename(fn)
+        for p in c.all_unique_positions():
+            if p.isAnyAtFileNode():
+                fn2 = p.anyAtFileNodeName()
+                if fn2.endswith(fn):
+                    # g.trace('found', fn, p.h)
+                    return p
+        return None
+    #@+node:ekr.20170805075533.4: *3* gdc.get_files
+    def get_files(self):
+        '''Return a list of changed files.'''
+        command = 'git diff --name-only %s %s' % (self.rev1, self.rev2)
+        return [
+            z.strip() for z in g.execGitCommand(command, self.repo_dir)
+                if z.strip().endswith('.py')
+        ]
+    #@+node:ekr.20170805075533.5: *3* gdc.run
+    def run(self):
+        
+        for fn in self.get_files():
+            self.diff_file(fn)
+        os.chdir(self.old_dir)
     #@-others
 #@-others
 #@-leo
