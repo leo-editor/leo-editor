@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.49" body_secondary_ratio="0.82">
-	<global_window_position top="82" left="884" height="824" width="935"/>
+	<global_window_position top="82" left="884" height="919" width="935"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -233,7 +233,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343071057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -490,7 +490,7 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20170721094522.1"><vh>Me (Python 3.6+)</vh></v>
 <v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
 </v>
-<v t="ekr.20100131171342.5508"><vh>leoBridge</vh>
+<v t="ekr.20100131171342.5508" a="E"><vh>leoBridge</vh>
 <v t="ekr.20100131171342.5509"><vh>@test leoBridge init logic</vh></v>
 </v>
 </vnodes>
@@ -921,7 +921,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="4">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="8,0">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1642,7 +1642,16 @@ if g.app.isExternalUnitTest:
     assert c
     assert c.rootPosition()
 else:
-    self.skipTest('Can not be run locally')
+    import subprocess
+    path = g.os_path_finalize_join(g.app.loadDir,'..','test', 'leo-bridge-test.py')
+    assert g.os_path_exists(path), path
+    command = 'python %s' % path
+    pid = subprocess.Popen(
+        command,
+        shell=False,
+        universal_newlines=True,
+    )
+    pid.communicate()
 </t>
 <t tx="ekr.20100731163237.5782">@language html
 
