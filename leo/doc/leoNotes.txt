@@ -25905,17 +25905,6 @@ except Exception:
     lines = traceback.format_exception(typ, val, tb)
     print(lines)
     
-.. @+node:ekr.20170805075533.3: *3* OLD gdc.find_file
-def find_file(self, fn):
-    '''Return the @<file> node matching fn.'''
-    c = self.c
-    fn = g.os_path_basename(fn)
-    for p in c.all_unique_positions():
-        if p.isAnyAtFileNode():
-            fn2 = p.anyAtFileNodeName()
-            if fn2.endswith(fn):
-                return p
-    return None
 .. @+node:ekr.20170806040830.1: *3* OLD gdc.diff_file
 def diff_file(self, fn):
     
