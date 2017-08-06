@@ -591,17 +591,17 @@ class GitDiffController:
         
         c = self.c
         files = self.get_files()
-        if not files:
+        if files:
+            self.root = self.create_root()
+            for fn in files:
+                self.diff_file(fn)
+            os.chdir(self.old_dir)
+            c.contractAllHeadlines()
+            self.root.expand()
+            c.selectPosition(self.root)
+            c.redraw()
+        else:
             g.es_print('empty git diff')
-            return
-        self.root = self.create_root()
-        for fn in files:
-            self.diff_file(fn)
-        os.chdir(self.old_dir)
-        c.contractAllHeadlines()
-        self.root.expand()
-        c.selectPosition(self.root)
-        c.redraw()
     #@-others
 #@-others
 #@-leo
