@@ -335,11 +335,12 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             defaultextension=".txt")
         return fn
     #@+node:ekr.20170805074938.1: *3* efc.gitDiff
-    @cmd('git-diff')
-    def gitDiff(self, event):
-
-        #GitDiffController(self.c, 'HEAD~1', 'HEAD~2').run()
-        GitDiffController(self.c, 'HEAD', 'HEAD~1').run()
+    if 0: # Not ready yet.
+        @cmd('git-diff')
+        def gitDiff(self, event):
+        
+            #GitDiffController(self.c, 'HEAD~1', 'HEAD~2').run()
+            GitDiffController(self.c, 'HEAD', 'HEAD~1').run()
     #@+node:ekr.20150514063305.366: *3* efc.insertFile
     @cmd('file-insert')
     def insertFile(self, event):
@@ -506,7 +507,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         c.bodyWantsFocus()
     #@-others
 #@+node:ekr.20170805075657.1: ** class GitDiffController
-class GitDiffController:
+class GitDiffController: # changed.
     '''A class to do git diffs.'''
     #@+others
     #@+node:ekr.20170805075446.1: *3* gdc.__init__
@@ -517,50 +518,79 @@ class GitDiffController:
         self.repo_dir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
         self.rev1 = rev1
         self.rev2 = rev2
+        self.root = None
+    #@+node:ekr.20170806041009.1: *3* gdc.create_root
+    def create_root(self):
+        
+        c = self.c
+        p = c.lastTopLevel().insertAfter()
+        if self.rev1 and self.rev2:
+            p.h = 'git diff %s %s' % (self.rev1, self.rev2)
+        else:
+            p.h = 'git diff'
+        p.b = '@language diff\n'
+            # No such colorizer at present.
+        return p
     #@+node:ekr.20170805075533.2: *3* gdc.diff_file
     def diff_file(self, fn):
         
-        c = self.c
-        command = 'git show %s:%s' % (self.rev2, fn)
-        lines = g.execGitCommand(command, self.repo_dir)
-        # Write p to lines2.
-        at = c.atFileCommands
-        p = self.find_file(fn)
-        if p and p.isAtFileNode():
-            at.write(p, nosentinels=False, toString=True)
-            lines2 = g.splitLines(at.stringOutput.replace('\r',''))
-            diff_list = list(difflib.unified_diff(lines, lines2, self.rev1, self.rev2))
+        trace = False and not g.unitTesting
+        lines = self.get_rev(self.rev1, fn)
+        lines2 = self.get_rev(self.rev2, fn)
+        diff_list = list(difflib.unified_diff(
+            lines,
+            lines2,
+            self.rev1 or 'uncommitted',
+            self.rev2 or 'uncommitted',
+        ))
+        if trace:
             g.trace(len(lines), len(lines2), fn)
             g.printList(diff_list)
-        elif p:
-            g.trace('found', fn)
-        else:
-            g.trace('not found', fn)
-    #@+node:ekr.20170805075533.3: *3* gdc.find_file
-    def find_file(self, fn):
-        '''Return the @<file> node matching fn.'''
-        c = self.c
-        fn = g.os_path_basename(fn)
-        for p in c.all_unique_positions():
-            if p.isAnyAtFileNode():
-                fn2 = p.anyAtFileNodeName()
-                if fn2.endswith(fn):
-                    return p
-        return None
+        self.root.b = '%sFile: %s\n%s' % (
+            self.root.b, fn, ''.join(diff_list))
     #@+node:ekr.20170805075533.4: *3* gdc.get_files
     def get_files(self):
         '''Return a list of changed files.'''
-        command = 'git diff --name-only %s %s' % (self.rev1, self.rev2)
-        return [
+        if self.rev1 and self.rev2:
+            command = 'git diff --name-only %s %s' % (self.rev1, self.rev2)
+            
+        else:
+            command = 'git diff --name-only'
+        files = [
             z.strip() for z in g.execGitCommand(command, self.repo_dir)
                 if z.strip().endswith('.py')
         ]
+        g.printList(files)
+        return files
+    #@+node:ekr.20170806035215.1: *3* gdc.get_rev
+    def get_rev(self, rev, fn):
+        '''Get the file from the given rev, or the working directory if None.'''
+        if rev:
+            command = 'git show %s:%s' % (rev, fn)
+            lines = g.execGitCommand(command, self.repo_dir)
+        else:
+            # Get the file from the working directory.
+            path = g.os_path_finalize_join(self.repo_dir, fn)
+            if g.os_path_exists(path):
+                with open(path, 'r') as f:
+                    s = f.read().replace('\r','')
+                    s = g.toUnicode(s)
+                    lines = g.splitLines(s)
+            else:
+                g.trace('not found:', path)
+                lines = []
+        return lines
     #@+node:ekr.20170805075533.5: *3* gdc.run
     def run(self):
         
+        c = self.c
+        self.root = self.create_root()
         for fn in self.get_files():
             self.diff_file(fn)
         os.chdir(self.old_dir)
+        c.contractAllHeadlines()
+        c.selectPosition(self.root)
+        c.redraw()
     #@-others
 #@-others
 #@-leo
