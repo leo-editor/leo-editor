@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20170806094317.2: * @file ../commands/editFileCommands.py
+#@+node:ekr.20170806095021.1: * @file ../commands/editFileCommands.py
 #@@first
 '''Leo's file-editing commands.'''
 #@+<< imports >>
@@ -628,41 +628,21 @@ class GitDiffController:
     def make_outline(self, fileName, lines, rev):
         '''Create a temp outline from lines.'''
         # A specialized version of atFileCommands.read.
-        c = self.c
-        at = c.atFileCommands
-        fromString = ''.join(lines)
+        at = self.c.atFileCommands
         root = self.file_node.insertAsLastChild()
         root.h = fileName + ':' + rev if rev else fileName
         at.initReadIvars(root, fileName, importFileName=None, atShadow=None)
-        at.fromString = fromString
-        if at.errors:
-            g.trace('init error')
+        at.fromString = ''.join(lines)
+        if at.errors > 0:
             return None
-        # From at.openFileForReading
-        at.inputFile = g.FileLikeObject(fromString=fromString)
-        at.initReadLine(fromString)
-        ###
-            # root.clearVisitedInTree()
-            # at.scanAllDirectives(root, importing=at.importing, reading=True)
-                # # Sets the following ivars:
-                    # # at.default_directory
-                    # # at.encoding: **changed later** by readOpenFile/at.scanHeader.
-                    # # at.explicitLineEnding
-                    # # at.language
-                    # # at.output_newline
-                    # # at.page_width
-                    # # at.tab_width
+        at.inputFile = g.FileLikeObject(fromString=at.fromString)
+        at.initReadLine(at.fromString)
         at.readOpenFile(root, fileName, deleteNodes=True)
-            # Calls at.scanHeader, which sets at.encoding.
         at.inputFile.close()
         root.clearDirty()
         if at.errors == 0:
             at.deleteUnvisitedNodes(root)
             at.deleteTnodeList(root)
-        ###
-            # if at.errors == 0 and not at.importing:
-                # # Used by mod_labels plugin.
-                # at.readPostPass(root, thinFile)
         at.deleteAllTempBodyStrings()
         return root
     #@+node:ekr.20170806094320.12: *3* gdc.run
