@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20170806132107.50: * @file ../commands/editFileCommands.py
+#@+node:ekr.20170806184759.2: * @file ../commands/editFileCommands.py
 #@@first
 '''Leo's file-editing commands.'''
 #@+<< imports >>
@@ -8,6 +8,7 @@
 import difflib
 import os
 import leo.core.leoGlobals as g
+import leo.core.leoNodes as leoNodes
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 #@-<< imports >>
 
@@ -549,10 +550,10 @@ class GitDiffController:
         if c.looksLikeDerivedFile(fn):
             p1 = self.make_outline(fn, lines, self.rev1)
             p2 = self.make_outline(fn, lines2, self.rev2)
-            self.make_diff_outlines(fn, p1, p2)
             # Reallocate (cut/paste) in reverse order, to preserve positions.
-            self.reallocate_gnxs(fn, p2)
-            self.reallocate_gnxs(fn, p1)
+            p2 = self.reallocate_gnxs(fn, p2)
+            p1 = self.reallocate_gnxs(fn, p1)
+            self.make_diff_outlines(fn, p1, p2)
     #@+node:ekr.20170806094321.1: *4* gdc.create_file_node
     def create_file_node(self, diff_list, fn):
 
@@ -596,8 +597,10 @@ class GitDiffController:
         at.initReadLine(at.fromString)
         at.readOpenFile(root, fn, deleteNodes=True)
         at.inputFile.close()
+        # Special case the root node.
+        root.b = ''.join(getattr(root.v, 'tempBodyList', []))
         # root.clearDirty()
-        if at.errors == 0:
+        if True: ### at.errors == 0:
             at.deleteUnvisitedNodes(root, redraw=False)
             at.deleteTnodeList(root)
         at.deleteAllTempBodyStrings()
@@ -607,9 +610,8 @@ class GitDiffController:
         '''
         Paste an outline into the present outline from the s.
         Nodes do *not* retain their original identify.
+        Similar to fc.getLeoOutlineFromClipboard
         '''
-        # From fc.getLeoOutlineFromClipboard
-        import leo.core.leoNodes as leoNodes
         c, fc = self.c, self.c.fileCommands
         parent = self.file_node
         fc.initReadIvars()
@@ -694,15 +696,7 @@ class GitDiffController:
         # Do *not* paste to the clipboard.  It causes a flash.
         s = c.fileCommands.putLeoOutline()
         root.doDelete(root.parent())
-        self.paste_outline(fn, s)
-            # c.pasteOutline(
-                # event=None,
-                # reassignIndices=True,
-                # redrawFlag=False,
-                # s=s, # Important: prevents flash.
-                # tempOutline=True, # Suppresses outline check
-                # undoFlag=False,
-            # )
+        return self.paste_outline(fn, s)
     #@+node:ekr.20170806094320.7: *3* gdc.find_file (not used yet)
     def find_file(self, fn):
         '''Return the @<file> node matching fn.'''
@@ -747,6 +741,7 @@ class GitDiffController:
         os.chdir(self.old_dir)
         c.contractAllHeadlines(redrawFlag=False)
         self.root.expand()
+        # Not sure why both these are needed.
         c.selectPosition(self.root, enableRedrawFlag=False)
         c.redraw()
     #@+node:ekr.20170806094320.9: *4* gdc.get_files
