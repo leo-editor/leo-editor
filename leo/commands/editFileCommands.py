@@ -510,7 +510,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
 class GitDiffController:
     '''A class to do git diffs.'''
     #@+others
-    #@+node:ekr.20170806094320.4: *3* gdc.__init__
+    #@+node:ekr.20170806094320.4: *3* gdc.__init__ & helper
     def __init__ (self, c, rev1=None, rev2=None):
         '''Ctor for the GitDiffController class.'''
         self.c = c
@@ -520,32 +520,22 @@ class GitDiffController:
         self.rev1 = rev1
         self.rev2 = rev2
         self.root = None
-    #@+node:ekr.20170806094321.1: *3* gdc.create_file_node
-    def create_file_node(self, diff_list, fn):
-
-        p = self.root.insertAsLastChild()
-        p.h = fn.strip()
-        p.b = ''.join(diff_list)
-        return p
-    #@+node:ekr.20170806094320.18: *3* gdc.create_root
-    def create_root(self):
-        
-        c = self.c
-        p = c.lastTopLevel().insertAfter()
-        if self.rev1 and self.rev2:
-            p.h = 'git diff %s %s' % (self.rev1, self.rev2)
-        else:
-            p.h = 'git diff'
-        # p.b = '@language diff\n'
-            # No such colorizer at present.
-        return p
-    #@+node:ekr.20170806094320.6: *3* gdc.diff_file
+    #@+node:ekr.20170806094321.3: *4* gdc.find_git_working_directory
+    def find_git_working_directory(self):
+        '''Return the git working directory.'''
+        path = g.os_path_abspath('.')
+        while path:
+            if g.os_path_exists(g.os_path_finalize_join(path, '.git')):
+                return path
+            path = g.os_path_finalize_join(path, '..')
+        return None
+    #@+node:ekr.20170806094320.6: *3* gdc.diff_file & helpers
     def diff_file(self, fn):
         
         trace = False and not g.unitTesting
         c = self.c
-        lines = self.get_rev(self.rev1, fn)
-        lines2 = self.get_rev(self.rev2, fn)
+        lines = self.get_lines_from_rev(self.rev1, fn)
+        lines2 = self.get_lines_from_rev(self.rev2, fn)
         diff_list = list(difflib.unified_diff(
             lines,
             lines2,
@@ -558,56 +548,19 @@ class GitDiffController:
         self.file_node = self.create_file_node(diff_list, fn)
         if c.looksLikeDerivedFile(fn):
             p1 = self.make_outline(fn, lines, self.rev1)
-            if not p1: return
             p2 = self.make_outline(fn, lines2, self.rev2)
-            if not p2: return
-            ### To do: compare the outlines.
-        
-    #@+node:ekr.20170806094320.7: *3* gdc.find_file
-    def find_file(self, fn):
-        '''Return the @<file> node matching fn.'''
-        c = self.c
-        fn = g.os_path_basename(fn)
-        for p in c.all_unique_positions():
-            if p.isAnyAtFileNode():
-                fn2 = p.anyAtFileNodeName()
-                if fn2.endswith(fn):
-                    return p
-        return None
-    #@+node:ekr.20170806094321.3: *3* gdc.find_git_working_directory
-    def find_git_working_directory(self):
-        '''Return the git working directory.'''
-        path = g.os_path_abspath('.')
-        while path:
-            if g.os_path_exists(g.os_path_finalize_join(path, '.git')):
-                return path
-            path = g.os_path_finalize_join(path, '..')
-        return None
-    #@+node:ekr.20170806094321.5: *3* gdc.finish
-    def finish(self):
-        '''Finish execution of this command.'''
-        c = self.c
-        os.chdir(self.old_dir)
-        c.contractAllHeadlines()
-        self.root.expand()
-        c.selectPosition(self.root)
-        c.redraw()
-    #@+node:ekr.20170806094320.9: *3* gdc.get_files
-    def get_files(self):
-        '''Return a list of changed files.'''
-        if self.rev1 and self.rev2:
-            command = 'git diff --name-only %s %s' % (self.rev1, self.rev2)
-            
-        else:
-            command = 'git diff --name-only'
-        files = [
-            z.strip() for z in g.execGitCommand(command, self.repo_dir)
-                if z.strip().endswith('.py')
-        ]
-        # g.printList(files)
-        return files
-    #@+node:ekr.20170806094320.15: *3* gdc.get_rev
-    def get_rev(self, rev, fn):
+            self.make_diff_outlines(fn, p1, p2)
+            self.reallocate_gnxs(p1)
+            self.reallocate_gnxs(p2)
+    #@+node:ekr.20170806094321.1: *4* gdc.create_file_node
+    def create_file_node(self, diff_list, fn):
+
+        p = self.root.insertAsLastChild()
+        p.h = fn.strip()
+        p.b = ''.join(diff_list)
+        return p
+    #@+node:ekr.20170806094320.15: *4* gdc.get_lines_from_rev
+    def get_lines_from_rev(self, rev, fn):
         '''Get the file from the given rev, or the working directory if None.'''
         if rev:
             command = 'git show %s:%s' % (rev, fn)
@@ -624,20 +577,23 @@ class GitDiffController:
                 g.trace('not found:', path)
                 lines = []
         return lines
-    #@+node:ekr.20170806094321.7: *3* gdc.make_outline
-    def make_outline(self, fileName, lines, rev):
+    #@+node:ekr.20170806125535.1: *4* gdc.make_diff_outlines
+    def make_diff_outlines(self, fn, p1, p2):
+        '''Create an outline-oriented diff from the outlines at p1 and p2.'''
+    #@+node:ekr.20170806094321.7: *4* gdc.make_outline
+    def make_outline(self, fn, lines, rev):
         '''Create a temp outline from lines.'''
         # A specialized version of atFileCommands.read.
         at = self.c.atFileCommands
         root = self.file_node.insertAsLastChild()
-        root.h = fileName + ':' + rev if rev else fileName
-        at.initReadIvars(root, fileName, importFileName=None, atShadow=None)
+        root.h = fn + ':' + rev if rev else fn
+        at.initReadIvars(root, fn, importFileName=None, atShadow=None)
         at.fromString = ''.join(lines)
         if at.errors > 0:
             return None
         at.inputFile = g.FileLikeObject(fromString=at.fromString)
         at.initReadLine(at.fromString)
-        at.readOpenFile(root, fileName, deleteNodes=True)
+        at.readOpenFile(root, fn, deleteNodes=True)
         at.inputFile.close()
         root.clearDirty()
         if at.errors == 0:
@@ -645,7 +601,21 @@ class GitDiffController:
             at.deleteTnodeList(root)
         at.deleteAllTempBodyStrings()
         return root
-    #@+node:ekr.20170806094320.12: *3* gdc.run
+    #@+node:ekr.20170806125830.1: *4* gdc.reallocate_gnxs
+    def reallocate_gnxs(self, root):
+        '''Reallocate the probably duplicated gnx's in root's tree.'''
+    #@+node:ekr.20170806094320.7: *3* gdc.find_file (not used yet)
+    def find_file(self, fn):
+        '''Return the @<file> node matching fn.'''
+        c = self.c
+        fn = g.os_path_basename(fn)
+        for p in c.all_unique_positions():
+            if p.isAnyAtFileNode():
+                fn2 = p.anyAtFileNodeName()
+                if fn2.endswith(fn):
+                    return p
+        return None
+    #@+node:ekr.20170806094320.12: *3* gdc.run & helpers
     def run(self):
         '''The main line of the git diff command.'''
         c = self.c
@@ -661,6 +631,41 @@ class GitDiffController:
                 g.es_print('empty git diff')
         else:
             g.es_print('no git repo found in', g.os_path_abspath('.'))
+    #@+node:ekr.20170806094320.18: *4* gdc.create_root
+    def create_root(self):
+        
+        c = self.c
+        p = c.lastTopLevel().insertAfter()
+        if self.rev1 and self.rev2:
+            p.h = 'git diff %s %s' % (self.rev1, self.rev2)
+        else:
+            p.h = 'git diff'
+        # p.b = '@language diff\n'
+            # No such colorizer at present.
+        return p
+    #@+node:ekr.20170806094321.5: *4* gdc.finish
+    def finish(self):
+        '''Finish execution of this command.'''
+        c = self.c
+        os.chdir(self.old_dir)
+        c.contractAllHeadlines()
+        self.root.expand()
+        c.selectPosition(self.root)
+        c.redraw()
+    #@+node:ekr.20170806094320.9: *4* gdc.get_files
+    def get_files(self):
+        '''Return a list of changed files.'''
+        if self.rev1 and self.rev2:
+            command = 'git diff --name-only %s %s' % (self.rev1, self.rev2)
+            
+        else:
+            command = 'git diff --name-only'
+        files = [
+            z.strip() for z in g.execGitCommand(command, self.repo_dir)
+                if z.strip().endswith('.py')
+        ]
+        # g.printList(files)
+        return files
     #@-others
 #@-others
 #@-leo

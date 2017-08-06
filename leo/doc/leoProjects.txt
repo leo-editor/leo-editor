@@ -4,7 +4,7 @@
 .. @+node:ekr.20170619165453.1: ** Branch: string-gui
 Attempt to run all unit tests without using Qt gui code.
 All gui-related code will be simulated with the StringTextWrapper class.
-.. @+node:ekr.20170806095521.1: ** @command git-diff
+.. @+node:ekr.20170806095521.1: ** @@command git-diff
 @language python
 g.cls()
 import difflib
