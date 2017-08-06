@@ -507,11 +507,11 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         c.bodyWantsFocus()
     #@-others
 #@+node:ekr.20170805075657.1: ** class GitDiffController
-class GitDiffController: # changed.
+class GitDiffController:
     '''A class to do git diffs.'''
     #@+others
     #@+node:ekr.20170805075446.1: *3* gdc.__init__
-    def __init__ (self, c, rev1, rev2):
+    def __init__ (self, c, rev1=None, rev2=None):
         '''Ctor for the GitDiffController class.'''
         self.c = c
         self.old_dir = g.os_path_abspath('.')
@@ -528,8 +528,15 @@ class GitDiffController: # changed.
             p.h = 'git diff %s %s' % (self.rev1, self.rev2)
         else:
             p.h = 'git diff'
-        p.b = '@language diff\n'
+        # p.b = '@language diff\n'
             # No such colorizer at present.
+        return p
+    #@+node:ekr.20170806043941.1: *3* gdc.create_file_node
+    def create_file_node(self, diff_list, fn):
+
+        p = self.root.insertAsLastChild()
+        p.h = fn.strip()
+        p.b = ''.join(diff_list)
         return p
     #@+node:ekr.20170805075533.2: *3* gdc.diff_file
     def diff_file(self, fn):
@@ -546,8 +553,7 @@ class GitDiffController: # changed.
         if trace:
             g.trace(len(lines), len(lines2), fn)
             g.printList(diff_list)
-        self.root.b = '%sFile: %s\n%s' % (
-            self.root.b, fn, ''.join(diff_list))
+        self.create_file_node(diff_list, fn)
     #@+node:ekr.20170805075533.4: *3* gdc.get_files
     def get_files(self):
         '''Return a list of changed files.'''
@@ -560,7 +566,7 @@ class GitDiffController: # changed.
             z.strip() for z in g.execGitCommand(command, self.repo_dir)
                 if z.strip().endswith('.py')
         ]
-        g.printList(files)
+        # g.printList(files)
         return files
     #@+node:ekr.20170806035215.1: *3* gdc.get_rev
     def get_rev(self, rev, fn):
@@ -589,6 +595,7 @@ class GitDiffController: # changed.
             self.diff_file(fn)
         os.chdir(self.old_dir)
         c.contractAllHeadlines()
+        self.root.expand()
         c.selectPosition(self.root)
         c.redraw()
     #@-others
