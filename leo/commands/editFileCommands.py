@@ -590,8 +590,12 @@ class GitDiffController:
     def run(self):
         
         c = self.c
+        files = self.get_files()
+        if not files:
+            g.es_print('empty git diff')
+            return
         self.root = self.create_root()
-        for fn in self.get_files():
+        for fn in files:
             self.diff_file(fn)
         os.chdir(self.old_dir)
         c.contractAllHeadlines()
