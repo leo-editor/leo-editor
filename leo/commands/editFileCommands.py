@@ -551,9 +551,8 @@ class GitDiffController:
             p2 = self.make_outline(fn, lines2, self.rev2)
             self.make_diff_outlines(fn, p1, p2)
             # Reallocate (cut/paste) in reverse order, to preserve positions.
-            if 1:
-                self.reallocate_gnxs(p2)
-                self.reallocate_gnxs(p1)
+            self.reallocate_gnxs(fn, p2)
+            self.reallocate_gnxs(fn, p1)
     #@+node:ekr.20170806094321.1: *4* gdc.create_file_node
     def create_file_node(self, diff_list, fn):
 
@@ -604,73 +603,57 @@ class GitDiffController:
         at.deleteAllTempBodyStrings()
         return root
     #@+node:ekr.20170806142044.1: *4* gdc.paste_outline
-    def paste_outline(self, s):
+    def paste_outline(self, fn, s):
         '''
         Paste an outline into the present outline from the s.
         Nodes do *not* retain their original identify.
         '''
-        c = self.c
-        ###
-            # c.endEditing()
-            # if not s or not c.canPasteOutline(s):
-                # return # This should never happen.
-            # isLeo = g.match(s, 0, g.app.prolog_prefix_string)
-            # vnodeInfoDict = c.computeVnodeInfoDict() if pasteAsClone else {}
-        # create a *position* to be pasted.
-        
-        ###
-            # if isLeo:
-                # pasted = c.fileCommands.getLeoOutlineFromClipboard(s, reassignIndices, tempOutline)
-            # if not pasted:
-                # # 2016/10/06:
-                # # We no longer support pasting MORE outlines. Use import-MORE-files instead.
-                # return None
-            # if pasteAsClone:
-                # copiedBunchList = c.computeCopiedBunchList(pasted, vnodeInfoDict)
-            # else:
-                # copiedBunchList = []
-            # if undoFlag:
-                # undoData = c.undoer.beforeInsertNode(c.p,
-                    # pasteAsClone=pasteAsClone, copiedBunchList=copiedBunchList)
+        # From fc.getLeoOutlineFromClipboard
+        import leo.core.leoNodes as leoNodes
+        c, fc = self.c, self.c.fileCommands
+        parent = self.file_node
+        fc.initReadIvars()
+        # Save...
+        children = c.hiddenRootNode.children
+        oldGnxDict = fc.gnxDict
+        fc.gnxDict = {}
         try:
-            cc = c.chapterController
-            if cc: cc.selectChapterLockout = True
-            pasted = c.fileCommands.getLeoOutlineFromClipboard(
-                s,
+            fc.usingClipboard = True
+            # This encoding must match the encoding used in putLeoOutline.
+            s = g.toEncodedString(s, fc.leo_file_encoding, reportErrors=True)
+            # readSaxFile modifies the hidden root.
+            v = fc.readSaxFile(
+                theFile=None,
+                fileName=fn,
+                silent=True, # don't tell about stylesheet elements.
+                inClipboard=True,
                 reassignIndices=True,
-                tempOutline=True,
-            )
+                s=s)
+            if not v:
+                g.es("invalid external file", color="blue")
+                return None
         finally:
-            if cc: cc.selectChapterLockout = False
-        
+            fc.usingClipboard = False
+        # Restore...
+        c.hiddenRootNode.children = children
+        # Unlink v from the hidden root.
+        v.parents.remove(c.hiddenRootNode)
+        p = leoNodes.Position(v)
+        n = parent.numberOfChildren()
+        p._linkAsNthChild(parent, n, adjust=False)
+            # Do *not* adjust links when linking v.
+            # The read code has already done that.
+        # Reassign indices.
+        fc.gnxDict = oldGnxDict
+        ni = g.app.nodeIndices
+        for p2 in p.self_and_subtree():
+            ni.getNewIndex(p2.v)
+        # Clean up.
+        fc.initReadIvars()
         c.validateOutline()
-        ###
-            # if not tempOutline:
-                # # Fix #427: Don't check for duplicate vnodes.
-                # c.checkOutline()
-        ### c.selectPosition(pasted, redrawFlag=False)
-        c.setCurrentPosition(pasted)
-        ### pasted.setDirty()
-        ### c.setChanged(True, redrawFlag=False)
-        # paste as first child if back is expanded.
-        back = pasted.back()
-        if back and back.hasChildren() and back.isExpanded():
-            # 2011/06/21: fixed hanger: test back.hasChildren().
-            pasted.moveToNthChildOf(back, 0)
-        ###
-            # if pasteAsClone:
-                # # Set dirty bits for ancestors of *all* pasted nodes.
-                # # Note: the setDescendentsDirty flag does not do what we want.
-                # for p in pasted.self_and_subtree():
-                    # p.setAllAncestorAtFileNodesDirty(
-                        # setDescendentsDirty=False)
-        ###
-            # if undoFlag:
-                # c.undoer.afterInsertNode(pasted, undoType, undoData)
-            # if redrawFlag:
-                # c.redraw(pasted)
-                # c.recolor()
-        return pasted
+        c.setCurrentPosition(p)
+            # c.selectPosition causes flash(!)
+        return p
     #@+node:ekr.20170806142044.2: *5* c.computeVnodeInfoDict
     #@+at
     # 
@@ -703,7 +686,7 @@ class GitDiffController:
                 aList.append(bunch)
         return aList
     #@+node:ekr.20170806125830.1: *4* gdc.reallocate_gnxs
-    def reallocate_gnxs(self, root):
+    def reallocate_gnxs(self, fn, root):
         '''Reallocate the probably duplicated gnx's in root's tree.'''
         c = self.c
         c.setCurrentPosition(root)
@@ -711,7 +694,7 @@ class GitDiffController:
         # Do *not* paste to the clipboard.  It causes a flash.
         s = c.fileCommands.putLeoOutline()
         root.doDelete(root.parent())
-        self.paste_outline(s)
+        self.paste_outline(fn, s)
             # c.pasteOutline(
                 # event=None,
                 # reassignIndices=True,
