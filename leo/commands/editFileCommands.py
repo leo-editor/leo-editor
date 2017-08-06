@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20170806095021.1: * @file ../commands/editFileCommands.py
+#@+node:ekr.20170806132107.50: * @file ../commands/editFileCommands.py
 #@@first
 '''Leo's file-editing commands.'''
 #@+<< imports >>
@@ -550,8 +550,10 @@ class GitDiffController:
             p1 = self.make_outline(fn, lines, self.rev1)
             p2 = self.make_outline(fn, lines2, self.rev2)
             self.make_diff_outlines(fn, p1, p2)
-            self.reallocate_gnxs(p1)
-            self.reallocate_gnxs(p2)
+            # Reallocate (cut/paste) in reverse order, to preserve positions.
+            if 1:
+                self.reallocate_gnxs(p2)
+                self.reallocate_gnxs(p1)
     #@+node:ekr.20170806094321.1: *4* gdc.create_file_node
     def create_file_node(self, diff_list, fn):
 
@@ -595,15 +597,129 @@ class GitDiffController:
         at.initReadLine(at.fromString)
         at.readOpenFile(root, fn, deleteNodes=True)
         at.inputFile.close()
-        root.clearDirty()
+        # root.clearDirty()
         if at.errors == 0:
-            at.deleteUnvisitedNodes(root)
+            at.deleteUnvisitedNodes(root, redraw=False)
             at.deleteTnodeList(root)
         at.deleteAllTempBodyStrings()
         return root
+    #@+node:ekr.20170806142044.1: *4* gdc.paste_outline
+    def paste_outline(self, s):
+        '''
+        Paste an outline into the present outline from the s.
+        Nodes do *not* retain their original identify.
+        '''
+        c = self.c
+        ###
+            # c.endEditing()
+            # if not s or not c.canPasteOutline(s):
+                # return # This should never happen.
+            # isLeo = g.match(s, 0, g.app.prolog_prefix_string)
+            # vnodeInfoDict = c.computeVnodeInfoDict() if pasteAsClone else {}
+        # create a *position* to be pasted.
+        
+        ###
+            # if isLeo:
+                # pasted = c.fileCommands.getLeoOutlineFromClipboard(s, reassignIndices, tempOutline)
+            # if not pasted:
+                # # 2016/10/06:
+                # # We no longer support pasting MORE outlines. Use import-MORE-files instead.
+                # return None
+            # if pasteAsClone:
+                # copiedBunchList = c.computeCopiedBunchList(pasted, vnodeInfoDict)
+            # else:
+                # copiedBunchList = []
+            # if undoFlag:
+                # undoData = c.undoer.beforeInsertNode(c.p,
+                    # pasteAsClone=pasteAsClone, copiedBunchList=copiedBunchList)
+        try:
+            cc = c.chapterController
+            if cc: cc.selectChapterLockout = True
+            pasted = c.fileCommands.getLeoOutlineFromClipboard(
+                s,
+                reassignIndices=True,
+                tempOutline=True,
+            )
+        finally:
+            if cc: cc.selectChapterLockout = False
+        
+        c.validateOutline()
+        ###
+            # if not tempOutline:
+                # # Fix #427: Don't check for duplicate vnodes.
+                # c.checkOutline()
+        ### c.selectPosition(pasted, redrawFlag=False)
+        c.setCurrentPosition(pasted)
+        ### pasted.setDirty()
+        ### c.setChanged(True, redrawFlag=False)
+        # paste as first child if back is expanded.
+        back = pasted.back()
+        if back and back.hasChildren() and back.isExpanded():
+            # 2011/06/21: fixed hanger: test back.hasChildren().
+            pasted.moveToNthChildOf(back, 0)
+        ###
+            # if pasteAsClone:
+                # # Set dirty bits for ancestors of *all* pasted nodes.
+                # # Note: the setDescendentsDirty flag does not do what we want.
+                # for p in pasted.self_and_subtree():
+                    # p.setAllAncestorAtFileNodesDirty(
+                        # setDescendentsDirty=False)
+        ###
+            # if undoFlag:
+                # c.undoer.afterInsertNode(pasted, undoType, undoData)
+            # if redrawFlag:
+                # c.redraw(pasted)
+                # c.recolor()
+        return pasted
+    #@+node:ekr.20170806142044.2: *5* c.computeVnodeInfoDict
+    #@+at
+    # 
+    # We don't know yet which nodes will be affected by the paste, so we remember
+    # everything. This is expensive, but foolproof.
+    # 
+    # The alternative is to try to remember the 'before' values of nodes in the
+    # FileCommands read logic. Several experiments failed, and the code is very ugly.
+    # In short, it seems wise to do things the foolproof way.
+    # 
+    #@@c
+
+    def computeVnodeInfoDict(self):
+        c, d = self, {}
+        for v in c.all_unique_nodes():
+            if v not in d:
+                d[v] = g.Bunch(v=v, head=v.h, body=v.b)
+        return d
+    #@+node:ekr.20170806142044.3: *5* c.computeCopiedBunchList
+    def computeCopiedBunchList(self, pasted, vnodeInfoDict):
+        # Create a dict containing only copied vnodes.
+        d = {}
+        for p in pasted.self_and_subtree():
+            d[p.v] = p.v
+        # g.trace(sorted(list(d.keys())))
+        aList = []
+        for v in vnodeInfoDict:
+            if d.get(v):
+                bunch = vnodeInfoDict.get(v)
+                aList.append(bunch)
+        return aList
     #@+node:ekr.20170806125830.1: *4* gdc.reallocate_gnxs
     def reallocate_gnxs(self, root):
         '''Reallocate the probably duplicated gnx's in root's tree.'''
+        c = self.c
+        c.setCurrentPosition(root)
+            # c.selectPosition causes flash.
+        # Do *not* paste to the clipboard.  It causes a flash.
+        s = c.fileCommands.putLeoOutline()
+        root.doDelete(root.parent())
+        self.paste_outline(s)
+            # c.pasteOutline(
+                # event=None,
+                # reassignIndices=True,
+                # redrawFlag=False,
+                # s=s, # Important: prevents flash.
+                # tempOutline=True, # Suppresses outline check
+                # undoFlag=False,
+            # )
     #@+node:ekr.20170806094320.7: *3* gdc.find_file (not used yet)
     def find_file(self, fn):
         '''Return the @<file> node matching fn.'''
@@ -618,12 +734,10 @@ class GitDiffController:
     #@+node:ekr.20170806094320.12: *3* gdc.run & helpers
     def run(self):
         '''The main line of the git diff command.'''
-        c = self.c
         if self.repo_dir:
             files = self.get_files()
             if files:
                 self.root = self.create_root()
-                c.selectPosition(self.root)
                 for fn in files:
                     self.diff_file(fn)
                 self.finish()
@@ -648,9 +762,9 @@ class GitDiffController:
         '''Finish execution of this command.'''
         c = self.c
         os.chdir(self.old_dir)
-        c.contractAllHeadlines()
+        c.contractAllHeadlines(redrawFlag=False)
         self.root.expand()
-        c.selectPosition(self.root)
+        c.selectPosition(self.root, enableRedrawFlag=False)
         c.redraw()
     #@+node:ekr.20170806094320.9: *4* gdc.get_files
     def get_files(self):

@@ -3985,7 +3985,7 @@ class Commands(object):
     #@+node:ekr.20031218072017.2899: *6* Commands (outline menu)
     #@+node:ekr.20031218072017.2900: *7* c.contractAllHeadlines
     @cmd('contract-all')
-    def contractAllHeadlines(self, event=None):
+    def contractAllHeadlines(self, event=None, redrawFlag=True):
         '''Contract all nodes in the outline.'''
         c = self
         for p in c.all_positions():
@@ -3994,7 +3994,8 @@ class Commands(object):
         p = c.p
         while p and p.hasParent():
             p.moveToParent()
-        c.redraw(p, setFocus=True)
+        if redrawFlag:
+            c.redraw(p, setFocus=True)
         c.expansionLevel = 1 # Reset expansion level.
     #@+node:ekr.20080819075811.3: *7* c.contractAllOtherNodes & helper
     @cmd('contract-all-other-nodes')
@@ -5851,7 +5852,7 @@ class Commands(object):
         # 2012/03/10: tree.redraw will change the position if p is a hoisted @chapter node.
         p2 = c.frame.tree.redraw(p)
         # Be careful.  NullTree.redraw returns None.
-        c.selectPosition(p2 or p)
+        c.selectPosition(p2 or p, enableRedrawFlag=False)
         if trace:
             g.trace(p2 and p2.h)
             # g.trace('setFocus', setFocus, p2 and p2.h or p and p.h)

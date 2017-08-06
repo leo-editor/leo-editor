@@ -13,6 +13,18 @@ import os
 # GitDiffController(c, 'HEAD', 'HEAD~1').run()
 GitDiffController(c, 'HEAD').run()
     # Same as git diff
+.. @+node:ekr.20170806133624.1: ** gdc.paste_to_clipboard
+def paste_to_clipboard(self,s):
+    '''Apparently g.app.gui.replaceClipboardWith(s) causes a flash!'''
+    try:
+        from tkinter import Tk # Python 3
+    except ImportError:
+        from Tkinter import Tk # Python 2
+    root = Tk()
+    root.withdraw()
+    root.clipboard_clear()
+    root.clipboard_append(s)
+    root.destroy()
 .. @-all
 .. @@nosearch
 .. @@killbeautify

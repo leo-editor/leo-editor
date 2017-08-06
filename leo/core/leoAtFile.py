@@ -566,7 +566,7 @@ class AtFile(object):
             delattr(v, "tnodeList")
             v._p_changed = True
     #@+node:ekr.20071105164407: *6* at.deleteUnvisitedNodes & helpers
-    def deleteUnvisitedNodes(self, root):
+    def deleteUnvisitedNodes(self, root, redraw=True):
         '''
         Delete unvisited nodes in root's subtree, not including root.
 
@@ -583,7 +583,7 @@ class AtFile(object):
                 # callback = at.defineResurrectedNodeCallback(r, root)
                 # # Move the nodes using the callback.
                 # at.c.deletePositionsInList(aList, callback)
-            at.c.deletePositionsInList(aList)
+            at.c.deletePositionsInList(aList, redraw=redraw)
     #@+node:ekr.20100803073751.5817: *7* createResurrectedNodesNode
     def createResurrectedNodesNode(self):
         '''Create a 'Resurrected Nodes' node as the last top-level node.'''
