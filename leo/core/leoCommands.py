@@ -163,7 +163,6 @@ class Commands(object):
         # Flags for c.outerUpdate...
         self.requestCloseWindow = False
         self.requestedFocusWidget = None
-        ### self.requestedIconify = '' # 'iconify','deiconify'
     #@+node:ekr.20120217070122.10472: *5* c.initFileIvars
     def initFileIvars(self, fileName, relativeFileName):
         '''Init file-related ivars of the commander.'''
@@ -5603,28 +5602,16 @@ class Commands(object):
             g.doHook("command2", c=c, p=p, v=p, label=label)
     #@+node:ekr.20080514131122.20: *4* c.outerUpdate
     def outerUpdate(self):
+        '''Handle delayed focus requests and modified events.'''
         trace = False and not g.unitTesting
-        traceFocus = False
         c = self
-        aList = []
         if not c.exists or not c.k:
             return
-        ###
-            # The iconify requests are made only by c.bringToFront.
-            # if c.requestedIconify in ('iconify', 'deiconify'):
-                # aList.append(c.requestedIconify)
-                # c.frame.iconify() if c.requestedIconify == 'iconify' else c.frame.deiconify()
         if c.requestedFocusWidget:
             w = c.requestedFocusWidget
-            if traceFocus: aList.append('focus: %s' % g.app.gui.widget_name(w))
+            if trace: g.trace('focus: %s' % g.app.gui.widget_name(w))
             c.set_focus(w)
-        else:
-            # We must not set the focus to the body pane here!
-            # That would make nested calls to c.outerUpdate significant.
-            pass
-        if trace and aList: g.trace(','.join(aList))
-        c.requestedFocusWidget = None
-        c.requestedIconify = ''
+            c.requestedFocusWidget = None
         table = (
             ("childrenModified", g.childrenModifiedSet),
             ("contentModified", g.contentModifiedSet),
@@ -5755,7 +5742,6 @@ class Commands(object):
     def bringToFront(self, c2=None, set_focus=True):
         c = self
         c2 = c2 or c
-        ### c.requestedIconify = 'deiconify'
         g.app.gui.ensure_commander_visible(c2)
 
     BringToFront = bringToFront # Compatibility with old scripts
