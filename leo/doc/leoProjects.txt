@@ -13,6 +13,9 @@ To do:
   Related to string-gui branch: Use string/null gui for unit tests.
   https://github.com/leo-editor/leo-editor/issues/503
 
+- c.widgetWantsFocusNow now just calls c.set_focus & clears c.requestedFocusWidget.
+- c.outerUpdate no longer handles recoloring or redrawing.
+- Replaced all calls to c.recolor_now by c.recolor.
 - Replaced all calls to redraw_now by redraw.
 - Removed all calls to body.forceFullRecolor.
 - Removed forceFullRecolorFlag.

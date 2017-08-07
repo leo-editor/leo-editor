@@ -6382,8 +6382,12 @@ class Commands(object):
 
     def widgetWantsFocusNow(self, w):
         c = self
-        c.request_focus(w)
-        c.outerUpdate()
+        ### Old code: no need to do this.
+            # c.request_focus(w)
+            # c.outerUpdate()
+        if w:
+            c.set_focus(w)
+            c.requestedFocusWidget = None
     # New in 4.9: all FocusNow methods now *do* call c.outerUpdate().
 
     def bodyWantsFocusNow(self):
