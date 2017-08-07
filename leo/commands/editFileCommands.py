@@ -469,7 +469,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         row -= len(directives)
         row = max(0, row)
         # Reload the file, creating new nodes.
-        c.selectPosition(p) ###, enableRedrawFlag=False)
+        c.selectPosition(p)
         c.refreshFromDisk()
         # Restore the line in the proper node.
         c.gotoCommands.find_file_line(row+1)
@@ -497,7 +497,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             lines = [z for z in g.splitLines(p2.b) if not g.isDirective(z)]
             row += len(lines)
         # Reload the file into a single node.
-        c.selectPosition(p) ###, enableRedrawFlag=False)
+        c.selectPosition(p)
         c.refreshFromDisk()
         # Restore the line in the proper node.
         ins = g.convertRowColToPythonIndex(p.b, row+1, 0)
@@ -768,8 +768,7 @@ class GitDiffController:
         os.chdir(self.old_dir)
         c.contractAllHeadlines(redrawFlag=False)
         self.root.expand()
-        # Not sure why both these are needed.
-        c.selectPosition(self.root) ###, enableRedrawFlag=False)
+        c.selectPosition(self.root)
         c.redraw()
     #@+node:ekr.20170806094320.9: *4* gdc.get_files
     def get_files(self):

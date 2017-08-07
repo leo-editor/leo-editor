@@ -2796,7 +2796,7 @@ class LoadManager(object):
                     root.doDelete(newNode=root.next())
                 p = g.findNodeAnywhere(c, "Leo's cheat sheet")
                 if p:
-                    c.selectPosition(p) ###, enableRedrawFlag=False)
+                    c.selectPosition(p)
                     p.expand()
                 c.target_language = 'rest'
                     # Settings not parsed the first time.
