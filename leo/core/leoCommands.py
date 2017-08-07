@@ -161,11 +161,9 @@ class Commands(object):
         self.suppressHeadChanged = False
             # True: prevent setting c.changed when switching chapters.
         # Flags for c.outerUpdate...
-        ### self.requestBringToFront = None # A commander, or None.
         self.requestCloseWindow = False
-        ### self.requestRecolorFlag = False
         self.requestedFocusWidget = None
-        self.requestedIconify = '' # 'iconify','deiconify'
+        ### self.requestedIconify = '' # 'iconify','deiconify'
     #@+node:ekr.20120217070122.10472: *5* c.initFileIvars
     def initFileIvars(self, fileName, relativeFileName):
         '''Init file-related ivars of the commander.'''
@@ -5612,14 +5610,10 @@ class Commands(object):
         if not c.exists or not c.k:
             return
         ###
-            # if c.requestBringToFront:
-                # if hasattr(c.frame, 'bringToFront'):
-                    # c.requestBringToFront.frame.bringToFront()
-                        # # c.requestBringToFront is a commander.
-        # The iconify requests are made only by c.bringToFront.
-        if c.requestedIconify in ('iconify', 'deiconify'):
-            aList.append(c.requestedIconify)
-            c.frame.iconify() if c.requestedIconify == 'iconify' else c.frame.deiconify()
+            # The iconify requests are made only by c.bringToFront.
+            # if c.requestedIconify in ('iconify', 'deiconify'):
+                # aList.append(c.requestedIconify)
+                # c.frame.iconify() if c.requestedIconify == 'iconify' else c.frame.deiconify()
         if c.requestedFocusWidget:
             w = c.requestedFocusWidget
             if traceFocus: aList.append('focus: %s' % g.app.gui.widget_name(w))
@@ -5629,7 +5623,6 @@ class Commands(object):
             # That would make nested calls to c.outerUpdate significant.
             pass
         if trace and aList: g.trace(','.join(aList))
-        ### c.requestBringToFront = None
         c.requestedFocusWidget = None
         c.requestedIconify = ''
         table = (
@@ -5762,9 +5755,7 @@ class Commands(object):
     def bringToFront(self, c2=None, set_focus=True):
         c = self
         c2 = c2 or c
-        ### c.requestBringToFront = c2
-        ### c.requestedFocusWidget = c2.frame.body.wrapper
-        c.requestedIconify = 'deiconify'
+        ### c.requestedIconify = 'deiconify'
         g.app.gui.ensure_commander_visible(c2)
 
     BringToFront = bringToFront # Compatibility with old scripts

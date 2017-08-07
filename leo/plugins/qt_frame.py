@@ -1430,12 +1430,10 @@ class LeoQtBody(leoFrame.LeoBody):
         d = self.editorWidgets
         wrapper = c.frame.body.wrapper # A QTextEditWrapper
         widget = wrapper.widget
-        ### This was just crazy.
-        ### self.editorWidgets['1'] = wrapper
         self.totalNumberOfEditors += 1
         self.numberOfEditors += 1
         if self.totalNumberOfEditors == 2:
-            self.editorWidgets['1'] = wrapper ### New.
+            self.editorWidgets['1'] = wrapper
             # Pack the original body editor.
             self.packLabel(widget, n=1)
         name = '%d' % self.totalNumberOfEditors
