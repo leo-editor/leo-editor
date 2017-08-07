@@ -249,22 +249,11 @@ class LeoBody(object):
     def updateSyntaxColorer(self, p):
         return self.colorizer.updateSyntaxColorer(p.copy())
 
-    def recolor(self, p, incremental=False):
+    ### def recolor(self, p, incremental=False):
+    def recolor(self, p, **kwargs):
+        if 'incremental' in kwargs:
+            print('c.recolor: incremental keyword is deprecated', g.callers(1))
         self.c.requestRecolorFlag = True
-
-        # trace = False and not g.unitTesting
-        # from leo.core.leoQt import QtWidgets
-        # assert self.widget and self.widget.document()
-        # assert isinstance(self.widget, QtWidgets.QTextEdit)
-        # if incremental:
-            # if trace: g.trace('***** incremental', incremental, p and p.h)
-        # else:
-            # if trace: g.trace('(body)',
-                # id(self.widget.document()),
-                # id(self.widget),
-                # p and p.h)
-        # self.c.requestRecolorFlag = True
-        # self.c.incrementalRecolorFlag = incremental
 
     recolor_now = recolor
     #@+node:ekr.20140903103455.18574: *3* LeoBody.Defined in subclasses
@@ -670,7 +659,7 @@ class LeoBody(object):
         #@+<< recolor the body >>
         #@+node:ekr.20051026083733.6: *5* << recolor the body >>
         c.frame.scanForTabWidth(p)
-        body.recolor(p, incremental=not self.forceFullRecolorFlag)
+        body.recolor(p) ###, incremental=not self.forceFullRecolorFlag)
         self.forceFullRecolorFlag = False
         if g.app.unitTesting:
             g.app.unitTestDict['colorized'] = True
@@ -1390,7 +1379,7 @@ class LeoTree(object):
             # New in Leo 4.4.5: we must recolor the body because
             # the headline may contain directives.
             c.frame.scanForTabWidth(p)
-            c.frame.body.recolor(p, incremental=True)
+            c.frame.body.recolor(p) ###, incremental=True)
             dirtyVnodeList = p.setDirty()
             u.afterChangeNodeContents(p, undoType, undoData,
                 dirtyVnodeList=dirtyVnodeList, inHead=True)

@@ -7,12 +7,13 @@ All gui-related code will be simulated with the StringTextWrapper class.
 .. @+node:ekr.20170807103720.1: ** Branch: redraw
 To do:
 
-- Chapter select logic should not call c.redraw.
+** Chapter select logic should not call c.redraw.
 
 - Investigate running unit tests without redraw.
   Related to string-gui branch: Use string/null gui for unit tests.
   https://github.com/leo-editor/leo-editor/issues/503
 
+- Done: removed c.incrementalRecolorFlag.
 - Done: c.selectPosition never calls c.redraw. All unit tests pass.
 - Done: Removed c.requestRedrawFlag and c.outerUpdate never calls c.redraw.  All tests pass.
 .. @+node:ekr.20170806095521.1: ** @@command git-diff

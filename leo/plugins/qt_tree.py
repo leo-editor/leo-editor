@@ -163,8 +163,6 @@ class LeoQtTree(leoFrame.LeoTree):
         '''
         trace = False and not g.app.unitTesting
         verbose = False
-        if False and g.app.unitTesting:
-            return ### Experimental
         c = self.c
         if g.app.disable_redraw:
             if trace: g.trace('*** disabled', g.callers())
@@ -192,7 +190,6 @@ class LeoQtTree(leoFrame.LeoTree):
         finally:
             self.redrawing = False
         self.setItemForCurrentPosition(scroll=scroll)
-        ### c.requestRedrawFlag = False
         if trace:
             if verbose:
                 theTime = g.timeSince(t1)
@@ -653,7 +650,7 @@ class LeoQtTree(leoFrame.LeoTree):
             if not c.changed: c.setChanged(True)
             # New in Leo 4.4.5: we must recolor the body because
             # the headline may contain directives.
-            c.frame.body.recolor(p, incremental=True)
+            c.frame.body.recolor(p) ###, incremental=True)
             dirtyVnodeList = p.setDirty()
             u.afterChangeNodeContents(p, undoType, undoData,
                 dirtyVnodeList=dirtyVnodeList, inHead=True) # 2013/08/26.

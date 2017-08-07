@@ -161,11 +161,9 @@ class Commands(object):
         self.suppressHeadChanged = False
             # True: prevent setting c.changed when switching chapters.
         # Flags for c.outerUpdate...
-        self.incrementalRecolorFlag = False
         self.requestBringToFront = None # A commander, or None.
         self.requestCloseWindow = False
         self.requestRecolorFlag = False
-        ### self.requestRedrawFlag = False
         self.requestedFocusWidget = None
         self.requestedIconify = '' # 'iconify','deiconify'
     #@+node:ekr.20120217070122.10472: *5* c.initFileIvars
@@ -5613,8 +5611,6 @@ class Commands(object):
         if not c.exists or not c.k:
             return
         # Suppress any requested redraw until we have iconified or diconified.
-        ### redrawFlag = c.requestRedrawFlag
-        ### c.requestRedrawFlag = False
         if trace and verbose:
             g.trace('**start', c.shortFileName() or '<unnamed>', g.callers(5))
         if c.requestBringToFront:
@@ -5629,17 +5625,16 @@ class Commands(object):
         if c.requestedIconify == 'deiconify':
             if verbose: aList.append('deiconify')
             c.frame.deiconify()
-        ###
-            # if redrawFlag:
-                # if trace: g.trace('****', 'tree.drag_p', c.frame.tree.drag_p)
-                # # A hack: force the redraw, even if we are dragging.
-                # aList.append('*** redraw')
-                # c.frame.tree.redraw_now(forceDraw=True)
+        # No longer used.
+        # if redrawFlag:
+            # if trace: g.trace('****', 'tree.drag_p', c.frame.tree.drag_p)
+            # # A hack: force the redraw, even if we are dragging.
+            # aList.append('*** redraw')
+            # c.frame.tree.redraw_now(forceDraw=True)
         if c.requestRecolorFlag:
-            aList.append('%srecolor' % (
-                '' if c.incrementalRecolorFlag else 'full '))
+            aList.append('recolor')
             # This should be the only call to c.recolor_now.
-            c.recolor_now(incremental=c.incrementalRecolorFlag)
+            c.recolor_now() ### incremental=False)
         if c.requestedFocusWidget:
             w = c.requestedFocusWidget
             if traceFocus: aList.append('focus: %s' % g.app.gui.widget_name(w))
@@ -5650,9 +5645,7 @@ class Commands(object):
             pass
         if trace and (verbose or aList):
             g.trace('** end', aList)
-        c.incrementalRecolorFlag = False
         c.requestRecolorFlag = None
-        ### c.requestRedrawFlag = False
         c.requestedFocusWidget = None
         c.requestedIconify = ''
         mods = g.childrenModifiedSet
@@ -5817,12 +5810,12 @@ class Commands(object):
                 redraw_flag = True
         # if trace: g.trace(redraw_flag, g.callers())
         return redraw_flag
-    #@+node:ekr.20080514131122.12: *4* c.recolor (requestRecolor) and c.force_recolor
-    def requestRecolor(self):
+    #@+node:ekr.20080514131122.12: *4* c.recolor
+    def recolor(self):
         c = self
         c.requestRecolorFlag = True
 
-    recolor = requestRecolor
+    requestRecolor = recolor
 
     @cmd('recolor')
     def recolorCommand(self, event=None):
@@ -5909,9 +5902,14 @@ class Commands(object):
         if flag:
             c.frame.tree.redraw_after_select(p)
     #@+node:ekr.20080514131122.13: *4* c.recolor_now
-    def recolor_now(self, p=None, incremental=False, interruptable=True):
+    ### def recolor_now(self, p=None, incremental=False, interruptable=True):
+    def recolor_now(self, **kwargs):
         # Support QScintillaColorizer.colorize.
         c = self
+        p = kwargs.get('p')
+        for name in ('incremental', 'interruptable'):
+            if name in kwargs:
+                print('c.recolor_now: "%s" keyword arg is deprecated' % name)
         colorizer = c.frame.body.colorizer
         if colorizer and hasattr(colorizer, 'colorize'):
             colorizer.colorize(p or c.p)
