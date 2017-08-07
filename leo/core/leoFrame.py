@@ -236,7 +236,7 @@ class LeoBody(object):
         '''Command decorator for the c.frame.body class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'frame', 'body'])
-    #@+node:ekr.20031218072017.3677: *3* LeoBody.Coloring (recolor is a do-nothing??)
+    #@+node:ekr.20031218072017.3677: *3* LeoBody.Coloring
     def forceFullRecolor(self):
         pass
 
