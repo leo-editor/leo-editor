@@ -163,7 +163,7 @@ class Commands(object):
         # Flags for c.outerUpdate...
         self.requestBringToFront = None # A commander, or None.
         self.requestCloseWindow = False
-        self.requestRecolorFlag = False
+        ### self.requestRecolorFlag = False
         self.requestedFocusWidget = None
         self.requestedIconify = '' # 'iconify','deiconify'
     #@+node:ekr.20120217070122.10472: *5* c.initFileIvars
@@ -5625,9 +5625,10 @@ class Commands(object):
                 # # A hack: force the redraw, even if we are dragging.
                 # aList.append('*** redraw')
                 # c.frame.tree.redraw(forceDraw=True)
-        if c.requestRecolorFlag:
-            aList.append('recolor')
-            c.recolor_now()
+        ### No longer used.
+            # if c.requestRecolorFlag:
+                # aList.append('recolor')
+                # c.recolor_now()
         if c.requestedFocusWidget:
             w = c.requestedFocusWidget
             if traceFocus: aList.append('focus: %s' % g.app.gui.widget_name(w))
@@ -5638,7 +5639,7 @@ class Commands(object):
             pass
         if trace and aList: g.trace(','.join(aList))
         c.requestBringToFront = None
-        c.requestRecolorFlag = None
+        ### c.requestRecolorFlag = None
         c.requestedFocusWidget = None
         c.requestedIconify = ''
         table = (
@@ -5802,12 +5803,12 @@ class Commands(object):
                 redraw_flag = True
         # if trace: g.trace(redraw_flag, g.callers())
         return redraw_flag
-    #@+node:ekr.20080514131122.12: *4* c.recolor
-    def recolor(self):
-        c = self
-        c.requestRecolorFlag = True
+    #@+node:ekr.20080514131122.12: *4* c.recolorCommand
+    # def recolor(self):
+        # c = self
+        # c.requestRecolorFlag = True
 
-    requestRecolor = recolor
+    # requestRecolor = recolor
 
     @cmd('recolor')
     def recolorCommand(self, event=None):
@@ -5893,8 +5894,8 @@ class Commands(object):
         flag = c.expandAllAncestors(p)
         if flag:
             c.frame.tree.redraw_after_select(p)
-    #@+node:ekr.20080514131122.13: *4* c.recolor_now
-    def recolor_now(self, **kwargs):
+    #@+node:ekr.20080514131122.13: *4* c.recolor
+    def recolor(self, **kwargs):
         # Support QScintillaColorizer.colorize.
         c = self
         p = kwargs.get('p')
@@ -5904,6 +5905,8 @@ class Commands(object):
         colorizer = c.frame.body.colorizer
         if colorizer and hasattr(colorizer, 'colorize'):
             colorizer.colorize(p or c.p)
+            
+    recolor_now = recolor
     #@+node:ekr.20080514131122.17: *4* c.widget_name
     def widget_name(self, widget):
         # c = self
