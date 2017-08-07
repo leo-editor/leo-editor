@@ -608,7 +608,7 @@ class FileCommands(object):
         if trace and verbose:
             g.trace('**** dumping outline...')
             c.dumpOutline()
-        c.selectPosition(p, enableRedrawFlag=not tempOutline)
+        c.selectPosition(p) ###, enableRedrawFlag=not tempOutline)
         self.initReadIvars()
         return p
 

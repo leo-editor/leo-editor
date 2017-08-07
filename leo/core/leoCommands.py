@@ -3058,7 +3058,7 @@ class Commands(object):
             if redraw:
                 p = g.findNodeAnywhere(c2, "Leo's cheat sheet")
                 if p:
-                    c2.selectPosition(p, enableRedrawFlag=False)
+                    c2.selectPosition(p) ###, enableRedrawFlag=False)
                     p.expand()
                 c2.redraw()
             return c2
@@ -5852,7 +5852,7 @@ class Commands(object):
         # 2012/03/10: tree.redraw will change the position if p is a hoisted @chapter node.
         p2 = c.frame.tree.redraw(p)
         # Be careful.  NullTree.redraw returns None.
-        c.selectPosition(p2 or p, enableRedrawFlag=False)
+        c.selectPosition(p2 or p) ###, enableRedrawFlag=False)
         if trace:
             g.trace(p2 and p2.h)
             # g.trace('setFocus', setFocus, p2 and p2.h or p and p.h)
@@ -7162,12 +7162,20 @@ class Commands(object):
             # # Recolor the *body* text, **not** the headline.
             # k.showStateAndMode(w=c.frame.body.wrapper)
     #@+node:ekr.20031218072017.2997: *4* c.selectPosition
-    def selectPosition(self, p, enableRedrawFlag=True):
+    ### def selectPosition(self, p, enableRedrawFlag=False): ### Was True
+    select_position_warning_dict = {}
+    def selectPosition(self, p, **kwargs):
         """Select a new position."""
         trace = False and not g.unitTesting
         trace_no_p = True and not g.app.batchMode
             # A serious error.
-        c = self; cc = c.chapterController
+        if 'enableRedrawFlag' in kwargs:
+            caller = g.callers(1)
+            if caller not in self.select_position_warning_dict:
+                self.select_position_warning_dict[caller]=True
+                print('c.selectPosition: enableRedrawFlag is deprecated', caller)
+        c = self
+        cc = c.chapterController
         if not p:
             if trace and trace_no_p: g.trace('===== no p', g.callers())
             return
@@ -7178,7 +7186,7 @@ class Commands(object):
                 # if the chapter changes.
             if trace: g.trace(p and p.h, g.callers())
         # 2012/03/08: De-hoist as necessary to make p visible.
-        redraw_flag = False
+        ### redraw_flag = False
         if c.hoistStack:
             while c.hoistStack:
                 bunch = c.hoistStack[-1]
@@ -7186,7 +7194,7 @@ class Commands(object):
                     break
                 else:
                     bunch = c.hoistStack.pop()
-                    redraw_flag = True
+                    ### redraw_flag = True
                     if trace: g.trace('unhoist', bunch.p.h)
         if trace:
             if c.positionExists(p):
@@ -7198,8 +7206,9 @@ class Commands(object):
         c.setCurrentPosition(p)
             # Do *not* test whether the position exists!
             # We may be in the midst of an undo.
-        if redraw_flag and enableRedrawFlag:
-            c.redraw()
+        ### Never do this
+        # if redraw_flag and enableRedrawFlag:
+            # c.redraw()
 
     # Compatibility, but confusing.
     selectVnode = selectPosition

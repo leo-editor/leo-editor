@@ -4,6 +4,9 @@
 .. @+node:ekr.20170619165453.1: ** Branch: string-gui
 Attempt to run all unit tests without using Qt gui code.
 All gui-related code will be simulated with the StringTextWrapper class.
+.. @+node:ekr.20170807103720.1: ** Branch: redraw
+Will investigate having c.selectPosition never call c.redraw.
+All unit tests pass when that is disabled.
 .. @+node:ekr.20170806095521.1: ** @@command git-diff
 @language python
 g.cls()
