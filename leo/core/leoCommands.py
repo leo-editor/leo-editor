@@ -7123,30 +7123,24 @@ class Commands(object):
             # # Recolor the *body* text, **not** the headline.
             # k.showStateAndMode(w=c.frame.body.wrapper)
     #@+node:ekr.20031218072017.2997: *4* c.selectPosition
-    select_position_warning_dict = {}
-
     def selectPosition(self, p, **kwargs):
-        '''Select a new position *without* redrawing the screen.'''
+        '''
+        Select a new position, redrawing the screen *only* if we must
+        change chapters.
+        '''
         trace = False and not g.unitTesting
-        trace_no_p = True and not g.app.batchMode
-            # A serious error.
-        if 'enableRedrawFlag' in kwargs:
-            caller = g.callers(1)
-            if caller not in self.select_position_warning_dict:
-                self.select_position_warning_dict[caller]=True
-                print('c.selectPosition: enableRedrawFlag is deprecated', caller)
+        if kwargs:
+            print('c.selectPosition: all keyword args are ignored', g.callers())
         c = self
         cc = c.chapterController
         if not p:
-            if trace and trace_no_p: g.trace('===== no p', g.callers())
+            if not g.app.batchMode: # A serious error.
+                g.trace('Warning: no p', g.callers())
             return
-        # 2016/04/20: check cc.selectChapterLockout.
         if cc and not cc.selectChapterLockout:
             cc.selectChapterForPosition(p)
-                # Important: selectChapterForPosition calls c.redraw
-                # if the chapter changes.
-            if trace: g.trace(p and p.h, g.callers())
-        # 2012/03/08: De-hoist as necessary to make p visible.
+                # Calls c.redraw only if the chapter changes.
+        # De-hoist as necessary to make p visible.
         if c.hoistStack:
             while c.hoistStack:
                 bunch = c.hoistStack[-1]
@@ -7161,11 +7155,9 @@ class Commands(object):
             else:
                 g.trace('**** does not exist: %s' % (p and p.h))
         c.frame.tree.select(p)
-        # New in Leo 4.4.2.
         c.setCurrentPosition(p)
             # Do *not* test whether the position exists!
             # We may be in the midst of an undo.
-        # Selecting a node should *never* redraw the screen.
 
     # Compatibility, but confusing.
     selectVnode = selectPosition
