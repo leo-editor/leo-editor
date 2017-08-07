@@ -1455,9 +1455,6 @@ class Undoer(object):
         # selectPosition causes recoloring, so avoid if possible.
         if current != u.p:
             c.selectPosition(u.p)
-        ###
-            # elif u.undoType in ('Cut', 'Paste', 'Clear Recent Files'):
-                # c.frame.body.forceFullRecolor()
         self.undoRedoText(
             u.p, u.leading, u.trailing,
             u.newMiddleLines, u.oldMiddleLines,
@@ -1820,9 +1817,6 @@ class Undoer(object):
         # selectPosition causes recoloring, so don't do this unless needed.
         if current != u.p:
             c.selectPosition(u.p)
-        ###
-            # elif u.undoType in ("Cut", "Paste", 'Clear Recent Files'):
-                # c.frame.body.forceFullRecolor()
         self.undoRedoText(
             u.p, u.leading, u.trailing,
             u.oldMiddleLines, u.newMiddleLines,

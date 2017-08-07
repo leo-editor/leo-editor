@@ -412,7 +412,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 # Keep the scroll point if possible.
                 w.setYScrollPosition(scroll)
                 w.seeInsertPoint()
-            ### c.frame.body.forceFullRecolor()
             c.bodyWantsFocusNow()
             return True
         else:

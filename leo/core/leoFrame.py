@@ -221,7 +221,6 @@ class LeoBody(object):
         frame.body = self
         self.c = c
         self.editorWidgets = {} # keys are pane names, values are text widgets
-        ### self.forceFullRecolorFlag = False
         self.frame = frame
         self.parentFrame = parentFrame # New in Leo 4.6.
         self.totalNumberOfEditors = 0
@@ -658,7 +657,6 @@ class LeoBody(object):
         #@+node:ekr.20051026083733.6: *5* << recolor the body >>
         c.frame.scanForTabWidth(p)
         body.recolor(p)
-        ### self.forceFullRecolorFlag = False
         if g.app.unitTesting:
             g.app.unitTestDict['colorized'] = True
         #@-<< recolor the body >>
@@ -991,7 +989,6 @@ class LeoFrame(object):
             w.see(i) # 2016/01/19: important
             g.app.gui.replaceClipboardWith(s)
         if name.startswith('body'):
-            ### c.frame.body.forceFullRecolor()
             c.frame.body.onBodyChanged('Cut', oldSel=oldSel, oldText=oldText)
         elif name.startswith('head'):
             # The headline is not officially changed yet.
@@ -1052,7 +1049,6 @@ class LeoFrame(object):
                     offset = 0
                 newCurPosition = tCurPosition + offset
                 w.setSelectionRange(i=newCurPosition, j=newCurPosition)
-            ### c.frame.body.forceFullRecolor()
             c.frame.body.onBodyChanged('Paste', oldSel=oldSel, oldText=oldText)
         elif singleLine:
             s = w.getAllText()

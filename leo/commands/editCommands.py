@@ -1407,7 +1407,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.deleteWordHelper(event, forward=False, smart=True)
 
     def deleteWordHelper(self, event, forward, smart=False):
-        ### c, w = self.c, self.editWidget(event)
+        # c = self.c
         w = self.editWidget(event)
         if not w:
             return
@@ -1422,7 +1422,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         if from_pos > to_pos:
             from_pos, to_pos = to_pos, from_pos
         w.delete(from_pos, to_pos)
-        ### c.frame.body.forceFullRecolor()
         self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.259: *4* ec.deleteNextChar
     @cmd('delete-char')
