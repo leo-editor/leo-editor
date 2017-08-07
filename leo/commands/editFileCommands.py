@@ -550,10 +550,11 @@ class GitDiffController:
         if c.looksLikeDerivedFile(fn):
             p1 = self.make_outline(fn, lines, self.rev1)
             p2 = self.make_outline(fn, lines2, self.rev2)
+            # Do this *before* reallocating gnx's.
+            self.make_diff_outlines(fn, p1, p2)
             # Reallocate (cut/paste) in reverse order, to preserve positions.
             p2 = self.reallocate_gnxs(fn, p2)
             p1 = self.reallocate_gnxs(fn, p1)
-            self.make_diff_outlines(fn, p1, p2)
     #@+node:ekr.20170806094321.1: *4* gdc.create_file_node
     def create_file_node(self, diff_list, fn):
 
@@ -579,9 +580,85 @@ class GitDiffController:
                 g.trace('not found:', path)
                 lines = []
         return lines
-    #@+node:ekr.20170806125535.1: *4* gdc.make_diff_outlines
+    #@+node:ekr.20170806125535.1: *4* gdc.make_diff_outlines & helpers
     def make_diff_outlines(self, fn, p1, p2):
         '''Create an outline-oriented diff from the outlines at p1 and p2.'''
+        d1 = {p.v.fileIndex: p.copy() for p in p1.self_and_subtree()}
+        d2 = {p.v.fileIndex: p.copy() for p in p2.self_and_subtree()}
+        inserted, deleted, changed = self.compute_dicts(d1, d2)
+        if 0: ### Not yet.
+            self.create_compare_nodes(fn, inserted, deleted, changed)
+        
+    #@+node:ekr.20170806191707.1: *5* gdc.computeChangeDicts
+    def compute_dicts(self, d1, d2):
+        '''Compute inserted, deleted, changed dictionaries.'''
+        # inserted = {}
+        # for key in d2:
+            # if not d1.get(key):
+                # inserted[key] = d2.get(key)
+        inserted = { key: d2.get(key) for key in d2 if not d1.get(key) }
+        # deleted = {}
+        # for key in d1:
+            # if not d2.get(key):
+                # deleted[key] = d1.get(key)
+        deleted = { key: d1.get(key) for key in d1 if not d2.get(key) }
+        changed = {}
+        for key in d1:
+            if d2.get(key):
+                p1 = d1.get(key)
+                p2 = d2.get(key)
+                if p1.h != p2.h or p1.b != p2.b:
+                    changed[key] = p2 # Show the node in the *other* file.
+        return inserted, deleted, changed
+    #@+node:ekr.20170806191942.1: *5* gdc.create_compare_nodes & helper
+    def create_compare_nodes(self, fn, inserted, deleted, changed):
+        '''Create the comparison trees.'''
+        # c = self.c # Always use the visible commander
+        parent = self.file_node
+        # Create parent node at the start of the outline.
+        ###
+            # u, undoType = c.undoer, 'Compare Two Files'
+            # u.beforeChangeGroup(c.p, undoType)
+            # undoData = u.beforeInsertNode(c.p)
+            # parent = c.p.insertAfter()
+            # parent.setHeadString(undoType)
+            # u.afterInsertNode(parent, undoType, undoData, dirtyVnodeList=[])
+        ###
+            # Use the wrapped file name if possible.
+            # fn1 = g.shortFileName(c1.wrappedFileName) or c1.shortFileName()
+            # fn2 = g.shortFileName(c2.wrappedFileName) or c2.shortFileName()
+        fn1 = fn + (':' + self.rev1 if self.rev1 else '')
+        fn2 = fn + (':' + self.rev2 if self.rev2 else '')
+        for d, kind in (
+            (deleted, 'not in %s' % fn2),
+            (inserted, 'not in %s' % fn1),
+            (changed, 'changed: as in %s' % fn2),
+        ):
+            self.create_compare_node(d, kind, parent)
+        ###
+            # c.selectPosition(parent)
+            # u.afterChangeGroup(parent, undoType, reportFlag=True)
+            # c.redraw()
+    #@+node:ekr.20170806191942.2: *6* gdc.create_compare_node
+    def create_compare_node(self, d, kind, parent):
+        if d:
+            c = self.c # Use the visible commander.
+            parent = parent.insertAsLastChild()
+            parent.setHeadString(kind)
+            for key in d:
+                p = d.get(key)
+                if not kind.endswith('.leo') and p.isAnyAtFileNode():
+                    # Don't make clones of @<file> nodes for wrapped files.
+                    pass
+                elif p.v.context == c:
+                    clone = p.clone()
+                    clone.moveToLastChildOf(parent)
+                else:
+                    # Fix bug 1160660: File-Compare-Leo-Files creates "other file" clones.
+                    copy = p.copyTreeAfter()
+                    copy.moveToLastChildOf(parent)
+                    for p2 in copy.self_and_subtree():
+                        p2.v.context = c
     #@+node:ekr.20170806094321.7: *4* gdc.make_outline
     def make_outline(self, fn, lines, rev):
         '''Create a temp outline from lines.'''
