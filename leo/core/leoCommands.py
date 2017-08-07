@@ -165,7 +165,7 @@ class Commands(object):
         self.requestBringToFront = None # A commander, or None.
         self.requestCloseWindow = False
         self.requestRecolorFlag = False
-        self.requestRedrawFlag = False
+        ### self.requestRedrawFlag = False
         self.requestedFocusWidget = None
         self.requestedIconify = '' # 'iconify','deiconify'
     #@+node:ekr.20120217070122.10472: *5* c.initFileIvars
@@ -5613,8 +5613,8 @@ class Commands(object):
         if not c.exists or not c.k:
             return
         # Suppress any requested redraw until we have iconified or diconified.
-        redrawFlag = c.requestRedrawFlag
-        c.requestRedrawFlag = False
+        ### redrawFlag = c.requestRedrawFlag
+        ### c.requestRedrawFlag = False
         if trace and verbose:
             g.trace('**start', c.shortFileName() or '<unnamed>', g.callers(5))
         if c.requestBringToFront:
@@ -5629,11 +5629,12 @@ class Commands(object):
         if c.requestedIconify == 'deiconify':
             if verbose: aList.append('deiconify')
             c.frame.deiconify()
-        if redrawFlag:
-            if trace: g.trace('****', 'tree.drag_p', c.frame.tree.drag_p)
-            # A hack: force the redraw, even if we are dragging.
-            aList.append('*** redraw')
-            c.frame.tree.redraw_now(forceDraw=True)
+        ###
+            # if redrawFlag:
+                # if trace: g.trace('****', 'tree.drag_p', c.frame.tree.drag_p)
+                # # A hack: force the redraw, even if we are dragging.
+                # aList.append('*** redraw')
+                # c.frame.tree.redraw_now(forceDraw=True)
         if c.requestRecolorFlag:
             aList.append('%srecolor' % (
                 '' if c.incrementalRecolorFlag else 'full '))
@@ -5651,7 +5652,7 @@ class Commands(object):
             g.trace('** end', aList)
         c.incrementalRecolorFlag = False
         c.requestRecolorFlag = None
-        c.requestRedrawFlag = False
+        ### c.requestRedrawFlag = False
         c.requestedFocusWidget = None
         c.requestedIconify = ''
         mods = g.childrenModifiedSet
@@ -5778,7 +5779,6 @@ class Commands(object):
         c = self
         if flag:
             c.requestRedrawFlag = True
-            # g.trace('flag is True',c.shortFileName(),g.callers())
 
     BeginUpdate = beginUpdate # Compatibility with old scripts
     EndUpdate = endUpdate # Compatibility with old scripts

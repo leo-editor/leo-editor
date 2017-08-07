@@ -192,7 +192,7 @@ class LeoQtTree(leoFrame.LeoTree):
         finally:
             self.redrawing = False
         self.setItemForCurrentPosition(scroll=scroll)
-        c.requestRedrawFlag = False
+        ### c.requestRedrawFlag = False
         if trace:
             if verbose:
                 theTime = g.timeSince(t1)
@@ -201,8 +201,8 @@ class LeoQtTree(leoFrame.LeoTree):
             else:
                 g.trace('**', self.redrawCount, g.callers())
         return p # Return the position, which may have changed.
-    # Compatibility
 
+    # Compatibility
     redraw = full_redraw
     redraw_now = full_redraw
     #@+node:tbrown.20150807093655.1: *5* qtree.clear_visual_icons

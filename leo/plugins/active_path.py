@@ -285,7 +285,7 @@ def onSelect (tag,keywords):
 
     if path:
         if sync_node_to_folder(c,pos,path):
-            c.requestRedrawFlag = True
+            ### c.requestRedrawFlag = True
             c.redraw()
             return True
 
@@ -657,7 +657,7 @@ def cmd_ActOnNode(event, p=None):
 
     if path:
         sync_node_to_folder(c,pos,path)
-        c.requestRedrawFlag = True
+        ### c.requestRedrawFlag = True
         c.redraw()
         return True
 
