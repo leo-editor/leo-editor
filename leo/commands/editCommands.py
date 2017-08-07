@@ -3117,7 +3117,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.insert(i, '\n')
                 w.setSelectionRange(sel_1 + 1, sel_2 + 1, insert=insert_pt + 1)
             # Fix bug 799695: colorizer bug after move-lines-up into a docstring
-            c.recolor_now()
+            c.recolor()
         finally:
             self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.331: *4* ec.moveLinesUp
@@ -3158,7 +3158,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.insert(j, '\n')
                 w.setSelectionRange(sel_1, sel_2, insert=sel_1)
             # Fix bug 799695: colorizer bug after move-lines-up into a docstring
-            c.recolor_now()
+            c.recolor()
         finally:
             self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.332: *4* ec.reverseRegion

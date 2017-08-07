@@ -4679,7 +4679,7 @@ class Commands(object):
         if c.collapse_nodes_after_move and c.sparse_move: # New in Leo 4.4.2
             parent.contract()
         c.redraw(p, setFocus=True)
-        c.recolor_now() # Moving can change syntax coloring.
+        c.recolor() # Moving can change syntax coloring.
     #@+node:ekr.20031218072017.1771: *6* c.moveOutlineRight
     @cmd('move-outline-right')
     def moveOutlineRight(self, event=None):
@@ -4709,7 +4709,7 @@ class Commands(object):
         u.afterMoveNode(p, 'Move Right', undoData, dirtyVnodeList)
         # g.trace(p)
         c.redraw(p, setFocus=True)
-        c.recolor_now()
+        c.recolor()
     #@+node:ekr.20031218072017.1772: *6* c.moveOutlineUp
     @cmd('move-outline-up')
     def moveOutlineUp(self, event=None):
@@ -5627,7 +5627,6 @@ class Commands(object):
                 # c.frame.tree.redraw(forceDraw=True)
         if c.requestRecolorFlag:
             aList.append('recolor')
-            # This should be the only call to c.recolor_now.
             c.recolor_now()
         if c.requestedFocusWidget:
             w = c.requestedFocusWidget

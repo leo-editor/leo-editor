@@ -1657,7 +1657,7 @@ class LeoQtBody(leoFrame.LeoBody):
             # Calls assignPositionToEditor.
             # Calls p.v.restoreCursorAndScroll.
         c.redraw()
-        c.recolor_now()
+        c.recolor()
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18205: *5* LeoQtBody.updateEditors
     # Called from addEditor and assignPositionToEditor
