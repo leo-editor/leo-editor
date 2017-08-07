@@ -7,7 +7,7 @@ All gui-related code will be simulated with the StringTextWrapper class.
 .. @+node:ekr.20170807103720.1: ** Branch: redraw
 To do:
 
-** Chapter select logic should not call c.redraw.
+Note: cc.selectChapterForPosition calls c.redraw *only* if the chapter changes.
 
 - Investigate running unit tests without redraw.
   Related to string-gui branch: Use string/null gui for unit tests.

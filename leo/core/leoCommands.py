@@ -5607,6 +5607,7 @@ class Commands(object):
         c = self
         if not c.exists or not c.k:
             return
+        # Delayed focus requests will always be useful.
         if c.requestedFocusWidget:
             w = c.requestedFocusWidget
             if trace: g.trace('focus: %s' % g.app.gui.widget_name(w))
@@ -7125,7 +7126,7 @@ class Commands(object):
     select_position_warning_dict = {}
 
     def selectPosition(self, p, **kwargs):
-        """Select a new position."""
+        '''Select a new position *without* redrawing the screen.'''
         trace = False and not g.unitTesting
         trace_no_p = True and not g.app.batchMode
             # A serious error.
@@ -7164,9 +7165,7 @@ class Commands(object):
         c.setCurrentPosition(p)
             # Do *not* test whether the position exists!
             # We may be in the midst of an undo.
-        # Never do this: it is terrible design.
-            # if redraw_flag and enableRedrawFlag:
-                # c.redraw()
+        # Selecting a node should *never* redraw the screen.
 
     # Compatibility, but confusing.
     selectVnode = selectPosition

@@ -345,6 +345,7 @@ class ChapterController(object):
             cc.selectChapterByName('main')
         # Fix bug 869385: Chapters make the nav_qt.py plugin useless
         assert not self.selectChapterLockout
+        # We only call c.redraw() if the chapter has changed.
         c.redraw()
     #@+node:ekr.20130915052002.11289: *4* cc.setAllChapterNames
     def setAllChapterNames(self):
