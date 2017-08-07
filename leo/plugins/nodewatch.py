@@ -219,7 +219,7 @@ class LeoNodewatchWidget(QtWidgets.QWidget):
         tup = self.c.theNodewatchController.watchlists[key][idx]
         pos = self.c.vnode2position(tup[1])
         self.c.selectPosition(pos)
-        self.c.redraw_now()
+        self.c.redraw()
     #@+node:peckj.20131101132841.6460: *4* update_combobox
     def update_combobox(self):
         self.c.theNodewatchController.watchlists = {}

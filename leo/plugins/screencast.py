@@ -355,7 +355,7 @@ class ScreenCastController(object):
         c.k.simulateCommand(command_name)
             # Named commands handle their own undo!
             # The undo handling in m.next should suffice.
-        c.redraw_now()
+        c.redraw()
         m.repaint('all')
     #@+node:ekr.20120922041923.10612: *4* sc.dismiss_menu_bar
     def dismiss_menu_bar(self):
@@ -512,7 +512,7 @@ class ScreenCastController(object):
     #@+node:ekr.20120918103526.10594: *4* sc.redraw
     def redraw(self, p=None):
         m = self
-        m.c.redraw_now(p)
+        m.c.redraw(p)
     #@+node:ekr.20120913110135.10585: *4* sc.repaint
     def repaint(self, pane):
         '''Repaint the given pane.'''
@@ -650,7 +650,7 @@ class ScreenCastController(object):
         m.quit_flag = False
         m.clear_state()
         p.contract()
-        c.redraw_now(p)
+        c.redraw(p)
         m.delete_widgets()
             # Clear widgets left over from previous, unfinished, slideshows.
         m.state_handler()
@@ -671,7 +671,7 @@ class ScreenCastController(object):
         m.quit_flag = False
         m.clear_state()
         # p.contract()
-        # c.redraw_now(p)
+        # c.redraw(p)
         m.delete_widgets()
             # Clear widgets left over from previous, unfinished, slideshows.
         m.state_handler()

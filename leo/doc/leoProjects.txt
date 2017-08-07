@@ -13,6 +13,7 @@ To do:
   Related to string-gui branch: Use string/null gui for unit tests.
   https://github.com/leo-editor/leo-editor/issues/503
 
+- Replaced all calls to redraw_now by redraw.
 - Removed all calls to body.forceFullRecolor.
 - Removed forceFullRecolorFlag.
 - Done: removed c.incrementalRecolorFlag.

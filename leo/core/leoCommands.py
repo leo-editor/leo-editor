@@ -4678,7 +4678,7 @@ class Commands(object):
         # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
         if c.collapse_nodes_after_move and c.sparse_move: # New in Leo 4.4.2
             parent.contract()
-        c.redraw_now(p, setFocus=True)
+        c.redraw(p, setFocus=True)
         c.recolor_now() # Moving can change syntax coloring.
     #@+node:ekr.20031218072017.1771: *6* c.moveOutlineRight
     @cmd('move-outline-right')
@@ -4708,7 +4708,7 @@ class Commands(object):
         c.setChanged(True)
         u.afterMoveNode(p, 'Move Right', undoData, dirtyVnodeList)
         # g.trace(p)
-        c.redraw_now(p, setFocus=True)
+        c.redraw(p, setFocus=True)
         c.recolor_now()
     #@+node:ekr.20031218072017.1772: *6* c.moveOutlineUp
     @cmd('move-outline-up')
@@ -5624,7 +5624,7 @@ class Commands(object):
                 # if trace: g.trace('****', 'tree.drag_p', c.frame.tree.drag_p)
                 # # A hack: force the redraw, even if we are dragging.
                 # aList.append('*** redraw')
-                # c.frame.tree.redraw_now(forceDraw=True)
+                # c.frame.tree.redraw(forceDraw=True)
         if c.requestRecolorFlag:
             aList.append('recolor')
             # This should be the only call to c.recolor_now.

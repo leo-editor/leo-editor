@@ -202,7 +202,7 @@ class slideshowController(object):
         g.es('%s' % h)
         #c.expandAllAncestors(p)
         #c.selectPosition(p)
-        c.redraw_now(p)
+        c.redraw(p)
         w.see('1.0')
         if h.startswith('@slideshow'):
             self.slideShowRoot = p.copy()

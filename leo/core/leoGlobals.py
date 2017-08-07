@@ -3561,7 +3561,7 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
             if p.hasChildren():
                 p.expand()
                 # n = min(3, p.numberOfChildren())
-            c.redraw_now()
+            c.redraw()
             c.frame.bringToFront()
             timer.stop()
 
@@ -6930,7 +6930,7 @@ def handleUnl(unl, c):
         return
     # End editing in *this* outline, so typing in the new outline works.
     c.endEditing()
-    c.redraw_now()
+    c.redraw()
     if g.unitTesting:
         g.app.unitTestDict['g.recursiveUNLSearch'] = path
     else:

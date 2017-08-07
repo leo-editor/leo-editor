@@ -84,8 +84,7 @@ class TreeAPI(object):
     def edit_widget(self, p): return None
 
     def redraw(self, p=None, scroll=True, forceDraw=False): pass
-
-    def redraw_now(self, p=None, scroll=True, forceDraw=False): pass
+    redraw_now = redraw
 
     def scrollTo(self, p): pass
     # May be defined in subclasses.
@@ -1488,8 +1487,7 @@ class LeoTree(object):
     def drawIcon(self, p): self.oops()
 
     def redraw(self, p=None, scroll=True, forceDraw=False): self.oops()
-
-    def redraw_now(self, p=None, scroll=True, forceDraw=False): self.oops()
+    redraw_now = redraw
 
     def scrollTo(self, p): self.oops()
     # idle_scrollTo = scrollTo # For compatibility.
@@ -2097,9 +2095,7 @@ class NullTree(LeoTree):
     def redraw(self, p=None, scroll=True, forceDraw=False):
         self.redrawCount += 1
         # g.trace(p and p.h, self.c.p.h)
-
-    def redraw_now(self, p=None, scroll=True, forceDraw=False):
-        self.redraw(p)
+    redraw_now = redraw
 
     def redraw_after_contract(self, p=None): self.redraw()
 

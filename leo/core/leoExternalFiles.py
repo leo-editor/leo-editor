@@ -206,7 +206,7 @@ class ExternalFilesController(object):
         path = g.fullPath(c, p)
         if self.has_changed(c, path):
             if self.ask(c, path, p=p):
-                c.redraw_now(p=p)
+                c.redraw(p=p)
                 c.refreshFromDisk(p)
                 c.redraw()
             # Always update the path & time to prevent future warnings.

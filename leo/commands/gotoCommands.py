@@ -233,7 +233,7 @@ class GoToCommands(object):
         c = self.c
         w = c.frame.body.wrapper
         c.selectPosition(root)
-        c.redraw_now()
+        c.redraw()
         if not g.unitTesting:
             if len(lines) < n:
                 g.warning('only', len(lines), 'lines')

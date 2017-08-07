@@ -3808,7 +3808,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             pasted.moveToNthChildOf(back, 0)
         # c.setRootPosition(c.findRootPosition(pasted))
         u.afterInsertNode(pasted, undoType, undoData)
-        c.redraw_now(pasted)
+        c.redraw(pasted)
         c.recolor()
     #@+node:ekr.20110605121601.18368: *6* LeoQTreeWidget.intraFileDrop
     def intraFileDrop(self, fn, p1, p2):
@@ -3861,9 +3861,9 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 p2.isExpanded() or
                 c.config.getBool("drag-alt-drag-expands") is not False
             ):
-                c.redraw_now(p1)
+                c.redraw(p1)
             else:
-                c.redraw_now(p2)
+                c.redraw(p2)
         # elif trace: g.trace('** move failed')
     #@+node:ekr.20110605121601.18383: *6* LeoQTreeWidget.parseText
     def parseText(self, md):
@@ -3904,7 +3904,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         if changed:
             c.setChanged(True)
             u.afterChangeGroup(c.p, undoType, reportFlag=False, dirtyVnodeList=[])
-            c.redraw_now()
+            c.redraw()
     #@+node:ekr.20110605121601.18370: *6* LeoQTreeWidget.doFileUrl & helper
     def doFileUrl(self, p, url):
         '''Read the file given by the url and put it in the outline.'''
