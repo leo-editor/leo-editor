@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:ekr.20170806184759.2: * @file ../commands/editFileCommands.py
+#@+node:ekr.20170806194921.2: * @file ../commands/editFileCommands.py
 #@@first
 '''Leo's file-editing commands.'''
 #@+<< imports >>
@@ -580,14 +580,14 @@ class GitDiffController:
                 g.trace('not found:', path)
                 lines = []
         return lines
-    #@+node:ekr.20170806125535.1: *4* gdc.make_diff_outlines & helpers
+    #@+node:ekr.20170806125535.1: *4* gdc.make_diff_outlines & helpers (finish)
     def make_diff_outlines(self, fn, p1, p2):
         '''Create an outline-oriented diff from the outlines at p1 and p2.'''
         d1 = {p.v.fileIndex: p.copy() for p in p1.self_and_subtree()}
         d2 = {p.v.fileIndex: p.copy() for p in p2.self_and_subtree()}
         inserted, deleted, changed = self.compute_dicts(d1, d2)
-        if 0: ### Not yet.
-            self.create_compare_nodes(fn, inserted, deleted, changed)
+        ### Not yet.
+        # self.create_compare_nodes(fn, inserted, deleted, changed)
         
     #@+node:ekr.20170806191707.1: *5* gdc.computeChangeDicts
     def compute_dicts(self, d1, d2):
@@ -610,23 +610,9 @@ class GitDiffController:
                 if p1.h != p2.h or p1.b != p2.b:
                     changed[key] = p2 # Show the node in the *other* file.
         return inserted, deleted, changed
-    #@+node:ekr.20170806191942.1: *5* gdc.create_compare_nodes & helper
+    #@+node:ekr.20170806191942.1: *5* gdc.create_compare_nodes
     def create_compare_nodes(self, fn, inserted, deleted, changed):
         '''Create the comparison trees.'''
-        # c = self.c # Always use the visible commander
-        parent = self.file_node
-        # Create parent node at the start of the outline.
-        ###
-            # u, undoType = c.undoer, 'Compare Two Files'
-            # u.beforeChangeGroup(c.p, undoType)
-            # undoData = u.beforeInsertNode(c.p)
-            # parent = c.p.insertAfter()
-            # parent.setHeadString(undoType)
-            # u.afterInsertNode(parent, undoType, undoData, dirtyVnodeList=[])
-        ###
-            # Use the wrapped file name if possible.
-            # fn1 = g.shortFileName(c1.wrappedFileName) or c1.shortFileName()
-            # fn2 = g.shortFileName(c2.wrappedFileName) or c2.shortFileName()
         fn1 = fn + (':' + self.rev1 if self.rev1 else '')
         fn2 = fn + (':' + self.rev2 if self.rev2 else '')
         for d, kind in (
@@ -634,31 +620,26 @@ class GitDiffController:
             (inserted, 'not in %s' % fn1),
             (changed, 'changed: as in %s' % fn2),
         ):
-            self.create_compare_node(d, kind, parent)
-        ###
-            # c.selectPosition(parent)
-            # u.afterChangeGroup(parent, undoType, reportFlag=True)
-            # c.redraw()
-    #@+node:ekr.20170806191942.2: *6* gdc.create_compare_node
-    def create_compare_node(self, d, kind, parent):
-        if d:
-            c = self.c # Use the visible commander.
-            parent = parent.insertAsLastChild()
-            parent.setHeadString(kind)
-            for key in d:
-                p = d.get(key)
-                if not kind.endswith('.leo') and p.isAnyAtFileNode():
-                    # Don't make clones of @<file> nodes for wrapped files.
-                    pass
-                elif p.v.context == c:
-                    clone = p.clone()
-                    clone.moveToLastChildOf(parent)
-                else:
-                    # Fix bug 1160660: File-Compare-Leo-Files creates "other file" clones.
-                    copy = p.copyTreeAfter()
-                    copy.moveToLastChildOf(parent)
-                    for p2 in copy.self_and_subtree():
-                        p2.v.context = c
+            if d:
+                self.create_compare_node(d, kind)
+    #@+node:ekr.20170806191942.2: *5* gdc.create_compare_node
+    def create_compare_node(self, d, kind):
+        c = self.c
+        parent = self.file_node.insertAsLastChild()
+        parent.setHeadString(kind)
+        for key in d:
+            p = d.get(key)
+            if not kind.endswith('.leo') and p.isAnyAtFileNode():
+                # Don't make clones of @<file> nodes for wrapped files.
+                pass
+            elif p.v.context == c:
+                clone = p.clone()
+                clone.moveToLastChildOf(parent)
+            else:
+                copy = p.copyTreeAfter()
+                copy.moveToLastChildOf(parent)
+                for p2 in copy.self_and_subtree():
+                    p2.v.context = c
     #@+node:ekr.20170806094321.7: *4* gdc.make_outline
     def make_outline(self, fn, lines, rev):
         '''Create a temp outline from lines.'''
@@ -733,37 +714,6 @@ class GitDiffController:
         c.setCurrentPosition(p)
             # c.selectPosition causes flash(!)
         return p
-    #@+node:ekr.20170806142044.2: *5* c.computeVnodeInfoDict
-    #@+at
-    # 
-    # We don't know yet which nodes will be affected by the paste, so we remember
-    # everything. This is expensive, but foolproof.
-    # 
-    # The alternative is to try to remember the 'before' values of nodes in the
-    # FileCommands read logic. Several experiments failed, and the code is very ugly.
-    # In short, it seems wise to do things the foolproof way.
-    # 
-    #@@c
-
-    def computeVnodeInfoDict(self):
-        c, d = self, {}
-        for v in c.all_unique_nodes():
-            if v not in d:
-                d[v] = g.Bunch(v=v, head=v.h, body=v.b)
-        return d
-    #@+node:ekr.20170806142044.3: *5* c.computeCopiedBunchList
-    def computeCopiedBunchList(self, pasted, vnodeInfoDict):
-        # Create a dict containing only copied vnodes.
-        d = {}
-        for p in pasted.self_and_subtree():
-            d[p.v] = p.v
-        # g.trace(sorted(list(d.keys())))
-        aList = []
-        for v in vnodeInfoDict:
-            if d.get(v):
-                bunch = vnodeInfoDict.get(v)
-                aList.append(bunch)
-        return aList
     #@+node:ekr.20170806125830.1: *4* gdc.reallocate_gnxs
     def reallocate_gnxs(self, fn, root):
         '''Reallocate the probably duplicated gnx's in root's tree.'''
