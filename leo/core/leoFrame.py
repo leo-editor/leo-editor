@@ -249,7 +249,6 @@ class LeoBody(object):
     def recolor(self, p, **kwargs):
         if 'incremental' in kwargs:
             print('c.recolor: incremental keyword is deprecated', g.callers(1))
-        ### self.c.requestRecolorFlag = True
         self.c.recolor()
 
     recolor_now = recolor

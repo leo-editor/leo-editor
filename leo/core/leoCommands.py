@@ -5619,16 +5619,6 @@ class Commands(object):
         if c.requestedIconify in ('iconify', 'deiconify'):
             aList.append(c.requestedIconify)
             c.frame.iconify() if c.requestedIconify == 'iconify' else c.frame.deiconify()
-        # No longer used.
-            # if redrawFlag:
-                # if trace: g.trace('****', 'tree.drag_p', c.frame.tree.drag_p)
-                # # A hack: force the redraw, even if we are dragging.
-                # aList.append('*** redraw')
-                # c.frame.tree.redraw(forceDraw=True)
-        ### No longer used.
-            # if c.requestRecolorFlag:
-                # aList.append('recolor')
-                # c.recolor_now()
         if c.requestedFocusWidget:
             w = c.requestedFocusWidget
             if traceFocus: aList.append('focus: %s' % g.app.gui.widget_name(w))
@@ -5639,7 +5629,6 @@ class Commands(object):
             pass
         if trace and aList: g.trace(','.join(aList))
         c.requestBringToFront = None
-        ### c.requestRecolorFlag = None
         c.requestedFocusWidget = None
         c.requestedIconify = ''
         table = (
