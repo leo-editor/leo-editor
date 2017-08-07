@@ -4233,10 +4233,10 @@ class LeoQtSpellTab(object):
         self.updateButtons()
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18397: *3* Helpers
-    #@+node:ekr.20110605121601.18398: *4* bringToFront
+    #@+node:ekr.20110605121601.18398: *4* bringToFront (LeoQtSpellTab)
     def bringToFront(self):
         self.c.frame.log.selectTab('Spell')
-    #@+node:ekr.20110605121601.18399: *4* fillbox
+    #@+node:ekr.20110605121601.18399: *4* fillbox (LeoQtSpellTab)
     def fillbox(self, alts, word=None):
         """Update the suggestions listBox in the Check Spelling dialog."""
         self.suggestions = alts
@@ -4246,7 +4246,7 @@ class LeoQtSpellTab(object):
         if self.suggestions:
             self.listBox.addItems(self.suggestions)
             self.listBox.setCurrentRow(0)
-    #@+node:ekr.20110605121601.18400: *4* getSuggestion
+    #@+node:ekr.20110605121601.18400: *4* getSuggestion (LeoQtSpellTab)
     def getSuggestion(self):
         """Return the selected suggestion from the listBox."""
         idx = self.listBox.currentRow()
