@@ -650,7 +650,7 @@ class LeoQtTree(leoFrame.LeoTree):
             if not c.changed: c.setChanged(True)
             # New in Leo 4.4.5: we must recolor the body because
             # the headline may contain directives.
-            c.frame.body.recolor(p) ###, incremental=True)
+            c.frame.body.recolor(p)
             dirtyVnodeList = p.setDirty()
             u.afterChangeNodeContents(p, undoType, undoData,
                 dirtyVnodeList=dirtyVnodeList, inHead=True) # 2013/08/26.

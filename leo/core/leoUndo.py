@@ -1397,7 +1397,7 @@ class Undoer(object):
         # Restore the body.
         u.p.setBodyString(u.newBody)
         w.setAllText(u.newBody)
-        c.frame.body.recolor(u.p) ###, incremental=False)
+        c.frame.body.recolor(u.p)
         # Restore the headline.
         u.p.initHeadString(u.newHead)
         # This is required so.  Otherwise redraw will revert the change!
@@ -1455,8 +1455,9 @@ class Undoer(object):
         # selectPosition causes recoloring, so avoid if possible.
         if current != u.p:
             c.selectPosition(u.p)
-        elif u.undoType in ('Cut', 'Paste', 'Clear Recent Files'):
-            c.frame.body.forceFullRecolor()
+        ###
+            # elif u.undoType in ('Cut', 'Paste', 'Clear Recent Files'):
+                # c.frame.body.forceFullRecolor()
         self.undoRedoText(
             u.p, u.leading, u.trailing,
             u.newMiddleLines, u.oldMiddleLines,
@@ -1702,7 +1703,7 @@ class Undoer(object):
         w = c.frame.body.wrapper
         u.p.b = u.oldBody
         w.setAllText(u.oldBody)
-        c.frame.body.recolor(u.p) ###, incremental=False)
+        c.frame.body.recolor(u.p)
         if trace: g.trace(repr(u.oldHead))
         u.p.h = u.oldHead
         # This is required.  Otherwise c.redraw will revert the change!
@@ -1779,7 +1780,7 @@ class Undoer(object):
         if sel:
             i, j = sel
             w.setSelectionRange(i, j, insert=j)
-        c.frame.body.recolor(p) ###, incremental=False)
+        c.frame.body.recolor(p)
         w.seeInsertPoint() # 2009/12/21
     #@+node:ekr.20050408100042: *4* u.undoRedoTree
     def undoRedoTree(self, p, new_data, old_data):
@@ -1819,8 +1820,9 @@ class Undoer(object):
         # selectPosition causes recoloring, so don't do this unless needed.
         if current != u.p:
             c.selectPosition(u.p)
-        elif u.undoType in ("Cut", "Paste", 'Clear Recent Files'):
-            c.frame.body.forceFullRecolor()
+        ###
+            # elif u.undoType in ("Cut", "Paste", 'Clear Recent Files'):
+                # c.frame.body.forceFullRecolor()
         self.undoRedoText(
             u.p, u.leading, u.trailing,
             u.oldMiddleLines, u.newMiddleLines,

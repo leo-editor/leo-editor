@@ -221,7 +221,7 @@ class LeoBody(object):
         frame.body = self
         self.c = c
         self.editorWidgets = {} # keys are pane names, values are text widgets
-        self.forceFullRecolorFlag = False
+        ### self.forceFullRecolorFlag = False
         self.frame = frame
         self.parentFrame = parentFrame # New in Leo 4.6.
         self.totalNumberOfEditors = 0
@@ -240,7 +240,6 @@ class LeoBody(object):
         return g.new_cmd_decorator(name, ['c', 'frame', 'body'])
     #@+node:ekr.20031218072017.3677: *3* LeoBody.Coloring (recolor is a do-nothing??)
     def forceFullRecolor(self):
-        # self.forceFullRecolorFlag = True
         pass
 
     def getColorizer(self):
@@ -249,7 +248,6 @@ class LeoBody(object):
     def updateSyntaxColorer(self, p):
         return self.colorizer.updateSyntaxColorer(p.copy())
 
-    ### def recolor(self, p, incremental=False):
     def recolor(self, p, **kwargs):
         if 'incremental' in kwargs:
             print('c.recolor: incremental keyword is deprecated', g.callers(1))
@@ -659,8 +657,8 @@ class LeoBody(object):
         #@+<< recolor the body >>
         #@+node:ekr.20051026083733.6: *5* << recolor the body >>
         c.frame.scanForTabWidth(p)
-        body.recolor(p) ###, incremental=not self.forceFullRecolorFlag)
-        self.forceFullRecolorFlag = False
+        body.recolor(p)
+        ### self.forceFullRecolorFlag = False
         if g.app.unitTesting:
             g.app.unitTestDict['colorized'] = True
         #@-<< recolor the body >>
@@ -993,7 +991,7 @@ class LeoFrame(object):
             w.see(i) # 2016/01/19: important
             g.app.gui.replaceClipboardWith(s)
         if name.startswith('body'):
-            c.frame.body.forceFullRecolor()
+            ### c.frame.body.forceFullRecolor()
             c.frame.body.onBodyChanged('Cut', oldSel=oldSel, oldText=oldText)
         elif name.startswith('head'):
             # The headline is not officially changed yet.
@@ -1054,7 +1052,7 @@ class LeoFrame(object):
                     offset = 0
                 newCurPosition = tCurPosition + offset
                 w.setSelectionRange(i=newCurPosition, j=newCurPosition)
-            c.frame.body.forceFullRecolor()
+            ### c.frame.body.forceFullRecolor()
             c.frame.body.onBodyChanged('Paste', oldSel=oldSel, oldText=oldText)
         elif singleLine:
             s = w.getAllText()
@@ -1379,7 +1377,7 @@ class LeoTree(object):
             # New in Leo 4.4.5: we must recolor the body because
             # the headline may contain directives.
             c.frame.scanForTabWidth(p)
-            c.frame.body.recolor(p) ###, incremental=True)
+            c.frame.body.recolor(p)
             dirtyVnodeList = p.setDirty()
             u.afterChangeNodeContents(p, undoType, undoData,
                 dirtyVnodeList=dirtyVnodeList, inHead=True)

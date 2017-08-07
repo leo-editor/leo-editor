@@ -5634,7 +5634,7 @@ class Commands(object):
         if c.requestRecolorFlag:
             aList.append('recolor')
             # This should be the only call to c.recolor_now.
-            c.recolor_now() ### incremental=False)
+            c.recolor_now()
         if c.requestedFocusWidget:
             w = c.requestedFocusWidget
             if traceFocus: aList.append('focus: %s' % g.app.gui.widget_name(w))
@@ -5902,7 +5902,6 @@ class Commands(object):
         if flag:
             c.frame.tree.redraw_after_select(p)
     #@+node:ekr.20080514131122.13: *4* c.recolor_now
-    ### def recolor_now(self, p=None, incremental=False, interruptable=True):
     def recolor_now(self, **kwargs):
         # Support QScintillaColorizer.colorize.
         c = self

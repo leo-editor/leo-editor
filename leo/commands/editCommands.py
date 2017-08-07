@@ -1407,7 +1407,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.deleteWordHelper(event, forward=False, smart=True)
 
     def deleteWordHelper(self, event, forward, smart=False):
-        c, w = self.c, self.editWidget(event)
+        ### c, w = self.c, self.editWidget(event)
+        w = self.editWidget(event)
         if not w:
             return
         self.beginCommand(w, undoType="delete-word")
@@ -1421,7 +1422,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if from_pos > to_pos:
             from_pos, to_pos = to_pos, from_pos
         w.delete(from_pos, to_pos)
-        c.frame.body.forceFullRecolor()
+        ### c.frame.body.forceFullRecolor()
         self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.259: *4* ec.deleteNextChar
     @cmd('delete-char')
@@ -3117,7 +3118,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.insert(i, '\n')
                 w.setSelectionRange(sel_1 + 1, sel_2 + 1, insert=insert_pt + 1)
             # Fix bug 799695: colorizer bug after move-lines-up into a docstring
-            c.recolor_now() ### incremental=False)
+            c.recolor_now()
         finally:
             self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.331: *4* ec.moveLinesUp
@@ -3158,7 +3159,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 w.insert(j, '\n')
                 w.setSelectionRange(sel_1, sel_2, insert=sel_1)
             # Fix bug 799695: colorizer bug after move-lines-up into a docstring
-            c.recolor_now() ### incremental=False)
+            c.recolor_now()
         finally:
             self.endCommand(changed=True, setLabel=True)
     #@+node:ekr.20150514063305.332: *4* ec.reverseRegion
