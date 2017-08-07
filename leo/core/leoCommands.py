@@ -5606,31 +5606,25 @@ class Commands(object):
     #@+node:ekr.20080514131122.20: *4* c.outerUpdate
     def outerUpdate(self):
         trace = False and not g.unitTesting
-        verbose = False; traceFocus = False
-        c = self; aList = []
+        traceFocus = False
+        c = self
+        aList = []
         if not c.exists or not c.k:
             return
-        # Suppress any requested redraw until we have iconified or diconified.
-        if trace and verbose:
-            g.trace('**start', c.shortFileName() or '<unnamed>', g.callers(5))
         if c.requestBringToFront:
             if hasattr(c.frame, 'bringToFront'):
                 c.requestBringToFront.frame.bringToFront()
                     # c.requestBringToFront is a commander.
-            c.requestBringToFront = None
         # The iconify requests are made only by c.bringToFront.
-        if c.requestedIconify == 'iconify':
-            if verbose: aList.append('iconify')
-            c.frame.iconify()
-        if c.requestedIconify == 'deiconify':
-            if verbose: aList.append('deiconify')
-            c.frame.deiconify()
+        if c.requestedIconify in ('iconify', 'deiconify'):
+            aList.append(c.requestedIconify)
+            c.frame.iconify() if c.requestedIconify == 'iconify' else c.frame.deiconify()
         # No longer used.
-        # if redrawFlag:
-            # if trace: g.trace('****', 'tree.drag_p', c.frame.tree.drag_p)
-            # # A hack: force the redraw, even if we are dragging.
-            # aList.append('*** redraw')
-            # c.frame.tree.redraw_now(forceDraw=True)
+            # if redrawFlag:
+                # if trace: g.trace('****', 'tree.drag_p', c.frame.tree.drag_p)
+                # # A hack: force the redraw, even if we are dragging.
+                # aList.append('*** redraw')
+                # c.frame.tree.redraw_now(forceDraw=True)
         if c.requestRecolorFlag:
             aList.append('recolor')
             # This should be the only call to c.recolor_now.
@@ -5643,21 +5637,20 @@ class Commands(object):
             # We must not set the focus to the body pane here!
             # That would make nested calls to c.outerUpdate significant.
             pass
-        if trace and (verbose or aList):
-            g.trace('** end', aList)
+        if trace and aList: g.trace(','.join(aList))
+        c.requestBringToFront = None
         c.requestRecolorFlag = None
         c.requestedFocusWidget = None
         c.requestedIconify = ''
-        mods = g.childrenModifiedSet
-        if mods:
-            #print(mods)
-            g.doHook("childrenModified", c=c, nodes=mods)
-            mods.clear()
-        mods = g.contentModifiedSet
-        if mods:
-            #print(mods)
-            g.doHook("contentModified", c=c, nodes=mods)
-            mods.clear()
+        table = (
+            ("childrenModified", g.childrenModifiedSet),
+            ("contentModified", g.contentModifiedSet),
+        )
+        for kind, mods in table:
+            if mods:
+                g.doHook(kind, c=c, nodes=mods)
+                mods.clear()
+        
     #@+node:ekr.20031218072017.2945: *3* c.Dragging
     #@+node:ekr.20031218072017.2353: *4* c.dragAfter
     def dragAfter(self, p, after):
