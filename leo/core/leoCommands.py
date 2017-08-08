@@ -163,6 +163,7 @@ class Commands(object):
         # Flags for c.outerUpdate...
         self.requestCloseWindow = False
         self.requestedFocusWidget = None
+        self.requestLaterRedraw = False
     #@+node:ekr.20120217070122.10472: *5* c.initFileIvars
     def initFileIvars(self, fileName, relativeFileName):
         '''Init file-related ivars of the commander.'''
@@ -5607,6 +5608,10 @@ class Commands(object):
         c = self
         if not c.exists or not c.k:
             return
+        # New in Leo 5.6: Delayed redraws are useful in utility methods.
+        if c.requestLaterRedraw:
+            c.requestLaterRedraw = False
+            c.redraw()
         # Delayed focus requests will always be useful.
         if c.requestedFocusWidget:
             w = c.requestedFocusWidget
@@ -5794,6 +5799,8 @@ class Commands(object):
         '''Redraw the screen immediately.'''
         trace = False and not g.unitTesting
         c = self
+        # New in Leo 5.6: clear the redraw request.
+        c.requestLaterRedraw = False
         if not p:
             p = c.p or c.rootPosition()
         if not p:
@@ -5815,6 +5822,13 @@ class Commands(object):
 
     force_redraw = redraw
     redraw_now = redraw
+    #@+node:ekr.20090110073010.3: *5* c.redraw_afer_icons_changed
+    def redraw_after_icons_changed(self):
+        '''Update the icon for the presently selected node,
+        or all icons if the 'all' flag is true.'''
+        c = self
+        c.frame.tree.redraw_after_icons_changed()
+        # c.treeFocusHelper()
     #@+node:ekr.20090110131802.2: *5* c.redraw_after_contract
     def redraw_after_contract(self, p=None, setFocus=False):
         c = self
@@ -5846,13 +5860,6 @@ class Commands(object):
         '''Redraw the screen (if needed) when editing ends.
         This may be a do-nothing for some gui's.'''
         return self.frame.tree.redraw_after_head_changed()
-    #@+node:ekr.20090110073010.3: *5* c.redraw_afer_icons_changed
-    def redraw_after_icons_changed(self):
-        '''Update the icon for the presently selected node,
-        or all icons if the 'all' flag is true.'''
-        c = self
-        c.frame.tree.redraw_after_icons_changed()
-        # c.treeFocusHelper()
     #@+node:ekr.20090110073010.4: *5* c.redraw_after_select
     def redraw_after_select(self, p):
         '''Redraw the screen after node p has been selected.'''
@@ -5862,6 +5869,15 @@ class Commands(object):
         flag = c.expandAllAncestors(p)
         if flag:
             c.frame.tree.redraw_after_select(p)
+    #@+node:ekr.20170808005711.1: *5* c.redraw_later
+    def redraw_later(self):
+        '''
+        Ensure that c.redraw() will be called eventually.
+        
+        c.outerUpdate will call c.redraw() only if no other code calls c.redraw().
+        '''
+        c = self
+        c.requestLaterRedraw = True
     #@+node:ekr.20080514131122.13: *4* c.recolor
     def recolor(self, **kwargs):
         # Support QScintillaColorizer.colorize.
