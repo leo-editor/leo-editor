@@ -13,6 +13,7 @@ Note: cc.selectChapterForPosition calls c.redraw *only* if the chapter changes.
   Related to string-gui branch: Use string/null gui for unit tests.
   https://github.com/leo-editor/leo-editor/issues/503
 
+- Added support for c.redraw_later, called from cc.selectChapterForPosition.
 - c.bringToFront now works without using c.outerUpdate.
 - c.widgetWantsFocusNow now just calls c.set_focus & clears c.requestedFocusWidget.
 - c.outerUpdate no longer handles recoloring or redrawing.
