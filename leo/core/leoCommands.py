@@ -5614,6 +5614,8 @@ class Commands(object):
             if c.enableRedrawFlag:
                 c.requestLaterRedraw = False
                 c.redraw()
+            else:
+                if trace: g.trace('c.redraw disabled')
         # Delayed focus requests will always be useful.
         if c.requestedFocusWidget:
             w = c.requestedFocusWidget
@@ -5796,6 +5798,15 @@ class Commands(object):
         wrapper.setAllText(c.p.b)
         wrapper.setSelectionRange(i, j, insert=ins)
     #@+node:ekr.20080514131122.14: *4* c.redrawing...
+    #@+node:ekr.20170808014610.1: *5* c.enable/disable_redraw (New in Leo 5.6)
+    def disable_redraw(self):
+        '''Disable all redrawing until enabled.'''
+        c = self
+        c.enableRedrawFlag = False
+        
+    def enable_redraw(self):
+        c = self
+        c.enableRedrawFlag = True
     #@+node:ekr.20090110073010.1: *5* c.redraw
     def redraw(self, p=None, setFocus=False):
         '''Redraw the screen immediately.'''
@@ -5898,15 +5909,6 @@ class Commands(object):
         '''
         c = self
         c.requestLaterRedraw = True
-    #@+node:ekr.20170808014610.1: *5* c.enable/disable_redraw (New in Leo 5.6)
-    def disable_redraw(self):
-        '''Disable all redrawing until enabled.'''
-        c = self
-        c.enableRedrawFlag = False
-        
-    def enable_redraw(self):
-        c = self
-        c.enableRedrawFlag = True
     #@+node:ekr.20080514131122.13: *4* c.recolor
     def recolor(self, **kwargs):
         # Support QScintillaColorizer.colorize.

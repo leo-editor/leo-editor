@@ -675,7 +675,7 @@ class GitDiffController:
         Similar to fc.getLeoOutlineFromClipboard
         '''
         c, fc = self.c, self.c.fileCommands
-        if 1:
+        if 1: # Feasible, now that redrawing is disabled.
             p = fc.getLeoOutlineFromClipboard(s, reassignIndices=True, tempOutline=True)
             return p
         else:
