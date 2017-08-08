@@ -169,6 +169,8 @@ class LeoQtTree(leoFrame.LeoTree):
             return
         if self.busy():
             return g.trace('*** full_redraw: busy!', g.callers())
+        # Cancel the delayed redraw request.
+        c.requestLaterRedraw = False
         if not p:
             p = c.currentPosition()
         elif c.hoistStack and p.h.startswith('@chapter') and p.hasChildren():
