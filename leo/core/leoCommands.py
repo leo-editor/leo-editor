@@ -161,6 +161,7 @@ class Commands(object):
         self.suppressHeadChanged = False
             # True: prevent setting c.changed when switching chapters.
         # Flags for c.outerUpdate...
+        self.enableRedrawFlag = True
         self.requestCloseWindow = False
         self.requestedFocusWidget = None
         self.requestLaterRedraw = False
@@ -5610,8 +5611,9 @@ class Commands(object):
             return
         # New in Leo 5.6: Delayed redraws are useful in utility methods.
         if c.requestLaterRedraw:
-            c.requestLaterRedraw = False
-            c.redraw()
+            if c.enableRedrawFlag:
+                c.requestLaterRedraw = False
+                c.redraw()
         # Delayed focus requests will always be useful.
         if c.requestedFocusWidget:
             w = c.requestedFocusWidget
@@ -5810,65 +5812,83 @@ class Commands(object):
             # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1183855
             # This looks redundant, but it is probably the only safe fix.
             c.frame.tree.select(p)
-        # 2012/03/10: tree.redraw will change the position if p is a hoisted @chapter node.
+        # tree.redraw will change the position if p is a hoisted @chapter node.
         p2 = c.frame.tree.redraw(p)
         # Be careful.  NullTree.redraw returns None.
         c.selectPosition(p2 or p)
-        if trace:
-            g.trace(p2 and p2.h)
-            # g.trace('setFocus', setFocus, p2 and p2.h or p and p.h)
+        if trace: g.trace(p2 and p2.h, g.callers())
         if setFocus: c.treeFocusHelper()
+        # New in Leo 5.6: clear the redraw request, again.
+        c.requestLaterRedraw = False
+
     # Compatibility with old scripts
 
     force_redraw = redraw
     redraw_now = redraw
     #@+node:ekr.20090110073010.3: *5* c.redraw_afer_icons_changed
     def redraw_after_icons_changed(self):
-        '''Update the icon for the presently selected node,
-        or all icons if the 'all' flag is true.'''
+        '''Update the icon for the presently selected node'''
         c = self
-        c.frame.tree.redraw_after_icons_changed()
-        # c.treeFocusHelper()
+        if c.enableRedrawFlag:
+            c.frame.tree.redraw_after_icons_changed()
+            # c.treeFocusHelper()
+        else:
+            c.requestLaterRedraw = True
     #@+node:ekr.20090110131802.2: *5* c.redraw_after_contract
     def redraw_after_contract(self, p=None, setFocus=False):
         c = self
         c.endEditing()
-        if p:
-            c.setCurrentPosition(p)
+        if c.enableRedrawFlag:
+            if p:
+                c.setCurrentPosition(p)
+            else:
+                p = c.currentPosition()
+            if p.isCloned():
+                c.redraw(p=p, setFocus=setFocus)
+            else:
+                c.frame.tree.redraw_after_contract(p)
+                if setFocus: c.treeFocusHelper()
         else:
-            p = c.currentPosition()
-        if p.isCloned():
-            c.redraw(p=p, setFocus=setFocus)
-        else:
-            c.frame.tree.redraw_after_contract(p)
-            if setFocus: c.treeFocusHelper()
+            c.requestLaterRedraw = True
     #@+node:ekr.20090112065525.1: *5* c.redraw_after_expand
     def redraw_after_expand(self, p=None, setFocus=False):
         c = self
         c.endEditing()
-        if p:
-            c.setCurrentPosition(p)
+        if c.enableRedrawFlag:
+            if p:
+                c.setCurrentPosition(p)
+            else:
+                p = c.currentPosition()
+            if p.isCloned():
+                c.redraw(p=p, setFocus=setFocus)
+            else:
+                c.frame.tree.redraw_after_expand(p)
+                if setFocus: c.treeFocusHelper()
         else:
-            p = c.currentPosition()
-        if p.isCloned():
-            c.redraw(p=p, setFocus=setFocus)
-        else:
-            c.frame.tree.redraw_after_expand(p)
-            if setFocus: c.treeFocusHelper()
+            c.requestLaterRedraw = True
     #@+node:ekr.20090110073010.2: *5* c.redraw_after_head_changed
     def redraw_after_head_changed(self):
-        '''Redraw the screen (if needed) when editing ends.
-        This may be a do-nothing for some gui's.'''
-        return self.frame.tree.redraw_after_head_changed()
+        '''
+        Redraw the screen (if needed) when editing ends.
+        This may be a do-nothing for some gui's.
+        '''
+        c = self
+        if c.enableRedrawFlag:
+            return self.frame.tree.redraw_after_head_changed()
+        else:
+            c.requestLaterRedraw = True
     #@+node:ekr.20090110073010.4: *5* c.redraw_after_select
     def redraw_after_select(self, p):
         '''Redraw the screen after node p has been selected.'''
         trace = False and not g.unitTesting
         if trace: g.trace('(Commands)', p and p.h or '<No p>', g.callers(4))
         c = self
-        flag = c.expandAllAncestors(p)
-        if flag:
-            c.frame.tree.redraw_after_select(p)
+        if c.enableRedrawFlag:
+            flag = c.expandAllAncestors(p)
+            if flag:
+                c.frame.tree.redraw_after_select(p)
+        else:
+            c.requestLaterRedraw = True
     #@+node:ekr.20170808005711.1: *5* c.redraw_later
     def redraw_later(self):
         '''
@@ -5878,6 +5898,15 @@ class Commands(object):
         '''
         c = self
         c.requestLaterRedraw = True
+    #@+node:ekr.20170808014610.1: *5* c.enable/disable_redraw (New in Leo 5.6)
+    def disable_redraw(self):
+        '''Disable all redrawing until enabled.'''
+        c = self
+        c.enableRedrawFlag = False
+        
+    def enable_redraw(self):
+        c = self
+        c.enableRedrawFlag = True
     #@+node:ekr.20080514131122.13: *4* c.recolor
     def recolor(self, **kwargs):
         # Support QScintillaColorizer.colorize.

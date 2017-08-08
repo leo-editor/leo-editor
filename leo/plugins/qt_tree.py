@@ -1276,25 +1276,29 @@ class LeoQtTree(leoFrame.LeoTree):
     def afterSelectHint(self, p, old_p):
         trace = False and not g.unitTesting
         c = self.c
-        self.selecting = False
-        if self.busy():
-            self.error('afterSelectHint busy!: %s' % self.busy())
-        if not p:
-            return self.error('no p')
-        if p != c.p:
-            if trace: self.error(
-                '(afterSelectHint) p != c.p\np:   %s\nc.p: %s\n' % (
-                repr(p), repr(c.currentPosition())))
-            p = c.p
-        # if trace: g.trace(c.p.h,g.callers())
-        # We don't redraw during unit testing: an important speedup.
-        if c.expandAllAncestors(p) and not g.unitTesting:
-            if trace: g.trace('***self.full_redraw')
-            self.full_redraw(p)
+        if c.enableRedrawFlag:
+            self.selecting = False
+            if self.busy():
+                self.error('afterSelectHint busy!: %s' % self.busy())
+            if not p:
+                return self.error('no p')
+            if p != c.p:
+                if trace: self.error(
+                    '(afterSelectHint) p != c.p\np:   %s\nc.p: %s\n' % (
+                    repr(p), repr(c.currentPosition())))
+                p = c.p
+            # if trace: g.trace(c.p.h,g.callers())
+            # We don't redraw during unit testing: an important speedup.
+            if c.expandAllAncestors(p) and not g.unitTesting:
+                if trace: g.trace('***self.full_redraw')
+                self.full_redraw(p)
+            else:
+                if trace: g.trace('*** c.outerUpdate')
+                c.outerUpdate() # Bring the tree up to date.
+                self.setItemForCurrentPosition(scroll=False)
         else:
-            if trace: g.trace('*** c.outerUpdate')
-            c.outerUpdate() # Bring the tree up to date.
-            self.setItemForCurrentPosition(scroll=False)
+            self.selecting = False
+            c.requestLaterRedraw = True
     #@+node:ekr.20110605121601.17907: *4* qtree.beforeSelectHint
     def beforeSelectHint(self, p, old_p):
         trace = False and not g.unitTesting

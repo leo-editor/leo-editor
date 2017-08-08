@@ -548,13 +548,17 @@ class GitDiffController:
             g.printList(diff_list)
         self.file_node = self.create_file_node(diff_list, fn)
         if c.looksLikeDerivedFile(fn):
-            p1 = self.make_outline(fn, lines, self.rev1)
-            p2 = self.make_outline(fn, lines2, self.rev2)
-            # Do this *before* reallocating gnx's.
-            self.make_diff_outlines(fn, p1, p2)
-            # Reallocate (cut/paste) in reverse order, to preserve positions.
-            p2 = self.reallocate_gnxs(fn, p2)
-            p1 = self.reallocate_gnxs(fn, p1)
+            try:
+                c.disable_redraw()
+                p1 = self.make_outline(fn, lines, self.rev1)
+                p2 = self.make_outline(fn, lines2, self.rev2)
+                # Do this *before* reallocating gnx's.
+                self.make_diff_outlines(fn, p1, p2)
+                # Reallocate (cut/paste) in reverse order, to preserve positions.
+                p2 = self.reallocate_gnxs(fn, p2)
+                p1 = self.reallocate_gnxs(fn, p1)
+            finally:
+                c.enable_redraw()
     #@+node:ekr.20170806094321.1: *4* gdc.create_file_node
     def create_file_node(self, diff_list, fn):
 
@@ -671,49 +675,53 @@ class GitDiffController:
         Similar to fc.getLeoOutlineFromClipboard
         '''
         c, fc = self.c, self.c.fileCommands
-        parent = self.file_node
-        fc.initReadIvars()
-        # Save...
-        children = c.hiddenRootNode.children
-        oldGnxDict = fc.gnxDict
-        fc.gnxDict = {}
-        try:
-            fc.usingClipboard = True
-            # This encoding must match the encoding used in putLeoOutline.
-            s = g.toEncodedString(s, fc.leo_file_encoding, reportErrors=True)
-            # readSaxFile modifies the hidden root.
-            v = fc.readSaxFile(
-                theFile=None,
-                fileName=fn,
-                silent=True, # don't tell about stylesheet elements.
-                inClipboard=True,
-                reassignIndices=True,
-                s=s)
-            if not v:
-                g.es("invalid external file", color="blue")
-                return None
-        finally:
-            fc.usingClipboard = False
-        # Restore...
-        c.hiddenRootNode.children = children
-        # Unlink v from the hidden root.
-        v.parents.remove(c.hiddenRootNode)
-        p = leoNodes.Position(v)
-        n = parent.numberOfChildren()
-        p._linkAsNthChild(parent, n, adjust=False)
-            # Do *not* adjust links when linking v.
-            # The read code has already done that.
-        # Reassign indices.
-        fc.gnxDict = oldGnxDict
-        ni = g.app.nodeIndices
-        for p2 in p.self_and_subtree():
-            ni.getNewIndex(p2.v)
-        # Clean up.
-        fc.initReadIvars()
-        c.validateOutline()
-        c.setCurrentPosition(p)
-            # c.selectPosition causes flash(!)
-        return p
+        if 1:
+            p = fc.getLeoOutlineFromClipboard(s, reassignIndices=True, tempOutline=True)
+            return p
+        else:
+            parent = self.file_node
+            fc.initReadIvars()
+            # Save...
+            children = c.hiddenRootNode.children
+            oldGnxDict = fc.gnxDict
+            fc.gnxDict = {}
+            try:
+                fc.usingClipboard = True
+                # This encoding must match the encoding used in putLeoOutline.
+                s = g.toEncodedString(s, fc.leo_file_encoding, reportErrors=True)
+                # readSaxFile modifies the hidden root.
+                v = fc.readSaxFile(
+                    theFile=None,
+                    fileName=fn,
+                    silent=True, # don't tell about stylesheet elements.
+                    inClipboard=True,
+                    reassignIndices=True,
+                    s=s)
+                if not v:
+                    g.es("invalid external file", color="blue")
+                    return None
+            finally:
+                fc.usingClipboard = False
+            # Restore...
+            c.hiddenRootNode.children = children
+            # Unlink v from the hidden root.
+            v.parents.remove(c.hiddenRootNode)
+            p = leoNodes.Position(v)
+            n = parent.numberOfChildren()
+            p._linkAsNthChild(parent, n, adjust=False)
+                # Do *not* adjust links when linking v.
+                # The read code has already done that.
+            # Reassign indices.
+            fc.gnxDict = oldGnxDict
+            ni = g.app.nodeIndices
+            for p2 in p.self_and_subtree():
+                ni.getNewIndex(p2.v)
+            # Clean up.
+            fc.initReadIvars()
+            c.validateOutline()
+            c.setCurrentPosition(p)
+                # c.selectPosition causes flash(!)
+            return p
     #@+node:ekr.20170806125830.1: *4* gdc.reallocate_gnxs
     def reallocate_gnxs(self, fn, root):
         '''Reallocate the probably duplicated gnx's in root's tree.'''
