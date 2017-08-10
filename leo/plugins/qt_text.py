@@ -841,7 +841,7 @@ class NumberBar(QtWidgets.QFrame):
         if bold:
             self.setBold(painter, True)
         s = str(n)
-        pad = len(str(self.highest_line)) - len(s)
+        pad = max(4, len(str(self.highest_line))) - len(s)
         s = ' '*pad + s
         # x = self.width() - self.fm.width(s) - self.w_adjust
         x = 0
