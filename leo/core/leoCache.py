@@ -433,6 +433,8 @@ class Cacher(object):
             self.db[fileKey] = self.makeCacheList(p)
     #@+node:ekr.20100208065621.5890: *3* cacher.test
     def test(self):
+        
+        # pylint: disable=no-member
         if g.app.gui.guiName() == 'nullGui':
             # Null gui's don't normally set the g.app.gui.db.
             g.app.setGlobalDb()
@@ -460,6 +462,7 @@ class Cacher(object):
     def commit(self, close=True):
         # in some cases while unit testing self.db is python dict
         if SQLITE and hasattr(self.db, 'conn'):
+            # pylint: disable=no-member
             self.db.conn.commit()
             if close:
                 self.db.conn.close()
