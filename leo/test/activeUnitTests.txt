@@ -2709,7 +2709,7 @@ else:
     command = 'python %s' % path
     pid = subprocess.Popen(
         command,
-        shell=False,
+        shell=True,
         universal_newlines=True,
     )
     pid.communicate()
