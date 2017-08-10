@@ -83,7 +83,7 @@ def renumber(c):
         nums = universal_line_numbers(root, new_p, delim_st, delim_en)
         NUMBERINGS[c.hash() + new_p.gnx] = nums
     c.user_dict[LNT] = nums
-    w = c.frame.top.findChild(QtWidgets.QFrame, 'gutter')
+    w = c.frame.top and c.frame.top.findChild(QtWidgets.QFrame, 'gutter')
     if w:
         w.highest_line = nums[-1] if nums else 10
         w.update()
