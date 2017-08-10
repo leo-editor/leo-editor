@@ -841,12 +841,10 @@ class NumberBar(QtWidgets.QFrame):
         if bold:
             self.setBold(painter, True)
         s = str(n)
-        x = self.width() - self.fm.width(s) - self.w_adjust # centers
-        # x = self.width() - self.fm.width(s) # right justifies too much, and probably centers.
-        # x = self.width() - self.fm.width(s) - self.w_adjust/2
-        # x = 0 # Left justifies
-        # x = self.fm.width(str(self.highest_line)) - self.fm.width(s) # center
-        # g.trace(self.width(), self.fm.width(s), x, repr(s))
+        pad = len(str(self.highest_line)) - len(s)
+        s = ' '*pad + s
+        # x = self.width() - self.fm.width(s) - self.w_adjust
+        x = 0
         y = round(top_left.y()) - scroll_y + self.fm.ascent() + self.y_adjust
         painter.drawText(x, y, s)
         if bold:
