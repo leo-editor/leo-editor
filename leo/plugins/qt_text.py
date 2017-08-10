@@ -799,7 +799,7 @@ class NumberBar(QtWidgets.QFrame):
         '''
         # w_adjust is used to compensate for the current line being bold.
         # Always allocate room for 2 columns
-        width = self.fm.width(str(max(10, self.highest_line))) + self.w_adjust
+        width = self.fm.width(str(max(1000, self.highest_line))) + self.w_adjust
         if self.width() != width:
             self.setFixedWidth(width)
         QtWidgets.QWidget.update(self, *args)
