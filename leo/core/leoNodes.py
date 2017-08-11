@@ -360,8 +360,9 @@ class Position(object):
         return [int(s.split(':')[1]) for s in p.key().split('.')]
     # This has makes positions hashable, at long long last.
 
-    def __hash__(self):
-        return sum([z[1] for z in self.stack])
+    #def __hash__(self):
+    #    return sum([z[1] for z in self.stack])
+    __hash__ = None
     #@+node:ekr.20040315023430: *3* p.File Conversion
     #@+at
     # - convertTreeToString and moreHead can't be VNode methods because they uses level().

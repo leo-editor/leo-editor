@@ -507,7 +507,9 @@ class QuickSearchController(object):
         lineMatchHits = 0
         for parent_key, parent_value in parent_list.items():
             if g.isString(parent_key):
-                it = QtWidgets.QListWidgetItem(parent_key, self.lw)
+                v = self.c.fileCommands.gnxDict.get(parent_key)
+                h = v.h if v else parent_key
+                it = QtWidgets.QListWidgetItem(h, self.lw)
             else:
                 it = QtWidgets.QListWidgetItem(parent_key.h, self.lw)
             f = it.font()
@@ -663,7 +665,7 @@ class QuickSearchController(object):
                         if node.level() == 0:
                             parents["Root"].append(node)
                         else:
-                            parents[node.parent()].append(node)
+                            parents[node.parent().gnx].append(node)
                 lineMatchHits = self.addParentMatches(parents)
             else:
                 self.addHeadlineMatches(hm)
