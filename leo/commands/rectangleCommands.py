@@ -176,7 +176,7 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         self.endCommand()
         # 2010/1/1: Fix bug 480422:
         # string-rectangle kills syntax highlighting.
-        c.frame.body.recolor(c.p, incremental=False)
+        c.frame.body.recolor(c.p)
     #@+node:ekr.20150514063305.460: *4* yankRectangle
     @cmd('rectangle-yank')
     def yankRectangle(self, event, killRect=None):

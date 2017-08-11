@@ -2703,7 +2703,16 @@ if g.app.isExternalUnitTest:
     assert c
     assert c.rootPosition()
 else:
-    self.skipTest('Can not be run locally')
+    import subprocess
+    path = g.os_path_finalize_join(g.app.loadDir,'..','test', 'leo-bridge-test.py')
+    assert g.os_path_exists(path), path
+    command = 'python %s' % path
+    pid = subprocess.Popen(
+        command,
+        shell=True,
+        universal_newlines=True,
+    )
+    pid.communicate()
 #@+node:ekr.20110608135658.3377: *3* leoChapters
 #@+node:ekr.20110608162543.3363: *4* @test chapter-create/remove & undo
 # cc will be None when unit tests run dynamically.

@@ -591,7 +591,6 @@ class FileCommands(object):
         # Important: we must not adjust links when linking v
         # into the outline.  The read code has already done that.
         if current.hasChildren() and current.isExpanded():
-            # What does checkPaste do??
             if check and not self.checkPaste(current, p):
                 return None
             p._linkAsNthChild(current, 0, adjust=False)

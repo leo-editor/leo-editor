@@ -161,13 +161,10 @@ class Commands(object):
         self.suppressHeadChanged = False
             # True: prevent setting c.changed when switching chapters.
         # Flags for c.outerUpdate...
-        self.incrementalRecolorFlag = False
-        self.requestBringToFront = None # A commander, or None.
+        self.enableRedrawFlag = True
         self.requestCloseWindow = False
-        self.requestRecolorFlag = False
-        self.requestRedrawFlag = False
         self.requestedFocusWidget = None
-        self.requestedIconify = '' # 'iconify','deiconify'
+        self.requestLaterRedraw = False
     #@+node:ekr.20120217070122.10472: *5* c.initFileIvars
     def initFileIvars(self, fileName, relativeFileName):
         '''Init file-related ivars of the commander.'''
@@ -3059,7 +3056,7 @@ class Commands(object):
             if redraw:
                 p = g.findNodeAnywhere(c2, "Leo's cheat sheet")
                 if p:
-                    c2.selectPosition(p, enableRedrawFlag=False)
+                    c2.selectPosition(p)
                     p.expand()
                 c2.redraw()
             return c2
@@ -3986,7 +3983,7 @@ class Commands(object):
     #@+node:ekr.20031218072017.2899: *6* Commands (outline menu)
     #@+node:ekr.20031218072017.2900: *7* c.contractAllHeadlines
     @cmd('contract-all')
-    def contractAllHeadlines(self, event=None):
+    def contractAllHeadlines(self, event=None, redrawFlag=True):
         '''Contract all nodes in the outline.'''
         c = self
         for p in c.all_positions():
@@ -3995,7 +3992,8 @@ class Commands(object):
         p = c.p
         while p and p.hasParent():
             p.moveToParent()
-        c.redraw(p, setFocus=True)
+        if redrawFlag:
+            c.redraw(p, setFocus=True)
         c.expansionLevel = 1 # Reset expansion level.
     #@+node:ekr.20080819075811.3: *7* c.contractAllOtherNodes & helper
     @cmd('contract-all-other-nodes')
@@ -4680,8 +4678,8 @@ class Commands(object):
         # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
         if c.collapse_nodes_after_move and c.sparse_move: # New in Leo 4.4.2
             parent.contract()
-        c.redraw_now(p, setFocus=True)
-        c.recolor_now() # Moving can change syntax coloring.
+        c.redraw(p, setFocus=True)
+        c.recolor() # Moving can change syntax coloring.
     #@+node:ekr.20031218072017.1771: *6* c.moveOutlineRight
     @cmd('move-outline-right')
     def moveOutlineRight(self, event=None):
@@ -4710,8 +4708,8 @@ class Commands(object):
         c.setChanged(True)
         u.afterMoveNode(p, 'Move Right', undoData, dirtyVnodeList)
         # g.trace(p)
-        c.redraw_now(p, setFocus=True)
-        c.recolor_now()
+        c.redraw(p, setFocus=True)
+        c.recolor()
     #@+node:ekr.20031218072017.1772: *6* c.moveOutlineUp
     @cmd('move-outline-up')
     def moveOutlineUp(self, event=None):
@@ -5607,63 +5605,33 @@ class Commands(object):
             g.doHook("command2", c=c, p=p, v=p, label=label)
     #@+node:ekr.20080514131122.20: *4* c.outerUpdate
     def outerUpdate(self):
+        '''Handle delayed focus requests and modified events.'''
         trace = False and not g.unitTesting
-        verbose = False; traceFocus = False
-        c = self; aList = []
+        c = self
         if not c.exists or not c.k:
             return
-        # Suppress any requested redraw until we have iconified or diconified.
-        redrawFlag = c.requestRedrawFlag
-        c.requestRedrawFlag = False
-        if trace and verbose:
-            g.trace('**start', c.shortFileName() or '<unnamed>', g.callers(5))
-        if c.requestBringToFront:
-            if hasattr(c.frame, 'bringToFront'):
-                c.requestBringToFront.frame.bringToFront()
-                    # c.requestBringToFront is a commander.
-            c.requestBringToFront = None
-        # The iconify requests are made only by c.bringToFront.
-        if c.requestedIconify == 'iconify':
-            if verbose: aList.append('iconify')
-            c.frame.iconify()
-        if c.requestedIconify == 'deiconify':
-            if verbose: aList.append('deiconify')
-            c.frame.deiconify()
-        if redrawFlag:
-            if trace: g.trace('****', 'tree.drag_p', c.frame.tree.drag_p)
-            # A hack: force the redraw, even if we are dragging.
-            aList.append('*** redraw')
-            c.frame.tree.redraw_now(forceDraw=True)
-        if c.requestRecolorFlag:
-            aList.append('%srecolor' % (
-                '' if c.incrementalRecolorFlag else 'full '))
-            # This should be the only call to c.recolor_now.
-            c.recolor_now(incremental=c.incrementalRecolorFlag)
+        # New in Leo 5.6: Delayed redraws are useful in utility methods.
+        if c.requestLaterRedraw:
+            if c.enableRedrawFlag:
+                c.requestLaterRedraw = False
+                c.redraw()
+            else:
+                if trace: g.trace('c.redraw disabled')
+        # Delayed focus requests will always be useful.
         if c.requestedFocusWidget:
             w = c.requestedFocusWidget
-            if traceFocus: aList.append('focus: %s' % g.app.gui.widget_name(w))
+            if trace: g.trace('focus: %s' % g.app.gui.widget_name(w))
             c.set_focus(w)
-        else:
-            # We must not set the focus to the body pane here!
-            # That would make nested calls to c.outerUpdate significant.
-            pass
-        if trace and (verbose or aList):
-            g.trace('** end', aList)
-        c.incrementalRecolorFlag = False
-        c.requestRecolorFlag = None
-        c.requestRedrawFlag = False
             c.requestedFocusWidget = None
-        c.requestedIconify = ''
-        mods = g.childrenModifiedSet
+        table = (
+            ("childrenModified", g.childrenModifiedSet),
+            ("contentModified", g.contentModifiedSet),
+        )
+        for kind, mods in table:
             if mods:
-            #print(mods)
-            g.doHook("childrenModified", c=c, nodes=mods)
-            mods.clear()
-        mods = g.contentModifiedSet
-        if mods:
-            #print(mods)
-            g.doHook("contentModified", c=c, nodes=mods)
+                g.doHook(kind, c=c, nodes=mods)
                 mods.clear()
+        
     #@+node:ekr.20031218072017.2945: *3* c.Dragging
     #@+node:ekr.20031218072017.2353: *4* c.dragAfter
     def dragAfter(self, p, after):
@@ -5778,7 +5746,6 @@ class Commands(object):
         c = self
         if flag:
             c.requestRedrawFlag = True
-            # g.trace('flag is True',c.shortFileName(),g.callers())
 
     BeginUpdate = beginUpdate # Compatibility with old scripts
     EndUpdate = endUpdate # Compatibility with old scripts
@@ -5786,9 +5753,6 @@ class Commands(object):
     def bringToFront(self, c2=None, set_focus=True):
         c = self
         c2 = c2 or c
-        c.requestBringToFront = c2
-        c.requestedIconify = 'deiconify'
-        c.requestedFocusWidget = c2.frame.body.wrapper
         g.app.gui.ensure_commander_visible(c2)
 
     BringToFront = bringToFront # Compatibility with old scripts
@@ -5817,12 +5781,12 @@ class Commands(object):
                 redraw_flag = True
         # if trace: g.trace(redraw_flag, g.callers())
         return redraw_flag
-    #@+node:ekr.20080514131122.12: *4* c.recolor (requestRecolor) and c.force_recolor
-    def requestRecolor(self):
-        c = self
-        c.requestRecolorFlag = True
+    #@+node:ekr.20080514131122.12: *4* c.recolorCommand
+    # def recolor(self):
+        # c = self
+        # c.requestRecolorFlag = True
 
-    recolor = requestRecolor
+    # requestRecolor = recolor
 
     @cmd('recolor')
     def recolorCommand(self, event=None):
@@ -5835,11 +5799,22 @@ class Commands(object):
         wrapper.setAllText(c.p.b)
         wrapper.setSelectionRange(i, j, insert=ins)
     #@+node:ekr.20080514131122.14: *4* c.redrawing...
+    #@+node:ekr.20170808014610.1: *5* c.enable/disable_redraw (New in Leo 5.6)
+    def disable_redraw(self):
+        '''Disable all redrawing until enabled.'''
+        c = self
+        c.enableRedrawFlag = False
+        
+    def enable_redraw(self):
+        c = self
+        c.enableRedrawFlag = True
     #@+node:ekr.20090110073010.1: *5* c.redraw
     def redraw(self, p=None, setFocus=False):
         '''Redraw the screen immediately.'''
         trace = False and not g.unitTesting
         c = self
+        # New in Leo 5.6: clear the redraw request.
+        c.requestLaterRedraw = False
         if not p:
             p = c.p or c.rootPosition()
         if not p:
@@ -5849,22 +5824,33 @@ class Commands(object):
             # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1183855
             # This looks redundant, but it is probably the only safe fix.
             c.frame.tree.select(p)
-        # 2012/03/10: tree.redraw will change the position if p is a hoisted @chapter node.
+        # tree.redraw will change the position if p is a hoisted @chapter node.
         p2 = c.frame.tree.redraw(p)
         # Be careful.  NullTree.redraw returns None.
         c.selectPosition(p2 or p)
-        if trace:
-            g.trace(p2 and p2.h)
-            # g.trace('setFocus', setFocus, p2 and p2.h or p and p.h)
+        if trace: g.trace(p2 and p2.h, g.callers())
         if setFocus: c.treeFocusHelper()
+        # New in Leo 5.6: clear the redraw request, again.
+        c.requestLaterRedraw = False
+
     # Compatibility with old scripts
 
     force_redraw = redraw
     redraw_now = redraw
+    #@+node:ekr.20090110073010.3: *5* c.redraw_afer_icons_changed
+    def redraw_after_icons_changed(self):
+        '''Update the icon for the presently selected node'''
+        c = self
+        if c.enableRedrawFlag:
+            c.frame.tree.redraw_after_icons_changed()
+            # c.treeFocusHelper()
+        else:
+            c.requestLaterRedraw = True
     #@+node:ekr.20090110131802.2: *5* c.redraw_after_contract
     def redraw_after_contract(self, p=None, setFocus=False):
         c = self
         c.endEditing()
+        if c.enableRedrawFlag:
             if p:
                 c.setCurrentPosition(p)
             else:
@@ -5874,10 +5860,13 @@ class Commands(object):
             else:
                 c.frame.tree.redraw_after_contract(p)
                 if setFocus: c.treeFocusHelper()
+        else:
+            c.requestLaterRedraw = True
     #@+node:ekr.20090112065525.1: *5* c.redraw_after_expand
     def redraw_after_expand(self, p=None, setFocus=False):
         c = self
         c.endEditing()
+        if c.enableRedrawFlag:
             if p:
                 c.setCurrentPosition(p)
             else:
@@ -5887,34 +5876,53 @@ class Commands(object):
             else:
                 c.frame.tree.redraw_after_expand(p)
                 if setFocus: c.treeFocusHelper()
+        else:
+            c.requestLaterRedraw = True
     #@+node:ekr.20090110073010.2: *5* c.redraw_after_head_changed
     def redraw_after_head_changed(self):
-        '''Redraw the screen (if needed) when editing ends.
-        This may be a do-nothing for some gui's.'''
-        return self.frame.tree.redraw_after_head_changed()
-    #@+node:ekr.20090110073010.3: *5* c.redraw_afer_icons_changed
-    def redraw_after_icons_changed(self):
-        '''Update the icon for the presently selected node,
-        or all icons if the 'all' flag is true.'''
+        '''
+        Redraw the screen (if needed) when editing ends.
+        This may be a do-nothing for some gui's.
+        '''
         c = self
-        c.frame.tree.redraw_after_icons_changed()
-        # c.treeFocusHelper()
+        if c.enableRedrawFlag:
+            return self.frame.tree.redraw_after_head_changed()
+        else:
+            c.requestLaterRedraw = True
     #@+node:ekr.20090110073010.4: *5* c.redraw_after_select
     def redraw_after_select(self, p):
         '''Redraw the screen after node p has been selected.'''
         trace = False and not g.unitTesting
         if trace: g.trace('(Commands)', p and p.h or '<No p>', g.callers(4))
         c = self
+        if c.enableRedrawFlag:
             flag = c.expandAllAncestors(p)
             if flag:
                 c.frame.tree.redraw_after_select(p)
-    #@+node:ekr.20080514131122.13: *4* c.recolor_now
-    def recolor_now(self, p=None, incremental=False, interruptable=True):
+        else:
+            c.requestLaterRedraw = True
+    #@+node:ekr.20170808005711.1: *5* c.redraw_later
+    def redraw_later(self):
+        '''
+        Ensure that c.redraw() will be called eventually.
+        
+        c.outerUpdate will call c.redraw() only if no other code calls c.redraw().
+        '''
+        c = self
+        c.requestLaterRedraw = True
+    #@+node:ekr.20080514131122.13: *4* c.recolor
+    def recolor(self, **kwargs):
         # Support QScintillaColorizer.colorize.
         c = self
+        p = kwargs.get('p')
+        for name in ('incremental', 'interruptable'):
+            if name in kwargs:
+                print('c.recolor_now: "%s" keyword arg is deprecated' % name)
         colorizer = c.frame.body.colorizer
         if colorizer and hasattr(colorizer, 'colorize'):
             colorizer.colorize(p or c.p)
+            
+    recolor_now = recolor
     #@+node:ekr.20080514131122.17: *4* c.widget_name
     def widget_name(self, widget):
         # c = self
@@ -6401,8 +6409,9 @@ class Commands(object):
 
     def widgetWantsFocusNow(self, w):
         c = self
-        c.request_focus(w)
-        c.outerUpdate()
+        if w:
+            c.set_focus(w)
+            c.requestedFocusWidget = None
     # New in 4.9: all FocusNow methods now *do* call c.outerUpdate().
 
     def bodyWantsFocusNow(self):
@@ -7162,23 +7171,24 @@ class Commands(object):
             # # Recolor the *body* text, **not** the headline.
             # k.showStateAndMode(w=c.frame.body.wrapper)
     #@+node:ekr.20031218072017.2997: *4* c.selectPosition
-    def selectPosition(self, p, enableRedrawFlag=True):
-        """Select a new position."""
+    def selectPosition(self, p, **kwargs):
+        '''
+        Select a new position, redrawing the screen *only* if we must
+        change chapters.
+        '''
         trace = False and not g.unitTesting
-        trace_no_p = True and not g.app.batchMode
-            # A serious error.
-        c = self; cc = c.chapterController
+        if kwargs:
+            print('c.selectPosition: all keyword args are ignored', g.callers())
+        c = self
+        cc = c.chapterController
         if not p:
-            if trace and trace_no_p: g.trace('===== no p', g.callers())
+            if not g.app.batchMode: # A serious error.
+                g.trace('Warning: no p', g.callers())
             return
-        # 2016/04/20: check cc.selectChapterLockout.
         if cc and not cc.selectChapterLockout:
             cc.selectChapterForPosition(p)
-                # Important: selectChapterForPosition calls c.redraw
-                # if the chapter changes.
-            if trace: g.trace(p and p.h, g.callers())
-        # 2012/03/08: De-hoist as necessary to make p visible.
-        redraw_flag = False
+                # Calls c.redraw only if the chapter changes.
+        # De-hoist as necessary to make p visible.
         if c.hoistStack:
             while c.hoistStack:
                 bunch = c.hoistStack[-1]
@@ -7186,7 +7196,6 @@ class Commands(object):
                     break
                 else:
                     bunch = c.hoistStack.pop()
-                    redraw_flag = True
                     if trace: g.trace('unhoist', bunch.p.h)
         if trace:
             if c.positionExists(p):
@@ -7194,12 +7203,9 @@ class Commands(object):
             else:
                 g.trace('**** does not exist: %s' % (p and p.h))
         c.frame.tree.select(p)
-        # New in Leo 4.4.2.
         c.setCurrentPosition(p)
             # Do *not* test whether the position exists!
             # We may be in the midst of an undo.
-        if redraw_flag and enableRedrawFlag:
-            c.redraw()
 
     # Compatibility, but confusing.
     selectVnode = selectPosition

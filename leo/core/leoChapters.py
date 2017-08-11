@@ -345,7 +345,8 @@ class ChapterController(object):
             cc.selectChapterByName('main')
         # Fix bug 869385: Chapters make the nav_qt.py plugin useless
         assert not self.selectChapterLockout
-        c.redraw_now()
+        # New in Leo 5.6: don't call c.redraw immediately.
+        c.redraw_later()
     #@+node:ekr.20130915052002.11289: *4* cc.setAllChapterNames
     def setAllChapterNames(self):
         '''Called early and often to discover all chapter names.'''

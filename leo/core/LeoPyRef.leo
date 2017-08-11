@@ -90,7 +90,8 @@
 <v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
 <v t="ekr.20141012064706.18389"><vh>@file leoAst.py</vh></v>
 <v t="ekr.20150323150718.1"><vh>@file leoAtFile.py</vh></v>
-<v t="ekr.20161026193447.1"><vh>@file leoBackground.py</vh></v>
+<v t="ekr.20161026193447.1"
+expanded="ekr.20161026193609.1,ekr.20161026193609.2,"><vh>@file leoBackground.py</vh></v>
 <v t="ekr.20150521115018.1"><vh>@file leoBeautify.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@file leoBridge.py</vh></v>
 <v t="ekr.20100208065621.5894"><vh>@file leoCache.py</vh></v>
@@ -115,7 +116,7 @@
 <v t="ekr.20140810053602.18074"><vh>@file leoQt.py</vh></v>
 <v t="ekr.20140526082700.18440"><vh>@file leoRope.py</vh></v>
 <v t="ekr.20090502071837.3"><vh>@file leoRst.py</vh></v>
-<v t="ekr.20120420054855.14241" descendentVnodeUnknownAttributes="7d7100285805000000302e332e3471017d71022858090000007374725f6374696d657103580c000000313331393633383634382e30710458090000007374725f6174696d657105580c000000313331393634353330362e32710658090000007374725f6d74696d657107580d000000313331393634313038352e30387108755805000000302e332e3271097d710a2858090000007374725f6374696d65710b580c000000313331393436303438332e30710c58090000007374725f6174696d65710d580d000000313331393436373035302e3438710e58090000007374725f6d74696d65710f580d000000313331393436373035302e34387110755805000000302e332e3571117d71122858090000007374725f6374696d657113580c000000313331393633383634382e30711458090000007374725f6174696d657115580d000000313331393634313435352e3937711658090000007374725f6d74696d657117580c000000313331393634313131372e397118755805000000302e332e3071197d711a2858090000007374725f6374696d65711b580c000000313331393439313330362e30711c58090000007374725f6174696d65711d580d000000313331393534393339302e3839711e58090000007374725f6d74696d65711f580d000000313331393439323330312e35327120755805000000302e332e3171217d71222858090000007374725f6374696d657123580c000000313331393436303438332e30712458090000007374725f6174696d657125580c000000313332303432323637302e39712658090000007374725f6d74696d657127580d000000313331393436373033382e32357128755805000000302e332e3371297d712a2858090000007374725f6374696d65712b580c000000313331393436303438332e30712c58090000007374725f6174696d65712d580d000000313332303433343235372e3336712e58090000007374725f6d74696d65712f580d000000313332303432323639302e3534713075752e"><vh>@file leoSessions.py</vh></v>
+<v t="ekr.20120420054855.14241" descendentVnodeUnknownAttributes="7d7100285805000000302e332e3071017d71022858090000007374725f6174696d657103580d000000313331393534393339302e3839710458090000007374725f6d74696d657105580d000000313331393439323330312e3532710658090000007374725f6374696d657107580c000000313331393439313330362e307108755805000000302e332e3571097d710a2858090000007374725f6174696d65710b580d000000313331393634313435352e3937710c58090000007374725f6d74696d65710d580c000000313331393634313131372e39710e58090000007374725f6374696d65710f580c000000313331393633383634382e307110755805000000302e332e3371117d71122858090000007374725f6174696d657113580d000000313332303433343235372e3336711458090000007374725f6d74696d657115580d000000313332303432323639302e3534711658090000007374725f6374696d657117580c000000313331393436303438332e307118755805000000302e332e3471197d711a2858090000007374725f6174696d65711b580c000000313331393634353330362e32711c58090000007374725f6d74696d65711d580d000000313331393634313038352e3038711e58090000007374725f6374696d65711f580c000000313331393633383634382e307120755805000000302e332e3171217d71222858090000007374725f6174696d657123580c000000313332303432323637302e39712458090000007374725f6d74696d657125580d000000313331393436373033382e3235712658090000007374725f6374696d657127580c000000313331393436303438332e307128755805000000302e332e3271297d712a2858090000007374725f6174696d65712b580d000000313331393436373035302e3438712c58090000007374725f6d74696d65712d580d000000313331393436373035302e3438712e58090000007374725f6374696d65712f580c000000313331393436303438332e30713075752e"><vh>@file leoSessions.py</vh></v>
 <v t="ekr.20080708094444.1"><vh>@file leoShadow.py</vh></v>
 <v t="ekr.20031218072017.3446"><vh>@file leoTangle.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@file leoUndo.py</vh></v>
@@ -274,19 +275,23 @@
 <v t="ekr.20170428084208.381"><vh>@file ../external/npyscreen/wgtitlefield.py</vh></v>
 <v t="ekr.20170428084208.398"><vh>@file ../external/npyscreen/wgwidget.py</vh></v>
 <v t="ekr.20170428084208.436"><vh>@file ../external/npyscreen/wgwidget_proto.py</vh></v>
-<v t="ekr.20170428084208.443"><vh>@file ../external/npyscreen/__init__.py</vh></v>
+<v t="ekr.20170428084208.443"><vh>@@file ../external/npyscreen/__init__.py</vh>
+<v t="ekr.20170428084208.444"><vh>Declarations</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20080730161153.8"><vh>Testing</vh>
 <v t="ekr.20160517182239.1"><vh>@file ../../flake8-leo.py</vh></v>
 <v t="ekr.20160518000549.1"><vh>@file ../../pyflakes-leo.py</vh></v>
 <v t="ekr.20100221142603.5638"><vh>@file ../../pylint-leo.py</vh></v>
+<v t="ekr.20170805060844.1"><vh>@file ../test/leo-bridge-test.py</vh></v>
 <v t="ekr.20080730161153.2"><vh>@file leoBridgeTest.py</vh></v>
 <v t="ekr.20080730161153.5"><vh>@file leoDynamicTest.py</vh></v>
 <v t="ekr.20051104075904" descendentVnodeUnknownAttributes="7d710058010000003071017d71025808000000616e6e6f746174657103285808000000616e6e6f7461746571047d710574710673732e"><vh>@file leoTest.py</vh></v>
 </v>
-<v t="ekr.20090802181029.5988"><vh>Version</vh>
+<v t="ekr.20090802181029.5988"><vh>Version and readme</vh>
 <v t="ekr.20090717092906.12765"><vh>@file leoVersion.py</vh></v>
+<v t="ekr.20170630132720.1"><vh>@edit ../../README.MD</vh></v>
 </v>
 </v>
 </vnodes>
@@ -295,7 +300,7 @@
 </t>
 <t tx="EKR.20040519090151.2">@nosearch
 </t>
-<t tx="ekr.20031218072017.2406" _bklnk="7d71002858050000006c696e6b7371015d710258010000007871034b0058010000007971044b00580400000074797065710558080000006e6f6465526563747106752e"># This file contains almost all of Leo's sources.
+<t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007971014b0058010000007871024b0058050000006c696e6b7371035d7104580400000074797065710558080000006e6f6465526563747106752e"># This file contains almost all of Leo's sources.
 # See the "About this file" node for important notes.
 @language python</t>
 <t tx="ekr.20031218072017.2604"></t>
@@ -1643,7 +1648,8 @@ if c.isChanged():
     c.save()
 c.k.simulateCommand('pylint')
 </t>
-<t tx="ekr.20160122104332.1"></t>
+<t tx="ekr.20160122104332.1">@language python
+</t>
 <t tx="ekr.20160123142722.1"># An example configuration file for make_stub_files.py.
 # By default, this is ~/stubs/make_stub_files.cfg.
 # Can be changed using the --config=path command-line option.
@@ -1782,7 +1788,7 @@ The TokenSync class is, a new, elegant, unexpected and happy development. It is 
 The TokenSync class avoids [problems with the col_offset field](
 http://stackoverflow.com/questions/16748029/how-to-get-source-corresponding-to-a-python-ast-node) in ast nodes. The TokenSync class depends only on the ast.lineno field and the tokenize module. We can expect it to be rock solid.
 
-Edward K. Ream  
+Edward K. Ream
 February 20 to 25, 2016
 </t>
 <t tx="ekr.20160420054135.4">gnx: ekr.20160412193816.5
@@ -1896,10 +1902,10 @@ import weakref
     self.display()
     while not (self._widgets__[self.editw].editable and not self._widgets__[self.editw].hidden):
         self.editw += 1
-        if self.editw &gt; len(self._widgets__)-1: 
+        if self.editw &gt; len(self._widgets__)-1:
             self.editing = False
             return False
-    
+
     while self.editing:
         if not self.ALL_SHOWN: self.on_screen()
         self.while_editing(weakref.proxy(self._widgets__[self.editw]))
@@ -1912,7 +1918,7 @@ import weakref
         self.handle_exiting_widgets(self._widgets__[self.editw].how_exited)
 
         if self.editw &gt; len(self._widgets__)-1: self.editw = len(self._widgets__)-1
-    
+
 </t>
 <t tx="ekr.20170428084207.318">def edit(self):
     self.pre_edit_loop()
@@ -1935,7 +1941,7 @@ import weakref
     self.ok_button = self.add_widget(self.__class__.OKBUTTON_TYPE, name=ok_button_text, rely=my, relx=mx, use_max_space=True)
     ok_button_postion = len(self._widgets__)-1
     self.ok_button.update()
-    # End add buttons 
+    # End add buttons
     self.editing=True
     if self.editw &lt; 0: self.editw=0
     if self.editw &gt; len(self._widgets__)-1:
@@ -1949,7 +1955,7 @@ import weakref
 
     while not (self._widgets__[self.editw].editable and not self._widgets__[self.editw].hidden):
         self.editw += 1
-        if self.editw &gt; len(self._widgets__)-1: 
+        if self.editw &gt; len(self._widgets__)-1:
             self.editing = False
             return False
 
@@ -1972,12 +1978,12 @@ import weakref
     del self.ok_button
     self.nextrely, self.nextrelx = tmp_rely, tmp_relx
     self.display()
-    
+
     #try:
     #    self.parentApp._FORM_VISIT_LIST.pop()
     #except:
     #    pass
-    
+
 
     self.editing = False
     self.erase()
@@ -1991,6 +1997,126 @@ import weakref
         self.ok_button.relx = mx
         self.ok_button.rely = my
 
+
+
+</t>
+<t tx="ekr.20170428084208.443">#!/usr/bin/python
+# This file generates pyflakes warnings for *all* imported symbols.
+@others
+@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20170428084208.444">from .globals                   import DEBUG, DISABLE_RESIZE_SYSTEM
+
+from .wgwidget                  import TEST_SETTINGS, ExhaustedTestInput, add_test_input_from_iterable, add_test_input_ch
+
+from .npyssafewrapper           import wrapper, wrapper_basic
+
+from   .npysThemeManagers       import ThemeManager, disableColor, enableColor
+from   . import npysThemes      as     Themes
+from   .apNPSApplication        import NPSApp
+from   .apNPSApplicationManaged import NPSAppManaged
+from   .proto_fm_screen_area    import setTheme
+from   .fmForm                  import FormBaseNew, Form, TitleForm, TitleFooterForm, SplitForm, FormExpanded, FormBaseNewExpanded, blank_terminal
+from   .fmActionForm            import ActionForm, ActionFormExpanded
+from   .fmActionFormV2          import ActionFormV2, ActionFormExpandedV2, ActionFormMinimal
+from   .fmFormWithMenus         import FormWithMenus, ActionFormWithMenus, \
+                                       FormBaseNewWithMenus, SplitFormWithMenus, \
+                                       ActionFormV2WithMenus
+from   .fmPopup                 import Popup, MessagePopup, ActionPopup, PopupWide, ActionPopupWide
+from   .fmFormMutt              import FormMutt, FormMuttWithMenus
+from   .fmFileSelector          import FileSelector, selectFile
+
+from .fmFormMuttActive          import ActionControllerSimple, TextCommandBox, \
+                                       FormMuttActive, FormMuttActiveWithMenus
+from .fmFormMuttActive          import FormMuttActiveTraditional, FormMuttActiveTraditionalWithMenus
+
+
+from .fmFormMultiPage           import FormMultiPage, FormMultiPageAction,\
+                                       FormMultiPageActionWithMenus, FormMultiPageWithMenus
+
+from .npysNPSFilteredData       import NPSFilteredDataBase, NPSFilteredDataList
+
+from .wgbutton                  import MiniButton
+from .wgbutton                  import MiniButtonPress
+from .wgbutton                  import MiniButton      as Button
+from .wgbutton                  import MiniButtonPress as ButtonPress
+
+from .wgtextbox                 import Textfield, FixedText
+from .wgtitlefield              import TitleText, TitleFixedText
+from .wgpassword                import PasswordEntry, TitlePassword
+from .wgannotatetextbox         import AnnotateTextboxBase
+from .wgannotatetextbox         import AnnotateTextboxBaseRight
+
+from .wgslider                  import Slider, TitleSlider
+from .wgslider                  import SliderNoLabel, TitleSliderNoLabel
+from .wgslider                  import SliderPercent, TitleSliderPercent
+
+from .wgwidget                  import DummyWidget, NotEnoughSpaceForWidget
+from . import wgwidget as widget
+
+from .wgmultiline               import MultiLine, Pager, TitleMultiLine, TitlePager, MultiLineAction, BufferPager, TitleBufferPager
+from .wgmultiselect             import MultiSelect, TitleMultiSelect, MultiSelectFixed, \
+                                       TitleMultiSelectFixed, MultiSelectAction
+from .wgeditmultiline           import MultiLineEdit
+from .wgcombobox                import ComboBox, TitleCombo
+from .wgcheckbox                import Checkbox, RoundCheckBox, CheckBoxMultiline, RoundCheckBoxMultiline, CheckBox, CheckboxBare
+from .wgFormControlCheckbox     import FormControlCheckbox
+from .wgautocomplete            import TitleFilename, Filename, Autocomplete
+from .muMenu                    import Menu
+from .wgselectone               import SelectOne, TitleSelectOne
+from .wgdatecombo               import DateCombo, TitleDateCombo
+
+from .npysTree import TreeData
+from .wgmultilinetree           import MLTree, MLTreeAnnotated, MLTreeAction, MLTreeAnnotatedAction
+from .wgmultilinetreeselectable import MLTreeMultiSelect, TreeLineSelectable
+from .wgmultilinetreeselectable import MLTreeMultiSelectAnnotated, TreeLineSelectableAnnotated
+
+
+# The following are maintained for compatibility with old code only. ##########################################
+
+from .compatibility_code.oldtreeclasses import MultiLineTree, SelectOneTree
+from .compatibility_code.oldtreeclasses import MultiLineTreeNew, MultiLineTreeNewAction, TreeLine, TreeLineAnnotated # Experimental
+from .compatibility_code.oldtreeclasses import MultiLineTreeNewAnnotatedAction, MultiLineTreeNewAnnotated # Experimental
+from .compatibility_code.npysNPSTree import NPSTreeData
+
+# End compatibility. ###########################################################################################
+
+from .wgfilenamecombo           import FilenameCombo, TitleFilenameCombo
+from .wgboxwidget               import BoxBasic, BoxTitle
+from .wgmultiline               import MultiLineActionWithShortcuts
+from .wgmultilineeditable       import MultiLineEditable, MultiLineEditableTitle, MultiLineEditableBoxed
+
+from .wgmonthbox                import MonthBox
+from .wggrid                    import SimpleGrid
+from .wggridcoltitles           import GridColTitles
+
+from .muNewMenu                 import NewMenu, MenuItem
+from .wgNMenuDisplay            import MenuDisplay, MenuDisplayScreen
+
+from .npyspmfuncs               import CallSubShell
+
+from .utilNotify                 import notify, notify_confirm, notify_wait, notify_ok_cancel, notify_yes_no
+
+# Base classes for overriding:
+
+# Standard Forms:
+from . import stdfmemail
+
+# Experimental Only
+from .wgtextboxunicode import TextfieldUnicode
+from .wgtexttokens     import TextTokens, TitleTextTokens
+
+# Very experimental. Don't use for anything serious
+from .apOptions import SimpleOptionForm
+from .apOptions import OptionListDisplay, OptionChanger, OptionList, OptionLimitedChoices, OptionListDisplayLine
+from .apOptions import OptionFreeText, OptionSingleChoice, OptionMultiChoice, OptionMultiFreeList, \
+                       OptionBoolean, OptionFilename, OptionDate, OptionMultiFreeText
+
+
+# This really is about as experimental as it gets
+from .apNPSApplicationEvents import StandardApp
+from .eveventhandler import Event
 
 
 </t>

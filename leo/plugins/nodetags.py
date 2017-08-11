@@ -297,7 +297,7 @@ class LeoTagWidget(QtWidgets.QWidget):
         pos = self.mapping[key]
         self.update_current_tags(pos)
         self.c.selectPosition(pos)
-        self.c.redraw_now()
+        self.c.redraw()
     #@+node:peckj.20140804192343.6568: *5* update_current_tags
     def update_current_tags(self,pos):
         # clear out the horizontalLayout2

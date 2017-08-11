@@ -1310,6 +1310,32 @@ class LeoCursesGui(leoGui.LeoGui):
             if s:
                 c.last_dir = g.os_path_dirname(s)
             return s
+    #@+node:ekr.20170712145632.2: *5* CGui.createFindDialog
+    def createFindDialog(self, c):
+        '''Create and init a non-modal Find dialog.'''
+        # g.app.globalFindTabManager = c.findCommands.ftm
+        # top = c.frame.top
+            # top is the DynamicWindow class.
+        # w = top.findTab
+        # top.find_status_label.setText('Find Status:')
+
+        ### d = QtWidgets.QDialog()
+        # Fix #516: Hide the dialog. Never delete it.
+
+        # def closeEvent(event, d=d):
+            # event.ignore()
+            # d.hide()
+
+        # d.closeEvent = closeEvent
+        # layout = QtWidgets.QVBoxLayout(d)
+        # layout.addWidget(w)
+        # self.attachLeoIcon(d)
+        # d.setLayout(layout)
+        # c.styleSheetManager.set_style_sheets(w=d)
+        # g.app.gui.setFilter(c, d, d, 'find-dialog')
+            # # This makes most standard bindings available.
+        # d.setModal(False)
+        # return d
     #@+node:ekr.20170430114709.1: *4* CGui.do_key
     def do_key(self, ch_i):
 
@@ -2156,7 +2182,7 @@ class CoreTree (leoFrame.LeoTree):
             # New in Leo 4.4.5: we must recolor the body because
             # the headline may contain directives.
                 # c.frame.scanForTabWidth(p)
-                # c.frame.body.recolor(p, incremental=True)
+                # c.frame.body.recolor(p)
             dirtyVnodeList = p.setDirty()
             u.afterChangeNodeContents(p, undoType, undoData,
                 dirtyVnodeList=dirtyVnodeList, inHead=True)

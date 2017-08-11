@@ -193,7 +193,7 @@ def importCiscoConfig(c):
             g.es("Unknown key: %s" % key)
     # p.sortChildren()
     current.expand()
-    c.redraw_now()
+    c.redraw()
     #@-<< complete outline >>
 #@-others
 #@@language python

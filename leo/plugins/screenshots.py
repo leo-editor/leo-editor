@@ -1275,11 +1275,11 @@ class ScreenShotController(object):
         # for child in p.children():
             # if g.match_word(child.h,0,'@image'):
                 # c.selectPosition(child)
-                # c.redraw_now(child)
+                # c.redraw(child)
                 # break
         # else:
             # c.selectPosition(p)
-            # c.redraw_now(p)
+            # c.redraw(p)
     #@+node:ekr.20101005193146.5690: *4* underline
     def underline(self, s):
         '''Return s overlined and underlined with '=' characters.'''

@@ -340,7 +340,8 @@ class LeoFind(object):
         old_p = c.p
         p = c.rootPosition()
         # Required.
-        c.selectPosition(p, enableRedrawFlag=True)
+        c.selectPosition(p)
+        c.redraw()
         c.bodyWantsFocusNow()
         # Set up the search.
         if defFlag:

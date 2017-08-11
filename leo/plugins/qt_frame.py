@@ -1430,12 +1430,10 @@ class LeoQtBody(leoFrame.LeoBody):
         d = self.editorWidgets
         wrapper = c.frame.body.wrapper # A QTextEditWrapper
         widget = wrapper.widget
-        ### This was just crazy.
-        ### self.editorWidgets['1'] = wrapper
         self.totalNumberOfEditors += 1
         self.numberOfEditors += 1
         if self.totalNumberOfEditors == 2:
-            self.editorWidgets['1'] = wrapper ### New.
+            self.editorWidgets['1'] = wrapper
             # Pack the original body editor.
             self.packLabel(widget, n=1)
         name = '%d' % self.totalNumberOfEditors
@@ -1657,7 +1655,7 @@ class LeoQtBody(leoFrame.LeoBody):
             # Calls assignPositionToEditor.
             # Calls p.v.restoreCursorAndScroll.
         c.redraw()
-        c.recolor_now()
+        c.recolor()
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18205: *5* LeoQtBody.updateEditors
     # Called from addEditor and assignPositionToEditor
@@ -3808,7 +3806,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             pasted.moveToNthChildOf(back, 0)
         # c.setRootPosition(c.findRootPosition(pasted))
         u.afterInsertNode(pasted, undoType, undoData)
-        c.redraw_now(pasted)
+        c.redraw(pasted)
         c.recolor()
     #@+node:ekr.20110605121601.18368: *6* LeoQTreeWidget.intraFileDrop
     def intraFileDrop(self, fn, p1, p2):
@@ -3861,9 +3859,9 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 p2.isExpanded() or
                 c.config.getBool("drag-alt-drag-expands") is not False
             ):
-                c.redraw_now(p1)
+                c.redraw(p1)
             else:
-                c.redraw_now(p2)
+                c.redraw(p2)
         # elif trace: g.trace('** move failed')
     #@+node:ekr.20110605121601.18383: *6* LeoQTreeWidget.parseText
     def parseText(self, md):
@@ -3904,7 +3902,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         if changed:
             c.setChanged(True)
             u.afterChangeGroup(c.p, undoType, reportFlag=False, dirtyVnodeList=[])
-            c.redraw_now()
+            c.redraw()
     #@+node:ekr.20110605121601.18370: *6* LeoQTreeWidget.doFileUrl & helper
     def doFileUrl(self, p, url):
         '''Read the file given by the url and put it in the outline.'''
@@ -4233,10 +4231,10 @@ class LeoQtSpellTab(object):
         self.updateButtons()
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18397: *3* Helpers
-    #@+node:ekr.20110605121601.18398: *4* bringToFront
+    #@+node:ekr.20110605121601.18398: *4* bringToFront (LeoQtSpellTab)
     def bringToFront(self):
         self.c.frame.log.selectTab('Spell')
-    #@+node:ekr.20110605121601.18399: *4* fillbox
+    #@+node:ekr.20110605121601.18399: *4* fillbox (LeoQtSpellTab)
     def fillbox(self, alts, word=None):
         """Update the suggestions listBox in the Check Spelling dialog."""
         self.suggestions = alts
@@ -4246,7 +4244,7 @@ class LeoQtSpellTab(object):
         if self.suggestions:
             self.listBox.addItems(self.suggestions)
             self.listBox.setCurrentRow(0)
-    #@+node:ekr.20110605121601.18400: *4* getSuggestion
+    #@+node:ekr.20110605121601.18400: *4* getSuggestion (LeoQtSpellTab)
     def getSuggestion(self):
         """Return the selected suggestion from the listBox."""
         idx = self.listBox.currentRow()

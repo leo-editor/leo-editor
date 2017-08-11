@@ -33,7 +33,7 @@ isfile = g.os_path_isfile
 join = g.os_path_join
 normcase = g.os_path_normcase
 split = g.os_path_split
-SQLITE = False
+SQLITE = True
 #@+others
 #@+node:ekr.20100208062523.5885: ** class Cacher
 class Cacher(object):
@@ -433,6 +433,8 @@ class Cacher(object):
             self.db[fileKey] = self.makeCacheList(p)
     #@+node:ekr.20100208065621.5890: *3* cacher.test
     def test(self):
+        
+        # pylint: disable=no-member
         if g.app.gui.guiName() == 'nullGui':
             # Null gui's don't normally set the g.app.gui.db.
             g.app.setGlobalDb()
@@ -460,9 +462,11 @@ class Cacher(object):
     def commit(self, close=True):
         # in some cases while unit testing self.db is python dict
         if SQLITE and hasattr(self.db, 'conn'):
+            # pylint: disable=no-member
             self.db.conn.commit()
             if close:
                 self.db.conn.close()
+                self.inited = False
 #@+node:ekr.20100208223942.5967: ** class PickleShareDB
 _sentinel = object()
 
@@ -780,7 +784,7 @@ class SqlitePickleShare(object):
         if not isdir(self.root) and not g.unitTesting:
             self._makedirs(self.root)
         dbfile = ':memory:' if g.unitTesting else join(root, 'cache.sqlite')
-        self.conn = sqlite3.connect(dbfile)
+        self.conn = sqlite3.connect(dbfile, isolation_level=None)
         self.init_dbtables(self.conn)
         self.cache = {}
             # Keys are normalized file names.
@@ -830,7 +834,10 @@ class SqlitePickleShare(object):
             for row in self.conn.execute('''select data from cachevalues
                 where key=?''', (key,)):
                 obj = self.loader(row[0])
-        except sqlite3.OperationalError:
+                break
+            else:
+                raise KeyError(key)
+        except sqlite3.Error:
             raise KeyError(key)
         return obj
     #@+node:vitalije.20170716201700.7: *4* __iter__
@@ -851,7 +858,8 @@ class SqlitePickleShare(object):
             self.conn.execute('''replace into cachevalues(key, data)
                 values(?,?);''', (key, data))
         except sqlite3.OperationalError as e:
-            raise
+            g.es_exception(e)
+
     #@+node:vitalije.20170716201700.10: *3* _makedirs
     def _makedirs(self, fn, mode=0o777):
         trace = False and not g.unitTesting
@@ -941,6 +949,7 @@ class SqlitePickleShare(object):
             args = tuple()
         else:
             sql = "select key from cachevalues where key glob ?;"
+            # pylint: disable=trailing-comma-tuple
             args = globpat,
         for key in self.conn.execute(sql, args):
             yield key

@@ -259,7 +259,7 @@ class RSSController(object):
                 newp.b = body
                 self.add_entry_to_history(feed, entry)
 
-        self.c.redraw_now()
+        self.c.redraw()
     #@+node:peckj.20131011131135.5848: *4* grab_date_parsed
     def grab_date_parsed(self, entry):
         published = None
@@ -337,7 +337,7 @@ class RSSController(object):
         pos = self.c.p
         if self.is_feed(pos):
             self.c.deletePositionsInList(pos.children())
-            self.c.redraw_now()
+            self.c.redraw()
         else:
             g.es('Not a valid @feed node.', color='red')
     #@+node:peckj.20131003090809.6563: *4* delete_all_feed_stories
@@ -346,7 +346,7 @@ class RSSController(object):
         '''
         for feed in self.get_all_feeds():
             self.c.deletePositionsInList(self.c.vnode2position(feed).children())
-        self.c.redraw_now()
+        self.c.redraw()
     #@+node:peckj.20131003101848.5579: *4* clear_selected_feed_history
     def clear_selected_feed_history(self,event=None):
         '''Clears the selected `@feed` node's viewed stories history.

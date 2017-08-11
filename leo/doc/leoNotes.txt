@@ -25737,351 +25737,205 @@ def unpack_object(self):
 
 .. @+node:ekr.20170404102619.1: ** Unused code
 @language python
-.. @+node:ekr.20031218072017.3161: *3* skip_php_braces (no longer used)
-@ 08-SEP-2002 DTHEIN: Added for PHP import support
-Skips from the opening to the matching . If no matching is found i is set to len(s).
-
-This code is called only from the import logic, and only for PHP imports.
-@c
-
-def skip_php_braces(s, i):
-    # start = g.get_line(s,i)
-    assert(g.match(s, i, '{'))
-    level = 0; n = len(s)
-    while i < n:
-        c = s[i]
-        if c == '{':
-            level += 1; i += 1
-        elif c == '}':
-            level -= 1
-            if level <= 0: return i + 1
-            i += 1
-        elif c == '\'' or c == '"': i = g.skip_string(s, i)
-        elif g.match(s, i, "<<<"): i = g.skip_heredoc_string(s, i)
-        elif g.match(s, i, '//') or g.match(s, i, '#'): i = g.skip_to_end_of_line(s, i)
-        elif g.match(s, i, '/*'): i = g.skip_block_comment(s, i)
-        else: i += 1
-    return i
-.. @+node:ekr.20170304161145.1: *3* ric.clean_all & helpers (no longer used)
-def clean_all(self, dir_, p):
-    '''Clean all imported nodes. This takes a lot of time.'''
-    # Warning: this happens after perfect import checks.
-    # Mistakes here could be serious.
-    trace = False and not g.unitTesting
-    t1 = time.time()
-    prev_dir = None
-    for p in p.self_and_subtree():
-        h = p.h
-        for tag in ('@clean', '@file', '@nosent'):
-            if h.startswith('@' + tag):
-                i = 1 + len(tag)
-                path = h[i:].strip()
-                dir_, fn = g.os_path_split(path)
-                if prev_dir != dir_:
-                    g.blue(g.os_path_normpath(dir_))
-                    prev_dir = dir_
-                junk, ext = g.os_path_splitext(path)
-                self.clean(p, ext)
-            elif h.startswith(tag):
-                i = len(tag)
-                path = h[i:].strip()
-                dir_, fn = g.os_path_split(path)
-                if prev_dir != dir_:
-                    g.blue(g.os_path_normpath(dir_))
-                    prev_dir = dir_
-                junk, ext = g.os_path_splitext(path)
-                self.clean(p, ext)
-    t2 = time.time()
-    if trace: g.trace('%2.2f sec' % (t2-t1))
-.. @+node:ekr.20170304161145.2: *4* ric.clean
-def clean(self, p, ext):
+.. @+node:ekr.20170804153417.1: *3* Leo exits after imp.reload(g)
+.. @+node:ekr.20170804153417.2: *4* c.executeScript & helpers
+@cmd('execute-script')
+def executeScript(self, event=None,
+    args=None, p=None, script=None, useSelectedText=True,
+    define_g=True, define_name='__main__',
+    silent=False, namespace=None, raiseFlag=False,
+):
     '''
-    - Move a shebang line from the first child to the root.
-    - Move a leading docstring in the first child to the root.
-    - Use a section reference for declarations.
-    - Remove leading and trailing blank lines from all nodes.
-    - Merge a node containing nothing but comments with the next node.
-    - Merge a node containing no class or def lines with the previous node.
+    Execute a *Leo* script.
+    Keyword args:
+    args=None               Not None: set script_args in the execution environment.
+    p=None                  Get the script from p.b, unless script is given.
+    script=None             None: use script in p.b or c.p.b
+    useSelectedText=True    False: use all the text in p.b or c.p.b.
+    define_g=True           True: define g for the script.
+    define_name='__main__'  Not None: define the name symbol.
+    silent=False            No longer used.
+    namespace=None          Not None: execute the script in this namespace.
+    raiseFlag=False         True: reraise any exceptions.
     '''
-    g.blue('cleaning', g.shortFileName(p.h))
-    root = p.copy()
-    for tag in ('@@file', '@file'):
-        if p.h.startswith(tag):
-            p.v.h = p.h[len(tag):].strip()
-            break
-    self.move_shebang_line(root)
-    # A bad idea.
-        # self.move_doc_string(root)
-    self.rename_decls(root)
-    for p in root.self_and_subtree():
-        self.clean_blank_lines(p)
-    # Get the single-line comment delim.
-    if ext.startswith('.'): ext = ext[1:]
-    language = g.app.extension_dict.get(ext)
-    if language:
-        delim, junk, junk = g.set_delims_from_language(language)
-    else:
-        delim = None
-    # g.trace('ext: %s language: %s delim: %s' % (ext,language,delim))
-    if delim:
-        # Do general language-dependent cleanups.
-        for p in root.subtree():
-            self.merge_comment_nodes(p, delim)
-    if ext == 'py':
-        # Do python only cleanups.
-        for p in root.subtree():
-            self.merge_extra_nodes(p)
-        for p in root.subtree():
-            self.move_decorator_lines(p)
-.. @+node:ekr.20170304161145.3: *4* ric.clean_blank_lines
-def clean_blank_lines(self, p):
-    '''Remove leading and trailing blank lines from all nodes.'''
-    s = p.b
-    if not s.strip():
-        return
-    result = g.splitLines(s)
-    for i in 0, -1:
-        while result:
-            if result[i].strip():
-                break
-            else:
-                del result[i]
-    s = ''.join(result)
-    if not s.endswith('\n'): s = s + '\n'
-    if s != p.b:
-        p.v.b = s
-.. @+node:ekr.20170304161145.4: *4* ric.merge_comment_nodes
-def merge_comment_nodes(self, p, delim):
-    '''Merge a node containing nothing but comments with the next node.'''
-    if not p.hasChildren() and p.hasNext() and p.h.strip().startswith(delim):
-        p2 = p.next()
-        b = p.b.lstrip()
-        b = b + ('\n' if b.endswith('\n') else '\n\n')
-        p2.v.b = b + p2.b
-        p.doDelete(p2)
-.. @+node:ekr.20170304161145.5: *4* ric.merge_extra_nodes
-def merge_extra_nodes(self, p):
-    '''Merge a node containing no class or def lines with the previous node'''
-    s = p.b
-    if p.hasChildren() or p.h.strip().startswith('<<') or not s.strip():
-        return
-    for s2 in g.splitLines(s):
-        if s2.strip().startswith('class') or s2.strip().startswith('def'):
-            return
-    p2 = p.back()
-    if p2:
-        nl = '\n' if s.endswith('\n') else '\n\n'
-        p2.v.b = p2.b + nl + s
-        p.doDelete(p2)
-.. @+node:ekr.20170304161145.6: *4* ric.move_decorator_lines (RecursiveImportController)
-def move_decorator_lines(self, p):
-    '''Move trailing decorator lines to the next node.'''
-    trace = False and not g.unitTesting
-    seen = []
-    p2 = p.next()
-    if not p2:
-        return False
-    lines = g.splitLines(p.b)
-    n = len(lines) - 1
-    while n >= 0:
-        s = lines[n]
-        if s.startswith('@'):
-            i = g.skip_id(s, 1, chars='-')
-            word = s[1: i]
-            if word in g.globalDirectiveList:
-                break
-            else:
-                n -= 1
-        else:
-            break
-    head = ''.join(lines[: n + 1])
-    tail = ''.join(lines[n + 1:])
-    if not tail:
-        return False
-    if not head.endswith('\n'):
-        head = head + '\n'
-    # assert p.b.v == head+tail
-    if trace:
-        if tail not in seen:
-            seen.append(tail)
-            g.trace(tail.strip())
-    nl = '' if tail.endswith('\n') else '\n'
-    p.v.b = head
-    p2.v.b = tail + nl + p2.b
-    return True
-.. @+node:ekr.20170304161145.7: *4* ric.move_doc_string WRONG
-def move_doc_string(self, root):
-    '''Move a leading docstring in the first child to the root node.'''
-    if 0: # This is completely misguided
-        # To do: copy comments before docstring
-        p = root.firstChild()
-        s = p and p.b or ''
-        if not s:
-            return
-        result = []
-        for s2 in g.splitLines(s):
-            delim = None
-            s3 = s2.strip()
-            if not s3:
-                result.append(s2)
-            elif s3.startswith('#'):
-                result.append(s2)
-            elif s3.startswith('"""'):
-                delim = '"""'
-                break
-            elif s3.startswith("'''"):
-                delim = "'''"
-                break
-            else:
-                break
-        if not delim:
-            comments = ''.join(result)
-            if comments:
-                nl = '\n\n' if root.b.strip() else ''
-                if root.b.startswith('@first #!'):
-                    lines = g.splitLines(root.b)
-                    root.v.b = lines[0] + '\n' + comments + nl + ''.join(lines[1:])
+    c, script1 = self, script
+    if not script:
+        if c.forceExecuteEntireBody:
+            useSelectedText = False
+        script = g.getScript(c, p or c.p, useSelectedText=useSelectedText)
+    script_p = p or c.p
+        # Only for error reporting below.
+    self.redirectScriptOutput()
+    try:
+        oldLog = g.app.log
+        log = c.frame.log
+        g.app.log = log
+        if script.strip():
+            sys.path.insert(0, '.') # New in Leo 5.0
+            sys.path.insert(0, c.frame.openDirectory) # per SegundoBob
+            script += '\n' # Make sure we end the script properly.
+            try:
+                # We *always* execute the script with p = c.p.
+                c.executeScriptHelper(args, define_g, define_name, namespace, script)
+            except Exception:
+                if raiseFlag:
+                    raise
                 else:
-                    root.v.b = comments + nl + root.b
-                p.v.b = s[len(comments):]
-            return
-        i = s.find(delim)
-        assert i > -1
-        i = s.find(delim, i + 3)
-        if i == -1:
-            return
-        doc = s[: i + 3]
-        p.v.b = s[i + 3:].lstrip()
-        # Move docstring to front of root.b, but after any shebang line.
-        nl = '\n\n' if root.b.strip() else ''
-        if root.b.startswith('@first #!'):
-            lines = g.splitLines(root.b)
-            root.v.b = lines[0] + '\n' + doc + nl + ''.join(lines[1:])
+                    g.handleScriptException(c, script_p, script, script1)
+            finally:
+                del sys.path[0]
+                del sys.path[0]
         else:
-            root.v.b = doc + nl + root.b
-.. @+node:ekr.20170304161145.8: *4* ric.move_shebang_line
-def move_shebang_line(self, root):
-    '''Move a shebang line from the first child to the root.'''
-    p = root.firstChild()
-    s = p and p.b or ''
-    if s.startswith('#!'):
-        lines = g.splitLines(s)
-        nl = '\n\n' if root.b.strip() else ''
-        root.v.b = '@first ' + lines[0] + nl + root.b
-        p.v.b = ''.join(lines[1:])
-.. @+node:ekr.20170304161145.9: *4* ric.rename_decls
-def rename_decls(self, root):
-    '''Use a section reference for declarations.'''
-    p = root.firstChild()
-    h = p and p.h or ''
-    tag = 'declarations'
-    if not h.endswith(tag):
-        return
-    if not p.b.strip():
-        return # The blank node will be deleted.
-    name = h[: -len(tag)].strip()
-    decls = g.angleBrackets(tag)
-    p.v.h = '%s (%s)' % (decls, name)
-    i = root.b.find('@others')
-    if i == -1:
-        g.trace('can not happen')
+            tabName = log and hasattr(log, 'tabName') and log.tabName or 'Log'
+            g.warning("no script selected", tabName=tabName)
+    finally:
+        g.app.log = oldLog
+        self.unredirectScriptOutput()
+.. @+node:ekr.20170804153417.3: *5* c.executeScriptHelper
+def executeScriptHelper(self, args, define_g, define_name, namespace, script):
+    c = self
+    if c.p:
+        p = c.p.copy() # *Always* use c.p and pass c.p to script.
+        c.setCurrentDirectoryFromContext(p)
     else:
-        nl = '' if i == 0 else '\n'
-        root.v.b = root.b[: i] + nl + decls + '\n' + root.b[i:]
-.. @+node:ekr.20031218072017.3213: *3* ric.createImportParent (no longer used)
-def createImportParent(self, current, files):
-    '''Create a parent node for nodes with a common prefix: x.h & x.cpp.'''
-    name0, name1 = files
-    prefix0, junk = g.os_path_splitext(name0)
-    prefix1, junk = g.os_path_splitext(name1)
-    if prefix0 and prefix0 == prefix1:
-        current = current.insertAsLastChild()
-        name, junk = g.os_path_splitext(prefix1)
-        name = name.replace('\\', '/') # 2011/11/25
-        current.initHeadString(name)
-    return current
-.. @+node:ekr.20140724175458.18053: *3* ic.create_top_node (no longer used)
-def create_top_node(self, atAuto, atAutoKind, fileName, parent):
-    '''Create the top node.'''
-    # g.trace(g.callers())
-    return parent.copy() ###
-    trace = True and not g.unitTesting
-    c, u = self.c, self.c.undoer
-    if trace: g.trace('atAuto: %r atAutoKind: %r parent: %s' % (
-        atAuto, atAutoKind, parent and parent.h))
-    if atAuto:
-        if atAutoKind:
-            # scannerUnitTest uses this code.
-            if not g.unitTesting:
-                g.trace('===== atAutoKind', atAutoKind, g.callers())
-            # We have found a match between ext and an @auto importer.
-            undoData = u.beforeInsertNode(parent)
-            if parent:
-                p = parent.insertAsLastChild()
-            else:
-                p = c.lastTopLevel().insertAfter()
-            if atAutoKind:
-                p.initHeadString(atAutoKind + ' ' + fileName)
-            u.afterInsertNode(p, 'Import', undoData)
-        else:
-            # Use the *existing* node.
-            p = parent.copy()
-            p.setBodyString('')
-    else:
-        undoData = u.beforeInsertNode(parent)
-        if parent:
-            p = parent.insertAsLastChild()
-        else:
-            p = c.lastTopLevel().insertAfter()
-        if self.treeType in ('@clean', '@file', '@nosent'):
-            p.initHeadString('%s %s' % (self.treeType, fileName))
-        elif self.treeType is None:
-            # By convention, we use the short file name.
-            p.initHeadString(g.shortFileName(fileName))
-        else:
-            p.initHeadString(fileName)
-        u.afterInsertNode(p, 'Import', undoData)
-    return p
-.. @+node:ekr.20170411155558.1: *3* OLD g.getGitBranchName
-def getGitBranchName(path=None, shorthand=True):
-    '''
-    Return the name of leo-editor's git branch.
-    
-    First, attempt to get the branch from leoVersion.branch.
-    This will always be the shorthand name of the branch.
-    
-    Otherwise, use the pygit2 package if it exists.
-    Return the shorthand name (master) or the full name (refs/heads/master).
-    
-    In all cases, return None if the branch name can not be determined.
-    '''
-    # First, try to get the version from leoVersion.
-    try:
-        from leo.core import leoVersion
-        branch = leoVersion.branch
-        if branch not in (None, 'None'):
-            return branch
-    except ImportError:
-        pass
-    # Next, use pygit2 if possible.
-    try:
-        import pygit2
-    except ImportError:
-        return None
-    if path is None:
-        path = g.os_path_finalize_join(g.app.loadDir, '..', '..')
-    try:
-        repo = pygit2.Repository(path)
-        if repo:
-            head = repo.head
-            return head.shorthand if shorthand else head.name
-        else:
-            return None
-    except Exception:
-        # Hard to tell what Repository ctor will do with an invalid path.
-        g.es_exception()
-        return None
+        p = None
+    # Do NOT define a subfunction here!
+    #
+    # On some, python 2.x versions it causes exec to cause a syntax error
+    # Workarounds that avoid the syntax error hurt performance.
+    # See http://stackoverflow.com/questions/4484872.
 
+        # def g_input_wrapper(message, c=c):
+            # return g.input_(message, c=c)
+
+    d = {'c': c, 'g': g, 'input': g.input_, 'p': p} if define_g else {}
+    if define_name: d['__name__'] = define_name
+    d['script_args'] = args or []
+    if namespace: d.update(namespace)
+    # A kludge: reset c.inCommand here to handle the case where we *never* return.
+    # (This can happen when there are multiple event loops.)
+    # This does not prevent zombie windows if the script puts up a dialog...
+    try:
+        c.inCommand = False
+        g.inScript = g.app.inScript = True
+            # g.inScript is a synonym for g.app.inScript.
+        if c.write_script_file:
+            scriptFile = self.writeScriptFile(script)
+            # pylint: disable=undefined-variable, no-member
+            if g.isPython3:
+                exec(compile(script, scriptFile, 'exec'), d)
+            else:
+                builtins.execfile(scriptFile, d)
+        else:
+            exec(script, d)
+    finally:
+        g.inScript = g.app.inScript = False
+.. @+node:ekr.20170804153417.4: *5* c.redirectScriptOutput
+def redirectScriptOutput(self):
+    c = self
+    # g.trace('original')
+    if c.config.redirect_execute_script_output_to_log_pane:
+        g.redirectStdout() # Redirect stdout
+        g.redirectStderr() # Redirect stderr
+.. @+node:ekr.20170804153417.5: *5* c.setCurrentDirectoryFromContext
+def setCurrentDirectoryFromContext(self, p):
+    trace = False and not g.unitTesting
+    c = self
+    aList = g.get_directives_dict_list(p)
+    path = c.scanAtPathDirectives(aList)
+    curDir = g.os_path_abspath(os.getcwd())
+    # g.trace(p.h,'\npath  ',path,'\ncurDir',curDir)
+    if path and path != curDir:
+        if trace: g.trace('calling os.chdir(%s)' % (path))
+        try:
+            os.chdir(path)
+        except Exception:
+            pass
+.. @+node:ekr.20170804153417.6: *5* c.unredirectScriptOutput
+def unredirectScriptOutput(self):
+    c = self
+    # g.trace('original')
+    if c.exists and c.config.redirect_execute_script_output_to_log_pane:
+        g.restoreStderr()
+        g.restoreStdout()
+.. @+node:ekr.20170804153417.7: *4* g.es_exception
+def es_exception(full=True, c=None, color="red"):
+    typ, val, tb = sys.exc_info()
+    # val is the second argument to the raise statement.
+    if full or g.app.debugSwitch > 0:
+        lines = traceback.format_exception(typ, val, tb)
+    else:
+        lines = traceback.format_exception_only(typ, val)
+    for line in lines:
+        g.es_print_error(line, color=color)
+    # if g.app.debugSwitch > 1:
+        # import pdb # Be careful: g.pdb may or may not have been defined.
+        # pdb.set_trace()
+    fileName, n = g.getLastTracebackFileAndLineNumber()
+    return fileName, n
+.. @+node:ekr.20170804153417.8: *4* g.executeScript
+def executeScript(name):
+    """Execute a script whose short python file name is given.
+
+    This is called only from the scripts_menu plugin."""
+    mod_name, ext = g.os_path_splitext(name)
+    theFile = None
+    try:
+        # This code is in effect an import or a reload.
+        # This allows the user to modify scripts without leaving Leo.
+        theFile, filename, description = imp.find_module(mod_name)
+        imp.load_module(mod_name, theFile, filename, description)
+    except Exception:
+        g.error("exception executing", name)
+        g.es_exception()
+    if theFile:
+        theFile.close()
+.. @+node:ekr.20170804153417.9: *4* import test: crashes Leo!
+@language python
+import imp
+import sys
+import traceback
+import leo.core.leoGlobals as g
+# print(id(g), g)
+try: # This crashes Leo
+    imp.reload(g)
+    # print(id(g), g)
+except Exception:
+    typ, val, tb = sys.exc_info()
+    lines = traceback.format_exception(typ, val, tb)
+    print(lines)
+    
+.. @+node:ekr.20170806040830.1: *3* OLD gdc.diff_file
+def diff_file(self, fn):
+    
+    if 1: # New code.  Get both versions from git.
+        lines = self.get_rev(self.rev1, fn)
+        lines2 = self.get_rev(self.rev2, fn)
+        diff_list = list(difflib.unified_diff(
+            lines,
+            lines2,
+            self.rev1 or 'uncommitted',
+            self.rev2 or 'uncommitted',
+        ))
+        g.trace(len(lines), len(lines2), fn)
+        g.printList(diff_list)
+    else:
+        c = self.c
+        command = 'git show %s:%s' % (self.rev2, fn)
+        lines = g.execGitCommand(command, self.repo_dir)
+        # Write p to lines2.
+        at = c.atFileCommands
+        p = self.find_file(fn)
+        if p and p.isAtFileNode():
+            at.write(p, nosentinels=False, toString=True)
+            lines2 = g.splitLines(at.stringOutput.replace('\r',''))
+            diff_list = list(difflib.unified_diff(lines, lines2, self.rev1, self.rev2))
+            g.trace(len(lines), len(lines2), fn)
+            g.printList(diff_list)
+        elif p:
+            g.trace('found', fn)
+        else:
+            g.trace('not found', fn)
 .. @-all
 .. @@nosearch
 .. @-leo

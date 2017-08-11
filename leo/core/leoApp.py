@@ -1010,6 +1010,10 @@ class LeoApp(object):
         # Leo 5.6: print the signon immediately:
         if not app.silentMode:
             print('')
+            if sys.stdout.encoding.lower() != 'utf-8':
+                print('Note: sys.stdout.encoding is not UTF-8')
+                print('See: https://stackoverflow.com/questions/14109024')
+                print('')
             print(app.signon)
             print(app.signon1)
             print(app.signon2)
@@ -1323,7 +1327,7 @@ class LeoApp(object):
         g.app.cacher = cacher = leoCache.Cacher()
         g.app.db = cacher.initGlobalDB()
     #@+node:ekr.20031218072017.1978: *3* app.setLeoID & helpers
-    def setLeoID(self, verbose=True):
+    def setLeoID(self, useDialog=True, verbose=True):
         '''Get g.app.leoID from various sources.'''
         self.leoID = None
         assert self == g.app
@@ -1336,10 +1340,13 @@ class LeoApp(object):
         for func in table:
             func(verbose)
             if self.leoID:
-                return
-        self.setIdFromDialog()
-        if self.leoID:
-            self.setIDFile()
+                break
+        else:
+            if useDialog:
+                self.setIdFromDialog()
+                if self.leoID:
+                    self.setIDFile()
+        return self.leoID
     #@+node:ekr.20031218072017.1979: *4* app.setIDFromSys
     def setIDFromSys(self, verbose):
         '''
@@ -2792,7 +2799,7 @@ class LoadManager(object):
                     root.doDelete(newNode=root.next())
                 p = g.findNodeAnywhere(c, "Leo's cheat sheet")
                 if p:
-                    c.selectPosition(p, enableRedrawFlag=False)
+                    c.selectPosition(p)
                     p.expand()
                 c.target_language = 'rest'
                     # Settings not parsed the first time.

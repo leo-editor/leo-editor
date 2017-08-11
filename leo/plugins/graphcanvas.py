@@ -1011,7 +1011,7 @@ class graphcanvasController(object):
         nn = self.c.currentPosition().insertAfter()
         nn.setHeadString('node')
         self.c.selectPosition(nn)
-        self.c.redraw_now()
+        self.c.redraw()
         self.loadGraph(pnt=pnt)
 
     #@+node:bob.20110119123023.7418: *3* pressLink

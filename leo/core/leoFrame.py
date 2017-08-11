@@ -84,8 +84,7 @@ class TreeAPI(object):
     def edit_widget(self, p): return None
 
     def redraw(self, p=None, scroll=True, forceDraw=False): pass
-
-    def redraw_now(self, p=None, scroll=True, forceDraw=False): pass
+    redraw_now = redraw
 
     def scrollTo(self, p): pass
     # May be defined in subclasses.
@@ -221,7 +220,6 @@ class LeoBody(object):
         frame.body = self
         self.c = c
         self.editorWidgets = {} # keys are pane names, values are text widgets
-        self.forceFullRecolorFlag = False
         self.frame = frame
         self.parentFrame = parentFrame # New in Leo 4.6.
         self.totalNumberOfEditors = 0
@@ -238,9 +236,8 @@ class LeoBody(object):
         '''Command decorator for the c.frame.body class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'frame', 'body'])
-    #@+node:ekr.20031218072017.3677: *3* LeoBody.Coloring (recolor is a do-nothing??)
+    #@+node:ekr.20031218072017.3677: *3* LeoBody.Coloring
     def forceFullRecolor(self):
-        # self.forceFullRecolorFlag = True
         pass
 
     def getColorizer(self):
@@ -249,22 +246,10 @@ class LeoBody(object):
     def updateSyntaxColorer(self, p):
         return self.colorizer.updateSyntaxColorer(p.copy())
 
-    def recolor(self, p, incremental=False):
-        self.c.requestRecolorFlag = True
-
-        # trace = False and not g.unitTesting
-        # from leo.core.leoQt import QtWidgets
-        # assert self.widget and self.widget.document()
-        # assert isinstance(self.widget, QtWidgets.QTextEdit)
-        # if incremental:
-            # if trace: g.trace('***** incremental', incremental, p and p.h)
-        # else:
-            # if trace: g.trace('(body)',
-                # id(self.widget.document()),
-                # id(self.widget),
-                # p and p.h)
-        # self.c.requestRecolorFlag = True
-        # self.c.incrementalRecolorFlag = incremental
+    def recolor(self, p, **kwargs):
+        if 'incremental' in kwargs:
+            print('c.recolor: incremental keyword is deprecated', g.callers(1))
+        self.c.recolor()
 
     recolor_now = recolor
     #@+node:ekr.20140903103455.18574: *3* LeoBody.Defined in subclasses
@@ -670,8 +655,7 @@ class LeoBody(object):
         #@+<< recolor the body >>
         #@+node:ekr.20051026083733.6: *5* << recolor the body >>
         c.frame.scanForTabWidth(p)
-        body.recolor(p, incremental=not self.forceFullRecolorFlag)
-        self.forceFullRecolorFlag = False
+        body.recolor(p)
         if g.app.unitTesting:
             g.app.unitTestDict['colorized'] = True
         #@-<< recolor the body >>
@@ -1004,7 +988,6 @@ class LeoFrame(object):
             w.see(i) # 2016/01/19: important
             g.app.gui.replaceClipboardWith(s)
         if name.startswith('body'):
-            c.frame.body.forceFullRecolor()
             c.frame.body.onBodyChanged('Cut', oldSel=oldSel, oldText=oldText)
         elif name.startswith('head'):
             # The headline is not officially changed yet.
@@ -1065,7 +1048,6 @@ class LeoFrame(object):
                     offset = 0
                 newCurPosition = tCurPosition + offset
                 w.setSelectionRange(i=newCurPosition, j=newCurPosition)
-            c.frame.body.forceFullRecolor()
             c.frame.body.onBodyChanged('Paste', oldSel=oldSel, oldText=oldText)
         elif singleLine:
             s = w.getAllText()
@@ -1390,7 +1372,7 @@ class LeoTree(object):
             # New in Leo 4.4.5: we must recolor the body because
             # the headline may contain directives.
             c.frame.scanForTabWidth(p)
-            c.frame.body.recolor(p, incremental=True)
+            c.frame.body.recolor(p)
             dirtyVnodeList = p.setDirty()
             u.afterChangeNodeContents(p, undoType, undoData,
                 dirtyVnodeList=dirtyVnodeList, inHead=True)
@@ -1505,8 +1487,7 @@ class LeoTree(object):
     def drawIcon(self, p): self.oops()
 
     def redraw(self, p=None, scroll=True, forceDraw=False): self.oops()
-
-    def redraw_now(self, p=None, scroll=True, forceDraw=False): self.oops()
+    redraw_now = redraw
 
     def scrollTo(self, p): self.oops()
     # idle_scrollTo = scrollTo # For compatibility.
@@ -2114,9 +2095,7 @@ class NullTree(LeoTree):
     def redraw(self, p=None, scroll=True, forceDraw=False):
         self.redrawCount += 1
         # g.trace(p and p.h, self.c.p.h)
-
-    def redraw_now(self, p=None, scroll=True, forceDraw=False):
-        self.redraw(p)
+    redraw_now = redraw
 
     def redraw_after_contract(self, p=None): self.redraw()
 

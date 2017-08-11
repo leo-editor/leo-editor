@@ -1,56 +1,50 @@
 .. @+leo-ver=5-thin
 .. @+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 .. @+all
-.. @+node:ekr.20170707035417.1: ** Leo 5.6
-.. @+node:ekr.20170709020723.1: *3* Bugs
-.. @+node:ekr.20170713050541.1: *4* #62: Syntax @color settings don't dereference
-https://github.com/leo-editor/leo-editor/issues/62
-.. @+node:ekr.20170713050028.1: *4* #317: Viewrendered pane loses live-render feature
-https://github.com/leo-editor/leo-editor/issues/317
-.. @+node:ekr.20170713051138.1: *4* #473: nav_qt buttons do not reload if file is re-opened
-https://github.com/leo-editor/leo-editor/issues/473
-.. @+node:ekr.20170707150222.1: *4* #505: Leo's read code must be rewritten
-https://github.com/leo-editor/leo-editor/issues/505
-
-This was the new-read branch.
-
-The new code eliminates hidden time bombs when switching branches.
-
-Changes to read/write code:
-- at.writeAll writes files at most once.
-- at.write updates cache. Previously only at.read updated the cache!
-- at.deleteUnvisitedNodes no longer creates resurrected nodes.
-- at.new_createThinChild4 *always* updates headlines.
-- at.terminateBody just sets v.tempRoots.
-  It no longer calls at.indicateNodeChanged.
-- fc.handleNodeConflicts reports changed headlines differently.
-
-Changes to cacher code:
-- Added cacher.checkForChangedNodes.
-- Added tempRoots logic.
-- Added always_warn switch to cacher.reportIfNodeChanged.
-.. @+node:ekr.20170709020718.1: *4* #516: Content of find tab can disappear
-https://github.com/leo-editor/leo-editor/issues/516
-
-.. @+node:ekr.20170712035501.1: *3* Features
-.. @+node:ekr.20170712035524.1: *4* Optionally show trailing whitespace
-@bool color_trailing_whitespace = True
-
-@color trailing_whitespace_color = red
-.. @+node:ekr.20170713045600.1: *4* #446: Added vr-zoom command
-https://github.com/leo-editor/leo-editor/issues/446
-.. @+node:ekr.20170718061900.1: *4* #531: file timestamps
-https://github.com/leo-editor/leo-editor/issues/531
-
-Added new settings::
-
-    @bool log_show_save_time = False
-    @string log_timestamp_format = "%H%M%S"
-    
-Changed fc.putSavedMessage and at.replaceTargetFileIfDifferent.
 .. @+node:ekr.20170619165453.1: ** Branch: string-gui
 Attempt to run all unit tests without using Qt gui code.
 All gui-related code will be simulated with the StringTextWrapper class.
+.. @+node:ekr.20170807103720.1: ** Branch: redraw
+To do:
+
+Note: cc.selectChapterForPosition calls c.redraw *only* if the chapter changes.
+
+- Investigate running unit tests without redraw.
+  Related to string-gui branch: Use string/null gui for unit tests.
+  https://github.com/leo-editor/leo-editor/issues/503
+
+- Added support for c.redraw_later, called from cc.selectChapterForPosition.
+- c.bringToFront now works without using c.outerUpdate.
+- c.widgetWantsFocusNow now just calls c.set_focus & clears c.requestedFocusWidget.
+- c.outerUpdate no longer handles recoloring or redrawing.
+- Replaced all calls to c.recolor_now by c.recolor.
+- Replaced all calls to redraw_now by redraw.
+- Removed all calls to body.forceFullRecolor.
+- Removed forceFullRecolorFlag.
+- Done: removed c.incrementalRecolorFlag.
+- Done: c.selectPosition never calls c.redraw. All unit tests pass.
+- Done: Removed c.requestRedrawFlag and c.outerUpdate never calls c.redraw.  All tests pass.
+.. @+node:ekr.20170806095521.1: ** @@command git-diff
+@language python
+g.cls()
+import difflib
+import os
+@others
+# GitDiffController(c, 'HEAD', 'HEAD~1').run()
+GitDiffController(c, 'HEAD').run()
+    # Same as git diff
+.. @+node:ekr.20170806133624.1: ** gdc.paste_to_clipboard
+def paste_to_clipboard(self,s):
+    '''Apparently g.app.gui.replaceClipboardWith(s) causes a flash!'''
+    try:
+        from tkinter import Tk # Python 3
+    except ImportError:
+        from Tkinter import Tk # Python 2
+    root = Tk()
+    root.withdraw()
+    root.clipboard_clear()
+    root.clipboard_append(s)
+    root.destroy()
 .. @-all
 .. @@nosearch
 .. @@killbeautify

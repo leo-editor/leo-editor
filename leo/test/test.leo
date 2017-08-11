@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.52" body_secondary_ratio="0.42">
-	<global_window_position top="62" left="503" height="749" width="1249"/>
+<globals body_outline_ratio="0.76" body_secondary_ratio="0.56">
+	<global_window_position top="62" left="503" height="956" width="1249"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -844,7 +844,6 @@
 </v>
 <v t="ekr.20120925105035.3146"><vh>Vertical scroll position probe</vh></v>
 </v>
-<v t="ekr.20160421054609.1"><vh>@clean leo-bridge-test.py</vh></v>
 <v t="ekr.20160929143541.1"><vh>Viewrendered examples</vh>
 <v t="ekr.20160929143541.12"><vh>@@movie Gayane Ballet (Url)</vh></v>
 <v t="ekr.20160929143541.14"><vh>@@movie Sample video (Url)</vh></v>
@@ -1194,7 +1193,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="0,0,2"></t>
+<t tx="ekr.20070416075121" str_leo_pos="5"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -8482,65 +8481,6 @@ def spam():
     '''This is a docstring.'''
     pass</t>
 <t tx="ekr.20160420153653.1"></t>
-<t tx="ekr.20160421054609.1">'''A simple test bed for the leoBridge module.'''
-import os
-import sys
-
-# Leo files.
-files = [
-    'c:/leo.repo/leo-editor/leo/test/unitTest.leo',
-    'c:/leo.repo/leo-editor/leo/test/test.leo',
-    'c:/xyzzy.xxx',
-]
-
-# Switches...
-gui = 'nullGui'         # 'nullGui', 'qt',
-kill_leo_output = False # True: kill all output produced by g.es_print.
-loadPlugins = False     # True: attempt to load plugins.
-readSettings = True     # True: read standard settings files.
-silent = True           # True: don't print signon messages.
-trace_sys_path = False  # True: trace imports here.
-verbose = True          # True: verbose output.
-
-# Import stuff...
-dir_ = os.path.abspath('.')
-if dir_ not in sys.path:
-    if trace_sys_path: print('appending %s to sys.path' % dir_)
-    sys.path.append(dir_)
-if trace_sys_path:
-    print('sys.path:...\n%s' % '\n'.join(sorted(sys.path)))
-    print('sys.argv: %s %s' % (len(sys.argv), '\n'.join(sys.argv)))
-if gui == 'qt':
-    # Do this here to bypass leoQt g.in_bridge logic.
-    import leo.core.leoQt as leoQt
-import leo.core.leoBridge as leoBridge
-
-controller = leoBridge.controller(
-    gui=gui,
-    loadPlugins=loadPlugins,
-    readSettings=readSettings,
-    silent=silent,
-    verbose=verbose)
-g = controller.globals()
-
-# This kills all output from commanders.
-if kill_leo_output:
-    
-    def do_nothing(*args, **keys):
-        pass
-        
-    g.es_print = do_nothing
-    
-for path in files:
-    if os.path.exists(path):
-        c = controller.openLeoFile(path)
-        if c:
-            n = 0
-            for p in c.all_positions():
-                n += 1
-            print('%s has %s nodes' % (c.shortFileName(), n))
-    else:
-        print('file not found: %s' % path)</t>
 <t tx="ekr.20160421123215.1">def do_nothing(*args, **keys):
     pass
         
