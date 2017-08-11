@@ -2237,7 +2237,7 @@ class Commands(object):
             fileName = g.app.gui.runOpenFileDialog(c,
                 title="Open",
                 filetypes=table,
-                defaultextension=g.defaultLeoFileExtension())
+                defaultextension=g.defaultLeoFileExtension(c))
         c.bringToFront()
         c.init_error_dialogs()
         ok = False
@@ -2420,11 +2420,11 @@ class Commands(object):
                         initialfile=c.mFileName,
                         title="Save",
                         filetypes=[g.fileFilters('LEOFILES')],
-                        defaultextension=g.defaultLeoFileExtension())
+                        defaultextension=g.defaultLeoFileExtension(c))
             c.bringToFront()
             if fileName:
                 # Don't change mFileName until the dialog has suceeded.
-                c.mFileName = g.ensure_extension(fileName, g.defaultLeoFileExtension())
+                c.mFileName = g.ensure_extension(fileName, g.defaultLeoFileExtension(c))
                 c.frame.title = c.computeWindowTitle(c.mFileName)
                 c.frame.setTitle(c.computeWindowTitle(c.mFileName))
                     # 2013/08/04: use c.computeWindowTitle.
@@ -2497,14 +2497,14 @@ class Commands(object):
                 initialfile=c.mFileName,
                 title="Save As",
                 filetypes=[g.fileFilters('LEOFILES')],
-                defaultextension=g.defaultLeoFileExtension())
+                defaultextension=g.defaultLeoFileExtension(c))
         c.bringToFront()
         if fileName:
             # Fix bug 998090: save file as doesn't remove entry from open file list.
             if c.mFileName:
                 g.app.forgetOpenFile(c.mFileName)
             # Don't change mFileName until the dialog has suceeded.
-            c.mFileName = g.ensure_extension(fileName, g.defaultLeoFileExtension())
+            c.mFileName = g.ensure_extension(fileName, g.defaultLeoFileExtension(c))
             # Part of the fix for https://bugs.launchpad.net/leo-editor/+bug/1194209
             c.frame.title = title = c.computeWindowTitle(c.mFileName)
             c.frame.setTitle(title)
@@ -2549,10 +2549,10 @@ class Commands(object):
                 initialfile=c.mFileName,
                 title="Save To",
                 filetypes=[g.fileFilters('LEOFILES')],
-                defaultextension=g.defaultLeoFileExtension())
+                defaultextension=g.defaultLeoFileExtension(c))
         c.bringToFront()
         if fileName:
-            fileName = g.ensure_extension(fileName, g.defaultLeoFileExtension())
+            fileName = g.ensure_extension(fileName, g.defaultLeoFileExtension(c))
             c.fileCommands.saveTo(fileName)
             g.app.recentFilesManager.updateRecentFiles(fileName)
             g.chdir(fileName)
@@ -5652,10 +5652,10 @@ class Commands(object):
         c.incrementalRecolorFlag = False
         c.requestRecolorFlag = None
         c.requestRedrawFlag = False
-        c.requestedFocusWidget = None
+            c.requestedFocusWidget = None
         c.requestedIconify = ''
         mods = g.childrenModifiedSet
-        if mods:
+            if mods:
             #print(mods)
             g.doHook("childrenModified", c=c, nodes=mods)
             mods.clear()
@@ -5663,7 +5663,7 @@ class Commands(object):
         if mods:
             #print(mods)
             g.doHook("contentModified", c=c, nodes=mods)
-            mods.clear()
+                mods.clear()
     #@+node:ekr.20031218072017.2945: *3* c.Dragging
     #@+node:ekr.20031218072017.2353: *4* c.dragAfter
     def dragAfter(self, p, after):
@@ -5865,28 +5865,28 @@ class Commands(object):
     def redraw_after_contract(self, p=None, setFocus=False):
         c = self
         c.endEditing()
-        if p:
-            c.setCurrentPosition(p)
-        else:
-            p = c.currentPosition()
-        if p.isCloned():
-            c.redraw(p=p, setFocus=setFocus)
-        else:
-            c.frame.tree.redraw_after_contract(p)
-            if setFocus: c.treeFocusHelper()
+            if p:
+                c.setCurrentPosition(p)
+            else:
+                p = c.currentPosition()
+            if p.isCloned():
+                c.redraw(p=p, setFocus=setFocus)
+            else:
+                c.frame.tree.redraw_after_contract(p)
+                if setFocus: c.treeFocusHelper()
     #@+node:ekr.20090112065525.1: *5* c.redraw_after_expand
     def redraw_after_expand(self, p=None, setFocus=False):
         c = self
         c.endEditing()
-        if p:
-            c.setCurrentPosition(p)
-        else:
-            p = c.currentPosition()
-        if p.isCloned():
-            c.redraw(p=p, setFocus=setFocus)
-        else:
-            c.frame.tree.redraw_after_expand(p)
-            if setFocus: c.treeFocusHelper()
+            if p:
+                c.setCurrentPosition(p)
+            else:
+                p = c.currentPosition()
+            if p.isCloned():
+                c.redraw(p=p, setFocus=setFocus)
+            else:
+                c.frame.tree.redraw_after_expand(p)
+                if setFocus: c.treeFocusHelper()
     #@+node:ekr.20090110073010.2: *5* c.redraw_after_head_changed
     def redraw_after_head_changed(self):
         '''Redraw the screen (if needed) when editing ends.
@@ -5905,9 +5905,9 @@ class Commands(object):
         trace = False and not g.unitTesting
         if trace: g.trace('(Commands)', p and p.h or '<No p>', g.callers(4))
         c = self
-        flag = c.expandAllAncestors(p)
-        if flag:
-            c.frame.tree.redraw_after_select(p)
+            flag = c.expandAllAncestors(p)
+            if flag:
+                c.frame.tree.redraw_after_select(p)
     #@+node:ekr.20080514131122.13: *4* c.recolor_now
     def recolor_now(self, p=None, incremental=False, interruptable=True):
         # Support QScintillaColorizer.colorize.
