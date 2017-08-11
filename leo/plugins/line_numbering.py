@@ -60,8 +60,15 @@ def onSelect (tag, keys):
         nums = NUMBERINGS.get(c.hash() + new_p.gnx, tuple())
         request_update(c)
         c.user_dict[LNT] = nums
+        with number_bar_widget(c) as w:
+            w.highest_line = nums[-1] if nums else 10
     else:
         c.user_dict[LNT] = tuple()
+#@+node:vitalije.20170811122518.1: ** number_bar_widget
+def number_bar_widget(c):
+    w = c.frame.top and c.frame.top.findChild(QtWidgets.QFrame, 'gutter')
+    if w:
+        yield w
 #@+node:vitalije.20170727214320.1: ** renumber
 NUMBERINGS = {}
 
@@ -82,11 +89,11 @@ def renumber(c):
         delim_en = at.endSentinelComment
         nums = universal_line_numbers(root, new_p, delim_st, delim_en)
         NUMBERINGS[c.hash() + new_p.gnx] = nums
-    c.user_dict[LNT] = nums
-    w = c.frame.top and c.frame.top.findChild(QtWidgets.QFrame, 'gutter')
-    if w:
-        w.highest_line = nums[-1] if nums else 10
-        w.update()
+    if c.user_dict.get(LNT) != nums:
+        c.user_dict[LNT] = nums
+        with number_bar_widget(c) as w:
+            w.highest_line = nums[-1] if nums else 10
+            w.update()
     finish_update(c)
 #@+node:vitalije.20170727214225.1: ** request & finish_update
 REQUESTS = {}
