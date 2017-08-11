@@ -3486,10 +3486,9 @@ def fileFilters(key):
     elif key == 'LEOFILES':
         return ("Leo files", "*.leo")
 #@+node:vitalije.20170714085545.1: *3* g.defaultLeoFileExtension
-def defaultLeoFileExtension():
-    if g.SQLITE:
-        return '.db'
-    return '.leo'
+def defaultLeoFileExtension(c=None):
+    conf = c.config if c else g.app.config
+    return conf.getString('default_leo_extension') or '.leo'
 #@+node:ekr.20031218072017.3151: ** g.Finding & Scanning
 #@+node:ekr.20140602083643.17659: *3* g.find_word
 def find_word(s, word, i=0):
