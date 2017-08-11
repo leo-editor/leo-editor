@@ -699,6 +699,7 @@
 <v t="ekr.20041119034357.8"><vh>@string output_initial_comment = None</vh></v>
 <v t="ekr.20041119034357.9"><vh>@string stylesheet = </vh></v>
 <v t="ekr.20080921060401.3"><vh>@string default_leo_file = ~/.leo/workbook.leo</vh></v>
+<v t="vitalije.20170811125150.1"><vh>@string default_leo_extension = .leo</vh></v>
 </v>
 <v t="ekr.20110611092035.16474"><vh>Recent files</vh>
 <v t="tbrown.20081003103821.1"><vh>@bool recent_files_group = False</vh></v>
@@ -15046,5 +15047,6 @@ paste-retaining-clones Paste Node As Clone</t>
 <t tx="vitalije.20100306144625.8944"></t>
 <t tx="vitalije.20100306144625.8945"></t>
 <t tx="vitalije.20100306144625.8946"># Time between saves in seconds</t>
+<t tx="vitalije.20170811125150.1"></t>
 </tnodes>
 </leo_file>
