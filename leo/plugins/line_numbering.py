@@ -15,6 +15,7 @@ __version__ = "0.1"
 import re
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets
+from contextlib import contextmanager
 LNT = 'line_number_translation'
 LNR = 'line_numbering_root'
 LNOFF = 'line_numbering_off'
@@ -65,10 +66,12 @@ def onSelect (tag, keys):
     else:
         c.user_dict[LNT] = tuple()
 #@+node:vitalije.20170811122518.1: ** number_bar_widget
+@contextmanager
 def number_bar_widget(c):
     w = c.frame.top and c.frame.top.findChild(QtWidgets.QFrame, 'gutter')
     if w:
         yield w
+    pass
 #@+node:vitalije.20170727214320.1: ** renumber
 NUMBERINGS = {}
 
