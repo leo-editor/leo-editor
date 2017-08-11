@@ -2127,12 +2127,14 @@ class FileCommands(object):
             )
         ok = False
         try:
+            fc.prepareDbTables(conn)
+            fc.exportDbVersion(conn)
             fc.exportVnodesToSqlite(conn, (dbrow(v) for v in c.all_unique_nodes()))
             fc.exportGeomToSqlite(conn)
             fc.exportHashesToSqlite(conn)
             conn.commit()
             ok = True
-        except sqlite3.OperationalError as e:
+        except sqlite3.Error as e:
             g.internalError(e)
         return ok
     #@+node:vitalije.20170705075107.1: *6* fc.decodePosition
@@ -2156,8 +2158,8 @@ class FileCommands(object):
         res = [mk%(x.gnx, y) for x,y in p.stack]
         res.append(mk%(p.gnx, p._childIndex))
         return jn.join(res)
-    #@+node:vitalije.20170701161851.1: *6* fc.exportVnodesToSqlite
-    def exportVnodesToSqlite(self, conn, rows):
+    #@+node:vitalije.20170811130512.1: *6* fc.prepareDbTables
+    def prepareDbTables(self, conn):
         conn.execute('''drop table if exists vnodes;''')
         conn.execute('''
             create table if not exists vnodes(
@@ -2170,7 +2172,8 @@ class FileCommands(object):
                 statusBits,
                 ua);''')
         conn.execute('''create table if not exists extra_infos(name primary key, value)''')
-        
+    #@+node:vitalije.20170701161851.1: *6* fc.exportVnodesToSqlite
+    def exportVnodesToSqlite(self, conn, rows):
         conn.executemany('''insert into vnodes
             (gnx, head, body, children, parents,
                 iconVal, statusBits, ua)
@@ -2192,12 +2195,15 @@ class FileCommands(object):
         )
         conn.executemany('replace into extra_infos(name, value) values(?, ?)', data)
 
+    #@+node:vitalije.20170811130559.1: *6* fc.exportDbVersion
+    def exportDbVersion(self, conn):
+        conn.execute("replace into extra_infos(name, value) values('dbversion', ?)", ('1.0',))
     #@+node:vitalije.20170701162204.1: *6* fc.exportHashesToSqlite
     def exportHashesToSqlite(self, conn):
         c = self.c
         md5 = lambda x:hashlib.md5(open(x,'rb').read()).hexdigest()
         files = set()
-        
+
         p = c.rootPosition()
         while p:
             if p.isAtIgnoreNode():
@@ -2208,11 +2214,11 @@ class FileCommands(object):
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-        
+
         conn.executemany(
             'replace into extra_infos(name, value) values(?,?)',
             map(lambda x:(x[1], md5(x[0])), files))
-        
+
     #@+node:ekr.20031218072017.2012: *4* fc.writeAtFileNodes
     @cmd('write-at-file-nodes')
     def writeAtFileNodes(self, event=None):
