@@ -21564,12 +21564,15 @@ table = (
 )
 fail = []
 for kind, generator in table:
-    aList = list(generator())
-    aList2 = list(set(aList))
-    if len(aList) == len(aList2) and len(aList) > 1:
-        if trace: print('  OK: %s %s' % (kind, len(aList)))
-    else:
-        if trace: print('FAIL: %s %s %s' % (kind, len(aList), len(aList2)))
+    aList = []
+    for p in generator():
+        if p in aList:
+            print('FAIL: %s %s %s' % (kind, p.gnx, p.h))
+            fail.append(kind)
+        else:
+            aList.append(p)
+    if len(aList) < 1:
+        print('FAIL: %s len %s' % (kind, len(aList)))
         fail.append(kind)
 assert not fail, fail
 #@+node:ekr.20170504124652.1: *5* parent
@@ -21579,6 +21582,13 @@ assert not fail, fail
 #@+node:ekr.20170504124617.1: *7* grandchild2
 #@+node:ekr.20170504124417.1: *6* child2
 #@+node:ekr.20170504124637.1: *6* child3
+#@+node:vitalije.20170811143058.1: *4* @test position not hashable
+try:
+    a = set()
+    a.add(p)
+    assert False, 'Adding position to set should throw exception'
+except TypeError:
+    pass
 #@+node:ekr.20040712101754.99: *4* @test c iters
 << coverage tests >>
 << duplicate tests >>
