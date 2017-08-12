@@ -189,6 +189,8 @@ class Cacher(object):
         else:
             # If the outline is out of sync, there may be write errors later,
             # but the user should be handle them easily enough.
+            isClone, child_v = self.fastAddLastChild(fileName, gnx, parent_v)
+            self.createOutlineFromCacheList(child_v, child_tuple, fileName, top=False)
             if trace: g.trace('vnode does not exist: %25s %s' % (gnx, h))
             # if not self.update_warning_given: # not needed.
                 # self.update_warning_given = True
