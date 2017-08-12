@@ -170,7 +170,8 @@ class Cacher(object):
             isClone, child_v = self.fastAddLastChild(fileName, gnx, parent_v)
             if isClone:
                 self.checkForChangedNodes(child_tuple, fileName, parent_v)
-            self.createOutlineFromCacheList(child_v, child_tuple, fileName, top=False)
+            else:
+                self.createOutlineFromCacheList(child_v, child_tuple, fileName, top=False)
     #@+node:ekr.20170622112151.1: *5* cacher.checkForChangedNodes
     # update_warning_given = False
 
