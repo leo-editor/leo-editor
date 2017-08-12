@@ -71,7 +71,11 @@ def number_bar_widget(c):
     w = c.frame.top and c.frame.top.findChild(QtWidgets.QFrame, 'gutter')
     if w:
         yield w
-    pass
+    else:
+        class DummyWidget:
+            def update(self):
+                pass
+        yield DummyWidget()
 #@+node:vitalije.20170727214320.1: ** renumber
 NUMBERINGS = {}
 
