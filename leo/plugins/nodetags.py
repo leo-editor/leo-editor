@@ -305,12 +305,13 @@ class LeoTagWidget(QtWidgets.QWidget):
     #@+node:peckj.20140804114520.15204: *3* updates + interaction
     #@+node:peckj.20140804114520.15205: *4* item_selected
     def item_selected(self):
+        c = self.c
         key = id(self.listWidget.currentItem())
         v = self.mapping[key]
         self.update_current_tags(v)
         pos = c.vnode2position(v)
-        self.c.selectPosition(pos)
-        self.c.redraw()
+        c.selectPosition(pos)
+        c.redraw()
     #@+node:peckj.20140804192343.6568: *5* update_current_tags
     def update_current_tags(self,pos):
         # clear out the horizontalLayout2

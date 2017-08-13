@@ -695,7 +695,7 @@ class FileCommands(object):
                 # Must be called *after* ni.end_holding.
             c.loading = False
                 # reenable c.changed
-            if type(theFile) is not sqlite3.Connection:
+            if not isinstance(theFile, sqlite3.Connection):
                 theFile.close()
                 # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1208942
                 # Leo holding directory/file handles after file close?
@@ -2213,7 +2213,7 @@ class FileCommands(object):
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
-
+        # pylint: disable=deprecated-lambda
         conn.executemany(
             'replace into extra_infos(name, value) values(?,?)',
             map(lambda x:(x[1], md5(x[0])), files))

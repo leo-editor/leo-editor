@@ -81,7 +81,7 @@ else:
 # import functools
 import imp
 import inspect
-import locale
+# import locale
 import operator
 import os
 # Module 'urllib' has no 'parse' member.
@@ -3063,15 +3063,7 @@ def getEncodingAt(p, s=None):
     aList = g.get_directives_dict_list(p)
     e = g.scanAtEncodingDirectives(aList)
     if s and s.strip() and not e:
-        ###
-        if False and sys.platform.startswith('win'):
-            try:
-                s.decode('utf-8', 'strict')
-                e = 'utf-8'
-            except Exception:
-                e = locale.getpreferredencoding()
-        else:
-            e = 'utf-8'
+        e = 'utf-8'
     return e
 #@+node:ville.20090701144325.14942: *3* g.guessExternalEditor
 def guessExternalEditor(c=None):
