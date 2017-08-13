@@ -5799,15 +5799,6 @@ class Commands(object):
         wrapper.setAllText(c.p.b)
         wrapper.setSelectionRange(i, j, insert=ins)
     #@+node:ekr.20080514131122.14: *4* c.redrawing...
-    #@+node:ekr.20170808014610.1: *5* c.enable/disable_redraw (New in Leo 5.6)
-    def disable_redraw(self):
-        '''Disable all redrawing until enabled.'''
-        c = self
-        c.enableRedrawFlag = False
-        
-    def enable_redraw(self):
-        c = self
-        c.enableRedrawFlag = True
     #@+node:ekr.20090110073010.1: *5* c.redraw
     def redraw(self, p=None, setFocus=False):
         '''Redraw the screen immediately.'''
@@ -5901,15 +5892,15 @@ class Commands(object):
                 c.frame.tree.redraw_after_select(p)
         else:
             c.requestLaterRedraw = True
-    #@+node:ekr.20170808005711.1: *5* c.redraw_later
-    def redraw_later(self):
-        '''
-        Ensure that c.redraw() will be called eventually.
-        
-        c.outerUpdate will call c.redraw() only if no other code calls c.redraw().
-        '''
+    #@+node:ekr.20170808014610.1: *5* c.enable/disable_redraw (New in Leo 5.6)
+    def disable_redraw(self):
+        '''Disable all redrawing until enabled.'''
         c = self
-        c.requestLaterRedraw = True
+        c.enableRedrawFlag = False
+        
+    def enable_redraw(self):
+        c = self
+        c.enableRedrawFlag = True
     #@+node:ekr.20080514131122.13: *4* c.recolor
     def recolor(self, **kwargs):
         # Support QScintillaColorizer.colorize.
