@@ -738,6 +738,7 @@ class TestManager(object):
                     self.logger.info(s.rstrip())
         def flush(self):
             pass
+
     #@+node:ekr.20170504130408.1: *5* create_logging_stream
     def create_logging_stream(self):
 
