@@ -186,6 +186,12 @@ class Cacher(object):
             self.reportIfNodeChanged(child_tuple, child_v, fileName, parent_v)
             for grand_child in grand_children:
                 self.checkForChangedNodes(grand_child, fileName, child_v)
+            gnxes_in_cache = set(x[2] for x in grand_children)
+            for_removal = [(i, v)
+                for i, v in enumerate(child_v.children) 
+                if v.gnx not in gnxes_in_cache]
+            for i, v in reversed(for_removal):
+                v._cutLink(i, child_v)
         else:
             # If the outline is out of sync, there may be write errors later,
             # but the user should be handle them easily enough.
