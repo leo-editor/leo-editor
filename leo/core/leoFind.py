@@ -1566,7 +1566,8 @@ class LeoFind(object):
         '''Handle the clone-find-all command, from p to after.'''
         c, u = self.c, self.c.undoer
         count, found = 0, None
-        clones, skip = set(), set()
+        # 535: positions are not hashable, but vnodes are.
+        clones, skip = [], set()
         while p and p != after:
             progress = p.copy()
             if p.v in skip:
@@ -1621,7 +1622,8 @@ class LeoFind(object):
         found = self.findNextBatchMatch(p)
         if found:
             if trace and verbose: g.trace('found', p.h)
-            clones.add(p.copy())
+            if not p in clones:
+                clones.append(p.copy())
             count += 1
         if flatten:
             skip.add(p.v)
