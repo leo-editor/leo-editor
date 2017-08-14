@@ -86,7 +86,7 @@ npyscreen = g.importExtension(
     'npyscreen',
     pluginName=None,
     required=True,
-    verbose=False,
+    verbose=True, # Issue a warning if the import fails.
 )
 if npyscreen:
     import npyscreen.utilNotify as utilNotify
