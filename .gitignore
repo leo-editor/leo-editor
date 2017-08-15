@@ -2,6 +2,9 @@
 __pycache__/
 *.py[cod]
 
+# .db files
+*.db
+
 # C extensions
 *.so
 
@@ -55,7 +58,6 @@ leo/*.zip
 # leo/core/commit_timestamp.json
 leo/core/LeoPy.leo
 leo/core/leoPy.leo
-leo/core/leoPy.db
 leo/core/unittest
 
 leo/dist/*.zip
@@ -94,7 +96,6 @@ leo/test/c_plus_plus_test.cpp
 leo/test/pylint-leo-rc.txt
 
 leo/test/.leo
-leo/test/unitTest.db
 leo/test/ropeProject/*.*
 leo/test/scriptFile.py
 leo/test/leoProfile.txt
