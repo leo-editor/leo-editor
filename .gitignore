@@ -55,6 +55,7 @@ leo/*.zip
 # leo/core/commit_timestamp.json
 leo/core/LeoPy.leo
 leo/core/leoPy.leo
+leo/core/leoPy.db
 leo/core/unittest
 
 leo/dist/*.zip
