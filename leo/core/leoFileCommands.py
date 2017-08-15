@@ -2215,7 +2215,7 @@ class FileCommands(object):
         c = self.c
         def md5(x):
             s = open(x, 'rb').read()
-            s = s.replace('\r\n', '\n')
+            s = s.replace(b'\r\n', b'\n')
             return hashlib.md5(s).hexdigest()
         files = set()
 
