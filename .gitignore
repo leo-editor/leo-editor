@@ -94,6 +94,7 @@ leo/test/c_plus_plus_test.cpp
 leo/test/pylint-leo-rc.txt
 
 leo/test/.leo
+leo/test/unitTest.db
 leo/test/ropeProject/*.*
 leo/test/scriptFile.py
 leo/test/leoProfile.txt
