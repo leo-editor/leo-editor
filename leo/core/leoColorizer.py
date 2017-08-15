@@ -1326,7 +1326,7 @@ class JEditColorizer(BaseColorizer):
         j = i; n = len(s)
         chars = self.word_chars
         # 2013/11/04: A kludge just for Haskell:
-        if self.language == 'haskell':
+        if self.language in ('haskell','clojure'):
             chars["'"] = "'"
         while j < n and s[j] in chars:
             j += 1
