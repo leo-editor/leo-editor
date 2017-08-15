@@ -2200,7 +2200,7 @@ class FileCommands(object):
     #@+node:vitalije.20170701162204.1: *6* fc.exportHashesToSqlite
     def exportHashesToSqlite(self, conn):
         c = self.c
-        md5 = lambda x:hashlib.md5(open(x,'rb').read()).hexdigest()
+        md5 = lambda x:hashlib.md5(open(x,'r').read()).hexdigest()
         files = set()
 
         p = c.rootPosition()
