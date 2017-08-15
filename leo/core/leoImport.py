@@ -2093,8 +2093,8 @@ class RecursiveImportController(object):
     def remove_empty_nodes(self, p):
         '''Remove empty nodes. Not called for @auto or @edit trees.'''
         c = self.c
-        aList = [p for p in p.self_and_subtree()
-            if not p.b and not p.hasChildren()]
+        aList = [p2 for p2 in p.self_and_subtree()
+            if not p2.b and not p2.hasChildren()]
         if aList:
             c.deletePositionsInList(aList, redraw=False)
     #@-others

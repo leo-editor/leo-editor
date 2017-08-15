@@ -5675,8 +5675,12 @@ d = g.app.config.unitTestDict # Always created for this unit test.
 keys = ('config.doButtons-file-names','config.doCommands-file-names')
 for key in keys:
     aList = d.get(key,[])
-    for fn in ['leoSettings.leo','unitTest.leo']:
-        assert fn in aList,'%s not in unitTestDict[%s]' % (fn,key)
+    for base in ('leoSettings', 'unitTest'):
+        for ext in ('.leo', '.db'):
+            if base+ext in aList:
+                break
+        else:
+            assert False,'%s not in unitTestDict[%s]' % (base,key)
 #@+node:ekr.20050203084930.1: *4* @test g.app.config.get
 w = g.app.config.get('global_setting_for_unit_tests','int')
 
