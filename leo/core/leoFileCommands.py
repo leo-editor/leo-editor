@@ -1282,14 +1282,10 @@ class FileCommands(object):
         '''Read the entire .leo file using the sax parser.'''
         dump = False and not g.unitTesting
         fc = self; c = fc.c
-        
+
         if fileName.endswith('.db'):
-            # TODO: what should be done if theFile is connection
-            #       to newly created database? Database should be
-            #       initialized to empty leo tree or we should here
-            #       just return None
-            return fc.retrieveVnodesFromDb(theFile) # or fc.initNewDb(theFile) - not implemented yet
-            
+            return fc.retrieveVnodesFromDb(theFile) or fc.initNewDb(theFile)
+
         # Pass one: create the intermediate nodes.
         saxRoot = fc.parse_leo_file(theFile, fileName,
             silent=silent, inClipboard=inClipboard, s=s)
@@ -1360,7 +1356,7 @@ class FileCommands(object):
     def retrieveVnodesFromDb(self, conn):
         '''Recreates tree from the data contained in table vnodes. This
            method follows behavior of readSaxFile.'''
-        
+
         fc = self; c = fc.c
         sql = '''select gnx, head, 
              body,
@@ -1371,7 +1367,7 @@ class FileCommands(object):
              ua from vnodes'''
         vnodes = []
         try:
-        
+
             for row in conn.execute(sql):
                 (gnx,
                     h,
@@ -1381,7 +1377,10 @@ class FileCommands(object):
                     iconVal,
                     statusBits,
                     ua) = row
-                ua = pickle.loads(g.toEncodedString(ua))
+                try:
+                    ua = pickle.loads(g.toEncodedString(ua))
+                except ValueError:
+                    ua = None
                 v = leoNodes.VNode(context=c, gnx=gnx)
                 v._headString = h
                 v._bodyString = b
@@ -1391,26 +1390,21 @@ class FileCommands(object):
                 v.statusBits = statusBits
                 v.u = ua
                 vnodes.append(v)
-        except ValueError as er:
-            if er.message.startswith("unsupported pickle protocol"):
-                g.error(er.message)
-            else:
-                raise
-            
-        except sqlite3.OperationalError as er:
-            
-            if er.message.find('no such table') < 0:
+
+        except sqlite3.Error as er:
+            if er.args[0].find('no such table') < 0:
                 # there was an error raised but it is not the one we expect
-                raise er
-                
+                g.internalError(er)
             # there is no vnodes table 
             return None
-        
+
         rootChildren = [x for x in vnodes if 'hidden-root-vnode-gnx' in x.parents]
-        assert rootChildren, 'there should be at least one top level node'
-        
+        if not rootChildren:
+            g.trace('there should be at least one top level node!')
+            return None
+
         findNode = lambda x: fc.gnxDict.get(x, c.hiddenRootNode)
-        
+
         # let us replace every gnx with the corresponding vnode
         for v in vnodes:
             v.children = [findNode(x) for x in v.children]
@@ -1422,6 +1416,18 @@ class FileCommands(object):
         p = fc.decodePosition(encp)
         c.setCurrentPosition(p)
         return rootChildren[0]
+    #@+node:vitalije.20170815162307.1: *6* fc.initNewDb
+    def initNewDb(self, conn):
+        ''' Initializes tables and returns None'''
+        fc = self; c = self.c
+        v = leoNodes.VNode(context=c)
+        c.hiddenRootNode.children = [v]
+        (w, h, x, y, r1, r2, encp) = fc.getWindowGeometryFromDb(conn)
+        c.frame.setTopGeometry(w, h, x, y, adjustSize=True)
+        c.frame.resizePanesToRatio(r1, r2)
+        c.sqlite_connection = conn
+        fc.exportToSqlite(c.mFileName)
+        return v
     #@+node:vitalije.20170630200802.1: *6* fc.getWindowGeometryFromDb
     def getWindowGeometryFromDb(self, conn):
         geom = (600, 400, 50, 50 , 0.5, 0.5, '')
@@ -2114,6 +2120,13 @@ class FileCommands(object):
             c.sqlite_connection = sqlite3.connect(fileName, 
                                         isolation_level='DEFERRED')
         conn = c.sqlite_connection
+        def dump_u(v):
+            try:
+                s = pickle.dumps(v.u, protocol=1)
+            except pickle.PicklingError:
+                s = ''
+                g.trace('unpickleable value', repr(v.u))
+            return s
         dbrow = lambda v:(
                 v.gnx,
                 v.h,
@@ -2122,7 +2135,7 @@ class FileCommands(object):
                 ' '.join(x.gnx for x in v.parents),
                 v.iconVal,
                 v.statusBits,
-                pickle.dumps(v.u)
+                dump_u(v)
             )
         ok = False
         try:
@@ -2200,7 +2213,10 @@ class FileCommands(object):
     #@+node:vitalije.20170701162204.1: *6* fc.exportHashesToSqlite
     def exportHashesToSqlite(self, conn):
         c = self.c
-        md5 = lambda x:hashlib.md5(open(x,'r').read()).hexdigest()
+        def md5(x):
+            s = open(x, 'rb').read()
+            s = s.replace('\r\n', '\n')
+            return hashlib.md5(s).hexdigest()
         files = set()
 
         p = c.rootPosition()
