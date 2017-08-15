@@ -99,6 +99,8 @@ class backlinkController(object):
             self.ui = backlinkTkUI(self)
         elif Qt:
             self.ui = backlinkQtUI(self)
+        else:
+            self.ui = None
         g.registerHandler('select3', self.updateTab)
         g.registerHandler('open2', self.loadLinks)
         # already missed initial 'open2' because of after-create-leo-frame, so
@@ -636,7 +638,8 @@ class backlinkController(object):
         if not self.messageUsed and not optional:
             self.messageUsed = True
 
-        self.ui.showMessage(msg, color=color)
+        if self.ui:
+            self.ui.showMessage(msg, color=color)
     #@+node:ekr.20090616105756.3966: *3* swap
     def swap(self):
         """Swap current pos. w. mark"""
