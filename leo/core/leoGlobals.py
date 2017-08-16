@@ -6570,7 +6570,6 @@ def handleScriptException(c, p, script, script1):
     g.warning("exception executing script")
     full = c.config.getBool('show_full_tracebacks_in_scripts')
     fileName, n = g.es_exception(full=full)
-    n = max(0, n - 1) # Convert to zero-based.
     c.goToScriptLineNumber(n, p)
     #@+<< dump the lines near the error >>
     #@+node:EKR.20040612215018: *4* << dump the lines near the error >>
