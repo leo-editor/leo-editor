@@ -2089,6 +2089,10 @@ class LoadManager(object):
     #@+node:ekr.20120219154958.10452: *3* LM.load & helpers
     def load(self, fileName=None, pymacs=None):
         '''Load the indicated file'''
+        trace = False and not g.unitTesting
+        if trace:
+            import time
+            t1 = time.clock()
         lm = self
         # Phase 1: before loading plugins.
         # Scan options, set directories and read settings.
@@ -2109,6 +2113,9 @@ class LoadManager(object):
         ok = lm.doPostPluginsInit()
         if ok and g.app.diff:
             lm.doDiff()
+        if trace:
+            t2 = time.clock()
+            g.trace('load time: %5.2f sec.' % (t2-t1))
         if ok:
             g.es('') # Clears horizontal scrolling in the log pane.
             g.app.gui.runMainLoop()
