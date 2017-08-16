@@ -81,7 +81,6 @@ This plugin defines the following commands that can be bound to keys:
 import leo.core.leoGlobals as g
 import itertools
 from collections import OrderedDict
-
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')
 from leo.core.leoQt import QtCore,QtConst,QtWidgets # isQt5,QtGui,
@@ -597,7 +596,10 @@ class QuickSearchController(object):
         self.pushSearchHistory(pat)
         if not pat.startswith('r:'):
             hpat = fnmatch.translate('*'+ pat + '*').replace(r"\Z(?ms)","")
-            bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)","")
+            bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)", "")
+            # in python 3.6 there is no (?ms) at the end
+            # only \Z
+            bpat = bpat.replace(r'\Z', '')
             flags = re.IGNORECASE
         else:
             hpat = pat[2:]
@@ -659,7 +661,7 @@ class QuickSearchController(object):
             numOfHm = len(hm) #do this before trim to get accurate count
             hm = [match for match in hm if match.key() not in bm_keys]
             if self.widgetUI.showParents.isChecked():
-                parents = OrderedDefaultDict(lambda: [])
+                parents = OrderedDefaultDict(list)
                 for nodeList in [hm,bm]:
                     for node in nodeList:
                         if node.level() == 0:
