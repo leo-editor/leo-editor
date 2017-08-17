@@ -802,7 +802,7 @@ class SqlitePickleShare(object):
             if data:
                 try:
                     val = pickle.loads(zlib.decompress(data))
-                except ValueError:
+                except (ValueError, TypeError):
                     g.es("Unpickling error - Python 3 data accessed from Python 2?")
                     return None
                 return val
