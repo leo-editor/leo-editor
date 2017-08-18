@@ -292,7 +292,7 @@ class BridgeController(object):
                 c = g.openWithFileName(fileName)
                 if trace:
                     t2 = time.time()
-                    g.trace('g.openWithFileName: %0.2fsec' % (t2 - t1))
+                    g.trace('%s %0.2fsec' % (fileName, (t2 - t1)))
                 if c: return c
             elif not self.silentMode:
                 print('file not found: %s. creating new window' % (fileName))

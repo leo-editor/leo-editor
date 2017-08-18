@@ -908,7 +908,14 @@ class ParserBaseClass(object):
         c = self.c
         # Note: when kind is 'shortcut', name is a command name.
         key = self.munge(name)
-        # if kind and kind.startswith('setting'): g.trace("settingsParser %10s %15s %s" %(kind,val,name))
+        if key is None:
+            g.es_print('Empty setting name in', p.h in c.fileName())
+            # g.trace("(ParserBaseClass): %r %r %r %s" % (kind,val,name,p.h))
+            parent = p.parent()
+            while parent:
+                g.trace('parent', parent.h)
+                parent.moveToParent()
+            return
         d = self.settingsDict
         gs = d.get(key)
         if gs:

@@ -50,9 +50,7 @@
 <v t="ekr.20080529111617.1"><vh>Plugins</vh>
 <v t="ekr.20070723091227"><vh>http plugin</vh>
 <v t="ekr.20070723091227.1"><vh>@bool http_active = True</vh></v>
-<v t="ekr.20070723091227.2"><vh>@int</vh>
-<v t="ekr.20090316115500.1"><vh>port = 8080</vh></v>
-</v>
+<v t="ekr.20090316115500.1"><vh>@int port = 8080</vh></v>
 <v t="ekr.20070723091227.3"><vh>@string rst_http_attributename = 'rst_http_attribute'</vh></v>
 </v>
 <v t="ekr.20080529111617.2"><vh>cleo</vh>
@@ -1193,7 +1191,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="5"></t>
+<t tx="ekr.20070416075121" str_leo_pos="0,0,12,0,1"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -1453,7 +1451,6 @@ os.system(r'%s %s %s' % (python,pyrexc,theFile))
         
         </t>
 <t tx="ekr.20070723091227.1"></t>
-<t tx="ekr.20070723091227.2"></t>
 <t tx="ekr.20070723091227.3"></t>
 <t tx="ekr.20070927175908">'''Convert a normal Leo tree to a networkx graph'''
 import networkx as nx
