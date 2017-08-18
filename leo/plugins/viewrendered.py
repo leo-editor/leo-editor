@@ -232,6 +232,7 @@ try:
     from urllib.request import urlopen
 except ImportError:
     nbformat = None
+import json
 #@-<< imports >>
 #@+<< define stylesheets >>
 #@+node:ekr.20110317024548.14377: ** << define stylesheets >>
@@ -1344,7 +1345,7 @@ if QtWidgets: # NOQA
             global layouts
             c = self.c
             splitter = self.splitter
-            deflo = c.cacher.db.get('viewrendered_default_layouts', (None, None))
+            deflo = c.db.get('viewrendered_default_layouts', (None, None))
             (loc, loo) = layouts.get(c.hash(), deflo)
             if which == 'closed' and loc and splitter:
                 splitter.load_layout(loc)
@@ -1355,15 +1356,17 @@ if QtWidgets: # NOQA
             global layouts
             c = self.c; h = c.hash()
             splitter = self.splitter
-            deflo = c.cacher.db.get('viewrendered_default_layouts', (None, None))
+            deflo = c.db.get('viewrendered_default_layouts', (None, None))
             (loc, loo) = layouts.get(c.hash(), deflo)
             if which == 'closed' and splitter:
                 loc = splitter.get_saveable_layout()
+                loc = json.loads(json.dumps(loc))
                 layouts[h] = loc, loo
             elif which == 'open' and splitter:
                 loo = splitter.get_saveable_layout()
+                loo = json.loads(json.dumps(loo))
                 layouts[h] = loc, loo
-            c.cacher.db['viewrendered_default_layouts'] = layouts[h]
+            c.db['viewrendered_default_layouts'] = layouts[h]
         #@-others
 #@-others
 #@@language python

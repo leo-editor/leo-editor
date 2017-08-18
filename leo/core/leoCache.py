@@ -812,7 +812,7 @@ class SqlitePickleShare(object):
         def dumpz(val):
             try:
                 # use Python 2's highest protocol, 2, if possible
-                data = pickle.dumps(val, 2)
+                data = pickle.dumps(val, protocol=2)
             except Exception:
                 # but use best available if that doesn't work (unlikely)
                 data = pickle.dumps(val, pickle.HIGHEST_PROTOCOL)
@@ -820,6 +820,8 @@ class SqlitePickleShare(object):
 
         self.loader = loadz
         self.dumper = dumpz
+        if g.isPython3:
+            self.reset_protocol_in_values()
     #@+node:vitalije.20170716201700.4: *4* __contains__(SqlitePickleShare)
     def __contains__(self, key):
         trace = False and g.unitTesting
@@ -929,6 +931,7 @@ class SqlitePickleShare(object):
     #@+node:vitalije.20170716201700.16: *3* get
     def get(self, key, default=None):
         trace = False and not g.unitTesting
+        if not self.has_key(key):return default
         try:
             val = self[key]
             if trace: g.trace('(SqlitePickleShare) SUCCESS', key)
@@ -961,6 +964,40 @@ class SqlitePickleShare(object):
             args = globpat,
         for key in self.conn.execute(sql, args):
             yield key
+    #@+node:vitalije.20170818091008.1: *3* reset_protocol_in_values
+    def reset_protocol_in_values(self):
+        PROTOCOLKEY = '__cache_pickle_protocol__'
+        if self.get(PROTOCOLKEY, 3) == 2: return
+        #@+others
+        #@+node:vitalije.20170818115606.1: *4* viewrendered special case
+        import json
+        row = self.get('viewrendered_default_layouts') or (None, None)
+        row = json.loads(json.dumps(row[0])), json.loads(json.dumps(row[1]))
+        self['viewrendered_default_layouts'] = row
+        #@+node:vitalije.20170818115617.1: *4* do_block
+        def do_block(cur):
+            itms = tuple((self.dumper(self.loader(v)), k) for k, v in cur)
+            if itms:
+                self.conn.executemany('update cachevalues set data=? where key=?', itms)
+                self.conn.commit()
+                return itms[-1][1]
+            return None
+        #@-others
+
+        self.conn.isolation_level = 'DEFERRED'
+
+        sql0 = '''select key, data from cachevalues order by key limit 50'''
+        sql1 = '''select key, data from cachevalues where key > ? order by key limit 50'''
+
+
+        block = self.conn.execute(sql0)
+        lk = do_block(block)
+        while lk:
+            lk = do_block(self.conn.execute(sql1, (lk,)))
+        self[PROTOCOLKEY] = 2
+        self.conn.commit()
+
+        self.conn.isolation_level = None
     #@+node:vitalije.20170716201700.23: *3* uncache
     def uncache(self, *items):
         """not used in SqlitePickleShare"""
