@@ -640,10 +640,14 @@ class GitDiffController:
                 ))
                 body.insert(0, '@language patch\n')
                 new_p.b = ''.join(body)
-                # Node 2
+                # Node 2: Old node
                 new_p2 = new_p.insertAfter()
-                new_p2.h = v.h
-                new_p2.b = '@language python\n' + v.b
+                new_p2.h = ' OLD:' + v1.h
+                new_p2.b = '@language python\n' + v1.b
+                # Node 3: New node
+                new_p2 = new_p.insertAfter()
+                new_p2.h = ' NEW:' + v2.h
+                new_p2.b = '@language python\n' + v2.b
             else:
                 new_p.h = v.h
                 new_p.b = v.b
