@@ -544,12 +544,13 @@ class GitDiffController:
             self.rev1 or 'uncommitted',
             self.rev2 or 'uncommitted',
         ))
-        diff_list.insert(0, '@language patch\n') ### Generalize
+        diff_list.insert(0, '@language patch\n')
         self.file_node = self.create_file_node(diff_list, fn)
         if c.looksLikeDerivedFile(fn):
             c1 = self.make_outline(fn, s1, self.rev1)
             c2 = self.make_outline(fn, s2, self.rev2)
             self.make_diff_outlines(fn, c1, c2)
+            self.file_node.b = self.file_node.b + '@language %s\n' % (c2.target_language)
     #@+node:ekr.20170806191707.1: *4* gdc.compute_dicts
     def compute_dicts(self, c1, c2):
         '''Compute inserted, deleted, changed dictionaries.'''
@@ -568,7 +569,6 @@ class GitDiffController:
                 assert v1.context != v2.context
                 if v1.h != v2.h or v1.b != v2.b:
                     changed[key] = (v1, v2)
-            # else: g.trace('not in d2', key)
         return added, deleted, changed
     #@+node:ekr.20170806191942.2: *4* gdc.create_compare_node
     def create_compare_node(self, c1, c2, d, kind):
@@ -577,7 +577,7 @@ class GitDiffController:
             return
         parent = self.file_node.insertAsLastChild()
         parent.setHeadString(kind)
-        for key in d: ### This should be a list:
+        for key in d:
             if kind.lower() == 'changed':
                 v1, v2 = d.get(key)
                 # Organizer node: contains diff
@@ -590,15 +590,18 @@ class GitDiffController:
                     self.rev2 or 'uncommitted',
                 ))
                 body.insert(0, '@language patch\n')
+                body.append('@language %s\n' % (c2.target_language))
                 organizer.b = ''.join(body)
                 # Node 2: Old node
                 p2 = organizer.insertAsLastChild()
                 p2.h = 'Old:' + v1.h
-                p2.b = '@language python\n' + v1.b
+                # p2.b = '@language %s\n%s' % (c1.target_language, v1.b)
+                p2.b = v1.b
                 # Node 3: New node
                 p3 = organizer.insertAsLastChild()
                 p3.h = 'New:' + v2.h
-                p3.b = '@language python\n' + v2.b
+                # p3.b = '@language %s\n%s' % (c2.target_language, v2.b)
+                p3.b = v2.b
             else:
                 v = d.get(key)
                 p = parent.insertAsLastChild()
@@ -606,7 +609,7 @@ class GitDiffController:
                 p.b = v.b
     #@+node:ekr.20170806094321.1: *4* gdc.create_file_node
     def create_file_node(self, diff_list, fn):
-
+        '''Create an organizer node for the file.'''
         p = self.root.insertAsLastChild()
         p.h = fn.strip()
         p.b = ''.join(diff_list)
@@ -660,6 +663,7 @@ class GitDiffController:
         # Complete the read.
         for p in root.self_and_subtree():
             p.b = ''.join(getattr(p.v, 'tempBodyList', []))
+        at.scanAllDirectives(root, importing=False, reading=True)
         return hidden_c
     #@+node:ekr.20170806094320.7: *3* gdc.find_file (not used yet)
     def find_file(self, fn):
