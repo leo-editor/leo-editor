@@ -545,6 +545,8 @@ class GitDiffController:
             self.rev1 or 'uncommitted',
             self.rev2 or 'uncommitted',
         ))
+        diff_list.insert(0, '@language patch\n')
+        diff_list.append('@language python\n') ### Generalize
         self.file_node = self.create_file_node(diff_list, fn)
         if c.looksLikeDerivedFile(fn):
             c1 = self.make_outline(fn, s1, self.rev1)
@@ -557,6 +559,14 @@ class GitDiffController:
         p.h = fn.strip()
         p.b = ''.join(diff_list)
         return p
+    #@+node:ekr.20170819132219.1: *4* gdc.find_gnx
+    def find_gnx(self, c, gnx):
+        '''Return the vnode in c having the given gnx.'''
+        for v in c.all_unique_nodes():
+            if v.fileIndex == gnx:
+                return v
+        g.trace('Can not happen. Not found:', gnx)
+        return None
     #@+node:ekr.20170806094320.15: *4* gdc.get_file_from_rev
     def get_file_from_rev(self, rev, fn):
         '''Get the file from the given rev, or the working directory if None.'''
@@ -603,12 +613,9 @@ class GitDiffController:
                 assert v1.context != v2.context
                 if v1.h != v2.h or v1.b != v2.b:
                     changed[key] = v2 # Show the node in the *other* file.
-                elif v1.h.startswith('gdc'):
-                    # g.trace('match: %25s %s' % (key, p1.h))
-                    g.trace('match', key, len(v1.b), len(v2.b))
             else:
                 g.trace('not in d2', key)
-        g.trace(bool(added), bool(deleted), bool(changed))
+        # g.trace(bool(added), bool(deleted), bool(changed))
         return added, deleted, changed
     #@+node:ekr.20170806191942.2: *5* gdc.create_compare_node
     def create_compare_node(self, c1, c2, d, kind):
@@ -621,34 +628,29 @@ class GitDiffController:
             if trace: g.trace('%7s %25s %s' % (kind, key, old_p.h))
             new_p.h = old_p.h
             if kind == 'CHANGED':
-                new_p.b = 'TO DO: DIFF'
+                v1 = self.find_gnx(c1, key)
+                v2 = self.find_gnx(c2, key)
+                assert v1 and v2
+                diff_list = list(difflib.unified_diff(
+                    g.splitLines(v1.b),
+                    g.splitLines(v2.b),
+                    self.rev1 or 'uncommitted',
+                    self.rev2 or 'uncommitted',
+                ))
+                diff_list.insert(0, '@language patch\n')
+                diff_list.append('@language python\n') ### Generalize
+                new_p.b = ''.join(diff_list)
             else:
                 new_p.b = old_p.b
-            
-        # for key in d:
-            # p = d.get(key)
-            # if not kind.endswith('.leo') and p.isAnyAtFileNode():
-                # # Don't make clones of @<file> nodes for wrapped files.
-                # pass
-            # elif p.v.context == c:
-                # clone = p.clone()
-                # clone.moveToLastChildOf(parent)
-            # else:
-                # copy = p.copyTreeAfter()
-                # copy.moveToLastChildOf(parent)
-                # for p2 in copy.self_and_subtree():
-                    # p2.v.context = c
     #@+node:ekr.20170806094321.7: *4* gdc.make_outline
     def make_outline(self, fn, s, rev):
         '''Create a hidden temp outline from lines.'''
         # A specialized version of atFileCommands.read.
         import leo.core.leoCommands as leoCommands
         hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
-        g.trace(len(s), fn)
         at = hidden_c.atFileCommands
         hidden_c.frame.createFirstTreeNode()
         root = hidden_c.rootPosition()
-        assert root
         root.h = fn + ':' + rev if rev else fn
         at.initReadIvars(root, fn, importFileName=None, atShadow=None)
         at.fromString = s
@@ -697,7 +699,7 @@ class GitDiffController:
             p.h = 'git diff %s %s' % (self.rev1, self.rev2)
         else:
             p.h = 'git diff'
-        p.b = '@language patch\n'
+        # p.b = '@language patch\n'
         return p
     #@+node:ekr.20170806094321.5: *4* gdc.finish
     def finish(self):
