@@ -611,14 +611,6 @@ class GitDiffController:
         p.h = fn.strip()
         p.b = ''.join(diff_list)
         return p
-    #@+node:ekr.20170819132219.1: *4* gdc.find_gnx
-    def find_gnx(self, c, gnx):
-        '''Return the vnode in c having the given gnx.'''
-        for v in c.all_unique_nodes():
-            if v.fileIndex == gnx:
-                return v
-        g.trace('Can not happen. Not found:', gnx)
-        return None
     #@+node:ekr.20170806094320.15: *4* gdc.get_file_from_rev
     def get_file_from_rev(self, rev, fn):
         '''Get the file from the given rev, or the working directory if None.'''
