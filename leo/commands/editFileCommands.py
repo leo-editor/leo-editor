@@ -550,50 +550,7 @@ class GitDiffController:
             c1 = self.make_outline(fn, s1, self.rev1)
             c2 = self.make_outline(fn, s2, self.rev2)
             self.make_diff_outlines(fn, c1, c2)
-    #@+node:ekr.20170806094321.1: *4* gdc.create_file_node
-    def create_file_node(self, diff_list, fn):
-
-        p = self.root.insertAsLastChild()
-        p.h = fn.strip()
-        p.b = ''.join(diff_list)
-        return p
-    #@+node:ekr.20170819132219.1: *4* gdc.find_gnx
-    def find_gnx(self, c, gnx):
-        '''Return the vnode in c having the given gnx.'''
-        for v in c.all_unique_nodes():
-            if v.fileIndex == gnx:
-                return v
-        g.trace('Can not happen. Not found:', gnx)
-        return None
-    #@+node:ekr.20170806094320.15: *4* gdc.get_file_from_rev
-    def get_file_from_rev(self, rev, fn):
-        '''Get the file from the given rev, or the working directory if None.'''
-        if rev:
-            # Get the file using git.
-            command = 'git show %s:%s' % (rev, fn)
-            lines = g.execGitCommand(command, self.repo_dir)
-            s = ''.join(lines)
-        else:
-            # Get the file from the working directory.
-            path = g.os_path_finalize_join(self.repo_dir, fn)
-            if g.os_path_exists(path):
-                with open(path, 'r') as f:
-                    s = f.read()
-            else:
-                g.trace('not found:', path)
-                s = ''
-        return g.toUnicode(s).replace('\r','')
-    #@+node:ekr.20170806125535.1: *4* gdc.make_diff_outlines & helpers
-    def make_diff_outlines(self, fn, c1, c2):
-        '''Create an outline-oriented diff from the *hidden* outlines c1 and c2.'''
-        added, deleted, changed = self.compute_dicts(c1, c2)
-        table = (
-            (added, 'Added'),
-            (deleted, 'Deleted'),
-            (changed, 'Changed'))
-        for d, kind in table:
-            self.create_compare_node(c1, c2, d, kind)
-    #@+node:ekr.20170806191707.1: *5* gdc.compute_dicts
+    #@+node:ekr.20170806191707.1: *4* gdc.compute_dicts
     def compute_dicts(self, c1, c2):
         '''Compute inserted, deleted, changed dictionaries.'''
         # Special case the root: only compare the body text.
@@ -613,7 +570,7 @@ class GitDiffController:
                     changed[key] = (v1, v2)
             # else: g.trace('not in d2', key)
         return added, deleted, changed
-    #@+node:ekr.20170806191942.2: *5* gdc.create_compare_node
+    #@+node:ekr.20170806191942.2: *4* gdc.create_compare_node
     def create_compare_node(self, c1, c2, d, kind):
         '''Create nodes describing the changes.'''
         if not d:
@@ -647,6 +604,49 @@ class GitDiffController:
                 p = parent.insertAsLastChild()
                 p.h = v.h
                 p.b = v.b
+    #@+node:ekr.20170806094321.1: *4* gdc.create_file_node
+    def create_file_node(self, diff_list, fn):
+
+        p = self.root.insertAsLastChild()
+        p.h = fn.strip()
+        p.b = ''.join(diff_list)
+        return p
+    #@+node:ekr.20170819132219.1: *4* gdc.find_gnx
+    def find_gnx(self, c, gnx):
+        '''Return the vnode in c having the given gnx.'''
+        for v in c.all_unique_nodes():
+            if v.fileIndex == gnx:
+                return v
+        g.trace('Can not happen. Not found:', gnx)
+        return None
+    #@+node:ekr.20170806094320.15: *4* gdc.get_file_from_rev
+    def get_file_from_rev(self, rev, fn):
+        '''Get the file from the given rev, or the working directory if None.'''
+        if rev:
+            # Get the file using git.
+            command = 'git show %s:%s' % (rev, fn)
+            lines = g.execGitCommand(command, self.repo_dir)
+            s = ''.join(lines)
+        else:
+            # Get the file from the working directory.
+            path = g.os_path_finalize_join(self.repo_dir, fn)
+            if g.os_path_exists(path):
+                with open(path, 'r') as f:
+                    s = f.read()
+            else:
+                g.trace('not found:', path)
+                s = ''
+        return g.toUnicode(s).replace('\r','')
+    #@+node:ekr.20170806125535.1: *4* gdc.make_diff_outlines
+    def make_diff_outlines(self, fn, c1, c2):
+        '''Create an outline-oriented diff from the *hidden* outlines c1 and c2.'''
+        added, deleted, changed = self.compute_dicts(c1, c2)
+        table = (
+            (added, 'Added'),
+            (deleted, 'Deleted'),
+            (changed, 'Changed'))
+        for d, kind in table:
+            self.create_compare_node(c1, c2, d, kind)
     #@+node:ekr.20170806094321.7: *4* gdc.make_outline
     def make_outline(self, fn, s, rev):
         '''Create a hidden temp outline from lines.'''
