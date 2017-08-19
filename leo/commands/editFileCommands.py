@@ -546,7 +546,7 @@ class GitDiffController:
             self.rev2 or 'uncommitted',
         ))
         diff_list.insert(0, '@language patch\n')
-        diff_list.append('@language python\n') ### Generalize
+        # diff_list.append('@language python\n') ### Generalize
         self.file_node = self.create_file_node(diff_list, fn)
         if c.looksLikeDerivedFile(fn):
             c1 = self.make_outline(fn, s1, self.rev1)
@@ -622,26 +622,31 @@ class GitDiffController:
         trace = True and not g.unitTesting
         parent = self.file_node.insertAsLastChild()
         parent.setHeadString(kind)
-        for key in d: # Don't sort, and this should be a list:
+        for key in d: ### This should be a list:
+            v = d.get(key)
             new_p = parent.insertAsLastChild()
-            old_p = d.get(key)
-            if trace: g.trace('%7s %25s %s' % (kind, key, old_p.h))
-            new_p.h = old_p.h
+            if trace: g.trace('%7s %25s %s' % (kind, key, v.h))
             if kind == 'CHANGED':
+                # Node 1
+                new_p.h = 'DIFF:' + v.h
                 v1 = self.find_gnx(c1, key)
                 v2 = self.find_gnx(c2, key)
                 assert v1 and v2
-                diff_list = list(difflib.unified_diff(
+                body = list(difflib.unified_diff(
                     g.splitLines(v1.b),
                     g.splitLines(v2.b),
                     self.rev1 or 'uncommitted',
                     self.rev2 or 'uncommitted',
                 ))
-                diff_list.insert(0, '@language patch\n')
-                diff_list.append('@language python\n') ### Generalize
-                new_p.b = ''.join(diff_list)
+                body.insert(0, '@language patch\n')
+                new_p.b = ''.join(body)
+                # Node 2
+                new_p2 = new_p.insertAfter()
+                new_p2.h = v.h
+                new_p2.b = '@language python\n' + v.b
             else:
-                new_p.b = old_p.b
+                new_p.h = v.h
+                new_p.b = v.b
     #@+node:ekr.20170806094321.7: *4* gdc.make_outline
     def make_outline(self, fn, s, rev):
         '''Create a hidden temp outline from lines.'''
