@@ -2118,6 +2118,7 @@
 <v t="ekr.20170819113555.1"><vh>patch</vh>
 <v t="ekr.20170819113555.2"><vh>@color patch_keyword1_color = green</vh></v>
 <v t="ekr.20170819113555.3"><vh>@color patch_keyword2_color = red</vh></v>
+<v t="ekr.20170819170521.1"><vh>@color patch_keyword3_color = blue</vh></v>
 <v t="ekr.20170819113555.4"><vh>@color patch_literal1_color = blue</vh></v>
 <v t="ekr.20170819113555.5"><vh>@color patch_literal2_color = blue</vh></v>
 </v>
@@ -14330,6 +14331,7 @@ if 0: # The base class
 <t tx="ekr.20170819113555.3"># -</t>
 <t tx="ekr.20170819113555.4"># +++</t>
 <t tx="ekr.20170819113555.5"># ---</t>
+<t tx="ekr.20170819170521.1"># @@</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
