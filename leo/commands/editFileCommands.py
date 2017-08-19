@@ -535,30 +535,37 @@ class GitDiffController:
         
         trace = False and not g.unitTesting
         c = self.c
-        lines = self.get_lines_from_rev(self.rev1, fn)
-        lines2 = self.get_lines_from_rev(self.rev2, fn)
+        s1 = self.get_file_from_rev(self.rev1, fn)
+        s2 = self.get_file_from_rev(self.rev2, fn)
+        lines1 = g.splitLines(s1)
+        lines2 = g.splitLines(s2)
         diff_list = list(difflib.unified_diff(
-            lines,
+            lines1,
             lines2,
             self.rev1 or 'uncommitted',
             self.rev2 or 'uncommitted',
         ))
         if trace:
-            g.trace(len(lines), len(lines2), fn)
+            g.trace(len(lines1), len(lines2), fn)
             g.printList(diff_list)
         self.file_node = self.create_file_node(diff_list, fn)
         if c.looksLikeDerivedFile(fn):
-            try:
-                c.disable_redraw()
-                p1 = self.make_outline(fn, lines, self.rev1)
-                p2 = self.make_outline(fn, lines2, self.rev2)
-                # Do this *before* reallocating gnx's.
-                self.make_diff_outlines(fn, p1, p2)
-                # Reallocate (cut/paste) in reverse order, to preserve positions.
-                p2 = self.reallocate_gnxs(fn, p2)
-                p1 = self.reallocate_gnxs(fn, p1)
-            finally:
-                c.enable_redraw()
+            c1 = self.make_outline(fn, s1, self.rev1)
+            c2 = self.make_outline(fn, s2, self.rev2)
+            assert c1 and c2
+            for p in c1.all_positions():
+                print('%25s %s' % (p.gnx, p.h))
+            # try:
+                # c.disable_redraw()
+                # p1 = self.make_outline(fn, lines, self.rev1)
+                # p2 = self.make_outline(fn, lines2, self.rev2)
+                # # Do this *before* reallocating gnx's.
+                # self.make_diff_outlines(fn, p1, p2)
+                # # Reallocate (cut/paste) in reverse order, to preserve positions.
+                # p2 = self.reallocate_gnxs(fn, p2)
+                # p1 = self.reallocate_gnxs(fn, p1)
+            # finally:
+                # c.enable_redraw()
     #@+node:ekr.20170806094321.1: *4* gdc.create_file_node
     def create_file_node(self, diff_list, fn):
 
@@ -566,24 +573,24 @@ class GitDiffController:
         p.h = fn.strip()
         p.b = ''.join(diff_list)
         return p
-    #@+node:ekr.20170806094320.15: *4* gdc.get_lines_from_rev
-    def get_lines_from_rev(self, rev, fn):
+    #@+node:ekr.20170806094320.15: *4* gdc.get_file_from_rev
+    def get_file_from_rev(self, rev, fn):
         '''Get the file from the given rev, or the working directory if None.'''
         if rev:
             command = 'git show %s:%s' % (rev, fn)
             lines = g.execGitCommand(command, self.repo_dir)
+            s = ''.join(lines)
         else:
             # Get the file from the working directory.
             path = g.os_path_finalize_join(self.repo_dir, fn)
             if g.os_path_exists(path):
                 with open(path, 'r') as f:
-                    s = f.read().replace('\r','')
-                    s = g.toUnicode(s)
-                    lines = g.splitLines(s)
+                    s = f.read()
+                    s = g.toUnicode(s).replace('\r','')
             else:
                 g.trace('not found:', path)
-                lines = []
-        return lines
+                s = g.u('')
+        return s
     #@+node:ekr.20170806125535.1: *4* gdc.make_diff_outlines & helpers (finish)
     def make_diff_outlines(self, fn, p1, p2):
         '''Create an outline-oriented diff from the outlines at p1 and p2.'''
@@ -645,14 +652,19 @@ class GitDiffController:
                 for p2 in copy.self_and_subtree():
                     p2.v.context = c
     #@+node:ekr.20170806094321.7: *4* gdc.make_outline
-    def make_outline(self, fn, lines, rev):
-        '''Create a temp outline from lines.'''
+    def make_outline(self, fn, s, rev):
+        '''Create a hidden temp outline from lines.'''
         # A specialized version of atFileCommands.read.
-        at = self.c.atFileCommands
-        root = self.file_node.insertAsLastChild()
+        import leo.core.leoCommands as leoCommands
+        hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
+        at = hidden_c.atFileCommands
+        hidden_c.frame.createFirstTreeNode()
+        ### root = self.file_node.insertAsLastChild()
+        root = hidden_c.rootPosition()
+        assert root
         root.h = fn + ':' + rev if rev else fn
         at.initReadIvars(root, fn, importFileName=None, atShadow=None)
-        at.fromString = ''.join(lines)
+        at.fromString = s ### ''.join(lines)
         if at.errors > 0:
             return None
         at.inputFile = g.FileLikeObject(fromString=at.fromString)
@@ -666,8 +678,8 @@ class GitDiffController:
             at.deleteUnvisitedNodes(root, redraw=False)
             at.deleteTnodeList(root)
         at.deleteAllTempBodyStrings()
-        return root
-    #@+node:ekr.20170806142044.1: *4* gdc.paste_outline
+        return hidden_c
+    #@+node:ekr.20170806142044.1: *4* gdc.paste_outline (to be deleted)
     def paste_outline(self, fn, s):
         '''
         Paste an outline into the present outline from the s.
@@ -722,7 +734,7 @@ class GitDiffController:
             c.setCurrentPosition(p)
                 # c.selectPosition causes flash(!)
             return p
-    #@+node:ekr.20170806125830.1: *4* gdc.reallocate_gnxs
+    #@+node:ekr.20170806125830.1: *4* gdc.reallocate_gnxs (to be deleted)
     def reallocate_gnxs(self, fn, root):
         '''Reallocate the probably duplicated gnx's in root's tree.'''
         c = self.c
