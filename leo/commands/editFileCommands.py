@@ -8,7 +8,7 @@
 import difflib
 import os
 import leo.core.leoGlobals as g
-### import leo.core.leoNodes as leoNodes
+import leo.core.leoCommands as leoCommands
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 #@-<< imports >>
 
@@ -532,21 +532,19 @@ class GitDiffController:
         return None
     #@+node:ekr.20170806094320.6: *3* gdc.diff_file & helpers
     def diff_file(self, fn):
-        
+        '''Create an outline describing the git diffs for fn.'''
         c = self.c
         s1 = self.get_file_from_rev(self.rev1, fn)
         s2 = self.get_file_from_rev(self.rev2, fn)
         lines1 = g.splitLines(s1)
         lines2 = g.splitLines(s2)
-        g.trace(len(s1), len(s2))
         diff_list = list(difflib.unified_diff(
             lines1,
             lines2,
             self.rev1 or 'uncommitted',
             self.rev2 or 'uncommitted',
         ))
-        diff_list.insert(0, '@language patch\n')
-        # diff_list.append('@language python\n') ### Generalize
+        diff_list.insert(0, '@language patch\n') ### Generalize
         self.file_node = self.create_file_node(diff_list, fn)
         if c.looksLikeDerivedFile(fn):
             c1 = self.make_outline(fn, s1, self.rev1)
@@ -612,27 +610,25 @@ class GitDiffController:
                 assert v1 and v2
                 assert v1.context != v2.context
                 if v1.h != v2.h or v1.b != v2.b:
-                    changed[key] = v2 # Show the node in the *other* file.
-            else:
-                g.trace('not in d2', key)
-        # g.trace(bool(added), bool(deleted), bool(changed))
+                    changed[key] = (v1, v2)
+            # else: g.trace('not in d2', key)
         return added, deleted, changed
     #@+node:ekr.20170806191942.2: *5* gdc.create_compare_node
     def create_compare_node(self, c1, c2, d, kind):
-        trace = False and not g.unitTesting
+        # trace = False and not g.unitTesting
         parent = self.file_node.insertAsLastChild()
         parent.setHeadString(kind)
         for key in d: ### This should be a list:
-            v = d.get(key)
-            if trace: g.trace('%7s %25s %s' % (kind, key, v.h))
+            # if trace: g.trace('%7s %25s %s' % (kind, key, v2.h))
             if kind == 'CHANGED':
+                v1, v2 = d.get(key)
                 # Organizer node: contains diff
                 organizer = parent.insertAsLastChild()
-                organizer.h = v.h
+                organizer.h = v2.h
                 # Get the old and new text.
-                v1 = self.find_gnx(c1, key)
-                v2 = self.find_gnx(c2, key)
-                assert v1 and v2
+                # v1 = self.find_gnx(c1, key)
+                # v2 = self.find_gnx(c2, key)
+                # assert v1 and v2
                 body = list(difflib.unified_diff(
                     g.splitLines(v1.b),
                     g.splitLines(v2.b),
@@ -650,6 +646,7 @@ class GitDiffController:
                 p3.h = 'NEW:' + v2.h
                 p3.b = '@language python\n' + v2.b
             else:
+                v = d.get(key)
                 p = parent.insertAsLastChild()
                 p.h = v.h
                 p.b = v.b
@@ -657,7 +654,6 @@ class GitDiffController:
     def make_outline(self, fn, s, rev):
         '''Create a hidden temp outline from lines.'''
         # A specialized version of atFileCommands.read.
-        import leo.core.leoCommands as leoCommands
         hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
         at = hidden_c.atFileCommands
         hidden_c.frame.createFirstTreeNode()
@@ -676,9 +672,6 @@ class GitDiffController:
         for p in root.self_and_subtree():
             p.b = ''.join(getattr(p.v, 'tempBodyList', []))
         return hidden_c
-    #@+node:ekr.20170819135511.1: *4* gdc.NEW NODE
-    def spam(self):
-        pass # For testing.
     #@+node:ekr.20170806094320.7: *3* gdc.find_file (not used yet)
     def find_file(self, fn):
         '''Return the @<file> node matching fn.'''
