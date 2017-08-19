@@ -1122,7 +1122,9 @@ class JEditColorizer(BaseColorizer):
                 return j - i
             else:
                 # g.trace('fail',repr(word),repr(self.word_chars))
-                return -(j - i + 1) # An important optimization.
+                # Bug fix: allow rescan.  Affects @language patch.
+                return 0
+                # Wrong: return -(j - i + 1)
     #@+node:ekr.20110605121601.18605: *5* jedit.match_section_ref
     def match_section_ref(self, s, i):
         if self.trace_leo_matches: g.trace()
@@ -1264,20 +1266,29 @@ class JEditColorizer(BaseColorizer):
         delegate='', exclude_match=False
     ):
         '''Succeed if seq matches s[i:]'''
-        # g.trace(g.callers(1), i, repr(s[i: i + 20]))
-        if at_line_start and i != 0 and s[i - 1] != '\n': return 0
-        if at_whitespace_end and i != g.skip_ws(s, 0): return 0
-        if at_word_start and i > 0 and s[i - 1] in self.word_chars: return 0 # 7/5/2008
+        # trace = s[i] in '+@'
+        # if trace: g.trace(g.callers(1), i, repr(s))
+        if at_line_start and i != 0 and s[i - 1] != '\n':
+            # if trace: g.trace('not at line start', repr(s[i-1]))
+            return 0
+        if at_whitespace_end and i != g.skip_ws(s, 0):
+            # if trace: g.trace('not at whitespace end')
+            return 0
+        if at_word_start and i > 0 and s[i - 1] in self.word_chars:
+            # if trace: g.trace('word 1')
+            return 0 # 7/5/2008
         if at_word_start and i + len(seq) + 1 < len(s) and s[i + len(seq)] in self.word_chars:
+            # if trace: g.trace('word 2')
             return 0
         if g.match(s, i, seq):
             j = len(s)
             self.colorRangeWithTag(s, i, j, kind, delegate=delegate, exclude_match=exclude_match)
             self.prev = (i, j, kind)
             self.trace_match(kind, s, i, j)
-            # g.trace(s[i:j])
+            # if trace: g.trace('match') # , s[i:j])
             return j # (was j-1) With a delegate, this could clear state.
         else:
+            # if trace: g.trace('no match')
             return 0
     #@+node:ekr.20110605121601.18612: *4* jedit.match_eol_span_regexp
     def match_eol_span_regexp(self, s, i,
@@ -1902,6 +1913,7 @@ class JEditColorizer(BaseColorizer):
         '''Colorize a *single* line s, starting in state n.'''
         f = self.restartDict.get(n)
         i = f(s) if f else 0
+        # g.trace(i, n, repr(s), f)
         # if trace: g.trace('===== %30s %r' % (self.showCurrentState(), s))
         while i < len(s):
             progress = i
@@ -1913,11 +1925,11 @@ class JEditColorizer(BaseColorizer):
                     g.trace('Can not happen: n is None', repr(f))
                     break
                 elif n > 0: # Success. The match has already been colored.
-                    # if f.__name__ != 'match_blanks': g.trace(f.__name__, repr(s[i:i+n]))
+                    # g.trace(n, i, f)
                     i += n
                     break
                 elif n < 0: # Total failure.
-                    # g.trace('%s %r' % (f.__name__, s[i:i-n]))
+                    # g.trace(n, i, f)
                     i += -n
                     break
                 else: # Partial failure: Do not break or change i!
