@@ -587,12 +587,12 @@ class GitDiffController:
     def make_diff_outlines(self, fn, c1, c2):
         '''Create an outline-oriented diff from the *hidden* outlines c1 and c2.'''
         added, deleted, changed = self.compute_dicts(c1, c2)
-        # fn1 = fn + (':' + self.rev1 if self.rev1 else '')
-        # fn2 = fn + (':' + self.rev2 if self.rev2 else '')
-        table = ((added, 'ADDED'), (deleted, 'DELETED'), (changed, 'CHANGED'))
+        table = (
+            (added, 'Added'),
+            (deleted, 'Deleted'),
+            (changed, 'Changed'))
         for d, kind in table:
-            if d:
-                self.create_compare_node(c1, c2, d, kind)
+            self.create_compare_node(c1, c2, d, kind)
     #@+node:ekr.20170806191707.1: *5* gdc.compute_dicts
     def compute_dicts(self, c1, c2):
         '''Compute inserted, deleted, changed dictionaries.'''
@@ -615,20 +615,17 @@ class GitDiffController:
         return added, deleted, changed
     #@+node:ekr.20170806191942.2: *5* gdc.create_compare_node
     def create_compare_node(self, c1, c2, d, kind):
-        # trace = False and not g.unitTesting
+        '''Create nodes describing the changes.'''
+        if not d:
+            return
         parent = self.file_node.insertAsLastChild()
         parent.setHeadString(kind)
         for key in d: ### This should be a list:
-            # if trace: g.trace('%7s %25s %s' % (kind, key, v2.h))
-            if kind == 'CHANGED':
+            if kind.lower() == 'changed':
                 v1, v2 = d.get(key)
                 # Organizer node: contains diff
                 organizer = parent.insertAsLastChild()
                 organizer.h = v2.h
-                # Get the old and new text.
-                # v1 = self.find_gnx(c1, key)
-                # v2 = self.find_gnx(c2, key)
-                # assert v1 and v2
                 body = list(difflib.unified_diff(
                     g.splitLines(v1.b),
                     g.splitLines(v2.b),
@@ -639,11 +636,11 @@ class GitDiffController:
                 organizer.b = ''.join(body)
                 # Node 2: Old node
                 p2 = organizer.insertAsLastChild()
-                p2.h = 'OLD:' + v1.h
+                p2.h = 'Old:' + v1.h
                 p2.b = '@language python\n' + v1.b
                 # Node 3: New node
                 p3 = organizer.insertAsLastChild()
-                p3.h = 'NEW:' + v2.h
+                p3.h = 'New:' + v2.h
                 p3.b = '@language python\n' + v2.b
             else:
                 v = d.get(key)
