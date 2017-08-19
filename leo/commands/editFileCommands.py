@@ -619,7 +619,7 @@ class GitDiffController:
         return added, deleted, changed
     #@+node:ekr.20170806191942.2: *5* gdc.create_compare_node
     def create_compare_node(self, c1, c2, d, kind):
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         parent = self.file_node.insertAsLastChild()
         parent.setHeadString(kind)
         for key in d: ### This should be a list:
@@ -629,9 +629,7 @@ class GitDiffController:
                 # Organizer node: contains diff
                 organizer = parent.insertAsLastChild()
                 organizer.h = v.h
-                # Node 1
-                # new_p = organizer.insertAsLastChild()
-                # new_p.h = 'DIFF:' + v.h
+                # Get the old and new text.
                 v1 = self.find_gnx(c1, key)
                 v2 = self.find_gnx(c2, key)
                 assert v1 and v2
@@ -644,17 +642,17 @@ class GitDiffController:
                 body.insert(0, '@language patch\n')
                 organizer.b = ''.join(body)
                 # Node 2: Old node
-                new_p2 = organizer.insertAsLastChild()
-                new_p2.h = 'OLD:' + v1.h
-                new_p2.b = '@language python\n' + v1.b
+                p2 = organizer.insertAsLastChild()
+                p2.h = 'OLD:' + v1.h
+                p2.b = '@language python\n' + v1.b
                 # Node 3: New node
-                new_p2 = organizer.insertAsLastChild()
-                new_p2.h = 'NEW:' + v2.h
-                new_p2.b = '@language python\n' + v2.b
+                p3 = organizer.insertAsLastChild()
+                p3.h = 'NEW:' + v2.h
+                p3.b = '@language python\n' + v2.b
             else:
-                new_p = parent.insertAsLastChild()
-                new_p.h = v.h
-                new_p.b = v.b
+                p = parent.insertAsLastChild()
+                p.h = v.h
+                p.b = v.b
     #@+node:ekr.20170806094321.7: *4* gdc.make_outline
     def make_outline(self, fn, s, rev):
         '''Create a hidden temp outline from lines.'''
