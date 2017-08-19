@@ -538,6 +538,7 @@ class GitDiffController:
         s2 = self.get_file_from_rev(self.rev2, fn)
         lines1 = g.splitLines(s1)
         lines2 = g.splitLines(s2)
+        g.trace(len(s1), len(s2))
         diff_list = list(difflib.unified_diff(
             lines1,
             lines2,
@@ -588,26 +589,23 @@ class GitDiffController:
     def compute_dicts(self, c1, c2):
         '''Compute inserted, deleted, changed dictionaries.'''
         # Special case the root: only compare the body text.
-        # root1_h = c1.rootPosition().h
-        c1.rootPosition().h = c2.rootPosition().h
-        d1 = {p.v.fileIndex: p.copy() for p in c1.all_positions()} 
-        d2 = {p.v.fileIndex: p.copy() for p in c2.all_positions()}
-        # g.trace(root1_h)
-        # g.printList(sorted(d1.keys()))
-        # g.trace(c2.rootPosition().h)
-        # g.printList(sorted(d2.keys()))
-        added   = { key: d2.get(key) for key in d2 if not d1.get(key) }
-        deleted = { key: d1.get(key) for key in d1 if not d2.get(key) }
+        c1.rootPosition().v.h = c2.rootPosition().v.h
+        d1 = {v.fileIndex: v for v in c1.all_unique_nodes()} 
+        d2 = {v.fileIndex: v for v in c2.all_unique_nodes()}
+        added   = {key: d2.get(key) for key in d2 if not d1.get(key)}
+        deleted = {key: d1.get(key) for key in d1 if not d2.get(key)}
         changed = {}
-        for key in sorted(d1): ### Sort for testing.
+        for key in d1:
             if key in d2:
-                p1 = d1.get(key)
-                p2 = d2.get(key)
-                assert p1 and p2
-                if p1.h != p2.h or p1.b != p2.b:
-                    changed[key] = p2 # Show the node in the *other* file.
-                elif p1.h.startswith('gdc'):
-                    g.trace('match: %25s %s' % (key, p1.h))
+                v1 = d1.get(key)
+                v2 = d2.get(key)
+                assert v1 and v2
+                assert v1.context != v2.context
+                if v1.h != v2.h or v1.b != v2.b:
+                    changed[key] = v2 # Show the node in the *other* file.
+                elif v1.h.startswith('gdc'):
+                    # g.trace('match: %25s %s' % (key, p1.h))
+                    g.trace('match', key, len(v1.b), len(v2.b))
             else:
                 g.trace('not in d2', key)
         g.trace(bool(added), bool(deleted), bool(changed))
@@ -615,15 +613,12 @@ class GitDiffController:
     #@+node:ekr.20170806191942.2: *5* gdc.create_compare_node
     def create_compare_node(self, c1, c2, d, kind):
         trace = True and not g.unitTesting
-        # c = self.c
-        g.trace(kind, d)
         parent = self.file_node.insertAsLastChild()
         parent.setHeadString(kind)
         for key in d: # Don't sort, and this should be a list:
             new_p = parent.insertAsLastChild()
             old_p = d.get(key)
-            if trace:
-                g.trace('%7s %25s %s' % (kind, key, old_p.h))
+            if trace: g.trace('%7s %25s %s' % (kind, key, old_p.h))
             new_p.h = old_p.h
             if kind == 'CHANGED':
                 new_p.b = 'TO DO: DIFF'
@@ -649,6 +644,7 @@ class GitDiffController:
         # A specialized version of atFileCommands.read.
         import leo.core.leoCommands as leoCommands
         hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
+        g.trace(len(s), fn)
         at = hidden_c.atFileCommands
         hidden_c.frame.createFirstTreeNode()
         root = hidden_c.rootPosition()
@@ -657,18 +653,15 @@ class GitDiffController:
         at.initReadIvars(root, fn, importFileName=None, atShadow=None)
         at.fromString = s
         if at.errors > 0:
+            g.trace('***** errors')
             return None
         at.inputFile = g.FileLikeObject(fromString=at.fromString)
         at.initReadLine(at.fromString)
         at.readOpenFile(root, fn, deleteNodes=True)
         at.inputFile.close()
-        # Special case the root node.
-        root.b = ''.join(getattr(root.v, 'tempBodyList', []))
-        # root.clearDirty()
-        if True: ### at.errors == 0:
-            at.deleteUnvisitedNodes(root, redraw=False)
-            at.deleteTnodeList(root)
-        at.deleteAllTempBodyStrings()
+        # Complete the read.
+        for p in root.self_and_subtree():
+            p.b = ''.join(getattr(p.v, 'tempBodyList', []))
         return hidden_c
     #@+node:ekr.20170806094320.7: *3* gdc.find_file (not used yet)
     def find_file(self, fn):
