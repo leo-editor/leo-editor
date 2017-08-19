@@ -624,11 +624,14 @@ class GitDiffController:
         parent.setHeadString(kind)
         for key in d: ### This should be a list:
             v = d.get(key)
-            new_p = parent.insertAsLastChild()
             if trace: g.trace('%7s %25s %s' % (kind, key, v.h))
             if kind == 'CHANGED':
+                # Organizer node: contains diff
+                organizer = parent.insertAsLastChild()
+                organizer.h = v.h
                 # Node 1
-                new_p.h = 'DIFF:' + v.h
+                # new_p = organizer.insertAsLastChild()
+                # new_p.h = 'DIFF:' + v.h
                 v1 = self.find_gnx(c1, key)
                 v2 = self.find_gnx(c2, key)
                 assert v1 and v2
@@ -639,16 +642,17 @@ class GitDiffController:
                     self.rev2 or 'uncommitted',
                 ))
                 body.insert(0, '@language patch\n')
-                new_p.b = ''.join(body)
+                organizer.b = ''.join(body)
                 # Node 2: Old node
-                new_p2 = new_p.insertAfter()
-                new_p2.h = ' OLD:' + v1.h
+                new_p2 = organizer.insertAsLastChild()
+                new_p2.h = 'OLD:' + v1.h
                 new_p2.b = '@language python\n' + v1.b
                 # Node 3: New node
-                new_p2 = new_p.insertAfter()
-                new_p2.h = ' NEW:' + v2.h
+                new_p2 = organizer.insertAsLastChild()
+                new_p2.h = 'NEW:' + v2.h
                 new_p2.b = '@language python\n' + v2.b
             else:
+                new_p = parent.insertAsLastChild()
                 new_p.h = v.h
                 new_p.b = v.b
     #@+node:ekr.20170806094321.7: *4* gdc.make_outline
@@ -674,6 +678,9 @@ class GitDiffController:
         for p in root.self_and_subtree():
             p.b = ''.join(getattr(p.v, 'tempBodyList', []))
         return hidden_c
+    #@+node:ekr.20170819135511.1: *4* gdc.NEW NODE
+    def spam(self):
+        pass # For testing.
     #@+node:ekr.20170806094320.7: *3* gdc.find_file (not used yet)
     def find_file(self, fn):
         '''Return the @<file> node matching fn.'''
