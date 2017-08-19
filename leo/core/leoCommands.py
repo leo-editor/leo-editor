@@ -2168,17 +2168,11 @@ class Commands(object):
         external file written by Leo.'''
         # c = self
         try:
-            f = open(fn, 'r')
-        except IOError:
-            return False
-        try:
-            s = f.read()
+            with open(fn, 'r') as f:
+                s = f.read()
+            return s.find('@+leo-ver=') > -1
         except Exception:
-            s = ''
-        finally:
-            f.close()
-        val = s.find('@+leo-ver=') > -1
-        return val
+            return False
     #@+node:ekr.20031218072017.1623: *6* c.new
     @cmd('new')
     def new(self, event=None, gui=None):
