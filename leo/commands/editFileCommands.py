@@ -533,7 +533,6 @@ class GitDiffController:
     #@+node:ekr.20170806094320.6: *3* gdc.diff_file & helpers
     def diff_file(self, fn):
         
-        trace = False and not g.unitTesting
         c = self.c
         s1 = self.get_file_from_rev(self.rev1, fn)
         s2 = self.get_file_from_rev(self.rev2, fn)
@@ -545,28 +544,11 @@ class GitDiffController:
             self.rev1 or 'uncommitted',
             self.rev2 or 'uncommitted',
         ))
-        if trace:
-            g.trace(len(lines1), len(lines2), fn)
-            g.printList(diff_list)
         self.file_node = self.create_file_node(diff_list, fn)
         if c.looksLikeDerivedFile(fn):
             c1 = self.make_outline(fn, s1, self.rev1)
             c2 = self.make_outline(fn, s2, self.rev2)
-            assert c1 and c2
-            # for p in c1.all_positions():
-                # print('%25s %s' % (p.gnx, p.h))
             self.make_diff_outlines(fn, c1, c2)
-            # try:
-                # c.disable_redraw()
-                # p1 = self.make_outline(fn, lines, self.rev1)
-                # p2 = self.make_outline(fn, lines2, self.rev2)
-                # # Do this *before* reallocating gnx's.
-                # self.make_diff_outlines(fn, p1, p2)
-                # # Reallocate (cut/paste) in reverse order, to preserve positions.
-                # p2 = self.reallocate_gnxs(fn, p2)
-                # p1 = self.reallocate_gnxs(fn, p1)
-            # finally:
-                # c.enable_redraw()
     #@+node:ekr.20170806094321.1: *4* gdc.create_file_node
     def create_file_node(self, diff_list, fn):
 
@@ -595,61 +577,72 @@ class GitDiffController:
     #@+node:ekr.20170806125535.1: *4* gdc.make_diff_outlines & helpers
     def make_diff_outlines(self, fn, c1, c2):
         '''Create an outline-oriented diff from the *hidden* outlines c1 and c2.'''
-        inserted, deleted, changed = self.compute_dicts(c1, c2)
+        added, deleted, changed = self.compute_dicts(c1, c2)
         # fn1 = fn + (':' + self.rev1 if self.rev1 else '')
         # fn2 = fn + (':' + self.rev2 if self.rev2 else '')
-        table = ((inserted,'ADDED'), (deleted, 'DELETED'), (changed, 'CHANGED'))
+        table = ((added, 'ADDED'), (deleted, 'DELETED'), (changed, 'CHANGED'))
         for d, kind in table:
             if d:
                 self.create_compare_node(c1, c2, d, kind)
-
     #@+node:ekr.20170806191707.1: *5* gdc.compute_dicts
     def compute_dicts(self, c1, c2):
         '''Compute inserted, deleted, changed dictionaries.'''
         # Special case the root: only compare the body text.
+        # root1_h = c1.rootPosition().h
         c1.rootPosition().h = c2.rootPosition().h
         d1 = {p.v.fileIndex: p.copy() for p in c1.all_positions()} 
         d2 = {p.v.fileIndex: p.copy() for p in c2.all_positions()}
+        # g.trace(root1_h)
         # g.printList(sorted(d1.keys()))
+        # g.trace(c2.rootPosition().h)
         # g.printList(sorted(d2.keys()))
-        inserted = { key: d2.get(key) for key in d2 if not d1.get(key) }
-        deleted  = { key: d1.get(key) for key in d1 if not d2.get(key) }
+        added   = { key: d2.get(key) for key in d2 if not d1.get(key) }
+        deleted = { key: d1.get(key) for key in d1 if not d2.get(key) }
         changed = {}
-        for key in d1:
+        for key in sorted(d1): ### Sort for testing.
             if key in d2:
                 p1 = d1.get(key)
                 p2 = d2.get(key)
+                assert p1 and p2
                 if p1.h != p2.h or p1.b != p2.b:
                     changed[key] = p2 # Show the node in the *other* file.
-        return inserted, deleted, changed
+                elif p1.h.startswith('gdc'):
+                    g.trace('match: %25s %s' % (key, p1.h))
+            else:
+                g.trace('not in d2', key)
+        g.trace(bool(added), bool(deleted), bool(changed))
+        return added, deleted, changed
     #@+node:ekr.20170806191942.2: *5* gdc.create_compare_node
     def create_compare_node(self, c1, c2, d, kind):
-        c = self.c
-        if 1:
-            # Summary
-            # g.trace(kind)
-            for key in sorted(d):
-                print('%7s %25s %s' % (kind, key, d.get(key).h))
-        else:
-            # Old code: to be revised.
-            parent = self.file_node.insertAsLastChild()
-            parent.setHeadString(kind)
-            for key in d:
-                p = d.get(key)
-                if not kind.endswith('.leo') and p.isAnyAtFileNode():
-                    # Don't make clones of @<file> nodes for wrapped files.
-                    pass
-                elif p.v.context == c:
-                    clone = p.clone()
-                    clone.moveToLastChildOf(parent)
-                else:
-                    copy = p.copyTreeAfter()
-                    copy.moveToLastChildOf(parent)
-                    for p2 in copy.self_and_subtree():
-                        p2.v.context = c
-    #@+node:ekr.20170819120301.1: *5* gdc.NEW NODE
-    def spam(self):
-        pass # For testing.
+        trace = True and not g.unitTesting
+        # c = self.c
+        g.trace(kind, d)
+        parent = self.file_node.insertAsLastChild()
+        parent.setHeadString(kind)
+        for key in d: # Don't sort, and this should be a list:
+            new_p = parent.insertAsLastChild()
+            old_p = d.get(key)
+            if trace:
+                g.trace('%7s %25s %s' % (kind, key, old_p.h))
+            new_p.h = old_p.h
+            if kind == 'CHANGED':
+                new_p.b = 'TO DO: DIFF'
+            else:
+                new_p.b = old_p.b
+            
+        # for key in d:
+            # p = d.get(key)
+            # if not kind.endswith('.leo') and p.isAnyAtFileNode():
+                # # Don't make clones of @<file> nodes for wrapped files.
+                # pass
+            # elif p.v.context == c:
+                # clone = p.clone()
+                # clone.moveToLastChildOf(parent)
+            # else:
+                # copy = p.copyTreeAfter()
+                # copy.moveToLastChildOf(parent)
+                # for p2 in copy.self_and_subtree():
+                    # p2.v.context = c
     #@+node:ekr.20170806094321.7: *4* gdc.make_outline
     def make_outline(self, fn, s, rev):
         '''Create a hidden temp outline from lines.'''
