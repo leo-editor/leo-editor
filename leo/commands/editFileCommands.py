@@ -766,8 +766,7 @@ class GitDiffController:
             p.h = 'git diff %s %s' % (self.rev1, self.rev2)
         else:
             p.h = 'git diff'
-        # p.b = '@language diff\n'
-            # No such colorizer at present.
+        p.b = '@language patch\n'
         return p
     #@+node:ekr.20170806094321.5: *4* gdc.finish
     def finish(self):
