@@ -2115,6 +2115,12 @@
 </v>
 </v>
 <v t="ekr.20060828110551.1"><vh>Language-specific colors</vh>
+<v t="ekr.20170819113555.1"><vh>patch</vh>
+<v t="ekr.20170819113555.2"><vh>@color patch_keyword1_color = green</vh></v>
+<v t="ekr.20170819113555.3"><vh>@color patch_keyword2_color = red</vh></v>
+<v t="ekr.20170819113555.4"><vh>@color patch_literal1_color = blue</vh></v>
+<v t="ekr.20170819113555.5"><vh>@color patch_literal2_color = blue</vh></v>
+</v>
 <v t="ekr.20060828110551.2"><vh>php</vh>
 <v t="ekr.20060828110551.3"><vh>@color php_operator_color = DodgerBlue1</vh></v>
 <v t="ekr.20060828145228.1"><vh>@font php keyword fonts</vh></v>
@@ -14319,6 +14325,11 @@ if 0: # The base class
 <t tx="ekr.20170706103843.1"></t>
 <t tx="ekr.20170718054928.1"></t>
 <t tx="ekr.20170718054951.1"></t>
+<t tx="ekr.20170819113555.1"></t>
+<t tx="ekr.20170819113555.2"># +</t>
+<t tx="ekr.20170819113555.3"># -</t>
+<t tx="ekr.20170819113555.4"># +++</t>
+<t tx="ekr.20170819113555.5"># ---</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
