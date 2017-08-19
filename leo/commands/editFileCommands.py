@@ -553,8 +553,8 @@ class GitDiffController:
             c1 = self.make_outline(fn, s1, self.rev1)
             c2 = self.make_outline(fn, s2, self.rev2)
             assert c1 and c2
-            for p in c1.all_positions():
-                print('%25s %s' % (p.gnx, p.h))
+            # for p in c1.all_positions():
+                # print('%25s %s' % (p.gnx, p.h))
             self.make_diff_outlines(fn, c1, c2)
             # try:
                 # c.disable_redraw()
@@ -578,6 +578,7 @@ class GitDiffController:
     def get_file_from_rev(self, rev, fn):
         '''Get the file from the given rev, or the working directory if None.'''
         if rev:
+            # Get the file using git.
             command = 'git show %s:%s' % (rev, fn)
             lines = g.execGitCommand(command, self.repo_dir)
             s = ''.join(lines)
@@ -587,71 +588,68 @@ class GitDiffController:
             if g.os_path_exists(path):
                 with open(path, 'r') as f:
                     s = f.read()
-                    s = g.toUnicode(s).replace('\r','')
             else:
                 g.trace('not found:', path)
-                s = g.u('')
-        return s
-    #@+node:ekr.20170806125535.1: *4* gdc.make_diff_outlines & helpers (finish)
+                s = ''
+        return g.toUnicode(s).replace('\r','')
+    #@+node:ekr.20170806125535.1: *4* gdc.make_diff_outlines & helpers
     def make_diff_outlines(self, fn, c1, c2):
         '''Create an outline-oriented diff from the *hidden* outlines c1 and c2.'''
+        inserted, deleted, changed = self.compute_dicts(c1, c2)
+        # fn1 = fn + (':' + self.rev1 if self.rev1 else '')
+        # fn2 = fn + (':' + self.rev2 if self.rev2 else '')
+        table = ((inserted,'ADDED'), (deleted, 'DELETED'), (changed, 'CHANGED'))
+        for d, kind in table:
+            if d:
+                self.create_compare_node(c1, c2, d, kind)
+
+    #@+node:ekr.20170806191707.1: *5* gdc.compute_dicts
+    def compute_dicts(self, c1, c2):
+        '''Compute inserted, deleted, changed dictionaries.'''
+        # Special case the root: only compare the body text.
+        c1.rootPosition().h = c2.rootPosition().h
         d1 = {p.v.fileIndex: p.copy() for p in c1.all_positions()} 
         d2 = {p.v.fileIndex: p.copy() for p in c2.all_positions()}
-        inserted, deleted, changed = self.compute_dicts(d1, d2)
-        ### Not yet.
-        # self.create_compare_nodes(fn, inserted, deleted, changed)
-        
-    #@+node:ekr.20170806191707.1: *5* gdc.computeChangeDicts
-    def compute_dicts(self, d1, d2):
-        '''Compute inserted, deleted, changed dictionaries.'''
-        # inserted = {}
-        # for key in d2:
-            # if not d1.get(key):
-                # inserted[key] = d2.get(key)
+        # g.printList(sorted(d1.keys()))
+        # g.printList(sorted(d2.keys()))
         inserted = { key: d2.get(key) for key in d2 if not d1.get(key) }
-        # deleted = {}
-        # for key in d1:
-            # if not d2.get(key):
-                # deleted[key] = d1.get(key)
-        deleted = { key: d1.get(key) for key in d1 if not d2.get(key) }
+        deleted  = { key: d1.get(key) for key in d1 if not d2.get(key) }
         changed = {}
         for key in d1:
-            if d2.get(key):
+            if key in d2:
                 p1 = d1.get(key)
                 p2 = d2.get(key)
                 if p1.h != p2.h or p1.b != p2.b:
                     changed[key] = p2 # Show the node in the *other* file.
         return inserted, deleted, changed
-    #@+node:ekr.20170806191942.1: *5* gdc.create_compare_nodes
-    def create_compare_nodes(self, fn, inserted, deleted, changed):
-        '''Create the comparison trees.'''
-        fn1 = fn + (':' + self.rev1 if self.rev1 else '')
-        fn2 = fn + (':' + self.rev2 if self.rev2 else '')
-        for d, kind in (
-            (deleted, 'not in %s' % fn2),
-            (inserted, 'not in %s' % fn1),
-            (changed, 'changed: as in %s' % fn2),
-        ):
-            if d:
-                self.create_compare_node(d, kind)
     #@+node:ekr.20170806191942.2: *5* gdc.create_compare_node
-    def create_compare_node(self, d, kind):
+    def create_compare_node(self, c1, c2, d, kind):
         c = self.c
-        parent = self.file_node.insertAsLastChild()
-        parent.setHeadString(kind)
-        for key in d:
-            p = d.get(key)
-            if not kind.endswith('.leo') and p.isAnyAtFileNode():
-                # Don't make clones of @<file> nodes for wrapped files.
-                pass
-            elif p.v.context == c:
-                clone = p.clone()
-                clone.moveToLastChildOf(parent)
-            else:
-                copy = p.copyTreeAfter()
-                copy.moveToLastChildOf(parent)
-                for p2 in copy.self_and_subtree():
-                    p2.v.context = c
+        if 1:
+            # Summary
+            # g.trace(kind)
+            for key in sorted(d):
+                print('%7s %25s %s' % (kind, key, d.get(key).h))
+        else:
+            # Old code: to be revised.
+            parent = self.file_node.insertAsLastChild()
+            parent.setHeadString(kind)
+            for key in d:
+                p = d.get(key)
+                if not kind.endswith('.leo') and p.isAnyAtFileNode():
+                    # Don't make clones of @<file> nodes for wrapped files.
+                    pass
+                elif p.v.context == c:
+                    clone = p.clone()
+                    clone.moveToLastChildOf(parent)
+                else:
+                    copy = p.copyTreeAfter()
+                    copy.moveToLastChildOf(parent)
+                    for p2 in copy.self_and_subtree():
+                        p2.v.context = c
+    #@+node:ekr.20170819120301.1: *5* gdc.NEW NODE
+    def spam(self):
+        pass # For testing.
     #@+node:ekr.20170806094321.7: *4* gdc.make_outline
     def make_outline(self, fn, s, rev):
         '''Create a hidden temp outline from lines.'''
