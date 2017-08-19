@@ -8,7 +8,7 @@
 import difflib
 import os
 import leo.core.leoGlobals as g
-import leo.core.leoNodes as leoNodes
+### import leo.core.leoNodes as leoNodes
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
 #@-<< imports >>
 
@@ -555,6 +555,7 @@ class GitDiffController:
             assert c1 and c2
             for p in c1.all_positions():
                 print('%25s %s' % (p.gnx, p.h))
+            self.make_diff_outlines(fn, c1, c2)
             # try:
                 # c.disable_redraw()
                 # p1 = self.make_outline(fn, lines, self.rev1)
@@ -592,10 +593,10 @@ class GitDiffController:
                 s = g.u('')
         return s
     #@+node:ekr.20170806125535.1: *4* gdc.make_diff_outlines & helpers (finish)
-    def make_diff_outlines(self, fn, p1, p2):
-        '''Create an outline-oriented diff from the outlines at p1 and p2.'''
-        d1 = {p.v.fileIndex: p.copy() for p in p1.self_and_subtree()}
-        d2 = {p.v.fileIndex: p.copy() for p in p2.self_and_subtree()}
+    def make_diff_outlines(self, fn, c1, c2):
+        '''Create an outline-oriented diff from the *hidden* outlines c1 and c2.'''
+        d1 = {p.v.fileIndex: p.copy() for p in c1.all_positions()} 
+        d2 = {p.v.fileIndex: p.copy() for p in c2.all_positions()}
         inserted, deleted, changed = self.compute_dicts(d1, d2)
         ### Not yet.
         # self.create_compare_nodes(fn, inserted, deleted, changed)
@@ -659,12 +660,11 @@ class GitDiffController:
         hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
         at = hidden_c.atFileCommands
         hidden_c.frame.createFirstTreeNode()
-        ### root = self.file_node.insertAsLastChild()
         root = hidden_c.rootPosition()
         assert root
         root.h = fn + ':' + rev if rev else fn
         at.initReadIvars(root, fn, importFileName=None, atShadow=None)
-        at.fromString = s ### ''.join(lines)
+        at.fromString = s
         if at.errors > 0:
             return None
         at.inputFile = g.FileLikeObject(fromString=at.fromString)
@@ -679,71 +679,6 @@ class GitDiffController:
             at.deleteTnodeList(root)
         at.deleteAllTempBodyStrings()
         return hidden_c
-    #@+node:ekr.20170806142044.1: *4* gdc.paste_outline (to be deleted)
-    def paste_outline(self, fn, s):
-        '''
-        Paste an outline into the present outline from the s.
-        Nodes do *not* retain their original identify.
-        Similar to fc.getLeoOutlineFromClipboard
-        '''
-        c, fc = self.c, self.c.fileCommands
-        if 1: # Feasible, now that redrawing is disabled.
-            p = fc.getLeoOutlineFromClipboard(s, reassignIndices=True, tempOutline=True)
-            return p
-        else:
-            parent = self.file_node
-            fc.initReadIvars()
-            # Save...
-            children = c.hiddenRootNode.children
-            oldGnxDict = fc.gnxDict
-            fc.gnxDict = {}
-            try:
-                fc.usingClipboard = True
-                # This encoding must match the encoding used in putLeoOutline.
-                s = g.toEncodedString(s, fc.leo_file_encoding, reportErrors=True)
-                # readSaxFile modifies the hidden root.
-                v = fc.readSaxFile(
-                    theFile=None,
-                    fileName=fn,
-                    silent=True, # don't tell about stylesheet elements.
-                    inClipboard=True,
-                    reassignIndices=True,
-                    s=s)
-                if not v:
-                    g.es("invalid external file", color="blue")
-                    return None
-            finally:
-                fc.usingClipboard = False
-            # Restore...
-            c.hiddenRootNode.children = children
-            # Unlink v from the hidden root.
-            v.parents.remove(c.hiddenRootNode)
-            p = leoNodes.Position(v)
-            n = parent.numberOfChildren()
-            p._linkAsNthChild(parent, n, adjust=False)
-                # Do *not* adjust links when linking v.
-                # The read code has already done that.
-            # Reassign indices.
-            fc.gnxDict = oldGnxDict
-            ni = g.app.nodeIndices
-            for p2 in p.self_and_subtree():
-                ni.getNewIndex(p2.v)
-            # Clean up.
-            fc.initReadIvars()
-            c.validateOutline()
-            c.setCurrentPosition(p)
-                # c.selectPosition causes flash(!)
-            return p
-    #@+node:ekr.20170806125830.1: *4* gdc.reallocate_gnxs (to be deleted)
-    def reallocate_gnxs(self, fn, root):
-        '''Reallocate the probably duplicated gnx's in root's tree.'''
-        c = self.c
-        c.setCurrentPosition(root)
-            # c.selectPosition causes flash.
-        # Do *not* paste to the clipboard.  It causes a flash.
-        s = c.fileCommands.putLeoOutline()
-        root.doDelete(root.parent())
-        return self.paste_outline(fn, s)
     #@+node:ekr.20170806094320.7: *3* gdc.find_file (not used yet)
     def find_file(self, fn):
         '''Return the @<file> node matching fn.'''
