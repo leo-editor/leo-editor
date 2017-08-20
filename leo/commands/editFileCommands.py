@@ -588,8 +588,11 @@ class GitDiffController:
                     self.rev1 or 'uncommitted',
                     self.rev2 or 'uncommitted',
                 ))
-                body.insert(0, '@language patch\n')
-                body.append('@language %s\n' % (c2.target_language))
+                if ''.join(body).strip():
+                    body.insert(0, '@language patch\n')
+                    body.append('@language %s\n' % (c2.target_language))
+                else:
+                    body = ['Only headline has changed']
                 organizer.b = ''.join(body)
                 # Node 2: Old node
                 p2 = organizer.insertAsLastChild()
@@ -664,7 +667,7 @@ class GitDiffController:
             p.b = ''.join(getattr(p.v, 'tempBodyList', []))
         at.scanAllDirectives(root, importing=False, reading=True)
         return hidden_c
-    #@+node:ekr.20170806094320.7: *3* gdc.find_file (not used yet)
+    #@+node:ekr.20170806094320.7: *3* gdc.find_file
     def find_file(self, fn):
         '''Return the @<file> node matching fn.'''
         c = self.c
@@ -675,18 +678,26 @@ class GitDiffController:
                 if fn2.endswith(fn):
                     return p
         return None
+    #@+node:ekr.20170819132219.1: *3* gdc.find_gnx
+    def find_gnx(self, c, gnx):
+        '''Return the vnode in c having the given gnx.'''
+        for v in c.all_unique_nodes():
+            if v.fileIndex == gnx:
+                return v
+        g.trace('Can not happen. Not found:', gnx)
+        return None
     #@+node:ekr.20170806094320.12: *3* gdc.run & helpers
     def run(self):
         '''The main line of the git diff command.'''
         if self.repo_dir:
-            files = self.get_files()
-            if files:
-                self.root = self.create_root()
-                for fn in files:
-                    self.diff_file(fn)
-                self.finish()
-            else:
-                g.es_print('empty git diff')
+            # 1. Diff the given revs.
+            ok = self.diff_revs()
+            if not ok:
+                # 2. Diff HEAD@{0} HEAD@{1}
+                self.rev1, self.rev2 = 'HEAD@{0}', 'HEAD@{1}'
+                ok = self.diff_revs()
+            if not ok:
+                g.es_print('no previous revs')
         else:
             g.es_print('no git repo found in', g.os_path_abspath('.'))
     #@+node:ekr.20170806094320.18: *4* gdc.create_root
@@ -700,6 +711,18 @@ class GitDiffController:
             p.h = 'git diff'
         # p.b = '@language patch\n'
         return p
+    #@+node:ekr.20170820082125.1: *4* gdc.diff_revs
+    def diff_revs(self):
+        '''Diff all files given by self.rev1 and self.rev2.'''
+        g.es_print('diffing %s %s' % (self.rev1 or '', self.rev2 or ''))
+        files = self.get_files()
+        if files:
+            self.root = self.create_root()
+            for fn in files:
+                self.diff_file(fn)
+            self.finish()
+        return bool(files)
+        
     #@+node:ekr.20170806094321.5: *4* gdc.finish
     def finish(self):
         '''Finish execution of this command.'''
