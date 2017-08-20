@@ -335,13 +335,11 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             filetypes=[("Text", "*.txt"), ("All files", "*")],
             defaultextension=".txt")
         return fn
-    #@+node:ekr.20170806094320.1: *3* efc.gitDiff
-    if 0: # Not ready yet.
-        @cmd('git-diff')
-        def gitDiff(self, event):
-        
-            #GitDiffController(self.c, 'HEAD~1', 'HEAD~2').run()
-            GitDiffController(self.c, 'HEAD', 'HEAD~1').run()
+    #@+node:ekr.20170819035801.90: *3* efc.gitDiff
+    @cmd('git-diff')
+    def gitDiff(self, event):
+
+        GitDiffController(self.c, 'HEAD').run()
     #@+node:ekr.20170806094318.7: *3* efc.insertFile
     @cmd('file-insert')
     def insertFile(self, event):
@@ -550,7 +548,8 @@ class GitDiffController:
             c1 = self.make_outline(fn, s1, self.rev1)
             c2 = self.make_outline(fn, s2, self.rev2)
             self.make_diff_outlines(fn, c1, c2)
-            self.file_node.b = self.file_node.b + '@language %s\n' % (c2.target_language)
+            self.file_node.b = '%s\n@language %s\n' % (
+                self.file_node.b.rstrip(), c2.target_language)
     #@+node:ekr.20170806191707.1: *4* gdc.compute_dicts
     def compute_dicts(self, c1, c2):
         '''Compute inserted, deleted, changed dictionaries.'''
