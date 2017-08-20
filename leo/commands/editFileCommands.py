@@ -545,8 +545,12 @@ class GitDiffController:
         diff_list.insert(0, '@language patch\n')
         self.file_node = self.create_file_node(diff_list, fn)
         if c.looksLikeDerivedFile(fn):
-            c1 = self.make_outline(fn, s1, self.rev1)
-            c2 = self.make_outline(fn, s2, self.rev2)
+            c1 = self.make_at_file_outline(fn, s1, self.rev1)
+            c2 = self.make_at_file_outline(fn, s2, self.rev2)
+        else:
+            c1 = self.make_clean_outline(fn, s1, self.rev1)
+            c2 = self.make_clean_outline(fn, s2, self.rev2)
+        if c1 and c2:
             self.make_diff_outlines(fn, c1, c2)
             self.file_node.b = '%s\n@language %s\n' % (
                 self.file_node.b.rstrip(), c2.target_language)
@@ -644,8 +648,34 @@ class GitDiffController:
             (changed, 'Changed'))
         for d, kind in table:
             self.create_compare_node(c1, c2, d, kind)
-    #@+node:ekr.20170806094321.7: *4* gdc.make_outline
-    def make_outline(self, fn, s, rev):
+    #@+node:ekr.20170820084258.1: *4* gdc.make_at_clean_outline
+    def make_at_clean_outline(self, fn, s, rev):
+        '''Create a hidden temp outline from lines.'''
+        # A specialized version of atFileCommands.read.
+        hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
+        ### at = hidden_c.atFileCommands
+        hidden_c.frame.createFirstTreeNode()
+        root = hidden_c.rootPosition()
+        root.h = fn + ':' + rev if rev else fn
+        g.trace('not ready yet', fn, rev)
+        return None ### Not ready yet.
+        ###
+            # at.initReadIvars(root, fn, importFileName=None, atShadow=None)
+            # at.fromString = s
+            # if at.errors > 0:
+                # g.trace('***** errors')
+                # return None
+            # at.inputFile = g.FileLikeObject(fromString=at.fromString)
+            # at.initReadLine(at.fromString)
+            # at.readOpenFile(root, fn, deleteNodes=True)
+            # at.inputFile.close()
+            # # Complete the read.
+            # for p in root.self_and_subtree():
+                # p.b = ''.join(getattr(p.v, 'tempBodyList', []))
+            # at.scanAllDirectives(root, importing=False, reading=True)
+            # return hidden_c
+    #@+node:ekr.20170806094321.7: *4* gdc.make_at_file_outline
+    def make_at_file_outline(self, fn, s, rev):
         '''Create a hidden temp outline from lines.'''
         # A specialized version of atFileCommands.read.
         hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
