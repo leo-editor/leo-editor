@@ -694,7 +694,7 @@ class GitDiffController:
             ok = self.diff_revs()
             if not ok:
                 # 2. Diff HEAD@{0} HEAD@{1}
-                self.rev1, self.rev2 = 'HEAD@{0}', 'HEAD@{1}'
+                self.rev1, self.rev2 = 'HEAD@{1}', 'HEAD@{0}'
                 ok = self.diff_revs()
             if not ok:
                 g.es_print('no previous revs')
@@ -705,16 +705,11 @@ class GitDiffController:
         
         c = self.c
         p = c.lastTopLevel().insertAfter()
-        if self.rev1 and self.rev2:
-            p.h = 'git diff %s %s' % (self.rev1, self.rev2)
-        else:
-            p.h = 'git diff'
-        # p.b = '@language patch\n'
+        p.h = 'git diff %s %s' % (self.rev1 or '', self.rev2 or '')
         return p
     #@+node:ekr.20170820082125.1: *4* gdc.diff_revs
     def diff_revs(self):
         '''Diff all files given by self.rev1 and self.rev2.'''
-        g.es_print('diffing %s %s' % (self.rev1 or '', self.rev2 or ''))
         files = self.get_files()
         if files:
             self.root = self.create_root()
