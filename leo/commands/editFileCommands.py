@@ -823,7 +823,7 @@ class GitDiffController:
         '''Return a list of changed files.'''
             
         def readable(fn):
-            for suffix in ('.leo', '.db', '.zip'):
+            for suffix in ('commit_timestamp.json', '.db', '.leo', '.zip', ):
                 if fn.strip().endswith(suffix):
                     return False
             return True
