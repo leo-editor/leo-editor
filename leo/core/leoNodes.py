@@ -1415,7 +1415,7 @@ class Position(object):
         # 2009/10/02: no need to copy arg to iter
         for child in p.children():
             child2 = p2.insertAsLastChild()
-            child.copyTreeFromSelfTo(child2)
+            child.copyTreeFromSelfTo(child2, copyGnxs=copyGnxs)
     #@+node:ekr.20160502095354.1: *4* p.copyWithNewVnodes
     def copyWithNewVnodes(self, copyMarked=False):
         '''

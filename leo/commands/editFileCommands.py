@@ -550,8 +550,8 @@ class GitDiffController:
         else:
             root = self.find_file(fn)
             if root:
-                c1 = self.make_clean_outline(fn, root, s1, self.rev1)
-                c2 = self.make_clean_outline(fn, root, s2, self.rev2)
+                c1 = self.make_at_clean_outline(fn, root, s1, self.rev1)
+                c2 = self.make_at_clean_outline(fn, root, s2, self.rev2)
             else:
                 g.es_print('No outline for', fn)
                 c1 = c2 = None
@@ -663,18 +663,24 @@ class GitDiffController:
         '''
         # A specialized version of at.readOneAtCleanNode.
         trace = True and not g.unitTesting
+        trace_lines = False
+        trace_tree = True
         assert s
         hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
         at = hidden_c.atFileCommands
         x = hidden_c.shadowController
         hidden_c.frame.createFirstTreeNode()
         hidden_root = hidden_c.rootPosition()
-        # copy root to hidden root
-        root.copyTreeFromSelfTo(hidden_root)
-        if 1:
+        # copy root to hidden root, including gnxs.
+        root.copyTreeFromSelfTo(hidden_root, copyGnxs=True)
+        if trace and trace_tree:
+            g.trace('original tree...')
+            for p in root.self_and_subtree():
+                print('%25s %4s %s' % (p.gnx, len(p.b), p.h))
             g.trace('copied tree...')
             for p in hidden_c.all_positions():
-                print(p.h)
+            # for p in hidden_root.self_and_subtree():
+                print('%25s %4s %s' % (p.gnx, len(p.b), p.h))
         hidden_root.h = fn + ':' + rev if rev else fn
         ###
             # fileName = g.fullPath(c, root)
@@ -691,15 +697,18 @@ class GitDiffController:
         old_private_lines = at.write_at_clean_sentinels(hidden_root)
         marker = x.markerFromFileLines(old_private_lines, fn)
         old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
+        assert old_public_lines
         ###if old_public_lines:
         new_private_lines = x.propagate_changed_lines(
             new_public_lines, old_private_lines, marker, p=hidden_root)
                 ### Use hidden_root, not root.
-        if trace:
+        if trace and trace_lines:
             at.dump(new_public_lines, 'new public')
             at.dump(old_private_lines, 'old private')
             at.dump(new_private_lines, 'new private')
-        assert new_private_lines != old_private_lines
+        if new_private_lines == old_private_lines:
+            if trace: g.trace('lines match')
+            return hidden_c
         ###
             # if not g.unitTesting:
                 # g.es("updating:", root.h)
@@ -812,14 +821,17 @@ class GitDiffController:
     #@+node:ekr.20170806094320.9: *4* gdc.get_files
     def get_files(self):
         '''Return a list of changed files.'''
-        if self.rev1 and self.rev2:
-            command = 'git diff --name-only %s %s' % (self.rev1, self.rev2)
             
-        else:
-            command = 'git diff --name-only'
+        def readable(fn):
+            for suffix in ('.leo', '.db', '.zip'):
+                if fn.strip().endswith(suffix):
+                    return False
+            return True
+
+        command = 'git diff --name-only %s %s' % (self.rev1 or '', self.rev2 or '')
         files = [
             z.strip() for z in g.execGitCommand(command, self.repo_dir)
-                if z.strip().endswith('.py')
+                if readable(z)
         ]
         # g.printList(files)
         return files
