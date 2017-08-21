@@ -773,7 +773,7 @@ class GitDiffController:
         p = c.lastTopLevel().insertAfter()
         p.h = 'git diff %s %s' % (r1, r2)
         if r1 and r2:
-            p.b = '%10s=%s\n%10s:%s' % (
+            p.b = '%s=%s\n%s=%s' % (
                 r1, self.get_revno(r1),
                 r2, self.get_revno(r2),
             )
