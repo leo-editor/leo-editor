@@ -662,7 +662,7 @@ class GitDiffController:
         s is the contents of the (public) file, without sentinels.
         '''
         # A specialized version of at.readOneAtCleanNode.
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
         at = hidden_c.atFileCommands
         x = hidden_c.shadowController
