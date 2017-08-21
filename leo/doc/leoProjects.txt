@@ -24,15 +24,6 @@ Note: cc.selectChapterForPosition calls c.redraw *only* if the chapter changes.
 - Done: removed c.incrementalRecolorFlag.
 - Done: c.selectPosition never calls c.redraw. All unit tests pass.
 - Done: Removed c.requestRedrawFlag and c.outerUpdate never calls c.redraw.  All tests pass.
-.. @+node:ekr.20170806095521.1: ** @@command git-diff
-@language python
-g.cls()
-import difflib
-import os
-@others
-# GitDiffController(c, 'HEAD', 'HEAD~1').run()
-GitDiffController(c, 'HEAD').run()
-    # Same as git diff
 .. @+node:ekr.20170806133624.1: ** gdc.paste_to_clipboard
 def paste_to_clipboard(self,s):
     '''Apparently g.app.gui.replaceClipboardWith(s) causes a flash!'''
