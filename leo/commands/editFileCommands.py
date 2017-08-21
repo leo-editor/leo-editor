@@ -663,9 +663,6 @@ class GitDiffController:
         '''
         # A specialized version of at.readOneAtCleanNode.
         trace = True and not g.unitTesting
-        trace_lines = False
-        trace_tree = False
-        assert s
         hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
         at = hidden_c.atFileCommands
         x = hidden_c.shadowController
@@ -673,21 +670,7 @@ class GitDiffController:
         hidden_root = hidden_c.rootPosition()
         # copy root to hidden root, including gnxs.
         root.copyTreeFromSelfTo(hidden_root, copyGnxs=True)
-        if trace and trace_tree:
-            g.trace('original tree...')
-            for p in root.self_and_subtree():
-                print('%25s %4s %s' % (p.gnx, len(p.b), p.h))
-            g.trace('copied tree...')
-            for p in hidden_c.all_positions():
-            # for p in hidden_root.self_and_subtree():
-                print('%25s %4s %s' % (p.gnx, len(p.b), p.h))
         hidden_root.h = fn + ':' + rev if rev else fn
-        ###
-            # fileName = g.fullPath(c, root)
-            # if not g.os_path_exists(fileName):
-                # g.es('not found: %s' % (fileName), color='red')
-                # return
-            # at.rememberReadPath(fileName, root)
         # Set at.encoding first.
         at.initReadIvars(hidden_root, fn)
             # Must be called before at.scanAllDirectives.
@@ -698,49 +681,19 @@ class GitDiffController:
         marker = x.markerFromFileLines(old_private_lines, fn)
         old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
         assert old_public_lines
-        ###if old_public_lines:
         new_private_lines = x.propagate_changed_lines(
             new_public_lines, old_private_lines, marker, p=hidden_root)
-                ### Use hidden_root, not root.
-        if trace and trace_lines:
-            at.dump(new_public_lines, 'new public')
-            at.dump(old_private_lines, 'old private')
-            at.dump(new_private_lines, 'new private')
-        # if 0: ### Always read the file.
-            # if new_private_lines == old_private_lines:
-                # if trace: g.trace('lines match')
-                # return hidden_c
-        ###
-            # if not g.unitTesting:
-                # g.es("updating:", root.h)
-        # The following is like at.read() w/o caching logic.
-        ### hidden_root.clearVisitedInTree()
         # Init the input stream used by read-open file.
         at.read_lines = new_private_lines
         at.read_ptr = 0
         # Read the file using the @file read logic.
-        ### thinFile = at.readOpenFile(hidden_root, fileName, deleteNodes=True)
         at.readOpenFile(hidden_root, fn, deleteNodes=True)
         # Complete the read.
         for p in hidden_root.self_and_subtree():
             p.b = ''.join(getattr(p.v, 'tempBodyList', []))
-        ###
-            # root.clearDirty()
-            # if at.errors == 0:
-                # at.deleteUnvisitedNodes(root)
-                # at.deleteTnodeList(root)
-                # at.readPostPass(root, thinFile)
-                    # # Used by mod_labels plugin: May set c dirty.
-                # root.clearOrphan()
-            # else:
-                # root.setOrphan()
-            # at.deleteAllTempBodyStrings()
-        if at.errors:
-            g.trace(at.errors, 'errors!')
+        if at.errors: g.trace(at.errors, 'errors!')
         if trace: g.trace(len(s), rev, fn, hidden_c)
         return None if at.errors else hidden_c
-        ###
-            # return at.errors == 0
     #@+node:ekr.20170806094321.7: *4* gdc.make_at_file_outline
     def make_at_file_outline(self, fn, s, rev):
         '''Create a hidden temp outline from lines.'''
