@@ -548,8 +548,13 @@ class GitDiffController:
             c1 = self.make_at_file_outline(fn, s1, self.rev1)
             c2 = self.make_at_file_outline(fn, s2, self.rev2)
         else:
-            c1 = self.make_clean_outline(fn, s1, self.rev1)
-            c2 = self.make_clean_outline(fn, s2, self.rev2)
+            root = self.find_file(fn)
+            if root:
+                c1 = self.make_clean_outline(fn, root, s1, self.rev1)
+                c2 = self.make_clean_outline(fn, root, s2, self.rev2)
+            else:
+                g.es_print('No outline for', fn)
+                c1 = c2 = None
         if c1 and c2:
             self.make_diff_outlines(fn, c1, c2)
             self.file_node.b = '%s\n@language %s\n' % (
@@ -620,6 +625,17 @@ class GitDiffController:
         p.h = fn.strip()
         p.b = ''.join(diff_list)
         return p
+    #@+node:ekr.20170806094320.7: *4* gdc.find_file
+    def find_file(self, fn):
+        '''Return the @<file> node matching fn.'''
+        c = self.c
+        fn = g.os_path_basename(fn)
+        for p in c.all_unique_positions():
+            if p.isAnyAtFileNode():
+                fn2 = p.anyAtFileNodeName()
+                if fn2.endswith(fn):
+                    return p
+        return None
     #@+node:ekr.20170806094320.15: *4* gdc.get_file_from_rev
     def get_file_from_rev(self, rev, fn):
         '''Get the file from the given rev, or the working directory if None.'''
@@ -638,42 +654,79 @@ class GitDiffController:
                 g.trace('not found:', path)
                 s = ''
         return g.toUnicode(s).replace('\r','')
-    #@+node:ekr.20170806125535.1: *4* gdc.make_diff_outlines
-    def make_diff_outlines(self, fn, c1, c2):
-        '''Create an outline-oriented diff from the *hidden* outlines c1 and c2.'''
-        added, deleted, changed = self.compute_dicts(c1, c2)
-        table = (
-            (added, 'Added'),
-            (deleted, 'Deleted'),
-            (changed, 'Changed'))
-        for d, kind in table:
-            self.create_compare_node(c1, c2, d, kind)
     #@+node:ekr.20170820084258.1: *4* gdc.make_at_clean_outline
-    def make_at_clean_outline(self, fn, s, rev):
-        '''Create a hidden temp outline from lines.'''
-        # A specialized version of atFileCommands.read.
+    def make_at_clean_outline(self, fn, root, s, rev):
+        '''
+        Create a hidden temp outline from lines without sentinels.
+        root is the @<file> node for fn.
+        s is the contents of the (public) file, without sentinels.
+        '''
+        # A specialized version of at.readOneAtCleanNode.
+        trace = True and not g.unitTesting
+        assert s
         hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
-        ### at = hidden_c.atFileCommands
+        at = hidden_c.atFileCommands
+        x = hidden_c.shadowController
         hidden_c.frame.createFirstTreeNode()
-        root = hidden_c.rootPosition()
-        root.h = fn + ':' + rev if rev else fn
-        g.trace('not ready yet', fn, rev)
-        return None ### Not ready yet.
+        hidden_root = hidden_c.rootPosition()
+        # copy root to hidden root
+        root.copyTreeFromSelfTo(hidden_root)
+        if 1:
+            g.trace('copied tree...')
+            for p in hidden_c.all_positions():
+                print(p.h)
+        hidden_root.h = fn + ':' + rev if rev else fn
         ###
-            # at.initReadIvars(root, fn, importFileName=None, atShadow=None)
-            # at.fromString = s
-            # if at.errors > 0:
-                # g.trace('***** errors')
-                # return None
-            # at.inputFile = g.FileLikeObject(fromString=at.fromString)
-            # at.initReadLine(at.fromString)
-            # at.readOpenFile(root, fn, deleteNodes=True)
-            # at.inputFile.close()
-            # # Complete the read.
-            # for p in root.self_and_subtree():
-                # p.b = ''.join(getattr(p.v, 'tempBodyList', []))
-            # at.scanAllDirectives(root, importing=False, reading=True)
-            # return hidden_c
+            # fileName = g.fullPath(c, root)
+            # if not g.os_path_exists(fileName):
+                # g.es('not found: %s' % (fileName), color='red')
+                # return
+            # at.rememberReadPath(fileName, root)
+        # Set at.encoding first.
+        at.initReadIvars(hidden_root, fn)
+            # Must be called before at.scanAllDirectives.
+        at.scanAllDirectives(hidden_root)
+            # Sets at.startSentinelComment/endSentinelComment.
+        new_public_lines = g.splitLines(s) ### at.read_at_clean_lines(fileName)
+        old_private_lines = at.write_at_clean_sentinels(hidden_root)
+        marker = x.markerFromFileLines(old_private_lines, fn)
+        old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
+        ###if old_public_lines:
+        new_private_lines = x.propagate_changed_lines(
+            new_public_lines, old_private_lines, marker, p=hidden_root)
+                ### Use hidden_root, not root.
+        if trace:
+            at.dump(new_public_lines, 'new public')
+            at.dump(old_private_lines, 'old private')
+            at.dump(new_private_lines, 'new private')
+        assert new_private_lines != old_private_lines
+        ###
+            # if not g.unitTesting:
+                # g.es("updating:", root.h)
+        # The following is like at.read() w/o caching logic.
+        ### hidden_root.clearVisitedInTree()
+        # Init the input stream used by read-open file.
+        at.read_lines = new_private_lines
+        at.read_ptr = 0
+        # Read the file using the @file read logic.
+        ### thinFile = at.readOpenFile(hidden_root, fileName, deleteNodes=True)
+        at.readOpenFile(hidden_root, fn, deleteNodes=True)
+        ###
+            # root.clearDirty()
+            # if at.errors == 0:
+                # at.deleteUnvisitedNodes(root)
+                # at.deleteTnodeList(root)
+                # at.readPostPass(root, thinFile)
+                    # # Used by mod_labels plugin: May set c dirty.
+                # root.clearOrphan()
+            # else:
+                # root.setOrphan()
+            # at.deleteAllTempBodyStrings()
+        if at.errors:
+            g.trace(at.errors, 'errors!')
+        return None if at.errors else hidden_c
+        ###
+            # return at.errors == 0
     #@+node:ekr.20170806094321.7: *4* gdc.make_at_file_outline
     def make_at_file_outline(self, fn, s, rev):
         '''Create a hidden temp outline from lines.'''
@@ -697,17 +750,16 @@ class GitDiffController:
             p.b = ''.join(getattr(p.v, 'tempBodyList', []))
         at.scanAllDirectives(root, importing=False, reading=True)
         return hidden_c
-    #@+node:ekr.20170806094320.7: *3* gdc.find_file
-    def find_file(self, fn):
-        '''Return the @<file> node matching fn.'''
-        c = self.c
-        fn = g.os_path_basename(fn)
-        for p in c.all_unique_positions():
-            if p.isAnyAtFileNode():
-                fn2 = p.anyAtFileNodeName()
-                if fn2.endswith(fn):
-                    return p
-        return None
+    #@+node:ekr.20170806125535.1: *4* gdc.make_diff_outlines
+    def make_diff_outlines(self, fn, c1, c2):
+        '''Create an outline-oriented diff from the *hidden* outlines c1 and c2.'''
+        added, deleted, changed = self.compute_dicts(c1, c2)
+        table = (
+            (added, 'Added'),
+            (deleted, 'Deleted'),
+            (changed, 'Changed'))
+        for d, kind in table:
+            self.create_compare_node(c1, c2, d, kind)
     #@+node:ekr.20170819132219.1: *3* gdc.find_gnx
     def find_gnx(self, c, gnx):
         '''Return the vnode in c having the given gnx.'''
