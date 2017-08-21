@@ -640,6 +640,13 @@ class GitDiffController:
                 if fn2.endswith(fn):
                     return p
         return None
+    #@+node:ekr.20170819132219.1: *4* gdc.find_gnx
+    def find_gnx(self, c, gnx):
+        '''Return a position in c having the given gnx.'''
+        for p in c.all_unique_positions():
+            if p.v.fileIndex == gnx:
+                return p
+        return None
     #@+node:ekr.20170806094320.15: *4* gdc.get_file_from_rev
     def get_file_from_rev(self, rev, fn):
         '''Get the file from the given rev, or the working directory if None.'''
@@ -692,7 +699,7 @@ class GitDiffController:
             # Must be called before at.scanAllDirectives.
         at.scanAllDirectives(hidden_root)
             # Sets at.startSentinelComment/endSentinelComment.
-        new_public_lines = g.splitLines(s) ### at.read_at_clean_lines(fileName)
+        new_public_lines = g.splitLines(s)
         old_private_lines = at.write_at_clean_sentinels(hidden_root)
         marker = x.markerFromFileLines(old_private_lines, fn)
         old_public_lines, junk = x.separate_sentinels(old_private_lines, marker)
@@ -743,14 +750,6 @@ class GitDiffController:
             (changed, 'Changed'))
         for d, kind in table:
             self.create_compare_node(c1, c2, d, kind)
-    #@+node:ekr.20170819132219.1: *3* gdc.find_gnx
-    def find_gnx(self, c, gnx):
-        '''Return a position in c having the given gnx.'''
-        for p in c.all_unique_positions():
-            if p.v.fileIndex == gnx:
-                return p
-        # g.trace('Can not happen. Not found:', gnx)
-        return None
     #@+node:ekr.20170806094320.12: *3* gdc.run & helpers
     def run(self):
         '''The main line of the git diff command.'''
@@ -767,7 +766,7 @@ class GitDiffController:
             g.es_print('no git repo found in', g.os_path_abspath('.'))
     #@+node:ekr.20170806094320.18: *4* gdc.create_root
     def create_root(self):
-        
+        '''Create the top-level organizer node describing the git diff.'''
         c = self.c
         r1, r2 = self.rev1 or '', self.rev2 or ''
         p = c.lastTopLevel().insertAfter()
