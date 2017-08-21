@@ -1396,19 +1396,22 @@ class Position(object):
 
     # To do: use v.copyTree instead.
 
-    def copyTreeAfter(self):
+    def copyTreeAfter(self, copyGnxs=False):
         '''Copy p and insert it after itself.'''
         p = self
         p2 = p.insertAfter()
-        p.copyTreeFromSelfTo(p2)
+        p.copyTreeFromSelfTo(p2, copyGnxs=copyGnxs)
         return p2
 
-    def copyTreeFromSelfTo(self, p2):
+    def copyTreeFromSelfTo(self, p2, copyGnxs=False):
         p = self
         p2.v._headString = g.toUnicode(p.h, reportErrors=True) # 2017/01/24
         p2.v._bodyString = g.toUnicode(p.b, reportErrors=True) # 2017/01/24
-        # 2013/09/08: Fix bug 1019794: p.copyTreeFromSelfTo, should deepcopy p.v.u.
+        # Fix bug 1019794: p.copyTreeFromSelfTo, should deepcopy p.v.u.
         p2.v.u = copy.deepcopy(p.v.u)
+        # 2017/08/20: Add support for copyGnx's keyword arg.
+        if copyGnxs:
+            p2.v.fileIndex = p.v.fileIndex
         # 2009/10/02: no need to copy arg to iter
         for child in p.children():
             child2 = p2.insertAsLastChild()
