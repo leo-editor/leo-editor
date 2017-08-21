@@ -664,7 +664,7 @@ class GitDiffController:
         # A specialized version of at.readOneAtCleanNode.
         trace = True and not g.unitTesting
         trace_lines = False
-        trace_tree = True
+        trace_tree = False
         assert s
         hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
         at = hidden_c.atFileCommands
@@ -706,9 +706,10 @@ class GitDiffController:
             at.dump(new_public_lines, 'new public')
             at.dump(old_private_lines, 'old private')
             at.dump(new_private_lines, 'new private')
-        if new_private_lines == old_private_lines:
-            if trace: g.trace('lines match')
-            return hidden_c
+        # if 0: ### Always read the file.
+            # if new_private_lines == old_private_lines:
+                # if trace: g.trace('lines match')
+                # return hidden_c
         ###
             # if not g.unitTesting:
                 # g.es("updating:", root.h)
@@ -720,6 +721,9 @@ class GitDiffController:
         # Read the file using the @file read logic.
         ### thinFile = at.readOpenFile(hidden_root, fileName, deleteNodes=True)
         at.readOpenFile(hidden_root, fn, deleteNodes=True)
+        # Complete the read.
+        for p in hidden_root.self_and_subtree():
+            p.b = ''.join(getattr(p.v, 'tempBodyList', []))
         ###
             # root.clearDirty()
             # if at.errors == 0:
@@ -733,6 +737,7 @@ class GitDiffController:
             # at.deleteAllTempBodyStrings()
         if at.errors:
             g.trace(at.errors, 'errors!')
+        if trace: g.trace(len(s), rev, fn, hidden_c)
         return None if at.errors else hidden_c
         ###
             # return at.errors == 0
