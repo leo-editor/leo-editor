@@ -658,6 +658,18 @@ class GitDiffController:
                 g.trace('not found:', path)
                 s = ''
         return g.toUnicode(s).replace('\r','')
+    #@+node:ekr.20170821052348.1: *4* gdc.get_revno
+    def get_revno(self, revspec, abbreviated=True):
+        '''Return the abbreviated hash the given revision spec.'''
+        if revspec:
+            # Return only the abbreviated hash for the revspec.
+            command = 'git show --format=%%%s --no-patch %s' % (
+                'h' if abbreviated else 'H',
+                revspec)
+            lines = g.execGitCommand(command, self.repo_dir)
+            return ''.join(lines)
+        else:
+            return 'uncommitted'
     #@+node:ekr.20170820084258.1: *4* gdc.make_at_clean_outline
     def make_at_clean_outline(self, fn, root, s, rev):
         '''
@@ -757,8 +769,16 @@ class GitDiffController:
     def create_root(self):
         
         c = self.c
+        r1, r2 = self.rev1 or '', self.rev2 or ''
         p = c.lastTopLevel().insertAfter()
-        p.h = 'git diff %s %s' % (self.rev1 or '', self.rev2 or '')
+        p.h = 'git diff %s %s' % (r1, r2)
+        if r1 and r2:
+            p.b = '%10s=%s\n%10s:%s' % (
+                r1, self.get_revno(r1),
+                r2, self.get_revno(r2),
+            )
+        else:
+            p.b = '%s=%s' % (r1, self.get_revno(r1))
         return p
     #@+node:ekr.20170820082125.1: *4* gdc.diff_revs
     def diff_revs(self):
