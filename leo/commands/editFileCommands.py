@@ -667,7 +667,7 @@ class GitDiffController:
                 'h' if abbreviated else 'H',
                 revspec)
             lines = g.execGitCommand(command, self.repo_dir)
-            return ''.join(lines)
+            return ''.join(lines).strip()
         else:
             return 'uncommitted'
     #@+node:ekr.20170820084258.1: *4* gdc.make_at_clean_outline
