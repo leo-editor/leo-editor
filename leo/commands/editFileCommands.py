@@ -606,13 +606,17 @@ class GitDiffController:
                 # Node 2: Old node
                 p2 = organizer.insertAsLastChild()
                 p2.h = 'Old:' + v1.h
-                # p2.b = '@language %s\n%s' % (c1.target_language, v1.b)
                 p2.b = v1.b
                 # Node 3: New node
-                p3 = organizer.insertAsLastChild()
-                p3.h = 'New:' + v2.h
-                # p3.b = '@language %s\n%s' % (c2.target_language, v2.b)
-                p3.b = v2.b
+                assert v1.fileIndex == v2.fileIndex
+                p_in_c = self.find_gnx(self.c, v1.fileIndex)
+                if p_in_c: # Make a clone, if possible.
+                    p3 = p_in_c.clone()
+                    p3.moveToLastChildOf(organizer)
+                else:
+                    p3 = organizer.insertAsLastChild()
+                    p3.h = 'New:' + v2.h
+                    p3.b = v2.b
             else:
                 v = d.get(key)
                 p = parent.insertAsLastChild()
@@ -729,11 +733,11 @@ class GitDiffController:
             self.create_compare_node(c1, c2, d, kind)
     #@+node:ekr.20170819132219.1: *3* gdc.find_gnx
     def find_gnx(self, c, gnx):
-        '''Return the vnode in c having the given gnx.'''
-        for v in c.all_unique_nodes():
-            if v.fileIndex == gnx:
-                return v
-        g.trace('Can not happen. Not found:', gnx)
+        '''Return a position in c having the given gnx.'''
+        for p in c.all_unique_positions():
+            if p.v.fileIndex == gnx:
+                return p
+        # g.trace('Can not happen. Not found:', gnx)
         return None
     #@+node:ekr.20170806094320.12: *3* gdc.run & helpers
     def run(self):
