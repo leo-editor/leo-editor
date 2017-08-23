@@ -91,6 +91,7 @@
 <v t="ekr.20150426031409.1"><vh>\@ifhostname hostname or !hostname</vh></v>
 <v t="ekr.20041119110141"><vh>\@ifplatform platform-name</vh></v>
 <v t="ekr.20041119035704.2"><vh>\@ignore comment</vh></v>
+<v t="ekr.20170823083657.1"><vh>\@menu and \@item</vh></v>
 <v t="ekr.20130503155210.16364"><vh>\@menuat</vh></v>
 <v t="ekr.20070411172718"><vh>\@openwith name = shortcut</vh></v>
 <v t="ekr.20131115075142.18226"><vh>\@outline-data setting-name</vh></v>
@@ -4780,7 +4781,7 @@ developers.
 </t>
 <t tx="ekr.20070729101310">True: trace import commands and @auto imports.</t>
 <t tx="ekr.20070803082435">True: import commands (including @auto nodes) do full checks.</t>
-<t tx="ekr.20070925144552">New in Leo 4.4.4. Leo creates its menus using @menus trees. Within @menus trees,
+<t tx="ekr.20070925144552">Leo creates its menus using @menus trees. Within @menus trees,
 @menu nodes create menus and @item nodes create menu items.
 
 Notes:
@@ -14333,6 +14334,27 @@ if 0: # The base class
 <t tx="ekr.20170819113555.4"># +++</t>
 <t tx="ekr.20170819113555.5"># ---</t>
 <t tx="ekr.20170819170521.1"># @@</t>
+<t tx="ekr.20170823083657.1">Leo creates its menus using @menus trees. Within @menus trees,
+@menu nodes create menus and @item nodes create menu items.
+
+Notes:
+
+- The menu name always follows @menu. If the menu name is 'Plugins', Leo will
+create the Plugins menu and populate the menu by calling the
+'create-optional-menus' hook. This creates the Plugins menu as usual.
+
+- Nested @menu nodes contain submenus.
+
+- The command name follows @item. If the body text of an @item node exists, this
+body text is the menu name. Otherwise, the menu name is the command name.
+However, if the command name starts with a '*', hyphens are removed from the
+menu name.
+
+- Menu names and command names may contain a single ampersand (&amp;). If present,
+the following character is underlined in the name.
+
+- If the command name in an @item node is just a hyphen (-), the item represents
+a menu separator.</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
