@@ -1392,11 +1392,11 @@
 <v t="ekr.20131213135427.22140"><vh>@item directory-&amp;make</vh></v>
 <v t="ekr.20131213135427.22141"><vh>@item directory-&amp;remove</vh></v>
 <v t="ekr.20131213135427.22142"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22143"><vh>@item open-cheat-sheet-leo</vh></v>
-<v t="ekr.20131213135427.22144"><vh>@item open-leoDocs-leo</vh></v>
-<v t="ekr.20131213135427.22145"><vh>@item open-leoPlugins-leo</vh></v>
-<v t="ekr.20131213135427.22146"><vh>@item open-quickstart-leo</vh></v>
-<v t="ekr.20131213135427.22147"><vh>@item open-scripts-leo</vh></v>
+<v t="ekr.20131213135427.22143"><vh>@item open-&amp;cheat-sheet-leo</vh></v>
+<v t="ekr.20131213135427.22144"><vh>@item open-leo&amp;Docs-leo</vh></v>
+<v t="ekr.20131213135427.22145"><vh>@item open-leo&amp;Plugins-leo</vh></v>
+<v t="ekr.20131213135427.22146"><vh>@item open-&amp;quickstart-leo</vh></v>
+<v t="ekr.20131213135427.22147"><vh>@item open-&amp;scripts-leo</vh></v>
 <v t="ekr.20131213135427.22148"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22149"><vh>@item file-&amp;compare-leo-files</vh></v>
 <v t="ekr.20131213135427.22150"><vh>@item file-&amp;delete</vh></v>
@@ -2837,6 +2837,7 @@
 </v>
 <v t="ekr.20170718054928.1"></v>
 <v t="ekr.20170718054951.1"></v>
+<v t="ekr.20070925144552"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -6882,11 +6883,11 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22140"></t>
 <t tx="ekr.20131213135427.22141"></t>
 <t tx="ekr.20131213135427.22142"></t>
-<t tx="ekr.20131213135427.22143">Open &amp;CheatSheet.leo</t>
-<t tx="ekr.20131213135427.22144">Open Leo&amp;Docs.leo</t>
-<t tx="ekr.20131213135427.22145">Open leo&amp;Plugins.leo</t>
-<t tx="ekr.20131213135427.22146">Open &amp;quickstart.leo</t>
-<t tx="ekr.20131213135427.22147">Open scr&amp;ipts.leo</t>
+<t tx="ekr.20131213135427.22143"></t>
+<t tx="ekr.20131213135427.22144"></t>
+<t tx="ekr.20131213135427.22145"></t>
+<t tx="ekr.20131213135427.22146"></t>
+<t tx="ekr.20131213135427.22147"></t>
 <t tx="ekr.20131213135427.22148"></t>
 <t tx="ekr.20131213135427.22149"></t>
 <t tx="ekr.20131213135427.22150"></t>
