@@ -1582,6 +1582,8 @@
 <v t="ekr.20170804155454.7"><vh>#516: Content of find tab can disappear</vh></v>
 <v t="ekr.20170804153108.198"><vh>#522: cycle-editor-focus raises ValueError</vh></v>
 <v t="ekr.20170804153108.135"><vh>#526: @persistence doesn't retain tags and links (uA's)</vh></v>
+<v t="ekr.20170823100047.1"><vh>#528: @menuat duplicates menus when myLeoSettings is opened</vh></v>
+<v t="ekr.20170823100152.1"><vh>#529: help-for-settings and docs for @menu and @item in leoSettings.leo </vh></v>
 <v t="ekr.20170804155213.1"><vh>#537: Non-ascii characters in leo.core.commit_timestamp.json crashes Leo</vh>
 <v t="ekr.20170804155213.2"><vh>g.jsonCommitInfo</vh></v>
 <v t="ekr.20170804155213.3"><vh>g.gitInfo</vh></v>
@@ -24384,6 +24386,10 @@ leoSettings.leo contains new colorizer settings for @language patch.
 
 For each diffed file, this command uses a variant of the atFile read logic to create the corresponding outline in a hidden commander.  Separate hidden commanders contain the "before" and "after" versions of the file. These outlines preserve gnx's, so it is easy to create dicts of inserted, deleted and changed nodes.  The command uses difflib (not git diff) to create all diffs, after the external file has been split into nodes.</t>
 <t tx="ekr.20170823085504.1">https://github.com/leo-editor/leo-editor/issues/529
+</t>
+<t tx="ekr.20170823100047.1">https://github.com/leo-editor/leo-editor/issues/528
+</t>
+<t tx="ekr.20170823100152.1">https://github.com/leo-editor/leo-editor/issues/529
 </t>
 <t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
