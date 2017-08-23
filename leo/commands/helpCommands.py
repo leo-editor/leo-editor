@@ -884,35 +884,6 @@ class HelpCommandsClass(BaseEditCommandsClass):
         '''
         #@-<< define s >>
         self.c.putHelpFor(s)
-    #@+node:ekr.20170823084423.1: *3* helpForSettings
-    @cmd('help-for-settings')
-    def helpForSettings(self, event=None):
-        '''Prints a discussion of of Leo's find commands.'''
-        #@+<< define s >>
-        #@+node:ekr.20170823084456.1: *4* << define s >> (helpForSettings)
-        #@@language rest
-
-        # Using raw string is essential.
-
-        s = r'''
-
-        About settings
-        ---------------
-
-        **@settings trees** specify settings. The headline of each node indicates
-        its type. The body text of most nodes contain comments. However, the body
-        text of \@data, \@font, \@item and \@shortcuts nodes may contain data. For
-        more information about the format of \@settings trees, see leoSettings.leo.
-
-        leoSettings.leo is Leo's main settings file. myLeoSettings.leo contains
-        your personal settings. Settings in myLeoSettings.leo override the settings
-        in leoSettings.leo. Put myLeoSettigns.leo in your home `~` directory or in
-        the `~/.leo` directory. Any other .leo file may contain an \@settings tree.
-        Such settings apply only to that file.
-
-        '''
-        #@-<< define s >>
-        self.c.putHelpFor(s)
     #@+node:ekr.20150514063305.400: *3* helpForScripting
     @cmd('help-for-scripting')
     def helpForScripting(self, event=None):
@@ -1130,6 +1101,35 @@ class HelpCommandsClass(BaseEditCommandsClass):
             g.toUnicode(s, encoding='utf-8',reportErrors=False)
             g.trace(*args,**keys)
             g.warning(*args,**keys)
+
+        '''
+        #@-<< define s >>
+        self.c.putHelpFor(s)
+    #@+node:ekr.20170823084423.1: *3* helpForSettings
+    @cmd('help-for-settings')
+    def helpForSettings(self, event=None):
+        '''Prints a discussion of of Leo's find commands.'''
+        #@+<< define s >>
+        #@+node:ekr.20170823084456.1: *4* << define s >> (helpForSettings)
+        #@@language rest
+
+        # Using raw string is essential.
+
+        s = r'''
+
+        About settings
+        ---------------
+
+        **@settings trees** specify settings. The headline of each node indicates
+        its type. The body text of most nodes contain comments. However, the body
+        text of \@data, \@font, \@item and \@shortcuts nodes may contain data. For
+        more information about the format of \@settings trees, see leoSettings.leo.
+
+        leoSettings.leo is Leo's main settings file. myLeoSettings.leo contains
+        your personal settings. Settings in myLeoSettings.leo override the settings
+        in leoSettings.leo. Put myLeoSettigns.leo in your home `~` directory or in
+        the `~/.leo` directory. Any other .leo file may contain an \@settings tree.
+        Such settings apply only to that file.
 
         '''
         #@-<< define s >>
