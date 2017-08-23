@@ -92,7 +92,7 @@
 <v t="ekr.20041119110141"><vh>\@ifplatform platform-name</vh></v>
 <v t="ekr.20041119035704.2"><vh>\@ignore comment</vh></v>
 <v t="ekr.20170823083657.1"><vh>\@menu and \@item</vh></v>
-<v t="ekr.20130503155210.16364"><vh>\@menuat</vh></v>
+<v t="ekr.20130503155210.16364"><vh>\@menuat </vh></v>
 <v t="ekr.20070411172718"><vh>\@openwith name = shortcut</vh></v>
 <v t="ekr.20131115075142.18226"><vh>\@outline-data setting-name</vh></v>
 <v t="ekr.20041119105509"><vh>\@set name = value</vh></v>
@@ -2836,7 +2836,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20130503155210.16364"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.

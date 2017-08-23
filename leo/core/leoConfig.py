@@ -387,7 +387,9 @@ class ParserBaseClass(object):
         '''Handle @menuat setting.'''
         trace = False and not g.unitTesting
         if g.app.config.menusList:
-            if trace: g.es_print("Patching menu tree: " + name)
+            if trace:
+                g.es_print("Patching menu tree: " + name)
+                g.es_print(self.c)
             # get the patch fragment
             patch = []
             if p.hasChildren():
@@ -403,7 +405,9 @@ class ParserBaseClass(object):
                 targetPath = '/' + targetPath
             ans = self.patchMenuTree(g.app.config.menusList, targetPath)
             if ans:
-                if trace: g.es_print("Patching (" + mode + ' ' + source + ") at " + targetPath)
+                if trace:
+                    # g.es_print("Patching (" + mode + ' ' + source + ") at " + targetPath)
+                    g.es_print("Patching (%s %s) at %s" % (mode, source, targetPath))
                 # pylint: disable=unpacking-non-sequence
                 list_, idx = ans
                 if mode not in ('copy', 'cut'):
@@ -461,19 +465,20 @@ class ParserBaseClass(object):
                 self.dumpMenuTree(val, level + 1, path=path + '/' + name)
     #@+node:tbrown.20080514180046.8: *5* patchMenuTree
     def patchMenuTree(self, orig, targetPath, path=''):
+        trace = False and not g.unitTesting
         for n, z in enumerate(orig):
             kind, val, val2 = z
             if kind == '@item':
                 name = self.getName(val, val2)
                 curPath = path + '/' + name
                 if curPath == targetPath:
-                    g.es_print('Found ' + targetPath)
+                    if trace: g.es_print('Found ' + targetPath)
                     return orig, n
             else:
                 name = self.getName(kind.replace('@menu ', ''))
                 curPath = path + '/' + name
                 if curPath == targetPath:
-                    g.es_print('Found ' + targetPath)
+                    if trace: g.es_print('Found ' + targetPath)
                     return orig, n
                 ans = self.patchMenuTree(val, targetPath, path=path + '/' + name)
                 if ans:
@@ -545,8 +550,7 @@ class ParserBaseClass(object):
                         else:
                             kind = tag
                             head = itemName
-                            # body = p.b
-                            # 4.11.1: Only the first body line is significant.
+                            # Only the first body line is significant.
                             # This allows following comment lines.
                             lines = [z for z in g.splitLines(p.b) if z.strip()]
                             body = lines[0] if lines else ''
