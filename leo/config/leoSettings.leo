@@ -1394,8 +1394,8 @@
 <v t="ekr.20131213135427.22141"><vh>@item directory-&amp;remove</vh></v>
 <v t="ekr.20131213135427.22142"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22143"><vh>@item open-&amp;cheat-sheet-leo</vh></v>
-<v t="ekr.20131213135427.22144"><vh>@item open-leo&amp;Docs-leo</vh></v>
-<v t="ekr.20131213135427.22145"><vh>@item open-leo&amp;Plugins-leo</vh></v>
+<v t="ekr.20131213135427.22144"><vh>@item open-leo-&amp;docs-leo</vh></v>
+<v t="ekr.20131213135427.22145"><vh>@item open-leo-&amp;plugins-leo</vh></v>
 <v t="ekr.20131213135427.22146"><vh>@item open-&amp;quickstart-leo</vh></v>
 <v t="ekr.20131213135427.22147"><vh>@item open-&amp;scripts-leo</vh></v>
 <v t="ekr.20131213135427.22148"><vh>@item -</vh></v>
@@ -2836,6 +2836,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20070925144552"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
