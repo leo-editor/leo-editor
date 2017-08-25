@@ -754,6 +754,7 @@
 <v t="ekr.20161010172424.1"><vh>@int js_importer_min_rescan_size = 0</vh></v>
 <v t="ekr.20161010172441.1"><vh>@int js_importer_min_scan_size = 0</vh></v>
 <v t="ekr.20080811105020.2"><vh>@bool suppress_import_parsing = False</vh></v>
+<v t="ekr.20170825083426.1"><vh>@data c_import_typedefs</vh></v>
 <v t="ekr.20111029055127.16616"><vh>@data import_html_tags</vh></v>
 <v t="ekr.20111029055127.16614"><vh>@data import_xml_tags</vh></v>
 </v>
@@ -2836,7 +2837,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20070925144552"></v>
+<v t="ekr.20170825083426.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -14353,6 +14354,19 @@ the following character is underlined in the name.
 
 - If the command name in an @item node is just a hyphen (-), the item represents
 a menu separator.</t>
+<t tx="ekr.20170825083426.1"># typedef names, one per line
+
+# These fix #545:
+
+    # _Bool
+    # scr_enter_status_t
+    # scr_exec_status_t
+    # scr_exit_status_t
+    # scr_node_api_t
+    # scr_update_status_t
+    # uint16_t
+    # uint8_t
+</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

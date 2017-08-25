@@ -19,17 +19,26 @@ class C_Importer(Importer):
             state_class = C_ScanState,
         )
         self.headline = None
-    # Used in multiple methods.
-    c_keywords = (
-        '(break|case|continue|default|do|else|enum|for|goto|if|' +
-        'return|sizeof|struct|switch|while)'
-    )
-    c_types_list = (
-        '(auto|bool|char|const|double|extern|float|int|register|' +
-        'signed|short|static|typedef|union|unsigned|void|volatile)'
-    )
-    c_types_pattern = re.compile(c_types_list)
-    c_keywords_pattern = re.compile(c_keywords)
+        # Fix #545 by supporting @data c_import_typedefs.
+        aSet = set()
+        for z in (
+            'auto', 'bool', 'char', 'const', 'double',
+            'extern', 'float', 'int', 'register',
+            'signed', 'short', 'static', 'typedef',
+            'union', 'unsigned', 'void', 'volatile',
+        ):
+            aSet.add(z)
+        for z in self.c.config.getData('c_import_typedefs') or []:
+            aSet.add(z)
+        self.c_type_names = '(%s)' % '|'.join(list(aSet))
+        self.c_types_pattern = re.compile(self.c_type_names)
+        self.c_class_pattern = re.compile(r'\s*(%s\s*)*\s*class\s+(\w+)' % (self.c_type_names))
+        self.c_func_pattern  = re.compile(r'\s*(%s\s*)+\s*([\w:]+)' % (self.c_type_names))
+        self.c_keywords = '(%s)' % '|'.join([
+            'break', 'case', 'continue', 'default', 'do', 'else', 'enum',
+            'for', 'goto', 'if', 'return', 'sizeof', 'struct', 'switch', 'while',
+        ])
+        self.c_keywords_pattern = re.compile(self.c_keywords)
 
     #@+others
     #@+node:ekr.20161204173153.1: *3* c_i.match_name_patterns
@@ -49,8 +58,6 @@ class C_Importer(Importer):
     # Define patterns that can start a block
     c_extern_pattern = re.compile(r'\s*extern\s+(\"\w+\")')
     c_typedef_pattern = re.compile(r'\s*(\w+)\s*\*\s*$')
-    c_class_pattern = re.compile(r'\s*(%s\s*)*\s*class\s+(\w+)' % (c_types_list))
-    c_func_pattern  = re.compile(r'\s*(%s\s*)+\s*([\w:]+)' % (c_types_list))
 
     def match_start_patterns(self, line):
         '''
