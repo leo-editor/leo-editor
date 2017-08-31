@@ -521,7 +521,8 @@ class Commands(object):
                     g.trace('%s unknown focus: %s' % (count, w_class))
         else:
             # c.last_no_focus = True
-            g.trace('%s no focus' % (count))
+            if trace:
+                g.trace('%3s no focus' % (count))
     #@+node:ekr.20081005065934.1: *4* c.initAfterLoad
     def initAfterLoad(self):
         '''Provide an offical hook for late inits of the commander.'''
