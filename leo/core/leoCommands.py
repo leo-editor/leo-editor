@@ -7336,6 +7336,31 @@ class Commands(object):
         if func:
             event = g.app.gui.create_key_event(c, None, None, None)
             func(event)
+    #@+node:vitalije.20170831154859.1: *3* reference outline commands
+    #@+node:vitalije.20170831154830.1: *4* c.updateRefLeoFile
+    @cmd('update-ref-file')
+    def updateRefLeoFile(self, event=None):
+        '''Saves public part of file to reference Leo file.'''
+        c = self
+        c.fileCommands.save_ref()
+    #@+node:vitalije.20170831154840.1: *4* c.readRefLeoFile
+    @cmd('read-ref-file')
+    def readRefLeoFile(self, event=None):
+        '''Updates public part of outline from reference Leo file.'''
+        c = self
+        c.fileCommands.updateFromRefFile()
+    #@+node:vitalije.20170831154850.1: *4* c.setReferenceFile
+    @cmd('set-reference-file')
+    def setReferenceFile(self, event=None):
+        '''Select a reference Leo document for the public part of this outline.'''
+        c = self
+        table = [ g.fileFilters("LEOFILES"),]
+        fileName = g.app.gui.runOpenFileDialog(c,
+                title="Select reference Leo file",
+                filetypes=table,
+                defaultextension=g.defaultLeoFileExtension(c))
+        if not fileName: return
+        c.fileCommands.setReferenceFile(fileName)
     #@+node:bobjack.20080509080123.2: *3* c.universalCallback & minibufferCallback
     def universalCallback(self, source_c, function):
         """Create a universal command callback.
