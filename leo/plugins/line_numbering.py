@@ -94,6 +94,9 @@ def renumber(c):
         at.scanAllDirectives(new_p)
         delim_st = at.startSentinelComment
         delim_en = at.endSentinelComment
+        if p.isAtCleanNode() or p.isAtAutoNode() or p.isAtEditNode():
+            delim_st = ''
+            delim_en = ''
         nums = universal_line_numbers(root, new_p, delim_st, delim_en)
         NUMBERINGS[c.hash() + new_p.gnx] = nums
     if c.user_dict.get(LNT) != nums:
@@ -179,7 +182,7 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
             offset, size = check_line(p, line, st)
             f_lines.append(st + offset)
             st += size
-        f_lines.append(st+1)
+        f_lines.append(st)
         flines_data[pkey(p)] = tuple(f_lines), st
         return st
     #@+node:vitalije.20170726124944.1: *3* check_line
@@ -189,6 +192,14 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
         #@+node:vitalije.20170726193840.1: *4* verbatim lines
         if is_verbatim(line):
             return 1, 2
+        #@+node:vitalije.20170726193927.1: *4* others
+        m = others_pat.match(line)
+        if m:
+            n = inc(st)
+            for p1 in others_iterator(p):
+                n = numerate_node(p1, n)
+            n = inc(n)
+            return (0, n-st) if delim_st else (0, n-st)
         #@+node:vitalije.20170726193858.1: *4* directives in clean
         if not delim_st and g.isDirective(line):
             return 0, 0
@@ -220,15 +231,7 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
             n = inc(st)
             n = numerate_node(p1, n)
             n = inc(n)
-            return 1, n-st
-        #@+node:vitalije.20170726193927.1: *4* others
-        m = others_pat.match(line)
-        if m:
-            n = inc(st)
-            for p1 in others_iterator(p):
-                n = numerate_node(p1, n)
-            n = inc(n)
-            return 1, n - st
+            return (0, n-st) if delim_st else (0, n-st)
         #@+node:vitalije.20170726193933.1: *4* doc part
         if doc_pattern.match(line):
             if delim_en: return 0, 2
@@ -240,7 +243,7 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
             return 0, 0
         #@-others
         # if we get here it is an ordinary line
-        return 1,1
+        return 0,1
     #@+node:vitalije.20170727202446.1: *3* pkey
     def pkey(p):
         # this is enough for short-term key inside this function
@@ -249,14 +252,14 @@ def universal_line_numbers(root, target_p, delim_st, delim_en):
     #@-others
     vlinescache[root.gnx] = tuple(g.splitLines(root.b))
     first, last = handle_first_and_last_lines()
-    start = 2 * first + 1 if delim_st else first+1
+    start = 2 * first + 2 if delim_st else first + 1
     n = numerate_node(root, start)
     if target_p == root:
         k = pkey(root)
         flines, n = flines_data[k]
         tfirst = tuple(range(1, first + 1))
         n += 2 if delim_st else 1
-        tlast = tuple(range(n, n + last+1))
+        tlast = tuple(range(n, n + last))
         return tfirst + flines + tlast
     else:
         k = pkey(target_p)
