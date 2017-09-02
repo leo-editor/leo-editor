@@ -246,7 +246,8 @@ expanded="ekr.20170524124449.1,ekr.20170517072429.1,"><vh>@file cursesGui2.py</v
 </v>
 <v t="ekr.20120309073937.9878"><vh>Searching</vh>
 <v t="ekr.20120309073748.9872"><vh>@file bigdash.py</vh></v>
-<v t="peckj.20140804114520.9427"><vh>@file nodetags.py</vh></v>
+<v t="peckj.20140804114520.9427"
+expanded="peckj.20140804103733.9246,peckj.20140804103733.9266,peckj.20140804103733.9262,peckj.20140804103733.9264,peckj.20140804103733.9265,peckj.20140804114520.15199,peckj.20140804114520.15200,peckj.20140804114520.15204,peckj.20140804114520.15205,peckj.20140804192343.6568,peckj.20140811082039.6623,"><vh>@file nodetags.py</vh></v>
 <v t="peckj.20131130132659.5964"><vh>@file nodewatch.py</vh></v>
 </v>
 <v t="ekr.20050111122605"><vh>Servers &amp; web stuff</vh>
@@ -288,6 +289,7 @@ expanded="ekr.20170524124449.1,ekr.20170517072429.1,"><vh>@file cursesGui2.py</v
 <v t="ville.20090310191936.10"><vh>@file colorize_headlines.py</vh></v>
 <v t="ekr.20090701111504.5294"><vh>@file contextmenu.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@file graphcanvas.py</vh></v>
+<v t="vitalije.20170727201534.1"><vh>@file line_numbering.py</vh></v>
 <v t="ville.20090518182905.5419"><vh>@file nav_qt.py</vh></v>
 <v t="ville.20120604212857.4215"><vh>@file notebook.py</vh></v>
 <v t="ekr.20090622063842.5264"><vh>@file projectwizard.py</vh></v>
@@ -633,7 +635,7 @@ if not g.unitTesting:
     '''Split the markdown cell p if it contains one or more html headers.'''
     trace = False and not g.unitTesting
     SPLIT = False
-        # Perhaps this should be a user option, 
+        # Perhaps this should be a user option,
         # but splitting adds signifincant whitespace.
         # The user can always split nodes manually if desired.
     i0, last = 0, p.copy()
