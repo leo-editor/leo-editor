@@ -966,20 +966,19 @@ class LeoQtGui(leoGui.LeoGui):
         k = c.k
         if p and not buttonText: buttonText = p.h.strip()
         if not buttonText: buttonText = 'Unnamed Script Button'
-        #@+<< create the button b >>
-        #@+node:ekr.20110605121601.18529: *4* << create the button b >>
+        # create the button b
         iconBar = c.frame.getIconBarObject()
         b = iconBar.add(text=buttonText)
-        #@-<< create the button b >>
-        #@+<< define the callbacks for b >>
-        #@+node:ekr.20110605121601.18530: *4* << define the callbacks for b >>
+
+        # define the callbacks for b...
+        
         def deleteButtonCallback(event=None, b=b, c=c):
             if b: b.pack_forget()
             c.bodyWantsFocus()
-
+        
         def executeScriptCallback(event=None,
             b=b,
-            c=c,
+            c=c, # Do not assume the script will want to remain in this commander.
             buttonText=buttonText,
             p=p and p.copy(),
             script=script
@@ -994,27 +993,28 @@ class LeoQtGui(leoGui.LeoGui):
                 if g.app.scriptDict.get('removeMe'):
                     g.es("removing", "'%s'" % (buttonText), "button at its request")
                     b.pack_forget()
-            # Do not assume the script will want to remain in this commander.
-        #@-<< define the callbacks for b >>
+            
         b.configure(command=executeScriptCallback)
         if shortcut:
-            #@+<< bind the shortcut to executeScriptCallback >>
-            #@+node:ekr.20110605121601.18531: *4* << bind the shortcut to executeScriptCallback >>
+            # bind the shortcut to executeScriptCallback.
             func = executeScriptCallback
             shortcut = k.canonicalizeShortcut(shortcut)
             ok = k.bindKey('button', shortcut, func, buttonText)
             if ok:
                 g.blue('bound @button', buttonText, 'to', shortcut)
-            #@-<< bind the shortcut to executeScriptCallback >>
-        #@+<< create press-buttonText-button command >>
-        #@+node:ekr.20110605121601.18532: *4* << create press-buttonText-button command >>
+
+        # create press-buttonText-button command.
         aList = [ch if ch.isalnum() else '-' for ch in buttonText]
         buttonCommandName = ''.join(aList)
         buttonCommandName = buttonCommandName.replace('--', '-')
         buttonCommandName = 'press-%s-button' % buttonCommandName.lower()
         # This will use any shortcut defined in an @shortcuts node.
-        k.registerCommand(buttonCommandName, None, executeScriptCallback, pane='button', verbose=False)
-        #@-<< create press-buttonText-button command >>
+        k.registerCommand(
+            commandName=buttonCommandName,
+            func=executeScriptCallback,
+            pane='button',
+            verbose=False,
+        )
     #@+node:ekr.20170612065255.1: *3* qt_gui.put_help
     def put_help(self, c, s, short_title=''):
         '''Put the help command.'''

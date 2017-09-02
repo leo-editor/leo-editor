@@ -122,7 +122,7 @@ class DateNodes(object):
             ('datenodes-this-month', self.insert_month_node),
             ('datenodes-this-year', self.insert_year_node),
         ):
-            c.k.registerCommand(command, shortcut=None, func=method)
+            c.k.registerCommand(command, method)
     #@+node:gfunch.20041209073652: *3* _get_settings
     def _get_settings(self):
         """Get any configuration options."""

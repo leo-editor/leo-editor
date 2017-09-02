@@ -150,21 +150,17 @@ class SFTPController(object):
 
     #@+others
     #@+node:peckj.20140218144401.6042: *3* __init__
-    def __init__ (self,c):
-
+    def __init__(self, c):
         self.c = c
         # Warning: hook handlers must use keywords.get('c'), NOT self.c.
-
         self._CACHE_CREDENTIALS = c.config.getBool('sftp-cache-credentials', True)
-
         # register commands
-        c.k.registerCommand('sftp-push',shortcut=None,func=self.sftp_push)
-        c.k.registerCommand('sftp-push-all',shortcut=None,func=self.sftp_push_all)
-        c.k.registerCommand('sftp-pull',shortcut=None,func=self.sftp_pull)
-        c.k.registerCommand('sftp-pull-all',shortcut=None,func=self.sftp_pull_all)
+        c.k.registerCommand('sftp-push', self.sftp_push)
+        c.k.registerCommand('sftp-push-all', self.sftp_push_all)
+        c.k.registerCommand('sftp-pull', self.sftp_pull)
+        c.k.registerCommand('sftp-pull-all', self.sftp_pull_all)
         if self._CACHE_CREDENTIALS:
-            c.k.registerCommand('sftp-forget-credentials',shortcut=None,func=self.sftp_forget_credentials)
-
+            c.k.registerCommand('sftp-forget-credentials', self.sftp_forget_credentials)
     #@+node:peckj.20140218144401.6157: *3* helpers
     #@+node:peckj.20140218144401.6158: *4* log
     def log(self, s, color=None):

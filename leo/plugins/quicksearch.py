@@ -141,10 +141,9 @@ def show_unittest_failures(event):
     c.k.simulateCommand('focus-to-nav')
 #@+node:tbrown.20111011152601.48462: ** install_qt_quicksearch_tab (Creates commands)
 def install_qt_quicksearch_tab(c):
-
     # tabw = c.frame.top.tabWidget
     wdg = LeoQuickSearchWidget(c, mode="nav")
-    c.frame.log.createTab("Nav", widget = wdg)
+    c.frame.log.createTab("Nav", widget=wdg)
     # tabw.addTab(wdg, "QuickSearch")
 
     def focus_quicksearch_entry(event):
@@ -162,7 +161,6 @@ def install_qt_quicksearch_tab(c):
             wdg.ui.lineEdit.setText(text)
             wdg.returnPressed()
             focus_to_nav(event)
-
         else:
             focus_quicksearch_entry(event)
 
@@ -178,21 +176,14 @@ def install_qt_quicksearch_tab(c):
         c.frame.log.selectTab('Nav')
         wdg.scon.doTimeline()
 
-    c.k.registerCommand(
-        'find-quick',None,focus_quicksearch_entry)
-    c.k.registerCommand(
-        # 'find-quick-selected','Ctrl-Shift-f',find_selected)
-        'find-quick-selected',None,find_selected)
-    c.k.registerCommand(
-        'focus-to-nav', None,focus_to_nav)
-    c.k.registerCommand(
-        'find-quick-test-failures', None,show_unittest_failures)
-    c.k.registerCommand(
-        'find-quick-timeline', None, timeline)
-    c.k.registerCommand(
-        'find-quick-changed', None, show_dirty)
-    c.k.registerCommand(
-        'history', None, nodehistory)
+    c.k.registerCommand('find-quick', focus_quicksearch_entry)
+    c.k.registerCommand('find-quick-selected', find_selected)
+        # shortcut='Ctrl-Shift-f',
+    c.k.registerCommand('focus-to-nav', focus_to_nav)
+    c.k.registerCommand('find-quick-test-failures', show_unittest_failures)
+    c.k.registerCommand('find-quick-timeline', timeline)
+    c.k.registerCommand('find-quick-changed', show_dirty)
+    c.k.registerCommand('history', nodehistory)
 
     @g.command('marked-list')
     def showmarks(event):
@@ -203,10 +194,10 @@ def install_qt_quicksearch_tab(c):
     @g.command('go-anywhere')
     def find_popout_f(event):
         c = event['c']
-        w = LeoQuickSearchWidget(c, mode="popout", parent = c.frame.top)
+        w = LeoQuickSearchWidget(c, mode="popout", parent=c.frame.top)
         topgeo = c.frame.top.geometry()
         wid = topgeo.width()
-        w.setGeometry(wid/2,0, wid/2, 500)
+        w.setGeometry(wid / 2, 0, wid / 2, 500)
         #w.setParent(c.frame.top)
         #w.setWindowFlags(QtConst.FramelessWindowHint)
         w.show()
@@ -215,8 +206,8 @@ def install_qt_quicksearch_tab(c):
         c._popout = w
 
     c.frame.nav = wdg
-
     # make activating this tab activate the input box
+
     def activate_input(idx, c=c):
         wdg = c.frame.nav
         tab_widget = wdg.parent().parent()

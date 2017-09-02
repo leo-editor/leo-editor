@@ -181,23 +181,20 @@ class RSSController(object):
 
     #@+others
     #@+node:peckj.20131002201824.5545: *3* __init__ (RSSController, rss.py)
-    def __init__ (self,c):
-
+    def __init__(self, c):
         self.c = c
         # Warning: hook handlers must use keywords.get('c'), NOT self.c.
-
-        self._NO_TIME = (3000,0,0,0,0,0,0,0,0)
+        self._NO_TIME = (3000, 0, 0, 0, 0, 0, 0, 0, 0)
         self._NO_SUMMARY = 'NO SUMMARY'
         self._NO_NAME = 'NO TITLE'
         self._NO_LINK = 'NO LINK'
-
         # register commands
-        c.k.registerCommand('rss-parse-selected-feed',shortcut=None,func=self.parse_selected_feed)
-        c.k.registerCommand('rss-parse-all-feeds',shortcut=None,func=self.parse_all_feeds)
-        c.k.registerCommand('rss-delete-selected-feed-stories',shortcut=None,func=self.delete_selected_feed_stories)
-        c.k.registerCommand('rss-delete-all-feed-stories',shortcut=None,func=self.delete_all_feed_stories)
-        c.k.registerCommand('rss-clear-selected-feed-history',shortcut=None,func=self.clear_selected_feed_history)
-        c.k.registerCommand('rss-clear-all-feed-histories',shortcut=None,func=self.clear_all_feed_histories)
+        c.k.registerCommand('rss-parse-selected-feed', self.parse_selected_feed)
+        c.k.registerCommand('rss-parse-all-feeds', self.parse_all_feeds)
+        c.k.registerCommand('rss-delete-selected-feed-stories', self.delete_selected_feed_stories)
+        c.k.registerCommand('rss-delete-all-feed-stories', self.delete_all_feed_stories)
+        c.k.registerCommand('rss-clear-selected-feed-history', self.clear_selected_feed_history)
+        c.k.registerCommand('rss-clear-all-feed-histories', self.clear_all_feed_histories)
     #@+node:peckj.20131003102740.5571: *3* feed related
     #@+node:peckj.20131002201824.5546: *4* get_all_feeds
     def get_all_feeds(self):

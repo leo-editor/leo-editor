@@ -78,7 +78,7 @@ class slideshowController(object):
             ('prev-slide-command', self.prevSlide),
             ('prev-slide-show-command', self.prevSlideShow),
         ):
-            k.registerCommand(name, shortcut=None, func=func, pane='all', verbose=False)
+            k.registerCommand(name, func)
     #@+node:ekr.20060901182318: *3* findFirstSlideShow
     def findFirstSlideShow(self):
         c = self.c

@@ -245,78 +245,57 @@ class quickMove(object):
             quickMove.copy_recursively(child, nd1.insertAsLastChild())
     #@+node:ekr.20070117113133: *3* __init__ (quickMove, quickMove.py)
     def __init__(self, c):
-
         self.table = (
-            ("Make ALL Buttons Here Permanent",None,self.permanentButton),
-            ("Clear ALL Permanent Buttons Here",None,self.clearButton),
+            ("Make ALL Buttons Here Permanent", None, self.permanentButton),
+            ("Clear ALL Permanent Buttons Here", None, self.clearButton),
         )
-
-        self.recent_moves = []  # recent move/copy/bookmark to commands for
+        self.recent_moves = [] # recent move/copy/bookmark to commands for
                                 # top level context menu entries
-
-        self.imps = []  # implementations, (func,name,text)
-        self.txts = {}  # get short from name, for permanent buttons
+        self.imps = [] # implementations, (func,name,text)
+        self.txts = {} # get short from name, for permanent buttons
                         # filled in below
-
         # build callables for imp list
-
         for name, first_last, long, short in quickMove.flavors:
-
             self.txts[name] = short
-
             if first_last:
                 todo = 'first child', 'last child', 'next sibling', 'prev sibling'
             else:
                 todo = ['']
-
             for which in todo:
 
                 def func(self=self, which=which, name=name, event=None):
                     self.addButton(which=which, type_=name)
-                fname = 'func_'+name+'_'+short+'_' +which
+
+                fname = 'func_' + name + '_' + short + '_' + which
                 if which:
-                    which = " "+which.title()
-                self.imps.append((func, fname, long+" "+short+which+" Button"))
-                cmdname = 'quickmove_'+long+" "+short+which
+                    which = " " + which.title()
+                self.imps.append((func, fname, long + " " + short + which + " Button"))
+                cmdname = 'quickmove_' + long + " " + short + which
                 cmdname = cmdname.strip().lower().replace(' ', '_')
-                # tried to use g.command() but global commands all use the same c
-                # so register only at the c level, not g level
-                # g.command(cmdname)(func)
-                c.k.registerCommand(cmdname, shortcut=None, func=lambda e:func(),
-                    pane='all',verbose=False)
-
-        c.k.registerCommand('quickmove_keyboard_popup', shortcut=None,
-            func=lambda e:self.keyboard_popup(), pane='all',verbose=False)
-        c.k.registerCommand('quickmove_keyboard_action', shortcut=None,
-            func=lambda e:self.keyboard_action(), pane='all',verbose=False)
-
+                c.k.registerCommand(cmdname, lambda e: func())
+        c.k.registerCommand('quickmove_keyboard_popup', lambda e: self.keyboard_popup())
+        c.k.registerCommand('quickmove_keyboard_action', lambda e: self.keyboard_action())
         self.keyboard_target = None
-
         self.c = c
-
         c.quickMove = self
-
         self.buttons = []
-
-        buttons_todo = []  # get whole list for container buttons
-
+        buttons_todo = [] # get whole list for container buttons
         for nd in c.all_unique_nodes():
             if 'quickMove' in nd.u:
-                if 'buttons' in nd.u['quickMove']:  # new dict based storage
+                if 'buttons' in nd.u['quickMove']: # new dict based storage
                     for rec in nd.u['quickMove']['buttons']:
                         buttons_todo.append(rec.copy())
-                        buttons_todo[-1].update({'v':nd})
-                else:  # read old list format and convert
+                        buttons_todo[-1].update({'v': nd})
+                else: # read old list format and convert
                     new_dicts = []
                     for rec in nd.u['quickMove']:
                         if len(rec) != 2:
-                            continue  # silently drop even older style permanent button
-                        first,type_ = rec
+                            continue # silently drop even older style permanent button
+                        first, type_ = rec
                         buttons_todo.append({'type': type_, 'first': first})
                         new_dicts.append(buttons_todo[-1].copy())
-                        buttons_todo[-1].update({'v':nd})
+                        buttons_todo[-1].update({'v': nd})
                     nd.u['quickMove'] = {'buttons': new_dicts}
-
         # legacy stuff
         for b in buttons_todo:
             first = b.get('first', None)
@@ -324,21 +303,16 @@ class quickMove(object):
                 b['first'] = 'first child'
             if first is False:
                 b['first'] = 'last child'
-
         for i in [b for b in buttons_todo if 'parent' not in b]:
             self.addButton(i['first'], i['type'], v=i['v'])
         for i in reversed([b for b in buttons_todo if 'parent' in b]):
             self.addButton(i['first'], i['type'], v=i['v'], parent=i['parent'])
-
         # c.frame.menu.createNewMenu('Move', 'Outline')
-
-        self.local_imps = []  # make table for createMenuItemsFromTable()
+        self.local_imps = [] # make table for createMenuItemsFromTable()
         for func, name, text in self.imps:
             self.local_imps.append((text, None, func))
-
         self.local_imps.extend(self.table)
         c.frame.menu.createMenuItemsFromTable('Move', self.table)
-
         if g.app.gui.guiName() == "qt":
             g.tree_popup_handlers.append(self.popup)
     #@+node:tbrown.20091207120031.5356: *3* dtor

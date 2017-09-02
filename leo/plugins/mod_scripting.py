@@ -528,7 +528,7 @@ class ScriptingController(object):
 
         - Creates the actual button and its balloon.
         - Adds the button to buttonsDict.
-        - Registers command with the shortcut.
+        - Registers command with an optional shortcut.
         - Creates x amd delete-x-button commands, where x is the cleaned button name.
         - Binds a right-click in the button to a callback that deletes the button.
         '''
@@ -559,12 +559,15 @@ class ScriptingController(object):
 
         def deleteButtonCallback(event=None, self=self, b=b):
             self.deleteButton(b, event=event)
+            
         # Register the delete-x-button command.
-
         deleteCommandName = 'delete-%s-button' % commandName
-        c.k.registerCommand(deleteCommandName, shortcut=None,
-            func=deleteButtonCallback, pane='button', verbose=False)
-            # Reporting this command is way too annoying.
+        c.k.registerCommand(
+            deleteCommandName,
+            deleteButtonCallback,
+            pane='button',
+            verbose=False, # Reporting this command is way too annoying.
+        )
         return b
     #@+node:ekr.20060328125248.28: *3* sc.executeScriptFromButton
     def executeScriptFromButton(self, b, buttonText, p, script):
@@ -985,35 +988,53 @@ class ScriptingController(object):
         c, k = self.c, self.c.k
         shortcut = self.getShortcut(h)
         if trace: g.trace('pane', pane, 'shortcut', shortcut, h)
-        s = self.cleanButtonText(h)
+        commandName = self.cleanButtonText(h)
         if trace and trace_name:
             if hasattr(func, '__name__'):
                 g.trace(func.__name__, func.__doc__)
             else:
                 g.trace(func)
         # Register the original function.
-        k.registerCommand(s, func=func,
-            pane=pane, shortcut=shortcut, source_c=source_c, verbose=trace)
-        # 2013/11/13 Jake Peck:
-        # include '@rclick-' in list of tags
+        k.registerCommand(
+            commandName=commandName,
+            func=func,
+            pane=pane,
+            source_c=source_c,
+            verbose=trace,
+        )
+        # 2017/09/01: Make the binding
+        if shortcut:
+            # g.trace('Calling k.bindLate', commandName, shortcut)
+            k.bindLate(
+                commandName=commandName,
+                func=func,
+                pane=pane,
+                shortcut=shortcut,
+            )
+        # 2013/11/13 Jake Peck: include '@rclick-' in list of tags
         for tag in ('@button-', '@command-', '@rclick-'):
-            if s.startswith(tag):
-                command = s[len(tag):].strip()
+            if commandName.startswith(tag):
+                commandName2 = commandName[len(tag):].strip()
                 # Create a *second* func, to avoid collision in c.commandsDict.
 
                 def registerAllCommandsCallback(event=None, func=func):
                     func()
+        
                 # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
                 # Minibuffer commands created by mod_scripting.py have no docstrings.
 
                 registerAllCommandsCallback.__doc__ = func.__doc__
-                # Make sure we never redefine an existing command.
-                if command in c.commandsDict:
+                # Never redefine an existing command.
+                if commandName2 in c.commandsDict:
                     # A warning here would probably be annoying.
                     pass
                 else:
-                    k.registerCommand(command, func=registerAllCommandsCallback,
-                        pane=pane, shortcut=None, verbose=trace)
+                    k.registerCommand(
+                        commandName=commandName2,
+                        func=registerAllCommandsCallback,
+                        pane=pane,
+                        verbose=trace,
+                    )
     #@+node:ekr.20150402021505.1: *4* sc.setButtonColor
     def setButtonColor(self, b, bg):
         '''Set the background color of Qt button b to bg.'''

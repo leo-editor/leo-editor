@@ -42,11 +42,11 @@ class pluginController(object):
     #@+node:ekr.20110110105526.5470: *3* __init__(pluginController, ftp.py)
     def __init__ (self,c):
         self.c = c
-    #@+at
-    #     c.k.registerCommand('upload',shortcut=None,func=self.upload)
-    #     script = "c.k.simulateCommand('upload')"
-    #     g.app.gui.makeScriptButton(c,script=script,buttonText='Upload')
-    #@@c
+
+        # c.k.registerCommand('upload', self.upload)
+        # script = "c.k.simulateCommand('upload')"
+        # g.app.gui.makeScriptButton(c,script=script,buttonText='Upload')
+
         ib_w = self.c.frame.iconBar.w
         action = QAction('Upload', ib_w)
         self.c.frame.iconBar.add(qaction = action, command = self.upload)
