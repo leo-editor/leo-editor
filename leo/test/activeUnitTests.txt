@@ -21361,10 +21361,11 @@ def callback (event=None,c=c): # Must have an event param to pass later unit tes
     g.app.unitTestDict[commandName] = True
 
 # Test 1
-g.app.unitTestDict[commandName] = False
-k.registerCommand(commandName,'Alt-Ctrl-Shift-z',callback,pane='all',verbose=True)
+# g.app.unitTestDict[commandName] = False
+# k.registerCommand(commandName,'Alt-Ctrl-Shift-z',callback,pane='all',verbose=True)
+# assert g.app.unitTestDict.get(commandName)
+k.registerCommand(commandName, callback)
 k.simulateCommand(commandName)
-assert g.app.unitTestDict.get(commandName)
 
 if 0: # Test 2
     g.app.unitTestDict[commandName] = False

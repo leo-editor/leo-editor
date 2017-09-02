@@ -2273,7 +2273,7 @@ class Command(object):
         global_commands_dict[self.name] = func
         if app:
             for c in app.commanders():
-                c.k.registerCommand(self.name, shortcut=None, func=func)
+                c.k.registerCommand(self.name, func)
         # Inject ivars for plugins_menu.py.
         func.is_command = True
         func.command_name = self.name

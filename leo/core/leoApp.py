@@ -1880,16 +1880,18 @@ class LoadManager(object):
 
         Both old_d and new_d remain unchanged.'''
         trace = False and not g.unitTesting
+        trace_binding = False or g.app.trace_binding
         lm = self
         if not old_d: return new_d
         if not new_d: return old_d
         if trace:
             new_n, old_n = len(list(new_d.keys())), len(list(old_d.keys()))
-            g.trace('new %4s %s %s' % (new_n, id(new_d), new_d.name()))
-            g.trace('old %4s %s %s' % (old_n, id(old_d), old_d.name()))
+            g.trace('new %4s %s' % (new_n, new_d.name()))
+            g.trace('old %4s %s' % (old_n, old_d.name()))
         # #510.
         si_list = new_d.get(g.app.trace_setting)
         if si_list:
+            # This code executed only if g.app.trace_setting exists.
             for si in si_list:
                 fn = si.kind.split(' ')[-1]
                 stroke = c.k.prettyPrintKey(si.stroke)
@@ -1897,12 +1899,13 @@ class LoadManager(object):
                     pane = ' in %s panes' % si.pane
                 else:
                     pane = ''
+                g.trace(repr(si))
                 g.es_print('--trace-setting: %20s binds %s to %-20s%s' %  (
                     fn, g.app.trace_setting, stroke, pane))
         inverted_old_d = lm.invert(old_d)
         inverted_new_d = lm.invert(new_d)
         # #510.
-        if g.app.trace_binding:
+        if trace and trace_binding:
             stroke = c.k.canonicalizeShortcut(g.app.trace_binding)
             si_list = inverted_new_d. get(stroke)
             if si_list:
@@ -1922,7 +1925,8 @@ class LoadManager(object):
         return result
     #@+node:ekr.20120311070142.9904: *5* LM.checkForDuplicateShortcuts
     def checkForDuplicateShortcuts(self, c, d):
-        '''Check for duplicates in an "inverted" dictionary d
+        '''
+        Check for duplicates in an "inverted" dictionary d
         whose keys are strokes and whose values are lists of ShortcutInfo nodes.
 
         Duplicates happen only if panes conflict.
