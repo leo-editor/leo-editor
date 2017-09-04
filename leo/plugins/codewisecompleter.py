@@ -128,13 +128,21 @@ def init ():
             g.registerHandler('after-create-leo-frame',onCreate)
             g.plugin_signon(__name__)
     return ok
+#@+node:ville.20091204224145.5362: *3* install_codewise_completer
+# def install_codewise_completer(c):
+
+    # c.k.registerCommand(
+            # 'codewise-complete','Alt-0',codewise_complete)
+
+    # c.k.registerCommand(
+            # 'codewise-suggest',None, codewise_suggest)
+
 #@+node:ville.20091204224145.5361: *3* onCreate (codewisecompleter.py)
 def onCreate (tag, keys):
     '''Register the ctags-complete command for the newly-created commander.'''
     c = keys.get('c')
     if c:
-        c.k.registerCommand('ctags-complete', start)
-            # shortcut='Alt-0',
+        c.k.registerCommand('ctags-complete', start, shortcut='Alt-0')
         c.k.registerCommand('codewise-suggest', suggest)
 #@+node:ekr.20110309051057.14287: *3* read_tags_file
 def read_tags_file():

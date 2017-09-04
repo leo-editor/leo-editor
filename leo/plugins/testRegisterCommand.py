@@ -21,10 +21,10 @@ def onCreate(tag,keys):
 
     c = keys.get('c')
     if c:
-
-        def callback (event):
+        def f (event):
             g.es_print('Hello',color='purple')
 
-        c.keyHandler.registerCommand('print-hello', callback)
+        c.keyHandler.registerCommand('print-hello', f)
+            # shortcut='Alt-Ctrl-Shift-p',
 #@-others
 #@-leo

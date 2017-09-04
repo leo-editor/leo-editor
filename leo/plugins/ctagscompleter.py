@@ -78,8 +78,7 @@ def onCreate (tag, keys):
 
     c = keys.get('c')
     if c:
-        c.k.registerCommand('ctags-complete', start)
-            # shortcut='Alt-0'
+        c.k.registerCommand('ctags-complete', start, shortcut='Alt-0')
 #@+node:ekr.20091015185801.5245: *3* read_tags_file
 def read_tags_file():
 

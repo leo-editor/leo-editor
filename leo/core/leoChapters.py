@@ -85,17 +85,11 @@ class ChapterController(object):
                 # Possible, but not likely.
                 cc.note('no such chapter: %s' % name)
 
-        # Always bind the commandName without a shortcut.
+        # Always bind the command without a shortcut.
         # This will create the command bound to any existing settings.
         bindings = (None, binding) if binding else (None,)
         for shortcut in bindings:
-            c.k.registerCommand(commandName, select_chapter_callback)
-            c.k.bindLate(
-                commandName=commandName,
-                func=select_chapter_callback,
-                pane='all',
-                shortcut=shortcut,
-            )
+            c.k.registerCommand(commandName, select_chapter_callback, shortcut=shortcut)
     #@+node:ekr.20150509030349.1: *3* cc.cmd (decorator)
     def cmd(name):
         '''Command decorator for the ChapterController class.'''

@@ -2139,7 +2139,7 @@ class KeyHandlerClass(object):
         k.setInputState(self.defaultUnboundKeyAction)
     #@+node:ekr.20061031131434.88: *3* k.Binding
     #@+node:ekr.20061031131434.89: *4* k.bindKey & helpers
-    def bindKey(self, pane, shortcut, callback, commandName, modeFlag=False, tag=""):
+    def bindKey(self, pane, shortcut, callback, commandName, modeFlag=False, tag=None):
         '''Bind the indicated shortcut (a Tk keystroke) to the callback.
 
         No actual gui bindings are made: only entries in k.masterBindingsDict.
@@ -2148,12 +2148,11 @@ class KeyHandlerClass(object):
 
         '''
         trace = False and not g.unitTesting
-            # and commandName.startswith('bookmarks')
-            # and tag.endswith('ekr.leo')
+            # and commandName.startswith('move-lines')
+            # and (shortcut == 'F1' or commandName == 'help')
         trace_list = False
         k = self
         if not k.check_bind_key(commandName, pane, shortcut):
-            if trace: g.trace('check_bind_key fails', commandName, shortcut)
             return False
         aList = k.bindingsDict.get(shortcut, [])
         try:
@@ -2165,8 +2164,9 @@ class KeyHandlerClass(object):
             else:
                 stroke = k.strokeFromSetting(shortcut)
             if trace:
-                # tag = tag.split(' ')[-1]
-                g.trace('%7s %25r %s' % (pane, commandName, stroke and stroke.s))
+                tag = tag.split(' ')[-1]
+                g.trace('%7s %25r %17s %s' % (pane, stroke and stroke.s, tag, commandName))
+                g.trace(g.callers())
             si = g.ShortcutInfo(kind=tag, pane=pane,
                 func=callback, commandName=commandName, stroke=stroke)
             if shortcut:
@@ -2269,45 +2269,17 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.94: *5* k.bindOpenWith
     def bindOpenWith(self, d):
         '''Register an open-with command.'''
-        c, k = self.c, self
-        shortcut = d.get('shortcut')
+        k = self; c = k.c
+        shortcut = d.get('shortcut') or ''
         name = d.get('name')
-        commandName = 'open-with-%s' % name.lower()
+        # The first parameter must be event, and it must default to None.
 
         def openWithCallback(event=None, c=c, d=d):
-            # The first parameter must be event, and it must default to None.
             return c.openWith(d=d)
+        # Use k.registerCommand to set the shortcuts in the various binding dicts.
 
-        k.registerCommand(commandName, openWithCallback)
-        # 2017/09/01: k.registerCommand no longer handles shortcuts.
-        if shortcut:
-            k.bindLate(
-                commandName=commandName,
-                func=openWithCallback,
-                pane='all',
-                shortcut=shortcut,
-            )
-    #@+node:ekr.20170901070753.1: *4* k.bindLate
-    def bindLate(self, commandName, func, pane='all', shortcut='None'):
-        '''New in Leo 5.6: A convenience method for late bindings.'''
-        trace = False and not g.unitTesting # and commandName.startswith('bookmarks')
-        c, k = self.c, self
-        stroke=k.strokeFromSetting(shortcut) # Must be a stroke, even if it represents an empty shortcut.
-        if trace: g.trace('%7s %35s %s' % (pane, commandName, shortcut))
-        # Similar to k.makeBindingsFromCommandsDict.
-        key, aList = c.config.getShortcut(commandName)
-        for si in aList:
-            assert isinstance(si, g.ShortcutInfo)
-            if commandName == si.commandName and not si.pane.endswith('-mode'):
-                k.bindKey(
-                    commandName=commandName,
-                    callback=func,
-                    pane=si.pane,
-                    shortcut=stroke, # Must be a Stroke.
-                    tag='k.bindLate',
-                )
-        if shortcut:
-            k.makeMasterGuiBinding(stroke)
+        commandName = 'open-with-%s' % name.lower()
+        k.registerCommand(commandName, openWithCallback, shortcut=shortcut)
     #@+node:ekr.20061031131434.95: *4* k.checkBindings
     def checkBindings(self):
         '''Print warnings if commands do not have any @shortcut entry.
@@ -2430,12 +2402,6 @@ class KeyHandlerClass(object):
         d2 = g.TypedDictOfLists(
             name='makeBindingsFromCommandsDict helper dict',
             keyType=g.KeyStroke, valType=g.ShortcutInfo)
-        if 0: ###
-            g.trace(len(list(d.keys())))
-            for key in d.keys():
-                if key.find('bookmark') > -1:
-                    g.trace(d.get(key))
-        # g.trace('bookmarks-open-node' in list(d.keys()))
         for commandName in sorted(d):
             command = d.get(commandName)
             key, aList = c.config.getShortcut(commandName)
@@ -3120,11 +3086,9 @@ class KeyHandlerClass(object):
                     si.func = func
                     d2[key2] = si
     #@+node:ekr.20061031131434.131: *4* k.registerCommand
-    example_given = False
-
     def registerCommand(self, commandName, func,
         pane='all',
-        shortcut=None, # Deprecated: will issue a warning.
+        shortcut='', # Deprecated.
         source_c=None,
         verbose=False
     ):
@@ -3138,57 +3102,45 @@ class KeyHandlerClass(object):
         If wrap is True then func will be wrapped with c.universalCallback.
         source_c is the commander in which an @command or @button node is defined.
 
-        **Note**: The 'shortcut' keyword arg is deprecated and non-functional.
+        **Important**: Bindings created here from plugins can not be overridden.
+        This includes @command and @button bindings created by mod_scripting.py.
         '''
-        ### trace = False and not g.unitTesting and not g.app.silentMode and shortcut
-        ### trace = commandName == 'find-quick-selected'
+        trace = False and not g.unitTesting and not g.app.silentMode and shortcut
         c, k = self.c, self
-        if shortcut:
-            g.trace('shortcut keyword arg is deprecated')
-            g.trace(g.callers())
-            if not self.example_given:
-                self.example_given = True
-                print('Use k.bindLate(commandName, func, pane, shortcut)')
+        is_local = c.shortFileName() not in ('myLeoSettings.leo', 'leoSettings.leo')
         f = c.commandsDict.get(commandName)
         if f and f.__name__ != func.__name__:
             g.trace('redefining', commandName, f, '->', func)
         assert not g.isStroke(shortcut)
         c.commandsDict[commandName] = func
-        k.bindLate(commandName, func)
-            # Required to define the name
-            
-        ### To be deleted
-            # is_local = c.shortFileName() not in ('myLeoSettings.leo', 'leoSettings.leo')
-            # if shortcut:
-                # stroke = k.strokeFromSetting(shortcut)
-            # elif commandName.lower() == 'shortcut': # Causes problems.
-                # stroke = None
-            # elif is_local:
-                # # 327: Don't get defaults when handling a local file.
-                # stroke = None
-            # else:
-                # # Try to get a stroke from leoSettings.leo.
-                # stroke = None
-                # junk, aList = c.config.getShortcut(commandName)
-                # if trace: g.trace(aList)
-                # for si in aList:
-                    # assert g.isShortcutInfo(si), si
-                    # assert g.isStrokeOrNone(si.stroke)
-                    # if si.stroke and not si.pane.endswith('-mode'):
-                        # stroke = si.stroke
-                        # pane = si.pane # 2015/05/11.
-                        # break
-            # if stroke:
-                # k.bindKey(pane, stroke, func, commandName, tag='register-command')
-                    # # Must be a stroke.
-                # k.makeMasterGuiBinding(stroke, trace=trace) # Must be a stroke.
-            # elif is_local:
-                # if trace: g.trace('KILL:', commandName)
-                # ### k.killBinding(commandName)
-            # if trace:
-                # pretty_stroke = k.prettyPrintKey(stroke) if stroke else 'None'
-                # g.trace(commandName, pretty_stroke, g.callers(2))
-
+        if shortcut:
+            stroke = k.strokeFromSetting(shortcut)
+        elif commandName.lower() == 'shortcut': # Causes problems.
+            stroke = None
+        elif is_local:
+            # 327: Don't get defaults when handling a local file.
+            stroke = None
+        else:
+            # Try to get a stroke from leoSettings.leo.
+            stroke = None
+            junk, aList = c.config.getShortcut(commandName)
+            for si in aList:
+                assert g.isShortcutInfo(si), si
+                assert g.isStrokeOrNone(si.stroke)
+                if si.stroke and not si.pane.endswith('-mode'):
+                    stroke = si.stroke
+                    pane = si.pane # 2015/05/11.
+                    break
+        if stroke:
+            k.bindKey(pane, stroke, func, commandName, tag='register-command')
+                # Must be a stroke.
+            k.makeMasterGuiBinding(stroke, trace=trace) # Must be a stroke.
+        elif is_local:
+            if trace: g.trace('KILL:', commandName)
+            k.killBinding(commandName)
+        if trace:
+            pretty_stroke = k.prettyPrintKey(stroke) if stroke else 'None'
+            g.trace('@command %25s' % (commandName), pretty_stroke, g.callers(2))
         # Fixup any previous abbreviation to press-x-button commands.
         if commandName.startswith('press-') and commandName.endswith('-button'):
             d = c.config.getAbbrevDict()
@@ -3484,8 +3436,6 @@ class KeyHandlerClass(object):
         if cmdfunc:
             k.bindKey('all', stroke, cmdfunc, cmdname)
             g.es('bound', stroke, 'to command', cmdname)
-        else:
-            g.trace('*** no func for', cmdname)
     #@+node:ekr.20091230094319.6240: *5* k.getPaneBinding
     def getPaneBinding(self, stroke, w):
         trace = False and not g.unitTesting

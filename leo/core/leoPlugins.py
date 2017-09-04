@@ -197,22 +197,18 @@ class BaseLeoPlugin(object):
         """
         self.c = keywords['c']
         self.commandNames = []
-    #@+node:ekr.20100908125007.6013: *3* setCommand (BaseLeoPlugin)
-    def setCommand(self, commandName, handler, pane='all', shortcut=None, verbose=False):
-        """
-        Associate a command name with handler code, optionally defining a keystroke shortcut
+    #@+node:ekr.20100908125007.6013: *3* setCommand
+    def setCommand(self, commandName, handler,
+                    shortcut='', pane='all', verbose=True):
+        """Associate a command name with handler code,
+        optionally defining a keystroke shortcut
         """
         self.commandNames.append(commandName)
         self.commandName = commandName
         self.shortcut = shortcut
         self.handler = handler
-        self.c.k.registerCommand(
-            comamndName=commandName,
-            func=handler,
-            pane=pane, 
-            shortcut=shortcut,
-            verbose=verbose,
-        )
+        self.c.k.registerCommand(commandName, handler,
+            pane=pane, shortcut=shortcut, verbose=verbose)
     #@+node:ekr.20100908125007.6014: *3* setMenuItem
     def setMenuItem(self, menu, commandName=None, handler=None):
         """Create a menu item in 'menu' using text 'commandName' calling handler 'handler'

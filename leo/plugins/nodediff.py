@@ -146,7 +146,7 @@ class NodeDiffController(object):
         self.diff_style = c.config.getString('node-diff-style') or 'compare'
         if self.diff_style not in self.valid_styles.keys():
             self.diff_style = 'compare'
-        # register commands...
+        # register commands
         c.k.registerCommand('diff-marked', self.run_diff_on_marked)
         c.k.registerCommand('diff-selected', self.run_diff_on_selected)
         c.k.registerCommand('diff-subtree', self.run_diff_on_subtree)
