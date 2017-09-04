@@ -608,15 +608,12 @@ class rstClass(object):
         def rst3PluginCallback (event=None):
             self.processTopTree(c.p)
 
-        c.k.registerCommand('write-restructured-text',shortcut=None,
-            func=rst3PluginCallback,pane='all',verbose=False)
-
+        c.k.registerCommand('write-restructured-text', rst3PluginCallback)
         table = (
             ("-",None,None),
             ### ("Write Restructed Text","",rst3PluginCallback),
             '&write-restructured-text',
         )
-
         c.frame.menu.createMenuEntries(editMenu,table,dynamicMenu=True)
     #@+node:ekr.20050813083007: *4* initHeadlineCommands
     def initHeadlineCommands (self):

@@ -412,8 +412,8 @@ class Commands(object):
         Create all entries in c.commandsDict.
         Do *not* clear c.commandsDict here.
         '''
-        for name, func in g.global_commands_dict.items():
-            self.k.registerCommand(commandName=name, shortcut=None, func=func)
+        for commandName, func in g.global_commands_dict.items():
+            self.k.registerCommand(commandName, func)
     #@+node:ekr.20051007143620: *5* c.printCommandsDict
     def printCommandsDict(self):
         c = self

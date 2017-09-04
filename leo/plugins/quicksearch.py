@@ -178,21 +178,13 @@ def install_qt_quicksearch_tab(c):
         c.frame.log.selectTab('Nav')
         wdg.scon.doTimeline()
 
-    c.k.registerCommand(
-        'find-quick',None,focus_quicksearch_entry)
-    c.k.registerCommand(
-        # 'find-quick-selected','Ctrl-Shift-f',find_selected)
-        'find-quick-selected',None,find_selected)
-    c.k.registerCommand(
-        'focus-to-nav', None,focus_to_nav)
-    c.k.registerCommand(
-        'find-quick-test-failures', None,show_unittest_failures)
-    c.k.registerCommand(
-        'find-quick-timeline', None, timeline)
-    c.k.registerCommand(
-        'find-quick-changed', None, show_dirty)
-    c.k.registerCommand(
-        'history', None, nodehistory)
+    c.k.registerCommand('find-quick', focus_quicksearch_entry)
+    c.k.registerCommand('find-quick-selected', find_selected, shortcut='Ctrl-Shift-f')
+    c.k.registerCommand('focus-to-nav', focus_to_nav)
+    c.k.registerCommand('find-quick-test-failures', show_unittest_failures)
+    c.k.registerCommand('find-quick-timeline', timeline)
+    c.k.registerCommand('find-quick-changed', show_dirty)
+    c.k.registerCommand('history', nodehistory)
 
     @g.command('marked-list')
     def showmarks(event):

@@ -117,12 +117,12 @@ class DateNodes(object):
         self.c = c
         self._get_settings()
 
-        for command, method in (
+        for commandName, method in (
             ('datenodes-today', self.insert_day_node),
             ('datenodes-this-month', self.insert_month_node),
             ('datenodes-this-year', self.insert_year_node),
         ):
-            c.k.registerCommand(command, shortcut=None, func=method)
+            c.k.registerCommand(commandName, method)
     #@+node:gfunch.20041209073652: *3* _get_settings
     def _get_settings(self):
         """Get any configuration options."""

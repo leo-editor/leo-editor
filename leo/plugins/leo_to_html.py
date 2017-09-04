@@ -276,7 +276,7 @@ class pluginController(object):
             'show-html-node-head'
         ):
             method = getattr(self, command.replace('-','_'))
-            c.k.registerCommand(command, shortcut=None, func=method)
+            c.k.registerCommand(command, method)
     #@+node:bob.20080107154757.3: *3* export_html
     # EXPORT ALL
 

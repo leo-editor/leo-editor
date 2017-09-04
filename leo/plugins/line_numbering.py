@@ -89,7 +89,7 @@ def renumber(c):
                 root = p
                 break
         else:
-            root = new_p
+            p = root = new_p
         at = c.atFileCommands
         at.scanAllDirectives(new_p)
         delim_st = at.startSentinelComment

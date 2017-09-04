@@ -486,6 +486,7 @@ for key in keys:
     if continue_flag:
         continue
     f = d.get(key)
+    # print(key, f.__name__ if f else repr(f))
     # Test true __call__ methods if they exist.
     name = getattr(f,'__name__',None) or repr(f)
     if hasattr(f,'__call__') and inspect.ismethod(f.__call__):
@@ -21362,7 +21363,8 @@ def callback (event=None,c=c): # Must have an event param to pass later unit tes
 
 # Test 1
 g.app.unitTestDict[commandName] = False
-k.registerCommand(commandName,'Alt-Ctrl-Shift-z',callback,pane='all',verbose=True)
+# k.registerCommand(commandName,callback,pane='all',shortcut='Alt-Ctrl-Shift-z',verbose=True)
+k.registerCommand(commandName,callback)
 k.simulateCommand(commandName)
 assert g.app.unitTestDict.get(commandName)
 

@@ -143,8 +143,8 @@ class OpmlController(object):
         '''Ctor for OpmlController class.'''
         self.c = c
         c.opmlCommands = self
-        c.k.registerCommand('read-opml-file', None, self.readOpmlCommand, pane='all', verbose=False)
-        c.k.registerCommand('write-opml-file', None, self.writeOpmlCommand, pane='all', verbose=False)
+        c.k.registerCommand('read-opml-file', self.readOpmlCommand)
+        c.k.registerCommand('write-opml-file', self.writeOpmlCommand)
         self.opml_read_derived_files = c.config.getBool('opml_read_derived_files')
         self.opml_write_derived_files = c.config.getBool('opml_write_derived_files')
         self.currentVnode = None

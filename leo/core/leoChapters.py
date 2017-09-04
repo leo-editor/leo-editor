@@ -61,16 +61,16 @@ class ChapterController(object):
         trace = False and not g.unitTesting
         trace_redef = True
         c, cc = self.c, self
-        command = 'chapter-select-%s' % chapterName
+        commandName = 'chapter-select-%s' % chapterName
         inverseBindingsDict = c.k.computeInverseBindingDict()
-        if command in c.commandsDict:
+        if commandName in c.commandsDict:
             if trace and trace_redef:
-                g.trace('===== already defined', command)
-                g.trace('inverse', inverseBindingsDict.get(command))
+                g.trace('===== already defined', commandName)
+                g.trace('inverse', inverseBindingsDict.get(commandName))
             return
         if trace:
-            g.trace('===== defining', command, binding, g.callers(1))
-            g.trace('inverse', inverseBindingsDict.get(command))
+            g.trace('===== defining', commandName, binding, g.callers(1))
+            g.trace('inverse', inverseBindingsDict.get(commandName))
 
         def select_chapter_callback(event,cc=cc,name=chapterName):
             chapter = cc.chaptersDict.get(name)
@@ -89,12 +89,7 @@ class ChapterController(object):
         # This will create the command bound to any existing settings.
         bindings = (None, binding) if binding else (None,)
         for shortcut in bindings:
-            c.k.registerCommand(
-                command,
-                func=select_chapter_callback,
-                pane='all',
-                shortcut=shortcut,
-                verbose=False)
+            c.k.registerCommand(commandName, select_chapter_callback, shortcut=shortcut)
     #@+node:ekr.20150509030349.1: *3* cc.cmd (decorator)
     def cmd(name):
         '''Command decorator for the ChapterController class.'''

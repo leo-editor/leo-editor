@@ -142,8 +142,8 @@ def onCreate (tag, keys):
     '''Register the ctags-complete command for the newly-created commander.'''
     c = keys.get('c')
     if c:
-        c.k.registerCommand('ctags-complete','Alt-0',start)
-        c.k.registerCommand('codewise-suggest',None, suggest)
+        c.k.registerCommand('ctags-complete', start, shortcut='Alt-0')
+        c.k.registerCommand('codewise-suggest', suggest)
 #@+node:ekr.20110309051057.14287: *3* read_tags_file
 def read_tags_file():
 

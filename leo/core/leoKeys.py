@@ -2270,9 +2270,8 @@ class KeyHandlerClass(object):
     def bindOpenWith(self, d):
         '''Register an open-with command.'''
         k = self; c = k.c
-        shortcut = d.get('shortcut')
+        shortcut = d.get('shortcut') or ''
         name = d.get('name')
-        # g.trace(d)
         # The first parameter must be event, and it must default to None.
 
         def openWithCallback(event=None, c=c, d=d):
@@ -2280,7 +2279,7 @@ class KeyHandlerClass(object):
         # Use k.registerCommand to set the shortcuts in the various binding dicts.
 
         commandName = 'open-with-%s' % name.lower()
-        k.registerCommand(commandName, shortcut, openWithCallback, pane='all', verbose=False)
+        k.registerCommand(commandName, openWithCallback, shortcut=shortcut)
     #@+node:ekr.20061031131434.95: *4* k.checkBindings
     def checkBindings(self):
         '''Print warnings if commands do not have any @shortcut entry.
@@ -3087,8 +3086,11 @@ class KeyHandlerClass(object):
                     si.func = func
                     d2[key2] = si
     #@+node:ekr.20061031131434.131: *4* k.registerCommand
-    def registerCommand(self, commandName, shortcut, func,
-        pane='all', source_c=None, verbose=False
+    def registerCommand(self, commandName, func,
+        pane='all',
+        shortcut='', # Deprecated.
+        source_c=None,
+        verbose=False
     ):
         '''
         Make the function available as a minibuffer command,

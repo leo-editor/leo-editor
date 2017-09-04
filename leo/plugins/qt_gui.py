@@ -1013,7 +1013,7 @@ class LeoQtGui(leoGui.LeoGui):
         buttonCommandName = buttonCommandName.replace('--', '-')
         buttonCommandName = 'press-%s-button' % buttonCommandName.lower()
         # This will use any shortcut defined in an @shortcuts node.
-        k.registerCommand(buttonCommandName, None, executeScriptCallback, pane='button', verbose=False)
+        k.registerCommand(buttonCommandName, executeScriptCallback, pane='button')
         #@-<< create press-buttonText-button command >>
     #@+node:ekr.20170612065255.1: *3* qt_gui.put_help
     def put_help(self, c, s, short_title=''):
