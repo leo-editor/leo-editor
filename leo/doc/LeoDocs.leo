@@ -20557,8 +20557,6 @@ After this leo editor will open with using the default python installation provi
 <t tx="ekr.20160410043905.1">Within @path and @&lt;file&gt; paths, Leo evaluates ``{{exp}}`` with the the following symbols defined: ``c``, ``g``, ``p``, ``os`` and ``sys``. File names are relative to the directory containing the .leo file, but that can be overridden, depending on the form of the file name.  Here is an example::
 
     @file {{c.config.getString('my-dir')}}{{os.sep}}myFile.py
-
-
 </t>
 <t tx="ekr.20160410044518.1">.. index::
     pair: @nosent; Reference
