@@ -945,6 +945,7 @@ class BookMarkDisplay(object):
             top = QtWidgets.QWidget()
             # pylint: disable=undefined-loop-variable
             # pylint bug, fix released: http://www.logilab.org/ticket/89092
+            # pylint: disable=undefined-variable
             top.mouseReleaseEvent = (lambda event, links=links, row_parent=row_parent:
                 self.background_clicked(event, links, row_parent))
             top.setMinimumSize(10,10)  # so there's something to click when empty
