@@ -6066,7 +6066,15 @@ def os_path_expandExpression(s, **keys):
         if exp:
             try:
                 p = c.p
-                d = {'c': c, 'g': g, 'p': p, 'os': os, 'sys': sys,}
+                d = {
+                    'c': c,
+                    'g': g,
+                    'getString': c.config.getString,
+                    'p': p,
+                    'os': os,
+                    'sep': os.sep,
+                    'sys': sys,
+                }
                 val = eval(exp, d)
                 # 2017/02/02: # Attempt a fix for #343:
                 val = g.toUnicode(val, encoding='utf-8', reportErrors=True)
