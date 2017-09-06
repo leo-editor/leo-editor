@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -498,6 +498,10 @@
 <v t="ekr.20091105080104.9031"><vh>How do I specify qt fonts?</vh></v>
 <v t="ekr.20050830115714.30"><vh>How do I submit a plugin?</vh></v>
 </v>
+<v t="ekr.20170906090516.1"><vh>Developing Leo's own code</vh>
+<v t="ekr.20170804153108.2"><vh>How can I use dev nodes to develop and test Leo's own code?</vh></v>
+<v t="ekr.20160309092522.1"><vh>What is the Stupendous Aha and why does it matter?</vh></v>
+</v>
 <v t="ekr.20050830115714.1"><vh>Learning to use Leo</vh>
 <v t="ekr.20161207052511.1"><vh>How can I learn Leo, or python, or anything</vh></v>
 <v t="ekr.20110531155858.20559"><vh>How does EKR (Leo's developer) use Leo?</vh></v>
@@ -515,7 +519,7 @@
 <v t="ekr.20090706042206.14718"><vh>How can I use Leo cooperatively without sentinels?</vh></v>
 <v t="ekr.20120229094652.15137"><vh>What's the recommended way to upgrade Leo?</vh></v>
 </v>
-<v t="ekr.20141109053526.4"><vh>Scipting &amp; Testing</vh>
+<v t="ekr.20141109053526.4"><vh>Scripting &amp; Testing</vh>
 <v t="ekr.20141108064630.15"><vh>How can I create buttons with dropdown menus?</vh></v>
 <v t="ekr.20120229094652.15099"><vh>How can I make commonly-used scripts widely accessible?</vh></v>
 <v t="ekr.20160415031743.21"><vh>How can I organize large docstrings?</vh></v>
@@ -528,7 +532,6 @@
 <v t="ekr.20141108064630.14"><vh>How to use leo to make mathematical notes?</vh></v>
 <v t="ekr.20160304081437.6"><vh>Tip: run unit tests locally using clones</vh></v>
 <v t="ekr.20080527063511.1"><vh>What is an easy way to profile code?</vh></v>
-<v t="ekr.20160309092522.1"><vh>What is the Stupendous Aha and why does it matter?</vh></v>
 </v>
 <v t="ekr.20050830115714.118"><vh>Tips and techniques</vh>
 <v t="ekr.20050830115714.113"><vh>How can I create a template .leo file?</vh></v>
@@ -1666,8 +1669,6 @@
 <v t="ekr.20170707034853.72"><vh>screen_capture.py now enabled by default</vh></v>
 </v>
 </v>
-<v t="ekr.20170804153108.2"><vh>** Doc: Reload chapter</vh></v>
-<v t="ekr.20160309092522.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -20428,8 +20429,7 @@ Unit tests permanent check of the correctness of a piece of code. Test Driven De
 
 1. Unit tests codify and make explicit desired or expected behavior.
 
-2. Unit tests are a way of "maintaining attention" on a problem.  Unit
-tests don't forget, and they are permanent.
+2. Unit tests are a way of "maintaining attention" on a problem.  Unit tests don't forget, and they are permanent.
 
 3. Unit tests *do whatever we want*, and they do it automatically.
 
@@ -23327,9 +23327,9 @@ Usually, code *should* use the p.b and p.h setters and p.setDirty(), despite the
 
 These performance gotchas become important for repetitive commands, like cff, replace-all and recursive import. In such situations, code should use p.v.b and p.v.h setters instead of p.b and p.h setters.
 </t>
-<t tx="ekr.20170608071626.1">Leo 5.6 (No release date)
+<t tx="ekr.20170608071626.1">Leo 5.6b1 September 8, 2017
 
-[Leo](http://leoeditor.com/) 5.6 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+[Leo](http://leoeditor.com/) 5.6b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
@@ -23830,7 +23830,7 @@ The new code is simpler and handles dubious html syntax.
 <t tx="ekr.20170707034853.60"></t>
 <t tx="ekr.20170707034853.61">https://github.com/leo-editor/leo-editor/issues/448
 
-If the expansion of an abbrevitiation is a command name, that command will be executed. Alas, this isn't very useful: typing destroys selection ranges.
+If the expansion of an abbreviation is a command name, that command will be executed. Alas, this isn't very useful: typing destroys selection ranges.
 
 This took only a few lines of code in abbrev.expandAbbrev.
 </t>
@@ -23853,7 +23853,7 @@ Added submenus to Windows menu. This significantly simplifies and clarifies the 
 
 2. Leo's hasher now includes the name of the present git branch in the hash. When switching git branches, this in essence disables hashing for all files changed in the previous branch.
 </t>
-<t tx="ekr.20170707034853.67">The first UP-arrow to gives the presvious command, the next up-arrow gives the next command, etc.
+<t tx="ekr.20170707034853.67">The first UP-arrow to gives the previous command, the next up-arrow gives the next command, etc.
 </t>
 <t tx="ekr.20170707034853.68">Changed g.computeWindowTitle.
 </t>
@@ -23936,7 +23936,7 @@ end of line is after last character in line
 
 navigating to these points is useful when using speech recognition and is frequently useful when creating macros to operate on text. Jump means you go to the location without remembering where you were. Push means remembering, in a stack, where you were and being able to return to that location with a pop command.
 
-The push/pop model works well with speech recognition becaause you don't have to give explicit navigation commands. You just go back to where you were.
+The push/pop model works well with speech recognition because you don't have to give explicit navigation commands. You just go back to where you were.
 </t>
 <t tx="ekr.20170804153108.166">https://github.com/leo-editor/leo-editor/issues/512
 </t>
@@ -23983,7 +23983,7 @@ After creating the dev node you simply run the dev script until everything works
 
 Summary
 
-@test, @command or @button can be thought of as defining an (almost) pristine dev environment. This is another way of describing the Stupendous Aha.
+@test, @command or @button can be thought of as defining an (almost) pristine dev environment. This is another way of describing the Stupendous Aha. The initial cost of creating dev nodes pays off immediately.
 
 Dev scripts should create a new, pristine environment every time it they are executed, using imp.reload as needed. Dev scripts should always create new objects for testing.  Dev scripts may use Leo's core objects provided they have not been modified.
 
@@ -23993,10 +23993,6 @@ Dev scripts have many advantages.  They can:
 - use outlines to organize the code under development.
 - form a permanent record of completed work.
 - can morph into unit tests.
-
-The initial cost of creating dev nodes pays off immediately.
-
-@language python
 </t>
 <t tx="ekr.20170804153108.4">https://github.com/leo-editor/leo-editor/issues/505
 
@@ -24096,7 +24092,7 @@ https://stackoverflow.com/questions/14109024
     return branch, commit
 </t>
 <t tx="ekr.20170804155213.4">def toUnicode(s, encoding='utf-8', reportErrors=False):
-    '''Connvert a non-unicode string with the given encoding to unicode.'''
+    '''Convert a non-unicode string with the given encoding to unicode.'''
     trace = False and not g.unitTesting
     if g.isUnicode(s):
         return s
@@ -24314,7 +24310,8 @@ For each diffed file, this command uses a variant of the atFile read logic to cr
 </t>
 <t tx="ekr.20170906040814.1">https://github.com/leo-editor/leo-editor/issues/504</t>
 <t tx="ekr.20170906040849.1">https://github.com/leo-editor/leo-editor/issues/508</t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170906090516.1"></t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
