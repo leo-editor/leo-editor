@@ -20551,10 +20551,10 @@ For anyone with similar problem the homebrew instruction for adding PyQT to the 
     export PATH="/usr/local/lib/python2.7/site-packages:${PATH}"
     
 After this leo editor will open with using the default python installation provided by MacOS.</t>
-<t tx="ekr.20160410043905.1">Within @path and @&lt;file&gt; paths, Leo evaluates ``{{exp}}`` with the the following symbols defined: ``c``, ``g``, ``p``, ``os`` and ``sys``. Also, ``sep`` is defined as os.sep, and ``getString`` is defined as c.config.getString. File names are relative to the directory containing the .leo file, but that can be overridden, depending on the form of the file name. The following are equivalent::
+<t tx="ekr.20160410043905.1">Within @path and @&lt;file&gt; paths, Leo evaluates ``{{exp}}`` with the the following symbols defined: ``c``, ``g``, ``p``, ``os`` and ``sys``. Also, ``sep`` is defined as os.sep.
+File names are relative to the directory containing the .leo file, but that can be overridden, depending on the form of the file name. For example::
 
-    @file {{getString('my-dir')}}{{sep}}myFile.py
-    @file {{c.config.getString('my-dir')}}{{os.sep}}myFile.py
+    @file {{c.config.getString('my-dir')}}{{sep}}myFile.py
 
 </t>
 <t tx="ekr.20160410044518.1">.. index::

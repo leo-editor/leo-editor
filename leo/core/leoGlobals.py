@@ -6069,14 +6069,14 @@ def os_path_expandExpression(s, **keys):
                 d = {
                     'c': c,
                     'g': g,
-                    'getString': c.config.getString,
+                    # 'getString': c.config.getString,
                     'p': p,
                     'os': os,
                     'sep': os.sep,
                     'sys': sys,
                 }
                 val = eval(exp, d)
-                # 2017/02/02: # Attempt a fix for #343:
+                # Fix #343:
                 val = g.toUnicode(val, encoding='utf-8', reportErrors=True)
                 s = s[: i] + val + s[j + 2:]
                 if trace: g.trace('returns', s)
