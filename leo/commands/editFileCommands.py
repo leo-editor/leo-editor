@@ -756,12 +756,16 @@ class GitDiffController:
         if self.repo_dir:
             # 1. Diff the given revs.
             ok = self.diff_revs()
-            if not ok:
+            # Go back several revs...
+            n1, n2 = 1, 0
+            while not ok and n1 <= 5:
                 # 2. Diff HEAD@{0} HEAD@{1}
-                self.rev1, self.rev2 = 'HEAD@{1}', 'HEAD@{0}'
+                self.rev1 = 'HEAD@{%s}' % (n1)
+                self.rev2 = 'HEAD@{%s}' % (n2)
                 ok = self.diff_revs()
+                n1, n2 = n1+1, n2+1
             if not ok:
-                g.es_print('no previous revs')
+                g.es_print('no changed readable files from HEAD@{1}..HEAD@(5)')
         else:
             g.es_print('no git repo found in', g.os_path_abspath('.'))
     #@+node:ekr.20170806094320.18: *4* gdc.create_root
