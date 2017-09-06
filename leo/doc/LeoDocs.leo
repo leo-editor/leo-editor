@@ -1666,9 +1666,8 @@
 <v t="ekr.20170707034853.72"><vh>screen_capture.py now enabled by default</vh></v>
 </v>
 </v>
-<v t="ekr.20170804153108.2"><vh>** Doc: Reload chapter</vh>
-<v t="ekr.20170804153108.3"><vh>Instant reload in Leo</vh></v>
-</v>
+<v t="ekr.20170804153108.2"><vh>** Doc: Reload chapter</vh></v>
+<v t="ekr.20160309092522.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -20362,9 +20361,7 @@ For instance, here is the @test node I use to develop the new javascript importe
     c.redraw()
     print('done')
 
-To repeat, the code under test is a child of this node, so the script uses @others to gain access to it.  It's super fast.
-
-You could call this an extension of the "stupendous Aha".</t>
+To repeat, the code under test is a child of this node, so the script uses @others to gain access to it.  It's super fast.</t>
 <t tx="ekr.20160304081437.7">Leo is a superb tool for understanding, studying and organizing any kind of complex data, including computer programs. The first great Aha in Leo's history was that webs (literate programs) are outlines in disguise. Leo's importers (@auto) make it easy to studying other people's programs. Leo's always-present outline structure clarifies overall program structure and makes many kinds of comments unnecessary.
 
 Leo is also a superb browser for code and data. Unlike many other folding editors, Leo remembers which nodes were expanded when you last saved an outline. This is surprisingly important. And Leo's clones let you organize any data as you want, even if all folds are collapsed.
@@ -23947,53 +23944,40 @@ The push/pop model works well with speech recognition becaause you don't have to
 </t>
 <t tx="ekr.20170804153108.198">https://github.com/leo-editor/leo-editor/issues/522
 </t>
-<t tx="ekr.20170804153108.2">@language rest
-@wrap
+<t tx="ekr.20170804153108.2">Here are step-by-step instructions for developing code in Leo without having to reload Leo.
 
-- Stupendous Aha FAQ.
-- All relevant discussions.
-- Recent post: https://groups.google.com/d/msg/leo-editor/rYF21GxraT4/xwGfOCoYBAAJ
+1. Create a **dev node** as a test harness.
 
-Here are step-by-step instructions for developing code in Leo without having to reload Leo.
+This node (in the Leo outline) defines your development environment. You can use an @test node, an @button node, or an @command node. Using a plain outline node would be less convenient because you won't be able to execute it so easily.
 
-tl;dr: Read the summary.  But devs should consider reading all of this carefully ;-)
+The **dev script** is the script in the dev node itself.  The **code under development** is the code exercised by the dev script.
 
-1. Create a dev node
+This is the most important step! Once you say to yourself, "Ok, I'm going to be clever and develop my code using a dev script, everything else will happen naturally. That is, the programming process itself will lead you to the next action. If you don't create a custom dev environment you will have to reload Leo to test your new code. That will be much slower.
 
-This node (in the Leo outline) defines your development environment.  This can be an @test node, an @button node, or an @command node. Using a plain outline node would be less convenient because you won't be able to execute it so easily.
+2. Set up your dev node so you can execute it with a single keystroke.
 
-The dev script is the script in the dev node itself.  The code under development is the code exercised by the dev script.
-
-This is (by far) the most important step! Once you say to yourself, "Ok, I'm going to be clever and develop my code using the Stupendous Aha", everything else in this post is going to happen naturally.  It may not always be easy, but the programming process itself will lead you to the next action.  Otoh, If you don't create a custom dev environment you will have to reload Leo to test your new code. That will be much slower.
-
-2. Set up your dev node so you can execute it quickly
-
-There are several ways to run your dev script easily:
+You can do any of the following:
 
 - Use a marked @test node and use run-marked-unit-tests-locally.
 - Disable or ignore all other @test nodes and then use run-all-unit-tests-locally.
 - Bind a keystroke to an @button or @command node.
-- Run an @button or @command node the first time from the minibuffer, and thereafter re-execute it with Ctrl-P (repeat-complex-command.
+- Run an @button or @command node the first time from the minibuffer, and then re-execute it with Ctrl-P (repeat-complex-command.
 
-Choose any way you like. What matters is being able to run your dev script with a single keystroke.
-
-2. Define or access the code under development
+3. Define or access the code under development.
 
 There are two main ways to do this:
 
-A.  Define the code as (possibly cloned) children of the dev node, and access the code using @others in the top-level node.
+A. Clone the code under test and move the clones so they are children of the dev node. Access the code under test using @others in the top-level node.
 
-B. Import a module. Important: typically your dev script will use imp.reload to ensure that imported module is up-to-date.
+B. Import one or more modules containing the code under test. Access the code using imp.reload to ensure that all imported modules are up-to-date.
 
-3. Create new instances of objects
+4. Create new instances of objects
 
-You must not use existing Leo objects when testing Leo code.  This includes all objects accessible via c, g and p, either directly or indirectly.  For example, you must not use c, c.frame, c.frame.body, etc., etc., even if you have reloaded all of Leo's modules!
-
-You can, however, use any Leo code when developing other (unmodified) code. 
+**You must not use existing Leo objects when testing Leo code.**  This includes all objects accessible via c, g and p, either directly or indirectly.  For example, you must not use c, c.frame, c.frame.body, etc., etc., even if you have reloaded all of Leo's modules!
 
 You will seldom need to worry about reloading code if you use @others to define the code under test.
 
-4. Run the test, edit, repeat
+5. Run the test, edit, repeat
 
 After creating the dev node you simply run the dev script until everything works :-)  The details depend on the code being developed.  Otoh, we can safely assume that devs can handle problems as they arise.
 
@@ -24003,83 +23987,16 @@ Summary
 
 Dev scripts should create a new, pristine environment every time it they are executed, using imp.reload as needed. Dev scripts should always create new objects for testing.  Dev scripts may use Leo's core objects provided they have not been modified.
 
-SmallTalk does most of this automagically.  However, dev scripts have their own advantages:
+Dev scripts have many advantages.  They can:
 
-- Dev scripts can access code using clones.
-- Dev scripts can use outlines to organize the code under development.
-- Dev scripts form a permanent record of completed work.
-- Dev scripts can morph into unit tests.
-- Dev scripts work for Python!
+- access code using clones.
+- use outlines to organize the code under development.
+- form a permanent record of completed work.
+- can morph into unit tests.
 
-Dev scripts bring most of the advantages of SmallTalk to Leo. The initial cost of creating dev nodes pays off immediately.
+The initial cost of creating dev nodes pays off immediately.
 
 @language python
-</t>
-<t tx="ekr.20170804153108.3">@language rest
-@wrap
-
-This post shows how to develop code without reloading or restarting Leo. Some easy setup work may be needed, but this work repays itself many times over.
-
-**Terminology**: A *Leonine Script* is a script in any Leo node, including @test, @button or @command nodes.
-
-The big idea is that Leo executes Leonine scripts in an (almost) pristine environment.
-
-The key idea is very simple
-
-
-**Prerequisites**
-
-
-Today, right now, Leo devs and script writers can develop python code *more* easily in Leo than in SmallTalk. This post explains how.
-
-**Overview**
-
-This post shows how it is possible
-
-*tl;dr:* Re-read the first sentence ;-)
-
-This post gathers together various tips and techniques that arescattered throughout Leo's docs and conversations in leo-editor. This post will be pre-writing for an important new chapter in Leo's Users Guide.
-
-
-**The big picture**
-
-**Background**
-
-"stupendous Aha"
-http://leoeditor.com/FAQ.html#what-is-the-stupendous-aha-and-why-does-it-matter
-
-As I re-read the FAQ entry, I see that it doesn't explain that @test (or @button) can define the code under development/test in a child of the @test/@button node.  This is instant reload.
-
-After the initial development process the code typically migrates to an external file, which makes  instant reload a tad more difficult.  But not much! 
-
-**Instantiating objects**
-
-@test, @button and @command execute scripts in (almost) virgin namespaces.
-
-Within these scripts, simple imports usually suffice. There is no need for imp.reload.
-
-These scripts must instantiate any recently-changed objects. They *can not* use objects accessible from the "c", "g" or "p" pre-defined symbols (already loaded objects).
-
-
-- Reload
-
-**@button vs @test vs @command**
-
-The details of running the various kinds of scripts vary slightly.
-
-@button and @command scripts create corresponding commands, so Ctrl-P (repeat-complex-command) can be used to rerun them. In addition, you can attach key bindings to @button and @command nodes.  Otoh, @test nodes may be more convenient when running multiple tests.
-
-**Summary**
-
-After a bit of preparation, it is *easier* to develop code than in SmallTalk, especially for large scripts because you can organize your scripts using outlines, section references and @others.
-
-The preparation consists of preamble code that instantiates all objects under test. Preamble code will usually need to use imp.reload when importing the code to be tested.
-
-
-Using these techniques, you can write and debug Python code 
-
-The techniques discussed here have some limitations, but when applicable script writers (including devs) can write and debug Puthon code more easily in Leo than in SmallTalk.
-
 </t>
 <t tx="ekr.20170804153108.4">https://github.com/leo-editor/leo-editor/issues/505
 
