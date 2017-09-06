@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1545,10 +1545,7 @@
 </v>
 <v t="ekr.20170316061434.1"><vh>Settings and command-line options</vh></v>
 </v>
-<v t="ekr.20170804153108.2"><vh>** Doc: Reload chapter</vh>
-<v t="ekr.20170804153108.3"><vh>Instant reload in Leo</vh></v>
-</v>
-<v t="ekr.20170608071626.1"><vh>Leo 5.6 release notes (in progress)</vh>
+<v t="ekr.20170608071626.1"><vh>Leo 5.6 release notes</vh>
 <v t="ekr.20170707034853.2"><vh>major features</vh>
 <v t="ekr.20170707034853.3"><vh>#488: Created a console gui for Leo</vh></v>
 <v t="ekr.20170822100152.1"><vh>#501: git-diff command</vh></v>
@@ -1556,6 +1553,8 @@
 <v t="ekr.20170707034853.4"><vh>Added "yes/no to all" buttons for externally changed file dialog</vh></v>
 </v>
 <v t="ekr.20170707034853.6"><vh>bugs</vh>
+<v t="ekr.20170906040849.1"><vh>#508: console gui: print-cmd-docstrings</vh></v>
+<v t="ekr.20170906040814.1"><vh>#504: console gui: console issues</vh></v>
 <v t="ekr.20170804155454.4"><vh>#317: Viewrendered pane loses live-render feature</vh></v>
 <v t="ekr.20170707034853.7"><vh>#385: Leo doesn't remember new headlines after saves</vh></v>
 <v t="ekr.20170707034853.8"><vh>#386: colorize markdown properly</vh></v>
@@ -1604,6 +1603,7 @@
 <v t="ekr.20170707034853.33"><vh>code</vh>
 <v t="ekr.20170804153108.4"><vh>#505: Leo's read code must be rewritten</vh></v>
 <v t="ekr.20170804153108.166"><vh>#512: unit tests are failing for Terry</vh></v>
+<v t="ekr.20170808083130.1"><vh>#539: Redesigned Leo's redraw code</vh></v>
 <v t="ekr.20170707034853.34"><vh>Added 'recursive' keyword arg to recursive import API</vh></v>
 <v t="ekr.20170707034853.35"><vh>Added better checks in v.setBodyString &amp; v.setHeadString</vh></v>
 <v t="ekr.20170707034853.36"><vh>Added g.Git functions</vh></v>
@@ -1666,8 +1666,9 @@
 <v t="ekr.20170707034853.72"><vh>screen_capture.py now enabled by default</vh></v>
 </v>
 </v>
-<v t="ekr.20170808083130.1"><vh>** document new redraw stuff</vh></v>
-<v t="ekr.20170618113437.1"></v>
+<v t="ekr.20170804153108.2"><vh>** Doc: Reload chapter</vh>
+<v t="ekr.20170804153108.3"><vh>Instant reload in Leo</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -23625,13 +23626,9 @@ Rewrote rf.createRecentFiles, rf.readRecentFilesFile and rf.writeRecentFilesFile
 
 The fix was in xml_i.scan_tag &amp; helper
 </t>
-<t tx="ekr.20170707034853.3">https://github.com/leo-editor/leo-editor/issues/488
+<t tx="ekr.20170707034853.3">A new chapter in Leo's documentation: http://leoeditor.com/console-gui.html
 
-https://github.com/leo-editor/leo-editor/issues/504
-console gui: console issues
-
-https://github.com/leo-editor/leo-editor/issues/508
-console gui: print-cmd-docstrings
+https://github.com/leo-editor/leo-editor/issues/488
 </t>
 <t tx="ekr.20170707034853.30">It must return True if g.app.externalFilesController is None.
 </t>
@@ -24030,10 +24027,8 @@ The big idea is that Leo executes Leonine scripts in an (almost) pristine enviro
 The key idea is very simple
 
 
+**Prerequisites**
 
-**Prerequisites.
-
- It's not always possible to do this, but 
 
 Today, right now, Leo devs and script writers can develop python code *more* easily in Leo than in SmallTalk. This post explains how.
 
@@ -24044,8 +24039,6 @@ This post shows how it is possible
 *tl;dr:* Re-read the first sentence ;-)
 
 This post gathers together various tips and techniques that arescattered throughout Leo's docs and conversations in leo-editor. This post will be pre-writing for an important new chapter in Leo's Users Guide.
-
-
 
 
 **The big picture**
@@ -24075,9 +24068,6 @@ These scripts must instantiate any recently-changed objects. They *can not* use 
 The details of running the various kinds of scripts vary slightly.
 
 @button and @command scripts create corresponding commands, so Ctrl-P (repeat-complex-command) can be used to rerun them. In addition, you can attach key bindings to @button and @command nodes.  Otoh, @test nodes may be more convenient when running multiple tests.
-
-
-
 
 **Summary**
 
@@ -24320,7 +24310,21 @@ Changes to cacher code:
     @bool color_trailing_whitespace = True
     @color trailing_whitespace_color = red
 </t>
-<t tx="ekr.20170808083130.1">c.redraw_later, c.disable/enable_redraw
+<t tx="ekr.20170808083130.1">https://github.com/leo-editor/leo-editor/issues/539
+
+Redrawing the screen happens *only* as the result of an explicit call to c.redraw. In particular, neither c.selectPosition nor its helpers redraw the screen.
+
+c.redraw_later() sets a flag requesting that c.outerUpdate call c.redraw if necessary. Any call to c.redraw resets this flag. cc.selectChapterForPosition calls c.redraw_later.
+
+c.disable_redraw() sets a flag disabling all outline redraws. c.enable_redraw() re-enables redrawing. This is similar to the old begin_update/end_update scheme, but simpler and more explicit. Use this as follows:
+
+try:
+    c.disable_redraw()
+    # Code that might otherwise redraw the tree.
+finally:
+    c.enable_redraw()
+
+c.outerUpdate has been drastically simplified. It no longer handles requests for redraws, recoloring, bring-to-front or de-iconification. It now handles requests for delayed focus changes and delayed redraws. It also handles "childrenModified" and "contentModified" hooks.
 </t>
 <t tx="ekr.20170815082542.1">Leo's Console minimal dependencies are:
 
@@ -24391,6 +24395,8 @@ For each diffed file, this command uses a variant of the atFile read logic to cr
 </t>
 <t tx="ekr.20170823100152.1">https://github.com/leo-editor/leo-editor/issues/529
 </t>
+<t tx="ekr.20170906040814.1">https://github.com/leo-editor/leo-editor/issues/504</t>
+<t tx="ekr.20170906040849.1">https://github.com/leo-editor/leo-editor/issues/508</t>
 <t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
