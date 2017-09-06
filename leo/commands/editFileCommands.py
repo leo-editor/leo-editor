@@ -802,6 +802,8 @@ class GitDiffController:
     #@+node:ekr.20170806094320.9: *4* gdc.get_files
     def get_files(self):
         '''Return a list of changed files.'''
+        
+        trace = True and not g.unitTesting
             
         def readable(fn):
             for suffix in ('commit_timestamp.json', '.db', '.leo', '.zip', ):
@@ -814,7 +816,9 @@ class GitDiffController:
             z.strip() for z in g.execGitCommand(command, self.repo_dir)
                 if readable(z)
         ]
-        # g.printList(files)
+        if trace:
+            g.trace(command)
+            g.printList(files)
         return files
     #@-others
 #@-others
