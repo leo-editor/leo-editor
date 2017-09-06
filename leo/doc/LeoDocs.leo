@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1550,10 +1550,10 @@
 </v>
 <v t="ekr.20170608071626.1"><vh>Leo 5.6 release notes (in progress)</vh>
 <v t="ekr.20170707034853.2"><vh>major features</vh>
-<v t="ekr.20170707034853.3"><vh>Created a console gui for Leo</vh></v>
+<v t="ekr.20170707034853.3"><vh>#488: Created a console gui for Leo</vh></v>
+<v t="ekr.20170822100152.1"><vh>#501: git-diff command</vh></v>
+<v t="ekr.20170707034853.5"><vh>#505: Leo switches between git branches properly</vh></v>
 <v t="ekr.20170707034853.4"><vh>Added "yes/no to all" buttons for externally changed file dialog</vh></v>
-<v t="ekr.20170707034853.5"><vh>Leo switches between git branches properly</vh></v>
-<v t="ekr.20170822100152.1"><vh>git-diff command</vh></v>
 </v>
 <v t="ekr.20170707034853.6"><vh>bugs</vh>
 <v t="ekr.20170804155454.4"><vh>#317: Viewrendered pane loses live-render feature</vh></v>
@@ -1610,41 +1610,42 @@
 <v t="ekr.20170707034853.37"><vh>Added gen_refs keyword arg to Importer ctor</vh></v>
 <v t="ekr.20170707034853.38"><vh>Added traces to c.doCommand to detect multiple redraws</vh></v>
 <v t="ekr.20170707034853.39"><vh>Improved @auto write code</vh></v>
-<v t="ekr.20170707034853.40"><vh>Removed atAuto from atFile class</vh></v>
+<v t="ekr.20170707034853.40"><vh>Removed atAuto switch from atFile class</vh></v>
 <v t="ekr.20170707034853.41"><vh>Updated docs re #464</vh></v>
 <v t="ekr.20170707034853.42"><vh>Use 'with' statement to simplify code</vh></v>
 </v>
 <v t="ekr.20170707034853.43"><vh>commands</vh>
-<v t="ekr.20170804153108.157"><vh>#495 and #496: jump/push commands</vh></v>
-<v t="ekr.20170707034853.44"><vh>Added edit-recent-files and write-edited-recent-files commands</vh></v>
-<v t="ekr.20170707034853.45"><vh>Added goto-any-clone command</vh></v>
-<v t="ekr.20170823085504.1"><vh>Added help-for-settings command</vh></v>
-<v t="ekr.20170707034853.46"><vh>Added listen-to-log and other commands</vh></v>
-<v t="ekr.20170708002743.1"><vh>Added push-cursor and pop-cursor</vh></v>
-<v t="ekr.20170707034853.47"><vh>Added show-color-names command</vh></v>
-<v t="ekr.20170708002922.1"><vh>Added start-of-line/finish-line commands</vh></v>
-<v t="ekr.20170707034853.48"><vh>Added toggle-auto-edit command</vh>
+<v t="ekr.20170707034853.44"><vh>#185: Added edit-recent-files and write-edited-recent-files commands</vh></v>
+<v t="ekr.20170707034853.55"><vh>#456: replace-all command is much faster</vh></v>
+<v t="ekr.20170707034853.48"><vh>#482: Added toggle-auto-edit command</vh>
 <v t="ekr.20170707034853.49"><vh>efc.toggleAtAutoAtEdit &amp; helpers</vh>
 <v t="ekr.20170707034853.50"><vh>efc.toAtAuto</vh></v>
 <v t="ekr.20170707034853.51"><vh>efc.toAtEdit</vh></v>
 </v>
 </v>
+<v t="ekr.20170804153108.157"><vh>#495 and #496: jump/push commands</vh></v>
+<v t="ekr.20170823085504.1"><vh>#529: Added help-for-settings command</vh></v>
+<v t="ekr.20170707034853.45"><vh>Added goto-any-clone command</vh></v>
+<v t="ekr.20170707034853.46"><vh>Added listen-to-log and other commands</vh></v>
+<v t="ekr.20170708002743.1"><vh>Added push-cursor and pop-cursor</vh></v>
+<v t="ekr.20170707034853.47"><vh>Added show-color-names command</vh></v>
+<v t="ekr.20170708002922.1"><vh>Added start-of-line/finish-line commands</vh></v>
 <v t="ekr.20170707034853.52"><vh>clone-find commands report number of matches in root node</vh></v>
 <v t="ekr.20170707034853.53"><vh>Improved indent-region and unindent-region commands</vh></v>
 <v t="ekr.20170707034853.54"><vh>Improved move-lines-up/down commands</vh></v>
-<v t="ekr.20170707034853.55"><vh>replace-all command is much faster</vh></v>
 <v t="ekr.20170707034853.73"><vh>valuescript plugin now supports vs-eval-block command</vh></v>
 </v>
 <v t="ekr.20170707034853.56"><vh>importers</vh>
+<v t="ekr.20170707034853.59"><vh>#479: Revised xml/html importers</vh></v>
 <v t="ekr.20170707034853.57"><vh>Added importer for the lua language</vh></v>
 <v t="ekr.20170707034853.58"><vh>Added tcl importer</vh></v>
-<v t="ekr.20170707034853.59"><vh>Revised xml/html importers</vh></v>
 </v>
 <v t="ekr.20170707034853.60"><vh>other features</vh>
+<v t="ekr.20170804155454.10"><vh>#446: Added vr-zoom command</vh></v>
 <v t="ekr.20170707034853.61"><vh>#448: Add abbreviations for commands</vh></v>
 <v t="ekr.20170707034853.62"><vh>#478: Allow paste-retaining-clones across different .leo files</vh></v>
 <v t="ekr.20170707034853.63"><vh>#484: Improved Windows menu</vh></v>
-<v t="ekr.20170804153108.222"><vh>#531: file timestamps</vh></v>
+<v t="ekr.20170804155454.11"><vh>#531: file timestamps</vh></v>
 <v t="ekr.20170707034853.64"><vh>Added  git branch name to backed-up files</vh></v>
 <v t="ekr.20170707034853.65"><vh>Improved "Write Existing File?" dialog</vh></v>
 <v t="ekr.20170707034853.66"><vh>Improved caching</vh></v>
@@ -1652,14 +1653,12 @@
 <v t="ekr.20170707034853.68"><vh>Indicate branch in Window title</vh></v>
 <v t="ekr.20170707034853.69"><vh>Restored importer;; abbreviation</vh></v>
 <v t="ekr.20170707034853.70"><vh>VR renders LaTex (python 2 only)</vh></v>
-<v t="ekr.20170804155454.10"><vh>#446: Added vr-zoom command</vh></v>
-<v t="ekr.20170804155454.11"><vh>#531: file timestamps</vh></v>
 </v>
 <v t="ekr.20170707034853.74"><vh>settings &amp; command-line arguments</vh>
+<v t="ekr.20170707034853.75"><vh>#518: Added @bool report_unchanged_files</vh></v>
 <v t="ekr.20170707034853.76"><vh>Added --trace-focus command-line argument</vh></v>
 <v t="ekr.20170804155454.9"><vh>Added @bool color_trailing_whitespace &amp; @color trailing_whitespace_color</vh></v>
 <v t="ekr.20170804154716.1"><vh>Added @bool log_show_save_time &amp; @string log_timestamp_format</vh></v>
-<v t="ekr.20170707034853.75"><vh>Added @bool report_unchanged_files</vh></v>
 <v t="ekr.20170707034853.77"><vh>Added @bool run_pyflakes_on_unchanged_files = True</vh></v>
 <v t="ekr.20170707034853.78"><vh>Added Ctrl-Shift-&lt; and Ctrl-Shift-&gt; bindings</vh></v>
 <v t="ekr.20170707034853.79"><vh>Restored default: @bool check_for_changed_external_files = True</vh></v>
@@ -1669,7 +1668,6 @@
 </v>
 <v t="ekr.20170808083130.1"><vh>** document new redraw stuff</vh></v>
 <v t="ekr.20170618113437.1"></v>
-<v t="ekr.20160410043905.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -23343,7 +23341,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 
 - The cursesGui2.py plugin creates a console gui for Leo.
 - Added "Yes to All" and "No to All" buttons to file-changed dialog.
-- Fixed bugs that caused problems when switching between git branches.
+- Fixed bugs (#505) that caused problems when switching between git branches.
 - Created outline-oriented git-diff command.
 
 **Links**
@@ -24020,7 +24018,6 @@ Dev scripts bring most of the advantages of SmallTalk to Leo. The initial cost o
 
 @language python
 </t>
-<t tx="ekr.20170804153108.222">https://github.com/leo-editor/leo-editor/issues/531</t>
 <t tx="ekr.20170804153108.3">@language rest
 @wrap
 
@@ -24394,7 +24391,7 @@ For each diffed file, this command uses a variant of the atFile read logic to cr
 </t>
 <t tx="ekr.20170823100152.1">https://github.com/leo-editor/leo-editor/issues/529
 </t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
