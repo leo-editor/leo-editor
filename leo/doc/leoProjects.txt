@@ -5,8 +5,6 @@
 Attempt to run all unit tests without using Qt gui code.
 All gui-related code will be simulated with the StringTextWrapper class.
 .. @+node:ekr.20170807103720.1: ** Branch: redraw
-To do:
-
 Note: cc.selectChapterForPosition calls c.redraw *only* if the chapter changes.
 
 - Investigate running unit tests without redraw.
@@ -24,18 +22,6 @@ Note: cc.selectChapterForPosition calls c.redraw *only* if the chapter changes.
 - Done: removed c.incrementalRecolorFlag.
 - Done: c.selectPosition never calls c.redraw. All unit tests pass.
 - Done: Removed c.requestRedrawFlag and c.outerUpdate never calls c.redraw.  All tests pass.
-.. @+node:ekr.20170806133624.1: ** gdc.paste_to_clipboard
-def paste_to_clipboard(self,s):
-    '''Apparently g.app.gui.replaceClipboardWith(s) causes a flash!'''
-    try:
-        from tkinter import Tk # Python 3
-    except ImportError:
-        from Tkinter import Tk # Python 2
-    root = Tk()
-    root.withdraw()
-    root.clipboard_clear()
-    root.clipboard_append(s)
-    root.destroy()
 .. @-all
 .. @@nosearch
 .. @@killbeautify
