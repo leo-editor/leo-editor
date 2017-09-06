@@ -807,7 +807,7 @@ class GitDiffController:
     def get_files(self):
         '''Return a list of changed files.'''
         
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
             
         def readable(fn):
             for suffix in ('commit_timestamp.json', '.db', '.leo', '.zip', ):
