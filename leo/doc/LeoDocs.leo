@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1453,7 +1453,6 @@
 </v>
 </v>
 </v>
-</v>
 <v t="ekr.20170123085934.1"><vh>Leo 5.5 release notes</vh>
 <v t="ekr.20170123090348.1"><vh>Most important features</vh>
 <v t="ekr.20170123084701.1"><vh>Fixed huge performance bug in syntax coloring</vh></v>
@@ -1547,6 +1546,7 @@
 <v t="ekr.20170228124856.1"><vh>VR supports @jupyter</vh></v>
 </v>
 <v t="ekr.20170316061434.1"><vh>Settings and command-line options</vh></v>
+</v>
 </v>
 <v t="ekr.20170608071626.1"><vh>Leo 5.6 release notes</vh>
 <v t="ekr.20170707034853.2"><vh>major features</vh>
@@ -1669,7 +1669,6 @@
 <v t="ekr.20170707034853.72"><vh>screen_capture.py now enabled by default</vh></v>
 </v>
 </v>
-<v t="ekr.20160410043905.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -23342,7 +23341,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 
 - The cursesGui2.py plugin creates a console gui for Leo.
 - Added "Yes to All" and "No to All" buttons to file-changed dialog.
-- Fixed bugs (#505) that caused problems when switching between git branches.
+- Fixed bug (#505) that caused problems when switching between git branches.
 - Created outline-oriented git-diff command.
 
 **Links**
@@ -23583,7 +23582,8 @@ Changed code in efc.on_idle and efc.idle_check_commander.
 </t>
 <t tx="ekr.20170707034853.19">https://github.com/leo-editor/leo-editor/issues/476
 </t>
-<t tx="ekr.20170707034853.2"></t>
+<t tx="ekr.20170707034853.2">For a list of all enhancements added in Leo 5.6, see this page:
+https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue%20label%3AEnhancement%20is%3Aclosed%20milestone%3A5.6%20-label%3AWon%27tDo%20</t>
 <t tx="ekr.20170707034853.20">https://github.com/leo-editor/leo-editor/issues/479
 Preserve brython indentation when importing .html files
 </t>
@@ -23829,7 +23829,8 @@ Preserve brython indentation when importing .html files
 
 The new code is simpler and handles dubious html syntax.
 </t>
-<t tx="ekr.20170707034853.6"></t>
+<t tx="ekr.20170707034853.6">For a list of all bugs fixed in Leo 5.6, see this page:
+https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+is%3Aclosed+milestone%3A5.6+-label%3AWon%27tDo+label%3ABug</t>
 <t tx="ekr.20170707034853.60"></t>
 <t tx="ekr.20170707034853.61">https://github.com/leo-editor/leo-editor/issues/448
 
@@ -24314,7 +24315,7 @@ For each diffed file, this command uses a variant of the atFile read logic to cr
 <t tx="ekr.20170906040814.1">https://github.com/leo-editor/leo-editor/issues/504</t>
 <t tx="ekr.20170906040849.1">https://github.com/leo-editor/leo-editor/issues/508</t>
 <t tx="ekr.20170906090516.1"></t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
