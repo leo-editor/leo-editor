@@ -5610,8 +5610,6 @@ class Commands(object):
             if c.enableRedrawFlag:
                 c.requestLaterRedraw = False
                 c.redraw()
-            else:
-                if trace: g.trace('c.redraw disabled')
         # Delayed focus requests will always be useful.
         if c.requestedFocusWidget:
             w = c.requestedFocusWidget
@@ -5626,7 +5624,6 @@ class Commands(object):
             if mods:
                 g.doHook(kind, c=c, nodes=mods)
                 mods.clear()
-        
     #@+node:ekr.20031218072017.2945: *3* c.Dragging
     #@+node:ekr.20031218072017.2353: *4* c.dragAfter
     def dragAfter(self, p, after):
@@ -5794,6 +5791,15 @@ class Commands(object):
         wrapper.setAllText(c.p.b)
         wrapper.setSelectionRange(i, j, insert=ins)
     #@+node:ekr.20080514131122.14: *4* c.redrawing...
+    #@+node:ekr.20170808014610.1: *5* c.enable/disable_redraw (New in Leo 5.6)
+    def disable_redraw(self):
+        '''Disable all redrawing until enabled.'''
+        c = self
+        c.enableRedrawFlag = False
+        
+    def enable_redraw(self):
+        c = self
+        c.enableRedrawFlag = True
     #@+node:ekr.20090110073010.1: *5* c.redraw
     def redraw(self, p=None, setFocus=False):
         '''Redraw the screen immediately.'''
@@ -5887,15 +5893,15 @@ class Commands(object):
                 c.frame.tree.redraw_after_select(p)
         else:
             c.requestLaterRedraw = True
-    #@+node:ekr.20170808014610.1: *5* c.enable/disable_redraw (New in Leo 5.6)
-    def disable_redraw(self):
-        '''Disable all redrawing until enabled.'''
-        c = self
-        c.enableRedrawFlag = False
+    #@+node:ekr.20170908081918.1: *5* c.redraw_later
+    def redraw_later(self):
+        '''
+        Ensure that c.redraw() will be called eventually.
         
-    def enable_redraw(self):
+        c.outerUpdate will call c.redraw() only if no other code calls c.redraw().
+        '''
         c = self
-        c.enableRedrawFlag = True
+        c.requestLaterRedraw = True
     #@+node:ekr.20080514131122.13: *4* c.recolor
     def recolor(self, **kwargs):
         # Support QScintillaColorizer.colorize.

@@ -640,13 +640,6 @@ class GitDiffController:
                 if fn2.endswith(fn):
                     return p
         return None
-    #@+node:ekr.20170819132219.1: *4* gdc.find_gnx
-    def find_gnx(self, c, gnx):
-        '''Return a position in c having the given gnx.'''
-        for p in c.all_unique_positions():
-            if p.v.fileIndex == gnx:
-                return p
-        return None
     #@+node:ekr.20170806094320.15: *4* gdc.get_file_from_rev
     def get_file_from_rev(self, rev, fn):
         '''Get the file from the given rev, or the working directory if None.'''
@@ -665,6 +658,46 @@ class GitDiffController:
                 g.trace('not found:', path)
                 s = ''
         return g.toUnicode(s).replace('\r','')
+    #@+node:ekr.20170806094321.7: *4* gdc.make_at_file_outline
+    def make_at_file_outline(self, fn, s, rev):
+        '''Create a hidden temp outline from lines.'''
+        # A specialized version of atFileCommands.read.
+        hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
+        at = hidden_c.atFileCommands
+        hidden_c.frame.createFirstTreeNode()
+        root = hidden_c.rootPosition()
+        root.h = fn + ':' + rev if rev else fn
+        at.initReadIvars(root, fn, importFileName=None, atShadow=None)
+        at.fromString = s
+        if at.errors > 0:
+            g.trace('***** errors')
+            return None
+        at.inputFile = g.FileLikeObject(fromString=at.fromString)
+        at.initReadLine(at.fromString)
+        at.readOpenFile(root, fn, deleteNodes=True)
+        at.inputFile.close()
+        # Complete the read.
+        for p in root.self_and_subtree():
+            p.b = ''.join(getattr(p.v, 'tempBodyList', []))
+        at.scanAllDirectives(root, importing=False, reading=True)
+        return hidden_c
+    #@+node:ekr.20170806125535.1: *4* gdc.make_diff_outlines
+    def make_diff_outlines(self, fn, c1, c2):
+        '''Create an outline-oriented diff from the *hidden* outlines c1 and c2.'''
+        added, deleted, changed = self.compute_dicts(c1, c2)
+        table = (
+            (added, 'Added'),
+            (deleted, 'Deleted'),
+            (changed, 'Changed'))
+        for d, kind in table:
+            self.create_compare_node(c1, c2, d, kind)
+    #@+node:ekr.20170819132219.1: *4* gdc.find_gnx
+    def find_gnx(self, c, gnx):
+        '''Return a position in c having the given gnx.'''
+        for p in c.all_unique_positions():
+            if p.v.fileIndex == gnx:
+                return p
+        return None
     #@+node:ekr.20170821052348.1: *4* gdc.get_revno
     def get_revno(self, revspec, abbreviated=True):
         '''Return the abbreviated hash the given revision spec.'''
@@ -717,39 +750,6 @@ class GitDiffController:
         if at.errors: g.trace(at.errors, 'errors!')
         if trace: g.trace(len(s), rev, fn, hidden_c)
         return None if at.errors else hidden_c
-    #@+node:ekr.20170806094321.7: *4* gdc.make_at_file_outline
-    def make_at_file_outline(self, fn, s, rev):
-        '''Create a hidden temp outline from lines.'''
-        # A specialized version of atFileCommands.read.
-        hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
-        at = hidden_c.atFileCommands
-        hidden_c.frame.createFirstTreeNode()
-        root = hidden_c.rootPosition()
-        root.h = fn + ':' + rev if rev else fn
-        at.initReadIvars(root, fn, importFileName=None, atShadow=None)
-        at.fromString = s
-        if at.errors > 0:
-            g.trace('***** errors')
-            return None
-        at.inputFile = g.FileLikeObject(fromString=at.fromString)
-        at.initReadLine(at.fromString)
-        at.readOpenFile(root, fn, deleteNodes=True)
-        at.inputFile.close()
-        # Complete the read.
-        for p in root.self_and_subtree():
-            p.b = ''.join(getattr(p.v, 'tempBodyList', []))
-        at.scanAllDirectives(root, importing=False, reading=True)
-        return hidden_c
-    #@+node:ekr.20170806125535.1: *4* gdc.make_diff_outlines
-    def make_diff_outlines(self, fn, c1, c2):
-        '''Create an outline-oriented diff from the *hidden* outlines c1 and c2.'''
-        added, deleted, changed = self.compute_dicts(c1, c2)
-        table = (
-            (added, 'Added'),
-            (deleted, 'Deleted'),
-            (changed, 'Changed'))
-        for d, kind in table:
-            self.create_compare_node(c1, c2, d, kind)
     #@+node:ekr.20170806094320.12: *3* gdc.run & helpers
     def run(self):
         '''The main line of the git diff command.'''
@@ -783,17 +783,6 @@ class GitDiffController:
         else:
             p.b = '%s=%s' % (r1, self.get_revno(r1))
         return p
-    #@+node:ekr.20170820082125.1: *4* gdc.diff_revs
-    def diff_revs(self):
-        '''Diff all files given by self.rev1 and self.rev2.'''
-        files = self.get_files()
-        if files:
-            self.root = self.create_root()
-            for fn in files:
-                self.diff_file(fn)
-            self.finish()
-        return bool(files)
-        
     #@+node:ekr.20170806094321.5: *4* gdc.finish
     def finish(self):
         '''Finish execution of this command.'''
@@ -824,6 +813,17 @@ class GitDiffController:
             g.trace(command)
             g.printList(files)
         return files
+    #@+node:ekr.20170820082125.1: *4* gdc.diff_revs
+    def diff_revs(self):
+        '''Diff all files given by self.rev1 and self.rev2.'''
+        files = self.get_files()
+        if files:
+            self.root = self.create_root()
+            for fn in files:
+                self.diff_file(fn)
+            self.finish()
+        return bool(files)
+        
     #@-others
 #@-others
 #@-leo
