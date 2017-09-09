@@ -1,3 +1,4 @@
+import os
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst, QtWebKit, QtWebKitWidgets
 
@@ -10,7 +11,8 @@ def _path_from_pos(c, p):
     :return: path
     :rtype: str
     """
-    
+    p = p.copy()
+
     def atfile(p):
         word0 = p.h.split()[0]
         return (
@@ -56,7 +58,7 @@ class LEP_WebKitView(QtWebKitWidgets.QWebView):
             self.setHtml(g.getScript(self.c, p, useSelectedText=False, useSentinels=False))
         else:
             self.setHtml(p.b)
-        # os.chdir(owd)
+        os.chdir(owd)
     def update_position(self, p):
         """update_position - update for current position
 
