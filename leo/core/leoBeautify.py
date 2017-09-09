@@ -117,7 +117,7 @@ def beautifyPythonTree(event):
 #@+node:ekr.20170202095153.1: *3* compare_ast (diabled)
 # http://stackoverflow.com/questions/3312989/
 # elegant-way-to-test-python-asts-for-equality-not-reference-or-object-identity
- 
+
 def compare_ast(node1, node2):
     return True
     ### Can hang, for mysterious reasons.
@@ -254,7 +254,7 @@ def comment_leo_lines(p):
         s = lines[i]
         # Comment out any containing a section reference.
         j = s.find('<<')
-        k = j > -1 and s.find('>>') or -1
+        k = s.find('>>') if j > -1 else -1
         if -1 < j < k:
             result.append(comment + s)
             # Generate a properly-indented pass line.
@@ -347,7 +347,7 @@ def uncomment_special_lines(comment, i, lines, p, result, s):
         return i
     else:
         j = s.find('<<')
-        k = j > -1 and s.find('>>') or -1
+        k = s.find('>>') if j > -1 else -1
         if -1 < j < k or s.find('@others') > -1:
             # A section reference line or an @others line.
             # Such lines are followed by a pass line.

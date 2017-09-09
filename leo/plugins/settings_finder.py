@@ -17,7 +17,7 @@ def init():
 
 #@+node:ekr.20170313021152.1: ** onCreate
 def onCreate (tag, key):
-    
+
     c = key.get('c')
     if c:
         sf = SettingsFinder(c)

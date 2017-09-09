@@ -408,7 +408,7 @@ just remove the first @ character from @@auto-rst and save,
 opening the external file afterwards.
 </t>
 <t tx="ville.20090701184416.1555"></t>
-<t tx="ville.20090701184416.1556" rst-import="7d710028580b000000756e6465726c696e657331710158000000007102580b000000756e6465726c696e65733271036802752e">@language rest
+<t tx="ville.20090701184416.1556" rst-import="7d710028580b000000756e6465726c696e657332710158000000007102580b000000756e6465726c696e65733171036802752e">@language rest
 @tabwidth -4
 @others
 
@@ -850,7 +850,10 @@ XXQMenuBar {
 # read-at-file-nodes Read file node</t>
 <t tx="ville.20101221125548.2199">Eventually, you will want to add extra functionality to your
 Leo documents. There are a few simple ways, and unlimited 
-power for advanced users
+power for advanced users.
+
+For more information, see CheatSheat.leo. You can open it
+with the leo-cheat-sheet command.
 
 </t>
 <t tx="ville.20101221131940.2204">You can write scripts in your document trees, and execute

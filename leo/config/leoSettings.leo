@@ -91,7 +91,8 @@
 <v t="ekr.20150426031409.1"><vh>\@ifhostname hostname or !hostname</vh></v>
 <v t="ekr.20041119110141"><vh>\@ifplatform platform-name</vh></v>
 <v t="ekr.20041119035704.2"><vh>\@ignore comment</vh></v>
-<v t="ekr.20130503155210.16364"><vh>\@menuat</vh></v>
+<v t="ekr.20170823083657.1"><vh>\@menu and \@item</vh></v>
+<v t="ekr.20130503155210.16364"><vh>\@menuat </vh></v>
 <v t="ekr.20070411172718"><vh>\@openwith name = shortcut</vh></v>
 <v t="ekr.20131115075142.18226"><vh>\@outline-data setting-name</vh></v>
 <v t="ekr.20041119105509"><vh>\@set name = value</vh></v>
@@ -122,6 +123,20 @@
 </v>
 <v t="ekr.20100904134301.11002"><vh>@data global-abbreviations</vh></v>
 <v t="ekr.20161121044950.1"><vh>@outline-data tree-abbreviations</vh>
+<v t="ekr.20170530035032.1"><vh>importer;;</vh>
+<v t="ekr.20170530035032.2"><vh>@@file importers/{|{x=name}|}.py</vh>
+<v t="ekr.20170530035032.3"><vh>class {|{x=cap_name}|}_Importer</vh>
+<v t="ekr.20170530035032.4"><vh>{|{x=name}|}.Overrides</vh>
+<v t="ekr.20170530035032.5"><vh>{|{x=name}|}.clean_headline</vh></v>
+<v t="ekr.20170530035032.6"><vh>{|{x=name}|}.clean_nodes</vh></v>
+</v>
+</v>
+<v t="ekr.20170530035032.7"><vh>class class {|{x=cap_name}|}_ScanState</vh>
+<v t="ekr.20170530035032.8"><vh>{|{x=name}|}_state.level</vh></v>
+<v t="ekr.20170530035032.9"><vh>{|{x=name}|}_state.update</vh></v>
+</v>
+</v>
+</v>
 <v t="ekr.20161121044950.2"><vh>per-commander-plugin;;</vh>
 <v t="ekr.20161121044950.3"><vh>@@file pluginname.py</vh>
 <v t="ekr.20161121044950.4"><vh>&lt;&lt; docstring &gt;&gt;</vh></v>
@@ -657,17 +672,22 @@
 <v t="tbnorth.20170111153430.1"><vh>@bool autojustify-on-at-start = False</vh></v>
 </v>
 <v t="ekr.20061003173413"><vh>Files &amp; directories</vh>
-<v t="ekr.20071110153046"><vh>@bool at_auto_warns_about_leading_whitespace = True</vh></v>
+<v t="ekr.20170706103545.1"><vh>@bool report_unchanged_files = True</vh></v>
 <v t="ekr.20061210091932"><vh>@bool chdir_to_relative_path = False</vh></v>
-<v t="ekr.20150403055250.1"><vh>@bool check_for_changed_external_files = True</vh></v>
-<v t="ekr.20090514111518.8379"><vh>@bool check_python_code_on_write = True</vh></v>
 <v t="ekr.20150216135059.1"><vh>@bool create-at-persistence-nodes-automatically = False</vh></v>
 <v t="ekr.20041119041304"><vh>@bool create_nonexistent_directories = False</vh></v>
 <v t="ekr.20041119034357.5"><vh>@bool read_only = False</vh></v>
-<v t="ekr.20161021095001.1"><vh>@bool run-pyflakes-on-write = False</vh></v>
-<v t="ekr.20150710084507.1"><vh>@bool syntax-error-popup = False</vh></v>
-<v t="ekr.20150321090958.1"><vh>@bool verbose_check_outline = False</vh></v>
+<v t="ekr.20170718054928.1"><vh>@bool log_show_save_time = False</vh></v>
+<v t="ekr.20170718054951.1"><vh>@string log_timestamp_format = %H:%M:%S</vh></v>
 <v t="ekr.20041119041304.1"><vh>@string relative_path_base_directory = .</vh></v>
+<v t="ekr.20170706103843.1"><vh>Checking files</vh>
+<v t="ekr.20071110153046"><vh>@bool at_auto_warns_about_leading_whitespace = True</vh></v>
+<v t="ekr.20150403055250.1"><vh>@bool check_for_changed_external_files = True</vh></v>
+<v t="ekr.20090514111518.8379"><vh>@bool check_python_code_on_write = True</vh></v>
+<v t="ekr.20161021095001.1"><vh>@bool run-pyflakes-on-write = False</vh></v>
+<v t="ekr.20150321090958.1"><vh>@bool verbose_check_outline = False</vh></v>
+<v t="ekr.20150710084507.1"><vh>@bool syntax-error-popup = False</vh></v>
+</v>
 <v t="ekr.20041119034357.12"><vh>External files</vh>
 <v t="ekr.20070419103554"><vh>@bool force_newlines_in_at_nosent_bodies = True</vh></v>
 <v t="ekr.20041119041747.4"><vh>@bool write_strips_blank_lines = True</vh></v>
@@ -680,6 +700,7 @@
 <v t="ekr.20041119034357.8"><vh>@string output_initial_comment = None</vh></v>
 <v t="ekr.20041119034357.9"><vh>@string stylesheet = </vh></v>
 <v t="ekr.20080921060401.3"><vh>@string default_leo_file = ~/.leo/workbook.leo</vh></v>
+<v t="vitalije.20170811125150.1"><vh>@string default_leo_extension = .leo</vh></v>
 </v>
 <v t="ekr.20110611092035.16474"><vh>Recent files</vh>
 <v t="tbrown.20081003103821.1"><vh>@bool recent_files_group = False</vh></v>
@@ -729,9 +750,11 @@
 <v t="ekr.20101104191857.8345"><vh>@bool at_auto_separate_non_def_nodes = False</vh></v>
 <v t="ekr.20070803082435"><vh>@bool full_import_checks = True</vh></v>
 <v t="ekr.20161010085256.1"><vh>@bool js_importer_clean_lws = True</vh></v>
+<v t="ekr.20170617135317.1"><vh>@bool put_python_decorators_in_imported_headlines = False</vh></v>
 <v t="ekr.20161010172424.1"><vh>@int js_importer_min_rescan_size = 0</vh></v>
 <v t="ekr.20161010172441.1"><vh>@int js_importer_min_scan_size = 0</vh></v>
 <v t="ekr.20080811105020.2"><vh>@bool suppress_import_parsing = False</vh></v>
+<v t="ekr.20170825083426.1"><vh>@data c_import_typedefs</vh></v>
 <v t="ekr.20111029055127.16616"><vh>@data import_html_tags</vh></v>
 <v t="ekr.20111029055127.16614"><vh>@data import_xml_tags</vh></v>
 </v>
@@ -1371,11 +1394,11 @@
 <v t="ekr.20131213135427.22140"><vh>@item directory-&amp;make</vh></v>
 <v t="ekr.20131213135427.22141"><vh>@item directory-&amp;remove</vh></v>
 <v t="ekr.20131213135427.22142"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22143"><vh>@item open-cheat-sheet-leo</vh></v>
-<v t="ekr.20131213135427.22144"><vh>@item open-leoDocs-leo</vh></v>
-<v t="ekr.20131213135427.22145"><vh>@item open-leoPlugins-leo</vh></v>
-<v t="ekr.20131213135427.22146"><vh>@item open-quickstart-leo</vh></v>
-<v t="ekr.20131213135427.22147"><vh>@item open-scripts-leo</vh></v>
+<v t="ekr.20131213135427.22143"><vh>@item open-&amp;cheat-sheet-leo</vh></v>
+<v t="ekr.20131213135427.22144"><vh>@item open-leo-&amp;docs-leo</vh></v>
+<v t="ekr.20131213135427.22145"><vh>@item open-leo-&amp;plugins-leo</vh></v>
+<v t="ekr.20131213135427.22146"><vh>@item open-&amp;quickstart-leo</vh></v>
+<v t="ekr.20131213135427.22147"><vh>@item open-&amp;scripts-leo</vh></v>
 <v t="ekr.20131213135427.22148"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22149"><vh>@item file-&amp;compare-leo-files</vh></v>
 <v t="ekr.20131213135427.22150"><vh>@item file-&amp;delete</vh></v>
@@ -1494,18 +1517,14 @@
 </v>
 </v>
 <v t="ekr.20131213135427.22320"><vh>@menu &amp;Window</vh>
-<v t="tbrown.20160130094511.1"><vh>@menu Arrange Panes</vh>
-<v t="tbrown.20160130095933.1"><vh>@item free-layout-context-menu</vh></v>
-<v t="tbrown.20160130095933.2"><vh>@item free-layout-load</vh></v>
-<v t="tbrown.20160130095933.3"><vh>@item free-layout-restore</vh></v>
-<v t="tbrown.20160130095933.4"><vh>@item free-layout-zoom</vh></v>
-<v t="tbrown.20160130100023.1"><vh>@@item free-layout-help</vh></v>
-</v>
-<v t="tbrown.20160130100249.1"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.22340"><vh>@item *&amp;resize-to-screen</vh></v>
+<v t="ekr.20131213135427.22341"><vh>@item *&amp;cascade-windows</vh></v>
+<v t="ekr.20131213135427.22342"><vh>@item *&amp;minimize-all</vh></v>
+<v t="ekr.20170509122306.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22321"><vh>@item *&amp;equal-sized-panes</vh></v>
-<v t="ekr.20131213135427.22322"><vh>@item *&amp;toggle-active-pane</vh></v>
 <v t="ekr.20131213135427.22323"><vh>@item *toggle-&amp;split-direction</vh></v>
-<v t="ekr.20131213135427.22324"><vh>@item -</vh></v>
+<v t="ekr.20170509103245.1"><vh>@item -</vh></v>
+<v t="ekr.20170509103101.1"><vh>@menu &amp;Expand Or Contract</vh>
 <v t="ekr.20131213135427.22325"><vh>@item *contract-&amp;body-pane</vh></v>
 <v t="ekr.20131213135427.22326"><vh>@item *contract-&amp;log-pane</vh></v>
 <v t="ekr.20131213135427.22327"><vh>@item *contract-&amp;outline-pane</vh></v>
@@ -1520,18 +1539,47 @@
 <v t="ekr.20131213135427.22336"><vh>@item *full&amp;y-expand-log-pane</vh></v>
 <v t="ekr.20131213135427.22337"><vh>@item *fully-e&amp;xpand-outline-pane</vh></v>
 <v t="ekr.20131213135427.22338"><vh>@item *fully-exp&amp;and-pane</vh></v>
-<v t="ekr.20131213135427.22339"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22340"><vh>@item *&amp;resize-to-screen</vh></v>
-<v t="ekr.20131213135427.22341"><vh>@item *&amp;cascade-windows</vh></v>
-<v t="ekr.20131213135427.22342"><vh>@item *&amp;minimize-all</vh></v>
-<v t="ekr.20131213135427.22155"><vh>@item -</vh></v>
+</v>
+<v t="ekr.20170509103221.1"><vh>@menu &amp;Focus</vh>
 <v t="ekr.20131213135427.22156"><vh>@@@item &amp;cycle-all-focus</vh></v>
+<v t="ekr.20131213135427.22322"><vh>@item *&amp;toggle-active-pane</vh></v>
+<v t="ekr.20170509104817.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22157"><vh>@item focus-to-&amp;body</vh></v>
 <v t="ekr.20131213135427.22158"><vh>@item focus-to-&amp;log</vh></v>
 <v t="ekr.20141112072219.1"><vh>@item focus-to-&amp;find</vh></v>
 <v t="ekr.20131213135427.22159"><vh>@item focus-to-&amp;minibuffer</vh></v>
 <v t="ekr.20141112072219.2"><vh>@item focus-to-&amp;spell-tab</vh></v>
 <v t="ekr.20131213135427.22160"><vh>@item focus-to-&amp;tree</vh></v>
+</v>
+<v t="ekr.20170509104949.1"><vh>@menu &amp;Layout</vh>
+<v t="tbrown.20160130095933.1"><vh>@item free-layout-context-menu</vh></v>
+<v t="tbrown.20160130095933.2"><vh>@item free-layout-load</vh></v>
+<v t="tbrown.20160130095933.3"><vh>@item free-layout-restore</vh></v>
+<v t="tbrown.20160130095933.4"><vh>@item free-layout-zoom</vh></v>
+<v t="tbrown.20160130100023.1"><vh>@@item free-layout-help</vh></v>
+</v>
+<v t="ekr.20170509104039.1"><vh>@menu &amp;Show Or Hide</vh>
+<v t="ekr.20170509104039.2"><vh>@item gui-&amp;all-show</vh></v>
+<v t="ekr.20170509104039.3"><vh>@item gui-&amp;iconbar-show</vh></v>
+<v t="ekr.20170509104039.4"><vh>@item gui-&amp;menu-show</vh></v>
+<v t="ekr.20170509104039.5"><vh>@item gui-&amp;minibuffer-show</vh></v>
+<v t="ekr.20170509104039.6"><vh>@item gui-&amp;statusbar-show</vh></v>
+<v t="ekr.20170509104039.7"><vh>@item gui-&amp;toolbar-show</vh></v>
+<v t="ekr.20170509105101.1"><vh>@item -</vh></v>
+<v t="ekr.20170509103811.1"><vh>@item gui-&amp;all-hide</vh></v>
+<v t="ekr.20170509103833.1"><vh>@item gui-&amp;iconbar-hide</vh></v>
+<v t="ekr.20170509103834.1"><vh>@item gui-&amp;menu-hide</vh></v>
+<v t="ekr.20170509103823.1"><vh>@item gui-&amp;minibuffer-hide</vh></v>
+<v t="ekr.20170509103931.1"><vh>@item gui-&amp;statusbar-hide</vh></v>
+<v t="ekr.20170509103944.1"><vh>@item gui-&amp;toolbar-hide</vh></v>
+<v t="ekr.20170509104140.1"><vh>@item -</vh></v>
+<v t="ekr.20170509104140.2"><vh>@item gui-&amp;all-toggle</vh></v>
+<v t="ekr.20170509104140.3"><vh>@item gui-&amp;iconbar-toggle</vh></v>
+<v t="ekr.20170509104140.4"><vh>@item gui-&amp;menu-toggle</vh></v>
+<v t="ekr.20170509104140.5"><vh>@item gui-&amp;minibuffer-toggle</vh></v>
+<v t="ekr.20170509104140.6"><vh>@item gui-&amp;statusbar-toggle</vh></v>
+<v t="ekr.20170509104140.7"><vh>@item gui-&amp;toolbar-toggle</vh></v>
+</v>
 </v>
 <v t="ekr.20131213135427.22343"><vh>@menu &amp;Help</vh>
 <v t="ekr.20131213135427.22344"><vh>@item about-leo</vh></v>
@@ -2069,6 +2117,13 @@
 </v>
 </v>
 <v t="ekr.20060828110551.1"><vh>Language-specific colors</vh>
+<v t="ekr.20170819113555.1"><vh>patch</vh>
+<v t="ekr.20170819113555.2"><vh>@color patch_keyword1_color = green</vh></v>
+<v t="ekr.20170819113555.3"><vh>@color patch_keyword2_color = red</vh></v>
+<v t="ekr.20170819170521.1"><vh>@color patch_keyword3_color = blue</vh></v>
+<v t="ekr.20170819113555.4"><vh>@color patch_literal1_color = blue</vh></v>
+<v t="ekr.20170819113555.5"><vh>@color patch_literal2_color = blue</vh></v>
+</v>
 <v t="ekr.20060828110551.2"><vh>php</vh>
 <v t="ekr.20060828110551.3"><vh>@color php_operator_color = DodgerBlue1</vh></v>
 <v t="ekr.20060828145228.1"><vh>@font php keyword fonts</vh></v>
@@ -2094,6 +2149,7 @@
 <v t="ekr.20111004182631.15534"><vh>@bool color_cweb_comments_with_latex = True</vh></v>
 <v t="ekr.20111004182631.15535"><vh>@bool color_cweb_doc_parts_with_latex = True</vh></v>
 <v t="ekr.20111004182631.15536"><vh>@bool color_directives_in_plain_text = True</vh></v>
+<v t="tbrown.20170710093248.1"><vh>@bool color_trailing_whitespace = True</vh></v>
 <v t="ekr.20100102121150.6344"><vh>@bool show-invisibles-by-default = False</vh></v>
 <v t="ekr.20111004182631.15537"><vh>@bool underline_undefined_section_names = True</vh></v>
 <v t="ekr.20111004182631.15538"><vh>@bool use_hyperlinks = False</vh></v>
@@ -2781,7 +2837,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20150403055250.1"></v>
+<v t="ekr.20170825083426.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -4104,7 +4160,9 @@ toggle-find-mark-changes-option     = Alt-Ctrl-c
 toggle-find-mark-finds-option       = Alt-Ctrl-f
 toggle-find-regex-option            = Alt-Ctrl-x
 toggle-find-word-option             = Alt-Ctrl-w
-toggle-find-wrap-around-option      = Alt-Ctrl-a</t>
+toggle-find-wrap-around-option      = Alt-Ctrl-a
+
+search-return-to-origin             = Alt+F3</t>
 <t tx="ekr.20060603215208.20">full-command            = Alt-x
 # negative-argument     = None      # Alt-minus conflicts with contract-all.
 repeat-complex-command  = Ctrl-P
@@ -4249,7 +4307,9 @@ tab-cycle-next      = Ctrl-Tab
 
 # Possible alternatives.
 # keyboard-quit     = Escape # Hard to type, interferes with dismissing dialogs.
-# focus-to-tree     = Ctrl-T</t>
+# focus-to-tree     = Ctrl-T
+edit-setting        = Ctrl+Key-0
+</t>
 <t tx="ekr.20060925060533.3">clone-node                  = Ctrl-`
 chapter-select              = None
 contract-node               = None
@@ -4290,15 +4350,19 @@ delete-char                         !text = Delete
 delete-comments                     = Ctrl-parenright # Shift-Ctrl-0
 delete-word                         = Ctrl-Delete
 delete-spaces                       = None
+# indent-region                     = Tab # Only when text is selected.
+indent-region                       = ctrl-greater # Ctrl-shift-&gt;
 kill-line                           = Ctrl-k
 kill-to-end-of-line                 = None
-newline-and-indent                  = Ctrl-j # same as tab.
-newline-and-indent                  = Tab
+newline-and-indent                  = Ctrl-j
+newline-and-indent                  !text = Tab
+focus-to-body                       !tree = Tab
 paste-text                          = Ctrl-v
 reformat-paragraph                  = Shift-Ctrl-p
 split-line                          = None
 unformat-paragraph                  = Shift-Ctrl-u
-unindent-region                     = Shift-tab
+unindent-region                     = ctrl-less # Ctrl-Shift-&lt;
+unindent-region                     = Shift-tab # Only when text is selected.
 yank                                = Ctrl-Y
 yank-pop                            = Alt-Y
 zap-to-character                    = Alt-z</t>
@@ -4463,9 +4527,9 @@ Leo acts in a reasonable manner, but it is still possible to get confused even i
 # Highly-recommended plugins:
 
 plugins_menu.py
-# free_layout.py
+free_layout.py
     # Now loaded automatically.
-    # needs to be early
+    # But it's useful to have a free_layout menu in the Plugins menu.
 
 # Recommended plugins:
 
@@ -4716,7 +4780,7 @@ developers.
 </t>
 <t tx="ekr.20070729101310">True: trace import commands and @auto imports.</t>
 <t tx="ekr.20070803082435">True: import commands (including @auto nodes) do full checks.</t>
-<t tx="ekr.20070925144552">New in Leo 4.4.4. Leo creates its menus using @menus trees. Within @menus trees,
+<t tx="ekr.20070925144552">Leo creates its menus using @menus trees. Within @menus trees,
 @menu nodes create menus and @item nodes create menu items.
 
 Notes:
@@ -5562,7 +5626,7 @@ class CheckSettings:
 CheckSettings(c).run()
 </t>
 <t tx="ekr.20110612074140.16415">def run (self):
-    
+
     verbose = False
     settings_node = g.findNodeAnywhere(self.c,'@settings')
 
@@ -5571,26 +5635,26 @@ CheckSettings(c).run()
 
     if not settings_node:
         return g.error('no @settings node in leoPy.leo')
-    
+
     # Step 1: compute aList1, the list of all settings in Leo's core.
     aList1 = []
     for p in self.core_c.all_positions():
         self.get_settings(aList1,p)
         aList1 = list(set(aList1))
         aList1.sort()
-        
+
     # Step 2: compute aList2, the list of all settings nodes in leoSettings.leo.
     aList2 = []
     for p in settings_node.subtree():
         self.get_settings_nodes(aList2,p)
         aList2 = list(set(aList2))
         aList2.sort()
-        
+
     if verbose:
         os.system('cls')
     else:
         print('-'*10)
-    
+
     for aList,tag in ((aList1,'leoPy.leo'),(aList2,'leoSettings.leo')):
         nl = g.choose(verbose,'\n','')
         end = g.choose(verbose,'...','')
@@ -5599,10 +5663,10 @@ CheckSettings(c).run()
         if verbose:
             for z in aList:
                 print(z.strip())
-        
+
     if verbose: g.es_print('done')</t>
 <t tx="ekr.20110612074140.16416">def init (self):
-    
+
     # leoPy.leo must be available.
     for f in g.app.windowList:
         c = f.c
@@ -5635,9 +5699,9 @@ CheckSettings(c).run()
     self.init()
 </t>
 <t tx="ekr.20110612074140.16419">def get_settings (self,aList,p):
-    
+
     '''Append all settings names in position p to aList'''
-        
+
     names = self.settingsNames
     for s in g.splitLines(p.b):
         for s2 in names:
@@ -5666,7 +5730,7 @@ CheckSettings(c).run()
                 break
 </t>
 <t tx="ekr.20110612074140.16478">def get_settings_nodes (self,aList,p):
-    
+
     '''Append all settings names in position p to aList'''
 
     s = p.h
@@ -5819,25 +5883,25 @@ gray90: #E5E5E5
 
 class Controller:
     @others
-    
+
 Controller(c).run()</t>
 <t tx="ekr.20111006212449.11851">def __init__ (self,c):
     self.c = c
-    
+
     self.errors = 0
-    
+
     # Commanders.
     self.core = None # Commander for leoPy.leo.
     self.plugins = None # Commander for leoPlugins.leo.
     self.settings = None # Commander for leoSettings.leo.
 </t>
 <t tx="ekr.20111006212449.11852">def check (self,configs_d,settings_d):
-    
+
     table = ('Bool','Color','Int','Float',# 'Font',
         'Ratio','Path','String',
     )
     format = '%40s %s'
-    
+
     if 1: # Less important: print missing settings.
         for kind in table:
             config_key = 'get%s' % kind
@@ -5881,50 +5945,50 @@ Controller(c).run()</t>
                         settings_list,config_list,
                         munged_settings_list,munged_config_list)</t>
 <t tx="ekr.20111006212449.11853">def error (self,s):
-    
+
     print(s)
     self.errors += 1
 </t>
 <t tx="ekr.20111006212449.11854">def get_commanders (self):
-    
+
     '''Open files as needed and set the commander ivars.'''
-    
+
     def open_commander(fn):
         c = g.openWithFileName(fn,old_c=self.c,gui=g.app.nullGui)
         if c: return c
         else:
             self.error('not found: %s' % fn)
-            
+
     self.core = open_commander(
         g.os_path_join(g.app.loadDir,'..','core','leoPy.leo'))
-            
+
     self.plugins = open_commander(
         g.os_path_join(g.app.loadDir,'..','plugins','leoPlugins.leo'))
-        
+
     self.settings = open_commander(
         g.os_path_join(g.app.loadDir,'..','config','leoSettings.leo'))
-        
+
     # g.trace('\n%s\n%s\n%s' % (self.core,self.plugins,self.settings))
 </t>
 <t tx="ekr.20111006212449.11855">def get_configs(self):
-    
+
     '''Return a dict containing a representation
     of all calls to x.config.getX.
     '''
-    
+
     d = {}
-    
+
     for c in (self.core,self.plugins):
         print('scanning: %s' % c.shortFileName())
         self.get_configs_from_outline(c,d)
-    
+
     return d</t>
 <t tx="ekr.20111006212449.11856">def get_configs_from_outline (self,c,d):
-    
+
     '''Scan the outline for all calls to x.config.getX
     and add items to d.
     '''
-    
+
     trace = True
     for p in c.all_positions():
         self.scan_for_configs(p,d)
@@ -5936,7 +6000,7 @@ Controller(c).run()</t>
                 print('  ' + name)
     return d</t>
 <t tx="ekr.20111006212449.11857">def scan_for_configs (self,p,d):
-    
+
     '''Scan the body text of p, finding all calls to getX.'''
     kinds = ('getBool','getColor','getInt','getFloat',
         # '@font', # special case.
@@ -5948,7 +6012,7 @@ Controller(c).run()</t>
         ch = s[i]
         if (
             ch == '@' and
-            (g.match(s,i,'@ ') or g.match(s,i,'@\n')) and 
+            (g.match(s,i,'@ ') or g.match(s,i,'@\n')) and
             (i == 0 or s[i-1] == '\n')
         ):
             i = s.find('\n@c',i)
@@ -5977,20 +6041,20 @@ Controller(c).run()</t>
         assert progress &lt; i
     return d</t>
 <t tx="ekr.20111006212449.11858">def get_settings (self):
-    
+
     '''Return a dict containing a representation
     of all settings in leoSettings.leo.
     '''
-    
+
     trace = False
     c,d = self.settings,{}
-    
+
     print('scanning: %s' % c.shortFileName())
 
     settings_node = g.findNodeAnywhere(c,'@settings')
     if not settings_node:
         return self.error('no @settings node')
-        
+
     for p in settings_node.subtree():
         if self.is_setting(p):
             kind,name = self.parse_setting(p)
@@ -6002,7 +6066,7 @@ Controller(c).run()</t>
                 d [kind] = aList
             else:
                 self.error('no name for %s' % (kind))
-                
+
     if trace:
         keys = list(d.keys())
         for key in sorted(keys):
@@ -6013,20 +6077,20 @@ Controller(c).run()</t>
 
     return d</t>
 <t tx="ekr.20111006212449.11859">def is_setting (self,p):
-    
+
     # For now, these are enough
     table = (
         '@bool','@color','@int','@float',
         # '@font', # special case.
         '@ratio','@path','@string',
     )
-    
+
     for s in table:
         if g.match_word(p.h,0,s):
             return True
     return False</t>
 <t tx="ekr.20111006212449.11860">def parse_setting (self,p):
-    
+
     s = p.h
     assert s[0] == '@'
     i = g.skip_id(s,1)
@@ -6037,26 +6101,26 @@ Controller(c).run()</t>
     name = s[i:j]
     return kind,name</t>
 <t tx="ekr.20111006212449.11861">def munge (self,s):
-    
+
     '''Return the canonicalized name for settings and arguments to c.config.getX.'''
-    
+
     s = s.replace('-','').replace('_','').lower()
     return g.toUnicode(s)
 </t>
 <t tx="ekr.20111006212449.11862">def run(self):
-    
+
     import os ; os.system('cls')
-    
+
     self.get_commanders()
     configs = self.get_configs()
     settings = self.get_settings()
-    
+
     if self.errors == 0:
         self.check(configs,settings)
-        
+
     g.trace('done')</t>
 <t tx="ekr.20111007043902.15697">def print_missing(self,format,munged_s,in_list,out_list,munged_in_list,munged_out_list):
-    
+
     '''Print the canonical name, followed by the list of names that match.'''
     assert munged_s in munged_in_list,munged_s
     assert munged_s not in munged_out_list,munged_s
@@ -6064,7 +6128,7 @@ Controller(c).run()</t>
         # Ignore plugins settings and global switches.
         for prefix in ('color','datenodes','http','opml','rst3','todo','trace','vim','zodb'):
             if munged_s.startswith(prefix):
-                return  
+                return
     # Ignore color settings.  They are handled differently...
     for suffix in ('color',):
         if munged_s.endswith(suffix):
@@ -6256,7 +6320,7 @@ main()
 
 path = g.os_path_finalize_join(
     g.app.loadDir,'..','plugins','*.py')
-    
+
 aList = glob.glob(path)
 aList.sort()
 
@@ -6819,11 +6883,11 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22140"></t>
 <t tx="ekr.20131213135427.22141"></t>
 <t tx="ekr.20131213135427.22142"></t>
-<t tx="ekr.20131213135427.22143">Open &amp;CheatSheet.leo</t>
-<t tx="ekr.20131213135427.22144">Open Leo&amp;Docs.leo</t>
-<t tx="ekr.20131213135427.22145">Open leo&amp;Plugins.leo</t>
-<t tx="ekr.20131213135427.22146">Open &amp;quickstart.leo</t>
-<t tx="ekr.20131213135427.22147">Open scr&amp;ipts.leo</t>
+<t tx="ekr.20131213135427.22143"></t>
+<t tx="ekr.20131213135427.22144"></t>
+<t tx="ekr.20131213135427.22145"></t>
+<t tx="ekr.20131213135427.22146"></t>
+<t tx="ekr.20131213135427.22147"></t>
 <t tx="ekr.20131213135427.22148"></t>
 <t tx="ekr.20131213135427.22149"></t>
 <t tx="ekr.20131213135427.22150"></t>
@@ -6831,7 +6895,6 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22152"></t>
 <t tx="ekr.20131213135427.22153"></t>
 <t tx="ekr.20131213135427.22154"></t>
-<t tx="ekr.20131213135427.22155"></t>
 <t tx="ekr.20131213135427.22156"></t>
 <t tx="ekr.20131213135427.22157"></t>
 <t tx="ekr.20131213135427.22158"></t>
@@ -6944,7 +7007,6 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22321"></t>
 <t tx="ekr.20131213135427.22322"></t>
 <t tx="ekr.20131213135427.22323"></t>
-<t tx="ekr.20131213135427.22324"></t>
 <t tx="ekr.20131213135427.22325"></t>
 <t tx="ekr.20131213135427.22326"></t>
 <t tx="ekr.20131213135427.22327"></t>
@@ -6959,7 +7021,6 @@ Alt+Ctrl+S set-find-suboutline-only</t>
 <t tx="ekr.20131213135427.22336"></t>
 <t tx="ekr.20131213135427.22337"></t>
 <t tx="ekr.20131213135427.22338"></t>
-<t tx="ekr.20131213135427.22339"></t>
 <t tx="ekr.20131213135427.22340"></t>
 <t tx="ekr.20131213135427.22341"></t>
 <t tx="ekr.20131213135427.22342"></t>
@@ -11616,6 +11677,7 @@ https://github.com/karstenw/leo-shortcuts-osx/blob/master/myLeoSettings.leo</t>
 # When a tree abbreviation fires, Leo pastes all the descendants of
 # the abbreviation node as the last children of the presently selected node.
 
+importer;;
 per-commander-plugin;;
 demo;;
 </t>
@@ -11627,7 +11689,7 @@ demo;;
 <t tx="ekr.20161121044950.2"></t>
 <t tx="ekr.20161121044950.3">&lt;&lt; docstring &gt;&gt;
 ### From leoSettings.leo
-# Created {|{x=time.strftime("%Y/%m/%d")}|}
+# Created 2017/05/30
 @language python
 @tabwidth -4
 __version__ = '0.0'
@@ -14106,6 +14168,205 @@ QMenuBar::item:pressed {
 <t tx="ekr.20170323095724.1">leo&amp;Settings.leo</t>
 <t tx="ekr.20170323095822.1">&amp;myLeoSettings.leo
 </t>
+<t tx="ekr.20170509103101.1"></t>
+<t tx="ekr.20170509103221.1"></t>
+<t tx="ekr.20170509103245.1"></t>
+<t tx="ekr.20170509103811.1"></t>
+<t tx="ekr.20170509103823.1"></t>
+<t tx="ekr.20170509103833.1"></t>
+<t tx="ekr.20170509103834.1"></t>
+<t tx="ekr.20170509103931.1"></t>
+<t tx="ekr.20170509103944.1"></t>
+<t tx="ekr.20170509104039.1"></t>
+<t tx="ekr.20170509104039.2"></t>
+<t tx="ekr.20170509104039.3"></t>
+<t tx="ekr.20170509104039.4"></t>
+<t tx="ekr.20170509104039.5"></t>
+<t tx="ekr.20170509104039.6"></t>
+<t tx="ekr.20170509104039.7"></t>
+<t tx="ekr.20170509104140.1"></t>
+<t tx="ekr.20170509104140.2"></t>
+<t tx="ekr.20170509104140.3"></t>
+<t tx="ekr.20170509104140.4"></t>
+<t tx="ekr.20170509104140.5"></t>
+<t tx="ekr.20170509104140.6"></t>
+<t tx="ekr.20170509104140.7"></t>
+<t tx="ekr.20170509104817.1"></t>
+<t tx="ekr.20170509104949.1"></t>
+<t tx="ekr.20170509105101.1"></t>
+<t tx="ekr.20170509122306.1"></t>
+<t tx="ekr.20170530035032.1"></t>
+<t tx="ekr.20170530035032.2">'''
+The @auto importer for the {|{x=get_language()}|} language.
+
+Created {|{x=time.strftime("%Y/%m/%d")}|} by the `importer;;` abbreviation.
+'''
+import leo.plugins.importers.linescanner as linescanner
+Importer = linescanner.Importer
+@others
+importer_dict = {
+    'class': {|{x=cap_name}|}_Importer,
+    'extensions': [&lt;|comma-separated lists of extensions|&gt;],
+        # Example: ['.c', '.cc', '.c++', '.cpp', '.cxx', '.h', '.h++']
+}
+@language python
+@tabwidth -4
+
+
+</t>
+<t tx="ekr.20170530035032.3">class {|{x=cap_name}|}_Importer(Importer):
+    '''The importer for the {|{x=name}|} lanuage.'''
+
+    def __init__(self, importCommands):
+        '''{|{x=cap_name}|}_Importer.__init__'''
+        # Init the base class.
+        Importer.__init__(self,
+            importCommands,
+            language = '{|{x=name}|}',
+            state_class = {|{x=cap_name}|}_ScanState,
+            strict = &lt;|True leading whitespace is significant. Otherwise False|&gt;,
+        )
+        
+    @others
+</t>
+<t tx="ekr.20170530035032.4"># These can be overridden in subclasses.
+</t>
+<t tx="ekr.20170530035032.5">### Define an override if desired...
+
+if 0: # The base class
+    def clean_headline(self, s):
+        '''Return a cleaned up headline s.'''
+        return s.strip()
+        
+# A more complex example, for the C language.
+
+# def clean_headline(self, s):
+    # '''Return a cleaned up headline s.'''
+    # import re
+    # type1 = r'(static|extern)*'
+    # type2 = r'(void|int|float|double|char)*'
+    # class_pattern = r'\s*(%s)\s*class\s+(\w+)' % (type1)
+    # pattern = r'\s*(%s)\s*(%s)\s*(\w+)' % (type1, type2)
+    # m = re.match(class_pattern, s)
+    # if m:
+        # prefix1 = '%s ' % (m.group(1)) if m.group(1) else ''
+        # return '%sclass %s' % (prefix1, m.group(2))
+    # m = re.match(pattern, s)
+    # if m:
+        # prefix1 = '%s ' % (m.group(1)) if m.group(1) else ''
+        # prefix2 = '%s ' % (m.group(2)) if m.group(2) else ''
+        # h = m.group(3) or '&lt;no c function name&gt;'
+        # return '%s%s%s' % (prefix1, prefix2, h)
+    # else:
+        # return s
+</t>
+<t tx="ekr.20170530035032.6">def clean_nodes(self, parent):
+    '''
+    Clean all nodes in parent's tree.
+    Subclasses override this as desired.
+    See perl_i.clean_nodes for an examplle.
+    '''
+    pass
+</t>
+<t tx="ekr.20170530035032.7">class {|{x=cap_name}|}_ScanState:
+    '''A class representing the state of the {|{x=name}|} line-oriented scan.'''
+    
+    def __init__(self, d=None):
+        '''{|{x=cap_name}|}_ScanState.__init__'''
+        if d:
+            prev = d.get('prev')
+            self.context = prev.context
+            ### Adjust these by hand.
+            self.curlies = prev.curlies
+        else:
+            self.context = ''
+            ### Adjust these by hand.
+            self.curlies = 0
+
+    def __repr__(self):
+        '''{|{x=cap_name}|}_ScanState.__repr__'''
+        ### Adjust these by hand.
+        return "{|{x=cap_name}|}_ScanState context: %r curlies: %s" % (
+            self.context, self.curlies)
+
+    __str__ = __repr__
+
+    @others
+
+</t>
+<t tx="ekr.20170530035032.8">def level(self):
+    '''{|{x=cap_name}|}_ScanState.level.'''
+    return &lt;|self.curlies|&gt;
+        ### Examples:
+        # self.indent # for python, coffeescript.
+        # self.curlies
+        # (self, curlies, self.parens)
+</t>
+<t tx="ekr.20170530035032.9">def update(self, data):
+    '''
+    {|{x=cap_name}|}_ScanState.update
+
+    Update the state using the 6-tuple returned by v2_scan_line.
+    Return i = data[1]
+    '''
+    context, i, delta_c, delta_p, delta_s, bs_nl = data
+    # All ScanState classes must have a context ivar.
+    self.context = context
+    self.curlies += delta_c  
+    ### Update {|{x=cap_name}|}_ScanState ivars
+    # self.bs_nl = bs_nl
+    # self.parens += delta_p
+    # self.squares += delta_s
+    return i
+</t>
+<t tx="ekr.20170617135317.1">True: The python importer will copy the first decorator preceding a
+      function/method into the headline of the imported node.
+      
+**Note**: The importer will copy only the first line of a multiline decorator.</t>
+<t tx="ekr.20170706103545.1">True: Report unchanged written files.</t>
+<t tx="ekr.20170706103843.1"></t>
+<t tx="ekr.20170718054928.1"></t>
+<t tx="ekr.20170718054951.1"></t>
+<t tx="ekr.20170819113555.1"></t>
+<t tx="ekr.20170819113555.2"># +</t>
+<t tx="ekr.20170819113555.3"># -</t>
+<t tx="ekr.20170819113555.4"># +++</t>
+<t tx="ekr.20170819113555.5"># ---</t>
+<t tx="ekr.20170819170521.1"># @@</t>
+<t tx="ekr.20170823083657.1">Leo creates its menus using @menus trees. Within @menus trees,
+@menu nodes create menus and @item nodes create menu items.
+
+Notes:
+
+- The menu name always follows @menu. If the menu name is 'Plugins', Leo will
+create the Plugins menu and populate the menu by calling the
+'create-optional-menus' hook. This creates the Plugins menu as usual.
+
+- Nested @menu nodes contain submenus.
+
+- The command name follows @item. If the body text of an @item node exists, this
+body text is the menu name. Otherwise, the menu name is the command name.
+However, if the command name starts with a '*', hyphens are removed from the
+menu name.
+
+- Menu names and command names may contain a single ampersand (&amp;). If present,
+the following character is underlined in the name.
+
+- If the command name in an @item node is just a hyphen (-), the item represents
+a menu separator.</t>
+<t tx="ekr.20170825083426.1"># typedef names, one per line
+
+# These fix #545:
+
+    # _Bool
+    # scr_enter_status_t
+    # scr_exec_status_t
+    # scr_exit_status_t
+    # scr_node_api_t
+    # scr_update_status_t
+    # uint16_t
+    # uint8_t
+</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
@@ -14807,13 +15068,13 @@ absence of this setting.</t>
 <t tx="tbrown.20151114110207.1">"Abbreviation" to trigger the selection of the next placeholder,
 i.e. typing ,, will select the next &lt;|placeholder|&gt; text, after
 removing the &lt;| and |&gt;</t>
-<t tx="tbrown.20160130094511.1"></t>
 <t tx="tbrown.20160130095933.1">Pane management menu</t>
 <t tx="tbrown.20160130095933.2">Load pane layout</t>
 <t tx="tbrown.20160130095933.3">Restore pane layout</t>
 <t tx="tbrown.20160130095933.4">Zoom pane</t>
 <t tx="tbrown.20160130100023.1">Pane layout help</t>
-<t tx="tbrown.20160130100249.1"></t>
+<t tx="tbrown.20170710093248.1">If true, tailing whitespace (spaces and tabs) will be underlined
+with small dots in `trailing_whitespace_color` (default red).</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
@@ -14834,5 +15095,6 @@ paste-retaining-clones Paste Node As Clone</t>
 <t tx="vitalije.20100306144625.8944"></t>
 <t tx="vitalije.20100306144625.8945"></t>
 <t tx="vitalije.20100306144625.8946"># Time between saves in seconds</t>
+<t tx="vitalije.20170811125150.1"></t>
 </tnodes>
 </leo_file>

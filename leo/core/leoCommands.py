@@ -34,12 +34,12 @@ def cmd(name):
 class Commands(object):
     """
     A per-outline class that implements most of Leo's commands. The
-    "c" predefined object is an instance of this class. 
-    
+    "c" predefined object is an instance of this class.
+
     c.initObjects() creates sucommanders corresponding to files in the
     leo/core and leo/commands. All of Leo's core code is accessible
     via this class and its subcommanders.
-    
+
     g.app.pluginsController is Leo's plugins controller. Many plugins
     inject controllers objects into the Commands class. These are
     another kind of subcommander.
@@ -123,6 +123,8 @@ class Commands(object):
         # For outline navigation.
         self.navPrefix = g.u('') # Must always be a string.
         self.navTime = None
+
+        self.sqlite_connection = None
     #@+node:ekr.20120217070122.10466: *5* c.initDebugIvars
     def initDebugIvars(self):
         '''Init Commander debugging ivars.'''
@@ -159,13 +161,10 @@ class Commands(object):
         self.suppressHeadChanged = False
             # True: prevent setting c.changed when switching chapters.
         # Flags for c.outerUpdate...
-        self.incrementalRecolorFlag = False
-        self.requestBringToFront = None # A commander, or None.
+        self.enableRedrawFlag = True
         self.requestCloseWindow = False
-        self.requestRecolorFlag = False
-        self.requestRedrawFlag = False
         self.requestedFocusWidget = None
-        self.requestedIconify = '' # 'iconify','deiconify'
+        self.requestLaterRedraw = False
     #@+node:ekr.20120217070122.10472: *5* c.initFileIvars
     def initFileIvars(self, fileName, relativeFileName):
         '''Init file-related ivars of the commander.'''
@@ -413,8 +412,8 @@ class Commands(object):
         Create all entries in c.commandsDict.
         Do *not* clear c.commandsDict here.
         '''
-        for name, func in g.global_commands_dict.items():
-            self.k.registerCommand(commandName=name, shortcut=None, func=func)
+        for commandName, func in g.global_commands_dict.items():
+            self.k.registerCommand(commandName, func)
     #@+node:ekr.20051007143620: *5* c.printCommandsDict
     def printCommandsDict(self):
         c = self
@@ -522,7 +521,8 @@ class Commands(object):
                     g.trace('%s unknown focus: %s' % (count, w_class))
         else:
             # c.last_no_focus = True
-            g.trace('%s no focus' % (count))
+            if trace:
+                g.trace('%3s no focus' % (count))
     #@+node:ekr.20081005065934.1: *4* c.initAfterLoad
     def initAfterLoad(self):
         '''Provide an offical hook for late inits of the commander.'''
@@ -679,7 +679,7 @@ class Commands(object):
     def reloadSettings(self, event=None):
         '''Reload all static abbreviations from all config files.'''
         self.reloadSettingsHelper(all=False)
-        
+
     @cmd('reload-all-settings')
     def reloadAllSettings(self, event=None):
         '''Reload all static abbreviations from all config files.'''
@@ -717,6 +717,7 @@ class Commands(object):
             for ivar in ('reloadSettings', 'reload_settings'):
                 func = getattr(subcommander, ivar, None)
                 if func:
+                    # pylint: disable=not-callable
                     if trace:
                         g.es_print('reloading settings in',
                             subcommander.__class__.__name__)
@@ -876,6 +877,7 @@ class Commands(object):
     #@+node:ekr.20161022121036.1: *5* c.cloneFindMarkedHelper
     def cloneFindMarkedHelper(self, flatten):
         '''Helper for clone-find-marked commands.'''
+        c = self
 
         def isMarked(p):
             return p.isMarked()
@@ -885,8 +887,12 @@ class Commands(object):
             predicate = isMarked,
             failMsg = 'No marked nodes',
             flatten = flatten,
+            redraw = True,
             undoType = 'clone-find-marked',
         )
+        found = c.lastTopLevel()
+        c.selectPosition(found)
+        found.b = '# Found %s marked nodes' % found.numberOfChildren()
     #@+node:ekr.20031218072017.2861: *4* Edit Menu...
     #@+node:ekr.20031218072017.2862: *5* Edit top level
     #@+node:ekr.20031218072017.2090: *6* c.colorPanel
@@ -966,7 +972,7 @@ class Commands(object):
 
             # def g_input_wrapper(message, c=c):
                 # return g.input_(message, c=c)
-        
+
         d = {'c': c, 'g': g, 'input': g.input_, 'p': p} if define_g else {}
         if define_name: d['__name__'] = define_name
         d['script_args'] = args or []
@@ -1273,9 +1279,9 @@ class Commands(object):
     def createLastChildNode(self, parent, headline, body):
         '''A helper function for the three extract commands.'''
         c = self
-        if body and len(body) > 0:
+        if body:
             body = body.rstrip()
-        if not body or len(body) == 0:
+        if not body:
             body = ""
         p = parent.insertAsLastChild()
         p.initHeadString(headline)
@@ -1893,7 +1899,7 @@ class Commands(object):
         c = self
         trailingNL = lines and lines[-1].endswith('\n')
         lines = [z[: -1] if z.endswith('\n') else z for z in lines]
-        if len(lines) > 0: # Bug fix: 2013/12/22.
+        if lines: # Bug fix: 2013/12/22.
             s = lines[0]
             if c.startsParagraph(s):
                 # Adjust indents[1]
@@ -2042,6 +2048,7 @@ class Commands(object):
             k.setEditingState()
             k.showStateAndMode(w=wrapper)
         return e, wrapper
+            # Neither of these is used by any caller.
     #@+node:ekr.20031218072017.2290: *6* c.toggleAngleBrackets
     @cmd('toggle-angle-brackets')
     def toggleAngleBrackets(self, event=None):
@@ -2054,7 +2061,7 @@ class Commands(object):
         s = p.h.strip()
         if (s[0: 2] == "<<" or
             s[-2:] == ">>" # Must be on separate line.
-        ): 
+        ):
             if s[0: 2] == "<<": s = s[2:]
             if s[-2:] == ">>": s = s[: -2]
             s = s.strip()
@@ -2162,17 +2169,11 @@ class Commands(object):
         external file written by Leo.'''
         # c = self
         try:
-            f = open(fn, 'r')
-        except IOError:
-            return False
-        try:
-            s = f.read()
+            with open(fn, 'r') as f:
+                s = f.read()
+            return s.find('@+leo-ver=') > -1
         except Exception:
-            s = ''
-        finally:
-            f.close()
-        val = s.find('@+leo-ver=') > -1
-        return val
+            return False
     #@+node:ekr.20031218072017.1623: *6* c.new
     @cmd('new')
     def new(self, event=None, gui=None):
@@ -2221,19 +2222,19 @@ class Commands(object):
         table = [
             # 2010/10/09: Fix an interface blunder. Show all files by default.
             ("All files", "*"),
-            ("Leo files", "*.leo"),
+            g.fileFilters("LEOFILES"),
             ("Python files", "*.py"),]
         fileName = ''.join(c.k.givenArgs)
         if not fileName:
             fileName = g.app.gui.runOpenFileDialog(c,
                 title="Open",
                 filetypes=table,
-                defaultextension=".leo")
+                defaultextension=g.defaultLeoFileExtension(c))
         c.bringToFront()
         c.init_error_dialogs()
         ok = False
         if fileName:
-            if fileName.endswith('.leo'):
+            if g.app.loadManager.isLeoFile(fileName):
                 c2 = g.openWithFileName(fileName, old_c=c)
                 if c2:
                     g.chdir(fileName)
@@ -2305,6 +2306,7 @@ class Commands(object):
         c, p, u = self, self.p, self.undoer
         c.nodeConflictList = []
         fn = p.anyAtFileNodeName()
+        shouldDelete = (not g.SQLITE) or (c.sqlite_connection is None)
         if fn:
             b = u.beforeChangeTree(p)
             redraw_flag = True
@@ -2315,11 +2317,11 @@ class Commands(object):
             word = p.h[0: i]
             if word == '@auto':
                 # This includes @auto-*
-                p.deleteAllChildren()
+                if shouldDelete: p.deleteAllChildren()
                 # Fix #451: refresh-from-disk selects wrong node.
                 p = at.readOneAtAutoNode(fn, p)
             elif word in ('@thin', '@file'):
-                p.deleteAllChildren()
+                if shouldDelete: p.deleteAllChildren()
                 at.read(p, force=True)
             elif word in ('@clean',):
                 # Wishlist 148: use @auto parser if the node is empty.
@@ -2329,10 +2331,10 @@ class Commands(object):
                     # Fix #451: refresh-from-disk selects wrong node.
                     p = at.readOneAtAutoNode(fn, p)
             elif word == '@shadow ':
-                p.deleteAllChildren()
+                if shouldDelete: p.deleteAllChildren()
                 at.read(p, force=True, atShadow=True)
             elif word == '@edit':
-                p.deleteAllChildren()
+                if shouldDelete: p.deleteAllChildren()
                 at.readOneAtEditNode(fn, p)
             else:
                 g.es_print('can not refresh from disk\n%r' % p.h)
@@ -2357,6 +2359,9 @@ class Commands(object):
     @cmd('save-file')
     def save(self, event=None, fileName=None):
         '''Save a Leo outline to a file.'''
+        if False and g.app.gui.guiName() == 'curses':
+            g.trace('===== Save disabled in curses gui =====')
+            return
         c = self; p = c.p
         # Do this now: w may go away.
         w = g.app.gui.get_focus(c)
@@ -2406,12 +2411,12 @@ class Commands(object):
                     fileName = g.app.gui.runSaveFileDialog(c,
                         initialfile=c.mFileName,
                         title="Save",
-                        filetypes=[("Leo files", "*.leo")],
-                        defaultextension=".leo")
+                        filetypes=[g.fileFilters('LEOFILES')],
+                        defaultextension=g.defaultLeoFileExtension(c))
             c.bringToFront()
             if fileName:
                 # Don't change mFileName until the dialog has suceeded.
-                c.mFileName = g.ensure_extension(fileName, ".leo")
+                c.mFileName = g.ensure_extension(fileName, g.defaultLeoFileExtension(c))
                 c.frame.title = c.computeWindowTitle(c.mFileName)
                 c.frame.setTitle(c.computeWindowTitle(c.mFileName))
                     # 2013/08/04: use c.computeWindowTitle.
@@ -2483,15 +2488,15 @@ class Commands(object):
             fileName = g.app.gui.runSaveFileDialog(c,
                 initialfile=c.mFileName,
                 title="Save As",
-                filetypes=[("Leo files", "*.leo")],
-                defaultextension=".leo")
+                filetypes=[g.fileFilters('LEOFILES')],
+                defaultextension=g.defaultLeoFileExtension(c))
         c.bringToFront()
         if fileName:
             # Fix bug 998090: save file as doesn't remove entry from open file list.
             if c.mFileName:
                 g.app.forgetOpenFile(c.mFileName)
             # Don't change mFileName until the dialog has suceeded.
-            c.mFileName = g.ensure_extension(fileName, ".leo")
+            c.mFileName = g.ensure_extension(fileName, g.defaultLeoFileExtension(c))
             # Part of the fix for https://bugs.launchpad.net/leo-editor/+bug/1194209
             c.frame.title = title = c.computeWindowTitle(c.mFileName)
             c.frame.setTitle(title)
@@ -2535,11 +2540,11 @@ class Commands(object):
             fileName = g.app.gui.runSaveFileDialog(c,
                 initialfile=c.mFileName,
                 title="Save To",
-                filetypes=[("Leo files", "*.leo")],
-                defaultextension=".leo")
+                filetypes=[g.fileFilters('LEOFILES')],
+                defaultextension=g.defaultLeoFileExtension(c))
         c.bringToFront()
         if fileName:
-            fileName = g.ensure_extension(fileName, ".leo")
+            fileName = g.ensure_extension(fileName, g.defaultLeoFileExtension(c))
             c.fileCommands.saveTo(fileName)
             g.app.recentFilesManager.updateRecentFiles(fileName)
             g.chdir(fileName)
@@ -2628,6 +2633,18 @@ class Commands(object):
         '''Sort the recent files list.'''
         c = self
         g.app.recentFilesManager.sortRecentFiles(c)
+    #@+node:vitalije.20170703115710.1: *6* c.editRecentFiles
+    @cmd('edit-recent-files')
+    def editRecentFiles(self, event=None):
+        '''Opens recent files list in a new node for editing.'''
+        c = self
+        g.app.recentFilesManager.editRecentFiles(c)
+    #@+node:vitalije.20170703115710.2: *6* c.writeEditedRecentFiles
+    @cmd('write-edited-recent-files')
+    def writeEditedRecentFiles(self, event=None):
+        '''Sort the recent files list.'''
+        c = self
+        g.app.recentFilesManager.writeEditedRecentFiles(c)
     #@+node:ekr.20031218072017.2838: *5* Read/Write submenu
     #@+node:ekr.20070806105721.1: *6* c.readAtAutoNodes
     @cmd('read-at-auto-nodes')
@@ -3034,7 +3051,7 @@ class Commands(object):
             if redraw:
                 p = g.findNodeAnywhere(c2, "Leo's cheat sheet")
                 if p:
-                    c2.selectPosition(p, enableRedrawFlag=False)
+                    c2.selectPosition(p)
                     p.expand()
                 c2.redraw()
             return c2
@@ -3276,10 +3293,11 @@ class Commands(object):
         if s is None:
             s = g.app.gui.getTextFromClipboard()
         pasteAsClone = not reassignIndices
-        if pasteAsClone and g.app.paste_c != c:
-            g.es('illegal paste-retaining-clones', color='red')
-            g.es('only valid in same outline.')
-            return
+        # commenting following block fixes #478
+        #if pasteAsClone and g.app.paste_c != c:
+        #    g.es('illegal paste-retaining-clones', color='red')
+        #    g.es('only valid in same outline.')
+        #    return
         undoType = 'Paste Node' if reassignIndices else 'Paste As Clone'
         c.endEditing()
         if not s or not c.canPasteOutline(s):
@@ -3960,7 +3978,7 @@ class Commands(object):
     #@+node:ekr.20031218072017.2899: *6* Commands (outline menu)
     #@+node:ekr.20031218072017.2900: *7* c.contractAllHeadlines
     @cmd('contract-all')
-    def contractAllHeadlines(self, event=None):
+    def contractAllHeadlines(self, event=None, redrawFlag=True):
         '''Contract all nodes in the outline.'''
         c = self
         for p in c.all_positions():
@@ -3969,7 +3987,8 @@ class Commands(object):
         p = c.p
         while p and p.hasParent():
             p.moveToParent()
-        c.redraw(p, setFocus=True)
+        if redrawFlag:
+            c.redraw(p, setFocus=True)
         c.expansionLevel = 1 # Reset expansion level.
     #@+node:ekr.20080819075811.3: *7* c.contractAllOtherNodes & helper
     @cmd('contract-all-other-nodes')
@@ -4654,8 +4673,8 @@ class Commands(object):
         # Patch by nh2: 0004-Add-bool-collapse_nodes_after_move-option.patch
         if c.collapse_nodes_after_move and c.sparse_move: # New in Leo 4.4.2
             parent.contract()
-        c.redraw_now(p, setFocus=True)
-        c.recolor_now() # Moving can change syntax coloring.
+        c.redraw(p, setFocus=True)
+        c.recolor() # Moving can change syntax coloring.
     #@+node:ekr.20031218072017.1771: *6* c.moveOutlineRight
     @cmd('move-outline-right')
     def moveOutlineRight(self, event=None):
@@ -4684,8 +4703,8 @@ class Commands(object):
         c.setChanged(True)
         u.afterMoveNode(p, 'Move Right', undoData, dirtyVnodeList)
         # g.trace(p)
-        c.redraw_now(p, setFocus=True)
-        c.recolor_now()
+        c.redraw(p, setFocus=True)
+        c.recolor()
     #@+node:ekr.20031218072017.1772: *6* c.moveOutlineUp
     @cmd('move-outline-up')
     def moveOutlineUp(self, event=None):
@@ -5547,6 +5566,7 @@ class Commands(object):
             g.app.commandName = label
         if not g.doHook("command1", c=c, p=p, v=p, label=label):
             try:
+                # redrawCount = c.frame.tree.redrawCount
                 c.inCommand = True
                 if trace: g.trace('start', command)
                 val = command(event)
@@ -5570,69 +5590,40 @@ class Commands(object):
                 else:
                     if trace: g.trace('calling outerUpdate')
                     c.outerUpdate()
+                    # redrawCount2 = c.frame.tree.redrawCount
+                    # if redrawCount2 > redrawCount + 1:
+                        # g.trace('too many redraw', label, redrawCount2, redrawCount)
+
         # Be careful: the command could destroy c.
         if c and c.exists:
             p = c.p
             g.doHook("command2", c=c, p=p, v=p, label=label)
     #@+node:ekr.20080514131122.20: *4* c.outerUpdate
     def outerUpdate(self):
+        '''Handle delayed focus requests and modified events.'''
         trace = False and not g.unitTesting
-        verbose = False; traceFocus = False
-        c = self; aList = []
+        c = self
         if not c.exists or not c.k:
             return
-        # Suppress any requested redraw until we have iconified or diconified.
-        redrawFlag = c.requestRedrawFlag
-        c.requestRedrawFlag = False
-        if trace and verbose:
-            g.trace('**start', c.shortFileName() or '<unnamed>', g.callers(5))
-        if c.requestBringToFront:
-            if hasattr(c.frame, 'bringToFront'):
-                c.requestBringToFront.frame.bringToFront()
-                    # c.requestBringToFront is a commander.
-            c.requestBringToFront = None
-        # The iconify requests are made only by c.bringToFront.
-        if c.requestedIconify == 'iconify':
-            if verbose: aList.append('iconify')
-            c.frame.iconify()
-        if c.requestedIconify == 'deiconify':
-            if verbose: aList.append('deiconify')
-            c.frame.deiconify()
-        if redrawFlag:
-            if trace: g.trace('****', 'tree.drag_p', c.frame.tree.drag_p)
-            # A hack: force the redraw, even if we are dragging.
-            aList.append('*** redraw')
-            c.frame.tree.redraw_now(forceDraw=True)
-        if c.requestRecolorFlag:
-            aList.append('%srecolor' % (
-                '' if c.incrementalRecolorFlag else 'full '))
-            # This should be the only call to c.recolor_now.
-            c.recolor_now(incremental=c.incrementalRecolorFlag)
+        # New in Leo 5.6: Delayed redraws are useful in utility methods.
+        if c.requestLaterRedraw:
+            if c.enableRedrawFlag:
+                c.requestLaterRedraw = False
+                c.redraw()
+        # Delayed focus requests will always be useful.
         if c.requestedFocusWidget:
             w = c.requestedFocusWidget
-            if traceFocus: aList.append('focus: %s' % g.app.gui.widget_name(w))
+            if trace: g.trace('focus: %s' % g.app.gui.widget_name(w))
             c.set_focus(w)
-        else:
-            # We must not set the focus to the body pane here!
-            # That would make nested calls to c.outerUpdate significant.
-            pass
-        if trace and (verbose or aList):
-            g.trace('** end', aList)
-        c.incrementalRecolorFlag = False
-        c.requestRecolorFlag = None
-        c.requestRedrawFlag = False
-        c.requestedFocusWidget = None
-        c.requestedIconify = ''
-        mods = g.childrenModifiedSet
-        if mods:
-            #print(mods)
-            g.doHook("childrenModified", c=c, nodes=mods)
-            mods.clear()
-        mods = g.contentModifiedSet
-        if mods:
-            #print(mods)
-            g.doHook("contentModified", c=c, nodes=mods)
-            mods.clear()
+            c.requestedFocusWidget = None
+        table = (
+            ("childrenModified", g.childrenModifiedSet),
+            ("contentModified", g.contentModifiedSet),
+        )
+        for kind, mods in table:
+            if mods:
+                g.doHook(kind, c=c, nodes=mods)
+                mods.clear()
     #@+node:ekr.20031218072017.2945: *3* c.Dragging
     #@+node:ekr.20031218072017.2353: *4* c.dragAfter
     def dragAfter(self, p, after):
@@ -5747,7 +5738,6 @@ class Commands(object):
         c = self
         if flag:
             c.requestRedrawFlag = True
-            # g.trace('flag is True',c.shortFileName(),g.callers())
 
     BeginUpdate = beginUpdate # Compatibility with old scripts
     EndUpdate = endUpdate # Compatibility with old scripts
@@ -5755,9 +5745,6 @@ class Commands(object):
     def bringToFront(self, c2=None, set_focus=True):
         c = self
         c2 = c2 or c
-        c.requestBringToFront = c2
-        c.requestedIconify = 'deiconify'
-        c.requestedFocusWidget = c2.frame.body.wrapper
         g.app.gui.ensure_commander_visible(c2)
 
     BringToFront = bringToFront # Compatibility with old scripts
@@ -5786,12 +5773,12 @@ class Commands(object):
                 redraw_flag = True
         # if trace: g.trace(redraw_flag, g.callers())
         return redraw_flag
-    #@+node:ekr.20080514131122.12: *4* c.recolor & requestRecolor
-    def requestRecolor(self):
-        c = self
-        c.requestRecolorFlag = True
+    #@+node:ekr.20080514131122.12: *4* c.recolorCommand
+    # def recolor(self):
+        # c = self
+        # c.requestRecolorFlag = True
 
-    recolor = requestRecolor
+    # requestRecolor = recolor
 
     @cmd('recolor')
     def recolorCommand(self, event=None):
@@ -5804,11 +5791,22 @@ class Commands(object):
         wrapper.setAllText(c.p.b)
         wrapper.setSelectionRange(i, j, insert=ins)
     #@+node:ekr.20080514131122.14: *4* c.redrawing...
+    #@+node:ekr.20170808014610.1: *5* c.enable/disable_redraw (New in Leo 5.6)
+    def disable_redraw(self):
+        '''Disable all redrawing until enabled.'''
+        c = self
+        c.enableRedrawFlag = False
+        
+    def enable_redraw(self):
+        c = self
+        c.enableRedrawFlag = True
     #@+node:ekr.20090110073010.1: *5* c.redraw
     def redraw(self, p=None, setFocus=False):
         '''Redraw the screen immediately.'''
         trace = False and not g.unitTesting
         c = self
+        # New in Leo 5.6: clear the redraw request.
+        c.requestLaterRedraw = False
         if not p:
             p = c.p or c.rootPosition()
         if not p:
@@ -5818,76 +5816,109 @@ class Commands(object):
             # Fix bug https://bugs.launchpad.net/leo-editor/+bug/1183855
             # This looks redundant, but it is probably the only safe fix.
             c.frame.tree.select(p)
-        # 2012/03/10: tree.redraw will change the position if p is a hoisted @chapter node.
+        # tree.redraw will change the position if p is a hoisted @chapter node.
         p2 = c.frame.tree.redraw(p)
         # Be careful.  NullTree.redraw returns None.
         c.selectPosition(p2 or p)
-        if trace:
-            g.trace(p2 and p2.h)
-            # g.trace('setFocus', setFocus, p2 and p2.h or p and p.h)
+        if trace: g.trace(p2 and p2.h, g.callers())
         if setFocus: c.treeFocusHelper()
+        # New in Leo 5.6: clear the redraw request, again.
+        c.requestLaterRedraw = False
+
     # Compatibility with old scripts
 
     force_redraw = redraw
     redraw_now = redraw
+    #@+node:ekr.20090110073010.3: *5* c.redraw_afer_icons_changed
+    def redraw_after_icons_changed(self):
+        '''Update the icon for the presently selected node'''
+        c = self
+        if c.enableRedrawFlag:
+            c.frame.tree.redraw_after_icons_changed()
+            # c.treeFocusHelper()
+        else:
+            c.requestLaterRedraw = True
     #@+node:ekr.20090110131802.2: *5* c.redraw_after_contract
     def redraw_after_contract(self, p=None, setFocus=False):
         c = self
         c.endEditing()
-        if p:
-            c.setCurrentPosition(p)
+        if c.enableRedrawFlag:
+            if p:
+                c.setCurrentPosition(p)
+            else:
+                p = c.currentPosition()
+            if p.isCloned():
+                c.redraw(p=p, setFocus=setFocus)
+            else:
+                c.frame.tree.redraw_after_contract(p)
+                if setFocus: c.treeFocusHelper()
         else:
-            p = c.currentPosition()
-        if p.isCloned():
-            c.redraw(p=p, setFocus=setFocus)
-        else:
-            c.frame.tree.redraw_after_contract(p)
-            if setFocus: c.treeFocusHelper()
+            c.requestLaterRedraw = True
     #@+node:ekr.20090112065525.1: *5* c.redraw_after_expand
     def redraw_after_expand(self, p=None, setFocus=False):
         c = self
         c.endEditing()
-        if p:
-            c.setCurrentPosition(p)
+        if c.enableRedrawFlag:
+            if p:
+                c.setCurrentPosition(p)
+            else:
+                p = c.currentPosition()
+            if p.isCloned():
+                c.redraw(p=p, setFocus=setFocus)
+            else:
+                c.frame.tree.redraw_after_expand(p)
+                if setFocus: c.treeFocusHelper()
         else:
-            p = c.currentPosition()
-        if p.isCloned():
-            c.redraw(p=p, setFocus=setFocus)
-        else:
-            c.frame.tree.redraw_after_expand(p)
-            if setFocus: c.treeFocusHelper()
+            c.requestLaterRedraw = True
     #@+node:ekr.20090110073010.2: *5* c.redraw_after_head_changed
     def redraw_after_head_changed(self):
-        '''Redraw the screen (if needed) when editing ends.
-        This may be a do-nothing for some gui's.'''
-        return self.frame.tree.redraw_after_head_changed()
-    #@+node:ekr.20090110073010.3: *5* c.redraw_afer_icons_changed
-    def redraw_after_icons_changed(self):
-        '''Update the icon for the presently selected node,
-        or all icons if the 'all' flag is true.'''
+        '''
+        Redraw the screen (if needed) when editing ends.
+        This may be a do-nothing for some gui's.
+        '''
         c = self
-        c.frame.tree.redraw_after_icons_changed()
-        # c.treeFocusHelper()
+        if c.enableRedrawFlag:
+            return self.frame.tree.redraw_after_head_changed()
+        else:
+            c.requestLaterRedraw = True
     #@+node:ekr.20090110073010.4: *5* c.redraw_after_select
     def redraw_after_select(self, p):
         '''Redraw the screen after node p has been selected.'''
         trace = False and not g.unitTesting
         if trace: g.trace('(Commands)', p and p.h or '<No p>', g.callers(4))
         c = self
-        flag = c.expandAllAncestors(p)
-        if flag:
-            c.frame.tree.redraw_after_select(p)
-    #@+node:ekr.20080514131122.13: *4* c.recolor_now (QScintilla only)
-    def recolor_now(self, p=None, incremental=False, interruptable=True):
+        if c.enableRedrawFlag:
+            flag = c.expandAllAncestors(p)
+            if flag:
+                c.frame.tree.redraw_after_select(p)
+        else:
+            c.requestLaterRedraw = True
+    #@+node:ekr.20170908081918.1: *5* c.redraw_later
+    def redraw_later(self):
+        '''
+        Ensure that c.redraw() will be called eventually.
+        
+        c.outerUpdate will call c.redraw() only if no other code calls c.redraw().
+        '''
+        c = self
+        c.requestLaterRedraw = True
+    #@+node:ekr.20080514131122.13: *4* c.recolor
+    def recolor(self, **kwargs):
         # Support QScintillaColorizer.colorize.
         c = self
+        p = kwargs.get('p')
+        for name in ('incremental', 'interruptable'):
+            if name in kwargs:
+                print('c.recolor_now: "%s" keyword arg is deprecated' % name)
         colorizer = c.frame.body.colorizer
         if colorizer and hasattr(colorizer, 'colorize'):
             colorizer.colorize(p or c.p)
+            
+    recolor_now = recolor
     #@+node:ekr.20080514131122.17: *4* c.widget_name
     def widget_name(self, widget):
         # c = self
-        return g.app.gui and g.app.gui.widget_name(widget) or ''
+        return g.app.gui.widget_name(widget) if g.app.gui else '<no widget>'
     #@+node:ekr.20120306130648.9849: *3* c.enableMenuBar
     def enableMenuBar(self):
         '''A failed attempt to work around Ubuntu Unity memory bugs.'''
@@ -6021,14 +6052,16 @@ class Commands(object):
         j2 = line.find("@>")
         return -1 < i1 < j1 or -1 < i2 < j2
     #@+node:ekr.20031218072017.2965: *4* c.canFindMatchingBracket
+    #@@nobeautify
+
     def canFindMatchingBracket(self):
         c = self
         brackets = "()[]{}"
         w = c.frame.body.wrapper
         s = w.getAllText()
         ins = w.getInsertPoint()
-        c1 = 0 <= ins < len(s) and s[ins] or ''
-        c2 = 0 <= ins - 1 < len(s) and s[ins - 1] or ''
+        c1 = s[ins]   if 0 <= ins   < len(s) else ''
+        c2 = s[ins-1] if 0 <= ins-1 < len(s) else ''
         val = (c1 and c1 in brackets) or (c2 and c2 in brackets)
         return bool(val)
     #@+node:ekr.20040303165342: *4* c.canHoist & canDehoist
@@ -6368,8 +6401,9 @@ class Commands(object):
 
     def widgetWantsFocusNow(self, w):
         c = self
-        c.request_focus(w)
-        c.outerUpdate()
+        if w:
+            c.set_focus(w)
+            c.requestedFocusWidget = None
     # New in 4.9: all FocusNow methods now *do* call c.outerUpdate().
 
     def bodyWantsFocusNow(self):
@@ -6424,14 +6458,14 @@ class Commands(object):
         A generator yielding *all* the root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
         predicate.
-        
+
         The generator yields all **root** anywhere in the outline that satisfy
         the predicate. Once a root is found, the generator skips its subtree.
         '''
         c = self
         if predicate is None:
 
-            # pylint: disable=function-redefined    
+            # pylint: disable=function-redefined
             def predicate(p):
                 return p.isAnyAtFileNode()
 
@@ -6449,14 +6483,14 @@ class Commands(object):
         A generator yielding all unique root positions in the outline that
         satisfy the given predicate. p.isAnyAtFileNode is the default
         predicate.
-        
+
         The generator yields all **root** anywhere in the outline that satisfy
         the predicate. Once a root is found, the generator skips its subtree.
         '''
         c = self
         if predicate is None:
 
-            # pylint: disable=function-redefined        
+            # pylint: disable=function-redefined
             def predicate(p):
                 return p.isAnyAtFileNode()
 
@@ -6612,14 +6646,14 @@ class Commands(object):
         '''
         New in Leo 5.5: Return None.
         Using empty positions masks problems in program logic.
-        
+
         In fact, there are no longer any calls to this method in Leo's core.
         '''
         # c = self
         g.trace('This method is deprecated. Instead, just use None.')
         return None
         # return leoNodes.Position(None)
-        
+
     #@+node:ekr.20040307104131.3: *5* c.positionExists
     def positionExists(self, p, root=None, trace=False):
         """Return True if a position exists in c's tree"""
@@ -6676,7 +6710,7 @@ class Commands(object):
             return leoNodes.Position(v, childIndex=0, stack=None)
         else:
             return None
-            
+
     # For compatibiility with old scripts...
     rootVnode = rootPosition
     findRootPosition = rootPosition
@@ -7000,39 +7034,43 @@ class Commands(object):
     def putHelpFor(self, s, short_title=''):
         '''Helper for various help commands.'''
         c = self
-        s = g.adjustTripleString(s.rstrip(), c.tab_width)
-        if s.startswith('<') and not s.startswith('<<'):
-            pass # how to do selective replace??
-        pc = g.app.pluginsController
-        table = (
-            'viewrendered3.py',
-            'viewrendered2.py',
-            'viewrendered.py',
-        )
-        for name in table:
-            if pc.isLoaded(name):
-                vr = pc.loadOnePlugin(name)
-                break
-        else:
-            vr = pc.loadOnePlugin('viewrendered.py')
-        if g.unitTesting:
-            assert vr # For unit testing.
-        if vr:
-            kw = {
-                'c': c,
-                'flags': 'rst',
-                'kind': 'rst',
-                'label': '',
-                'msg': s,
-                'name': 'Apropos',
-                'short_title': short_title,
-                'title': ''}
-            vr.show_scrolled_message(tag='Apropos', kw=kw)
-            c.bodyWantsFocus()
-            if g.unitTesting:
-                vr.close_rendering_pane(event={'c': c})
-        else:
-            g.es(s)
+        g.app.gui.put_help(c, s, short_title)
+        # s = g.adjustTripleString(s.rstrip(), c.tab_width)
+        # if s.startswith('<') and not s.startswith('<<'):
+            # pass # how to do selective replace??
+        # if g.app.gui.guiName() == 'curses':
+            # g.app.gui.put_help(s, short_title)
+            # return
+        # pc = g.app.pluginsController
+        # table = (
+            # 'viewrendered3.py',
+            # 'viewrendered2.py',
+            # 'viewrendered.py',
+        # )
+        # for name in table:
+            # if pc.isLoaded(name):
+                # vr = pc.loadOnePlugin(name)
+                # break
+        # else:
+            # vr = pc.loadOnePlugin('viewrendered.py')
+        # if g.unitTesting:
+            # assert vr # For unit testing.
+        # if vr:
+            # kw = {
+                # 'c': c,
+                # 'flags': 'rst',
+                # 'kind': 'rst',
+                # 'label': '',
+                # 'msg': s,
+                # 'name': 'Apropos',
+                # 'short_title': short_title,
+                # 'title': ''}
+            # vr.show_scrolled_message(tag='Apropos', kw=kw)
+            # c.bodyWantsFocus()
+            # if g.unitTesting:
+                # vr.close_rendering_pane(event={'c': c})
+        # else:
+            # g.es(s)
     #@+node:ekr.20140717074441.17770: *3* c.recreateGnxDict
     def recreateGnxDict(self):
         '''Recreate the gnx dict prior to refreshing nodes from disk.'''
@@ -7125,23 +7163,24 @@ class Commands(object):
             # # Recolor the *body* text, **not** the headline.
             # k.showStateAndMode(w=c.frame.body.wrapper)
     #@+node:ekr.20031218072017.2997: *4* c.selectPosition
-    def selectPosition(self, p, enableRedrawFlag=True):
-        """Select a new position."""
+    def selectPosition(self, p, **kwargs):
+        '''
+        Select a new position, redrawing the screen *only* if we must
+        change chapters.
+        '''
         trace = False and not g.unitTesting
-        trace_no_p = True and not g.app.batchMode
-            # A serious error.
-        c = self; cc = c.chapterController
+        if kwargs:
+            print('c.selectPosition: all keyword args are ignored', g.callers())
+        c = self
+        cc = c.chapterController
         if not p:
-            if trace and trace_no_p: g.trace('===== no p', g.callers())
+            if not g.app.batchMode: # A serious error.
+                g.trace('Warning: no p', g.callers())
             return
-        # 2016/04/20: check cc.selectChapterLockout.
         if cc and not cc.selectChapterLockout:
             cc.selectChapterForPosition(p)
-                # Important: selectChapterForPosition calls c.redraw
-                # if the chapter changes.
-            if trace: g.trace(p and p.h, g.callers())
-        # 2012/03/08: De-hoist as necessary to make p visible.
-        redraw_flag = False
+                # Calls c.redraw only if the chapter changes.
+        # De-hoist as necessary to make p visible.
         if c.hoistStack:
             while c.hoistStack:
                 bunch = c.hoistStack[-1]
@@ -7149,7 +7188,6 @@ class Commands(object):
                     break
                 else:
                     bunch = c.hoistStack.pop()
-                    redraw_flag = True
                     if trace: g.trace('unhoist', bunch.p.h)
         if trace:
             if c.positionExists(p):
@@ -7157,12 +7195,9 @@ class Commands(object):
             else:
                 g.trace('**** does not exist: %s' % (p and p.h))
         c.frame.tree.select(p)
-        # New in Leo 4.4.2.
         c.setCurrentPosition(p)
             # Do *not* test whether the position exists!
             # We may be in the midst of an undo.
-        if redraw_flag and enableRedrawFlag:
-            c.redraw()
 
     # Compatibility, but confusing.
     selectVnode = selectPosition
@@ -7176,7 +7211,7 @@ class Commands(object):
             return
         c = self; p = c.p; p1 = p.copy()
         invisible = c.config.getBool('invisible_outline_navigation')
-        ch = event and event.char or ''
+        ch = event.char if event else ''
         allFlag = ch.isupper() and invisible # all is a global (!?)
         if not invisible: ch = ch.lower()
         found = False
@@ -7236,7 +7271,7 @@ class Commands(object):
                 if h.startswith('@' + s):
                     while 1:
                         n = len(prefix)
-                        ch2 = n < len(h) and h[n] or ''
+                        ch2 = h[n] if n < len(h) else ''
                         if ch2.isspace():
                             prefix = prefix + ch2
                         else: break
@@ -7272,13 +7307,66 @@ class Commands(object):
         if g.app.externalFilesController:
             return g.app.externalFilesController.check_overwrite(c, fn)
         else:
-            return True # Vitalije.
+            return True
     #@+node:ekr.20090103070824.9: *4* c.setFileTimeStamp
     def setFileTimeStamp(self, fn):
         '''Update the timestamp for fn..'''
         # c = self
         if g.app.externalFilesController:
             g.app.externalFilesController.set_time(fn)
+    #@+node:vitalije.20170708172746.1: *3* c.editShortcut
+    @cmd('edit-shortcut')
+    def editShortcut(self, event=None):
+        k = self.k
+        if k.isEditShortcutSensible():
+            self.k.setState('input-shortcut', 'input-shortcut')
+            g.es('Press desired key combination')
+        else:
+            g.es('No possible shortcut in selected body line/headline')
+            g.es('Select @button, @command, @shortcuts or @mode node and run it again.')
+    #@+node:vitalije.20170713174950.1: *3* c.editOneSetting
+    @cmd('edit-setting')
+    def editOneSetting(self, event=None):
+        '''Opens correct dialog for selected setting type'''
+        c = self; p = c.p; func = None
+        if p.h.startswith('@font'):
+            func = c.commandsDict.get('show-fonts')
+        elif p.h.startswith('@color '):
+            func = c.commandsDict.get('show-color-wheel')
+        elif p.h.startswith(('@shortcuts','@button','@command')):
+            c.editShortcut()
+            return
+        else:
+            g.es('not in a setting node')
+            return
+        if func:
+            event = g.app.gui.create_key_event(c, None, None, None)
+            func(event)
+    #@+node:vitalije.20170831154859.1: *3* reference outline commands
+    #@+node:vitalije.20170831154830.1: *4* c.updateRefLeoFile
+    @cmd('update-ref-file')
+    def updateRefLeoFile(self, event=None):
+        '''Saves public part of file to reference Leo file.'''
+        c = self
+        c.fileCommands.save_ref()
+    #@+node:vitalije.20170831154840.1: *4* c.readRefLeoFile
+    @cmd('read-ref-file')
+    def readRefLeoFile(self, event=None):
+        '''Updates public part of outline from reference Leo file.'''
+        c = self
+        c.fileCommands.updateFromRefFile()
+    #@+node:vitalije.20170831154850.1: *4* c.setReferenceFile
+    @cmd('set-reference-file')
+    def setReferenceFile(self, event=None):
+        '''Select a reference Leo document for the public part of this outline.'''
+        c = self
+        table = [ g.fileFilters("LEOFILES"),]
+        fileName = g.app.gui.runOpenFileDialog(c,
+                title="Select reference Leo file",
+                filetypes=table,
+                defaultextension=g.defaultLeoFileExtension(c))
+        if not fileName: return
+        c.fileCommands.setReferenceFile(fileName)
     #@+node:bobjack.20080509080123.2: *3* c.universalCallback & minibufferCallback
     def universalCallback(self, source_c, function):
         """Create a universal command callback.

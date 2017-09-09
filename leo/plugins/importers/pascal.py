@@ -19,18 +19,18 @@ class Pascal_Importer(Importer):
             state_class = Pascal_ScanState,
             strict = False,
         )
-        
+
     #@+others
     #@+node:ekr.20161126171035.4: *3* pascal_i.clean_headline
     pascal_clean_pattern = re.compile(r'^(function|procedure)\s+([\w_.]+)')
 
-    def clean_headline(self, headline):
+    def clean_headline(self, s):
         '''Return a cleaned up headline s.'''
-        m = self.pascal_clean_pattern.match(headline)
+        m = self.pascal_clean_pattern.match(s)
         if m:
             return '%s %s' % (m.group(1), m.group(2))
         else:
-            return headline.strip()
+            return s.strip()
 
     #@+node:ekr.20161127115120.1: *3* pascal_i.cut_stack
     def cut_stack(self, new_state, stack):
@@ -65,7 +65,7 @@ class Pascal_Importer(Importer):
         '''
         trace = False and g.unitTesting
         comment, block1, block2 = self.single_comment, self.block1, self.block2
-        
+
         def add_key(d, key, data):
             aList = d.get(key,[])
             aList.append(data)
@@ -123,7 +123,7 @@ class Pascal_Importer(Importer):
 #@+node:ekr.20161126171035.6: ** class class Pascal_ScanState
 class Pascal_ScanState:
     '''A class representing the state of the pascal line-oriented scan.'''
-    
+
     def __init__(self, d=None):
         '''Pascal_ScanState.__init__'''
         if d:

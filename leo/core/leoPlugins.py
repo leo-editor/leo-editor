@@ -7,6 +7,7 @@ import sys
 # but that mignt not load because imports may fail.
 optional_modules = [
     'leo.plugins.livecode',
+    'leo.plugins.cursesGui2',
 ]
 #@+others
 #@+node:ekr.20100908125007.6041: ** Top-level functions (leoPlugins.py)
@@ -198,7 +199,7 @@ class BaseLeoPlugin(object):
         self.commandNames = []
     #@+node:ekr.20100908125007.6013: *3* setCommand
     def setCommand(self, commandName, handler,
-                    shortcut=None, pane='all', verbose=True):
+                    shortcut='', pane='all', verbose=True):
         """Associate a command name with handler code,
         optionally defining a keystroke shortcut
         """
@@ -206,7 +207,8 @@ class BaseLeoPlugin(object):
         self.commandName = commandName
         self.shortcut = shortcut
         self.handler = handler
-        self.c.k.registerCommand(commandName, shortcut, handler, pane, verbose)
+        self.c.k.registerCommand(commandName, handler,
+            pane=pane, shortcut=shortcut, verbose=verbose)
     #@+node:ekr.20100908125007.6014: *3* setMenuItem
     def setMenuItem(self, menu, commandName=None, handler=None):
         """Create a menu item in 'menu' using text 'commandName' calling handler 'handler'
@@ -451,7 +453,12 @@ class LeoPluginsController(object):
     #@+node:ekr.20100909065501.5953: *3* plugins.Load & unload
     #@+node:ekr.20100908125007.6022: *4* plugins.loadHandlers
     def loadHandlers(self, tag, keys):
-        """Load all enabled plugins from the plugins directory"""
+        '''
+        Load all enabled plugins.
+
+        Using a module name (without the trailing .py) allows a plugin to
+        be loaded from outside the leo/plugins directory.
+        '''
 
         def pr(*args, **keys):
             if not g.app.unitTesting:
@@ -469,7 +476,12 @@ class LeoPluginsController(object):
                 self.loadOnePlugin(plugin.strip(), tag=tag)
     #@+node:ekr.20100908125007.6024: *4* plugins.loadOnePlugin
     def loadOnePlugin(self, moduleOrFileName, tag='open0', verbose=False):
-        '''Load one plugin with extensive tracing if --trace-plugins is in effect.'''
+        '''
+        Load one plugin from a file name or module.
+        Use extensive tracing if --trace-plugins is in effect.
+
+        Using a module name allows plugins to be loaded from outside the leo/plugins directory.
+        '''
         global optional_modules
             # verbose is no longer used: all traces are verbose
         trace = g.app.trace_plugins
@@ -561,8 +573,9 @@ class LeoPluginsController(object):
             if trace: report('loaded: %s' % moduleName)
         elif trace or self.warn_on_failure:
             if trace or tag == 'open0':
-                if moduleName not in optional_modules:
-                    report('can not load enabled plugin: %s' % moduleName)
+                if not g.app.gui.guiName().startswith('curses'):
+                    if moduleName not in optional_modules:
+                        report('can not load enabled plugin: %s' % moduleName)
         return result
     #@+node:ekr.20031218072017.1318: *4* plugins.plugin_signon
     def plugin_signon(self, module_name, verbose=False):

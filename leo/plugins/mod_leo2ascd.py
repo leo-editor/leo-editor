@@ -134,7 +134,7 @@ def CodeChunk(text, width=72):
         chunkList.append(text)
     else:
         while chunkEnd < textLen:
-            if len(chunkList) > 0:
+            if chunkList:
                 prefix = '  '
             chunkEnd = chunkStart + shortWidth
             if chunkEnd > textLen:
@@ -310,7 +310,7 @@ def WriteNode(v,startinglevel, ascFile):
                 continue
         # We have something to print, so print heading.
         if lastLinePrintedType == CV.LINE_WAS_NONE:
-            if (len(h) > 0) and (Conf.current["PrintHeadings"] == "on"):
+            if h and (Conf.current["PrintHeadings"] == "on"):
                 WriteOutputLine("\n\n%s" % h)
                 WriteOutputLine(SectionUnderline(h,v.level()-startinglevel,v))
                 lastLinePrintedType = CV.LINE_WAS_HEAD

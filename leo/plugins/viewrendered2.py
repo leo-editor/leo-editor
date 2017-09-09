@@ -340,7 +340,7 @@ if import_ok:
             vr.show()
         else:
             vr = ViewRenderedController(c)
-            controllers[c.hash()] = vr 
+            controllers[c.hash()] = vr
             if trace: g.trace('** new controller: %s' % (vr))
             if hasattr(c, 'free_layout'):
                 vr._ns_id = '_leo_viewrendered' # for free_layout load/save
@@ -1443,11 +1443,11 @@ class ViewRenderedController(QtWidgets.QWidget):
             assert i > -1
             sizes = splitter.sizes()
             n = len(sizes)
-            for j in range(len(sizes)):
+            for j, size in enumerate(sizes):
                 if j == i:
-                    sizes[j] = max(0, sizes[i] + delta)
+                    sizes[j] = max(0, size + delta)
                 else:
-                    sizes[j] = max(0, sizes[j] - int(delta / (n - 1)))
+                    sizes[j] = max(0, size - int(delta / (n - 1)))
             splitter.setSizes(sizes)
     #@+node:ekr.20140226074510.4216: *3* vr2.activate
     def activate(self):

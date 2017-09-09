@@ -3,7 +3,1019 @@
 .. @@language rest
 .. @@wrap
 .. @+all
-.. @+node:ekr.20170308150422.1: ** To do: Leo 5.6
+.. @+node:ekr.20170308150422.1: ** First
+# These should be separate issues.
+.. @+node:ekr.20170826052924.1: *3* Duplicate Joe Orr's page
+https://bl.ocks.org/kaleguy/cef095e16e147bc04dd6c5812d732fb2
+
+About bl.ocks.org
+https://bl.ocks.org/-/about
+.. @+node:ekr.20170905104117.1: *4* LeoView-blocks.org
+@language html
+
+<!DOCTYPE html>
+<html>
+<head>
+<<head>>
+</head>
+<body>
+<header>
+  <div class="column">
+    <div class="navigation">
+      <a href="https://bl.ocks.org/">Popular</a>
+      / <a href="https://bl.ocks.org/-/about">About</a>
+    </div>
+    <a class="user" href="https://bl.ocks.org/kaleguy"><img class="avatar" src="Leo%20Viewer%20-%20bl.ocks.org_files/1402176.png" width="30" height="30">Joe Orr</a>’s
+    Block <a class="gist gist-id self" title="View Gist on GitHub." href="https://gist.github.com/kaleguy/cef095e16e147bc04dd6c5812d732fb2">cef095e16e147bc04dd6c5812d732fb2</a>    <div class="date">Updated March 4, 2017</div>
+  </div>
+</header>
+
+<div class="column">
+  <h1>Leo Viewer</h1>
+  <div class="index">
+    <iframe sandbox="allow-popups allow-scripts allow-forms allow-same-origin" src="Leo%20Viewer%20-%20bl.ocks.org_files/a.html" marginwidth="0" marginheight="0" style="height:480px;" scrolling="no"></iframe>
+  </div>
+  <div class="index-pop">
+    <a target="_blank" title="Open Block cef095e16e147bc04dd6c5812d732fb2 a new window." href="https://bl.ocks.org/kaleguy/raw/cef095e16e147bc04dd6c5812d732fb2">Open<svg height="16" width="12"><path d="M11 10h1v3c0 0.55-0.45 1-1 1H1c-0.55 0-1-0.45-1-1V3c0-0.55 0.45-1 1-1h3v1H1v10h10V10zM6 2l2.25 2.25-3.25 3.25 1.5 1.5 3.25-3.25 2.25 2.25V2H6z"></path></svg></a>
+  </div>
+
+<div class="gist-readme" data-key="README.md"><p><a href="http://leoeditor.com/">Leo</a> is, among other things, an open source outlining editor.</p>
+
+    <p>This code snippet shows how to a view simple Leo file (one that
+    contains no @file directives, just text nodes).</p>
+    
+    <p>If the first line in a node has a @language directive (including md
+    or html), the content will be properly displayed. </p>
+    
+    <p>View on
+    <a href="https://bl.ocks.org/kaleguy/cef095e16e147bc04dd6c5812d732fb2">bl.ocks.org</a>
+    </p>
+    
+    <p>Leo files are XML, the snippet transforms the Leo XML into JSON via XSL
+    and then uses Vue.js create the viewer.</p>
+</div>
+
+<div class="gist-sources">
+    <div class="gist-source" data-key="index.html">
+      <h2>index.html<a name="index.html" class="anchor" href="#index.html">#</a></h2>
+      <pre><code class="html xml">
+    <span class="tag">&lt;
+      <span class="title">html</span>&gt;</span>
+    <span class="tag">&lt;
+        <span class="title">head</span>&gt;</span>
+    <span class="tag">&lt;
+        <span class="title">script</span>
+        <span class="attribute">type</span>=
+        <span class="value">"text/javascript"</span>
+        <span class="attribute">src</span>=
+        <span class="value">"https://ff.kis.v2.scr.kaspersky-labs.com/6ABA38EC-EAF5-3942-9237-326AECF014D4/main.js"</span>
+        <span class="attribute">charset</span>=
+        <span class="value">"UTF-8"</span>&gt;</span>
+    <span class="javascript"></span>
+    <span class="tag">&lt;/
+    <span class="title">script</span>&gt;</span>
+    <span class="tag">&lt;
+        <span class="title">link</span>
+        <span class="attribute">rel</span>=
+        <span class="value">"stylesheet"</span>
+        <span class="attribute">crossorigin</span>=
+        <span class="value">"anonymous"</span>
+        <span class="attribute">href</span>=
+        <span class="value">"
+            https://ff.kis.v2.scr.kaspersky-labs.com/4D410FCEA623-7329-2493-5FAE-CE83ABA6/abn/main.css"
+            </span>/&gt;</span>
+    <span class="tag">&lt;
+        <span class="title">script</span>
+        <span class="attribute">src</span>=
+        <span class="value">"https://unpkg.com/vue"</span>&gt;</span>
+    <span class="javascript"></span>
+    <span class="tag">&lt;/
+        <span class="title">script</span>&gt;</span>
+
+        <span class="tag">&lt;
+            <span class="title">style</span>
+            <span class="attribute">type</span>=
+            <span class="value">"text/css"</span>&gt;</span>
+            <span class="css">
+                <span class="tag">body</span>
+                <span class="rules">{
+                    <span class="rule">
+                        <span class="attribute">font-family</span>:
+                        <span class="value"> Verdana</span>;
+                    </span>
+                    <span class="rule">}</span>
+                </span>
+            <span class="class">.item</span>
+            <span class="rules">{
+                <span class="rule">
+                    <span class="attribute">cursor</span>:
+                    <span class="value"> pointer</span>;
+                </span>
+                <span class="rule">}</span>
+            </span>
+            <span class="class">.bold</span>
+            <span class="rules">{
+                <span class="rule">
+                    <span class="attribute">font-weight</span>:
+                    <span class="value"> bold</span>;
+                </span>
+                <span class="rule">}</span>
+            </span>
+            <span class="tag">ul</span> <span class="rules">{
+                <span class="rule"><span class="attribute">padding-left</span>:<span class="value"> <span class="number">1</span>em</span>;</span>
+                <span class="rule"><span class="attribute">line-height</span>:<span class="value"> <span class="number">1.5</span>em</span>;</span>
+                <span class="rule"><span class="attribute">list-style-type</span>:<span class="value"> none</span>;</span>
+            <span class="rule">}</span></span>
+            <span class="tag">li</span> <span class="rules">{
+                <span class="rule"><span class="attribute">white-space</span>:<span class="value"> nowrap</span>;</span>
+            <span class="rule">}</span></span>
+            <span class="class">.active</span> <span class="rules">{
+                <span class="rule"><span class="attribute">background</span>:<span class="value"> <span class="number">#81ff00</span></span>;</span>
+            <span class="rule">}</span></span>
+            <span class="tag">li</span> &gt; <span class="tag">div</span> <span class="rules">{
+               <span class="rule"><span class="attribute">padding-left</span>:<span class="value"><span class="number">4</span>px</span>;</span>
+            <span class="rule">}</span></span>
+        </span><span class="tag">&lt;/<span class="title">style</span>&gt;</span>
+
+        <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"https://cdn.rawgit.com/lingtalfi/simpledrag/master/simpledrag.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.6/marked.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">link</span> <span class="attribute">rel</span>=<span class="value">"stylesheet"</span> <span class="attribute">href</span>=<span class="value">"//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/vs.min.css"</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript">hljs.initHighlightingOnLoad();</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+
+        <span class="tag">&lt;<span class="title">style</span> <span class="attribute">type</span>=<span class="value">"text/css"</span>&gt;</span><span class="css">
+
+            <span class="tag">html</span>, <span class="tag">body</span> <span class="rules">{
+                <span class="rule"><span class="attribute">height</span>:<span class="value"> <span class="number">100</span>%</span>;</span>
+                <span class="rule"><span class="attribute">margin</span>:<span class="value"><span class="number">0</span></span>;</span>
+            <span class="rule">}</span></span>
+
+            <span class="tag">textarea</span> <span class="rules">{
+                <span class="rule"><span class="attribute">margin-top</span>:<span class="value"><span class="number">20</span>px</span>;</span>
+                <span class="rule"><span class="attribute">border</span>:<span class="value"> none</span>;</span>
+                <span class="rule"><span class="attribute">background-color</span>:<span class="value"> transparent</span>;</span>
+                <span class="rule"><span class="attribute">resize</span>:<span class="value"> none</span>;</span>
+                <span class="rule"><span class="attribute">outline</span>:<span class="value"> none</span>;</span>
+                <span class="rule"><span class="attribute">font-size</span>:<span class="value"><span class="number">16</span>px</span>;</span>
+                <span class="rule"><span class="attribute">font-family</span>:<span class="value"> Verdana</span>;</span>
+                <span class="rule"><span class="attribute">height</span>:<span class="value"><span class="number">100</span>%</span>;</span>
+                <span class="rule"><span class="attribute">width</span>:<span class="value"><span class="number">100</span>%</span>;</span>
+
+            <span class="rule">}</span></span>
+
+            <span class="class">.panes-container</span> <span class="rules">{
+                <span class="rule"><span class="attribute">display</span>:<span class="value"> flex</span>;</span>
+                <span class="rule"><span class="attribute">width</span>:<span class="value"> <span class="number">100</span>%</span>;</span>
+                <span class="rule"><span class="attribute">overflow</span>:<span class="value"> hidden</span>;</span>
+            <span class="rule">}</span></span>
+
+            <span class="class">.left-pane</span> <span class="rules">{
+                <span class="rule"><span class="attribute">width</span>:<span class="value"> <span class="number">250</span>px</span>;</span>
+                <span class="rule"><span class="attribute">background</span>:<span class="value"> <span class="hexcolor">#fff</span></span>;</span>
+            <span class="rule">}</span></span>
+
+            <span class="class">.panes-separator</span> <span class="rules">{
+                <span class="rule"><span class="attribute">width</span>:<span class="value"> <span class="number">11</span>px</span>;</span>
+                <span class="rule"><span class="attribute">background</span>:<span class="value"> <span class="hexcolor">#eee</span></span>;</span>
+                <span class="rule"><span class="attribute">position</span>:<span class="value"> relative</span>;</span>
+                <span class="rule"><span class="attribute">cursor</span>:<span class="value"> col-resize</span>;</span>
+                <span class="rule"><span class="attribute">background-image</span>:<span class="value"> <span class="function">url(<span class="string">'vertical.png'</span>)</span></span>;</span>
+                <span class="rule"><span class="attribute">background-repeat</span>:<span class="value"> no-repeat</span>;</span>
+                <span class="rule"><span class="attribute">background-position</span>:<span class="value"> <span class="number">50</span>%</span>;</span>
+            <span class="rule">}</span></span>
+
+            <span class="class">.right-pane</span> <span class="rules">{
+                <span class="rule"><span class="attribute">flex</span>:<span class="value"> auto</span>;</span>
+                <span class="rule"><span class="attribute">background</span>:<span class="value"> <span class="hexcolor">#fff</span></span>;</span>
+            <span class="rule">}</span></span>
+
+            <span class="class">.panes-container</span>,
+            <span class="class">.panes-separator</span>,
+            <span class="class">.left-pane</span>,
+            <span class="class">.right-pane</span> <span class="rules">{
+                <span class="rule"><span class="attribute">margin</span>:<span class="value"> <span class="number">0</span></span>;</span>
+                <span class="rule"><span class="attribute">padding</span>:<span class="value"> <span class="number">0</span></span>;</span>
+                <span class="rule"><span class="attribute">height</span>:<span class="value"> <span class="number">100</span>%</span>;</span>
+            <span class="rule">}</span></span>
+            <span class="class">.right-pane</span> <span class="rules">{
+                <span class="rule"><span class="attribute">padding</span>:<span class="value"><span class="number">10</span>px</span>;</span>
+                <span class="rule"><span class="attribute">padding-top</span>:<span class="value"><span class="number">0</span>px</span>;</span>
+            <span class="rule">}</span></span>
+
+        </span><span class="tag">&lt;/<span class="title">style</span>&gt;</span>
+
+    <span class="tag">&lt;/<span class="title">head</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">body</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">type</span>=<span class="value">"text/x-template"</span> <span class="attribute">id</span>=<span class="value">"item-template"</span>&gt;</span><span class="javascript">
+      &lt;li&gt;
+          &lt;div
+            :class="{bold: isFolder, active: active}"
+            @click="toggle"&gt;
+            &lt;span v-if="isFolder"&gt;{{open ? '▼' : '▶'}}&lt;/span&gt;
+            {{model.name}}
+          &lt;/div&gt;
+          &lt;ul v-show="open" v-if="isFolder"&gt;
+            &lt;item
+              class="item"
+              v-for="model in model.children"
+              :model="model"&gt;
+            &lt;/item&gt;
+          &lt;/ul&gt;
+      &lt;/li&gt;
+    </span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+
+    <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"panes-container"</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"left-pane"</span> <span class="attribute">id</span>=<span class="value">"left-pane"</span>&gt;</span>
+            <span class="tag">&lt;<span class="title">ul</span> <span class="attribute">id</span>=<span class="value">"demo"</span>&gt;</span>
+                <span class="tag">&lt;<span class="title">item
+</span>                        <span class="attribute">class</span>=<span class="value">"item"</span>
+                        <span class="attribute">:model</span>=<span class="value">"treeData"</span>&gt;</span>
+                <span class="tag">&lt;/<span class="title">item</span>&gt;</span>
+            <span class="tag">&lt;/<span class="title">ul</span>&gt;</span>
+        <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"panes-separator"</span> <span class="attribute">id</span>=<span class="value">"panes-separator"</span>&gt;</span><span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">div</span> <span class="attribute">class</span>=<span class="value">"right-pane"</span> <span class="attribute">id</span>=<span class="value">"right-pane"</span>&gt;</span>
+        <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+    <span class="tag">&lt;/<span class="title">div</span>&gt;</span>
+    <span class="tag">&lt;/<span class="title">body</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span> <span class="attribute">src</span>=<span class="value">"tree.js"</span>&gt;</span><span class="javascript"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+
+<span class="tag">&lt;/<span class="title">html</span>&gt;</span></code></pre>
+    </div>
+    <div class="gist-source" data-key="example.leo">
+      <h2>example.leo<a name="example.leo" class="anchor" href="#example.leo">#</a></h2>
+      <pre><code class="xml"><span class="pi">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<span class="comment">&lt;!-- Created by Leo: http://leoeditor.com/leo_toc.html --&gt;</span>
+<span class="tag">&lt;<span class="title">leo_file</span> <span class="attribute">xmlns:leo</span>=<span class="value">"http://leoeditor.com/namespaces/leo-python-editor/1.1"</span> &gt;</span>
+<span class="tag">&lt;<span class="title">leo_header</span> <span class="attribute">file_format</span>=<span class="value">"2"</span> <span class="attribute">tnodes</span>=<span class="value">"0"</span> <span class="attribute">max_tnode_index</span>=<span class="value">"0"</span> <span class="attribute">clone_windows</span>=<span class="value">"0"</span>/&gt;</span>
+<span class="tag">&lt;<span class="title">globals</span> <span class="attribute">body_outline_ratio</span>=<span class="value">"0.5"</span> <span class="attribute">body_secondary_ratio</span>=<span class="value">"0.5"</span>&gt;</span>
+	<span class="tag">&lt;<span class="title">global_window_position</span> <span class="attribute">top</span>=<span class="value">"50"</span> <span class="attribute">left</span>=<span class="value">"50"</span> <span class="attribute">height</span>=<span class="value">"500"</span> <span class="attribute">width</span>=<span class="value">"700"</span>/&gt;</span>
+	<span class="tag">&lt;<span class="title">global_log_window_position</span> <span class="attribute">top</span>=<span class="value">"0"</span> <span class="attribute">left</span>=<span class="value">"0"</span> <span class="attribute">height</span>=<span class="value">"0"</span> <span class="attribute">width</span>=<span class="value">"0"</span>/&gt;</span>
+<span class="tag">&lt;/<span class="title">globals</span>&gt;</span>
+<span class="tag">&lt;<span class="title">preferences</span>/&gt;</span>
+<span class="tag">&lt;<span class="title">find_panel_settings</span>/&gt;</span>
+<span class="tag">&lt;<span class="title">vnodes</span>&gt;</span>
+<span class="tag">&lt;<span class="title">v</span> <span class="attribute">t</span>=<span class="value">"josephorr.20170228222411.2"</span> <span class="attribute">a</span>=<span class="value">"E"</span>&gt;</span><span class="tag">&lt;<span class="title">vh</span>&gt;</span>Top<span class="tag">&lt;/<span class="title">vh</span>&gt;</span>
+<span class="tag">&lt;<span class="title">v</span> <span class="attribute">t</span>=<span class="value">"josephorr.20170304173237.1"</span> <span class="attribute">a</span>=<span class="value">"E"</span>&gt;</span><span class="tag">&lt;<span class="title">vh</span>&gt;</span>HTML<span class="tag">&lt;/<span class="title">vh</span>&gt;</span>
+<span class="tag">&lt;<span class="title">v</span> <span class="attribute">t</span>=<span class="value">"josephorr.20170304174041.1"</span>&gt;</span><span class="tag">&lt;<span class="title">vh</span>&gt;</span>Text and Photo<span class="tag">&lt;/<span class="title">vh</span>&gt;</span><span class="tag">&lt;/<span class="title">v</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">v</span>&gt;</span>
+<span class="tag">&lt;<span class="title">v</span> <span class="attribute">t</span>=<span class="value">"josephorr.20170304174421.1"</span> <span class="attribute">a</span>=<span class="value">"E"</span>&gt;</span><span class="tag">&lt;<span class="title">vh</span>&gt;</span>Text<span class="tag">&lt;/<span class="title">vh</span>&gt;</span>
+<span class="tag">&lt;<span class="title">v</span> <span class="attribute">t</span>=<span class="value">"josephorr.20170304174436.1"</span>&gt;</span><span class="tag">&lt;<span class="title">vh</span>&gt;</span>A Note About Something<span class="tag">&lt;/<span class="title">vh</span>&gt;</span><span class="tag">&lt;/<span class="title">v</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">v</span>&gt;</span>
+<span class="tag">&lt;<span class="title">v</span> <span class="attribute">t</span>=<span class="value">"josephorr.20170304113011.1"</span> <span class="attribute">a</span>=<span class="value">"E"</span>&gt;</span><span class="tag">&lt;<span class="title">vh</span>&gt;</span>Code<span class="tag">&lt;/<span class="title">vh</span>&gt;</span>
+<span class="tag">&lt;<span class="title">v</span> <span class="attribute">t</span>=<span class="value">"josephorr.20170304113024.1"</span>&gt;</span><span class="tag">&lt;<span class="title">vh</span>&gt;</span>Javascript<span class="tag">&lt;/<span class="title">vh</span>&gt;</span><span class="tag">&lt;/<span class="title">v</span>&gt;</span>
+<span class="tag">&lt;<span class="title">v</span> <span class="attribute">t</span>=<span class="value">"josephorr.20170304115429.1"</span>&gt;</span><span class="tag">&lt;<span class="title">vh</span>&gt;</span>Coffeescript<span class="tag">&lt;/<span class="title">vh</span>&gt;</span><span class="tag">&lt;/<span class="title">v</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">v</span>&gt;</span>
+<span class="tag">&lt;<span class="title">v</span> <span class="attribute">t</span>=<span class="value">"josephorr.20170304103722.1"</span> <span class="attribute">a</span>=<span class="value">"E"</span>&gt;</span><span class="tag">&lt;<span class="title">vh</span>&gt;</span>Markdown<span class="tag">&lt;/<span class="title">vh</span>&gt;</span>
+<span class="tag">&lt;<span class="title">v</span> <span class="attribute">t</span>=<span class="value">"josephorr.20170304175209.1"</span>&gt;</span><span class="tag">&lt;<span class="title">vh</span>&gt;</span>Markdown In Leo<span class="tag">&lt;/<span class="title">vh</span>&gt;</span><span class="tag">&lt;/<span class="title">v</span>&gt;</span>
+<span class="tag">&lt;<span class="title">v</span> <span class="attribute">t</span>=<span class="value">"josephorr.20170304103726.1"</span>&gt;</span><span class="tag">&lt;<span class="title">vh</span>&gt;</span>A Markdown Section<span class="tag">&lt;/<span class="title">vh</span>&gt;</span><span class="tag">&lt;/<span class="title">v</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">v</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">v</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">vnodes</span>&gt;</span>
+<span class="tag">&lt;<span class="title">tnodes</span>&gt;</span>
+<span class="tag">&lt;<span class="title">t</span> <span class="attribute">tx</span>=<span class="value">"josephorr.20170228222411.2"</span>&gt;</span>This is the top.<span class="tag">&lt;/<span class="title">t</span>&gt;</span>
+<span class="tag">&lt;<span class="title">t</span> <span class="attribute">tx</span>=<span class="value">"josephorr.20170304103722.1"</span>&gt;</span><span class="tag">&lt;/<span class="title">t</span>&gt;</span>
+<span class="tag">&lt;<span class="title">t</span> <span class="attribute">tx</span>=<span class="value">"josephorr.20170304103726.1"</span>&gt;</span>@language md
+
+# A topic
+
+This is fascinating.
+
+## Another Topic
+
+This one is less so.
+
+### Fine Print
+
+We would rather you not read this section.<span class="tag">&lt;/<span class="title">t</span>&gt;</span>
+<span class="tag">&lt;<span class="title">t</span> <span class="attribute">tx</span>=<span class="value">"josephorr.20170304113011.1"</span>&gt;</span><span class="tag">&lt;/<span class="title">t</span>&gt;</span>
+<span class="tag">&lt;<span class="title">t</span> <span class="attribute">tx</span>=<span class="value">"josephorr.20170304113024.1"</span>&gt;</span>@language javascript
+
+function getLanguage(text){
+   var language = '';
+   var re = /^@language (\w+)/;
+   var languageTokens = re.exec(text);
+   if (languageTokens){
+       language = languageTokens[1];
+       console.log(language);
+   }
+   return language;
+}<span class="tag">&lt;/<span class="title">t</span>&gt;</span>
+<span class="tag">&lt;<span class="title">t</span> <span class="attribute">tx</span>=<span class="value">"josephorr.20170304115429.1"</span>&gt;</span>@language coffeescript
+
+Client = require 'ftp'
+async = require 'async'
+remote_path ='/public_html/targetfolder/'
+local_path = 'data/'
+fs = require 'fs'
+
+c = new Client()
+c.on 'ready', ()-&amp;gt;
+  c.list remote_path, (err, list)-&amp;gt;
+    if (err) then console.error 'list', err
+    file_funcs = (getFileFunc file.name for file in list)
+    async.series file_funcs, ()-&amp;gt; c.end()
+
+getFileFunc = (name) -&amp;gt;
+  (callback)-&amp;gt;
+    if /csv$/.test name
+      c.get remote_path + name, (err, stream)-&amp;gt;
+        console.log 'Getting ', name
+        if err then console.log 'get', err
+        stream.once 'close', callback
+        stream.pipe fs.createWriteStream local_path + name
+    else
+      console.log "Skipping", name
+      callback()
+
+c.connect(
+  host : 'ftp.targethost.com'
+  user : 'username@domain.com'
+  password : 'password'
+)<span class="tag">&lt;/<span class="title">t</span>&gt;</span>
+<span class="tag">&lt;<span class="title">t</span> <span class="attribute">tx</span>=<span class="value">"josephorr.20170304173237.1"</span>&gt;</span>This branch has an HTML leaf in it.<span class="tag">&lt;/<span class="title">t</span>&gt;</span>
+<span class="tag">&lt;<span class="title">t</span> <span class="attribute">tx</span>=<span class="value">"josephorr.20170304174041.1"</span>&gt;</span>@language html
+
+&amp;lt;h1&amp;gt;Bee And Flower&amp;lt;/h1&amp;gt;
+
+An example of HTML content.
+
+&amp;lt;div&amp;gt;
+  &amp;lt;p&amp;gt;
+    &amp;lt;img src='https://upload.wikimedia.org/wikipedia/commons/5/5e/200x133px-Biene_auf_lavendel.png'&amp;gt;
+  &amp;lt;/p&amp;gt;
+&amp;lt;/div&amp;gt;  <span class="tag">&lt;/<span class="title">t</span>&gt;</span>
+<span class="tag">&lt;<span class="title">t</span> <span class="attribute">tx</span>=<span class="value">"josephorr.20170304174421.1"</span>&gt;</span><span class="tag">&lt;/<span class="title">t</span>&gt;</span>
+<span class="tag">&lt;<span class="title">t</span> <span class="attribute">tx</span>=<span class="value">"josephorr.20170304174436.1"</span>&gt;</span>This is just some regular text.
+
+And now for some hipster ipsum:
+
+Prism selvage farm-to-table, chillwave hexagon echo park tacos wayfarers shabby chic. Man braid chartreuse offal meggings. Messenger bag fap shabby chic blue bottle, typewriter la croix man braid chicharrones fashion axe mlkshk mustache narwhal. Single-origin coffee banh mi put a bird on it, lomo cred mumblecore schlitz flexitarian freegan retro. Edison bulb keytar single-origin coffee, direct trade plaid pug everyday carry ethical enamel pin. Viral neutra direct trade ramps semiotics intelligentsia, organic celiac food truck vice. Echo park PBR&amp;amp;B iPhone trust fund dreamcatcher.<span class="tag">&lt;/<span class="title">t</span>&gt;</span>
+<span class="tag">&lt;<span class="title">t</span> <span class="attribute">tx</span>=<span class="value">"josephorr.20170304175209.1"</span>&gt;</span>@language md
+## Leo Does Markdown
+
+This node was writen with Markdown.
+
+Use the @language md directive to set the node to markdown.<span class="tag">&lt;/<span class="title">t</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">tnodes</span>&gt;</span>
+<span class="tag">&lt;/<span class="title">leo_file</span>&gt;</span>
+</code></pre>
+    </div>
+    <div class="gist-source" data-key="leo.xsl">
+      <h2>leo.xsl<a name="leo.xsl" class="anchor" href="#leo.xsl">#</a></h2>
+      <pre><code class="xslt xml"><span class="pi">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="tag">&lt;<span class="title">xsl:stylesheet</span> <span class="attribute">version</span>=<span class="value">"1.0"</span> <span class="attribute">xmlns:xsl</span>=<span class="value">"http://www.w3.org/1999/XSL/Transform"</span>&gt;</span>
+
+    <span class="tag">&lt;<span class="title">xsl:template</span> <span class="attribute">match</span>=<span class="value">"/"</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">xsl:apply-templates</span>/&gt;</span>
+    <span class="tag">&lt;/<span class="title">xsl:template</span>&gt;</span>
+
+    <span class="tag">&lt;<span class="title">xsl:template</span> <span class="attribute">match</span>=<span class="value">"v"</span>&gt;</span>
+        <span class="tag">&lt;<span class="title">xsl:variable</span> <span class="attribute">name</span>=<span class="value">"t"</span> <span class="attribute">select</span>=<span class="value">"@t"</span>/&gt;</span>
+        {
+          "name":"<span class="tag">&lt;<span class="title">xsl:value-of</span> <span class="attribute">select</span>=<span class="value">"vh"</span>/&gt;</span>",
+          "text":`<span class="tag">&lt;<span class="title">xsl:value-of</span> <span class="attribute">select</span>=<span class="value">"//t[@tx=$t]"</span>/&gt;</span>`,
+          "children":[<span class="tag">&lt;<span class="title">xsl:apply-templates</span> <span class="attribute">select</span>=<span class="value">"v"</span>/&gt;</span>]
+        }
+        <span class="tag">&lt;<span class="title">xsl:if</span> <span class="attribute">test</span>=<span class="value">"position()!=last()"</span>&gt;</span>,<span class="tag">&lt;/<span class="title">xsl:if</span>&gt;</span>
+    <span class="tag">&lt;/<span class="title">xsl:template</span>&gt;</span>
+
+    <span class="tag">&lt;<span class="title">xsl:template</span> <span class="attribute">match</span>=<span class="value">"text()"</span>/&gt;</span>
+
+<span class="tag">&lt;/<span class="title">xsl:stylesheet</span>&gt;</span></code></pre>
+    </div>
+    <div class="gist-source" data-key="tree.js">
+      <h2>tree.js<a name="tree.js" class="anchor" href="#tree.js">#</a></h2>
+      <pre><code class="javascript"><span class="keyword">var</span> leftPane = document.getElementById(<span class="string">'left-pane'</span>);
+<span class="keyword">var</span> rightPane = document.getElementById(<span class="string">'right-pane'</span>);
+<span class="keyword">var</span> paneSep = document.getElementById(<span class="string">'panes-separator'</span>);
+
+rightPane.innerHTML = <span class="string">''</span>;
+
+<span class="keyword">var</span> currentNode = <span class="literal">null</span>;
+
+<span class="function"><span class="keyword">function</span> <span class="title">showText</span><span class="params">(text)</span>{</span>
+    <span class="keyword">if</span> (! text){<span class="keyword">return</span>}
+
+    language = getLanguage(text);
+
+    <span class="comment">// just plain text</span>
+    <span class="keyword">if</span> (! language){
+        rightPane.innerHTML = `&lt;textarea readonly&gt;${text}&lt;<span class="regexp">/textarea&gt;`;
+        return;
+    }
+
+    /</span><span class="regexp">/ remove directives
+    text = removeFirstLine(text);
+
+    switch(language){
+        case 'md':
+            text = marked(text);
+            rightPane.innerHTML = text;
+            break;
+        case 'html':
+            rightPane.innerHTML = text;
+            break;
+        default:
+            text = `&lt;pre&gt;&lt;code class="${language}"&gt;${text}&lt;/</span>code&gt;&lt;<span class="regexp">/pre&gt;`;
+            rightPane.innerHTML = text;
+            hljs.highlightBlock(rightPane);
+    }
+
+}
+
+function getLanguage(text){
+   var language = '';
+   var re = /</span>^@language (\w+)/;
+   <span class="keyword">var</span> languageTokens = re.exec(text);
+   <span class="keyword">if</span> (languageTokens){
+       language = languageTokens[<span class="number">1</span>];
+       console.log(language);
+   }
+   <span class="keyword">return</span> language;
+}
+
+<span class="function"><span class="keyword">function</span> <span class="title">removeFirstLine</span><span class="params">(text)</span>{</span>
+    <span class="keyword">return</span> text.split(<span class="regexp">/[\n]/</span>).splice(<span class="number">1</span>).join(<span class="string">'\n'</span>);
+}
+
+
+Vue.component(<span class="string">'item'</span>, {
+
+   template: <span class="string">'#item-template'</span>,
+    props: {
+        model: Object
+    },
+    data: <span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
+        <span class="keyword">return</span> {
+            open: <span class="literal">false</span>,
+            active: <span class="literal">false</span>
+        }
+    },
+    computed: {
+        isFolder: <span class="function"><span class="keyword">function</span><span class="params">()</span> {</span>
+            <span class="keyword">return</span> <span class="keyword">this</span>.model.children &amp;&amp; <span class="keyword">this</span>.model.children.length;
+        }
+    },
+    methods: {
+        toggle: <span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
+            <span class="keyword">if</span> (<span class="keyword">this</span>.isFolder){
+                <span class="keyword">this</span>.open = ! <span class="keyword">this</span>.open;
+            }
+            <span class="keyword">if</span> (currentNode) {
+                currentNode.active = <span class="literal">false</span>;
+            }
+            currentNode = <span class="keyword">this</span>;
+            currentNode.active = <span class="literal">true</span>;
+
+            console.log(<span class="keyword">this</span>);
+            showText(<span class="keyword">this</span>.model.text);
+        }
+    }
+
+});
+
+<span class="function"><span class="keyword">function</span> <span class="title">loadXMLDoc</span><span class="params">(filename, type)</span>{</span>
+    <span class="keyword">var</span> xhttp = <span class="keyword">new</span> XMLHttpRequest();
+    xhttp.open(<span class="string">'GET'</span>, filename, <span class="literal">false</span>); <span class="comment">// synchronous</span>
+    xhttp.send(<span class="string">''</span>);
+    <span class="keyword">return</span> xhttp[<span class="string">'response'</span> + type];
+}
+
+<span class="function"><span class="keyword">function</span> <span class="title">displayResult</span><span class="params">()</span>{</span>
+
+    <span class="keyword">var</span> xmlString = loadXMLDoc(<span class="string">'example.leo'</span>, <span class="string">'Text'</span>);
+    <span class="keyword">var</span> oParser = <span class="keyword">new</span> DOMParser();
+    <span class="keyword">var</span> xml = oParser.parseFromString(xmlString,<span class="string">'text/xml'</span>);
+    <span class="keyword">var</span> xsl = loadXMLDoc(<span class="string">'leo.xsl'</span>, <span class="string">'XML'</span>);
+    <span class="keyword">var</span> xsltProcessor = <span class="keyword">new</span> XSLTProcessor();
+    xsltProcessor.importStylesheet(xsl);
+    <span class="keyword">var</span> resultDocument = xsltProcessor.transformToFragment(xml, document);
+    <span class="keyword">var</span> data = resultDocument.textContent;
+    data = data.replace(<span class="regexp">/,\s?$/</span>,<span class="string">''</span>); <span class="comment">// kludge to get rid of trailing comma</span>
+    data = <span class="string">'var data = '</span> + data;
+    eval(data); <span class="comment">// JSON.Parse doesn't work because of template strings</span>
+    <span class="keyword">var</span> demo = <span class="keyword">new</span> Vue({
+        el: <span class="string">'#demo'</span>,
+        data: {
+            treeData: data
+        }
+    })
+
+}
+
+<span class="comment">// The script below constrains the target to move horizontally between a left and a right virtual boundaries.</span>
+<span class="comment">// - the left limit is positioned at 10% of the screen width</span>
+<span class="comment">// - the right limit is positioned at 90% of the screen width</span>
+<span class="keyword">var</span> leftLimit = <span class="number">0</span>;
+<span class="keyword">var</span> rightLimit = <span class="number">90</span>;
+
+
+paneSep.sdrag(<span class="function"><span class="keyword">function</span> <span class="params">(el, pageX, startX, pageY, startY, fix)</span> {</span>
+
+    fix.skipX = <span class="literal">true</span>;
+
+    <span class="keyword">if</span> (pageX &lt; window.innerWidth * leftLimit / <span class="number">100</span>) {
+        pageX = window.innerWidth * leftLimit / <span class="number">100</span>;
+        fix.pageX = pageX;
+    }
+    <span class="keyword">if</span> (pageX &gt; window.innerWidth * rightLimit / <span class="number">100</span>) {
+        pageX = window.innerWidth * rightLimit / <span class="number">100</span>;
+        fix.pageX = pageX;
+    }
+
+    <span class="keyword">var</span> cur = pageX / window.innerWidth * <span class="number">100</span>;
+    <span class="keyword">if</span> (cur &lt; <span class="number">0</span>) {
+        cur = <span class="number">0</span>;
+    }
+    <span class="keyword">if</span> (cur &gt; window.innerWidth) {
+        cur = window.innerWidth;
+    }
+
+    <span class="keyword">var</span> right = (<span class="number">100</span>-cur-<span class="number">2</span>);
+    leftPane.style.width = cur + <span class="string">'%'</span>;
+    rightPane.style.width = right + <span class="string">'%'</span>;
+
+}, <span class="literal">null</span>, <span class="string">'horizontal'</span>);
+
+
+
+displayResult();</code></pre>
+    </div>
+  </div>
+  <div class="gist-license">
+    <h2>LICENSE<a name="license" class="anchor" href="#license">#</a></h2>
+    Released under the <a target="_blank" href="https://opensource.org/licenses/MIT">The MIT License</a>.
+  </div>
+</div>
+
+<script type="text/javascript" src="Leo%20Viewer%20-%20bl.ocks.org_files/main.js" charset="UTF-8"></script><link rel="stylesheet" crossorigin="anonymous" href="Leo%20Viewer%20-%20bl.ocks.org_files/main.css"><script src="Leo%20Viewer%20-%20bl.ocks.org_files/d3.js"></script>
+<script src="Leo%20Viewer%20-%20bl.ocks.org_files/highlight.js"></script>
+
+<script>
+var gist = {"public":true,"protocol":"https","sha":"fb4dafb0b50c41a0e923006a8ac2ff1efcf22b5e","files":{".block":{"language":null,"type":"text/plain","filename":".block","size":36,"sha":"e8e775efa1d876c3f2dde641259c054ab1fcb2e6"},"README.md":{"language":"Markdown","type":"text/plain","filename":"README.md","size":516,"sha":"e3bfe0cf2312093f657dc890bc9d2cc6a9fde668"},"example.leo":{"language":null,"type":"text/plain","filename":"example.leo","size":3990,"sha":"842985224fa01b152a0bf78041b26368dafb01b3"},"index.html":{"language":"HTML","type":"text/html","filename":"index.html","size":3600,"sha":"efd3ded176f1da36681906519766a23cb689e62f"},"leo.xsl":{"language":"XSLT","type":"application/xml","filename":"leo.xsl","size":584,"sha":"58e8449d85c0ef59e53e3b46f483ce0ccc9222aa"},"leoview.png":{"language":null,"type":"image/png","filename":"leoview.png","size":30028,"sha":"ef459fd84936c84df9178611680dce2aa3916297"},"thumbnail.png":{"language":null,"type":"image/png","filename":"thumbnail.png","size":30028,"sha":"ef459fd84936c84df9178611680dce2aa3916297"},"tree.js":{"language":"JavaScript","type":"application/javascript","filename":"tree.js","size":3821,"sha":"e1a6bb68b1ce193f885671149395420e86993ece"}},"created_at":"2017-03-04T14:57:49Z","updated_at":"2017-03-04T23:50:29Z","description":"Leo Viewer","owner":{"login":"kaleguy"},"id":"cef095e16e147bc04dd6c5812d732fb2"};
+
+var files = d3.values(gist.files);
+
+d3.select(".gist-readme")
+    .data(files, function(d) { return d ? d.filename : this.getAttribute("data-key"); })
+    .each(function(d) {
+      var readme = d3.select(this);
+      d3.text("/kaleguy/raw/cef095e16e147bc04dd6c5812d732fb2/fb4dafb0b50c41a0e923006a8ac2ff1efcf22b5e/" + d.filename, function(error, content) {
+        if (error) content = "Sorry, an error occurred.";
+        readme.html(new Showdown.converter().makeHtml(content));
+        readme.selectAll("code").each(function() { hljs.highlightBlock(this); });
+      });
+    });
+
+d3.selectAll(".gist-source")
+    .data(files, function(d) { return d ? d.filename : this.getAttribute("data-key"); })
+  .select("code")
+    .attr("class", function(d) { return d.language && (d.language === "JSON" ? "javascript" : d.language.toLowerCase()); })
+    .each(function(d) {
+      var code = d3.select(this);
+      d3.text("/kaleguy/raw/cef095e16e147bc04dd6c5812d732fb2/fb4dafb0b50c41a0e923006a8ac2ff1efcf22b5e/" + (d.filename === "index.html" ? "" : d.filename), function(error, content) {
+        if (error) content = "Sorry, an error occurred.";
+        code.text(content);
+        hljs.highlightBlock(code.node());
+      });
+    });
+</script>
+
+<script>
+    GoogleAnalyticsObject = "ga", ga = function() { ga.q.push(arguments); }, ga.q = [], ga.l = +new Date;
+    ga("create", "UA-48272912-1", "auto");
+    ga("send", "pageview");
+</script>
+
+<script async="" src="Leo%20Viewer%20-%20bl.ocks.org_files/analytics.js"></script>
+
+</body></html>
+.. @+node:ekr.20170905104217.1: *5* <<head>>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"><meta charset="utf-8">
+<meta name="viewport" content="width=1000">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@mbostock">
+<meta property="og:url" content="https://bl.ocks.org/kaleguy/cef095e16e147bc04dd6c5812d732fb2">
+<meta property="og:title" content="Leo Viewer">
+<meta property="og:description" content="Joe Orr’s Block cef095e16e147bc04dd6c5812d732fb2">
+<meta property="og:image" content="https://bl.ocks.org/kaleguy/raw/cef095e16e147bc04dd6c5812d732fb2/fb4dafb0b50c41a0e923006a8ac2ff1efcf22b5e/thumbnail.png">
+<title>Leo Viewer - bl.ocks.org</title>
+<link rel="icon" href="https://bl.ocks.org/favicon.png">
+<link rel="canonical" href="https://bl.ocks.org/kaleguy/cef095e16e147bc04dd6c5812d732fb2">
+<style>
+@import url("/style.css");
+</style>
+.. @+node:ekr.20170905111950.1: *4* index.html
+@language html
+@tabwidth -2
+<html>
+  <head>
+    <<head>>
+  </head>
+  <body>
+    <<body>>
+  </body>
+  <script src="tree.js"></script>
+</html>
+.. @+node:ekr.20170905114435.1: *5* <<head>>
+<script src="https://unpkg.com/vue"></script>
+<style type="text/css">
+  body {
+      font-family: Verdana;
+  }
+  .item {
+      cursor: pointer;
+  }
+  .bold {
+      font-weight: bold;
+  }
+  ul {
+    padding-left: 1em;
+    line-height: 1.5em;
+    list-style-type: none;
+  }
+  li {
+    white-space: nowrap;
+  }
+  .active {
+    background: #81ff00;
+  }
+  li > div {
+    padding-left:4px;
+  }
+</style>
+
+<script src="https://cdn.rawgit.com/lingtalfi/simpledrag/master/simpledrag.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.6/marked.min.js"></script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/vs.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<style type="text/css">
+  html, body {
+      height: 100%;
+      margin:0;
+  }
+  textarea {
+    margin-top:20px;
+    border: none;
+    background-color: transparent;
+    resize: none;
+    outline: none;
+    font-size:16px;
+    font-family: Verdana;
+    height:100%;
+    width:100%;
+  }
+  .panes-container {
+      display: flex;
+      width: 100%;
+      overflow: hidden;
+  }
+  .left-pane {
+      width: 250px;
+      background: #fff;
+  }
+  .panes-separator {
+    width: 11px;
+    background: #eee;
+    position: relative;
+    cursor: col-resize;
+    background-image: url('vertical.png');
+    background-repeat: no-repeat;
+    background-position: 50%;
+  }
+  .right-pane {
+    flex: auto;
+    background: #fff;
+  }
+  .panes-container,
+  .panes-separator,
+  .left-pane,
+  .right-pane {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+  .right-pane {
+    padding:10px;
+    padding-top:0px;
+  }
+</style>
+.. @+node:ekr.20170905114452.1: *5* <<body>>
+<script type="text/x-template" id="item-template">
+  <li>
+    <div :class="{bold: isFolder, active: active}" @click="toggle">
+      <span v-if="isFolder">{{open ? '▼' : '▶'}}</span>
+      {{model.name}}
+    </div>
+    <ul v-show="open" v-if="isFolder">
+      <item class="item" v-for="model in model.children" :model="model"></item>
+    </ul>
+  </li>
+</script>
+<div class="panes-container">
+    <div class="left-pane" id="left-pane">
+        <ul id="demo">
+          <item class="item" :model="treeData"></item>
+        </ul>
+    </div>
+    <div class="panes-separator" id="panes-separator"></div>
+    <div class="right-pane" id="right-pane"></div>
+</div>
+.. @+node:ekr.20170905112037.1: *4* example.leo
+@language xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
+<leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
+<leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
+	<global_log_window_position top="0" left="0" height="0" width="0"/>
+</globals>
+<preferences/>
+<find_panel_settings/>
+<vnodes>
+<v t="josephorr.20170228222411.2" a="E"><vh>Top</vh>
+<v t="josephorr.20170304173237.1" a="E"><vh>HTML</vh>
+<v t="josephorr.20170304174041.1"><vh>Text and Photo</vh></v>
+</v>
+<v t="josephorr.20170304174421.1" a="E"><vh>Text</vh>
+<v t="josephorr.20170304174436.1"><vh>A Note About Something</vh></v>
+</v>
+<v t="josephorr.20170304113011.1" a="E"><vh>Code</vh>
+<v t="josephorr.20170304113024.1"><vh>Javascript</vh></v>
+<v t="josephorr.20170304115429.1"><vh>Coffeescript</vh></v>
+</v>
+<v t="josephorr.20170304103722.1" a="E"><vh>Markdown</vh>
+<v t="josephorr.20170304175209.1"><vh>Markdown In Leo</vh></v>
+<v t="josephorr.20170304103726.1"><vh>A Markdown Section</vh></v>
+</v>
+</v>
+</vnodes>
+<tnodes>
+<t tx="josephorr.20170228222411.2">This is the top.</t>
+<t tx="josephorr.20170304103722.1"></t>
+<t tx="josephorr.20170304103726.1">@language md
+
+# A topic
+
+This is fascinating.
+
+## Another Topic
+
+This one is less so.
+
+### Fine Print
+
+We would rather you not read this section.</t>
+<t tx="josephorr.20170304113011.1"></t>
+<t tx="josephorr.20170304113024.1">@language javascript
+
+function getLanguage(text){
+   var language = '';
+   var re = /^@language (\w+)/;
+   var languageTokens = re.exec(text);
+   if (languageTokens){
+       language = languageTokens[1];
+       console.log(language);
+   }
+   return language;
+}</t>
+<t tx="josephorr.20170304115429.1">@language coffeescript
+
+Client = require 'ftp'
+async = require 'async'
+remote_path ='/public_html/targetfolder/'
+local_path = 'data/'
+fs = require 'fs'
+
+c = new Client()
+c.on 'ready', ()-&gt;
+  c.list remote_path, (err, list)-&gt;
+    if (err) then console.error 'list', err
+    file_funcs = (getFileFunc file.name for file in list)
+    async.series file_funcs, ()-&gt; c.end()
+
+getFileFunc = (name) -&gt;
+  (callback)-&gt;
+    if /csv$/.test name
+      c.get remote_path + name, (err, stream)-&gt;
+        console.log 'Getting ', name
+        if err then console.log 'get', err
+        stream.once 'close', callback
+        stream.pipe fs.createWriteStream local_path + name
+    else
+      console.log "Skipping", name
+      callback()
+
+c.connect(
+  host : 'ftp.targethost.com'
+  user : 'username@domain.com'
+  password : 'password'
+)</t>
+<t tx="josephorr.20170304173237.1">This branch has an HTML leaf in it.</t>
+<t tx="josephorr.20170304174041.1">@language html
+
+&lt;h1&gt;Bee And Flower&lt;/h1&gt;
+
+An example of HTML content.
+
+&lt;div&gt;
+  &lt;p&gt;
+    &lt;img src='https://upload.wikimedia.org/wikipedia/commons/5/5e/200x133px-Biene_auf_lavendel.png'&gt;
+  &lt;/p&gt;
+&lt;/div&gt;  </t>
+<t tx="josephorr.20170304174421.1"></t>
+<t tx="josephorr.20170304174436.1">This is just some regular text.
+
+And now for some hipster ipsum:
+
+Prism selvage farm-to-table, chillwave hexagon echo park tacos wayfarers shabby chic. Man braid chartreuse offal meggings. Messenger bag fap shabby chic blue bottle, typewriter la croix man braid chicharrones fashion axe mlkshk mustache narwhal. Single-origin coffee banh mi put a bird on it, lomo cred mumblecore schlitz flexitarian freegan retro. Edison bulb keytar single-origin coffee, direct trade plaid pug everyday carry ethical enamel pin. Viral neutra direct trade ramps semiotics intelligentsia, organic celiac food truck vice. Echo park PBR&amp;B iPhone trust fund dreamcatcher.</t>
+<t tx="josephorr.20170304175209.1">@language md
+## Leo Does Markdown
+
+This node was writen with Markdown.
+
+Use the @language md directive to set the node to markdown.</t>
+</tnodes>
+</leo_file>
+.. @+node:ekr.20170905112115.1: *4* leo.xsl
+@language xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+    <xsl:template match="/">
+        <xsl:apply-templates/>
+    </xsl:template>
+
+    <xsl:template match="v">
+        <xsl:variable name="t" select="@t"/>
+        {
+          "name":"<xsl:value-of select="vh"/>",
+          "text":`<xsl:value-of select="//t[@tx=$t]"/>`,
+          "children":[<xsl:apply-templates select="v"/>]
+        }
+        <xsl:if test="position()!=last()">,</xsl:if>
+    </xsl:template>
+
+    <xsl:template match="text()"/>
+
+</xsl:stylesheet>
+
+.. @+node:ekr.20170905112131.1: *4* tree.js
+@language javascript
+
+var leftPane  = document.getElementById('left-pane');
+var rightPane = document.getElementById('right-pane');
+var paneSep   = document.getElementById('panes-separator');
+rightPane.innerHTML = '';
+var currentNode = null;
+<< function showText(text)>>
+<< function getLanguage(text)>>
+<< function removeFirstLine(text)>>
+<< Vue.component('item'>>
+<< function loadXMLDoc(filename, type)>>
+<< function displayResult()>>
+<< paneSep.sdrag(function (el, pageX, startX, pageY, startY, fix)>>
+displayResult();
+.. @+node:ekr.20170905112457.1: *5* << function showText(text) >>
+function showText(text){
+    if (! text){return}
+    language = getLanguage(text);
+    if (! language){
+        // just plain text
+        rightPane.innerHTML = `<textarea readonly>${text}</textarea>`;
+        return;
+    }
+    // remove directives
+    text = removeFirstLine(text);
+    switch(language){
+        case 'md':
+            text = marked(text);
+            rightPane.innerHTML = text;
+            break;
+        case 'html':
+            rightPane.innerHTML = text;
+            break;
+        default:
+            text = `<pre><code class="${language}">${text}</code></pre>`;
+            rightPane.innerHTML = text;
+            hljs.highlightBlock(rightPane);
+    }
+}
+.. @+node:ekr.20170905112457.4: *5* << function getLanguage(text) >>
+function getLanguage(text){
+   var language = '';
+   var re = /^@language (\w+)/;
+   var languageTokens = re.exec(text);
+   if (languageTokens){
+        language = languageTokens[1];
+        console.log(language);
+    }
+   return language;
+}
+.. @+node:ekr.20170905112457.6: *5* << function removeFirstLine(text) >>
+function removeFirstLine(text){
+    return text.split(/[\n]/).splice(1).join('\n');
+}
+.. @+node:ekr.20170905112457.7: *5* << Vue.component('item'  >>
+Vue.component('item', {
+
+    template: '#item-template',
+
+    props: {
+        model: Object
+    },
+
+    data: function(){
+        return {
+            open: false,
+            active: false
+        }
+    },
+
+    computed: {
+        isFolder: function() {
+            return this.model.children && this.model.children.length;
+        }
+    },
+    
+    methods: {
+        toggle: function(){
+            if (this.isFolder){
+                this.open = ! this.open;
+            }
+            if (currentNode) {
+                currentNode.active = false;
+            }
+            currentNode = this;
+            currentNode.active = true;
+            console.log(this);
+            showText(this.model.text);
+        }
+    }
+});
+.. @+node:ekr.20170905112457.17: *5* << function loadXMLDoc(filename, type) >>
+function loadXMLDoc(filename, type){
+    var xhttp = new XMLHttpRequest();
+    xhttp.open('GET', filename, false); // synchronous
+    xhttp.send('');
+    return xhttp['response' + type];
+}
+.. @+node:ekr.20170905112457.18: *5* << function displayResult() >>
+function displayResult(){
+
+    var xmlString = loadXMLDoc('example.leo', 'Text');
+    var oParser = new DOMParser();
+    var xml = oParser.parseFromString(xmlString,'text/xml');
+    var xsl = loadXMLDoc('leo.xsl', 'XML');
+    var xsltProcessor = new XSLTProcessor();
+    xsltProcessor.importStylesheet(xsl);
+    var resultDocument = xsltProcessor.transformToFragment(xml, document);
+    var data = resultDocument.textContent;
+    data = data.replace(/,\s?$/,''); // kludge to get rid of trailing comma
+    data = 'var data = ' + data;
+    eval(data); // JSON.Parse doesn't work because of template strings
+    var demo = new Vue({
+        el: '#demo',
+        data: {
+            treeData: data
+        }
+    })
+}
+.. @+node:ekr.20170905112457.21: *5* << paneSep.sdrag(function (el, pageX, startX, pageY, startY, fix)  >>
+// This script constrains the target to move horizontally between left and right virtual boundaries.
+// - the left limit is positioned at 10% of the screen width
+// - the right limit is positioned at 90% of the screen width
+var leftLimit = 0;
+var rightLimit = 90;
+paneSep.sdrag(function (el, pageX, startX, pageY, startY, fix) {
+
+    fix.skipX = true;
+    if (pageX < window.innerWidth * leftLimit / 100) {
+        pageX = window.innerWidth * leftLimit / 100;
+        fix.pageX = pageX;
+    }
+    if (pageX > window.innerWidth * rightLimit / 100) {
+        pageX = window.innerWidth * rightLimit / 100;
+        fix.pageX = pageX;
+    }
+    var cur = pageX / window.innerWidth * 100;
+    if (cur < 0) {
+        cur = 0;
+    }
+    if (cur > window.innerWidth) {
+        cur = window.innerWidth;
+    }
+    var right = (100-cur-2);
+    leftPane.style.width = cur + '%';
+    rightPane.style.width = right + '%';
+
+}, null, 'horizontal');
 .. @+node:ekr.20170324083526.1: *3* Improve VR plugin
 @language rest
 @wrap
@@ -13,23 +1025,6 @@
 2. A new directive, say @rendertree would tell VR to render the node and its subtree.  This makes visible and explicit what would otherwise be a VR option.
 
 3. Support for rendering @language latex.  I am about to up code to render such nodes as plain text rather than the default.  Next, I'll add the actual rendering.
-.. @+node:ekr.20170320052551.1: *3* 5.6: First
-@language rest
-@wrap
-.. @+node:ekr.20170325055951.1: *4* #414: Add p.drawer, p.results, etc.
-https://github.com/leo-editor/leo-editor/issues/414
-.. @+node:ekr.20170405071940.1: *4* #466: Moving a node can cause temporary coloring issues
-.. @+node:ekr.20170414095128.1: *4* New to do
-- Warn about multiple redraws in a single command.
-- Allow paste-retaining-clones across files.
-- Code review: c.selectPosition followed by redraw.
-- Code review: more AtFile helpers.
-.. @+node:ekr.20170328043328.1: *4* Add ekr bindings for indent/unindent-region
-Ctrl-Tab moves between Outline tabs.
-
-Alt-Tab, Alt-Shift-Tab?
-
-c.indentBody, c.dedentBody, selfInsertCommand.
 .. @+node:ekr.20170211190548.1: *3* Add org-mode features
 @language rest
 @wrap

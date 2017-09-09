@@ -15,6 +15,8 @@ import os
 import re
 import sys
 import time
+import hashlib
+import sqlite3
 #@-<< imports >>
 #@+others
 #@+node:ekr.20160514120655.1: ** class AtFile
@@ -198,7 +200,6 @@ class AtFile(object):
         at.pending = []
         at.raw = False # True: in @raw mode
         at.root = None # The root (a position) of tree being read or written.
-        at.root_seen = False # True: root VNode has been handled in this file.
         at.startSentinelComment = ""
         at.startSentinelComment = ""
         at.tab_width = c.tab_width or -4
@@ -307,6 +308,7 @@ class AtFile(object):
         # at.output_newline:    set by scanAllDirectives() below.
         # at.page_width:        set by scanAllDirectives() below.
         at.outputContents = None
+        at.sameFiles = 0
         at.sentinels = not nosentinels
         at.shortFileName = "" # For messages.
         at.root = root
@@ -350,29 +352,12 @@ class AtFile(object):
     #@+node:ekr.20130911110233.11286: *4* at.initReadLine
     def initReadLine(self, s):
         '''Init the ivars so that at.readLine will read all of s.'''
-        # This is part of the new_read logic.
         at = self
         at.read_i = 0
         at.read_lines = g.splitLines(s)
+        at._file_bytes = g.toEncodedString(s)
     #@+node:ekr.20041005105605.17: *3* at.Reading
-    #@+<< Detecting clone conflicts >>
-    #@+node:ekr.20100619222623.5918: *4* << Detecting clone conflicts >>
-    #@+at
-    # **v.tempBodyString**, a *temporary* ivar, accumulates v.b.
-    # The vnode ctor must not create this ivar!
-    # 
-    # at.terminateBody detects clone conflicts. The old value is
-    # v.b. The new value is::
-    # 
-    #     ''.join(v.tempBodyList)
-    # 
-    # at.terminateBody calls at.indicateNodeChanged when a
-    # mismatch is detected. at.indicateNodeChanged adds an entry
-    # in c.nodeConflictList for each clone conflict.
-    # 
-    # Finally, fc.handleNodeConflicts creates a 'Recovered Nodes'
-    # node for each entry in c.nodeConflictList.
-    #@-<< Detecting clone conflicts >>
+
     #@+node:ekr.20041005105605.18: *4* at.Reading (top level)
     #@+at All reading happens in the readOpenFile logic, so plugins
     # should need to override only this method.
@@ -427,7 +412,6 @@ class AtFile(object):
             try:
                 # Open the file in binary mode to allow 0x1a in bodies & headlines.
                 at.inputFile = open(fn, 'rb')
-                # new_read_line logic.
                 at.readFileToUnicode(fn)
                     # Sets at.encoding...
                     #   From the BOM, if present.
@@ -440,6 +424,7 @@ class AtFile(object):
             except IOError:
                 at.error("can not open: '@file %s'" % (fn))
                 at.inputFile = None
+                at._file_bytes = g.toEncodedString('')
                 fn = None
         return fn
     #@+node:ekr.20150204165040.4: *6* at.openAtShadowFileForReading
@@ -470,9 +455,9 @@ class AtFile(object):
     ):
         """Read an @thin or @file tree."""
         trace = (False or g.app.debug) and not g.unitTesting
-        # if trace: g.trace(root.h)
         at, c = self, self.c
         fileName = at.initFileName(fromString, importFileName, root)
+        sfn = g.shortFileName(fileName)
         if not fileName:
             at.error("Missing file name.  Restoring @file tree from .leo file.")
             return False
@@ -484,14 +469,17 @@ class AtFile(object):
             # outline can be updated from the external file.
         at.initReadIvars(root, fileName,
             importFileName=importFileName, atShadow=atShadow)
+
         at.fromString = fromString
         if at.errors:
             if trace: g.trace('Init error')
             return False
+
         fileName = at.openFileForReading(fromString=fromString)
             # For @shadow files, calls x.updatePublicAndPrivateFiles.
             # Calls at.initReadLine(s), where s is the file contents.
             # This will be used only if not cached.
+
         if fileName and at.inputFile:
             c.setFileTimeStamp(fileName)
         elif fromString: # 2010/09/02.
@@ -499,8 +487,11 @@ class AtFile(object):
         else:
             if trace: g.trace('No inputFile')
             return False
-        # Get the file from the cache if possible.
-        if fromString:
+        if g.SQLITE and c.sqlite_connection:
+            loaded = at.checkExternalFileAgainstDb(root)
+            if loaded: return True
+            s, loaded, fileKey, force = at._file_bytes, False, None, True
+        elif fromString or not g.enableDB:
             s, loaded, fileKey = fromString, False, None
         else:
             s, loaded, fileKey = c.cacher.readFile(fileName, root)
@@ -510,13 +501,18 @@ class AtFile(object):
             # if trace: g.trace('file-like file',fileName)
             force = True # Disable caching.
         if loaded and not force:
-            if trace: g.trace('cache hit', g.shortFileName(fileName))
+            if trace:
+                g.trace('cache hit', fileKey, sfn)
             at.inputFile.close()
             root.clearDirty()
             return True
         if not g.unitTesting:
-            if trace: g.trace('***** cache miss', repr(at.encoding), g.shortFileName(fileName))
-            g.es("reading:", root.h)
+            if trace:
+                if g.enableDB:
+                    g.trace('cache miss', sfn)
+                else:
+                    g.trace('caching disabled', sfn)
+            g.es_print("reading:", root.h)
         if isFileLike:
             if g.unitTesting:
                 if 0: print("converting @file format in", root.h)
@@ -561,7 +557,9 @@ class AtFile(object):
             root.clearOrphan()
         # There will be an internal error if fileKey is None.
         # This is not the cause of the bug.
-        if at.errors == 0 and not isFileLike and not fromString:
+        write_to_cache = (not (g.SQLITE and c.sqlite_connection)
+            and at.errors == 0 and not isFileLike and not fromString)
+        if write_to_cache:
             c.cacher.writeFile(root, fileKey)
         if trace: g.trace('at.errors', at.errors)
         return at.errors == 0
@@ -580,21 +578,24 @@ class AtFile(object):
             delattr(v, "tnodeList")
             v._p_changed = True
     #@+node:ekr.20071105164407: *6* at.deleteUnvisitedNodes & helpers
-    def deleteUnvisitedNodes(self, root):
-        '''Delete unvisited nodes in root's subtree, not including root.
+    def deleteUnvisitedNodes(self, root, redraw=True):
+        '''
+        Delete unvisited nodes in root's subtree, not including root.
 
-        Actually, instead of deleting the nodes, we move them to be children of the
-        'Resurrected Nodes' r.
+        Before Leo 5.6: Move unvisited node to be children of the 'Resurrected
+        Nodes'.
         '''
         at = self
         # Find the unvisited nodes.
         aList = [z for z in root.subtree() if not z.isVisited()]
         if aList:
-            r = at.createResurrectedNodesNode()
-            assert r not in aList
-            callback = at.defineResurrectedNodeCallback(r, root)
-            # Move the nodes using the callback.
-            at.c.deletePositionsInList(aList, callback)
+            # new-read: Never create resurrected nodes.
+                # r = at.createResurrectedNodesNode()
+                # assert r not in aList
+                # callback = at.defineResurrectedNodeCallback(r, root)
+                # # Move the nodes using the callback.
+                # at.c.deletePositionsInList(aList, callback)
+            at.c.deletePositionsInList(aList, redraw=redraw)
     #@+node:ekr.20100803073751.5817: *7* createResurrectedNodesNode
     def createResurrectedNodesNode(self):
         '''Create a 'Resurrected Nodes' node as the last top-level node.'''
@@ -673,6 +674,29 @@ class AtFile(object):
             if trace: g.trace('found: True isThin:',
                 isThin, repr(line))
             return not isThin
+    #@+node:vitalije.20170701155512.1: *6* at.checkExternalFileAgainstDb
+    #@+at
+    #     This method assumes that file was already read and that
+    #     at.initReadLine was called, which did set at._file_bytes to
+    #     content of file as encoded string.
+    # 
+    #     This is also true if we are reading fromString.
+    #@@c
+    def checkExternalFileAgainstDb(self, root):
+        '''Returns True if file is not modified since last save in db.
+           Otherwise returns False.'''
+        conn = self.c.sqlite_connection
+        if conn is None: return False
+        hx = hashlib.md5(self._file_bytes).hexdigest()
+        try:
+            hx2 = conn.execute(
+                    '''select value from extra_infos
+                            where name=?''',
+                    ('md5_' + root.gnx,)
+                ).fetchone()
+        except sqlite3.OperationalError:
+            hx2 = False
+        return hx2 and hx2[0] == hx
     #@+node:ekr.20041005105605.26: *5* at.readAll
     def readAll(self, root, force=False):
         """Scan positions, looking for @<file> nodes to read."""
@@ -782,24 +806,21 @@ class AtFile(object):
         if not g.unitTesting:
             g.es("reading:", p.h)
         try:
+            # For #451: return p.
+            old_p = p.copy()
             at.scanAllDirectives(
                 p,
                 forcePythonSentinels=False,
                 importing=True,
-                reading=True, 
+                reading=True,
             )
-            if trace: g.trace(at.language, p.h)
-            # For #451: return p.
-            old_p = p.copy()
             p.v.b = '' # Required for @auto API checks.
             p.deleteAllChildren()
             p = ic.createOutline(fileName, parent=p.copy())
             # Do *not* select a postion here.
             # That would improperly expand nodes.
                 # c.selectPosition(p)
-        except AssertionError:
-            p = old_p
-            ic.errors += 1
+            if trace: g.trace(at.language, p.h)
         except Exception:
             p = old_p
             ic.errors += 1
@@ -1041,12 +1062,12 @@ class AtFile(object):
         if not firstLines:
             return
         found, j, tag = False, 0, "@first"
-        for k in range(len(out)):
+        for k, s in enumerate(out):
             # Skip leading whitespace lines.
-            if not found and not out[k].strip():
+            if not found and s.isspace():
                 continue
             # Quit if something other than @first directive.
-            if not g.match(out[k], 0, tag):
+            if not g.match(s, 0, tag):
                 break
             found = True
             # Quit if no leading lines to apply.
@@ -1056,7 +1077,7 @@ class AtFile(object):
             leadingLine = " " + firstLines[j]
             out[k] = tag + leadingLine.rstrip() + '\n'
             j += 1
-            if trace: g.trace(repr(out[k]))
+            if trace: g.trace(repr(s))
     #@+node:ekr.20041005105605.118: *7* at.completeLastDirectives
     def completeLastDirectives(self, out, lastLines):
         '''
@@ -1216,14 +1237,13 @@ class AtFile(object):
         for p in root.self_and_subtree():
             v = p.v
             if v.gnx not in seen:
-                old_body = p.bodyString()
                 seen[v.gnx] = v
                 at.terminateNode(postPass=True, v=v)
-                new_body = p.bodyString()
+                # new-read: at.terminateNode has done all the work.
                 if hasattr(v, 'tempBodyList'):
                     delattr(v, 'tempBodyList')
-                if new_body != old_body:
-                    at.handleChangedNode(new_body, old_body, p, thinFile)
+                if hasattr(v, 'tempRoots'):
+                    delattr(v, 'tempRoots')
     #@+node:ekr.20150309154506.27: *6* at.handleChangedNode
     def handleChangedNode(self, new_body, old_body, p, thinFile):
         '''Set ancestor files dirty and support mod_labels plugin.'''
@@ -1270,24 +1290,33 @@ class AtFile(object):
             pass # Middle sentinels never alter text.
         else:
             at.terminateBody(v, postPass)
-        # Delete tempBodyList. Do not leave this lying around!
+        # Delete tempBodyList.
         if hasattr(v, 'tempBodyList'): delattr(v, 'tempBodyList')
     #@+node:ekr.20100628124907.5816: *7* at.indicateNodeChanged
     def indicateNodeChanged(self, old, new, postPass, v):
-        '''Add an entry to c.nodeConflictList.'''
+        '''
+        Add an entry to c.nodeConflictList.
+        Called only from at.terminateBody.
+        '''
+        trace = False and not g.unitTesting
         at, c = self, self.c
+        debug = False # Debug perfect import.
+        # Ignore *all* trailing whitespace.
+        if new.rstrip() == old.rstrip():
+            return
         if at.perfectImportRoot:
             if not postPass:
                 at.correctedLines += 1
-                at.reportCorrection(old, new, v)
+                if debug:
+                    at.reportCorrection(old, new, v)
                 v.setDirty()
                     # Just mark the vnode dirty.
                     # Ancestors will be marked dirty later.
                 c.setChanged(True)
-        else:
-            # Do nothing if only trailing whitespace is involved.
-            if new.endswith('\n') and old == new[: -1]: return
-            if old.endswith('\n') and new == old[: -1]: return
+            return
+        if c.make_node_conflicts_node:
+            if trace:
+                g.es_print('Creating recovered node', v.h)
             c.nodeConflictList.append(g.bunch(
                 tag='(uncached)',
                 gnx=v.gnx,
@@ -1296,36 +1325,35 @@ class AtFile(object):
                 b_new=new,
                 h_old=v._headString,
                 h_new=v._headString,
+                root_v = at.root and at.root.v,
             ))
-            v.setDirty()
-                # Just set the dirty bit. Ancestors will be marked dirty later.
-            c.changed = True
-                # Important: the dirty bits won't stick unless we set c.changed here.
-                # Do *not* call c.setChanged(True) here: that would be too slow.
+        # Always do this.
+        v.setDirty()
+            # Just set the dirty bit. Ancestors will be marked dirty later.
+        c.changed = True
+            # Important: the dirty bits won't stick unless we set c.changed here.
+            # Do *not* call c.setChanged(True) here: that would be too slow.
     #@+node:ekr.20100628124907.5818: *7* at.reportCorrection
     def reportCorrection(self, old, new, v):
+        '''Debugging only. Report changed perfect import lines.'''
         at = self
-        found = False
-        for p in at.perfectImportRoot.self_and_subtree():
-            if p.v == v:
-                found = True; break
+        found = any([p.v == v for p in at.perfectImportRoot.self_and_subtree()])
         if found:
-            if 0: # For debugging.
-                g.pr('\n', '-' * 40)
-                g.pr("old", len(old))
-                for line in g.splitLines(old):
-                    line = line.replace(' ', '< >').replace('\t', '<TAB>').replace('\n', '<NL>')
-                    g.pr(repr(str(line)))
-                g.pr('\n', '-' * 40)
-                g.pr("new", len(new))
-                for line in g.splitLines(new):
-                    #line = line.replace(' ','< >').replace('\t','<TAB>')
-                    g.pr(repr(str(line)))
-                g.pr('\n', '-' * 40)
+            g.pr('\n', '-' * 40)
+            g.pr("old", len(old))
+            for line in g.splitLines(old):
+                line = line.replace(' ', '< >').replace('\t', '<TAB>').replace('\n', '<NL>')
+                g.pr(repr(str(line)))
+            g.pr('\n', '-' * 40)
+            g.pr("new", len(new))
+            for line in g.splitLines(new):
+                #line = line.replace(' ','< >').replace('\t','<TAB>')
+                g.pr(repr(str(line)))
+            g.pr('\n', '-' * 40)
         else:
             # This should never happen.
             g.error("correcting hidden node: v=", repr(v))
-    #@+node:ekr.20100702062857.5824: *7* at.terminateBody (detects changes)
+    #@+node:ekr.20100702062857.5824: *7* at.terminateBody (sets tempRoots)
     def terminateBody(self, v, postPass=False):
         '''Terminate scanning of body text for node v. Set v.b.'''
         trace = False and not g.unitTesting
@@ -1335,14 +1363,29 @@ class AtFile(object):
         else:
             new = ''.join(at.out)
         new = g.toUnicode(new)
-        old = v.bodyString()
-        # Warn if the body text has changed. Don't warn about the root node.
-        if v != at.root.v and at.bodyIsInited(v) and new != old:
-            at.indicateNodeChanged(old, new, postPass, v)
-        v.setBodyString(new)
+        # new-read: at.createThinChild4 creates v.tempRoots.
+        # *Do* allow changes to the root node.
+        if hasattr(v, 'tempRoots'):
+            if trace:
+                g.trace('tempRoots: %20s %s' % (
+                    v.h,
+                    list([g.shortFileName(z) for z in v.tempRoots]),
+                ))
+            old = v.bodyString()
+            if old != new:
+                # This *always* creates a recovered node.
+                at.indicateNodeChanged(old, new, postPass, v)
+                # The last external file wins.
+                v.setBodyString(new)
+        else:
+            # No other @file node has set this node.
+            # Just replace the body string
+            v.tempRoots = set()
+            v.setBodyString(new)
+        v.tempRoots.add(self.root.h)
         at.bodySetInited(v)
-        if trace:
-            g.trace('%25s old %3s new %3s' % (v.gnx, len(old), len(new)), v.h)
+            # Note: the sax code also sets this, so we can't use
+            # this "bit" in place of v.tempRoots.
     #@+node:ekr.20041005105605.74: *5* at.scanText4 & allies
     def scanText4(self, fileName, p, verbose=False):
         """Scan a 4.x derived file non-recursively."""
@@ -1358,7 +1401,7 @@ class AtFile(object):
                 s = at.readLine()
                 if trace and verbose: g.trace(repr(s))
                 at.lineNumber += 1
-                if len(s) == 0:
+                if not s:
                     # An error.  We expect readEndLeo to set at.done.
                     break
                 kind = at.sentinelKind4(s)
@@ -1439,14 +1482,14 @@ class AtFile(object):
         at = self
         trace = False and at.readVersion5 and not g.unitTesting
         # Skip the leading stuff
-        if len(at.endSentinelComment) == 0:
+        if at.endSentinelComment:
+            i = at.skipIndent(s, 0, at.indent)
+        else:
             # Skip the single comment delim and a blank.
             i = g.skip_ws(s, 0)
             if g.match(s, i, at.startSentinelComment):
                 i += len(at.startSentinelComment)
                 if g.match(s, i, " "): i += 1
-        else:
-            i = at.skipIndent(s, 0, at.indent)
         if at.readVersion5:
             # Append the line to docOut.
             line = s[i:]
@@ -1500,7 +1543,6 @@ class AtFile(object):
             at.v1.fileIndex = gnx
             at.v1 = None
         if not ok: return
-        at.root_seen = True
         # Switch context.
         if at.readVersion5:
             # Terminate the *previous* doc part if it exists.
@@ -1536,8 +1578,9 @@ class AtFile(object):
     def createNewThinNode(self, gnx, headline, level):
         '''Create a new (new-style) vnode.'''
         at = self
-        testFile = at.targetFileName.endswith('clone-revert-test.txt')
-        trace = (False and testFile) and not g.unitTesting
+        # testFile = at.targetFileName.endswith('clone-revert-test.txt')
+        # trace = (False and testFile) and not g.unitTesting
+        trace = False and not g.unitTesting
         if trace:
             g.trace('v5: %s level: %2s %-24s %s' % (at.readVersion5, level, gnx, headline))
             g.trace(at.thinNodeStack)
@@ -1554,7 +1597,7 @@ class AtFile(object):
             at.thinNodeStack.append(v)
         at.lastThinNode = v
         return v
-    #@+node:ekr.20130121102015.10272: *9* at.createV5ThinNode & helper
+    #@+node:ekr.20130121102015.10272: *9* at.createV5ThinNode
     def createV5ThinNode(self, gnx, headline, level):
         '''Create a version 5 vnode.'''
         at = self
@@ -1574,7 +1617,6 @@ class AtFile(object):
         at.thinChildIndexStack.append(0)
         at.lastThinNode = v
         # Ensure that the body text is set only once.
-        # Huh?
         if v.isVisited():
             if hasattr(v, 'tempBodyList'):
                 delattr(v, 'tempBodyList')
@@ -1597,24 +1639,23 @@ class AtFile(object):
         gnx = gnxString = g.toUnicode(gnxString)
         gnxDict = c.fileCommands.gnxDict
         v = gnxDict.get(gnxString)
+        if v and gnx != v.fileIndex:
+            g.internalError('v.fileIndex: %s gnx: %s' % (v.fileIndex, gnx))
+            return None
         if v:
-            if gnx == v.fileIndex:
-                # Always use v.h, regardless of headline.
-                if trace and v.h != headline:
-                    g.trace('read error v.h: %s headline: %s' % (v.h, headline))
-                child = v # The return value.
-                if n >= len(parent.children):
-                    child._linkAsNthChild(parent, n)
-                    if trace and trace_tree:
-                        g.trace('OLD n: %s parent: %s -> %s' % (n, parent.h, child.h))
-                elif trace:
-                    if trace_tree: g.trace('DUP n: %s parent: %s -> %s' % (
-                        n, parent.h, child.h))
-                    else:
-                        g.trace('CLONE', id(v), v.gnx, v.h)
-            else:
-                g.internalError('v.fileIndex: %s gnx: %s' % (v.fileIndex, gnx))
-                return None
+            # new-read: Always honor the healine.
+            v.h = headline
+            child = v
+                # The return value.
+            if n >= len(parent.children):
+                child._linkAsNthChild(parent, n)
+                if trace and trace_tree:
+                    g.trace('OLD n: %s parent: %s -> %s' % (n, parent.h, child.h))
+            elif trace:
+                if trace_tree: g.trace('DUP n: %s parent: %s -> %s' % (
+                    n, parent.h, child.h))
+                else:
+                    g.trace('CLONE', id(v), v.gnx, v.h)
         else:
             v = leoNodes.VNode(context=c, gnx=gnx)
             v._headString = headline # Allowed use of v._headString.
@@ -1708,11 +1749,11 @@ class AtFile(object):
         '''Set headline to the rest of the line.
         Don't strip leading whitespace.'''
         at = self
-        if len(at.endSentinelComment) == 0:
-            h = s[i: -1].rstrip()
-        else:
+        if at.endSentinelComment:
             k = s.rfind(at.endSentinelComment, i)
             h = s[i: k].rstrip() # works if k == -1
+        else:
+            h = s[i: -1].rstrip()
         # Undo the CWEB hack: undouble @ signs if\
         # the opening comment delim ends in '@'.
         if at.startSentinelComment[-1:] == '@':
@@ -1780,22 +1821,20 @@ class AtFile(object):
             lws2 = ''
         j = g.skip_ws(s, i)
         assert g.match(s, j, "<<"), 'missing @<< sentinel'
-        # g.trace(repr(at.endSentinelComment))
-        if len(at.endSentinelComment) == 0:
-            if at.readVersion5:
-                line = lws2 + s[i:]
-            else:
-                line = s[i: -1] # No trailing newline
-        else:
+        if at.endSentinelComment:
             k = s.find(at.endSentinelComment, i)
             if at.readVersion5:
                 line = lws2 + s[i: k] + '\n' # Restore the newline.
             else:
                 line = s[i: k] # No trailing newline, whatever k is.
-            # g.trace(repr(line))
+        else:
+            if at.readVersion5:
+                line = lws2 + s[i:]
+            else:
+                line = s[i: -1] # No trailing newline
         # Undo the cweb hack.
         start = at.startSentinelComment
-        if start and len(start) > 0 and start[-1] == '@':
+        if start and start[-1] == '@':
             line = line.replace('@@', '@')
         at.appendToOut(line)
         if at.readVersion5:
@@ -1930,7 +1969,7 @@ class AtFile(object):
         # Such lines were presumably written by @last.
         while 1:
             s = at.readLine()
-            if len(s) == 0: break
+            if not s: break
             at.lastLines.append(s) # Capture all trailing lines, even if empty.
         at.done = True
     #@+node:ekr.20041005105605.94: *7* at.readEndMiddle
@@ -2133,12 +2172,12 @@ class AtFile(object):
             at.raw = False
         e = at.endSentinelComment
         s2 = s[i:]
-        if len(e) > 0:
+        if e:
             k = s.rfind(e, i)
             if k != -1:
                 s2 = s[i: k] + '\n'
         start = at.startSentinelComment
-        if start and len(start) > 0 and start[-1] == '@':
+        if start and start[-1] == '@':
             s2 = s2.replace('@@', '@')
         # An @c or @code ends the doc part when using new sentinels.
         if (
@@ -2289,7 +2328,7 @@ class AtFile(object):
             return at.noSentinel
         # Locally undo cweb hack here
         start = at.startSentinelComment
-        if start and len(start) > 0 and start[-1] == '@':
+        if start and start[-1] == '@':
             s = s[: i] + s[i:].replace('@@', '@')
         # New sentinels.
         if g.match(s, i, "@+"):
@@ -2333,7 +2372,7 @@ class AtFile(object):
             i += 1
         i = g.skip_c_id(s, i)
         key = s[j: i]
-        if len(key) > 0 and key in at.sentinelDict:
+        if key and key in at.sentinelDict:
             return at.sentinelDict[key]
         else:
             return at.noSentinel
@@ -2341,7 +2380,7 @@ class AtFile(object):
     def skipSentinelStart4(self, s, i):
         """Skip the start of a sentinel."""
         start = self.startSentinelComment
-        assert start and len(start) > 0, 'skipSentinelStart4 1'
+        assert start, 'skipSentinelStart4 1'
         i = g.skip_ws(s, i)
         assert g.match(s, i, start), 'skipSentinelStart4 2'
         i += len(start)
@@ -2399,7 +2438,7 @@ class AtFile(object):
         return p
     #@+node:ekr.20041005105605.120: *5* at.parseLeoSentinel
     if 1: # Experimental. All unit tests pass.
-        
+
         def parseLeoSentinel(self, s):
             '''
             Parse the sentinel line s.
@@ -2416,9 +2455,9 @@ class AtFile(object):
                 # The old code weirdly allowed '.' in version numbers.
             m = pattern.match(s)
             valid = bool(m)
-            if valid:  
+            if valid:
                 # set start delim: whitespace before @+leo is significant.
-                # group(1): \* 
+                # group(1): \*
                 start = m.group(1)
                 valid = bool(start)
             if valid:
@@ -2462,7 +2501,7 @@ class AtFile(object):
                 g.trace('valid: %s, isThin: %s, encoding: %r, start: %r, end: %r' % (
                     valid, isThin, encoding, start, end))
             return valid, new_df, start, end, isThin
-        
+
     else:
 
         def parseLeoSentinel(self, s):
@@ -2588,7 +2627,7 @@ class AtFile(object):
         self.root.setDirty()
             # 2010/10/22: the dirty bit gets cleared later, though.
         self.root.setOrphan()
-    #@+node:ekr.20041005105605.128: *5* at.readLine (unused args when new_read is True)
+    #@+node:ekr.20041005105605.128: *5* at.readLine
     def readLine(self):
         """
         Read one line from file using the present encoding.
@@ -2717,7 +2756,7 @@ class AtFile(object):
         s = p.h
         if g.match(s, 0, "@@"):
             s = s[2:]
-            if s and len(s) > 0:
+            if s:
                 at.outputFile.write(s)
         # Write the body.
         s = p.b
@@ -2822,7 +2861,7 @@ class AtFile(object):
                 g.error('openForWrite: exception opening file: %s' % (open_file_name))
                 g.es_exception()
             return 'error', None
-    #@+node:ekr.20041005105605.144: *5* at.write & helpers
+    #@+node:ekr.20041005105605.144: *5* at.write & helpers (changed)
     def write(self,
         root,
         kind='@unknown', # Should not happen.
@@ -2885,6 +2924,10 @@ class AtFile(object):
                     at.rememberReadPath(eventualFileName, root)
                     at.replaceTargetFileIfDifferent(root)
                         # Sets/clears dirty and orphan bits.
+                    # Leo 5.6: update the cache *here*, not just when reading.
+                    fileKey = c.cacher.fileKey(eventualFileName, at.outputContents)
+                    if trace: g.trace(g.shortFileName(eventualFileName), fileKey)
+                    c.cacher.writeFile(at.root, fileKey)
         except Exception:
             if hasattr(self.root.v, 'tnodeList'):
                 delattr(self.root.v, 'tnodeList')
@@ -2913,7 +2956,7 @@ class AtFile(object):
         # Delete the temp file.
         if at.outputFileName:
             self.remove(at.outputFileName)
-    #@+node:ekr.20041005105605.147: *5* at.writeAll & helpers
+    #@+node:ekr.20041005105605.147: *5* at.writeAll & helpers (changed)
     def writeAll(self,
         writeAtFileNodesFlag=False,
         writeDirtyAtFileNodesFlag=False,
@@ -2924,6 +2967,7 @@ class AtFile(object):
         at = self; c = at.c
         if trace: scanAtPathDirectivesCount = c.scanAtPathDirectivesCount
         writtenFiles = [] # Files that might be written again.
+        at.sameFiles = 0
         force = writeAtFileNodesFlag
         # This is the *only* place where these are set.
         # promptForDangerousWrite sets cancelFlag only if canCancelFlag is True.
@@ -2942,6 +2986,8 @@ class AtFile(object):
             p = c.rootPosition()
             after = None
         at.clearAllOrphanBits(p)
+        # Leo 5.6: write files only once.
+        seen = set()
         while p and p != after:
             if p.isAtIgnoreNode() and not p.isAtAsisFileNode():
                 if p.isAnyAtFileNode():
@@ -2949,17 +2995,19 @@ class AtFile(object):
                 # Note: @ignore not honored in @asis nodes.
                 p.moveToNodeAfterTree() # 2011/10/08: Honor @ignore!
             elif p.isAnyAtFileNode():
-                try:
-                    self.writeAllHelper(p, root, force, toString, writeAtFileNodesFlag, writtenFiles)
-                except Exception:
-                    # Fix bug 1260415: https://bugs.launchpad.net/leo-editor/+bug/1260415
-                    # Give a more urgent, more specific, more helpful message.
-                    g.es_exception()
-                    g.es('Internal error writing: %s' % (p.h), color='red')
-                    g.es('Please report this error to:', color='blue')
-                    g.es('https://groups.google.com/forum/#!forum/leo-editor', color='blue')
-                    g.es('Warning: changes to this file will be lost', color='red')
-                    g.es('unless you can save the file successfully.', color='red')
+                if p.v not in seen:
+                    seen.add(p.v)
+                    try:
+                        self.writeAllHelper(p, root, force, toString, writeAtFileNodesFlag, writtenFiles)
+                    except Exception:
+                        # Fix bug 1260415: https://bugs.launchpad.net/leo-editor/+bug/1260415
+                        # Give a more urgent, more specific, more helpful message.
+                        g.es_exception()
+                        g.es('Internal error writing: %s' % (p.h), color='red')
+                        g.es('Please report this error to:', color='blue')
+                        g.es('https://groups.google.com/forum/#!forum/leo-editor', color='blue')
+                        g.es('Warning: changes to this file will be lost', color='red')
+                        g.es('unless you can save the file successfully.', color='red')
                 p.moveToNodeAfterTree()
             else:
                 p.moveToThreadNext()
@@ -2970,8 +3018,12 @@ class AtFile(object):
         # say the command is finished.
         if not g.unitTesting:
             if writeAtFileNodesFlag or writeDirtyAtFileNodesFlag:
-                if len(writtenFiles) > 0:
-                    g.es("finished")
+                if writtenFiles:
+                    report = c.config.getBool('report_unchanged_files', default=True)
+                    if report:
+                        g.es("finished")
+                    elif at.sameFiles:
+                        g.es('finished. %s unchanged files' % at.sameFiles)
                 elif writeAtFileNodesFlag:
                     g.warning("no @<file> nodes in the selected tree")
                     # g.es("to write an unchanged @auto node,\nselect it directly.")
@@ -3061,7 +3113,7 @@ class AtFile(object):
                 at.write(p, kind='@thin', toString=toString)
                 writtenFiles.append(p.v)
             elif p.isAtFileNode():
-                at.write(p, kind='@file', toString=toString) 
+                at.write(p, kind='@file', toString=toString)
                 writtenFiles.append(p.v)
             if p.v in writtenFiles:
                 # Clear the dirty bits in all descendant nodes.
@@ -3365,7 +3417,7 @@ class AtFile(object):
             forcePythonSentinels=True,
                 # A hack to suppress an error message.
                 # The actual sentinels will be set below.
-        )    
+        )
         #
         # Bug fix: Leo 4.5.1:
         # use x.markerFromFileName to force the delim to match
@@ -3491,7 +3543,7 @@ class AtFile(object):
         c.raise_error_dialogs(kind='write')
     #@+node:ekr.20041005105605.152: *6* at.writeMissingNode
     def writeMissingNode(self, p):
-        
+
         at = self
         if p.isAtAsisFileNode():
             at.asisWrite(p)
@@ -3591,7 +3643,7 @@ class AtFile(object):
             at_warning_given = False,
             has_at_others = False,
             in_code = True,
-        )   
+        )
         while i < len(s):
             next_i = g.skip_line(s, i)
             assert next_i > i, 'putBody'
@@ -3613,7 +3665,7 @@ class AtFile(object):
         '''
         Ensure a trailing newline in s.
         If we add a trailing newline, we'll generate an @nonl sentinel below.
-        
+
         - We always ensure a newline in @file and @thin trees.
         - This code is not used used in @asis trees.
         - New in Leo 4.4.3 b1: We add a newline in @clean/@nosent trees unless
@@ -3637,7 +3689,7 @@ class AtFile(object):
             if status.in_code:
                 if at.raw:
                     at.putCodeLine(s, i)
-                else: 
+                else:
                     name, n1, n2 = at.findSectionName(s, i)
                     if name:
                         at.putRefLine(s, i, n1, n2, name, p)
@@ -4069,7 +4121,7 @@ class AtFile(object):
         start = at.startSentinelComment
         end = at.endSentinelComment
         h = p.h
-        if end and len(end) > 0:
+        if end:
             h = h.replace(start, "")
             h = h.replace(end, "")
         return h
@@ -4140,7 +4192,7 @@ class AtFile(object):
             at.onl()
     #@+node:ekr.20041005105605.196: *4* Writing 4.x utils...
     #@+node:ekr.20090514111518.5661: *5* at.checkPythonCode & helpers
-    def checkPythonCode(self, root, s=None, targetFn=None):
+    def checkPythonCode(self, root, s=None, targetFn=None, pyflakes_errors_only=False):
         '''Perform python-related checks on root.'''
         at = self
         if not targetFn:
@@ -4150,13 +4202,14 @@ class AtFile(object):
                 s = at.outputContents
                 if not s: return
             # It's too slow to check each node separately.
-            ok = at.checkPythonSyntax(root, s)
+            if pyflakes_errors_only:
+                ok = True
+            else:
+                ok = at.checkPythonSyntax(root, s)
             # Syntax checking catches most indentation problems.
-            # if ok: at.tabNannyNode(root,s)
-            # if not ok:
-                # g.app.syntax_error_files.append(g.shortFileName(targetFn))
-            if at.runPyFlakesOnWrite and not g.unitTesting:
-                ok2 = self.runPyflakes(root)
+                # if ok: at.tabNannyNode(root,s)
+            if ok and at.runPyFlakesOnWrite and not g.unitTesting:
+                ok2 = self.runPyflakes(root, pyflakes_errors_only=pyflakes_errors_only)
             else:
                 ok2 = True
             if not ok or not ok2:
@@ -4199,12 +4252,13 @@ class AtFile(object):
             if j == i:
                 g.es_print(' ' * (7 + offset) + '^')
     #@+node:ekr.20161021084954.1: *6* at.runPyflakes
-    def runPyflakes(self, root):
+    def runPyflakes(self, root, pyflakes_errors_only):
         '''Run pyflakes on the selected node.'''
         try:
             import leo.commands.checkerCommands as checkerCommands
             if checkerCommands.pyflakes:
-                ok = checkerCommands.PyflakesCommand(self.c).run(p=root)
+                x = checkerCommands.PyflakesCommand(self.c)
+                ok = x.run(p=root,pyflakes_errors_only=pyflakes_errors_only)
                 return ok
         except Exception:
             g.es_exception()
@@ -4534,7 +4588,7 @@ class AtFile(object):
     def putDirective(self, s, i):
         r'''
         Output a sentinel a directive or reference s.
-        
+
         It is important for PHP and other situations that \@first and \@last
         directives get translated to verbatim lines that do *not* include what
         follows the @first & @last directives.
@@ -4608,25 +4662,28 @@ class AtFile(object):
             lines = s2.split("\\n")
             for line in lines:
                 line = line.replace("@date", time.asctime())
-                if len(line) > 0:
+                if line:
                     self.putSentinel("@comment " + line)
     #@+node:ekr.20080712150045.1: *5* at.replaceFileWithString
     def replaceFileWithString(self, fn, s):
-        '''Replace the file with s if s is different from theFile's contents.
+        '''
+        Replace the file with s if s is different from theFile's contents.
 
         Return True if theFile was changed.
 
         This is used only by the @shadow logic.
         '''
         trace = False and not g.unitTesting
-        at = self
+        at, c = self, self.c
         exists = g.os_path_exists(fn)
         if exists: # Read the file.  Return if it is the same.
             s2, e = g.readFileIntoString(fn)
             if s is None:
                 return False
             if s == s2:
-                if not g.unitTesting: g.es('unchanged:', fn)
+                report = c.config.getBool('report_unchanged_files', default=True)
+                if report and not g.unitTesting:
+                    g.es('unchanged:', fn)
                 return False
         # Issue warning if directory does not exist.
         theDir = g.os_path_dirname(fn)
@@ -4683,6 +4740,12 @@ class AtFile(object):
             'ignoreBlankLines', ignoreBlankLines,
             'target exists', g.os_path_exists(at.targetFileName),
             at.outputFileName, at.targetFileName)
+        # #531: Optionally report timestamp...
+        if c.config.getBool('log_show_save_time', default=False):
+            format = c.config.getString('log_timestamp_format') or "%H:%M:%S"
+            timestamp = time.strftime(format) + ' '
+        else:
+            timestamp = ''
         if g.os_path_exists(at.targetFileName):
             if at.compareFiles(
                 at.outputFileName,
@@ -4692,9 +4755,13 @@ class AtFile(object):
             ):
                 # Files are identical.
                 if trace: g.trace('files are identical')
-                if not g.unitTesting:
-                    g.es('unchanged:', at.shortFileName)
+                report = c.config.getBool('report_unchanged_files', default=True)
+                at.sameFiles += 1
+                if report and not g.unitTesting:
+                    g.es('%sunchanged: %s' % (timestamp, at.shortFileName))
                 at.fileChangedFlag = False
+                # Leo 5.6: Check unchanged files.
+                at.checkPythonCode(root, pyflakes_errors_only=True)
                 return False
             else:
                 # A mismatch. Report if the files differ only in line endings.
@@ -4711,7 +4778,7 @@ class AtFile(object):
                 if ok:
                     c.setFileTimeStamp(at.targetFileName)
                     if not g.unitTesting:
-                        g.es('wrote:', at.shortFileName)
+                        g.es('%swrote: %s' % (timestamp, at.shortFileName))
                 else:
                     g.error('error writing', at.shortFileName)
                     g.es('not written:', at.shortFileName)
@@ -4728,7 +4795,7 @@ class AtFile(object):
             if ok:
                 c.setFileTimeStamp(at.targetFileName)
                 if not g.unitTesting:
-                    g.es('created:', at.targetFileName)
+                    g.es('%screated: %s' % (timestamp, at.targetFileName))
                 if root:
                     # Fix bug 889175: Remember the full fileName.
                     at.rememberReadPath(at.targetFileName, root)
@@ -4853,14 +4920,14 @@ class AtFile(object):
     #@-<< about os.rename >>
 
     def rename(self, src, dst, mode=None, verbose=True):
-        '''remove dst if it exists, then rename src to dst.
-
+        '''
+        Remove dst if it exists, then rename src to dst.
         Change the mode of the renamed file if mode is given.
-
-        Return True if all went well.'''
+        Return True if all went well.
+        '''
         c = self.c
         head, junk = g.os_path_split(dst)
-        if head and len(head) > 0:
+        if head:
             g.makeAllNonExistentDirectories(head, c=c)
         if g.os_path_exists(dst):
             if not self.remove(dst, verbose=verbose):

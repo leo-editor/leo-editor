@@ -21,7 +21,7 @@ class Html_Importer(Xml_Importer):
             # void elements in HTML 4.01/XHTML 1.0 Strict:
             'area', 'base', 'br', 'col', 'hr', 'img', 'input', 'link', 'meta', 'param',
             # void elements in HTML5:
-            'command', 'keygen', 'source', 
+            'command', 'keygen', 'source',
         ]
 #@-others
 importer_dict = {

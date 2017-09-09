@@ -2,7 +2,10 @@
 #@+node:ville.20090314215508.4: * @file quicksearch.py
 #@+<< docstring >>
 #@+node:ville.20090314215508.5: ** << docstring >> (quicksearch.py)
-''' Adds a fast-to-use search widget, like the "Find in files" feature of many editors.
+'''
+Adds a fast-to-use search widget, like the "Find in files" feature of many editors.
+
+Quicksearch searches node headlines only, *not* body text
 
 Just load the plugin, activate "Nav" tab, enter search text and press enter.
 
@@ -19,6 +22,7 @@ by searching for "r:(?i)Foo". (?i) is a standard feature of Python regular expre
 syntax, as documented in
 
 The search can be confined to several options:
+
 - All: regular search for all nodes
 - Subtree: current node and it's children
 - File: only search under a node with an @<file> directive
@@ -77,7 +81,6 @@ This plugin defines the following commands that can be bound to keys:
 import leo.core.leoGlobals as g
 import itertools
 from collections import OrderedDict
-
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')
 from leo.core.leoQt import QtCore,QtConst,QtWidgets # isQt5,QtGui,
@@ -159,6 +162,7 @@ def install_qt_quicksearch_tab(c):
             wdg.ui.lineEdit.setText(text)
             wdg.returnPressed()
             focus_to_nav(event)
+
         else:
             focus_quicksearch_entry(event)
 
@@ -174,20 +178,13 @@ def install_qt_quicksearch_tab(c):
         c.frame.log.selectTab('Nav')
         wdg.scon.doTimeline()
 
-    c.k.registerCommand(
-        'find-quick',None,focus_quicksearch_entry)
-    c.k.registerCommand(
-        'find-quick-selected','Ctrl-Shift-f',find_selected)
-    c.k.registerCommand(
-        'focus-to-nav', None,focus_to_nav)
-    c.k.registerCommand(
-        'find-quick-test-failures', None,show_unittest_failures)
-    c.k.registerCommand(
-        'find-quick-timeline', None, timeline)
-    c.k.registerCommand(
-        'find-quick-changed', None, show_dirty)
-    c.k.registerCommand(
-        'history', None, nodehistory)
+    c.k.registerCommand('find-quick', focus_quicksearch_entry)
+    c.k.registerCommand('find-quick-selected', find_selected, shortcut='Ctrl-Shift-f')
+    c.k.registerCommand('focus-to-nav', focus_to_nav)
+    c.k.registerCommand('find-quick-test-failures', show_unittest_failures)
+    c.k.registerCommand('find-quick-timeline', timeline)
+    c.k.registerCommand('find-quick-changed', show_dirty)
+    c.k.registerCommand('history', nodehistory)
 
     @g.command('marked-list')
     def showmarks(event):
@@ -356,6 +353,8 @@ class LeoQuickSearchWidget(QtWidgets.QWidget):
 
         if t == g.u('m'):
             self.scon.doShowMarked()
+        elif t == g.u('h'):
+            self.scon.doSearchHistory()
         else:
             self.scon.doSearch(t)
 
@@ -419,6 +418,7 @@ class QuickSearchController(object):
                                "@auto-otl", "@auto-rst"]
 
         self.frozen = False
+        self._search_patterns = []
         def searcher(inp):
             #print("searcher", inp)
             if self.frozen:
@@ -474,6 +474,10 @@ class QuickSearchController(object):
     def freeze(self, val = True):
         self.frozen = val
 
+    #@+node:vitalije.20170705203722.1: *3* addItem
+    def addItem(self, it, val):
+        self.its[id(it)] = val
+        return len(self.its) > 300
     #@+node:ekr.20111015194452.15689: *3* addBodyMatches
     def addBodyMatches(self, poslist):
         lineMatchHits = 0
@@ -482,43 +486,45 @@ class QuickSearchController(object):
             f = it.font()
             f.setBold(True)
             it.setFont(f)
-            self.its[id(it)] = (p, None)
+            if self.addItem(it, (p, None)):return lineMatchHits
             ms = matchlines(p.b, p.matchiter)
             for ml, pos in ms:
                 lineMatchHits += 1
                 it = QtWidgets.QListWidgetItem("    "+ml, self.lw)
-                self.its[id(it)] = (p,pos)
+                if self.addItem(it, (p,pos)):return lineMatchHits
         return lineMatchHits
     #@+node:jlunz.20151027092130.1: *3* addParentMatches
     def addParentMatches(self, parent_list):
         lineMatchHits = 0
         for parent_key, parent_value in parent_list.items():
             if g.isString(parent_key):
-                it = QtWidgets.QListWidgetItem(parent_key, self.lw)
+                v = self.c.fileCommands.gnxDict.get(parent_key)
+                h = v.h if v else parent_key
+                it = QtWidgets.QListWidgetItem(h, self.lw)
             else:
                 it = QtWidgets.QListWidgetItem(parent_key.h, self.lw)
             f = it.font()
             f.setItalic(True)
             it.setFont(f)
-            self.its[id(it)] = (parent_key, None)
+            if self.addItem(it, (parent_key, None)): return lineMatchHits
             for p in parent_value:
                 it = QtWidgets.QListWidgetItem("    "+p.h, self.lw)
                 f = it.font()
                 f.setBold(True)
                 it.setFont(f)
-                self.its[id(it)] = (p, None)
+                if self.addItem(it, (p, None)):return lineMatchHits
                 if hasattr(p,"matchiter"): #p might be not have body matches
                     ms = matchlines(p.b, p.matchiter)
                     for ml, pos in ms:
                         lineMatchHits += 1
                         it = QtWidgets.QListWidgetItem("    "+"    "+ml, self.lw)
-                        self.its[id(it)] = (p,pos)
+                        if self.addItem(it, (p, pos)):return lineMatchHits
         return lineMatchHits
 
     #@+node:ekr.20111015194452.15690: *3* addGeneric
     def addGeneric(self, text, f):
         """ Add generic callback """
-        it = id(QtWidgets.QListWidgetItem(text, self.lw))
+        it = QtWidgets.QListWidgetItem(text, self.lw)
         self.its[id(it)] = f
         return it
     #@+node:ekr.20111015194452.15688: *3* addHeadlineMatches
@@ -529,7 +535,7 @@ class QuickSearchController(object):
             f = it.font()
             f.setBold(True)
             it.setFont(f)
-            self.its[id(it)] = (p,None)
+            if self.addItem(it, (p, None)): return
     #@+node:ekr.20111015194452.15691: *3* clear
     def clear(self):
 
@@ -543,6 +549,23 @@ class QuickSearchController(object):
         nh.reverse()
         self.clear()
         self.addHeadlineMatches(nh)
+    #@+node:vitalije.20170703141041.1: *3* doSearchHistory
+    def doSearchHistory(self):
+        self.clear()
+        def sHistSelect(x):
+            def _f():
+                self.widgetUI.lineEdit.setText(x)
+                self.doSearch(x)
+            return _f
+        for pat in self._search_patterns:
+            self.addGeneric(pat, sHistSelect(pat))
+
+
+    def pushSearchHistory(self, pat):
+        if pat in self._search_patterns:
+            return
+        self._search_patterns = ([pat] + self._search_patterns)[:30]
+
     #@+node:tbrown.20120220091254.45207: *3* doTimeline
     def doTimeline(self):
 
@@ -562,10 +585,13 @@ class QuickSearchController(object):
     def doSearch(self, pat):
         hitBase = False
         self.clear()
-
+        self.pushSearchHistory(pat)
         if not pat.startswith('r:'):
             hpat = fnmatch.translate('*'+ pat + '*').replace(r"\Z(?ms)","")
-            bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)","")
+            bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)", "")
+            # in python 3.6 there is no (?ms) at the end
+            # only \Z
+            bpat = bpat.replace(r'\Z', '')
             flags = re.IGNORECASE
         else:
             hpat = pat[2:]
@@ -606,8 +632,8 @@ class QuickSearchController(object):
                         hitBase = True
                     else:
                         node = node.parent()
-            if hitBase: 
-                # If I hit the base then revert to all positions 
+            if hitBase:
+                # If I hit the base then revert to all positions
                 # this is basically the "main" chapter
                 hitBase = False #reset
                 hNodes = self.c.all_positions()
@@ -626,15 +652,14 @@ class QuickSearchController(object):
             bm_keys = [match.key() for match in bm]
             numOfHm = len(hm) #do this before trim to get accurate count
             hm = [match for match in hm if match.key() not in bm_keys]
-
             if self.widgetUI.showParents.isChecked():
-                parents = OrderedDefaultDict(lambda: [])
+                parents = OrderedDefaultDict(list)
                 for nodeList in [hm,bm]:
                     for node in nodeList:
                         if node.level() == 0:
                             parents["Root"].append(node)
                         else:
-                            parents[node.parent()].append(node)
+                            parents[node.parent().gnx].append(node)
                 lineMatchHits = self.addParentMatches(parents)
             else:
                 self.addHeadlineMatches(hm)
@@ -642,6 +667,7 @@ class QuickSearchController(object):
 
             hits = numOfHm + lineMatchHits
             self.lw.insertItem(0, "{} hits".format(hits))
+
         else:
             if combo == "File":
                 self.lw.insertItem(0, "External file directive not found "+

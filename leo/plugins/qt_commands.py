@@ -3,6 +3,7 @@
 '''Leo's Qt-related commands defined by @g.command.'''
 import leo.core.leoGlobals as g
 import leo.core.leoColor as leoColor
+import leo.core.leoConfig as leoConfig
 from leo.core.leoQt import QtGui, QtWidgets
 #@+others
 #@+node:ekr.20110605121601.18000: ** init
@@ -32,7 +33,7 @@ def detach_editor_toggle(event):
         detach_editor(c)
     else:
         undetach_editor(c)
-        
+
 @g.command('detach-editor-toggle-max')
 def detach_editor_toggle_max(event):
     """ Detach editor, maximize """
@@ -114,21 +115,21 @@ def showColorNames(event=None):
             background-color: %s;
             selection-background-color: %s;
             selection-color: black;
-        }''' 
+        }'''
     ivar = 'leo_settings_color_picker'
     if getattr(c, ivar, None):
         g.es('The color picker already exists in the icon bar.')
     else:
         color_list = []
         box = QtWidgets.QComboBox()
-    
+
         def onActivated(n,*args,**keys):
             color = color_list[n]
             sheet = template % (color,color)
             box.setStyleSheet(sheet)
             g.es("copied to clipboard:", color)
             QtWidgets.QApplication.clipboard().setText(color)
-            
+
         box.activated.connect(onActivated)
         color_db = leoColor.leo_color_database
         for key in sorted(color_db):
@@ -147,17 +148,26 @@ def showColorNames(event=None):
             # Do this last, so errors don't prevent re-execution.
 #@+node:ekr.20170324142416.1: ** qt: show-color-wheel
 @g.command('show-color-wheel')
-def showColorWheel(event=None):
+def showColorWheel(self, event=None):
     '''Show a Qt color dialog.'''
+    c = self.c; p = c.p
     picker = QtWidgets.QColorDialog()
+    in_color_setting = p.h.startswith('@color ')
     try:
         text = QtWidgets.QApplication.clipboard().text()
+        if in_color_setting:
+            text = p.h.split('=', 1)[1].strip()
         color = QtGui.QColor(text)
         picker.setCurrentColor(color)
-    except ValueError:
-        pass
+    except (ValueError, IndexError) as e:
+        g.trace('error caught', e)
     if not picker.exec_():
         g.es("No color selected")
+    elif in_color_setting:
+        udata = c.undoer.beforeChangeNodeContents(p)
+        p.h = '%s = %s'%(p.h.split('=', 1)[0].strip(),
+                         g.u(picker.selectedColor().name()))
+        c.undoer.afterChangeNodeContents(p, 'change-color', udata)
     else:
         text = picker.selectedColor().name()
         g.es("copied to clipboard:", text)
@@ -166,20 +176,39 @@ def showColorWheel(event=None):
 @g.command('show-fonts')
 def showFonts(self, event=None):
     '''Open a tab in the log pane showing a font picker.'''
+    c = self.c; p = c.p
+
     picker = QtWidgets.QFontDialog()
-    text = QtWidgets.QApplication.clipboard().text()
+    if p.h.startswith('@font'):
+        (name, family, weight, slant, size) = leoConfig.parseFont(p.b)
+    else:
+        name, family, weight, slant, size = None, None, False, False, 12
     try:
-        font = QtGui.QFont(text)
+        font = QtGui.QFont()
+        if family: font.setFamily(family)
+        font.setBold(weight)
+        font.setItalic(slant)
+        font.setPointSize(size)
         picker.setCurrentFont(font)
     except ValueError:
         pass
     if not picker.exec_():
         g.es("No font selected")
     else:
-        text = picker.selectedFont().family()
-        g.es('copied to clipboard:', text)
-        QtWidgets.QApplication.clipboard().setText(text)
-    
+        font = picker.selectedFont()
+        udata = c.undoer.beforeChangeNodeContents(p)
+        comments = [x for x in g.splitLines(p.b) if x.strip().startswith('#')]
+
+        defs = [
+            '\n' if comments else '',
+            '%s_family = %s\n'%(name, font.family()),
+            '%s_weight = %s\n'%(name, 'bold' if font.bold() else 'normal'),
+            '%s_slant = %s\n'%(name, 'italic' if font.italic() else 'roman'),
+            '%s_size = %s\n'%(name, font.pointSizeF())
+        ]
+
+        p.b = g.u('').join(comments + defs)
+        c.undoer.afterChangeNodeContents(p, 'change-font', udata)
 #@+node:ekr.20140918124632.17891: ** qt: style-reload
 @g.command('style-reload')
 def style_reload(event):

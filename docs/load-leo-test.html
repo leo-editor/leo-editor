@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script type="text/javascript" src="scripts/upclick-min.js"></script>
+<script type="text/javascript" src="scripts/jquery.min.js"></script>
+<title>Load Your Leo File</title>
+</head>
+<body>
+<form name="form1">
+<input type="button" id="uploader" value="Upload From Your Hard Drive">
+</form>
+<p style="margin:0;font-size:1em;">&nbsp;</p>
+Or
+<p style="margin:0;font-size:1em;">&nbsp;</p>
+<form id="form2">
+Upload from the Internet.<br>Enter the URL below.<br>
+<input style="width:500px;" type="text" id="get_name"><br>&nbsp;<br>
+<input type="button" value="Upload From the Internet" onClick="loader();">
+</form>
+<div style="margin:0 auto;text-align:left;" id="leo-data">
+</div>
+<script type="text/javascript">
+var $doc_error = "<p>Error uploading file.</p>";
+var $leo_div   = document.getElementById('leo-data');
+var uploader   = document.getElementById('uploader');
+var do_return  = function (data)
+{
+  var is_leo = data.split("-");
+  if (!(is_leo[0] == "show"))
+  {
+     $leo_div.innerHTML = data;
+     return;
+  }
+  if (!(is_leo[1] == "leo"))
+  {
+     $leo_div.innerHTML = data;
+     return;
+  }
+  document.location = "./tmp/" + data;
+};
+var loader = function()
+{
+  //alert(xget_name);
+  var xget_name  = document.getElementById('get_name').value
+  var res = $.post( "do-leo.php", {get_name: xget_name});
+  res.done(function(data)
+  {
+     //document.getElementById('leo-data').innerHTML = data;
+     do_return(data);
+  });
+};
+upclick(
+ {
+   element: uploader,
+   action: 'do-leo.php', 
+   onstart:
+   function(filename)
+   {
+     //alert('Start upload: '+filename);
+     var x = 2;
+   },
+   oncomplete:
+   function(data) 
+   {
+     do_return(data); 
+   }
+});
+</script>
+<script type="text/javascript">
+</script>
+</body>
+</html>
+ 
+ 

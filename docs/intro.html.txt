@@ -1,0 +1,26 @@
+.. rst3: filename: html\intro.html
+
+################
+The Leo Tutorial
+################
+
+.. index:: Leo's tutorial
+
+.. _`free software`: https://en.wikipedia.org/wiki/Free_software
+.. _`Learn the basics of Leo in one hour`: http://leoeditor.com/basics1.html
+.. _`Learn intermediate topics in one hour`: http://leoeditor.com/basics2.html
+
+Leo is a power tool for people who want to organize, study and work with
+data, especially complex data like computer programs, books, web sites and
+data bases.
+
+Leo looks like other outlining programs, but it is not. Leonistas say Leo
+is a revolutionary tool and that Leo is fun to use--even addictive.
+
+Leo is `free software`_; it's source code is freely available.
+
+This tutorial has two parts: 
+
+1. `Learn the basics of Leo in one hour`_ and
+2. `Learn intermediate topics in one hour`_.
+

@@ -84,6 +84,7 @@
 <v t="ekr.20160122104400.1"><vh>@settings</vh>
 <v t="ekr.20160122104357.1"><vh>@data history-list</vh></v>
 </v>
+<v t="ekr.20170420085814.1"><vh>Recursive import script</vh></v>
 </v>
 <v t="ekr.20090430075506.4"><vh>Notes</vh>
 <v t="ekr.20090430075506.3"><vh>@file leoPluginNotes.txt</vh></v>
@@ -106,24 +107,6 @@
 <v t="ekr.20050303051222.1"><vh>__init__</vh></v>
 </v>
 </v>
-</v>
-<v t="ekr.20101110150056.9453"><vh> Qt only plugins</vh>
-<v t="tbrown.20091029123555.5319"><vh>@file attrib_edit.py</vh></v>
-<v t="ville.20090310191936.10"><vh>@file colorize_headlines.py</vh></v>
-<v t="ekr.20090701111504.5294"><vh>@file contextmenu.py</vh></v>
-<v t="tbrown.20090206153748.1"><vh>@file graphcanvas.py</vh></v>
-<v t="ville.20090518182905.5419"><vh>@file nav_qt.py</vh></v>
-<v t="ville.20120604212857.4215"><vh>@file notebook.py</vh></v>
-<v t="ekr.20090622063842.5264"><vh>@file projectwizard.py</vh></v>
-<v t="ekr.20160928073518.1"><vh>@file pyplot_backend.py</vh></v>
-<v t="ville.20090314215508.4"><vh>@file quicksearch.py</vh></v>
-<v t="tbrown.20130420091241.44181"><vh>@file screen_capture.py</vh></v>
-<v t="ville.20090815203828.5235"><vh>@file spydershell.py</vh></v>
-<v t="ekr.20100103093121.5329"><vh>@file stickynotes.py</vh></v>
-<v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
-<v t="ville.20110403115003.10348"><vh>@file valuespace.py</vh></v>
-<v t="tbrown.20100318101414.5990"><vh>@file viewrendered.py</vh></v>
-<v t="ekr.20140225222704.16748"><vh>@file viewrendered2.py</vh></v>
 </v>
 <v t="ekr.20100103093121.5365"><vh>Auto completion</vh>
 <v t="ekr.20091118065749.5261"><vh>@file ctagscompleter.py</vh></v>
@@ -168,6 +151,7 @@
 <v t="EKR.20040517080202.3"><vh>@file examples/french_fm.py</vh></v>
 </v>
 <v t="ekr.20101110150056.9457"><vh>Experimental</vh>
+<v t="ekr.20090704103932.5160"><vh>@file leo_pdf.py</vh></v>
 <v t="danr7.20060902083957"><vh>@file leo_to_rtf.py</vh></v>
 <v t="ekr.20040205071616"><vh>@file mnplugins.py</vh></v>
 <v t="ekr.20101110094759.5843"><vh>@file mod_speedups.py</vh></v>
@@ -194,6 +178,7 @@
 <v t="edream.110203113231.873"><vh>@file at_folder.py</vh></v>
 <v t="ekr.20040915085351"><vh>@file at_produce.py</vh></v>
 <v t="ktenney.20041211072654.1"><vh>@file at_view.py</vh></v>
+<v t="ekr.20170619151859.2"><vh>@file auto_colorize2_0.py</vh></v>
 <v t="tbrown.20081223111325.3"><vh>@file backlink.py</vh></v>
 <v t="tbrown.20070322113635"><vh>@file bookmarks.py</vh></v>
 <v t="ekr.20060807103814.1"><vh>@file datenodes.py</vh></v>
@@ -215,6 +200,9 @@
 </v>
 <v t="ekr.20081121105001.2080"><vh>Gui plugins</vh>
 <v t="ekr.20150107090324.1"><vh>@file cursesGui.py</vh></v>
+<v t="ekr.20170419092835.1"
+expanded="ekr.20170524124449.1,ekr.20170517072429.1,"><vh>@file cursesGui2.py</vh></v>
+<v t="ekr.20170419150249.1"><vh>@file template_gui.py</vh></v>
 </v>
 <v t="ekr.20140723122936.17925"><vh>Importer plugins</vh>
 <v t="ekr.20140723122936.18139"><vh>@file importers/__init__.py</vh></v>
@@ -232,20 +220,21 @@
 <v t="ekr.20160504080826.1"><vh>@file importers/json.py</vh></v>
 <v t="ekr.20140723122936.18151"><vh>@file importers/leo_rst.py</vh></v>
 <v t="ekr.20161108125620.1"><vh>@file importers/linescanner.py</vh></v>
+<v t="ekr.20170530024520.2"><vh>@file importers/lua.py</vh></v>
 <v t="ekr.20140725190808.18066"><vh>@file importers/markdown.py</vh></v>
 <v t="ekr.20140723122936.18146"><vh>@file importers/org.py</vh></v>
 <v t="ekr.20140723122936.18150"><vh>@file importers/otl.py</vh></v>
 <v t="ekr.20140723122936.18147"><vh>@file importers/pascal.py</vh></v>
 <v t="ekr.20161027100313.1"><vh>@file importers/perl.py</vh></v>
 <v t="ekr.20140723122936.18148"><vh>@file importers/php.py</vh></v>
-<v t="ekr.20161029103517.1"><vh>@file importers/python.py</vh></v>
+<v t="ekr.20140723122936.18149"><vh>@file importers/python.py</vh></v>
+<v t="ekr.20170615153639.2"><vh>@file importers/tcl.py</vh></v>
 <v t="ekr.20140723122936.18152"><vh>@file importers/typescript.py</vh></v>
-<v t="ekr.20161121204146.2"><vh>@file importers/xml.py</vh></v>
+<v t="ekr.20140723122936.18137"><vh>@file importers/xml.py</vh></v>
 </v>
 <v t="ekr.20130927050813.13031"><vh>Obsolete</vh>
 <v t="ajones.20070122160142"><vh>@file textnode.py</vh></v>
 <v t="ekr.20050817132814"><vh>rst3</vh>
-<v t="ekr.20090704103932.5160"><vh>@file leo_pdf.py</vh></v>
 <v t="ekr.20050805162550"><vh>@file rst3.py</vh></v>
 </v>
 </v>
@@ -257,7 +246,8 @@
 </v>
 <v t="ekr.20120309073937.9878"><vh>Searching</vh>
 <v t="ekr.20120309073748.9872"><vh>@file bigdash.py</vh></v>
-<v t="peckj.20140804114520.9427"><vh>@file nodetags.py</vh></v>
+<v t="peckj.20140804114520.9427"
+expanded="peckj.20140804103733.9246,peckj.20140804103733.9266,peckj.20140804103733.9262,peckj.20140804103733.9264,peckj.20140804103733.9265,peckj.20140804114520.15199,peckj.20140804114520.15200,peckj.20140804114520.15204,peckj.20140804114520.15205,peckj.20140804192343.6568,peckj.20140811082039.6623,"><vh>@file nodetags.py</vh></v>
 <v t="peckj.20131130132659.5964"><vh>@file nodewatch.py</vh></v>
 </v>
 <v t="ekr.20050111122605"><vh>Servers &amp; web stuff</vh>
@@ -294,6 +284,25 @@
 <v t="ekr.20121126095734.12418"><vh>@file threadutil.py</vh></v>
 </v>
 <v t="ekr.20040915073259"><vh>User interface</vh>
+<v t="ekr.20101110150056.9453"><vh> Qt only plugins</vh>
+<v t="tbrown.20091029123555.5319"><vh>@file attrib_edit.py</vh></v>
+<v t="ville.20090310191936.10"><vh>@file colorize_headlines.py</vh></v>
+<v t="ekr.20090701111504.5294"><vh>@file contextmenu.py</vh></v>
+<v t="tbrown.20090206153748.1"><vh>@file graphcanvas.py</vh></v>
+<v t="vitalije.20170727201534.1"><vh>@file line_numbering.py</vh></v>
+<v t="ville.20090518182905.5419"><vh>@file nav_qt.py</vh></v>
+<v t="ville.20120604212857.4215"><vh>@file notebook.py</vh></v>
+<v t="ekr.20090622063842.5264"><vh>@file projectwizard.py</vh></v>
+<v t="ekr.20160928073518.1"><vh>@file pyplot_backend.py</vh></v>
+<v t="ville.20090314215508.4"><vh>@file quicksearch.py</vh></v>
+<v t="tbrown.20130420091241.44181"><vh>@file screen_capture.py</vh></v>
+<v t="ville.20090815203828.5235"><vh>@file spydershell.py</vh></v>
+<v t="ekr.20100103093121.5329"><vh>@file stickynotes.py</vh></v>
+<v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
+<v t="ville.20110403115003.10348"><vh>@file valuespace.py</vh></v>
+<v t="tbrown.20100318101414.5990"><vh>@file viewrendered.py</vh></v>
+<v t="ekr.20140225222704.16748"><vh>@file viewrendered2.py</vh></v>
+</v>
 <v t="ekr.20061023142737"><vh> UNL plugin</vh>
 <v t="ekr.20061023142737.1"><vh>Tests</vh>
 <v t="rogererens.20041130095659"><vh>@url 'file: ./../../plugins/leoPlugins.leo#Plugins--&gt;UNL plugin--&gt;To do'</vh></v>
@@ -354,8 +363,7 @@ in LeoDocs.leo for full details.
 <t tx="edream.110203113231.618">@language python
 @tabwidth -4
 @pagewidth 80
-
-@nosearch</t>
+</t>
 <t tx="edream.110203113231.667"></t>
 <t tx="edream.110203113231.729"></t>
 <t tx="edream.110203113231.872">@nocolor-node
@@ -570,9 +578,11 @@ To activate the rst3 plugin, do the following:
 <t tx="ekr.20130927050813.13031"></t>
 <t tx="ekr.20140723122936.17925"># These plugins now contain the importer code for all kinds of @auto nodes.
 # Each plugin must define a top-level importer_dict dictionary describing the plugin.
+@language python
 </t>
 <t tx="ekr.20140726091031.18071"># These plugins now contain the write code for all kinds special @auto nodes.
 # Each plugin must define a top-level writer_dict dictionary describing the plugin.
+@language python
 </t>
 <t tx="ekr.20160122104302.1">@nosearch</t>
 <t tx="ekr.20160122104357.1">pylint
@@ -625,7 +635,7 @@ if not g.unitTesting:
     '''Split the markdown cell p if it contains one or more html headers.'''
     trace = False and not g.unitTesting
     SPLIT = False
-        # Perhaps this should be a user option, 
+        # Perhaps this should be a user option,
         # but splitting adds signifincant whitespace.
         # The user can always split nodes manually if desired.
     i0, last = 0, p.copy()
@@ -822,7 +832,7 @@ if not g.unitTesting:
         g.es_print('not found', fn)
         return None
 </t>
-<t tx="ekr.20160412101537.3">def __init__(self, c=None, importCommands=None, atAuto=None):
+<t tx="ekr.20160412101537.3">def __init__(self, c=None, importCommands=None):
     '''Ctor for Import_IPYNB class.'''
     self.c = importCommands.c if importCommands else c
         # Commander of present outline.
@@ -999,11 +1009,10 @@ Export_IPYNB(c).export_outline(p, fn=fn)
 '''Save a copy of this file to the Backup directory.'''
 theDir,base = g.os_path_split(c.fileName())
 path = g.os_path_join('~/Dropbox/','backups','leoPlugins',base)
-c.backup(path, useTimeStamp=True)
+branch = g.gitBranchName()
+c.backup(path, prefix=branch, useTimeStamp=True)
     # Dropbox can show previous versions!
     # But this depends on proxy/firewall settings.
-c.bodyWantsFocusNow()
-
 </t>
 <t tx="ekr.20161030154232.1">'''Converts the word at the cursor to pep8 style throughout a given tree.'''
 # aTestExample notFoundExample.
@@ -1308,6 +1317,17 @@ if 0: # A more complex example, for the C language.
     return i
 </t>
 <t tx="ekr.20170203054655.1"></t>
+<t tx="ekr.20170420085814.1">'''Recursively import all python files in a directory and clean the result.'''
+dir_ = r'C:\leo.repo\leo-editor\leo\external\npyscreen'
+g.cls()
+c.recursiveImport(
+    dir_ = dir_,
+    kind = '@file', # '@clean', #'@nosent','@auto','@file',
+    recursive = True,
+    safe_at_file = True,
+    theTypes = ['.py',],
+)
+</t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
 </t>
 </tnodes>

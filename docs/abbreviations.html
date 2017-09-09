@@ -1,0 +1,195 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Abbreviations and Templates &mdash; Leo 4.11 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '4.11',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="top" title="Leo 4.11 documentation" href="index.html" />
+    <link rel="up" title="Intermediate Topics" href="intermediatetopics.html" />
+    <link rel="next" title="Controlling Syntax Coloring" href="coloring.html" />
+    <link rel="prev" title="Intermediate Topics" href="intermediatetopics.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="coloring.html" title="Controlling Syntax Coloring"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="intermediatetopics.html" title="Intermediate Topics"
+             accesskey="P">previous</a> |</li>
+        <li><a href="leo_toc.html">Leo 4.11 documentation</a> &raquo;</li>
+          <li><a href="usersguide.html" >Leo&#8217;s Users&#8217; Guide</a> &raquo;</li>
+          <li><a href="intermediatetopics.html" accesskey="U">Intermediate Topics</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="abbreviations-and-templates">
+<h1>Abbreviations and Templates<a class="headerlink" href="#abbreviations-and-templates" title="Permalink to this headline">¶</a></h1>
+<p>Leo supports versatile abbreviations and templating capabilities. For
+example, you can type <tt class="docutils literal"><span class="pre">def;;</span></tt>, and Leo will prompt you for a
+function name, using the node name as a default, detect whether the
+function needs a <tt class="docutils literal"><span class="pre">self</span></tt> parameter, ask for a list of parameters, and
+expand you input (just <tt class="docutils literal"><span class="pre">&quot;some_function&quot;</span></tt> and <tt class="docutils literal"><span class="pre">&quot;one,</span> <span class="pre">two,</span> <span class="pre">three=4&quot;</span></tt>
+to something like:</p>
+<div class="highlight-python"><pre>def some_function(one, two, three=4):
+    """some_function - Return &lt;|return|&gt;
+
+    :Parameters:
+    - `one`: &lt;|describe one|&gt;
+    - `two`: &lt;|describe two|&gt;
+    - `three`: &lt;|describe three|&gt;
+    """
+
+    &lt;|code|&gt;</pre>
+</div>
+<p>Leo selects the first placeholder, <tt class="docutils literal"><span class="pre">&lt;|return|&gt;</span></tt> so you can begin
+typing in the right place. Hitting <tt class="docutils literal"><span class="pre">,,</span></tt> will select the next place
+holder, and so on.</p>
+<div class="section" id="settings">
+<h2>settings<a class="headerlink" href="#settings" title="Permalink to this headline">¶</a></h2>
+<p>Here are the Leo settings which relate to abbreviations. See the
+actual settings in leoSettings.leo for full details.</p>
+<p><strong>&#64;bool enable-abbreviations</strong> = True</p>
+<p>Enables or disables abbreviations. Typically you would enable
+abbreviations in myLeoSettings.leo or in individual .leo files.</p>
+<p><strong>&#64;data global-abbreviations</strong> &amp; <strong>&#64;data abbreviations</strong></p>
+<p>These define local and global abbreviations. Definitions in &#64;data
+abbreviation nodes override definitions in &#64;data global-abbreviation
+nodes. Typically you would define &#64;data abbreviation nodes in
+myLeoSettings.leo. Comments lines (lines starting with &#8216;#&#8217;) are
+ignored. Non-comment lines should have the form:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">name</span><span class="o">=</span><span class="n">definition</span>
+</pre></div>
+</div>
+<p><strong>&#64;string abbreviations-subst-start</strong> = <tt class="docutils literal"><span class="pre">{|{</span></tt> <br />
+<strong>&#64;string abbreviations-subst-end</strong> = <tt class="docutils literal"><span class="pre">}|}</span></tt></p>
+<p>If abbreviations-subst-start is something other than None, <em>and</em> &#64;bool
+scripting-at-script-nodes = True, then substitutions will be made when
+abbreviations are inserted. For example, if abbreviations-subst-start
+is set to <tt class="docutils literal"><span class="pre">{|{</span></tt> and abbreviations-subst-end is set to <tt class="docutils literal"><span class="pre">}|}</span></tt>, an
+abbreviation like:</p>
+<div class="highlight-python"><pre>date;;={|{import time;x=time.asctime()}|}</pre>
+</div>
+<p>will expand to something like &#8220;Mon Aug 20 22:00:40 2012&#8221;</p>
+<p><strong>Note</strong>: abbreviations-subst-end has no effect if abbreviations-subst-start is None.</p>
+<p><strong>&#64;data abbreviations-subst-env</strong></p>
+<p>If abbreviations-subst-start is set, the code in this node will be
+executed (once only) when the outline is loaded, in an environment
+which will be used for execution of substitutions in abbreviations.</p>
+<p>For example, if this node contains <tt class="docutils literal"><span class="pre">import</span> <span class="pre">time</span></tt>, an abbreviation
+like:</p>
+<div class="highlight-python"><pre>date;;={|{import time;x=time.asctime()}|}</pre>
+</div>
+<p>can be written more simply as:</p>
+<div class="highlight-python"><pre>date;;={|{x=time.asctime()}|}</pre>
+</div>
+<p>The environment will contain <tt class="docutils literal"><span class="pre">c</span></tt> and <tt class="docutils literal"><span class="pre">g</span></tt>, a dict called
+<tt class="docutils literal"><span class="pre">_values</span></tt> (see ask() and get() in &#64;data abbreviations-subst-env),
+and <tt class="docutils literal"><span class="pre">_abr</span></tt>, the abbreviation being expanded.</p>
+<p><strong>Note</strong>: start lines with <tt class="docutils literal"><span class="pre">\:</span></tt> to preserve indentation.</p>
+<p><strong>&#64;string abbreviations-place-start</strong> = <tt class="docutils literal"><span class="pre">&lt;|</span></tt> <br />
+<strong>&#64;string abbreviations-place-end</strong> = <tt class="docutils literal"><span class="pre">|&gt;</span></tt></p>
+<p>These settings specify the start and end of a placeholder for template
+expansions. For example, the <tt class="docutils literal"><span class="pre">&lt;|</span></tt> and <tt class="docutils literal"><span class="pre">|&gt;</span></tt> in:</p>
+<div class="highlight-python"><pre>w;;=while &lt;|condition|&gt;:
+\:    &lt;|code|&gt;</pre>
+</div>
+<p>This would expand with the <tt class="docutils literal"><span class="pre">&lt;|condition|&gt;</span></tt> selected, and <tt class="docutils literal"><span class="pre">,,</span></tt>, if
+that&#8217;s an abbreviation linked to __NEXT_PLACEHOLDER, see &#64;&#64;data
+abbreviations examples, would select <tt class="docutils literal"><span class="pre">&lt;|code|&gt;</span></tt>.</p>
+</div>
+<div class="section" id="examples">
+<h2>examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>See the node <tt class="docutils literal"><span class="pre">&#64;&#64;data</span> <span class="pre">abbreviations</span> <span class="pre">examples</span></tt> in leoSettings.leo for
+examples of advanced abbreviations with substitutions.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="leo_toc.html">
+              <img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="intermediatetopics.html"
+                        title="previous chapter">Intermediate Topics</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="coloring.html"
+                        title="next chapter">Controlling Syntax Coloring</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="coloring.html" title="Controlling Syntax Coloring"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="intermediatetopics.html" title="Intermediate Topics"
+             >previous</a> |</li>
+        <li><a href="leo_toc.html">Leo 4.11 documentation</a> &raquo;</li>
+          <li><a href="usersguide.html" >Leo&#8217;s Users&#8217; Guide</a> &raquo;</li>
+          <li><a href="intermediatetopics.html" >Intermediate Topics</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Edward K. Ream.
+      Last updated on Oct 10, 2013.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

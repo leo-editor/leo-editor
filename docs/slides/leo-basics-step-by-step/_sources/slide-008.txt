@@ -1,0 +1,9 @@
+=========================
+Leo Basics Step By Step:8
+=========================
+
+
+Ctrl-I inserts a new node.
+
+.. image:: slide-008.png
+

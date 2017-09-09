@@ -35,7 +35,7 @@ class CS_Importer(Importer):
         '''
         trace = False and g.unitTesting
         comment, block1, block2 = self.single_comment, self.block1, self.block2
-        
+
         def add_key(d, key, data):
             aList = d.get(key,[])
             aList.append(data)
@@ -77,7 +77,7 @@ class CS_Importer(Importer):
     def end_block(self, line, new_state, stack):
         '''
         Handle an unusual case: an underindented tail line.
-        
+
         line is **not** a class/def line. It *is* underindented so it
         *terminates* the previous block.
         '''
@@ -163,7 +163,7 @@ class CS_Importer(Importer):
                 # g.trace('='*10, repr(line))
                 return True
         return False
-     
+
     #@+node:ekr.20161108181857.1: *3* coffee_i.post_pass & helpers
     def post_pass(self, parent):
         '''Massage the created nodes.'''
@@ -268,7 +268,7 @@ class CS_Importer(Importer):
 #@+node:ekr.20161110045131.1: ** class CS_ScanState
 class CS_ScanState:
     '''A class representing the state of the coffeescript line-oriented scan.'''
-    
+
     def __init__(self, d=None):
         '''CS_ScanState ctor.'''
         if d:
@@ -308,7 +308,7 @@ class CS_ScanState:
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         # self.bs_nl = bs_nl
         self.context = context
-        # self.curlies += delta_c  
+        # self.curlies += delta_c
         # self.parens += delta_p
         # self.squares += delta_s
         return i

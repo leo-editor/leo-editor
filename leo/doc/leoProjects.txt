@@ -1,145 +1,27 @@
 .. @+leo-ver=5-thin
 .. @+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 .. @+all
-.. @+node:ekr.20170325085902.1: ** 5.6
-.. @+node:ekr.20170326052206.1: *3* bugs
-.. @+node:ekr.20170324115046.1: *4* #386: colorize markdown properly
-https://github.com/leo-editor/leo-editor/issues/386
-All changes made to leo/modes/md.py
-.. @+node:ekr.20170315103331.1: *4* #438: Tree abbreviation placeholders in headlines...
-https://github.com/leo-editor/leo-editor/issues/438
-.. @+node:ekr.20170326054533.1: *4* Fixed bug in k.computeInverseBindingDict
-The bug gave way too many bindings for the move-lines commands.
-.. @+node:ekr.20170326113032.1: *4* Fixed bug in tab completion
-ga.show_tab_list wasn't showing commands without any shortcuts!
-.. @+node:ekr.20170329145930.1: *4* The pylint command now warns if pylint has not been installed
-The change was to pylint.run_pylint.
+.. @+node:ekr.20170619165453.1: ** Branch: string-gui
+Attempt to run all unit tests without using Qt gui code.
+All gui-related code will be simulated with the StringTextWrapper class.
+.. @+node:ekr.20170807103720.1: ** Branch: redraw
+Note: cc.selectChapterForPosition calls c.redraw *only* if the chapter changes.
 
-This removes a major source of confusion.
-.. @+node:ekr.20170330024242.1: *4* #451: refresh-from-disk selects wrong node
-https://github.com/leo-editor/leo-editor/issues/451
-refresh-from-disk doesn't always restore focus to the correct node
+- Investigate running unit tests without redraw.
+  Related to string-gui branch: Use string/null gui for unit tests.
+  https://github.com/leo-editor/leo-editor/issues/503
 
-- at.readOneAtAutoNode returns the *new* position.
-- c.refreshFromDisk selects that position.
-.. @+node:ekr.20170401132710.1: *4* Fixed several problems with goto-global-line
-.. @+node:ekr.20170401202930.1: *4* #453: Focus jumps to body when expanding abbrev in a headline
-https://github.com/leo-editor/leo-editor/issues/453
-Focus jumps to de body pane when expanding an abbreviation in a headline.
-
-The fix was in find_place_holder. It should not set focus if no placeholder found.
-.. @+node:ekr.20170402034115.1: *4* #456: replace-all is very slow
-Made several changes to find.batchChange.
-.. @+node:ekr.20170402035751.1: *4* #458: Chapters drop-down list is not automatically resized
-https://github.com/leo-editor/leo-editor/issues/458
-Set a Qt flag in tt.createControl.
-.. @+node:ekr.20170406091617.1: *4* Fixed bugs re plugins registration
-Fixed plugins.registerOneHandler and plugins.registerOneExclusiveHandler
-.. @+node:ekr.20170406095247.1: *4* Fixed serious bug in c.checkFileTimeStamp
-It must return True if g.app.externalFilesController is None.
-.. @+node:ekr.20170412052100.1: *4* #472: @clean nodes stopped updating
-@clean nodes stopped updating
-https://github.com/leo-editor/leo-editor/issues/472
-
-Solved: the checks are made only if @bool check_for_changed_external_files = True
-.. @+node:ekr.20170416063625.1: *4* Revised xml/html importers
-The new code is simpler and handles dubious html syntax.
-.. @+node:ekr.20170325085907.1: *3* code
-.. @+node:ekr.20170325085939.1: *4* Added better checks in v.setBodyString & v.setHeadString
-.. @+node:ekr.20170331043509.1: *4* Improved @auto write code
-- Removed the allow_at_auto_section switch in leoAtFile.py.
-
-- When writing @auto files << handle line at s[i] >> in at.putBody now expands section references in @auto files *if* they are defined. Otherwise, lines containing undefined section references are written as plain code lines.
-.. @+node:ekr.20170331043931.1: *4* Added gen_refs keyword arg to Importer ctor
-This makes explicit which importers actually generate section reference. At present, only the javascript importer sets this arg.
-.. @+node:ekr.20170403182514.1: *4* Updated docs re #464
-@language rest
-@wrap
-
-https://github.com/leo-editor/leo-editor/issues/464
-
-**Warning**: The p.b and p.h setters and p.setDirty() are *very* expensive:
-
-- p.b = s calls c.setBodyString(p, s) which will recolor body text and update the node's icon.
-- p.h = s calls c.setHeadString(p, s) which calls p.setDirty().
-- p.setDirty() changes the icons of all ancestor @file nodes.
-
-In contrast, the corresponding p.v.b and p.v.b setters and p.v.setDirty() are extremely fast.
-
-Usually, code *should* use the p.b and p.h setters and p.setDirty(), despite their cost, because they update Leo's outline pane properly. Calling c.redraw() is *not* enough.
-
-These performance gotchas become important for repetitive commands, like cff, replace-all and recursive import. In such situations, code should use p.v.b and p.v.h setters instead of p.b and p.h setters.
-.. @+node:ekr.20170404032504.1: *4* Added 'recursive' keyword arg to recursive import API
-Added 'recursive' keyword arg to c.recursiveImport and RecursiveImportController ctor.
-Recursive is *not* the same as not one_file.
-.. @+node:ekr.20170406092043.1: *4* Removed atAuto from atFile class
-Ding dong, the switch is dead, the wicked old switch is dead.
-.. @+node:ekr.20170412055006.1: *4* Added g.Git functions
-leoGlobals.py the following functions and their helpers:
-
-- branch, commit = g.gitInfo(path = None)
-- date, build = g.jsonCommitInfo()
-- branch = g.gitBranchName(path = None)
-- commit = g.getCommitNumber(path = None)
-
-The path should be a folder containing a .git subfolder. If the path is None, the leo-editor folder is used.
-
-Leo's cacher code will soon use the branch name returned by g.gitInfo() to ensure that switching git branches works properly.
-
-As a happy side effect, these methods completely collapse the complexity of leoVersion.py. 
-.. @+node:ekr.20170403190659.1: *3* docs
-.. @+node:ekr.20170325090029.1: *3* features
-.. @+node:ekr.20170325090032.1: *4* Added show-color-names command
-.. @+node:ekr.20170326052408.1: *4* Improved move-lines-up/down commands
-These commands (bound to ctrl-up/down by default) now work at the top or bottom of the body pane. The move-lines-up command inserts a new line below the moved line/lines when the lines are at the top of the body text.  Similarly, the move-lines-down command inserts a line before the moved lines when at the bottom of the body text. Imo, this is a natural and useful.
-.. @+node:ekr.20170325045838.1: *4* #448: Add abbreviations for commands
-https://github.com/leo-editor/leo-editor/issues/448
-
-If the expansion of an abbrevitiation is a command name, that command will be executed. Alas, this isn't very useful: typing destroys selection ranges.
-
-This took only a few lines of code in abbrev.expandAbbrev.
-.. @+node:ekr.20170326091637.1: *4* Improved indent-region and unindent-region commands
-https://groups.google.com/d/msg/leo-editor/SUnqs1_YbeI/DIv0EbtFCgAJ
-
-The indent-region and unindent-region just move the insert point if there is no text selected.
-.. @+node:ekr.20170327052423.1: *4* Improved "Write Existing File?" dialog
-at.promptForDangerousWrite puts up a dialog with a clearer cancel button.
-All tests pass.
-
-- It says "Cancel (No To All)".
-- Added cancelMessage keyword arg to x.promptForDangerousWrite.
-- Use keyword args in LeoFrame.promptForSave and ns_do_context.
-.. @+node:ekr.20170328143013.1: *4* Added --trace-focus command-line argument
-.. @+node:ekr.20170411092513.1: *4* Added goto-any-clone command
-Searches from c.p for *any* clone, not just a clone of c.p.  Useful for eliminating all clones from a .leo file.
-
-This command is different from goto-next-clone as follows:
-
-- goto-any-clone goes to the next clone, regardless of whether c.p is a clone.
-- goto-any-clone does not wrap. It prints a message when no clones remain.
-.. @+node:ekr.20170414103904.1: *4* Improved caching
-Rev b32259 transitions to a new caching scheme:
-
-1. All hashes now use the full path to the external file.  Previously, the headline of @file nodes was typically used instead. Surely this might have caused silent problems.
-
-2. Leo's hasher now includes the name of the present git branch in the hash. When switching git branches, this in essence disables hashing for all files changed in the previous branch.
-.. @+node:ekr.20170403192311.1: *3* plugins
-.. @+node:ekr.20170403192317.1: *4* screen_capture.py now enabled by default
-.. @+node:ekr.20170331043621.1: *3* settings
-.. @+node:ekr.20170330083957.1: *4* Retired @bool allow_section_references_in_at_auto
-The disabled setting now contains this comment:
-
-    **Note**: This setting has been retired for the following reasons:
-    
-    1. The new javascript importer *always* generate section references
-    for non-trivial programs. As a result, the legacy value for this
-    setting would cause the javascript importer to fail.
-    
-    2. The new @auto write code writes expands section references if
-    they exist. Otherwise, the write code writes the line as is,
-    without any complaint. As a result, there should be no problem if
-    an imported code contains something that looks like a section
-    reference but isn't.
+- Added support for c.redraw_later, called from cc.selectChapterForPosition.
+- c.bringToFront now works without using c.outerUpdate.
+- c.widgetWantsFocusNow now just calls c.set_focus & clears c.requestedFocusWidget.
+- c.outerUpdate no longer handles recoloring or redrawing.
+- Replaced all calls to c.recolor_now by c.recolor.
+- Replaced all calls to redraw_now by redraw.
+- Removed all calls to body.forceFullRecolor.
+- Removed forceFullRecolorFlag.
+- Done: removed c.incrementalRecolorFlag.
+- Done: c.selectPosition never calls c.redraw. All unit tests pass.
+- Done: Removed c.requestRedrawFlag and c.outerUpdate never calls c.redraw.  All tests pass.
 .. @-all
 .. @@nosearch
 .. @@killbeautify

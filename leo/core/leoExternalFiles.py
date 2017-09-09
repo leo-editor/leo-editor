@@ -25,7 +25,7 @@ class ExternalFile(object):
         return '<ExternalFile: %20s %s>' % (self.time, g.shortFilename(self.path))
 
     __str__ = __repr__
-    
+
     #@+others
     #@+node:ekr.20161011174757.1: *3* ef.shortFileName
     def shortFileName(self):
@@ -73,6 +73,8 @@ class ExternalFilesController(object):
             # Keys are full paths, values are modification times.
             # DO NOT alter directly, use set_time(path) and
             # get_time(path), see set_time() for notes.
+        self.yesno_all_time = 0  # previous yes/no to all answer, time of answer
+        self.yesno_all_answer = None  # answer, 'yes-all', or 'no-all'
         g.app.idleTimeManager.add_callback(self.on_idle)
     #@+node:ekr.20150405105938.1: *3* efc.entries
     #@+node:ekr.20150405194745.1: *4* efc.check_overwrite (called from c.checkTimeStamp)
@@ -83,6 +85,11 @@ class ExternalFilesController(object):
         Return True if the file given by fn has not been changed
         since Leo read it or if the user agrees to overwrite it.
         '''
+        if c.sqlite_connection and c.mFileName == path:
+            # sqlite database file is never actually overwriten by Leo
+            # so no need to check its timestamp. It is modified through
+            # sqlite methods.
+            return True
         if self.has_changed(c, path):
             return self.ask(c, path)
         else:
@@ -204,7 +211,7 @@ class ExternalFilesController(object):
         path = g.fullPath(c, p)
         if self.has_changed(c, path):
             if self.ask(c, path, p=p):
-                c.redraw_now(p=p)
+                c.redraw(p=p)
                 c.refreshFromDisk(p)
                 c.redraw()
             # Always update the path & time to prevent future warnings.
@@ -317,6 +324,13 @@ class ExternalFilesController(object):
         Ask user whether to overwrite an @<file> tree.
         Return True if the user agrees.
         '''
+        if g.unitTesting:
+            return False
+
+        if self.yesno_all_time + 3 >= time.time() and self.yesno_all_answer:
+            self.yesno_all_time = time.time()  # Still reloading?  Extend time.
+            return bool('yes' in self.yesno_all_answer.lower())
+
         if not p:
             for ef in self.files:
                 if ef.path == path:
@@ -328,10 +342,14 @@ class ExternalFilesController(object):
             where = p.h
         s = '\n'.join([
             '%s has changed outside Leo.' % (g.splitLongFileName(path)),
-            'Overwrite %s?' % (where),
+            'Reload %s in Leo?' % (where),
         ])
-        result = g.app.gui.runAskYesNoDialog(c, 'Overwrite the Leo outline?', s)
-        return bool(result and result.lower() == 'yes')
+        result = g.app.gui.runAskYesNoDialog(c, 'Overwrite the version in Leo?', s,
+            yes_all=True, no_all=True)
+        if result and "-all" in result.lower():
+            self.yesno_all_time = time.time()
+            self.yesno_all_answer = result.lower()
+        return bool(result and 'yes' in result.lower())
             # Careful: may be unit testing.
     #@+node:ekr.20150404052819.1: *4* efc.checksum
     def checksum(self, path):

@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Using @shadow &mdash; Leo 5.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '5.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="top" title="Leo 5.0 documentation" href="leo_toc.html" />
+    <link rel="up" title="Advanced Topics" href="intermediatetopics.html" />
+    <link rel="next" title="A Miscellany of Leo Scripting" href="scripting-miscellany.html" />
+    <link rel="prev" title="Debugging with Leo" href="debuggers.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="scripting-miscellany.html" title="A Miscellany of Leo Scripting"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="debuggers.html" title="Debugging with Leo"
+             accesskey="P">previous</a> |</li>
+        <li><a href="leo_toc.html">Leo 5.0 documentation</a> &raquo;</li>
+          <li><a href="intermediatetopics.html" accesskey="U">Advanced Topics</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="using-shadow">
+<h1><a class="toc-backref" href="#id1">Using &#64;shadow</a><a class="headerlink" href="#using-shadow" title="Permalink to this headline">¶</a></h1>
+<p>This chapter describes an important new feature that debuted in Leo 4.5 b2: &#64;shadow trees.
+These trees combine the benefits of &#64;auto, &#64;file and &#64;nosent trees:</p>
+<ul class="simple">
+<li>The (public) files created by &#64;shadow trees contain no sentinels, but</li>
+<li>Leo is able to update &#64;shadow trees in the Leo outline based on changes made
+to public files outside of Leo.</li>
+</ul>
+<p>&#64;shadow trees are often useful for studying or editing source files from projects that don&#8217;t use Leo.
+In such situations, it is convenient to import the &#64;shadow tree from the (public) sources.
+As discussed below, Leo can import &#64;shadow trees automatically,
+using the same algorithms used by <a class="reference external" href="directives.html#auto">&#64;auto trees</a>.</p>
+<p>The crucial ideas and algorithms underlying &#64;shadow trees are the invention of Bernhard Mulder.</p>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#using-shadow" id="id1">Using &#64;shadow</a><ul>
+<li><a class="reference internal" href="#overview" id="id2">Overview</a></li>
+<li><a class="reference internal" href="#creating-shadow-trees" id="id3">Creating &#64;shadow trees</a></li>
+<li><a class="reference internal" href="#what-the-update-algorithm-does" id="id4">What the update algorithm does</a></li>
+<li><a class="reference internal" href="#aha-boundary-cases-don-t-matter" id="id5">Aha: boundary cases don&#8217;t matter</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id2">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>Using &#64;shadow trees is the best choice when you want to have the full power of
+Leo&#8217;s outlines, but wish to retain the source files in their original format,
+without Leo sentinels (markup) in comments in the source file.</p>
+<p>Leo&#8217;s &#64;file trees create external files containing comments called sentinels.
+These sentinel lines allow Leo to recreate the outlines structure of &#64;file
+trees. Alas, many people and organizations find these added sentinel lines
+unacceptable. &#64;nosent nodes create external files without sentinels, but at a
+cost: Leo can not update &#64;nosent trees when the corresponding external file is
+changed outside of Leo.</p>
+<p>&#64;shadow trees provide a way around this dilemma. When Leo saves an &#64;shadow
+tree, it saves two copies of the tree: a <strong>public</strong> file without sentinels, and
+a <strong>private</strong> file containing sentinels. Using Bernhard Mulder&#8217;s brilliant
+<strong>update algorithm</strong>, Leo is able to update &#64;shadow trees in the Leo outline
+based <em>solely</em> on changes to public files.</p>
+<p>Leo writes private files to a subfolder of the folder containing the public file:
+by default this folder is called .leo_shadow.
+You can change the name of this folder using the &#64;string shadow_subdir setting.
+Note that private files need not be known to source code control systems such as bzr or git.</p>
+<p>That&#8217;s <em>almost</em> all there is to it.  The following sections discuss important details:</p>
+<ul class="simple">
+<li>How to create &#64;shadow trees.</li>
+<li>How &#64;shadow works.</li>
+<li>Why the update algorithm is sound.</li>
+</ul>
+</div>
+<div class="section" id="creating-shadow-trees">
+<h2><a class="toc-backref" href="#id3">Creating &#64;shadow trees</a><a class="headerlink" href="#creating-shadow-trees" title="Permalink to this headline">¶</a></h2>
+<p>The first step in creating an &#64;shadow tree is to create a node whose
+headline is &#64;shadow <em>&lt;filename&gt;</em>.</p>
+<p>Thus, you can create an &#64;shadow node and save your outline, regardless of
+whether the original file exists. The next time Leo reads the &#64;shadow node, Leo
+will <strong>create</strong> the entire &#64;shadow tree using the same logic as for <a class="reference external" href="directives.html#auto">&#64;auto
+trees</a>. You can cause Leo to read the &#64;shadow node in two ways: 1) by closing
+and reloading the Leo outline or 2) by selecting the &#64;shadow node and executing
+the <a class="reference external" href="File:Read/Write:Read">File:Read/Write:Read</a> &#64;shadow Node command.</p>
+<p><strong>Important</strong>: Leo imports the private file into the &#64;shadow tree only if</p>
+<ol class="loweralpha simple">
+<li>the public file exists and</li>
+<li>the private file does <em>not</em> exist.</li>
+</ol>
+<p>Thus, Leo will import code into each &#64;shadow node at most once. After the first
+import, updates are made using the update algorithm.</p>
+<p><strong>Note</strong>: just as for &#64;auto, Leo will never read (import) or write an &#64;shadow
+tree if the &#64;shadow node is under the influence of an &#64;ignore directive.</p>
+<p><strong>Important</strong>: At present, Leo puts all nodes included by &#64;others at the
+same outline level. This could fairly be called a bug. See:
+<a class="reference external" href="https://bugs.launchpad.net/leo-editor/+bug/1226353">https://bugs.launchpad.net/leo-editor/+bug/1226353</a> The workaround is to
+place an &#64;others directive at the end of any node with children.</p>
+</div>
+<div class="section" id="what-the-update-algorithm-does">
+<h2><a class="toc-backref" href="#id4">What the update algorithm does</a><a class="headerlink" href="#what-the-update-algorithm-does" title="Permalink to this headline">¶</a></h2>
+<p>Suppose our &#64;shadow tree is &#64;shadow a.py. When Leo writes this tree it creates a
+public file, a.py, and a private file, .leo_shadow/xa.p (or just xa.p for
+short). Public files might can committed to a source code control system such as
+bzr or git. Private files should <em>not</em> be known to bzr or git.</p>
+<p>Now suppose a.py has been changed outside of Leo, say as the result of a bzr
+merge. The corresponding private file, xa.p, will <em>not</em> have been changed.
+(Private files should <em>never</em> change outside of Leo.</p>
+<p>When Leo reads the <em>new</em> (and possibly updated) public file it does the
+following:</p>
+<ol class="arabic simple">
+<li>Recreates the <em>old</em> public file by removing sentinels from the (unchanged!) <em>private</em> file.</li>
+<li>Creates a set of diffs between the old and new <em>public</em> files.</li>
+<li>Uses the diffs to create a new version of the <em>private</em> file.</li>
+<li>Creates the &#64;shadow tree using  the new <em>private</em> file.</li>
+</ol>
+<p><strong>Important</strong>: The update algorithm never changes sentinels. This means that the
+update algorithm never inserts or deletes nodes. The user is responsible for
+creating nodes to hold new lines, or for deleting nodes that become empty as the
+result of deleting lines.</p>
+<p>Step 3 is the clever part. To see all the details of how the algorithm works,
+please study the x.propagate_changed_lines method in leoShadow.py. This code is
+heavily commented.</p>
+</div>
+<div class="section" id="aha-boundary-cases-don-t-matter">
+<h2><a class="toc-backref" href="#id5">Aha: boundary cases don&#8217;t matter</a><a class="headerlink" href="#aha-boundary-cases-don-t-matter" title="Permalink to this headline">¶</a></h2>
+<p>There are several boundary cases that the update algorithm can not resolve.
+For example, if a line is inserted at the boundary between nodes,
+the updated algorithm can not determine whether the line should be inserted
+at the end of one node of the start of the next node.</p>
+<p>Happily, the inability of the update algorithm to distinguish between
+these two cases <strong>does not matter</strong>, for three very important reasons:</p>
+<ol class="arabic simple">
+<li>No matter which choice is made, the <em>public</em> file that results is the same.
+<strong>The choice doesn&#8217;t matter</strong>, so the update algorithm is completely and
+absolutely safe.</li>
+<li>Leo reports any nodes that were changed as the result of the update
+algorithm. In essence, these reports are exactly the same as the reports Leo
+makes when &#64;file trees were changed as the result of changes made externally
+to Leo. It is as easy for the user to review changes to &#64;shadow trees as it
+is to review changes to &#64;thin or &#64;file trees.</li>
+<li>Suppose the user moves a line from the end of one node to the beginning of
+the following node, or vice versa. Once the user saves the file, the
+<em>private</em> file records the location of the moved line. The next time the user
+reads the &#64;shadow file, the line will <em>not</em> be subject to the update
+algorithm because the line has not been changed externally. The location of
+the line (on the boundary) will be completely determined and it will never
+need to be moved across the boundary.</li>
+</ol>
+<p>Understanding these three reasons finally convinced me that &#64;shadow could be
+made to work reliably.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="leo_toc.html">
+              <img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="debuggers.html"
+                        title="previous chapter">Debugging with Leo</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="scripting-miscellany.html"
+                        title="next chapter">A Miscellany of Leo Scripting</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="scripting-miscellany.html" title="A Miscellany of Leo Scripting"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="debuggers.html" title="Debugging with Leo"
+             >previous</a> |</li>
+        <li><a href="leo_toc.html">Leo 5.0 documentation</a> &raquo;</li>
+          <li><a href="intermediatetopics.html" >Advanced Topics</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Edward K. Ream.
+      Last updated on Jan 22, 2015.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3b1.
+    </div>
+  </body>
+</html>

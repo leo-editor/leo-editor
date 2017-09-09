@@ -66,7 +66,7 @@ class BaseEditCommandsClass(object):
         trace = False and not g.unitTesting
         c = self.c
         w = event and event.widget
-        wname = (w and c.widget_name(w)) or '<no widget>'
+        wname = c.widget_name(w) if w else '<no widget>'
         if w and g.isTextWrapper(w):
             pass
         else:

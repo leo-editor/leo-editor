@@ -1,0 +1,1727 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Scripting Leo with Python &mdash; Leo 4.11 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '4.11',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="top" title="Leo 4.11 documentation" href="index.html" />
+    <link rel="up" title="Intermediate Topics" href="intermediatetopics.html" />
+    <link rel="next" title="Plugins" href="plugins.html" />
+    <link rel="prev" title="Creating Documents with the rst3 Command" href="rstplugin3.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="plugins.html" title="Plugins"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="rstplugin3.html" title="Creating Documents with the rst3 Command"
+             accesskey="P">previous</a> |</li>
+        <li><a href="leo_toc.html">Leo 4.11 documentation</a> &raquo;</li>
+          <li><a href="usersguide.html" >Leo&#8217;s Users&#8217; Guide</a> &raquo;</li>
+          <li><a href="intermediatetopics.html" accesskey="U">Intermediate Topics</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="scripting-leo-with-python">
+<h1><a class="toc-backref" href="#id1">Scripting Leo with Python</a><a class="headerlink" href="#scripting-leo-with-python" title="Permalink to this headline">¶</a></h1>
+<p>This chapter describes how to write Python scripts that control Leo and
+access the data in Leo outlines. To write such scripts, you must understand
+the basics of Leo&#8217;s internal data structures. As we shall see, these basics
+are quite simple.</p>
+<p>Although this chapter discusses everything you will need to write most
+scripts, please keep in mind that your scripts have complete access to all
+of Leo&#8217;s source code, that is, all the code in LeoPy.leo.</p>
+<p>You can put Leo script in the body text of <em>any</em> outline node.  You can run
+scripts in several ways:</p>
+<ol class="arabic simple">
+<li>Select a node containing the script and do Ctrl-B (execute-script).</li>
+</ol>
+<ol class="arabic simple" start="2">
+<li>&#64;button and &#64;command nodes allow you to run scripts while selecting
+some <em>other</em> node. This brings scripts to data, an extremely powerful
+capability. &#64;button nodes create a button in Leo&#8217;s icon area. You can
+execute the script <strong>on the presently selected node</strong> by pressing the
+button. &#64;command nodes work similarly, but instead of creating a
+button, they create a Leo command. (Actually, &#64;button nodes also create
+Leo commands).</li>
+</ol>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#scripting-leo-with-python" id="id1">Scripting Leo with Python</a><ul>
+<li><a class="reference internal" href="#basics" id="id2">Basics</a><ul>
+<li><a class="reference internal" href="#positions" id="id3">Positions</a></li>
+<li><a class="reference internal" href="#c-g-and-p" id="id4">c, g and p</a></li>
+<li><a class="reference internal" href="#important-objects" id="id5">Important objects</a></li>
+<li><a class="reference internal" href="#g-es-writes-to-the-log-pane" id="id6">g.es writes to the log pane</a></li>
+<li><a class="reference internal" href="#p-h-and-p-b" id="id7">p.h and p.b</a></li>
+<li><a class="reference internal" href="#c-redraw" id="id8">c.redraw</a></li>
+<li><a class="reference internal" href="#p-copy" id="id9">p.copy</a></li>
+<li><a class="reference internal" href="#generators" id="id10">Generators</a></li>
+<li><a class="reference internal" href="#testing-whether-a-position-is-valid" id="id11">Testing whether a position is valid</a></li>
+<li><a class="reference internal" href="#g-pdb" id="id12">g.pdb</a></li>
+<li><a class="reference internal" href="#button-scripts" id="id13">&#64;button scripts</a></li>
+<li><a class="reference internal" href="#autocompletion" id="id14">autocompletion</a></li>
+<li><a class="reference internal" href="#summary" id="id15">Summary</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#event-handlers" id="id16">Event handlers</a><ul>
+<li><a class="reference internal" href="#enabling-idle-time-event-handlers" id="id17">Enabling idle time event handlers</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#other-topics" id="id18">Other topics</a><ul>
+<li><a class="reference internal" href="#g-app-windowlist-the-list-of-all-open-frames" id="id19">g.app.windowList: the list of all open frames</a></li>
+<li><a class="reference internal" href="#ensuring-that-positions-are-valid" id="id20">Ensuring that positions are valid</a></li>
+<li><a class="reference internal" href="#g-openwithfilename" id="id21">g.openWithFileName</a></li>
+<li><a class="reference internal" href="#g-getscript" id="id22">g.getScript</a></li>
+<li><a class="reference internal" href="#c-frame-body-bodyctrl" id="id23">c.frame.body.bodyCtrl</a></li>
+<li><a class="reference internal" href="#invoking-commands-from-scripts" id="id24">Invoking commands from scripts</a></li>
+<li><a class="reference internal" href="#getting-settings-from-settings-trees" id="id25">Getting settings from &#64;settings trees</a></li>
+<li><a class="reference internal" href="#preferences-ivars" id="id26">Preferences ivars</a></li>
+<li><a class="reference internal" href="#functions-defined-in-leoglobals-py" id="id27">Functions defined in leoGlobals.py</a></li>
+<li><a class="reference internal" href="#making-operations-undoable" id="id28">Making operations undoable</a></li>
+<li><a class="reference internal" href="#redirecting-output-from-scripts" id="id29">Redirecting output from scripts</a></li>
+<li><a class="reference internal" href="#creating-qt-windows-from-leo-scripts" id="id30">Creating Qt Windows from Leo scripts</a></li>
+<li><a class="reference internal" href="#writing-to-different-log-tabs" id="id31">Writing to different log tabs</a></li>
+<li><a class="reference internal" href="#invoking-dialogs-using-the-g-app-gui-class" id="id32">Invoking dialogs using the g.app.gui class</a></li>
+<li><a class="reference internal" href="#inserting-and-deleting-icons" id="id33">Inserting and deleting icons</a></li>
+<li><a class="reference internal" href="#working-with-directives-and-paths" id="id34">Working with directives and paths</a></li>
+<li><a class="reference internal" href="#running-leo-in-batch-mode" id="id35">Running Leo in batch mode</a></li>
+<li><a class="reference internal" href="#getting-interactive-input-from-scripts" id="id36">Getting interactive input from scripts</a></li>
+<li><a class="reference internal" href="#the-g-command-decorator" id="id37">The &#64;g.command decorator</a></li>
+<li><a class="reference internal" href="#modifying-plugins-with-script-scripts" id="id38">Modifying plugins with &#64;script scripts</a></li>
+<li><a class="reference internal" href="#creating-minimal-outlines" id="id39">Creating minimal outlines</a></li>
+<li><a class="reference internal" href="#retaining-pointers-to-qt-windows" id="id40">Retaining pointers to Qt windows</a></li>
+<li><a class="reference internal" href="#c-user-dict-and-g-user-dict" id="id41">c.user_dict and g.user_dict</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="basics">
+<h2><a class="toc-backref" href="#id2">Basics</a><a class="headerlink" href="#basics" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="positions">
+<h3><a class="toc-backref" href="#id3">Positions</a><a class="headerlink" href="#positions" title="Permalink to this headline">¶</a></h3>
+<p>A <strong>position</strong> object represents a specific node in a Leo outline.
+Equivalently, a position represents the state of a Leo generator, that is,
+a specific node during a traversal of a Leo outline.
+Because of clones, a node may appear arbitrarily many times in an outline,
+so a node may appear at arbitrarily many positions in the outline.</p>
+<p>For any position p, <strong>p.v</strong> is the vnode at position p.
+A node&#8217;s vnode never changes, regardless of where the node appears in the
+outline, and regardless of whether the node is cloned or not.</p>
+<p><strong>Positions become invalid when the outline changes.</strong> You may save and and
+use positions <em>provided</em> the outline remains unchanged. Leo&#8217;s generators
+deliver positions, one after each other, using a <em>single</em> (ever-changing)
+position object. As a result, scripts must use p.copy() to create lists of
+positions. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">aList</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">rootPosition</span><span class="p">()</span><span class="o">.</span><span class="n">subtree</span><span class="p">()]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="c-g-and-p">
+<h3><a class="toc-backref" href="#id4">c, g and p</a><a class="headerlink" href="#c-g-and-p" title="Permalink to this headline">¶</a></h3>
+<p>All Leo scripts run with the execute-script command (Ctrl-B)
+have access to the following three <strong>predefined objects</strong>:</p>
+<ul class="simple">
+<li>c is the commander of the outline containing the script.</li>
+<li>g is Leo&#8217;s leo.core.leoGlobals module.</li>
+<li>p is the presently selected position, the same as c.p.</li>
+</ul>
+<p>The predefined c, g and p variables give <em>full</em> and <em>easy</em> access to all
+the data in your outlines, as well as hundreds, if not thousands, of useful
+Python functions in Leo&#8217;s core. These variables define an easy-to-use DOM
+(Document Object Model) through which you can get o set any data in <em>your</em>
+outlines. The hello world example is:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">all_positions</span><span class="p">():</span>
+    <span class="n">indent</span> <span class="o">=</span> <span class="s">&#39;.&#39;</span> <span class="o">*</span> <span class="n">p</span><span class="o">.</span><span class="n">level</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">indent</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">h</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Here, c.all_positions() delivers a list of positions, and p.level() and p.h
+deliver the indentation level and head string of position p.</p>
+</div>
+<div class="section" id="important-objects">
+<h3><a class="toc-backref" href="#id5">Important objects</a><a class="headerlink" href="#important-objects" title="Permalink to this headline">¶</a></h3>
+<p>Leo scripts typically use the following objects:</p>
+<dl class="docutils">
+<dt><strong>g</strong></dt>
+<dd>The predefined object g is the leo.core.leoGlobals module. This module
+contains several dozen utility functions and classes.</dd>
+<dt><strong>g.app</strong></dt>
+<dd>g.app is the <strong>application object</strong> representing the entire Leo application.
+The instance variables (ivars) of g.app represent Leo&#8217;s global variables.</dd>
+<dt><strong>commander</strong></dt>
+<dd>The predefined object c is the commander of the window containing the
+script. Commanders represent all aspects of a single Leo window. For any
+commander c, c.p is the presently selected position (see below), and
+c.rootPosition() is the root (first) position in the outline. Given
+c, Leo scripts can gain access to all data present while Leo is running,
+including all of Leo&#8217;s classes, functions and data.</dd>
+<dt><strong>position</strong></dt>
+<dd>The predefined object p is the position of the presently selected
+node. Positions represent locations in Leo outlines. For any position p,
+p.v is the vnode at that position.</dd>
+<dt><strong>vnode</strong></dt>
+<dd>A vnode represents a single outline node. Because of clones, a vnode may
+appear in several places on the screen. Vnodes hold most of the data in Leo
+outlines. For any vnode v, v.h is the node&#8217;s headline, and v.b is the node&#8217;s
+body text. As a convenience, for any position p, p.h and p.b are synonyms
+for p.v.h and p.v.b.</dd>
+</dl>
+<p>Most scripts will need only the objects and classes described above.</p>
+</div>
+<div class="section" id="g-es-writes-to-the-log-pane">
+<h3><a class="toc-backref" href="#id6">g.es writes to the log pane</a><a class="headerlink" href="#g-es-writes-to-the-log-pane" title="Permalink to this headline">¶</a></h3>
+<p>The g.es method prints its arguments to the Log tab of the log pane:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot;Hello world&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>g.es converts non-string arguments using repr:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>g.es prints multiple arguments separated by commas:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot;Hello&quot;</span><span class="p">,</span><span class="s">&quot;world&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To create a tab named &#8216;Test&#8217; or make it visible if it already exists:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">selectTab</span><span class="p">(</span><span class="s">&#39;Test&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>When first created, a tab contains a text widget. To write to this widget,
+add the tabName argument to g.es:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&#39;Test&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s">&#39;blue&#39;</span><span class="p">,</span><span class="n">tabName</span><span class="o">=</span><span class="s">&#39;Test&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="p-h-and-p-b">
+<h3><a class="toc-backref" href="#id7">p.h and p.b</a><a class="headerlink" href="#p-h-and-p-b" title="Permalink to this headline">¶</a></h3>
+<p>Here is how to access the data of a Leo window:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="c"># p is already defined.</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">p</span> <span class="c"># get the current position.</span>
+<span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot;head:&quot;</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot;body:&quot;</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here is how to access data at position p.
+<strong>Note</strong>: these methods work whether or not p is the current position:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">body</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">b</span> <span class="c"># get the body text.</span>
+<span class="n">head</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">h</span> <span class="c"># get the headline text.</span>
+<span class="n">p</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">body</span> <span class="c"># set body text of p to body.</span>
+<span class="n">p</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="n">head</span> <span class="c"># set headline text of p to head.</span>
+</pre></div>
+</div>
+<p><strong>Note</strong>: Sometimes you want to use text that <em>looks</em> like a section reference, but isn&#8217;t.
+In such cases, you can use g.angleBrackets.  For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">angleBrackets</span><span class="p">(</span><span class="s">&#39;abc&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="c-redraw">
+<h3><a class="toc-backref" href="#id8">c.redraw</a><a class="headerlink" href="#c-redraw" title="Permalink to this headline">¶</a></h3>
+<p>You can use c.redraw_now to redraw the entire screen immediately:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">c</span><span class="o">.</span><span class="n">redraw_now</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>However, it is usually better to <em>request</em> a redraw to be done later as
+follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">c</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Leo actually redraws the screen in c.outerUpdate, provided that a redraw has
+been requested. Leo will call c.outerUpdate at the end of each script, event
+handler and Leo command.</p>
+</div>
+<div class="section" id="p-copy">
+<h3><a class="toc-backref" href="#id9">p.copy</a><a class="headerlink" href="#p-copy" title="Permalink to this headline">¶</a></h3>
+<p>Scripts must wary of saving positions because positions become invalid
+whenever the user moves, inserts or deletes nodes.  It is valid to store
+positions <strong>only</strong> when a script knows that the stored position will be used
+before the outline&#8217;s structure changes.</p>
+<p>To store a position, the script must use the p.copy() method:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">p2</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>   <span class="c"># Correct: p2 will not change when p changes later.</span>
+</pre></div>
+</div>
+<p>The following <strong>will not work</strong>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">p2</span> <span class="o">=</span> <span class="n">p</span>  <span class="c"># Wrong.  p2 will change if p changes later.</span>
+</pre></div>
+</div>
+<p>For example, the following creates a dictionary of saved positions:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">all_positions</span><span class="p">():</span>
+    <span class="n">d</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="generators">
+<h3><a class="toc-backref" href="#id10">Generators</a><a class="headerlink" href="#generators" title="Permalink to this headline">¶</a></h3>
+<p>Leo scripts can easily access any node of an outline with iterator. Leo&#8217;s
+iterators return positions or nodes, one after another. Iterators do not
+return lists, but you can make lists from iterators easily. For example, the
+c.all_positions() iterator returns every position in c&#8217;s tree, one after
+another. You can use the iterator directly, like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">all_positions</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It is seldom a good idea to capture positions in a list: positions become
+invalid whenever the outline changes. Using an invalid position could cause
+a (soft) crash in Leo. If you do want to capture positions temporarily, the
+proper way is to call p.copy(). Like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">aList</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">all_positions</span><span class="p">()]</span>
+</pre></div>
+</div>
+<p>The following will <strong>not</strong> work:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">aList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">all_positions</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>because it is equivalent to:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">aList</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">all_positions</span><span class="p">()]</span>
+</pre></div>
+</div>
+<p>The problem is that the c.all_positions iterator uses a <em>single</em> position,
+and merely alters that position each time it is called. Thus, aList will
+contain multiple copies of an empty position!</p>
+<p>However, the following <em>does</em> work:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">aList</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">all_nodes</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>In this case, aList will contain a list of all the <em>vnodes</em> in the outline.</p>
+<div class="section" id="c-all-positions-c-all-unique-positions">
+<h4>c.all_positions &amp; c.all_unique_positions<a class="headerlink" href="#c-all-positions-c-all-unique-positions" title="Permalink to this headline">¶</a></h4>
+<p>The c.all_positions generator returns a list of all positions in the outline.
+This script makes a list of all the nodes in an outline:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">all_positions</span><span class="p">())</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;This outline contains </span><span class="si">%d</span><span class="s"> nodes&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The c.all_unique_positions generator returns a list of all unique positions in the outline.
+For each vnode v in the outline, exactly one position p is returned such that p.v == v.</p>
+<p>This script prints the <em>distinct</em> vnodes of an outline:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">all_unique_positions</span><span class="p">():</span>
+    <span class="n">sep</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">choose</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">hasChildren</span><span class="p">(),</span><span class="s">&#39;+&#39;</span><span class="p">,</span><span class="s">&#39;-&#39;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="s">&#39; &#39;</span><span class="o">*</span><span class="n">p</span><span class="o">.</span><span class="n">level</span><span class="p">(),</span><span class="n">sep</span><span class="p">,</span><span class="n">p</span><span class="o">.</span><span class="n">h</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="p-children">
+<h4>p.children<a class="headerlink" href="#p-children" title="Permalink to this headline">¶</a></h4>
+<p>The p.children generator returns a list of all children of position p:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">parent</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;children of </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">parent</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parent</span><span class="o">.</span><span class="n">children</span><span class="p">():</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="p-parents-p-self-and-parents">
+<h4>p.parents &amp; p.self_and_parents<a class="headerlink" href="#p-parents-p-self-and-parents" title="Permalink to this headline">¶</a></h4>
+<p>The p.parents generator returns a list of all parents of position p,
+excluding p:</p>
+<div class="highlight-python"><pre>current = p.copy()
+print("exclusive of %s" % (current.h),color="purple")
+for p in current.parents():
+    print(p.h)</pre>
+</div>
+<p>The p.self_and_parents generator returns a list of all parents of position
+p, including p:</p>
+<div class="highlight-python"><pre>current = p.copy()
+print("inclusive parents of %s" % (current.h),color="purple")
+for p in current.self_and_parents():
+    print(p.h)</pre>
+</div>
+</div>
+<div class="section" id="p-siblings-p-following-siblings">
+<h4>p.siblings &amp; p.following_siblings<a class="headerlink" href="#p-siblings-p-following-siblings" title="Permalink to this headline">¶</a></h4>
+<p>The p.siblings generator returns a list of all siblings of position p:</p>
+<div class="highlight-python"><pre>current = c.p
+print("all siblings of %s" % (current.h),color="purple")
+for p in current.self_and_siblings():
+    print(p.h)</pre>
+</div>
+<p>The p.following_siblings generator returns a list of all siblings that
+follow position p:</p>
+<div class="highlight-python"><pre>current = c.p
+print("following siblings of %s" % (current.h),color="purple")
+for p in current.following_siblings():
+    print(p.h)</pre>
+</div>
+</div>
+<div class="section" id="p-subtree-p-self-and-subtree">
+<h4>p.subtree &amp; p.self_and_subtree<a class="headerlink" href="#p-subtree-p-self-and-subtree" title="Permalink to this headline">¶</a></h4>
+<p>The p.subtree generator returns a list of all positions in p&#8217;s subtree, excluding p:</p>
+<div class="highlight-python"><pre>parent = p.parent()
+print("exclusive subtree of %s" % (parent.h),color="purple")
+for p in parent.subtree():
+    print(p.h)</pre>
+</div>
+<p>The p.self_and_subtree generator returns a list of all positions in p&#8217;s subtree, including p:</p>
+<div class="highlight-python"><pre>parent = p.parent()
+print("inclusive subtree of %s" % (parent.h),color="purple")
+for p in parent.self_and_subtree():
+    print(p.h)</pre>
+</div>
+</div>
+</div>
+<div class="section" id="testing-whether-a-position-is-valid">
+<h3><a class="toc-backref" href="#id11">Testing whether a position is valid</a><a class="headerlink" href="#testing-whether-a-position-is-valid" title="Permalink to this headline">¶</a></h3>
+<p>The tests:</p>
+<div class="highlight-python"><pre>if p:       # Right
+if not p:   # Right</pre>
+</div>
+<p>are the <strong>only</strong> correct ways to test whether a position p is valid.
+In particular, the following <strong>will not work</strong>:</p>
+<div class="highlight-python"><pre>if p is None:       # Wrong
+if p is not None:   # Wrong</pre>
+</div>
+</div>
+<div class="section" id="g-pdb">
+<h3><a class="toc-backref" href="#id12">g.pdb</a><a class="headerlink" href="#g-pdb" title="Permalink to this headline">¶</a></h3>
+<p>g.pdb() invokes Python <a class="reference external" href="http://docs.python.org/library/pdb.html">pdb</a> debugger.  You must be running Leo
+from a console to invoke g.pdb().</p>
+<p>g.pdb() is merely a convenience.  It is equivalent to:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">pdb</span>
+<span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The debugger_pudb.py plugin causes g.pdb() to invoke the full-screen <a class="reference external" href="http://pypi.python.org/pypi/pudb">pudb</a>
+debugger instead of pdb. pudb works on Linux and similar systems; it does not
+work on Windows.</p>
+</div>
+<div class="section" id="button-scripts">
+<h3><a class="toc-backref" href="#id13">&#64;button scripts</a><a class="headerlink" href="#button-scripts" title="Permalink to this headline">¶</a></h3>
+<p>Creating an &#64;button script should be your first thought whenever you want to
+automate any task. The scripting plugin, mod_scripting.py, must be enabled to
+use &#64;button scripts.</p>
+<p>When Leo loads a .leo file, the mod_scripting plugin creates a <strong>script button</strong>
+in Leo&#8217;s icon area for every &#64;button node in the outline. The plugin also
+creates a corresponding minibuffer command for each &#64;button node. Pressing the
+script button (or executing the command from the minibuffer) applies the script
+in the &#64;button node to the presently selected outline node.</p>
+<p>In effect, each script button defines an instant command! The .leo files in Leo&#8217;s
+distribution contain many &#64;button nodes (many disabled), that do repetitive chores.
+Here is one, &#64;button promote-child-bodies, from LeoDocs.leo:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="sd">&#39;&#39;&#39;Copy the body text of all children to the parent&#39;s body text.&#39;&#39;&#39;</span>
+
+<span class="c"># Great for creating what&#39;s new nodes.</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">b</span><span class="p">]</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">undoer</span><span class="o">.</span><span class="n">beforeChangeNodeContents</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">children</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">b</span><span class="p">:</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">- </span><span class="si">%s</span><span class="se">\n\n</span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">h</span><span class="p">,</span><span class="n">child</span><span class="o">.</span><span class="n">b</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">- </span><span class="si">%s</span><span class="se">\n\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">h</span><span class="p">))</span>
+<span class="n">p</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="n">c</span><span class="o">.</span><span class="n">undoer</span><span class="o">.</span><span class="n">afterChangeNodeContents</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="s">&#39;promote-child-bodies&#39;</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This creates a fully undoable promote-child-bodies command.</p>
+<p><strong>Notes</strong>:</p>
+<ul>
+<li><p class="first">Script buttons execute the <strong>present</strong> body text of the &#64;button node. You
+can modify a script button&#8217;s script at any time without having to recreate the
+script button.  This makes script buttons ideal for prototyping code.</p>
+</li>
+<li><p class="first">You can bind keys to the commands created by script buttons.  For example:</p>
+<div class="highlight-python"><pre>@button my-button @key=Alt-8</pre>
+</div>
+</li>
+<li><p class="first">You can delete any script button by right-clicking on it.</p>
+</li>
+<li><p class="first">For more details, see the docstring of the mod_scripting plugin. If the plugin
+is enabled, you can see this string by choosing mod_scripting from Leo&#8217;s
+Plugins menu.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="autocompletion">
+<h3><a class="toc-backref" href="#id14">autocompletion</a><a class="headerlink" href="#autocompletion" title="Permalink to this headline">¶</a></h3>
+<p>Alt-1 (toggle-autocompleter) enables and disables Leo&#8217;s autocompletion feature.
+Autocompletion is extremely useful for writing Leo scripts because it knows
+about all of Python&#8217;s standard library modules and all of Leo&#8217;s source code.
+<strong>Important</strong>: &#64;language python must be in effect for autocompletion to work.</p>
+<p>For example, with autocompletion enabled typing:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">c</span><span class="o">.</span><span class="n">atF</span>
+</pre></div>
+</div>
+<p>will put the only possible completion in the body pane:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">c</span><span class="o">.</span><span class="n">atFileCommands</span>
+</pre></div>
+</div>
+<p>Continuing to type:</p>
+<div class="highlight-python"><pre>.wr</pre>
+</div>
+<p>will show you all of the write commands in leoAtFile.py:</p>
+<div class="highlight-python"><pre>write:method
+writeAll:method
+writeAllHelper:method
+writeAtAutoNodes:method
+writeAtAutoNodesHelper:method
+writeAtShadowNodes:method
+writeAtShadowNodesHelper:method
+writeDirtyAtAutoNodes:method
+writeDirtyAtShadowNodes:method
+writeError:method
+writeException:method
+writeFromString:method
+writeMissing:method
+writeOneAtAutoNode:method
+writeOneAtEditNode:method
+writeOneAtShadowNode:method
+writeOpenFile:method
+writeVersion5:&lt;class 'bool
+writing_to_shadow_directory:&lt;class 'bool</pre>
+</div>
+<p>When a single completion is shown, typing &#8216;?&#8217; will show the docstring for a method.
+For example:</p>
+<div class="highlight-python"><pre>c.atFileCommands.write?</pre>
+</div>
+<p>shows:</p>
+<div class="highlight-python"><pre>Write a 4.x derived file.
+root is the position of an @&lt;file&gt; node</pre>
+</div>
+<p>Using autocompletion effectively can lots of time when writing Leo scripts.</p>
+</div>
+<div class="section" id="summary">
+<h3><a class="toc-backref" href="#id15">Summary</a><a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h3>
+<p>The following sections summarizes the most useful methods that your
+scripts can use.</p>
+<div class="section" id="iterators">
+<h4>Iterators<a class="headerlink" href="#iterators" title="Permalink to this headline">¶</a></h4>
+<p>Here is the list of Leo&#8217;s iterators:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">c</span><span class="o">.</span><span class="n">all_nodes</span>             <span class="c"># all vnodes in c.</span>
+<span class="n">c</span><span class="o">.</span><span class="n">all_unique_nodes</span>      <span class="c"># all unique vnodes in c.</span>
+<span class="n">c</span><span class="o">.</span><span class="n">all_positions</span>         <span class="c"># all positions in c.</span>
+<span class="n">c</span><span class="o">.</span><span class="n">all_unique_positions</span>  <span class="c"># all unique positions in c.</span>
+
+<span class="n">p</span><span class="o">.</span><span class="n">children</span>              <span class="c"># all children of p.</span>
+<span class="n">p</span><span class="o">.</span><span class="n">following_siblings</span>    <span class="c"># all siblings of p that follow p.</span>
+<span class="n">p</span><span class="o">.</span><span class="n">nodes</span>                 <span class="c"># all vnodes in p&#39;s subtree.</span>
+<span class="n">p</span><span class="o">.</span><span class="n">parents</span>               <span class="c"># all parents of p.</span>
+<span class="n">p</span><span class="o">.</span><span class="n">self_and_parents</span>      <span class="c"># p and all parents of p.</span>
+<span class="n">p</span><span class="o">.</span><span class="n">siblings</span>              <span class="c"># all siblings of p, including p.</span>
+<span class="n">p</span><span class="o">.</span><span class="n">subtree</span>               <span class="c"># all positions in p&#39;s subtree, excluding p.</span>
+<span class="n">p</span><span class="o">.</span><span class="n">self_and_subtree</span>      <span class="c"># all positions in p&#39;s subtree, including p.</span>
+<span class="n">p</span><span class="o">.</span><span class="n">unique_nodes</span>          <span class="c"># all unique vnodes in p&#39;s subtree.</span>
+<span class="n">p</span><span class="o">.</span><span class="n">unique_subtree</span>        <span class="c"># all unique positions in p&#39;s subtree.</span>
+</pre></div>
+</div>
+<p><strong>Note</strong>: An iterator that returns <strong>unique positions</strong> is an iterator that returns
+a list of positions such that p.v == v at most once for any vnode v.
+Similarly, a generator that returns <strong>unique nodes</strong> is a generator that returns
+a list that contains any vnode at most once.</p>
+<p><strong>Note</strong>: The names given above are the recommended names for Leo&#8217;s iterators.
+Leo continues to support the names of iterators used before Leo 4.7.
+These names typically end with the _iter suffix.</p>
+</div>
+<div class="section" id="getters">
+<h4>Getters<a class="headerlink" href="#getters" title="Permalink to this headline">¶</a></h4>
+<p>Here are the most useful getters of the vnode and position classes.</p>
+<p>Returning strings:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">p</span><span class="o">.</span><span class="n">b</span> <span class="c"># the body string of p.</span>
+<span class="n">p</span><span class="o">.</span><span class="n">h</span> <span class="c"># the headline string of p. A property.</span>
+</pre></div>
+</div>
+<p>Returning ints:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">p</span><span class="o">.</span><span class="n">childIndex</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">numberOfChildren</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">level</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Returning bools representing property bits:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">p</span><span class="o">.</span><span class="n">hasChildren</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">isAncestorOf</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span> <span class="c"># True if v2 is a child, grandchild, etc. of p.</span>
+<span class="n">p</span><span class="o">.</span><span class="n">isCloned</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">isDirty</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">isExpanded</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">isMarked</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">isVisible</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">isVisited</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="setters">
+<h4>Setters<a class="headerlink" href="#setters" title="Permalink to this headline">¶</a></h4>
+<p>Here are the most useful setters of the Commands and position classes.
+The following setters of the position class regardless of whether
+p is the presently selected position:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">p</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">s</span>  <span class="c"># Sets the body text of p.</span>
+<span class="n">p</span><span class="o">.</span><span class="n">h</span> <span class="o">=</span> <span class="n">s</span>  <span class="c"># Sets the headline text of p.</span>
+</pre></div>
+</div>
+<p>Moving nodes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">p</span><span class="o">.</span><span class="n">moveAfter</span><span class="p">(</span><span class="n">v2</span><span class="p">)</span>           <span class="c"># move p after v2</span>
+<span class="n">p</span><span class="o">.</span><span class="n">moveToNthChildOf</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">n</span><span class="p">)</span>  <span class="c"># move p to the n&#39;th child of v2</span>
+<span class="n">p</span><span class="o">.</span><span class="n">moveToRoot</span><span class="p">(</span><span class="n">oldRoot</span><span class="p">)</span>     <span class="c"># make p the root position.</span>
+                          <span class="c"># oldRoot must be the old root position if it exists.</span>
+</pre></div>
+</div>
+<p>The &#8220;visited&#8221; bit may be used by commands or scripts for any purpose.
+Many commands use this bits for tree traversal, so these bits do not persist:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">c</span><span class="o">.</span><span class="n">clearAllVisited</span><span class="p">()</span> <span class="c"># Clears all visited bits in c&#39;s tree.</span>
+<span class="n">p</span><span class="o">.</span><span class="n">clearVisited</span><span class="p">()</span>
+<span class="n">p</span><span class="o">.</span><span class="n">setVisited</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="event-handlers">
+<h2><a class="toc-backref" href="#id16">Event handlers</a><a class="headerlink" href="#event-handlers" title="Permalink to this headline">¶</a></h2>
+<p>Plugins and other scripts can register event handlers (also known as hooks) with code such as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">leoPlugins</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s">&quot;after-create-leo-frame&quot;</span><span class="p">,</span><span class="n">onCreate</span><span class="p">)</span>
+<span class="n">leoPlugins</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s">&quot;idle&quot;</span><span class="p">,</span> <span class="n">on_idle</span><span class="p">)</span>
+<span class="n">leoPlugins</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">((</span><span class="s">&quot;start2&quot;</span><span class="p">,</span><span class="s">&quot;open2&quot;</span><span class="p">,</span><span class="s">&quot;command2&quot;</span><span class="p">),</span> <span class="n">create_open_with_menu</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>As shown above, a plugin may register one or more event handlers with a single call to
+leoPlugins.registerHandler. Once a hook is registered, Leo will call the
+registered function&#8217; at the named <strong>hook time</strong>. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">leoPlugins</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s">&quot;idle&quot;</span><span class="p">,</span> <span class="n">on_idle</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>causes Leo to call on_idle at &#8220;idle&#8221; time.</p>
+<p>Event handlers must have the following signature:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">myHook</span> <span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">keywords</span><span class="p">):</span>
+    <span class="n">whatever</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>tag is the name of the hook (a string).</li>
+<li>keywords is a Python dictionary containing additional information.
+The following section describes the contents of the keywords dictionary in detail.</li>
+</ul>
+<p><strong>Important</strong>: hooks should get the proper commander this way:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">c</span> <span class="o">=</span> <span class="n">keywords</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;c&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The following table tells about each event handler: its name, when it is called,
+and the additional arguments passed to the hook in the keywords dictionary.
+For some kind of hooks, Leo will skip its own normal processing if the hook
+returns anything <em>other</em> than None. The table indicates such hooks with &#8216;yes&#8217; in
+the &#8216;Stop?&#8217; column.</p>
+<p><strong>Important</strong>: Ever since Leo 4.2, the v, old_v and new_v keys in
+the keyword dictionary contain <em>positions</em>, not vnodes. These keys are
+deprecated. The new_c key is also deprecated. Plugins should use the c key instead.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="7%" />
+<col width="30%" />
+<col width="37%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Event name (tag argument)</th>
+<th class="head">Stop?</th>
+<th class="head">When called</th>
+<th class="head">Keys in keywords dict</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>&#8216;after-auto&#8217;</td>
+<td>&nbsp;</td>
+<td>after each &#64;auto file loaded</td>
+<td>c,p (note 13)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;after-create-leo-frame&#8217;</td>
+<td>&nbsp;</td>
+<td>after creating any frame</td>
+<td>c</td>
+</tr>
+<tr class="row-even"><td>&#8216;after-redraw-outline&#8217;</td>
+<td>&nbsp;</td>
+<td>end of tree.redraw</td>
+<td>c (note 6)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;before-create-leo-frame&#8217;</td>
+<td>&nbsp;</td>
+<td>before frame.finishCreate</td>
+<td>c</td>
+</tr>
+<tr class="row-even"><td>&#8216;bodyclick1&#8217;</td>
+<td>yes</td>
+<td>before normal click in body</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;bodyclick2&#8217;</td>
+<td>&nbsp;</td>
+<td>after normal click in body</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;bodydclick1&#8217;</td>
+<td>yes</td>
+<td>before double click in body</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;bodydclick2&#8217;</td>
+<td>&nbsp;</td>
+<td>after  double click in body</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;bodykey1&#8217;</td>
+<td>yes</td>
+<td>before body keystrokes</td>
+<td>c,p,v,ch,oldSel,undoType</td>
+</tr>
+<tr class="row-odd"><td>&#8216;bodykey2&#8217;</td>
+<td>&nbsp;</td>
+<td>after  body keystrokes</td>
+<td>c,p,v,ch,oldSel,undoType</td>
+</tr>
+<tr class="row-even"><td>&#8216;bodyrclick1&#8217;</td>
+<td>yes</td>
+<td>before right click in body</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;bodyrclick2&#8217;</td>
+<td>&nbsp;</td>
+<td>after  right click in body</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;boxclick1&#8217;</td>
+<td>yes</td>
+<td>before click in +- box</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;boxclick2&#8217;</td>
+<td>&nbsp;</td>
+<td>after  click in +- box</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;clear-all-marks&#8217;</td>
+<td>&nbsp;</td>
+<td>after clear-all-marks command</td>
+<td>c,p,v</td>
+</tr>
+<tr class="row-odd"><td>&#8216;clear-mark&#8217;</td>
+<td>&nbsp;</td>
+<td>when mark is set</td>
+<td>c,p,v</td>
+</tr>
+<tr class="row-even"><td>&#8216;close-frame&#8217;</td>
+<td>&nbsp;</td>
+<td>in app.closeLeoWindow</td>
+<td>c</td>
+</tr>
+<tr class="row-odd"><td>&#8216;color-optional-markup&#8217;</td>
+<td>yes *</td>
+<td>(note 7)</td>
+<td>colorer,p,v,s,i,j,colortag (note 7)</td>
+</tr>
+<tr class="row-even"><td>&#8216;command1&#8217;</td>
+<td>yes</td>
+<td>before each command</td>
+<td>c,p,v,label (note 2)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;command2&#8217;</td>
+<td>&nbsp;</td>
+<td>after  each command</td>
+<td>c,p,v,label (note 2)</td>
+</tr>
+<tr class="row-even"><td>&#8216;create-optional-menus&#8217;</td>
+<td>&nbsp;</td>
+<td>(note 8)</td>
+<td>c (note 8)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;create-popup-menu-items&#8217;</td>
+<td>&nbsp;</td>
+<td>in tree.OnPopup</td>
+<td>c,p,v,event (new)</td>
+</tr>
+<tr class="row-even"><td>&#8216;draw-outline-box&#8217;</td>
+<td>yes</td>
+<td>when drawing +- box</td>
+<td>tree,p,v,x,y</td>
+</tr>
+<tr class="row-odd"><td>&#8216;draw-outline-icon&#8217;</td>
+<td>yes</td>
+<td>when drawing icon</td>
+<td>tree,p,v,x,y</td>
+</tr>
+<tr class="row-even"><td>&#8216;draw-outline-node&#8217;</td>
+<td>yes</td>
+<td>when drawing node</td>
+<td>tree,p,v,x,y</td>
+</tr>
+<tr class="row-odd"><td>&#8216;draw-outline-text-box&#8217;</td>
+<td>yes</td>
+<td>when drawing headline</td>
+<td>tree,p,v,x,y</td>
+</tr>
+<tr class="row-even"><td>&#8216;drag1&#8217;</td>
+<td>yes</td>
+<td>before start of drag</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;drag2&#8217;</td>
+<td>&nbsp;</td>
+<td>after  start of drag</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;dragging1&#8217;</td>
+<td>yes</td>
+<td>before continuing to drag</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;dragging2&#8217;</td>
+<td>&nbsp;</td>
+<td>after  continuing to drag</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;enable-popup-menu-items&#8217;</td>
+<td>&nbsp;</td>
+<td>in tree.OnPopup</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;end1&#8217;</td>
+<td>&nbsp;</td>
+<td>start of app.quit()</td>
+<td>None</td>
+</tr>
+<tr class="row-even"><td>&#8216;enddrag1&#8217;</td>
+<td>yes</td>
+<td>before end of drag</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;enddrag2&#8217;</td>
+<td>&nbsp;</td>
+<td>after  end of drag</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;headclick1&#8217;</td>
+<td>yes</td>
+<td>before normal click in headline</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;headclick2&#8217;</td>
+<td>&nbsp;</td>
+<td>after  normal click in headline</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;headrclick1&#8217;</td>
+<td>yes</td>
+<td>before right click in headline</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;headrclick2&#8217;</td>
+<td>&nbsp;</td>
+<td>after  right click in headline</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;headkey1&#8217;</td>
+<td>yes</td>
+<td>before headline keystrokes</td>
+<td>c,p,v,ch (note 12)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;headkey2&#8217;</td>
+<td>&nbsp;</td>
+<td>after  headline keystrokes</td>
+<td>c,p,v,ch (note 12)</td>
+</tr>
+<tr class="row-even"><td>&#8216;hoist-changed&#8217;</td>
+<td>&nbsp;</td>
+<td>whenever the hoist stack changes</td>
+<td>c</td>
+</tr>
+<tr class="row-odd"><td>&#8216;hypercclick1&#8217;</td>
+<td>yes</td>
+<td>before control click in hyperlink</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;hypercclick2&#8217;</td>
+<td>&nbsp;</td>
+<td>after  control click in hyperlink</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;hyperenter1&#8217;</td>
+<td>yes</td>
+<td>before entering hyperlink</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;hyperenter2&#8217;</td>
+<td>&nbsp;</td>
+<td>after  entering hyperlink</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;hyperleave1&#8217;</td>
+<td>yes</td>
+<td>before leaving  hyperlink</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;hyperleave2&#8217;</td>
+<td>&nbsp;</td>
+<td>after  leaving  hyperlink</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;iconclick1&#8217;</td>
+<td>yes</td>
+<td>before single click in icon box</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;iconclick2&#8217;</td>
+<td>&nbsp;</td>
+<td>after  single click in icon box</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;iconrclick1&#8217;</td>
+<td>yes</td>
+<td>before right click in icon box</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;iconrclick2&#8217;</td>
+<td>&nbsp;</td>
+<td>after  right click in icon box</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;icondclick1&#8217;</td>
+<td>yes</td>
+<td>before double click in icon box</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;icondclick2&#8217;</td>
+<td>&nbsp;</td>
+<td>after  double click in icon box</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-odd"><td>&#8216;idle&#8217;</td>
+<td>&nbsp;</td>
+<td>periodically (at idle time)</td>
+<td>c</td>
+</tr>
+<tr class="row-even"><td>&#8216;init-color-markup&#8217;</td>
+<td>&nbsp;</td>
+<td>(note 7)</td>
+<td>colorer,p,v (note 7)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;menu1&#8217;</td>
+<td>yes</td>
+<td>before creating menus</td>
+<td>c,p,v (note 3)</td>
+</tr>
+<tr class="row-even"><td>&#8216;menu2&#8217;</td>
+<td>yes</td>
+<td>during creating menus</td>
+<td>c,p,v (note 3)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;menu-update&#8217;</td>
+<td>yes</td>
+<td>before updating menus</td>
+<td>c,p,v</td>
+</tr>
+<tr class="row-even"><td>&#8216;new&#8217;</td>
+<td>&nbsp;</td>
+<td>start of New command</td>
+<td>c,old_c,new_c (note 9)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;open1&#8217;</td>
+<td>yes</td>
+<td>before opening any file</td>
+<td>c,old_c,new_c,fileName (note 4)</td>
+</tr>
+<tr class="row-even"><td>&#8216;open2&#8217;</td>
+<td>&nbsp;</td>
+<td>after  opening any file</td>
+<td>c,old_c,new_c,fileName (note 4)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;openwith1&#8217;</td>
+<td>yes</td>
+<td>before Open With command</td>
+<td>c,p,v,d (note 14)</td>
+</tr>
+<tr class="row-even"><td>&#8216;openwith2&#8217;</td>
+<td>&nbsp;</td>
+<td>after  Open With command</td>
+<td>c,p,v,(note 14)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;recentfiles1&#8217;</td>
+<td>yes</td>
+<td>before Recent Files command</td>
+<td>c,p,v,fileName,closeFlag</td>
+</tr>
+<tr class="row-even"><td>&#8216;recentfiles2&#8217;</td>
+<td>&nbsp;</td>
+<td>after  Recent Files command</td>
+<td>c,p,v,fileName,closeFlag</td>
+</tr>
+<tr class="row-odd"><td>&#8216;redraw-entire-outline&#8217;</td>
+<td>yes</td>
+<td>start of tree.redraw</td>
+<td>c (note 6)</td>
+</tr>
+<tr class="row-even"><td>&#8216;save1&#8217;</td>
+<td>yes</td>
+<td>before any Save command</td>
+<td>c,p,v,fileName</td>
+</tr>
+<tr class="row-odd"><td>&#8216;save2&#8217;</td>
+<td>&nbsp;</td>
+<td>after  any Save command</td>
+<td>c,p,v,fileName</td>
+</tr>
+<tr class="row-even"><td>&#8216;scan-directives&#8217;</td>
+<td>&nbsp;</td>
+<td>in scanDirectives</td>
+<td>c,p,v,s,old_dict,dict,pluginsList (note 10)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;select1&#8217;</td>
+<td>yes</td>
+<td>before selecting a position</td>
+<td>c,new_p,old_p,new_v,new_v</td>
+</tr>
+<tr class="row-even"><td>&#8216;select2&#8217;</td>
+<td>&nbsp;</td>
+<td>after  selecting a position</td>
+<td>c,new_p,old_p,new_v,old_v</td>
+</tr>
+<tr class="row-odd"><td>&#8216;select3&#8217;</td>
+<td>&nbsp;</td>
+<td>after  selecting a position</td>
+<td>c,new_p,old_p,new_v,old_v</td>
+</tr>
+<tr class="row-even"><td>&#8216;set-mark&#8217;</td>
+<td>&nbsp;</td>
+<td>when a mark is set</td>
+<td>c,p,v</td>
+</tr>
+<tr class="row-odd"><td>&#8216;show-popup-menu&#8217;</td>
+<td>&nbsp;</td>
+<td>in tree.OnPopup</td>
+<td>c,p,v,event</td>
+</tr>
+<tr class="row-even"><td>&#8216;start1&#8217;</td>
+<td>&nbsp;</td>
+<td>after app.finishCreate()</td>
+<td>None</td>
+</tr>
+<tr class="row-odd"><td>&#8216;start2&#8217;</td>
+<td>&nbsp;</td>
+<td>after opening first Leo window</td>
+<td>c,p,v,fileName</td>
+</tr>
+<tr class="row-even"><td>&#8216;unselect1&#8217;</td>
+<td>yes</td>
+<td>before unselecting a vnode</td>
+<td>c,new_p,old_p,new_v,old_v</td>
+</tr>
+<tr class="row-odd"><td>&#8216;unselect2&#8217;</td>
+<td>&nbsp;</td>
+<td>after  unselecting a vnode</td>
+<td>c,new_p,old_p,old_v,old_v</td>
+</tr>
+<tr class="row-even"><td>&#8216;&#64;url1&#8217;</td>
+<td>yes</td>
+<td>before double-click &#64;url node</td>
+<td>c,p,v,url (note 5)</td>
+</tr>
+<tr class="row-odd"><td>&#8216;&#64;url2&#8217;</td>
+<td>&nbsp;</td>
+<td>after  double-click &#64;url node</td>
+<td>c,p,v(note 5)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Notes</strong>:</p>
+<ol class="arabic">
+<li><p class="first">&#8216;activate&#8217; and &#8216;deactivate&#8217; hooks have been removed because they do not work as expected.</p>
+</li>
+<li><p class="first">&#8216;commands&#8217; hooks: The label entry in the keywords dict contains the
+&#8216;canonicalized&#8217; form of the command, that is, the lowercase name of the command
+with all non-alphabetic characters removed.
+Commands hooks now set the label for undo and redo commands &#8216;undo&#8217; and &#8216;redo&#8217;
+rather than &#8216;cantundo&#8217; and &#8216;cantredo&#8217;.</p>
+</li>
+<li><p class="first">&#8216;menu1&#8217; hook: Setting g.app.realMenuNameDict in this hook is an easy way of
+translating menu names to other languages. <strong>Note</strong>: the &#8216;new&#8217; names created this
+way affect only the actual spelling of the menu items, they do <em>not</em> affect how
+you specify shortcuts settings, nor do they affect the &#8216;official&#8217;
+command names passed in g.app.commandName. For example:</p>
+<div class="highlight-python"><pre>app().realMenuNameDict['Open...'] = 'Ouvre'.</pre>
+</div>
+</li>
+<li><p class="first">&#8216;open1&#8217; and &#8216;open2&#8217; hooks: These are called with a keywords dict containing the following entries:</p>
+<ul class="simple">
+<li>c:          The commander of the newly opened window.</li>
+<li>old_c:      The commander of the previously open window.</li>
+<li>new_c:      (deprecated: use &#8216;c&#8217; instead) The commander of the newly opened window.</li>
+<li>fileName:   The name of the file being opened.</li>
+</ul>
+<p>You can use old_c.p and c.p to get the current position in the old and new windows.
+Leo calls the &#8216;open1&#8217; and &#8216;open2&#8217; hooks only if the file is not already open. Leo
+will also call the &#8216;open1&#8217; and &#8216;open2&#8217; hooks if: a) a file is opened using the
+Recent Files menu and b) the file is not already open.</p>
+</li>
+<li><p class="first">&#8216;&#64;url1&#8217; and &#8216;&#64;url2&#8217; hooks are only executed if the &#8216;icondclick1&#8217; hook returns None.</p>
+</li>
+<li><p class="first">These hooks are useful for testing.</p>
+</li>
+<li><p class="first">These hooks allow plugins to parse and handle markup within doc parts,
+comments and Python &#8216;&#8217;&#8217; strings. Note that these hooks are <em>not</em> called in
+Python &#8216;&#8217;&#8217; strings. See the color_markup plugin for a complete example of how to
+use these hooks.</p>
+</li>
+<li><p class="first">Leo calls the &#8216;create-optional-menus&#8217; hook when creating menus. This hook need
+only create new menus in the correct order, without worrying about the placement
+of the menus in the menu bar. See the plugins_menu and scripts_menu plugins for
+examples of how to use this hook.</p>
+</li>
+<li><p class="first">The New command calls &#8216;new&#8217;.
+The &#8216;new_c&#8217; key is deprecated.  Use the &#8216;c&#8217; key instead.</p>
+</li>
+<li><p class="first">g.scanDirectives calls &#8216;scan-directives&#8217; hook.
+g.scanDirectives returns a dictionary, say d.
+d.get(&#8216;pluginsList&#8217;) is an a list of tuples (d,v,s,k) where:</p>
+<ul class="simple">
+<li>d is the spelling of the &#64;directive, without the leading &#64;.</li>
+<li>v is the vnode containing the directive, _not_ the original vnode.</li>
+<li>s[k:] is a string containing whatever follows the &#64;directive.
+k has already been moved past any whitespace that follows the &#64;directive.</li>
+</ul>
+<p>See the add_directives plugins directive for a complete example of how to use
+the &#8216;scan-directives&#8217; hook.</p>
+</li>
+<li><p class="first">g.app.closeLeoWindow calls the &#8216;close-frame&#8217; hook just before
+removing the window from g.app.windowList. The hook code may remove the window
+from app.windowList to prevent g.app.closeLeoWindow from destroying the window.</p>
+</li>
+<li><p class="first">Leo calls the &#8216;headkey1&#8217; and &#8216;headkey2&#8217; when the headline <em>might</em> have changed.</p>
+</li>
+<li><p class="first">p is the new node (position) containing <a class="reference external" href="mailto:'%40auto">'<span>&#64;</span>auto</a> filename.ext&#8217;</p>
+</li>
+<li><p class="first">New in Leo 4.10: the d argument to the open-with event handlers is a python
+dictionary whose keys are all the tags specified by the user in the body of the
+&#64;openwith node.</p>
+</li>
+</ol>
+<div class="section" id="enabling-idle-time-event-handlers">
+<h3><a class="toc-backref" href="#id17">Enabling idle time event handlers</a><a class="headerlink" href="#enabling-idle-time-event-handlers" title="Permalink to this headline">¶</a></h3>
+<p>Two methods in leoGlobals.py allow scripts and plugins to enable and disable &#8216;idle&#8217; events.
+<strong>g.enableIdleTimeHook(idleTimeDelay=100)</strong> enables the &#8220;idle&#8221; hook.
+Afterwards, Leo will call the &#8220;idle&#8221; hook approximately every idleTimeDelay milliseconds.
+Leo will continue to call the &#8220;idle&#8221; hook periodically until disableIdleTimeHook is called.
+<strong>g.disableIdleTimeHook()</strong> disables the &#8220;idle&#8221; hook.</p>
+</div>
+</div>
+<div class="section" id="other-topics">
+<h2><a class="toc-backref" href="#id18">Other topics</a><a class="headerlink" href="#other-topics" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="g-app-windowlist-the-list-of-all-open-frames">
+<h3><a class="toc-backref" href="#id19">g.app.windowList: the list of all open frames</a><a class="headerlink" href="#g-app-windowlist-the-list-of-all-open-frames" title="Permalink to this headline">¶</a></h3>
+<p>The windowlist attribute of the application instance contains the list of the
+frames of all open windows. The commands ivar of the frame gives the commander
+for that frame:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">aList</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">windowList</span> <span class="c"># get the list of all open frames.</span>
+<span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&quot;windows...&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">aList</span><span class="p">:</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">c</span> <span class="c"># c is f&#39;s commander</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">shortFileName</span><span class="p">())</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">rootPosition</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>There is also g.app.commanders() method, that gives the list of all active
+commanders directly.</p>
+</div>
+<div class="section" id="ensuring-that-positions-are-valid">
+<h3><a class="toc-backref" href="#id20">Ensuring that positions are valid</a><a class="headerlink" href="#ensuring-that-positions-are-valid" title="Permalink to this headline">¶</a></h3>
+<p>Positions become invalid whenever the outline changes.</p>
+<p>c.positionExists(p) returns True if position p is (still) valid in Commander c.</p>
+<p>The following code will find a position p2 having the same vnode as p:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">if</span> <span class="ow">not</span> <span class="n">c</span><span class="o">.</span><span class="n">positionExists</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">p2</span> <span class="ow">in</span> <span class="n">c</span><span class="o">.</span><span class="n">all_positions</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">p2</span><span class="o">.</span><span class="n">v</span> <span class="o">==</span> <span class="n">p</span><span class="o">.</span><span class="n">v</span><span class="p">:</span> <span class="c"># found</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">selectPosition</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&#39;position no longer exists&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="g-openwithfilename">
+<h3><a class="toc-backref" href="#id21">g.openWithFileName</a><a class="headerlink" href="#g-openwithfilename" title="Permalink to this headline">¶</a></h3>
+<p><strong>g.openWithFileName</strong> opens a .leo file. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">new_c</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">openWithFileName</span><span class="p">(</span><span class="n">fileName</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>new_c is the commander of the newly-created outline.</p>
+</div>
+<div class="section" id="g-getscript">
+<h3><a class="toc-backref" href="#id22">g.getScript</a><a class="headerlink" href="#g-getscript" title="Permalink to this headline">¶</a></h3>
+<p><strong>g.getScript(c,p)</strong> returns the expansion of p&#8217;s body text. (If p is the
+presently selected node and there is a text selection, g.getScript returns the
+expansion of only the selected text.)</p>
+<p>Leo scripts can use g.getScript to implement new ways of executing Python code.
+For example, the mod_scripting plugin uses g.getScript to implement &#64;button nodes,
+and Leo&#8217;s core uses g.getScript to implement &#64;test nodes.</p>
+</div>
+<div class="section" id="c-frame-body-bodyctrl">
+<h3><a class="toc-backref" href="#id23">c.frame.body.bodyCtrl</a><a class="headerlink" href="#c-frame-body-bodyctrl" title="Permalink to this headline">¶</a></h3>
+<p>Let:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">w</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">bodyCtrl</span> <span class="c"># Leo&#39;s body pane.</span>
+</pre></div>
+</div>
+<p>Scripts can get or change the context of the body as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">w</span><span class="o">.</span><span class="n">appendText</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>                     <span class="c"># Append s to end of body text.</span>
+<span class="n">w</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>                  <span class="c"># Delete characters from i to j.</span>
+<span class="n">w</span><span class="o">.</span><span class="n">deleteTextSelection</span><span class="p">()</span>             <span class="c"># Delete the selected text, if any.</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>                 <span class="c"># Return the text from i to j.</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">getAllText</span>                    <span class="c"># Return the entire body text.</span>
+<span class="n">i</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">getInsertPoint</span><span class="p">()</span>              <span class="c"># Return the location of the cursor.</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">getSelectedText</span><span class="p">()</span>             <span class="c"># Return the selected text, if any.</span>
+<span class="n">i</span><span class="p">,</span><span class="n">j</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">getSelectionRange</span> <span class="p">(</span><span class="n">sort</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="c"># Return the range of selected text.</span>
+<span class="n">w</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">s</span><span class="p">)</span>                    <span class="c"># Replace the text from i to j by s.</span>
+<span class="n">w</span><span class="o">.</span><span class="n">setAllText</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>                     <span class="c"># Set the entire body text to s.</span>
+<span class="n">w</span><span class="o">.</span><span class="n">setSelectionRange</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">insert</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span> <span class="c"># Select the text.</span>
+</pre></div>
+</div>
+<p><strong>Notes</strong>:</p>
+<ul class="simple">
+<li>These are only the most commonly-used methods.
+For more information, consult Leo&#8217;s source code.</li>
+<li>i and j are zero-based indices into the the text.
+When j is not specified, it defaults to i.
+When the sort parameter is in effect, getSelectionRange
+ensures i &lt;= j.</li>
+<li>color is a Tk color name, even when using the Gt gui.</li>
+</ul>
+</div>
+<div class="section" id="invoking-commands-from-scripts">
+<h3><a class="toc-backref" href="#id24">Invoking commands from scripts</a><a class="headerlink" href="#invoking-commands-from-scripts" title="Permalink to this headline">¶</a></h3>
+<p>Leo dispatches commands using c.doCommand,
+which calls the &#8220;command1&#8221; and &#8220;command2&#8221; hook routines for the given label.
+c.doCommand catches all exceptions thrown by the command:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">c</span><span class="o">.</span><span class="n">doCommand</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">markHeadline</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s">&quot;markheadline&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can also call command handlers directly so that hooks will not be called:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">c</span><span class="o">.</span><span class="n">markHeadline</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>You can invoke minibuffer commands by name.  For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">c</span><span class="o">.</span><span class="n">executeMinibufferCommand</span><span class="p">(</span><span class="s">&#39;open-outline&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>c.keyHandler.funcReturn contains the value returned from the command.
+In many cases, as above, this value is simply &#8216;break&#8217;.</p>
+</div>
+<div class="section" id="getting-settings-from-settings-trees">
+<h3><a class="toc-backref" href="#id25">Getting settings from &#64;settings trees</a><a class="headerlink" href="#getting-settings-from-settings-trees" title="Permalink to this headline">¶</a></h3>
+<p>Any .leo file may contain an &#64;settings tree, so settings may be different for each commander.
+Plugins and other scripts can get the value of settings as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">format_headlines</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getBool</span><span class="p">(</span><span class="s">&#39;rst3_format_headlines&#39;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&#39;format_headlines&#39;</span><span class="p">,</span><span class="n">format_headlines</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The c.config class has the following getters.
+See the configSettings in leoCommands.py for details:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getBool</span><span class="p">(</span><span class="n">settingName</span><span class="p">,</span><span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+<span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getColor</span><span class="p">(</span><span class="n">settingName</span><span class="p">)</span>
+<span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getDirectory</span><span class="p">(</span><span class="n">settingName</span><span class="p">)</span>
+<span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getFloat</span><span class="p">(</span><span class="n">settingName</span><span class="p">)</span>
+<span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getInt</span><span class="p">(</span><span class="n">settingName</span><span class="p">)</span>
+<span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getLanguage</span><span class="p">(</span><span class="n">settingName</span><span class="p">)</span>
+<span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getRatio</span><span class="p">(</span><span class="n">settingName</span><span class="p">)</span>
+<span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getShortcut</span><span class="p">(</span><span class="n">settingName</span><span class="p">)</span>
+<span class="n">c</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">getString</span><span class="p">(</span><span class="n">settingName</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>These methods return None if no setting exists.
+The getBool &#8216;default&#8217; argument to getBool gives the value to be returned if the setting does not exist.</p>
+</div>
+<div class="section" id="preferences-ivars">
+<h3><a class="toc-backref" href="#id26">Preferences ivars</a><a class="headerlink" href="#preferences-ivars" title="Permalink to this headline">¶</a></h3>
+<p>Each commander maintains its own preferences.
+Your scripts can get the following ivars:</p>
+<div class="highlight-python"><pre>ivars = (
+    'output_doc_flag',
+    'page_width',
+    'page_width',
+    'tab_width',
+    'target_language',
+    'use_header_flag',
+)
+
+print("Prefs ivars...\n",color="purple")
+for ivar in ivars:
+    print(getattr(c,ivar))</pre>
+</div>
+<p>If your script sets c.tab_width your script may call f.setTabWidth to redraw the screen:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">c</span><span class="o">.</span><span class="n">tab_width</span> <span class="o">=</span> <span class="o">-</span><span class="mi">4</span>    <span class="c"># Change this and see what happens.</span>
+<span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">setTabWidth</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">tab_width</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="functions-defined-in-leoglobals-py">
+<h3><a class="toc-backref" href="#id27">Functions defined in leoGlobals.py</a><a class="headerlink" href="#functions-defined-in-leoglobals-py" title="Permalink to this headline">¶</a></h3>
+<p>leoGlobals.py contains many utility functions and constants.
+The following script prints all the names defined in leoGlobals.py:</p>
+<div class="highlight-python"><pre>print("Names defined in leoGlobals.py",color="purple")
+names = g.__dict__.keys()
+names.sort()
+for name in names:
+    print(name)</pre>
+</div>
+</div>
+<div class="section" id="making-operations-undoable">
+<h3><a class="toc-backref" href="#id28">Making operations undoable</a><a class="headerlink" href="#making-operations-undoable" title="Permalink to this headline">¶</a></h3>
+<p>Plugins and scripts should call u.beforeX and u.afterX methods ato
+describe the operation that is being performed. <strong>Note</strong>: u is shorthand for
+c.undoer. Most u.beforeX methods return undoData that the client
+code merely passes to the corresponding u.afterX method. This data contains
+the &#8216;before&#8217; snapshot. The u.afterX methods then create a bead containing
+both the &#8216;before&#8217; and &#8216;after&#8217; snapshots.</p>
+<p>u.beforeChangeGroup and u.afterChangeGroup allow multiple calls to
+u.beforeX and u.afterX methods to be treated as a single undoable entry.
+See the code for the Replace All, Sort, Promote and Demote
+commands for examples. The u.beforeChangeGroup and u.afterChangeGroup
+methods substantially reduce the number of u.beforeX and afterX methods
+needed.</p>
+<p>Plugins and scripts may define their own u.beforeX and afterX methods. Indeed,
+u.afterX merely needs to set the bunch.undoHelper and
+bunch.redoHelper ivars to the methods used to undo and redo the operation.
+See the code for the various u.beforeX and afterX methods for guidance.</p>
+<p>p.setDirty and p.setAllAncestorAtFileNodesDirty now return a
+dirtyVnodeList that all vnodes that became dirty as the result of an
+operation. More than one list may be generated: client code is responsible for
+merging lists using the pattern dirtyVnodeList.extend(dirtyVnodeList2)</p>
+<p>See the section &lt;&lt; How Leo implements unlimited undo &gt;&gt; in leoUndo.py
+for more details. In general, the best way to see how to implement undo is to
+see how Leo&#8217;s core calls the u.beforeX and afterX methods.</p>
+</div>
+<div class="section" id="redirecting-output-from-scripts">
+<h3><a class="toc-backref" href="#id29">Redirecting output from scripts</a><a class="headerlink" href="#redirecting-output-from-scripts" title="Permalink to this headline">¶</a></h3>
+<p>leoGlobals.py defines 6 convenience methods for redirecting stdout and stderr:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">g</span><span class="o">.</span><span class="n">redirectStderr</span><span class="p">()</span> <span class="c"># Redirect stderr to the current log pane.</span>
+<span class="n">g</span><span class="o">.</span><span class="n">redirectStdout</span><span class="p">()</span> <span class="c"># Redirect stdout to the current log pane.</span>
+<span class="n">g</span><span class="o">.</span><span class="n">restoreStderr</span><span class="p">()</span>  <span class="c"># Restores stderr so it prints to the console window.</span>
+<span class="n">g</span><span class="o">.</span><span class="n">restoreStdout</span><span class="p">()</span>  <span class="c"># Restores stdout so it prints to the console window.</span>
+<span class="n">g</span><span class="o">.</span><span class="n">stdErrIsRedirected</span><span class="p">()</span> <span class="c"># Returns True if the stderr stream is redirected to the log pane.</span>
+<span class="n">g</span><span class="o">.</span><span class="n">stdOutIsRedirected</span><span class="p">()</span> <span class="c"># Returns True if the stdout stream is redirected to the log pane.</span>
+</pre></div>
+</div>
+<p>Calls need <em>not</em> be paired. Redundant calls are ignored and the last call made
+controls where output for each stream goes.
+<strong>Note</strong>: you must execute Leo in a console window to see non-redirected output from the print statement:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">print</span><span class="p">(</span><span class="s">&quot;stdout isRedirected: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">g</span><span class="o">.</span><span class="n">stdOutIsRedirected</span><span class="p">())</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;stderr isRedirected: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">g</span><span class="o">.</span><span class="n">stdErrIsRedirected</span><span class="p">())</span>
+
+<span class="n">g</span><span class="o">.</span><span class="n">redirectStderr</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;stdout isRedirected: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">g</span><span class="o">.</span><span class="n">stdOutIsRedirected</span><span class="p">())</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;stderr isRedirected: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">g</span><span class="o">.</span><span class="n">stdErrIsRedirected</span><span class="p">())</span>
+
+<span class="n">g</span><span class="o">.</span><span class="n">redirectStdout</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;stdout isRedirected: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">g</span><span class="o">.</span><span class="n">stdOutIsRedirected</span><span class="p">())</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;stderr isRedirected: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">g</span><span class="o">.</span><span class="n">stdErrIsRedirected</span><span class="p">())</span>
+
+<span class="n">g</span><span class="o">.</span><span class="n">restoreStderr</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;stdout isRedirected: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">g</span><span class="o">.</span><span class="n">stdOutIsRedirected</span><span class="p">())</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;stderr isRedirected: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">g</span><span class="o">.</span><span class="n">stdErrIsRedirected</span><span class="p">())</span>
+
+<span class="n">g</span><span class="o">.</span><span class="n">restoreStdout</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;stdout isRedirected: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">g</span><span class="o">.</span><span class="n">stdOutIsRedirected</span><span class="p">())</span>
+<span class="k">print</span><span class="p">(</span><span class="s">&quot;stderr isRedirected: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">g</span><span class="o">.</span><span class="n">stdErrIsRedirected</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="creating-qt-windows-from-leo-scripts">
+<h3><a class="toc-backref" href="#id30">Creating Qt Windows from Leo scripts</a><a class="headerlink" href="#creating-qt-windows-from-leo-scripts" title="Permalink to this headline">¶</a></h3>
+<p>The following puts up a test window when run as a Leo script:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">PyQt4</span> <span class="kn">import</span> <span class="n">QtGui</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">QtGui</span><span class="o">.</span><span class="n">QWidget</span><span class="p">()</span>
+<span class="n">w</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="mi">250</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span>
+<span class="n">w</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+<span class="n">w</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s">&#39;Simple test&#39;</span><span class="p">)</span>
+<span class="n">w</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">c</span><span class="o">.</span><span class="n">my_test</span> <span class="o">=</span> <span class="n">w</span> <span class="c"># &lt;-- Keep a reference to the window!</span>
+</pre></div>
+</div>
+<p><strong>Important</strong>: Something like the last line is essential. Without it, the window
+would immediately disappear after being created.  The assignment:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">c</span><span class="o">.</span><span class="n">my_test</span> <span class="o">=</span> <span class="n">w</span>
+</pre></div>
+</div>
+<p>creates a permanent reference to the window so the window won&#8217;t be garbage
+collected after the Leo script exits.</p>
+</div>
+<div class="section" id="writing-to-different-log-tabs">
+<h3><a class="toc-backref" href="#id31">Writing to different log tabs</a><a class="headerlink" href="#writing-to-different-log-tabs" title="Permalink to this headline">¶</a></h3>
+<p>Plugins and scripts can create new tabs in the log panel.
+The following creates a tab named test or make it visible if it already exists:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">selectTab</span><span class="p">(</span><span class="s">&#39;Test&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>g.es, g.enl, g.ecnl, g.ecnls write to the log tab specified by the optional
+tabName argument. The default for tabName is &#8216;Log&#8217;. The put and putnl methods of
+the gui&#8217;s log class also take an optional tabName argument which defaults to
+&#8216;Log&#8217;.</p>
+<p>Plugins and scripts may call the c.frame.canvas.createCanvas method to create a
+log tab containing a graphics widget. Here is an example script:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">log</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">log</span> <span class="p">;</span> <span class="n">tag</span> <span class="o">=</span> <span class="s">&#39;my-canvas&#39;</span>
+<span class="n">w</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">canvasDict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">w</span><span class="p">:</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">createCanvas</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">bg</span><span class="o">=</span><span class="s">&#39;yellow&#39;</span><span class="p">)</span>
+<span class="n">log</span><span class="o">.</span><span class="n">selectTab</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="invoking-dialogs-using-the-g-app-gui-class">
+<h3><a class="toc-backref" href="#id32">Invoking dialogs using the g.app.gui class</a><a class="headerlink" href="#invoking-dialogs-using-the-g-app-gui-class" title="Permalink to this headline">¶</a></h3>
+<p>Scripts can invoke various dialogs using the following methods of the g.app.gui object.
+Here is a partial list. You can use typing completion(default bindings: Alt-1 and Alt-2) to get the full list!</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">runAskOkCancelNumberDialog</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">message</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">runAskOkCancelStringDialog</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">message</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">runAskOkDialog</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">message</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">text</span><span class="o">=</span><span class="s">&#39;Ok&#39;</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">runAskYesNoCancelDialog</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">message</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+    <span class="n">yesMessage</span><span class="o">=</span><span class="s">&#39;Yes&#39;</span><span class="p">,</span><span class="n">noMessage</span><span class="o">=</span><span class="s">&#39;No&#39;</span><span class="p">,</span><span class="n">defaultButton</span><span class="o">=</span><span class="s">&#39;Yes&#39;</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">runAskYesNoDialog</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">message</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The values returned are in (&#8216;ok&#8217;,&#8217;yes&#8217;,&#8217;no&#8217;,&#8217;cancel&#8217;), as indicated by the
+method names. Some dialogs also return strings or numbers, again as indicated by
+their names.</p>
+<p>Scripts can run File Open and Save dialogs with these methods:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">runOpenFileDialog</span><span class="p">(</span><span class="n">title</span><span class="p">,</span><span class="n">filetypes</span><span class="p">,</span><span class="n">defaultextension</span><span class="p">,</span><span class="n">multiple</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">runSaveFileDialog</span><span class="p">(</span><span class="n">initialfile</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">filetypes</span><span class="p">,</span><span class="n">defaultextension</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For details about how to use these file dialogs, look for examples in Leo&#8217;s own
+source code. The runOpenFileDialog returns a list of file names.</p>
+</div>
+<div class="section" id="inserting-and-deleting-icons">
+<h3><a class="toc-backref" href="#id33">Inserting and deleting icons</a><a class="headerlink" href="#inserting-and-deleting-icons" title="Permalink to this headline">¶</a></h3>
+<p>You can add an icon to the presently selected node with
+c.editCommands.insertIconFromFile(path). path is an absolute path or a path
+relative to the leo/Icons folder. A relative path is recommended if you plan to
+use the icons on machines with different directory structures.</p>
+<p>For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">path</span> <span class="o">=</span> <span class="s">&#39;rt_arrow_disabled.gif&#39;</span>
+<span class="n">c</span><span class="o">.</span><span class="n">editCommands</span><span class="o">.</span><span class="n">insertIconFromFile</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Scripts can delete icons from the presently selected node using the following methods:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">c</span><span class="o">.</span><span class="n">editCommands</span><span class="o">.</span><span class="n">deleteFirstIcon</span><span class="p">()</span>
+<span class="n">c</span><span class="o">.</span><span class="n">editCommands</span><span class="o">.</span><span class="n">deleteLastIcon</span><span class="p">()</span>
+<span class="n">c</span><span class="o">.</span><span class="n">editCommands</span><span class="o">.</span><span class="n">deleteNodeIcons</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="working-with-directives-and-paths">
+<h3><a class="toc-backref" href="#id34">Working with directives and paths</a><a class="headerlink" href="#working-with-directives-and-paths" title="Permalink to this headline">¶</a></h3>
+<p>Scripts can easily determine what directives are in effect at a particular
+position in an outline. c.scanAllDirectives(p) returns a Python dictionary whose
+keys are directive names and whose values are the value in effect at position p.
+For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">d</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">scanAllDirectives</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">dictToString</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>In particular, d.get(&#8216;path&#8217;) returns the full, absolute path created by all
+&#64;path directives that are in ancestors of node p. If p is any kind of &#64;file node
+(including &#64;file, &#64;auto, &#64;nosent, &#64;shadow, etc.), the following script will
+print the full path to the created file:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">path</span> <span class="o">=</span> <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;path&#39;</span><span class="p">)</span>
+<span class="n">name</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">anyAtFileNodeName</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">name</span><span class="p">:</span>
+   <span class="n">name</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_finalize_join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">name</span><span class="p">)</span>
+   <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="running-leo-in-batch-mode">
+<h3><a class="toc-backref" href="#id35">Running Leo in batch mode</a><a class="headerlink" href="#running-leo-in-batch-mode" title="Permalink to this headline">¶</a></h3>
+<p>On startup, Leo looks for two arguments of the form:</p>
+<div class="highlight-python"><pre>--script scriptFile</pre>
+</div>
+<p>If found, Leo enters batch mode. In batch mode Leo does not show any windows.
+Leo assumes the scriptFile contains a Python script and executes the contents of
+that file using Leo&#8217;s Execute Script command. By default, Leo sends all
+output to the console window. Scripts in the scriptFile may disable or enable
+this output by calling app.log.disable or app.log.enable</p>
+<p>Scripts in the scriptFile may execute any of Leo&#8217;s commands except the Edit Body
+and Edit Headline commands. Those commands require interaction with the user.
+For example, the following batch script reads a Leo file and prints all the
+headlines in that file:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">path</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_finalize_join</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">loadDir</span><span class="p">,</span><span class="s">&#39;..&#39;</span><span class="p">,</span><span class="s">&#39;test&#39;</span><span class="p">,</span><span class="s">&#39;test.leo&#39;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">g</span><span class="o">.</span><span class="n">os_path_exists</span><span class="p">(</span><span class="n">path</span><span class="p">),</span><span class="n">path</span>
+
+<span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">disable</span><span class="p">()</span> <span class="c"># disable reading messages while opening the file</span>
+<span class="n">c2</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">openWithFileName</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">enable</span><span class="p">()</span> <span class="c"># re-enable the log.</span>
+
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">c2</span><span class="o">.</span><span class="n">all_positions</span><span class="p">():</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">toEncodedString</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">h</span><span class="p">,</span><span class="s">&quot;utf-8&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="getting-interactive-input-from-scripts">
+<h3><a class="toc-backref" href="#id36">Getting interactive input from scripts</a><a class="headerlink" href="#getting-interactive-input-from-scripts" title="Permalink to this headline">¶</a></h3>
+<p>The following code can be run from a script to get input from the user using the minibuffer:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">getInput</span> <span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+   <span class="n">stateName</span> <span class="o">=</span> <span class="s">&#39;get-input&#39;</span>
+   <span class="n">k</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">k</span>
+   <span class="n">state</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">getState</span><span class="p">(</span><span class="n">stateName</span><span class="p">)</span>
+
+   <span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+       <span class="n">k</span><span class="o">.</span><span class="n">setLabelBlue</span><span class="p">(</span><span class="s">&#39;Input: &#39;</span><span class="p">,</span><span class="n">protect</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+       <span class="n">k</span><span class="o">.</span><span class="n">getArg</span><span class="p">(</span><span class="n">event</span><span class="p">,</span><span class="n">stateName</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">getInput</span><span class="p">)</span>
+   <span class="k">else</span><span class="p">:</span>
+       <span class="n">k</span><span class="o">.</span><span class="n">clearState</span><span class="p">()</span>
+       <span class="n">g</span><span class="o">.</span><span class="n">es_print</span><span class="p">(</span><span class="s">&#39;input: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">k</span><span class="o">.</span><span class="n">arg</span><span class="p">)</span>
+
+<span class="n">getInput</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Let&#8217;s look at this in detail.  The lines:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">stateName</span> <span class="o">=</span> <span class="s">&#39;get-input&#39;</span>
+<span class="n">k</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">k</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">getState</span><span class="p">(</span><span class="n">stateName</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>define a state <em>name</em>, &#8216;get-input&#8217;, unique to this code.
+k.getState returns the present state (an int) associated with this state.</p>
+<p>When getInput() is first called, the state returned by k.getState will be 0,
+so the following lines are executed:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">if</span> <span class="n">state</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">k</span><span class="o">.</span><span class="n">setLabelBlue</span><span class="p">(</span><span class="s">&#39;Input: &#39;</span><span class="p">,</span><span class="n">protect</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">k</span><span class="o">.</span><span class="n">getArg</span><span class="p">(</span><span class="n">event</span><span class="p">,</span><span class="n">stateName</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">getInput</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>These lines put a protected label in the minibuffer:
+the user can&#8217;t delete the label by backspacing.
+getArg, and the rest of Leo&#8217;s key handling code, take care of the extremely
+complex details of handling key strokes in states.
+The call to getArg never returns.
+Instead, when the user has finished entering the input by typing &lt;Return&gt;
+getArg calls getInput so that k.getState will return state 1, the value
+passed as the third argument to k.getArg.
+The following lines handle state 1:</p>
+<div class="highlight-python"><pre>else:
+    k.clearState()
+    g.es_print('input: %s' % k.arg)</pre>
+</div>
+<p>k.arg is the value returned by k.getArg.
+This example code just prints the value of k.arg and clears the input state.</p>
+</div>
+<div class="section" id="the-g-command-decorator">
+<h3><a class="toc-backref" href="#id37">The &#64;g.command decorator</a><a class="headerlink" href="#the-g-command-decorator" title="Permalink to this headline">¶</a></h3>
+<p>You can use the &#64;g.command decorator to create new commands. This is an easy-to-use
+wrapper for c.k.registerCommand(), with the following advantages over it:</p>
+<ul class="simple">
+<li>The new command is automatically created for all Leo controllers (open Leo documents).</li>
+<li>The new command is also automatically available on all new Leo controllers
+(documents that will be opened in the future).</li>
+<li>Prettier syntax.</li>
+</ul>
+<p>Therefore, &#64;g.command can be naturally
+prototyped with execute-script (Ctrl+b) in Leo node.</p>
+<p>As an example, you can execute this script to make command hello available:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="nd">@g.command</span><span class="p">(</span><span class="s">&#39;hello&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">hello_f</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+    <span class="c"># use even[&#39;c&#39;] to access controller</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="s">&#39;c&#39;</span><span class="p">]</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">currentPosition</span><span class="p">()</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&#39;hello from&#39;</span><span class="p">,</span> <span class="n">pos</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you want to create a plugin that only exposes new commands, this is basically all you need in the plugins .py file.
+There is no need to hook up for &#8216;after-create-leo-frame&#8217; just to make your commands available.</p>
+<p>If you want to create a command in object oriented style (so that the commands deal with your own objects),
+create them using closures like this (note how self is available inside command functions):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MyCommands</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nd">@g.command</span><span class="p">(</span><span class="s">&#39;foo1&#39;</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">foo1_f</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+           <span class="bp">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="nd">@g.command</span><span class="p">(</span><span class="s">&#39;foo2&#39;</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">foo2_f</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+           <span class="bp">self</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="mi">2</span>
+
+        <span class="nd">@g.command</span><span class="p">(</span><span class="s">&#39;foo-print&#39;</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">foo_print_f</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+           <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="s">&#39;foo is&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">foo</span><span class="p">)</span>
+
+<span class="n">o</span> <span class="o">=</span> <span class="n">MyCommands</span><span class="p">()</span>
+<span class="n">o</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Note that running create() in this example in <cite>after-create-leo-frame</cite> is pointless - the
+newly created commands will override the commands in all previous controllers. You should consider
+this in your plugin design, and create your commands only once per Leo session.</p>
+</div>
+<div class="section" id="modifying-plugins-with-script-scripts">
+<h3><a class="toc-backref" href="#id38">Modifying plugins with &#64;script scripts</a><a class="headerlink" href="#modifying-plugins-with-script-scripts" title="Permalink to this headline">¶</a></h3>
+<p>The mod_scripting plugin runs &#64;scripts before plugin initiation is complete.
+Thus, such scripts can not directly modify plugins. Instead, a script can create
+an event handler for the after-create-leo-frame that will modify the plugin.</p>
+<p>For example, the following modifies the cleo.py plugin after Leo has completed loading it:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">prikey</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">pa</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">getat</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s">&#39;priority&#39;</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="n">pa</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">pa</span> <span class="o">==</span> <span class="mi">24</span><span class="p">:</span>
+        <span class="n">pa</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">if</span> <span class="n">pa</span> <span class="o">==</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="n">pa</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span>
+
+    <span class="k">return</span> <span class="n">pa</span>
+
+<span class="kn">import</span> <span class="nn">types</span>
+<span class="kn">from</span> <span class="nn">leo.core</span> <span class="kn">import</span> <span class="n">leoPlugins</span>
+
+<span class="k">def</span> <span class="nf">on_create</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">keywords</span><span class="p">):</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">cleo</span><span class="o">.</span><span class="n">prikey</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">MethodType</span><span class="p">(</span><span class="n">prikey</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">cleo</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">cleo</span><span class="o">.</span><span class="n">__class__</span><span class="p">)</span>
+
+<span class="n">leoPlugins</span><span class="o">.</span><span class="n">registerHandler</span><span class="p">(</span><span class="s">&quot;after-create-leo-frame&quot;</span><span class="p">,</span><span class="n">on_create</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Attempting to modify c.cleo.prikey immediately in the &#64;script gives an
+AttributeError as c has no .cleo when the &#64;script is executed. Deferring it by
+using registerHandler() avoids the problem.</p>
+</div>
+<div class="section" id="creating-minimal-outlines">
+<h3><a class="toc-backref" href="#id39">Creating minimal outlines</a><a class="headerlink" href="#creating-minimal-outlines" title="Permalink to this headline">¶</a></h3>
+<p>The following script will create a minimal Leo outline:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">if</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="c"># Create a visible frame.</span>
+    <span class="n">c2</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">newCommander</span><span class="p">(</span><span class="n">fileName</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="c"># Create an invisible frame.</span>
+    <span class="n">c2</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">newCommander</span><span class="p">(</span><span class="n">fileName</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">gui</span><span class="o">=</span><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">nullGui</span><span class="p">)</span>
+
+<span class="n">c2</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">createFirstTreeNode</span><span class="p">()</span>
+<span class="n">c2</span><span class="o">.</span><span class="n">redraw</span><span class="p">()</span>
+
+<span class="c"># Test that the script works.</span>
+<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">c2</span><span class="o">.</span><span class="n">all_positions</span><span class="p">():</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">es</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">h</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="retaining-pointers-to-qt-windows">
+<h3><a class="toc-backref" href="#id40">Retaining pointers to Qt windows</a><a class="headerlink" href="#retaining-pointers-to-qt-windows" title="Permalink to this headline">¶</a></h3>
+<p>The following script won&#8217;t work as intended:</p>
+<blockquote>
+<div>from PyQt4 import QtGui
+w = QtGui.QWidget()
+w.resize(250, 150)
+w.move(300, 300)
+w.setWindowTitle(&#8216;Simple test&#8217;)
+w.show()</div></blockquote>
+<p>When the script exits the sole reference to the window, w, ceases to
+exist, so the window is destroyed (garbage collected). To keep the window
+open, add the following code as the last line to keep the reference alive:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">scriptsDict</span><span class="p">[</span><span class="s">&#39;my-script_w&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">w</span>
+</pre></div>
+</div>
+<p>Note that this reference will persist until the next time you run the
+execute-script. If you want something even more permanent, you can do
+something like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">g</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">my_script_w</span> <span class="o">=</span> <span class="n">w</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="c-user-dict-and-g-user-dict">
+<h3><a class="toc-backref" href="#id41">c.user_dict and g.user_dict</a><a class="headerlink" href="#c-user-dict-and-g-user-dict" title="Permalink to this headline">¶</a></h3>
+<p>The leoGlobals module g defines a Python dictionary called g.user_dict.
+Similarly, each commander c defines a Python dictionary, c.user_dict. These
+dictionaries do not persist when Leo exits. They are for use of scripts and
+plugins.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="leo_toc.html">
+              <img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="rstplugin3.html"
+                        title="previous chapter">Creating Documents with the rst3 Command</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="plugins.html"
+                        title="next chapter">Plugins</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="plugins.html" title="Plugins"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="rstplugin3.html" title="Creating Documents with the rst3 Command"
+             >previous</a> |</li>
+        <li><a href="leo_toc.html">Leo 4.11 documentation</a> &raquo;</li>
+          <li><a href="usersguide.html" >Leo&#8217;s Users&#8217; Guide</a> &raquo;</li>
+          <li><a href="intermediatetopics.html" >Intermediate Topics</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Edward K. Ream.
+      Last updated on Oct 12, 2013.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

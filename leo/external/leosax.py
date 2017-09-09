@@ -12,8 +12,9 @@ multiple .leo files quickly.
 
 from __future__ import print_function
 
+import leo.core.leoGlobals as g
 from xml.sax.handler import ContentHandler
-from xml.sax import parse
+from xml.sax import parseString
 from pickle import loads
 from binascii import unhexlify
 
@@ -120,14 +121,12 @@ class LeoReader(ContentHandler):
     """
     #@+others
     #@+node:ekr.20120519121124.9927: *3* __init__
-
-
     def __init__(self, *args, **kwargs):
         """Set ivars"""
         ContentHandler.__init__(self, *args, **kwargs)
         self.root = LeoNode()
 
-        self.root.h = 'ROOT'
+        self.root.h = g.u('ROOT')
         # changes type from [] to str, done by endElement() for other vnodes
 
         self.cur = self.root
@@ -167,7 +166,7 @@ class LeoReader(ContentHandler):
         # character collection, so it doesn't matter
 
         if name == 'v':
-            self.cur.h = ''.join(self.cur.h)
+            self.cur.h = g.u('').join(self.cur.h)
             self.cur = self.cur.parent
             if self.path:
                 del self.path[-1]
@@ -199,7 +198,9 @@ class LeoReader(ContentHandler):
 def get_leo_data(source):
     """Return the root node for the specificed .leo file (path or file)"""
     parser = LeoReader()
-    parse(source, parser)
+    if g.os_path_isfile(source):
+        source = g.readFileIntoEncodedString(source)
+    parseString(source, parser)
     return parser.root
 
 #@-others
@@ -209,13 +210,12 @@ def get_leo_data(source):
 
 if __name__ == '__main__':
     import sys
-    import os
-    if len(sys.argv) > 1 and os.path.isfile(sys.argv[1]):
+    if len(sys.argv) > 1 and g.os_path_isfile(sys.argv[1]):
         wb = sys.argv[1]
     else:
-        wb = os.path.expanduser(
-            os.path.join('~', '.leo', 'workbook.leo')
+        wb = g.os_path_expanduser(
+            g.os_path_join('~', '.leo', 'workbook.leo')
         )
-    leo_data = get_leo_data(wb)
+    leo_data = get_leo_data(g.readFileIntoUnicodeString(wb))
     print(leo_data)
 #@-leo

@@ -25,6 +25,66 @@ class DebugCommandsClass(BaseEditCommandsClass):
     def collectGarbage(self, event=None):
         """Run Python's Garbage Collector."""
         g.collectGarbage()
+    #@+node:ekr.20150514063305.106: *3* debug.dumpAll/New/VerboseObjects
+    @cmd('gc-dump-all-objects')
+    def dumpAllObjects(self, event=None):
+        '''Print a summary of all existing Python objects.'''
+        old = g.trace_gc
+        g.trace_gc = True
+        g.printGcAll()
+        g.trace_gc = old
+
+    @cmd('gc-dump-new-objects')
+    def dumpNewObjects(self, event=None):
+        '''
+        Print a summary of all Python objects created
+        since the last time Python's Garbage collector was run.
+        '''
+        old = g.trace_gc
+        g.trace_gc = True
+        g.printGcObjects()
+        g.trace_gc = old
+
+    @cmd('gc-dump-objects-verbose')
+    def verboseDumpObjects(self, event=None):
+        '''Print a more verbose listing of all existing Python objects.'''
+        old = g.trace_gc
+        g.trace_gc = True
+        g.printGcVerbose()
+        g.trace_gc = old
+    #@+node:ekr.20170713112849.1: *3* debug.dumpNode
+    @cmd('dump-node')
+    def dumpNode(self, event=None):
+        '''Dump c.p.v, including gnx, uA's, etc.'''
+        p = self.c.p
+        if p:
+            g.es_print('gnx: %s %s' % (p.v.gnx, p.v.h))
+            if p.v.u:
+                g.es_print('uAs')
+                g.printDict(p.v.u)
+            else:
+                g.es_print('no uAs')
+    #@+node:ekr.20150514063305.107: *3* debug.enable/disableGcTrace
+    @cmd('gc-trace-disable')
+    def disableGcTrace(self, event=None):
+        '''Enable tracing of Python's Garbage Collector.'''
+        g.trace_gc = False
+
+    @cmd('gc-trace-enable')
+    def enableGcTrace(self, event=None):
+        '''Disable tracing of Python's Garbage Collector.'''
+        g.trace_gc = True
+        g.enable_gc_debug()
+        if g.trace_gc_verbose:
+            g.blue('enabled verbose gc stats')
+        else:
+            g.blue('enabled brief gc stats')
+    #@+node:ekr.20150514063305.108: *3* debug.freeTreeWidgets
+    def freeTreeWidgets(self, event=None):
+        '''Free all widgets used in Leo's outline pane.'''
+        c = self.c
+        c.frame.tree.destroyWidgets()
+        c.redraw()
     #@+node:ekr.20150514063305.104: *3* debug.invoke_debugger & helper
     @cmd('debug')
     def invoke_debugger(self, event=None):
@@ -43,7 +103,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
             parser = doctest.DocTestParser()
             examples = parser.get_examples(script)
             # if this is doctest, extract the examples as a script
-            if len(examples) > 0:
+            if examples:
                 script = doctest.script_from_examples(script)
         except ImportError:
             pass
@@ -82,54 +142,50 @@ class DebugCommandsClass(BaseEditCommandsClass):
                     g.warning('debugger does not exist:', debugger)
         g.es('no debugger found.')
         return None
-    #@+node:ekr.20150514063305.106: *3* debug.dumpAll/New/VerboseObjects
-    @cmd('gc-dump-all-objects')
-    def dumpAllObjects(self, event=None):
-        '''Print a summary of all existing Python objects.'''
-        old = g.trace_gc
-        g.trace_gc = True
-        g.printGcAll()
-        g.trace_gc = old
-
-    @cmd('gc-dump-new-objects')
-    def dumpNewObjects(self, event=None):
-        '''
-        Print a summary of all Python objects created
-        since the last time Python's Garbage collector was run.
-        '''
-        old = g.trace_gc
-        g.trace_gc = True
-        g.printGcObjects()
-        g.trace_gc = old
-
-    @cmd('gc-dump-objects-verbose')
-    def verboseDumpObjects(self, event=None):
-        '''Print a more verbose listing of all existing Python objects.'''
-        old = g.trace_gc
-        g.trace_gc = True
-        g.printGcVerbose()
-        g.trace_gc = old
-    #@+node:ekr.20150514063305.107: *3* debug.enable/disableGcTrace
-    @cmd('gc-trace-disable')
-    def disableGcTrace(self, event=None):
-        '''Enable tracing of Python's Garbage Collector.'''
-        g.trace_gc = False
-
-    @cmd('gc-trace-enable')
-    def enableGcTrace(self, event=None):
-        '''Disable tracing of Python's Garbage Collector.'''
-        g.trace_gc = True
-        g.enable_gc_debug()
-        if g.trace_gc_verbose:
-            g.blue('enabled verbose gc stats')
+    #@+node:ekr.20170429154309.1: *3* debug.killLogListener
+    @cmd('kill-log-listener')
+    @cmd('log-kill-listener')
+    def killLogListener(self, event=None):
+        '''Kill the listener started by listen-for-log.'''
+        if g.app.log_listener:
+            try:
+                g.app.log_listener.kill()
+            except Exception:
+                g.es_exception()
+            g.app.log_listener = None
+            g.es_print('killed log listener.')
         else:
-            g.blue('enabled brief gc stats')
-    #@+node:ekr.20150514063305.108: *3* debug.freeTreeWidgets
-    def freeTreeWidgets(self, event=None):
-        '''Free all widgets used in Leo's outline pane.'''
-        c = self.c
-        c.frame.tree.destroyWidgets()
-        c.redraw()
+            g.es_print('log listener not active.')
+
+    #@+node:ekr.20170429152049.1: *3* debug.listenToLog
+    @cmd('listen-to-log')
+    @cmd('log-listen')
+    def listenToLog(self, event=None):
+        '''
+        A socket listener, listening on localhost. See:
+        https://docs.python.org/2/howto/logging-cookbook.html#sending-and-receiving-logging-events-across-a-network
+
+        Start this listener first, then start the broadcaster.
+
+        leo/plugins/cursesGui2.py is a typical broadcaster.
+        '''
+        # Kill any previous listener.
+        if g.app.log_listener:
+            g.es_print('Killing previous listener')
+            try:
+                g.app.log_listener.kill()
+            except Exception:
+                g.es_exception()
+            g.app.log_listener = None
+        # Start a new listener.
+        g.es_print('Starting log_listener.py')
+        path = g.os_path_finalize_join(g.app.loadDir,
+            '..', 'external', 'log_listener.py')
+        g.app.log_listener = subprocess.Popen(
+            [sys.executable, path],
+            shell=False,
+            universal_newlines=True,
+        )
     #@+node:ekr.20150514063305.109: *3* debug.pdb
     @cmd('pdb')
     def pdb(self, event=None):

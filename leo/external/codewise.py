@@ -297,8 +297,6 @@ def pdb(message=''):
     pdb.set_trace()
 #@+node:ekr.20110310093050.14263: *5* pr (codewise)
 # see: http://www.diveintopython.org/xml_processing/unicode.html
-pr_warning_given = False
-
 def pr(*args, **keys): # (codewise!)
     '''Print all non-keyword args, and put them to the log pane.
     The first, third, fifth, etc. arg translated by g.translateString.
@@ -308,34 +306,21 @@ def pr(*args, **keys): # (codewise!)
     d = {'commas': False, 'newline': True, 'spaces': True}
     d = g.doKeywordArgs(keys, d)
     newline = d.get('newline')
-    if hasattr(sys.stdout, 'encoding') and sys.stdout.encoding:
+    if getattr(sys.stdout, 'encoding', None):
         # sys.stdout is a TextIOWrapper with a particular encoding.
         encoding = sys.stdout.encoding
     else:
         encoding = 'utf-8'
-    # Important:  Python's print statement *can* handle unicode.
-    # However, the following must appear in Python\Lib\sitecustomize.py:
-    #    sys.setdefaultencoding('utf-8')
-    s = g.translateArgs(args, d) # Translates everything to unicode.
+    s = g.translateArgs(args, d)
+        # Translates everything to unicode.
+    func = g.toUnicode if g.isPython3 else g.toEncodedString
+    s = func(s, encoding=encoding, reportErrors=False)
     if newline:
-        s = s + '\n'
-    if g.isPython3:
-        if encoding.lower() in ('utf-8', 'utf-16'):
-            s2 = s # There can be no problem.
-        else:
-            # 2010/10/21: Carefully convert s to the encoding.
-            s3 = g.toEncodedString(s, encoding=encoding, reportErrors=False)
-            s2 = g.toUnicode(s3, encoding=encoding, reportErrors=False)
-    else:
-        s2 = g.toEncodedString(s, encoding, reportErrors=False)
-    if 1: # Good for production: queues 'reading settings' until after signon.
-        if g.app.logInited and sys.stdout: # Bug fix: 2012/11/13.
-            sys.stdout.write(s2)
-        else:
-            g.app.printWaiting.append(s2)
-    else:
-        # Good for debugging: prints messages immediately.
-        print(s2)
+        s += g.u('\n') if g.isPython3 else '\n'
+    # Python's print statement *can* handle unicode, but
+    # sitecustomize.py must have sys.setdefaultencoding('utf-8')
+    sys.stdout.write(s)
+        # Codewise: unit tests do not change sys.stdout.
 #@+node:ekr.20110310093050.14268: *5* trace (codewise)
 # Convert all args to strings.
 
@@ -383,7 +368,7 @@ def translateArgs(args, d):
     '''Return the concatenation of all args, with odd args translated.'''
     if not hasattr(g, 'consoleEncoding'):
         e = sys.getdefaultencoding()
-        g.consoleEncoding = isValidEncoding(e) and e or 'utf-8'
+        g.consoleEncoding = e if isValidEncoding(e) else 'utf-8'
         # print 'translateArgs',g.consoleEncoding
     result = []; n = 0; spaces = d.get('spaces')
     for arg in args:
@@ -420,6 +405,7 @@ def isCallable(obj):
 
 def isString(s):
     '''Return True if s is any string, but not bytes.'''
+    # pylint: disable=no-member
     if g.isPython3:
         return type(s) == type('a') # NOQA
     else:
@@ -427,6 +413,7 @@ def isString(s):
 
 def isUnicode(s):
     '''Return True if s is a unicode string.'''
+    # pylint: disable=no-member
     if g.isPython3:
         return type(s) == type('a') # NOQA
     else:

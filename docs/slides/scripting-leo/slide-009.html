@@ -1,0 +1,113 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  
+<!-- Mirrored from webpages.charter.net/edreamleo/slides/scripting-leo/slide-009.html by HTTrack Website Copier/3.x [XR&CO'2010], Fri, 22 Feb 2013 17:58:57 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>g.openWithFileName &mdash; Leo v4.8 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '4.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="top" title="Leo v4.8 documentation" href="index.html" />
+    <link rel="next" title="g.pdb" href="slide-010.html" />
+    <link rel="prev" title="Building scripts from outlines" href="slide-008.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="slide-010.html" title="g.pdb"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="slide-008.html" title="Building scripts from outlines"
+             accesskey="P">previous</a> |</li>
+        <li><a href="leo_toc.html">Leo v4.8 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="g-openwithfilename">
+<h1>g.openWithFileName<a class="headerlink" href="#g-openwithfilename" title="Permalink to this headline">¶</a></h1>
+<p>The c and g constants give you access to all of
+Leo&#8217;s source code. Here, we&#8217;ll discuss just two of
+them. There are hundreds more you can use.</p>
+<p><strong>g.openWithFileName</strong> opens a .leo file.  For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ok</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">openWithFileName</span><span class="p">(</span><span class="n">fileName</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
+<span class="n">new_c</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">c</span>
+</pre></div>
+</div>
+<p>The return frame value represents the frame of the visual
+outline.  frame.c is the frame&#8217;s commander, so new_c is
+the commander of the newly-created outline.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="leo_toc.html">
+              <img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/>
+            </a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="slide-008.html"
+                        title="previous chapter">Building scripts from outlines</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="slide-010.html"
+                        title="next chapter">g.pdb</a></p>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="slide-010.html" title="g.pdb"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="slide-008.html" title="Building scripts from outlines"
+             >previous</a> |</li>
+        <li><a href="leo_toc.html">Leo v4.8 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2010, Edward K. Ream.
+      Last updated on Nov 21, 2010.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.4.
+    </div>
+  </body>
+
+<!-- Mirrored from webpages.charter.net/edreamleo/slides/scripting-leo/slide-009.html by HTTrack Website Copier/3.x [XR&CO'2010], Fri, 22 Feb 2013 17:58:57 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+</html>

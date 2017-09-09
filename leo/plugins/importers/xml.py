@@ -34,8 +34,6 @@ class Xml_Importer(Importer):
         self.tag_warning_given = False
             # True: a structure error has been detected.
             # Only warn once.
-
-
     #@+node:ekr.20161121204918.1: *3* xml_i.add_tags
     def add_tags(self):
         '''Add items to self.class/functionTags and from settings.'''
@@ -120,7 +118,7 @@ class Xml_Importer(Importer):
     def end_tag(self, s, tag, tag_level):
         '''
         Handle the ">" or "/>" that ends an element.
-        
+
         Ignore ">" except for void tags.
         '''
         trace = False
@@ -141,12 +139,12 @@ class Xml_Importer(Importer):
             g.es_print(repr(s))
         return tag_level
     #@+node:ekr.20161122080143.1: *5* xml_i.scan_tag & helper
-    ch_pattern = re.compile(r'([\!\?]?[\w\_\.\:\-]+)')
+    ch_pattern = re.compile(r'([\!\?]?[\w\_\.\:\-]+)', re.UNICODE)
 
     def scan_tag(self, s, i, tag_level):
         '''
         Scan an xml tag starting with "<" or "</".
-        
+
         Adjust the stack as appropriate:
         - "<" adds the tag to the stack.
         - "</" removes the top of the stack if it matches.
@@ -182,7 +180,7 @@ class Xml_Importer(Importer):
     def pop_to_tag(self, tag, s):
         '''
         Attempt to pop tag from the top of the stack.
-        
+
         If the top doesn't match, issue a warning and attempt to recover.
         '''
         trace = False
@@ -226,10 +224,8 @@ class Xml_Importer(Importer):
     #@+node:ekr.20161123005742.1: *3* xml_i.undent
     def undent(self, p):
         '''
-        Remove leading whitespace from *all* lines except @others.
-        Regularize lws before @others.
-        
-        i.check allows such drastic changes for all non-strict languages.
+        Regularize lws before @others, but preserve lws for all other lines.
+        This is needed to handle embedded brython code properly.
         '''
         result, w = [], self.tab_width
         indent = ' '*abs(w) if w < 0 else '\t'
@@ -241,13 +237,14 @@ class Xml_Importer(Importer):
                 else:
                     result.append(indent + ls)
             else:
-                result.append(ls)
+                # Fix #479: Preserve brython indentation when importing .html files.
+                result.append('\n' if s.isspace() else s)
         return result
     #@-others
 #@+node:ekr.20161121204146.7: ** class class Xml_ScanState
 class Xml_ScanState:
     '''A class representing the state of the xml line-oriented scan.'''
-    
+
     def __init__(self, d=None):
         '''Xml_ScanState.__init__'''
         if d:

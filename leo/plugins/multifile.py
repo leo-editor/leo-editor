@@ -152,12 +152,9 @@ def stop (tag,keywords):
     if not c:
         g.trace('can not happen')
         return
-
     multi = scanForMultiPath(c)
-    # g.trace(g.dictToString(multi))
-
-    for fileName in multi.keys():
-        paths = multi [fileName]
+    for fileName in multi:
+        paths = multi.get(fileName)
         for path in paths:
             try:
                 if os.path.isdir(path):
@@ -178,7 +175,7 @@ def scanForMultiPath (c):
 
     global multiprefix, multipath
     at = c.atFileCommands ; sep = ';' ; d = {}
-    for fileName in files.keys(): # Keys are fileNames, values are root positions.
+    for fileName in files: # Keys are fileNames, values are root positions.
         root = files[fileName]
         at.scanDefaultDirectory(root) # Using root here may be dubious.
         fileName = g.os_path_join(at.default_directory,fileName)

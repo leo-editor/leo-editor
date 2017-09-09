@@ -197,7 +197,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 g.trace(key, '...\n\n', d.get(key))
     #@+node:ekr.20170227062001.1: *7* abbrev.init_tree_abbrev_helper
     def init_tree_abbrev_helper(self, d, tree_s):
-        
+
         trace = False and not g.unitTesting
         c = self.c
         old_p = c.p.copy()
@@ -412,7 +412,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 # Keep the scroll point if possible.
                 w.setYScrollPosition(scroll)
                 w.seeInsertPoint()
-            c.frame.body.forceFullRecolor()
             c.bodyWantsFocusNow()
             return True
         else:
@@ -616,7 +615,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 ):
                     ch = ''
                 else:
-                    ch = event and event.char or ''
+                    ch = event.char if event else ''
         else:
             ch = event.char
         return ch

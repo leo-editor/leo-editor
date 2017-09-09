@@ -380,7 +380,7 @@ class AttributeGetterColon(AttributeGetter):
             if not i or i[0].isspace():
                 continue
             words = i.split(None, 1)
-            if words and len(words[0]) and words[0][-1] == ':':
+            if words and words[0] and words[0][-1] == ':':
                 if len(words) == 1:
                     words.append('')
                 ans.append( (self, words[0][:-1], words[1], words[0][:-1], str, False) )
@@ -393,7 +393,7 @@ class AttributeGetterColon(AttributeGetter):
 
         for n,i in enumerate(parts[:99]):
             words = i.split(None, 1)
-            if words and len(words[0]) and words[0][-1] == ':' and words[0][:-1] == path:
+            if words and words[0] and words[0][-1] == ':' and words[0][:-1] == path:
                 parts[n] = "%s: %s" % (path, value)
                 v.b = '\n'.join(parts)
                 break
@@ -406,7 +406,7 @@ class AttributeGetterColon(AttributeGetter):
 
         for n,i in enumerate(parts[:99]):
             words = i.split(None, 1)
-            if words and len(words[0]) and words[0][-1] == ':' and words[0][:-1] == path:
+            if words and words[0] and words[0][-1] == ':' and words[0][:-1] == path:
                 del parts[n]
                 v.b = '\n'.join(parts)
                 break

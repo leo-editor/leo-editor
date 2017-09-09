@@ -106,7 +106,9 @@ class ShadowController(object):
 
         Return True if theFile was changed.
         '''
-        trace = False and not g.unitTesting; verbose = False
+        trace = False and not g.unitTesting
+        verbose = False
+        c = self.c
         x = self
         exists = g.os_path_exists(fn)
         if exists:
@@ -115,7 +117,9 @@ class ShadowController(object):
             if s2 is None:
                 return False
             if s == s2:
-                if not g.unitTesting: g.es('unchanged:', fn)
+                report = c.config.getBool('report_unchanged_files', default=True)
+                if report and not g.unitTesting:
+                    g.es('unchanged:', fn)
                 return False
         # Issue warning if directory does not exist.
         theDir = g.os_path_dirname(fn)
@@ -689,7 +693,7 @@ class ShadowController(object):
         #@+node:ekr.20080709062932.11: *4* shortDescription (AtShadowTestCase)
         def shortDescription(self):
             '''AtShadowTestCase.shortDescription.'''
-            return self.p and self.p.h or '@test-shadow: no self.p'
+            return self.p.h if self.p else '@test-shadow: no self.p'
         #@-others
     #@+node:ekr.20090529061522.5727: *3* class x.Marker
     class Marker(object):

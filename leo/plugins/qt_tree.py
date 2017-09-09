@@ -23,24 +23,26 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.18405: *4* qtree.__init__
     def __init__(self, c, frame):
         '''Ctor for the LeoQtTree class.'''
-        # Init the base class.
         leoFrame.LeoTree.__init__(self, frame)
             # Init the base class.
         self.c = c
+        #
         # Configuration.
         self.auto_edit = c.config.getBool('single_click_auto_edits_headline', False)
+        #
         # Widget independent status ivars...
         self.contracting = False
-        # self.dragging = False
         self.expanding = False
         self.prev_v = None
         self.redrawing = False
         self.redrawCount = 0 # Count for debugging.
         self.revertHeadline = None # Previous headline text for abortEditLabel.
         self.selecting = False
+        #
         # Debugging...
         self.nodeDrawCount = 0
         self.traceCallersFlag = False # Enable traceCallers method.
+        #
         # Associating items with position and vnodes...
         self.item2positionDict = {}
         self.item2vnodeDict = {}
@@ -48,13 +50,13 @@ class LeoQtTree(leoFrame.LeoTree):
         self.vnode2itemsDict = {} # values are lists of items.
         self.editWidgetsDict = {} # keys are native edit widgets, values are wrappers.
         self.setConfigIvars()
-        self.setEditPosition(None) # Set positions returned by LeoTree.editPosition()
+        #
         # Components.
         self.canvas = self # An official ivar used by Leo's core.
         self.headlineWrapper = qt_text.QHeadlineWrapper # This is a class.
         self.treeWidget = w = frame.top.leo_ui.treeWidget # An internal ivar.
             # w is a LeoQTreeWidget, a subclass of QTreeWidget.
-
+        #
         # "declutter", node appearance tweaking
         self.use_declutter = c.config.getBool('tree-declutter', default=False)
         self.declutter_patterns = None  # list of pairs of patterns for decluttering
@@ -79,8 +81,8 @@ class LeoQtTree(leoFrame.LeoTree):
 
                 def mimeData(self, indexes):
                     g.trace()
+        #
         # Early inits...
-
         try:
             w.headerItem().setHidden(True)
         except Exception:
@@ -167,6 +169,8 @@ class LeoQtTree(leoFrame.LeoTree):
             return
         if self.busy():
             return g.trace('*** full_redraw: busy!', g.callers())
+        # Cancel the delayed redraw request.
+        c.requestLaterRedraw = False
         if not p:
             p = c.currentPosition()
         elif c.hoistStack and p.h.startswith('@chapter') and p.hasChildren():
@@ -188,7 +192,6 @@ class LeoQtTree(leoFrame.LeoTree):
         finally:
             self.redrawing = False
         self.setItemForCurrentPosition(scroll=scroll)
-        c.requestRedrawFlag = False
         if trace:
             if verbose:
                 theTime = g.timeSince(t1)
@@ -197,8 +200,8 @@ class LeoQtTree(leoFrame.LeoTree):
             else:
                 g.trace('**', self.redrawCount, g.callers())
         return p # Return the position, which may have changed.
-    # Compatibility
 
+    # Compatibility
     redraw = full_redraw
     redraw_now = full_redraw
     #@+node:tbrown.20150807093655.1: *5* qtree.clear_visual_icons
@@ -569,22 +572,11 @@ class LeoQtTree(leoFrame.LeoTree):
         c.outerUpdate()
     #@+node:ekr.20110605121601.17886: *4* qtree.busy
     def busy(self):
-        '''Return True (actually, a debugging string)
-        if any lockout is set.'''
+        '''Return True (actually, a debugging string) if any lockout is set.'''
         trace = False
-        table = (
-            (self.contracting, 'contracting'),
-            (self.expanding, 'expanding'),
-            (self.redrawing, 'redrawing'),
-            (self.selecting, 'selecting'))
-        item = self.getCurrentItem()
-        aList = []
-        for ivar, kind in table:
-            if ivar:
-                aList.append(kind)
-        kinds = ','.join(aList)
-        if aList and trace:
-            g.trace(self.traceItem(item), kinds, g.callers(4))
+        table = ('contracting','expanding','redrawing','selecting')
+        kinds = ','.join([z for z in table if getattr(self, z)])
+        if kinds and trace: g.trace(kinds)
         return kinds # Return the string for debugging
     #@+node:ekr.20110605121601.18437: *4* qtree.onContextMenu
     def onContextMenu(self, point):
@@ -660,7 +652,7 @@ class LeoQtTree(leoFrame.LeoTree):
             if not c.changed: c.setChanged(True)
             # New in Leo 4.4.5: we must recolor the body because
             # the headline may contain directives.
-            c.frame.body.recolor(p, incremental=True)
+            c.frame.body.recolor(p)
             dirtyVnodeList = p.setDirty()
             u.afterChangeNodeContents(p, undoType, undoData,
                 dirtyVnodeList=dirtyVnodeList, inHead=True) # 2013/08/26.
@@ -1286,25 +1278,29 @@ class LeoQtTree(leoFrame.LeoTree):
     def afterSelectHint(self, p, old_p):
         trace = False and not g.unitTesting
         c = self.c
-        self.selecting = False
-        if self.busy():
-            self.error('afterSelectHint busy!: %s' % self.busy())
-        if not p:
-            return self.error('no p')
-        if p != c.p:
-            if trace: self.error(
-                '(afterSelectHint) p != c.p\np:   %s\nc.p: %s\n' % (
-                repr(p), repr(c.currentPosition())))
-            p = c.p
-        # if trace: g.trace(c.p.h,g.callers())
-        # We don't redraw during unit testing: an important speedup.
-        if c.expandAllAncestors(p) and not g.unitTesting:
-            if trace: g.trace('***self.full_redraw')
-            self.full_redraw(p)
+        if c.enableRedrawFlag:
+            self.selecting = False
+            if self.busy():
+                self.error('afterSelectHint busy!: %s' % self.busy())
+            if not p:
+                return self.error('no p')
+            if p != c.p:
+                if trace: self.error(
+                    '(afterSelectHint) p != c.p\np:   %s\nc.p: %s\n' % (
+                    repr(p), repr(c.currentPosition())))
+                p = c.p
+            # if trace: g.trace(c.p.h,g.callers())
+            # We don't redraw during unit testing: an important speedup.
+            if c.expandAllAncestors(p) and not g.unitTesting:
+                if trace: g.trace('***self.full_redraw')
+                self.full_redraw(p)
+            else:
+                if trace: g.trace('*** c.outerUpdate')
+                c.outerUpdate() # Bring the tree up to date.
+                self.setItemForCurrentPosition(scroll=False)
         else:
-            if trace: g.trace('*** c.outerUpdate')
-            c.outerUpdate() # Bring the tree up to date.
-            self.setItemForCurrentPosition(scroll=False)
+            self.selecting = False
+            c.requestLaterRedraw = True
     #@+node:ekr.20110605121601.17907: *4* qtree.beforeSelectHint
     def beforeSelectHint(self, p, old_p):
         trace = False and not g.unitTesting
@@ -1319,6 +1315,9 @@ class LeoQtTree(leoFrame.LeoTree):
         """Returns the edit widget for position p."""
         trace = False and not g.unitTesting
         verbose = False
+        # if False and g.unitTesting:
+            # ### Highly experimental: 10 unit tests fail.
+            # return HeadWrapper(c=self.c, name='head', p=p)
         item = self.position2item(p)
         if item:
             e = self.getTreeEditorForItem(item)
@@ -1360,11 +1359,12 @@ class LeoQtTree(leoFrame.LeoTree):
             # A nice hack: just set the focus request.
             c.requestedFocusWidget = e
         return e, wrapper
-    #@+node:ekr.20110605121601.17910: *4* qtree.editPosition
-    def editPosition(self):
-        c = self.c; p = c.currentPosition()
-        ew = self.edit_widget(p)
-        return ew and p or None
+    #@+node:ekr.20110605121601.17910: *4* qtree.editPosition (no longer used)
+    # def editPosition(self):
+        # c = self.c
+        # p = c.currentPosition()
+        # ew = self.edit_widget(p)
+        # return p if ew else None
     #@+node:ekr.20110605121601.17911: *4* qtree.endEditLabel
     def endEditLabel(self):
         '''Override LeoTree.endEditLabel.

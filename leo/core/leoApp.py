@@ -12,6 +12,7 @@ except ImportError:
     import __builtin__ as builtins # Python 2.
 import glob
 import importlib
+import io
 import os
 import optparse
 import string
@@ -21,11 +22,11 @@ import traceback
 import zipfile
 import platform
 if g.isPython3:
-    import io
     StringIO = io.StringIO
 else:
     import cStringIO
     StringIO = cStringIO.StringIO
+import sqlite3
 #@-<< imports >>
 #@+others
 #@+node:ekr.20161026122804.1: ** class IdleTimeManager
@@ -33,16 +34,16 @@ class IdleTimeManager(object):
     '''
     A singleton class to manage idle-time handling. This class handles all
     details of running code at idle time, including running 'idle' hooks.
-    
+
     Any code can call g.app.idleTimeManager.add_callback(callback) to cause
     the callback to be called at idle time forever.
     '''
-    
+
     def __init__(self):
         '''Ctor for IdleTimeManager class.'''
         self.callback_list = []
         self.timer = None
-        
+
     #@+others
     #@+node:ekr.20161026125611.1: *3* itm.add_callback
     def add_callback(self, callback):
@@ -90,6 +91,7 @@ class LeoApp(object):
 
         leoGlobals.py contains global switches to be set by hand.
         '''
+        # g.trace('LeoApp')
         #@+<< LeoApp: command-line arguments >>
         #@+node:ekr.20161028035755.1: *5* << LeoApp: command-line arguments >>
         self.batchMode = False
@@ -122,10 +124,14 @@ class LeoApp(object):
             # For qt_frame plugin.
         self.start_minimized = False
             # For qt_frame plugin.
+        self.trace_binding = None
+            # True: name of binding to trace, or None.
         self.trace_focus = False
             # True: trace changes in focus.
         self.trace_plugins = False
             # True: trace imports of plugins.
+        self.trace_setting = None
+            # The name of a setting to trace, or None.
         self.translateToUpperCase = False
             # Never set to True.
         self.useIpython = False
@@ -153,6 +159,8 @@ class LeoApp(object):
             # May be set by plugins.
         self.idle_timers = []
             # A list of IdleTime instances, so they persist.
+        self.log_listener = None
+            # The process created by the 'listen-for-log' command.
         self.positions = 0
             # The number of positions generated.
         self.scanErrors = 0
@@ -277,6 +285,8 @@ class LeoApp(object):
             # True: executing a script.
         self.initing = True
             # True: we are initiing the app.
+        self.initComplete = False
+            # True: late bindings are not allowed.
         self.killed = False
             # True: we are about to destroy the root window.
         self.openingSettingsFile = False
@@ -299,12 +309,11 @@ class LeoApp(object):
         self.logIsLocked = False
             # True: no changes to log are allowed.
         self.logWaiting = []
-            # List of messages waiting to go to a log.
+            # List of tuples (s, color, newline) waiting to go to a log.
         self.printWaiting = []
             # Queue of messages to be sent to the printer.
         self.signon = ''
         self.signon2 = ''
-        self.signon_printed = False
         #@-<< LeoApp: the global log >>
         #@+<< LeoApp: global types >>
         #@+node:ekr.20161028040204.1: *5* << LeoApp: global types >>
@@ -940,6 +949,7 @@ class LeoApp(object):
             if veto: return False
         g.app.setLog(None) # no log until we reactive a window.
         g.doHook("close-frame", c=c)
+        c.cacher.commit() # store cache
             # This may remove frame from the window list.
         if frame in g.app.windowList:
             g.app.destroyWindow(frame)
@@ -959,17 +969,15 @@ class LeoApp(object):
         return [f.c for f in g.app.windowList]
     #@+node:ekr.20090717112235.6007: *3* app.computeSignon
     def computeSignon(self):
-        app = self
         import leo.core.leoVersion as leoVersion
+        app = self
         build, date = leoVersion.build, leoVersion.date
-        guiVersion = app.gui and app.gui.getFullVersion() or 'no gui!'
+        guiVersion = app.gui.getFullVersion() if app.gui else 'no gui!'
         leoVer = leoVersion.version
         n1, n2, n3, junk, junk = sys.version_info
         if sys.platform.startswith('win'):
             sysVersion = 'Windows '
             try:
-                # v = os.sys.getwindowsversion()
-                # sysVersion += ', '.join([str(z) for z in v])
                 # peckj 20140416: determine true OS architecture
                 # the following code should return the proper architecture
                 # regardless of whether or not the python architecture matches
@@ -981,7 +989,8 @@ class LeoApp(object):
                     true_platform = os.environ['PROCESSOR_ARCHITEw6432']
                 except KeyError:
                     pass
-                sysVersion = 'Windows %s %s (build %s) %s' % (release, true_platform, winbuild, sp)
+                sysVersion = 'Windows %s %s (build %s) %s' % (
+                    release, true_platform, winbuild, sp)
             except Exception:
                 pass
         else: sysVersion = sys.platform
@@ -998,14 +1007,31 @@ class LeoApp(object):
             app.signon += ', '+date
         app.signon2 = 'Python %s.%s.%s, %s\n%s' % (
             n1, n2, n3, guiVersion, sysVersion)
+        # Leo 5.6: print the signon immediately:
+        if not app.silentMode:
+            print('')
+            if sys.stdout.encoding.lower() != 'utf-8':
+                print('Note: sys.stdout.encoding is not UTF-8')
+                print('See: https://stackoverflow.com/questions/14109024')
+                print('')
+            print(app.signon)
+            print(app.signon1)
+            print(app.signon2)
+            print('** isPython3: %s' % g.isPython3)
+            print('** caching %s' % ('enabled' if g.enableDB else 'disabled'))
+            print('')
     #@+node:ekr.20100831090251.5838: *3* app.createXGui
     #@+node:ekr.20100831090251.5840: *4* app.createCursesGui
     def createCursesGui(self, fileName='', verbose=False):
-        app = self
-        app.pluginsController.loadOnePlugin(
-            'leo.plugins.cursesGui2',
-            verbose=verbose,
-        )
+        try:
+            import leo.plugins.cursesGui2 as cursesGui2
+            ok = cursesGui2.init()
+        except ImportError:
+            ok = False
+        if ok:
+            g.app.gui = cursesGui2.LeoCursesGui()
+        else:
+            print('can not create curses gui.')
     #@+node:ekr.20090619065122.8593: *4* app.createDefaultGui
     def createDefaultGui(self, fileName='', verbose=False):
         """A convenience routines for plugins to create the default gui class."""
@@ -1020,7 +1046,7 @@ class LeoApp(object):
             app.createQtGui(fileName, verbose=verbose)
         elif argName == 'null':
             g.app.gui = g.app.nullGui
-        elif argName == 'curses':
+        elif argName in ('console', 'curses'):
             app.createCursesGui()
         elif argName == 'text':
             app.createTextGui()
@@ -1164,6 +1190,7 @@ class LeoApp(object):
         if trace: print('finishQuit')
         if not g.app.killed:
             g.doHook("end1")
+            g.app.cacher.commit()
         if g.app.ipk:
             g.app.ipk.cleanup_consoles()
         self.destroyAllOpenWithFiles()
@@ -1204,12 +1231,10 @@ class LeoApp(object):
         # This takes about 3/4 sec when called by the leoBridge module.
         import leo.core.leoCommands as leoCommands
         return leoCommands.Commands(fileName, relativeFileName, gui, previousSettings)
-    #@+node:ekr.20031218072017.2617: *3* app.onQuit (enabled)
+    #@+node:ekr.20031218072017.2617: *3* app.onQuit
     @cmd('exit-leo')
     def onQuit(self, event=None):
         '''Exit Leo, prompting to save unsaved outlines first.'''
-        trace = self.trace_shutdown and not g.unitTesting
-        if trace: print('onQuit: %s' % g.callers())
         g.app.quitting = True
         # if trace: print('onQuit',g.app.save_session,g.app.sessionManager)
         if g.app.save_session and g.app.sessionManager:
@@ -1241,7 +1266,7 @@ class LeoApp(object):
                         g.es_print('Exception running', aClass.__name__)
                         g.es_exception()
                         return None
-                        
+
                 scanner_for_at_auto_cb.scanner_name = aClass.__name__
                     # For traces in ic.createOutline.
                 if trace: g.trace('found', p.h)
@@ -1265,7 +1290,7 @@ class LeoApp(object):
                     g.es_print('Exception running', aClass.__name__)
                     g.es_exception()
                     return None
-                    
+
             scanner_for_ext_cb.scanner_name = aClass.__name__
                 # For traces in ic.createOutline.
             return scanner_for_ext_cb
@@ -1299,107 +1324,112 @@ class LeoApp(object):
         """
         # Fixes bug 670108.
         import leo.core.leoCache as leoCache
-        g.app.db = leoCache.Cacher().initGlobalDB()
-    #@+node:ekr.20031218072017.1978: *3* app.setLeoID
-    def setLeoID(self, verbose=True):
-        tag = ".leoID.txt"
-        homeLeoDir = g.app.homeLeoDir
-        globalConfigDir = g.app.globalConfigDir
-        loadDir = g.app.loadDir
-        verbose = not g.app.unitTesting
-        #@+<< return if we can set leoID from sys.leoID >>
-        #@+node:ekr.20031218072017.1979: *4* << return if we can set leoID from sys.leoID>>
-        # This would be set by in Python's sitecustomize.py file.
-        # Use hasattr & getattr to suppress pylint warning.
-        # Use a "non-constant" attribute to suppress another warning!
-        nonConstantAttr = "leoID"
-        if hasattr(sys, nonConstantAttr):
-            g.app.leoID = getattr(sys, nonConstantAttr)
-            if verbose and not g.app.silentMode and not g.app.unitTesting:
-                g.red("leoID=", g.app.leoID, spaces=False)
-            # Careful: periods in the id field of a gnx will corrupt the .leo file!
-            g.app.leoID = g.app.leoID.replace('.', '-')
-            return
+        g.app.cacher = cacher = leoCache.Cacher()
+        g.app.db = cacher.initGlobalDB()
+    #@+node:ekr.20031218072017.1978: *3* app.setLeoID & helpers
+    def setLeoID(self, useDialog=True, verbose=True):
+        '''Get g.app.leoID from various sources.'''
+        self.leoID = None
+        assert self == g.app
+        verbose = verbose and not g.unitTesting and not self.silentMode
+        table = (
+            self.setIDFromSys,
+            self.setIDFromFile,
+            self.setIDFromEnv,
+        )
+        for func in table:
+            func(verbose)
+            if self.leoID:
+                break
         else:
-            g.app.leoID = None
-        #@-<< return if we can set leoID from sys.leoID >>
-        #@+<< return if we can set leoID from "leoID.txt" >>
-        #@+node:ekr.20031218072017.1980: *4* << return if we can set leoID from "leoID.txt" >>
-        for theDir in (homeLeoDir, globalConfigDir, loadDir):
-            # N.B. We would use the _working_ directory if theDir is None!
-            if theDir:
-                try:
-                    fn = g.os_path_join(theDir, tag)
-                    f = open(fn, 'r')
-                    s = f.readline()
-                    f.close()
-                    if s and len(s) > 0:
-                        g.app.leoID = s.strip()
-                        # Careful: periods in the id field of a gnx
-                        # will corrupt the .leo file!
-                        g.app.leoID = g.app.leoID.replace('.', '-')
-                        if verbose and not g.app.silentMode and not g.app.unitTesting:
-                            g.red('leoID=', g.app.leoID, ' (in ', theDir, ')', spaces=False)
-                        return
-                    elif verbose and not g.app.unitTesting:
-                        g.red('empty ', tag, ' (in ', theDir, ')', spaces=False)
-                except IOError:
-                    g.app.leoID = None
-                except Exception:
-                    g.app.leoID = None
-                    g.error('unexpected exception in app.setLeoID')
-                    g.es_exception()
-        #@-<< return if we can set leoID from "leoID.txt" >>
-        #@+<< return if we can set leoID from os.getenv('USER') >>
-        #@+node:ekr.20060211140947.1: *4* << return if we can set leoID from os.getenv('USER') >>
+            if useDialog:
+                self.setIdFromDialog()
+                if self.leoID:
+                    self.setIDFile()
+        return self.leoID
+    #@+node:ekr.20031218072017.1979: *4* app.setIDFromSys
+    def setIDFromSys(self, verbose):
+        '''
+        Attempt to set g.app.leoID from sys.leoID.
+
+        This might be set by in Python's sitecustomize.py file.
+        '''
+        id_ = getattr(sys, "leoID", None)
+        if id_:
+            # Careful: periods in the id field of a gnx will corrupt the .leo file!
+            self.leoID = id_.replace('.', '-')
+            if verbose:
+                g.red("leoID=", self.leoID, spaces=False)
+    #@+node:ekr.20031218072017.1980: *4* app.setIDFromFile
+    def setIDFromFile(self, verbose):
+        '''Attempt to set g.app.leoID from leoID.txt.'''
+        trace = False
+        tag = ".leoID.txt"
+        for theDir in (self.homeLeoDir, self.globalConfigDir, self.loadDir):
+            if not theDir:
+                continue # Do not use the current directory!
+            fn = g.os_path_join(theDir, tag)
+            try:
+                with open(fn, 'r') as f:
+                    s = f.readline().strip()
+                if not s:
+                    continue
+                # Careful: periods in gnx will corrupt the .leo file!
+                self.leoID = s.replace('.', '-')
+                if trace:
+                    g.es('leoID=%r (in %s)' % (self.leoID, theDir), color='red')
+                else:
+                    g.es('leoID=%r' % (self.leoID), color='red')
+            except IOError:
+                pass
+            except Exception:
+                g.error('unexpected exception in app.setLeoID')
+                g.es_exception()
+    #@+node:ekr.20060211140947.1: *4* app.setIDFromEnv
+    def setIDFromEnv(self, verbose):
+        '''Set leoID from environment vars.'''
         try:
-            theId = os.getenv('USER')
-            if theId:
-                if verbose and not g.app.unitTesting:
-                    g.blue("setting leoID from os.getenv('USER'):",
-                        repr(theId))
-                g.app.leoID = theId
-                # Careful: periods in the id field of a gnx
-                # will corrupt the .leo file!
-                g.app.leoID = g.app.leoID.replace('.', '-')
-                return
+            id_ = os.getenv('USER')
+            if id_:
+                if verbose:
+                    g.blue("setting leoID from os.getenv('USER'):", repr(id_))
+                # Careful: periods in the gnx would corrupt the .leo file!
+                self.leoID = id_.replace('.', '-')
         except Exception:
             pass
-        #@-<< return if we can set leoID from os.getenv('USER') >>
-        #@+<< put up a dialog requiring a valid id >>
-        #@+node:ekr.20031218072017.1981: *4* << put up a dialog requiring a valid id >>
-        # 2011/06/13: Don't put up a splash screen.
+    #@+node:ekr.20031218072017.1981: *4* app.setIdFromDialog
+    def setIdFromDialog(self):
+        '''Get leoID from a dialog.'''
+        # Don't put up a splash screen.
         # It would obscure the coming dialog.
-        g.app.use_splash_screen = False
+        self.use_splash_screen = False
         # New in 4.1: get an id for gnx's.  Plugins may set g.app.leoID.
-        if g.app.gui is None:
+        if self.gui is None:
             # Create the Qt gui if it exists.
-            g.app.createDefaultGui(fileName='g.app.setLeoId', verbose=True)
-        if g.app.gui is None: # Neither gui could be created: this should never happen.
+            self.createDefaultGui(fileName='g.app.setLeoId', verbose=False)
+        if self.gui is None: # Neither gui could be created: this should never happen.
             g.es_debug("Please enter LeoID (e.g. your username, 'johndoe'...)")
             # pylint: disable=no-member
             f = builtins.input if g.isPython3 else builtins.raw_input
                 # Suppress pyflakes complaint.
             leoid = f('LeoID: ')
         else:
-            leoid = g.app.gui.runAskLeoIDDialog()
+            leoid = self.gui.runAskLeoIDDialog()
         # Bug fix: 2/6/05: put result in g.app.leoID.
-        g.app.leoID = leoid
         # Careful: periods in the id field of a gnx will corrupt the .leo file!
-        g.app.leoID = g.app.leoID.replace('.', '-')
-        # g.trace(g.app.leoID)
-        g.blue('leoID=', repr(g.app.leoID), spaces=False)
-        #@-<< put up a dialog requiring a valid id >>
-        #@+<< attempt to create leoID.txt >>
-        #@+node:ekr.20031218072017.1982: *4* << attempt to create leoID.txt >> (changed)
-        for theDir in (homeLeoDir, globalConfigDir, loadDir):
-            # N.B. We would use the _working_ directory if theDir is None!
+        self.leoID = leoid.replace('.', '-')
+        g.blue('leoID=', repr(self.leoID), spaces=False)
+    #@+node:ekr.20031218072017.1982: *4* app.setIDFile
+    def setIDFile(self):
+        '''Create leoID.txt.'''
+        tag = ".leoID.txt"
+        for theDir in (self.homeLeoDir, self.globalConfigDir, self.loadDir):
             if theDir:
                 try:
                     fn = g.os_path_join(theDir, tag)
                     f = open(fn, 'w')
-                    s = g.app.leoID
-                    if not g.isPython3: # 2010/08/27
+                    s = self.leoID
+                    if not g.isPython3:
                         s = g.toEncodedString(s, encoding='utf-8', reportErrors=True)
                     f.write(s)
                     f.close()
@@ -1409,7 +1439,6 @@ class LeoApp(object):
                 except IOError:
                     pass
                 g.error('can not create', tag, 'in', theDir)
-        #@-<< attempt to create leoID.txt >>
     #@+node:ekr.20031218072017.1847: *3* app.setLog, lockLog, unlocklog
     def setLog(self, log):
         """set the frame to which log messages will go"""
@@ -1436,47 +1465,34 @@ class LeoApp(object):
             # Do not call g.es, g.es_print, g.pr or g.trace here!
             print('***** writeWaitingLog: silent: %s c: %s' % (
                 app.silentMode, c and c.shortFileName() or '<no c>'))
-            # print('***** %s' % g.callers(8))
-            # print('***** writeWaitingLog: %s' % ''.join(app.printWaiting))
-            # import sys ; print('writeWaitingLog: argv',sys.argv)
         if not c or not c.exists:
             return
         if g.unitTesting:
-            app.printWaiting = []
             app.logWaiting = []
             g.app.setLog(None) # Prepare to requeue for other commanders.
             return
+        # Write the signon to the log: similar to self.computeSignon().
+        p3 = 'isPython3: %s' % g.isPython3
+        caching = 'caching %s' % ('enabled' if g.enableDB else 'disabled')
         table = [
             ('Leo Log Window', 'red'),
             (app.signon, None),
             (app.signon1, None),
-            (app.signon2, None)
+            (app.signon2, None),
+            (p3, None),
+            (caching, None),
         ]
         table.reverse()
         c.setLog()
         app.logInited = True # Prevent recursive call.
-        if not app.signon_printed:
-            app.signon_printed = True
-            if not app.silentMode:
-                print('')
-                print('** isPython3: %s' % g.isPython3)
-                if not g.enableDB:
-                    print('** caching disabled')
-                print(app.signon)
-                if app.signon1:
-                    print(app.signon1)
-                print(app.signon2)
         if not app.silentMode:
-            for s in app.printWaiting:
-                print(s)
-        app.printWaiting = []
-        if not app.silentMode:
+            # Write the signon.
             for s, color in table:
                 if s:
-                    app.logWaiting.insert(0, (s + '\n', color),)
-            for s, color in app.logWaiting:
-                g.es('', s, color=color, newline=0)
-                    # The caller must write the newlines.
+                    app.logWaiting.insert(0, (s, color, True),)
+            # Write all the queued log entries.
+            for s, color, newline in app.logWaiting:
+                g.es('', s, color=color, newline=newline)
             if hasattr(c.frame.log, 'scrollToEnd'):
                 g.app.gui.runAtIdle(c.frame.log.scrollToEnd)
         app.logWaiting = []
@@ -1611,13 +1627,9 @@ class LoadManager(object):
         g.app.globalConfigDir = lm.computeGlobalConfigDir()
         g.app.extensionsDir = g.os_path_finalize_join(g.app.loadDir, '..', 'extensions')
         g.app.testDir = g.os_path_finalize_join(g.app.loadDir, '..', 'test')
-    #@+node:ekr.20120209051836.10253: *5* lm.computeGlobalConfigDir
+    #@+node:ekr.20120209051836.10253: *5* LM.computeGlobalConfigDir
     def computeGlobalConfigDir(self):
-        # lm = self
-        # To avoid pylint complaints that sys.leo_config_directory does not exist.
-        leo_config_dir = (
-            hasattr(sys, 'leo_config_directory') and
-            getattr(sys, 'leo_config_directory') or None)
+        leo_config_dir = getattr(sys, 'leo_config_directory', None)
         if leo_config_dir:
             theDir = leo_config_dir
         else:
@@ -1631,7 +1643,7 @@ class LoadManager(object):
         ):
             theDir = None
         return theDir
-    #@+node:ekr.20120209051836.10254: *5* lm.computeHomeDir
+    #@+node:ekr.20120209051836.10254: *5* LM.computeHomeDir
     def computeHomeDir(self):
         """Returns the user's home directory."""
         home = os.path.expanduser("~")
@@ -1651,20 +1663,20 @@ class LoadManager(object):
                 home = None
         # g.trace(home)
         return home
-    #@+node:ekr.20120209051836.10260: *5* lm.computeHomeLeoDir
+    #@+node:ekr.20120209051836.10260: *5* LM.computeHomeLeoDir
     def computeHomeLeoDir(self):
         # lm = self
         homeLeoDir = g.os_path_finalize_join(g.app.homeDir, '.leo')
         if not g.os_path_exists(homeLeoDir):
             g.makeAllNonExistentDirectories(homeLeoDir, force=True)
         return homeLeoDir
-    #@+node:ekr.20120209051836.10255: *5* lm.computeLeoDir
+    #@+node:ekr.20120209051836.10255: *5* LM.computeLeoDir
     def computeLeoDir(self):
         # lm = self
         loadDir = g.app.loadDir
         return g.os_path_dirname(loadDir)
             # We don't want the result in sys.path
-    #@+node:ekr.20120209051836.10256: *5* lm.computeLoadDir
+    #@+node:ekr.20120209051836.10256: *5* LM.computeLoadDir
     def computeLoadDir(self):
         """Returns the directory containing leo.py."""
         import sys
@@ -1708,7 +1720,7 @@ class LoadManager(object):
         except Exception:
             print("Exception getting load directory")
             raise
-    #@+node:ekr.20120213164030.10697: *5* lm.computeMachineName
+    #@+node:ekr.20120213164030.10697: *5* LM.computeMachineName
     def computeMachineName(self):
         '''Return the name of the current machine, i.e, HOSTNAME.'''
         # This is prepended to leoSettings.leo or myLeoSettings.leo
@@ -1772,7 +1784,7 @@ class LoadManager(object):
                 val = getattr(g.app, ivar)
                 g.trace('%20s' % (ivar), val)
     #@+node:ekr.20120215062153.10740: *3* LM.Settings
-    #@+node:ekr.20120130101219.10182: *4* lm.computeBindingLetter
+    #@+node:ekr.20120130101219.10182: *4* LM.computeBindingLetter
     def computeBindingLetter(self, kind):
         # lm = self
         if not kind:
@@ -1789,7 +1801,7 @@ class LoadManager(object):
             return '@'
         else:
             return 'D'
-    #@+node:ekr.20120223062418.10421: *4* lm.computeLocalSettings
+    #@+node:ekr.20120223062418.10421: *4* LM.computeLocalSettings
     def computeLocalSettings(self, c, settings_d, shortcuts_d, localFlag):
         '''Merge the settings dicts from c's outline into *new copies of*
         settings_d and shortcuts_d.'''
@@ -1801,12 +1813,20 @@ class LoadManager(object):
         assert shortcuts_d
         assert settings_d
         if settings_d2:
+            # #510:
+            if g.app.trace_setting:
+                key = g.app.config.munge(g.app.trace_setting)
+                val = settings_d2.d.get(key)
+                if val:
+                    fn = g.shortFileName(val.path)
+                    g.es_print('--trace-setting: in %20s: @%s %s=%s' %  (
+                        fn, val.kind, g.app.trace_setting, val.val))
             settings_d = settings_d.copy()
             settings_d.update(settings_d2)
         if shortcuts_d2:
             shortcuts_d = lm.mergeShortcutsDicts(c, shortcuts_d, shortcuts_d2)
         return settings_d, shortcuts_d
-    #@+node:ekr.20121126202114.3: *4* lm.createDefaultSettingsDicts
+    #@+node:ekr.20121126202114.3: *4* LM.createDefaultSettingsDicts
     def createDefaultSettingsDicts(self):
         '''Create lm.globalSettingsDict & lm.globalShortcutsDict.'''
         settings_d = g.app.config.defaultsDict
@@ -1816,7 +1836,7 @@ class LoadManager(object):
             name='lm.globalShortcutsDict',
             keyType=type('s'), valType=g.ShortcutInfo)
         return settings_d, shortcuts_d
-    #@+node:ekr.20120214165710.10726: *4* lm.createSettingsDicts
+    #@+node:ekr.20120214165710.10726: *4* LM.createSettingsDicts
     def createSettingsDicts(self, c, localFlag):
         import leo.core.leoConfig as leoConfig
         parser = leoConfig.SettingsTreeParser(c, localFlag)
@@ -1854,29 +1874,59 @@ class LoadManager(object):
             d1 = lm.globalSettingsDict.copy(settingsName)
             d2 = lm.globalShortcutsDict.copy(shortcutsName)
         return PreviousSettings(d1, d2)
-    #@+node:ekr.20120214132927.10723: *4* lm.mergeShortcutsDicts & helpers
+    #@+node:ekr.20120214132927.10723: *4* LM.mergeShortcutsDicts & helpers
     def mergeShortcutsDicts(self, c, old_d, new_d):
         '''Create a new dict by overriding all shortcuts in old_d by shortcuts in new_d.
 
         Both old_d and new_d remain unchanged.'''
         trace = False and not g.unitTesting
+        trace_binding = False or g.app.trace_binding
         lm = self
         if not old_d: return new_d
         if not new_d: return old_d
         if trace:
             new_n, old_n = len(list(new_d.keys())), len(list(old_d.keys()))
-            g.trace('new %4s %s %s' % (new_n, id(new_d), new_d.name()))
-            g.trace('old %4s %s %s' % (old_n, id(old_d), old_d.name()))
+            g.trace('new %4s %s' % (new_n, new_d.name()))
+            g.trace('old %4s %s' % (old_n, old_d.name()))
+        # #510.
+        si_list = new_d.get(g.app.trace_setting)
+        if si_list:
+            # This code executed only if g.app.trace_setting exists.
+            for si in si_list:
+                fn = si.kind.split(' ')[-1]
+                stroke = c.k.prettyPrintKey(si.stroke)
+                if si.pane and si.pane != 'all':
+                    pane = ' in %s panes' % si.pane
+                else:
+                    pane = ''
+                g.trace(repr(si))
+                g.es_print('--trace-setting: %20s binds %s to %-20s%s' %  (
+                    fn, g.app.trace_setting, stroke, pane))
         inverted_old_d = lm.invert(old_d)
         inverted_new_d = lm.invert(new_d)
+        # #510.
+        if trace and trace_binding:
+            stroke = c.k.canonicalizeShortcut(g.app.trace_binding)
+            si_list = inverted_new_d. get(stroke)
+            if si_list:
+                for si in si_list:
+                    fn = si.kind.split(' ')[-1] # si.kind #
+                    stroke2 = c.k.prettyPrintKey(stroke)
+                    if si.pane and si.pane != 'all':
+                        pane = ' in %s panes' % si.pane
+                    else:
+                        pane = ''
+                    g.es_print('--trace-binding: %20s binds %s to %-20s%s' %  (
+                        fn, stroke2, si.commandName, pane))
         # Fix bug 951921: check for duplicate shortcuts only in the new file.
         lm.checkForDuplicateShortcuts(c, inverted_new_d)
         inverted_old_d.update(inverted_new_d) # Updates inverted_old_d in place.
         result = lm.uninvert(inverted_old_d)
         return result
-    #@+node:ekr.20120311070142.9904: *5* lm.checkForDuplicateShortcuts
+    #@+node:ekr.20120311070142.9904: *5* LM.checkForDuplicateShortcuts
     def checkForDuplicateShortcuts(self, c, d):
-        '''Check for duplicates in an "inverted" dictionary d
+        '''
+        Check for duplicates in an "inverted" dictionary d
         whose keys are strokes and whose values are lists of ShortcutInfo nodes.
 
         Duplicates happen only if panes conflict.
@@ -1897,7 +1947,7 @@ class LoadManager(object):
                 g.es_print('conflicting key bindings in %s' % (c.shortFileName()))
                 for si in aList2:
                     g.es_print('%6s %s %s' % (si.pane, si.stroke.s, si.commandName))
-    #@+node:ekr.20120214132927.10724: *5* lm.invert
+    #@+node:ekr.20120214132927.10724: *5* LM.invert
     def invert(self, d):
         '''Invert a shortcut dict whose keys are command names,
         returning a dict whose keys are strokes.'''
@@ -1920,7 +1970,7 @@ class LoadManager(object):
         if trace: g.trace('returns  %4s %s %s' % (
             len(list(result.keys())), id(d), result.name()))
         return result
-    #@+node:ekr.20120214132927.10725: *5* lm.uninvert
+    #@+node:ekr.20120214132927.10725: *5* LM.uninvert
     def uninvert(self, d):
         '''Uninvert an inverted shortcut dict whose keys are strokes,
         returning a dict whose keys are command names.'''
@@ -1942,7 +1992,7 @@ class LoadManager(object):
         if trace: g.trace('returns %4s %s %s' % (
             len(list(result.keys())), id(d), result.name()))
         return result
-    #@+node:ekr.20120222103014.10312: *4* lm.openSettingsFile
+    #@+node:ekr.20120222103014.10312: *4* LM.openSettingsFile
     def openSettingsFile(self, fn):
         '''
         Open a settings file with a null gui.  Return the commander.
@@ -1959,14 +2009,16 @@ class LoadManager(object):
 
         def message(s):
             # This occurs early in startup, so use the following.
-            if not giveMessage: return
-            if not g.isPython3:
-                s = g.toEncodedString(s, 'ascii')
-            g.blue(s)
+            if giveMessage:
+                if not g.isPython3:
+                    s = g.toEncodedString(s, 'ascii')
+                g.blue(s)
 
         theFile = lm.openLeoOrZipFile(fn)
+        
         if theFile:
             message('reading settings in %s' % (fn))
+            
         # Changing g.app.gui here is a major hack.  It is necessary.
         oldGui = g.app.gui
         g.app.gui = g.app.nullGui
@@ -1976,16 +2028,16 @@ class LoadManager(object):
         g.app.lockLog()
         g.app.openingSettingsFile = True
         try:
-            ok = c.fileCommands.openLeoFile(theFile, fn,
-                readAtFileNodesFlag=False, silent=True)
-                    # closes theFile.
+            ok =  c.fileCommands.openLeoFile(theFile, fn,
+                    readAtFileNodesFlag=False, silent=True)
+                        # closes theFile.
         finally:
             g.app.openingSettingsFile = False
         g.app.unlockLog()
         c.openDirectory = frame.openDirectory = g.os_path_dirname(fn)
         g.app.gui = oldGui
-        return ok and c or None
-    #@+node:ekr.20120213081706.10382: *4* lm.readGlobalSettingsFiles
+        return c if ok else None
+    #@+node:ekr.20120213081706.10382: *4* LM.readGlobalSettingsFiles
     def readGlobalSettingsFiles(self):
         '''Read leoSettings.leo and myLeoSettings.leo using a null gui.'''
         trace = (False or g.trace_startup) and not g.unitTesting
@@ -2017,7 +2069,7 @@ class LoadManager(object):
         for c in commanders:
             if c not in old_commanders:
                 g.app.forgetOpenFile(c.fileName())
-    #@+node:ekr.20120214165710.10838: *4* lm.traceSettingsDict
+    #@+node:ekr.20120214165710.10838: *4* LM.traceSettingsDict
     def traceSettingsDict(self, d, verbose=False):
         if verbose:
             print(d)
@@ -2027,7 +2079,7 @@ class LoadManager(object):
             if d: print('')
         else:
             print(d)
-    #@+node:ekr.20120214165710.10822: *4* lm.traceShortcutsDict
+    #@+node:ekr.20120214165710.10822: *4* LM.traceShortcutsDict
     def traceShortcutsDict(self, d, verbose=False):
         if verbose:
             print(d)
@@ -2041,9 +2093,14 @@ class LoadManager(object):
     #@+node:ekr.20120219154958.10452: *3* LM.load & helpers
     def load(self, fileName=None, pymacs=None):
         '''Load the indicated file'''
+        trace = False and not g.unitTesting
+        if trace:
+            import time
+            t1 = time.clock()
         lm = self
         # Phase 1: before loading plugins.
         # Scan options, set directories and read settings.
+        print('') # Give some separation for the coming traces.
         if not lm.isValidPython(): return
         lm.doPrePluginsInit(fileName, pymacs)
             # sets lm.options and lm.files
@@ -2060,6 +2117,9 @@ class LoadManager(object):
         ok = lm.doPostPluginsInit()
         if ok and g.app.diff:
             lm.doDiff()
+        if trace:
+            t2 = time.clock()
+            g.trace('load time: %5.2f sec.' % (t2-t1))
         if ok:
             g.es('') # Clears horizontal scrolling in the log pane.
             g.app.gui.runMainLoop()
@@ -2221,7 +2281,7 @@ class LoadManager(object):
             g.trace('LM.atAutoWritersDict')
             g.printDict(g.app.atAutoWritersDict)
         # Creates problems: https://github.com/leo-editor/leo-editor/issues/40
-     
+
     #@+node:ekr.20140728040812.17991: *7* LM.parse_writer_dict
     def parse_writer_dict(self, sfn, m):
         '''
@@ -2270,7 +2330,9 @@ class LoadManager(object):
                 g.app.createDefaultGui(__file__)
             else:
                 # This can happen when launching Leo from IPython.
-                g.trace('g.app.gui', g.app.gui, g.callers())
+                # This can also happen when leoID does not exist.
+                if trace:
+                    g.trace('g.app.gui', g.app.gui, g.callers())
         elif gui_option is None:
             if script and not windowFlag:
                 # Always use null gui for scripts.
@@ -2377,7 +2439,7 @@ class LoadManager(object):
         add('--fail-fast', action='store_true', dest='fail_fast',
             help='stop unit tests after the first failure')
         add('--gui',
-            help='gui to use (qt/qttabs)')
+            help='gui to use (qt/qttabs/console/null)')
         add('--load-type', dest='load_type',
             help='@<file> type for loading non-outlines from command line')
         add('--maximized', action='store_true',
@@ -2404,10 +2466,14 @@ class LoadManager(object):
             help='save session tabs on exit')
         add('--silent', action='store_true', dest='silent',
             help='disable all log messages')
+        add('--trace-binding', dest='binding',
+            help='trace key bindings')
         add('--trace-focus', action='store_true', dest='trace_focus',
             help='trace changes of focus')
         add('--trace-plugins', action='store_true', dest='trace_plugins',
             help='trace imports of plugins')
+        add('--trace-setting', dest='setting',
+            help='trace where setting is set')
         add('-v', '--version', action='store_true', dest='version',
             help='print version number and exit')
         add('--window-size', dest='window_size',
@@ -2434,7 +2500,7 @@ class LoadManager(object):
             gui = gui.lower()
             if gui == 'qttabs':
                 g.app.qt_use_tabs = True
-            elif gui in ('curses', 'text', 'qt', 'null'):
+            elif gui in ('console', 'curses', 'text', 'qt', 'null'):
                     # text: cursesGui.py, curses: cursesGui2.py.
                 g.app.qt_use_tabs = False
             else:
@@ -2506,10 +2572,16 @@ class LoadManager(object):
         # --silent
         g.app.silentMode = options.silent
         # print('scanOptions: silentMode',g.app.silentMode)
+        # --trace-binding
+        g.app.trace_binding = options.binding
         # --trace-focus
         g.app.trace_focus = options.trace_focus
         # --trace-plugins
         g.app.trace_plugins = options.trace_plugins
+        # --trace-setting=setting
+        g.app.trace_setting = options.setting
+            # g.app.config does not exist yet.
+            # g.trace('trace_setting:', repr(options.trace_setting))
         # --version: print the version and exit.
         versionFlag = options.version
         # --window-size
@@ -2572,7 +2644,7 @@ class LoadManager(object):
         # import pdb ; pdb.set_trace()
         import sys
         import leo.core.leoGlobals as g
-        
+
         # Define class LeoStdOut
         #@+others
         #@+node:ekr.20160718091844.1: *6* class LeoStdOut
@@ -2586,7 +2658,7 @@ class LoadManager(object):
 
             def flush(self, *args, **keys):
                 pass
-                
+
             #@+others
             #@+node:ekr.20160718102306.1: *7* LeoStdOut.write
             def write(self, *args, **keys):
@@ -2619,6 +2691,7 @@ class LoadManager(object):
                     color = g.actualColor('black')
                 color = g.actualColor(color)
                 tabName = d.get('tabName') or 'Log'
+                newline = d.get('newline')
                 s = g.translateArgs(args, d)
                 if app.batchMode:
                     if log:
@@ -2627,7 +2700,7 @@ class LoadManager(object):
                     # from_redirect is the big difference between this and g.es.
                     log.put(s, color=color, tabName=tabName, from_redirect=True)
                 else:
-                    app.logWaiting.append((s, color),)
+                    app.logWaiting.append((s, color, newline),)
             #@-others
         #@-others
 
@@ -2677,7 +2750,7 @@ class LoadManager(object):
         g.app.initComplete = True
         if c: c.setLog()
         # print('doPostPluginsInit: ***** set log')
-        p = c and c.p or None
+        p = c.p if c else None
         g.doHook("start2", c=c, p=p, v=p, fileName=fileName)
         if c: lm.initFocusAndDraw(c, fileName)
         screenshot_fn = lm.options.get('screenshot_fn')
@@ -2737,7 +2810,7 @@ class LoadManager(object):
                     root.doDelete(newNode=root.next())
                 p = g.findNodeAnywhere(c, "Leo's cheat sheet")
                 if p:
-                    c.selectPosition(p, enableRedrawFlag=False)
+                    c.selectPosition(p)
                     p.expand()
                 c.target_language = 'rest'
                     # Settings not parsed the first time.
@@ -2867,7 +2940,7 @@ class LoadManager(object):
         get settings from the leoSettings.leo and myLeoSetting.leo or default settings,
         or open an empty outline.
         '''
-        trace = (False or g.trace_startup) and not g.unitTesting
+        trace = (False or g.trace_startup or g.app.debug) and not g.unitTesting
         if trace: g.es_debug(fn)
         lm = self
         # Step 0: Return if the file is already open.
@@ -2912,6 +2985,10 @@ class LoadManager(object):
         # Open the file, if possible.
         g.doHook('open0')
         theFile = lm.openLeoOrZipFile(fn)
+        if isinstance(theFile, sqlite3.Connection):
+            # this commander is associated with sqlite db
+            c.sqlite_connection = theFile
+            
         # Enable the log.
         g.app.unlockLog()
         c.frame.log.enable(True)
@@ -3022,7 +3099,7 @@ class LoadManager(object):
                 p.setHeadString('%s %s' % (load_type,fn))
                 c.refreshFromDisk()
                 c.selectPosition(p)
-                    
+
         # Fix critical bug 1184855: data loss with command line 'leo somefile.ext'
         # Fix smallish bug 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo.
         c.mFileName = fn if fn.endswith('.leo') else '%s.leo' % (fn)
@@ -3039,6 +3116,8 @@ class LoadManager(object):
         return c
     #@+node:ekr.20120223062418.10419: *6* LM.isLeoFile & LM.isZippedFile
     def isLeoFile(self, fn):
+        if g.SQLITE:
+            return fn and (zipfile.is_zipfile(fn) or fn.endswith('.leo') or fn.endswith('.db'))
         return fn and (zipfile.is_zipfile(fn) or fn.endswith('.leo'))
 
     def isZippedFile(self, fn):
@@ -3046,6 +3125,9 @@ class LoadManager(object):
     #@+node:ekr.20120224161905.10030: *6* LM.openLeoOrZipFile
     def openLeoOrZipFile(self, fn):
         lm = self
+        if g.SQLITE:
+            if fn.endswith('.db'):
+                return sqlite3.connect(fn)
         zipped = lm.isZippedFile(fn)
         if lm.isLeoFile(fn) and g.os_path_exists(fn):
             if zipped:
@@ -3133,6 +3215,9 @@ class RecentFilesManager(object):
     '''A class to manipulate leoRecentFiles.txt.'''
 
     def __init__(self):
+
+        self.edit_headline = 'Recent files. Do not change this headline!'
+            # Headline used by
         self.groupedMenus = []
             # Set in rf.createRecentFilesMenuItems.
         self.recentFiles = []
@@ -3253,6 +3338,25 @@ class RecentFilesManager(object):
         if groupedEntries: # store so we can delete them later
             rf.groupedMenus = [z for z in dirCount
                 if dirCount[z]['entry'] is not None]
+    #@+node:vitalije.20170703115609.1: *3* rf.editRecentFiles
+    def editRecentFiles(self, c):
+        '''
+        Dump recentFiles into new node appended as lastTopLevel, selects it and
+        request focus in body.
+
+        NOTE: command write-edited-recent-files assume that headline of this
+        node is not changed by user.
+        '''
+        rf = self
+        nl = '\n' if g.isPython3 else g.u('\n')
+        p1 = c.lastTopLevel().insertAfter()
+        p1.h = self.edit_headline
+        p1.b = nl.join(rf.recentFiles)
+        c.redraw()
+        c.selectPosition(p1)
+        c.redraw()
+        c.bodyWantsFocusNow()
+        g.es('edit list and run write-rff to save recentFiles')
     #@+node:ekr.20120225072226.10286: *3* rf.getRecentFiles
     def getRecentFiles(self):
         # Fix #299: Leo loads a deleted file.
@@ -3266,7 +3370,7 @@ class RecentFilesManager(object):
             "*clear-recent-files",
             "*clean-recent-files",
             "*sort-recent-files",
-            # ("-",None,None),
+            ("-",None,None),
         )
     #@+node:ekr.20070224115832: *3* rf.readRecentFiles & helpers
     def readRecentFiles(self, localConfigFile):
@@ -3289,43 +3393,43 @@ class RecentFilesManager(object):
             rf.createRecentFiles()
     #@+node:ekr.20061010121944: *4* rf.createRecentFiles
     def createRecentFiles(self):
-        '''Trye to reate .leoRecentFiles.txt in
-        - the users home directory first,
-        - Leo's config directory second.'''
+        '''
+        Try to create .leoRecentFiles.txt, in the users home directory, or in
+        Leo's config directory if that fails.
+        '''
         for theDir in (g.app.homeLeoDir, g.app.globalConfigDir):
             if theDir:
+                fn = g.os_path_join(theDir, '.leoRecentFiles.txt')
                 try:
-                    fn = g.os_path_join(theDir, '.leoRecentFiles.txt')
-                    f = open(fn, 'w')
-                    f.close()
-                    g.red('created', fn)
-                    return
-                except Exception:
+                    with open(fn, 'w'):
+                        g.red('created', fn)
+                        return
+                except IOError:
                     g.error('can not create', fn)
                     g.es_exception()
     #@+node:ekr.20050424115658: *4* rf.readRecentFilesFile
     def readRecentFilesFile(self, path):
         trace = False and not g.unitTesting
-        rf = self
         fileName = g.os_path_join(path, '.leoRecentFiles.txt')
-        ok = g.os_path_exists(fileName)
-        if ok:
-            try:
-                if g.isPython3:
-                    f = open(fileName, encoding='utf-8', mode='r')
-                else:
-                    f = open(fileName, 'r')
-            except IOError:
-                g.trace('can not open', fileName)
-                return False
-            if trace: g.trace(('reading %s' % fileName))
-            lines = f.readlines()
-            if lines and rf.sanitize(lines[0]) == 'readonly':
-                lines = lines[1:]
-            if lines:
-                lines = [g.toUnicode(g.os_path_normpath(line)) for line in lines]
-                rf.appendToRecentFiles(lines)
-        return ok
+        if not g.os_path_exists(fileName):
+            return False
+        if trace: g.trace(('reading %s' % fileName))
+        try:
+            with io.open(fileName, encoding='utf-8', mode='r') as f:
+                try: # Fix #471.
+                    lines = f.readlines()
+                except Exception:
+                    lines = None
+        except IOError:
+            # The file exists, so FileNotFoundError is not possible.
+            g.trace('can not open', fileName)
+            return False
+        if lines and self.sanitize(lines[0]) == 'readonly':
+            lines = lines[1:]
+        if lines:
+            lines = [g.toUnicode(g.os_path_normpath(line)) for line in lines]
+            self.appendToRecentFiles(lines)
+        return True
     #@+node:ekr.20120225072226.10285: *3* rf.sanitize
     def sanitize(self, name):
         '''Return a sanitized file name.'''
@@ -3344,11 +3448,15 @@ class RecentFilesManager(object):
     def sortRecentFiles(self, c):
         '''Sort the recent files list.'''
         rf = self
-        aList = rf.recentFiles
-        aList.sort(key=lambda s: g.os_path_basename(s).lower())
-        aList.reverse()
+
+        def key(path):
+            # Sort only the base name.  That's what will appear in the menu.
+            s = g.os_path_basename(path)
+            return s.lower() if sys.platform.lower().startswith('win') else s
+
+        aList = sorted(rf.recentFiles, key=key)
         rf.recentFiles = []
-        for z in aList:
+        for z in reversed(aList):
             rf.updateRecentFiles(z)
         rf.writeRecentFilesFile(c, force=True)
             # Force the write message.
@@ -3379,13 +3487,29 @@ class RecentFilesManager(object):
         else:
             for frame in g.app.windowList:
                 rf.createRecentFilesMenuItems(frame.c)
+    #@+node:vitalije.20170703115616.1: *3* rf.writeEditedRecentFiles
+    def writeEditedRecentFiles(self, c):
+        '''
+        Write content of "edit_headline" node as recentFiles and recreates
+        menues.
+        '''
+        rf = self; p = c.p
+        p = g.findNodeAnywhere(c, self.edit_headline)
+        if p:
+            files = [z for z in p.b.splitlines() if z and g.os_path_exists(z)]
+            rf.recentFiles = files
+            rf.writeRecentFilesFile(c, force=False)
+            rf.updateRecentFiles(None)
+            c.selectPosition(p)
+            c.deleteOutline()
+        else:
+            g.red('not found:', self.edit_headline)
     #@+node:ekr.20050424114937.2: *3* rf.writeRecentFilesFile & helper
     def writeRecentFilesFile(self, c, force=False):
         '''
         Write the appropriate .leoRecentFiles.txt file.
 
         Write a message if force is True, or if it hasn't been written yet.
-
         '''
         tag = '.leoRecentFiles.txt'
         rf = self
@@ -3407,7 +3531,8 @@ class RecentFilesManager(object):
                     if force or not rf.recentFileMessageWritten:
                         if ok:
                             if not g.app.silentMode:
-                                g.pr('wrote recent file: %s' % fileName)
+                                # Fix #459:
+                                g.es_print('wrote recent file: %s' % fileName)
                             written = True
                         else:
                             g.error('failed to write recent file: %s' % (fileName))
@@ -3425,54 +3550,32 @@ class RecentFilesManager(object):
     def writeRecentFilesFileHelper(self, fileName):
         # Don't update the file if it begins with read-only.
         trace = False and not g.unitTesting
-        rf = self
-        theFile = None
+        # Part 1: Return False if the first line is "readonly".
+        #         It's ok if the file doesn't exist.
+        if g.os_path_exists(fileName):
+            with io.open(fileName, encoding='utf-8', mode='r') as f:
+                try:
+                    # Fix #471.
+                    lines = f.readlines()
+                except Exception:
+                    lines = None
+                if lines and self.sanitize(lines[0]) == 'readonly':
+                    if trace: g.trace('read-only: %s' % fileName)
+                    return False
+        # Part 2: write the files.
         try:
-            # Attempt to fix #471:
-            if g.isPython3:
-                theFile = open(fileName, encoding='utf-8', mode='r')
-            else:
-                theFile = open(fileName, mode='r')
-            try:
-                # Protect against #471.
-                lines = theFile.readlines()
-            except Exception:
-                lines = None
-            if lines and rf.sanitize(lines[0]) == 'readonly':
-                if trace: g.trace('read-only: %s' % fileName)
-                return False
+            with io.open(fileName, encoding='utf-8', mode='w') as f:
+                s = '\n'.join(self.recentFiles) if self.recentFiles else '\n'
+                f.write(g.toUnicode(s))
+                return True
         except IOError:
-            # The user may have erased a file.  Not an error.
-            pass
-        finally:
-            if theFile: theFile.close()
-            theFile = None
-        try:
-            if g.isPython3:
-                theFile = open(fileName, encoding='utf-8', mode='w')
-            else:
-                theFile = open(fileName, mode='w')
-            if rf.recentFiles:
-                s = '\n'.join(rf.recentFiles)
-            else:
-                s = '\n'
-            if not g.isPython3:
-                s = g.toEncodedString(s, reportErrors=True)
-            theFile.write(s)
-        except IOError:
-            # The user may have erased a file.  Not an error.
             g.error('error writing', fileName)
             g.es_exception()
-            theFile = None
         except Exception:
             g.error('unexpected exception writing', fileName)
             g.es_exception()
-            theFile = None
             if g.unitTesting: raise
-        finally:
-            if theFile:
-                theFile.close()
-        return bool(theFile)
+        return False
     #@-others
 #@+node:ekr.20150514125218.1: ** Top-level-commands
 #@+node:ekr.20150514125218.2: *3* ctrl-click-at-cursor

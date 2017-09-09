@@ -1,0 +1,17 @@
+==================
+Setting .leoID.txt
+==================
+
+
+The first time you start Leo, a dialog will ask you for a unique
+identifier. This string helps ensure that each Leo node has a
+unique identity.
+
+This identifier can be any string 3 characters or more in length.
+In a shared environment, a cvs or bzr login name works well.
+
+Pick a string you don't mind making public: it will appear in
+files that Leo creates.
+
+Leo stores this identifier in the file ~/.leo/.leoID.txt.
+You can change this identifier at any time by editing .leoID.txt.

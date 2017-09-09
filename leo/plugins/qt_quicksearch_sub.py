@@ -3,11 +3,11 @@
 #
 # WARNING! All changes made in this file will be lost!
 #from PyQt4 import QtCore, QtGui
-from leo.core.leoQt import isQt5, QtCore, QtWidgets # QtGui, 
+from leo.core.leoQt import isQt5, QtCore, QtWidgets # QtGui,
 QtGui = QtWidgets
 
 class Ui_LeoQuickSearchWidget(object):
-    
+
     def setupUi(self, LeoQuickSearchWidget):
         LeoQuickSearchWidget.setObjectName("LeoQuickSearchWidget")
         LeoQuickSearchWidget.resize(868, 572)
@@ -70,6 +70,6 @@ class Ui_LeoQuickSearchWidget(object):
             self.showParents.setText(
                 QtGui.QApplication.translate(
                     "LeoQuickSearchWidget",
-                    "Show Parents", 
+                    "Show Parents",
                     None,
                     QtGui.QApplication.UnicodeUTF8))

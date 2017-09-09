@@ -1,0 +1,315 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The leoInspect Module &mdash; Leo 4.11 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '4.11',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+    <link rel="top" title="Leo 4.11 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="leo_toc.html">Leo 4.11 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="the-leoinspect-module">
+<h1><a class="toc-backref" href="#id1">The leoInspect Module</a><a class="headerlink" href="#the-leoinspect-module" title="Permalink to this headline">¶</a></h1>
+<p>The leoInspect module provides answers to questions about Python
+source code such as:</p>
+<ul class="simple">
+<li>Where are all assignments to &#8216;w&#8217; in leoEditCommands.py?</li>
+<li>Which of those assignments are &#8220;unusual&#8221; in some way?</li>
+</ul>
+<p>The leoInspect module grew out of a re-imagining of the new-pylint
+project, which has been a &#8220;hobby&#8221; project of mine for several years.
+Rather than attempting global &#8220;proofs&#8221; of difficult propositions, as
+new-pylint does, the leoInspect module answers specific questions
+about modules, functions, classes, methods and statements. We can use
+such answers while debugging, or as documentation, or especially as
+the foundation for <em>fast</em> unit tests.</p>
+<p>The leoInspect module provides answers to questions about Python
+source code. leoInspect is an elegant and easy-to-use front end for
+Python&#8217;s AST (Abstract Syntax Tree) trees <em>and</em> a window into a richly
+connected set of semantic data built <em>from</em> AST trees.</p>
+<p>The simplicity of the leoInspect module could be called &#8220;third
+generation&#8221; simplicity. Several implementation Ahas lie behind it.</p>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#the-leoinspect-module" id="id1">The leoInspect Module</a><ul>
+<li><a class="reference internal" href="#a-query-language" id="id2">A query language</a></li>
+<li><a class="reference internal" href="#comparing-leoinspect-and-pylint" id="id3">Comparing leoInspect and Pylint</a></li>
+<li><a class="reference internal" href="#still-to-do" id="id4">Still to do</a></li>
+<li><a class="reference internal" href="#theory-of-operation" id="id5">Theory of operation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="a-query-language">
+<h2><a class="toc-backref" href="#id2">A query language</a><a class="headerlink" href="#a-query-language" title="Permalink to this headline">¶</a></h2>
+<p>Mathematica&#8217;s expressions inspired the design of the query language:
+simple and task oriented. All details in the background. leoInspect
+makes <em>Python</em> the query language! Let&#8217;s see how.</p>
+<p>All queries start with a call to leoInspect.module:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">leo.core.leoInspect</span> <span class="kn">as</span> <span class="nn">inspect</span>
+<span class="n">o</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">module</span><span class="p">(</span><span class="s">&#39;leoApp.py&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The call to inspect.module creates a <strong>query object</strong> o representing
+all the data contained in the AST for leoApp.py. But this query object
+<em>also</em> represents a <strong>context</strong>, a module, class, function, method or
+statement.</p>
+<p>For any context o, we can use <strong>getters</strong> to get lists of other contexts:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">aList</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">calls</span><span class="p">()</span>      <span class="c"># All function/method calls in context o.</span>
+<span class="n">aList</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">classes</span><span class="p">()</span>    <span class="c"># All classes in context o.</span>
+<span class="n">aList</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">functions</span><span class="p">()</span>  <span class="c"># All functions in context o.</span>
+<span class="n">aList</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">statements</span><span class="p">()</span> <span class="c"># All the statements in context o.</span>
+</pre></div>
+</div>
+<p>Assignments and calls are especially important for queries. The following
+getters return the assignments related to some name s:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">aList</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">assignments_to</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="n">aList</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">assignments_using</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="n">aList</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">calls_to</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="n">aList</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">call_args_of</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The o.name getter returns the name of any module, class, method,
+function or var:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">s</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The o.format getter returns a human-readable representation of a
+context&#8217;s AST tree:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">s</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">format</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>These getters generally make it unnecessary to access AST trees
+directly: ASTs are merely part of the &#8220;plumbing&#8221; of the leoInspect
+module. However, the o.tree getter returns the actual AST tree if you
+really need it:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ast_tree</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">tree</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Let&#8217;s see how to create actual queries. Here is a script to discover
+all assignments to &#8216;w&#8217; in leoEditCommands.py is:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">leo.core.leoInspect</span> <span class="kn">as</span> <span class="nn">inspect</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">module</span><span class="p">(</span><span class="s">&#39;leoEditCommands.py&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">assignments_to</span><span class="p">(</span><span class="s">&#39;w&#39;</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">format</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>It is easy to &#8220;zero in&#8221; on particular classes or method using the
+o.name getter. The following script prints all assignments to the
+&#8216;files&#8217; ivar of the LoadManager class in leoApp.py:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">leo.core.leoInspect</span> <span class="kn">as</span> <span class="nn">inspect</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">module</span><span class="p">(</span><span class="s">&#39;leoApp.py&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">theClass</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">classes</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">theClass</span><span class="o">.</span><span class="n">name</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;LoadManager&#39;</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">assignments_to</span><span class="p">(</span><span class="s">&#39;files&#39;</span><span class="p">):</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">format</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>We have seen that the getters hide all the messy details of Python AST
+trees. This is a revolution in using AST trees!</p>
+</div>
+<div class="section" id="comparing-leoinspect-and-pylint">
+<h2><a class="toc-backref" href="#id3">Comparing leoInspect and Pylint</a><a class="headerlink" href="#comparing-leoinspect-and-pylint" title="Permalink to this headline">¶</a></h2>
+<p>Could one create a lint-like programming using leoInspect? Perhaps,
+but much more work would be required. Indeed, pylint is an extremely
+capable program. It can make complex deductions that are presently far
+beyond leoInspect&#8217;s capabilities.</p>
+<p>However, leoInspect is an elegant front end. It might serve
+as the basis of more complex analysis. Multi-pass algorithms are often
+<em>faster</em> and more elegant than single-pass algorithms, so the &#8220;extra&#8221;
+overhead of the leoInspect prepass is probably not significant. What
+matters are the deductions that can be made using leoInspect.Context
+data.</p>
+<p>Speed is not an obstacle for a lint-like tool based on leoInspect.
+Indeed, the module getter creates <em>all</em> the context data in a very
+fast pass over the modules AST tree. It takes about 4.6 seconds to
+create the context data for all 34 of Leo&#8217;s source files. Because
+getters are extremely fast, even complex queries will be fast. A
+multiple-pass query will typically take about 0.1 sec per pass. Using
+AstFormatter in the InspectTraverser class adds a negligible amount of
+time, less than 10% of the total tree-traversal time.</p>
+</div>
+<div class="section" id="still-to-do">
+<h2><a class="toc-backref" href="#id4">Still to do</a><a class="headerlink" href="#still-to-do" title="Permalink to this headline">¶</a></h2>
+<p>The assignments_to, assignments_using and the new calls_to getters all
+specify a <strong>pattern</strong> to be matched against the the lhs of assignments
+(or against function names in the calls_to getter).  At present, the
+pattern must match as a plain word match, but it would be more natural
+to use regex matches.  That&#8217;s coming.</p>
+<p>Three new getters would give leoInspect the ability to replace
+refactored code:</p>
+<ul class="simple">
+<li>o.token_range: Returns pointers the list of tokens comprising o.</li>
+<li>o.text: Returns o&#8217;s source text (a string).</li>
+<li>o.text_range: Returns the starting and ending offsets of the text in the file.</li>
+</ul>
+<p>These getters are non-trivial to do, but a reasonable design is in place.</p>
+</div>
+<div class="section" id="theory-of-operation">
+<h2><a class="toc-backref" href="#id5">Theory of operation</a><a class="headerlink" href="#theory-of-operation" title="Permalink to this headline">¶</a></h2>
+<p>The module getter creates <em>all</em> the data used by the other getters.
+This data is a richly-linked set of Context objects. Getters are very
+fast because the getter of an object o merely returns one of o&#8217;s
+ivars.</p>
+<p>The o.format getter is an exception. It traverses o&#8217;s AST to create
+the human-readable representation of o.</p>
+<p>The AstFormatter class is a straightforward recursive descent algorithm.</p>
+<p>The InspectTraverser.do_Attribute method uses the <em>formatting</em> code to
+compute the value of the attribute. This replaces complex
+AST-traversal code with a call to the formatter.</p>
+<div class="section" id="getters">
+<h3>Getters<a class="headerlink" href="#getters" title="Permalink to this headline">¶</a></h3>
+<p>Getters all follow roughly the same pattern.  For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">assignments_to</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="nb">all</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+
+    <span class="n">format</span><span class="p">,</span><span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span><span class="o">.</span><span class="n">format</span><span class="p">,[]</span>
+
+    <span class="k">for</span> <span class="n">assn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">assignments</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="nb">all</span><span class="p">):</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="n">assn</span><span class="o">.</span><span class="n">tree</span><span class="p">()</span>
+        <span class="n">kind</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ast_kind</span><span class="p">(</span><span class="n">tree</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kind</span> <span class="o">==</span> <span class="s">&#39;Assign&#39;</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">tree</span><span class="o">.</span><span class="n">targets</span><span class="p">:</span>
+                <span class="n">lhs</span> <span class="o">=</span> <span class="n">format</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="n">lhs</span><span class="p">:</span>
+                    <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">assn</span><span class="p">)</span>
+                    <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">kind</span> <span class="o">==</span> <span class="s">&#39;AugAssign&#39;</span><span class="p">,</span><span class="n">kind</span>
+            <span class="n">lhs</span> <span class="o">=</span> <span class="n">format</span><span class="p">(</span><span class="n">tree</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="n">lhs</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">assn</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+</div>
+<p>This is AST-traversal code. Indeed, the tree getter returns an AST,
+and ast_kind is an internal getter that returns the AST type for an
+AST node.</p>
+<p>This code is elegant. It uses the assignments getter to get the list
+of all assignments in this context and all contained (descendant)
+contexts. All public getters are members of the base Context class, so
+this code code &#8220;just works&#8221; for <em>all</em> contexts. Furthermore,
+assignments are StatementContext objects, so they &#8220;just work&#8221; as
+elements returned by the getter. Comparing this code with the code
+found in pylint shows how elegant this code truly is.</p>
+<p>No simpler code is possible. AST trees for assignments are a bit
+different from AST trees for augmented assignments. Once the type of
+assignment is identified, the code simply <em>formats</em> the left hand side
+(lhs) of the assignment, and compares s with the lhs. If there is a
+match, the entire assignment is appended to the result.</p>
+</div>
+<div class="section" id="computing-token-ranges">
+<h3>Computing token ranges<a class="headerlink" href="#computing-token-ranges" title="Permalink to this headline">¶</a></h3>
+<p>This section describes the how the unfinished o.token_range getter will work.</p>
+<p>There are two parts to the problem...</p>
+<div class="section" id="token-info-prepass">
+<h4>Token-info prepass<a class="headerlink" href="#token-info-prepass" title="Permalink to this headline">¶</a></h4>
+<p>For each node N of a module&#8217;s tree, we want to inject the following
+two new ivars:</p>
+<ul class="simple">
+<li>N.end_lineno: the line number of the last character of the token.</li>
+<li>N.end_col_offset: the (byte) offset of the last character of the token.</li>
+</ul>
+<p><strong>Important</strong>: tree structure is irrelevant when computing these fields: we
+simply want a <strong>sorted</strong> list of (N.lineno,No.col_offset, N) tuples!</p>
+<p>The prepass will use ast.walk(root), to generate the list.  After
+sorting the list, the prepass will inject inject N.end_lineno and
+N.end_col_offset ivars into each node N by stepping through the list.
+The ending values of the previous node on the list are the the same as
+the beginning values of the next node on the list.</p>
+<p>This prepass need only be done once per module.</p>
+</div>
+<div class="section" id="token-range">
+<h4>token_range<a class="headerlink" href="#token-range" title="Permalink to this headline">¶</a></h4>
+<p>To compute token_range for a <em>particular</em> N, we want to discover
+values M.end_lineno and M.end_col_offset for M, the <strong>last</strong> token in
+N&#8217;s entire tree.</p>
+<p>token_range will do the prepass on the modules tree if necessary.
+token_range will then call ast.walk(N) to discover all of N&#8217;s nodes,
+sort the list, and return the last element of the list!</p>
+<p>token_range will, by its design, include <em>all</em> text in the range,
+including comments.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="leo_toc.html">
+              <img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="leo_toc.html">Leo 4.11 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Edward K. Ream.
+      Last updated on Aug 16, 2013.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.
+    </div>
+  </body>
+</html>

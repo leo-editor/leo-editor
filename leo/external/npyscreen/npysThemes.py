@@ -1,6 +1,11 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20170428084207.390: * @file ../external/npyscreen/npysThemes.py
+#@+others
+#@+node:ekr.20170428084207.391: ** Declarations
 import curses
 from . import npysThemeManagers as ThemeManagers
 
+#@+node:ekr.20170428084207.392: ** class DefaultTheme
 class DefaultTheme(ThemeManagers.ThemeManager):
     default_colors = {
         'DEFAULT'     : 'WHITE_BLACK',
@@ -20,7 +25,8 @@ class DefaultTheme(ThemeManagers.ThemeManager):
         'CAUTION'     : 'YELLOW_BLACK',
         'CAUTIONHL'   : 'BLACK_YELLOW',
     }
-    
+
+#@+node:ekr.20170428084207.393: ** class ElegantTheme
 class ElegantTheme(ThemeManagers.ThemeManager):
     default_colors = {
         'DEFAULT'     : 'WHITE_BLACK',
@@ -42,6 +48,7 @@ class ElegantTheme(ThemeManagers.ThemeManager):
     }
 
 
+#@+node:ekr.20170428084207.394: ** class ColorfulTheme
 class ColorfulTheme(ThemeManagers.ThemeManager):
     default_colors = {
         'DEFAULT'     : 'RED_BLACK',
@@ -62,6 +69,7 @@ class ColorfulTheme(ThemeManagers.ThemeManager):
         'CAUTIONHL'   : 'BLACK_YELLOW',
         }
 
+#@+node:ekr.20170428084207.395: ** class BlackOnWhiteTheme
 class BlackOnWhiteTheme(ThemeManagers.ThemeManager):
     default_colors = {
         'DEFAULT'     : 'BLACK_WHITE',
@@ -82,8 +90,9 @@ class BlackOnWhiteTheme(ThemeManagers.ThemeManager):
         'CAUTIONHL'   : 'BLACK_YELLOW',
     }
 
+#@+node:ekr.20170428084207.396: ** class TransparentThemeDarkText
 class TransparentThemeDarkText(ThemeManagers.ThemeManager):
-    _colors_to_define = ( 
+    _colors_to_define = (
     ('BLACK_WHITE',      curses.COLOR_BLACK,      curses.COLOR_WHITE),
     ('BLUE_BLACK',       curses.COLOR_BLUE,       curses.COLOR_BLACK),
     ('CYAN_BLACK',       curses.COLOR_CYAN,       curses.COLOR_BLACK),
@@ -101,7 +110,7 @@ class TransparentThemeDarkText(ThemeManagers.ThemeManager):
     ('MAGENTA_WHITE',    curses.COLOR_MAGENTA,    curses.COLOR_WHITE),
     ('RED_WHITE',        curses.COLOR_RED,        curses.COLOR_WHITE),
     ('YELLOW_WHITE',     curses.COLOR_YELLOW,     curses.COLOR_WHITE),
-     
+
     ('BLACK_ON_DEFAULT',   curses.COLOR_BLACK,      -1),
     ('WHITE_ON_DEFAULT',   curses.COLOR_WHITE,      -1),
     ('BLUE_ON_DEFAULT',    curses.COLOR_BLUE,       -1),
@@ -132,10 +141,14 @@ class TransparentThemeDarkText(ThemeManagers.ThemeManager):
     }
 
 
+    #@+others
+    #@+node:ekr.20170428084207.397: *3* __init__
     def __init__(self, *args, **keywords):
         curses.use_default_colors()
         super(TransparentThemeDarkText, self).__init__(*args, **keywords)
-        
+
+    #@-others
+#@+node:ekr.20170428084207.398: ** class TransparentThemeLightText
 class TransparentThemeLightText(TransparentThemeDarkText):
     default_colors = {
         'DEFAULT'     : 'WHITE_ON_DEFAULT',
@@ -155,4 +168,8 @@ class TransparentThemeLightText(TransparentThemeDarkText):
         'CAUTION'     : 'YELLOW_BLACK',
         'CAUTIONHL'   : 'BLACK_YELLOW',
     }
-    
+
+#@-others
+#@@language python
+#@@tabwidth -4
+#@-leo

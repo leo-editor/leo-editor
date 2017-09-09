@@ -495,8 +495,8 @@ class Undoer(object):
         bunch.newDirty = p.isDirty()
         bunch.newHead = p.h
         bunch.newMarked = p.isMarked()
-        bunch.newSel = w.getSelectionRange()
-        bunch.newYScroll = w.getYScrollPosition()
+        bunch.newSel = w.getSelectionRange() if w else 0, 0
+        bunch.newYScroll = w.getYScrollPosition() if w else 0
         u.pushBead(bunch)
     #@+node:ekr.20050315134017.3: *5* u.afterChangeTree
     def afterChangeTree(self, p, command, bunch):
@@ -926,7 +926,7 @@ class Undoer(object):
         if hasattr(v, 'undo_info'):
             u.setIvarsFromBunch(v.undo_info)
     #@+node:ekr.20031218072017.1490: *4* u.setUndoTypingParams
-    def setUndoTypingParams(self, p, undo_type, oldText, newText, 
+    def setUndoTypingParams(self, p, undo_type, oldText, newText,
         oldSel=None, newSel=None, oldYview=None,
     ):
         '''
@@ -1397,7 +1397,7 @@ class Undoer(object):
         # Restore the body.
         u.p.setBodyString(u.newBody)
         w.setAllText(u.newBody)
-        c.frame.body.recolor(u.p, incremental=False)
+        c.frame.body.recolor(u.p)
         # Restore the headline.
         u.p.initHeadString(u.newHead)
         # This is required so.  Otherwise redraw will revert the change!
@@ -1455,8 +1455,6 @@ class Undoer(object):
         # selectPosition causes recoloring, so avoid if possible.
         if current != u.p:
             c.selectPosition(u.p)
-        elif u.undoType in ('Cut', 'Paste', 'Clear Recent Files'):
-            c.frame.body.forceFullRecolor()
         self.undoRedoText(
             u.p, u.leading, u.trailing,
             u.newMiddleLines, u.oldMiddleLines,
@@ -1702,7 +1700,7 @@ class Undoer(object):
         w = c.frame.body.wrapper
         u.p.b = u.oldBody
         w.setAllText(u.oldBody)
-        c.frame.body.recolor(u.p, incremental=False)
+        c.frame.body.recolor(u.p)
         if trace: g.trace(repr(u.oldHead))
         u.p.h = u.oldHead
         # This is required.  Otherwise c.redraw will revert the change!
@@ -1756,13 +1754,13 @@ class Undoer(object):
         s = []
         if leading > 0:
             s.extend(body_lines[: leading])
-        if len(oldMidLines) > 0:
+        if oldMidLines:
             s.extend(oldMidLines)
         if trailing > 0:
             s.extend(body_lines[-trailing:])
         s = '\n'.join(s)
         # Remove trailing newlines in s.
-        while len(s) > 0 and s[-1] == '\n':
+        while s and s[-1] == '\n':
             s = s[: -1]
         # Add oldNewlines newlines.
         if oldNewlines > 0:
@@ -1779,7 +1777,7 @@ class Undoer(object):
         if sel:
             i, j = sel
             w.setSelectionRange(i, j, insert=j)
-        c.frame.body.recolor(p, incremental=False)
+        c.frame.body.recolor(p)
         w.seeInsertPoint() # 2009/12/21
     #@+node:ekr.20050408100042: *4* u.undoRedoTree
     def undoRedoTree(self, p, new_data, old_data):
@@ -1819,8 +1817,6 @@ class Undoer(object):
         # selectPosition causes recoloring, so don't do this unless needed.
         if current != u.p:
             c.selectPosition(u.p)
-        elif u.undoType in ("Cut", "Paste", 'Clear Recent Files'):
-            c.frame.body.forceFullRecolor()
         self.undoRedoText(
             u.p, u.leading, u.trailing,
             u.oldMiddleLines, u.newMiddleLines,

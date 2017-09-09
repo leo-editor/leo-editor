@@ -303,9 +303,9 @@ class CoffeeScriptTraverser(object):
             for keyword in node.keywords:
                 bases.append('%s=%s' % (keyword.arg, self.visit(keyword.value)))
         if getattr(node, 'starargs', None): # Python 3
-            bases.append('*%s', self.visit(node.starargs))
+            bases.append('*%s' % self.visit(node.starargs))
         if getattr(node, 'kwargs', None): # Python 3
-            bases.append('*%s', self.visit(node.kwargs))
+            bases.append('*%s' % self.visit(node.kwargs))
         if bases:
             s = 'class %s extends %s' % (name, ', '.join(bases))
         else:
@@ -351,7 +351,7 @@ class CoffeeScriptTraverser(object):
             result.append(self.visit(z))
             self.level -= 1
         return ''.join(result)
-        
+
     do_AsyncFunctionDef = do_FunctionDef
     #@+node:ekr.20160316091132.20: *4* cv.Interactive
 
@@ -501,6 +501,16 @@ class CoffeeScriptTraverser(object):
         if ifs:
             result.append(' if %s' % (''.join(ifs)))
         return ''.join(result)
+    #@+node:ekr.20170721093550.1: *4* cv.Constant (Python 3.6+)
+    def do_Constant(self, node): # Python 3.6+ only.
+        assert g.isPython3
+        if hasattr(node, 'lineno'):
+            # Do *not* handle leading lines here.
+            # leading = self.leading_string(node)
+            return self.sync_string(node)
+        else:
+            g.trace('==== no lineno', node.s)
+            return node.s
     #@+node:ekr.20160316091132.34: *4* cv.Dict
 
     def do_Dict(self, node):
@@ -544,10 +554,29 @@ class CoffeeScriptTraverser(object):
 
     def do_ExtSlice(self, node):
         return ':'.join([self.visit(z) for z in node.dims])
+    #@+node:ekr.20170721093848.1: *4* cv.FormattedValue (Python 3.6+: unfinished)
+    # FormattedValue(expr value, int? conversion, expr? format_spec)
+
+    def do_FormattedValue(self, node): # Python 3.6+ only.
+        assert g.isPython3
+        
+        return '%s%s%s' % (
+            self.visit(node.value),
+            self.visit(node.conversion) if node.conversion else '',
+            self.visit(node.format_spec) if node.format_spec else '')
     #@+node:ekr.20160316091132.37: *4* cv.Index
 
     def do_Index(self, node):
         return self.visit(node.value)
+    #@+node:ekr.20170721093747.1: *4* cv.JoinedStr (Python 3.6+: unfinished)
+    # JoinedStr(expr* values)
+
+    def do_JoinedStr(self, node):
+        
+        if node.values:
+            for value in node.values:
+                self.visit(value)
+
     #@+node:ekr.20160316091132.38: *4* cv.List
 
     def do_List(self, node):
@@ -701,6 +730,17 @@ class CoffeeScriptTraverser(object):
         else:
             tail = '\n'
         return tail
+    #@+node:ekr.20170721093332.1: *4* cv.AnnAssign
+    # AnnAssign(expr target, expr annotation, expr? value, int simple)
+
+    def do_AnnAssign(self, node):
+        head = self.leading_string(node)
+        tail = self.trailing_comment(node)
+        s = '%s:%s=%s\n' % (
+            self.visit(node.target),
+            self.visit(node.annotation),
+            self.visit(node.value))
+        return head + self.indent(s) + tail
     #@+node:ekr.20160316091132.55: *4* cv.Assert
 
     def do_Assert(self, node):
@@ -834,7 +874,7 @@ class CoffeeScriptTraverser(object):
                 result.append(self.visit(z))
                 self.level -= 1
         return ''.join(result)
-        
+
     def do_AsyncFor(self, node):
         return self.do_For(node, async=True)
     #@+node:ekr.20160316091132.65: *4* cv.Global
@@ -1107,7 +1147,7 @@ class CoffeeScriptTraverser(object):
             result.append(self.visit(z))
             self.level -= 1
         return ''.join(result) + tail
-        
+
     def do_AsyncWith(self, node):
         return self.do_With(node, async=True)
 

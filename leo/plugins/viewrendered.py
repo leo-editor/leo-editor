@@ -195,7 +195,6 @@ import leo.plugins.qt_text as qt_text
 import leo.plugins.free_layout as free_layout
 from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
 from leo.core.leoQt import phonon, QtSvg, QtWebKitWidgets
-import cgi
 try:
     import docutils
     import docutils.core
@@ -233,6 +232,7 @@ try:
     from urllib.request import urlopen
 except ImportError:
     nbformat = None
+import json
 #@-<< imports >>
 #@+<< define stylesheets >>
 #@+node:ekr.20110317024548.14377: ** << define stylesheets >>
@@ -280,6 +280,8 @@ latex_template = '''\
 #@-<< define html templates >>
 controllers = {}
     # Keys are c.hash(): values are PluginControllers
+layouts = {}
+    # Keys are c.hash(): values are tuples (layout_when_closed, layout_when_open)
 #@+others
 #@+node:ekr.20110320120020.14491: ** Top-level
 #@+node:tbrown.20100318101414.5994: *3* decorate_window
@@ -290,10 +292,14 @@ def decorate_window(w):
 #@+node:tbrown.20100318101414.5995: *3* init
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    ok = bool(QtSvg and QtWebKitWidgets)
-    g.plugin_signon(__name__)
-    g.registerHandler('after-create-leo-frame', onCreate)
-    g.registerHandler('scrolledMessage', show_scrolled_message)
+    ok = bool(got_docutils and QtSvg and QtWebKitWidgets)
+    # 2017/08/18: register handlers only if all required imports
+    # were successful.
+    if ok:
+        g.plugin_signon(__name__)
+        g.registerHandler('after-create-leo-frame', onCreate)
+        g.registerHandler('close-frame', onClose)
+        g.registerHandler('scrolledMessage', show_scrolled_message)
     return ok
 #@+node:ekr.20110317024548.14376: *3* onCreate (viewrendered.py)
 def onCreate(tag, keys):
@@ -301,6 +307,16 @@ def onCreate(tag, keys):
     if c:
         provider = ViewRenderedProvider(c)
         free_layout.register_provider(c, provider)
+#@+node:vitalije.20170712174157.1: *3* onClose
+def onClose(tag, keys):
+    c = keys.get('c')
+    h = c.hash()
+    vr = controllers.get(h)
+    if vr:
+        c.bodyWantsFocus()
+        del controllers[h]
+        vr.deactivate()
+        vr.deleteLater()
 #@+node:tbrown.20110629132207.8984: *3* show_scrolled_message
 def show_scrolled_message(tag, kw):
     if g.unitTesting:
@@ -321,6 +337,12 @@ def show_scrolled_message(tag, kw):
         keywords={'c': c, 'force': True, 's': s, 'flags': flags},
     )
     return True
+#@+node:vitalije.20170713082256.1: *3* split_last_sizes
+def split_last_sizes(sizes):
+    result = [2 * x for x in sizes[:-1]]
+    result.append(sizes[-1])
+    result.append(sizes[-1])
+    return result
 #@+node:ekr.20110320120020.14490: ** Commands
 #@+node:ekr.20131213163822.16471: *3* g.command('preview')
 @g.command('preview')
@@ -334,22 +356,32 @@ def viewrendered(event):
     c = event.get('c')
     if not c:
         return None
-    global controllers
+    global controllers, layouts
     vr = controllers.get(c.hash())
     if vr:
         if trace: g.trace('** controller exists: %s' % (vr))
+        vr.activate()
         vr.show()
+        vr.adjust_layout('open')
     else:
-        controllers[c.hash()] = vr = ViewRenderedController(c)
+        h = c.hash()
+        controllers[h] = vr = ViewRenderedController(c)
+        layouts[h] = c.cacher.db.get('viewrendered_default_layouts', (None, None))
         if trace: g.trace('** new controller: %s' % (vr))
         if hasattr(c, 'free_layout'):
             vr._ns_id = '_leo_viewrendered' # for free_layout load/save
             vr.splitter = splitter = c.free_layout.get_top_splitter()
             # Careful: we may be unit testing.
             if splitter:
+                vr.store_layout('closed')
+                sizes = split_last_sizes(splitter.sizes())
                 ok = splitter.add_adjacent(vr, 'bodyFrame', 'right-of')
                 if not ok:
                     splitter.insert(0, vr)
+                else:
+                    if splitter.orientation() == QtCore.Qt.Horizontal:
+                        splitter.setSizes(sizes)
+                vr.adjust_layout('open')
         else:
             vr.setWindowTitle("Rendered View")
             vr.resize(600, 600)
@@ -388,15 +420,17 @@ def expand_rendering_pane(event):
 @g.command('vr-hide')
 def hide_rendering_pane(event):
     '''Close the rendering pane.'''
-    global controllers
+    global controllers, layouts
     c = event.get('c')
     if c:
         vr = c.frame.top.findChild(QtWidgets.QWidget, 'viewrendered_pane')
         if vr:
+            vr.store_layout('open')
             vr.deactivate()
             vr.deleteLater()
 
-            def at_idle(c=c):
+            def at_idle(c=c, _vr=vr):
+                _vr.adjust_layout('closed')
                 c.bodyWantsFocusNow()
 
             QtCore.QTimer.singleShot(0, at_idle)
@@ -475,6 +509,35 @@ def update_rendering_pane(event):
             vr = viewrendered(event)
         if vr:
             vr.update(tag='view', keywords={'c': c, 'force': True})
+#@+node:vitalije.20170712195827.1: *3* @g.command('vr-zoom')
+@g.command('vr-zoom')
+def zoom_rendering_pane(event):
+    c = event.get('c')
+    flc = c.free_layout
+    vr = controllers.get(c.hash())
+    if not vr: return
+    if vr.zoomed:
+        for ns in flc.get_top_splitter().top().self_and_descendants():
+            if hasattr(ns, '_unzoom'):
+                # this splitter could have been added since
+                ns.setSizes(ns._unzoom)
+    else:
+        parents = []
+        parent = vr
+        while parent:
+            parents.append(parent)
+            parent = parent.parent()
+        for ns in flc.get_top_splitter().top().self_and_descendants():
+            # FIXME - shouldn't be doing this across windows
+            ns._unzoom = ns.sizes()
+            for i in range(ns.count()):
+                w = ns.widget(i)
+                if w in parents:
+                    sizes = [0] * len(ns._unzoom)
+                    sizes[i] = sum(ns._unzoom)
+                    ns.setSizes(sizes)
+                    break
+    vr.zoomed = not vr.zoomed
 #@+node:tbrown.20110629084915.35149: ** class ViewRenderedProvider (vr)
 class ViewRenderedProvider(object):
     #@+others
@@ -491,10 +554,14 @@ class ViewRenderedProvider(object):
         return [('Viewrendered', '_leo_viewrendered')]
     #@+node:tbrown.20110629084915.35151: *3* ns_provide
     def ns_provide(self, id_):
-        global controllers
+        global controllers, layouts
         if id_ == '_leo_viewrendered':
             c = self.c
             vr = controllers.get(c.hash()) or ViewRenderedController(c)
+            h = c.hash()
+            controllers[h] = vr
+            if not layouts.get(h):
+                layouts[h] = c.cacher.db.get('viewrendered_default_layouts', (None, None))
             # return ViewRenderedController(self.c)
             return vr
     #@-others
@@ -542,6 +609,7 @@ if QtWidgets: # NOQA
             # Init.
             self.create_dispatch_dict()
             self.activate()
+            self.zoomed = False
         #@+node:ekr.20110320120020.14478: *4* vr.create_dispatch_dict
         def create_dispatch_dict(self):
             pc = self
@@ -583,11 +651,11 @@ if QtWidgets: # NOQA
                 assert i > -1
                 sizes = splitter.sizes()
                 n = len(sizes)
-                for j in range(len(sizes)):
+                for j, size in enumerate(sizes):
                     if j == i:
-                        sizes[j] = max(0, sizes[i] + delta)
+                        sizes[j] = max(0, size + delta)
                     else:
-                        sizes[j] = max(0, sizes[j] - int(delta / (n - 1)))
+                        sizes[j] = max(0, size - int(delta / (n - 1)))
                 splitter.setSizes(sizes)
         #@+node:ekr.20110317080650.14381: *3* vr.activate
         def activate(self):
@@ -892,14 +960,21 @@ if QtWidgets: # NOQA
                 w.setHtml(s)
                 w.show()
                 c.bodyWantsFocusNow()
-           
+
         #@+node:ekr.20170324085132.1: *5* vr.create_latex_html
         def create_latex_html(self, s):
             '''Create an html page embedding the latex code s.'''
             trace = False and not g.unitTesting
             c = self.c
-            html = cgi.escape(s)
-            template = latex_template % (html)
+            # pylint: disable=deprecated-method
+            try:
+                import html
+                escape = html.escape
+            except AttributeError:
+                import cgi
+                escape = cgi.escape
+            html_s = escape(s)
+            template = latex_template % (html_s)
             template = g.adjustTripleString(template, c.tab_width).strip()
             if trace:
                 g.trace()
@@ -1050,7 +1125,7 @@ if QtWidgets: # NOQA
                 raiseFlag=False)
         #@+node:ekr.20160928030257.1: *5* vr.embed_pyplot_widget (not ready yet)
         def embed_pyplot_widget(self):
-            
+
             pc = self
             c = pc.c
             # Careful: we may be unit testing.
@@ -1059,7 +1134,7 @@ if QtWidgets: # NOQA
                 if trace: g.trace('no splitter')
                 return
             if not pc.pyplot_canvas:
-               
+
                 # TODO Create the widgets.
                 w = None
                 ### Ref
@@ -1182,7 +1257,7 @@ if QtWidgets: # NOQA
                     wrapper = qt_text.QTextEditWrapper(w, name='vr-body', c=c)
                     event = g.Bunch(c=c, w=wrapper)
                     g.openUrlOnClick(event, url=url)
-                    
+
                 # if self.w and hasattr(self.w, 'anchorClicked'):
                     # try:
                         # self.w.anchorClicked.disconnect()
@@ -1265,6 +1340,33 @@ if QtWidgets: # NOQA
                         continue
                 result.append(s)
             return ''.join(result)
+        #@+node:vitalije.20170712183051.1: *3* vr.adjust_layout
+        def adjust_layout(self, which):
+            global layouts
+            c = self.c
+            splitter = self.splitter
+            deflo = c.db.get('viewrendered_default_layouts', (None, None))
+            (loc, loo) = layouts.get(c.hash(), deflo)
+            if which == 'closed' and loc and splitter:
+                splitter.load_layout(loc)
+            elif which == 'open' and loo and splitter:
+                splitter.load_layout(loo)
+        #@+node:vitalije.20170712183618.1: *3* vr.store_layout
+        def store_layout(self, which):
+            global layouts
+            c = self.c; h = c.hash()
+            splitter = self.splitter
+            deflo = c.db.get('viewrendered_default_layouts', (None, None))
+            (loc, loo) = layouts.get(c.hash(), deflo)
+            if which == 'closed' and splitter:
+                loc = splitter.get_saveable_layout()
+                loc = json.loads(json.dumps(loc))
+                layouts[h] = loc, loo
+            elif which == 'open' and splitter:
+                loo = splitter.get_saveable_layout()
+                loo = json.loads(json.dumps(loo))
+                layouts[h] = loc, loo
+            c.db['viewrendered_default_layouts'] = layouts[h]
         #@-others
 #@-others
 #@@language python

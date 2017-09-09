@@ -1,3 +1,5 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20170805060844.1: * @file ../test/leo-bridge-test.py
 '''A simple test bed for the leoBridge module.'''
 import os
 import sys
@@ -11,7 +13,7 @@ files = [
 
 # Switches...
 gui = 'nullGui'         # 'nullGui', 'qt',
-kill_leo_output = False # True: kill all output produced by g.es_print.
+kill_leo_output = True  # True: kill all output produced by g.es_print.
 loadPlugins = False     # True: attempt to load plugins.
 readSettings = True     # True: read standard settings files.
 silent = True           # True: don't print signon messages.
@@ -29,6 +31,7 @@ if trace_sys_path:
 if gui == 'qt':
     # Do this here to bypass leoQt g.in_bridge logic.
     import leo.core.leoQt as leoQt
+    assert leoQt
 import leo.core.leoBridge as leoBridge
 
 controller = leoBridge.controller(
@@ -54,6 +57,13 @@ for path in files:
             n = 0
             for p in c.all_positions():
                 n += 1
-            print('%s has %s nodes' % (c.shortFileName(), n))
-    else:
-        print('file not found: %s' % path)
+            if not silent:
+                print('%s has %s nodes' % (c.shortFileName(), n))
+        else:
+            assert False, path # For unit testing
+    elif not silent:
+        if path.endswith('xyzzy.xxx'):
+            print('file not found: %s' % path)
+        else:
+            assert False, path # For unit testing
+#@-leo

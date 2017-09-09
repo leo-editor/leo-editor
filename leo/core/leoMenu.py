@@ -107,12 +107,13 @@ class LeoMenu(object):
         g.error('', s)
     #@+node:ekr.20031218072017.3781: *3* Gui-independent menu routines
     #@+node:ekr.20060926213642: *4* capitalizeMinibufferMenuName
+    #@@nobeautify
+
     def capitalizeMinibufferMenuName(self, s, removeHyphens):
         result = []
-        for i in range(len(s)):
-            ch = s[i]
-            prev = i > 0 and s[i - 1] or ''
-            prevprev = i > 1 and s[i - 2] or ''
+        for i, ch in enumerate(s):
+            prev =     s[i - 1] if i > 0 else ''
+            prevprev = s[i - 2] if i > 1 else ''
             if (
                 i == 0 or
                 i == 1 and prev == '&' or
@@ -289,8 +290,10 @@ class LeoMenu(object):
             if kind.startswith(tag):
                 name = kind[len(tag):].strip()
                 if not self.handleSpecialMenus(name, parentName=None):
-                    self.createNewMenu(name) # Create top-level menu.
-                    self.createMenuFromConfigList(name, val, level=0)
+                    # Fix #528: Don't create duplicate menu items.
+                    menu = self.createNewMenu(name) # Create top-level menu.
+                    if menu:
+                        self.createMenuFromConfigList(name, val, level=0)
             else:
                 self.error('%s %s not valid outside @menu tree' % (kind, val))
         aList = c.config.getOpenWith()
@@ -322,8 +325,9 @@ class LeoMenu(object):
                 if table:
                     self.createMenuEntries(parentMenu, table)
                 if not self.handleSpecialMenus(name, parentName, table):
-                    self.createNewMenu(name, parentName) # Create submenu of parent menu.
-                    self.createMenuFromConfigList(name, val, level + 1)
+                    menu = self.createNewMenu(name, parentName) # Create submenu of parent menu.
+                    if menu: # Partial fix for #528.
+                        self.createMenuFromConfigList(name, val, level + 1)
                 table = []
             elif kind == '@item':
                 name = str(val) # Item names must always be ascii.
@@ -1049,7 +1053,7 @@ class LeoMenu(object):
             w = c.frame.getFocus()
             if w and sys.platform.startswith('darwin'):
                  # 2012/01/11: redirect (MacOS only).
-                wname = c.widget_name(w) or ''
+                wname = c.widget_name(w)
                 if wname.startswith('head'):
                     w = c.frame.tree.edit_widget(c.p)
             # 2015/05/14: return a wrapper if possible.
@@ -1150,10 +1154,12 @@ class LeoMenu(object):
     #@+node:ekr.20031218072017.3784: *4* createMenuItemsFromTable
     def createMenuItemsFromTable(self, menuName, table, dynamicMenu=False):
         trace = False
+        if g.app.gui.isNullGui:
+            return
         try:
             menu = self.getMenu(menuName)
             if menu is None:
-                if trace and not g.app.menuWarningsGiven and not g.app.gui.isNullGui:
+                if trace and not g.app.menuWarningsGiven: ### and not g.app.gui.isNullGui:
                     g.es_print(g.app.gui.guiName(), g.callers())
                     g.es_print("menu does not exist: %s" % (menuName))
                 return
@@ -1168,7 +1174,9 @@ class LeoMenu(object):
             parent = self.getMenu(parentName) # parent may be None.
             menu = self.getMenu(menuName)
             if menu:
-                g.error("menu already exists:", menuName)
+                # Not an error.
+                # g.error("menu already exists:", menuName)
+                return None # Fix #528.
             else:
                 menu = self.new_menu(parent, tearoff=0, label=menuName)
                 self.setMenu(menuName, menu)

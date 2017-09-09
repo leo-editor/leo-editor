@@ -9,7 +9,7 @@ Importer = linescanner.Importer
 #@+node:ekr.20161027094537.13: ** class Perl_Importer
 class Perl_Importer(Importer):
     '''A scanner for the perl language.'''
-    
+
     def __init__(self, importCommands,language=None, alternate_language=None):
         '''The ctor for the Perl_ImportController class.'''
         # Init the base class.
@@ -18,7 +18,7 @@ class Perl_Importer(Importer):
             language = 'perl',
             state_class = Perl_ScanState,
         )
-        
+
     #@+others
     #@+node:ekr.20161027183713.1: *3* perl_i.clean_headline
     def clean_headline(self, s):
@@ -58,7 +58,7 @@ class Perl_Importer(Importer):
         '''
         trace = False and g.unitTesting
         comment, block1, block2 = self.single_comment, self.block1, self.block2
-        
+
         def add_key(d, key, data):
             aList = d.get(key,[])
             aList.append(data)
@@ -129,7 +129,7 @@ class Perl_Importer(Importer):
 #@+node:ekr.20161105095705.1: ** class Perl_ScanState
 class Perl_ScanState:
     '''A class representing the state of the perl line-oriented scan.'''
-    
+
     def __init__(self, d=None):
         '''Perl_ScanState ctor.'''
         if d:
@@ -140,12 +140,12 @@ class Perl_ScanState:
         else:
             self.context = ''
             self.curlies = self.parens = 0
-        
+
     def __repr__(self):
         '''Perl_ScanState.__repr__'''
         return 'Perl_ScanState context: %r curlies: %s parens: %s' % (
             self.context, self.curlies, self.parens)
-            
+
     __str__ = __repr__
 
     #@+others
@@ -162,7 +162,7 @@ class Perl_ScanState:
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         # self.bs_nl = bs_nl
         self.context = context
-        self.curlies += delta_c  
+        self.curlies += delta_c
         self.parens += delta_p
         # self.squares += delta_s
         return i

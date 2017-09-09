@@ -517,13 +517,14 @@ class RstCommands(object):
     #@+node:ekr.20090502071837.62: *5* rst.processTopTree
     def processTopTree(self, p, justOneFile=False):
         '''Find and handle all @rst and @slides node associated with p.'''
-        
+
         def predicate(p):
-            h = p and p.h or ''
+            # pylint: disable=consider-using-ternary
+            h = p.h if p else ''
             return (
                 h.startswith('@rst') and not h.startswith('@rst-') or
                 h.startswith('@slides'))
-            
+
         roots = g.findRootsWithPredicate(self.c, p, predicate)
         if roots:
             for p in roots:
@@ -605,7 +606,7 @@ class RstCommands(object):
         i = g.skip_id(h, 1) # Skip the '@'
         kind, fn = h[: i].strip(), h[i:].strip()
         if not fn: return g.error('%s requires file name' % (kind))
-        title = p and p.firstChild().h or '<no slide>'
+        title = p.firstChild().h if p and p.firstChild() else '<no slide>'
         title = title.strip().capitalize()
         n_tot = p.numberOfChildren()
         n = 1
@@ -1985,6 +1986,7 @@ class HtmlParserClass(LinkAnchorParserClass):
         self.stack = self.stack[2]
     #@+node:ekr.20120219194520.10455: *4* feed
     def feed(self, line):
+        # pylint: disable=arguments-differ
         # g.trace(repr(line))
         self.node_code.append(line)
         HTMLParser.HTMLParser.feed(self, line) # Call the base class's feed().

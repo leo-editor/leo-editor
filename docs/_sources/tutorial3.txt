@@ -1,0 +1,51 @@
+.. rst3: filename: html\tutorial3.html
+
+##################
+Creating Documents
+##################
+
+.. contents::
+    :depth: 2
+
+.. |br| raw:: html
+
+   <br />
+
+Using abbreviations & templates
++++++++++++++++++++++++++++++++
+
+
+
+Creating documents with reStructuredText
+++++++++++++++++++++++++++++++++++++++++
+
+.. _`docutils`: http://docutils.sourceforge.net
+.. _`LaTeX`: http://www.latex-project.org/
+.. _`reStructuredText`: http://docutils.sourceforge.net/rst.html
+.. _`Sphinx`: http://sphinx.pocoo.org/
+.. .. _`this chapter`: http://leoeditor.com/rstplugin3.html
+.. _`Leo's Users Guide`: http://leoeditor.com/leo_toc.html
+
+The rst3 command converts an @rst tree to `reStructuredText`_ (rST) and sends
+the result to `docutils`_ or `Sphinx`_ for further processing.
+
+With this tool chain, you can easily create HTML, PDF, LaTeX and other
+kinds of documents. All of Leo's documentation is written in Sphinx and
+processed with the rst3 command to produce HTML files.
+
+In "plain" rST, you denote sections by underlining heading names.
+Reorganizing an document is tedious: you have to change the underlining
+characters by hand.
+
+In contrast, the rst3 command automatically creates rST sections from
+headlines. Reorganizing your document is easy--just reorganize your @rst
+tree. You don't have to change rST markup!
+
+The rst3 command provides *many* other capabilities for power users. For
+full details, see `this chapter`_ in `Leo's Users Guide`_.
+
+Summary
++++++++
+
+
+

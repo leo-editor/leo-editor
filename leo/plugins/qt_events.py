@@ -83,6 +83,9 @@ class LeoQtEventFilter(QtCore.QObject):
         # Important:
         # QLineEdit: ignore all key events except keyRelease events.
         # QTextEdit: ignore all key events except keyPress events.
+        if c.frame and c.frame.top and obj is c.frame.top.lineEdit and eventType == ev.FocusIn:
+            if k.getStateKind() == 'getArg':
+                c.frame.top.lineEdit.restore_selection()
         if eventType in lineEditKeyKinds:
             p = c.currentPosition()
             isEditWidget = obj == c.frame.tree.edit_widget(p)
@@ -107,7 +110,7 @@ class LeoQtEventFilter(QtCore.QObject):
             elif k.inState():
                 override = not ignore # allow all keystrokes.
             else:
-                override = len(aList) > 0
+                override = bool(aList)
         else:
             override = False; tkKey = '<no key>'
             if self.tag == 'body':
@@ -177,11 +180,11 @@ class LeoQtEventFilter(QtCore.QObject):
                 shortcut = darwinmap[tkKey]
         char = ch
         # Auxiliary info.
-        x = hasattr(event, 'x') and event.x or 0
-        y = hasattr(event, 'y') and event.y or 0
+        x = getattr(event, 'x', None) or 0
+        y = getattr(event, 'y', None) or 0
         # Support for fastGotoNode plugin
-        x_root = hasattr(event, 'x_root') and event.x_root or 0
-        y_root = hasattr(event, 'y_root') and event.y_root or 0
+        x_root = getattr(event, 'x_root', None) or 0
+        y_root = getattr(event, 'y_root', None) or 0
         if trace and verbose: g.trace('ch: %s, shortcut: %s printable: %s' % (
             repr(ch), repr(shortcut), ch in string.printable))
         return leoGui.LeoKeyEvent(c, char, event, shortcut, w, x, y, x_root, y_root)
@@ -528,7 +531,7 @@ class LeoQtEventFilter(QtCore.QObject):
                     ignore.append(n)
         for val, kind in show:
             if self.tag in exclude_names:
-                return 
+                return
             if eventType == val:
                 if traceKey:
                     g.trace(

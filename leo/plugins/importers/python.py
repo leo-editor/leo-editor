@@ -11,7 +11,7 @@ Target = linescanner.Target
 #@+node:ekr.20161029103615.1: ** class Py_Importer(Importer)
 class Py_Importer(Importer):
     '''A class to store and update scanning state.'''
-    
+
     def __init__(self, importCommands, language=None, alternate_language=None):
         '''Py_Importer.ctor.'''
         # Init the base class.
@@ -24,17 +24,31 @@ class Py_Importer(Importer):
 
     #@+others
     #@+node:ekr.20161110073751.1: *3* py_i.clean_headline
-    def clean_headline(self, s):
+    def clean_headline(self, h, p=None):
         '''Return a cleaned up headline s.'''
-        m = re.match(r'\s*def\s+(\w+)', s)
-        if m:
-            return m.group(1)
+        # pylint: disable=arguments-differ
+        if p: # Called from clean_all_headlines:
+            return self.get_decorator(p) + p.h
         else:
-            m = re.match(r'\s*class\s+(\w+)', s)
+            m = re.match(r'\s*def\s+(\w+)', h)
             if m:
-                return 'class %s' % m.group(1)
-            else:
-                return s.strip()
+                return m.group(1)
+            m = re.match(r'\s*class\s+(\w+)', h)
+            return 'class %s' % m.group(1) if m else h.strip()
+
+    def get_decorator(self, p):
+        if g.unitTesting or self.c.config.getBool('put_python_decorators_in_imported_headlines'):
+            for s in self.get_lines(p):
+                if not s.isspace():
+                    m = re.match(r'\s*@\s*([\w\.]+)', s)
+                    if m:
+                        s = s.strip()
+                        if s.endswith('('):
+                            s = s[:-1].strip()
+                        return s + ' '
+                    else:
+                        return ''
+        return ''
     #@+node:ekr.20161128054630.1: *3* py_i.get_new_dict
     #@@nobeautify
 
@@ -45,7 +59,7 @@ class Py_Importer(Importer):
         '''
         trace = False and g.unitTesting
         comment, block1, block2 = self.single_comment, self.block1, self.block2
-        
+
         def add_key(d, key, data):
             aList = d.get(key,[])
             aList.append(data)
@@ -143,7 +157,7 @@ class Py_Importer(Importer):
     #@+node:ekr.20161220171728.1: *4* python_i.common_lws
     def common_lws(self, lines):
         '''Return the lws (a string) common to all lines.'''
-        return lines and self.get_str_lws(lines[0]) or ''
+        return self.get_str_lws(lines[0]) if lines else ''
             # We must unindent the class/def line fully.
             # It would be wrong to examine the indentation of other lines.
     #@+node:ekr.20161116034633.2: *4* python_i.cut_stack
@@ -184,7 +198,7 @@ class Py_Importer(Importer):
         '''
         Handle a line that terminates the previous class/def. The line is
         neither a class/def line, and we are not in a multi-line token.
-        
+
         Skip all lines that are at the same level as the class/def.
         '''
         # pylint: disable=arguments-differ
@@ -233,7 +247,7 @@ class Py_Importer(Importer):
         '''
         trace = False # and g.unitTesting
         indent_ws = self.get_str_lws(line)
-        h = self.clean_headline(line) 
+        h = self.clean_headline(line)
         if not target.at_others_flag:
             target.at_others_flag = True
             ref = '%s@others\n' % indent_ws
@@ -367,7 +381,7 @@ class Py_Importer(Importer):
     def starts_decorator(self, i, lines, prev_state):
         '''
         True if the line looks like a decorator outside any context.
-        
+
         Puts the entire decorator into the self.decorator_lines list,
         and sets self.skip so that the next line to be handled is a class/def line.
         '''
@@ -390,12 +404,22 @@ class Py_Importer(Importer):
                     self.decorator_lines.append(line)
                     self.skip += 1
                     prev_state = new_state
-        return False       
+        return False
+    #@+node:ekr.20170617125213.1: *3* py_i.clean_all_headlines
+    def clean_all_headlines(self, parent):
+        '''
+        Clean all headlines in parent's tree by calling the language-specific
+        clean_headline method.
+        '''
+        for p in parent.subtree():
+            h = self.clean_headline(p.h, p=p)
+            if h and h != p.h:
+                p.h = h
     #@+node:ekr.20161119083054.1: *3* py_i.find_class & helper
     def find_class(self, parent):
         '''
         Find the start and end of a class/def in a node.
-        
+
         Return (kind, i, j), where kind in (None, 'class', 'def')
         '''
         trace = True and not g.unitTesting
@@ -417,7 +441,7 @@ class Py_Importer(Importer):
         '''
         Find the end of a class/def starting at index
         on line i of lines.
-        
+
         Return (kind, i, j), where kind in (None, 'class', 'def')
         .'''
         trace = True and not g.unitTesting
@@ -446,7 +470,7 @@ class Py_Importer(Importer):
 #@+node:ekr.20161105100227.1: ** class Python_ScanState
 class Python_ScanState:
     '''A class representing the state of the python line-oriented scan.'''
-    
+
     def __init__(self, d=None):
         '''Python_ScanState ctor.'''
         if d:
@@ -496,7 +520,7 @@ class Python_ScanState:
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         self.bs_nl = bs_nl
         self.context = context
-        self.curlies += delta_c  
+        self.curlies += delta_c
         self.parens += delta_p
         self.squares += delta_s
         return i

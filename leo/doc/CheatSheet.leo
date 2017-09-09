@@ -389,8 +389,18 @@ Most useful methods:
                             # safely deletes all the positions in aList.
     c.positionExists(p)
     c.redraw(p=None)        # Redraw the screen. Select p if given.
+    c.redraw_later()        # Ensure that Leo redraws the outline.
     c.save()                # Save the present outline.
-    c.selectPosition()
+    c.selectPosition()      # Select the position, without redrawing the screen.
+    
+Suppressing screen flash when redrawing the outline:
+
+    try:
+        c.disable_redraw()
+        &lt;&lt; Code that might otherwise update the outline &gt;&gt;
+    finally:
+        c.enable_redraw()
+        c.redraw()
     
 **Official ivars** of any leoFrame f:
 

@@ -19,7 +19,7 @@ class Otl_Importer(Importer):
             state_class = None,
             strict = False,
         )
-        
+
     #@+others
     #@+node:ekr.20161124035243.1: *3* otl_i.gen_lines & helper
     # Must match body pattern first.
@@ -29,7 +29,7 @@ class Otl_Importer(Importer):
     def gen_lines(self, s, parent):
         '''Node generator for otl (vim-outline) mode.'''
         self.inject_lines_ivar(parent)
-        # We may as well do this first.  See warning below.
+        # We may as well do this first.  See note below.
         self.add_line(parent, '@others\n')
         self.parents = [parent]
         for line in g.splitLines(s):
@@ -48,9 +48,11 @@ class Otl_Importer(Importer):
                         h = m.group(2).strip())
                 else:
                     self.error('Bad otl line: %r' % line)
-        # This warning *is* correct.
-        warning = '\nWarning: this node is ignored when writing this file.\n\n'
-        self.add_line(self.root, warning)
+        note = (
+            'Note: This node\'s body text is ignored when writing this file.\n\n' +
+            'The @others directive is not required.\n'
+        )
+        self.add_line(parent, note)
     #@+node:ekr.20161124035243.2: *4* otl_i.find_parent
     def find_parent(self, level, h):
         '''
@@ -74,7 +76,7 @@ class Otl_Importer(Importer):
         '''
         Optional Stage 2 of the importer pipeline, consisting of zero or more
         substages. Each substage alters nodes in various ways.
-        
+
         Subclasses may freely override this method, **provided** that all
         substages use the API for setting body text. Changing p.b directly will
         cause asserts to fail later in i.finish().

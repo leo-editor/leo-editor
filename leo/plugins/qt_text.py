@@ -799,7 +799,7 @@ class NumberBar(QtWidgets.QFrame):
         '''
         # w_adjust is used to compensate for the current line being bold.
         # Always allocate room for 2 columns
-        width = self.fm.width(str(max(10, self.highest_line))) + self.w_adjust
+        width = self.fm.width(str(max(1000, self.highest_line))) + self.w_adjust
         if self.width() != width:
             self.setFixedWidth(width)
         QtWidgets.QWidget.update(self, *args)
@@ -819,16 +819,19 @@ class NumberBar(QtWidgets.QFrame):
         # Paint each visible block.
         painter = QtGui.QPainter(self)
         block = d.begin()
-        n = 0
+        n = i = 0
+        c = self.c
+        translation = c.user_dict.get('line_number_translation', [])
         while block.isValid():
+            i = translation[n] if n < len(translation) else n + 1
             n += 1
             top_left = layout.blockBoundingRect(block).topLeft()
             if top_left.y() > page_bottom:
                 break # Outside the visible area.
             bold = block == current_block
-            self.paintBlock(bold, n, painter, top_left, scroll_y)
+            self.paintBlock(bold, i, painter, top_left, scroll_y)
             block = block.next()
-        self.highest_line = n
+        self.highest_line = i
         painter.end()
         QtWidgets.QWidget.paintEvent(self, event)
             # Propagate the event.
@@ -838,7 +841,10 @@ class NumberBar(QtWidgets.QFrame):
         if bold:
             self.setBold(painter, True)
         s = str(n)
-        x = self.width() - self.fm.width(s) - self.w_adjust
+        pad = max(4, len(str(self.highest_line))) - len(s)
+        s = ' '*pad + s
+        # x = self.width() - self.fm.width(s) - self.w_adjust
+        x = 0
         y = round(top_left.y()) - scroll_y + self.fm.ascent() + self.y_adjust
         painter.drawText(x, y, s)
         if bold:
@@ -938,6 +944,12 @@ class QMinibufferWrapper(QLineEditWrapper):
         # It may lag a bit when the style's edited, but the new top
         # level sheet will get pushed down quite frequently.
         self.widget.setStyleSheet(self.c.frame.top.styleSheet())
+
+    def setSelectionRange(self, i, j, insert=None, s=None):
+        QLineEditWrapper.setSelectionRange(self, i, j, insert, s)
+        insert = j if insert is None else insert
+        if self.widget:
+            self.widget._sel_and_insert = (i, j, insert)
 #@+node:ekr.20110605121601.18103: ** class QScintillaWrapper(QTextMixin)
 class QScintillaWrapper(QTextMixin):
     '''A wrapper for QsciScintilla supporting the high-level interface.
@@ -1395,10 +1407,16 @@ class QTextEditWrapper(QTextMixin):
         w = self.widget
         tc = QtGui.QTextCursor
         d = {
+            'begin-line': tc.StartOfLine, # Was start-line
+            'down': tc.Down,
+            'end': tc.End,
+            'end-line': tc.EndOfLine, # Not used.
             'exchange': True, # Dummy.
-            'down': tc.Down, 'end': tc.End, 'end-line': tc.EndOfLine,
-            'home': tc.Start, 'left': tc.Left, 'page-down': tc.Down,
-            'page-up': tc.Up, 'right': tc.Right, 'start-line': tc.StartOfLine,
+            'home': tc.Start,
+            'left': tc.Left,
+            'page-down': tc.Down,
+            'page-up': tc.Up,
+            'right': tc.Right,
             'up': tc.Up,
         }
         kind = kind.lower()
@@ -1518,7 +1536,7 @@ class QTextEditWrapper(QTextMixin):
         trace = False and not g.unitTesting
         trace_time = True
         c, w = self.c, self.widget
-        h = c.p and c.p.h or '<no p>'
+        h = c.p.h if c.p else '<no p>'
         if trace and not trace_time: g.trace(len(s), h)
         try:
             if trace and trace_time:

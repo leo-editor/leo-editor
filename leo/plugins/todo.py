@@ -78,12 +78,12 @@ if g.app.gui.guiName() == "qt":
     from leo.core.leoQt import QtConst,QtCore,QtGui,QtWidgets,uic ### isQt5
 #@-<< imports >>
 #@+others
-#@+node:tbrown.20090119215428.6: ** init
+#@+node:tbrown.20090119215428.6: ** init (todo.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
     name = g.app.gui.guiName()
     if name != "qt":
-        if name != 'nullGui':
+        if name not in ('curses', 'nullGui'):
             print('todo.py plugin not loading because gui is not Qt')
         return False
     g.registerHandler('after-create-leo-frame',onCreate)
@@ -216,7 +216,7 @@ if g.app.gui.guiName() == "qt":
             offsets = sorted(set(offsets), key=lambda x: (x[0],int(x[1:].strip('>').replace('<', '-'))))
             u.dueDateOffset.addItems(offsets)
             u.dueDateOffset.setCurrentIndex(self.date_offset_default)
-           
+
             if True: ### isQt5:
                 self.UI.dueDateOffset.activated.connect(
                     lambda v: o.set_date_offset(field='duedate'))
@@ -533,6 +533,7 @@ class todoController(object):
                         # Example: @strings[beforeIcon,beforeHeadline] cleo_icon_location = beforeHeadline
             elif which == 'progress':
                 prog = self.getat(p.v, 'progress')
+                # pylint: disable=literal-comparison
                 if prog is not '':
                     prog = int(prog or 0)
                     use = prog//10*10
@@ -605,7 +606,7 @@ class todoController(object):
     #@+node:tbrown.20090119215428.23: *4* testDefault
     def testDefault(self, attrib, val):
         "return true if val is default val for attrib"
-
+        # pylint: disable=consider-using-ternary
         return attrib == "priority" and val == 9999 or val == ""
     #@+node:tbrown.20090119215428.24: *4* setat
     def setat(self, node, attrib, val):
@@ -696,7 +697,7 @@ class todoController(object):
     def redraw(self):
 
         self.updateUI()
-        self.c.redraw_now()
+        self.c.redraw()
     #@+node:tbrown.20090119215428.29: *4* clear_all
     @redrawer
     def clear_all(self, recurse=False, all=False):

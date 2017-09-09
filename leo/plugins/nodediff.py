@@ -137,22 +137,21 @@ class NodeDiffController(object):
     def __init__(self, c):
         self.c = c
         # Warning: hook handlers must use keywords.get('c'), NOT self.c.
-
         self.tab_name = 'NodeDiff'
-
-        self.valid_styles = {'compare': self.run_compare,
-                             'ndiff': self.run_ndiff,
-                             'unified_diff': self.run_unified_diff}
+        self.valid_styles = {
+            'compare': self.run_compare,
+            'ndiff': self.run_ndiff,
+            'unified_diff': self.run_unified_diff,
+        }
         self.diff_style = c.config.getString('node-diff-style') or 'compare'
         if self.diff_style not in self.valid_styles.keys():
             self.diff_style = 'compare'
-
         # register commands
-        c.k.registerCommand('diff-marked',shortcut=None,func=self.run_diff_on_marked)
-        c.k.registerCommand('diff-selected',shortcut=None,func=self.run_diff_on_selected)
-        c.k.registerCommand('diff-subtree',shortcut=None,func=self.run_diff_on_subtree)
-        c.k.registerCommand('diff-saved',shortcut=None,func=self.run_diff_on_saved)
-        c.k.registerCommand('diff-vcs',shortcut=None,func=self.run_diff_on_vcs)
+        c.k.registerCommand('diff-marked', self.run_diff_on_marked)
+        c.k.registerCommand('diff-selected', self.run_diff_on_selected)
+        c.k.registerCommand('diff-subtree', self.run_diff_on_subtree)
+        c.k.registerCommand('diff-saved', self.run_diff_on_saved)
+        c.k.registerCommand('diff-vcs', self.run_diff_on_vcs)
     #@+node:peckj.20140113131037.5802: *3* getters
     #@+node:peckj.20140113131037.5799: *4* get_selection
     def get_selection(self):

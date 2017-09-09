@@ -20,7 +20,7 @@ class Java_Importer(Importer):
             state_class = Java_ScanState,
             strict = False,
         )
-    
+
     # Used in multiple methods.
     java_keywords = (
         '(break|case|catch|continue|default|do|else|enum|' +
@@ -35,17 +35,17 @@ class Java_Importer(Importer):
     # 'signed|typedef|union|unsigned)'
     java_types_pattern = re.compile(java_types_list)
     java_keywords_pattern = re.compile(java_keywords)
-  
+
     #@+others
     #@+node:ekr.20161126163014.1: *3* java_i.clean_headline
-    def clean_headline(self, headline):
+    def clean_headline(self, s):
         '''Return the cleaned headline.'''
-        if headline.strip().endswith('{'):
-            return headline.strip('{').strip()
+        if s.strip().endswith('{'):
+            return s.strip('{').strip()
         else:
-            return headline.strip()\
+            return s.strip()\
 
-        
+
     #@+node:ekr.20161205042019.2: *3* java_i.match_name_patterns
     java_name_pattern = re.compile(r'\s*([\w:]+)')
 
@@ -60,7 +60,7 @@ class Java_Importer(Importer):
             if not self.java_types_pattern.match(word):
                 self.headline = word
     #@+node:ekr.20161205042019.3: *3* java_i.match_start_patterns
-    # Define patterns that can start a block        
+    # Define patterns that can start a block
     java_class_pattern = re.compile(r'\s*(%s\s*)*\s*class\s+(\w+)' % (java_types_list))
     java_func_pattern  = re.compile(r'\s*(%s\s*)+\s*([\w:]+)' % (java_types_list))
 
@@ -158,7 +158,7 @@ class Java_Importer(Importer):
 #@+node:ekr.20161126161824.6: ** class class Java_ScanState
 class Java_ScanState:
     '''A class representing the state of the java line-oriented scan.'''
-    
+
     def __init__(self, d=None):
         '''Java_ScanState.__init__'''
         if d:
@@ -193,7 +193,7 @@ class Java_ScanState:
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         # All ScanState classes must have a context ivar.
         self.context = context
-        self.curlies += delta_c  
+        self.curlies += delta_c
         return i
     #@-others
 #@-others

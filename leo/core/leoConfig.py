@@ -22,16 +22,16 @@ class ParserBaseClass(object):
     basic_types = [
         # Headlines have the form @kind name = var
         'bool', 'color', 'directory', 'int', 'ints',
-        'float', 'path', 'ratio', 'shortcut', 'string', 'strings']
+        'float', 'path', 'ratio', 'string', 'strings']
     control_types = [
-        'abbrev', 'buttons',
+        'buttons',
         'commands', 'data',
         'enabledplugins', 'font',
         'ifenv', 'ifhostname', 'ifplatform',
-        # 'if','ifgui',
         'ignore',
         'menus', 'mode', 'menuat',
-        'openwith', 'outlinedata', 'page', 'popup',
+        'openwith', 'outlinedata',
+        'popup',
         'settings', 'shortcuts',
         ]
     # Keys are settings names, values are (type,value) tuples.
@@ -55,7 +55,6 @@ class ParserBaseClass(object):
             # A list of dicts containing 'name','shortcut','command' keys.
         # Keys are canonicalized names.
         self.dispatchDict = {
-            'abbrev':       self.doAbbrev, # New in 4.4.1 b2.
             'bool':         self.doBool,
             'buttons':      self.doButtons, # New in 4.4.4
             'color':        self.doColor,
@@ -64,8 +63,6 @@ class ParserBaseClass(object):
             'directory':    self.doDirectory,
             'enabledplugins': self.doEnabledPlugins,
             'font':         self.doFont,
-            # 'if':         self.doIf, # Removed in 5.2 b1.
-            # 'ifgui':      self.doIfGui,  # Removed in 4.4 b3.
             'ifenv':        self.doIfEnv, # New in 5.2 b1.
             'ifhostname':   self.doIfHostname,
             'ifplatform':   self.doIfPlatform,
@@ -80,9 +77,7 @@ class ParserBaseClass(object):
             'openwith':     self.doOpenWith, # New in 4.4.3 b1.
             'outlinedata':  self.doOutlineData, # New in 4.11.1.
             'path':         self.doPath,
-            'page':         self.doPage,
             'ratio':        self.doRatio,
-            # 'shortcut':   self.doShortcut, # Removed in 4.4.1 b1.
             'shortcuts':    self.doShortcuts,
             'string':       self.doString,
             'strings':      self.doStrings,
@@ -122,17 +117,6 @@ class ParserBaseClass(object):
         # Does not work at present because we are using a null Gui.
         g.blue(s)
     #@+node:ekr.20041120094940: *3* kind handlers (ParserBaseClass)
-    #@+node:ekr.20060608221203: *4* doAbbrev
-    def doAbbrev(self, p, kind, name, val):
-        d = {}
-        s = p.b
-        lines = g.splitLines(s)
-        for line in lines:
-            line = line.strip()
-            if line and not g.match(line, 0, '#'):
-                name, val = self.parseAbbrevLine(line)
-                if name: d[val] = name
-        self.set(p, 'abbrev', 'abbrev', d)
     #@+node:ekr.20041120094940.1: *4* doBool
     def doBool(self, p, kind, name, val):
         if val in ('True', 'true', '1'):
@@ -172,7 +156,7 @@ class ParserBaseClass(object):
         if aList:
             g.app.config.atCommonButtonsList.extend(aList)
                 # Bug fix: 2011/11/24: Extend the list, don't replace it.
-            g.app.config.buttonsFileName = c and c.shortFileName() or '<no settings file>'
+            g.app.config.buttonsFileName = c.shortFileName() if c else '<no settings file>'
         if trace: g.trace(c.shortFileName(), '[%s]' % ','.join([z[0].h for z in aList]))
         d, key = g.app.config.unitTestDict, 'config.doButtons-file-names'
         aList = d.get(key, [])
@@ -236,6 +220,7 @@ class ParserBaseClass(object):
         # New in Leo 4.11: do not strip lines.
         data = self.getOutlineDataHelper(p)
         self.set(p, kind, name, data)
+        return 'skip'
     #@+node:ekr.20131114051702.16546: *5* getOutlineDataHelper
     def getOutlineDataHelper(self, p):
         c = self.c
@@ -274,7 +259,7 @@ class ParserBaseClass(object):
         s = ''.join(aList)
         # Set the global config ivars.
         g.app.config.enabledPluginsString = s
-        g.app.config.enabledPluginsFileName = c and c.shortFileName() or '<no settings file>'
+        g.app.config.enabledPluginsFileName = c.shortFileName() if c else '<no settings file>'
         # g.trace('\n%s' % (s),g.app.config.enabledPluginsFileName)
     #@+node:ekr.20041120094940.6: *4* doFloat
     def doFloat(self, p, kind, name, val):
@@ -297,13 +282,6 @@ class ParserBaseClass(object):
                 setKind = key
                 self.set(p, setKind, name, val)
                 if trace and val not in (None, 'none', 'None'): g.trace(key, val)
-    #@+node:ekr.20041120103933: *4* doIf (not supported)
-    if 0:
-        # Not supported. Use @ifenv instead.
-
-        def doIf(self, p, kind, name, val):
-            g.trace("'if' not supported yet")
-            return None
     #@+node:ekr.20150426034813.1: *4* doIfEnv
     def doIfEnv(self, p, kind, name, val):
         '''
@@ -325,20 +303,6 @@ class ParserBaseClass(object):
                 return None
         if trace: g.trace('disabled', name, env, aList[1:])
         return 'skip'
-    #@+node:ekr.20041121125416: *4* doIfGui (not supported)
-    if 0:
-        # This might work now that Leo supports the --gui command-line argument.
-        # However, it is not needed.
-
-        def doIfGui(self, p, kind, name, val):
-            if not g.app.gui or not g.app.gui.guiName():
-                s = '@if-gui has no effect: g.app.gui not defined yet'
-                g.warning(s)
-                return "skip"
-            elif g.app.gui.guiName().lower() == name.lower():
-                return None
-            else:
-                return "skip"
     #@+node:dan.20080410121257.2: *4* doIfHostname
     def doIfHostname(self, p, kind, name, val):
         '''
@@ -423,7 +387,9 @@ class ParserBaseClass(object):
         '''Handle @menuat setting.'''
         trace = False and not g.unitTesting
         if g.app.config.menusList:
-            if trace: g.es_print("Patching menu tree: " + name)
+            if trace:
+                g.es_print("Patching menu tree: " + name)
+                g.es_print(self.c)
             # get the patch fragment
             patch = []
             if p.hasChildren():
@@ -439,7 +405,9 @@ class ParserBaseClass(object):
                 targetPath = '/' + targetPath
             ans = self.patchMenuTree(g.app.config.menusList, targetPath)
             if ans:
-                if trace: g.es_print("Patching (" + mode + ' ' + source + ") at " + targetPath)
+                if trace:
+                    # g.es_print("Patching (" + mode + ' ' + source + ") at " + targetPath)
+                    g.es_print("Patching (%s %s) at %s" % (mode, source, targetPath))
                 # pylint: disable=unpacking-non-sequence
                 list_, idx = ans
                 if mode not in ('copy', 'cut'):
@@ -497,19 +465,20 @@ class ParserBaseClass(object):
                 self.dumpMenuTree(val, level + 1, path=path + '/' + name)
     #@+node:tbrown.20080514180046.8: *5* patchMenuTree
     def patchMenuTree(self, orig, targetPath, path=''):
+        trace = False and not g.unitTesting
         for n, z in enumerate(orig):
             kind, val, val2 = z
             if kind == '@item':
                 name = self.getName(val, val2)
                 curPath = path + '/' + name
                 if curPath == targetPath:
-                    g.es_print('Found ' + targetPath)
+                    if trace: g.es_print('Found ' + targetPath)
                     return orig, n
             else:
                 name = self.getName(kind.replace('@menu ', ''))
                 curPath = path + '/' + name
                 if curPath == targetPath:
-                    g.es_print('Found ' + targetPath)
+                    if trace: g.es_print('Found ' + targetPath)
                     return orig, n
                 ans = self.patchMenuTree(val, targetPath, path=path + '/' + name)
                 if ans:
@@ -581,8 +550,7 @@ class ParserBaseClass(object):
                         else:
                             kind = tag
                             head = itemName
-                            # body = p.b
-                            # 4.11.1: Only the first body line is significant.
+                            # Only the first body line is significant.
                             # This allows following comment lines.
                             lines = [z for z in g.splitLines(p.b) if z.strip()]
                             body = lines[0] if lines else ''
@@ -652,9 +620,6 @@ class ParserBaseClass(object):
         name = kind = 'openwithtable'
         self.openWithList.append(d)
         self.set(p, kind, name, self.openWithList)
-    #@+node:ekr.20041120104215.2: *4* doPage
-    def doPage(self, p, kind, name, val):
-        pass # Ignore @page this while parsing settings.
     #@+node:bobjack.20080324141020.4: *4* doPopup & helper
     def doPopup(self, p, kind, name, val):
         """
@@ -939,25 +904,6 @@ class ParserBaseClass(object):
         si = g.ShortcutInfo(kind=kind, nextMode=nextMode, pane=pane, stroke=stroke)
         if trace: g.trace('%25s %s' % (name, si))
         return name, si
-    #@+node:ekr.20060608222828: *4* parseAbbrevLine (ParserBaseClass)
-    def parseAbbrevLine(self, s):
-        '''Parse an abbreviation line:
-        command-name = abbreviation
-        return (command-name,abbreviation)
-        '''
-        i = j = g.skip_ws(s, 0)
-        i = g.skip_id(s, i, '-') # New in 4.4: allow Emacs-style shortcut names.
-        name = s[j: i]
-        if not name: return None, None
-        i = g.skip_ws(s, i)
-        if not g.match(s, i, '='): return None, None
-        i = g.skip_ws(s, i + 1)
-        val = s[i:].strip()
-        # Ignore comments after the shortcut.
-        i = val.find('#')
-        if i > -1: val = val[: i].strip()
-        if val: return name, val
-        else: return None, None
     #@+node:ekr.20041120094940.9: *3* set (ParserBaseClass)
     def set(self, p, kind, name, val):
         """Init the setting for name to val."""
@@ -966,7 +912,14 @@ class ParserBaseClass(object):
         c = self.c
         # Note: when kind is 'shortcut', name is a command name.
         key = self.munge(name)
-        # if kind and kind.startswith('setting'): g.trace("settingsParser %10s %15s %s" %(kind,val,name))
+        if key is None:
+            g.es_print('Empty setting name in', p.h in c.fileName())
+            # g.trace("(ParserBaseClass): %r %r %r %s" % (kind,val,name,p.h))
+            parent = p.parent()
+            while parent:
+                g.trace('parent', parent.h)
+                parent.moveToParent()
+            return
         d = self.settingsDict
         gs = d.get(key)
         if gs:
@@ -1366,7 +1319,10 @@ class GlobalConfigManager(object):
     #@+node:ekr.20041122070339: *4* gcm.getColor
     def getColor(self, setting):
         '''Return the value of @color setting.'''
-        return self.get(setting, "color")
+        col = self.get(setting, "color")
+        while col and col.startswith('@'):
+            col = self.get(col[1:], "color")
+        return col
     #@+node:ekr.20080312071248.7: *4* gcm.getCommonCommands
     def getCommonAtCommands(self):
         '''Return the list of tuples (headline,script) for common @command nodes.'''
@@ -1696,7 +1652,10 @@ class LocalConfigManager(object):
     #@+node:ekr.20120215072959.12525: *5* c.config.getColor
     def getColor(self, setting):
         '''Return the value of @color setting.'''
-        return self.get(setting, "color")
+        col = self.get(setting, "color")
+        while col and col.startswith('@'):
+            col = self.get(col[1:], "color")
+        return col
     #@+node:ekr.20120215072959.12527: *5* c.config.getData
     def getData(self, setting, strip_comments=True, strip_data=True):
         '''Return a list of non-comment strings in the body text of @data setting.'''
@@ -1909,23 +1868,22 @@ class LocalConfigManager(object):
         if g.unitTesting:
             pass # print(''.join(result))
         else:
-            g.es('', ''.join(result), tabName='Settings')
+            g.es_print('', ''.join(result), tabName='Settings')
     #@+node:ekr.20120215072959.12475: *3* c.config.set
-    def set(self, p, kind, name, val):
+    def set(self, p, kind, name, val, warn=True):
         """Init the setting for name to val."""
         trace = False and not g.unitTesting
         if trace: g.trace(kind, name, val)
         c = self.c
         # Note: when kind is 'shortcut', name is a command name.
         key = g.app.config.munge(name)
-        # if kind and kind.startswith('setting'): g.trace("c.config %10s %15s %s" %(kind,val,name))
         d = self.settingsDict
         assert g.isTypedDict(d), d
         gs = d.get(key)
         if gs:
             assert g.isGeneralSetting(gs), gs
             path = gs.path
-            if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
+            if warn and c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
                 g.es("over-riding setting:", name, "from", path)
         gs = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting')
         d.replace(key, gs)
@@ -1979,4 +1937,31 @@ class SettingsTreeParser(ParserBaseClass):
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
+def parseFont(b):
+    family = None
+    weight = None
+    slant = None
+    size = None
+    settings_name = None
+    for line in g.splitLines(b):
+        line = line.strip()
+        if line.startswith('#'): continue
+        i = line.find('=')
+        if i < 0: continue
+        name = line[:i].strip()
+        if name.endswith('_family'):
+            family = line[i+1:].strip()
+        elif name.endswith('_weight'):
+            weight = line[i+1:].strip()
+        elif name.endswith('_size'):
+            size = line[i+1:].strip()
+            try:
+                size = float(size)
+            except ValueError:
+                size = 12
+        elif name.endswith('_slant'):
+            slant = line[i+1:].strip()
+        if settings_name is None and name.endswith(('_family', '_slant', '_weight','_size')):
+            settings_name = name.rsplit('_', 1)[0]
+    return settings_name, family, weight == 'bold', slant in ('slant', 'italic'), size
 #@-leo

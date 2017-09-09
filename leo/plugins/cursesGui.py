@@ -6,6 +6,7 @@
 # are labeled: # undoc: where the AttributeError comes from other implementations
 # of method.
 #@@c
+# pylint: disable=arguments-differ
 #@+<< imports >>
 #@+node:ekr.20150107090324.2: ** << imports >>
 # pylint: disable=wrong-import-order
@@ -289,7 +290,7 @@ class textMenuCascade(object):
     #@+node:ekr.20150107090324.39: *3* display
     def display(self):
         ret = underline(self.label, self.underline)
-        if len(self.menu.entries) == 0:
+        if not self.menu.entries:
             ret += ' [Submenu with no entries]'
         return ret
     #@-others
@@ -431,10 +432,12 @@ class textTree(leoFrame.LeoTree):
     #@+node:ekr.20150107090324.62: *3* begin/endUpdate & redraw/now
     def redraw(self, p=None, scroll=True, forceDraw=False):
         self.text_draw_tree()
+        
+    redraw_now = redraw
 
-    def redraw_now(self, p=None, scroll=True, forceDraw=False):
-        if forceDraw:
-            self.redraw()
+    # def redraw_now(self, p=None, scroll=True, forceDraw=False):
+        # if forceDraw:
+            # self.redraw()
     #@+node:ekr.20150107090324.63: *3* endUpdate
     #@+node:ekr.20150107090324.64: *3* __init__
     def __init__(self, frame):

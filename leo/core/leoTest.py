@@ -12,11 +12,13 @@ try:
     import builtins # Python 3
 except ImportError:
     import __builtin__ as builtins # Python 2.
+import cProfile as profile
 import doctest
 import gc
 import glob
+import logging
+import logging.handlers
 import os
-import cProfile as profile
 # import pstats # A Python distro bug: can fail on Ubuntu.
 # import re
 import sys
@@ -675,11 +677,25 @@ class TestManager(object):
                     suite.addTest(test)
                     found = True
             if found:
-                runner = unittest.TextTestRunner(
-                    failfast=g.app.failFast,
-                    verbosity=verbosity,
-                )
+                if g.app.gui.guiName() == 'curses':
+                    logger, handler, stream = self.create_logging_stream()
+                    runner = unittest.TextTestRunner(
+                        stream=stream,
+                        failfast=g.app.failFast,
+                        verbosity=verbosity,
+                    )
+                else:
+                    stream = None
+                    runner = unittest.TextTestRunner(
+                        # stream=stream, # Careful: doesn't work with Python 2.
+                        failfast=g.app.failFast,
+                        verbosity=verbosity,
+                    )
                 result = runner.run(suite)
+                if stream:
+                    if stream.aList:
+                        logger.info('\n'+''.join(stream.aList))
+                    logger.removeHandler(handler)
                 # put info to db as well
                 if g.enableDB:
                     key = 'unittest/cur/fail'
@@ -698,6 +714,49 @@ class TestManager(object):
                 c.redraw(p1)
             else:
                 c.recolor() # Needed when coloring is disabled in unit tests.
+    #@+node:ekr.20170504130531.1: *5* class LoggingLog
+    class LoggingStream:
+        '''A class that can searve as a logging stream.'''
+
+        def __init__(self, logger):
+            self.aList = []
+            self.logger = logger
+
+        def write(self, s):
+            '''Called from pr and also unittest.addSuccess/addFailure.'''
+            if 0: # Write everything on a new line.
+                if not s.isspace():
+                    self.logger.info(s.rstrip())
+            else:
+                s = s.strip()
+                if len(s) == 1:
+                    self.aList.append(s)
+                elif s:
+                    if self.aList:
+                        self.logger.info(''.join(self.aList))
+                        self.aList = []
+                    self.logger.info(s.rstrip())
+        def flush(self):
+            pass
+
+    #@+node:ekr.20170504130408.1: *5* create_logging_stream
+    def create_logging_stream(self):
+
+        logger = logging.getLogger()
+        logger.setLevel(logging.INFO)
+
+            # Don't use debug: it includes Qt debug messages.
+        for handler in logger.handlers or []:
+            if isinstance(handler, logging.handlers.SocketHandler):
+                break
+        else:
+            handler = logging.handlers.SocketHandler(
+                'localhost',
+                logging.handlers.DEFAULT_TCP_LOGGING_PORT,
+            )
+            logger.addHandler(handler)
+        stream = self.LoggingStream(logger)
+        return logger, handler, stream
     #@+node:ekr.20120912094259.10549: *5* get_suite_script
     def get_suite_script(self):
         s = '''
@@ -1254,6 +1313,7 @@ class TestManager(object):
         if len(lines1) != len(lines2):
             if verbose: g.trace("Different number of lines")
             return False
+        # pylint: disable=consider-using-enumerate
         for i in range(len(lines2)):
             line1 = lines1[i]
             line2 = lines2[i]
@@ -1352,6 +1412,7 @@ class TestManager(object):
                 p.moveToNodeAfterTree()
                 continue
             seen.append(p.v)
+            # pylint: disable=consider-using-ternary
             add = (marked and p.isMarked()) or not marked
             if g.match_word(p.h, 0, '@ignore'):
                 if trace and verbose: g.trace(p.h)

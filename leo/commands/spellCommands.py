@@ -122,7 +122,7 @@ class EnchantClass(object):
         word = ''.join([i for i in word if not i.isdigit()])
             # Remove all digits.
         if d.check(word) or d.check(word.lower()):
-            return None 
+            return None
         if word.find('_') > -1:
             # Snake case.
             words = word.split('_')
@@ -374,6 +374,8 @@ class SpellTabHandler(object):
     #@+node:ekr.20150514063305.501: *4* SpellTabHandler.__init__
     def __init__(self, c, tabName):
         """Ctor for SpellTabHandler class."""
+        if g.app.gui.isNullGui:
+            return ###
         self.c = c
         self.body = c.frame.body
         self.currentWord = None

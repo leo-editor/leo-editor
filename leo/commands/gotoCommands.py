@@ -18,7 +18,7 @@ class GoToCommands(object):
     def find_file_line(self, n, p=None):
         '''
         Place the cursor on the n'th line (one-based) of an external file.
-        Return p, offset, found for unit testing.
+        Return (p, offset, found) for unit testing.
         '''
         trace = False and not g.unitTesting
             # It's usually better to look at the file in scite.
@@ -58,7 +58,7 @@ class GoToCommands(object):
         '''Return the global line number of the first line of p.b'''
         # See #283: https://github.com/leo-editor/leo-editor/issues/283
         if 1: # Not ready yet, and probably will never be ready.
-            return None 
+            return None
         else: # Prototype code.
             trace = False and not g.unitTesting
             root, fileName = self.find_root(p)
@@ -233,7 +233,7 @@ class GoToCommands(object):
         c = self.c
         w = c.frame.body.wrapper
         c.selectPosition(root)
-        c.redraw_now()
+        c.redraw()
         if not g.unitTesting:
             if len(lines) < n:
                 g.warning('only', len(lines), 'lines')
@@ -290,7 +290,12 @@ class GoToCommands(object):
     def get_delims(self, root):
         '''Return the deliminters in effect at root.'''
         c = self.c
-        d = c.scanAllDirectives(root)
+        old_target_language = c.target_language
+        try:
+            c.target_language = g.getLanguageAtPosition(c, root)
+            d = c.scanAllDirectives(root)
+        finally:
+            c.target_language = old_target_language
         delims1, delims2, delims3 = d.get('delims')
         # g.trace(root.h, d.get('language'), d.get('delims'))
         if delims1:
@@ -307,7 +312,7 @@ class GoToCommands(object):
         '''
         c = self.c
         if root.isAtAutoNode():
-            # Special case @auto nodes: 
+            # Special case @auto nodes:
             # Leo does not write sentinels in the root @auto node.
             at = c.atFileCommands
             ivar = 'force_sentinels'
@@ -317,7 +322,7 @@ class GoToCommands(object):
             finally:
                 if hasattr(at, ivar):
                     delattr(at, ivar)
-            return ok and at.stringOutput or ''
+            return at.stringOutput if ok else ''
         else:
             return g.composeScript( # Fix # 429.
                 c = c,

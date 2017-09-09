@@ -25,7 +25,7 @@ class Rst_Importer(Importer):
             state_class = Rst_ScanState,
             strict = False,
         )
-        
+
     #@+others
     #@+node:ekr.20161204032455.1: *3* rst_i.check
     def check(self, unused_s, parent):
@@ -43,7 +43,7 @@ class Rst_Importer(Importer):
         if not s or s.isspace():
             return
         self.inject_lines_ivar(parent)
-        # We may as well do this first.  See warning below.
+        # We may as well do this first.  See note below.
         self.add_line(parent, '@others\n')
         self.stack = [parent]
         skip = 0
@@ -66,8 +66,11 @@ class Rst_Importer(Importer):
             else:
                 p = self.stack[-1]
                 self.add_line(p, line)
-        warning = '\nWarning: this node is ignored when writing this file.\n\n'
-        self.add_line(parent, warning)
+        note = (
+            'Note: This node\'s body text is ignored when writing this file.\n\n' +
+            'The @others directive is not required.\n'
+        )
+        self.add_line(parent, note)
     #@+node:ekr.20161129040921.5: *4* rst_i.find_parent
     def find_parent(self, level, h):
         '''
@@ -93,7 +96,7 @@ class Rst_Importer(Importer):
             child = self.create_child_node(
                 parent = top,
                 body = None,
-                headline = 'placeholder', 
+                headline = 'placeholder',
             )
             self.stack.append(child)
         # Create the desired node.
@@ -118,7 +121,7 @@ class Rst_Importer(Importer):
             ch1 = self.is_underline(line1)
             ch2 = self.is_underline(line2, extra='#')
             return (
-                ch0 and ch2 and ch0 == ch2 and 
+                ch0 and ch2 and ch0 == ch2 and
                 not ch1 and
                 len(line1) >= 4 and
                 len(line0) >= len(line1) and
@@ -134,7 +137,7 @@ class Rst_Importer(Importer):
             line1 = lines[i+1]
             ch0 = self.is_underline(line0)
             ch1 = self.is_underline(line1)
-            return not line0.isspace() and not ch0 and ch1 and 4 <= len(line1) 
+            return not line0.isspace() and not ch0 and ch1 and 4 <= len(line1)
         else:
             return False
     #@+node:ekr.20161129040921.8: *4* rst_i.is_underline
@@ -193,7 +196,7 @@ class Rst_Importer(Importer):
 #@+node:ekr.20161127192007.6: ** class Rst_ScanState
 class Rst_ScanState:
     '''A class representing the state of the rst line-oriented scan.'''
-    
+
     def __init__(self, d=None):
         '''Rst_ScanState.__init__'''
         if d:

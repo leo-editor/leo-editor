@@ -138,7 +138,8 @@ class BridgeController(object):
         g.app.recentFilesManager = leoApp.RecentFilesManager()
         g.app.loadManager = lm = leoApp.LoadManager()
         g.app.loadManager.computeStandardDirectories()
-        if not self.getLeoID(): return
+        if not g.app.setLeoID(useDialog=False, verbose=True):
+            raise ValueError("unable to set LeoID.")
         g.app.inBridge = True # Added 2007/10/21: support for g.getScript.
         g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
         g.app.config = leoConfig.GlobalConfigManager()
@@ -232,63 +233,6 @@ class BridgeController(object):
             print("isValidPython: unexpected exception: g.CheckVersion")
             import traceback; traceback.print_exc()
             return 0
-    #@+node:ekr.20070227094232: *4* bridge.getLeoID
-    def getLeoID(self):
-        import os
-        import sys
-        g = self.g; tag = ".leoID.txt"
-        homeDir = g.app.homeLeoDir
-        globalConfigDir = g.app.globalConfigDir
-        loadDir = g.app.loadDir
-        verbose = False and not g.app.unitTesting
-        #@+<< try to get leoID from sys.leoID >>
-        #@+node:ekr.20070227094232.1: *5* << try to get leoID from sys.leoID>>
-        # This would be set by in Python's sitecustomize.py file.
-        # Use hasattr & getattr to suppress pylint warning.
-        # We also have to use a "non-constant" attribute to suppress another warning!
-        nonConstantAttr = "leoID"
-        if hasattr(sys, nonConstantAttr):
-            g.app.leoID = getattr(sys, nonConstantAttr)
-            if verbose and not g.app.silentMode:
-                g.red("leoID=", g.app.leoID, spaces=False)
-        #@-<< try to get leoID from sys.leoID >>
-        if not g.app.leoID:
-            #@+<< try to get leoID from "leoID.txt" >>
-            #@+node:ekr.20070227094232.2: *5* << try to get leoID from "leoID.txt" >>
-            for theDir in (homeDir, globalConfigDir, loadDir):
-                # N.B. We would use the _working_ directory if theDir is None!
-                if theDir:
-                    try:
-                        fn = g.os_path_join(theDir, tag)
-                        f = open(fn, 'r')
-                        s = f.readline()
-                        f.close()
-                        if s and len(s) > 0:
-                            g.app.leoID = s.strip()
-                            if verbose and not g.app.silentMode:
-                                g.red('leoID=', g.app.leoID, ' (in ', theDir, ')', spaces=False)
-                            break
-                        elif verbose:
-                            g.red('empty ', tag, ' (in ', theDir, ')', spaces=False)
-                    except IOError:
-                        g.app.leoID = None
-                    except Exception:
-                        g.app.leoID = None
-                        g.error('unexpected exception in app.setLeoID')
-                        g.es_exception()
-            #@-<< try to get leoID from "leoID.txt" >>
-        if not g.app.leoID:
-            #@+<< try to get leoID from os.getenv('USER') >>
-            #@+node:ekr.20070227094232.3: *5* << try to get leoID from os.getenv('USER') >>
-            try:
-                theId = os.getenv('USER')
-                if theId:
-                    if verbose: g.red("using os.getenv('USER'):", repr(theId))
-                    g.app.leoID = theId
-            except Exception:
-                pass
-            #@-<< try to get leoID from os.getenv('USER') >>
-        return g.app.leoID
     #@+node:ekr.20070227093629.9: *4* bridge.reportDirectories
     def reportDirectories(self):
         if not self.silentMode:
@@ -348,7 +292,7 @@ class BridgeController(object):
                 c = g.openWithFileName(fileName)
                 if trace:
                     t2 = time.time()
-                    g.trace('g.openWithFileName: %0.2fsec' % (t2 - t1))
+                    g.trace('%s %0.2fsec' % (fileName, (t2 - t1)))
                 if c: return c
             elif not self.silentMode:
                 print('file not found: %s. creating new window' % (fileName))

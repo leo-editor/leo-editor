@@ -1,0 +1,6 @@
+AddType application/xml xsl
+AddType application/xslt+xml xslt
+AddType application/xml xml
+AddType application/xml leo
+
+

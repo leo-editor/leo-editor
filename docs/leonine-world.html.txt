@@ -1,0 +1,28 @@
+.. rst3: filename: html\leonine-world.html
+
+#################
+The Leonine World
+#################
+
+**Leonine** refers to Leo's unique way of organizing data and programs. This has many implications:
+
+**Browsing**: Leo remembers your outline organization. Class browsers don't. Doh!
+
+**The big picture**: Outline nodes hide messy details, revealing the big picture *at all times*.
+
+**Programming**: Leo outlines naturally organize programs into modules, classes and functions. Leonine sources are their own design document. How you organize outlines is a choice in a new design space.
+
+**User-defined types**: Headlines naturally describe a node's contents: **headlines naturally define types**. Leo's core supports types such as @button, @rst, @suite, @url, etc. Plugins define @bookmark, @graph, @html and @task types. Scripts can easily define other types.
+
+**Testing**: Leo's @test nodes creates a unique unit-testing framework:
+
+- @test nodes focus on the real test code.
+- It is easy to run only the @test nodes in a particular suboutline.
+- @test scripts can easily use data in their children.
+
+.. _`clone-find`: tutorial-basics.html#clone-find-commands
+
+**Work flow**: The `clone-find`_ commands gather all match a pattern under a single node. No need to keep searching for them. You can change the clones, and the original nodes change as well. This is a great way to fix bugs or to write books.
+
+**Databases**: Leo's clones create new opportunities for scriptable databases. In my brother Speed's outlines, suboutlines *are* SQL queries!
+

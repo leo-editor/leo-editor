@@ -20,7 +20,7 @@ class Markdown_Importer(Importer):
             strict = False,
         )
         self.underline_dict = {}
-        
+
     #@+others
     #@+node:ekr.20161124193148.1: *3* md_i.gen_lines & helpers
     def gen_lines(self, s, parent):
@@ -58,8 +58,11 @@ class Markdown_Importer(Importer):
                 self.add_line(top, line)
             else:
                 self.add_line(top, line)
-        warning = '\nWarning: this node is ignored when writing this file.\n\n'
-        self.add_line(parent, warning)
+        note = (
+            'Note: This node\'s body text is ignored when writing this file.\n\n' +
+            'The @others directive is not required.\n'
+        )
+        self.add_line(parent, note)
     #@+node:ekr.20161124193148.2: *4* md_i.find_parent
     def find_parent(self, level, h):
         '''

@@ -1,0 +1,25 @@
+====================
+Scripts & .bat files
+====================
+
+
+Using shell scripts (Linux) or .bat files (Windows)
+can make it easier to open Leo files.
+
+**Linux**
+
+Put this in a shell script called leo::
+
+    #!/bin/sh 
+    python <path-to-leo-directory>launchLeo.py $1
+
+**Windows**
+
+Put this in leo.bat::
+
+    cd <path-to-leo-folder>
+    python <path-to-leo-folder>launchLeo.py %*
+
+On either platform, the following will open x.leo::
+
+    leo x.leo

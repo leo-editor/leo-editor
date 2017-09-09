@@ -361,8 +361,9 @@ class Position(object):
         return [int(s.split(':')[1]) for s in p.key().split('.')]
     # This has makes positions hashable, at long long last.
 
-    def __hash__(self):
-        return sum([z[1] for z in self.stack])
+    #def __hash__(self):
+    #    return sum([z[1] for z in self.stack])
+    __hash__ = None
     #@+node:ekr.20040315023430: *3* p.File Conversion
     #@+at
     # - convertTreeToString and moreHead can't be VNode methods because they uses level().
@@ -438,10 +439,10 @@ class Position(object):
         A generator yielding all the root positions "near" p1 = self that
         satisfy the given predicate. p.isAnyAtFileNode is the default
         predicate.
-        
+
         The search first proceeds up the p's tree. If a root is found, this
         generator yields just that root.
-        
+
         Otherwise, the generator yields all nodes in p.subtree() that satisfy
         the predicate. Once a root is found, the generator skips its subtree.
         '''
@@ -473,10 +474,10 @@ class Position(object):
         A generator yielding all unique root positions "near" p1 = self that
         satisfy the given predicate. p.isAnyAtFileNode is the default
         predicate.
-        
+
         The search first proceeds up the p's tree. If a root is found, this
         generator yields just that root.
-        
+
         Otherwise, the generator yields all unique nodes in p.subtree() that
         satisfy the predicate. Once a root is found, the generator skips its
         subtree.
@@ -892,7 +893,7 @@ class Position(object):
     def level(self):
         '''Return the number of p's parents.'''
         p = self
-        return p.v and len(p.stack) or 0
+        return len(p.stack) if p.v else 0
 
     simpleLevel = level
     #@+node:ekr.20111005152227.15566: *4* p.positionAfterDeletedTree
@@ -1249,7 +1250,7 @@ class Position(object):
                     p.moveToParent()
                 # not found.
         return p
-    #@+node:ekr.20080416161551.210: *4* p.moveToVisBack
+    #@+node:ekr.20080416161551.210: *4* p.moveToVisBack & helper
     def moveToVisBack(self, c):
         """Move a position to the position of the previous visible node."""
         trace = False and not g.unitTesting
@@ -1273,10 +1274,11 @@ class Position(object):
                 p.moveToParent() # Same as p.moveToThreadBack()
             if trace: g.trace(p.parent(), p)
             if p:
-                done, val = self.checkVisBackLimit(limit, limitIsVisible, p)
-                if done:
-                    if trace and verbose: g.trace('done', p)
-                    return val # A position or None
+                if limit:
+                    done, val = self.checkVisBackLimit(limit, limitIsVisible, p)
+                    if done:
+                        if trace and verbose: g.trace('done', p)
+                        return val # A position or None
                 if p.isVisible(c):
                     if trace and verbose: g.trace('isVisible', p)
                     return p
@@ -1286,24 +1288,22 @@ class Position(object):
         return p
     #@+node:ekr.20090715145956.6166: *5* checkVisBackLimit
     def checkVisBackLimit(self, limit, limitIsVisible, p):
-        '''Return done, return-val'''
+        '''Return done, p or None'''
         trace = False and not g.unitTesting
         c = p.v.context
-        if limit:
-            if limit == p:
-                if trace: g.trace('at limit', p)
-                if limitIsVisible and p.isVisible(c):
-                    return True, p
-                else:
-                    return True, None
-            elif limit.isAncestorOf(p):
-                return False, None
+        if limit == p:
+            if trace: g.trace('at limit', p)
+            if limitIsVisible and p.isVisible(c):
+                return True, p
             else:
-                if trace: g.trace('outside limit tree', limit, p)
                 return True, None
-        else:
+        elif limit.isAncestorOf(p):
             return False, None
-    #@+node:ekr.20080416161551.211: *4* p.moveToVisNext
+        else:
+            if trace: g.trace('outside limit tree', limit, p)
+            return True, None
+
+    #@+node:ekr.20080416161551.211: *4* p.moveToVisNext & helper
     def moveToVisNext(self, c):
         """Move a position to the position of the next visible node."""
         trace = False and not g.unitTesting
@@ -1322,26 +1322,15 @@ class Position(object):
                 p.moveToThreadNext()
             if trace: g.trace('2', p and p.h)
             if p:
-                done, val = self.checkVisNextLimit(limit, p)
-                if done: return val
+                if limit and self.checkVisNextLimit(limit,p):
+                    return None
                 if p.isVisible(c):
                     return p.copy()
         return p
     #@+node:ekr.20090715145956.6167: *5* checkVisNextLimit
     def checkVisNextLimit(self, limit, p):
-        '''Return done, return-val'''
-        trace = False and not g.unitTesting
-        if limit:
-            # Unlike moveToVisBack, being at the limit does not terminate.
-            if limit == p:
-                return False, None
-            elif limit.isAncestorOf(p):
-                return False, None
-            else:
-                if trace: g.trace('outside limit tree')
-                return True, None
-        else:
-            return False, None
+        '''Return True is p is outside limit of visible nodes.'''
+        return limit != p and not limit.isAncestorOf(p)
     #@+node:ekr.20150316175921.6: *4* p.safeMoveToThreadNext
     def safeMoveToThreadNext(self):
         '''
@@ -1408,23 +1397,26 @@ class Position(object):
 
     # To do: use v.copyTree instead.
 
-    def copyTreeAfter(self):
+    def copyTreeAfter(self, copyGnxs=False):
         '''Copy p and insert it after itself.'''
         p = self
         p2 = p.insertAfter()
-        p.copyTreeFromSelfTo(p2)
+        p.copyTreeFromSelfTo(p2, copyGnxs=copyGnxs)
         return p2
 
-    def copyTreeFromSelfTo(self, p2):
+    def copyTreeFromSelfTo(self, p2, copyGnxs=False):
         p = self
         p2.v._headString = g.toUnicode(p.h, reportErrors=True) # 2017/01/24
         p2.v._bodyString = g.toUnicode(p.b, reportErrors=True) # 2017/01/24
-        # 2013/09/08: Fix bug 1019794: p.copyTreeFromSelfTo, should deepcopy p.v.u.
+        # Fix bug 1019794: p.copyTreeFromSelfTo, should deepcopy p.v.u.
         p2.v.u = copy.deepcopy(p.v.u)
+        # 2017/08/20: Add support for copyGnx's keyword arg.
+        if copyGnxs:
+            p2.v.fileIndex = p.v.fileIndex
         # 2009/10/02: no need to copy arg to iter
         for child in p.children():
             child2 = p2.insertAsLastChild()
-            child.copyTreeFromSelfTo(child2)
+            child.copyTreeFromSelfTo(child2, copyGnxs=copyGnxs)
     #@+node:ekr.20160502095354.1: *4* p.copyWithNewVnodes
     def copyWithNewVnodes(self, copyMarked=False):
         '''
@@ -1622,10 +1614,10 @@ class Position(object):
     def __set_b(self, val):
         '''
         Set the body text of a position.
-        
+
         **Warning: the p.b = whatever is *expensive* because it calls
         c.setBodyString().
-        
+
         Usually, code *should* this setter, despite its cost, because it
         update's Leo's outline pane properly. Calling c.redraw() is *not*
         enough.
@@ -1650,10 +1642,10 @@ class Position(object):
     def __set_h(self, val):
         '''
         Set the headline text of a position.
-        
+
         **Warning: the p.h = whatever is *expensive* because it calls
         c.setHeadString().
-        
+
         Usually, code *should* this setter, despite its cost, because it
         update's Leo's outline pane properly. Calling c.redraw() is *not*
         enough.
@@ -1858,10 +1850,10 @@ class Position(object):
     def setDirty(self, setDescendentsDirty=True):
         '''
         Mark a node and all ancestor @file nodes dirty.
-        
+
         **Warning**: p.setDirty() is *expensive* because it calls
         p.setAllAncestorAtFileNodesDirty().
-        
+
         Usually, code *should* this setter, despite its cost, because it
         update's Leo's outline pane properly. Calling c.redraw() is *not*
         enough.
@@ -2255,7 +2247,7 @@ class VNodeBase(object):
     #@+node:ekr.20031218072017.3364: *5* v.lastChild
     def lastChild(self):
         v = self
-        return v.children and v.children[-1] or None
+        return v.children[-1] if v.children else None
     #@+node:ekr.20031218072017.3365: *5* v.nthChild
     # childIndex and nthChild are zero-based.
 
@@ -2591,6 +2583,8 @@ class VNodeBase(object):
         '''Adjust links after adding a link to v.'''
         trace = False and not g.unitTesting
         v = self
+        # g.trace(v.context.frame.tree)
+        v.context.frame.tree.generation += 1
         parent_v.childrenModified()
         # Update parent_v.children & v.parents.
         parent_v.children.insert(childIndex, v)
@@ -2623,6 +2617,7 @@ class VNodeBase(object):
     def _cutLink(self, childIndex, parent_v):
         '''Adjust links after cutting a link to v.'''
         v = self
+        v.context.frame.tree.generation += 1
         parent_v.childrenModified()
         assert parent_v.children[childIndex] == v
         del parent_v.children[childIndex]
@@ -2633,7 +2628,7 @@ class VNodeBase(object):
         # If v has no more parents, we adjust all
         # the parent links in the descendant tree.
         # This handles clones properly when deleting a tree.
-        if len(v.parents) == 0:
+        if not v.parents:
             for child in v.children:
                 child._cutParentLinks(parent=v)
     #@+node:ekr.20090804190529.6133: *5* v._cutParentLinks
@@ -2642,7 +2637,7 @@ class VNodeBase(object):
         v = self
         if trace: g.trace('parent', parent, 'v', v)
         v.parents.remove(parent)
-        if len(v.parents) == 0:
+        if not v.parents:
             for child in v.children:
                 child._cutParentLinks(parent=v)
     #@+node:ekr.20031218072017.3425: *4* v._linkAsNthChild (used by 4.x read logic)

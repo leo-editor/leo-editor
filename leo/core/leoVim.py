@@ -77,7 +77,7 @@ class VimCommands(object):
         # Add all entries in arrow dict to the other dicts.
         vc.arrow_d = arrow_d = vc.create_arrow_d()
         for d, tag in ((d1, 'normal'), (d2, 'motion'), (d3, 'visual')):
-            for key in arrow_d.keys():
+            for key in arrow_d:
                 if key in d:
                     g.trace('duplicate arrow key in %s dict: %s' % (tag, key))
                 else:
@@ -86,7 +86,7 @@ class VimCommands(object):
             # Check for conflicts between motion dict (d2) and the normal and visual dicts.
             # These are not necessarily errors, but are useful for debugging.
             for d, tag in ((d1, 'normal'), (d3, 'visual')):
-                for key in d2.keys():
+                for key in d2:
                     f, f2 = d.get(key), d2.get(key)
                     if f2 and f and f != f2:
                         g.trace('conflicting motion key in %s dict: %s %s %s' % (

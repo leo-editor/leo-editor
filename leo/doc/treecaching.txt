@@ -1,5 +1,6 @@
 Python list based description of trees ('objtrees')
-+++++++++++++++++++++++++++++++++++++++++++++++++++
+===================================================
+
 Positions and trees are objects that exists only within Leo instance. However, trees can have "serialized" representation in .leo xml files (where structure is described by xml hierarchy), or @file nodes (where structure is described by sentinels).
 
 Sometimes, both formats are too heavyweight. Both xml and "flat" text files involve nontrivial callback-based (or worse) parsing. Luckily, trees can be represented naturally with python lists, which can be pickled and passed around with almost zero cost in CPU consumption or code complexity. In theory position objects can be passed around in this fashion as well, but positions always have to exist in the tree (there is no concept of 'detached' position) and they can't be pickled or moved around outside the Leo instance.
@@ -43,8 +44,10 @@ Note that these trees are constructed using `g.tree_at_position(pos)`. These obj
             create_tree_at_position(chpos, el)
 
 `g.create_tree_at_vnode` is more complex, but faster and supports clones. It relies on `g.fast_add_last_child(c, parent_v, gnxString)`, which adds a new node to the tree as last child of parent_v (vnode), It either returns the created vnode, or None if it created a clone (i.e. a node with same gnx was already found in the document). This is a conscious design choice, as it prevents you from accidentally manipulating the tree of the clone (since it already has a tree of its own!).
+
 Using objtrees for caching
-++++++++++++++++++++++++++
+==========================
+
 Objtrees are not without real life applications. They are used to implement the content hash based node cache that radically speeds up Leo's startup (effectively eliminating the delay caused by Leo parsing @file / @auto nodes - something which made trees with several @auto or @file nodes intolerable in practice. The trick here relies on the fact that:
 
 - The whole content of external file (say, foo.py) can be described by calculating an md5sum of the file - The same external file content will always create the same leo tree.
@@ -58,8 +61,10 @@ In brief,
 - After creating the tree, Leo executes g.tree_at_position and pickles the objtree to file ~/.leo/db/LeoDocs.leo/fcache/8095e2dabbfe90b349066209fb090df6
 
 - Now, on the next startup, Leo *will* find the cached pickle, read it in and execute `g.create_tree_at_vnode`
+
 The `Leo database` (c.db, g.app.db)
-+++++++++++++++++++++++++++++++++++
+===================================
+
 Previous discussion omitted one fact - Leo doesn't actually operate on files directly, but uses the `pickleshare` library (shipped with Leo) to access the cached pickles. In essence, the database is always associated with one specific Leo document, and is available through c.db. So, storing a tree is (in simplified form) about doing::
 
    cachename = "fcache/8095e2dabbfe90b349066209fb090df6"

@@ -109,7 +109,7 @@ class controller(object):
             g.es(dirName)
             compteurglobal = self.importDir(dirName,compteurglobal=0)
             c.selectPosition(c.p)
-            c.redraw_now()
+            c.redraw()
             if language == 'french':
                 g.es(str(compteurglobal)+" fichiers traités.")
             else:
@@ -155,7 +155,7 @@ class controller(object):
             #@-<< listdir >>
             p = c.importCommands.createHeadline(current,body,tail)
             c.selectPosition(p)
-            if len(dossiers) > 0:
+            if dossiers:
                 for d in dossiers:
                     compteurglobal = self.importDir(d,compteurglobal)
             c.setChanged(True)

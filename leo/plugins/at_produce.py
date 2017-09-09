@@ -34,6 +34,7 @@ simple substitute when that machinery is overkill.
 
 import leo.core.leoGlobals as g
 import os
+import subprocess
 import threading
 import time
 
@@ -115,25 +116,34 @@ def getList(c,all):
 def runList(c,aList):
     '''
     Run all commands in aList (in a separate thread).
-    Do not do change Leo's outline in this thread!
+    Do not change Leo's outline in this thread!
     '''
-    # pylint: disable=deprecated-method,no-member
-    # popen3() is deprecated.
     f = open('produce.log', 'w+')
+    PIPE = subprocess.PIPE
     try:
-        for z in aList:
-            if z.startswith(pr):
-                c.at_produce_command = z
-                z = z.lstrip(pr).lstrip()
-                f.write( 'produce: %s\n' % z )
-                fi, fo, fe  = os.popen3( z )
+        for command in aList:
+            if command.startswith(pr):
+                c.at_produce_command = command
+                command = command.lstrip(pr).lstrip()
+                f.write('produce: %s\n' % command )
+                # EKR: 2017/05/05
+                # Replace popen3 per https://docs.python.org/2.4/lib/node245.html
+                # fi, fo, fe  = os.popen3(command)
+                p = subprocess.Popen(
+                    command,
+                    # bufsize=bufsize,
+                    # close_fds=True, # Dubious to disable this.
+                    stdin=PIPE, stdout=PIPE, stderr=PIPE,
+                    shell=True,
+                )
+                fi, fo, fe = p.stdin, p.stdout, p.stderr
                 while 1:
-                    txt = fo.read()
-                    f.write( txt )
+                    txt = g.toUnicode(fo.read())
+                    f.write(txt)
                     if txt == '': break
                 while 1:
-                    txt = fe.read()
-                    f.write( txt )
+                    txt = g.toUnicode(fe.read())
+                    f.write(txt)
                     if txt == '': break
                 fi.close()
                 fo.close()

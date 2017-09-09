@@ -282,13 +282,10 @@ class quickMove(object):
                 # tried to use g.command() but global commands all use the same c
                 # so register only at the c level, not g level
                 # g.command(cmdname)(func)
-                c.k.registerCommand(cmdname, shortcut=None, func=lambda e:func(),
-                    pane='all',verbose=False)
+                c.k.registerCommand(cmdname, lambda e:func())
 
-        c.k.registerCommand('quickmove_keyboard_popup', shortcut=None,
-            func=lambda e:self.keyboard_popup(), pane='all',verbose=False)
-        c.k.registerCommand('quickmove_keyboard_action', shortcut=None,
-            func=lambda e:self.keyboard_action(), pane='all',verbose=False)
+        c.k.registerCommand('quickmove_keyboard_popup', lambda e:self.keyboard_popup())
+        c.k.registerCommand('quickmove_keyboard_action', lambda e:self.keyboard_action())
 
         self.keyboard_target = None
 
