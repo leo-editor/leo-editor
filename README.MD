@@ -1,22 +1,17 @@
-Leo 5.5 March 23, 2017
+Leo 5.6b1 September 11, 2017
 
-[Leo](http://leoeditor.com/) 5.5 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+[Leo](http://leoeditor.com/) 5.6b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
 Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is possible to simulate Python in assembly language...
 
-**The highlights of Leo 5.5**
+**The highlights of Leo 5.6**
 
-- Syntax coloring is 20x faster than before.
-  The "big-text" hack is no longer needed.
-- Leo's importers are now line/token oriented, allowing them
-  to handle languages like javascript more robustly.
-- New perl and javascript importers.
-- Pylint now runs in the background.
-- Pyflakes can optionally check each file as it is written.
-- Greatly simplified argument-handling for interactive commands.
-- Documented how to do Test-Driven Development in Leo.
+- The cursesGui2.py plugin creates a console gui for Leo.
+- Added "Yes to All" and "No to All" buttons to file-changed dialog.
+- Improved how Leo switches between git branches.
+- Created outline-oriented git-diff command.
 
 **Links**
 

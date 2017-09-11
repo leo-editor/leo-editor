@@ -353,7 +353,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20161024113542.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -385,7 +384,7 @@ INCIDENTAL, CONSEQUENTIAL OR OTHER DAMAGES.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 5.5
+Version: 5.6
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -405,25 +404,20 @@ Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 
 </t>
-<t tx="EKR.20040519090846.9">Leo 5.5 March 23, 2017
+<t tx="EKR.20040519090846.9">Leo 5.6b1 September 11, 2017
 
-[Leo](http://leoeditor.com/) 5.5 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+[Leo](http://leoeditor.com/) 5.6b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
-Leo is an IDE, outliner and PIM, as described [here] (http://leoeditor.com/preface.html).
+Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
 Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is possible to simulate Python in assembly language...
 
-**The highlights of Leo 5.5**
+**The highlights of Leo 5.6**
 
-- Syntax coloring is 20x faster than before.
-  The "big-text" hack is no longer needed.
-- Leo's importers are now line/token oriented, allowing them
-  to handle languages like javascript more robustly.
-- New perl and javascript importers.
-- Pylint now runs in the background.
-- Pyflakes can optionally check each file as it is written.
-- Greatly simplified argument-handling for interactive commands.
-- Documented how to do Test-Driven Development in Leo.
+- The cursesGui2.py plugin creates a console gui for Leo.
+- Added "Yes to All" and "No to All" buttons to file-changed dialog.
+- Improved how Leo switches between git branches.
+- Created outline-oriented git-diff command.
 
 **Links**
 
@@ -509,7 +503,7 @@ Mark Ng
 [Quote] I have just finished a little embedded system for someone, written in
 C using leo as the editor. I told the customer he _had_ to use leo for
 ongoing maintenance, after I looked at one of the main state machines:
-600 lines in the derived file, but trivialy easy to get your head
+600 lines in the derived file, but trivially easy to get your head
 around in Leo...
 
 The good news is that having been forced to meet leo he thinks it'll
@@ -525,7 +519,7 @@ makes the system more flexible...
 [End Quote]</t>
 <t tx="ekr.20040828084148">Leo is the best IDE that I have had the pleasure to use. I have been using it
 now for about 2 -- 3 months. It has totally changed not only the way that I
-program, but also the way that I store and organise all of the information that
+program, but also the way that I store and organize all of the information that
 I need for the job that I do. -- Ian Mulvany</t>
 <t tx="ekr.20050315084904"></t>
 <t tx="ekr.20060213160806">"Thanks for a wonderful program – everybody should be using it! It blows the
@@ -732,7 +726,7 @@ Make these files in the top-level folder::
     leo.zip.
 '''
 
-version = '5.5' ##version
+version = '5.6b1' ##version
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
 
@@ -864,7 +858,7 @@ def deleteTempFiles (self,lines):
     for z in dirs:
         dirDict[z] = []
         # Leo 5.4: Add leo/core/commit_timestamp.json
-        # This file is in .gitignore, but we mut write it here.
+        # This file is in .gitignore, but we must write it here.
         if 0:
             if z == 'leo/core':
                 # g.trace(z)
@@ -1847,7 +1841,7 @@ moin.py:
 erlang.py:  no obvious problem.
 lilypond.py:no obvious problem.
 perl.py:    no obvious problem.
-pl1.py:     no obvious problm.
+pl1.py:     no obvious problem.
 rest.py:    no obvious problem.
 rtf.py:     no obvious problem.
 scala.py:   no obvious problem.
