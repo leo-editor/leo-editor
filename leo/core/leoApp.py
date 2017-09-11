@@ -27,6 +27,8 @@ else:
     import cStringIO
     StringIO = cStringIO.StringIO
 import sqlite3
+
+import leo.core.editpane.editpane  # for the command creation side effect
 #@-<< imports >>
 #@+others
 #@+node:ekr.20161026122804.1: ** class IdleTimeManager

@@ -17,6 +17,27 @@ def DBG(text):
     """
     print("LEP: %s" % text)
 
+@g.command("edit-pane-test-open")
+def edit_pane_test_open(event):
+
+    c = event['c']
+
+    if not hasattr(c, '__edit_pane_test'):
+        c.__edit_pane_test = True
+        class MinimalDemoProvider:
+            def ns_provides(self):
+                return [("Demo editor", "__demo_provider_minimal_slider")]
+            def ns_provide(self, id_):
+                if id_ == "__demo_provider_minimal_slider":
+                    w = LeoEditPane(c=c, mode='split')
+                    return w
+                return None
+            def ns_provider_id(self):
+                return "__demo_provider_minimal"
+        c.free_layout.get_top_splitter().register_provider(MinimalDemoProvider())
+
+    s = c.free_layout.get_top_splitter()
+    s.open_window("__demo_provider_minimal_slider")
 class LeoEditPane(QtWidgets.QWidget):
     """
     Leo node body editor / viewer
