@@ -21936,15 +21936,15 @@ Then run::
 </t>
 <t tx="ekr.20170206073747.8">You may download Leo's sources in one of three ways, as described at:
 http://leoeditor.com/download.html If the sources are zipped, unzip them
-into a folder in your home directory, say ~/leo-5.5.
+into a folder in your home directory, say ~/leo-5.6.
 
 You now have several choices.
 
-1. You can run Leo from your home directory. Just add  ~/leo-5.5 to your path.
+1. You can run Leo from your home directory. Just add  ~/leo-5.6 to your path.
 
 2. You can install leo into /usr/local/lib and /usr/local/bin with:
 
-    cd ~/leo-5.5
+    cd ~/leo-5.6
     sudo python setup.py install
 
 See `Running Leo`_ for how to run Leo after installing it.
