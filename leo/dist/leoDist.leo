@@ -776,7 +776,7 @@ g.es_print('done') # '@button make-leo done')
     These directories start at the top-level directory.
     '''
     trace = False
-    ignoreDirs = ('.bzr','.git',)
+    ignoreDirs = ('.bzr','.git','docs')
     # Important: this adds all directories on EKR's machine,
     # regardless of whether they appear in the manifest!
     result = [] ; n = len(rootDir)
