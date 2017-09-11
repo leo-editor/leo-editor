@@ -24,6 +24,9 @@
 </v>
 <v t="ekr.20101026142031.1516"><vh>Registry Keys</vh></v>
 </v>
+<v t="ekr.20170911061827.1"><vh>@button check .leo files</vh>
+<v t="ekr.20170911062209.1"><vh>&lt;&lt; define files &gt;&gt;</vh></v>
+</v>
 </v>
 <v t="ekr.20161024113526.1"><vh>Notes</vh>
 <v t="ekr.20160501153808.1"><vh>Anaconda install notes</vh></v>
@@ -2808,7 +2811,7 @@ it is possible to simulate Python in assembly language...
         - leoSettings.leo
     leo/core/leoPyRef.leo
     leo/dist/leoDist.leo
-    leo/docs:
+    leo/doc:
         - LeoReleaseNotes.leo
         - cheatSheet.leo
         - default_workbook.leo
@@ -3947,5 +3950,37 @@ Command-line options::
 <t tx="ekr.20170316113823.9">Leo no longer hangs waiting for this command to finish.
 https://github.com/leo-editor/leo-editor/issues/328
 </t>
+<t tx="ekr.20170911061827.1">'''Make sure no distributed .leo file contains xml-stylesheet elements.'''
+g.cls()
+&lt;&lt; define files &gt;&gt;
+for fn in files:
+    path = g.os_path_finalize_join(g.app.loadDir, '..', fn)
+    if g.os_path_exists(path):
+        with open(path, 'rb') as f:
+            s = f.read()
+        s = g.toUnicode(s)
+        if s.find('&lt;xml-stylesheet') &gt; -1:
+            print('contains xml-stylesheet element: %s' % (path))
+    else:
+        print('does not exist: %s' % path)
+print('done')
+</t>
+<t tx="ekr.20170911062209.1">files = (
+    'config/exampleSettings.leo',
+    'config/leoSettings.leo',
+    'core/leoPyRef.leo',
+    'dist/leoDist.leo',
+    'doc/LeoReleaseNotes.leo',
+    'doc/cheatSheet.leo',
+    'doc/default_workbook.leo',
+    'doc/leoDocs.leo',
+    'doc/leoSlideShows.leo',
+    'doc/quickstart.leo',
+    'external/leo2html.leo',
+    'plugins/leoGuiPluginsRef.leo',
+    'plugins/leoPluginsRef.leo',
+    'scripts/scripts.leo',
+    'test/test.leo',
+)</t>
 </tnodes>
 </leo_file>
