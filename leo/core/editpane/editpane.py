@@ -19,7 +19,10 @@ def DBG(text):
 
 @g.command("edit-pane-test-open")
 def edit_pane_test_open(event):
+    """Make a command for opening the editpane in free_layout.
 
+    This is just for testing / demoing, and will be removed eventually.
+    """
     c = event['c']
 
     if not hasattr(c, '__edit_pane_test'):
@@ -113,7 +116,9 @@ class LeoEditPane(QtWidgets.QWidget):
         return cbox
 
     def _add_frame(self):
-        """_add_frame - add a widget with a layout as a hiding target"""
+        """_add_frame - add a widget with a layout as a hiding target.
+
+        i.e. a container we can hide / show easily"""
         w = QtWidgets.QWidget(self)
         self.layout().addWidget(w)
         w.setSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
@@ -261,11 +266,25 @@ class LeoEditPane(QtWidgets.QWidget):
         self.view_frame = self._add_frame()
         self.splitter.addWidget(self.view_frame)
 
+        self.control_visible = show_control
+        self.header_visible = show_head
         self.show()
 
         # debug
         self.line_edit.setText("test")
 
+    @property
+    def header_visible(self):
+        return self.header.isVisible()
+    @header_visible.setter
+    def header_visible(self, state):
+        self.header.setVisible(state)
+    @property
+    def control_visible(self):
+        return self.control.isVisible()
+    @control_visible.setter
+    def control_visible(self, state):
+        self.control.setVisible(state)
     def change_goto(self, state, one_shot=False):
         self.goto = one_shot or bool(state)
         self.state_changed()
