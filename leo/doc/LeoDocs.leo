@@ -1329,6 +1329,18 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20170911082347.1"><vh>What's new in Leo 5.6</vh>
+<v t="ekr.20170911082432.2"><vh>Highlights</vh>
+<v t="ekr.20170911082432.3"><vh>#488: Created a console gui for Leo</vh></v>
+<v t="ekr.20170911082432.4"><vh>#501: git-diff command</vh></v>
+<v t="ekr.20170911082432.5"><vh>#505: Leo switches between git branches properly</vh></v>
+<v t="ekr.20170911082432.6"><vh>Added "yes/no to all" buttons for externally changed file dialog</vh></v>
+</v>
+<v t="ekr.20170911082432.53"><vh>Code</vh></v>
+<v t="ekr.20170911082432.66"><vh>Commands</vh></v>
+<v t="ekr.20170911082432.88"><vh>Other features</vh></v>
+<v t="ekr.20170911082432.101"><vh>Settings &amp; command-line arguments</vh></v>
+</v>
 <v t="ekr.20170123090814.1"><vh>What's new in Leo 5.5</vh>
 <v t="ekr.20170123090841.2"><vh>Highlights</vh></v>
 <v t="ekr.20170123090841.6"><vh>Created new @button scripts</vh></v>
@@ -1548,6 +1560,7 @@
 <v t="ekr.20170316061434.1"><vh>Settings and command-line options</vh></v>
 </v>
 </v>
+<v t="ekr.20170911082347.1"></v>
 <v t="ekr.20170608071626.1"><vh>Leo 5.6 release notes</vh>
 <v t="ekr.20170707034853.2"><vh>major features</vh>
 <v t="ekr.20170707034853.3"><vh>#488: Created a console gui for Leo</vh></v>
@@ -23329,7 +23342,7 @@ Usually, code *should* use the p.b and p.h setters and p.setDirty(), despite the
 
 These performance gotchas become important for repetitive commands, like cff, replace-all and recursive import. In such situations, code should use p.v.b and p.v.h setters instead of p.b and p.h setters.
 </t>
-<t tx="ekr.20170608071626.1">Leo 5.6b1 September 8, 2017
+<t tx="ekr.20170608071626.1">Leo 5.6b1 September 11, 2017
 
 [Leo](http://leoeditor.com/) 5.6b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
@@ -23341,7 +23354,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 
 - The cursesGui2.py plugin creates a console gui for Leo.
 - Added "Yes to All" and "No to All" buttons to file-changed dialog.
-- Fixed bug (#505) that caused problems when switching between git branches.
+- Improved how Leo switches between git branches.
 - Created outline-oriented git-diff command.
 
 **Links**
@@ -24315,7 +24328,141 @@ For each diffed file, this command uses a variant of the atFile read logic to cr
 <t tx="ekr.20170906040814.1">https://github.com/leo-editor/leo-editor/issues/504</t>
 <t tx="ekr.20170906040849.1">https://github.com/leo-editor/leo-editor/issues/508</t>
 <t tx="ekr.20170906090516.1"></t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20170911082347.1"></t>
+<t tx="ekr.20170911082432.101">- Added --trace-focus command-line argument.
+- Added @bool color_trailing_whitespace = True
+- Added @bool log_show_save_time = False
+- Added @bool report_unchanged_files = True
+- Added @bool run_pyflakes_on_unchanged_files = True
+- Added @color trailing_whitespace_color = red
+- Added @string log_timestamp_format = %H:%M:%S
+- Ctrl-Shift-&lt; and Ctrl-Shift-&gt; are now bound to indent/unindent-region.
+  These can be used when no text is selected.
+- Restored default: @bool check_for_changed_external_files = True</t>
+<t tx="ekr.20170911082432.2">- A new console gui for Leo.
+- Added git-diff command
+- Added listen-to-log and kill-log-listen commands.
+- Added "yes/no to all" buttons for externally changed file dialog
+- Leo switches between git branches more smoothly.</t>
+<t tx="ekr.20170911082432.3">A new chapter in Leo's documentation: http://leoeditor.com/console-gui.html
+
+https://github.com/leo-editor/leo-editor/issues/488
+</t>
+<t tx="ekr.20170911082432.4">https://github.com/leo-editor/leo-editor/issues/501
+
+The new git-diff command shows the diffs between any uncommitted work and git's HEAD in an outline. This is, by far, the best outline-oriented diff in Leo's history. The command works for all kinds of external files.
+
+**Outline organization**
+
+This command creates a single tree as the last top-level node of the outline::
+
+  - git diff  # The single organizer node for the command
+    - file A  # The organizer node for file A.
+              # Body contains the text diff of the entire file.
+      - Added # An organizer node for all added nodes, created only if necessary.
+        - node 1 # A copy of the first added node.
+        - node 2 # A copy of the second added node.
+            ...
+      - Deleted  # An organizer node for all deleted nodes, created only if necessary.
+        - node 1 # A copy of the first deleted node.
+            ...
+      - Changed  # An organizer node for all changed nodes, created only if necessary.
+        - node 1 # An organizer node for the changed node.
+                 #  Body contains the text diff of that node.
+          - old: node1 # A copy of the old node.
+          - new: node1 # A copy of the new node.
+
+This command does not use git diff in any way. For example, moving a node affects only the overall diff in the organizer node for the file. Moved nodes do not otherwise appear in the diff.
+
+**Text diffs**
+
+Organizer nodes for files and changed nodes contain text diffs. Diffs look like this::
+
+    @language patch
+    
+    --- HEAD
+    +++ uncommitted
+    @@ -553,8 +553,8 @@
+                 c1 = self.make_outline(fn, s1, self.rev1)
+                 c2 = self.make_outline(fn, s2, self.rev2)
+                 assert c1 and c2
+    -            for p in c1.all_positions():
+    -                print('%25s %s' % (p.gnx, p.h))
+    +            # for p in c1.all_positions():
+    +                # print('%25s %s' % (p.gnx, p.h))
+                 self.make_diff_outlines(fn, c1, c2)
+                 # try:
+                     # c.disable_redraw()
+    @@ -578,6 +578,7 @@
+    ...
+    @language python
+
+**Settings**
+
+leoSettings.leo contains new colorizer settings for @language patch.
+
+**Theory of operation**
+
+For each diffed file, this command uses a variant of the atFile read logic to create the corresponding outline in a hidden commander.  Separate hidden commanders contain the "before" and "after" versions of the file. These outlines preserve gnx's, so it is easy to create dicts of inserted, deleted and changed nodes.  The command uses difflib (not git diff) to create all diffs, after the external file has been split into nodes.</t>
+<t tx="ekr.20170911082432.5">https://github.com/leo-editor/leo-editor/issues/505
+
+The new code eliminates hidden time bombs when switching branches.
+
+Changes to read/write code:
+- at.writeAll writes files at most once.
+- at.write updates cache. Previously only at.read updated the cache!
+- at.deleteUnvisitedNodes no longer creates resurrected nodes.
+- at.new_createThinChild4 *always* updates headlines.
+- at.terminateBody just sets v.tempRoots.
+  It no longer calls at.indicateNodeChanged.
+- fc.handleNodeConflicts reports changed headlines differently.
+
+Changes to cacher code:
+- Added cacher.checkForChangedNodes.
+- Added tempRoots logic.
+- Added always_warn switch to cacher.reportIfNodeChanged.
+</t>
+<t tx="ekr.20170911082432.53">- Removed confusing "atAuto" switch from AtFile class.
+- Rewrote Leo's at-file read code.
+- Rewrote Leo's redraw code, adding c.redraw_later.
+- Unit tests now work on all all platforms without failing.
+</t>
+<t tx="ekr.20170911082432.6">Rev 9c94fec36d adds Yes / no to all on external file changes.
+
+If you answer yes to all or no to all Leo remembers that
+answer for 3 seconds. As a result, another set of external
+changes will show the pop up again.
+</t>
+<t tx="ekr.20170911082432.66">Added the following commands:
+
+- edit-recent-files and write-edited-recent-files
+- goto-any-clone
+- help-for-settings
+- listen-to-log and kill-log-listen
+- push-cursor and pop_cursor
+- show-color-names and show-color-wheel
+- start-of-line and finish-line
+- toggle-auto-edit
+- vr-zoom
+- vs-eval-block (valuescript plugin)
+
+Improved the following commands:
+
+- clone-find*
+- indent-region and unindent-region
+- move-lines-up and move-lines-down
+- paste-retaining-clones now works across different .leo files
+- replace-all is much faster.
+</t>
+<t tx="ekr.20170911082432.88">- Added tcl importer.
+- Added lua importer.
+- Improved xml and html importers.
+- Improved Windows menu.
+- Improved caching of files.
+- Improved operation of command history.
+- Optionally show timestamps when writing files.
+- The viewrendered.py plugin renders LaTex (Python 2.x only)</t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
