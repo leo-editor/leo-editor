@@ -353,6 +353,8 @@
 </v>
 </v>
 </v>
+<v t="ekr.20101027070126.1664"></v>
+<v t="ekr.20101027070126.1666"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -820,6 +822,8 @@ g.es_print('done') # '@button make-leo done')
         'leo/core/ekrLeoPy.leo',
     )
     lines = self.deleteFiles(lines,deleteList)
+    # Delete all files in the top-level docs/ directory
+    lines = [z for z in lines if not z.startswith('docs/')]
     if trace:
         g.trace('=' * 40)
         g.trace(g.listToString(lines))
