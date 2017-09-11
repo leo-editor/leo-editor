@@ -1047,7 +1047,7 @@ def deleteTempFiles (self,lines):
         # This commit ensures the proper files are included in the distribution.
         # r'git commit -m "commit doc files during make"',
         ##version
-        r'%s archive --format zip --output "%s" --prefix=Leo-5.5/ master' % (
+        r'%s archive --format zip --output "%s" --prefix=Leo-5.6/ master' % (
             r'c:\apps\Git\bin\git.exe',zipFile),
     )
     g.execute_shell_commands(commands,trace=True)
@@ -1206,6 +1206,7 @@ pluginsDir  = abspath(join(g.app.loadDir,'..','plugins'))
 # Next.
 coreDir =       abspath(join(g.app.loadDir,'..','core'))
 docDir =        abspath(join(g.app.loadDir,'..','doc'))
+docsDir =       abspath(join(g.app.loadDir,'..','..','docs'))
 manifest_fn =   abspath(join(rootDir,'git-manifest.txt'))
 # install_fn =    abspath(join(distDir,'nsi-install-files.txt'))
 # uninstall_fn =  abspath(join(distDir,'nsi-uninstall-files.txt'))
@@ -1495,9 +1496,15 @@ stand_alone_globals.leo         export-ignore
 # setup.cfg                     export-ignore
 # setup.py                      export-ignore
 
+# Do not include leo/docs folder in distributions
+leo/docs/ export-ignore
+
+# Do not include various local files.
 leo/core/leoPy.leo              export-ignore
 leo/core/ekrLeoPy.leo           export-ignore
 leo/test/unittest/.leo_shadow/  export-ignore
+
+leo/core/commit_timestamp.json merge=ours
 </t>
 <t tx="ekr.20141016123713.2120">def copy_nsi_files(self):
     '''
