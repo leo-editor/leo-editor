@@ -1496,8 +1496,8 @@ stand_alone_globals.leo         export-ignore
 # setup.cfg                     export-ignore
 # setup.py                      export-ignore
 
-# Do not include leo/docs folder in distributions
-leo/docs/ export-ignore
+# Do not include the top-level docs folder in distributions
+docs/                           export-ignore
 
 # Do not include various local files.
 leo/core/leoPy.leo              export-ignore
