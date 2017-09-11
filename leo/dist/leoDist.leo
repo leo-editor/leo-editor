@@ -2806,24 +2806,7 @@ it is possible to simulate Python in assembly language...
     - pip2/3 install setuptools==19.2
 </t>
 <t tx="ekr.20161015091350.1">- Make sure no distributed .leo file contains xml-stylesheet elements.
-    leo/config:
-        - exampleSettings.leo:
-        - leoSettings.leo
-    leo/core/leoPyRef.leo
-    leo/dist/leoDist.leo
-    leo/doc:
-        - LeoReleaseNotes.leo
-        - cheatSheet.leo
-        - default_workbook.leo
-        - leoDocs.leo
-        - leoSlideShows.leo
-        - quickstart.leo
-    leo/external/leo2html.leo
-    leo/plugins:
-        - leoGuiPluginsRef.leo
-        - leoPluginsRef.leo
-    leo/scripts/scripts.leo
-    leo/test/test.leo
+  Run @button check .leo files.
 - Make sure Leo looks good without myLeoSettings.leo.
 - Run the "check-bindings" button in leoSettings.leo.
 - Run all unit tests with *both* Python 2 and 3.
@@ -3951,7 +3934,7 @@ Command-line options::
 https://github.com/leo-editor/leo-editor/issues/328
 </t>
 <t tx="ekr.20170911061827.1">'''Make sure no distributed .leo file contains xml-stylesheet elements.'''
-g.cls()
+# g.cls()
 &lt;&lt; define files &gt;&gt;
 for fn in files:
     path = g.os_path_finalize_join(g.app.loadDir, '..', fn)
