@@ -5628,6 +5628,9 @@ def pr(*args, **keys):
     newline = d.get('newline')
     stdout = sys.stdout if sys.stdout and g.unitTesting else sys.__stdout__
         # Unit tests require sys.stdout.
+    if not stdout:
+        # Fix #541.
+        return
     if sys.platform.lower().startswith('win'):
         encoding = 'ascii' # 2011/11/9.
     elif getattr(stdout, 'encoding', None):
