@@ -7346,19 +7346,53 @@ class Commands(object):
     #@+node:vitalije.20170831154830.1: *4* c.updateRefLeoFile
     @cmd('update-ref-file')
     def updateRefLeoFile(self, event=None):
-        '''Saves public part of file to reference Leo file.'''
+        '''Saves *public* part of this outline (which consists
+           of all nodes above the special separator node to the
+           reference Leo file. This special separator node is
+           created by executing command `set-reference-file`.
+           
+           Below this special node is *private* area where
+           one can freely make changes that should not be 
+           published (yet) to reference Leo file.'''
         c = self
         c.fileCommands.save_ref()
     #@+node:vitalije.20170831154840.1: *4* c.readRefLeoFile
     @cmd('read-ref-file')
     def readRefLeoFile(self, event=None):
-        '''Updates public part of outline from reference Leo file.'''
+        '''This command will replace completely *public*
+           part of this outline with the content of reference
+           Leo file. Keep in mind that it will show no mercy to
+           any changes made to the *public* part of this outline.
+           
+           The *public* part of outline consists of all nodes above
+           the special *separator* node. This *separator* node is 
+           created by executing `set-reference-file` command.'''
         c = self
         c.fileCommands.updateFromRefFile()
     #@+node:vitalije.20170831154850.1: *4* c.setReferenceFile
     @cmd('set-reference-file')
     def setReferenceFile(self, event=None):
-        '''Select a reference Leo document for the public part of this outline.'''
+        '''Shows file open dialog allowing user to select a 
+           *reference* Leo document to which this outline will
+           be bound.
+           
+           In essence this command will insert a node (if there
+           is not already there) with the special headline and
+           in body path to selected reference Leo file.
+           
+           This command should be used along with two other
+           commands: `update-ref-file` and `read-ref-file`.
+           They will operate on the *public* part of the outline,
+           which consists of all nodes above this special node.
+           
+           `update-ref-file` will save the *public* part of
+           this outline to reference Leo file.
+           
+           `read-ref-file` will replace completely *public*
+           part of this outline with the content of reference
+           Leo file. Keep in mind that it will show no mercy to
+           any changes you have made to the *public* part of 
+           this outline.'''
         c = self
         table = [ g.fileFilters("LEOFILES"),]
         fileName = g.app.gui.runOpenFileDialog(c,
