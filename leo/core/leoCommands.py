@@ -1366,6 +1366,7 @@ class Commands(object):
     extractPythonMethod = extract
     #@+node:ekr.20110530124245.18241: *8* c.extractDef
     extractDef_patterns = (
+        re.compile(r'\((?:def|defn|defui|deftype|defrecord|defonce)\s+(\S+)'), # clojure definition
         re.compile(r'\s*(?:def|class)\s+(\w+)'), # python definitions
         re.compile(r'\bvar\s+(\w+)\s*=\s*function\b'), # js function
         re.compile(r'\bfunction\s+(\w+)\s*\('), # js function
@@ -1375,21 +1376,17 @@ class Commands(object):
         re.compile(r'\b(\w+)\s*=\s(?:\([^)]*\))\s*(?:=>|->)'), # coffeescript function
         re.compile(r'\b(\w+)\s*:\s(?:=>|->)'), # coffeescript function
         re.compile(r'\b(\w+)\s*:\s(?:\([^)]*\))\s*(?:=>|->)'), # coffeescript function
-        re.compile(r'\((?:def|defn|defui|deftype|defrecord|defonce)\s+(\S+)'), # clojure definition
     )
     def extractDef(self, s):
         '''Return the defined function/method/class name if s
         looks like definition. Tries several different languages.'''
-        lines = self.config.getData('extract-patterns')
-        if lines:
-            for s in lines:
-                pat = re.compile(s)
-                m = pat.search(s)
-                if m: return m.group(1)
-        else:
-            for pat in self.extractDef_patterns:
-                m = pat.search(s)
-                if m: return m.group(1)
+        for s in self.config.getData('extract-patterns') or []:
+            pat = re.compile(s)
+            m = pat.search(s)
+            if m: return m.group(1)
+        for pat in self.extractDef_patterns:
+            m = pat.search(s)
+            if m: return m.group(1)
         return ''
     #@+node:ekr.20110530124245.18242: *8* c.extractRef
     def extractRef(self, s):
