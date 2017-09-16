@@ -1380,9 +1380,16 @@ class Commands(object):
     def extractDef(self, s):
         '''Return the defined function/method/class name if s
         looks like definition. Tries several different languages.'''
-        for pat in self.extractDef_patterns:
-            m = pat.search(s)
-            if m: return m.group(1)
+        lines = self.config.getData('extract-patterns')
+        if lines:
+            for s in lines:
+                pat = re.compile(s)
+                m = pat.search(s)
+                if m: return m.group(1)
+        else:
+            for pat in self.extractDef_patterns:
+                m = pat.search(s)
+                if m: return m.group(1)
         return ''
     #@+node:ekr.20110530124245.18242: *8* c.extractRef
     def extractRef(self, s):
