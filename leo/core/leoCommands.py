@@ -1367,9 +1367,9 @@ class Commands(object):
     #@+node:ekr.20110530124245.18241: *8* c.extractDef
     extractDef_patterns = (
         re.compile(r'\((?:def|defn|defui|deftype|defrecord|defonce)\s+(\S+)'), # clojure definition
-        re.compile(r'\s*(?:def|class)\s+(\w+)'), # python definitions
-        re.compile(r'\bvar\s+(\w+)\s*=\s*function\b'), # js function
-        re.compile(r'\bfunction\s+(\w+)\s*\('), # js function
+        re.compile(r'^\s*(?:def|class)\s+(\w+)'), # python definitions
+        re.compile(r'^\bvar\s+(\w+)\s*=\s*function\b'), # js function
+        re.compile(r'^\s*function\s+(\w+)\s*\('), # js function
         re.compile(r'\b(\w+)\s*:\s*function\s'), # js function
         re.compile(r'\.(\w+)\s*=\s*function\b'), # js function
         re.compile(r'\b(\w+)\s*=\s(?:=>|->)'), # coffeescript function
