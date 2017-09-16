@@ -1365,23 +1365,24 @@ class Commands(object):
     extractSection = extract
     extractPythonMethod = extract
     #@+node:ekr.20110530124245.18241: *8* c.extractDef
+    extractDef_patterns = (
+        re.compile(r'\s*(?:def|class)\s+(\w+)'), # python definitions
+        re.compile(r'\bvar\s+(\w+)\s*=\s*function\b'), # js function
+        re.compile(r'\bfunction\s+(\w+)\s*\('), # js function
+        re.compile(r'\b(\w+)\s*:\s*function\s'), # js function
+        re.compile(r'\.(\w+)\s*=\s*function\b'), # js function
+        re.compile(r'\b(\w+)\s*=\s(?:=>|->)'), # coffeescript function
+        re.compile(r'\b(\w+)\s*=\s(?:\([^)]*\))\s*(?:=>|->)'), # coffeescript function
+        re.compile(r'\b(\w+)\s*:\s(?:=>|->)'), # coffeescript function
+        re.compile(r'\b(\w+)\s*:\s(?:\([^)]*\))\s*(?:=>|->)'), # coffeescript function
+        re.compile(r'\((?:def|defn|defui|deftype|defrecord|defonce)\s+(\S+)'), # clojure definition
+    )
     def extractDef(self, s):
-        '''Return the defined function/method name if
-        s looks like Python def or class line.
-        '''
-        s = s.strip()
-        for tag in ('def', 'class'):
-            if s.startswith(tag):
-                i = g.skip_ws(s, len(tag))
-                j = g.skip_id(s, i, chars='_')
-                if j > i:
-                    name = s[i: j]
-                    if tag == 'class':
-                        return name
-                    else:
-                        k = g.skip_ws(s, j)
-                        if g.match(s, k, '('):
-                            return name
+        '''Return the defined function/method/class name if s
+        looks like definition. Tries several different languages.'''
+        for pat in self.extractDef_patterns:
+            m = pat.search(s)
+            if m: return m.group(1)
         return ''
     #@+node:ekr.20110530124245.18242: *8* c.extractRef
     def extractRef(self, s):
