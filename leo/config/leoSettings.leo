@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="111" left="599" height="912" width="1458"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -2837,7 +2837,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20170825083426.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -4139,6 +4138,7 @@ isearch-forward                     = Alt-I # Alt-S conflicts with &amp;Search a
 isearch-forward-regexp              = None
 search-backward                     = None
 search-forward                      = None
+search-return-to-origin             = None
 word-search-backward                = None 
 word-search-forward                 = None
 
@@ -4377,19 +4377,17 @@ write-dirty-at-file-nodes   = Shift-Ctrl-Q
 <t tx="ekr.20060925061845.1">auto-complete-force         = Ctrl-space
 auto-complete               = period
 debug                       = None
+dabbrev-completion          = Alt-Ctrl-slash
+dabbrev-expands             = Alt-slash
+edit-setting                = None
 execute-script              = Ctrl-B
 redo                        = Shift-Ctrl-Z
-
-dabbrev-completion  = Alt-Ctrl-slash
-dabbrev-expands     = Alt-slash
-
 run-all-unit-tests-externally       = None
 run-all-unit-tests-locally          = None
 run-marked-unit-tests-externally    = None
 run-marked-unit-tests-locally       = None
 run-selected-unit-tests-externally  = None
 run-selected-unit-tests-locally     = None
-
 show-calltips               = parenleft
 show-calltips-force         = None # This command needs work before it is useful. Alt-parenleft
 sort-siblings               = Alt-A
@@ -4773,7 +4771,7 @@ menu-shortcut = Alt-S # Search and Settings menus.
 menu-shortcut = Alt-W # Window menu.
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401">@nocolor-node
+<t tx="ekr.20070622214401" str_leo_pos="4">@nocolor-node
 
 Please don't change this node and its descendants; they are for Leo's
 developers.
@@ -7261,21 +7259,10 @@ new                             = None         # Ctrl-n conflicts with next-line
 newline-and-indent              = Ctrl-j
 next-line                       = Ctrl-n
 next-line-extend-selection      = None
-# number-command                  = None
-# number-command-0                = Alt-0
-# number-command-1                = Alt-1
-# number-command-2                = Alt-2
-# number-command-3                = Alt-3
-# number-command-4                = Alt-4
-# number-command-5                = Alt-5
-# number-command-6                = Alt-6
-# number-command-7                = Alt-7
-# number-command-8                = Alt-8
-# number-command-9                = Alt-9 
-open-leoDocs-leo                = None
-open-leoDist-leo                = None
-open-leoPlugins-leo             = None
-open-leoSettings-leo            = None
+open-leo-docs-leo               = None
+open-leo-dist-leo               = None
+open-leo-plugins-leo            = None
+open-leo-settings-leo           = None
 open-scripts-leo                = None
 open-offline-tutorial           = None
 open-online-home                = None
@@ -7341,9 +7328,10 @@ set-overwrite-state             = None
 settings                        = None  # Ctrl-Y conflicts with yank.
 shell-command                   = Alt-exclam
 shell-command-on-region         = Alt-bar
-show-colors                     = None
+show-color-names                = None
+show-color-wheel                = None
 show-fonts                      = None
-# show-invisibles                 = Alt-V
+# show-invisibles               = Alt-V
 show-invisibles                 = None  # Alt-V conflicts with scroll-up-page .
 sort-children                   = None
 sort-columns                    = None
@@ -7534,6 +7522,7 @@ double-click-headline               = None
 double-click-icon-box               = None
 dump-outline                        = None
 edit-headline                       = None
+edit-setting                        = None
 enable-autocompleter                = None
 enable-calltips                     = None
 end-edit-headline                   = None
@@ -7727,24 +7716,10 @@ new                                 = None
 newline-and-indent                  = None
 next-line                           = None
 next-line-extend-selection          = None
-# number-command                    = None
-# number-command-0                  = None
-# number-command-1                  = None
-# number-command-2                  = None
-# number-command-3                  = None
-# number-command-4                  = None
-# number-command-5                  = None
-# number-command-6                  = None
-# number-command-7                  = None
-# number-command-8                  = None
-# number-command-9                  = None
-# number-to-register                = None
-# open-compare-window               = None
-# open-find-dialog                  = None
-open-leoDocs-leo                    = None
-open-leoDist-leo                    = None
-open-leoPlugins-leo                 = None
-open-leoSettings-leo                = None
+open-leo-docs-leo                   = None
+open-leo-dist-leo                   = None
+open-leo-plugins-leo                = None
+open-leo-settings-leo               = None
 open-scripts-leo                    = None
 open-offline-tutorial               = None
 open-online-home                    = None
@@ -7815,6 +7790,7 @@ scroll-up-line                      = None
 scroll-up-page                      = None
 search-backward                     = None
 search-forward                      = None
+search-return-to-origin             = None
 select-all                          = None
 set-colors                          = None
 set-comment-column                  = None
@@ -7835,7 +7811,8 @@ shell-command                       = None
 shell-command-on-region             = None
 show-calltips                       = None
 show-calltips-force                 = None
-show-colors                         = None
+show-color-names                    = None
+show-color-wheel                    = None
 show-find-options                   = None
 show-fonts                          = None
 show-invisibles                     = None

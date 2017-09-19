@@ -24,6 +24,9 @@
 </v>
 <v t="ekr.20101026142031.1516"><vh>Registry Keys</vh></v>
 </v>
+<v t="ekr.20170911061827.1"><vh>@button check .leo files</vh>
+<v t="ekr.20170911062209.1"><vh>&lt;&lt; define files &gt;&gt;</vh></v>
+</v>
 </v>
 <v t="ekr.20161024113526.1"><vh>Notes</vh>
 <v t="ekr.20160501153808.1"><vh>Anaconda install notes</vh></v>
@@ -253,6 +256,7 @@
 </v>
 <v t="ekr.20170316113823.88"><vh>Settings and command-line options</vh></v>
 </v>
+<v t="ekr.20170911085243.1"><vh>Leo 5.6</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
@@ -349,7 +353,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20161024113542.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -381,7 +384,7 @@ INCIDENTAL, CONSEQUENTIAL OR OTHER DAMAGES.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 5.5
+Version: 5.6
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -401,25 +404,20 @@ Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 
 </t>
-<t tx="EKR.20040519090846.9">Leo 5.5 March 23, 2017
+<t tx="EKR.20040519090846.9">Leo 5.6b1 September 11, 2017
 
-[Leo](http://leoeditor.com/) 5.5 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+[Leo](http://leoeditor.com/) 5.6b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
-Leo is an IDE, outliner and PIM, as described [here] (http://leoeditor.com/preface.html).
+Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
 Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is possible to simulate Python in assembly language...
 
-**The highlights of Leo 5.5**
+**The highlights of Leo 5.6**
 
-- Syntax coloring is 20x faster than before.
-  The "big-text" hack is no longer needed.
-- Leo's importers are now line/token oriented, allowing them
-  to handle languages like javascript more robustly.
-- New perl and javascript importers.
-- Pylint now runs in the background.
-- Pyflakes can optionally check each file as it is written.
-- Greatly simplified argument-handling for interactive commands.
-- Documented how to do Test-Driven Development in Leo.
+- The cursesGui2.py plugin creates a console gui for Leo.
+- Added "Yes to All" and "No to All" buttons to file-changed dialog.
+- Improved how Leo switches between git branches.
+- Created outline-oriented git-diff command.
 
 **Links**
 
@@ -505,7 +503,7 @@ Mark Ng
 [Quote] I have just finished a little embedded system for someone, written in
 C using leo as the editor. I told the customer he _had_ to use leo for
 ongoing maintenance, after I looked at one of the main state machines:
-600 lines in the derived file, but trivialy easy to get your head
+600 lines in the derived file, but trivially easy to get your head
 around in Leo...
 
 The good news is that having been forced to meet leo he thinks it'll
@@ -521,7 +519,7 @@ makes the system more flexible...
 [End Quote]</t>
 <t tx="ekr.20040828084148">Leo is the best IDE that I have had the pleasure to use. I have been using it
 now for about 2 -- 3 months. It has totally changed not only the way that I
-program, but also the way that I store and organise all of the information that
+program, but also the way that I store and organize all of the information that
 I need for the job that I do. -- Ian Mulvany</t>
 <t tx="ekr.20050315084904"></t>
 <t tx="ekr.20060213160806">"Thanks for a wonderful program – everybody should be using it! It blows the
@@ -728,7 +726,7 @@ Make these files in the top-level folder::
     leo.zip.
 '''
 
-version = '5.5' ##version
+version = '5.6b1' ##version
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
 
@@ -778,7 +776,7 @@ g.es_print('done') # '@button make-leo done')
     These directories start at the top-level directory.
     '''
     trace = False
-    ignoreDirs = ('.bzr','.git',)
+    ignoreDirs = ('.bzr','.git','docs')
     # Important: this adds all directories on EKR's machine,
     # regardless of whether they appear in the manifest!
     result = [] ; n = len(rootDir)
@@ -822,6 +820,8 @@ g.es_print('done') # '@button make-leo done')
         'leo/core/ekrLeoPy.leo',
     )
     lines = self.deleteFiles(lines,deleteList)
+    # Delete all files in the top-level docs/ directory
+    lines = [z for z in lines if not z.startswith('docs/')]
     if trace:
         g.trace('=' * 40)
         g.trace(g.listToString(lines))
@@ -860,7 +860,7 @@ def deleteTempFiles (self,lines):
     for z in dirs:
         dirDict[z] = []
         # Leo 5.4: Add leo/core/commit_timestamp.json
-        # This file is in .gitignore, but we mut write it here.
+        # This file is in .gitignore, but we must write it here.
         if 0:
             if z == 'leo/core':
                 # g.trace(z)
@@ -1049,7 +1049,7 @@ def deleteTempFiles (self,lines):
         # This commit ensures the proper files are included in the distribution.
         # r'git commit -m "commit doc files during make"',
         ##version
-        r'%s archive --format zip --output "%s" --prefix=Leo-5.5/ master' % (
+        r'%s archive --format zip --output "%s" --prefix=Leo-5.6/ master' % (
             r'c:\apps\Git\bin\git.exe',zipFile),
     )
     g.execute_shell_commands(commands,trace=True)
@@ -1208,6 +1208,7 @@ pluginsDir  = abspath(join(g.app.loadDir,'..','plugins'))
 # Next.
 coreDir =       abspath(join(g.app.loadDir,'..','core'))
 docDir =        abspath(join(g.app.loadDir,'..','doc'))
+docsDir =       abspath(join(g.app.loadDir,'..','..','docs'))
 manifest_fn =   abspath(join(rootDir,'git-manifest.txt'))
 # install_fn =    abspath(join(distDir,'nsi-install-files.txt'))
 # uninstall_fn =  abspath(join(distDir,'nsi-uninstall-files.txt'))
@@ -1497,9 +1498,16 @@ stand_alone_globals.leo         export-ignore
 # setup.cfg                     export-ignore
 # setup.py                      export-ignore
 
+# Do not include the top-level docs folder in distributions
+docs/                           export-ignore
+docs/*                          export-ignore
+
+# Do not include various local files.
 leo/core/leoPy.leo              export-ignore
 leo/core/ekrLeoPy.leo           export-ignore
 leo/test/unittest/.leo_shadow/  export-ignore
+
+leo/core/commit_timestamp.json merge=ours
 </t>
 <t tx="ekr.20141016123713.2120">def copy_nsi_files(self):
     '''
@@ -1843,7 +1851,7 @@ moin.py:
 erlang.py:  no obvious problem.
 lilypond.py:no obvious problem.
 perl.py:    no obvious problem.
-pl1.py:     no obvious problm.
+pl1.py:     no obvious problem.
 rest.py:    no obvious problem.
 rtf.py:     no obvious problem.
 scala.py:   no obvious problem.
@@ -2803,24 +2811,7 @@ it is possible to simulate Python in assembly language...
     - pip2/3 install setuptools==19.2
 </t>
 <t tx="ekr.20161015091350.1">- Make sure no distributed .leo file contains xml-stylesheet elements.
-    leo/config:
-        - exampleSettings.leo:
-        - leoSettings.leo
-    leo/core/leoPyRef.leo
-    leo/dist/leoDist.leo
-    leo/docs:
-        - LeoReleaseNotes.leo
-        - cheatSheet.leo
-        - default_workbook.leo
-        - leoDocs.leo
-        - leoSlideShows.leo
-        - quickstart.leo
-    leo/external/leo2html.leo
-    leo/plugins:
-        - leoGuiPluginsRef.leo
-        - leoPluginsRef.leo
-    leo/scripts/scripts.leo
-    leo/test/test.leo
+  Run @button check .leo files.
 - Make sure Leo looks good without myLeoSettings.leo.
 - Run the "check-bindings" button in leoSettings.leo.
 - Run all unit tests with *both* Python 2 and 3.
@@ -2874,7 +2865,7 @@ LeoPyRef.leo and LeoPluginsRef.leo:
   - Check it by visiting the archive:
   https://mail.python.org/pipermail/python-announce-list/
 
-- Register Leo at http://www.python.org/pypi?:action=submit_form
+- Register Leo at https://pypi.python.org/pypi
 
 - My blog: http://edreamleo.blogspot.com/
   **Paste source-forge or leo-editor announcement**.
@@ -3946,6 +3937,66 @@ Command-line options::
 </t>
 <t tx="ekr.20170316113823.9">Leo no longer hangs waiting for this command to finish.
 https://github.com/leo-editor/leo-editor/issues/328
+</t>
+<t tx="ekr.20170911061827.1">'''Make sure no distributed .leo file contains xml-stylesheet elements.'''
+# g.cls()
+&lt;&lt; define files &gt;&gt;
+for fn in files:
+    path = g.os_path_finalize_join(g.app.loadDir, '..', fn)
+    if g.os_path_exists(path):
+        with open(path, 'rb') as f:
+            s = f.read()
+        s = g.toUnicode(s)
+        if s.find('&lt;xml-stylesheet') &gt; -1:
+            print('contains xml-stylesheet element: %s' % (path))
+    else:
+        print('does not exist: %s' % path)
+print('done')
+</t>
+<t tx="ekr.20170911062209.1">files = (
+    'config/exampleSettings.leo',
+    'config/leoSettings.leo',
+    'core/leoPyRef.leo',
+    'dist/leoDist.leo',
+    'doc/LeoReleaseNotes.leo',
+    'doc/cheatSheet.leo',
+    'doc/default_workbook.leo',
+    'doc/leoDocs.leo',
+    'doc/leoSlideShows.leo',
+    'doc/quickstart.leo',
+    'external/leo2html.leo',
+    'plugins/leoGuiPluginsRef.leo',
+    'plugins/leoPluginsRef.leo',
+    'scripts/scripts.leo',
+    'test/test.leo',
+)</t>
+<t tx="ekr.20170911085243.1">Leo 5.6b1 September 11, 2017
+
+[Leo](http://leoeditor.com/) 5.6b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+
+Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is possible to simulate Python in assembly language...
+
+**The highlights of Leo 5.6**
+
+- The cursesGui2.py plugin creates a console gui for Leo.
+- Added "Yes to All" and "No to All" buttons to file-changed dialog.
+- Improved how Leo switches between git branches.
+- Created outline-oriented git-diff command.
+
+**Links**
+
+- [Leo's home page](http://leoeditor.com)
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
 </t>
 </tnodes>
 </leo_file>

@@ -1321,13 +1321,14 @@ class Commands(object):
         Create child node from the selected body text.
 
         1. If the selection starts with a section reference, the section
-           name become the child's headline. All following lines become
+           name becomes the child's headline. All following lines become
            the child's body text. The section reference line remains in
            the original body text.
 
-        2. If the selection looks like a Python class or definition line,
-           the class/function/method name becomes the child's headline and
-           all selected lines become the child's body text.
+        2. If the selection looks like a definition line (for the Python,
+           JavaScript, CoffeeScript or Clojure languages) the
+           class/function/method name becomes the child's headline and all
+           selected lines become the child's body text.
 
         3. Otherwise, the first line becomes the child's headline, and all
            selected lines become the child's body text.
@@ -1365,23 +1366,28 @@ class Commands(object):
     extractSection = extract
     extractPythonMethod = extract
     #@+node:ekr.20110530124245.18241: *8* c.extractDef
+    extractDef_patterns = (
+        re.compile(r'\((?:def|defn|defui|deftype|defrecord|defonce)\s+(\S+)'), # clojure definition
+        re.compile(r'^\s*(?:def|class)\s+(\w+)'), # python definitions
+        re.compile(r'^\bvar\s+(\w+)\s*=\s*function\b'), # js function
+        re.compile(r'^\s*function\s+(\w+)\s*\('), # js function
+        re.compile(r'\b(\w+)\s*:\s*function\s'), # js function
+        re.compile(r'\.(\w+)\s*=\s*function\b'), # js function
+        re.compile(r'\b(\w+)\s*=\s(?:=>|->)'), # coffeescript function
+        re.compile(r'\b(\w+)\s*=\s(?:\([^)]*\))\s*(?:=>|->)'), # coffeescript function
+        re.compile(r'\b(\w+)\s*:\s(?:=>|->)'), # coffeescript function
+        re.compile(r'\b(\w+)\s*:\s(?:\([^)]*\))\s*(?:=>|->)'), # coffeescript function
+    )
     def extractDef(self, s):
-        '''Return the defined function/method name if
-        s looks like Python def or class line.
-        '''
-        s = s.strip()
-        for tag in ('def', 'class'):
-            if s.startswith(tag):
-                i = g.skip_ws(s, len(tag))
-                j = g.skip_id(s, i, chars='_')
-                if j > i:
-                    name = s[i: j]
-                    if tag == 'class':
-                        return name
-                    else:
-                        k = g.skip_ws(s, j)
-                        if g.match(s, k, '('):
-                            return name
+        '''Return the defined function/method/class name if s
+        looks like definition. Tries several different languages.'''
+        for s in self.config.getData('extract-patterns') or []:
+            pat = re.compile(s)
+            m = pat.search(s)
+            if m: return m.group(1)
+        for pat in self.extractDef_patterns:
+            m = pat.search(s)
+            if m: return m.group(1)
         return ''
     #@+node:ekr.20110530124245.18242: *8* c.extractRef
     def extractRef(self, s):
@@ -7346,19 +7352,56 @@ class Commands(object):
     #@+node:vitalije.20170831154830.1: *4* c.updateRefLeoFile
     @cmd('update-ref-file')
     def updateRefLeoFile(self, event=None):
-        '''Saves public part of file to reference Leo file.'''
+        '''
+        Saves only the **public part** of this outline to the reference Leo
+        file. The public part consists of all nodes above the **special
+        separator node**, a top-level node whose headline is
+        `---begin-private-area---`.
+       
+        Below this special node is **private area** where one can freely make
+        changes that should not be copied (published) to the reference Leo file.
+        
+        **Note**: Use the set-reference-file command to create the separator node.
+        '''
         c = self
         c.fileCommands.save_ref()
     #@+node:vitalije.20170831154840.1: *4* c.readRefLeoFile
     @cmd('read-ref-file')
     def readRefLeoFile(self, event=None):
-        '''Updates public part of outline from reference Leo file.'''
+        '''
+        This command *completely replaces* the **public part** of this outline
+        with the contents of the reference Leo file. The public part consists
+        of all nodes above the top-level node whose headline is
+        `---begin-private-area---`.
+
+        Below this special node is **private area** where one can freely make
+        changes that should not be copied (published) to the reference Leo file.
+        
+        **Note**: Use the set-reference-file command to create the separator node.
+        '''
         c = self
         c.fileCommands.updateFromRefFile()
     #@+node:vitalije.20170831154850.1: *4* c.setReferenceFile
     @cmd('set-reference-file')
     def setReferenceFile(self, event=None):
-        '''Select a reference Leo document for the public part of this outline.'''
+        '''
+        Shows a file open dialog allowing you to select a **reference** Leo
+        document to which this outline will be connected.
+           
+        This command creates a **special separator node**, a top-level node
+        whose headline is `---begin-private-area---` and whose body is the path
+        to reference Leo file.
+        
+        The separator node splits the outline into two parts. The **public
+        part** consists of all nodes above the separator node. The **private
+        part** consists of all nodes below the separator node.
+           
+        The update-ref-file and read-ref-file commands operate on the **public
+        part** of the outline. The update-ref-file command saves *only* the
+        public part of the outline to reference Leo file. The read-ref-file
+        command *completely replaces* the public part of the outline with the
+        contents of reference Leo file.
+        '''
         c = self
         table = [ g.fileFilters("LEOFILES"),]
         fileName = g.app.gui.runOpenFileDialog(c,

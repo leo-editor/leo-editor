@@ -83,7 +83,7 @@ def renumber(c):
     if c.user_dict.get(LNOFF, False):
         nums = tuple()
     else:
-        new_p = c.p
+        p = new_p = c.p
         for p in new_p.self_and_parents():
             if p.isAnyAtFileNode() or p.v.u.get(LNR):
                 root = p
