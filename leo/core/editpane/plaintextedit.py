@@ -1,3 +1,4 @@
+import re
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
 
@@ -61,10 +62,25 @@ class LEP_PlainTextEditB(LEP_PlainTextEdit):
     background color to test multiple edtitors
     """
     lep_name = "Plain Text Edit 'B'"
+    class BHighlighter(QtGui.QSyntaxHighlighter):
+        fmt = QtGui.QTextCharFormat()
+        fmt.setFontWeight(QtGui.QFont.Bold)
+        fmt.setForeground(QtCore.Qt.darkMagenta)
+        pattern = "\\bMy[A-Za-z]*\\b"
+        regex = re.compile(pattern)
+
+        def highlightBlock(self, text):
+            offset = 0
+            index = self.regex.search(text)
+            while index:
+                start = index.start()
+                length = index.end() - start
+                self.setFormat(offset+start, length, self.fmt)
+                offset += start + length
+                index = self.regex.search(text[offset:])
+
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
         super(LEP_PlainTextEditB, self).__init__(c=c, lep=lep, *args, **kwargs)
         self.setStyleSheet("* {background: #989; color: #222; }")
-
-
-
+        self.highlighter = self.BHighlighter(self.document())

@@ -44,6 +44,3 @@ class LEP_PlainTextViewB(LEP_PlainTextView):
         """set up"""
         super(LEP_PlainTextViewB, self).__init__(c=c, lep=lep, *args, **kwargs)
         self.setStyleSheet("* {background: #899; color: #222; }")
-
-
-

@@ -45,7 +45,7 @@ class LeoEditPane(QtWidgets.QWidget):
     """
     Leo node body editor / viewer
     """
-    def __init__(self, c=None, p=None, mode='edit', show_head=True, show_control=False,
+    def __init__(self, c=None, p=None, mode='edit', show_head=True, show_control=True,
                  update=True, recurse=False, *args, **kwargs):
         """__init__ - bind to outline
 
