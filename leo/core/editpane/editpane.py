@@ -342,6 +342,8 @@ class LeoEditPane(QtWidgets.QWidget):
         module_dir = os.path.dirname(__file__)
         names = [os.path.splitext(i) for i in os.listdir(module_dir)
                  if os.path.isfile(os.path.join(module_dir, i))]
+        # FIXME: sort 'plain' to start of list for devel.
+        names.sort(key=lambda x: (not x[0].startswith('plain'), x[0]))
         modules = []
         for name in [i[0] for i in names if i[1].lower() == '.py']:
             try:
@@ -353,7 +355,7 @@ class LeoEditPane(QtWidgets.QWidget):
                         modules.append(locals()[name])
                     except Exception:
                         pass
-                    
+
             except ImportError:
                 pass
 
