@@ -2,6 +2,7 @@ import re
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
 from leo.core.leoColorizer import LeoHighlighter, JEditColorizer
+import leo.plugins.qt_text as qt_text
 
 import time  # temporary for debugging
 
@@ -40,8 +41,10 @@ class LEP_LeoTextEdit(QtWidgets.QTextEdit):
         self.c = c
         self.lep = lep
         self.textChanged.connect(self.text_changed)
-        self.highlighter = JEditColorizer(c, self, c.frame.body.wrapper)
-        # FIXME: borrowing c.frame.body.wrapper like this can not end well
+        self.wrapper = qt_text.QTextEditWrapper(self, name='edit_pane', c=c)
+        self.wrapper.widget = self
+        self.highlighter = JEditColorizer(c, self, self.wrapper)
+        g.app.gui.setFilter(c, self, self.wrapper, 'edit_pane')
     def focusInEvent (self, event):
         QtWidgets.QTextEdit.focusInEvent(self, event)
         DBG("focusin()")
