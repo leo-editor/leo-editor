@@ -1,7 +1,7 @@
 import re
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
-from leo.core.leoColorizer import LeoHighlighter
+from leo.core.leoColorizer import LeoHighlighter, JEditColorizer
 
 import time  # temporary for debugging
 
@@ -40,7 +40,8 @@ class LEP_LeoTextEdit(QtWidgets.QTextEdit):
         self.c = c
         self.lep = lep
         self.textChanged.connect(self.text_changed)
-        self.highlighter = LeoHighlighter(c, NONE, self.document())
+        self.highlighter = JEditColorizer(c, self, c.frame.body.wrapper)
+        # FIXME: borrowing c.frame.body.wrapper like this can not end well
     def focusInEvent (self, event):
         QtWidgets.QTextEdit.focusInEvent(self, event)
         DBG("focusin()")
