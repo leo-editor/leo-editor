@@ -2336,7 +2336,7 @@ class Commands(object):
                 else:
                     # Fix #451: refresh-from-disk selects wrong node.
                     p = at.readOneAtAutoNode(fn, p)
-            elif word == '@shadow ':
+            elif word == '@shadow':
                 if shouldDelete: p.deleteAllChildren()
                 at.read(p, force=True, atShadow=True)
             elif word == '@edit':
