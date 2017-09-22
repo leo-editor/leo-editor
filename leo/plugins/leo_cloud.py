@@ -59,9 +59,15 @@ def onCreate (tag, keys):
 @g.command("lc-read-current")
 def lc_read_current(event):
     """write current Leo Cloud subtree to cloud"""
+    c = event.get('c')
+    if not c or not hasattr(c, '_leo_cloud'):
+        return
 @g.command("lc-write-current")
 def lc_write_current(event):
     """write current Leo Cloud subtree to cloud"""
+    c = event.get('c')
+    if not c or not hasattr(c, '_leo_cloud'):
+        return
 class LeoCloudIOABC:
     """Leo Cloud IO layer "Abstract" Base Class
     
@@ -72,19 +78,29 @@ class LeoCloudIOABC:
 
 class LeoCloudIOFileSystem(LeoCloudIOABC):
     """Leo Cloud IO layer that just loads / saves local files"""
-    def get(self, lc_id):
-        """get - get a Leo Cloud resource
+    def get_data(self, lc_id):
+        """get_data - get a Leo Cloud resource
 
         :param str(?) lc_id: resource to get
+        :returns: object loaded from JSON
         """
         filepath = os.path.join(self.basepath, lc_id+'.json')
         with open(filepath) as data:
             return json.load(data)
 
-    def put(self, vnode, lc_id):
+    def get_subtree(self, lc_id):
+        """get_subtree - get a Leo subtree from the cloud
+
+        :param str(?) lc_id: resource to get
+        :returns: vnode build from lc_id
+        """
+        data = self.get_data(lc_id)
+        # FIXME: not implemented
+
+    def put_subtree(self, v, lc_id):
         """put - put a subtree into the Leo Cloud
 
-        :param Vnode vnode: subtree to put
+        :param vnode v: subtree to put
         :param str(?) lc_id: place to put it
         """
         filepath = os.path.join(self.basepath, lc_id+'.json')
