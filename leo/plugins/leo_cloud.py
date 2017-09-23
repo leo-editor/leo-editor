@@ -42,11 +42,12 @@ import sys
 from collections import namedtuple, defaultdict
 
 import leo.core.leoGlobals as g
+from leo.core.leoNodes import vnode
 
 def init ():
-
-    # g.registerHandler(('new','open2'),onCreate)
+    g.registerHandler(('new','open2'),onCreate)
     g.plugin_signon(__name__)
+    return True
 
 def onCreate (tag, keys):
 
@@ -62,22 +63,35 @@ def lc_read_current(event):
     c = event.get('c')
     if not c or not hasattr(c, '_leo_cloud'):
         return
+
 @g.command("lc-write-current")
 def lc_write_current(event):
     """write current Leo Cloud subtree to cloud"""
     c = event.get('c')
     if not c or not hasattr(c, '_leo_cloud'):
         return
+
 class LeoCloudIOABC:
     """Leo Cloud IO layer "Abstract" Base Class
-    
+
     LeoCloudIO layer sits between LeoCloud plugin and backends,
-    which might be leo_cloud_server.py or Google Drive etc. etc.    
+    which might be leo_cloud_server.py or Google Drive etc. etc.
     """
     pass
 
 class LeoCloudIOFileSystem(LeoCloudIOABC):
-    """Leo Cloud IO layer that just loads / saves local files"""
+    """Leo Cloud IO layer that just loads / saves local files.
+
+    i.e it's just for development / testing
+    """
+    def __init__(self, basepath):
+        """
+        :param str basepath: root folder for data
+        """
+        self.basepath = basepath
+        if not os.path.exists(self.basepath):
+            os.makedirs((self.basepath))
+
     def get_data(self, lc_id):
         """get_data - get a Leo Cloud resource
 
@@ -94,22 +108,51 @@ class LeoCloudIOFileSystem(LeoCloudIOABC):
         :param str(?) lc_id: resource to get
         :returns: vnode build from lc_id
         """
-        data = self.get_data(lc_id)
-        # FIXME: not implemented
+        return LeoCloud.from_dict(self.get_data(lc_id))
 
-    def put_subtree(self, v, lc_id):
-        """put - put a subtree into the Leo Cloud
+    def put_data(self, lc_id, data):
+        """put - store data in the Leo Cloud
 
-        :param vnode v: subtree to put
         :param str(?) lc_id: place to put it
+        :param obj data: data to store
         """
         filepath = os.path.join(self.basepath, lc_id+'.json')
-        with open(filepath, 'w') as data:
-            return json.dump(LeoCloud.to_json(vnode), data)
+        with open(filepath, 'w') as out:
+            return json.dump(LeoCloud.to_json(data), out)
 
+    def put_subtree(self, lc_id, v):
+        """put - put a subtree into the Leo Cloud
+
+        :param str(?) lc_id: place to put it
+        :param vnode v: subtree to put
+        """
+        self.put_data(LeoCloud.to_json(v), lc_id)
 
 
 class LeoCloud:
+    def __init__(self, c):
+        """
+        :param context c: Leo context
+        """
+        self.c = c
+
+    def _from_dict_recursive(self, top, d):
+        top.h = d['h']
+        top.b = d['b']
+        top.u = d['u']
+        top.children[:] = []
+        for child in d['children']:
+            top.children.append(self._from_dict_recursive(vnode(self.c), child))
+        return top
+
+    def from_dict(self, d):
+        """from_dict - make a Leo subtree from a dict
+
+        :param dict d: input dict
+        :return: vnode
+        """
+        return self._from_dict_recursive(vnode(self.c), d)
+
     @staticmethod
     def _to_dict_recursive(v, d):
         """_to_dict_recursive - recursively make dictionary representation of v
@@ -123,7 +166,7 @@ class LeoCloud:
         d['u'] = v.u
         d['children'] = []
         for child in v.children:
-            d['children'].append(_to_dict_recursive(child, dict()))
+            d['children'].append(LeoCloud._to_dict_recursive(child, dict()))
         return d
 
     @staticmethod
@@ -144,5 +187,6 @@ class LeoCloud:
         :rtype: str
         """
         return json.dumps(LeoCloud.to_dict(v))
+
 
 
