@@ -37,6 +37,7 @@ Maybe more granular and regular synchronization.
 
 """
 
+import json
 import os
 import sys
 from collections import namedtuple, defaultdict
@@ -118,7 +119,7 @@ class LeoCloudIOFileSystem(LeoCloudIOABC):
         """
         filepath = os.path.join(self.basepath, lc_id+'.json')
         with open(filepath, 'w') as out:
-            return json.dump(LeoCloud.to_json(data), out)
+            return json.dump(data, out)
 
     def put_subtree(self, lc_id, v):
         """put - put a subtree into the Leo Cloud
@@ -126,7 +127,7 @@ class LeoCloudIOFileSystem(LeoCloudIOABC):
         :param str(?) lc_id: place to put it
         :param vnode v: subtree to put
         """
-        self.put_data(LeoCloud.to_json(v), lc_id)
+        self.put_data(lc_id, LeoCloud.to_dict(v))
 
 
 class LeoCloud:
