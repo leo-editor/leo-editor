@@ -48,11 +48,13 @@ from collections import namedtuple, defaultdict
 import leo.core.leoGlobals as g
 from leo.core.leoNodes import vnode
 
+from leo.core.leoQt import QtCore  # see QTimer in LeoCloud.__init__
+
 # for 'key: value' lines in body text
 KWARG_RE = re.compile(r"^([A-Za-z][A-Za-z0-9_]*): (.*)")
 
 def init ():
-    g.registerHandler(('new','open2'),onCreate)
+    g.registerHandler(('new','open2'), onCreate)
     g.plugin_signon(__name__)
     return True
 
@@ -204,19 +206,40 @@ class LeoCloud:
         """
         self.c = c
 
+        # we're here via open2 hook, but too soon to load from cloud,
+        # so defer
+        QtCore.QTimer.singleShot(0, self.load_clouds)
     def find_at_leo_cloud(self, p):
         """find_at_leo_cloud - find @leo_cloud node
 
         :param position p: start from here, work up
         :return: position or None
         """
-        while not p.h.startswith("@leo_cloud ") and p.parent():
+        while not p.h.startswith("@leo_cloud") and p.parent():
             p = p.parent()
         if not p.h.startswith("@leo_cloud"):
             g.es("No @leo_cloud node found", color='red')
             return
         return p
+    def _find_clouds_recursive(self, v, found):
+        """see find_clouds()"""
+        if v.h.startswith('@ignore'):
+            return
+        if v.h.startswith('@leo_cloud'):
+            found.add(v)
+            return
+        else:
+            for child in v.children:
+                self._find_clouds_recursive(child, found)
 
+    def find_clouds(self):
+        """find_clouds - return a list of @leo_cloud nodes
+        
+        respects @ignore in headlines, doesn't recurse into @leo_cloud nodes
+        """
+        found = set()
+        self._find_clouds_recursive(self.c.hiddenRootNode, found)
+        return found
     def _from_dict_recursive(self, top, d):
         top.h = d['h']
         top.b = d['b']
@@ -240,20 +263,43 @@ class LeoCloud:
         :param position p: node containing text
         :return: LeoCloudIO instance
         """
+        kwargs = self.kw_from_node(p)
+        lc_io_class = eval("LeoCloudIO%s" % kwargs['type'])
+        return lc_io_class(self.c, p, kwargs)
+
+    def kw_from_node(self, p):
+        """kw_from_node - read keywords from body text
+
+        :param position p: node containing text
+        :return: dict
+        """
         kwargs = {}
         for line in p.b.split('\n'):
             kwarg = KWARG_RE.match(line)
             if kwarg:
                 kwargs[kwarg.group(1)] = kwarg.group(2)
-        lc_io_class = eval("LeoCloudIO%s" % kwargs['type'])
-        return lc_io_class(self.c, p, kwargs)
+        return kwargs
 
-    def read_current(self):
+    def load_clouds(self):
+        for lc_v in self.find_clouds():
+            kwargs = self.kw_from_node(lc_v)
+            read = False
+            if kwargs.get('read_on_load', '').lower() == 'yes':
+                read = True
+            elif kwargs.get('read_on_load', '').lower() == 'ask':
+                read = g.app.gui.runAskYesNoCancelDialog(self.c, "Read cloud data?",
+                    message="Read cloud data '%s', overwriting local nodes?" % kwargs['ID'])
+                read = str(read).lower() == 'yes'
+            if read:
+                self.read_current(p=self.c.vnode2position(lc_v))
+    def read_current(self, p=None):
         """read_current - read current tree from cloud
         """
-        p = self.find_at_leo_cloud(self.c.p)
+        if p is None:
+            p = self.find_at_leo_cloud(self.c.p)
         if not p:
             return
+        g.es("Reading from cloud...")  # some io's as slow to init. - reassure user
         lc_io = getattr(p.v, '_leo_cloud_io', None) or self.io_from_node(p)
         v = lc_io.get_subtree(lc_io.lc_id)
         p.deleteAllChildren()
@@ -262,8 +308,7 @@ class LeoCloud:
             child._addLink(child_n, p.v)
         # p.v.children = v.children
         self.c.redraw(p=p)
-        g.es("Loaded %s" % lc_io.lc_id)
-
+        g.es("Read %s" % lc_io.lc_id)
     @staticmethod
     def _to_dict_recursive(v, d):
         """_to_dict_recursive - recursively make dictionary representation of v
@@ -289,16 +334,14 @@ class LeoCloud:
         """
         return LeoCloud._to_dict_recursive(v, dict())
 
-    def write_current(self):
+    def write_current(self, p=None):
         """write_current - write current tree to cloud
         """
-        p = self.find_at_leo_cloud(self.c.p)
+        if p is None:
+            p = self.find_at_leo_cloud(self.c.p)
         if not p:
             return
         g.es("Storing to cloud...")  # some io's as slow to init. - reassure user
         lc_io = getattr(p.v, '_leo_cloud_io', None) or self.io_from_node(p)
         lc_io.put_subtree(lc_io.lc_id, p.v)
         g.es("Stored %s" % lc_io.lc_id)
-
-
-
