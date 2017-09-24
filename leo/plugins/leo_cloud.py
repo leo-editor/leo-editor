@@ -55,9 +55,9 @@ KWARG_RE = re.compile(r"^([A-Za-z][A-Za-z0-9_]*): (.*)")
 
 def init ():
     g.registerHandler(('new','open2'), onCreate)
+    g.registerHandler(('save2'), onSave)
     g.plugin_signon(__name__)
     return True
-
 def onCreate (tag, keys):
 
     c = keys.get('c')
@@ -66,6 +66,14 @@ def onCreate (tag, keys):
 
     c._leo_cloud = LeoCloud(c)
 
+def onSave(tag, keys):
+
+    c = keys.get('c')
+    if not c:
+        return
+
+    if getattr(c, '_leo_cloud'):
+        c._leo_cloud.save_clouds()
 @g.command("lc-read-current")
 def lc_read_current(event):
     """write current Leo Cloud subtree to cloud"""
@@ -147,7 +155,7 @@ class LeoCloudIOFileSystem(LeoCloudIOBase):
         """
         filepath = os.path.join(self.basepath, lc_id+'.json')
         with open(filepath, 'w') as out:
-            return json.dump(data, out)
+            return json.dump(data, out, sort_keys=True)
 
 
 class LeoCloudIOGit(LeoCloudIOBase):
@@ -193,7 +201,7 @@ class LeoCloudIOGit(LeoCloudIOBase):
         """
         filepath = os.path.join(self.local, lc_id+'.json')
         with open(filepath, 'w') as out:
-            json.dump(data, out)
+            json.dump(data, out, sort_keys=True)  # sort_keys - prevent unnecessary diffs
         self._run_git('git -C "%s" add "%s"' % (self.local, lc_id+'.json'))
         self._run_git('git -C "%s" commit -mupdates' % self.local)
         self._run_git('git -C "%s" push' % self.local)
@@ -281,17 +289,26 @@ class LeoCloud:
         return kwargs
 
     def load_clouds(self):
+        skipped = []
         for lc_v in self.find_clouds():
             kwargs = self.kw_from_node(lc_v)
             read = False
-            if kwargs.get('read_on_load', '').lower() == 'yes':
+            read_on_load = kwargs.get('read_on_load', '').lower()
+            if read_on_load == 'yes':
                 read = True
-            elif kwargs.get('read_on_load', '').lower() == 'ask':
+            elif read_on_load == 'ask':
                 read = g.app.gui.runAskYesNoCancelDialog(self.c, "Read cloud data?",
                     message="Read cloud data '%s', overwriting local nodes?" % kwargs['ID'])
                 read = str(read).lower() == 'yes'
             if read:
                 self.read_current(p=self.c.vnode2position(lc_v))
+            else:
+                if read_on_load not in ('no', 'ask'):
+                    skipped.append(kwargs['ID'])
+        if skipped:
+            g.app.gui.runAskOkDialog(self.c, "Unloaded cloud data",
+                message="There is unloaded (possibly stale) could data, use\nread_on_load: yes|no|ask\n"
+                  "in @leo_cloud nodes to avoid this message.\nUnloaded data:\n%s" % ', '.join(skipped))
     def read_current(self, p=None):
         """read_current - read current tree from cloud
         """
@@ -309,6 +326,27 @@ class LeoCloud:
         # p.v.children = v.children
         self.c.redraw(p=p)
         g.es("Read %s" % lc_io.lc_id)
+    def save_clouds(self):
+        skipped = []
+        for lc_v in self.find_clouds():
+            kwargs = self.kw_from_node(lc_v)
+            write = False
+            write_on_save = kwargs.get('write_on_save', '').lower()
+            if write_on_save == 'yes':
+                write = True
+            elif write_on_save == 'ask':
+                write = g.app.gui.runAskYesNoCancelDialog(self.c, "Write cloud data?",
+                    message="Write cloud data '%s', overwriting remove version?" % kwargs['ID'])
+                write = str(write).lower() == 'yes'
+            if write:
+                self.write_current(p=self.c.vnode2position(lc_v))
+            else:
+                if write_on_save not in ('no', 'ask'):
+                    skipped.append(kwargs['ID'])
+        if skipped:
+            g.app.gui.runAskOkDialog(self.c, "Unsaved cloud data",
+                message="There is unsaved could data, use\nwrite_on_save: yes|no|ask\n"
+                  "in @leo_cloud nodes to avoid this message.\nUnsaved data:\n%s" % ', '.join(skipped))
     @staticmethod
     def _to_dict_recursive(v, d):
         """_to_dict_recursive - recursively make dictionary representation of v
