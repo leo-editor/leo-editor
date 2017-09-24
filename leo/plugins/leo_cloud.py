@@ -249,6 +249,7 @@ class LeoCloud:
         self._find_clouds_recursive(self.c.hiddenRootNode, found)
         return found
     def _from_dict_recursive(self, top, d):
+        """see from_dict()"""
         top.h = d['h']
         top.b = d['b']
         top.u = d['u']
@@ -289,6 +290,7 @@ class LeoCloud:
         return kwargs
 
     def load_clouds(self):
+        """check for clouds to load on startup"""
         skipped = []
         for lc_v in self.find_clouds():
             kwargs = self.kw_from_node(lc_v)
@@ -327,6 +329,7 @@ class LeoCloud:
         self.c.redraw(p=p)
         g.es("Read %s" % lc_io.lc_id)
     def save_clouds(self):
+        """check for clouds to save when outline is saved"""
         skipped = []
         for lc_v in self.find_clouds():
             kwargs = self.kw_from_node(lc_v)
