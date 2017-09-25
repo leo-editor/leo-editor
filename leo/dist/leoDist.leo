@@ -726,7 +726,7 @@ Make these files in the top-level folder::
     leo.zip.
 '''
 
-version = '5.6b1' ##version
+version = '5.6' ##version
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
 
