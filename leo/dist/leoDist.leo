@@ -3970,9 +3970,9 @@ print('done')
     'scripts/scripts.leo',
     'test/test.leo',
 )</t>
-<t tx="ekr.20170911085243.1">Leo 5.6b1 September 11, 2017
+<t tx="ekr.20170911085243.1">Leo 5.6 September 25, 2017
 
-[Leo](http://leoeditor.com/) 5.6b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+[Leo](http://leoeditor.com/) 5.6 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
