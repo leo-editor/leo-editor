@@ -306,7 +306,7 @@ class LeoCloud:
             if read:
                 self.read_current(p=self.c.vnode2position(lc_v))
             elif read_on_load == 'no':
-                g.es("NOTE: not reading cloud data '%s'" % kwargs['ID'])
+                g.es("NOTE: not reading '%s' from cloud" % kwargs['ID'])
             elif read_on_load != 'ask':
                 skipped.append(kwargs['ID'])
         if skipped:
@@ -346,7 +346,7 @@ class LeoCloud:
             if write:
                 self.write_current(p=self.c.vnode2position(lc_v))
             elif write_on_save == 'no':
-                g.es("NOTE: not writing cloud data '%s'" % kwargs['ID'])
+                g.es("NOTE: not writing '%s' to cloud" % kwargs['ID'])
             elif write_on_save != 'ask':
                 skipped.append(kwargs['ID'])
         if skipped:
