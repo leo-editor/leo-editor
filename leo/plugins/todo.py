@@ -365,6 +365,10 @@ class todoController(object):
     }
 
     todo_priorities = 1,2,3,4,5,6,7,8,9,10,19
+
+    _date_fields = ['created', 'date', 'duedate', 'nextworkdate', 'prisetdate']
+    _time_fields = ['duetime', 'nextworktime', 'time']
+    _datetime_fields = _date_fields + _time_fields
     #@+node:tbrown.20090119215428.11: *3* __init__
     def __init__ (self,c):
         '''ctor for todoController class.'''
@@ -417,6 +421,26 @@ class todoController(object):
     def __del__(self):
         for i in self.handlers:
             g.unregisterHandler(i[0], i[1])
+    #@+node:tbnorth.20170925093004.1: *3* _date
+    def _date(self, d):
+        """_date - convert a string to a date
+
+        :param str d: date to convert
+        :return: datetime.date
+        """
+        if not d.strip():
+            return ''
+        return datetime.datetime.strptime(d.split('T')[0], "%Y-%m-%d").date()
+
+    def _time(self, d):
+        """_time - convert a string to a time
+
+        :param str d: time to convert
+        :return: datetime.time
+        """
+        if not d.strip():
+            return ''
+        return datetime.datetime.strptime(d, "%H:%M:%S.%f").time()
     #@+node:tbrown.20090630144958.5319: *3* addPopupMenu
     def addPopupMenu(self,c,p,menu):
 
@@ -600,7 +624,12 @@ class todoController(object):
             isinstance(node.unknownAttributes["annotate"], dict) and
             attrib in node.unknownAttributes["annotate"]
         ):
-            return node.unknownAttributes["annotate"][attrib]
+            x = node.unknownAttributes["annotate"][attrib]
+            if attrib in self._date_fields and g.isString(x):
+                x = self._date(x)
+            if attrib in self._time_fields and g.isString(x):
+                x = self._time(x)
+            return x
         else:
             return 9999 if attrib == "priority" else ''
     #@+node:tbrown.20090119215428.23: *4* testDefault
@@ -611,6 +640,10 @@ class todoController(object):
     #@+node:tbrown.20090119215428.24: *4* setat
     def setat(self, node, attrib, val):
         "new attribute setter"
+
+        if attrib in self._datetime_fields and isinstance(val,
+            (datetime.date, datetime.time, datetime.datetime)):
+            val = val.isoformat()
 
         if 'annotate' in node.u and 'src_unl' in node.u['annotate']:
 

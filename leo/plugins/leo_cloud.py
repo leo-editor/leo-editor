@@ -333,6 +333,8 @@ class LeoCloud:
         p.deleteAllChildren()
         for child_n, child in enumerate(v.children):
             child._addLink(child_n, p.v)
+        if hasattr(self.c, 'cleo'):
+            self.c.cleo.loadAllIcons()
         self.c.redraw(p=old_p if self.c.positionExists(old_p) else p)
         g.es("Read %s" % lc_io.lc_id)
     def save_clouds(self):
