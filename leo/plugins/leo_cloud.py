@@ -44,6 +44,7 @@ import shlex
 import subprocess
 import sys
 from collections import namedtuple, defaultdict
+from datetime import date, datetime
 
 import leo.core.leoGlobals as g
 from leo.core.leoNodes import vnode
@@ -155,7 +156,7 @@ class LeoCloudIOFileSystem(LeoCloudIOBase):
         """
         filepath = os.path.join(self.basepath, lc_id+'.json')
         with open(filepath, 'w') as out:
-            return json.dump(data, out, sort_keys=True)
+            return out.write(LeoCloud.to_json(data))
 
 
 class LeoCloudIOGit(LeoCloudIOBase):
@@ -201,7 +202,7 @@ class LeoCloudIOGit(LeoCloudIOBase):
         """
         filepath = os.path.join(self.local, lc_id+'.json')
         with open(filepath, 'w') as out:
-            json.dump(data, out, sort_keys=True)  # sort_keys - prevent unnecessary diffs
+            out.write(LeoCloud.to_json(data))
         self._run_git('git -C "%s" add "%s"' % (self.local, lc_id+'.json'))
         self._run_git('git -C "%s" commit -mupdates' % self.local)
         self._run_git('git -C "%s" push' % self.local)
@@ -304,9 +305,10 @@ class LeoCloud:
                 read = str(read).lower() == 'yes'
             if read:
                 self.read_current(p=self.c.vnode2position(lc_v))
-            else:
-                if read_on_load not in ('no', 'ask'):
-                    skipped.append(kwargs['ID'])
+            elif read_on_load == 'no':
+                g.es("NOTE: not reading cloud data '%s'" % kwargs['ID'])
+            elif read_on_load != 'ask':
+                skipped.append(kwargs['ID'])
         if skipped:
             g.app.gui.runAskOkDialog(self.c, "Unloaded cloud data",
                 message="There is unloaded (possibly stale) could data, use\nread_on_load: yes|no|ask\n"
@@ -339,17 +341,41 @@ class LeoCloud:
                 write = True
             elif write_on_save == 'ask':
                 write = g.app.gui.runAskYesNoCancelDialog(self.c, "Write cloud data?",
-                    message="Write cloud data '%s', overwriting remove version?" % kwargs['ID'])
+                    message="Write cloud data '%s', overwriting remote version?" % kwargs['ID'])
                 write = str(write).lower() == 'yes'
             if write:
                 self.write_current(p=self.c.vnode2position(lc_v))
-            else:
-                if write_on_save not in ('no', 'ask'):
-                    skipped.append(kwargs['ID'])
+            elif write_on_save == 'no':
+                g.es("NOTE: not writing cloud data '%s'" % kwargs['ID'])
+            elif write_on_save != 'ask':
+                skipped.append(kwargs['ID'])
         if skipped:
             g.app.gui.runAskOkDialog(self.c, "Unsaved cloud data",
                 message="There is unsaved could data, use\nwrite_on_save: yes|no|ask\n"
                   "in @leo_cloud nodes to avoid this message.\nUnsaved data:\n%s" % ', '.join(skipped))
+    @staticmethod
+    def _to_json_serial(obj):
+        """JSON serializer for objects not serializable by default json code"""
+        if isinstance(obj, (datetime, date)):
+            return obj.isoformat()
+        if isinstance(obj, set):
+            return list(obj)
+        raise TypeError ("Type %s not serializable" % type(obj))
+
+    @staticmethod
+    def to_json(data):
+        """to_json - convert dict to appropriate JSON
+
+        :param dict data: data to convert
+        :return: json
+        :rtype: str
+        """
+        return json.dumps(
+            data,
+            sort_keys=True,  # prevent unnecessary diffs
+            indent=0,        # make json readable on cloud web pages
+            default=LeoCloud._to_json_serial
+        )
     @staticmethod
     def _to_dict_recursive(v, d):
         """_to_dict_recursive - recursively make dictionary representation of v
