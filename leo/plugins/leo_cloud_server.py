@@ -11,8 +11,9 @@ I.e. as of 20170924 this is just a place holder awaiting development.
 Terry N. Brown, terrynbrown@gmail.com, Fri Sep 22 10:34:10 2017
 """
 
-import os
-import sys
-from collections import namedtuple, defaultdict
+# pylint: disable=unused-import
+# import os
+# import sys
+# from collections import namedtuple, defaultdict
 
 

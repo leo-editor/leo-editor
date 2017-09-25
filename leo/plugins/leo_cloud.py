@@ -37,13 +37,14 @@ Maybe more granular and regular synchronization.
 
 """
 
+# pylint: disable=unused-import
 import json
 import os
 import re
 import shlex
 import subprocess
-import sys
-from collections import namedtuple, defaultdict
+# import sys
+# from collections import namedtuple, defaultdict
 from datetime import date, datetime
 
 import leo.core.leoGlobals as g
@@ -113,6 +114,8 @@ class LeoCloudIOBase:
         :param str(?) lc_id: resource to get
         :returns: vnode build from lc_id
         """
+        # pylint: disable=no-member
+        # self.get_data
         return self.c._leo_cloud.from_dict(self.get_data(lc_id))
 
     def put_subtree(self, lc_id, v):
@@ -121,6 +124,8 @@ class LeoCloudIOBase:
         :param str(?) lc_id: place to put it
         :param vnode v: subtree to put
         """
+        # pylint: disable=no-member
+        # self.put_data
         self.put_data(lc_id, LeoCloud.to_dict(v))
 
 
@@ -277,6 +282,7 @@ class LeoCloud:
         :return: LeoCloudIO instance
         """
         kwargs = self.kw_from_node(p)
+        # pylint: disable=eval-used
         lc_io_class = eval("LeoCloudIO%s" % kwargs['type'])
         return lc_io_class(self.c, p, kwargs)
 
