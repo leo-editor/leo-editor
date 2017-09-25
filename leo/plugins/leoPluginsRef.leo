@@ -11,6 +11,7 @@
 <vnodes>
 <v t="ekr.20160122104302.1"><vh>Startup</vh>
 <v t="ekr.20160510132151.1"><vh>@button backup</vh></v>
+<v t="ekr.20170811173231.1"><vh>@button backup-repo</vh></v>
 <v t="ekr.20170203054655.1"><vh>@ignore unused buttons</vh>
 <v t="ekr.20161122014821.1"><vh>@button make-importer</vh>
 <v t="ekr.20161122020451.1"><vh>&lt;&lt; define run &amp; helpers &gt;&gt;</vh>
@@ -82,6 +83,7 @@
 </v>
 </v>
 <v t="ekr.20160122104400.1"><vh>@settings</vh>
+<v t="ekr.20170709095709.1"><vh>@@bool minibuffer_find_mode = True</vh></v>
 <v t="ekr.20160122104357.1"><vh>@data history-list</vh></v>
 </v>
 <v t="ekr.20170420085814.1"><vh>Recursive import script</vh></v>
@@ -200,8 +202,7 @@
 </v>
 <v t="ekr.20081121105001.2080"><vh>Gui plugins</vh>
 <v t="ekr.20150107090324.1"><vh>@file cursesGui.py</vh></v>
-<v t="ekr.20170419092835.1"
-expanded="ekr.20170524124449.1,ekr.20170517072429.1,"><vh>@file cursesGui2.py</vh></v>
+<v t="ekr.20170419092835.1"><vh>@file cursesGui2.py</vh></v>
 <v t="ekr.20170419150249.1"><vh>@file template_gui.py</vh></v>
 </v>
 <v t="ekr.20140723122936.17925"><vh>Importer plugins</vh>
@@ -246,17 +247,18 @@ expanded="ekr.20170524124449.1,ekr.20170517072429.1,"><vh>@file cursesGui2.py</v
 </v>
 <v t="ekr.20120309073937.9878"><vh>Searching</vh>
 <v t="ekr.20120309073748.9872"><vh>@file bigdash.py</vh></v>
-<v t="peckj.20140804114520.9427"
-expanded="peckj.20140804103733.9246,peckj.20140804103733.9266,peckj.20140804103733.9262,peckj.20140804103733.9264,peckj.20140804103733.9265,peckj.20140804114520.15199,peckj.20140804114520.15200,peckj.20140804114520.15204,peckj.20140804114520.15205,peckj.20140804192343.6568,peckj.20140811082039.6623,"><vh>@file nodetags.py</vh></v>
+<v t="peckj.20140804114520.9427"><vh>@file nodetags.py</vh></v>
 <v t="peckj.20131130132659.5964"><vh>@file nodewatch.py</vh></v>
 </v>
 <v t="ekr.20050111122605"><vh>Servers &amp; web stuff</vh>
+<v t="ekr.20170925083314.1"><vh>@auto leo_cloud.py</vh></v>
+<v t="ekr.20170925083853.1"><vh>@auto leo_cloud_server.py</vh></v>
 <v t="ville.20110206142055.10640"><vh>@file leofeeds.py</vh></v>
+<v t="ville.20110125222411.10536"><vh>@file leomail.py</vh></v>
 <v t="ville.20091009202416.10040"><vh>@file leoremote.py</vh></v>
 <v t="EKR.20040517080250.1"><vh>@file mod_http.py</vh></v>
 <v t="ekr.20131004162848.11444"><vh>@file rss.py</vh></v>
 <v t="peckj.20140811080604.9496"><vh>@file sftp.py</vh></v>
-<v t="ville.20110125222411.10536"><vh>@file leomail.py</vh></v>
 </v>
 <v t="ekr.20101004082701.5674"><vh>Slideshows, screencasts &amp; screenshots</vh>
 <v t="ekr.20170128213103.1"><vh>@file demo.py</vh></v>
@@ -289,7 +291,6 @@ expanded="peckj.20140804103733.9246,peckj.20140804103733.9266,peckj.201408041037
 <v t="ville.20090310191936.10"><vh>@file colorize_headlines.py</vh></v>
 <v t="ekr.20090701111504.5294"><vh>@file contextmenu.py</vh></v>
 <v t="tbrown.20090206153748.1"><vh>@file graphcanvas.py</vh></v>
-<v t="vitalije.20170727201534.1"><vh>@file line_numbering.py</vh></v>
 <v t="ville.20090518182905.5419"><vh>@file nav_qt.py</vh></v>
 <v t="ville.20120604212857.4215"><vh>@file notebook.py</vh></v>
 <v t="ekr.20090622063842.5264"><vh>@file projectwizard.py</vh></v>
@@ -313,6 +314,7 @@ expanded="peckj.20140804103733.9246,peckj.20140804103733.9266,peckj.201408041037
 <v t="ekr.20060328125925"><vh>@file chapter_hoist.py</vh></v>
 <v t="ville.20110115234843.8742"><vh>@file dragdropgoodies.py</vh></v>
 <v t="tbrown.20090513125417.5244"><vh>@file interact.py</vh></v>
+<v t="vitalije.20170727201534.1"><vh>@file line_numbering.py</vh></v>
 <v t="ekr.20040915073259.1"><vh>@file maximizeNewWindows.py</vh></v>
 <v t="ekr.20101110093301.5818"><vh>@file mod_framesize.py</vh></v>
 <v t="EKR.20040517080555.2"><vh>@file plugins_menu.py</vh></v>
@@ -1327,6 +1329,33 @@ c.recursiveImport(
     safe_at_file = True,
     theTypes = ['.py',],
 )
+</t>
+<t tx="ekr.20170709095709.1">**Temporary**: So I can fix #516 without going crazy.</t>
+<t tx="ekr.20170811173231.1">@language python
+import os
+import subprocess
+import sys
+import time
+win = sys.platform.startswith('win')
+old_dir = g.os_path_abspath('.')
+if win:
+    new_dir = r'C:\leo.repo\leo-editor'
+    path = r'C:\Users\edreamleo\Backup'
+else:
+    new_dir = '/home/edward/leo.repo/leo-editor'
+    path = '/home/edward/Backup'
+assert g.os_path_exists(new_dir), repr(new_dir)
+assert g.os_path_exists(path), repr(path)
+stamp = time.strftime("%Y%m%d-%H%M%S")
+fn = g.os_path_finalize_join(path, 'leo-bundle-all-%s' % (stamp))
+bundle_command = 'git bundle create %s --all' % fn
+print(bundle_command)
+os.chdir(new_dir)
+# os.system(bundle_command)
+proc = subprocess.Popen(bundle_command, shell=True)
+proc.wait()
+os.chdir(old_dir)
+print('done! wrote %s' % fn)
 </t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
 </t>
