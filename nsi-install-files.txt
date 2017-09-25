@@ -3,6 +3,7 @@
 SetOutPath "$INSTDIR"
 SetOverwrite ifnewer
 File ".gitattributes"
+File "About leo.exe.TXT"
 File "INSTALL.TXT"
 File "LICENSE.TXT"
 File "MANIFEST.in"
