@@ -356,6 +356,7 @@
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
+@wrap
 </t>
 <t tx="EKR.20040519090846.1">Leo is Open Software and is distributed under the terms of the MIT
 License. The gist of the license is that Leo is absolutely free, even
@@ -404,9 +405,9 @@ Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 
 </t>
-<t tx="EKR.20040519090846.9">Leo 5.6b1 September 11, 2017
+<t tx="EKR.20040519090846.9">Leo 5.6 September 25, 2017
 
-[Leo](http://leoeditor.com/) 5.6b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+[Leo](http://leoeditor.com/) 5.6 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
