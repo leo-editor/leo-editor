@@ -168,6 +168,9 @@ class LeoCloudIOGit(LeoCloudIOBase):
         """
         :param str basepath: root folder for data
         """
+        # if p.v._leo_cloud_io was used, we'd probably also need to pull
+        # in get_data(), so don't bother with p.v._leo_cloud_io
+        # p.v._leo_cloud_io = self
         LeoCloudIOBase.__init__(self, c, p, kwargs)
         self.remote = kwargs['remote']
         self.local = os.path.expanduser(kwargs['local'])
@@ -320,15 +323,17 @@ class LeoCloud:
             p = self.find_at_leo_cloud(self.c.p)
         if not p:
             return
+        old_p = self.c.p.copy()
         g.es("Reading from cloud...")  # some io's as slow to init. - reassure user
+        # io's can cache themselves on the vnode, but should think hard
+        # about whether they want to
         lc_io = getattr(p.v, '_leo_cloud_io', None) or self.io_from_node(p)
+
         v = lc_io.get_subtree(lc_io.lc_id)
         p.deleteAllChildren()
         for child_n, child in enumerate(v.children):
-            # child._cutLink(child_n, v)
             child._addLink(child_n, p.v)
-        # p.v.children = v.children
-        self.c.redraw(p=p)
+        self.c.redraw(p=old_p if self.c.positionExists(old_p) else p)
         g.es("Read %s" % lc_io.lc_id)
     def save_clouds(self):
         """check for clouds to save when outline is saved"""
