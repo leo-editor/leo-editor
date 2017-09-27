@@ -57,7 +57,7 @@ KWARG_RE = re.compile(r"^([A-Za-z][A-Za-z0-9_]*): (.*)")
 
 def init ():
     g.registerHandler(('new','open2'), onCreate)
-    g.registerHandler(('save2'), onSave)
+    g.registerHandler(('save1'), onSave)
     g.plugin_signon(__name__)
     return True
 def onCreate (tag, keys):
@@ -76,6 +76,8 @@ def onSave(tag, keys):
 
     if getattr(c, '_leo_cloud'):
         c._leo_cloud.save_clouds()
+
+    return None  # explicitly not stopping save1 hook
 @g.command("lc-read-current")
 def lc_read_current(event):
     """write current Leo Cloud subtree to cloud"""
@@ -91,7 +93,6 @@ def lc_write_current(event):
     if not c or not hasattr(c, '_leo_cloud'):
         return
     c._leo_cloud.write_current()
-
 class LeoCloudIOBase:
     """Leo Cloud IO layer Base Class
 
@@ -350,6 +351,8 @@ class LeoCloud:
             kwargs = self.kw_from_node(lc_v)
             write = False
             write_on_save = kwargs.get('write_on_save', '').lower()
+            if not self.subtree_changed(lc_v):
+                write_on_save = 'unchanged'
             if write_on_save == 'yes':
                 write = True
             elif write_on_save == 'ask':
@@ -360,12 +363,28 @@ class LeoCloud:
                 self.write_current(p=self.c.vnode2position(lc_v))
             elif write_on_save == 'no':
                 g.es("NOTE: not writing '%s' to cloud" % kwargs['ID'])
+            elif write_on_save == 'unchanged':
+                g.es("NOTE: not writing unchanged '%s' to cloud" % kwargs['ID'])
             elif write_on_save != 'ask':
                 skipped.append(kwargs['ID'])
         if skipped:
             g.app.gui.runAskOkDialog(self.c, "Unsaved cloud data",
                 message="There is unsaved could data, use\nwrite_on_save: yes|no|ask\n"
                   "in @leo_cloud nodes to avoid this message.\nUnsaved data:\n%s" % ', '.join(skipped))
+    def subtree_changed(self, p):
+        """subtree_changed - check if subtree is changed
+
+        :param position p: top of subtree
+        :return: bool
+        """
+        if isinstance(p, vnode):
+            p = self.c.vnode2position(p)
+        for nd in p.self_and_subtree_iter():
+            if nd.isDirty():
+                break
+        else:
+            return False
+        return True
     @staticmethod
     def _to_json_serial(obj):
         """JSON serializer for objects not serializable by default json code"""
