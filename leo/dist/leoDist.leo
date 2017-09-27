@@ -313,7 +313,7 @@
 <v t="ekr.20161015092224.1"><vh>Create distribution</vh></v>
 <v t="ekr.20161020040946.1"><vh>Test</vh></v>
 <v t="ekr.20161020041000.1"><vh>Create git tag</vh></v>
-<v t="ekr.20170316104916.1"><vh>Create release</vh></v>
+<v t="ekr.20170316104916.1"><vh>Publish release</vh></v>
 <v t="ekr.20161015091353.3"><vh>Announcements</vh></v>
 </v>
 <v t="ekr.20101027131034.1490"><vh>NSIS source files</vh>
@@ -2866,7 +2866,7 @@ LeoPyRef.leo and LeoPluginsRef.leo:
   - Check it by visiting the archive:
   https://mail.python.org/pipermail/python-announce-list/
 
-- Register Leo at https://pypi.python.org/pypi
+- Register Leo at https://pypi.python.org/pypi/leo
 
 - My blog: http://edreamleo.blogspot.com/
   **Paste source-forge or leo-editor announcement**.
