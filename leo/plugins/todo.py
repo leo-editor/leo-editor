@@ -413,7 +413,7 @@ class todoController(object):
         os.chdir(owd)
         for i in self.handlers:
             g.registerHandler(i[0], i[1])
-        self.loadAllIcons(setDirty=False)
+        self.loadAllIcons()
 
         # correct spinTime suffix:
         self.ui.UI.spinTime.setSuffix(" " + self.time_name)
@@ -527,13 +527,13 @@ class todoController(object):
         return new
     #@+node:tbrown.20090119215428.15: *3* loadAllIcons
     @redrawer
-    def loadAllIcons(self,tag=None,k=None,clear=None,setDirty=True):
+    def loadAllIcons(self, tag=None, k=None, clear=None):
         """Load icons to represent cleo state"""
         for p in self.c.all_positions():
-            self.loadIcons(p,clear=clear,setDirty=setDirty)
+            self.loadIcons(p, clear=clear)
     #@+node:tbrown.20090119215428.16: *3* loadIcons
     @redrawer
-    def loadIcons(self, p,clear=False,setDirty=True):
+    def loadIcons(self, p,clear=False):
 
         com = self.c.editCommands
         allIcons = com.getIconList(p)
@@ -579,8 +579,8 @@ class todoController(object):
                     com.appendImageDictToList(icons, self.iconDir,
                         g.os_path_join('cleo', icon),
                         2, on='vnode', cleoIcon='1', where=self.prog_location)
-        com.setIconList(p,icons,setDirty)
 
+        com.setIconList(p, icons, setDirty=False)
     #@+node:tbrown.20090119215428.17: *3* close
     def close(self, tag, key):
         "unregister handlers on closing commander"
@@ -695,6 +695,7 @@ class todoController(object):
             node.unknownAttributes["annotate"][attrib] != val
         ):
             self.c.setChanged(True)
+            node.setDirty()
 
         node.unknownAttributes["annotate"][attrib] = val
 
