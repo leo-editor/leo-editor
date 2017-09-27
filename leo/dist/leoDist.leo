@@ -2866,7 +2866,7 @@ LeoPyRef.leo and LeoPluginsRef.leo:
   - Check it by visiting the archive:
   https://mail.python.org/pipermail/python-announce-list/
 
-- Register Leo at https://pypi.python.org/pypi
+- Register Leo at https://pypi.python.org/pypi/leo
 
 - My blog: http://edreamleo.blogspot.com/
   **Paste source-forge or leo-editor announcement**.
