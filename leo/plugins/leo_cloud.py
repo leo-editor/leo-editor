@@ -252,12 +252,18 @@ class LeoCloud:
 
     def find_clouds(self):
         """find_clouds - return a list of @leo_cloud nodes
-        
+
         respects @ignore in headlines, doesn't recurse into @leo_cloud nodes
         """
         found = set()
         self._find_clouds_recursive(self.c.hiddenRootNode, found)
-        return found
+        valid = []
+        for lc in found:
+            if 'ID' in self.kw_from_node(lc):
+                valid.append(lc)
+            else:
+                g.es('%s - no ID: line' % lc.h, color='red')
+        return valid
     def _from_dict_recursive(self, top, d):
         """see from_dict()"""
         top.h = d['h']
