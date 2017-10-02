@@ -60,6 +60,7 @@ def init ():
     g.registerHandler(('save1'), onSave)
     g.plugin_signon(__name__)
     return True
+
 def onCreate (tag, keys):
 
     c = keys.get('c')
@@ -78,6 +79,7 @@ def onSave(tag, keys):
         c._leo_cloud.save_clouds()
 
     return None  # explicitly not stopping save1 hook
+
 @g.command("lc-read-current")
 def lc_read_current(event):
     """write current Leo Cloud subtree to cloud"""
@@ -93,6 +95,7 @@ def lc_write_current(event):
     if not c or not hasattr(c, '_leo_cloud'):
         return
     c._leo_cloud.write_current()
+
 class LeoCloudIOBase:
     """Leo Cloud IO layer Base Class
 
@@ -227,6 +230,7 @@ class LeoCloud:
         # we're here via open2 hook, but too soon to load from cloud,
         # so defer
         QtCore.QTimer.singleShot(0, self.load_clouds)
+
     def find_at_leo_cloud(self, p):
         """find_at_leo_cloud - find @leo_cloud node
 
@@ -239,6 +243,7 @@ class LeoCloud:
             g.es("No @leo_cloud node found", color='red')
             return
         return p
+
     def _find_clouds_recursive(self, v, found):
         """see find_clouds()"""
         if v.h.startswith('@ignore'):
@@ -264,6 +269,7 @@ class LeoCloud:
             else:
                 g.es('%s - no ID: line' % lc.h, color='red')
         return valid
+
     def _from_dict_recursive(self, top, d):
         """see from_dict()"""
         top.h = d['h']
@@ -329,6 +335,7 @@ class LeoCloud:
             g.app.gui.runAskOkDialog(self.c, "Unloaded cloud data",
                 message="There is unloaded (possibly stale) could data, use\nread_on_load: yes|no|ask\n"
                   "in @leo_cloud nodes to avoid this message.\nUnloaded data:\n%s" % ', '.join(skipped))
+
     def read_current(self, p=None):
         """read_current - read current tree from cloud
         """
@@ -350,6 +357,32 @@ class LeoCloud:
             self.c.cleo.loadAllIcons()
         self.c.redraw(p=old_p if self.c.positionExists(old_p) else p)
         g.es("Read %s" % lc_io.lc_id)
+        # set c changed but don't dirty tree, which would cause
+        # write to cloud prompt on save
+        c.setChanged(changedFlag=True)
+
+    @staticmethod
+    def recursive_hash(nd, tree, include_current=True):
+        """
+        recursive_hash - recursively hash a tree
+
+        :param vnode nd: node to hahs
+        :param list tree: recursive list of hashes
+        :param bool include_current: include h/b/u of current node in hash?
+        :return: sha1 hash of tree
+        :rtype: str
+
+        Calling with include_current=False ignores the h/b/u of the top node
+        """
+        childs = []
+        hashes = [recursive_hash3(child, childs) for child in nd.children]
+        if include_current:
+            hashes.extend([nd.h + nd.b + str(nd.u)])
+            # FIXME: random sorting on nd.u, use JSON/sorted keys
+        whole_hash = sha1(''.join(hashes).encode('utf-8')).hexdigest()
+        tree.append([whole_hash, childs])
+        return whole_hash
+
     def save_clouds(self):
         """check for clouds to save when outline is saved"""
         skipped = []
@@ -377,6 +410,7 @@ class LeoCloud:
             g.app.gui.runAskOkDialog(self.c, "Unsaved cloud data",
                 message="There is unsaved could data, use\nwrite_on_save: yes|no|ask\n"
                   "in @leo_cloud nodes to avoid this message.\nUnsaved data:\n%s" % ', '.join(skipped))
+
     def subtree_changed(self, p):
         """subtree_changed - check if subtree is changed
 
@@ -391,6 +425,7 @@ class LeoCloud:
         else:
             return False
         return True
+
     @staticmethod
     def _to_json_serial(obj):
         """JSON serializer for objects not serializable by default json code"""
@@ -414,6 +449,7 @@ class LeoCloud:
             indent=0,        # make json readable on cloud web pages
             default=LeoCloud._to_json_serial
         )
+
     @staticmethod
     def _to_dict_recursive(v, d):
         """_to_dict_recursive - recursively make dictionary representation of v
@@ -450,3 +486,82 @@ class LeoCloud:
         lc_io = getattr(p.v, '_leo_cloud_io', None) or self.io_from_node(p)
         lc_io.put_subtree(lc_io.lc_id, p.v)
         g.es("Stored %s" % lc_io.lc_id)
+
+"""Notes / code for recursive hashes
+
+from hashlib import sha1, md5
+import json
+import timeit
+
+# using c.all_unique_nodes()
+
+def hashy():
+    n = 0
+    for nd in c.all_unique_nodes():
+        sha1(
+            nd.h.encode('utf-8') +
+            nd.b.encode('utf-8') +
+            str(nd.u).encode('utf-8')
+        ).hexdigest()
+        n += 1
+    # g.es(n)
+n = 10
+g.es(timeit.timeit(hashy, number=n) / n)
+
+# not storing
+
+def recursive_hash(nd):
+    hashes = [recursive_hash(child) for child in nd.children]
+    hashes.extend([nd.h + nd.b + str(nd.u)])
+    return sha1(''.join(hashes).encode('utf-8')).hexdigest()
+
+def test_recurse():
+    return recursive_hash(c.hiddenRootNode)
+
+g.es(timeit.timeit(test_recurse, number=n) / n)
+
+# using dicts
+
+def recursive_hash2(nd, tree):
+    childs = {}
+    hashes = [recursive_hash2(child, childs) for child in nd.children]
+    hashes.extend([nd.h + nd.b + str(nd.u)])
+    whole_hash = sha1(''.join(hashes).encode('utf-8')).hexdigest()
+    tree[whole_hash] = childs
+    return whole_hash
+
+def test_recurse2():
+    return recursive_hash2(c.hiddenRootNode, {})
+
+g.es(timeit.timeit(test_recurse2, number=n) / n)
+
+# using lists
+
+def recursive_hash3(nd, tree):
+    childs = []
+    hashes = [recursive_hash3(child, childs) for child in nd.children]
+    hashes.extend([nd.h + nd.b + str(nd.u)])
+    whole_hash = sha1(''.join(hashes).encode('utf-8')).hexdigest()
+    tree.append([whole_hash, childs])
+    return whole_hash
+
+def test_recurse3():
+    return recursive_hash3(c.hiddenRootNode, [])
+
+g.es(timeit.timeit(test_recurse2, number=n) / n)
+
+# comparison
+
+g.es(test_recurse())
+g.es(test_recurse2())
+g.es(test_recurse3())
+
+# save
+
+all = []
+recursive_hash3(c.hiddenRootNode, all)
+with open("/tmp/json_hashes.json", 'w') as out:
+    json.dump(all, out)
+"""
+
+
