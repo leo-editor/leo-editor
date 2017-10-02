@@ -895,6 +895,11 @@ class quickMoveButton(object):
             nxt = nxt.v
             # store a VNode instead of position as positions are too easily lost
 
+            if self.type_ != 'jump':
+                p.setDirty()  # before move to dirty current parent
+                p2.setDirty()
+                c.setChanged(changedFlag=True)
+
             if self.type_ == 'clone':
                 p = p.clone()
 
