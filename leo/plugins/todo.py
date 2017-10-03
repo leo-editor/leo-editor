@@ -1298,7 +1298,23 @@ class todoController(object):
 
         return c2, nd
     #@-others
+#@+node:tbrown.20170928065405.1: ** command fix datetime
+@g.command('todo-fix-datetime')
+def todo_fix_datetime(event):
+
+    c = event['c']
+    changed = 0
+    for nd in c.all_unique_nodes():
+        for key in c.cleo._datetime_fields:
+            x = c.cleo.getat(nd, key)
+            if not g.isString(x):
+                c.cleo.setat(nd, key, x)
+                changed += 1
+                g.es("%r -> %r" % (x, c.cleo.getat(nd, key)))
+    g.es("Changed %d attribs." % changed)
+
 #@+node:tbrown.20100701093750.13800: ** command inc/dec priority
+
 @g.command('todo-dec-pri')
 def todo_dec_pri(event, direction=1):
 

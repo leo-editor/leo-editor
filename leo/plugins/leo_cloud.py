@@ -43,9 +43,8 @@ import os
 import re
 import shlex
 import subprocess
-# import sys
-# from collections import namedtuple, defaultdict
 from datetime import date, datetime
+from hashlib import sha1
 
 import leo.core.leoGlobals as g
 from leo.core.leoNodes import vnode
@@ -359,7 +358,7 @@ class LeoCloud:
         g.es("Read %s" % lc_io.lc_id)
         # set c changed but don't dirty tree, which would cause
         # write to cloud prompt on save
-        c.setChanged(changedFlag=True)
+        self.c.setChanged(changedFlag=True)
 
     @staticmethod
     def recursive_hash(nd, tree, include_current=True):
@@ -375,7 +374,7 @@ class LeoCloud:
         Calling with include_current=False ignores the h/b/u of the top node
         """
         childs = []
-        hashes = [recursive_hash3(child, childs) for child in nd.children]
+        hashes = [LeoCloud.recursive_hash3(child, childs) for child in nd.children]
         if include_current:
             hashes.extend([nd.h + nd.b + str(nd.u)])
             # FIXME: random sorting on nd.u, use JSON/sorted keys
