@@ -889,8 +889,8 @@ class quickMoveButton(object):
                 if p.v == p2.v or not self.checkMove(p,p2):
                     g.error('Invalid move: %s' % (self.targetHeadString))
                     return
-
-            p2.expand()
+            if p2.isAncestorOf(p):  # not for sibling moves
+                p2.expand()
             nxt = p.visNext(c) or p.visBack(c)
             nxt = nxt.v
             # store a VNode instead of position as positions are too easily lost
@@ -912,9 +912,9 @@ class quickMoveButton(object):
                     if not p2.parent():
                         raise Exception("Not implemented for top-level nodes") #FIXME
                     if self.which == 'next sibling':
-                        p.moveToNthChildOf(p2.parent(), p2._childIndex+1)
-                    elif self.which == 'prev sibling':
                         p.moveToNthChildOf(p2.parent(), p2._childIndex)
+                    elif self.which == 'prev sibling':
+                        p.moveToNthChildOf(p2.parent(), p2._childIndex-1)
                 else:
                     raise Exception("Unknown move type "+self.which)
 
