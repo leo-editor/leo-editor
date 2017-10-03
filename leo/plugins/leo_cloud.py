@@ -321,8 +321,21 @@ class LeoCloud:
             if read_on_load == 'yes':
                 read = True
             elif read_on_load == 'ask':
+                try:
+                    last_read = datetime.strptime(
+                        lc_v.u['_leo_cloud']['last_read'], "%Y-%m-%dT%H:%M:%S.%f")
+                except KeyError:
+                    last_read = None
+                message = "Read cloud data '%s', overwriting local nodes?" % kwargs['ID']
+                if last_read:
+                    delta = datetime.now() - last_read
+                    message = "%s\n%s, %sh:%sm:%ss ago" % (
+                        message, last_read.strftime("%a %b %d %H:%M"),
+                        24*delta.days+int(delta.seconds / 3600),
+                        (delta.seconds / 60) % 60,
+                        delta.seconds % 60)
                 read = g.app.gui.runAskYesNoCancelDialog(self.c, "Read cloud data?",
-                    message="Read cloud data '%s', overwriting local nodes?" % kwargs['ID'])
+                    message=message)
                 read = str(read).lower() == 'yes'
             if read:
                 self.read_current(p=self.c.vnode2position(lc_v))
@@ -359,6 +372,8 @@ class LeoCloud:
         # set c changed but don't dirty tree, which would cause
         # write to cloud prompt on save
         self.c.setChanged(changedFlag=True)
+        p.v.u.setdefault('_leo_cloud', {})['last_read'] = datetime.now().isoformat()
+
 
     @staticmethod
     def recursive_hash(nd, tree, include_current=True):
