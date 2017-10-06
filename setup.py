@@ -52,8 +52,7 @@ setup(
     #package_dir = {'': 'leo'},
     entry_points = {
        'console_scripts': ['leoc = leo.core.runLeo:run'],
-       'gui_scripts' : ['leow = leo.core.runLeo.run']
-            #leow.exe is created, but it starts and exits with no errors and no splash screen
+       'gui_scripts' : ['leo = leo.core.runLeo:run']
        }
 )
 
