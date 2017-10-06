@@ -1,21 +1,38 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:maphew.20141126130213.2: * @file setup.py
+#@@first
 '''setup.py for leo'''
 simple = False # True: avoid all complications.
 trace = False
 from setuptools import setup, find_packages # Always prefer setuptools over distutils
 from codecs import open # To use a consistent encoding
-import leo.core.leoVersion
+import leo.core.leoVersion # FIXME: extract from GIT tags instead, ionelmc slide:19
+#@+others
 #@+node:maphew.20141126230535.3: ** docstring
 '''setup.py for leo
 
     Nov 2014: strip to bare minimum and rebuild using ONLY
     https://python-packaging-user-guide.readthedocs.org/en/latest/index.html
-    
-    See if we can get all the way to end (painless `python setup.py install` and
-    `pip install .` on all platforms) without having to leave standard library
-    or leverage hacks.
+        
+    Oct 2017: Excellent guide "﻿Less known packaging features and tricks"
+    Ionel Cristian Mărieș, @ionelmc
+    https://blog.ionelmc.ro/presentations/packaging/#slide:2
+    https://blog.ionelmc.ro/2014/05/25/python-packaging/
 '''
+#@+node:maphew.20171006124415.1: ** Get description
+try:
+    long_description = open('README.MD', 'r').read()
+        # mode was 'rt'
+except IOError:
+    long_description = """
+Leo is an outline-oriented IDE written in 100% pure Python.
+Leo features a multi-window outlining editor, Python colorizing,
+powerful outline commands and many other things, including 
+unlimited Undo/Redo and an integrated Python shell(IDLE) window.
+Leo requires Python 2.6 or above.  Leo works with Python 3.x.
+Requires PyQt and SIP preinstalled.
+    """
 #@+node:maphew.20141126230535.4: ** classifiers
 classifiers = [
     'Development Status :: 5 - Production/Stable',
@@ -44,12 +61,12 @@ setup(
     url = 'http://leoeditor.com',
     license = 'MIT License',
     description = "Leo: Leonine Editor with Outlines", # becomes "Summary" in pkg-info
+    long_description = long_description,
     platforms = ['Linux','Windows','MacOS'],
-    download_url = 'http://sourceforge.net/projects/leo/files/Leo/',
+    download_url = 'http://leoeditor.com/download.html',
     classifiers = classifiers,
     packages = find_packages(),
-    #packages = ['', 'core'], 
-    #package_dir = {'': 'leo'},
+    include_package_data=True, # also include MANIFEST files in wheels
     entry_points = {
        'console_scripts': ['leoc = leo.core.runLeo:run'],
        'gui_scripts' : ['leo = leo.core.runLeo:run']
