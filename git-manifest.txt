@@ -1,4 +1,5 @@
 .gitattributes
+About leo.exe.TXT
 INSTALL.TXT
 LICENSE.TXT
 MANIFEST.in
@@ -3756,6 +3757,8 @@ leo/plugins/leoGuiPluginsRef.leo
 leo/plugins/leoOPML.py
 leo/plugins/leoPluginNotes.txt
 leo/plugins/leoPluginsRef.leo
+leo/plugins/leo_cloud.py
+leo/plugins/leo_cloud_server.py
 leo/plugins/leo_interface.py
 leo/plugins/leo_pdf.py
 leo/plugins/leo_to_html.ini

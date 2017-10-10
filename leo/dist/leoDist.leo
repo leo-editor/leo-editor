@@ -313,7 +313,7 @@
 <v t="ekr.20161015092224.1"><vh>Create distribution</vh></v>
 <v t="ekr.20161020040946.1"><vh>Test</vh></v>
 <v t="ekr.20161020041000.1"><vh>Create git tag</vh></v>
-<v t="ekr.20170316104916.1"><vh>Create release</vh></v>
+<v t="ekr.20170316104916.1"><vh>Publish release</vh></v>
 <v t="ekr.20161015091353.3"><vh>Announcements</vh></v>
 </v>
 <v t="ekr.20101027131034.1490"><vh>NSIS source files</vh>
@@ -356,6 +356,7 @@
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
+@wrap
 </t>
 <t tx="EKR.20040519090846.1">Leo is Open Software and is distributed under the terms of the MIT
 License. The gist of the license is that Leo is absolutely free, even
@@ -404,9 +405,9 @@ Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 
 </t>
-<t tx="EKR.20040519090846.9">Leo 5.6b1 September 11, 2017
+<t tx="EKR.20040519090846.9">Leo 5.6 September 25, 2017
 
-[Leo](http://leoeditor.com/) 5.6b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+[Leo](http://leoeditor.com/) 5.6 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
@@ -726,7 +727,7 @@ Make these files in the top-level folder::
     leo.zip.
 '''
 
-version = '5.6b1' ##version
+version = '5.6' ##version
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
 
@@ -2865,7 +2866,7 @@ LeoPyRef.leo and LeoPluginsRef.leo:
   - Check it by visiting the archive:
   https://mail.python.org/pipermail/python-announce-list/
 
-- Register Leo at https://pypi.python.org/pypi
+- Register Leo at https://pypi.python.org/pypi/leo
 
 - My blog: http://edreamleo.blogspot.com/
   **Paste source-forge or leo-editor announcement**.
@@ -2884,7 +2885,7 @@ Create the executable installer:
 
 Run pyinstaller on Windows:
 - (optional) Delete leo-editor/dist and leo-editor/build folders.
-- Run pyinstaller2 launchLeo-unified.spec
+- Run pyinstaller2 --clean --win-private-assemblies launchLeo-unified.spec
 - Test a *copy* of the result so .pyo files are not added to the package)
 - Compress the folder to Leo_&lt;version&gt;_Win.zip.
     
@@ -3970,9 +3971,9 @@ print('done')
     'scripts/scripts.leo',
     'test/test.leo',
 )</t>
-<t tx="ekr.20170911085243.1">Leo 5.6b1 September 11, 2017
+<t tx="ekr.20170911085243.1">Leo 5.6 September 25, 2017
 
-[Leo](http://leoeditor.com/) 5.6b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+[Leo](http://leoeditor.com/) 5.6 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
