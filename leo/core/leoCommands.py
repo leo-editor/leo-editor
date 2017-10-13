@@ -1342,7 +1342,7 @@ class Commands(object):
         lines = [g.removeLeadingWhitespace(s, ws, c.tab_width) for s in lines]
         h = lines[0].strip()
         ref_h = c.extractRef(h).strip()
-        def_h = c.extractDef(h).strip()
+        def_h = c.extractDef('\n'.join(lines)).strip()
         if ref_h:
             # h,b,middle = ref_h,lines[1:],lines[0]
             # 2012/02/27: Change suggested by vitalije (vitalijem@gmail.com)
@@ -1381,8 +1381,8 @@ class Commands(object):
     def extractDef(self, s):
         '''Return the defined function/method/class name if s
         looks like definition. Tries several different languages.'''
-        for s in self.config.getData('extract-patterns') or []:
-            pat = re.compile(s)
+        for pat in self.config.getData('extract-patterns') or []:
+            pat = re.compile(pat)
             m = pat.search(s)
             if m: return m.group(1)
         for pat in self.extractDef_patterns:
