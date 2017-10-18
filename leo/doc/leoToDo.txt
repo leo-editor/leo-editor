@@ -2261,7 +2261,7 @@ of Leo and I have browse the doc about developing in Leo in [2] and I
 plan to follow it as a tutorial, but any pointer to a more detailed 
 section to pay attention or to the Leo trees to start hacking is welcomed
 
-[2] http://webpages.charter.net/edreamleo/scripting.html
+[2] scripting.html
 
 .. @+node:ekr.20031218072017.797: *4* Won't do: @file http & @file ftp
 I'd like to see leo's @file can be extended to cover more protocols, like REBOL's "read" does. 
@@ -3520,7 +3520,7 @@ Leo file will start with the following::
 
     <?xml version="1.0" encoding="utf-8"?>
     <?xml-stylesheet my_stylesheet?>
-    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+    <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
     <leo_file file_format="3"
         xmlns:leo="http://www.leo-editor.org/2011/leo"/>
         
@@ -3542,7 +3542,7 @@ Summary of format
 
     <?xml version="1.0" encoding="utf-8"?>
     <?xml-stylesheet my_stylesheet?>
-    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+    <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
     <leo_file file_format="3" xmlns:leo="http://www.leo-editor.org/2011/leo"/>
     <graph>
     <nodes>
@@ -3680,7 +3680,7 @@ Leo file will start with the following::
 
     <?xml version="1.0" encoding="utf-8"?>
     <?xml-stylesheet my_stylesheet?>
-    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+    <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
     <leo_file file_format="3"
         xmlns:leo="http://www.leo-editor.org/2011/leo"/>
         
@@ -3701,7 +3701,7 @@ Summary of format
 
     <?xml version="1.0" encoding="utf-8"?>
     <?xml-stylesheet my_stylesheet?>
-    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+    <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
     <leo_file file_format="3" xmlns:leo="http://www.leo-editor.org/2011/leo"/>
     <directed-acyclic-graph>
         <node id="gnx">
@@ -3803,7 +3803,7 @@ Leo file will start with the following::
 
     <?xml version="1.0" encoding="utf-8"?>
     <?xml-stylesheet my_stylesheet?>
-    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+    <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
     <leo:file file_format="3"
         xmlns:leo="http://www.leo-editor.org/2011/leo"/>
     <graphml xmlns="http://graphml.graphdrawing.org/xmlns"/>
@@ -3826,7 +3826,7 @@ Summary of format
 
     <?xml version="1.0" encoding="utf-8"?>
     <?xml-stylesheet my_stylesheet?>
-    <!-- Created by Leo (http://webpages.charter.net/edreamleo/front.html) -->
+    <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
     <leo:outline file_format="3" xmlns:leo="http://www.leo-editor.org/2011/leo"/>
     <graphml xmlns="http://graphml.graphdrawing.org/xmlns"/>
     <graph>

@@ -230,11 +230,11 @@ It may be that Leo could benefit from some Emacs-like or vim-like features, but
 that doesn't seem so likely.  Leo has many users who also use Emacs and vim, and
 they seem happy enough :-)
 
-Finally, Leo offers features that have no counterpart at all in editors like
-Emacs and vim. For example, the rst3 command converts an outline to restructured
-text. See: http://webpages.charter.net/edreamleo/rstplugin3.html Yes, one could
-imagine an org-mode command that does this, but the fact is that Leo's outline
-orientation has given it abilities possessed by no other editor or IDE.
+Finally, Leo offers features that have no counterpart at all in editors
+like Emacs and vim. For example, the rst3 command converts an outline to
+restructured text. See: rstplugin3.html Yes, one could imagine an org-mode
+command that does this, but the fact is that Leo's outline orientation has
+given it abilities possessed by no other editor or IDE.
 
 I invite you to try Leo. If, after using Leo for
 real work, you find you would like some new feature, then by all means ask.
@@ -1102,7 +1102,6 @@ HTH
 
 Jon Schull <jschull@softlock.com>  
 Date:  2003/12/30 Tue PM 05:50:51 EST 
-To:  edreamleo@charter.net 
 Subject:  Leo, Mac OS X 10.3, and VPython 
 
 I've been evaluating leo or vpython programming on  Mac OS X 10.3, and 
