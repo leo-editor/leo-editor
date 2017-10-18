@@ -4097,6 +4097,7 @@ class AtFile(object):
         h = at.removeCommentDelims(p)
         if getattr(at, 'at_shadow_test_hack', False):
             # A hack for @shadow unit testing.
+            # see AtShadowTestCase.makePrivateLines.
             return h
         else:
             gnx = p.v.fileIndex
