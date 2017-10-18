@@ -3,6 +3,66 @@ leo_cloud.py - synchronize Leo subtrees with remote central server
 
 Terry N. Brown, terrynbrown@gmail.com, Fri Sep 22 10:34:10 2017
 
+This plugin allows subtrees within a .leo file to be stored in the cloud. It
+should be possible to support various cloud platforms, currently git is
+supported (i.e. you can use GitLab or GitHub or your own remote git server).
+
+A leo_cloud subtree has a top node with a headline that starts with
+'@leo_cloud'. The rest of the headline is ignored. The body of this top node is
+used to describe the cloud service, e.g.:
+
+type: Git
+remote: git@gitlab.com:tnbrown/leo_cloud_storage.git
+local: ~/.leo/leo_cloud/gitlab_leo_cloud_storage
+ID: shortcuts
+read_on_load: ask
+write_on_save: ask
+
+The first three lines can be repeated with different IDs to store
+different subtrees at the same remote cloud location.
+
+read_on_load: / write_on_save: can be yes, no, or ask.  If it's not one
+of those three, there's a warning dialog.
+
+There's also a file system backend, which would look like this:
+
+type: FileSystem
+root: ~/DropBox/leo_cloud
+ID: my_notes
+read_on_load: ask
+write_on_save: ask
+
+The FileSystem backend was meant to be for development, but of course if you map
+it into a folder that is sync'ed externally, as shown above, it can serve as a
+cloud adapter too.
+
+In addition to the Git and FileSystem cloud types it should be possible to add
+many others - Google Drive, OneDrive, DropBox, AWS, WebDAV, sFTP, whatever.
+
+FYI: https://gitlab.com/ gives you free private repos.
+
+The plugin stores headline, body, and uA (unknown attributes). The caveat is
+that it must be JSON serializable, this is to avoid pickle flavor issues. I
+don't think this will cause problems except for legacy datetime objects from the
+todo.py plugin and set()s in the tags plugin. I think both can be fixed easily -
+a custom JSON writer can write datetime as iso string time and sets as lists,
+and the tags plugin can coerce lists to sets. I think the todo.py plugin already
+reads iso string time values.
+
+My intended use was a common synchronized todo list across machines, which this
+achieves. (note to self, make sure todo icons are refreshed properly).
+
+An unintended bonus is that you can use it to sync. your settings across
+machines easily too. Like this:
+
+@settings
+  @keys
+    @leo_cloud
+      @shortcuts
+
+"just works", so now your shortcuts etc. can be stored on a central
+server.
+
 (this is the Leo plugin half, see also leo_cloud_server.py)
 
 Sub-trees include head and body content *and* v.u
