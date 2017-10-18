@@ -1329,6 +1329,11 @@ class Commands(object):
            JavaScript, CoffeeScript or Clojure languages) the
            class/function/method name becomes the child's headline and all
            selected lines become the child's body text.
+           
+           You may add additional regex patterns for definition lines using
+           @data extract-patterns nodes. Each line of the body text should a
+           valid regex pattern. Lines starting with # are comment lines. Use \#
+           for patterns starting with #.
 
         3. Otherwise, the first line becomes the child's headline, and all
            selected lines become the child's body text.
@@ -1382,9 +1387,13 @@ class Commands(object):
         '''Return the defined function/method/class name if s
         looks like definition. Tries several different languages.'''
         for pat in self.config.getData('extract-patterns') or []:
-            pat = re.compile(pat)
-            m = pat.search(s)
-            if m: return m.group(1)
+            try:
+                pat = re.compile(pat)
+                m = pat.search(s)
+                if m: return m.group(1)
+            except Exception:
+                g.es_print('bad regex in @data extract-patterns', color='blue')
+                g.es_print(pat)
         for pat in self.extractDef_patterns:
             m = pat.search(s)
             if m: return m.group(1)
