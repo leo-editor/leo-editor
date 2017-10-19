@@ -1347,9 +1347,7 @@ class Commands(object):
         lines = [g.removeLeadingWhitespace(s, ws, c.tab_width) for s in lines]
         h = lines[0].strip()
         ref_h = c.extractRef(h).strip()
-        def_h = c.extractDef(lines[0].strip())
-        if not def_h:
-            def_h = c.extractDef('\n'.join(lines)).strip()
+        def_h = c.extractDef_find(lines)
         if ref_h:
             # h,b,middle = ref_h,lines[1:],lines[0]
             # 2012/02/27: Change suggested by vitalije (vitalijem@gmail.com)
@@ -1377,7 +1375,7 @@ class Commands(object):
         re.compile(r'\((?:def|defn|defui|deftype|defrecord|defonce)\s+(\S+)'), # clojure definition
         re.compile(r'^\s*(?:def|class)\s+(\w+)'), # python definitions
         re.compile(r'^\bvar\s+(\w+)\s*=\s*function\b'), # js function
-        re.compile(r'^\s*function\s+(\w+)\s*\('), # js function
+        re.compile(r'^(?:export\s)?\s*function\s+(\w+)\s*\('), # js function
         re.compile(r'\b(\w+)\s*:\s*function\s'), # js function
         re.compile(r'\.(\w+)\s*=\s*function\b'), # js function
         re.compile(r'\b(\w+)\s*=\s(?:=>|->)'), # coffeescript function
@@ -1412,6 +1410,13 @@ class Commands(object):
         if -1 < i < j:
             return s
         return ''
+    #@+node:vitalije.20171019094654.1: *8* extractDef_find
+    def extractDef_find(self, lines):
+        c = self
+        for line in lines:
+            def_h = c.extractDef(line.strip())
+            if def_h:
+                return def_h
     #@+node:ekr.20031218072017.1710: *7* c.extractSectionNames
     @cmd('extract-names')
     def extractSectionNames(self, event=None):
