@@ -1698,6 +1698,7 @@ class FileCommands(object):
         ok = g.doHook("save1", c=c, p=p, v=p.v, fileName=fileName)
         if ok is None:
             fileName, content = getPublicLeoFile()
+            fileName = g.os_path_finalize_join(c.openDirectory, fileName)
             with open(fileName, 'w') as out:
                 out.write(content)
             g.es('updated reference file:',
