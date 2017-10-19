@@ -1378,8 +1378,8 @@ class Commands(object):
         re.compile(r'^(?:export\s)?\s*function\s+(\w+)\s*\('), # js function
         re.compile(r'\b(\w+)\s*:\s*function\s'), # js function
         re.compile(r'\.(\w+)\s*=\s*function\b'), # js function
-        re.compile(r'\b(\w+)\s*=\s(?:=>|->)'), # coffeescript function
-        re.compile(r'\b(\w+)\s*=\s(?:\([^)]*\))\s*(?:=>|->)'), # coffeescript function
+        re.compile(r'(?:export\s)?\b(\w+)\s*=\s(?:=>|->)'), # coffeescript function
+        re.compile(r'(?:export\s)?\b(\w+)\s*=\s(?:\([^)]*\))\s*(?:=>|->)'), # coffeescript function
         re.compile(r'\b(\w+)\s*:\s(?:=>|->)'), # coffeescript function
         re.compile(r'\b(\w+)\s*:\s(?:\([^)]*\))\s*(?:=>|->)'), # coffeescript function
     )
