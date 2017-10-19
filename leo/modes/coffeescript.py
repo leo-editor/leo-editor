@@ -281,15 +281,15 @@ def coffeescript_rule32(colorer, s, i):
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
 def coffeescript_rule33(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="keyword3", regexp="@([\\p{L}\\p{Nl}\\$_][\\p{L}\\p{Nl}\\p{Nd}\\$_]*)",
+    return colorer.match_seq_regexp(s, i, kind="keyword3", regexp="@([a-zA-Z\\$_][a-zA-Z0-9\\$_]*)",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
 def coffeescript_rule34(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="keyword4", regexp="([\\p{L}\\p{Nl}\\$_][\\p{L}\\p{Nl}\\p{Nd}\\$_]*)(?=\\s*(?:[:\\.]|\\?\\.))",
+    return colorer.match_seq_regexp(s, i, kind="keyword4", regexp="([a-zA-Z\\$_][a-zA-Z0-9\\$_]*)(?=\\s*(?:[:\\.]|\\?\\.))",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
 def coffeescript_rule35(colorer, s, i):
-    return colorer.match_seq_regexp(s, i, kind="keyword1", regexp="for\\s+own(?![\\p{L}\\p{Nl}\\p{Nd}\\$_])",
+    return colorer.match_seq_regexp(s, i, kind="keyword1", regexp="for\\s+own(?![a-zA-Z0-9\\$_])",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, delegate="")
 
 def coffeescript_rule36(colorer, s, i):
