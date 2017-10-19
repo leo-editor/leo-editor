@@ -1347,7 +1347,9 @@ class Commands(object):
         lines = [g.removeLeadingWhitespace(s, ws, c.tab_width) for s in lines]
         h = lines[0].strip()
         ref_h = c.extractRef(h).strip()
-        def_h = c.extractDef('\n'.join(lines)).strip()
+        def_h = c.extractDef(lines[0].strip())
+        if not def_h:
+            def_h = c.extractDef('\n'.join(lines)).strip()
         if ref_h:
             # h,b,middle = ref_h,lines[1:],lines[0]
             # 2012/02/27: Change suggested by vitalije (vitalijem@gmail.com)
