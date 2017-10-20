@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.76" body_secondary_ratio="0.56">
-	<global_window_position top="62" left="503" height="956" width="1249"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.56">
+	<global_window_position top="103" left="99" height="956" width="1249"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -687,6 +687,16 @@
 <v t="ekr.20160401061847.7"><vh>@movie Sample video (Local file)</vh></v>
 <v t="ekr.20160401062424.1"><vh>@movie Sample video (Url)</vh></v>
 <v t="ekr.20160401061847.9"><vh>@networkx my network</vh></v>
+<v t="ekr.20171020112352.1"><vh>@pyplot matplotlib animate_decay</vh>
+<v t="ekr.20171020112352.2"><vh>data_gen</vh></v>
+<v t="ekr.20171020112352.3"><vh>init</vh></v>
+<v t="ekr.20171020112352.4"><vh>run</vh></v>
+</v>
+<v t="ekr.20171020112405.1"><vh>@pyplot basic_example</vh>
+<v t="ekr.20171020112405.2"><vh>Figure 1</vh></v>
+<v t="ekr.20171020112405.3"><vh>Figure 2</vh></v>
+</v>
+<v t="ekr.20171020112424.1"><vh>@pyplot barchar_demo</vh></v>
 <v t="ekr.20160401061847.10" a="M"><vh>@svg bubbles sources</vh></v>
 <v t="ekr.20160401061847.11"><vh>@svg bubbles.svg</vh></v>
 <v t="ekr.20160401061847.12"><vh>@url Leo's home page (md default)</vh></v>
@@ -1191,7 +1201,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="0,0,12,0,1"></t>
+<t tx="ekr.20070416075121" str_leo_pos="3,12,11"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -9470,5 +9480,138 @@ $$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$
 </t>
 <t tx="ekr.20160930220426.1"></t>
 <t tx="ekr.20170709101639.1"># Test #516</t>
+<t tx="ekr.20171020112352.1"># http://matplotlib.org/1.5.1/examples/animation/animate_decay.html
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+
+@others
+
+# global data.
+fig, ax = plt.subplots()
+line, = ax.plot([], [], lw=2)
+ax.grid()
+xdata, ydata = [], []
+ani = animation.FuncAnimation(
+    fig, run, data_gen, blit=False, interval=10,
+    repeat=False, init_func=init)
+
+plt.ion()
+    # sets interactive mode. Prevents this message:
+    # QCoreApplication::exec: The event loop is already running
+plt.show()</t>
+<t tx="ekr.20171020112352.2">def data_gen(t=0):
+    cnt = 0
+    while cnt &lt; 1000:
+        cnt += 1
+        t += 0.1
+        yield t, np.sin(2*np.pi*t) * np.exp(-t/10.)
+</t>
+<t tx="ekr.20171020112352.3">def init():
+    ax.set_ylim(-1.1, 1.1)
+    ax.set_xlim(0, 10)
+    del xdata[:]
+    del ydata[:]
+    line.set_data(xdata, ydata)
+    return line,
+</t>
+<t tx="ekr.20171020112352.4">def run(data):
+    # update the data
+    t, y = data
+    xdata.append(t)
+    ydata.append(y)
+    xmin, xmax = ax.get_xlim()
+    if t &gt;= xmax:
+        ax.set_xlim(xmin, 2*xmax)
+        ax.figure.canvas.draw()
+    line.set_data(xdata, ydata)
+    return line,</t>
+<t tx="ekr.20171020112405.1"># http://matplotlib.org/1.5.1/examples/animation/basic_example.html
+if 0:
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import matplotlib.animation as animation
+
+@others
+
+if 0:
+    plt.ion()
+    # sets interactive mode. Prevents this message:
+    # QCoreApplication::exec: The event loop is already running
+plt.show()</t>
+<t tx="ekr.20171020112405.2">if 1:
+    
+    def update_line(num, data, line):
+        line.set_data(data[..., :num])
+        return line, # a tuple.
+
+    fig1 = plt.figure()
+    data = np.random.rand(2, 25)
+    l, = plt.plot([], [], 'r-')
+    plt.xlim(0, 1)
+    plt.ylim(0, 1)
+    plt.xlabel('x')
+    plt.title('test')
+    line_ani = animation.FuncAnimation(fig1, update_line, 25,
+        fargs=(data, l),
+        interval=50,
+        blit=True)
+</t>
+<t tx="ekr.20171020112405.3">fig2 = plt.figure()
+x = np.arange(-9, 10)
+y = np.arange(-9, 10).reshape(-1, 1)
+base = np.hypot(x, y)
+ims = []
+for add in np.arange(15):
+    ims.append((plt.pcolor(x, y, base + add, norm=plt.Normalize(0, 30)),))
+animation.ArtistAnimation(fig2, ims,
+    interval=50,
+    repeat_delay=3000,
+    blit=True)
+#im_ani.save('im.mp4', metadata={'artist':'Guido'})</t>
+<t tx="ekr.20171020112424.1">#!/usr/bin/env python
+# a bar plot with errorbars
+import numpy as np
+import matplotlib.pyplot as plt
+
+N = 5
+menMeans = (20, 35, 30, 35, 27)
+menStd = (2, 3, 4, 1, 2)
+
+ind = np.arange(N)  # the x locations for the groups
+width = 0.35       # the width of the bars
+
+fig, ax = plt.subplots()
+
+rects1 = ax.bar(ind, menMeans, width, color='r', yerr=menStd)
+
+womenMeans = (25, 32, 34, 20, 25)
+womenStd = (3, 5, 2, 3, 3)
+rects2 = ax.bar(ind + width, womenMeans, width, color='y', yerr=womenStd)
+
+# add some text for labels, title and axes ticks
+ax.set_ylabel('Scores')
+ax.set_title('Scores by group and gender')
+ax.set_xticks(ind + width)
+ax.set_xticklabels(('G1', 'G2', 'G3', 'G4', 'G5'))
+
+ax.legend((rects1[0], rects2[0]), ('Men', 'Women'))
+
+
+def autolabel(rects):
+    # attach some text labels
+    for rect in rects:
+        height = rect.get_height()
+        ax.text(rect.get_x() + rect.get_width()/2., 1.05*height,
+                '%d' % int(height),
+                ha='center', va='bottom')
+
+autolabel(rects1)
+autolabel(rects2)
+
+plt.ion()
+    # sets interactive mode. Prevents this message:
+    # QCoreApplication::exec: The event loop is already running
+plt.show()</t>
 </tnodes>
 </leo_file>
