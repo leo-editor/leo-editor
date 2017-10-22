@@ -143,6 +143,7 @@ class BridgeController(object):
         g.app.inBridge = True # Added 2007/10/21: support for g.getScript.
         g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
         g.app.config = leoConfig.GlobalConfigManager()
+        g.app.setGlobalDb() # Fix #556.
         if self.readSettings:
             lm.readGlobalSettingsFiles()
                 # reads only standard settings files, using a null gui.
