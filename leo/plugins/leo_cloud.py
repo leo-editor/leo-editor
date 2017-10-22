@@ -50,7 +50,7 @@ and the tags plugin can coerce lists to sets. I think the todo.py plugin already
 reads iso string time values.
 
 My intended use was a common synchronized todo list across machines, which this
-achieves. (note to self, make sure todo icons are refreshed properly).
+achieves.
 
 An unintended bonus is that you can use it to sync. your settings across
 machines easily too. Like this:
@@ -63,37 +63,6 @@ machines easily too. Like this:
 "just works", so now your shortcuts etc. can be stored on a central
 server.
 
-(this is the Leo plugin half, see also leo_cloud_server.py)
-
-Sub-trees include head and body content *and* v.u
-
-## Phase 1
-
-On load, on save, and on demand, synchronize @leo_cloud subtrees with
-remote server by complete download / upload
-
-## Phase 2
-
-Maybe more granular and regular synchronization.
-
- - experiments show recursive hash of 7000 node subtree, covering
-   v.h, v.b, and v.u, can be done in 0.02 seconds on a 4GHz CPU.
-
-## General notes
-
- - todo.py used to put datetime.datetime objects in v.u, the tags.py
-   plugin puts set() objects in v.u.  Neither are JSON serializable.
-   Plan is to serialize to text (ISO date and JSON list), and not
-   fix on the way back in - tags.py can coerce the things it expects
-   to be sets to be sets.
-
- - for Phase 1 functionality at least it might be possible to use
-   non-server back ends like Google Drive / Drop Box / git / WebDAV.
-   Probably worth a layer to handle this for people with out access to a
-   server.
-
- - goal would be for an older Raspberry Pi to be sufficient server
-   wise, so recursive hash speed there might be an issue (Phase 2)
 
 """
 
