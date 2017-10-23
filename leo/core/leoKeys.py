@@ -639,8 +639,7 @@ class AutoCompleterClass(object):
         aList = list(set([z[0] for z in hits]))
         aList.sort()
         if trace:
-            # g.trace('hits[:50]',g.listToString(hits[:50],sort=False))
-            g.trace('aList[:50]', g.listToString(aList[: 50], sort=False))
+            g.trace('aList[:50]', g.listToString(aList[: 50]))
         return aList
     #@+node:ekr.20110512232915.14481: *6* ac.clean_for_display (not used)
     def clean_for_display(self, hits):
@@ -659,8 +658,8 @@ class AutoCompleterClass(object):
         aList = list(set(aList))
         aList.sort()
         if trace:
-            # g.trace('hits[:50]',g.listToString(hits[:50],sort=False))
-            g.trace('aList[:50]', g.listToString(aList[: 50], sort=False))
+            # g.trace('hits[:50]',g.listToString(hits[:50])
+            g.trace('aList[:50]', g.listToString(aList[: 50]))
         return aList
     #@+node:ekr.20110510120621.14542: *6* ac.guess_class
     def guess_class(self, c, varname):
