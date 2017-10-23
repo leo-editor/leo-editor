@@ -1317,7 +1317,7 @@ class Commands(object):
     #@+node:ekr.20110530124245.18239: *7* c.extract & helpers
     @cmd('extract')
     def extract(self, event=None):
-        '''
+        r'''
         Create child node from the selected body text.
 
         1. If the selection starts with a section reference, the section
