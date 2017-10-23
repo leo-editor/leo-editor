@@ -1820,11 +1820,7 @@ def pdb(message=''):
     if message:
         print(message)
     pdb.set_trace()
-#@+node:ekr.20041224080039: *4* g.printDict & dictToString
-def printDict(d, indent='', tag=''):
-    '''Pretty print a Python dict using g.pr.'''
-    g.pr(dictToString(d, indent=indent, tag=tag))
-
+#@+node:ekr.20041224080039: *4* g.dictToString
 def dictToString(d, indent='', tag=None):
     '''Pretty print a Python dict to a string.'''
     if not d:
@@ -1844,11 +1840,7 @@ def dictToString(d, indent='', tag=None):
     result.append(indent+'}')
     s = ''.join(result)
     return '%s...\n%s\n' % (tag, s) if tag else s
-#@+node:ekr.20041126060136: *4* g.printList & listToString
-def printList(aList, indent='', tag=None):
-    '''Pretty print a Python list using g.pr.'''
-    g.pr(g.listToString(aList, indent=indent, tag=tag))
-
+#@+node:ekr.20041126060136: *4* g.listToString
 def listToString(obj, indent='', tag=None):
     '''Pretty print a Python list to a string.'''
     if not obj:
@@ -1866,12 +1858,8 @@ def listToString(obj, indent='', tag=None):
     result.append(']')
     s = ''.join(result)
     return '%s...\n%s\n' % (tag, s) if tag else s
-#@+node:ekr.20050819064157: *4* g.printObj & toString
-def printObj(obj, indent='', tag=None):
-    '''Pretty print any Python object using g.pr.'''
-    g.pr(objToString(obj, indent=indent, tag=tag))
-
-def toString(obj, indent='', tag=None):
+#@+node:ekr.20050819064157: *4* g.objToSTring & g.toString
+def objToString(obj, indent='', tag=None):
     '''Pretty print any Python object to a string.'''
     if isinstance(obj, dict):
         s = dictToString(obj, indent=indent)
@@ -1883,12 +1871,16 @@ def toString(obj, indent='', tag=None):
         s = repr(obj)
     return '%s...\n%s\n' % (tag, s) if tag else s
 
-objToString = toString
-#@+node:ekr.20171023110057.1: *4* g.printTuple & tupleToString
-def printTuple(obj, indent='', tag=None):
-    '''Pretty print a Python tuple using g.pr.'''
-    g.pr(tupleToString(obj, indent=indent, tag=tag))
+toString = objToString
+#@+node:ekr.20171023140544.1: *4* g.printObj & aliases
+def printObj(obj, indent='', tag=None):
+    '''Pretty print any Python object using g.pr.'''
+    g.pr(objToString(obj, indent=indent, tag=tag))
 
+printDict = printObj
+printList = printObj
+printTuple = printObj
+#@+node:ekr.20171023110057.1: *4* g.tupleToString
 def tupleToString(obj, indent='', tag=None):
     '''Pretty print a Python tuple to a string.'''
     if not obj:
