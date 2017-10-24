@@ -19,7 +19,7 @@ def _path_from_pos(c, p):
             word0 in g.app.atFileNames|set(['@auto']) or
             word0.startswith('@auto-')
         )
-    
+
     aList = g.get_directives_dict_list(p)
     path = c.scanAtPathDirectives(aList)
     while c.positionExists(p):
@@ -32,8 +32,9 @@ def _path_from_pos(c, p):
                 path = nodepath
             break
         p.moveToParent()
-    
+
     return path
+
 class LEP_WebKitView(QtWebKitWidgets.QWebView):
     """LEP_WebKitView - Web Kit View
     """
@@ -45,6 +46,9 @@ class LEP_WebKitView(QtWebKitWidgets.QWebView):
         self.c = c
         self.lep = lep
 
+        # enable inspector
+        QtWebKit.QWebSettings.globalSettings().setAttribute(
+            QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
     def new_position(self, p):
         """new_position - update for new position
 
@@ -59,6 +63,7 @@ class LEP_WebKitView(QtWebKitWidgets.QWebView):
         else:
             self.setHtml(p.b)
         os.chdir(owd)
+
     def update_position(self, p):
         """update_position - update for current position
 
