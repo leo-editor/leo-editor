@@ -360,8 +360,8 @@ class LeoCloud:
                     delta = datetime.now() - last_read
                     message = "%s\n%s, %sh:%sm:%ss ago" % (
                         message, last_read.strftime("%a %b %d %H:%M"),
-                        int(24*delta.days+delta.seconds / 3600),
-                        (delta.seconds / 60) % 60,
+                        24*delta.days+int(delta.seconds / 3600),
+                        int(delta.seconds / 60) % 60,
                         delta.seconds % 60)
                 read = g.app.gui.runAskYesNoCancelDialog(self.c, "Read cloud data?",
                     message=message)
@@ -531,6 +531,9 @@ class LeoCloud:
         lc_io = getattr(p.v, '_leo_cloud_io', None) or self.io_from_node(p)
         lc_io.put_subtree(lc_io.lc_id, p.v)
         g.es("Stored %s" % lc_io.lc_id)
+        # writing counts as reading, last read time msg. confusing otherwise
+        p.v.u.setdefault('_leo_cloud', {})['last_read'] = datetime.now().isoformat()
+
 
 
 
