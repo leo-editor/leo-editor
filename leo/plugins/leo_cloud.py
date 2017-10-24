@@ -360,7 +360,7 @@ class LeoCloud:
                     delta = datetime.now() - last_read
                     message = "%s\n%s, %sh:%sm:%ss ago" % (
                         message, last_read.strftime("%a %b %d %H:%M"),
-                        24*delta.days+int(delta.seconds / 3600),
+                        int(24*delta.days+delta.seconds / 3600),
                         (delta.seconds / 60) % 60,
                         delta.seconds % 60)
                 read = g.app.gui.runAskYesNoCancelDialog(self.c, "Read cloud data?",
@@ -409,6 +409,8 @@ class LeoCloud:
         """
         recursive_hash - recursively hash a tree
 
+        Note - currently unused but intend to use to analyse changes in trees
+
         :param vnode nd: node to hahs
         :param list tree: recursive list of hashes
         :param bool include_current: include h/b/u of current node in hash?
@@ -418,7 +420,7 @@ class LeoCloud:
         Calling with include_current=False ignores the h/b/u of the top node
         """
         childs = []
-        hashes = [LeoCloud.recursive_hash3(child, childs) for child in nd.children]
+        hashes = [LeoCloud.recursive_hash(child, childs) for child in nd.children]
         if include_current:
             hashes.extend([nd.h + nd.b + str(nd.u)])
             # FIXME: random sorting on nd.u, use JSON/sorted keys
@@ -530,81 +532,6 @@ class LeoCloud:
         lc_io.put_subtree(lc_io.lc_id, p.v)
         g.es("Stored %s" % lc_io.lc_id)
 
-"""Notes / code for recursive hashes
 
-from hashlib import sha1, md5
-import json
-import timeit
-
-# using c.all_unique_nodes()
-
-def hashy():
-    n = 0
-    for nd in c.all_unique_nodes():
-        sha1(
-            nd.h.encode('utf-8') +
-            nd.b.encode('utf-8') +
-            str(nd.u).encode('utf-8')
-        ).hexdigest()
-        n += 1
-    # g.es(n)
-n = 10
-g.es(timeit.timeit(hashy, number=n) / n)
-
-# not storing
-
-def recursive_hash(nd):
-    hashes = [recursive_hash(child) for child in nd.children]
-    hashes.extend([nd.h + nd.b + str(nd.u)])
-    return sha1(''.join(hashes).encode('utf-8')).hexdigest()
-
-def test_recurse():
-    return recursive_hash(c.hiddenRootNode)
-
-g.es(timeit.timeit(test_recurse, number=n) / n)
-
-# using dicts
-
-def recursive_hash2(nd, tree):
-    childs = {}
-    hashes = [recursive_hash2(child, childs) for child in nd.children]
-    hashes.extend([nd.h + nd.b + str(nd.u)])
-    whole_hash = sha1(''.join(hashes).encode('utf-8')).hexdigest()
-    tree[whole_hash] = childs
-    return whole_hash
-
-def test_recurse2():
-    return recursive_hash2(c.hiddenRootNode, {})
-
-g.es(timeit.timeit(test_recurse2, number=n) / n)
-
-# using lists
-
-def recursive_hash3(nd, tree):
-    childs = []
-    hashes = [recursive_hash3(child, childs) for child in nd.children]
-    hashes.extend([nd.h + nd.b + str(nd.u)])
-    whole_hash = sha1(''.join(hashes).encode('utf-8')).hexdigest()
-    tree.append([whole_hash, childs])
-    return whole_hash
-
-def test_recurse3():
-    return recursive_hash3(c.hiddenRootNode, [])
-
-g.es(timeit.timeit(test_recurse2, number=n) / n)
-
-# comparison
-
-g.es(test_recurse())
-g.es(test_recurse2())
-g.es(test_recurse3())
-
-# save
-
-all = []
-recursive_hash3(c.hiddenRootNode, all)
-with open("/tmp/json_hashes.json", 'w') as out:
-    json.dump(all, out)
-"""
 
 
