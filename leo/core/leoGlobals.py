@@ -1872,32 +1872,6 @@ def objToString(obj, indent='', tag=None):
     return '%s...\n%s\n' % (tag, s) if tag else s
 
 toString = objToString
-#@+node:ekr.20171023140544.1: *4* g.printObj & aliases
-def printObj(obj, indent='', tag=None):
-    '''Pretty print any Python object using g.pr.'''
-    g.pr(objToString(obj, indent=indent, tag=tag))
-
-printDict = printObj
-printList = printObj
-printTuple = printObj
-#@+node:ekr.20171023110057.1: *4* g.tupleToString
-def tupleToString(obj, indent='', tag=None):
-    '''Pretty print a Python tuple to a string.'''
-    if not obj:
-        return '(),'
-    result = ['(']
-    indent2 = indent+' '*4
-    for i, obj2 in enumerate(obj):
-        if len(obj) > 1:
-            result.append('\n'+indent2)
-        result.append(objToString(obj2,indent=indent2))
-        if len(obj) == 1 or i+1 < len(obj):
-            result.append(',')
-        elif len(obj) > 1:
-            result.append('\n'+indent)
-    result.append(')')
-    s = ''.join(result)
-    return '%s...\n%s\n' % (tag, s) if tag else s
 #@+node:ekr.20140401054342.16844: *4* g.run_pylint
 def run_pylint(fn, rc,
     dots=True, # Show level dots in Sherlock traces.
@@ -1954,6 +1928,32 @@ def sleep(n):
     '''Wait about n milliseconds.'''
     from time import sleep
     sleep(n) #sleeps for 5 seconds
+#@+node:ekr.20171023140544.1: *4* g.printObj & aliases
+def printObj(obj, indent='', tag=None):
+    '''Pretty print any Python object using g.pr.'''
+    g.pr(objToString(obj, indent=indent, tag=tag))
+
+printDict = printObj
+printList = printObj
+printTuple = printObj
+#@+node:ekr.20171023110057.1: *4* g.tupleToString
+def tupleToString(obj, indent='', tag=None):
+    '''Pretty print a Python tuple to a string.'''
+    if not obj:
+        return '(),'
+    result = ['(']
+    indent2 = indent+' '*4
+    for i, obj2 in enumerate(obj):
+        if len(obj) > 1:
+            result.append('\n'+indent2)
+        result.append(objToString(obj2,indent=indent2))
+        if len(obj) == 1 or i+1 < len(obj):
+            result.append(',')
+        elif len(obj) > 1:
+            result.append('\n'+indent)
+    result.append(')')
+    s = ''.join(result)
+    return '%s...\n%s\n' % (tag, s) if tag else s
 #@+node:ekr.20031218072017.1588: *3* g.Garbage Collection
 lastObjectCount = 0
 lastObjectsDict = {}
