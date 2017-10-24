@@ -1,3 +1,10 @@
+try:
+    # this can fix an issue with Qt Web views in Ubuntu
+    from OpenGL import GL
+except:
+    # but not need to stop if it doesn't work
+    pass
+
 import imp
 import os
 
@@ -355,8 +362,11 @@ class LeoEditPane(QtWidgets.QWidget):
                         modules.append(locals()[name])
                     except Exception:
                         pass
+                DBG("Loaded module: %s" % name)
 
-            except ImportError:
+            except ImportError as err:
+                DBG("Failed to load module: %s" % name)
+                print(err)
                 pass
 
         self.modules = []

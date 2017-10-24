@@ -2,9 +2,16 @@ import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
 
 import markdown
-from webkitview import LEP_WebKitView as HtmlView
-from plaintextview import LEP_PlainTextView as TextView
 
+# FIXME: for now, prefer the older WebKit over WebEngine.  WebEngine is
+# probably superior, but needs --disable-web-security passed to the
+# QApplication to load local images without a server.
+try:
+    from leo.core.editpane.webkitview import LEP_WebKitView as HtmlView
+except ImportError:
+    from leo.core.editpane.webengineview import LEP_WebEngineView as HtmlView
+
+from leo.core.editpane.plaintextview import LEP_PlainTextView as TextView
 def to_html(text):
     """to_html - convert to HTML
 
