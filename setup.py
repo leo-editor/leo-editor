@@ -21,18 +21,20 @@ import leo.core.leoVersion # FIXME: extract from GIT tags instead, ionelmc slide
     https://blog.ionelmc.ro/2014/05/25/python-packaging/
 '''
 #@+node:maphew.20171006124415.1: ** Get description
+# Get the long description from the README file
+# And also convert to reST
+# adapted from https://github.com/BonsaiAI/bonsai-config/blob/0.3.1/setup.py#L7
 try:
-    long_description = open('README.MD', 'r').read()
-        # mode was 'rt'
-except IOError:
-    long_description = """
-Leo is an outline-oriented IDE written in 100% pure Python.
-Leo features a multi-window outlining editor, Python colorizing,
-powerful outline commands and many other things, including 
-unlimited Undo/Redo and an integrated Python shell(IDLE) window.
-Leo requires Python 2.6 or above.  Leo works with Python 3.x.
-Requires PyQt and SIP preinstalled.
-    """
+    from pypandoc import convert
+    def read_md(f): return convert(f, 'rst')
+
+except ImportError:
+    print("warning: pypandoc module not found, "
+          "could not convert Markdown to RST")
+
+#def read_md(f): return open(f, 'r').read()
+
+    
 #@+node:maphew.20141126230535.4: ** classifiers
 classifiers = [
     'Development Status :: 5 - Production/Stable',
@@ -55,13 +57,13 @@ classifiers = [
 
 setup(
     name = 'leo',
-    version = leo.core.leoVersion.version,
+    version = leo.core.leoVersion.version + '.rc3',
     author = "Edward K. Ream",
     author_email = 'edreamleo@gmail.com',
     url = 'http://leoeditor.com',
     license = 'MIT License',
     description = "Leo: Leonine Editor with Outlines", # becomes "Summary" in pkg-info
-    long_description = long_description,
+    long_description = read_md('README.md'),
     platforms = ['Linux','Windows','MacOS'],
     download_url = 'http://leoeditor.com/download.html',
     classifiers = classifiers,
