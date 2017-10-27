@@ -1615,7 +1615,6 @@ Packaging a new release for Test PyPi
 Manually adjust version# in setup.py, eg: `leo.core.version + 'rc2' #release candidate 2`
 
     ::Build
-    git checkout tags/5.6.1
     python setup.py bdist_wheel
 
     ::Test installation locally
@@ -1639,6 +1638,7 @@ _Will likely always use this recipe after the first time or two. Remember to rem
 
     rd /s/q dist
     rd /s/q build
+    git checkout tags/5.6.1
     python setup.py bdist_wheel
     twine upload --repository-url https://pypi.org/legacy/ dist/*
     pip install leo
