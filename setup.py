@@ -57,7 +57,7 @@ classifiers = [
 
 setup(
     name = 'leo',
-    version = leo.core.leoVersion.version + '.rc3',
+    version = leo.core.leoVersion.version,
     author = "Edward K. Ream",
     author_email = 'edreamleo@gmail.com',
     url = 'http://leoeditor.com',
