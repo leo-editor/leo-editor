@@ -1615,6 +1615,7 @@ Packaging a new release for Test PyPi
 Manually adjust version# in setup.py, eg: `leo.core.version + 'rc2' #release candidate 2`
 
     ::Build
+    git checkout tags/5.6.1
     python setup.py bdist_wheel
 
     ::Test installation locally
