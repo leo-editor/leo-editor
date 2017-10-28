@@ -18,23 +18,6 @@ class LEP_LeoTextEdit(QtWidgets.QTextEdit):
     """
     lep_type = "EDITOR"
     lep_name = "Leo Text Edit"
-    class BHighlighter(QtGui.QSyntaxHighlighter):
-        fmt = QtGui.QTextCharFormat()
-        fmt.setFontWeight(QtGui.QFont.Bold)
-        fmt.setForeground(QtCore.Qt.darkMagenta)
-        pattern = "\\bMy[A-Za-z]*\\b"
-        regex = re.compile(pattern)
-
-        def highlightBlock(self, text):
-            offset = 0
-            index = self.regex.search(text)
-            while index:
-                start = index.start()
-                length = index.end() - start
-                self.setFormat(offset+start, length, self.fmt)
-                offset += start + length
-                index = self.regex.search(text[offset:])
-
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
         super(LEP_LeoTextEdit, self).__init__(*args, **kwargs)
@@ -44,7 +27,10 @@ class LEP_LeoTextEdit(QtWidgets.QTextEdit):
         self.wrapper = qt_text.QTextEditWrapper(self, name='edit_pane', c=c)
         self.wrapper.widget = self
         self.highlighter = JEditColorizer(c, self, self.wrapper)
-        g.app.gui.setFilter(c, self, self.wrapper, 'edit_pane')
+
+        # maybe need to go in this direction, but this is insufficient by iteself
+        # g.app.gui.setFilter(c, self, self.wrapper, 'edit_pane')
+
     def focusInEvent (self, event):
         QtWidgets.QTextEdit.focusInEvent(self, event)
         DBG("focusin()")
@@ -54,6 +40,7 @@ class LEP_LeoTextEdit(QtWidgets.QTextEdit):
     def focusOutEvent (self, event):
         QtWidgets.QTextEdit.focusOutEvent(self, event)
         DBG("focusout()")
+
     def new_position(self, p):
         """new_position - update for new position
 
@@ -77,5 +64,6 @@ class LEP_LeoTextEdit(QtWidgets.QTextEdit):
         """
         DBG("update editor position")
         self.setText(p.b)
+
 
 

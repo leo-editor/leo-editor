@@ -31,6 +31,12 @@ def to_html(text):
     out, err = proc.communicate(text)
     return out
 
+# see if Pandoc's installed
+try:
+    to_html("test")
+except:
+    raise ImportError
+
 class LEP_PanDownView(HtmlView):
     """LEP_MarkdownView -
     """
