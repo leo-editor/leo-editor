@@ -1820,80 +1820,58 @@ def pdb(message=''):
     if message:
         print(message)
     pdb.set_trace()
-#@+node:ekr.20041224080039: *4* g.printDict & dictToString
-def printDict(d, tag='', verbose=True, indent=''):
-    '''Pretty print a Python dict using g.pr.'''
-    if d:
-        n = 6
-        for key in sorted(d):
-            if g.isString(key):
-                n = max(n, len(key))
-        g.pr('%s...{' % (tag) if tag else '{')
-        for key in sorted(d):
-            g.pr("%s%*s: %s" % (indent, n, key, repr(d.get(key)).strip()))
-        g.pr('}')
-    else:
-        g.pr('%s...{}' % (tag) if tag else '{}')
-
-def dictToString(d, tag=None, verbose=True, indent=''):
+#@+node:ekr.20041224080039: *4* g.dictToString
+def dictToString(d, indent='', tag=None):
     '''Pretty print a Python dict to a string.'''
-    if d:
-        n = 6
-        for key in sorted(d):
-            if g.isString(key):
-                n = max(n, len(key))
-        lines = ["%s%*s: %s" % (indent, n, key, repr(d.get(key)).strip())
-            for key in sorted(d)]
-        s = '\n'.join(lines)
-        if tag:
-            return '%s...{\n%s\n}\n' % (tag, s)
-        else:
-            return '{\n%s\n}\n' % (s)
+    if not d:
+        return '{}'
+    result = ['{\n']
+    indent2 = indent+' '*4
+    n = 6
+    for key in sorted(d):
+        n = max(n, len(key) if g.isString(key) else len(repr(key)))
+    keys = list(sorted(d))
+    for i, key in enumerate(keys):
+        result.append(indent2+key+': ')
+        result.append(objToString(d.get(key),indent=indent2))
+        if i+1 < len(keys):
+            result.append(',')
+        result.append('\n')
+    result.append(indent+'}')
+    s = ''.join(result)
+    return '%s...\n%s\n' % (tag, s) if tag else s
+#@+node:ekr.20041126060136: *4* g.listToString
+def listToString(obj, indent='', tag=None):
+    '''Pretty print a Python list to a string.'''
+    if not obj:
+        return '[]'
+    result = ['[']
+    indent2 = indent+' '*4
+    for i, obj2 in enumerate(obj):
+        if len(obj) > 1:
+            result.append('\n'+indent2)
+        result.append(objToString(obj2,indent=indent2))
+        if i+1 < len(obj) > 1:
+            result.append(',')
+        elif len(obj) > 1:
+            result.append('\n'+indent)
+    result.append(']')
+    s = ''.join(result)
+    return '%s...\n%s\n' % (tag, s) if tag else s
+#@+node:ekr.20050819064157: *4* g.objToSTring & g.toString
+def objToString(obj, indent='', tag=None):
+    '''Pretty print any Python object to a string.'''
+    if isinstance(obj, dict):
+        s = dictToString(obj, indent=indent)
+    elif isinstance(obj, list):
+        s = listToString(obj, indent=indent)
+    elif isinstance(obj, tuple):
+        s = tupleToString(obj, indent=indent)
     else:
-        return '%s...{}' % (tag) if tag else '{}'
-#@+node:ekr.20041126060136: *4* g.printList & listToString
-def printList(aList, tag=None, sort=False, indent=''):
-    if aList:
-        bList = list(sorted(aList)) if sort else aList
-        g.pr('%s...[' % (tag) if tag else '[')
-        for e in bList:
-            g.pr('%s%s' % (indent, repr(e).strip()))
-        g.pr(']')
-    else:
-        g.pr(tag + '...[]' if tag else '[]')
+        s = repr(obj)
+    return '%s...\n%s\n' % (tag, s) if tag else s
 
-def listToString(aList, tag=None, sort=False, indent='', toRepr=False):
-    if not aList:
-        if tag: return '%s...{}' % tag
-        else: return '[]'
-    if sort:
-        bList = aList[:] # Sort a copy!
-        bList.sort()
-    else:
-        bList = aList
-    lines = ["%s%s" % (indent, repr(e).strip()) for e in bList]
-    s = '\n'.join(lines)
-    if toRepr: s = repr(s)
-    if tag:
-        return '[%s...\n%s\n]' % (tag, s)
-    else:
-        return '[\n%s\n]' % s
-#@+node:ekr.20050819064157: *4* g.printObj & toString
-def printObj(obj, tag=None, sort=False, verbose=True, indent=''):
-    if isinstance(obj, (list, tuple)):
-        g.printList(obj, tag, sort, indent)
-    elif isinstance(obj, dict):
-        g.printDict(obj, tag, verbose, indent)
-    else:
-        g.pr('%s%s' % (indent, repr(obj).strip()))
-
-def toString(obj, tag=None, sort=False, verbose=True, indent=''):
-    if isinstance(obj, (list, tuple)):
-        return g.listToString(obj, tag, sort, indent)
-    elif isinstance(obj, dict):
-        return g.dictToString(obj, tag, verbose, indent)
-    else:
-        return '%s%s' % (indent, repr(obj).strip())
+toString = objToString
 #@+node:ekr.20140401054342.16844: *4* g.run_pylint
 def run_pylint(fn, rc,
     dots=True, # Show level dots in Sherlock traces.
@@ -1950,6 +1928,32 @@ def sleep(n):
     '''Wait about n milliseconds.'''
     from time import sleep
     sleep(n) #sleeps for 5 seconds
+#@+node:ekr.20171023140544.1: *4* g.printObj & aliases
+def printObj(obj, indent='', tag=None):
+    '''Pretty print any Python object using g.pr.'''
+    g.pr(objToString(obj, indent=indent, tag=tag))
+
+printDict = printObj
+printList = printObj
+printTuple = printObj
+#@+node:ekr.20171023110057.1: *4* g.tupleToString
+def tupleToString(obj, indent='', tag=None):
+    '''Pretty print a Python tuple to a string.'''
+    if not obj:
+        return '(),'
+    result = ['(']
+    indent2 = indent+' '*4
+    for i, obj2 in enumerate(obj):
+        if len(obj) > 1:
+            result.append('\n'+indent2)
+        result.append(objToString(obj2,indent=indent2))
+        if len(obj) == 1 or i+1 < len(obj):
+            result.append(',')
+        elif len(obj) > 1:
+            result.append('\n'+indent)
+    result.append(')')
+    s = ''.join(result)
+    return '%s...\n%s\n' % (tag, s) if tag else s
 #@+node:ekr.20031218072017.1588: *3* g.Garbage Collection
 lastObjectCount = 0
 lastObjectsDict = {}

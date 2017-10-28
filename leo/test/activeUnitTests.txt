@@ -1034,7 +1034,7 @@ if g.os_path_exists(fn):
 s = "testᾹ(U+1FB9: Greek Capital Letter Alpha With Macron)"
 
 s2 = 'test: %s' % s
-#@+node:ekr.20050208051854: *3* @test atFile.printError
+#@+node:ekr.20050208051854: *3* @@test atFile.printError
 @first # -*- coding: utf-8 -*-
 
 at = c.atFileCommands
@@ -2711,6 +2711,7 @@ else:
     pid = subprocess.Popen(
         command,
         shell=True,
+        stdout=subprocess.PIPE, # Eliminate output.
         universal_newlines=True,
     )
     pid.communicate()

@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -516,6 +516,7 @@
 </v>
 <v t="ekr.20101025080245.6084"><vh>Leo in Shared environments</vh>
 <v t="ekr.20050830115714.12"><vh>How should I use Leo with git, etc.?</vh></v>
+<v t="ekr.20171027125705.1"><vh>Why do files sometimes change when switching branches?</vh></v>
 <v t="ekr.20090706042206.14718"><vh>How can I use Leo cooperatively without sentinels?</vh></v>
 <v t="ekr.20120229094652.15137"><vh>What's the recommended way to upgrade Leo?</vh></v>
 </v>
@@ -815,6 +816,7 @@
 <v t="ekr.20101113063552.9470"><vh>script_io_to_body.py</vh></v>
 </v>
 <v t="ekr.20101113063552.9471"><vh>Servers</vh>
+<v t="ekr.20171018084145.1"><vh>leo_cloud.py</vh></v>
 <v t="ekr.20101113063552.9472"><vh>leoremote.py</vh></v>
 <v t="ekr.20101113063552.9473"><vh>mod_http.py</vh></v>
 </v>
@@ -24467,7 +24469,16 @@ Improved the following commands:
 <t tx="ekr.20170913102052.1">https://github.com/leo-editor/leo-editor/issues/541
 </t>
 <t tx="ekr.20170925084456.1"></t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20171018084145.1">Synchronize @leo_cloud subtrees with remote central server.
+</t>
+<t tx="ekr.20171027125705.1">Private copies of LeoPyRef.leo, that is, leoPy.leo, are "global".  That is, they persist unchanged when switching branches.  In effect, they act like (sometimes) unwanted caches.
+
+If you change the *structure* of @file nodes in leoPy.leo in one branch, such changes will "propegate" to other branches, even though the contents of each node has remained the same.
+
+You can see such changes clearly using leo --diff.
+
+In short, don't make unnecessary structural changes in leoPy.leo when in branches other than master.</t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   

@@ -3,37 +3,66 @@ leo_cloud.py - synchronize Leo subtrees with remote central server
 
 Terry N. Brown, terrynbrown@gmail.com, Fri Sep 22 10:34:10 2017
 
-(this is the Leo plugin half, see also leo_cloud_server.py)
+This plugin allows subtrees within a .leo file to be stored in the cloud. It
+should be possible to support various cloud platforms, currently git is
+supported (i.e. you can use GitLab or GitHub or your own remote git server).
 
-Sub-trees include head and body content *and* v.u
+A leo_cloud subtree has a top node with a headline that starts with
+'@leo_cloud'. The rest of the headline is ignored. The body of this top node is
+used to describe the cloud service, e.g.:
 
-## Phase 1
+type: Git
+remote: git@gitlab.com:tnbrown/leo_cloud_storage.git
+local: ~/.leo/leo_cloud/gitlab_leo_cloud_storage
+ID: shortcuts
+read_on_load: ask
+write_on_save: ask
 
-On load, on save, and on demand, synchronize @leo_cloud subtrees with
-remote server by complete download / upload
+The first three lines can be repeated with different IDs to store
+different subtrees at the same remote cloud location.
 
-## Phase 2
+read_on_load: / write_on_save: can be yes, no, or ask.  If it's not one
+of those three, there's a warning dialog.
 
-Maybe more granular and regular synchronization.
+There's also a file system backend, which would look like this:
 
- - experiments show recursive hash of 7000 node subtree, covering
-   v.h, v.b, and v.u, can be done in 0.02 seconds on a 4GHz CPU.
+type: FileSystem
+root: ~/DropBox/leo_cloud
+ID: my_notes
+read_on_load: ask
+write_on_save: ask
 
-## General notes
+The FileSystem backend was meant to be for development, but of course if you map
+it into a folder that is sync'ed externally, as shown above, it can serve as a
+cloud adapter too.
 
- - todo.py used to put datetime.datetime objects in v.u, the tags.py
-   plugin puts set() objects in v.u.  Neither are JSON serializable.
-   Plan is to serialize to text (ISO date and JSON list), and not
-   fix on the way back in - tags.py can coerce the things it expects
-   to be sets to be sets.
+In addition to the Git and FileSystem cloud types it should be possible to add
+many others - Google Drive, OneDrive, DropBox, AWS, WebDAV, sFTP, whatever.
 
- - for Phase 1 functionality at least it might be possible to use
-   non-server back ends like Google Drive / Drop Box / git / WebDAV.
-   Probably worth a layer to handle this for people with out access to a
-   server.
+FYI: https://gitlab.com/ gives you free private repos.
 
- - goal would be for an older Raspberry Pi to be sufficient server
-   wise, so recursive hash speed there might be an issue (Phase 2)
+The plugin stores headline, body, and uA (unknown attributes). The caveat is
+that it must be JSON serializable, this is to avoid pickle flavor issues. I
+don't think this will cause problems except for legacy datetime objects from the
+todo.py plugin and set()s in the tags plugin. I think both can be fixed easily -
+a custom JSON writer can write datetime as iso string time and sets as lists,
+and the tags plugin can coerce lists to sets. I think the todo.py plugin already
+reads iso string time values.
+
+My intended use was a common synchronized todo list across machines, which this
+achieves.
+
+An unintended bonus is that you can use it to sync. your settings across
+machines easily too. Like this:
+
+@settings
+  @keys
+    @leo_cloud
+      @shortcuts
+
+"just works", so now your shortcuts etc. can be stored on a central
+server.
+
 
 """
 
@@ -332,7 +361,7 @@ class LeoCloud:
                     message = "%s\n%s, %sh:%sm:%ss ago" % (
                         message, last_read.strftime("%a %b %d %H:%M"),
                         24*delta.days+int(delta.seconds / 3600),
-                        (delta.seconds / 60) % 60,
+                        int(delta.seconds / 60) % 60,
                         delta.seconds % 60)
                 read = g.app.gui.runAskYesNoCancelDialog(self.c, "Read cloud data?",
                     message=message)
@@ -380,6 +409,8 @@ class LeoCloud:
         """
         recursive_hash - recursively hash a tree
 
+        Note - currently unused but intend to use to analyse changes in trees
+
         :param vnode nd: node to hahs
         :param list tree: recursive list of hashes
         :param bool include_current: include h/b/u of current node in hash?
@@ -389,7 +420,7 @@ class LeoCloud:
         Calling with include_current=False ignores the h/b/u of the top node
         """
         childs = []
-        hashes = [LeoCloud.recursive_hash3(child, childs) for child in nd.children]
+        hashes = [LeoCloud.recursive_hash(child, childs) for child in nd.children]
         if include_current:
             hashes.extend([nd.h + nd.b + str(nd.u)])
             # FIXME: random sorting on nd.u, use JSON/sorted keys
@@ -500,82 +531,10 @@ class LeoCloud:
         lc_io = getattr(p.v, '_leo_cloud_io', None) or self.io_from_node(p)
         lc_io.put_subtree(lc_io.lc_id, p.v)
         g.es("Stored %s" % lc_io.lc_id)
+        # writing counts as reading, last read time msg. confusing otherwise
+        p.v.u.setdefault('_leo_cloud', {})['last_read'] = datetime.now().isoformat()
 
-"""Notes / code for recursive hashes
 
-from hashlib import sha1, md5
-import json
-import timeit
 
-# using c.all_unique_nodes()
-
-def hashy():
-    n = 0
-    for nd in c.all_unique_nodes():
-        sha1(
-            nd.h.encode('utf-8') +
-            nd.b.encode('utf-8') +
-            str(nd.u).encode('utf-8')
-        ).hexdigest()
-        n += 1
-    # g.es(n)
-n = 10
-g.es(timeit.timeit(hashy, number=n) / n)
-
-# not storing
-
-def recursive_hash(nd):
-    hashes = [recursive_hash(child) for child in nd.children]
-    hashes.extend([nd.h + nd.b + str(nd.u)])
-    return sha1(''.join(hashes).encode('utf-8')).hexdigest()
-
-def test_recurse():
-    return recursive_hash(c.hiddenRootNode)
-
-g.es(timeit.timeit(test_recurse, number=n) / n)
-
-# using dicts
-
-def recursive_hash2(nd, tree):
-    childs = {}
-    hashes = [recursive_hash2(child, childs) for child in nd.children]
-    hashes.extend([nd.h + nd.b + str(nd.u)])
-    whole_hash = sha1(''.join(hashes).encode('utf-8')).hexdigest()
-    tree[whole_hash] = childs
-    return whole_hash
-
-def test_recurse2():
-    return recursive_hash2(c.hiddenRootNode, {})
-
-g.es(timeit.timeit(test_recurse2, number=n) / n)
-
-# using lists
-
-def recursive_hash3(nd, tree):
-    childs = []
-    hashes = [recursive_hash3(child, childs) for child in nd.children]
-    hashes.extend([nd.h + nd.b + str(nd.u)])
-    whole_hash = sha1(''.join(hashes).encode('utf-8')).hexdigest()
-    tree.append([whole_hash, childs])
-    return whole_hash
-
-def test_recurse3():
-    return recursive_hash3(c.hiddenRootNode, [])
-
-g.es(timeit.timeit(test_recurse2, number=n) / n)
-
-# comparison
-
-g.es(test_recurse())
-g.es(test_recurse2())
-g.es(test_recurse3())
-
-# save
-
-all = []
-recursive_hash3(c.hiddenRootNode, all)
-with open("/tmp/json_hashes.json", 'w') as out:
-    json.dump(all, out)
-"""
 
 

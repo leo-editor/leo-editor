@@ -1317,7 +1317,7 @@ class Commands(object):
     #@+node:ekr.20110530124245.18239: *7* c.extract & helpers
     @cmd('extract')
     def extract(self, event=None):
-        '''
+        r'''
         Create child node from the selected body text.
 
         1. If the selection starts with a section reference, the section
@@ -1329,6 +1329,11 @@ class Commands(object):
            JavaScript, CoffeeScript or Clojure languages) the
            class/function/method name becomes the child's headline and all
            selected lines become the child's body text.
+           
+           You may add additional regex patterns for definition lines using
+           @data extract-patterns nodes. Each line of the body text should a
+           valid regex pattern. Lines starting with # are comment lines. Use \#
+           for patterns starting with #.
 
         3. Otherwise, the first line becomes the child's headline, and all
            selected lines become the child's body text.
@@ -1342,7 +1347,7 @@ class Commands(object):
         lines = [g.removeLeadingWhitespace(s, ws, c.tab_width) for s in lines]
         h = lines[0].strip()
         ref_h = c.extractRef(h).strip()
-        def_h = c.extractDef(h).strip()
+        def_h = c.extractDef_find(lines)
         if ref_h:
             # h,b,middle = ref_h,lines[1:],lines[0]
             # 2012/02/27: Change suggested by vitalije (vitalijem@gmail.com)
@@ -1370,21 +1375,25 @@ class Commands(object):
         re.compile(r'\((?:def|defn|defui|deftype|defrecord|defonce)\s+(\S+)'), # clojure definition
         re.compile(r'^\s*(?:def|class)\s+(\w+)'), # python definitions
         re.compile(r'^\bvar\s+(\w+)\s*=\s*function\b'), # js function
-        re.compile(r'^\s*function\s+(\w+)\s*\('), # js function
+        re.compile(r'^(?:export\s)?\s*function\s+(\w+)\s*\('), # js function
         re.compile(r'\b(\w+)\s*:\s*function\s'), # js function
         re.compile(r'\.(\w+)\s*=\s*function\b'), # js function
-        re.compile(r'\b(\w+)\s*=\s(?:=>|->)'), # coffeescript function
-        re.compile(r'\b(\w+)\s*=\s(?:\([^)]*\))\s*(?:=>|->)'), # coffeescript function
+        re.compile(r'(?:export\s)?\b(\w+)\s*=\s(?:=>|->)'), # coffeescript function
+        re.compile(r'(?:export\s)?\b(\w+)\s*=\s(?:\([^)]*\))\s*(?:=>|->)'), # coffeescript function
         re.compile(r'\b(\w+)\s*:\s(?:=>|->)'), # coffeescript function
         re.compile(r'\b(\w+)\s*:\s(?:\([^)]*\))\s*(?:=>|->)'), # coffeescript function
     )
     def extractDef(self, s):
         '''Return the defined function/method/class name if s
         looks like definition. Tries several different languages.'''
-        for s in self.config.getData('extract-patterns') or []:
-            pat = re.compile(s)
-            m = pat.search(s)
-            if m: return m.group(1)
+        for pat in self.config.getData('extract-patterns') or []:
+            try:
+                pat = re.compile(pat)
+                m = pat.search(s)
+                if m: return m.group(1)
+            except Exception:
+                g.es_print('bad regex in @data extract-patterns', color='blue')
+                g.es_print(pat)
         for pat in self.extractDef_patterns:
             m = pat.search(s)
             if m: return m.group(1)
@@ -1401,6 +1410,13 @@ class Commands(object):
         if -1 < i < j:
             return s
         return ''
+    #@+node:vitalije.20171019094654.1: *8* extractDef_find
+    def extractDef_find(self, lines):
+        c = self
+        for line in lines:
+            def_h = c.extractDef(line.strip())
+            if def_h:
+                return def_h
     #@+node:ekr.20031218072017.1710: *7* c.extractSectionNames
     @cmd('extract-names')
     def extractSectionNames(self, event=None):
