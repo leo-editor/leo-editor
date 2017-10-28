@@ -1,3 +1,7 @@
+#@+leo-ver=5-thin
+#@+node:tbrown.20171028115541.1: * @file signal_manager.py
+#@+others
+#@+node:tbrown.20171028115601.1: ** Declarations
 """
 signal_manager.py - SignalManager - light weight signal management
 
@@ -9,23 +13,30 @@ Terry Brown, terrynbrown@gmail.com, Thu Mar 23 21:13:38 2017
 
 from collections import defaultdict
 
+#@+node:tbrown.20171028115601.2: ** class SignalData
 class SignalData:
+    #@+others
+    #@+node:tbrown.20171028115601.3: *3* __init__
     def __init__(self):
         self.listeners = defaultdict(lambda: list())
         self.emitters = []
         self.locked = False
 
 
+    #@-others
+#@+node:tbrown.20171028115601.4: ** class MsgSignalHandled
 class MsgSignalHandled:
     """A listener can return SignalManager.MsgSignalHandled to prevent
     other listeners from being called
     """
     pass
 
+#@+node:tbrown.20171028115601.5: ** _setup
 def _setup(obj):
     if not hasattr(obj, '_signal_data'):
         obj._signal_data = SignalData()
 
+#@+node:tbrown.20171028115601.6: ** emit
 def emit(source, signal_name, *args, **kwargs):
     """Emit signal to all listeners"""
     if not hasattr(source, '_signal_data'):
@@ -50,6 +61,7 @@ def emit(source, signal_name, *args, **kwargs):
     if obj_to_lock is not None:
         obj_to_lock._signal_data.locked = False
 
+#@+node:tbrown.20171028115601.7: ** connect
 def connect(source, signal_name, listener):
     """Connect to signal"""
     _setup(source)
@@ -60,6 +72,7 @@ def connect(source, signal_name, listener):
         _setup(obj)
         obj._signal_data.emitters.append(source)
 
+#@+node:tbrown.20171028115601.8: ** disconnect_all
 def disconnect_all(listener):
     """Disconnect from all signals"""
     for emitter in listener._signal_data.emitters:
@@ -68,28 +81,37 @@ def disconnect_all(listener):
                 i for i in emitter._signal_data.listeners[signal]
                 if getattr(i, '__self__', None) != listener
             ]
+#@+node:tbrown.20171028115601.9: ** is_locked
 def is_locked(obj):
     return hasattr(obj, '_signal_data') and obj._signal_data.locked
 
+#@+node:tbrown.20171028115601.10: ** lock
 def lock(obj):
     _setup(obj)
     obj._signal_data.locked = True
 
+#@+node:tbrown.20171028115601.11: ** unlock
 def unlock(obj):
     _setup(obj)
     obj._signal_data.locked = False
+#@+node:tbrown.20171028115601.12: ** class SignalManager
 class SignalManager(object):
     """SignalManager - light weight signal management mixin."""
 
+    #@+others
+    #@+node:tbrown.20171028115601.13: *3* emit
     def emit(self, signal_name, *args, **kwargs):
         """Emit signal to all listeners"""
         emit(self, signal_name, *args, **kwargs)
 
+    #@+node:tbrown.20171028115601.14: *3* connect
     def connect(self, signal_name, listener):
         """Connect to signal"""
         connect(self, signal_name, listener)
 
 
+    #@-others
+#@+node:tbrown.20171028115601.15: ** main
 def main():
     """test of SignalManager"""
 
@@ -131,6 +153,10 @@ def main():
     a.do_work()
     b.do_work()
 
+#@-others
 if __name__ == '__main__':
     main()
 
+#@@language python
+#@@tabwidth -4
+#@-leo

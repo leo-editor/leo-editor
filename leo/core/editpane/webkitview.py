@@ -1,7 +1,12 @@
+#@+leo-ver=5-thin
+#@+node:tbrown.20171028115143.1: * @file editpane/webkitview.py
+#@+others
+#@+node:tbrown.20171028115457.1: ** Declarations
 import os
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst, QtWebKit, QtWebKitWidgets
 
+#@+node:tbrown.20171028115457.2: ** _path_from_pos
 def _path_from_pos(c, p):
     """_path_from_pos - get folder for position
 
@@ -35,11 +40,14 @@ def _path_from_pos(c, p):
 
     return path
 
+#@+node:tbrown.20171028115457.3: ** class LEP_WebKitView
 class LEP_WebKitView(QtWebKitWidgets.QWebView):
     """LEP_WebKitView - Web Kit View
     """
     lep_type = "HTML"
     lep_name = "Web Kit View"
+    #@+others
+    #@+node:tbrown.20171028115457.4: *3* __init__
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
         super(LEP_WebKitView, self).__init__(*args, **kwargs)
@@ -49,6 +57,7 @@ class LEP_WebKitView(QtWebKitWidgets.QWebView):
         # enable inspector
         QtWebKit.QWebSettings.globalSettings().setAttribute(
             QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
+    #@+node:tbrown.20171028115457.5: *3* new_position
     def new_position(self, p):
         """new_position - update for new position
 
@@ -64,6 +73,7 @@ class LEP_WebKitView(QtWebKitWidgets.QWebView):
             self.setHtml(p.b)
         os.chdir(owd)
 
+    #@+node:tbrown.20171028115457.6: *3* update_position
     def update_position(self, p):
         """update_position - update for current position
 
@@ -73,3 +83,8 @@ class LEP_WebKitView(QtWebKitWidgets.QWebView):
 
 
 
+    #@-others
+#@-others
+#@@language python
+#@@tabwidth -4
+#@-leo

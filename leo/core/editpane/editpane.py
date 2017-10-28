@@ -1,3 +1,7 @@
+#@+leo-ver=5-thin
+#@+node:tbrown.20171028115144.6: * @file editpane/editpane.py
+#@+others
+#@+node:tbrown.20171028115438.1: ** Declarations
 try:
     # this can fix an issue with Qt Web views in Ubuntu
     from OpenGL import GL
@@ -17,6 +21,7 @@ if g.isPython3:
 
 import leo.core.signal_manager as sig
 
+#@+node:tbrown.20171028115438.2: ** DBG
 def DBG(text):
     """DBG - temporary debugging function
 
@@ -24,6 +29,7 @@ def DBG(text):
     """
     print("LEP: %s" % text)
 
+#@+node:tbrown.20171028115438.3: ** edit_pane_test_open
 @g.command("edit-pane-test-open")
 def edit_pane_test_open(event):
     """Make a command for opening the editpane in free_layout.
@@ -48,10 +54,13 @@ def edit_pane_test_open(event):
 
     s = c.free_layout.get_top_splitter()
     s.open_window("__demo_provider_minimal_slider")
+#@+node:tbrown.20171028115438.4: ** class LeoEditPane
 class LeoEditPane(QtWidgets.QWidget):
     """
     Leo node body editor / viewer
     """
+    #@+others
+    #@+node:tbrown.20171028115438.5: *3* __init__
     def __init__(self, c=None, p=None, mode='edit', show_head=True, show_control=True,
                  update=True, recurse=False, *args, **kwargs):
         """__init__ - bind to outline
@@ -93,6 +102,7 @@ class LeoEditPane(QtWidgets.QWidget):
         ]
         self._register_handlers()
 
+    #@+node:tbrown.20171028115438.6: *3* _add_checkbox
     def _add_checkbox(self, text, state_changed, tooltip, checked=True,
         enabled=True, button_label=True):
         """
@@ -122,6 +132,7 @@ class LeoEditPane(QtWidgets.QWidget):
         self.control.layout().addItem(QtWidgets.QSpacerItem(20, 0))
         return cbox
 
+    #@+node:tbrown.20171028115438.7: *3* _add_frame
     def _add_frame(self):
         """_add_frame - add a widget with a layout as a hiding target.
 
@@ -134,6 +145,7 @@ class LeoEditPane(QtWidgets.QWidget):
         w.layout().setSpacing(0)
         return w
 
+    #@+node:tbrown.20171028115438.8: *3* _after_body_key
     def _after_body_key(self, v):
         """_after_body_key - after Leo selects another node
 
@@ -157,6 +169,7 @@ class LeoEditPane(QtWidgets.QWidget):
 
         return None
 
+    #@+node:tbrown.20171028115438.9: *3* _after_select
     def _after_select(self, tag, keywords):
         """_after_select - after Leo selects another node
 
@@ -176,6 +189,7 @@ class LeoEditPane(QtWidgets.QWidget):
 
         return None
 
+    #@+node:tbrown.20171028115438.10: *3* _before_select
     def _before_select(self, tag, keywords):
         """_before_select - before Leo selects another node
 
@@ -198,6 +212,7 @@ class LeoEditPane(QtWidgets.QWidget):
 
         return None
 
+    #@+node:tbrown.20171028115438.11: *3* _find_gnx_node
     def _find_gnx_node(self, gnx):
         '''Return the first position having the given gnx.'''
         if self.c.p.gnx == gnx:
@@ -208,6 +223,7 @@ class LeoEditPane(QtWidgets.QWidget):
         g.es("Edit/View pane couldn't find node")
         return None
 
+    #@+node:tbrown.20171028115438.12: *3* _register_handlers
     def _register_handlers(self):
         """_register_handlers - attach to Leo signals
         """
@@ -217,6 +233,7 @@ class LeoEditPane(QtWidgets.QWidget):
 
         sig.connect(self.c, 'body_changed', self._after_body_key)
 
+    #@+node:tbrown.20171028115438.13: *3* _build_layout
     def _build_layout(self, show_head=True, show_control=True, update=True, recurse=False):
         """build_layout - build layout
         """
@@ -280,28 +297,35 @@ class LeoEditPane(QtWidgets.QWidget):
         # debug
         self.line_edit.setText("test")
 
+    #@+node:tbrown.20171028115438.14: *3* header_visible
     @property
     def header_visible(self):
         return self.header.isVisible()
+    #@+node:tbrown.20171028115438.15: *3* header_visible
     @header_visible.setter
     def header_visible(self, state):
         self.header.setVisible(state)
+    #@+node:tbrown.20171028115438.16: *3* control_visible
     @property
     def control_visible(self):
         return self.control.isVisible()
+    #@+node:tbrown.20171028115438.17: *3* control_visible
     @control_visible.setter
     def control_visible(self, state):
         self.control.setVisible(state)
+    #@+node:tbrown.20171028115438.18: *3* change_goto
     def change_goto(self, state, one_shot=False):
         self.goto = one_shot or bool(state)
         self.state_changed()
         self.goto = bool(state)
 
+    #@+node:tbrown.20171028115438.19: *3* change_recurse
     def change_recurse(self, state, one_shot=False):
         self.recurse = one_shot or bool(state)
         self.state_changed()
         self.recurse = bool(state)
 
+    #@+node:tbrown.20171028115438.20: *3* change_track
     def change_track(self, state, one_shot=False):
         self.track = one_shot or bool(state)
         if self.track:
@@ -309,6 +333,7 @@ class LeoEditPane(QtWidgets.QWidget):
             self.new_position(p)
         self.track = bool(state)
 
+    #@+node:tbrown.20171028115438.21: *3* change_update
     def change_update(self, state, one_shot=False):
         self.update = one_shot or bool(state)
         if self.update:
@@ -317,6 +342,7 @@ class LeoEditPane(QtWidgets.QWidget):
                 self.new_position(p)
         self.update = bool(state)
 
+    #@+node:tbrown.20171028115438.22: *3* close
     def close(self):
         """close - clean up
         """
@@ -328,21 +354,25 @@ class LeoEditPane(QtWidgets.QWidget):
                 g.unregisterHandler(hook, handler)
         return do_close
 
+    #@+node:tbrown.20171028115438.23: *3* edit_widget_focus
     def edit_widget_focus(self):
         """edit_widget_focus - edit widget got focus"""
         if self.goto:
             self.goto_node()
 
+    #@+node:tbrown.20171028115438.24: *3* get_position
     def get_position(self):
         """get_position - get current position"""
         return self._find_gnx_node(self.gnx)
 
+    #@+node:tbrown.20171028115438.25: *3* goto_node
     def goto_node(self):
         """goto_node - goto node being edited / viewed"""
         p = self.get_position()
         if p and p != self.c.p:
             self.c.selectPosition(p)
 
+    #@+node:tbrown.20171028115438.26: *3* load_modules
     def load_modules(self):
         """load_modules - load modules to find widgets
         """
@@ -379,6 +409,7 @@ class LeoEditPane(QtWidgets.QWidget):
                         self.modules.append(module)
                     self.widget_classes.append(value)
 
+    #@+node:tbrown.20171028115438.27: *3* misc_menu
     def misc_menu(self):
         """build menu on Action button"""
 
@@ -401,6 +432,7 @@ class LeoEditPane(QtWidgets.QWidget):
                 menu.addAction(act)
         menu.exec_(self.mapToGlobal(self.control_menu_button.pos()))
 
+    #@+node:tbrown.20171028115438.28: *3* mode_menu
     def mode_menu(self):
         """build menu on Action button"""
         menu = QtWidgets.QMenu()
@@ -415,6 +447,7 @@ class LeoEditPane(QtWidgets.QWidget):
             menu.addAction(act)
         menu.exec_(self.mapToGlobal(self.btn_mode.pos()))
 
+    #@+node:tbrown.20171028115438.29: *3* new_position
     def new_position(self, p):
         """new_position - update editor and view for new Leo position
 
@@ -428,6 +461,7 @@ class LeoEditPane(QtWidgets.QWidget):
         self.new_position_edit(p)
         self.new_position_view(p)
 
+    #@+node:tbrown.20171028115438.30: *3* new_position_edit
     def new_position_edit(self, p):
         """new_position_edit - update editor for new position
 
@@ -441,6 +475,7 @@ class LeoEditPane(QtWidgets.QWidget):
         if self.mode != 'view':
             self.edit_widget.new_position(p)
 
+    #@+node:tbrown.20171028115438.31: *3* new_position_view
     def new_position_view(self, p):
         """new_position_view - update viewer for new position
 
@@ -453,6 +488,7 @@ class LeoEditPane(QtWidgets.QWidget):
         if self.mode != 'edit':
             self.view_widget.new_position(p)
 
+    #@+node:tbrown.20171028115438.32: *3* text_changed
     def text_changed(self, new_text):
         """text_changed - node text changed by this LEP's editor"""
 
@@ -462,6 +498,7 @@ class LeoEditPane(QtWidgets.QWidget):
         p.b = new_text  # triggers 'body_changed' signal from c
         self.update_position_view(p)  # as we're ignoring signals
         sig.unlock(self)
+    #@+node:tbrown.20171028115438.33: *3* update_position
     def update_position(self, p):
         """update_position - update editor and view for current Leo position
 
@@ -475,6 +512,7 @@ class LeoEditPane(QtWidgets.QWidget):
         self.update_position_edit(p)
         self.update_position_view(p)
 
+    #@+node:tbrown.20171028115438.34: *3* update_position_edit
     def update_position_edit(self, p):
         """update_position_edit - update editor for current position
 
@@ -488,6 +526,7 @@ class LeoEditPane(QtWidgets.QWidget):
         if self.mode != 'view':
             self.edit_widget.update_position(p)
 
+    #@+node:tbrown.20171028115438.35: *3* update_position_view
     def update_position_view(self, p):
         """update_position_view - update viewer for current position
 
@@ -501,9 +540,11 @@ class LeoEditPane(QtWidgets.QWidget):
         if self.update and self.mode != 'edit':
             self.view_widget.update_position(p)
 
+    #@+node:tbrown.20171028115438.36: *3* render
     def render(self, checked):
         pass
 
+    #@+node:tbrown.20171028115438.37: *3* set_widget
     def set_widget(self, widget_class=None, lep_type='TEXT'):
         """set_widget - set edit or view widget
 
@@ -528,6 +569,7 @@ class LeoEditPane(QtWidgets.QWidget):
         frame.layout().addWidget(widget)
         update(self.get_position())
 
+    #@+node:tbrown.20171028115438.38: *3* set_mode
     def set_mode(self, mode):
         """set_mode - change mode edit / view / split
 
@@ -538,6 +580,7 @@ class LeoEditPane(QtWidgets.QWidget):
         self.btn_mode.setText(u"%s\u25BE" % mode.title())
         self.state_changed()
 
+    #@+node:tbrown.20171028115438.39: *3* state_changed
     def state_changed(self):
         """state_changed - control state has changed
         """
@@ -559,3 +602,8 @@ class LeoEditPane(QtWidgets.QWidget):
 
 
 
+    #@-others
+#@-others
+#@@language python
+#@@tabwidth -4
+#@-leo
