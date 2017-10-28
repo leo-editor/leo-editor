@@ -2021,6 +2021,8 @@ class RecursiveImportController(object):
                 treeType='@file', # '@auto','@clean','@nosent' cause problems.
             )
             p = parent.lastChild()
+            p.h = self.kind + p.h[5:]
+                # Bug fix 2017/10/27: honor the requested kind.
         if self.safe_at_file:
             p.v.h = '@' + p.v.h
     #@+node:ekr.20130823083943.12607: *4* ric.post_process & helpers
