@@ -139,7 +139,7 @@ class LeoEditPane(QtWidgets.QWidget):
         i.e. a container we can hide / show easily"""
         w = QtWidgets.QWidget(self)
         self.layout().addWidget(w)
-        w.setSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
+        w.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Maximum)
         w.setLayout(QtWidgets.QHBoxLayout())
         w.layout().setContentsMargins(0, 0, 0, 0)
         w.layout().setSpacing(0)
@@ -244,8 +244,14 @@ class LeoEditPane(QtWidgets.QWidget):
 
         # header
         self.header = self._add_frame()
+        self.toggle_ctrl = QtWidgets.QPushButton("-", self)
+        self.header.layout().addWidget(self.toggle_ctrl)
         self.line_edit = QtWidgets.QLineEdit(self)
         self.header.layout().addWidget(self.line_edit)
+        self.header.layout().addStretch(1)
+        self.btn_close = QtWidgets.QPushButton("X", self)
+        self.btn_close.clicked.connect(lambda checked: self.close())
+        self.header.layout().addWidget(self.btn_close)
 
         # controls
         self.control = self._add_frame()
@@ -297,6 +303,8 @@ class LeoEditPane(QtWidgets.QWidget):
         # debug
         self.line_edit.setText("test")
 
+        # toggle control visibility
+        self.toggle_ctrl.clicked.connect(lambda checked: self.control.setVisible(not self.control.isVisible()))
     #@+node:tbrown.20171028115438.14: *3* header_visible
     @property
     def header_visible(self):
