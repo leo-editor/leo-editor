@@ -367,7 +367,7 @@ class LeoEditPane(QtWidgets.QWidget):
         """edit_widget_focus - edit widget got focus"""
         if self.goto:
             self.goto_node()
-
+        self.update_position(self.get_position())
     #@+node:tbrown.20171028115438.24: *3* get_position
     def get_position(self):
         """get_position - get current position"""
@@ -481,7 +481,7 @@ class LeoEditPane(QtWidgets.QWidget):
 
         DBG("new edit position")
         if self.mode != 'view':
-            self.edit_widget.new_position(p)
+            self.edit_widget.new_text(p.b)
 
     #@+node:tbrown.20171028115438.31: *3* new_position_view
     def new_position_view(self, p):
@@ -494,7 +494,11 @@ class LeoEditPane(QtWidgets.QWidget):
         """
         DBG("new view position")
         if self.mode != 'edit':
-            self.view_widget.new_position(p)
+            if self.recurse:
+                text = g.getScript(self.c, p, useSelectedText=False, useSentinels=False)
+            else:
+                text = p.b
+            self.view_widget.new_text(text)
 
     #@+node:tbrown.20171028115438.32: *3* text_changed
     def text_changed(self, new_text):
@@ -532,7 +536,7 @@ class LeoEditPane(QtWidgets.QWidget):
 
         DBG("update edit position")
         if self.mode != 'view':
-            self.edit_widget.update_position(p)
+            self.edit_widget.update_text(p.b)
 
     #@+node:tbrown.20171028115438.35: *3* update_position_view
     def update_position_view(self, p):
@@ -546,7 +550,11 @@ class LeoEditPane(QtWidgets.QWidget):
 
         DBG("update view position")
         if self.update and self.mode != 'edit':
-            self.view_widget.update_position(p)
+            if self.recurse:
+                text = g.getScript(self.c, p, useSelectedText=False, useSentinels=False)
+            else:
+                text = p.b
+            self.view_widget.update_text(text)
 
     #@+node:tbrown.20171028115438.36: *3* render
     def render(self, checked):

@@ -20,26 +20,23 @@ class LEP_WebEngineView(QtWebEngineWidgets.QWebEngineView):
         self.c = c
         self.lep = lep
 
-    #@+node:tbrown.20171028115459.4: *3* new_position
-    def new_position(self, p):
-        """new_position - update for new position
+    #@+node:tbrown.20171028115459.4: *3* new_text
+    def new_text(self, text):
+        """new_text - update for new text
 
-        :param Leo position p: new position
+        :param str text: new text
         """
-        if self.lep.recurse:
-            self.setHtml(g.getScript(self.c, p, useSelectedText=False, useSentinels=False))
-        else:
-            self.setHtml(p.b)
+        self.setHtml(text)
 
-    #@+node:tbrown.20171028115459.5: *3* update_position
-    def update_position(self, p):
-        """update_position - update for current position
+    #@+node:tbrown.20171028115459.5: *3* update_text
+    def update_text(self, text):
+        """update_text - update for current text
 
-        :param Leo position p: current position
+        :param str text: current text
         """
         # h = self.horizontalScrollBar().value()
         # v = self.verticalScrollBar().value()
-        self.new_position(p)
+        self.new_text(text)
         # self.horizontalScrollBar().setValue(h)
         # self.verticalScrollBar().setValue(v)
 

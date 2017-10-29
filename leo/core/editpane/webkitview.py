@@ -62,29 +62,27 @@ class LEP_WebKitView(QtWebKitWidgets.QWebView):
             # seems that leoQt(?) substitutes QtWebEngine for QtWebKit
             # if QtWebKit isn't available, causing this to fail
             pass
-    #@+node:tbrown.20171028115457.5: *3* new_position
-    def new_position(self, p):
-        """new_position - update for new position
+    #@+node:tbrown.20171028115457.5: *3* new_text
+    def new_text(self, text):
+        """new_text - update for new text
 
-        :param Leo position p: new position
+        :param str text: new text
         """
         owd = os.getcwd()
-        path = _path_from_pos(self.c, p)
+        path = _path_from_pos(self.c, self.c.p)
+        g.es("FIXME: _path_from_pos() in WebKitView - not self.c.p")
         os.chdir(path)
         g.es(path)
-        if self.lep.recurse:
-            self.setHtml(g.getScript(self.c, p, useSelectedText=False, useSentinels=False))
-        else:
-            self.setHtml(p.b)
+        self.setHtml(text)
         os.chdir(owd)
 
-    #@+node:tbrown.20171028115457.6: *3* update_position
-    def update_position(self, p):
-        """update_position - update for current position
+    #@+node:tbrown.20171028115457.6: *3* update_text
+    def update_text(self, text):
+        """update_text - update for current text
 
-        :param Leo position p: current position
+        :param str text: current text
         """
-        self.new_position(p)
+        self.new_text(text)
 
 
 

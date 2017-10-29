@@ -47,26 +47,23 @@ class LEP_MarkdownView(HtmlView):
         self.c = c
         self.lep = lep
 
-    #@+node:tbrown.20171028115507.5: *3* new_position
-    def new_position(self, p):
-        """new_position - update for new position
+    #@+node:tbrown.20171028115507.5: *3* new_text
+    def new_text(self, text):
+        """new_text - update for new text
 
-        :param Leo position p: new position
+        :param str text: new text
         """
-        if self.lep.recurse:
-            self.setHtml(to_html(g.getScript(self.c, p, useSelectedText=False, useSentinels=False)))
-        else:
-            self.setHtml(to_html(p.b))
+        self.setHtml(to_html(text))
 
-    #@+node:tbrown.20171028115507.6: *3* update_position
-    def update_position(self, p):
-        """update_position - update for current position
+    #@+node:tbrown.20171028115507.6: *3* update_text
+    def update_text(self, text):
+        """update_text - update for current text
 
-        :param Leo position p: current position
+        :param str text: current position
         """
         # h = self.horizontalScrollBar().value()
         # v = self.verticalScrollBar().value()
-        self.new_position(p)
+        self.new_text(text)
         # self.horizontalScrollBar().setValue(h)
         # self.verticalScrollBar().setValue(v)
 
@@ -86,16 +83,13 @@ class LEP_MarkdownHtmlView(TextView):
         self.c = c
         self.lep = lep
 
-    #@+node:tbrown.20171028115507.9: *3* new_position
-    def new_position(self, p):
-        """new_position - update for new position
+    #@+node:tbrown.20171028115507.9: *3* new_text
+    def new_text(self, text):
+        """new_text - update for new text
 
-        :param Leo position p: new position
+        :param str text: new text
         """
-        if self.lep.recurse:
-            self.setPlainText(to_html(g.getScript(self.c, p, useSelectedText=False, useSentinels=False)))
-        else:
-            self.setPlainText(to_html(p.b))
+        self.setPlainText(to_html(text))
 
 
 

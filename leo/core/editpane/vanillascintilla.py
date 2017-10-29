@@ -52,23 +52,23 @@ class LEP_VanillaScintilla(Qsci.QsciScintilla):
         Qsci.QsciScintilla.focusInEvent(self, event)
         DBG("focusin()")
         self.lep.edit_widget_focus()
-        self.update_position(self.lep.get_position())
+        #X self.update_position(self.lep.get_position())
 
     #@+node:tbrown.20171028115501.6: *3* focusOutEvent
     def focusOutEvent (self, event):
         Qsci.QsciScintilla.focusOutEvent(self, event)
         DBG("focusout()")
-        #X p = self.lep.get_position()
-        #X p.b = self.text()
+        #X text = self.lep.get_position()
+        #X text = self.text()
         #X self.lep.c.redraw()
 
-    #@+node:tbrown.20171028115501.7: *3* new_position
-    def new_position(self, p):
-        """new_position - update for new position
+    #@+node:tbrown.20171028115501.7: *3* new_text
+    def new_text(self, text):
+        """new_text - update for new text
 
-        :param Leo position p: new position
+        :param str text: new text
         """
-        self.setText(p.b)
+        self.setText(text)
 
     #@+node:tbrown.20171028115501.8: *3* text_changed
     def text_changed(self):
@@ -79,14 +79,14 @@ class LEP_VanillaScintilla(Qsci.QsciScintilla):
         else:
             DBG("text changed, NOT focused")
 
-    #@+node:tbrown.20171028115501.9: *3* update_position
-    def update_position(self, p):
-        """update_position - update for current position
+    #@+node:tbrown.20171028115501.9: *3* update_text
+    def update_text(self, text):
+        """update_text - update for current text
 
-        :param Leo position p: current position
+        :param str text: current text
         """
-        DBG("update editor position")
-        self.setText(p.b)
+        DBG("update editor text")
+        self.setText(text)
 
 
 

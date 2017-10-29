@@ -36,19 +36,19 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
         QtWidgets.QTextEdit.focusInEvent(self, event)
         DBG("focusin()")
         self.lep.edit_widget_focus()
-        self.update_position(self.lep.get_position())
+        #X self.update_position(self.lep.get_position())
 
     #@+node:tbrown.20171028115504.6: *3* focusOutEvent
     def focusOutEvent (self, event):
         QtWidgets.QTextEdit.focusOutEvent(self, event)
         DBG("focusout()")
-    #@+node:tbrown.20171028115504.7: *3* new_position
-    def new_position(self, p):
-        """new_position - update for new position
+    #@+node:tbrown.20171028115504.7: *3* new_text
+    def new_text(self, text):
+        """new_text - update for new text
 
-        :param Leo position p: new position
+        :param str text: new text
         """
-        self.setText(p.b)
+        self.setText(text)
 
     #@+node:tbrown.20171028115504.8: *3* text_changed
     def text_changed(self):
@@ -60,14 +60,14 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
         else:
             DBG("text changed, NOT focused")
 
-    #@+node:tbrown.20171028115504.9: *3* update_position
-    def update_position(self, p):
-        """update_position - update for current position
+    #@+node:tbrown.20171028115504.9: *3* update_text
+    def update_text(self, text):
+        """update_text - update for current text
 
-        :param Leo position p: current position
+        :param str text: current text
         """
-        DBG("update editor position")
-        self.setText(p.b)
+        DBG("update editor text")
+        self.setText(text)
 
 
     #@-others
