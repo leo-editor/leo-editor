@@ -55,8 +55,13 @@ class LEP_WebKitView(QtWebKitWidgets.QWebView):
         self.lep = lep
 
         # enable inspector
-        QtWebKit.QWebSettings.globalSettings().setAttribute(
-            QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
+        try:
+            QtWebKit.QWebSettings.globalSettings().setAttribute(
+              QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
+        except AttributeError:
+            # seems that leoQt(?) substitutes QtWebEngine for QtWebKit
+            # if QtWebKit isn't available, causing this to fail
+            pass
     #@+node:tbrown.20171028115457.5: *3* new_position
     def new_position(self, p):
         """new_position - update for new position
