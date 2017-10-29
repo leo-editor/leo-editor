@@ -13,7 +13,7 @@ include pylint-leo.py
 
 # Exclusions
 # same as scrub_datafiles in setup.py, prior to Github commit 9982d17e2470ac8313050b8a0288cd39d7ad4f5b
-prune leo/extensions 
+prune leo/external 
 prune leo/test
 prune leo/plugins/test
 prune leo/doc/html
