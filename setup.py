@@ -37,9 +37,7 @@ except ImportError:
     
 #@+node:maphew.20141126230535.4: ** classifiers
 classifiers = [
-    'Development Status :: 5 - Production/Stable',
-    'Environment :: Win32 (MS Windows)',
-    'Environment :: X11 Applications :: Qt',
+    'Development Status :: 6 - Mature',
     'Intended Audience :: End Users/Desktop',
     'Intended Audience :: Developers',
     'License :: OSI Approved :: MIT License',
@@ -47,8 +45,7 @@ classifiers = [
     'Operating System :: MacOS',
     'Operating System :: Microsoft :: Windows',
     'Operating System :: POSIX :: Linux',
-    'Programming Language :: Python :: 2.6',
-    'Programming Language :: Python :: 3',
+    'Programming Language :: Python',
     'Topic :: Software Development',
     'Topic :: Text Editors',
     'Topic :: Text Processing',
@@ -62,7 +59,7 @@ setup(
     author_email = 'edreamleo@gmail.com',
     url = 'http://leoeditor.com',
     license = 'MIT License',
-    description = "Leo: Leonine Editor with Outlines", # becomes "Summary" in pkg-info
+    description = "An IDE, PIM and Outliner", # becomes "Summary" in pkg-info
     long_description = read_md('README.md'),
     platforms = ['Linux','Windows','MacOS'],
     download_url = 'http://leoeditor.com/download.html',
