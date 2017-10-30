@@ -21,6 +21,7 @@ if g.isPython3:
 
 import leo.core.signal_manager as sig
 
+from clicky_splitter import ClickySplitter
 #@+node:tbrown.20171028115438.2: ** DBG
 def DBG(text):
     """DBG - temporary debugging function
@@ -288,7 +289,7 @@ class LeoEditPane(QtWidgets.QWidget):
             QtWidgets.QSpacerItem(0, 0, hPolicy=QtWidgets.QSizePolicy.Expanding))
 
         # content
-        self.splitter = QtWidgets.QSplitter(self)
+        self.splitter = ClickySplitter(self)
         self.splitter.setOrientation(QtCore.Qt.Vertical)
         self.layout().addWidget(self.splitter)
         self.edit_frame = self._add_frame()
