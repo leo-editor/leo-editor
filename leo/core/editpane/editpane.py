@@ -21,7 +21,7 @@ if g.isPython3:
 
 import leo.core.signal_manager as sig
 
-from clicky_splitter import ClickySplitter
+from leo.core.editpane.clicky_splitter import ClickySplitter
 #@+node:tbrown.20171028115438.2: ** DBG
 def DBG(text):
     """DBG - temporary debugging function
