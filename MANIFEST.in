@@ -1,17 +1,18 @@
+# Global
+#recursive-include leo *.*     # not needed when using `graft`
+graft leo
+global-exclude *.py[cod] __pycache__ *.so
+
+# Root folder
 include *.TXT
 include launchLeo.py
 include profileLeo.py
 include pylint-leo.bat
 include pylint-leo.py
-recursive-exclude leo *.pyc *.pyo
 
-# same as data_pat in setup.py
-recursive-include leo *.tix *.GIF *.dbm *.conf *.TXT *.xml *.gif *.leo *.def *.svg *.ini *.six *.bat *.cat *.pro *.sh *.xsl *.bmp *.js *.ui *.rix *.pmsp  *.pyd *.png *.alg *.php *.css *.ico *.txt *.html  *.iix  *.w  *.json
 
-# same as scrub_datafiles in setup.py
-prune leo/extensions 
+# Exclusions
+# same as scrub_datafiles in setup.py, prior to Github commit 9982d17e2470ac8313050b8a0288cd39d7ad4f5b
 prune leo/test
 prune leo/plugins/test
 prune leo/doc/html
-prune leo/__pycache__
-prune leo/*/__pycache__

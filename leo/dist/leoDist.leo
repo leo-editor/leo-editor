@@ -302,7 +302,7 @@
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
 </v>
-<v t="ekr.20141118074110.4"><vh>Discussions</vh>
+<v t="ekr.20141118074110.4" a="E"><vh>Discussions</vh>
 <v t="ekr.20141118074110.2"><vh>Matt's workflow for updating pypi</vh></v>
 <v t="ekr.20141118074110.3"><vh>Installing Leo on Linux</vh></v>
 </v>
@@ -1588,6 +1588,63 @@ Quotes:    http://leoeditor.com/testimonials.html
 <t tx="ekr.20141117135127.2"></t>
 <t tx="ekr.20141117135127.3"></t>
 <t tx="ekr.20141118074110.2">@language rest
+
+2017
+----
+
+https://github.com/leo-editor/leo-editor/issues/562
+
+Pre-requsites, pip installable:
+
+- Wheel: for building cross platform binaries (might be installed already)
+- Twine: for secure upload to pypi.org
+- PyPandoc: to convert markdown to rst for Readme.
+  There's an extra step to download pandoc binaries in PATH:
+
+        from pypandoc.pandoc_download import download_pandoc
+        download_pandoc()
+
+Packaging a new release for Test PyPi
+=====================================
+(Windows syntax)
+
+    ::Clean previous build and distribution folders
+    rd /s/q build
+    rd /s/q dist
+
+Manually adjust version# in setup.py, eg: `leo.core.version + 'rc2' #release candidate 2`
+
+    ::Build
+    python setup.py bdist_wheel
+
+    ::Test installation locally
+    pip install dist\*.whl
+    leoc --version
+    pip uninstall leo
+
+    ::Upload
+    twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+
+    ::Install from remote
+    pip install --pre --index-url https://test.pypi.org/simple/ leo
+    leoc --version
+
+Remove broken releases (still can't re-use identical version numbers and file names though):
+https://testpypi.python.org/pypi?%3Aaction=pkg_edit&amp;name=leo
+
+Production Release
+==================
+_Will likely always use this recipe after the first time or two. Remember to remove manual version number!_
+
+    rd /s/q dist
+    rd /s/q build
+    git checkout tags/5.6.1
+    python setup.py bdist_wheel
+    twine upload --repository-url https://pypi.org/legacy/ dist/*
+    pip install leo
+
+2014
+----
 
 https://groups.google.com/d/msg/leo-editor/Mm0hFBIR81Q/0v217II0kPIJ
 
