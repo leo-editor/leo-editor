@@ -164,8 +164,8 @@ class LeoEditPane(QtWidgets.QWidget):
 
         DBG("after body key")
 
-        if self.update:
-            self.update_position(p)
+        #X if self.update:
+        self.update_position(p)
 
         return None
 
@@ -517,12 +517,15 @@ class LeoEditPane(QtWidgets.QWidget):
         :param position p: the new position
         """
         if self.track:
-            self.gnx = p.gnx
+            our_p = self.c.p
+            assert self.gnx == our_p.gnx
         else:
-            p = self.get_position()
+            our_p = self.get_position()
 
-        self.update_position_edit(p)
-        self.update_position_view(p)
+        if p.gnx == our_p.gnx:
+            self.update_position_edit(p)
+            if self.update:
+                self.update_position_view(p)
 
     #@+node:tbrown.20171028115438.34: *3* update_position_edit
     def update_position_edit(self, p):
