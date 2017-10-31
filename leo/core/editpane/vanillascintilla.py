@@ -1,18 +1,19 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115143.3: * @file editpane/vanillascintilla.py
-#@+others
-#@+node:tbrown.20171028115501.1: ** Declarations
 """
 vanillascintilla.py - a LeoEditPane editor that uses QScintilla
 but does not try to add Leo key handling
 
 Terry Brown, Terry_N_Brown@yahoo.com, Sat Feb  4 12:38:26 2017
 """
-
+#@+<< vanillascintilla.py imports >>
+#@+node:tbrown.20171028115501.1: ** << vanillascintilla.py imports >>
 import leo.core.leoGlobals as g
-from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
-from PyQt5 import Qsci
+assert g
+from leo.core.leoQt import QtGui, QtWidgets, Qsci # QtCore, QtConst
 
+#@-<< vanillascintilla.py imports >>
+#@+others
 #@+node:tbrown.20171028115501.2: ** DBG
 def DBG(text):
     """DBG - temporary debugging function

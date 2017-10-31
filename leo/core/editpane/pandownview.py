@@ -1,7 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115144.3: * @file editpane/pandownview.py
-#@+others
-#@+node:tbrown.20171028115505.1: ** Declarations
+#@+<< pandownview.py imports >>
+#@+node:tbrown.20171028115505.1: ** << pandownview.py imports >>
 """Markdown view using Pandoc.
 
 There could also be a more generic Pandoc view that handles more input
@@ -10,7 +10,8 @@ languages, but this just does markdown.
 from subprocess import Popen, PIPE
 
 import leo.core.leoGlobals as g
-from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
+assert g
+# from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
 
 # FIXME: for now, prefer the older WebKit over WebEngine.  WebEngine is
 # probably superior, but needs --disable-web-security passed to the
@@ -22,6 +23,8 @@ except ImportError:
 
 from leo.core.editpane.plaintextview import LEP_PlainTextView as TextView
 
+#@-<< pandownview.py imports >>
+#@+others
 #@+node:tbrown.20171028115505.2: ** to_html
 def to_html(text):
     """to_html - convert to HTML

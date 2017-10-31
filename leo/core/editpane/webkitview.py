@@ -1,11 +1,13 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115143.1: * @file editpane/webkitview.py
-#@+others
-#@+node:tbrown.20171028115457.1: ** Declarations
+#@+<< webkitview.py imports >>
+#@+node:tbrown.20171028115457.1: ** << webkitview.py imports >>
 import os
 import leo.core.leoGlobals as g
-from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst, QtWebKit, QtWebKitWidgets
-
+assert g
+from leo.core.leoQt import QtWebKit, QtWebKitWidgets # QtConst, QtCore, QtGui, QtWidgets
+#@-<< webkitview.py imports >>
+#@+others
 #@+node:tbrown.20171028115457.2: ** _path_from_pos
 def _path_from_pos(c, p):
     """_path_from_pos - get folder for position

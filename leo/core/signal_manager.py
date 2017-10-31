@@ -1,7 +1,5 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115541.1: * @file signal_manager.py
-#@+others
-#@+node:tbrown.20171028115601.1: ** Declarations
 """
 signal_manager.py - SignalManager - light weight signal management
 
@@ -10,14 +8,14 @@ even explicit listing of which signals exist.
 
 Terry Brown, terrynbrown@gmail.com, Thu Mar 23 21:13:38 2017
 """
-
 from collections import defaultdict
-
+#@+others
 #@+node:tbrown.20171028115601.2: ** class SignalData
 class SignalData:
     #@+others
     #@+node:tbrown.20171028115601.3: *3* __init__
     def __init__(self):
+        # pylint: disable=unnecessary-lambda
         self.listeners = defaultdict(lambda: list())
         self.emitters = []
         self.locked = False

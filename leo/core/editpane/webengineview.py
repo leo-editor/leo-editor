@@ -1,13 +1,18 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115143.2: * @file editpane/webengineview.py
-#@+others
-#@+node:tbrown.20171028115459.1: ** Declarations
+#@+<< webengineview.py imports >>
+#@+node:tbrown.20171028115459.1: ** << webengineview.py imports >>
 import leo.core.leoGlobals as g
-from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
-from PyQt5 import QtWebEngineWidgets
+assert g
+### EKR: Use QtWebKitWidgets instead of QtWebEngineWidgets
+from leo.core.leoQt import QtWebKitWidgets # QtCore, QtGui, QtWidgets, QtConst
+# from PyQt5 import QtWebEngineWidgets
 
+#@-<< webengineview.py imports >>
+#@+others
 #@+node:tbrown.20171028115459.2: ** class LEP_WebEngineView
-class LEP_WebEngineView(QtWebEngineWidgets.QWebEngineView):
+# class LEP_WebEngineView(QtWebEngineWidgets.QWebEngineView):
+class LEP_WebEngineView(QtWebKitWidgets.QWebEngineView):
     """LEP_PlainTextView - simplest possible LeoEditorPane viewer
     """
     lep_type = "HTML"
@@ -43,6 +48,7 @@ class LEP_WebEngineView(QtWebEngineWidgets.QWebEngineView):
 
 
     #@-others
+
 #@-others
 #@@language python
 #@@tabwidth -4

@@ -1,15 +1,18 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115144.5: * @file editpane/leotextedit.py
-#@+others
-#@+node:tbrown.20171028115508.1: ** Declarations
-import re
+#@+<<leotextedit.py imports >>
+#@+node:tbrown.20171028115508.1: ** <<leotextedit.py imports >>
+# import re
 import leo.core.leoGlobals as g
-from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
-from leo.core.leoColorizer import LeoHighlighter, JEditColorizer
+assert g
+from leo.core.leoQt import QtWidgets #  QtConst, QtCore, QtGui
+from leo.core.leoColorizer import JEditColorizer # LeoHighlighter
 import leo.plugins.qt_text as qt_text
 
-import time  # temporary for debugging
+# import time  # temporary for debugging
 
+#@-<<leotextedit.py imports >>
+#@+others
 #@+node:tbrown.20171028115508.2: ** DBG
 def DBG(text):
     """DBG - temporary debugging function

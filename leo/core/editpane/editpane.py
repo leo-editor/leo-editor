@@ -1,20 +1,22 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115144.6: * @file editpane/editpane.py
-#@+others
-#@+node:tbrown.20171028115438.1: ** Declarations
+'''Support for the edit-pane-test-open command and window.'''
+#@+<<editpane.py imports>>
+#@+node:tbrown.20171028115438.1: ** <<editpane.py imports>>
 try:
     # this can fix an issue with Qt Web views in Ubuntu
     from OpenGL import GL
-except:
+    assert GL # To keep pyflakes happy.
+except Exception:
     # but not need to stop if it doesn't work
     pass
 
-import imp
+# import imp
 import os
 
 import leo.core.leoGlobals as g
-from leo.core.leoNodes import vnode
-from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
+# from leo.core.leoNodes import vnode
+from leo.core.leoQt import QtCore, QtWidgets, QtConst # QtGui
 
 if g.isPython3:
     from importlib import import_module
@@ -22,6 +24,8 @@ if g.isPython3:
 import leo.core.signal_manager as sig
 
 from leo.core.editpane.clicky_splitter import ClickySplitter
+#@-<<editpane.py imports>>
+#@+others
 #@+node:tbrown.20171028115438.2: ** DBG
 def DBG(text):
     """DBG - temporary debugging function
@@ -402,12 +406,9 @@ class LeoEditPane(QtWidgets.QWidget):
                     except Exception:
                         pass
                 DBG("Loaded module: %s" % name)
-
             except ImportError as err:
                 DBG("Failed to load module: %s" % name)
                 print(err)
-                pass
-
         self.modules = []
         self.widget_classes = []
         for module in modules:

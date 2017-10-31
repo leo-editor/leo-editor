@@ -1,9 +1,10 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115144.4: * @file editpane/markdownview.py
-#@+others
-#@+node:tbrown.20171028115507.1: ** Declarations
+#@+<< markdownview.py imports >>
+#@+node:tbrown.20171028115507.1: ** << markdownview.py imports >>
 import leo.core.leoGlobals as g
-from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
+assert g
+# from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
 
 import markdown
 
@@ -16,6 +17,8 @@ except ImportError:
     from leo.core.editpane.webengineview import LEP_WebEngineView as HtmlView
 
 from leo.core.editpane.plaintextview import LEP_PlainTextView as TextView
+#@-<< markdownview.py imports >>
+#@+others
 #@+node:tbrown.20171028115507.2: ** to_html
 def to_html(text):
     """to_html - convert to HTML

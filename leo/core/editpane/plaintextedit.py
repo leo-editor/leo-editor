@@ -1,13 +1,16 @@
 #@+leo-ver=5-thin
 #@+node:tbrown.20171028115144.2: * @file editpane/plaintextedit.py
-#@+others
-#@+node:tbrown.20171028115504.1: ** Declarations
+#@+<< plaintextedit.py imports >>
+#@+node:tbrown.20171028115504.1: ** << plaintextedit.py imports >>
 import re
 import leo.core.leoGlobals as g
-from leo.core.leoQt import QtCore, QtGui, QtWidgets, QtConst
+assert g
+from leo.core.leoQt import QtCore, QtGui, QtWidgets # QtConst
 
-import time  # temporary for debugging
+# import time  # temporary for debugging
 
+#@-<< plaintextedit.py imports >>
+#@+others
 #@+node:tbrown.20171028115504.2: ** DBG
 def DBG(text):
     """DBG - temporary debugging function
