@@ -2708,6 +2708,7 @@ else:
     path = g.os_path_finalize_join(g.app.loadDir,'..','test', 'leo-bridge-test.py')
     assert g.os_path_exists(path), path
     command = 'python %s' % path
+    print('*****')
     pid = subprocess.Popen(
         command,
         shell=True,
