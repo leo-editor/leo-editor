@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.52" body_secondary_ratio="0.69">
-	<global_window_position top="142" left="629" height="890" width="1069"/>
+	<global_window_position top="255" left="215" height="890" width="1069"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1653,7 +1653,6 @@ else:
     path = g.os_path_finalize_join(g.app.loadDir,'..','test', 'leo-bridge-test.py')
     assert g.os_path_exists(path), path
     command = 'python %s' % path
-    print('*****')
     pid = subprocess.Popen(
         command,
         shell=True,
