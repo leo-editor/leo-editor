@@ -7,7 +7,7 @@ simple = False # True: avoid all complications.
 trace = False
 from setuptools import setup, find_packages # Always prefer setuptools over distutils
 from codecs import open # To use a consistent encoding
-import leo.core.leoVersion # FIXME: extract from GIT tags instead, ionelmc slide:19
+#import leo.core.leoVersion # FIXME: extract from GIT tags instead, ionelmc slide:19
 #@+others
 #@+node:maphew.20141126230535.3: ** docstring
 '''setup.py for leo
@@ -52,9 +52,16 @@ classifiers = [
     ]
 #@-others
 
+scm_version_options = {
+    'write_to' : 'leo/version.py' # feasible for core/leoVersion to use this?
+    }
+
 setup(
     name = 'leo',
-    version = leo.core.leoVersion.version,
+    #version = leo.core.leoVersion.version,
+    # https://github.com/pypa/setuptools_scm
+    use_scm_version = scm_version_options,
+    setup_requires=['setuptools_scm'],
     author = "Edward K. Ream",
     author_email = 'edreamleo@gmail.com',
     url = 'http://leoeditor.com',
