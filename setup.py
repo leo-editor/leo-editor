@@ -61,9 +61,6 @@ version = '{}.{}'.format(leo.core.leoVersion.version,
 setup(
     name = 'leo',
     version = version,
-    # https://github.com/pypa/setuptools_scm
-    # use_scm_version = scm_version_options,
-    # setup_requires=['setuptools_scm'],
     author = "Edward K. Ream",
     author_email = 'edreamleo@gmail.com',
     url = 'http://leoeditor.com',
