@@ -257,6 +257,7 @@
 <v t="ekr.20170316113823.88"><vh>Settings and command-line options</vh></v>
 </v>
 <v t="ekr.20170911085243.1"><vh>Leo 5.6</vh></v>
+<v t="maphew.20171107045903.1"><vh>Leo 5.6.1</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
@@ -296,13 +297,13 @@
 </v>
 <v t="EKR.20040519090846.1"><vh>@asis ../../LICENSE.TXT</vh></v>
 <v t="EKR.20040519090846.8"><vh>@asis ../../PKG-INFO.TXT</vh></v>
-<v t="EKR.20040519090846.9"><vh>@asis ../../README.MD</vh></v>
+<v t="EKR.20040519090846.9"><vh>@asis ../../README.md</vh></v>
 <v t="ekr.20151227063335.1"><vh>@asis ../../About leo.exe.TXT</vh></v>
 <v t="ekr.20150425135153.1"><vh>homebrew istall script</vh>
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
 </v>
-<v t="ekr.20141118074110.4" a="E"><vh>Discussions</vh>
+<v t="ekr.20141118074110.4"><vh>Discussions</vh>
 <v t="ekr.20141118074110.2"><vh>Matt's workflow for updating pypi</vh></v>
 <v t="ekr.20141118074110.3"><vh>Installing Leo on Linux</vh></v>
 </v>
@@ -325,11 +326,11 @@
 <v t="ekr.20160510090441.1"><vh>@file ../../leo_assoc.nsi</vh></v>
 <v t="ekr.20101027054254.1590"><vh>@file ../../leo.nsi</vh></v>
 </v>
-<v t="ekr.20101027070126.1639"><vh>@button make leo</vh>
+<v t="ekr.20101027070126.1639" a="E"><vh>@button make leo</vh>
 <v t="ekr.20090905082405.1487"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20110614062644.1379"><vh>&lt;&lt; define global paths and file names &gt;&gt;</vh></v>
-<v t="ekr.20101027070126.1643"><vh>class LeoMaker</vh>
-<v t="ekr.20101027070126.1662"><vh>run &amp; helpers</vh>
+<v t="ekr.20101027070126.1643" a="E"><vh>class LeoMaker</vh>
+<v t="ekr.20101027070126.1662" a="E"><vh>run &amp; helpers</vh>
 <v t="ekr.20101105103524.1494"><vh>clean_manifest</vh></v>
 <v t="ekr.20110603171959.1506"><vh>clean_spellpyx</vh></v>
 <v t="ekr.20141016123713.2120"><vh>copy_nsi_files (Not used)</vh></v>
@@ -419,6 +420,10 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - Added "Yes to All" and "No to All" buttons to file-changed dialog.
 - Improved how Leo switches between git branches.
 - Created outline-oriented git-diff command.
+
+**Leo 5.6.1, November 9, 2017**
+
+- Published on Python Package Index (PyPi) and pip installable, `pip install leo`
 
 **Links**
 
@@ -1743,7 +1748,7 @@ than later.
 </t>
 <t tx="ekr.20141118074110.3">https://groups.google.com/forum/#!topic/leo-editor/VvnDYjV4aIk</t>
 <t tx="ekr.20141118074110.4"></t>
-<t tx="ekr.20150326055410.1">@language rest
+<t tx="ekr.20150326055410.1">##version@language rest
 
 1. Search for ##version
 
@@ -4042,6 +4047,38 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - Added "Yes to All" and "No to All" buttons to file-changed dialog.
 - Improved how Leo switches between git branches.
 - Created outline-oriented git-diff command.
+
+**Links**
+
+- [Leo's home page](http://leoeditor.com)
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="maphew.20171107045903.1">Leo 5.6 September 25, 2017
+
+[Leo](http://leoeditor.com/) 5.6 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+
+Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is possible to simulate Python in assembly language...
+
+**The highlights of Leo 5.6**
+
+- The cursesGui2.py plugin creates a console gui for Leo.
+- Added "Yes to All" and "No to All" buttons to file-changed dialog.
+- Improved how Leo switches between git branches.
+- Created outline-oriented git-diff command.
+
+**Leo 5.6.1, November 9, 2017**
+
+- Published on Python Package Index (PyPi) and pip installable, `pip install leo`
 
 **Links**
 
