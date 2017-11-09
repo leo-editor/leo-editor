@@ -714,12 +714,12 @@ class AtFile(object):
         c.init_error_dialogs()
         after = p.nodeAfterTree() if force else None
         while p and p != after:
-            gnx = p.gnx
-            #skip clones
-            if gnx in scanned_tnodes:
+            data = (p.gnx, g.fullPath(c, p))
+            #skip clones referring to exactly the same paths.
+            if data in scanned_tnodes:
                 p.moveToNodeAfterTree()
                 continue
-            scanned_tnodes.add(gnx)
+            scanned_tnodes.add(data)
             if not p.h.startswith('@'):
                 p.moveToThreadNext()
             elif p.isAtIgnoreNode():
@@ -2861,7 +2861,7 @@ class AtFile(object):
                 g.error('openForWrite: exception opening file: %s' % (open_file_name))
                 g.es_exception()
             return 'error', None
-    #@+node:ekr.20041005105605.144: *5* at.write & helpers (changed)
+    #@+node:ekr.20041005105605.144: *5* at.write & helpers
     def write(self,
         root,
         kind='@unknown', # Should not happen.
@@ -2956,7 +2956,7 @@ class AtFile(object):
         # Delete the temp file.
         if at.outputFileName:
             self.remove(at.outputFileName)
-    #@+node:ekr.20041005105605.147: *5* at.writeAll & helpers (changed)
+    #@+node:ekr.20041005105605.147: *5* at.writeAll & helpers
     def writeAll(self,
         writeAtFileNodesFlag=False,
         writeDirtyAtFileNodesFlag=False,
@@ -2995,8 +2995,9 @@ class AtFile(object):
                 # Note: @ignore not honored in @asis nodes.
                 p.moveToNodeAfterTree() # 2011/10/08: Honor @ignore!
             elif p.isAnyAtFileNode():
-                if p.v not in seen:
-                    seen.add(p.v)
+                data = p.v, g.fullPath(c, p)
+                if data not in seen:
+                    seen.add(data)
                     try:
                         self.writeAllHelper(p, root, force, toString, writeAtFileNodesFlag, writtenFiles)
                     except Exception:
