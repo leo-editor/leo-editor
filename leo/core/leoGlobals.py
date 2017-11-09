@@ -7043,6 +7043,8 @@ def openUrlHelper(event, url=None):
                     return
     elif not g.isString(url):
         url = url.toString()
+        url = g.toUnicode(url)
+            # Fix #571
     if url and g.isValidUrl(url):
         # Part 2: handle the url
         p = c.p
