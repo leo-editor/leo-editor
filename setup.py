@@ -52,8 +52,16 @@ classifiers = [
     ]
 #@-others
 
+scm_version_options = {
+    'write_to' : 'leo/version.py' # feasible for core/leoVersion to use this?
+    }
+
 setup(
     name = 'leo',
+    #version = leo.core.leoVersion.version,
+    # https://github.com/pypa/setuptools_scm
+    use_scm_version = scm_version_options,
+    setup_requires=['setuptools_scm'],
     version = leo.core.leoVersion.version,
     author = "Edward K. Ream",
     author_email = 'edreamleo@gmail.com',
