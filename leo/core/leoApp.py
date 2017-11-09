@@ -29,6 +29,7 @@ else:
 import sqlite3
 
 import leo.core.editpane.editpane  # for the command creation side effect
+assert leo.core.editpane.editpane
 #@-<< imports >>
 #@+others
 #@+node:ekr.20161026122804.1: ** class IdleTimeManager
