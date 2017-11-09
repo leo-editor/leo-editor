@@ -53,6 +53,8 @@ classifiers = [
 #@-others
 
 scm_version_options = {
+    'write_to_template': '{}+dYYYMMMDD',
+    #'write_to_template': 'some random text',
     'write_to' : 'leo/version.py' # feasible for core/leoVersion to use this?
     }
 

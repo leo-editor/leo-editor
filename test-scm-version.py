@@ -1,12 +1,21 @@
+''' setuptools_scm module isn't documented in a way I understand,
+particularly with regard to version number formatting. Let's explore
+and see what we can learn..
+'''
 import setuptools_scm as scm
 
-print "Default:\t{}\n".format(scm.get_version())
+print("Default:\t{}\n".format(scm.get_version()))
+
+scm_version_options = {
+    'write_to_template': '{tag}',
+    'write_to' : 'leo/version.py' # feasible for core/leoVersion to use this?
+    }
 
 for s in ['guess-next-dev','post-release']:
     scm.version_scheme = s
-    print "{}:\t{}".format(s, scm.get_version())
+    print("{}:\t{}".format(s, scm.get_version()))
 
- 
+  
 
 '''
     what would you want it to look like? Something like:
