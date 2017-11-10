@@ -1758,7 +1758,7 @@ class RstCommands(object):
         c = self.c
         openDirectory = c.frame.openDirectory
         default_path = self.getOption(self.root or c.p, 'default_path')
-            # Subtle change, part of #562: scan options starting at self.root, not c.p.
+            # Subtle change, part of #362: scan options starting at self.root, not c.p.
         if default_path:
             path = g.os_path_finalize_join(self.path, default_path, fn)
         elif self.path:
