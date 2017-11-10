@@ -1202,7 +1202,7 @@ class RstCommands(object):
             return val
         # 3. Search all parents, using self.dd.
         root = self.root if self.root and p.isAncestorOf(self.root) else p
-            # Fix #562.
+            # Fix #362.
         for p2 in root.self_and_parents():
             d = self.dd.get(p2.v, {})
             if trace and verbose: g.trace('=====', p2.h, d)
