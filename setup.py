@@ -53,7 +53,7 @@ classifiers = [
 #@-others
 
 scm_version_options = {
-    #'write_to_template': '{}+dYYYMMMDD',
+    'write_to_template': '{}+dYYYMMMDD',
     #'write_to_template': 'some random text',
     'write_to' : 'leo/version.py' # feasible for core/leoVersion to use this?
     }
@@ -70,17 +70,12 @@ setup(
     url = 'http://leoeditor.com',
     license = 'MIT License',
     description = "An IDE, PIM and Outliner", # becomes "Summary" in pkg-info
-    long_description = read_md('data/README.md'),
+    long_description = read_md('README.md'),
     platforms = ['Linux','Windows','MacOS'],
     download_url = 'http://leoeditor.com/download.html',
     classifiers = classifiers,
-    
     packages = find_packages(),
-    package_dir={'':'.', # Leo itself, `$root/leo`
-        'data':'data'}, # extra files, nsis install cfg, etc `$root/data`
-    data_files={'data':['data/*.*']},
     include_package_data=True, # also include MANIFEST files in wheels
-    
     entry_points = {
        'console_scripts': ['leoc = leo.core.runLeo:run'],
        'gui_scripts' : ['leo = leo.core.runLeo:run']
