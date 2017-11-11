@@ -23,7 +23,9 @@ if g.isPython3:
 
 import leo.core.signal_manager as sig
 
-from leo.core.editpane.clicky_splitter import ClickySplitter
+if QtWidgets is not None:
+    # leo.core.leoQt returns None for bridge mode
+    from leo.core.editpane.clicky_splitter import ClickySplitter
 #@-<<editpane.py imports>>
 #@+others
 #@+node:tbrown.20171028115438.2: ** DBG
