@@ -303,7 +303,7 @@
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
 </v>
-<v t="ekr.20141118074110.4"><vh>Discussions</vh>
+<v t="ekr.20141118074110.4" a="E"><vh>Discussions</vh>
 <v t="ekr.20141118074110.2"><vh>Matt's workflow for updating pypi</vh></v>
 <v t="ekr.20141118074110.3"><vh>Installing Leo on Linux</vh></v>
 </v>
@@ -1647,6 +1647,22 @@ _Will likely always use this recipe after the first time or two. Remember to rem
     python setup.py bdist_wheel
     twine upload --repository-url https://pypi.org/legacy/ dist/*
     pip install leo
+
+Caveats
+=======
+
+`pip install leo` only installs the contents of `leo` folder. So links to files in the project root or other folders will be broken. (Background https://github.com/leo-editor/leo-editor/issues/573)
+
+    ./leo-editor/*         --&gt; left out
+    ./leo-editor/docs/*    --&gt; left out
+    ./leo-editor/leo/*/*/* --&gt; PYTHONHOME/Lib/site-packages/leo
+
+Docs: of litte concern. These can regenerated from sources in ./leo (leoDocs.leo), and are on the website: http://leoeditor.com
+
+Root: these files should only be involved in building installers and similar activities (e.g. leoDist.leo). Work from a git checkout or source tarball instead: https://github.com/leo-editor/leo-editor
+
+
+
 
 2014
 ----
