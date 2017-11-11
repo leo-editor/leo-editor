@@ -6,6 +6,7 @@
 #@+node:ekr.20120219194520.10463: ** << imports >> (leoApp)
 import leo.core.leoGlobals as g
 import leo.core.leoExternalFiles as leoExternalFiles
+from leo.core.editpane.editpane import edit_pane_test_open
 try:
     import builtins # Python 3
 except ImportError:
@@ -3585,6 +3586,8 @@ def ctrlClickAtCursor(event):
     c = event.get('c')
     if c:
         g.openUrlOnClick(event)
+#@+node:tbrown.20171110183043.1: *3* edit-pane-test-open
+g.command("edit-pane-test-open")(edit_pane_test_open)
 #@+node:ekr.20150514125218.3: *3* enable/disable/toggle-idle-time-events
 @g.command('disable-idle-time-events')
 def disable_idle_time_events(event):
