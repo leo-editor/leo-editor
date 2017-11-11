@@ -35,7 +35,6 @@ def DBG(text):
     print("LEP: %s" % text)
 
 #@+node:tbrown.20171028115438.3: ** edit_pane_test_open
-@g.command("edit-pane-test-open")
 def edit_pane_test_open(event):
     """Make a command for opening the editpane in free_layout.
 
