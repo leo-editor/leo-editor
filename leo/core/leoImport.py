@@ -478,7 +478,7 @@ class LeoImportCommands(object):
                 g.match_word(s, i, "@c") or
                 g.match_word(s, i, "@root") or
                 g.match_word(s, i, "@code") # 2/25/03
-            ): 
+            ):
                 return i, result
             elif(g.match(s, i, "<<") and # must be on separate lines.
                 g.find_on_line(s, i, ">>=") > -1
@@ -749,7 +749,7 @@ class LeoImportCommands(object):
             ext, func and func.__name__, func and func.scanner_name, p.h))
         # Call the scanning function.
         if g.unitTesting:
-            assert func or ext in ('.w', '.xxx'), (ext, p.h)
+            assert func or ext in ('.txt', '.w', '.xxx'), (ext, p.h)
         if func and not c.config.getBool('suppress_import_parsing', default=False):
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')
@@ -783,7 +783,7 @@ class LeoImportCommands(object):
         return fileName
     #@+node:ekr.20170405191106.1: *5* ic.import_binary_file
     def import_binary_file(self, fileName, parent):
-        
+
         # Fix bug 1185409 importing binary files puts binary content in body editor.
         # Create an @url node.
         c = self.c
@@ -1318,7 +1318,7 @@ class LeoImportCommands(object):
 
     def cSharpUnitTest(self, p, fileName=None, s=None, showTree=False):
         return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.c#')
-        
+
     def coffeeScriptUnitTest(self, p, fileName=None, s=None, showTree=False):
         return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.coffee')
 
@@ -1348,13 +1348,13 @@ class LeoImportCommands(object):
 
     def orgUnitTest(self, p, fileName=None, s=None, showTree=False):
         return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.org')
-        
+
     def otlUnitTest(self, p, fileName=None, s=None, showTree=False):
         return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.otl')
 
     def pascalUnitTest(self, p, fileName=None, s=None, showTree=False):
         return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.pas')
-        
+
     def perlUnitTest(self, p, fileName=None, s=None, showTree=False):
         return self.scannerUnitTest(p, fileName=fileName, s=s, showTree=showTree, ext='.pl')
 
@@ -2021,6 +2021,8 @@ class RecursiveImportController(object):
                 treeType='@file', # '@auto','@clean','@nosent' cause problems.
             )
             p = parent.lastChild()
+            p.h = self.kind + p.h[5:]
+                # Bug fix 2017/10/27: honor the requested kind.
         if self.safe_at_file:
             p.v.h = '@' + p.v.h
     #@+node:ekr.20130823083943.12607: *4* ric.post_process & helpers
@@ -2080,7 +2082,7 @@ class RecursiveImportController(object):
             p.h = '@path %s' % (stripped or path)
             for p in p.children():
                 self.minimize_headlines(p, prefix + stripped)
-        
+
     #@+node:ekr.20170404134052.1: *6* ric.strip_prefix
     def strip_prefix(self, path, prefix):
         '''Strip the prefix from the path and return the result.'''
@@ -2093,8 +2095,8 @@ class RecursiveImportController(object):
     def remove_empty_nodes(self, p):
         '''Remove empty nodes. Not called for @auto or @edit trees.'''
         c = self.c
-        aList = [p for p in p.self_and_subtree()
-            if not p.b and not p.hasChildren()]
+        aList = [p2 for p2 in p.self_and_subtree()
+            if not p2.b and not p2.hasChildren()]
         if aList:
             c.deletePositionsInList(aList, redraw=False)
     #@-others
@@ -2104,7 +2106,7 @@ class TabImporter:
     A class to import a file whose outline levels are indicated by
     leading tabs or blanks (but not both).
     '''
-    
+
     def __init__(self, c, separate=True):
         '''Ctor for the TabImporter class.'''
         self.c = c
@@ -2167,8 +2169,8 @@ class TabImporter:
             if ch not in ' \t':
                 return s[:i]
         return s
-        
-        
+
+
     #@+node:ekr.20161006072958.1: *3* tabbed.prompt_for_files
     def prompt_for_files(self):
         '''Prompt for a list of FreeMind (.mm.html) files and import them.'''

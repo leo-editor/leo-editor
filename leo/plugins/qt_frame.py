@@ -201,6 +201,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
     def createLogPane(self, parent):
         '''Create all parts of Leo's log pane.'''
         # Create widgets.
+        c = self.leo_c
         logFrame = self.createFrame(parent, 'logFrame',
             vPolicy=QtWidgets.QSizePolicy.Minimum)
         innerFrame = self.createFrame(logFrame, 'logInnerFrame',
@@ -218,7 +219,11 @@ class DynamicWindow(QtWidgets.QMainWindow):
         # Find tab.
         findTab = QtWidgets.QWidget()
         findTab.setObjectName('findTab')
-        tabWidget.addTab(findScrollArea, 'Find')
+        # Fix #516:
+        use_minibuffer = c.config.getBool('minibuffer-find-mode', default=False)
+        use_dialog = c.config.getBool('use_find_dialog', default=False)
+        if not use_minibuffer and not use_dialog:
+            tabWidget.addTab(findScrollArea, 'Find')
         # Do this later, in LeoFind.finishCreate
         self.findScrollArea = findScrollArea
         self.findTab = findTab
@@ -233,6 +238,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20131118172620.16858: *6* dw.finishCreateLogPane
     def finishCreateLogPane(self):
         '''It's useful to create this late, because c.config is now valid.'''
+        # self.findTab exists even if there is not Find tab in the Log pane.
+        assert self.findTab
         self.createFindTab(self.findTab, self.findScrollArea)
         self.findScrollArea.setWidget(self.findTab)
     #@+node:ekr.20110605121601.18146: *5* dw.createMainLayout
@@ -277,8 +284,36 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 self.parent().show()
                 QtWidgets.QLineEdit.focusInEvent(self, event)
                     # EKR: 2014/06/28: Call the base class method.
+            def restore_selection(self):
+                w = self
+                i, j, ins = self._sel_and_insert
+                if i == j:
+                    w.setCursorPosition(i)
+                else:
+                    length = j - i
+                    # Set selection is a QLineEditMethod
+                    if ins < j:
+                        w.setSelection(j, -length)
+                    else:
+                        w.setSelection(i, length)
+
+            def focusOutEvent(self, event):
+                self.store_selection()
+                QtWidgets.QLineEdit.focusOutEvent(self, event)
+            def store_selection(self):
+                w = self
+                ins = w.cursorPosition()
+                if w.hasSelectedText():
+                    i = w.selectionStart()
+                    s = w.selectedText()
+                    s = g.u(s)
+                    j = i + len(s)
+                else:
+                    i = j = ins
+                w._sel_and_insert = (i, j, ins)
 
         lineEdit = VisLineEdit(frame)
+        lineEdit._sel_and_insert = (0, 0, 0)
         lineEdit.setObjectName('lineEdit') # name important.
         # Pack.
         hLayout = self.createHLayout(frame, 'minibufferHLayout', spacing=4)
@@ -1363,7 +1398,7 @@ class LeoQtBody(leoFrame.LeoBody):
             self.wrapper = qt_text.QTextEditWrapper(self.widget, name='body', c=c)
             self.widget.setAcceptRichText(False)
             self.colorizer = leoColorizer.JEditColorizer(c, self.widget, self.wrapper)
-            
+
     #@+node:ekr.20110605121601.18183: *5* LeoQtBody.setWrap
     def setWrap(self, p=None, force=False):
         '''Set **only** the wrap bits in the body.'''
@@ -1392,12 +1427,13 @@ class LeoQtBody(leoFrame.LeoBody):
         '''Add another editor to the body pane.'''
         trace = False and not g.unitTesting
         c, p = self.c, self.c.p
+        d = self.editorWidgets
         wrapper = c.frame.body.wrapper # A QTextEditWrapper
         widget = wrapper.widget
-        self.editorWidgets['1'] = wrapper
         self.totalNumberOfEditors += 1
         self.numberOfEditors += 1
         if self.totalNumberOfEditors == 2:
+            self.editorWidgets['1'] = wrapper
             # Pack the original body editor.
             self.packLabel(widget, n=1)
         name = '%d' % self.totalNumberOfEditors
@@ -1405,7 +1441,8 @@ class LeoQtBody(leoFrame.LeoBody):
         assert g.isTextWrapper(wrapper), wrapper
         assert g.isTextWidget(widget), widget
         assert isinstance(f, QtWidgets.QFrame), f
-        self.editorWidgets[name] = wrapper
+        d[name] = wrapper
+        # g.printDict(d)
         if trace: g.trace('name %s wrapper %s widget %s' % (
             name, id(wrapper), id(widget)))
         if self.numberOfEditors == 2:
@@ -1478,6 +1515,9 @@ class LeoQtBody(leoFrame.LeoBody):
         if len(list(d.keys())) <= 1: return
         name = w.leo_name if hasattr(w, 'leo_name') else '1'
             # Defensive programming.
+        if trace:
+            g.trace(name, w)
+            g.printDict(d)
         # At present, can not delete the first column.
         if name == '1':
             g.warning('can not delete leftmost editor')
@@ -1488,10 +1528,12 @@ class LeoQtBody(leoFrame.LeoBody):
         if trace: g.trace('**delete name %s id(wrapper) %s id(w) %s' % (
             name, id(wrapper), id(w)))
         del d[name]
+        if trace:
+            g.printDict(d)
         f = c.frame.top.leo_ui.leo_body_inner_frame
         layout = f.layout()
         for z in (w, w.leo_label):
-            if z: # 2011/11/12
+            if z:
                 self.unpackWidget(layout, z)
         w.leo_label = None # 2011/11/12
         # Select another editor.
@@ -1613,7 +1655,7 @@ class LeoQtBody(leoFrame.LeoBody):
             # Calls assignPositionToEditor.
             # Calls p.v.restoreCursorAndScroll.
         c.redraw()
-        c.recolor_now()
+        c.recolor()
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18205: *5* LeoQtBody.updateEditors
     # Called from addEditor and assignPositionToEditor
@@ -2196,7 +2238,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 offset = c.p.textOffset()
                 cr = te.textCursor()
                 bl = cr.block()
-                col = cr.columnNumber()
+                col = bl.position()
                 row = bl.blockNumber() + 1
                 line = g.u(bl.text())
                 # Fix bug #195: fcol when using @first directive is inaccurate
@@ -2218,7 +2260,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 fcol = '' if offset is None else max(0, col + offset - fcol_offset)
             else:
                 row, col, fcol = 0, 0, ''
-            if 1: 
+            if 1:
                 self.put1("line: %d col: %d fcol: %s" % (row, col, fcol))
             else:
                 #283 is not ready yet, and probably will never be.
@@ -2378,7 +2420,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 else:
                     # Fix #367: complete the selection at idle time.
                     g.app.selectLeoWindow(c2)
-                
+
                     def handler(timer, c=c2, p=p):
                         c2.selectPosition(p)
                         timer.stop()
@@ -3145,7 +3187,7 @@ class LeoQtLog(leoFrame.LeoLog):
         '''
         Put s to the Qt Log widget, converting to html.
         All output to the log stream eventually comes here.
-        
+
         The from_redirect keyword argument is no longer used.
         '''
         trace = False and not g.unitTesting
@@ -3764,7 +3806,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
             pasted.moveToNthChildOf(back, 0)
         # c.setRootPosition(c.findRootPosition(pasted))
         u.afterInsertNode(pasted, undoType, undoData)
-        c.redraw_now(pasted)
+        c.redraw(pasted)
         c.recolor()
     #@+node:ekr.20110605121601.18368: *6* LeoQTreeWidget.intraFileDrop
     def intraFileDrop(self, fn, p1, p2):
@@ -3817,9 +3859,9 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 p2.isExpanded() or
                 c.config.getBool("drag-alt-drag-expands") is not False
             ):
-                c.redraw_now(p1)
+                c.redraw(p1)
             else:
-                c.redraw_now(p2)
+                c.redraw(p2)
         # elif trace: g.trace('** move failed')
     #@+node:ekr.20110605121601.18383: *6* LeoQTreeWidget.parseText
     def parseText(self, md):
@@ -3860,7 +3902,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
         if changed:
             c.setChanged(True)
             u.afterChangeGroup(c.p, undoType, reportFlag=False, dirtyVnodeList=[])
-            c.redraw_now()
+            c.redraw()
     #@+node:ekr.20110605121601.18370: *6* LeoQTreeWidget.doFileUrl & helper
     def doFileUrl(self, p, url):
         '''Read the file given by the url and put it in the outline.'''
@@ -4189,10 +4231,10 @@ class LeoQtSpellTab(object):
         self.updateButtons()
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18397: *3* Helpers
-    #@+node:ekr.20110605121601.18398: *4* bringToFront
+    #@+node:ekr.20110605121601.18398: *4* bringToFront (LeoQtSpellTab)
     def bringToFront(self):
         self.c.frame.log.selectTab('Spell')
-    #@+node:ekr.20110605121601.18399: *4* fillbox
+    #@+node:ekr.20110605121601.18399: *4* fillbox (LeoQtSpellTab)
     def fillbox(self, alts, word=None):
         """Update the suggestions listBox in the Check Spelling dialog."""
         self.suggestions = alts
@@ -4202,7 +4244,7 @@ class LeoQtSpellTab(object):
         if self.suggestions:
             self.listBox.addItems(self.suggestions)
             self.listBox.setCurrentRow(0)
-    #@+node:ekr.20110605121601.18400: *4* getSuggestion
+    #@+node:ekr.20110605121601.18400: *4* getSuggestion (LeoQtSpellTab)
     def getSuggestion(self):
         """Return the selected suggestion from the listBox."""
         idx = self.listBox.currentRow()

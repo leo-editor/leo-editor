@@ -290,8 +290,10 @@ class LeoMenu(object):
             if kind.startswith(tag):
                 name = kind[len(tag):].strip()
                 if not self.handleSpecialMenus(name, parentName=None):
-                    self.createNewMenu(name) # Create top-level menu.
-                    self.createMenuFromConfigList(name, val, level=0)
+                    # Fix #528: Don't create duplicate menu items.
+                    menu = self.createNewMenu(name) # Create top-level menu.
+                    if menu:
+                        self.createMenuFromConfigList(name, val, level=0)
             else:
                 self.error('%s %s not valid outside @menu tree' % (kind, val))
         aList = c.config.getOpenWith()
@@ -323,8 +325,9 @@ class LeoMenu(object):
                 if table:
                     self.createMenuEntries(parentMenu, table)
                 if not self.handleSpecialMenus(name, parentName, table):
-                    self.createNewMenu(name, parentName) # Create submenu of parent menu.
-                    self.createMenuFromConfigList(name, val, level + 1)
+                    menu = self.createNewMenu(name, parentName) # Create submenu of parent menu.
+                    if menu: # Partial fix for #528.
+                        self.createMenuFromConfigList(name, val, level + 1)
                 table = []
             elif kind == '@item':
                 name = str(val) # Item names must always be ascii.
@@ -1171,7 +1174,9 @@ class LeoMenu(object):
             parent = self.getMenu(parentName) # parent may be None.
             menu = self.getMenu(menuName)
             if menu:
-                g.error("menu already exists:", menuName)
+                # Not an error.
+                # g.error("menu already exists:", menuName)
+                return None # Fix #528.
             else:
                 menu = self.new_menu(parent, tearoff=0, label=menuName)
                 self.setMenu(menuName, menu)

@@ -19,7 +19,7 @@ class Pascal_Importer(Importer):
             state_class = Pascal_ScanState,
             strict = False,
         )
-        
+
     #@+others
     #@+node:ekr.20161126171035.4: *3* pascal_i.clean_headline
     pascal_clean_pattern = re.compile(r'^(function|procedure)\s+([\w_.]+)')
@@ -65,7 +65,7 @@ class Pascal_Importer(Importer):
         '''
         trace = False and g.unitTesting
         comment, block1, block2 = self.single_comment, self.block1, self.block2
-        
+
         def add_key(d, key, data):
             aList = d.get(key,[])
             aList.append(data)
@@ -123,7 +123,7 @@ class Pascal_Importer(Importer):
 #@+node:ekr.20161126171035.6: ** class class Pascal_ScanState
 class Pascal_ScanState:
     '''A class representing the state of the pascal line-oriented scan.'''
-    
+
     def __init__(self, d=None):
         '''Pascal_ScanState.__init__'''
         if d:

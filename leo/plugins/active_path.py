@@ -210,7 +210,7 @@ def isFileNode(p):
     return (
         not p.h.strip().startswith('@') and not p.hasChildren() and
         not isDirNode(p) and isDirNode(p.parent()) and
-        (not p.b.strip() or 
+        (not p.b.strip() or
         p.b.startswith("@language rest # AUTOLOADED DOCSTRING")  # no c!
             # p.b.startswith(c.__active_path['DS_SENTINEL']
       ))
@@ -285,7 +285,7 @@ def onSelect (tag,keywords):
 
     if path:
         if sync_node_to_folder(c,pos,path):
-            c.requestRedrawFlag = True
+            ### c.requestRedrawFlag = True
             c.redraw()
             return True
 
@@ -657,7 +657,7 @@ def cmd_ActOnNode(event, p=None):
 
     if path:
         sync_node_to_folder(c,pos,path)
-        c.requestRedrawFlag = True
+        ### c.requestRedrawFlag = True
         c.redraw()
         return True
 
@@ -709,7 +709,7 @@ def cmd_SetNodeToAbsolutePathRecursive(event):
     """Change "/dirname/" to "@path /absolute/path/to/dirname", recursively"""
     c = event.get('c')
     for s in run_recursive(c):
-        cmd_SetNodeToAbsolutePath(c, p=s)
+        cmd_SetNodeToAbsolutePath(event, p=s)
 #@+node:tbrown.20080616153649.5: ** cmd_SetNodeToAbsolutePath (active_path.py)
 @g.command('active-path-set-node-to-absolute-path')
 def cmd_SetNodeToAbsolutePath(event,p=None):

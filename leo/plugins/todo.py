@@ -216,7 +216,7 @@ if g.app.gui.guiName() == "qt":
             offsets = sorted(set(offsets), key=lambda x: (x[0],int(x[1:].strip('>').replace('<', '-'))))
             u.dueDateOffset.addItems(offsets)
             u.dueDateOffset.setCurrentIndex(self.date_offset_default)
-           
+
             if True: ### isQt5:
                 self.UI.dueDateOffset.activated.connect(
                     lambda v: o.set_date_offset(field='duedate'))
@@ -365,6 +365,10 @@ class todoController(object):
     }
 
     todo_priorities = 1,2,3,4,5,6,7,8,9,10,19
+
+    _date_fields = ['created', 'date', 'duedate', 'nextworkdate', 'prisetdate']
+    _time_fields = ['duetime', 'nextworktime', 'time']
+    _datetime_fields = _date_fields + _time_fields
     #@+node:tbrown.20090119215428.11: *3* __init__
     def __init__ (self,c):
         '''ctor for todoController class.'''
@@ -409,7 +413,7 @@ class todoController(object):
         os.chdir(owd)
         for i in self.handlers:
             g.registerHandler(i[0], i[1])
-        self.loadAllIcons(setDirty=False)
+        self.loadAllIcons()
 
         # correct spinTime suffix:
         self.ui.UI.spinTime.setSuffix(" " + self.time_name)
@@ -417,6 +421,26 @@ class todoController(object):
     def __del__(self):
         for i in self.handlers:
             g.unregisterHandler(i[0], i[1])
+    #@+node:tbnorth.20170925093004.1: *3* _date
+    def _date(self, d):
+        """_date - convert a string to a date
+
+        :param str d: date to convert
+        :return: datetime.date
+        """
+        if not d.strip():
+            return ''
+        return datetime.datetime.strptime(d.split('T')[0], "%Y-%m-%d").date()
+
+    def _time(self, d):
+        """_time - convert a string to a time
+
+        :param str d: time to convert
+        :return: datetime.time
+        """
+        if not d.strip():
+            return ''
+        return datetime.datetime.strptime(d, "%H:%M:%S.%f").time()
     #@+node:tbrown.20090630144958.5319: *3* addPopupMenu
     def addPopupMenu(self,c,p,menu):
 
@@ -503,13 +527,13 @@ class todoController(object):
         return new
     #@+node:tbrown.20090119215428.15: *3* loadAllIcons
     @redrawer
-    def loadAllIcons(self,tag=None,k=None,clear=None,setDirty=True):
+    def loadAllIcons(self, tag=None, k=None, clear=None):
         """Load icons to represent cleo state"""
         for p in self.c.all_positions():
-            self.loadIcons(p,clear=clear,setDirty=setDirty)
+            self.loadIcons(p, clear=clear)
     #@+node:tbrown.20090119215428.16: *3* loadIcons
     @redrawer
-    def loadIcons(self, p,clear=False,setDirty=True):
+    def loadIcons(self, p,clear=False):
 
         com = self.c.editCommands
         allIcons = com.getIconList(p)
@@ -555,8 +579,8 @@ class todoController(object):
                     com.appendImageDictToList(icons, self.iconDir,
                         g.os_path_join('cleo', icon),
                         2, on='vnode', cleoIcon='1', where=self.prog_location)
-        com.setIconList(p,icons,setDirty)
 
+        com.setIconList(p, icons, setDirty=False)
     #@+node:tbrown.20090119215428.17: *3* close
     def close(self, tag, key):
         "unregister handlers on closing commander"
@@ -600,7 +624,12 @@ class todoController(object):
             isinstance(node.unknownAttributes["annotate"], dict) and
             attrib in node.unknownAttributes["annotate"]
         ):
-            return node.unknownAttributes["annotate"][attrib]
+            x = node.unknownAttributes["annotate"][attrib]
+            if attrib in self._date_fields and g.isString(x):
+                x = self._date(x)
+            if attrib in self._time_fields and g.isString(x):
+                x = self._time(x)
+            return x
         else:
             return 9999 if attrib == "priority" else ''
     #@+node:tbrown.20090119215428.23: *4* testDefault
@@ -611,6 +640,10 @@ class todoController(object):
     #@+node:tbrown.20090119215428.24: *4* setat
     def setat(self, node, attrib, val):
         "new attribute setter"
+
+        if attrib in self._datetime_fields and isinstance(val,
+            (datetime.date, datetime.time, datetime.datetime)):
+            val = val.isoformat()
 
         if 'annotate' in node.u and 'src_unl' in node.u['annotate']:
 
@@ -662,6 +695,7 @@ class todoController(object):
             node.unknownAttributes["annotate"][attrib] != val
         ):
             self.c.setChanged(True)
+            node.setDirty()
 
         node.unknownAttributes["annotate"][attrib] = val
 
@@ -697,7 +731,7 @@ class todoController(object):
     def redraw(self):
 
         self.updateUI()
-        self.c.redraw_now()
+        self.c.redraw()
     #@+node:tbrown.20090119215428.29: *4* clear_all
     @redrawer
     def clear_all(self, recurse=False, all=False):
@@ -1264,7 +1298,23 @@ class todoController(object):
 
         return c2, nd
     #@-others
+#@+node:tbrown.20170928065405.1: ** command fix datetime
+@g.command('todo-fix-datetime')
+def todo_fix_datetime(event):
+
+    c = event['c']
+    changed = 0
+    for nd in c.all_unique_nodes():
+        for key in c.cleo._datetime_fields:
+            x = c.cleo.getat(nd, key)
+            if not g.isString(x):
+                c.cleo.setat(nd, key, x)
+                changed += 1
+                g.es("%r -> %r" % (x, c.cleo.getat(nd, key)))
+    g.es("Changed %d attribs." % changed)
+
 #@+node:tbrown.20100701093750.13800: ** command inc/dec priority
+
 @g.command('todo-dec-pri')
 def todo_dec_pri(event, direction=1):
 

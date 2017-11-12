@@ -37,7 +37,7 @@ class MultiSelectTree(multilinetree.SelectOneTree):
             self.value.remove(working_with)
         else:
             self.value.append(working_with)
-            
+
     #@+node:ekr.20170428084208.251: *3* MultiSelectTree.h_set_filtered_to_selected
     def h_set_filtered_to_selected(self, ch):
         self.value = self.get_filtered_values()
@@ -48,7 +48,7 @@ class MultiSelectTree(multilinetree.SelectOneTree):
             working_with = weakref.proxy(self.values[self.cursor_line])
         except TypeError:
             working_with = self.values[self.cursor_line]
-        
+
         if not working_with in self.value:
             self.value.append(working_with)
         if self.return_exit:

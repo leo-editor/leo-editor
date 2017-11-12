@@ -8,7 +8,7 @@ Importer = linescanner.Importer
 #@+others
 #@+node:ekr.20140723122936.18049: ** class JS_Importer
 class JS_Importer(Importer):
-    
+
     def __init__(self, importCommands, language=None, alternate_language=None):
         '''The ctor for the JS_ImportController class.'''
         # Init the base class.
@@ -35,8 +35,8 @@ class JS_Importer(Importer):
               '*=', '*',
               '/=', '/',
               '%=', '%',
-        '&&', '&=', '&', 
-        '||', '|=', '|', 
+        '&&', '&=', '&',
+        '||', '|=', '|',
                     '~',
                     '=',
                     '!', # Unary op can trigger regex.
@@ -109,7 +109,7 @@ class JS_Importer(Importer):
                 expect = 'div'
             elif ch.isdigit():
                 i += 1
-                # Only *approximately* correct. 
+                # Only *approximately* correct.
                 while i < len(s) and (s[i] in '.+-e' or s[i].isdigit()):
                     i += 1
                 # This should work even if the scan ends with '+' or '-'
@@ -220,7 +220,7 @@ class JS_Importer(Importer):
 #@+node:ekr.20161105092745.1: ** class JS_ScanState
 class JS_ScanState:
     '''A class representing the state of the javascript line-oriented scan.'''
-    
+
     def __init__(self, d=None):
         '''JS_ScanState ctor'''
         if d:
@@ -231,12 +231,12 @@ class JS_ScanState:
         else:
             self.context = ''
             self.curlies = self.parens = 0
-        
+
     def __repr__(self):
         '''JS_ScanState.__repr__'''
         return 'JS_ScanState context: %r curlies: %s parens: %s' % (
             self.context, self.curlies, self.parens)
-            
+
     __str__ = __repr__
 
     #@+others
@@ -253,7 +253,7 @@ class JS_ScanState:
         context, i, delta_c, delta_p, delta_s, bs_nl = data
         # self.bs_nl = bs_nl
         self.context = context
-        self.curlies += delta_c  
+        self.curlies += delta_c
         self.parens += delta_p
         # self.squares += delta_s
         return i

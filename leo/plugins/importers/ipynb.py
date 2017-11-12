@@ -213,7 +213,7 @@ class Import_IPYNB(object):
         '''Split the markdown cell p if it contains one or more html headers.'''
         trace = False and not g.unitTesting
         SPLIT = False
-            # Perhaps this should be a user option, 
+            # Perhaps this should be a user option,
             # but splitting adds signifincant whitespace.
             # The user can always split nodes manually if desired.
         i0, last = 0, p.copy()

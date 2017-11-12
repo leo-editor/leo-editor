@@ -170,40 +170,52 @@ class TagController(object):
         regex = re.compile(tag)
 
         for node in self.c.all_unique_nodes():
-            p = self.c.vnode2position(node)
-            for t in self.get_tags(p):
+            #p = self.c.vnode2position(node)
+            for t in self.get_tags(node):
                 if regex.match(t):
-                    nodelist.append(p)
+                    nodelist.append(node)
                     break
 
         return nodelist
+    #@+node:vitalije.20170811150914.1: *4* get_tagged_gnxes
+    def get_tagged_gnxes(self, tag):
+        c = self.c
+
+        tag = tag.replace('*', '.*')
+
+        regex = re.compile(tag)
+
+        for v in c.all_unique_nodes():
+            for t in self.get_tags(v):
+                if regex.match(t):
+                    yield v.gnx
     #@+node:peckj.20140804103733.9265: *3* individual nodes
     #@+node:peckj.20140804103733.9259: *4* get_tags
-    def get_tags(self, p):
-        ''' returns a list of tags applied to p '''
-        if p:
-            tags = p.v.u.get(self.TAG_LIST_KEY, set([]))
+    def get_tags(self, v):
+        ''' returns a list of tags applied to v '''
+        if v:
+            tags = v.u.get(self.TAG_LIST_KEY, set([]))
             return list(tags)
         else:
             return []
     #@+node:peckj.20140804103733.9260: *4* add_tag
-    def add_tag(self, p, tag):
-        ''' adds 'tag' to the taglist of p '''
-        tags = p.v.u.get(self.TAG_LIST_KEY, set([]))
+    def add_tag(self, v, tag):
+        ''' adds 'tag' to the taglist of v '''
+        tags = v.u.get(self.TAG_LIST_KEY, set([]))
         tags.add(tag)
-        p.v.u[self.TAG_LIST_KEY] = tags
+        v.u[self.TAG_LIST_KEY] = tags
         self.c.setChanged(True)
         self.update_taglist(tag)
     #@+node:peckj.20140804103733.9261: *4* remove_tag
-    def remove_tag(self, p, tag):
-        ''' removes 'tag' from the taglist of p '''
-        tags = p.v.u.get(self.TAG_LIST_KEY, set([]))
+    def remove_tag(self, v, tag):
+        ''' removes 'tag' from the taglist of v '''
+        tags = v.u.get(self.TAG_LIST_KEY, set([]))
         if tag in tags:
             tags.remove(tag)
         if tags:
-            p.v.u[self.TAG_LIST_KEY] = tags
+            v.u[self.TAG_LIST_KEY] = tags
         else:
-            del p.v.u[self.TAG_LIST_KEY] # prevent a few corner cases, and conserve disk space
+            del v.u[self.TAG_LIST_KEY] # prevent a few corner cases, and conserve disk space
         self.c.setChanged(True)
         self.update_taglist(tag)
     #@-others
@@ -293,11 +305,13 @@ class LeoTagWidget(QtWidgets.QWidget):
     #@+node:peckj.20140804114520.15204: *3* updates + interaction
     #@+node:peckj.20140804114520.15205: *4* item_selected
     def item_selected(self):
+        c = self.c
         key = id(self.listWidget.currentItem())
-        pos = self.mapping[key]
-        self.update_current_tags(pos)
-        self.c.selectPosition(pos)
-        self.c.redraw_now()
+        v = self.mapping[key]
+        self.update_current_tags(v)
+        pos = c.vnode2position(v)
+        c.selectPosition(pos)
+        c.redraw()
     #@+node:peckj.20140804192343.6568: *5* update_current_tags
     def update_current_tags(self,pos):
         # clear out the horizontalLayout2
@@ -327,7 +341,7 @@ class LeoTagWidget(QtWidgets.QWidget):
             ui = tc.ui
             # right click on a tag to remove it from the node
             if event.button() == QtCore.Qt.RightButton:
-                tc.remove_tag(p,tag)
+                tc.remove_tag(p.v,tag)
             # other clicks make the jumplist open that tag for browsing
             else:
                 idx = ui.comboBox.findText(tag)
@@ -343,6 +357,7 @@ class LeoTagWidget(QtWidgets.QWidget):
 
     #@+node:peckj.20140804114520.15207: *4* update_list
     def update_list(self):
+        c = self.c; gnxDict = c.fileCommands.gnxDict
         key = str(self.comboBox.currentText()).strip()
         current_tags = self.tc.get_all_tags()
         if key not in current_tags and key not in self.custom_searches:
@@ -360,10 +375,10 @@ class LeoTagWidget(QtWidgets.QWidget):
         tags.reverse()
         operations.reverse()
 
-        resultset = set(self.tc.get_tagged_nodes(tags.pop()))
+        resultset = set(self.tc.get_tagged_gnxes(tags.pop()))
         while operations:
             op = operations.pop()
-            nodes = set(self.tc.get_tagged_nodes(tags.pop()))
+            nodes = set(self.tc.get_tagged_gnxes(tags.pop()))
             if op == '&':
                 resultset &= nodes
             elif op == '|':
@@ -375,7 +390,8 @@ class LeoTagWidget(QtWidgets.QWidget):
 
         self.listWidget.clear()
         self.mapping = {}
-        for n in resultset:
+        for gnx in resultset:
+            n = gnxDict[gnx]
             item = QtWidgets.QListWidgetItem(n.h)
             self.listWidget.addItem(item)
             self.mapping[id(item)] = n
@@ -405,7 +421,7 @@ class LeoTagWidget(QtWidgets.QWidget):
             g.es('Cannot add tags containing any of these characters: &|^-', color='red')
             return # don't add unsearchable tags
         else:
-            self.tc.add_tag(p,tag)
+            self.tc.add_tag(p.v,tag)
     #@+node:peckj.20140811082039.6623: *3* event hooks
     #@+node:peckj.20140804195456.13487: *4* select2_hook
     def select2_hook(self, tag, keywords):

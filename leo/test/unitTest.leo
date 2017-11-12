@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.84" body_secondary_ratio="0.64">
-	<global_window_position top="126" left="552" height="838" width="1245"/>
+<globals body_outline_ratio="0.52" body_secondary_ratio="0.69">
+	<global_window_position top="255" left="215" height="890" width="1069"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -13,8 +13,17 @@
 <v t="ekr.20140716121225.4354"><vh>@@button print-gnx</vh></v>
 <v t="ekr.20161123080832.1"><vh>@button make-table</vh></v>
 <v t="ekr.20111112092813.4154"><vh>@command cls</vh></v>
-<v t="ekr.20101220161557.6011"><vh>@file unitTestStartup.txt</vh></v>
-<v t="ekr.20150216110251.11"><vh>@persistence</vh></v>
+<v t="ekr.20101220161557.6011" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580500000069636f6e7371035d71047d710528580700000072656c506174687106581900000066696c655f69636f6e732f66696c655f66696c65322e706e6771075807000000786f666673657471084b025807000000796f666673657471094b00580400000074797065710a580400000066696c65710b680b58640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f66696c65322e706e67710c580400000078706164710d4b01580a00000076697375616c49636f6e710e580100000031710f58020000006f6e71105805000000766e6f64657111580500000077686572657112580e0000006265666f7265486561646c696e657113756173732e"><vh>@file unitTestStartup.txt</vh></v>
+<v t="ekr.20150216110251.11"><vh>@persistence</vh>
+<v t="ekr.20170818044949.1"><vh>@data:#@auto</vh></v>
+<v t="ekr.20170818044949.2"><vh>@data:#@auto</vh>
+<v t="ekr.20170818044949.3"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20170818044949.4"><vh>@data:#@auto</vh></v>
+<v t="ekr.20170818044949.5"><vh>@data:#@auto</vh>
+<v t="ekr.20170818044949.6"><vh>@gnxs</vh></v>
+</v>
+</v>
 <v t="ekr.20041121151002"><vh>@settings</vh>
 <v t="ekr.20080324133327.2"><vh>@bool allow_middle_button_paste = True</vh></v>
 <v t="ekr.20161011095551.1"><vh>@bool allow_section_references_in_at_auto = True</vh></v>
@@ -32,7 +41,7 @@
 <v t="ekr.20111123042627.6654"><vh>@enabled-plugins</vh></v>
 <v t="ekr.20050328101834"><vh>@page http plugin</vh>
 <v t="ekr.20050328101834.1"><vh>@bool http_active = False</vh></v>
-<v t="ekr.20050328101834.2"><vh>@int  port = 8080</vh></v>
+<v t="ekr.20050328101834.2"><vh>@int port = 8080</vh></v>
 <v t="ekr.20050328101834.3"><vh>@string rst_http_attributename = ''</vh></v>
 </v>
 <v t="ekr.20111112093605.4679"><vh>@shortcuts</vh></v>
@@ -233,7 +242,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343071017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d71002858010000003071017d7102580500000069636f6e7371035d71047d710528580700000072656c506174687106581900000066696c655f69636f6e732f66696c655f66696c65322e706e6771075807000000786f666673657471084b025807000000796f666673657471094b00580400000074797065710a580400000066696c65710b680b58640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f66696c65322e706e67710c580400000078706164710d4b01580a00000076697375616c49636f6e710e580100000031710f58020000006f6e71105805000000766e6f64657111580500000077686572657112580e0000006265666f7265486561646c696e6571137561735808000000302e362e31322e3971147d71155809000000756e69745f7465737471165804000000616263647117735809000000302e362e31392e343171187d711958090000006d795f706c7567696e711a580300000076616c711b735808000000302e362e31382e37711c7d711d5808000000616e6e6f74617465711e7d711f735808000000302e362e32372e3771207d71215808000000616e6e6f7461746571227d7123735808000000302e362e31362e3371247d71255808000000616e6e6f7461746571267d712773752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -447,7 +456,50 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20170707091814.4"><vh>after sel=3.1,3.4</vh></v>
 </v>
 </v>
+<v t="ekr.20111121224307.3934"><vh>@test k.handleDefaultChar from log pane</vh></v>
 </v>
+<v t="ekr.20170712045534.1"><vh>#512: Unit tests that fail for others</vh>
+<v t="ekr.20170712053944.1"><vh>Vitalije</vh>
+<v t="ekr.20111121224307.3934"></v>
+</v>
+<v t="ekr.20170712045644.1"><vh>Terry's failures</vh>
+<v t="ekr.20090529115704.4557"><vh>@test x.makeShadowDirectory</vh>
+<v t="ekr.20090529115704.4558"><vh>deleteShadowDir</vh></v>
+</v>
+<v t="ekr.20100131171342.5485"><vh>@test all commands have an event arg</vh></v>
+<v t="ekr.20170712132824.1"><vh>add/delete comments</vh>
+<v t="ekr.20120309155126.3949"><vh>@test add comments with multiple @language directives</vh>
+<v t="ekr.20120309155126.3950"><vh>rest and python</vh></v>
+</v>
+<v t="ekr.20170712135224.1"><vh>@test delete comments with multiple @language directives</vh>
+<v t="ekr.20170712135224.2"><vh>rest and python</vh></v>
+</v>
+<v t="ekr.20111112171235.3854"><vh>@test add html comments</vh>
+<v t="ekr.20170128023431.1"><vh>@language html</vh>
+<v t="ekr.20111112171235.3855"><vh>html</vh></v>
+</v>
+</v>
+<v t="ekr.20170712132900.1"><vh>@test delete html comments</vh>
+<v t="ekr.20170712132933.1"><vh>@language html</vh>
+<v t="ekr.20170712132933.2"><vh>html</vh></v>
+</v>
+</v>
+<v t="ekr.20170712134334.1"><vh>@test add python comments</vh>
+<v t="ekr.20170712134334.2"><vh>python</vh></v>
+</v>
+<v t="ekr.20170712134948.1"><vh>@test delete python comments</vh>
+<v t="ekr.20170712134948.3"><vh>python</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20170712140759.1"><vh>xgid failures</vh>
+<v t="ekr.20111124090010.3939"><vh>@test g.app.config @buttons and @commands logic</vh></v>
+<v t="ekr.20111123214629.3941"><vh>@@test unbound Alt-9 key is completely ignored</vh></v>
+</v>
+<v t="ekr.20170721094522.1"><vh>Me (Python 3.6+)</vh></v>
+<v t="ekr.20160523094102.1"><vh>@test leoAst traverser classes</vh></v>
+</v>
+<v t="ekr.20100131171342.5509"><vh>@test leoBridge init logic</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -961,12 +1013,12 @@ if not vr:
 
 Important: this may cause crashes on some platforms.
 </t>
-<t tx="ekr.20080904084223.1"># changed.
+<t tx="ekr.20080904084223.1" icons="5d71007d710128580700000072656c506174687102581900000066696c655f69636f6e732f66696c655f6175746f322e706e6771035807000000786f666673657471044b025807000000796f666673657471054b005804000000747970657106580400000066696c657107680758640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f6175746f322e706e67710858040000007870616471094b01580a00000076697375616c49636f6e710a580100000031710b58020000006f6e710c5805000000766e6f6465710d58050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e"># changed.
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20080904102243.2">@language python
+<t tx="ekr.20080904102243.2" icons="5d71007d710128580700000072656c506174687102581900000066696c655f69636f6e732f66696c655f66696c65322e706e6771035807000000786f666673657471044b025807000000796f666673657471054b005804000000747970657106580400000066696c657107680758640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f66696c65322e706e67710858040000007870616471094b01580a00000076697375616c49636f6e710a580100000031710b58020000006f6e710c5805000000766e6f6465710d58050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e">@language python
 @tabwidth -4
 @others
 </t>
@@ -981,13 +1033,43 @@ Important: this may cause crashes on some platforms.
     pass
 </t>
 <t tx="ekr.20080907122804.1">@others</t>
-<t tx="ekr.20080907123324.2">@language python
+<t tx="ekr.20080907123324.2" icons="5d71007d710128580700000072656c506174687102581b00000066696c655f69636f6e732f66696c655f6e6f73656e74322e706e6771035807000000786f666673657471044b025807000000796f666673657471054b005804000000747970657106580400000066696c657107680758660000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f6e6f73656e74322e706e67710858040000007870616471094b01580a00000076697375616c49636f6e710a580100000031710b58020000006f6e710c5805000000766e6f6465710d58050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e">@language python
 @tabwidth -4
 # before @others: line 1
 @others
 # last line: line 6</t>
 <t tx="ekr.20080907123324.3">def spam(): # line 2
     pass
+</t>
+<t tx="ekr.20090529115704.4557">import glob
+import os
+x = c.shadowController
+@others
+shadow_fn  = x.shadowPathName('unittest/xyzzy/test.py')
+shadow_dir = x.shadowDirName('unittest/xyzzy/test.py')
+if g.os_path_exists(shadow_fn):
+    g.utils_remove(shadow_fn,verbose=True)
+    # assert not os.path.exists(shadow_fn),'still exists: %s' % shadow_fn
+    if os.path.exists(shadow_fn):
+        # Fix bug #512: Just skip this test.
+        self.skipTest('Can not delete the directory.')
+deleteShadowDir(shadow_dir)
+x.makeShadowDirectory(shadow_dir)
+assert os.path.exists(shadow_dir)
+deleteShadowDir(shadow_dir)
+</t>
+<t tx="ekr.20090529115704.4558">def deleteShadowDir(shadowDir):
+
+    if g.os_path_exists(shadow_dir):
+        files = g.os_path_abspath(g.os_path_join(shadow_dir,"*.*"))
+        files = glob.glob(files)
+        for z in files:
+            if z != shadow_dir:
+                # g.trace(z)
+                os.unlink(z)
+        # g.trace(shadow_dir)
+        os.rmdir(shadow_dir)
+        assert not os.path.exists(shadow_dir),'still exists: %s' % shadow_dir
 </t>
 <t tx="ekr.20090529141856.4785">import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
@@ -1296,13 +1378,13 @@ finally:
 <t tx="ekr.20090704085350.5024">def eggs():
     pass
 </t>
-<t tx="ekr.20090704085350.5028">@language python
+<t tx="ekr.20090704085350.5028" icons="5d71007d710128580700000072656c506174687102581900000066696c655f69636f6e732f66696c655f61736973322e706e6771035807000000786f666673657471044b025807000000796f666673657471054b005804000000747970657106580400000066696c657107680758640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f61736973322e706e67710858040000007870616471094b01580a00000076697375616c49636f6e710a580100000031710b58020000006f6e710c5805000000766e6f6465710d58050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e">@language python
 @others</t>
 <t tx="ekr.20090704085350.5029">def spam():
     pass</t>
 <t tx="ekr.20090704085350.5030">def eggs():
     pass</t>
-<t tx="ekr.20090704085350.5034">@first
+<t tx="ekr.20090704085350.5034" icons="5d71007d710128580700000072656c506174687102581b00000066696c655f69636f6e732f66696c655f6e6f73656e74322e706e6771035807000000786f666673657471044b025807000000796f666673657471054b005804000000747970657106580400000066696c657107680758660000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f6e6f73656e74322e706e67710858040000007870616471094b01580a00000076697375616c49636f6e710a580100000031710b58020000006f6e710c5805000000766e6f6465710d58050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e">@first
 @language python
 @others
 </t>
@@ -1312,7 +1394,7 @@ finally:
 <t tx="ekr.20090704085350.5036">def eggs():
     pass
 </t>
-<t tx="ekr.20090704085350.5056">@others
+<t tx="ekr.20090704085350.5056" icons="5d71007d710128580700000072656c506174687102581900000066696c655f69636f6e732f66696c655f6175746f322e706e6771035807000000786f666673657471044b025807000000796f666673657471054b005804000000747970657106580400000066696c657107680758640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f6175746f322e706e67710858040000007870616471094b01580a00000076697375616c49636f6e710a580100000031710b58020000006f6e710c5805000000766e6f6465710d58050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e">@others
 @language python
 @tabwidth -4
 </t>
@@ -1522,6 +1604,62 @@ for tag,aList in table:
         d1 = inspect.getargspec(func)
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
+</t>
+<t tx="ekr.20100131171342.5485">import inspect
+
+d = c.commandsDict
+keys = sorted(d.keys())
+table = ('bookmark', 'quickmove_', 'screen-capture', 'stickynote')
+for key in keys:
+    continue_flag = False
+    for prefix in table:
+        if key.startswith(prefix):
+            continue_flag = True
+            break # These plugins have their own signatures.
+    if continue_flag:
+        continue
+    f = d.get(key)
+    # print(key, f.__name__ if f else repr(f))
+    # Test true __call__ methods if they exist.
+    name = getattr(f,'__name__',None) or repr(f)
+    if hasattr(f,'__call__') and inspect.ismethod(f.__call__):
+        f = getattr(f,'__call__')
+    args, varargs, varkw, defaults = data = inspect.getargspec(f)
+    arg0 = len(args) &gt; 0 and args[0]
+    arg1 = len(args) &gt; 1 and args[1]
+    expected = ('event',)
+    message = '\nno event arg for command %s, func: %s\nargs: %s' % (key,name,data)
+    assert arg0 in expected or arg1 in expected, message
+</t>
+<t tx="ekr.20100131171342.5509">import leo.core.leoBridge as leoBridge
+
+if g.app.isExternalUnitTest:
+    print('running @test leoBridge init logic')
+    # This can not be run locally!
+    b = leoBridge.controller(gui='nullGui',
+        loadPlugins=True,
+        readSettings=True,
+        silent=False,
+        tracePlugins=True,
+        verbose=True)
+    g = b.globals()
+    path = g.os_path_finalize_join(g.app.loadDir,'..','doc','LeoDocs.leo')
+    assert g.os_path_exists(path)
+    c = b.openLeoFile(path)
+    assert c
+    assert c.rootPosition()
+else:
+    import subprocess
+    path = g.os_path_finalize_join(g.app.loadDir,'..','test', 'leo-bridge-test.py')
+    assert g.os_path_exists(path), path
+    command = 'python %s' % path
+    pid = subprocess.Popen(
+        command,
+        shell=True,
+        stdout=subprocess.PIPE, # Eliminate output.
+        universal_newlines=True,
+    )
+    pid.communicate()
 </t>
 <t tx="ekr.20100731163237.5782">@language html
 
@@ -4609,13 +4747,13 @@ False:
 </t>
 <t tx="ekr.20110521073115.3496">cython keywords
 </t>
-<t tx="ekr.20110610122533.3407">@others
+<t tx="ekr.20110610122533.3407" icons="5d71007d710128580700000072656c506174687102581900000066696c655f69636f6e732f66696c655f6175746f322e706e6771035807000000786f666673657471044b025807000000796f666673657471054b005804000000747970657106580400000066696c657107680758640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f6175746f322e706e67710858040000007870616471094b01580a00000076697375616c49636f6e710a580100000031710b58020000006f6e710c5805000000766e6f6465710d58050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e">@others
 @language python
 @tabwidth -4
 </t>
 <t tx="ekr.20110615130436.3317"># This was used by @test writing a .leo file retains orphan bits.
 # but this test is moot because Leo no longer writes orphan bits.</t>
-<t tx="ekr.20111021115306.3697">\begin{document}
+<t tx="ekr.20111021115306.3697" icons="5d71007d710128580700000072656c506174687102581900000066696c655f69636f6e732f66696c655f66696c65322e706e6771035807000000786f666673657471044b025807000000796f666673657471054b005804000000747970657106580400000066696c657107680758640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f66696c65322e706e67710858040000007870616471094b01580a00000076697375616c49636f6e710a580100000031710b58020000006f6e710c5805000000766e6f6465710d58050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e">\begin{document}
 &lt;&lt; Document &gt;&gt;
 % hidden comment
 \end{document}
@@ -4643,7 +4781,70 @@ run-all-unit-tests-locally          = Alt-6
 
 # Important: Alt-9 is used by a unit test
 </t>
+<t tx="ekr.20111112171235.3854">w = c.frame.body.wrapper
+p = g.findNodeInTree(c,p,'html')
+assert p,'not found: html'
+old_indent = c.config.getBool('indent_added_comments',default=True)
+table = (
+    (
+        False,
+        '@language html\n&lt;html&gt;\ntext\n&lt;/html&gt;\n',
+        '@language html\n&lt;html&gt;\n&lt;!-- text --&gt;\n&lt;/html&gt;\n',
+    ),
+    (
+        True,
+        '@language html\n&lt;html&gt;\n    text\n&lt;/html&gt;\n',
+        '@language html\n&lt;html&gt;\n    &lt;!-- text --&gt;\n&lt;/html&gt;\n'
+    ),
+)
+try:
+    for indent, s1, expected in table:
+        # Step 1: set the setting.
+        c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+        val = c.config.getBool('indent_added_comments')
+        assert indent == val, (repr(indent), repr(val))
+        # Step 2: set p.b and the insert point.
+        c.selectPosition(p)
+        p.b = s1
+        i = p.b.find('text')
+        assert i &gt; -1,'fail1: %s' % (repr(p.b))
+        w.setSelectionRange(i,i+4)
+        # Step 3: test add-comments
+        c.addComments()
+        assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+finally:
+    c.config.set(p, 'bool', 'indent_added_comments', old_indent)
+    val = c.config.getBool('indent_added_comments')
+    assert old_indent == val, (repr(indent), repr(val))
+</t>
+<t tx="ekr.20111112171235.3855">@language html
+&lt;html&gt;
+    &lt;!-- text --&gt;
+&lt;/html&gt;
+</t>
 <t tx="ekr.20111115080347.3872"></t>
+<t tx="ekr.20111121224307.3934">if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+if 'Find' not in c.frame.log.frameDict:
+    self.skipTest('No Find tab')
+elif g.app.gui.guiName().startswith('qt'):
+    tabs = ('Log', 'Find')
+    log = c.frame.log
+    c.bodyWantsFocusNow()
+    last_widget = c.frame.body
+    for tab in tabs:
+        # A small hack: fudge up the widget to pass to the command.
+        event = g.bunch(widget=last_widget)
+        c.editCommands.cycleAllFocus(event=event)
+        assert log.tabName == tab,'expected %s, got %s' % (
+            tab,log.tabName)
+        last_widget = log.contentsDict.get(tab)
+        event = g.bunch(widget=last_widget)
+        # This throws exception: LeoQTextBrowser has no attribute logCtrl.
+        c.k.handleDefaultChar(event, stroke='a')
+else:
+    self.skipTest('Requires Qt Gui')
+</t>
 <t tx="ekr.20111123042627.6654"># Leo loads plugins in the order they appear here.
 
 # **Important**: to change these defaults, put
@@ -4662,6 +4863,47 @@ mod_scripting.py
 # quicksearch.py
 # stickynotes.py
 # todo.py
+</t>
+<t tx="ekr.20111123214629.3941">from leo.core.leoQt import QtCore,QtGui,QtWidgets
+import leo.plugins.qt_events as qt_events
+import sys
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+elif sys.platform.startswith('linux'):
+    self.skipTest('linux test')
+elif g.app.gui.guiName().startswith('qt'):
+    wrapper = c.frame.body.wrapper
+    w = wrapper.widget
+    assert g.isTextWrapper(wrapper),wrapper
+    assert g.isTextWidget(w),w
+    filter_obj = qt_events.LeoQtEventFilter(c,w=w)
+    g.app.unitTestDict[p.h] = filter_obj
+        # keep a pointer to the filter.
+    for z in c.k.bindingsDict.keys():
+        if z.s == 'Alt+Key-9':
+            self.skipTest('Alt-Key-9 is bound')
+    if 0: # Too dangerous, and not useful enough.
+        # Create an Alt-9 key event.
+        ev = QtCore.QEvent
+        e = QtGui.QKeyEvent(ev.KeyPress,ord('9'),QtCore.Qt.AltModifier)
+        filter_obj.eventFilter(w,e)
+        # Assert that handleUnboundChar actually ignored it.
+        assert g.app.unitTestDict.get('handleUnboundChar-ignore-alt-or-ctrl')
+else:
+     self.skipTest('Requires Qt Gui')
+</t>
+<t tx="ekr.20111124090010.3939">if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+d = g.app.config.unitTestDict # Always created for this unit test.
+keys = ('config.doButtons-file-names','config.doCommands-file-names')
+for key in keys:
+    aList = d.get(key,[])
+    for base in ('leoSettings', 'unitTest'):
+        for ext in ('.leo', '.db'):
+            if base+ext in aList:
+                break
+        else:
+            assert False,'%s not in unitTestDict[%s]' % (base,key)
 </t>
 <t tx="ekr.20111124094121.3941"># These exist for a unit test.</t>
 <t tx="ekr.20111124094121.3942"></t>
@@ -5277,7 +5519,50 @@ hr { /* EKR */
 &lt;/body&gt;
 &lt;/html&gt;
 </t>
-<t tx="ekr.20130912092638.4150">@first # -*- coding: utf-16 -*-
+<t tx="ekr.20120309155126.3949">w = c.frame.body.wrapper
+p = g.findNodeInTree(c,p,'rest and python')
+assert p,'not found: rest and python'
+old_indent = c.config.getBool('indent_added_comments',default=True)
+table = (
+    (
+        False,
+        '@language rest\nrest text.\n@language python\ndef spam():\n    pass\n# after',
+        '@language rest\nrest text.\n@language python\ndef spam():\n#     pass\n# after',
+    ),
+    (
+        True,
+        '@language rest\nrest text.\n@language python\ndef spam():\n    pass\n# after',
+        '@language rest\nrest text.\n@language python\ndef spam():\n    # pass\n# after',
+    ),
+)
+try:
+    for indent, s1, expected in table:
+        # Step 1: set the setting.
+        c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+        val = c.config.getBool('indent_added_comments')
+        assert indent == val, (repr(indent), repr(val))
+        # Step 2: set p.b and the insert point.
+        c.selectPosition(p)
+        p.b = s1
+        i = p.b.find('pass')
+        assert i &gt; -1,'fail1: %s' % (repr(p.b))
+        w.setSelectionRange(i,i+4)
+        # Step 3: test add-comments
+        c.addComments()
+        assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+finally:
+    c.config.set(p, 'bool', 'indent_added_comments', old_indent)
+    val = c.config.getBool('indent_added_comments')
+    assert old_indent == val, (repr(indent), repr(val))
+</t>
+<t tx="ekr.20120309155126.3950">@language rest
+rest text.
+@language python
+def spam():
+    # pass
+# after
+</t>
+<t tx="ekr.20130912092638.4150" icons="5d71007d710128580700000072656c506174687102581900000066696c655f69636f6e732f66696c655f66696c65322e706e6771035807000000786f666673657471044b025807000000796f666673657471054b005804000000747970657106580400000066696c657107680758640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f66696c65322e706e67710858040000007870616471094b01580a00000076697375616c49636f6e710a580100000031710b58020000006f6e710c5805000000766e6f6465710d58050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e">@first # -*- coding: utf-16 -*-
 @encoding utf-16
 
 Test of utf-16.
@@ -5668,7 +5953,7 @@ The @others directive is not required.
 @language plain
 @tabwidth -4
 </t>
-<t tx="ekr.20150626101842.1">@others
+<t tx="ekr.20150626101842.1" icons="5d71007d710128580700000072656c506174687102581900000066696c655f69636f6e732f66696c655f6175746f322e706e6771035807000000786f666673657471044b025807000000796f666673657471054b005804000000747970657106580400000066696c657107680758640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f6175746f322e706e67710858040000007870616471094b01580a00000076697375616c49636f6e710a580100000031710b58020000006f6e710c5805000000766e6f6465710d58050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e">@others
 Note: This node's body text is ignored when writing this file.
 
 The @others directive is not required.
@@ -6047,14 +6332,14 @@ def __init__(self, s: Type) -&gt; None:
 <t tx="ekr.20150919074321.3">def spam(self):
     pass
 </t>
-<t tx="ekr.20160403123754.1">@language c
+<t tx="ekr.20160403123754.1" icons="5d71007d710128580700000072656c506174687102581900000066696c655f69636f6e732f66696c655f66696c65322e706e6771035807000000786f666673657471044b025807000000796f666673657471054b005804000000747970657106580400000066696c657107680758640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f66696c65322e706e67710858040000007870616471094b01580a00000076697375616c49636f6e710a580100000031710b58020000006f6e710c5805000000766e6f6465710d58050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e">@language c
 @tabwidth -4
 @others
 </t>
 <t tx="ekr.20160403123754.2">def child():
     pass
 </t>
-<t tx="ekr.20160403143048.1">@language c
+<t tx="ekr.20160403143048.1" icons="5d71007d710128580700000072656c506174687102581a00000066696c655f69636f6e732f66696c655f636c65616e322e706e6771035807000000786f666673657471044b025807000000796f666673657471054b005804000000747970657106580400000066696c657107680758650000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f636c65616e322e706e67710858040000007870616471094b01580a00000076697375616c49636f6e710a580100000031710b58020000006f6e710c5805000000766e6f6465710d58050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e">@language c
 @tabwidth -4
 // before @others // line 1
 @others
@@ -6063,7 +6348,7 @@ def __init__(self, s: Type) -&gt; None:
 <t tx="ekr.20160403143048.2">def spam(): // line 2
     pass
 </t>
-<t tx="ekr.20160403143130.1">@language python
+<t tx="ekr.20160403143130.1" icons="5d71007d710128580700000072656c506174687102581a00000066696c655f69636f6e732f66696c655f636c65616e322e706e6771035807000000786f666673657471044b025807000000796f666673657471054b005804000000747970657106580400000066696c657107680758650000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f636c65616e322e706e67710858040000007870616471094b01580a00000076697375616c49636f6e710a580100000031710b58020000006f6e710c5805000000766e6f6465710d58050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e">@language python
 @tabwidth -4
 # Before @others: line 1
 @others
@@ -6163,6 +6448,18 @@ else:
 </t>
 <t tx="ekr.20160403152507.1">def eggs(): # line 4
     pass</t>
+<t tx="ekr.20160523094102.1"># Great ast docs: http://greentreesnakes.readthedocs.io/en/latest/nodes.html
+
+import leo.core.leoAst as leoAst
+leoAst.unit_test(raise_on_fail=True)
+
+import leo.external.make_stub_files as msf
+msf.unit_test(raise_on_fail=True)
+
+import leo.external.py2cs as py2cs
+py2cs.unit_test(raise_on_fail=True)
+
+</t>
 <t tx="ekr.20161011092326.7"># ~/at-auto-test.py
 
 # This is valid Python, but it looks like a section reference.
@@ -6564,7 +6861,9 @@ else:
         return builtins.unicode(s, encoding)
 </t>
 <t tx="ekr.20170101134417.1"></t>
-<t tx="ekr.20170401122024.7">@language cweb
+<t tx="ekr.20170128023431.1">@language html
+</t>
+<t tx="ekr.20170401122024.7" icons="5d71007d710128580700000072656c506174687102581900000066696c655f69636f6e732f66696c655f66696c65322e706e6771035807000000786f666673657471044b025807000000796f666673657471054b005804000000747970657106580400000066696c657107680758640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f66696c65322e706e67710858040000007870616471094b01580a00000076697375616c49636f6e710a580100000031710b58020000006f6e710c5805000000766e6f6465710d58050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e">@language cweb
 @ % This file is part of CWEB.
 % This program by Silvio Levy and Donald E. Knuth
 % is based on a program by Knuth.
@@ -10319,6 +10618,267 @@ line 1
         line b
 line c
 last line
+</t>
+<t tx="ekr.20170712045534.1"></t>
+<t tx="ekr.20170712045644.1">======================================================================
+ERROR: runTest (leo.core.leoTest.GeneralTestCase)
+@test x.makeShadowDirectory
+@test all commands have an event arg
+
+@test add/delete html comments
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/usr1/usr1/home/tbrown/t/Package/leo/git/leo-editor/leo/core/leoTest.py", line 211, in runTest
+    builtins.execfile(scriptFile, d)
+  File "/home/tbrown/.leo/scriptFile.py", line 27, in &lt;module&gt;
+    assert p.b == s,'fail5: s\n%s\nresult\n%s' % (repr(s),repr(p.b))
+AssertionError: fail5: s
+u'@language html\n&lt;html&gt;\n    text \n&lt;/html&gt;\n'
+result
+u'@language html\n&lt;html&gt;\n   text \n&lt;/html&gt;\n'
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.EditBodyTestCase)
+EditBodyTestCase: addComments
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/usr1/usr1/home/tbrown/t/Package/leo/git/leo-editor/leo/core/leoTest.py", line 105, in runTest
+    self.editBody()
+  File "/mnt/usr1/usr1/home/tbrown/t/Package/leo/git/leo-editor/leo/core/leoTest.py", line 85, in editBody
+    compareHeadlines=False), '%s: before undo1' % commandName
+AssertionError: addComments: before undo1</t>
+<t tx="ekr.20170712053944.1"></t>
+<t tx="ekr.20170712132824.1"></t>
+<t tx="ekr.20170712132900.1">w = c.frame.body.wrapper
+p = g.findNodeInTree(c,p,'html')
+assert p,'not found: html'
+old_indent = c.config.getBool('indent_added_comments',default=True)
+table = (
+    (
+        False,
+        '@language html\n&lt;html&gt;\n&lt;!-- text --&gt;\n&lt;/html&gt;\n',
+        '@language html\n&lt;html&gt;\ntext\n&lt;/html&gt;\n',
+    ),
+    (
+        True,
+        '@language html\n&lt;html&gt;\n    &lt;!-- text --&gt;\n&lt;/html&gt;\n',
+        '@language html\n&lt;html&gt;\n    text\n&lt;/html&gt;\n',
+    ),
+)
+try:
+    for indent, s1, expected in table:
+        # Step 1: set the setting.
+        c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+        val = c.config.getBool('indent_added_comments')
+        assert indent == val, (repr(indent), repr(val))
+        # Step 2: set p.b and the insert point.
+        c.selectPosition(p)
+        p.b = s1
+        i = p.b.find('text')
+        assert i &gt; -1,'fail1: %s' % (repr(p.b))
+        w.setSelectionRange(i,i+4)
+        # Step 3: test delete-comments
+        c.deleteComments()
+        assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+finally:
+    c.config.set(p, 'bool', 'indent_added_comments', old_indent)
+    val = c.config.getBool('indent_added_comments')
+    assert old_indent == val, (repr(indent), repr(val))
+</t>
+<t tx="ekr.20170712132933.1">@language html
+</t>
+<t tx="ekr.20170712132933.2">@language html
+&lt;html&gt;
+    text
+&lt;/html&gt;
+</t>
+<t tx="ekr.20170712134334.1">w = c.frame.body.wrapper
+p = g.findNodeInTree(c,p,'python')
+assert p,'not found: python'
+old_indent = c.config.getBool('indent_added_comments',default=True)
+table = (
+    (
+        True,
+        '@language python\ndef spam():\n    pass\n\n# after',
+        '@language python\ndef spam():\n    # pass\n\n# after',
+    ),
+    (
+        False,
+        '@language python\ndef spam():\n    pass\n\n# after',
+        '@language python\ndef spam():\n#     pass\n\n# after',
+    ),
+)
+try:
+    for indent, s1, expected in table:
+        # Step 1: set the setting.
+        c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+        val = c.config.getBool('indent_added_comments')
+        assert indent == val, (repr(indent), repr(val))
+        # Step 2: set p.b and the insert point.
+        c.selectPosition(p)
+        p.b = s1
+        i = p.b.find('pass')
+        assert i &gt; -1,'fail1: %s' % (repr(p.b))
+        w.setSelectionRange(i,i+4)
+        # Step 3: test add-comments
+        c.addComments()
+        assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+finally:
+    c.config.set(p, 'bool', 'indent_added_comments', old_indent)
+    val = c.config.getBool('indent_added_comments')
+    assert old_indent == val, (repr(indent), repr(val))
+</t>
+<t tx="ekr.20170712134334.2">@language python
+def spam():
+#     pass
+
+# after
+</t>
+<t tx="ekr.20170712134948.1">w = c.frame.body.wrapper
+p = g.findNodeInTree(c,p,'python')
+assert p,'not found: python'
+old_indent = c.config.getBool('indent_added_comments',default=True)
+table = (
+    (
+        True,
+        '@language python\ndef spam():\n    # pass\n\n# after',
+        '@language python\ndef spam():\n    pass\n\n# after',
+    ),
+    (
+        False,
+        '@language python\ndef spam():\n#     pass\n\n# after',
+        '@language python\ndef spam():\n    pass\n\n# after',
+    ),
+)
+try:
+    for indent, s1, expected in table:
+        # Step 1: set the setting.
+        c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+        val = c.config.getBool('indent_added_comments')
+        assert indent == val, (repr(indent), repr(val))
+        # Step 2: set p.b and the insert point.
+        c.selectPosition(p)
+        p.b = s1
+        i = p.b.find('pass')
+        assert i &gt; -1,'fail1: %s' % (repr(p.b))
+        w.setSelectionRange(i,i+4)
+        # Step 3: test delete-comments
+        c.deleteComments()
+        assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+finally:
+    c.config.set(p, 'bool', 'indent_added_comments', old_indent)
+    val = c.config.getBool('indent_added_comments')
+    assert old_indent == val, (repr(indent), repr(val))
+</t>
+<t tx="ekr.20170712134948.3">@language python
+def spam():
+    pass
+
+# after
+</t>
+<t tx="ekr.20170712135224.1">w = c.frame.body.wrapper
+p = g.findNodeInTree(c,p,'rest and python')
+assert p,'not found: rest and python'
+old_indent = c.config.getBool('indent_added_comments',default=True)
+table = (
+    (
+        False,
+        '@language rest\nrest text.\n@language python\ndef spam():\n#     pass\n# after',
+        '@language rest\nrest text.\n@language python\ndef spam():\n    pass\n# after',
+    ),
+    (
+        True,
+        '@language rest\nrest text.\n@language python\ndef spam():\n    # pass\n# after',
+        '@language rest\nrest text.\n@language python\ndef spam():\n    pass\n# after',
+    ),
+)
+try:
+    for indent, s1, expected in table:
+        # Step 1: set the setting.
+        c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+        val = c.config.getBool('indent_added_comments')
+        assert indent == val, (repr(indent), repr(val))
+        # Step 2: set p.b and the insert point.
+        c.selectPosition(p)
+        p.b = s1
+        i = p.b.find('pass')
+        assert i &gt; -1,'fail1: %s' % (repr(p.b))
+        w.setSelectionRange(i,i+4)
+        # Step 3: test add-comments
+        c.deleteComments()
+        assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+finally:
+    c.config.set(p, 'bool', 'indent_added_comments', old_indent)
+    val = c.config.getBool('indent_added_comments')
+    assert old_indent == val, (repr(indent), repr(val))
+</t>
+<t tx="ekr.20170712135224.2">@language rest
+rest text.
+@language python
+def spam():
+    pass
+# after
+</t>
+<t tx="ekr.20170712140759.1">@language rest
+@wrap
+
+I'm also having 3 failed tests with current master, some of those seem to be different from Terry's ones:
+
+Trying to create a QVariant instance of QMetaType::Void type, an invalid QVariant will be constructed instead
+
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test g.app.config @buttons and @commands logic
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\dev\Leo-5.4\leo\core\leoTest.py", line 209, in runTest
+    exec(compile(script, scriptFile, 'exec'), d)
+  File "C:\Users\sysadmin\.leo\scriptFile.py", line 26, in &lt;module&gt;
+    assert fn in aList,'%s not in unitTestDict[%s]' % (fn,key)
+AssertionError: myLeoSettings.leo not in unitTestDict[config.doCommands-file-names]
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test unbound Alt-9 key is completely ignored
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\dev\Leo-5.4\leo\core\leoTest.py", line 209, in runTest
+    exec(compile(script, scriptFile, 'exec'), d)
+  File "C:\Users\sysadmin\.leo\scriptFile.py", line 27, in &lt;module&gt;
+    assert g.app.unitTestDict.get('handleUnboundChar-ignore-alt-or-ctrl')
+AssertionError
+
+----------------------------------------------------------------------
+Ran 905 tests in 120.272s
+
+FAILED (failures=3, skipped=11)
+
+@language python
+
+
+</t>
+<t tx="ekr.20170721094522.1"></t>
+<t tx="ekr.20170818044949.1">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20170818044949.2">gnx: ekr.20090627070131.4975
+</t>
+<t tx="ekr.20170818044949.3">gnx: ekr.20090627070131.4976
+unl: spam
+gnx: ekr.20090627070131.4977
+unl: cheese
+</t>
+<t tx="ekr.20170818044949.4">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20170818044949.5">gnx: ekr.20100801125533.5788
+</t>
+<t tx="ekr.20170818044949.6">gnx: ekr.20100801125533.5789
+unl: spam
+gnx: ekr.20100801125533.5790
+unl: cheese
 </t>
 </tnodes>
 </leo_file>

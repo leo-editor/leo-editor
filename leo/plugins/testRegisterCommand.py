@@ -24,7 +24,7 @@ def onCreate(tag,keys):
         def f (event):
             g.es_print('Hello',color='purple')
 
-        c.keyHandler.registerCommand(
-            'print-hello','Alt-Ctrl-Shift-p',f)
+        c.keyHandler.registerCommand('print-hello', f)
+            # shortcut='Alt-Ctrl-Shift-p',
 #@-others
 #@-leo

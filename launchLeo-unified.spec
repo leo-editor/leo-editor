@@ -9,6 +9,10 @@ a pyinstaller .spec file that creates a stand-alone version of Leo.
 This is a single .exe file or a folder, depending on generate_folder.
 
 >pyinstaller launchLeo-unified.spec
+
+This may be better, per: https://stackoverflow.com/questions/32457341
+
+>pyinstaller --clean --win-private-assemblies launchLeo-unified.spec
 '''
 
 # Requires setuptools 19.2 (19.4 is broken)

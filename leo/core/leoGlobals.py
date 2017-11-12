@@ -44,6 +44,7 @@ if 0:
     print('*** isPython3: %s' % isPython3)
     if not enableDB:
         print('** leoGlobals.py: caching disabled')
+SQLITE = True
 #@-<< global switches >>
 #@+<< imports >>
 #@+node:ekr.20050208101229: ** << imports >> (leoGlobals)
@@ -80,7 +81,7 @@ else:
 # import functools
 import imp
 import inspect
-import locale
+# import locale
 import operator
 import os
 # Module 'urllib' has no 'parse' member.
@@ -146,7 +147,7 @@ globalDirectiveList = [
 #     def cmd(name):
 #         '''Command decorator for the abbrevCommands class.'''
 #         return g.new_cmd_decorator(name, ['c', 'abbrevCommands',])
-#         
+# 
 # **Important**: All *new* commands should be defined using @g.command, but
 # this dict will remain forever so as not to break existing code.  See this
 # discussion https://github.com/leo-editor/leo-editor/issues/325
@@ -1819,80 +1820,58 @@ def pdb(message=''):
     if message:
         print(message)
     pdb.set_trace()
-#@+node:ekr.20041224080039: *4* g.printDict & dictToString
-def printDict(d, tag='', verbose=True, indent=''):
-    '''Pretty print a Python dict using g.pr.'''
-    if d:
-        n = 6
-        for key in sorted(d):
-            if g.isString(key):
-                n = max(n, len(key))
-        g.pr('%s...{' % (tag) if tag else '{')
-        for key in sorted(d):
-            g.pr("%s%*s: %s" % (indent, n, key, repr(d.get(key)).strip()))
-        g.pr('}')
-    else:
-        g.pr('%s...{}' % (tag) if tag else '{}')
-
-def dictToString(d, tag=None, verbose=True, indent=''):
+#@+node:ekr.20041224080039: *4* g.dictToString
+def dictToString(d, indent='', tag=None):
     '''Pretty print a Python dict to a string.'''
-    if d:
-        n = 6
-        for key in sorted(d):
-            if g.isString(key):
-                n = max(n, len(key))
-        lines = ["%s%*s: %s" % (indent, n, key, repr(d.get(key)).strip())
-            for key in sorted(d)]
-        s = '\n'.join(lines)
-        if tag:
-            return '%s...{\n%s\n}\n' % (tag, s)
-        else:
-            return '{\n%s\n}\n' % (s)
+    if not d:
+        return '{}'
+    result = ['{\n']
+    indent2 = indent+' '*4
+    n = 6
+    for key in sorted(d):
+        n = max(n, len(key) if g.isString(key) else len(repr(key)))
+    keys = list(sorted(d))
+    for i, key in enumerate(keys):
+        result.append(indent2+key+': ')
+        result.append(objToString(d.get(key),indent=indent2))
+        if i+1 < len(keys):
+            result.append(',')
+        result.append('\n')
+    result.append(indent+'}')
+    s = ''.join(result)
+    return '%s...\n%s\n' % (tag, s) if tag else s
+#@+node:ekr.20041126060136: *4* g.listToString
+def listToString(obj, indent='', tag=None):
+    '''Pretty print a Python list to a string.'''
+    if not obj:
+        return '[]'
+    result = ['[']
+    indent2 = indent+' '*4
+    for i, obj2 in enumerate(obj):
+        if len(obj) > 1:
+            result.append('\n'+indent2)
+        result.append(objToString(obj2,indent=indent2))
+        if i+1 < len(obj) > 1:
+            result.append(',')
+        elif len(obj) > 1:
+            result.append('\n'+indent)
+    result.append(']')
+    s = ''.join(result)
+    return '%s...\n%s\n' % (tag, s) if tag else s
+#@+node:ekr.20050819064157: *4* g.objToSTring & g.toString
+def objToString(obj, indent='', tag=None):
+    '''Pretty print any Python object to a string.'''
+    if isinstance(obj, dict):
+        s = dictToString(obj, indent=indent)
+    elif isinstance(obj, list):
+        s = listToString(obj, indent=indent)
+    elif isinstance(obj, tuple):
+        s = tupleToString(obj, indent=indent)
     else:
-        return '%s...{}' % (tag) if tag else '{}'
-#@+node:ekr.20041126060136: *4* g.printList & listToString
-def printList(aList, tag=None, sort=False, indent=''):
-    if aList:
-        bList = list(sorted(aList)) if sort else aList
-        g.pr('%s...[' % (tag) if tag else '[')
-        for e in bList:
-            g.pr('%s%s' % (indent, repr(e).strip()))
-        g.pr(']')
-    else:
-        g.pr(tag + '...[]' if tag else '[]')
+        s = repr(obj)
+    return '%s...\n%s\n' % (tag, s) if tag else s
 
-def listToString(aList, tag=None, sort=False, indent='', toRepr=False):
-    if not aList:
-        if tag: return '%s...{}' % tag
-        else: return '[]'
-    if sort:
-        bList = aList[:] # Sort a copy!
-        bList.sort()
-    else:
-        bList = aList
-    lines = ["%s%s" % (indent, repr(e).strip()) for e in bList]
-    s = '\n'.join(lines)
-    if toRepr: s = repr(s)
-    if tag:
-        return '[%s...\n%s\n]' % (tag, s)
-    else:
-        return '[\n%s\n]' % s
-#@+node:ekr.20050819064157: *4* g.printObj & toString
-def printObj(obj, tag=None, sort=False, verbose=True, indent=''):
-    if isinstance(obj, (list, tuple)):
-        g.printList(obj, tag, sort, indent)
-    elif isinstance(obj, dict):
-        g.printDict(obj, tag, verbose, indent)
-    else:
-        g.pr('%s%s' % (indent, repr(obj).strip()))
-
-def toString(obj, tag=None, sort=False, verbose=True, indent=''):
-    if isinstance(obj, (list, tuple)):
-        return g.listToString(obj, tag, sort, indent)
-    elif isinstance(obj, dict):
-        return g.dictToString(obj, tag, verbose, indent)
-    else:
-        return '%s%s' % (indent, repr(obj).strip())
+toString = objToString
 #@+node:ekr.20140401054342.16844: *4* g.run_pylint
 def run_pylint(fn, rc,
     dots=True, # Show level dots in Sherlock traces.
@@ -1904,9 +1883,9 @@ def run_pylint(fn, rc,
 ):
     '''
     Run pylint with the given args, with Sherlock tracing if requested.
-    
+
     **Do not assume g.app exists.**
-    
+
     run() in pylint-leo.py and PylintCommand.run_pylint *optionally* call this function.
     '''
     try:
@@ -1949,6 +1928,32 @@ def sleep(n):
     '''Wait about n milliseconds.'''
     from time import sleep
     sleep(n) #sleeps for 5 seconds
+#@+node:ekr.20171023140544.1: *4* g.printObj & aliases
+def printObj(obj, indent='', tag=None):
+    '''Pretty print any Python object using g.pr.'''
+    g.pr(objToString(obj, indent=indent, tag=tag))
+
+printDict = printObj
+printList = printObj
+printTuple = printObj
+#@+node:ekr.20171023110057.1: *4* g.tupleToString
+def tupleToString(obj, indent='', tag=None):
+    '''Pretty print a Python tuple to a string.'''
+    if not obj:
+        return '(),'
+    result = ['(']
+    indent2 = indent+' '*4
+    for i, obj2 in enumerate(obj):
+        if len(obj) > 1:
+            result.append('\n'+indent2)
+        result.append(objToString(obj2,indent=indent2))
+        if len(obj) == 1 or i+1 < len(obj):
+            result.append(',')
+        elif len(obj) > 1:
+            result.append('\n'+indent)
+    result.append(')')
+    s = ''.join(result)
+    return '%s...\n%s\n' % (tag, s) if tag else s
 #@+node:ekr.20031218072017.1588: *3* g.Garbage Collection
 lastObjectCount = 0
 lastObjectsDict = {}
@@ -2215,9 +2220,9 @@ def timeSince(start):
 def callback(func):
     '''
     A global decorator that protects Leo against crashes in callbacks.
-    
+
     This is the recommended way of defining all callback.
-        
+
         @g.callback
         def a_callback(...):
             c = event.get('c')
@@ -2251,10 +2256,10 @@ def check_cmd_instance_dict(c, g):
 class Command(object):
     '''
     A global decorator for creating commands.
-    
+
     This is the recommended way of defining all new commands, including
     commands that could befined inside a class. The typical usage is:
-        
+
         @g.command('command-name')
         def A_Command(event):
             c = event.get('c')
@@ -2272,7 +2277,7 @@ class Command(object):
         global_commands_dict[self.name] = func
         if app:
             for c in app.commanders():
-                c.k.registerCommand(self.name, shortcut=None, func=func)
+                c.k.registerCommand(self.name, func)
         # Inject ivars for plugins_menu.py.
         func.is_command = True
         func.command_name = self.name
@@ -2591,7 +2596,7 @@ def isDirective(s):
             return bool(m.group(1) in g.globalDirectiveList)
     else:
         return False
-   
+
 #@+node:ekr.20080827175609.52: *3* g.scanAtCommentAndLanguageDirectives
 def scanAtCommentAndAtLanguageDirectives(aList):
     '''
@@ -3001,6 +3006,8 @@ def ensure_extension(name, ext):
     theFile, old_ext = g.os_path_splitext(name)
     if not name:
         return name # don't add to an empty name.
+    elif g.SQLITE and old_ext in ('.db', '.leo'):
+        return name
     elif old_ext and old_ext == ext:
         return name
     else:
@@ -3060,15 +3067,7 @@ def getEncodingAt(p, s=None):
     aList = g.get_directives_dict_list(p)
     e = g.scanAtEncodingDirectives(aList)
     if s and s.strip() and not e:
-        ###
-        if False and sys.platform.startswith('win'):
-            try:
-                s.decode('utf-8', 'strict')
-                e = 'utf-8'
-            except Exception:
-                e = locale.getpreferredencoding()
-        else:
-            e = 'utf-8'
+        e = 'utf-8'
     return e
 #@+node:ville.20090701144325.14942: *3* g.guessExternalEditor
 def guessExternalEditor(c=None):
@@ -3476,6 +3475,16 @@ def utils_stat(fileName):
     except Exception:
         mode = None
     return mode
+#@+node:vitalije.20170714085317.1: *3* g.fileFilters
+def fileFilters(key):
+    if key == 'LEOFILES' and g.SQLITE:
+        return ("Leo files", "*.leo *.db")
+    elif key == 'LEOFILES':
+        return ("Leo files", "*.leo")
+#@+node:vitalije.20170714085545.1: *3* g.defaultLeoFileExtension
+def defaultLeoFileExtension(c=None):
+    conf = c.config if c else g.app.config
+    return conf.getString('default_leo_extension') or '.leo'
 #@+node:ekr.20031218072017.3151: ** g.Finding & Scanning
 #@+node:ekr.20140602083643.17659: *3* g.find_word
 def find_word(s, word, i=0):
@@ -3507,7 +3516,7 @@ def findRootsWithPredicate(c, root, predicate):
     '''
     Commands often want to find one or more **roots**, given a position p.
     A root is the position of any node matching a predicate.
-    
+
     This function formalizes the search order used by the pylint, pyflakes and
     the rst3 commands, returning a list of zero or more found roots.
     '''
@@ -3553,7 +3562,7 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
         return True, maxdepth, maxp
 
     def moveToP(c, p):
-        
+
         def focus_callback(timer, c=c, p=p.copy()):
             '''Idle-time handler for g.recursiveUNLSearch'''
             c.expandAllAncestors(p)
@@ -3561,13 +3570,13 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
             if p.hasChildren():
                 p.expand()
                 # n = min(3, p.numberOfChildren())
-            c.redraw_now()
+            c.redraw()
             c.frame.bringToFront()
             timer.stop()
 
         timer = g.IdleTime(focus_callback, delay=0.1, tag='g.recursiveUNLSearch')
         if timer: timer.start()
-        
+
     found, maxdepth, maxp = recursiveUNLFind(
         unlList, c, depth, p, maxdepth, maxp,
         soft_idx=soft_idx, hard_idx=hard_idx)
@@ -4266,7 +4275,7 @@ def gitHeadPath(path=None):
 def gitInfo(path=None):
     '''
     Path is a .git/HEAD directory, or None.
-    
+
     Return the branch and commit number or ('', '').
     '''
     trace = False and not g.unitTesting
@@ -5057,7 +5066,7 @@ else:
     def ue(s, encoding):
         # Use builtins to suppress pyflakes complaint.
         # pylint: disable=no-member, undefined-variable
-        return builtins.unicode(s, encoding) 
+        return builtins.unicode(s, encoding)
 #@+node:ekr.20170108034643.1: *4* g.ustr (pyzo)
 def ustr(s):
     '''Define the pyzo ustr function.'''
@@ -5434,7 +5443,7 @@ def es(*args, **keys):
             else: log.newlines = 0
     else:
         app.logWaiting.append((s, color, newline),)
-    
+
 #@+node:ekr.20141107085700.4: *3* g.es_debug
 def es_debug(*args, **keys):
     '''
@@ -5623,6 +5632,9 @@ def pr(*args, **keys):
     newline = d.get('newline')
     stdout = sys.stdout if sys.stdout and g.unitTesting else sys.__stdout__
         # Unit tests require sys.stdout.
+    if not stdout:
+        # Fix #541.
+        return
     if sys.platform.lower().startswith('win'):
         encoding = 'ascii' # 2011/11/9.
     elif getattr(stdout, 'encoding', None):
@@ -5938,7 +5950,7 @@ def init_zodb(pathToZodbStorage, verbose=True):
 def input_(message='', c=None):
     '''
     Safely execute python's input statement.
-    
+
     c.executeScriptHelper binds 'input' to be a wrapper that calls g.input_
     with c and handler bound properly.
     '''
@@ -5946,7 +5958,7 @@ def input_(message='', c=None):
         return ''
     if False: # c and app and not app.gui.isNullGui:
         # Use the minibuffer.
-        
+
         def handler(event, c=c):
             c.k.resetLabel()
             return c.k.arg
@@ -6061,9 +6073,17 @@ def os_path_expandExpression(s, **keys):
         if exp:
             try:
                 p = c.p
-                d = {'c': c, 'g': g, 'p': p, 'os': os, 'sys': sys,}
+                d = {
+                    'c': c,
+                    'g': g,
+                    # 'getString': c.config.getString,
+                    'p': p,
+                    'os': os,
+                    'sep': os.sep,
+                    'sys': sys,
+                }
                 val = eval(exp, d)
-                # 2017/02/02: # Attempt a fix for #343:
+                # Fix #343:
                 val = g.toUnicode(val, encoding='utf-8', reportErrors=True)
                 s = s[: i] + val + s[j + 2:]
                 if trace: g.trace('returns', s)
@@ -6346,10 +6366,10 @@ def getDocStringForFunction(func):
     def get_defaults(func, i):
         args, varargs, keywords, defaults = inspect.getargspec(func)
         return defaults[i]
+
     # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
     # Minibuffer commands created by mod_scripting.py have no docstrings.
     # Do special cases first.
-
     s = ''
     if name(func) == 'minibufferCallback':
         func = get_defaults(func, 0)
@@ -6362,12 +6382,12 @@ def getDocStringForFunction(func):
             # Do a text scan for the function.
         if trace: g.trace('commonCallback.__doc__', repr(s))
     # Now the general cases.  Prefer __doc__ to docstring()
-    if not s and hasattr(func, 'docstring'):
-        s = func.docstring()
-        if trace: g.trace('func.docstring()', name(func), repr(s))
     if not s and hasattr(func, '__doc__'):
         s = func.__doc__
         if trace: g.trace('__doc__', name(func), repr(s))
+    if not s and hasattr(func, 'docstring'):
+        s = func.docstring
+        if trace: g.trace('func.docstring()', name(func), repr(s))
     if not s:
         if trace: g.trace('fail')
     return s
@@ -6547,7 +6567,7 @@ def composeScript(c, p, s, forcePythonSentinels=True, useSentinels=True):
 def extractExecutableString(c, p, s, language='python'):
     '''
     Return all lines for the given @language directive.
-    
+
     Ignore all lines under control of any other @language directive.
     '''
     if g.unitTesting:
@@ -6569,7 +6589,6 @@ def handleScriptException(c, p, script, script1):
     g.warning("exception executing script")
     full = c.config.getBool('show_full_tracebacks_in_scripts')
     fileName, n = g.es_exception(full=full)
-    n = max(0, n - 1) # Convert to zero-based.
     c.goToScriptLineNumber(n, p)
     #@+<< dump the lines near the error >>
     #@+node:EKR.20040612215018: *4* << dump the lines near the error >>
@@ -6711,7 +6730,7 @@ url_regex = re.compile(r"""%s://[^\s'"]+[\w=/]""" % (kinds))
 def unquoteUrl(url):
     '''
     Replace special characters (especially %20, by their equivalent).
-    
+
     This function handles 2/3 issues and suppresses pylint complaints.
     '''
     # pylint: disable=no-member
@@ -6934,7 +6953,7 @@ def handleUnl(unl, c):
         return
     # End editing in *this* outline, so typing in the new outline works.
     c.endEditing()
-    c.redraw_now()
+    c.redraw()
     if g.unitTesting:
         g.app.unitTestDict['g.recursiveUNLSearch'] = path
     else:
@@ -6979,7 +6998,7 @@ def openUrl(p):
             c = p.v.context
             if not g.doHook("@url1", c=c, p=p, v=p, url=url):
                 g.handleUrl(url, c=c, p=p)
-            g.doHook("@url2", c=c, p=p, v=p)
+            g.doHook("@url2", c=c, p=p, v=p, url=url)
 #@+node:ekr.20110605121601.18135: *3* g.openUrlOnClick (open-url-under-cursor)
 def openUrlOnClick(event, url=None):
     '''Open the URL under the cursor.  Return it for unit testing.'''
@@ -7028,6 +7047,8 @@ def openUrlHelper(event, url=None):
                     return
     elif not g.isString(url):
         url = url.toString()
+        url = g.toUnicode(url)
+            # Fix #571
     if url and g.isValidUrl(url):
         # Part 2: handle the url
         p = c.p

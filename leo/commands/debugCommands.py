@@ -52,6 +52,18 @@ class DebugCommandsClass(BaseEditCommandsClass):
         g.trace_gc = True
         g.printGcVerbose()
         g.trace_gc = old
+    #@+node:ekr.20170713112849.1: *3* debug.dumpNode
+    @cmd('dump-node')
+    def dumpNode(self, event=None):
+        '''Dump c.p.v, including gnx, uA's, etc.'''
+        p = self.c.p
+        if p:
+            g.es_print('gnx: %s %s' % (p.v.gnx, p.v.h))
+            if p.v.u:
+                g.es_print('uAs')
+                g.printDict(p.v.u)
+            else:
+                g.es_print('no uAs')
     #@+node:ekr.20150514063305.107: *3* debug.enable/disableGcTrace
     @cmd('gc-trace-disable')
     def disableGcTrace(self, event=None):
@@ -144,7 +156,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
             g.es_print('killed log listener.')
         else:
             g.es_print('log listener not active.')
-        
+
     #@+node:ekr.20170429152049.1: *3* debug.listenToLog
     @cmd('listen-to-log')
     @cmd('log-listen')
@@ -152,9 +164,9 @@ class DebugCommandsClass(BaseEditCommandsClass):
         '''
         A socket listener, listening on localhost. See:
         https://docs.python.org/2/howto/logging-cookbook.html#sending-and-receiving-logging-events-across-a-network
-        
+
         Start this listener first, then start the broadcaster.
-        
+
         leo/plugins/cursesGui2.py is a typical broadcaster.
         '''
         # Kill any previous listener.

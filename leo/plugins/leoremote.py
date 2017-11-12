@@ -6,7 +6,7 @@
 
     NOTE: as of 2015-07-29 the http://localhostL:8130/_/exec/ mode of
     the mod_http plug-in is intended to replace this module's functionality.
-    
+
     2016/12/23: Use g.exec_file, so this module *might* work with Python 3.
 
     Executing the leoserve-start command will cause Leo to to listen on a local

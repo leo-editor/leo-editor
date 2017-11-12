@@ -5,6 +5,7 @@ use_zodb = False
 #@+<< imports >>
 #@+node:ekr.20060904165452.1: ** << imports >> (leoNodes)
 import leo.core.leoGlobals as g
+import leo.core.signal_manager as sig
 # if g.app and g.app.use_psyco:
     # # g.pr("enabled psyco classes",__file__)
     # try: from psyco.classes import *
@@ -360,8 +361,9 @@ class Position(object):
         return [int(s.split(':')[1]) for s in p.key().split('.')]
     # This has makes positions hashable, at long long last.
 
-    def __hash__(self):
-        return sum([z[1] for z in self.stack])
+    #def __hash__(self):
+    #    return sum([z[1] for z in self.stack])
+    __hash__ = None
     #@+node:ekr.20040315023430: *3* p.File Conversion
     #@+at
     # - convertTreeToString and moreHead can't be VNode methods because they uses level().
@@ -437,10 +439,10 @@ class Position(object):
         A generator yielding all the root positions "near" p1 = self that
         satisfy the given predicate. p.isAnyAtFileNode is the default
         predicate.
-        
+
         The search first proceeds up the p's tree. If a root is found, this
         generator yields just that root.
-        
+
         Otherwise, the generator yields all nodes in p.subtree() that satisfy
         the predicate. Once a root is found, the generator skips its subtree.
         '''
@@ -472,10 +474,10 @@ class Position(object):
         A generator yielding all unique root positions "near" p1 = self that
         satisfy the given predicate. p.isAnyAtFileNode is the default
         predicate.
-        
+
         The search first proceeds up the p's tree. If a root is found, this
         generator yields just that root.
-        
+
         Otherwise, the generator yields all unique nodes in p.subtree() that
         satisfy the predicate. Once a root is found, the generator skips its
         subtree.
@@ -1300,7 +1302,7 @@ class Position(object):
         else:
             if trace: g.trace('outside limit tree', limit, p)
             return True, None
-       
+
     #@+node:ekr.20080416161551.211: *4* p.moveToVisNext & helper
     def moveToVisNext(self, c):
         """Move a position to the position of the next visible node."""
@@ -1395,23 +1397,26 @@ class Position(object):
 
     # To do: use v.copyTree instead.
 
-    def copyTreeAfter(self):
+    def copyTreeAfter(self, copyGnxs=False):
         '''Copy p and insert it after itself.'''
         p = self
         p2 = p.insertAfter()
-        p.copyTreeFromSelfTo(p2)
+        p.copyTreeFromSelfTo(p2, copyGnxs=copyGnxs)
         return p2
 
-    def copyTreeFromSelfTo(self, p2):
+    def copyTreeFromSelfTo(self, p2, copyGnxs=False):
         p = self
         p2.v._headString = g.toUnicode(p.h, reportErrors=True) # 2017/01/24
         p2.v._bodyString = g.toUnicode(p.b, reportErrors=True) # 2017/01/24
-        # 2013/09/08: Fix bug 1019794: p.copyTreeFromSelfTo, should deepcopy p.v.u.
+        # Fix bug 1019794: p.copyTreeFromSelfTo, should deepcopy p.v.u.
         p2.v.u = copy.deepcopy(p.v.u)
+        # 2017/08/20: Add support for copyGnx's keyword arg.
+        if copyGnxs:
+            p2.v.fileIndex = p.v.fileIndex
         # 2009/10/02: no need to copy arg to iter
         for child in p.children():
             child2 = p2.insertAsLastChild()
-            child.copyTreeFromSelfTo(child2)
+            child.copyTreeFromSelfTo(child2, copyGnxs=copyGnxs)
     #@+node:ekr.20160502095354.1: *4* p.copyWithNewVnodes
     def copyWithNewVnodes(self, copyMarked=False):
         '''
@@ -1609,10 +1614,10 @@ class Position(object):
     def __set_b(self, val):
         '''
         Set the body text of a position.
-        
+
         **Warning: the p.b = whatever is *expensive* because it calls
         c.setBodyString().
-        
+
         Usually, code *should* this setter, despite its cost, because it
         update's Leo's outline pane properly. Calling c.redraw() is *not*
         enough.
@@ -1637,10 +1642,10 @@ class Position(object):
     def __set_h(self, val):
         '''
         Set the headline text of a position.
-        
+
         **Warning: the p.h = whatever is *expensive* because it calls
         c.setHeadString().
-        
+
         Usually, code *should* this setter, despite its cost, because it
         update's Leo's outline pane properly. Calling c.redraw() is *not*
         enough.
@@ -1845,10 +1850,10 @@ class Position(object):
     def setDirty(self, setDescendentsDirty=True):
         '''
         Mark a node and all ancestor @file nodes dirty.
-        
+
         **Warning**: p.setDirty() is *expensive* because it calls
         p.setAllAncestorAtFileNodesDirty().
-        
+
         Usually, code *should* this setter, despite its cost, because it
         update's Leo's outline pane properly. Calling c.redraw() is *not*
         enough.
@@ -2517,6 +2522,7 @@ class VNodeBase(object):
                     self.unicode_warning_given = True
                     g.internalError(s)
                     g.es_exception()
+        sig.emit(self.context, 'body_changed', self)
 
     def setHeadString(self, s):
         # Fix bug: https://bugs.launchpad.net/leo-editor/+bug/1245535

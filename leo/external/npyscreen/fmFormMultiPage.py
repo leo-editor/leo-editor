@@ -35,7 +35,7 @@ class FormMultiPage(fmForm.FormBaseNew):
 
         if hasattr(self, 'parentApp'):
             self.parentApp.resize()
-            
+
         self._create_screen()
         self.resize()
         for page in self._pages__:
@@ -48,7 +48,7 @@ class FormMultiPage(fmForm.FormBaseNew):
     def display_page_number(self):
         if not self.display_pages:
             return False
-            
+
         if len(self._pages__) > 1:
             display_text = "%s%s %s %s %s%s" % (
                 self.page_info_pre_pages_display,
@@ -61,23 +61,23 @@ class FormMultiPage(fmForm.FormBaseNew):
         # for python2
             if isinstance(display_text, bytes):
                 display_text = display_text.decode('utf-8', 'replace')
-        
+
             maxy,maxx = self.curses_pad.getmaxyx()
-        
+
             if (maxx-5) <= len(display_text):
                 # then give up.
                 return False
-        
+
             self.add_line(
                 maxy - 1,
                 maxx - len(display_text) - 2,
                 display_text,
-                self.make_attributes_list(display_text, 
-                     curses.A_NORMAL | self.theme_manager.findPair(self, 
+                self.make_attributes_list(display_text,
+                     curses.A_NORMAL | self.theme_manager.findPair(self,
                                                                   self.pages_label_color)),
                 maxx - len(display_text) - 2,
             )
-        
+
 
     #@+node:ekr.20170428084207.230: *3* add_widget_intelligent
     def add_widget_intelligent(self, *args, **keywords):
@@ -86,7 +86,7 @@ class FormMultiPage(fmForm.FormBaseNew):
         except NotEnoughSpaceForWidget:
             self.add_page()
             return self.add_widget(*args, **keywords)
-            
+
 
     #@+node:ekr.20170428084207.231: *3* _clear_all_widgets
     def _clear_all_widgets(self,):
@@ -121,7 +121,7 @@ class FormMultiPage(fmForm.FormBaseNew):
             else:
                 r = list(range(self.editw+1, len(self._widgets__))) + list(range(0, self.editw))
             for n in r:
-                if self._widgets__[n].editable and not self._widgets__[n].hidden: 
+                if self._widgets__[n].editable and not self._widgets__[n].hidden:
                     self.editw = n
                     value_changed = True
                     break
@@ -136,23 +136,23 @@ class FormMultiPage(fmForm.FormBaseNew):
         if self.editw == 0:
             if self._active_page > 0:
                 self.switch_page(self._active_page-1)
-        
-        if not self.editw == 0:     
+
+        if not self.editw == 0:
             # remember that xrange does not return the 'last' value,
             # so go to -1, not 0! (fence post error in reverse)
             for n in range(self.editw-1, -1, -1 ):
-                if self._widgets__[n].editable and not self._widgets__[n].hidden: 
+                if self._widgets__[n].editable and not self._widgets__[n].hidden:
                     self.editw = n
                     break
-                    
-                    
+
+
     #@-others
 #@+node:ekr.20170428084207.236: ** class FormMultiPageAction
 class FormMultiPageAction(FormMultiPage):
     CANCEL_BUTTON_BR_OFFSET = (2, 12)
     OK_BUTTON_TEXT          = "OK"
     CANCEL_BUTTON_TEXT      = "Cancel"
-    
+
     #@+others
     #@+node:ekr.20170428084207.237: *3* on_ok
     def on_ok(self):
@@ -166,10 +166,10 @@ class FormMultiPageAction(FormMultiPage):
     def pre_edit_loop(self):
         self._page_for_buttons = len(self._pages__)-1
         self.switch_page(self._page_for_buttons)
-        
+
         # Add ok and cancel buttons. Will remove later
         tmp_rely, tmp_relx = self.nextrely, self.nextrelx
-        
+
         c_button_text = self.CANCEL_BUTTON_TEXT
         cmy, cmx = self.curses_pad.getmaxyx()
         cmy -= self.__class__.CANCEL_BUTTON_BR_OFFSET[0]
@@ -177,7 +177,7 @@ class FormMultiPageAction(FormMultiPage):
         self.c_button = self.add_widget(self.__class__.OKBUTTON_TYPE, name=c_button_text, rely=cmy, relx=cmx, use_max_space=True)
         self._c_button_postion = len(self._widgets__)-1
         self.c_button.update()
-        
+
         my, mx = self.curses_pad.getmaxyx()
         ok_button_text = self.OK_BUTTON_TEXT
         my -= self.__class__.OK_BUTTON_BR_OFFSET[0]
@@ -187,7 +187,7 @@ class FormMultiPageAction(FormMultiPage):
         # End add buttons
         self.nextrely, self.nextrelx = tmp_rely, tmp_relx
         self.switch_page(0)
-        
+
     #@+node:ekr.20170428084207.240: *3* _during_edit_loop
     def _during_edit_loop(self):
         if self.ok_button.value or self.c_button.value:
@@ -204,7 +204,7 @@ class FormMultiPageAction(FormMultiPage):
     def resize(self):
         super(FormMultiPageAction, self).resize()
         self.move_ok_button()
-          
+
     #@+node:ekr.20170428084207.242: *3* move_ok_button
     def move_ok_button(self):
         if hasattr(self, 'ok_button'):
@@ -234,7 +234,7 @@ class FormMultiPageAction(FormMultiPage):
         #self.nextrely, self.nextrelx = tmp_rely, tmp_relx
         self.display()
         self.editing = False
-        
+
         return self.edit_return_value
 
 

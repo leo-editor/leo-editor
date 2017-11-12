@@ -109,7 +109,7 @@ class controller(object):
             g.es(dirName)
             compteurglobal = self.importDir(dirName,compteurglobal=0)
             c.selectPosition(c.p)
-            c.redraw_now()
+            c.redraw()
             if language == 'french':
                 g.es(str(compteurglobal)+" fichiers traités.")
             else:

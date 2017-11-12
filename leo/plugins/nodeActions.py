@@ -347,7 +347,7 @@ def doNodeAction(pClicked, c):
                     if saveAtFile:
                         #Problem - No way found to just save clicked node, saving all
                         c.fileCommands.writeAtFileNodes()
-                        c.requestRedrawFlag = True
+                        ### c.requestRedrawFlag = True
                         c.redraw()
                         if messageLevel >= 3:
                             g.blue( "nA:    Saved '" + hClicked + "'")

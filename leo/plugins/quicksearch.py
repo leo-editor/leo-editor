@@ -81,7 +81,6 @@ This plugin defines the following commands that can be bound to keys:
 import leo.core.leoGlobals as g
 import itertools
 from collections import OrderedDict
-
 # Fail gracefully if the gui is not qt.
 g.assertUi('qt')
 from leo.core.leoQt import QtCore,QtConst,QtWidgets # isQt5,QtGui,
@@ -179,21 +178,13 @@ def install_qt_quicksearch_tab(c):
         c.frame.log.selectTab('Nav')
         wdg.scon.doTimeline()
 
-    c.k.registerCommand(
-        'find-quick',None,focus_quicksearch_entry)
-    c.k.registerCommand(
-        # 'find-quick-selected','Ctrl-Shift-f',find_selected)
-        'find-quick-selected',None,find_selected)
-    c.k.registerCommand(
-        'focus-to-nav', None,focus_to_nav)
-    c.k.registerCommand(
-        'find-quick-test-failures', None,show_unittest_failures)
-    c.k.registerCommand(
-        'find-quick-timeline', None, timeline)
-    c.k.registerCommand(
-        'find-quick-changed', None, show_dirty)
-    c.k.registerCommand(
-        'history', None, nodehistory)
+    c.k.registerCommand('find-quick', focus_quicksearch_entry)
+    c.k.registerCommand('find-quick-selected', find_selected, shortcut='Ctrl-Shift-f')
+    c.k.registerCommand('focus-to-nav', focus_to_nav)
+    c.k.registerCommand('find-quick-test-failures', show_unittest_failures)
+    c.k.registerCommand('find-quick-timeline', timeline)
+    c.k.registerCommand('find-quick-changed', show_dirty)
+    c.k.registerCommand('history', nodehistory)
 
     @g.command('marked-list')
     def showmarks(event):
@@ -507,7 +498,9 @@ class QuickSearchController(object):
         lineMatchHits = 0
         for parent_key, parent_value in parent_list.items():
             if g.isString(parent_key):
-                it = QtWidgets.QListWidgetItem(parent_key, self.lw)
+                v = self.c.fileCommands.gnxDict.get(parent_key)
+                h = v.h if v else parent_key
+                it = QtWidgets.QListWidgetItem(h, self.lw)
             else:
                 it = QtWidgets.QListWidgetItem(parent_key.h, self.lw)
             f = it.font()
@@ -566,13 +559,13 @@ class QuickSearchController(object):
             return _f
         for pat in self._search_patterns:
             self.addGeneric(pat, sHistSelect(pat))
-        
+
 
     def pushSearchHistory(self, pat):
         if pat in self._search_patterns:
             return
         self._search_patterns = ([pat] + self._search_patterns)[:30]
-        
+
     #@+node:tbrown.20120220091254.45207: *3* doTimeline
     def doTimeline(self):
 
@@ -595,7 +588,10 @@ class QuickSearchController(object):
         self.pushSearchHistory(pat)
         if not pat.startswith('r:'):
             hpat = fnmatch.translate('*'+ pat + '*').replace(r"\Z(?ms)","")
-            bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)","")
+            bpat = fnmatch.translate(pat).rstrip('$').replace(r"\Z(?ms)", "")
+            # in python 3.6 there is no (?ms) at the end
+            # only \Z
+            bpat = bpat.replace(r'\Z', '')
             flags = re.IGNORECASE
         else:
             hpat = pat[2:]
@@ -636,8 +632,8 @@ class QuickSearchController(object):
                         hitBase = True
                     else:
                         node = node.parent()
-            if hitBase: 
-                # If I hit the base then revert to all positions 
+            if hitBase:
+                # If I hit the base then revert to all positions
                 # this is basically the "main" chapter
                 hitBase = False #reset
                 hNodes = self.c.all_positions()
@@ -657,13 +653,13 @@ class QuickSearchController(object):
             numOfHm = len(hm) #do this before trim to get accurate count
             hm = [match for match in hm if match.key() not in bm_keys]
             if self.widgetUI.showParents.isChecked():
-                parents = OrderedDefaultDict(lambda: [])
+                parents = OrderedDefaultDict(list)
                 for nodeList in [hm,bm]:
                     for node in nodeList:
                         if node.level() == 0:
                             parents["Root"].append(node)
                         else:
-                            parents[node.parent()].append(node)
+                            parents[node.parent().gnx].append(node)
                 lineMatchHits = self.addParentMatches(parents)
             else:
                 self.addHeadlineMatches(hm)

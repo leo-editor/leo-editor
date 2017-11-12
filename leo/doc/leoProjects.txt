@@ -1,7 +1,27 @@
 .. @+leo-ver=5-thin
 .. @+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 .. @+all
-.. @+node:ekr.20170707035417.1: ** Leo 5.6
+.. @+node:ekr.20170619165453.1: ** Branch: string-gui
+Attempt to run all unit tests without using Qt gui code.
+All gui-related code will be simulated with the StringTextWrapper class.
+.. @+node:ekr.20170807103720.1: ** Branch: redraw
+Note: cc.selectChapterForPosition calls c.redraw *only* if the chapter changes.
+
+- Investigate running unit tests without redraw.
+  Related to string-gui branch: Use string/null gui for unit tests.
+  https://github.com/leo-editor/leo-editor/issues/503
+
+- Added support for c.redraw_later, called from cc.selectChapterForPosition.
+- c.bringToFront now works without using c.outerUpdate.
+- c.widgetWantsFocusNow now just calls c.set_focus & clears c.requestedFocusWidget.
+- c.outerUpdate no longer handles recoloring or redrawing.
+- Replaced all calls to c.recolor_now by c.recolor.
+- Replaced all calls to redraw_now by redraw.
+- Removed all calls to body.forceFullRecolor.
+- Removed forceFullRecolorFlag.
+- Done: removed c.incrementalRecolorFlag.
+- Done: c.selectPosition never calls c.redraw. All unit tests pass.
+- Done: Removed c.requestRedrawFlag and c.outerUpdate never calls c.redraw.  All tests pass.
 .. @-all
 .. @@nosearch
 .. @@killbeautify

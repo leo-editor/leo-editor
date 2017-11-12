@@ -22,17 +22,15 @@ class ParserBaseClass(object):
     basic_types = [
         # Headlines have the form @kind name = var
         'bool', 'color', 'directory', 'int', 'ints',
-        'float', 'path', 'ratio', 'shortcut', 'string', 'strings']
+        'float', 'path', 'ratio', 'string', 'strings']
     control_types = [
-        'abbrev', 'buttons',
+        'buttons',
         'commands', 'data',
         'enabledplugins', 'font',
         'ifenv', 'ifhostname', 'ifplatform',
-        # 'if','ifgui',
         'ignore',
         'menus', 'mode', 'menuat',
         'openwith', 'outlinedata',
-        # 'page',
         'popup',
         'settings', 'shortcuts',
         ]
@@ -389,7 +387,9 @@ class ParserBaseClass(object):
         '''Handle @menuat setting.'''
         trace = False and not g.unitTesting
         if g.app.config.menusList:
-            if trace: g.es_print("Patching menu tree: " + name)
+            if trace:
+                g.es_print("Patching menu tree: " + name)
+                g.es_print(self.c)
             # get the patch fragment
             patch = []
             if p.hasChildren():
@@ -405,7 +405,9 @@ class ParserBaseClass(object):
                 targetPath = '/' + targetPath
             ans = self.patchMenuTree(g.app.config.menusList, targetPath)
             if ans:
-                if trace: g.es_print("Patching (" + mode + ' ' + source + ") at " + targetPath)
+                if trace:
+                    # g.es_print("Patching (" + mode + ' ' + source + ") at " + targetPath)
+                    g.es_print("Patching (%s %s) at %s" % (mode, source, targetPath))
                 # pylint: disable=unpacking-non-sequence
                 list_, idx = ans
                 if mode not in ('copy', 'cut'):
@@ -463,19 +465,20 @@ class ParserBaseClass(object):
                 self.dumpMenuTree(val, level + 1, path=path + '/' + name)
     #@+node:tbrown.20080514180046.8: *5* patchMenuTree
     def patchMenuTree(self, orig, targetPath, path=''):
+        trace = False and not g.unitTesting
         for n, z in enumerate(orig):
             kind, val, val2 = z
             if kind == '@item':
                 name = self.getName(val, val2)
                 curPath = path + '/' + name
                 if curPath == targetPath:
-                    g.es_print('Found ' + targetPath)
+                    if trace: g.es_print('Found ' + targetPath)
                     return orig, n
             else:
                 name = self.getName(kind.replace('@menu ', ''))
                 curPath = path + '/' + name
                 if curPath == targetPath:
-                    g.es_print('Found ' + targetPath)
+                    if trace: g.es_print('Found ' + targetPath)
                     return orig, n
                 ans = self.patchMenuTree(val, targetPath, path=path + '/' + name)
                 if ans:
@@ -547,8 +550,7 @@ class ParserBaseClass(object):
                         else:
                             kind = tag
                             head = itemName
-                            # body = p.b
-                            # 4.11.1: Only the first body line is significant.
+                            # Only the first body line is significant.
                             # This allows following comment lines.
                             lines = [z for z in g.splitLines(p.b) if z.strip()]
                             body = lines[0] if lines else ''
@@ -910,7 +912,14 @@ class ParserBaseClass(object):
         c = self.c
         # Note: when kind is 'shortcut', name is a command name.
         key = self.munge(name)
-        # if kind and kind.startswith('setting'): g.trace("settingsParser %10s %15s %s" %(kind,val,name))
+        if key is None:
+            g.es_print('Empty setting name in', p.h in c.fileName())
+            # g.trace("(ParserBaseClass): %r %r %r %s" % (kind,val,name,p.h))
+            parent = p.parent()
+            while parent:
+                g.trace('parent', parent.h)
+                parent.moveToParent()
+            return
         d = self.settingsDict
         gs = d.get(key)
         if gs:
@@ -1310,7 +1319,10 @@ class GlobalConfigManager(object):
     #@+node:ekr.20041122070339: *4* gcm.getColor
     def getColor(self, setting):
         '''Return the value of @color setting.'''
-        return self.get(setting, "color")
+        col = self.get(setting, "color")
+        while col and col.startswith('@'):
+            col = self.get(col[1:], "color")
+        return col
     #@+node:ekr.20080312071248.7: *4* gcm.getCommonCommands
     def getCommonAtCommands(self):
         '''Return the list of tuples (headline,script) for common @command nodes.'''
@@ -1640,7 +1652,10 @@ class LocalConfigManager(object):
     #@+node:ekr.20120215072959.12525: *5* c.config.getColor
     def getColor(self, setting):
         '''Return the value of @color setting.'''
-        return self.get(setting, "color")
+        col = self.get(setting, "color")
+        while col and col.startswith('@'):
+            col = self.get(col[1:], "color")
+        return col
     #@+node:ekr.20120215072959.12527: *5* c.config.getData
     def getData(self, setting, strip_comments=True, strip_data=True):
         '''Return a list of non-comment strings in the body text of @data setting.'''
@@ -1853,11 +1868,11 @@ class LocalConfigManager(object):
         if g.unitTesting:
             pass # print(''.join(result))
         else:
-            g.es('', ''.join(result), tabName='Settings')
+            g.es_print('', ''.join(result), tabName='Settings')
     #@+node:ekr.20120215072959.12475: *3* c.config.set
-    def set(self, p, kind, name, val):
+    def set(self, p, kind, name, val, warn=True):
         """Init the setting for name to val."""
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         if trace: g.trace(kind, name, val)
         c = self.c
         # Note: when kind is 'shortcut', name is a command name.
@@ -1868,7 +1883,7 @@ class LocalConfigManager(object):
         if gs:
             assert g.isGeneralSetting(gs), gs
             path = gs.path
-            if c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
+            if warn and c.os_path_finalize(c.mFileName) != c.os_path_finalize(path):
                 g.es("over-riding setting:", name, "from", path)
         gs = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting')
         d.replace(key, gs)
@@ -1922,4 +1937,31 @@ class SettingsTreeParser(ParserBaseClass):
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
+def parseFont(b):
+    family = None
+    weight = None
+    slant = None
+    size = None
+    settings_name = None
+    for line in g.splitLines(b):
+        line = line.strip()
+        if line.startswith('#'): continue
+        i = line.find('=')
+        if i < 0: continue
+        name = line[:i].strip()
+        if name.endswith('_family'):
+            family = line[i+1:].strip()
+        elif name.endswith('_weight'):
+            weight = line[i+1:].strip()
+        elif name.endswith('_size'):
+            size = line[i+1:].strip()
+            try:
+                size = float(size)
+            except ValueError:
+                size = 12
+        elif name.endswith('_slant'):
+            slant = line[i+1:].strip()
+        if settings_name is None and name.endswith(('_family', '_slant', '_weight','_size')):
+            settings_name = name.rsplit('_', 1)[0]
+    return settings_name, family, weight == 'bold', slant in ('slant', 'italic'), size
 #@-leo

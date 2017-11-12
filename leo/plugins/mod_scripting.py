@@ -562,8 +562,7 @@ class ScriptingController(object):
         # Register the delete-x-button command.
 
         deleteCommandName = 'delete-%s-button' % commandName
-        c.k.registerCommand(deleteCommandName, shortcut=None,
-            func=deleteButtonCallback, pane='button', verbose=False)
+        c.k.registerCommand(deleteCommandName, deleteButtonCallback, pane='button')
             # Reporting this command is way too annoying.
         return b
     #@+node:ekr.20060328125248.28: *3* sc.executeScriptFromButton
@@ -983,37 +982,37 @@ class ScriptingController(object):
         trace = False and not g.unitTesting
         trace_name = False
         c, k = self.c, self.c.k
-        shortcut = self.getShortcut(h)
+        shortcut = self.getShortcut(h) or ''
         if trace: g.trace('pane', pane, 'shortcut', shortcut, h)
-        s = self.cleanButtonText(h)
+        commandName = self.cleanButtonText(h)
         if trace and trace_name:
             if hasattr(func, '__name__'):
                 g.trace(func.__name__, func.__doc__)
             else:
                 g.trace(func)
         # Register the original function.
-        k.registerCommand(s, func=func,
+        k.registerCommand(commandName, func,
             pane=pane, shortcut=shortcut, source_c=source_c, verbose=trace)
         # 2013/11/13 Jake Peck:
         # include '@rclick-' in list of tags
         for tag in ('@button-', '@command-', '@rclick-'):
-            if s.startswith(tag):
-                command = s[len(tag):].strip()
+            if commandName.startswith(tag):
+                commandName2 = commandName[len(tag):].strip()
                 # Create a *second* func, to avoid collision in c.commandsDict.
 
                 def registerAllCommandsCallback(event=None, func=func):
                     func()
+        
                 # Fix bug 1251252: https://bugs.launchpad.net/leo-editor/+bug/1251252
                 # Minibuffer commands created by mod_scripting.py have no docstrings.
-
                 registerAllCommandsCallback.__doc__ = func.__doc__
-                # Make sure we never redefine an existing command.
-                if command in c.commandsDict:
+                # Make sure we never redefine an existing commandName.
+                if commandName2 in c.commandsDict:
                     # A warning here would probably be annoying.
                     pass
                 else:
-                    k.registerCommand(command, func=registerAllCommandsCallback,
-                        pane=pane, shortcut=None, verbose=trace)
+                    k.registerCommand(commandName2, registerAllCommandsCallback,
+                        pane=pane, verbose=trace)
     #@+node:ekr.20150402021505.1: *4* sc.setButtonColor
     def setButtonColor(self, b, bg):
         '''Set the background color of Qt button b to bg.'''

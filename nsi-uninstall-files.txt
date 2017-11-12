@@ -3,6 +3,7 @@
 
 SetOutPath $Temp
 Delete "$INSTDIR\.gitattributes"
+Delete "$INSTDIR\About leo.exe.TXT"
 Delete "$INSTDIR\INSTALL.TXT"
 Delete "$INSTDIR\LICENSE.TXT"
 Delete "$INSTDIR\MANIFEST.in"
@@ -10,6 +11,7 @@ Delete "$INSTDIR\Makefile"
 Delete "$INSTDIR\PKG-INFO.TXT"
 Delete "$INSTDIR\README.MD"
 Delete "$INSTDIR\Readme-quick-install.TXT"
+Delete "$INSTDIR\_config.yml"
 Delete "$INSTDIR\ekr-spellpyx.txt"
 Delete "$INSTDIR\flake8-leo.py"
 Delete "$INSTDIR\git-diff.bat"

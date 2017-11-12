@@ -60,30 +60,30 @@ Commands
 
 These two commands allow keyboard driven quickmove operations:
 
-``quickmove_keyboard_popup``
+``quickmove-keyboard-popup``
     Show a keyboard (arrow key) friendly menu of quick move
     actions.  Set the current node as the target for the selected action.
-``quickmove_keyboard_action``
-    Perform the action selected with ``quickmove_keyboard_popup``, moving
+``quickmove-keyboard-action``
+    Perform the action selected with ``quickmove-keyboard-popup``, moving
     the current node to the target, or whatever the selected action was.
 
 These commands are available for binding, they do the same thing as the
 corresponding tree context menu item, if your using buttons you might as
 well use the context menu::
 
-    quickmove_bookmark_to_first_child
-    quickmove_bookmark_to_last_child
-    quickmove_clone_to_first_child
-    quickmove_clone_to_last_child
-    quickmove_copy_to_first_child
-    quickmove_copy_to_last_child
-    quickmove_jump_to
-    quickmove_link_from
-    quickmove_link_to
-    quickmove_move_to_first_child
-    quickmove_move_to_last_child
+    quickmove-bookmark-to-first-child
+    quickmove-bookmark-to-last-child
+    quickmove-clone-to-first-child
+    quickmove-clone-to-last-child
+    quickmove-copy-to-first-child
+    quickmove-copy-to-last-child
+    quickmove-jump-to
+    quickmove-link-from
+    quickmove-link-to
+    quickmove-move-to-first-child
+    quickmove-move-to-last-child
 
-``quickmove_visit_next_target``
+``quickmove-visit-next-target``
     This cycles through the cross-file targets maintained by the
     `Show targets` / `Read targets` commands mentioned above.  Useful if
     the targets are To Do lists and you want to cycle through them.
@@ -197,6 +197,19 @@ def visit_next_target(event):
     unl = g._quickmove_target_list[0]
     g._quickmove_target_list = g._quickmove_target_list[1:] + [unl]
     g.handleUrl(unl, c)
+#@+node:tbnorth.20171002092646.1: ** keyboard commands
+@g.command('quickmove-keyboard-popup')
+def keyboard_popup(event):
+    c = event.get('c')
+    if not c or not hasattr(c, 'quickMove'):
+        return
+    c.quickMove.keyboard_popup()
+@g.command('quickmove-keyboard-action')
+def keyboard_action(event):
+    c = event.get('c')
+    if not c or not hasattr(c, 'quickMove'):
+        return
+    c.quickMove.keyboard_action()
 #@+node:tbrown.20070117104409.4: ** class quickMove
 class quickMove(object):
 
@@ -282,13 +295,10 @@ class quickMove(object):
                 # tried to use g.command() but global commands all use the same c
                 # so register only at the c level, not g level
                 # g.command(cmdname)(func)
-                c.k.registerCommand(cmdname, shortcut=None, func=lambda e:func(),
-                    pane='all',verbose=False)
+                c.k.registerCommand(cmdname, lambda e:func())
 
-        c.k.registerCommand('quickmove_keyboard_popup', shortcut=None,
-            func=lambda e:self.keyboard_popup(), pane='all',verbose=False)
-        c.k.registerCommand('quickmove_keyboard_action', shortcut=None,
-            func=lambda e:self.keyboard_action(), pane='all',verbose=False)
+        # c.k.registerCommand('quickmove_keyboard_popup', lambda e:self.keyboard_popup())
+        # c.k.registerCommand('quickmove_keyboard_action', lambda e:self.keyboard_action())
 
         self.keyboard_target = None
 
@@ -879,11 +889,16 @@ class quickMoveButton(object):
                 if p.v == p2.v or not self.checkMove(p,p2):
                     g.error('Invalid move: %s' % (self.targetHeadString))
                     return
-
-            p2.expand()
+            if p2.isAncestorOf(p):  # not for sibling moves
+                p2.expand()
             nxt = p.visNext(c) or p.visBack(c)
             nxt = nxt.v
             # store a VNode instead of position as positions are too easily lost
+
+            if self.type_ != 'jump':
+                p.setDirty()  # before move to dirty current parent
+                p2.setDirty()
+                c.setChanged(changedFlag=True)
 
             if self.type_ == 'clone':
                 p = p.clone()
@@ -897,9 +912,9 @@ class quickMoveButton(object):
                     if not p2.parent():
                         raise Exception("Not implemented for top-level nodes") #FIXME
                     if self.which == 'next sibling':
-                        p.moveToNthChildOf(p2.parent(), p2._childIndex+1)
-                    elif self.which == 'prev sibling':
                         p.moveToNthChildOf(p2.parent(), p2._childIndex)
+                    elif self.which == 'prev sibling':
+                        p.moveToNthChildOf(p2.parent(), p2._childIndex-1)
                 else:
                     raise Exception("Unknown move type "+self.which)
 

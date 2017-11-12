@@ -1113,7 +1113,7 @@ if docutils: # NOQA
             for nkey in nkeys:
                 if nkey in keys:
                     val = d.get(nkey)
-                    g.pr(nkey,':',g.toString(val,verbose=False,indent='\t'))
+                    g.pr(nkey,':',g.toString(val,indent='\t'))
 
             g.pr('\ndone', '-' * 25)
         #@+node:ekr.20090704103932.5220: *4* encode (PDFTranslator) (No longer used)

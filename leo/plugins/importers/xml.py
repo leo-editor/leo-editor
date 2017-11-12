@@ -118,7 +118,7 @@ class Xml_Importer(Importer):
     def end_tag(self, s, tag, tag_level):
         '''
         Handle the ">" or "/>" that ends an element.
-        
+
         Ignore ">" except for void tags.
         '''
         trace = False
@@ -144,7 +144,7 @@ class Xml_Importer(Importer):
     def scan_tag(self, s, i, tag_level):
         '''
         Scan an xml tag starting with "<" or "</".
-        
+
         Adjust the stack as appropriate:
         - "<" adds the tag to the stack.
         - "</" removes the top of the stack if it matches.
@@ -180,7 +180,7 @@ class Xml_Importer(Importer):
     def pop_to_tag(self, tag, s):
         '''
         Attempt to pop tag from the top of the stack.
-        
+
         If the top doesn't match, issue a warning and attempt to recover.
         '''
         trace = False
@@ -244,7 +244,7 @@ class Xml_Importer(Importer):
 #@+node:ekr.20161121204146.7: ** class class Xml_ScanState
 class Xml_ScanState:
     '''A class representing the state of the xml line-oriented scan.'''
-    
+
     def __init__(self, d=None):
         '''Xml_ScanState.__init__'''
         if d:

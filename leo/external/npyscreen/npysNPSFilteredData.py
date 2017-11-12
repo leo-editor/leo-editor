@@ -38,7 +38,7 @@ class NPSFilteredDataBase(object):
     def _apply_filter(self):
         # Could do some caching here - but the default definition does not.
         self._filtered_values = self.filter_data()
-            
+
     #@-others
 #@+node:ekr.20170428084207.362: ** class NPSFilteredDataList
 class NPSFilteredDataList(NPSFilteredDataBase):

@@ -119,7 +119,7 @@ def tomboy_act_on_node(c,p,event):
         raise leoPlugins.TryNext
 
     capturenotes(c,p)
-    c.redraw_now()
+    c.redraw()
 
 def tomboy_install():
     g.act_on_node.add(tomboy_act_on_node, 99)

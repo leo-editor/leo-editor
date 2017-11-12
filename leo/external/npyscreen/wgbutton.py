@@ -30,7 +30,7 @@ class MiniButton(checkbox._ToggleControl):
             self.color = keywords['color']
         else:
             self.color = 'CONTROL'
-        
+
     #@+node:ekr.20170428084207.528: *3* calculate_area_needed
     def calculate_area_needed(self):
         return 1, self.label_width+2
@@ -41,37 +41,37 @@ class MiniButton(checkbox._ToggleControl):
         if self.hidden:
             self.clear()
             return False
-        
-        
+
+
         if self.value and self.do_colors():
             self.parent.curses_pad.addstr(self.rely, self.relx, '>', self.parent.theme_manager.findPair(self))
             self.parent.curses_pad.addstr(self.rely, self.relx+self.width-1, '<', self.parent.theme_manager.findPair(self))
         elif self.value:
             self.parent.curses_pad.addstr(self.rely, self.relx, '>')
             self.parent.curses_pad.addstr(self.rely, self.relx+self.width-1, '<')
-            
-        
+
+
         if self.editing:
             button_state = curses.A_STANDOUT
         else:
             button_state = curses.A_NORMAL
-        
+
         button_name = self.name
         if isinstance(button_name, bytes):
             button_name = button_name.decode(self.encoding, 'replace')
         button_name = button_name.center(self.label_width)
-        
+
         if self.do_colors():
             if self.cursor_color:
                 if self.editing:
                     button_attributes = self.parent.theme_manager.findPair(self, self.cursor_color)
                 else:
                     button_attributes  = self.parent.theme_manager.findPair(self, self.color)
-            else:    
+            else:
                 button_attributes = self.parent.theme_manager.findPair(self, self.color) | button_state
         else:
             button_attributes = button_state
-        
+
         self.add_line(self.rely, self.relx+1,
             button_name,
             self.make_attributes_list(button_name, button_attributes),
@@ -83,7 +83,7 @@ class MiniButton(checkbox._ToggleControl):
 #@+node:ekr.20170428084207.530: ** class MiniButtonPress
 class MiniButtonPress(MiniButton):
     # NB.  The when_pressed_function functionality is potentially dangerous. It can set up
-    # a circular reference that the garbage collector will never free. 
+    # a circular reference that the garbage collector will never free.
     # If this is a risk for your program, it is best to subclass this object and
     # override when_pressed_function instead.  Otherwise your program will leak memory.
     #@+others
@@ -100,7 +100,7 @@ class MiniButtonPress(MiniButton):
             curses.ascii.NL: self.h_toggle,
             curses.ascii.CR: self.h_toggle,
         })
-        
+
     #@+node:ekr.20170428084207.533: *3* destroy
     def destroy(self):
         self.when_pressed_function = None

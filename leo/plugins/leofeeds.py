@@ -99,7 +99,7 @@ def emitfeed(url, p):
             lnk = chi(e)
             lnk.h = '@url ' + li.rel
             lnk.b = li.href
-        if 'enclosures' in ent:            
+        if 'enclosures' in ent:
             for enc in ent.enclosures:
                 ec = chi(e)
                 ec.h = '@url Enclosure: ' +  enc.get('type','notype') + " " + enc.get('length','')
@@ -116,7 +116,7 @@ def feeds_act_on_node(c,p,event):
     if sp[0] not in ['@feed']:
         raise leoPlugins.TryNext
 
-    emitfeed(sp[1], p)           
+    emitfeed(sp[1], p)
     c.redraw()
 
 def feeds_install():

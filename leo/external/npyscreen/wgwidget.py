@@ -56,7 +56,7 @@ def add_test_input_ch(test_input):
     if not TEST_SETTINGS['TEST_INPUT']:
         TEST_SETTINGS['TEST_INPUT'] = []
     TEST_SETTINGS['TEST_INPUT'].append(test_input)
-    
+
 
 #@+node:ekr.20170428084208.402: ** class ExhaustedTestInput
 class ExhaustedTestInput(Exception):
@@ -75,9 +75,9 @@ class InputHandler(object):
     def handle_input(self, i):
         """
         Dispatch a handler in this class or parents.
-        
+
         i is the character code. Leo handles codes from 1..351.
-        
+
         Return True if input has been completely handled.
         """
         def tell(f):
@@ -179,7 +179,7 @@ class InputHandler(object):
         for pair in handlers_list:
             assert len(pair) == 2
         self.complex_handlers.extend(handlers_list)
-        
+
     #@+node:ekr.20170428084208.409: *3* IH.remove_complex_handler
     def remove_complex_handler(self, test_function):
         _new_list = []
@@ -242,13 +242,13 @@ class InputHandler(object):
 #@+node:ekr.20170428084208.410: ** class Widget (InputHandler, _LinePrinter, EventHandler)
 class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
     "A base class for widgets. Do not use directly"
-    
+
     _SAFE_STRING_STRIPS_NL = True
-    
+
     #@+others
     #@+node:ekr.20170428084208.412: *3* Widget.__init__
-    def __init__(self, screen, 
-            relx=0, rely=0, name=None, value=None, 
+    def __init__(self, screen,
+            relx=0, rely=0, name=None, value=None,
             width = False, height = False,
             max_height = False, max_width=False,
             editable=True,
@@ -277,12 +277,12 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         self.hidden = hidden
         self.interested_in_mouse_even_when_not_editable = False# used only for rare widgets to allow user to click
                                                         # even if can't actually select the widget.  See mutt-style forms
-                                                        
+
         try:
             self.parent = weakref.proxy(screen)
         except TypeError:
             self.parent = screen
-        self.use_max_space = use_max_space    
+        self.use_max_space = use_max_space
         self.set_relyx(rely, relx)
         #self.relx = relx
         #self.rely = rely
@@ -292,10 +292,10 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             self._force_ascii = True
         else:
             self._force_ascii = False
-        
-        
+
+
         self.set_up_handlers()
-        
+
         # To allow derived classes to set this and then call this method safely...
         try:
             self.value
@@ -307,7 +307,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             self.name
         except Exception:
             self.name=name
-            
+
         self.request_width =  width     # widgets should honour if possible
         self.request_height = height    # widgets should honour if possible
 
@@ -317,16 +317,16 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         self.set_size()
 
         self.editing = False        # Change to true during an edit
-        
+
         self.editable = editable
         if self.parent.curses_pad.getmaxyx()[0]-1 == self.rely: self.on_last_line = True
         else: self.on_last_line = False
-        
+
         if value_changed_callback:
             self.value_changed_callback = value_changed_callback
         else:
             self.value_changed_callback = None
-        
+
         self.initialize_event_handling()
     #@+node:ekr.20170429213619.3: *3* Widget._edit_loop
     def _edit_loop(self):
@@ -342,7 +342,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             self.get_and_use_key_press()
         if _i_set_parent_editing:
             self.parent.editing = False
-        
+
         if self.editing:
             self.editing    = False
             self.how_exited = True
@@ -353,10 +353,10 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         #    ch = self.parent.curses_pad.get_wch()
         #    self._last_get_ch_was_unicode = True
         #except AttributeError:
-            
+
         # For now, disable all attempt to use get_wch()
         # but everything that follows could be in the except clause above.
-        
+
             # Try to read utf-8 if possible.
         _stored_bytes =[]
         self._last_get_ch_was_unicode = True
@@ -372,28 +372,28 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
                 self._last_get_ch_was_unicode = False
                 return rtn_ch
             # if we are here, we need to read 1, 2 or 3 more bytes.
-            # all of the subsequent bytes should be in the range 128 - 191, 
+            # all of the subsequent bytes should be in the range 128 - 191,
             # but we'll risk not checking...
-            elif 194 <= ch <= 223: 
+            elif 194 <= ch <= 223:
                     # 2 bytes
                     _stored_bytes.append(ch)
                     _stored_bytes.append(self.parent.curses_pad.getch())
-            elif 224 <= ch <= 239: 
-                    # 3 bytes 
+            elif 224 <= ch <= 239:
+                    # 3 bytes
                     _stored_bytes.append(ch)
-                    _stored_bytes.append(self.parent.curses_pad.getch()) 
-                    _stored_bytes.append(self.parent.curses_pad.getch()) 
-            elif 240 <= ch <= 244: 
-                    # 4 bytes 
-                    _stored_bytes.append(ch) 
-                    _stored_bytes.append(self.parent.curses_pad.getch()) 
-                    _stored_bytes.append(self.parent.curses_pad.getch()) 
+                    _stored_bytes.append(self.parent.curses_pad.getch())
+                    _stored_bytes.append(self.parent.curses_pad.getch())
+            elif 240 <= ch <= 244:
+                    # 4 bytes
+                    _stored_bytes.append(ch)
+                    _stored_bytes.append(self.parent.curses_pad.getch())
+                    _stored_bytes.append(self.parent.curses_pad.getch())
                     _stored_bytes.append(self.parent.curses_pad.getch())
             elif ch >= 245:
                 # probably a control character
                 self._last_get_ch_was_unicode = False
                 return ch
-            
+
             if sys.version_info[0] >= 3:
                 ch = bytes(_stored_bytes).decode('utf-8', errors='strict')
             else:
@@ -402,7 +402,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         else:
             ch = self.parent.curses_pad.getch()
             self._last_get_ch_was_unicode = False
-        
+
         # This line should not be in the except clause.
         return ch
     #@+node:ekr.20170429213619.16: *3* Widget._internal_when_value_edited
@@ -417,7 +417,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
     def _post_edit(self):
         self.highlight = 0
         self.update()
-        
+
     #@+node:ekr.20170429213619.2: *3* Widget._pre_edit
     def _pre_edit(self):
         self.highlight = 1
@@ -447,7 +447,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         # else:
             # return False
     #@+node:ekr.20170428084208.421: *3* Widget.calculate_area_needed
-    def calculate_area_needed(self): 
+    def calculate_area_needed(self):
         """Classes should provide a function to
         calculate the screen area they need, returning either y,x, or 0,0 if
         they want all the screen they can.  However, do not use this to say how
@@ -491,7 +491,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         """Destroy the widget: methods should provide a mechanism to destroy any references that might
         case a memory leak.  See select. module for an example"""
         pass
-        
+
     #@+node:ekr.20170428084208.424: *3* Widget.display
     def display(self):
         """Do an update of the object AND refresh the screen"""
@@ -511,7 +511,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
     #@+node:ekr.20170429213619.1: *3* Widget.edit
     def edit(self):
         """Allow the user to edit the widget: ie. start handling keypresses."""
-        
+
         # g.trace('Widget')
         self.editing = 1
         self._pre_edit()
@@ -540,7 +540,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
                 #self.parent.curses_pad.timeout(1)
                 self.parent.curses_pad.nodelay(1)
                 ch2 = self.parent.curses_pad.getch()
-                if ch2 != -1: 
+                if ch2 != -1:
                     ch = curses.ascii.alt(ch2)
                 self.parent.curses_pad.timeout(-1) # back to blocking mode
                 #curses.flushinp()
@@ -589,7 +589,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         rel_y       = y - self.rely - self.parent.show_aty
         rel_x = x - self.relx - self.parent.show_atx
         return (mouse_id, rel_x, rel_y, z, bstate)
-        
+
     #def when_parent_changes_value(self):
         # Can be called by forms when they chage their value.
         #pass
@@ -631,9 +631,9 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
                 except Exception:
                     s.append('?')
             s = ''.join(s)
-        
+
             self._safe_filter_value_cache = (this_string, s)
-        
+
             return s
         #s = ''
         #for cha in this_string.replace('\n', ''):
@@ -648,12 +648,12 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         printable chars.  (Try to catch dodgy input).  Give it a string,
         and it will return a string safe to print - without touching
         the original.  In Python 3 this function is not needed
-        
+
         N.B. This will return a unicode string on python 3 and a utf-8 string
         on python2
         """
         try:
-            if not this_string: 
+            if not this_string:
                 return ""
             #this_string = str(this_string)
             # In python 3
@@ -663,7 +663,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
                 rtn_value = this_string.replace('\n', ' ')
             else:
                 rtn_value = this_string
-        
+
             # Does the terminal want ascii?
             if self._force_ascii:
                 if isinstance(rtn_value, bytes):
@@ -678,7 +678,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
                         # even on python3, in this case, we want a string that
                         # contains only ascii chars - but in unicode, so:
                         rtn_value = rtn_value.encode('ascii', 'replace').decode()
-                        return rtn_value     
+                        return rtn_value
                     else:
                         return rtn_value.encode('ascii', 'replace')
                 return rtn_value
@@ -693,7 +693,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
                         # Python2.6
                         rtn_value = rtn_value.decode(self.encoding, 'replace')
                 if sys.version_info[0] >= 3:
-                    return rtn_value     
+                    return rtn_value
                 else:
                     return rtn_value.encode('utf-8', 'replace')
             else:
@@ -715,9 +715,9 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
     def set_relyx(self, y, x):
         """
         Set the position of the widget on the Form.  If y or x is a negative value,
-        npyscreen will try to position it relative to the bottom or right edge of the 
+        npyscreen will try to position it relative to the bottom or right edge of the
         Form.  Note that this ignores any margins that the Form may have defined.
-        This is currently an experimental feature.  A future version of the API may 
+        This is currently an experimental feature.  A future version of the API may
         take account of the margins set by the parent Form.
         """
         self._requested_rely = y
@@ -733,7 +733,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             if self.rely < 0:
                 self.rely = 0
         if x >= 0:
-            self.relx = x            
+            self.relx = x
         else:
             self.relx = self.parent.curses_pad.getmaxyx()[1] + x
             # I don't think there is any real value in using these margins
@@ -747,7 +747,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         my, mx = self.space_available()
         #my = my+1 # Probably want to remove this.
         ny, nx = self.calculate_area_needed()
-        
+
         max_height = self.max_height
         max_width  = self.max_width
         # What to do if max_height or max_width is negative
@@ -755,40 +755,40 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
             max_height = my + max_height
         if max_width not in (None, False) and max_width < 0:
             max_width = mx + max_width
-            
+
         if max_height not in (None, False) and max_height <= 0:
-            raise NotEnoughSpaceForWidget("Not enough space for requested size")  
+            raise NotEnoughSpaceForWidget("Not enough space for requested size")
         if max_width not in (None, False) and max_width <= 0:
             raise NotEnoughSpaceForWidget("Not enough space for requested size")
-        
+
         if ny > 0:
-            if my >= ny: 
+            if my >= ny:
                 self.height = ny
-            else: 
+            else:
                 self.height = RAISEERROR
         elif max_height:
-            if max_height <= my: 
+            if max_height <= my:
                 self.height = max_height
-            else: 
+            else:
                 self.height = self.request_height
-        else: 
+        else:
             self.height = (self.request_height or my)
-        
+
         #if mx <= 0 or my <= 0:
         #    raise Exception("Not enough space for widget")
 
 
         if nx > 0:                 # if a minimum space is specified....
-            if mx >= nx:           # if max width is greater than needed space 
+            if mx >= nx:           # if max width is greater than needed space
                 self.width = nx    # width is needed space
-            else: 
+            else:
                 self.width = RAISEERROR    # else raise an error
         elif self.max_width:       # otherwise if a max width is speciied
-            if max_width <= mx: 
+            if max_width <= mx:
                 self.width = max_width
-            else: 
+            else:
                 self.width = RAISEERROR
-        else: 
+        else:
             self.width = self.request_width or mx
         if self.height == RAISEERROR or self.width == RAISEERROR:
             # Not enough space for widget

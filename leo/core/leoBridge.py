@@ -138,10 +138,12 @@ class BridgeController(object):
         g.app.recentFilesManager = leoApp.RecentFilesManager()
         g.app.loadManager = lm = leoApp.LoadManager()
         g.app.loadManager.computeStandardDirectories()
-        if not self.getLeoID(): return
+        if not g.app.setLeoID(useDialog=False, verbose=True):
+            raise ValueError("unable to set LeoID.")
         g.app.inBridge = True # Added 2007/10/21: support for g.getScript.
         g.app.nodeIndices = leoNodes.NodeIndices(g.app.leoID)
         g.app.config = leoConfig.GlobalConfigManager()
+        g.app.setGlobalDb() # Fix #556.
         if self.readSettings:
             lm.readGlobalSettingsFiles()
                 # reads only standard settings files, using a null gui.
@@ -232,74 +234,6 @@ class BridgeController(object):
             print("isValidPython: unexpected exception: g.CheckVersion")
             import traceback; traceback.print_exc()
             return 0
-    #@+node:ekr.20070227094232: *4* bridge.getLeoID
-    def getLeoID(self):
-        '''
-        Attempt to set g.app.leoApp from various places, but do *not* ever set
-        the leoID.txt file.
-        
-        *Warning*: this code is similar to LeoApp.setLeoId, but here
-        self is *not* g.app.
-        '''
-        g = self.g
-        for func in (self.getIDFromSys, self.getIDFromFile, self.getIDFromEnv):
-            func()
-            if g.app.leoID:
-                return
-        return g.app.leoID
-    #@+node:ekr.20070227094232.1: *5* bridge.getIDFromSys
-    def getIDFromSys(self):
-        '''
-        Attempt to set g.app.leoID from sys.leoID.
-        
-        This might be set by in Python's sitecustomize.py file.
-        '''
-        import sys
-        g = self.g
-        trace = False and not g.app.silentMode
-        id_ = getattr(sys, "leoID", None)
-        if id_:
-            g.app.leoID = id_
-            if trace: g.red("leoID=", id_, spaces=False)
-    #@+node:ekr.20070227094232.2: *5* bridge.getIDFromFile
-    def getIDFromFile(self):
-        '''Attempt to set g.app.leoID from leoID.txt.'''
-        g = self.g
-        trace = False and not g.app.silentMode
-        tag = ".leoID.txt"
-        for theDir in (g.app.homeDir, g.app.globalConfigDir, g.app.loadDir):
-            if not theDir:
-                continue # do *not* use the current directory!
-            fn = g.os_path_join(theDir, tag)
-            try:
-                with open(fn, 'r') as f:
-                    s = f.readline().strip()
-                if not s:
-                    continue
-                g.app.leoID = s
-                if trace:
-                    g.es('leoID=%r (in %s)' % (s, theDir), color='red')
-                else:
-                    g.es('leoID=%r' % (s), color='red')
-            except IOError:
-                g.app.leoID = None
-            except Exception:
-                g.app.leoID = None
-                g.error('unexpected exception in app.setLeoID')
-                g.es_exception()
-    #@+node:ekr.20070227094232.3: *5* bridge.getIDFromEnv
-    def getIDFromEnv(self):
-        '''Set leoID from environment vars.'''
-        import os
-        g = self.g
-        trace = False and not g.app.silentMode
-        try:
-            id_ = os.getenv('USER')
-            if id_:
-                if trace: g.red("using os.getenv('USER'):", repr(id_))
-                g.app.leoID = id_
-        except Exception:
-            pass
     #@+node:ekr.20070227093629.9: *4* bridge.reportDirectories
     def reportDirectories(self):
         if not self.silentMode:
@@ -359,7 +293,7 @@ class BridgeController(object):
                 c = g.openWithFileName(fileName)
                 if trace:
                     t2 = time.time()
-                    g.trace('g.openWithFileName: %0.2fsec' % (t2 - t1))
+                    g.trace('%s %0.2fsec' % (fileName, (t2 - t1)))
                 if c: return c
             elif not self.silentMode:
                 print('file not found: %s. creating new window' % (fileName))

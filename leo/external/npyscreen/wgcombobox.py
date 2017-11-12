@@ -19,13 +19,13 @@ class ComboBox(textbox.Textfield):
     def __init__(self, screen, value = None, values=None,**keywords):
         self.values = values or []
         self.value = value or None
-        if value is 0: 
+        if value is 0:
             self.value = 0
         super(ComboBox, self).__init__(screen, **keywords)
-        
+
     #@+node:ekr.20170428084207.565: *3* ComboBox.display_value
     def display_value(self, vl):
-        """Overload this function to change how values are displayed.  
+        """Overload this function to change how values are displayed.
         Should accept one argument (the object to be represented), and return a string."""
         return str(vl)
 
@@ -67,14 +67,14 @@ class ComboBox(textbox.Textfield):
             ord('k'):         self.h_exit_up,
             ord('j'):         self.h_exit_down,
             ord('h'):         self.h_exit_left,
-            ord('l'):         self.h_exit_right,                      
+            ord('l'):         self.h_exit_right,
         })
 
     #@+node:ekr.20170428084207.570: *3* ComboBox.h_change_value
     def h_change_value(self, input):
         "Pop up a window in which to select the values for the field"
         F = Popup.Popup(name = self.name)
-        l = F.add(multiline.MultiLine, 
+        l = F.add(multiline.MultiLine,
             values = [self.display_value(x) for x in self.values],
             return_exit=True, select_exit=True,
             value=self.value)
@@ -87,7 +87,7 @@ class ComboBox(textbox.Textfield):
 #@+node:ekr.20170428084207.571: ** class TitleCombo
 class TitleCombo(titlefield.TitleText):
     _entry_type = ComboBox
-    
+
     #@+others
     #@+node:ekr.20170428084207.572: *3* get_values
     def get_values(self):
@@ -106,7 +106,7 @@ class TitleCombo(titlefield.TitleText):
         except Exception:
             # probably trying to set the value before the textarea is initialised
             self.__tmp_values = values
-            
+
     #@+node:ekr.20170428084207.574: *3* del_values
     def del_values(self):
         del self.entry_widget.values

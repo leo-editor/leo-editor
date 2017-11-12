@@ -30,7 +30,7 @@ Settings
 
 @data wikiview-link-patterns
     This node contains regex patterns for text to be hidden by the plugin.
-    
+
     Blank lines and lines starting with '#' are comment lines.
     Each non-comment line represents a pattern.
     Use \b# for patterns starting with '#'

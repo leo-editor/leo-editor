@@ -30,11 +30,11 @@ class Autocomplete(textbox.Textfield):
     #@+node:ekr.20170428084207.499: *3* get_choice
     def get_choice(self, values):
         # If auto_complete needs the user to select from a list of values, this function lets them do that.
-        
+
         #tmp_window = Form.TitleForm(name=self.name, framed=True)
         tmp_window = Popup.Popup(name=self.name, framed=True)
-        sel = tmp_window.add_widget(multiline.MultiLine, 
-                values=values, 
+        sel = tmp_window.add_widget(multiline.MultiLine,
+                values=values,
                 value=self.value,
                 return_exit=True, select_exit=True)
         #sel = multiline.MultiLine(tmp_window, values=values, value=self.value)
@@ -58,11 +58,11 @@ class Filename(Autocomplete):
             # Let's have absolute paths.
             dir = os.path.abspath(dir)
 
-            if self.value == '': 
+            if self.value == '':
                 self.value=dir
                 break
 
-            try: 
+            try:
                 flist = os.listdir(dir)
             except Exception:
                 self.show_brief_message("Can't read directory!")
@@ -109,7 +109,7 @@ class Filename(Autocomplete):
 
                 if os.path.isdir(filelist[index1]):
                     dirs_only.append(filelist[index1])
-            
+
                 else:
                     files_only.append(filelist[index1])
 

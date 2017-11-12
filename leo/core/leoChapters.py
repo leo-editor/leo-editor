@@ -61,16 +61,16 @@ class ChapterController(object):
         trace = False and not g.unitTesting
         trace_redef = True
         c, cc = self.c, self
-        command = 'chapter-select-%s' % chapterName
+        commandName = 'chapter-select-%s' % chapterName
         inverseBindingsDict = c.k.computeInverseBindingDict()
-        if command in c.commandsDict:
+        if commandName in c.commandsDict:
             if trace and trace_redef:
-                g.trace('===== already defined', command)
-                g.trace('inverse', inverseBindingsDict.get(command))
+                g.trace('===== already defined', commandName)
+                g.trace('inverse', inverseBindingsDict.get(commandName))
             return
         if trace:
-            g.trace('===== defining', command, binding, g.callers(1))
-            g.trace('inverse', inverseBindingsDict.get(command))
+            g.trace('===== defining', commandName, binding, g.callers(1))
+            g.trace('inverse', inverseBindingsDict.get(commandName))
 
         def select_chapter_callback(event,cc=cc,name=chapterName):
             chapter = cc.chaptersDict.get(name)
@@ -89,12 +89,7 @@ class ChapterController(object):
         # This will create the command bound to any existing settings.
         bindings = (None, binding) if binding else (None,)
         for shortcut in bindings:
-            c.k.registerCommand(
-                command,
-                func=select_chapter_callback,
-                pane='all',
-                shortcut=shortcut,
-                verbose=False)
+            c.k.registerCommand(commandName, select_chapter_callback, shortcut=shortcut)
     #@+node:ekr.20150509030349.1: *3* cc.cmd (decorator)
     def cmd(name):
         '''Command decorator for the ChapterController class.'''
@@ -109,7 +104,7 @@ class ChapterController(object):
         g.es('Chapters:\n' + '\n'.join(names))
         k.setLabelBlue('Select chapter: ')
         k.get1Arg(event, handler=self.selectChapter1, tabList=names)
-            
+
     def selectChapter1(self, event):
         cc, k = self, self.c.k
         k.clearState()
@@ -125,7 +120,7 @@ class ChapterController(object):
         i = names.index(sel_name)
         new_name = names[i-1 if i > 0 else len(names)-1]
         cc.selectChapterByName(new_name)
-        
+
     @cmd('chapter-next')
     def nextChapter(self, event=None):
         cc = self
@@ -345,7 +340,8 @@ class ChapterController(object):
             cc.selectChapterByName('main')
         # Fix bug 869385: Chapters make the nav_qt.py plugin useless
         assert not self.selectChapterLockout
-        c.redraw_now()
+        # New in Leo 5.6: don't call c.redraw immediately.
+        c.redraw_later()
     #@+node:ekr.20130915052002.11289: *4* cc.setAllChapterNames
     def setAllChapterNames(self):
         '''Called early and often to discover all chapter names.'''

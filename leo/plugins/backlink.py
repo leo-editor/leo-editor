@@ -99,6 +99,9 @@ class backlinkController(object):
             self.ui = backlinkTkUI(self)
         elif Qt:
             self.ui = backlinkQtUI(self)
+        else:
+            # Fix part of #509. Ignore missing attributes.
+            self.ui = g.NullObject()
         g.registerHandler('select3', self.updateTab)
         g.registerHandler('open2', self.loadLinks)
         # already missed initial 'open2' because of after-create-leo-frame, so
@@ -632,10 +635,8 @@ class backlinkController(object):
 
         if self.messageUsed and optional:
             return
-
         if not self.messageUsed and not optional:
             self.messageUsed = True
-
         self.ui.showMessage(msg, color=color)
     #@+node:ekr.20090616105756.3966: *3* swap
     def swap(self):
@@ -658,19 +659,15 @@ class backlinkController(object):
         c = self.c
         p = c.p
         v = p.v
-
         self.messageUsed = False
-
         self.ui.enableDelete(False)
         self.deleteMode = False
         self.showMessage('', optional=True)
-
         try:
             if v.u['_bklnk']['urls']:
                 self.ui.enableDelete(True)
         except KeyError:
             pass
-
         texts = []
         if (v.u and '_bklnk' in v.u and 'links' in v.u['_bklnk']):
             i = 0
@@ -691,7 +688,9 @@ class backlinkController(object):
                 self.ui.enableDelete(True)
                 self.showMessage('Click a link to follow it', optional=True)
                 for i in dests:
-                    def goThere(where = i[1]): c.selectPosition(where)
+                    
+                    def goThere(where = i[1]):
+                        c.selectPosition(where)
 
                     name = i[1].h
                     # add self.name_levels worth of ancestor names on left or right
@@ -708,10 +707,8 @@ class backlinkController(object):
                         else:
                             nl -= 1
                             name += ' < ' + nl_txt
-
                     txt = {'S':'->','D':'<-','U':'--'}[i[0]] + ' ' + name
                     texts.append(txt)
-
             urls = []
             for url in v.u['_bklnk'].get('urls', []):
                 url = url.rsplit('##', 1)
@@ -726,7 +723,6 @@ class backlinkController(object):
                 url = url.replace('-->', ' > ')
                 urls.append((description, url))
             texts.extend(urls)
-
         self.ui.loadList(texts)
 
     #@+node:ekr.20090616105756.3969: *3* vnodePosition

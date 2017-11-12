@@ -22,13 +22,13 @@ def init():
     return ok
 #@+node:ekr.20170419150249.3: ** class TemplateFrame
 class TemplateFrame:
-    
+
     def __init__ (self, c, title):
         self.c = c
         self.d = {}
         self.title = title
         self.menu = TemplateMenu(c)
-        
+
     #@+others
     #@+node:ekr.20170419150249.4: *3* TF.__getattr__
     # https://docs.python.org/2/reference/datamodel.html#object.__getattr__
@@ -45,7 +45,7 @@ class TemplateFrame:
     def getShortCut(self, *args, **kwargs):
         return None
     #@-others
-    
+
 #@+node:ekr.20170419150249.6: ** class TemplateGui
 class TemplateGui(leoGui.LeoGui):
     '''A do-nothing gui template.'''
@@ -72,7 +72,7 @@ class TemplateGui(leoGui.LeoGui):
             # Or just raise AttributeError.
     #@+node:ekr.20170419150249.8: *3* TG.createLeoFrame
     def createLeoFrame(self, c, title):
-        
+
         return TemplateFrame(c, title)
     #@+node:ekr.20170419150249.9: *3* TG.Focus...
     def get_focus(self, *args, **keys):
@@ -84,11 +84,11 @@ class TemplateGui(leoGui.LeoGui):
     #@-others
 #@+node:ekr.20170419150249.39: ** class TemplateMenu
 class TemplateMenu:
-    
+
     def __init__ (self, c):
         self.c = c
         self.d = {}
-        
+
     #@+others
     #@+node:ekr.20170419150249.40: *3* TM.__getattr__
     # https://docs.python.org/2/reference/datamodel.html#object.__getattr__

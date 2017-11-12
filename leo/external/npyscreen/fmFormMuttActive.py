@@ -39,9 +39,9 @@ class ActionControllerSimple(object):
     #@+node:ekr.20170428084207.263: *3* add_action
     def add_action(self, ident, function, live):
         ident = re.compile(ident)
-        self._action_list.append({'identifier': ident, 
-                                  'function': function, 
-                                  'live': live 
+        self._action_list.append({'identifier': ident,
+                                  'function': function,
+                                  'live': live
                                   })
 
     #@+node:ekr.20170428084207.264: *3* process_command_live
@@ -49,7 +49,7 @@ class ActionControllerSimple(object):
         for a in self._action_list:
             if a['identifier'].match(command_line) and a['live']==True:
                 a['function'](command_line, control_widget_proxy, live=True)
-                
+
     #@+node:ekr.20170428084207.265: *3* process_command_complete
     def process_command_complete(self, command_line, control_widget_proxy):
         for a in self._action_list:
@@ -66,21 +66,21 @@ class ActionControllerSimple(object):
 class TextCommandBox(wgtextbox.Textfield):
     #@+others
     #@+node:ekr.20170428084207.267: *3* __init__
-    def __init__(self, screen, 
-                    history=False, 
-                    history_max=100, 
+    def __init__(self, screen,
+                    history=False,
+                    history_max=100,
                     set_up_history_keys=False,
                     *args, **keywords):
         super(TextCommandBox, self).__init__(screen, *args, **keywords)
         self.history = history
-        self._history_store = collections.deque(maxlen=history_max)        
+        self._history_store = collections.deque(maxlen=history_max)
         self._current_history_index = False
         self._current_command = None
         if set_up_history_keys:
             self.set_up_history_keys()
-        
+
         # History functions currently not complete.
-        
+
     #@+node:ekr.20170428084207.268: *3* set_up_handlers
     def set_up_handlers(self):
         '''TextCommandBox.set_up_handlers.'''
@@ -142,7 +142,7 @@ class TextCommandBox(wgtextbox.Textfield):
             self._current_history_index = False
         self.parent.action_controller.process_command_complete(self.value, weakref.proxy(self))
         self.value = ''
-        
+
     #@+node:ekr.20170428084207.273: *3* when_value_edited
     def when_value_edited(self):
         super(TextCommandBox, self).when_value_edited()
@@ -162,13 +162,13 @@ class TextCommandBoxTraditional(TextCommandBox):
     #@+others
     #@+node:ekr.20170428084207.275: *3* __init__
     def __init__(self, screen,
-                    history=True, 
-                    history_max=100, 
+                    history=True,
+                    history_max=100,
                     set_up_history_keys=True,
                     *args, **keywords):
         super(TextCommandBoxTraditional, self).__init__(screen,
          history=history,
-         history_max=history_max, 
+         history_max=history_max,
          set_up_history_keys=set_up_history_keys,
          *args, **keywords
         )
@@ -181,15 +181,15 @@ class TextCommandBoxTraditional(TextCommandBox):
             inputchstr = chr(inputch)
         except Exception:
             inputchstr = False
-        
+
         try:
             input_unctrl = curses.ascii.unctrl(inputch)
         except TypeError:
             input_unctrl = False
-            
+
         if not self.linked_widget:
             return super(TextCommandBoxTraditional, self).handle_input(inputch)
-        
+
         if (inputch in self.always_pass_to_linked_widget) or \
             (inputchstr in self.always_pass_to_linked_widget) or \
             (input_unctrl in self.always_pass_to_linked_widget):
@@ -201,10 +201,10 @@ class TextCommandBoxTraditional(TextCommandBox):
             if inputchstr in self.BEGINNING_OF_COMMAND_LINE_CHARS or \
                 inputch in self.BEGINNING_OF_COMMAND_LINE_CHARS:
                 return super(TextCommandBoxTraditional, self).handle_input(inputch)
-            
+
         if self.value:
             return super(TextCommandBoxTraditional, self).handle_input(inputch)
-        
+
         rtn = self.linked_widget.handle_input(inputch)
         self.linked_widget.update()
         return rtn
@@ -229,7 +229,7 @@ class FormMuttActive(fmFormMutt.FormMutt):
         # then call the superclass init method.
         super(FormMuttActive, self).__init__(*args, **keywords)
         self.set_value(self.DATA_CONTROLER())
-        
+
 
     #@-others
 #@+node:ekr.20170428084207.279: ** class FormMuttActiveWithMenus
@@ -239,7 +239,7 @@ class FormMuttActiveWithMenus(FormMuttActive, fmFormWithMenus.FormBaseNewWithMen
     def __init__(self, *args, **keywords):
         super(FormMuttActiveWithMenus, self).__init__(*args, **keywords)
         self.initialize_menus()
-        
+
     #@-others
 #@+node:ekr.20170428084207.281: ** class FormMuttActiveTraditional
 class FormMuttActiveTraditional(fmFormMutt.FormMutt):
@@ -249,7 +249,7 @@ class FormMuttActiveTraditional(fmFormMutt.FormMutt):
     #@+others
     #@+node:ekr.20170428084207.282: *3* __init__
     def __init__(self, *args, **keywords):
-        # First create action_controller so that create methods of forms 
+        # First create action_controller so that create methods of forms
         # can use it.
         self.action_controller        = self.ACTION_CONTROLLER(parent=self)
         super(FormMuttActiveTraditional, self).__init__(*args, **keywords)
@@ -257,13 +257,13 @@ class FormMuttActiveTraditional(fmFormMutt.FormMutt):
         self.wCommand.linked_widget   = self.wMain
         self.wMain.editable           = False
         self.wMain.always_show_cursor = True
-        
+
         # special mouse handling
         self.wMain.interested_in_mouse_even_when_not_editable = True
 
     #@-others
 #@+node:ekr.20170428084207.283: ** class FormMuttActiveTraditionalWithMenus
-class FormMuttActiveTraditionalWithMenus(FormMuttActiveTraditional, 
+class FormMuttActiveTraditionalWithMenus(FormMuttActiveTraditional,
  fmFormWithMenus.FormBaseNewWithMenus):
     #@+others
     #@+node:ekr.20170428084207.284: *3* __init__

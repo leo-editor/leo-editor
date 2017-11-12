@@ -117,7 +117,7 @@ def beautifyPythonTree(event):
 #@+node:ekr.20170202095153.1: *3* compare_ast (diabled)
 # http://stackoverflow.com/questions/3312989/
 # elegant-way-to-test-python-asts-for-equality-not-reference-or-object-identity
- 
+
 def compare_ast(node1, node2):
     return True
     ### Can hang, for mysterious reasons.

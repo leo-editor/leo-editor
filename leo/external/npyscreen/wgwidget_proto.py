@@ -29,27 +29,27 @@ class _LinePrinter(object):
             return ch.encode('utf-8', 'replace')
 
     #@+node:ekr.20170428084208.441: *3* add_line
-    def add_line(self, realy, realx, 
-                unicode_string, 
-                attributes_list, max_columns, 
+    def add_line(self, realy, realx,
+                unicode_string,
+                attributes_list, max_columns,
                 force_ascii=False):
         if isinstance(unicode_string, bytes):
             raise ValueError("This class prints unicode strings only.")
-        
+
         if len(unicode_string) != len(attributes_list):
             raise ValueError("Must supply an attribute for every character.")
 
         column = 0
         place_in_string = 0
-        
+
         if hasattr(self, 'curses_pad'):
             # we are a form
             print_on = self.curses_pad
         else:
             # we are a widget
-            print_on = self.parent.curses_pad    
-        
-        
+            print_on = self.parent.curses_pad
+
+
         while column <= (max_columns-1):
             try:
                 width_of_char_to_print = self.find_width_of_char(unicode_string[place_in_string])
@@ -58,8 +58,8 @@ class _LinePrinter(object):
             if column - 1 + width_of_char_to_print > max_columns:
                 break
             try:
-                print_on.addstr(realy,realx+column, 
-                    self._print_unicode_char(unicode_string[place_in_string]), 
+                print_on.addstr(realy,realx+column,
+                    self._print_unicode_char(unicode_string[place_in_string]),
                     attributes_list[place_in_string]
                     )
             except IndexError:
@@ -73,7 +73,7 @@ class _LinePrinter(object):
         provided, with each entry of the list containing a copy of attribute."""
         if isinstance(unicode_string, bytes):
             raise ValueError("This class is intended for unicode strings only.")
-        
+
         atb_array = []
         ln = len(unicode_string)
         for x in range(ln):

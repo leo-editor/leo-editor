@@ -19,7 +19,7 @@ class Org_Importer(Importer):
             state_class = None,
             strict = False,
         )
-        
+
     #@+others
     #@+node:ekr.20161123194634.1: *3* org_i.gen_lines & helper
     org_pattern = re.compile(r'^(\*+)(.*)$')
@@ -72,7 +72,7 @@ class Org_Importer(Importer):
         '''
         Optional Stage 2 of the importer pipeline, consisting of zero or more
         substages. Each substage alters nodes in various ways.
-        
+
         Subclasses may freely override this method, **provided** that all
         substages use the API for setting body text. Changing p.b directly will
         cause asserts to fail later in i.finish().

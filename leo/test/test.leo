@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.52" body_secondary_ratio="0.65">
-	<global_window_position top="62" left="503" height="749" width="788"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.56">
+	<global_window_position top="103" left="99" height="956" width="1249"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -11,11 +11,11 @@
 <vnodes>
 <v t="ekr.20070416075121"><vh>Startup</vh>
 <v t="ekr.20070224123943"><vh>@settings</vh>
-<v t="ekr.20150618075639.1"><vh>@bool minibuffer_find_mode = True</vh></v>
-<v t="ekr.20150619071508.1"><vh>@bool use_find_dialog = False</vh></v>
+<v t="ekr.20071025193940"><vh>@@enabled-plugins</vh></v>
+<v t="ekr.20150618075639.1"><vh>@bool minibuffer_find_mode = False</vh></v>
+<v t="ekr.20170709101639.1"><vh>@bool use_find_dialog = True</vh></v>
 <v t="ekr.20140808094008.3549"><vh>@bool vim_mode = False</vh></v>
 <v t="ekr.20091230064146.1911"><vh>@data import_xml_tags</vh></v>
-<v t="ekr.20071025193940"><vh>@@enabled-plugins</vh></v>
 <v t="ekr.20160930062850.1"><vh>@int qweb_view_font_size = 30</vh></v>
 <v t="ekr.20110510110227.2439"><vh>Autocompleter settings</vh>
 <v t="ekr.20110512085154.2447"><vh>@bool auto_tab_complete = True</vh></v>
@@ -31,12 +31,6 @@
 <v t="ekr.20110521072459.2464"><vh>@@color keyword3_color = orange</vh></v>
 <v t="ekr.20110521072459.2465"><vh>@@color keyword4_color = pink</vh></v>
 </v>
-<v t="ekr.20120928143821.3161"><vh>Log pane colors</vh>
-<v t="ekr.20120928143821.3162"><vh>@@color log_error_color = orange</vh></v>
-<v t="ekr.20120928143821.3168"><vh>@@color log_warning_color = purple</vh></v>
-<v t="ekr.20120928143821.3163"><vh>@@color log_text_foreground_color = pink</vh></v>
-<v t="ekr.20120928143821.3164"><vh>@@color log_text_background_color = None</vh></v>
-</v>
 <v t="ekr.20100118190256.2015"><vh>Files &amp; directories</vh>
 <v t="ekr.20101009105505.2295"><vh>@bool put_expansion_bits_in_leo_files = False</vh></v>
 <v t="ekr.20080822153619.1"><vh>@string shadow_subdir = .leo/shadow</vh></v>
@@ -47,12 +41,16 @@
 <v t="ekr.20080729153237.3"><vh>@bool trace_gc_calls = False</vh></v>
 <v t="ekr.20080729153237.4"><vh>@bool trace_gc_verbose = False</vh></v>
 </v>
+<v t="ekr.20120928143821.3161"><vh>Log pane colors</vh>
+<v t="ekr.20120928143821.3162"><vh>@@color log_error_color = orange</vh></v>
+<v t="ekr.20120928143821.3168"><vh>@@color log_warning_color = purple</vh></v>
+<v t="ekr.20120928143821.3163"><vh>@@color log_text_foreground_color = pink</vh></v>
+<v t="ekr.20120928143821.3164"><vh>@@color log_text_background_color = None</vh></v>
+</v>
 <v t="ekr.20080529111617.1"><vh>Plugins</vh>
 <v t="ekr.20070723091227"><vh>http plugin</vh>
 <v t="ekr.20070723091227.1"><vh>@bool http_active = True</vh></v>
-<v t="ekr.20070723091227.2"><vh>@int</vh>
-<v t="ekr.20090316115500.1"><vh>port = 8080</vh></v>
-</v>
+<v t="ekr.20090316115500.1"><vh>@int port = 8080</vh></v>
 <v t="ekr.20070723091227.3"><vh>@string rst_http_attributename = 'rst_http_attribute'</vh></v>
 </v>
 <v t="ekr.20080529111617.2"><vh>cleo</vh>
@@ -337,6 +335,8 @@
 <v t="ekr.20080206055658"><vh>Script to print font settings</vh></v>
 </v>
 </v>
+<v t="ekr.20150618075639.1"></v>
+<v t="ekr.20170709101639.1"></v>
 <v t="ekr.20160420153653.1"><vh>Examples</vh>
 <v t="ekr.20131128115544.3333"><vh>display xml as Leo outlines using css</vh>
 <v t="ekr.20131106150237.3641"><vh>@button display css</vh>
@@ -687,6 +687,16 @@
 <v t="ekr.20160401061847.7"><vh>@movie Sample video (Local file)</vh></v>
 <v t="ekr.20160401062424.1"><vh>@movie Sample video (Url)</vh></v>
 <v t="ekr.20160401061847.9"><vh>@networkx my network</vh></v>
+<v t="ekr.20171020112352.1"><vh>@pyplot matplotlib animate_decay</vh>
+<v t="ekr.20171020112352.2"><vh>data_gen</vh></v>
+<v t="ekr.20171020112352.3"><vh>init</vh></v>
+<v t="ekr.20171020112352.4"><vh>run</vh></v>
+</v>
+<v t="ekr.20171020112405.1"><vh>@pyplot basic_example</vh>
+<v t="ekr.20171020112405.2"><vh>Figure 1</vh></v>
+<v t="ekr.20171020112405.3"><vh>Figure 2</vh></v>
+</v>
+<v t="ekr.20171020112424.1"><vh>@pyplot barchar_demo</vh></v>
 <v t="ekr.20160401061847.10" a="M"><vh>@svg bubbles sources</vh></v>
 <v t="ekr.20160401061847.11"><vh>@svg bubbles.svg</vh></v>
 <v t="ekr.20160401061847.12"><vh>@url Leo's home page (md default)</vh></v>
@@ -842,7 +852,6 @@
 </v>
 <v t="ekr.20120925105035.3146"><vh>Vertical scroll position probe</vh></v>
 </v>
-<v t="ekr.20160421054609.1"><vh>@clean leo-bridge-test.py</vh></v>
 <v t="ekr.20160929143541.1"><vh>Viewrendered examples</vh>
 <v t="ekr.20160929143541.12"><vh>@@movie Gayane Ballet (Url)</vh></v>
 <v t="ekr.20160929143541.14"><vh>@@movie Sample video (Url)</vh></v>
@@ -892,8 +901,6 @@
 <v t="ekr.20160930220358.1"><vh>mathjax-test</vh></v>
 <v t="ekr.20160930062725.1"><vh>mathjax-test2</vh></v>
 </v>
-<v t="ekr.20170112161234.1"><vh>@edit c:/leo.repo/leo-editor/leo/core/leoApp.py</vh></v>
-<v t="ekr.20170112175025.1"><vh>after</vh></v>
 </vnodes>
 <tnodes>
 <t tx="edward.20081127113749.10">def undo_replacement(self):
@@ -1194,7 +1201,7 @@ subprocess.Popen(cmdline)
 </t>
 <t tx="ekr.20070224123943"></t>
 <t tx="ekr.20070410063214"></t>
-<t tx="ekr.20070416075121" str_leo_pos="9"></t>
+<t tx="ekr.20070416075121" str_leo_pos="3,12,11"></t>
 <t tx="ekr.20070503085527"></t>
 <t tx="ekr.20070517070854">import leoGui
 oldGui = g.app.gui
@@ -1454,7 +1461,6 @@ os.system(r'%s %s %s' % (python,pyrexc,theFile))
         
         </t>
 <t tx="ekr.20070723091227.1"></t>
-<t tx="ekr.20070723091227.2"></t>
 <t tx="ekr.20070723091227.3"></t>
 <t tx="ekr.20070927175908">'''Convert a normal Leo tree to a networkx graph'''
 import networkx as nx
@@ -7829,8 +7835,7 @@ def selector(n):
 <t tx="ekr.20131128115544.3333"></t>
 <t tx="ekr.20140808094008.3549">import meta
 print(meta)</t>
-<t tx="ekr.20150618075639.1"></t>
-<t tx="ekr.20150619071508.1"></t>
+<t tx="ekr.20150618075639.1"># Test #516</t>
 <t tx="ekr.20160401061847.1"></t>
 <t tx="ekr.20160401061847.10">@nocolor-node
 &lt;?xml version="1.0" standalone="no"?&gt;
@@ -8144,7 +8149,7 @@ Section
 - Bullet list
 - Another item
 - Third item.</t>
-<t tx="ekr.20160401061847.2" _bklnk="7d710028580400000074797065710158080000006e6f646552656374710258010000007971034b0058050000006c696e6b7371045d710558010000007871064b00752e">gs.clear()
+<t tx="ekr.20160401061847.2" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e">gs.clear()
 gs.addText('\n%s\n%s' % (gv,gs))
 
 if 0:
@@ -8483,65 +8488,6 @@ def spam():
     '''This is a docstring.'''
     pass</t>
 <t tx="ekr.20160420153653.1"></t>
-<t tx="ekr.20160421054609.1">'''A simple test bed for the leoBridge module.'''
-import os
-import sys
-
-# Leo files.
-files = [
-    'c:/leo.repo/leo-editor/leo/test/unitTest.leo',
-    'c:/leo.repo/leo-editor/leo/test/test.leo',
-    'c:/xyzzy.xxx',
-]
-
-# Switches...
-gui = 'nullGui'         # 'nullGui', 'qt',
-kill_leo_output = False # True: kill all output produced by g.es_print.
-loadPlugins = False     # True: attempt to load plugins.
-readSettings = True     # True: read standard settings files.
-silent = True           # True: don't print signon messages.
-trace_sys_path = False  # True: trace imports here.
-verbose = True          # True: verbose output.
-
-# Import stuff...
-dir_ = os.path.abspath('.')
-if dir_ not in sys.path:
-    if trace_sys_path: print('appending %s to sys.path' % dir_)
-    sys.path.append(dir_)
-if trace_sys_path:
-    print('sys.path:...\n%s' % '\n'.join(sorted(sys.path)))
-    print('sys.argv: %s %s' % (len(sys.argv), '\n'.join(sys.argv)))
-if gui == 'qt':
-    # Do this here to bypass leoQt g.in_bridge logic.
-    import leo.core.leoQt as leoQt
-import leo.core.leoBridge as leoBridge
-
-controller = leoBridge.controller(
-    gui=gui,
-    loadPlugins=loadPlugins,
-    readSettings=readSettings,
-    silent=silent,
-    verbose=verbose)
-g = controller.globals()
-
-# This kills all output from commanders.
-if kill_leo_output:
-    
-    def do_nothing(*args, **keys):
-        pass
-        
-    g.es_print = do_nothing
-    
-for path in files:
-    if os.path.exists(path):
-        c = controller.openLeoFile(path)
-        if c:
-            n = 0
-            for p in c.all_positions():
-                n += 1
-            print('%s has %s nodes' % (c.shortFileName(), n))
-    else:
-        print('file not found: %s' % path)</t>
 <t tx="ekr.20160421123215.1">def do_nothing(*args, **keys):
     pass
         
@@ -8959,7 +8905,7 @@ code::
         ax.figure.canvas.draw()
     line.set_data(xdata, ydata)
     return line,</t>
-<t tx="ekr.20160929143541.6" _bklnk="7d710028580400000074797065710158080000006e6f646552656374710258010000007971034b0058050000006c696e6b7371045d710558010000007871064b00752e">gs.clear()
+<t tx="ekr.20160929143541.6" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e">gs.clear()
 gs.addText('\n%s\n%s' % (gv,gs))
 
 if 0:
@@ -9533,6 +9479,139 @@ $$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$
 &lt;/html&gt;
 </t>
 <t tx="ekr.20160930220426.1"></t>
-<t tx="ekr.20170112175025.1"></t>
+<t tx="ekr.20170709101639.1"># Test #516</t>
+<t tx="ekr.20171020112352.1"># http://matplotlib.org/1.5.1/examples/animation/animate_decay.html
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+
+@others
+
+# global data.
+fig, ax = plt.subplots()
+line, = ax.plot([], [], lw=2)
+ax.grid()
+xdata, ydata = [], []
+ani = animation.FuncAnimation(
+    fig, run, data_gen, blit=False, interval=10,
+    repeat=False, init_func=init)
+
+plt.ion()
+    # sets interactive mode. Prevents this message:
+    # QCoreApplication::exec: The event loop is already running
+plt.show()</t>
+<t tx="ekr.20171020112352.2">def data_gen(t=0):
+    cnt = 0
+    while cnt &lt; 1000:
+        cnt += 1
+        t += 0.1
+        yield t, np.sin(2*np.pi*t) * np.exp(-t/10.)
+</t>
+<t tx="ekr.20171020112352.3">def init():
+    ax.set_ylim(-1.1, 1.1)
+    ax.set_xlim(0, 10)
+    del xdata[:]
+    del ydata[:]
+    line.set_data(xdata, ydata)
+    return line,
+</t>
+<t tx="ekr.20171020112352.4">def run(data):
+    # update the data
+    t, y = data
+    xdata.append(t)
+    ydata.append(y)
+    xmin, xmax = ax.get_xlim()
+    if t &gt;= xmax:
+        ax.set_xlim(xmin, 2*xmax)
+        ax.figure.canvas.draw()
+    line.set_data(xdata, ydata)
+    return line,</t>
+<t tx="ekr.20171020112405.1"># http://matplotlib.org/1.5.1/examples/animation/basic_example.html
+if 0:
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import matplotlib.animation as animation
+
+@others
+
+if 0:
+    plt.ion()
+    # sets interactive mode. Prevents this message:
+    # QCoreApplication::exec: The event loop is already running
+plt.show()</t>
+<t tx="ekr.20171020112405.2">if 1:
+    
+    def update_line(num, data, line):
+        line.set_data(data[..., :num])
+        return line, # a tuple.
+
+    fig1 = plt.figure()
+    data = np.random.rand(2, 25)
+    l, = plt.plot([], [], 'r-')
+    plt.xlim(0, 1)
+    plt.ylim(0, 1)
+    plt.xlabel('x')
+    plt.title('test')
+    line_ani = animation.FuncAnimation(fig1, update_line, 25,
+        fargs=(data, l),
+        interval=50,
+        blit=True)
+</t>
+<t tx="ekr.20171020112405.3">fig2 = plt.figure()
+x = np.arange(-9, 10)
+y = np.arange(-9, 10).reshape(-1, 1)
+base = np.hypot(x, y)
+ims = []
+for add in np.arange(15):
+    ims.append((plt.pcolor(x, y, base + add, norm=plt.Normalize(0, 30)),))
+animation.ArtistAnimation(fig2, ims,
+    interval=50,
+    repeat_delay=3000,
+    blit=True)
+#im_ani.save('im.mp4', metadata={'artist':'Guido'})</t>
+<t tx="ekr.20171020112424.1">#!/usr/bin/env python
+# a bar plot with errorbars
+import numpy as np
+import matplotlib.pyplot as plt
+
+N = 5
+menMeans = (20, 35, 30, 35, 27)
+menStd = (2, 3, 4, 1, 2)
+
+ind = np.arange(N)  # the x locations for the groups
+width = 0.35       # the width of the bars
+
+fig, ax = plt.subplots()
+
+rects1 = ax.bar(ind, menMeans, width, color='r', yerr=menStd)
+
+womenMeans = (25, 32, 34, 20, 25)
+womenStd = (3, 5, 2, 3, 3)
+rects2 = ax.bar(ind + width, womenMeans, width, color='y', yerr=womenStd)
+
+# add some text for labels, title and axes ticks
+ax.set_ylabel('Scores')
+ax.set_title('Scores by group and gender')
+ax.set_xticks(ind + width)
+ax.set_xticklabels(('G1', 'G2', 'G3', 'G4', 'G5'))
+
+ax.legend((rects1[0], rects2[0]), ('Men', 'Women'))
+
+
+def autolabel(rects):
+    # attach some text labels
+    for rect in rects:
+        height = rect.get_height()
+        ax.text(rect.get_x() + rect.get_width()/2., 1.05*height,
+                '%d' % int(height),
+                ha='center', va='bottom')
+
+autolabel(rects1)
+autolabel(rects2)
+
+plt.ion()
+    # sets interactive mode. Prevents this message:
+    # QCoreApplication::exec: The event loop is already running
+plt.show()</t>
 </tnodes>
 </leo_file>

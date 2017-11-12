@@ -99,7 +99,7 @@ The TokenSync class is, a new, elegant, unexpected and happy development. It is 
 The TokenSync class avoids [problems with the col_offset field](
 http://stackoverflow.com/questions/16748029/how-to-get-source-corresponding-to-a-python-ast-node) in ast nodes. The TokenSync class depends only on the ast.lineno field and the tokenize module. We can expect it to be rock solid.
 
-Edward K. Ream  
+Edward K. Ream
 February 20 to 25, 2016
 
 

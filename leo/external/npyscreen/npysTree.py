@@ -98,7 +98,7 @@ class TreeData(object):
         return _a
     #@+node:ekr.20170428084207.412: *4* TreeData.has_children
     def has_children(self):
-        
+
         return len(self._children) > 0
         # if len(self._children) > 0:
             # return True

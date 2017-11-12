@@ -81,8 +81,13 @@ class PersistenceDataController(object):
         Create @gnxs nodes and @uas trees as needed.
         '''
         # Delete all children of the @data node.
+        trace = False and not g.unitTesting
+        if trace:
+            g.trace(root and root.h)
+            g.printDict(root.v.u)
         self.at_persistence = self.find_at_persistence_node()
         if not self.at_persistence:
+            if trace: g.trace('no @persistence node')
             return None
             # was return at_data # for at-file-to-at-auto command.
         at_data = self.find_at_data_node(root)
@@ -111,6 +116,7 @@ class PersistenceDataController(object):
                 p2.h = '@ua:' + p.v.gnx
                 p2.b = 'unl:%s\nua:%s' % (
                     self.relative_unl(p, root), self.pickle(p))
+                if trace: g.trace('created:', p2.h)
         # This is no longer necessary because of at.saveOutlineIfPossible.
         if False and not g.app.initing and not g.unitTesting:
             # Explain why the .leo file has become dirty.
@@ -124,18 +130,23 @@ class PersistenceDataController(object):
     #@+node:ekr.20140711111623.17807: *4* pd.update_after_read_foreign_file & helpers
     def update_after_read_foreign_file(self, root):
         '''Restore gnx's, uAs and clone links using @gnxs nodes and @uas trees.'''
+        trace = False and not g.unitTesting
         self.at_persistence = self.find_at_persistence_node()
         if not self.at_persistence:
+            if trace: g.trace('no @persistence node')
             return
         if not self.is_foreign_file(root):
+            if trace: g.trace('not a foreign file', root and root.h)
             return
         # Create clone links from @gnxs node
         at_gnxs = self.has_at_gnxs_node(root)
         if at_gnxs:
+            if trace: g.trace('gnx node:', at_gnxs and at_gnxs.h)
             self.restore_gnxs(at_gnxs, root)
         # Create uas from @uas tree.
         at_uas = self.has_at_uas_node(root)
         if at_uas:
+            if trace: g.trace('uas node:', at_uas and at_uas.h)
             self.create_uas(at_uas, root)
     #@+node:ekr.20140711111623.17810: *5* pd.restore_gnxs & helpers
     def restore_gnxs(self, at_gnxs, root):
@@ -193,8 +204,11 @@ class PersistenceDataController(object):
                     if trace: g.trace(fn, 'clone:', old_gnx, '->', gnx, unl)
                 else:
                     g.es_print('mismatch in cloned node', p1.h)
-            elif trace:
-                g.trace(fn, ' node:', old_gnx, '->', gnx, unl)
+            else:
+                if trace:
+                    g.trace(fn, ' node:', old_gnx, '->', gnx, unl)
+                # Fix #526: A major bug: this was not set!
+                p1.v.fileIndex = gnx
             g.app.nodeIndices.updateLastIndex(g.toUnicode(gnx))
         else:
             if trace: g.trace('unl not found: %s' % unl)
@@ -228,9 +242,10 @@ class PersistenceDataController(object):
                         if trace: g.trace('set', p.h, ua)
                         p.v.u = ua
                     else:
-                        g.trace('Can not unpickle uA in', p.h, type(ua), ua[: 40])
+                        g.trace('Can not unpickle uA in',
+                            p.h, repr(unl), type(ua), ua[: 40])
                 elif trace:
-                    g.trace('no match for gnx:', repr(gnx), 'unl:', unl)
+                    g.trace('no match for gnx:', repr(gnx))
             elif trace:
                 g.trace('unexpected child of @uas node', at_ua)
     #@+node:ekr.20140712105818.16750: *3* pd.Helpers
@@ -293,7 +308,7 @@ class PersistenceDataController(object):
                 last.moveToNext()
             p = last.insertAfter()
             p.h = h
-            g.es('created %s node' % h, color='red')
+            g.es_print('created %s node' % h, color='red')
         return p
     #@+node:ekr.20140711111623.17891: *5* pd.find_at_uas_node (changed)
     def find_at_uas_node(self, root):

@@ -29,14 +29,14 @@ def onCreate (tag, keys):
     try:
         c = keys.get('c')
         init_dict(c)
-        g.visit_tree_item.add(colorize) 
+        g.visit_tree_item.add(colorize)
     except Exception as e:
         g.es_trace("Could not load commander." + str(e))
 #@+node:ekr.20170619151859.5: ** init
 def init():
     def on_save(tag, key):
         c = key['c']
-        init_dict(c)    
+        init_dict(c)
         c.redraw()
     g.registerHandler("save2", on_save)
     g.registerHandler('after-create-leo-frame', onCreate)
@@ -50,46 +50,46 @@ def init_dict(c):
     except Exception as e:
         g.es_trace("This outline has no Headline Formats node\n" + str(e))
         return
-    try:        
+    try:
         formats = yaml.load(fbody)
     except Exception as e:
         g.es_trace("Could not parse Headline Format yaml file\n" + str(e))
         return
     try:
-        formats = formats["Headline Formats"]        
+        formats = formats["Headline Formats"]
     except Exception as e:
         g.es_trace("Yaml file does not have proper heading.\n" + str(e))
         return
     #preprocess multi headline styles
     g.app.permanentScriptDict[cs + 'formats'] = {}
     try:
-        for k, f in formats.items(): 
+        for k, f in formats.items():
             if "`" in k:
                 _ = k.split("`")
                 for _1 in _:
                     g.app.permanentScriptDict[cs + 'formats'][_1.strip()] = f
             else:
-                g.app.permanentScriptDict[cs + 'formats'][k] = f         
+                g.app.permanentScriptDict[cs + 'formats'][k] = f
     except Exception as e:
-        g.es_error(e)      
+        g.es_error(e)
 #@+node:ekr.20170619151859.7: ** colorize
 def colorize(c,p, item):
     """Colorize by reading "Headline Formats" node, or symbol in headline"""
     cs = str(c)
-    font = item.font(0)      
+    font = item.font(0)
     try:
         g.app.permanentScriptDict[cs  + 'formats']
     except Exception:
         g.app.permanentScriptDict[cs + 'formats'] = {}
     for k, f in g.app.permanentScriptDict[cs + 'formats'].items():
-        def format_one(f): 
+        def format_one(f):
             #color
             try:
                 if f['color']:
                     item.setForeground(0, QBrush(QColor("#" + str(f['color']))))
             except Exception:
                 print(item)
-            #weight    
+            #weight
             try:
                 if f['font-weight']:
                     font.setBold(True)
@@ -97,8 +97,8 @@ def colorize(c,p, item):
                 pass
             #icon
             # if f['icon']:
-                # com = c.editCommands                        
-                # allIcons = com.getIconList(p)                    
+                # com = c.editCommands
+                # allIcons = com.getIconList(p)
                 # icons = [i for i in allIcons if f['icon'] not in i]
                 # in_list = False
                 # for i in icons:
@@ -106,12 +106,12 @@ def colorize(c,p, item):
                     # if f['icon'] in i:
                         # in_list = True
                         # break
-                
+
                 # if in_list != True:
                     # com.appendImageDictToList(icons, f['icon_dir'], f['icon'], 1)
                     # com.setIconList(p, icons, True)
         if k == p.h:
-            format_one(f)    
+            format_one(f)
         # else:
             # if "++" in p.h:
                 # color = "#999999"
@@ -120,11 +120,11 @@ def colorize(c,p, item):
             # except:
                 # pass
     item.setFont(0, font)
-    
 
 
 
-    
+
+
 
 
 #@-others

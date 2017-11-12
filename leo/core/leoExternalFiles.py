@@ -25,7 +25,7 @@ class ExternalFile(object):
         return '<ExternalFile: %20s %s>' % (self.time, g.shortFilename(self.path))
 
     __str__ = __repr__
-    
+
     #@+others
     #@+node:ekr.20161011174757.1: *3* ef.shortFileName
     def shortFileName(self):
@@ -85,6 +85,11 @@ class ExternalFilesController(object):
         Return True if the file given by fn has not been changed
         since Leo read it or if the user agrees to overwrite it.
         '''
+        if c.sqlite_connection and c.mFileName == path:
+            # sqlite database file is never actually overwriten by Leo
+            # so no need to check its timestamp. It is modified through
+            # sqlite methods.
+            return True
         if self.has_changed(c, path):
             return self.ask(c, path)
         else:
@@ -206,7 +211,7 @@ class ExternalFilesController(object):
         path = g.fullPath(c, p)
         if self.has_changed(c, path):
             if self.ask(c, path, p=p):
-                c.redraw_now(p=p)
+                c.redraw(p=p)
                 c.refreshFromDisk(p)
                 c.redraw()
             # Always update the path & time to prevent future warnings.

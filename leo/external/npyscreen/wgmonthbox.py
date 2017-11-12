@@ -13,7 +13,7 @@ import curses
 class DateEntryBase(widget.Widget):
     #@+others
     #@+node:ekr.20170428084208.46: *3* __init__
-    def __init__(self, screen, allowPastDate=True, allowTodaysDate=True, firstWeekDay=6, 
+    def __init__(self, screen, allowPastDate=True, allowTodaysDate=True, firstWeekDay=6,
                     use_datetime = False, allowClear=False, **keywords):
         super(DateEntryBase, self).__init__(screen, **keywords)
         self.allow_date_in_past = allowPastDate
@@ -23,14 +23,14 @@ class DateEntryBase(widget.Widget):
         self._max = datetime.date.max
         self._min = datetime.date.min
         self.firstWeekDay = firstWeekDay
-        
+
     #@+node:ekr.20170428084208.47: *3* date_or_datetime
     def date_or_datetime(self):
         if self.use_datetime:
             return datetime.datetime
         else:
             return datetime.date
-            
+
     #@+node:ekr.20170428084208.48: *3* _check_date
     def _check_date(self):
         if not self.value:
@@ -40,8 +40,8 @@ class DateEntryBase(widget.Widget):
                 if self.allow_todays_date:
                     self.value = self.date_or_datetime().today()
                 else:
-                    self.value = self.date_or_datetime().today() + datetime.timedelta(1)      
-        
+                    self.value = self.date_or_datetime().today() + datetime.timedelta(1)
+
     #@+node:ekr.20170428084208.49: *3* _check_today_validity
     def _check_today_validity(self, onErrorHigher=True):
         """If not allowed to select today's date, and today is selected, move either higher or lower
@@ -153,10 +153,10 @@ class DateEntryBase(widget.Widget):
             self._check_today_validity(onErrorHigher=True)
         except Exception:
             self.value = old_value
-            
+
     #@+node:ekr.20170428084208.61: *3* h_find_today
     def h_find_today(self, *args):
-        self.value = self.date_or_datetime().today()  
+        self.value = self.date_or_datetime().today()
         self._check_date()
         self._check_today_validity(onErrorHigher=True)
 
@@ -164,18 +164,18 @@ class DateEntryBase(widget.Widget):
     def h_clear(self, *args):
         if self.allow_clear:
             self.value   = None
-            self.editing = None 
+            self.editing = None
 
     #@-others
 #@+node:ekr.20170428084208.63: ** class MonthBox
 class MonthBox(DateEntryBase):
     DAY_FIELD_WIDTH = 4
-    
+
     #@+others
     #@+node:ekr.20170428084208.64: *3* MonthBox.__init__
     def __init__(self, screen, **keywords):
         super(MonthBox, self).__init__(screen, **keywords)
-        
+
     #@+node:ekr.20170428084208.65: *3* MonthBox.calculate_area_needed
     def calculate_area_needed(self):
         # Rember that although months only have 4-5 weeks, they can span 6 weeks.
@@ -189,8 +189,8 @@ class MonthBox(DateEntryBase):
         if self.hidden:
             self.clear()
             return False
-        
-        # Title line        
+
+        # Title line
         if not self.value:
             _title_line = "No Value Set"
         else:
@@ -201,24 +201,24 @@ class MonthBox(DateEntryBase):
             except ValueError:
                 monthname = "Month: %s" % self.value.month
             day   = self.value.day
-            
+
             _title_line = "%s, %s" % (monthname, year)
-        
+
         if isinstance(_title_line, bytes):
             _title_line = _title_line.decode(self.encoding, 'replace')
-        
+
         if self.do_colors():
             title_attribute = self.parent.theme_manager.findPair(self)
         else:
             title_attribute = curses.A_NORMAL
-        
-        self.add_line(self.rely, self.relx, 
+
+        self.add_line(self.rely, self.relx,
             _title_line,
             self.make_attributes_list(_title_line, title_attribute),
             self.width-1
         )
-        
-        
+
+
         if self.value:
             # Print the days themselves
             try:
@@ -231,11 +231,11 @@ class MonthBox(DateEntryBase):
             if do_cal_print:
                 # Print the day names
                 # weekheader puts an extra space at the end of each name
-                
+
                 cal_header = calendar.weekheader(self.__class__.DAY_FIELD_WIDTH - 1)
                 if isinstance(cal_header, bytes):
                     cal_header = cal_header.decode(self.encoding, 'replace')
-                
+
                 if self.do_colors():
                     cal_title_attribute = self.parent.theme_manager.findPair(self, 'LABEL')
                 else:
@@ -245,12 +245,12 @@ class MonthBox(DateEntryBase):
                     self.make_attributes_list(cal_header, cal_title_attribute),
                     self.width,
                     )
-                    
+
                 print_line = self.rely+2
-        
+
                 for calrow in cal_data:
                     print_column = self.relx
-            
+
                     for thisday in calrow:
                         if thisday is 0:
                             pass
@@ -265,21 +265,21 @@ class MonthBox(DateEntryBase):
                             else:
                                 self.parent.curses_pad.addstr(print_line, print_column, str(thisday))
                         print_column += self.__class__.DAY_FIELD_WIDTH
-            
+
                     print_line += 1
-                    
+
             # Print some help
             if self.allow_clear:
                 key_help = "keys: dwmyDWMY t cq"
             else:
                 key_help = "keys: dwmyDWMY t"
-            
+
             if self.do_colors():
                 self.parent.curses_pad.addstr(self.rely+9, self.relx, key_help, self.parent.theme_manager.findPair(self, 'LABEL'))
             else:
                 self.parent.curses_pad.addstr(self.rely+9, self.relx, key_help)
 
-        
+
     #@+node:ekr.20170428084208.67: *3* MonthBox.set_up_handlers
     def set_up_handlers(self):
         '''MonthBox.set_up_handlers.'''

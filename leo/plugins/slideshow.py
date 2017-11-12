@@ -72,13 +72,13 @@ class slideshowController(object):
     #@+node:ekr.20060831171016: *3* createCommands (slideshowController)
     def createCommands(self):
         c = self.c; k = c.k
-        for name, func in (
+        for commandName, func in (
             ('next-slide-command', self.nextSlide),
             ('next-slide-show-command', self.nextSlideShow),
             ('prev-slide-command', self.prevSlide),
             ('prev-slide-show-command', self.prevSlideShow),
         ):
-            k.registerCommand(name, shortcut=None, func=func, pane='all', verbose=False)
+            k.registerCommand(commandName, func)
     #@+node:ekr.20060901182318: *3* findFirstSlideShow
     def findFirstSlideShow(self):
         c = self.c
@@ -202,7 +202,7 @@ class slideshowController(object):
         g.es('%s' % h)
         #c.expandAllAncestors(p)
         #c.selectPosition(p)
-        c.redraw_now(p)
+        c.redraw(p)
         w.see('1.0')
         if h.startswith('@slideshow'):
             self.slideShowRoot = p.copy()

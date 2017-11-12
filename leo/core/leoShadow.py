@@ -415,11 +415,9 @@ class ShadowController(object):
             g.trace(
                 'marker', marker,
                 '\npublic_file', old_public_file,
-                '\npublic lines...\n%s' % (
-                    g.listToString(old_public_lines, toRepr=True)),
+                '\npublic lines...\n%s' % g.listToString(old_public_lines),
                 '\nprivate_file', old_private_file,
-                '\nprivate lines...\n%s\n' % (
-                    g.listToString(old_private_lines, toRepr=True)))
+                '\nprivate lines...\n%s\n' % g.listToString(old_private_lines))
         new_private_lines = x.propagate_changed_lines(
             old_public_lines, old_private_lines, marker)
         # Important bug fix: Never create the private file here!

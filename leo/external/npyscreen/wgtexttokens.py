@@ -11,27 +11,27 @@ from . import wgtitlefield
 #@+node:ekr.20170428084208.368: ** class TextTokens
 class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
     """This is an experiemental widget"""
-    
+
     # NB IT DOES NOT CURRENTLY SUPPORT THE HIGHLIGHTING COLORS
     # OF THE TEXTFIELD CLASS.
-    
-    
+
+
     #@+others
     #@+node:ekr.20170428084208.369: *3* TextTokens.__init__
-    def __init__(self, *args, **keywords):        
+    def __init__(self, *args, **keywords):
         super(TextTokens, self).__init__(*args, **keywords)
         self.begin_at        = 0 # which token to begin display with
         self.maximum_string_length = self.width - 2
         self.left_margin     = 0
         self.cursor_position = 0
-        
+
         self.important = False
         self.highlight = False
         self.show_bold = False
 
     #@+node:ekr.20170428084208.370: *3* TextTokens.find_cursor_offset_on_screen
     def find_cursor_offset_on_screen(self, position):
-        index  = self.begin_at 
+        index  = self.begin_at
         offset = 0
         while index < position:
             offset += len(self.decode_token(self.value[index]))
@@ -74,23 +74,23 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
             txt += i[0]
             highlighting += i[1]
         return txt, highlighting
-            
-                
+
+
     #@+node:ekr.20170428084208.374: *3* TextTokens.update
     def update(self, clear=True, cursor=True):
         if clear: self.clear()
         if self.begin_at    < 0: self.begin_at = 0
         if self.left_margin >= self.maximum_string_length:
             raise ValueError
-            
+
         if self.cursor_position < 0:
             self.cursor_position = 0
         if self.cursor_position > len(self.value):
             self.cursor_position = len(self.value)
-        
+
         if self.cursor_position < self.begin_at:
             self.begin_at = self.cursor_position
-        
+
         while self.find_cursor_offset_on_screen(self.cursor_position) > \
                  self.find_cursor_offset_on_screen(self.begin_at) + \
                  self.maximum_string_length - self.left_margin -1: # -1:
@@ -100,7 +100,7 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
         text, highlighting = self.get_literal_text_to_display(start_at=self.begin_at)
         if self.do_colors():
             if self.important:
-                color = self.parent.theme_manager.findPair(self, 'IMPORTANT') | curses.A_BOLD            
+                color = self.parent.theme_manager.findPair(self, 'IMPORTANT') | curses.A_BOLD
             else:
                 color = self.parent.theme_manager.findPair(self, self.color)
             if self.show_bold:
@@ -123,16 +123,16 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
                 else:
                     color = color | curses.A_UNDERLINE
             highlighting = [color for c in highlighting if c == curses.A_NORMAL]
-        
+
         self._print(text, highlighting)
-        
+
         if self.editing and cursor:
             self.print_cursor()
-        
+
 
     #@+node:ekr.20170428084208.375: *3* TextTokens._print
     def _print(self, text, highlighting):
-        self.add_line(self.rely, 
+        self.add_line(self.rely,
                       self.relx + self.left_margin,
                       text,
                       highlighting,
@@ -146,19 +146,19 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
             char_under_cur = self.safe_string(char_under_cur)
         except IndexError:
             char_under_cur = ' '
-        
+
         if isinstance(char_under_cur, bytes):
             char_under_cur = char_under_cur.decode(self.encoding, 'replace')
-        
+
         offset = self.find_cursor_offset_on_screen(self.cursor_position)
         if self.do_colors():
             ATTR_LIST = self.parent.theme_manager.findPair(self) | curses.A_STANDOUT
         else:
             ATTR_LIST = curses.A_STANDOUT
 
-        self.add_line(self.rely, 
+        self.add_line(self.rely,
              self.begin_at + self.relx + self.left_margin + offset,
-            char_under_cur, 
+            char_under_cur,
             self.make_attributes_list(char_under_cur, ATTR_LIST),
             # I don't understand why the "- self.begin_at" is needed in the following line
             # but it is or the cursor can end up overrunning the end of the widget.
@@ -171,7 +171,7 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
             #self.value = self.value[:self.cursor_position] + curses.keyname(input) \
             #   + self.value[self.cursor_position:]
             #self.cursor_position += len(curses.keyname(input))
-            
+
             # workaround for the metamode bug:
             if self._last_get_ch_was_unicode == True and isinstance(self.value, bytes):
                 # probably dealing with python2.
@@ -197,7 +197,7 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
     def calculate_area_needed(self):
         "Need one line of screen, and any width going"
         return 1,0
-        
+
 
 
     #@-others
@@ -205,7 +205,7 @@ class TextTokens(wgtextbox.Textfield,wgwidget.Widget):
 class TitleTextTokens(wgtitlefield.TitleText):
     _entry_type = TextTokens
 
-    
+
 #@-others
 #@@language python
 #@@tabwidth -4

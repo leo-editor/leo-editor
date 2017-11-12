@@ -6,6 +6,7 @@
 #@+node:ekr.20120219194520.10463: ** << imports >> (leoApp)
 import leo.core.leoGlobals as g
 import leo.core.leoExternalFiles as leoExternalFiles
+from leo.core.editpane.editpane import edit_pane_test_open
 try:
     import builtins # Python 3
 except ImportError:
@@ -26,6 +27,7 @@ if g.isPython3:
 else:
     import cStringIO
     StringIO = cStringIO.StringIO
+import sqlite3
 #@-<< imports >>
 #@+others
 #@+node:ekr.20161026122804.1: ** class IdleTimeManager
@@ -33,16 +35,16 @@ class IdleTimeManager(object):
     '''
     A singleton class to manage idle-time handling. This class handles all
     details of running code at idle time, including running 'idle' hooks.
-    
+
     Any code can call g.app.idleTimeManager.add_callback(callback) to cause
     the callback to be called at idle time forever.
     '''
-    
+
     def __init__(self):
         '''Ctor for IdleTimeManager class.'''
         self.callback_list = []
         self.timer = None
-        
+
     #@+others
     #@+node:ekr.20161026125611.1: *3* itm.add_callback
     def add_callback(self, callback):
@@ -948,6 +950,7 @@ class LeoApp(object):
             if veto: return False
         g.app.setLog(None) # no log until we reactive a window.
         g.doHook("close-frame", c=c)
+        c.cacher.commit() # store cache
             # This may remove frame from the window list.
         if frame in g.app.windowList:
             g.app.destroyWindow(frame)
@@ -1008,6 +1011,10 @@ class LeoApp(object):
         # Leo 5.6: print the signon immediately:
         if not app.silentMode:
             print('')
+            if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
+                print('Note: sys.stdout.encoding is not UTF-8')
+                print('See: https://stackoverflow.com/questions/14109024')
+                print('')
             print(app.signon)
             print(app.signon1)
             print(app.signon2)
@@ -1184,6 +1191,7 @@ class LeoApp(object):
         if trace: print('finishQuit')
         if not g.app.killed:
             g.doHook("end1")
+            g.app.cacher.commit()
         if g.app.ipk:
             g.app.ipk.cleanup_consoles()
         self.destroyAllOpenWithFiles()
@@ -1259,7 +1267,7 @@ class LeoApp(object):
                         g.es_print('Exception running', aClass.__name__)
                         g.es_exception()
                         return None
-                        
+
                 scanner_for_at_auto_cb.scanner_name = aClass.__name__
                     # For traces in ic.createOutline.
                 if trace: g.trace('found', p.h)
@@ -1283,7 +1291,7 @@ class LeoApp(object):
                     g.es_print('Exception running', aClass.__name__)
                     g.es_exception()
                     return None
-                    
+
             scanner_for_ext_cb.scanner_name = aClass.__name__
                 # For traces in ic.createOutline.
             return scanner_for_ext_cb
@@ -1317,9 +1325,10 @@ class LeoApp(object):
         """
         # Fixes bug 670108.
         import leo.core.leoCache as leoCache
-        g.app.db = leoCache.Cacher().initGlobalDB()
+        g.app.cacher = cacher = leoCache.Cacher()
+        g.app.db = cacher.initGlobalDB()
     #@+node:ekr.20031218072017.1978: *3* app.setLeoID & helpers
-    def setLeoID(self, verbose=True):
+    def setLeoID(self, useDialog=True, verbose=True):
         '''Get g.app.leoID from various sources.'''
         self.leoID = None
         assert self == g.app
@@ -1332,15 +1341,18 @@ class LeoApp(object):
         for func in table:
             func(verbose)
             if self.leoID:
-                return
-        self.setIdFromDialog()
-        if self.leoID:
-            self.setIDFile()
+                break
+        else:
+            if useDialog:
+                self.setIdFromDialog()
+                if self.leoID:
+                    self.setIDFile()
+        return self.leoID
     #@+node:ekr.20031218072017.1979: *4* app.setIDFromSys
     def setIDFromSys(self, verbose):
         '''
         Attempt to set g.app.leoID from sys.leoID.
-        
+
         This might be set by in Python's sitecustomize.py file.
         '''
         id_ = getattr(sys, "leoID", None)
@@ -1869,16 +1881,18 @@ class LoadManager(object):
 
         Both old_d and new_d remain unchanged.'''
         trace = False and not g.unitTesting
+        trace_binding = False or g.app.trace_binding
         lm = self
         if not old_d: return new_d
         if not new_d: return old_d
         if trace:
             new_n, old_n = len(list(new_d.keys())), len(list(old_d.keys()))
-            g.trace('new %4s %s %s' % (new_n, id(new_d), new_d.name()))
-            g.trace('old %4s %s %s' % (old_n, id(old_d), old_d.name()))
+            g.trace('new %4s %s' % (new_n, new_d.name()))
+            g.trace('old %4s %s' % (old_n, old_d.name()))
         # #510.
         si_list = new_d.get(g.app.trace_setting)
         if si_list:
+            # This code executed only if g.app.trace_setting exists.
             for si in si_list:
                 fn = si.kind.split(' ')[-1]
                 stroke = c.k.prettyPrintKey(si.stroke)
@@ -1886,17 +1900,18 @@ class LoadManager(object):
                     pane = ' in %s panes' % si.pane
                 else:
                     pane = ''
+                g.trace(repr(si))
                 g.es_print('--trace-setting: %20s binds %s to %-20s%s' %  (
                     fn, g.app.trace_setting, stroke, pane))
         inverted_old_d = lm.invert(old_d)
         inverted_new_d = lm.invert(new_d)
         # #510.
-        if g.app.trace_binding:
+        if trace and trace_binding:
             stroke = c.k.canonicalizeShortcut(g.app.trace_binding)
             si_list = inverted_new_d. get(stroke)
             if si_list:
                 for si in si_list:
-                    fn = si.kind.split(' ')[-1] # si.kind # 
+                    fn = si.kind.split(' ')[-1] # si.kind #
                     stroke2 = c.k.prettyPrintKey(stroke)
                     if si.pane and si.pane != 'all':
                         pane = ' in %s panes' % si.pane
@@ -1911,7 +1926,8 @@ class LoadManager(object):
         return result
     #@+node:ekr.20120311070142.9904: *5* LM.checkForDuplicateShortcuts
     def checkForDuplicateShortcuts(self, c, d):
-        '''Check for duplicates in an "inverted" dictionary d
+        '''
+        Check for duplicates in an "inverted" dictionary d
         whose keys are strokes and whose values are lists of ShortcutInfo nodes.
 
         Duplicates happen only if panes conflict.
@@ -2000,8 +2016,10 @@ class LoadManager(object):
                 g.blue(s)
 
         theFile = lm.openLeoOrZipFile(fn)
+        
         if theFile:
             message('reading settings in %s' % (fn))
+            
         # Changing g.app.gui here is a major hack.  It is necessary.
         oldGui = g.app.gui
         g.app.gui = g.app.nullGui
@@ -2011,9 +2029,9 @@ class LoadManager(object):
         g.app.lockLog()
         g.app.openingSettingsFile = True
         try:
-            ok = c.fileCommands.openLeoFile(theFile, fn,
-                readAtFileNodesFlag=False, silent=True)
-                    # closes theFile.
+            ok =  c.fileCommands.openLeoFile(theFile, fn,
+                    readAtFileNodesFlag=False, silent=True)
+                        # closes theFile.
         finally:
             g.app.openingSettingsFile = False
         g.app.unlockLog()
@@ -2076,6 +2094,10 @@ class LoadManager(object):
     #@+node:ekr.20120219154958.10452: *3* LM.load & helpers
     def load(self, fileName=None, pymacs=None):
         '''Load the indicated file'''
+        trace = False and not g.unitTesting
+        if trace:
+            import time
+            t1 = time.clock()
         lm = self
         # Phase 1: before loading plugins.
         # Scan options, set directories and read settings.
@@ -2096,6 +2118,9 @@ class LoadManager(object):
         ok = lm.doPostPluginsInit()
         if ok and g.app.diff:
             lm.doDiff()
+        if trace:
+            t2 = time.clock()
+            g.trace('load time: %5.2f sec.' % (t2-t1))
         if ok:
             g.es('') # Clears horizontal scrolling in the log pane.
             g.app.gui.runMainLoop()
@@ -2257,7 +2282,7 @@ class LoadManager(object):
             g.trace('LM.atAutoWritersDict')
             g.printDict(g.app.atAutoWritersDict)
         # Creates problems: https://github.com/leo-editor/leo-editor/issues/40
-     
+
     #@+node:ekr.20140728040812.17991: *7* LM.parse_writer_dict
     def parse_writer_dict(self, sfn, m):
         '''
@@ -2620,7 +2645,7 @@ class LoadManager(object):
         # import pdb ; pdb.set_trace()
         import sys
         import leo.core.leoGlobals as g
-        
+
         # Define class LeoStdOut
         #@+others
         #@+node:ekr.20160718091844.1: *6* class LeoStdOut
@@ -2634,7 +2659,7 @@ class LoadManager(object):
 
             def flush(self, *args, **keys):
                 pass
-                
+
             #@+others
             #@+node:ekr.20160718102306.1: *7* LeoStdOut.write
             def write(self, *args, **keys):
@@ -2786,7 +2811,7 @@ class LoadManager(object):
                     root.doDelete(newNode=root.next())
                 p = g.findNodeAnywhere(c, "Leo's cheat sheet")
                 if p:
-                    c.selectPosition(p, enableRedrawFlag=False)
+                    c.selectPosition(p)
                     p.expand()
                 c.target_language = 'rest'
                     # Settings not parsed the first time.
@@ -2961,6 +2986,10 @@ class LoadManager(object):
         # Open the file, if possible.
         g.doHook('open0')
         theFile = lm.openLeoOrZipFile(fn)
+        if isinstance(theFile, sqlite3.Connection):
+            # this commander is associated with sqlite db
+            c.sqlite_connection = theFile
+            
         # Enable the log.
         g.app.unlockLog()
         c.frame.log.enable(True)
@@ -3071,7 +3100,7 @@ class LoadManager(object):
                 p.setHeadString('%s %s' % (load_type,fn))
                 c.refreshFromDisk()
                 c.selectPosition(p)
-                    
+
         # Fix critical bug 1184855: data loss with command line 'leo somefile.ext'
         # Fix smallish bug 1226816 Command line "leo xxx.leo" creates file xxx.leo.leo.
         c.mFileName = fn if fn.endswith('.leo') else '%s.leo' % (fn)
@@ -3088,6 +3117,8 @@ class LoadManager(object):
         return c
     #@+node:ekr.20120223062418.10419: *6* LM.isLeoFile & LM.isZippedFile
     def isLeoFile(self, fn):
+        if g.SQLITE:
+            return fn and (zipfile.is_zipfile(fn) or fn.endswith('.leo') or fn.endswith('.db'))
         return fn and (zipfile.is_zipfile(fn) or fn.endswith('.leo'))
 
     def isZippedFile(self, fn):
@@ -3095,6 +3126,9 @@ class LoadManager(object):
     #@+node:ekr.20120224161905.10030: *6* LM.openLeoOrZipFile
     def openLeoOrZipFile(self, fn):
         lm = self
+        if g.SQLITE:
+            if fn.endswith('.db'):
+                return sqlite3.connect(fn)
         zipped = lm.isZippedFile(fn)
         if lm.isLeoFile(fn) and g.os_path_exists(fn):
             if zipped:
@@ -3182,9 +3216,9 @@ class RecentFilesManager(object):
     '''A class to manipulate leoRecentFiles.txt.'''
 
     def __init__(self):
-        
+
         self.edit_headline = 'Recent files. Do not change this headline!'
-            # Headline used by 
+            # Headline used by
         self.groupedMenus = []
             # Set in rf.createRecentFilesMenuItems.
         self.recentFiles = []
@@ -3310,7 +3344,7 @@ class RecentFilesManager(object):
         '''
         Dump recentFiles into new node appended as lastTopLevel, selects it and
         request focus in body.
-           
+
         NOTE: command write-edited-recent-files assume that headline of this
         node is not changed by user.
         '''
@@ -3415,7 +3449,7 @@ class RecentFilesManager(object):
     def sortRecentFiles(self, c):
         '''Sort the recent files list.'''
         rf = self
-            
+
         def key(path):
             # Sort only the base name.  That's what will appear in the menu.
             s = g.os_path_basename(path)
@@ -3552,6 +3586,8 @@ def ctrlClickAtCursor(event):
     c = event.get('c')
     if c:
         g.openUrlOnClick(event)
+#@+node:tbrown.20171110183043.1: *3* edit-pane-test-open
+g.command("edit-pane-test-open")(edit_pane_test_open)
 #@+node:ekr.20150514125218.3: *3* enable/disable/toggle-idle-time-events
 @g.command('disable-idle-time-events')
 def disable_idle_time_events(event):

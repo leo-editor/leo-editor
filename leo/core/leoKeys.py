@@ -639,8 +639,7 @@ class AutoCompleterClass(object):
         aList = list(set([z[0] for z in hits]))
         aList.sort()
         if trace:
-            # g.trace('hits[:50]',g.listToString(hits[:50],sort=False))
-            g.trace('aList[:50]', g.listToString(aList[: 50], sort=False))
+            g.trace('aList[:50]', g.listToString(aList[: 50]))
         return aList
     #@+node:ekr.20110512232915.14481: *6* ac.clean_for_display (not used)
     def clean_for_display(self, hits):
@@ -659,8 +658,8 @@ class AutoCompleterClass(object):
         aList = list(set(aList))
         aList.sort()
         if trace:
-            # g.trace('hits[:50]',g.listToString(hits[:50],sort=False))
-            g.trace('aList[:50]', g.listToString(aList[: 50], sort=False))
+            # g.trace('hits[:50]',g.listToString(hits[:50])
+            g.trace('aList[:50]', g.listToString(aList[: 50]))
         return aList
     #@+node:ekr.20110510120621.14542: *6* ac.guess_class
     def guess_class(self, c, varname):
@@ -1450,7 +1449,7 @@ class GetArg(object):
                 ga.do_char(event, char)
     #@+node:ekr.20161019060054.1: *4* ga.cancel_after_state
     def cancel_after_state(ga):
-        
+
         ga.after_get_arg_state = None
     #@+node:ekr.20140816165728.18955: *4* ga.do_char
     def do_char(ga, event, char):
@@ -2270,9 +2269,8 @@ class KeyHandlerClass(object):
     def bindOpenWith(self, d):
         '''Register an open-with command.'''
         k = self; c = k.c
-        shortcut = d.get('shortcut')
+        shortcut = d.get('shortcut') or ''
         name = d.get('name')
-        # g.trace(d)
         # The first parameter must be event, and it must default to None.
 
         def openWithCallback(event=None, c=c, d=d):
@@ -2280,7 +2278,7 @@ class KeyHandlerClass(object):
         # Use k.registerCommand to set the shortcuts in the various binding dicts.
 
         commandName = 'open-with-%s' % name.lower()
-        k.registerCommand(commandName, shortcut, openWithCallback, pane='all', verbose=False)
+        k.registerCommand(commandName, openWithCallback, shortcut=shortcut)
     #@+node:ekr.20061031131434.95: *4* k.checkBindings
     def checkBindings(self):
         '''Print warnings if commands do not have any @shortcut entry.
@@ -2740,7 +2738,7 @@ class KeyHandlerClass(object):
         result.append('***** Plain Keys...\n')
         self.printBindingsHelper(result, data, prefix=None)
         if not g.unitTesting:
-            g.es('', ''.join(result), tabName=tabName)
+            g.es_print('', ''.join(result), tabName=tabName)
         k.showStateAndMode()
         return result # for unit test.
     #@+node:ekr.20061031131434.120: *5* printBindingsHelper
@@ -2811,7 +2809,7 @@ class KeyHandlerClass(object):
                 data.append((s1, s2),)
         # This isn't perfect in variable-width fonts.
         lines = ['%*s %s\n' % (-n, z1, z2) for z1, z2 in data]
-        g.es('', ''.join(lines), tabName=tabName)
+        g.es_print('', ''.join(lines), tabName=tabName)
     #@+node:ekr.20061031131434.122: *4* k.repeatComplexCommand & helper
     @cmd('repeat-complex-command')
     def repeatComplexCommand(self, event):
@@ -2881,7 +2879,7 @@ class KeyHandlerClass(object):
         k.showStateAndMode()
     #@+node:ekr.20061031131434.125: *3* k.Externally visible helpers
     #@+node:ekr.20140816165728.18968: *4* Wrappers for GetArg methods
-    # New in Leo 5.4    
+    # New in Leo 5.4
     def getNextArg(self, handler):
         '''
         Get the next arg.  For example, after a Tab in the find commands.
@@ -2889,8 +2887,8 @@ class KeyHandlerClass(object):
         '''
         # Replace the current handler.
         self.getArgInstance.after_get_arg_state = ('getarg', 1, handler)
-        
-    # New in Leo 5.4  
+
+    # New in Leo 5.4
     def get1Arg(self, event, handler,
         # returnKind=None, returnState=None,
         prefix=None, tabList=None, completion=True, oneCharacter=False,
@@ -2908,15 +2906,15 @@ class KeyHandlerClass(object):
 
         Before going into the many details, let's look at some examples. This
         code will work in any class having a 'c' ivar bound to a commander.
-            
+
         Example 1: get one argument from the user:
-            
+
             @cmd('my-command')
             def myCommand(self, event):
                 k = self.c.k
                 k.setLabelBlue('prompt: ')
                 k.get1Arg(event, handler=self.myCommand1)
-                    
+
             def myCommand1(self, event):
                 k = self.c.k
                 # k.arg contains the argument.
@@ -2926,21 +2924,21 @@ class KeyHandlerClass(object):
                 k.clearState()
                 k.resetLabel()
                 k.showStateAndMode()
-                
+
         Example 2: get two arguments from the user:
-            
+
             @cmd('my-command')
             def myCommand(self, event):
                 k = self.c.k
                 k.setLabelBlue('first prompt: ')
                 k.get1Arg(event, handler=self.myCommand1)
-                    
+
             def myCommand1(self, event):
                 k = self.c.k
                 self.arg1 = k.arg
                 k.setLabelBlue('second prompt: ')
                 k.getNextArg(handler=self.myCommand2)
-                
+
             def myCommand2(self, event):
                 k = self.c.k
                 # k.arg contains second argument.
@@ -2950,7 +2948,7 @@ class KeyHandlerClass(object):
                 k.clearState()
                 k.resetLabel()
                 k.showStateAndMode()
-                
+
         k.get1Arg and k.getNextArg are a convenience methods. They simply passes
         their arguments to the get_arg method of the singleton GetArg instance. This
         docstring describes k.get1arg and k.getNextArg as if they were the
@@ -2979,7 +2977,7 @@ class KeyHandlerClass(object):
 
         useMinibuffer=True: True: put focus in the minibuffer while accumulating arguments.
                             False allows sort-lines, for example, to show the selection range.
-            
+
         '''
         #@-<< docstring for k.get1arg >>
         returnKind, returnState = None, None
@@ -3087,8 +3085,11 @@ class KeyHandlerClass(object):
                     si.func = func
                     d2[key2] = si
     #@+node:ekr.20061031131434.131: *4* k.registerCommand
-    def registerCommand(self, commandName, shortcut, func,
-        pane='all', source_c=None, verbose=False
+    def registerCommand(self, commandName, func,
+        pane='all',
+        shortcut='', # Deprecated.
+        source_c=None,
+        verbose=False
     ):
         '''
         Make the function available as a minibuffer command,
@@ -3099,7 +3100,7 @@ class KeyHandlerClass(object):
 
         If wrap is True then func will be wrapped with c.universalCallback.
         source_c is the commander in which an @command or @button node is defined.
-        
+
         **Important**: Bindings created here from plugins can not be overridden.
         This includes @command and @button bindings created by mod_scripting.py.
         '''
@@ -3331,6 +3332,9 @@ class KeyHandlerClass(object):
         trace = False and not g.unitTesting
         k = self
         # First, honor minibuffer bindings for all except user modes.
+        if state == 'input-shortcut':
+            k.handleInputShortcut(event, stroke)
+            return True
         if state in ('getArg', 'getFileName', 'full-command', 'auto-complete', 'vim-mode'):
             if k.handleMiniBindings(event, state, stroke):
                 return True
@@ -3376,6 +3380,61 @@ class KeyHandlerClass(object):
             else:
                 if trace: g.trace('No state handler for %s' % state)
             return True
+    #@+node:vitalije.20170708161511.1: *5* k.handleInputShortcut
+    def handleInputShortcut(self, event, stroke):
+        k = self; c = k.c; p = c.p
+        k.clearState()
+        if p.h.startswith(('@shortcuts', '@mode')):
+            # line of text in body
+            w = c.frame.body
+            before, sel, after = w.getInsertLines()
+            m = k._cmd_handle_input_pattern.search(sel)
+            assert m # edit-shortcut was invoked on a malformed body line
+            sel = g.u('%s %s\n')%(m.group(0), stroke.s)
+            udata = c.undoer.beforeChangeNodeContents(p)
+            w.setSelectionAreas(before, sel, after)
+            c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
+            w.onBodyChanged('change shortcut')
+            cmdname = m.group(0).rstrip('= ')
+            k.editShortcut_do_bind_helper(stroke, cmdname)
+            return
+        elif p.h.startswith(('@command', '@button')):
+            udata = c.undoer.beforeChangeNodeContents(p)
+            cmd = p.h.split(g.u('@key'),1)[0]
+            p.h = g.u('%s @key=%s')%(cmd, stroke.s)
+            c.undoer.afterChangeNodeContents(p, 'change shortcut', udata)
+            try:
+                cmdname = cmd.split(' ', 1)[1].strip()
+                k.editShortcut_do_bind_helper(stroke, cmdname)
+            except IndexError:
+                pass
+            return
+        else:
+            # this should never happen
+            g.error('not in settings node shortcut')
+
+    #@+node:vitalije.20170709151653.1: *6* k.isInShortcutBodyLine
+    _cmd_handle_input_pattern = re.compile(g.u('[A-Za-z0-9_\\-]+\\s*='))
+    def isInShortcutBodyLine(self):
+        k = self; c = k.c; p = c.p
+        if p.h.startswith(('@shortcuts', '@mode')):
+            # line of text in body
+            w = c.frame.body
+            before, sel, after = w.getInsertLines()
+            m = k._cmd_handle_input_pattern.search(sel)
+            return bool(m)
+        return p.h.startswith(('@command', '@button'))
+    #@+node:vitalije.20170709151658.1: *6* k.isEditShortcutSensible
+    def isEditShortcutSensible(self):
+        k = self; c = k.c; p = c.p
+        return p.h.startswith(('@command', '@button')) or k.isInShortcutBodyLine()
+    #@+node:vitalije.20170709202924.1: *6* k.editShortcut_do_bind_helper
+    def editShortcut_do_bind_helper(self, stroke, cmdname):
+        k = self; c = k.c
+        cmdfunc = c.commandsDict.get(cmdname)
+        if cmdfunc:
+            k.bindKey('all', stroke, cmdfunc, cmdname)
+            g.es('bound', stroke, 'to command', cmdname)
     #@+node:ekr.20091230094319.6240: *5* k.getPaneBinding
     def getPaneBinding(self, stroke, w):
         trace = False and not g.unitTesting
@@ -3410,7 +3469,7 @@ class KeyHandlerClass(object):
                 if d:
                     g.trace('d.get(%s)' % (stroke))
                     g.trace(d.get(stroke))
-                
+
             if (
                 # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
                 name and w_name.startswith(name) or

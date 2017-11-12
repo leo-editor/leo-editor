@@ -18,11 +18,11 @@ class TextfieldCtrlChars(textbox.Textfield):
     def _get_maximum_string_length(self):
         if self.on_last_line:
             _maximum_string_length = self.width - 1
-        else:   
+        else:
             _maximum_string_length = self.width
-        
+
         _maximum_string_length -= (len(self.ctr_chars) + 1)
-        
+
         return _maximum_string_length
 
     #@+node:ekr.20170428084208.364: *3* _set_maxiumum_string_length

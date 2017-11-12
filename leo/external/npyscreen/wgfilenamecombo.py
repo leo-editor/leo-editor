@@ -20,9 +20,9 @@ class FilenameCombo(wgcombobox.ComboBox):
         self.must_exist = must_exist
         self.confirm_if_exists = confirm_if_exists
         self.sort_by_extension = sort_by_extension
-        
+
         super(FilenameCombo, self).__init__(screen, *args, **keywords)
-        
+
     #@+node:ekr.20170428084207.615: *3* _print
     def _print(self):
         if self.value == None:
@@ -51,7 +51,7 @@ class FilenameCombo(wgcombobox.ComboBox):
         if self.value == '':
             self.value = None
         self.display()
-        
+
 
     #@-others
 #@+node:ekr.20170428084207.617: ** class TitleFilenameCombo
