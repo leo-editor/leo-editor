@@ -1233,7 +1233,7 @@ class LeoLog(object):
         self.c.invalidateFocus()
         self.c.bodyWantsFocus()
     #@+node:ekr.20111122080923.10184: *3* LeoLog.orderedTabNames
-    def orderedTabNames(self, LeoLog):
+    def orderedTabNames(self, LeoLog=None):
         return list(self.frameDict.values())
     #@+node:ekr.20070302094848.9: *3* LeoLog.numberOfVisibleTabs
     def numberOfVisibleTabs(self):
@@ -1800,7 +1800,12 @@ class NullBody(LeoBody):
 #@+node:ekr.20031218072017.2218: ** class NullColorizer (BaseColorizer)
 class NullColorizer(leoColorizer.BaseColorizer):
     '''A colorizer class that doesn't color.'''
-    pass
+    
+    recolorCount = 0
+            
+    def colorize(self, p):
+        self.recolorCount += 1
+            # For #503: Use string/null gui for unit tests
 #@+node:ekr.20031218072017.2222: ** class NullFrame (LeoFrame)
 class NullFrame(LeoFrame):
     '''A null frame class for tests and batch execution.'''
@@ -1844,7 +1849,6 @@ class NullFrame(LeoFrame):
     def expandLogPane(self, event=None): pass
     def expandOutlinePane(self, event=None): pass
     def expandPane(self, event=None): pass
-    def finishCreate(self): pass
     def fullyExpandBodyPane(self, event=None): pass
     def fullyExpandLogPane(self, event=None): pass
     def fullyExpandOutlinePane(self, event=None): pass
@@ -1867,6 +1871,12 @@ class NullFrame(LeoFrame):
     def toggleActivePane(self, event=None): pass
     def toggleSplitDirection(self, event=None): pass
     def update(self): pass
+    #@+node:ekr.20171112115045.1: *3* NullFrame.finishCreate
+    def finishCreate(self):
+        
+        # 2017/11/12: For #503: Use string/null gui for unit tests.
+        self.createFirstTreeNode()
+            # Call the base LeoFrame method.
     #@-others
 #@+node:ekr.20070301164543: ** class NullIconBarClass
 class NullIconBarClass(object):
@@ -2095,6 +2105,8 @@ class NullTree(LeoTree):
     def redraw(self, p=None, scroll=True, forceDraw=False):
         self.redrawCount += 1
         # g.trace(p and p.h, self.c.p.h)
+        return p
+            # Support for #503: Use string/null gui for unit tests
     redraw_now = redraw
 
     def redraw_after_contract(self, p=None): self.redraw()

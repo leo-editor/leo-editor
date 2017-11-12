@@ -2116,7 +2116,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def destroySelf(self):
         # Remember these: we are about to destroy all of our ivars!
         c, top = self.c, self.top
-        g.app.gui.frameFactory.deleteFrame(top)
+        if hasattr(g.app.gui, 'frameFactory'):
+            g.app.gui.frameFactory.deleteFrame(top)
         # Indicate that the commander is no longer valid.
         c.exists = False
         if 0: # We can't do this unless we unhook the event filter.

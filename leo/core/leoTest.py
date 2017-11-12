@@ -697,7 +697,7 @@ class TestManager(object):
                     old_frame = c.frame
                     old_k_w = c.k.w
                     try:
-                        g.app.gui = leoGui.NullGui(c=c)
+                        g.app.gui = leoGui.NullGui()
                         c.frame = leoFrame.NullFrame(c, title='<title>', gui=g.app.gui)
                         c.k.w = None
                             # A huge switcheroo.
@@ -707,7 +707,6 @@ class TestManager(object):
                         c.frame = old_frame
                         c.k.w = old_k_w
                 else:
-                    g.trace(g.app.gui)
                     result = runner.run(suite)
                 if stream:
                     if stream.aList:

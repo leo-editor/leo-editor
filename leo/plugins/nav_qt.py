@@ -68,7 +68,6 @@ class NavController(object):
 
         self.c = c
         c._prev_next = self
-
         self._buttons = self.makeButtons()
 
     #@+node:ville.20090518182905.5427: *3* makeButtons
@@ -76,7 +75,8 @@ class NavController(object):
 
         c = self.c
         w = c.frame.iconBar.w
-        if not w: return # EKR: can be None when unit testing.
+        if not w:
+            return [] # EKR: can be an empty list when unit testing.
 
         icon_l = w.style().standardIcon(QtWidgets.QStyle.SP_ArrowLeft)
         icon_r = w.style().standardIcon(QtWidgets.QStyle.SP_ArrowRight)

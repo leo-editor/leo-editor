@@ -178,7 +178,9 @@ class JEditColorizer(BaseColorizer):
             )
         else:
             self.highlighter = None
-        widget.leo_colorizer = self
+        if widget:
+            # #503: widget may be None during unit tests.
+            widget.leo_colorizer = self
         # State data used by recolor and helpers...
         # init() properly sets these for each language.
         self.actualColorDict = {} # Used only by setTag.
@@ -2170,7 +2172,7 @@ if QtGui:
                     QtGui.QSyntaxHighlighter.rehighlight(self)
         #@+node:ekr.20110605121601.18567: *3* leo_h.highlightBlock
         def highlightBlock(self, s):
-            """ Called by QSyntaxHiglighter """
+            """ Called by QSyntaxHighlighter """
             self.n_calls += 1
             s = g.toUnicode(s)
             self.colorizer.recolor(s)

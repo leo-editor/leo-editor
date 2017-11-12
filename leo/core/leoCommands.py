@@ -5836,6 +5836,7 @@ class Commands(object):
         # tree.redraw will change the position if p is a hoisted @chapter node.
         p2 = c.frame.tree.redraw(p)
         # Be careful.  NullTree.redraw returns None.
+        # #503: NullTree.redraw(p) now returns p.
         c.selectPosition(p2 or p)
         if trace: g.trace(p2 and p2.h, g.callers())
         if setFocus: c.treeFocusHelper()

@@ -1179,7 +1179,9 @@ if not g.isPython3: # Does not work with Python 3.x
 
 # g.openWithFileName *always* opens the file.
 
-if not g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest:
+    self.skipTest('Not for external test')
+else:
     if g.isPython3:
         # Do not call g.ue: it will crash.
         theFile = 'Ỗ'
@@ -1187,7 +1189,6 @@ if not g.app.isExternalUnitTest:
         theFile = g.ue('Ỗ','utf-8')
     
     path = g.os_path_join('Ỗ','Ỗ')
-
     try:
         c2 = g.openWithFileName(path,old_c=c)
     finally:
@@ -2685,7 +2686,7 @@ def spam():
     if -1 < 2:
         pass
 #@+node:ekr.20100131171342.5508: *3* leoBridge
-#@+node:ekr.20100131171342.5509: *4* @test leoBridge init logic
+#@+node:ekr.20100131171342.5509: *4* @@@test leoBridge init logic
 import leo.core.leoBridge as leoBridge
 
 if g.app.isExternalUnitTest:
@@ -6794,7 +6795,7 @@ else:
 
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-elif g.app.gui.guiName() == 'curses':
+elif g.app.gui.guiName() in ('nullGui', 'curses'):
     self.skipTest('Not for curses gui')
 else:
     log = c.frame.log
@@ -10815,6 +10816,7 @@ else:
     p = c.testManager.findNodeAnywhere(h)
     w = c.frame.body.wrapper
     n = c.frame.body.colorizer.recolorCount
+    # print(c.frame.body.colorizer)
     assert p,'node not found: %s' % h
     c.selectPosition(p)
     c.bodyWantsFocus()
@@ -11486,6 +11488,8 @@ else:
 #@+node:ekr.20111121081052.3908: *4* @test c.frame.log.numberOfVisibleTabs
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() in ('nullGui', 'curses'):
+    self.skipTest('Not for curses gui')
 else:
     log = c.frame.log
     d = log.contentsDict
@@ -12468,8 +12472,9 @@ else:
     fn = '<file name>'
     p2 = p.firstChild()
     tree = c.frame.tree
-    w = tree.treeWidget
+    # w = tree.treeWidget
     if hasattr(tree,'treeWidget'):
+        w = tree.treeWidget
         for w.was_control_drag in (True,False):
             tree.treeWidget.intraFileDrop(fn,p,p2)
             assert True==g.app.unitTestDict['checkMoveWithParentWithWarning']
@@ -22426,7 +22431,7 @@ try:
     # With the new undo logic, it takes 2 undoes.
     # The first undo undoes the headline changes,
     # the second undo undoes the insert node.
-    if g.app.isExternalUnitTest:
+    if g.app.isExternalUnitTest or g.app.gui.guiName() == 'nullGui':
         # The situation is different in a null Gui.
         pass
     else:
@@ -22452,9 +22457,9 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-#@+node:ekr.20140923083354.6274: *6* A
-#@+node:ekr.20140923083354.6276: *6* inserted
-#@+node:ekr.20140923083354.6275: *6* B
+#@+node:ekr.20171112131324.1: *6* A
+#@+node:ekr.20171112131324.3: *6* newHeadline
+#@+node:ekr.20171112131324.2: *6* B
 #@+node:ekr.20080423110627.11: *5* @test move-outline-down & undo/redo
 root = p.copy()
 while p.hasChildren():

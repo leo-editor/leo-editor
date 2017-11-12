@@ -495,7 +495,11 @@ class Undoer(object):
         bunch.newDirty = p.isDirty()
         bunch.newHead = p.h
         bunch.newMarked = p.isMarked()
-        bunch.newSel = w.getSelectionRange() if w else 0, 0
+        # Bug fix 2017/11/12: don't use ternary operator.
+        if w:
+            bunch.newSel = w.getSelectionRange()
+        else:
+            bunch.newSel = 0, 0
         bunch.newYScroll = w.getYScrollPosition() if w else 0
         u.pushBead(bunch)
     #@+node:ekr.20050315134017.3: *5* u.afterChangeTree
