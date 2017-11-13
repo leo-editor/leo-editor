@@ -11,11 +11,9 @@ except Exception:
     # but not need to stop if it doesn't work
     pass
 
-# import imp
 import os
 
 import leo.core.leoGlobals as g
-# from leo.core.leoNodes import vnode
 from leo.core.leoQt import QtCore, QtWidgets, QtConst # QtGui
 
 if g.isPython3:
@@ -23,9 +21,7 @@ if g.isPython3:
 
 import leo.core.signal_manager as sig
 
-if QtWidgets is not None:
-    # leo.core.leoQt returns None for bridge mode
-    from leo.core.editpane.clicky_splitter import ClickySplitter
+from leo.plugins.editpane.clicky_splitter import ClickySplitter
 #@-<<editpane.py imports>>
 #@+others
 #@+node:tbrown.20171028115438.2: ** DBG
@@ -399,7 +395,7 @@ class LeoEditPane(QtWidgets.QWidget):
         for name in [i[0] for i in names if i[1].lower() == '.py']:
             try:
                 if g.isPython3:
-                    modules.append(import_module('leo.core.editpane.'+name))
+                    modules.append(import_module('leo.plugins.editpane.'+name))
                 else:
                     try:
                         exec ( "import %s" % name )  # parens for Python 3 syntax
