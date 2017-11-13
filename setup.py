@@ -7,7 +7,9 @@ simple = False # True: avoid all complications.
 trace = False
 from setuptools import setup, find_packages # Always prefer setuptools over distutils
 from codecs import open # To use a consistent encoding
-import leo.core.leoVersion # FIXME: extract from GIT tags instead, ionelmc slide:19
+import os
+import leo.core.leoGlobals as g
+
 #@+others
 #@+node:maphew.20141126230535.3: ** docstring
 '''setup.py for leo
@@ -20,6 +22,17 @@ import leo.core.leoVersion # FIXME: extract from GIT tags instead, ionelmc slide
     https://blog.ionelmc.ro/presentations/packaging/#slide:2
     https://blog.ionelmc.ro/2014/05/25/python-packaging/
 '''
+#@+node:maphew.20171112223922.1: ** git_version
+def git_version():
+    '''
+    Fetch from Git: {tag} {distance-from-tag} {current commit hash}
+    Return as string compliant with PEP440
+    '''
+    root = os.path.dirname(os.path.realpath(__file__))
+    tag, distance, commit = g.gitDescribe(root)
+    version = '{}.dev{}+{}'.format(tag, distance, commit)
+        # 5.6.dev55+e1129da
+    return version
 #@+node:maphew.20171006124415.1: ** Get description
 # Get the long description from the README file
 # And also convert to reST
@@ -33,8 +46,6 @@ except ImportError:
           "could not convert Markdown to RST")
 
 #def read_md(f): return open(f, 'r').read()
-
-    
 #@+node:maphew.20141126230535.4: ** classifiers
 classifiers = [
     'Development Status :: 6 - Mature',
@@ -52,19 +63,10 @@ classifiers = [
     ]
 #@-others
 
-scm_version_options = {
-    'write_to_template': '{}+dYYYMMMDD',
-    #'write_to_template': 'some random text',
-    'write_to' : 'leo/version.py' # feasible for core/leoVersion to use this?
-    }
-
 setup(
     name = 'leo',
-    #version = leo.core.leoVersion.version,
-    # https://github.com/pypa/setuptools_scm
-    use_scm_version = scm_version_options,
-    setup_requires=['setuptools_scm'],
-    version = leo.core.leoVersion.version,
+    # version = leo.core.leoVersion.version,
+    version = git_version(),
     author = "Edward K. Ream",
     author_email = 'edreamleo@gmail.com',
     url = 'http://leoeditor.com',
