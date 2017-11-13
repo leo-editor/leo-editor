@@ -599,6 +599,7 @@ batch_file = g.os_path_join(test_path,"batchTest.py")
 test_file  = g.os_path_join(test_path,"createdFile.txt")
 
 # Execute this command: python launchLeo.py --script test\unittest\batchTest.py
+# Note: batchTest.py is defined in unitTest.leo.
 if 1:
     command = r"%s %s --silent --script %s" % (python_interp,leo_file,batch_file)
 else:
@@ -608,7 +609,10 @@ else:
 
 if trace:
     print('@test batch mode: loadDir: %s' % g.app.loadDir)
+    print('test_file', test_file)
 removeFile(test_file)
+if trace:
+    print('command', command)
 os.system(command)
 assert g.os_path_exists(test_file), repr(test_file)
 #@+node:ekr.20100131171342.5484: *4* removeFile
