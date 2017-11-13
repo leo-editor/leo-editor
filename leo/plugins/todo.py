@@ -369,7 +369,7 @@ class todoController(object):
     _date_fields = ['created', 'date', 'duedate', 'nextworkdate', 'prisetdate']
     _time_fields = ['duetime', 'nextworktime', 'time']
     _datetime_fields = _date_fields + _time_fields
-    #@+node:tbrown.20090119215428.11: *3* __init__
+    #@+node:tbrown.20090119215428.11: *3* __init__ (todoController)
     def __init__ (self,c):
         '''ctor for todoController class.'''
         self.c = c

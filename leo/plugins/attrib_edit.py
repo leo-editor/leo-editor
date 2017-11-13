@@ -527,7 +527,7 @@ class attrib_edit_Controller(object):
     '''A per-commander class that manages attribute editing.'''
 
     #@+others
-    #@+node:tbrown.20091009210724.10981: *3* __init__
+    #@+node:tbrown.20091009210724.10981: *3* __init__ (attrib_edit_Controller)
     def __init__ (self, c):
 
         self.c = c
@@ -607,7 +607,6 @@ class attrib_edit_Controller(object):
         c = self.c
 
         self.initForm()
-
         for attr in self.getAttribs():
             class_, name, value, path, type_, readonly = attr
             if readonly:

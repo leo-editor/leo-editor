@@ -69,7 +69,7 @@ else:
     from urllib import unquote
 #@-<< imports >>
 #@+others
-#@+node:tbrown.20130813134319.14337: ** init
+#@+node:tbrown.20130813134319.14337: ** init (richtext.py)
 def init():
     '''Return True if the plugin has loaded successfully.'''
     name = g.app.gui.guiName()

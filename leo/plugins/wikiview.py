@@ -97,7 +97,7 @@ class WikiView(object):
     """Manage wikiview for an outline"""
 
     #@+others
-    #@+node:tbrown.20141101114322.10: *3* __init__
+    #@+node:tbrown.20141101114322.10: *3* __init__ (WikiView)
     def __init__(self, c):
         '''Ctor for WikiView class.'''
         self.c = c

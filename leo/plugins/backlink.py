@@ -87,7 +87,7 @@ Qt = None
 class backlinkController(object):
     """Display and edit links in leo trees"""
     #@+others
-    #@+node:ekr.20090616105756.3943: *3* __init__
+    #@+node:ekr.20090616105756.3943: *3* __init__ (backlinkController)
     def __init__ (self,c):
         '''Ctor for backlinkController class.'''
         self.c = c
