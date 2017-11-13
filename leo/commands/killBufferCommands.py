@@ -23,14 +23,20 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         '''Ctor for KillBufferCommandsClass class.'''
         # pylint: disable=super-init-not-called
         self.c = c
-        self.addWsToKillRing = c.config.getBool('add-ws-to-kill-ring')
         self.kbiterator = self.iterateKillBuffer()
-        self.last_clipboard = None # For interacting with system clipboard.
+        self.last_clipboard = None
+            # For interacting with system clipboard.
         self.lastYankP = None
             # Position of the last item returned by iterateKillBuffer.
         self.reset = None
             # The index of the next item to be returned in
             # g.app.globalKillBuffer by iterateKillBuffer.
+        self.reloadSettings()
+            
+    def reloadSettings(self):
+        '''KillBufferCommandsClass.reloadSettings.'''
+        c = self.c
+        self.addWsToKillRing = c.config.getBool('add-ws-to-kill-ring')
     #@+node:ekr.20150514063305.411: *3* addToKillBuffer
     def addToKillBuffer(self, text):
         '''

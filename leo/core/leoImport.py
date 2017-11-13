@@ -2304,11 +2304,10 @@ class ZimImportController(object):
 
     '''
     #@+others
-    #@+node:ekr.20141210051628.31: *3* zic.__init__
+    #@+node:ekr.20141210051628.31: *3* zic.__init__ & zic.reloadSettings
     def __init__(self, c):
         '''Ctor for ZimImportController class.'''
         self.c = c
-        # User options.
         self.pathToZim = c.config.getString('path_to_zim')
         self.rstLevel = c.config.getInt('rst_level') or 0
         self.rstType = c.config.getString('rst_type') or 'rst'

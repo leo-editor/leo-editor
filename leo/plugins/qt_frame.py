@@ -1341,7 +1341,7 @@ class LeoQtBody(leoFrame.LeoBody):
         self.set_widget()
             # Sets self.widget and self.wrapper.
         # Config stuff.
-        self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
+        self.reloadSettings()
         self.setWrap(c.p)
         # For multiple body editors.
         self.editor_name = None
@@ -1357,6 +1357,14 @@ class LeoQtBody(leoFrame.LeoBody):
         self.textRendererVisible = False
         self.textRendererWrapper = None
         if trace: g.trace('(qtBody)', self.widget)
+        
+    def reloadSettings(self):
+        c = self.c
+        # Reload the base class settings.
+        if hasattr(leoFrame.LeoBody, 'reloadSettings'):
+            leoFrame.LeoBody.reloadSettings(self)
+        self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
+        
     #@+node:ekr.20110605121601.18185: *5* LeoQtBody.get_name
     def getName(self):
         return 'body-widget'
@@ -3074,13 +3082,18 @@ class LeoQtLog(leoFrame.LeoLog):
             # The Qt.QTabWidget that holds all the tabs.
         # Fixes bug 917814: Switching Log Pane tabs is done incompletely.
         tw.currentChanged.connect(self.onCurrentChanged)
-        self.wrap = bool(c.config.getBool('log_pane_wraps'))
         if 0: # Not needed to make onActivateEvent work.
             # Works only for .tabWidget, *not* the individual tabs!
             theFilter = qt_events.LeoQtEventFilter(c, w=tw, tag='tabWidget')
             tw.installEventFilter(theFilter)
         # 2013/11/15: Partial fix for bug 1251755: Log-pane refinements
         tw.setMovable(True)
+        self.reloadSettings()
+        
+    def reloadSettings(self):
+        c = self.c
+        self.wrap = bool(c.config.getBool('log_pane_wraps'))
+        
     #@+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate
     def finishCreate(self):
         '''Finish creating the LeoQtLog class.'''

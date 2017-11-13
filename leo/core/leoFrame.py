@@ -228,9 +228,15 @@ class LeoBody(object):
         self.wrapper = None # set in LeoQtBody.setWidget.
         self.numberOfEditors = 1
         self.pb = None # paned body widget.
-        self.use_chapters = c.config.getBool('use_chapters')
         # Must be overridden in subclasses...
         self.colorizer = None
+        # Init user settings.
+        self.reloadSettings()
+        
+    def reloadSettings(self):
+        '''LeoBody.reloadSettings.'''
+        c = self.c
+        self.use_chapters = c.config.getBool('use_chapters')
     #@+node:ekr.20150509034810.1: *3* LeoBody.cmd (decorator)
     def cmd(name):
         '''Command decorator for the c.frame.body class.'''
@@ -705,7 +711,7 @@ class LeoFrame(object):
     '''The base class for all Leo windows.'''
     instances = 0
     #@+others
-    #@+node:ekr.20031218072017.3679: *3* LeoFrame.__init__
+    #@+node:ekr.20031218072017.3679: *3* LeoFrame.__init__ & reloadSettings
     def __init__(self, c, gui):
         self.c = c
         self.gui = gui
@@ -739,6 +745,10 @@ class LeoFrame(object):
         self.startupWindow = False # True if initially opened window
         self.stylesheet = None # The contents of <?xml-stylesheet...?> line.
         self.tab_width = 0 # The tab width in effect in this pane.
+        self.reloadSettings()
+        
+    def reloadSettings(self):
+        c = self.c
         self.cursorStay = c.config.getBool("cursor_stay_on_paste", default = True)
     #@+node:ekr.20051009045404: *4* frame.createFirstTreeNode
     def createFirstTreeNode(self):

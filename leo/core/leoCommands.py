@@ -325,6 +325,7 @@ class Commands(object):
         self.killBufferCommands = killBufferCommands.KillBufferCommandsClass(c)
         self.rectangleCommands  = rectangleCommands.RectangleCommandsClass(c)
         self.spellCommands      = spellCommands.SpellCommandsClass(c)
+        self.undoer             = leoUndo.Undoer(c)
         # Create the list of subcommanders.
         self.subCommanders = [
             self.abbrevCommands,
@@ -352,11 +353,11 @@ class Commands(object):
             self.tangleCommands,
             self.testManager,
             self.vimCommands,
+            self.undoer,
         ]
         # Other objects
         self.cacher = leoCache.Cacher(c)
         self.cacher.initFileDB(self.mFileName)
-        self.undoer = leoUndo.Undoer(self)
         import leo.plugins.free_layout as free_layout
         self.free_layout = free_layout.FreeLayoutController(c)
         if hasattr(g.app.gui, 'styleSheetManagerClass'):
@@ -713,14 +714,21 @@ class Commands(object):
         '''
         trace = True and not g.unitTesting
         c = self
-        for subcommander in c.subCommanders:
+        classes = c.subCommanders[:]
+        table = [
+            g.app.pluginsController,
+            c.frame, c.frame.body, c.frame.log, c.frame.tree,
+        ]
+        classes.extend([z for z in table if z])
+        classes.sort(key=lambda obj: obj.__class__.__name__)
+        for obj in classes:
             for ivar in ('reloadSettings', 'reload_settings'):
-                func = getattr(subcommander, ivar, None)
+                func = getattr(obj, ivar, None)
                 if func:
                     # pylint: disable=not-callable
                     if trace:
                         g.es_print('reloading settings in',
-                            subcommander.__class__.__name__)
+                            obj.__class__.__name__)
                     func()
 
     #@+node:ekr.20150329162703.1: *4* Clone find...

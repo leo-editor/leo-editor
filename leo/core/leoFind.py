@@ -118,7 +118,7 @@ class LeoFind(object):
     """The base class for Leo's Find commands."""
     #@+others
     #@+node:ekr.20131117164142.17021: *3* LeoFind.birth
-    #@+node:ekr.20031218072017.3053: *4* LeoFind.__init__ & helpers
+    #@+node:ekr.20031218072017.3053: *4* LeoFind.__init__
     #@@nobeautify
 
     def __init__(self, c):
@@ -133,10 +133,6 @@ class LeoFind(object):
         self.frame = None
         self.k = c.k
         self.re_obj = None
-
-        # Options ivars: set once:
-        self.ignore_dups = c.config.getBool('find-ignore-duplicates', default=False)
-
         # Options ivars: set by FindTabManager.init.
         self.batch = None
         self.ignore_case = None
@@ -150,7 +146,6 @@ class LeoFind(object):
         self.reverse = None
         self.wrap = None
         self.whole_word = None
-
         # For isearch commands...
         self.stack = [] # Entries are (p,sel)
         self.isearch_ignore_case = None
@@ -158,7 +153,6 @@ class LeoFind(object):
         self.isearch_regexp = None
         self.findTextList = []
         self.changeTextList = []
-
         # Widget ivars...
         self.change_ctrl = None
         self.s_ctrl = SearchWidget()
@@ -167,13 +161,13 @@ class LeoFind(object):
         self.change_text = ""
         self.radioButtonsChanged = False
             # Set by ftm.radio_button_callback
-
+        #
         # Communication betweenfind-def and startSearch
         self.find_def_data = None
             # Saved regular find settings.
         self.find_seen = set()
             # Set of vnodes.
-
+        #
         # Ivars containing internal state...
         self.buttonFlag = False
         self.changeAllFlag = False
@@ -210,11 +204,17 @@ class LeoFind(object):
         # New in 4.11.1.
         # Must be called when config settings are valid.
         c = self.c
-        self.minibuffer_mode = c.config.getBool('minibuffer-find-mode', default=False)
+        self.reloadSettings()
         # now that configuration settings are valid,
         # we can finish creating the Find pane.
         dw = c.frame.top
         if dw: dw.finishCreateLogPane()
+    #@+node:ekr.20171113164709.1: *4* LeoFind.reloadSettings
+    def reloadSettings(self):
+        '''LeoFind.reloadSettings.'''
+        c = self.c
+        self.ignore_dups = c.config.getBool('find-ignore-duplicates', default=False)
+        self.minibuffer_mode = c.config.getBool('minibuffer-find-mode', default=False)
     #@+node:ekr.20060123065756.1: *3* LeoFind.Buttons (immediate execution)
     #@+node:ekr.20031218072017.3057: *4* find.changeAllButton
     def changeAllButton(self, event=None):

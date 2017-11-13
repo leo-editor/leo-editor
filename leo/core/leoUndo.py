@@ -54,15 +54,12 @@ class Undoer(object):
     # So that ivars can be inited to None rather thatn [].
     #@+others
     #@+node:ekr.20150509193307.1: *3* u.Birth
-    #@+node:ekr.20031218072017.3606: *4* u.__init__
+    #@+node:ekr.20031218072017.3606: *4* u.__init__ & reloadSettings
     def __init__(self, c):
         self.c = c
         self.debug_Undoer = False # True: enable debugging code in new undo scheme.
         self.debug_print = False # True: enable print statements in debug code.
-        self.granularity = c.config.getString('undo_granularity')
-        if self.granularity: self.granularity = self.granularity.lower()
-        if self.granularity not in ('node', 'line', 'word', 'char'):
-            self.granularity = 'line'
+        self.granularity = None # Set in reloadSettings.
         # g.trace('Undoer',self.granularity)
         self.max_undo_stack_size = c.config.getInt('max_undo_stack_size') or 0
         # Statistics comparing old and new ways (only if self.debug_Undoer is on).
@@ -122,6 +119,16 @@ class Undoer(object):
         self.prevSel = None
         self.sortChildren = None
         self.verboseUndoGroup = None
+        self.reloadSettings()
+        
+    def reloadSettings(self):
+        '''Undoer.reloadSettings.'''
+        c = self.c
+        self.granularity = c.config.getString('undo_granularity')
+        if self.granularity:
+            self.granularity = self.granularity.lower()
+        if self.granularity not in ('node', 'line', 'word', 'char'):
+            self.granularity = 'line'
 
     def redoHelper(self):
         pass

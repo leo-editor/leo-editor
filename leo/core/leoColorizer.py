@@ -154,7 +154,7 @@ class JEditColorizer(BaseColorizer):
     '''
     #@+others
     #@+node:ekr.20110605121601.18571: *3*  jedit.Birth & init
-    #@+node:ekr.20110605121601.18572: *4* jedit.__init__
+    #@+node:ekr.20110605121601.18572: *4* jedit.__init
     def __init__(self, c, widget, wrapper):
         '''Ctor for JEditColorizer class.'''
         # g.trace('(JEditColorizer) widget', widget)

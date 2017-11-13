@@ -26,10 +26,6 @@ class LeoQtTree(leoFrame.LeoTree):
         leoFrame.LeoTree.__init__(self, frame)
             # Init the base class.
         self.c = c
-        #
-        # Configuration.
-        self.auto_edit = c.config.getBool('single_click_auto_edits_headline', False)
-        #
         # Widget independent status ivars...
         self.contracting = False
         self.expanding = False
@@ -38,27 +34,22 @@ class LeoQtTree(leoFrame.LeoTree):
         self.redrawCount = 0 # Count for debugging.
         self.revertHeadline = None # Previous headline text for abortEditLabel.
         self.selecting = False
-        #
         # Debugging...
         self.nodeDrawCount = 0
         self.traceCallersFlag = False # Enable traceCallers method.
-        #
         # Associating items with position and vnodes...
         self.item2positionDict = {}
         self.item2vnodeDict = {}
         self.position2itemDict = {}
         self.vnode2itemsDict = {} # values are lists of items.
         self.editWidgetsDict = {} # keys are native edit widgets, values are wrappers.
-        self.setConfigIvars()
-        #
+        self.reloadSettings()
         # Components.
         self.canvas = self # An official ivar used by Leo's core.
         self.headlineWrapper = qt_text.QHeadlineWrapper # This is a class.
         self.treeWidget = w = frame.top.leo_ui.treeWidget # An internal ivar.
             # w is a LeoQTreeWidget, a subclass of QTreeWidget.
-        #
         # "declutter", node appearance tweaking
-        self.use_declutter = c.config.getBool('tree-declutter', default=False)
         self.declutter_patterns = None  # list of pairs of patterns for decluttering
         self.declutter_iconDir = g.os_path_abspath(g.os_path_normpath(
             g.os_path_join(g.app.loadDir,"..","Icons")))
@@ -81,7 +72,6 @@ class LeoQtTree(leoFrame.LeoTree):
 
                 def mimeData(self, indexes):
                     g.trace()
-        #
         # Early inits...
         try:
             w.headerItem().setHidden(True)
@@ -113,16 +103,18 @@ class LeoQtTree(leoFrame.LeoTree):
         # 2010/01/24: Do not set this here.
         # The read logic sets c.changed to indicate nodes have changed.
         # c.setChanged(False)
-    #@+node:ekr.20110605121601.17871: *4* qtree.setConfigIvars
-    def setConfigIvars(self):
+    #@+node:ekr.20110605121601.17871: *4* qtree.reloadSettings
+    def reloadSettings(self):
         '''LeoQtTree.'''
         c = self.c
+        self.auto_edit = c.config.getBool('single_click_auto_edits_headline', False)
         self.allow_clone_drags = c.config.getBool('allow_clone_drags')
         self.enable_drag_messages = c.config.getBool("enable_drag_messages")
         self.select_all_text_when_editing_headlines = c.config.getBool(
             'select_all_text_when_editing_headlines')
         self.stayInTree = c.config.getBool('stayInTreeAfterSelect')
         self.use_chapters = c.config.getBool('use_chapters')
+        self.use_declutter = c.config.getBool('tree-declutter', default=False)
     #@+node:ekr.20110605121601.17940: *4* qtree.wrapQLineEdit
     def wrapQLineEdit(self, w):
         '''A wretched kludge for MacOs k.masterMenuHandler.'''
