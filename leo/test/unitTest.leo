@@ -13,7 +13,7 @@
 <v t="ekr.20140716121225.4354"><vh>@@button print-gnx</vh></v>
 <v t="ekr.20161123080832.1"><vh>@button make-table</vh></v>
 <v t="ekr.20111112092813.4154"><vh>@command cls</vh></v>
-<v t="ekr.20101220161557.6011" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580500000069636f6e7371035d71047d71052858020000006f6e71065805000000766e6f646571075807000000786f666673657471084b02580a00000076697375616c49636f6e7109580100000031710a580400000078706164710b4b01580400000066696c65710c58640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f66696c65322e706e67710d580700000072656c50617468710e581900000066696c655f69636f6e732f66696c655f66696c65322e706e67710f580500000077686572657110580e0000006265666f7265486561646c696e6571115804000000747970657112680c5807000000796f666673657471134b00756173732e"><vh>@file unitTestStartup.txt</vh></v>
+<v t="ekr.20101220161557.6011" descendentVnodeUnknownAttributes="7d710058010000003071017d7102580500000069636f6e7371035d71047d710528580700000072656c506174687106581900000066696c655f69636f6e732f66696c655f66696c65322e706e6771075804000000747970657108580400000066696c657109680958640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f66696c65322e706e67710a58020000006f6e710b5805000000766e6f6465710c580400000078706164710d4b015807000000786f6666736574710e4b02580a00000076697375616c49636f6e710f58010000003171105807000000796f666673657471114b00580500000077686572657112580e0000006265666f7265486561646c696e657113756173732e"><vh>@file unitTestStartup.txt</vh></v>
 <v t="ekr.20150216110251.11"><vh>@persistence</vh>
 <v t="ekr.20170818044949.1"><vh>@data:#@auto</vh></v>
 <v t="ekr.20170818044949.2"><vh>@data:#@auto</vh>
@@ -242,7 +242,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343171017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c73580100000030710d7d710e580500000069636f6e73710f5d71107d71112858020000006f6e71125805000000766e6f646571135807000000786f666673657471144b02580a00000076697375616c49636f6e7115580100000031711658040000007870616471174b01580400000066696c65711858640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f66696c65322e706e677119580700000072656c50617468711a581900000066696c655f69636f6e732f66696c655f66696c65322e706e67711b58050000007768657265711c580e0000006265666f7265486561646c696e65711d580400000074797065711e68185807000000796f6666736574711f4b007561735808000000302e362e31322e3971207d71215809000000756e69745f7465737471225804000000616263647123735808000000302e362e32372e3771247d71255808000000616e6e6f7461746571267d712773752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c73580100000030710d7d710e580500000069636f6e73710f5d71107d711128580700000072656c506174687112581900000066696c655f69636f6e732f66696c655f66696c65322e706e6771135804000000747970657114580400000066696c657115681558640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f66696c65322e706e67711658020000006f6e71175805000000766e6f6465711858040000007870616471194b015807000000786f6666736574711a4b02580a00000076697375616c49636f6e711b580100000031711c5807000000796f6666736574711d4b0058050000007768657265711e580e0000006265666f7265486561646c696e65711f7561735808000000302e362e31322e3971207d71215809000000756e69745f7465737471225804000000616263647123735809000000302e362e31392e343171247d712558090000006d795f706c7567696e7126580300000076616c712773752e"
 marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -501,8 +501,34 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20100131171342.5509"><vh>@@@test leoBridge init logic</vh></v>
 <v t="ekr.20171112061554.1"><vh>===== Test that fail when using a string gui</vh>
-<v t="ekr.20171112115914.1"><vh>Fixed</vh>
-<v t="ekr.20050206090416"><vh>@test open non-existent non-ascii directory</vh></v>
+<v t="ekr.20091219122958.5066"><vh>leoRst</vh>
+<v t="ekr.20100813100841.5825"><vh>@@@test show_doc_parts_in_rst_mode</vh></v>
+<v t="ekr.20100813100841.5847"><vh>@ignore</vh>
+<v t="ekr.20100812213445.5824"><vh>@test code_mode: rst3 show_doc_parts_as_paragraphs</vh>
+<v t="ekr.20100812213445.5825"><vh>source</vh>
+<v t="ekr.20100812213445.5826"><vh>@rst test.html</vh>
+<v t="ekr.20100812213445.5827"><vh>section</vh></v>
+</v>
+</v>
+<v t="ekr.20100812213445.5828"><vh>expected</vh>
+<v t="ekr.20100813100841.5843"><vh>rst</vh></v>
+<v t="ekr.20100813100841.5844"><vh> html</vh></v>
+</v>
+</v>
+<v t="ekr.20100813100841.5827"><vh>@test code_mode: show_leo_directives</vh></v>
+<v t="ekr.20100813100841.5828"><vh>@test code_mode: show_markup_doc_parts</vh></v>
+<v t="ekr.20100813100841.5829"><vh>@test code_mode: show_options_doc_parts</vh></v>
+</v>
+<v t="ekr.20091219121039.5065"><vh>@test c.rstCommands.handleMissingStyleSheetArgs</vh></v>
+<v t="ekr.20111103213154.3823"><vh>@test c.rstCommands.writeToDocutils: pdf</vh></v>
+<v t="ekr.20100131180007.5459"><vh>@test rst.initAtAutoWrite</vh></v>
+<v t="ekr.20100813100841.5850"></v>
+<v t="ekr.20100812172232.5801"></v>
+<v t="ekr.20100813100841.5824"></v>
+<v t="ekr.20100813124317.5879"></v>
+<v t="ekr.20100827140832.5913"></v>
+<v t="ekr.20120307070541.3937"></v>
+</v>
 <v t="ekr.20090615053403.4876"><vh>leoColorizer</vh>
 <v t="ekr.20090615053403.4877"><vh>@test @comment after @language plain</vh>
 <v t="ekr.20090615053403.4878"><vh>plain code</vh></v>
@@ -644,19 +670,28 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20090615053403.4957"><vh>@test zz end of leoColor tests</vh></v>
 </v>
-<v t="ekr.20111121164644.3928"><vh>@test cycle-tab-focus</vh></v>
+<v t="ekr.20171112115914.1"><vh>Fixed</vh>
+<v t="ekr.20050206090416"><vh>@test open non-existent non-ascii directory</vh></v>
 <v t="ekr.20051107115231.24"><vh>@test paste from menu to body recolors the body</vh></v>
-<v t="ekr.20111121081052.3908"><vh>@test c.frame.log.numberOfVisibleTabs</vh></v>
-<v t="ekr.20111003145300.3466"><vh>@test illegal drag gives warning</vh>
-<v t="ekr.20111003145300.3467"><vh>a</vh></v>
-</v>
 <v t="ekr.20080501121449.3"><vh>@test insert node</vh>
-<v t="ekr.20171112131324.1"><vh>A</vh></v>
-<v t="ekr.20171112131324.3"><vh>newHeadline</vh></v>
-<v t="ekr.20171112131324.2"><vh>B</vh></v>
+<v t="ekr.20171112182742.3"><vh>A</vh></v>
+<v t="ekr.20171112182742.5"><vh>newHeadline</vh></v>
+<v t="ekr.20171112182742.4"><vh>B</vh></v>
 </v>
 <v t="ekr.20080423110627.11"><vh>@test move-outline-down &amp; undo/redo</vh></v>
 <v t="ekr.20080503073030.1"><vh>@test move-outline-left</vh></v>
+</v>
+<v t="ekr.20171112181749.1"><vh>Skipped</vh>
+<v t="ekr.20111121081052.3908"><vh>@test c.frame.log.numberOfVisibleTabs</vh></v>
+<v t="ekr.20111107065245.3833"><vh>@test c.frame.minimize-all</vh></v>
+<v t="ekr.20111107065530.3833"><vh>@test c.frame.resize-to-screen</vh></v>
+<v t="ekr.20111120124051.3994"><vh>@test cycle-all-focus</vh></v>
+<v t="ekr.20111121164644.3928"><vh>@test cycle-tab-focus</vh></v>
+<v t="ekr.20100223123103.5382"><vh>@test expand/contract-pane</vh></v>
+<v t="ekr.20111003145300.3466"><vh>@test illegal drag gives warning</vh>
+<v t="ekr.20111003145300.3467"><vh>a</vh></v>
+</v>
+<v t="ekr.20111006064419.3493"><vh>@test move-marked-nodes</vh></v>
 </v>
 </v>
 </vnodes>
@@ -1133,7 +1168,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="9">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="4">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1221,7 +1256,6 @@ Important: this may cause crashes on some platforms.
 <t tx="ekr.20080423110627.11">root = p.copy()
 while p.hasChildren():
     p.firstChild().doDelete(newNode=None)
-
 try:
     p2 = p.insertAsNthChild(0)
     p2.setHeadString('A')
@@ -1259,7 +1293,6 @@ try:
     assert moved.h == 'B',          'fail 1-3'
     assert moved.back().h == 'C',   'fail 2-3'
     assert moved.next().h == 'D',   'fail 3-3'
-
 finally:
     if 1:
         while root.hasChildren():
@@ -1319,7 +1352,6 @@ finally:
 </t>
 <t tx="ekr.20080503073030.1">while p.hasChildren():
     p.firstChild().doDelete(newNode=None)
-
 try:
     p2 = p.insertAsNthChild(0)
     p2.setHeadString('A')
@@ -1334,21 +1366,19 @@ try:
     c.undoer.redo()
     c.undoer.undo()
     c.undoer.redo()
-
     moved.doDelete(newNode=p)
-
 finally:
     if 1:
         while p.hasChildren():
             p.firstChild().doDelete(newNode=None)
         c.redraw_now(p)
 </t>
-<t tx="ekr.20080904084223.1" icons="5d71007d71012858020000006f6e71025805000000766e6f646571035807000000786f666673657471044b02580a00000076697375616c49636f6e7105580100000031710658040000007870616471074b01580400000066696c65710858640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f6175746f322e706e677109580700000072656c50617468710a581900000066696c655f69636f6e732f66696c655f6175746f322e706e67710b58050000007768657265710c580e0000006265666f7265486561646c696e65710d580400000074797065710e68085807000000796f6666736574710f4b0075612e"># changed.
+<t tx="ekr.20080904084223.1" icons="5d71007d710128580700000072656c506174687102581900000066696c655f69636f6e732f66696c655f6175746f322e706e6771035804000000747970657104580400000066696c657105680558640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f6175746f322e706e67710658020000006f6e71075805000000766e6f6465710858040000007870616471094b015807000000786f6666736574710a4b02580a00000076697375616c49636f6e710b580100000031710c5807000000796f6666736574710d4b0058050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e"># changed.
 @others
 @language python
 @tabwidth -4
 </t>
-<t tx="ekr.20080904102243.2" icons="5d71007d71012858020000006f6e71025805000000766e6f646571035807000000786f666673657471044b02580a00000076697375616c49636f6e7105580100000031710658040000007870616471074b01580400000066696c65710858640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f66696c65322e706e677109580700000072656c50617468710a581900000066696c655f69636f6e732f66696c655f66696c65322e706e67710b58050000007768657265710c580e0000006265666f7265486561646c696e65710d580400000074797065710e68085807000000796f6666736574710f4b0075612e">@language python
+<t tx="ekr.20080904102243.2" icons="5d71007d710128580700000072656c506174687102581900000066696c655f69636f6e732f66696c655f66696c65322e706e6771035804000000747970657104580400000066696c657105680558640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f66696c65322e706e67710658020000006f6e71075805000000766e6f6465710858040000007870616471094b015807000000786f6666736574710a4b02580a00000076697375616c49636f6e710b580100000031710c5807000000796f6666736574710d4b0058050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e">@language python
 @tabwidth -4
 @others
 </t>
@@ -1363,7 +1393,7 @@ finally:
     pass
 </t>
 <t tx="ekr.20080907122804.1">@others</t>
-<t tx="ekr.20080907123324.2" icons="5d71007d71012858020000006f6e71025805000000766e6f646571035807000000786f666673657471044b02580a00000076697375616c49636f6e7105580100000031710658040000007870616471074b01580400000066696c65710858660000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f6e6f73656e74322e706e677109580700000072656c50617468710a581b00000066696c655f69636f6e732f66696c655f6e6f73656e74322e706e67710b58050000007768657265710c580e0000006265666f7265486561646c696e65710d580400000074797065710e68085807000000796f6666736574710f4b0075612e">@language python
+<t tx="ekr.20080907123324.2" icons="5d71007d710128580700000072656c506174687102581b00000066696c655f69636f6e732f66696c655f6e6f73656e74322e706e6771035804000000747970657104580400000066696c657105680558660000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f6e6f73656e74322e706e67710658020000006f6e71075805000000766e6f6465710858040000007870616471094b015807000000786f6666736574710a4b02580a00000076697375616c49636f6e710b580100000031710c5807000000796f6666736574710d4b0058050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e">@language python
 @tabwidth -4
 # before @others: line 1
 @others
@@ -3560,13 +3590,13 @@ else:
 <t tx="ekr.20090704085350.5024">def eggs():
     pass
 </t>
-<t tx="ekr.20090704085350.5028" icons="5d71007d71012858020000006f6e71025805000000766e6f646571035807000000786f666673657471044b02580a00000076697375616c49636f6e7105580100000031710658040000007870616471074b01580400000066696c65710858640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f61736973322e706e677109580700000072656c50617468710a581900000066696c655f69636f6e732f66696c655f61736973322e706e67710b58050000007768657265710c580e0000006265666f7265486561646c696e65710d580400000074797065710e68085807000000796f6666736574710f4b0075612e">@language python
+<t tx="ekr.20090704085350.5028" icons="5d71007d710128580700000072656c506174687102581900000066696c655f69636f6e732f66696c655f61736973322e706e6771035804000000747970657104580400000066696c657105680558640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f61736973322e706e67710658020000006f6e71075805000000766e6f6465710858040000007870616471094b015807000000786f6666736574710a4b02580a00000076697375616c49636f6e710b580100000031710c5807000000796f6666736574710d4b0058050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e">@language python
 @others</t>
 <t tx="ekr.20090704085350.5029">def spam():
     pass</t>
 <t tx="ekr.20090704085350.5030">def eggs():
     pass</t>
-<t tx="ekr.20090704085350.5034" icons="5d71007d71012858020000006f6e71025805000000766e6f646571035807000000786f666673657471044b02580a00000076697375616c49636f6e7105580100000031710658040000007870616471074b01580400000066696c65710858660000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f6e6f73656e74322e706e677109580700000072656c50617468710a581b00000066696c655f69636f6e732f66696c655f6e6f73656e74322e706e67710b58050000007768657265710c580e0000006265666f7265486561646c696e65710d580400000074797065710e68085807000000796f6666736574710f4b0075612e">@first
+<t tx="ekr.20090704085350.5034" icons="5d71007d710128580700000072656c506174687102581b00000066696c655f69636f6e732f66696c655f6e6f73656e74322e706e6771035804000000747970657104580400000066696c657105680558660000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f6e6f73656e74322e706e67710658020000006f6e71075805000000766e6f6465710858040000007870616471094b015807000000786f6666736574710a4b02580a00000076697375616c49636f6e710b580100000031710c5807000000796f6666736574710d4b0058050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e">@first
 @language python
 @others
 </t>
@@ -3576,7 +3606,7 @@ else:
 <t tx="ekr.20090704085350.5036">def eggs():
     pass
 </t>
-<t tx="ekr.20090704085350.5056" icons="5d71007d71012858020000006f6e71025805000000766e6f646571035807000000786f666673657471044b02580a00000076697375616c49636f6e7105580100000031710658040000007870616471074b01580400000066696c65710858640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f6175746f322e706e677109580700000072656c50617468710a581900000066696c655f69636f6e732f66696c655f6175746f322e706e67710b58050000007768657265710c580e0000006265666f7265486561646c696e65710d580400000074797065710e68085807000000796f6666736574710f4b0075612e">@others
+<t tx="ekr.20090704085350.5056" icons="5d71007d710128580700000072656c506174687102581900000066696c655f69636f6e732f66696c655f6175746f322e706e6771035804000000747970657104580400000066696c657105680558640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f6175746f322e706e67710658020000006f6e71075805000000766e6f6465710858040000007870616471094b015807000000786f6666736574710a4b02580a00000076697375616c49636f6e710b580100000031710c5807000000796f6666736574710d4b0058050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e">@others
 @language python
 @tabwidth -4
 </t>
@@ -3613,6 +3643,24 @@ for p in c.all_positions():
             p.v.u = None
 put('done') 
 c.redraw()</t>
+<t tx="ekr.20091219121039.5065">x = c.rstCommands
+result = x.handleMissingStyleSheetArgs(p,s=None)
+assert result == {},'expected {}, got %s' % result
+expected = {
+    'documentoptions':'[english,12pt,lettersize]',
+    'language':'ca',
+    'use-latex-toc':'1',
+}
+for s in (
+    '--language=ca, --use-latex-toc,--documentoptions=[english,12pt,lettersize]',
+    '--documentoptions=[english,12pt,lettersize],--language=ca, --use-latex-toc',
+    '--use-latex-toc,--documentoptions=[english,12pt,lettersize],--language=ca, ',
+):
+    result = x.handleMissingStyleSheetArgs(p,s=s)
+    assert result == expected,'expected %s\ngot %s' % (expected,result)
+</t>
+<t tx="ekr.20091219122958.5066"># Warning: these depend on the .css files in leo\test\unittest.
+</t>
 <t tx="ekr.20100102164959.5088">nodes = 0 ; lines = 0
 for p in c.all_unique_positions():
     nodes += 1
@@ -3843,6 +3891,54 @@ else:
     )
     pid.communicate()
 </t>
+<t tx="ekr.20100131180007.5459">rst = c.rstCommands
+rst.initAtAutoWrite(p,fileName='&lt;test file&gt;',outputFile=None)
+
+# Ensure we are actually testing the default logic.
+d = p.v.u.get('rst-import',{})
+underlines = d.get('underline_characters')
+assert underlines is None,'fail 1: %s' % repr(underlines)
+assert d == {},'fail 2: %s' % repr(d)
+# Now test the logic.
+assert rst.underlines2 == '','fail 3: %s' % repr(rst.underlines2)
+assert rst.underlines1 == '=+*^~"\'`-:&gt;&lt;_', 'fail4 %s' % repr(rst.underlines1)
+assert rst.atAutoWriteUnderlines == '=+*^~"\'`-:&gt;&lt;_', 'fail 5: %s' % (
+    repr(rst.atAutoWriteUnderlines))
+</t>
+<t tx="ekr.20100223123103.5382">import leo.core.leoFrame as leoFrame
+
+# Do nothing when run externally.
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() in ('curses', 'nullGui'):
+    # assert False, 'Not ready yet: interferes with other tests'
+    self.skipTest('Not for curses or null gui')
+else:
+    assert not isinstance(c.frame,leoFrame.NullFrame)
+    def closeEnough(f1,f2):
+        return abs(f1-f2) &lt; 0.01
+    f = c.frame
+    ratio,ratio2 = f.ratio,f.secondary_ratio
+    table = (
+        c.bodyWantsFocusNow,
+        c.logWantsFocusNow,
+        c.treeWantsFocusNow,
+    )
+    for func in table:
+        name = func.__name__
+        func()
+        f.contractPane()
+        if func == c.logWantsFocusNow:
+            assert ratio2 != f.secondary_ratio,'fail 1'
+        else:
+            assert ratio != f.ratio,'fail 2: %s, %s: %s' % (ratio,f.ratio,name)
+        func()
+        f.expandPane()
+        assert closeEnough(ratio,f.ratio),'fail 3 %s != %s: %s' % (
+            ratio,f.ratio,name)
+        assert closeEnough(ratio2,f.secondary_ratio),'fail 4 %s != %s: %s' % (
+            ratio2,f.secondary_ratio,name)
+</t>
 <t tx="ekr.20100731163237.5782">@language html
 
 &lt;&lt; a section reference &gt;&gt;
@@ -3893,6 +3989,28 @@ This is the body of the section.
 </t>
 <t tx="ekr.20100812213445.5814">@language html
 </t>
+<t tx="ekr.20100812213445.5824">exec(g.findTestScript(c,'@common leoRst test code'))
+
+rst3Test(c,p)
+</t>
+<t tx="ekr.20100812213445.5825">@language rest
+</t>
+<t tx="ekr.20100812213445.5826">@ @rst-options
+show_doc_parts_as_paragraphs=True
+@c
+#####
+Title
+#####
+
+This is test.html
+</t>
+<t tx="ekr.20100812213445.5827">@ This is a doc part
+it has two lines.
+@c
+This is the body of the section.
+</t>
+<t tx="ekr.20100812213445.5828">@language html
+</t>
 <t tx="ekr.20100813100841.5824">import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
     self.skipTest('no docutils')
@@ -3902,6 +4020,11 @@ exec(s)
     # Defines rst3Test class.
 rst3Test(c,p)
 </t>
+<t tx="ekr.20100813100841.5825"># Applies to options doc parts as well.
+</t>
+<t tx="ekr.20100813100841.5827"></t>
+<t tx="ekr.20100813100841.5828"></t>
+<t tx="ekr.20100813100841.5829"></t>
 <t tx="ekr.20100813100841.5839">@language rest
 </t>
 <t tx="ekr.20100813100841.5840">@ @rst-options
@@ -3919,6 +4042,292 @@ it has two lines.
 This is the body of the section.
 </t>
 <t tx="ekr.20100813100841.5842"></t>
+<t tx="ekr.20100813100841.5843">.. rst3: filename: test.html
+
+
+#####
+Title
+#####
+
+This is test.html
+
+section
++++++++
+
+@ This is a doc part
+it has two lines.
+@c
+
+This is the body of the section.
+
+</t>
+<t tx="ekr.20100813100841.5844">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta name="generator" content="Docutils 0.8: http://docutils.sourceforge.net/" /&gt;
+&lt;title&gt;Title&lt;/title&gt;
+&lt;style type="text/css"&gt;
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="document" id="title"&gt;
+&lt;h1 class="title"&gt;Title&lt;/h1&gt;
+
+&lt;!-- rst3: filename: test.html --&gt;
+&lt;p&gt;This is test.html&lt;/p&gt;
+&lt;div class="section" id="section"&gt;
+&lt;h1&gt;section&lt;/h1&gt;
+&lt;p&gt;&amp;#64; This is a doc part
+it has two lines.
+&amp;#64;c&lt;/p&gt;
+&lt;p&gt;This is the body of the section.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20100813100841.5847"></t>
 <t tx="ekr.20100813100841.5848">.. rst3: filename: test.html
 
 
@@ -4204,6 +4613,8 @@ This is the body of the section.&lt;/p&gt;
 <t tx="ekr.20100813100841.5850">import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
     self.skipTest('no docutils')
+# A kludge: run the test in 
+openDirectory = c.frame.openDirectory
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
 assert s, repr(p)
 exec(s)
@@ -7004,7 +7415,7 @@ object HelloWorld {
     }
   }
 </t>
-<t tx="ekr.20110610122533.3407" icons="5d71007d71012858020000006f6e71025805000000766e6f646571035807000000786f666673657471044b02580a00000076697375616c49636f6e7105580100000031710658040000007870616471074b01580400000066696c65710858640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f6175746f322e706e677109580700000072656c50617468710a581900000066696c655f69636f6e732f66696c655f6175746f322e706e67710b58050000007768657265710c580e0000006265666f7265486561646c696e65710d580400000074797065710e68085807000000796f6666736574710f4b0075612e">@others
+<t tx="ekr.20110610122533.3407" icons="5d71007d710128580700000072656c506174687102581900000066696c655f69636f6e732f66696c655f6175746f322e706e6771035804000000747970657104580400000066696c657105680558640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f6175746f322e706e67710658020000006f6e71075805000000766e6f6465710858040000007870616471094b015807000000786f6666736574710a4b02580a00000076697375616c49636f6e710b580100000031710c5807000000796f6666736574710d4b0058050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e">@others
 @language python
 @tabwidth -4
 </t>
@@ -7014,13 +7425,12 @@ object HelloWorld {
 import sys
 if sys.platform.startswith('linux'):
     self.skipTest('linux test')
-elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
+elif g.app.gui.guiName() in ('curses', 'nullGui'):
+    self.skipTest('Not for curses or null gui')
 else:
     fn = '&lt;file name&gt;'
     p2 = p.firstChild()
     tree = c.frame.tree
-    # w = tree.treeWidget
     if hasattr(tree,'treeWidget'):
         w = tree.treeWidget
         for w.was_control_drag in (True,False):
@@ -7028,7 +7438,40 @@ else:
             assert True==g.app.unitTestDict['checkMoveWithParentWithWarning']
 </t>
 <t tx="ekr.20111003145300.3467"></t>
-<t tx="ekr.20111021115306.3697" icons="5d71007d71012858020000006f6e71025805000000766e6f646571035807000000786f666673657471044b02580a00000076697375616c49636f6e7105580100000031710658040000007870616471074b01580400000066696c65710858640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f66696c65322e706e677109580700000072656c50617468710a581900000066696c655f69636f6e732f66696c655f66696c65322e706e67710b58050000007768657265710c580e0000006265666f7265486561646c696e65710d580400000074797065710e68085807000000796f6666736574710f4b0075612e">\begin{document}
+<t tx="ekr.20111006064419.3493">if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() == 'nullGui':
+    self.skipTest('Not for null gui')
+else:
+
+    exec(g.findTestScript(c,'@common x-marked-nodes test code'))
+    
+    def test(p):
+        setup_test(p)
+        n = p.numberOfChildren()
+        assert n == 4 ,'delete: children: %s' % (n)
+        c.moveMarked()
+        assert c.p.h == 'Moved marked nodes'
+        n = p.numberOfChildren()
+        assert n == 2 ,'delete: children: %s' % (n)
+        if 0:
+            # The new move-marked-nodes command doesn't
+            # leave the result in the root node.
+            root = c.rootPosition()
+            assert root.h == 'Moved marked nodes',root.h
+        if 0: # The move-marked-nodes command is no longer undoable.
+            c.undoer.undo()
+            n = p.numberOfChildren()
+            assert n == 4,'undo: children: %s' % (n)
+            c.undoer.redo()
+            n = p.numberOfChildren()
+            assert n == 2 ,'delete: children: %s' % (n)
+    try:
+        test(p)
+    finally:
+        tear_down(p,'Moved marked nodes')
+</t>
+<t tx="ekr.20111021115306.3697" icons="5d71007d710128580700000072656c506174687102581900000066696c655f69636f6e732f66696c655f66696c65322e706e6771035804000000747970657104580400000066696c657105680558640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f66696c65322e706e67710658020000006f6e71075805000000766e6f6465710858040000007870616471094b015807000000786f6666736574710a4b02580a00000076697375616c49636f6e710b580100000031710c5807000000796f6666736574710d4b0058050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e">\begin{document}
 &lt;&lt; Document &gt;&gt;
 % hidden comment
 \end{document}
@@ -7044,6 +7487,54 @@ div
 table
 nodeA
 nodeB
+</t>
+<t tx="ekr.20111103213154.3823">@first # -*- coding: utf-8 -*-
+@encoding utf-8
+
+'''Test the interface between docutils and leo_pdf.py. No file is written.
+'''
+try:
+    import docutils
+    import reportlab.platypus
+except ImportError:
+    self.skipTest('No docutils')
+
+path = g.os_path_finalize_join(g.app.loadDir,'..','plugins')
+module = g.importFromPath(
+    moduleName='leo_pdf',
+    path=path,
+    verbose = False)
+assert module
+s = '''This is a test.'''
+result = c.rstCommands.writeToDocutils(p,s,'.pdf')
+assert result,result
+</t>
+<t tx="ekr.20111107065245.3833"># The actual code contains the unit test.
+# This test will have effect only when run locally.
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() in ( 'curses', 'nullGui'):
+    self.skipTest('Not for curses or null gui')
+else:
+    d = g.app.unitTestDict
+    tag = 'minimize-all'
+    assert not d.get(tag)
+    c.frame.minimizeAll()
+    assert d.get(tag) is True
+</t>
+<t tx="ekr.20111107065530.3833"># The actual code contains the unit test.
+# This test will have effect only when run locally.
+
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() in ('curses', 'nullGui'):
+    self.skipTest('Not for curses or null gui')
+else:
+    d = g.app.unitTestDict
+    tag = 'resize-to-screen'
+    assert not d.get(tag)
+    c.frame.resizeToScreen()
+    assert d.get(tag) is True
 </t>
 <t tx="ekr.20111112092813.4154">g.cls()</t>
 <t tx="ekr.20111112093605.4679"># leoSettings.leo no longer sets any bindings for run-xxx-unit-test.
@@ -7098,10 +7589,33 @@ finally:
 &lt;/html&gt;
 </t>
 <t tx="ekr.20111115080347.3872"></t>
+<t tx="ekr.20111120124051.3994">'''Test that cycle-all-focus cycles through all tabs.'''
+
+import sys
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+elif sys.platform.startswith('linux'):
+    self.skipTest('Not for linux')
+elif g.app.gui.guiName() in ('curses', 'nullGui'):
+    self.skipTest('Not for curses or null gui')
+else:
+    log = c.frame.log
+    c.bodyWantsFocusNow()
+    w_name = g.app.gui.widget_name
+    w = c.frame.body
+    seen = []
+    while w:
+        event = g.bunch(widget=w)
+        c.editCommands.cycleAllFocus(event=event)
+        w = g.app.gui.get_focus()
+        if w in seen: break
+        seen.append(w)
+    assert len(seen) &gt;2, "expected &gt;2, got %s" % len(seen)
+</t>
 <t tx="ekr.20111121081052.3908">if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 elif g.app.gui.guiName() in ('nullGui', 'curses'):
-    self.skipTest('Not for curses gui')
+    self.skipTest('Not for curses or null gui')
 else:
     log = c.frame.log
     d = log.contentsDict
@@ -7119,7 +7633,7 @@ else:
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 elif g.app.gui.guiName() in ('nullGui', 'curses'):
-    self.skipTest('Not for curses gui')
+    self.skipTest('Not for curses or null gui')
 else:
     log = c.frame.log
     tabs = log.orderedTabNames()[1:]
@@ -7870,7 +8384,7 @@ def spam():
     # pass
 # after
 </t>
-<t tx="ekr.20130912092638.4150" icons="5d71007d71012858020000006f6e71025805000000766e6f646571035807000000786f666673657471044b02580a00000076697375616c49636f6e7105580100000031710658040000007870616471074b01580400000066696c65710858640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f66696c65322e706e677109580700000072656c50617468710a581900000066696c655f69636f6e732f66696c655f66696c65322e706e67710b58050000007768657265710c580e0000006265666f7265486561646c696e65710d580400000074797065710e68085807000000796f6666736574710f4b0075612e">@first # -*- coding: utf-16 -*-
+<t tx="ekr.20130912092638.4150" icons="5d71007d710128580700000072656c506174687102581900000066696c655f69636f6e732f66696c655f66696c65322e706e6771035804000000747970657104580400000066696c657105680558640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f66696c65322e706e67710658020000006f6e71075805000000766e6f6465710858040000007870616471094b015807000000786f6666736574710a4b02580a00000076697375616c49636f6e710b580100000031710c5807000000796f6666736574710d4b0058050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e">@first # -*- coding: utf-16 -*-
 @encoding utf-16
 
 Test of utf-16.
@@ -8261,7 +8775,7 @@ The @others directive is not required.
 @language plain
 @tabwidth -4
 </t>
-<t tx="ekr.20150626101842.1" icons="5d71007d71012858020000006f6e71025805000000766e6f646571035807000000786f666673657471044b02580a00000076697375616c49636f6e7105580100000031710658040000007870616471074b01580400000066696c65710858640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f6175746f322e706e677109580700000072656c50617468710a581900000066696c655f69636f6e732f66696c655f6175746f322e706e67710b58050000007768657265710c580e0000006265666f7265486561646c696e65710d580400000074797065710e68085807000000796f6666736574710f4b0075612e">@others
+<t tx="ekr.20150626101842.1" icons="5d71007d710128580700000072656c506174687102581900000066696c655f69636f6e732f66696c655f6175746f322e706e6771035804000000747970657104580400000066696c657105680558640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f6175746f322e706e67710658020000006f6e71075805000000766e6f6465710858040000007870616471094b015807000000786f6666736574710a4b02580a00000076697375616c49636f6e710b580100000031710c5807000000796f6666736574710d4b0058050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e">@others
 Note: This node's body text is ignored when writing this file.
 
 The @others directive is not required.
@@ -8640,14 +9154,14 @@ def __init__(self, s: Type) -&gt; None:
 <t tx="ekr.20150919074321.3">def spam(self):
     pass
 </t>
-<t tx="ekr.20160403123754.1" icons="5d71007d71012858020000006f6e71025805000000766e6f646571035807000000786f666673657471044b02580a00000076697375616c49636f6e7105580100000031710658040000007870616471074b01580400000066696c65710858640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f66696c65322e706e677109580700000072656c50617468710a581900000066696c655f69636f6e732f66696c655f66696c65322e706e67710b58050000007768657265710c580e0000006265666f7265486561646c696e65710d580400000074797065710e68085807000000796f6666736574710f4b0075612e">@language c
+<t tx="ekr.20160403123754.1" icons="5d71007d710128580700000072656c506174687102581900000066696c655f69636f6e732f66696c655f66696c65322e706e6771035804000000747970657104580400000066696c657105680558640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f66696c65322e706e67710658020000006f6e71075805000000766e6f6465710858040000007870616471094b015807000000786f6666736574710a4b02580a00000076697375616c49636f6e710b580100000031710c5807000000796f6666736574710d4b0058050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e">@language c
 @tabwidth -4
 @others
 </t>
 <t tx="ekr.20160403123754.2">def child():
     pass
 </t>
-<t tx="ekr.20160403143048.1" icons="5d71007d71012858020000006f6e71025805000000766e6f646571035807000000786f666673657471044b02580a00000076697375616c49636f6e7105580100000031710658040000007870616471074b01580400000066696c65710858650000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f636c65616e322e706e677109580700000072656c50617468710a581a00000066696c655f69636f6e732f66696c655f636c65616e322e706e67710b58050000007768657265710c580e0000006265666f7265486561646c696e65710d580400000074797065710e68085807000000796f6666736574710f4b0075612e">@language c
+<t tx="ekr.20160403143048.1" icons="5d71007d710128580700000072656c506174687102581a00000066696c655f69636f6e732f66696c655f636c65616e322e706e6771035804000000747970657104580400000066696c657105680558650000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f636c65616e322e706e67710658020000006f6e71075805000000766e6f6465710858040000007870616471094b015807000000786f6666736574710a4b02580a00000076697375616c49636f6e710b580100000031710c5807000000796f6666736574710d4b0058050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e">@language c
 @tabwidth -4
 // before @others // line 1
 @others
@@ -8656,7 +9170,7 @@ def __init__(self, s: Type) -&gt; None:
 <t tx="ekr.20160403143048.2">def spam(): // line 2
     pass
 </t>
-<t tx="ekr.20160403143130.1" icons="5d71007d71012858020000006f6e71025805000000766e6f646571035807000000786f666673657471044b02580a00000076697375616c49636f6e7105580100000031710658040000007870616471074b01580400000066696c65710858650000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f636c65616e322e706e677109580700000072656c50617468710a581a00000066696c655f69636f6e732f66696c655f636c65616e322e706e67710b58050000007768657265710c580e0000006265666f7265486561646c696e65710d580400000074797065710e68085807000000796f6666736574710f4b0075612e">@language python
+<t tx="ekr.20160403143130.1" icons="5d71007d710128580700000072656c506174687102581a00000066696c655f69636f6e732f66696c655f636c65616e322e706e6771035804000000747970657104580400000066696c657105680558650000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f636c65616e322e706e67710658020000006f6e71075805000000766e6f6465710858040000007870616471094b015807000000786f6666736574710a4b02580a00000076697375616c49636f6e710b580100000031710c5807000000796f6666736574710d4b0058050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e">@language python
 @tabwidth -4
 # Before @others: line 1
 @others
@@ -9259,8 +9773,9 @@ finally:
 </t>
 <t tx="ekr.20170201175441.3"></t>
 <t tx="ekr.20170201175441.4">@nocolor
-@color</t>
-<t tx="ekr.20170401122024.7" icons="5d71007d71012858020000006f6e71025805000000766e6f646571035807000000786f666673657471044b02580a00000076697375616c49636f6e7105580100000031710658040000007870616471074b01580400000066696c65710858640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f66696c65322e706e677109580700000072656c50617468710a581900000066696c655f69636f6e732f66696c655f66696c65322e706e67710b58050000007768657265710c580e0000006265666f7265486561646c696e65710d580400000074797065710e68085807000000796f6666736574710f4b0075612e">@language cweb
+@color
+</t>
+<t tx="ekr.20170401122024.7" icons="5d71007d710128580700000072656c506174687102581900000066696c655f69636f6e732f66696c655f66696c65322e706e6771035804000000747970657104580400000066696c657105680558640000002f6d656469612f766974616c696a652f686f6d6531312f766974616c696a652f70726f6772616d692f6c656f2d656469746f722f7472756e6b2d73716c6974652f6c656f2f49636f6e732f66696c655f69636f6e732f66696c655f66696c65322e706e67710658020000006f6e71075805000000766e6f6465710858040000007870616471094b015807000000786f6666736574710a4b02580a00000076697375616c49636f6e710b580100000031710c5807000000796f6666736574710d4b0058050000007768657265710e580e0000006265666f7265486561646c696e65710f75612e">@language cweb
 @ % This file is part of CWEB.
 % This program by Silvio Levy and Donald E. Knuth
 % is based on a program by Knuth.
@@ -13279,8 +13794,9 @@ unl: cheese
 </t>
 <t tx="ekr.20171112061554.1"></t>
 <t tx="ekr.20171112115914.1"></t>
-<t tx="ekr.20171112131324.1"></t>
-<t tx="ekr.20171112131324.2"></t>
-<t tx="ekr.20171112131324.3"></t>
+<t tx="ekr.20171112181749.1"></t>
+<t tx="ekr.20171112182742.3"></t>
+<t tx="ekr.20171112182742.4"></t>
+<t tx="ekr.20171112182742.5"></t>
 </tnodes>
 </leo_file>

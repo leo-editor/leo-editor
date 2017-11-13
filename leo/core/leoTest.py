@@ -691,7 +691,7 @@ class TestManager(object):
                         failfast=g.app.failFast,
                         verbosity=verbosity,
                     )
-                if 0: ### Experimental: use the null gui for all unit tests.
+                if 1: ### Experimental: use the null gui for all unit tests.
                     import leo.core.leoFrame as leoFrame
                     old_gui = g.app.gui
                     old_frame = c.frame
@@ -699,6 +699,8 @@ class TestManager(object):
                     try:
                         g.app.gui = leoGui.NullGui()
                         c.frame = leoFrame.NullFrame(c, title='<title>', gui=g.app.gui)
+                        c.frame.openDirectory = old_frame.openDirectory
+                            # A kluge, but quite useful.
                         c.k.w = None
                             # A huge switcheroo.
                         result = runner.run(suite)

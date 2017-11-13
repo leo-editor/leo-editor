@@ -849,7 +849,7 @@ class FileCommands(object):
     def readOutlineOnly(self, theFile, fileName):
         c = self.c
         #@+<< Set the default directory >>
-        #@+node:ekr.20071211134300: *6* << Set the default directory >>
+        #@+node:ekr.20071211134300: *6* << Set the default directory >> (fc.readOutlineOnly)
         #@+at
         # The most natural default directory is the directory containing the .leo file
         # that we are about to open. If the user has specified the "Default Directory"

@@ -1253,9 +1253,9 @@ import leo.core.leoFrame as leoFrame
 # Do nothing when run externally.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-elif g.app.gui.guiName() == 'curses':
+elif g.app.gui.guiName() in ('curses', 'nullGui'):
     # assert False, 'Not ready yet: interferes with other tests'
-    self.skipTest('Not for curses gui')
+    self.skipTest('Not for curses or null gui')
 else:
     assert not isinstance(c.frame,leoFrame.NullFrame)
     def closeEnough(f1,f2):
@@ -6775,8 +6775,8 @@ if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 elif sys.platform.startswith('linux'):
     self.skipTest('Not for linux')
-elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
+elif g.app.gui.guiName() in ('curses', 'nullGui'):
+    self.skipTest('Not for curses or null gui')
 else:
     log = c.frame.log
     c.bodyWantsFocusNow()
@@ -6796,7 +6796,7 @@ else:
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 elif g.app.gui.guiName() in ('nullGui', 'curses'):
-    self.skipTest('Not for curses gui')
+    self.skipTest('Not for curses or null gui')
 else:
     log = c.frame.log
     tabs = log.orderedTabNames()[1:]
@@ -8602,6 +8602,8 @@ def test():
 #@+node:ekr.20111006064419.3493: *5* @test move-marked-nodes
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() == 'nullGui':
+    self.skipTest('Not for null gui')
 else:
 
     exec(g.findTestScript(c,'@common x-marked-nodes test code'))
@@ -11489,7 +11491,7 @@ else:
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 elif g.app.gui.guiName() in ('nullGui', 'curses'):
-    self.skipTest('Not for curses gui')
+    self.skipTest('Not for curses or null gui')
 else:
     log = c.frame.log
     d = log.contentsDict
@@ -11515,8 +11517,8 @@ else:
 # This test will have effect only when run locally.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
+elif g.app.gui.guiName() in ( 'curses', 'nullGui'):
+    self.skipTest('Not for curses or null gui')
 else:
     d = g.app.unitTestDict
     tag = 'minimize-all'
@@ -11574,8 +11576,8 @@ else:
 
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
+elif g.app.gui.guiName() in ('curses', 'nullGui'):
+    self.skipTest('Not for curses or null gui')
 else:
     d = g.app.unitTestDict
     tag = 'resize-to-screen'
@@ -12466,13 +12468,12 @@ else:
 import sys
 if sys.platform.startswith('linux'):
     self.skipTest('linux test')
-elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
+elif g.app.gui.guiName() in ('curses', 'nullGui'):
+    self.skipTest('Not for curses or null gui')
 else:
     fn = '<file name>'
     p2 = p.firstChild()
     tree = c.frame.tree
-    # w = tree.treeWidget
     if hasattr(tree,'treeWidget'):
         w = tree.treeWidget
         for w.was_control_drag in (True,False):
@@ -22457,14 +22458,13 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-#@+node:ekr.20171112131324.1: *6* A
-#@+node:ekr.20171112131324.3: *6* newHeadline
-#@+node:ekr.20171112131324.2: *6* B
+#@+node:ekr.20171112182742.3: *6* A
+#@+node:ekr.20171112182742.5: *6* newHeadline
+#@+node:ekr.20171112182742.4: *6* B
 #@+node:ekr.20080423110627.11: *5* @test move-outline-down & undo/redo
 root = p.copy()
 while p.hasChildren():
     p.firstChild().doDelete(newNode=None)
-
 try:
     p2 = p.insertAsNthChild(0)
     p2.setHeadString('A')
@@ -22502,7 +22502,6 @@ try:
     assert moved.h == 'B',          'fail 1-3'
     assert moved.back().h == 'C',   'fail 2-3'
     assert moved.next().h == 'D',   'fail 3-3'
-
 finally:
     if 1:
         while root.hasChildren():
@@ -22511,7 +22510,6 @@ finally:
 #@+node:ekr.20080503073030.1: *5* @test move-outline-left
 while p.hasChildren():
     p.firstChild().doDelete(newNode=None)
-
 try:
     p2 = p.insertAsNthChild(0)
     p2.setHeadString('A')
@@ -22526,9 +22524,7 @@ try:
     c.undoer.redo()
     c.undoer.undo()
     c.undoer.redo()
-
     moved.doDelete(newNode=p)
-
 finally:
     if 1:
         while p.hasChildren():
@@ -23546,6 +23542,8 @@ assert rst.atAutoWriteUnderlines == '=+*^~"\'`-:><_', 'fail 5: %s' % (
 import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
     self.skipTest('no docutils')
+# A kludge: run the test in 
+openDirectory = c.frame.openDirectory
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
 assert s, repr(p)
 exec(s)

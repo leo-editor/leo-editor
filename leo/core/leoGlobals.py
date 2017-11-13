@@ -6174,11 +6174,14 @@ def os_path_join(*args, **keys):
     if expanduser:
         uargs = [g.os_path_expanduser(z) for z in uargs if z]
     if trace: g.trace('2', uargs)
-    try:
-        path = os.path.join(*uargs)
-    except TypeError:
-        g.trace(uargs, args, keys, g.callers())
-        raise
+    if uargs:
+        try:
+            path = os.path.join(*uargs)
+        except TypeError:
+            g.trace(uargs, args, keys, g.callers())
+            raise
+    else:
+        path = '' # 2017/11/12: don't crash.
     if trace: g.trace('3', path)
     # May not be needed on some Pythons.
     path = g.toUnicodeFileEncoding(path)
