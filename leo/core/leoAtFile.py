@@ -123,15 +123,13 @@ class AtFile(object):
         self.canCancelFlag = False
         self.cancelFlag = False
         self.yesToAll = False
-        # User options.
-        self.checkPythonCodeOnWrite = c.config.getBool(
-            'check-python-code-on-write', default=True)
-        self.runPyFlakesOnWrite = c.config.getBool(
-            'run-pyflakes-on-write', default=False)
-        self.underindentEscapeString = c.config.getString(
-            'underindent-escape-string') or '\\-'
+        # User options: set in reloadSettings.
+        self.checkPythonCodeOnWrite = False
+        self.runPyFlakesOnWrite = False
+        self.underindentEscapeString = '\\-'
+        self.reloadSettings()
+        # Define the dispatch dictionary used by scanText4.
         self.dispatch_dict = self.defineDispatchDict()
-            # Define the dispatch dictionary used by scanText4.
     #@+node:ekr.20041005105605.9: *5* at.defineDispatchDict
     #@@nobeautify
 
@@ -173,6 +171,16 @@ class AtFile(object):
             # New 4.8 sentinels
             self.endRef: self.readEndRef,
         }
+    #@+node:ekr.20171113152939.1: *5* at.reloadSettings
+    def reloadSettings(self):
+        '''AtFile.reloadSettings'''
+        c = self.c
+        self.checkPythonCodeOnWrite = c.config.getBool(
+            'check-python-code-on-write', default=True)
+        self.runPyFlakesOnWrite = c.config.getBool(
+            'run-pyflakes-on-write', default=False)
+        self.underindentEscapeString = c.config.getString(
+            'underindent-escape-string') or '\\-'
     #@+node:ekr.20150509194251.1: *4* at.cmd (decorator)
     def cmd(name):
         '''Command decorator for the AtFileCommands class.'''

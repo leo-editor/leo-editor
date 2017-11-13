@@ -711,7 +711,7 @@ class Commands(object):
         Reload settings in all subcommanders that have either a
         reload_settings or reloadSettings method.
         '''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         c = self
         for subcommander in c.subCommanders:
             for ivar in ('reloadSettings', 'reload_settings'):
@@ -722,6 +722,7 @@ class Commands(object):
                         g.es_print('reloading settings in',
                             subcommander.__class__.__name__)
                     func()
+
     #@+node:ekr.20150329162703.1: *4* Clone find...
     #@+node:ekr.20160224175312.1: *5* c.cffm & c.cfam
     @cmd('clone-find-all-marked')

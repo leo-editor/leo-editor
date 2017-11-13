@@ -40,7 +40,7 @@ import unittest
 class ShadowController(object):
     '''A class to manage @shadow files'''
     #@+others
-    #@+node:ekr.20080708094444.79: *3*  x.ctor
+    #@+node:ekr.20080708094444.79: *3*  x.ctor & x.reloadSettings
     def __init__(self, c, trace=False, trace_writers=False):
         '''Ctor for ShadowController class.'''
         self.c = c
@@ -53,17 +53,26 @@ class ShadowController(object):
         }
         # File encoding.
         self.encoding = c.config.default_derived_file_encoding
-        # Configuration...
-        self.shadow_subdir = c.config.getString('shadow_subdir') or '.leo_shadow'
-        self.shadow_prefix = c.config.getString('shadow_prefix') or ''
-        self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir', default=False)
-        self.shadow_subdir = g.os_path_normpath(self.shadow_subdir)
+        # Configuration: set in reloadSettings.
+        self.shadow_subdir = None
+        self.shadow_prefix = None
+        self.shadow_in_home_dir = None
+        self.shadow_subdir = None
         # Error handling...
         self.errors = 0
         self.last_error = '' # The last error message, regardless of whether it was actually shown.
         self.trace = False
         # Support for goto-line.
         self.line_mapping = []
+        self.reloadSettings()
+        
+    def reloadSettings(self):
+        '''ShadowController.reloadSettings.'''
+        c = self.c
+        self.shadow_subdir = c.config.getString('shadow_subdir') or '.leo_shadow'
+        self.shadow_prefix = c.config.getString('shadow_prefix') or ''
+        self.shadow_in_home_dir = c.config.getBool('shadow_in_home_dir', default=False)
+        self.shadow_subdir = g.os_path_normpath(self.shadow_subdir)
     #@+node:ekr.20080711063656.1: *3* x.File utils
     #@+node:ekr.20080711063656.7: *4* x.baseDirName
     def baseDirName(self):

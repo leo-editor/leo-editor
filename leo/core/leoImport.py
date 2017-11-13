@@ -275,7 +275,7 @@ class LeoImportCommands(object):
     For more information, see leo/plugins/importers/howto.txt.
     '''
     #@+others
-    #@+node:ekr.20031218072017.3207: *3* ic.__init__
+    #@+node:ekr.20031218072017.3207: *3* ic.__init__& ic.reload_settings
     def __init__(self, c):
         '''ctor for LeoImportCommands class.'''
         self.c = c
@@ -288,10 +288,15 @@ class LeoImportCommands(object):
         self.output_newline = g.getOutputNewline(c=c) # Value of @bool output_newline
         self.rootLine = "" # Empty or @root + self.fileName
         self.tab_width = c.tab_width
-        self.trace = c.config.getBool('trace_import')
+        self.trace = False # set below.
         self.treeType = "@file" # None or "@file"
         self.webType = "@noweb" # "cweb" or "noweb"
         self.web_st = [] # noweb symbol table.
+        self.reload_settings()
+        
+    def reload_settings(self):
+        '''LeoImportCommands.reload_settings'''
+        self.trace = self.c.config.getBool('trace_import')
     #@+node:ekr.20031218072017.3289: *3* ic.Export
     #@+node:ekr.20031218072017.3290: *4* ic.convertCodePartToWeb & helpers
     def convertCodePartToWeb(self, s, i, p, result):

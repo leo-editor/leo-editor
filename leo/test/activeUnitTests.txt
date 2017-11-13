@@ -11510,7 +11510,7 @@ else:
 #@+node:ekr.20111121140833.3917: *4* @test c.frame.log.put & putNl
 '''These were changed, then reverted, but a unit test is important.'''
 
-if g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest or g.app.gui.guiName() in ('curses', 'nullGui'):
     self.skipTest('Prints to console, which is annoying.')
 else:
     log = c.frame.log

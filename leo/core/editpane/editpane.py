@@ -183,7 +183,6 @@ class LeoEditPane(QtWidgets.QWidget):
         :param dict keywords: c, new_p, old_p
         :return: None
         """
-
         c = keywords['c']
         if c != self.c:
             return None
@@ -192,7 +191,6 @@ class LeoEditPane(QtWidgets.QWidget):
 
         if self.track:
             self.new_position(keywords['new_p'])
-
         return None
 
     #@+node:tbrown.20171028115438.10: *3* _before_select

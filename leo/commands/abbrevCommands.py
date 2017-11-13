@@ -40,7 +40,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         self.n_regex = re.compile(r'(?<!\\)\\n') # to replace \\n but not \\\\n
         self.expanding = False # True: expanding abbreviations.
         self.event = None
-        self.globalDynamicAbbrevs = c.config.getBool('globalDynamicAbbrevs')
         self.last_hit = None # Distinguish between text and tree abbreviations.
         self.root = None # The root of tree abbreviations.
         self.save_ins = None # Saved insert point.
@@ -139,8 +138,9 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 g.es_exception()
         else:
             c.abbrev_subst_start = False
-    #@+node:ekr.20150514043850.8: *6* abbrev.init_settings
+    #@+node:ekr.20150514043850.8: *6* abbrev.init_settings (called from reload_settings)
     def init_settings(self):
+        '''Called from AbbrevCommands.reload_settings.'''
         c = self.c
         c.k.abbrevOn = c.config.getBool('enable-abbreviations', default=False)
         # Init these here for k.masterCommand.
@@ -155,6 +155,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         self.enabled = (
             c.config.getBool('scripting-at-script-nodes') or
             c.config.getBool('scripting-abbreviations'))
+        self.globalDynamicAbbrevs = c.config.getBool('globalDynamicAbbrevs')
         self.subst_env = c.config.getData('abbreviations-subst-env', strip_data=False)
     #@+node:ekr.20150514043850.9: *6* abbrev.init_tree_abbrev
     def init_tree_abbrev(self):
@@ -208,6 +209,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 abbrev_name = s.strip()
                 for child in p.children():
                     if child.h.strip() == abbrev_name:
+                        # g.trace('calling c.selectPosition', child.h)
                         c.selectPosition(child)
                         abbrev_s = c.fileCommands.putLeoOutline()
                         if trace: g.trace('define', abbrev_name, len(abbrev_s))

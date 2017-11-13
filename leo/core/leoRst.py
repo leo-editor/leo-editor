@@ -130,13 +130,13 @@ class RstCommands(object):
     '''
     #@+others
     #@+node:ekr.20090502071837.34: *3* rst.Birth
-    #@+node:ekr.20090502071837.35: *4*  rst.ctor
+    #@+node:ekr.20090502071837.35: *4*  rst.ctor & rst.reloadSettings
     def __init__(self, c):
         '''Ctor for the RstCommand class.'''
         global SilverCity
         self.c = c
         # Debugging and statistics.
-        self.debug = c.config.getBool('rst3_debug', default=False)
+        self.debug = False # Set in reloadSettings.
         self.n_written = 0
             # Number of files written.
         # Warning flags.
@@ -190,8 +190,14 @@ class RstCommands(object):
         self.source = None
             # The written source as a string.
         # Complete the init.
+        self.reloadSettings()
         self.updateD0FromSettings()
         self.initHeadlineCommands()
+
+    def reloadSettings(self):
+        '''RstCommand.reloadSettings'''
+        self.debug = self.c.config.getBool('rst3_debug', default=False)
+        
     #@+node:ekr.20150509035745.1: *4* rst.cmd (decorator)
     def cmd(name):
         '''Command decorator for the RstCommands class.'''
