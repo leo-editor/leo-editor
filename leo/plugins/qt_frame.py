@@ -1337,11 +1337,11 @@ class LeoQtBody(leoFrame.LeoBody):
         leoFrame.LeoBody.__init__(self, frame, parentFrame)
         c = self.c
         assert c.frame == frame and frame.c == c
-        self.set_config()
+        self.reload_settings()
         self.set_widget()
             # Sets self.widget and self.wrapper.
         # Config stuff.
-        self.reloadSettings()
+        self.reload_settings()
         self.setWrap(c.p)
         # For multiple body editors.
         self.editor_name = None
@@ -1357,26 +1357,27 @@ class LeoQtBody(leoFrame.LeoBody):
         self.textRendererVisible = False
         self.textRendererWrapper = None
         if trace: g.trace('(qtBody)', self.widget)
-        
-    def reloadSettings(self):
-        c = self.c
-        # Reload the base class settings.
-        if hasattr(leoFrame.LeoBody, 'reloadSettings'):
-            leoFrame.LeoBody.reloadSettings(self)
-        self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
-        
     #@+node:ekr.20110605121601.18185: *5* LeoQtBody.get_name
     def getName(self):
         return 'body-widget'
-    #@+node:ekr.20140901062324.18562: *5* LeoQtBody.set_config
-    def set_config(self):
-        '''Set configuration ivars.'''
+    #@+node:ekr.20140901062324.18562: *5* LeoQtBody.reload_settings
+    def reload_settings(self):
         c = self.c
+        self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
         self.useScintilla = c.config.getBool('qt-use-scintilla')
         self.unselectedBackgroundColor = c.config.getColor(
             'unselected_body_bg_color')
         self.unselectedForegroundColor = c.config.getColor(
             'unselected_body_fg_color')
+        self.use_chapters = c.config.getBool('use_chapters')
+
+        ### To do: update the widget if it exists.
+
+        # Reload the base class settings.
+        # if hasattr(leoFrame.LeoBody, 'reloadSettings'):
+            # leoFrame.LeoBody.reloadSettings(self)
+
+        
     #@+node:ekr.20160309074124.1: *5* LeoQtBody.set_invisibles
     def set_invisibles(self, c):
         '''Set the show-invisibles bit in the document.'''
@@ -2020,11 +2021,15 @@ class LeoQtFrame(leoFrame.LeoFrame):
         self.minibufferVisible = True
         self.statusLineClass = self.QtStatusLineClass
         self.title = title
-        # Config settings.
+        self.setIvars()
+        self.reloadSettings()
+        
+    def reloadSettings(self):
+        c = self.c
         self.trace_status_line = c.config.getBool('trace_status_line')
         self.use_chapters = c.config.getBool('use_chapters')
         self.use_chapter_tabs = c.config.getBool('use_chapter_tabs')
-        self.setIvars()
+
     #@+node:ekr.20110605121601.18248: *5* qtFrame.setIvars
     def setIvars(self):
         # "Official ivars created in createLeoFrame and its allies.

@@ -231,12 +231,8 @@ class LeoBody(object):
         # Must be overridden in subclasses...
         self.colorizer = None
         # Init user settings.
-        self.reloadSettings()
-        
-    def reloadSettings(self):
-        '''LeoBody.reloadSettings.'''
-        c = self.c
-        self.use_chapters = c.config.getBool('use_chapters')
+        self.use_chapters = False
+            # May be overridden in subclasses.
     #@+node:ekr.20150509034810.1: *3* LeoBody.cmd (decorator)
     def cmd(name):
         '''Command decorator for the c.frame.body class.'''

@@ -154,7 +154,7 @@ class AutoCompleterClass(object):
     def __init__(self, k):
         '''Ctor for AutoCompleterClass class.'''
         # Ivars...
-        self.c = c = k.c
+        self.c = k.c
         self.k = k
         self.force = None
         self.language = None
@@ -176,7 +176,10 @@ class AutoCompleterClass(object):
             # The (global) completions for "self."
         self.completionsDict = {}
             # Keys are prefixes, values are completion lists.
-        # Options...
+        self.reloadSettings()
+        
+    def reloadSettings(self):
+        c = self.c
         self.auto_tab = c.config.getBool('auto_tab_complete', False)
         self.forbid_invalid = c.config.getBool('forbid_invalid_completions', False)
         self.use_qcompleter = c.config.getBool('use_qcompleter', False)

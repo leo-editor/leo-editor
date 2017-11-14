@@ -720,12 +720,15 @@ class Commands(object):
         classes = c.subCommanders[:]
         classes.extend(c.configurables[:])
         table = [
+            g.app.gui,
             g.app.pluginsController,
+            c.k.autoCompleter,
             c.frame, c.frame.body, c.frame.log, c.frame.tree,
             c.frame.body.colorizer,
             getattr(c.frame.body.colorizer, 'highlighter', None),
         ]
         classes.extend([z for z in table if z])
+        # classes = list(set(classes))
         classes.sort(key=lambda obj: obj.__class__.__name__)
         for obj in classes:
             for ivar in ('reloadSettings', 'reload_settings'):

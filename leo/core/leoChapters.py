@@ -28,6 +28,10 @@ class ChapterController(object):
             # True: cc.selectChapterForPosition does nothing.
             # Note: Used in qt_frame.py.
         self.tt = None # May be set in finishCreate.
+        self.reloadSettings()
+        
+    def reloadSettings(self):
+        c = self.c
         self.use_tabs = c.config.getBool('use_chapter_tabs')
     #@+node:ekr.20160402024827.1: *4* cc.createIcon
     def createIcon(self):

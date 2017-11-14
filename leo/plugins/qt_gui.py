@@ -49,18 +49,19 @@ class LeoQtGui(leoGui.LeoGui):
         # g.trace('(LeoQtGui)',g.callers())
         leoGui.LeoGui.__init__(self, 'qt')
              # Initialize the base class.
-        self.qtApp = QtWidgets.QApplication(sys.argv)
+        self.active = True
         self.consoleOnly = False # Console is separate from the log.
         self.iconimages = {}
         self.idleTimeClass = qt_idle_time.IdleTime
         self.insert_char_flag = False # A flag for eventFilter.
+        self.mGuiName = 'qt'
         self.plainTextWidget = qt_text.PlainTextWrapper
         self.styleSheetManagerClass = StyleSheetManager
-        self.mGuiName = 'qt'
-        self.appIcon = self.getIconImage('leoapp32.png')
-        self.color_theme = g.app.config and g.app.config.getString('color_theme')
-        self.active = True
             # For c.idle_focus_helper and activate/deactivate events.
+        # Create objects...
+        self.qtApp = QtWidgets.QApplication(sys.argv)
+        self.reloadSettings()
+        self.appIcon = self.getIconImage('leoapp32.png')
         # Put up the splash screen()
         if (g.app.use_splash_screen and
             not g.app.batchMode and
@@ -72,6 +73,9 @@ class LeoQtGui(leoGui.LeoGui):
             self.frameFactory = qt_frame.TabbedFrameFactory()
         else:
             self.frameFactory = qt_frame.SDIFrameFactory()
+        
+    def reloadSettings(self):
+        self.color_theme = g.app.config and g.app.config.getString('color_theme')
     #@+node:ekr.20110605121601.18484: *3*  qt_gui.destroySelf (calls qtApp.quit)
     def destroySelf(self):
         trace = g.app.trace_shutdown

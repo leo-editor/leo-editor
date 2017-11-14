@@ -115,6 +115,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self.stayInTree = c.config.getBool('stayInTreeAfterSelect')
         self.use_chapters = c.config.getBool('use_chapters')
         self.use_declutter = c.config.getBool('tree-declutter', default=False)
+
     #@+node:ekr.20110605121601.17940: *4* qtree.wrapQLineEdit
     def wrapQLineEdit(self, w):
         '''A wretched kludge for MacOs k.masterMenuHandler.'''

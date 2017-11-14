@@ -404,7 +404,7 @@ class QLineEditWrapper(QTextMixin):
 class LeoLineTextWidget(QtWidgets.QFrame):
     '''A QFrame supporting gutter line numbers. This class *has* a QTextEdit.'''
     #@+others
-    #@+node:ekr.20150403094706.9: *3* __init__
+    #@+node:ekr.20150403094706.9: *3* __init__(LeoLineTextWidget)
     def __init__(self, c, e, *args):
         '''Ctor for LineTextWidget.'''
         QtWidgets.QFrame.__init__(self, *args)
@@ -415,6 +415,7 @@ class LeoLineTextWidget(QtWidgets.QFrame):
         e.setFrameStyle(self.NoFrame)
         # e.setAcceptRichText(False)
         self.number_bar = NumberBar(c, e)
+        c.configurables.append(self.number_bar)
         hbox = QtWidgets.QHBoxLayout(self)
         hbox.setSpacing(0)
         hbox.setContentsMargins(0, 0, 0, 0)
@@ -771,9 +772,10 @@ if QtWidgets:
 #@+node:ekr.20150403094706.2: ** class NumberBar(QFrame)
 class NumberBar(QtWidgets.QFrame):
     #@+others
-    #@+node:ekr.20150403094706.3: *3* NumberBar.__init__
+    #@+node:ekr.20150403094706.3: *3* NumberBar.__init__& reloadSettings
     def __init__(self, c, e, *args):
         '''Ctor for NumberBar class.'''
+        # g.trace('(NumberBar)')
         QtWidgets.QFrame.__init__(self, *args)
             # Init the base class.
         self.c = c
@@ -785,12 +787,17 @@ class NumberBar(QtWidgets.QFrame):
             # A QFontMetrics
         self.highest_line = 0
             # The highest line that is currently visibile.
+        # Set the name to gutter so that the QFrame#gutter style sheet applies.
+        self.setObjectName('gutter')
+        self.reloadSettings()
+        
+    def reloadSettings(self):
+        c = self.c
         self.w_adjust = c.config.getInt('gutter-w-adjust') or 12
             # Extra width for column.
         self.y_adjust = c.config.getInt('gutter-y-adjust') or 10
             # The y offset of the first line of the gutter.
-        # Set the name to gutter so that the QFrame#gutter style sheet applies.
-        self.setObjectName('gutter')
+        
     #@+node:ekr.20150403094706.5: *3* NumberBar.update
     def update(self, *args):
         '''
