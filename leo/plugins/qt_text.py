@@ -792,8 +792,7 @@ class NumberBar(QtWidgets.QFrame):
         
     def reloadSettings(self):
         c = self.c
-        if self not in c.configurables:
-            c.configurables.append(self)
+        c.registerReloadSettings(self)
         self.w_adjust = c.config.getInt('gutter-w-adjust') or 12
             # Extra width for column.
         self.y_adjust = c.config.getInt('gutter-y-adjust') or 10

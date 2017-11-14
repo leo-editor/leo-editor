@@ -356,7 +356,7 @@ class Commands(object):
             self.undoer,
         ]
         # Other objects
-        c.configurables = []
+        c.configurables = c.subCommanders[:]
             # A list of other classes that have a reloadSettings method
         self.cacher = leoCache.Cacher(c)
         self.cacher.initFileDB(self.mFileName)
@@ -687,6 +687,12 @@ class Commands(object):
     def reloadAllSettings(self, event=None):
         '''Reload settings for all open outlines, saving them if necessary.'''
         self.reloadSettingsHelper(all=True)
+    #@+node:ekr.20171114114908.1: *5* c.registerReloadSettings
+    def registerReloadSettings(self, obj):
+        '''Enter object into c.configurables.'''
+        c = self
+        if obj not in c.configurables:
+            c.configurables.append(obj)
     #@+node:ekr.20170221034501.1: *5* c.reloadSettingsHelper
     def reloadSettingsHelper(self, all):
         '''Reload settings in all commanders, or just self.'''
@@ -720,8 +726,6 @@ class Commands(object):
         '''
         trace = False and not g.unitTesting
         c = self
-        classes = c.subCommanders[:]
-        classes.extend(c.configurables[:])
         table = [
             g.app.gui,
             g.app.pluginsController,
@@ -730,16 +734,22 @@ class Commands(object):
             c.frame.body.colorizer,
             getattr(c.frame.body.colorizer, 'highlighter', None),
         ]
-        classes.extend([z for z in table if z])
-        classes = list(set(classes))
+        for obj in table:
+            if obj:
+                c.registerReloadSettings(obj)
+        # classes = list(set(classes))
             # Useful now that instances add themselves to c.configurables.
-        classes.sort(key=lambda obj: obj.__class__.__name__)
-        for obj in classes:
+        c.configurables.sort(key=lambda obj: obj.__class__.__name__)
+        for obj in c.configurables:
             func = getattr(obj, 'reloadSettings', None)
             if func:
                 # pylint: disable=not-callable
                 if trace: g.pr('reloading settings in', obj.__class__.__name__)
-                func()
+                try:
+                    func()
+                except Exception:
+                    g.es_exception()
+                    c.configurables.remove(obj)
     #@+node:ekr.20150329162703.1: *4* Clone find...
     #@+node:ekr.20160224175312.1: *5* c.cffm & c.cfam
     @cmd('clone-find-all-marked')

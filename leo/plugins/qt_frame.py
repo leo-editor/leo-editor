@@ -117,8 +117,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
     def reloadSettings(self):
         c = self.leo_c
-        if self not in c.configurables:
-            c.configurables.append(self)
+        c.registerReloadSettings(self)
         self.bigTree = c.config.getBool('big_outline_pane')
         self.show_iconbar = c.config.getBool('show_iconbar', default=True)
         if getattr(self, 'iconBar', None):
@@ -2320,8 +2319,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
 
         def reloadSettings(self):
             c = self.c
-            if self not in c.configurables:
-                c.configurables.append(self)
+            c.registerReloadSettings(self)
             self.buttonColor = c.config.getString('qt-button-color')
         #@+node:ekr.20110605121601.18264: *4*  do-nothings (QtIconBarClass)
         # These *are* called from Leo's core.
