@@ -693,7 +693,7 @@ class TestManager(object):
                     )
                 if 1: ### Experimental: use the null gui for all unit tests.
                     import leo.core.leoFrame as leoFrame
-                    old_gui = g.app.gui
+                    g.app.old_gui = old_gui = g.app.gui
                     old_frame = c.frame
                     old_k_w = c.k.w
                     try:

@@ -29049,6 +29049,12 @@ if g.app.gui.guiName() == 'curses':
     import logging
     logging.info('test')
     curses.endwin()
+elif g.app.gui.guiName() == 'nullGui':
+    g.app.gui = g.app.old_gui
+        # Restore the qt gui swapped out by TM.doTests
+    c.k.simulateCommand(':q!')
+    # else:
+        # print('can not shut down automatically')
 else:
     c.k.simulateCommand(':q!')
 #@-all

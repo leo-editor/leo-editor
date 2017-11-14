@@ -274,6 +274,9 @@ class LeoBody(object):
 
     def packEditorLabelWidget(self, w):
         self.oops()
+
+    def onFocusOut(self, obj):
+        pass
     #@+node:ekr.20060528100747: *3* LeoBody.Editors
     # This code uses self.pb, a paned body widget, created by tkBody.finishCreate.
     #@+node:ekr.20070424053629: *4* LeoBody.entries
