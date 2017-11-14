@@ -356,6 +356,9 @@ class Commands(object):
             self.undoer,
         ]
         # Other objects
+        c.configurables = []
+            # A list of classes that have a reloadSettings/reload_settings method
+            # but that are not subcommanders.
         self.cacher = leoCache.Cacher(c)
         self.cacher.initFileDB(self.mFileName)
         import leo.plugins.free_layout as free_layout
@@ -700,21 +703,22 @@ class Commands(object):
                 # Init the config classes.
             c.initConfigSettings()
                 # Init the commander config ivars.
-            c.reloadSubcommanderSettings()
+            c.reloadConfigurableSettings()
                 # Reload settings in all subcommanders.
             c.setChanged(changed)
                 # Restore the changed bit.
             # c.redraw()
                 # Redraw so a pasted temp node isn't visible
-    #@+node:ekr.20170221040621.1: *5* c.reloadSubcommanderSettings
-    def reloadSubcommanderSettings(self):
+    #@+node:ekr.20170221040621.1: *5* c.reloadConfigurableSettings
+    def reloadConfigurableSettings(self):
         '''
-        Reload settings in all subcommanders that have either a
-        reload_settings or reloadSettings method.
+        Call all reload_settings or reloadSettings method in
+        c.subcommanders, c.configurables and other known classes.
         '''
         trace = True and not g.unitTesting
         c = self
         classes = c.subCommanders[:]
+        classes.extend(c.configurables[:])
         table = [
             g.app.pluginsController,
             c.frame, c.frame.body, c.frame.log, c.frame.tree,

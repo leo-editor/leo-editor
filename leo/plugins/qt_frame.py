@@ -2404,7 +2404,9 @@ class LeoQtFrame(leoFrame.LeoFrame):
             c = self.c
             f = c.frame
             if f.use_chapters and f.use_chapter_tabs:
-                return LeoQtTreeTab(c, f.iconBar)
+                tt = LeoQtTreeTab(c, f.iconBar)
+                c.configurables.append(tt)
+                return tt
             else:
                 return None
         #@+node:ekr.20110605121601.18270: *4* deleteButton
@@ -4305,7 +4307,7 @@ class LeoQtTreeTab(object):
     #@+node:ekr.20110605121601.18440: *4*  ctor (LeoQtTreeTab)
     def __init__(self, c, iconBar):
         '''Ctor for LeoQtTreeTab class.'''
-        # g.trace('(LeoTreeTab)',g.callers(4))
+        # g.trace('(LeoQtTreeTab)',g.callers(4))
         self.c = c
         self.cc = c.chapterController
         assert self.cc
@@ -4314,7 +4316,20 @@ class LeoQtTreeTab(object):
         self.tabNames = []
             # The list of tab names. Changes when tabs are renamed.
         self.w = None # The QComboBox
+        self.reloadSettings()
         self.createControl()
+        
+    def reloadSettings(self):
+        c = self.c
+        self.selectedTabBackgroundColor = c.config.getColor(
+            'selected_chapter_tab_background_color') or 'LightSteelBlue2'
+        self.selectedTabForegroundColor = c.config.getColor(
+            'selected_chapter_tab_foreground_color') or 'black'
+        self.unselectedTabBackgroundColor = c.config.getColor(
+            'unselected_chapter_tab_background_color') or 'lightgrey'
+        self.unselectedTabForegroundColor = c.config.getColor(
+            'unselected_chapter_tab_foreground_color') or 'black'
+        ### To do: update the control
     #@+node:ekr.20110605121601.18441: *4* tt.createControl (defines class LeoQComboBox)
     def createControl(self):
 

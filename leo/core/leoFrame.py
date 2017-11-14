@@ -1732,14 +1732,6 @@ class LeoTreeTab(object):
         self.cc = chapterController
         self.nb = None # Created in createControl.
         self.parentFrame = parentFrame
-        self.selectedTabBackgroundColor = c.config.getColor(
-            'selected_chapter_tab_background_color') or 'LightSteelBlue2'
-        self.selectedTabForegroundColor = c.config.getColor(
-            'selected_chapter_tab_foreground_color') or 'black'
-        self.unselectedTabBackgroundColor = c.config.getColor(
-            'unselected_chapter_tab_background_color') or 'lightgrey'
-        self.unselectedTabForegroundColor = c.config.getColor(
-            'unselected_chapter_tab_foreground_color') or 'black'
     #@+node:ekr.20070317073755: *3* Must be defined in subclasses
     def createControl(self):
         self.oops()
