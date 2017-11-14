@@ -66,6 +66,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         self.init_tree_abbrev()
         self.init_env()
 
+    reloadSettings = reload_settings
     #@+node:ekr.20150514043850.6: *6* abbrev.init_abbrev
     def init_abbrev(self):
         '''

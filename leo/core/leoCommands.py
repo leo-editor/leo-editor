@@ -357,8 +357,7 @@ class Commands(object):
         ]
         # Other objects
         c.configurables = []
-            # A list of classes that have a reloadSettings/reload_settings method
-            # but that are not subcommanders.
+            # A list of other classes that have a reloadSettings method
         self.cacher = leoCache.Cacher(c)
         self.cacher.initFileDB(self.mFileName)
         import leo.plugins.free_layout as free_layout
@@ -712,8 +711,8 @@ class Commands(object):
     #@+node:ekr.20170221040621.1: *5* c.reloadConfigurableSettings
     def reloadConfigurableSettings(self):
         '''
-        Call all reload_settings or reloadSettings method in
-        c.subcommanders, c.configurables and other known classes.
+        Call all reloadSettings method in c.subcommanders, c.configurables and
+        other known classes.
         '''
         trace = True and not g.unitTesting
         c = self
@@ -731,15 +730,13 @@ class Commands(object):
         # classes = list(set(classes))
         classes.sort(key=lambda obj: obj.__class__.__name__)
         for obj in classes:
-            for ivar in ('reloadSettings', 'reload_settings'):
-                func = getattr(obj, ivar, None)
-                if func:
-                    # pylint: disable=not-callable
-                    if trace:
-                        g.es_print('reloading settings in',
-                            obj.__class__.__name__)
-                    func()
-
+            func = getattr(obj, 'reloadSettings', None)
+            if func:
+                # pylint: disable=not-callable
+                if trace:
+                    g.es_print('reloading settings in',
+                        obj.__class__.__name__)
+                func()
     #@+node:ekr.20150329162703.1: *4* Clone find...
     #@+node:ekr.20160224175312.1: *5* c.cffm & c.cfam
     @cmd('clone-find-all-marked')

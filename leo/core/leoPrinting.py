@@ -22,6 +22,8 @@ class PrintingController(object):
         self.font_size = c.config.getString('printing-font-size') or '12'
         self.font_family = c.config.getString('printing-font-family') or 'DejaVu Sans Mono'
         self.stylesheet = self.construct_stylesheet()
+        
+    reloadSettings = reload_settings
     #@+node:ekr.20150419124739.8: *4* pr.construct stylesheet
     def construct_stylesheet(self):
         '''Return the Qt stylesheet to be used for printing.'''

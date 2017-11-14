@@ -1337,11 +1337,9 @@ class LeoQtBody(leoFrame.LeoBody):
         leoFrame.LeoBody.__init__(self, frame, parentFrame)
         c = self.c
         assert c.frame == frame and frame.c == c
-        self.reload_settings()
+        self.reloadSettings()
         self.set_widget()
             # Sets self.widget and self.wrapper.
-        # Config stuff.
-        self.reload_settings()
         self.setWrap(c.p)
         # For multiple body editors.
         self.editor_name = None
@@ -1360,8 +1358,8 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18185: *5* LeoQtBody.get_name
     def getName(self):
         return 'body-widget'
-    #@+node:ekr.20140901062324.18562: *5* LeoQtBody.reload_settings
-    def reload_settings(self):
+    #@+node:ekr.20140901062324.18562: *5* LeoQtBody.reloadSettings
+    def reloadSettings(self):
         c = self.c
         self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
         self.useScintilla = c.config.getBool('qt-use-scintilla')
@@ -1372,12 +1370,6 @@ class LeoQtBody(leoFrame.LeoBody):
         self.use_chapters = c.config.getBool('use_chapters')
 
         ### To do: update the widget if it exists.
-
-        # Reload the base class settings.
-        # if hasattr(leoFrame.LeoBody, 'reloadSettings'):
-            # leoFrame.LeoBody.reloadSettings(self)
-
-        
     #@+node:ekr.20160309074124.1: *5* LeoQtBody.set_invisibles
     def set_invisibles(self, c):
         '''Set the show-invisibles bit in the document.'''
@@ -2310,10 +2302,13 @@ class LeoQtFrame(leoFrame.LeoFrame):
             self.parentFrame = parentFrame
             # Status ivars.
             self.actions = []
-            self.buttonColor = c.config.getString('qt-button-color')
             self.chapterController = None
             self.toolbar = self
             self.w = c.frame.top.iconBar # A QToolBar.
+            
+        def reloadSettings(self):
+            c = self.c
+            self.buttonColor = c.config.getString('qt-button-color')
         #@+node:ekr.20110605121601.18264: *4*  do-nothings (QtIconBarClass)
         # These *are* called from Leo's core.
 

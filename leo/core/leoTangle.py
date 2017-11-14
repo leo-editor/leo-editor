@@ -442,6 +442,8 @@ class BaseTangleCommands(object):
         self.tangle_batch_flag = c.config.getBool('tangle_batch_flag')
         self.untangle_batch_flag = c.config.getBool('untangle_batch_flag')
         self.use_header_flag = c.config.getBool('use_header_flag')
+        
+    reloadSettings = reload_settings
     #@+node:ekr.20031218072017.3467: *3* top level
     #@+at Only top-level drivers initialize ivars.
     #@+node:ekr.20031218072017.3468: *4* cleanup

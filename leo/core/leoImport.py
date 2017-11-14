@@ -295,8 +295,9 @@ class LeoImportCommands(object):
         self.reload_settings()
         
     def reload_settings(self):
-        '''LeoImportCommands.reload_settings'''
         self.trace = self.c.config.getBool('trace_import')
+        
+    reloadSettings = reload_settings
     #@+node:ekr.20031218072017.3289: *3* ic.Export
     #@+node:ekr.20031218072017.3290: *4* ic.convertCodePartToWeb & helpers
     def convertCodePartToWeb(self, s, i, p, result):
