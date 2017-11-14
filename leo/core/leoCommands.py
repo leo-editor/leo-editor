@@ -718,6 +718,8 @@ class Commands(object):
         table = [
             g.app.pluginsController,
             c.frame, c.frame.body, c.frame.log, c.frame.tree,
+            c.frame.body.colorizer,
+            getattr(c.frame.body.colorizer, 'highlighter', None),
         ]
         classes.extend([z for z in table if z])
         classes.sort(key=lambda obj: obj.__class__.__name__)

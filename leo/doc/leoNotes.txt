@@ -25947,6 +25947,22 @@ def diff_file(self, fn):
             g.trace('found', fn)
         else:
             g.trace('not found', fn)
+.. @+node:ekr.20110605121601.18588: *3* jedit.setFontFromConfig (no longer used)
+def setFontFromConfig(self):
+    c = self.c
+    self.bold_font = c.config.getFontFromParams(
+        "body_text_font_family", "body_text_font_size",
+        "body_text_font_slant", "body_text_font_weight",
+        c.config.defaultBodyFontSize)
+    self.italic_font = c.config.getFontFromParams(
+        "body_text_font_family", "body_text_font_size",
+        "body_text_font_slant", "body_text_font_weight",
+        c.config.defaultBodyFontSize)
+    self.bolditalic_font = c.config.getFontFromParams(
+        "body_text_font_family", "body_text_font_size",
+        "body_text_font_slant", "body_text_font_weight",
+        c.config.defaultBodyFontSize)
+    self.color_tags_list = []
 .. @-all
 .. @@nosearch
 .. @-leo
