@@ -735,6 +735,7 @@ class LeoFrame(object):
         self.tree = None
         self.useMiniBufferWidget = False
         # Gui-independent data
+        self.cursorStay = True # May be overridden in subclass.reloadSettings.
         self.componentsDict = {} # Keys are names, values are componentClass instances.
         self.es_newlines = 0 # newline count for this log stream
         self.openDirectory = ""
@@ -744,11 +745,6 @@ class LeoFrame(object):
         self.startupWindow = False # True if initially opened window
         self.stylesheet = None # The contents of <?xml-stylesheet...?> line.
         self.tab_width = 0 # The tab width in effect in this pane.
-        self.reloadSettings()
-        
-    def reloadSettings(self):
-        c = self.c
-        self.cursorStay = c.config.getBool("cursor_stay_on_paste", default = True)
     #@+node:ekr.20051009045404: *4* frame.createFirstTreeNode
     def createFirstTreeNode(self):
         f = self; c = f.c

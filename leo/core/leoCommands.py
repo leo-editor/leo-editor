@@ -680,18 +680,22 @@ class Commands(object):
     #@+node:ekr.20170221033738.1: *4* c.reloadSettings & helpers
     @cmd('reload-settings')
     def reloadSettings(self, event=None):
-        '''Reload all static abbreviations from all config files.'''
+        '''Reload settings for the selected outline, saving it if necessary.'''
         self.reloadSettingsHelper(all=False)
 
     @cmd('reload-all-settings')
     def reloadAllSettings(self, event=None):
-        '''Reload all static abbreviations from all config files.'''
+        '''Reload settings for all open outlines, saving them if necessary.'''
         self.reloadSettingsHelper(all=True)
     #@+node:ekr.20170221034501.1: *5* c.reloadSettingsHelper
     def reloadSettingsHelper(self, all):
         '''Reload settings in all commanders, or just self.'''
         lm = g.app.loadManager
         commanders = g.app.commanders() if all else [self]
+        # Save any changes so they can be seen.
+        for c2 in commanders:
+            if c2.isChanged():
+                c2.save()
         lm.readGlobalSettingsFiles()
             # Read leoSettings.leo and myLeoSettings.leo, using a null gui.
         for c in commanders:
@@ -703,7 +707,7 @@ class Commands(object):
             c.initConfigSettings()
                 # Init the commander config ivars.
             c.reloadConfigurableSettings()
-                # Reload settings in all subcommanders.
+                # Reload settings in all configurable classes
             c.setChanged(changed)
                 # Restore the changed bit.
             # c.redraw()
@@ -734,9 +738,7 @@ class Commands(object):
             func = getattr(obj, 'reloadSettings', None)
             if func:
                 # pylint: disable=not-callable
-                if trace:
-                    g.es_print('reloading settings in',
-                        obj.__class__.__name__)
+                if trace: g.pr('reloading settings in', obj.__class__.__name__)
                 func()
     #@+node:ekr.20150329162703.1: *4* Clone find...
     #@+node:ekr.20160224175312.1: *5* c.cffm & c.cfam

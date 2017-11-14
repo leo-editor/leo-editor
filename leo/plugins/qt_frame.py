@@ -83,7 +83,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
     def do_leo_spell_btn_Ignore(self):
         self.doSpellBtn('onIgnoreButton')
-    #@+node:ekr.20110605121601.18139: *3* dw.construct & helper
+    #@+node:ekr.20110605121601.18139: *3* dw.construct & helpers
     def construct(self, master=None):
         """ Factor 'heavy duty' code out from the DynamicWindow ctor """
         # g.trace('(DynamicWindow)')
@@ -99,13 +99,12 @@ class DynamicWindow(QtWidgets.QMainWindow):
         ui_description_file = g.app.loadDir + "/../plugins/" + ui_file_name
         # g.pr('DynamicWindw.__init__,ui_description_file)
         assert g.os_path_exists(ui_description_file)
-        self.bigTree = c.config.getBool('big_outline_pane')
+        self.reloadSettings()
         main_splitter, secondary_splitter = self.createMainWindow()
         self.iconBar = self.addToolBar("IconBar")
         self.set_icon_bar_orientation(c)
         # #266 A setting to hide the icon bar.
-        show_iconbar = c.config.getBool('show_iconbar', default=True)
-        if not show_iconbar:
+        if not self.show_iconbar:
             self.iconBar.hide()
         self.leo_menubar = self.menuBar()
         self.statusBar = QtWidgets.QStatusBar()
@@ -114,6 +113,20 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.setSplitDirection(main_splitter, secondary_splitter, orientation)
         if hasattr(c, 'styleSheetManager'):
             c.styleSheetManager.set_style_sheets(top=self, all=True)
+        self.updateSettings()
+
+    def reloadSettings(self):
+        c = self.leo_c
+        if self not in c.configurables:
+            c.configurables.append(self)
+        self.bigTree = c.config.getBool('big_outline_pane')
+        self.show_iconbar = c.config.getBool('show_iconbar', default=True)
+        self.updateSettings()
+
+    def updateSettings(self):
+        if getattr(self, 'iconBar', None):
+            # g.trace('(DW)', self.show_iconbar, self.iconBar)
+            self.iconBar.show() if self.show_iconbar else self.iconBar.hide()
     #@+node:ekr.20140915062551.19519: *4* dw.set_icon_bar_orientation
     def set_icon_bar_orientation(self, c):
         '''Set the orientation of the icon bar based on settings.'''
@@ -2018,10 +2031,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
         
     def reloadSettings(self):
         c = self.c
+        self.cursorStay = c.config.getBool("cursor_stay_on_paste", default=True)
         self.trace_status_line = c.config.getBool('trace_status_line')
         self.use_chapters = c.config.getBool('use_chapters')
         self.use_chapter_tabs = c.config.getBool('use_chapter_tabs')
-
     #@+node:ekr.20110605121601.18248: *5* qtFrame.setIvars
     def setIvars(self):
         # "Official ivars created in createLeoFrame and its allies.
