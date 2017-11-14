@@ -893,8 +893,9 @@ class LeoFrame(object):
         if self.iconBar: self.iconBar.clear()
 
     def createIconBar(self):
+        c = self.c
         if not self.iconBar:
-            self.iconBar = self.iconBarClass(self.c, self.outerFrame)
+            self.iconBar = self.iconBarClass(c, self.outerFrame)
         return self.iconBar
 
     def getIconBar(self):

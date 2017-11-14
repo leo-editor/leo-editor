@@ -727,7 +727,8 @@ class Commands(object):
             getattr(c.frame.body.colorizer, 'highlighter', None),
         ]
         classes.extend([z for z in table if z])
-        # classes = list(set(classes))
+        classes = list(set(classes))
+            # Useful now that instances add themselves to c.configurables.
         classes.sort(key=lambda obj: obj.__class__.__name__)
         for obj in classes:
             func = getattr(obj, 'reloadSettings', None)

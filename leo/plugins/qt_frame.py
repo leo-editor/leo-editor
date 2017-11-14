@@ -2305,9 +2305,12 @@ class LeoQtFrame(leoFrame.LeoFrame):
             self.chapterController = None
             self.toolbar = self
             self.w = c.frame.top.iconBar # A QToolBar.
-            
+            self.reloadSettings()
+
         def reloadSettings(self):
             c = self.c
+            if self not in c.configurables:
+                c.configurables.append(self)
             self.buttonColor = c.config.getString('qt-button-color')
         #@+node:ekr.20110605121601.18264: *4*  do-nothings (QtIconBarClass)
         # These *are* called from Leo's core.

@@ -415,7 +415,6 @@ class LeoLineTextWidget(QtWidgets.QFrame):
         e.setFrameStyle(self.NoFrame)
         # e.setAcceptRichText(False)
         self.number_bar = NumberBar(c, e)
-        c.configurables.append(self.number_bar)
         hbox = QtWidgets.QHBoxLayout(self)
         hbox.setSpacing(0)
         hbox.setContentsMargins(0, 0, 0, 0)
@@ -793,6 +792,8 @@ class NumberBar(QtWidgets.QFrame):
         
     def reloadSettings(self):
         c = self.c
+        if self not in c.configurables:
+            c.configurables.append(self)
         self.w_adjust = c.config.getInt('gutter-w-adjust') or 12
             # Extra width for column.
         self.y_adjust = c.config.getInt('gutter-y-adjust') or 10
