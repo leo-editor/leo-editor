@@ -1773,17 +1773,16 @@ class StyleSheetManager(object):
     def reload_settings(self):
         '''
         Recompute and apply the stylesheet.
-
-        The name "reload_settings" makes this an official reload settings
-        method. The reload-settings command calls all such methods
-        automatically after re-reading all settings files.
+        Called automatically by the reload-settings commands.
         '''
         # g.trace('(StyleSheetManager)')
         sheet = self.get_style_sheet_from_settings()
         if sheet:
             w = self.get_master_widget()
             w.setStyleSheet(sheet)
-        # c.redraw()
+        # self.c.redraw()
+
+    reloadSettings = reload_settings
     #@+node:ekr.20140913054442.19391: *3* ssm.set selected_style_sheet
     def set_selected_style_sheet(self):
         '''For manual testing: update the stylesheet using c.p.b.'''

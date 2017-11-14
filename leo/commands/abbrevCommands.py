@@ -141,7 +141,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             c.abbrev_subst_start = False
     #@+node:ekr.20150514043850.8: *6* abbrev.init_settings (called from reload_settings)
     def init_settings(self):
-        '''Called from AbbrevCommands.reload_settings.'''
+        '''Called from AbbrevCommands.reload_settings aka reloadSettings.'''
         c = self.c
         c.k.abbrevOn = c.config.getBool('enable-abbreviations', default=False)
         # Init these here for k.masterCommand.
