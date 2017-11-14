@@ -18,7 +18,7 @@ def cmd(name):
 class KillBufferCommandsClass(BaseEditCommandsClass):
     '''A class to manage the kill buffer.'''
     #@+others
-    #@+node:ekr.20150514063305.409: *3* kill.ctor
+    #@+node:ekr.20150514063305.409: *3* kill.ctor & reloadSettings
     def __init__(self, c):
         '''Ctor for KillBufferCommandsClass class.'''
         # pylint: disable=super-init-not-called

@@ -43,7 +43,7 @@ def init():
 class LeoQtGui(leoGui.LeoGui):
     '''A class implementing Leo's Qt gui.'''
     #@+others
-    #@+node:ekr.20110605121601.18477: *3*  qt_gui.__init__
+    #@+node:ekr.20110605121601.18477: *3*  qt_gui.__init__ & reloadSettings
     def __init__(self):
         '''Ctor for LeoQtGui class.'''
         # g.trace('(LeoQtGui)',g.callers())

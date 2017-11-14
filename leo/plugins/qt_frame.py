@@ -2000,7 +2000,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     """A class that represents a Leo window rendered in qt."""
     #@+others
     #@+node:ekr.20110605121601.18246: *3*  qtFrame.Birth & Death
-    #@+node:ekr.20110605121601.18247: *4* qtFrame.__init__
+    #@+node:ekr.20110605121601.18247: *4* qtFrame.__init__ & reloadSettings
     def __init__(self, c, title, gui):
         # Init the base class.
         leoFrame.LeoFrame.__init__(self, c, gui)
@@ -2294,7 +2294,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     class QtIconBarClass(object):
         '''A class representing the singleton Icon bar'''
         #@+others
-        #@+node:ekr.20110605121601.18263: *4*  ctor (QtIconBarClass)
+        #@+node:ekr.20110605121601.18263: *4*  ctor & reloadSettings (QtIconBarClass)
         def __init__(self, c, parentFrame):
             '''Ctor for QtIconBarClass.'''
             # Copy ivars
@@ -2407,9 +2407,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             c = self.c
             f = c.frame
             if f.use_chapters and f.use_chapter_tabs:
-                tt = LeoQtTreeTab(c, f.iconBar)
-                c.configurables.append(tt)
-                return tt
+                return LeoQtTreeTab(c, f.iconBar)
             else:
                 return None
         #@+node:ekr.20110605121601.18270: *4* deleteButton
@@ -3068,7 +3066,7 @@ class LeoQtLog(leoFrame.LeoLog):
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'frame', 'log'])
     #@+node:ekr.20110605121601.18313: *3* LeoQtLog.Birth
-    #@+node:ekr.20110605121601.18314: *4* LeoQtLog.__init__
+    #@+node:ekr.20110605121601.18314: *4* LeoQtLog.__init__ & reloadSettings
     def __init__(self, frame, parentFrame):
         '''Ctor for LeoQtLog class.'''
         # g.trace('(LeoQtLog)',frame,parentFrame)
@@ -4307,7 +4305,7 @@ class LeoQtTreeTab(object):
     '''
     #@+others
     #@+node:ekr.20110605121601.18439: *3*  Birth & death
-    #@+node:ekr.20110605121601.18440: *4*  ctor (LeoQtTreeTab)
+    #@+node:ekr.20110605121601.18440: *4*  ctor & reloadSettings (LeoQtTreeTab)
     def __init__(self, c, iconBar):
         '''Ctor for LeoQtTreeTab class.'''
         # g.trace('(LeoQtTreeTab)',g.callers(4))
@@ -4324,6 +4322,8 @@ class LeoQtTreeTab(object):
         
     def reloadSettings(self):
         c = self.c
+        if self not in c.configurables:
+            c.configurables.append(self)
         self.selectedTabBackgroundColor = c.config.getColor(
             'selected_chapter_tab_background_color') or 'LightSteelBlue2'
         self.selectedTabForegroundColor = c.config.getColor(
