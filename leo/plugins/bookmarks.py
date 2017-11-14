@@ -612,7 +612,7 @@ class BookMarkDisplay(object):
     Bookmark = namedtuple('Bookmark', 'head url ancestors siblings children v')
 
     #@+others
-    #@+node:tbrown.20110712100955.18926: *3* __init__
+    #@+node:tbrown.20110712100955.18926: *3* __init__ (BookMarkDisplay)
     def __init__(self, c, v=None):
 
         self.c = c

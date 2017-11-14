@@ -175,7 +175,7 @@ class leoscreen_Controller(object):
     '''A per-commander class that manages screen interaction.'''
 
     #@+others
-    #@+node:tbrown.20100226095909.12784: *3* __init__
+    #@+node:tbrown.20100226095909.12784: *3* __init__(leoscreen_Controller)
     def __init__ (self, c):
         """set up vars., prepare temporary file"""
 

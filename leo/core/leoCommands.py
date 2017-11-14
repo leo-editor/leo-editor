@@ -724,7 +724,7 @@ class Commands(object):
         Call all reloadSettings method in c.subcommanders, c.configurables and
         other known classes.
         '''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         c = self
         table = [
             g.app.gui,
@@ -737,9 +737,9 @@ class Commands(object):
         for obj in table:
             if obj:
                 c.registerReloadSettings(obj)
-        # classes = list(set(classes))
+        c.configurables = list(set(c.configurables))
             # Useful now that instances add themselves to c.configurables.
-        c.configurables.sort(key=lambda obj: obj.__class__.__name__)
+        c.configurables.sort(key=lambda obj: obj.__class__.__name__.lower())
         for obj in c.configurables:
             func = getattr(obj, 'reloadSettings', None)
             if func:

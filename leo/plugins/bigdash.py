@@ -180,7 +180,7 @@ class BigDash(object):
 #@+node:ekr.20140919160020.17897: ** class GlobalSearch
 class GlobalSearch(object):
     #@+others
-    #@+node:ekr.20140919160020.17898: *3* __init__
+    #@+node:ekr.20140919160020.17898: *3* __init__(GlobalSearch)
     def __init__(self):
         '''Ctor for GlobalSearch class.'''
         self.fts_max_hits = g.app.config.getInt('fts_max_hits') or 30

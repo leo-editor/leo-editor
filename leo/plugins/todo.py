@@ -382,24 +382,7 @@ class todoController(object):
         self._widget_to_style = None  # see updateStyle()
         self.iconDir = g.os_path_abspath(g.os_path_normpath(
             g.os_path_join(g.app.loadDir,"..","Icons")))
-        #@+<< set / read default values >>
-        #@+node:tbrown.20090119215428.12: *4* << set / read default values >>
-        self.time_name = 'days'
-        if c.config.getString('todo_time_name'):
-            self.time_name = c.config.getString('todo_time_name')
-
-        self.icon_location = 'beforeHeadline'
-        if c.config.getString('todo_icon_location'):
-            self.icon_location = c.config.getString('todo_icon_location')
-
-        self.prog_location = 'beforeHeadline'
-        if c.config.getString('todo_prog_location'):
-            self.prog_location = c.config.getString('todo_prog_location')
-
-        self.icon_order = 'pri-first'
-        if c.config.getString('todo_icon_order'):
-            self.icon_order = c.config.getString('todo_icon_order')
-        #@-<< set / read default values >>
+        self.reloadSettings()
         self.handlers = [
            ("close-frame",self.close),
            ('select3', self.updateUI),
@@ -417,6 +400,14 @@ class todoController(object):
 
         # correct spinTime suffix:
         self.ui.UI.spinTime.setSuffix(" " + self.time_name)
+    #@+node:tbrown.20090119215428.12: *4* reloadSettings (todoController)
+    def reloadSettings(self):
+        c = self.c
+        c.registerReloadSettings(self)
+        self.time_name = c.config.getString('todo_time_name') or 'days'
+        self.icon_location = c.config.getString('todo_icon_location') or 'beforeHeadline'
+        self.prog_location = c.config.getString('todo_prog_location') or 'beforeHeadline'
+        self.icon_order = c.config.getString('todo_icon_order') or 'pri-first'
     #@+node:tbrown.20090522142657.7894: *3* __del__
     def __del__(self):
         for i in self.handlers:

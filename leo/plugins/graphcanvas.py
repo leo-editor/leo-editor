@@ -673,7 +673,7 @@ class linkItem(QtWidgets.QGraphicsItemGroup):
 class graphcanvasController(object):
     """Display and edit links in leo"""
     #@+others
-    #@+node:bob.20110119123023.7409: *3* __init__
+    #@+node:bob.20110119123023.7409: *3* __init__(graphcanvasController)
 
     def __init__ (self,c):
 
