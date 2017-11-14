@@ -133,7 +133,7 @@ def onCreate (tag, keys):
 class NodeDiffController(object):
 
     #@+others
-    #@+node:peckj.20140113131037.5798: *3* __init__ (NodeDiffController, nodediff.py)
+    #@+node:peckj.20140113131037.5798: *3* __init__ & reloadSettings (NodeDiffController, nodediff.py)
     def __init__(self, c):
         self.c = c
         # Warning: hook handlers must use keywords.get('c'), NOT self.c.
@@ -143,15 +143,21 @@ class NodeDiffController(object):
             'ndiff': self.run_ndiff,
             'unified_diff': self.run_unified_diff,
         }
-        self.diff_style = c.config.getString('node-diff-style') or 'compare'
-        if self.diff_style not in self.valid_styles.keys():
-            self.diff_style = 'compare'
+        # Settings
+        self.reloadSettings()
         # register commands
         c.k.registerCommand('diff-marked', self.run_diff_on_marked)
         c.k.registerCommand('diff-selected', self.run_diff_on_selected)
         c.k.registerCommand('diff-subtree', self.run_diff_on_subtree)
         c.k.registerCommand('diff-saved', self.run_diff_on_saved)
         c.k.registerCommand('diff-vcs', self.run_diff_on_vcs)
+        
+    def reloadSettings(self):
+        c = self.c
+        c.registerReloadSettings(self)
+        self.diff_style = c.config.getString('node-diff-style') or 'compare'
+        if self.diff_style not in self.valid_styles.keys():
+            self.diff_style = 'compare'
     #@+node:peckj.20140113131037.5802: *3* getters
     #@+node:peckj.20140113131037.5799: *4* get_selection
     def get_selection(self):

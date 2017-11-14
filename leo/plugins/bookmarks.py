@@ -612,51 +612,44 @@ class BookMarkDisplay(object):
     Bookmark = namedtuple('Bookmark', 'head url ancestors siblings children v')
 
     #@+others
-    #@+node:tbrown.20110712100955.18926: *3* __init__ (BookMarkDisplay)
+    #@+node:tbrown.20110712100955.18926: *3* __init__ & reloadSettings (BookMarkDisplay)
     def __init__(self, c, v=None):
 
         self.c = c
         c._bookmarks = self
-
         # self.v - where the bookmarks for c are kept, may not be in c
         if v is None:
             v = self.v = c.p.v
         else:
             self.v = v
-
         self.current = None  # current (last used) bookmark
         self.previous = None  # position in outline, for outline / bookmarks switch
-
         self.levels = c.config.getInt('bookmarks-levels') or 1
         # levels to show in hierarchical display
         self.second = False  # second click of current bookmark?
         self.upwards = False  # moving upwards through hierarchy
-
         self.w = QtWidgets.QWidget()
-
-        self.dark = c.config.getBool("color_theme_is_dark")
-
+        self.reloadSettings()
         # stuff for pane persistence
         self.w._ns_id = '_leo_bookmarks_show:'
         # v might not be in this outline
         c.db['_leo_bookmarks_show'] = v.context.vnode2position(v).get_UNL()
-
         # else:
             # c.frame.log.createTab(c.p.h[:10])
             # tabWidget = c.frame.log.tabWidget
             # self.w = tabWidget.widget(tabWidget.count()-1)
-
         self.w.setObjectName('show_bookmarks')
         self.w.setMinimumSize(10, 10)
         self.w.setLayout(QtWidgets.QVBoxLayout())
         self.w.layout().setContentsMargins(0,0,0,0)
-
         self.current_list = self.get_list()
-
         self.show_list(self.current_list)
-
         g.registerHandler('select1', self.update)
-
+        
+    def reloadSettings(self):
+        c = self.c
+        c.registerReloadSettings(self)
+        self.dark = c.config.getBool("color_theme_is_dark")
     #@+node:tbrown.20131227100801.30379: *3* background_clicked
     def background_clicked(self, event, bookmarks, row_parent):
         """background_clicked - Handle a background click in a bookmark pane

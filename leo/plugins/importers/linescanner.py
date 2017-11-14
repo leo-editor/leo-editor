@@ -96,16 +96,14 @@ class Importer(object):
     '''
 
     #@+others
-    #@+node:ekr.20161108155925.1: *3* i.__init__
-    #@@nobeautify
-
+    #@+node:ekr.20161108155925.1: *3* i.__init__ & reloadSettings
     def __init__(self,
         importCommands,
         gen_refs=False, # True: generate section references,
-        language = None, # For @language directive.
-        name = None, # The kind of importer, usually the same as language
-        state_class = None, # For i.scan_line
-        strict = False,
+        language=None, # For @language directive.
+        name=None, # The kind of importer, usually the same as language
+        state_class=None, # For i.scan_line
+        strict=False,
     ):
         '''Importer.__init__.'''
         # Copies of args...
@@ -123,12 +121,12 @@ class Importer(object):
         self.state_class = state_class
         self.strict = strict
             # True: leading whitespace is significant.
-
+        #
         # Set from ivars...
         self.has_decls = name not in ('xml', 'org-mode', 'vimoutliner')
         self.is_rst = name in ('rst',)
         self.tree_type = ic.treeType # '@root', '@file', etc.
-
+        #
         # Constants...
         data = g.set_delims_from_language(self.name)
         self.single_comment, self.block1, self.block2 = data
@@ -140,13 +138,10 @@ class Importer(object):
             # Must be set by subclasses that use general_scan_line.
         self.tab_width = 0 # Must be set in run, using self.root.
         self.ws_pattern = re.compile(r'^\s*$|^\s*%s' % (self.single_comment or ''))
-
+        #
         # Settings...
-        self.at_auto_warns_about_leading_whitespace = c.config.getBool(
-            'at_auto_warns_about_leading_whitespace')
-        self.warn_about_underindented_lines = True
-        # self.at_auto_separate_non_def_nodes = False
-
+        self.reloadSettings()
+        #
         # State vars.
         self.errors = 0
         ic.errors = 0 # Required.
@@ -156,6 +151,14 @@ class Importer(object):
         self.skip = 0 # A skip count for x.gen_lines & its helpers.
         self.ws_error = False
         self.root = None
+
+    def reloadSettings(self):
+        c = self.c
+        c.registerReloadSettings(self)
+        # self.at_auto_separate_non_def_nodes = False
+        self.at_auto_warns_about_leading_whitespace = c.config.getBool(
+            'at_auto_warns_about_leading_whitespace')
+        self.warn_about_underindented_lines = True
     #@+node:ekr.20161110042512.1: *3* i.API for setting body text
     # All code in passes 1 and 2 *must* use this API to change body text.
 

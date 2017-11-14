@@ -97,7 +97,7 @@ class WikiView(object):
     """Manage wikiview for an outline"""
 
     #@+others
-    #@+node:tbrown.20141101114322.10: *3* __init__ (WikiView)
+    #@+node:tbrown.20141101114322.10: *3* __init__ & reloadSettings (WikiView)
     def __init__(self, c):
         '''Ctor for WikiView class.'''
         self.c = c
@@ -110,8 +110,7 @@ class WikiView(object):
         self.select = 'select3'  # Leo hook to hide text
         self.pts=1  # hidden text size (0.1 does not work!)
         self.pct=1  # hidden text letter spacing
-        self.active = c.config.getBool('wikiview-active')
-            # This setting is True by default, so the redundancy is harmless.
+        self.reloadSettings()
         w = c.frame.body.widget
         if not w:
             return # w may not exist during unit testing.
@@ -123,6 +122,12 @@ class WikiView(object):
         # apply hiding for initial load (`after-create-leo-frame` from module level
         # init() / onCreate())
         self.hide(self.select, {'c': c})
+        
+    def reloadSettings(self):
+        c = self.c
+        c.registerReloadSettings(self)
+        self.active = c.config.getBool('wikiview-active')
+            # This setting is True by default, so the redundancy is harmless.
     #@+node:ekr.20170205071315.1: *3* parse_options & helper
     def parse_options(self):
         '''Return leadins, patterns from @data wikiview-link-patterns'''

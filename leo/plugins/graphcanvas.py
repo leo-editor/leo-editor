@@ -673,30 +673,26 @@ class linkItem(QtWidgets.QGraphicsItemGroup):
 class graphcanvasController(object):
     """Display and edit links in leo"""
     #@+others
-    #@+node:bob.20110119123023.7409: *3* __init__(graphcanvasController)
-
+    #@+node:bob.20110119123023.7409: *3* __init__ & reloadSettings (graphcanvasController)
     def __init__ (self,c):
 
         self.c = c
-
-        self.graph_manual_layout = c.config.getBool('graph-manual-layout',default=False)
-
         self.c.graphcanvasController = self
-
         self.selectPen = QtGui.QPen(QtGui.QColor(255,0,0))
         self.selectPen.setWidth(2)
-
         self.ui = graphcanvasUI(self)
-
-
         g.registerHandler('headkey2', lambda a,b: self.do_update())
         g.registerHandler("select2", self.onSelect2)
-
-        self.initIvars()
-
         # g.registerHandler('open2', self.loadLinks)
-        # already missed initial 'open2' because of after-create-leo-frame, so
-        # self.loadLinksInt()
+            # already missed initial 'open2' because of after-create-leo-frame, so
+            # self.loadLinksInt()
+        self.initIvars()
+        self.reloadSettings()
+        
+    def reloadSettings(self):
+        c = self.c
+        c.registerReloadSettings(self)
+        self.graph_manual_layout = c.config.getBool('graph-manual-layout',default=False)
     #@+node:bob.20110119123023.7410: *3* initIvars
     def initIvars(self):
         """initialize, called by __init__ and clear"""

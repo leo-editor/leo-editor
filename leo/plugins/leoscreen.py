@@ -175,45 +175,36 @@ class leoscreen_Controller(object):
     '''A per-commander class that manages screen interaction.'''
 
     #@+others
-    #@+node:tbrown.20100226095909.12784: *3* __init__(leoscreen_Controller)
+    #@+node:tbrown.20100226095909.12784: *3* __init__& reloadSettings (leoscreen_Controller)
     def __init__ (self, c):
         """set up vars., prepare temporary file"""
-
         self.c = c
         c.leo_screen = self
-
         self.use_screen = None  # to select a particular screen session
-
-        # skip line -1, which is
-        # usually a prompt and not interesting
+        # skip line -1, which is usually a prompt and not interesting
         self.first_line = -2
-
         # pulling in lines from output, this is the next one to get
         self.next_unread_line = self.first_line
-
         # output from last command
         self.output = []
         self.old_output = []
-
         # file name for hardcopy and paste commands
         fd, self.tmpfile = tempfile.mkstemp()
         os.close(fd)
-
+        # Settings
+        self.reloadSettings()
+        self._get_output()  # prime output diffing system
+        self.popups = []  # store references to popup windows
+        self.stack_frame = 0
+            # used by jump to error commands, 0 = innermost frame
+        
+    def reloadSettings(self):
+        c = self.c
+        c.registerReloadSettings(self)
         # line prefix for pasting results into leo (#, --, //, C, etc.)
         x = self.c.config.getString('leoscreen_prefix')
-        if x:
-            self.get_line_prefix = x.replace('SPACE', ' ')
-        else:
-            self.get_line_prefix = ''
-
+        self.get_line_prefix = x.replace('SPACE', ' ') if x else ''
         self.time_fmt = self.c.config.getString('leoscreen_time_fmt') or '%Y-%m-%d %H:%M:%S'
-
-        self._get_output()  # prime output diffing system
-
-        self.popups = []  # store references to popup windows
-
-        self.stack_frame = 0
-        # used by jump to error commands, 0 = innermost frame
     #@+node:tbrown.20100226095909.12785: *3* __del__
     def __del__(self):
         """remove temporary file"""

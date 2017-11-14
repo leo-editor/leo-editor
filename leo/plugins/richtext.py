@@ -86,43 +86,24 @@ if QtWidgets:
 
     class CKEEditor(QtWidgets.QWidget):
         #@+others
-        #@+node:tbrown.20130813134319.7225: *3* __init__ (CKEEditor)
+        #@+node:tbrown.20130813134319.7225: *3* __init__ & reloadSettings (CKEEditor)
         def __init__(self, *args, **kwargs):
 
             self.c = kwargs['c']
-
             del kwargs['c']
             QtWidgets.QWidget.__init__(self, *args, **kwargs)
-
             # were we opened by an @ rich node? Calling code will set
             self.at_rich = False
             # are we being closed by leaving an @ rich node? Calling code will set
             self.at_rich_close = False
-
-            # read autosave preference
-            if not hasattr(self.c, '_ckeeditor_autosave'):
-                auto = self.c.config.getBool("richtext_cke_autosave") or False
-                self.c._ckeeditor_autosave = auto
-                if auto:
-                    g.es("NOTE: automatic saving of rich text edits")
-
+            # read settings.
+            self.reloadSettings()
             # load HTML template
-            template_path = g.os_path_join(
-                g.computeLeoDir(),
-                'plugins', 'cke_template.html',
-            )
+            template_path = g.os_path_join(g.computeLeoDir(), 'plugins', 'cke_template.html')
             self.template = open(template_path).read()
-            path = g.os_path_join(
-                g.computeLeoDir(), 'external', 'ckeditor'
-            )
+            path = g.os_path_join(g.computeLeoDir(), 'external', 'ckeditor')
             self.template = self.template.replace(
                 '[CKEDITOR]', QtCore.QUrl.fromLocalFile(path).toString())
-
-            # load config
-            self.config = self.c.config.getData("richtext_cke_config")
-            if self.config:
-                self.config = '\n'.join(self.config).strip()
-
             # make widget containing QWebView
             self.setLayout(QtWidgets.QVBoxLayout())
             self.layout().setSpacing(0)
@@ -130,15 +111,26 @@ if QtWidgets:
             # enable inspector
             QtWebKit.QWebSettings.globalSettings().setAttribute(
                 QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
-
             self.webview = QtWebKitWidgets.QWebView()
             self.layout().addWidget(self.webview)
-
             g.registerHandler('select3', self.select_node)
             g.registerHandler('unselect1', self.unselect_node)
-
             # load current node
             self.select_node('', {'c': self.c, 'new_p': self.c.p})
+            
+        def reloadSettings(self):
+            c = self.c
+            c.registerReloadSettings(self)
+            # read autosave preference
+            if not hasattr(self.c, '_ckeeditor_autosave'):
+                auto = self.c.config.getBool("richtext_cke_autosave") or False
+                self.c._ckeeditor_autosave = auto
+                if auto:
+                    g.es("NOTE: automatic saving of rich text edits")
+            # load config
+            self.config = self.c.config.getData("richtext_cke_config")
+            if self.config:
+                self.config = '\n'.join(self.config).strip()
         #@+node:tbrown.20130813134319.7226: *3* select_node
         def select_node(self, tag, kwargs):
             c = kwargs['c']

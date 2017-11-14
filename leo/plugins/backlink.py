@@ -87,13 +87,13 @@ Qt = None
 class backlinkController(object):
     """Display and edit links in leo trees"""
     #@+others
-    #@+node:ekr.20090616105756.3943: *3* __init__ (backlinkController)
+    #@+node:ekr.20090616105756.3943: *3* __init__ & reloadSettings (backlinkController)
     def __init__ (self,c):
         '''Ctor for backlinkController class.'''
         self.c = c
         self.c.backlinkController = self
         self.initIvars()
-        self.name_levels = c.config.getInt('backlink_name_levels') or 0
+        self.reloadSettings()
         self.fixIDs(c)
         if Tk:
             self.ui = backlinkTkUI(self)
@@ -107,6 +107,11 @@ class backlinkController(object):
         # already missed initial 'open2' because of after-create-leo-frame, so
         self.loadLinksInt()
         self.updateTabInt()
+        
+    def reloadSettings(self):
+        c = self.c
+        c.registerReloadSettings(self)
+        self.name_levels = c.config.getInt('backlink_name_levels') or 0
     #@+node:tbrown.20091005145931.5227: *3* fixIDs
     def fixIDs(self, c):
 

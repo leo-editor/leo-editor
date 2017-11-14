@@ -1393,11 +1393,8 @@ class ViewRenderedController(QtWidgets.QWidget):
         self.vp = None # The present video player.
         self.w = None # The present widget in the rendering pane.
         self.title = None
-        # User-options:
-        self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
-        self.auto_create = c.config.getBool('view-rendered-auto-create', False)
-        # self.auto_hide    = c.config.getBool('view-rendered-auto-hide',False)
-        self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
+        # User-options
+        self.reloadSettings()
         self.node_changed = True
         # Init.
         self.create_dispatch_dict()
@@ -1426,6 +1423,14 @@ class ViewRenderedController(QtWidgets.QWidget):
             'svg': pc.update_svg,
             'url': pc.update_url,
         }
+    #@+node:ekr.20171114150614.1: *4* vr2.reloadSettings
+    def reloadSettings(self):
+        c = self.c
+        c.registerReloadSettings(self)
+        self.auto_create = c.config.getBool('view-rendered-auto-create', False)
+        # self.auto_hide    = c.config.getBool('view-rendered-auto-hide',False)
+        self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
+        self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
     #@+node:ekr.20140226074510.4214: *3* vr2.closeEvent
     def closeEvent(self, event):
         self.deactivate()

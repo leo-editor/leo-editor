@@ -138,18 +138,24 @@ class NodeClass(object):
 class OpmlController(object):
     '''The controller class for this plugin.'''
     #@+others
-    #@+node:ekr.20060904103412.7: *3* oc.__init__
+    #@+node:ekr.20060904103412.7: *3* oc.__init__& reloadSettings
     def __init__(self, c):
         '''Ctor for OpmlController class.'''
         self.c = c
         c.opmlCommands = self
         c.k.registerCommand('read-opml-file', self.readOpmlCommand)
         c.k.registerCommand('write-opml-file', self.writeOpmlCommand)
-        self.opml_read_derived_files = c.config.getBool('opml_read_derived_files')
-        self.opml_write_derived_files = c.config.getBool('opml_write_derived_files')
         self.currentVnode = None
         self.topVnode = None
         self.generated_gnxs = {} # Keys are gnx's (strings).  Values are vnodes.
+        self.reloadSettings()
+        
+    def reloadSettings(self):
+        c = self.c
+        c.registerReloadSettings(self)
+        self.opml_read_derived_files = c.config.getBool('opml_read_derived_files')
+        self.opml_write_derived_files = c.config.getBool('opml_write_derived_files')
+
     #@+node:ekr.20060914163456: *3* oc.createVnodes & helpers
     def createVnodes(self, c, dummyRoot):
         '''**Important**: this method and its helpers are low-level code

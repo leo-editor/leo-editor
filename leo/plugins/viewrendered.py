@@ -571,7 +571,7 @@ if QtWidgets: # NOQA
     class ViewRenderedController(QtWidgets.QWidget):
         '''A class to control rendering in a rendering pane.'''
         #@+others
-        #@+node:ekr.20110317080650.14380: *3* vr.ctor & helper
+        #@+node:ekr.20110317080650.14380: *3* vr.ctor & helpers
         def __init__(self, c, parent=None):
             '''Ctor for ViewRenderedController class.'''
             self.c = c
@@ -600,11 +600,8 @@ if QtWidgets: # NOQA
             self.title = None
             self.vp = None # The present video player.
             self.w = None # The present widget in the rendering pane.
-            # User-options:
-            self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
-            self.auto_create = c.config.getBool('view-rendered-auto-create', False)
-            # self.auto_hide    = c.config.getBool('view-rendered-auto-hide',False)
-            self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
+            # User settings.
+            self.reloadSettings()
             self.node_changed = True
             # Init.
             self.create_dispatch_dict()
@@ -633,6 +630,14 @@ if QtWidgets: # NOQA
             }
             pc.dispatch_dict = d
             return d
+        #@+node:ekr.20171114150510.1: *4* vr.reloadSettings
+        def reloadSettings(self):
+            c = self.c
+            c.registerReloadSettings(self)
+            self.auto_create = c.config.getBool('view-rendered-auto-create', False)
+            # self.auto_hide    = c.config.getBool('view-rendered-auto-hide',False)
+            self.background_color = c.config.getColor('rendering-pane-background-color') or 'white'
+            self.default_kind = c.config.getString('view-rendered-default-kind') or 'rst'
         #@+node:tbrown.20110621120042.22676: *3* vr.closeEvent
         def closeEvent(self, event):
             '''Close the vr window.'''
