@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20171028115143.1: * @file editpane/webkitview.py
+#@+node:tbrown.20171028115143.1: * @file ../plugins/editpane/webkitview.py
 #@+<< webkitview.py imports >>
 #@+node:tbrown.20171028115457.1: ** << webkitview.py imports >>
 import os

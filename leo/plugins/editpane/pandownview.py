@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20171028115144.3: * @file editpane/pandownview.py
+#@+node:tbrown.20171028115144.3: * @file ../plugins/editpane/pandownview.py
 #@+<< pandownview.py imports >>
 #@+node:tbrown.20171028115505.1: ** << pandownview.py imports >>
 """Markdown view using Pandoc.

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20171028115144.2: * @file editpane/plaintextedit.py
+#@+node:tbrown.20171028115144.2: * @file ../plugins/editpane/plaintextedit.py
 #@+<< plaintextedit.py imports >>
 #@+node:tbrown.20171028115504.1: ** << plaintextedit.py imports >>
 import re

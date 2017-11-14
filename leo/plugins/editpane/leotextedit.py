@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20171028115144.5: * @file editpane/leotextedit.py
+#@+node:tbrown.20171028115144.5: * @file ../plugins/editpane/leotextedit.py
 #@+<<leotextedit.py imports >>
 #@+node:tbrown.20171028115508.1: ** <<leotextedit.py imports >>
 # import re

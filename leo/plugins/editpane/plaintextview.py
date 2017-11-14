@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20171028115144.1: * @file editpane/plaintextview.py
+#@+node:tbrown.20171028115144.1: * @file ../plugins/editpane/plaintextview.py
 #@+<< plaintextview.py declarations >>
 #@+node:tbrown.20171028115502.1: ** << plaintextview.py declarations >>
 import leo.core.leoGlobals as g
