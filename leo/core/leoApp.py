@@ -6,7 +6,6 @@
 #@+node:ekr.20120219194520.10463: ** << imports >> (leoApp)
 import leo.core.leoGlobals as g
 import leo.core.leoExternalFiles as leoExternalFiles
-from leo.core.editpane.editpane import edit_pane_test_open
 try:
     import builtins # Python 3
 except ImportError:
@@ -1067,6 +1066,11 @@ class LeoApp(object):
         try:
             from leo.core.leoQt import Qt
             import leo.plugins.qt_gui as qt_gui
+            try:
+                from leo.plugins.editpane.editpane import edit_pane_test_open
+                g.command('edit-pane-test-open')(edit_pane_test_open)
+            except ImportError:
+                print('Failed to import editpane')
         except ImportError:
             Qt = None
         if Qt:
@@ -1075,6 +1079,7 @@ class LeoApp(object):
                 print('Qt Gui created in %s' % fileName)
         else:
             print('createQtGui: can not create Qt gui.')
+
     #@+node:ekr.20170419093747.1: *4* app.createTextGui (was createCursesGui)
     def createTextGui(self, fileName='', verbose=False):
         app = self
@@ -3586,8 +3591,6 @@ def ctrlClickAtCursor(event):
     c = event.get('c')
     if c:
         g.openUrlOnClick(event)
-#@+node:tbrown.20171110183043.1: *3* edit-pane-test-open
-g.command("edit-pane-test-open")(edit_pane_test_open)
 #@+node:ekr.20150514125218.3: *3* enable/disable/toggle-idle-time-events
 @g.command('disable-idle-time-events')
 def disable_idle_time_events(event):

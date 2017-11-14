@@ -12,11 +12,11 @@ import markdown
 # probably superior, but needs --disable-web-security passed to the
 # QApplication to load local images without a server.
 try:
-    from leo.core.editpane.webkitview import LEP_WebKitView as HtmlView
+    from leo.plugins.editpane.webkitview import LEP_WebKitView as HtmlView
 except ImportError:
-    from leo.core.editpane.webengineview import LEP_WebEngineView as HtmlView
+    from leo.plugins.editpane.webengineview import LEP_WebEngineView as HtmlView
 
-from leo.core.editpane.plaintextview import LEP_PlainTextView as TextView
+from leo.plugins.editpane.plaintextview import LEP_PlainTextView as TextView
 #@-<< markdownview.py imports >>
 #@+others
 #@+node:tbrown.20171028115507.2: ** to_html
