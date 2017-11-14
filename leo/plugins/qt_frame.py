@@ -104,6 +104,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.iconBar = self.addToolBar("IconBar")
         self.set_icon_bar_orientation(c)
         # #266 A setting to hide the icon bar.
+        # Calling reloadSettings again would also work.
         if not self.show_iconbar:
             self.iconBar.hide()
         self.leo_menubar = self.menuBar()
@@ -113,7 +114,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.setSplitDirection(main_splitter, secondary_splitter, orientation)
         if hasattr(c, 'styleSheetManager'):
             c.styleSheetManager.set_style_sheets(top=self, all=True)
-        self.updateSettings()
 
     def reloadSettings(self):
         c = self.leo_c
@@ -121,12 +121,11 @@ class DynamicWindow(QtWidgets.QMainWindow):
             c.configurables.append(self)
         self.bigTree = c.config.getBool('big_outline_pane')
         self.show_iconbar = c.config.getBool('show_iconbar', default=True)
-        self.updateSettings()
-
-    def updateSettings(self):
         if getattr(self, 'iconBar', None):
-            # g.trace('(DW)', self.show_iconbar, self.iconBar)
-            self.iconBar.show() if self.show_iconbar else self.iconBar.hide()
+            if self.show_iconbar:
+                self.iconBar.show()
+            else:
+                self.iconBar.hide()
     #@+node:ekr.20140915062551.19519: *4* dw.set_icon_bar_orientation
     def set_icon_bar_orientation(self, c):
         '''Set the orientation of the icon bar based on settings.'''
@@ -1376,13 +1375,12 @@ class LeoQtBody(leoFrame.LeoBody):
         c = self.c
         self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
         self.useScintilla = c.config.getBool('qt-use-scintilla')
-        self.unselectedBackgroundColor = c.config.getColor(
-            'unselected_body_bg_color')
-        self.unselectedForegroundColor = c.config.getColor(
-            'unselected_body_fg_color')
         self.use_chapters = c.config.getBool('use_chapters')
-
-        ### To do: update the widget if it exists.
+        # These are no longer used.
+            # self.unselectedBackgroundColor = c.config.getColor(
+                # 'unselected_body_bg_color')
+            # self.unselectedForegroundColor = c.config.getColor(
+                # 'unselected_body_fg_color')
     #@+node:ekr.20160309074124.1: *5* LeoQtBody.set_invisibles
     def set_invisibles(self, c):
         '''Set the show-invisibles bit in the document.'''
@@ -4318,7 +4316,7 @@ class LeoQtTreeTab(object):
     '''
     #@+others
     #@+node:ekr.20110605121601.18439: *3*  Birth & death
-    #@+node:ekr.20110605121601.18440: *4*  ctor & reloadSettings (LeoQtTreeTab)
+    #@+node:ekr.20110605121601.18440: *4*  ctor (LeoQtTreeTab)
     def __init__(self, c, iconBar):
         '''Ctor for LeoQtTreeTab class.'''
         # g.trace('(LeoQtTreeTab)',g.callers(4))
@@ -4330,22 +4328,9 @@ class LeoQtTreeTab(object):
         self.tabNames = []
             # The list of tab names. Changes when tabs are renamed.
         self.w = None # The QComboBox
-        self.reloadSettings()
+        # self.reloadSettings()
         self.createControl()
         
-    def reloadSettings(self):
-        c = self.c
-        if self not in c.configurables:
-            c.configurables.append(self)
-        self.selectedTabBackgroundColor = c.config.getColor(
-            'selected_chapter_tab_background_color') or 'LightSteelBlue2'
-        self.selectedTabForegroundColor = c.config.getColor(
-            'selected_chapter_tab_foreground_color') or 'black'
-        self.unselectedTabBackgroundColor = c.config.getColor(
-            'unselected_chapter_tab_background_color') or 'lightgrey'
-        self.unselectedTabForegroundColor = c.config.getColor(
-            'unselected_chapter_tab_foreground_color') or 'black'
-        ### To do: update the control
     #@+node:ekr.20110605121601.18441: *4* tt.createControl (defines class LeoQComboBox)
     def createControl(self):
 
