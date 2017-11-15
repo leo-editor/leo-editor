@@ -336,7 +336,7 @@ class ScriptingController(object):
             g.es('This setting can be True only in')
             g.es('leoSettings.leo or myLeoSettings.leo')
             # Restore the value in myLeoSettings.leo
-            val = g.app.config.myLeoSettingsValueOfSetting('scripting-at-script-nodes')
+            val = g.app.config.valueInMyLeoSettings('scripting-at-script-nodes')
             if val is None: val = False
             g.es('Restoring value to', val, color='red')
             self.atScriptNodes = val
