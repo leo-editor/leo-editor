@@ -527,7 +527,7 @@ class attrib_edit_Controller(object):
     '''A per-commander class that manages attribute editing.'''
 
     #@+others
-    #@+node:tbrown.20091009210724.10981: *3* __init__ (attrib_edit_Controller)
+    #@+node:tbrown.20091009210724.10981: *3* __init__ & reloadSettings (attrib_edit_Controller)
     def __init__ (self, c):
 
         self.c = c
