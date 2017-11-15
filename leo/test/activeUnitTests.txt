@@ -29014,7 +29014,8 @@ for fn in files:
 # This must be true even though @bool scriptingatscriptnodes is True in this file.
 if hasattr(c,'theScriptingController'):
     # mod_scripting may be disabled when running tests externally.
-    assert not c.theScriptingController.atScriptNodes
+    val = g.app.config.myLeoSettingsValueOfSetting('scripting-at-script-nodes')
+    assert c.theScriptingController.atScriptNodes == val
 #@+node:ekr.20100131171342.5501: *4* @test zz end of plugins unit tests
 s = '\nEnd of plugins unit tests'
 if g.app.gui.guiName() == 'curses':
