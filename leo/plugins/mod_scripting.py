@@ -335,7 +335,9 @@ class ScriptingController(object):
             g.es('@bool scripting-at-script-nodes = True', color='red')
             g.es('This setting can be True only in')
             g.es('leoSettings.leo or myLeoSettings.leo')
-            self.atScriptNodes = False
+            # 2017/11/15: There is no need to *override* the setting if
+            # it has been set (correctly) in myLeoSettings.leo.
+                # self.atScriptNodes = False
         self.createDebugButton = getBool('scripting-create-debug-button')
             # True: create Debug Script button.
         self.createRunScriptButton = getBool('scripting-create-run-script-button')
