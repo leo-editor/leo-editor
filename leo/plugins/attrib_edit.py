@@ -562,11 +562,11 @@ class attrib_edit_Controller(object):
         c.registerReloadSettings(self)
         active = c.config.getData('attrib_edit_active_modes') or []
         self.getsetters = []
-        if not active:
-            self.getsetters[0][1] = True  # turn on the first one
         for i in AttributeGetter.implementations:
             s = i(c)
             self.getsetters.append([s, (s.name() in active) ])
+        if not active:
+            self.getsetters[0][1] = True  # turn on the first one
     #@+node:tbrown.20091009210724.10983: *3* __del__
     def __del__(self):
         for i in self.handlers:
