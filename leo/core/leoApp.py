@@ -1746,8 +1746,14 @@ class LoadManager(object):
         return name
     #@+node:ekr.20120211121736.10772: *4* LM.computeWorkbookFileName
     def computeWorkbookFileName(self):
+        '''
+        Return the name of the workbook.
+        
+        Return None *only* if:
+        1. The workbook does not exist.
+        2. We are unit testing or in batch mode.
+        '''
         # lm = self
-        # Get the name of the workbook.
         fn = g.app.config.getString(setting='default_leo_file')
             # The default is ~/.leo/workbook.leo
         if not fn and g.app.debug:
@@ -1756,12 +1762,12 @@ class LoadManager(object):
         fn = g.os_path_finalize(fn)
         if not fn:
             return None
+        elif g.os_path_exists(fn):
+            return fn
         elif g.unitTesting or g.app.batchMode:
             # 2017/02/18: unit tests must not create a workbook.
             # Neither should batch mode operation.
             return None
-        elif g.os_path_exists(fn):
-            return fn
         elif g.os_path_isabs(fn):
             # Create the file.
             g.error('Using default leo file name:\n%s' % (fn))

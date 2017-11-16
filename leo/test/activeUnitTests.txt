@@ -589,6 +589,7 @@ else:
 #@+node:ekr.20100131171342.5483: *3* @test batch mode
 import os
 import sys
+silent = True
 trace = False
 python_interp = sys.executable
 test_path = g.os_path_join(g.app.loadDir,"..","test","unittest")
@@ -598,9 +599,11 @@ leo_file   = g.os_path_join(src_path,"launchLeo.py")
 batch_file = g.os_path_join(test_path,"batchTest.py")
 test_file  = g.os_path_join(test_path,"createdFile.txt")
 
+assert g.os_path_exists(batch_file), batchTest
+
 # Execute this command: python launchLeo.py --script test\unittest\batchTest.py
-# Note: batchTest.py is defined in unitTest.leo.
-if 1:
+# Note: batchTest.py is defined in this file, unitTest.leo.
+if silent:
     command = r"%s %s --silent --script %s" % (python_interp,leo_file,batch_file)
 else:
     command = r"%s %s --script %s" % (python_interp,leo_file,batch_file)
@@ -609,10 +612,10 @@ else:
 
 if trace:
     print('@test batch mode: loadDir: %s' % g.app.loadDir)
-    print('test_file', test_file)
+    print('test_file: %s' % test_file)
 removeFile(test_file)
 if trace:
-    print('command', command)
+    print('command: %s' %  command)
 os.system(command)
 assert g.os_path_exists(test_file), repr(test_file)
 #@+node:ekr.20100131171342.5484: *4* removeFile
@@ -2690,7 +2693,7 @@ def spam():
     if -1 < 2:
         pass
 #@+node:ekr.20100131171342.5508: *3* leoBridge
-#@+node:ekr.20100131171342.5509: *4* @@@test leoBridge init logic
+#@+node:ekr.20100131171342.5509: *4* @test leoBridge init logic
 import leo.core.leoBridge as leoBridge
 
 if g.app.isExternalUnitTest:
