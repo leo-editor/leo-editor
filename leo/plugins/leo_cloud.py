@@ -65,8 +65,6 @@ machines easily too. Like this:
 
 "just works", so now your shortcuts etc. can be stored on a central
 server.
-
-
 """
 
 # pylint: disable=unused-import
@@ -76,6 +74,7 @@ import re
 import shlex
 import subprocess
 import threading
+from copy import deepcopy
 from datetime import date, datetime
 from hashlib import sha1
 
@@ -507,11 +506,10 @@ class LeoCloud:
         childs = []
         hashes = [LeoCloud.recursive_hash(child, childs) for child in nd.children]
         if include_current:
-            hashes.extend([nd.h + nd.b + json.dumps(nd.u, sort_keys=True)])
+            hashes.extend([nd.h + nd.b + json.dumps(LeoCloud._ua_clean(nd.u), sort_keys=True)])
         whole_hash = sha1(''.join(hashes).encode('utf-8')).hexdigest()
         tree.append([whole_hash, childs])
         return whole_hash
-
     def save_clouds(self):
         """check for clouds to save when outline is saved"""
         skipped = []
@@ -603,6 +601,23 @@ class LeoCloud:
         :return: dict of subtree
         """
         return LeoCloud._to_dict_recursive(v, dict())
+
+    @staticmethod
+    def _ua_clean(d):
+        """_ua_clean - strip todo icons from dict
+
+        :param dict d: dict to clean
+        :return: cleaned dict
+
+        recursive_hash() to compare trees stumbles on todo icons which are
+        derived information from the todo attribute and include *local*
+        paths to icon images
+        """
+
+        d = deepcopy(d)
+        if 'icons' in d:
+            d['icons'] = [i for i in d['icons'] if not i.get('cleoIcon')]
+        return d
 
     def write_current(self, p=None):
         """write_current - write current tree to cloud
