@@ -216,23 +216,15 @@ class InternalIPKernel(object):
         if old_show:
             shell._showtraceback = old_show
     #@+node:ekr.20171115090205.1: *3* ileo.test
-    def test():
+    def test(self):
         
         from ipykernel.connect import connect_qtconsole
         from ipykernel.kernelapp import IPKernelApp
         
-        import leo.core.leoGlobals as g
-        assert g.isPython3
-        
-        def main():
-            # From pylab_kernel
-            kernelApp = IPKernelApp.instance()
-            # pylab is needed for Qt event loop integration.
-            args = ['python', '--pylab=qt', '--log-level=20']
-            kernelApp.initialize(args)
-            console = connect_qtconsole()
-            assert console
-            # g.trace(console)
+        kernelApp = IPKernelApp.instance()
+        args = ['python', '--pylab=qt', '--log-level=20']
+        kernelApp.initialize(args)
+        connect_qtconsole()
     #@-others
 #@+node:ekr.20130930062914.16002: ** class LeoNameSpace
 class LeoNameSpace(object):
