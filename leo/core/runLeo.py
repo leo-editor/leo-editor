@@ -67,6 +67,7 @@ prof = profile_leo
 def run(fileName=None, pymacs=None, *args, **keywords):
     """Initialize and run Leo"""
     assert g.app
+    # g.trace('runLeo.py', args, keywords)
     g.app.loadManager = leoApp.LoadManager()
     g.app.loadManager.load(fileName, pymacs)
 #@-others

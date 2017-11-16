@@ -4,7 +4,7 @@
 A module to run unit tests with the leoBridge module.
 Leo's unit test code uses this module when running unit tests externally.
 '''
-trace = True
+trace = False
     # Enables the trace in main.
 trace_argv = False
     # Enable trace of argv. For debugging this file: it duplicate of the trace in main()
