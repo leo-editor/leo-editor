@@ -513,6 +513,8 @@ class LeoCloud:
     def save_clouds(self):
         """check for clouds to save when outline is saved"""
         skipped = []
+        no = []
+        unchanged = []
         for lc_v in self.find_clouds():
             kwargs = self.kw_from_node(lc_v)
             write = False
@@ -528,15 +530,19 @@ class LeoCloud:
             if write:
                 self.write_current(p=self.c.vnode2position(lc_v))
             elif write_on_save == 'no':
-                g.es("NOTE: not writing '%s' to cloud" % kwargs['ID'])
+                no.append(kwargs['ID'])
             elif write_on_save == 'unchanged':
-                g.es("NOTE: not writing unchanged '%s' to cloud" % kwargs['ID'])
+                unchanged.append(kwargs['ID'])
             elif write_on_save != 'ask':
                 skipped.append(kwargs['ID'])
         if skipped:
             g.app.gui.runAskOkDialog(self.c, "Unsaved cloud data",
                 message="There is unsaved cloud data, use\nwrite_on_save: yes|no|ask\n"
                   "in @leo_cloud nodes to avoid this message.\nUnsaved data:\n%s" % ', '.join(skipped))
+        if unchanged:
+            g.es("Unchanged cloud data: %s" % ', '.join(unchanged))
+        if no:
+            g.es("Cloud data never saved: %s" % ', '.join(no))
 
     def subtree_changed(self, p):
         """subtree_changed - check if subtree is changed
