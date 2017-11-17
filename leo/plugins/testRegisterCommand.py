@@ -16,14 +16,19 @@ def init():
     g.plugin_signon(__name__)
     return True
 #@+node:ekr.20051016161205.1: ** onCreate (testRegisterCommand.py)
-def onCreate(tag,keys):
+def hello_command (event):
+        g.es_print('Hello from %s' % (g.shortFileName(__file__)), color='purple')
 
+def onCreate(tag,keys):
     c = keys.get('c')
     if c:
-        def f (event):
-            g.es_print('Hello',color='purple')
-
-        c.keyHandler.registerCommand('print-hello', f)
+        c.keyHandler.registerCommand('print-hello', hello_command)
             # shortcut='Alt-Ctrl-Shift-p',
+
+# This is the recommended way of registering commands.
+
+@g.command('print-hello2')
+def hello_command2 (event):
+    g.es_print('Hello 2 from %s' % (g.shortFileName(__file__)), color='red')
 #@-others
 #@-leo
