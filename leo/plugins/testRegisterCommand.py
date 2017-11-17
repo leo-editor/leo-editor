@@ -1,13 +1,12 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20051016160700: * @file testRegisterCommand.py
 '''A plugin to test k.registerCommand.'''
+# See #560: https://github.com/leo-editor/leo-editor/issues/560
 
 #@@language python
 #@@tabwidth -4
 
 import leo.core.leoGlobals as g
-
-__version__ = '0.1'
 
 #@+others
 #@+node:ekr.20051016161205: ** init
