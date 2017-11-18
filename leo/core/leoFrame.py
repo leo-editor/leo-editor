@@ -228,9 +228,11 @@ class LeoBody(object):
         self.wrapper = None # set in LeoQtBody.setWidget.
         self.numberOfEditors = 1
         self.pb = None # paned body widget.
-        self.use_chapters = c.config.getBool('use_chapters')
         # Must be overridden in subclasses...
         self.colorizer = None
+        # Init user settings.
+        self.use_chapters = False
+            # May be overridden in subclasses.
     #@+node:ekr.20150509034810.1: *3* LeoBody.cmd (decorator)
     def cmd(name):
         '''Command decorator for the c.frame.body class.'''
@@ -268,6 +270,9 @@ class LeoBody(object):
 
     def packEditorLabelWidget(self, w):
         self.oops()
+
+    def onFocusOut(self, obj):
+        pass
     #@+node:ekr.20060528100747: *3* LeoBody.Editors
     # This code uses self.pb, a paned body widget, created by tkBody.finishCreate.
     #@+node:ekr.20070424053629: *4* LeoBody.entries
@@ -705,7 +710,7 @@ class LeoFrame(object):
     '''The base class for all Leo windows.'''
     instances = 0
     #@+others
-    #@+node:ekr.20031218072017.3679: *3* LeoFrame.__init__
+    #@+node:ekr.20031218072017.3679: *3* LeoFrame.__init__ & reloadSettings
     def __init__(self, c, gui):
         self.c = c
         self.gui = gui
@@ -730,6 +735,7 @@ class LeoFrame(object):
         self.tree = None
         self.useMiniBufferWidget = False
         # Gui-independent data
+        self.cursorStay = True # May be overridden in subclass.reloadSettings.
         self.componentsDict = {} # Keys are names, values are componentClass instances.
         self.es_newlines = 0 # newline count for this log stream
         self.openDirectory = ""
@@ -739,7 +745,6 @@ class LeoFrame(object):
         self.startupWindow = False # True if initially opened window
         self.stylesheet = None # The contents of <?xml-stylesheet...?> line.
         self.tab_width = 0 # The tab width in effect in this pane.
-        self.cursorStay = c.config.getBool("cursor_stay_on_paste", default = True)
     #@+node:ekr.20051009045404: *4* frame.createFirstTreeNode
     def createFirstTreeNode(self):
         f = self; c = f.c
@@ -884,8 +889,9 @@ class LeoFrame(object):
         if self.iconBar: self.iconBar.clear()
 
     def createIconBar(self):
+        c = self.c
         if not self.iconBar:
-            self.iconBar = self.iconBarClass(self.c, self.outerFrame)
+            self.iconBar = self.iconBarClass(c, self.outerFrame)
         return self.iconBar
 
     def getIconBar(self):
@@ -1233,7 +1239,7 @@ class LeoLog(object):
         self.c.invalidateFocus()
         self.c.bodyWantsFocus()
     #@+node:ekr.20111122080923.10184: *3* LeoLog.orderedTabNames
-    def orderedTabNames(self, LeoLog):
+    def orderedTabNames(self, LeoLog=None):
         return list(self.frameDict.values())
     #@+node:ekr.20070302094848.9: *3* LeoLog.numberOfVisibleTabs
     def numberOfVisibleTabs(self):
@@ -1719,14 +1725,6 @@ class LeoTreeTab(object):
         self.cc = chapterController
         self.nb = None # Created in createControl.
         self.parentFrame = parentFrame
-        self.selectedTabBackgroundColor = c.config.getColor(
-            'selected_chapter_tab_background_color') or 'LightSteelBlue2'
-        self.selectedTabForegroundColor = c.config.getColor(
-            'selected_chapter_tab_foreground_color') or 'black'
-        self.unselectedTabBackgroundColor = c.config.getColor(
-            'unselected_chapter_tab_background_color') or 'lightgrey'
-        self.unselectedTabForegroundColor = c.config.getColor(
-            'unselected_chapter_tab_foreground_color') or 'black'
     #@+node:ekr.20070317073755: *3* Must be defined in subclasses
     def createControl(self):
         self.oops()
@@ -1800,7 +1798,12 @@ class NullBody(LeoBody):
 #@+node:ekr.20031218072017.2218: ** class NullColorizer (BaseColorizer)
 class NullColorizer(leoColorizer.BaseColorizer):
     '''A colorizer class that doesn't color.'''
-    pass
+    
+    recolorCount = 0
+            
+    def colorize(self, p):
+        self.recolorCount += 1
+            # For #503: Use string/null gui for unit tests
 #@+node:ekr.20031218072017.2222: ** class NullFrame (LeoFrame)
 class NullFrame(LeoFrame):
     '''A null frame class for tests and batch execution.'''
@@ -1844,7 +1847,6 @@ class NullFrame(LeoFrame):
     def expandLogPane(self, event=None): pass
     def expandOutlinePane(self, event=None): pass
     def expandPane(self, event=None): pass
-    def finishCreate(self): pass
     def fullyExpandBodyPane(self, event=None): pass
     def fullyExpandLogPane(self, event=None): pass
     def fullyExpandOutlinePane(self, event=None): pass
@@ -1867,6 +1869,12 @@ class NullFrame(LeoFrame):
     def toggleActivePane(self, event=None): pass
     def toggleSplitDirection(self, event=None): pass
     def update(self): pass
+    #@+node:ekr.20171112115045.1: *3* NullFrame.finishCreate
+    def finishCreate(self):
+        
+        # 2017/11/12: For #503: Use string/null gui for unit tests.
+        self.createFirstTreeNode()
+            # Call the base LeoFrame method.
     #@-others
 #@+node:ekr.20070301164543: ** class NullIconBarClass
 class NullIconBarClass(object):
@@ -2095,6 +2103,8 @@ class NullTree(LeoTree):
     def redraw(self, p=None, scroll=True, forceDraw=False):
         self.redrawCount += 1
         # g.trace(p and p.h, self.c.p.h)
+        return p
+            # Support for #503: Use string/null gui for unit tests
     redraw_now = redraw
 
     def redraw_after_contract(self, p=None): self.redraw()

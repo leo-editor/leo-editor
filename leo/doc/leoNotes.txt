@@ -25947,6 +25947,37 @@ def diff_file(self, fn):
             g.trace('found', fn)
         else:
             g.trace('not found', fn)
+.. @+node:ekr.20110605121601.18588: *3* jedit.setFontFromConfig (no longer used)
+def setFontFromConfig(self):
+    c = self.c
+    self.bold_font = c.config.getFontFromParams(
+        "body_text_font_family", "body_text_font_size",
+        "body_text_font_slant", "body_text_font_weight",
+        c.config.defaultBodyFontSize)
+    self.italic_font = c.config.getFontFromParams(
+        "body_text_font_family", "body_text_font_size",
+        "body_text_font_slant", "body_text_font_weight",
+        c.config.defaultBodyFontSize)
+    self.bolditalic_font = c.config.getFontFromParams(
+        "body_text_font_family", "body_text_font_size",
+        "body_text_font_slant", "body_text_font_weight",
+        c.config.defaultBodyFontSize)
+    self.color_tags_list = []
+.. @+node:ekr.20171114100155.1: *3* reloadSettings (LeoQtTreeTab)
+# Apparently, none of these settings are used!
+def reloadSettings(self):
+    g.trace('(LeoQtTreeTab)', g.callers())
+    c = self.c
+    if self not in c.configurables:
+        c.configurables.append(self)
+    self.selectedTabBackgroundColor = c.config.getColor(
+        'selected_chapter_tab_background_color') or 'LightSteelBlue2'
+    self.selectedTabForegroundColor = c.config.getColor(
+        'selected_chapter_tab_foreground_color') or 'black'
+    self.unselectedTabBackgroundColor = c.config.getColor(
+        'unselected_chapter_tab_background_color') or 'lightgrey'
+    self.unselectedTabForegroundColor = c.config.getColor(
+        'unselected_chapter_tab_foreground_color') or 'black'
 .. @-all
 .. @@nosearch
 .. @-leo

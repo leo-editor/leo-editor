@@ -330,12 +330,10 @@ class BaseTangleCommands(object):
                     [^\n]*\n
                 )
             )*'''         , re.VERBOSE)
-    #@+node:ekr.20031218072017.3466: *3* tangle.__init__
+    #@+node:ekr.20031218072017.1356: *3* tangle.Birth
     def __init__(self, c):
         self.c = c
         self.init_ivars()
-    #@+node:ekr.20031218072017.1356: *3* tangle.init_ivars & init_directive_ivars
-    # Called by __init__
 
     def init_ivars(self):
         c = self.c
@@ -401,6 +399,7 @@ class BaseTangleCommands(object):
         self.string1 = self.string2 = self.verbatim = None
         self.message = None # forgiving compare message.
         #@-<< init untangle ivars >>
+
     # Called by scanAllDirectives
 
     def init_directive_ivars(self):
@@ -410,11 +409,11 @@ class BaseTangleCommands(object):
         # Global options
         self.page_width = c.page_width
         self.tab_width = c.tab_width
-        # New in Leo 4.5: get these from settings.
-        self.output_doc_flag = c.config.getBool('output_doc_flag')
-        self.tangle_batch_flag = c.config.getBool('tangle_batch_flag')
-        self.untangle_batch_flag = c.config.getBool('untangle_batch_flag')
-        self.use_header_flag = c.config.getBool('use_header_flag')
+        # Get settings from reload_settings.
+        self.output_doc_flag = False
+        self.tangle_batch_flag = False
+        self.untangle_batch_flag = False
+        self.use_header_flag = False
         # Default tangle options.
         self.tangle_directory = None # Initialized by scanAllDirectives
         # Default tangle language
@@ -436,6 +435,15 @@ class BaseTangleCommands(object):
         self.encoding = c.config.default_derived_file_encoding # 2/21/03
         self.output_newline = g.getOutputNewline(c=c) # 4/24/03: initialize from config settings.
         #@-<< init directive ivars >>
+        
+    def reload_settings(self):
+        c = self.c
+        self.output_doc_flag = c.config.getBool('output_doc_flag')
+        self.tangle_batch_flag = c.config.getBool('tangle_batch_flag')
+        self.untangle_batch_flag = c.config.getBool('untangle_batch_flag')
+        self.use_header_flag = c.config.getBool('use_header_flag')
+        
+    reloadSettings = reload_settings
     #@+node:ekr.20031218072017.3467: *3* top level
     #@+at Only top-level drivers initialize ivars.
     #@+node:ekr.20031218072017.3468: *4* cleanup

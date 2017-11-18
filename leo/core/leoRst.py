@@ -130,13 +130,13 @@ class RstCommands(object):
     '''
     #@+others
     #@+node:ekr.20090502071837.34: *3* rst.Birth
-    #@+node:ekr.20090502071837.35: *4*  rst.ctor
+    #@+node:ekr.20090502071837.35: *4*  rst.ctor & rst.reloadSettings
     def __init__(self, c):
         '''Ctor for the RstCommand class.'''
         global SilverCity
         self.c = c
         # Debugging and statistics.
-        self.debug = c.config.getBool('rst3_debug', default=False)
+        self.debug = False # Set in reloadSettings.
         self.n_written = 0
             # Number of files written.
         # Warning flags.
@@ -185,12 +185,19 @@ class RstCommands(object):
         self.path = ''
             # The path from any @path directive. Set by init_write.
             # May be overridden (in computeOutputFileName() by rst3_default_path option.
-        self.rootNode = None
+        self.root = None
+            # The @rst node being processed.
         self.source = None
             # The written source as a string.
         # Complete the init.
+        self.reloadSettings()
         self.updateD0FromSettings()
         self.initHeadlineCommands()
+
+    def reloadSettings(self):
+        '''RstCommand.reloadSettings'''
+        self.debug = self.c.config.getBool('rst3_debug', default=False)
+        
     #@+node:ekr.20150509035745.1: *4* rst.cmd (decorator)
     def cmd(name):
         '''Command decorator for the RstCommands class.'''
@@ -528,7 +535,8 @@ class RstCommands(object):
         roots = g.findRootsWithPredicate(self.c, p, predicate)
         if roots:
             for p in roots:
-                self.processTree(p, ext = None, toString = False, justOneFile = justOneFile)
+                self.root = p.copy()
+                self.processTree(p, ext=None, toString=False, justOneFile=justOneFile)
         else:
             g.warning('No @rst or @slides nodes in', p.h)
     #@+node:ekr.20090502071837.63: *5* rst.processTree
@@ -1174,17 +1182,20 @@ class RstCommands(object):
     #@+node:ekr.20090502071837.44: *4* rst.getOption
     def getOption(self, p, name):
         '''Return the value of the named option at node p.'''
+        d = self.scriptSettingsDict
         name = self.munge(name)
-        trace = False and not g.unitTesting
+        trace = False and not g.unitTesting # and name == 'default_path' 
+        verbose = False
         assert p, g.callers()
             # We may as well fail here.
 
         def dump(kind, p, val):
             if trace:
-                g.pr('getOption: %7s %30s %-15r %s' % (kind, name, val, p.h))
-        # 1. Search scriptSettingsDict.
+                # g.pr('getOption: %7s %30s %-15r %s' % (kind, name, val, p.h))
+                g.pr('getOption node: %s kind: %s name: %s val: %s' % (
+                    p.h, kind.upper(), name, val))
 
-        d = self.scriptSettingsDict
+        # 1. Search scriptSettingsDict.
         val = d.get(name)
         if val is not None:
             dump('script', p, val)
@@ -1196,8 +1207,11 @@ class RstCommands(object):
             dump('single', p, val)
             return val
         # 3. Search all parents, using self.dd.
-        for p2 in p.self_and_parents():
+        root = self.root if self.root and p.isAncestorOf(self.root) else p
+            # Fix #362.
+        for p2 in root.self_and_parents():
             d = self.dd.get(p2.v, {})
+            if trace and verbose: g.trace('=====', p2.h, d)
             val = d.get(name)
             if val is not None:
                 dump('node', p2, val)
@@ -1235,7 +1249,7 @@ class RstCommands(object):
         self.preprocessTree(p)
     #@+node:ekr.20090502071837.46: *4* rst.preprocessTree & helpers
     def preprocessTree(self, root):
-        '''Init settings in root, its subtree and all pareents.'''
+        '''Init settings in root, its subtree and all parents.'''
         self.dd = {}
         # Bug fix 12/4/05: must preprocess parents too.
         for p in root.parents():
@@ -1746,9 +1760,11 @@ class RstCommands(object):
     #@+node:ekr.20090502071837.89: *4* rst.computeOutputFileName
     def computeOutputFileName(self, fn):
         '''Return the full path to the output file.'''
+        trace = (False or self.debug) and not g.unitTesting
         c = self.c
         openDirectory = c.frame.openDirectory
-        default_path = self.getOption(c.p, 'default_path')
+        default_path = self.getOption(self.root or c.p, 'default_path')
+            # Subtle change, part of #362: scan options starting at self.root, not c.p.
         if default_path:
             path = g.os_path_finalize_join(self.path, default_path, fn)
         elif self.path:
@@ -1757,9 +1773,10 @@ class RstCommands(object):
             path = g.os_path_finalize_join(self.path, openDirectory, fn)
         else:
             path = g.os_path_finalize_join(fn)
-        if self.debug and not g.unitTesting:
+        if trace:
             g.trace('openDirectory:', repr(openDirectory))
             g.trace('default_path: ', repr(default_path))
+            g.trace('self.path:    ', repr(self.path))
             g.trace('path:         ', repr(path))
         return path
     #@+node:ekr.20090502071837.43: *4* rst.dumpDict

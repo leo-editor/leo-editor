@@ -1450,6 +1450,18 @@ class GlobalConfigManager(object):
                     letter = lm.computeBindingLetter(gs.path)
                     # g.trace('%3s %40s %s' % (letter,key,gs.val))
                     yield key, gs.val, c, letter
+    #@+node:ekr.20171115062202.1: *3* gcm.valueInMyLeoSettings
+    def valueInMyLeoSettings(self, settingName):
+        '''Return the value of the setting, if any, in myLeoSettings.leo.'''
+        lm = g.app.loadManager
+        d = lm.globalSettingsDict.d
+        gs = d.get(self.munge(settingName))
+            # A GeneralSetting object.
+        if gs:
+            path = gs.path
+            if path.find('myLeoSettings.leo') > -1:
+                return gs.val
+        return None
     #@-others
 #@+node:ekr.20041118104831.1: ** class LocalConfigManager
 class LocalConfigManager(object):

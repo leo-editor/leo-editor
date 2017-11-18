@@ -295,16 +295,11 @@ class NullGui(LeoGui):
         LeoGui.__init__(self, guiName)
             # init the base class.
         self.clipboardContents = ''
-        ### self.theDict = {}
         self.focusWidget = None
-        ### self.frameFactory = g.NullObject()
-        ### self.iconimages = {}
-        ### self.insert_char_flag = False
         self.script = None
         self.lastFrame = None
             # The outer frame, used only to set the g.app.log in runMainLoop.
         self.isNullGui = True
-        ### self.plainTextWidget = leoFrame.StringTextWrapper
     #@+node:ekr.20031218072017.3744: *3* NullGui.dialogs
     def runAboutLeoDialog(self, c, version, theCopyright, url, email):
         return self.simulateDialog("aboutLeoDialog", None)
@@ -451,10 +446,8 @@ class StringGui(LeoGui):
         # self.focusWidget = None
         # self.frameFactory = g.NullObject()
         # self.iconimages = {}
-        # ### self.insert_char_flag = False
         # self.script = None
         # self.isNullGui = True
-        # ### self.plainTextWidget = leoFrame.StringTextWrapper
     #@+node:ekr.20170613095422.7: *3* StringGui.oops
     def oops(self):
         g.trace("StringGui", g.callers(4))

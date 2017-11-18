@@ -143,7 +143,7 @@ class EnchantClass(object):
 class SpellCommandsClass(BaseEditCommandsClass):
     '''Commands to support the Spell Tab.'''
     #@+others
-    #@+node:ekr.20150514063305.482: *3* ctor (SpellCommandsClass)
+    #@+node:ekr.20150514063305.482: *3* ctor & reloadSettings(SpellCommandsClass)
     def __init__(self, c):
         '''
         Ctor for SpellCommandsClass class.
@@ -152,6 +152,11 @@ class SpellCommandsClass(BaseEditCommandsClass):
         # pylint: disable=super-init-not-called
         self.c = c
         self.handler = None
+        self.reloadSettings()
+        
+    def reloadSettings(self):
+        '''SpellCommandsClass.reloadSettings.'''
+        c = self.c
         self.page_width = c.config.getInt("page-width")
             # for wrapping
     #@+node:ekr.20150514063305.484: *3* openSpellTab

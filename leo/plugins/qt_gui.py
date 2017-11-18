@@ -43,24 +43,25 @@ def init():
 class LeoQtGui(leoGui.LeoGui):
     '''A class implementing Leo's Qt gui.'''
     #@+others
-    #@+node:ekr.20110605121601.18477: *3*  qt_gui.__init__
+    #@+node:ekr.20110605121601.18477: *3*  qt_gui.__init__ & reloadSettings
     def __init__(self):
         '''Ctor for LeoQtGui class.'''
         # g.trace('(LeoQtGui)',g.callers())
         leoGui.LeoGui.__init__(self, 'qt')
              # Initialize the base class.
-        self.qtApp = QtWidgets.QApplication(sys.argv)
+        self.active = True
         self.consoleOnly = False # Console is separate from the log.
         self.iconimages = {}
         self.idleTimeClass = qt_idle_time.IdleTime
         self.insert_char_flag = False # A flag for eventFilter.
+        self.mGuiName = 'qt'
         self.plainTextWidget = qt_text.PlainTextWrapper
         self.styleSheetManagerClass = StyleSheetManager
-        self.mGuiName = 'qt'
-        self.appIcon = self.getIconImage('leoapp32.png')
-        self.color_theme = g.app.config and g.app.config.getString('color_theme')
-        self.active = True
             # For c.idle_focus_helper and activate/deactivate events.
+        # Create objects...
+        self.qtApp = QtWidgets.QApplication(sys.argv)
+        self.reloadSettings()
+        self.appIcon = self.getIconImage('leoapp32.png')
         # Put up the splash screen()
         if (g.app.use_splash_screen and
             not g.app.batchMode and
@@ -72,6 +73,9 @@ class LeoQtGui(leoGui.LeoGui):
             self.frameFactory = qt_frame.TabbedFrameFactory()
         else:
             self.frameFactory = qt_frame.SDIFrameFactory()
+        
+    def reloadSettings(self):
+        self.color_theme = g.app.config and g.app.config.getString('color_theme')
     #@+node:ekr.20110605121601.18484: *3*  qt_gui.destroySelf (calls qtApp.quit)
     def destroySelf(self):
         trace = g.app.trace_shutdown
@@ -1769,17 +1773,16 @@ class StyleSheetManager(object):
     def reload_settings(self):
         '''
         Recompute and apply the stylesheet.
-
-        The name "reload_settings" makes this an official reload settings
-        method. The reload-settings command calls all such methods
-        automatically after re-reading all settings files.
+        Called automatically by the reload-settings commands.
         '''
         # g.trace('(StyleSheetManager)')
         sheet = self.get_style_sheet_from_settings()
         if sheet:
             w = self.get_master_widget()
             w.setStyleSheet(sheet)
-        # c.redraw()
+        # self.c.redraw()
+
+    reloadSettings = reload_settings
     #@+node:ekr.20140913054442.19391: *3* ssm.set selected_style_sheet
     def set_selected_style_sheet(self):
         '''For manual testing: update the stylesheet using c.p.b.'''

@@ -50,6 +50,9 @@ except ImportError:
           "could not convert Markdown to RST")
 
 #def read_md(f): return open(f, 'r').read()
+    # disabled so obviously fail if markdown conversion fails
+
+    
 #@+node:maphew.20141126230535.4: ** classifiers
 classifiers = [
     'Development Status :: 6 - Mature',

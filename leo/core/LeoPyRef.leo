@@ -80,6 +80,7 @@
 </v>
 <v t="EKR.20040519090151.2"><vh>To do</vh>
 <v t="ekr.20100119205347.6015"><vh>@file ../doc/leoToDo.txt</vh></v>
+<v t="ekr.20170926093035.1"><vh>Failures in unified version</vh></v>
 </v>
 <v t="ekr.20031218072017.2406"><vh>Code</vh>
 <v t="ekr.20140902032918.18591"><vh> About this file</vh>
@@ -90,8 +91,7 @@
 <v t="ekr.20031218072017.2604"><vh>Core classes</vh>
 <v t="ekr.20031218072017.2608"><vh>@file leoApp.py</vh></v>
 <v t="ekr.20141012064706.18389"><vh>@file leoAst.py</vh></v>
-<v t="ekr.20150323150718.1"
-expanded="ekr.20160514120655.1,ekr.20041005105605.17,ekr.20041005105605.18,ekr.20041005105605.21,"><vh>@file leoAtFile.py</vh></v>
+<v t="ekr.20150323150718.1"><vh>@file leoAtFile.py</vh></v>
 <v t="ekr.20161026193447.1"><vh>@file leoBackground.py</vh></v>
 <v t="ekr.20150521115018.1"><vh>@file leoBeautify.py</vh></v>
 <v t="ekr.20070227091955.1"><vh>@file leoBridge.py</vh></v>
@@ -117,7 +117,7 @@ expanded="ekr.20160514120655.1,ekr.20041005105605.17,ekr.20041005105605.18,ekr.2
 <v t="ekr.20140810053602.18074"><vh>@file leoQt.py</vh></v>
 <v t="ekr.20140526082700.18440"><vh>@file leoRope.py</vh></v>
 <v t="ekr.20090502071837.3"><vh>@file leoRst.py</vh></v>
-<v t="ekr.20120420054855.14241" descendentVnodeUnknownAttributes="7d7100285805000000302e332e3171017d71022858090000007374725f6174696d657103580c000000313332303432323637302e39710458090000007374725f6d74696d657105580d000000313331393436373033382e3235710658090000007374725f6374696d657107580c000000313331393436303438332e307108755805000000302e332e3571097d710a2858090000007374725f6174696d65710b580d000000313331393634313435352e3937710c58090000007374725f6d74696d65710d580c000000313331393634313131372e39710e58090000007374725f6374696d65710f580c000000313331393633383634382e307110755805000000302e332e3071117d71122858090000007374725f6174696d657113580d000000313331393534393339302e3839711458090000007374725f6d74696d657115580d000000313331393439323330312e3532711658090000007374725f6374696d657117580c000000313331393439313330362e307118755805000000302e332e3271197d711a2858090000007374725f6174696d65711b580d000000313331393436373035302e3438711c58090000007374725f6d74696d65711d580d000000313331393436373035302e3438711e58090000007374725f6374696d65711f580c000000313331393436303438332e307120755805000000302e332e3371217d71222858090000007374725f6174696d657123580d000000313332303433343235372e3336712458090000007374725f6d74696d657125580d000000313332303432323639302e3534712658090000007374725f6374696d657127580c000000313331393436303438332e307128755805000000302e332e3471297d712a2858090000007374725f6174696d65712b580c000000313331393634353330362e32712c58090000007374725f6d74696d65712d580d000000313331393634313038352e3038712e58090000007374725f6374696d65712f580c000000313331393633383634382e30713075752e"><vh>@file leoSessions.py</vh></v>
+<v t="ekr.20120420054855.14241" descendentVnodeUnknownAttributes="7d7100285805000000302e332e3271017d71022858090000007374725f6174696d657103580d000000313331393436373035302e3438710458090000007374725f6d74696d657105580d000000313331393436373035302e3438710658090000007374725f6374696d657107580c000000313331393436303438332e307108755805000000302e332e3071097d710a2858090000007374725f6174696d65710b580d000000313331393534393339302e3839710c58090000007374725f6d74696d65710d580d000000313331393439323330312e3532710e58090000007374725f6374696d65710f580c000000313331393439313330362e307110755805000000302e332e3571117d71122858090000007374725f6174696d657113580d000000313331393634313435352e3937711458090000007374725f6d74696d657115580c000000313331393634313131372e39711658090000007374725f6374696d657117580c000000313331393633383634382e307118755805000000302e332e3171197d711a2858090000007374725f6174696d65711b580c000000313332303432323637302e39711c58090000007374725f6d74696d65711d580d000000313331393436373033382e3235711e58090000007374725f6374696d65711f580c000000313331393436303438332e307120755805000000302e332e3371217d71222858090000007374725f6174696d657123580d000000313332303433343235372e3336712458090000007374725f6d74696d657125580d000000313332303432323639302e3534712658090000007374725f6374696d657127580c000000313331393436303438332e307128755805000000302e332e3471297d712a2858090000007374725f6174696d65712b580c000000313331393634353330362e32712c58090000007374725f6d74696d65712d580d000000313331393634313038352e3038712e58090000007374725f6374696d65712f580c000000313331393633383634382e30713075752e"><vh>@file leoSessions.py</vh></v>
 <v t="ekr.20080708094444.1"><vh>@file leoShadow.py</vh></v>
 <v t="ekr.20031218072017.3446"><vh>@file leoTangle.py</vh></v>
 <v t="ekr.20031218072017.3603"><vh>@file leoUndo.py</vh></v>
@@ -144,12 +144,27 @@ expanded="ekr.20160514120655.1,ekr.20041005105605.17,ekr.20041005105605.18,ekr.2
 <v t="ekr.20050721093241"><vh>&lt;&lt; about gui classes and gui plugins &gt;&gt;</vh></v>
 <v t="ekr.20031218072017.3630"><vh>@file leoCompare.py</vh></v>
 <v t="ekr.20060123151617"><vh>@file leoFind.py</vh></v>
-<v t="ekr.20031218072017.3655"><vh>@file leoFrame.py</vh></v>
+<v t="ekr.20031218072017.3655"
+marks="ekr.20031218072017.1329,"><vh>@file leoFrame.py</vh></v>
 <v t="ekr.20031218072017.3719"><vh>@file leoGui.py</vh></v>
 <v t="ekr.20061031131434"><vh>@file leoKeys.py</vh></v>
 <v t="ekr.20031218072017.3749"><vh>@file leoMenu.py</vh></v>
 </v>
 <v t="ekr.20110605121601.17862"><vh>Qt gui</vh>
+<v t="ekr.20171031111403.1"><vh>Leo Edit Pane</vh>
+<v t="tbrown.20171029210211.1"><vh>@file ../plugins/editpane/clicky_splitter.py</vh></v>
+<v t="tbrown.20171028115144.6"><vh>@file ../plugins/editpane/editpane.py</vh></v>
+<v t="tbrown.20171028115144.5"><vh>@file ../plugins/editpane/leotextedit.py</vh></v>
+<v t="tbrown.20171028115144.4"><vh>@file ../plugins/editpane/markdownview.py</vh></v>
+<v t="tbrown.20171028115144.3"><vh>@file ../plugins/editpane/pandownview.py</vh></v>
+<v t="tbrown.20171028115144.2"><vh>@file ../plugins/editpane/plaintextedit.py</vh></v>
+<v t="tbrown.20171028115144.1"><vh>@file ../plugins/editpane/plaintextview.py</vh></v>
+<v t="tbrown.20171028115143.3"><vh>@file ../plugins/editpane/vanillascintilla.py</vh></v>
+<v t="tbrown.20171028115143.2"><vh>@file ../plugins/editpane/webengineview.py</vh></v>
+<v t="tbrown.20171028115143.1"><vh>@file ../plugins/editpane/webkitview.py</vh></v>
+<v t="tbrown.20171028115144.8"><vh>@file ../plugins/editpane/__init__.py</vh></v>
+<v t="tbrown.20171028115541.1"><vh>@file signal_manager.py</vh></v>
+</v>
 <v t="ekr.20120419093256.10048"><vh>@file ../plugins/free_layout.py</vh></v>
 <v t="ekr.20110605121601.17954"><vh>@file ../plugins/nested_splitter.py</vh></v>
 <v t="ekr.20110605121601.17996"><vh>@file ../plugins/qt_commands.py</vh></v>
@@ -192,6 +207,7 @@ expanded="ekr.20160514120655.1,ekr.20041005105605.17,ekr.20041005105605.18,ekr.2
 <v t="ekr.20160316091132.1"><vh>@file ../external/py2cs.py</vh></v>
 <v t="ekr.20160316091152.1"><vh>@clean ../external/py2cs_theory.md</vh>
 <v t="ekr.20160316091152.2"><vh>The problem</vh></v>
+<v t="ekr.20170820190658.1"><vh>A new node</vh></v>
 <v t="ekr.20160316091152.3"><vh>The design</vh></v>
 <v t="ekr.20160316091152.4"><vh>Using TokenSync class</vh></v>
 <v t="ekr.20160316091152.5"><vh>Summary</vh></v>
@@ -301,7 +317,7 @@ expanded="ekr.20160514120655.1,ekr.20041005105605.17,ekr.20041005105605.18,ekr.2
 </t>
 <t tx="EKR.20040519090151.2">@nosearch
 </t>
-<t tx="ekr.20031218072017.2406" _bklnk="7d71002858010000007871014b0058010000007971024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e"># This file contains almost all of Leo's sources.
+<t tx="ekr.20031218072017.2406" _bklnk="7d710028580400000074797065710158080000006e6f646552656374710258010000007971034b0058010000007871044b0058050000006c696e6b7371055d7106752e"># This file contains almost all of Leo's sources.
 # See the "About this file" node for important notes.
 @language python</t>
 <t tx="ekr.20031218072017.2604"></t>
@@ -1840,7 +1856,8 @@ else:
 if 0:
     &lt;&lt; old dir_ settings &gt;&gt;
 g.cls()
-dir_ = r'C:\leo.repo\leo-editor\leo\external\npyscreen'
+dir_ = r'C:\leo.repo\leo-editor\leo\core\editpane'
+# dir_ = r'C:\leo.repo\leo-editor\leo\external\npyscreen'
 c.recursiveImport(
     dir_ = dir_,
     kind = '@file', # '@clean', #'@nosent','@auto','@file',
@@ -2148,5 +2165,105 @@ proc.wait()
 os.chdir(old_dir)
 print('done! wrote %s' % fn)
 </t>
+<t tx="ekr.20170820190658.1"></t>
+<t tx="ekr.20170926093035.1">c:\Test\LeoAppFolder&gt;LeoApp.exe
+
+
+reading settings in C:\Users\edreamleo\.leo\workbook.leo
+reading settings in C:\Test\LEOAPP~1\leo\test\unitTest.leo
+reading: @file unitTestStartup.txt
+reading: @file activeUnitTests.txt
+.saved: save-new-test.py
+....
+Traceback (most recent call last):
+  File "launchLeo.py", line 8, in &lt;module&gt;
+  File "leo\core\runLeo.py", line 71, in run
+    g.app.loadManager.load(fileName, pymacs)
+  File "leo\core\leoApp.py", line 2117, in load
+    ok = lm.doPostPluginsInit()
+  File "leo\core\leoApp.py", line 2722, in doPostPluginsInit
+    c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
+  File "leo\core\leoApp.py", line 2959, in loadLocalFile
+    c = lm.openFileByName(fn, gui, old_c, previousSettings)
+  File "leo\core\leoApp.py", line 3007, in openFileByName
+    lm.initWrapperLeoFile(c, fn)
+  File "leo\core\leoApp.py", line 3084, in initWrapperLeoFile
+    p.h = g.shortFileName(fn) if fn.endswith('.leo') else '@edit %s' % fn
+AttributeError: 'NoneType' object has no attribute 'h'
+Failed to execute script launchLeo
+F...................test of at.printError: La Pe?a
+..............s...........................
+End of leoAtFile tests
+..........s...
+c:\Test\LeoAppFolder&gt;python2 C:\Test\LEOAPP~1\leo\test\leo-bridge-test.py
+
+c:\Test\LeoAppFolder&gt;c:\Anaconda2\python.exe C:\Test\LEOAPP~1\leo\test\leo-bridge-test.py
+.ssss........................................
+End of leoColor tests
+................................
+End of leoCommands tests
+........
+End of leoConfig tests
+....ss...................................
+.........................................................................................................................................s...........................
+End of typing tests
+.
+End of leoEditCommands tests.
+............
+End of leoFileCommands tests.
+.....
+End of leoFind tests.
+.............
+End of leoFrame tests.
+..........................F.............................................
+End of leoGlobals tests.
+...
+End of leoGui tests.
+...............................................................................................................................
+End of leoImport tests.
+..s....
+End of leoKeys tests.
+.........................................
+End of leoNodes tests.
+................................s..................................................................
+End of leoUndo tests.
+...............................................................................................................................................................
+End of plugins unit tests
+.@test print redraw count: 736
+..all unit tests done
+..
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test batch mode
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "leo\core\leoTest.py", line 211, in runTest
+    builtins.execfile(scriptFile, d)
+  File "C:\Test\LEOAPP~1\leo\test\scriptFile.py", line 38, in &lt;module&gt;
+    assert(g.os_path_exists(test_file))
+AssertionError
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test g.importModule
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "leo\core\leoTest.py", line 211, in runTest
+    builtins.execfile(scriptFile, d)
+  File "C:\Test\LEOAPP~1\leo\test\scriptFile.py", line 5, in &lt;module&gt;
+    assert g.importModule('rope',verbose=False)
+AssertionError
+
+----------------------------------------------------------------------
+Ran 916 tests in 123.577s
+
+FAILED (failures=2, skipped=11)
+
+c:\Test\LeoAppFolder&gt;
+
+##### can not open @edit C:\Test\LEOAPP~1\README.MD</t>
+<t tx="ekr.20171031111403.1"></t>
 </tnodes>
 </leo_file>

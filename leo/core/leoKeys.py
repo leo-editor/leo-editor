@@ -150,11 +150,11 @@ class AutoCompleterClass(object):
         '''Command decorator for the AutoCompleter class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'k', 'autoCompleter'])
-    #@+node:ekr.20061031131434.5: *3* ac.ctor
+    #@+node:ekr.20061031131434.5: *3* ac.ctor & reloadSettings
     def __init__(self, k):
         '''Ctor for AutoCompleterClass class.'''
         # Ivars...
-        self.c = c = k.c
+        self.c = k.c
         self.k = k
         self.force = None
         self.language = None
@@ -176,7 +176,10 @@ class AutoCompleterClass(object):
             # The (global) completions for "self."
         self.completionsDict = {}
             # Keys are prefixes, values are completion lists.
-        # Options...
+        self.reloadSettings()
+        
+    def reloadSettings(self):
+        c = self.c
         self.auto_tab = c.config.getBool('auto_tab_complete', False)
         self.forbid_invalid = c.config.getBool('forbid_invalid_completions', False)
         self.use_qcompleter = c.config.getBool('use_qcompleter', False)
@@ -1691,7 +1694,7 @@ class KeyHandlerClass(object):
         # Define all ivars...
         self.defineExternallyVisibleIvars()
         self.defineInternalIvars()
-        self.defineSettingsIvars()
+        self.reloadSettings()
         self.defineTkNames()
         self.defineSpecialKeys()
         self.defineSingleLineCommands()
@@ -1859,37 +1862,6 @@ class KeyHandlerClass(object):
             'find-next',
             'find-prev',
         ]
-    #@+node:ekr.20120217070122.10479: *5* k.defineSettingIvars
-    def defineSettingsIvars(self):
-        # Part 1: These were in the ctor.
-        c = self.c
-        getBool = c.config.getBool
-        getColor = c.config.getColor
-        self.enable_autocompleter = getBool('enable_autocompleter_initially')
-        self.enable_calltips = getBool('enable_calltips_initially')
-        self.ignore_caps_lock = getBool('ignore_caps_lock')
-        self.ignore_unbound_non_ascii_keys = getBool('ignore_unbound_non_ascii_keys')
-        self.minibuffer_background_color = getColor('minibuffer_background_color') or 'lightblue'
-        self.minibuffer_foreground_color = getColor('minibuffer_foreground_color') or 'black'
-        self.minibuffer_warning_color = getColor('minibuffer_warning_color') or 'lightgrey'
-        self.minibuffer_error_color = getColor('minibuffer_error_color') or 'red'
-        self.swap_mac_keys = getBool('swap_mac_keys')
-        self.warn_about_redefined_shortcuts = getBool('warn_about_redefined_shortcuts')
-        # Has to be disabled (default) for AltGr support on Windows
-        self.enable_alt_ctrl_bindings = c.config.getBool('enable_alt_ctrl_bindings')
-        # Part 2: These were in finishCreate.
-        # Set mode colors used by k.setInputState.
-        bg = c.config.getColor('body_text_background_color') or 'white'
-        fg = c.config.getColor('body_text_foreground_color') or 'black'
-        self.command_mode_bg_color = getColor('command_mode_bg_color') or bg
-        self.command_mode_fg_color = getColor('command_mode_fg_color') or fg
-        self.insert_mode_bg_color = getColor('insert_mode_bg_color') or bg
-        self.insert_mode_fg_color = getColor('insert_mode_fg_color') or fg
-        self.overwrite_mode_bg_color = getColor('overwrite_mode_bg_color') or bg
-        self.overwrite_mode_fg_color = getColor('overwrite_mode_fg_color') or fg
-        self.unselected_body_bg_color = getColor('unselected_body_bg_color') or bg
-        self.unselected_body_fg_color = getColor('unselected_body_fg_color') or bg
-        # g.trace(self.c.shortFileName())
     #@+node:ekr.20080509064108.6: *5* k.defineSingleLineCommands
     def defineSingleLineCommands(self):
         k = self
@@ -2111,6 +2083,37 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061101071425: *4* k.oops
     def oops(self):
         g.trace('Should be defined in subclass:', g.callers(4))
+    #@+node:ekr.20120217070122.10479: *4* k.reloadSettings
+    def reloadSettings(self):
+        # Part 1: These were in the ctor.
+        c = self.c
+        getBool = c.config.getBool
+        getColor = c.config.getColor
+        self.enable_autocompleter = getBool('enable_autocompleter_initially')
+        self.enable_calltips = getBool('enable_calltips_initially')
+        self.ignore_caps_lock = getBool('ignore_caps_lock')
+        self.ignore_unbound_non_ascii_keys = getBool('ignore_unbound_non_ascii_keys')
+        self.minibuffer_background_color = getColor('minibuffer_background_color') or 'lightblue'
+        self.minibuffer_foreground_color = getColor('minibuffer_foreground_color') or 'black'
+        self.minibuffer_warning_color = getColor('minibuffer_warning_color') or 'lightgrey'
+        self.minibuffer_error_color = getColor('minibuffer_error_color') or 'red'
+        self.swap_mac_keys = getBool('swap_mac_keys')
+        self.warn_about_redefined_shortcuts = getBool('warn_about_redefined_shortcuts')
+        # Has to be disabled (default) for AltGr support on Windows
+        self.enable_alt_ctrl_bindings = c.config.getBool('enable_alt_ctrl_bindings')
+        # Part 2: These were in finishCreate.
+        # Set mode colors used by k.setInputState.
+        bg = c.config.getColor('body_text_background_color') or 'white'
+        fg = c.config.getColor('body_text_foreground_color') or 'black'
+        self.command_mode_bg_color = getColor('command_mode_bg_color') or bg
+        self.command_mode_fg_color = getColor('command_mode_fg_color') or fg
+        self.insert_mode_bg_color = getColor('insert_mode_bg_color') or bg
+        self.insert_mode_fg_color = getColor('insert_mode_fg_color') or fg
+        self.overwrite_mode_bg_color = getColor('overwrite_mode_bg_color') or bg
+        self.overwrite_mode_fg_color = getColor('overwrite_mode_fg_color') or fg
+        self.unselected_body_bg_color = getColor('unselected_body_bg_color') or bg
+        self.unselected_body_fg_color = getColor('unselected_body_fg_color') or bg
+        # g.trace(self.c.shortFileName())
     #@+node:ekr.20110209093958.15413: *4* k.setDefaultEditingKeyAction (New)
     def setDefaultEditingAction(self):
         k = self; c = k.c

@@ -83,7 +83,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
     def do_leo_spell_btn_Ignore(self):
         self.doSpellBtn('onIgnoreButton')
-    #@+node:ekr.20110605121601.18139: *3* dw.construct & helper
+    #@+node:ekr.20110605121601.18139: *3* dw.construct & helpers
     def construct(self, master=None):
         """ Factor 'heavy duty' code out from the DynamicWindow ctor """
         # g.trace('(DynamicWindow)')
@@ -99,13 +99,13 @@ class DynamicWindow(QtWidgets.QMainWindow):
         ui_description_file = g.app.loadDir + "/../plugins/" + ui_file_name
         # g.pr('DynamicWindw.__init__,ui_description_file)
         assert g.os_path_exists(ui_description_file)
-        self.bigTree = c.config.getBool('big_outline_pane')
+        self.reloadSettings()
         main_splitter, secondary_splitter = self.createMainWindow()
         self.iconBar = self.addToolBar("IconBar")
         self.set_icon_bar_orientation(c)
         # #266 A setting to hide the icon bar.
-        show_iconbar = c.config.getBool('show_iconbar', default=True)
-        if not show_iconbar:
+        # Calling reloadSettings again would also work.
+        if not self.show_iconbar:
             self.iconBar.hide()
         self.leo_menubar = self.menuBar()
         self.statusBar = QtWidgets.QStatusBar()
@@ -114,6 +114,17 @@ class DynamicWindow(QtWidgets.QMainWindow):
         self.setSplitDirection(main_splitter, secondary_splitter, orientation)
         if hasattr(c, 'styleSheetManager'):
             c.styleSheetManager.set_style_sheets(top=self, all=True)
+
+    def reloadSettings(self):
+        c = self.leo_c
+        c.registerReloadSettings(self)
+        self.bigTree = c.config.getBool('big_outline_pane')
+        self.show_iconbar = c.config.getBool('show_iconbar', default=True)
+        if getattr(self, 'iconBar', None):
+            if self.show_iconbar:
+                self.iconBar.show()
+            else:
+                self.iconBar.hide()
     #@+node:ekr.20140915062551.19519: *4* dw.set_icon_bar_orientation
     def set_icon_bar_orientation(self, c):
         '''Set the orientation of the icon bar based on settings.'''
@@ -1337,11 +1348,9 @@ class LeoQtBody(leoFrame.LeoBody):
         leoFrame.LeoBody.__init__(self, frame, parentFrame)
         c = self.c
         assert c.frame == frame and frame.c == c
-        self.set_config()
+        self.reloadSettings()
         self.set_widget()
             # Sets self.widget and self.wrapper.
-        # Config stuff.
-        self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
         self.setWrap(c.p)
         # For multiple body editors.
         self.editor_name = None
@@ -1360,15 +1369,17 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20110605121601.18185: *5* LeoQtBody.get_name
     def getName(self):
         return 'body-widget'
-    #@+node:ekr.20140901062324.18562: *5* LeoQtBody.set_config
-    def set_config(self):
-        '''Set configuration ivars.'''
+    #@+node:ekr.20140901062324.18562: *5* LeoQtBody.reloadSettings
+    def reloadSettings(self):
         c = self.c
+        self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
         self.useScintilla = c.config.getBool('qt-use-scintilla')
-        self.unselectedBackgroundColor = c.config.getColor(
-            'unselected_body_bg_color')
-        self.unselectedForegroundColor = c.config.getColor(
-            'unselected_body_fg_color')
+        self.use_chapters = c.config.getBool('use_chapters')
+        # These are no longer used.
+            # self.unselectedBackgroundColor = c.config.getColor(
+                # 'unselected_body_bg_color')
+            # self.unselectedForegroundColor = c.config.getColor(
+                # 'unselected_body_fg_color')
     #@+node:ekr.20160309074124.1: *5* LeoQtBody.set_invisibles
     def set_invisibles(self, c):
         '''Set the show-invisibles bit in the document.'''
@@ -1999,7 +2010,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     """A class that represents a Leo window rendered in qt."""
     #@+others
     #@+node:ekr.20110605121601.18246: *3*  qtFrame.Birth & Death
-    #@+node:ekr.20110605121601.18247: *4* qtFrame.__init__
+    #@+node:ekr.20110605121601.18247: *4* qtFrame.__init__ & reloadSettings
     def __init__(self, c, title, gui):
         # Init the base class.
         leoFrame.LeoFrame.__init__(self, c, gui)
@@ -2012,11 +2023,15 @@ class LeoQtFrame(leoFrame.LeoFrame):
         self.minibufferVisible = True
         self.statusLineClass = self.QtStatusLineClass
         self.title = title
-        # Config settings.
+        self.setIvars()
+        self.reloadSettings()
+        
+    def reloadSettings(self):
+        c = self.c
+        self.cursorStay = c.config.getBool("cursor_stay_on_paste", default=True)
         self.trace_status_line = c.config.getBool('trace_status_line')
         self.use_chapters = c.config.getBool('use_chapters')
         self.use_chapter_tabs = c.config.getBool('use_chapter_tabs')
-        self.setIvars()
     #@+node:ekr.20110605121601.18248: *5* qtFrame.setIvars
     def setIvars(self):
         # "Official ivars created in createLeoFrame and its allies.
@@ -2116,7 +2131,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def destroySelf(self):
         # Remember these: we are about to destroy all of our ivars!
         c, top = self.c, self.top
-        g.app.gui.frameFactory.deleteFrame(top)
+        if hasattr(g.app.gui, 'frameFactory'):
+            g.app.gui.frameFactory.deleteFrame(top)
         # Indicate that the commander is no longer valid.
         c.exists = False
         if 0: # We can't do this unless we unhook the event filter.
@@ -2288,7 +2304,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
     class QtIconBarClass(object):
         '''A class representing the singleton Icon bar'''
         #@+others
-        #@+node:ekr.20110605121601.18263: *4*  ctor (QtIconBarClass)
+        #@+node:ekr.20110605121601.18263: *4*  ctor & reloadSettings (QtIconBarClass)
         def __init__(self, c, parentFrame):
             '''Ctor for QtIconBarClass.'''
             # Copy ivars
@@ -2296,10 +2312,15 @@ class LeoQtFrame(leoFrame.LeoFrame):
             self.parentFrame = parentFrame
             # Status ivars.
             self.actions = []
-            self.buttonColor = c.config.getString('qt-button-color')
             self.chapterController = None
             self.toolbar = self
             self.w = c.frame.top.iconBar # A QToolBar.
+            self.reloadSettings()
+
+        def reloadSettings(self):
+            c = self.c
+            c.registerReloadSettings(self)
+            self.buttonColor = c.config.getString('qt-button-color')
         #@+node:ekr.20110605121601.18264: *4*  do-nothings (QtIconBarClass)
         # These *are* called from Leo's core.
 
@@ -3054,7 +3075,7 @@ class LeoQtLog(leoFrame.LeoLog):
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'frame', 'log'])
     #@+node:ekr.20110605121601.18313: *3* LeoQtLog.Birth
-    #@+node:ekr.20110605121601.18314: *4* LeoQtLog.__init__
+    #@+node:ekr.20110605121601.18314: *4* LeoQtLog.__init__ & reloadSettings
     def __init__(self, frame, parentFrame):
         '''Ctor for LeoQtLog class.'''
         # g.trace('(LeoQtLog)',frame,parentFrame)
@@ -3073,13 +3094,18 @@ class LeoQtLog(leoFrame.LeoLog):
             # The Qt.QTabWidget that holds all the tabs.
         # Fixes bug 917814: Switching Log Pane tabs is done incompletely.
         tw.currentChanged.connect(self.onCurrentChanged)
-        self.wrap = bool(c.config.getBool('log_pane_wraps'))
         if 0: # Not needed to make onActivateEvent work.
             # Works only for .tabWidget, *not* the individual tabs!
             theFilter = qt_events.LeoQtEventFilter(c, w=tw, tag='tabWidget')
             tw.installEventFilter(theFilter)
         # 2013/11/15: Partial fix for bug 1251755: Log-pane refinements
         tw.setMovable(True)
+        self.reloadSettings()
+        
+    def reloadSettings(self):
+        c = self.c
+        self.wrap = bool(c.config.getBool('log_pane_wraps'))
+        
     #@+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate
     def finishCreate(self):
         '''Finish creating the LeoQtLog class.'''
@@ -4291,7 +4317,7 @@ class LeoQtTreeTab(object):
     #@+node:ekr.20110605121601.18440: *4*  ctor (LeoQtTreeTab)
     def __init__(self, c, iconBar):
         '''Ctor for LeoQtTreeTab class.'''
-        # g.trace('(LeoTreeTab)',g.callers(4))
+        # g.trace('(LeoQtTreeTab)',g.callers(4))
         self.c = c
         self.cc = c.chapterController
         assert self.cc
@@ -4300,7 +4326,9 @@ class LeoQtTreeTab(object):
         self.tabNames = []
             # The list of tab names. Changes when tabs are renamed.
         self.w = None # The QComboBox
+        # self.reloadSettings()
         self.createControl()
+        
     #@+node:ekr.20110605121601.18441: *4* tt.createControl (defines class LeoQComboBox)
     def createControl(self):
 

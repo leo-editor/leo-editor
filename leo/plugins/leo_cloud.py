@@ -4,8 +4,9 @@ leo_cloud.py - synchronize Leo subtrees with remote central server
 Terry N. Brown, terrynbrown@gmail.com, Fri Sep 22 10:34:10 2017
 
 This plugin allows subtrees within a .leo file to be stored in the cloud. It
-should be possible to support various cloud platforms, currently git is
-supported (i.e. you can use GitLab or GitHub or your own remote git server).
+should be possible to support various cloud platforms, currently git and systems
+like DropBox are supported (i.e. you can use GitLab or GitHub or your own remote
+git server).
 
 A leo_cloud subtree has a top node with a headline that starts with
 '@leo_cloud'. The rest of the headline is ignored. The body of this top node is
@@ -21,8 +22,10 @@ write_on_save: ask
 The first three lines can be repeated with different IDs to store
 different subtrees at the same remote cloud location.
 
-read_on_load: / write_on_save: can be yes, no, or ask.  If it's not one
-of those three, there's a warning dialog.
+read_on_load: / write_on_save: can be yes, no, ask, or background (read_on_load
+only). If it's not one of those three, there's a warning dialog. `background`
+performs a check against the cloud in the background, and then behaves like
+`ask` if a difference is detected.
 
 There's also a file system backend, which would look like this:
 
@@ -32,12 +35,12 @@ ID: my_notes
 read_on_load: ask
 write_on_save: ask
 
-The FileSystem backend was meant to be for development, but of course if you map
-it into a folder that is sync'ed externally, as shown above, it can serve as a
-cloud adapter too.
+If you set up the FileSystem backend it into a folder that is sync'ed
+externally, as shown above, it can serve as a cloud adapter for services like
+DropBox, Google Drive, OneDrive, etc. etc.
 
 In addition to the Git and FileSystem cloud types it should be possible to add
-many others - Google Drive, OneDrive, DropBox, AWS, WebDAV, sFTP, whatever.
+many others - AWS, WebDAV, sFTP, whatever.
 
 FYI: https://gitlab.com/ gives you free private repos.
 
@@ -62,8 +65,6 @@ machines easily too. Like this:
 
 "just works", so now your shortcuts etc. can be stored on a central
 server.
-
-
 """
 
 # pylint: disable=unused-import
@@ -72,6 +73,8 @@ import os
 import re
 import shlex
 import subprocess
+import threading
+from copy import deepcopy
 from datetime import date, datetime
 from hashlib import sha1
 
@@ -254,10 +257,57 @@ class LeoCloud:
         :param context c: Leo context
         """
         self.c = c
+        self.bg_finished = False  # used for background thread
+        self.bg_results = []      # results from background thread
 
         # we're here via open2 hook, but too soon to load from cloud,
         # so defer
         QtCore.QTimer.singleShot(0, self.load_clouds)
+
+    def bg_check(self, to_check):
+        """
+        bg_check - run from load_clouds() to look for changes in
+        cloud in background.
+
+        WARNING: no gui impacting calls allowed here (g.es() etc.)
+
+        :param list to_check: list of (vnode, kwargs, hash) tuples to check
+
+        This (background) thread can't handle any changes found, because it
+        would have to interact with the user and GUI code can only be called
+        from the main thread.  We don't want to use QThread, to allow this to
+        work without Qt.  So we just collect results and set
+        self.bg_finished = True, which the main thread watches using g.IdleTime()
+
+        """
+        for v, kwargs, local_hash in to_check:
+            c = v.context
+            p = c.vnode2position(v)
+            lc_io = getattr(v, '_leo_cloud_io', None) or self.io_from_node(p)
+            subtree = lc_io.get_subtree(lc_io.lc_id)
+            remote_hash = self.recursive_hash(subtree, [], include_current=False)
+            self.bg_results.append((v, local_hash == remote_hash))
+        self.bg_finished = True
+    def bg_post_process(self, timer):
+        """
+        bg_post_process - check to see if background checking is finished,
+        handle any changed cloud trees found
+
+        :param leo-idle-timer timer: Leo idle timer
+        """
+        if not self.bg_finished:
+            return
+        timer.stop()
+        from_background = set()
+        for v, unchanged in self.bg_results:
+            kwargs = self.kw_from_node(v)
+            if unchanged:
+                g.es("Cloud tree '%s' unchanged" % kwargs['ID'])
+            else:
+                from_background.add((kwargs['remote'], kwargs['ID']))
+                g.es("Cloud tree '%s' DOES NOT MATCH" % kwargs['ID'])
+        if from_background:
+            self.load_clouds(from_background=from_background)
 
     def find_at_leo_cloud(self, p):
         """find_at_leo_cloud - find @leo_cloud node
@@ -340,13 +390,31 @@ class LeoCloud:
                 kwargs[kwarg.group(1)] = kwarg.group(2)
         return kwargs
 
-    def load_clouds(self):
-        """check for clouds to load on startup"""
+    def load_clouds(self, from_background=None):
+        """
+        load_clouds - Handle loading from cloud on startup and after
+        background checking for changes.
+
+        :param set from_background: set of (remote, ID) str tuples if we're
+            called after a background check process finds changes.
+        :return: <|returns|>
+        :rtype: <|return type|>
+        """
+        if from_background is None:
+            from_background = set()
         skipped = []
+        background = []  # things to check in background
         for lc_v in self.find_clouds():
             kwargs = self.kw_from_node(lc_v)
+            if from_background and \
+                (kwargs['remote'], kwargs['ID']) not in from_background:
+                # only process nodes from the background checking
+                continue
             read = False
             read_on_load = kwargs.get('read_on_load', '').lower()
+            if from_background:
+                # was 'background', changes found, so now treat as 'ask'
+                read_on_load = 'ask'
             if read_on_load == 'yes':
                 read = True
             elif read_on_load == 'ask':
@@ -368,15 +436,28 @@ class LeoCloud:
                 read = str(read).lower() == 'yes'
             if read:
                 self.read_current(p=self.c.vnode2position(lc_v))
+            elif read_on_load == 'background':
+                # second time round, with from_background data, this will
+                # have been changed to 'ask' (above), so no infinite loop
+                background.append((lc_v, kwargs,
+                    self.recursive_hash(lc_v, [], include_current=False)))
             elif read_on_load == 'no':
                 g.es("NOTE: not reading '%s' from cloud" % kwargs['ID'])
             elif read_on_load != 'ask':
                 skipped.append(kwargs['ID'])
         if skipped:
             g.app.gui.runAskOkDialog(self.c, "Unloaded cloud data",
-                message="There is unloaded (possibly stale) could data, use\nread_on_load: yes|no|ask\n"
+                message="There is unloaded (possibly stale) cloud data, use\nread_on_load: yes|no|ask\n"
                   "in @leo_cloud nodes to avoid this message.\nUnloaded data:\n%s" % ', '.join(skipped))
 
+        if background:
+            # send to background thread for checking
+            names = ', '.join([i[1]['ID'] for i in background])
+            g.es("Checking cloud trees in background:\n%s" % names)
+            thread = threading.Thread(target=self.bg_check, args=(background,))
+            thread.start()
+            # start watching for results
+            g.IdleTime(self.bg_post_process).start()
     def read_current(self, p=None):
         """read_current - read current tree from cloud
         """
@@ -411,26 +492,29 @@ class LeoCloud:
 
         Note - currently unused but intend to use to analyse changes in trees
 
-        :param vnode nd: node to hahs
+        :param vnode nd: node to hash
         :param list tree: recursive list of hashes
         :param bool include_current: include h/b/u of current node in hash?
         :return: sha1 hash of tree
         :rtype: str
 
         Calling with include_current=False ignores the h/b/u of the top node
+
+        To hash a dict, need a string representation
+        that sorts keys, i.e. json.dumps(s, sort_keys=True)
         """
         childs = []
         hashes = [LeoCloud.recursive_hash(child, childs) for child in nd.children]
         if include_current:
-            hashes.extend([nd.h + nd.b + str(nd.u)])
-            # FIXME: random sorting on nd.u, use JSON/sorted keys
+            hashes.extend([nd.h + nd.b + json.dumps(LeoCloud._ua_clean(nd.u), sort_keys=True)])
         whole_hash = sha1(''.join(hashes).encode('utf-8')).hexdigest()
         tree.append([whole_hash, childs])
         return whole_hash
-
     def save_clouds(self):
         """check for clouds to save when outline is saved"""
         skipped = []
+        no = []
+        unchanged = []
         for lc_v in self.find_clouds():
             kwargs = self.kw_from_node(lc_v)
             write = False
@@ -446,15 +530,19 @@ class LeoCloud:
             if write:
                 self.write_current(p=self.c.vnode2position(lc_v))
             elif write_on_save == 'no':
-                g.es("NOTE: not writing '%s' to cloud" % kwargs['ID'])
+                no.append(kwargs['ID'])
             elif write_on_save == 'unchanged':
-                g.es("NOTE: not writing unchanged '%s' to cloud" % kwargs['ID'])
+                unchanged.append(kwargs['ID'])
             elif write_on_save != 'ask':
                 skipped.append(kwargs['ID'])
         if skipped:
             g.app.gui.runAskOkDialog(self.c, "Unsaved cloud data",
-                message="There is unsaved could data, use\nwrite_on_save: yes|no|ask\n"
+                message="There is unsaved cloud data, use\nwrite_on_save: yes|no|ask\n"
                   "in @leo_cloud nodes to avoid this message.\nUnsaved data:\n%s" % ', '.join(skipped))
+        if unchanged:
+            g.es("Unchanged cloud data: %s" % ', '.join(unchanged))
+        if no:
+            g.es("Cloud data never saved: %s" % ', '.join(no))
 
     def subtree_changed(self, p):
         """subtree_changed - check if subtree is changed
@@ -519,6 +607,23 @@ class LeoCloud:
         :return: dict of subtree
         """
         return LeoCloud._to_dict_recursive(v, dict())
+
+    @staticmethod
+    def _ua_clean(d):
+        """_ua_clean - strip todo icons from dict
+
+        :param dict d: dict to clean
+        :return: cleaned dict
+
+        recursive_hash() to compare trees stumbles on todo icons which are
+        derived information from the todo attribute and include *local*
+        paths to icon images
+        """
+
+        d = deepcopy(d)
+        if 'icons' in d:
+            d['icons'] = [i for i in d['icons'] if not i.get('cleoIcon')]
+        return d
 
     def write_current(self, p=None):
         """write_current - write current tree to cloud

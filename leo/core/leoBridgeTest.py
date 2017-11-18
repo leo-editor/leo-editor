@@ -7,7 +7,7 @@ All options come from sys.argv.  See scan_options for the available options.
 
 **Important**: Leo's core does not use this module in any way.
 '''
-trace = True # True: enable traces in main.
+trace = False # True: enable traces in main.
 import leo.core.leoBridge as leoBridge
 import optparse
 import sys

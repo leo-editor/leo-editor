@@ -527,38 +527,23 @@ class attrib_edit_Controller(object):
     '''A per-commander class that manages attribute editing.'''
 
     #@+others
-    #@+node:tbrown.20091009210724.10981: *3* __init__
+    #@+node:tbrown.20091009210724.10981: *3* __init__ & reloadSettings (attrib_edit_Controller)
     def __init__ (self, c):
 
         self.c = c
         c.attribEditor = self
-
         self.pname = "_attrib_edit_frame"  # used to tag out panel
-
-        active = c.config.getData('attrib_edit_active_modes') or []
-
-        self.getsetters = []
-        for i in AttributeGetter.implementations:
-            s = i(c)
-            self.getsetters.append([s, (s.name() in active) ])
-        if not active:
-            self.getsetters[0][1] = True  # turn on the first one
-
+        self.reloadSettings()
         self.attrPaths = set()  # set of tuples (getter-class, path)
-
         self.handlers = [
            ('select3', self.updateEditor),
         ]
-
         for i in self.handlers:
             g.registerHandler(i[0], i[1])
-
         # 'body' or 'tab' mode
         # self.guiMode = c.config.getString('attrib_edit_placement') or 'tab'
-
         self.guiMode = 'tab'
         # body mode in not compatible with nested_splitter, causes hard crash
-
         if self.guiMode == 'body':
             self.holder = QtWidgets.QSplitter(QtCore.Qt.Vertical)
             self.holder.setMinimumWidth(300)
@@ -571,6 +556,17 @@ class attrib_edit_Controller(object):
             self.holder = QtWidgets.QHBoxLayout()
             self.parent.setLayout(self.holder)
             c.frame.log.createTab('Attribs', widget = self.parent)
+            
+    def reloadSettings(self):
+        c = self.c
+        c.registerReloadSettings(self)
+        active = c.config.getData('attrib_edit_active_modes') or []
+        self.getsetters = []
+        for i in AttributeGetter.implementations:
+            s = i(c)
+            self.getsetters.append([s, (s.name() in active) ])
+        if not active:
+            self.getsetters[0][1] = True  # turn on the first one
     #@+node:tbrown.20091009210724.10983: *3* __del__
     def __del__(self):
         for i in self.handlers:
@@ -607,7 +603,6 @@ class attrib_edit_Controller(object):
         c = self.c
 
         self.initForm()
-
         for attr in self.getAttribs():
             class_, name, value, path, type_, readonly = attr
             if readonly:

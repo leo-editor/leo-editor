@@ -2,8 +2,21 @@
 .. @+node:ekr.20100120072650.6089: * @file ../doc/leoProjects.txt
 .. @+all
 .. @+node:ekr.20170619165453.1: ** Branch: string-gui
-Attempt to run all unit tests without using Qt gui code.
-All gui-related code will be simulated with the StringTextWrapper class.
+Status: merged into master
+
+TM.doTests now runs all unit tests with string gui (StringTextWrapper class).
+
+This has three advantages:
+
+1. The tests run much more quickly than before.
+2. Leo does no redraws during the tests.
+3. Clicks in the Leo window can now longer spoil running unit tests.
+
+Notes:
+
+1. Several unit tests that require the qt gui now call skipTest.  This is an interim measure. 
+
+2. TM.doTests contains a switch that determines which gui will be used.
 .. @+node:ekr.20170807103720.1: ** Branch: redraw
 Note: cc.selectChapterForPosition calls c.redraw *only* if the chapter changes.
 

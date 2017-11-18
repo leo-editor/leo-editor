@@ -1066,6 +1066,11 @@ class LeoApp(object):
         try:
             from leo.core.leoQt import Qt
             import leo.plugins.qt_gui as qt_gui
+            try:
+                from leo.plugins.editpane.editpane import edit_pane_test_open
+                g.command('edit-pane-test-open')(edit_pane_test_open)
+            except ImportError:
+                print('Failed to import editpane')
         except ImportError:
             Qt = None
         if Qt:
@@ -1074,6 +1079,7 @@ class LeoApp(object):
                 print('Qt Gui created in %s' % fileName)
         else:
             print('createQtGui: can not create Qt gui.')
+
     #@+node:ekr.20170419093747.1: *4* app.createTextGui (was createCursesGui)
     def createTextGui(self, fileName='', verbose=False):
         app = self
@@ -1740,8 +1746,14 @@ class LoadManager(object):
         return name
     #@+node:ekr.20120211121736.10772: *4* LM.computeWorkbookFileName
     def computeWorkbookFileName(self):
+        '''
+        Return the name of the workbook.
+        
+        Return None *only* if:
+        1. The workbook does not exist.
+        2. We are unit testing or in batch mode.
+        '''
         # lm = self
-        # Get the name of the workbook.
         fn = g.app.config.getString(setting='default_leo_file')
             # The default is ~/.leo/workbook.leo
         if not fn and g.app.debug:
@@ -1750,12 +1762,12 @@ class LoadManager(object):
         fn = g.os_path_finalize(fn)
         if not fn:
             return None
+        elif g.os_path_exists(fn):
+            return fn
         elif g.unitTesting or g.app.batchMode:
             # 2017/02/18: unit tests must not create a workbook.
             # Neither should batch mode operation.
             return None
-        elif g.os_path_exists(fn):
-            return fn
         elif g.os_path_isabs(fn):
             # Create the file.
             g.error('Using default leo file name:\n%s' % (fn))

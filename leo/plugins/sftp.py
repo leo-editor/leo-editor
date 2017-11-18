@@ -149,7 +149,7 @@ def onCreate (tag, keys):
 class SFTPController(object):
 
     #@+others
-    #@+node:peckj.20140218144401.6042: *3* __init__
+    #@+node:peckj.20140218144401.6042: *3* __init__(SFTPController)
     def __init__ (self,c):
 
         self.c = c

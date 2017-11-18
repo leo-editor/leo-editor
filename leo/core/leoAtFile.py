@@ -123,15 +123,13 @@ class AtFile(object):
         self.canCancelFlag = False
         self.cancelFlag = False
         self.yesToAll = False
-        # User options.
-        self.checkPythonCodeOnWrite = c.config.getBool(
-            'check-python-code-on-write', default=True)
-        self.runPyFlakesOnWrite = c.config.getBool(
-            'run-pyflakes-on-write', default=False)
-        self.underindentEscapeString = c.config.getString(
-            'underindent-escape-string') or '\\-'
+        # User options: set in reloadSettings.
+        self.checkPythonCodeOnWrite = False
+        self.runPyFlakesOnWrite = False
+        self.underindentEscapeString = '\\-'
+        self.reloadSettings()
+        # Define the dispatch dictionary used by scanText4.
         self.dispatch_dict = self.defineDispatchDict()
-            # Define the dispatch dictionary used by scanText4.
     #@+node:ekr.20041005105605.9: *5* at.defineDispatchDict
     #@@nobeautify
 
@@ -173,6 +171,16 @@ class AtFile(object):
             # New 4.8 sentinels
             self.endRef: self.readEndRef,
         }
+    #@+node:ekr.20171113152939.1: *5* at.reloadSettings
+    def reloadSettings(self):
+        '''AtFile.reloadSettings'''
+        c = self.c
+        self.checkPythonCodeOnWrite = c.config.getBool(
+            'check-python-code-on-write', default=True)
+        self.runPyFlakesOnWrite = c.config.getBool(
+            'run-pyflakes-on-write', default=False)
+        self.underindentEscapeString = c.config.getString(
+            'underindent-escape-string') or '\\-'
     #@+node:ekr.20150509194251.1: *4* at.cmd (decorator)
     def cmd(name):
         '''Command decorator for the AtFileCommands class.'''
@@ -714,12 +722,12 @@ class AtFile(object):
         c.init_error_dialogs()
         after = p.nodeAfterTree() if force else None
         while p and p != after:
-            gnx = p.gnx
-            #skip clones
-            if gnx in scanned_tnodes:
+            data = (p.gnx, g.fullPath(c, p))
+            #skip clones referring to exactly the same paths.
+            if data in scanned_tnodes:
                 p.moveToNodeAfterTree()
                 continue
-            scanned_tnodes.add(gnx)
+            scanned_tnodes.add(data)
             if not p.h.startswith('@'):
                 p.moveToThreadNext()
             elif p.isAtIgnoreNode():
@@ -2861,7 +2869,7 @@ class AtFile(object):
                 g.error('openForWrite: exception opening file: %s' % (open_file_name))
                 g.es_exception()
             return 'error', None
-    #@+node:ekr.20041005105605.144: *5* at.write & helpers (changed)
+    #@+node:ekr.20041005105605.144: *5* at.write & helpers
     def write(self,
         root,
         kind='@unknown', # Should not happen.
@@ -2956,7 +2964,7 @@ class AtFile(object):
         # Delete the temp file.
         if at.outputFileName:
             self.remove(at.outputFileName)
-    #@+node:ekr.20041005105605.147: *5* at.writeAll & helpers (changed)
+    #@+node:ekr.20041005105605.147: *5* at.writeAll & helpers
     def writeAll(self,
         writeAtFileNodesFlag=False,
         writeDirtyAtFileNodesFlag=False,
@@ -2995,8 +3003,9 @@ class AtFile(object):
                 # Note: @ignore not honored in @asis nodes.
                 p.moveToNodeAfterTree() # 2011/10/08: Honor @ignore!
             elif p.isAnyAtFileNode():
-                if p.v not in seen:
-                    seen.add(p.v)
+                data = p.v, g.fullPath(c, p)
+                if data not in seen:
+                    seen.add(data)
                     try:
                         self.writeAllHelper(p, root, force, toString, writeAtFileNodesFlag, writtenFiles)
                     except Exception:

@@ -215,6 +215,16 @@ class InternalIPKernel(object):
         shell.run_code(code)
         if old_show:
             shell._showtraceback = old_show
+    #@+node:ekr.20171115090205.1: *3* ileo.test
+    def test(self):
+        
+        from ipykernel.connect import connect_qtconsole
+        from ipykernel.kernelapp import IPKernelApp
+        
+        kernelApp = IPKernelApp.instance()
+        args = ['python', '--pylab=qt', '--log-level=20']
+        kernelApp.initialize(args)
+        connect_qtconsole()
     #@-others
 #@+node:ekr.20130930062914.16002: ** class LeoNameSpace
 class LeoNameSpace(object):

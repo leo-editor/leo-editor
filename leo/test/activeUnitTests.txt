@@ -589,6 +589,7 @@ else:
 #@+node:ekr.20100131171342.5483: *3* @test batch mode
 import os
 import sys
+silent = True
 trace = False
 python_interp = sys.executable
 test_path = g.os_path_join(g.app.loadDir,"..","test","unittest")
@@ -598,8 +599,11 @@ leo_file   = g.os_path_join(src_path,"launchLeo.py")
 batch_file = g.os_path_join(test_path,"batchTest.py")
 test_file  = g.os_path_join(test_path,"createdFile.txt")
 
+assert g.os_path_exists(batch_file), batchTest
+
 # Execute this command: python launchLeo.py --script test\unittest\batchTest.py
-if 1:
+# Note: batchTest.py is defined in this file, unitTest.leo.
+if silent:
     command = r"%s %s --silent --script %s" % (python_interp,leo_file,batch_file)
 else:
     command = r"%s %s --script %s" % (python_interp,leo_file,batch_file)
@@ -608,9 +612,12 @@ else:
 
 if trace:
     print('@test batch mode: loadDir: %s' % g.app.loadDir)
+    print('test_file: %s' % test_file)
 removeFile(test_file)
+if trace:
+    print('command: %s' %  command)
 os.system(command)
-assert(g.os_path_exists(test_file))
+assert g.os_path_exists(test_file), repr(test_file)
 #@+node:ekr.20100131171342.5484: *4* removeFile
 def removeFile(path):
 
@@ -1179,7 +1186,9 @@ if not g.isPython3: # Does not work with Python 3.x
 
 # g.openWithFileName *always* opens the file.
 
-if not g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest:
+    self.skipTest('Not for external test')
+else:
     if g.isPython3:
         # Do not call g.ue: it will crash.
         theFile = 'Ỗ'
@@ -1187,7 +1196,6 @@ if not g.app.isExternalUnitTest:
         theFile = g.ue('Ỗ','utf-8')
     
     path = g.os_path_join('Ỗ','Ỗ')
-
     try:
         c2 = g.openWithFileName(path,old_c=c)
     finally:
@@ -1252,9 +1260,9 @@ import leo.core.leoFrame as leoFrame
 # Do nothing when run externally.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-elif g.app.gui.guiName() == 'curses':
+elif g.app.gui.guiName() in ('curses', 'nullGui'):
     # assert False, 'Not ready yet: interferes with other tests'
-    self.skipTest('Not for curses gui')
+    self.skipTest('Not for curses or null gui')
 else:
     assert not isinstance(c.frame,leoFrame.NullFrame)
     def closeEnough(f1,f2):
@@ -5725,23 +5733,22 @@ else:
 # For some reason these don't select the dialog properly when run as a script.
 # However, the main reason for the tests is to make sure the ctors don't crash.
 # Also, for unit testing the value of c doesn't matter.
-
-oldGui = g.app.gui ; guis = [g.app.gui]
-
 import leo.core.leoGui as leoGui
-guis.append(leoGui.UnitTestGui())
-
-for gui in guis:
-    gui.runAboutLeoDialog(c,'version','copyright','url','email')
-    gui.runAskLeoIDDialog()
-    gui.runAskOkDialog(c,'title','message')
-    gui.runAskOkCancelNumberDialog(c,'title','message')
-    gui.runAskOkCancelStringDialog(c,'title','message')
-    gui.runAskYesNoDialog(c,'title','message')
-    gui.runAskYesNoCancelDialog(c,'title','message')
-    # gui.runCompareDialog(c) # Removed.
-
-g.app.gui = oldGui
+try:
+    oldGui = g.app.gui
+    guis = [g.app.gui]
+    guis.append(leoGui.UnitTestGui())
+    for gui in guis:
+        gui.runAboutLeoDialog(c,'version','copyright','url','email')
+        gui.runAskLeoIDDialog()
+        gui.runAskOkDialog(c,'title','message')
+        gui.runAskOkCancelNumberDialog(c,'title','message')
+        gui.runAskOkCancelStringDialog(c,'title','message')
+        gui.runAskYesNoDialog(c,'title','message')
+        gui.runAskYesNoCancelDialog(c,'title','message')
+        # gui.runCompareDialog(c) # Removed.
+finally:
+    g.app.gui = oldGui
 #@+node:ekr.20071113192611: *3* leoEditCommands
 #@+node:ekr.20070131175538: *4*  Commands A-B
 #@+node:ekr.20061101121602.78: *5* @test add-space-to-lines
@@ -6775,8 +6782,8 @@ if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 elif sys.platform.startswith('linux'):
     self.skipTest('Not for linux')
-elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
+elif g.app.gui.guiName() in ('curses', 'nullGui'):
+    self.skipTest('Not for curses or null gui')
 else:
     log = c.frame.log
     c.bodyWantsFocusNow()
@@ -6795,8 +6802,8 @@ else:
 
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
+elif g.app.gui.guiName() in ('nullGui', 'curses'):
+    self.skipTest('Not for curses or null gui')
 else:
     log = c.frame.log
     tabs = log.orderedTabNames()[1:]
@@ -8602,6 +8609,8 @@ def test():
 #@+node:ekr.20111006064419.3493: *5* @test move-marked-nodes
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() == 'nullGui':
+    self.skipTest('Not for null gui')
 else:
 
     exec(g.findTestScript(c,'@common x-marked-nodes test code'))
@@ -10816,6 +10825,7 @@ else:
     p = c.testManager.findNodeAnywhere(h)
     w = c.frame.body.wrapper
     n = c.frame.body.colorizer.recolorCount
+    # print(c.frame.body.colorizer)
     assert p,'node not found: %s' % h
     c.selectPosition(p)
     c.bodyWantsFocus()
@@ -11487,6 +11497,8 @@ else:
 #@+node:ekr.20111121081052.3908: *4* @test c.frame.log.numberOfVisibleTabs
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() in ('nullGui', 'curses'):
+    self.skipTest('Not for curses or null gui')
 else:
     log = c.frame.log
     d = log.contentsDict
@@ -11501,7 +11513,7 @@ else:
 #@+node:ekr.20111121140833.3917: *4* @test c.frame.log.put & putNl
 '''These were changed, then reverted, but a unit test is important.'''
 
-if g.app.isExternalUnitTest:
+if g.app.isExternalUnitTest or g.app.gui.guiName() in ('curses', 'nullGui'):
     self.skipTest('Prints to console, which is annoying.')
 else:
     log = c.frame.log
@@ -11512,8 +11524,8 @@ else:
 # This test will have effect only when run locally.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
+elif g.app.gui.guiName() in ( 'curses', 'nullGui'):
+    self.skipTest('Not for curses or null gui')
 else:
     d = g.app.unitTestDict
     tag = 'minimize-all'
@@ -11571,8 +11583,8 @@ else:
 
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
+elif g.app.gui.guiName() in ('curses', 'nullGui'):
+    self.skipTest('Not for curses or null gui')
 else:
     d = g.app.unitTestDict
     tag = 'resize-to-screen'
@@ -12463,14 +12475,14 @@ else:
 import sys
 if sys.platform.startswith('linux'):
     self.skipTest('linux test')
-elif g.app.gui.guiName() == 'curses':
-    self.skipTest('Not for curses gui')
+elif g.app.gui.guiName() in ('curses', 'nullGui'):
+    self.skipTest('Not for curses or null gui')
 else:
     fn = '<file name>'
     p2 = p.firstChild()
     tree = c.frame.tree
-    w = tree.treeWidget
     if hasattr(tree,'treeWidget'):
+        w = tree.treeWidget
         for w.was_control_drag in (True,False):
             tree.treeWidget.intraFileDrop(fn,p,p2)
             assert True==g.app.unitTestDict['checkMoveWithParentWithWarning']
@@ -22427,7 +22439,7 @@ try:
     # With the new undo logic, it takes 2 undoes.
     # The first undo undoes the headline changes,
     # the second undo undoes the insert node.
-    if g.app.isExternalUnitTest:
+    if g.app.isExternalUnitTest or g.app.gui.guiName() == 'nullGui':
         # The situation is different in a null Gui.
         pass
     else:
@@ -22453,14 +22465,13 @@ finally:
         while root.hasChildren():
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
-#@+node:ekr.20140923083354.6274: *6* A
-#@+node:ekr.20140923083354.6276: *6* inserted
-#@+node:ekr.20140923083354.6275: *6* B
+#@+node:ekr.20171112182742.3: *6* A
+#@+node:ekr.20171112182742.5: *6* newHeadline
+#@+node:ekr.20171112182742.4: *6* B
 #@+node:ekr.20080423110627.11: *5* @test move-outline-down & undo/redo
 root = p.copy()
 while p.hasChildren():
     p.firstChild().doDelete(newNode=None)
-
 try:
     p2 = p.insertAsNthChild(0)
     p2.setHeadString('A')
@@ -22498,7 +22509,6 @@ try:
     assert moved.h == 'B',          'fail 1-3'
     assert moved.back().h == 'C',   'fail 2-3'
     assert moved.next().h == 'D',   'fail 3-3'
-
 finally:
     if 1:
         while root.hasChildren():
@@ -22507,7 +22517,6 @@ finally:
 #@+node:ekr.20080503073030.1: *5* @test move-outline-left
 while p.hasChildren():
     p.firstChild().doDelete(newNode=None)
-
 try:
     p2 = p.insertAsNthChild(0)
     p2.setHeadString('A')
@@ -22522,9 +22531,7 @@ try:
     c.undoer.redo()
     c.undoer.undo()
     c.undoer.redo()
-
     moved.doDelete(newNode=p)
-
 finally:
     if 1:
         while p.hasChildren():
@@ -23542,6 +23549,8 @@ assert rst.atAutoWriteUnderlines == '=+*^~"\'`-:><_', 'fail 5: %s' % (
 import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
     self.skipTest('no docutils')
+# A kludge: run the test in 
+openDirectory = c.frame.openDirectory
 s = g.findTestScript(c,'@common leoRst test code',warn=True)
 assert s, repr(p)
 exec(s)
@@ -29008,7 +29017,8 @@ for fn in files:
 # This must be true even though @bool scriptingatscriptnodes is True in this file.
 if hasattr(c,'theScriptingController'):
     # mod_scripting may be disabled when running tests externally.
-    assert not c.theScriptingController.atScriptNodes
+    val = g.app.config.valueInMyLeoSettings('scripting-at-script-nodes')
+    assert c.theScriptingController.atScriptNodes == val
 #@+node:ekr.20100131171342.5501: *4* @test zz end of plugins unit tests
 s = '\nEnd of plugins unit tests'
 if g.app.gui.guiName() == 'curses':
@@ -29043,6 +29053,12 @@ if g.app.gui.guiName() == 'curses':
     import logging
     logging.info('test')
     curses.endwin()
+elif g.app.gui.guiName() == 'nullGui':
+    g.app.gui = g.app.old_gui
+        # Restore the qt gui swapped out by TM.doTests
+    c.k.simulateCommand(':q!')
+    # else:
+        # print('can not shut down automatically')
 else:
     c.k.simulateCommand(':q!')
 #@-all

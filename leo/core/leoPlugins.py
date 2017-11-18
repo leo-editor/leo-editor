@@ -250,7 +250,7 @@ class LeoPluginsController(object):
     '''The global plugins controller, g.app.pluginsController'''
     #@+others
     #@+node:ekr.20100909065501.5954: *3* plugins.Birth
-    #@+node:ekr.20100908125007.6034: *4* plugins.ctor
+    #@+node:ekr.20100908125007.6034: *4* plugins.ctor & reloadSettings
     def __init__(self):
         # g.trace('LeoPluginsController',g.callers())
         self.handlers = {}
@@ -269,11 +269,11 @@ class LeoPluginsController(object):
         g.act_on_node = CommandChainDispatcher()
         g.visit_tree_item = CommandChainDispatcher()
         g.tree_popup_handlers = []
-    #@+node:ekr.20100909065501.5974: *4* plugins.finishCreate
+    #@+node:ekr.20100909065501.5974: *4* plugins.finishCreate & reloadSettings
     def finishCreate(self):
-        '''Set configuration settings for LeoPluginsController.
+        self.reloadSettings()
 
-        Nothing bad will happen if this is never called.'''
+    def reloadSettings(self):
         self.warn_on_failure = g.app.config.getBool(
             setting='warn_when_plugins_fail_to_load',
             default=True)

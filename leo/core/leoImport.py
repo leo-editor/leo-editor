@@ -275,7 +275,7 @@ class LeoImportCommands(object):
     For more information, see leo/plugins/importers/howto.txt.
     '''
     #@+others
-    #@+node:ekr.20031218072017.3207: *3* ic.__init__
+    #@+node:ekr.20031218072017.3207: *3* ic.__init__& ic.reload_settings
     def __init__(self, c):
         '''ctor for LeoImportCommands class.'''
         self.c = c
@@ -288,10 +288,16 @@ class LeoImportCommands(object):
         self.output_newline = g.getOutputNewline(c=c) # Value of @bool output_newline
         self.rootLine = "" # Empty or @root + self.fileName
         self.tab_width = c.tab_width
-        self.trace = c.config.getBool('trace_import')
+        self.trace = False # set below.
         self.treeType = "@file" # None or "@file"
         self.webType = "@noweb" # "cweb" or "noweb"
         self.web_st = [] # noweb symbol table.
+        self.reload_settings()
+        
+    def reload_settings(self):
+        self.trace = self.c.config.getBool('trace_import')
+        
+    reloadSettings = reload_settings
     #@+node:ekr.20031218072017.3289: *3* ic.Export
     #@+node:ekr.20031218072017.3290: *4* ic.convertCodePartToWeb & helpers
     def convertCodePartToWeb(self, s, i, p, result):
@@ -2021,6 +2027,8 @@ class RecursiveImportController(object):
                 treeType='@file', # '@auto','@clean','@nosent' cause problems.
             )
             p = parent.lastChild()
+            p.h = self.kind + p.h[5:]
+                # Bug fix 2017/10/27: honor the requested kind.
         if self.safe_at_file:
             p.v.h = '@' + p.v.h
     #@+node:ekr.20130823083943.12607: *4* ric.post_process & helpers
@@ -2297,11 +2305,10 @@ class ZimImportController(object):
 
     '''
     #@+others
-    #@+node:ekr.20141210051628.31: *3* zic.__init__
+    #@+node:ekr.20141210051628.31: *3* zic.__init__ & zic.reloadSettings
     def __init__(self, c):
         '''Ctor for ZimImportController class.'''
         self.c = c
-        # User options.
         self.pathToZim = c.config.getString('path_to_zim')
         self.rstLevel = c.config.getInt('rst_level') or 0
         self.rstType = c.config.getString('rst_type') or 'rst'

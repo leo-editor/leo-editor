@@ -689,7 +689,7 @@ class LeoActions(object):
     but putting it here for separation for now.
     """
     #@+others
-    #@+node:tbrown.20110930220448.18077: *3* __init__
+    #@+node:tbrown.20110930220448.18077: *3* __init__(LeoActions)
     def __init__(self, request_handler):
         self.request_handler = request_handler
         self.bookmark_unl = g.app.commanders()[0].config.getString('http_bookmark_unl')

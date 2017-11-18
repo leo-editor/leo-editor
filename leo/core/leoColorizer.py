@@ -141,8 +141,8 @@ class BaseColorizer(object):
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
         return None
 
-    def setFontFromConfig(self):
-        pass
+    # def setFontFromConfig(self):
+        # pass
     #@-others
 #@+node:ekr.20110605121601.18569: ** class JEditColorizer(BaseColorizer)
 # This is c.frame.body.colorizer
@@ -154,7 +154,7 @@ class JEditColorizer(BaseColorizer):
     '''
     #@+others
     #@+node:ekr.20110605121601.18571: *3*  jedit.Birth & init
-    #@+node:ekr.20110605121601.18572: *4* jedit.__init__
+    #@+node:ekr.20110605121601.18572: *4* jedit.__init & helpers
     def __init__(self, c, widget, wrapper):
         '''Ctor for JEditColorizer class.'''
         # g.trace('(JEditColorizer) widget', widget)
@@ -178,7 +178,9 @@ class JEditColorizer(BaseColorizer):
             )
         else:
             self.highlighter = None
-        widget.leo_colorizer = self
+        if widget:
+            # #503: widget may be None during unit tests.
+            widget.leo_colorizer = self
         # State data used by recolor and helpers...
         # init() properly sets these for each language.
         self.actualColorDict = {} # Used only by setTag.
@@ -199,10 +201,6 @@ class JEditColorizer(BaseColorizer):
         self.highlight_digits = True
         self.ignore_case = True
         self.no_word_sep = ''
-        # Config settings...
-        self.showInvisibles = c.config.getBool("show_invisibles_by_default")
-        self.underline_undefined = c.config.getBool("underline_undefined_section_names")
-        self.use_hyperlinks = c.config.getBool("use_hyperlinks")
         # Debugging...
         self.allow_mark_prev = True
         self.n_setTag = 0
@@ -232,7 +230,6 @@ class JEditColorizer(BaseColorizer):
         self.rulesDict = {}
         # self.defineAndExtendForthWords()
         self.word_chars = {} # Inited by init_keywords().
-        self.setFontFromConfig()
         self.tags = [
             # 8 Leo-specific tags.
             "blank", # show_invisibles_space_color
@@ -252,6 +249,7 @@ class JEditColorizer(BaseColorizer):
             'markup', 'operator',
             'trailing_whitespace',
         ]
+        self.reloadSettings()
         self.defineLeoKeywordsDict()
         self.defineDefaultColorsDict()
         self.defineDefaultFontDict()
@@ -366,6 +364,26 @@ class JEditColorizer(BaseColorizer):
                 'operator'      :'operator_font',
                 'trailing_whitespace' :'trailing_whitespace_font',
         }
+    #@+node:ekr.20171114041307.1: *5* jedit.reloadSettings
+    def reloadSettings(self):
+        c = self.c
+        self.showInvisibles = c.config.getBool("show_invisibles_by_default")
+        self.underline_undefined = c.config.getBool("underline_undefined_section_names")
+        self.use_hyperlinks = c.config.getBool("use_hyperlinks")
+        # There were in setFontFromConfig.
+        self.bold_font = c.config.getFontFromParams(
+            "body_text_font_family", "body_text_font_size",
+            "body_text_font_slant", "body_text_font_weight",
+            c.config.defaultBodyFontSize)
+        self.italic_font = c.config.getFontFromParams(
+            "body_text_font_family", "body_text_font_size",
+            "body_text_font_slant", "body_text_font_weight",
+            c.config.defaultBodyFontSize)
+        self.bolditalic_font = c.config.getFontFromParams(
+            "body_text_font_family", "body_text_font_size",
+            "body_text_font_slant", "body_text_font_weight",
+            c.config.defaultBodyFontSize)
+        self.color_tags_list = []
     #@+node:ekr.20110605121601.18576: *4* jedit.addImportedRules
     def addImportedRules(self, mode, rulesDict, rulesetName):
         '''Append any imported rules at the end of the rulesets specified in mode.importDict'''
@@ -815,22 +833,6 @@ class JEditColorizer(BaseColorizer):
         '''Munge a mode name so that it is a valid python id.'''
         valid = string.ascii_letters + string.digits + '_'
         return ''.join([ch.lower() if ch in valid else '_' for ch in s])
-    #@+node:ekr.20110605121601.18588: *4* jedit.setFontFromConfig
-    def setFontFromConfig(self):
-        c = self.c
-        self.bold_font = c.config.getFontFromParams(
-            "body_text_font_family", "body_text_font_size",
-            "body_text_font_slant", "body_text_font_weight",
-            c.config.defaultBodyFontSize)
-        self.italic_font = c.config.getFontFromParams(
-            "body_text_font_family", "body_text_font_size",
-            "body_text_font_slant", "body_text_font_weight",
-            c.config.defaultBodyFontSize)
-        self.bolditalic_font = c.config.getFontFromParams(
-            "body_text_font_family", "body_text_font_size",
-            "body_text_font_slant", "body_text_font_weight",
-            c.config.defaultBodyFontSize)
-        self.color_tags_list = []
     #@+node:ekr.20110605121601.18589: *3*  jedit.Pattern matchers
     #@+node:ekr.20110605121601.18590: *4*  About the pattern matchers
     #@@nocolor-node
@@ -2170,7 +2172,7 @@ if QtGui:
                     QtGui.QSyntaxHighlighter.rehighlight(self)
         #@+node:ekr.20110605121601.18567: *3* leo_h.highlightBlock
         def highlightBlock(self, s):
-            """ Called by QSyntaxHiglighter """
+            """ Called by QSyntaxHighlighter """
             self.n_calls += 1
             s = g.toUnicode(s)
             self.colorizer.recolor(s)
@@ -2211,7 +2213,7 @@ if Qsci:
 class QScintillaColorizer(BaseColorizer):
     '''A colorizer for a QsciScintilla widget.'''
     #@+others
-    #@+node:ekr.20140906081909.18709: *3* qsc.__init__
+    #@+node:ekr.20140906081909.18709: *3* qsc.__init__ & reloadSettings
     def __init__(self, c, widget, wrapper):
         '''Ctor for QScintillaColorizer. widget is a '''
         # g.trace('QScintillaColorizer)',widget)
@@ -2219,7 +2221,6 @@ class QScintillaColorizer(BaseColorizer):
             # init the base class.
         self.count = 0 # For unit testing.
         self.colorCacheFlag = False
-        self.enabled = c.config.getBool('use_syntax_coloring')
         self.error = False # Set if there is an error in jeditColorizer.recolor
         self.flag = True # Per-node enable/disable flag.
         self.full_recolor_count = 0 # For unit testing.
@@ -2237,12 +2238,17 @@ class QScintillaColorizer(BaseColorizer):
                 # document = widget.document())
         widget.leo_colorizer = self
         # Define/configure various lexers.
+        self.reloadSettings()
         if Qsci:
             self.lexersDict = self.makeLexersDict()
             self.nullLexer = NullScintillaLexer(c)
         else:
             self.lexersDict = {}
             self.nullLexer = g.NullObject()
+            
+    def reloadSettings(self):
+        c = self.c
+        self.enabled = c.config.getBool('use_syntax_coloring')
     #@+node:ekr.20170128141158.1: *3* qsc.scanColorDirectives (over-ride)
     def scanColorDirectives(self, p):
         '''

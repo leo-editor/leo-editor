@@ -5,6 +5,7 @@ use_zodb = False
 #@+<< imports >>
 #@+node:ekr.20060904165452.1: ** << imports >> (leoNodes)
 import leo.core.leoGlobals as g
+import leo.core.signal_manager as sig
 # if g.app and g.app.use_psyco:
     # # g.pr("enabled psyco classes",__file__)
     # try: from psyco.classes import *
@@ -2521,6 +2522,7 @@ class VNodeBase(object):
                     self.unicode_warning_given = True
                     g.internalError(s)
                     g.es_exception()
+        sig.emit(self.context, 'body_changed', self)
 
     def setHeadString(self, s):
         # Fix bug: https://bugs.launchpad.net/leo-editor/+bug/1245535

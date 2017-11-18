@@ -6190,7 +6190,14 @@ def os_path_join(*args, **keys):
     if expanduser:
         uargs = [g.os_path_expanduser(z) for z in uargs if z]
     if trace: g.trace('2', uargs)
-    path = os.path.join(*uargs)
+    if uargs:
+        try:
+            path = os.path.join(*uargs)
+        except TypeError:
+            g.trace(uargs, args, keys, g.callers())
+            raise
+    else:
+        path = '' # 2017/11/12: don't crash.
     if trace: g.trace('3', path)
     # May not be needed on some Pythons.
     path = g.toUnicodeFileEncoding(path)
@@ -7010,7 +7017,7 @@ def openUrl(p):
             c = p.v.context
             if not g.doHook("@url1", c=c, p=p, v=p, url=url):
                 g.handleUrl(url, c=c, p=p)
-            g.doHook("@url2", c=c, p=p, v=p)
+            g.doHook("@url2", c=c, p=p, v=p, url=url)
 #@+node:ekr.20110605121601.18135: *3* g.openUrlOnClick (open-url-under-cursor)
 def openUrlOnClick(event, url=None):
     '''Open the URL under the cursor.  Return it for unit testing.'''
@@ -7059,6 +7066,8 @@ def openUrlHelper(event, url=None):
                     return
     elif not g.isString(url):
         url = url.toString()
+        url = g.toUnicode(url)
+            # Fix #571
     if url and g.isValidUrl(url):
         # Part 2: handle the url
         p = c.p

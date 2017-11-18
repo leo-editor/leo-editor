@@ -325,6 +325,7 @@ class Commands(object):
         self.killBufferCommands = killBufferCommands.KillBufferCommandsClass(c)
         self.rectangleCommands  = rectangleCommands.RectangleCommandsClass(c)
         self.spellCommands      = spellCommands.SpellCommandsClass(c)
+        self.undoer             = leoUndo.Undoer(c)
         # Create the list of subcommanders.
         self.subCommanders = [
             self.abbrevCommands,
@@ -352,11 +353,13 @@ class Commands(object):
             self.tangleCommands,
             self.testManager,
             self.vimCommands,
+            self.undoer,
         ]
         # Other objects
+        c.configurables = c.subCommanders[:]
+            # A list of other classes that have a reloadSettings method
         self.cacher = leoCache.Cacher(c)
         self.cacher.initFileDB(self.mFileName)
-        self.undoer = leoUndo.Undoer(self)
         import leo.plugins.free_layout as free_layout
         self.free_layout = free_layout.FreeLayoutController(c)
         if hasattr(g.app.gui, 'styleSheetManagerClass'):
@@ -677,18 +680,28 @@ class Commands(object):
     #@+node:ekr.20170221033738.1: *4* c.reloadSettings & helpers
     @cmd('reload-settings')
     def reloadSettings(self, event=None):
-        '''Reload all static abbreviations from all config files.'''
+        '''Reload settings for the selected outline, saving it if necessary.'''
         self.reloadSettingsHelper(all=False)
 
     @cmd('reload-all-settings')
     def reloadAllSettings(self, event=None):
-        '''Reload all static abbreviations from all config files.'''
+        '''Reload settings for all open outlines, saving them if necessary.'''
         self.reloadSettingsHelper(all=True)
+    #@+node:ekr.20171114114908.1: *5* c.registerReloadSettings
+    def registerReloadSettings(self, obj):
+        '''Enter object into c.configurables.'''
+        c = self
+        if obj not in c.configurables:
+            c.configurables.append(obj)
     #@+node:ekr.20170221034501.1: *5* c.reloadSettingsHelper
     def reloadSettingsHelper(self, all):
         '''Reload settings in all commanders, or just self.'''
         lm = g.app.loadManager
         commanders = g.app.commanders() if all else [self]
+        # Save any changes so they can be seen.
+        for c2 in commanders:
+            if c2.isChanged():
+                c2.save()
         lm.readGlobalSettingsFiles()
             # Read leoSettings.leo and myLeoSettings.leo, using a null gui.
         for c in commanders:
@@ -699,29 +712,44 @@ class Commands(object):
                 # Init the config classes.
             c.initConfigSettings()
                 # Init the commander config ivars.
-            c.reloadSubcommanderSettings()
-                # Reload settings in all subcommanders.
+            c.reloadConfigurableSettings()
+                # Reload settings in all configurable classes
             c.setChanged(changed)
                 # Restore the changed bit.
             # c.redraw()
                 # Redraw so a pasted temp node isn't visible
-    #@+node:ekr.20170221040621.1: *5* c.reloadSubcommanderSettings
-    def reloadSubcommanderSettings(self):
+    #@+node:ekr.20170221040621.1: *5* c.reloadConfigurableSettings
+    def reloadConfigurableSettings(self):
         '''
-        Reload settings in all subcommanders that have either a
-        reload_settings or reloadSettings method.
+        Call all reloadSettings method in c.subcommanders, c.configurables and
+        other known classes.
         '''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         c = self
-        for subcommander in c.subCommanders:
-            for ivar in ('reloadSettings', 'reload_settings'):
-                func = getattr(subcommander, ivar, None)
-                if func:
-                    # pylint: disable=not-callable
-                    if trace:
-                        g.es_print('reloading settings in',
-                            subcommander.__class__.__name__)
+        table = [
+            g.app.gui,
+            g.app.pluginsController,
+            c.k.autoCompleter,
+            c.frame, c.frame.body, c.frame.log, c.frame.tree,
+            c.frame.body.colorizer,
+            getattr(c.frame.body.colorizer, 'highlighter', None),
+        ]
+        for obj in table:
+            if obj:
+                c.registerReloadSettings(obj)
+        c.configurables = list(set(c.configurables))
+            # Useful now that instances add themselves to c.configurables.
+        c.configurables.sort(key=lambda obj: obj.__class__.__name__.lower())
+        for obj in c.configurables:
+            func = getattr(obj, 'reloadSettings', None)
+            if func:
+                # pylint: disable=not-callable
+                if trace: g.pr('reloading settings in', obj.__class__.__name__)
+                try:
                     func()
+                except Exception:
+                    g.es_exception()
+                    c.configurables.remove(obj)
     #@+node:ekr.20150329162703.1: *4* Clone find...
     #@+node:ekr.20160224175312.1: *5* c.cffm & c.cfam
     @cmd('clone-find-all-marked')
@@ -5588,7 +5616,6 @@ class Commands(object):
             g.app.commandName = label
         if not g.doHook("command1", c=c, p=p, v=p, label=label):
             try:
-                # redrawCount = c.frame.tree.redrawCount
                 c.inCommand = True
                 if trace: g.trace('start', command)
                 val = command(event)
@@ -5612,10 +5639,6 @@ class Commands(object):
                 else:
                     if trace: g.trace('calling outerUpdate')
                     c.outerUpdate()
-                    # redrawCount2 = c.frame.tree.redrawCount
-                    # if redrawCount2 > redrawCount + 1:
-                        # g.trace('too many redraw', label, redrawCount2, redrawCount)
-
         # Be careful: the command could destroy c.
         if c and c.exists:
             p = c.p
@@ -5841,6 +5864,7 @@ class Commands(object):
         # tree.redraw will change the position if p is a hoisted @chapter node.
         p2 = c.frame.tree.redraw(p)
         # Be careful.  NullTree.redraw returns None.
+        # #503: NullTree.redraw(p) now returns p.
         c.selectPosition(p2 or p)
         if trace: g.trace(p2 and p2.h, g.callers())
         if setFocus: c.treeFocusHelper()
