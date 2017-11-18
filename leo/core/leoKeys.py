@@ -3113,8 +3113,11 @@ class KeyHandlerClass(object):
         c, k = self.c, self
         is_local = c.shortFileName() not in ('myLeoSettings.leo', 'leoSettings.leo')
         if not func:
-            g.es_print('Null func passed to k.registerCommand', commandName)
+            g.es_print('Null func passed to k.registerCommand\n', commandName)
             return
+        # Several plugins, including mod_scripting.py, must define shortcuts.
+            # if shortcut: # This is not necessarily wrong.
+                # g.es_print('The "shortcut" arg to k.registerCommand is deprecated', commandName)
         f = c.commandsDict.get(commandName)
         if f and f.__name__ != func.__name__:
             g.trace('redefining', commandName, f, '->', func)
