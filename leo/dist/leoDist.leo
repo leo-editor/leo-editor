@@ -326,10 +326,10 @@
 <v t="ekr.20160510090441.1"><vh>@file ../../leo_assoc.nsi</vh></v>
 <v t="ekr.20101027054254.1590"><vh>@file ../../leo.nsi</vh></v>
 </v>
-<v t="ekr.20101027070126.1639" a="E"><vh>@button make leo</vh>
+<v t="ekr.20101027070126.1639"><vh>@button make leo</vh>
 <v t="ekr.20090905082405.1487"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20110614062644.1379"><vh>&lt;&lt; define global paths and file names &gt;&gt;</vh></v>
-<v t="ekr.20101027070126.1643" a="E"><vh>class LeoMaker</vh>
+<v t="ekr.20101027070126.1643"><vh>class LeoMaker</vh>
 <v t="ekr.20101027070126.1662" a="E"><vh>run &amp; helpers</vh>
 <v t="ekr.20101105103524.1494"><vh>clean_manifest</vh></v>
 <v t="ekr.20110603171959.1506"><vh>clean_spellpyx</vh></v>
@@ -1616,10 +1616,10 @@ Packaging a new release for Test PyPi
     ::Clean previous build and distribution folders
     rd /s/q build
     rd /s/q dist
-
-Manually adjust version# in setup.py, eg: `leo.core.version + 'rc2' #release candidate 2`
-
-    ::Build
+    rd /s/q leo.egg-info
+    
+    ::Verify integrity and Build
+    python setup.py check
     python setup.py bdist_wheel
 
     ::Test installation locally

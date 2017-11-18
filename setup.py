@@ -34,8 +34,12 @@ def git_version():
         # 5.6, 55, e1129da
     major, minor = tag.split('.')
     minor = int(minor) + 1
-    version = '{}.{}.dev{}+{}'.format(major, minor, distance, commit)
-        # 5.7.dev55+e1129da
+    # version = '{}.{}.dev{}+{}'.format(major, minor, distance, commit)
+        # # 5.7.dev55+e1129da
+        # disabled. Can't use local PEP440 names on pypi!
+        # https://github.com/pypa/pypi-legacy/issues/731
+    version = '{}.{}.dev{}'.format(major, minor, distance)
+        # 5.7.dev55
     return version
 #@+node:maphew.20171006124415.1: ** Get description
 # Get the long description from the README file
