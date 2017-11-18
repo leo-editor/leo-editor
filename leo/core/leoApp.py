@@ -1228,6 +1228,17 @@ class LeoApp(object):
             self.destroyWindow(w)
         if trace: print('before finishQuit')
         self.finishQuit()
+    #@+node:ekr.20171118024827.1: *3* app.makeAllBindings
+    def makeAllBindings(self):
+        '''
+        LeoApp.makeAllBindings:
+            
+        Call c.k.makeAllBindings for all open commanders c.
+        '''
+        app = self
+        for c in app.commanders():
+            # g.trace(c.shortFileName())
+            c.k.makeAllBindings()
     #@+node:ekr.20031218072017.2188: *3* app.newCommander
     def newCommander(self, fileName, relativeFileName=None, gui=None, previousSettings=None):
         """Create a commander and its view frame for the Leo main window."""
@@ -2127,6 +2138,8 @@ class LoadManager(object):
         g.app.idleTimeManager.start()
         # Phase 3: after loading plugins. Create one or more frames.
         ok = lm.doPostPluginsInit()
+        # Fix #579: Key bindings don't take for commands defined in plugins
+        g.app.makeAllBindings()
         if ok and g.app.diff:
             lm.doDiff()
         if trace:

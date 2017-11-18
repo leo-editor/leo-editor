@@ -2076,6 +2076,8 @@ class KeyHandlerClass(object):
         k.getArgInstance = GetArg(c)
             # a singleton. Defined here so that c.k will exist.
         k.makeAllBindings()
+            # Important: This must be called this now,
+            # even though LM.laod calls g.app.makeAllBindings later.
         k.initCommandHistory()
         k.inited = True
         k.setDefaultInputState()

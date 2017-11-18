@@ -2287,6 +2287,8 @@ class Commands(object):
             if g.app.loadManager.isLeoFile(fileName):
                 c2 = g.openWithFileName(fileName, old_c=c)
                 if c2:
+                    g.app.makeAllBindings()
+                        # Fix #579: Key bindings don't take for commands defined in plugins.
                     g.chdir(fileName)
                     g.setGlobalOpenDir(fileName)
                 if c2 and closeFlag:
@@ -2666,6 +2668,8 @@ class Commands(object):
         if g.doHook("recentfiles1", c=c, p=c.p, v=c.p, fileName=fn, closeFlag=closeFlag):
             return
         c2 = g.openWithFileName(fn, old_c=c)
+        if c2:
+            g.app.makeAllBindings()
         if closeFlag and c2 and c2 != c:
             g.app.destroyWindow(c.frame)
             c2.setLog()
