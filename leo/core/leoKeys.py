@@ -3109,9 +3109,12 @@ class KeyHandlerClass(object):
         **Important**: Bindings created here from plugins can not be overridden.
         This includes @command and @button bindings created by mod_scripting.py.
         '''
-        trace = False and not g.unitTesting and not g.app.silentMode and shortcut
+        trace = False and not g.unitTesting and not g.app.silentMode
         c, k = self.c, self
         is_local = c.shortFileName() not in ('myLeoSettings.leo', 'leoSettings.leo')
+        if not func:
+            g.es_print('Null func passed to k.registerCommand', commandName)
+            return
         f = c.commandsDict.get(commandName)
         if f and f.__name__ != func.__name__:
             g.trace('redefining', commandName, f, '->', func)
@@ -3139,12 +3142,13 @@ class KeyHandlerClass(object):
             k.bindKey(pane, stroke, func, commandName, tag='register-command')
                 # Must be a stroke.
             k.makeMasterGuiBinding(stroke, trace=trace) # Must be a stroke.
-        elif is_local:
-            if trace: g.trace('KILL:', commandName)
-            k.killBinding(commandName)
+        # New in Leo 5.7: it's not possible to kill bindings from k.registerCommand.
+            # elif is_local:
+                # if trace: g.trace('KILL:', commandName)
+                # k.killBinding(commandName)
         if trace:
-            pretty_stroke = k.prettyPrintKey(stroke) if stroke else 'None'
-            g.trace('@command %25s' % (commandName), pretty_stroke, g.callers(2))
+            # pretty_stroke = k.prettyPrintKey(stroke) if stroke else 'None'
+            g.trace('@command %-45s' % (commandName), g.callers(2))
         # Fixup any previous abbreviation to press-x-button commands.
         if commandName.startswith('press-') and commandName.endswith('-button'):
             d = c.config.getAbbrevDict()
