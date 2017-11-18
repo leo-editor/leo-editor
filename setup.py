@@ -26,12 +26,16 @@ import leo.core.leoGlobals as g
 def git_version():
     '''
     Fetch from Git: {tag} {distance-from-tag} {current commit hash}
-    Return as string compliant with PEP440
+    Increment minor # by 1 and
+    Return as single string compliant with PEP440
     '''
     root = os.path.dirname(os.path.realpath(__file__))
     tag, distance, commit = g.gitDescribe(root)
-    version = '{}.dev{}+{}'.format(tag, distance, commit)
-        # 5.6.dev55+e1129da
+        # 5.6, 55, e1129da
+    major, minor = tag.split('.')
+    minor = int(minor) + 1
+    version = '{}.{}.dev{}+{}'.format(major, minor, distance, commit)
+        # 5.7.dev55+e1129da
     return version
 #@+node:maphew.20171006124415.1: ** Get description
 # Get the long description from the README file
