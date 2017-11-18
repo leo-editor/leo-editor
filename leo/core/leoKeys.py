@@ -2144,18 +2144,22 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.88: *3* k.Binding
     #@+node:ekr.20061031131434.89: *4* k.bindKey & helpers
     def bindKey(self, pane, shortcut, callback, commandName, modeFlag=False, tag=None):
-        '''Bind the indicated shortcut (a Tk keystroke) to the callback.
+        '''
+        Bind the indicated shortcut (a Tk keystroke) to the callback.
 
-        No actual gui bindings are made: only entries in k.masterBindingsDict.
+        No actual gui bindings are made: only entries in k.masterBindingsDict
+        and k.bindingsDict.
 
         tag gives the source of the binding.
-
+        
+        Return True if the binding was made successfully.
         '''
         trace = False and not g.unitTesting
-            # and commandName.startswith('move-lines')
-            # and (shortcut == 'F1' or commandName == 'help')
         trace_list = False
         k = self
+        if not shortcut:
+            # Don't use this method to undo bindings.
+            return False
         if not k.check_bind_key(commandName, pane, shortcut):
             return False
         aList = k.bindingsDict.get(shortcut, [])
@@ -2175,6 +2179,7 @@ class KeyHandlerClass(object):
                 func=callback, commandName=commandName, stroke=stroke)
             if shortcut:
                 k.bindKeyToDict(pane, shortcut, si)
+                    # Updates k.masterBindingsDict
             if shortcut and not modeFlag:
                 aList = k.remove_conflicting_definitions(
                     aList, commandName, pane, shortcut)
@@ -2195,10 +2200,11 @@ class KeyHandlerClass(object):
     bindShortcut = bindKey # For compatibility
     #@+node:ekr.20120130074511.10228: *5* k.check_bind_key
     def check_bind_key(self, commandName, pane, shortcut):
+        '''
+        Return True if the binding of shortcut to commandName for the given
+        pane can be made.
+        '''
         # k = self
-        if not shortcut:
-            return False
-            # return True # #327: binding to None clears previous bindings.
         assert g.isStroke(shortcut)
         # Give warning and return if we try to bind to Enter or Leave.
         for s in ('enter', 'leave'):
@@ -2381,8 +2387,27 @@ class KeyHandlerClass(object):
     def killBinding(self, commandName):
         '''
         Kill all bindings for all keystrokes presently assigned to commandName.
+        This is effectively the inverse of k.bindKey()
+        
+        - Remove all matching entries from k.bindingsDict.
+          Keys are shortcuts, values are lists of ShortcutInfo objects.
+        - Remove any matching entry from k.masterBindingDict.
+          Keys are strokes, values are list of widgets in which stoke is bound
         '''
-        # g.trace(commandName)
+        c = self.c
+        raw_key, aList = c.config.getShortcut(commandName)
+        g.trace(commandName)
+        g.printList(aList)
+        
+        ### From k.registerCommand
+            # raw_key, aList = c.config.getShortcut(commandName)
+            # for si in aList:
+                # assert g.isShortcutInfo(si), si
+                # assert g.isStrokeOrNone(si.stroke)
+                # if si.stroke and not si.pane.endswith('-mode'):
+                    # stroke = si.stroke
+                    # pane = si.pane # 2015/05/11.
+                    # break
     #@+node:ekr.20061031131434.98: *4* k.makeAllBindings
     def makeAllBindings(self):
         '''Make all key bindings in all of Leo's panes.'''
@@ -3115,7 +3140,7 @@ class KeyHandlerClass(object):
         if not func:
             g.es_print('Null func passed to k.registerCommand\n', commandName)
             return
-        # Several plugins, including mod_scripting.py, must define shortcuts.
+        # Several plugins and methods, including mod_scripting.py, must define shortcuts.
             # if shortcut: # This is not necessarily wrong.
                 # g.es_print('The "shortcut" arg to k.registerCommand is deprecated', commandName)
         f = c.commandsDict.get(commandName)
@@ -3450,8 +3475,8 @@ class KeyHandlerClass(object):
     #@+node:ekr.20091230094319.6240: *5* k.getPaneBinding
     def getPaneBinding(self, stroke, w):
         trace = False and not g.unitTesting
-        trace_dict = True
-        verbose = True
+        trace_dict = False
+        verbose = False
         k = self; w_name = k.c.widget_name(w)
         state = k.unboundKeyAction
         if not g.isStroke(stroke):

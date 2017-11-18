@@ -1329,9 +1329,11 @@ class SherlockTracer(object):
 # so it is convenient to define it in leoGlobals.py.
 
 class ShortcutInfo(object):
-    '''A class representing any kind of key binding line.
+    '''
+    A class representing any kind of key binding line.
 
-    This includes other information besides just the KeyStroke.'''
+    This includes other information besides just the KeyStroke.
+    '''
     #@+others
     #@+node:ekr.20120129040823.10254: *4*  ctor (ShortcutInfo)
     def __init__(self, kind, commandName='', func=None, nextMode=None, pane=None, stroke=None):

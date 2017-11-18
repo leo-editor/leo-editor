@@ -1826,8 +1826,10 @@ class LoadManager(object):
             return 'D'
     #@+node:ekr.20120223062418.10421: *4* LM.computeLocalSettings
     def computeLocalSettings(self, c, settings_d, shortcuts_d, localFlag):
-        '''Merge the settings dicts from c's outline into *new copies of*
-        settings_d and shortcuts_d.'''
+        '''
+        Merge the settings dicts from c's outline into *new copies of*
+        settings_d and shortcuts_d.
+        '''
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: g.es_debug('%s\n%s\n%s' % (
             c.shortFileName(), settings_d, shortcuts_d))
@@ -1899,11 +1901,12 @@ class LoadManager(object):
         return PreviousSettings(d1, d2)
     #@+node:ekr.20120214132927.10723: *4* LM.mergeShortcutsDicts & helpers
     def mergeShortcutsDicts(self, c, old_d, new_d):
-        '''Create a new dict by overriding all shortcuts in old_d by shortcuts in new_d.
+        '''
+        Create a new dict by overriding all shortcuts in old_d by shortcuts in new_d.
 
-        Both old_d and new_d remain unchanged.'''
+        Both old_d and new_d remain unchanged.
+        '''
         trace = False and not g.unitTesting
-        trace_binding = False or g.app.trace_binding
         lm = self
         if not old_d: return new_d
         if not new_d: return old_d
@@ -1927,8 +1930,8 @@ class LoadManager(object):
                     fn, g.app.trace_setting, stroke, pane))
         inverted_old_d = lm.invert(old_d)
         inverted_new_d = lm.invert(new_d)
-        # #510.
-        if trace and trace_binding:
+        # #510 & #327: always honor --trace-binding here.
+        if g.app.trace_binding:
             stroke = c.k.canonicalizeShortcut(g.app.trace_binding)
             si_list = inverted_new_d. get(stroke)
             if si_list:
@@ -1972,8 +1975,10 @@ class LoadManager(object):
                     g.es_print('%6s %s %s' % (si.pane, si.stroke.s, si.commandName))
     #@+node:ekr.20120214132927.10724: *5* LM.invert
     def invert(self, d):
-        '''Invert a shortcut dict whose keys are command names,
-        returning a dict whose keys are strokes.'''
+        '''
+        Invert a shortcut dict whose keys are command names,
+        returning a dict whose keys are strokes.
+        '''
         trace = False and not g.unitTesting; verbose = True
         if trace: g.trace('*' * 40, d.name())
         result = g.TypedDictOfLists(
@@ -1995,8 +2000,10 @@ class LoadManager(object):
         return result
     #@+node:ekr.20120214132927.10725: *5* LM.uninvert
     def uninvert(self, d):
-        '''Uninvert an inverted shortcut dict whose keys are strokes,
-        returning a dict whose keys are command names.'''
+        '''
+        Uninvert an inverted shortcut dict whose keys are strokes,
+        returning a dict whose keys are command names.
+        '''
         trace = False and not g.unitTesting; verbose = True
         if trace and verbose: g.trace('*' * 40)
         assert d.keyType == g.KeyStroke, d.keyType
