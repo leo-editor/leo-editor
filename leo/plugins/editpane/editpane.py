@@ -15,13 +15,14 @@ import os
 
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets, QtConst # QtGui
+if QtCore is not None:
+    from leo.plugins.editpane.clicky_splitter import ClickySplitter
 
 if g.isPython3:
     from importlib import import_module
 
 import leo.core.signal_manager as sig
 
-from leo.plugins.editpane.clicky_splitter import ClickySplitter
 #@-<<editpane.py imports>>
 #@+others
 #@+node:tbrown.20171028115438.2: ** DBG
