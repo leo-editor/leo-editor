@@ -4259,6 +4259,22 @@ def gitCommitNumber(path=None):
     '''
     branch, commit = g.gitInfo(path)
     return commit
+#@+node:maphew.20171112205129.1: *3* g.gitDescribe
+def gitDescribe(path=None):
+    '''
+    Return the Git tag, distance-from-tag, and commit hash for the
+    associated path. If path is None, use the leo-editor directory.
+    
+    Given `git describe` cmd line output: `v5.6-55-ge1129da\n`
+    This function returns ('v5.6', '55', 'e1129da')
+    '''
+    describe = g.execGitCommand('git describe', path)
+    tag, distance, commit = describe[0].split('-')
+    #strip leading 'g' from commit hash (it's not part of the hash)
+    if 'g' in commit[0:]: commit = commit[1:]
+    commit = commit.rstrip()
+
+    return tag, distance, commit
 #@+node:ekr.20170414034616.6: *3* g.gitHeadPath
 def gitHeadPath(path=None):
     '''

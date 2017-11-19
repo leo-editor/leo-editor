@@ -7,7 +7,8 @@ simple = False # True: avoid all complications.
 trace = False
 from setuptools import setup, find_packages # Always prefer setuptools over distutils
 from codecs import open # To use a consistent encoding
-import leo.core.leoVersion
+import os
+import leo.core.leoGlobals as g
 
 #@+others
 #@+node:maphew.20141126230535.3: ** docstring
@@ -21,6 +22,25 @@ import leo.core.leoVersion
     https://blog.ionelmc.ro/presentations/packaging/#slide:2
     https://blog.ionelmc.ro/2014/05/25/python-packaging/
 '''
+#@+node:maphew.20171112223922.1: ** git_version
+def git_version():
+    '''
+    Fetch from Git: {tag} {distance-from-tag} {current commit hash}
+    Increment minor # by 1 and
+    Return as single string compliant with PEP440
+    '''
+    root = os.path.dirname(os.path.realpath(__file__))
+    tag, distance, commit = g.gitDescribe(root)
+        # 5.6, 55, e1129da
+    major, minor = tag.split('.')
+    minor = int(minor) + 1
+    # version = '{}.{}.dev{}+{}'.format(major, minor, distance, commit)
+        # # 5.7.dev55+e1129da
+        # disabled. Can't use local PEP440 names on pypi!
+        # https://github.com/pypa/pypi-legacy/issues/731
+    version = '{}.{}.dev{}'.format(major, minor, distance)
+        # 5.7.dev55
+    return version
 #@+node:maphew.20171006124415.1: ** Get description
 # Get the long description from the README file
 # And also convert to reST
@@ -54,13 +74,10 @@ classifiers = [
     ]
 #@-others
 
-# '5.6.201711051246'
-version = '{}.{}'.format(leo.core.leoVersion.version,
-    leo.core.leoVersion.build)
-    
 setup(
     name = 'leo',
-    version = version,
+    # version = leo.core.leoVersion.version,
+    version = git_version(),
     author = "Edward K. Ream",
     author_email = 'edreamleo@gmail.com',
     url = 'http://leoeditor.com',

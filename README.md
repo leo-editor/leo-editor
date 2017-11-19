@@ -13,6 +13,10 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - Improved how Leo switches between git branches.
 - Created outline-oriented git-diff command.
 
+**Leo 5.6.1, November 9, 2017**
+
+- Published on Python Package Index (PyPi) and pip installable, `pip install leo`
+
 **Links**
 
 - [Leo's home page](http://leoeditor.com)
