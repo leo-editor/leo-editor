@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="111" left="599" height="912" width="1458"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -4771,7 +4771,7 @@ menu-shortcut = Alt-S # Search and Settings menus.
 menu-shortcut = Alt-W # Window menu.
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="4">@nocolor-node
+<t tx="ekr.20070622214401">@nocolor-node
 
 Please don't change this node and its descendants; they are for Leo's
 developers.
@@ -6528,7 +6528,8 @@ action will be used instead.</t>
     
 1. @bool enable-abbreviations = True
 2. *either* this setting or @bool scripting-at-script-nodes = True</t>
-<t tx="ekr.20131003040744.17561">vr-toggle = Alt-0</t>
+<t tx="ekr.20131003040744.17561">find-quick-selected = Ctrl-Shift-F
+vr-toggle = Alt-0</t>
 <t tx="ekr.20131007055150.13034"></t>
 <t tx="ekr.20131008181812.17533">False: disable all drag and drop operations in the outline.</t>
 <t tx="ekr.20131009050634.17656"></t>
