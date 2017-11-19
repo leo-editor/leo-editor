@@ -2287,7 +2287,7 @@ class Commands(object):
             if g.app.loadManager.isLeoFile(fileName):
                 c2 = g.openWithFileName(fileName, old_c=c)
                 if c2:
-                    g.app.makeAllBindings()
+                    c2.k.makeAllBindings()
                         # Fix #579: Key bindings don't take for commands defined in plugins.
                     g.chdir(fileName)
                     g.setGlobalOpenDir(fileName)
