@@ -45,7 +45,7 @@ class Xml_Importer(Importer):
             # g.printList(aList)
         return aList
     #@+node:ekr.20170416082422.1: *3* xml_i.clean_headline
-    def clean_headline(self, s):
+    def clean_headline(self, s, p=None):
         '''xml and html: Return a cleaned up headline s.'''
         m = re.match(r'\s*(<[^>]+>)', s)
         return m.group(1) if m else s.strip()

@@ -201,7 +201,7 @@ class JS_Importer(Importer):
             assert progress < i
         return i1 # Don't skip ahead.
     #@+node:ekr.20161101183354.1: *3* js_i.clean_headline
-    def clean_headline(self, s):
+    def clean_headline(self, s, p=None):
         '''Return a cleaned up headline s.'''
         s = s.strip()
         # Don't clean a headline twice.

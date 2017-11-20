@@ -24,17 +24,16 @@ class Py_Importer(Importer):
 
     #@+others
     #@+node:ekr.20161110073751.1: *3* py_i.clean_headline
-    def clean_headline(self, h, p=None):
+    def clean_headline(self, s, p=None):
         '''Return a cleaned up headline s.'''
-        # pylint: disable=arguments-differ
         if p: # Called from clean_all_headlines:
             return self.get_decorator(p) + p.h
         else:
-            m = re.match(r'\s*def\s+(\w+)', h)
+            m = re.match(r'\s*def\s+(\w+)', s)
             if m:
                 return m.group(1)
-            m = re.match(r'\s*class\s+(\w+)', h)
-            return 'class %s' % m.group(1) if m else h.strip()
+            m = re.match(r'\s*class\s+(\w+)', s)
+            return 'class %s' % m.group(1) if m else s.strip()
 
     def get_decorator(self, p):
         if g.unitTesting or self.c.config.getBool('put_python_decorators_in_imported_headlines'):
@@ -412,6 +411,8 @@ class Py_Importer(Importer):
         clean_headline method.
         '''
         for p in parent.subtree():
+            # Important: i.gen_ref does not know p when it calls
+            # self.clean_headline.
             h = self.clean_headline(p.h, p=p)
             if h and h != p.h:
                 p.h = h

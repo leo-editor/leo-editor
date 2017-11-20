@@ -24,7 +24,7 @@ class Pascal_Importer(Importer):
     #@+node:ekr.20161126171035.4: *3* pascal_i.clean_headline
     pascal_clean_pattern = re.compile(r'^(function|procedure)\s+([\w_.]+)')
 
-    def clean_headline(self, s):
+    def clean_headline(self, s, p=None):
         '''Return a cleaned up headline s.'''
         m = self.pascal_clean_pattern.match(s)
         if m:

@@ -41,7 +41,7 @@ class Tcl_Importer(Importer):
     #@+node:ekr.20170615153639.5: *3* tcl.clean_headline
     proc_pattern = re.compile(r'\s*proc\s+([\w$]+)')
 
-    def clean_headline(self, s):
+    def clean_headline(self, s, p=None):
         '''Return a cleaned up headline s.'''
         m = re.match(self.proc_pattern, s)
         return 'proc ' + m.group(1) if m else s

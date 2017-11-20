@@ -203,7 +203,7 @@ class Importer(object):
         This is overridden by the RstScanner class.'''
         return parent
     #@+node:ekr.20161108131153.9: *4* i.clean_headline
-    def clean_headline(self, s):
+    def clean_headline(self, s, p=None):
         '''
         Return the cleaned version headline s.
         Will typically be overridden in subclasses.
@@ -661,7 +661,7 @@ class Importer(object):
         '''
         trace = False and g.unitTesting
         indent_ws = self.get_str_lws(line)
-        h = self.clean_headline(line)
+        h = self.clean_headline(line, p=None)
         if self.gen_refs:
             # Fix #441: Make sure all section refs are unique.
             d = self.refs_dict
@@ -750,7 +750,9 @@ class Importer(object):
         clean_headline method.
         '''
         for p in parent.subtree():
-            h = self.clean_headline(p.h)
+            # Important: i.gen_ref does not know p when it calls
+            # self.clean_headline.
+            h = self.clean_headline(p.h, p=p)
             if h:
                 if h != p.h: p.h = h
             else:

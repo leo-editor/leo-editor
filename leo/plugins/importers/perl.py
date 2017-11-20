@@ -21,7 +21,7 @@ class Perl_Importer(Importer):
 
     #@+others
     #@+node:ekr.20161027183713.1: *3* perl_i.clean_headline
-    def clean_headline(self, s):
+    def clean_headline(self, s, p=None):
         '''Return a cleaned up headline s.'''
         m = re.match(r'sub\s+(\w+)', s)
         return 'sub ' + m.group(1) if m else s
