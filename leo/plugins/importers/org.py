@@ -19,6 +19,7 @@ class Org_Importer(Importer):
             state_class = None,
             strict = False,
         )
+        self.remove_tags = self.c.config.getBool('org-mode-removes-tags')
 
     #@+others
     #@+node:ekr.20161123194634.1: *3* org_i.gen_lines & helper
