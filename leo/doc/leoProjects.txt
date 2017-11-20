@@ -35,6 +35,19 @@ Note: cc.selectChapterForPosition calls c.redraw *only* if the chapter changes.
 - Done: removed c.incrementalRecolorFlag.
 - Done: c.selectPosition never calls c.redraw. All unit tests pass.
 - Done: Removed c.requestRedrawFlag and c.outerUpdate never calls c.redraw.  All tests pass.
+.. @+node:ekr.20171120061142.1: ** #327: Create a way to unbind bindings in leoSettings.leo.
+Rev 24da84a completes #327: Create a way to unbind bindings in leoSettings.leo.
+https://github.com/leo-editor/leo-editor/issues/327
+
+This enhancement allows you to override bindings made in leoSettings.leo or myLeoSettings.leo by setting:
+
+    command-name = None
+
+in the local .leo file, that is, outside of leoSettings.leo or myLeoSettings.leo. Important: binding:
+
+    do-nothing = <key>
+
+does not work.  That would eat <key> entirely.  Instead, the new code calls k.handleUnboundKeys when it sees any key previously bound to command-name.
 .. @-all
 .. @@nosearch
 .. @@killbeautify
