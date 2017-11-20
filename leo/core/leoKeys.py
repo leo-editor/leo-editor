@@ -3298,7 +3298,11 @@ class KeyHandlerClass(object):
                 return
         # 2011/02/08: Use getPaneBindings for *all* keys.
         si = k.getPaneBinding(stroke, w)
-        if si:
+        if si and si.commandName in k.killedBindings:
+            # 327: ignore killed bindings.
+            if trace and trace_unbound: g.trace('  killed', stroke)
+            k.handleUnboundKeys(event, char, stroke)
+        elif si:
             assert g.isShortcutInfo(si), si
             if traceGC: g.printNewObjects('masterKey 3')
             if trace: g.trace('   bound', stroke, si.func.__name__)
