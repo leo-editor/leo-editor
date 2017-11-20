@@ -50,8 +50,8 @@ try:
     def read_md(f): return convert(f, 'rst')
 
 except ImportError:
-    print("warning: pypandoc module not found, "
-          "could not convert Markdown to RST")
+    print('warning: pypandoc module not found, '
+          'could not convert Markdown to RST')
 
 #def read_md(f): return open(f, 'r').read()
     # disabled so obviously fail if markdown conversion fails
@@ -78,11 +78,11 @@ setup(
     name = 'leo',
     # version = leo.core.leoVersion.version,
     version = git_version(),
-    author = "Edward K. Ream",
+    author = 'Edward K. Ream',
     author_email = 'edreamleo@gmail.com',
     url = 'http://leoeditor.com',
     license = 'MIT License',
-    description = "An IDE, PIM and Outliner", # becomes "Summary" in pkg-info
+    description = 'An IDE, PIM and Outliner', # becomes 'Summary' in pkg-info
     long_description = read_md('README.md'),
     platforms = ['Linux','Windows','MacOS'],
     download_url = 'http://leoeditor.com/download.html',
