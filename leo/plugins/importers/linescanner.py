@@ -750,14 +750,12 @@ class Importer(object):
         clean_headline method.
         '''
         for p in parent.subtree():
-            # Important: i.gen_ref does not know p when it calls
-            # self.clean_headline.
+            # Note: i.gen_ref calls clean_headline without knowing p.
+            # As a result, the first argument is required.
             h = self.clean_headline(p.h, p=p)
-            if h:
-                if h != p.h: p.h = h
-            else:
-                pass
-                # g.trace('empty headline', p, 'parent', parent.h)
+            if h and h != p.h:
+                p.h = h
+        
     #@+node:ekr.20161110130157.1: *5* i.clean_all_nodes
     def clean_all_nodes(self, parent):
         '''Clean the nodes in parent's tree, in a language-dependent way.'''

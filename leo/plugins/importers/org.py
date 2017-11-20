@@ -19,9 +19,36 @@ class Org_Importer(Importer):
             state_class = None,
             strict = False,
         )
-        self.remove_tags = self.c.config.getBool('org-mode-removes-tags')
+        c = self.c
+        self.remove_tags = c.config.getBool('org-mode-removes-tags')
+        self.load_nodetags()
+        self.tc = getattr(c, 'theTagController', None)
 
     #@+others
+    #@+node:ekr.20171120084611.2: *3* org_i.clean_headline
+    tag_pattern = re.compile(r':([\w_@]+:)+\s*$')
+        # Recognize :tag: syntax only at the end of headlines.
+        # Use :tag1:tag2: to specify two tags, not :tag1: :tag2:
+
+    def clean_headline(self, s, p=None):
+        '''
+        Return a cleaned up headline for p.
+        Also parses org-mode tags.
+        '''
+        trace = True and not g.unitTesting
+        if p and self.tc:
+            # Support for #578: org-mode tags.
+            m = self.tag_pattern.search(s)
+            if m:
+                i = m.start()
+                head = s[:i].strip()
+                tail = s[i+1:-1].strip()
+                tags = tail.split(':')
+                for tag in tags:
+                    self.tc.add_tag(p.v, tag)
+                if trace:
+                    g.trace('head', head, 'tags:', tags)
+        return s
     #@+node:ekr.20161123194634.1: *3* org_i.gen_lines & helper
     org_pattern = re.compile(r'^(\*+)(.*)$')
 
@@ -84,29 +111,7 @@ class Org_Importer(Importer):
         substages use the API for setting body text. Changing p.b directly will
         cause asserts to fail later in i.finish().
         '''
-        # Do nothing!
-    #@+node:ekr.20171120100911.1: *3* org_i.clean_all_headlines
-    def clean_all_headlines(self, parent):
-        '''
-        Clean all headlines in parent's tree by calling the language-specific
-        clean_headline method.
-        '''
-        for p in parent.subtree():
-            h = self.clean_headline(p.h, p=p)
-            if h and h != p.h:
-                p.h = h
-    #@+node:ekr.20171120084611.2: *3* org_i.clean_headline (to do)
-    tag_pattern = re.compile(r'To do')
-
-    def clean_headline(self, s, p=None):
-        '''Return a cleaned up headline for p.'''
-        m = self.tag_pattern.match(s)
-        if False and m:
-            return m.group(0).strip('(').strip()
-        else:
-            return s.strip()
-
-
+        self.clean_all_headlines(parent)
     #@-others
 #@-others
 importer_dict = {

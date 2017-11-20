@@ -14925,9 +14925,33 @@ try:
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
+    if 0:
+        p.deleteAllChildren()
+    c.redraw()
+#@+node:ekr.20171120113732.1: *6* @test org tags
+s = '''\
+* Section 1 :tag1:
+* Section 2 :tag2:
+* Section 3 :tag3:tag4:
+'''
+table = (
+    'Section 1 :tag1:',
+    'Section 2 :tag2:',
+    'Section 3 :tag3:tag4:',
+)
+try:
+    c.importCommands.orgUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
     if 1:
         p.deleteAllChildren()
-        c.redraw()
+    c.redraw()
 
 #@+node:ekr.20161124040933.1: *5* otl (vim-outline) tests
 #@+node:ekr.20161124040933.2: *6* @test otl-1
