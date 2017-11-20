@@ -71,6 +71,17 @@ classifiers = [
     'Topic :: Text Editors',
     'Topic :: Text Processing',
     ]
+#@+node:maphew.20171120133429.1: ** User requirements
+user_requires = [
+    'PyQt5; python_version >= "3.0"',
+    'python-qt5; python_version < "3.0"',
+    ]
+#@+node:maphew.20171120133437.1: ** Dev requirements
+developer_requires = {'develop':[
+    'pylint','pyflakes', # coding syntax standards
+    'pypandoc', # doc format conversion
+    'twine','wheel','keyring' # Pip packaging, uploading to PyPi
+    ]}
 #@-others
 
 setup(
@@ -88,6 +99,8 @@ setup(
     classifiers=classifiers,
     packages=find_packages(),
     include_package_data=True, # also include MANIFEST files in wheels
+    install_requires=user_requires,
+    extras_require=developer_requires,
     entry_points={
        'console_scripts': ['leoc = leo.core.runLeo:run'],
        'gui_scripts': ['leo = leo.core.runLeo:run']
