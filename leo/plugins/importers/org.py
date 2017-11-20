@@ -67,6 +67,12 @@ class Org_Importer(Importer):
             )
             self.parents.append(child)
         return self.parents[level]
+    #@+node:ekr.20171120084611.5: *3* org_i.load_nodetags
+    def load_nodetags(self):
+        '''load the nodetags.py plugin if necessary.'''
+        c = self.c
+        if not c.theTagController:
+            g.app.pluginsController.loadOnePlugin('nodetags.py', verbose=False)
     #@+node:ekr.20161126074103.1: *3* org_i.post_pass
     def post_pass(self, parent):
         '''
@@ -78,6 +84,29 @@ class Org_Importer(Importer):
         cause asserts to fail later in i.finish().
         '''
         # Do nothing!
+    #@+node:ekr.20171120100911.1: *3* org_i.clean_all_headlines
+    def clean_all_headlines(self, parent):
+        '''
+        Clean all headlines in parent's tree by calling the language-specific
+        clean_headline method.
+        '''
+        for p in parent.subtree():
+            h = self.clean_headline(p.h, p=p)
+            if h and h != p.h:
+                p.h = h
+    #@+node:ekr.20171120084611.2: *3* org_i.clean_headline (to do)
+    tag_pattern = re.compile(r'To do')
+
+    def clean_headline(self, s, p=None):
+        '''Return a cleaned up headline for p.'''
+        # pylint: disable=arguments-differ
+        m = self.tag_pattern.match(s)
+        if False and m:
+            return m.group(0).strip('(').strip()
+        else:
+            return s.strip()
+
+
     #@-others
 #@-others
 importer_dict = {
