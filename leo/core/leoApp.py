@@ -1898,7 +1898,7 @@ class LoadManager(object):
             d1 = lm.globalSettingsDict.copy(settingsName)
             d2 = lm.globalShortcutsDict.copy(shortcutsName)
         return PreviousSettings(d1, d2)
-    #@+node:ekr.20120214132927.10723: *4* LM.mergeShortcutsDicts & helpers (changed)
+    #@+node:ekr.20120214132927.10723: *4* LM.mergeShortcutsDicts & helpers
     def mergeShortcutsDicts(self, c, old_d, new_d, localFlag):
         '''
         Create a new dict by overriding all shortcuts in old_d by shortcuts in new_d.

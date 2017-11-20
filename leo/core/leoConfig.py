@@ -671,7 +671,7 @@ class ParserBaseClass(object):
                 self.valueError(p, kind, name, val)
         except ValueError:
             self.valueError(p, kind, name, val)
-    #@+node:ekr.20041120105609: *4* doShortcuts (ParserBaseClass) (changed)
+    #@+node:ekr.20041120105609: *4* doShortcuts (ParserBaseClass)
     def doShortcuts(self, p, kind, junk_name, junk_val, s=None):
         '''Handle an @shortcut or @shortcuts node.'''
         trace = False and not g.unitTesting
@@ -686,10 +686,10 @@ class ParserBaseClass(object):
                 if si and si.stroke not in (None, 'none', 'None'):
                     self.doOneShortcut(si, commandName, p)
                 else:
-                    # Add local assignments to None to c.k.
-                    fn2 = c.shortFileName()
-                    if not fn2.endswith('leoSettings.leo') and not fn2.endswith('myLeoSettings.leo'):
-                        if trace: g.trace('%s: killing binding to %s' % (fn2, commandName))
+                    # New in Leo 5.7: Add local assignments to None to c.k.killedBindings.
+                    if c.config.isLocalSettingsFile():
+                        if trace: g.trace('%s: killing binding to %s' % (
+                            c.shortFileName(), commandName))
                         c.k.killedBindings.append(commandName)
         if trace: g.trace(
             len(list(self.shortcutsDict.keys())), c.shortFileName(), p.h)
@@ -1847,6 +1847,15 @@ class LocalConfigManager(object):
         path = gs.path.lower()
         for fn in ('myLeoSettings.leo', 'leoSettings.leo'):
             if path.endswith(fn.lower()):
+                return False
+        return True
+    #@+node:ekr.20171119222458.1: *4* c.config.isLocalSettingFile (new)
+    def isLocalSettingsFile(self):
+        '''Return true if c is not leoSettings.leo or myLeoSettings.leo'''
+        c = self.c
+        fn = c.shortFileName().lower()
+        for fn2 in ('leoSettings.leo', 'myLeoSettings.leo'):
+            if fn.endswith(fn2.lower()):
                 return False
         return True
     #@+node:ekr.20120224140548.10528: *4* c.exists (new)
