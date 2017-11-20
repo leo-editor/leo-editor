@@ -100,7 +100,6 @@ class Org_Importer(Importer):
 
     def clean_headline(self, s, p=None):
         '''Return a cleaned up headline for p.'''
-        # pylint: disable=arguments-differ
         m = self.tag_pattern.match(s)
         if False and m:
             return m.group(0).strip('(').strip()

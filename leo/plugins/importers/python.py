@@ -246,7 +246,7 @@ class Py_Importer(Importer):
         '''
         trace = False # and g.unitTesting
         indent_ws = self.get_str_lws(line)
-        h = self.clean_headline(line)
+        h = self.clean_headline(line, p=None)
         if not target.at_others_flag:
             target.at_others_flag = True
             ref = '%s@others\n' % indent_ws
@@ -337,7 +337,7 @@ class Py_Importer(Importer):
         top = stack[-1]
         parent = top.p
         self.gen_ref(line, parent, top)
-        h = self.clean_headline(line)
+        h = self.clean_headline(line, p=None)
         child = self.create_child_node(parent, line, h)
         self.prepend_lines(child, self.decorator_lines)
         if trace: g.printList(self.get_lines(child))
