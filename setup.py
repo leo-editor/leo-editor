@@ -47,6 +47,7 @@ def git_version():
 # adapted from https://github.com/BonsaiAI/bonsai-config/blob/0.3.1/setup.py#L7
 try:
     from pypandoc import convert
+
     def read_md(f): return convert(f, 'rst')
 
 except ImportError:
@@ -55,8 +56,6 @@ except ImportError:
 
 #def read_md(f): return open(f, 'r').read()
     # disabled so obviously fail if markdown conversion fails
-
-    
 #@+node:maphew.20141126230535.4: ** classifiers
 classifiers = [
     'Development Status :: 6 - Mature',
@@ -75,23 +74,23 @@ classifiers = [
 #@-others
 
 setup(
-    name = 'leo',
+    name='leo',
     # version = leo.core.leoVersion.version,
-    version = git_version(),
-    author = 'Edward K. Ream',
-    author_email = 'edreamleo@gmail.com',
-    url = 'http://leoeditor.com',
-    license = 'MIT License',
-    description = 'An IDE, PIM and Outliner', # becomes 'Summary' in pkg-info
-    long_description = read_md('README.md'),
-    platforms = ['Linux','Windows','MacOS'],
-    download_url = 'http://leoeditor.com/download.html',
-    classifiers = classifiers,
-    packages = find_packages(),
+    version=git_version(),
+    author='Edward K. Ream',
+    author_email='edreamleo@gmail.com',
+    url='http://leoeditor.com',
+    license='MIT License',
+    description='An IDE, PIM and Outliner', # becomes 'Summary' in pkg-info
+    long_description=read_md('README.md'),
+    platforms=['Linux', 'Windows', 'MacOS'],
+    download_url='http://leoeditor.com/download.html',
+    classifiers=classifiers,
+    packages=find_packages(),
     include_package_data=True, # also include MANIFEST files in wheels
-    entry_points = {
+    entry_points={
        'console_scripts': ['leoc = leo.core.runLeo:run'],
-       'gui_scripts' : ['leo = leo.core.runLeo:run']
+       'gui_scripts': ['leo = leo.core.runLeo:run']
        }
 )
 
