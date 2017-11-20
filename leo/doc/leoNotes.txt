@@ -25999,6 +25999,31 @@ def bindLate(self, commandName, func, pane='all', shortcut='None'):
             )
     if shortcut:
         k.makeMasterGuiBinding(stroke)
+.. @+node:ekr.20161026041659.1: *3* k.killBinding (not used)
+def killBinding(self, commandName):
+    '''
+    Kill all bindings for all keystrokes presently assigned to commandName.
+    This is effectively the inverse of k.bindKey()
+    
+    - Remove all matching entries from k.bindingsDict.
+      Keys are shortcuts, values are lists of ShortcutInfo objects.
+    - Remove any matching entry from k.masterBindingDict.
+      Keys are strokes, values are list of widgets in which stoke is bound
+    '''
+    c = self.c
+    raw_key, aList = c.config.getShortcut(commandName)
+    g.trace(commandName)
+    g.printList(aList)
+    
+    ### From k.registerCommand
+        # raw_key, aList = c.config.getShortcut(commandName)
+        # for si in aList:
+            # assert g.isShortcutInfo(si), si
+            # assert g.isStrokeOrNone(si.stroke)
+            # if si.stroke and not si.pane.endswith('-mode'):
+                # stroke = si.stroke
+                # pane = si.pane # 2015/05/11.
+                # break
 .. @-all
 .. @@nosearch
 .. @-leo

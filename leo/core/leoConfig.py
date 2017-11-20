@@ -671,7 +671,7 @@ class ParserBaseClass(object):
                 self.valueError(p, kind, name, val)
         except ValueError:
             self.valueError(p, kind, name, val)
-    #@+node:ekr.20041120105609: *4* doShortcuts (ParserBaseClass)
+    #@+node:ekr.20041120105609: *4* doShortcuts (ParserBaseClass) (changed)
     def doShortcuts(self, p, kind, junk_name, junk_val, s=None):
         '''Handle an @shortcut or @shortcuts node.'''
         trace = False and not g.unitTesting
@@ -685,6 +685,12 @@ class ParserBaseClass(object):
                 assert g.isShortcutInfo(si), si
                 if si and si.stroke not in (None, 'none', 'None'):
                     self.doOneShortcut(si, commandName, p)
+                else:
+                    # Add local assignments to None to c.k.
+                    fn2 = c.shortFileName()
+                    if not fn2.endswith('leoSettings.leo') and not fn2.endswith('myLeoSettings.leo'):
+                        if trace: g.trace('%s: killing binding to %s' % (fn2, commandName))
+                        c.k.killedBindings.append(commandName)
         if trace: g.trace(
             len(list(self.shortcutsDict.keys())), c.shortFileName(), p.h)
     #@+node:ekr.20111020144401.9585: *5* doOneShortcut (ParserBaseClass)

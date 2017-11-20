@@ -123,6 +123,9 @@ import time
 # inverseBindingDict (5)  command names       lists of tuples (pane,key)
 # modeCommandsDict (6)    command name (7)    inner modeCommandsDicts (8)
 # 
+# New in Leo 4.7:
+# k.killedBindings is a list of command names for which bindings have been killed in local files.
+# 
 # Notes:
 # 
 # (1) Command names are minibuffer names (strings)
@@ -1682,6 +1685,8 @@ class KeyHandlerClass(object):
             # A singleton defined in k.finishCreate.
         self.inited = False
             # Set at end of finishCreate.
+        self.killedBindings = []
+            # A list of commands whose bindings have been set to None in the local file.
         self.swap_mac_keys = False
             # How to init this??
         self.w = None
@@ -2383,31 +2388,6 @@ class KeyHandlerClass(object):
                         found = True; break
             if not found and warn:
                 g.trace('no setting for %s' % commandName)
-    #@+node:ekr.20161026041659.1: *4* k.killBinding
-    def killBinding(self, commandName):
-        '''
-        Kill all bindings for all keystrokes presently assigned to commandName.
-        This is effectively the inverse of k.bindKey()
-        
-        - Remove all matching entries from k.bindingsDict.
-          Keys are shortcuts, values are lists of ShortcutInfo objects.
-        - Remove any matching entry from k.masterBindingDict.
-          Keys are strokes, values are list of widgets in which stoke is bound
-        '''
-        c = self.c
-        raw_key, aList = c.config.getShortcut(commandName)
-        g.trace(commandName)
-        g.printList(aList)
-        
-        ### From k.registerCommand
-            # raw_key, aList = c.config.getShortcut(commandName)
-            # for si in aList:
-                # assert g.isShortcutInfo(si), si
-                # assert g.isStrokeOrNone(si.stroke)
-                # if si.stroke and not si.pane.endswith('-mode'):
-                    # stroke = si.stroke
-                    # pane = si.pane # 2015/05/11.
-                    # break
     #@+node:ekr.20061031131434.98: *4* k.makeAllBindings
     def makeAllBindings(self):
         '''Make all key bindings in all of Leo's panes.'''
@@ -3170,10 +3150,6 @@ class KeyHandlerClass(object):
             k.bindKey(pane, stroke, func, commandName, tag='register-command')
                 # Must be a stroke.
             k.makeMasterGuiBinding(stroke, trace=trace) # Must be a stroke.
-        # New in Leo 5.7: it's not possible to kill bindings from k.registerCommand.
-            # elif is_local:
-                # if trace: g.trace('KILL:', commandName)
-                # k.killBinding(commandName)
         if trace:
             # pretty_stroke = k.prettyPrintKey(stroke) if stroke else 'None'
             g.trace('@command %-45s' % (commandName), g.callers(2))
@@ -3477,7 +3453,7 @@ class KeyHandlerClass(object):
         trace = False and not g.unitTesting
         trace_dict = False
         verbose = False
-        k = self; w_name = k.c.widget_name(w)
+        k, w_name = self, self.c.widget_name(w)
         state = k.unboundKeyAction
         if not g.isStroke(stroke):
             g.trace('can not happen: not a stroke', repr(stroke), g.callers())
