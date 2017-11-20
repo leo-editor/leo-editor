@@ -1849,7 +1849,7 @@ class LocalConfigManager(object):
             if path.endswith(fn.lower()):
                 return False
         return True
-    #@+node:ekr.20171119222458.1: *4* c.config.isLocalSettingFile (new)
+    #@+node:ekr.20171119222458.1: *4* c.config.isLocalSettingsFile (new)
     def isLocalSettingsFile(self):
         '''Return true if c is not leoSettings.leo or myLeoSettings.leo'''
         c = self.c

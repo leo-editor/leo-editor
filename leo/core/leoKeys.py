@@ -2391,6 +2391,8 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.98: *4* k.makeAllBindings
     def makeAllBindings(self):
         '''Make all key bindings in all of Leo's panes.'''
+        trace = False and not g.unitTesting
+        if trace: t1 = time.clock()
         k = self
         k.bindingsDict = {}
         k.addModeCommands()
@@ -2399,6 +2401,7 @@ class KeyHandlerClass(object):
         k.initAbbrev()
         k.completeAllBindings()
         k.checkBindings()
+        if trace: g.trace('%4.2f sec.' % (time.clock()-t1))
     #@+node:ekr.20061031131434.102: *4* k.makeBindingsFromCommandsDict
     def makeBindingsFromCommandsDict(self):
         '''Add bindings for all entries in c.commandsDict.'''
