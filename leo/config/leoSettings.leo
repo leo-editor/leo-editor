@@ -2839,6 +2839,10 @@
 </v>
 </v>
 <v t="ekr.20171121015619.1"></v>
+<v t="ekr.20171121100639.1"><vh>Declutter</vh>
+<v t="tbrown.20150807123339.1"></v>
+<v t="tbrown.20150807123421.1"></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -14356,6 +14360,7 @@ at the end of headlines.
 
 False: Leave headlines as they are.
 </t>
+<t tx="ekr.20171121100639.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

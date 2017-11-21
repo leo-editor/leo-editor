@@ -14934,7 +14934,7 @@ s = '''\
 * Section 2 :tag2:
 * Section 3 :tag3:tag4:
 '''
-if c.config.getBool('org-mode-removes-tags'):
+if False: ### c.config.getBool('org-mode-removes-tags'):
     table = (
         'Section 1',
         'Section 2',
