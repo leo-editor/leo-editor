@@ -201,7 +201,8 @@ class TagController(object):
     #@+node:peckj.20140804103733.9260: *4* add_tag
     def add_tag(self, v, tag):
         ''' adds 'tag' to the taglist of v '''
-        tags = v.u.get(self.TAG_LIST_KEY, set([]))
+        # cast to set() incase JSON storage (leo_cloud plugin) converted to list
+        tags = set(v.u.get(self.TAG_LIST_KEY, set([])))
         tags.add(tag)
         v.u[self.TAG_LIST_KEY] = tags
         self.c.setChanged(True)
@@ -209,7 +210,8 @@ class TagController(object):
     #@+node:peckj.20140804103733.9261: *4* remove_tag
     def remove_tag(self, v, tag):
         ''' removes 'tag' from the taglist of v '''
-        tags = v.u.get(self.TAG_LIST_KEY, set([]))
+        # cast to set() incase JSON storage (leo_cloud plugin) converted to list
+        tags = set(v.u.get(self.TAG_LIST_KEY, set([])))
         if tag in tags:
             tags.remove(tag)
         if tags:
