@@ -21,8 +21,7 @@ class Org_Importer(Importer):
         )
         c = self.c
         self.remove_tags = c.config.getBool('org-mode-removes-tags')
-        self.load_nodetags()
-        self.tc = getattr(c, 'theTagController', None)
+        self.tc = self.load_nodetags()
 
     #@+others
     #@+node:ekr.20171120084611.2: *3* org_i.clean_headline
@@ -48,7 +47,9 @@ class Org_Importer(Importer):
                     self.tc.add_tag(p.v, tag)
                 if trace:
                     g.trace('head', head, 'tags:', tags)
+                return head if self.remove_tags else p.h
         return s
+
     #@+node:ekr.20161123194634.1: *3* org_i.gen_lines & helper
     org_pattern = re.compile(r'^(\*+)(.*)$')
 
@@ -97,10 +98,14 @@ class Org_Importer(Importer):
         return self.parents[level]
     #@+node:ekr.20171120084611.5: *3* org_i.load_nodetags
     def load_nodetags(self):
-        '''load the nodetags.py plugin if necessary.'''
+        '''
+        Load the nodetags.py plugin if necessary.
+        Return c.theTagController.
+        '''
         c = self.c
-        if not c.theTagController:
+        if not getattr(c, 'theTagController', None):
             g.app.pluginsController.loadOnePlugin('nodetags.py', verbose=False)
+        return getattr(c, 'theTagController', None)
     #@+node:ekr.20161126074103.1: *3* org_i.post_pass
     def post_pass(self, parent):
         '''

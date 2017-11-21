@@ -751,6 +751,7 @@
 <v t="ekr.20070803082435"><vh>@bool full_import_checks = True</vh></v>
 <v t="ekr.20161010085256.1"><vh>@bool js_importer_clean_lws = True</vh></v>
 <v t="ekr.20170617135317.1"><vh>@bool put_python_decorators_in_imported_headlines = False</vh></v>
+<v t="ekr.20171121015619.1"><vh>@bool org-mode-removes-tags = True</vh></v>
 <v t="ekr.20161010172424.1"><vh>@int js_importer_min_rescan_size = 0</vh></v>
 <v t="ekr.20161010172441.1"><vh>@int js_importer_min_scan_size = 0</vh></v>
 <v t="ekr.20080811105020.2"><vh>@bool suppress_import_parsing = False</vh></v>
@@ -2837,6 +2838,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20171121015619.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -14344,6 +14346,15 @@ a menu separator.</t>
     # scr_update_status_t
     # uint16_t
     # uint8_t
+</t>
+<t tx="ekr.20171121015619.1">True: Within .org files, the importer removes tags, like::
+
+    :tag1:
+    :tag1:tag2:
+    
+at the end of headlines.
+
+False: Leave headlines as they are.
 </t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
