@@ -19,7 +19,7 @@ class Org_Importer(Importer):
             state_class = None,
             strict = False,
         )
-        c = self.c
+        ### c = self.c
         ### self.remove_tags = c.config.getBool('org-mode-removes-tags')
         self.tc = self.load_nodetags()
 
