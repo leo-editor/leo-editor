@@ -667,6 +667,10 @@
 </v>
 </v>
 </v>
+<v t="ekr.20171121100639.1"><vh>Declutter</vh>
+<v t="tbrown.20150807123339.1"><vh>@bool tree-declutter = False</vh></v>
+<v t="tbrown.20150807123421.1"><vh>@data tree-declutter-patterns</vh></v>
+</v>
 <v t="tbnorth.20170111153412.1"><vh>Editing</vh>
 <v t="tbnorth.20170111153417.1"><vh>@int autojustify = 78</vh></v>
 <v t="tbnorth.20170111153430.1"><vh>@bool autojustify-on-at-start = False</vh></v>
@@ -751,7 +755,6 @@
 <v t="ekr.20070803082435"><vh>@bool full_import_checks = True</vh></v>
 <v t="ekr.20161010085256.1"><vh>@bool js_importer_clean_lws = True</vh></v>
 <v t="ekr.20170617135317.1"><vh>@bool put_python_decorators_in_imported_headlines = False</vh></v>
-<v t="ekr.20171121015619.1"><vh>@bool org-mode-removes-tags = True</vh></v>
 <v t="ekr.20161010172424.1"><vh>@int js_importer_min_rescan_size = 0</vh></v>
 <v t="ekr.20161010172441.1"><vh>@int js_importer_min_scan_size = 0</vh></v>
 <v t="ekr.20080811105020.2"><vh>@bool suppress_import_parsing = False</vh></v>
@@ -2175,8 +2178,6 @@
 <v t="ekr.20061007211759"><vh>@bool sparse_move_outline_left = False</vh></v>
 <v t="ekr.20060122105527.7"><vh>@bool stayInTreeAfterSelect = True</vh></v>
 <v t="ekr.20061002115414.1"><vh>@float outline_nav_extend_delay = 2.0</vh></v>
-<v t="tbrown.20150807123339.1"><vh>@bool tree-declutter = False</vh></v>
-<v t="tbrown.20150807123421.1"><vh>@data tree-declutter-patterns</vh></v>
 </v>
 <v t="ekr.20041119034357.15"><vh>Unicode options</vh>
 <v t="ekr.20080212084020"><vh>@string default_at_auto_file_encoding = utf-8</vh></v>
@@ -2837,11 +2838,6 @@
 </v>
 </v>
 </v>
-</v>
-<v t="ekr.20171121015619.1"></v>
-<v t="ekr.20171121100639.1"><vh>Declutter</vh>
-<v t="tbrown.20150807123339.1"></v>
-<v t="tbrown.20150807123421.1"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -14350,15 +14346,6 @@ a menu separator.</t>
     # scr_update_status_t
     # uint16_t
     # uint8_t
-</t>
-<t tx="ekr.20171121015619.1">True: Within .org files, the importer removes tags, like::
-
-    :tag1:
-    :tag1:tag2:
-    
-at the end of headlines.
-
-False: Leave headlines as they are.
 </t>
 <t tx="ekr.20171121100639.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
