@@ -51,11 +51,10 @@ try:
     def read_md(f): return convert(f, 'rst')
 
 except ImportError:
-    print('warning: pypandoc module not found, '
-          'could not convert Markdown to RST')
+    print('warning: pypandoc module not found, could not convert Markdown to RST')
 
-#def read_md(f): return open(f, 'r').read()
-    # disabled so obviously fail if markdown conversion fails
+    def read_md(f): return open(f, 'r').read()
+        # disable to obviously fail if markdown conversion fails
 #@+node:maphew.20141126230535.4: ** classifiers
 classifiers = [
     'Development Status :: 6 - Mature',
@@ -74,7 +73,7 @@ classifiers = [
 #@+node:maphew.20171120133429.1: ** User requirements
 user_requires = [
     'PyQt5; python_version >= "3.0"',
-    'python-qt5; python_version < "3.0"',
+    'python-qt5; python_version < "3.0" and platform_system=="Windows"',
     ]
 #@+node:maphew.20171120133437.1: ** Dev requirements
 developer_requires = {'develop':[
