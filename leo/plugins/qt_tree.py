@@ -223,7 +223,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self.declutter_update = True
 
         return None
-    #@+node:tbrown.20150807090639.1: *5* qtree.declutter_node & helper
+    #@+node:tbrown.20150807090639.1: *5* qtree.declutter_node & helpers
     def declutter_node(self, c, p, item):
         """declutter_node - change the appearance of a node
 
@@ -250,32 +250,16 @@ class LeoQtTree(leoFrame.LeoTree):
         text = str(item.text(0)) if g.isPython3 else g.u(item.text(0))
         new_icons = []
         for pattern, cmds in self.declutter_patterns:
-            m1 = pattern.match(text)
-            if m1:
-                # if trace: g.trace('PATTERN.MATCH', text)
-                for cmd, arg in cmds:
-                    if cmd == 'REPLACE':
-                        text = pattern.sub(arg, text)
-                        item.setText(0, text)
-                    else:
-                        self.declutter_helper(arg, c, cmd, item, new_icons)
-            else:
-                m2 = pattern.search(text)
-                if m2:
-                    # if trace: g.trace('PATTERN.SEARCH', text)
+            for func in (pattern.match, pattern.search):
+                m = func(text)
+                if m:
+                    # if trace: g.trace(func.__name__, text)
                     for cmd, arg in cmds:
-                        if trace: g.trace(cmd, text)
-                        if cmd == 'REPLACE-HEAD':
-                            s = text[:m2.start()]
-                            item.setText(0, s.rstrip())
-                        elif cmd == 'REPLACE-TAIL':
-                            s = text[m2.end():]
-                            item.setText(0, s.lstrip())
-                        elif cmd == 'REPLACE-REST':
-                            s = text[:m2.start] + text[m2.end():]
-                            item.setText(0, s.strip())
+                        if self.declutter_replace(arg, cmd, item, m, pattern, text):
+                            pass
                         else:
-                            self.declutter_helper(arg, c, cmd, item, new_icons) 
+                            self.declutter_style(arg, c, cmd, item, new_icons)
+                    break # Don't try pattern.search if pattern.match succeeds.
         com = c.editCommands
         allIcons = com.getIconList(p)
         icons = [i for i in allIcons if 'visualIcon' not in i]
@@ -287,8 +271,32 @@ class LeoQtTree(leoFrame.LeoTree):
                     on='vnode', visualIcon='1'
                 )
             com.setIconList(p, icons, False)
-    #@+node:ekr.20171122055719.1: *6* qtree.declutter_helper
-    def declutter_helper(self, arg, c, cmd, item, new_icons):
+    #@+node:ekr.20171122064635.1: *6* qtree.declutter_replace
+    def declutter_replace(self, arg, cmd, item, m, pattern, text):
+        '''
+        Execute cmd and return True if cmd is any replace command.
+        '''
+        if cmd == 'REPLACE':
+            text = pattern.sub(arg, text)
+            item.setText(0, text)
+            return True
+        elif cmd == 'REPLACE-HEAD':
+            s = text[:m.start()]
+            item.setText(0, s.rstrip())
+            return True
+        elif cmd == 'REPLACE-TAIL':
+            s = text[m.end():]
+            item.setText(0, s.lstrip())
+            return True
+        elif cmd == 'REPLACE-REST':
+            s = text[:m.start] + text[m.end():]
+            item.setText(0, s.strip())
+            return True
+        else:
+            return False
+        
+    #@+node:ekr.20171122055719.1: *6* qtree.declutter_style
+    def declutter_style(self, arg, c, cmd, item, new_icons):
         '''Handle style options.'''
         arg = c.styleSheetManager.expand_css_constants(arg).split()[0]
         if cmd == 'ICON':
