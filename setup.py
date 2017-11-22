@@ -72,6 +72,8 @@ classifiers = [
     ]
 #@+node:maphew.20171120133429.1: ** User requirements
 user_requires = [
+    'docutils', # Sphinx, rST plugin
+    'pyenchant', # spell check support
     'PyQt5; python_version >= "3.0"',
     'python-qt5; python_version < "3.0" and platform_system=="Windows"',
     ]
