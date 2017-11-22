@@ -14378,16 +14378,7 @@ a menu separator.</t>
 # WEIGHT
 #   one of Light, Normal, DemiBold, Bold, Black
 </t>
-<t tx="ekr.20171122044417.1"># Experimental org-mode tag rule:
-# RULE ^((.(?!:[\w_@]+:))+)\s*:([\w_@]+:)+\s*$
-# REPLACE \1
-
-# Simpler org-mode tag rule that does not allow ':' in the head:
-# RULE ^([^:]*):([\w_@]+:)+\s*$
-# REPLACE \1
-
-# Much simpler and rule, using REPLACE-HEAD
-# RULE :([\w_@]+:)+\s*$
+<t tx="ekr.20171122044417.1"># RULE :([\w_@]+:)+\s*$
 # REPLACE-HEAD
 </t>
 <t tx="ekr.20171122044441.1"># if the node name starts with 'peacock node DEMO', make a mess of it
