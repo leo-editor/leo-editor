@@ -1,9 +1,0 @@
-==========================
-Leo Basics Step By Step:14
-==========================
-
-
-Let's add a new node.  I hit Ctrl-I.
-
-.. image:: slide-014.png
-
