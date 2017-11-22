@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -702,7 +702,11 @@
 </v>
 <v t="ekr.20060105214753"><vh>Input modes</vh></v>
 <v t="ekr.20050306090601"><vh>Adding extensible attributes to nodes and .leo files</vh></v>
-<v t="ekr.20170228112643.1"><vh>Decluttering headlines</vh></v>
+<v t="ekr.20170228112643.1"><vh>Decluttering headlines</vh>
+<v t="ekr.20171122090736.1"><vh>Examples</vh></v>
+<v t="ekr.20171122090711.1"><vh>Rule &amp; replacement lines</vh></v>
+<v t="ekr.20171122090722.1"><vh>Style lines</vh></v>
+</v>
 <v t="ekr.20080310093038.4"><vh>Translating Leo's menus and messages</vh></v>
 <v t="ekr.20100122073254.11655"><vh>Writing new importers</vh></v>
 </v>
@@ -1686,6 +1690,7 @@
 <v t="ekr.20170707034853.72"><vh>screen_capture.py now enabled by default</vh></v>
 </v>
 </v>
+<v t="ekr.20170228112643.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -22873,36 +22878,38 @@ Rob (Largo84)::
 </t>
 <t tx="ekr.20170228112247.1">https://github.com/leo-editor/leo-editor/pull/349
 Command line option to select type of @&lt;file&gt; node to when opening non-outline files</t>
-<t tx="ekr.20170228112643.1">**Decluttering** replaces @clean, @file, etc. by icons in headlines. The setting::
+<t tx="ekr.20170228112643.1">**Decluttering** replaces controls custom formatting of headlines, including:
+
+- Hiding or changing headline text,
+- Adding icons to headlines,
+- Changing the styling of headlines.
+
+Decluttering is *inactive* when you are editing a headline.
+
+Decluttering is *completely optional*. To enable decluttering, use::
 
      @bool tree-declutter = True
      
-enables decluttering. The @data node::
-
+Decluttering is controlled by **decluttering rulesets**.
+You specify decluttering rulesets in the body text of::
+     
     @data tree-declutter-patterns
     
-should contain `regular expression patterns &lt;https://docs.python.org/2/library/re.html&gt;`_ like::
+As usual with @data nodes:
 
-    # remove @clean and use an icon
-    RULE ^@clean (.*)
-    REPLACE \1
-    ICON file_icons/file_clean.png
-    
-    # show the last part of long filenames
-    RULE ^.{1,1000}([/\\])(.{25})
-    REPLACE …\1\2
-    
-    # if the node name starts with 'peacock node DEMO', make a mess of it
-    RULE ^(peacock node DEMO)
-    REPLACE LOOK: \1
-    ICON Tango/16x16/emotes/face-grin.png
-    ICON Tango/16x16/emotes/face-wink.png
-    FG @solarized-magenta
-    BG white
-    FONT Times
-    PX 40
-    ITALIC 1
-    WEIGHT Bold
+- Blank lines and lines starting with '#' are ignored.
+- You may organize the text of the @data node using child nodes.
+
+Each ruleset consists of a list of lines:
+
+- The first line is a **rule line**, containing a **find pattern**.
+- The second line is a **replacement line**.
+- The ruleset ends with zero or more **style lines**.
+
+Find patterns are `regular expressions &lt;https://docs.python.org/2/library/re.html&gt;`_.
+Decluttering affects only those headlines that match a rule pattern. 
+
+The following section shows some example rulesets. Later sections discuss decluttering commands, patterns and styles in more detail.
 </t>
 <t tx="ekr.20170228124856.1">https://groups.google.com/d/msg/leo-editor/L4EAfY7NJbw/NgSv5zSDEwAJ
 
@@ -24480,7 +24487,77 @@ If you change the *structure* of @file nodes in leoPy.leo in one branch, such ch
 You can see such changes clearly using leo --diff.
 
 In short, don't make unnecessary structural changes in leoPy.leo when in branches other than master.</t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20171122090711.1">All rulesets start with a **rule line** of the form::
+
+    RULE &lt;regular expression&gt;
+    
+The ruleset matches a headline if and only if the regular expression matches. Matches can start anywhere in the headline. Leo first attempts to a match using re.match. If that doesn't work, Leo tries re.search.
+
+A **replacement line** must follow the rule line. Here are the valid forms::
+
+    REPLACE &lt;substitution expression&gt;
+    REPLACE-HEAD
+    REPLACE-TAIL
+    REPLACE-REST
+    
+- REPLACE replaces the headline by the value of the substitution expression.  For example::
+
+    REPLACE \1
+    
+  matches replaces the headline by the first matched regex group.
+
+- REPLACE-HEAD replaces replace the headline by the text that precedes the matched text.
+
+- REPLACE-TAIL replaces the headline by the text that follows the matched text.
+
+- REPLACE-REST replaces the headline by everything except the matched text.
+</t>
+<t tx="ekr.20171122090722.1">Leo applies style lines only if they appear in a ruleset that matches a headline. Style lines do the following...
+
+Add an icon to the headline::
+
+    ICON path/to/icon
+    
+Set the background or foreground color to a color number or names::
+
+    BG #FF8800
+    FG @solarized-magenta
+
+Set the font to a given font name::
+
+    Font Times
+    
+Set the font size in pixels (PX) or points (PT)::
+
+    PX 40
+    PT 16
+    
+Enable or disable italics::
+
+    ITALIC 0
+    ITALIC 1
+
+Set the font weight to one of Light, Normal, DemiBold, Bold, Black::
+
+    WEIGHT DemoBold
+</t>
+<t tx="ekr.20171122090736.1">Here are some examples of decluttering rulesets::
+
+    # Hide org-mode tags and bold the headline.
+    RULE :([\w_@]+:)+\s*$
+    REPLACE-HEAD
+    WEIGHT Bold
+
+    # Replace @clean with an icon
+    RULE ^@clean (.*)
+    REPLACE \1
+    ICON file_icons/file_clean.png
+    
+    # Show the last part of long filenames
+    RULE ^.{1,1000}([/\\])(.{25})
+    REPLACE …\1\2
+</t>
+<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
