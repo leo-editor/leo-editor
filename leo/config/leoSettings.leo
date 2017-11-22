@@ -669,7 +669,14 @@
 </v>
 <v t="ekr.20171121100639.1"><vh>Declutter</vh>
 <v t="tbrown.20150807123339.1"><vh>@bool tree-declutter = False</vh></v>
-<v t="tbrown.20150807123421.1"><vh>@data tree-declutter-patterns</vh></v>
+<v t="tbrown.20150807123421.1"><vh>@data tree-declutter-patterns</vh>
+<v t="ekr.20171122044344.1"><vh> About declutter patterns</vh></v>
+<v t="ekr.20171122044441.3"><vh>declutter: add icon to folders and remove...</vh></v>
+<v t="ekr.20171122044441.1"><vh>declutter: demo pattern</vh></v>
+<v t="ekr.20171122044417.1"><vh>declutter: hide org-mode tags</vh></v>
+<v t="ekr.20171122044441.2"><vh>declutter: replace @&lt;file&gt; with an icon</vh></v>
+<v t="ekr.20171122044906.1"><vh>declutter: show last part of long filenames</vh></v>
+</v>
 </v>
 <v t="tbnorth.20170111153412.1"><vh>Editing</vh>
 <v t="tbnorth.20170111153417.1"><vh>@int autojustify = 78</vh></v>
@@ -14349,6 +14356,101 @@ a menu separator.</t>
     # uint8_t
 </t>
 <t tx="ekr.20171121100639.1"></t>
+<t tx="ekr.20171122044344.1"># each rules starts with 'RULE' followed by the regex pattern to match
+# non-blank non-# lines before the next RULE are commands:
+
+# REPLACE &lt;text on rest of line&gt;
+#   replacement text
+# ICON path/to/icon
+#   icon to add
+# FG
+#   a color, e.g. #FF8800 or @solarized-magenta
+# BG
+#   a color, e.g. #FF8800 or @solarized-magenta
+# FONT
+#   The name of a font, e.g. Times
+# PX
+#   A font size in pixels, e.g. 40
+# PT
+#   A font size in points, e.g. 40
+# ITALIC
+#   0 or 1
+# WEIGHT
+#   one of Light, Normal, DemiBold, Bold, Black
+</t>
+<t tx="ekr.20171122044417.1"># Experimental org-mode tag rule:
+# RULE ^((.(?!:[\w_@]+:))+)\s*:([\w_@]+:)+\s*$
+# REPLACE \1
+
+# Simpler org-mode tag rule that does not allow ':' in the head:
+# RULE ^([^:]*):([\w_@]+:)+\s*$
+# REPLACE \1
+
+# Much simpler and rule, using REPLACE-HEAD
+# RULE :([\w_@]+:)+\s*$
+# REPLACE-HEAD
+</t>
+<t tx="ekr.20171122044441.1"># if the node name starts with 'peacock node DEMO', make a mess of it
+RULE ^(peacock node DEMO)
+REPLACE LOOK: \1
+ICON Tango/16x16/emotes/face-grin.png
+ICON Tango/16x16/emotes/face-wink.png
+FG @solarized-magenta
+BG white
+FONT Times
+PX 40
+ITALIC 1
+WEIGHT Bold
+</t>
+<t tx="ekr.20171122044441.2"># remove @clean etc. and use an icon
+RULE ^@clean (.*)
+REPLACE \1
+ICON file_icons/file_clean.png
+
+RULE ^@auto (.*)
+REPLACE \1
+ICON file_icons/file_auto.png
+
+RULE ^@edit (.*)
+REPLACE \1
+ICON file_icons/file_edit.png
+
+RULE ^@asis (.*)
+REPLACE \1
+ICON file_icons/file_asis.png
+
+RULE ^@nosent (.*)
+REPLACE \1
+ICON file_icons/file_nosent.png
+
+RULE ^@file (.*)
+REPLACE \1
+ICON file_icons/file_file.png
+</t>
+<t tx="ekr.20171122044441.3"># Add Icon to folders and remove /-/
+RULE ^/(.*)/$
+REPLACE \1 
+ICON file_icons/folder.png
+
+# Add icon to path folders and remove @path
+RULE ^@path (.*)
+REPLACE \1 
+ICON file_icons/folder_path.png
+
+# Add Icon to removed folders and remove */-/*
+RULE ^\*/(.*)/\*$
+REPLACE \1 
+ICON file_icons/folder_removed.png
+
+# Add Icon to removed files and remove *-* but not **-**
+RULE ^\*([^\*/]*[^\*]*[^\*/]*)\*$
+REPLACE \1 
+ICON file_icons/removed.png
+</t>
+<t tx="ekr.20171122044906.1"># show the last part of long filenames
+RULE ^.{1,1000}/(.{20})
+REPLACE …/\1
+</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
@@ -14742,92 +14844,9 @@ See tree-declutter-patterns
 </t>
 <t tx="tbrown.20150807123421.1" lineYOffset="4b002e"># regex patterns to reformat the appearance of nodes
 # tree-declutter must be set to True for these to function
-#
-# lines starting with '#' are ignored
-# each rules starts with 'RULE' followed by the regex pattern to match
-# non-blank non-# lines before the next RULE are commands:
-# REPLACE &lt;text on rest of line&gt;
-#   replacement text
-# ICON path/to/icon
-#   icon to add
-# FG
-#   a color, e.g. #FF8800 or @solarized-magenta
-# BG
-#   a color, e.g. #FF8800 or @solarized-magenta
-# FONT
-#   The name of a font, e.g. Times
-# PX
-#   A font size in pixels, e.g. 40
-# PT
-#   A font size in points, e.g. 40
-# ITALIC
-#   0 or 1
-# WEIGHT
-#   one of Light, Normal, DemiBold, Bold, Black
 
-# Experimental org-mode tag rule:
-# RULE ^((.(?!:[\w_@]+:))+)\s*:([\w_@]+:)+\s*$
-# REPLACE \1
-
-# Simpler org-mode tag rule that does not allow ':' in the head:
-# RULE ^([^:]*):([\w_@]+:)+\s*$
-# REPLACE \1
-
-# if the node name starts with 'peacock node DEMO', make a mess of it
-RULE ^(peacock node DEMO)
-REPLACE LOOK: \1
-ICON Tango/16x16/emotes/face-grin.png
-ICON Tango/16x16/emotes/face-wink.png
-FG @solarized-magenta
-BG white
-FONT Times
-PX 40
-ITALIC 1
-WEIGHT Bold
-
-# remove @clean etc. and use an icon
-RULE ^@clean (.*)
-REPLACE \1
-ICON file_icons/file_clean.png
-RULE ^@auto (.*)
-REPLACE \1
-ICON file_icons/file_auto.png
-RULE ^@edit (.*)
-REPLACE \1
-ICON file_icons/file_edit.png
-RULE ^@asis (.*)
-REPLACE \1
-ICON file_icons/file_asis.png
-RULE ^@nosent (.*)
-REPLACE \1
-ICON file_icons/file_nosent.png
-RULE ^@file (.*)
-REPLACE \1
-ICON file_icons/file_file.png
-
-# Add Icon to folders and remove /-/
-RULE ^/(.*)/$
-REPLACE \1 
-ICON file_icons/folder.png
-
-# Add icon to path folders and remove @path
-RULE ^@path (.*)
-REPLACE \1 
-ICON file_icons/folder_path.png
-
-# Add Icon to removed folders and remove */-/*
-RULE ^\*/(.*)/\*$
-REPLACE \1 
-ICON file_icons/folder_removed.png
-
-# Add Icon to removed files and remove *-* but not **-**
-RULE ^\*([^\*/]*[^\*]*[^\*/]*)\*$
-REPLACE \1 
-ICON file_icons/removed.png
-
-# show the last part of long filenames
-RULE ^.{1,1000}/(.{20})
-REPLACE …/\1
+# blank lines and lines starting with '#' are ignored
+# See the children of this node for the actual patterns.
 </t>
 <t tx="tbrown.20150810084824.1">Separation between icons on tree node items</t>
 <t tx="tbrown.20150821171510.1">This data is used by SettingsFinder.build_menu() to build the
