@@ -2839,6 +2839,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20171121100639.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -14763,6 +14764,14 @@ See tree-declutter-patterns
 #   0 or 1
 # WEIGHT
 #   one of Light, Normal, DemiBold, Bold, Black
+
+# Experimental org-mode tag rule:
+# RULE ^((.(?!:[\w_@]+:))+)\s*:([\w_@]+:)+\s*$
+# REPLACE \1
+
+# Simpler org-mode tag rule that does not allow ':' in the head:
+# RULE ^([^:]*):([\w_@]+:)+\s*$
+# REPLACE \1
 
 # if the node name starts with 'peacock node DEMO', make a mess of it
 RULE ^(peacock node DEMO)
