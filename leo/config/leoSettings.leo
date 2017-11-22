@@ -670,7 +670,10 @@
 <v t="ekr.20171121100639.1"><vh>Declutter</vh>
 <v t="tbrown.20150807123339.1"><vh>@bool tree-declutter = False</vh></v>
 <v t="tbrown.20150807123421.1"><vh>@data tree-declutter-patterns</vh>
-<v t="ekr.20171122044344.1"><vh> About declutter patterns</vh></v>
+<v t="ekr.20171122113628.1"><vh> About Decluttering</vh>
+<v t="ekr.20171122113628.3"><vh>Rule &amp; replacement lines</vh></v>
+<v t="ekr.20171122113628.4"><vh>Style lines</vh></v>
+</v>
 <v t="ekr.20171122044441.3"><vh>declutter: add icon to folders and remove...</vh></v>
 <v t="ekr.20171122044441.1"><vh>declutter: demo pattern</vh></v>
 <v t="ekr.20171122044417.1"><vh>declutter: hide org-mode tags</vh></v>
@@ -14356,28 +14359,6 @@ a menu separator.</t>
     # uint8_t
 </t>
 <t tx="ekr.20171121100639.1"></t>
-<t tx="ekr.20171122044344.1"># each rules starts with 'RULE' followed by the regex pattern to match
-# non-blank non-# lines before the next RULE are commands:
-
-# REPLACE &lt;text on rest of line&gt;
-#   replacement text
-# ICON path/to/icon
-#   icon to add
-# FG
-#   a color, e.g. #FF8800 or @solarized-magenta
-# BG
-#   a color, e.g. #FF8800 or @solarized-magenta
-# FONT
-#   The name of a font, e.g. Times
-# PX
-#   A font size in pixels, e.g. 40
-# PT
-#   A font size in points, e.g. 40
-# ITALIC
-#   0 or 1
-# WEIGHT
-#   one of Light, Normal, DemiBold, Bold, Black
-</t>
 <t tx="ekr.20171122044417.1"># RULE :([\w_@]+:)+\s*$
 # REPLACE-HEAD
 </t>
@@ -14441,6 +14422,94 @@ ICON file_icons/removed.png
 <t tx="ekr.20171122044906.1"># show the last part of long filenames
 RULE ^.{1,1000}/(.{20})
 REPLACE …/\1
+</t>
+<t tx="ekr.20171122113628.1"># **Decluttering** replaces controls custom formatting of headlines, including:
+
+# - Hiding or changing headline text,
+# - Adding icons to headlines,
+# - Changing the styling of headlines.
+
+# Decluttering is *inactive* when you are editing a headline.
+
+# Decluttering is *completely optional*. To enable decluttering, use::
+
+     # @bool tree-declutter = True
+     
+# Decluttering is controlled by **decluttering rulesets**.
+# You specify decluttering rulesets in the body text of::
+     
+    # @data tree-declutter-patterns
+    
+# As usual with @data nodes:
+
+# - Blank lines and lines starting with '#' are ignored.
+# - You may organize the text of the @data node using child nodes.
+
+# Each ruleset consists of a list of lines:
+
+# - The first line is a **rule line**, containing a **find pattern**.
+# - The second line is a **replacement line**.
+# - The ruleset ends with zero or more **style lines**.
+
+# Find patterns are `regular expressions &lt;https://docs.python.org/2/library/re.html&gt;`_.
+# Decluttering affects only those headlines that match a rule pattern. 
+
+# The following section shows some example rulesets. Later sections discuss decluttering commands, patterns and styles in more detail.
+</t>
+<t tx="ekr.20171122113628.3"># All rulesets start with a **rule line** of the form::
+
+    # RULE &lt;regular expression&gt;
+    
+# The ruleset matches a headline if and only if the regular expression matches. Matches can start anywhere in the headline. Leo first attempts to a match using re.match. If that doesn't work, Leo tries re.search.
+
+# A **replacement line** must follow the rule line. Here are the valid forms::
+
+    # REPLACE &lt;substitution expression&gt;
+    # REPLACE-HEAD
+    # REPLACE-TAIL
+    # REPLACE-REST
+    
+# - REPLACE replaces the headline by the value of the substitution expression.  For example::
+
+    # REPLACE \1
+    
+  # matches replaces the headline by the first matched regex group.
+
+# - REPLACE-HEAD replaces replace the headline by the text that precedes the matched text.
+
+# - REPLACE-TAIL replaces the headline by the text that follows the matched text.
+
+# - REPLACE-REST replaces the headline by everything except the matched text.
+</t>
+<t tx="ekr.20171122113628.4"># Leo applies style lines only if they appear in a ruleset that matches a headline.
+# Style lines do the following...
+
+# Add an icon to the headline::
+
+    # ICON path/to/icon
+    
+# Set the background or foreground color to a color number or names::
+
+    # BG #FF8800
+    # FG @solarized-magenta
+
+# Set the font to a given font name::
+
+    # Font Times
+    
+# Set the font size in pixels (PX) or points (PT)::
+
+    # PX 40
+    # PT 16
+    
+# Enable or disable italics::
+
+    # ITALIC 0
+    # ITALIC 1
+
+# Set the font weight to one of Light, Normal, DemiBold, Bold, Black::
+
+    # WEIGHT DemoBold
 </t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
@@ -14833,11 +14902,16 @@ c.k.simulateCommand('show-fonts')
 <t tx="tbrown.20150807123339.1" lineYOffset="4b002e">Set to True to enable node appearance modifications
 See tree-declutter-patterns
 </t>
-<t tx="tbrown.20150807123421.1" lineYOffset="4b002e"># regex patterns to reformat the appearance of nodes
-# tree-declutter must be set to True for these to function
+<t tx="tbrown.20150807123421.1" lineYOffset="4b002e"># **Decluttering** replaces controls custom formatting of headlines, including:
 
-# blank lines and lines starting with '#' are ignored
-# See the children of this node for the actual patterns.
+# - Hiding or changing headline text,
+# - Adding icons to headlines,
+# - Changing the styling of headlines.
+
+# @bool tree-declutter must be True to enable decluttering.
+
+# blank lines and lines starting with '#' are ignored.
+# See the children of this node for details.
 </t>
 <t tx="tbrown.20150810084824.1">Separation between icons on tree node items</t>
 <t tx="tbrown.20150821171510.1">This data is used by SettingsFinder.build_menu() to build the
