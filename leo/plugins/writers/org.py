@@ -11,25 +11,8 @@ class OrgModeWriter(basewriter.BaseWriter):
     def __init__(self,c):
         basewriter.BaseWriter.__init__(self,c)
         self.tc = self.load_nodetags()
-        ### self.reloadSettings()
-        
-    ###
-    # def reloadSettings(self):
-        # self.remove_tags = self.c.config.getBool('org-mode-removes-tags')
 
     #@+others
-    #@+node:ekr.20171121020232.1: *3* orgw.compute_headline (not used)
-    ###
-    # def compute_headline(self, p):
-        # '''
-        # Return the headline to be written, possibly adding tags.
-        # '''
-        # if self.remove_tags and self.tc:
-            # tags = self.tc.get_tags(p.v)
-            # if tags:
-                # # Sort the tags for unit tests.
-                # return '%s :%s:' % (p.h.strip(), ':'.join(sorted(tags)))
-        # return p.h
     #@+node:ekr.20171121020009.1: *3* orgw.load_nodetags
     def load_nodetags(self):
         '''
@@ -53,7 +36,6 @@ class OrgModeWriter(basewriter.BaseWriter):
                     self.put_node_sentinel(p, '#')
                 indent = p.level() - root_level
                 self.put('%s %s' % ('*' * indent, p.h))
-                    ### self.compute_headline(p)))
             for s in p.b.splitlines(False):
                 self.put(s)
         root.setVisited()

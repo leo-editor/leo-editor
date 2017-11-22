@@ -14934,18 +14934,11 @@ s = '''\
 * Section 2 :tag2:
 * Section 3 :tag3:tag4:
 '''
-if False: ### c.config.getBool('org-mode-removes-tags'):
-    table = (
-        'Section 1',
-        'Section 2',
-        'Section 3',
-    )
-else:
-    table = (
-        'Section 1 :tag1:',
-        'Section 2 :tag2:',
-        'Section 3 :tag3:tag4:',
-    )
+table = (
+    'Section 1 :tag1:',
+    'Section 2 :tag2:',
+    'Section 3 :tag3:tag4:',
+)
 try:
     c.importCommands.orgUnitTest(p,s=s,showTree=True)
     if 1:

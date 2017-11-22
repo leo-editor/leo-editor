@@ -19,8 +19,6 @@ class Org_Importer(Importer):
             state_class = None,
             strict = False,
         )
-        ### c = self.c
-        ### self.remove_tags = c.config.getBool('org-mode-removes-tags')
         self.tc = self.load_nodetags()
 
     #@+others
@@ -47,7 +45,6 @@ class Org_Importer(Importer):
                     self.tc.add_tag(p.v, tag)
                 if trace:
                     g.trace('head', head, 'tags:', tags)
-                ### return head if self.remove_tags else p.h
         return s
 
     #@+node:ekr.20161123194634.1: *3* org_i.gen_lines & helper
