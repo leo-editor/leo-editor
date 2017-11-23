@@ -3100,9 +3100,9 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.131: *4* k.registerCommand
     def registerCommand(self, commandName, func,
         pane='all',
-        shortcut='', # Deprecated.
-        source_c=None,
-        verbose=False
+        shortcut='', # Deprecated for most purposes.
+        source_c=None, # No longer used.
+        verbose=False # No longer used.
     ):
         '''
         Make the function available as a minibuffer command,
@@ -3168,7 +3168,8 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.127: *4* k.simulateCommand & k.commandExists
     def simulateCommand(self, commandName, event=None):
         '''Execute a Leo command by name.'''
-        k = self; c = k.c
+        trace = False and not g.unitTesting
+        c, k = self.c, self
         func = self.commandExists(commandName)
         if func:
             # g.trace(commandName,func.__name__)
@@ -3178,6 +3179,7 @@ class KeyHandlerClass(object):
                 event = None # A legacy function.
             else: # Create a dummy event as a signal.
                 event = g.app.gui.create_key_event(c, None, None, None)
+            if trace: g.trace(event)
             k.masterCommand(event=event, func=func)
             if c.exists:
                 return k.funcReturn

@@ -271,8 +271,15 @@ class LeoKeyEvent(object):
         self.y_root = y_root
     #@+node:ekr.20140907103315.18774: *3* LeoKeyEvent.__repr__
     def __repr__(self):
-        return 'LeoKeyEvent: stroke: %s, char: %s, w: %s' % (
-            repr(self.stroke), repr(self.char), repr(self.w))
+        
+        if 1:
+            d = {'c': self.c.shortFileName()}
+            for ivar in ('char', 'event', 'stroke', 'w'):
+                d[ivar] = getattr(self, ivar)
+            return 'LeoKeyEvent:\n%s' % g.objToString(d)
+        else:
+            return 'LeoKeyEvent: stroke: %s, char: %s, w: %s' % (
+                repr(self.stroke), repr(self.char), repr(self.w))
     #@+node:ekr.20150511181702.1: *3* LeoKeyEvent.get & __getitem__
     def get(self, attr):
         '''Compatibility with g.bunch: return an attr.'''
