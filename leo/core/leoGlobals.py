@@ -2286,6 +2286,49 @@ class Command(object):
         return func
 
 command = Command
+#@+node:ekr.20171123095526.1: *3* g.commander_command (decorator)
+class CommanderCommand(object):
+    '''
+    A global decorator for creating commander commands, that is, commands
+    that were formerly methods of the Commands class in leoCommands.py.
+    
+    Usage:
+
+        @g.command('command-name')
+        def command_name(self, *args, **kwargs):
+            ...
+        
+    The decorator injects command_name into the Commander class and calls
+    funcToMethod so the ivar will be injected in all future commanders.
+
+    g can *not* be used anywhere in this class!
+    '''
+
+    def __init__(self, name, **kwargs):
+        '''Ctor for command decorator class.'''
+        self.name = name
+
+    def __call__(self, func):
+        '''Register command for all future commanders.'''
+        trace = False and not g.unitTesting
+        if trace: g.trace(self.name)
+        # g.trace('app', app, 'name', self.name, 'func', func)
+        global_commands_dict[self.name] = func
+        if app:
+            # funcToMethod ensures the command will be injected into all future commanders.
+            import leo.core.leoCommands as leoCommands
+            if hasattr(leoCommands.Commands, func.__name__):
+                g.trace('COMMAND EXISTS', func.__name__)
+            else:
+                funcToMethod(func, leoCommands.Commands)
+            for c in app.commanders():
+                c.k.registerCommand(self.name, func)
+        # Inject ivars for plugins_menu.py.
+        func.is_command = True
+        func.command_name = self.name
+        return func
+
+commander_command = CommanderCommand
 #@+node:ekr.20150508164812.1: *3* g.ivars2instance
 def ivars2instance(c, g, ivars):
     '''
