@@ -8,6 +8,7 @@ trace = False
 from setuptools import setup, find_packages # Always prefer setuptools over distutils
 from codecs import open # To use a consistent encoding
 import os
+from shutil import rmtree, copytree
 import leo.core.leoGlobals as g
 
 #@+others
@@ -85,6 +86,15 @@ developer_requires = {'develop':[
     'pypandoc', # doc format conversion
     'twine','wheel','keyring' # Pip packaging, uploading to PyPi
     ]}
+#@+node:maphew.20171122231442.1: ** clean
+def clean():
+    print('Removing build and dist directories')
+    root = os.path.dirname(os.path.realpath(__file__))
+    for d in ['build', 'dist', 'leo.egg-info']:
+        dpath = os.path.join(root,d)
+        if os.path.isdir(dpath):
+            rmtree(dpath)
+clean()
 #@-others
 
 setup(
