@@ -74,11 +74,11 @@ classifiers = [
 #@+node:maphew.20171120133429.1: ** User requirements
 user_requires = [
     'docutils', # Sphinx, rST plugin
-    'pyenchant', # spell check support
-    'pyxml', # xml importing
+    #'pyenchant', # spell check support ## no wheels for some platforms, e.g. amd64
+    #'pyxml', # xml importing ## no pip package
     'PyQt5; python_version >= "3.0"',
     'python-qt5; python_version < "3.0" and platform_system=="Windows"',
-    # missing: pyqt for Linux python 2.x (doesn't exist on PyPi)
+    ## missing: pyqt for Linux python 2.x (doesn't exist on PyPi)
     ]
 #@+node:maphew.20171120133437.1: ** Dev requirements
 developer_requires = {'develop':[
