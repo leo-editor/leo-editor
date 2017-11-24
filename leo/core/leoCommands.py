@@ -3446,34 +3446,6 @@ class Commands(object):
         '''Go to the previous node in the history list.'''
         c = self
         c.nodeHistory.goPrev()
-    #@+node:vitalije.20170713174950.1: *4* c.editOneSetting
-    @cmd('edit-setting')
-    def editOneSetting(self, event=None):
-        '''Opens correct dialog for selected setting type'''
-        c = self; p = c.p; func = None
-        if p.h.startswith('@font'):
-            func = c.commandsDict.get('show-fonts')
-        elif p.h.startswith('@color '):
-            func = c.commandsDict.get('show-color-wheel')
-        elif p.h.startswith(('@shortcuts','@button','@command')):
-            c.editShortcut()
-            return
-        else:
-            g.es('not in a setting node')
-            return
-        if func:
-            event = g.app.gui.create_key_event(c, None, None, None)
-            func(event)
-    #@+node:vitalije.20170708172746.1: *4* c.editShortcut
-    @cmd('edit-shortcut')
-    def editShortcut(self, event=None):
-        k = self.k
-        if k.isEditShortcutSensible():
-            self.k.setState('input-shortcut', 'input-shortcut')
-            g.es('Press desired key combination')
-        else:
-            g.es('No possible shortcut in selected body line/headline')
-            g.es('Select @button, @command, @shortcuts or @mode node and run it again.')
     #@+node:ekr.20031218072017.2819: *4* File Menu
     #@+node:ekr.20170221033738.1: *5* c.reloadSettings & helpers
     @cmd('reload-settings')

@@ -25,7 +25,36 @@ def about(self, event=None):
     url = "http://leoeditor.com/"
     email = "edreamleo@gmail.com"
     g.app.gui.runAboutLeoDialog(c, version, theCopyright, url, email)
-#@+node:ekr.20031218072017.2940: ** c.leoDocumentation
+#@+node:vitalije.20170713174950.1: ** c.editOneSetting
+@g.commander_command('edit-setting')
+def editOneSetting(self, event=None):
+    '''Opens correct dialog for selected setting type'''
+    c = self; p = c.p; func = None
+    if p.h.startswith('@font'):
+        func = c.commandsDict.get('show-fonts')
+    elif p.h.startswith('@color '):
+        func = c.commandsDict.get('show-color-wheel')
+    elif p.h.startswith(('@shortcuts','@button','@command')):
+        c.editShortcut()
+        return
+    else:
+        g.es('not in a setting node')
+        return
+    if func:
+        event = g.app.gui.create_key_event(c, None, None, None)
+        func(event)
+#@+node:vitalije.20170708172746.1: ** c.editShortcut
+@g.commander_command('edit-shortcut')
+def editShortcut(self, event=None):
+    k = self.k
+    if k.isEditShortcutSensible():
+        self.k.setState('input-shortcut', 'input-shortcut')
+        g.es('Press desired key combination')
+    else:
+        g.es('No possible shortcut in selected body line/headline')
+        g.es('Select @button, @command, @shortcuts or @mode node and run it again.')
+#@+node:ekr.20171124093409.1: ** c.Open Leo files
+#@+node:ekr.20031218072017.2940: *3* c.leoDocumentation
 @g.commander_command('open-leo-docs-leo')
 @g.commander_command('leo-docs-leo')
 def leoDocumentation(self, event=None):
@@ -38,17 +67,7 @@ def leoDocumentation(self, event=None):
         c2 = g.openWithFileName(fileName, old_c=c)
         if c2: return
     g.es("not found:", name)
-#@+node:ekr.20031218072017.2941: ** c.leoHome
-@g.commander_command('open-online-home')
-def leoHome(self, event=None):
-    '''Open Leo's Home page in a web browser.'''
-    import webbrowser
-    url = "http://leoeditor.com/"
-    try:
-        webbrowser.open_new(url)
-    except Exception:
-        g.es("not found:", url)
-#@+node:ekr.20090628075121.5994: ** c.leoQuickStart
+#@+node:ekr.20090628075121.5994: *3* c.leoQuickStart
 @g.commander_command('open-quickstart-leo')
 @g.commander_command('leo-quickstart-leo')
 def leoQuickStart(self, event=None):
@@ -60,7 +79,7 @@ def leoQuickStart(self, event=None):
         c2 = g.openWithFileName(fileName, old_c=c)
         if c2: return
     g.es("not found:", name)
-#@+node:ekr.20131028155339.17096: ** c.openCheatSheet
+#@+node:ekr.20131028155339.17096: *3* c.openCheatSheet
 @g.commander_command('open-cheat-sheet-leo')
 @g.commander_command('leo-cheat-sheet')
 @g.commander_command('cheat-sheet')
@@ -81,7 +100,7 @@ def openCheatSheet(self, event=None, redraw=True):
     else:
         g.es('file not found: %s' % fn)
         return None
-#@+node:ekr.20161025090405.1: ** c.openLeoDist
+#@+node:ekr.20161025090405.1: *3* c.openLeoDist
 @g.commander_command('open-leo-dist-leo')
 @g.commander_command('leo-dist-leo')
 def openLeoDist(self, event=None):
@@ -93,7 +112,7 @@ def openLeoDist(self, event=None):
         c2 = g.openWithFileName(fileName, old_c=c)
         if c2: return
     g.es("not found:", name)
-#@+node:ekr.20050130152008: ** c.openLeoPlugins
+#@+node:ekr.20050130152008: *3* c.openLeoPlugins
 @g.commander_command('open-leo-plugins-leo')
 @g.commander_command('leo-plugins-leo')
 def openLeoPlugins(self, event=None):
@@ -107,7 +126,7 @@ def openLeoPlugins(self, event=None):
             c2 = g.openWithFileName(fileName, old_c=c)
             if c2: return
     g.es('not found:', ', '.join(names))
-#@+node:ekr.20151225193723.1: ** c.openLeoPy
+#@+node:ekr.20151225193723.1: *3* c.openLeoPy
 @g.commander_command('open-leo-py-leo')
 @g.commander_command('leo-py-leo')
 def openLeoPy(self, event=None):
@@ -121,7 +140,7 @@ def openLeoPy(self, event=None):
             c2 = g.openWithFileName(fileName, old_c=c)
             if c2: return
     g.es('not found:', ', '.join(names))
-#@+node:ekr.20061018094539: ** c.openLeoScripts
+#@+node:ekr.20061018094539: *3* c.openLeoScripts
 @g.commander_command('open-scripts-leo')
 @g.commander_command('leo-scripts-leo')
 def openLeoScripts(self, event=None):
@@ -133,7 +152,7 @@ def openLeoScripts(self, event=None):
         c2 = g.openWithFileName(fileName, old_c=c)
         if c2: return
     g.es('not found:', fileName)
-#@+node:ekr.20031218072017.2943: ** c.openLeoSettings & c.openMyLeoSettings & helper
+#@+node:ekr.20031218072017.2943: *3* c.openLeoSettings & c.openMyLeoSettings & helper
 @g.commander_command('open-leo-settings-leo')
 @g.commander_command('leo-settings-leo')
 def openLeoSettings(self, event=None):
@@ -157,7 +176,7 @@ def openMyLeoSettings(self, event=None):
     else:
         g.es('not found: myLeoSettings.leo')
         return c.createMyLeoSettings()
-#@+node:ekr.20141119161908.2: *3* c.createMyLeoSettings
+#@+node:ekr.20141119161908.2: *4* c.createMyLeoSettings
 def createMyLeoSettings(self):
     """createMyLeoSettings - Return true if myLeoSettings.leo created ok
     """
@@ -213,7 +232,29 @@ def createMyLeoSettings(self):
     )
     c2.redraw()
     return c2
-#@+node:ekr.20131213072223.19441: ** c.openLeoTOC
+#@+node:ekr.20151225095102.1: *3* c.openUnittest
+@g.commander_command('open-unittest-leo')
+@g.commander_command('leo-unittest-leo')
+def openUnittest(self, event=None):
+    '''Open unittest.leo.'''
+    c = self
+    fileName = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'unitTest.leo')
+    if g.os_path_exists(fileName):
+        c2 = g.openWithFileName(fileName, old_c=c)
+        if c2: return
+    g.es('not found:', fileName)
+#@+node:ekr.20171124093507.1: ** c.Open Leo web pages
+#@+node:ekr.20031218072017.2941: *3* c.leoHome
+@g.commander_command('open-online-home')
+def leoHome(self, event=None):
+    '''Open Leo's Home page in a web browser.'''
+    import webbrowser
+    url = "http://leoeditor.com/"
+    try:
+        webbrowser.open_new(url)
+    except Exception:
+        g.es("not found:", url)
+#@+node:ekr.20131213072223.19441: *3* c.openLeoTOC
 @g.commander_command('open-online-toc')
 def openLeoTOC(self, event=None):
     '''Open Leo's tutorials page in a web browser.'''
@@ -223,7 +264,7 @@ def openLeoTOC(self, event=None):
         webbrowser.open_new(url)
     except Exception:
         g.es("not found:", url)
-#@+node:ekr.20131213072223.19435: ** c.openLeoTutorials
+#@+node:ekr.20131213072223.19435: *3* c.openLeoTutorials
 @g.commander_command('open-online-tutorials')
 def openLeoTutorials(self, event=None):
     '''Open Leo's tutorials page in a web browser.'''
@@ -233,7 +274,7 @@ def openLeoTutorials(self, event=None):
         webbrowser.open_new(url)
     except Exception:
         g.es("not found:", url)
-#@+node:ekr.20060613082924: ** c.openLeoUsersGuide
+#@+node:ekr.20060613082924: *3* c.openLeoUsersGuide
 @g.commander_command('open-users-guide')
 def openLeoUsersGuide(self, event=None):
     '''Open Leo's users guide in a web browser.'''
@@ -243,7 +284,7 @@ def openLeoUsersGuide(self, event=None):
         webbrowser.open_new(url)
     except Exception:
         g.es("not found:", url)
-#@+node:ekr.20131213072223.19437: ** c.openLeoVideos
+#@+node:ekr.20131213072223.19437: *3* c.openLeoVideos
 @g.commander_command('open-online-videos')
 def openLeoVideos(self, event=None):
     '''Open Leo's videos page in a web browser.'''
@@ -268,17 +309,6 @@ def openPythonWindow(self, event=None):
         os.spawnv(os.P_NOWAIT, sys.executable, args)
     else: # Use a pristine environment.
         os.spawnve(os.P_NOWAIT, sys.executable, args, os.environ)
-#@+node:ekr.20151225095102.1: ** c.openUnittest
-@g.commander_command('open-unittest-leo')
-@g.commander_command('leo-unittest-leo')
-def openUnittest(self, event=None):
-    '''Open unittest.leo.'''
-    c = self
-    fileName = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'unitTest.leo')
-    if g.os_path_exists(fileName):
-        c2 = g.openWithFileName(fileName, old_c=c)
-        if c2: return
-    g.es('not found:', fileName)
 #@+node:ekr.20131213072223.19532: ** c.selectAtSettingsNode
 @g.commander_command('open-local-settings')
 def selectAtSettingsNode(self, event=None):
