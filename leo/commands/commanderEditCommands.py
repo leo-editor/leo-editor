@@ -4,11 +4,8 @@
 #@@first
 '''Edit commands that used to be defined in leoCommands.py'''
 import leo.core.leoGlobals as g
-### import builtins
 import os
 import re
-### import sys
-# import time
 
 #@+others
 #@+node:ekr.20171123135625.34: ** c.addComments
@@ -149,6 +146,7 @@ def extract(self, event=None):
     3. Otherwise, the first line becomes the child's headline, and all
        selected lines become the child's body text.
     '''
+    # Define helpers
     #@+others
     #@+node:ekr.20171123135625.20: *3* def createLastChildNode
     def createLastChildNode(c, parent, headline, body):

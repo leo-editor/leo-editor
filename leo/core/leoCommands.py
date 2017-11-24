@@ -2876,6 +2876,101 @@ class Commands(object):
                 ok = False
             if not ok: break
         return ok, d
+    #@+node:ekr.20171123135625.42: *4* c.findBoundParagraph & helpers
+    def findBoundParagraph(self, event=None):
+        '''
+        Return the lines of a paragraph to be reformatted.
+        This is a convenience method for the reformat-paragraph command.
+        '''
+        c = self
+        trace = False and not g.unitTesting
+        head, ins, tail = c.frame.body.getInsertLines()
+        head_lines = g.splitLines(head)
+        tail_lines = g.splitLines(tail)
+        if trace:
+            g.trace("head_lines:\n%s" % ''.join(head_lines))
+            g.trace("ins: ", ins)
+            g.trace("tail_lines:\n%s" % ''.join(tail_lines))
+            g.trace('*****')
+        result = []
+        insert_lines = g.splitLines(ins)
+        para_lines = insert_lines + tail_lines
+        # If the present line doesn't start a paragraph,
+        # scan backward, adding trailing lines of head to ins.
+        if insert_lines and not c.startsParagraph(insert_lines[0]):
+            n = 0 # number of moved lines.
+            for i, s in enumerate(reversed(head_lines)):
+                if c.endsParagraph(s) or c.singleLineParagraph(s):
+                    break
+                elif c.startsParagraph(s):
+                    n += 1
+                    break
+                else: n += 1
+            if n > 0:
+                para_lines = head_lines[-n:] + para_lines
+                head_lines = head_lines[: -n]
+        ended, started = False, False
+        for i, s in enumerate(para_lines):
+            if trace: g.trace(
+                # 'i: %s started: %5s single: %5s starts: %5s: ends: %5s %s' % (
+                i, started,
+                c.singleLineParagraph(s),
+                c.startsParagraph(s),
+                c.endsParagraph(s), repr(s))
+            if started:
+                if c.endsParagraph(s) or c.startsParagraph(s):
+                    ended = True
+                    break
+                else:
+                    result.append(s)
+            elif s.strip():
+                result.append(s)
+                started = True
+                if c.endsParagraph(s) or c.singleLineParagraph(s):
+                    i += 1
+                    ended = True
+                    break
+            else:
+                head_lines.append(s)
+        if started:
+            head = g.joinLines(head_lines)
+            tail_lines = para_lines[i:] if ended else []
+            tail = g.joinLines(tail_lines)
+            return head, result, tail # string, list, string
+        else:
+            if trace: g.trace('no paragraph')
+            return None, None, None
+    #@+node:ekr.20171123135625.43: *5* c.endsParagraph & c.singleLineParagraph
+    def endsParagraph(self, s):
+        '''Return True if s is a blank line.'''
+        return not s.strip()
+
+    def singleLineParagraph(self, s):
+        '''Return True if s is a single-line paragraph.'''
+        return s.startswith('@') or s.strip() in ('"""', "'''")
+    #@+node:ekr.20171123135625.44: *5* c.startsParagraph
+    def startsParagraph(self, s):
+        '''Return True if line s starts a paragraph.'''
+        trace = False and not g.unitTesting
+        if not s.strip():
+            val = False
+        elif s.strip() in ('"""', "'''"):
+            val = True
+        elif s[0].isdigit():
+            i = 0
+            while i < len(s) and s[i].isdigit():
+                i += 1
+            val = g.match(s, i, ')') or g.match(s, i, '.')
+        elif s[0].isalpha():
+            # Careful: single characters only.
+            # This could cause problems in some situations.
+            val = (
+                (g.match(s, 1, ')') or g.match(s, 1, '.')) and
+                (len(s) < 2 or s[2] in (' \t\n')))
+        else:
+            val = s.startswith('@') or s.startswith('-')
+        if trace: g.trace(val, repr(s))
+        return val
     #@+node:ekr.20171123135625.29: *4* c.getBodyLines
     def getBodyLines(self, expandSelection=False):
         """
@@ -3046,7 +3141,6 @@ class Commands(object):
         self.frame.body.updateSyntaxColorer(v)
     #@+node:ekr.20031218072017.2818: *3* c.Top-level commands
     #@+node:ekr.20171123135625.4: *4* c.executeScript & helpers
-    ### @g.commander_command('execute-script')
     @cmd('execute-script')
     def executeScript(self, event=None,
         args=None, p=None, script=None, useSelectedText=True,
@@ -6609,10 +6703,9 @@ class Commands(object):
         if hasattr(frame.body, 'set_invisibles'):
             frame.body.set_invisibles(c)
         c.frame.body.recolor(c.p)
-    #@+node:ekr.20171123143645.1: *3* zz Edit commands with helpers
     #@+node:ekr.20171123135625.41: *4* c.reformatParagraph & helpers
-    ### @g.commander_command('reformat-paragraph')
     @cmd('reformat-paragraph')
+    ### @g.commander_command('reformat-paragraph')
     def reformatParagraph(self, event=None, undoType='Reformat Paragraph'):
         '''
         Reformat a text paragraph
@@ -6625,6 +6718,113 @@ class Commands(object):
         Paragraph is bound by start of body, end of body and blank lines. Paragraph is
         selected by position of current insertion cursor.
         '''
+        # Define helpers
+        #@+others
+        #@+node:ekr.20171123135625.45: *5* def rp_get_args
+        def rp_get_args(c):
+            '''Compute and return oldSel,oldYview,original,pageWidth,tabWidth.'''
+            body = c.frame.body
+            w = body.wrapper
+            d = c.scanAllDirectives()
+            if c.editCommands.fillColumn > 0:
+                pageWidth = c.editCommands.fillColumn
+            else:
+                pageWidth = d.get("pagewidth")
+            tabWidth = d.get("tabwidth")
+            original = w.getAllText()
+            oldSel = w.getSelectionRange()
+            oldYview = w.getYScrollPosition()
+            return oldSel, oldYview, original, pageWidth, tabWidth
+        #@+node:ekr.20171123135625.46: *5* def rp_get_leading_ws
+        def rp_get_leading_ws(c, lines, tabWidth):
+            '''Compute and return indents and leading_ws.'''
+            # c = self
+            indents = [0, 0]
+            leading_ws = ["", ""]
+            for i in (0, 1):
+                if i < len(lines):
+                    # Use the original, non-optimized leading whitespace.
+                    leading_ws[i] = ws = g.get_leading_ws(lines[i])
+                    indents[i] = g.computeWidth(ws, tabWidth)
+            indents[1] = max(indents)
+            if len(lines) == 1:
+                leading_ws[1] = leading_ws[0]
+            return indents, leading_ws
+        #@+node:ekr.20171123135625.47: *5* def rp_reformat
+        def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
+            '''Reformat the body and update the selection.'''
+            body = c.frame.body
+            w = body.wrapper
+            # This destroys recoloring.
+            junk, ins = body.setSelectionAreas(head, result, tail)
+            changed = original != head + result + tail
+            if changed:
+                s = w.getAllText()
+                # Fix an annoying glitch when there is no
+                # newline following the reformatted paragraph.
+                if not tail and ins < len(s): ins += 1
+                # 2010/11/16: stay in the paragraph.
+                body.onBodyChanged(undoType, oldSel=oldSel, oldYview=oldYview)
+            else:
+                # Advance to the next paragraph.
+                s = w.getAllText()
+                ins += 1 # Move past the selection.
+                while ins < len(s):
+                    i, j = g.getLine(s, ins)
+                    line = s[i: j]
+                    # 2010/11/16: it's annoying, imo, to treat @ lines differently.
+                    if line.isspace():
+                        ins = j + 1
+                    else:
+                        ins = i
+                        break
+                # setSelectionAreas has destroyed the coloring.
+                c.recolor()
+            w.setSelectionRange(ins, ins, insert=ins)
+            # 2011/10/26: Calling see does more harm than good.
+                # w.see(ins)
+            # Make sure we never scroll horizontally.
+            w.setXScrollPosition(0)
+        #@+node:ekr.20171123135625.48: *5* def rp_wrap_all_lines
+        def rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth):
+            '''Compute the result of wrapping all lines.'''
+            trailingNL = lines and lines[-1].endswith('\n')
+            lines = [z[: -1] if z.endswith('\n') else z for z in lines]
+            if lines: # Bug fix: 2013/12/22.
+                s = lines[0]
+                if c.startsParagraph(s):
+                    # Adjust indents[1]
+                    # Similar to code in c.startsParagraph(s)
+                    i = 0
+                    if s[0].isdigit():
+                        while i < len(s) and s[i].isdigit():
+                            i += 1
+                        if g.match(s, i, ')') or g.match(s, i, '.'):
+                            i += 1
+                    elif s[0].isalpha():
+                        if g.match(s, 1, ')') or g.match(s, 1, '.'):
+                            i = 2
+                    elif s[0] == '-':
+                        i = 1
+                    # Never decrease indentation.
+                    i = g.skip_ws(s, i + 1)
+                    if i > indents[1]:
+                        indents[1] = i
+                        leading_ws[1] = ' ' * i
+            # Wrap the lines, decreasing the page width by indent.
+            result = g.wrap_lines(lines,
+                pageWidth - indents[1],
+                pageWidth - indents[0])
+            # prefix with the leading whitespace, if any
+            paddedResult = []
+            paddedResult.append(leading_ws[0] + result[0])
+            for line in result[1:]:
+                paddedResult.append(leading_ws[1] + line)
+            # Convert the result to a string.
+            result = '\n'.join(paddedResult)
+            if trailingNL: result = result + '\n'
+            return result
+        #@-others
         c = self
         body = c.frame.body
         w = body.wrapper
@@ -6634,210 +6834,12 @@ class Commands(object):
         if w.hasSelection():
             i, j = w.getSelectionRange()
             w.setInsertPoint(i)
-        oldSel, oldYview, original, pageWidth, tabWidth = c.rp_get_args()
+        oldSel, oldYview, original, pageWidth, tabWidth = rp_get_args(c)
         head, lines, tail = c.findBoundParagraph()
         if lines:
-            indents, leading_ws = c.rp_get_leading_ws(lines, tabWidth)
-            result = c.rp_wrap_all_lines(indents, leading_ws, lines, pageWidth)
-            c.rp_reformat(head, oldSel, oldYview, original, result, tail, undoType)
-    #@+node:ekr.20171123135625.42: *5* c.findBoundParagraph & helpers
-    def findBoundParagraph(self, event=None):
-        '''Return the lines of a paragraph to be reformatted.'''
-        c = self
-        trace = False and not g.unitTesting
-        head, ins, tail = c.frame.body.getInsertLines()
-        head_lines = g.splitLines(head)
-        tail_lines = g.splitLines(tail)
-        if trace:
-            g.trace("head_lines:\n%s" % ''.join(head_lines))
-            g.trace("ins: ", ins)
-            g.trace("tail_lines:\n%s" % ''.join(tail_lines))
-            g.trace('*****')
-        result = []
-        insert_lines = g.splitLines(ins)
-        para_lines = insert_lines + tail_lines
-        # If the present line doesn't start a paragraph,
-        # scan backward, adding trailing lines of head to ins.
-        if insert_lines and not c.startsParagraph(insert_lines[0]):
-            n = 0 # number of moved lines.
-            for i, s in enumerate(reversed(head_lines)):
-                if c.endsParagraph(s) or c.singleLineParagraph(s):
-                    break
-                elif c.startsParagraph(s):
-                    n += 1
-                    break
-                else: n += 1
-            if n > 0:
-                para_lines = head_lines[-n:] + para_lines
-                head_lines = head_lines[: -n]
-        ended, started = False, False
-        for i, s in enumerate(para_lines):
-            if trace: g.trace(
-                # 'i: %s started: %5s single: %5s starts: %5s: ends: %5s %s' % (
-                i, started,
-                c.singleLineParagraph(s),
-                c.startsParagraph(s),
-                c.endsParagraph(s), repr(s))
-            if started:
-                if c.endsParagraph(s) or c.startsParagraph(s):
-                    ended = True
-                    break
-                else:
-                    result.append(s)
-            elif s.strip():
-                result.append(s)
-                started = True
-                if c.endsParagraph(s) or c.singleLineParagraph(s):
-                    i += 1
-                    ended = True
-                    break
-            else:
-                head_lines.append(s)
-        if started:
-            head = g.joinLines(head_lines)
-            tail_lines = para_lines[i:] if ended else []
-            tail = g.joinLines(tail_lines)
-            return head, result, tail # string, list, string
-        else:
-            if trace: g.trace('no paragraph')
-            return None, None, None
-    #@+node:ekr.20171123135625.43: *6* c.endsParagraph & c.singleLineParagraph
-    def endsParagraph(self, s):
-        '''Return True if s is a blank line.'''
-        return not s.strip()
-
-    def singleLineParagraph(self, s):
-        '''Return True if s is a single-line paragraph.'''
-        return s.startswith('@') or s.strip() in ('"""', "'''")
-    #@+node:ekr.20171123135625.44: *6* c.startsParagraph
-    def startsParagraph(self, s):
-        '''Return True if line s starts a paragraph.'''
-        trace = False and not g.unitTesting
-        if not s.strip():
-            val = False
-        elif s.strip() in ('"""', "'''"):
-            val = True
-        elif s[0].isdigit():
-            i = 0
-            while i < len(s) and s[i].isdigit():
-                i += 1
-            val = g.match(s, i, ')') or g.match(s, i, '.')
-        elif s[0].isalpha():
-            # Careful: single characters only.
-            # This could cause problems in some situations.
-            val = (
-                (g.match(s, 1, ')') or g.match(s, 1, '.')) and
-                (len(s) < 2 or s[2] in (' \t\n')))
-        else:
-            val = s.startswith('@') or s.startswith('-')
-        if trace: g.trace(val, repr(s))
-        return val
-    #@+node:ekr.20171123135625.45: *5* c.rp_get_args
-    def rp_get_args(self):
-        '''Compute and return oldSel,oldYview,original,pageWidth,tabWidth.'''
-        c = self
-        body = c.frame.body
-        w = body.wrapper
-        d = c.scanAllDirectives()
-        # g.trace(c.editCommands.fillColumn)
-        if c.editCommands.fillColumn > 0:
-            pageWidth = c.editCommands.fillColumn
-        else:
-            pageWidth = d.get("pagewidth")
-        tabWidth = d.get("tabwidth")
-        original = w.getAllText()
-        oldSel = w.getSelectionRange()
-        oldYview = w.getYScrollPosition()
-        return oldSel, oldYview, original, pageWidth, tabWidth
-    #@+node:ekr.20171123135625.46: *5* c.rp_get_leading_ws
-    def rp_get_leading_ws(self, lines, tabWidth):
-        '''Compute and return indents and leading_ws.'''
-        # c = self
-        indents = [0, 0]
-        leading_ws = ["", ""]
-        for i in (0, 1):
-            if i < len(lines):
-                # Use the original, non-optimized leading whitespace.
-                leading_ws[i] = ws = g.get_leading_ws(lines[i])
-                indents[i] = g.computeWidth(ws, tabWidth)
-        indents[1] = max(indents)
-        if len(lines) == 1:
-            leading_ws[1] = leading_ws[0]
-        return indents, leading_ws
-    #@+node:ekr.20171123135625.47: *5* c.rp_reformat
-    def rp_reformat(self, head, oldSel, oldYview, original, result, tail, undoType):
-        '''Reformat the body and update the selection.'''
-        c = self; body = c.frame.body; w = body.wrapper
-        # This destroys recoloring.
-        junk, ins = body.setSelectionAreas(head, result, tail)
-        changed = original != head + result + tail
-        if changed:
-            s = w.getAllText()
-            # Fix an annoying glitch when there is no
-            # newline following the reformatted paragraph.
-            if not tail and ins < len(s): ins += 1
-            # 2010/11/16: stay in the paragraph.
-            body.onBodyChanged(undoType, oldSel=oldSel, oldYview=oldYview)
-        else:
-            # Advance to the next paragraph.
-            s = w.getAllText()
-            ins += 1 # Move past the selection.
-            while ins < len(s):
-                i, j = g.getLine(s, ins)
-                line = s[i: j]
-                # 2010/11/16: it's annoying, imo, to treat @ lines differently.
-                if line.isspace():
-                    ins = j + 1
-                else:
-                    ins = i
-                    break
-            # setSelectionAreas has destroyed the coloring.
-            c.recolor()
-        w.setSelectionRange(ins, ins, insert=ins)
-        # 2011/10/26: Calling see does more harm than good.
-            # w.see(ins)
-        # Make sure we never scroll horizontally.
-        w.setXScrollPosition(0)
-    #@+node:ekr.20171123135625.48: *5* c.rp_wrap_all_lines
-    def rp_wrap_all_lines(self, indents, leading_ws, lines, pageWidth):
-        '''Compute the result of wrapping all lines.'''
-        c = self
-        trailingNL = lines and lines[-1].endswith('\n')
-        lines = [z[: -1] if z.endswith('\n') else z for z in lines]
-        if lines: # Bug fix: 2013/12/22.
-            s = lines[0]
-            if c.startsParagraph(s):
-                # Adjust indents[1]
-                # Similar to code in c.startsParagraph(s)
-                i = 0
-                if s[0].isdigit():
-                    while i < len(s) and s[i].isdigit():
-                        i += 1
-                    if g.match(s, i, ')') or g.match(s, i, '.'):
-                        i += 1
-                elif s[0].isalpha():
-                    if g.match(s, 1, ')') or g.match(s, 1, '.'):
-                        i = 2
-                elif s[0] == '-':
-                    i = 1
-                # Never decrease indentation.
-                i = g.skip_ws(s, i + 1)
-                if i > indents[1]:
-                    indents[1] = i
-                    leading_ws[1] = ' ' * i
-        # Wrap the lines, decreasing the page width by indent.
-        result = g.wrap_lines(lines,
-            pageWidth - indents[1],
-            pageWidth - indents[0])
-        # prefix with the leading whitespace, if any
-        paddedResult = []
-        paddedResult.append(leading_ws[0] + result[0])
-        for line in result[1:]:
-            paddedResult.append(leading_ws[1] + line)
-        # Convert the result to a string.
-        result = '\n'.join(paddedResult)
-        if trailingNL: result = result + '\n'
-        return result
+            indents, leading_ws = rp_get_leading_ws(c, lines, tabWidth)
+            result = rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth)
+            rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType)
     #@-others
 #@-others
 #@@language python
