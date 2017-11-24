@@ -2423,127 +2423,6 @@ class Commands(object):
         else:
             g.error('no such command: %s %s' % (commandName, g.callers()))
             return None
-    #@+node:ekr.20171123135625.4: *4* c.executeScript & helpers
-    ### @g.commander_command('execute-script')
-    @cmd('execute-script')
-    def executeScript(self, event=None,
-        args=None, p=None, script=None, useSelectedText=True,
-        define_g=True, define_name='__main__',
-        silent=False, namespace=None, raiseFlag=False,
-    ):
-        '''
-        Execute a *Leo* script.
-        Keyword args:
-        args=None               Not None: set script_args in the execution environment.
-        p=None                  Get the script from p.b, unless script is given.
-        script=None             None: use script in p.b or c.p.b
-        useSelectedText=True    False: use all the text in p.b or c.p.b.
-        define_g=True           True: define g for the script.
-        define_name='__main__'  Not None: define the name symbol.
-        silent=False            No longer used.
-        namespace=None          Not None: execute the script in this namespace.
-        raiseFlag=False         True: reraise any exceptions.
-        '''
-        c, script1 = self, script
-        if not script:
-            if c.forceExecuteEntireBody:
-                useSelectedText = False
-            script = g.getScript(c, p or c.p, useSelectedText=useSelectedText)
-        script_p = p or c.p
-            # Only for error reporting below.
-        self.redirectScriptOutput()
-        try:
-            oldLog = g.app.log
-            log = c.frame.log
-            g.app.log = log
-            if script.strip():
-                sys.path.insert(0, '.') # New in Leo 5.0
-                sys.path.insert(0, c.frame.openDirectory) # per SegundoBob
-                script += '\n' # Make sure we end the script properly.
-                try:
-                    # We *always* execute the script with p = c.p.
-                    c.executeScriptHelper(args, define_g, define_name, namespace, script)
-                except Exception:
-                    if raiseFlag:
-                        raise
-                    else:
-                        g.handleScriptException(c, script_p, script, script1)
-                finally:
-                    del sys.path[0]
-                    del sys.path[0]
-            else:
-                tabName = log and hasattr(log, 'tabName') and log.tabName or 'Log'
-                g.warning("no script selected", tabName=tabName)
-        finally:
-            g.app.log = oldLog
-            self.unredirectScriptOutput()
-    #@+node:ekr.20171123135625.5: *5* c.executeScriptHelper
-    def executeScriptHelper(self, args, define_g, define_name, namespace, script):
-        c = self
-        if c.p:
-            p = c.p.copy() # *Always* use c.p and pass c.p to script.
-            c.setCurrentDirectoryFromContext(p)
-        else:
-            p = None
-        # Do NOT define a subfunction here!
-        #
-        # On some, python 2.x versions it causes exec to cause a syntax error
-        # Workarounds that avoid the syntax error hurt performance.
-        # See http://stackoverflow.com/questions/4484872.
-
-            # def g_input_wrapper(message, c=c):
-                # return g.input_(message, c=c)
-
-        d = {'c': c, 'g': g, 'input': g.input_, 'p': p} if define_g else {}
-        if define_name: d['__name__'] = define_name
-        d['script_args'] = args or []
-        if namespace: d.update(namespace)
-        # A kludge: reset c.inCommand here to handle the case where we *never* return.
-        # (This can happen when there are multiple event loops.)
-        # This does not prevent zombie windows if the script puts up a dialog...
-        try:
-            c.inCommand = False
-            g.inScript = g.app.inScript = True
-                # g.inScript is a synonym for g.app.inScript.
-            if c.write_script_file:
-                scriptFile = self.writeScriptFile(script)
-                # pylint: disable=undefined-variable, no-member
-                if g.isPython3:
-                    exec(compile(script, scriptFile, 'exec'), d)
-                else:
-                    builtins.execfile(scriptFile, d)
-            else:
-                exec(script, d)
-        finally:
-            g.inScript = g.app.inScript = False
-    #@+node:ekr.20171123135625.6: *5* c.redirectScriptOutput
-    def redirectScriptOutput(self):
-        c = self
-        # g.trace('original')
-        if c.config.redirect_execute_script_output_to_log_pane:
-            g.redirectStdout() # Redirect stdout
-            g.redirectStderr() # Redirect stderr
-    #@+node:ekr.20171123135625.7: *5* c.setCurrentDirectoryFromContext
-    def setCurrentDirectoryFromContext(self, p):
-        trace = False and not g.unitTesting
-        c = self
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        curDir = g.os_path_abspath(os.getcwd())
-        # g.trace(p.h,'\npath  ',path,'\ncurDir',curDir)
-        if path and path != curDir:
-            if trace: g.trace('calling os.chdir(%s)' % (path))
-            try:
-                os.chdir(path)
-            except Exception:
-                pass
-    #@+node:ekr.20171123135625.8: *5* c.unredirectScriptOutput
-    def unredirectScriptOutput(self):
-        c = self
-        # g.trace('original')
-        if c.exists and c.config.redirect_execute_script_output_to_log_pane:
-            g.restoreStderr()
-            g.restoreStdout()
     #@+node:ekr.20091002083910.6106: *4* c.find_b & find_h (PosList)
     #@+<< PosList doc >>
     #@+node:bob.20101215134608.5898: *5* << PosList doc >>
@@ -2886,7 +2765,7 @@ class Commands(object):
         """
         c = self
         return c.frame.tree.getSelectedPositions()
-    #@+node:ekr.20171123200644.1: *3* c.Utils
+    #@+node:ekr.20171123200644.1: *3* c.Utils & convenience methods
     #@+node:ekr.20150422080541.1: *4* c.backup
     def backup(self, fileName=None, prefix=None, useTimeStamp=True):
         '''
@@ -3076,6 +2955,22 @@ class Commands(object):
             g.es_exception() # Probably a bad format string in leoSettings.leo.
             s = time.strftime(default_format, time.gmtime())
         return s
+    #@+node:ekr.20171123135625.10: *4* c.goToLineNumber & goToScriptLineNumber
+    def goToLineNumber(self, n):
+        """
+        Go to line n (zero-based) of a script.
+        A convenience method called from g.handleScriptException.
+        """
+        c = self
+        c.gotoCommands.find_file_line(n)
+
+    def goToScriptLineNumber(self, n, p):
+        """
+        Go to line n (zero-based) of a script.
+        A convenience method called from g.handleScriptException.
+        """
+        c = self
+        c.gotoCommands.find_script_line(n, p)
     #@+node:ekr.20171123135625.32: *4* c.hasAmbiguousLangauge
     def hasAmbiguousLanguage(self, p):
         '''Return True if p.b contains different @language directives.'''
@@ -3150,6 +3045,127 @@ class Commands(object):
     def updateSyntaxColorer(self, v):
         self.frame.body.updateSyntaxColorer(v)
     #@+node:ekr.20031218072017.2818: *3* c.Top-level commands
+    #@+node:ekr.20171123135625.4: *4* c.executeScript & helpers
+    ### @g.commander_command('execute-script')
+    @cmd('execute-script')
+    def executeScript(self, event=None,
+        args=None, p=None, script=None, useSelectedText=True,
+        define_g=True, define_name='__main__',
+        silent=False, namespace=None, raiseFlag=False,
+    ):
+        '''
+        Execute a *Leo* script.
+        Keyword args:
+        args=None               Not None: set script_args in the execution environment.
+        p=None                  Get the script from p.b, unless script is given.
+        script=None             None: use script in p.b or c.p.b
+        useSelectedText=True    False: use all the text in p.b or c.p.b.
+        define_g=True           True: define g for the script.
+        define_name='__main__'  Not None: define the name symbol.
+        silent=False            No longer used.
+        namespace=None          Not None: execute the script in this namespace.
+        raiseFlag=False         True: reraise any exceptions.
+        '''
+        c, script1 = self, script
+        if not script:
+            if c.forceExecuteEntireBody:
+                useSelectedText = False
+            script = g.getScript(c, p or c.p, useSelectedText=useSelectedText)
+        script_p = p or c.p
+            # Only for error reporting below.
+        self.redirectScriptOutput()
+        try:
+            oldLog = g.app.log
+            log = c.frame.log
+            g.app.log = log
+            if script.strip():
+                sys.path.insert(0, '.') # New in Leo 5.0
+                sys.path.insert(0, c.frame.openDirectory) # per SegundoBob
+                script += '\n' # Make sure we end the script properly.
+                try:
+                    # We *always* execute the script with p = c.p.
+                    c.executeScriptHelper(args, define_g, define_name, namespace, script)
+                except Exception:
+                    if raiseFlag:
+                        raise
+                    else:
+                        g.handleScriptException(c, script_p, script, script1)
+                finally:
+                    del sys.path[0]
+                    del sys.path[0]
+            else:
+                tabName = log and hasattr(log, 'tabName') and log.tabName or 'Log'
+                g.warning("no script selected", tabName=tabName)
+        finally:
+            g.app.log = oldLog
+            self.unredirectScriptOutput()
+    #@+node:ekr.20171123135625.5: *5* c.executeScriptHelper
+    def executeScriptHelper(self, args, define_g, define_name, namespace, script):
+        c = self
+        if c.p:
+            p = c.p.copy() # *Always* use c.p and pass c.p to script.
+            c.setCurrentDirectoryFromContext(p)
+        else:
+            p = None
+        # Do NOT define a subfunction here!
+        #
+        # On some, python 2.x versions it causes exec to cause a syntax error
+        # Workarounds that avoid the syntax error hurt performance.
+        # See http://stackoverflow.com/questions/4484872.
+
+            # def g_input_wrapper(message, c=c):
+                # return g.input_(message, c=c)
+
+        d = {'c': c, 'g': g, 'input': g.input_, 'p': p} if define_g else {}
+        if define_name: d['__name__'] = define_name
+        d['script_args'] = args or []
+        if namespace: d.update(namespace)
+        # A kludge: reset c.inCommand here to handle the case where we *never* return.
+        # (This can happen when there are multiple event loops.)
+        # This does not prevent zombie windows if the script puts up a dialog...
+        try:
+            c.inCommand = False
+            g.inScript = g.app.inScript = True
+                # g.inScript is a synonym for g.app.inScript.
+            if c.write_script_file:
+                scriptFile = self.writeScriptFile(script)
+                # pylint: disable=undefined-variable, no-member
+                if g.isPython3:
+                    exec(compile(script, scriptFile, 'exec'), d)
+                else:
+                    builtins.execfile(scriptFile, d)
+            else:
+                exec(script, d)
+        finally:
+            g.inScript = g.app.inScript = False
+    #@+node:ekr.20171123135625.6: *5* c.redirectScriptOutput
+    def redirectScriptOutput(self):
+        c = self
+        # g.trace('original')
+        if c.config.redirect_execute_script_output_to_log_pane:
+            g.redirectStdout() # Redirect stdout
+            g.redirectStderr() # Redirect stderr
+    #@+node:ekr.20171123135625.7: *5* c.setCurrentDirectoryFromContext
+    def setCurrentDirectoryFromContext(self, p):
+        trace = False and not g.unitTesting
+        c = self
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        curDir = g.os_path_abspath(os.getcwd())
+        # g.trace(p.h,'\npath  ',path,'\ncurDir',curDir)
+        if path and path != curDir:
+            if trace: g.trace('calling os.chdir(%s)' % (path))
+            try:
+                os.chdir(path)
+            except Exception:
+                pass
+    #@+node:ekr.20171123135625.8: *5* c.unredirectScriptOutput
+    def unredirectScriptOutput(self):
+        c = self
+        # g.trace('original')
+        if c.exists and c.config.redirect_execute_script_output_to_log_pane:
+            g.restoreStderr()
+            g.restoreStdout()
     #@+node:ekr.20110402084740.14490: *4* c.goToNext/PrevHistory
     @cmd('goto-next-history-node')
     def goToNextHistory(self, event=None):
@@ -6594,257 +6610,6 @@ class Commands(object):
             frame.body.set_invisibles(c)
         c.frame.body.recolor(c.p)
     #@+node:ekr.20171123143645.1: *3* zz Edit commands with helpers
-    #@+node:ekr.20171123135625.22: *4* c.extract...
-    #@+node:ekr.20171123135625.23: *5* c.extract & helpers
-    ### @g.commander_command('extract')
-    @cmd('extract')
-    def extract(self, event=None):
-        r'''
-        Create child node from the selected body text.
-
-        1. If the selection starts with a section reference, the section
-           name becomes the child's headline. All following lines become
-           the child's body text. The section reference line remains in
-           the original body text.
-
-        2. If the selection looks like a definition line (for the Python,
-           JavaScript, CoffeeScript or Clojure languages) the
-           class/function/method name becomes the child's headline and all
-           selected lines become the child's body text.
-           
-           You may add additional regex patterns for definition lines using
-           @data extract-patterns nodes. Each line of the body text should a
-           valid regex pattern. Lines starting with # are comment lines. Use \#
-           for patterns starting with #.
-
-        3. Otherwise, the first line becomes the child's headline, and all
-           selected lines become the child's body text.
-        '''
-        c, current, u, undoType = self, self.p, self.undoer, 'Extract'
-        head, lines, tail, oldSel, oldYview = self.getBodyLines()
-        if not lines:
-            return # Nothing selected.
-        # Remove leading whitespace.
-        junk, ws = g.skip_leading_ws_with_indent(lines[0], 0, c.tab_width)
-        lines = [g.removeLeadingWhitespace(s, ws, c.tab_width) for s in lines]
-        h = lines[0].strip()
-        ref_h = c.extractRef(h).strip()
-        def_h = c.extractDef_find(lines)
-        if ref_h:
-            # h,b,middle = ref_h,lines[1:],lines[0]
-            # 2012/02/27: Change suggested by vitalije (vitalijem@gmail.com)
-            h, b, middle = ref_h, lines[1:], ' ' * ws + lines[0]
-        elif def_h:
-            h, b, middle = def_h, lines, ''
-        else:
-            h, b, middle = lines[0].strip(), lines[1:], ''
-        u.beforeChangeGroup(current, undoType)
-        undoData = u.beforeInsertNode(current)
-        p = c.createLastChildNode(current, h, ''.join(b))
-        u.afterInsertNode(p, undoType, undoData)
-        c.updateBodyPane(head, middle, tail,
-            undoType=undoType, oldSel=None, oldYview=oldYview)
-        u.afterChangeGroup(current, undoType=undoType)
-        p.parent().expand()
-        c.redraw(p.parent()) # A bit more convenient than p.
-        c.bodyWantsFocus()
-    # Compatibility
-
-    extractSection = extract
-    extractPythonMethod = extract
-    #@+node:ekr.20171123135625.20: *6* c.createLastChildNode
-    def createLastChildNode(self, parent, headline, body):
-        '''A helper function for the three extract commands.'''
-        c = self
-        if body:
-            body = body.rstrip()
-        if not body:
-            body = ""
-        p = parent.insertAsLastChild()
-        p.initHeadString(headline)
-        p.setBodyString(body)
-        p.setDirty()
-        c.validateOutline()
-        return p
-    #@+node:ekr.20171123135625.24: *6* c.extractDef
-    extractDef_patterns = (
-        re.compile(r'\((?:def|defn|defui|deftype|defrecord|defonce)\s+(\S+)'), # clojure definition
-        re.compile(r'^\s*(?:def|class)\s+(\w+)'), # python definitions
-        re.compile(r'^\bvar\s+(\w+)\s*=\s*function\b'), # js function
-        re.compile(r'^(?:export\s)?\s*function\s+(\w+)\s*\('), # js function
-        re.compile(r'\b(\w+)\s*:\s*function\s'), # js function
-        re.compile(r'\.(\w+)\s*=\s*function\b'), # js function
-        re.compile(r'(?:export\s)?\b(\w+)\s*=\s(?:=>|->)'), # coffeescript function
-        re.compile(r'(?:export\s)?\b(\w+)\s*=\s(?:\([^)]*\))\s*(?:=>|->)'), # coffeescript function
-        re.compile(r'\b(\w+)\s*:\s(?:=>|->)'), # coffeescript function
-        re.compile(r'\b(\w+)\s*:\s(?:\([^)]*\))\s*(?:=>|->)'), # coffeescript function
-    )
-    def extractDef(self, s):
-        '''Return the defined function/method/class name if s
-        looks like definition. Tries several different languages.'''
-        for pat in self.config.getData('extract-patterns') or []:
-            try:
-                pat = re.compile(pat)
-                m = pat.search(s)
-                if m: return m.group(1)
-            except Exception:
-                g.es_print('bad regex in @data extract-patterns', color='blue')
-                g.es_print(pat)
-        for pat in self.extractDef_patterns:
-            m = pat.search(s)
-            if m: return m.group(1)
-        return ''
-    #@+node:ekr.20171123135625.26: *6* c.extractDef_find
-    def extractDef_find(self, lines):
-        c = self
-        for line in lines:
-            def_h = c.extractDef(line.strip())
-            if def_h:
-                return def_h
-    #@+node:ekr.20171123135625.25: *6* c.extractRef
-    def extractRef(self, s):
-        '''Return s if it starts with a section name.'''
-        i = s.find('<<')
-        j = s.find('>>')
-        if -1 < i < j:
-            return s
-        i = s.find('@<')
-        j = s.find('@>')
-        if -1 < i < j:
-            return s
-        return ''
-    #@+node:ekr.20171123135625.10: *4* c.goToLineNumber & goToScriptLineNumber
-    def goToLineNumber(self, n):
-        """
-        Go to line n (zero-based) of a script.
-        Called from g.handleScriptException.
-        """
-        # import leo.commands.gotoCommands as gotoCommands
-        c = self
-        c.gotoCommands.find_file_line(n)
-
-    def goToScriptLineNumber(self, n, p):
-        """
-        Go to line n (zero-based) of a script.
-        Called from g.handleScriptException.
-        """
-        # import leo.commands.gotoCommands as gotoCommands
-        c = self
-        c.gotoCommands.find_script_line(n, p)
-    #@+node:ekr.20171123135625.31: *4* c.insert/removeComments
-    #@+node:ekr.20171123135625.34: *5* c.addComments
-    ### @g.commander_command('add-comments')
-    @cmd('add-comments')
-    def addComments(self, event=None):
-        #@+<< addComments docstring >>
-        #@+node:ekr.20171123135625.35: *6* << addComments docstring >>
-        #@@pagewidth 50
-        '''
-        Converts all selected lines to comment lines using
-        the comment delimiters given by the applicable @language directive.
-
-        Inserts single-line comments if possible; inserts
-        block comments for languages like html that lack
-        single-line comments.
-
-        @bool indent_added_comments
-
-        If True (the default), inserts opening comment
-        delimiters just before the first non-whitespace
-        character of each line. Otherwise, inserts opening
-        comment delimiters at the start of each line.
-
-        *See also*: delete-comments.
-        '''
-        #@-<< addComments docstring >>
-        c = self; p = c.p
-        head, lines, tail, oldSel, oldYview = self.getBodyLines()
-        if not lines:
-            g.warning('no text selected')
-            return
-        # The default language in effect at p.
-        language = c.frame.body.colorizer.scanLanguageDirectives(p)
-        if c.hasAmbiguousLanguage(p):
-            language = c.getLanguageAtCursor(p, language)
-        # g.trace(language,p.h)
-        d1, d2, d3 = g.set_delims_from_language(language)
-        d2 = d2 or ''; d3 = d3 or ''
-        if d1:
-            openDelim, closeDelim = d1 + ' ', ''
-        else:
-            openDelim, closeDelim = d2 + ' ', ' ' + d3
-        # Comment out non-blank lines.
-        indent = c.config.getBool('indent_added_comments', default=True)
-        result = []
-        for line in lines:
-            if line.strip():
-                i = g.skip_ws(line, 0)
-                if indent:
-                    result.append(line[0: i] + openDelim + line[i:].replace('\n', '') + closeDelim + '\n')
-                else:
-                    result.append(openDelim + line.replace('\n', '') + closeDelim + '\n')
-            else:
-                result.append(line)
-        result = ''.join(result)
-        c.updateBodyPane(head, result, tail, undoType='Add Comments', oldSel=None, oldYview=oldYview)
-    #@+node:ekr.20171123135625.36: *5* c.deleteComments
-    ### @g.commander_command('delete-comments')
-    @cmd('delete-comments')
-    def deleteComments(self, event=None):
-        #@+<< deleteComments docstring >>
-        #@+node:ekr.20171123135625.37: *6* << deleteComments docstring >>
-        #@@pagewidth 50
-        '''
-        Removes one level of comment delimiters from all
-        selected lines.  The applicable @language directive
-        determines the comment delimiters to be removed.
-
-        Removes single-line comments if possible; removes
-        block comments for languages like html that lack
-        single-line comments.
-
-        *See also*: add-comments.
-        '''
-        #@-<< deleteComments docstring >>
-        c = self; p = c.p
-        head, lines, tail, oldSel, oldYview = self.getBodyLines()
-        result = []
-        if not lines:
-            g.warning('no text selected')
-            return
-        # The default language in effect at p.
-        language = c.frame.body.colorizer.scanLanguageDirectives(p)
-        if c.hasAmbiguousLanguage(p):
-            language = c.getLanguageAtCursor(p, language)
-        d1, d2, d3 = g.set_delims_from_language(language)
-        if d1:
-            # Remove the single-line comment delim in front of each line
-            d1b = d1 + ' '
-            n1, n1b = len(d1), len(d1b)
-            for s in lines:
-                i = g.skip_ws(s, 0)
-                if g.match(s, i, d1b):
-                    result.append(s[: i] + s[i + n1b:])
-                elif g.match(s, i, d1):
-                    result.append(s[: i] + s[i + n1:])
-                else:
-                    result.append(s)
-        else:
-            # Remove the block comment delimiters from each line.
-            n2, n3 = len(d2), len(d3)
-            for s in lines:
-                i = g.skip_ws(s, 0)
-                j = s.find(d3, i + n2)
-                if g.match(s, i, d2) and j > -1:
-                    first = i + n2
-                    if g.match(s, first, ' '): first += 1
-                    last = j
-                    if g.match(s, last - 1, ' '): last -= 1
-                    result.append(s[: i] + s[first: last] + s[j + n3:])
-                else:
-                    result.append(s)
-        result = ''.join(result)
-        c.updateBodyPane(head, result, tail, undoType='Delete Comments', oldSel=None, oldYview=oldYview)
     #@+node:ekr.20171123135625.41: *4* c.reformatParagraph & helpers
     ### @g.commander_command('reformat-paragraph')
     @cmd('reformat-paragraph')

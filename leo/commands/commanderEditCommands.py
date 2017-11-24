@@ -6,74 +6,291 @@
 import leo.core.leoGlobals as g
 ### import builtins
 import os
-# import re
+import re
 ### import sys
 # import time
 
 #@+others
-#@+node:ekr.20171123135625.2: ** Edit top level
-#@+node:ekr.20171123135625.3: *3* c.colorPanel
-@g.commander_command('set-colors')
-def colorPanel(self, event=None):
-    '''Open the color dialog.'''
-    c = self; frame = c.frame
-    if not frame.colorPanel:
-        frame.colorPanel = g.app.gui.createColorPanel(c)
-    frame.colorPanel.bringToFront()
-#@+node:ekr.20171123135625.9: *3* c.fontPanel
-@g.commander_command('set-font')
-def fontPanel(self, event=None):
-    '''Open the font dialog.'''
-    c = self; frame = c.frame
-    if not frame.fontPanel:
-        frame.fontPanel = g.app.gui.createFontPanel(c)
-    frame.fontPanel.bringToFront()
-#@+node:ekr.20171123135625.11: *3* c.preferences
-@g.commander_command('settings')
-def preferences(self, event=None):
-    '''Handle the preferences command.'''
-    c = self
-    c.openLeoSettings()
-#@+node:ekr.20171123135625.13: *3* c.writeScriptFile
-def writeScriptFile(self, script):
-    trace = False and not g.unitTesting
-    # Get the path to the file.
-    c = self
-    path = c.config.getString('script_file_path')
-    if path:
-        isAbsPath = os.path.isabs(path)
-        driveSpec, path = os.path.splitdrive(path)
-        parts = path.split('/')
-        # xxx bad idea, loadDir is often read only!
-        path = g.app.loadDir
-        if isAbsPath:
-            # make the first element absolute
-            parts[0] = driveSpec + os.sep + parts[0]
-        allParts = [path] + parts
-        path = c.os_path_finalize_join(*allParts)
+#@+node:ekr.20171123135625.34: ** c.addComments
+### @cmd('add-comments')
+@g.commander_command('add-comments')
+def addComments(self, event=None):
+    #@+<< addComments docstring >>
+    #@+node:ekr.20171123135625.35: *3* << addComments docstring >>
+    #@@pagewidth 50
+    '''
+    Converts all selected lines to comment lines using
+    the comment delimiters given by the applicable @language directive.
+
+    Inserts single-line comments if possible; inserts
+    block comments for languages like html that lack
+    single-line comments.
+
+    @bool indent_added_comments
+
+    If True (the default), inserts opening comment
+    delimiters just before the first non-whitespace
+    character of each line. Otherwise, inserts opening
+    comment delimiters at the start of each line.
+
+    *See also*: delete-comments.
+    '''
+    #@-<< addComments docstring >>
+    c = self; p = c.p
+    head, lines, tail, oldSel, oldYview = self.getBodyLines()
+    if not lines:
+        g.warning('no text selected')
+        return
+    # The default language in effect at p.
+    language = c.frame.body.colorizer.scanLanguageDirectives(p)
+    if c.hasAmbiguousLanguage(p):
+        language = c.getLanguageAtCursor(p, language)
+    # g.trace(language,p.h)
+    d1, d2, d3 = g.set_delims_from_language(language)
+    d2 = d2 or ''; d3 = d3 or ''
+    if d1:
+        openDelim, closeDelim = d1 + ' ', ''
     else:
-        path = c.os_path_finalize_join(
-            g.app.homeLeoDir, 'scriptFile.py')
-    if trace: g.trace(path)
-    # Write the file.
-    try:
-        if g.isPython3:
-            # Use the default encoding.
-            f = open(path, encoding='utf-8', mode='w')
+        openDelim, closeDelim = d2 + ' ', ' ' + d3
+    # Comment out non-blank lines.
+    indent = c.config.getBool('indent_added_comments', default=True)
+    result = []
+    for line in lines:
+        if line.strip():
+            i = g.skip_ws(line, 0)
+            if indent:
+                result.append(line[0: i] + openDelim + line[i:].replace('\n', '') + closeDelim + '\n')
+            else:
+                result.append(openDelim + line.replace('\n', '') + closeDelim + '\n')
         else:
-            f = open(path, 'w')
-        s = script
-        if not g.isPython3: # 2010/08/27
-            s = g.toEncodedString(s, reportErrors=True)
-        f.write(s)
-        f.close()
-    except Exception:
-        g.es_exception()
-        g.es("Failed to write script to %s" % path)
-        # g.es("Check your configuration of script_file_path, currently %s" %
-            # c.config.getString('script_file_path'))
-        path = None
-    return path
+            result.append(line)
+    result = ''.join(result)
+    c.updateBodyPane(head, result, tail, undoType='Add Comments', oldSel=None, oldYview=oldYview)
+#@+node:ekr.20171123135625.36: ** c.deleteComments
+### @cmd('delete-comments')
+@g.commander_command('delete-comments')
+def deleteComments(self, event=None):
+    #@+<< deleteComments docstring >>
+    #@+node:ekr.20171123135625.37: *3* << deleteComments docstring >>
+    #@@pagewidth 50
+    '''
+    Removes one level of comment delimiters from all
+    selected lines.  The applicable @language directive
+    determines the comment delimiters to be removed.
+
+    Removes single-line comments if possible; removes
+    block comments for languages like html that lack
+    single-line comments.
+
+    *See also*: add-comments.
+    '''
+    #@-<< deleteComments docstring >>
+    c = self; p = c.p
+    head, lines, tail, oldSel, oldYview = self.getBodyLines()
+    result = []
+    if not lines:
+        g.warning('no text selected')
+        return
+    # The default language in effect at p.
+    language = c.frame.body.colorizer.scanLanguageDirectives(p)
+    if c.hasAmbiguousLanguage(p):
+        language = c.getLanguageAtCursor(p, language)
+    d1, d2, d3 = g.set_delims_from_language(language)
+    if d1:
+        # Remove the single-line comment delim in front of each line
+        d1b = d1 + ' '
+        n1, n1b = len(d1), len(d1b)
+        for s in lines:
+            i = g.skip_ws(s, 0)
+            if g.match(s, i, d1b):
+                result.append(s[: i] + s[i + n1b:])
+            elif g.match(s, i, d1):
+                result.append(s[: i] + s[i + n1:])
+            else:
+                result.append(s)
+    else:
+        # Remove the block comment delimiters from each line.
+        n2, n3 = len(d2), len(d3)
+        for s in lines:
+            i = g.skip_ws(s, 0)
+            j = s.find(d3, i + n2)
+            if g.match(s, i, d2) and j > -1:
+                first = i + n2
+                if g.match(s, first, ' '): first += 1
+                last = j
+                if g.match(s, last - 1, ' '): last -= 1
+                result.append(s[: i] + s[first: last] + s[j + n3:])
+            else:
+                result.append(s)
+    result = ''.join(result)
+    c.updateBodyPane(head, result, tail, undoType='Delete Comments', oldSel=None, oldYview=oldYview)
+#@+node:ekr.20171123135625.23: ** c.extract & helpers
+### @cmd('extract')
+@g.commander_command('extract')
+def extract(self, event=None):
+    r'''
+    Create child node from the selected body text.
+
+    1. If the selection starts with a section reference, the section
+       name becomes the child's headline. All following lines become
+       the child's body text. The section reference line remains in
+       the original body text.
+
+    2. If the selection looks like a definition line (for the Python,
+       JavaScript, CoffeeScript or Clojure languages) the
+       class/function/method name becomes the child's headline and all
+       selected lines become the child's body text.
+       
+       You may add additional regex patterns for definition lines using
+       @data extract-patterns nodes. Each line of the body text should a
+       valid regex pattern. Lines starting with # are comment lines. Use \#
+       for patterns starting with #.
+
+    3. Otherwise, the first line becomes the child's headline, and all
+       selected lines become the child's body text.
+    '''
+    #@+others
+    #@+node:ekr.20171123135625.20: *3* def createLastChildNode
+    def createLastChildNode(c, parent, headline, body):
+        '''A helper function for the three extract commands.'''
+        ### c = self
+        if body:
+            body = body.rstrip()
+        if not body:
+            body = ""
+        p = parent.insertAsLastChild()
+        p.initHeadString(headline)
+        p.setBodyString(body)
+        p.setDirty()
+        c.validateOutline()
+        return p
+    #@+node:ekr.20171123135625.24: *3* def extractDef
+    extractDef_patterns = (
+        re.compile(r'\((?:def|defn|defui|deftype|defrecord|defonce)\s+(\S+)'), # clojure definition
+        re.compile(r'^\s*(?:def|class)\s+(\w+)'), # python definitions
+        re.compile(r'^\bvar\s+(\w+)\s*=\s*function\b'), # js function
+        re.compile(r'^(?:export\s)?\s*function\s+(\w+)\s*\('), # js function
+        re.compile(r'\b(\w+)\s*:\s*function\s'), # js function
+        re.compile(r'\.(\w+)\s*=\s*function\b'), # js function
+        re.compile(r'(?:export\s)?\b(\w+)\s*=\s(?:=>|->)'), # coffeescript function
+        re.compile(r'(?:export\s)?\b(\w+)\s*=\s(?:\([^)]*\))\s*(?:=>|->)'), # coffeescript function
+        re.compile(r'\b(\w+)\s*:\s(?:=>|->)'), # coffeescript function
+        re.compile(r'\b(\w+)\s*:\s(?:\([^)]*\))\s*(?:=>|->)'), # coffeescript function
+    )
+    def extractDef(s):
+        '''Return the defined function/method/class name if s
+        looks like definition. Tries several different languages.'''
+        for pat in self.config.getData('extract-patterns') or []:
+            try:
+                pat = re.compile(pat)
+                m = pat.search(s)
+                if m: return m.group(1)
+            except Exception:
+                g.es_print('bad regex in @data extract-patterns', color='blue')
+                g.es_print(pat)
+        for pat in extractDef_patterns:
+            m = pat.search(s)
+            if m: return m.group(1)
+        return ''
+    #@+node:ekr.20171123135625.26: *3* def extractDef_find
+    def extractDef_find(lines):
+        for line in lines:
+            def_h = extractDef(line.strip())
+            if def_h:
+                return def_h
+    #@+node:ekr.20171123135625.25: *3* def extractRef
+    def extractRef(s):
+        '''Return s if it starts with a section name.'''
+        i = s.find('<<')
+        j = s.find('>>')
+        if -1 < i < j:
+            return s
+        i = s.find('@<')
+        j = s.find('@>')
+        if -1 < i < j:
+            return s
+        return ''
+    #@-others
+    c, current = self, self.p
+    u, undoType = c.undoer, 'Extract'
+    head, lines, tail, oldSel, oldYview = self.getBodyLines()
+    if not lines:
+        return # Nothing selected.
+    # Remove leading whitespace.
+    junk, ws = g.skip_leading_ws_with_indent(lines[0], 0, c.tab_width)
+    lines = [g.removeLeadingWhitespace(s, ws, c.tab_width) for s in lines]
+    h = lines[0].strip()
+    ref_h = extractRef(h).strip()
+    def_h = extractDef_find(lines)
+    if ref_h:
+        # h,b,middle = ref_h,lines[1:],lines[0]
+        # 2012/02/27: Change suggested by vitalije (vitalijem@gmail.com)
+        h, b, middle = ref_h, lines[1:], ' ' * ws + lines[0]
+    elif def_h:
+        h, b, middle = def_h, lines, ''
+    else:
+        h, b, middle = lines[0].strip(), lines[1:], ''
+    u.beforeChangeGroup(current, undoType)
+    undoData = u.beforeInsertNode(current)
+    p = createLastChildNode(c, current, h, ''.join(b))
+    u.afterInsertNode(p, undoType, undoData)
+    c.updateBodyPane(head, middle, tail,
+        undoType=undoType, oldSel=None, oldYview=oldYview)
+    u.afterChangeGroup(current, undoType=undoType)
+    p.parent().expand()
+    c.redraw(p.parent()) # A bit more convenient than p.
+    c.bodyWantsFocus()
+# Compatibility
+
+### extractSection = extract
+### extractPythonMethod = extract
+#@+node:ekr.20171123135625.27: ** c.extractSectionNames
+@g.commander_command('extract-names')
+def extractSectionNames(self, event=None):
+    '''Create child nodes for every section reference in the selected text.
+    The headline of each new child node is the section reference.
+    The body of each child node is empty.'''
+    c = self; u = c.undoer; undoType = 'Extract Section Names'
+    body = c.frame.body; current = c.p
+    head, lines, tail, oldSel, oldYview = self.getBodyLines()
+    if not lines:
+        g.warning('No lines selected')
+        return
+    u.beforeChangeGroup(current, undoType)
+    found = False
+    for s in lines:
+        name = c.findSectionName(s)
+        if name:
+            undoData = u.beforeInsertNode(current)
+            p = self.createLastChildNode(current, name, None)
+            u.afterInsertNode(p, undoType, undoData)
+            found = True
+    c.validateOutline()
+    if found:
+        u.afterChangeGroup(current, undoType)
+        c.redraw(p)
+    else:
+        g.warning("selected text should contain section names")
+    # Restore the selection.
+    i, j = oldSel
+    w = body.wrapper
+    if w:
+        w.setSelectionRange(i, j)
+        w.setFocus()
+#@+node:ekr.20171123135625.28: *3* c.findSectionName
+def findSectionName(self, s):
+    head1 = s.find("<<")
+    if head1 > -1:
+        head2 = s.find(">>", head1)
+    else:
+        head1 = s.find("@<")
+        if head1 > -1:
+            head2 = s.find("@>", head1)
+    if head1 == -1 or head2 == -1 or head1 > head2:
+        name = None
+    else:
+        name = s[head1: head2 + 2]
+    return name
 #@+node:ekr.20171123135625.14: ** Edit Body submenu
 #@+node:ekr.20171123135625.15: *3* c.findMatchingBracket
 @g.commander_command('match-brackets')
@@ -403,52 +620,68 @@ def toggleAngleBrackets(self, event=None):
         s = g.angleBrackets(' ' + s + ' ')
     p.setHeadString(s)
     c.redrawAndEdit(p, selectAll=True)
-#@+node:ekr.20171123135625.27: ** c.extractSectionNames
-@g.commander_command('extract-names')
-def extractSectionNames(self, event=None):
-    '''Create child nodes for every section reference in the selected text.
-    The headline of each new child node is the section reference.
-    The body of each child node is empty.'''
-    c = self; u = c.undoer; undoType = 'Extract Section Names'
-    body = c.frame.body; current = c.p
-    head, lines, tail, oldSel, oldYview = self.getBodyLines()
-    if not lines:
-        g.warning('No lines selected')
-        return
-    u.beforeChangeGroup(current, undoType)
-    found = False
-    for s in lines:
-        name = c.findSectionName(s)
-        if name:
-            undoData = u.beforeInsertNode(current)
-            p = self.createLastChildNode(current, name, None)
-            u.afterInsertNode(p, undoType, undoData)
-            found = True
-    c.validateOutline()
-    if found:
-        u.afterChangeGroup(current, undoType)
-        c.redraw(p)
+#@+node:ekr.20171123135625.2: ** Edit top level
+#@+node:ekr.20171123135625.3: *3* c.colorPanel
+@g.commander_command('set-colors')
+def colorPanel(self, event=None):
+    '''Open the color dialog.'''
+    c = self; frame = c.frame
+    if not frame.colorPanel:
+        frame.colorPanel = g.app.gui.createColorPanel(c)
+    frame.colorPanel.bringToFront()
+#@+node:ekr.20171123135625.9: *3* c.fontPanel
+@g.commander_command('set-font')
+def fontPanel(self, event=None):
+    '''Open the font dialog.'''
+    c = self; frame = c.frame
+    if not frame.fontPanel:
+        frame.fontPanel = g.app.gui.createFontPanel(c)
+    frame.fontPanel.bringToFront()
+#@+node:ekr.20171123135625.11: *3* c.preferences
+@g.commander_command('settings')
+def preferences(self, event=None):
+    '''Handle the preferences command.'''
+    c = self
+    c.openLeoSettings()
+#@+node:ekr.20171123135625.13: *3* c.writeScriptFile
+def writeScriptFile(self, script):
+    trace = False and not g.unitTesting
+    # Get the path to the file.
+    c = self
+    path = c.config.getString('script_file_path')
+    if path:
+        isAbsPath = os.path.isabs(path)
+        driveSpec, path = os.path.splitdrive(path)
+        parts = path.split('/')
+        # xxx bad idea, loadDir is often read only!
+        path = g.app.loadDir
+        if isAbsPath:
+            # make the first element absolute
+            parts[0] = driveSpec + os.sep + parts[0]
+        allParts = [path] + parts
+        path = c.os_path_finalize_join(*allParts)
     else:
-        g.warning("selected text should contain section names")
-    # Restore the selection.
-    i, j = oldSel
-    w = body.wrapper
-    if w:
-        w.setSelectionRange(i, j)
-        w.setFocus()
-#@+node:ekr.20171123135625.28: *3* c.findSectionName
-def findSectionName(self, s):
-    head1 = s.find("<<")
-    if head1 > -1:
-        head2 = s.find(">>", head1)
-    else:
-        head1 = s.find("@<")
-        if head1 > -1:
-            head2 = s.find("@>", head1)
-    if head1 == -1 or head2 == -1 or head1 > head2:
-        name = None
-    else:
-        name = s[head1: head2 + 2]
-    return name
+        path = c.os_path_finalize_join(
+            g.app.homeLeoDir, 'scriptFile.py')
+    if trace: g.trace(path)
+    # Write the file.
+    try:
+        if g.isPython3:
+            # Use the default encoding.
+            f = open(path, encoding='utf-8', mode='w')
+        else:
+            f = open(path, 'w')
+        s = script
+        if not g.isPython3: # 2010/08/27
+            s = g.toEncodedString(s, reportErrors=True)
+        f.write(s)
+        f.close()
+    except Exception:
+        g.es_exception()
+        g.es("Failed to write script to %s" % path)
+        # g.es("Check your configuration of script_file_path, currently %s" %
+            # c.config.getString('script_file_path'))
+        path = None
+    return path
 #@-others
 #@-leo

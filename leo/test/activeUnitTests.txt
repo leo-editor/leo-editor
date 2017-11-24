@@ -28486,7 +28486,7 @@ after
 #@+node:ekr.20050518070540.4: *7* selection
 2.0
 2.16
-#@+node:ekr.20050518070927: *6* extractSection test1
+#@+node:ekr.20050518070927: *6* extract test3
 #@+node:ekr.20050518070927.1: *7* before
 before
     << section >>
@@ -28505,7 +28505,7 @@ sec line 3
 #@+node:ekr.20050518070927.4: *7* selection
 2.0
 5.10
-#@+node:ekr.20050518071251: *6* extractSection test2
+#@+node:ekr.20050518071251: *6* extract test4
 #@+node:ekr.20050518071251.1: *7* before
 before
     << section >>
