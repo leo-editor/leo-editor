@@ -5,7 +5,8 @@
 '''File commands that used to be defined in leoCommands.py'''
 import leo.core.leoGlobals as g
 
+###
 @g.commander_command('new-test-command')
-def new_test_command(self, *args, **kwargs):
-    g.trace(self, args, kwargs)
+def new_test_command(self, event=None):
+    g.trace(self, event)
 #@-leo

@@ -288,6 +288,8 @@ class Commands(object):
         # Import commander commands to execute @g.commander_command decorators
         import leo.commands.commanderEditCommands as commanderEditCommands
         assert commanderEditCommands
+        import leo.commands.commanderFileCommands as commanderFileCommands
+        assert commanderFileCommands
         # Other subcommanders.
         import leo.core.leoFind as leoFind # Leo 4.11.1
         import leo.core.leoKeys as leoKeys
