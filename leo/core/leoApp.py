@@ -2787,7 +2787,7 @@ class LoadManager(object):
         if not c:
             return False # Force an immediate exit.
         # Fix bug 844953: tell Unity which menu to use.
-        if c: c.enableMenuBar()
+            # if c: c.enableMenuBar()
         # Do the final inits.
         g.app.logInited = True
         g.app.initComplete = True
@@ -3066,7 +3066,7 @@ class LoadManager(object):
             g.doHook("after-create-leo-frame", c=c)
             g.doHook("after-create-leo-frame2", c=c)
             # Fix bug 844953: tell Unity which menu to use.
-            c.enableMenuBar()
+                # c.enableMenuBar()
     #@+node:ekr.20120223062418.10406: *6* LM.findOpenFile
     def findOpenFile(self, fn):
         # lm = self

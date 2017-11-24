@@ -7049,7 +7049,7 @@ old_attrs = [
     'editFileCommands',
     'editHeadline',
     'edit_widget',
-    'enableMenuBar',
+    # 'enableMenuBar',
     'endEditing',
     'endUpdate',
     'endsParagraph',
@@ -26024,6 +26024,18 @@ def killBinding(self, commandName):
                 # stroke = si.stroke
                 # pane = si.pane # 2015/05/11.
                 # break
+.. @+node:ekr.20120306130648.9849: *3* c.enableMenuBar
+def enableMenuBar(self):
+    '''A failed attempt to work around Ubuntu Unity memory bugs.'''
+    c = self
+    # g.trace(c.frame.title,g.callers())
+    if 0:
+        if c.frame.menu.isNull:
+            return
+        for frame in g.app.windowList:
+            if frame != c.frame:
+                frame.menu.menuBar.setDisabled(True)
+        c.frame.menu.menuBar.setEnabled(True)
 .. @-all
 .. @@nosearch
 .. @-leo

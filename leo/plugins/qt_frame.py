@@ -1328,7 +1328,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
         i = self.indexOf(dw)
         self.setCurrentIndex(i)
         # Fix bug 844953: tell Unity which menu to use.
-        c.enableMenuBar()
+            # c.enableMenuBar()
     #@-others
 #@+node:ekr.20110605121601.18180: ** class LeoQtBody(leoFrame.LeoBody)
 class LeoQtBody(leoFrame.LeoBody):

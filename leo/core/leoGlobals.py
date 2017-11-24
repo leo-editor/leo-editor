@@ -2317,8 +2317,13 @@ class CommanderCommand(object):
         if app:
             # funcToMethod ensures the command will be injected into all future commanders.
             import leo.core.leoCommands as leoCommands
-            if hasattr(leoCommands.Commands, func.__name__):
-                g.trace('COMMAND EXISTS', func.__name__)
+            old_attr = getattr(leoCommands.Commands, func.__name__, None)
+            if old_attr:
+                if old_attr == func:
+                    # Not a problem. Just multiple decorators for a func.
+                    pass # g.trace('MULTIPLE DECORATORS', func.__name__)
+                else:
+                    g.trace('COMMAND EXISTS', func.__name__)
             else:
                 funcToMethod(func, leoCommands.Commands)
             for c in app.commanders():
