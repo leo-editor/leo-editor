@@ -840,7 +840,7 @@ class Commands(object):
             try:
                 c.inCommand = True
                 # Support for @g.commander_command
-                # pylint: disable=deprecated-method
+                # pylint: disable=deprecated-method,no-member
                 if g.isPython3:
                     args = list(inspect.signature(command).parameters.keys())
                 else:

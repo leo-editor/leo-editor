@@ -2286,6 +2286,12 @@ class Command(object):
         return func
 
 command = Command
+#@+node:ekr.20171124070654.1: *3* g.command_alias
+def command_alias(alias, func):
+    '''Create an alias for the *already defined* method in the Commands class.'''
+    import leo.core.leoCommands as leoCommands
+    assert hasattr(leoCommands.Commands, func.__name__)
+    funcToMethod(func, leoCommands.Commands, alias)
 #@+node:ekr.20171123095526.1: *3* g.commander_command (decorator)
 class CommanderCommand(object):
     '''

@@ -409,10 +409,10 @@ def extract(self, event=None):
     p.parent().expand()
     c.redraw(p.parent()) # A bit more convenient than p.
     c.bodyWantsFocus()
+    
 # Compatibility
-
-### extractSection = extract
-### extractPythonMethod = extract
+g.command_alias('extractSection', extract)
+g.command_alias('extractPythonMethod', extract)
 #@+node:ekr.20171123135625.27: ** c.extractSectionNames
 @g.commander_command('extract-names')
 def extractSectionNames(self, event=None):
