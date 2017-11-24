@@ -2291,10 +2291,16 @@ class KeyHandlerClass(object):
 
         def openWithCallback(event=None, c=c, d=d):
             return c.openWith(d=d)
-        # Use k.registerCommand to set the shortcuts in the various binding dicts.
 
+        # Use k.registerCommand to set the shortcuts in the various binding dicts.
         commandName = 'open-with-%s' % name.lower()
-        k.registerCommand(commandName, openWithCallback, shortcut=shortcut)
+        k.registerCommand(
+            allowBinding=True,
+            commandName=commandName,
+            func=openWithCallback,
+            pane='all',
+            shortcut=shortcut,
+        )
     #@+node:ekr.20061031131434.95: *4* k.checkBindings
     def checkBindings(self):
         '''Print warnings if commands do not have any @shortcut entry.
@@ -3099,38 +3105,59 @@ class KeyHandlerClass(object):
                     d2[key2] = si
     #@+node:ekr.20061031131434.131: *4* k.registerCommand
     def registerCommand(self, commandName, func,
+        allowBinding=False,
         pane='all',
-        shortcut='', # Deprecated for most purposes.
-        source_c=None, # No longer used.
-        verbose=False # No longer used.
+        shortcut=None, # Must be None unless allowBindings is True.
+        **kwargs
     ):
         '''
-        Make the function available as a minibuffer command,
-        and optionally attempt to bind a shortcut.
-
+        Make the function available as a minibuffer command.
+        
         You can wrap any method in a callback function, so the
         restriction to functions is not significant.
-
-        If wrap is True then func will be wrapped with c.universalCallback.
-        source_c is the commander in which an @command or @button node is defined.
-
+        
+        Ignore the 'shortcut' arg unless 'allowBinding' is True.
+        
+        Only k.bindOpenWith and the mod_scripting.py plugin should set
+        allowBinding.
+        '''
+        c, k = self.c, self
+        if not func:
+            g.es_print('Null func passed to k.registerCommand\n', commandName)
+            return
+        f = c.commandsDict.get(commandName)
+        if f and f.__name__ != func.__name__:
+            g.trace('redefining', commandName, f, '->', func)
+        c.commandsDict[commandName] = func
+        # Warn about deprecated arguments.
+        if shortcut and not allowBinding:
+            g.es_print('The "shortcut" keyword arg to k.registerCommand will be ignored')
+            g.es_print('Called from', g.callers())
+            shortcut = None
+        for arg, val in kwargs.items():
+            if val is not None:
+                g.es_print('The "%s" keyword arg to k.registerCommand is deprecated' % arg)
+                g.es_print('Called from', g.callers())
+        # Make requested bindings, even if a warning has been given.
+        # This maintains strict compatibility with existing plugins and scripts.
+        k.registerCommandShortcut(
+            commandName=commandName,
+            func=func,
+            pane=pane,
+            shortcut=shortcut,
+        )
+    #@+node:ekr.20171124043747.1: *4* k.registerCommandShortcut
+    def registerCommandShortcut(self, commandName, func, pane, shortcut):
+        '''
+        Register a shortcut for the a command.
+        
         **Important**: Bindings created here from plugins can not be overridden.
         This includes @command and @button bindings created by mod_scripting.py.
         '''
         trace = False and not g.unitTesting and not g.app.silentMode
         c, k = self.c, self
         is_local = c.shortFileName() not in ('myLeoSettings.leo', 'leoSettings.leo')
-        if not func:
-            g.es_print('Null func passed to k.registerCommand\n', commandName)
-            return
-        # Several plugins and methods, including mod_scripting.py, must define shortcuts.
-            # if shortcut: # This is not necessarily wrong.
-                # g.es_print('The "shortcut" arg to k.registerCommand is deprecated', commandName)
-        f = c.commandsDict.get(commandName)
-        if f and f.__name__ != func.__name__:
-            g.trace('redefining', commandName, f, '->', func)
         assert not g.isStroke(shortcut)
-        c.commandsDict[commandName] = func
         if shortcut:
             stroke = k.strokeFromSetting(shortcut)
         elif commandName.lower() == 'shortcut': # Causes problems.

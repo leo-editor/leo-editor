@@ -566,7 +566,13 @@ class ScriptingController(object):
         # Register the delete-x-button command.
 
         deleteCommandName = 'delete-%s-button' % commandName
-        c.k.registerCommand(deleteCommandName, deleteButtonCallback, pane='button')
+        c.k.registerCommand(
+            # allowBinding=True,
+            commandName=deleteCommandName,
+            func=deleteButtonCallback,
+            pane='button',
+            shortcut=None,
+        )
             # Reporting this command is way too annoying.
         return b
     #@+node:ekr.20060328125248.28: *3* sc.executeScriptFromButton
@@ -995,8 +1001,14 @@ class ScriptingController(object):
             else:
                 g.trace(func)
         # Register the original function.
-        k.registerCommand(commandName, func,
-            pane=pane, shortcut=shortcut, source_c=source_c, verbose=trace)
+        k.registerCommand(
+            allowBinding=True,
+            commandName=commandName,
+            func=func,
+            pane=pane,
+            shortcut=shortcut,
+        )
+
         # 2013/11/13 Jake Peck:
         # include '@rclick-' in list of tags
         for tag in ('@button-', '@command-', '@rclick-'):
@@ -1015,8 +1027,13 @@ class ScriptingController(object):
                     # A warning here would probably be annoying.
                     pass
                 else:
-                    k.registerCommand(commandName2, registerAllCommandsCallback,
-                        pane=pane, verbose=trace)
+                    k.registerCommand(
+                        commandName=commandName2,
+                        func=registerAllCommandsCallback,
+                        pane=pane,
+                        shortcut=None
+                    )
+
     #@+node:ekr.20150402021505.1: *4* sc.setButtonColor
     def setButtonColor(self, b, bg):
         '''Set the background color of Qt button b to bg.'''
