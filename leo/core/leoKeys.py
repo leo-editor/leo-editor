@@ -2627,7 +2627,6 @@ class KeyHandlerClass(object):
         '''Call the function whose name is in the minibuffer.'''
         trace = False and not g.unitTesting
         c, k = self.c, self
-        # s = k.getLabel()
         k.mb_tabList = []
         commandName, tail = k.getMinibufferCommandName()
         if trace: g.trace('command:', commandName, 'tail:', tail)
@@ -2654,17 +2653,11 @@ class KeyHandlerClass(object):
                 c.bodyWantsFocusNow()
                 # Change the event widget so we don't refer to the to-be-deleted headline widget.
                 event.w = event.widget = c.frame.body.wrapper.widget
-                try:
-                    func(event)
-                except Exception:
-                    g.es_exception()
+                c.executeAnyCommand(func, event)
             else:
                 c.widgetWantsFocusNow(event and event.widget)
                     # Important, so cut-text works, e.g.
-                try:
-                    func(event)
-                except Exception:
-                    g.es_exception()
+                c.executeAnyCommand(func, event)
             k.endCommand(commandName)
             return True
         else:

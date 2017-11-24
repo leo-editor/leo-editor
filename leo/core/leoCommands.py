@@ -843,22 +843,7 @@ class Commands(object):
         if not g.doHook("command1", c=c, p=p, v=p, label=label):
             try:
                 c.inCommand = True
-                # Support for @g.commander_command
-                # pylint: disable=deprecated-method,no-member
-                if g.isPython3:
-                    args = list(inspect.signature(command).parameters.keys())
-                else:
-                    args, varargs, keywords, defaults = inspect.getargspec(command)
-                if trace: g.trace('start', command, 'args', args)
-                if inspect.ismethod(command):
-                    # Leo's legacy way of dispatching commands.
-                    val = command(event)
-                elif args and args[0] == 'self':
-                    # @g.commander_command
-                    val = command(c, event)
-                else:
-                    # @g.new_cmd_decorator
-                    val = command(event)
+                val = c.executeAnyCommand(command, event)
                 if trace: g.trace('end', command)
                 if c and c.exists: # Be careful: the command could destroy c.
                     c.inCommand = False
@@ -2588,6 +2573,35 @@ class Commands(object):
             c.selectPosition(c.rootPosition())
                 # Calls redraw()
             # c.redraw()
+    #@+node:ekr.20171124074112.1: *4* c.executeAnyCommand
+    def executeAnyCommand(self, command, event):
+        '''
+        Execute a command, no matter how defined.
+        
+        Supports @g.commander_command and @g.new_cmd_decorator and plain methods.
+        '''
+        trace = False and not g.unitTesting
+        c = self
+        # pylint: disable=deprecated-method,no-member
+        if g.isPython3:
+            args = list(inspect.signature(command).parameters.keys())
+        else:
+            args, varargs, keywords, defaults = inspect.getargspec(command)
+        if trace: g.trace('start', command, 'args', args)
+        try:
+            if inspect.ismethod(command):
+                # Leo's legacy way of dispatching commands.
+                val = command(event)
+            elif args and args[0] == 'self':
+                # @g.commander_command
+                val = command(c, event)
+            else:
+                # @g.new_cmd_decorator
+                val = command(event)
+            return val
+        except Exception:
+            g.es_exception()
+            return None
     #@+node:ekr.20051106040126: *4* c.executeMinibufferCommand
     def executeMinibufferCommand(self, commandName):
         c = self; k = c.k
