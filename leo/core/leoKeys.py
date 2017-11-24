@@ -3172,7 +3172,12 @@ class KeyHandlerClass(object):
         c, k = self.c, self
         func = self.commandExists(commandName)
         if func:
-            # g.trace(commandName,func.__name__)
+            # Support @g.commander_command
+            c_func = getattr(c, func.__name__, None)
+            if c_func:
+                if trace:
+                    g.trace('@g.commander_command(%s): %s' % (commandName,func.__name__))
+                return c_func(event=event)
             if event:
                 pass
             elif commandName.startswith('specialCallback'):
@@ -3686,7 +3691,7 @@ class KeyHandlerClass(object):
         This returns None, but may set k.funcReturn.
         '''
         c, k = self.c, self
-        trace = False and not g.unitTesting and g.app.gui.guiName() == 'curses'
+        trace = False and not g.unitTesting # and g.app.gui.guiName() == 'curses'
         traceGC = False
         traceStroke = True
         # if trace: g.trace(commandName, func)

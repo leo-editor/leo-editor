@@ -13,6 +13,7 @@ try:
 except ImportError:
     import __builtin__ as builtins # Python 2.
 import imp
+import inspect
 import itertools
 import os
 import re
@@ -838,8 +839,22 @@ class Commands(object):
         if not g.doHook("command1", c=c, p=p, v=p, label=label):
             try:
                 c.inCommand = True
-                if trace: g.trace('start', command)
-                val = command(event)
+                # Support for @g.commander_command
+                # pylint: disable=deprecated-method
+                if g.isPython3:
+                    args = list(inspect.signature(command).parameters.keys())
+                else:
+                    args, varargs, keywords, defaults = inspect.getargspec(command)
+                if trace: g.trace('start', command, 'args', args)
+                if inspect.ismethod(command):
+                    # Leo's legacy way of dispatching commands.
+                    val = command(event)
+                elif args and args[0] == 'self':
+                    # @g.commander_command
+                    val = command(c, event)
+                else:
+                    # @g.new_cmd_decorator
+                    val = command(event)
                 if trace: g.trace('end', command)
                 if c and c.exists: # Be careful: the command could destroy c.
                     c.inCommand = False
@@ -6666,182 +6681,6 @@ class Commands(object):
         else: # Use a pristine environment.
             os.spawnve(os.P_NOWAIT, sys.executable, args, os.environ)
     #@+node:ekr.20171123144901.1: *3* zz called by k.simulateCommand in unit test
-    #@+node:ekr.20171123135625.12: *4* c.show/hide/toggleInvisibles
-    ### @g.commander_command('hide-invisibles')
-    @cmd('hide-invisibles')
-    def hideInvisibles(self, event=None):
-        '''Hide invisible (whitespace) characters.'''
-        c = self; c.showInvisiblesHelper(False)
-
-    ### @g.commander_command('show-invisibles')
-    @cmd('show-invisibles')
-    def showInvisibles(self, event=None):
-        '''Show invisible (whitespace) characters.'''
-        c = self; c.showInvisiblesHelper(True)
-
-    ### @g.commander_command('toggle-invisibles')
-    @cmd('toggle-invisibles')
-    def toggleShowInvisibles(self, event=None):
-        '''Toggle showing of invisible (whitespace) characters.'''
-        c = self; colorizer = c.frame.body.getColorizer()
-        val = 0 if colorizer.showInvisibles else 1
-        c.showInvisiblesHelper(val)
-
-    def showInvisiblesHelper(self, val):
-        c, frame = self, self.frame
-        colorizer = frame.body.getColorizer()
-        colorizer.showInvisibles = val
-        colorizer.highlighter.showInvisibles = val
-        # It is much easier to change the menu name here than in the menu updater.
-        menu = frame.menu.getMenu("Edit")
-        index = frame.menu.getMenuLabel(menu,
-            'Hide Invisibles' if val else 'Show Invisibles')
-        if index is None:
-            if val: frame.menu.setMenuLabel(menu, "Show Invisibles", "Hide Invisibles")
-            else: frame.menu.setMenuLabel(menu, "Hide Invisibles", "Show Invisibles")
-        # 2016/03/09: Set the status bits here.
-        # May fix #240: body won't scroll to end of text
-        # https://github.com/leo-editor/leo-editor/issues/240
-        if hasattr(frame.body, 'set_invisibles'):
-            frame.body.set_invisibles(c)
-        c.frame.body.recolor(c.p)
-    #@+node:ekr.20171123135625.41: *4* c.reformatParagraph & helpers
-    @cmd('reformat-paragraph')
-    ### @g.commander_command('reformat-paragraph')
-    def reformatParagraph(self, event=None, undoType='Reformat Paragraph'):
-        '''
-        Reformat a text paragraph
-
-        Wraps the concatenated text to present page width setting. Leading tabs are
-        sized to present tab width setting. First and second line of original text is
-        used to determine leading whitespace in reformatted text. Hanging indentation
-        is honored.
-
-        Paragraph is bound by start of body, end of body and blank lines. Paragraph is
-        selected by position of current insertion cursor.
-        '''
-        # Define helpers
-        #@+others
-        #@+node:ekr.20171123135625.45: *5* def rp_get_args
-        def rp_get_args(c):
-            '''Compute and return oldSel,oldYview,original,pageWidth,tabWidth.'''
-            body = c.frame.body
-            w = body.wrapper
-            d = c.scanAllDirectives()
-            if c.editCommands.fillColumn > 0:
-                pageWidth = c.editCommands.fillColumn
-            else:
-                pageWidth = d.get("pagewidth")
-            tabWidth = d.get("tabwidth")
-            original = w.getAllText()
-            oldSel = w.getSelectionRange()
-            oldYview = w.getYScrollPosition()
-            return oldSel, oldYview, original, pageWidth, tabWidth
-        #@+node:ekr.20171123135625.46: *5* def rp_get_leading_ws
-        def rp_get_leading_ws(c, lines, tabWidth):
-            '''Compute and return indents and leading_ws.'''
-            # c = self
-            indents = [0, 0]
-            leading_ws = ["", ""]
-            for i in (0, 1):
-                if i < len(lines):
-                    # Use the original, non-optimized leading whitespace.
-                    leading_ws[i] = ws = g.get_leading_ws(lines[i])
-                    indents[i] = g.computeWidth(ws, tabWidth)
-            indents[1] = max(indents)
-            if len(lines) == 1:
-                leading_ws[1] = leading_ws[0]
-            return indents, leading_ws
-        #@+node:ekr.20171123135625.47: *5* def rp_reformat
-        def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
-            '''Reformat the body and update the selection.'''
-            body = c.frame.body
-            w = body.wrapper
-            # This destroys recoloring.
-            junk, ins = body.setSelectionAreas(head, result, tail)
-            changed = original != head + result + tail
-            if changed:
-                s = w.getAllText()
-                # Fix an annoying glitch when there is no
-                # newline following the reformatted paragraph.
-                if not tail and ins < len(s): ins += 1
-                # 2010/11/16: stay in the paragraph.
-                body.onBodyChanged(undoType, oldSel=oldSel, oldYview=oldYview)
-            else:
-                # Advance to the next paragraph.
-                s = w.getAllText()
-                ins += 1 # Move past the selection.
-                while ins < len(s):
-                    i, j = g.getLine(s, ins)
-                    line = s[i: j]
-                    # 2010/11/16: it's annoying, imo, to treat @ lines differently.
-                    if line.isspace():
-                        ins = j + 1
-                    else:
-                        ins = i
-                        break
-                # setSelectionAreas has destroyed the coloring.
-                c.recolor()
-            w.setSelectionRange(ins, ins, insert=ins)
-            # 2011/10/26: Calling see does more harm than good.
-                # w.see(ins)
-            # Make sure we never scroll horizontally.
-            w.setXScrollPosition(0)
-        #@+node:ekr.20171123135625.48: *5* def rp_wrap_all_lines
-        def rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth):
-            '''Compute the result of wrapping all lines.'''
-            trailingNL = lines and lines[-1].endswith('\n')
-            lines = [z[: -1] if z.endswith('\n') else z for z in lines]
-            if lines: # Bug fix: 2013/12/22.
-                s = lines[0]
-                if c.startsParagraph(s):
-                    # Adjust indents[1]
-                    # Similar to code in c.startsParagraph(s)
-                    i = 0
-                    if s[0].isdigit():
-                        while i < len(s) and s[i].isdigit():
-                            i += 1
-                        if g.match(s, i, ')') or g.match(s, i, '.'):
-                            i += 1
-                    elif s[0].isalpha():
-                        if g.match(s, 1, ')') or g.match(s, 1, '.'):
-                            i = 2
-                    elif s[0] == '-':
-                        i = 1
-                    # Never decrease indentation.
-                    i = g.skip_ws(s, i + 1)
-                    if i > indents[1]:
-                        indents[1] = i
-                        leading_ws[1] = ' ' * i
-            # Wrap the lines, decreasing the page width by indent.
-            result = g.wrap_lines(lines,
-                pageWidth - indents[1],
-                pageWidth - indents[0])
-            # prefix with the leading whitespace, if any
-            paddedResult = []
-            paddedResult.append(leading_ws[0] + result[0])
-            for line in result[1:]:
-                paddedResult.append(leading_ws[1] + line)
-            # Convert the result to a string.
-            result = '\n'.join(paddedResult)
-            if trailingNL: result = result + '\n'
-            return result
-        #@-others
-        c = self
-        body = c.frame.body
-        w = body.wrapper
-        if g.app.batchMode:
-            c.notValidInBatchMode("reformat-paragraph")
-            return
-        if w.hasSelection():
-            i, j = w.getSelectionRange()
-            w.setInsertPoint(i)
-        oldSel, oldYview, original, pageWidth, tabWidth = rp_get_args(c)
-        head, lines, tail = c.findBoundParagraph()
-        if lines:
-            indents, leading_ws = rp_get_leading_ws(c, lines, tabWidth)
-            result = rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth)
-            rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType)
     #@-others
 #@-others
 #@@language python

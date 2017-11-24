@@ -1094,7 +1094,8 @@ class LeoFrame(object):
     @cmd('end-edit-headline')
     def endEditLabelCommand(self, event=None, p=None):
         '''End editing of a headline and move focus to the body pane.'''
-        frame = self; c = frame.c; k = c.k
+        frame = self
+        c = frame.c; k = c.k
         if g.app.batchMode:
             c.notValidInBatchMode("End Edit Headline")
         else:

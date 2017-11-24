@@ -2312,17 +2312,17 @@ class CommanderCommand(object):
         '''Register command for all future commanders.'''
         trace = False and not g.unitTesting
         if trace: g.trace(self.name)
-        # g.trace('app', app, 'name', self.name, 'func', func)
         global_commands_dict[self.name] = func
         if app:
             # funcToMethod ensures the command will be injected into all future commanders.
             import leo.core.leoCommands as leoCommands
             old_attr = getattr(leoCommands.Commands, func.__name__, None)
             if old_attr:
+                # Not a problem. Just multiple decorators for a func.
                 if old_attr == func:
-                    # Not a problem. Just multiple decorators for a func.
-                    pass # g.trace('MULTIPLE DECORATORS', func.__name__)
-                else:
+                    pass
+                elif g.isPython3:
+                    # The test above fails for Python 2.
                     g.trace('COMMAND EXISTS', func.__name__)
             else:
                 funcToMethod(func, leoCommands.Commands)
