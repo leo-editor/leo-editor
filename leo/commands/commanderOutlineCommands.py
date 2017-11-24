@@ -521,38 +521,11 @@ def insertChild(self, event=None):
     c = self
     return c.insertHeadline(event=event, op_name='Insert Child', as_child=True)
 #@+node:ekr.20031218072017.1761: *3* c.insertHeadline
-@g.command('insert-node')
+@g.commander_command('insert-node')
 def insertHeadlineCommand(self, event=None, op_name="Insert Node", as_child=False):
     '''Insert a node after the presently selected node.'''
     c = self
     c.insertHeadline(event=event)
-    # The helper does all the work
-    ###
-        # trace = False and not g.unitTesting
-        # c = self; u = c.undoer
-        # current = c.p
-        # if not current: return
-        # c.endEditing()
-        # if trace: g.trace('==========', c.p.h, g.app.gui.get_focus())
-        # undoData = c.undoer.beforeInsertNode(current)
-        # # Make sure the new node is visible when hoisting.
-        # if (as_child or
-            # (current.hasChildren() and current.isExpanded()) or
-            # (c.hoistStack and current == c.hoistStack[-1].p)
-        # ):
-            # if c.config.getBool('insert_new_nodes_at_end'):
-                # p = current.insertAsLastChild()
-            # else:
-                # p = current.insertAsNthChild(0)
-        # else:
-            # p = current.insertAfter()
-        # g.doHook('create-node', c=c, p=p)
-        # p.setDirty(setDescendentsDirty=False)
-        # dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-        # c.setChanged(True)
-        # u.afterInsertNode(p, op_name, undoData, dirtyVnodeList=dirtyVnodeList)
-        # c.redrawAndEdit(p, selectAll=True)
-        # return p
 #@+node:ekr.20130922133218.11540: *3* c.insertHeadlineBefore (new in Leo 4.11)
 @g.commander_command('insert-node-before')
 def insertHeadlineBefore(self, event=None):
