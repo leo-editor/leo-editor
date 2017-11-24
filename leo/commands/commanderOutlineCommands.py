@@ -5,7 +5,7 @@
 '''Outline commands that used to be defined in leoCommands.py'''
 import leo.core.leoGlobals as g
 #@+others
-#@+node:ekr.20040412060927: ** c.dumpOutline
+#@+node:ekr.20040412060927: ** c_oc.dumpOutline
 @g.commander_command('dump-outline')
 def dumpOutline(self, event=None):
     """ Dump all nodes in the outline."""
@@ -20,7 +20,7 @@ def dumpOutline(self, event=None):
         if p.v not in seen:
             seen[p.v] = True
             p.v.dump()
-#@+node:ekr.20171124081846.1: ** c.fullCheckOutline
+#@+node:ekr.20171124081846.1: ** c_oc.fullCheckOutline
 @g.commander_command('check-outline')
 def fullCheckOutline(self, event=None):
     '''
@@ -31,8 +31,8 @@ def fullCheckOutline(self, event=None):
     '''
     c = self
     return c.checkOutline(check_links=True)
-#@+node:ekr.20031218072017.1548: ** c.Cut & Paste Outlines
-#@+node:ekr.20031218072017.1549: *3* c.cutOutline
+#@+node:ekr.20031218072017.1548: ** c_oc.Cut & Paste Outlines
+#@+node:ekr.20031218072017.1549: *3* c_oc.cutOutline
 @g.commander_command('cut-node')
 def cutOutline(self, event=None):
     '''Delete the selected outline and send it to the clipboard.'''
@@ -41,7 +41,7 @@ def cutOutline(self, event=None):
         c.copyOutline()
         c.deleteOutline("Cut Node")
         c.recolor()
-#@+node:ekr.20031218072017.1550: *3* c.copyOutline
+#@+node:ekr.20031218072017.1550: *3* c_oc.copyOutline
 @g.commander_command('copy-node')
 def copyOutline(self, event=None):
     '''Copy the selected outline to the clipboard.'''
@@ -51,7 +51,7 @@ def copyOutline(self, event=None):
     s = c.fileCommands.putLeoOutline()
     g.app.paste_c = c
     g.app.gui.replaceClipboardWith(s)
-#@+node:ekr.20031218072017.1551: *3* c.pasteOutline & helpers
+#@+node:ekr.20031218072017.1551: *3* c_oc.pasteOutline & helpers
 # To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
 
 @g.commander_command('paste-node')
@@ -146,22 +146,22 @@ def computeVnodeInfoDict(c):
         if v not in d:
             d[v] = g.Bunch(v=v, head=v.h, body=v.b)
     return d
-#@+node:EKR.20040610130943: *3* c.pasteOutlineRetainingClones
+#@+node:EKR.20040610130943: *3* c_oc.pasteOutlineRetainingClones
 @g.commander_command('paste-retaining-clones')
 def pasteOutlineRetainingClones(self, event=None):
     '''Paste an outline into the present outline from the clipboard.
     Nodes *retain* their original identify.'''
     c = self
     return c.pasteOutline(reassignIndices=False)
-#@+node:ekr.20031218072017.2898: ** c.Expand & contract commands
-#@+node:ekr.20031218072017.2900: *3* c.contract-all
+#@+node:ekr.20031218072017.2898: ** c_oc.Expand & contract commands
+#@+node:ekr.20031218072017.2900: *3* c_oc.contract-all
 @g.command('contract-all')
 def contractAllHeadlinesCommand(self, event=None, redrawFlag=True):
     '''Contract all nodes in the outline.'''
     # The helper does all the work.
     c = self
     c.contractAllHeadlines(event=event,redrawFlag=redrawFlag)
-#@+node:ekr.20080819075811.3: *3* c.contractAllOtherNodes & helper
+#@+node:ekr.20080819075811.3: *3* c_oc.contractAllOtherNodes & helper
 @g.commander_command('contract-all-other-nodes')
 def contractAllOtherNodes(self, event=None):
     '''
@@ -183,7 +183,7 @@ def contractIfNotCurrent(c, p, leaveOpen):
         else:
             for p2 in child.self_and_subtree():
                 p2.contract()
-#@+node:ekr.20031218072017.2901: *3* c.contractNode
+#@+node:ekr.20031218072017.2901: *3* c_oc.contractNode
 @g.commander_command('contract-node')
 def contractNode(self, event=None):
     '''Contract the presently selected node.'''
@@ -193,7 +193,7 @@ def contractNode(self, event=None):
         c.redraw() # A full redraw is necessary to handle clones.
     else:
         c.redraw_after_contract(p=p, setFocus=True)
-#@+node:ekr.20040930064232: *3* c.contractNodeOrGoToParent
+#@+node:ekr.20040930064232: *3* c_oc.contractNodeOrGoToParent
 @g.commander_command('contract-or-go-left')
 def contractNodeOrGoToParent(self, event=None):
     """Simulate the left Arrow Key in folder of Windows Explorer."""
@@ -230,7 +230,7 @@ def contractNodeOrGoToParent(self, event=None):
             # p.moveToNext()
     if redraw:
         c.redraw()
-#@+node:ekr.20031218072017.2902: *3* c.contractParent
+#@+node:ekr.20031218072017.2902: *3* c_oc.contractParent
 @g.commander_command('contract-parent')
 def contractParent(self, event=None):
     '''Contract the parent of the presently selected node.'''
@@ -239,7 +239,7 @@ def contractParent(self, event=None):
     if not parent: return
     parent.contract()
     c.redraw_after_contract(p=parent)
-#@+node:ekr.20031218072017.2903: *3* c.expandAllHeadlines
+#@+node:ekr.20031218072017.2903: *3* c_oc.expandAllHeadlines
 @g.commander_command('expand-all')
 def expandAllHeadlines(self, event=None):
     '''Expand all headlines.
@@ -251,7 +251,7 @@ def expandAllHeadlines(self, event=None):
         p.moveToNext()
     c.redraw_after_expand(p=c.rootPosition(), setFocus=True)
     c.expansionLevel = 0 # Reset expansion level.
-#@+node:ekr.20031218072017.2904: *3* c.expandAllSubheads
+#@+node:ekr.20031218072017.2904: *3* c_oc.expandAllSubheads
 @g.commander_command('expand-all-subheads')
 def expandAllSubheads(self, event=None):
     '''Expand all children of the presently selected node.'''
@@ -263,7 +263,7 @@ def expandAllSubheads(self, event=None):
         c.expandSubtree(child)
         child = child.next()
     c.redraw(p, setFocus=True)
-#@+node:ekr.20031218072017.2905: *3* c.expandLevel1..9
+#@+node:ekr.20031218072017.2905: *3* c_oc.expandLevel1..9
 @g.commander_command('expand-to-level-1')
 def expandLevel1(self, event=None):
     '''Expand the outline to level 1'''
@@ -308,7 +308,7 @@ def expandLevel8(self, event=None):
 def expandLevel9(self, event=None):
     '''Expand the outline to level 9'''
     self.expandToLevel(9)
-#@+node:ekr.20031218072017.2906: *3* c.expandNextLevel
+#@+node:ekr.20031218072017.2906: *3* c_oc.expandNextLevel
 @g.commander_command('expand-next-level')
 def expandNextLevel(self, event=None):
     '''Increase the expansion level of the outline and
@@ -320,7 +320,7 @@ def expandNextLevel(self, event=None):
         c.expansionNode = c.p.copy()
     # g.trace(c.expansionLevel)
     self.expandToLevel(c.expansionLevel + 1)
-#@+node:ekr.20031218072017.2907: *3* c.c.expandNode
+#@+node:ekr.20031218072017.2907: *3* c_oc.expandNode
 @g.commander_command('expand-node')
 def expandNode(self, event=None):
     '''Expand the presently selected node.'''
@@ -332,7 +332,7 @@ def expandNode(self, event=None):
         c.redraw() # Bug fix: 2009/10/03.
     else:
         c.redraw_after_expand(p, setFocus=True)
-#@+node:ekr.20040930064232.1: *3* c.expandNodeAnd/OrGoToFirstChild
+#@+node:ekr.20040930064232.1: *3* c_oc.expandNodeAnd/OrGoToFirstChild
 @g.commander_command('expand-and-go-right')
 def expandNodeAndGoToFirstChild(self, event=None):
     """If a node has children, expand it if needed and go to the first child."""
@@ -356,7 +356,7 @@ def expandNodeOrGoToFirstChild(self, event=None):
             c.expandNode() # Calls redraw_after_expand.
         else:
             c.redraw_after_expand(p.firstChild(), setFocus=True)
-#@+node:ekr.20060928062431: *3* c.expandOnlyAncestorsOfNode
+#@+node:ekr.20060928062431: *3* c_oc.expandOnlyAncestorsOfNode
 @g.commander_command('expand-ancestors-only')
 def expandOnlyAncestorsOfNode(self, event=None, p=None):
     '''Contract all nodes in the outline.'''
@@ -375,7 +375,7 @@ def expandOnlyAncestorsOfNode(self, event=None, p=None):
         level += 1
     c.redraw(setFocus=True)
     c.expansionLevel = level # Reset expansion level.
-#@+node:ekr.20031218072017.2908: *3* c.expandPrevLevel
+#@+node:ekr.20031218072017.2908: *3* c_oc.expandPrevLevel
 @g.commander_command('expand-prev-level')
 def expandPrevLevel(self, event=None):
     '''Decrease the expansion level of the outline and
@@ -386,8 +386,8 @@ def expandPrevLevel(self, event=None):
         c.expansionLevel = 1
         c.expansionNode = c.p.copy()
     self.expandToLevel(max(1, c.expansionLevel - 1))
-#@+node:ekr.20031218072017.2028: ** c.hoist/dehoist/clearAllHoists
-#@+node:ekr.20120308061112.9865: *3* c.deHoist
+#@+node:ekr.20031218072017.2028: ** c_oc.hoist/dehoist/clearAllHoists
+#@+node:ekr.20120308061112.9865: *3* c_oc.deHoist
 @g.commander_command('de-hoist')
 @g.commander_command('dehoist')
 def dehoist(self, event=None):
@@ -410,14 +410,14 @@ def dehoist(self, event=None):
     c.frame.putStatusLine("De-Hoist: " + p.h)
     c.undoer.afterDehoist(p, 'DeHoist')
     g.doHook('hoist-changed', c=c)
-#@+node:ekr.20120308061112.9866: *3* c.clearAllHoists
+#@+node:ekr.20120308061112.9866: *3* c_oc.clearAllHoists
 def clearAllHoists(self):
     '''Undo a previous hoist of an outline.'''
     c = self
     c.hoistStack = []
     c.frame.putStatusLine("Hoists cleared")
     g.doHook('hoist-changed', c=c)
-#@+node:ekr.20120308061112.9867: *3* c.hoist
+#@+node:ekr.20120308061112.9867: *3* c_oc.hoist
 @g.commander_command('hoist')
 def hoist(self, event=None):
     '''Make only the selected outline visible.'''
@@ -439,8 +439,8 @@ def hoist(self, event=None):
     c.frame.putStatusLine("Hoist: " + p.h)
     c.undoer.afterHoist(p, 'Hoist')
     g.doHook('hoist-changed', c=c)
-#@+node:ekr.20031218072017.1759: ** c.Insert, Delete & Clone commands
-#@+node:ekr.20031218072017.1762: *3* c.clone
+#@+node:ekr.20031218072017.1759: ** c_oc.Insert, Delete & Clone commands
+#@+node:ekr.20031218072017.1762: *3* c_oc.clone
 @g.commander_command('clone-node')
 def clone(self, event=None):
     '''Create a clone of the selected outline.'''
@@ -460,7 +460,7 @@ def clone(self, event=None):
         clone.doDelete()
         c.setCurrentPosition(p)
         return None
-#@+node:ekr.20150630152607.1: *3* c.cloneToAtSpot
+#@+node:ekr.20150630152607.1: *3* c_oc.cloneToAtSpot
 @g.commander_command('clone-to-at-spot')
 def cloneToAtSpot(self, event=None):
     '''
@@ -501,7 +501,7 @@ def cloneToAtSpot(self, event=None):
     else:
         clone.doDelete()
         c.setCurrentPosition(p)
-#@+node:ekr.20141023154408.5: *3* c.cloneToLastNode
+#@+node:ekr.20141023154408.5: *3* c_oc.cloneToLastNode
 @g.commander_command('clone-node-to-last-node')
 def cloneToLastNode(self, event=None):
     '''
@@ -523,7 +523,7 @@ def cloneToLastNode(self, event=None):
     u.afterCloneNode(clone, 'Clone Node To Last', undoData, dirtyVnodeList=dirtyVnodeList)
     c.redraw(prev)
     # return clone # For mod_labels and chapters plugins.
-#@+node:ekr.20031218072017.1193: *3* c.deleteOutline
+#@+node:ekr.20031218072017.1193: *3* c_oc.deleteOutline
 @g.commander_command('delete-node')
 def deleteOutline(self, event=None, op_name="Delete Node"):
     """Deletes the selected outline."""
@@ -541,19 +541,19 @@ def deleteOutline(self, event=None, op_name="Delete Node"):
     u.afterDeleteNode(newNode, op_name, undoData, dirtyVnodeList=dirtyVnodeList)
     c.redraw(newNode)
     c.validateOutline()
-#@+node:ekr.20071005173203.1: *3* c.insertChild
+#@+node:ekr.20071005173203.1: *3* c_oc.insertChild
 @g.commander_command('insert-child')
 def insertChild(self, event=None):
     '''Insert a node after the presently selected node.'''
     c = self
     return c.insertHeadline(event=event, op_name='Insert Child', as_child=True)
-#@+node:ekr.20031218072017.1761: *3* c.insertHeadline
+#@+node:ekr.20031218072017.1761: *3* c_oc.insertHeadline
 @g.commander_command('insert-node')
 def insertHeadlineCommand(self, event=None, op_name="Insert Node", as_child=False):
     '''Insert a node after the presently selected node.'''
     c = self
     c.insertHeadline(event=event)
-#@+node:ekr.20130922133218.11540: *3* c.insertHeadlineBefore (new in Leo 4.11)
+#@+node:ekr.20130922133218.11540: *3* c_oc.insertHeadlineBefore (new in Leo 4.11)
 @g.commander_command('insert-node-before')
 def insertHeadlineBefore(self, event=None):
     '''Insert a node before the presently selected node.'''
@@ -574,8 +574,8 @@ def insertHeadlineBefore(self, event=None):
     u.afterInsertNode(p, op_name, undoData, dirtyVnodeList=dirtyVnodeList)
     c.redrawAndEdit(p, selectAll=True)
     return p
-#@+node:ekr.20080425060424.1: ** c.Sort commands
-#@+node:ekr.20050415134809: *3* c.sortChildren
+#@+node:ekr.20080425060424.1: ** c_oc.Sort commands
+#@+node:ekr.20050415134809: *3* c_oc.sortChildren
 # New in Leo 4.7 final: this method no longer supports
 # the 'cmp' keyword arg.
 
@@ -585,7 +585,7 @@ def sortChildren(self, event=None, key=None, reverse=False):
     c = self; p = c.p
     if p and p.hasChildren():
         c.sortSiblings(p=p.firstChild(), sortChildren=True, key=key, reverse=reverse)
-#@+node:ekr.20050415134809.1: *3* c.sortSiblings
+#@+node:ekr.20050415134809.1: *3* c_oc.sortSiblings
 # New in Leo 4.7 final: this method no longer supports
 # the 'cmp' keyword arg.
 
@@ -624,8 +624,8 @@ def sortSiblings(self, event=None, key=None, p=None, sortChildren=False,
     # Sorting destroys position p, and possibly the root position.
     p = c.setPositionAfterSort(sortChildren)
     c.redraw(p)
-#@+node:ekr.20031218072017.2913: ** c.Goto commands
-#@+node:ekr.20031218072017.1628: *3* c.goNextVisitedNode
+#@+node:ekr.20031218072017.2913: ** c_oc.Goto commands
+#@+node:ekr.20031218072017.1628: *3* c_oc.goNextVisitedNode
 @g.commander_command('go-forward')
 def goNextVisitedNode(self, event=None):
     '''Select the next visited node.'''
@@ -638,7 +638,7 @@ def goNextVisitedNode(self, event=None):
         finally:
             c.nodeHistory.skipBeadUpdate = False
             c.redraw_after_select(p)
-#@+node:ekr.20031218072017.1627: *3* c.goPrevVisitedNode
+#@+node:ekr.20031218072017.1627: *3* c_oc.goPrevVisitedNode
 @g.commander_command('go-back')
 def goPrevVisitedNode(self, event=None):
     '''Select the previously visited node.'''
@@ -651,7 +651,7 @@ def goPrevVisitedNode(self, event=None):
         finally:
             c.nodeHistory.skipBeadUpdate = False
             c.redraw_after_select(p)
-#@+node:ekr.20031218072017.2914: *3* c.goToFirstNode
+#@+node:ekr.20031218072017.2914: *3* c_oc.goToFirstNode
 @g.commander_command('goto-first-node')
 def goToFirstNode(self, event=None):
     '''Select the first node of the entire outline.'''
@@ -661,7 +661,7 @@ def goToFirstNode(self, event=None):
     c.expandOnlyAncestorsOfNode()
     c.redraw()
     c.treeSelectHelper(p)
-#@+node:ekr.20051012092453: *3* c.goToFirstSibling
+#@+node:ekr.20051012092453: *3* c_oc.goToFirstSibling
 @g.commander_command('goto-first-sibling')
 def goToFirstSibling(self, event=None):
     '''Select the first sibling of the selected node.'''
@@ -670,7 +670,7 @@ def goToFirstSibling(self, event=None):
         while p.hasBack():
             p.moveToBack()
     c.treeSelectHelper(p)
-#@+node:ekr.20070615070925: *3* c.goToFirstVisibleNode
+#@+node:ekr.20070615070925: *3* c_oc.goToFirstVisibleNode
 @g.commander_command('goto-first-visible-node')
 def goToFirstVisibleNode(self, event=None):
     '''Select the first visible node of the selected chapter or hoist.'''
@@ -681,7 +681,7 @@ def goToFirstVisibleNode(self, event=None):
         c.expandOnlyAncestorsOfNode()
         c.redraw_after_select(p)
         c.treeSelectHelper(p)
-#@+node:ekr.20031218072017.2915: *3* c.goToLastNode
+#@+node:ekr.20031218072017.2915: *3* c_oc.goToLastNode
 @g.commander_command('goto-last-node')
 def goToLastNode(self, event=None):
     '''Select the last node in the entire tree.'''
@@ -693,7 +693,7 @@ def goToLastNode(self, event=None):
     c.treeSelectHelper(p)
     c.expandOnlyAncestorsOfNode()
     c.redraw()
-#@+node:ekr.20051012092847.1: *3* c.goToLastSibling
+#@+node:ekr.20051012092847.1: *3* c_oc.goToLastSibling
 @g.commander_command('goto-last-sibling')
 def goToLastSibling(self, event=None):
     '''Select the last sibling of the selected node.'''
@@ -702,7 +702,7 @@ def goToLastSibling(self, event=None):
         while p.hasNext():
             p.moveToNext()
     c.treeSelectHelper(p)
-#@+node:ekr.20050711153537: *3* c.goToLastVisibleNode
+#@+node:ekr.20050711153537: *3* c_oc.goToLastVisibleNode
 @g.commander_command('goto-last-visible-node')
 def goToLastVisibleNode(self, event=None):
     '''Select the last visible node of selected chapter or hoist.'''
@@ -713,7 +713,7 @@ def goToLastVisibleNode(self, event=None):
         c.expandOnlyAncestorsOfNode()
         c.redraw_after_select(p)
         c.treeSelectHelper(p)
-#@+node:ekr.20031218072017.2916: *3* c.goToNextClone
+#@+node:ekr.20031218072017.2916: *3* c_oc.goToNextClone
 @g.commander_command('goto-next-clone')
 def goToNextClone(self, event=None):
     '''
@@ -758,7 +758,7 @@ def goToNextClone(self, event=None):
             c.redraw_after_select(p)
     else:
         g.blue('done')
-#@+node:ekr.20071213123942: *3* c.findNextClone
+#@+node:ekr.20071213123942: *3* c_oc.findNextClone
 @g.commander_command('find-next-clone')
 def findNextClone(self, event=None):
     '''Select the next cloned node.'''
@@ -780,7 +780,7 @@ def findNextClone(self, event=None):
         c.redraw_after_select(p)
     else:
         g.blue('no more clones')
-#@+node:ekr.20031218072017.2917: *3* c.goToNextDirtyHeadline
+#@+node:ekr.20031218072017.2917: *3* c_oc.goToNextDirtyHeadline
 @g.commander_command('goto-next-changed')
 def goToNextDirtyHeadline(self, event=None):
     '''Select the node that is marked as changed.'''
@@ -800,7 +800,7 @@ def goToNextDirtyHeadline(self, event=None):
             p = c.rootPosition()
     if not p: g.blue('done')
     c.treeSelectHelper(p) # Sets focus.
-#@+node:ekr.20031218072017.2918: *3* c.goToNextMarkedHeadline
+#@+node:ekr.20031218072017.2918: *3* c_oc.goToNextMarkedHeadline
 @g.commander_command('goto-next-marked')
 def goToNextMarkedHeadline(self, event=None):
     '''Select the next marked node.'''
@@ -820,25 +820,25 @@ def goToNextMarkedHeadline(self, event=None):
             p = c.rootPosition()
     if not p: g.blue('done')
     c.treeSelectHelper(p) # Sets focus.
-#@+node:ekr.20031218072017.2919: *3* c.goToNextSibling
+#@+node:ekr.20031218072017.2919: *3* c_oc.goToNextSibling
 @g.commander_command('goto-next-sibling')
 def goToNextSibling(self, event=None):
     '''Select the next sibling of the selected node.'''
     c = self; p = c.p
     c.treeSelectHelper(p and p.next())
-#@+node:ekr.20031218072017.2920: *3* c.goToParent
+#@+node:ekr.20031218072017.2920: *3* c_oc.goToParent
 @g.commander_command('goto-parent')
 def goToParent(self, event=None):
     '''Select the parent of the selected node.'''
     c = self; p = c.p
     c.treeSelectHelper(p and p.parent())
-#@+node:ekr.20031218072017.2921: *3* c.goToPrevSibling
+#@+node:ekr.20031218072017.2921: *3* c_oc.goToPrevSibling
 @g.commander_command('goto-prev-sibling')
 def goToPrevSibling(self, event=None):
     '''Select the previous sibling of the selected node.'''
     c = self; p = c.p
     c.treeSelectHelper(p and p.back())
-#@+node:ekr.20031218072017.2993: *3* c.selectThreadBack
+#@+node:ekr.20031218072017.2993: *3* c_oc.selectThreadBack
 @g.commander_command('goto-prev-node')
 def selectThreadBack(self, event=None):
     '''Select the node preceding the selected node in outline order.'''
@@ -846,7 +846,7 @@ def selectThreadBack(self, event=None):
     if not p: return
     p.moveToThreadBack()
     c.treeSelectHelper(p)
-#@+node:ekr.20031218072017.2994: *3* c.selectThreadNext
+#@+node:ekr.20031218072017.2994: *3* c_oc.selectThreadNext
 @g.commander_command('goto-next-node')
 def selectThreadNext(self, event=None):
     '''Select the node following the selected node in outline order.'''
@@ -854,7 +854,7 @@ def selectThreadNext(self, event=None):
     if not p: return
     p.moveToThreadNext()
     c.treeSelectHelper(p)
-#@+node:ekr.20031218072017.2995: *3* c.selectVisBack
+#@+node:ekr.20031218072017.2995: *3* c_oc.selectVisBack
 @g.commander_command('goto-prev-visible')
 def selectVisBack(self, event=None):
     '''Select the visible node preceding the presently selected node.'''
@@ -867,7 +867,7 @@ def selectVisBack(self, event=None):
         c.treeSelectHelper(p)
     else:
         c.endEditing() # 2011/05/28: A special case.
-#@+node:ekr.20031218072017.2996: *3* c.selectVisNext
+#@+node:ekr.20031218072017.2996: *3* c_oc.selectVisNext
 @g.commander_command('goto-next-visible')
 def selectVisNext(self, event=None):
     '''Select the visible node following the presently selected node.'''
@@ -879,8 +879,8 @@ def selectVisNext(self, event=None):
         c.treeSelectHelper(p)
     else:
         c.endEditing() # 2011/05/28: A special case.
-#@+node:ekr.20031218072017.2922: ** c.Mark commands
-#@+node:ekr.20090905110447.6098: *3* c.cloneMarked
+#@+node:ekr.20031218072017.2922: ** c_oc.Mark commands
+#@+node:ekr.20090905110447.6098: *3* c_oc.cloneMarked
 @g.commander_command('clone-marked-nodes')
 def cloneMarked(self, event=None):
     """Clone all marked nodes as children of a new node."""
@@ -918,7 +918,7 @@ def cloneMarked(self, event=None):
     if not g.unitTesting:
         g.blue('cloned %s nodes' % (n))
     c.redraw()
-#@+node:ekr.20160502090456.1: *3* c.copyMarked
+#@+node:ekr.20160502090456.1: *3* c_oc.copyMarked
 @g.commander_command('copy-marked-nodes')
 def copyMarked(self, event=None):
     """Copy all marked nodes as children of a new node."""
@@ -950,7 +950,7 @@ def copyMarked(self, event=None):
     if not g.unitTesting:
         g.blue('copied %s nodes' % (n))
     c.redraw()
-#@+node:ekr.20111005081134.15540: *3* c.deleteMarked
+#@+node:ekr.20111005081134.15540: *3* c_oc.deleteMarked
 @g.commander_command('delete-marked-nodes')
 def deleteMarked(self, event=None):
     """Delete all marked nodes."""
@@ -973,7 +973,7 @@ def deleteMarked(self, event=None):
     c.contractAllHeadlines()
     c.selectPosition(c.rootPosition())
     c.redraw()
-#@+node:ekr.20111005081134.15539: *3* c.moveMarked & helper
+#@+node:ekr.20111005081134.15539: *3* c_oc.moveMarked & helper
 @g.commander_command('move-marked-nodes')
 def moveMarked(self, event=None):
     '''
@@ -1036,14 +1036,13 @@ def moveMarked(self, event=None):
     c.selectPosition(parent)
     c.redraw()
 #@+node:ekr.20111005081134.15543: *4* def createMoveMarkedNode
-def createMoveMarkedNode(self):
-    c = self
+def createMoveMarkedNode(c):
     oldRoot = c.rootPosition()
     p = oldRoot.insertAfter()
     p.moveToRoot(oldRoot)
     c.setHeadString(p, 'Moved marked nodes')
     return p
-#@+node:ekr.20031218072017.2923: *3* c.markChangedHeadlines
+#@+node:ekr.20031218072017.2923: *3* c_oc.markChangedHeadlines
 @g.commander_command('mark-changed-items')
 def markChangedHeadlines(self, event=None):
     '''Mark all nodes that have been changed.'''
@@ -1061,7 +1060,7 @@ def markChangedHeadlines(self, event=None):
     if not g.unitTesting:
         g.blue('done')
     c.redraw_after_icons_changed()
-#@+node:ekr.20031218072017.2924: *3* c.markChangedRoots
+#@+node:ekr.20031218072017.2924: *3* c_oc.markChangedRoots
 def markChangedRoots(self, event=None):
     '''Mark all changed @root nodes.'''
     c = self; u = c.undoer; undoType = 'Mark Changed'
@@ -1081,7 +1080,7 @@ def markChangedRoots(self, event=None):
     if not g.unitTesting:
         g.blue('done')
     c.redraw_after_icons_changed()
-#@+node:ekr.20031218072017.2928: *3* c.markHeadline
+#@+node:ekr.20031218072017.2928: *3* c_oc.markHeadline
 @g.commander_command('mark')
 def markHeadline(self, event=None):
     '''Toggle the mark of the selected node.'''
@@ -1098,7 +1097,7 @@ def markHeadline(self, event=None):
     c.setChanged(True)
     u.afterMark(p, undoType, bunch, dirtyVnodeList=dirtyVnodeList)
     c.redraw_after_icons_changed()
-#@+node:ekr.20031218072017.2929: *3* c.markSubheads
+#@+node:ekr.20031218072017.2929: *3* c_oc.markSubheads
 @g.commander_command('mark-subheads')
 def markSubheads(self, event=None):
     '''Mark all children of the selected node as changed.'''
@@ -1118,7 +1117,7 @@ def markSubheads(self, event=None):
             u.afterMark(p, undoType, bunch)
     u.afterChangeGroup(current, undoType, dirtyVnodeList=dirtyVnodeList)
     c.redraw_after_icons_changed()
-#@+node:ekr.20031218072017.2930: *3* c.unmarkAll
+#@+node:ekr.20031218072017.2930: *3* c_oc.unmarkAll
 @g.commander_command('unmark-all')
 def unmarkAll(self, event=None):
     '''Unmark all nodes in the entire outline.'''
@@ -1143,8 +1142,8 @@ def unmarkAll(self, event=None):
         c.setChanged(True)
     u.afterChangeGroup(current, undoType, dirtyVnodeList=dirtyVnodeList)
     c.redraw_after_icons_changed()
-#@+node:ekr.20031218072017.1766: ** c.Move commands
-#@+node:ekr.20031218072017.1767: *3* c.demote
+#@+node:ekr.20031218072017.1766: ** c_oc.Move commands
+#@+node:ekr.20031218072017.1767: *3* c_oc.demote
 @g.commander_command('demote')
 def demote(self, event=None):
     '''Make all following siblings children of the selected node.'''
@@ -1181,7 +1180,7 @@ def demote(self, event=None):
     u.afterDemote(p, followingSibs, dirtyVnodeList)
     c.redraw(p, setFocus=True)
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
-#@+node:ekr.20031218072017.1768: *3* c.moveOutlineDown
+#@+node:ekr.20031218072017.1768: *3* c_oc.moveOutlineDown
 #@+at
 # Moving down is more tricky than moving up; we can't move p to be a child of
 # itself. An important optimization: we don't have to call
@@ -1239,7 +1238,7 @@ def moveOutlineDown(self, event=None):
         u.afterMoveNode(p, 'Move Down', undoData, dirtyVnodeList)
     c.redraw(p, setFocus=True)
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
-#@+node:ekr.20031218072017.1770: *3* c.moveOutlineLeft
+#@+node:ekr.20031218072017.1770: *3* c_oc.moveOutlineLeft
 @g.commander_command('move-outline-left')
 def moveOutlineLeft(self, event=None):
     '''Move the selected node left if possible.'''
@@ -1271,7 +1270,7 @@ def moveOutlineLeft(self, event=None):
         parent.contract()
     c.redraw(p, setFocus=True)
     c.recolor() # Moving can change syntax coloring.
-#@+node:ekr.20031218072017.1771: *3* c.moveOutlineRight
+#@+node:ekr.20031218072017.1771: *3* c_oc.moveOutlineRight
 @g.commander_command('move-outline-right')
 def moveOutlineRight(self, event=None):
     '''Move the selected node right if possible.'''
@@ -1301,7 +1300,7 @@ def moveOutlineRight(self, event=None):
     # g.trace(p)
     c.redraw(p, setFocus=True)
     c.recolor()
-#@+node:ekr.20031218072017.1772: *3* c.moveOutlineUp
+#@+node:ekr.20031218072017.1772: *3* c_oc.moveOutlineUp
 @g.commander_command('move-outline-up')
 def moveOutlineUp(self, event=None):
     '''Move the selected node up if possible.'''
@@ -1369,7 +1368,7 @@ def moveOutlineUp(self, event=None):
         u.afterMoveNode(p, 'Move Right', undoData, dirtyVnodeList)
     c.redraw(p, setFocus=True)
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
-#@+node:ekr.20031218072017.1774: *3* c.promote
+#@+node:ekr.20031218072017.1774: *3* c_oc.promote
 @g.commander_command('promote')
 def promote(self, event=None, undoFlag=True, redrawFlag=True):
     '''Make all children of the selected nodes siblings of the selected node.'''
@@ -1406,7 +1405,7 @@ def promote(self, event=None, undoFlag=True, redrawFlag=True):
     if redrawFlag:
         c.redraw(p, setFocus=True)
         c.updateSyntaxColorer(p) # Moving can change syntax coloring.
-#@+node:ekr.20071213185710: *3* c.toggleSparseMove
+#@+node:ekr.20071213185710: *3* c_oc.toggleSparseMove
 @g.commander_command('toggle-sparse-move')
 def toggleSparseMove(self, event=None):
     '''Toggle whether moves collapse the outline.'''
