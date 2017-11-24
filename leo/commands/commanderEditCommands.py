@@ -601,11 +601,82 @@ def reformatParagraph(self, event=None, undoType='Reformat Paragraph'):
         i, j = w.getSelectionRange()
         w.setInsertPoint(i)
     oldSel, oldYview, original, pageWidth, tabWidth = rp_get_args(c)
-    head, lines, tail = c.findBoundParagraph()
+    head, lines, tail = find_bound_paragraph(c)
     if lines:
         indents, leading_ws = rp_get_leading_ws(c, lines, tabWidth)
         result = rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth)
         rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType)
+#@+node:ekr.20171123135625.43: *3* def ends_paragraph & single_line_paragraph
+def ends_paragraph(s):
+    '''Return True if s is a blank line.'''
+    return not s.strip()
+
+def single_line_paragraph(s):
+    '''Return True if s is a single-line paragraph.'''
+    return s.startswith('@') or s.strip() in ('"""', "'''")
+#@+node:ekr.20171123135625.42: *3* def find_bound_paragraph
+def find_bound_paragraph(c):
+    '''
+    Return the lines of a paragraph to be reformatted.
+    This is a convenience method for the reformat-paragraph command.
+    '''
+    trace = False and not g.unitTesting
+    head, ins, tail = c.frame.body.getInsertLines()
+    head_lines = g.splitLines(head)
+    tail_lines = g.splitLines(tail)
+    if trace:
+        g.trace("head_lines:\n%s" % ''.join(head_lines))
+        g.trace("ins: ", ins)
+        g.trace("tail_lines:\n%s" % ''.join(tail_lines))
+        g.trace('*****')
+    result = []
+    insert_lines = g.splitLines(ins)
+    para_lines = insert_lines + tail_lines
+    # If the present line doesn't start a paragraph,
+    # scan backward, adding trailing lines of head to ins.
+    if insert_lines and not startsParagraph(insert_lines[0]):
+        n = 0 # number of moved lines.
+        for i, s in enumerate(reversed(head_lines)):
+            if ends_paragraph(s) or single_line_paragraph(s):
+                break
+            elif startsParagraph(s):
+                n += 1
+                break
+            else: n += 1
+        if n > 0:
+            para_lines = head_lines[-n:] + para_lines
+            head_lines = head_lines[: -n]
+    ended, started = False, False
+    for i, s in enumerate(para_lines):
+        if trace: g.trace(
+            # 'i: %s started: %5s single: %5s starts: %5s: ends: %5s %s' % (
+            i, started,
+            single_line_paragraph(s),
+            startsParagraph(s),
+            ends_paragraph(s), repr(s))
+        if started:
+            if ends_paragraph(s) or startsParagraph(s):
+                ended = True
+                break
+            else:
+                result.append(s)
+        elif s.strip():
+            result.append(s)
+            started = True
+            if ends_paragraph(s) or single_line_paragraph(s):
+                i += 1
+                ended = True
+                break
+        else:
+            head_lines.append(s)
+    if started:
+        head = g.joinLines(head_lines)
+        tail_lines = para_lines[i:] if ended else []
+        tail = g.joinLines(tail_lines)
+        return head, result, tail # string, list, string
+    else:
+        if trace: g.trace('no paragraph')
+        return None, None, None
 #@+node:ekr.20171123135625.45: *3* def rp_get_args
 def rp_get_args(c):
     '''Compute and return oldSel,oldYview,original,pageWidth,tabWidth.'''
@@ -678,9 +749,9 @@ def rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth):
     lines = [z[: -1] if z.endswith('\n') else z for z in lines]
     if lines: # Bug fix: 2013/12/22.
         s = lines[0]
-        if c.startsParagraph(s):
+        if startsParagraph(s):
             # Adjust indents[1]
-            # Similar to code in c.startsParagraph(s)
+            # Similar to code in startsParagraph(s)
             i = 0
             if s[0].isdigit():
                 while i < len(s) and s[i].isdigit():
@@ -710,6 +781,29 @@ def rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth):
     result = '\n'.join(paddedResult)
     if trailingNL: result = result + '\n'
     return result
+#@+node:ekr.20171123135625.44: *3* def startsParagraph
+def startsParagraph(s):
+    '''Return True if line s starts a paragraph.'''
+    trace = False and not g.unitTesting
+    if not s.strip():
+        val = False
+    elif s.strip() in ('"""', "'''"):
+        val = True
+    elif s[0].isdigit():
+        i = 0
+        while i < len(s) and s[i].isdigit():
+            i += 1
+        val = g.match(s, i, ')') or g.match(s, i, '.')
+    elif s[0].isalpha():
+        # Careful: single characters only.
+        # This could cause problems in some situations.
+        val = (
+            (g.match(s, 1, ')') or g.match(s, 1, '.')) and
+            (len(s) < 2 or s[2] in (' \t\n')))
+    else:
+        val = s.startswith('@') or s.startswith('-')
+    if trace: g.trace(val, repr(s))
+    return val
 #@+node:ekr.20171123135625.12: ** c_ec.show/hide/toggleInvisibles
 @g.commander_command('hide-invisibles')
 def hideInvisibles(self, event=None):
@@ -787,7 +881,7 @@ def unformatParagraph(self, event=None, undoType='Unformat Paragraph'):
         i, j = w.getSelectionRange()
         w.setInsertPoint(i)
     oldSel, oldYview, original, pageWidth, tabWidth = c.rp_get_args()
-    head, lines, tail = c.findBoundParagraph()
+    head, lines, tail = find_bound_paragraph(c)
     if lines:
         result = ' '.join([z.strip() for z in lines]) + '\n'
         unreformat(c, head, oldSel, oldYview, original, result, tail, undoType)

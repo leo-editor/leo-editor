@@ -596,6 +596,54 @@ class Commands(object):
             c.windowPosition = 500, 700, 50, 50 # width,height,left,top.
     #@+node:ekr.20171124100654.1: *3* c.API
     # These methods are a fundamental, unchanging, part of Leo's API.
+    #@+node:ekr.20171124153201.1: *4* c.All other API
+    #@+node:ekr.20150422080541.1: *5* c.backup
+    def backup(self, fileName=None, prefix=None, useTimeStamp=True):
+        '''
+        Back up given fileName or c.fileName().
+        If useTimeStamp is True, append a timestamp to the filename.
+        '''
+        c = self
+        fn = fileName or c.fileName()
+        if not fn:
+            return
+        theDir, base = g.os_path_split(fn)
+        if useTimeStamp:
+            if base.endswith('.leo'):
+                base = base[: -4]
+            stamp = time.strftime("%Y%m%d-%H%M%S")
+            branch = prefix + '-' if prefix else ''
+            fn = '%s%s-%s.leo' % (branch, base, stamp)
+            path = g.os_path_finalize_join(theDir, fn)
+        else:
+            path = fn
+        if path:
+            # pylint: disable=no-member
+                # Defined in commanderFileCommands.py.
+            c.saveTo(fileName=path)
+                # Issues saved message.
+            g.es('in', theDir)
+    #@+node:ekr.20171123135625.10: *5* c.goToLineNumber & goToScriptLineNumber
+    def goToLineNumber(self, n):
+        """
+        Go to line n (zero-based) of a script.
+        A convenience method called from g.handleScriptException.
+        """
+        c = self
+        c.gotoCommands.find_file_line(n)
+
+    def goToScriptLineNumber(self, n, p):
+        """
+        Go to line n (zero-based) of a script.
+        A convenience method called from g.handleScriptException.
+        """
+        c = self
+        c.gotoCommands.find_script_line(n, p)
+    #@+node:ekr.20131016084446.16724: *5* c.setComplexCommand
+    def setComplexCommand(self, commandName):
+        '''Make commandName the command to be executed by repeat-complex-command.'''
+        c = self
+        c.k.mb_history.insert(0, commandName)
     #@+node:ekr.20031218072017.2909: *4* c.Expand/contract
     #@+node:ekr.20171124091426.1: *5* c.contractAllHeadlines
     def contractAllHeadlines(self, event=None, redrawFlag=True):
@@ -1667,33 +1715,7 @@ class Commands(object):
             g.es_exception()
             if unittest: raise
     #@+node:ekr.20171124084021.1: *3* c.Command helpers
-    #@+node:ekr.20171124102201.1: *4* c.All other helpers
-    #@+node:ekr.20150422080541.1: *5* c.backup
-    def backup(self, fileName=None, prefix=None, useTimeStamp=True):
-        '''
-        Back up given fileName or c.fileName().
-        If useTimeStamp is True, append a timestamp to the filename.
-        '''
-        c = self
-        fn = fileName or c.fileName()
-        if not fn:
-            return
-        theDir, base = g.os_path_split(fn)
-        if useTimeStamp:
-            if base.endswith('.leo'):
-                base = base[: -4]
-            stamp = time.strftime("%Y%m%d-%H%M%S")
-            branch = prefix + '-' if prefix else ''
-            fn = '%s%s-%s.leo' % (branch, base, stamp)
-            path = g.os_path_finalize_join(theDir, fn)
-        else:
-            path = fn
-        if path:
-            # pylint: disable=no-member
-                # Defined in commanderFileCommands.py.
-            c.saveTo(fileName=path)
-                # Issues saved message.
-            g.es('in', theDir)
+    #@+node:ekr.20171124101444.1: *4* c.File helpers
     #@+node:ekr.20090103070824.11: *5* c.checkFileTimeStamp
     def checkFileTimeStamp(self, fn):
         '''
@@ -1705,134 +1727,6 @@ class Commands(object):
             return g.app.externalFilesController.check_overwrite(c, fn)
         else:
             return True
-    #@+node:ekr.20171123135625.42: *5* c.findBoundParagraph & helpers
-    def findBoundParagraph(self, event=None):
-        '''
-        Return the lines of a paragraph to be reformatted.
-        This is a convenience method for the reformat-paragraph command.
-        '''
-        c = self
-        trace = False and not g.unitTesting
-        head, ins, tail = c.frame.body.getInsertLines()
-        head_lines = g.splitLines(head)
-        tail_lines = g.splitLines(tail)
-        if trace:
-            g.trace("head_lines:\n%s" % ''.join(head_lines))
-            g.trace("ins: ", ins)
-            g.trace("tail_lines:\n%s" % ''.join(tail_lines))
-            g.trace('*****')
-        result = []
-        insert_lines = g.splitLines(ins)
-        para_lines = insert_lines + tail_lines
-        # If the present line doesn't start a paragraph,
-        # scan backward, adding trailing lines of head to ins.
-        if insert_lines and not c.startsParagraph(insert_lines[0]):
-            n = 0 # number of moved lines.
-            for i, s in enumerate(reversed(head_lines)):
-                if c.endsParagraph(s) or c.singleLineParagraph(s):
-                    break
-                elif c.startsParagraph(s):
-                    n += 1
-                    break
-                else: n += 1
-            if n > 0:
-                para_lines = head_lines[-n:] + para_lines
-                head_lines = head_lines[: -n]
-        ended, started = False, False
-        for i, s in enumerate(para_lines):
-            if trace: g.trace(
-                # 'i: %s started: %5s single: %5s starts: %5s: ends: %5s %s' % (
-                i, started,
-                c.singleLineParagraph(s),
-                c.startsParagraph(s),
-                c.endsParagraph(s), repr(s))
-            if started:
-                if c.endsParagraph(s) or c.startsParagraph(s):
-                    ended = True
-                    break
-                else:
-                    result.append(s)
-            elif s.strip():
-                result.append(s)
-                started = True
-                if c.endsParagraph(s) or c.singleLineParagraph(s):
-                    i += 1
-                    ended = True
-                    break
-            else:
-                head_lines.append(s)
-        if started:
-            head = g.joinLines(head_lines)
-            tail_lines = para_lines[i:] if ended else []
-            tail = g.joinLines(tail_lines)
-            return head, result, tail # string, list, string
-        else:
-            if trace: g.trace('no paragraph')
-            return None, None, None
-    #@+node:ekr.20171123135625.43: *6* c.endsParagraph & c.singleLineParagraph
-    def endsParagraph(self, s):
-        '''Return True if s is a blank line.'''
-        return not s.strip()
-
-    def singleLineParagraph(self, s):
-        '''Return True if s is a single-line paragraph.'''
-        return s.startswith('@') or s.strip() in ('"""', "'''")
-    #@+node:ekr.20171123135625.44: *6* c.startsParagraph
-    def startsParagraph(self, s):
-        '''Return True if line s starts a paragraph.'''
-        trace = False and not g.unitTesting
-        if not s.strip():
-            val = False
-        elif s.strip() in ('"""', "'''"):
-            val = True
-        elif s[0].isdigit():
-            i = 0
-            while i < len(s) and s[i].isdigit():
-                i += 1
-            val = g.match(s, i, ')') or g.match(s, i, '.')
-        elif s[0].isalpha():
-            # Careful: single characters only.
-            # This could cause problems in some situations.
-            val = (
-                (g.match(s, 1, ')') or g.match(s, 1, '.')) and
-                (len(s) < 2 or s[2] in (' \t\n')))
-        else:
-            val = s.startswith('@') or s.startswith('-')
-        if trace: g.trace(val, repr(s))
-        return val
-    #@+node:ekr.20171123135625.10: *5* c.goToLineNumber & goToScriptLineNumber
-    def goToLineNumber(self, n):
-        """
-        Go to line n (zero-based) of a script.
-        A convenience method called from g.handleScriptException.
-        """
-        c = self
-        c.gotoCommands.find_file_line(n)
-
-    def goToScriptLineNumber(self, n, p):
-        """
-        Go to line n (zero-based) of a script.
-        A convenience method called from g.handleScriptException.
-        """
-        c = self
-        c.gotoCommands.find_script_line(n, p)
-    #@+node:ekr.20031218072017.2092: *5* c.openCompareWindow (not used?)
-    def openCompareWindow(self, event=None):
-        '''Open a dialog for comparing files and directories.'''
-        c = self; frame = c.frame
-        if not frame.comparePanel:
-            frame.comparePanel = g.app.gui.createComparePanel(c)
-        if frame.comparePanel:
-            frame.comparePanel.bringToFront()
-        else:
-            g.warning('the', g.app.gui.guiName(),
-                'gui does not support the compare window')
-    #@+node:ekr.20131016084446.16724: *5* c.setComplexCommand
-    def setComplexCommand(self, commandName):
-        '''Make commandName the command to be executed by repeat-complex-command.'''
-        c = self
-        c.k.mb_history.insert(0, commandName)
-    #@+node:ekr.20171124101444.1: *4* c.File helpers
     #@+node:ekr.20090212054250.9: *5* c.createNodeFromExternalFile
     def createNodeFromExternalFile(self, fn):
         '''

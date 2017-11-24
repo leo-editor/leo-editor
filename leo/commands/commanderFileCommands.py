@@ -6,7 +6,7 @@
 import leo.core.leoGlobals as g
 import time
 #@+others
-#@+node:ekr.20170221033738.1: ** c.reloadSettings & helper
+#@+node:ekr.20170221033738.1: ** c_file.reloadSettings & helper
 @g.commander_command('reload-settings')
 def reloadSettings(self, event=None):
     '''Reload settings for the selected outline, saving it if necessary.'''
@@ -43,13 +43,13 @@ def reloadSettingsHelper(c, all):
             # Restore the changed bit.
         # c.redraw()
             # Redraw so a pasted temp node isn't visible
-#@+node:ekr.20031218072017.2820: ** c.top level
-#@+node:ekr.20031218072017.2833: *3* c.close
+#@+node:ekr.20031218072017.2820: ** c_file.top level
+#@+node:ekr.20031218072017.2833: *3* c_file.close
 @g.commander_command('close-window')
 def close(self, event=None, new_c=None):
     '''Close the Leo window, prompting to save it if it has been changed.'''
     g.app.closeLeoWindow(self.frame, new_c=new_c)
-#@+node:ekr.20110530124245.18245: *3* c.importAnyFile
+#@+node:ekr.20110530124245.18245: *3* c_file.importAnyFile
 @g.commander_command('import-file')
 def importAnyFile(self, event=None):
     '''Import one or more files.'''
@@ -141,7 +141,7 @@ g.command_alias('importFlattenedOutline', importAnyFile)
 g.command_alias('importMOREFiles', importAnyFile)
 g.command_alias('importNowebFiles', importAnyFile)
 g.command_alias('importTabFiles', importAnyFile)
-#@+node:ekr.20031218072017.1623: *3* c.new
+#@+node:ekr.20031218072017.1623: *3* c_file.new
 @g.commander_command('new')
 def new(self, event=None, gui=None):
     '''Create a new Leo window.'''
@@ -168,7 +168,7 @@ def new(self, event=None, gui=None):
     c.setChanged(False) # Fix #387
     c.redraw()
     return c # For unit tests and scripts.
-#@+node:ekr.20031218072017.2821: *3* c.open
+#@+node:ekr.20031218072017.2821: *3* c_file.open
 @g.commander_command('open-outline')
 def open(self, event=None):
     '''Open a Leo window containing the contents of a .leo file.'''
@@ -218,7 +218,7 @@ def open(self, event=None):
     # openWithFileName sets focus if ok.
     if not ok:
         c.initialFocusHelper()
-#@+node:ekr.20140717074441.17772: *3* c.refreshFromDisk
+#@+node:ekr.20140717074441.17772: *3* c_file.refreshFromDisk
 # refresh_pattern = re.compile('^(@[\w-]+)')
 
 @g.commander_command('refresh-from-disk')
@@ -277,7 +277,7 @@ def refreshFromDisk(self, event=None):
             n = sum([1 for z in p.self_and_subtree()])
             h = sum([hash(z.h) for z in p.self_and_subtree()])
             g.trace('%s nodes, hash: %s in %5.2f sec. %r' % (n, h, (t2-t1), p.h))
-#@+node:ekr.20031218072017.2834: *3* c.save
+#@+node:ekr.20031218072017.2834: *3* c_file.save
 @g.commander_command('save-file')
 def save(self, event=None, fileName=None):
     '''Save a Leo outline to a file.'''
@@ -358,7 +358,7 @@ def save(self, event=None, fileName=None):
         p.restoreCursorAndScroll()
     else:
         c.treeWantsFocus()
-#@+node:ekr.20110228162720.13980: *3* c.saveAll
+#@+node:ekr.20110228162720.13980: *3* c_file.saveAll
 @g.commander_command('save-all')
 def saveAll(self, event=None):
     '''Save all open tabs windows/tabs.'''
@@ -372,7 +372,7 @@ def saveAll(self, event=None):
     c = self
     dw = c.frame.top # A DynamicWindow
     dw.select(c)
-#@+node:ekr.20031218072017.2835: *3* c.saveAs
+#@+node:ekr.20031218072017.2835: *3* c_file.saveAs
 @g.commander_command('save-file-as')
 def saveAs(self, event=None, fileName=None):
     '''Save a Leo outline to a file with a new filename.'''
@@ -428,7 +428,7 @@ def saveAs(self, event=None, fileName=None):
         p.restoreCursorAndScroll()
     else:
         c.treeWantsFocus()
-#@+node:ekr.20031218072017.2836: *3* c.saveTo
+#@+node:ekr.20031218072017.2836: *3* c_file.saveTo
 @g.commander_command('save-file-to')
 def saveTo(self, event=None, fileName=None):
     '''Save a Leo outline to a file, leaving the file associated with the Leo outline unchanged.'''
@@ -467,7 +467,7 @@ def saveTo(self, event=None, fileName=None):
         c.treeWantsFocus()
     c.outerUpdate()
 
-#@+node:ekr.20031218072017.2837: *3* c.revert
+#@+node:ekr.20031218072017.2837: *3* c_file.revert
 @g.commander_command('revert')
 def revert(self, event=None):
     '''Revert the contents of a Leo outline to last saved contents.'''
@@ -484,7 +484,7 @@ def revert(self, event=None):
     c.bringToFront()
     if reply == "yes":
         g.app.loadManager.revertCommander(c)
-#@+node:ekr.20070413045221: *3* c.saveAsUnzipped & saveAsZipped
+#@+node:ekr.20070413045221: *3* c_file.saveAsUnzipped & saveAsZipped
 @g.commander_command('save-file-as-unzipped')
 def saveAsUnzipped(self, event=None):
     '''
@@ -511,7 +511,7 @@ def saveAsZippedHelper(c, isZipped):
     finally:
         c.isZipped = oldZipped
 #@+node:ekr.20031218072017.2849: ** Export
-#@+node:ekr.20031218072017.2850: *3* c.exportHeadlines
+#@+node:ekr.20031218072017.2850: *3* c_file.exportHeadlines
 @g.commander_command('export-headlines')
 def exportHeadlines(self, event=None):
     '''Export all headlines to an external file.'''
@@ -527,7 +527,7 @@ def exportHeadlines(self, event=None):
         g.setGlobalOpenDir(fileName)
         g.chdir(fileName)
         c.importCommands.exportHeadlines(fileName)
-#@+node:ekr.20031218072017.2851: *3* c.flattenOutline
+#@+node:ekr.20031218072017.2851: *3* c_file.flattenOutline
 @g.commander_command('flatten-outline')
 def flattenOutline(self, event=None):
     '''
@@ -546,7 +546,7 @@ def flattenOutline(self, event=None):
         g.setGlobalOpenDir(fileName)
         g.chdir(fileName)
         c.importCommands.flattenOutline(fileName)
-#@+node:ekr.20141030120755.12: *3* c.flattenOutlineToNode
+#@+node:ekr.20141030120755.12: *3* c_file.flattenOutlineToNode
 @g.commander_command('flatten-outline-to-node')
 def flattenOutlineToNode(self, event=None):
     '''
@@ -573,7 +573,7 @@ def flattenOutlineToNode(self, event=None):
             aList.extend(lines)
     root.b = root.b.rstrip() + '\n' + ''.join(aList).rstrip() + '\n'
     u.afterChangeNodeContents(root, 'flatten-outline-to-node', bunch)
-#@+node:ekr.20031218072017.2857: *3* c.outlineToCWEB
+#@+node:ekr.20031218072017.2857: *3* c_file.outlineToCWEB
 @g.commander_command('outline-to-cweb')
 def outlineToCWEB(self, event=None):
     '''
@@ -595,7 +595,7 @@ def outlineToCWEB(self, event=None):
         g.setGlobalOpenDir(fileName)
         g.chdir(fileName)
         c.importCommands.outlineToWeb(fileName, "cweb")
-#@+node:ekr.20031218072017.2858: *3* c.outlineToNoweb
+#@+node:ekr.20031218072017.2858: *3* c_file.outlineToNoweb
 @g.commander_command('outline-to-noweb')
 def outlineToNoweb(self, event=None):
     '''
@@ -618,7 +618,7 @@ def outlineToNoweb(self, event=None):
         g.chdir(fileName)
         c.importCommands.outlineToWeb(fileName, "noweb")
         c.outlineToNowebDefaultFileName = fileName
-#@+node:ekr.20031218072017.2859: *3* c.removeSentinels
+#@+node:ekr.20031218072017.2859: *3* c_file.removeSentinels
 @g.commander_command('remove-sentinels')
 def removeSentinels(self, event=None):
     '''Import one or more files, removing any sentinels.'''
@@ -642,7 +642,7 @@ def removeSentinels(self, event=None):
     if names:
         g.chdir(names[0])
         c.importCommands.removeSentinelsCommand(names)
-#@+node:ekr.20031218072017.2860: *3* c.weave
+#@+node:ekr.20031218072017.2860: *3* c_file.weave
 @g.commander_command('weave')
 def weave(self, event=None):
     '''Simulate a literate-programming weave operation by writing the outline to a text file.'''
@@ -659,7 +659,7 @@ def weave(self, event=None):
         g.chdir(fileName)
         c.importCommands.weave(fileName)
 #@+node:ekr.20031218072017.2838: ** Read/Write
-#@+node:ekr.20070806105721.1: *3* c.readAtAutoNodes
+#@+node:ekr.20070806105721.1: *3* c_file.readAtAutoNodes
 @g.commander_command('read-at-auto-nodes')
 def readAtAutoNodes(self, event=None):
     '''Read all @auto nodes in the presently selected outline.'''
@@ -671,7 +671,7 @@ def readAtAutoNodes(self, event=None):
     u.afterChangeTree(p, 'Read @auto Nodes', undoData)
     c.redraw()
     c.raise_error_dialogs(kind='read')
-#@+node:ekr.20031218072017.1839: *3* c.readAtFileNodes
+#@+node:ekr.20031218072017.1839: *3* c_file.readAtFileNodes
 @g.commander_command('read-at-file-nodes')
 def readAtFileNodes(self, event=None):
     '''Read all @file nodes in the presently selected outline.'''
@@ -683,7 +683,7 @@ def readAtFileNodes(self, event=None):
     u.afterChangeTree(p, 'Read @file Nodes', undoData)
     c.redraw()
     # c.raise_error_dialogs(kind='read') # Done in at.readAll.
-#@+node:ekr.20080801071227.4: *3* c.readAtShadowNodes
+#@+node:ekr.20080801071227.4: *3* c_file.readAtShadowNodes
 @g.commander_command('read-at-shadow-nodes')
 def readAtShadowNodes(self, event=None):
     '''Read all @shadow nodes in the presently selected outline.'''
@@ -695,7 +695,7 @@ def readAtShadowNodes(self, event=None):
     u.afterChangeTree(p, 'Read @shadow Nodes', undoData)
     c.redraw()
     c.raise_error_dialogs(kind='read')
-#@+node:ekr.20070915134101: *3* c.readFileIntoNode
+#@+node:ekr.20070915134101: *3* c_file.readFileIntoNode
 @g.commander_command('read-file-into-node')
 def readFileIntoNode(self, event=None):
     '''Read a file into a single node.'''
@@ -719,7 +719,7 @@ def readFileIntoNode(self, event=None):
     p.setBodyString(s)
     w.setAllText(s)
     c.redraw(p)
-#@+node:ekr.20031218072017.2839: *3* c.readOutlineOnly
+#@+node:ekr.20031218072017.2839: *3* c_file.readOutlineOnly
 @g.commander_command('read-outline-only')
 def readOutlineOnly(self, event=None):
     '''Open a Leo outline from a .leo file, but do not read any derived files.'''
@@ -743,7 +743,7 @@ def readOutlineOnly(self, event=None):
         c.fileCommands.readOutlineOnly(theFile, fileName) # closes file.
     except Exception:
         g.es("can not open:", fileName)
-#@+node:ekr.20070915142635: *3* c.writeFileFromNode
+#@+node:ekr.20070915142635: *3* c_file.writeFileFromNode
 @g.commander_command('write-file-from-node')
 def writeFileFromNode(self, event=None):
     '''If node starts with @read-file-into-node, use the full path name in the headline.
@@ -780,13 +780,13 @@ def writeFileFromNode(self, event=None):
             g.error('can not write %s', fileName)
         
 #@+node:ekr.20031218072017.2079: ** Recent Files
-#@+node:ekr.20031218072017.2080: *3* c.clearRecentFiles
+#@+node:ekr.20031218072017.2080: *3* c_file.clearRecentFiles
 @g.commander_command('clear-recent-files')
 def clearRecentFiles(self, event=None):
     """Clear the recent files list, then add the present file."""
     c = self
     g.app.recentFilesManager.clearRecentFiles(c)
-#@+node:ekr.20031218072017.2081: *3* c.openRecentFile
+#@+node:ekr.20031218072017.2081: *3* c_file.openRecentFile
 def openRecentFile(self, fn=None):
     c = self
     # Automatically close the previous window if...
@@ -807,32 +807,32 @@ def openRecentFile(self, fn=None):
         c2.setLog()
         g.doHook("recentfiles2",
             c=c2, p=c2.p, v=c2.p, fileName=fn, closeFlag=closeFlag)
-#@+node:tbrown.20080509212202.6: *3* c.cleanRecentFiles
+#@+node:tbrown.20080509212202.6: *3* c_file.cleanRecentFiles
 @g.commander_command('clean-recent-files')
 def cleanRecentFiles(self, event=None):
     '''Remove items from the recent files list that are no longer valid.'''
     c = self
     g.app.recentFilesManager.cleanRecentFiles(c)
-#@+node:tbrown.20080509212202.8: *3* c.sortRecentFiles
+#@+node:tbrown.20080509212202.8: *3* c_file.sortRecentFiles
 @g.commander_command('sort-recent-files')
 def sortRecentFiles(self, event=None):
     '''Sort the recent files list.'''
     c = self
     g.app.recentFilesManager.sortRecentFiles(c)
-#@+node:vitalije.20170703115710.1: *3* c.editRecentFiles
+#@+node:vitalije.20170703115710.1: *3* c_file.editRecentFiles
 @g.commander_command('edit-recent-files')
 def editRecentFiles(self, event=None):
     '''Opens recent files list in a new node for editing.'''
     c = self
     g.app.recentFilesManager.editRecentFiles(c)
-#@+node:vitalije.20170703115710.2: *3* c.writeEditedRecentFiles
+#@+node:vitalije.20170703115710.2: *3* c_file.writeEditedRecentFiles
 @g.commander_command('write-edited-recent-files')
 def writeEditedRecentFiles(self, event=None):
     '''Sort the recent files list.'''
     c = self
     g.app.recentFilesManager.writeEditedRecentFiles(c)
 #@+node:vitalije.20170831154859.1: ** Reference outline commands
-#@+node:vitalije.20170831154830.1: *3* c.updateRefLeoFile
+#@+node:vitalije.20170831154830.1: *3* c_file.updateRefLeoFile
 @g.commander_command('update-ref-file')
 def updateRefLeoFile(self, event=None):
     '''
@@ -848,7 +848,7 @@ def updateRefLeoFile(self, event=None):
     '''
     c = self
     c.fileCommands.save_ref()
-#@+node:vitalije.20170831154840.1: *3* c.readRefLeoFile
+#@+node:vitalije.20170831154840.1: *3* c_file.readRefLeoFile
 @g.commander_command('read-ref-file')
 def readRefLeoFile(self, event=None):
     '''
@@ -864,7 +864,7 @@ def readRefLeoFile(self, event=None):
     '''
     c = self
     c.fileCommands.updateFromRefFile()
-#@+node:vitalije.20170831154850.1: *3* c.setReferenceFile
+#@+node:vitalije.20170831154850.1: *3* c_file.setReferenceFile
 @g.commander_command('set-reference-file')
 def setReferenceFile(self, event=None):
     '''
@@ -894,7 +894,7 @@ def setReferenceFile(self, event=None):
     if not fileName: return
     c.fileCommands.setReferenceFile(fileName)
 #@+node:ekr.20031218072017.2841: ** Tangle
-#@+node:ekr.20031218072017.2842: *3* c.tangleAll
+#@+node:ekr.20031218072017.2842: *3* c_file.tangleAll
 @g.commander_command('tangle-all')
 def tangleAll(self, event=None):
     '''
@@ -905,7 +905,7 @@ def tangleAll(self, event=None):
     '''
     c = self
     c.tangleCommands.tangleAll()
-#@+node:ekr.20031218072017.2843: *3* c.tangleMarked
+#@+node:ekr.20031218072017.2843: *3* c_file.tangleMarked
 @g.commander_command('tangle-marked')
 def tangleMarked(self, event=None):
     '''
@@ -916,7 +916,7 @@ def tangleMarked(self, event=None):
     '''
     c = self
     c.tangleCommands.tangleMarked()
-#@+node:ekr.20031218072017.2844: *3* c.tangle
+#@+node:ekr.20031218072017.2844: *3* c_file.tangle
 @g.commander_command('tangle')
 def tangle(self, event=None):
     '''
@@ -928,7 +928,7 @@ def tangle(self, event=None):
     c = self
     c.tangleCommands.tangle()
 #@+node:ekr.20031218072017.2845: ** Untangle
-#@+node:ekr.20031218072017.2846: *3* c.untangleAll
+#@+node:ekr.20031218072017.2846: *3* c_file.untangleAll
 @g.commander_command('untangle-all')
 def untangleAll(self, event=None):
     '''
@@ -940,7 +940,7 @@ def untangleAll(self, event=None):
     c = self
     c.tangleCommands.untangleAll()
     c.undoer.clearUndoState()
-#@+node:ekr.20031218072017.2847: *3* c.untangleMarked
+#@+node:ekr.20031218072017.2847: *3* c_file.untangleMarked
 @g.commander_command('untangle-marked')
 def untangleMarked(self, event=None):
     '''
@@ -952,7 +952,7 @@ def untangleMarked(self, event=None):
     c = self
     c.tangleCommands.untangleMarked()
     c.undoer.clearUndoState()
-#@+node:ekr.20031218072017.2848: *3* c.untangle
+#@+node:ekr.20031218072017.2848: *3* c_file.untangle
 @g.commander_command('untangle')
 def untangle(self, event=None):
     '''Untangle all @root nodes in the selected outline.
