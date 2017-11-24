@@ -6,9 +6,8 @@
 import leo.core.leoGlobals as g
 import os
 import re
-
 #@+others
-#@+node:ekr.20171123135625.34: ** c.addComments
+#@+node:ekr.20171123135625.34: ** c_ec.addComments
 @g.commander_command('add-comments')
 def addComments(self, event=None):
     #@+<< addComments docstring >>
@@ -62,7 +61,7 @@ def addComments(self, event=None):
             result.append(line)
     result = ''.join(result)
     c.updateBodyPane(head, result, tail, undoType='Add Comments', oldSel=None, oldYview=oldYview)
-#@+node:ekr.20171123135625.3: ** c.colorPanel
+#@+node:ekr.20171123135625.3: ** c_ec.colorPanel
 @g.commander_command('set-colors')
 def colorPanel(self, event=None):
     '''Open the color dialog.'''
@@ -70,7 +69,7 @@ def colorPanel(self, event=None):
     if not frame.colorPanel:
         frame.colorPanel = g.app.gui.createColorPanel(c)
     frame.colorPanel.bringToFront()
-#@+node:ekr.20171123135625.16: ** c.convertAllBlanks
+#@+node:ekr.20171123135625.16: ** c_ec.convertAllBlanks
 @g.commander_command('convert-all-blanks')
 def convertAllBlanks(self, event=None):
     '''Convert all blanks to tabs in the selected outline.'''
@@ -113,7 +112,7 @@ def convertAllBlanks(self, event=None):
             # Must come before c.redraw().
     if count > 0:
         c.redraw_after_icons_changed()
-#@+node:ekr.20171123135625.17: ** c.convertAllTabs
+#@+node:ekr.20171123135625.17: ** c_ec.convertAllTabs
 @g.commander_command('convert-all-tabs')
 def convertAllTabs(self, event=None):
     '''Convert all tabs to blanks in the selected outline.'''
@@ -154,7 +153,7 @@ def convertAllTabs(self, event=None):
         g.es("tabs converted to blanks in", count, "nodes")
     if count > 0:
         c.redraw_after_icons_changed()
-#@+node:ekr.20171123135625.18: ** c.convertBlanks
+#@+node:ekr.20171123135625.18: ** c_ec.convertBlanks
 @g.commander_command('convert-blanks')
 def convertBlanks(self, event=None):
     '''Convert all blanks to tabs in the selected node.'''
@@ -175,7 +174,7 @@ def convertBlanks(self, event=None):
             oldSel = None
             dirtyVnodeList = c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview) # Handles undo
     return changed, dirtyVnodeList
-#@+node:ekr.20171123135625.19: ** c.convertTabs
+#@+node:ekr.20171123135625.19: ** c_ec.convertTabs
 @g.commander_command('convert-tabs')
 def convertTabs(self, event=None):
     '''Convert all tabs to blanks in the selected node.'''
@@ -197,7 +196,7 @@ def convertTabs(self, event=None):
             oldSel = None
             dirtyVnodeList = c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview) # Handles undo
     return changed, dirtyVnodeList
-#@+node:ekr.20171123135625.21: ** c.dedentBody (unindent-region)
+#@+node:ekr.20171123135625.21: ** c_ec.dedentBody (unindent-region)
 @g.commander_command('unindent-region')
 def dedentBody(self, event=None):
     '''Remove one tab's worth of indentation from all presently selected lines.'''
@@ -221,7 +220,7 @@ def dedentBody(self, event=None):
             ins = max(0, ins - abs(tab_width))
             oldSel = ins, ins
         c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview, preserveSel)
-#@+node:ekr.20171123135625.36: ** c.deleteComments
+#@+node:ekr.20171123135625.36: ** c_ec.deleteComments
 @g.commander_command('delete-comments')
 def deleteComments(self, event=None):
     #@+<< deleteComments docstring >>
@@ -239,7 +238,8 @@ def deleteComments(self, event=None):
     *See also*: add-comments.
     '''
     #@-<< deleteComments docstring >>
-    c = self; p = c.p
+    c = self
+    p = c.p
     head, lines, tail, oldSel, oldYview = self.getBodyLines()
     result = []
     if not lines:
@@ -278,7 +278,7 @@ def deleteComments(self, event=None):
                 result.append(s)
     result = ''.join(result)
     c.updateBodyPane(head, result, tail, undoType='Delete Comments', oldSel=None, oldYview=oldYview)
-#@+node:ekr.20171123135625.54: ** c.editHeadline
+#@+node:ekr.20171123135625.54: ** c_ec.editHeadline
 @g.commander_command('edit-headline')
 def editHeadline(self, event=None):
     '''Begin editing the headline of the selected node.'''
@@ -294,7 +294,7 @@ def editHeadline(self, event=None):
         k.showStateAndMode(w=wrapper)
     return e, wrapper
         # Neither of these is used by any caller.
-#@+node:ekr.20171123135625.23: ** c.extract & helpers
+#@+node:ekr.20171123135625.23: ** c_ec.extract & helpers
 @g.commander_command('extract')
 def extract(self, event=None):
     r'''
@@ -318,79 +318,18 @@ def extract(self, event=None):
     3. Otherwise, the first line becomes the child's headline, and all
        selected lines become the child's body text.
     '''
-    # Define helpers
-    #@+others
-    #@+node:ekr.20171123135625.20: *3* def createLastChildNode
-    def createLastChildNode(c, parent, headline, body):
-        '''A helper function for the three extract commands.'''
-        if body:
-            body = body.rstrip()
-        if not body:
-            body = ""
-        p = parent.insertAsLastChild()
-        p.initHeadString(headline)
-        p.setBodyString(body)
-        p.setDirty()
-        c.validateOutline()
-        return p
-    #@+node:ekr.20171123135625.24: *3* def extractDef
-    extractDef_patterns = (
-        re.compile(r'\((?:def|defn|defui|deftype|defrecord|defonce)\s+(\S+)'), # clojure definition
-        re.compile(r'^\s*(?:def|class)\s+(\w+)'), # python definitions
-        re.compile(r'^\bvar\s+(\w+)\s*=\s*function\b'), # js function
-        re.compile(r'^(?:export\s)?\s*function\s+(\w+)\s*\('), # js function
-        re.compile(r'\b(\w+)\s*:\s*function\s'), # js function
-        re.compile(r'\.(\w+)\s*=\s*function\b'), # js function
-        re.compile(r'(?:export\s)?\b(\w+)\s*=\s(?:=>|->)'), # coffeescript function
-        re.compile(r'(?:export\s)?\b(\w+)\s*=\s(?:\([^)]*\))\s*(?:=>|->)'), # coffeescript function
-        re.compile(r'\b(\w+)\s*:\s(?:=>|->)'), # coffeescript function
-        re.compile(r'\b(\w+)\s*:\s(?:\([^)]*\))\s*(?:=>|->)'), # coffeescript function
-    )
-    def extractDef(s):
-        '''Return the defined function/method/class name if s
-        looks like definition. Tries several different languages.'''
-        for pat in self.config.getData('extract-patterns') or []:
-            try:
-                pat = re.compile(pat)
-                m = pat.search(s)
-                if m: return m.group(1)
-            except Exception:
-                g.es_print('bad regex in @data extract-patterns', color='blue')
-                g.es_print(pat)
-        for pat in extractDef_patterns:
-            m = pat.search(s)
-            if m: return m.group(1)
-        return ''
-    #@+node:ekr.20171123135625.26: *3* def extractDef_find
-    def extractDef_find(lines):
-        for line in lines:
-            def_h = extractDef(line.strip())
-            if def_h:
-                return def_h
-    #@+node:ekr.20171123135625.25: *3* def extractRef
-    def extractRef(s):
-        '''Return s if it starts with a section name.'''
-        i = s.find('<<')
-        j = s.find('>>')
-        if -1 < i < j:
-            return s
-        i = s.find('@<')
-        j = s.find('@>')
-        if -1 < i < j:
-            return s
-        return ''
-    #@-others
-    c, current = self, self.p
+    c = self
+    current = c.p # Unchanging.
     u, undoType = c.undoer, 'Extract'
-    head, lines, tail, oldSel, oldYview = self.getBodyLines()
+    head, lines, tail, oldSel, oldYview = c.getBodyLines()
     if not lines:
         return # Nothing selected.
     # Remove leading whitespace.
     junk, ws = g.skip_leading_ws_with_indent(lines[0], 0, c.tab_width)
     lines = [g.removeLeadingWhitespace(s, ws, c.tab_width) for s in lines]
     h = lines[0].strip()
-    ref_h = extractRef(h).strip()
-    def_h = extractDef_find(lines)
+    ref_h = extractRef(c, h).strip()
+    def_h = extractDef_find(c, lines)
     if ref_h:
         # h,b,middle = ref_h,lines[1:],lines[0]
         # 2012/02/27: Change suggested by vitalije (vitalijem@gmail.com)
@@ -413,25 +352,88 @@ def extract(self, event=None):
 # Compatibility
 g.command_alias('extractSection', extract)
 g.command_alias('extractPythonMethod', extract)
-#@+node:ekr.20171123135625.27: ** c.extractSectionNames
+#@+node:ekr.20171123135625.20: *3* def createLastChildNode
+def createLastChildNode(c, parent, headline, body):
+    '''A helper function for the three extract commands.'''
+    if body:
+        body = body.rstrip()
+    if not body:
+        body = ""
+    p = parent.insertAsLastChild()
+    p.initHeadString(headline)
+    p.setBodyString(body)
+    p.setDirty()
+    c.validateOutline()
+    return p
+#@+node:ekr.20171123135625.24: *3* def extractDef
+extractDef_patterns = (
+    re.compile(r'\((?:def|defn|defui|deftype|defrecord|defonce)\s+(\S+)'), # clojure definition
+    re.compile(r'^\s*(?:def|class)\s+(\w+)'), # python definitions
+    re.compile(r'^\bvar\s+(\w+)\s*=\s*function\b'), # js function
+    re.compile(r'^(?:export\s)?\s*function\s+(\w+)\s*\('), # js function
+    re.compile(r'\b(\w+)\s*:\s*function\s'), # js function
+    re.compile(r'\.(\w+)\s*=\s*function\b'), # js function
+    re.compile(r'(?:export\s)?\b(\w+)\s*=\s(?:=>|->)'), # coffeescript function
+    re.compile(r'(?:export\s)?\b(\w+)\s*=\s(?:\([^)]*\))\s*(?:=>|->)'), # coffeescript function
+    re.compile(r'\b(\w+)\s*:\s(?:=>|->)'), # coffeescript function
+    re.compile(r'\b(\w+)\s*:\s(?:\([^)]*\))\s*(?:=>|->)'), # coffeescript function
+)
+def extractDef(c, s):
+    '''Return the defined function/method/class name if s
+    looks like definition. Tries several different languages.'''
+    for pat in c.config.getData('extract-patterns') or []:
+        try:
+            pat = re.compile(pat)
+            m = pat.search(s)
+            if m: return m.group(1)
+        except Exception:
+            g.es_print('bad regex in @data extract-patterns', color='blue')
+            g.es_print(pat)
+    for pat in extractDef_patterns:
+        m = pat.search(s)
+        if m: return m.group(1)
+    return ''
+#@+node:ekr.20171123135625.26: *3* def extractDef_find
+def extractDef_find(c, lines):
+    for line in lines:
+        def_h = extractDef(c, line.strip())
+        if def_h:
+            return def_h
+#@+node:ekr.20171123135625.25: *3* def extractRef
+def extractRef(c, s):
+    '''Return s if it starts with a section name.'''
+    i = s.find('<<')
+    j = s.find('>>')
+    if -1 < i < j:
+        return s
+    i = s.find('@<')
+    j = s.find('@>')
+    if -1 < i < j:
+        return s
+    return ''
+#@+node:ekr.20171123135625.27: ** c_ec.extractSectionNames & helper
 @g.commander_command('extract-names')
-def extractSectionNames(self, event=None):
-    '''Create child nodes for every section reference in the selected text.
-    The headline of each new child node is the section reference.
-    The body of each child node is empty.'''
-    c = self; u = c.undoer; undoType = 'Extract Section Names'
-    body = c.frame.body; current = c.p
-    head, lines, tail, oldSel, oldYview = self.getBodyLines()
+def extractSectionNames(c, event=None):
+    '''
+    Create child nodes for every section reference in the selected text.
+    - The headline of each new child node is the section reference.
+    - The body of each child node is empty.
+    '''
+    current = c.p
+    u = c.undoer
+    undoType = 'Extract Section Names'
+    body = c.frame.body
+    head, lines, tail, oldSel, oldYview = c.getBodyLines()
     if not lines:
         g.warning('No lines selected')
         return
     u.beforeChangeGroup(current, undoType)
     found = False
     for s in lines:
-        name = c.findSectionName(s)
+        name = findSectionName(c, s)
         if name:
             undoData = u.beforeInsertNode(current)
-            p = self.createLastChildNode(current, name, None)
+            p = c.createLastChildNode(current, name, None)
             u.afterInsertNode(p, undoType, undoData)
             found = True
     c.validateOutline()
@@ -446,7 +448,7 @@ def extractSectionNames(self, event=None):
     if w:
         w.setSelectionRange(i, j)
         w.setFocus()
-#@+node:ekr.20171123135625.28: *3* c.findSectionName
+#@+node:ekr.20171123135625.28: *3* def findSectionName
 def findSectionName(self, s):
     head1 = s.find("<<")
     if head1 > -1:
@@ -460,13 +462,11 @@ def findSectionName(self, s):
     else:
         name = s[head1: head2 + 2]
     return name
-#@+node:ekr.20171123135625.15: ** c.findMatchingBracket
+#@+node:ekr.20171123135625.15: ** c_ec.findMatchingBracket
 @g.commander_command('match-brackets')
 @g.commander_command('select-to-matching-bracket')
 def findMatchingBracket(self, event=None):
     '''Select the text between matching brackets.'''
-    #@+others
-    #@-others
     c, p = self, self.p
     if g.app.batchMode:
         c.notValidInBatchMode("Match Brackets")
@@ -476,7 +476,7 @@ def findMatchingBracket(self, event=None):
         g.es('match-brackets not supported for', language)
     else:
         g.MatchBrackets(c, p, language).run()
-#@+node:ekr.20171123135625.9: ** c.fontPanel
+#@+node:ekr.20171123135625.9: ** c_ec.fontPanel
 @g.commander_command('set-font')
 def fontPanel(self, event=None):
     '''Open the font dialog.'''
@@ -484,7 +484,7 @@ def fontPanel(self, event=None):
     if not frame.fontPanel:
         frame.fontPanel = g.app.gui.createFontPanel(c)
     frame.fontPanel.bringToFront()
-#@+node:ekr.20110402084740.14490: ** c.goToNext/PrevHistory
+#@+node:ekr.20110402084740.14490: ** c_ec.goToNext/PrevHistory
 @g.commander_command('goto-next-history-node')
 def goToNextHistory(self, event=None):
     '''Go to the next node in the history list.'''
@@ -496,7 +496,7 @@ def goToPrevHistory(self, event=None):
     '''Go to the previous node in the history list.'''
     c = self
     c.nodeHistory.goPrev()
-#@+node:ekr.20171123135625.30: ** c.indentBody (indent-region)
+#@+node:ekr.20171123135625.30: ** c_ec.indentBody (indent-region)
 @g.commander_command('indent-region')
 def indentBody(self, event=None):
     '''
@@ -525,7 +525,7 @@ def indentBody(self, event=None):
             oldSel = ins, ins
         result = ''.join(result)
         c.updateBodyPane(head, result, tail, undoType, oldSel, oldYview, preserveSel)
-#@+node:ekr.20171123135625.38: ** c.insertBodyTime
+#@+node:ekr.20171123135625.38: ** c_ec.insertBodyTime
 @g.commander_command('insert-body-time')
 def insertBodyTime(self, event=None):
     '''Insert a time/date stamp at the cursor.'''
@@ -540,7 +540,7 @@ def insertBodyTime(self, event=None):
     i = w.getInsertPoint()
     w.insert(i, s)
     c.frame.body.onBodyChanged(undoType, oldSel=oldSel)
-#@+node:ekr.20171123135625.52: ** c.justify-toggle-auto
+#@+node:ekr.20171123135625.52: ** c_ec.justify-toggle-auto
 @g.commander_command("justify-toggle-auto")
 def justify_toggle_auto(self, event=None):
     c = self
@@ -554,13 +554,13 @@ def justify_toggle_auto(self, event=None):
     else:
         c.editCommands.autojustify = 0
         g.es("Autojustify off")
-#@+node:ekr.20171123135625.11: ** c.preferences
+#@+node:ekr.20171123135625.11: ** c_ec.preferences
 @g.commander_command('settings')
 def preferences(self, event=None):
     '''Handle the preferences command.'''
     c = self
     c.openLeoSettings()
-#@+node:ekr.20171123135625.40: ** c.reformatBody
+#@+node:ekr.20171123135625.40: ** c_ec.reformatBody
 def reformatBody(self, event=None):
     '''Reformat all paragraphs in the body.'''
     c, p = self, self.p
@@ -577,7 +577,7 @@ def reformatBody(self, event=None):
         if ins <= progress or ins >= len(s):
             break
     c.undoer.afterChangeGroup(p, undoType)
-#@+node:ekr.20171123135625.41: ** c.reformatParagraph & helpers
+#@+node:ekr.20171123135625.41: ** c_ec.reformatParagraph & helpers
 @g.commander_command('reformat-paragraph')
 def reformatParagraph(self, event=None, undoType='Reformat Paragraph'):
     '''
@@ -591,113 +591,6 @@ def reformatParagraph(self, event=None, undoType='Reformat Paragraph'):
     Paragraph is bound by start of body, end of body and blank lines. Paragraph is
     selected by position of current insertion cursor.
     '''
-    # Define helpers
-    #@+others
-    #@+node:ekr.20171123135625.45: *3* def rp_get_args
-    def rp_get_args(c):
-        '''Compute and return oldSel,oldYview,original,pageWidth,tabWidth.'''
-        body = c.frame.body
-        w = body.wrapper
-        d = c.scanAllDirectives()
-        if c.editCommands.fillColumn > 0:
-            pageWidth = c.editCommands.fillColumn
-        else:
-            pageWidth = d.get("pagewidth")
-        tabWidth = d.get("tabwidth")
-        original = w.getAllText()
-        oldSel = w.getSelectionRange()
-        oldYview = w.getYScrollPosition()
-        return oldSel, oldYview, original, pageWidth, tabWidth
-    #@+node:ekr.20171123135625.46: *3* def rp_get_leading_ws
-    def rp_get_leading_ws(c, lines, tabWidth):
-        '''Compute and return indents and leading_ws.'''
-        # c = self
-        indents = [0, 0]
-        leading_ws = ["", ""]
-        for i in (0, 1):
-            if i < len(lines):
-                # Use the original, non-optimized leading whitespace.
-                leading_ws[i] = ws = g.get_leading_ws(lines[i])
-                indents[i] = g.computeWidth(ws, tabWidth)
-        indents[1] = max(indents)
-        if len(lines) == 1:
-            leading_ws[1] = leading_ws[0]
-        return indents, leading_ws
-    #@+node:ekr.20171123135625.47: *3* def rp_reformat
-    def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
-        '''Reformat the body and update the selection.'''
-        body = c.frame.body
-        w = body.wrapper
-        # This destroys recoloring.
-        junk, ins = body.setSelectionAreas(head, result, tail)
-        changed = original != head + result + tail
-        if changed:
-            s = w.getAllText()
-            # Fix an annoying glitch when there is no
-            # newline following the reformatted paragraph.
-            if not tail and ins < len(s): ins += 1
-            # 2010/11/16: stay in the paragraph.
-            body.onBodyChanged(undoType, oldSel=oldSel, oldYview=oldYview)
-        else:
-            # Advance to the next paragraph.
-            s = w.getAllText()
-            ins += 1 # Move past the selection.
-            while ins < len(s):
-                i, j = g.getLine(s, ins)
-                line = s[i: j]
-                # 2010/11/16: it's annoying, imo, to treat @ lines differently.
-                if line.isspace():
-                    ins = j + 1
-                else:
-                    ins = i
-                    break
-            # setSelectionAreas has destroyed the coloring.
-            c.recolor()
-        w.setSelectionRange(ins, ins, insert=ins)
-        # 2011/10/26: Calling see does more harm than good.
-            # w.see(ins)
-        # Make sure we never scroll horizontally.
-        w.setXScrollPosition(0)
-    #@+node:ekr.20171123135625.48: *3* def rp_wrap_all_lines
-    def rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth):
-        '''Compute the result of wrapping all lines.'''
-        trailingNL = lines and lines[-1].endswith('\n')
-        lines = [z[: -1] if z.endswith('\n') else z for z in lines]
-        if lines: # Bug fix: 2013/12/22.
-            s = lines[0]
-            if c.startsParagraph(s):
-                # Adjust indents[1]
-                # Similar to code in c.startsParagraph(s)
-                i = 0
-                if s[0].isdigit():
-                    while i < len(s) and s[i].isdigit():
-                        i += 1
-                    if g.match(s, i, ')') or g.match(s, i, '.'):
-                        i += 1
-                elif s[0].isalpha():
-                    if g.match(s, 1, ')') or g.match(s, 1, '.'):
-                        i = 2
-                elif s[0] == '-':
-                    i = 1
-                # Never decrease indentation.
-                i = g.skip_ws(s, i + 1)
-                if i > indents[1]:
-                    indents[1] = i
-                    leading_ws[1] = ' ' * i
-        # Wrap the lines, decreasing the page width by indent.
-        result = g.wrap_lines(lines,
-            pageWidth - indents[1],
-            pageWidth - indents[0])
-        # prefix with the leading whitespace, if any
-        paddedResult = []
-        paddedResult.append(leading_ws[0] + result[0])
-        for line in result[1:]:
-            paddedResult.append(leading_ws[1] + line)
-        # Convert the result to a string.
-        result = '\n'.join(paddedResult)
-        if trailingNL: result = result + '\n'
-        return result
-    #@-others
     c = self
     body = c.frame.body
     w = body.wrapper
@@ -713,7 +606,111 @@ def reformatParagraph(self, event=None, undoType='Reformat Paragraph'):
         indents, leading_ws = rp_get_leading_ws(c, lines, tabWidth)
         result = rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth)
         rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType)
-#@+node:ekr.20171123135625.12: ** c.show/hide/toggleInvisibles
+#@+node:ekr.20171123135625.45: *3* def rp_get_args
+def rp_get_args(c):
+    '''Compute and return oldSel,oldYview,original,pageWidth,tabWidth.'''
+    body = c.frame.body
+    w = body.wrapper
+    d = c.scanAllDirectives()
+    if c.editCommands.fillColumn > 0:
+        pageWidth = c.editCommands.fillColumn
+    else:
+        pageWidth = d.get("pagewidth")
+    tabWidth = d.get("tabwidth")
+    original = w.getAllText()
+    oldSel = w.getSelectionRange()
+    oldYview = w.getYScrollPosition()
+    return oldSel, oldYview, original, pageWidth, tabWidth
+#@+node:ekr.20171123135625.46: *3* def rp_get_leading_ws
+def rp_get_leading_ws(c, lines, tabWidth):
+    '''Compute and return indents and leading_ws.'''
+    # c = self
+    indents = [0, 0]
+    leading_ws = ["", ""]
+    for i in (0, 1):
+        if i < len(lines):
+            # Use the original, non-optimized leading whitespace.
+            leading_ws[i] = ws = g.get_leading_ws(lines[i])
+            indents[i] = g.computeWidth(ws, tabWidth)
+    indents[1] = max(indents)
+    if len(lines) == 1:
+        leading_ws[1] = leading_ws[0]
+    return indents, leading_ws
+#@+node:ekr.20171123135625.47: *3* def rp_reformat
+def rp_reformat(c, head, oldSel, oldYview, original, result, tail, undoType):
+    '''Reformat the body and update the selection.'''
+    body = c.frame.body
+    w = body.wrapper
+    # This destroys recoloring.
+    junk, ins = body.setSelectionAreas(head, result, tail)
+    changed = original != head + result + tail
+    if changed:
+        s = w.getAllText()
+        # Fix an annoying glitch when there is no
+        # newline following the reformatted paragraph.
+        if not tail and ins < len(s): ins += 1
+        # 2010/11/16: stay in the paragraph.
+        body.onBodyChanged(undoType, oldSel=oldSel, oldYview=oldYview)
+    else:
+        # Advance to the next paragraph.
+        s = w.getAllText()
+        ins += 1 # Move past the selection.
+        while ins < len(s):
+            i, j = g.getLine(s, ins)
+            line = s[i: j]
+            # 2010/11/16: it's annoying, imo, to treat @ lines differently.
+            if line.isspace():
+                ins = j + 1
+            else:
+                ins = i
+                break
+        # setSelectionAreas has destroyed the coloring.
+        c.recolor()
+    w.setSelectionRange(ins, ins, insert=ins)
+    # 2011/10/26: Calling see does more harm than good.
+        # w.see(ins)
+    # Make sure we never scroll horizontally.
+    w.setXScrollPosition(0)
+#@+node:ekr.20171123135625.48: *3* def rp_wrap_all_lines
+def rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth):
+    '''Compute the result of wrapping all lines.'''
+    trailingNL = lines and lines[-1].endswith('\n')
+    lines = [z[: -1] if z.endswith('\n') else z for z in lines]
+    if lines: # Bug fix: 2013/12/22.
+        s = lines[0]
+        if c.startsParagraph(s):
+            # Adjust indents[1]
+            # Similar to code in c.startsParagraph(s)
+            i = 0
+            if s[0].isdigit():
+                while i < len(s) and s[i].isdigit():
+                    i += 1
+                if g.match(s, i, ')') or g.match(s, i, '.'):
+                    i += 1
+            elif s[0].isalpha():
+                if g.match(s, 1, ')') or g.match(s, 1, '.'):
+                    i = 2
+            elif s[0] == '-':
+                i = 1
+            # Never decrease indentation.
+            i = g.skip_ws(s, i + 1)
+            if i > indents[1]:
+                indents[1] = i
+                leading_ws[1] = ' ' * i
+    # Wrap the lines, decreasing the page width by indent.
+    result = g.wrap_lines(lines,
+        pageWidth - indents[1],
+        pageWidth - indents[0])
+    # prefix with the leading whitespace, if any
+    paddedResult = []
+    paddedResult.append(leading_ws[0] + result[0])
+    for line in result[1:]:
+        paddedResult.append(leading_ws[1] + line)
+    # Convert the result to a string.
+    result = '\n'.join(paddedResult)
+    if trailingNL: result = result + '\n'
+    return result
+#@+node:ekr.20171123135625.12: ** c_ec.show/hide/toggleInvisibles
 @g.commander_command('hide-invisibles')
 def hideInvisibles(self, event=None):
     '''Hide invisible (whitespace) characters.'''
@@ -751,7 +748,7 @@ def showInvisiblesHelper(c, val):
     if hasattr(frame.body, 'set_invisibles'):
         frame.body.set_invisibles(c)
     c.frame.body.recolor(c.p)
-#@+node:ekr.20171123135625.55: ** c.toggleAngleBrackets
+#@+node:ekr.20171123135625.55: ** c_ec.toggleAngleBrackets
 @g.commander_command('toggle-angle-brackets')
 def toggleAngleBrackets(self, event=None):
     '''Add or remove double angle brackets from the headline of the selected node.'''
@@ -771,7 +768,7 @@ def toggleAngleBrackets(self, event=None):
         s = g.angleBrackets(' ' + s + ' ')
     p.setHeadString(s)
     c.redrawAndEdit(p, selectAll=True)
-#@+node:ekr.20171123135625.49: ** c.unformatParagraph & helper
+#@+node:ekr.20171123135625.49: ** c_ec.unformatParagraph & helper
 @g.commander_command('unformat-paragraph')
 def unformatParagraph(self, event=None, undoType='Unformat Paragraph'):
     '''
@@ -793,11 +790,12 @@ def unformatParagraph(self, event=None, undoType='Unformat Paragraph'):
     head, lines, tail = c.findBoundParagraph()
     if lines:
         result = ' '.join([z.strip() for z in lines]) + '\n'
-        c.unreformat(head, oldSel, oldYview, original, result, tail, undoType)
-#@+node:ekr.20171123135625.50: *3* c.unreformat
-def unreformat(self, head, oldSel, oldYview, original, result, tail, undoType):
+        unreformat(c, head, oldSel, oldYview, original, result, tail, undoType)
+#@+node:ekr.20171123135625.50: *3* def.unreformat
+def unreformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     '''unformat the body and update the selection.'''
-    c = self; body = c.frame.body; w = body.wrapper
+    body = c.frame.body
+    w = body.wrapper
     # This destroys recoloring.
     junk, ins = body.setSelectionAreas(head, result, tail)
     changed = original != head + result + tail
@@ -821,7 +819,7 @@ def unreformat(self, head, oldSel, oldYview, original, result, tail, undoType):
     w.see(ins)
     # Make sure we never scroll horizontally.
     w.setXScrollPosition(0)
-#@+node:ekr.20171123135625.13: ** c.writeScriptFile
+#@+node:ekr.20171123135625.13: ** c_ec.writeScriptFile
 def writeScriptFile(self, script):
     trace = False and not g.unitTesting
     # Get the path to the file.
