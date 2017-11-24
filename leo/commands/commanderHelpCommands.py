@@ -1,0 +1,276 @@
+# -*- coding: utf-8 -*-
+#@+leo-ver=5-thin
+#@+node:ekr.20171124073126.1: * @file ../commands/commanderHelpCommands.py
+#@@first
+'''Help commands that used to be defined in leoCommands.py'''
+import leo.core.leoGlobals as g
+import time
+#@+others
+#@+node:ekr.20031218072017.2939: ** c.about (version number & date)
+@g.commander_command('about-leo')
+def about(self, event=None):
+    '''Bring up an About Leo Dialog.'''
+    c = self
+    import datetime
+    # Don't use triple-quoted strings or continued strings here.
+    # Doing so would add unwanted leading tabs.
+    version = g.app.signon + '\n\n'
+    theCopyright = (
+        "Copyright 1999-%s by Edward K. Ream\n" +
+        "All Rights Reserved\n" +
+        "Leo is distributed under the MIT License") % datetime.date.today().year
+    url = "http://leoeditor.com/"
+    email = "edreamleo@gmail.com"
+    g.app.gui.runAboutLeoDialog(c, version, theCopyright, url, email)
+#@+node:ekr.20031218072017.2940: ** c.leoDocumentation
+@g.commander_command('open-leo-docs-leo')
+@g.commander_command('leo-docs-leo')
+def leoDocumentation(self, event=None):
+    '''Open LeoDocs.leo in a new Leo window.'''
+    c = self
+    name = "LeoDocs.leo"
+    fileName = g.os_path_finalize_join(g.app.loadDir, "..", "doc", name)
+    # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
+    if g.os_path_exists(fileName):
+        c2 = g.openWithFileName(fileName, old_c=c)
+        if c2: return
+    g.es("not found:", name)
+#@+node:ekr.20031218072017.2941: ** c.leoHome
+@g.commander_command('open-online-home')
+def leoHome(self, event=None):
+    '''Open Leo's Home page in a web browser.'''
+    import webbrowser
+    url = "http://leoeditor.com/"
+    try:
+        webbrowser.open_new(url)
+    except Exception:
+        g.es("not found:", url)
+#@+node:ekr.20090628075121.5994: ** c.leoQuickStart
+@g.commander_command('open-quickstart-leo')
+@g.commander_command('leo-quickstart-leo')
+def leoQuickStart(self, event=None):
+    '''Open quickstart.leo in a new Leo window.'''
+    c = self; name = "quickstart.leo"
+    fileName = g.os_path_finalize_join(g.app.loadDir, "..", "doc", name)
+    # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
+    if g.os_path_exists(fileName):
+        c2 = g.openWithFileName(fileName, old_c=c)
+        if c2: return
+    g.es("not found:", name)
+#@+node:ekr.20131028155339.17096: ** c.openCheatSheet
+@g.commander_command('open-cheat-sheet-leo')
+@g.commander_command('leo-cheat-sheet')
+@g.commander_command('cheat-sheet')
+def openCheatSheet(self, event=None, redraw=True):
+    '''Open leo/doc/cheatSheet.leo'''
+    c = self
+    fn = g.os_path_finalize_join(g.app.loadDir, '..', 'doc', 'CheatSheet.leo')
+    # g.es_debug(g.os_path_exists(fn),fn)
+    if g.os_path_exists(fn):
+        c2 = g.openWithFileName(fn, old_c=c)
+        if redraw:
+            p = g.findNodeAnywhere(c2, "Leo's cheat sheet")
+            if p:
+                c2.selectPosition(p)
+                p.expand()
+            c2.redraw()
+        return c2
+    else:
+        g.es('file not found: %s' % fn)
+        return None
+#@+node:ekr.20161025090405.1: ** c.openLeoDist
+@g.commander_command('open-leo-dist-leo')
+@g.commander_command('leo-dist-leo')
+def openLeoDist(self, event=None):
+    '''Open leoDist.leo in a new Leo window.'''
+    c = self
+    name = "leoDist.leo"
+    fileName = g.os_path_finalize_join(g.app.loadDir, "..", "dist", name)
+    if g.os_path_exists(fileName):
+        c2 = g.openWithFileName(fileName, old_c=c)
+        if c2: return
+    g.es("not found:", name)
+#@+node:ekr.20050130152008: ** c.openLeoPlugins
+@g.commander_command('open-leo-plugins-leo')
+@g.commander_command('leo-plugins-leo')
+def openLeoPlugins(self, event=None):
+    '''Open leoPlugins.leo in a new Leo window.'''
+    c = self
+    names = ('leoPlugins.leo', 'leoPluginsRef.leo',) # Used in error message.
+    for name in names:
+        fileName = g.os_path_finalize_join(g.app.loadDir, "..", "plugins", name)
+        # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
+        if g.os_path_exists(fileName):
+            c2 = g.openWithFileName(fileName, old_c=c)
+            if c2: return
+    g.es('not found:', ', '.join(names))
+#@+node:ekr.20151225193723.1: ** c.openLeoPy
+@g.commander_command('open-leo-py-leo')
+@g.commander_command('leo-py-leo')
+def openLeoPy(self, event=None):
+    '''Open leoPy.leo in a new Leo window.'''
+    c = self
+    names = ('leoPy.leo', 'LeoPyRef.leo',) # Used in error message.
+    for name in names:
+        fileName = g.os_path_finalize_join(g.app.loadDir, "..", "core", name)
+        # Only call g.openWithFileName if the file exists.
+        if g.os_path_exists(fileName):
+            c2 = g.openWithFileName(fileName, old_c=c)
+            if c2: return
+    g.es('not found:', ', '.join(names))
+#@+node:ekr.20061018094539: ** c.openLeoScripts
+@g.commander_command('open-scripts-leo')
+@g.commander_command('leo-scripts-leo')
+def openLeoScripts(self, event=None):
+    '''Open scripts.leo.'''
+    c = self
+    fileName = g.os_path_finalize_join(g.app.loadDir, '..', 'scripts', 'scripts.leo')
+    # Bug fix: 2012/04/09: only call g.openWithFileName if the file exists.
+    if g.os_path_exists(fileName):
+        c2 = g.openWithFileName(fileName, old_c=c)
+        if c2: return
+    g.es('not found:', fileName)
+#@+node:ekr.20031218072017.2943: ** c.openLeoSettings & c.openMyLeoSettings & helper
+@g.commander_command('open-leo-settings-leo')
+@g.commander_command('leo-settings-leo')
+def openLeoSettings(self, event=None):
+    '''Open leoSettings.leo in a new Leo window.'''
+    c, lm = self, g.app.loadManager
+    path = lm.computeLeoSettingsPath()
+    if path:
+        return g.openWithFileName(path, old_c=c)
+    else:
+        g.es('not found: leoSettings.leo')
+        return None
+
+@g.commander_command('open-myLeoSettings-leo')
+@g.commander_command('my-leo-settings-leo')
+def openMyLeoSettings(self, event=None):
+    '''Open myLeoSettings.leo in a new Leo window.'''
+    c, lm = self, g.app.loadManager
+    path = lm.computeMyLeoSettingsPath()
+    if path:
+        return g.openWithFileName(path, old_c=c)
+    else:
+        g.es('not found: myLeoSettings.leo')
+        return c.createMyLeoSettings()
+#@+node:ekr.20141119161908.2: *3* c.createMyLeoSettings
+def createMyLeoSettings(self):
+    """createMyLeoSettings - Return true if myLeoSettings.leo created ok
+    """
+    name = "myLeoSettings.leo"
+    c = self
+    homeLeoDir = g.app.homeLeoDir
+    loadDir = g.app.loadDir
+    configDir = g.app.globalConfigDir
+    # check it doesn't already exist
+    for path in homeLeoDir, loadDir, configDir:
+        fileName = g.os_path_join(path, name)
+        if g.os_path_exists(fileName):
+            return None
+    ok = g.app.gui.runAskYesNoDialog(c,
+        title = 'Create myLeoSettings.leo?',
+        message = 'Create myLeoSettings.leo in %s?' % (homeLeoDir),
+    )
+    if ok == 'no':
+        return
+    # get '@enabled-plugins' from g.app.globalConfigDir
+    fileName = g.os_path_join(configDir, "leoSettings.leo")
+    leosettings = g.openWithFileName(fileName, old_c=c)
+    enabledplugins = g.findNodeAnywhere(leosettings, '@enabled-plugins')
+    enabledplugins = enabledplugins.b
+    leosettings.close()
+    # now create "~/.leo/myLeoSettings.leo"
+    fileName = g.os_path_join(homeLeoDir, name)
+    c2 = g.openWithFileName(fileName, old_c=c)
+    # add content to outline
+    nd = c2.rootPosition()
+    nd.h = "Settings README"
+    nd.b = (
+        "myLeoSettings.leo personal settings file created {time}\n\n"
+        "Only nodes that are descendants of the @settings node are read.\n\n"
+        "Only settings you need to modify should be in this file, do\n"
+        "not copy large parts of leoSettings.py here.\n\n"
+        "For more information see http://leoeditor.com/customizing.html"
+        "".format(time=time.asctime())
+    )
+    nd = nd.insertAfter()
+    nd.h = '@settings'
+    nd = nd.insertAsNthChild(0)
+    nd.h = '@enabled-plugins'
+    nd.b = enabledplugins
+    nd = nd.insertAfter()
+    nd.h = '@keys'
+    nd = nd.insertAsNthChild(0)
+    nd.h = '@shortcuts'
+    nd.b = (
+        "# You can define keyboard shortcuts here of the form:\n"
+        "#\n"
+        "#    some-command Shift-F5\n"
+    )
+    c2.redraw()
+    return c2
+#@+node:ekr.20131213072223.19441: ** c.openLeoTOC
+@g.commander_command('open-online-toc')
+def openLeoTOC(self, event=None):
+    '''Open Leo's tutorials page in a web browser.'''
+    import webbrowser
+    url = "http://leoeditor.com/leo_toc.html"
+    try:
+        webbrowser.open_new(url)
+    except Exception:
+        g.es("not found:", url)
+#@+node:ekr.20131213072223.19435: ** c.openLeoTutorials
+@g.commander_command('open-online-tutorials')
+def openLeoTutorials(self, event=None):
+    '''Open Leo's tutorials page in a web browser.'''
+    import webbrowser
+    url = "http://leoeditor.com/tutorial.html"
+    try:
+        webbrowser.open_new(url)
+    except Exception:
+        g.es("not found:", url)
+#@+node:ekr.20060613082924: ** c.openLeoUsersGuide
+@g.commander_command('open-users-guide')
+def openLeoUsersGuide(self, event=None):
+    '''Open Leo's users guide in a web browser.'''
+    import webbrowser
+    url = "http://leoeditor.com/usersguide.html"
+    try:
+        webbrowser.open_new(url)
+    except Exception:
+        g.es("not found:", url)
+#@+node:ekr.20131213072223.19437: ** c.openLeoVideos
+@g.commander_command('open-online-videos')
+def openLeoVideos(self, event=None):
+    '''Open Leo's videos page in a web browser.'''
+    import webbrowser
+    url = "http://leoeditor.com/screencasts.html"
+    try:
+        webbrowser.open_new(url)
+    except Exception:
+        g.es("not found:", url)
+#@+node:ekr.20151225095102.1: ** c.openUnittest
+@g.commander_command('open-unittest-leo')
+@g.commander_command('leo-unittest-leo')
+def openUnittest(self, event=None):
+    '''Open unittest.leo.'''
+    c = self
+    fileName = g.os_path_finalize_join(g.app.loadDir, '..', 'test', 'unitTest.leo')
+    if g.os_path_exists(fileName):
+        c2 = g.openWithFileName(fileName, old_c=c)
+        if c2: return
+    g.es('not found:', fileName)
+#@+node:ekr.20131213072223.19532: ** c.selectAtSettingsNode
+@g.commander_command('open-local-settings')
+def selectAtSettingsNode(self, event=None):
+    '''Select the @settings node, if there is one.'''
+    c = self
+    p = c.config.settingsRoot()
+    if p:
+        c.selectPosition(p)
+        c.redraw()
+    else:
+        g.es('no local @settings tree.')
+#@-others
+#@-leo
