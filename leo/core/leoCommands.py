@@ -2613,6 +2613,126 @@ class Commands(object):
         else:
             g.error('no such command: %s %s' % (commandName, g.callers()))
             return None
+    #@+node:ekr.20171123135625.4: *4* c.executeScript & helpers
+    @cmd('execute-script')
+    def executeScript(self, event=None,
+        args=None, p=None, script=None, useSelectedText=True,
+        define_g=True, define_name='__main__',
+        silent=False, namespace=None, raiseFlag=False,
+    ):
+        '''
+        Execute a *Leo* script.
+        Keyword args:
+        args=None               Not None: set script_args in the execution environment.
+        p=None                  Get the script from p.b, unless script is given.
+        script=None             None: use script in p.b or c.p.b
+        useSelectedText=True    False: use all the text in p.b or c.p.b.
+        define_g=True           True: define g for the script.
+        define_name='__main__'  Not None: define the name symbol.
+        silent=False            No longer used.
+        namespace=None          Not None: execute the script in this namespace.
+        raiseFlag=False         True: reraise any exceptions.
+        '''
+        c, script1 = self, script
+        if not script:
+            if c.forceExecuteEntireBody:
+                useSelectedText = False
+            script = g.getScript(c, p or c.p, useSelectedText=useSelectedText)
+        script_p = p or c.p
+            # Only for error reporting below.
+        self.redirectScriptOutput()
+        try:
+            oldLog = g.app.log
+            log = c.frame.log
+            g.app.log = log
+            if script.strip():
+                sys.path.insert(0, '.') # New in Leo 5.0
+                sys.path.insert(0, c.frame.openDirectory) # per SegundoBob
+                script += '\n' # Make sure we end the script properly.
+                try:
+                    # We *always* execute the script with p = c.p.
+                    c.executeScriptHelper(args, define_g, define_name, namespace, script)
+                except Exception:
+                    if raiseFlag:
+                        raise
+                    else:
+                        g.handleScriptException(c, script_p, script, script1)
+                finally:
+                    del sys.path[0]
+                    del sys.path[0]
+            else:
+                tabName = log and hasattr(log, 'tabName') and log.tabName or 'Log'
+                g.warning("no script selected", tabName=tabName)
+        finally:
+            g.app.log = oldLog
+            self.unredirectScriptOutput()
+    #@+node:ekr.20171123135625.5: *5* c.executeScriptHelper
+    def executeScriptHelper(self, args, define_g, define_name, namespace, script):
+        c = self
+        if c.p:
+            p = c.p.copy() # *Always* use c.p and pass c.p to script.
+            c.setCurrentDirectoryFromContext(p)
+        else:
+            p = None
+        # Do NOT define a subfunction here!
+        #
+        # On some, python 2.x versions it causes exec to cause a syntax error
+        # Workarounds that avoid the syntax error hurt performance.
+        # See http://stackoverflow.com/questions/4484872.
+
+            # def g_input_wrapper(message, c=c):
+                # return g.input_(message, c=c)
+
+        d = {'c': c, 'g': g, 'input': g.input_, 'p': p} if define_g else {}
+        if define_name: d['__name__'] = define_name
+        d['script_args'] = args or []
+        if namespace: d.update(namespace)
+        # A kludge: reset c.inCommand here to handle the case where we *never* return.
+        # (This can happen when there are multiple event loops.)
+        # This does not prevent zombie windows if the script puts up a dialog...
+        try:
+            c.inCommand = False
+            g.inScript = g.app.inScript = True
+                # g.inScript is a synonym for g.app.inScript.
+            if c.write_script_file:
+                scriptFile = self.writeScriptFile(script)
+                # pylint: disable=undefined-variable, no-member
+                if g.isPython3:
+                    exec(compile(script, scriptFile, 'exec'), d)
+                else:
+                    builtins.execfile(scriptFile, d)
+            else:
+                exec(script, d)
+        finally:
+            g.inScript = g.app.inScript = False
+    #@+node:ekr.20171123135625.6: *5* c.redirectScriptOutput
+    def redirectScriptOutput(self):
+        c = self
+        # g.trace('original')
+        if c.config.redirect_execute_script_output_to_log_pane:
+            g.redirectStdout() # Redirect stdout
+            g.redirectStderr() # Redirect stderr
+    #@+node:ekr.20171123135625.7: *5* c.setCurrentDirectoryFromContext
+    def setCurrentDirectoryFromContext(self, p):
+        trace = False and not g.unitTesting
+        c = self
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        curDir = g.os_path_abspath(os.getcwd())
+        # g.trace(p.h,'\npath  ',path,'\ncurDir',curDir)
+        if path and path != curDir:
+            if trace: g.trace('calling os.chdir(%s)' % (path))
+            try:
+                os.chdir(path)
+            except Exception:
+                pass
+    #@+node:ekr.20171123135625.8: *5* c.unredirectScriptOutput
+    def unredirectScriptOutput(self):
+        c = self
+        # g.trace('original')
+        if c.exists and c.config.redirect_execute_script_output_to_log_pane:
+            g.restoreStderr()
+            g.restoreStdout()
     #@+node:ekr.20150410095543.1: *4* c.findNodeOutsideAnyAtFileTree
     def findNodeOutsideAnyAtFileTree(self, target):
         '''Select the first clone of target that is outside any @file node.'''
@@ -2886,126 +3006,6 @@ class Commands(object):
         c = self
         return c.frame.tree.getSelectedPositions()
     #@+node:ekr.20031218072017.2818: *3* c.Top-level commands
-    #@+node:ekr.20171123135625.4: *4* c.executeScript & helpers
-    @cmd('execute-script')
-    def executeScript(self, event=None,
-        args=None, p=None, script=None, useSelectedText=True,
-        define_g=True, define_name='__main__',
-        silent=False, namespace=None, raiseFlag=False,
-    ):
-        '''
-        Execute a *Leo* script.
-        Keyword args:
-        args=None               Not None: set script_args in the execution environment.
-        p=None                  Get the script from p.b, unless script is given.
-        script=None             None: use script in p.b or c.p.b
-        useSelectedText=True    False: use all the text in p.b or c.p.b.
-        define_g=True           True: define g for the script.
-        define_name='__main__'  Not None: define the name symbol.
-        silent=False            No longer used.
-        namespace=None          Not None: execute the script in this namespace.
-        raiseFlag=False         True: reraise any exceptions.
-        '''
-        c, script1 = self, script
-        if not script:
-            if c.forceExecuteEntireBody:
-                useSelectedText = False
-            script = g.getScript(c, p or c.p, useSelectedText=useSelectedText)
-        script_p = p or c.p
-            # Only for error reporting below.
-        self.redirectScriptOutput()
-        try:
-            oldLog = g.app.log
-            log = c.frame.log
-            g.app.log = log
-            if script.strip():
-                sys.path.insert(0, '.') # New in Leo 5.0
-                sys.path.insert(0, c.frame.openDirectory) # per SegundoBob
-                script += '\n' # Make sure we end the script properly.
-                try:
-                    # We *always* execute the script with p = c.p.
-                    c.executeScriptHelper(args, define_g, define_name, namespace, script)
-                except Exception:
-                    if raiseFlag:
-                        raise
-                    else:
-                        g.handleScriptException(c, script_p, script, script1)
-                finally:
-                    del sys.path[0]
-                    del sys.path[0]
-            else:
-                tabName = log and hasattr(log, 'tabName') and log.tabName or 'Log'
-                g.warning("no script selected", tabName=tabName)
-        finally:
-            g.app.log = oldLog
-            self.unredirectScriptOutput()
-    #@+node:ekr.20171123135625.5: *5* c.executeScriptHelper
-    def executeScriptHelper(self, args, define_g, define_name, namespace, script):
-        c = self
-        if c.p:
-            p = c.p.copy() # *Always* use c.p and pass c.p to script.
-            c.setCurrentDirectoryFromContext(p)
-        else:
-            p = None
-        # Do NOT define a subfunction here!
-        #
-        # On some, python 2.x versions it causes exec to cause a syntax error
-        # Workarounds that avoid the syntax error hurt performance.
-        # See http://stackoverflow.com/questions/4484872.
-
-            # def g_input_wrapper(message, c=c):
-                # return g.input_(message, c=c)
-
-        d = {'c': c, 'g': g, 'input': g.input_, 'p': p} if define_g else {}
-        if define_name: d['__name__'] = define_name
-        d['script_args'] = args or []
-        if namespace: d.update(namespace)
-        # A kludge: reset c.inCommand here to handle the case where we *never* return.
-        # (This can happen when there are multiple event loops.)
-        # This does not prevent zombie windows if the script puts up a dialog...
-        try:
-            c.inCommand = False
-            g.inScript = g.app.inScript = True
-                # g.inScript is a synonym for g.app.inScript.
-            if c.write_script_file:
-                scriptFile = self.writeScriptFile(script)
-                # pylint: disable=undefined-variable, no-member
-                if g.isPython3:
-                    exec(compile(script, scriptFile, 'exec'), d)
-                else:
-                    builtins.execfile(scriptFile, d)
-            else:
-                exec(script, d)
-        finally:
-            g.inScript = g.app.inScript = False
-    #@+node:ekr.20171123135625.6: *5* c.redirectScriptOutput
-    def redirectScriptOutput(self):
-        c = self
-        # g.trace('original')
-        if c.config.redirect_execute_script_output_to_log_pane:
-            g.redirectStdout() # Redirect stdout
-            g.redirectStderr() # Redirect stderr
-    #@+node:ekr.20171123135625.7: *5* c.setCurrentDirectoryFromContext
-    def setCurrentDirectoryFromContext(self, p):
-        trace = False and not g.unitTesting
-        c = self
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        curDir = g.os_path_abspath(os.getcwd())
-        # g.trace(p.h,'\npath  ',path,'\ncurDir',curDir)
-        if path and path != curDir:
-            if trace: g.trace('calling os.chdir(%s)' % (path))
-            try:
-                os.chdir(path)
-            except Exception:
-                pass
-    #@+node:ekr.20171123135625.8: *5* c.unredirectScriptOutput
-    def unredirectScriptOutput(self):
-        c = self
-        # g.trace('original')
-        if c.exists and c.config.redirect_execute_script_output_to_log_pane:
-            g.restoreStderr()
-            g.restoreStdout()
     #@+node:ekr.20110402084740.14490: *4* c.goToNext/PrevHistory
     @cmd('goto-next-history-node')
     def goToNextHistory(self, event=None):
@@ -3018,7 +3018,36 @@ class Commands(object):
         '''Go to the previous node in the history list.'''
         c = self
         c.nodeHistory.goPrev()
-    #@+node:ekr.20170221033738.1: *4* c.reloadSettings & helpers
+    #@+node:vitalije.20170713174950.1: *4* c.editOneSetting
+    @cmd('edit-setting')
+    def editOneSetting(self, event=None):
+        '''Opens correct dialog for selected setting type'''
+        c = self; p = c.p; func = None
+        if p.h.startswith('@font'):
+            func = c.commandsDict.get('show-fonts')
+        elif p.h.startswith('@color '):
+            func = c.commandsDict.get('show-color-wheel')
+        elif p.h.startswith(('@shortcuts','@button','@command')):
+            c.editShortcut()
+            return
+        else:
+            g.es('not in a setting node')
+            return
+        if func:
+            event = g.app.gui.create_key_event(c, None, None, None)
+            func(event)
+    #@+node:vitalije.20170708172746.1: *4* c.editShortcut
+    @cmd('edit-shortcut')
+    def editShortcut(self, event=None):
+        k = self.k
+        if k.isEditShortcutSensible():
+            self.k.setState('input-shortcut', 'input-shortcut')
+            g.es('Press desired key combination')
+        else:
+            g.es('No possible shortcut in selected body line/headline')
+            g.es('Select @button, @command, @shortcuts or @mode node and run it again.')
+    #@+node:ekr.20031218072017.2819: *4* File Menu
+    #@+node:ekr.20170221033738.1: *5* c.reloadSettings & helpers
     @cmd('reload-settings')
     def reloadSettings(self, event=None):
         '''Reload settings for the selected outline, saving it if necessary.'''
@@ -3028,13 +3057,13 @@ class Commands(object):
     def reloadAllSettings(self, event=None):
         '''Reload settings for all open outlines, saving them if necessary.'''
         self.reloadSettingsHelper(all=True)
-    #@+node:ekr.20171114114908.1: *5* c.registerReloadSettings
+    #@+node:ekr.20171114114908.1: *6* c.registerReloadSettings
     def registerReloadSettings(self, obj):
         '''Enter object into c.configurables.'''
         c = self
         if obj not in c.configurables:
             c.configurables.append(obj)
-    #@+node:ekr.20170221034501.1: *5* c.reloadSettingsHelper
+    #@+node:ekr.20170221034501.1: *6* c.reloadSettingsHelper
     def reloadSettingsHelper(self, all):
         '''Reload settings in all commanders, or just self.'''
         lm = g.app.loadManager
@@ -3059,7 +3088,7 @@ class Commands(object):
                 # Restore the changed bit.
             # c.redraw()
                 # Redraw so a pasted temp node isn't visible
-    #@+node:ekr.20170221040621.1: *5* c.reloadConfigurableSettings
+    #@+node:ekr.20170221040621.1: *6* c.reloadConfigurableSettings
     def reloadConfigurableSettings(self):
         '''
         Call all reloadSettings method in c.subcommanders, c.configurables and
@@ -3091,36 +3120,6 @@ class Commands(object):
                 except Exception:
                     g.es_exception()
                     c.configurables.remove(obj)
-    #@+node:ekr.20171123200405.1: *4* c.Settings commands
-    #@+node:vitalije.20170713174950.1: *5* c.editOneSetting
-    @cmd('edit-setting')
-    def editOneSetting(self, event=None):
-        '''Opens correct dialog for selected setting type'''
-        c = self; p = c.p; func = None
-        if p.h.startswith('@font'):
-            func = c.commandsDict.get('show-fonts')
-        elif p.h.startswith('@color '):
-            func = c.commandsDict.get('show-color-wheel')
-        elif p.h.startswith(('@shortcuts','@button','@command')):
-            c.editShortcut()
-            return
-        else:
-            g.es('not in a setting node')
-            return
-        if func:
-            event = g.app.gui.create_key_event(c, None, None, None)
-            func(event)
-    #@+node:vitalije.20170708172746.1: *5* c.editShortcut
-    @cmd('edit-shortcut')
-    def editShortcut(self, event=None):
-        k = self.k
-        if k.isEditShortcutSensible():
-            self.k.setState('input-shortcut', 'input-shortcut')
-            g.es('Press desired key combination')
-        else:
-            g.es('No possible shortcut in selected body line/headline')
-            g.es('Select @button, @command, @shortcuts or @mode node and run it again.')
-    #@+node:ekr.20031218072017.2819: *4* File Menu
     #@+node:ekr.20031218072017.2820: *5* c.top level (file menu)
     #@+node:ekr.20031218072017.2833: *6* c.close
     @cmd('close-window')
@@ -3645,250 +3644,6 @@ class Commands(object):
             c.saveAs()
         finally:
             c.isZipped = oldZipped
-    #@+node:ekr.20031218072017.2079: *5* Recent Files submenu & allies
-    #@+node:ekr.20031218072017.2080: *6* c.clearRecentFiles
-    @cmd('clear-recent-files')
-    def clearRecentFiles(self, event=None):
-        """Clear the recent files list, then add the present file."""
-        c = self
-        g.app.recentFilesManager.clearRecentFiles(c)
-    #@+node:ekr.20031218072017.2081: *6* c.openRecentFile
-    def openRecentFile(self, fn=None):
-        c = self
-        # Automatically close the previous window if...
-        closeFlag = (
-            c.frame.startupWindow and
-                # The window was open on startup
-            not c.changed and not c.frame.saved and
-                # The window has never been changed
-            g.app.numberOfUntitledWindows == 1)
-                # Only one untitled window has ever been opened.
-        if g.doHook("recentfiles1", c=c, p=c.p, v=c.p, fileName=fn, closeFlag=closeFlag):
-            return
-        c2 = g.openWithFileName(fn, old_c=c)
-        if c2:
-            g.app.makeAllBindings()
-        if closeFlag and c2 and c2 != c:
-            g.app.destroyWindow(c.frame)
-            c2.setLog()
-            g.doHook("recentfiles2",
-                c=c2, p=c2.p, v=c2.p, fileName=fn, closeFlag=closeFlag)
-    #@+node:tbrown.20080509212202.6: *6* c.cleanRecentFiles
-    @cmd('clean-recent-files')
-    def cleanRecentFiles(self, event=None):
-        '''Remove items from the recent files list that are no longer valid.'''
-        c = self
-        g.app.recentFilesManager.cleanRecentFiles(c)
-    #@+node:tbrown.20080509212202.8: *6* c.sortRecentFiles
-    @cmd('sort-recent-files')
-    def sortRecentFiles(self, event=None):
-        '''Sort the recent files list.'''
-        c = self
-        g.app.recentFilesManager.sortRecentFiles(c)
-    #@+node:vitalije.20170703115710.1: *6* c.editRecentFiles
-    @cmd('edit-recent-files')
-    def editRecentFiles(self, event=None):
-        '''Opens recent files list in a new node for editing.'''
-        c = self
-        g.app.recentFilesManager.editRecentFiles(c)
-    #@+node:vitalije.20170703115710.2: *6* c.writeEditedRecentFiles
-    @cmd('write-edited-recent-files')
-    def writeEditedRecentFiles(self, event=None):
-        '''Sort the recent files list.'''
-        c = self
-        g.app.recentFilesManager.writeEditedRecentFiles(c)
-    #@+node:ekr.20031218072017.2838: *5* Read/Write submenu
-    #@+node:ekr.20070806105721.1: *6* c.readAtAutoNodes
-    @cmd('read-at-auto-nodes')
-    def readAtAutoNodes(self, event=None):
-        '''Read all @auto nodes in the presently selected outline.'''
-        c = self; u = c.undoer; p = c.p
-        c.endEditing()
-        c.init_error_dialogs()
-        undoData = u.beforeChangeTree(p)
-        c.importCommands.readAtAutoNodes()
-        u.afterChangeTree(p, 'Read @auto Nodes', undoData)
-        c.redraw()
-        c.raise_error_dialogs(kind='read')
-    #@+node:ekr.20031218072017.1839: *6* c.readAtFileNodes
-    @cmd('read-at-file-nodes')
-    def readAtFileNodes(self, event=None):
-        '''Read all @file nodes in the presently selected outline.'''
-        c = self; u = c.undoer; p = c.p
-        c.endEditing()
-        # c.init_error_dialogs() # Done in at.readAll.
-        undoData = u.beforeChangeTree(p)
-        c.fileCommands.readAtFileNodes()
-        u.afterChangeTree(p, 'Read @file Nodes', undoData)
-        c.redraw()
-        # c.raise_error_dialogs(kind='read') # Done in at.readAll.
-    #@+node:ekr.20080801071227.4: *6* c.readAtShadowNodes
-    @cmd('read-at-shadow-nodes')
-    def readAtShadowNodes(self, event=None):
-        '''Read all @shadow nodes in the presently selected outline.'''
-        c = self; u = c.undoer; p = c.p
-        c.endEditing()
-        c.init_error_dialogs()
-        undoData = u.beforeChangeTree(p)
-        c.atFileCommands.readAtShadowNodes(p)
-        u.afterChangeTree(p, 'Read @shadow Nodes', undoData)
-        c.redraw()
-        c.raise_error_dialogs(kind='read')
-    #@+node:ekr.20070915134101: *6* c.readFileIntoNode
-    @cmd('read-file-into-node')
-    def readFileIntoNode(self, event=None):
-        '''Read a file into a single node.'''
-        c = self
-        undoType = 'Read File Into Node'
-        c.endEditing()
-        filetypes = [("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo"),]
-        fileName = g.app.gui.runOpenFileDialog(c,
-            title="Read File Into Node",
-            filetypes=filetypes,
-            defaultextension=None)
-        if not fileName: return
-        s, e = g.readFileIntoString(fileName)
-        if s is None:
-            return
-        g.chdir(fileName)
-        s = '@nocolor\n' + s
-        w = c.frame.body.wrapper
-        p = c.insertHeadline(op_name=undoType)
-        p.setHeadString('@read-file-into-node ' + fileName)
-        p.setBodyString(s)
-        w.setAllText(s)
-        c.redraw(p)
-    #@+node:ekr.20031218072017.2839: *6* c.readOutlineOnly
-    @cmd('read-outline-only')
-    def readOutlineOnly(self, event=None):
-        '''Open a Leo outline from a .leo file, but do not read any derived files.'''
-        c = self
-        c.endEditing()
-        fileName = g.app.gui.runOpenFileDialog(c,
-            title="Read Outline Only",
-            filetypes=[("Leo files", "*.leo"), ("All files", "*")],
-            defaultextension=".leo")
-        if not fileName:
-            return
-        try:
-            theFile = open(fileName, 'r')
-            g.chdir(fileName)
-            c = g.app.newCommander(fileName)
-            frame = c.frame
-            frame.deiconify()
-            frame.lift()
-            c.fileCommands.readOutlineOnly(theFile, fileName) # closes file.
-        except Exception:
-            g.es("can not open:", fileName)
-    #@+node:ekr.20070915142635: *6* c.writeFileFromNode
-    @cmd('write-file-from-node')
-    def writeFileFromNode(self, event=None):
-        '''If node starts with @read-file-into-node, use the full path name in the headline.
-        Otherwise, prompt for a file name.
-        '''
-        c = self; p = c.p
-        c.endEditing()
-        h = p.h.rstrip()
-        s = p.b
-        tag = '@read-file-into-node'
-        if h.startswith(tag):
-            fileName = h[len(tag):].strip()
-        else:
-            fileName = None
-        if not fileName:
-            filetypes = [("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo"),]
-            fileName = g.app.gui.runSaveFileDialog(c,
-                initialfile=None,
-                title='Write File From Node',
-                filetypes=filetypes,
-                defaultextension=None)
-        if fileName:
-            try:
-                theFile = open(fileName, 'w')
-                g.chdir(fileName)
-            except IOError:
-                theFile = None
-            if theFile:
-                if s.startswith('@nocolor\n'):
-                    s = s[len('@nocolor\n'):]
-                if not g.isPython3: # 2010/08/27
-                    s = g.toEncodedString(s, reportErrors=True)
-                theFile.write(s)
-                theFile.flush()
-                g.blue('wrote:', fileName)
-                theFile.close()
-            else:
-                g.error('can not write %s', fileName)
-    #@+node:ekr.20031218072017.2841: *5* Tangle submenu
-    #@+node:ekr.20031218072017.2842: *6* c.tangleAll
-    @cmd('tangle-all')
-    def tangleAll(self, event=None):
-        '''
-        Tangle all @root nodes in the entire outline.
-
-        **Important**: @root and all tangle and untangle commands are
-        deprecated. They are documented nowhere but in these docstrings.
-        '''
-        c = self
-        c.tangleCommands.tangleAll()
-    #@+node:ekr.20031218072017.2843: *6* c.tangleMarked
-    @cmd('tangle-marked')
-    def tangleMarked(self, event=None):
-        '''
-        Tangle all marked @root nodes in the entire outline.
-
-        **Important**: @root and all tangle and untangle commands are
-        deprecated. They are documented nowhere but in these docstrings.
-        '''
-        c = self
-        c.tangleCommands.tangleMarked()
-    #@+node:ekr.20031218072017.2844: *6* c.tangle
-    @cmd('tangle')
-    def tangle(self, event=None):
-        '''
-        Tangle all @root nodes in the selected outline.
-
-        **Important**: @root and all tangle and untangle commands are
-        deprecated. They are documented nowhere but in these docstrings.
-        '''
-        c = self
-        c.tangleCommands.tangle()
-    #@+node:ekr.20031218072017.2845: *5* Untangle submenu
-    #@+node:ekr.20031218072017.2846: *6* c.untangleAll
-    @cmd('untangle-all')
-    def untangleAll(self, event=None):
-        '''
-        Untangle all @root nodes in the entire outline.
-
-        **Important**: @root and all tangle and untangle commands are
-        deprecated. They are documented nowhere but in these docstrings.
-        '''
-        c = self
-        c.tangleCommands.untangleAll()
-        c.undoer.clearUndoState()
-    #@+node:ekr.20031218072017.2847: *6* c.untangleMarked
-    @cmd('untangle-marked')
-    def untangleMarked(self, event=None):
-        '''
-        Untangle all marked @root nodes in the entire outline.
-
-        **Important**: @root and all tangle and untangle commands are
-        deprecated. They are documented nowhere but in these docstrings.
-        '''
-        c = self
-        c.tangleCommands.untangleMarked()
-        c.undoer.clearUndoState()
-    #@+node:ekr.20031218072017.2848: *6* c.untangle
-    @cmd('untangle')
-    def untangle(self, event=None):
-        '''Untangle all @root nodes in the selected outline.
-
-        **Important**: @root and all tangle and untangle commands are
-        deprecated. They are documented nowhere but in these docstrings.
-        '''
-        c = self
-        c.tangleCommands.untangle()
-        c.undoer.clearUndoState()
     #@+node:ekr.20031218072017.2849: *5* Export submenu
     #@+node:ekr.20031218072017.2850: *6* c.exportHeadlines
     @cmd('export-headlines')
@@ -4037,6 +3792,180 @@ class Commands(object):
             g.setGlobalOpenDir(fileName)
             g.chdir(fileName)
             c.importCommands.weave(fileName)
+    #@+node:ekr.20031218072017.2838: *5* Read/Write submenu
+    #@+node:ekr.20070806105721.1: *6* c.readAtAutoNodes
+    @cmd('read-at-auto-nodes')
+    def readAtAutoNodes(self, event=None):
+        '''Read all @auto nodes in the presently selected outline.'''
+        c = self; u = c.undoer; p = c.p
+        c.endEditing()
+        c.init_error_dialogs()
+        undoData = u.beforeChangeTree(p)
+        c.importCommands.readAtAutoNodes()
+        u.afterChangeTree(p, 'Read @auto Nodes', undoData)
+        c.redraw()
+        c.raise_error_dialogs(kind='read')
+    #@+node:ekr.20031218072017.1839: *6* c.readAtFileNodes
+    @cmd('read-at-file-nodes')
+    def readAtFileNodes(self, event=None):
+        '''Read all @file nodes in the presently selected outline.'''
+        c = self; u = c.undoer; p = c.p
+        c.endEditing()
+        # c.init_error_dialogs() # Done in at.readAll.
+        undoData = u.beforeChangeTree(p)
+        c.fileCommands.readAtFileNodes()
+        u.afterChangeTree(p, 'Read @file Nodes', undoData)
+        c.redraw()
+        # c.raise_error_dialogs(kind='read') # Done in at.readAll.
+    #@+node:ekr.20080801071227.4: *6* c.readAtShadowNodes
+    @cmd('read-at-shadow-nodes')
+    def readAtShadowNodes(self, event=None):
+        '''Read all @shadow nodes in the presently selected outline.'''
+        c = self; u = c.undoer; p = c.p
+        c.endEditing()
+        c.init_error_dialogs()
+        undoData = u.beforeChangeTree(p)
+        c.atFileCommands.readAtShadowNodes(p)
+        u.afterChangeTree(p, 'Read @shadow Nodes', undoData)
+        c.redraw()
+        c.raise_error_dialogs(kind='read')
+    #@+node:ekr.20070915134101: *6* c.readFileIntoNode
+    @cmd('read-file-into-node')
+    def readFileIntoNode(self, event=None):
+        '''Read a file into a single node.'''
+        c = self
+        undoType = 'Read File Into Node'
+        c.endEditing()
+        filetypes = [("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo"),]
+        fileName = g.app.gui.runOpenFileDialog(c,
+            title="Read File Into Node",
+            filetypes=filetypes,
+            defaultextension=None)
+        if not fileName: return
+        s, e = g.readFileIntoString(fileName)
+        if s is None:
+            return
+        g.chdir(fileName)
+        s = '@nocolor\n' + s
+        w = c.frame.body.wrapper
+        p = c.insertHeadline(op_name=undoType)
+        p.setHeadString('@read-file-into-node ' + fileName)
+        p.setBodyString(s)
+        w.setAllText(s)
+        c.redraw(p)
+    #@+node:ekr.20031218072017.2839: *6* c.readOutlineOnly
+    @cmd('read-outline-only')
+    def readOutlineOnly(self, event=None):
+        '''Open a Leo outline from a .leo file, but do not read any derived files.'''
+        c = self
+        c.endEditing()
+        fileName = g.app.gui.runOpenFileDialog(c,
+            title="Read Outline Only",
+            filetypes=[("Leo files", "*.leo"), ("All files", "*")],
+            defaultextension=".leo")
+        if not fileName:
+            return
+        try:
+            theFile = open(fileName, 'r')
+            g.chdir(fileName)
+            c = g.app.newCommander(fileName)
+            frame = c.frame
+            frame.deiconify()
+            frame.lift()
+            c.fileCommands.readOutlineOnly(theFile, fileName) # closes file.
+        except Exception:
+            g.es("can not open:", fileName)
+    #@+node:ekr.20070915142635: *6* c.writeFileFromNode
+    @cmd('write-file-from-node')
+    def writeFileFromNode(self, event=None):
+        '''If node starts with @read-file-into-node, use the full path name in the headline.
+        Otherwise, prompt for a file name.
+        '''
+        c = self; p = c.p
+        c.endEditing()
+        h = p.h.rstrip()
+        s = p.b
+        tag = '@read-file-into-node'
+        if h.startswith(tag):
+            fileName = h[len(tag):].strip()
+        else:
+            fileName = None
+        if not fileName:
+            filetypes = [("All files", "*"), ("Python files", "*.py"), ("Leo files", "*.leo"),]
+            fileName = g.app.gui.runSaveFileDialog(c,
+                initialfile=None,
+                title='Write File From Node',
+                filetypes=filetypes,
+                defaultextension=None)
+        if fileName:
+            try:
+                theFile = open(fileName, 'w')
+                g.chdir(fileName)
+            except IOError:
+                theFile = None
+            if theFile:
+                if s.startswith('@nocolor\n'):
+                    s = s[len('@nocolor\n'):]
+                if not g.isPython3: # 2010/08/27
+                    s = g.toEncodedString(s, reportErrors=True)
+                theFile.write(s)
+                theFile.flush()
+                g.blue('wrote:', fileName)
+                theFile.close()
+            else:
+                g.error('can not write %s', fileName)
+    #@+node:ekr.20031218072017.2079: *5* Recent Files submenu & allies
+    #@+node:ekr.20031218072017.2080: *6* c.clearRecentFiles
+    @cmd('clear-recent-files')
+    def clearRecentFiles(self, event=None):
+        """Clear the recent files list, then add the present file."""
+        c = self
+        g.app.recentFilesManager.clearRecentFiles(c)
+    #@+node:ekr.20031218072017.2081: *6* c.openRecentFile
+    def openRecentFile(self, fn=None):
+        c = self
+        # Automatically close the previous window if...
+        closeFlag = (
+            c.frame.startupWindow and
+                # The window was open on startup
+            not c.changed and not c.frame.saved and
+                # The window has never been changed
+            g.app.numberOfUntitledWindows == 1)
+                # Only one untitled window has ever been opened.
+        if g.doHook("recentfiles1", c=c, p=c.p, v=c.p, fileName=fn, closeFlag=closeFlag):
+            return
+        c2 = g.openWithFileName(fn, old_c=c)
+        if c2:
+            g.app.makeAllBindings()
+        if closeFlag and c2 and c2 != c:
+            g.app.destroyWindow(c.frame)
+            c2.setLog()
+            g.doHook("recentfiles2",
+                c=c2, p=c2.p, v=c2.p, fileName=fn, closeFlag=closeFlag)
+    #@+node:tbrown.20080509212202.6: *6* c.cleanRecentFiles
+    @cmd('clean-recent-files')
+    def cleanRecentFiles(self, event=None):
+        '''Remove items from the recent files list that are no longer valid.'''
+        c = self
+        g.app.recentFilesManager.cleanRecentFiles(c)
+    #@+node:tbrown.20080509212202.8: *6* c.sortRecentFiles
+    @cmd('sort-recent-files')
+    def sortRecentFiles(self, event=None):
+        '''Sort the recent files list.'''
+        c = self
+        g.app.recentFilesManager.sortRecentFiles(c)
+    #@+node:vitalije.20170703115710.1: *6* c.editRecentFiles
+    @cmd('edit-recent-files')
+    def editRecentFiles(self, event=None):
+        '''Opens recent files list in a new node for editing.'''
+        c = self
+        g.app.recentFilesManager.editRecentFiles(c)
+    #@+node:vitalije.20170703115710.2: *6* c.writeEditedRecentFiles
+    @cmd('write-edited-recent-files')
+    def writeEditedRecentFiles(self, event=None):
+        '''Sort the recent files list.'''
+        c = self
+        g.app.recentFilesManager.writeEditedRecentFiles(c)
     #@+node:vitalije.20170831154859.1: *5* Reference outline commands
     #@+node:vitalije.20170831154830.1: *6* c.updateRefLeoFile
     @cmd('update-ref-file')
@@ -4099,6 +4028,76 @@ class Commands(object):
                 defaultextension=g.defaultLeoFileExtension(c))
         if not fileName: return
         c.fileCommands.setReferenceFile(fileName)
+    #@+node:ekr.20031218072017.2841: *5* Tangle submenu
+    #@+node:ekr.20031218072017.2842: *6* c.tangleAll
+    @cmd('tangle-all')
+    def tangleAll(self, event=None):
+        '''
+        Tangle all @root nodes in the entire outline.
+
+        **Important**: @root and all tangle and untangle commands are
+        deprecated. They are documented nowhere but in these docstrings.
+        '''
+        c = self
+        c.tangleCommands.tangleAll()
+    #@+node:ekr.20031218072017.2843: *6* c.tangleMarked
+    @cmd('tangle-marked')
+    def tangleMarked(self, event=None):
+        '''
+        Tangle all marked @root nodes in the entire outline.
+
+        **Important**: @root and all tangle and untangle commands are
+        deprecated. They are documented nowhere but in these docstrings.
+        '''
+        c = self
+        c.tangleCommands.tangleMarked()
+    #@+node:ekr.20031218072017.2844: *6* c.tangle
+    @cmd('tangle')
+    def tangle(self, event=None):
+        '''
+        Tangle all @root nodes in the selected outline.
+
+        **Important**: @root and all tangle and untangle commands are
+        deprecated. They are documented nowhere but in these docstrings.
+        '''
+        c = self
+        c.tangleCommands.tangle()
+    #@+node:ekr.20031218072017.2845: *5* Untangle submenu
+    #@+node:ekr.20031218072017.2846: *6* c.untangleAll
+    @cmd('untangle-all')
+    def untangleAll(self, event=None):
+        '''
+        Untangle all @root nodes in the entire outline.
+
+        **Important**: @root and all tangle and untangle commands are
+        deprecated. They are documented nowhere but in these docstrings.
+        '''
+        c = self
+        c.tangleCommands.untangleAll()
+        c.undoer.clearUndoState()
+    #@+node:ekr.20031218072017.2847: *6* c.untangleMarked
+    @cmd('untangle-marked')
+    def untangleMarked(self, event=None):
+        '''
+        Untangle all marked @root nodes in the entire outline.
+
+        **Important**: @root and all tangle and untangle commands are
+        deprecated. They are documented nowhere but in these docstrings.
+        '''
+        c = self
+        c.tangleCommands.untangleMarked()
+        c.undoer.clearUndoState()
+    #@+node:ekr.20031218072017.2848: *6* c.untangle
+    @cmd('untangle')
+    def untangle(self, event=None):
+        '''Untangle all @root nodes in the selected outline.
+
+        **Important**: @root and all tangle and untangle commands are
+        deprecated. They are documented nowhere but in these docstrings.
+        '''
+        c = self
+        c.tangleCommands.untangle()
+        c.undoer.clearUndoState()
     #@+node:ekr.20031218072017.2894: *4* Outline menu (commands)
     #@+node:ekr.20031218072017.2895: *5*  Top Level... (Commands)
     #@+node:ekr.20031218072017.1548: *6* c.Cut & Paste Outlines
@@ -5944,33 +5943,6 @@ class Commands(object):
             c.selectPosition(p)
             c.redraw_after_select(p)
         c.treeFocusHelper()
-    #@+node:ekr.20031218072017.2931: *4* Window Menu
-    #@+node:ekr.20031218072017.2092: *5* c.openCompareWindow
-    def openCompareWindow(self, event=None):
-        '''Open a dialog for comparing files and directories.'''
-        c = self; frame = c.frame
-        if not frame.comparePanel:
-            frame.comparePanel = g.app.gui.createComparePanel(c)
-        if frame.comparePanel:
-            frame.comparePanel.bringToFront()
-        else:
-            g.warning('the', g.app.gui.guiName(),
-                'gui does not support the compare window')
-    #@+node:ekr.20031218072017.2932: *5* c.openPythonWindow
-    @cmd('open-python-window')
-    def openPythonWindow(self, event=None):
-        '''Open Python's Idle debugger in a separate process.'''
-        try:
-            idlelib_path = imp.find_module('idlelib')[1]
-        except ImportError:
-            g.es_print('idlelib not found: can not open a Python window.')
-            return
-        idle = g.os_path_join(idlelib_path, 'idle.py')
-        args = [sys.executable, idle]
-        if 1: # Use present environment.
-            os.spawnv(os.P_NOWAIT, sys.executable, args)
-        else: # Use a pristine environment.
-            os.spawnve(os.P_NOWAIT, sys.executable, args, os.environ)
     #@+node:ekr.20171123200644.1: *3* c.Utils & convenience methods
     #@+node:ekr.20150422080541.1: *4* c.backup
     def backup(self, fileName=None, prefix=None, useTimeStamp=True):
@@ -6284,6 +6256,17 @@ class Commands(object):
                 word = s[i: j]
                 languages.add(word)
         return len(list(languages)) > 1
+    #@+node:ekr.20031218072017.2092: *4* c.openCompareWindow (not used?)
+    def openCompareWindow(self, event=None):
+        '''Open a dialog for comparing files and directories.'''
+        c = self; frame = c.frame
+        if not frame.comparePanel:
+            frame.comparePanel = g.app.gui.createComparePanel(c)
+        if frame.comparePanel:
+            frame.comparePanel.bringToFront()
+        else:
+            g.warning('the', g.app.gui.guiName(),
+                'gui does not support the compare window')
     #@+node:ekr.20140717074441.17770: *4* c.recreateGnxDict
     def recreateGnxDict(self):
         '''Recreate the gnx dict prior to refreshing nodes from disk.'''

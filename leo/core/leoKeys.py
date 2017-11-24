@@ -2622,7 +2622,7 @@ class KeyHandlerClass(object):
         except Exception:
             g.es_exception()
             self.keyboardQuit()
-    #@+node:ekr.20061031131434.112: *5* callAltXFunction
+    #@+node:ekr.20061031131434.112: *5* k.callAltXFunction
     def callAltXFunction(self, event):
         '''Call the function whose name is in the minibuffer.'''
         trace = False and not g.unitTesting

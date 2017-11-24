@@ -4,6 +4,9 @@
 #@@first
 '''Help commands that used to be defined in leoCommands.py'''
 import leo.core.leoGlobals as g
+import imp
+import os
+import sys
 import time
 #@+others
 #@+node:ekr.20031218072017.2939: ** c.about (version number & date)
@@ -250,6 +253,21 @@ def openLeoVideos(self, event=None):
         webbrowser.open_new(url)
     except Exception:
         g.es("not found:", url)
+#@+node:ekr.20031218072017.2932: ** c.openPythonWindow
+@g.commander_command('open-python-window')
+def openPythonWindow(self, event=None):
+    '''Open Python's Idle debugger in a separate process.'''
+    try:
+        idlelib_path = imp.find_module('idlelib')[1]
+    except ImportError:
+        g.es_print('idlelib not found: can not open a Python window.')
+        return
+    idle = g.os_path_join(idlelib_path, 'idle.py')
+    args = [sys.executable, idle]
+    if 1: # Use present environment.
+        os.spawnv(os.P_NOWAIT, sys.executable, args)
+    else: # Use a pristine environment.
+        os.spawnve(os.P_NOWAIT, sys.executable, args, os.environ)
 #@+node:ekr.20151225095102.1: ** c.openUnittest
 @g.commander_command('open-unittest-leo')
 @g.commander_command('leo-unittest-leo')
