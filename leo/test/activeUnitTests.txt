@@ -5417,6 +5417,7 @@ try:
     try:
         c.markAllAtFileNodesDirty()
     except Exception:
+        g.es_exception()
         ok = False
 finally:
     for p in c.all_positions():
@@ -5427,7 +5428,7 @@ finally:
             if p.isMarked():
                 c.clearMarked(p)
 
-if not ok: raise
+assert ok
 #@+node:ekr.20050512083822.1: *4* @test c.markSubheads
 marks = [p.v for p in c.all_positions() if p.isMarked()]
 try:
