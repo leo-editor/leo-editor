@@ -5,32 +5,6 @@
 '''Outline commands that used to be defined in leoCommands.py'''
 import leo.core.leoGlobals as g
 #@+others
-#@+node:ekr.20040412060927: ** c_oc.dumpOutline
-@g.commander_command('dump-outline')
-def dumpOutline(self, event=None):
-    """ Dump all nodes in the outline."""
-    c = self
-    seen = {}
-    print('')
-    print('=' * 40)
-    v = c.hiddenRootNode
-    v.dump()
-    seen[v] = True
-    for p in c.all_positions():
-        if p.v not in seen:
-            seen[p.v] = True
-            p.v.dump()
-#@+node:ekr.20171124081846.1: ** c_oc.fullCheckOutline
-@g.commander_command('check-outline')
-def fullCheckOutline(self, event=None):
-    '''
-    Performs a full check of the consistency of a .leo file.
-
-    As of Leo 5.1, Leo performs checks of gnx's and outline structure
-    before writes and after reads, pastes and undo/redo.
-    '''
-    c = self
-    return c.checkOutline(check_links=True)
 #@+node:ekr.20031218072017.1548: ** c_oc.Cut & Paste Outlines
 #@+node:ekr.20031218072017.1549: *3* c_oc.cutOutline
 @g.commander_command('cut-node')
@@ -153,6 +127,21 @@ def pasteOutlineRetainingClones(self, event=None):
     Nodes *retain* their original identify.'''
     c = self
     return c.pasteOutline(reassignIndices=False)
+#@+node:ekr.20040412060927: ** c_oc.dumpOutline
+@g.commander_command('dump-outline')
+def dumpOutline(self, event=None):
+    """ Dump all nodes in the outline."""
+    c = self
+    seen = {}
+    print('')
+    print('=' * 40)
+    v = c.hiddenRootNode
+    v.dump()
+    seen[v] = True
+    for p in c.all_positions():
+        if p.v not in seen:
+            seen[p.v] = True
+            p.v.dump()
 #@+node:ekr.20031218072017.2898: ** c_oc.Expand & contract commands
 #@+node:ekr.20031218072017.2900: *3* c_oc.contract-all
 @g.command('contract-all')
@@ -386,244 +375,17 @@ def expandPrevLevel(self, event=None):
         c.expansionLevel = 1
         c.expansionNode = c.p.copy()
     self.expandToLevel(max(1, c.expansionLevel - 1))
-#@+node:ekr.20031218072017.2028: ** c_oc.hoist/dehoist/clearAllHoists
-#@+node:ekr.20120308061112.9865: *3* c_oc.deHoist
-@g.commander_command('de-hoist')
-@g.commander_command('dehoist')
-def dehoist(self, event=None):
-    '''Undo a previous hoist of an outline.'''
-    c = self
-    if not c.p or not c.hoistStack:
-        return
-    # Don't de-hoist an @chapter node.
-    if c.chapterController and c.p.h.startswith('@chapter '):
-        if not g.unitTesting:
-            g.es('can not de-hoist an @chapter node.',color='blue')
-        return
-    bunch = c.hoistStack.pop()
-    p = bunch.p
-    if bunch.expanded: p.expand()
-    else: p.contract()
-    c.setCurrentPosition(p)
-    c.redraw()
-    c.frame.clearStatusLine()
-    c.frame.putStatusLine("De-Hoist: " + p.h)
-    c.undoer.afterDehoist(p, 'DeHoist')
-    g.doHook('hoist-changed', c=c)
-#@+node:ekr.20120308061112.9866: *3* c_oc.clearAllHoists
-def clearAllHoists(self):
-    '''Undo a previous hoist of an outline.'''
-    c = self
-    c.hoistStack = []
-    c.frame.putStatusLine("Hoists cleared")
-    g.doHook('hoist-changed', c=c)
-#@+node:ekr.20120308061112.9867: *3* c_oc.hoist
-@g.commander_command('hoist')
-def hoist(self, event=None):
-    '''Make only the selected outline visible.'''
-    c = self
-    p = c.p
-    if not p:
-        return
-    # Don't hoist an @chapter node.
-    if c.chapterController and p.h.startswith('@chapter '):
-        if not g.unitTesting:
-            g.es('can not hoist an @chapter node.',color='blue')
-        return
-    # Remember the expansion state.
-    bunch = g.Bunch(p=p.copy(), expanded=p.isExpanded())
-    c.hoistStack.append(bunch)
-    p.expand()
-    c.redraw(p)
-    c.frame.clearStatusLine()
-    c.frame.putStatusLine("Hoist: " + p.h)
-    c.undoer.afterHoist(p, 'Hoist')
-    g.doHook('hoist-changed', c=c)
-#@+node:ekr.20031218072017.1759: ** c_oc.Insert, Delete & Clone commands
-#@+node:ekr.20031218072017.1762: *3* c_oc.clone
-@g.commander_command('clone-node')
-def clone(self, event=None):
-    '''Create a clone of the selected outline.'''
-    c = self; u = c.undoer; p = c.p
-    if not p:
-        return None
-    undoData = c.undoer.beforeCloneNode(p)
-    c.endEditing() # Capture any changes to the headline.
-    clone = p.clone()
-    dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
-    c.setChanged(True)
-    if c.validateOutline():
-        u.afterCloneNode(clone, 'Clone Node', undoData, dirtyVnodeList=dirtyVnodeList)
-        c.redraw(clone)
-        return clone # For mod_labels and chapters plugins.
-    else:
-        clone.doDelete()
-        c.setCurrentPosition(p)
-        return None
-#@+node:ekr.20150630152607.1: *3* c_oc.cloneToAtSpot
-@g.commander_command('clone-to-at-spot')
-def cloneToAtSpot(self, event=None):
+#@+node:ekr.20171124081846.1: ** c_oc.fullCheckOutline
+@g.commander_command('check-outline')
+def fullCheckOutline(self, event=None):
     '''
-    Create a clone of the selected node and move it to the last @spot node
-    of the outline. Create the @spot node if necessary.
+    Performs a full check of the consistency of a .leo file.
+
+    As of Leo 5.1, Leo performs checks of gnx's and outline structure
+    before writes and after reads, pastes and undo/redo.
     '''
-    c = self; u = c.undoer; p = c.p
-    if not p:
-        return
-    # 2015/12/27: fix bug 220: do not allow clone-to-at-spot on @spot node.
-    if p.h.startswith('@spot'):
-        g.es("can not clone @spot node", color='red')
-        return
-    last_spot = None
-    for p2 in c.all_positions():
-        if g.match_word(p2.h, 0, '@spot'):
-            last_spot = p2.copy()
-    if not last_spot:
-        last = c.lastTopLevel()
-        last_spot = last.insertAfter()
-        last_spot.h = '@spot'
-    undoData = c.undoer.beforeCloneNode(p)
-    c.endEditing() # Capture any changes to the headline.
-    clone = p.copy()
-    clone._linkAsNthChild(last_spot,
-                          n=last_spot.numberOfChildren(),
-                          adjust=True)
-    dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
-    c.setChanged(True)
-    if c.validateOutline():
-        u.afterCloneNode(clone,
-                         'Clone Node',
-                         undoData,
-                         dirtyVnodeList=dirtyVnodeList)
-        c.contractAllHeadlines()
-        c.redraw()
-        c.selectPosition(clone)
-    else:
-        clone.doDelete()
-        c.setCurrentPosition(p)
-#@+node:ekr.20141023154408.5: *3* c_oc.cloneToLastNode
-@g.commander_command('clone-node-to-last-node')
-def cloneToLastNode(self, event=None):
-    '''
-    Clone the selected node and move it to the last node.
-    Do *not* change the selected node.
-    '''
-    c, p, u = self, self.p, self.undoer
-    if not p: return
-    prev = p.copy()
-    undoData = c.undoer.beforeCloneNode(p)
-    c.endEditing() # Capture any changes to the headline.
-    clone = p.clone()
-    last = c.rootPosition()
-    while last and last.hasNext():
-        last.moveToNext()
-    clone.moveAfter(last)
-    dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
-    c.setChanged(True)
-    u.afterCloneNode(clone, 'Clone Node To Last', undoData, dirtyVnodeList=dirtyVnodeList)
-    c.redraw(prev)
-    # return clone # For mod_labels and chapters plugins.
-#@+node:ekr.20031218072017.1193: *3* c_oc.deleteOutline
-@g.commander_command('delete-node')
-def deleteOutline(self, event=None, op_name="Delete Node"):
-    """Deletes the selected outline."""
-    c, u = self, self.undoer
-    p = c.p
-    if not p: return
-    c.endEditing() # Make sure we capture the headline for Undo.
-    if p.hasVisBack(c): newNode = p.visBack(c)
-    else: newNode = p.next() # _not_ p.visNext(): we are at the top level.
-    if not newNode: return
-    undoData = u.beforeDeleteNode(p)
-    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-    p.doDelete(newNode)
-    c.setChanged(True)
-    u.afterDeleteNode(newNode, op_name, undoData, dirtyVnodeList=dirtyVnodeList)
-    c.redraw(newNode)
-    c.validateOutline()
-#@+node:ekr.20071005173203.1: *3* c_oc.insertChild
-@g.commander_command('insert-child')
-def insertChild(self, event=None):
-    '''Insert a node after the presently selected node.'''
     c = self
-    return c.insertHeadline(event=event, op_name='Insert Child', as_child=True)
-#@+node:ekr.20031218072017.1761: *3* c_oc.insertHeadline
-@g.commander_command('insert-node')
-def insertHeadlineCommand(self, event=None, op_name="Insert Node", as_child=False):
-    '''Insert a node after the presently selected node.'''
-    c = self
-    c.insertHeadline(event=event)
-#@+node:ekr.20130922133218.11540: *3* c_oc.insertHeadlineBefore (new in Leo 4.11)
-@g.commander_command('insert-node-before')
-def insertHeadlineBefore(self, event=None):
-    '''Insert a node before the presently selected node.'''
-    c, current, u = self, self.p, self.undoer
-    op_name = 'Insert Node Before'
-    if not current: return
-    # Can not insert before the base of a hoist.
-    if c.hoistStack and current == c.hoistStack[-1].p:
-        g.warning('can not insert a node before the base of a hoist')
-        return
-    c.endEditing()
-    undoData = u.beforeInsertNode(current)
-    p = current.insertBefore()
-    g.doHook('create-node', c=c, p=p)
-    p.setDirty(setDescendentsDirty=False)
-    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
-    c.setChanged(True)
-    u.afterInsertNode(p, op_name, undoData, dirtyVnodeList=dirtyVnodeList)
-    c.redrawAndEdit(p, selectAll=True)
-    return p
-#@+node:ekr.20080425060424.1: ** c_oc.Sort commands
-#@+node:ekr.20050415134809: *3* c_oc.sortChildren
-# New in Leo 4.7 final: this method no longer supports
-# the 'cmp' keyword arg.
-
-@g.commander_command('sort-children')
-def sortChildren(self, event=None, key=None, reverse=False):
-    '''Sort the children of a node.'''
-    c = self; p = c.p
-    if p and p.hasChildren():
-        c.sortSiblings(p=p.firstChild(), sortChildren=True, key=key, reverse=reverse)
-#@+node:ekr.20050415134809.1: *3* c_oc.sortSiblings
-# New in Leo 4.7 final: this method no longer supports
-# the 'cmp' keyword arg.
-
-@g.commander_command('sort-siblings')
-def sortSiblings(self, event=None, key=None, p=None, sortChildren=False,
-                  reverse=False):
-    '''Sort the siblings of a node.'''
-    c = self; u = c.undoer
-    if not p : p = c.p
-    if not p: return
-    c.endEditing()
-    undoType = 'Sort Children' if sortChildren else 'Sort Siblings'
-    parent_v = p._parentVnode()
-    parent = p.parent()
-    oldChildren = parent_v.children[:]
-    newChildren = parent_v.children[:]
-    if key is None:
-
-        def lowerKey(self):
-            return (self.h.lower())
-
-        key = lowerKey
-    newChildren.sort(key=key, reverse=reverse)
-    if oldChildren == newChildren:
-        return
-    # 2010/01/20. Fix bug 510148.
-    c.setChanged(True)
-    # g.trace(g.listToString(newChildren))
-    bunch = u.beforeSort(p, undoType, oldChildren, newChildren, sortChildren)
-    parent_v.children = newChildren
-    if parent:
-        dirtyVnodeList = parent.setAllAncestorAtFileNodesDirty()
-    else:
-        dirtyVnodeList = []
-    u.afterSort(p, bunch, dirtyVnodeList)
-    # Sorting destroys position p, and possibly the root position.
-    p = c.setPositionAfterSort(sortChildren)
-    c.redraw(p)
+    return c.checkOutline(check_links=True)
 #@+node:ekr.20031218072017.2913: ** c_oc.Goto commands
 #@+node:ekr.20031218072017.1628: *3* c_oc.goNextVisitedNode
 @g.commander_command('go-forward')
@@ -879,6 +641,223 @@ def selectVisNext(self, event=None):
         c.treeSelectHelper(p)
     else:
         c.endEditing() # 2011/05/28: A special case.
+#@+node:ekr.20031218072017.2028: ** c_oc.hoist/dehoist/clearAllHoists
+#@+node:ekr.20120308061112.9865: *3* c_oc.deHoist
+@g.commander_command('de-hoist')
+@g.commander_command('dehoist')
+def dehoist(self, event=None):
+    '''Undo a previous hoist of an outline.'''
+    c = self
+    if not c.p or not c.hoistStack:
+        return
+    # Don't de-hoist an @chapter node.
+    if c.chapterController and c.p.h.startswith('@chapter '):
+        if not g.unitTesting:
+            g.es('can not de-hoist an @chapter node.',color='blue')
+        return
+    bunch = c.hoistStack.pop()
+    p = bunch.p
+    if bunch.expanded: p.expand()
+    else: p.contract()
+    c.setCurrentPosition(p)
+    c.redraw()
+    c.frame.clearStatusLine()
+    c.frame.putStatusLine("De-Hoist: " + p.h)
+    c.undoer.afterDehoist(p, 'DeHoist')
+    g.doHook('hoist-changed', c=c)
+#@+node:ekr.20120308061112.9866: *3* c_oc.clearAllHoists
+def clearAllHoists(self):
+    '''Undo a previous hoist of an outline.'''
+    c = self
+    c.hoistStack = []
+    c.frame.putStatusLine("Hoists cleared")
+    g.doHook('hoist-changed', c=c)
+#@+node:ekr.20120308061112.9867: *3* c_oc.hoist
+@g.commander_command('hoist')
+def hoist(self, event=None):
+    '''Make only the selected outline visible.'''
+    c = self
+    p = c.p
+    if not p:
+        return
+    # Don't hoist an @chapter node.
+    if c.chapterController and p.h.startswith('@chapter '):
+        if not g.unitTesting:
+            g.es('can not hoist an @chapter node.',color='blue')
+        return
+    # Remember the expansion state.
+    bunch = g.Bunch(p=p.copy(), expanded=p.isExpanded())
+    c.hoistStack.append(bunch)
+    p.expand()
+    c.redraw(p)
+    c.frame.clearStatusLine()
+    c.frame.putStatusLine("Hoist: " + p.h)
+    c.undoer.afterHoist(p, 'Hoist')
+    g.doHook('hoist-changed', c=c)
+#@+node:ekr.20031218072017.1759: ** c_oc.Insert, Delete & Clone commands
+#@+node:ekr.20031218072017.1762: *3* c_oc.clone
+@g.commander_command('clone-node')
+def clone(self, event=None):
+    '''Create a clone of the selected outline.'''
+    c = self; u = c.undoer; p = c.p
+    if not p:
+        return None
+    undoData = c.undoer.beforeCloneNode(p)
+    c.endEditing() # Capture any changes to the headline.
+    clone = p.clone()
+    dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
+    c.setChanged(True)
+    if c.validateOutline():
+        u.afterCloneNode(clone, 'Clone Node', undoData, dirtyVnodeList=dirtyVnodeList)
+        c.redraw(clone)
+        return clone # For mod_labels and chapters plugins.
+    else:
+        clone.doDelete()
+        c.setCurrentPosition(p)
+        return None
+#@+node:ekr.20150630152607.1: *3* c_oc.cloneToAtSpot
+@g.commander_command('clone-to-at-spot')
+def cloneToAtSpot(self, event=None):
+    '''
+    Create a clone of the selected node and move it to the last @spot node
+    of the outline. Create the @spot node if necessary.
+    '''
+    c = self; u = c.undoer; p = c.p
+    if not p:
+        return
+    # 2015/12/27: fix bug 220: do not allow clone-to-at-spot on @spot node.
+    if p.h.startswith('@spot'):
+        g.es("can not clone @spot node", color='red')
+        return
+    last_spot = None
+    for p2 in c.all_positions():
+        if g.match_word(p2.h, 0, '@spot'):
+            last_spot = p2.copy()
+    if not last_spot:
+        last = c.lastTopLevel()
+        last_spot = last.insertAfter()
+        last_spot.h = '@spot'
+    undoData = c.undoer.beforeCloneNode(p)
+    c.endEditing() # Capture any changes to the headline.
+    clone = p.copy()
+    clone._linkAsNthChild(last_spot,
+                          n=last_spot.numberOfChildren(),
+                          adjust=True)
+    dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
+    c.setChanged(True)
+    if c.validateOutline():
+        u.afterCloneNode(clone,
+                         'Clone Node',
+                         undoData,
+                         dirtyVnodeList=dirtyVnodeList)
+        c.contractAllHeadlines()
+        c.redraw()
+        c.selectPosition(clone)
+    else:
+        clone.doDelete()
+        c.setCurrentPosition(p)
+#@+node:ekr.20141023154408.5: *3* c_oc.cloneToLastNode
+@g.commander_command('clone-node-to-last-node')
+def cloneToLastNode(self, event=None):
+    '''
+    Clone the selected node and move it to the last node.
+    Do *not* change the selected node.
+    '''
+    c, p, u = self, self.p, self.undoer
+    if not p: return
+    prev = p.copy()
+    undoData = c.undoer.beforeCloneNode(p)
+    c.endEditing() # Capture any changes to the headline.
+    clone = p.clone()
+    last = c.rootPosition()
+    while last and last.hasNext():
+        last.moveToNext()
+    clone.moveAfter(last)
+    dirtyVnodeList = clone.setAllAncestorAtFileNodesDirty()
+    c.setChanged(True)
+    u.afterCloneNode(clone, 'Clone Node To Last', undoData, dirtyVnodeList=dirtyVnodeList)
+    c.redraw(prev)
+    # return clone # For mod_labels and chapters plugins.
+#@+node:ekr.20031218072017.1193: *3* c_oc.deleteOutline
+@g.commander_command('delete-node')
+def deleteOutline(self, event=None, op_name="Delete Node"):
+    """Deletes the selected outline."""
+    c, u = self, self.undoer
+    p = c.p
+    if not p: return
+    c.endEditing() # Make sure we capture the headline for Undo.
+    if p.hasVisBack(c): newNode = p.visBack(c)
+    else: newNode = p.next() # _not_ p.visNext(): we are at the top level.
+    if not newNode: return
+    undoData = u.beforeDeleteNode(p)
+    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    p.doDelete(newNode)
+    c.setChanged(True)
+    u.afterDeleteNode(newNode, op_name, undoData, dirtyVnodeList=dirtyVnodeList)
+    c.redraw(newNode)
+    c.validateOutline()
+#@+node:ekr.20071005173203.1: *3* c_oc.insertChild
+@g.commander_command('insert-child')
+def insertChild(self, event=None):
+    '''Insert a node after the presently selected node.'''
+    c = self
+    return c.insertHeadline(event=event, op_name='Insert Child', as_child=True)
+#@+node:ekr.20031218072017.1761: *3* c_oc.insertHeadline
+@g.commander_command('insert-node')
+def insertHeadline(self, event=None, op_name="Insert Node", as_child=False):
+    '''Insert a node after the presently selected node.'''
+    c = self
+    return insertHeadlineHelper(c, event=event)
+#@+node:ekr.20171124091846.1: *4* def insertHeadlineHelper
+def insertHeadlineHelper(c, event=None, op_name="Insert Node", as_child=False):
+    '''Insert a node after the presently selected node.'''
+    trace = False and not g.unitTesting
+    u = c.undoer
+    current = c.p
+    if not current:
+        return None
+    c.endEditing()
+    if trace: g.trace('==========', c.p.h, g.app.gui.get_focus())
+    undoData = c.undoer.beforeInsertNode(current)
+    # Make sure the new node is visible when hoisting.
+    if (as_child or
+        (current.hasChildren() and current.isExpanded()) or
+        (c.hoistStack and current == c.hoistStack[-1].p)
+    ):
+        if c.config.getBool('insert_new_nodes_at_end'):
+            p = current.insertAsLastChild()
+        else:
+            p = current.insertAsNthChild(0)
+    else:
+        p = current.insertAfter()
+    g.doHook('create-node', c=c, p=p)
+    p.setDirty(setDescendentsDirty=False)
+    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    c.setChanged(True)
+    u.afterInsertNode(p, op_name, undoData, dirtyVnodeList=dirtyVnodeList)
+    c.redrawAndEdit(p, selectAll=True)
+    return p
+#@+node:ekr.20130922133218.11540: *3* c_oc.insertHeadlineBefore (new in Leo 4.11)
+@g.commander_command('insert-node-before')
+def insertHeadlineBefore(self, event=None):
+    '''Insert a node before the presently selected node.'''
+    c, current, u = self, self.p, self.undoer
+    op_name = 'Insert Node Before'
+    if not current: return
+    # Can not insert before the base of a hoist.
+    if c.hoistStack and current == c.hoistStack[-1].p:
+        g.warning('can not insert a node before the base of a hoist')
+        return
+    c.endEditing()
+    undoData = u.beforeInsertNode(current)
+    p = current.insertBefore()
+    g.doHook('create-node', c=c, p=p)
+    p.setDirty(setDescendentsDirty=False)
+    dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
+    c.setChanged(True)
+    u.afterInsertNode(p, op_name, undoData, dirtyVnodeList=dirtyVnodeList)
+    c.redrawAndEdit(p, selectAll=True)
+    return p
 #@+node:ekr.20031218072017.2922: ** c_oc.Mark commands
 #@+node:ekr.20090905110447.6098: *3* c_oc.cloneMarked
 @g.commander_command('clone-marked-nodes')
@@ -1413,6 +1392,56 @@ def toggleSparseMove(self, event=None):
     c.sparse_move = not c.sparse_move
     if not g.unitTesting:
         g.blue('sparse-move: %s' % c.sparse_move)
+#@+node:ekr.20080425060424.1: ** c_oc.Sort commands
+#@+node:ekr.20050415134809: *3* c_oc.sortChildren
+# New in Leo 4.7 final: this method no longer supports
+# the 'cmp' keyword arg.
+
+@g.commander_command('sort-children')
+def sortChildren(self, event=None, key=None, reverse=False):
+    '''Sort the children of a node.'''
+    c = self; p = c.p
+    if p and p.hasChildren():
+        c.sortSiblings(p=p.firstChild(), sortChildren=True, key=key, reverse=reverse)
+#@+node:ekr.20050415134809.1: *3* c_oc.sortSiblings
+# New in Leo 4.7 final: this method no longer supports
+# the 'cmp' keyword arg.
+
+@g.commander_command('sort-siblings')
+def sortSiblings(self, event=None, key=None, p=None, sortChildren=False,
+                  reverse=False):
+    '''Sort the siblings of a node.'''
+    c = self; u = c.undoer
+    if not p : p = c.p
+    if not p: return
+    c.endEditing()
+    undoType = 'Sort Children' if sortChildren else 'Sort Siblings'
+    parent_v = p._parentVnode()
+    parent = p.parent()
+    oldChildren = parent_v.children[:]
+    newChildren = parent_v.children[:]
+    if key is None:
+
+        def lowerKey(self):
+            return (self.h.lower())
+
+        key = lowerKey
+    newChildren.sort(key=key, reverse=reverse)
+    if oldChildren == newChildren:
+        return
+    # 2010/01/20. Fix bug 510148.
+    c.setChanged(True)
+    # g.trace(g.listToString(newChildren))
+    bunch = u.beforeSort(p, undoType, oldChildren, newChildren, sortChildren)
+    parent_v.children = newChildren
+    if parent:
+        dirtyVnodeList = parent.setAllAncestorAtFileNodesDirty()
+    else:
+        dirtyVnodeList = []
+    u.afterSort(p, bunch, dirtyVnodeList)
+    # Sorting destroys position p, and possibly the root position.
+    p = c.setPositionAfterSort(sortChildren)
+    c.redraw(p)
 #@+node:ekr.20070420092425: ** def cantMoveMessage
 def cantMoveMessage(c):
     h = c.rootPosition().h
