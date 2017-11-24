@@ -6,18 +6,43 @@
 import leo.core.leoGlobals as g
 import time
 #@+others
-#@+node:ekr.20170221033738.1: ** c.reloadSettings
+#@+node:ekr.20170221033738.1: ** c.reloadSettings & helper
 @g.commander_command('reload-settings')
 def reloadSettings(self, event=None):
     '''Reload settings for the selected outline, saving it if necessary.'''
     c = self
-    c.reloadSettingsHelper(all=False)
+    reloadSettingsHelper(c, all=False)
 
 @g.commander_command('reload-all-settings')
 def reloadAllSettings(self, event=None):
     '''Reload settings for all open outlines, saving them if necessary.'''
     c = self
-    c.reloadSettingsHelper(all=True)
+    reloadSettingsHelper(c, all=True)
+#@+node:ekr.20170221034501.1: *3* def reloadSettingsHelper
+def reloadSettingsHelper(c, all):
+    '''Reload settings in all commanders, or just c.'''
+    lm = g.app.loadManager
+    commanders = g.app.commanders() if all else [c]
+    # Save any changes so they can be seen.
+    for c2 in commanders:
+        if c2.isChanged():
+            c2.save()
+    lm.readGlobalSettingsFiles()
+        # Read leoSettings.leo and myLeoSettings.leo, using a null gui.
+    for c in commanders:
+        changed = c.isChanged()
+        previousSettings = lm.getPreviousSettings(fn=c.mFileName)
+            # Read the local file, using a null gui.
+        c.initSettings(previousSettings)
+            # Init the config classes.
+        c.initConfigSettings()
+            # Init the commander config ivars.
+        c.reloadConfigurableSettings()
+            # Reload settings in all configurable classes
+        c.setChanged(changed)
+            # Restore the changed bit.
+        # c.redraw()
+            # Redraw so a pasted temp node isn't visible
 #@+node:ekr.20031218072017.2820: ** c.top level
 #@+node:ekr.20031218072017.2833: *3* c.close
 @g.commander_command('close-window')

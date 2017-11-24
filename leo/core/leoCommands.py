@@ -596,6 +596,55 @@ class Commands(object):
             c.windowPosition = 500, 700, 50, 50 # width,height,left,top.
     #@+node:ekr.20171124100654.1: *3* c.API
     # These methods are a fundamental, unchanging, part of Leo's API.
+    #@+node:ekr.20031218072017.2909: *4* c.Expand/contract
+    #@+node:ekr.20171124091426.1: *5* c.contractAllHeadlines
+    def contractAllHeadlines(self, event=None, redrawFlag=True):
+        '''Contract all nodes in the outline.'''
+        c = self
+        for p in c.all_positions():
+            p.contract()
+        # Select the topmost ancestor of the presently selected node.
+        p = c.p
+        while p and p.hasParent():
+            p.moveToParent()
+        if redrawFlag:
+            c.redraw(p, setFocus=True)
+        c.expansionLevel = 1 # Reset expansion level.
+    #@+node:ekr.20031218072017.2910: *5* c.contractSubtree
+    def contractSubtree(self, p):
+        for p in p.subtree():
+            p.contract()
+    #@+node:ekr.20031218072017.2911: *5* c.expandSubtree
+    def expandSubtree(self, v):
+        c = self
+        last = v.lastNode()
+        while v and v != last:
+            v.expand()
+            v = v.threadNext()
+        c.redraw()
+    #@+node:ekr.20031218072017.2912: *5* c.expandToLevel
+    def expandToLevel(self, level):
+        trace = False and not g.unitTesting
+        c = self
+        n = c.p.level()
+        old_expansion_level = c.expansionLevel
+        max_level = 0
+        for p in c.p.self_and_subtree():
+            if p.level() - n + 1 < level:
+                p.expand()
+                max_level = max(max_level, p.level() - n + 1)
+            else:
+                p.contract()
+        c.expansionNode = c.p.copy()
+        c.expansionLevel = max_level + 1
+        if c.expansionLevel != old_expansion_level:
+            if trace: g.trace('level', level, 'max_level', max_level+1)
+            c.redraw()
+        # It's always useful to announce the level.
+        # c.k.setLabelBlue('level: %s' % (max_level+1))
+        # g.es('level', max_level + 1)
+        c.frame.putStatusLine('level: %s' % (max_level+1))
+            # bg='red', fg='red')
     #@+node:ekr.20091001141621.6061: *4* c.Generators
     #@+node:ekr.20091001141621.6043: *5* c.all_nodes & all_unique_nodes
     def all_nodes(self):
@@ -1014,6 +1063,36 @@ class Commands(object):
         v, n = stack.pop()
         p = leoNodes.Position(v, n, stack)
         return p
+    #@+node:ekr.20171124083736.1: *4* c.Mark helpers
+    #@+node:ekr.20031218072017.2925: *5* c.markAllAtFileNodesDirty
+    def markAllAtFileNodesDirty(self, event=None):
+        '''Mark all @file nodes as changed.'''
+        c = self; p = c.rootPosition()
+        c.endEditing()
+        while p:
+            if p.isAtFileNode() and not p.isDirty():
+                p.setDirty()
+                c.setChanged(True)
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+        c.redraw_after_icons_changed()
+    #@+node:ekr.20031218072017.2926: *5* c.markAtFileNodesDirty
+    def markAtFileNodesDirty(self, event=None):
+        '''Mark all @file nodes in the selected tree as changed.'''
+        c = self
+        p = c.p
+        if not p: return
+        c.endEditing()
+        after = p.nodeAfterTree()
+        while p and p != after:
+            if p.isAtFileNode() and not p.isDirty():
+                p.setDirty()
+                c.setChanged(True)
+                p.moveToNodeAfterTree()
+            else:
+                p.moveToThreadNext()
+        c.redraw_after_icons_changed()
     #@+node:ekr.20090130135126.1: *4* c.Properties
     def __get_p(self):
         c = self
@@ -1753,55 +1832,6 @@ class Commands(object):
         '''Make commandName the command to be executed by repeat-complex-command.'''
         c = self
         c.k.mb_history.insert(0, commandName)
-    #@+node:ekr.20031218072017.2909: *4* c.Expand/contract helpers
-    #@+node:ekr.20171124091426.1: *5* c.contractAllHeadlines
-    def contractAllHeadlines(self, event=None, redrawFlag=True):
-        '''Contract all nodes in the outline.'''
-        c = self
-        for p in c.all_positions():
-            p.contract()
-        # Select the topmost ancestor of the presently selected node.
-        p = c.p
-        while p and p.hasParent():
-            p.moveToParent()
-        if redrawFlag:
-            c.redraw(p, setFocus=True)
-        c.expansionLevel = 1 # Reset expansion level.
-    #@+node:ekr.20031218072017.2910: *5* c.contractSubtree
-    def contractSubtree(self, p):
-        for p in p.subtree():
-            p.contract()
-    #@+node:ekr.20031218072017.2911: *5* c.expandSubtree
-    def expandSubtree(self, v):
-        c = self
-        last = v.lastNode()
-        while v and v != last:
-            v.expand()
-            v = v.threadNext()
-        c.redraw()
-    #@+node:ekr.20031218072017.2912: *5* c.expandToLevel
-    def expandToLevel(self, level):
-        trace = False and not g.unitTesting
-        c = self
-        n = c.p.level()
-        old_expansion_level = c.expansionLevel
-        max_level = 0
-        for p in c.p.self_and_subtree():
-            if p.level() - n + 1 < level:
-                p.expand()
-                max_level = max(max_level, p.level() - n + 1)
-            else:
-                p.contract()
-        c.expansionNode = c.p.copy()
-        c.expansionLevel = max_level + 1
-        if c.expansionLevel != old_expansion_level:
-            if trace: g.trace('level', level, 'max_level', max_level+1)
-            c.redraw()
-        # It's always useful to announce the level.
-        # c.k.setLabelBlue('level: %s' % (max_level+1))
-        # g.es('level', max_level + 1)
-        c.frame.putStatusLine('level: %s' % (max_level+1))
-            # bg='red', fg='red')
     #@+node:ekr.20171124101444.1: *4* c.File helpers
     #@+node:ekr.20090212054250.9: *5* c.createNodeFromExternalFile
     def createNodeFromExternalFile(self, fn):
@@ -1908,61 +1938,6 @@ class Commands(object):
                 except Exception:
                     g.es_exception()
                     c.configurables.remove(obj)
-    #@+node:ekr.20170221034501.1: *5* c.reloadSettingsHelper
-    def reloadSettingsHelper(self, all):
-        '''Reload settings in all commanders, or just self.'''
-        lm = g.app.loadManager
-        commanders = g.app.commanders() if all else [self]
-        # Save any changes so they can be seen.
-        for c2 in commanders:
-            if c2.isChanged():
-                c2.save()
-        lm.readGlobalSettingsFiles()
-            # Read leoSettings.leo and myLeoSettings.leo, using a null gui.
-        for c in commanders:
-            changed = c.isChanged()
-            previousSettings = lm.getPreviousSettings(fn=c.mFileName)
-                # Read the local file, using a null gui.
-            c.initSettings(previousSettings)
-                # Init the config classes.
-            c.initConfigSettings()
-                # Init the commander config ivars.
-            c.reloadConfigurableSettings()
-                # Reload settings in all configurable classes
-            c.setChanged(changed)
-                # Restore the changed bit.
-            # c.redraw()
-                # Redraw so a pasted temp node isn't visible
-    #@+node:ekr.20171124083736.1: *4* c.Mark helpers
-    #@+node:ekr.20031218072017.2925: *5* c.markAllAtFileNodesDirty
-    def markAllAtFileNodesDirty(self, event=None):
-        '''Mark all @file nodes as changed.'''
-        c = self; p = c.rootPosition()
-        c.endEditing()
-        while p:
-            if p.isAtFileNode() and not p.isDirty():
-                p.setDirty()
-                c.setChanged(True)
-                p.moveToNodeAfterTree()
-            else:
-                p.moveToThreadNext()
-        c.redraw_after_icons_changed()
-    #@+node:ekr.20031218072017.2926: *5* c.markAtFileNodesDirty
-    def markAtFileNodesDirty(self, event=None):
-        '''Mark all @file nodes in the selected tree as changed.'''
-        c = self
-        p = c.p
-        if not p: return
-        c.endEditing()
-        after = p.nodeAfterTree()
-        while p and p != after:
-            if p.isAtFileNode() and not p.isDirty():
-                p.setDirty()
-                c.setChanged(True)
-                p.moveToNodeAfterTree()
-            else:
-                p.moveToThreadNext()
-        c.redraw_after_icons_changed()
     #@+node:ekr.20171124083104.1: *4* c.Paste helpers
     #@+node:ekr.20050418084539: *5* c.computeVnodeInfoDict
     def computeVnodeInfoDict(self):
