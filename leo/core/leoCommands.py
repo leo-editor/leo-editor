@@ -3434,18 +3434,6 @@ class Commands(object):
         c = self
         return c.frame.tree.getSelectedPositions()
     #@+node:ekr.20031218072017.2818: *3* c.Top-level commands
-    #@+node:ekr.20110402084740.14490: *4* c.goToNext/PrevHistory
-    @cmd('goto-next-history-node')
-    def goToNextHistory(self, event=None):
-        '''Go to the next node in the history list.'''
-        c = self
-        c.nodeHistory.goNext()
-
-    @cmd('goto-prev-history-node')
-    def goToPrevHistory(self, event=None):
-        '''Go to the previous node in the history list.'''
-        c = self
-        c.nodeHistory.goPrev()
     #@+node:ekr.20031218072017.2819: *4* File Menu
     #@+node:ekr.20170221033738.1: *5* c.reloadSettings & helpers
     @cmd('reload-settings')

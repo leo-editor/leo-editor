@@ -484,6 +484,18 @@ def fontPanel(self, event=None):
     if not frame.fontPanel:
         frame.fontPanel = g.app.gui.createFontPanel(c)
     frame.fontPanel.bringToFront()
+#@+node:ekr.20110402084740.14490: ** c.goToNext/PrevHistory
+@g.commander_command('goto-next-history-node')
+def goToNextHistory(self, event=None):
+    '''Go to the next node in the history list.'''
+    c = self
+    c.nodeHistory.goNext()
+
+@g.commander_command('goto-prev-history-node')
+def goToPrevHistory(self, event=None):
+    '''Go to the previous node in the history list.'''
+    c = self
+    c.nodeHistory.goPrev()
 #@+node:ekr.20171123135625.30: ** c.indentBody (indent-region)
 @g.commander_command('indent-region')
 def indentBody(self, event=None):
