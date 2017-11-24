@@ -51,7 +51,7 @@ def copyOutline(self, event=None):
     s = c.fileCommands.putLeoOutline()
     g.app.paste_c = c
     g.app.gui.replaceClipboardWith(s)
-#@+node:ekr.20031218072017.1551: *3* c.pasteOutline
+#@+node:ekr.20031218072017.1551: *3* c.pasteOutline & helpers
 # To cut and paste between apps, just copy into an empty body first, then copy to Leo's clipboard.
 
 @g.commander_command('paste-node')
@@ -80,7 +80,7 @@ def pasteOutline(self, event=None,
     if not s or not c.canPasteOutline(s):
         return # This should never happen.
     isLeo = g.match(s, 0, g.app.prolog_prefix_string)
-    vnodeInfoDict = c.computeVnodeInfoDict() if pasteAsClone else {}
+    vnodeInfoDict = computeVnodeInfoDict(c) if pasteAsClone else {}
     # create a *position* to be pasted.
     if isLeo:
         pasted = c.fileCommands.getLeoOutlineFromClipboard(s, reassignIndices, tempOutline)
@@ -89,7 +89,7 @@ def pasteOutline(self, event=None,
         # We no longer support pasting MORE outlines. Use import-MORE-files instead.
         return None
     if pasteAsClone:
-        copiedBunchList = c.computeCopiedBunchList(pasted, vnodeInfoDict)
+        copiedBunchList = computeCopiedBunchList(c, pasted, vnodeInfoDict)
     else:
         copiedBunchList = []
     if undoFlag:
@@ -119,6 +119,33 @@ def pasteOutline(self, event=None,
         c.redraw(pasted)
         c.recolor()
     return pasted
+#@+node:ekr.20050418084539.2: *4* def computeCopiedBunchList
+def computeCopiedBunchList(c, pasted, vnodeInfoDict):
+    '''Create a dict containing only copied vnodes.'''
+    d = {}
+    for p in pasted.self_and_subtree():
+        d[p.v] = p.v
+    aList = []
+    for v in vnodeInfoDict:
+        if d.get(v):
+            bunch = vnodeInfoDict.get(v)
+            aList.append(bunch)
+    return aList
+#@+node:ekr.20050418084539: *4* def computeVnodeInfoDict
+def computeVnodeInfoDict(c):
+    '''
+    We don't know yet which nodes will be affected by the paste, so we remember
+    everything. This is expensive, but foolproof.
+    
+    The alternative is to try to remember the 'before' values of nodes in the
+    FileCommands read logic. Several experiments failed, and the code is very ugly.
+    In short, it seems wise to do things the foolproof way.
+    '''
+    d = {}
+    for v in c.all_unique_nodes():
+        if v not in d:
+            d[v] = g.Bunch(v=v, head=v.h, body=v.b)
+    return d
 #@+node:EKR.20040610130943: *3* c.pasteOutlineRetainingClones
 @g.commander_command('paste-retaining-clones')
 def pasteOutlineRetainingClones(self, event=None):

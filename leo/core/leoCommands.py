@@ -1938,34 +1938,6 @@ class Commands(object):
                 except Exception:
                     g.es_exception()
                     c.configurables.remove(obj)
-    #@+node:ekr.20171124083104.1: *4* c.Paste helpers
-    #@+node:ekr.20050418084539: *5* c.computeVnodeInfoDict
-    def computeVnodeInfoDict(self):
-        '''
-        We don't know yet which nodes will be affected by the paste, so we remember
-        everything. This is expensive, but foolproof.
-        
-        The alternative is to try to remember the 'before' values of nodes in the
-        FileCommands read logic. Several experiments failed, and the code is very ugly.
-        In short, it seems wise to do things the foolproof way.
-        '''
-        c, d = self, {}
-        for v in c.all_unique_nodes():
-            if v not in d:
-                d[v] = g.Bunch(v=v, head=v.h, body=v.b)
-        return d
-    #@+node:ekr.20050418084539.2: *5* c.computeCopiedBunchList
-    def computeCopiedBunchList(self, pasted, vnodeInfoDict):
-        '''Create a dict containing only copied vnodes.'''
-        d = {}
-        for p in pasted.self_and_subtree():
-            d[p.v] = p.v
-        aList = []
-        for v in vnodeInfoDict:
-            if d.get(v):
-                bunch = vnodeInfoDict.get(v)
-                aList.append(bunch)
-        return aList
     #@+node:ekr.20171123200644.1: *3* c.Convenience methods
     #@+node:ekr.20171123135625.39: *4* c.getTime
     def getTime(self, body=True):
