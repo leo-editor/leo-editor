@@ -5970,22 +5970,23 @@ def createScratchCommander(fileName=None):
     frame.setInitialWindowGeometry()
     frame.resizePanesToRatio(frame.ratio, frame.secondary_ratio)
 #@+node:ekr.20031218072017.3126: *3* g.funcToMethod (Python Cookbook)
-#@+at From page 188 of the Python Cookbook.
-# 
-# The following method allows you to add a function as a method of any class. That
-# is, it converts the function to a method of the class. The method just added is
-# available instantly to all existing instances of the class, and to all instances
-# created in the future.
-# 
-# The function's first argument should be self.
-# 
-# The newly created method has the same name as the function unless the optional
-# name argument is supplied, in which case that name is used as the method name.
-#@@c
-
 def funcToMethod(f, theClass, name=None):
+    '''
+    From the Python Cookbook...
+
+    The following method allows you to add a function as a method of
+    any class. That is, it converts the function to a method of the
+    class. The method just added is available instantly to all
+    existing instances of the class, and to all instances created in
+    the future.
+    
+    The function's first argument should be self.
+    
+    The newly created method has the same name as the function unless
+    the optional name argument is supplied, in which case that name is
+    used as the method name.
+    '''
     setattr(theClass, name or f.__name__, f)
-    # g.trace(name)
 #@+node:ekr.20060913090832.1: *3* g.init_zodb
 init_zodb_import_failed = False
 init_zodb_failed = {} # Keys are paths, values are True.
