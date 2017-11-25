@@ -43,6 +43,8 @@ class Commands(object):
     g.app.pluginsController is Leo's plugins controller. Many plugins
     inject controllers objects into the Commands class. These are
     another kind of subcommander.
+    
+    The @g..commander_command decorator injects methods into this class.
     """
     #@+others
     #@+node:ekr.20031218072017.2811: *3*  c.Birth & death
@@ -594,6 +596,137 @@ class Commands(object):
                     repr(self.fixedWindowPosition))
         else:
             c.windowPosition = 500, 700, 50, 50 # width,height,left,top.
+    #@+node:ekr.20171123135625.4: *3* @cmd c.executeScript & public helpers
+    @cmd('execute-script')
+    def executeScript(self, event=None,
+        args=None, p=None, script=None, useSelectedText=True,
+        define_g=True, define_name='__main__',
+        silent=False, namespace=None, raiseFlag=False,
+    ):
+        '''
+        Execute a *Leo* script.
+        Keyword args:
+        args=None               Not None: set script_args in the execution environment.
+        p=None                  Get the script from p.b, unless script is given.
+        script=None             None: use script in p.b or c.p.b
+        useSelectedText=True    False: use all the text in p.b or c.p.b.
+        define_g=True           True: define g for the script.
+        define_name='__main__'  Not None: define the name symbol.
+        silent=False            No longer used.
+        namespace=None          Not None: execute the script in this namespace.
+        raiseFlag=False         True: reraise any exceptions.
+        '''
+        c, script1 = self, script
+        if not script:
+            if c.forceExecuteEntireBody:
+                useSelectedText = False
+            script = g.getScript(c, p or c.p, useSelectedText=useSelectedText)
+        script_p = p or c.p
+            # Only for error reporting below.
+        self.redirectScriptOutput()
+        try:
+            oldLog = g.app.log
+            log = c.frame.log
+            g.app.log = log
+            if script.strip():
+                sys.path.insert(0, '.') # New in Leo 5.0
+                sys.path.insert(0, c.frame.openDirectory) # per SegundoBob
+                script += '\n' # Make sure we end the script properly.
+                try:
+                    # We *always* execute the script with p = c.p.
+                    c.executeScriptHelper(args, define_g, define_name, namespace, script)
+                except Exception:
+                    if raiseFlag:
+                        raise
+                    else:
+                        g.handleScriptException(c, script_p, script, script1)
+                finally:
+                    del sys.path[0]
+                    del sys.path[0]
+            else:
+                tabName = log and hasattr(log, 'tabName') and log.tabName or 'Log'
+                g.warning("no script selected", tabName=tabName)
+        finally:
+            g.app.log = oldLog
+            self.unredirectScriptOutput()
+    #@+node:ekr.20171123135625.5: *4* c.executeScriptHelper
+    def executeScriptHelper(self, args, define_g, define_name, namespace, script):
+        c = self
+        if c.p:
+            p = c.p.copy() # *Always* use c.p and pass c.p to script.
+            c.setCurrentDirectoryFromContext(p)
+        else:
+            p = None
+        # Do NOT define a subfunction here!
+        #
+        # On some, python 2.x versions it causes exec to cause a syntax error
+        # Workarounds that avoid the syntax error hurt performance.
+        # See http://stackoverflow.com/questions/4484872.
+
+            # def g_input_wrapper(message, c=c):
+                # return g.input_(message, c=c)
+
+        d = {'c': c, 'g': g, 'input': g.input_, 'p': p} if define_g else {}
+        if define_name: d['__name__'] = define_name
+        d['script_args'] = args or []
+        if namespace: d.update(namespace)
+        # A kludge: reset c.inCommand here to handle the case where we *never* return.
+        # (This can happen when there are multiple event loops.)
+        # This does not prevent zombie windows if the script puts up a dialog...
+        try:
+            c.inCommand = False
+            g.inScript = g.app.inScript = True
+                # g.inScript is a synonym for g.app.inScript.
+            if c.write_script_file:
+                scriptFile = self.writeScriptFile(script)
+                # pylint: disable=undefined-variable, no-member
+                if g.isPython3:
+                    exec(compile(script, scriptFile, 'exec'), d)
+                else:
+                    builtins.execfile(scriptFile, d)
+            else:
+                exec(script, d)
+        finally:
+            g.inScript = g.app.inScript = False
+    #@+node:ekr.20171123135625.6: *4* c.redirectScriptOutput
+    def redirectScriptOutput(self):
+        c = self
+        # g.trace('original')
+        if c.config.redirect_execute_script_output_to_log_pane:
+            g.redirectStdout() # Redirect stdout
+            g.redirectStderr() # Redirect stderr
+    #@+node:ekr.20171123135625.7: *4* c.setCurrentDirectoryFromContext
+    def setCurrentDirectoryFromContext(self, p):
+        trace = False and not g.unitTesting
+        c = self
+        aList = g.get_directives_dict_list(p)
+        path = c.scanAtPathDirectives(aList)
+        curDir = g.os_path_abspath(os.getcwd())
+        # g.trace(p.h,'\npath  ',path,'\ncurDir',curDir)
+        if path and path != curDir:
+            if trace: g.trace('calling os.chdir(%s)' % (path))
+            try:
+                os.chdir(path)
+            except Exception:
+                pass
+    #@+node:ekr.20171123135625.8: *4* c.unredirectScriptOutput
+    def unredirectScriptOutput(self):
+        c = self
+        # g.trace('original')
+        if c.exists and c.config.redirect_execute_script_output_to_log_pane:
+            g.restoreStderr()
+            g.restoreStdout()
+    #@+node:ekr.20080514131122.12: *3* @cmd c.recolorCommand
+    @cmd('recolor')
+    def recolorCommand(self, event=None):
+        '''Force a full recolor.'''
+        c = self
+        wrapper = c.frame.body.wrapper
+        # Setting all text appears to be the only way.
+        i, j = wrapper.getSelectionRange()
+        ins = wrapper.getInsertPoint()
+        wrapper.setAllText(c.p.b)
+        wrapper.setSelectionRange(i, j, insert=ins)
     #@+node:ekr.20171124100654.1: *3* c.API
     # These methods are a fundamental, unchanging, part of Leo's API.
     #@+node:ekr.20091001141621.6061: *4* c.Generators
@@ -1222,100 +1355,6 @@ class Commands(object):
             # g.trace(body)
             c.setBodyString(p, body)
             # Don't set the dirty bit: it would just be annoying.
-    #@+node:ekr.20171123200644.1: *3* c.Convenience methods
-    #@+node:ekr.20171123135625.39: *4* c.getTime
-    def getTime(self, body=True):
-        c = self
-        default_format = "%m/%d/%Y %H:%M:%S" # E.g., 1/30/2003 8:31:55
-        # Try to get the format string from settings.
-        if body:
-            format = c.config.getString("body_time_format_string")
-            gmt = c.config.getBool("body_gmt_time")
-        else:
-            format = c.config.getString("headline_time_format_string")
-            gmt = c.config.getBool("headline_gmt_time")
-        if format is None:
-            format = default_format
-        try:
-            # import time
-            if gmt:
-                s = time.strftime(format, time.gmtime())
-            else:
-                s = time.strftime(format, time.localtime())
-        except(ImportError, NameError):
-            g.warning("time.strftime not available on this platform")
-            return ""
-        except Exception:
-            g.es_exception() # Probably a bad format string in leoSettings.leo.
-            s = time.strftime(default_format, time.gmtime())
-        return s
-    #@+node:ekr.20171123135625.10: *4* c.goToLineNumber & goToScriptLineNumber
-    def goToLineNumber(self, n):
-        """
-        Go to line n (zero-based) of a script.
-        A convenience method called from g.handleScriptException.
-        """
-        c = self
-        c.gotoCommands.find_file_line(n)
-
-    def goToScriptLineNumber(self, n, p):
-        """
-        Go to line n (zero-based) of a script.
-        A convenience method called from g.handleScriptException.
-        """
-        c = self
-        c.gotoCommands.find_script_line(n, p)
-    #@+node:ekr.20090103070824.9: *4* c.setFileTimeStamp
-    def setFileTimeStamp(self, fn):
-        '''Update the timestamp for fn..'''
-        # c = self
-        if g.app.externalFilesController:
-            g.app.externalFilesController.set_time(fn)
-    #@+node:ekr.20031218072017.3000: *4* c.updateSyntaxColorer
-    def updateSyntaxColorer(self, v):
-        self.frame.body.updateSyntaxColorer(v)
-    #@+node:ekr.20130823083943.12559: *3* c.recursiveImport
-    def recursiveImport(self, dir_, kind,
-        recursive=True,
-        safe_at_file=True,
-        theTypes=None,
-    ):
-        #@+<< docstring >>
-        #@+node:ekr.20130823083943.12614: *4* << docstring >>
-        '''
-        Recursively import all python files in a directory and clean the results.
-
-        Parameters::
-            dir_              The root directory or file to import.
-            kind              One of ('@clean','@edit','@file','@nosent').
-            recursive=True    True: recurse into subdirectories.
-            safe_at_file=True True: produce @@file nodes instead of @file nodes.
-            theTypes=None     A list of file extensions to import.
-                              None is equivalent to ['.py']
-
-        This method cleans imported files as follows:
-
-        - Replace backslashes with forward slashes in headlines.
-        - Remove empty nodes.
-        - Add @path directives that reduce the needed path specifiers in descendant nodes.
-        - Add @file to nodes or replace @file with @@file.
-        '''
-        #@-<< docstring >>
-        c = self
-        if g.os_path_exists(dir_):
-            # Import all files in dir_ after c.p.
-            try:
-                import leo.core.leoImport as leoImport
-                cc = leoImport.RecursiveImportController(c, kind,
-                    recursive=recursive,
-                    safe_at_file=safe_at_file,
-                    theTypes=['.py'] if not theTypes else theTypes,
-                )
-                cc.run(dir_)
-            finally:
-                c.redraw()
-        else:
-            g.es_print('Does not exist: %s' % (dir_))
     #@+node:ekr.20171124081419.1: *3* c.Check Outline
     #@+node:ekr.20141024211256.22: *4* c.checkGnxs
     def checkGnxs(self):
@@ -1606,6 +1645,58 @@ class Commands(object):
             g.trace("unexpected exception")
             g.es_exception()
             if unittest: raise
+    #@+node:ekr.20171123200644.1: *3* c.Convenience methods
+    #@+node:ekr.20171123135625.39: *4* c.getTime
+    def getTime(self, body=True):
+        c = self
+        default_format = "%m/%d/%Y %H:%M:%S" # E.g., 1/30/2003 8:31:55
+        # Try to get the format string from settings.
+        if body:
+            format = c.config.getString("body_time_format_string")
+            gmt = c.config.getBool("body_gmt_time")
+        else:
+            format = c.config.getString("headline_time_format_string")
+            gmt = c.config.getBool("headline_gmt_time")
+        if format is None:
+            format = default_format
+        try:
+            # import time
+            if gmt:
+                s = time.strftime(format, time.gmtime())
+            else:
+                s = time.strftime(format, time.localtime())
+        except(ImportError, NameError):
+            g.warning("time.strftime not available on this platform")
+            return ""
+        except Exception:
+            g.es_exception() # Probably a bad format string in leoSettings.leo.
+            s = time.strftime(default_format, time.gmtime())
+        return s
+    #@+node:ekr.20171123135625.10: *4* c.goToLineNumber & goToScriptLineNumber
+    def goToLineNumber(self, n):
+        """
+        Go to line n (zero-based) of a script.
+        A convenience method called from g.handleScriptException.
+        """
+        c = self
+        c.gotoCommands.find_file_line(n)
+
+    def goToScriptLineNumber(self, n, p):
+        """
+        Go to line n (zero-based) of a script.
+        A convenience method called from g.handleScriptException.
+        """
+        c = self
+        c.gotoCommands.find_script_line(n, p)
+    #@+node:ekr.20090103070824.9: *4* c.setFileTimeStamp
+    def setFileTimeStamp(self, fn):
+        '''Update the timestamp for fn..'''
+        # c = self
+        if g.app.externalFilesController:
+            g.app.externalFilesController.set_time(fn)
+    #@+node:ekr.20031218072017.3000: *4* c.updateSyntaxColorer
+    def updateSyntaxColorer(self, v):
+        self.frame.body.updateSyntaxColorer(v)
     #@+node:ekr.20080901124540.1: *3* c.Directive scanning
     # These are all new in Leo 4.5.1.
     #@+node:ekr.20171123135625.33: *4* c.getLanguageAtCursor
@@ -1936,126 +2027,6 @@ class Commands(object):
         else:
             g.error('no such command: %s %s' % (commandName, g.callers()))
             return None
-    #@+node:ekr.20171123135625.4: *4* c.executeScript & helpers
-    @cmd('execute-script')
-    def executeScript(self, event=None,
-        args=None, p=None, script=None, useSelectedText=True,
-        define_g=True, define_name='__main__',
-        silent=False, namespace=None, raiseFlag=False,
-    ):
-        '''
-        Execute a *Leo* script.
-        Keyword args:
-        args=None               Not None: set script_args in the execution environment.
-        p=None                  Get the script from p.b, unless script is given.
-        script=None             None: use script in p.b or c.p.b
-        useSelectedText=True    False: use all the text in p.b or c.p.b.
-        define_g=True           True: define g for the script.
-        define_name='__main__'  Not None: define the name symbol.
-        silent=False            No longer used.
-        namespace=None          Not None: execute the script in this namespace.
-        raiseFlag=False         True: reraise any exceptions.
-        '''
-        c, script1 = self, script
-        if not script:
-            if c.forceExecuteEntireBody:
-                useSelectedText = False
-            script = g.getScript(c, p or c.p, useSelectedText=useSelectedText)
-        script_p = p or c.p
-            # Only for error reporting below.
-        self.redirectScriptOutput()
-        try:
-            oldLog = g.app.log
-            log = c.frame.log
-            g.app.log = log
-            if script.strip():
-                sys.path.insert(0, '.') # New in Leo 5.0
-                sys.path.insert(0, c.frame.openDirectory) # per SegundoBob
-                script += '\n' # Make sure we end the script properly.
-                try:
-                    # We *always* execute the script with p = c.p.
-                    c.executeScriptHelper(args, define_g, define_name, namespace, script)
-                except Exception:
-                    if raiseFlag:
-                        raise
-                    else:
-                        g.handleScriptException(c, script_p, script, script1)
-                finally:
-                    del sys.path[0]
-                    del sys.path[0]
-            else:
-                tabName = log and hasattr(log, 'tabName') and log.tabName or 'Log'
-                g.warning("no script selected", tabName=tabName)
-        finally:
-            g.app.log = oldLog
-            self.unredirectScriptOutput()
-    #@+node:ekr.20171123135625.5: *5* c.executeScriptHelper
-    def executeScriptHelper(self, args, define_g, define_name, namespace, script):
-        c = self
-        if c.p:
-            p = c.p.copy() # *Always* use c.p and pass c.p to script.
-            c.setCurrentDirectoryFromContext(p)
-        else:
-            p = None
-        # Do NOT define a subfunction here!
-        #
-        # On some, python 2.x versions it causes exec to cause a syntax error
-        # Workarounds that avoid the syntax error hurt performance.
-        # See http://stackoverflow.com/questions/4484872.
-
-            # def g_input_wrapper(message, c=c):
-                # return g.input_(message, c=c)
-
-        d = {'c': c, 'g': g, 'input': g.input_, 'p': p} if define_g else {}
-        if define_name: d['__name__'] = define_name
-        d['script_args'] = args or []
-        if namespace: d.update(namespace)
-        # A kludge: reset c.inCommand here to handle the case where we *never* return.
-        # (This can happen when there are multiple event loops.)
-        # This does not prevent zombie windows if the script puts up a dialog...
-        try:
-            c.inCommand = False
-            g.inScript = g.app.inScript = True
-                # g.inScript is a synonym for g.app.inScript.
-            if c.write_script_file:
-                scriptFile = self.writeScriptFile(script)
-                # pylint: disable=undefined-variable, no-member
-                if g.isPython3:
-                    exec(compile(script, scriptFile, 'exec'), d)
-                else:
-                    builtins.execfile(scriptFile, d)
-            else:
-                exec(script, d)
-        finally:
-            g.inScript = g.app.inScript = False
-    #@+node:ekr.20171123135625.6: *5* c.redirectScriptOutput
-    def redirectScriptOutput(self):
-        c = self
-        # g.trace('original')
-        if c.config.redirect_execute_script_output_to_log_pane:
-            g.redirectStdout() # Redirect stdout
-            g.redirectStderr() # Redirect stderr
-    #@+node:ekr.20171123135625.7: *5* c.setCurrentDirectoryFromContext
-    def setCurrentDirectoryFromContext(self, p):
-        trace = False and not g.unitTesting
-        c = self
-        aList = g.get_directives_dict_list(p)
-        path = c.scanAtPathDirectives(aList)
-        curDir = g.os_path_abspath(os.getcwd())
-        # g.trace(p.h,'\npath  ',path,'\ncurDir',curDir)
-        if path and path != curDir:
-            if trace: g.trace('calling os.chdir(%s)' % (path))
-            try:
-                os.chdir(path)
-            except Exception:
-                pass
-    #@+node:ekr.20171123135625.8: *5* c.unredirectScriptOutput
-    def unredirectScriptOutput(self):
-        c = self
-        # g.trace('original')
-        if c.exists and c.config.redirect_execute_script_output_to_log_pane:
-            g.restoreStderr()
-            g.restoreStdout()
     #@+node:ekr.20131016084446.16724: *4* c.setComplexCommand
     def setComplexCommand(self, commandName):
         '''Make commandName the command to be executed by repeat-complex-command.'''
@@ -2258,10 +2229,10 @@ class Commands(object):
                 p.moveToThreadNext()
         c.redraw_after_icons_changed()
     #@+node:ekr.20031218072017.2823: *4* c.openWith
-    # This is *not* a command.
-    # @cmd('open-with')
     def openWith(self, event=None, d=None):
         '''
+        This is *not* a command.
+
         Handles the items in the Open With... menu.
 
         See ExternalFilesController.open_with for details about d.
@@ -2553,23 +2524,6 @@ class Commands(object):
             colorizer.colorize(p or c.p)
             
     recolor_now = recolor
-    #@+node:ekr.20080514131122.12: *5* c.recolorCommand
-    # def recolor(self):
-        # c = self
-        # c.requestRecolorFlag = True
-
-    # requestRecolor = recolor
-
-    @cmd('recolor')
-    def recolorCommand(self, event=None):
-        '''Force a full recolor.'''
-        c = self
-        wrapper = c.frame.body.wrapper
-        # Setting all text appears to be the only way.
-        i, j = wrapper.getSelectionRange()
-        ins = wrapper.getInsertPoint()
-        wrapper.setAllText(c.p.b)
-        wrapper.setSelectionRange(i, j, insert=ins)
     #@+node:ekr.20080514131122.14: *5* c.redrawing...
     #@+node:ekr.20170808014610.1: *6* c.enable/disable_redraw (New in Leo 5.6)
     def disable_redraw(self):
@@ -3342,6 +3296,48 @@ class Commands(object):
         body.wrapper.setFocus()
         c.recolor()
         return dirtyVnodeList
+    #@+node:ekr.20130823083943.12559: *3* c.recursiveImport
+    def recursiveImport(self, dir_, kind,
+        recursive=True,
+        safe_at_file=True,
+        theTypes=None,
+    ):
+        #@+<< docstring >>
+        #@+node:ekr.20130823083943.12614: *4* << docstring >>
+        '''
+        Recursively import all python files in a directory and clean the results.
+
+        Parameters::
+            dir_              The root directory or file to import.
+            kind              One of ('@clean','@edit','@file','@nosent').
+            recursive=True    True: recurse into subdirectories.
+            safe_at_file=True True: produce @@file nodes instead of @file nodes.
+            theTypes=None     A list of file extensions to import.
+                              None is equivalent to ['.py']
+
+        This method cleans imported files as follows:
+
+        - Replace backslashes with forward slashes in headlines.
+        - Remove empty nodes.
+        - Add @path directives that reduce the needed path specifiers in descendant nodes.
+        - Add @file to nodes or replace @file with @@file.
+        '''
+        #@-<< docstring >>
+        c = self
+        if g.os_path_exists(dir_):
+            # Import all files in dir_ after c.p.
+            try:
+                import leo.core.leoImport as leoImport
+                cc = leoImport.RecursiveImportController(c, kind,
+                    recursive=recursive,
+                    safe_at_file=safe_at_file,
+                    theTypes=['.py'] if not theTypes else theTypes,
+                )
+                cc.run(dir_)
+            finally:
+                c.redraw()
+        else:
+            g.es_print('Does not exist: %s' % (dir_))
     #@+node:ekr.20171124084149.1: *3* c.Scripting utils
     #@+node:ekr.20160201072634.1: *4* c.cloneFindByPredicate
     def cloneFindByPredicate(self,
