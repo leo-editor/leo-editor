@@ -4,7 +4,6 @@
 #@@first
 '''Edit commands that used to be defined in leoCommands.py'''
 import leo.core.leoGlobals as g
-import os
 import re
 #@+others
 #@+node:ekr.20171123135625.34: ** c_ec.addComments
@@ -562,6 +561,7 @@ def preferences(self, event=None):
     c = self
     c.openLeoSettings()
 #@+node:ekr.20171123135625.40: ** c_ec.reformatBody
+@g.commander_command('reformat-body')
 def reformatBody(self, event=None):
     '''Reformat all paragraphs in the body.'''
     c, p = self, self.p
@@ -914,45 +914,5 @@ def unreformat(c, head, oldSel, oldYview, original, result, tail, undoType):
     w.see(ins)
     # Make sure we never scroll horizontally.
     w.setXScrollPosition(0)
-#@+node:ekr.20171123135625.13: ** c_ec.writeScriptFile
-def writeScriptFile(self, script):
-    trace = False and not g.unitTesting
-    # Get the path to the file.
-    c = self
-    path = c.config.getString('script_file_path')
-    if path:
-        isAbsPath = os.path.isabs(path)
-        driveSpec, path = os.path.splitdrive(path)
-        parts = path.split('/')
-        # xxx bad idea, loadDir is often read only!
-        path = g.app.loadDir
-        if isAbsPath:
-            # make the first element absolute
-            parts[0] = driveSpec + os.sep + parts[0]
-        allParts = [path] + parts
-        path = c.os_path_finalize_join(*allParts)
-    else:
-        path = c.os_path_finalize_join(
-            g.app.homeLeoDir, 'scriptFile.py')
-    if trace: g.trace(path)
-    # Write the file.
-    try:
-        if g.isPython3:
-            # Use the default encoding.
-            f = open(path, encoding='utf-8', mode='w')
-        else:
-            f = open(path, 'w')
-        s = script
-        if not g.isPython3: # 2010/08/27
-            s = g.toEncodedString(s, reportErrors=True)
-        f.write(s)
-        f.close()
-    except Exception:
-        g.es_exception()
-        g.es("Failed to write script to %s" % path)
-        # g.es("Check your configuration of script_file_path, currently %s" %
-            # c.config.getString('script_file_path'))
-        path = None
-    return path
 #@-others
 #@-leo

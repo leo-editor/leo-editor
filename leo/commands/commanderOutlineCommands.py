@@ -321,7 +321,7 @@ def expandNode(self, event=None):
         c.redraw() # Bug fix: 2009/10/03.
     else:
         c.redraw_after_expand(p, setFocus=True)
-#@+node:ekr.20040930064232.1: *3* c_oc.expandNodeAnd/OrGoToFirstChild
+#@+node:ekr.20040930064232.1: *3* c_oc.expandNodeAndGoToFirstChild
 @g.commander_command('expand-and-go-right')
 def expandNodeAndGoToFirstChild(self, event=None):
     """If a node has children, expand it if needed and go to the first child."""
@@ -335,7 +335,7 @@ def expandNodeAndGoToFirstChild(self, event=None):
             # expandNodeAndGoToFirstChild only expands or only goes to first child .
             c.selectPosition(p.firstChild())
     c.treeFocusHelper()
-
+#@+node:ekr.20171125082744.1: *3* c_oc.expandNodeOrGoToFirstChild
 @g.commander_command('expand-or-go-right')
 def expandNodeOrGoToFirstChild(self, event=None):
     """Simulate the Right Arrow Key in folder of Windows Explorer."""
@@ -666,7 +666,8 @@ def dehoist(self, event=None):
     c.undoer.afterDehoist(p, 'DeHoist')
     g.doHook('hoist-changed', c=c)
 #@+node:ekr.20120308061112.9866: *3* c_oc.clearAllHoists
-def clearAllHoists(self):
+@g.commander_command('clear-all-hoists')
+def clearAllHoists(self, event=None):
     '''Undo a previous hoist of an outline.'''
     c = self
     c.hoistStack = []
@@ -837,7 +838,7 @@ def insertHeadlineHelper(c, event=None, op_name="Insert Node", as_child=False):
     u.afterInsertNode(p, op_name, undoData, dirtyVnodeList=dirtyVnodeList)
     c.redrawAndEdit(p, selectAll=True)
     return p
-#@+node:ekr.20130922133218.11540: *3* c_oc.insertHeadlineBefore (new in Leo 4.11)
+#@+node:ekr.20130922133218.11540: *3* c_oc.insertHeadlineBefore
 @g.commander_command('insert-node-before')
 def insertHeadlineBefore(self, event=None):
     '''Insert a node before the presently selected node.'''
@@ -1160,16 +1161,15 @@ def demote(self, event=None):
     c.redraw(p, setFocus=True)
     c.updateSyntaxColorer(p) # Moving can change syntax coloring.
 #@+node:ekr.20031218072017.1768: *3* c_oc.moveOutlineDown
-#@+at
-# Moving down is more tricky than moving up; we can't move p to be a child of
-# itself. An important optimization: we don't have to call
-# checkMoveWithParentWithWarning() if the parent of the moved node remains the
-# same.
-#@@c
-
 @g.commander_command('move-outline-down')
 def moveOutlineDown(self, event=None):
     '''Move the selected node down.'''
+    # Moving down is more tricky than moving up because we can't 
+    # move p to be a child of itself.
+    #
+    # An important optimization:
+    # we don't have to call checkMoveWithParentWithWarning() if the parent of
+    # the moved node remains the same.
     c = self; u = c.undoer; p = c.p
     if not p: return
     if not c.canMoveOutlineDown():
@@ -1394,22 +1394,22 @@ def toggleSparseMove(self, event=None):
         g.blue('sparse-move: %s' % c.sparse_move)
 #@+node:ekr.20080425060424.1: ** c_oc.Sort commands
 #@+node:ekr.20050415134809: *3* c_oc.sortChildren
-# New in Leo 4.7 final: this method no longer supports
-# the 'cmp' keyword arg.
-
 @g.commander_command('sort-children')
 def sortChildren(self, event=None, key=None, reverse=False):
     '''Sort the children of a node.'''
+    # This method no longer supports the 'cmp' keyword arg.
     c = self; p = c.p
     if p and p.hasChildren():
         c.sortSiblings(p=p.firstChild(), sortChildren=True, key=key, reverse=reverse)
 #@+node:ekr.20050415134809.1: *3* c_oc.sortSiblings
-# New in Leo 4.7 final: this method no longer supports
-# the 'cmp' keyword arg.
-
 @g.commander_command('sort-siblings')
-def sortSiblings(self, event=None, key=None, p=None, sortChildren=False,
-                  reverse=False):
+def sortSiblings(self, event=None,
+    # cmp keyword is no longer supported.
+    key=None,
+    p=None,
+    sortChildren=False,
+    reverse=False
+):
     '''Sort the siblings of a node.'''
     c = self; u = c.undoer
     if not p : p = c.p

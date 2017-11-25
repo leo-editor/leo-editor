@@ -175,13 +175,12 @@ def openMyLeoSettings(self, event=None):
         return g.openWithFileName(path, old_c=c)
     else:
         g.es('not found: myLeoSettings.leo')
-        return c.createMyLeoSettings()
-#@+node:ekr.20141119161908.2: *4* c_help.createMyLeoSettings
-def createMyLeoSettings(self):
+        return createMyLeoSettings(c)
+#@+node:ekr.20141119161908.2: *4* def c_help.createMyLeoSettings
+def createMyLeoSettings(c):
     """createMyLeoSettings - Return true if myLeoSettings.leo created ok
     """
     name = "myLeoSettings.leo"
-    c = self
     homeLeoDir = g.app.homeLeoDir
     loadDir = g.app.loadDir
     configDir = g.app.globalConfigDir
