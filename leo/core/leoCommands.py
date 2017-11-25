@@ -6,13 +6,12 @@
 #@+node:ekr.20040712045933: ** << imports >> (leoCommands)
 import leo.core.leoGlobals as g
 import leo.core.leoNodes as leoNodes
-# The leoCommands ctor now does most leo.core.leo* imports.
-# This breaks circular dependencies.
+    # The leoCommands ctor now does most leo.core.leo* imports.
+    # This breaks circular dependencies.
 try:
     import builtins # Python 3
 except ImportError:
     import __builtin__ as builtins # Python 2.
-import inspect
 import itertools
 import os
 import re
@@ -1994,25 +1993,8 @@ class Commands(object):
         
         Supports @g.commander_command and @g.new_cmd_decorator and plain methods.
         '''
-        trace = False and not g.unitTesting
-        c = self
-        # pylint: disable=deprecated-method,no-member
-        if g.isPython3:
-            args = list(inspect.signature(command).parameters.keys())
-        else:
-            args, varargs, keywords, defaults = inspect.getargspec(command)
-        if trace: g.trace('start', command, 'args', args)
         try:
-            if inspect.ismethod(command):
-                # Leo's legacy way of dispatching commands.
-                val = command(event)
-            elif args and args[0] == 'self':
-                # @g.commander_command
-                val = command(c, event)
-            else:
-                # @g.new_cmd_decorator
-                val = command(event)
-            return val
+            return command(event)
         except Exception:
             g.es_exception()
             return None

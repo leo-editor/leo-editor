@@ -284,7 +284,8 @@ def save(self, event=None, fileName=None):
     if False and g.app.gui.guiName() == 'curses':
         g.trace('===== Save disabled in curses gui =====')
         return
-    c = self; p = c.p
+    c = self
+    p = c.p
     # Do this now: w may go away.
     w = g.app.gui.get_focus(c)
     inBody = g.app.gui.widget_name(w).startswith('body')

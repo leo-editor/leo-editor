@@ -2318,20 +2318,19 @@ class CommanderCommand(object):
         '''Register command for all future commanders.'''
         trace = False and not g.unitTesting
         if trace: g.trace(self.name)
-        global_commands_dict[self.name] = func
+        
+        def commander_command_wrapper(event):
+            c = event.get('c')
+            method = getattr(c, func.__name__, None)
+            method(event=event)
+            
+        # Inject ivars for plugins_menu.py.
+        commander_command_wrapper.__name__ = 'commander_command_wrapper: %s' % self.name
+        commander_command_wrapper.__doc__ = func.__doc__
+        global_commands_dict[self.name] = commander_command_wrapper
         if app:
-            # funcToMethod ensures the command will be injected into all future commanders.
             import leo.core.leoCommands as leoCommands
-            old_attr = getattr(leoCommands.Commands, func.__name__, None)
-            if old_attr:
-                # Not a problem. Just multiple decorators for a func.
-                if old_attr == func:
-                    pass
-                elif g.isPython3:
-                    # The test above fails for Python 2.
-                    g.trace('COMMAND EXISTS', func.__name__)
-            else:
-                funcToMethod(func, leoCommands.Commands)
+            funcToMethod(func, leoCommands.Commands)
             for c in app.commanders():
                 c.k.registerCommand(self.name, func)
         # Inject ivars for plugins_menu.py.
@@ -2361,7 +2360,7 @@ def ivars2instance(c, g, ivars):
             g.trace('can not happen: unknown attribute', obj, ivar, ivars)
             break
     return obj
-#@+node:ekr.20150508134046.1: *3* g.new_cmd_decorator
+#@+node:ekr.20150508134046.1: *3* g.new_cmd_decorator (decorator)
 def new_cmd_decorator(name, ivars):
     '''
     Return a new decorator for a command with the given name.
@@ -2370,7 +2369,7 @@ def new_cmd_decorator(name, ivars):
 
     def _decorator(func):
 
-        def wrapper(event):
+        def new_cmd_wrapper(event):
             c = event.c
             self = g.ivars2instance(c, g, ivars)
             try:
@@ -2380,9 +2379,9 @@ def new_cmd_decorator(name, ivars):
             except Exception:
                 g.es_exception()
 
-        wrapper.__name__ = 'wrapper: %s' % name
-        wrapper.__doc__ = func.__doc__
-        global_commands_dict[name] = wrapper
+        new_cmd_wrapper.__name__ = 'wrapper: %s' % name
+        new_cmd_wrapper.__doc__ = func.__doc__
+        global_commands_dict[name] = new_cmd_wrapper
             # Put the *wrapper* into the global dict.
         return func
             # The decorator must return the func itself.
