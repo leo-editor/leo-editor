@@ -3,8 +3,6 @@
 #@+node:maphew.20141126130213.2: * @file setup.py
 #@@first
 '''setup.py for leo'''
-simple = False # True: avoid all complications.
-trace = False
 from setuptools import setup, find_packages # Always prefer setuptools over distutils
 from codecs import open # To use a consistent encoding
 import os
