@@ -413,12 +413,13 @@ def extractRef(c, s):
     return ''
 #@+node:ekr.20171123135625.27: ** c_ec.extractSectionNames & helper
 @g.commander_command('extract-names')
-def extractSectionNames(c, event=None):
+def extractSectionNames(self, event=None):
     '''
     Create child nodes for every section reference in the selected text.
     - The headline of each new child node is the section reference.
     - The body of each child node is empty.
     '''
+    c = self
     current = c.p
     u = c.undoer
     undoType = 'Extract Section Names'

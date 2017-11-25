@@ -787,7 +787,8 @@ def clearRecentFiles(self, event=None):
     c = self
     g.app.recentFilesManager.clearRecentFiles(c)
 #@+node:ekr.20031218072017.2081: *3* c_file.openRecentFile
-def openRecentFile(self, fn=None):
+@g.commander_command('open-recent-file')
+def openRecentFile(self, event=None, fn=None):
     c = self
     # Automatically close the previous window if...
     closeFlag = (
