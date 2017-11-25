@@ -2316,8 +2316,6 @@ class CommanderCommand(object):
 
     def __call__(self, func):
         '''Register command for all future commanders.'''
-        trace = False and not g.unitTesting
-        if trace: g.trace(self.name)
         
         def commander_command_wrapper(event):
             c = event.get('c')
