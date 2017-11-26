@@ -1838,7 +1838,6 @@ class LoadManager(object):
         assert shortcuts_d
         assert settings_d
         if settings_d2:
-            # #510:
             if g.app.trace_setting:
                 key = g.app.config.munge(g.app.trace_setting)
                 val = settings_d2.d.get(key)
@@ -1849,7 +1848,7 @@ class LoadManager(object):
             settings_d = settings_d.copy()
             settings_d.update(settings_d2)
         if shortcuts_d2:
-            shortcuts_d = lm.mergeShortcutsDicts(c, shortcuts_d, shortcuts_d2)
+            shortcuts_d = lm.mergeShortcutsDicts(c, shortcuts_d, shortcuts_d2, localFlag)
         return settings_d, shortcuts_d
     #@+node:ekr.20121126202114.3: *4* LM.createDefaultSettingsDicts
     def createDefaultSettingsDicts(self):
@@ -1900,7 +1899,7 @@ class LoadManager(object):
             d2 = lm.globalShortcutsDict.copy(shortcutsName)
         return PreviousSettings(d1, d2)
     #@+node:ekr.20120214132927.10723: *4* LM.mergeShortcutsDicts & helpers
-    def mergeShortcutsDicts(self, c, old_d, new_d):
+    def mergeShortcutsDicts(self, c, old_d, new_d, localFlag):
         '''
         Create a new dict by overriding all shortcuts in old_d by shortcuts in new_d.
 
@@ -1914,7 +1913,9 @@ class LoadManager(object):
             new_n, old_n = len(list(new_d.keys())), len(list(old_d.keys()))
             g.trace('new %4s %s' % (new_n, new_d.name()))
             g.trace('old %4s %s' % (old_n, old_d.name()))
-        # #510.
+            if localFlag:
+                g.trace('new_d.d')
+                g.printDict(new_d.d)
         si_list = new_d.get(g.app.trace_setting)
         if si_list:
             # This code executed only if g.app.trace_setting exists.
@@ -1932,18 +1933,28 @@ class LoadManager(object):
         inverted_new_d = lm.invert(new_d)
         # #510 & #327: always honor --trace-binding here.
         if g.app.trace_binding:
-            stroke = c.k.canonicalizeShortcut(g.app.trace_binding)
-            si_list = inverted_new_d. get(stroke)
-            if si_list:
-                for si in si_list:
-                    fn = si.kind.split(' ')[-1] # si.kind #
-                    stroke2 = c.k.prettyPrintKey(stroke)
-                    if si.pane and si.pane != 'all':
-                        pane = ' in %s panes' % si.pane
-                    else:
-                        pane = ''
-                    g.es_print('--trace-binding: %20s binds %s to %-20s%s' %  (
-                        fn, stroke2, si.commandName, pane))
+            binding = g.app.trace_binding
+            # First, see if the binding is for a command. (Doesn't work for plugin commands).
+            if localFlag and binding in c.k.killedBindings:
+                g.es_print('--trace-binding: %s sets %s to None' % (
+                    c.shortFileName(), binding))
+            elif localFlag and binding in c.commandsDict:
+                 d = c.k.computeInverseBindingDict()
+                 g.trace('--trace-binding: %20s binds %s to %s' % (
+                    c.shortFileName(), binding, d.get(binding) or []))
+            else:
+                stroke = c.k.canonicalizeShortcut(binding)
+                si_list = inverted_new_d.get(stroke)
+                if si_list:
+                    for si in si_list:
+                        fn = si.kind.split(' ')[-1] # si.kind #
+                        stroke2 = c.k.prettyPrintKey(stroke)
+                        if si.pane and si.pane != 'all':
+                            pane = ' in %s panes' % si.pane
+                        else:
+                            pane = ''
+                        g.es_print('--trace-binding: %20s binds %s to %-20s%s' %  (
+                            fn, stroke2, si.commandName, pane))
         # Fix bug 951921: check for duplicate shortcuts only in the new file.
         lm.checkForDuplicateShortcuts(c, inverted_new_d)
         inverted_old_d.update(inverted_new_d) # Updates inverted_old_d in place.
@@ -2776,7 +2787,7 @@ class LoadManager(object):
         if not c:
             return False # Force an immediate exit.
         # Fix bug 844953: tell Unity which menu to use.
-        if c: c.enableMenuBar()
+            # if c: c.enableMenuBar()
         # Do the final inits.
         g.app.logInited = True
         g.app.initComplete = True
@@ -3055,7 +3066,7 @@ class LoadManager(object):
             g.doHook("after-create-leo-frame", c=c)
             g.doHook("after-create-leo-frame2", c=c)
             # Fix bug 844953: tell Unity which menu to use.
-            c.enableMenuBar()
+                # c.enableMenuBar()
     #@+node:ekr.20120223062418.10406: *6* LM.findOpenFile
     def findOpenFile(self, fn):
         # lm = self

@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="111" left="599" height="912" width="1458"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -665,6 +665,20 @@
 <v t="ekr.20060325071042.2"><vh>@ifplatform darwin</vh>
 <v t="ekr.20060325071042.3"><vh>@bool test_darwin_setting = True</vh></v>
 </v>
+</v>
+</v>
+<v t="ekr.20171121100639.1"><vh>Declutter</vh>
+<v t="tbrown.20150807123339.1"><vh>@bool tree-declutter = False</vh></v>
+<v t="tbrown.20150807123421.1"><vh>@data tree-declutter-patterns</vh>
+<v t="ekr.20171122113628.1"><vh> About Decluttering</vh>
+<v t="ekr.20171122113628.3"><vh>Rule &amp; replacement lines</vh></v>
+<v t="ekr.20171122113628.4"><vh>Style lines</vh></v>
+</v>
+<v t="ekr.20171122044441.3"><vh>declutter: add icon to folders and remove...</vh></v>
+<v t="ekr.20171122044441.1"><vh>declutter: demo pattern</vh></v>
+<v t="ekr.20171122044417.1"><vh>declutter: hide org-mode tags</vh></v>
+<v t="ekr.20171122044441.2"><vh>declutter: replace @&lt;file&gt; with an icon</vh></v>
+<v t="ekr.20171122044906.1"><vh>declutter: show last part of long filenames</vh></v>
 </v>
 </v>
 <v t="tbnorth.20170111153412.1"><vh>Editing</vh>
@@ -2174,8 +2188,6 @@
 <v t="ekr.20061007211759"><vh>@bool sparse_move_outline_left = False</vh></v>
 <v t="ekr.20060122105527.7"><vh>@bool stayInTreeAfterSelect = True</vh></v>
 <v t="ekr.20061002115414.1"><vh>@float outline_nav_extend_delay = 2.0</vh></v>
-<v t="tbrown.20150807123339.1"><vh>@bool tree-declutter = False</vh></v>
-<v t="tbrown.20150807123421.1"><vh>@data tree-declutter-patterns</vh></v>
 </v>
 <v t="ekr.20041119034357.15"><vh>Unicode options</vh>
 <v t="ekr.20080212084020"><vh>@string default_at_auto_file_encoding = utf-8</vh></v>
@@ -2837,6 +2849,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20171121100639.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -4771,7 +4784,7 @@ menu-shortcut = Alt-S # Search and Settings menus.
 menu-shortcut = Alt-W # Window menu.
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="4">@nocolor-node
+<t tx="ekr.20070622214401">@nocolor-node
 
 Please don't change this node and its descendants; they are for Leo's
 developers.
@@ -6528,7 +6541,8 @@ action will be used instead.</t>
     
 1. @bool enable-abbreviations = True
 2. *either* this setting or @bool scripting-at-script-nodes = True</t>
-<t tx="ekr.20131003040744.17561">vr-toggle = Alt-0</t>
+<t tx="ekr.20131003040744.17561">find-quick-selected = Ctrl-Shift-F
+vr-toggle = Alt-0</t>
 <t tx="ekr.20131007055150.13034"></t>
 <t tx="ekr.20131008181812.17533">False: disable all drag and drop operations in the outline.</t>
 <t tx="ekr.20131009050634.17656"></t>
@@ -14344,6 +14358,159 @@ a menu separator.</t>
     # uint16_t
     # uint8_t
 </t>
+<t tx="ekr.20171121100639.1"></t>
+<t tx="ekr.20171122044417.1"># RULE :([\w_@]+:)+\s*$
+# REPLACE-HEAD
+</t>
+<t tx="ekr.20171122044441.1"># if the node name starts with 'peacock node DEMO', make a mess of it
+RULE ^(peacock node DEMO)
+REPLACE LOOK: \1
+ICON Tango/16x16/emotes/face-grin.png
+ICON Tango/16x16/emotes/face-wink.png
+FG @solarized-magenta
+BG white
+FONT Times
+PX 40
+ITALIC 1
+WEIGHT Bold
+</t>
+<t tx="ekr.20171122044441.2"># remove @clean etc. and use an icon
+RULE ^@clean (.*)
+REPLACE \1
+ICON file_icons/file_clean.png
+
+RULE ^@auto (.*)
+REPLACE \1
+ICON file_icons/file_auto.png
+
+RULE ^@edit (.*)
+REPLACE \1
+ICON file_icons/file_edit.png
+
+RULE ^@asis (.*)
+REPLACE \1
+ICON file_icons/file_asis.png
+
+RULE ^@nosent (.*)
+REPLACE \1
+ICON file_icons/file_nosent.png
+
+RULE ^@file (.*)
+REPLACE \1
+ICON file_icons/file_file.png
+</t>
+<t tx="ekr.20171122044441.3"># Add Icon to folders and remove /-/
+RULE ^/(.*)/$
+REPLACE \1 
+ICON file_icons/folder.png
+
+# Add icon to path folders and remove @path
+RULE ^@path (.*)
+REPLACE \1 
+ICON file_icons/folder_path.png
+
+# Add Icon to removed folders and remove */-/*
+RULE ^\*/(.*)/\*$
+REPLACE \1 
+ICON file_icons/folder_removed.png
+
+# Add Icon to removed files and remove *-* but not **-**
+RULE ^\*([^\*/]*[^\*]*[^\*/]*)\*$
+REPLACE \1 
+ICON file_icons/removed.png
+</t>
+<t tx="ekr.20171122044906.1"># show the last part of long filenames
+RULE ^.{1,1000}/(.{20})
+REPLACE …/\1
+</t>
+<t tx="ekr.20171122113628.1"># **Decluttering** replaces controls custom formatting of headlines, including:
+
+# - Hiding or changing headline text,
+# - Adding icons to headlines,
+# - Changing the styling of headlines.
+
+# Decluttering is *inactive* when you are editing a headline.
+
+# Decluttering is *completely optional*. To enable decluttering, use::
+
+     # @bool tree-declutter = True
+     
+# Decluttering is controlled by **decluttering rulesets**.
+# You specify decluttering rulesets in the body text of::
+     
+    # @data tree-declutter-patterns
+    
+# As usual with @data nodes:
+
+# - Blank lines and lines starting with '#' are ignored.
+# - You may organize the text of the @data node using child nodes.
+
+# Each ruleset consists of a list of lines:
+
+# - The first line is a **rule line**, containing a **find pattern**.
+# - The second line is a **replacement line**.
+# - The ruleset ends with zero or more **style lines**.
+
+# Find patterns are `regular expressions &lt;https://docs.python.org/2/library/re.html&gt;`_.
+# Decluttering affects only those headlines that match a rule pattern. 
+
+# The following section shows some example rulesets. Later sections discuss decluttering commands, patterns and styles in more detail.
+</t>
+<t tx="ekr.20171122113628.3"># All rulesets start with a **rule line** of the form::
+
+    # RULE &lt;regular expression&gt;
+    
+# The ruleset matches a headline if and only if the regular expression matches. Matches can start anywhere in the headline. Leo first attempts to a match using re.match. If that doesn't work, Leo tries re.search.
+
+# A **replacement line** must follow the rule line. Here are the valid forms::
+
+    # REPLACE &lt;substitution expression&gt;
+    # REPLACE-HEAD
+    # REPLACE-TAIL
+    # REPLACE-REST
+    
+# - REPLACE replaces the headline by the value of the substitution expression.  For example::
+
+    # REPLACE \1
+    
+  # matches replaces the headline by the first matched regex group.
+
+# - REPLACE-HEAD replaces replace the headline by the text that precedes the matched text.
+
+# - REPLACE-TAIL replaces the headline by the text that follows the matched text.
+
+# - REPLACE-REST replaces the headline by everything except the matched text.
+</t>
+<t tx="ekr.20171122113628.4"># Leo applies style lines only if they appear in a ruleset that matches a headline.
+# Style lines do the following...
+
+# Add an icon to the headline::
+
+    # ICON path/to/icon
+    
+# Set the background or foreground color to a color number or names::
+
+    # BG #FF8800
+    # FG @solarized-magenta
+
+# Set the font to a given font name::
+
+    # Font Times
+    
+# Set the font size in pixels (PX) or points (PT)::
+
+    # PX 40
+    # PT 16
+    
+# Enable or disable italics::
+
+    # ITALIC 0
+    # ITALIC 1
+
+# Set the font weight to one of Light, Normal, DemiBold, Bold, Black::
+
+    # WEIGHT DemoBold
+</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
@@ -14735,86 +14902,16 @@ c.k.simulateCommand('show-fonts')
 <t tx="tbrown.20150807123339.1" lineYOffset="4b002e">Set to True to enable node appearance modifications
 See tree-declutter-patterns
 </t>
-<t tx="tbrown.20150807123421.1" lineYOffset="4b002e"># regex patterns to reformat the appearance of nodes
-# tree-declutter must be set to True for these to function
-#
-# lines starting with '#' are ignored
-# each rules starts with 'RULE' followed by the regex pattern to match
-# non-blank non-# lines before the next RULE are commands:
-# REPLACE &lt;text on rest of line&gt;
-#   replacement text
-# ICON path/to/icon
-#   icon to add
-# FG
-#   a color, e.g. #FF8800 or @solarized-magenta
-# BG
-#   a color, e.g. #FF8800 or @solarized-magenta
-# FONT
-#   The name of a font, e.g. Times
-# PX
-#   A font size in pixels, e.g. 40
-# PT
-#   A font size in points, e.g. 40
-# ITALIC
-#   0 or 1
-# WEIGHT
-#   one of Light, Normal, DemiBold, Bold, Black
+<t tx="tbrown.20150807123421.1" lineYOffset="4b002e"># **Decluttering** replaces controls custom formatting of headlines, including:
 
-# if the node name starts with 'peacock node DEMO', make a mess of it
-RULE ^(peacock node DEMO)
-REPLACE LOOK: \1
-ICON Tango/16x16/emotes/face-grin.png
-ICON Tango/16x16/emotes/face-wink.png
-FG @solarized-magenta
-BG white
-FONT Times
-PX 40
-ITALIC 1
-WEIGHT Bold
+# - Hiding or changing headline text,
+# - Adding icons to headlines,
+# - Changing the styling of headlines.
 
-# remove @clean etc. and use an icon
-RULE ^@clean (.*)
-REPLACE \1
-ICON file_icons/file_clean.png
-RULE ^@auto (.*)
-REPLACE \1
-ICON file_icons/file_auto.png
-RULE ^@edit (.*)
-REPLACE \1
-ICON file_icons/file_edit.png
-RULE ^@asis (.*)
-REPLACE \1
-ICON file_icons/file_asis.png
-RULE ^@nosent (.*)
-REPLACE \1
-ICON file_icons/file_nosent.png
-RULE ^@file (.*)
-REPLACE \1
-ICON file_icons/file_file.png
+# @bool tree-declutter must be True to enable decluttering.
 
-# Add Icon to folders and remove /-/
-RULE ^/(.*)/$
-REPLACE \1 
-ICON file_icons/folder.png
-
-# Add icon to path folders and remove @path
-RULE ^@path (.*)
-REPLACE \1 
-ICON file_icons/folder_path.png
-
-# Add Icon to removed folders and remove */-/*
-RULE ^\*/(.*)/\*$
-REPLACE \1 
-ICON file_icons/folder_removed.png
-
-# Add Icon to removed files and remove *-* but not **-**
-RULE ^\*([^\*/]*[^\*]*[^\*/]*)\*$
-REPLACE \1 
-ICON file_icons/removed.png
-
-# show the last part of long filenames
-RULE ^.{1,1000}/(.{20})
-REPLACE …/\1
+# blank lines and lines starting with '#' are ignored.
+# See the children of this node for details.
 </t>
 <t tx="tbrown.20150810084824.1">Separation between icons on tree node items</t>
 <t tx="tbrown.20150821171510.1">This data is used by SettingsFinder.build_menu() to build the

@@ -46,7 +46,7 @@ class TS_Importer(Importer):
         if trace: g.trace('returns', i, s[i] if i < len(s) else '')
         return i-1
     #@+node:ekr.20161118093751.5: *3* js_i.clean_headline
-    def clean_headline(self, s):
+    def clean_headline(self, s, p=None):
         '''Return a cleaned up headline s.'''
         s = s.strip()
         # Don't clean a headline twice.

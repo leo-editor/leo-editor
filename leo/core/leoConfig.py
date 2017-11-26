@@ -685,6 +685,12 @@ class ParserBaseClass(object):
                 assert g.isShortcutInfo(si), si
                 if si and si.stroke not in (None, 'none', 'None'):
                     self.doOneShortcut(si, commandName, p)
+                else:
+                    # New in Leo 5.7: Add local assignments to None to c.k.killedBindings.
+                    if c.config.isLocalSettingsFile():
+                        if trace: g.trace('%s: killing binding to %s' % (
+                            c.shortFileName(), commandName))
+                        c.k.killedBindings.append(commandName)
         if trace: g.trace(
             len(list(self.shortcutsDict.keys())), c.shortFileName(), p.h)
     #@+node:ekr.20111020144401.9585: *5* doOneShortcut (ParserBaseClass)
@@ -1841,6 +1847,15 @@ class LocalConfigManager(object):
         path = gs.path.lower()
         for fn in ('myLeoSettings.leo', 'leoSettings.leo'):
             if path.endswith(fn.lower()):
+                return False
+        return True
+    #@+node:ekr.20171119222458.1: *4* c.config.isLocalSettingsFile (new)
+    def isLocalSettingsFile(self):
+        '''Return true if c is not leoSettings.leo or myLeoSettings.leo'''
+        c = self.c
+        fn = c.shortFileName().lower()
+        for fn2 in ('leoSettings.leo', 'myLeoSettings.leo'):
+            if fn.endswith(fn2.lower()):
                 return False
         return True
     #@+node:ekr.20120224140548.10528: *4* c.exists (new)

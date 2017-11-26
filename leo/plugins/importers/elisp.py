@@ -68,7 +68,7 @@ class Elisp_Importer(Importer):
     #@+node:ekr.20161127184128.4: *3* elisp_i.clean_headline
     elisp_clean_pattern = re.compile(r'^\s*\(\s*defun\s+([\w_-]+)')
 
-    def clean_headline(self, s):
+    def clean_headline(self, s, p=None):
         '''Return a cleaned up headline s.'''
         m = self.elisp_clean_pattern.match(s)
         if m and m.group(1):

@@ -1608,6 +1608,8 @@ class LeoFind(object):
             p2 = p.copy()
             n = found.numberOfChildren()
             p2._linkAsNthChild(found, n, adjust=False)
+        # Sort the clones in place, without undo.
+        found.v.children.sort(key=lambda v: v.h.lower())
         return found
     #@+node:ekr.20160422071747.1: *6* find.doCloneFindAllHelper
     def doCloneFindAllHelper(self, clones, count, flatten, p, skip):

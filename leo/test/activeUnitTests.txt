@@ -5417,6 +5417,7 @@ try:
     try:
         c.markAllAtFileNodesDirty()
     except Exception:
+        g.es_exception()
         ok = False
 finally:
     for p in c.all_positions():
@@ -5427,7 +5428,7 @@ finally:
             if p.isMarked():
                 c.clearMarked(p)
 
-if not ok: raise
+assert ok
 #@+node:ekr.20050512083822.1: *4* @test c.markSubheads
 marks = [p.v for p in c.all_positions() if p.isMarked()]
 try:
@@ -14927,7 +14928,31 @@ try:
 finally:
     if 1:
         p.deleteAllChildren()
-        c.redraw()
+    c.redraw()
+#@+node:ekr.20171120113732.1: *6* @test org tags
+s = '''\
+* Section 1 :tag1:
+* Section 2 :tag2:
+* Section 3 :tag3:tag4:
+'''
+table = (
+    'Section 1 :tag1:',
+    'Section 2 :tag2:',
+    'Section 3 :tag3:tag4:',
+)
+try:
+    c.importCommands.orgUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
 
 #@+node:ekr.20161124040933.1: *5* otl (vim-outline) tests
 #@+node:ekr.20161124040933.2: *6* @test otl-1
@@ -28462,7 +28487,7 @@ after
 #@+node:ekr.20050518070540.4: *7* selection
 2.0
 2.16
-#@+node:ekr.20050518070927: *6* extractSection test1
+#@+node:ekr.20050518070927: *6* extract test3
 #@+node:ekr.20050518070927.1: *7* before
 before
     << section >>
@@ -28481,7 +28506,7 @@ sec line 3
 #@+node:ekr.20050518070927.4: *7* selection
 2.0
 5.10
-#@+node:ekr.20050518071251: *6* extractSection test2
+#@+node:ekr.20050518071251: *6* extract test4
 #@+node:ekr.20050518071251.1: *7* before
 before
     << section >>

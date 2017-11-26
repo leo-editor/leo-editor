@@ -31,7 +31,7 @@ class Lua_Importer(Importer):
     # Define necessary overrides.
     #@+others
     #@+node:ekr.20170530024520.5: *3* lua_i.clean_headline
-    def clean_headline(self, s):
+    def clean_headline(self, s, p=None):
         '''Return a cleaned up headline s.'''
         s = s.strip()
         for tag in ('local', 'function'):

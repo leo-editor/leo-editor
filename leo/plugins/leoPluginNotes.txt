@@ -277,6 +277,18 @@ Terry Brown created this initial version of this plugin, and the free_layout and
 EKR generalized this plugin and added communication and coordination between the free_layout, NestedSplitter and viewrendered plugins.
 
 Jacob Peck added markdown support.
+#@+node:ekr.20171121020232.1: ** orgw.compute_headline (not used)
+###
+# def compute_headline(self, p):
+    # '''
+    # Return the headline to be written, possibly adding tags.
+    # '''
+    # if self.remove_tags and self.tc:
+        # tags = self.tc.get_tags(p.v)
+        # if tags:
+            # # Sort the tags for unit tests.
+            # return '%s :%s:' % (p.h.strip(), ':'.join(sorted(tags)))
+    # return p.h
 #@-all
 #@@killbeautify
 # This file contains unused plugins and code

@@ -123,6 +123,9 @@ import time
 # inverseBindingDict (5)  command names       lists of tuples (pane,key)
 # modeCommandsDict (6)    command name (7)    inner modeCommandsDicts (8)
 # 
+# New in Leo 4.7:
+# k.killedBindings is a list of command names for which bindings have been killed in local files.
+# 
 # Notes:
 # 
 # (1) Command names are minibuffer names (strings)
@@ -1682,6 +1685,8 @@ class KeyHandlerClass(object):
             # A singleton defined in k.finishCreate.
         self.inited = False
             # Set at end of finishCreate.
+        self.killedBindings = []
+            # A list of commands whose bindings have been set to None in the local file.
         self.swap_mac_keys = False
             # How to init this??
         self.w = None
@@ -2286,10 +2291,16 @@ class KeyHandlerClass(object):
 
         def openWithCallback(event=None, c=c, d=d):
             return c.openWith(d=d)
-        # Use k.registerCommand to set the shortcuts in the various binding dicts.
 
+        # Use k.registerCommand to set the shortcuts in the various binding dicts.
         commandName = 'open-with-%s' % name.lower()
-        k.registerCommand(commandName, openWithCallback, shortcut=shortcut)
+        k.registerCommand(
+            allowBinding=True,
+            commandName=commandName,
+            func=openWithCallback,
+            pane='all',
+            shortcut=shortcut,
+        )
     #@+node:ekr.20061031131434.95: *4* k.checkBindings
     def checkBindings(self):
         '''Print warnings if commands do not have any @shortcut entry.
@@ -2383,34 +2394,11 @@ class KeyHandlerClass(object):
                         found = True; break
             if not found and warn:
                 g.trace('no setting for %s' % commandName)
-    #@+node:ekr.20161026041659.1: *4* k.killBinding
-    def killBinding(self, commandName):
-        '''
-        Kill all bindings for all keystrokes presently assigned to commandName.
-        This is effectively the inverse of k.bindKey()
-        
-        - Remove all matching entries from k.bindingsDict.
-          Keys are shortcuts, values are lists of ShortcutInfo objects.
-        - Remove any matching entry from k.masterBindingDict.
-          Keys are strokes, values are list of widgets in which stoke is bound
-        '''
-        c = self.c
-        raw_key, aList = c.config.getShortcut(commandName)
-        g.trace(commandName)
-        g.printList(aList)
-        
-        ### From k.registerCommand
-            # raw_key, aList = c.config.getShortcut(commandName)
-            # for si in aList:
-                # assert g.isShortcutInfo(si), si
-                # assert g.isStrokeOrNone(si.stroke)
-                # if si.stroke and not si.pane.endswith('-mode'):
-                    # stroke = si.stroke
-                    # pane = si.pane # 2015/05/11.
-                    # break
     #@+node:ekr.20061031131434.98: *4* k.makeAllBindings
     def makeAllBindings(self):
         '''Make all key bindings in all of Leo's panes.'''
+        trace = False and not g.unitTesting
+        if trace: t1 = time.clock()
         k = self
         k.bindingsDict = {}
         k.addModeCommands()
@@ -2419,6 +2407,7 @@ class KeyHandlerClass(object):
         k.initAbbrev()
         k.completeAllBindings()
         k.checkBindings()
+        if trace: g.trace('%4.2f sec.' % (time.clock()-t1))
     #@+node:ekr.20061031131434.102: *4* k.makeBindingsFromCommandsDict
     def makeBindingsFromCommandsDict(self):
         '''Add bindings for all entries in c.commandsDict.'''
@@ -2633,12 +2622,11 @@ class KeyHandlerClass(object):
         except Exception:
             g.es_exception()
             self.keyboardQuit()
-    #@+node:ekr.20061031131434.112: *5* callAltXFunction
+    #@+node:ekr.20061031131434.112: *5* k.callAltXFunction
     def callAltXFunction(self, event):
         '''Call the function whose name is in the minibuffer.'''
         trace = False and not g.unitTesting
         c, k = self.c, self
-        # s = k.getLabel()
         k.mb_tabList = []
         commandName, tail = k.getMinibufferCommandName()
         if trace: g.trace('command:', commandName, 'tail:', tail)
@@ -2665,17 +2653,11 @@ class KeyHandlerClass(object):
                 c.bodyWantsFocusNow()
                 # Change the event widget so we don't refer to the to-be-deleted headline widget.
                 event.w = event.widget = c.frame.body.wrapper.widget
-                try:
-                    func(event)
-                except Exception:
-                    g.es_exception()
+                c.executeAnyCommand(func, event)
             else:
                 c.widgetWantsFocusNow(event and event.widget)
                     # Important, so cut-text works, e.g.
-                try:
-                    func(event)
-                except Exception:
-                    g.es_exception()
+                c.executeAnyCommand(func, event)
             k.endCommand(commandName)
             return True
         else:
@@ -3116,38 +3098,59 @@ class KeyHandlerClass(object):
                     d2[key2] = si
     #@+node:ekr.20061031131434.131: *4* k.registerCommand
     def registerCommand(self, commandName, func,
+        allowBinding=False,
         pane='all',
-        shortcut='', # Deprecated.
-        source_c=None,
-        verbose=False
+        shortcut=None, # Must be None unless allowBindings is True.
+        **kwargs
     ):
         '''
-        Make the function available as a minibuffer command,
-        and optionally attempt to bind a shortcut.
-
+        Make the function available as a minibuffer command.
+        
         You can wrap any method in a callback function, so the
         restriction to functions is not significant.
-
-        If wrap is True then func will be wrapped with c.universalCallback.
-        source_c is the commander in which an @command or @button node is defined.
-
+        
+        Ignore the 'shortcut' arg unless 'allowBinding' is True.
+        
+        Only k.bindOpenWith and the mod_scripting.py plugin should set
+        allowBinding.
+        '''
+        c, k = self.c, self
+        if not func:
+            g.es_print('Null func passed to k.registerCommand\n', commandName)
+            return
+        f = c.commandsDict.get(commandName)
+        if f and f.__name__ != func.__name__:
+            g.trace('redefining', commandName, f, '->', func)
+        c.commandsDict[commandName] = func
+        # Warn about deprecated arguments.
+        if shortcut and not allowBinding:
+            g.es_print('The "shortcut" keyword arg to k.registerCommand will be ignored')
+            g.es_print('Called from', g.callers())
+            shortcut = None
+        for arg, val in kwargs.items():
+            if val is not None:
+                g.es_print('The "%s" keyword arg to k.registerCommand is deprecated' % arg)
+                g.es_print('Called from', g.callers())
+        # Make requested bindings, even if a warning has been given.
+        # This maintains strict compatibility with existing plugins and scripts.
+        k.registerCommandShortcut(
+            commandName=commandName,
+            func=func,
+            pane=pane,
+            shortcut=shortcut,
+        )
+    #@+node:ekr.20171124043747.1: *4* k.registerCommandShortcut
+    def registerCommandShortcut(self, commandName, func, pane, shortcut):
+        '''
+        Register a shortcut for the a command.
+        
         **Important**: Bindings created here from plugins can not be overridden.
         This includes @command and @button bindings created by mod_scripting.py.
         '''
         trace = False and not g.unitTesting and not g.app.silentMode
         c, k = self.c, self
         is_local = c.shortFileName() not in ('myLeoSettings.leo', 'leoSettings.leo')
-        if not func:
-            g.es_print('Null func passed to k.registerCommand\n', commandName)
-            return
-        # Several plugins and methods, including mod_scripting.py, must define shortcuts.
-            # if shortcut: # This is not necessarily wrong.
-                # g.es_print('The "shortcut" arg to k.registerCommand is deprecated', commandName)
-        f = c.commandsDict.get(commandName)
-        if f and f.__name__ != func.__name__:
-            g.trace('redefining', commandName, f, '->', func)
         assert not g.isStroke(shortcut)
-        c.commandsDict[commandName] = func
         if shortcut:
             stroke = k.strokeFromSetting(shortcut)
         elif commandName.lower() == 'shortcut': # Causes problems.
@@ -3170,10 +3173,6 @@ class KeyHandlerClass(object):
             k.bindKey(pane, stroke, func, commandName, tag='register-command')
                 # Must be a stroke.
             k.makeMasterGuiBinding(stroke, trace=trace) # Must be a stroke.
-        # New in Leo 5.7: it's not possible to kill bindings from k.registerCommand.
-            # elif is_local:
-                # if trace: g.trace('KILL:', commandName)
-                # k.killBinding(commandName)
         if trace:
             # pretty_stroke = k.prettyPrintKey(stroke) if stroke else 'None'
             g.trace('@command %-45s' % (commandName), g.callers(2))
@@ -3189,16 +3188,23 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.127: *4* k.simulateCommand & k.commandExists
     def simulateCommand(self, commandName, event=None):
         '''Execute a Leo command by name.'''
-        k = self; c = k.c
+        trace = False and not g.unitTesting
+        c, k = self.c, self
         func = self.commandExists(commandName)
         if func:
-            # g.trace(commandName,func.__name__)
+            # Support @g.commander_command
+            c_func = getattr(c, func.__name__, None)
+            if c_func:
+                if trace:
+                    g.trace('@g.commander_command(%s): %s' % (commandName,func.__name__))
+                return c_func(event=event)
             if event:
                 pass
             elif commandName.startswith('specialCallback'):
                 event = None # A legacy function.
             else: # Create a dummy event as a signal.
                 event = g.app.gui.create_key_event(c, None, None, None)
+            if trace: g.trace(event)
             k.masterCommand(event=event, func=func)
             if c.exists:
                 return k.funcReturn
@@ -3319,7 +3325,11 @@ class KeyHandlerClass(object):
                 return
         # 2011/02/08: Use getPaneBindings for *all* keys.
         si = k.getPaneBinding(stroke, w)
-        if si:
+        if si and si.commandName in k.killedBindings:
+            # 327: ignore killed bindings.
+            if trace and trace_unbound: g.trace('  killed', stroke)
+            k.handleUnboundKeys(event, char, stroke)
+        elif si:
             assert g.isShortcutInfo(si), si
             if traceGC: g.printNewObjects('masterKey 3')
             if trace: g.trace('   bound', stroke, si.func.__name__)
@@ -3477,7 +3487,7 @@ class KeyHandlerClass(object):
         trace = False and not g.unitTesting
         trace_dict = False
         verbose = False
-        k = self; w_name = k.c.widget_name(w)
+        k, w_name = self, self.c.widget_name(w)
         state = k.unboundKeyAction
         if not g.isStroke(stroke):
             g.trace('can not happen: not a stroke', repr(stroke), g.callers())
@@ -3701,7 +3711,7 @@ class KeyHandlerClass(object):
         This returns None, but may set k.funcReturn.
         '''
         c, k = self.c, self
-        trace = False and not g.unitTesting and g.app.gui.guiName() == 'curses'
+        trace = False and not g.unitTesting # and g.app.gui.guiName() == 'curses'
         traceGC = False
         traceStroke = True
         # if trace: g.trace(commandName, func)

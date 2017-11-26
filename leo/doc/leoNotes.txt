@@ -7049,7 +7049,7 @@ old_attrs = [
     'editFileCommands',
     'editHeadline',
     'edit_widget',
-    'enableMenuBar',
+    # 'enableMenuBar',
     'endEditing',
     'endUpdate',
     'endsParagraph',
@@ -25748,6 +25748,91 @@ def unpack_object(self):
 
 .. @+node:ekr.20170404102619.1: ** Unused code
 @language python
+.. @+node:ekr.20120306130648.9849: *3* c.enableMenuBar
+def enableMenuBar(self):
+    '''A failed attempt to work around Ubuntu Unity memory bugs.'''
+    c = self
+    # g.trace(c.frame.title,g.callers())
+    if 0:
+        if c.frame.menu.isNull:
+            return
+        for frame in g.app.windowList:
+            if frame != c.frame:
+                frame.menu.menuBar.setDisabled(True)
+        c.frame.menu.menuBar.setEnabled(True)
+.. @+node:ekr.20031218072017.2092: *3* c.openCompareWindow (not used)
+def openCompareWindow(self, event=None):
+    '''Open a dialog for comparing files and directories.'''
+    c = self; frame = c.frame
+    if not frame.comparePanel:
+        frame.comparePanel = g.app.gui.createComparePanel(c)
+    if frame.comparePanel:
+        frame.comparePanel.bringToFront()
+    else:
+        g.warning('the', g.app.gui.guiName(),
+            'gui does not support the compare window')
+.. @+node:ekr.20110605121601.18588: *3* jedit.setFontFromConfig (no longer used)
+def setFontFromConfig(self):
+    c = self.c
+    self.bold_font = c.config.getFontFromParams(
+        "body_text_font_family", "body_text_font_size",
+        "body_text_font_slant", "body_text_font_weight",
+        c.config.defaultBodyFontSize)
+    self.italic_font = c.config.getFontFromParams(
+        "body_text_font_family", "body_text_font_size",
+        "body_text_font_slant", "body_text_font_weight",
+        c.config.defaultBodyFontSize)
+    self.bolditalic_font = c.config.getFontFromParams(
+        "body_text_font_family", "body_text_font_size",
+        "body_text_font_slant", "body_text_font_weight",
+        c.config.defaultBodyFontSize)
+    self.color_tags_list = []
+.. @+node:ekr.20170901070753.1: *3* k.bindLate (not used)
+def bindLate(self, commandName, func, pane='all', shortcut='None'):
+    '''New in Leo 5.6: A convenience method for late bindings.'''
+    trace = False and not g.unitTesting # and commandName.startswith('bookmarks')
+    c, k = self.c, self
+    stroke=k.strokeFromSetting(shortcut) # Must be a stroke, even if it represents an empty shortcut.
+    if trace: g.trace('%7s %35s %s' % (pane, commandName, shortcut))
+    # Similar to k.makeBindingsFromCommandsDict.
+    key, aList = c.config.getShortcut(commandName)
+    for si in aList:
+        assert isinstance(si, g.ShortcutInfo)
+        if commandName == si.commandName and not si.pane.endswith('-mode'):
+            k.bindKey(
+                commandName=commandName,
+                callback=func,
+                pane=si.pane,
+                shortcut=stroke, # Must be a Stroke.
+                tag='k.bindLate',
+            )
+    if shortcut:
+        k.makeMasterGuiBinding(stroke)
+.. @+node:ekr.20161026041659.1: *3* k.killBinding (not used)
+def killBinding(self, commandName):
+    '''
+    Kill all bindings for all keystrokes presently assigned to commandName.
+    This is effectively the inverse of k.bindKey()
+    
+    - Remove all matching entries from k.bindingsDict.
+      Keys are shortcuts, values are lists of ShortcutInfo objects.
+    - Remove any matching entry from k.masterBindingDict.
+      Keys are strokes, values are list of widgets in which stoke is bound
+    '''
+    c = self.c
+    raw_key, aList = c.config.getShortcut(commandName)
+    g.trace(commandName)
+    g.printList(aList)
+    
+    ### From k.registerCommand
+        # raw_key, aList = c.config.getShortcut(commandName)
+        # for si in aList:
+            # assert g.isShortcutInfo(si), si
+            # assert g.isStrokeOrNone(si.stroke)
+            # if si.stroke and not si.pane.endswith('-mode'):
+                # stroke = si.stroke
+                # pane = si.pane # 2015/05/11.
+                # break
 .. @+node:ekr.20170804153417.1: *3* Leo exits after imp.reload(g)
 .. @+node:ekr.20170804153417.2: *4* c.executeScript & helpers
 @cmd('execute-script')
@@ -25947,22 +26032,6 @@ def diff_file(self, fn):
             g.trace('found', fn)
         else:
             g.trace('not found', fn)
-.. @+node:ekr.20110605121601.18588: *3* jedit.setFontFromConfig (no longer used)
-def setFontFromConfig(self):
-    c = self.c
-    self.bold_font = c.config.getFontFromParams(
-        "body_text_font_family", "body_text_font_size",
-        "body_text_font_slant", "body_text_font_weight",
-        c.config.defaultBodyFontSize)
-    self.italic_font = c.config.getFontFromParams(
-        "body_text_font_family", "body_text_font_size",
-        "body_text_font_slant", "body_text_font_weight",
-        c.config.defaultBodyFontSize)
-    self.bolditalic_font = c.config.getFontFromParams(
-        "body_text_font_family", "body_text_font_size",
-        "body_text_font_slant", "body_text_font_weight",
-        c.config.defaultBodyFontSize)
-    self.color_tags_list = []
 .. @+node:ekr.20171114100155.1: *3* reloadSettings (LeoQtTreeTab)
 # Apparently, none of these settings are used!
 def reloadSettings(self):
@@ -25978,27 +26047,6 @@ def reloadSettings(self):
         'unselected_chapter_tab_background_color') or 'lightgrey'
     self.unselectedTabForegroundColor = c.config.getColor(
         'unselected_chapter_tab_foreground_color') or 'black'
-.. @+node:ekr.20170901070753.1: *3* k.bindLate (not used)
-def bindLate(self, commandName, func, pane='all', shortcut='None'):
-    '''New in Leo 5.6: A convenience method for late bindings.'''
-    trace = False and not g.unitTesting # and commandName.startswith('bookmarks')
-    c, k = self.c, self
-    stroke=k.strokeFromSetting(shortcut) # Must be a stroke, even if it represents an empty shortcut.
-    if trace: g.trace('%7s %35s %s' % (pane, commandName, shortcut))
-    # Similar to k.makeBindingsFromCommandsDict.
-    key, aList = c.config.getShortcut(commandName)
-    for si in aList:
-        assert isinstance(si, g.ShortcutInfo)
-        if commandName == si.commandName and not si.pane.endswith('-mode'):
-            k.bindKey(
-                commandName=commandName,
-                callback=func,
-                pane=si.pane,
-                shortcut=stroke, # Must be a Stroke.
-                tag='k.bindLate',
-            )
-    if shortcut:
-        k.makeMasterGuiBinding(stroke)
 .. @-all
 .. @@nosearch
 .. @-leo

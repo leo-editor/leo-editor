@@ -38,7 +38,7 @@ class Java_Importer(Importer):
 
     #@+others
     #@+node:ekr.20161126163014.1: *3* java_i.clean_headline
-    def clean_headline(self, s):
+    def clean_headline(self, s, p=None):
         '''Return the cleaned headline.'''
         if s.strip().endswith('{'):
             return s.strip('{').strip()

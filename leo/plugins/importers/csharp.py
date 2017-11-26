@@ -20,7 +20,7 @@ class Csharp_Importer(Importer):
 
     #@+others
     #@+node:ekr.20161121200106.5: *3* csharp.clean_headline
-    def clean_headline(self, s):
+    def clean_headline(self, s, p=None):
         '''Return a cleaned up headline s.'''
         s = s.strip()
         if s.endswith('{'):

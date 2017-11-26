@@ -223,7 +223,7 @@ class LeoQtTree(leoFrame.LeoTree):
         self.declutter_update = True
 
         return None
-    #@+node:tbrown.20150807090639.1: *5* qtree.declutter_node
+    #@+node:tbrown.20150807090639.1: *5* qtree.declutter_node & helpers
     def declutter_node(self, c, p, item):
         """declutter_node - change the appearance of a node
 
@@ -231,54 +231,35 @@ class LeoQtTree(leoFrame.LeoTree):
         :param position p: position of node
         :param QWidgetItem item: tree node widget item
         """
+        trace = False and not g.unitTesting
         if self.declutter_patterns is None:
             self.declutter_patterns = []
             lines = c.config.getData("tree-declutter-patterns")
-            while lines:
-                line = lines.pop(0)
-                cmd, arg = line.split(None, 1)
+            for line in lines:
+                try:
+                    cmd, arg = line.split(None, 1)
+                except ValueError:
+                    # Allow empty arg, and guard against user errors.
+                    cmd = line.strip()
+                    arg = ''
                 if cmd == 'RULE':
                     self.declutter_patterns.append((re.compile(arg), []))
-                    continue
-                self.declutter_patterns[-1][1].append((cmd, arg))
-
+                else:
+                    self.declutter_patterns[-1][1].append((cmd, arg))
+            if trace: g.trace('PATTERNS', self.declutter_patterns)
         text = str(item.text(0)) if g.isPython3 else g.u(item.text(0))
         new_icons = []
         for pattern, cmds in self.declutter_patterns:
-            if pattern.match(text):
-
-                for cmd, arg in cmds:
-                    if cmd == 'REPLACE':
-                        text = pattern.sub(arg, text)
-                        item.setText(0, text)
-                        continue
-                    arg = c.styleSheetManager.expand_css_constants(arg).split()[0]
-                    if cmd == 'ICON':
-                        new_icons.append(arg)
-                    elif cmd == 'BG':
-                        item.setBackground(0, QtGui.QBrush(QtGui.QColor(arg)))
-                    elif cmd == 'FG':
-                        item.setForeground(0, QtGui.QBrush(QtGui.QColor(arg)))
-                    elif cmd == 'FONT':
-                        item.setFont(0, QtGui.QFont(arg))
-                    elif cmd == 'ITALIC':
-                        font = item.font(0)
-                        font.setItalic(bool(int(arg)))
-                        item.setFont(0, font)
-                    elif cmd == 'WEIGHT':
-                        arg = getattr(QtGui.QFont, arg, 75)
-                        font = item.font(0)
-                        font.setWeight(arg)
-                        item.setFont(0, font)
-                    elif cmd == 'PX':
-                        font = item.font(0)
-                        font.setPixelSize(int(arg))
-                        item.setFont(0, font)
-                    elif cmd == 'PT':
-                        font = item.font(0)
-                        font.setPointSize(int(arg))
-                        item.setFont(0, font)
-
+            for func in (pattern.match, pattern.search):
+                m = func(text)
+                if m:
+                    # if trace: g.trace(func.__name__, text)
+                    for cmd, arg in cmds:
+                        if self.declutter_replace(arg, cmd, item, m, pattern, text):
+                            pass
+                        else:
+                            self.declutter_style(arg, c, cmd, item, new_icons)
+                    break # Don't try pattern.search if pattern.match succeeds.
         com = c.editCommands
         allIcons = com.getIconList(p)
         icons = [i for i in allIcons if 'visualIcon' not in i]
@@ -290,6 +271,59 @@ class LeoQtTree(leoFrame.LeoTree):
                     on='vnode', visualIcon='1'
                 )
             com.setIconList(p, icons, False)
+    #@+node:ekr.20171122064635.1: *6* qtree.declutter_replace
+    def declutter_replace(self, arg, cmd, item, m, pattern, text):
+        '''
+        Execute cmd and return True if cmd is any replace command.
+        '''
+        if cmd == 'REPLACE':
+            text = pattern.sub(arg, text)
+            item.setText(0, text)
+            return True
+        elif cmd == 'REPLACE-HEAD':
+            s = text[:m.start()]
+            item.setText(0, s.rstrip())
+            return True
+        elif cmd == 'REPLACE-TAIL':
+            s = text[m.end():]
+            item.setText(0, s.lstrip())
+            return True
+        elif cmd == 'REPLACE-REST':
+            s = text[:m.start] + text[m.end():]
+            item.setText(0, s.strip())
+            return True
+        else:
+            return False
+        
+    #@+node:ekr.20171122055719.1: *6* qtree.declutter_style
+    def declutter_style(self, arg, c, cmd, item, new_icons):
+        '''Handle style options.'''
+        arg = c.styleSheetManager.expand_css_constants(arg).split()[0]
+        if cmd == 'ICON':
+            new_icons.append(arg)
+        elif cmd == 'BG':
+            item.setBackground(0, QtGui.QBrush(QtGui.QColor(arg)))
+        elif cmd == 'FG':
+            item.setForeground(0, QtGui.QBrush(QtGui.QColor(arg)))
+        elif cmd == 'FONT':
+            item.setFont(0, QtGui.QFont(arg))
+        elif cmd == 'ITALIC':
+            font = item.font(0)
+            font.setItalic(bool(int(arg)))
+            item.setFont(0, font)
+        elif cmd == 'WEIGHT':
+            arg = getattr(QtGui.QFont, arg, 75)
+            font = item.font(0)
+            font.setWeight(arg)
+            item.setFont(0, font)
+        elif cmd == 'PX':
+            font = item.font(0)
+            font.setPixelSize(int(arg))
+            item.setFont(0, font)
+        elif cmd == 'PT':
+            font = item.font(0)
+            font.setPointSize(int(arg))
+            item.setFont(0, font)
     #@+node:ekr.20110605121601.17874: *5* qtree.drawChildren
     def drawChildren(self, p, parent_item):
         '''Draw the children of p if they should be expanded.'''

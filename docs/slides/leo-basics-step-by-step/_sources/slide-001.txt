@@ -1,8 +1,0 @@
-=========================
-Leo Basics Step By Step:1
-=========================
-
-
-This is a step-by-step introduction to show you
-how to use Leo outlines.
-

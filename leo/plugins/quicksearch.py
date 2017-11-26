@@ -179,7 +179,8 @@ def install_qt_quicksearch_tab(c):
         wdg.scon.doTimeline()
 
     c.k.registerCommand('find-quick', focus_quicksearch_entry)
-    c.k.registerCommand('find-quick-selected', find_selected, shortcut='Ctrl-Shift-f')
+    c.k.registerCommand('find-quick-selected', find_selected)
+        ### , shortcut='Ctrl-Shift-f')
     c.k.registerCommand('focus-to-nav', focus_to_nav)
     c.k.registerCommand('find-quick-test-failures', show_unittest_failures)
     c.k.registerCommand('find-quick-timeline', timeline)

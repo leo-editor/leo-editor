@@ -2286,6 +2286,57 @@ class Command(object):
         return func
 
 command = Command
+#@+node:ekr.20171124070654.1: *3* g.command_alias
+def command_alias(alias, func):
+    '''Create an alias for the *already defined* method in the Commands class.'''
+    import leo.core.leoCommands as leoCommands
+    assert hasattr(leoCommands.Commands, func.__name__)
+    funcToMethod(func, leoCommands.Commands, alias)
+#@+node:ekr.20171123095526.1: *3* g.commander_command (decorator)
+class CommanderCommand(object):
+    '''
+    A global decorator for creating commander commands, that is, commands
+    that were formerly methods of the Commands class in leoCommands.py.
+    
+    Usage:
+
+        @g.command('command-name')
+        def command_name(self, *args, **kwargs):
+            ...
+        
+    The decorator injects command_name into the Commander class and calls
+    funcToMethod so the ivar will be injected in all future commanders.
+
+    g can *not* be used anywhere in this class!
+    '''
+
+    def __init__(self, name, **kwargs):
+        '''Ctor for command decorator class.'''
+        self.name = name
+
+    def __call__(self, func):
+        '''Register command for all future commanders.'''
+        
+        def commander_command_wrapper(event):
+            c = event.get('c')
+            method = getattr(c, func.__name__, None)
+            method(event=event)
+            
+        # Inject ivars for plugins_menu.py.
+        commander_command_wrapper.__name__ = 'commander_command_wrapper: %s' % self.name
+        commander_command_wrapper.__doc__ = func.__doc__
+        global_commands_dict[self.name] = commander_command_wrapper
+        if app:
+            import leo.core.leoCommands as leoCommands
+            funcToMethod(func, leoCommands.Commands)
+            for c in app.commanders():
+                c.k.registerCommand(self.name, func)
+        # Inject ivars for plugins_menu.py.
+        func.is_command = True
+        func.command_name = self.name
+        return func
+
+commander_command = CommanderCommand
 #@+node:ekr.20150508164812.1: *3* g.ivars2instance
 def ivars2instance(c, g, ivars):
     '''
@@ -2307,7 +2358,7 @@ def ivars2instance(c, g, ivars):
             g.trace('can not happen: unknown attribute', obj, ivar, ivars)
             break
     return obj
-#@+node:ekr.20150508134046.1: *3* g.new_cmd_decorator
+#@+node:ekr.20150508134046.1: *3* g.new_cmd_decorator (decorator)
 def new_cmd_decorator(name, ivars):
     '''
     Return a new decorator for a command with the given name.
@@ -2316,7 +2367,7 @@ def new_cmd_decorator(name, ivars):
 
     def _decorator(func):
 
-        def wrapper(event):
+        def new_cmd_wrapper(event):
             c = event.c
             self = g.ivars2instance(c, g, ivars)
             try:
@@ -2326,9 +2377,9 @@ def new_cmd_decorator(name, ivars):
             except Exception:
                 g.es_exception()
 
-        wrapper.__name__ = 'wrapper: %s' % name
-        wrapper.__doc__ = func.__doc__
-        global_commands_dict[name] = wrapper
+        new_cmd_wrapper.__name__ = 'wrapper: %s' % name
+        new_cmd_wrapper.__doc__ = func.__doc__
+        global_commands_dict[name] = new_cmd_wrapper
             # Put the *wrapper* into the global dict.
         return func
             # The decorator must return the func itself.
@@ -3283,6 +3334,9 @@ def readFileIntoString(fn,
     - The encoding given by the 'encoding' keyword arg.
     - None, which typically means 'utf-8'.
     '''
+    if not g.os_path_exists(fn):
+        g.error('file not found:', fn)
+        return None, None
     try:
         e = None
         with open(fn, 'rb') as f:
@@ -5916,22 +5970,23 @@ def createScratchCommander(fileName=None):
     frame.setInitialWindowGeometry()
     frame.resizePanesToRatio(frame.ratio, frame.secondary_ratio)
 #@+node:ekr.20031218072017.3126: *3* g.funcToMethod (Python Cookbook)
-#@+at From page 188 of the Python Cookbook.
-# 
-# The following method allows you to add a function as a method of any class. That
-# is, it converts the function to a method of the class. The method just added is
-# available instantly to all existing instances of the class, and to all instances
-# created in the future.
-# 
-# The function's first argument should be self.
-# 
-# The newly created method has the same name as the function unless the optional
-# name argument is supplied, in which case that name is used as the method name.
-#@@c
-
 def funcToMethod(f, theClass, name=None):
+    '''
+    From the Python Cookbook...
+
+    The following method allows you to add a function as a method of
+    any class. That is, it converts the function to a method of the
+    class. The method just added is available instantly to all
+    existing instances of the class, and to all instances created in
+    the future.
+    
+    The function's first argument should be self.
+    
+    The newly created method has the same name as the function unless
+    the optional name argument is supplied, in which case that name is
+    used as the method name.
+    '''
     setattr(theClass, name or f.__name__, f)
-    # g.trace(name)
 #@+node:ekr.20060913090832.1: *3* g.init_zodb
 init_zodb_import_failed = False
 init_zodb_failed = {} # Keys are paths, values are True.
