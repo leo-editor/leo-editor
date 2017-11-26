@@ -1604,7 +1604,8 @@ Pre-requsites, pip installable:
 - Wheel: for building cross platform binaries (might be installed already)
 - Twine: for secure upload to pypi.org
 - PyPandoc: to convert markdown to rst for Readme.
-  There's an extra step to download pandoc binaries in PATH:
+  There's an extra step to download pandoc binaries and install to PATH ( if not
+  installed already):
 
         from pypandoc.pandoc_download import download_pandoc
         download_pandoc()
@@ -1613,12 +1614,7 @@ Packaging a new release for Test PyPi
 =====================================
 (Windows syntax)
 
-    ::Clean previous build and distribution folders
-    rd /s/q build
-    rd /s/q dist
-    rd /s/q leo.egg-info
-    
-    ::Verify integrity and Build
+    ::Verify integrity and Build (see leo\dist\build-*.bat)
     python setup.py check
     python setup.py bdist_wheel
 
