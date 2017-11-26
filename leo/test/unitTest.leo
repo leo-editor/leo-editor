@@ -2,7 +2,7 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.52" body_secondary_ratio="0.55">
+<globals body_outline_ratio="0.52" body_secondary_ratio="0.84">
 	<global_window_position top="86" left="327" height="890" width="827"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -246,8 +246,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343171057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
-marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343171057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -366,7 +365,6 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20100131171342.5483"><vh>@test batch mode</vh>
 <v t="ekr.20100131171342.5484"><vh>removeFile</vh></v>
 </v>
-</v>
 <v t="ekr.20110118082508.3729"><vh>reformat-paragraph tests</vh>
 <v t="ekr.20110118082508.3793"><vh>@test reformat-paragraph list 1 of 5</vh>
 <v t="ekr.20110118082508.3799"><vh>work</vh></v>
@@ -463,6 +461,14 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20110118082508.3764"><vh>before sel=1.0,1.0</vh></v>
 <v t="ekr.20110118082508.3765"><vh>after sel=5.8,5.8</vh></v>
 </v>
+</v>
+</v>
+<v t="ekr.20171126172628.1" a="E"><vh>Tests that fail with console gui</vh>
+<v t="ekr.20100204173354.5375"><vh>@test toggle-find-x</vh></v>
+<v t="ekr.20111110073834.3843"><vh>@test g.es_print</vh></v>
+<v t="ekr.20111110073528.3843"><vh>@test g.pr</vh></v>
+<v t="ekr.20111110072415.3841"><vh>@test g.trace</vh></v>
+<v t="ekr.20140822063016.4474"><vh>@test zzz force a quit</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -880,7 +886,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="4">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="7,4">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -1622,6 +1628,38 @@ for key in keys:
     message = '\nno event arg for command %s, func: %s\nargs: %s' % (key,name,data)
     assert arg0 in expected or arg1 in expected, message
 </t>
+<t tx="ekr.20100204173354.5375">if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+elif g.app.gui.guiName() in ('nullGui', 'curses'):
+    self.skipTest('Not for curses')
+        # The commands exist, but don't do anything,
+        # which causes fail1.
+else:
+    table = (
+        # ('ignore_case','toggle-find-ignore-case-option'),
+            # This option now can be set automagically.
+        ('search_body','toggle-find-in-body-option'),
+        ('search_headline','toggle-find-in-headline-option'),
+        ('mark_changes','toggle-find-mark-changes-option'),
+        ('mark_finds','toggle-find-mark-finds-option'),
+        ('pattern_match','toggle-find-regex-option'),
+        # ('reverse','toggle-find-reverse-option'),
+        ('whole_word','toggle-find-word-option'),
+        ('wrap','toggle-find-wrap-around-option'),
+    )
+    fc = c.findCommands
+    for ivar,command in table:
+        val1 = getattr(fc,ivar)
+        try:
+            c.k.simulateCommand(command)
+            val2 = getattr(fc,ivar)
+            assert val2 == (not val1),'failed 1 %s' % command
+            c.k.simulateCommand(command)
+            val3 = getattr(fc,ivar)
+            assert val3 == val1,'failed 2 %s' % command
+        finally:
+            setattr(fc,ivar,val1)
+</t>
 <t tx="ekr.20100731163237.5782">@language html
 
 &lt;&lt; a section reference &gt;&gt;
@@ -2259,6 +2297,60 @@ div
 table
 nodeA
 nodeB
+</t>
+<t tx="ekr.20111110072415.3841">'''Make sure that g.trace doesn't add an extra newline.'''
+if g.app.gui.guiName() in ('nullGui', 'curses'):
+    self.skipTest('Not for curses gui')
+else:
+    import sys
+    
+    def test():
+        g.trace('a')
+        g.trace('b')
+    
+    try:
+        sys.stdout = g.fileLikeObject()
+        test()
+        result = sys.stdout.get()
+        assert result == 'test a\ntest b\n',repr(result)
+    finally:
+        sys.stdout = sys.__stdout__
+</t>
+<t tx="ekr.20111110073528.3843">'''Make sure that g.trace doesn't add an extra newline.'''
+if g.app.gui.guiName() in ('nullGui', 'curses'):
+    self.skipTest('Not for curses gui')
+else:
+    import sys
+    
+    def test():
+        g.pr('a')
+        g.pr('b')
+    
+    try:
+        sys.stdout = g.fileLikeObject()
+        test()
+        result = sys.stdout.get()
+        assert result == 'a\nb\n',repr(result)
+    finally:
+        sys.stdout = sys.__stdout__
+</t>
+<t tx="ekr.20111110073834.3843">'''Make sure that g.trace doesn't add an extra newline.'''
+if g.app.gui.guiName() in ('nullGui', 'curses'):
+    self.skipTest('Not for curses gui')
+else:
+    import sys
+
+    def test():
+        g.es_print('a')
+        g.es_print('b')
+    
+    try:
+        sys.stdout = g.fileLikeObject()
+        test()
+        result = sys.stdout.get()
+        assert result == 'a\nb\n',repr(result)
+    finally:
+        sys.stdout = sys.__stdout__
 </t>
 <t tx="ekr.20111112092813.4154">g.cls()</t>
 <t tx="ekr.20111112093605.4679"># leoSettings.leo no longer sets any bindings for run-xxx-unit-test.
@@ -2991,6 +3083,25 @@ finally:
     if 1:
         p.deleteAllChildren()
     c.redraw()
+</t>
+<t tx="ekr.20140822063016.4474">if 0:
+    # These won't do any good if a unit test foolishly saves the outline!
+    c.k.simulateCommand('contract-all')
+    c.setChanged(False)
+g.pr('===== guiName', g.app.gui.guiName())
+if g.app.gui.guiName() == 'curses':
+    import curses
+    import logging
+    logging.info('test')
+    curses.endwin()
+elif g.app.gui.guiName() == 'nullGui':
+    g.app.gui = g.app.old_gui
+        # Restore the qt gui swapped out by TM.doTests
+    c.k.simulateCommand(':q!')
+    # else:
+        # print('can not shut down automatically')
+else:
+    c.k.simulateCommand(':q!')
 </t>
 <t tx="ekr.20140902101931.4478"></t>
 <t tx="ekr.20150208213643.12">def spam():
@@ -7816,5 +7927,6 @@ unl: cheese
 <t tx="ekr.20171126153044.1"># Required for unit tests: See #577.</t>
 <t tx="ekr.20171126153138.1">See #577: https://github.com/leo-editor/leo-editor/issues/577
 </t>
+<t tx="ekr.20171126172628.1"></t>
 </tnodes>
 </leo_file>

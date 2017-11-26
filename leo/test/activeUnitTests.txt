@@ -10530,7 +10530,7 @@ for obj,ivar,command in table:
 #@+node:ekr.20100204173354.5375: *5* @test toggle-find-x
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
-elif g.app.gui.guiName() == 'curses':
+elif g.app.gui.guiName() in ('nullGui', 'curses'):
     self.skipTest('Not for curses')
         # The commands exist, but don't do anything,
         # which causes fail1.
@@ -11754,7 +11754,7 @@ for i in range(3):
         repr(val),repr(result))
 #@+node:ekr.20111110073834.3843: *4* @test g.es_print
 '''Make sure that g.trace doesn't add an extra newline.'''
-if g.app.gui.guiName() == 'curses':
+if g.app.gui.guiName() in ('nullGui', 'curses'):
     self.skipTest('Not for curses gui')
 else:
     import sys
@@ -11993,7 +11993,7 @@ except Exception:
     raise
 #@+node:ekr.20111110073528.3843: *4* @test g.pr
 '''Make sure that g.trace doesn't add an extra newline.'''
-if g.app.gui.guiName() == 'curses':
+if g.app.gui.guiName() in ('nullGui', 'curses'):
     self.skipTest('Not for curses gui')
 else:
     import sys
@@ -12336,7 +12336,7 @@ else:
     self.skipTest('Requires Qt Gui')
 #@+node:ekr.20111110072415.3841: *4* @test g.trace
 '''Make sure that g.trace doesn't add an extra newline.'''
-if g.app.gui.guiName() == 'curses':
+if g.app.gui.guiName() in ('nullGui', 'curses'):
     self.skipTest('Not for curses gui')
 else:
     import sys
@@ -29072,7 +29072,7 @@ if 0:
     # These won't do any good if a unit test foolishly saves the outline!
     c.k.simulateCommand('contract-all')
     c.setChanged(False)
-    
+g.pr('===== guiName', g.app.gui.guiName())
 if g.app.gui.guiName() == 'curses':
     import curses
     import logging
