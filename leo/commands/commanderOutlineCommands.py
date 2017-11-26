@@ -144,7 +144,7 @@ def dumpOutline(self, event=None):
             p.v.dump()
 #@+node:ekr.20031218072017.2898: ** c_oc.Expand & contract commands
 #@+node:ekr.20031218072017.2900: *3* c_oc.contract-all
-@g.command('contract-all')
+@g.commander_command('contract-all')
 def contractAllHeadlinesCommand(self, event=None, redrawFlag=True):
     '''Contract all nodes in the outline.'''
     # The helper does all the work.
