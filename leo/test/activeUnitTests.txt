@@ -29054,7 +29054,7 @@ else:
 #@+node:ekr.20090306091634.1: ** @test print redraw count
 tree = c.frame.tree
 if hasattr(tree,'redrawCount'):
-    print('%s: %s' % (p.h,tree.redrawCount))
+    g.pr('%s: %s' % (p.h,tree.redrawCount))
 #@+node:ekr.20170123053430.1: ** @test print calls to jedit.setTag
 if 0:
     print('calls to jedit.setTag: %s' %
@@ -29072,8 +29072,8 @@ if 0:
     # These won't do any good if a unit test foolishly saves the outline!
     c.k.simulateCommand('contract-all')
     c.setChanged(False)
-g.pr('===== guiName', g.app.gui.guiName())
-if g.app.gui.guiName() == 'curses':
+old_gui = getattr(g.app, 'old_gui', None)
+if old_gui and old_gui.guiName() == 'curses':
     import curses
     import logging
     logging.info('test')

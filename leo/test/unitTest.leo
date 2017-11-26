@@ -246,7 +246,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343171057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343171117d711258090000006d795f706c7567696e7113580300000076616c711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -462,13 +462,10 @@
 <v t="ekr.20110118082508.3765"><vh>after sel=5.8,5.8</vh></v>
 </v>
 </v>
-</v>
-<v t="ekr.20171126172628.1" a="E"><vh>Tests that fail with console gui</vh>
-<v t="ekr.20100204173354.5375"><vh>@test toggle-find-x</vh></v>
-<v t="ekr.20111110073834.3843"><vh>@test g.es_print</vh></v>
-<v t="ekr.20111110073528.3843"><vh>@test g.pr</vh></v>
-<v t="ekr.20111110072415.3841"><vh>@test g.trace</vh></v>
+<v t="ekr.20171126172628.1"><vh>Tests that fail with console gui</vh>
 <v t="ekr.20140822063016.4474"><vh>@test zzz force a quit</vh></v>
+<v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
+</v>
 </v>
 </vnodes>
 <tnodes>
@@ -886,7 +883,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="7,4">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="4">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -994,6 +991,10 @@ Important: this may cause crashes on some platforms.
 # last line: line 6</t>
 <t tx="ekr.20080907123324.3">def spam(): # line 2
     pass
+</t>
+<t tx="ekr.20090306091634.1">tree = c.frame.tree
+if hasattr(tree,'redrawCount'):
+    g.pr('%s: %s' % (p.h,tree.redrawCount))
 </t>
 <t tx="ekr.20090529115704.4557">import glob
 import os
@@ -1627,38 +1628,6 @@ for key in keys:
     expected = ('event',)
     message = '\nno event arg for command %s, func: %s\nargs: %s' % (key,name,data)
     assert arg0 in expected or arg1 in expected, message
-</t>
-<t tx="ekr.20100204173354.5375">if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-elif g.app.gui.guiName() in ('nullGui', 'curses'):
-    self.skipTest('Not for curses')
-        # The commands exist, but don't do anything,
-        # which causes fail1.
-else:
-    table = (
-        # ('ignore_case','toggle-find-ignore-case-option'),
-            # This option now can be set automagically.
-        ('search_body','toggle-find-in-body-option'),
-        ('search_headline','toggle-find-in-headline-option'),
-        ('mark_changes','toggle-find-mark-changes-option'),
-        ('mark_finds','toggle-find-mark-finds-option'),
-        ('pattern_match','toggle-find-regex-option'),
-        # ('reverse','toggle-find-reverse-option'),
-        ('whole_word','toggle-find-word-option'),
-        ('wrap','toggle-find-wrap-around-option'),
-    )
-    fc = c.findCommands
-    for ivar,command in table:
-        val1 = getattr(fc,ivar)
-        try:
-            c.k.simulateCommand(command)
-            val2 = getattr(fc,ivar)
-            assert val2 == (not val1),'failed 1 %s' % command
-            c.k.simulateCommand(command)
-            val3 = getattr(fc,ivar)
-            assert val3 == val1,'failed 2 %s' % command
-        finally:
-            setattr(fc,ivar,val1)
 </t>
 <t tx="ekr.20100731163237.5782">@language html
 
@@ -2297,60 +2266,6 @@ div
 table
 nodeA
 nodeB
-</t>
-<t tx="ekr.20111110072415.3841">'''Make sure that g.trace doesn't add an extra newline.'''
-if g.app.gui.guiName() in ('nullGui', 'curses'):
-    self.skipTest('Not for curses gui')
-else:
-    import sys
-    
-    def test():
-        g.trace('a')
-        g.trace('b')
-    
-    try:
-        sys.stdout = g.fileLikeObject()
-        test()
-        result = sys.stdout.get()
-        assert result == 'test a\ntest b\n',repr(result)
-    finally:
-        sys.stdout = sys.__stdout__
-</t>
-<t tx="ekr.20111110073528.3843">'''Make sure that g.trace doesn't add an extra newline.'''
-if g.app.gui.guiName() in ('nullGui', 'curses'):
-    self.skipTest('Not for curses gui')
-else:
-    import sys
-    
-    def test():
-        g.pr('a')
-        g.pr('b')
-    
-    try:
-        sys.stdout = g.fileLikeObject()
-        test()
-        result = sys.stdout.get()
-        assert result == 'a\nb\n',repr(result)
-    finally:
-        sys.stdout = sys.__stdout__
-</t>
-<t tx="ekr.20111110073834.3843">'''Make sure that g.trace doesn't add an extra newline.'''
-if g.app.gui.guiName() in ('nullGui', 'curses'):
-    self.skipTest('Not for curses gui')
-else:
-    import sys
-
-    def test():
-        g.es_print('a')
-        g.es_print('b')
-    
-    try:
-        sys.stdout = g.fileLikeObject()
-        test()
-        result = sys.stdout.get()
-        assert result == 'a\nb\n',repr(result)
-    finally:
-        sys.stdout = sys.__stdout__
 </t>
 <t tx="ekr.20111112092813.4154">g.cls()</t>
 <t tx="ekr.20111112093605.4679"># leoSettings.leo no longer sets any bindings for run-xxx-unit-test.
@@ -3088,8 +3003,8 @@ finally:
     # These won't do any good if a unit test foolishly saves the outline!
     c.k.simulateCommand('contract-all')
     c.setChanged(False)
-g.pr('===== guiName', g.app.gui.guiName())
-if g.app.gui.guiName() == 'curses':
+old_gui = getattr(g.app, 'old_gui', None)
+if old_gui and old_gui.guiName() == 'curses':
     import curses
     import logging
     logging.info('test')
