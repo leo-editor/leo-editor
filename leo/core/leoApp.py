@@ -3359,7 +3359,7 @@ class RecentFilesManager(object):
                 continue # happens with empty list/new file
 
             def recentFilesCallback(event=None, c=c, name=name):
-                c.openRecentFile(name)
+                c.openRecentFile(fn=name)
 
             if groupedEntries:
                 dirName, baseName = g.os_path_split(name)

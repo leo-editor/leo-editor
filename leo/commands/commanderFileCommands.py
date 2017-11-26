@@ -787,28 +787,6 @@ def clearRecentFiles(self, event=None):
     """Clear the recent files list, then add the present file."""
     c = self
     g.app.recentFilesManager.clearRecentFiles(c)
-#@+node:ekr.20031218072017.2081: *3* c_file.openRecentFile
-@g.commander_command('open-recent-file')
-def openRecentFile(self, event=None, fn=None):
-    c = self
-    # Automatically close the previous window if...
-    closeFlag = (
-        c.frame.startupWindow and
-            # The window was open on startup
-        not c.changed and not c.frame.saved and
-            # The window has never been changed
-        g.app.numberOfUntitledWindows == 1)
-            # Only one untitled window has ever been opened.
-    if g.doHook("recentfiles1", c=c, p=c.p, v=c.p, fileName=fn, closeFlag=closeFlag):
-        return
-    c2 = g.openWithFileName(fn, old_c=c)
-    if c2:
-        g.app.makeAllBindings()
-    if closeFlag and c2 and c2 != c:
-        g.app.destroyWindow(c.frame)
-        c2.setLog()
-        g.doHook("recentfiles2",
-            c=c2, p=c2.p, v=c2.p, fileName=fn, closeFlag=closeFlag)
 #@+node:tbrown.20080509212202.6: *3* c_file.cleanRecentFiles
 @g.commander_command('clean-recent-files')
 def cleanRecentFiles(self, event=None):
@@ -833,6 +811,28 @@ def writeEditedRecentFiles(self, event=None):
     '''Sort the recent files list.'''
     c = self
     g.app.recentFilesManager.writeEditedRecentFiles(c)
+#@+node:ekr.20031218072017.2081: *3* c_file.openRecentFile
+@g.commander_command('open-recent-file')
+def openRecentFile(self, event=None, fn=None):
+    c = self
+    # Automatically close the previous window if...
+    closeFlag = (
+        c.frame.startupWindow and
+            # The window was open on startup
+        not c.changed and not c.frame.saved and
+            # The window has never been changed
+        g.app.numberOfUntitledWindows == 1)
+            # Only one untitled window has ever been opened.
+    if g.doHook("recentfiles1", c=c, p=c.p, v=c.p, fileName=fn, closeFlag=closeFlag):
+        return
+    c2 = g.openWithFileName(fn, old_c=c)
+    if c2:
+        g.app.makeAllBindings()
+    if closeFlag and c2 and c2 != c:
+        g.app.destroyWindow(c.frame)
+        c2.setLog()
+        g.doHook("recentfiles2",
+            c=c2, p=c2.p, v=c2.p, fileName=fn, closeFlag=closeFlag)
 #@+node:vitalije.20170831154859.1: ** Reference outline commands
 #@+node:vitalije.20170831154830.1: *3* c_file.updateRefLeoFile
 @g.commander_command('update-ref-file')
