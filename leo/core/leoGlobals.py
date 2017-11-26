@@ -3334,6 +3334,9 @@ def readFileIntoString(fn,
     - The encoding given by the 'encoding' keyword arg.
     - None, which typically means 'utf-8'.
     '''
+    if not g.os_path_exists(fn):
+        g.error('file not found:', fn)
+        return None, None
     try:
         e = None
         with open(fn, 'rb') as f:
