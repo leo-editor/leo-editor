@@ -1927,7 +1927,7 @@ class CoreFrame (leoFrame.LeoFrame):
         if wname.startswith('body'):
             c.frame.body.onBodyChanged('Paste', oldSel=oldSel, oldText=oldText)
         elif wname.startswith('head'):
-            c.frame.tree.onHeadChanged(w.p, s=w.getAllText(), undoType='Paste')
+            c.frame.tree.onHeadChanged(c.p, s=w.getAllText(), undoType='Paste')
                 # New for Curses gui.
 
     OnPasteFromMenu = pasteText
