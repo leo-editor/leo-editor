@@ -1044,6 +1044,7 @@ class TestManager(object):
     def runEditCommandTest(self, p):
         tm = self
         c = self.c
+        # g.trace(c.config.getInt('page_width'), c.config.getInt('tab_width'), p.h)
         atTest = p.copy()
         w = c.frame.body.wrapper
         h = atTest.h
