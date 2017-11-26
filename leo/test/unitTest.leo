@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.52" body_secondary_ratio="0.55">
-	<global_window_position top="86" left="327" height="890" width="1355"/>
+	<global_window_position top="86" left="327" height="890" width="827"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -24,8 +24,8 @@
 <v t="ekr.20170818044949.6"><vh>@gnxs</vh></v>
 </v>
 </v>
-<v t="ekr.20041121151002" a="E"><vh>@settings</vh>
-<v t="ekr.20171126153138.1" a="E"><vh>Required for reformat-paragraph tests</vh>
+<v t="ekr.20041121151002"><vh>@settings</vh>
+<v t="ekr.20171126153138.1"><vh>Required for reformat-paragraph tests</vh>
 <v t="ekr.20171126152936.1"><vh>@int page_width = 80</vh></v>
 <v t="ekr.20171126153044.1"><vh>@int tab_width = -4</vh></v>
 </v>
@@ -880,7 +880,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="0">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="4">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>

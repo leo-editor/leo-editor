@@ -355,7 +355,7 @@ class LeoApp(object):
             # True: suppress importCommands.check
         self.unitTestDict = {}
             # For communication between unit tests and code.
-        self.UnitTestGui = None
+        self.unitTestGui = None
             # A way to override the gui in external unit tests.
         self.unitTesting = False
             # True if unit testing.

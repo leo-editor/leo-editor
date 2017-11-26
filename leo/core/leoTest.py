@@ -226,12 +226,12 @@ class GeneralTestCase(unittest.TestCase):
 class ImportExportTestCase(unittest.TestCase):
     """Data-driven unit tests for Leo's edit body commands."""
     #@+others
-    #@+node:ekr.20051104075904.81: *3*  fail (importExportTestCase)
+    #@+node:ekr.20051104075904.81: *3*  fail (ImportExportTestCase)
     def fail(self, msg=None):
         """Mark a unit test as having failed."""
         import leo.core.leoGlobals as g
         g.app.unitTestDict["fail"] = g.callers()
-    #@+node:ekr.20051104075904.80: *3* __init__ (importExportTestCase)
+    #@+node:ekr.20051104075904.80: *3* __init__ (ImportExportTestCase)
     def __init__(self, c, p, dialog, temp_p, doImport):
         # Init the base class.
         unittest.TestCase.__init__(self)
@@ -245,7 +245,7 @@ class ImportExportTestCase(unittest.TestCase):
         self.fileName = ""
         self.doImport = doImport
         self.old_p = c.p
-    #@+node:ekr.20051104075904.82: *3* importExport (importExportTestCase)
+    #@+node:ekr.20051104075904.82: *3* importExport (ImportExportTestCase)
     def importExport(self):
         c = self.c; p = self.p
         g.app.unitTestDict = {'c': c, 'g': g, 'p': p and p.copy()}
@@ -254,11 +254,11 @@ class ImportExportTestCase(unittest.TestCase):
         command(event=None)
         failedMethod = g.app.unitTestDict.get("fail")
         self.assertFalse(failedMethod, failedMethod)
-    #@+node:ekr.20051104075904.83: *3* runTest
+    #@+node:ekr.20051104075904.83: *3* runTest (ImportExportTestCase)
     def runTest(self):
         # """Import Export Test Case"""
         self.importExport()
-    #@+node:ekr.20051104075904.84: *3* setUp
+    #@+node:ekr.20051104075904.84: *3* setUp (ImportExportTestCase)
     def setUp(self):
         trace = False
         c = self.c; temp_p = self.temp_p
@@ -293,13 +293,13 @@ class ImportExportTestCase(unittest.TestCase):
             theDict = {name: fileName}
         self.oldGui = g.app.gui
         self.gui = leoGui.UnitTestGui(theDict, trace=False)
-    #@+node:ekr.20051104075904.85: *3* shortDescription
+    #@+node:ekr.20051104075904.85: *3* shortDescription (ImportExportTestCase)
     def shortDescription(self):
         try:
             return "ImportExportTestCase: %s %s" % (self.p.h, self.fileName)
         except Exception:
             return "ImportExportTestCase"
-    #@+node:ekr.20051104075904.86: *3* tearDown
+    #@+node:ekr.20051104075904.86: *3* tearDown (ImportExportTestCase)
     def tearDown(self):
         c = self.c; temp_p = self.temp_p
         if self.gui:
@@ -489,7 +489,7 @@ class RunTestExternallyHelperClass(object):
         Create dynamicUnitTest.leo, then run all tests from dynamicUnitTest.leo
         in a separate process.
         '''
-        trace = True
+        trace = False
         import time
         c = self.c; p = c.p
         t1 = time.time()
@@ -579,7 +579,7 @@ class RunTestExternallyHelperClass(object):
     ):
         '''Run all unit tests in path (a .leo file) in a pristine environment.'''
         # New in Leo 4.5: leoDynamicTest.py is in the leo/core folder.
-        trace = True
+        trace = False
         verbose = False
             # The verbose trace is pretty much a duplicate of the trace in
             # leoDynamicTest.py:main()
