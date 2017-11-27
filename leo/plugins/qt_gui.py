@@ -80,7 +80,7 @@ class LeoQtGui(leoGui.LeoGui):
     def destroySelf(self):
         trace = g.app.trace_shutdown
         QtCore.pyqtRemoveInputHook()
-        if trace: print('LeoQtGui.destroySelf: calling qtApp.Quit')
+        if trace: g.pr('LeoQtGui.destroySelf: calling qtApp.Quit')
         self.qtApp.quit()
     #@+node:ekr.20110605121601.18485: *3* qt_gui.Clipboard
 

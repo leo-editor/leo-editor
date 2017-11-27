@@ -934,9 +934,10 @@ class LeoApp(object):
                       further along the command line.
         """
         trace = self.trace_shutdown and not g.unitTesting
-        if trace: print('closeLeoWindow: %s' % frame.c.shortFileName())
         c = frame.c
+        if trace: g.pr('closeLeoWindow: changed: %s %s' % (c.changed, c.shortFileName()))
         c.endEditing() # Commit any open edits.
+        if trace: g.trace('changed', c.changed)
         if c.promptingForClose:
             # There is already a dialog open asking what to do.
             return False
@@ -1096,7 +1097,7 @@ class LeoApp(object):
     def destroyAllOpenWithFiles(self):
         '''Remove temp files created with the Open With command.'''
         trace = self.trace_shutdown and not g.unitTesting
-        if trace: print('destroyAllOpenWithFiles')
+        if trace: g.pr('destroyAllOpenWithFiles')
         if g.app.externalFilesController:
             g.app.externalFilesController.shut_down()
             g.app.externalFilesController = None
@@ -1104,11 +1105,11 @@ class LeoApp(object):
     def destroyWindow(self, frame):
         '''Destroy all ivars in a Leo frame.'''
         trace = self.trace_shutdown and not g.unitTesting
-        if trace: print('destroyWindow:  %s' % frame.c.shortFileName())
+        if trace: g.pr('destroyWindow:  %s' % frame.c.shortFileName())
         if g.app.externalFilesController:
             g.app.externalFilesController.destroy_frame(frame)
         if frame in g.app.windowList:
-            # print('destroyWindow', (g.app.windowList)
+            # g.pr('destroyWindow', (g.app.windowList)
             g.app.forgetOpenFile(frame.c.fileName())
         # force the window to go away now.
         # Important: this also destroys all the objects of the commander.
@@ -1149,12 +1150,12 @@ class LeoApp(object):
         if fn in aList:
             aList.remove(fn)
             if trace:
-                print('forgetOpenFile: %s' % g.shortFileName(fn))
+                g.pr('forgetOpenFile: %s' % g.shortFileName(fn))
                 # for z in aList:
-                #    print('  %s' % (z))
+                #    g.pr('  %s' % (z))
             d[tag] = aList
         else:
-            if trace: print('forgetOpenFile: did not remove: %s' % (fn))
+            if trace: g.pr('forgetOpenFile: did not remove: %s' % (fn))
     #@+node:ekr.20120427064024.10065: *4* app.rememberOpenFile
     def rememberOpenFile(self, fn):
         trace = False and not g.unitTesting
@@ -1193,14 +1194,14 @@ class LeoApp(object):
     def finishQuit(self):
         # forceShutdown may already have fired the "end1" hook.
         trace = self.trace_shutdown and not g.unitTesting
-        if trace: print('finishQuit')
+        if trace: g.pr('finishQuit')
         if not g.app.killed:
             g.doHook("end1")
             g.app.cacher.commit()
         if g.app.ipk:
             g.app.ipk.cleanup_consoles()
         self.destroyAllOpenWithFiles()
-        # if trace: print('app.finishQuit: setting g.app.killed: %s' % g.callers())
+        # if trace: g.pr('app.finishQuit: setting g.app.killed: %s' % g.callers())
         g.app.killed = True
             # Disable all further hooks and events.
             # Alas, "idle" events can still be called
@@ -1216,17 +1217,17 @@ class LeoApp(object):
         In particular, may be called from plugins during startup.
         """
         trace = self.trace_shutdown and not g.unitTesting
-        if trace: print('forceShutdown')
+        if trace: g.pr('forceShutdown')
         # Wait until everything is quiet before really quitting.
-        if trace: print('forceShutdown: before end1')
+        if trace: g.pr('forceShutdown: before end1')
         g.doHook("end1")
-        if trace: print('forceShutdown: after end1')
+        if trace: g.pr('forceShutdown: after end1')
         self.log = None # Disable writeWaitingLog
         self.killed = True # Disable all further hooks.
         for w in self.windowList[:]:
-            if trace: print('forceShutdown: %s' % w)
+            if trace: g.pr('forceShutdown: %s' % w)
             self.destroyWindow(w)
-        if trace: print('before finishQuit')
+        if trace: g.pr('before finishQuit')
         self.finishQuit()
     #@+node:ekr.20171118024827.1: *3* app.makeAllBindings
     def makeAllBindings(self):
@@ -2517,6 +2518,8 @@ class LoadManager(object):
             help='trace imports of plugins')
         add('--trace-setting', dest='setting',
             help='trace where setting is set')
+        add('--trace-shutdown', action='store_true', dest='trace_shutdown',
+            help='trace shutdown logic')
         add('-v', '--version', action='store_true', dest='version',
             help='print version number and exit')
         add('--window-size', dest='window_size',
@@ -2625,6 +2628,8 @@ class LoadManager(object):
         g.app.trace_setting = options.setting
             # g.app.config does not exist yet.
             # g.trace('trace_setting:', repr(options.trace_setting))
+        # --trace-shutdown
+        g.app.trace_shutdown = options.trace_shutdown
         # --version: print the version and exit.
         versionFlag = options.version
         # --window-size
