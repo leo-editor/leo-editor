@@ -1167,6 +1167,8 @@ class LeoCursesGui(leoGui.LeoGui):
         for commandName, func in table:
             g.global_commands_dict[commandName] = func
             c.k.overrideCommand(commandName, func)
+        # A new ivar.
+        c.inFindCommand = False
 
     #@+node:ekr.20170419110052.1: *4* CGui.createLeoFrame
     def createLeoFrame(self, c, title):
@@ -1389,6 +1391,59 @@ class LeoCursesGui(leoGui.LeoGui):
         )
         c.k.masterKeyHandler(event)
         c.outerUpdate()
+    #@+node:ekr.20171127170859.1: *4* CGUI.find
+    def find(self, c, pattern):
+        '''Search for the pattern in body text only.'''
+        c.inFindCommand = False
+        p = c.p
+        while p:
+            s = p.b
+            if sys.platform.lower().startswith('win'):
+                s = s.replace('\r', '')
+            if s.find(pattern) > -1:
+                g.es('FOUND',pattern)
+                c.selectPosition(p)
+                self.focus_to_body()
+                ### To do: select the found line.
+                return
+            else:
+                p.moveToThreadNext()
+        g.es('NOT FOUND', pattern)
+        self.focus_to_body()
+    #@+node:ekr.20171127173313.1: *4* CGUI.focus_from_minibuffer
+    def focus_from_minibuffer(self):
+        '''Remove focus from the minibuffer text widget.'''
+        form = self.curses_form
+        box = form._widgets__[-2] # The minibuffer
+        widgets = box._my_widgets
+        assert len(widgets) == 1
+        w = widgets[0]
+        w.editing = False
+        w.how_exited = True
+        w.update()
+
+    #@+node:ekr.20171127171659.1: *4* CGui.focus_to_body
+    def focus_to_body(self):
+        '''Put focus in minibuffer text widget.'''
+        form = self.curses_form
+        box = form._widgets__[-3] # The body pane
+        widgets = box._my_widgets
+        assert len(widgets) == 1
+        form.editw = form._widgets__.index(box)
+        w = widgets[0]
+        w.edit()
+
+    #@+node:ekr.20171127162649.1: *4* CGui.focus_to_minibuffer
+    def focus_to_minibuffer(self):
+        '''Put focus in minibuffer text widget.'''
+        form = self.curses_form
+        box = form._widgets__[-2] # The minibuffer
+        widgets = box._my_widgets
+        assert len(widgets) == 1
+        form.editw = form._widgets__.index(box)
+        w = widgets[0]
+        w.edit()
+
     #@+node:ekr.20170514060742.1: *4* CGui.fonts
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
         # g.trace('CursesGui', g.callers())
@@ -1493,30 +1548,6 @@ class LeoCursesGui(leoGui.LeoGui):
                 message=s,
                 title=short_title or 'Help',
             )
-    #@+node:ekr.20171126192144.1: *4* CGui.startSearch
-    def startSearch(self, event):
-        g.trace('(CGui)', event)
-        c = event.get('c')
-        if c:
-            val = self.runAskOkCancelStringDialog(
-                c=c,
-                title='Find',
-                message='Find:',
-                # cancelButtonText=None,
-                # okButtonText=None,
-                # default="",
-                # wide=False,
-            )
-            g.trace(val)
-            # self.runAskOkCancelStringDialog(self, c, title, message,
-                # cancelButtonText=None,
-                # okButtonText=None,
-                # default="",
-                # wide=False,
-            # )
-        else:
-            g.trace('no c')
-
     #@+node:ekr.20170502020354.1: *4* CGui.run
     def run(self):
         '''
@@ -1545,6 +1576,16 @@ class LeoCursesGui(leoGui.LeoGui):
             curses.endwin()
             if g.app.trace_shutdown:
                 g.pr('Exiting Leo...')
+    #@+node:ekr.20171126192144.1: *4* CGui.startSearch
+    def startSearch(self, event):
+        g.trace('(CGui)', event)
+        c = event.get('c')
+        if c:
+            c.inCommand = False
+            c.inFindCommand = True
+                # A new flag.
+            self.focus_to_minibuffer()
+                # Does not return!
     #@-others
 #@+node:edward.20170428174322.1: *3* class KeyEvent (object)
 class KeyEvent(object):
@@ -2781,16 +2822,20 @@ class LeoMiniBuffer(npyscreen.Textfield):
         Send the contents to k.masterKeyHandler.
         '''
         c = self.leo_c
-        commandName = self.value.strip()
+        val = self.value.strip()
         self.value = ''
         self.update()
-        c.k.masterCommand(
-            commandName=commandName,
-            event=KeyEvent(c,char='',event='',shortcut='',w=self),
-            func=None,
-            stroke=None,
-        )
-
+        if c.inFindCommand:
+            # Execute the find command.
+            g.app.gui.focus_from_minibuffer()
+            g.app.gui.find(c, val)
+        else:
+            c.k.masterCommand(
+                commandName=val,
+                event=KeyEvent(c,char='',event='',shortcut='',w=self),
+                func=None,
+                stroke=None,
+            )
     #@+node:ekr.20170510094104.1: *5* LeoMiniBuffer.set_handlers
     def set_handlers(self):
 
