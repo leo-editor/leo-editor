@@ -1340,6 +1340,7 @@ class LeoApp(object):
         self.finishQuit()
     #@+node:ekr.20031218072017.2617: *4* app.onQuit
     @cmd('exit-leo')
+    @cmd('quit-leo')
     def onQuit(self, event=None):
         '''Exit Leo, prompting to save unsaved outlines first.'''
         g.app.quitting = True
