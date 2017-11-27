@@ -1172,147 +1172,10 @@ class LeoCursesGui(leoGui.LeoGui):
         '''
         sys.exit(0)
     #@+node:ekr.20170502021145.1: *4* CGui.dialogs
-    def dialog_message(self, message):
-        '''No longer used: a placeholder for dialogs.'''
-        if not g.unitTesting:
-            for s in g.splitLines(message):
-                g.pr(s.rstrip())
-
-    def runAboutLeoDialog(self, c, version, theCopyright, url, email):
-        """Create and run Leo's About Leo dialog."""
-        if not g.unitTesting:
-            message =  '%s\n%s\n%s\n%s' % (version, theCopyright, url, email)
-            utilNotify.notify_confirm(message, title="About Leo")
-                # form_color='STANDOUT', wrap=True, wide=False, editw=0)
-
-    def runAskLeoIDDialog(self):
-        """Create and run a dialog to get g.app.LeoID."""
-        if not g.unitTesting:
-            message = (
-                "leoID.txt not found\n\n" +
-                "The curses gui can not set this file." +
-                "Exiting..."
-            )
-            g.trace(message)
-            sys.exit(0)
-                # "Please enter an id that identifies you uniquely.\n" +
-                # "Your cvs/bzr login name is a good choice.\n\n" +
-                # "Leo uses this id to uniquely identify nodes.\n\n" +
-                # "Your id must contain only letters and numbers\n" +
-                # "and must be at least 3 characters in length."
-
-    def runAskOkDialog(self, c, title,
-        message=None,
-        text="Ok",
-    ):
-        """Create and run an askOK dialog ."""
-        if g.unitTesting:
-            return False
-        elif self.curses_app:
-            self.in_dialog = True
-            val = utilNotify.notify_confirm(message=message,title=title)
-            self.in_dialog = False
-            return val
-        else:
-            return False
-
-    def runAskOkCancelNumberDialog(self, c, title, message,
-        cancelButtonText=None,
-        okButtonText=None,
-    ):
-        """Create and run askOkCancelNumber dialog ."""
-        if g.unitTesting:
-            return False
-        elif self.curses_app:
-            self.in_dialog = True
-            val = utilNotify.notify_ok_cancel(message=message,title=title)
-            self.in_dialog = False
-            return val
-        else:
-            return False
-
-    def runAskOkCancelStringDialog(self, c, title, message,
-        cancelButtonText=None,
-        okButtonText=None,
-        default="",
-        wide=False,
-    ):
-        """Create and run askOkCancelString dialog ."""
-        if g.unitTesting:
-            return False
-        else:
-            self.in_dialog = True
-            val = utilNotify.notify_ok_cancel(message=message,title=title)
-            self.in_dialog = False
-            return 'yes' if val else 'no'
-
-    def runAskYesNoDialog(self, c, title,
-        message=None,
-        yes_all=False,
-        no_all=False,
-    ):
-        """Create and run an askYesNo dialog."""
-        if g.unitTesting:
-            return False
-        else:
-            self.in_dialog = True
-            val = utilNotify.notify_ok_cancel(message=message,title=title)
-            self.in_dialog = False
-            return 'yes' if val else 'no'
-
-    def runAskYesNoCancelDialog(self, c, title,
-        message=None,
-        yesMessage="Yes",
-        noMessage="No",
-        yesToAllMessage=None,
-        defaultButton="Yes",
-        cancelMessage=None,
-    ):
-        """Create and run an askYesNoCancel dialog ."""
-        if g.unitTesting:
-            return False
-        else:
-            g.trace()
-            self.in_dialog = True
-            val = utilNotify.notify_yes_no(message=message,title=title)
-                # Important: don't use notify_ok_cancel.
-            self.in_dialog = False
-            return 'yes' if val else 'no'
-
-    def runOpenFileDialog(self, c, title, filetypes, defaultextension, multiple=False, startpath=None):
-        if not g.unitTesting:
-            g.trace('not ready yet', title)
-
-    def runPropertiesDialog(self,
-        title='Properties',
-        data=None,
-        callback=None,
-        buttons=None,
-    ):
-        """Dispay a modal TkPropertiesDialog"""
-        if not g.unitTesting:
-            g.trace('not ready yet', title)
-
-    def runSaveFileDialog(self, c, initialfile, title, filetypes, defaultextension):
-        if g.unitTesting:
-            return None
-        else:
-            # Not tested.
-            self.in_dialog = True
-            s = utilNotify.selectFile(
-                select_dir=False,
-                must_exist=False,
-                confirm_if_exists=True,
-                sort_by_extension=True,
-            )
-            self.in_dialog = False
-            s = g.u(s or '')
-            if s:
-                c.last_dir = g.os_path_dirname(s)
-            return s
-    #@+node:ekr.20170712145632.2: *5* CGui.createFindDialog
+    #@+node:ekr.20170712145632.2: *5* CGui.createFindDialog (to do)
     def createFindDialog(self, c):
         '''Create and init a non-modal Find dialog.'''
+        g.trace()
         # g.app.globalFindTabManager = c.findCommands.ftm
         # top = c.frame.top
             # top is the DynamicWindow class.
@@ -1336,6 +1199,155 @@ class LeoCursesGui(leoGui.LeoGui):
             # # This makes most standard bindings available.
         # d.setModal(False)
         # return d
+    #@+node:ekr.20171126182120.1: *5* CGui.dialog_message
+    def dialog_message(self, message):
+        '''No longer used: a placeholder for dialogs.'''
+        if not g.unitTesting:
+            for s in g.splitLines(message):
+                g.pr(s.rstrip())
+
+    #@+node:ekr.20171126182120.2: *5* CGui.runAboutLeoDialog
+    def runAboutLeoDialog(self, c, version, theCopyright, url, email):
+        """Create and run Leo's About Leo dialog."""
+        if not g.unitTesting:
+            message =  '%s\n%s\n%s\n%s' % (version, theCopyright, url, email)
+            utilNotify.notify_confirm(message, title="About Leo")
+                # form_color='STANDOUT', wrap=True, wide=False, editw=0)
+
+    #@+node:ekr.20171126182120.3: *5* CGui.runAskLeoIDDialog
+    def runAskLeoIDDialog(self):
+        """Create and run a dialog to get g.app.LeoID."""
+        if not g.unitTesting:
+            message = (
+                "leoID.txt not found\n\n" +
+                "The curses gui can not set this file." +
+                "Exiting..."
+            )
+            g.trace(message)
+            sys.exit(0)
+                # "Please enter an id that identifies you uniquely.\n" +
+                # "Your cvs/bzr login name is a good choice.\n\n" +
+                # "Leo uses this id to uniquely identify nodes.\n\n" +
+                # "Your id must contain only letters and numbers\n" +
+                # "and must be at least 3 characters in length."
+
+    #@+node:ekr.20171126182120.5: *5* CGui.runAskOkCancelNumberDialog
+    def runAskOkCancelNumberDialog(self, c, title, message,
+        cancelButtonText=None,
+        okButtonText=None,
+    ):
+        """Create and run askOkCancelNumber dialog ."""
+        if g.unitTesting:
+            return False
+        elif self.curses_app:
+            self.in_dialog = True
+            val = utilNotify.notify_ok_cancel(message=message,title=title)
+            self.in_dialog = False
+            return val
+        else:
+            return False
+
+    #@+node:ekr.20171126182120.6: *5* CGui.runAskOkCancelStringDialog
+    def runAskOkCancelStringDialog(self, c, title, message,
+        cancelButtonText=None,
+        okButtonText=None,
+        default="",
+        wide=False,
+    ):
+        """Create and run askOkCancelString dialog ."""
+        if g.unitTesting:
+            return False
+        else:
+            self.in_dialog = True
+            val = utilNotify.notify_ok_cancel(message=message,title=title)
+            self.in_dialog = False
+            return 'yes' if val else 'no'
+
+    #@+node:ekr.20171126182120.4: *5* CGui.runAskOkDialog
+    def runAskOkDialog(self, c, title,
+        message=None,
+        text="Ok",
+    ):
+        """Create and run an askOK dialog ."""
+        if g.unitTesting:
+            return False
+        elif self.curses_app:
+            self.in_dialog = True
+            val = utilNotify.notify_confirm(message=message,title=title)
+            self.in_dialog = False
+            return val
+        else:
+            return False
+
+    #@+node:ekr.20171126182120.8: *5* CGui.runAskYesNoCancelDialog
+    def runAskYesNoCancelDialog(self, c, title,
+        message=None,
+        yesMessage="Yes",
+        noMessage="No",
+        yesToAllMessage=None,
+        defaultButton="Yes",
+        cancelMessage=None,
+    ):
+        """Create and run an askYesNoCancel dialog ."""
+        if g.unitTesting:
+            return False
+        else:
+            g.trace(g.callers())
+            self.in_dialog = True
+            val = utilNotify.notify_yes_no(message=message,title=title)
+                # Important: don't use notify_ok_cancel.
+            self.in_dialog = False
+            return 'yes' if val else 'no'
+
+    #@+node:ekr.20171126182120.7: *5* CGui.runAskYesNoDialog
+    def runAskYesNoDialog(self, c, title,
+        message=None,
+        yes_all=False,
+        no_all=False,
+    ):
+        """Create and run an askYesNo dialog."""
+        if g.unitTesting:
+            return False
+        else:
+            self.in_dialog = True
+            val = utilNotify.notify_ok_cancel(message=message,title=title)
+            self.in_dialog = False
+            return 'yes' if val else 'no'
+
+    #@+node:ekr.20171126182120.9: *5* CGui.runOpenFileDialog
+    def runOpenFileDialog(self, c, title, filetypes, defaultextension, multiple=False, startpath=None):
+        if not g.unitTesting:
+            g.trace('not ready yet', title)
+
+    #@+node:ekr.20171126182120.10: *5* CGui.runPropertiesDialog
+    def runPropertiesDialog(self,
+        title='Properties',
+        data=None,
+        callback=None,
+        buttons=None,
+    ):
+        """Dispay a modal TkPropertiesDialog"""
+        if not g.unitTesting:
+            g.trace('not ready yet', title)
+
+    #@+node:ekr.20171126182120.11: *5* CGui.runSaveFileDialog
+    def runSaveFileDialog(self, c, initialfile, title, filetypes, defaultextension):
+        if g.unitTesting:
+            return None
+        else:
+            # Not tested.
+            self.in_dialog = True
+            s = utilNotify.selectFile(
+                select_dir=False,
+                must_exist=False,
+                confirm_if_exists=True,
+                sort_by_extension=True,
+            )
+            self.in_dialog = False
+            s = g.u(s or '')
+            if s:
+                c.last_dir = g.os_path_dirname(s)
+            return s
     #@+node:ekr.20170430114709.1: *4* CGui.do_key
     def do_key(self, ch_i):
 
