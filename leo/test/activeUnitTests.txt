@@ -29085,6 +29085,7 @@ elif g.app.gui.guiName() == 'nullGui':
     # else:
         # print('can not shut down automatically')
 else:
-    c.k.simulateCommand(':q!')
+    g.app.forceShutdown()
+    # c.k.simulateCommand(':q!')
 #@-all
 #@-leo
