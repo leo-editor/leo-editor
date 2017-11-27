@@ -1160,15 +1160,13 @@ class LeoCursesGui(leoGui.LeoGui):
         w.leo_wrapper = wrapper
     #@+node:ekr.20171126191726.1: *5* CGui.monkeyPatch
     def monkeyPatch(self, c):
-        trace = False and not g.unitTesting
-        commandName = 'start-search'
-        if trace:
-            wrapper = g.global_commands_dict.get(commandName)
-            g.trace(wrapper.__name__, wrapper)
-        g.global_commands_dict[commandName] = self.startSearch
-        c.k.overrideCommand(commandName, self.startSearch)
+        table = (
+            ('start-search', self.startSearch),
+        )
+        for commandName, func in table:
+            g.global_commands_dict[commandName] = func
+            c.k.overrideCommand(commandName, func)
 
-        # c.findCommands.startSearch = self.startSearch
     #@+node:ekr.20170419110052.1: *4* CGui.createLeoFrame
     def createLeoFrame(self, c, title):
         '''
@@ -1272,6 +1270,7 @@ class LeoCursesGui(leoGui.LeoGui):
         else:
             self.in_dialog = True
             val = utilNotify.notify_ok_cancel(message=message,title=title)
+                # val is True/False
             self.in_dialog = False
             return 'yes' if val else 'no'
 
@@ -1496,6 +1495,27 @@ class LeoCursesGui(leoGui.LeoGui):
     #@+node:ekr.20171126192144.1: *4* CGui.startSearch
     def startSearch(self, event):
         g.trace('(CGui)', event)
+        c = event.get('c')
+        if c:
+            val = self.runAskOkCancelStringDialog(
+                c=c,
+                title='Find',
+                message='Find:',
+                # cancelButtonText=None,
+                # okButtonText=None,
+                # default="",
+                # wide=False,
+            )
+            g.trace(val)
+            # self.runAskOkCancelStringDialog(self, c, title, message,
+                # cancelButtonText=None,
+                # okButtonText=None,
+                # default="",
+                # wide=False,
+            # )
+        else:
+            g.trace('no c')
+
     #@+node:ekr.20170502020354.1: *4* CGui.run
     def run(self):
         '''
@@ -1587,10 +1607,13 @@ class KeyHandler (object):
                 ch = chr(ch_i)
             except Exception:
                 ch = '<no ch>'
-            if trace: g.trace(ch_i, ch)
             char, shortcut = self.to_key(ch_i)
-            if shortcut:
-                if trace: g.trace(shortcut)
+            # if trace:
+                # g.trace('(CKey)', ch_i, ch, repr(shortcut))
+                # g.trace(g.app.gui, repr(getattr(g.app.gui, 'in_dialog', None)))
+            if g.app.gui.in_dialog:
+                if trace: g.trace('(CKey) dialog key', ch)
+            elif shortcut:
                 try:
                     w = c.frame.body.wrapper
                     event = self.create_key_event(c, w, char, shortcut)
