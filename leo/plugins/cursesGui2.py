@@ -986,6 +986,7 @@ class LeoCursesGui(leoGui.LeoGui):
         self.createCursesTree(c, form)
         self.createCursesBody(c, form)
         self.createCursesMinibuffer(c, form)
+        self.monkeyPatch(c)
         # g.es(form)
         return form
     #@+node:ekr.20170502084106.1: *5* CGui.createCursesBody
@@ -1157,6 +1158,17 @@ class LeoCursesGui(leoGui.LeoGui):
         assert wrapper
         box.leo_wrapper = wrapper
         w.leo_wrapper = wrapper
+    #@+node:ekr.20171126191726.1: *5* CGui.monkeyPatch
+    def monkeyPatch(self, c):
+        trace = False and not g.unitTesting
+        commandName = 'start-search'
+        if trace:
+            wrapper = g.global_commands_dict.get(commandName)
+            g.trace(wrapper.__name__, wrapper)
+        g.global_commands_dict[commandName] = self.startSearch
+        c.k.overrideCommand(commandName, self.startSearch)
+
+        # c.findCommands.startSearch = self.startSearch
     #@+node:ekr.20170419110052.1: *4* CGui.createLeoFrame
     def createLeoFrame(self, c, title):
         '''
@@ -1481,6 +1493,9 @@ class LeoCursesGui(leoGui.LeoGui):
                 message=s,
                 title=short_title or 'Help',
             )
+    #@+node:ekr.20171126192144.1: *4* CGui.startSearch
+    def startSearch(self, event):
+        g.trace('(CGui)', event)
     #@+node:ekr.20170502020354.1: *4* CGui.run
     def run(self):
         '''
@@ -1563,7 +1578,7 @@ class KeyHandler (object):
         Return True if the event was completely handled.
         '''
         #  This is a rewrite of LeoQtEventFilter code.
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         c = g.app.log and g.app.log.c
         if not c:
             return True # We are shutting down.

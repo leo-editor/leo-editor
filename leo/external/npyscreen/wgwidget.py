@@ -90,7 +90,7 @@ class InputHandler(object):
                 return repr(f)
 
         trace = False
-        trace_entry = False
+        trace_entry = True
         trace_parent = False
         parent_widget = getattr(self, 'parent_widget', None)
         parent = getattr(self, 'parent', None)

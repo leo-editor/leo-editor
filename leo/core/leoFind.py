@@ -520,6 +520,7 @@ class LeoFind(object):
     #@+node:ekr.20131119060731.22452: *4* find.startSearch
     @cmd('start-search')
     def startSearch(self, event):
+        # g.trace('(LeoFind)', event)
         w = self.editWidget(event)
         if w:
             self.preloadFindPattern(w)
