@@ -2110,6 +2110,7 @@ class CoreTree (leoFrame.LeoTree):
             # Init the base class.
         assert self.c
         assert not hasattr(self, 'widget')
+        self.revertVnode = None # A hack for onHeadChanged.
         self.redrawCount = 0 # For unit tests.
         self.widget = None
             # A LeoMLTree set by CGui.createCursesTree.
@@ -2189,6 +2190,10 @@ class CoreTree (leoFrame.LeoTree):
         c, u = self.c, self.c.undoer
         if not c.frame.body.wrapper:
             return # Startup.
+        if not self.revertVnode:
+            # This is a hack, but all unit tests pass.
+            if trace: g.trace('no headline ever edited')
+            return
         w = self.edit_widget(p)
         if c.suppressHeadChanged:
             if trace: g.trace('c.suppressHeadChanged')
@@ -2263,9 +2268,10 @@ class CoreTree (leoFrame.LeoTree):
         """Returns the edit widget for position p."""
         wrapper = HeadWrapper(c=self.c, name='head', p=p)
         return wrapper
-    #@+node:ekr.20170511095353.1: *5* CTree.editLabel
+    #@+node:ekr.20170511095353.1: *5* CTree.editLabel (not used)
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""
+        self.revertHeadline = p.h
         return None, None
     #@+node:ekr.20170511105355.7: *5* CTree.endEditLabel
     def endEditLabel(self):
@@ -3072,6 +3078,11 @@ class LeoMLTree(npyscreen.MLTree, object):
     #@+node:ekr.20170506044733.10: *5* LeoMLTree.h_edit_headline
     def h_edit_headline(self, ch):
         '''Called when the user types "h".'''
+        c = self.leo_c
+        # Remember the starting headline, for CTree.onHeadChanged.
+        tree = c.frame.tree # CTree
+        tree.revertVnode = c.p.v
+        tree.revertHeadline = c.p.h
         self.edit_headline()
     #@+node:ekr.20170516055435.5: *5* LeoMLTree.h_expand_all
     def h_expand_all(self, ch):
