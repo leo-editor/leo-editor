@@ -839,11 +839,12 @@ def pr(*args, **keys):
     d = g.doKeywordArgs(keys, d)
     s = g.translateArgs(args, d)
     for line in g.splitLines(s):
-        line = '   pr: %s' % line.rstrip()
-        if True: ### has_logger():
-            logging.info(line)
-        else:
-            print(line)
+        if line.strip(): # No need to print blank logging lines.
+            line = '   pr: %s' % line.rstrip()
+            if True: ### has_logger():
+                logging.info(line)
+            else:
+                print(line)
 #@+node:ekr.20170429165242.1: *4* curses2: trace
 def trace(*args, **keys):
     '''Monkey-patch for g.trace.'''
@@ -1542,7 +1543,8 @@ class LeoCursesGui(leoGui.LeoGui):
             stdscr.keypad(0)
             curses.echo()
             curses.endwin()
-            g.pr('Exiting Leo...')
+            if g.app.trace_shutdown:
+                g.pr('Exiting Leo...')
     #@-others
 #@+node:edward.20170428174322.1: *3* class KeyEvent (object)
 class KeyEvent(object):

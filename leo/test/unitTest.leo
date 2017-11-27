@@ -246,7 +246,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343171057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735809000000302e362e31392e3431710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"
 expanded="ekr.20071113194858,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
@@ -467,8 +467,8 @@ expanded="ekr.20071113194858,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20140822063016.4474"><vh>@test zzz force a quit</vh></v>
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 </v>
-</v>
 <v t="ekr.20140822063016.4474"></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -3001,25 +3001,8 @@ finally:
         p.deleteAllChildren()
     c.redraw()
 </t>
-<t tx="ekr.20140822063016.4474">if 0:
-    # These won't do any good if a unit test foolishly saves the outline!
-    c.k.simulateCommand('contract-all')
-    c.setChanged(False)
-old_gui = getattr(g.app, 'old_gui', None)
-if old_gui and old_gui.guiName() == 'curses':
-    import curses
-    import logging
-    logging.info('test')
-    curses.endwin()
-elif g.app.gui.guiName() == 'nullGui':
-    g.app.gui = g.app.old_gui
-        # Restore the qt gui swapped out by TM.doTests
-    c.k.simulateCommand(':q!')
-    # else:
-        # print('can not shut down automatically')
-else:
-    g.app.forceShutdown()
-    # c.k.simulateCommand(':q!')
+<t tx="ekr.20140822063016.4474">g.app.forceShutdown()
+    # Now works with curses gui.
 </t>
 <t tx="ekr.20140902101931.4478"></t>
 <t tx="ekr.20150208213643.12">def spam():

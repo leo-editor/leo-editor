@@ -29068,24 +29068,7 @@ if g.app.gui.guiName() == 'curses':
 else:
     g.pr(s,color='blue')
 #@+node:ekr.20140822063016.4474: ** @test zzz force a quit
-if 0:
-    # These won't do any good if a unit test foolishly saves the outline!
-    c.k.simulateCommand('contract-all')
-    c.setChanged(False)
-old_gui = getattr(g.app, 'old_gui', None)
-if old_gui and old_gui.guiName() == 'curses':
-    import curses
-    import logging
-    logging.info('test')
-    curses.endwin()
-elif g.app.gui.guiName() == 'nullGui':
-    g.app.gui = g.app.old_gui
-        # Restore the qt gui swapped out by TM.doTests
-    c.k.simulateCommand(':q!')
-    # else:
-        # print('can not shut down automatically')
-else:
-    g.app.forceShutdown()
-    # c.k.simulateCommand(':q!')
+g.app.forceShutdown()
+    # Now works with curses gui.
 #@-all
 #@-leo

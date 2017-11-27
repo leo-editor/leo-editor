@@ -691,7 +691,7 @@ class TestManager(object):
                         failfast=g.app.failFast,
                         verbosity=verbosity,
                     )
-                if 1: ### Experimental: use the null gui for all unit tests.
+                if 1: # Use the null gui for all unit tests.
                     import leo.core.leoFrame as leoFrame
                     g.app.old_gui = old_gui = g.app.gui
                     old_frame = c.frame
@@ -708,6 +708,11 @@ class TestManager(object):
                         g.app.gui = old_gui
                         c.frame = old_frame
                         c.k.w = old_k_w
+                        # Allow unit tests to kill the console gui.
+                        if g.app.killed:
+                            if g.app.trace_shutdown:
+                                g.trace('calling sys.exit(0) after unit test')
+                            sys.exit(0)
                 else:
                     result = runner.run(suite)
                 if stream:
