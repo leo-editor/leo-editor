@@ -909,6 +909,461 @@ def method_name(f):
     else:
         return repr(f)
 #@+node:ekr.20170524123950.1: ** Gui classes
+#@+node:ekr.20171128051435.1: *3* class FindTabManager
+class FindTabManager(object):
+    '''A helper class for the LeoFind class.'''
+    # A complete rewrite of the FindTabManager in qt_frame.py.
+    #@+others
+    #@+node:ekr.20171128051435.2: *4*  ftm.ctor
+    def __init__(self, c):
+        '''Ctor for the FindTabManager class.'''
+        # g.trace('(FindTabManager)',c.shortFileName(),g.callers())
+        self.c = c
+        assert(c.findCommands) ###
+        c.findCommands.minibuffer_mode = True ###
+        self.entry_focus = None # The widget that had focus before find-pane entered.
+        # Find/change text boxes.
+        self.find_findbox = None
+        self.find_replacebox = None
+        # Check boxes.
+        self.check_box_ignore_case = None
+        self.check_box_mark_changes = None
+        self.check_box_mark_finds = None
+        self.check_box_regexp = None
+        self.check_box_search_body = None
+        self.check_box_search_headline = None
+        self.check_box_whole_word = None
+        self.check_box_wrap_around = None
+        # Radio buttons
+        self.radio_button_entire_outline = None
+        self.radio_button_node_only = None
+        self.radio_button_suboutline_only = None
+        # Push buttons
+        self.find_next_button = None
+        self.find_prev_button = None
+        self.find_all_button = None
+        self.help_for_find_commands_button = None
+        self.replace_button = None
+        self.replace_then_find_button = None
+        self.replace_all_button = None
+    #@+node:ekr.20171128051435.3: *4* ftm.text getters/setters
+    def getFindText(self):
+        return g.u(self.find_findbox.text())
+
+    def getReplaceText(self):
+        return g.u(self.find_replacebox.text())
+
+    getChangeText = getReplaceText
+
+    def setFindText(self, s):
+        w = self.find_findbox
+        s = g.toUnicode(s)
+        w.clear()
+        w.insert(s)
+
+    def setReplaceText(self, s):
+        w = self.find_replacebox
+        s = g.toUnicode(s)
+        w.clear()
+        w.insert(s)
+
+    setChangeText = setReplaceText
+    #@+node:ekr.20171128051435.4: *4* ftm.clear_focus & init_focus & set_entry_focus
+    def clear_focus(self):
+        pass
+        ###
+            # self.entry_focus = None
+            # self.find_findbox.clearFocus()
+
+    def init_focus(self):
+        pass
+        ###
+            # self.set_entry_focus()
+            # w = self.find_findbox
+            # w.setFocus()
+            # s = g.u(w.text())
+            # w.setSelection(0, len(s))
+
+    def set_entry_focus(self):
+        pass
+        ###
+            # # Remember the widget that had focus, changing headline widgets
+            # # to the tree pane widget.  Headline widgets can disappear!
+            # c = self.c
+            # w = g.app.gui.get_focus(raw=True)
+            # if w != c.frame.body.wrapper.widget:
+                # w = c.frame.tree.treeWidget
+            # self.entry_focus = w
+            # # g.trace(w,g.app.gui.widget_name(w))
+    #@+node:ekr.20171128051435.5: *4* ftm.set_ignore_case
+    def set_ignore_case(self, aBool):
+        '''Set the ignore-case checkbox to the given value.'''
+        c = self.c
+        c.findCommands.ignore_case = aBool
+        w = self.check_box_ignore_case
+        w.setChecked(aBool)
+    #@+node:ekr.20171128051435.6: *4* ftm.init_widgets (creates callbacks)
+    def init_widgets(self):
+        '''
+        Init widgets and ivars from c.config settings.
+        Create callbacks that always keep the LeoFind ivars up to date.
+        '''
+        c = self.c
+        find = c.findCommands
+        # Find/change text boxes.
+        table = (
+            ('find_findbox', 'find_text', '<find pattern here>'),
+            ('find_replacebox', 'change_text', ''),
+        )
+        for ivar, setting_name, default in table:
+            s = c.config.getString(setting_name) or default
+            s = g.u(s)
+            w = getattr(self, ivar)
+            w.insert(s)
+            ###
+                # if find.minibuffer_mode:
+                    # w.clearFocus()
+                # else:
+                    # w.setSelection(0, len(s))
+        # Check boxes.
+        table = (
+            ('ignore_case', self.check_box_ignore_case),
+            ('mark_changes', self.check_box_mark_changes),
+            ('mark_finds', self.check_box_mark_finds),
+            ('pattern_match', self.check_box_regexp),
+            ('search_body', self.check_box_search_body),
+            ('search_headline', self.check_box_search_headline),
+            ('whole_word', self.check_box_whole_word),
+            ('wrap', self.check_box_wrap_around),
+        )
+        for setting_name, w in table:
+            val = c.config.getBool(setting_name, default=False)
+            # The setting name is also the name of the LeoFind ivar.
+            assert hasattr(find, setting_name), setting_name
+            setattr(find, setting_name, val)
+            if val:
+                w.toggle()
+
+            def check_box_callback(n, setting_name=setting_name, w=w):
+                # The focus has already change when this gets called.
+                # focus_w = QtWidgets.QApplication.focusWidget()
+                # g.trace(setting_name,val,focus_w,g.callers())
+                val = w.isChecked()
+                assert hasattr(find, setting_name), setting_name
+                setattr(find, setting_name, val)
+                # Too kludgy: we must use an accurate setting.
+                # It would be good to have an "about to change" signal.
+                # Put focus in minibuffer if minibuffer find is in effect.
+                ### c.bodyWantsFocusNow()
+
+            ### w.stateChanged.connect(check_box_callback)
+
+        # Radio buttons
+        table = (
+            ('node_only', 'node_only', self.radio_button_node_only),
+            ('entire_outline', None, self.radio_button_entire_outline),
+            ('suboutline_only', 'suboutline_only', self.radio_button_suboutline_only),
+        )
+        for setting_name, ivar, w in table:
+            val = c.config.getBool(setting_name, default=False)
+            # The setting name is also the name of the LeoFind ivar.
+            # g.trace(setting_name,ivar,val)
+            if ivar is not None:
+                assert hasattr(find, setting_name), setting_name
+                setattr(find, setting_name, val)
+                w.toggle()
+
+            def radio_button_callback(n, ivar=ivar, setting_name=setting_name, w=w):
+                val = w.isChecked()
+                find.radioButtonsChanged = True
+                # g.trace(setting_name,ivar,val,g.callers())
+                if ivar:
+                    assert hasattr(find, ivar), ivar
+                    setattr(find, ivar, val)
+
+            w.toggled.connect(radio_button_callback)
+        # Ensure one radio button is set.
+        if not find.node_only and not find.suboutline_only:
+            w = self.radio_button_entire_outline
+            w.toggle()
+    #@+node:ekr.20171128051435.7: *4* ftm.set_radio_button
+    def set_radio_button(self, name):
+        '''Set the value of the radio buttons'''
+        # c = self.c
+        # find = c.findCommands
+        d = {
+            # Name is not an ivar. Set by find.setFindScope... commands.
+            'node-only': self.radio_button_node_only,
+            'entire-outline': self.radio_button_entire_outline,
+            'suboutline-only': self.radio_button_suboutline_only,
+        }
+        w = d.get(name)
+        assert w
+        # Most of the work will be done in the radio button callback.
+        if not w.isChecked():
+            w.toggle()
+        ###
+            # if find.minibuffer_mode:
+                # find.showFindOptionsInStatusArea()
+    #@+node:ekr.20171128051435.8: *4* ftm.toggle_checkbox
+    #@@nobeautify
+
+    def toggle_checkbox(self,checkbox_name):
+        '''Toggle the value of the checkbox whose name is given.'''
+        c = self.c
+        find = c.findCommands
+        if not find:
+            return
+        d = {
+            'ignore_case':     self.check_box_ignore_case,
+            'mark_changes':    self.check_box_mark_changes,
+            'mark_finds':      self.check_box_mark_finds,
+            'pattern_match':   self.check_box_regexp,
+            'search_body':     self.check_box_search_body,
+            'search_headline': self.check_box_search_headline,
+            'whole_word':      self.check_box_whole_word,
+            'wrap':            self.check_box_wrap_around,
+        }
+        w = d.get(checkbox_name)
+        assert w, repr(w)
+        assert hasattr(find,checkbox_name),checkbox_name
+        w.toggle() # The checkbox callback toggles the ivar.
+        ###
+            # if find.minibuffer_mode:
+                # find.showFindOptionsInStatusArea()
+    #@-others
+#@+node:edward.20170428174322.1: *3* class KeyEvent (object)
+class KeyEvent(object):
+    '''A gui-independent wrapper for gui events.'''
+    #@+others
+    #@+node:edward.20170428174322.2: *4* KeyEvent.__init__
+    def __init__(self, c, char, event, shortcut, w,
+        x=None,
+        y=None,
+        x_root=None,
+        y_root=None,
+    ):
+        '''Ctor for KeyEvent class.'''
+        trace = False
+        assert not g.isStroke(shortcut), g.callers()
+        stroke = g.KeyStroke(shortcut) if shortcut else None
+        if trace: g.trace('KeyEvent: stroke', stroke)
+        self.c = c
+        self.char = char or ''
+        self.event = event
+        self.stroke = stroke
+        self.w = self.widget = w
+        # Optional ivars
+        self.x = x
+        self.y = y
+        # Support for fastGotoNode plugin
+        self.x_root = x_root
+        self.y_root = y_root
+    #@+node:edward.20170428174322.3: *4* KeyEvent.__repr__
+    def __repr__(self):
+        return 'KeyEvent: stroke: %s, char: %s, w: %s' % (
+            repr(self.stroke), repr(self.char), repr(self.w))
+    #@+node:edward.20170428174322.4: *4* KeyEvent.get & __getitem__
+    def get(self, attr):
+        '''Compatibility with g.bunch: return an attr.'''
+        return getattr(self, attr, None)
+
+    def __getitem__(self, attr):
+        '''Compatibility with g.bunch: return an attr.'''
+        return getattr(self, attr, None)
+    #@+node:edward.20170428174322.5: *4* KeyEvent.type
+    def type(self):
+        return 'KeyEvent'
+    #@-others
+#@+node:ekr.20170430114840.1: *3* class KeyHandler (object)
+class KeyHandler (object):
+
+    #@+others
+    #@+node:ekr.20170430114930.1: *4* CKey.do_key & helpers
+    def do_key(self, ch_i):
+        '''
+        Handle a key event by calling k.masterKeyHandler.
+        Return True if the event was completely handled.
+        '''
+        #  This is a rewrite of LeoQtEventFilter code.
+        trace = True and not g.unitTesting
+        c = g.app.log and g.app.log.c
+        if not c:
+            return True # We are shutting down.
+        elif self.is_key_event(ch_i):
+            try:
+                ch = chr(ch_i)
+            except Exception:
+                ch = '<no ch>'
+            char, shortcut = self.to_key(ch_i)
+            # if trace:
+                # g.trace('(CKey)', ch_i, ch, repr(shortcut))
+                # g.trace(g.app.gui, repr(getattr(g.app.gui, 'in_dialog', None)))
+            if g.app.gui.in_dialog:
+                if trace: g.trace('(CKey) dialog key', ch)
+            elif shortcut:
+                try:
+                    w = c.frame.body.wrapper
+                    event = self.create_key_event(c, w, char, shortcut)
+                    c.k.masterKeyHandler(event)
+                except Exception:
+                    g.es_exception()
+            return bool(shortcut)
+        else:
+            return False
+    #@+node:ekr.20170430115131.4: *5* CKey.char_to_tk_name
+    tk_dict = {
+        # Part 1: same as g.app.guiBindNamesDict
+        "&": "ampersand",
+        "^": "asciicircum",
+        "~": "asciitilde",
+        "*": "asterisk",
+        "@": "at",
+        "\\": "backslash",
+        "|": "bar",
+        "{": "braceleft",
+        "}": "braceright",
+        "[": "bracketleft",
+        "]": "bracketright",
+        ":": "colon",
+        ",": "comma",
+        "$": "dollar",
+        "=": "equal",
+        "!": "exclam",
+        ">": "greater",
+        "<": "less",
+        "-": "minus",
+        "#": "numbersign",
+        '"': "quotedbl",
+        "'": "quoteright",
+        "(": "parenleft",
+        ")": "parenright",
+        "%": "percent",
+        ".": "period",
+        "+": "plus",
+        "?": "question",
+        "`": "quoteleft",
+        ";": "semicolon",
+        "/": "slash",
+        " ": "space",
+        "_": "underscore",
+        # Curses.
+        ### Qt
+            # # Part 2: special Qt translations.
+            # 'Backspace': 'BackSpace',
+            # 'Backtab': 'Tab', # The shift mod will convert to 'Shift+Tab',
+            # 'Esc': 'Escape',
+            # 'Del': 'Delete',
+            # 'Ins': 'Insert', # was 'Return',
+            # # Comment these out to pass the key to the QTextWidget.
+            # # Use these to enable Leo's page-up/down commands.
+            # 'PgDown': 'Next',
+            # 'PgUp': 'Prior',
+            # # New entries.  These simplify code.
+            # 'Down': 'Down', 'Left': 'Left', 'Right': 'Right', 'Up': 'Up',
+            # 'End': 'End',
+            # 'F1': 'F1', 'F2': 'F2', 'F3': 'F3', 'F4': 'F4', 'F5': 'F5',
+            # 'F6': 'F6', 'F7': 'F7', 'F8': 'F8', 'F9': 'F9',
+            # 'F10': 'F10', 'F11': 'F11', 'F12': 'F12',
+            # 'Home': 'Home',
+            # # 'Insert':'Insert',
+            # 'Return': 'Return',
+            # 'Tab': 'Tab',
+            # # 'Tab':'\t', # A hack for QLineEdit.
+            # # Unused: Break, Caps_Lock,Linefeed,Num_lock
+    }
+
+    def char_to_tk_name(self, ch):
+        return self.tk_dict.get(ch, ch)
+    #@+node:ekr.20170430115131.2: *5* CKey.create_key_event
+    def create_key_event(self, c, w, ch, shortcut):
+        trace = False
+        # Last-minute adjustments...
+        if shortcut == 'Return':
+            ch = '\n' # Somehow Qt wants to return '\r'.
+        elif shortcut == 'Escape':
+            ch = 'Escape'
+        # Switch the Shift modifier to handle the cap-lock key.
+        if isinstance(ch, int):
+            g.trace('can not happen: ch: %r shortcut: %r' % (ch, shortcut))
+        elif (
+            ch and len(ch) == 1 and
+            shortcut and len(shortcut) == 1 and
+            ch.isalpha() and shortcut.isalpha()
+        ):
+            if ch != shortcut:
+                if trace: g.trace('caps-lock')
+                shortcut = ch
+        # Patch provided by resi147.
+        # See the thread: special characters in MacOSX, like '@'.
+        # Alt keys apparently never generated.
+            # if sys.platform.startswith('darwin'):
+                # darwinmap = {
+                    # 'Alt-Key-5': '[',
+                    # 'Alt-Key-6': ']',
+                    # 'Alt-Key-7': '|',
+                    # 'Alt-slash': '\\',
+                    # 'Alt-Key-8': '{',
+                    # 'Alt-Key-9': '}',
+                    # 'Alt-e': '€',
+                    # 'Alt-l': '@',
+                # }
+                # if tkKey in darwinmap:
+                    # shortcut = darwinmap[tkKey]
+        if trace: g.trace('ch: %r, shortcut: %r' % (ch, shortcut))
+        import leo.core.leoGui as leoGui
+        return leoGui.LeoKeyEvent(
+            c=c,
+            char=ch,
+            event={'c': c, 'w': w},
+            shortcut=shortcut,
+            w=w, x=0, y=0, x_root=0, y_root=0,
+        )
+    #@+node:ekr.20170430115030.1: *5* CKey.is_key_event
+    def is_key_event(self, ch_i):
+        # pylint: disable=no-member
+        return ch_i not in (curses.KEY_MOUSE,)
+    #@+node:ekr.20170430115131.3: *5* CKey.to_key
+    def to_key(self, i):
+        '''Convert int i to a char and shortcut.'''
+        trace = False
+        a = curses.ascii
+        char, shortcut = '', ''
+        s = a.unctrl(i)
+        if i <= 32:
+            d = {
+                8:'Backspace',  9:'Tab',
+                10:'Return',    13:'Linefeed',
+                27:'Escape',    32: ' ',
+            }
+            shortcut = d.get(i, '')
+            # All real ctrl keys lie between 1 and 26.
+            if shortcut and shortcut != 'Escape':
+                char = chr(i)
+            elif len(s) >= 2 and s.startswith('^'):
+                shortcut = 'Ctrl+' + self.char_to_tk_name(s[1:].lower())
+        elif i == 127:
+            pass
+        elif i < 128:
+            char = shortcut = chr(i)
+            if char.isupper():
+                shortcut = 'Shift+' + char
+            else:
+                shortcut = self.char_to_tk_name(char)
+        elif 265 <= i <= 276:
+            # Special case for F-keys
+            shortcut = 'F%s' % (i-265+1)
+        elif i == 351:
+            shortcut = 'Shift+Tab'
+        elif s.startswith('\\x'):
+            pass
+        elif len(s) >= 3 and s.startswith('!^'):
+            shortcut = 'Alt+' + self.char_to_tk_name(s[2:])
+        else:
+            pass
+        if trace: g.trace('i: %s s: %s char: %r shortcut: %r' % (i, s, char, shortcut))
+        return char, shortcut
+    #@-others
 #@+node:ekr.20170419094731.1: *3* class LeoCursesGui (leoGui.LeoGui)
 class LeoCursesGui(leoGui.LeoGui):
     '''
@@ -1229,33 +1684,10 @@ class LeoCursesGui(leoGui.LeoGui):
     # Do *not* define setClipboardSelection.
     # setClipboardSelection = replaceClipboardWith
     #@+node:ekr.20170502021145.1: *4* CGui.dialogs
-    #@+node:ekr.20170712145632.2: *5* CGui.createFindDialog (to do)
+    #@+node:ekr.20170712145632.2: *5* CGui.createFindDialog
     def createFindDialog(self, c):
         '''Create and init a non-modal Find dialog.'''
-        g.trace()
-        # g.app.globalFindTabManager = c.findCommands.ftm
-        # top = c.frame.top
-            # top is the DynamicWindow class.
-        # w = top.findTab
-        # top.find_status_label.setText('Find Status:')
-
-        ### d = QtWidgets.QDialog()
-        # Fix #516: Hide the dialog. Never delete it.
-
-        # def closeEvent(event, d=d):
-            # event.ignore()
-            # d.hide()
-
-        # d.closeEvent = closeEvent
-        # layout = QtWidgets.QVBoxLayout(d)
-        # layout.addWidget(w)
-        # self.attachLeoIcon(d)
-        # d.setLayout(layout)
-        # c.styleSheetManager.set_style_sheets(w=d)
-        # g.app.gui.setFilter(c, d, d, 'find-dialog')
-            # # This makes most standard bindings available.
-        # d.setModal(False)
-        # return d
+        g.trace('not implemented')
     #@+node:ekr.20171126182120.1: *5* CGui.dialog_message
     def dialog_message(self, message):
         '''No longer used: a placeholder for dialogs.'''
@@ -1571,246 +2003,18 @@ class LeoCursesGui(leoGui.LeoGui):
             )
     #@+node:ekr.20171126192144.1: *4* CGui.startSearch
     def startSearch(self, event):
-        g.trace('(CGui)', event)
+        g.trace('(CGui)')
         c = event.get('c')
         if c:
             c.inCommand = False
             c.inFindCommand = True
                 # A new flag.
+            c.findCommands.minibuffer_mode = True
+            c.findCommands.startSearch(event)
+            g.trace('=====')
             self.focus_to_minibuffer(c)
                 # Does not return!
-    #@-others
-#@+node:edward.20170428174322.1: *3* class KeyEvent (object)
-class KeyEvent(object):
-    '''A gui-independent wrapper for gui events.'''
-    #@+others
-    #@+node:edward.20170428174322.2: *4* KeyEvent.__init__
-    def __init__(self, c, char, event, shortcut, w,
-        x=None,
-        y=None,
-        x_root=None,
-        y_root=None,
-    ):
-        '''Ctor for KeyEvent class.'''
-        trace = False
-        assert not g.isStroke(shortcut), g.callers()
-        stroke = g.KeyStroke(shortcut) if shortcut else None
-        if trace: g.trace('KeyEvent: stroke', stroke)
-        self.c = c
-        self.char = char or ''
-        self.event = event
-        self.stroke = stroke
-        self.w = self.widget = w
-        # Optional ivars
-        self.x = x
-        self.y = y
-        # Support for fastGotoNode plugin
-        self.x_root = x_root
-        self.y_root = y_root
-    #@+node:edward.20170428174322.3: *4* KeyEvent.__repr__
-    def __repr__(self):
-        return 'KeyEvent: stroke: %s, char: %s, w: %s' % (
-            repr(self.stroke), repr(self.char), repr(self.w))
-    #@+node:edward.20170428174322.4: *4* KeyEvent.get & __getitem__
-    def get(self, attr):
-        '''Compatibility with g.bunch: return an attr.'''
-        return getattr(self, attr, None)
 
-    def __getitem__(self, attr):
-        '''Compatibility with g.bunch: return an attr.'''
-        return getattr(self, attr, None)
-    #@+node:edward.20170428174322.5: *4* KeyEvent.type
-    def type(self):
-        return 'KeyEvent'
-    #@-others
-#@+node:ekr.20170430114840.1: *3* class KeyHandler (object)
-class KeyHandler (object):
-
-    #@+others
-    #@+node:ekr.20170430114930.1: *4* CKey.do_key & helpers
-    def do_key(self, ch_i):
-        '''
-        Handle a key event by calling k.masterKeyHandler.
-        Return True if the event was completely handled.
-        '''
-        #  This is a rewrite of LeoQtEventFilter code.
-        trace = True and not g.unitTesting
-        c = g.app.log and g.app.log.c
-        if not c:
-            return True # We are shutting down.
-        elif self.is_key_event(ch_i):
-            try:
-                ch = chr(ch_i)
-            except Exception:
-                ch = '<no ch>'
-            char, shortcut = self.to_key(ch_i)
-            # if trace:
-                # g.trace('(CKey)', ch_i, ch, repr(shortcut))
-                # g.trace(g.app.gui, repr(getattr(g.app.gui, 'in_dialog', None)))
-            if g.app.gui.in_dialog:
-                if trace: g.trace('(CKey) dialog key', ch)
-            elif shortcut:
-                try:
-                    w = c.frame.body.wrapper
-                    event = self.create_key_event(c, w, char, shortcut)
-                    c.k.masterKeyHandler(event)
-                except Exception:
-                    g.es_exception()
-            return bool(shortcut)
-        else:
-            return False
-    #@+node:ekr.20170430115131.4: *5* CKey.char_to_tk_name
-    tk_dict = {
-        # Part 1: same as g.app.guiBindNamesDict
-        "&": "ampersand",
-        "^": "asciicircum",
-        "~": "asciitilde",
-        "*": "asterisk",
-        "@": "at",
-        "\\": "backslash",
-        "|": "bar",
-        "{": "braceleft",
-        "}": "braceright",
-        "[": "bracketleft",
-        "]": "bracketright",
-        ":": "colon",
-        ",": "comma",
-        "$": "dollar",
-        "=": "equal",
-        "!": "exclam",
-        ">": "greater",
-        "<": "less",
-        "-": "minus",
-        "#": "numbersign",
-        '"': "quotedbl",
-        "'": "quoteright",
-        "(": "parenleft",
-        ")": "parenright",
-        "%": "percent",
-        ".": "period",
-        "+": "plus",
-        "?": "question",
-        "`": "quoteleft",
-        ";": "semicolon",
-        "/": "slash",
-        " ": "space",
-        "_": "underscore",
-        # Curses.
-        ### Qt
-            # # Part 2: special Qt translations.
-            # 'Backspace': 'BackSpace',
-            # 'Backtab': 'Tab', # The shift mod will convert to 'Shift+Tab',
-            # 'Esc': 'Escape',
-            # 'Del': 'Delete',
-            # 'Ins': 'Insert', # was 'Return',
-            # # Comment these out to pass the key to the QTextWidget.
-            # # Use these to enable Leo's page-up/down commands.
-            # 'PgDown': 'Next',
-            # 'PgUp': 'Prior',
-            # # New entries.  These simplify code.
-            # 'Down': 'Down', 'Left': 'Left', 'Right': 'Right', 'Up': 'Up',
-            # 'End': 'End',
-            # 'F1': 'F1', 'F2': 'F2', 'F3': 'F3', 'F4': 'F4', 'F5': 'F5',
-            # 'F6': 'F6', 'F7': 'F7', 'F8': 'F8', 'F9': 'F9',
-            # 'F10': 'F10', 'F11': 'F11', 'F12': 'F12',
-            # 'Home': 'Home',
-            # # 'Insert':'Insert',
-            # 'Return': 'Return',
-            # 'Tab': 'Tab',
-            # # 'Tab':'\t', # A hack for QLineEdit.
-            # # Unused: Break, Caps_Lock,Linefeed,Num_lock
-    }
-
-    def char_to_tk_name(self, ch):
-        return self.tk_dict.get(ch, ch)
-    #@+node:ekr.20170430115131.2: *5* CKey.create_key_event
-    def create_key_event(self, c, w, ch, shortcut):
-        trace = False
-        # Last-minute adjustments...
-        if shortcut == 'Return':
-            ch = '\n' # Somehow Qt wants to return '\r'.
-        elif shortcut == 'Escape':
-            ch = 'Escape'
-        # Switch the Shift modifier to handle the cap-lock key.
-        if isinstance(ch, int):
-            g.trace('can not happen: ch: %r shortcut: %r' % (ch, shortcut))
-        elif (
-            ch and len(ch) == 1 and
-            shortcut and len(shortcut) == 1 and
-            ch.isalpha() and shortcut.isalpha()
-        ):
-            if ch != shortcut:
-                if trace: g.trace('caps-lock')
-                shortcut = ch
-        # Patch provided by resi147.
-        # See the thread: special characters in MacOSX, like '@'.
-        # Alt keys apparently never generated.
-            # if sys.platform.startswith('darwin'):
-                # darwinmap = {
-                    # 'Alt-Key-5': '[',
-                    # 'Alt-Key-6': ']',
-                    # 'Alt-Key-7': '|',
-                    # 'Alt-slash': '\\',
-                    # 'Alt-Key-8': '{',
-                    # 'Alt-Key-9': '}',
-                    # 'Alt-e': '€',
-                    # 'Alt-l': '@',
-                # }
-                # if tkKey in darwinmap:
-                    # shortcut = darwinmap[tkKey]
-        if trace: g.trace('ch: %r, shortcut: %r' % (ch, shortcut))
-        import leo.core.leoGui as leoGui
-        return leoGui.LeoKeyEvent(
-            c=c,
-            char=ch,
-            event={'c': c, 'w': w},
-            shortcut=shortcut,
-            w=w, x=0, y=0, x_root=0, y_root=0,
-        )
-    #@+node:ekr.20170430115030.1: *5* CKey.is_key_event
-    def is_key_event(self, ch_i):
-        # pylint: disable=no-member
-        return ch_i not in (curses.KEY_MOUSE,)
-    #@+node:ekr.20170430115131.3: *5* CKey.to_key
-    def to_key(self, i):
-        '''Convert int i to a char and shortcut.'''
-        trace = False
-        a = curses.ascii
-        char, shortcut = '', ''
-        s = a.unctrl(i)
-        if i <= 32:
-            d = {
-                8:'Backspace',  9:'Tab',
-                10:'Return',    13:'Linefeed',
-                27:'Escape',    32: ' ',
-            }
-            shortcut = d.get(i, '')
-            # All real ctrl keys lie between 1 and 26.
-            if shortcut and shortcut != 'Escape':
-                char = chr(i)
-            elif len(s) >= 2 and s.startswith('^'):
-                shortcut = 'Ctrl+' + self.char_to_tk_name(s[1:].lower())
-        elif i == 127:
-            pass
-        elif i < 128:
-            char = shortcut = chr(i)
-            if char.isupper():
-                shortcut = 'Shift+' + char
-            else:
-                shortcut = self.char_to_tk_name(char)
-        elif 265 <= i <= 276:
-            # Special case for F-keys
-            shortcut = 'F%s' % (i-265+1)
-        elif i == 351:
-            shortcut = 'Shift+Tab'
-        elif s.startswith('\\x'):
-            pass
-        elif len(s) >= 3 and s.startswith('!^'):
-            shortcut = 'Alt+' + self.char_to_tk_name(s[2:])
-        else:
-            pass
-        if trace: g.trace('i: %s s: %s char: %r shortcut: %r' % (i, s, char, shortcut))
-        return char, shortcut
     #@-others
 #@+node:ekr.20170524124010.1: ** Leo widget classes
 # Most are subclasses Leo's base gui classes.
@@ -1900,9 +2104,112 @@ class CoreFrame (leoFrame.LeoFrame):
         # g.trace('CoreFrame', self.c.shortFileName())
         c = self.c
         g.app.windowList.append(self)
-        c.findCommands.ftm = g.NullObject()
+        ftm = FindTabManager(c)
+        c.findCommands.ftm = ftm ### was g.NullObject()
+        self.ftm = ftm
+        self.createFindTab()
         self.createFirstTreeNode()
             # Call the base-class method.
+    #@+node:ekr.20171128052121.1: *5* CFrame.createFindTab & helpers
+    def createFindTab(self):
+        '''Create a Find Tab in the given parent.'''
+        # Like DynamicWindow.createFindTab.
+        g.trace('=====')
+        ftm = self.ftm
+        assert ftm
+        self.create_find_findbox()
+        self.create_find_replacebox()
+        self.create_find_checkboxes()
+        # Official ivars (in addition to checkbox ivars).
+        self.leo_find_widget = None ### tab_widget # A scrollArea.
+        ftm.init_widgets()
+    #@+node:ekr.20171128052121.4: *6* CFrame.create_find_findbox
+    def create_find_findbox(self):
+        '''Create the Find: label and text area.'''
+        c = self.c
+        fc = c.findCommands
+        ftm = self.ftm
+        assert ftm
+        assert ftm.find_findbox is None
+        ftm.find_findbox = self.createLineEdit('findPattern', disabled=fc.expert_mode)
+    #@+node:ekr.20171128052121.5: *6* CFrame.create_find_replacebox
+    def create_find_replacebox(self):
+        '''Create the Replace: label and text area.'''
+        c = self.c
+        fc = c.findCommands
+        ftm = self.ftm
+        assert ftm
+        assert ftm.find_replacebox is None
+        ftm.find_replacebox = self.createLineEdit('findChange', disabled=fc.expert_mode)
+    #@+node:ekr.20171128052121.6: *6* CFrame.create_find_checkboxes
+    def create_find_checkboxes(self):
+        '''Create check boxes and radio buttons.'''
+        # c = self.c
+        ftm = self.ftm
+
+        def mungeName(kind, label):
+            # The returned value is the name of an ivar.
+            kind = 'check_box_' if kind == 'box' else 'radio_button_'
+            name = label.replace(' ', '_').replace('&', '').lower()
+            return '%s%s' % (kind, name)
+
+        d = {
+            'box': self.createCheckBox,
+            'rb': self.createRadioButton,
+        }
+        table = (
+            # First row.
+            ('box', 'whole &Word'),
+            ('rb', '&Entire outline'),
+            # Second row.
+            ('box', '&Ignore case'),
+            ('rb', '&Suboutline only'),
+            # Third row.
+            ('box', 'wrap &Around'),
+            ('rb', '&Node only'),
+            # Fourth row.
+            ('box', 'rege&Xp'),
+            ('box', 'search &Headline'),
+            # Fifth row.
+            ('box', 'mark &Finds'),
+            ('box', 'search &Body'),
+            # Sixth row.
+            ('box', 'mark &Changes'),
+        )
+        for kind, label in table:
+            name = mungeName(kind, label)
+            func = d.get(kind)
+            assert func
+            label = label.replace('&', '')
+            w = func(name, label)
+            assert getattr(ftm, name) is None
+            setattr(ftm, name, w)
+    #@+node:ekr.20171128053531.3: *6* CFrame.createCheckBox
+    def createCheckBox(self, name, label):
+        
+        w = g.NullObject()
+        ###
+            # w = QtWidgets.QCheckBox(parent)
+            # self.setName(w, name)
+            # w.setText(self.tr(label))
+        return w
+    #@+node:ekr.20171128053531.8: *6* CFrame.createLineEdit
+    def createLineEdit(self, name, disabled=True):
+        
+        w = g.NullObject()
+        ###
+            # w = QtWidgets.QLineEdit(parent)
+            # w.setObjectName(name)
+            # w.leo_disabled = disabled # Inject the ivar.
+        return w
+    #@+node:ekr.20171128053531.9: *6* CFrame.createRadioButton
+    def createRadioButton(self, name, label):
+        w = g.NullObject()
+        ###
+            # w = QtWidgets.QRadioButton(parent)
+            # self.setName(w, name)
+            # w.setText(self.tr(label))
+        return w
     #@+node:ekr.20170524145750.1: *4* CFrame.cmd (decorator)
     def cmd(name):
         '''Command decorator for the LeoFrame class.'''
