@@ -917,7 +917,8 @@ class LeoCursesGui(leoGui.LeoGui):
     '''
 
     #@+others
-    #@+node:ekr.20170608112335.1: *4* CGui.__init__
+    #@+node:ekr.20171128041849.1: *4* CGui.Birth & death
+    #@+node:ekr.20170608112335.1: *5* CGui.__init__
     def __init__(self):
         '''Ctor for the CursesGui class.'''
         leoGui.LeoGui.__init__(self, 'curses')
@@ -944,31 +945,7 @@ class LeoCursesGui(leoGui.LeoGui):
         self.top_form = None
             # The top-level form. Set in createCursesTop.
         self.key_handler = KeyHandler()
-    #@+node:ekr.20170504112655.1: *4* CGui.clipboard
-    # Yes, using Tkinter seems to be the standard way.
-    #@+node:ekr.20170504112744.3: *5* CGui.getTextFromClipboard
-    def getTextFromClipboard(self):
-        '''Get a unicode string from the clipboard.'''
-        root = Tk()
-        root.withdraw()
-        try:
-            s = root.clipboard_get()
-        except Exception: # _tkinter.TclError:
-            s = ''
-        root.destroy()
-        return g.toUnicode(s)
-    #@+node:ekr.20170504112744.2: *5* CGui.replaceClipboardWith
-    def replaceClipboardWith(self, s):
-        '''Replace the clipboard with the string s.'''
-        root = Tk()
-        root.withdraw()
-        root.clipboard_clear()
-        root.clipboard_append(s)
-        root.destroy()
-
-    # Do *not* define setClipboardSelection.
-    # setClipboardSelection = replaceClipboardWith
-    #@+node:ekr.20170502083158.1: *4* CGui.createCursesTop & helpers
+    #@+node:ekr.20170502083158.1: *5* CGui.createCursesTop & helpers
     def createCursesTop(self):
         '''Create the top-level curses Form.'''
         trace = False and not g.unitTesting
@@ -990,7 +967,7 @@ class LeoCursesGui(leoGui.LeoGui):
         self.monkeyPatch(c)
         # g.es(form)
         return form
-    #@+node:ekr.20170502084106.1: *5* CGui.createCursesBody
+    #@+node:ekr.20170502084106.1: *6* CGui.createCursesBody
     def createCursesBody(self, c, form):
         '''
         Create the curses body widget in the given curses Form.
@@ -1034,7 +1011,7 @@ class LeoCursesGui(leoGui.LeoGui):
         w.leo_c = c
         w.leo_box = box
 
-    #@+node:ekr.20170502083613.1: *5* CGui.createCursesLog
+    #@+node:ekr.20170502083613.1: *6* CGui.createCursesLog
     def createCursesLog(self, c, form):
         '''
         Create the curses log widget in the given curses Form.
@@ -1072,7 +1049,7 @@ class LeoCursesGui(leoGui.LeoGui):
         box.leo_wrapper = wrapper
         w.leo_wrapper = wrapper
         w.leo_box = box
-    #@+node:ekr.20170502084249.1: *5* CGui.createCursesMinibuffer
+    #@+node:ekr.20170502084249.1: *6* CGui.createCursesMinibuffer
     def createCursesMinibuffer(self, c, form):
         '''Create the curses minibuffer widget in the given curses Form.'''
         trace = False
@@ -1101,7 +1078,7 @@ class LeoCursesGui(leoGui.LeoGui):
         w.leo_c = c
         w.leo_wrapper = wrapper
 
-    #@+node:ekr.20170502083754.1: *5* CGui.createCursesTree
+    #@+node:ekr.20170502083754.1: *6* CGui.createCursesTree
     def createCursesTree(self, c, form):
         '''Create the curses tree widget in the given curses Form.'''
 
@@ -1159,7 +1136,7 @@ class LeoCursesGui(leoGui.LeoGui):
         assert wrapper
         box.leo_wrapper = wrapper
         w.leo_wrapper = wrapper
-    #@+node:ekr.20171126191726.1: *5* CGui.monkeyPatch
+    #@+node:ekr.20171126191726.1: *6* CGui.monkeyPatch
     def monkeyPatch(self, c):
         table = (
             ('start-search', self.startSearch),
@@ -1170,20 +1147,87 @@ class LeoCursesGui(leoGui.LeoGui):
         # A new ivar.
         c.inFindCommand = False
 
-    #@+node:ekr.20170419110052.1: *4* CGui.createLeoFrame
+    #@+node:ekr.20170419110052.1: *5* CGui.createLeoFrame
     def createLeoFrame(self, c, title):
         '''
         Create a LeoFrame for the current gui.
         Called from Leo's core (c.initObjects).
         '''
         return CoreFrame(c, title)
-    #@+node:ekr.20170502103338.1: *4* CGui.destroySelf
+    #@+node:ekr.20170502103338.1: *5* CGui.destroySelf
     def destroySelf(self):
         '''
         Terminate the curses gui application.
         Leo's core calls this only if the user agrees to terminate the app.
         '''
         sys.exit(0)
+    #@+node:ekr.20170501032447.1: *5* CGui.init_logger
+    def init_logger(self):
+
+        self.rootLogger = logging.getLogger('')
+        self.rootLogger.setLevel(logging.DEBUG)
+        socketHandler = logging.handlers.SocketHandler(
+            'localhost',
+            logging.handlers.DEFAULT_TCP_LOGGING_PORT,
+        )
+        self.rootLogger.addHandler(socketHandler)
+        logging.info('-' * 20)
+        # Monkey-patch leoGlobals functions.
+        g.es = es
+        g.pr = pr # Most ouput goes through here, including g.es_exception.
+        g.trace = trace
+    #@+node:ekr.20170419140914.1: *5* CGui.runMainLoop
+    def runMainLoop(self):
+        '''The curses gui main loop.'''
+        # pylint: disable=no-member
+        #
+        # Do NOT change g.app!
+        self.curses_app = LeoApp()
+        stdscr = curses.initscr()
+        if 1: # Must follow initscr.
+            self.dump_keys()
+        try:
+            self.curses_app.run()
+                # run calls CApp.main(), which calls CGui.run().
+        finally:
+            curses.nocbreak()
+            stdscr.keypad(0)
+            curses.echo()
+            curses.endwin()
+            if g.app.trace_shutdown:
+                g.pr('Exiting Leo...')
+    #@+node:ekr.20170502020354.1: *5* CGui.run
+    def run(self):
+        '''
+        Create and run the top-level curses form.
+
+        '''
+        self.top_form = self.createCursesTop()
+        self.top_form.edit()
+    #@+node:ekr.20170504112655.1: *4* CGui.Clipboard
+    # Yes, using Tkinter seems to be the standard way.
+    #@+node:ekr.20170504112744.3: *5* CGui.getTextFromClipboard
+    def getTextFromClipboard(self):
+        '''Get a unicode string from the clipboard.'''
+        root = Tk()
+        root.withdraw()
+        try:
+            s = root.clipboard_get()
+        except Exception: # _tkinter.TclError:
+            s = ''
+        root.destroy()
+        return g.toUnicode(s)
+    #@+node:ekr.20170504112744.2: *5* CGui.replaceClipboardWith
+    def replaceClipboardWith(self, s):
+        '''Replace the clipboard with the string s.'''
+        root = Tk()
+        root.withdraw()
+        root.clipboard_clear()
+        root.clipboard_append(s)
+        root.destroy()
+
+    # Do *not* define setClipboardSelection.
+    # setClipboardSelection = replaceClipboardWith
     #@+node:ekr.20170502021145.1: *4* CGui.dialogs
     #@+node:ekr.20170712145632.2: *5* CGui.createFindDialog (to do)
     def createFindDialog(self, c):
@@ -1403,14 +1447,15 @@ class LeoCursesGui(leoGui.LeoGui):
             if s.find(pattern) > -1:
                 g.es('FOUND',pattern)
                 c.selectPosition(p)
-                self.focus_to_body()
+                self.focus_to_body(c)
                 ### To do: select the found line.
                 return
             else:
                 p.moveToThreadNext()
         g.es('NOT FOUND', pattern)
-        self.focus_to_body()
-    #@+node:ekr.20171127173313.1: *4* CGUI.focus_from_minibuffer
+        self.focus_to_body(c)
+    #@+node:ekr.20171128041920.1: *4* CGui.Focus
+    #@+node:ekr.20171127173313.1: *5* CGUI.focus_from_minibuffer
     def focus_from_minibuffer(self):
         '''Remove focus from the minibuffer text widget.'''
         form = self.curses_form
@@ -1422,33 +1467,25 @@ class LeoCursesGui(leoGui.LeoGui):
         w.how_exited = True
         w.update()
 
-    #@+node:ekr.20171127171659.1: *4* CGui.focus_to_body
-    def focus_to_body(self):
+    #@+node:ekr.20171127171659.1: *5* CGui.focus_to_body
+    def focus_to_body(self, c):
         '''Put focus in minibuffer text widget.'''
-        form = self.curses_form
-        box = form._widgets__[-3] # The body pane
-        widgets = box._my_widgets
-        assert len(widgets) == 1
-        form.editw = form._widgets__.index(box)
-        w = widgets[0]
+        w = self.set_focus(c, c.frame.body)
         w.edit()
-
-    #@+node:ekr.20171127162649.1: *4* CGui.focus_to_minibuffer
-    def focus_to_minibuffer(self):
+    #@+node:ekr.20171127162649.1: *5* CGui.focus_to_minibuffer
+    def focus_to_minibuffer(self, c):
         '''Put focus in minibuffer text widget.'''
-        form = self.curses_form
-        box = form._widgets__[-2] # The minibuffer
-        widgets = box._my_widgets
-        assert len(widgets) == 1
-        form.editw = form._widgets__.index(box)
-        w = widgets[0]
+        w = self.set_focus(c, c.frame.miniBufferWidget)
         w.edit()
-
-    #@+node:ekr.20170514060742.1: *4* CGui.fonts
-    def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
-        # g.trace('CursesGui', g.callers())
-        return None
-    #@+node:ekr.20170502101347.1: *4* CGui.get/set_focus
+        ###
+            # form = self.curses_form
+            # box = form._widgets__[-2] # The minibuffer
+            # widgets = box._my_widgets
+            # assert len(widgets) == 1
+            # form.editw = form._widgets__.index(box)
+            # w = widgets[0]
+            # w.edit()
+    #@+node:ekr.20170502101347.1: *5* CGui.get_focus
     def get_focus(self, c=None, raw=False, at_idle=False):
         '''
         Return the Leo wrapper for the npyscreen widget that is being edited.
@@ -1464,23 +1501,25 @@ class LeoCursesGui(leoGui.LeoGui):
             g.trace('===== no leo_wrapper', widget)
                 # At present, HeadWrappers have no widgets.
             return None
-
+    #@+node:ekr.20171128041805.1: *5* CGui.set_focus
     set_focus_dict = {}
         # Keys are wrappers, values are npyscreen.widgets.
     set_focus_ok = []
     set_focus_fail = []
 
     def set_focus(self, c, w):
+        '''Given a Leo wrapper, set focus to the underlying npyscreen widget.'''
         trace = False
-        trace_cache = False
+        trace_cache = True
         # w is a wrapper
         widget = getattr(w, 'widget', None)
+        if trace: g.trace('widget', widget)
         if not widget:
             if trace or not w: g.trace('no widget', repr(w))
-            return
+            return None
         if not isinstance(widget, npyscreen.wgwidget.Widget):
             g.trace('not an npyscreen.Widget', repr(w))
-            return
+            return None
         form = self.curses_form
         d = self.set_focus_dict
         if w in d:
@@ -1491,47 +1530,29 @@ class LeoCursesGui(leoGui.LeoGui):
             form.edit_w = i
             if not g.unitTesting:
                 form.display()
-            return
+            return widget
         for i, widget2 in enumerate(form._widgets__):
             if widget == widget2:
                 if trace: g.trace('FOUND', i, widget)
                 d [w] = form.editw = i
                 if not g.unitTesting:
                     form.display()
-                    return
+                return widget
             for j, widget3 in enumerate(getattr(widget2, '_my_widgets', [])):
                 if widget == widget3 or repr(widget) == repr(widget3):
                     if trace: g.trace('FOUND INNER', i, j, widget)
                     d [w] = form.editw = i # Not j!?
                     if not g.unitTesting:
                         form.display()
-                    return
+                    return widget
         if trace and widget not in self.set_focus_fail:
             self.set_focus_fail.append(widget)
             g.trace('Fail\n%r\n%r' % (widget, w))
-            ###
-                # g.printList(form._widgets__)
-                # for outer in form._widgets__:
-                    # g.trace('outer:', outer)
-                    # if hasattr(outer, '_my_widgets'):
-                        # g.printList(outer._my_widgets)
-                    # else:
-                        # g.trace('no inner widgets')
-    #@+node:ekr.20170501032447.1: *4* CGui.init_logger
-    def init_logger(self):
-
-        self.rootLogger = logging.getLogger('')
-        self.rootLogger.setLevel(logging.DEBUG)
-        socketHandler = logging.handlers.SocketHandler(
-            'localhost',
-            logging.handlers.DEFAULT_TCP_LOGGING_PORT,
-        )
-        self.rootLogger.addHandler(socketHandler)
-        logging.info('-' * 20)
-        # Monkey-patch leoGlobals functions.
-        g.es = es
-        g.pr = pr # Most ouput goes through here, including g.es_exception.
-        g.trace = trace
+        return None
+    #@+node:ekr.20170514060742.1: *4* CGui.fonts
+    def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
+        # g.trace('CursesGui', g.callers())
+        return None
     #@+node:ekr.20170504052119.1: *4* CGui.isTextWrapper
     def isTextWrapper(self, w):
         '''Return True if w is a Text widget suitable for text-oriented commands.'''
@@ -1548,34 +1569,6 @@ class LeoCursesGui(leoGui.LeoGui):
                 message=s,
                 title=short_title or 'Help',
             )
-    #@+node:ekr.20170502020354.1: *4* CGui.run
-    def run(self):
-        '''
-        Create and run the top-level curses form.
-
-        '''
-        self.top_form = self.createCursesTop()
-        self.top_form.edit()
-    #@+node:ekr.20170419140914.1: *4* CGui.runMainLoop
-    def runMainLoop(self):
-        '''The curses gui main loop.'''
-        # pylint: disable=no-member
-        #
-        # Do NOT change g.app!
-        self.curses_app = LeoApp()
-        stdscr = curses.initscr()
-        if 1: # Must follow initscr.
-            self.dump_keys()
-        try:
-            self.curses_app.run()
-                # run calls CApp.main(), which calls CGui.run().
-        finally:
-            curses.nocbreak()
-            stdscr.keypad(0)
-            curses.echo()
-            curses.endwin()
-            if g.app.trace_shutdown:
-                g.pr('Exiting Leo...')
     #@+node:ekr.20171126192144.1: *4* CGui.startSearch
     def startSearch(self, event):
         g.trace('(CGui)', event)
@@ -1584,7 +1577,7 @@ class LeoCursesGui(leoGui.LeoGui):
             c.inCommand = False
             c.inFindCommand = True
                 # A new flag.
-            self.focus_to_minibuffer()
+            self.focus_to_minibuffer(c)
                 # Does not return!
     #@-others
 #@+node:edward.20170428174322.1: *3* class KeyEvent (object)
@@ -1902,7 +1895,7 @@ class CoreFrame (leoFrame.LeoFrame):
             # self.wantedWidget = None
             # self.wantedCallbackScheduled = False
             # self.scrollWay = None
-    #@+node:ekr.20170420163932.1: *5* CFrame.finishCreate (more work may be needed)
+    #@+node:ekr.20170420163932.1: *5* CFrame.finishCreate
     def finishCreate(self):
         # g.trace('CoreFrame', self.c.shortFileName())
         c = self.c
@@ -1910,16 +1903,6 @@ class CoreFrame (leoFrame.LeoFrame):
         c.findCommands.ftm = g.NullObject()
         self.createFirstTreeNode()
             # Call the base-class method.
-
-        ### Not yet.
-            # c = self.c
-            # assert c
-            # self.top = g.app.gui.frameFactory.createFrame(self)
-            # self.createIconBar() # A base class method.
-            # self.createSplitterComponents()
-            # self.createStatusLine() # A base class method.
-            # self.miniBufferWidget = qt_text.QMinibufferWrapper(c)
-            # c.bodyWantsFocus()
     #@+node:ekr.20170524145750.1: *4* CFrame.cmd (decorator)
     def cmd(name):
         '''Command decorator for the LeoFrame class.'''
