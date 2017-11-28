@@ -13,6 +13,9 @@ except Exception:
 
 import os
 
+from collections import defaultdict
+from types import StringTypes
+
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore, QtWidgets, QtConst # QtGui
 if QtCore is not None:
@@ -65,13 +68,30 @@ class LeoEditPane(QtWidgets.QWidget):
     #@+others
     #@+node:tbrown.20171028115438.5: *3* __init__
     def __init__(self, c=None, p=None, mode='edit', show_head=True, show_control=True,
-                 update=True, recurse=False, *args, **kwargs):
+        update=True, recurse=False, lep_type=None, *args, **kwargs):
         """__init__ - bind to outline
 
         :param outline c: outline to bind to
+        :param position p: initial position
+        :param str mode: 'edit' | 'view' | 'split'
+        :param bool show_head: show header
+        :param bool show_control: show controls
+        :param bool update: update view pane when text changes
+        :param bool recurse: render view pane recursively
+        :param str or [str] lep_type: 'EDITOR' or ['EDITOR', 'HTML']
+        :param list *args: pass through
+        :param dict **kwargs: pass through
         """
         DBG("__init__ LEP")
         super(LeoEditPane, self).__init__(*args, **kwargs)
+
+        lep_type = lep_type or ['EDITOR', 'TEXT']
+        if isinstance(lep_type, StringTypes):
+            lep_type = [lep_type]
+
+        self.modules = []  # modules we collect widgets from
+        self.widget_classes = []  # collected widgets
+        self.widget_for = defaultdict(lambda:[])  # widget by class.lep_type
 
         self.c = c
         p = p or self.c.p
@@ -93,8 +113,8 @@ class LeoEditPane(QtWidgets.QWidget):
         self.recurse = self.cb_recurse.isChecked()
         self.goto    = self.cb_goto.isChecked()
 
-        self.set_widget(lep_type='EDITOR')
-        self.set_widget(lep_type='TEXT')
+        for type_ in lep_type:
+            self.set_widget(lep_type=type_)
 
         self.set_mode(self.mode)
 
@@ -405,8 +425,7 @@ class LeoEditPane(QtWidgets.QWidget):
             except ImportError as err:
                 DBG("Failed to load module: %s" % name)
                 print(err)
-        self.modules = []
-        self.widget_classes = []
+
         for module in modules:
             for key in dir(module):
                 value = getattr(module, key)
@@ -414,6 +433,7 @@ class LeoEditPane(QtWidgets.QWidget):
                     if module not in self.modules:
                         self.modules.append(module)
                     self.widget_classes.append(value)
+                    self.widget_for[value.lep_type].append(value)
 
     #@+node:tbrown.20171028115438.27: *3* misc_menu
     def misc_menu(self):
