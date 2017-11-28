@@ -839,11 +839,9 @@ def pr(*args, **keys):
     d = g.doKeywordArgs(keys, d)
     s = g.translateArgs(args, d)
     for line in g.splitLines(s):
-        line = '   pr: %s' % line.rstrip()
-        if True: ### has_logger():
+        if line.strip(): # No need to print blank logging lines.
+            line = '   pr: %s' % line.rstrip()
             logging.info(line)
-        else:
-            print(line)
 #@+node:ekr.20170429165242.1: *4* curses2: trace
 def trace(*args, **keys):
     '''Monkey-patch for g.trace.'''
@@ -891,10 +889,7 @@ def trace(*args, **keys):
             result.append(arg)
     s = ''.join(result)
     line = 'trace: %s' % s.rstrip()
-    if True: ### has_logger():
-        logging.info(line)
-    else:
-        print(line)
+    logging.info(line)
 #@+node:ekr.20170526075024.1: *3* method_name
 def method_name(f):
     '''Print a method name is a simplified format.'''
@@ -908,594 +903,219 @@ def method_name(f):
     else:
         return repr(f)
 #@+node:ekr.20170524123950.1: ** Gui classes
-#@+node:ekr.20170419094731.1: *3* class LeoCursesGui (leoGui.LeoGui)
-class LeoCursesGui(leoGui.LeoGui):
-    '''
-    Leo's curses gui wrapper.
-    This is g.app.gui, when --gui=curses.
-    '''
-
+#@+node:ekr.20171128051435.1: *3* class StringFindTabManager
+class StringFindTabManager(object):
+    '''A helper class for the LeoFind class.'''
+    # A complete rewrite of the FindTabManager in qt_frame.py.
     #@+others
-    #@+node:ekr.20170608112335.1: *4* CGui.__init__
-    def __init__(self):
-        '''Ctor for the CursesGui class.'''
-        leoGui.LeoGui.__init__(self, 'curses')
-            # Init the base class.
-        self.consoleOnly = False
-            # Required attribute.
-        self.curses_app = None
-            # The singleton LeoApp instance.
-        self.curses_form = None
-            # The top-level curses Form instance.
-            # Form.editw is the widget with focus.
-        self.in_dialog = False
-            # True: executing a modal dialog.
-        self.log = None
-            # The present log. Used by g.es
-        self.log_inited = False
-            # True: don't use the wait_list.
-        self.wait_list = []
-            # Queued log messages.
-        self.init_logger()
-            # Do this as early as possible.
-            # It monkey-patches g.pr and g.trace.
-        # g.trace('CursesGui')
-        self.top_form = None
-            # The top-level form. Set in createCursesTop.
-        self.key_handler = KeyHandler()
-    #@+node:ekr.20170504112655.1: *4* CGui.clipboard
-    # Yes, using Tkinter seems to be the standard way.
-    #@+node:ekr.20170504112744.3: *5* CGui.getTextFromClipboard
-    def getTextFromClipboard(self):
-        '''Get a unicode string from the clipboard.'''
-        root = Tk()
-        root.withdraw()
-        try:
-            s = root.clipboard_get()
-        except Exception: # _tkinter.TclError:
-            s = ''
-        root.destroy()
-        return g.toUnicode(s)
-    #@+node:ekr.20170504112744.2: *5* CGui.replaceClipboardWith
-    def replaceClipboardWith(self, s):
-        '''Replace the clipboard with the string s.'''
-        root = Tk()
-        root.withdraw()
-        root.clipboard_clear()
-        root.clipboard_append(s)
-        root.destroy()
+    #@+node:ekr.20171128051435.2: *4*  ftm.ctor
+    def __init__(self, c):
+        '''Ctor for the FindTabManager class.'''
+        # g.trace('(FindTabManager)',c.shortFileName(),g.callers())
+        self.c = c
+        g.trace('(StringFindTabManager)', c.findCommands)
+        assert(c.findCommands)
+        c.findCommands.minibuffer_mode = True
+        self.entry_focus = None # The widget that had focus before find-pane entered.
+        # Find/change text boxes.
+        self.find_findbox = None
+        self.find_replacebox = None
+        # Check boxes.
+        self.check_box_ignore_case = None
+        self.check_box_mark_changes = None
+        self.check_box_mark_finds = None
+        self.check_box_regexp = None
+        self.check_box_search_body = None
+        self.check_box_search_headline = None
+        self.check_box_whole_word = None
+        self.check_box_wrap_around = None
+        # Radio buttons
+        self.radio_button_entire_outline = None
+        self.radio_button_node_only = None
+        self.radio_button_suboutline_only = None
+        # Push buttons
+        self.find_next_button = None
+        self.find_prev_button = None
+        self.find_all_button = None
+        self.help_for_find_commands_button = None
+        self.replace_button = None
+        self.replace_then_find_button = None
+        self.replace_all_button = None
+    #@+node:ekr.20171128051435.3: *4* ftm.text getters/setters
+    def getFindText(self):
+        return g.u(self.find_findbox.text())
 
-    # Do *not* define setClipboardSelection.
-    # setClipboardSelection = replaceClipboardWith
-    #@+node:ekr.20170502083158.1: *4* CGui.createCursesTop & helpers
-    def createCursesTop(self):
-        '''Create the top-level curses Form.'''
-        trace = False and not g.unitTesting
-        # Assert the key relationships required by the startup code.
-        assert self == g.app.gui
-        c = g.app.log.c
-        assert c == g.app.windowList[0].c
-        assert isinstance(c.frame, CoreFrame), repr(c.frame)
-        if trace:
-            g.trace('commanders in g.app.windowList')
-            g.printList([z.c.shortFileName() for z in g.app.windowList])
-        # Create the top-level form.
-        self.curses_form = form = LeoForm(name = "Welcome to Leo")
-            # This call clears the screen.
-        self.createCursesLog(c, form)
-        self.createCursesTree(c, form)
-        self.createCursesBody(c, form)
-        self.createCursesMinibuffer(c, form)
-        # g.es(form)
-        return form
-    #@+node:ekr.20170502084106.1: *5* CGui.createCursesBody
-    def createCursesBody(self, c, form):
+    def getReplaceText(self):
+        return g.u(self.find_replacebox.text())
+
+    getChangeText = getReplaceText
+
+    def setFindText(self, s):
+        w = self.find_findbox
+        s = g.toUnicode(s)
+        w.clear()
+        w.insert(s)
+
+    def setReplaceText(self, s):
+        w = self.find_replacebox
+        s = g.toUnicode(s)
+        w.clear()
+        w.insert(s)
+
+    setChangeText = setReplaceText
+    #@+node:ekr.20171128051435.4: *4* ftm.clear_focus & init_focus & set_entry_focus
+    def clear_focus(self):
+        pass
+        ###
+            # self.entry_focus = None
+            # self.find_findbox.clearFocus()
+
+    def init_focus(self):
+        pass
+        ###
+            # self.set_entry_focus()
+            # w = self.find_findbox
+            # w.setFocus()
+            # s = g.u(w.text())
+            # w.setSelection(0, len(s))
+
+    def set_entry_focus(self):
+        pass
+        ###
+            # # Remember the widget that had focus, changing headline widgets
+            # # to the tree pane widget.  Headline widgets can disappear!
+            # c = self.c
+            # w = g.app.gui.get_focus(raw=True)
+            # if w != c.frame.body.wrapper.widget:
+                # w = c.frame.tree.treeWidget
+            # self.entry_focus = w
+            # # g.trace(w,g.app.gui.widget_name(w))
+    #@+node:ekr.20171128051435.5: *4* ftm.set_ignore_case
+    def set_ignore_case(self, aBool):
+        '''Set the ignore-case checkbox to the given value.'''
+        c = self.c
+        c.findCommands.ignore_case = aBool
+        w = self.check_box_ignore_case
+        w.setChecked(aBool)
+    #@+node:ekr.20171128051435.6: *4* ftm.init_widgets
+    def init_widgets(self):
         '''
-        Create the curses body widget in the given curses Form.
-        Populate it with c.p.b.
+        Init widgets and ivars from c.config settings.
+        Create callbacks that always keep the LeoFind ivars up to date.
         '''
-        trace = False
-
-        class BoxTitleBody(npyscreen.BoxTitle):
-            # pylint: disable=used-before-assignment
-            _contained_widget = LeoBody
-            how_exited = None
-
-        box = form.add(
-            BoxTitleBody,
-            max_height=8, # Subtract 4 lines
-            name='Body Pane',
-            footer="Press e to edit line, esc to end editing, d to delete line",
-            values=g.splitLines(c.p.b),
-            slow_scroll=True,
+        c = self.c
+        find = c.findCommands
+        # Find/change text boxes.
+        table = (
+            ('find_findbox', 'find_text', '<find pattern here>'),
+            ('find_replacebox', 'change_text', ''),
         )
-        assert isinstance(box, BoxTitleBody), repr(box)
-        # Get the contained widget.
-        widgets = box._my_widgets
-        assert len(widgets) == 1
-        w = widgets[0]
-        if trace: g.trace('\nBODY', w, '\nBOX', box)
-        assert isinstance(w, LeoBody), repr(w)
-        # Link and check.
-        assert isinstance(c.frame, leoFrame.LeoFrame), repr(c.frame)
-            # The generic LeoFrame class
-        assert isinstance(c.frame.body, leoFrame.LeoBody), repr(c.frame.body)
-            # The generic LeoBody class
-        assert c.frame.body.widget is None, repr(c.frame.body.widget)
-        c.frame.body.widget = w
-        assert c.frame.body.wrapper is None, repr(c.frame.body.wrapper)
-        c.frame.body.wrapper = wrapper = BodyWrapper(c, 'body', w)
-        # Inject the wrapper for get_focus.
-        box.leo_wrapper = wrapper
-        w.leo_wrapper = wrapper
-        # Inject leo_c.
-        w.leo_c = c
-        w.leo_box = box
-
-    #@+node:ekr.20170502083613.1: *5* CGui.createCursesLog
-    def createCursesLog(self, c, form):
-        '''
-        Create the curses log widget in the given curses Form.
-        Populate the widget with the queued log messages.
-        '''
-        class BoxTitleLog(npyscreen.BoxTitle):
-            # pylint: disable=used-before-assignment
-            _contained_widget = LeoLog
-            how_exited = None
-
-        box = form.add(
-            BoxTitleLog,
-            max_height=8, # Subtract 4 lines
-            name='Log Pane',
-            footer="Press e to edit line, esc to end editing, d to delete line",
-            values=[s for s, color in self.wait_list],
-            slow_scroll=False,
-        )
-        assert isinstance(box, BoxTitleLog), repr(box)
-        # Clear the wait list and disable it.
-        self.wait_list = []
-        self.log_inited = True
-        widgets = box._my_widgets
-        assert len(widgets) == 1
-        w = widgets[0]
-        assert isinstance(w, LeoLog), repr(w)
-        # Link and check...
-        assert isinstance(self.log, CoreLog), repr(self.log)
-        self.log.widget = w
-        w.firstScroll()
-        assert isinstance(c.frame, leoFrame.LeoFrame), repr(c.frame)
-            # The generic LeoFrame class
-        c.frame.log.wrapper = wrapper = LogWrapper(c, 'log', w)
-        # Inject the wrapper for get_focus.
-        box.leo_wrapper = wrapper
-        w.leo_wrapper = wrapper
-        w.leo_box = box
-    #@+node:ekr.20170502084249.1: *5* CGui.createCursesMinibuffer
-    def createCursesMinibuffer(self, c, form):
-        '''Create the curses minibuffer widget in the given curses Form.'''
-        trace = False
-
-        class MiniBufferBox(npyscreen.BoxTitle):
-            '''An npyscreen class representing Leo's minibuffer, with binding.'''
-            # pylint: disable=used-before-assignment
-            _contained_widget = LeoMiniBuffer
-            how_exited = None
-
-        box = form.add(MiniBufferBox, name='Mini-buffer', max_height=3)
-        assert isinstance(box, MiniBufferBox)
-        # Link and check...
-        widgets = box._my_widgets
-        assert len(widgets) == 1
-        w = widgets[0]
-        if trace: g.trace('\nMINI', w, '\nBOX', box)
-        assert isinstance(w, LeoMiniBuffer), repr(w)
-        assert isinstance(c.frame, CoreFrame), repr(c.frame)
-        assert c.frame.miniBufferWidget is None
-        wrapper = MiniBufferWrapper(c, 'minibuffer', w)
-        assert wrapper.widget == w, repr(wrapper.widget)
-        c.frame.miniBufferWidget = wrapper
-        # Inject the wrapper for get_focus.
-        box.leo_wrapper = wrapper
-        w.leo_c = c
-        w.leo_wrapper = wrapper
-
-    #@+node:ekr.20170502083754.1: *5* CGui.createCursesTree
-    def createCursesTree(self, c, form):
-        '''Create the curses tree widget in the given curses Form.'''
-
-        class BoxTitleTree(npyscreen.BoxTitle):
-            # pylint: disable=used-before-assignment
-            _contained_widget = LeoMLTree
-            how_exited = None
-
-        hidden_root_node = LeoTreeData(content='<HIDDEN>', ignore_root=True)
-        if native:
-            pass # cacher created below.
-        else:
-            for i in range(3):
-                node = hidden_root_node.new_child(content='node %s' % (i))
-                for j in range(2):
-                    child = node.new_child(content='child %s.%s' % (i, j))
-                    for k in range(4):
-                        grand_child = child.new_child(
-                            content='grand-child %s.%s.%s' % (i, j, k))
-                        assert grand_child # for pyflakes.
-        box = form.add(
-            BoxTitleTree,
-            max_height=8, # Subtract 4 lines
-            name='Tree Pane',
-            footer="Press d to delete node, e to edit headline (return to end), i to insert node",
-            values=hidden_root_node,
-            slow_scroll=False,
-        )
-        assert isinstance(box, BoxTitleTree), repr(box)
-        # Link and check...
-        widgets = box._my_widgets
-        assert len(widgets) == 1
-        w = leo_tree = widgets[0]
-        assert isinstance(w, LeoMLTree), repr(w)
-        leo_tree.leo_c = c
-        if native:
-            leo_tree.values = LeoValues(c=c, tree = leo_tree)
-        assert getattr(leo_tree, 'hidden_root_node') is None, leo_tree
-        leo_tree.hidden_root_node = hidden_root_node
-        assert isinstance(c.frame, leoFrame.LeoFrame), repr(c.frame)
-            # CoreFrame is a LeoFrame
-        assert isinstance(c.frame.tree, CoreTree), repr(c.frame.tree)
-        assert c.frame.tree.canvas is None, repr(c.frame.canvas)
-            # A standard ivar, used by Leo's core.
-        c.frame.canvas = leo_tree
-            # A LeoMLTree.
-        assert not hasattr(c.frame.tree, 'treeWidget'), repr(c.frame.tree.treeWidget)
-        c.frame.tree.treeWidget = leo_tree
-            # treeWidget is an official ivar.
-        assert c.frame.tree.widget is None
-        c.frame.tree.widget = leo_tree
-            # Set CoreTree.widget.
-        # Inject the wrapper for get_focus.
-        wrapper = c.frame.tree
-        assert wrapper
-        box.leo_wrapper = wrapper
-        w.leo_wrapper = wrapper
-    #@+node:ekr.20170419110052.1: *4* CGui.createLeoFrame
-    def createLeoFrame(self, c, title):
-        '''
-        Create a LeoFrame for the current gui.
-        Called from Leo's core (c.initObjects).
-        '''
-        return CoreFrame(c, title)
-    #@+node:ekr.20170502103338.1: *4* CGui.destroySelf
-    def destroySelf(self):
-        '''
-        Terminate the curses gui application.
-        Leo's core calls this only if the user agrees to terminate the app.
-        '''
-        sys.exit(0)
-    #@+node:ekr.20170502021145.1: *4* CGui.dialogs
-    def dialog_message(self, message):
-        '''No longer used: a placeholder for dialogs.'''
-        if not g.unitTesting:
-            for s in g.splitLines(message):
-                g.pr(s.rstrip())
-
-    def runAboutLeoDialog(self, c, version, theCopyright, url, email):
-        """Create and run Leo's About Leo dialog."""
-        if not g.unitTesting:
-            message =  '%s\n%s\n%s\n%s' % (version, theCopyright, url, email)
-            utilNotify.notify_confirm(message, title="About Leo")
-                # form_color='STANDOUT', wrap=True, wide=False, editw=0)
-
-    def runAskLeoIDDialog(self):
-        """Create and run a dialog to get g.app.LeoID."""
-        if not g.unitTesting:
-            message = (
-                "leoID.txt not found\n\n" +
-                "The curses gui can not set this file." +
-                "Exiting..."
-            )
-            g.trace(message)
-            sys.exit(0)
-                # "Please enter an id that identifies you uniquely.\n" +
-                # "Your cvs/bzr login name is a good choice.\n\n" +
-                # "Leo uses this id to uniquely identify nodes.\n\n" +
-                # "Your id must contain only letters and numbers\n" +
-                # "and must be at least 3 characters in length."
-
-    def runAskOkDialog(self, c, title,
-        message=None,
-        text="Ok",
-    ):
-        """Create and run an askOK dialog ."""
-        if g.unitTesting:
-            return False
-        elif self.curses_app:
-            self.in_dialog = True
-            val = utilNotify.notify_confirm(message=message,title=title)
-            self.in_dialog = False
-            return val
-        else:
-            return False
-
-    def runAskOkCancelNumberDialog(self, c, title, message,
-        cancelButtonText=None,
-        okButtonText=None,
-    ):
-        """Create and run askOkCancelNumber dialog ."""
-        if g.unitTesting:
-            return False
-        elif self.curses_app:
-            self.in_dialog = True
-            val = utilNotify.notify_ok_cancel(message=message,title=title)
-            self.in_dialog = False
-            return val
-        else:
-            return False
-
-    def runAskOkCancelStringDialog(self, c, title, message,
-        cancelButtonText=None,
-        okButtonText=None,
-        default="",
-        wide=False,
-    ):
-        """Create and run askOkCancelString dialog ."""
-        if g.unitTesting:
-            return False
-        else:
-            self.in_dialog = True
-            val = utilNotify.notify_ok_cancel(message=message,title=title)
-            self.in_dialog = False
-            return 'yes' if val else 'no'
-
-    def runAskYesNoDialog(self, c, title,
-        message=None,
-        yes_all=False,
-        no_all=False,
-    ):
-        """Create and run an askYesNo dialog."""
-        if g.unitTesting:
-            return False
-        else:
-            self.in_dialog = True
-            val = utilNotify.notify_ok_cancel(message=message,title=title)
-            self.in_dialog = False
-            return 'yes' if val else 'no'
-
-    def runAskYesNoCancelDialog(self, c, title,
-        message=None,
-        yesMessage="Yes",
-        noMessage="No",
-        yesToAllMessage=None,
-        defaultButton="Yes",
-        cancelMessage=None,
-    ):
-        """Create and run an askYesNoCancel dialog ."""
-        if g.unitTesting:
-            return False
-        else:
-            g.trace()
-            self.in_dialog = True
-            val = utilNotify.notify_yes_no(message=message,title=title)
-                # Important: don't use notify_ok_cancel.
-            self.in_dialog = False
-            return 'yes' if val else 'no'
-
-    def runOpenFileDialog(self, c, title, filetypes, defaultextension, multiple=False, startpath=None):
-        if not g.unitTesting:
-            g.trace('not ready yet', title)
-
-    def runPropertiesDialog(self,
-        title='Properties',
-        data=None,
-        callback=None,
-        buttons=None,
-    ):
-        """Dispay a modal TkPropertiesDialog"""
-        if not g.unitTesting:
-            g.trace('not ready yet', title)
-
-    def runSaveFileDialog(self, c, initialfile, title, filetypes, defaultextension):
-        if g.unitTesting:
-            return None
-        else:
-            # Not tested.
-            self.in_dialog = True
-            s = utilNotify.selectFile(
-                select_dir=False,
-                must_exist=False,
-                confirm_if_exists=True,
-                sort_by_extension=True,
-            )
-            self.in_dialog = False
-            s = g.u(s or '')
-            if s:
-                c.last_dir = g.os_path_dirname(s)
-            return s
-    #@+node:ekr.20170712145632.2: *5* CGui.createFindDialog
-    def createFindDialog(self, c):
-        '''Create and init a non-modal Find dialog.'''
-        # g.app.globalFindTabManager = c.findCommands.ftm
-        # top = c.frame.top
-            # top is the DynamicWindow class.
-        # w = top.findTab
-        # top.find_status_label.setText('Find Status:')
-
-        ### d = QtWidgets.QDialog()
-        # Fix #516: Hide the dialog. Never delete it.
-
-        # def closeEvent(event, d=d):
-            # event.ignore()
-            # d.hide()
-
-        # d.closeEvent = closeEvent
-        # layout = QtWidgets.QVBoxLayout(d)
-        # layout.addWidget(w)
-        # self.attachLeoIcon(d)
-        # d.setLayout(layout)
-        # c.styleSheetManager.set_style_sheets(w=d)
-        # g.app.gui.setFilter(c, d, d, 'find-dialog')
-            # # This makes most standard bindings available.
-        # d.setModal(False)
-        # return d
-    #@+node:ekr.20170430114709.1: *4* CGui.do_key
-    def do_key(self, ch_i):
-
-        # Ignore all printable characters.
-        if not self.in_dialog and 32 <= ch_i < 128:
-            g.trace('ignoring', chr(ch_i))
-            return True
-        return self.key_handler.do_key(ch_i)
-    #@+node:ekr.20170526051256.1: *4* CGui.dump_keys
-    def dump_keys(self):
-        '''Show all defined curses.KEY_ constants.'''
-        if 0:
-            aList = ['%3s %s' % (getattr(curses,z), z)
-                for z in dir(curses)
-                    if isinstance(getattr(curses,z), int)]
-            g.trace()
-            g.printList(sorted(aList))
-    #@+node:ekr.20170522005855.1: *4* CGui.event_generate
-    def event_generate(self, c, char, shortcut, w):
-
-        event = KeyEvent(
-            c=c,
-            char=char,
-            event=g.NullObject(),
-            shortcut=shortcut,
-            w=w,
-        )
-        c.k.masterKeyHandler(event)
-        c.outerUpdate()
-    #@+node:ekr.20170514060742.1: *4* CGui.fonts
-    def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
-        # g.trace('CursesGui', g.callers())
-        return None
-    #@+node:ekr.20170502101347.1: *4* CGui.get/set_focus
-    def get_focus(self, c=None, raw=False, at_idle=False):
-        '''
-        Return the Leo wrapper for the npyscreen widget that is being edited.
-        '''
-        # Careful during startup.
-        editw = getattr(g.app.gui.curses_form, 'editw', None)
-        if editw is None:
-            return None
-        widget = self.curses_form._widgets__[editw]
-        if hasattr(widget, 'leo_wrapper'):
-            return widget.leo_wrapper
-        else:
-            g.trace('===== no leo_wrapper', widget)
-                # At present, HeadWrappers have no widgets.
-            return None
-
-    set_focus_dict = {}
-        # Keys are wrappers, values are npyscreen.widgets.
-    set_focus_ok = []
-    set_focus_fail = []
-
-    def set_focus(self, c, w):
-        trace = False
-        trace_cache = False
-        # w is a wrapper
-        widget = getattr(w, 'widget', None)
-        if not widget:
-            if trace or not w: g.trace('no widget', repr(w))
-            return
-        if not isinstance(widget, npyscreen.wgwidget.Widget):
-            g.trace('not an npyscreen.Widget', repr(w))
-            return
-        form = self.curses_form
-        d = self.set_focus_dict
-        if w in d:
-            i = d.get(w)
-            if trace and trace_cache and w not in self.set_focus_ok:
-                self.set_focus_ok.append(w)
-                g.trace('Cached', i, w)
-            form.edit_w = i
-            if not g.unitTesting:
-                form.display()
-            return
-        for i, widget2 in enumerate(form._widgets__):
-            if widget == widget2:
-                if trace: g.trace('FOUND', i, widget)
-                d [w] = form.editw = i
-                if not g.unitTesting:
-                    form.display()
-                    return
-            for j, widget3 in enumerate(getattr(widget2, '_my_widgets', [])):
-                if widget == widget3 or repr(widget) == repr(widget3):
-                    if trace: g.trace('FOUND INNER', i, j, widget)
-                    d [w] = form.editw = i # Not j!?
-                    if not g.unitTesting:
-                        form.display()
-                    return
-        if trace and widget not in self.set_focus_fail:
-            self.set_focus_fail.append(widget)
-            g.trace('Fail\n%r\n%r' % (widget, w))
+        for ivar, setting_name, default in table:
+            s = c.config.getString(setting_name) or default
+            s = g.u(s)
+            w = getattr(self, ivar)
+            w.insert(s)
             ###
-                # g.printList(form._widgets__)
-                # for outer in form._widgets__:
-                    # g.trace('outer:', outer)
-                    # if hasattr(outer, '_my_widgets'):
-                        # g.printList(outer._my_widgets)
-                    # else:
-                        # g.trace('no inner widgets')
-    #@+node:ekr.20170501032447.1: *4* CGui.init_logger
-    def init_logger(self):
-
-        self.rootLogger = logging.getLogger('')
-        self.rootLogger.setLevel(logging.DEBUG)
-        socketHandler = logging.handlers.SocketHandler(
-            'localhost',
-            logging.handlers.DEFAULT_TCP_LOGGING_PORT,
+                # if find.minibuffer_mode:
+                    # w.clearFocus()
+                # else:
+                    # w.setSelection(0, len(s))
+        # Check boxes.
+        table = (
+            ('ignore_case', self.check_box_ignore_case),
+            ('mark_changes', self.check_box_mark_changes),
+            ('mark_finds', self.check_box_mark_finds),
+            ('pattern_match', self.check_box_regexp),
+            ('search_body', self.check_box_search_body),
+            ('search_headline', self.check_box_search_headline),
+            ('whole_word', self.check_box_whole_word),
+            ('wrap', self.check_box_wrap_around),
         )
-        self.rootLogger.addHandler(socketHandler)
-        logging.info('-' * 20)
-        # Monkey-patch leoGlobals functions.
-        g.es = es
-        g.pr = pr # Most ouput goes through here, including g.es_exception.
-        g.trace = trace
-    #@+node:ekr.20170504052119.1: *4* CGui.isTextWrapper
-    def isTextWrapper(self, w):
-        '''Return True if w is a Text widget suitable for text-oriented commands.'''
-        return w and getattr(w, 'supportsHighLevelInterface', None)
-    #@+node:ekr.20170504052042.1: *4* CGui.oops
-    def oops(self):
-        '''Ignore do-nothing methods.'''
-        g.pr("CursesGui oops:", g.callers(4), "should be overridden in subclass")
-    #@+node:ekr.20170612063102.1: *4* CGui.put_help
-    def put_help(self, c, s, short_title):
-        '''Put a help message in a dialog.'''
-        if not g.unitTesting:
-            utilNotify.notify_confirm(
-                message=s,
-                title=short_title or 'Help',
-            )
-    #@+node:ekr.20170502020354.1: *4* CGui.run
-    def run(self):
-        '''
-        Create and run the top-level curses form.
+        for setting_name, w in table:
+            val = c.config.getBool(setting_name, default=False)
+            # The setting name is also the name of the LeoFind ivar.
+            assert hasattr(find, setting_name), setting_name
+            setattr(find, setting_name, val)
+            if val:
+                w.toggle()
 
-        '''
-        self.top_form = self.createCursesTop()
-        self.top_form.edit()
-    #@+node:ekr.20170419140914.1: *4* CGui.runMainLoop
-    def runMainLoop(self):
-        '''The curses gui main loop.'''
-        # pylint: disable=no-member
-        #
-        # Do NOT change g.app!
-        self.curses_app = LeoApp()
-        stdscr = curses.initscr()
-        if 1: # Must follow initscr.
-            self.dump_keys()
-        try:
-            self.curses_app.run()
-                # run calls CApp.main(), which calls CGui.run().
-        finally:
-            curses.nocbreak()
-            stdscr.keypad(0)
-            curses.echo()
-            curses.endwin()
-            g.pr('Exiting Leo...')
+            def check_box_callback(n, setting_name=setting_name, w=w):
+                val = w.isChecked()
+                assert hasattr(find, setting_name), setting_name
+                setattr(find, setting_name, val)
+                ### c.bodyWantsFocusNow()
+
+        # Radio buttons
+        table = (
+            ('node_only', 'node_only', self.radio_button_node_only),
+            ('entire_outline', None, self.radio_button_entire_outline),
+            ('suboutline_only', 'suboutline_only', self.radio_button_suboutline_only),
+        )
+        for setting_name, ivar, w in table:
+            val = c.config.getBool(setting_name, default=False)
+            # The setting name is also the name of the LeoFind ivar.
+            if ivar is not None:
+                assert hasattr(find, setting_name), setting_name
+                setattr(find, setting_name, val)
+                w.toggle()
+
+            def radio_button_callback(n, ivar=ivar, setting_name=setting_name, w=w):
+                val = w.isChecked()
+                find.radioButtonsChanged = True
+                # g.trace(setting_name,ivar,val,g.callers())
+                if ivar:
+                    assert hasattr(find, ivar), ivar
+                    setattr(find, ivar, val)
+
+        # Ensure one radio button is set.
+        if not find.node_only and not find.suboutline_only:
+            w = self.radio_button_entire_outline
+            w.toggle()
+    #@+node:ekr.20171128051435.7: *4* ftm.set_radio_button
+    def set_radio_button(self, name):
+        '''Set the value of the radio buttons'''
+        # c = self.c
+        # find = c.findCommands
+        d = {
+            # Name is not an ivar. Set by find.setFindScope... commands.
+            'node-only': self.radio_button_node_only,
+            'entire-outline': self.radio_button_entire_outline,
+            'suboutline-only': self.radio_button_suboutline_only,
+        }
+        w = d.get(name)
+        assert w, repr(w)
+        # Most of the work will be done in the radio button callback.
+        if not w.isChecked():
+            w.toggle()
+        ###
+            # if find.minibuffer_mode:
+                # find.showFindOptionsInStatusArea()
+    #@+node:ekr.20171128051435.8: *4* ftm.toggle_checkbox
+    #@@nobeautify
+
+    def toggle_checkbox(self,checkbox_name):
+        '''Toggle the value of the checkbox whose name is given.'''
+        c = self.c
+        find = c.findCommands
+        if not find:
+            return
+        d = {
+            'ignore_case':     self.check_box_ignore_case,
+            'mark_changes':    self.check_box_mark_changes,
+            'mark_finds':      self.check_box_mark_finds,
+            'pattern_match':   self.check_box_regexp,
+            'search_body':     self.check_box_search_body,
+            'search_headline': self.check_box_search_headline,
+            'whole_word':      self.check_box_whole_word,
+            'wrap':            self.check_box_wrap_around,
+        }
+        w = d.get(checkbox_name)
+        assert w, repr(w)
+        assert hasattr(find,checkbox_name),checkbox_name
+        w.toggle() # The checkbox callback toggles the ivar.
+        ###
+            # if find.minibuffer_mode:
+                # find.showFindOptionsInStatusArea()
     #@-others
 #@+node:edward.20170428174322.1: *3* class KeyEvent (object)
 class KeyEvent(object):
@@ -1551,7 +1171,7 @@ class KeyHandler (object):
         Return True if the event was completely handled.
         '''
         #  This is a rewrite of LeoQtEventFilter code.
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         c = g.app.log and g.app.log.c
         if not c:
             return True # We are shutting down.
@@ -1560,10 +1180,13 @@ class KeyHandler (object):
                 ch = chr(ch_i)
             except Exception:
                 ch = '<no ch>'
-            if trace: g.trace(ch_i, ch)
             char, shortcut = self.to_key(ch_i)
-            if shortcut:
-                if trace: g.trace(shortcut)
+            # if trace:
+                # g.trace('(CKey)', ch_i, ch, repr(shortcut))
+                # g.trace(g.app.gui, repr(getattr(g.app.gui, 'in_dialog', None)))
+            if g.app.gui.in_dialog:
+                if trace: g.trace('(CKey) dialog key', ch)
+            elif shortcut:
                 try:
                     w = c.frame.body.wrapper
                     event = self.create_key_event(c, w, char, shortcut)
@@ -1726,6 +1349,675 @@ class KeyHandler (object):
         if trace: g.trace('i: %s s: %s char: %r shortcut: %r' % (i, s, char, shortcut))
         return char, shortcut
     #@-others
+#@+node:ekr.20170419094731.1: *3* class LeoCursesGui (leoGui.LeoGui)
+class LeoCursesGui(leoGui.LeoGui):
+    '''
+    Leo's curses gui wrapper.
+    This is g.app.gui, when --gui=curses.
+    '''
+
+    #@+others
+    #@+node:ekr.20171128041849.1: *4* CGui.Birth & death
+    #@+node:ekr.20170608112335.1: *5* CGui.__init__
+    def __init__(self):
+        '''Ctor for the CursesGui class.'''
+        leoGui.LeoGui.__init__(self, 'curses')
+            # Init the base class.
+        self.consoleOnly = False
+            # Required attribute.
+        self.curses_app = None
+            # The singleton LeoApp instance.
+        self.curses_form = None
+            # The top-level curses Form instance.
+            # Form.editw is the widget with focus.
+        self.in_dialog = False
+            # True: executing a modal dialog.
+        self.log = None
+            # The present log. Used by g.es
+        self.log_inited = False
+            # True: don't use the wait_list.
+        self.wait_list = []
+            # Queued log messages.
+        self.init_logger()
+            # Do this as early as possible.
+            # It monkey-patches g.pr and g.trace.
+        # g.trace('CursesGui')
+        self.top_form = None
+            # The top-level form. Set in createCursesTop.
+        self.key_handler = KeyHandler()
+    #@+node:ekr.20170502083158.1: *5* CGui.createCursesTop & helpers
+    def createCursesTop(self):
+        '''Create the top-level curses Form.'''
+        trace = False and not g.unitTesting
+        # Assert the key relationships required by the startup code.
+        assert self == g.app.gui
+        c = g.app.log.c
+        assert c == g.app.windowList[0].c
+        assert isinstance(c.frame, CoreFrame), repr(c.frame)
+        if trace:
+            g.trace('commanders in g.app.windowList')
+            g.printList([z.c.shortFileName() for z in g.app.windowList])
+        # Create the top-level form.
+        self.curses_form = form = LeoForm(name = "Welcome to Leo")
+            # This call clears the screen.
+        self.createCursesLog(c, form)
+        self.createCursesTree(c, form)
+        self.createCursesBody(c, form)
+        self.createCursesMinibuffer(c, form)
+        self.monkeyPatch(c)
+        # g.es(form)
+        return form
+    #@+node:ekr.20170502084106.1: *6* CGui.createCursesBody
+    def createCursesBody(self, c, form):
+        '''
+        Create the curses body widget in the given curses Form.
+        Populate it with c.p.b.
+        '''
+        trace = False
+
+        class BoxTitleBody(npyscreen.BoxTitle):
+            # pylint: disable=used-before-assignment
+            _contained_widget = LeoBody
+            how_exited = None
+
+        box = form.add(
+            BoxTitleBody,
+            max_height=8, # Subtract 4 lines
+            name='Body Pane',
+            footer="Press e to edit line, esc to end editing, d to delete line",
+            values=g.splitLines(c.p.b),
+            slow_scroll=True,
+        )
+        assert isinstance(box, BoxTitleBody), repr(box)
+        # Get the contained widget.
+        widgets = box._my_widgets
+        assert len(widgets) == 1
+        w = widgets[0]
+        if trace: g.trace('\nBODY', w, '\nBOX', box)
+        assert isinstance(w, LeoBody), repr(w)
+        # Link and check.
+        assert isinstance(c.frame, leoFrame.LeoFrame), repr(c.frame)
+            # The generic LeoFrame class
+        assert isinstance(c.frame.body, leoFrame.LeoBody), repr(c.frame.body)
+            # The generic LeoBody class
+        assert c.frame.body.widget is None, repr(c.frame.body.widget)
+        c.frame.body.widget = w
+        assert c.frame.body.wrapper is None, repr(c.frame.body.wrapper)
+        c.frame.body.wrapper = wrapper = BodyWrapper(c, 'body', w)
+        # Inject the wrapper for get_focus.
+        box.leo_wrapper = wrapper
+        w.leo_wrapper = wrapper
+        # Inject leo_c.
+        w.leo_c = c
+        w.leo_box = box
+
+    #@+node:ekr.20170502083613.1: *6* CGui.createCursesLog
+    def createCursesLog(self, c, form):
+        '''
+        Create the curses log widget in the given curses Form.
+        Populate the widget with the queued log messages.
+        '''
+        class BoxTitleLog(npyscreen.BoxTitle):
+            # pylint: disable=used-before-assignment
+            _contained_widget = LeoLog
+            how_exited = None
+
+        box = form.add(
+            BoxTitleLog,
+            max_height=8, # Subtract 4 lines
+            name='Log Pane',
+            footer="Press e to edit line, esc to end editing, d to delete line",
+            values=[s for s, color in self.wait_list],
+            slow_scroll=False,
+        )
+        assert isinstance(box, BoxTitleLog), repr(box)
+        # Clear the wait list and disable it.
+        self.wait_list = []
+        self.log_inited = True
+        widgets = box._my_widgets
+        assert len(widgets) == 1
+        w = widgets[0]
+        assert isinstance(w, LeoLog), repr(w)
+        # Link and check...
+        assert isinstance(self.log, CoreLog), repr(self.log)
+        self.log.widget = w
+        w.firstScroll()
+        assert isinstance(c.frame, leoFrame.LeoFrame), repr(c.frame)
+            # The generic LeoFrame class
+        c.frame.log.wrapper = wrapper = LogWrapper(c, 'log', w)
+        # Inject the wrapper for get_focus.
+        box.leo_wrapper = wrapper
+        w.leo_wrapper = wrapper
+        w.leo_box = box
+    #@+node:ekr.20170502084249.1: *6* CGui.createCursesMinibuffer
+    def createCursesMinibuffer(self, c, form):
+        '''Create the curses minibuffer widget in the given curses Form.'''
+        trace = False
+
+        class MiniBufferBox(npyscreen.BoxTitle):
+            '''An npyscreen class representing Leo's minibuffer, with binding.'''
+            # pylint: disable=used-before-assignment
+            _contained_widget = LeoMiniBuffer
+            how_exited = None
+
+        box = form.add(MiniBufferBox, name='Mini-buffer', max_height=3)
+        assert isinstance(box, MiniBufferBox)
+        # Link and check...
+        widgets = box._my_widgets
+        assert len(widgets) == 1
+        w = widgets[0]
+        if trace: g.trace('\nMINI', w, '\nBOX', box)
+        assert isinstance(w, LeoMiniBuffer), repr(w)
+        assert isinstance(c.frame, CoreFrame), repr(c.frame)
+        assert c.frame.miniBufferWidget is None
+        wrapper = MiniBufferWrapper(c, 'minibuffer', w)
+        assert wrapper.widget == w, repr(wrapper.widget)
+        c.frame.miniBufferWidget = wrapper
+        # Inject the wrapper for get_focus.
+        box.leo_wrapper = wrapper
+        w.leo_c = c
+        w.leo_wrapper = wrapper
+
+    #@+node:ekr.20170502083754.1: *6* CGui.createCursesTree
+    def createCursesTree(self, c, form):
+        '''Create the curses tree widget in the given curses Form.'''
+
+        class BoxTitleTree(npyscreen.BoxTitle):
+            # pylint: disable=used-before-assignment
+            _contained_widget = LeoMLTree
+            how_exited = None
+
+        hidden_root_node = LeoTreeData(content='<HIDDEN>', ignore_root=True)
+        if native:
+            pass # cacher created below.
+        else:
+            for i in range(3):
+                node = hidden_root_node.new_child(content='node %s' % (i))
+                for j in range(2):
+                    child = node.new_child(content='child %s.%s' % (i, j))
+                    for k in range(4):
+                        grand_child = child.new_child(
+                            content='grand-child %s.%s.%s' % (i, j, k))
+                        assert grand_child # for pyflakes.
+        box = form.add(
+            BoxTitleTree,
+            max_height=8, # Subtract 4 lines
+            name='Tree Pane',
+            footer="Press d to delete node, e to edit headline (return to end), i to insert node",
+            values=hidden_root_node,
+            slow_scroll=False,
+        )
+        assert isinstance(box, BoxTitleTree), repr(box)
+        # Link and check...
+        widgets = box._my_widgets
+        assert len(widgets) == 1
+        w = leo_tree = widgets[0]
+        assert isinstance(w, LeoMLTree), repr(w)
+        leo_tree.leo_c = c
+        if native:
+            leo_tree.values = LeoValues(c=c, tree = leo_tree)
+        assert getattr(leo_tree, 'hidden_root_node') is None, leo_tree
+        leo_tree.hidden_root_node = hidden_root_node
+        assert isinstance(c.frame, leoFrame.LeoFrame), repr(c.frame)
+            # CoreFrame is a LeoFrame
+        assert isinstance(c.frame.tree, CoreTree), repr(c.frame.tree)
+        assert c.frame.tree.canvas is None, repr(c.frame.canvas)
+            # A standard ivar, used by Leo's core.
+        c.frame.canvas = leo_tree
+            # A LeoMLTree.
+        assert not hasattr(c.frame.tree, 'treeWidget'), repr(c.frame.tree.treeWidget)
+        c.frame.tree.treeWidget = leo_tree
+            # treeWidget is an official ivar.
+        assert c.frame.tree.widget is None
+        c.frame.tree.widget = leo_tree
+            # Set CoreTree.widget.
+        # Inject the wrapper for get_focus.
+        wrapper = c.frame.tree
+        assert wrapper
+        box.leo_wrapper = wrapper
+        w.leo_wrapper = wrapper
+    #@+node:ekr.20171126191726.1: *6* CGui.monkeyPatch
+    def monkeyPatch(self, c):
+        table = (
+           ('start-search', self.startSearch),
+        )
+        for commandName, func in table:
+            g.global_commands_dict[commandName] = func
+            c.k.overrideCommand(commandName, func)
+        # A new ivar.
+        c.inFindCommand = False
+
+    #@+node:ekr.20170419110052.1: *5* CGui.createLeoFrame
+    def createLeoFrame(self, c, title):
+        '''
+        Create a LeoFrame for the current gui.
+        Called from Leo's core (c.initObjects).
+        '''
+        return CoreFrame(c, title)
+    #@+node:ekr.20170502103338.1: *5* CGui.destroySelf
+    def destroySelf(self):
+        '''
+        Terminate the curses gui application.
+        Leo's core calls this only if the user agrees to terminate the app.
+        '''
+        sys.exit(0)
+    #@+node:ekr.20170501032447.1: *5* CGui.init_logger
+    def init_logger(self):
+
+        self.rootLogger = logging.getLogger('')
+        self.rootLogger.setLevel(logging.DEBUG)
+        socketHandler = logging.handlers.SocketHandler(
+            'localhost',
+            logging.handlers.DEFAULT_TCP_LOGGING_PORT,
+        )
+        self.rootLogger.addHandler(socketHandler)
+        logging.info('-' * 20)
+        # Monkey-patch leoGlobals functions.
+        g.es = es
+        g.pr = pr # Most ouput goes through here, including g.es_exception.
+        g.trace = trace
+    #@+node:ekr.20170419140914.1: *5* CGui.runMainLoop
+    def runMainLoop(self):
+        '''The curses gui main loop.'''
+        # pylint: disable=no-member
+        #
+        # Do NOT change g.app!
+        self.curses_app = LeoApp()
+        stdscr = curses.initscr()
+        if 1: # Must follow initscr.
+            self.dump_keys()
+        try:
+            self.curses_app.run()
+                # run calls CApp.main(), which calls CGui.run().
+        finally:
+            curses.nocbreak()
+            stdscr.keypad(0)
+            curses.echo()
+            curses.endwin()
+            if g.app.trace_shutdown:
+                g.pr('Exiting Leo...')
+    #@+node:ekr.20170502020354.1: *5* CGui.run
+    def run(self):
+        '''
+        Create and run the top-level curses form.
+
+        '''
+        self.top_form = self.createCursesTop()
+        self.top_form.edit()
+    #@+node:ekr.20170504112655.1: *4* CGui.Clipboard
+    # Yes, using Tkinter seems to be the standard way.
+    #@+node:ekr.20170504112744.3: *5* CGui.getTextFromClipboard
+    def getTextFromClipboard(self):
+        '''Get a unicode string from the clipboard.'''
+        root = Tk()
+        root.withdraw()
+        try:
+            s = root.clipboard_get()
+        except Exception: # _tkinter.TclError:
+            s = ''
+        root.destroy()
+        return g.toUnicode(s)
+    #@+node:ekr.20170504112744.2: *5* CGui.replaceClipboardWith
+    def replaceClipboardWith(self, s):
+        '''Replace the clipboard with the string s.'''
+        root = Tk()
+        root.withdraw()
+        root.clipboard_clear()
+        root.clipboard_append(s)
+        root.destroy()
+
+    # Do *not* define setClipboardSelection.
+    # setClipboardSelection = replaceClipboardWith
+    #@+node:ekr.20170502021145.1: *4* CGui.dialogs
+    #@+node:ekr.20170712145632.2: *5* CGui.createFindDialog
+    def createFindDialog(self, c):
+        '''Create and init a non-modal Find dialog.'''
+        g.trace('not implemented')
+    #@+node:ekr.20171126182120.1: *5* CGui.dialog_message
+    def dialog_message(self, message):
+        '''No longer used: a placeholder for dialogs.'''
+        if not g.unitTesting:
+            for s in g.splitLines(message):
+                g.pr(s.rstrip())
+
+    #@+node:ekr.20171126182120.2: *5* CGui.runAboutLeoDialog
+    def runAboutLeoDialog(self, c, version, theCopyright, url, email):
+        """Create and run Leo's About Leo dialog."""
+        if not g.unitTesting:
+            message =  '%s\n%s\n%s\n%s' % (version, theCopyright, url, email)
+            utilNotify.notify_confirm(message, title="About Leo")
+                # form_color='STANDOUT', wrap=True, wide=False, editw=0)
+
+    #@+node:ekr.20171126182120.3: *5* CGui.runAskLeoIDDialog
+    def runAskLeoIDDialog(self):
+        """Create and run a dialog to get g.app.LeoID."""
+        if not g.unitTesting:
+            message = (
+                "leoID.txt not found\n\n" +
+                "The curses gui can not set this file." +
+                "Exiting..."
+            )
+            g.trace(message)
+            sys.exit(0)
+                # "Please enter an id that identifies you uniquely.\n" +
+                # "Your cvs/bzr login name is a good choice.\n\n" +
+                # "Leo uses this id to uniquely identify nodes.\n\n" +
+                # "Your id must contain only letters and numbers\n" +
+                # "and must be at least 3 characters in length."
+
+    #@+node:ekr.20171126182120.5: *5* CGui.runAskOkCancelNumberDialog
+    def runAskOkCancelNumberDialog(self, c, title, message,
+        cancelButtonText=None,
+        okButtonText=None,
+    ):
+        """Create and run askOkCancelNumber dialog ."""
+        if g.unitTesting:
+            return False
+        elif self.curses_app:
+            self.in_dialog = True
+            val = utilNotify.notify_ok_cancel(message=message,title=title)
+            self.in_dialog = False
+            return val
+        else:
+            return False
+
+    #@+node:ekr.20171126182120.6: *5* CGui.runAskOkCancelStringDialog
+    def runAskOkCancelStringDialog(self, c, title, message,
+        cancelButtonText=None,
+        okButtonText=None,
+        default="",
+        wide=False,
+    ):
+        """Create and run askOkCancelString dialog ."""
+        if g.unitTesting:
+            return False
+        else:
+            self.in_dialog = True
+            val = utilNotify.notify_ok_cancel(message=message,title=title)
+                # val is True/False
+            self.in_dialog = False
+            return 'yes' if val else 'no'
+
+    #@+node:ekr.20171126182120.4: *5* CGui.runAskOkDialog
+    def runAskOkDialog(self, c, title,
+        message=None,
+        text="Ok",
+    ):
+        """Create and run an askOK dialog ."""
+        if g.unitTesting:
+            return False
+        elif self.curses_app:
+            self.in_dialog = True
+            val = utilNotify.notify_confirm(message=message,title=title)
+            self.in_dialog = False
+            return val
+        else:
+            return False
+
+    #@+node:ekr.20171126182120.8: *5* CGui.runAskYesNoCancelDialog
+    def runAskYesNoCancelDialog(self, c, title,
+        message=None,
+        yesMessage="Yes",
+        noMessage="No",
+        yesToAllMessage=None,
+        defaultButton="Yes",
+        cancelMessage=None,
+    ):
+        """Create and run an askYesNoCancel dialog ."""
+        if g.unitTesting:
+            return False
+        else:
+            g.trace(g.callers())
+            self.in_dialog = True
+            val = utilNotify.notify_yes_no(message=message,title=title)
+                # Important: don't use notify_ok_cancel.
+            self.in_dialog = False
+            return 'yes' if val else 'no'
+
+    #@+node:ekr.20171126182120.7: *5* CGui.runAskYesNoDialog
+    def runAskYesNoDialog(self, c, title,
+        message=None,
+        yes_all=False,
+        no_all=False,
+    ):
+        """Create and run an askYesNo dialog."""
+        if g.unitTesting:
+            return False
+        else:
+            self.in_dialog = True
+            val = utilNotify.notify_ok_cancel(message=message,title=title)
+            self.in_dialog = False
+            return 'yes' if val else 'no'
+
+    #@+node:ekr.20171126182120.9: *5* CGui.runOpenFileDialog
+    def runOpenFileDialog(self, c, title, filetypes, defaultextension, multiple=False, startpath=None):
+        if not g.unitTesting:
+            g.trace('not ready yet', title)
+
+    #@+node:ekr.20171126182120.10: *5* CGui.runPropertiesDialog
+    def runPropertiesDialog(self,
+        title='Properties',
+        data=None,
+        callback=None,
+        buttons=None,
+    ):
+        """Dispay a modal TkPropertiesDialog"""
+        if not g.unitTesting:
+            g.trace('not ready yet', title)
+
+    #@+node:ekr.20171126182120.11: *5* CGui.runSaveFileDialog
+    def runSaveFileDialog(self, c, initialfile, title, filetypes, defaultextension):
+        if g.unitTesting:
+            return None
+        else:
+            # Not tested.
+            self.in_dialog = True
+            s = utilNotify.selectFile(
+                select_dir=False,
+                must_exist=False,
+                confirm_if_exists=True,
+                sort_by_extension=True,
+            )
+            self.in_dialog = False
+            s = g.u(s or '')
+            if s:
+                c.last_dir = g.os_path_dirname(s)
+            return s
+    #@+node:ekr.20170430114709.1: *4* CGui.do_key
+    def do_key(self, ch_i):
+
+        # Ignore all printable characters.
+        if not self.in_dialog and 32 <= ch_i < 128:
+            g.trace('ignoring', chr(ch_i))
+            return True
+        return self.key_handler.do_key(ch_i)
+    #@+node:ekr.20170526051256.1: *4* CGui.dump_keys
+    def dump_keys(self):
+        '''Show all defined curses.KEY_ constants.'''
+        if 0:
+            aList = ['%3s %s' % (getattr(curses,z), z)
+                for z in dir(curses)
+                    if isinstance(getattr(curses,z), int)]
+            g.trace()
+            g.printList(sorted(aList))
+    #@+node:ekr.20170522005855.1: *4* CGui.event_generate
+    def event_generate(self, c, char, shortcut, w):
+
+        event = KeyEvent(
+            c=c,
+            char=char,
+            event=g.NullObject(),
+            shortcut=shortcut,
+            w=w,
+        )
+        c.k.masterKeyHandler(event)
+        c.outerUpdate()
+    #@+node:ekr.20171127170859.1: *4* CGUI.find
+    def find(self, c, pattern):
+        '''Search for the pattern in body text only.'''
+        c.inFindCommand = False
+        g.trace('=====', g.callers())
+        p = c.p
+        while p:
+            s = p.b
+            if sys.platform.lower().startswith('win'):
+                s = s.replace('\r', '')
+            if s.find(pattern) > -1:
+                g.es('FOUND',pattern)
+                c.selectPosition(p)
+                self.focus_to_body(c)
+                ### To do: select the found line.
+                return
+            else:
+                p.moveToThreadNext()
+        g.es('NOT FOUND', pattern)
+        self.focus_to_body(c)
+    #@+node:ekr.20171128041920.1: *4* CGui.Focus
+    #@+node:ekr.20171127173313.1: *5* CGUI.focus_from_minibuffer
+    def focus_from_minibuffer(self):
+        '''Remove focus from the minibuffer text widget.'''
+        form = self.curses_form
+        box = form._widgets__[-2] # The minibuffer
+        widgets = box._my_widgets
+        assert len(widgets) == 1
+        w = widgets[0]
+        w.editing = False
+        w.how_exited = True
+        w.update()
+
+    #@+node:ekr.20171127171659.1: *5* CGui.focus_to_body
+    def focus_to_body(self, c):
+        '''Put focus in minibuffer text widget.'''
+        w = self.set_focus(c, c.frame.body)
+        w.edit()
+    #@+node:ekr.20171127162649.1: *5* CGui.focus_to_minibuffer
+    def focus_to_minibuffer(self, c):
+        '''Put focus in minibuffer text widget.'''
+        w = self.set_focus(c, c.frame.miniBufferWidget)
+        w.edit()
+        #
+            # form = self.curses_form
+            # box = form._widgets__[-2] # The minibuffer
+            # widgets = box._my_widgets
+            # assert len(widgets) == 1
+            # form.editw = form._widgets__.index(box)
+            # w = widgets[0]
+            # w.edit()
+    #@+node:ekr.20170502101347.1: *5* CGui.get_focus
+    def get_focus(self, c=None, raw=False, at_idle=False):
+        '''
+        Return the Leo wrapper for the npyscreen widget that is being edited.
+        '''
+        # Careful during startup.
+        trace = (False or g.app.trace_focus) and not g.unitTesting
+        editw = getattr(g.app.gui.curses_form, 'editw', None)
+        if editw is None:
+            if trace: g.trace('(CursesGui) no editw')
+            return None
+        widget = self.curses_form._widgets__[editw]
+        if hasattr(widget, 'leo_wrapper'):
+            if trace:
+                g.trace('(CursesGui)', widget.leo_wrapper.__class__.__name__)
+                g.trace(g.callers())
+            return widget.leo_wrapper
+        else:
+            g.trace('(CursesGui) ===== no leo_wrapper', widget)
+                # At present, HeadWrappers have no widgets.
+            return None
+    #@+node:ekr.20171128041805.1: *5* CGui.set_focus
+    set_focus_dict = {}
+        # Keys are wrappers, values are npyscreen.widgets.
+    set_focus_ok = []
+    set_focus_fail = []
+
+    def set_focus(self, c, w):
+        '''Given a Leo wrapper, set focus to the underlying npyscreen widget.'''
+        trace = (False or g.app.trace_focus) and not g.unitTesting
+        trace_cache = False
+        # w is a wrapper
+        widget = getattr(w, 'widget', None)
+        if trace:
+            g.trace('widget', widget)
+            g.trace(g.callers())
+        if not widget:
+            if trace or not w: g.trace('no widget', repr(w))
+            return None
+        if not isinstance(widget, npyscreen.wgwidget.Widget):
+            g.trace('not an npyscreen.Widget', repr(w))
+            return None
+        form = self.curses_form
+        d = self.set_focus_dict
+        if w in d:
+            i = d.get(w)
+            if trace and trace_cache and w not in self.set_focus_ok:
+                self.set_focus_ok.append(w)
+                g.trace('Cached', i, w)
+            form.edit_w = i
+            if not g.unitTesting:
+                form.display()
+            return widget
+        for i, widget2 in enumerate(form._widgets__):
+            if widget == widget2:
+                if trace: g.trace('FOUND', i, widget)
+                d [w] = form.editw = i
+                if not g.unitTesting:
+                    form.display()
+                return widget
+            for j, widget3 in enumerate(getattr(widget2, '_my_widgets', [])):
+                if widget == widget3 or repr(widget) == repr(widget3):
+                    if trace: g.trace('FOUND INNER', i, j, widget)
+                    d [w] = form.editw = i # Not j!?
+                    if not g.unitTesting:
+                        form.display()
+                    return widget
+        if trace and widget not in self.set_focus_fail:
+            self.set_focus_fail.append(widget)
+            g.trace('Fail\n%r\n%r' % (widget, w))
+        return None
+    #@+node:ekr.20170514060742.1: *4* CGui.fonts
+    def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
+        # g.trace('CursesGui', g.callers())
+        return None
+    #@+node:ekr.20170504052119.1: *4* CGui.isTextWrapper
+    def isTextWrapper(self, w):
+        '''Return True if w is a Text widget suitable for text-oriented commands.'''
+        return w and getattr(w, 'supportsHighLevelInterface', None)
+    #@+node:ekr.20170504052042.1: *4* CGui.oops
+    def oops(self):
+        '''Ignore do-nothing methods.'''
+        g.pr("CursesGui oops:", g.callers(4), "should be overridden in subclass")
+    #@+node:ekr.20170612063102.1: *4* CGui.put_help
+    def put_help(self, c, s, short_title):
+        '''Put a help message in a dialog.'''
+        if not g.unitTesting:
+            utilNotify.notify_confirm(
+                message=s,
+                title=short_title or 'Help',
+            )
+    #@+node:ekr.20171126192144.1: *4* CGui.startSearch
+    def startSearch(self, event):
+        c = event.get('c')
+        if c:
+            g.trace('(CGui)', c.findCommands)
+            fc = c.findCommands
+            ftm = c.frame.ftm
+            c.inCommand = False
+            c.inFindCommand = True
+                # A new flag.
+            fc.minibuffer_mode = True
+            if 1: # Allow hard settings, for tests.
+                table = (
+                    ('pattern_match', ftm.check_box_regexp, True),
+                )
+                for setting_name, w, val in table:
+                    assert hasattr(fc, setting_name), setting_name
+                    setattr(fc, setting_name, val)
+                    w.setCheckState(val)
+            c.findCommands.startSearch(event)
+            self.focus_to_minibuffer(c)
+                # Does not return!
+
+    #@-others
 #@+node:ekr.20170524124010.1: ** Leo widget classes
 # Most are subclasses Leo's base gui classes.
 # All classes have a "c" ivar.
@@ -1809,24 +2101,102 @@ class CoreFrame (leoFrame.LeoFrame):
             # self.wantedWidget = None
             # self.wantedCallbackScheduled = False
             # self.scrollWay = None
-    #@+node:ekr.20170420163932.1: *5* CFrame.finishCreate (more work may be needed)
+    #@+node:ekr.20170420163932.1: *5* CFrame.finishCreate
     def finishCreate(self):
         # g.trace('CoreFrame', self.c.shortFileName())
         c = self.c
         g.app.windowList.append(self)
-        c.findCommands.ftm = g.NullObject()
+        ftm = StringFindTabManager(c)
+        c.findCommands.ftm = ftm
+        self.ftm = ftm
+        self.createFindTab()
         self.createFirstTreeNode()
             # Call the base-class method.
+    #@+node:ekr.20171128052121.1: *5* CFrame.createFindTab & helpers
+    def createFindTab(self):
+        '''Create a Find Tab in the given parent.'''
+        # Like DynamicWindow.createFindTab.
+        ftm = self.ftm
+        assert ftm
+        self.create_find_findbox()
+        self.create_find_replacebox()
+        self.create_find_checkboxes()
+        # Official ivars (in addition to checkbox ivars).
+        self.leo_find_widget = None
+        ftm.init_widgets()
+    #@+node:ekr.20171128052121.4: *6* CFrame.create_find_findbox
+    def create_find_findbox(self):
+        '''Create the Find: label and text area.'''
+        c = self.c
+        fc = c.findCommands
+        ftm = self.ftm
+        assert ftm
+        assert ftm.find_findbox is None
+        ftm.find_findbox = self.createLineEdit('findPattern', disabled=fc.expert_mode)
+    #@+node:ekr.20171128052121.5: *6* CFrame.create_find_replacebox
+    def create_find_replacebox(self):
+        '''Create the Replace: label and text area.'''
+        c = self.c
+        fc = c.findCommands
+        ftm = self.ftm
+        assert ftm
+        assert ftm.find_replacebox is None
+        ftm.find_replacebox = self.createLineEdit('findChange', disabled=fc.expert_mode)
+    #@+node:ekr.20171128052121.6: *6* CFrame.create_find_checkboxes
+    def create_find_checkboxes(self):
+        '''Create check boxes and radio buttons.'''
+        # c = self.c
+        ftm = self.ftm
 
-        ### Not yet.
-            # c = self.c
-            # assert c
-            # self.top = g.app.gui.frameFactory.createFrame(self)
-            # self.createIconBar() # A base class method.
-            # self.createSplitterComponents()
-            # self.createStatusLine() # A base class method.
-            # self.miniBufferWidget = qt_text.QMinibufferWrapper(c)
-            # c.bodyWantsFocus()
+        def mungeName(kind, label):
+            # The returned value is the name of an ivar.
+            kind = 'check_box_' if kind == 'box' else 'radio_button_'
+            name = label.replace(' ', '_').replace('&', '').lower()
+            return '%s%s' % (kind, name)
+
+        d = {
+            'box': self.createCheckBox,
+            'rb': self.createRadioButton,
+        }
+        table = (
+            # First row.
+            ('box', 'whole &Word'),
+            ('rb', '&Entire outline'),
+            # Second row.
+            ('box', '&Ignore case'),
+            ('rb', '&Suboutline only'),
+            # Third row.
+            ('box', 'wrap &Around'),
+            ('rb', '&Node only'),
+            # Fourth row.
+            ('box', 'rege&Xp'),
+            ('box', 'search &Headline'),
+            # Fifth row.
+            ('box', 'mark &Finds'),
+            ('box', 'search &Body'),
+            # Sixth row.
+            ('box', 'mark &Changes'),
+        )
+        for kind, label in table:
+            name = mungeName(kind, label)
+            func = d.get(kind)
+            assert func
+            label = label.replace('&', '')
+            w = func(name, label)
+            assert getattr(ftm, name) is None
+            setattr(ftm, name, w)
+    #@+node:ekr.20171128053531.3: *6* CFrame.createCheckBox
+    def createCheckBox(self, name, label):
+
+        return leoGui.StringCheckBox(name, label)
+    #@+node:ekr.20171128053531.8: *6* CFrame.createLineEdit
+    def createLineEdit(self, name, disabled=True):
+
+        return leoGui.StringLineEdit(name, disabled)
+    #@+node:ekr.20171128053531.9: *6* CFrame.createRadioButton
+    def createRadioButton(self, name, label):
+
+        return leoGui.StringRadioButton(name, label)
     #@+node:ekr.20170524145750.1: *4* CFrame.cmd (decorator)
     def cmd(name):
         '''Command decorator for the LeoFrame class.'''
@@ -1927,7 +2297,7 @@ class CoreFrame (leoFrame.LeoFrame):
         if wname.startswith('body'):
             c.frame.body.onBodyChanged('Paste', oldSel=oldSel, oldText=oldText)
         elif wname.startswith('head'):
-            c.frame.tree.onHeadChanged(w.p, s=w.getAllText(), undoType='Paste')
+            c.frame.tree.onHeadChanged(c.p, s=w.getAllText(), undoType='Paste')
                 # New for Curses gui.
 
     OnPasteFromMenu = pasteText
@@ -2060,6 +2430,7 @@ class CoreTree (leoFrame.LeoTree):
             # Init the base class.
         assert self.c
         assert not hasattr(self, 'widget')
+        self.revertVnode = None # A hack for onHeadChanged.
         self.redrawCount = 0 # For unit tests.
         self.widget = None
             # A LeoMLTree set by CGui.createCursesTree.
@@ -2139,6 +2510,10 @@ class CoreTree (leoFrame.LeoTree):
         c, u = self.c, self.c.undoer
         if not c.frame.body.wrapper:
             return # Startup.
+        if not self.revertVnode:
+            # This is a hack, but all unit tests pass.
+            if trace: g.trace('no headline ever edited')
+            return
         w = self.edit_widget(p)
         if c.suppressHeadChanged:
             if trace: g.trace('c.suppressHeadChanged')
@@ -2213,9 +2588,10 @@ class CoreTree (leoFrame.LeoTree):
         """Returns the edit widget for position p."""
         wrapper = HeadWrapper(c=self.c, name='head', p=p)
         return wrapper
-    #@+node:ekr.20170511095353.1: *5* CTree.editLabel
+    #@+node:ekr.20170511095353.1: *5* CTree.editLabel (not used)
     def editLabel(self, p, selectAll=False, selection=None):
         """Start editing p's headline."""
+        self.revertHeadline = p.h
         return None, None
     #@+node:ekr.20170511105355.7: *5* CTree.endEditLabel
     def endEditLabel(self):
@@ -2723,16 +3099,33 @@ class LeoMiniBuffer(npyscreen.Textfield):
         Send the contents to k.masterKeyHandler.
         '''
         c = self.leo_c
-        commandName = self.value.strip()
+        val = self.value.strip()
         self.value = ''
         self.update()
-        c.k.masterCommand(
-            commandName=commandName,
-            event=KeyEvent(c,char='',event='',shortcut='',w=self),
-            func=None,
-            stroke=None,
-        )
-
+        if False: ### c.inFindCommand:
+            # Execute the find command.
+            g.app.gui.focus_from_minibuffer()
+            g.app.gui.find(c, val)
+        elif 1:
+            # Experimental
+            c.k.w = self.leo_wrapper ### leoFrame.StringTextWrapper(c, 'minibuffer')
+            c.k.arg = val ### self.leo_wrapper.getAllText()
+            g.trace('=====', val)
+            c.k.masterKeyHandler(
+                event=KeyEvent(c,
+                    char='\n',
+                    event='',
+                    shortcut='',
+                    w=None,
+                )
+            )
+        else:
+            c.k.masterCommand(
+                commandName=val,
+                event=KeyEvent(c,char='',event='',shortcut='',w=self),
+                func=None,
+                stroke=None,
+            )
     #@+node:ekr.20170510094104.1: *5* LeoMiniBuffer.set_handlers
     def set_handlers(self):
 
@@ -3022,6 +3415,11 @@ class LeoMLTree(npyscreen.MLTree, object):
     #@+node:ekr.20170506044733.10: *5* LeoMLTree.h_edit_headline
     def h_edit_headline(self, ch):
         '''Called when the user types "h".'''
+        c = self.leo_c
+        # Remember the starting headline, for CTree.onHeadChanged.
+        tree = c.frame.tree # CTree
+        tree.revertVnode = c.p.v
+        tree.revertHeadline = c.p.h
         self.edit_headline()
     #@+node:ekr.20170516055435.5: *5* LeoMLTree.h_expand_all
     def h_expand_all(self, ch):

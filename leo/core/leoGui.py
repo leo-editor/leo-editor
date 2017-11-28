@@ -18,7 +18,7 @@ try:
 except ImportError:
     import __builtin__ as builtins # Python 2.
 #@+others
-#@+node:ekr.20031218072017.3720: ** class LeoGui
+#@+node:ekr.20031218072017.3720: ** class LeoGui (object)
 class LeoGui(object):
     """The base class of all gui classes.
 
@@ -242,7 +242,7 @@ class LeoGui(object):
         else:
             return repr(w)
     #@-others
-#@+node:ekr.20070228160107: ** class LeoKeyEvent
+#@+node:ekr.20070228160107: ** class LeoKeyEvent (object)
 class LeoKeyEvent(object):
     '''A gui-independent wrapper for gui events.'''
     #@+others
@@ -432,6 +432,26 @@ class NullScriptingControllerClass(object):
 
     def createAllButtons(self):
         pass
+#@+node:ekr.20171128093401.1: ** class StringCheckBox (object)
+class StringCheckBox(object):
+    '''Simulate a QCheckBox.'''
+    
+    def __init__(self, name, label):
+        self.label = label
+        self.name = name
+        self.value = True
+        
+    def checkState(self):
+        return self.value
+        
+    def objectName(self):
+        return self.name
+
+    def setCheckState(self, value):
+        self.value = value
+    
+    def toggle(self):
+        self.value = not self.value
 #@+node:ekr.20170613095422.1: ** class StringGui (NullGui)
 class StringGui(LeoGui):
     '''
@@ -458,6 +478,51 @@ class StringGui(LeoGui):
     def runMainLoop(self):
         self.oops()
     #@-others
+#@+node:ekr.20171128093503.1: ** class StringLineEdit (object)
+class StringLineEdit(object):
+    
+    '''Simulate a QLineEdit.'''
+        
+    def __init__(self, name, disabled):
+        self.disabled = disabled
+        self.name = name
+        self.pos = 0
+        self.s = ''
+        
+    def clear(self):
+        self.pos = 0
+        self.s = ''
+
+    def insert(self, s):
+        i = self.pos
+        self.s = self.s[:i] + s + self.s[i:]
+        self.pos += len(s)
+        
+    def objectName(self):
+        return self.name
+        
+    def text(self):
+        return self.s
+#@+node:ekr.20171128093602.1: ** class StringRadioButton (object)
+class StringRadioButton(object):
+    
+    '''Simulate QRadioButton.'''
+    
+    def __init__(self, name, label):
+        self.label = label
+        self.name = name
+        self.value = True
+        
+    def isChecked(self):
+        return self.value
+        
+    def objectName(self):
+        return self.name
+    
+    def toggle(self):
+        self.value = not self.value
+
+   
 #@+node:ekr.20031218072017.3742: ** class UnitTestGui (NullGui)
 class UnitTestGui(NullGui):
     '''A gui class for use by unit tests.'''

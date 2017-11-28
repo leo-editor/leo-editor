@@ -292,15 +292,16 @@ def decorate_window(w):
 #@+node:tbrown.20100318101414.5995: *3* init
 def init():
     '''Return True if the plugin has loaded successfully.'''
+    global got_docutils
     ok = bool(got_docutils and QtSvg and QtWebKitWidgets)
-    # 2017/08/18: register handlers only if all required imports
-    # were successful.
-    if ok:
-        g.plugin_signon(__name__)
-        g.registerHandler('after-create-leo-frame', onCreate)
-        g.registerHandler('close-frame', onClose)
-        g.registerHandler('scrolledMessage', show_scrolled_message)
-    return ok
+    if not ok:
+        g.es_print('Warning: viewrendered.py running without docutils.')
+    # Always enable this plugin, even if imports fail.
+    g.plugin_signon(__name__)
+    g.registerHandler('after-create-leo-frame', onCreate)
+    g.registerHandler('close-frame', onClose)
+    g.registerHandler('scrolledMessage', show_scrolled_message)
+    return True
 #@+node:ekr.20110317024548.14376: *3* onCreate (viewrendered.py)
 def onCreate(tag, keys):
     c = keys.get('c')

@@ -781,12 +781,24 @@ def writeFileFromNode(self, event=None):
             g.error('can not write %s', fileName)
         
 #@+node:ekr.20031218072017.2079: ** Recent Files
+#@+node:tbrown.20080509212202.6: *3* c_file.cleanRecentFiles
+@g.commander_command('clean-recent-files')
+def cleanRecentFiles(self, event=None):
+    '''Remove items from the recent files list that are no longer valid.'''
+    c = self
+    g.app.recentFilesManager.cleanRecentFiles(c)
 #@+node:ekr.20031218072017.2080: *3* c_file.clearRecentFiles
 @g.commander_command('clear-recent-files')
 def clearRecentFiles(self, event=None):
     """Clear the recent files list, then add the present file."""
     c = self
     g.app.recentFilesManager.clearRecentFiles(c)
+#@+node:vitalije.20170703115710.1: *3* c_file.editRecentFiles
+@g.commander_command('edit-recent-files')
+def editRecentFiles(self, event=None):
+    '''Opens recent files list in a new node for editing.'''
+    c = self
+    g.app.recentFilesManager.editRecentFiles(c)
 #@+node:ekr.20031218072017.2081: *3* c_file.openRecentFile
 @g.commander_command('open-recent-file')
 def openRecentFile(self, event=None, fn=None):
@@ -809,24 +821,12 @@ def openRecentFile(self, event=None, fn=None):
         c2.setLog()
         g.doHook("recentfiles2",
             c=c2, p=c2.p, v=c2.p, fileName=fn, closeFlag=closeFlag)
-#@+node:tbrown.20080509212202.6: *3* c_file.cleanRecentFiles
-@g.commander_command('clean-recent-files')
-def cleanRecentFiles(self, event=None):
-    '''Remove items from the recent files list that are no longer valid.'''
-    c = self
-    g.app.recentFilesManager.cleanRecentFiles(c)
 #@+node:tbrown.20080509212202.8: *3* c_file.sortRecentFiles
 @g.commander_command('sort-recent-files')
 def sortRecentFiles(self, event=None):
     '''Sort the recent files list.'''
     c = self
     g.app.recentFilesManager.sortRecentFiles(c)
-#@+node:vitalije.20170703115710.1: *3* c_file.editRecentFiles
-@g.commander_command('edit-recent-files')
-def editRecentFiles(self, event=None):
-    '''Opens recent files list in a new node for editing.'''
-    c = self
-    g.app.recentFilesManager.editRecentFiles(c)
 #@+node:vitalije.20170703115710.2: *3* c_file.writeEditedRecentFiles
 @g.commander_command('write-edited-recent-files')
 def writeEditedRecentFiles(self, event=None):

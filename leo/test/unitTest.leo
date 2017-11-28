@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.52" body_secondary_ratio="0.61">
-	<global_window_position top="56" left="48" height="890" width="1002"/>
+<globals body_outline_ratio="0.52" body_secondary_ratio="0.84">
+	<global_window_position top="86" left="327" height="890" width="827"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -25,6 +25,10 @@
 </v>
 </v>
 <v t="ekr.20041121151002"><vh>@settings</vh>
+<v t="ekr.20171126153138.1"><vh>Required for reformat-paragraph tests</vh>
+<v t="ekr.20171126152936.1"><vh>@int page_width = 80</vh></v>
+<v t="ekr.20171126153044.1"><vh>@int tab_width = -4</vh></v>
+</v>
 <v t="ekr.20080324133327.2"><vh>@bool allow_middle_button_paste = True</vh></v>
 <v t="ekr.20161011095551.1"><vh>@bool allow_section_references_in_at_auto = True</vh></v>
 <v t="ekr.20101009105124.6195"><vh>@bool put_expansion_bits_in_leo_files = True</vh></v>
@@ -242,8 +246,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285809000000302e362e31392e343171017d710258090000006d795f706c7567696e7103580300000076616c7104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
-marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e32372e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343171097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735808000000302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -362,6 +365,108 @@ marks="ekr.20170416085619.1,"><vh>@file activeUnitTests.txt</vh></v>
 <v t="ekr.20100131171342.5483"><vh>@test batch mode</vh>
 <v t="ekr.20100131171342.5484"><vh>removeFile</vh></v>
 </v>
+<v t="ekr.20110118082508.3729"><vh>reformat-paragraph tests</vh>
+<v t="ekr.20110118082508.3793"><vh>@test reformat-paragraph list 1 of 5</vh>
+<v t="ekr.20110118082508.3799"><vh>work</vh></v>
+<v t="ekr.20110118082508.3800"><vh>before sel=1.0,1.0</vh></v>
+<v t="ekr.20110118082508.3803"><vh>after sel=2.21,2.21</vh></v>
+</v>
+<v t="ekr.20110118082508.3808"><vh>@test reformat-paragraph list 2 of 5</vh>
+<v t="ekr.20110118082508.3809"><vh>work</vh></v>
+<v t="ekr.20110118082508.3810"><vh>before sel=4.0,4.0</vh></v>
+<v t="ekr.20110118082508.3811"><vh>after sel=7.0,7.0</vh></v>
+</v>
+<v t="ekr.20110118082508.3816"><vh>@test reformat-paragraph list 3 of 5</vh>
+<v t="ekr.20110118082508.3817"><vh>work</vh></v>
+<v t="ekr.20110118082508.3818"><vh>before sel=7.0,7.0</vh></v>
+<v t="ekr.20110118082508.3819"><vh>after sel=8.29,8.29</vh></v>
+</v>
+<v t="ekr.20110118082508.3824"><vh>@test reformat-paragraph list 4 of 5</vh>
+<v t="ekr.20110118082508.3825"><vh>work</vh></v>
+<v t="ekr.20110118082508.3826"><vh>before sel=10.0,10.0</vh></v>
+<v t="ekr.20110118082508.3827"><vh>after sel=11.28,11.28</vh></v>
+</v>
+<v t="ekr.20110118082508.3832"><vh>@test reformat-paragraph list 5 of 5</vh>
+<v t="ekr.20110118082508.3833"><vh>work</vh></v>
+<v t="ekr.20110118082508.3834"><vh>before sel=13.0,13.0</vh></v>
+<v t="ekr.20110118082508.3835"><vh>after sel=14.19,14.19</vh></v>
+</v>
+<v t="ekr.20131103084038.4274"><vh>@test reformat-paragraph new code 1 of 8</vh>
+<v t="ekr.20131103084038.4275"><vh>work</vh></v>
+<v t="ekr.20131103084038.4276"><vh>before sel=1.0,1.0</vh></v>
+<v t="ekr.20131103084038.4277"><vh>after sel=2.0,2.0</vh></v>
+</v>
+<v t="ekr.20131103084038.4282"><vh>@test reformat-paragraph new code 2 of 8</vh>
+<v t="ekr.20131103084038.4283"><vh>work</vh></v>
+<v t="ekr.20131103084038.4284"><vh>before sel=2.0,2.0</vh></v>
+<v t="ekr.20131103084038.4285"><vh>after sel=3.0,3.0</vh></v>
+</v>
+<v t="ekr.20131103084038.4290"><vh>@test reformat-paragraph new code 3 of 8</vh>
+<v t="ekr.20131103084038.4291"><vh>work</vh></v>
+<v t="ekr.20131103084038.4292"><vh>before sel=3.1,4.1</vh></v>
+<v t="ekr.20131103084038.4293"><vh>after sel=3.26,3.26</vh></v>
+</v>
+<v t="ekr.20131103084038.4298"><vh>@test reformat-paragraph new code 4 of 8</vh>
+<v t="ekr.20131103084038.4299"><vh>work</vh></v>
+<v t="ekr.20131103084038.4300"><vh>before sel=1.0,1.0</vh></v>
+<v t="ekr.20131103084038.4301"><vh>after sel=2.10,2.10</vh></v>
+</v>
+<v t="ekr.20131103084038.4306"><vh>@test reformat-paragraph new code 5 of 8</vh>
+<v t="ekr.20131103084038.4307"><vh>work</vh></v>
+<v t="ekr.20131103084038.4308"><vh>before sel=1.0,2.0</vh></v>
+<v t="ekr.20131103084038.4309"><vh>after sel=2.11,2.11</vh></v>
+</v>
+<v t="ekr.20131103084038.4314"><vh>@test reformat-paragraph new code 6 of 8</vh>
+<v t="ekr.20131103084038.4315"><vh>work</vh></v>
+<v t="ekr.20131103084038.4316"><vh>before sel=1.0,1.0</vh></v>
+<v t="ekr.20131103084038.4317"><vh>after sel=2.11,2.11</vh></v>
+</v>
+<v t="ekr.20131103084038.4322"><vh>@test reformat-paragraph new code 7 of 8</vh>
+<v t="ekr.20131103084038.4323"><vh>work</vh></v>
+<v t="ekr.20131103084038.4324"><vh>before sel=2.11,2.11</vh></v>
+<v t="ekr.20131103084038.4325"><vh>after sel=3.1,3.1</vh></v>
+</v>
+<v t="ekr.20131103084038.4330"><vh>@test reformat-paragraph new code 8 of 8</vh>
+<v t="ekr.20131103084038.4331"><vh>work</vh></v>
+<v t="ekr.20131103084038.4332"><vh>before sel=1.0,1.0</vh></v>
+<v t="ekr.20131103084038.4333"><vh>after sel=3.0,3.0</vh></v>
+</v>
+<v t="ekr.20110118082508.3766"><vh>@test reformat-paragraph paragraph 1 of 3</vh>
+<v t="ekr.20110118082508.3772"><vh>work</vh></v>
+<v t="ekr.20110118082508.3773"><vh>before sel=1.0,1.0</vh></v>
+<v t="ekr.20110118082508.3792"><vh>after sel=11.14,11.14</vh></v>
+</v>
+<v t="ekr.20110118082508.3779"><vh>@test reformat-paragraph paragraph 2 of 3</vh>
+<v t="ekr.20110118082508.3780"><vh>work</vh></v>
+<v t="ekr.20110118082508.3781"><vh>before sel=13.0,13.0</vh></v>
+<v t="ekr.20110118082508.3782"><vh>after sel=23.33,23.33</vh></v>
+</v>
+<v t="ekr.20110118082508.3787"><vh>@test reformat-paragraph paragraph 3 of 3</vh>
+<v t="ekr.20110118082508.3788"><vh>work</vh></v>
+<v t="ekr.20110118082508.3789"><vh>before sel=25.10,25.10</vh></v>
+<v t="ekr.20110118082508.3790"><vh>after sel=32.11,32.11</vh></v>
+</v>
+<v t="ekr.20110118082508.3730"><vh>@test reformat-paragraph simple hanging indent</vh>
+<v t="ekr.20110118082508.3745"><vh>work</vh></v>
+<v t="ekr.20110118082508.3746"><vh>before sel= 1.0,1.0</vh></v>
+<v t="ekr.20110118082508.3747"><vh>after sel= 5.8,5.8</vh></v>
+</v>
+<v t="ekr.20110118082508.3748"><vh>@test reformat-paragraph simple hanging indent 2</vh>
+<v t="ekr.20110118082508.3754"><vh>work</vh></v>
+<v t="ekr.20110118082508.3755"><vh>before sel=2.0,2.0</vh></v>
+<v t="ekr.20110118082508.3756"><vh>after sel=5.8,5.8</vh></v>
+</v>
+<v t="ekr.20110118082508.3757"><vh>@test reformat-paragraph simple hanging indent 3</vh>
+<v t="ekr.20110118082508.3763"><vh>work</vh></v>
+<v t="ekr.20110118082508.3764"><vh>before sel=1.0,1.0</vh></v>
+<v t="ekr.20110118082508.3765"><vh>after sel=5.8,5.8</vh></v>
+</v>
+</v>
+<v t="ekr.20171126172628.1"><vh>Tests that fail with console gui</vh>
+<v t="ekr.20140822063016.4474"><vh>@test zzz force a quit</vh></v>
+<v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
+</v>
+<v t="ekr.20140822063016.4474"></v>
 </v>
 </vnodes>
 <tnodes>
@@ -386,7 +491,8 @@ code for @test, @suite, etc. so if you want all the gory details you can read
 the code. It's not complicated: Leo creates UnitTest classes automatically whose
 run method is the body of the @suite or @test node.
 </t>
-<t tx="ekr.20041121151002"></t>
+<t tx="ekr.20041121151002"># Many of these are required for unit tests.
+# Do not change them without running all unit tests.</t>
 <t tx="ekr.20050328101834"></t>
 <t tx="ekr.20050328101834.1"></t>
 <t tx="ekr.20050328101834.2"></t>
@@ -886,6 +992,10 @@ Important: this may cause crashes on some platforms.
 # last line: line 6</t>
 <t tx="ekr.20080907123324.3">def spam(): # line 2
     pass
+</t>
+<t tx="ekr.20090306091634.1">tree = c.frame.tree
+if hasattr(tree,'redrawCount'):
+    g.pr('%s: %s' % (p.h,tree.redrawCount))
 </t>
 <t tx="ekr.20090529115704.4557">import glob
 import os
@@ -1543,6 +1653,593 @@ False:
 
 # Some tests are disabled when g.app.isExternalUnitTest is True.
 # Using self.skipTest(reason) is now preferred.</t>
+<t tx="ekr.20110118082508.3729"></t>
+<t tx="ekr.20110118082508.3730"># Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20110118082508.3745">Honor this line that has a hanging
+  indentation, please. Hanging
+  indentation is valuable for lists of
+  all kinds. But it is tricky to get
+  right.
+
+Next paragraph.
+</t>
+<t tx="ekr.20110118082508.3746">Honor this line that has a hanging indentation, please.  Hanging
+  indentation is valuable for lists of all kinds.  But it is tricky to get right.
+
+Next paragraph.
+</t>
+<t tx="ekr.20110118082508.3747">Honor this line that has a hanging
+  indentation, please. Hanging
+  indentation is valuable for lists of
+  all kinds. But it is tricky to get
+  right.
+
+Next paragraph.
+</t>
+<t tx="ekr.20110118082508.3748"># Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20110118082508.3754">Honor this line that has a hanging
+  indentation, please. Hanging
+  indentation is valuable for lists of
+  all kinds. But it is tricky to get
+  right.
+
+Next paragraph.
+</t>
+<t tx="ekr.20110118082508.3755">Honor this line that has
+  a hanging indentation, please.  Hanging
+    indentation is valuable for lists of all kinds.  But it is tricky to get right.
+
+Next paragraph.
+</t>
+<t tx="ekr.20110118082508.3756">Honor this line that has a hanging
+  indentation, please. Hanging
+  indentation is valuable for lists of
+  all kinds. But it is tricky to get
+  right.
+
+Next paragraph.
+</t>
+<t tx="ekr.20110118082508.3757"># Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20110118082508.3763">Honor this line that has a hanging
+  indentation, please. Hanging
+  indentation is valuable for lists of
+  all kinds. But it is tricky to get
+  right.
+
+Next Paragraph.
+</t>
+<t tx="ekr.20110118082508.3764">Honor this line that 
+  has a hanging indentation, 
+  please.  Hanging
+   indentation is valuable
+    for lists of all kinds.  But 
+    it is tricky to get right.
+
+Next Paragraph.
+</t>
+<t tx="ekr.20110118082508.3765">Honor this line that has a hanging
+  indentation, please. Hanging
+  indentation is valuable for lists of
+  all kinds. But it is tricky to get
+  right.
+
+Next Paragraph.
+</t>
+<t tx="ekr.20110118082508.3766"># Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20110118082508.3772">Americans live in the most severe
+weather-prone country on Earth. Each
+year, Americans cope with an average of
+10,000 thunderstorms, 2,500 floods,
+1,000 tornadoes, as well as an average
+of 6 deadly hurricanes. Potentially
+deadly weather impacts every American.
+Communities can now rely on the National
+Weather Service’s StormReady program to
+help them guard against the ravages of
+Mother Nature.
+
+Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+
+StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+
+Last paragraph.
+</t>
+<t tx="ekr.20110118082508.3773">Americans live in the most severe weather-prone country on Earth. Each year, Americans cope with an average of 10,000 thunderstorms, 2,500 floods, 1,000 tornadoes, as well as an average of 6 deadly hurricanes. Potentially deadly weather impacts every American. Communities can now rely on the National Weather Service’s StormReady program to help them guard against the ravages of Mother Nature.
+
+Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+
+StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+
+Last paragraph.
+</t>
+<t tx="ekr.20110118082508.3779"># Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20110118082508.3780">Americans live in the most severe
+weather-prone country on Earth. Each
+year, Americans cope with an average of
+10,000 thunderstorms, 2,500 floods,
+1,000 tornadoes, as well as an average
+of 6 deadly hurricanes. Potentially
+deadly weather impacts every American.
+Communities can now rely on the National
+Weather Service’s StormReady program to
+help them guard against the ravages of
+Mother Nature.
+
+Some 90% of all presidentially declared
+disasters are weather related, leading
+to around 500 deaths per year and nearly
+$14 billion in damage. StormReady, a
+program started in 1999 in Tulsa, OK,
+helps arm America's communities with the
+communication and safety skills needed
+to save lives and property– before and
+during the event. StormReady helps
+community leaders and emergency managers
+strengthen local safety programs.
+
+StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+
+Last paragraph.
+</t>
+<t tx="ekr.20110118082508.3781">Americans live in the most severe
+weather-prone country on Earth. Each
+year, Americans cope with an average of
+10,000 thunderstorms, 2,500 floods,
+1,000 tornadoes, as well as an average
+of 6 deadly hurricanes. Potentially
+deadly weather impacts every American.
+Communities can now rely on the National
+Weather Service’s StormReady program to
+help them guard against the ravages of
+Mother Nature.
+
+Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+
+StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+
+Last paragraph.
+</t>
+<t tx="ekr.20110118082508.3782">Americans live in the most severe
+weather-prone country on Earth. Each
+year, Americans cope with an average of
+10,000 thunderstorms, 2,500 floods,
+1,000 tornadoes, as well as an average
+of 6 deadly hurricanes. Potentially
+deadly weather impacts every American.
+Communities can now rely on the National
+Weather Service’s StormReady program to
+help them guard against the ravages of
+Mother Nature.
+
+Some 90% of all presidentially declared
+disasters are weather related, leading
+to around 500 deaths per year and nearly
+$14 billion in damage. StormReady, a
+program started in 1999 in Tulsa, OK,
+helps arm America's communities with the
+communication and safety skills needed
+to save lives and property– before and
+during the event. StormReady helps
+community leaders and emergency managers
+strengthen local safety programs.
+
+StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+
+Last paragraph.
+</t>
+<t tx="ekr.20110118082508.3787"># Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20110118082508.3788">Americans live in the most severe
+weather-prone country on Earth. Each
+year, Americans cope with an average of
+10,000 thunderstorms, 2,500 floods,
+1,000 tornadoes, as well as an average
+of 6 deadly hurricanes. Potentially
+deadly weather impacts every American.
+Communities can now rely on the National
+Weather Service’s StormReady program to
+help them guard against the ravages of
+Mother Nature.
+
+Some 90% of all presidentially declared
+disasters are weather related, leading
+to around 500 deaths per year and nearly
+$14 billion in damage. StormReady, a
+program started in 1999 in Tulsa, OK,
+helps arm America's communities with the
+communication and safety skills needed
+to save lives and property– before and
+during the event. StormReady helps
+community leaders and emergency managers
+strengthen local safety programs.
+
+StormReady communities are better
+prepared to save lives from the
+onslaught of severe weather through
+better planning, education, and
+awareness. No community is storm proof,
+but StormReady can help communities save
+lives. Does StormReady make a
+difference?
+
+Last paragraph.
+</t>
+<t tx="ekr.20110118082508.3789">Americans live in the most severe
+weather-prone country on Earth. Each
+year, Americans cope with an average of
+10,000 thunderstorms, 2,500 floods,
+1,000 tornadoes, as well as an average
+of 6 deadly hurricanes. Potentially
+deadly weather impacts every American.
+Communities can now rely on the National
+Weather Service’s StormReady program to
+help them guard against the ravages of
+Mother Nature.
+
+Some 90% of all presidentially declared
+disasters are weather related, leading
+to around 500 deaths per year and nearly
+$14 billion in damage. StormReady, a
+program started in 1999 in Tulsa, OK,
+helps arm America's communities with the
+communication and safety skills needed
+to save lives and property– before and
+during the event. StormReady helps
+community leaders and emergency managers
+strengthen local safety programs.
+
+StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+
+Last paragraph.
+</t>
+<t tx="ekr.20110118082508.3790">Americans live in the most severe
+weather-prone country on Earth. Each
+year, Americans cope with an average of
+10,000 thunderstorms, 2,500 floods,
+1,000 tornadoes, as well as an average
+of 6 deadly hurricanes. Potentially
+deadly weather impacts every American.
+Communities can now rely on the National
+Weather Service’s StormReady program to
+help them guard against the ravages of
+Mother Nature.
+
+Some 90% of all presidentially declared
+disasters are weather related, leading
+to around 500 deaths per year and nearly
+$14 billion in damage. StormReady, a
+program started in 1999 in Tulsa, OK,
+helps arm America's communities with the
+communication and safety skills needed
+to save lives and property– before and
+during the event. StormReady helps
+community leaders and emergency managers
+strengthen local safety programs.
+
+StormReady communities are better
+prepared to save lives from the
+onslaught of severe weather through
+better planning, education, and
+awareness. No community is storm proof,
+but StormReady can help communities save
+lives. Does StormReady make a
+difference?
+
+Last paragraph.
+</t>
+<t tx="ekr.20110118082508.3792">Americans live in the most severe
+weather-prone country on Earth. Each
+year, Americans cope with an average of
+10,000 thunderstorms, 2,500 floods,
+1,000 tornadoes, as well as an average
+of 6 deadly hurricanes. Potentially
+deadly weather impacts every American.
+Communities can now rely on the National
+Weather Service’s StormReady program to
+help them guard against the ravages of
+Mother Nature.
+
+Some 90% of all presidentially declared disasters are weather related, leading to around 500 deaths per year and nearly $14 billion in damage. StormReady, a program started in 1999 in Tulsa, OK, helps arm America's communities with the communication and safety skills needed to save lives and property– before and during the event. StormReady helps community leaders and emergency managers strengthen local safety programs.
+
+StormReady communities are better prepared to save lives from the onslaught of severe weather through better planning, education, and awareness. No community is storm proof, but StormReady can help communities save lives. Does StormReady make a difference?
+
+Last paragraph.
+</t>
+<t tx="ekr.20110118082508.3793"># Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20110118082508.3799">This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item 
+     number 1.  It is the first item in the list.
+
+  2. This is item 
+     number 2.  It is the second item in the list.
+
+  3. This is item 
+     number 3.  It is the third item in the list.
+
+This paragraph ends the test.  It is the "final"
+paragraph.
+</t>
+<t tx="ekr.20110118082508.3800">This paragraph leads of this test.  It is the "lead"
+paragraph.
+
+  1. This is item 
+     number 1.  It is the first item in the list.
+
+  2. This is item 
+     number 2.  It is the second item in the list.
+
+  3. This is item 
+     number 3.  It is the third item in the list.
+
+This paragraph ends the test.  It is the "final"
+paragraph.
+</t>
+<t tx="ekr.20110118082508.3803">This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item 
+     number 1.  It is the first item in the list.
+
+  2. This is item 
+     number 2.  It is the second item in the list.
+
+  3. This is item 
+     number 3.  It is the third item in the list.
+
+This paragraph ends the test.  It is the "final"
+paragraph.
+</t>
+<t tx="ekr.20110118082508.3808"># Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20110118082508.3809">This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item number 1. It is the
+     first item in the list.
+
+  2. This is item 
+     number 2.  It is the second item in the list.
+
+  3. This is item 
+     number 3.  It is the third item in the list.
+
+This paragraph ends the test.  It is the "final"
+paragraph.
+</t>
+<t tx="ekr.20110118082508.3810">This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item number 1. It is the
+     first item in the list.
+
+  2. This is item 
+     number 2.  It is the second item in the list.
+
+  3. This is item 
+     number 3.  It is the third item in the list.
+
+This paragraph ends the test.  It is the "final"
+paragraph.
+</t>
+<t tx="ekr.20110118082508.3811">This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item number 1. It is the
+     first item in the list.
+
+  2. This is item 
+     number 2.  It is the second item in the list.
+
+  3. This is item 
+     number 3.  It is the third item in the list.
+
+This paragraph ends the test.  It is the "final"
+paragraph.
+</t>
+<t tx="ekr.20110118082508.3816"># Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20110118082508.3817">This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item number 1. It is the
+     first item in the list.
+
+  2. This is item number 2. It is the
+     second item in the list.
+
+  3. This is item 
+     number 3.  It is the third item in the list.
+
+This paragraph ends the test.  It is the "final"
+paragraph.
+</t>
+<t tx="ekr.20110118082508.3818">This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item number 1. It is the
+     first item in the list.
+
+  2. This is item 
+     number 2.  It is the second item in the list.
+
+  3. This is item 
+     number 3.  It is the third item in the list.
+
+This paragraph ends the test.  It is the "final"
+paragraph.
+</t>
+<t tx="ekr.20110118082508.3819">This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item number 1. It is the
+     first item in the list.
+
+  2. This is item number 2. It is the
+     second item in the list.
+
+  3. This is item 
+     number 3.  It is the third item in the list.
+
+This paragraph ends the test.  It is the "final"
+paragraph.
+</t>
+<t tx="ekr.20110118082508.3824"># Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20110118082508.3825">This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item number 1. It is the
+     first item in the list.
+
+  2. This is item number 2. It is the
+     second item in the list.
+
+  3. This is item number 3. It is the
+     third item in the list.
+
+This paragraph ends the test.  It is the "final"
+paragraph.
+</t>
+<t tx="ekr.20110118082508.3826">This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item number 1. It is the
+     first item in the list.
+
+  2. This is item number 2. It is the
+     second item in the list.
+
+  3. This is item 
+     number 3.  It is the third item in the list.
+
+This paragraph ends the test.  It is the "final"
+paragraph.
+</t>
+<t tx="ekr.20110118082508.3827">This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item number 1. It is the
+     first item in the list.
+
+  2. This is item number 2. It is the
+     second item in the list.
+
+  3. This is item number 3. It is the
+     third item in the list.
+
+This paragraph ends the test.  It is the "final"
+paragraph.
+</t>
+<t tx="ekr.20110118082508.3832"># Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20110118082508.3833">This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item number 1. It is the
+     first item in the list.
+
+  2. This is item number 2. It is the
+     second item in the list.
+
+  3. This is item number 3. It is the
+     third item in the list.
+
+This paragraph ends the test. It is the
+"final" paragraph.
+</t>
+<t tx="ekr.20110118082508.3834">This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item number 1. It is the
+     first item in the list.
+
+  2. This is item number 2. It is the
+     second item in the list.
+
+  3. This is item number 3. It is the
+     third item in the list.
+
+This paragraph ends the test.  It is the "final"
+paragraph.
+</t>
+<t tx="ekr.20110118082508.3835">This paragraph leads of this test. It is
+the "lead" paragraph.
+
+  1. This is item number 1. It is the
+     first item in the list.
+
+  2. This is item number 2. It is the
+     second item in the list.
+
+  3. This is item number 3. It is the
+     third item in the list.
+
+This paragraph ends the test. It is the
+"final" paragraph.
+</t>
 <t tx="ekr.20110521073115.3494"></t>
 <t tx="ekr.20110521073115.3495">builtins, including cython builtins
 </t>
@@ -1808,6 +2505,174 @@ def spam():
 @encoding utf-16
 
 Test of utf-16.
+</t>
+<t tx="ekr.20131103084038.4274"># Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20131103084038.4275">@pagewidth 40
+'''
+docstring.
+'''
+</t>
+<t tx="ekr.20131103084038.4276">@pagewidth 40
+'''
+docstring.
+'''
+</t>
+<t tx="ekr.20131103084038.4277">@pagewidth 40
+'''
+docstring.
+'''
+</t>
+<t tx="ekr.20131103084038.4282"># Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20131103084038.4283">@pagewidth 40
+'''
+docstring.
+'''
+</t>
+<t tx="ekr.20131103084038.4284">@pagewidth 40
+'''
+docstring.
+'''
+</t>
+<t tx="ekr.20131103084038.4285">@pagewidth 40
+'''
+docstring.
+'''
+</t>
+<t tx="ekr.20131103084038.4290"># Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20131103084038.4291">@pagewidth 40
+'''
+docstring. more docstring.
+'''
+</t>
+<t tx="ekr.20131103084038.4292">@pagewidth 40
+'''
+docstring.
+more docstring.
+'''
+</t>
+<t tx="ekr.20131103084038.4293">@pagewidth 40
+'''
+docstring. more docstring.
+'''
+</t>
+<t tx="ekr.20131103084038.4298"># Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20131103084038.4299">- Point 1. xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  Line 11.
+A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+</t>
+<t tx="ekr.20131103084038.4300">- Point 1. xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+Line 11.
+A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+</t>
+<t tx="ekr.20131103084038.4301">- Point 1. xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  Line 11.
+A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+</t>
+<t tx="ekr.20131103084038.4306"># Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20131103084038.4307">A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+   Line 22.
+1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+</t>
+<t tx="ekr.20131103084038.4308">A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+  Line 22.
+1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+</t>
+<t tx="ekr.20131103084038.4309">A. Point 2. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+   Line 22.
+1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+</t>
+<t tx="ekr.20131103084038.4314"># Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20131103084038.4315">1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+   Line 32.
+
+2. Point 4  xxxxxxxxxxxxxxxxxxxxxxxxxxx
+</t>
+<t tx="ekr.20131103084038.4316">1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+Line 32.
+
+2. Point 4  xxxxxxxxxxxxxxxxxxxxxxxxxxx
+</t>
+<t tx="ekr.20131103084038.4317">1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+   Line 32.
+
+2. Point 4  xxxxxxxxxxxxxxxxxxxxxxxxxxx
+</t>
+<t tx="ekr.20131103084038.4322"># Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20131103084038.4323">1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+   Line 32.
+
+2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
+        Line 41.
+</t>
+<t tx="ekr.20131103084038.4324">1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+   Line 32.
+
+2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
+        Line 41.
+</t>
+<t tx="ekr.20131103084038.4325">1. Point 3. xxxxxxxxxxxxxxxxxxxxxxxxxxx
+   Line 32.
+
+2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
+        Line 41.
+</t>
+<t tx="ekr.20131103084038.4330"># Required when running tests externally
+@language plain
+@pagewidth 40
+@tabwidth 8
+
+c.testManager.runEditCommandTest(p)
+</t>
+<t tx="ekr.20131103084038.4331">2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
+        Line 41.
+</t>
+<t tx="ekr.20131103084038.4332">2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
+        Line 41.
+</t>
+<t tx="ekr.20131103084038.4333">2. Point 4 xxxxxxxxxxxxxxxxxxxxxxxxxxx
+        Line 41.
 </t>
 <t tx="ekr.20131111155830.4249"></t>
 <t tx="ekr.20131111155830.4250"># Not yet...
@@ -2134,6 +2999,9 @@ finally:
     if 1:
         p.deleteAllChildren()
     c.redraw()
+</t>
+<t tx="ekr.20140822063016.4474">g.app.forceShutdown()
+    # Now works with curses gui.
 </t>
 <t tx="ekr.20140902101931.4478"></t>
 <t tx="ekr.20150208213643.12">def spam():
@@ -6955,5 +7823,10 @@ unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
 </t>
+<t tx="ekr.20171126152936.1"># Required for unit tests: See #577.</t>
+<t tx="ekr.20171126153044.1"># Required for unit tests: See #577.</t>
+<t tx="ekr.20171126153138.1">See #577: https://github.com/leo-editor/leo-editor/issues/577
+</t>
+<t tx="ekr.20171126172628.1"></t>
 </tnodes>
 </leo_file>

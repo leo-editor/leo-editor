@@ -2143,8 +2143,6 @@ class VimCommands(object):
     @cmd(':q!')
     def quit_now(vc, event=None):
         '''Quit immediately.'''
-        for c in g.app.commanders():
-            g.app.forgetOpenFile(c.fileName(), force=True)
         g.app.forceShutdown()
     #@+node:ekr.20150509050918.1: *4* vc.r_command
     @cmd(':r')

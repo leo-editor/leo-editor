@@ -26,7 +26,7 @@ from leo.plugins.editpane.plaintextview import LEP_PlainTextView as TextView
 #@-<< pandownview.py imports >>
 #@+others
 #@+node:tbrown.20171028115505.2: ** to_html
-def to_html(text):
+def to_html(text, from_='markdown'):
     """to_html - convert to HTML
 
     :param str text: markdown text to convert
@@ -34,7 +34,8 @@ def to_html(text):
     :rtype: str
     """
 
-    cmd = "pandoc --smart --standalone --mathjax --from markdown --to html".split()
+    cmd = "pandoc --smart --standalone --mathjax --from %s --to html" % from_
+    cmd = cmd.split()
     proc = Popen(cmd, stdin=PIPE, stdout=PIPE)
     out, err = proc.communicate(text)
     return out
@@ -51,6 +52,7 @@ class LEP_PanDownView(HtmlView):
     """
     lep_type = "MARKDOWN"
     lep_name = "PanDoc Markdown View"
+    from_fmt = 'markdown'
     #@+others
     #@+node:tbrown.20171028115505.4: *3* __init__
     def __init__(self, c=None, lep=None, *args, **kwargs):
@@ -65,7 +67,7 @@ class LEP_PanDownView(HtmlView):
 
         :param str text: new text
         """
-        self.setHtml(to_html(text))
+        self.setHtml(to_html(text, from_=self.from_fmt))
 
     #@+node:tbrown.20171028115505.6: *3* update_text
     def update_text(self, text):
@@ -87,6 +89,7 @@ class LEP_PanDownHtmlView(TextView):
     """
     lep_type = "MARKDOWN-HTML"
     lep_name = "PanDoc Markdown Html View"
+    from_fmt = 'markdown'
     #@+others
     #@+node:tbrown.20171028115505.8: *3* __init__
     def __init__(self, c=None, lep=None, *args, **kwargs):
@@ -101,11 +104,25 @@ class LEP_PanDownHtmlView(TextView):
 
         :param str text: new text
         """
-        self.setPlainText(to_html(text))
+        self.setPlainText(to_html(text, from_=self.from_fmt))
 
 
 
     #@-others
+#@+node:tbrown.20171128074654.1: ** class LEP_PanRstView
+class LEP_PanRstView(LEP_PanDownView):
+    """LEP_PanDownView -
+    """
+    lep_type = "RST"
+    lep_name = "PanDoc rst View"
+    from_fmt = 'rst'
+#@+node:tbrown.20171128074707.1: ** class LEP_PanRstHtmlView
+class LEP_PanRstHtmlView(LEP_PanDownHtmlView):
+    """LEP_PanDownHtmlView -
+    """
+    lep_type = "RST-HTML"
+    lep_name = "PanDoc rst Html View"
+    from_fmt = 'rst'
 #@-others
 #@@language python
 #@@tabwidth -4

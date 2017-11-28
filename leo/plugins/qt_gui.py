@@ -80,7 +80,7 @@ class LeoQtGui(leoGui.LeoGui):
     def destroySelf(self):
         trace = g.app.trace_shutdown
         QtCore.pyqtRemoveInputHook()
-        if trace: print('LeoQtGui.destroySelf: calling qtApp.Quit')
+        if trace: g.pr('LeoQtGui.destroySelf: calling qtApp.Quit')
         self.qtApp.quit()
     #@+node:ekr.20110605121601.18485: *3* qt_gui.Clipboard
 
@@ -733,7 +733,9 @@ class LeoQtGui(leoGui.LeoGui):
                 # Kludge: DynamicWindow creates the body pane
                 # with wrapper = None, so return the LeoQtBody.
                 w = c.frame.body
-        if trace: g.trace('(LeoQtGui)', w.__class__.__name__)
+        if trace:
+            g.trace('(LeoQtGui)', w.__class__.__name__)
+            g.trace(g.callers())
         return w
 
     def set_focus(self, c, w):
@@ -742,8 +744,11 @@ class LeoQtGui(leoGui.LeoGui):
         trace = (False or g.app.trace_focus) and not g.unitTesting
         # gui = self
         if w:
-            if hasattr(w, 'widget') and w.widget: w = w.widget
-            if trace: g.trace('(LeoQtGui)', w.__class__.__name__)
+            if hasattr(w, 'widget') and w.widget:
+                w = w.widget
+            if trace:
+                g.trace('(LeoQtGui)', w.__class__.__name__)
+                g.trace(g.callers())
             w.setFocus()
 
     def ensure_commander_visible(self, c1):

@@ -4,13 +4,13 @@
 A module to run unit tests with the leoBridge module.
 Leo's unit test code uses this module when running unit tests externally.
 '''
-trace = False
+g_trace = False
     # Enables the trace in main.
 trace_argv = False
     # Enable trace of argv. For debugging this file: it duplicate of the trace in main()
-trace_main = True
+trace_main = False
     # Enable trace of options in main().
-trace_time = True
+trace_time = False
     # Enables tracing of the overhead take to run tests externally.
 #@+<< imports >>
 #@+node:ekr.20120220125945.10419: ** << imports >> (leoDynamicTest.py)
@@ -29,11 +29,10 @@ import leo.core.leoBridge as leoBridge
 #@+node:ekr.20080730161153.6: ** main & helpers (leoDynamicTest.py)
 def main():
     '''Run a dynamic test using the Leo bridge.'''
-    trace = True
     tag = 'leoDynamicTests.leo'
-    if trace: t1 = time.time()
+    if g_trace: t1 = time.time()
     options = scanOptions()
-    if trace and trace_main:
+    if g_trace and trace_main:
         print('leoDynamicTest.py:main: options...')
         print('  curdir         %s' % cwd)
         print('  path:          %s' % options.path)
@@ -51,7 +50,7 @@ def main():
         tracePlugins=options.trace_plugins,
         verbose=options.verbose, # True: prints log messages.
     )
-    if trace and trace_time:
+    if g_trace and trace_time:
         t2 = time.time()
         print('%s open bridge:  %0.2fsec' % (tag, t2 - t1))
     if bridge.isOpen():
@@ -60,7 +59,7 @@ def main():
         g.app.isExternalUnitTest = True
         path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', options.path)
         c = bridge.openLeoFile(path)
-        if trace:
+        if g_trace:
             t3 = time.time()
             print('%s open file:    %0.2fsec' % (tag, t3 - t2))
         runUnitTests(c, g)
@@ -102,14 +101,14 @@ def scanOptions():
 #@@tabwidth -4
 #@@pagewidth 70
 if __name__ == '__main__':
-    if trace and trace_time:
+    if g_trace and trace_time:
         t1 = time.time()
-    if trace and trace_argv:
+    if g_trace and trace_argv:
         print('leoDynamicTest.py: argv...')
         for z in sys.argv[2:]:
             print('  %s' % repr(z))
     main()
-    if trace and trace_time:
+    if g_trace and trace_time:
         t2 = time.time()
         print('leoDynamicUnittest.py: %0.2fsec' % (t2 - t1))
 #@-leo

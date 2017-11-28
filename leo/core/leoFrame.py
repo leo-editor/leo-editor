@@ -2181,6 +2181,8 @@ class StringTextWrapper(object):
 
     def setFocus(self): pass
 
+    def setStyleClass(self, name): pass
+
     def setXScrollPosition(self, i): pass
 
     def setYScrollPosition(self, i): pass

@@ -5,10 +5,9 @@
 import re
 import leo.core.leoGlobals as g
 assert g
-from leo.core.leoQt import QtCore, QtGui, QtWidgets # QtConst
+from leo.core.leoQt import QtCore, QtGui, QtWidgets
 
 # import time  # temporary for debugging
-
 #@-<< plaintextedit.py imports >>
 #@+others
 #@+node:tbrown.20171028115504.2: ** DBG
@@ -51,7 +50,7 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
 
         :param str text: new text
         """
-        self.setText(text)
+        self.setPlainText(text)
 
     #@+node:tbrown.20171028115504.8: *3* text_changed
     def text_changed(self):
@@ -59,7 +58,6 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
         if QtWidgets.QApplication.focusWidget() == self:
             DBG("text changed, focused")
             self.lep.text_changed(self.toPlainText())
-
         else:
             DBG("text changed, NOT focused")
 
@@ -70,7 +68,7 @@ class LEP_PlainTextEdit(QtWidgets.QTextEdit):
         :param str text: current text
         """
         DBG("update editor text")
-        self.setText(text)
+        self.setPlainText(text)
 
 
     #@-others

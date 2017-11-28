@@ -3334,8 +3334,17 @@ def readFileIntoString(fn,
     - The encoding given by the 'encoding' keyword arg.
     - None, which typically means 'utf-8'.
     '''
+    if not fn:
+        g.trace('no fn arg given')
+        g.trace(g.callers())
+        return None, None
+    if g.os_path_isdir(fn):
+        g.trace('not a file:', fn)
+        g.trace(g.callers())
+        return None, None
     if not g.os_path_exists(fn):
         g.error('file not found:', fn)
+        g.trace(g.callers())
         return None, None
     try:
         e = None

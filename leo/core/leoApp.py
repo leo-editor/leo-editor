@@ -83,7 +83,7 @@ class LeoApp(object):
 
     Ivars of this class are Leo's global variables."""
     #@+others
-    #@+node:ekr.20150509193643.1: *3* app.Birth
+    #@+node:ekr.20150509193643.1: *3* app.Birth & startup
     #@+node:ekr.20031218072017.1416: *4* app.__init__ (helpers contain language dicts)
     def __init__(self):
         '''
@@ -355,7 +355,7 @@ class LeoApp(object):
             # True: suppress importCommands.check
         self.unitTestDict = {}
             # For communication between unit tests and code.
-        self.UnitTestGui = None
+        self.unitTestGui = None
             # A way to override the gui in external unit tests.
         self.unitTesting = False
             # True if unit testing.
@@ -921,53 +921,7 @@ class LeoApp(object):
         '''Command decorator for the LeoApp class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['g', 'app'])
-    #@+node:ekr.20031218072017.2609: *3* app.closeLeoWindow
-    def closeLeoWindow(self, frame, new_c=None, finish_quit=True):
-        """
-        Attempt to close a Leo window.
-
-        Return False if the user veto's the close.
-
-        finish_quit - usually True, close Leo when last file closes, but
-                      False when closing an already-open-elsewhere file
-                      during initial load, so UI remains for files
-                      further along the command line.
-        """
-        trace = self.trace_shutdown and not g.unitTesting
-        if trace: print('closeLeoWindow: %s' % frame.c.shortFileName())
-        c = frame.c
-        c.endEditing() # Commit any open edits.
-        if c.promptingForClose:
-            # There is already a dialog open asking what to do.
-            return False
-        g.app.recentFilesManager.writeRecentFilesFile(c)
-            # Make sure .leoRecentFiles.txt is written.
-        if c.changed:
-            c.promptingForClose = True
-            veto = frame.promptForSave()
-            c.promptingForClose = False
-            if veto: return False
-        g.app.setLog(None) # no log until we reactive a window.
-        g.doHook("close-frame", c=c)
-        c.cacher.commit() # store cache
-            # This may remove frame from the window list.
-        if frame in g.app.windowList:
-            g.app.destroyWindow(frame)
-            g.app.windowList.remove(frame)
-        else:
-            # Fix bug https://github.com/leo-editor/leo-editor/issues/69
-            g.app.forgetOpenFile(fn=c.fileName(), force=True)
-        if g.app.windowList:
-            c2 = new_c or g.app.windowList[0].c
-            g.app.selectLeoWindow(c2)
-        elif finish_quit and not g.app.unitTesting:
-            g.app.finishQuit()
-        return True # The window has been closed.
-    #@+node:ville.20090602181814.6219: *3* app.commanders
-    def commanders(self):
-        """ Return list of currently active controllers """
-        return [f.c for f in g.app.windowList]
-    #@+node:ekr.20090717112235.6007: *3* app.computeSignon
+    #@+node:ekr.20090717112235.6007: *4* app.computeSignon
     def computeSignon(self):
         import leo.core.leoVersion as leoVersion
         app = self
@@ -1020,8 +974,8 @@ class LeoApp(object):
             print('** isPython3: %s' % g.isPython3)
             print('** caching %s' % ('enabled' if g.enableDB else 'disabled'))
             print('')
-    #@+node:ekr.20100831090251.5838: *3* app.createXGui
-    #@+node:ekr.20100831090251.5840: *4* app.createCursesGui
+    #@+node:ekr.20100831090251.5838: *4* app.createXGui
+    #@+node:ekr.20100831090251.5840: *5* app.createCursesGui
     def createCursesGui(self, fileName='', verbose=False):
         try:
             import leo.plugins.cursesGui2 as cursesGui2
@@ -1032,7 +986,7 @@ class LeoApp(object):
             g.app.gui = cursesGui2.LeoCursesGui()
         else:
             print('can not create curses gui.')
-    #@+node:ekr.20090619065122.8593: *4* app.createDefaultGui
+    #@+node:ekr.20090619065122.8593: *5* app.createDefaultGui
     def createDefaultGui(self, fileName='', verbose=False):
         """A convenience routines for plugins to create the default gui class."""
         app = self
@@ -1052,13 +1006,13 @@ class LeoApp(object):
             app.createTextGui()
         if not app.gui:
             print('createDefaultGui: Leo requires Qt to be installed.')
-    #@+node:ekr.20031218072017.1938: *4* app.createNullGuiWithScript
+    #@+node:ekr.20031218072017.1938: *5* app.createNullGuiWithScript
     def createNullGuiWithScript(self, script=None):
         app = self
         app.batchMode = True
         app.gui = g.app.nullGui
         app.gui.setScript(script)
-    #@+node:ekr.20090202191501.1: *4* app.createQtGui
+    #@+node:ekr.20090202191501.1: *5* app.createQtGui
     def createQtGui(self, fileName='', verbose=False):
         # Do NOT omit fileName param: it is used in plugin code.
         """A convenience routines for plugins to create the Qt gui class."""
@@ -1080,11 +1034,11 @@ class LeoApp(object):
         else:
             print('createQtGui: can not create Qt gui.')
 
-    #@+node:ekr.20170419093747.1: *4* app.createTextGui (was createCursesGui)
+    #@+node:ekr.20170419093747.1: *5* app.createTextGui (was createCursesGui)
     def createTextGui(self, fileName='', verbose=False):
         app = self
         app.pluginsController.loadOnePlugin('leo.plugins.cursesGui', verbose=verbose)
-    #@+node:ekr.20090126063121.3: *4* app.createWxGui
+    #@+node:ekr.20090126063121.3: *5* app.createWxGui
     def createWxGui(self, fileName='', verbose=False):
         # Do NOT omit fileName param: it is used in plugin code.
         """A convenience routines for plugins to create the wx gui class."""
@@ -1092,245 +1046,7 @@ class LeoApp(object):
         app.pluginsController.loadOnePlugin('leo.plugins.wxGui', verbose=verbose)
         if fileName and verbose:
             print('wxGui created in %s' % fileName)
-    #@+node:ekr.20031218072017.2612: *3* app.destroyAllOpenWithFiles
-    def destroyAllOpenWithFiles(self):
-        '''Remove temp files created with the Open With command.'''
-        trace = self.trace_shutdown and not g.unitTesting
-        if trace: print('destroyAllOpenWithFiles')
-        if g.app.externalFilesController:
-            g.app.externalFilesController.shut_down()
-            g.app.externalFilesController = None
-    #@+node:ekr.20031218072017.2615: *3* app.destroyWindow
-    def destroyWindow(self, frame):
-        '''Destroy all ivars in a Leo frame.'''
-        trace = self.trace_shutdown and not g.unitTesting
-        if trace: print('destroyWindow:  %s' % frame.c.shortFileName())
-        if g.app.externalFilesController:
-            g.app.externalFilesController.destroy_frame(frame)
-        if frame in g.app.windowList:
-            # print('destroyWindow', (g.app.windowList)
-            g.app.forgetOpenFile(frame.c.fileName())
-        # force the window to go away now.
-        # Important: this also destroys all the objects of the commander.
-        frame.destroySelf()
-    #@+node:ekr.20120427064024.10068: *3* app.Detecting already-open files
-    #@+node:ekr.20120427064024.10064: *4* app.checkForOpenFile
-    def checkForOpenFile(self, c, fn):
-        '''Warn if fn is already open and add fn to already_open_files list.'''
-        d, tag = g.app.db, 'open-leo-files'
-        if g.app.reverting:
-            # Fix #302: revert to saved doesn't reset external file change monitoring
-            g.app.already_open_files = []
-        if d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting:
-            return
-        aList = g.app.db.get(tag) or []
-        if fn in aList:
-            # The file may be open in another copy of Leo, or not:
-            # another Leo may have been killed prematurely.
-            # Put the file on the global list.
-            # A dialog will warn the user such files later.
-            if fn not in g.app.already_open_files:
-                g.es('may be open in another Leo:', color='red')
-                g.es(fn)
-                g.app.already_open_files.append(fn)
-        else:
-            g.app.rememberOpenFile(fn)
-    #@+node:ekr.20120427064024.10066: *4* app.forgetOpenFile
-    def forgetOpenFile(self, fn, force=False):
-        '''Forget the open file, so that is no longer considered open.'''
-        trace = self.trace_shutdown and not g.unitTesting
-        d, tag = g.app.db, 'open-leo-files'
-        if not d or not fn:
-            # Fix https://github.com/leo-editor/leo-editor/issues/69
-            return
-        if not force and (d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting):
-            return
-        aList = d.get(tag) or []
-        if fn in aList:
-            aList.remove(fn)
-            if trace:
-                print('forgetOpenFile: %s' % g.shortFileName(fn))
-                # for z in aList:
-                #    print('  %s' % (z))
-            d[tag] = aList
-        else:
-            if trace: print('forgetOpenFile: did not remove: %s' % (fn))
-    #@+node:ekr.20120427064024.10065: *4* app.rememberOpenFile
-    def rememberOpenFile(self, fn):
-        trace = False and not g.unitTesting
-        d, tag = g.app.db, 'open-leo-files'
-        if d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting:
-            pass
-        elif g.app.preReadFlag:
-            pass
-        else:
-            aList = d.get(tag) or []
-            # It's proper to add duplicates to this list.
-            aList.append(fn)
-            if trace:
-                # Trace doesn't work well while initing.
-                print('rememberOpenFile:added: %s' % (fn))
-                for z in aList:
-                    print('  %s' % (z))
-            d[tag] = aList
-    #@+node:ekr.20150621062355.1: *4* app.runAlreadyOpenDialog
-    def runAlreadyOpenDialog(self, c):
-        '''Warn about possibly already-open files.'''
-        # g.trace(g.app.already_open_files)
-        if g.app.already_open_files:
-            aList = sorted(set(g.app.already_open_files))
-            g.app.already_open_files = []
-            g.app.gui.dismiss_splash_screen()
-            message = (
-                'The following files may already be open\n'
-                'in another copy of Leo:\n\n' +
-                '\n'.join(aList))
-            g.app.gui.runAskOkDialog(c,
-                title='Already Open Files',
-                message=message,
-                text="Ok")
-    #@+node:ekr.20031218072017.1732: *3* app.finishQuit
-    def finishQuit(self):
-        # forceShutdown may already have fired the "end1" hook.
-        trace = self.trace_shutdown and not g.unitTesting
-        if trace: print('finishQuit')
-        if not g.app.killed:
-            g.doHook("end1")
-            g.app.cacher.commit()
-        if g.app.ipk:
-            g.app.ipk.cleanup_consoles()
-        self.destroyAllOpenWithFiles()
-        # if trace: print('app.finishQuit: setting g.app.killed: %s' % g.callers())
-        g.app.killed = True
-            # Disable all further hooks and events.
-            # Alas, "idle" events can still be called
-            # even after the following code.
-        if g.app.gui:
-            g.app.gui.destroySelf()
-                # Calls qtApp.quit()
-    #@+node:ekr.20031218072017.2616: *3* app.forceShutdown
-    def forceShutdown(self):
-        """
-        Forces an immediate shutdown of Leo at any time.
-
-        In particular, may be called from plugins during startup.
-        """
-        trace = self.trace_shutdown and not g.unitTesting
-        if trace: print('forceShutdown')
-        # Wait until everything is quiet before really quitting.
-        if trace: print('forceShutdown: before end1')
-        g.doHook("end1")
-        if trace: print('forceShutdown: after end1')
-        self.log = None # Disable writeWaitingLog
-        self.killed = True # Disable all further hooks.
-        for w in self.windowList[:]:
-            if trace: print('forceShutdown: %s' % w)
-            self.destroyWindow(w)
-        if trace: print('before finishQuit')
-        self.finishQuit()
-    #@+node:ekr.20171118024827.1: *3* app.makeAllBindings
-    def makeAllBindings(self):
-        '''
-        LeoApp.makeAllBindings:
-            
-        Call c.k.makeAllBindings for all open commanders c.
-        '''
-        app = self
-        for c in app.commanders():
-            # g.trace(c.shortFileName())
-            c.k.makeAllBindings()
-    #@+node:ekr.20031218072017.2188: *3* app.newCommander
-    def newCommander(self, fileName, relativeFileName=None, gui=None, previousSettings=None):
-        """Create a commander and its view frame for the Leo main window."""
-        trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: g.es_debug(repr(fileName), repr(relativeFileName))
-        # Create the commander and its subcommanders.
-        # This takes about 3/4 sec when called by the leoBridge module.
-        import leo.core.leoCommands as leoCommands
-        return leoCommands.Commands(fileName, relativeFileName, gui, previousSettings)
-    #@+node:ekr.20031218072017.2617: *3* app.onQuit
-    @cmd('exit-leo')
-    def onQuit(self, event=None):
-        '''Exit Leo, prompting to save unsaved outlines first.'''
-        g.app.quitting = True
-        # if trace: print('onQuit',g.app.save_session,g.app.sessionManager)
-        if g.app.save_session and g.app.sessionManager:
-            g.app.sessionManager.save_snapshot()
-        while g.app.windowList:
-            w = g.app.windowList[0]
-            if not g.app.closeLeoWindow(w):
-                break
-        if g.app.windowList:
-            g.app.quitting = False # If we get here the quit has been disabled.
-    #@+node:ekr.20140727180847.17985: *3* app.scanner_for_at_auto
-    def scanner_for_at_auto(self, c, p):
-        '''A factory returning a scanner function for p, an @auto node.'''
-        trace = False and not g.unitTesting
-        d = g.app.atAutoDict
-        if trace: g.trace('\n'.join(sorted(d.keys())))
-        for key in d.keys():
-            # pylint: disable=cell-var-from-loop
-            aClass = d.get(key)
-            if aClass and g.match_word(p.h, 0, key):
-                if trace: g.trace('found', aClass.__name__)
-
-                def scanner_for_at_auto_cb(c, parent, s):
-                    try:
-                        ic = c.importCommands
-                        scanner = aClass(importCommands=ic)
-                        return scanner.run(s, parent)
-                    except Exception:
-                        g.es_print('Exception running', aClass.__name__)
-                        g.es_exception()
-                        return None
-
-                scanner_for_at_auto_cb.scanner_name = aClass.__name__
-                    # For traces in ic.createOutline.
-                if trace: g.trace('found', p.h)
-                return scanner_for_at_auto_cb
-        if trace: g.trace('not found', p.h, sorted(d.keys()))
-        return None
-    #@+node:ekr.20140130172810.15471: *3* app.scanner_for_ext
-    def scanner_for_ext(self, c, ext):
-        '''A factory returning a scanner function for the given file extension.'''
-        trace = False and not g.unitTesting
-        aClass = g.app.classDispatchDict.get(ext)
-        if trace: g.trace(ext, aClass.__name__)
-        if aClass:
-
-            def scanner_for_ext_cb(c, parent, s):
-                try:
-                    ic = c.importCommands
-                    scanner = aClass(importCommands=ic)
-                    return scanner.run(s, parent)
-                except Exception:
-                    g.es_print('Exception running', aClass.__name__)
-                    g.es_exception()
-                    return None
-
-            scanner_for_ext_cb.scanner_name = aClass.__name__
-                # For traces in ic.createOutline.
-            return scanner_for_ext_cb
-        else:
-            return None
-    #@+node:ekr.20120304065838.15588: *3* app.selectLeoWindow
-    def selectLeoWindow(self, c):
-        trace = False and not g.unitTesting
-        if trace: g.trace(c.frame.title)
-        frame = c.frame
-        frame.deiconify()
-        frame.lift()
-        c.setLog()
-        master = hasattr(frame.top, 'leo_master') and frame.top.leo_master
-        if master: # 2011/11/21: selecting the new tab ensures focus is set.
-            # frame.top.leo_master is a TabbedTopLevel.
-            master.select(c)
-        if 1: # 2016/04/09
-            c.initialFocusHelper()
-        else:
-            c.bodyWantsFocus()
-        c.outerUpdate()
-    #@+node:ville.20090620122043.6275: *3* app.setGlobalDb
+    #@+node:ville.20090620122043.6275: *4* app.setGlobalDb
     def setGlobalDb(self):
         """ Create global pickleshare db
 
@@ -1343,7 +1059,7 @@ class LeoApp(object):
         import leo.core.leoCache as leoCache
         g.app.cacher = cacher = leoCache.Cacher()
         g.app.db = cacher.initGlobalDB()
-    #@+node:ekr.20031218072017.1978: *3* app.setLeoID & helpers
+    #@+node:ekr.20031218072017.1978: *4* app.setLeoID & helpers
     def setLeoID(self, useDialog=True, verbose=True):
         '''Get g.app.leoID from various sources.'''
         self.leoID = None
@@ -1364,7 +1080,7 @@ class LeoApp(object):
                 if self.leoID:
                     self.setIDFile()
         return self.leoID
-    #@+node:ekr.20031218072017.1979: *4* app.setIDFromSys
+    #@+node:ekr.20031218072017.1979: *5* app.setIDFromSys
     def setIDFromSys(self, verbose):
         '''
         Attempt to set g.app.leoID from sys.leoID.
@@ -1377,7 +1093,7 @@ class LeoApp(object):
             self.leoID = id_.replace('.', '-')
             if verbose:
                 g.red("leoID=", self.leoID, spaces=False)
-    #@+node:ekr.20031218072017.1980: *4* app.setIDFromFile
+    #@+node:ekr.20031218072017.1980: *5* app.setIDFromFile
     def setIDFromFile(self, verbose):
         '''Attempt to set g.app.leoID from leoID.txt.'''
         trace = False
@@ -1402,7 +1118,7 @@ class LeoApp(object):
             except Exception:
                 g.error('unexpected exception in app.setLeoID')
                 g.es_exception()
-    #@+node:ekr.20060211140947.1: *4* app.setIDFromEnv
+    #@+node:ekr.20060211140947.1: *5* app.setIDFromEnv
     def setIDFromEnv(self, verbose):
         '''Set leoID from environment vars.'''
         try:
@@ -1414,7 +1130,7 @@ class LeoApp(object):
                 self.leoID = id_.replace('.', '-')
         except Exception:
             pass
-    #@+node:ekr.20031218072017.1981: *4* app.setIdFromDialog
+    #@+node:ekr.20031218072017.1981: *5* app.setIdFromDialog
     def setIdFromDialog(self):
         '''Get leoID from a dialog.'''
         # Don't put up a splash screen.
@@ -1436,7 +1152,7 @@ class LeoApp(object):
         # Careful: periods in the id field of a gnx will corrupt the .leo file!
         self.leoID = leoid.replace('.', '-')
         g.blue('leoID=', repr(self.leoID), spaces=False)
-    #@+node:ekr.20031218072017.1982: *4* app.setIDFile
+    #@+node:ekr.20031218072017.1982: *5* app.setIDFile
     def setIDFile(self):
         '''Create leoID.txt.'''
         tag = ".leoID.txt"
@@ -1456,7 +1172,7 @@ class LeoApp(object):
                 except IOError:
                     pass
                 g.error('can not create', tag, 'in', theDir)
-    #@+node:ekr.20031218072017.1847: *3* app.setLog, lockLog, unlocklog
+    #@+node:ekr.20031218072017.1847: *4* app.setLog, lockLog, unlocklog
     def setLog(self, log):
         """set the frame to which log messages will go"""
         # print("app.setLog: %s %s" % (log, g.callers()))
@@ -1473,7 +1189,7 @@ class LeoApp(object):
         """Enable changes to the log"""
         # print("app.unlockLog:")
         self.logIsLocked = False
-    #@+node:ekr.20031218072017.2619: *3* app.writeWaitingLog
+    #@+node:ekr.20031218072017.2619: *4* app.writeWaitingLog
     def writeWaitingLog(self, c):
         '''Write all waiting lines to the log.'''
         trace = False
@@ -1515,6 +1231,297 @@ class LeoApp(object):
         app.logWaiting = []
         # Essential when opening multiple files...
         g.app.setLog(None)
+    #@+node:ekr.20171127111053.1: *3* app.Closing
+    #@+node:ekr.20031218072017.2609: *4* app.closeLeoWindow
+    def closeLeoWindow(self, frame, new_c=None, finish_quit=True):
+        """
+        Attempt to close a Leo window.
+
+        Return False if the user veto's the close.
+
+        finish_quit - usually True, close Leo when last file closes, but
+                      False when closing an already-open-elsewhere file
+                      during initial load, so UI remains for files
+                      further along the command line.
+        """
+        trace = self.trace_shutdown and not g.unitTesting
+        c = frame.c
+        if trace: g.pr('closeLeoWindow: changed: %s %s' % (c.changed, c.shortFileName()))
+        c.endEditing() # Commit any open edits.
+        if trace: g.trace('changed', c.changed)
+        if c.promptingForClose:
+            # There is already a dialog open asking what to do.
+            return False
+        g.app.recentFilesManager.writeRecentFilesFile(c)
+            # Make sure .leoRecentFiles.txt is written.
+        if c.changed:
+            c.promptingForClose = True
+            veto = frame.promptForSave()
+            c.promptingForClose = False
+            if veto: return False
+        g.app.setLog(None) # no log until we reactive a window.
+        g.doHook("close-frame", c=c)
+        c.cacher.commit() # store cache
+            # This may remove frame from the window list.
+        if frame in g.app.windowList:
+            g.app.destroyWindow(frame)
+            g.app.windowList.remove(frame)
+        else:
+            # Fix bug https://github.com/leo-editor/leo-editor/issues/69
+            g.app.forgetOpenFile(fn=c.fileName(), force=True)
+        if g.app.windowList:
+            c2 = new_c or g.app.windowList[0].c
+            g.app.selectLeoWindow(c2)
+        elif finish_quit and not g.app.unitTesting:
+            g.app.finishQuit()
+        return True # The window has been closed.
+    #@+node:ekr.20031218072017.2612: *4* app.destroyAllOpenWithFiles
+    def destroyAllOpenWithFiles(self):
+        '''Remove temp files created with the Open With command.'''
+        trace = self.trace_shutdown and not g.unitTesting
+        if trace: g.pr('destroyAllOpenWithFiles')
+        if g.app.externalFilesController:
+            g.app.externalFilesController.shut_down()
+            g.app.externalFilesController = None
+    #@+node:ekr.20031218072017.2615: *4* app.destroyWindow
+    def destroyWindow(self, frame):
+        '''Destroy all ivars in a Leo frame.'''
+        trace = self.trace_shutdown and not g.unitTesting
+        if trace: g.pr('destroyWindow:  %s' % frame.c.shortFileName())
+        if g.app.externalFilesController:
+            g.app.externalFilesController.destroy_frame(frame)
+        if frame in g.app.windowList:
+            # g.pr('destroyWindow', (g.app.windowList)
+            g.app.forgetOpenFile(frame.c.fileName())
+        # force the window to go away now.
+        # Important: this also destroys all the objects of the commander.
+        frame.destroySelf()
+    #@+node:ekr.20031218072017.1732: *4* app.finishQuit
+    def finishQuit(self):
+        # forceShutdown may already have fired the "end1" hook.
+        trace = self.trace_shutdown and not g.unitTesting
+        if trace: g.pr('finishQuit')
+        if not g.app.killed:
+            g.doHook("end1")
+            g.app.cacher.commit()
+        if g.app.ipk:
+            g.app.ipk.cleanup_consoles()
+        self.destroyAllOpenWithFiles()
+        # if trace: g.pr('app.finishQuit: setting g.app.killed: %s' % g.callers())
+        g.app.killed = True
+            # Disable all further hooks and events.
+            # Alas, "idle" events can still be called
+            # even after the following code.
+        if g.app.gui:
+            g.app.gui.destroySelf()
+                # Calls qtApp.quit()
+    #@+node:ekr.20031218072017.2616: *4* app.forceShutdown
+    def forceShutdown(self):
+        """
+        Forces an immediate shutdown of Leo at any time.
+
+        In particular, may be called from plugins during startup.
+        """
+        trace = self.trace_shutdown and not g.unitTesting
+        app = self
+        if trace: g.pr('forceShutdown')
+        for c in app.commanders():
+            app.forgetOpenFile(c.fileName(), force=True)
+        # Wait until everything is quiet before really quitting.
+        if trace: g.pr('forceShutdown: before end1')
+        g.doHook("end1")
+        if trace: g.pr('forceShutdown: after end1')
+        self.log = None # Disable writeWaitingLog
+        self.killed = True # Disable all further hooks.
+        for w in self.windowList[:]:
+            if trace: g.pr('forceShutdown: %s' % w)
+            self.destroyWindow(w)
+        if trace: g.pr('before finishQuit')
+        self.finishQuit()
+    #@+node:ekr.20031218072017.2617: *4* app.onQuit
+    @cmd('exit-leo')
+    @cmd('quit-leo')
+    def onQuit(self, event=None):
+        '''Exit Leo, prompting to save unsaved outlines first.'''
+        g.app.quitting = True
+        # if trace: print('onQuit',g.app.save_session,g.app.sessionManager)
+        if g.app.save_session and g.app.sessionManager:
+            g.app.sessionManager.save_snapshot()
+        while g.app.windowList:
+            w = g.app.windowList[0]
+            if not g.app.closeLeoWindow(w):
+                break
+        if g.app.windowList:
+            g.app.quitting = False # If we get here the quit has been disabled.
+    #@+node:ekr.20120304065838.15588: *3* app.selectLeoWindow
+    def selectLeoWindow(self, c):
+        trace = False and not g.unitTesting
+        if trace: g.trace(c.frame.title)
+        frame = c.frame
+        frame.deiconify()
+        frame.lift()
+        c.setLog()
+        master = hasattr(frame.top, 'leo_master') and frame.top.leo_master
+        if master: # 2011/11/21: selecting the new tab ensures focus is set.
+            # frame.top.leo_master is a TabbedTopLevel.
+            master.select(c)
+        if 1: # 2016/04/09
+            c.initialFocusHelper()
+        else:
+            c.bodyWantsFocus()
+        c.outerUpdate()
+    #@+node:ville.20090602181814.6219: *3* app.commanders
+    def commanders(self):
+        """ Return list of currently active controllers """
+        return [f.c for f in g.app.windowList]
+    #@+node:ekr.20120427064024.10068: *3* app.Detecting already-open files
+    #@+node:ekr.20120427064024.10064: *4* app.checkForOpenFile
+    def checkForOpenFile(self, c, fn):
+        '''Warn if fn is already open and add fn to already_open_files list.'''
+        d, tag = g.app.db, 'open-leo-files'
+        if g.app.reverting:
+            # Fix #302: revert to saved doesn't reset external file change monitoring
+            g.app.already_open_files = []
+        if d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting:
+            return
+        aList = g.app.db.get(tag) or []
+        if fn in aList:
+            # The file may be open in another copy of Leo, or not:
+            # another Leo may have been killed prematurely.
+            # Put the file on the global list.
+            # A dialog will warn the user such files later.
+            if fn not in g.app.already_open_files:
+                g.es('may be open in another Leo:', color='red')
+                g.es(fn)
+                g.app.already_open_files.append(fn)
+        else:
+            g.app.rememberOpenFile(fn)
+    #@+node:ekr.20120427064024.10066: *4* app.forgetOpenFile
+    def forgetOpenFile(self, fn, force=False):
+        '''Forget the open file, so that is no longer considered open.'''
+        trace = self.trace_shutdown and not g.unitTesting
+        d, tag = g.app.db, 'open-leo-files'
+        if not d or not fn:
+            # Fix https://github.com/leo-editor/leo-editor/issues/69
+            return
+        if not force and (d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting):
+            return
+        aList = d.get(tag) or []
+        if fn in aList:
+            aList.remove(fn)
+            if trace:
+                g.pr('forgetOpenFile: %s' % g.shortFileName(fn))
+                # for z in aList:
+                #    g.pr('  %s' % (z))
+            d[tag] = aList
+        else:
+            if trace: g.pr('forgetOpenFile: did not remove: %s' % (fn))
+    #@+node:ekr.20120427064024.10065: *4* app.rememberOpenFile
+    def rememberOpenFile(self, fn):
+        trace = False and not g.unitTesting
+        d, tag = g.app.db, 'open-leo-files'
+        if d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting:
+            pass
+        elif g.app.preReadFlag:
+            pass
+        else:
+            aList = d.get(tag) or []
+            # It's proper to add duplicates to this list.
+            aList.append(fn)
+            if trace:
+                # Trace doesn't work well while initing.
+                print('rememberOpenFile:added: %s' % (fn))
+                for z in aList:
+                    print('  %s' % (z))
+            d[tag] = aList
+    #@+node:ekr.20150621062355.1: *4* app.runAlreadyOpenDialog
+    def runAlreadyOpenDialog(self, c):
+        '''Warn about possibly already-open files.'''
+        # g.trace(g.app.already_open_files)
+        if g.app.already_open_files:
+            aList = sorted(set(g.app.already_open_files))
+            g.app.already_open_files = []
+            g.app.gui.dismiss_splash_screen()
+            message = (
+                'The following files may already be open\n'
+                'in another copy of Leo:\n\n' +
+                '\n'.join(aList))
+            g.app.gui.runAskOkDialog(c,
+                title='Already Open Files',
+                message=message,
+                text="Ok")
+    #@+node:ekr.20171118024827.1: *3* app.makeAllBindings
+    def makeAllBindings(self):
+        '''
+        LeoApp.makeAllBindings:
+            
+        Call c.k.makeAllBindings for all open commanders c.
+        '''
+        app = self
+        for c in app.commanders():
+            # g.trace(c.shortFileName())
+            c.k.makeAllBindings()
+    #@+node:ekr.20031218072017.2188: *3* app.newCommander
+    def newCommander(self, fileName, relativeFileName=None, gui=None, previousSettings=None):
+        """Create a commander and its view frame for the Leo main window."""
+        trace = (False or g.trace_startup) and not g.unitTesting
+        if trace: g.es_debug(repr(fileName), repr(relativeFileName))
+        # Create the commander and its subcommanders.
+        # This takes about 3/4 sec when called by the leoBridge module.
+        import leo.core.leoCommands as leoCommands
+        return leoCommands.Commands(fileName, relativeFileName, gui, previousSettings)
+    #@+node:ekr.20171127111141.1: *3* app.Import utils
+    #@+node:ekr.20140727180847.17985: *4* app.scanner_for_at_auto
+    def scanner_for_at_auto(self, c, p):
+        '''A factory returning a scanner function for p, an @auto node.'''
+        trace = False and not g.unitTesting
+        d = g.app.atAutoDict
+        if trace: g.trace('\n'.join(sorted(d.keys())))
+        for key in d.keys():
+            # pylint: disable=cell-var-from-loop
+            aClass = d.get(key)
+            if aClass and g.match_word(p.h, 0, key):
+                if trace: g.trace('found', aClass.__name__)
+
+                def scanner_for_at_auto_cb(c, parent, s):
+                    try:
+                        ic = c.importCommands
+                        scanner = aClass(importCommands=ic)
+                        return scanner.run(s, parent)
+                    except Exception:
+                        g.es_print('Exception running', aClass.__name__)
+                        g.es_exception()
+                        return None
+
+                scanner_for_at_auto_cb.scanner_name = aClass.__name__
+                    # For traces in ic.createOutline.
+                if trace: g.trace('found', p.h)
+                return scanner_for_at_auto_cb
+        if trace: g.trace('not found', p.h, sorted(d.keys()))
+        return None
+    #@+node:ekr.20140130172810.15471: *4* app.scanner_for_ext
+    def scanner_for_ext(self, c, ext):
+        '''A factory returning a scanner function for the given file extension.'''
+        trace = False and not g.unitTesting
+        aClass = g.app.classDispatchDict.get(ext)
+        if trace: g.trace(ext, aClass.__name__)
+        if aClass:
+
+            def scanner_for_ext_cb(c, parent, s):
+                try:
+                    ic = c.importCommands
+                    scanner = aClass(importCommands=ic)
+                    return scanner.run(s, parent)
+                except Exception:
+                    g.es_print('Exception running', aClass.__name__)
+                    g.es_exception()
+                    return None
+
+            scanner_for_ext_cb.scanner_name = aClass.__name__
+                # For traces in ic.createOutline.
+            return scanner_for_ext_cb
+        else:
+            return None
     #@-others
 #@+node:ekr.20120209051836.10242: ** class LoadManager
 class LoadManager(object):
@@ -2517,6 +2524,8 @@ class LoadManager(object):
             help='trace imports of plugins')
         add('--trace-setting', dest='setting',
             help='trace where setting is set')
+        add('--trace-shutdown', action='store_true', dest='trace_shutdown',
+            help='trace shutdown logic')
         add('-v', '--version', action='store_true', dest='version',
             help='print version number and exit')
         add('--window-size', dest='window_size',
@@ -2625,6 +2634,8 @@ class LoadManager(object):
         g.app.trace_setting = options.setting
             # g.app.config does not exist yet.
             # g.trace('trace_setting:', repr(options.trace_setting))
+        # --trace-shutdown
+        g.app.trace_shutdown = options.trace_shutdown
         # --version: print the version and exit.
         versionFlag = options.version
         # --window-size
@@ -3359,7 +3370,7 @@ class RecentFilesManager(object):
                 continue # happens with empty list/new file
 
             def recentFilesCallback(event=None, c=c, name=name):
-                c.openRecentFile(name)
+                c.openRecentFile(fn=name)
 
             if groupedEntries:
                 dirName, baseName = g.os_path_split(name)
