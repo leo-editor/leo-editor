@@ -1589,7 +1589,7 @@ class LeoCursesGui(leoGui.LeoGui):
     #@+node:ekr.20171126191726.1: *6* CGui.monkeyPatch
     def monkeyPatch(self, c):
         table = (
-            ('start-search', self.startSearch),
+           ('start-search', self.startSearch),
         )
         for commandName, func in table:
             g.global_commands_dict[commandName] = func
@@ -1918,14 +1918,19 @@ class LeoCursesGui(leoGui.LeoGui):
         Return the Leo wrapper for the npyscreen widget that is being edited.
         '''
         # Careful during startup.
+        trace = (False or g.app.trace_focus) and not g.unitTesting
         editw = getattr(g.app.gui.curses_form, 'editw', None)
         if editw is None:
+            if trace: g.trace('(CursesGui) no editw')
             return None
         widget = self.curses_form._widgets__[editw]
         if hasattr(widget, 'leo_wrapper'):
+            if trace:
+                g.trace('(CursesGui)', widget.leo_wrapper.__class__.__name__)
+                g.trace(g.callers())
             return widget.leo_wrapper
         else:
-            g.trace('===== no leo_wrapper', widget)
+            g.trace('(CursesGui) ===== no leo_wrapper', widget)
                 # At present, HeadWrappers have no widgets.
             return None
     #@+node:ekr.20171128041805.1: *5* CGui.set_focus
@@ -1936,11 +1941,13 @@ class LeoCursesGui(leoGui.LeoGui):
 
     def set_focus(self, c, w):
         '''Given a Leo wrapper, set focus to the underlying npyscreen widget.'''
-        trace = False
-        trace_cache = True
+        trace = (False or g.app.trace_focus) and not g.unitTesting
+        trace_cache = False
         # w is a wrapper
         widget = getattr(w, 'widget', None)
-        if trace: g.trace('widget', widget)
+        if trace:
+            g.trace('widget', widget)
+            g.trace(g.callers())
         if not widget:
             if trace or not w: g.trace('no widget', repr(w))
             return None
@@ -2109,7 +2116,6 @@ class CoreFrame (leoFrame.LeoFrame):
     def createFindTab(self):
         '''Create a Find Tab in the given parent.'''
         # Like DynamicWindow.createFindTab.
-        g.trace('=====')
         ftm = self.ftm
         assert ftm
         self.create_find_findbox()

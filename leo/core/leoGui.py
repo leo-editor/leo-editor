@@ -434,7 +434,7 @@ class NullScriptingControllerClass(object):
         pass
 #@+node:ekr.20171128093401.1: ** class StringCheckBox (object)
 class StringCheckBox(object):
-    '''Simulate QCheckBox.'''
+    '''Simulate a QCheckBox.'''
     
     def __init__(self, name, label):
         self.label = label
@@ -444,7 +444,7 @@ class StringCheckBox(object):
     def checkState(self):
         return self.value
         
-    def name(self):
+    def objectName(self):
         return self.name
     
     def toggle(self):
@@ -477,20 +477,29 @@ class StringGui(LeoGui):
     #@-others
 #@+node:ekr.20171128093503.1: ** class StringLineEdit (object)
 class StringLineEdit(object):
+    
+    '''Simulate a QLineEdit.'''
         
     def __init__(self, name, disabled):
         self.disabled = disabled
         self.name = name
+        self.pos = 0
+        self.s = ''
+        
+    def clear(self):
+        self.pos = 0
         self.s = ''
 
+    def insert(self, s):
+        i = self.pos
+        self.s = self.s[:i] + s + self.s[i:]
+        self.pos += len(s)
+        
+    def objectName(self):
+        return self.name
+        
     def text(self):
         return self.s
-        
-    def insert(self, s):
-        self.s = s
-        
-    def name(self):
-        return self.name
 #@+node:ekr.20171128093602.1: ** class StringRadioButton (object)
 class StringRadioButton(object):
     
@@ -500,12 +509,17 @@ class StringRadioButton(object):
         self.label = label
         self.name = name
         self.value = True
+        
+    def isChecked(self):
+        return self.value
+        
+    def objectName(self):
+        return self.name
     
     def toggle(self):
         self.value = not self.value
 
-    def isChecked(self):
-        return self.value
+   
 #@+node:ekr.20031218072017.3742: ** class UnitTestGui (NullGui)
 class UnitTestGui(NullGui):
     '''A gui class for use by unit tests.'''

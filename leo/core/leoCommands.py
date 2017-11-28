@@ -514,7 +514,7 @@ class Commands(object):
         from leo.core.leoQt import QtWidgets
         import leo.plugins.qt_frame as qt_frame
         trace = (False or g.app.trace_focus) and not g.unitTesting
-        trace_known = True
+        trace_known = False
         c = self
         table = (
             QtWidgets.QWidget,
@@ -2756,7 +2756,9 @@ class Commands(object):
         c = self
         trace = (False or g.app.trace_focus) and not g.unitTesting
         w = g.app.gui and g.app.gui.get_focus(c)
-        if trace: g.trace('(c)', repr(w and g.app.gui.widget_name(w)))
+        if trace:
+            g.trace('(c)', repr(w and g.app.gui.widget_name(w)), w)
+            g.callers()
         return w
 
     def get_requested_focus(self):
@@ -2767,14 +2769,18 @@ class Commands(object):
         trace = (False or g.app.trace_focus) and not g.unitTesting
         c = self
         if w and g.app.gui:
-            if trace: g.trace('(c)', repr(g.app.gui.widget_name(w)))
+            if trace:
+                g.trace('(c)', repr(g.app.gui.widget_name(w)), w)
+                g.callers()
             c.requestedFocusWidget = w
 
     def set_focus(self, w, force=False):
         trace = (False or g.app.trace_focus) and not g.unitTesting
         c = self
         if w and g.app.gui:
-            if trace: g.trace('(c)', repr(w and g.app.gui.widget_name(w)))
+            if trace:
+                g.trace('(c)', repr(w and g.app.gui.widget_name(w)), w)
+                g.callers()
             g.app.gui.set_focus(c, w)
         else:
             if trace: g.trace('(c) no w')
