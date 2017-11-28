@@ -1482,7 +1482,11 @@ class GetArg(object):
             k.arg = char
         else:
             k.arg = ga.get_label()
-            if trace: g.trace('k.mb_prefix', k.mb_prefix, 'k.arg', k.arg)
+            if trace:
+                g.trace(
+                    'k.w', repr(k.w),
+                    'k.mb_prefix', repr(k.mb_prefix),
+                    'k.arg', repr(k.arg))
         kind, n, handler = ga.after_get_arg_state
         if trace: g.trace('handler: %s' % (handler and handler.__name__))
         if kind: k.setState(kind, n, handler)
@@ -1498,7 +1502,7 @@ class GetArg(object):
         returnKind, returnState, tabList, useMinibuffer
     ):
         '''Do state 0 processing.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         c, k = ga.c, ga.k
         # Set the ga globals...
         k.getArgEscapeFlag = False
@@ -1522,7 +1526,9 @@ class GetArg(object):
     #@+node:ekr.20140818103808.18234: *4* ga.should_end
     def should_end(ga, char, stroke):
         '''Return True if ga.get_arg should return.'''
+        trace = False and not g.unitTesting
         k = ga.k
+        if trace: g.trace('char', repr(char), 'stroke', repr(stroke))
         return (
             char in ('\n', 'Return',) or
             k.oneCharacterArg or

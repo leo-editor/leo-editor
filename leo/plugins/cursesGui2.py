@@ -903,8 +903,8 @@ def method_name(f):
     else:
         return repr(f)
 #@+node:ekr.20170524123950.1: ** Gui classes
-#@+node:ekr.20171128051435.1: *3* class FindTabManager
-class FindTabManager(object):
+#@+node:ekr.20171128051435.1: *3* class StringFindTabManager
+class StringFindTabManager(object):
     '''A helper class for the LeoFind class.'''
     # A complete rewrite of the FindTabManager in qt_frame.py.
     #@+others
@@ -913,6 +913,7 @@ class FindTabManager(object):
         '''Ctor for the FindTabManager class.'''
         # g.trace('(FindTabManager)',c.shortFileName(),g.callers())
         self.c = c
+        g.trace('(StringFindTabManager)', c.findCommands)
         assert(c.findCommands)
         c.findCommands.minibuffer_mode = True
         self.entry_focus = None # The widget that had focus before find-pane entered.
@@ -996,7 +997,7 @@ class FindTabManager(object):
         c.findCommands.ignore_case = aBool
         w = self.check_box_ignore_case
         w.setChecked(aBool)
-    #@+node:ekr.20171128051435.6: *4* ftm.init_widgets (creates callbacks)
+    #@+node:ekr.20171128051435.6: *4* ftm.init_widgets
     def init_widgets(self):
         '''
         Init widgets and ivars from c.config settings.
@@ -1039,18 +1040,10 @@ class FindTabManager(object):
                 w.toggle()
 
             def check_box_callback(n, setting_name=setting_name, w=w):
-                # The focus has already change when this gets called.
-                # focus_w = QtWidgets.QApplication.focusWidget()
-                # g.trace(setting_name,val,focus_w,g.callers())
                 val = w.isChecked()
                 assert hasattr(find, setting_name), setting_name
                 setattr(find, setting_name, val)
-                # Too kludgy: we must use an accurate setting.
-                # It would be good to have an "about to change" signal.
-                # Put focus in minibuffer if minibuffer find is in effect.
                 ### c.bodyWantsFocusNow()
-
-            ### w.stateChanged.connect(check_box_callback)
 
         # Radio buttons
         table = (
@@ -1061,7 +1054,6 @@ class FindTabManager(object):
         for setting_name, ivar, w in table:
             val = c.config.getBool(setting_name, default=False)
             # The setting name is also the name of the LeoFind ivar.
-            # g.trace(setting_name,ivar,val)
             if ivar is not None:
                 assert hasattr(find, setting_name), setting_name
                 setattr(find, setting_name, val)
@@ -1074,8 +1066,6 @@ class FindTabManager(object):
                 if ivar:
                     assert hasattr(find, ivar), ivar
                     setattr(find, ivar, val)
-
-            ### w.toggled.connect(radio_button_callback)
 
         # Ensure one radio button is set.
         if not find.node_only and not find.suboutline_only:
@@ -1866,6 +1856,7 @@ class LeoCursesGui(leoGui.LeoGui):
     def find(self, c, pattern):
         '''Search for the pattern in body text only.'''
         c.inFindCommand = False
+        g.trace('=====', g.callers())
         p = c.p
         while p:
             s = p.b
@@ -2005,15 +1996,24 @@ class LeoCursesGui(leoGui.LeoGui):
             )
     #@+node:ekr.20171126192144.1: *4* CGui.startSearch
     def startSearch(self, event):
-        g.trace('(CGui)')
         c = event.get('c')
         if c:
+            g.trace('(CGui)', c.findCommands)
+            fc = c.findCommands
+            ftm = c.frame.ftm
             c.inCommand = False
             c.inFindCommand = True
                 # A new flag.
-            c.findCommands.minibuffer_mode = True
+            fc.minibuffer_mode = True
+            if 1: # Allow hard settings, for tests.
+                table = (
+                    ('pattern_match', ftm.check_box_regexp, True),
+                )
+                for setting_name, w, val in table:
+                    assert hasattr(fc, setting_name), setting_name
+                    setattr(fc, setting_name, val)
+                    w.setCheckState(val)
             c.findCommands.startSearch(event)
-            g.trace('=====')
             self.focus_to_minibuffer(c)
                 # Does not return!
 
@@ -2106,7 +2106,7 @@ class CoreFrame (leoFrame.LeoFrame):
         # g.trace('CoreFrame', self.c.shortFileName())
         c = self.c
         g.app.windowList.append(self)
-        ftm = FindTabManager(c)
+        ftm = StringFindTabManager(c)
         c.findCommands.ftm = ftm
         self.ftm = ftm
         self.createFindTab()
@@ -3102,10 +3102,23 @@ class LeoMiniBuffer(npyscreen.Textfield):
         val = self.value.strip()
         self.value = ''
         self.update()
-        if c.inFindCommand:
+        if False: ### c.inFindCommand:
             # Execute the find command.
             g.app.gui.focus_from_minibuffer()
             g.app.gui.find(c, val)
+        elif 1:
+            # Experimental
+            c.k.w = self.leo_wrapper ### leoFrame.StringTextWrapper(c, 'minibuffer')
+            c.k.arg = val ### self.leo_wrapper.getAllText()
+            g.trace('=====', val)
+            c.k.masterKeyHandler(
+                event=KeyEvent(c,
+                    char='\n',
+                    event='',
+                    shortcut='',
+                    w=None,
+                )
+            )
         else:
             c.k.masterCommand(
                 commandName=val,

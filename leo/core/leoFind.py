@@ -1079,6 +1079,8 @@ class LeoFind(object):
     @cmd('set-search-string')
     def searchWithPresentOptions(self, event, findAllFlag=False, changeAllFlag=False):
         '''Open the search pane and get the search string.'''
+        trace = False and not g.unitTesting
+        if trace: g.trace('=====')
         # Remember the entry focus, just as when using the find pane.
         self.changeAllFlag = changeAllFlag
         self.findAllFlag = findAllFlag
@@ -1090,6 +1092,8 @@ class LeoFind(object):
             escapes=escapes) # The Tab Easter Egg.
 
     def searchWithPresentOptions1(self, event):
+        trace = False and not g.unitTesting
+        if trace: g.trace('=====')
         c, k = self.c, self.k
         # g.trace(k.getArgEscapeFlag, repr(k.arg), g.callers())
         if k.getArgEscapeFlag:
@@ -1101,6 +1105,7 @@ class LeoFind(object):
                 k.resetLabel()
                 k.showStateAndMode()
                 if func:
+                    if trace: g.trace('calling:', func)
                     func(event)
                 else:
                     return g.trace('unknown command', command)
@@ -1111,6 +1116,7 @@ class LeoFind(object):
                 self.setupSearchPattern(k.arg)
                 self.setReplaceString1(event=None)
         else:
+            if trace: g.trace('k.arg', repr(k.arg))
             self.updateFindList(k.arg)
             k.clearState()
             k.resetLabel()
@@ -1143,6 +1149,8 @@ class LeoFind(object):
         return None
     #@+node:ekr.20131117164142.17007: *4* find.stateZeroHelper
     def stateZeroHelper(self, event, prefix, handler, escapes=None):
+        trace = False and not g.unitTesting
+        if trace: g.trace('handler', handler)
         c, k = self.c, self.k
         self.w = self.editWidget(event)
         if not self.w:
@@ -1758,6 +1766,7 @@ class LeoFind(object):
         if trace:
             g.trace('***** entry: search_headline: %s search_body: %s %s' % (
                 self.search_headline, self.search_body, p.h))
+            g.trace('pattern_match', self.pattern_match)
             if verbose:
                 print('parents...')
                 for parent in p.parents():

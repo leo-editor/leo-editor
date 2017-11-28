@@ -446,6 +446,9 @@ class StringCheckBox(object):
         
     def objectName(self):
         return self.name
+
+    def setCheckState(self, value):
+        self.value = value
     
     def toggle(self):
         self.value = not self.value
