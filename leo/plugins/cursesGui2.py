@@ -841,10 +841,7 @@ def pr(*args, **keys):
     for line in g.splitLines(s):
         if line.strip(): # No need to print blank logging lines.
             line = '   pr: %s' % line.rstrip()
-            if True: ### has_logger():
-                logging.info(line)
-            else:
-                print(line)
+            logging.info(line)
 #@+node:ekr.20170429165242.1: *4* curses2: trace
 def trace(*args, **keys):
     '''Monkey-patch for g.trace.'''
@@ -892,10 +889,7 @@ def trace(*args, **keys):
             result.append(arg)
     s = ''.join(result)
     line = 'trace: %s' % s.rstrip()
-    if True: ### has_logger():
-        logging.info(line)
-    else:
-        print(line)
+    logging.info(line)
 #@+node:ekr.20170526075024.1: *3* method_name
 def method_name(f):
     '''Print a method name is a simplified format.'''
@@ -919,8 +913,8 @@ class FindTabManager(object):
         '''Ctor for the FindTabManager class.'''
         # g.trace('(FindTabManager)',c.shortFileName(),g.callers())
         self.c = c
-        assert(c.findCommands) ###
-        c.findCommands.minibuffer_mode = True ###
+        assert(c.findCommands)
+        c.findCommands.minibuffer_mode = True
         self.entry_focus = None # The widget that had focus before find-pane entered.
         # Find/change text boxes.
         self.find_findbox = None
@@ -1081,7 +1075,8 @@ class FindTabManager(object):
                     assert hasattr(find, ivar), ivar
                     setattr(find, ivar, val)
 
-            w.toggled.connect(radio_button_callback)
+            ### w.toggled.connect(radio_button_callback)
+
         # Ensure one radio button is set.
         if not find.node_only and not find.suboutline_only:
             w = self.radio_button_entire_outline
@@ -1098,7 +1093,7 @@ class FindTabManager(object):
             'suboutline-only': self.radio_button_suboutline_only,
         }
         w = d.get(name)
-        assert w
+        assert w, repr(w)
         # Most of the work will be done in the radio button callback.
         if not w.isChecked():
             w.toggle()
@@ -1909,7 +1904,7 @@ class LeoCursesGui(leoGui.LeoGui):
         '''Put focus in minibuffer text widget.'''
         w = self.set_focus(c, c.frame.miniBufferWidget)
         w.edit()
-        ###
+        #
             # form = self.curses_form
             # box = form._widgets__[-2] # The minibuffer
             # widgets = box._my_widgets
@@ -2105,7 +2100,7 @@ class CoreFrame (leoFrame.LeoFrame):
         c = self.c
         g.app.windowList.append(self)
         ftm = FindTabManager(c)
-        c.findCommands.ftm = ftm ### was g.NullObject()
+        c.findCommands.ftm = ftm
         self.ftm = ftm
         self.createFindTab()
         self.createFirstTreeNode()
@@ -2121,7 +2116,7 @@ class CoreFrame (leoFrame.LeoFrame):
         self.create_find_replacebox()
         self.create_find_checkboxes()
         # Official ivars (in addition to checkbox ivars).
-        self.leo_find_widget = None ### tab_widget # A scrollArea.
+        self.leo_find_widget = None
         ftm.init_widgets()
     #@+node:ekr.20171128052121.4: *6* CFrame.create_find_findbox
     def create_find_findbox(self):
@@ -2186,30 +2181,16 @@ class CoreFrame (leoFrame.LeoFrame):
             setattr(ftm, name, w)
     #@+node:ekr.20171128053531.3: *6* CFrame.createCheckBox
     def createCheckBox(self, name, label):
-        
-        w = g.NullObject()
-        ###
-            # w = QtWidgets.QCheckBox(parent)
-            # self.setName(w, name)
-            # w.setText(self.tr(label))
-        return w
+
+        return leoGui.StringCheckBox(name, label)
     #@+node:ekr.20171128053531.8: *6* CFrame.createLineEdit
     def createLineEdit(self, name, disabled=True):
-        
-        w = g.NullObject()
-        ###
-            # w = QtWidgets.QLineEdit(parent)
-            # w.setObjectName(name)
-            # w.leo_disabled = disabled # Inject the ivar.
-        return w
+
+        return leoGui.StringLineEdit(name, disabled)
     #@+node:ekr.20171128053531.9: *6* CFrame.createRadioButton
     def createRadioButton(self, name, label):
-        w = g.NullObject()
-        ###
-            # w = QtWidgets.QRadioButton(parent)
-            # self.setName(w, name)
-            # w.setText(self.tr(label))
-        return w
+
+        return leoGui.StringRadioButton(name, label)
     #@+node:ekr.20170524145750.1: *4* CFrame.cmd (decorator)
     def cmd(name):
         '''Command decorator for the LeoFrame class.'''
