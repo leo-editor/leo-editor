@@ -60,7 +60,7 @@ class LEP_LeoTextEdit(QtWidgets.QTextEdit):
 
         :param str text: new text
         """
-        self.setText(text)
+        self.setPlainText(text)
 
     #@+node:tbrown.20171028115508.8: *3* text_changed
     def text_changed(self):
@@ -79,7 +79,7 @@ class LEP_LeoTextEdit(QtWidgets.QTextEdit):
         :param str text: current text
         """
         DBG("update editor text")
-        self.setText(text)
+        self.setPlainText(text)
 
 
 
