@@ -1054,9 +1054,10 @@ class StringFindTabManager(object):
 
     def toggle_checkbox(self,checkbox_name):
         '''Toggle the value of the checkbox whose name is given.'''
+        trace = False and not g.unitTesting
         c = self.c
-        find = c.findCommands
-        if not find:
+        fc = c.findCommands
+        if not fc:
             return
         d = {
             'ignore_case':     self.check_box_ignore_case,
@@ -1070,8 +1071,10 @@ class StringFindTabManager(object):
         }
         w = d.get(checkbox_name)
         assert w, repr(w)
-        assert hasattr(find,checkbox_name),checkbox_name
-        w.toggle() # The checkbox callback toggles the ivar.
+        assert hasattr(fc, checkbox_name),checkbox_name
+        w.toggle() # This only toggles w's internal value.
+        setattr(fc, checkbox_name, not getattr(fc, checkbox_name))
+        if trace: g.trace(checkbox_name, getattr(fc, checkbox_name, None))
     #@-others
 #@+node:edward.20170428174322.1: *3* class KeyEvent (object)
 class KeyEvent(object):
