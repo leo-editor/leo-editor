@@ -442,6 +442,8 @@
 </v>
 <v t="ekr.20131008041326.16092"><vh>Installing &amp; running Leo</vh>
 <v t="ekr.20131015104133.16766"><vh>@rst html/getting-started.html</vh></v>
+<v t="matt.20171128140549.1"><vh>@rst html/have-python.html</vh></v>
+<v t="matt.20171128140627.1"><vh>@rst html/all-in-one.html</vh></v>
 <v t="ekr.20111127144911.5544"><vh>@rst html/download.html</vh>
 <v t="tbrown.20140412113009.50227"><vh>Snapshots</vh></v>
 </v>
@@ -24487,6 +24489,56 @@ If you change the *structure* of @file nodes in leoPy.leo in one branch, such ch
 You can see such changes clearly using leo --diff.
 
 In short, don't make unnecessary structural changes in leoPy.leo when in branches other than master.</t>
+
+<t tx="matt.20171128140549.1">Already have python installed
+-----------------------------
+
+Python 3.0+:
+
+    pip install leo
+
+
+Python 2.7+ on Windows:
+
+    pip install python-qt5
+    pip install leo
+
+
+Python 2.7+ on Linux (debian/ubuntu/mint):
+
+    apt install python-pyqt5
+    pip install leo
+
+
+All the required dependencies will be installed also. See below for optional ones.
+Tested: Windows 7,10, Linux Mint.
+</t>
+<t tx="matt.20171128140627.1">.. _`Anaconda`:   https://www.anaconda.com/download/
+.. _`Miniconda`:  https://conda.io/miniconda.html
+
+All-in full-meal deal
+---------------------
+
+Install `Anaconda`_ scientific computing environment which includes Python, NumPy, SciPy, PyQt, and hundreds of other tools, packages and libraries commonly used for Data Science. It's a 500 MB download but you're guaranteed to have everything needed.
+
+
+Then from Anaconda shell:
+
+    pip install leo
+
+
+Lean, from the inside out
+-------------------------
+
+Install the `Miniconda`_ Anaconda environment, which is stripped down to just Python and the `conda` package management tool. Pick and choose from the full 1000+ Anaconda package ecosystem.
+
+From Anaconda shell:
+
+    conda install pyqt5
+    pip install leo
+</t>
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+
 <t tx="ekr.20171122090711.1">All rulesets start with a **rule line** of the form::
 
     RULE &lt;regular expression&gt;
