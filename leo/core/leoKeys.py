@@ -1470,7 +1470,8 @@ class GetArg(object):
         trace = False and not g.unitTesting
         k = ga.k
         if trace:
-            g.trace('char', repr(char), stroke, k.getArgEscapes)
+            g.trace('oneCharacterArg: %r' % k.oneCharacterArg)
+            g.trace('char: %r stroke: %r escapes: %s' % (char, stroke, k.getArgEscapes))
             if ga.after_get_arg_state:
                 kind, n, handler = ga.after_get_arg_state
                 g.trace('after state', kind, n, handler and handler.__name__ or 'None')
@@ -1478,15 +1479,16 @@ class GetArg(object):
             k.getArgEscapeFlag = True
         if stroke and stroke in k.getArgEscapes:
             k.getArgEscapeFlag = True
+        # Get the value.
+        gui_arg = getattr(g.app.gui, 'curses_gui_arg', None)
         if k.oneCharacterArg:
             k.arg = char
         else:
-            k.arg = ga.get_label()
-            if trace:
-                g.trace(
-                    'k.w', repr(k.w),
-                    'k.mb_prefix', repr(k.mb_prefix),
-                    'k.arg', repr(k.arg))
+            # A hack to support the curses gui.
+            k.arg = gui_arg or ga.get_label()
+        if trace:
+            g.trace('k.w: %r, prefix: %r, arg: %r gui_arg: %r' % (
+                k.w, k.mb_prefix, k.arg, gui_arg))
         kind, n, handler = ga.after_get_arg_state
         if trace: g.trace('handler: %s' % (handler and handler.__name__))
         if kind: k.setState(kind, n, handler)
@@ -1502,7 +1504,7 @@ class GetArg(object):
         returnKind, returnState, tabList, useMinibuffer
     ):
         '''Do state 0 processing.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c, k = ga.c, ga.k
         # Set the ga globals...
         k.getArgEscapeFlag = False
@@ -3717,7 +3719,7 @@ class KeyHandlerClass(object):
         This returns None, but may set k.funcReturn.
         '''
         c, k = self.c, self
-        trace = False and not g.unitTesting # and g.app.gui.guiName() == 'curses'
+        trace = False and not g.unitTesting
         traceGC = False
         traceStroke = True
         # if trace: g.trace(commandName, func)

@@ -503,7 +503,7 @@ class LeoTreeData(npyscreen.TreeData):
             sort=None,
             sort_function=None,
         ):
-            trace = True
+            trace = False
             p = self.content.copy()
                 # Never change the stored position!
                 # LeoTreeData(p) makes a copy of p.
@@ -740,18 +740,6 @@ class LeoTreeLine(npyscreen.TreeLine):
         def when_check_value_changed(self):
             '''Check whether the widget's value has changed and call when_valued_edited if so.'''
             return True
-            ###
-                # val = self._tree_real_value
-                # if val is not None:
-                    # p = val.content
-                    # assert isinstance(p, leoNodes.Position), repr(p)
-                # # Boilerplate.
-                # if hasattr(self, 'parent_widget'):
-                    # g.trace('LeoTreeLine.parent_widget', repr(self.parent_widget))
-                    # self.parent_widget.when_value_edited()
-                    # self.parent_widget._internal_when_value_edited()
-                # return True
-
     #@-others
 #@+node:ekr.20170618103742.1: *3* class QuitButton (npyscreen.MiniButton)
 class QuitButton (npyscreen.MiniButtonPress):
@@ -913,7 +901,7 @@ class StringFindTabManager(object):
         '''Ctor for the FindTabManager class.'''
         # g.trace('(FindTabManager)',c.shortFileName(),g.callers())
         self.c = c
-        g.trace('(StringFindTabManager)', c.findCommands)
+        # g.trace('(StringFindTabManager)', c.findCommands)
         assert(c.findCommands)
         c.findCommands.minibuffer_mode = True
         self.entry_focus = None # The widget that had focus before find-pane entered.
@@ -966,30 +954,12 @@ class StringFindTabManager(object):
     #@+node:ekr.20171128051435.4: *4* ftm.clear_focus & init_focus & set_entry_focus
     def clear_focus(self):
         pass
-        ###
-            # self.entry_focus = None
-            # self.find_findbox.clearFocus()
 
     def init_focus(self):
         pass
-        ###
-            # self.set_entry_focus()
-            # w = self.find_findbox
-            # w.setFocus()
-            # s = g.u(w.text())
-            # w.setSelection(0, len(s))
 
     def set_entry_focus(self):
         pass
-        ###
-            # # Remember the widget that had focus, changing headline widgets
-            # # to the tree pane widget.  Headline widgets can disappear!
-            # c = self.c
-            # w = g.app.gui.get_focus(raw=True)
-            # if w != c.frame.body.wrapper.widget:
-                # w = c.frame.tree.treeWidget
-            # self.entry_focus = w
-            # # g.trace(w,g.app.gui.widget_name(w))
     #@+node:ekr.20171128051435.5: *4* ftm.set_ignore_case
     def set_ignore_case(self, aBool):
         '''Set the ignore-case checkbox to the given value.'''
@@ -1015,11 +985,6 @@ class StringFindTabManager(object):
             s = g.u(s)
             w = getattr(self, ivar)
             w.insert(s)
-            ###
-                # if find.minibuffer_mode:
-                    # w.clearFocus()
-                # else:
-                    # w.setSelection(0, len(s))
         # Check boxes.
         table = (
             ('ignore_case', self.check_box_ignore_case),
@@ -1043,7 +1008,6 @@ class StringFindTabManager(object):
                 val = w.isChecked()
                 assert hasattr(find, setting_name), setting_name
                 setattr(find, setting_name, val)
-                ### c.bodyWantsFocusNow()
 
         # Radio buttons
         table = (
@@ -1062,7 +1026,6 @@ class StringFindTabManager(object):
             def radio_button_callback(n, ivar=ivar, setting_name=setting_name, w=w):
                 val = w.isChecked()
                 find.radioButtonsChanged = True
-                # g.trace(setting_name,ivar,val,g.callers())
                 if ivar:
                     assert hasattr(find, ivar), ivar
                     setattr(find, ivar, val)
@@ -1075,7 +1038,6 @@ class StringFindTabManager(object):
     def set_radio_button(self, name):
         '''Set the value of the radio buttons'''
         # c = self.c
-        # find = c.findCommands
         d = {
             # Name is not an ivar. Set by find.setFindScope... commands.
             'node-only': self.radio_button_node_only,
@@ -1087,9 +1049,6 @@ class StringFindTabManager(object):
         # Most of the work will be done in the radio button callback.
         if not w.isChecked():
             w.toggle()
-        ###
-            # if find.minibuffer_mode:
-                # find.showFindOptionsInStatusArea()
     #@+node:ekr.20171128051435.8: *4* ftm.toggle_checkbox
     #@@nobeautify
 
@@ -1113,9 +1072,6 @@ class StringFindTabManager(object):
         assert w, repr(w)
         assert hasattr(find,checkbox_name),checkbox_name
         w.toggle() # The checkbox callback toggles the ivar.
-        ###
-            # if find.minibuffer_mode:
-                # find.showFindOptionsInStatusArea()
     #@-others
 #@+node:edward.20170428174322.1: *3* class KeyEvent (object)
 class KeyEvent(object):
@@ -1171,7 +1127,7 @@ class KeyHandler (object):
         Return True if the event was completely handled.
         '''
         #  This is a rewrite of LeoQtEventFilter code.
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = g.app.log and g.app.log.c
         if not c:
             return True # We are shutting down.
@@ -1233,7 +1189,7 @@ class KeyHandler (object):
         " ": "space",
         "_": "underscore",
         # Curses.
-        ### Qt
+        # Qt
             # # Part 2: special Qt translations.
             # 'Backspace': 'BackSpace',
             # 'Backtab': 'Tab', # The shift mod will convert to 'Shift+Tab',
@@ -1370,6 +1326,8 @@ class LeoCursesGui(leoGui.LeoGui):
         self.curses_form = None
             # The top-level curses Form instance.
             # Form.editw is the widget with focus.
+        self.curses_gui_arg = None
+            # A hack for interfacing with k.getArg.
         self.in_dialog = False
             # True: executing a modal dialog.
         self.log = None
@@ -1852,26 +1810,6 @@ class LeoCursesGui(leoGui.LeoGui):
         )
         c.k.masterKeyHandler(event)
         c.outerUpdate()
-    #@+node:ekr.20171127170859.1: *4* CGUI.find
-    def find(self, c, pattern):
-        '''Search for the pattern in body text only.'''
-        c.inFindCommand = False
-        g.trace('=====', g.callers())
-        p = c.p
-        while p:
-            s = p.b
-            if sys.platform.lower().startswith('win'):
-                s = s.replace('\r', '')
-            if s.find(pattern) > -1:
-                g.es('FOUND',pattern)
-                c.selectPosition(p)
-                self.focus_to_body(c)
-                ### To do: select the found line.
-                return
-            else:
-                p.moveToThreadNext()
-        g.es('NOT FOUND', pattern)
-        self.focus_to_body(c)
     #@+node:ekr.20171128041920.1: *4* CGui.Focus
     #@+node:ekr.20171127173313.1: *5* CGUI.focus_from_minibuffer
     def focus_from_minibuffer(self):
@@ -2065,8 +2003,7 @@ class CoreFrame (leoFrame.LeoFrame):
         self.statusLine = g.NullObject()
         assert self.tree is None, self.tree
         self.tree = CoreTree(c)
-        ### ===============
-            # Official ivars...
+        # Official ivars...
             # self.iconBar = None
             # self.iconBarClass = None # self.QtIconBarClass
             # self.initComplete = False # Set by initCompleteHint().
@@ -2362,8 +2299,8 @@ class CoreLog (leoFrame.LeoLog):
     def orderedTabNames(self, LeoLog=None): # Unused: LeoLog
         '''Return a list of tab names in the order in which they appear in the QTabbedWidget.'''
         return []
-        ### w = self.tabWidget
-        ### return [w.tabText(i) for i in range(w.count())]
+        # w = self.tabWidget
+        #return [w.tabText(i) for i in range(w.count())]
     #@+node:ekr.20170419143731.15: *4* CLog.put
     def put(self, s, color=None, tabName='Log', from_redirect=False):
         '''All output to the log stream eventually comes here.'''
@@ -2783,7 +2720,7 @@ class LeoBody (npyscreen.MultiLineEditable):
         Update Leo after the body has been changed.
         Called by LeoBodyTextfield.h_addch.
         '''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.leo_c
         wrapper = self.leo_wrapper
         p = c.p
@@ -3098,31 +3035,27 @@ class LeoMiniBuffer(npyscreen.Textfield):
         Handle the return key in the minibuffer.
         Send the contents to k.masterKeyHandler.
         '''
+        trace = False and not g.unitTesting
         c = self.leo_c
+        k = c.k
         val = self.value.strip()
         self.value = ''
         self.update()
-        if False: ### c.inFindCommand:
-            # Execute the find command.
-            g.app.gui.focus_from_minibuffer()
-            g.app.gui.find(c, val)
-        elif 1:
-            # Experimental
-            c.k.w = self.leo_wrapper ### leoFrame.StringTextWrapper(c, 'minibuffer')
-            c.k.arg = val ### self.leo_wrapper.getAllText()
-            g.trace('=====', val)
-            c.k.masterKeyHandler(
-                event=KeyEvent(c,
-                    char='\n',
-                    event='',
-                    shortcut='',
-                    w=None,
-                )
-            )
+        if trace: g.trace('===== inState: %r val: %r' % (k.inState(), val))
+        if k.inState():
+            # Handle the key.
+            k.w = self.leo_wrapper
+            k.arg = val
+            g.app.gui.curses_gui_arg = val
+            k.masterKeyHandler(
+                event=KeyEvent(c, char='\n', event='', shortcut='\n', w=None))
+            g.app.gui.curses_gui_arg = None
+            k.clearState()
         else:
-            c.k.masterCommand(
+            # Alt-x command
+            k.masterCommand(
                 commandName=val,
-                event=KeyEvent(c,char='',event='',shortcut='',w=self),
+                event=KeyEvent(c,char='',event='',shortcut='',w=None), # was w=self
                 func=None,
                 stroke=None,
             )
@@ -4064,82 +3997,9 @@ class BodyWrapper(leoFrame.StringTextWrapper):
         self.leo_frame = None
         self.leo_name = name
         self.leo_label = None
-    #@+node:ekr.20170504034655.6: *4* bw.onCursorPositionChanged (called?)
+    #@+node:ekr.20170504034655.6: *4* bw.onCursorPositionChanged
     def onCursorPositionChanged(self, event=None):
-
-        g.trace('=====')
-
-        # c = self.c
-        # name = c.widget_name(self)
-        # # Apparently, this does not cause problems
-        # # because it generates no events in the body pane.
-        # if name.startswith('body'):
-            # if hasattr(c.frame, 'statusLine'):
-                # c.frame.statusLine.update()
-    #@+node:ekr.20170511053143.7: *4* tm.onTextChanged (REF)
-    # def onTextChanged(self):
-        # '''
-        # Update Leo after the body has been changed.
-
-        # self.selecting is guaranteed to be True during
-        # the entire selection process.
-        # '''
-        # # Important: usually self.changingText is True.
-        # # This method very seldom does anything.
-        # trace = True and not g.unitTesting
-        # verbose = True
-        # c, p = self.c, self.c.p
-        # tree = c.frame.tree
-        # if self.changingText:
-            # if trace and verbose: g.trace('already changing')
-            # return
-        # if tree.tree_select_lockout:
-            # if trace and verbose: g.trace('selecting lockout')
-            # return
-        # if tree.selecting:
-            # if trace and verbose: g.trace('selecting')
-            # return
-        # if tree.redrawing:
-            # if trace and verbose: g.trace('redrawing')
-            # return
-        # if not p:
-            # if trace: g.trace('*** no p')
-            # return
-        # newInsert = self.getInsertPoint()
-        # newSel = self.getSelectionRange()
-        # newText = self.getAllText() # Converts to unicode.
-        # # Get the previous values from the VNode.
-        # oldText = p.b
-        # if oldText == newText:
-            # # This can happen as the result of undo.
-            # # g.error('*** unexpected non-change')
-            # return
-        # # g.trace('**',len(newText),p.h,'\n',g.callers(8))
-        # # oldIns  = p.v.insertSpot
-        # i, j = p.v.selectionStart, p.v.selectionLength
-        # oldSel = (i, i + j)
-        # if trace: g.trace('oldSel', oldSel, 'newSel', newSel)
-        # oldYview = None
-        # undoType = 'Typing'
-        # c.undoer.setUndoTypingParams(p, undoType,
-            # oldText=oldText, newText=newText,
-            # oldSel=oldSel, newSel=newSel, oldYview=oldYview)
-        # # Update the VNode.
-        # p.v.setBodyString(newText)
-        # if True:
-            # p.v.insertSpot = newInsert
-            # i, j = newSel
-            # i, j = self.toPythonIndex(i), self.toPythonIndex(j)
-            # if i > j: i, j = j, i
-            # p.v.selectionStart, p.v.selectionLength = (i, j - i)
-        # # No need to redraw the screen.
-        # c.recolor()
-        # if g.app.qt_use_tabs:
-            # if trace: g.trace(c.frame.top)
-        # if not c.changed and c.frame.initComplete:
-            # c.setChanged(True)
-        # c.frame.body.updateEditors()
-        # c.frame.tree.updateIcon(p)
+        pass
     #@-others
 #@+node:ekr.20170522002403.1: *3* class HeadWrapper (leoFrame.StringTextWrapper)
 class HeadWrapper(leoFrame.StringTextWrapper):

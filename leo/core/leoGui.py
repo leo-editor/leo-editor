@@ -494,9 +494,10 @@ class StringLineEdit(object):
         self.s = ''
 
     def insert(self, s):
-        i = self.pos
-        self.s = self.s[:i] + s + self.s[i:]
-        self.pos += len(s)
+        if s:
+            i = self.pos
+            self.s = self.s[:i] + s + self.s[i:]
+            self.pos += len(s)
         
     def objectName(self):
         return self.name
