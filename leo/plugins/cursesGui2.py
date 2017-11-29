@@ -1943,7 +1943,7 @@ class LeoCursesGui(leoGui.LeoGui):
             c.inFindCommand = True
                 # A new flag.
             fc.minibuffer_mode = True
-            if 1: # Allow hard settings, for tests.
+            if 0: # Allow hard settings, for tests.
                 table = (
                     ('pattern_match', ftm.check_box_regexp, True),
                 )
@@ -3224,7 +3224,7 @@ class LeoMLTree(npyscreen.MLTree, object):
         Set .start_display_at and .cursor_line ivars to display node p, with 2
         lines of preceding context if possible.
         '''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self.leo_c
         # if trace:
             # g.trace('parents...')
