@@ -71,13 +71,14 @@ classifiers = [
     ]
 #@+node:maphew.20171120133429.1: ** User requirements
 user_requires = [
-    'docutils', # Sphinx, rST plugin
+    'docutils', # used by Sphinx, rST plugin
     #'pyenchant', # spell check support ## no wheels for some platforms, e.g. amd64
     #'pyxml', # xml importing ## no pip package
     'PyQt5; python_version >= "3.0"',
     #'python-qt5; python_version < "3.0" and platform_system=="Windows"',
 		# disabled, pending "pip install from .whl fails conditional dependency check" https://github.com/pypa/pip/issues/4886
     ## missing: pyqt for Linux python 2.x (doesn't exist on PyPi)
+    'sphinx',
     ]
 #@+node:maphew.20171120133437.1: ** Dev requirements
 developer_requires = {'develop':[
