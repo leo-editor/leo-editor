@@ -1978,6 +1978,7 @@
 </v>
 <v t="tbrown.20140102100730.27777"><vh>bookmarks</vh>
 <v t="tbrown.20140102100730.27778"><vh>@int bookmarks_levels = 1</vh></v>
+<v t="tbrown.20171128211219.1"><vh>@data bookmarks-modifiers</vh></v>
 </v>
 <v t="ekr.20060807103220"><vh>datenodes plugin</vh>
 <v t="ekr.20060807103220.1"><vh>@string datenodes_body_text = To do...</vh></v>
@@ -15149,6 +15150,29 @@ removing the &lt;| and |&gt;</t>
 <t tx="tbrown.20160130100023.1">Pane layout help</t>
 <t tx="tbrown.20170710093248.1">If true, tailing whitespace (spaces and tabs) will be underlined
 with small dots in `trailing_whitespace_color` (default red).</t>
+<t tx="tbrown.20171128211219.1"># These control the effects of modifiers (Shift, Control, Alt) on left
+# clicks on bookmarks.  Available modifiers are:
+#
+#     None AltControl ControlShift Alt Control Shift
+#     AltShift AltControlShift
+#
+# Available actions are:
+#
+#     goto_bookmark update_bookmark rename_bookmark edit_bookmark
+#     delete_bookmark add_child navigate hoist promote
+#
+# There's one more action than modifier combo., so you have to work
+# out what you don't want.  `promote` is missing by default.
+
+None goto_bookmark
+AltControl update_bookmark
+ControlShift rename_bookmark
+Alt edit_bookmark
+Control delete_bookmark
+Shift add_child
+AltShift navigate
+AltControlShift hoist
+</t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
 <t tx="ville.20091008201813.3909">Qt ui uses a different (simpler) setup for creating context menus,
