@@ -3059,6 +3059,13 @@ class LeoMiniBuffer(npyscreen.Textfield):
                 func=None,
                 stroke=None,
             )
+        # Do a full redraw, with c.p as the first visible node.
+        if trace: g.trace('-----', c.p.h)
+        c.expandAllAncestors(c.p)
+        w = c.frame.tree.widget
+        w.values.clear_cache()
+        w.select_leo_node(c.p)
+        w.update(forceInit=True)
     #@+node:ekr.20170510094104.1: *5* LeoMiniBuffer.set_handlers
     def set_handlers(self):
 
@@ -3211,6 +3218,38 @@ class LeoMLTree(npyscreen.MLTree, object):
                 i += 1
         g.trace('Can not happen', n)
         return None
+    #@+node:ekr.20171128191134.1: *5* LeoMLTree.select_leo_node
+    def select_leo_node(self, p):
+        '''
+        Set .start_display_at and .cursor_line ivars to display node p, with 2
+        lines of preceding context if possible.
+        '''
+        trace = True and not g.unitTesting
+        c = self.leo_c
+        # if trace:
+            # g.trace('parents...')
+            # parent = p.parent()
+            # while parent:
+                # g.trace(parent.h)
+                # parent = parent.parent()
+        limit, junk = c.visLimit()
+        p2 = limit.copy() if limit else c.rootPosition()
+        i = 0
+        while p2:
+            if p2 == p:
+                if trace: g.trace('FOUND', i, p.h)
+                # Provide context if possible.
+                for j in range(2):
+                    if p.hasVisBack(c):
+                        p.moveToVisBack(c)
+                        i -= 1
+                self.start_display_at = i
+                self.cursor_line = i
+                return
+            else:
+                p2.moveToVisNext(c)
+                i += 1
+        g.trace('Can not happen. Not found', p)
     #@+node:ekr.20170514065422.1: *5* LeoMLTree.intraFileDrop
     def intraFileDrop(self, fn, p1, p2):
         pass
@@ -3465,7 +3504,7 @@ class LeoMLTree(npyscreen.MLTree, object):
                     self.h_expand_tree(ch)
             else:
                 self.h_cursor_line_down(ch)
-    #@+node:ekr.20170507175304.1: *5* LeoMLTree.set_handlers (changed)
+    #@+node:ekr.20170507175304.1: *5* LeoMLTree.set_handlers
     #@@nobeautify
     def set_handlers(self):
 
@@ -3510,10 +3549,10 @@ class LeoMLTree(npyscreen.MLTree, object):
         self.set_handlers()
 
     #@+node:ekr.20170513032502.1: *4* LeoMLTree.update & helpers
-    def update(self, clear=True):
+    def update(self, clear=True, forceInit=False):
         '''Redraw the tree.'''
         # This is a major refactoring of MultiLine.update.
-        if self.editing:
+        if self.editing or forceInit:
             self._init_update()
         if self._must_redraw(clear):
             self._redraw(clear)
@@ -3547,7 +3586,7 @@ class LeoMLTree(npyscreen.MLTree, object):
     #@+node:ekr.20170513123010.1: *5* LeoMLTree._must_redraw
     def _must_redraw(self, clear):
         '''Return a list of reasons why we must redraw.'''
-        trace = False
+        trace = False and not g.unitTesting
         table = (
             ('cache', not self._safe_to_display_cache or self.never_cache),
             ('value', self._last_value is not self.value),
@@ -3567,9 +3606,12 @@ class LeoMLTree(npyscreen.MLTree, object):
     #@+node:ekr.20170513122427.1: *5* LeoMLTree._redraw & helpers
     def _redraw(self, clear):
         '''Do the actual redraw.'''
+        trace = False and not g.unitTesting
         # pylint: disable=no-member
         #
         # self.clear is Widget.clear. It does *not* use _myWidgets.
+        if trace: g.trace('start: %r cursor: %r' % (
+            self.start_display_at, self.cursor_line))
         if (clear is True or
             clear is None and self._last_start_display_at != self.start_display_at
         ):
