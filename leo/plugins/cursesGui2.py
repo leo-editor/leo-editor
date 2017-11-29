@@ -951,7 +951,7 @@ class StringFindTabManager(object):
         w.insert(s)
 
     setChangeText = setReplaceText
-    #@+node:ekr.20171128051435.4: *4* ftm.clear_focus & init_focus & set_entry_focus
+    #@+node:ekr.20171128051435.4: *4* ftm.*_focus
     def clear_focus(self):
         pass
 
@@ -1035,20 +1035,30 @@ class StringFindTabManager(object):
             w = self.radio_button_entire_outline
             w.toggle()
     #@+node:ekr.20171128051435.7: *4* ftm.set_radio_button
+    #@@nobeautify
+
     def set_radio_button(self, name):
         '''Set the value of the radio buttons'''
-        # c = self.c
+        c = self.c
+        fc = c.findCommands
         d = {
-            # Name is not an ivar. Set by find.setFindScope... commands.
-            'node-only': self.radio_button_node_only,
-            'entire-outline': self.radio_button_entire_outline,
-            'suboutline-only': self.radio_button_suboutline_only,
+            # commandName       fc.ivar            # radio button.
+            'node-only':       ('node_only',       self.radio_button_node_only),
+            'entire-outline':  (None,              self.radio_button_entire_outline),
+            'suboutline-only': ('suboutline_only', self.radio_button_suboutline_only)
         }
-        w = d.get(name)
+        ivar, w = d.get(name)
         assert w, repr(w)
-        # Most of the work will be done in the radio button callback.
         if not w.isChecked():
-            w.toggle()
+            w.toggle() # This just sets the radio button's value.
+        # First, clear the ivars.
+        fc.node_only = False
+        fc.suboutline_only = False
+        # Next, set the ivar.
+        if ivar:
+            # g.trace('set fc.%s' % ivar)
+            setattr(fc, ivar, True)
+       
     #@+node:ekr.20171128051435.8: *4* ftm.toggle_checkbox
     #@@nobeautify
 
