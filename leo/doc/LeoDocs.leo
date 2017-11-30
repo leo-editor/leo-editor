@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -442,6 +442,10 @@
 </v>
 <v t="ekr.20131008041326.16092"><vh>Installing &amp; running Leo</vh>
 <v t="ekr.20131015104133.16766"><vh>@rst html/getting-started.html</vh></v>
+<v t="maphew.20171129140022.1"><vh>@rst html/quick.html</vh>
+<v t="maphew.20171129131746.1"><vh>Computer with python already</vh></v>
+<v t="maphew.20171129131759.1"><vh>No python yet</vh></v>
+</v>
 <v t="ekr.20111127144911.5544"><vh>@rst html/download.html</vh>
 <v t="tbrown.20140412113009.50227"><vh>Snapshots</vh></v>
 </v>
@@ -15796,6 +15800,7 @@ Downloading, Installing &amp; Running Leo
 .. toctree::
    :maxdepth: 4
 
+   quick
    download
    installing
    running
@@ -24557,7 +24562,50 @@ Set the font weight to one of Light, Normal, DemiBold, Bold, Black::
     RULE ^.{1,1000}([/\\])(.{25})
     REPLACE …\1\2
 </t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="maphew.20171129131746.1">Python 3.0+::
+
+    pip install leo
+
+Python 2.7+ on Windows::
+
+    pip install python-qt5
+    pip install leo
+
+Python 2.7+ on Linux (debian/ubuntu/mint)::
+
+    apt install python-pyqt5
+    pip install leo
+
+See [Installing &gt;&gt; Dependencies] for additional packages and tools you might want.
+
+*Tested: Windows 7,10, Linux Mint.*
+</t>
+<t tx="maphew.20171129131759.1">.. _`Anaconda`:   https://www.anaconda.com/download/
+.. _`Miniconda`:  https://conda.io/miniconda.html
+
+All-in
+------
+Install `Anaconda`_ scientific computing environment which includes Python, NumPy, SciPy, PyQt, and over a thousand tools, packages and libraries commonly used for Data Science. It's a 500+ MB download but you're guaranteed to have everything needed.
+
+Then from Anaconda shell::
+
+    pip install leo
+
+
+Lean
+----
+Install the `Miniconda`_ Anaconda environment, which is stripped down to just Python and the `conda` package management tool. Pick and choose from the full 1000+ Anaconda package ecosystem.
+
+From Anaconda shell::
+
+    conda install pyqt5
+    pip install leo
+</t>
+<t tx="maphew.20171129140022.1">###########
+Quick Start
+###########
+</t>
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
