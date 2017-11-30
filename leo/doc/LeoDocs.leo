@@ -24569,7 +24569,7 @@ Set the font weight to one of Light, Normal, DemiBold, Bold, Black::
 </t>
 <t tx="ekr.20171130105248.1">The following sections discuss will be of interest *only* to those who want to enhance the cursesGui2.py plugin. All others can safely ignore this discussion.
 
-The post: `Debugging npyscreen apps using two consoles &lt;https://groups.google.com/forum/#!topic/npyscreen/nk2pjj71bok&gt;`_ discusses the strategy used to bootstrap this plugin. It's easier to develop now that so much is working, developing this code will always be difficult.
+The post: `Debugging npyscreen apps using two consoles &lt;https://groups.google.com/forum/#!topic/npyscreen/nk2pjj71bok&gt;`_ discusses the strategy used to bootstrap this plugin. It's easier to develop now that so much is working, but developing this code will always be difficult.
 
 </t>
 <t tx="ekr.20171130110558.1">The console gui code stands "between" the npyscreen code and Leo's core code. With only *very minor* exceptions, I have made it a rule to keep Leo's core and the npyscreen code completely unchanged.  Thus, the console gui wraps just about everything. This makes the code inherently complex, but this complexity can not be helped.
