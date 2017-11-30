@@ -731,7 +731,7 @@ class LeoFrame(object):
         self.miniBufferWidget = None
         self.outerFrame = None
         self.prefsPanel = None
-        self.statusLine = None
+        self.statusLine = g.NullObject() # For unit tests.
         self.tree = None
         self.useMiniBufferWidget = False
         # Gui-independent data

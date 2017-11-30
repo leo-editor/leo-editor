@@ -1198,7 +1198,7 @@ class LeoFind(object):
         self.lastStateHelper()
         self.generalSearchHelper(k.arg)
     #@+node:ekr.20131117164142.16915: *3* LeoFind.Option commands
-    #@+node:ekr.20131117164142.16919: *4* LeoFind.toggle checkbox commands
+    #@+node:ekr.20131117164142.16919: *4* LeoFind.toggle-find-*-option commands
     @cmd('toggle-find-collapses-nodes')
     def toggleFindCollapesNodes(self, event):
         '''Toggle the 'Collapse Nodes' checkbox in the find tab.'''
@@ -1248,8 +1248,11 @@ class LeoFind(object):
         return self.toggleOption('wrap')
 
     def toggleOption(self, checkbox_name):
+        c, fc = self.c, self.c.findCommands
         self.ftm.toggle_checkbox(checkbox_name)
-    #@+node:ekr.20131117164142.17019: *4* LeoFind.setFindScope...
+        options = fc.computeFindOptionsInStatusArea()
+        c.frame.statusLine.put(options)
+    #@+node:ekr.20131117164142.17019: *4* LeoFind.set-find-* commands
     @cmd('set-find-everywhere')
     def setFindScopeEveryWhere(self, event=None):
         '''Set the 'Entire Outline' radio button in the Find tab.'''
@@ -1267,7 +1270,10 @@ class LeoFind(object):
 
     def setFindScope(self, where):
         '''Set the radio buttons to the given scope'''
+        c, fc = self.c, self.c.findCommands
         self.ftm.set_radio_button(where)
+        options = fc.computeFindOptionsInStatusArea()
+        c.frame.statusLine.put(options)
     #@+node:ekr.20131117164142.16989: *4* LeoFind.showFindOptions & helper
     @cmd('show-find-options')
     def showFindOptions(self, event=None):

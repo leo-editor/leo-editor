@@ -1085,8 +1085,8 @@ class StringFindTabManager(object):
         w = d.get(checkbox_name)
         assert w, repr(w)
         assert hasattr(fc, checkbox_name),checkbox_name
-        w.toggle() # This only toggles w's internal value.
         setattr(fc, checkbox_name, not getattr(fc, checkbox_name))
+        w.toggle() # Only toggles w's internal value.
         if trace: g.trace(checkbox_name, getattr(fc, checkbox_name, None))
     #@-others
 #@+node:edward.20170428174322.1: *3* class KeyEvent (object)
@@ -1514,7 +1514,8 @@ class LeoCursesGui(leoGui.LeoGui):
         assert isinstance(c.frame, CoreFrame), repr(c.frame)
         wrapper = StatusLineWrapper(c, 'status-line', w)
         assert wrapper.widget == w, repr(wrapper.widget)
-        assert c.frame.statusLine is None
+        assert isinstance(c.frame.statusLine, g.NullObject)
+        # assert c.frame.statusLine is None
         c.frame.statusLine = wrapper
         c.frame.statusText = wrapper
         # Inject the wrapper for get_focus.
@@ -2038,7 +2039,7 @@ class CoreFrame (leoFrame.LeoFrame):
         self.menu = CoreMenu(c)
         self.miniBufferWidget = None
             # Set later.
-        self.statusLine = None
+        self.statusLine = g.NullObject() # For unit tests.
         assert self.tree is None, self.tree
         self.tree = CoreTree(c)
         # Official ivars...
