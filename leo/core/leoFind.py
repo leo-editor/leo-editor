@@ -1268,14 +1268,22 @@ class LeoFind(object):
     def setFindScope(self, where):
         '''Set the radio buttons to the given scope'''
         self.ftm.set_radio_button(where)
-    #@+node:ekr.20131117164142.16989: *4* LeoFind.showFindOptions
+    #@+node:ekr.20131117164142.16989: *4* LeoFind.showFindOptions & helper
     @cmd('show-find-options')
     def showFindOptions(self, event=None):
         '''
         Show the present find options in the status line.
         This is useful for commands like search-forward that do not show the Find Panel.
         '''
-        frame = self.c.frame; z = []
+        frame = self.c.frame
+        frame.clearStatusLine()
+        part1, part2 = self.computeFindOptions()
+        frame.putStatusLine(part1, bg='blue')
+        frame.putStatusLine(part2)
+    #@+node:ekr.20171129205648.1: *5* LeoFind.computeFindOptions
+    def computeFindOptions(self):
+        '''Return the status line as two strings.'''
+        z = []
         # Set the scope field.
         head = self.search_headline
         body = self.search_body
@@ -1291,9 +1299,7 @@ class LeoFind(object):
         head = 'head' if head else ''
         body = 'body' if body else ''
         sep = '+' if head and body else ''
-        frame.clearStatusLine()
-        s = '%s%s%s %s  ' % (head, sep, body, scope)
-        frame.putStatusLine(s, bg='blue')
+        part1 = '%s%s%s %s  ' % (head, sep, body, scope)
         # Set the type field.
         regex = self.pattern_match
         if regex: z.append('regex')
@@ -1308,7 +1314,9 @@ class LeoFind(object):
         for ivar, s in table:
             val = getattr(self, ivar)
             if val: z.append(s)
-        frame.putStatusLine(' '.join(z))
+        part2 = ' '.join(z)
+        return part1, part2
+
     #@+node:ekr.20131117164142.16990: *4* LeoFind.setupChangePattern
     def setupChangePattern(self, pattern):
         self.ftm.setChangeText(pattern)
@@ -2224,9 +2232,14 @@ class LeoFind(object):
         if regexp in (True, False): self.pattern_match = regexp
         if word in (True, False): self.whole_word = word
         self.showFindOptions()
-    #@+node:ekr.20150615174549.1: *4* find.showFindOptionsInStatusArea
+    #@+node:ekr.20150615174549.1: *4* find.showFindOptionsInStatusArea & helper
     def showFindOptionsInStatusArea(self):
         '''Show find options in the status area.'''
+        c = self.c
+        s = self.computeFindOptionsInStatusArea()
+        c.frame.putStatusLine(s)
+    #@+node:ekr.20171129211238.1: *5* find.computeFindOptionsInStatusArea
+    def computeFindOptionsInStatusArea(self):
         c = self.c
         ftm = c.findCommands.ftm
         table = (
@@ -2248,7 +2261,7 @@ class LeoFind(object):
             if ivar.isChecked():
                 result.append('[%s]' % option)
                 break
-        c.frame.putStatusLine('Find: %s' % ' '.join(result))
+        return 'Find: %s' % ' '.join(result)
     #@+node:ekr.20150619070602.1: *4* find.showStatus
     def showStatus(self, found):
         '''Show the find status the Find dialog, if present, and the status line.'''

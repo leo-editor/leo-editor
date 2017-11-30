@@ -1375,6 +1375,7 @@ class LeoCursesGui(leoGui.LeoGui):
         self.createCursesTree(c, form)
         self.createCursesBody(c, form)
         self.createCursesMinibuffer(c, form)
+        self.createCursesStatusLine(c, form)
         self.monkeyPatch(c)
         # g.es(form)
         return form
@@ -1489,6 +1490,34 @@ class LeoCursesGui(leoGui.LeoGui):
         w.leo_c = c
         w.leo_wrapper = wrapper
 
+    #@+node:ekr.20171129193946.1: *6* CGui.createCursesStatusLine
+    def createCursesStatusLine(self, c, form):
+        '''Create the curses minibuffer widget in the given curses Form.'''
+
+        class StatusLineBox(npyscreen.BoxTitle):
+            '''An npyscreen class representing Leo's status line.'''
+            # pylint: disable=used-before-assignment
+            _contained_widget = LeoStatusLine
+            how_exited = None
+
+        box = form.add(StatusLineBox, name='Status Line', max_height=3)
+        assert isinstance(box, StatusLineBox)
+        # Link and check...
+        widgets = box._my_widgets
+        assert len(widgets) == 1
+        w = widgets[0]
+        # g.trace(w, box)
+        assert isinstance(w, LeoStatusLine), repr(w)
+        assert isinstance(c.frame, CoreFrame), repr(c.frame)
+        wrapper = StatusLineWrapper(c, 'status-line', w)
+        assert wrapper.widget == w, repr(wrapper.widget)
+        assert c.frame.statusLine is None
+        c.frame.statusLine = wrapper
+        c.frame.statusText = wrapper
+        # Inject the wrapper for get_focus.
+        box.leo_wrapper = wrapper
+        w.leo_c = c
+        w.leo_wrapper = wrapper
     #@+node:ekr.20170502083754.1: *6* CGui.createCursesTree
     def createCursesTree(self, c, form):
         '''Create the curses tree widget in the given curses Form.'''
@@ -1828,7 +1857,7 @@ class LeoCursesGui(leoGui.LeoGui):
     def focus_from_minibuffer(self):
         '''Remove focus from the minibuffer text widget.'''
         form = self.curses_form
-        box = form._widgets__[-2] # The minibuffer
+        box = form._widgets__[-3] # The minibuffer
         widgets = box._my_widgets
         assert len(widgets) == 1
         w = widgets[0]
@@ -1846,14 +1875,6 @@ class LeoCursesGui(leoGui.LeoGui):
         '''Put focus in minibuffer text widget.'''
         w = self.set_focus(c, c.frame.miniBufferWidget)
         w.edit()
-        #
-            # form = self.curses_form
-            # box = form._widgets__[-2] # The minibuffer
-            # widgets = box._my_widgets
-            # assert len(widgets) == 1
-            # form.editw = form._widgets__.index(box)
-            # w = widgets[0]
-            # w.edit()
     #@+node:ekr.20170502101347.1: *5* CGui.get_focus
     def get_focus(self, c=None, raw=False, at_idle=False):
         '''
@@ -1949,7 +1970,7 @@ class LeoCursesGui(leoGui.LeoGui):
     def startSearch(self, event):
         c = event.get('c')
         if c:
-            g.trace('(CGui)', c.findCommands)
+            # g.trace('(CGui)', c.findCommands)
             fc = c.findCommands
             ftm = c.frame.ftm
             c.inCommand = False
@@ -1965,9 +1986,10 @@ class LeoCursesGui(leoGui.LeoGui):
                     setattr(fc, setting_name, val)
                     w.setCheckState(val)
             c.findCommands.startSearch(event)
+            options = fc.computeFindOptionsInStatusArea()
+            c.frame.statusLine.put(options)
             self.focus_to_minibuffer(c)
                 # Does not return!
-
     #@-others
 #@+node:ekr.20170524124010.1: ** Leo widget classes
 # Most are subclasses Leo's base gui classes.
@@ -2013,7 +2035,7 @@ class CoreFrame (leoFrame.LeoFrame):
         self.menu = CoreMenu(c)
         self.miniBufferWidget = None
             # Set later.
-        self.statusLine = g.NullObject()
+        self.statusLine = None
         assert self.tree is None, self.tree
         self.tree = CoreTree(c)
         # Official ivars...
@@ -2588,6 +2610,24 @@ class CoreTree (leoFrame.LeoTree):
             # Now done after c.p has been changed.
                 # p.restoreCursorAndScroll()
     #@-others
+#@+node:ekr.20171129200050.1: *3* class CoreStatusLine (object)
+class CoreStatusLine(object):
+    '''A do-nothing status line.'''
+
+    def __init__(self, c, parentFrame):
+        '''Ctor for CoreStatusLine class.'''
+        g.trace('(CoreStatusLine)', c)
+        self.c = c
+        self.enabled = False
+        self.parentFrame = parentFrame
+        self.textWidget = None
+        # The official ivars. 
+        c.frame.statusFrame = None
+        c.frame.statusLabel = None
+        c.frame.statusText = None
+
+    #@+others
+    #@-others
 #@+node:ekr.20170502093200.1: *3* class TopFrame (object)
 class TopFrame (object):
     '''A representation of c.frame.top.'''
@@ -3100,6 +3140,20 @@ class LeoMiniBuffer(npyscreen.Textfield):
             curses.ascii.BS:        self.h_delete_left,
             curses.KEY_BACKSPACE:   self.h_delete_left,
         })
+    #@-others
+#@+node:ekr.20171129194909.1: *3* class LeoStatusLine (npyscreen.Textfield)
+class LeoStatusLine(npyscreen.Textfield):
+    '''An npyscreen class representing Leo's status line'''
+
+    def __init__(self, *args, **kwargs):
+        super(LeoStatusLine, self).__init__(*args, **kwargs)
+        # These are injected later.
+        self.leo_c = None
+        self.leo_wrapper = None
+        # Use the default handlers.
+            # self.set_handlers()
+
+    #@+others
     #@-others
 #@+node:ekr.20170506035146.1: *3* class LeoMLTree (npyscreen.MLTree, object)
 class LeoMLTree(npyscreen.MLTree, object):
@@ -4104,6 +4158,48 @@ class MiniBufferWrapper(leoFrame.StringTextWrapper):
         self.widget = w
 
     #@+others
+    #@-others
+#@+node:ekr.20171129194610.1: *3* class StatusLineWrapper (leoFrame.StringTextWrapper)
+class StatusLineWrapper(leoFrame.StringTextWrapper):
+    '''A Wrapper class for the status line.'''
+
+    def __init__(self, c, name, w):
+        '''Ctor for StatusLineWrapper class'''
+        leoFrame.StringTextWrapper.__init__(self, c, name)
+        self.trace = False # For tracing in base class.
+        ### self.enabled = True
+        self.widget = w
+        
+    def isEnabled(self):
+        return True
+
+    #@+others
+    #@+node:ekr.20171129204751.1: *4* StatusLineWrapper.do nothings
+    def disable(self, *args, **kwargs):
+        pass
+
+    def enable(self, *args, **kwargs):
+        pass
+        
+    def setFocus(self):
+        pass
+    #@+node:ekr.20171129204736.1: *4* StatusLineWrapper.redirectors
+    def clear(self):
+        self.widget.value = ''
+        self.widget.display()
+
+    def get(self):
+        return self.widget.value
+
+    def put(self, s, *args, **kwargs):
+        i = s.find('#')
+        if i > -1:
+            s = s[i+1:]
+        self.widget.value = s
+        self.widget.display()
+        
+    def update(self, *args, **kwargs):
+        self.widget.update()
     #@-others
 #@-others
 #@-others
