@@ -4167,7 +4167,6 @@ class StatusLineWrapper(leoFrame.StringTextWrapper):
         '''Ctor for StatusLineWrapper class'''
         leoFrame.StringTextWrapper.__init__(self, c, name)
         self.trace = False # For tracing in base class.
-        ### self.enabled = True
         self.widget = w
         
     def isEnabled(self):
