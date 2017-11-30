@@ -17,6 +17,7 @@ import os
 
 from collections import defaultdict
 
+# pylint: disable=no-name-in-module
 if g.isPython3:
     StringTypes = str
 else:
