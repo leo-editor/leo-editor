@@ -3,6 +3,8 @@
 '''Support for the edit-pane-test-open command and window.'''
 #@+<<editpane.py imports>>
 #@+node:tbrown.20171028115438.1: ** <<editpane.py imports>>
+import leo.core.leoGlobals as g
+
 try:
     # this can fix an issue with Qt Web views in Ubuntu
     from OpenGL import GL
@@ -14,9 +16,12 @@ except Exception:
 import os
 
 from collections import defaultdict
-from types import StringTypes
 
-import leo.core.leoGlobals as g
+if g.isPython3:
+    StringTypes = str
+else:
+    from types import StringTypes
+
 from leo.core.leoQt import QtCore, QtWidgets, QtConst # QtGui
 if QtCore is not None:
     from leo.plugins.editpane.clicky_splitter import ClickySplitter
