@@ -1148,8 +1148,11 @@
 <v t="ekr.20170618162705.1"><vh>Exiting Leo &amp; saving files</vh></v>
 <v t="ekr.20170618111248.3"><vh>Navigation and editing</vh></v>
 <v t="ekr.20170618111248.5"><vh>Leo key bindings</vh></v>
-<v t="ekr.20170618115228.1"><vh>Broadcast and Listening</vh></v>
 <v t="ekr.20170618115641.1"><vh>Limitations</vh></v>
+<v t="ekr.20171130105248.1"><vh>Developing the cursesGui2 plugin</vh>
+<v t="ekr.20171130110558.1"><vh>Overview for devs</vh></v>
+<v t="ekr.20170618115228.1"><vh>Broadcasting and listening</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20131015104133.16763"><vh>A scripting miscellany</vh>
@@ -1695,6 +1698,8 @@
 </v>
 </v>
 <v t="ekr.20170228112643.1"></v>
+<v t="ekr.20131008041326.16092"></v>
+<v t="ekr.20170618113437.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -23528,7 +23533,7 @@ The area between colons in the Tree pane corresponds to Leo's icon box::
      :  M : node is marked.
      :   T: node has body text.
 </t>
-<t tx="ekr.20170618115228.1">The console gui can broadcast print statements and traces to another console.  To do this, you must start a socket listener in the *other* console, listening to the broadcaster on localhost::
+<t tx="ekr.20170618115228.1">The console gui sends the output of g.pr and g.trace to another console. To do this, you must start a socket listener in the *other* console, listening to the broadcaster on localhost::
 
     Leo Qt (listener) &lt;-- Leo console, (broadcaster)
     
@@ -24561,6 +24566,46 @@ Set the font weight to one of Light, Normal, DemiBold, Bold, Black::
     # Show the last part of long filenames
     RULE ^.{1,1000}([/\\])(.{25})
     REPLACE …\1\2
+</t>
+<t tx="ekr.20171130105248.1">The following sections discuss will be of interest *only* to those who want to enhance the cursesGui2.py plugin. All others can safely ignore this discussion.
+
+The post: `Debugging npyscreen apps using two consoles &lt;https://groups.google.com/forum/#!topic/npyscreen/nk2pjj71bok&gt;`_ discusses the strategy used to bootstrap this plugin. It's easier to develop now that so much is working, developing this code will always be difficult.
+
+</t>
+<t tx="ekr.20171130110558.1">The console gui code stands "between" the npyscreen code and Leo's core code. With only *very minor* exceptions, I have made it a rule to keep Leo's core and the npyscreen code completely unchanged.  Thus, the console gui wraps just about everything. This makes the code inherently complex, but this complexity can not be helped.
+
+You *can not* use g.pdb to debug cursesGui2.py, for two reasons:
+
+- g.pdb's output would overwrite the screen.
+  Writing to the second console would not help because...
+
+- There would be no way to get input to pdb.
+
+As a result, **devs must uses traces** to figure out what is happening. The
+`Broadcasting and listing &lt;console-gui.html#broadcasting-and-listening&gt;`_
+section tells how to send traces to a *second* console. Use only g.pr and g.trace to create traces. **Do not use print statements in cursesGui2.py**.
+
+The following methods contain crucial traces:
+
+- **IH.handle_input** (external/npyscreen/wgwidget.py) shows the raw input to npyscreen.
+- **k.masterKeyHandler** (leoKeys.py) shows the keys passed to Leo's core.
+- **k.masterCommand** (leoKeys.py) shows the Leo command (if any) bound to the raw key.
+
+Other noteworthy methods and functions, all in cursesGui2.py:
+
+- **CGui.createCursesTop** creates the main window by calling a helper for each part of the main window. The helpers handle the *extremely complex* details of setting and/or injecting ivars into various classes. Getting these ivars right is the heart of the plugin.
+
+- **LeoMiniBuffer.h_return** contains a crucial hack that allows the minibuffer to be used both to enter commands and to enter find strings.
+
+- The top-level **es, pr and trace functions** replace g.es, g.pr and g.trace functions so that they send their results to the second console.
+
+- **CGui.monkeyPatch** contains some hacks needed to make the 'start-find' command work.
+
+To enable tracing for these methods, and many others, set the trace variable at the start of the method.  Feel free to add your own traces in consoleGui2.py.
+
+All unit tests presently pass when run from the console gui. **F4 runs all unit tests**. IH.handle_input handles this special case.
+
+*Most importantly*, it would pointless to describe the code in detail. Devs must come up to speed on their own by studying traces. Don't even *think* of trying to remember details. Instead, use cff to study the code.
 </t>
 <t tx="maphew.20171129131746.1">Python 3.0+::
 
