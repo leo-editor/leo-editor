@@ -12,9 +12,12 @@ will crash on startup.
 Please report any problems at #488:
 https://github.com/leo-editor/leo-editor/issues/488
 
+Devs for this plugin should read these notes:
+http://leoeditor.com/console-gui.html#developing-the-cursesgui2-plugin
+
 **Warnings**
 
-This is pre-alpha code. You *must* be prepared to recover from data loss. I
+This is beta-level code. You *must* be prepared to recover from data loss. I
 recommend testing on files under git control. That gives you diffs and easy
 reverts.
 
