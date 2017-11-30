@@ -1618,13 +1618,16 @@ Packaging a new release for Test PyPi
     python setup.py check
     python setup.py bdist_wheel
 
-    ::Test installation locally
-    pip install dist\*.whl
+    ::Test default install locally
+    pip install dist\leo-5.7.dev344-py2.py3-none-any.whl
     leoc --version
     pip uninstall leo
 
+    ::Test developer install locally
+    pip install leo[develop] dist\leo-5.7.dev344-py2.py3-none-any.whl
+
     ::Upload
-    twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+    twine upload --repository-url https://test.pypi.org/legacy/ dist/leo-5.7.dev344-py2.py3-none-any
 
     ::Install from remote
     pip install --pre --index-url https://test.pypi.org/simple/ leo
@@ -1639,9 +1642,9 @@ _Will likely always use this recipe after the first time or two. Remember to rem
 
     rd /s/q dist
     rd /s/q build
-    git checkout tags/5.6.1
+    git checkout tags/5.7
     python setup.py bdist_wheel
-    twine upload --repository-url https://pypi.org/legacy/ dist/*
+    twine upload https://pypi.org/legacy/ dist/*
     pip install leo
 
 Caveats
