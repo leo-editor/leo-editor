@@ -3020,10 +3020,42 @@ class LeoMiniBuffer(npyscreen.Textfield):
         super(LeoMiniBuffer, self).__init__(*args, **kwargs)
         self.leo_c = None # Set later
         self.leo_wrapper = None # Set later.
+        self.leo_completion_index = 0
+        self.leo_completion_list = []
+        self.leo_completion_prefix = ''
         self.set_handlers()
 
     #@+others
     #@+node:ekr.20170510172335.1: *4* LeoMiniBuffer.Handlers
+    #@+node:ekr.20171201054825.1: *5* LeoMiniBuffer.do_tab_completion
+    def do_tab_completion(self):
+        '''Perform tab completion.'''
+        trace = False and not g.unitTesting
+        c = self.leo_c
+        # import leo.core.leoKeys as leoKeys
+        # ga = leoKeys.GetArg()
+        command = self.value
+        i = self.leo_completion_index
+        if trace: g.trace('command: %r prefix: %r' % (command, self.leo_completion_prefix))
+        # Restart the completions if necessary.
+        if not command.startswith(self.leo_completion_prefix):
+            i = 0
+        if i == 0:
+            # Compute new completions.
+            self.leo_completion_prefix = command
+            command_list = sorted(c.k.c.commandsDict.keys())
+            tab_list, common_prefix = g.itemsMatchingPrefixInList(command, command_list)
+            self.leo_completion_list = tab_list
+            if trace: g.printObj(tab_list)
+        # Update the index and the widget.
+        if self.leo_completion_list:
+            tab_list = self.leo_completion_list
+            self.value = tab_list[i]
+            i = 0 if i+1 >= len(tab_list) else i+1
+            self.leo_completion_index = i
+            self.update()
+        elif trace:
+            g.trace('no completions for', command)
     #@+node:ekr.20170510095136.2: *5* LeoMiniBuffer.h_cursor_beginning
     def h_cursor_beginning(self, ch):
 
@@ -3059,6 +3091,22 @@ class LeoMiniBuffer(npyscreen.Textfield):
             # Delete the character to the left of the cursor
             self.value = s[:n-1] + s[n:]
             self.cursor_position -= 1
+    #@+node:ekr.20171201053817.1: *5* LeoMiniBuffer.h_exit_down
+    def h_exit_down(self, ch):
+        '''LeoMiniBuffer.h_exit_down.  Override InputHandler.h_exit_down.'''
+        trace = False and not g.unitTesting
+        c = self.leo_c
+        if trace: g.trace('(LeoMiniBuffer)', repr(ch))
+        if c and self.value.strip():
+            self.do_tab_completion()
+        else:
+            # Restart completion cycling.
+            self.leo_completion_index = 0
+            # The code in InputHandler.h_exit_down.
+            if not self._test_safe_to_exit():
+                return False
+            self.editing = False
+            self.how_exited = EXITED_DOWN
     #@+node:ekr.20170510095136.7: *5* LeoMiniBuffer.h_insert
     def h_insert(self, ch):
 
