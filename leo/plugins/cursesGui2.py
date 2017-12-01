@@ -51,18 +51,6 @@ reverts.
   might work. And paste may work only in limited contexts...
 
 - The body text is not syntax colored.
-
-** To do**
-
-- The changed indicator following "Welcome to Leo" is not updated immediately.
-
-- Shift-arrow in body/log panes should create selections. Alas, the base
-  npyscreen classes do not support selections, so this would be a big
-  project.
-
-- Shift arrows in outine should move nodes up/down.
-
-- Support tab completion in the minibuffer.
 '''
 #@-<< cursesGui2 docstring >>
 #@+<< cursesGui2 imports >>
@@ -1372,7 +1360,7 @@ class LeoCursesGui(leoGui.LeoGui):
             g.trace('commanders in g.app.windowList')
             g.printList([z.c.shortFileName() for z in g.app.windowList])
         # Create the top-level form.
-        self.curses_form = form = LeoForm(name = "Welcome to Leo")
+        self.curses_form = form = LeoForm(name='Dummy Name')
             # This call clears the screen.
         self.createCursesLog(c, form)
         self.createCursesTree(c, form)
@@ -3029,7 +3017,10 @@ class LeoForm (npyscreen.Form):
 
     def display(self, *args, **kwargs):
         changed = any([z.c.isChanged() for z in g.app.windowList])
-        self.name = 'Welcome to Leo' + (' (changed)' if changed else '')
+        c = g.app.log.c
+        self.name = 'Welcome to Leo: %s%s' % (
+            '(changed) ' if changed else '',
+            c.fileName() if c else '')
         super(LeoForm, self).display(*args, **kwargs)
 #@+node:ekr.20170510092721.1: *3* class LeoMiniBuffer (npyscreen.Textfield)
 class LeoMiniBuffer(npyscreen.Textfield):
@@ -3123,6 +3114,7 @@ class LeoMiniBuffer(npyscreen.Textfield):
         w.values.clear_cache()
         w.select_leo_node(c.p)
         w.update(forceInit=True)
+        g.app.gui.curses_form.display()
     #@+node:ekr.20170510094104.1: *5* LeoMiniBuffer.set_handlers
     def set_handlers(self):
 
