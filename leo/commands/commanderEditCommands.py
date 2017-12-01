@@ -881,7 +881,7 @@ def unformatParagraph(self, event=None, undoType='Unformat Paragraph'):
     if w.hasSelection():
         i, j = w.getSelectionRange()
         w.setInsertPoint(i)
-    oldSel, oldYview, original, pageWidth, tabWidth = c.rp_get_args()
+    oldSel, oldYview, original, pageWidth, tabWidth = rp_get_args(c)
     head, lines, tail = find_bound_paragraph(c)
     if lines:
         result = ' '.join([z.strip() for z in lines]) + '\n'
