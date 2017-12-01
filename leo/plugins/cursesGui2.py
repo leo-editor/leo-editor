@@ -5,52 +5,24 @@
 #@+<< cursesGui2 docstring >>
 #@+node:ekr.20170608073034.1: ** << cursesGui2 docstring >>
 '''
-A curses gui for Leo using npyscreen. Enable with --gui=curses on the
-command line. You must resize your console to be big enough. Otherwise, Leo
-will crash on startup.
+A curses gui for Leo using npyscreen.
 
-Please report any problems at #488:
-https://github.com/leo-editor/leo-editor/issues/488
-
-Devs for this plugin should read these notes:
-http://leoeditor.com/console-gui.html#developing-the-cursesgui2-plugin
+The ``--gui=curses`` command-line option enables this plugin.
 
 **Warnings**
 
-This is beta-level code. You *must* be prepared to recover from data loss. I
-recommend testing on files under git control. That gives you diffs and easy
-reverts.
+- Leo will crash on startup if the console is not big enough.
 
-**Limitations**
+- This is beta-level code. Be prepared to recover from data loss. Testing
+  on files under git control gives you diffs and easy reverts.
+  
+- There are many limitations: see http://leoeditor.com/console-gui.html
 
-- Only simple control characters are supported. Ctrl-S will work, Alt-S,
-  Ctrl-Shift-S etc. will not. This is a limitation of the curses module and
-  can not be fixed.
+Please report any problem here:
+https://github.com/leo-editor/leo-editor/issues/488
 
-- Shift arrows are not (yet) supported. npyscreen apparently does not
-  support selection ranges in text! Subclasses could do so, but that would
-  be non-trivial.
-
-- Editing the log or body pane is a bit strange. You switch between tabs
-  with tab or shift-tab. Type 'e' to edit edit mode, as shown on the
-  on-screen prompts.
-
-  Edit mode defines a *range* of lines that are being edited. Hitting
-  return extends the range. Initially, the range consists of a single line,
-  with the cursor at the end of the line. Moving outside the range with
-  up/down arrow keys ends editing. Doing a more Leonine job would require a
-  complete rewrite of the base classes.
-
-- Deleting a line is not possible in edit mode. Use 'd' outside of edit
-  mode to delete a line in the log or body panes.
-
-- Some commands can be run from the minibuffer, but there is no tab
-  completion and no indication of what the correct command names are.
-
-- Code for cut/paste works, but in the absence of selections only paste
-  might work. And paste may work only in limited contexts...
-
-- The body text is not syntax colored.
+Devs, please read:
+http://leoeditor.com/console-gui.html#developing-the-cursesgui2-plugin
 '''
 #@-<< cursesGui2 docstring >>
 #@+<< cursesGui2 imports >>

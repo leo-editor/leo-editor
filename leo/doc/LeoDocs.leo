@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -442,10 +442,6 @@
 </v>
 <v t="ekr.20131008041326.16092"><vh>Installing &amp; running Leo</vh>
 <v t="ekr.20131015104133.16766"><vh>@rst html/getting-started.html</vh></v>
-<v t="maphew.20171129140022.1"><vh>@rst html/quick.html</vh>
-<v t="maphew.20171129131746.1"><vh>Computer with python already</vh></v>
-<v t="maphew.20171129131759.1"><vh>No python yet</vh></v>
-</v>
 <v t="ekr.20111127144911.5544"><vh>@rst html/download.html</vh>
 <v t="tbrown.20140412113009.50227"><vh>Snapshots</vh></v>
 </v>
@@ -1148,10 +1144,15 @@
 <v t="ekr.20170618162705.1"><vh>Exiting Leo &amp; saving files</vh></v>
 <v t="ekr.20170618111248.3"><vh>Navigation and editing</vh></v>
 <v t="ekr.20170618111248.5"><vh>Leo key bindings</vh></v>
-<v t="ekr.20170618115641.1"><vh>Limitations</vh></v>
-<v t="ekr.20171130105248.1"><vh>Developing the cursesGui2 plugin</vh>
-<v t="ekr.20171130110558.1"><vh>Overview for devs</vh></v>
+<v t="ekr.20170618115641.1"><vh>Limitations</vh>
+<v t="ekr.20171201041242.1"><vh>Curses limitations</vh></v>
+<v t="ekr.20171201041304.1"><vh>npyscreen limitations</vh></v>
+</v>
 <v t="ekr.20170618115228.1"><vh>Broadcasting and listening</vh></v>
+<v t="ekr.20171130105248.1"><vh>Developing the cursesGui2 plugin</vh>
+<v t="ekr.20171201034131.1"><vh>Tracing is essential</vh></v>
+<v t="ekr.20171201034133.1"><vh>Noteworthy functions and methods</vh></v>
+<v t="ekr.20171201042151.1"><vh>Running unit tests</vh></v>
 </v>
 </v>
 </v>
@@ -1699,6 +1700,11 @@
 </v>
 <v t="ekr.20170228112643.1"></v>
 <v t="ekr.20131008041326.16092"></v>
+<v t="ekr.20101125062332.5090"></v>
+<v t="maphew.20171129140022.1"><vh>@rst html/quick.html</vh>
+<v t="maphew.20171129131746.1"><vh>Computer with python already</vh></v>
+<v t="maphew.20171129131759.1"><vh>No python yet</vh></v>
+</v>
 <v t="ekr.20170618113437.1"></v>
 </vnodes>
 <tnodes>
@@ -15805,7 +15811,6 @@ Downloading, Installing &amp; Running Leo
 .. toctree::
    :maxdepth: 4
 
-   quick
    download
    installing
    running
@@ -23466,7 +23471,7 @@ And for me, that means everything.</t>
 <t tx="ekr.20170618111245.1">1. Resize your console/terminal to a recommended minimum size of 100x35.
    **Leo will crash on startup if there are fewer than 34 rows**.
 
-2. Launch Leo with the `--gui=console` command-line option::
+2. Launch Leo with the ``--gui=console`` command-line option::
 
     &gt;launchleo.py --gui=console [path to leo file\file_name.leo]
 
@@ -23539,17 +23544,15 @@ The area between colons in the Tree pane corresponds to Leo's icon box::
     
 To set this up:
 
-- In the **listener console**, start a regular Leo Qt session.
-- Start the listener with the 'listen-to-log' command.
-- In the **broadcast console**, start Leo with the console gui. This starts
-  the broadcaster.
-- Leo's log output will be displayed in the Leo Qt session console.
-- The 'kill-log-listener' command kills the listener, if it exists. Issue
-  this command in the Leo Qt session.
-</t>
-<t tx="ekr.20170618115641.1">Cut/paste is theoretically supported, but in the absence of selections only paste might work.  And paste may work only in limited contexts...
+1. In the **listener console**, start a regular Leo Qt session with the ``--listen-to-log`` command-line option. You can start a listener at any time with Leo's ``listen-to-log`` command. The ``kill-log-listener`` command kills the listener, if it exists.
+  
+2. In the **broadcast console**, start Leo with the console gui using the ``--gui=console`` command-line option. This automatically starts the broadcaster.
 
-Some commands can be run from the minibuffer, but there is no tab completion and no indication of what the correct command names are.</t>
+If the listener is active, the log output from the curses gui console will be displayed in the listener's console.
+</t>
+<t tx="ekr.20170618115641.1">This plugin suffers from fundamental limitations, as discussed in the following sections...
+
+</t>
 <t tx="ekr.20170618162705.1">To exit Leo: click "Quit Leo" button and &lt;Enter&gt;. Ctrl-Q also works. **There is no way to cancel Ctrl-Q**. A dialog box will appear. Press Enter to select "No". Press arrow keys to move between "Yes" and "No". "Yes" saves, then exits. "No" Exits without saving.
 </t>
 <t tx="ekr.20170707034853.10">https://github.com/leo-editor/leo-editor/issues/470
@@ -24571,10 +24574,12 @@ Set the font weight to one of Light, Normal, DemiBold, Bold, Black::
 
 The post: `Debugging npyscreen apps using two consoles &lt;https://groups.google.com/forum/#!topic/npyscreen/nk2pjj71bok&gt;`_ discusses the strategy used to bootstrap this plugin. It's easier to develop now that so much is working, but developing this code will always be difficult.
 
-</t>
-<t tx="ekr.20171130110558.1">The console gui code stands "between" the npyscreen code and Leo's core code. With only *very minor* exceptions, I have made it a rule to keep Leo's core and the npyscreen code completely unchanged.  Thus, the console gui wraps just about everything. This makes the code inherently complex, but this complexity can not be helped.
+The console gui code stands "between" the npyscreen code and Leo's core code. With only very minor exceptions, **Leo's core and the npyscreen code must remain completely unchanged**.  Thus, the console gui wraps just about everything. This makes the plugin's code inherently complex, but this complexity can not be helped.
 
-You *can not* use g.pdb to debug cursesGui2.py, for two reasons:
+**Important**: It would pointless to describe the code in detail. Devs must come up to speed on their own by studying traces. Don't even *think* of trying to remember details. Instead, use cff to study the code.
+
+</t>
+<t tx="ekr.20171201034131.1">You *can not* use g.pdb to debug cursesGui2.py, for two reasons:
 
 - g.pdb's output would overwrite the screen.
   Writing to the second console would not help because...
@@ -24585,7 +24590,8 @@ As a result, **devs must uses traces** to figure out what is happening. The
 `Broadcasting and listing &lt;console-gui.html#broadcasting-and-listening&gt;`_
 section tells how to send traces to a *second* console. Use only g.pr and g.trace to create traces. **Do not use print statements in cursesGui2.py**.
 
-The following methods contain crucial traces:
+</t>
+<t tx="ekr.20171201034133.1">The following methods contain crucial traces:
 
 - **IH.handle_input** (external/npyscreen/wgwidget.py) shows the raw input to npyscreen.
 - **k.masterKeyHandler** (leoKeys.py) shows the keys passed to Leo's core.
@@ -24602,10 +24608,34 @@ Other noteworthy methods and functions, all in cursesGui2.py:
 - **CGui.monkeyPatch** contains some hacks needed to make the 'start-find' command work.
 
 To enable tracing for these methods, and many others, set the trace variable at the start of the method.  Feel free to add your own traces in consoleGui2.py.
+</t>
+<t tx="ekr.20171201041242.1">**The curses module supports only simple control characters**. Ctrl-S will work, Alt-S, Ctrl-Shift-S etc. will not. These limitations can not be fixed.
+</t>
+<t tx="ekr.20171201041304.1">The npyscreen package defines widgets with limited capabilities:
 
-All unit tests presently pass when run from the console gui. **F4 runs all unit tests**. IH.handle_input handles this special case.
+- **npyscreen does not support selection ranges in text**! 
 
-*Most importantly*, it would pointless to describe the code in detail. Devs must come up to speed on their own by studying traces. Don't even *think* of trying to remember details. Instead, use cff to study the code.
+- Shift arrows are not supported, because there are no selection ranges.
+  
+- Cut/paste is theoretically supported, but in the absence of selections
+  only paste might work. And paste may work only in limited contexts...
+
+- Editing the log or body pane is a bit strange. You switch between tabs
+  with tab or shift-tab. Type 'e' to edit edit mode, as shown on the
+  on-screen prompts.
+
+  Edit mode defines a *range* of lines that are being edited. Hitting
+  return extends the range. Initially, the range consists of a single line,
+  with the cursor at the end of the line. Moving outside the range with
+  up/down arrow keys ends editing. Doing a more Leonine job would require a
+  complete rewrite of the base classes.
+
+- Deleting a line is not possible in edit mode. Use 'd' outside of edit
+  mode to delete a line in the log or body panes.
+
+- The body text is not syntax colored.
+</t>
+<t tx="ekr.20171201042151.1">**F4 runs all unit tests**. IH.handle_input binds F4 as a special case. All unit tests presently pass when run from the console gui. Devs *must* run all tests in the console gui before committing any changes to this plugin.
 </t>
 <t tx="maphew.20171129131746.1">Python 3.0+::
 
@@ -24646,11 +24676,11 @@ From Anaconda shell::
     conda install pyqt5
     pip install leo
 </t>
-<t tx="maphew.20171129140022.1">###########
-Quick Start
-###########
+<t tx="maphew.20171129140022.1">#######################
+Installing dependencies
+#######################
 </t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
