@@ -1368,6 +1368,8 @@ class LeoCursesGui(leoGui.LeoGui):
         self.createCursesMinibuffer(c, form)
         self.createCursesStatusLine(c, form)
         self.monkeyPatch(c)
+        self.redraw_in_context(c)
+        c.frame.tree.set_status_line(c.p)
         # g.es(form)
         return form
     #@+node:ekr.20170502084106.1: *6* CGui.createCursesBody
@@ -1845,18 +1847,6 @@ class LeoCursesGui(leoGui.LeoGui):
         c.k.masterKeyHandler(event)
         c.outerUpdate()
     #@+node:ekr.20171128041920.1: *4* CGui.Focus
-    #@+node:ekr.20171127173313.1: *5* CGUI.focus_from_minibuffer
-    def focus_from_minibuffer(self):
-        '''Remove focus from the minibuffer text widget.'''
-        form = self.curses_form
-        box = form._widgets__[-3] # The minibuffer
-        widgets = box._my_widgets
-        assert len(widgets) == 1
-        w = widgets[0]
-        w.editing = False
-        w.how_exited = True
-        w.update()
-
     #@+node:ekr.20171127171659.1: *5* CGui.focus_to_body
     def focus_to_body(self, c):
         '''Put focus in minibuffer text widget.'''
@@ -1958,6 +1948,15 @@ class LeoCursesGui(leoGui.LeoGui):
                 message=s,
                 title=short_title or 'Help',
             )
+    #@+node:ekr.20171130195357.1: *4* CGui.redraw_in_context
+    def redraw_in_context(self, c):
+        '''Redraw p in context.'''
+        c.expandAllAncestors(c.p)
+        w = c.frame.tree.widget
+        w.values.clear_cache()
+        w.select_leo_node(c.p)
+        w.update(forceInit=True)
+        g.app.gui.curses_form.display()
     #@+node:ekr.20171130181722.1: *4* CGui.repeatComplexCommand
     def repeatComplexCommand(self, c):
         '''An override of the 'repeat-complex-command' command.'''
@@ -3109,6 +3108,8 @@ class LeoMiniBuffer(npyscreen.Textfield):
         self.update()
         if trace: g.trace('===== inState: %r val: %r' % (k.inState(), val))
         commandName = val
+        c.frame.tree.set_status_line(c.p)
+            # This may be changed by the command.
         if k.inState():
             # Handle the key.
             k.w = self.leo_wrapper
@@ -3132,12 +3133,7 @@ class LeoMiniBuffer(npyscreen.Textfield):
             c.setComplexCommand(commandName=commandName)
         # Do a full redraw, with c.p as the first visible node.
         if trace: g.trace('----- after command')
-        c.expandAllAncestors(c.p)
-        w = c.frame.tree.widget
-        w.values.clear_cache()
-        w.select_leo_node(c.p)
-        w.update(forceInit=True)
-        g.app.gui.curses_form.display()
+        g.app.gui.redraw_in_context(c)
     #@+node:ekr.20170510094104.1: *5* LeoMiniBuffer.set_handlers
     def set_handlers(self):
 
