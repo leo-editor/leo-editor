@@ -157,35 +157,6 @@ class DebugCommandsClass(BaseEditCommandsClass):
         else:
             g.es_print('log listener not active.')
 
-    #@+node:ekr.20170429152049.1: *3* debug.listenToLog
-    @cmd('listen-to-log')
-    @cmd('log-listen')
-    def listenToLog(self, event=None):
-        '''
-        A socket listener, listening on localhost. See:
-        https://docs.python.org/2/howto/logging-cookbook.html#sending-and-receiving-logging-events-across-a-network
-
-        Start this listener first, then start the broadcaster.
-
-        leo/plugins/cursesGui2.py is a typical broadcaster.
-        '''
-        # Kill any previous listener.
-        if g.app.log_listener:
-            g.es_print('Killing previous listener')
-            try:
-                g.app.log_listener.kill()
-            except Exception:
-                g.es_exception()
-            g.app.log_listener = None
-        # Start a new listener.
-        g.es_print('Starting log_listener.py')
-        path = g.os_path_finalize_join(g.app.loadDir,
-            '..', 'external', 'log_listener.py')
-        g.app.log_listener = subprocess.Popen(
-            [sys.executable, path],
-            shell=False,
-            universal_newlines=True,
-        )
     #@+node:ekr.20150514063305.109: *3* debug.pdb
     @cmd('pdb')
     def pdb(self, event=None):

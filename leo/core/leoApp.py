@@ -15,6 +15,7 @@ import importlib
 import io
 import os
 import optparse
+import subprocess
 import string
 import sys
 # import time
@@ -110,6 +111,8 @@ class LeoApp(object):
             # The gui name given in --gui option.
         self.ipython_inited = False
             # True if leoIpython.py imports succeeded.
+        self.listen_to_log_flag = False
+            # True: execute listen-to-log command.
         self.qt_use_tabs = False
             # True: allow tabbed main window.
         self.restore_session = False
@@ -1353,23 +1356,6 @@ class LeoApp(object):
                 break
         if g.app.windowList:
             g.app.quitting = False # If we get here the quit has been disabled.
-    #@+node:ekr.20120304065838.15588: *3* app.selectLeoWindow
-    def selectLeoWindow(self, c):
-        trace = False and not g.unitTesting
-        if trace: g.trace(c.frame.title)
-        frame = c.frame
-        frame.deiconify()
-        frame.lift()
-        c.setLog()
-        master = hasattr(frame.top, 'leo_master') and frame.top.leo_master
-        if master: # 2011/11/21: selecting the new tab ensures focus is set.
-            # frame.top.leo_master is a TabbedTopLevel.
-            master.select(c)
-        if 1: # 2016/04/09
-            c.initialFocusHelper()
-        else:
-            c.bodyWantsFocus()
-        c.outerUpdate()
     #@+node:ville.20090602181814.6219: *3* app.commanders
     def commanders(self):
         """ Return list of currently active controllers """
@@ -1450,26 +1436,6 @@ class LeoApp(object):
                 title='Already Open Files',
                 message=message,
                 text="Ok")
-    #@+node:ekr.20171118024827.1: *3* app.makeAllBindings
-    def makeAllBindings(self):
-        '''
-        LeoApp.makeAllBindings:
-            
-        Call c.k.makeAllBindings for all open commanders c.
-        '''
-        app = self
-        for c in app.commanders():
-            # g.trace(c.shortFileName())
-            c.k.makeAllBindings()
-    #@+node:ekr.20031218072017.2188: *3* app.newCommander
-    def newCommander(self, fileName, relativeFileName=None, gui=None, previousSettings=None):
-        """Create a commander and its view frame for the Leo main window."""
-        trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: g.es_debug(repr(fileName), repr(relativeFileName))
-        # Create the commander and its subcommanders.
-        # This takes about 3/4 sec when called by the leoBridge module.
-        import leo.core.leoCommands as leoCommands
-        return leoCommands.Commands(fileName, relativeFileName, gui, previousSettings)
     #@+node:ekr.20171127111141.1: *3* app.Import utils
     #@+node:ekr.20140727180847.17985: *4* app.scanner_for_at_auto
     def scanner_for_at_auto(self, c, p):
@@ -1522,6 +1488,73 @@ class LeoApp(object):
             return scanner_for_ext_cb
         else:
             return None
+    #@+node:ekr.20170429152049.1: *3* app.listenToLog
+    @cmd('listen-to-log')
+    @cmd('log-listen')
+    def listenToLog(self, event=None):
+        '''
+        A socket listener, listening on localhost. See:
+        https://docs.python.org/2/howto/logging-cookbook.html#sending-and-receiving-logging-events-across-a-network
+
+        Start this listener first, then start the broadcaster.
+
+        leo/plugins/cursesGui2.py is a typical broadcaster.
+        '''
+        app = self
+        # Kill any previous listener.
+        if app.log_listener:
+            g.es_print('Killing previous listener')
+            try:
+                app.log_listener.kill()
+            except Exception:
+                g.es_exception()
+            app.log_listener = None
+        # Start a new listener.
+        g.es_print('Starting log_listener.py')
+        path = g.os_path_finalize_join(app.loadDir,
+            '..', 'external', 'log_listener.py')
+        app.log_listener = subprocess.Popen(
+            [sys.executable, path],
+            shell=False,
+            universal_newlines=True,
+        )
+    #@+node:ekr.20171118024827.1: *3* app.makeAllBindings
+    def makeAllBindings(self):
+        '''
+        LeoApp.makeAllBindings:
+            
+        Call c.k.makeAllBindings for all open commanders c.
+        '''
+        app = self
+        for c in app.commanders():
+            # g.trace(c.shortFileName())
+            c.k.makeAllBindings()
+    #@+node:ekr.20031218072017.2188: *3* app.newCommander
+    def newCommander(self, fileName, relativeFileName=None, gui=None, previousSettings=None):
+        """Create a commander and its view frame for the Leo main window."""
+        trace = (False or g.trace_startup) and not g.unitTesting
+        if trace: g.es_debug(repr(fileName), repr(relativeFileName))
+        # Create the commander and its subcommanders.
+        # This takes about 3/4 sec when called by the leoBridge module.
+        import leo.core.leoCommands as leoCommands
+        return leoCommands.Commands(fileName, relativeFileName, gui, previousSettings)
+    #@+node:ekr.20120304065838.15588: *3* app.selectLeoWindow
+    def selectLeoWindow(self, c):
+        trace = False and not g.unitTesting
+        if trace: g.trace(c.frame.title)
+        frame = c.frame
+        frame.deiconify()
+        frame.lift()
+        c.setLog()
+        master = hasattr(frame.top, 'leo_master') and frame.top.leo_master
+        if master: # 2011/11/21: selecting the new tab ensures focus is set.
+            # frame.top.leo_master is a TabbedTopLevel.
+            master.select(c)
+        if 1: # 2016/04/09
+            c.initialFocusHelper()
+        else:
+            c.bodyWantsFocus()
+        c.outerUpdate()
     #@-others
 #@+node:ekr.20120209051836.10242: ** class LoadManager
 class LoadManager(object):
@@ -2172,6 +2205,8 @@ class LoadManager(object):
             g.trace('load time: %5.2f sec.' % (t2-t1))
         if ok:
             g.es('') # Clears horizontal scrolling in the log pane.
+            if g.app.listen_to_log_flag:
+                g.app.listenToLog()
             g.app.gui.runMainLoop()
             # For scripts, the gui is a nullGui.
             # and the gui.setScript has already been called.
@@ -2490,6 +2525,8 @@ class LoadManager(object):
             help='stop unit tests after the first failure')
         add('--gui',
             help='gui to use (qt/qttabs/console/null)')
+        add('--listen-to-log', action='store_true', dest='listen_to_log',
+            help='start log_listener.py on startup')
         add('--load-type', dest='load_type',
             help='@<file> type for loading non-outlines from command line')
         add('--maximized', action='store_true',
@@ -2567,6 +2604,8 @@ class LoadManager(object):
             g.app.qt_use_tabs = True
         assert gui
         g.app.guiArgName = gui
+        # --listen-to-log
+        g.app.listen_to_log_flag = options.listen_to_log
         # --load-type
         load_type = options.load_type
         if load_type:
