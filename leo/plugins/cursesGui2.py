@@ -1923,6 +1923,7 @@ class LeoCursesGui(leoGui.LeoGui):
     #@+node:ekr.20171130195357.1: *4* CGui.redraw_in_context
     def redraw_in_context(self, c):
         '''Redraw p in context.'''
+        # g.trace(c.p and c.p.h)
         c.expandAllAncestors(c.p)
         w = c.frame.tree.widget
         w.values.clear_cache()
@@ -3280,12 +3281,6 @@ class LeoMLTree(npyscreen.MLTree, object):
         '''
         trace = False and not g.unitTesting
         c = self.leo_c
-        # if trace:
-            # g.trace('parents...')
-            # parent = p.parent()
-            # while parent:
-                # g.trace(parent.h)
-                # parent = parent.parent()
         limit, junk = c.visLimit()
         p2 = limit.copy() if limit else c.rootPosition()
         i = 0
@@ -3293,17 +3288,19 @@ class LeoMLTree(npyscreen.MLTree, object):
             if p2 == p:
                 if trace: g.trace('FOUND', i, p.h)
                 # Provide context if possible.
+                self.cursor_line = i
                 for j in range(2):
                     if p.hasVisBack(c):
                         p.moveToVisBack(c)
                         i -= 1
                 self.start_display_at = i
-                self.cursor_line = i
                 return
             else:
                 p2.moveToVisNext(c)
                 i += 1
-        g.trace('Can not happen. Not found', p)
+        if trace:
+            # Can happen during unit tests.
+            g.trace('Not found', p and p.h)
     #@+node:ekr.20170514065422.1: *5* LeoMLTree.intraFileDrop
     def intraFileDrop(self, fn, p1, p2):
         pass
@@ -3606,6 +3603,11 @@ class LeoMLTree(npyscreen.MLTree, object):
     def update(self, clear=True, forceInit=False):
         '''Redraw the tree.'''
         # This is a major refactoring of MultiLine.update.
+        trace = False and not g.unitTesting
+        c = self.leo_c
+        if trace: g.trace('(LeoMLTree)', c.p and c.p.h)
+        self.select_leo_node(c.p)
+            # Ensures that the selected node is always highlighted.
         if self.editing or forceInit:
             self._init_update()
         if self._must_redraw(clear):
