@@ -3905,9 +3905,12 @@ class KeyHandlerClass(object):
     def setLabel(self, s, protect=False):
         '''Set the label of the minibuffer.'''
         trace = False and not g.app.unitTesting
-        k, w = self, self.w
+        c, k, w = self.c, self, self.w
         if w:
-            if trace: g.trace(repr(s), g.callers())
+            if trace: g.trace(s)
+            # Support for the curses gui.
+            if hasattr(g.app.gui, 'set_minibuffer_label'):
+                g.app.gui.set_minibuffer_label(c, s)
             w.setAllText(s)
             n = len(s)
             w.setSelectionRange(n, n, insert=n)
@@ -3919,9 +3922,11 @@ class KeyHandlerClass(object):
     def setLabelBlue(self, label, protect=True):
         '''Set the minibuffer label.'''
         trace = False and not g.unitTesting
-        k = self; w = k.w
-        if trace: g.trace('label:', label, g.callers())
-        if w:
+        k, w = self, self.w
+        if trace: g.trace('label:', label)
+        if hasattr(g.app.gui, 'set_minibuffer_label'):
+            g.app.gui.set_minibuffer_label(self.c, label)
+        elif w:
             w.setStyleClass('') # normal state, not warning or error
             if label is not None:
                 k.setLabel(label, protect=protect)
@@ -4616,13 +4621,21 @@ class KeyHandlerClass(object):
         c, k = self.c, self
         state = k.unboundKeyAction
         mode = k.getStateKind()
-        if not g.app.gui: return
+        if not g.app.gui:
+            if trace: g.trace('no gui')
+            return
         if not w:
-            w = g.app.gui.get_focus(c)
-            if not w: return
+            if hasattr(g.app.gui, 'set_minibuffer_label'):
+                pass # we don't need w
+            else:
+                w = g.app.gui.get_focus(c)
+                if not w:
+                    if trace: g.trace('no focus')
+                    return
         isText = g.isTextWrapper(w)
         # This fixes a problem with the tk gui plugin.
         if mode and mode.lower().startswith('isearch'):
+            if trace: g.trace('isearch')
             return
         wname = g.app.gui.widget_name(w).lower()
         # Get the wrapper for the headline widget.
@@ -4632,7 +4645,6 @@ class KeyHandlerClass(object):
                 else: w2 = w
                 w = c.frame.tree.getWrapper(w2, item=None)
                 isText = bool(w) # A benign hack.
-        if trace: g.trace('state: %s, text?: %s, w: %s' % (state, isText, w))
         if mode:
             if mode in ('getArg', 'getFileName', 'full-command'):
                 s = None
@@ -4644,13 +4656,16 @@ class KeyHandlerClass(object):
                     mode = mode[: -5]
                 s = '%s Mode' % mode.capitalize()
         elif c.vim_mode and c.vimCommands:
+            if trace: g.trace('vim')
             c.vimCommands.show_status()
             return
         else:
             s = '%s State' % state.capitalize()
             if c.editCommands.extendMode:
                 s = s + ' (Extend Mode)'
-        if trace: g.trace(repr(s))
+        if trace:
+            # g.trace('state: %s, text?: %s, w: %s' % (state, isText, w))
+            g.trace(repr(s))
         if s:
             k.setLabelBlue(s)
         if w and isText:

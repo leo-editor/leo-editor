@@ -1105,6 +1105,7 @@ class KeyHandler (object):
         #  This is a rewrite of LeoQtEventFilter code.
         trace = False and not g.unitTesting
         c = g.app.log and g.app.log.c
+        k = c and c.k
         if not c:
             return True # We are shutting down.
         elif self.is_key_event(ch_i):
@@ -1122,11 +1123,13 @@ class KeyHandler (object):
                 try:
                     w = c.frame.body.wrapper
                     event = self.create_key_event(c, w, char, shortcut)
-                    c.k.masterKeyHandler(event)
+                    k.masterKeyHandler(event)
                 except Exception:
                     g.es_exception()
+            g.app.gui.show_label(c)
             return bool(shortcut)
         else:
+            g.app.gui.show_label(c)
             return False
     #@+node:ekr.20170430115131.4: *5* CKey.char_to_tk_name
     tk_dict = {
@@ -1310,6 +1313,8 @@ class LeoCursesGui(leoGui.LeoGui):
             # The present log. Used by g.es
         self.log_inited = False
             # True: don't use the wait_list.
+        self.minibuffer_label = ''
+            # The label set by k.setLabel.
         self.wait_list = []
             # Queued log messages.
         self.init_logger()
@@ -1450,6 +1455,8 @@ class LeoCursesGui(leoGui.LeoGui):
         wrapper = MiniBufferWrapper(c, 'minibuffer', w)
         assert wrapper.widget == w, repr(wrapper.widget)
         c.frame.miniBufferWidget = wrapper
+        # Inject the box into the wrapper
+        wrapper.box = box
         # Inject the wrapper for get_focus.
         box.leo_wrapper = wrapper
         w.leo_c = c
@@ -1808,6 +1815,8 @@ class LeoCursesGui(leoGui.LeoGui):
             g.printList(sorted(aList))
     #@+node:ekr.20170522005855.1: *4* CGui.event_generate
     def event_generate(self, c, char, shortcut, w):
+        
+        k = c.k
 
         event = KeyEvent(
             c=c,
@@ -1816,7 +1825,8 @@ class LeoCursesGui(leoGui.LeoGui):
             shortcut=shortcut,
             w=w,
         )
-        c.k.masterKeyHandler(event)
+        k.masterKeyHandler(event)
+        g.app.gui.show_label(c)
         c.outerUpdate()
     #@+node:ekr.20171128041920.1: *4* CGui.Focus
     #@+node:ekr.20171127171659.1: *5* CGui.focus_to_body
@@ -1924,12 +1934,35 @@ class LeoCursesGui(leoGui.LeoGui):
     def redraw_in_context(self, c):
         '''Redraw p in context.'''
         # g.trace(c.p and c.p.h)
-        c.expandAllAncestors(c.p)
         w = c.frame.tree.widget
+        c.expandAllAncestors(c.p)
+        g.app.gui.show_label(c)
         w.values.clear_cache()
         w.select_leo_node(c.p)
         w.update(forceInit=True)
         g.app.gui.curses_form.display()
+    #@+node:ekr.20171201084211.1: *4* CGui.set_minibuffer_label
+    def set_minibuffer_label(self, c, s):
+        '''Remember the minibuffer label.'''
+        # g.trace(repr(s))
+        self.minibuffer_label = s
+        self.show_label(c)
+    #@+node:ekr.20171201081700.1: *4* CGui.show_label
+    def show_label(self, c):
+        '''
+        Set the minibuffer's label the value set by set_minibuffer_label.
+        '''
+        trace = False and not g.unitTesting
+        wrapper = c.frame.miniBufferWidget
+        if not wrapper: return
+        box = wrapper.box
+        if not box: return
+        s = self.minibuffer_label
+        if trace: g.trace(repr(s))
+        box.name = 'Mini-buffer: %s' % s.strip()
+        box.update()
+        g.app.gui.curses_form.display()
+       
     #@+node:ekr.20171130181722.1: *4* CGui.repeatComplexCommand
     def repeatComplexCommand(self, c):
         '''An override of the 'repeat-complex-command' command.'''
@@ -4192,10 +4225,8 @@ class MiniBufferWrapper(leoFrame.StringTextWrapper):
         '''Ctor for MiniBufferWrapper class'''
         leoFrame.StringTextWrapper.__init__(self, c, name)
         self.trace = False # For tracing in base class.
+        self.box = None # Injected
         self.widget = w
-
-    #@+others
-    #@-others
 #@+node:ekr.20171129194610.1: *3* class StatusLineWrapper (leoFrame.StringTextWrapper)
 class StatusLineWrapper(leoFrame.StringTextWrapper):
     '''A Wrapper class for the status line.'''
