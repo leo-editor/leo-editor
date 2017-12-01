@@ -1570,15 +1570,15 @@ class LeoCursesGui(leoGui.LeoGui):
         w.leo_wrapper = wrapper
     #@+node:ekr.20171126191726.1: *6* CGui.monkeyPatch
     def monkeyPatch(self, c):
+        '''Monkey patch commands'''
         table = (
-           ('start-search', self.startSearch),
+            ('start-search', self.startSearch),
         )
         for commandName, func in table:
             g.global_commands_dict[commandName] = func
             c.k.overrideCommand(commandName, func)
         # A new ivar.
         c.inFindCommand = False
-
     #@+node:ekr.20170419110052.1: *5* CGui.createLeoFrame
     def createLeoFrame(self, c, title):
         '''
@@ -1958,6 +1958,24 @@ class LeoCursesGui(leoGui.LeoGui):
                 message=s,
                 title=short_title or 'Help',
             )
+    #@+node:ekr.20171130181722.1: *4* CGui.repeatComplexCommand
+    def repeatComplexCommand(self, c):
+        '''An override of the 'repeat-complex-command' command.'''
+        trace = False and not g.unitTesting
+        k = c.k
+        if k.mb_history:
+            commandName = k.mb_history[0]
+            if trace:
+                g.trace(commandName)
+                g.printObj(k.mb_history)
+            k.masterCommand(
+                commandName=commandName,
+                event=KeyEvent(c,char='',event='',shortcut='',w=None),
+                func=None,
+                stroke=None,
+            )
+        else:
+            g.warning('no previous command')
     #@+node:ekr.20171126192144.1: *4* CGui.startSearch
     def startSearch(self, event):
         c = event.get('c')
@@ -3090,6 +3108,7 @@ class LeoMiniBuffer(npyscreen.Textfield):
         self.value = ''
         self.update()
         if trace: g.trace('===== inState: %r val: %r' % (k.inState(), val))
+        commandName = val
         if k.inState():
             # Handle the key.
             k.w = self.leo_wrapper
@@ -3099,16 +3118,20 @@ class LeoMiniBuffer(npyscreen.Textfield):
                 event=KeyEvent(c, char='\n', event='', shortcut='\n', w=None))
             g.app.gui.curses_gui_arg = None
             k.clearState()
+        elif commandName == 'repeat-complex-command':
+            g.app.gui.repeatComplexCommand(c)
         else:
-            # Alt-x command
+            # All other alt-x command
             k.masterCommand(
-                commandName=val,
-                event=KeyEvent(c,char='',event='',shortcut='',w=None), # was w=self
+                commandName=commandName,
+                event=KeyEvent(c,char='',event='',shortcut='',w=None),
                 func=None,
                 stroke=None,
             )
+            # Support repeat-complex-command.
+            c.setComplexCommand(commandName=commandName)
         # Do a full redraw, with c.p as the first visible node.
-        if trace: g.trace('-----', c.p.h)
+        if trace: g.trace('----- after command')
         c.expandAllAncestors(c.p)
         w = c.frame.tree.widget
         w.values.clear_cache()
