@@ -1829,19 +1829,12 @@ def dictToString(d, indent='', tag=None):
         return '{}'
     result = ['{\n']
     indent2 = indent+' '*4
-    # Carefully construct d2.
-    d2 = {}
-    for key, val in d.items():
-        key2 = key if g.isString(key) else repr(key)
-        d2[key2] = val
-    n = 6
-    for key in d2.keys():
-       n = max(n, len(key))
-    for i, key in enumerate(sorted(d2)):
-        pad = ' ' * max(0, (n-len(key)))
+    n = 2 + len(indent) + max([len(repr(z)) for z in d.keys()])
+    for i, key in enumerate(sorted(d, key=lambda z:repr(z))):
+        pad = ' ' * max(0, (n-len(repr(key))))
         result.append('%s%s:' % (pad, key))
-        result.append(objToString(d2.get(key),indent=indent2))
-        if i+1 < len(d2.keys()):
+        result.append(objToString(d.get(key),indent=indent2))
+        if i+1 < len(d.keys()):
             result.append(',')
         result.append('\n')
     result.append(indent+'}')
