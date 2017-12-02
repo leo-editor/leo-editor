@@ -81,7 +81,7 @@ class InputHandler(object):
 
         Return True if input has been completely handled.
         """
-        trace = True
+        trace = False
         trace_entry = True
         trace_parent = False
         

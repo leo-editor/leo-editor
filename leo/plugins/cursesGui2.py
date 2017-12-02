@@ -1366,7 +1366,7 @@ class LeoCursesGui(leoGui.LeoGui):
         self.monkeyPatch(c)
         self.redraw_in_context(c)
         c.frame.tree.set_status_line(c.p)
-        # g.es(form)
+        self.focus_to_body(c)
         return form
     #@+node:ekr.20170502084106.1: *6* CGui.createCursesBody
     def createCursesBody(self, c, form):
@@ -1891,7 +1891,7 @@ class LeoCursesGui(leoGui.LeoGui):
 
     def set_focus(self, c, w):
         '''Given a Leo wrapper, set focus to the underlying npyscreen widget.'''
-        trace = (True or g.app.trace_focus) and not g.unitTesting
+        trace = (False or g.app.trace_focus) and not g.unitTesting
         trace_cache = False
         # w is a wrapper
         widget = getattr(w, 'widget', None)
@@ -1944,7 +1944,7 @@ class LeoCursesGui(leoGui.LeoGui):
             self.set_focus_fail.append(widget)
             g.trace('Fail\n%r\n%r' % (widget, w))
         return None
-    #@+node:ekr.20170514060742.1: *4* CGui.fonts
+    #@+node:ekr.20170514060742.1: *4* CGui.Fonts
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
         # g.trace('CursesGui', g.callers())
         return None
@@ -1955,12 +1955,19 @@ class LeoCursesGui(leoGui.LeoGui):
     #@+node:ekr.20171202092230.1: *4* CGui.show_find_success
     def show_find_success(self, c, in_headline, insert, p):
         '''Handle a successful find match.'''
-        trace = True and not g.unitTesting
-        if trace: g.trace(in_headline, insert, p.h)
+        trace = False and not g.unitTesting
         if in_headline:
+            if trace: g.trace('HEADLINE', p.h)
+            c.frame.tree.widget.select_leo_node(p)
             self.focus_to_head(c, p)
+                # Does not return.
         else:
+            w = c.frame.body.widget
+            row, col = g.convertPythonIndexToRowCol(p.b, insert)
+            if trace: g.trace('BODY ROW', row, p.h)
+            w.cursor_line = row
             self.focus_to_body(c)
+                # Does not return.
     #@+node:ekr.20170504052042.1: *4* CGui.oops
     def oops(self):
         '''Ignore do-nothing methods.'''
