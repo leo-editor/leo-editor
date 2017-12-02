@@ -622,17 +622,33 @@ class LeoTreeLine(npyscreen.TreeLine):
     def h_cursor_end(self, ch):
 
         # self.value is a LeoTreeData.
-        self.cursor_position = max(0, len(self.value.content)-1)
+        # native: content is a position.
+        content = self.value.content
+        s = content.h if native else content
+        self.cursor_position = max(0, len(s)-1)
     #@+node:ekr.20170508130328.1: *5* LeoTreeLine.h_cursor_left
     def h_cursor_left(self, input):
-
-        self.cursor_position = max(0, self.cursor_position -1)
+        
+        # self.value is a LeoTreeData.
+        # native: content is a position.
+        content = self.value.content
+        s = content.h if native else content
+        i = min(self.cursor_position, len(s)-1)
+        self.cursor_position = max(0, i-1)
     #@+node:ekr.20170508130339.1: *5* LeoTreeLine.h_cursor_right
     def h_cursor_right(self, input):
 
-        self.cursor_position += 1
+        # self.value is a LeoTreeData.
+        # native: content is a position.
+        content = self.value.content
+        s = content.h if native else content
+        i = self.cursor_position
+        i = min(i+1, len(s)-1)
+        self.cursor_position = max(0, i)
 
-    #@+node:ekr.20170508130349.1: *5* LeoTreeLine.h_delete_left (changed)
+
+
+    #@+node:ekr.20170508130349.1: *5* LeoTreeLine.h_delete_left
     def h_delete_left(self, input):
 
         # self.value is a LeoTreeData.
@@ -675,7 +691,7 @@ class LeoTreeLine(npyscreen.TreeLine):
             s = self.value.content
             self.value.content = s[:n] + chr(i) + s[n:]
         self.cursor_position += 1
-    #@+node:ekr.20170508130025.1: *5* LeoTreeLine.set_handlers (changed)
+    #@+node:ekr.20170508130025.1: *5* LeoTreeLine.set_handlers
     #@@nobeautify
 
     def set_handlers(self):
@@ -1817,7 +1833,6 @@ class LeoCursesGui(leoGui.LeoGui):
     def event_generate(self, c, char, shortcut, w):
         
         k = c.k
-
         event = KeyEvent(
             c=c,
             char=char,
@@ -1941,6 +1956,24 @@ class LeoCursesGui(leoGui.LeoGui):
         w.select_leo_node(c.p)
         w.update(forceInit=True)
         g.app.gui.curses_form.display()
+    #@+node:ekr.20171130181722.1: *4* CGui.repeatComplexCommand
+    def repeatComplexCommand(self, c):
+        '''An override of the 'repeat-complex-command' command.'''
+        trace = False and not g.unitTesting
+        k = c.k
+        if k.mb_history:
+            commandName = k.mb_history[0]
+            if trace:
+                g.trace(commandName)
+                g.printObj(k.mb_history)
+            k.masterCommand(
+                commandName=commandName,
+                event=KeyEvent(c,char='',event='',shortcut='',w=None),
+                func=None,
+                stroke=None,
+            )
+        else:
+            g.warning('no previous command')
     #@+node:ekr.20171201084211.1: *4* CGui.set_minibuffer_label
     def set_minibuffer_label(self, c, s):
         '''Remember the minibuffer label.'''
@@ -1963,24 +1996,6 @@ class LeoCursesGui(leoGui.LeoGui):
         box.update()
         g.app.gui.curses_form.display()
        
-    #@+node:ekr.20171130181722.1: *4* CGui.repeatComplexCommand
-    def repeatComplexCommand(self, c):
-        '''An override of the 'repeat-complex-command' command.'''
-        trace = False and not g.unitTesting
-        k = c.k
-        if k.mb_history:
-            commandName = k.mb_history[0]
-            if trace:
-                g.trace(commandName)
-                g.printObj(k.mb_history)
-            k.masterCommand(
-                commandName=commandName,
-                event=KeyEvent(c,char='',event='',shortcut='',w=None),
-                func=None,
-                stroke=None,
-            )
-        else:
-            g.warning('no previous command')
     #@+node:ekr.20171126192144.1: *4* CGui.startSearch
     def startSearch(self, event):
         c = event.get('c')
@@ -2490,7 +2505,7 @@ class CoreTree (leoFrame.LeoTree):
 
     def onHeadChanged(self, p, s=None, undoType='Typing'):
         '''
-        Officially change a headline.
+        Officially change a headline.   
         This is c.frame.tree.onHeadChanged.
         '''
         trace = False and not g.unitTesting
@@ -3311,7 +3326,7 @@ class LeoMLTree(npyscreen.MLTree, object):
     #@+node:ekr.20170506044733.4: *5* LeoMLTree.edit_headline
     def edit_headline(self):
 
-        trace = False
+        trace = True
         assert self.values, g.callers()
         try:
             active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
@@ -3411,8 +3426,11 @@ class LeoMLTree(npyscreen.MLTree, object):
         return node
     #@+node:ekr.20170506044733.5: *5* LeoMLTree.insert_line
     def insert_line(self):
-
+        '''Insert an MLTree line and mark c changed.'''
         trace = False
+        c = self.leo_c
+        c.changed = True # Just set the changed bit.
+        # c.p.setDirty()
         n = 0 if self.cursor_line is None else self.cursor_line
         if trace: g.trace('line: %r', n)
         if native:
@@ -3423,14 +3441,16 @@ class LeoMLTree(npyscreen.MLTree, object):
                 p2 = p.insertAsFirstChild()
             else:
                 p2 = p.insertAfter()
-            self.cursor_line += 1
             p2.h = 'New Headline'
-            self.values.clear_cache()
+            self.cursor_line += 1
+            c.selectPosition(p2)
+            g.app.gui.redraw_in_context(c)
         else:
             self.values.insert(n+1, self.new_mltree_node())
             self.cursor_line += 1
         self.display()
         self.edit_headline()
+        
     #@+node:ekr.20170506045346.1: *4* LeoMLTree.Handlers
     # These insert or delete entire outline nodes.
     #@+node:ekr.20170523112839.1: *5* LeoMLTree.handle_mouse_event
@@ -3512,6 +3532,7 @@ class LeoMLTree(npyscreen.MLTree, object):
     def h_delete(self, ch):
 
         c = self.leo_c
+        c.changed = True # Just set the changed bit.
         self.delete_line()
         if native:
             p = self.get_nth_visible_position(self.cursor_line)
