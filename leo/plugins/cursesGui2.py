@@ -255,13 +255,16 @@ class LeoLogTextfield (npyscreen.Textfield):
     #@+node:ekr.20170603104320.8: *5* LeoLogTextfield.h_exit_down
     def h_exit_down(self, ch_i):
         '''LeoLogTextfield.h_exit_up. Delegate to LeoLog.'''
-        parent_w = self.leo_parent
-        # g.trace('LeoLogTextfield', ch_i, 'LeoLog.cursor_line:', parent_w.cursor_line)
+        trace = False and not g.unitTesting
+        if trace:
+            g.trace('(LeoLogTextfield)', self._test_safe_to_exit())
+                # ch_i, 'LeoLog.cursor_line:', parent_w.cursor_line)
         if ch_i in (curses.ascii.CR, curses.ascii.NL):
             # A pretty horrible kludge.
             self.h_addch(ord(' '))
             self.cursor_position = 0
         else:
+            parent_w = self.leo_parent
             parent_w.set_box_name('Log Pane')
         if not self._test_safe_to_exit():
             return False
@@ -1849,6 +1852,11 @@ class LeoCursesGui(leoGui.LeoGui):
         '''Put focus in minibuffer text widget.'''
         w = self.set_focus(c, c.frame.body)
         w.edit()
+    #@+node:ekr.20171202092838.1: *5* CGui.focus_to_head
+    def focus_to_head(self, c, p):
+        '''Put focus in minibuffer text widget.'''
+        w = self.set_focus(c, c.frame.tree)
+        w.edit()
     #@+node:ekr.20171127162649.1: *5* CGui.focus_to_minibuffer
     def focus_to_minibuffer(self, c):
         '''Put focus in minibuffer text widget.'''
@@ -1883,7 +1891,7 @@ class LeoCursesGui(leoGui.LeoGui):
 
     def set_focus(self, c, w):
         '''Given a Leo wrapper, set focus to the underlying npyscreen widget.'''
-        trace = (False or g.app.trace_focus) and not g.unitTesting
+        trace = (True or g.app.trace_focus) and not g.unitTesting
         trace_cache = False
         # w is a wrapper
         widget = getattr(w, 'widget', None)
@@ -1898,6 +1906,17 @@ class LeoCursesGui(leoGui.LeoGui):
             return None
         form = self.curses_form
         d = self.set_focus_dict
+        # Properly end editing in the previous form.
+        if 0:
+            i = form.editw
+            w = form._widgets__[i]
+            g.trace('=====', i, w)
+            if w:
+                w.editing = False
+                w.how_exited = EXITED_ESCAPE
+        # _FormBase.find_next_editable does:
+        #   self.editw = n
+        #   self.display.
         if w in d:
             i = d.get(w)
             if trace and trace_cache and w not in self.set_focus_ok:
@@ -1933,6 +1952,15 @@ class LeoCursesGui(leoGui.LeoGui):
     def isTextWrapper(self, w):
         '''Return True if w is a Text widget suitable for text-oriented commands.'''
         return w and getattr(w, 'supportsHighLevelInterface', None)
+    #@+node:ekr.20171202092230.1: *4* CGui.show_find_success
+    def show_find_success(self, c, in_headline, insert, p):
+        '''Handle a successful find match.'''
+        trace = True and not g.unitTesting
+        if trace: g.trace(in_headline, insert, p.h)
+        if in_headline:
+            self.focus_to_head(c, p)
+        else:
+            self.focus_to_body(c)
     #@+node:ekr.20170504052042.1: *4* CGui.oops
     def oops(self):
         '''Ignore do-nothing methods.'''
@@ -2344,9 +2372,6 @@ class CoreLog (leoFrame.LeoLog):
     @cmd('clear-log')
     def clearLog(self, event=None):
         '''Clear the log pane.'''
-        # w = self.logCtrl.widget # w is a QTextBrowser
-        # if w:
-            # w.clear()
     #@+node:ekr.20170420035717.1: *4* CLog.enable/disable
     def disable(self):
         self.enabled = False
@@ -2960,9 +2985,12 @@ class LeoLog (npyscreen.MultiLineEditable):
     #@+node:ekr.20170604113733.2: *5* LeoLog.h_exit_down
     def h_exit_down(self, ch_i):
         """Called when user leaves the widget to the next widget"""
-        # g.trace('LeoLog', ch_i)
+        trace = False and not g.unitTesting
         if ch_i in (curses.ascii.CR, curses.ascii.NL):
             return False
+        if trace:
+            g.trace('(LeoLog) safe:', self._test_safe_to_exit())
+            g.trace(g.callers())
         self.set_box_name('Log Pane')
         if not self._test_safe_to_exit():
             return False
@@ -3707,7 +3735,9 @@ class LeoMLTree(npyscreen.MLTree, object):
         # This is a major refactoring of MultiLine.update.
         trace = False and not g.unitTesting
         c = self.leo_c
-        if trace: g.trace('(LeoMLTree)', c.p and c.p.h)
+        if trace:
+            g.trace('(LeoMLTree)', c.p and c.p.h)
+            g.trace(g.callers())
         self.select_leo_node(c.p)
             # Ensures that the selected node is always highlighted.
         if self.editing or forceInit:
@@ -4199,7 +4229,7 @@ class BodyWrapper(leoFrame.StringTextWrapper):
         self.leo_label = None
     #@+node:ekr.20170504034655.6: *4* bw.onCursorPositionChanged
     def onCursorPositionChanged(self, event=None):
-        pass
+        g.trace('=====', event)
     #@-others
 #@+node:ekr.20170522002403.1: *3* class HeadWrapper (leoFrame.StringTextWrapper)
 class HeadWrapper(leoFrame.StringTextWrapper):

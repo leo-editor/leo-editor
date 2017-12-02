@@ -2557,6 +2557,9 @@ class LeoFind(object):
                 insert, w.getSelectionRange(), w.getYScrollPosition()))
             if c.vim_mode and c.vimCommands:
                 c.vimCommands.update_selection_after_search()
+        # Support for the console gui.
+        if hasattr(g.app.gui, 'show_find_success'):
+            g.app.gui.show_find_success(c, self.in_headline, insert, p)
         if c.config.getBool('close-find-dialog-after-search', default=True):
             if hasattr(g.app.gui, 'hideFindDialog'):
                 g.app.gui.hideFindDialog()
