@@ -2946,10 +2946,9 @@ class LeoLog (npyscreen.MultiLineEditable):
     #@+node:ekr.20170603103946.31: *5* LeoLog.h_cursor_line_up
     def h_cursor_line_up(self, ch_i):
         '''From MultiLine.h_cursor_line_up. Never exit here.'''
-        # g.trace('LeoLog', ch_i)
         self.set_box_name('Log Pane')
         self.cursor_line = max(0, self.cursor_line-1)
-        g.trace('start: %s, line: %s' % (self.start_display_at, self.cursor_line))
+        # g.trace('start: %s, line: %s' % (self.start_display_at, self.cursor_line))
     #@+node:ekr.20170604061933.4: *5* LeoLog.h_edit_cursor_line_value
     def h_edit_cursor_line_value(self, ch_i):
        '''From MultiLineEditable.h_edit_cursor_line_value'''
