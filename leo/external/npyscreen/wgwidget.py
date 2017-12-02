@@ -12,6 +12,7 @@ assert g
 import copy
 import curses
 import curses.ascii
+import re
 # import string
 import sys
 #import curses.wrapper
@@ -80,25 +81,26 @@ class InputHandler(object):
 
         Return True if input has been completely handled.
         """
-        def tell(f):
-            import re
-            pattern = r'<bound method ([\w\.]*\.)?(\w+) of <([\w\.]*\.)?(\w+) object at (.+)>>'
-            m = re.match(pattern, repr(f))
-            if m:
-                return '%s.%s' % (m.group(4), m.group(2))
-            else:
-                return repr(f)
-
-        trace = False
+        trace = True
         trace_entry = True
         trace_parent = False
+        
+        def tell(f):
+            pattern = r'<bound method ([\w\.]*\.)?(\w+) of <([\w\.]*\.)?(\w+) object at (.+)>>'
+            m = re.match(pattern, repr(f))
+            return ('%s.%s' % (m.group(4), m.group(2))) if m else repr(f)
+
         parent_widget = getattr(self, 'parent_widget', None)
         parent = getattr(self, 'parent', None)
         if trace and trace_entry:
-            g.trace('self: %20s, parent: %8s, %3s = %r' % (
+            # g.trace('self: %20s, parent: %8s, %3s = %r' % (
+            s = curses.ascii.unctrl(i)
+            if s == '^I': s = 'TAB'
+            if s == '^J': s = 'RETURN'
+            g.trace('========== %s, parent: %s, %s = %r' % (
                 self.__class__.__name__,
                 parent.__class__.__name__,
-                i, curses.ascii.unctrl(i),
+                i, s,
             ))
         # A special case for F4 so we can run unit tests.
         # myLeoSettings.leo binds F4.
@@ -107,7 +109,7 @@ class InputHandler(object):
             return True
         if i in self.handlers:
             f = self.handlers[i]
-            if trace: g.trace('handler: %3s %s' % (i, tell(f)))
+            if trace: g.trace('handler: %s %s' % (i, tell(f)))
             f(i)
             return True
         try:
@@ -189,7 +191,7 @@ class InputHandler(object):
         self.complex_handlers = _new_list
 
     #@+node:ekr.20170430114154.1: *3* IH.handlers (default for all widgets)
-    # Handler Methods here - npc convention - prefix with h_
+    # Handler Methods here - npyscreen convention - prefix with h_
 
     #@+others
     #@+node:ekr.20170430114213.1: *4* InputHandler.h_exit_down
@@ -496,6 +498,11 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
     #@+node:ekr.20170428084208.424: *3* Widget.display
     def display(self):
         """Do an update of the object AND refresh the screen"""
+        trace = False and not g.unitTesting
+        if trace:
+            name = self.__class__.__name__
+            if name.startswith('Leo'):
+                g.trace('(Widget)', name, g.callers())
         if self.hidden:
             self.clear()
             self.parent.refresh()
@@ -822,9 +829,13 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
                 self.parent.parentApp.while_waiting()
     #@+node:ekr.20170428084208.423: *3* Widget.update
     def update(self, clear=True):
-        """How should object display itself on the screen. Define here, but do not actually refresh the curses
-        display, since this should be done as little as possible.  This base widget puts nothing on screen."""
-        g.trace('Widget', g.callers())
+        """
+        How should object display itself on the screen. Define here, but do not
+        actually refresh the curses display, since this should be done as
+        little as possible. This base widget puts nothing on screen.
+        """
+        trace = False and not g.unitTesting
+        if trace: g.trace('===== Widget', g.callers())
         if self.hidden:
             self.clear()
             return True

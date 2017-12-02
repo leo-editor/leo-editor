@@ -2,6 +2,8 @@
 #@+node:ekr.20170428084207.174: * @file ../external/npyscreen/fmForm.py
 #!/usr/bin/python
 # pylint: disable=no-member
+import leo.core.leoGlobals as g
+assert g
 #@+others
 #@+node:ekr.20170428084207.175: ** Declarations
 from . import proto_fm_screen_area
@@ -166,15 +168,20 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
             None:                   self.do_nothing,
             }
 
-    #@+node:ekr.20170428084207.186: *3* handle_exiting_widgets
+    #@+node:ekr.20170428084207.186: *3* _FormBase.handle_exiting_widgets
     def handle_exiting_widgets(self, condition):
+        trace = False and not g.unitTesting
+        if trace:
+            g.trace('condition', repr(condition))
+            g.trace('how_exited_handlers...')
+            g.printDict(self.how_exited_handers)
         self.how_exited_handers[condition]()
 
     #@+node:ekr.20170428084207.187: *3* do_nothing
     def do_nothing(self, *args, **keywords):
         pass
 
-    #@+node:ekr.20170428084207.188: *3* exit_editing
+    #@+node:ekr.20170428084207.188: *3* _FormBase.exit_editing
     def exit_editing(self, *args, **keywords):
         self.editing = False
         try:
@@ -242,6 +249,8 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
 
     #@+node:ekr.20170428084207.193: *3* _FormBase.DISPLAY
     def DISPLAY(self):
+        trace = False and not g.unitTesting
+        if trace: g.trace('(_FormBase)', self.display)
         self.curses_pad.redrawwin()
         self.erase()
         self.display()
@@ -298,8 +307,9 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
             pass
 
 
-    #@+node:ekr.20170428084207.200: *3* find_next_editable
+    #@+node:ekr.20170428084207.200: *3* _FormBase.find_next_editable
     def find_next_editable(self, *args):
+        trace = False and not g.unitTesting
         if not self.cycle_widgets:
             r = list(range(self.editw+1, len(self._widgets__)))
         else:
@@ -308,6 +318,9 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
             if self._widgets__[n].editable and not self._widgets__[n].hidden:
                 self.editw = n
                 break
+        if trace:
+            w = self._widgets__[n]
+            g.trace('===== (_FormBase) ', n, w.__class__.__name__)
         self.display()
 
 

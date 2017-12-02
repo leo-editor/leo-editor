@@ -85,8 +85,11 @@ class TextfieldBase(widget.Widget):
         trace = False
         self.update_count += 1
         if trace:
-            g.trace('%3s %s TextfieldBase: cursor: %5r %s' % (
-                self.update_count, id(self), self.cursor_position, self.value))
+            name = self.__class__.__name__
+            if name.startswith('LeoLogTextField'):
+                g.trace('=====', name, g.callers())
+                g.trace('(TextfieldBase) %3s %s TextfieldBase: cursor: %5r %s' % (
+                    self.update_count, id(self), self.cursor_position, self.value))
         if clear: self.clear()
         if self.hidden:
             return True
@@ -421,10 +424,6 @@ class Textfield(TextfieldBase):
         self.display()
         self.cursor_position = False
         return self.how_exited, self.value
-
-    ###########################################################################################
-    # Handlers and methods
-
     #@+node:ekr.20170428084208.339: *3* Textfield.t_input_isprint
     def t_input_isprint(self, inp):
         if self._last_get_ch_was_unicode and inp not in '\n\t\r':
