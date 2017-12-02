@@ -2369,25 +2369,19 @@ class CoreLog (leoFrame.LeoLog):
     #@+node:ekr.20170419143731.15: *4* CLog.put
     def put(self, s, color=None, tabName='Log', from_redirect=False):
         '''All output to the log stream eventually comes here.'''
-        c = self.c
-        w = self.widget
-            # This is the actual MultiLine widget
-        if not c or not c.exists:
+        c, w = self.c, self.widget
+        if not c or not c.exists or not w:
             # logging.info('CLog.put: no c: %r' % s)
-            pass
-        elif w:
-            assert isinstance(w, npyscreen. MultiLineEditable), repr(w)
-            # Fix #508: Part 1: Handle newlines correctly.
-            lines = s.split('\n')
-            for line in lines:
-                w.values.append(line)
-            # Fix #508: Part 2: Scroll last line into view.
-            w.cursor_line += len(lines)
-            w.start_display_at += len(lines)
-            w.update()
-        else:
-            pass
-            # logging.info('CLog.put no w: %r' % s)
+            return
+        assert isinstance(w, npyscreen. MultiLineEditable), repr(w)
+        # Fix #508: Part 1: Handle newlines correctly.
+        lines = s.split('\n')
+        for line in lines:
+            w.values.append(line)
+        # Fix #508: Part 2: Scroll last line into view.
+        w.cursor_line += len(lines)
+        w.start_display_at += len(lines)
+        w.update()
     #@+node:ekr.20170419143731.16: *4* CLog.putnl
     def putnl(self, tabName='Log'):
         '''Put a newline to the Qt log.'''
@@ -2933,22 +2927,29 @@ class LeoLog (npyscreen.MultiLineEditable):
         From MultiLine.h_cursor_line_down. Never exit.
         '''
         # pylint: disable=no-member,access-member-before-definition
-        # g.trace('LeoLog', ch_i)
+        trace = False and not g.unitTesting
         self.set_box_name('Log Pane')
         i = self.cursor_line
         j = self.start_display_at
-        self.cursor_line = min(len(self.values)-1, i+1)
-        if self._my_widgets[i-j].task == self.continuation_line:
-            if self.slow_scroll:
-                self.start_display_at += 1
-            else:
-                self.start_display_at = self.cursor_line
+        n = len(self.values)
+        n2 = len(self._my_widgets)
+        # Scroll only if there are more lines left.
+        if i < n-2:
+            # Update self.cursor_line
+            self.cursor_line = i2 = max(0, min(i+1, n-1))
+            # Update self.start_display_at.
+            if self._my_widgets[i-j].task == self.continuation_line:
+                self.start_display_at = min(j, max(i2+1, n2-1))
+        if trace:
+            g.trace('n: %s, start: %s, line: %s' % (
+                n, self.start_display_at, self.cursor_line))
     #@+node:ekr.20170603103946.31: *5* LeoLog.h_cursor_line_up
     def h_cursor_line_up(self, ch_i):
         '''From MultiLine.h_cursor_line_up. Never exit here.'''
         # g.trace('LeoLog', ch_i)
         self.set_box_name('Log Pane')
         self.cursor_line = max(0, self.cursor_line-1)
+        g.trace('start: %s, line: %s' % (self.start_display_at, self.cursor_line))
     #@+node:ekr.20170604061933.4: *5* LeoLog.h_edit_cursor_line_value
     def h_edit_cursor_line_value(self, ch_i):
        '''From MultiLineEditable.h_edit_cursor_line_value'''
