@@ -1,6 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084207.223: * @file ../external/npyscreen/fmFormMultiPage.py
 ## Very, very experimental. Do NOT USE.
+import leo.core.leoGlobals as g
+assert g
 #@+others
 #@+node:ekr.20170428084207.224: ** Declarations
 import curses
@@ -95,7 +97,7 @@ class FormMultiPage(fmForm.FormBaseNew):
         self._active_page = 0
         self.switch_page(self._active_page, display=False)
 
-    #@+node:ekr.20170428084207.232: *3* switch_page
+    #@+node:ekr.20170428084207.232: *3* FormMultiPage.switch_page
     def switch_page(self, page, display=True):
         self._widgets__ = self._pages__[page]
         self._active_page = page
@@ -112,8 +114,9 @@ class FormMultiPage(fmForm.FormBaseNew):
         self.switch_page(page_number, display=False)
         return page_number
 
-    #@+node:ekr.20170428084207.234: *3* find_next_editable
+    #@+node:ekr.20170428084207.234: *3* FormMultiPage.find_next_editable
     def find_next_editable(self, *args):
+        g.trace('===== (FormMultiPage)')
         if not self.editw == len(self._widgets__):
             value_changed = False
             if not self.cycle_widgets:
@@ -131,7 +134,7 @@ class FormMultiPage(fmForm.FormBaseNew):
         self.display()
 
 
-    #@+node:ekr.20170428084207.235: *3* find_previous_editable
+    #@+node:ekr.20170428084207.235: *3* FormMultiPage.find_previous_editable
     def find_previous_editable(self, *args):
         if self.editw == 0:
             if self._active_page > 0:
@@ -154,15 +157,15 @@ class FormMultiPageAction(FormMultiPage):
     CANCEL_BUTTON_TEXT      = "Cancel"
 
     #@+others
-    #@+node:ekr.20170428084207.237: *3* on_ok
+    #@+node:ekr.20170428084207.237: *3* FormMultiPageAction.on_ok
     def on_ok(self):
         pass
 
-    #@+node:ekr.20170428084207.238: *3* on_cancel
+    #@+node:ekr.20170428084207.238: *3* FormMultiPageAction.on_cancel
     def on_cancel(self):
         pass
 
-    #@+node:ekr.20170428084207.239: *3* pre_edit_loop
+    #@+node:ekr.20170428084207.239: *3* FormMultiPageAction.pre_edit_loop
     def pre_edit_loop(self):
         self._page_for_buttons = len(self._pages__)-1
         self.switch_page(self._page_for_buttons)
@@ -188,7 +191,7 @@ class FormMultiPageAction(FormMultiPage):
         self.nextrely, self.nextrelx = tmp_rely, tmp_relx
         self.switch_page(0)
 
-    #@+node:ekr.20170428084207.240: *3* _during_edit_loop
+    #@+node:ekr.20170428084207.240: *3* FormMultiPageAction._during_edit_loop
     def _during_edit_loop(self):
         if self.ok_button.value or self.c_button.value:
             self.editing = False
@@ -200,12 +203,12 @@ class FormMultiPageAction(FormMultiPage):
             self.c_button.value = False
             self.edit_return_value = self.on_cancel()
 
-    #@+node:ekr.20170428084207.241: *3* resize
+    #@+node:ekr.20170428084207.241: *3* FormMultiPageAction.resize
     def resize(self):
         super(FormMultiPageAction, self).resize()
         self.move_ok_button()
 
-    #@+node:ekr.20170428084207.242: *3* move_ok_button
+    #@+node:ekr.20170428084207.242: *3* FormMultiPageAction.move_ok_button
     def move_ok_button(self):
         if hasattr(self, 'ok_button'):
             my, mx = self.curses_pad.getmaxyx()
@@ -222,7 +225,7 @@ class FormMultiPageAction(FormMultiPage):
             self.c_button.relx = cmx
 
 
-    #@+node:ekr.20170428084207.243: *3* post_edit_loop
+    #@+node:ekr.20170428084207.243: *3* FormMultiPageAction.post_edit_loop
     def post_edit_loop(self):
         self.switch_page(self._page_for_buttons)
         self.ok_button.destroy()

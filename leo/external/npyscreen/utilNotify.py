@@ -57,7 +57,7 @@ def notify(message, title="Message", form_color='STANDOUT',
     mlw.values = message
     F.display()
 
-#@+node:ekr.20170428084207.473: ** notify_confirm
+#@+node:ekr.20170428084207.473: ** notify_confirm (utilNotify.py)
 def notify_confirm(message, title="Message", form_color='STANDOUT', wrap=True, wide=False,
                     editw = 0,):
     message = _prepare_message(message)
@@ -83,7 +83,7 @@ def notify_wait(*args, **keywords):
     curses.flushinp()
 
 
-#@+node:ekr.20170428084207.475: ** notify_ok_cancel
+#@+node:ekr.20170428084207.475: ** notify_ok_cancel (utilNotify.py)
 def notify_ok_cancel(message, title="Message", form_color='STANDOUT', wrap=True, editw = 0,):
     message = _prepare_message(message)
     F   = ConfirmCancelPopup(name=title, color=form_color)
@@ -97,7 +97,7 @@ def notify_ok_cancel(message, title="Message", form_color='STANDOUT', wrap=True,
     F.edit()
     return F.value
 
-#@+node:ekr.20170428084207.476: ** notify_yes_no
+#@+node:ekr.20170428084207.476: ** notify_yes_no (utilNotify.py)
 def notify_yes_no(message, title="Message", form_color='STANDOUT', wrap=True, editw = 0,):
     message = _prepare_message(message)
     F   = YesNoPopup(name=title, color=form_color)

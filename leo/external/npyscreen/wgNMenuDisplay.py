@@ -16,7 +16,7 @@ import curses
 #@+node:ekr.20170428084208.255: ** class MenuViewerController
 class MenuViewerController(object):
     #@+others
-    #@+node:ekr.20170428084208.256: *3* __init__
+    #@+node:ekr.20170428084208.256: *3* MenuViewerController.__init__
     def __init__(self, menu=None):
         self.setMenu(menu)
         self.create()
@@ -47,7 +47,7 @@ class MenuViewerController(object):
         self._menu = self._menuStack.pop()
 
 
-    #@+node:ekr.20170428084208.262: *3* _executeSelection
+    #@+node:ekr.20170428084208.262: *3* MenuViewerController._executeSelection
     def _executeSelection(self, sel):
         self._editing = False
         return sel()

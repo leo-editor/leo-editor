@@ -89,14 +89,14 @@ class NPSAppManaged(apNPSApplication.NPSApp):
         """Set the form that will be selected when the current one exits."""
         self.NEXT_ACTIVE_FORM = fmid
 
-    #@+node:ekr.20170428084207.39: *3* switchForm
+    #@+node:ekr.20170428084207.39: *3* NPSAppManaged.switchForm
     def switchForm(self, fmid):
         """Immediately switch to the form specified by fmid."""
         self._THISFORM.editing = False
         self.setNextForm(fmid)
         self.switchFormNow()
 
-    #@+node:ekr.20170428084207.40: *3* switchFormNow
+    #@+node:ekr.20170428084207.40: *3* NPSAppManaged.switchFormNow
     def switchFormNow(self):
         self._THISFORM.editing = False
         try:

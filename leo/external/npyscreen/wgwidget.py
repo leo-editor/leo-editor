@@ -333,7 +333,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         self.initialize_event_handling()
     #@+node:ekr.20170429213619.3: *3* Widget._edit_loop
     def _edit_loop(self):
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         if trace: g.trace('BEGIN')
         if not self.parent.editing:
             _i_set_parent_editing = True

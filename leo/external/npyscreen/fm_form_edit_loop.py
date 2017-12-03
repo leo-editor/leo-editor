@@ -67,13 +67,15 @@ class FormNewEditLoop(object):
 #@+node:ekr.20170428084207.319: ** class FormDefaultEditLoop
 class FormDefaultEditLoop(object):
     #@+others
-    #@+node:ekr.20170428084207.320: *3* FormDefaultEditLoop.edit
+    #@+node:ekr.20170428084207.320: *3* FormDefaultEditLoop.edit (fm_form_edit_loop.py)
     def edit(self):
         """
         Edit the fields until the user selects the ok button added in the lower
         right corner. Button will be removed when editing finishes
         """
-        g.trace('===== (FormDefaultEditLoop)')
+        trace = False and not g.unitTesting
+        if trace:
+            g.trace('===== (FormDefaultEditLoop:%s)' % self.__class__.__name__)
         # Add ok button. Will remove later
         tmp_rely, tmp_relx = self.nextrely, self.nextrelx
         my, mx = self.curses_pad.getmaxyx()
@@ -105,12 +107,14 @@ class FormDefaultEditLoop(object):
             self.while_editing(weakref.proxy(self._widgets__[self.editw]))
             if not self.editing:
                 break
+
             self._widgets__[self.editw].edit()
             self._widgets__[self.editw].display()
 
             self.handle_exiting_widgets(self._widgets__[self.editw].how_exited)
 
-            if self.editw > len(self._widgets__)-1: self.editw = len(self._widgets__)-1
+            if self.editw > len(self._widgets__)-1:
+                self.editw = len(self._widgets__)-1
             if self.ok_button.value:
                 self.editing = False
 

@@ -77,7 +77,7 @@ class MultiLineEditable(wgmultiline.MultiLine):
     #@+node:ekr.20170428084208.165: *3* MultiLineEditable._continue_editing
     def _continue_editing(self):
 
-        # g.trace('MultiLineEditable')
+        g.trace('(MultiLineEditable)')
         active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
         continue_editing = self.ALLOW_CONTINUE_EDITING
         if hasattr(active_line, 'how_exited'):

@@ -65,22 +65,22 @@ class ActionFormV2(fmForm.FormBaseNew):
     def on_ok(self):
         pass
 
-    #@+node:ekr.20170428084207.142: *3* _on_ok
+    #@+node:ekr.20170428084207.142: *3* ActionFormV2._on_ok
     def _on_ok(self):
         self.editing = self.on_ok()
 
-    #@+node:ekr.20170428084207.143: *3* _on_cancel
+    #@+node:ekr.20170428084207.143: *3* ActionFormV2._on_cancel
     def _on_cancel(self):
         self.editing = self.on_cancel()
 
-    #@+node:ekr.20170428084207.144: *3* set_up_exit_condition_handlers
+    #@+node:ekr.20170428084207.144: *3* ActionFormV2.set_up_exit_condition_handlers
     def set_up_exit_condition_handlers(self):
         super(ActionFormV2, self).set_up_exit_condition_handlers()
         self.how_exited_handers.update({
             widget.EXITED_ESCAPE:   self.find_cancel_button
         })
 
-    #@+node:ekr.20170428084207.145: *3* find_cancel_button
+    #@+node:ekr.20170428084207.145: *3* ActionFormV2.find_cancel_button
     def find_cancel_button(self):
         self.editw = len(self._widgets__)-2
 
@@ -99,7 +99,7 @@ class ActionFormV2(fmForm.FormBaseNew):
         self.nextrely, self.nextrelx = tmp_rely, tmp_relx
 
 
-    #@+node:ekr.20170428084207.147: *3* pre_edit_loop
+    #@+node:ekr.20170428084207.147: *3* ActionFormV2.pre_edit_loop
     def pre_edit_loop(self):
         self._widgets__.sort(key=operator.attrgetter('relx'))
         self._widgets__.sort(key=operator.attrgetter('rely'))
@@ -108,11 +108,11 @@ class ActionFormV2(fmForm.FormBaseNew):
         if not self._widgets__[self.editw].editable:
             self.find_next_editable()
 
-    #@+node:ekr.20170428084207.148: *3* post_edit_loop
+    #@+node:ekr.20170428084207.148: *3* ActionFormV2.post_edit_loop
     def post_edit_loop(self):
         pass
 
-    #@+node:ekr.20170428084207.149: *3* _during_edit_loop
+    #@+node:ekr.20170428084207.149: *3* ActionFormV2._during_edit_loop
     def _during_edit_loop(self):
         pass
 

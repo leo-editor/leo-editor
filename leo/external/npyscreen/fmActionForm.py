@@ -23,7 +23,7 @@ class ActionForm(fmForm.Form):
             widget.EXITED_ESCAPE:   self.find_cancel_button
         })
 
-    #@+node:ekr.20170428084207.125: *3* find_cancel_button
+    #@+node:ekr.20170428084207.125: *3* ActionForm.find_cancel_button
     def find_cancel_button(self):
         self.editw = len(self._widgets__)-2
 

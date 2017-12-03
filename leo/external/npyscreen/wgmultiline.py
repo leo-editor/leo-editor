@@ -610,10 +610,10 @@ class MultiLine(widget.Widget):
             self.how_exited=True
     #@+node:ekr.20170428084208.116: *4* MultiLine.edit
     def edit(self):
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         if trace:
             g.trace('===== (MultiLine:%s)' % self.__class__.__name__)
-            g.trace('CALLERS', g.callers(verbose=True))
+            # g.trace('CALLERS', g.callers(verbose=True))
         self.editing = True
         self.how_exited = None
         #if self.value: self.cursor_line = self.value

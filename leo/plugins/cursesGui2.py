@@ -1633,7 +1633,7 @@ class LeoCursesGui(leoGui.LeoGui):
         '''
         Create and run the top-level curses form.
         '''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         self.top_form = self.createCursesTop()
         if trace: g.trace('(CGui) top_form', self.top_form)
         self.top_form.edit()
@@ -1852,17 +1852,20 @@ class LeoCursesGui(leoGui.LeoGui):
     def focus_to_body(self, c):
         '''Put focus in minibuffer text widget.'''
         w = self.set_focus(c, c.frame.body)
-        w.edit()
+        assert w
+        ### w.edit()
     #@+node:ekr.20171202092838.1: *5* CGui.focus_to_head
     def focus_to_head(self, c, p):
         '''Put focus in minibuffer text widget.'''
         w = self.set_focus(c, c.frame.tree)
-        w.edit()
+        assert w
+        ### w.edit()
     #@+node:ekr.20171127162649.1: *5* CGui.focus_to_minibuffer
     def focus_to_minibuffer(self, c):
         '''Put focus in minibuffer text widget.'''
         w = self.set_focus(c, c.frame.miniBufferWidget)
-        w.edit()
+        assert w
+        ### w.edit()
     #@+node:ekr.20170502101347.1: *5* CGui.get_focus
     def get_focus(self, c=None, raw=False, at_idle=False):
         '''
@@ -1893,11 +1896,12 @@ class LeoCursesGui(leoGui.LeoGui):
     def set_focus(self, c, w):
         '''Given a Leo wrapper, set focus to the underlying npyscreen widget.'''
         trace = (True or g.app.trace_focus) and not g.unitTesting
+        verbose = False
         # Get the wrapper's npyscreen widget.
         widget = getattr(w, 'widget', None)
         if trace:
-            g.trace('widget', widget)
-            g.trace(g.callers())
+            g.trace('widget', widget.__class__.__name__)
+            # g.trace(g.callers())
         if not widget:
             if trace or not w: g.trace('no widget', repr(w))
             return None
@@ -1905,34 +1909,38 @@ class LeoCursesGui(leoGui.LeoGui):
             g.trace('not an npyscreen.Widget', repr(w))
             return None
         form = self.curses_form
-        # Properly end editing in the previous form.
-        ### Doesn't work.
-        if 0:
+        if 1: # Seems to cause problems.
+            # End editing in the previous form.
             i = form.editw
             w = form._widgets__[i]
-            g.trace('=====', i, w)
+            if trace and verbose:
+                g.trace('CLEAR FOCUS', i, w.__class__.__name__)
             if w:
                 w.editing = False
                 w.how_exited = EXITED_ESCAPE
-        #
-        # _FormBase.find_next_editable does:
-        #   self.editw = n
-        #   self.display.
-        #
+                w.display()
         for i, widget2 in enumerate(form._widgets__):
             if widget == widget2:
                 if trace: g.trace('FOUND', i, widget)
                 form.editw = i
-                if not g.unitTesting:
-                    form.display()
+                form.display()
                 return widget
             for j, widget3 in enumerate(getattr(widget2, '_my_widgets', [])):
                 if widget == widget3 or repr(widget) == repr(widget3):
                     if trace: g.trace('FOUND INNER', i, j, widget2)
                     form.editw = i
                         # Select the *outer* widget.
-                    if not g.unitTesting:
-                        form.display()
+                    # Like BoxTitle.edit.
+                    if 1:
+                        # So weird.
+                        widget2.editing=True
+                        widget2.display()
+                        ### widget2.entry_widget.edit()
+                        widget3.edit()
+                        widget2.how_exited = widget3.how_exited
+                        widget2.editing = False
+                        widget2.display()
+                    form.display()
                     return widget
         if trace and widget not in self.set_focus_fail:
             self.set_focus_fail.append(widget)
@@ -1946,22 +1954,6 @@ class LeoCursesGui(leoGui.LeoGui):
     def isTextWrapper(self, w):
         '''Return True if w is a Text widget suitable for text-oriented commands.'''
         return w and getattr(w, 'supportsHighLevelInterface', None)
-    #@+node:ekr.20171202092230.1: *4* CGui.show_find_success
-    def show_find_success(self, c, in_headline, insert, p):
-        '''Handle a successful find match.'''
-        trace = False and not g.unitTesting
-        if in_headline:
-            if trace: g.trace('HEADLINE', p.h)
-            c.frame.tree.widget.select_leo_node(p)
-            self.focus_to_head(c, p)
-                # Does not return.
-        else:
-            w = c.frame.body.widget
-            row, col = g.convertPythonIndexToRowCol(p.b, insert)
-            if trace: g.trace('BODY ROW', row, p.h)
-            w.cursor_line = row
-            self.focus_to_body(c)
-                # Does not return.
     #@+node:ekr.20170504052042.1: *4* CGui.oops
     def oops(self):
         '''Ignore do-nothing methods.'''
@@ -2009,6 +2001,22 @@ class LeoCursesGui(leoGui.LeoGui):
         # g.trace(repr(s))
         self.minibuffer_label = s
         self.show_label(c)
+    #@+node:ekr.20171202092230.1: *4* CGui.show_find_success
+    def show_find_success(self, c, in_headline, insert, p):
+        '''Handle a successful find match.'''
+        trace = False and not g.unitTesting
+        if in_headline:
+            if trace: g.trace('HEADLINE', p.h)
+            c.frame.tree.widget.select_leo_node(p)
+            self.focus_to_head(c, p)
+                # Does not return.
+        else:
+            w = c.frame.body.widget
+            row, col = g.convertPythonIndexToRowCol(p.b, insert)
+            if trace: g.trace('BODY ROW', row, p.h)
+            w.cursor_line = row
+            self.focus_to_body(c)
+                # Does not return.
     #@+node:ekr.20171201081700.1: *4* CGui.show_label
     def show_label(self, c):
         '''
@@ -3355,7 +3363,7 @@ class LeoMLTree(npyscreen.MLTree, object):
     #@+node:ekr.20170506044733.4: *5* LeoMLTree.edit_headline
     def edit_headline(self):
 
-        trace = True
+        trace = False and not g.unitTesting
         assert self.values, g.callers()
         try:
             active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]

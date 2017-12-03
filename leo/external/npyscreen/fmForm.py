@@ -41,7 +41,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
 
 
     #@+others
-    #@+node:ekr.20170428084207.177: *3* __init__
+    #@+node:ekr.20170428084207.177: *3* _FormBase.__init__
     def __init__(self, name=None, parentApp=None, framed=None, help=None, color='FORMDEFAULT',
                     widget_list=None, cycle_widgets=False, *args, **keywords):
         super(_FormBase, self).__init__(*args, **keywords)
@@ -88,7 +88,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
     def resize(self):
         pass
 
-    #@+node:ekr.20170428084207.179: *3* _clear_all_widgets
+    #@+node:ekr.20170428084207.179: *3* _FormBase._clear_all_widgets
     def _clear_all_widgets(self, ):
         self._widgets__     = []
         self._widgets_by_id = {}
@@ -170,10 +170,16 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
 
     #@+node:ekr.20170428084207.186: *3* _FormBase.handle_exiting_widgets
     def handle_exiting_widgets(self, condition):
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         func = self.how_exited_handers[condition]
         if trace:
-            g.trace('how_exited: %r %s' % (condition, func.__name__))
+            g.pr('-'*70)
+            g.trace('(_FormBase:%s) how_exited: %r %s.%s' % (
+                self.__class__.__name__,
+                condition,
+                func.__self__.__class__.__name__,
+                func.__name__,
+            ))
             # g.trace('how_exited_handlers...')
             # g.printDict(self.how_exited_handers)
         func()
@@ -183,8 +189,11 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
 
     #@+node:ekr.20170428084207.188: *3* _FormBase.exit_editing
     def exit_editing(self, *args, **keywords):
+        
+        trace = False and not g.unitTesting
         self.editing = False
         try:
+            if trace: g.trace('(_FormBase)')
             self._widgets__[self.editw].entry_widget.editing = False
         except Exception:
             pass
@@ -250,7 +259,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
     #@+node:ekr.20170428084207.193: *3* _FormBase.DISPLAY
     def DISPLAY(self):
         trace = False and not g.unitTesting
-        if trace: g.trace('(_FormBase)', self.display)
+        if trace: g.trace('===== (_FormBase)', self.display)
         self.curses_pad.redrawwin()
         self.erase()
         self.display()
@@ -299,7 +308,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
                 pass
         return None
 
-    #@+node:ekr.20170428084207.199: *3* set_editing
+    #@+node:ekr.20170428084207.199: *3* _FormBase.set_editing
     def set_editing(self, wdg):
         try:
             self.editw = self._widgets__.index(wdg)
@@ -309,7 +318,8 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
 
     #@+node:ekr.20170428084207.200: *3* _FormBase.find_next_editable
     def find_next_editable(self, *args):
-        trace = True and not g.unitTesting
+        # This is the ONLY usable version of this method.
+        trace = False and not g.unitTesting
         old_n = self.editw
         if not self.cycle_widgets:
             r = list(range(self.editw+1, len(self._widgets__)))
@@ -321,11 +331,11 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
                 break
         if trace:
             w = self._widgets__[n]
-            g.trace('FOUND (_FormBase:%s) %s --> %s %s' % (
-                self, old_n, n, w.__class__.__name__))
-            g.trace('CALLERS', g.callers())
+            g.trace('(_FormBase:%s) FOUND: %s --> %s %s' % (
+                self.__class__.__name__, old_n, n, w.__class__.__name__))
+            # g.trace('CALLERS', g.callers(verbose=True))
         self.display()
-    #@+node:ekr.20170428084207.201: *3* find_previous_editable
+    #@+node:ekr.20170428084207.201: *3* _FormBase.find_previous_editable
     def find_previous_editable(self, *args):
         if self.editw != 0:
             # remember that xrange does not return the 'last' value,

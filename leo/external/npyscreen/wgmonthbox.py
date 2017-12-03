@@ -160,7 +160,7 @@ class DateEntryBase(widget.Widget):
         self._check_date()
         self._check_today_validity(onErrorHigher=True)
 
-    #@+node:ekr.20170428084208.62: *3* h_clear
+    #@+node:ekr.20170428084208.62: *3* .DateEntryBase.h_clear
     def h_clear(self, *args):
         if self.allow_clear:
             self.value   = None

@@ -1,5 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084208.213: * @file ../external/npyscreen/wgmultilinetreeselectable.py
+import leo.core.leoGlobals as g
+assert g
 #@+others
 #@+node:ekr.20170428084208.214: ** Declarations
 import curses
@@ -104,6 +106,7 @@ class MLTreeMultiSelect(wgmultilinetree.MLTree):
 
     #@+node:ekr.20170428084208.222: *3* MLTreeMultiSelect.h_select
     def h_select(self, ch):
+        g.trace('===== (MLTreeMultiSelect)')
         vl = self.values[self.cursor_line]
         vl_to_set = not vl.selected
         if self.select_cascades:
