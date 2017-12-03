@@ -1656,45 +1656,52 @@ def alert(message, c=None):
         g.app.gui.alert(c, message)
 #@+node:ekr.20051023083258: *4* g.callers & _callerName
 def callers(n=4, count=0, excludeCaller=True, files=False):
-    '''Return a list containing the callers of the function that called g.callerList.
-
-    If the excludeCaller keyword is True (the default), g.callers is not on the list.
-
-    If the files keyword argument is True, filenames are included in the list.
     '''
-    # sys._getframe throws ValueError in both cpython and jython if there are less than i entries.
-    # The jython stack often has less than 8 entries,
-    # so we must be careful to call g._callerName with smaller values of i first.
+    Return a list containing the callers of the function that called g.callerList.
+
+    excludeCaller: True (the default), g.callers itself is not on the list.
+    
+    If the `files` keyword is True, or the caller name is in the `names`
+    list, return:
+    
+        line <line number> <file name> <caller name>
+        
+    Otherwise, just return the <caller name>
+    '''
+    # Be careful to call g._callerName with smaller values of i first:
+    # sys._getframe throws ValueError if there are less than i entries.
     result = []
     i = 3 if excludeCaller else 2
     while 1:
-        s = _callerName(i, files=files)
-        # print(i,s)
+        s = _callerName(n=i, files=files)
         if s:
             result.append(s)
-        if not s or len(result) >= n: break
+        if not s or len(result) >= n:
+            break
         i += 1
     result.reverse()
     if count > 0: result = result[: count]
-    sep = '\n' if files else ','
-    return sep.join(result)
+    if files:
+        return ''.join(['\n  %s' % z for z in result])
+    else:
+        return ','.join(result)
 #@+node:ekr.20031218072017.3107: *5* g._callerName
-def _callerName(n=1, files=False):
-    # print('_callerName: %s %s' % (n,files))
-    try: # get the function name from the call stack.
+def _callerName(n, files):
+    try:
+        # get the function name from the call stack.
         f1 = sys._getframe(n) # The stack frame, n levels up.
         code1 = f1.f_code # The code object
+        fn = shortFilename(code1.co_filename) # The file name.
         name = code1.co_name
-        if name == '__init__':
-            name = '__init__(%s,line %s)' % (
-                shortFileName(code1.co_filename), code1.co_firstlineno)
+        line = code1.co_firstlineno
         if files:
-            return '%s:%s' % (shortFilename(code1.co_filename), name)
+            return 'line %4s %-30s %s' % (line, fn, name)
         else:
-            return name # The code name
+            return name
     except ValueError:
-        # print('g._callerName: ValueError',n)
-        return '' # The stack is not deep enough.
+        return ''
+            # The stack is not deep enough OR
+            # sys._getframe does not exist on this platform.
     except Exception:
         es_exception()
         return '' # "<no caller name>"
