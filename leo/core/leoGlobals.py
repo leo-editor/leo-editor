@@ -1655,16 +1655,17 @@ def alert(message, c=None):
         g.es(message)
         g.app.gui.alert(c, message)
 #@+node:ekr.20051023083258: *4* g.callers & _callerName
-def callers(n=4, count=0, excludeCaller=True, files=False):
+def callers(n=4, count=0, excludeCaller=True, verbose=False):
     '''
     Return a list containing the callers of the function that called g.callerList.
 
     excludeCaller: True (the default), g.callers itself is not on the list.
     
-    If the `files` keyword is True, or the caller name is in the `names`
+    If the `verbose` keyword is True, or the caller name is in the `names`
     list, return:
     
-        line <line number> <file name> <caller name>
+        line N <file name> <class_name>.<caller_name> # methods
+        line N <file name> <caller_name>              # functions.
         
     Otherwise, just return the <caller name>
     '''
@@ -1673,29 +1674,33 @@ def callers(n=4, count=0, excludeCaller=True, files=False):
     result = []
     i = 3 if excludeCaller else 2
     while 1:
-        s = _callerName(n=i, files=files)
+        s = _callerName(n=i, verbose=verbose)
         if s:
             result.append(s)
         if not s or len(result) >= n:
             break
         i += 1
     result.reverse()
-    if count > 0: result = result[: count]
-    if files:
+    if count > 0:
+        result = result[:count]
+    if verbose:
         return ''.join(['\n  %s' % z for z in result])
     else:
         return ','.join(result)
 #@+node:ekr.20031218072017.3107: *5* g._callerName
-def _callerName(n, files):
+def _callerName(n, verbose=False):
     try:
         # get the function name from the call stack.
         f1 = sys._getframe(n) # The stack frame, n levels up.
         code1 = f1.f_code # The code object
-        fn = shortFilename(code1.co_filename) # The file name.
+        sfn = shortFilename(code1.co_filename) # The file name.
+        locals_ = f1.f_locals # The local namespace.
         name = code1.co_name
         line = code1.co_firstlineno
-        if files:
-            return 'line %4s %-30s %s' % (line, fn, name)
+        if verbose:
+            obj = locals_.get('self')
+            full_name = '%s.%s' % (obj.__class__.__name__, name) if obj else name
+            return 'line %4s %-30s %s' % (line, sfn, full_name)
         else:
             return name
     except ValueError:
@@ -1832,6 +1837,7 @@ def pdb(message=''):
 #@+node:ekr.20041224080039: *4* g.dictToString
 def dictToString(d, indent='', tag=None):
     '''Pretty print a Python dict to a string.'''
+    # pylint: disable=unnecessary-lambd
     if not d:
         return '{}'
     result = ['{\n']
