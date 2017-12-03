@@ -1837,7 +1837,7 @@ def pdb(message=''):
 #@+node:ekr.20041224080039: *4* g.dictToString
 def dictToString(d, indent='', tag=None):
     '''Pretty print a Python dict to a string.'''
-    # pylint: disable=unnecessary-lambd
+    # pylint: disable=unnecessary-lambda
     if not d:
         return '{}'
     result = ['{\n']
