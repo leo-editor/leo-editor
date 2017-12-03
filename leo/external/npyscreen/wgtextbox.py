@@ -406,7 +406,7 @@ class Textfield(TextfieldBase):
     #@+node:ekr.20170428084208.337: *3* Textfield.edit
     def edit(self):
 
-        # g.trace('Textfield')
+        g.trace('===== (Textfield)')
         self.editing = 1
         if self.cursor_position is False:
             self.cursor_position = len(self.value or '')

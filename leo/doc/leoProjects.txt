@@ -48,6 +48,29 @@ in the local .leo file, that is, outside of leoSettings.leo or myLeoSettings.leo
     do-nothing = <key>
 
 does not work.  That would eat <key> entirely.  Instead, the new code calls k.handleUnboundKeys when it sees any key previously bound to command-name.
+.. @+node:ekr.20171203110825.1: ** Added verbose option to g.callers()
+@language rest
+@wrap
+
+g.callers(verbose=True) returns the callers on separate lines, displaying file name, line number **and class name**. This is especially useful for gui programming, where there may be many 'display, 'edit', 'redraw' and 'update' methods.  It's also useful where you just don't have any idea where a function or method resides.
+
+For example, these traces, in BoxTitle.edit::
+
+    g.trace('===== (BoxTitle:%s) entry_widget: %s' % (
+        self.__class__.__name__,
+        self.entry_widget.__class__.__name__))
+    g.trace('CALLERS', g.callers(verbose=True))
+
+Produce::
+
+    trace: edit ===== (BoxTitle:BoxTitleLog) entry_widget: LeoLog
+    trace: edit CALLERS
+      line   32 apNPSApplication.py            LeoApp.__remove_argument_call_main
+      line 2711 cursesGui2.py                  LeoApp.main
+      line 1632 cursesGui2.py                  LeoCursesGui.run
+      line   66 fm_form_edit_loop.py           LeoForm.edit
+
+Each line shows the line number and file containing the function or method.  All the above lines show methods.
 .. @-all
 .. @@nosearch
 .. @@killbeautify

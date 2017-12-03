@@ -27,7 +27,7 @@ class DateCombo(textbox.Textfield, monthbox.DateEntryBase):
         keywords.update({'cursor': False})
         super(DateCombo, self).update(**keywords)
 
-    #@+node:ekr.20170428084207.580: *3* edit
+    #@+node:ekr.20170428084207.580: *3* DateCombo.edit
     def edit(self):
         #We'll just use the widget one
         super(textbox.Textfield, self).edit()

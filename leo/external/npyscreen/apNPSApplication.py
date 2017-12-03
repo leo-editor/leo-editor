@@ -1,6 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084207.3: * @file ../external/npyscreen/apNPSApplication.py
 #!/usr/bin/env python
+import leo.core.leoGlobals as g
+assert g
 #@+others
 #@+node:ekr.20170428084207.4: ** Declarations
 import curses
@@ -34,9 +36,10 @@ class NPSApp(object):
         del screen
         return self.main()
 
-    #@+node:ekr.20170428084207.10: *3* run
+    #@+node:ekr.20170428084207.10: *3* NPS.run
     def run(self, fork=None):
         """Run application.  Calls Mainloop wrapped properly."""
+        g.trace('===== (NPS) fork:', repr(fork))
         if fork is None:
             return npyssafewrapper.wrapper(self.__remove_argument_call_main)
         else:

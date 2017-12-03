@@ -39,7 +39,7 @@ class Menu(object):
         for pair in pairs:
             self.add_item(pair[0], pair[1])
 
-    #@+node:ekr.20170428084207.331: *3* edit
+    #@+node:ekr.20170428084207.331: *3* Menu.edit
     def edit(self, *args, **keywords):
         """Display choice to user, execute function associated"""
 

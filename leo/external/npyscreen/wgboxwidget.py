@@ -4,6 +4,8 @@ import curses
 import weakref
 from .wgwidget import Widget
 from .wgmultiline import MultiLine
+import leo.core.leoGlobals as g
+assert g
 # pylint: disable=no-member
 #@+others
 #@+node:ekr.20170428084207.505: ** class BoxBasic
@@ -169,6 +171,11 @@ class BoxTitle(BoxBasic):
 
     #@+node:ekr.20170428084207.514: *3* BoxTitle.edit
     def edit(self):
+        trace = True and not g.unitTesting
+        if trace:
+            g.trace('===== (BoxTitle:%s) entry_widget: %s' % (
+                self.__class__.__name__, self.entry_widget.__class__.__name__))
+            g.trace('CALLERS', g.callers(verbose=True))
         self.editing=True
         self.display()
         self.entry_widget.edit()
@@ -176,9 +183,6 @@ class BoxTitle(BoxBasic):
         self.how_exited = self.entry_widget.how_exited
         self.editing=False
         self.display()
-
-
-
     #@+node:ekr.20170428084207.515: *3* BoxTitle.get_value
     def get_value(self):
         if hasattr(self, 'entry_widget'):

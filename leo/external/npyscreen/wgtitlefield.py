@@ -1,6 +1,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20170428084208.381: * @file ../external/npyscreen/wgtitlefield.py
 #!/usr/bin/python
+import leo.core.leoGlobals as g
+assert g
 #@+others
 #@+node:ekr.20170428084208.382: ** Declarations
 # import curses
@@ -125,6 +127,7 @@ class TitleText(widget.Widget):
 
     #@+node:ekr.20170428084208.388: *3* TitleText.edit
     def edit(self):
+        g.trace('===== (TitleText)')
         self.editing=True
         self.display()
         self.entry_widget.edit()

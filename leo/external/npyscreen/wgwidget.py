@@ -333,19 +333,20 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         self.initialize_event_handling()
     #@+node:ekr.20170429213619.3: *3* Widget._edit_loop
     def _edit_loop(self):
-
+        trace = True and not g.unitTesting
+        if trace: g.trace('BEGIN')
         if not self.parent.editing:
             _i_set_parent_editing = True
             self.parent.editing   = True
         else:
             _i_set_parent_editing = False
         while self.editing and self.parent.editing:
-            # g.pr('Widget._edit_loop:', self.__class__.__name__, g.callers(2))
+            if trace: g.trace('LOOP', self.__class__.__name__, g.callers(2))
             self.display()
             self.get_and_use_key_press()
         if _i_set_parent_editing:
             self.parent.editing = False
-
+        if trace: g.trace('END')
         if self.editing:
             self.editing    = False
             self.how_exited = True
@@ -519,8 +520,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
     #@+node:ekr.20170429213619.1: *3* Widget.edit
     def edit(self):
         """Allow the user to edit the widget: ie. start handling keypresses."""
-
-        # g.trace('Widget')
+        g.trace('===== (Widget)')
         self.editing = 1
         self._pre_edit()
         self._edit_loop()

@@ -2,6 +2,8 @@
 #@+node:ekr.20170428084207.311: * @file ../external/npyscreen/fm_form_edit_loop.py
 #!/usr/bin/env python
 # encoding: utf-8
+import leo.core.leoGlobals as g
+assert g
 #@+others
 #@+node:ekr.20170428084207.312: ** Declarations
 """
@@ -29,16 +31,18 @@ class FormNewEditLoop(object):
     def _during_edit_loop(self):
         pass
 
-    #@+node:ekr.20170428084207.317: *3* edit_loop
+    #@+node:ekr.20170428084207.317: *3* FormNewEditLoop.edit_loop
     def edit_loop(self):
+        
+        g.trace('===== (FormNewEditLoop)')
         self.editing = True
         self.display()
         while not (self._widgets__[self.editw].editable and not self._widgets__[self.editw].hidden):
             self.editw += 1
-            if self.editw > len(self._widgets__)-1: 
+            if self.editw > len(self._widgets__)-1:
                 self.editing = False
                 return False
-        
+
         while self.editing:
             if not self.ALL_SHOWN: self.on_screen()
             self.while_editing(weakref.proxy(self._widgets__[self.editw]))
@@ -51,9 +55,10 @@ class FormNewEditLoop(object):
             self.handle_exiting_widgets(self._widgets__[self.editw].how_exited)
 
             if self.editw > len(self._widgets__)-1: self.editw = len(self._widgets__)-1
-        
-    #@+node:ekr.20170428084207.318: *3* edit
+
+    #@+node:ekr.20170428084207.318: *3* FormNewEditLoop.edit
     def edit(self):
+        g.trace('===== (FormNewEditLoop)')
         self.pre_edit_loop()
         self.edit_loop()
         self.post_edit_loop()
@@ -62,10 +67,13 @@ class FormNewEditLoop(object):
 #@+node:ekr.20170428084207.319: ** class FormDefaultEditLoop
 class FormDefaultEditLoop(object):
     #@+others
-    #@+node:ekr.20170428084207.320: *3* edit
+    #@+node:ekr.20170428084207.320: *3* FormDefaultEditLoop.edit
     def edit(self):
-        """Edit the fields until the user selects the ok button added in the lower right corner. Button will
-        be removed when editing finishes"""
+        """
+        Edit the fields until the user selects the ok button added in the lower
+        right corner. Button will be removed when editing finishes
+        """
+        g.trace('===== (FormDefaultEditLoop)')
         # Add ok button. Will remove later
         tmp_rely, tmp_relx = self.nextrely, self.nextrelx
         my, mx = self.curses_pad.getmaxyx()
@@ -75,7 +83,7 @@ class FormDefaultEditLoop(object):
         self.ok_button = self.add_widget(self.__class__.OKBUTTON_TYPE, name=ok_button_text, rely=my, relx=mx, use_max_space=True)
         ok_button_postion = len(self._widgets__)-1
         self.ok_button.update()
-        # End add buttons 
+        # End add buttons
         self.editing=True
         if self.editw < 0: self.editw=0
         if self.editw > len(self._widgets__)-1:
@@ -84,12 +92,11 @@ class FormDefaultEditLoop(object):
             self.editw = 0
         if not self._widgets__[self.editw].editable: self.find_next_editable()
 
-
         self.display()
 
         while not (self._widgets__[self.editw].editable and not self._widgets__[self.editw].hidden):
             self.editw += 1
-            if self.editw > len(self._widgets__)-1: 
+            if self.editw > len(self._widgets__)-1:
                 self.editing = False
                 return False
 
@@ -112,16 +119,12 @@ class FormDefaultEditLoop(object):
         del self.ok_button
         self.nextrely, self.nextrelx = tmp_rely, tmp_relx
         self.display()
-        
         #try:
         #    self.parentApp._FORM_VISIT_LIST.pop()
         #except:
         #    pass
-        
-
         self.editing = False
         self.erase()
-
     #@+node:ekr.20170428084207.321: *3* move_ok_button
     def move_ok_button(self):
         if hasattr(self, 'ok_button'):

@@ -598,7 +598,7 @@ class LeoTreeLine(npyscreen.TreeLine):
     #@+node:ekr.20170510210908.1: *4* LeoTreeLine.edit
     def edit(self):
         """Allow the user to edit the widget: ie. start handling keypresses."""
-        # g.trace('==== LeoTreeLine')
+        g.trace('==== LeoTreeLine')
         self.editing = True
         # self._pre_edit()
         self.highlight = True
@@ -1366,7 +1366,7 @@ class LeoCursesGui(leoGui.LeoGui):
         self.monkeyPatch(c)
         self.redraw_in_context(c)
         c.frame.tree.set_status_line(c.p)
-        self.focus_to_body(c)
+        ### self.focus_to_body(c)
         return form
     #@+node:ekr.20170502084106.1: *6* CGui.createCursesBody
     def createCursesBody(self, c, form):
@@ -1632,9 +1632,10 @@ class LeoCursesGui(leoGui.LeoGui):
     def run(self):
         '''
         Create and run the top-level curses form.
-
         '''
+        trace = True and not g.unitTesting
         self.top_form = self.createCursesTop()
+        if trace: g.trace('(CGui) top_form', self.top_form)
         self.top_form.edit()
     #@+node:ekr.20170504112655.1: *4* CGui.Clipboard
     # Yes, using Tkinter seems to be the standard way.
@@ -1884,16 +1885,15 @@ class LeoCursesGui(leoGui.LeoGui):
                 # At present, HeadWrappers have no widgets.
             return None
     #@+node:ekr.20171128041805.1: *5* CGui.set_focus
-    set_focus_dict = {}
+    # set_focus_dict = {}
         # Keys are wrappers, values are npyscreen.widgets.
     set_focus_ok = []
     set_focus_fail = []
 
     def set_focus(self, c, w):
         '''Given a Leo wrapper, set focus to the underlying npyscreen widget.'''
-        trace = (False or g.app.trace_focus) and not g.unitTesting
-        trace_cache = False
-        # w is a wrapper
+        trace = (True or g.app.trace_focus) and not g.unitTesting
+        # Get the wrapper's npyscreen widget.
         widget = getattr(w, 'widget', None)
         if trace:
             g.trace('widget', widget)
@@ -1905,8 +1905,8 @@ class LeoCursesGui(leoGui.LeoGui):
             g.trace('not an npyscreen.Widget', repr(w))
             return None
         form = self.curses_form
-        d = self.set_focus_dict
         # Properly end editing in the previous form.
+        ### Doesn't work.
         if 0:
             i = form.editw
             w = form._widgets__[i]
@@ -1914,29 +1914,23 @@ class LeoCursesGui(leoGui.LeoGui):
             if w:
                 w.editing = False
                 w.how_exited = EXITED_ESCAPE
+        #
         # _FormBase.find_next_editable does:
         #   self.editw = n
         #   self.display.
-        if w in d:
-            i = d.get(w)
-            if trace and trace_cache and w not in self.set_focus_ok:
-                self.set_focus_ok.append(w)
-                g.trace('Cached', i, w)
-            form.edit_w = i
-            if not g.unitTesting:
-                form.display()
-            return widget
+        #
         for i, widget2 in enumerate(form._widgets__):
             if widget == widget2:
                 if trace: g.trace('FOUND', i, widget)
-                d [w] = form.editw = i
+                form.editw = i
                 if not g.unitTesting:
                     form.display()
                 return widget
             for j, widget3 in enumerate(getattr(widget2, '_my_widgets', [])):
                 if widget == widget3 or repr(widget) == repr(widget3):
-                    if trace: g.trace('FOUND INNER', i, j, widget)
-                    d [w] = form.editw = i # Not j!?
+                    if trace: g.trace('FOUND INNER', i, j, widget2)
+                    form.editw = i
+                        # Select the *outer* widget.
                     if not g.unitTesting:
                         form.display()
                     return widget

@@ -52,7 +52,7 @@ class MenuViewerController(object):
         self._editing = False
         return sel()
 
-    #@+node:ekr.20170428084208.263: *3* edit
+    #@+node:ekr.20170428084208.263: *3* MenuViewerController.edit
     def edit(self):
         try:
             if self._menu is None:
