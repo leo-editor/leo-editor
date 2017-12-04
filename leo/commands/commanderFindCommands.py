@@ -90,6 +90,10 @@ def cloneFindMarkedHelper(c, flatten):
         redraw = True,
         undoType = 'clone-find-marked',
     )
+    # Unmarking all nodes is convenient.
+    for v in c.all_unique_nodes():
+        if v.isMarked():
+            v.clearMarked()
     found = c.lastTopLevel()
     c.selectPosition(found)
     found.b = '# Found %s marked nodes' % found.numberOfChildren()
