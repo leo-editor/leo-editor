@@ -371,7 +371,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1147,6 +1147,7 @@
 <v t="ekr.20170618115641.1"><vh>Limitations</vh>
 <v t="ekr.20171201041242.1"><vh>Curses limitations</vh></v>
 <v t="ekr.20171201041304.1"><vh>npyscreen limitations</vh></v>
+<v t="ekr.20171204104344.1"><vh>Unfixed bugs</vh></v>
 </v>
 <v t="ekr.20170618115228.1"><vh>Broadcasting and listening</vh></v>
 <v t="ekr.20171130105248.1"><vh>Developing the cursesGui2 plugin</vh>
@@ -24637,6 +24638,11 @@ To enable tracing for these methods, and many others, set the trace variable at 
 </t>
 <t tx="ekr.20171201042151.1">**F4 runs all unit tests**. IH.handle_input binds F4 as a special case. All unit tests presently pass when run from the console gui. Devs *must* run all tests in the console gui before committing any changes to this plugin.
 </t>
+<t tx="ekr.20171204104344.1">The following bugs have resisted serious efforts to fix them. I will work on them further only if they cause *serious* difficulties to those who use the console gui.
+
+Shift focus to the minibuffer after Ctrl-F works initially, but thereafter Tab and Shift-Tab don't work as expected until all widgets have been visited.  A workaround is to navigate to the minibuffer *before* using Ctrl-F, but this is not a perfect fix either.
+
+After startup, the output from g.es correctly goes to the log widget, but it is scrolled out of view!</t>
 <t tx="maphew.20171129131746.1">Python 3.0+::
 
     pip install leo
