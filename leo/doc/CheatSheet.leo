@@ -919,37 +919,43 @@ refers to the file abc.py in (absolute path of) the current directory.
 - See "Unit testing with Leo" for full details.
 </t>
 <t tx="ekr.20170311122518.1">Usage: launchLeo.py [options] file1, file2, ...
-    
-    Options:
-      -h, --help            show this help message and exit
-      --debug               enable debug mode
-      --diff                use Leo as an external git diff
-      --fullscreen          start fullscreen
-      --ipython             enable ipython support
-      --fail-fast           stop unit tests after the first failure
-      --gui=GUI             gui to use (qt/qttabs)
-      --load-type=LOAD_TYPE
-                            @&lt;file&gt; type for loading non-outlines from command
-                            line
-      --maximized           start maximized
-      --minimized           start minimized
-      --no-cache            disable reading of cached files
-      --no-plugins          disable all plugins
-      --no-splash           disable the splash screen
-      --screen-shot=SCREENSHOT_FN
-                            take a screen shot and then exit
-      --script=SCRIPT       execute a script and then exit
-      --script-window=SCRIPT_WINDOW
-                            open a window for scripts
-      --select=SELECT       headline or gnx of node to select
-      --session-restore     restore previously saved session tabs at startup
-      --session-save        save session tabs on exit
-      --silent              disable all log messages
-      --trace-plugins       trace imports of plugins
-      -v, --version         print version number and exit
-      --window-size=WINDOW_SIZE
-                            initial window size (height x width)
-</t>
+
+Options:
+  -h, --help            show this help message and exit
+  --debug               enable debug mode
+  --diff                use Leo as an external git diff
+  --fullscreen          start fullscreen
+  --ipython             enable ipython support
+  --fail-fast           stop unit tests after the first failure
+  --gui=GUI             gui to use (qt/qttabs/console/null)
+  --listen-to-log       start log_listener.py on startup
+  --load-type=LOAD_TYPE
+                        @&lt;file&gt; type for loading non-outlines from command
+                        line
+  --maximized           start maximized
+  --minimized           start minimized
+  --no-cache            disable reading of cached files
+  --no-plugins          disable all plugins
+  --no-splash           disable the splash screen
+  --screen-shot=SCREENSHOT_FN
+                        take a screen shot and then exit
+  --script=SCRIPT       execute a script and then exit
+  --script-window=SCRIPT_WINDOW
+                        open a window for scripts
+  --select=SELECT       headline or gnx of node to select
+  --session-restore     restore previously saved session tabs at startup
+  --session-save        save session tabs on exit
+  --silent              disable all log messages
+  --trace-binding=BINDING
+                        trace key bindings
+  --trace-focus         trace changes of focus
+  --trace-plugins       trace imports of plugins
+  --trace-setting=SETTING
+                        trace where setting is set
+  --trace-shutdown      trace shutdown logic
+  -v, --version         print version number and exit
+  --window-size=WINDOW_SIZE
+                        initial window size (height x width)</t>
 <t tx="ekr.20170315015836.1">Ivars:
 
     g.app                   A LeoApp instance.
