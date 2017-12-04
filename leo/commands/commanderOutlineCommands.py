@@ -808,7 +808,8 @@ def insertChild(self, event=None):
 def insertHeadline(self, event=None, op_name="Insert Node", as_child=False):
     '''Insert a node after the presently selected node.'''
     c = self
-    return insertHeadlineHelper(c, event=event)
+    # Fix #600.
+    return insertHeadlineHelper(c, event=event, as_child=as_child)
 #@+node:ekr.20171124091846.1: *4* def insertHeadlineHelper
 def insertHeadlineHelper(c, event=None, op_name="Insert Node", as_child=False):
     '''Insert a node after the presently selected node.'''
@@ -818,7 +819,9 @@ def insertHeadlineHelper(c, event=None, op_name="Insert Node", as_child=False):
     if not current:
         return None
     c.endEditing()
-    if trace: g.trace('==========', c.p.h, g.app.gui.get_focus())
+    if trace:
+        # g.trace('==========', c.p.h, g.app.gui.get_focus())
+        g.trace('as_child', as_child, current.h)
     undoData = c.undoer.beforeInsertNode(current)
     # Make sure the new node is visible when hoisting.
     if (as_child or
