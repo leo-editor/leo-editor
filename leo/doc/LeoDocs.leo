@@ -24640,9 +24640,9 @@ To enable tracing for these methods, and many others, set the trace variable at 
 </t>
 <t tx="ekr.20171204104344.1">The following bugs have resisted serious efforts to fix them. I will work on them further only if they cause *serious* difficulties to those who use the console gui.
 
-Shift focus to the minibuffer after Ctrl-F works initially, but thereafter Tab and Shift-Tab don't work as expected until all widgets have been visited.  A workaround is to navigate to the minibuffer *before* using Ctrl-F, but this is not a perfect fix either.
+- Shifting focus to the minibuffer after Ctrl-F works initially, but thereafter Tab and Shift-Tab don't work as expected until all widgets have been visited.  A workaround is to navigate to the minibuffer *before* using Ctrl-F, but this is not a perfect fix either.
 
-After startup, the output from g.es correctly goes to the log widget, but it is scrolled out of view!</t>
+- After startup, the output from g.es correctly goes to the log widget, but it is scrolled out of view!</t>
 <t tx="maphew.20171129131746.1">Python 3.0+::
 
     pip install leo
