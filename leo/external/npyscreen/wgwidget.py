@@ -887,8 +887,12 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         pass
     #@+node:ekr.20170429213619.17: *4* Widget.when_value_edited
     def when_value_edited(self):
-        """Called when the user edits the value of the widget.  Will usually also be called the first time
-        that the user edits the widget."""
+        """
+        Called when the user edits the value of the widget.
+        
+        Will usually also be called the first time that the user edits the
+        widget.
+        """
         pass
     #@-others
 #@+node:ekr.20170428084208.428: ** class DummyWidget

@@ -143,7 +143,7 @@ class TextCommandBox(wgtextbox.Textfield):
         self.parent.action_controller.process_command_complete(self.value, weakref.proxy(self))
         self.value = ''
 
-    #@+node:ekr.20170428084207.273: *3* when_value_edited
+    #@+node:ekr.20170428084207.273: *3* TextCommandBox.when_value_edited
     def when_value_edited(self):
         super(TextCommandBox, self).when_value_edited()
         if self.editing:

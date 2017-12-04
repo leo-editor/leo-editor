@@ -171,17 +171,21 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
     #@+node:ekr.20170428084207.186: *3* _FormBase.handle_exiting_widgets
     def handle_exiting_widgets(self, condition):
         trace = False and not g.unitTesting
+        trace_handlers = False
         func = self.how_exited_handers[condition]
         if trace:
             g.pr('-'*70)
             g.trace('(_FormBase:%s) how_exited: %r %s.%s' % (
                 self.__class__.__name__,
                 condition,
-                func.__self__.__class__.__name__,
+                func.__self__.__class__.__name__ if hasattr(func, '__self__') else 'function',
                 func.__name__,
             ))
-            # g.trace('how_exited_handlers...')
-            # g.printDict(self.how_exited_handers)
+            if trace_handlers:
+                g.trace('_FormBase.how_exited_handlers...')
+                d = self.how_exited_handers
+                g.printDict({key: d.get(key).__name__ for key in d})
+                # g.printDict(d)
         func()
     #@+node:ekr.20170428084207.187: *3* do_nothing
     def do_nothing(self, *args, **keywords):
