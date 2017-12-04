@@ -1887,21 +1887,113 @@ class LeoCursesGui(leoGui.LeoGui):
             g.trace('(CursesGui) ===== no leo_wrapper', widget)
                 # At present, HeadWrappers have no widgets.
             return None
-    #@+node:ekr.20171128041805.1: *5* CGui.set_focus
-    # set_focus_dict = {}
-        # Keys are wrappers, values are npyscreen.widgets.
-    set_focus_ok = []
+    #@+node:ekr.20171128041805.1: *5* CGui.set_focus & helpers
     set_focus_fail = []
 
     def set_focus(self, c, w):
         '''Given a Leo wrapper, set focus to the underlying npyscreen widget.'''
+        new_focus = False
+        if new_focus:
+            return self.NEW_set_focus(c,w)
+        else:
+            return self.OLD_set_focus(c, w)
+    #@+node:ekr.20171204040620.1: *6* CGui.NEW_set_focus & helper
+    def NEW_set_focus(self, c, w):
+        '''
+        Given a Leo wrapper w, set focus to the underlying npyscreen widget.
+        '''
         trace = (True or g.app.trace_focus) and not g.unitTesting
-        verbose = False
+        verbose = True # verbose trace of callers.
         # Get the wrapper's npyscreen widget.
         widget = getattr(w, 'widget', None)
         if trace:
             g.trace('widget', widget.__class__.__name__)
-            # g.trace(g.callers())
+            g.trace(g.callers(verbose=verbose))
+        if not widget:
+            g.trace('no widget', repr(w))
+            return
+        if not isinstance(widget, npyscreen.wgwidget.Widget):
+            g.trace('not an npyscreen.Widget', repr(w))
+            return
+        form = self.curses_form
+        # Find the widget to be edited
+        for i, widget2 in enumerate(form._widgets__):
+            if widget == widget2:
+                # if trace: g.trace('FOUND', i, widget.__class__.__name__)
+                self.switch_editing(i, widget)
+                return
+            for j, widget3 in enumerate(getattr(widget2, '_my_widgets', [])):
+                if widget == widget3 or repr(widget) == repr(widget3):
+                    # if trace: g.trace('FOUND INNER', i, j, widget2.__class__.__name__)
+                    self.switch_editing(i, widget)
+                    return
+        if trace and widget not in self.set_focus_fail:
+            self.set_focus_fail.append(widget)
+            g.trace('Fail\n%r\n%r' % (widget, w))
+    #@+node:ekr.20171204040620.2: *7* CGui.switch_editing
+    def switch_editing(self, i, w):
+        '''Clear editing for *all* widgets and set form.editw to i'''
+        trace = (True or g.app.trace_focus) and not g.unitTesting
+        how = None # 'leo-set-focus'
+        form = self.curses_form
+        if i == form.editw:
+            if trace: g.trace('NO CHANGE', i, w.__class__.__name__)
+            return
+        if trace: g.trace('-----', i, w.__class__.__name__)
+        
+        # Select the widget for editing.
+        form.editw = i
+
+        if 0:
+            # Inject 'leo-set-focus' into form.how_exited_handers
+            
+            def switch_focus_callback(form=form, i=i, w=w):
+                g.trace(i, w.__class__.__name__)
+                g.trace(g.callers(verbose=True))
+                w.display()
+                form.display()
+            
+            form.how_exited_handers[how] = switch_focus_callback
+        if 1:
+            # Clear editing for the editw widget:
+            w = form._widgets__[i]
+            # if trace: g.trace('editing', getattr(w, 'editing', None))
+            if hasattr(w, 'editing'):
+                w.editing = False
+            w.how_exited = how
+        if 1: 
+            # Clear editing for all widgets.
+            for i, w1 in enumerate(form._widgets__):
+                # if trace: g.trace('CLEAR',  w.__class__.__name__)
+                if getattr(w1, 'editing', None):
+                    if trace: g.trace('End EDITING', w1.__class__.__name__)
+                    w1.editing = False
+                ### w1.how_exited = how
+                w1.display()
+                for j, w2 in enumerate(getattr(w, '_my_widgets', [])):
+                    # if trace: g.trace('CLEAR INNER',  w.__class__.__name__)
+                    if getattr(w2, 'editing', None):
+                        if trace: g.trace('END EDITING', w2.__class__.__name__)
+                        w2.editing = False
+                    ### w2.how_exited = how
+                    w2.display()
+                    
+        # Start editing the widget.
+        w.editing = True
+        w.display()
+        form.display()
+        w.edit()
+            # Does not return
+    #@+node:ekr.20171204100910.1: *6* CGui.OLD_set_focus
+    def OLD_set_focus(self, c, w):
+        '''Given a Leo wrapper, set focus to the underlying npyscreen widget.'''
+        trace = (True or g.app.trace_focus) and not g.unitTesting
+        verbose = True # Full trace of callers.
+        # Get the wrapper's npyscreen widget.
+        widget = getattr(w, 'widget', None)
+        if trace:
+            g.trace('widget', widget.__class__.__name__)
+            g.trace(g.callers(verbose=verbose))
         if not widget:
             if trace or not w: g.trace('no widget', repr(w))
             return None
@@ -1924,7 +2016,7 @@ class LeoCursesGui(leoGui.LeoGui):
                 if trace: g.trace('FOUND', i, widget)
                 form.editw = i
                 form.display()
-                return widget
+                return ### widget
             for j, widget3 in enumerate(getattr(widget2, '_my_widgets', [])):
                 if widget == widget3 or repr(widget) == repr(widget3):
                     if trace: g.trace('FOUND INNER', i, j, widget2)
@@ -1941,11 +2033,11 @@ class LeoCursesGui(leoGui.LeoGui):
                         widget2.editing = False
                         widget2.display()
                     form.display()
-                    return widget
+                    return ### widget
         if trace and widget not in self.set_focus_fail:
             self.set_focus_fail.append(widget)
             g.trace('Fail\n%r\n%r' % (widget, w))
-        return None
+        return ### None
     #@+node:ekr.20170514060742.1: *4* CGui.Fonts
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
         # g.trace('CursesGui', g.callers())
