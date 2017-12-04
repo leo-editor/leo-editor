@@ -1987,7 +1987,7 @@ class LeoCursesGui(leoGui.LeoGui):
     #@+node:ekr.20171204100910.1: *6* CGui.OLD_set_focus
     def OLD_set_focus(self, c, w):
         '''Given a Leo wrapper, set focus to the underlying npyscreen widget.'''
-        trace = (True or g.app.trace_focus) and not g.unitTesting
+        trace = (False or g.app.trace_focus) and not g.unitTesting
         verbose = True # Full trace of callers.
         # Get the wrapper's npyscreen widget.
         widget = getattr(w, 'widget', None)
