@@ -2128,27 +2128,31 @@ class LeoCursesGui(leoGui.LeoGui):
     #@+node:ekr.20171126192144.1: *4* CGui.startSearch
     def startSearch(self, event):
         c = event.get('c')
-        if c:
-            # g.trace('(CGui)', c.findCommands)
-            fc = c.findCommands
-            ftm = c.frame.ftm
-            c.inCommand = False
-            c.inFindCommand = True
-                # A new flag.
-            fc.minibuffer_mode = True
-            if 0: # Allow hard settings, for tests.
-                table = (
-                    ('pattern_match', ftm.check_box_regexp, True),
-                )
-                for setting_name, w, val in table:
-                    assert hasattr(fc, setting_name), setting_name
-                    setattr(fc, setting_name, val)
-                    w.setCheckState(val)
-            c.findCommands.startSearch(event)
-            options = fc.computeFindOptionsInStatusArea()
-            c.frame.statusLine.put(options)
-            self.focus_to_minibuffer(c)
-                # Does not return!
+        if not c: return
+        ### This does not work because the console doesn't show the message!
+        # if not isinstance(w, MiniBufferWrapper):
+            # g.es_print('Sorry, Ctrl-F must be run from the minibuffer.')
+            # return
+        # g.trace('(CGui)', c.findCommands)
+        fc = c.findCommands
+        ftm = c.frame.ftm
+        c.inCommand = False
+        c.inFindCommand = True
+            # A new flag.
+        fc.minibuffer_mode = True
+        if 0: # Allow hard settings, for tests.
+            table = (
+                ('pattern_match', ftm.check_box_regexp, True),
+            )
+            for setting_name, w, val in table:
+                assert hasattr(fc, setting_name), setting_name
+                setattr(fc, setting_name, val)
+                w.setCheckState(val)
+        c.findCommands.startSearch(event)
+        options = fc.computeFindOptionsInStatusArea()
+        c.frame.statusLine.put(options)
+        self.focus_to_minibuffer(c)
+            # Does not return!
     #@-others
 #@+node:ekr.20170524124010.1: ** Leo widget classes
 # Most are subclasses Leo's base gui classes.
