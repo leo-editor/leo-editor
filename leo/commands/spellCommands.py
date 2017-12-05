@@ -181,6 +181,21 @@ class SpellCommandsClass(BaseEditCommandsClass):
         self.spell_as_you_type = False
         self.wrap_as_you_type = False
     #@+node:ekr.20150514063305.485: *3* commands...(SpellCommandsClass)
+    #@+node:ekr.20171205043931.1: *4* add
+    @cmd('spell-add')
+    def add(self, event=None):
+        '''
+        Simulate pressing the 'add' button in the Spell tab.
+
+        Just open the Spell tab if it has never been opened.
+        For minibuffer commands, we must also force the Spell tab to be visible.
+        '''
+        # self.handler is a SpellTabHandler object (inited by openSpellTab)
+        if self.handler:
+            self.openSpellTab()
+            self.handler.add()
+        else:
+            self.openSpellTab()
     #@+node:ekr.20150514063305.486: *4* find
     @cmd('spell-find')
     def find(self, event=None):
