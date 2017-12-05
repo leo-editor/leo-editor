@@ -1,3 +1,4 @@
+# Processed in order listed
 # Global
 #recursive-include leo *.*     # not needed when using `graft`
 graft leo
@@ -16,3 +17,7 @@ include *.nsi
 prune leo/test
 prune leo/plugins/test
 prune leo/doc/html
+
+# Issue #603, https://github.com/leo-editor/leo-editor/issues/603
+include leo/doc/html/conf.py
+include leo/doc/html/index.html
