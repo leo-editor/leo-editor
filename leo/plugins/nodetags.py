@@ -340,7 +340,7 @@ class LeoTagWidget(QtWidgets.QWidget):
             ui = tc.ui
             # right click on a tag to remove it from the node
             if event.button() == QtCore.Qt.RightButton:
-                tc.remove_tag(p.v,tag)
+                tc.remove_tag(p,tag)
             # other clicks make the jumplist open that tag for browsing
             else:
                 idx = ui.comboBox.findText(tag)
