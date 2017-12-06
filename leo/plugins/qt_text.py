@@ -901,7 +901,10 @@ class QHeadlineWrapper(QLineEditWrapper):
         '''Return True if the tree item exists and it's edit widget exists.'''
         trace = False and not g.unitTesting
         tree = self.c.frame.tree
-        e = tree.treeWidget.itemWidget(self.item, 0)
+        try:
+            e = tree.treeWidget.itemWidget(self.item, 0)
+        except RuntimeError:
+            return False
         valid = tree.isValidItem(self.item)
         result = valid and e == self.widget
         if trace: g.trace('result %s self.widget %s itemWidget %s' % (
