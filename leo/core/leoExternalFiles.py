@@ -549,12 +549,14 @@ class ExternalFilesController(object):
             # All of these must be supported because they
             # could exist in @open-with nodes.
             command = '<no command>'
-            if kind == 'os.startfile':
+            if kind in ('os.system', 'os.startfile'):
                 # New in Leo 5.7: 
                 # Use subProcess.Popen(..., shell=True)
                 c_arg = self.join(arg, fn)
-                command = 'os.startfile -> subprocess.Popen(%s)' % c_arg
-                if trace: g.trace(command)
+                if trace:
+                    command = '%s -> subprocess.Popen(%s)' % (
+                        kind, g.shortFileName(c_arg))
+                    g.trace(command)
                 if not testing:
                     try:
                         subprocess.Popen(c_arg, shell=True)
