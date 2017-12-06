@@ -42,7 +42,7 @@ class Org_Importer(Importer):
                 tail = s[i+1:-1].strip()
                 tags = tail.split(':')
                 for tag in tags:
-                    self.tc.add_tag(p.v, tag)
+                    self.tc.add_tag(p, tag)
                 if trace:
                     g.trace('head', head, 'tags:', tags)
         return s

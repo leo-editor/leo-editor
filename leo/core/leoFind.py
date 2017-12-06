@@ -877,6 +877,7 @@ class LeoFind(object):
         k.clearState()
         k.resetLabel()
         k.showStateAndMode()
+        self.find_text = k.arg
         self.cloneFindTag(k.arg)
         c.treeWantsFocus()
     #@+node:ekr.20131117164142.16998: *4* find.minibufferFindAll
@@ -1526,7 +1527,7 @@ class LeoFind(object):
         Create a "Found Tag" node as the last node of the outline.
         Clone all positions in the clones set as children of found.
         '''
-        c = self.c
+        c, p = self.c, self.c.p
         # Create the found node.
         assert c.positionExists(c.lastTopLevel()), c.lastTopLevel()
         found = c.lastTopLevel().insertAfter()

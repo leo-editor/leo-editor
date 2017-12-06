@@ -95,8 +95,8 @@ whitespace (calling .strip()).
 #@+<< imports >>
 #@+node:peckj.20140804103733.9241: ** << imports >>
 import leo.core.leoGlobals as g
+import leo.core.leoNodes as leoNodes
 import re
-#from PyQt4 import QtGui, QtCore
 from leo.core.leoQt import QtWidgets, QtCore
 #@-<< imports >>
 #@+others
@@ -139,8 +139,7 @@ class TagController(object):
     #@+node:peckj.20140804103733.9263: *5* initialize_taglist
     def initialize_taglist(self):
         taglist = []
-        for v in self.c.all_unique_nodes():
-            p = self.c.vnode2position(v)
+        for p in self.c.all_unique_positions():
             for tag in self.get_tags(p):
                 if tag not in taglist:
                     taglist.append(tag)
@@ -161,63 +160,59 @@ class TagController(object):
         self.ui.update_all()
     #@+node:peckj.20140804103733.9258: *4* get_tagged_nodes
     def get_tagged_nodes(self, tag):
-        ''' return a list of positions of nodes containing the tag, with * as a wildcard '''
+        ''' return a list of *positions* of nodes containing the tag, with * as a wildcard '''
         nodelist = []
-
         # replace * with .* for regex compatibility
         tag = tag.replace('*', '.*')
-
         regex = re.compile(tag)
-
-        for node in self.c.all_unique_nodes():
-            #p = self.c.vnode2position(node)
-            for t in self.get_tags(node):
-                if regex.match(t):
-                    nodelist.append(node)
+        for p in self.c.all_unique_positions():
+            for tag in self.get_tags(p):
+                if regex.match(tag):
+                    nodelist.append(p.copy())
                     break
-
         return nodelist
     #@+node:vitalije.20170811150914.1: *4* get_tagged_gnxes
     def get_tagged_gnxes(self, tag):
         c = self.c
-
         tag = tag.replace('*', '.*')
-
         regex = re.compile(tag)
-
-        for v in c.all_unique_nodes():
-            for t in self.get_tags(v):
+        for p in c.all_unique_positions():
+            for t in self.get_tags(p):
                 if regex.match(t):
-                    yield v.gnx
+                    yield p.v.gnx
     #@+node:peckj.20140804103733.9265: *3* individual nodes
     #@+node:peckj.20140804103733.9259: *4* get_tags
-    def get_tags(self, v):
-        ''' returns a list of tags applied to v '''
-        if v:
-            tags = v.u.get(self.TAG_LIST_KEY, set([]))
+    def get_tags(self, p):
+        ''' returns a list of tags applied to position p.'''
+        trace = False and not g.unitTesting
+        if p:
+            tags = p.v.u.get(self.TAG_LIST_KEY, set([]))
+            if trace and tags: g.trace(tags, p.h)
             return list(tags)
         else:
             return []
     #@+node:peckj.20140804103733.9260: *4* add_tag
-    def add_tag(self, v, tag):
+    def add_tag(self, p, tag):
         ''' adds 'tag' to the taglist of v '''
         # cast to set() incase JSON storage (leo_cloud plugin) converted to list
-        tags = set(v.u.get(self.TAG_LIST_KEY, set([])))
+        tags = set(p.v.u.get(self.TAG_LIST_KEY, set([])))
         tags.add(tag)
-        v.u[self.TAG_LIST_KEY] = tags
+        p.v.u[self.TAG_LIST_KEY] = tags
         self.c.setChanged(True)
         self.update_taglist(tag)
     #@+node:peckj.20140804103733.9261: *4* remove_tag
-    def remove_tag(self, v, tag):
-        ''' removes 'tag' from the taglist of v '''
+    def remove_tag(self, p, tag):
+        ''' removes 'tag' from the taglist of position p. '''
         # cast to set() incase JSON storage (leo_cloud plugin) converted to list
+        v = p.v
         tags = set(v.u.get(self.TAG_LIST_KEY, set([])))
         if tag in tags:
             tags.remove(tag)
         if tags:
             v.u[self.TAG_LIST_KEY] = tags
         else:
-            del v.u[self.TAG_LIST_KEY] # prevent a few corner cases, and conserve disk space
+            del v.u[self.TAG_LIST_KEY]
+            # prevent a few corner cases, and conserve disk space
         self.c.setChanged(True)
         self.update_taglist(tag)
     #@-others
@@ -310,12 +305,14 @@ class LeoTagWidget(QtWidgets.QWidget):
         c = self.c
         key = id(self.listWidget.currentItem())
         v = self.mapping[key]
-        self.update_current_tags(v)
-        pos = c.vnode2position(v)
-        c.selectPosition(pos)
+        if isinstance(v, leoNodes.VNode):
+            p = c.vnode2position(v)
+        assert isinstance(p, leoNodes.Position), repr(p)
+        self.update_current_tags(p)
+        c.selectPosition(p)
         c.redraw()
     #@+node:peckj.20140804192343.6568: *5* update_current_tags
-    def update_current_tags(self,pos):
+    def update_current_tags(self, p):
         # clear out the horizontalLayout2
         hl2 = self.horizontalLayout2
         while hl2.count():
@@ -325,7 +322,7 @@ class LeoTagWidget(QtWidgets.QWidget):
         label.setObjectName("nodetags-label2")
         label.setText('Tags for current node:')
         hl2.addWidget(label)
-        tags = self.tc.get_tags(pos)
+        tags = self.tc.get_tags(p)
         # add tags
         for tag in tags:
             l = QtWidgets.QLabel(self)
@@ -333,10 +330,10 @@ class LeoTagWidget(QtWidgets.QWidget):
             l.setObjectName('nodetags-label3')
             hl2.addWidget(l)
             l.mouseReleaseEvent = self.callback_factory(tag)
-
     #@+node:peckj.20140804194839.6569: *6* callback_factory
     def callback_factory(self, tag):
         c = self.c
+
         def callback(event):
             p = c.p
             tc = c.theTagController
@@ -349,6 +346,7 @@ class LeoTagWidget(QtWidgets.QWidget):
                 idx = ui.comboBox.findText(tag)
                 ui.comboBox.setCurrentIndex(idx)
             ui.update_all()
+
         return callback
     #@+node:peckj.20140804114520.15206: *4* update_combobox
     def update_combobox(self):
@@ -423,7 +421,7 @@ class LeoTagWidget(QtWidgets.QWidget):
             g.es('Cannot add tags containing any of these characters: &|^-', color='red')
             return # don't add unsearchable tags
         else:
-            self.tc.add_tag(p.v,tag)
+            self.tc.add_tag(p,tag)
     #@+node:peckj.20140811082039.6623: *3* event hooks
     #@+node:peckj.20140804195456.13487: *4* select2_hook
     def select2_hook(self, tag, keywords):
