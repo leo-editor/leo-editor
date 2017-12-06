@@ -535,21 +535,38 @@ class ExternalFilesController(object):
         'name':     menu label (used only by the menu code).
         'shortcut': menu shortcut (used only by the menu code).
         '''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         testing = testing or g.unitTesting
         arg_tuple = d.get('args', [])
         arg = ' '.join(arg_tuple)
         kind = d.get('kind')
+        if kind in ('os.spawnl', 'subprocess.Popen'):
+            if not g.os_path_exists(arg):
+                g.trace('Executable not found', arg, arg_tuple)
+                return
         try:
             # All of these must be supported because they
             # could exist in @open-with nodes.
             command = '<no command>'
             if kind == 'os.startfile':
-                command = 'os.startfile(%s)' % self.join(arg, fn)
+                # New in Leo 5.7: 
+                # Use subProcess.Popen(..., shell=True)
+                c_arg = self.join(arg, fn)
+                command = 'os.startfile -> subprocess.Popen(%s)' % c_arg
                 if trace: g.trace(command)
-                # pylint: disable=no-member
-                # trust the user not to use this option on Linux.
-                if not testing: os.startfile(self.join(arg, fn))
+                if not testing:
+                    try:
+                        subprocess.Popen(c_arg, shell=True)
+                    except OSError:
+                        g.es_print('c_arg', repr(c_arg))
+                        g.es_exception()
+                # Legacy code.
+                    # command = 'os.startfile(%s)' % self.join(arg, fn)
+                    # if trace: g.trace(command)
+                    # # pylint: disable=no-member
+                    # # trust the user not to use this option on Linux.
+                    # if not testing:
+                        # os.startfile(arg, fn)
             elif kind == 'exec':
                 g.es_print('open-with exec no longer valid.')
                 # command = 'exec(%s)' % self.join(arg,fn)

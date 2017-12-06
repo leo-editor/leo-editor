@@ -2851,6 +2851,7 @@
 </v>
 </v>
 <v t="ekr.20171121100639.1"></v>
+<v t="ekr.20070411101857"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -4710,12 +4711,9 @@ as an argument to the opener logic.
 
 Quotes in &lt;a string&gt; will be *retained*, allowing the user to specify
 exactly the arguments to be passed to opener logic.</t>
-<t tx="ekr.20070411101857.1"># 'subprocess.Popen',['pythonw','C:/Python24/Lib/idlelib/idle.pyw'],'.py'
-
-ext:    .py
-kind:   subprocess.Popen
-arg:    pythonw
-arg:    "%PYTHONHOME%/Lib/idlelib/idle.pyw"
+<t tx="ekr.20070411101857.1">ext:    .py
+kind:   os.startfile
+arg:    idle
 </t>
 <t tx="ekr.20070411101857.2"># 'subprocess.Popen','C:/Program Files/Microsoft Office/Office/WINWORD.exe',None
 
