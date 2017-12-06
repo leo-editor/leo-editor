@@ -1689,8 +1689,8 @@
 <v t="ville.20091008201813.3911"><vh>@data contextmenu_commands</vh></v>
 </v>
 <v t="ekr.20070411101857"><vh>Open With menu</vh>
-<v t="ekr.20171206102715.1"><vh>@ifplatform linux2</vh>
-<v t="ekr.20171206102715.2"><vh>@openwith Idle = Alt+Shift+Ctrl+I</vh></v>
+<v t="ekr.20171206102715.1"><vh>@ifplatform linux, linux2</vh>
+<v t="ekr.20171206102715.2"><vh>@openwith Scite = Alt+Shift+Ctrl+S</vh></v>
 </v>
 <v t="ekr.20171206102759.1"><vh>@ifplatform win32</vh>
 <v t="ekr.20171206102759.2"><vh>@openwith Idle = Alt+Shift+Ctrl+I</vh></v>
@@ -14509,9 +14509,7 @@ REPLACE …/\1
 <t tx="ekr.20171206102715.1">Settings for MacOs or Linux...</t>
 <t tx="ekr.20171206102715.2">ext: .py
 kind: subprocess.Popen
-arg: idle
-arg: "/usr/lib64/python2.7/idlelib/idle.pyw"
-#arg: "%PYTHONHOME%/idlelib/idle.pyw"
+arg: /usr/bin/scite
 </t>
 <t tx="ekr.20171206102759.1">Settings for Windows...
 </t>
