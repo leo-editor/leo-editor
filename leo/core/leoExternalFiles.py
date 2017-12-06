@@ -535,15 +535,16 @@ class ExternalFilesController(object):
         'name':     menu label (used only by the menu code).
         'shortcut': menu shortcut (used only by the menu code).
         '''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         testing = testing or g.unitTesting
         arg_tuple = d.get('args', [])
         arg = ' '.join(arg_tuple)
         kind = d.get('kind')
-        if kind in ('os.spawnl', 'subprocess.Popen'):
-            if not g.os_path_exists(arg):
-                g.trace('Executable not found', arg, arg_tuple)
-                return
+        # This doesn't handle %ProgramFiles%
+            # if kind in ('os.spawnl', 'subprocess.Popen'):
+                # if not g.os_path_exists(arg):
+                    # g.trace('Executable not found', arg, arg_tuple)
+                    # return
         try:
             # All of these must be supported because they
             # could exist in @open-with nodes.

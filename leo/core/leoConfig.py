@@ -332,13 +332,18 @@ class ParserBaseClass(object):
     #@+node:ekr.20041120104215: *4* doIfPlatform
     def doIfPlatform(self, p, kind, name, val):
         '''Support @ifplatform in @settings trees.'''
-        trace = False
+        trace = False and not g.unitTesting
         platform = sys.platform.lower()
+        if trace:
+            g.trace(g.callers(verbose=True))
+            child = p and p.firstChild()
+            child_h = child.h if child else 'No Child'
         for s in name.split(','):
             if platform == s.lower():
-                if trace: g.trace('enable', s)
+                if trace:
+                    g.trace('===== enable', s, p.h, 'child', child_h)
                 return None
-        if trace: g.trace('disable', name)
+        if trace: g.trace('===== disable', name, p.h, 'child', child_h)
         return "skip"
     #@+node:ekr.20041120104215.1: *4* doIgnore
     def doIgnore(self, p, kind, name, val):
@@ -527,16 +532,18 @@ class ParserBaseClass(object):
                 g.app.config.menusFileName = name
     #@+node:ekr.20070926141716: *5* doItems
     def doItems(self, p, aList):
-        trace = False and g.isPython3
+        trace = False and not g.unitTesting
         if trace: g.trace(p.h)
         p = p.copy()
         after = p.nodeAfterTree()
         p.moveToThreadNext()
-        if trace: g.trace(self.debug_count, p.h, 'after', after and after.h)
+        if trace:
+            g.trace(p.h)
+            # g.trace(self.debug_count, p.h, 'after', after and after.h)
         while p and p != after:
             self.debug_count += 1
             h = p.h
-            for tag in ('@menu', '@item'):
+            for tag in ('@menu', '@item', '@ifplatform'):
                 if g.match_word(h, 0, tag):
                     itemName = h[len(tag):].strip()
                     if itemName:
@@ -612,6 +619,7 @@ class ParserBaseClass(object):
             self.createModeCommand(modeName, name1, d)
     #@+node:ekr.20070411101643.1: *4* doOpenWith (ParserBaseClass)
     def doOpenWith(self, p, kind, name, val):
+        trace = False and not g.unitTesting
         # g.trace(self.c.shortFileName(),'kind',kind,'name',name,'val',val)
         d = self.parseOpenWith(p)
         d['name'] = name
@@ -619,6 +627,9 @@ class ParserBaseClass(object):
         # g.trace('command',d.get('command'))
         name = kind = 'openwithtable'
         self.openWithList.append(d)
+        if trace:
+            g.trace(p.h)
+            g.printList(self.openWithList)
         self.set(p, kind, name, self.openWithList)
     #@+node:bobjack.20080324141020.4: *4* doPopup & helper
     def doPopup(self, p, kind, name, val):
@@ -813,11 +824,13 @@ class ParserBaseClass(object):
                         val = s[j + 1:].strip()
         # g.trace("%50s %10s %s" %(name,kind,val))
         return kind, name, val
-    #@+node:ekr.20070411101643.2: *4* parseOpenWith & helper
+    #@+node:ekr.20070411101643.2: *4* parseOpenWith & helper (ParserBaseClass)
     def parseOpenWith(self, p):
+        trace = False and not g.unitTesting
         d = {'command': None}
-            # Old: command is a tuple.
-            # New: d contains args, kind, etc tags.
+           # d contains args, kind, etc tags.
+        if trace:
+            g.trace(p.h)
         for line in g.splitLines(p.b):
             self.parseOpenWithLine(line, d)
         return d

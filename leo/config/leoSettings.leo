@@ -1689,9 +1689,16 @@
 <v t="ville.20091008201813.3911"><vh>@data contextmenu_commands</vh></v>
 </v>
 <v t="ekr.20070411101857"><vh>Open With menu</vh>
-<v t="ekr.20070411101857.1"><vh>@openwith Idle = Alt+Shift+Ctrl+I</vh></v>
+<v t="ekr.20171206102715.1"><vh>@ifplatform linux2</vh>
+<v t="ekr.20171206102715.2"><vh>@openwith Idle = Alt+Shift+Ctrl+I</vh></v>
+</v>
+<v t="ekr.20171206102759.1"><vh>@ifplatform win32</vh>
+<v t="ekr.20171206102759.2"><vh>@openwith Idle = Alt+Shift+Ctrl+I</vh></v>
+<v t="ekr.20171206102759.3"><vh>@openwith Open-Office = Alt+Shift+Ctrl+O</vh></v>
+<v t="ekr.20171206102759.4"><vh>@openwith Scite = Alt+Shift+Ctrl+S</vh></v>
 <v t="ekr.20070411101857.2"><vh>@openwith Word = Alt+Shift+Ctrl+W </vh></v>
-<v t="ekr.20070411101857.3"><vh>@@openwith Wordpad = Alt+Shift+Ctrl+T</vh></v>
+<v t="ekr.20171206102759.6"><vh>@@openwith Wordpad = Alt+Shift+Ctrl+T</vh></v>
+</v>
 <v t="TL.20080702085131.2"><vh>@bool open_with_save_on_update = True</vh></v>
 <v t="TL.20080702085131.3"><vh>@bool open_with_goto_node_on_update = True</vh></v>
 <v t="TL.20080702085131.4"><vh>@bool open_with_clean_filenames = False</vh></v>
@@ -4711,20 +4718,9 @@ as an argument to the opener logic.
 
 Quotes in &lt;a string&gt; will be *retained*, allowing the user to specify
 exactly the arguments to be passed to opener logic.</t>
-<t tx="ekr.20070411101857.1">ext:    .py
-kind:   os.startfile
-arg:    idle
-</t>
-<t tx="ekr.20070411101857.2"># 'subprocess.Popen','C:/Program Files/Microsoft Office/Office/WINWORD.exe',None
-
-ext:    
+<t tx="ekr.20070411101857.2">ext:    
 kind:   subprocess.Popen
 arg:    "C:/Program Files/Microsoft Office/Office/WINWORD.exe"</t>
-<t tx="ekr.20070411101857.3"># 'subprocess.Popen','C:/Program Files/Windows NT/Accessories/wordpad.exe',None
-
-ext:    
-kind:   subprocess.Popen
-arg:    "%ProgramFiles%/Windows NT/Accessories/wordpad.exe"</t>
 <t tx="ekr.20070411172718">@openwith nodes in @settings trees create menu items. The openWith
 plugin must be active for these settings to have any effect.
 
@@ -14509,6 +14505,38 @@ REPLACE …/\1
 # Set the font weight to one of Light, Normal, DemiBold, Bold, Black::
 
     # WEIGHT DemoBold
+</t>
+<t tx="ekr.20171206102715.1">Settings for MacOs or Linux...</t>
+<t tx="ekr.20171206102715.2">ext: .py
+kind: subprocess.Popen
+arg: idle
+arg: "/usr/lib64/python2.7/idlelib/idle.pyw"
+#arg: "%PYTHONHOME%/idlelib/idle.pyw"
+</t>
+<t tx="ekr.20171206102759.1">Settings for Windows...
+</t>
+<t tx="ekr.20171206102759.2">ext:    .py
+kind:   os.startfile
+arg:    idle
+
+# Does not work
+    # ext:    .py
+    # kind:   subprocess.Popen
+    # arg:    pythonw
+    # arg:    "%PYTHONHOME%/Lib/idlelib/idle.pyw"
+
+</t>
+<t tx="ekr.20171206102759.3">ext:    .txt
+arg:    "%ProgramFiles%\OpenOffice 4\program\swriter.exe"
+kind:   subprocess.Popen
+</t>
+<t tx="ekr.20171206102759.4">ext:    .txt
+kind:   subprocess.Popen
+arg:    C:\apps\SciTE\scite.exe
+</t>
+<t tx="ekr.20171206102759.6">ext:    
+kind:   subprocess.Popen
+arg:    "%ProgramFiles%/Windows NT/Accessories/wordpad.exe"
 </t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
