@@ -350,20 +350,12 @@ class AstFormatter(object):
         defaults = [self.visit(z) for z in node.defaults]
         args2 = []
         n_plain = len(args) - len(defaults)
-        for i in range(len(args)):
+        for i in range(len(node.args)):
             if i < n_plain:
                 args2.append(args[i])
             else:
                 args2.append('%s=%s' % (args[i], defaults[i - n_plain]))
         if g.isPython3:
-            args  = [self.visit(z) for z in node.kwonlyargs]
-            defaults = [self.visit(z) for z in node.kw_defaults]
-            n_plain = len(args) - len(defaults)
-            for i in range(len(args)):
-                if i < n_plain:
-                    args2.append(args[i])
-                else:
-                    args2.append('%s=%s' % (args[i], defaults[i - n_plain]))
             # Add the vararg and kwarg expressions.
             vararg = getattr(node, 'vararg', None)
             if vararg: args2.append('*' + self.visit(vararg))
@@ -383,7 +375,7 @@ class AstFormatter(object):
         if getattr(node, 'annotation', None):
             return self.visit(node.annotation)
         else:
-            return ''
+            return node.arg ### 2017/12/07
     #@+node:ekr.20141012064706.18418: *4* f.Attribute
     # Attribute(expr value, identifier attr, expr_context ctx)
 
