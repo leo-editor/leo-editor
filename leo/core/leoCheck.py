@@ -53,6 +53,8 @@ class Check (object):
         ('def',   re.compile(r'^\s*def\s+[\w0-9]+.*:')),
         ('c.x=',  re.compile(r'^\s*c\.[\w.]+\s*=')),
             # Assignment to c.
+        ('self.x=', re.compile(r'^\s*self\.\w+\s*=')),
+            # Assignment to self. We really want only object assigns.
         ('call',  re.compile(r'^\s*(\w+)(\.\w+)*\s*\(.*\)')),
             # Possible function call.
     )
@@ -71,10 +73,10 @@ class Check (object):
                     try:
                         call = m.group(1)
                         if not any([call.startswith(z) for z in self.ignore]):
-                            print('%6s %s' % (kind, s.rstrip()))
+                            print('%7s %s' % (kind, s.rstrip()))
                     except IndexError:
                         # No m.group(1)
-                        print('%6s %s' % (kind, s.rstrip()))
+                        print('%7s %s' % (kind, s.rstrip()))
     #@-others
 
 # Check(c).check(fn)
