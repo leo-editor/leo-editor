@@ -15,6 +15,69 @@ import re
     # Used only in the disused prototype code.
 import time
 #@+others
+#@+node:ekr.20171207095816.1: ** @@button checker
+# g.cls()
+# if c.changed: c.save()
+
+# import imp
+# import leo.core.leoAst as leoAst
+# imp.reload(leoAst)
+# import ast
+# import re
+# import time
+
+fn = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'nodetags.py')
+
+class Check (object):
+    #@+others
+    #@+node:ekr.20171207100902.1: *3* checker.__init__
+    def __init__(self, c):
+        self.c = c
+    #@+node:ekr.20171207100432.1: *3* checker.check
+    def check(self, fn):
+        
+        sfn = g.shortFileName(fn)
+        if g.os_path_exists(fn):
+            s, e = g.readFileIntoString(fn)
+            if s:
+                s1 = g.toEncodedString(s, encoding=e)
+                node = ast.parse(s1, filename='before', mode='exec')
+                self.show(fn, node)
+            else:
+                g.trace('empty file:', sfn)
+        else:
+            g.trace('file not found:', sfn)
+    #@+node:ekr.20171207101337.1: *3* checker.show
+    patterns = (
+        ('class', re.compile(r'class\s+[a-z_A-Z][a-z_A-Z0-9]*.*:')),
+        ('def',   re.compile(r'^\s*def\s+[\w0-9]+.*:')),
+        ('c.x=',  re.compile(r'^\s*c\.[\w.]+\s*=')),
+            # Assignment to c.
+        ('call',  re.compile(r'^\s*(\w+)(\.\w+)*\s*\(.*\)')),
+            # Possible function call.
+    )
+    ignore = ('dict', 'enumerate', 'list', 'tuple')
+        # Things that look like function calls.
+
+    def show(self, fn, node):
+        s = leoAst.AstFormatter().format(node)
+        aList = g.splitLines(s)
+        g.trace('%s lines, %s' % (len(aList), g.shortFileName(fn)))
+        for s in aList:
+            # Match each pattern separately for better control.
+            for kind, pattern in self.patterns:
+                m = pattern.match(s)
+                if m:
+                    try:
+                        call = m.group(1)
+                        if not any([call.startswith(z) for z in self.ignore]):
+                            print('%6s %s' % (kind, s.rstrip()))
+                    except IndexError:
+                        # No m.group(1)
+                        print('%6s %s' % (kind, s.rstrip()))
+    #@-others
+
+# Check(c).check(fn)
 #@+node:ekr.20160109173821.1: ** class BindNames
 class BindNames(object):
     '''A class that binds all names to objects without traversing any tree.'''
