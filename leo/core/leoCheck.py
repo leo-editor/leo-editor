@@ -37,6 +37,10 @@ class ConventionChecker (object):
     def __init__(self, c):
         self.c = c
         self.class_name = None
+        # Keys are names, values are strings.
+        self.c_classes = {}
+        self.class_ivars = {}
+        self.class_methods = {}
 
     #@+others
     #@+node:ekr.20171207100432.1: *3* checker.check
@@ -59,7 +63,8 @@ class ConventionChecker (object):
             return g.trace('no fn or s argument')
         # Check the source
         node = ast.parse(s, filename='before', mode='exec')
-        self.show(fn, node)
+        self.show(fn=sfn, node=node)
+        print('')
         g.trace('done', sfn)
             
        
@@ -67,9 +72,9 @@ class ConventionChecker (object):
     patterns = (
         ('class', re.compile(r'class\s+([a-z_A-Z][a-z_A-Z0-9]*).*:')),
         ('def',   re.compile(r'^\s*def\s+([\w0-9]+).*:')),
-        ('c.x=',  re.compile(r'^\s*c\.[\w.]+\s*=')),
+        ('c.x=',  re.compile(r'^\s*c\.([\w.]+)\s*=')),
             # Assignment to c.
-        ('self.x=', re.compile(r'^\s*self\.\w+\s*=')),
+        ('self.x=', re.compile(r'^\s*self\.(\w+)\s*=')),
             # Assignment to self. We really want only object assigns.
         ('call',  re.compile(r'^\s*(\w+)(\.\w+)*\s*\(.*\)')),
             # Possible function call.
@@ -78,11 +83,11 @@ class ConventionChecker (object):
         # Things that look like function calls.
 
     def show(self, fn, node):
-        
+        trace = True
         show_matches = True
         s = leoAst.AstFormatter().format(node)
         aList = g.splitLines(s)
-        g.trace('%s lines, %s' % (len(aList), g.shortFileName(fn)))
+        # g.trace('%s lines, %s' % (len(aList), fn)
         if not show_matches:
             return
         d = {
@@ -100,14 +105,21 @@ class ConventionChecker (object):
                     f = d.get(kind)
                     assert f, kind
                     f(kind, m, s)
+        self.end_class()
+        if trace and self.c_classes:
+            print('')
+            g.trace('C CLASSES')
+            g.printDict(self.c_classes)
     #@+node:ekr.20171208090003.1: *3* checker.do_*
     def do_assn_to_c(self, kind, m, s):
         if self.class_name:
             s = s.replace('self.', '<%s>.' % self.class_name)
+        self.c_classes [m.group(1)] = s.strip()
         print('%7s %s' % (kind, s.strip()))
 
     def do_assn_to_self(self, kind, m, s):
         assert self.class_name
+        self.class_ivars [m.group(1)] = s.strip()
         s = s.replace('self.', '<%s>.' % self.class_name)
         print('%7s %s' % (kind, s.strip()))
 
@@ -124,18 +136,37 @@ class ConventionChecker (object):
             print('%7s %s' % (kind, s.strip()))
 
     def do_class(self, kind, m, s):
-        self.class_name = m.group(1)
+       
+        self.end_class(m)
         print('')
-        print('class %s' % (m.group(1)))
+        print(s.rstrip())
         
     def do_def(self, kind, m, s):
         # Not quite accurate...
         print('')
         if self.class_name:
-            print('    def %s.%s\n' % (self.class_name, m.group(1)))
+            self.class_methods [m.group(1)] = s.strip()
+            print('    def %s.%s\n' % (self.class_name, s.strip())) ### m.group(1)))
         else:
             print(s.strip())
         
+    #@+node:ekr.20171208111655.1: *3* checker.end_class
+    def end_class(self, m=None):
+        
+        trace = True
+        if trace and self.class_name:
+            print('')
+            g.trace('==== END OF CLASS', self.class_name)
+            if self.class_ivars:
+                g.trace('IVARS')
+                g.printDict(self.class_ivars)
+            if self.class_methods:
+                g.trace('METHODS')
+                g.printDict(self.class_methods)
+            print('')
+        self.class_ivars = {}
+        self.class_methods = {}
+        self.class_name = m.group(1) if m else '<no class name>'
     #@-others
 #@+node:ekr.20160109173821.1: ** class BindNames
 class BindNames(object):
