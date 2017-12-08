@@ -31,7 +31,7 @@ class ConventionChecker (object):
         imp.reload(leoCheck)
         
         fn = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'nodetags.py')
-        leoCheck.ConventionChecker(c).check(fn)
+        leoCheck.ConventionChecker(c).check(fn=fn)
     '''
     
     def __init__(self, c):
@@ -39,20 +39,29 @@ class ConventionChecker (object):
 
     #@+others
     #@+node:ekr.20171207100432.1: *3* checker.check
-    def check(self, fn):
-        
-        sfn = g.shortFileName(fn)
-        if g.os_path_exists(fn):
-            s, e = g.readFileIntoString(fn)
-            if s:
-                s1 = g.toEncodedString(s, encoding=e)
-                node = ast.parse(s1, filename='before', mode='exec')
-                self.show(fn, node)
-                g.trace('done', sfn)
+    def check(self, fn=None, s=None):
+        '''Check the contents of fn or the string s.'''
+        # Get the source.
+        if fn:
+            sfn = g.shortFileName(fn)
+            if g.os_path_exists(fn):
+                s, e = g.readFileIntoString(fn)
+                if s:
+                    s = g.toEncodedString(s, encoding=e)
+                else:
+                    return g.trace('empty file:', sfn)
             else:
-                g.trace('empty file:', sfn)
+                return g.trace('file not found:', sfn)
+        elif s:
+            sfn = '<string>'
         else:
-            g.trace('file not found:', sfn)
+            return g.trace('no fn or s argument')
+        # Check the source
+        node = ast.parse(s, filename='before', mode='exec')
+        self.show(fn, node)
+        g.trace('done', sfn)
+            
+       
     #@+node:ekr.20171207101337.1: *3* checker.show
     patterns = (
         ('class', re.compile(r'class\s+[a-z_A-Z][a-z_A-Z0-9]*.*:')),
