@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:maphew.20141126130213.2: * @file setup.py
+#@+node:maphew.20171207193249.1: * @file setup.py
 #@@first
 '''setup.py for leo'''
 from setuptools import setup, find_packages # Always prefer setuptools over distutils
@@ -71,21 +71,19 @@ classifiers = [
     ]
 #@+node:maphew.20171120133429.1: ** User requirements
 user_requires = [
-    'docutils', # used by Sphinx, rST plugin
-    #'pyenchant', # spell check support ## no wheels for some platforms, e.g. amd64
-    #'pyxml', # xml importing ## no pip package
     'PyQt5; python_version >= "3.0"',
     #'python-qt5; python_version < "3.0" and platform_system=="Windows"',
 		# disabled, pending "pip install from .whl fails conditional dependency check" https://github.com/pypa/pip/issues/4886
     ## missing: pyqt for Linux python 2.x (doesn't exist on PyPi)
-    'sphinx',
-    ]
-#@+node:maphew.20171120133437.1: ** Dev requirements
-developer_requires = {'develop':[
+
+    'docutils', # used by Sphinx, rST plugin
     'pylint','pyflakes', # coding syntax standards
     'pypandoc', # doc format conversion
+    'sphinx', # rST plugin
     'twine','wheel','keyring' # Pip packaging, uploading to PyPi
-    ]}
+    #'pyenchant', # spell check support ## no wheels for some platforms, e.g. amd64
+    #'pyxml', # xml importing ## no pip package
+    ]
 #@+node:maphew.20171122231442.1: ** clean
 def clean():
     print('Removing build and dist directories')
@@ -113,7 +111,6 @@ setup(
     packages=find_packages(),
     include_package_data=True, # also include MANIFEST files in wheels
     install_requires=user_requires,
-    extras_require=developer_requires,
     entry_points={
        'console_scripts': ['leoc = leo.core.runLeo:run'],
        'gui_scripts': ['leo = leo.core.runLeo:run']

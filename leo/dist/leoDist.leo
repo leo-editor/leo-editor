@@ -303,7 +303,7 @@
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
 </v>
-<v t="ekr.20141118074110.4" a="E"><vh>Discussions</vh>
+<v t="ekr.20141118074110.4"><vh>Discussions</vh>
 <v t="ekr.20141118074110.2"><vh>Matt's workflow for updating pypi</vh></v>
 <v t="ekr.20141118074110.3"><vh>Installing Leo on Linux</vh></v>
 </v>
@@ -354,6 +354,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20141118074110.2"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -1607,8 +1608,13 @@ Pre-requsites, pip installable:
   There's an extra step to download pandoc binaries and install to PATH ( if not
   installed already):
 
+        # preferred
+        conda install pandoc
+
+        #alternate
         from pypandoc.pandoc_download import download_pandoc
         download_pandoc()
+
 
 Packaging a new release for Test PyPi
 =====================================
