@@ -39,7 +39,9 @@ class ConventionChecker (object):
         self.class_name = None
         # Keys are names, values are strings.
         self.classes = {}
+            # A simple form of symbol tables.
         self.c_classes = {}
+            # A global, specialized, symbol table.
 
     #@+others
     #@+node:ekr.20171207100432.1: *3* checker.check
@@ -96,9 +98,8 @@ class ConventionChecker (object):
                     f(kind, m, s)
         self.start_class()
         self.end_program()
-    #@+node:ekr.20171208090003.1: *3* checker.do_*
+    #@+node:ekr.20171208090003.1: *3* checker.do_* (string-oriented visitors)
     def do_assn_to_c(self, kind, m, s):
-
         self.c_classes [m.group(1)] = s.strip()
         print('%7s %s' % (kind, s.strip()))
 
@@ -129,7 +130,7 @@ class ConventionChecker (object):
         self.start_class(m)
         print('')
         print(s.rstrip())
-        
+
     def do_def(self, kind, m, s):
         # Not quite accurate...
         print('')
@@ -140,28 +141,24 @@ class ConventionChecker (object):
             print('    def %s.%s\n' % (self.class_name, s.strip()))
         else:
             print(s.strip())
-        
     #@+node:ekr.20171208111655.1: *3* checker.start_class
     def start_class(self, m=None):
         '''Start a new class, ending the old class.'''
         trace = True
+        # Trace the old class.
         if trace and self.class_name:
             print('')
             g.trace('==== END OF CLASS', self.class_name)
             g.printDict(self.classes[self.class_name])
-            # if self.ivars:
-                # g.trace('IVARS')
-                # g.printDict(self.ivars)
-            # if self.methods:
-                # g.trace('METHODS')
-                # g.printDict(self.methods)
             print('')
-        # End the old class.
+        # Switch classes.
         if m:
             self.class_name = m.group(1)
-            g.trace('===== START CLASS', m.group(1))
-            self.classes [self.class_name] = {'ivars': {}, 'methods': {}}
-           
+            if trace: g.trace('===== START CLASS', m.group(1))
+            self.classes [self.class_name] = {
+                'ivars': {},
+                'methods': {},
+            }
     #@+node:ekr.20171208135642.1: *3* checker.end_program
     def end_program(self):
         
