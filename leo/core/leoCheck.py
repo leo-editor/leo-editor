@@ -36,6 +36,7 @@ class ConventionChecker (object):
     
     def __init__(self, c):
         self.c = c
+        self.class_name = None
 
     #@+others
     #@+node:ekr.20171207100432.1: *3* checker.check
@@ -64,8 +65,8 @@ class ConventionChecker (object):
        
     #@+node:ekr.20171207101337.1: *3* checker.show
     patterns = (
-        ('class', re.compile(r'class\s+[a-z_A-Z][a-z_A-Z0-9]*.*:')),
-        ('def',   re.compile(r'^\s*def\s+[\w0-9]+.*:')),
+        ('class', re.compile(r'class\s+([a-z_A-Z][a-z_A-Z0-9]*).*:')),
+        ('def',   re.compile(r'^\s*def\s+([\w0-9]+).*:')),
         ('c.x=',  re.compile(r'^\s*c\.[\w.]+\s*=')),
             # Assignment to c.
         ('self.x=', re.compile(r'^\s*self\.\w+\s*=')),
@@ -84,18 +85,57 @@ class ConventionChecker (object):
         g.trace('%s lines, %s' % (len(aList), g.shortFileName(fn)))
         if not show_matches:
             return
+        d = {
+            'call':     self.do_call,
+            'class':    self.do_class,
+            'def':      self.do_def,
+            'self.x=':  self.do_assn_to_self,
+            'c.x=':     self.do_assn_to_c,
+        }
         for s in aList:
             # Match each pattern separately for better control.
             for kind, pattern in self.patterns:
                 m = pattern.match(s)
                 if m:
-                    try:
-                        call = m.group(1)
-                        if not any([call.startswith(z) for z in self.ignore]):
-                            print('%7s %s' % (kind, s.rstrip()))
-                    except IndexError:
-                        # No m.group(1)
-                        print('%7s %s' % (kind, s.rstrip()))
+                    f = d.get(kind)
+                    assert f, kind
+                    f(kind, m, s)
+    #@+node:ekr.20171208090003.1: *3* checker.do_*
+    def do_assn_to_c(self, kind, m, s):
+        if self.class_name:
+            s = s.replace('self.', '<%s>.' % self.class_name)
+        print('%7s %s' % (kind, s.strip()))
+
+    def do_assn_to_self(self, kind, m, s):
+        assert self.class_name
+        s = s.replace('self.', '<%s>.' % self.class_name)
+        print('%7s %s' % (kind, s.strip()))
+
+    def do_call(self, kind, m, s):
+        trace = True
+        try:
+            call = m.group(1)
+            trace = not any([call.startswith(z) for z in self.ignore])
+        except IndexError:
+            pass # No m.group(1)
+        if trace:
+            if self.class_name:
+                s = s.replace('self.', '<%s>.' % self.class_name)
+            print('%7s %s' % (kind, s.strip()))
+
+    def do_class(self, kind, m, s):
+        self.class_name = m.group(1)
+        print('')
+        print('class %s' % (m.group(1)))
+        
+    def do_def(self, kind, m, s):
+        # Not quite accurate...
+        print('')
+        if self.class_name:
+            print('    def %s.%s\n' % (self.class_name, m.group(1)))
+        else:
+            print(s.strip())
+        
     #@-others
 #@+node:ekr.20160109173821.1: ** class BindNames
 class BindNames(object):
