@@ -38,9 +38,8 @@ class ConventionChecker (object):
         self.c = c
         self.class_name = None
         # Keys are names, values are strings.
+        self.classes = {}
         self.c_classes = {}
-        self.class_ivars = {}
-        self.class_methods = {}
 
     #@+others
     #@+node:ekr.20171207100432.1: *3* checker.check
@@ -66,8 +65,6 @@ class ConventionChecker (object):
         self.show(fn=sfn, node=node)
         print('')
         g.trace('done', sfn)
-            
-       
     #@+node:ekr.20171207101337.1: *3* checker.show
     patterns = (
         ('class', re.compile(r'class\s+([a-z_A-Z][a-z_A-Z0-9]*).*:')),
@@ -83,45 +80,39 @@ class ConventionChecker (object):
         # Things that look like function calls.
 
     def show(self, fn, node):
-        trace = True
-        show_matches = True
-        s = leoAst.AstFormatter().format(node)
-        aList = g.splitLines(s)
-        # g.trace('%s lines, %s' % (len(aList), fn)
-        if not show_matches:
-            return
-        d = {
+        dispatch = {
             'call':     self.do_call,
             'class':    self.do_class,
             'def':      self.do_def,
             'self.x=':  self.do_assn_to_self,
             'c.x=':     self.do_assn_to_c,
         }
-        for s in aList:
-            # Match each pattern separately for better control.
+        s = leoAst.AstFormatter().format(node)
+        for s in g.splitLines(s):
             for kind, pattern in self.patterns:
                 m = pattern.match(s)
                 if m:
-                    f = d.get(kind)
-                    assert f, kind
+                    f = dispatch.get(kind)
                     f(kind, m, s)
-        self.end_class()
-        if trace and self.c_classes:
-            print('')
-            g.trace('C CLASSES')
-            g.printDict(self.c_classes)
+        self.start_class()
+        self.end_program()
     #@+node:ekr.20171208090003.1: *3* checker.do_*
     def do_assn_to_c(self, kind, m, s):
-        if self.class_name:
-            s = s.replace('self.', '<%s>.' % self.class_name)
+
         self.c_classes [m.group(1)] = s.strip()
         print('%7s %s' % (kind, s.strip()))
 
     def do_assn_to_self(self, kind, m, s):
         assert self.class_name
-        self.class_ivars [m.group(1)] = s.strip()
-        s = s.replace('self.', '<%s>.' % self.class_name)
+        ivar = m.group(1)
+        d = self.classes.get(self.class_name)
+        assert d is not None, self.class_name
+        ivars = d.get('ivars')
+        ivars[ivar] = s.strip()
+        d['ivars'] = ivars
         print('%7s %s' % (kind, s.strip()))
+        g.trace(self.class_name, ivar)
+        g.printDict(d)
 
     def do_call(self, kind, m, s):
         trace = True
@@ -131,13 +122,11 @@ class ConventionChecker (object):
         except IndexError:
             pass # No m.group(1)
         if trace:
-            if self.class_name:
-                s = s.replace('self.', '<%s>.' % self.class_name)
             print('%7s %s' % (kind, s.strip()))
+        self.resolve_call(kind, m, s)
 
     def do_class(self, kind, m, s):
-       
-        self.end_class(m)
+        self.start_class(m)
         print('')
         print(s.rstrip())
         
@@ -145,28 +134,91 @@ class ConventionChecker (object):
         # Not quite accurate...
         print('')
         if self.class_name:
-            self.class_methods [m.group(1)] = s.strip()
-            print('    def %s.%s\n' % (self.class_name, s.strip())) ### m.group(1)))
+            the_class = self.classes[self.class_name]
+            methods = the_class.get('methods')
+            methods [m.group(1)] = s.strip()
+            print('    def %s.%s\n' % (self.class_name, s.strip()))
         else:
             print(s.strip())
         
-    #@+node:ekr.20171208111655.1: *3* checker.end_class
-    def end_class(self, m=None):
-        
+    #@+node:ekr.20171208111655.1: *3* checker.start_class
+    def start_class(self, m=None):
+        '''Start a new class, ending the old class.'''
         trace = True
         if trace and self.class_name:
             print('')
             g.trace('==== END OF CLASS', self.class_name)
-            if self.class_ivars:
-                g.trace('IVARS')
-                g.printDict(self.class_ivars)
-            if self.class_methods:
-                g.trace('METHODS')
-                g.printDict(self.class_methods)
+            g.printDict(self.classes[self.class_name])
+            # if self.ivars:
+                # g.trace('IVARS')
+                # g.printDict(self.ivars)
+            # if self.methods:
+                # g.trace('METHODS')
+                # g.printDict(self.methods)
             print('')
-        self.class_ivars = {}
-        self.class_methods = {}
-        self.class_name = m.group(1) if m else '<no class name>'
+        # End the old class.
+        if m:
+            self.class_name = m.group(1)
+            g.trace('===== START CLASS', m.group(1))
+            self.classes [self.class_name] = {'ivars': {}, 'methods': {}}
+           
+    #@+node:ekr.20171208135642.1: *3* checker.end_program
+    def end_program(self):
+        
+        trace = True
+        if trace and self.c_classes:
+            print('')
+            g.trace('C CLASSES')
+            g.printDict(self.c_classes)
+    #@+node:ekr.20171208134737.1: *3* checker.resolve_call
+    call_pattern = re.compile(r'(\w+(\.\w+)*)\s*\((.*)\)')
+
+    def resolve_call(self, kind, m, s):
+
+        s = s.strip()
+        m = self.call_pattern.match(s)
+        aList = m.group(1).split('.')
+        head, func = aList[:-1], aList[-1]
+        args = m.group(3).split(',')
+        print('')
+        g.trace('-----', s)
+        g.trace('HEAD: %s FUNC: %s ARGS: %s' % (head, func, args))
+        obj = None
+        for name in head:
+            obj = self.resolve(name, obj)
+            g.trace('result:', obj.kind, obj.name)
+        g.trace('RESULT:', obj.kind, obj.name)
+    #@+node:ekr.20171208142646.1: *3* checker.resolve
+    def resolve(self, name, obj):
+        '''Resolve name in the context of obj.'''
+        if obj:
+            g.trace(self.class_name, name, obj.kind, obj.name)
+        else:
+            g.trace(self.class_name, name, '<None>')
+        if obj:
+            if obj.kind == 'error':
+                return obj
+            elif obj.kind == 'class':
+                the_class = self.classes.get(obj.name)
+                g.printDict(the_class)
+                if the_class:
+                    ivars = the_class.get('ivars')
+                    methods = the_class.get('methods')
+                    if methods.get(obj.name):
+                        return g.Bunch(kind='func', name=name)
+                    elif ivars.get(name):
+                        ### To do: follow the chain!!!
+                        return g.Bunch(kind='ivar', name='%s.%s' % (obj.name, name))
+                    else:
+                        return g.Bunch(kind='error', name='no member %s' % name)
+                else:
+                    return g.Bunch(kind='error', name='no class %s' % name)
+            else:
+                return g.Bunch(kind='error', name='unknown kind %s' % obj.kind)
+        elif name == 'self' and self.class_name:
+            return g.Bunch(kind='class', name=self.class_name)
+        else:
+            return g.Bunch(kind='error', name=name)
     #@-others
 #@+node:ekr.20160109173821.1: ** class BindNames
 class BindNames(object):
