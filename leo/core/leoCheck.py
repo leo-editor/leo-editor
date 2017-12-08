@@ -188,16 +188,20 @@ class ConventionChecker (object):
     #@+node:ekr.20171208142646.1: *3* checker.resolve
     def resolve(self, name, obj):
         '''Resolve name in the context of obj.'''
-        if obj:
-            g.trace(self.class_name, name, obj.kind, obj.name)
-        else:
-            g.trace(self.class_name, name, '<None>')
+        trace = True
+        if trace:
+            if obj:
+                g.trace(self.class_name, name, obj.kind, obj.name)
+            else:
+                g.trace(self.class_name, name, '<None>')
         if obj:
             if obj.kind == 'error':
                 return obj
             elif obj.kind == 'class':
                 the_class = self.classes.get(obj.name)
-                g.printDict(the_class)
+                if trace:
+                    g.trace('CLASS DICT')
+                    g.printDict(the_class)
                 if the_class:
                     ivars = the_class.get('ivars')
                     methods = the_class.get('methods')
@@ -205,6 +209,7 @@ class ConventionChecker (object):
                         return g.Bunch(kind='func', name=name)
                     elif ivars.get(name):
                         ### To do: follow the chain!!!
+                        ### We want to return the class of a.b.
                         return g.Bunch(kind='ivar', name='%s.%s' % (obj.name, name))
                     else:
                         return g.Bunch(kind='error', name='no member %s' % name)
