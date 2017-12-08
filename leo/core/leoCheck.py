@@ -15,24 +15,29 @@ import re
     # Used only in the disused prototype code.
 import time
 #@+others
-#@+node:ekr.20171207095816.1: ** @@button checker
-# g.cls()
-# if c.changed: c.save()
-
-# import imp
-# import leo.core.leoAst as leoAst
-# imp.reload(leoAst)
-# import ast
-# import re
-# import time
-
-fn = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'nodetags.py')
-
-class Check (object):
-    #@+others
-    #@+node:ekr.20171207100902.1: *3* checker.__init__
+#@+node:ekr.20171207095816.1: ** class ConventionChecker
+class ConventionChecker (object):
+    '''
+    A prototype of #632's convention-checking tool.
+    https://github.com/leo-editor/leo-editor/issues/632
+    
+    Here is the body of @button check-conventions:
+    
+        g.cls()
+        if c.changed: c.save()
+        
+        import imp
+        import leo.core.leoCheck as leoCheck
+        imp.reload(leoCheck)
+        
+        fn = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'nodetags.py')
+        leoCheck.ConventionChecker(c).check(fn)
+    '''
+    
     def __init__(self, c):
         self.c = c
+
+    #@+others
     #@+node:ekr.20171207100432.1: *3* checker.check
     def check(self, fn):
         
@@ -43,6 +48,7 @@ class Check (object):
                 s1 = g.toEncodedString(s, encoding=e)
                 node = ast.parse(s1, filename='before', mode='exec')
                 self.show(fn, node)
+                g.trace('done', sfn)
             else:
                 g.trace('empty file:', sfn)
         else:
@@ -62,9 +68,13 @@ class Check (object):
         # Things that look like function calls.
 
     def show(self, fn, node):
+        
+        show_matches = True
         s = leoAst.AstFormatter().format(node)
         aList = g.splitLines(s)
         g.trace('%s lines, %s' % (len(aList), g.shortFileName(fn)))
+        if not show_matches:
+            return
         for s in aList:
             # Match each pattern separately for better control.
             for kind, pattern in self.patterns:
@@ -78,8 +88,6 @@ class Check (object):
                         # No m.group(1)
                         print('%7s %s' % (kind, s.rstrip()))
     #@-others
-
-# Check(c).check(fn)
 #@+node:ekr.20160109173821.1: ** class BindNames
 class BindNames(object):
     '''A class that binds all names to objects without traversing any tree.'''
