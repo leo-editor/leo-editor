@@ -34,8 +34,7 @@ class ConventionChecker (object):
         leoCheck.ConventionChecker(c).check(fn=fn)
     '''
     
-    pass1_patterns = []
-    pass2_patterns = []
+    patterns = []
         # Set below.
     
     def __init__(self, c):
@@ -81,13 +80,13 @@ class ConventionChecker (object):
             'self.x=':  self.do_assn_to_self,
             'c.x=':     self.do_assn_to_c,
         }
-        s = leoAst.AstFormatter().format(node)
-        table = ((1, self.pass1_patterns), (2, self.pass2_patterns))
-        for n, patterns in table:
+        s1 = leoAst.AstFormatter().format(node)
+        for n in (1, 2):
+            self.class_name = None
             self.pass_n = n
             print('===== pass: %s' % n)
-            for s in g.splitLines(s):
-                for kind, pattern in patterns:
+            for s in g.splitLines(s1):
+                for kind, pattern in self.patterns:
                     m = pattern.match(s)
                     if m:
                         f = dispatch.get(kind)
@@ -114,59 +113,61 @@ class ConventionChecker (object):
     # These could be called string-oriented visitors.
     #@+node:ekr.20171209063559.1: *4* checker.do_assn_to_c
     assign_to_c_pattern = ('c.x=',  re.compile(r'^\s*c\.([\w.]+)\s*=(.*)'))
-    pass2_patterns.append(assign_to_c_pattern)
+    patterns.append(assign_to_c_pattern)
 
     def do_assn_to_c(self, kind, m, s):
-        ivar = m.group(1)
-        val = m.group(2).strip()
-        # Resolve val, if possible.
-        if self.class_name:
-            context = self.Type('class', self.class_name)
-        else:
-            context = self.Type('module', self.file_name)
-        val = self.resolve(val, context, trace=False)
-        d = self.classes.get('Commands')
-        assert d
-        ivars = d.get('ivars')
-        ivars[ivar] = val
-        d['ivars'] = ivars
+        if self.pass_n == 1:
+            ivar = m.group(1)
+            val = m.group(2).strip()
+            # Resolve val, if possible.
+            if self.class_name:
+                context = self.Type('class', self.class_name)
+            else:
+                context = self.Type('module', self.file_name)
+            val = self.resolve(val, context, trace=False)
+            d = self.classes.get('Commands')
+            assert d
+            ivars = d.get('ivars')
+            ivars[ivar] = val
+            d['ivars'] = ivars
         print('%14s: %s' % (kind, s.strip()))
 
     #@+node:ekr.20171209063559.2: *4* checker.do_assn_to_self
     assn_to_self_pattern = ('self.x=', re.compile(r'^\s*self\.(\w+)\s*=(.*)'))
-    pass1_patterns.append(assn_to_self_pattern)
+    patterns.append(assn_to_self_pattern)
 
     def do_assn_to_self(self, kind, m, s):
         trace = False
         assert self.class_name
-        ivar = m.group(1)
-        val = m.group(2).strip()
-        d = self.classes.get(self.class_name)
-        assert d is not None, self.class_name
-        ivars = d.get('ivars')
-        ivars[ivar] = val
-        d['ivars'] = ivars
         print('%14s: %s' % (kind, s.strip()))
-        if trace:
-            g.trace(self.class_name, ivar, val)
-            g.printDict(d)
-
+        if self.pass_n == 1:
+            ivar = m.group(1)
+            val = m.group(2).strip()
+            d = self.classes.get(self.class_name)
+            assert d is not None, self.class_name
+            ivars = d.get('ivars')
+            ivars[ivar] = val
+            d['ivars'] = ivars
+            if trace:
+                g.trace(self.class_name, ivar, val)
+                g.printDict(d)
     #@+node:ekr.20171209063559.3: *4* checker.do_call
     call_pattern = ('call',  re.compile(r'^\s*(\w+(\.\w+)*)\s*\((.*)\)'))
-    pass2_patterns.append(call_pattern)
+    patterns.append(call_pattern)
 
     ignore = ('dict', 'enumerate', 'list', 'tuple')
         # Things that look like function calls.
 
     def do_call(self, kind, m, s):
         trace = True
+        if trace: print('%14s: %s' % (kind, s.strip()))
+        if self.pass_n == 1:
+            return
         try:
             call = m.group(1)
             trace = not any([call.startswith(z) for z in self.ignore])
         except IndexError:
             pass # No m.group(1)
-        if trace:
-            print('%14s: %s' % (kind, s.strip()))
         obj = self.resolve_call(kind, m, s)
         if obj and obj.kind == 'instance':
             m = self.call_pattern.match(s.strip())
@@ -183,40 +184,34 @@ class ConventionChecker (object):
 
     #@+node:ekr.20171209063559.4: *4* checker.do_class
     class_pattern = ('class', re.compile(r'class\s+([a-z_A-Z][a-z_A-Z0-9]*).*:'))
-    pass1_patterns.append(class_pattern)
-    pass2_patterns.append(class_pattern)
+    patterns.append(class_pattern)
 
     def do_class(self, kind, m, s):
-        if self.pass_n == 1:
-            self.start_class(m)
-        print('')
+        self.start_class(m)
         print(s.rstrip())
 
     #@+node:ekr.20171209063559.5: *4* checker.do_def
     def_pattern = ('def', re.compile(r'^\s*def\s+([\w0-9]+)\s*\((.*)\)\s*:'))
-    pass1_patterns.append(def_pattern)
-    pass2_patterns.append(def_pattern)
+    patterns.append(def_pattern)
 
     def do_def(self, kind, m, s):
         trace = True
+        if trace: print('%4s%s' % ('', s.strip()))
         # Not quite accurate..
-        if trace: print('')
-        if self.class_name:
-            if self.pass_n == 1:
-                def_name = m.group(1)
-                def_args = m.group(2)
-                the_class = self.classes[self.class_name]
-                methods = the_class.get('methods')
-                methods [def_name] = def_args
-            if trace: print('%4s%s\n' % ('', s.strip()))
-        else:
-            if trace: print(s.strip())
+        # if trace: print('')
+        if self.class_name and self.pass_n == 1:
+            def_name = m.group(1)
+            def_args = m.group(2)
+            the_class = self.classes[self.class_name]
+            methods = the_class.get('methods')
+            methods [def_name] = def_args
+            
     #@+node:ekr.20171208135642.1: *3* checker.end_program
     def end_program(self):
         
         trace = False
         if trace:
-            print('')
+            # print('')
             print('----- END OF PROGRAM')
             for key, val in sorted(self.classes.items()):
                 print('class %s' % key)
@@ -352,29 +347,21 @@ class ConventionChecker (object):
     def start_class(self, m=None):
         '''Start a new class, ending the old class.'''
         trace = True
-        trace_commands = False
         # Trace the old class.
-        if trace:
-            print('')
         if trace and self.class_name:
             print('----- END', self.class_name)
             g.printDict(self.classes[self.class_name])
-        # Trace the present state of the Commands class.
-        if trace and trace_commands:
-            if not self.class_name:
-                print('===== START OF PROGRAM')
-            print('Commands class')
-            g.printDict(self.classes.get('Commands'))
-        if trace:
-            print('')
         # Switch classes.
         if m:
             self.class_name = m.group(1)
             if trace: print('===== START', self.class_name)
-            self.classes [self.class_name] = {
-                'ivars': {},
-                'methods': {},
-            }
+            if self.pass_n == 1:
+                self.classes [self.class_name] = {
+                    'ivars': {},
+                    'methods': {},
+                }
+        else:
+            self.class_name = None
     #@+node:ekr.20171209030742.1: *3* class Type
     class Type (object):
         '''A class to hold all type-related data.'''
