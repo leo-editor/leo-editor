@@ -142,7 +142,7 @@ class ConventionChecker (object):
         '''
         
         return {
-            # Pre-enter the Commands class.
+            # Pre-enter known classes.
             'Commands': {
                 'ivars': {
                     'p': self.Type('instance', name='Position'),
@@ -159,12 +159,13 @@ class ConventionChecker (object):
             'Vnode': {
                 'ivars': {
                     'h': self.Type('instance', name='String'),
+                    # Vnode has no v instance!
                 },
                 'methods': {},
             },
             'String': {
                 'ivars': {},
-                'methods': {},
+                'methods': {}, ### Possible?
             },
         }
         
@@ -208,7 +209,7 @@ class ConventionChecker (object):
                 context = self.Type('class', name=self.class_name)
             else:
                 context = self.Type('module')
-            result = self.resolve_chain(chain, context=context)
+            result = self.resolve_chain(chain, context)
             if trace:
                 g.trace(' ----> %s.%s' % (result, func))
     #@+node:ekr.20171209034244.1: *4* checker.resolve_chain
