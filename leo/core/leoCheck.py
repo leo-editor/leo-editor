@@ -37,12 +37,8 @@ class ConventionChecker (object):
     def __init__(self, c):
         self.c = c
         self.class_name = None
-        # Keys are names, values are strings.
-        self.classes = {
-            'Commands': {'ivars': {}, 'methods': {}},
-                # Pre-enter the Commands class.
-        }
-            # A simple form of symbol tables.
+        self.classes = self.init_classes()
+            # Rudimentary symbol tables.
 
     #@+others
     #@+node:ekr.20171207100432.1: *3* checker.check
@@ -139,11 +135,44 @@ class ConventionChecker (object):
             print('----- END OF PROGRAM')
             print('Commands class')
             g.printDict(self.classes.get('Commands'))
+    #@+node:ekr.20171209044610.1: *3* checker.init_classes
+    def init_classes(self):
+        '''
+        Init the symbol tables with known classes.
+        '''
+        
+        return {
+            # Pre-enter the Commands class.
+            'Commands': {
+                'ivars': {
+                    'p': self.Type('instance', name='Position'),
+                },
+                'methods': {},
+            },
+            'Position': {
+                'ivars': {
+                    'v': self.Type('instance', name='Vnode'),
+                    'h': self.Type('instance', name='String'),
+                },
+                'methods': {},
+            },
+            'Vnode': {
+                'ivars': {
+                    'h': self.Type('instance', name='String'),
+                },
+                'methods': {},
+            },
+            'String': {
+                'ivars': {},
+                'methods': {},
+            },
+        }
+        
     #@+node:ekr.20171208142646.1: *3* checker.resolve & helpers
     def resolve(self, name, obj, trace=None):
         '''Resolve name in the context of obj.'''
         trace = True if trace is None else trace
-        if trace: g.trace('===== name: %s obj: %r' % (name, obj))
+        if trace: g.trace('      ===== name: %s obj: %r' % (name, obj))
         if obj:
             if obj.kind == 'error':
                 result = obj
@@ -158,7 +187,7 @@ class ConventionChecker (object):
                 result = self.Type('error', tag='unknown kind: %s' % obj.kind)
         else:
             result = self.Type('error', tag='unbound name: %s' % name)
-        if trace: g.trace('----- returns', result)
+        if trace: g.trace('      ----->', result)
         return result
     #@+node:ekr.20171208134737.1: *4* checker.resolve_call
     call_pattern = re.compile(r'(\w+(\.\w+)*)\s*\((.*)\)')
@@ -171,31 +200,28 @@ class ConventionChecker (object):
         aList = m.group(1).split('.')
         chain, func = aList[:-1], aList[-1]
         args = m.group(3).split(',')
-        if trace:
-            print('')
-            g.trace('===== %s.%s(%s)' % (
-            '.'.join(chain), func, ','.join(args)))
-        if self.class_name:
-            context = self.Type('class', name=self.class_name)
-        else:
-            context = self.Type('module')
-        result = self.resolve_chain(chain, context=context)
-        if trace:
-            print('')
-            g.trace('-----', result)
+        if chain:
+            if trace:
+                g.trace(' ===== %s.%s(%s)' % (
+                    '.'.join(chain), func, ','.join(args)))
+            if self.class_name:
+                context = self.Type('class', name=self.class_name)
+            else:
+                context = self.Type('module')
+            result = self.resolve_chain(chain, context=context)
+            if trace:
+                g.trace(' ----> %s.%s' % (result, func))
     #@+node:ekr.20171209034244.1: *4* checker.resolve_chain
     def resolve_chain(self, chain, context):
         
         trace = True
         if trace:
-            print('')
             g.trace('=====', chain, context)
         for name in chain:
             context = self.resolve(name, context)
-            if trace: g.trace('name: %s ==> %r' % (name, context))
+            if trace: g.trace('%s ==> %r' % (name, context))
         if trace:
-            print('')
-            g.trace('-----', context)
+            g.trace('---->', context)
         return context
     #@+node:ekr.20171208173323.1: *4* checker.resolve_class
     def resolve_class(self, name, obj):
