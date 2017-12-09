@@ -128,15 +128,16 @@ class ConventionChecker (object):
             print('%4s%s\n' % ('', s.strip()))
         else:
             print(s.strip())
-    #@+node:ekr.20171208135642.1: *3* checker.end_program (not used)
+    #@+node:ekr.20171208135642.1: *3* checker.end_program
     def end_program(self):
         
-        trace = True
+        trace = False
         if trace:
             print('')
             print('----- END OF PROGRAM')
-            print('Commands class')
-            g.printDict(self.classes.get('Commands'))
+            for key, val in sorted(self.classes.items()):
+                print('class %s' % key)
+                g.printDict(val)
     #@+node:ekr.20171209044610.1: *3* checker.init_classes
     def init_classes(self):
         '''
@@ -292,7 +293,7 @@ class ConventionChecker (object):
                     f = dispatch.get(kind)
                     f(kind, m, s)
         self.start_class()
-        # self.end_program()
+        self.end_program()
     #@+node:ekr.20171208111655.1: *3* checker.start_class
     def start_class(self, m=None):
         '''Start a new class, ending the old class.'''
