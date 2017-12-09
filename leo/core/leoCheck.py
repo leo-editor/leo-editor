@@ -39,6 +39,8 @@ class ConventionChecker (object):
         self.class_name = None
         self.classes = self.init_classes()
             # Rudimentary symbol tables.
+        self.file_name = None
+            # Set in show().
 
     #@+others
     #@+node:ekr.20171207100432.1: *3* checker.check
@@ -72,9 +74,9 @@ class ConventionChecker (object):
         val = m.group(2).strip()
         # Resolve val, if possible.
         if self.class_name:
-            context = self.Type('class', name=self.class_name)
+            context = self.Type('class', self.class_name)
         else:
-            context = self.Type('module')
+            context = self.Type('module', self.file_name)
         val = self.resolve(val, context, trace=False)
         d = self.classes.get('Commands')
         assert d
@@ -145,20 +147,20 @@ class ConventionChecker (object):
             # Pre-enter known classes.
             'Commands': {
                 'ivars': {
-                    'p': self.Type('instance', name='Position'),
+                    'p': self.Type('instance', 'Position'),
                 },
                 'methods': {},
             },
             'Position': {
                 'ivars': {
-                    'v': self.Type('instance', name='Vnode'),
-                    'h': self.Type('instance', name='String'),
+                    'v': self.Type('instance', 'Vnode'),
+                    'h': self.Type('instance', 'String'),
                 },
                 'methods': {},
             },
             'Vnode': {
                 'ivars': {
-                    'h': self.Type('instance', name='String'),
+                    'h': self.Type('instance', 'String'),
                     # Vnode has no v instance!
                 },
                 'methods': {},
@@ -179,15 +181,15 @@ class ConventionChecker (object):
                 result = obj
             elif name == 'self':
                 assert obj.name, repr(obj)
-                result = self.Type('instance', name=obj.name)
+                result = self.Type('instance', obj.name)
             elif obj.kind == 'class':
                 result = self.resolve_class(name, obj)
             elif obj.kind == 'instance':
                 result = obj
             else:
-                result = self.Type('error', tag='unknown kind: %s' % obj.kind)
+                result = self.Type('error', 'unknown kind: %s' % obj.kind)
         else:
-            result = self.Type('error', tag='unbound name: %s' % name)
+            result = self.Type('error', 'unbound name: %s' % name)
         if trace: g.trace('      ----->', result)
         return result
     #@+node:ekr.20171208134737.1: *4* checker.resolve_call
@@ -206,9 +208,9 @@ class ConventionChecker (object):
                 g.trace(' ===== %s.%s(%s)' % (
                     '.'.join(chain), func, ','.join(args)))
             if self.class_name:
-                context = self.Type('class', name=self.class_name)
+                context = self.Type('class', self.class_name)
             else:
-                context = self.Type('module')
+                context = self.Type('module', self.file_name)
             result = self.resolve_chain(chain, context)
             if trace:
                 g.trace(' ----> %s.%s' % (result, func))
@@ -230,16 +232,16 @@ class ConventionChecker (object):
         class_name = 'Commands' if obj.name == 'c' else obj.name
         the_class = self.classes.get(class_name)
         if not the_class:
-            return self.Type('error', name='no class %s' % name)
+            return self.Type('error', 'no class %s' % name)
         if trace:
             g.trace('CLASS DICT', class_name)
             g.printDict(the_class)
         ivars = the_class.get('ivars')
         methods = the_class.get('methods')
         if name == 'self':
-            return self.Type('class', name=class_name)
+            return self.Type('class', class_name)
         elif methods.get(name):
-            return self.Type('func', name=name)
+            return self.Type('func', name)
         elif ivars.get(name):
             g.trace('***** IVAR', name)
             val = ivars.get(name)
@@ -248,7 +250,7 @@ class ConventionChecker (object):
                 print('')
                 g.trace('----- RECURSIVE', head2)
             ### Unbounded recursion.
-            ### obj2 = self.type('class', name=class_name)
+            ### obj2 = self.type('class', class_name)
             obj2 = None ### Wrong
             for name2 in head2:
                 obj2 = self.resolve(name2, obj2)
@@ -258,7 +260,7 @@ class ConventionChecker (object):
                 g.trace('----- END RECURSIVE: %r', obj2)
             return obj2
         else:
-            return self.Type('error', tag='no member %s' % name)
+            return self.Type('error', 'no member %s' % name)
     #@+node:ekr.20171207101337.1: *3* checker.show
     patterns = (
         ('class', re.compile(r'class\s+([a-z_A-Z][a-z_A-Z0-9]*).*:')),
@@ -274,6 +276,7 @@ class ConventionChecker (object):
         # Things that look like function calls.
 
     def show(self, fn, node):
+        self.file_name = fn
         dispatch = {
             'call':     self.do_call,
             'class':    self.do_class,
@@ -323,7 +326,7 @@ class ConventionChecker (object):
 
         kinds = ('error', 'class', 'instance', 'module', 'unknown')
         
-        def __init__(self, kind, name=None, source=None, tag=None):
+        def __init__(self, kind, name, source=None, tag=None):
 
             assert kind in self.kinds, repr(kind)
             self.kind = kind
@@ -333,10 +336,7 @@ class ConventionChecker (object):
             
         def __repr__(self):
 
-            return '<%s: %s>' % (
-                self.kind,
-                self.tag if self.kind in ('error', 'unknown') else self.name,
-            )
+            return '<%s: %s>' % (self.kind, self.name)
     #@-others
 #@+node:ekr.20160109173821.1: ** class BindNames
 class BindNames(object):
