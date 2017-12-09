@@ -34,6 +34,9 @@ class ConventionChecker (object):
         leoCheck.ConventionChecker(c).check(fn=fn)
     '''
     
+    patterns = []
+        # Set below.
+    
     def __init__(self, c):
         self.c = c
         self.class_name = None
@@ -43,7 +46,7 @@ class ConventionChecker (object):
             # Set in show().
 
     #@+others
-    #@+node:ekr.20171207100432.1: *3* checker.check
+    #@+node:ekr.20171207100432.1: *3* checker.check & helper
     def check(self, fn=None, s=None):
         '''Check the contents of fn or the string s.'''
         # Get the source.
@@ -63,9 +66,28 @@ class ConventionChecker (object):
             return g.trace('no fn or s argument')
         # Check the source
         node = ast.parse(s, filename='before', mode='exec')
-        self.show(fn=sfn, node=node)
+        self.check_helper(fn=sfn, node=node)
         print('')
         g.trace('done', sfn)
+    #@+node:ekr.20171207101337.1: *4* checker.check_helper
+    def check_helper(self, fn, node):
+        self.file_name = fn
+        dispatch = {
+            'call':     self.do_call,
+            'class':    self.do_class,
+            'def':      self.do_def,
+            'self.x=':  self.do_assn_to_self,
+            'c.x=':     self.do_assn_to_c,
+        }
+        s = leoAst.AstFormatter().format(node)
+        for s in g.splitLines(s):
+            for kind, pattern in self.patterns:
+                m = pattern.match(s)
+                if m:
+                    f = dispatch.get(kind)
+                    f(kind, m, s)
+        self.start_class()
+        self.end_program()
     #@+node:ekr.20171209065852.1: *3* checker_check_signature & helper
     def check_signature(self, func, args, signature):
         
@@ -82,9 +104,11 @@ class ConventionChecker (object):
                 
     def check_arg(self, call_arg, sig_arg):
         g.trace('CHECK', call_arg, sig_arg)
-    #@+node:ekr.20171208090003.1: *3* checker.do_* (string-oriented visitors)
+    #@+node:ekr.20171208090003.1: *3* checker.do_*
+    # These could be called string-oriented visitors.
     #@+node:ekr.20171209063559.1: *4* checker.do_assn_to_c
-    # re.compile(r'^\s*c\.([\w.]+)\s*=(.*)')
+    assign_to_c_pattern = ('c.x=',  re.compile(r'^\s*c\.([\w.]+)\s*=(.*)'))
+    patterns.append(assign_to_c_pattern)
 
     def do_assn_to_c(self, kind, m, s):
         ivar = m.group(1)
@@ -103,7 +127,8 @@ class ConventionChecker (object):
         print('%14s: %s' % (kind, s.strip()))
 
     #@+node:ekr.20171209063559.2: *4* checker.do_assn_to_self
-    # re.compile(r'^\s*self\.(\w+)\s*=(.*)')
+    assn_to_self_pattern = ('self.x=', re.compile(r'^\s*self\.(\w+)\s*=(.*)'))
+    patterns.append(assn_to_self_pattern)
 
     def do_assn_to_self(self, kind, m, s):
         trace = False
@@ -121,7 +146,11 @@ class ConventionChecker (object):
             g.printDict(d)
 
     #@+node:ekr.20171209063559.3: *4* checker.do_call
-    # re.compile(r'^\s*(\w+(\.\w+)*)\s*\(.*\)')
+    call_pattern = ('call',  re.compile(r'^\s*(\w+(\.\w+)*)\s*\((.*)\)'))
+    patterns.append(call_pattern)
+
+    ignore = ('dict', 'enumerate', 'list', 'tuple')
+        # Things that look like function calls.
 
     def do_call(self, kind, m, s):
         trace = True
@@ -147,27 +176,31 @@ class ConventionChecker (object):
                     self.check_signature(func, args, signature)
 
     #@+node:ekr.20171209063559.4: *4* checker.do_class
+    class_pattern = ('class', re.compile(r'class\s+([a-z_A-Z][a-z_A-Z0-9]*).*:'))
+    patterns.append(class_pattern)
+
     def do_class(self, kind, m, s):
         self.start_class(m)
         print('')
         print(s.rstrip())
 
     #@+node:ekr.20171209063559.5: *4* checker.do_def
-    #### re.compile(r'^\s*def\s+([\w0-9]+).*:')
-    # re.compile(r'^\s*def\s+([\w0-9]+)\s*\((.*)\)\s*:')
+    def_pattern = ('def', re.compile(r'^\s*def\s+([\w0-9]+)\s*\((.*)\)\s*:'))
+    patterns.append(def_pattern)
 
     def do_def(self, kind, m, s):
+        trace = True
         # Not quite accurate...
-        print('')
+        if trace: print('')
         if self.class_name:
             def_name = m.group(1)
             def_args = m.group(2)
             the_class = self.classes[self.class_name]
             methods = the_class.get('methods')
             methods [def_name] = def_args
-            print('%4s%s\n' % ('', s.strip()))
+            if trace: print('%4s%s\n' % ('', s.strip()))
         else:
-            print(s.strip())
+            if trace: print(s.strip())
     #@+node:ekr.20171208135642.1: *3* checker.end_program
     def end_program(self):
         
@@ -305,38 +338,6 @@ class ConventionChecker (object):
             return obj2
         else:
             return self.Type('error', 'no member %s' % name)
-    #@+node:ekr.20171207101337.1: *3* checker.show
-    patterns = (
-        ('class', re.compile(r'class\s+([a-z_A-Z][a-z_A-Z0-9]*).*:')),
-        ('def',   re.compile(r'^\s*def\s+([\w0-9]+)\s*\((.*)\)\s*:')),
-        ('c.x=',  re.compile(r'^\s*c\.([\w.]+)\s*=(.*)')),
-            # Assignment to c.
-        ('self.x=', re.compile(r'^\s*self\.(\w+)\s*=(.*)')),
-            # Assignment to self. We really want only object assigns.
-        ('call',  re.compile(r'^\s*(\w+(\.\w+)*)\s*\((.*)\)')),
-            # Possible function call.
-    )
-    ignore = ('dict', 'enumerate', 'list', 'tuple')
-        # Things that look like function calls.
-
-    def show(self, fn, node):
-        self.file_name = fn
-        dispatch = {
-            'call':     self.do_call,
-            'class':    self.do_class,
-            'def':      self.do_def,
-            'self.x=':  self.do_assn_to_self,
-            'c.x=':     self.do_assn_to_c,
-        }
-        s = leoAst.AstFormatter().format(node)
-        for s in g.splitLines(s):
-            for kind, pattern in self.patterns:
-                m = pattern.match(s)
-                if m:
-                    f = dispatch.get(kind)
-                    f(kind, m, s)
-        self.start_class()
-        self.end_program()
     #@+node:ekr.20171208111655.1: *3* checker.start_class
     def start_class(self, m=None):
         '''Start a new class, ending the old class.'''
