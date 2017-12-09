@@ -42,6 +42,7 @@ class ConventionChecker (object):
         self.class_name = None
         self.classes = self.init_classes()
             # Rudimentary symbol tables.
+        self.enable_trace = True
         self.file_name = None
             # Set in show().
         self.pass_n = 0
@@ -66,12 +67,14 @@ class ConventionChecker (object):
         else:
             return g.trace('no fn or s argument')
         # Check the source
+        t1 = time.clock()
         node = ast.parse(s, filename='before', mode='exec')
         self.check_helper(fn=sfn, node=node)
-        print('')
-        g.trace('done', sfn)
+        t2 = time.clock()
+        g.trace('done: %4.2f sec. %s' % ((t2-t1), sfn))
     #@+node:ekr.20171207101337.1: *4* checker.check_helper
     def check_helper(self, fn, node):
+        trace = True and self.enable_trace
         self.file_name = fn
         dispatch = {
             'call':     self.do_call,
@@ -84,7 +87,7 @@ class ConventionChecker (object):
         for n in (1, 2):
             self.class_name = None
             self.pass_n = n
-            print('===== pass: %s' % n)
+            if trace: print('===== pass: %s' % n)
             for s in g.splitLines(s1):
                 for kind, pattern in self.patterns:
                     m = pattern.match(s)
@@ -96,19 +99,23 @@ class ConventionChecker (object):
     #@+node:ekr.20171209065852.1: *3* checker_check_signature & helper
     def check_signature(self, func, args, signature):
         
-        g.trace('%s(%s) ==> %s' % (func, args, signature))
+        trace = True and self.enable_trace
+        if trace: g.trace('%s(%s) ==> %s' % (func, args, signature))
         if signature[0] == 'self':
             signature = signature[1:]
         for i, arg in enumerate(args):
             if i < len(signature):
                 self.check_arg(arg, signature[i])
-            else:
+            elif trace:
                 g.trace('possible extra arg', arg)
         if len(args) > len(signature):
-            g.trace('possible missing args', signature[len(args)-1:])
+            if trace:
+                g.trace('possible missing args', signature[len(args)-1:])
                 
     def check_arg(self, call_arg, sig_arg):
-        g.trace('CHECK', call_arg, sig_arg)
+        
+        trace = True and self.enable_trace
+        if trace: g.trace('CHECK', call_arg, sig_arg)
     #@+node:ekr.20171208090003.1: *3* checker.do_*
     # These could be called string-oriented visitors.
     #@+node:ekr.20171209063559.1: *4* checker.do_assn_to_c
@@ -116,6 +123,8 @@ class ConventionChecker (object):
     patterns.append(assign_to_c_pattern)
 
     def do_assn_to_c(self, kind, m, s):
+        
+        trace = True and self.enable_trace
         if self.pass_n == 1:
             ivar = m.group(1)
             val = m.group(2).strip()
@@ -130,16 +139,18 @@ class ConventionChecker (object):
             ivars = d.get('ivars')
             ivars[ivar] = val
             d['ivars'] = ivars
-        print('%14s: %s' % (kind, s.strip()))
+        if trace:
+            print('%14s: %s' % (kind, s.strip()))
 
     #@+node:ekr.20171209063559.2: *4* checker.do_assn_to_self
     assn_to_self_pattern = ('self.x=', re.compile(r'^\s*self\.(\w+)\s*=(.*)'))
     patterns.append(assn_to_self_pattern)
 
     def do_assn_to_self(self, kind, m, s):
-        trace = False
+        trace = True and self.enable_trace
         assert self.class_name
-        print('%14s: %s' % (kind, s.strip()))
+        if trace:
+            print('%14s: %s' % (kind, s.strip()))
         if self.pass_n == 1:
             ivar = m.group(1)
             val = m.group(2).strip()
@@ -159,7 +170,7 @@ class ConventionChecker (object):
         # Things that look like function calls.
 
     def do_call(self, kind, m, s):
-        trace = True
+        trace = True and self.enable_trace
         if trace: print('%14s: %s' % (kind, s.strip()))
         if self.pass_n == 1:
             return
@@ -187,15 +198,16 @@ class ConventionChecker (object):
     patterns.append(class_pattern)
 
     def do_class(self, kind, m, s):
+        trace = True and self.enable_trace
         self.start_class(m)
-        print(s.rstrip())
+        if trace: print(s.rstrip())
 
     #@+node:ekr.20171209063559.5: *4* checker.do_def
     def_pattern = ('def', re.compile(r'^\s*def\s+([\w0-9]+)\s*\((.*)\)\s*:'))
     patterns.append(def_pattern)
 
     def do_def(self, kind, m, s):
-        trace = True
+        trace = True and self.enable_trace
         if trace: print('%4s%s' % ('', s.strip()))
         # Not quite accurate..
         # if trace: print('')
@@ -209,7 +221,7 @@ class ConventionChecker (object):
     #@+node:ekr.20171208135642.1: *3* checker.end_program
     def end_program(self):
         
-        trace = False
+        trace = True and self.enable_trace
         if trace:
             # print('')
             print('----- END OF PROGRAM')
@@ -253,8 +265,10 @@ class ConventionChecker (object):
     #@+node:ekr.20171208142646.1: *3* checker.resolve & helpers
     def resolve(self, name, obj, trace=None):
         '''Resolve name in the context of obj.'''
-        trace = True if trace is None else trace
-        if trace: g.trace('      ===== name: %s obj: %r' % (name, obj))
+        trace = True and self.enable_trace
+        trace_resolve = False
+        if trace and trace_resolve:
+            g.trace('      ===== name: %s obj: %r' % (name, obj))
         if obj:
             if obj.kind == 'error':
                 result = obj
@@ -269,14 +283,14 @@ class ConventionChecker (object):
                 result = self.Type('error', 'unknown kind: %s' % obj.kind)
         else:
             result = self.Type('error', 'unbound name: %s' % name)
-        if trace: g.trace('      ----->', result)
+        if trace and trace_resolve: g.trace('      ----->', result)
         return result
     #@+node:ekr.20171208134737.1: *4* checker.resolve_call
     call_pattern = re.compile(r'(\w+(\.\w+)*)\s*\((.*)\)')
 
     def resolve_call(self, kind, m, s):
 
-        trace = True
+        trace = True and self.enable_trace
         s = s.strip()
         m = self.call_pattern.match(s)
         aList = m.group(1).split('.')
@@ -299,7 +313,7 @@ class ConventionChecker (object):
     #@+node:ekr.20171209034244.1: *4* checker.resolve_chain
     def resolve_chain(self, chain, context):
         
-        trace = True
+        trace = True and self.enable_trace
         if trace:
             g.trace('=====', chain, context)
         for name in chain:
@@ -310,7 +324,8 @@ class ConventionChecker (object):
         return context
     #@+node:ekr.20171208173323.1: *4* checker.resolve_class
     def resolve_class(self, name, obj):
-        trace = True
+        
+        trace = True and self.enable_trace
         class_name = 'Commands' if obj.name == 'c' else obj.name
         the_class = self.classes.get(class_name)
         if not the_class:
@@ -325,7 +340,7 @@ class ConventionChecker (object):
         elif methods.get(name):
             return self.Type('func', name)
         elif ivars.get(name):
-            g.trace('***** IVAR', name)
+            if trace: g.trace('***** IVAR', name)
             val = ivars.get(name)
             head2 = val.split('.')
             if trace:
@@ -336,7 +351,7 @@ class ConventionChecker (object):
             obj2 = None ### Wrong
             for name2 in head2:
                 obj2 = self.resolve(name2, obj2)
-                g.trace('result: %r' % obj2)
+                if trace: g.trace('result: %r' % obj2)
             if trace:
                 print('')
                 g.trace('----- END RECURSIVE: %r', obj2)
@@ -346,7 +361,7 @@ class ConventionChecker (object):
     #@+node:ekr.20171208111655.1: *3* checker.start_class
     def start_class(self, m=None):
         '''Start a new class, ending the old class.'''
-        trace = True
+        trace = True and self.enable_trace
         # Trace the old class.
         if trace and self.class_name:
             print('----- END', self.class_name)
