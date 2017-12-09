@@ -66,7 +66,24 @@ class ConventionChecker (object):
         self.show(fn=sfn, node=node)
         print('')
         g.trace('done', sfn)
+    #@+node:ekr.20171209065852.1: *3* checker_check_signature & helper
+    def check_signature(self, func, args, signature):
+        
+        g.trace('%s(%s) ==> %s' % (func, args, signature))
+        if signature[0] == 'self':
+            signature = signature[1:]
+        for i, arg in enumerate(args):
+            if i < len(signature):
+                self.check_arg(arg, signature[i])
+            else:
+                g.trace('possible extra arg', arg)
+        if len(args) > len(signature):
+            g.trace('possible missing args', signature[len(args)-1:])
+                
+    def check_arg(self, call_arg, sig_arg):
+        g.trace('CHECK', call_arg, sig_arg)
     #@+node:ekr.20171208090003.1: *3* checker.do_* (string-oriented visitors)
+    #@+node:ekr.20171209063559.1: *4* checker.do_assn_to_c
     # re.compile(r'^\s*c\.([\w.]+)\s*=(.*)')
 
     def do_assn_to_c(self, kind, m, s):
@@ -85,6 +102,7 @@ class ConventionChecker (object):
         d['ivars'] = ivars
         print('%14s: %s' % (kind, s.strip()))
 
+    #@+node:ekr.20171209063559.2: *4* checker.do_assn_to_self
     # re.compile(r'^\s*self\.(\w+)\s*=(.*)')
 
     def do_assn_to_self(self, kind, m, s):
@@ -102,6 +120,9 @@ class ConventionChecker (object):
             g.trace(self.class_name, ivar, val)
             g.printDict(d)
 
+    #@+node:ekr.20171209063559.3: *4* checker.do_call
+    # re.compile(r'^\s*(\w+(\.\w+)*)\s*\(.*\)')
+
     def do_call(self, kind, m, s):
         trace = True
         try:
@@ -111,20 +132,39 @@ class ConventionChecker (object):
             pass # No m.group(1)
         if trace:
             print('%14s: %s' % (kind, s.strip()))
-        self.resolve_call(kind, m, s)
+        obj = self.resolve_call(kind, m, s)
+        if obj and obj.kind == 'instance':
+            m = self.call_pattern.match(s.strip())
+            chain = m.group(1).split('.')
+            func = chain[-1]
+            args = m.group(3).split(',')
+            instance = self.classes.get(obj.name)
+            if instance:
+                d = instance.get('methods')
+                signature = d.get(func)
+                if signature:
+                    signature = signature.split(',')
+                    self.check_signature(func, args, signature)
 
+    #@+node:ekr.20171209063559.4: *4* checker.do_class
     def do_class(self, kind, m, s):
         self.start_class(m)
         print('')
         print(s.rstrip())
 
+    #@+node:ekr.20171209063559.5: *4* checker.do_def
+    #### re.compile(r'^\s*def\s+([\w0-9]+).*:')
+    # re.compile(r'^\s*def\s+([\w0-9]+)\s*\((.*)\)\s*:')
+
     def do_def(self, kind, m, s):
         # Not quite accurate...
         print('')
         if self.class_name:
+            def_name = m.group(1)
+            def_args = m.group(2)
             the_class = self.classes[self.class_name]
             methods = the_class.get('methods')
-            methods [m.group(1)] = s.strip()
+            methods [def_name] = def_args
             print('%4s%s\n' % ('', s.strip()))
         else:
             print(s.strip())
@@ -215,6 +255,9 @@ class ConventionChecker (object):
             result = self.resolve_chain(chain, context)
             if trace:
                 g.trace(' ----> %s.%s' % (result, func))
+        else:
+            result = None
+        return result
     #@+node:ekr.20171209034244.1: *4* checker.resolve_chain
     def resolve_chain(self, chain, context):
         
@@ -265,12 +308,12 @@ class ConventionChecker (object):
     #@+node:ekr.20171207101337.1: *3* checker.show
     patterns = (
         ('class', re.compile(r'class\s+([a-z_A-Z][a-z_A-Z0-9]*).*:')),
-        ('def',   re.compile(r'^\s*def\s+([\w0-9]+).*:')),
+        ('def',   re.compile(r'^\s*def\s+([\w0-9]+)\s*\((.*)\)\s*:')),
         ('c.x=',  re.compile(r'^\s*c\.([\w.]+)\s*=(.*)')),
             # Assignment to c.
         ('self.x=', re.compile(r'^\s*self\.(\w+)\s*=(.*)')),
             # Assignment to self. We really want only object assigns.
-        ('call',  re.compile(r'^\s*(\w+)(\.\w+)*\s*\(.*\)')),
+        ('call',  re.compile(r'^\s*(\w+(\.\w+)*)\s*\((.*)\)')),
             # Possible function call.
     )
     ignore = ('dict', 'enumerate', 'list', 'tuple')
