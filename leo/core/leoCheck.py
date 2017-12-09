@@ -18,8 +18,8 @@ import time
 #@+node:ekr.20171207095816.1: ** class ConventionChecker
 class ConventionChecker (object):
     '''
-    A prototype of #632's convention-checking tool.
-    https://github.com/leo-editor/leo-editor/issues/632
+    A prototype of an extensible convention-checking tool.
+    See: https://github.com/leo-editor/leo-editor/issues/632
     
     Here is the body of @button check-conventions:
     
@@ -34,7 +34,8 @@ class ConventionChecker (object):
         leoCheck.ConventionChecker(c).check(fn=fn)
     '''
     
-    patterns = []
+    pass1_patterns = []
+    pass2_patterns = []
         # Set below.
     
     def __init__(self, c):
@@ -44,6 +45,7 @@ class ConventionChecker (object):
             # Rudimentary symbol tables.
         self.file_name = None
             # Set in show().
+        self.pass_n = 0
 
     #@+others
     #@+node:ekr.20171207100432.1: *3* checker.check & helper
@@ -80,13 +82,17 @@ class ConventionChecker (object):
             'c.x=':     self.do_assn_to_c,
         }
         s = leoAst.AstFormatter().format(node)
-        for s in g.splitLines(s):
-            for kind, pattern in self.patterns:
-                m = pattern.match(s)
-                if m:
-                    f = dispatch.get(kind)
-                    f(kind, m, s)
-        self.start_class()
+        table = ((1, self.pass1_patterns), (2, self.pass2_patterns))
+        for n, patterns in table:
+            self.pass_n = n
+            print('===== pass: %s' % n)
+            for s in g.splitLines(s):
+                for kind, pattern in patterns:
+                    m = pattern.match(s)
+                    if m:
+                        f = dispatch.get(kind)
+                        f(kind, m, s)
+            self.start_class()
         self.end_program()
     #@+node:ekr.20171209065852.1: *3* checker_check_signature & helper
     def check_signature(self, func, args, signature):
@@ -108,7 +114,7 @@ class ConventionChecker (object):
     # These could be called string-oriented visitors.
     #@+node:ekr.20171209063559.1: *4* checker.do_assn_to_c
     assign_to_c_pattern = ('c.x=',  re.compile(r'^\s*c\.([\w.]+)\s*=(.*)'))
-    patterns.append(assign_to_c_pattern)
+    pass2_patterns.append(assign_to_c_pattern)
 
     def do_assn_to_c(self, kind, m, s):
         ivar = m.group(1)
@@ -128,7 +134,7 @@ class ConventionChecker (object):
 
     #@+node:ekr.20171209063559.2: *4* checker.do_assn_to_self
     assn_to_self_pattern = ('self.x=', re.compile(r'^\s*self\.(\w+)\s*=(.*)'))
-    patterns.append(assn_to_self_pattern)
+    pass1_patterns.append(assn_to_self_pattern)
 
     def do_assn_to_self(self, kind, m, s):
         trace = False
@@ -147,7 +153,7 @@ class ConventionChecker (object):
 
     #@+node:ekr.20171209063559.3: *4* checker.do_call
     call_pattern = ('call',  re.compile(r'^\s*(\w+(\.\w+)*)\s*\((.*)\)'))
-    patterns.append(call_pattern)
+    pass2_patterns.append(call_pattern)
 
     ignore = ('dict', 'enumerate', 'list', 'tuple')
         # Things that look like function calls.
@@ -177,27 +183,31 @@ class ConventionChecker (object):
 
     #@+node:ekr.20171209063559.4: *4* checker.do_class
     class_pattern = ('class', re.compile(r'class\s+([a-z_A-Z][a-z_A-Z0-9]*).*:'))
-    patterns.append(class_pattern)
+    pass1_patterns.append(class_pattern)
+    pass2_patterns.append(class_pattern)
 
     def do_class(self, kind, m, s):
-        self.start_class(m)
+        if self.pass_n == 1:
+            self.start_class(m)
         print('')
         print(s.rstrip())
 
     #@+node:ekr.20171209063559.5: *4* checker.do_def
     def_pattern = ('def', re.compile(r'^\s*def\s+([\w0-9]+)\s*\((.*)\)\s*:'))
-    patterns.append(def_pattern)
+    pass1_patterns.append(def_pattern)
+    pass2_patterns.append(def_pattern)
 
     def do_def(self, kind, m, s):
         trace = True
-        # Not quite accurate...
+        # Not quite accurate..
         if trace: print('')
         if self.class_name:
-            def_name = m.group(1)
-            def_args = m.group(2)
-            the_class = self.classes[self.class_name]
-            methods = the_class.get('methods')
-            methods [def_name] = def_args
+            if self.pass_n == 1:
+                def_name = m.group(1)
+                def_args = m.group(2)
+                the_class = self.classes[self.class_name]
+                methods = the_class.get('methods')
+                methods [def_name] = def_args
             if trace: print('%4s%s\n' % ('', s.strip()))
         else:
             if trace: print(s.strip())
