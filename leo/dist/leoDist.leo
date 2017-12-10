@@ -1597,61 +1597,72 @@ Quotes:    http://leoeditor.com/testimonials.html
 
 2017
 ----
-
 https://github.com/leo-editor/leo-editor/issues/562
 
-Pre-requsites, pip installable:
+_Quick reference recipe is at top. See next section for build environment pre-requisites._
 
-- Wheel: for building cross platform binaries (might be installed already)
-- Twine: for secure upload to pypi.org
-- PyPandoc: to convert markdown to rst for Readme.
-  There's an extra step to download pandoc binaries and install to PATH ( if not
-  installed already):
-
-        # preferred
-        conda install pandoc
-
-        #alternate
-        from pypandoc.pandoc_download import download_pandoc
-        download_pandoc()
-
-
-Packaging a new release for Test PyPi
-=====================================
-(Windows syntax)
-
-    ::Verify integrity and Build (see leo\dist\build-*.bat)
-    python setup.py check
-    python setup.py bdist_wheel
-
-    ::Test default install locally
-    pip install dist\leo-5.7.dev344-py2.py3-none-any.whl
-    leoc --version
-    pip uninstall leo
-
-    ::Test developer install locally
-    pip install leo[develop] dist\leo-5.7.dev344-py2.py3-none-any.whl
-
-    ::Upload
-    twine upload --repository-url https://test.pypi.org/legacy/ dist/leo-5.7.dev344-py2.py3-none-any
-
-    ::Install from remote
-    pip install --pre --index-url https://test.pypi.org/simple/ leo
-    leoc --version
-
-Remove broken releases (still can't re-use identical version numbers and file names though):
-https://testpypi.python.org/pypi?%3Aaction=pkg_edit&amp;name=leo
 
 Production Release
 ==================
-_Will likely always use this recipe after the first time or two. Remember to remove manual version number!_
+Remove stale distribution files &amp; folders.  
+Optionally set local checkout to specific version tag.  
+Build redistributable source and binary wheel package.  
+Upload to PyPi (assumes account registration already completed).  
+Test download and install from PyPi. Best to uninstall old Leo first or run in clean virtual env.
 
-    rd /s/q dist
-    rd /s/q build
+Windows syntax. 'Activate/deactivate' assume using virtual envs; skip those lines if not:
+
+    activate leo-build
+    
+    rmdir /s/q dist build leo.egg-info
     git checkout tags/5.7
     python setup.py bdist_wheel
-    twine upload https://pypi.org/legacy/ dist/*
+    
+    :: Optional, test install locally
+    pip install dist\*.whl
+    leoc --version
+    pip uninstall leo
+    
+    twine upload https://pypi.org/legacy/ dist\*.whl
+    
+    :: Optional, inspect public page for problems
+    start https://pypi.python.org/pypi/leo
+    
+    deactivate
+    activate py3-clean
+    
     pip install leo
+    leoc --version
+
+Twine upload will use username and password stored in `.pypirc`, or will prompt
+if that doesn't exist.
+
+
+### Pre-requisites, pip installable
+
+- Wheel: for building cross platform binaries (might be installed already)
+- Setuptools: because ...setup!
+- Twine: for secure upload to pypi.org
+- PyPandoc: to convert markdown to rst for Readme.
+
+    pip install pypandoc setuptools twine wheel
+
+Pandoc executable must be in PATH. If not installed already one these should
+work (or use your own preferred method):
+
+    # Preferred
+    conda install pandoc
+
+    # Alternate
+    from pypandoc.pandoc_download import download_pandoc
+    download_pandoc()
+
+
+Verify can login to PyPi and access Leo package edit page:
+https://pypi.python.org/pypi?%3Aaction=pkg_edit&amp;name=leo
+Contact one of the _Package Index Owners_ to be added as a maintainer if needed
+(see end of https://pypi.python.org/pypi/leo).
+
 
 Caveats
 =======
@@ -1668,104 +1679,35 @@ Root: these files should only be involved in building installers and similar act
 
 
 
+Packaging a new release for Test PyPi
+=====================================
 
-2014
-----
+I (Matt) don't recommend using Test PyPi unless problems with the package on the
+PyPi side are anticipated. It's too much of a pain to switch back and forth
+between test and production when testing installs. In practice most problems
+will be found and encountered when testing an install straight from the whl file
+on disk `pip install dist\Leo-*.whl`
 
-https://groups.google.com/d/msg/leo-editor/Mm0hFBIR81Q/0v217II0kPIJ
+(Windows syntax)
 
-Here's my workflow (written here as a script, but really done in fits and
-starts):
+    ::Verify integrity and Build (see leo\dist\build-*.bat)
+    python setup.py check
+    python setup.py bdist_wheel
 
-:: checkout tagged release &amp; build package
-pushd b:\apps\leo-editor
-git checkout tags/Leo-5.0-final
-python setup.py sdist
-popd
+    ::Test default install locally
+    pip install dist\leo-5.7.dev344-py2.py3-none-any.whl
+    leoc --version
+    pip uninstall leo
 
-:: install from built package
-pip uninstall leo
-pip install  b:\apps\dist\leo-5.0-final.zip
+    ::Upload
+    twine upload --repository-url https://test.pypi.org/legacy/ dist/leo-5.7.dev344-py2.py3-none-any
 
-:: verify Leo works as expected
-D:\&gt;which leoc
-B:\o4w\apps\Python27\Scripts\leoc.EXE
+    ::Install from remote
+    pip install --pre --index-url https://test.pypi.org/simple/ leo
+    leoc --version
 
-D:\&gt;leoc --version
-Leo 5.0-final, build 20141117141110, Mon Nov 17 14:11:10 CST 2014
-
-D:\&gt;leoc
-
-** isPython3: False
-Leo 5.0-final, build 20141117141110, Mon Nov 17 14:11:10 CST 2014
-Not running from a git repo
-Python 2.7.4, PyQt version 4.7.1
-Windows 7 AMD64 (build 6.1.7601) SP1
-leoID=maphew (in C:\Users\mhwilkie\dropbox\.leo)
-reading settings in B:\o4w\apps\Python27\lib\site-packages\leo\config\leoSettings.leo
-reading settings in C:\Users\mhwilkie\dropbox\.leo\myLeoSettings.leo
-reading settings in C:\Users\mhwilkie\dropbox\.leo\workbook.leo
-...snip...
-wrote recent file: C:\Users\mhwilkie\dropbox\.leo\.leoRecentFiles.txt
-
-:: rebuild package and upload
-pushd b:\apps\leo-editor
-python setup.py sdist upload
-popd
-
-:: inspect public page for problems
-start https://pypi.python.org/pypi/leo
-
-:: verbosely install from pypi.org
-pip uninstall leo
-pip -v install -pre leo
-
-:: repeat verify run leo works.
-
-https://groups.google.com/d/msg/leo-editor/Mm0hFBIR81Q/67p7y-x1zLAJ
-
-&gt; python setup.py sdist upload
-
-This is the tricky part, there's a bunch of prep-work that's hidden,
-involving getting a properly formatted ~/.pypirc. It looks very
-straightforward, according to docs, but in practice I've found devilishly
-difficult. There are bugs lurking in distutils/setuptools/something. I've
-had my .pypirc mangled by "register" and had to rebuild manually. Anyway:
-
-Step 1:
-python setup.py register
-
-and answer wizard steps, you'll need your pypi user and pass handy.
-DO save at end.
-
-Step 2: manually edit %HOME%\.pypirc and make sure it resembles below.
-**Do not** use https.
-
-Step 3: the commands in previous message (`python setup.py sdist upload`)
-
-Here's my .pypirc:
-
-[distutils]
-index-servers =
-    pypi
-    testpypi
-
-[pypi]
-repository: http://pypi.python.org/pypi
-username: {{omitted}}
-password: {{omitted}}
-
-[testpypi]
-repository: http://testpypi.python.org/pypi
-username: {{omitted}}
-password: {{omitted}}
-
-It really is a horrible system. The user and pass are sent in clear text. I
-don't know what's taking them so long to use SSH keys or OpenID or..., but
-frankly it's to Python's detriment. I hope they get it sorted out sooner
-than later.
-
-
+Remove broken releases (still can't re-use identical version numbers and file names though):
+https://testpypi.python.org/pypi?%3Aaction=pkg_edit&amp;name=leo
 </t>
 <t tx="ekr.20141118074110.3">https://groups.google.com/forum/#!topic/leo-editor/VvnDYjV4aIk</t>
 <t tx="ekr.20141118074110.4"></t>
