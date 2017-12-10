@@ -232,7 +232,7 @@ class ConventionChecker (object):
         # Things that look like function calls.
 
     def do_call(self, kind, m, s):
-        trace = True and self.pass_n == 2 ### self.enable_trace
+        trace = False and self.pass_n == 2
         if trace: print('%14s: %s' % (kind, s.strip()))
         if self.pass_n == 1:
             return
@@ -292,13 +292,12 @@ class ConventionChecker (object):
     #@+node:ekr.20171208142646.1: *3* checker.resolve & helpers
     def resolve(self, name, obj, trace=None):
         '''Resolve name in the context of obj.'''
-        trace = True and self.enable_trace
-        trace_resolve = False
+        trace = False and self.enable_trace
+        trace_resolve = True
         if trace and trace_resolve:
             g.trace('      ===== name: %s obj: %r' % (name, obj))
-            g.pdb()
         if obj:
-            if obj.kind == 'error':
+            if obj.kind in ('error', 'unknown'):
                 result = obj
             elif name == 'self':
                 assert obj.name, repr(obj)
@@ -356,13 +355,18 @@ class ConventionChecker (object):
         '''Resolve obj.ivar'''
         trace = False and self.enable_trace
         trace_dict = False
+        raise_on_error = True
+        class_name = 'Commands' if obj.name == 'c' else obj.name
+        the_class = self.classes.get(class_name)
         self.recursion_count += 1
         if self.recursion_count > 5:
             print('')
-            g.trace('UNBOUNDED RECURSION: %s\n' % g.callers())
+            g.trace('UNBOUNDED RECURSION: %s' % g.callers())
+            g.trace('CLASS DICT', class_name)
+            g.printDict(the_class)
+            if raise_on_error:
+                assert False, self.recursion_count
             return self.Type('error', 'recursion')
-        class_name = 'Commands' if obj.name == 'c' else obj.name
-        the_class = self.classes.get(class_name)
         if not the_class:
             return self.Type('error', 'no class %s' % ivar)
         if trace and trace_dict:
@@ -390,6 +394,10 @@ class ConventionChecker (object):
                     # Resovle the rest of the tail in the found context.
                     if trace: g.trace('TAIL: %s => %s.%s' % (val, special_obj, tail))
                     return self.resolve_chain(tail[1:], special_obj)
+            # Avoid recursion.
+            if ivar == val:
+                g.trace('AVOID RECURSION: self.%s=%s' % (ivar, val))
+                return self.Type('unknown', ivar)
             head2 = val.split('.')
             if trace:
                 g.trace('RECURSIVE', head2)
