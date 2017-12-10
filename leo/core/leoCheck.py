@@ -36,18 +36,63 @@ class ConventionChecker (object):
     
     patterns = []
         # Set below.
-    
+
+    #@+others
+    #@+node:ekr.20171210134449.1: *3* checker.Birth
     def __init__(self, c):
         self.c = c
         self.class_name = None
+        # Rudimentary symbol tables...
         self.classes = self.init_classes()
-            # Rudimentary symbol tables.
+        self.special_names = self.init_special_names()
+        # Other ivars...
         self.enable_trace = True
         self.file_name = None
-            # Set in show().
         self.pass_n = 0
-
-    #@+others
+    #@+node:ekr.20171209044610.1: *4* checker.init_classes
+    def init_classes(self):
+        '''
+        Init the symbol tables with known classes.
+        '''
+        return {
+            # Pre-enter known classes.
+            'Commands': {
+                'ivars': {
+                    'p': self.Type('instance', 'Position'),
+                },
+                'methods': {},
+            },
+            'Position': {
+                'ivars': {
+                    'v': self.Type('instance', 'VNode'),
+                    'h': self.Type('instance', 'String'),
+                },
+                'methods': {},
+            },
+            'VNode': {
+                'ivars': {
+                    'h': self.Type('instance', 'String'),
+                    # Vnode has no v instance!
+                },
+                'methods': {},
+            },
+            'String': {
+                'ivars': {},
+                'methods': {}, ### Possible?
+            },
+        }
+        
+    #@+node:ekr.20171210133853.1: *4* checker.init_special_names
+    def init_special_names(self):
+        '''Init known special names.'''
+        t = self.Type
+        return {
+            'c': t('instance', 'Commands'),
+            'c.p': t('instance', 'Position'),
+            'g': t('module', 'leo.core.leoGlobals'),
+            'p': t('instance', 'Position'),
+            'v': t('instance', 'VNode'),
+        }
     #@+node:ekr.20171207100432.1: *3* checker.check & helper
     def check(self, fn=None, s=None):
         '''Check the contents of fn or the string s.'''
@@ -69,12 +114,16 @@ class ConventionChecker (object):
         # Check the source
         t1 = time.clock()
         node = ast.parse(s, filename='before', mode='exec')
-        self.check_helper(fn=sfn, node=node)
+        self.check_helper(fn=sfn, node=node, s=s)
         t2 = time.clock()
-        g.trace('done: %4.2f sec. %s' % ((t2-t1), sfn))
+        if fn:
+            g.trace('done: %4.2f sec. %s' % ((t2-t1), sfn))
+        else:
+            g.trace('done')
     #@+node:ekr.20171207101337.1: *4* checker.check_helper
-    def check_helper(self, fn, node):
+    def check_helper(self, fn, node, s):
         trace = True and self.enable_trace
+        trace_source = False
         self.file_name = fn
         dispatch = {
             'call':     self.do_call,
@@ -85,9 +134,16 @@ class ConventionChecker (object):
         }
         s1 = leoAst.AstFormatter().format(node)
         for n in (1, 2):
+            self.enable_trace = n == 2
             self.class_name = None
             self.pass_n = n
-            if trace: print('===== pass: %s' % n)
+            if trace:
+                print('===== pass: %s' % n)
+                if trace_source and n == 2:
+                    print('===== source')
+                    print(s1)
+                    print('----- end source')
+            
             for s in g.splitLines(s1):
                 for kind, pattern in self.patterns:
                     m = pattern.match(s)
@@ -117,14 +173,16 @@ class ConventionChecker (object):
         trace = True and self.enable_trace
         if trace: g.trace('CHECK', call_arg, sig_arg)
     #@+node:ekr.20171208090003.1: *3* checker.do_*
-    # These could be called string-oriented visitors.
+    # These are like string-oriented visitors.
     #@+node:ekr.20171209063559.1: *4* checker.do_assn_to_c
     assign_to_c_pattern = ('c.x=',  re.compile(r'^\s*c\.([\w.]+)\s*=(.*)'))
     patterns.append(assign_to_c_pattern)
 
     def do_assn_to_c(self, kind, m, s):
         
-        trace = True and self.enable_trace
+        trace = True ### and self.pass_n == 1 ### self.enable_trace
+        if trace:
+            print('%14s: %s' % (kind, s.strip()))
         if self.pass_n == 1:
             ivar = m.group(1)
             val = m.group(2).strip()
@@ -139,15 +197,16 @@ class ConventionChecker (object):
             ivars = d.get('ivars')
             ivars[ivar] = val
             d['ivars'] = ivars
-        if trace:
-            print('%14s: %s' % (kind, s.strip()))
-
+            if trace:
+                g.trace('dict for class Commands...')
+                g.printDict(d)
+        
     #@+node:ekr.20171209063559.2: *4* checker.do_assn_to_self
     assn_to_self_pattern = ('self.x=', re.compile(r'^\s*self\.(\w+)\s*=(.*)'))
     patterns.append(assn_to_self_pattern)
 
     def do_assn_to_self(self, kind, m, s):
-        trace = True and self.enable_trace
+        trace = True ### and self.pass_n == 2 ### self.enable_trace
         assert self.class_name
         if trace:
             print('%14s: %s' % (kind, s.strip()))
@@ -160,7 +219,7 @@ class ConventionChecker (object):
             ivars[ivar] = val
             d['ivars'] = ivars
             if trace:
-                g.trace(self.class_name, ivar, val)
+                g.trace('dict for class', self.class_name)
                 g.printDict(d)
     #@+node:ekr.20171209063559.3: *4* checker.do_call
     call_pattern = ('call',  re.compile(r'^\s*(\w+(\.\w+)*)\s*\((.*)\)'))
@@ -170,7 +229,7 @@ class ConventionChecker (object):
         # Things that look like function calls.
 
     def do_call(self, kind, m, s):
-        trace = True and self.enable_trace
+        trace = True and self.pass_n == 2 ### self.enable_trace
         if trace: print('%14s: %s' % (kind, s.strip()))
         if self.pass_n == 1:
             return
@@ -221,47 +280,12 @@ class ConventionChecker (object):
     #@+node:ekr.20171208135642.1: *3* checker.end_program
     def end_program(self):
         
-        trace = True and self.enable_trace
+        trace = False
         if trace:
-            # print('')
             print('----- END OF PROGRAM')
             for key, val in sorted(self.classes.items()):
                 print('class %s' % key)
                 g.printDict(val)
-    #@+node:ekr.20171209044610.1: *3* checker.init_classes
-    def init_classes(self):
-        '''
-        Init the symbol tables with known classes.
-        '''
-        
-        return {
-            # Pre-enter known classes.
-            'Commands': {
-                'ivars': {
-                    'p': self.Type('instance', 'Position'),
-                },
-                'methods': {},
-            },
-            'Position': {
-                'ivars': {
-                    'v': self.Type('instance', 'Vnode'),
-                    'h': self.Type('instance', 'String'),
-                },
-                'methods': {},
-            },
-            'Vnode': {
-                'ivars': {
-                    'h': self.Type('instance', 'String'),
-                    # Vnode has no v instance!
-                },
-                'methods': {},
-            },
-            'String': {
-                'ivars': {},
-                'methods': {}, ### Possible?
-            },
-        }
-        
     #@+node:ekr.20171208142646.1: *3* checker.resolve & helpers
     def resolve(self, name, obj, trace=None):
         '''Resolve name in the context of obj.'''
@@ -269,16 +293,15 @@ class ConventionChecker (object):
         trace_resolve = False
         if trace and trace_resolve:
             g.trace('      ===== name: %s obj: %r' % (name, obj))
+            g.pdb()
         if obj:
             if obj.kind == 'error':
                 result = obj
             elif name == 'self':
                 assert obj.name, repr(obj)
                 result = self.Type('instance', obj.name)
-            elif obj.kind == 'class':
-                result = self.resolve_class(name, obj)
-            elif obj.kind == 'instance':
-                result = obj
+            elif obj.kind in ('class', 'instance'):
+                result = self.resolve_ivar(name, obj)
             else:
                 result = self.Type('error', 'unknown kind: %s' % obj.kind)
         else:
@@ -318,58 +341,69 @@ class ConventionChecker (object):
             g.trace('=====', chain, context)
         for name in chain:
             context = self.resolve(name, context)
-            if trace: g.trace('%s ==> %r' % (name, context))
+            if trace: g.trace('%4s ==> %r' % (name, context))
         if trace:
-            g.trace('---->', context)
+            g.trace('%4s ----> %r' % (name, context))
         return context
-    #@+node:ekr.20171208173323.1: *4* checker.resolve_class
-    def resolve_class(self, name, obj):
-        
+    #@+node:ekr.20171208173323.1: *4* checker.resolve_ivar
+    def resolve_ivar(self, ivar, obj):
+        '''Resolve obj.ivar'''
         trace = True and self.enable_trace
+        trace_dict = False
         class_name = 'Commands' if obj.name == 'c' else obj.name
         the_class = self.classes.get(class_name)
         if not the_class:
-            return self.Type('error', 'no class %s' % name)
-        if trace:
+            return self.Type('error', 'no class %s' % ivar)
+        if trace and trace_dict:
             g.trace('CLASS DICT', class_name)
             g.printDict(the_class)
         ivars = the_class.get('ivars')
         methods = the_class.get('methods')
-        if name == 'self':
+        if ivar == 'self':
             return self.Type('class', class_name)
-        elif methods.get(name):
-            return self.Type('func', name)
-        elif ivars.get(name):
-            if trace: g.trace('***** IVAR', name)
-            val = ivars.get(name)
+        elif methods.get(ivar):
+            return self.Type('func', ivar)
+        elif ivars.get(ivar):
+            val = ivars.get(ivar)
+            if trace: g.trace('IVAR:', ivar, 'CONTEXT', obj, 'VAL', val)
+            if isinstance(val, self.Type):
+                if trace: g.trace('KNOWN: %s %r ==> %r' % (ivar, obj, val))
+                return val
+            # Check for pre-defined special names.
+            for special_name, special_obj in self.special_names.items():
+                tail = val[len(special_name):]
+                if val == special_name:
+                    if trace: g.trace('SPECIAL: %s ==> %s' % (val, special_obj))
+                    return special_obj
+                elif val.startswith(special_name) and tail.startswith('.'):
+                    # Resovle the rest of the tail in the found context.
+                    if trace: g.trace('TAIL: %s => %s.%s' % (val, special_obj, tail))
+                    return self.resolve_chain(tail[1:], special_obj)
             head2 = val.split('.')
             if trace:
-                print('')
-                g.trace('----- RECURSIVE', head2)
-            ### Unbounded recursion.
-            ### obj2 = self.type('class', class_name)
-            obj2 = None ### Wrong
+                g.trace('RECURSIVE', head2)
+            obj2 = obj
             for name2 in head2:
+                old_obj2 = obj2
                 obj2 = self.resolve(name2, obj2)
-                if trace: g.trace('result: %r' % obj2)
+                if trace: g.trace('recursive %s: %r --> %r' % (name2, old_obj2, obj2))
             if trace:
-                print('')
-                g.trace('----- END RECURSIVE: %r', obj2)
+                g.trace('END RECURSIVE: %r', obj2)
             return obj2
         else:
-            return self.Type('error', 'no member %s' % name)
+            return self.Type('error', 'no member %s' % ivar)
     #@+node:ekr.20171208111655.1: *3* checker.start_class
     def start_class(self, m=None):
         '''Start a new class, ending the old class.'''
         trace = True and self.enable_trace
         # Trace the old class.
         if trace and self.class_name:
-            print('----- END', self.class_name)
+            print('----- END class %s. class dict...' % self.class_name)
             g.printDict(self.classes[self.class_name])
         # Switch classes.
         if m:
             self.class_name = m.group(1)
-            if trace: print('===== START', self.class_name)
+            if trace: print('===== START class', self.class_name)
             if self.pass_n == 1:
                 self.classes [self.class_name] = {
                     'ivars': {},
