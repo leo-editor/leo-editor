@@ -49,6 +49,7 @@ class ConventionChecker (object):
         self.enable_trace = True
         self.file_name = None
         self.pass_n = 0
+        self.recursion_count = 0
     #@+node:ekr.20171209044610.1: *4* checker.init_classes
     def init_classes(self):
         '''
@@ -155,7 +156,7 @@ class ConventionChecker (object):
     #@+node:ekr.20171209065852.1: *3* checker_check_signature & helper
     def check_signature(self, func, args, signature):
         
-        trace = True and self.enable_trace
+        trace = False and self.enable_trace
         if trace: g.trace('%s(%s) ==> %s' % (func, args, signature))
         if signature[0] == 'self':
             signature = signature[1:]
@@ -170,7 +171,7 @@ class ConventionChecker (object):
                 
     def check_arg(self, call_arg, sig_arg):
         
-        trace = True and self.enable_trace
+        trace = False and self.enable_trace
         if trace: g.trace('CHECK', call_arg, sig_arg)
     #@+node:ekr.20171208090003.1: *3* checker.do_*
     # These are like string-oriented visitors.
@@ -180,7 +181,8 @@ class ConventionChecker (object):
 
     def do_assn_to_c(self, kind, m, s):
         
-        trace = True ### and self.pass_n == 1 ### self.enable_trace
+        trace = False and self.enable_trace
+        trace_dict = False
         if trace:
             print('%14s: %s' % (kind, s.strip()))
         if self.pass_n == 1:
@@ -197,7 +199,7 @@ class ConventionChecker (object):
             ivars = d.get('ivars')
             ivars[ivar] = val
             d['ivars'] = ivars
-            if trace:
+            if trace and trace_dict:
                 g.trace('dict for class Commands...')
                 g.printDict(d)
         
@@ -206,7 +208,8 @@ class ConventionChecker (object):
     patterns.append(assn_to_self_pattern)
 
     def do_assn_to_self(self, kind, m, s):
-        trace = True ### and self.pass_n == 2 ### self.enable_trace
+        trace = False and self.enable_trace
+        trace_dict = False
         assert self.class_name
         if trace:
             print('%14s: %s' % (kind, s.strip()))
@@ -218,7 +221,7 @@ class ConventionChecker (object):
             ivars = d.get('ivars')
             ivars[ivar] = val
             d['ivars'] = ivars
-            if trace:
+            if trace and trace_dict:
                 g.trace('dict for class', self.class_name)
                 g.printDict(d)
     #@+node:ekr.20171209063559.3: *4* checker.do_call
@@ -313,14 +316,17 @@ class ConventionChecker (object):
 
     def resolve_call(self, kind, m, s):
 
-        trace = True and self.enable_trace
+        trace = False and self.enable_trace
+        trace_entry = True
+        trace_result = False
         s = s.strip()
         m = self.call_pattern.match(s)
         aList = m.group(1).split('.')
         chain, func = aList[:-1], aList[-1]
         args = m.group(3).split(',')
         if chain:
-            if trace:
+            self.recursion_count = 0
+            if trace and trace_entry:
                 g.trace(' ===== %s.%s(%s)' % (
                     '.'.join(chain), func, ','.join(args)))
             if self.class_name:
@@ -328,7 +334,7 @@ class ConventionChecker (object):
             else:
                 context = self.Type('module', self.file_name)
             result = self.resolve_chain(chain, context)
-            if trace:
+            if trace and trace_result:
                 g.trace(' ----> %s.%s' % (result, func))
         else:
             result = None
@@ -336,7 +342,7 @@ class ConventionChecker (object):
     #@+node:ekr.20171209034244.1: *4* checker.resolve_chain
     def resolve_chain(self, chain, context):
         
-        trace = True and self.enable_trace
+        trace = False and self.enable_trace
         if trace:
             g.trace('=====', chain, context)
         for name in chain:
@@ -348,8 +354,13 @@ class ConventionChecker (object):
     #@+node:ekr.20171208173323.1: *4* checker.resolve_ivar
     def resolve_ivar(self, ivar, obj):
         '''Resolve obj.ivar'''
-        trace = True and self.enable_trace
+        trace = False and self.enable_trace
         trace_dict = False
+        self.recursion_count += 1
+        if self.recursion_count > 5:
+            print('')
+            g.trace('UNBOUNDED RECURSION: %s\n' % g.callers())
+            return self.Type('error', 'recursion')
         class_name = 'Commands' if obj.name == 'c' else obj.name
         the_class = self.classes.get(class_name)
         if not the_class:
@@ -396,10 +407,14 @@ class ConventionChecker (object):
     def start_class(self, m=None):
         '''Start a new class, ending the old class.'''
         trace = True and self.enable_trace
+        trace_dict = False
         # Trace the old class.
         if trace and self.class_name:
-            print('----- END class %s. class dict...' % self.class_name)
-            g.printDict(self.classes[self.class_name])
+            if trace_dict:
+                print('----- END class %s. class dict...' % self.class_name)
+                g.printDict(self.classes[self.class_name])
+            else:
+                print('----- END class %s', self.class_name)
         # Switch classes.
         if m:
             self.class_name = m.group(1)
