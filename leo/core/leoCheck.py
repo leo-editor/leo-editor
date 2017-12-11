@@ -466,31 +466,6 @@ class ConventionChecker (object):
 
             return '<%s: %s>' % (self.kind, self.name)
     #@-others
-#@+node:ekr.20160109173821.1: ** class BindNames
-class BindNames(object):
-    '''A class that binds all names to objects without traversing any tree.'''
-
-    def __init__(self):
-        '''Ctor for BindNames class.'''
-        self.module_context = None
-        self.context = None
-#@+node:ekr.20160109173938.1: *3* bind_all_names
-def bind_all_names(self, module_context):
-    '''Bind all names in the given module context and in all inner contexts.'''
-    self.parent_context = None
-    self.module_context = module_context
-    self.bind_names(module_context)
-#@+node:ekr.20160109174258.1: *3* bind_names
-def bind_names(self, context):
-    '''Bind all names in the given context and in all inner contexts.'''
-    # First, create objects for all names defined in this context.
-
-    # Next, bind names in inner contexts.
-    old_parent = self.parent_context
-    self.parent_context = context
-
-    # Restore the context.
-    self.parent_context = old_parent
 #@+node:ekr.20160109102859.1: ** class Context
 class Context(object):
     '''
@@ -567,7 +542,6 @@ class Context(object):
 
         self.referenced_names.add(name)
     #@-others
-#@+node:ekr.20160109185501.1: ** class Obj
 #@+node:ekr.20160108105958.1: ** class Pass1 (AstFullTraverser)
 class Pass1 (leoAst.AstFullTraverser): # V2
 

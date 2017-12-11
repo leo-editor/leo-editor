@@ -12978,6 +12978,32 @@ if Qsci:
             # pylint: disable=no-member
             font = QtGui.QFont("DejaVu Sans Mono", 14)
             lexer.setFont(font)
+#@+node:ekr.20171211081943.1: *3* From leoCheck.py
+#@+node:ekr.20160109173821.1: *4* class BindNames
+class BindNames(object):
+    '''A class that binds all names to objects without traversing any tree.'''
+
+    def __init__(self):
+        '''Ctor for BindNames class.'''
+        self.module_context = None
+        self.context = None
+#@+node:ekr.20160109173938.1: *5* bind_all_names
+def bind_all_names(self, module_context):
+    '''Bind all names in the given module context and in all inner contexts.'''
+    self.parent_context = None
+    self.module_context = module_context
+    self.bind_names(module_context)
+#@+node:ekr.20160109174258.1: *5* bind_names
+def bind_names(self, context):
+    '''Bind all names in the given context and in all inner contexts.'''
+    # First, create objects for all names defined in this context.
+
+    # Next, bind names in inner contexts.
+    old_parent = self.parent_context
+    self.parent_context = context
+
+    # Restore the context.
+    self.parent_context = old_parent
 #@-all
 #@@nosearch
 #@-leo
