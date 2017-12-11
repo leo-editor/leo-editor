@@ -5,7 +5,10 @@
 import os
 import leo.core.leoGlobals as g
 assert g
-from leo.core.leoQt import QtWebKit, QtWebKitWidgets # QtConst, QtCore, QtGui, QtWidgets
+from leo.core.leoQt import QtWebKit, QtWebKitWidgets
+if 'engine' in g.os_path_basename(QtWebKitWidgets.__file__).lower():
+    # not loading webkit view, webengine masquerading as webkit
+    raise ImportError
 #@-<< webkitview.py imports >>
 #@+others
 #@+node:tbrown.20171028115457.2: ** _path_from_pos

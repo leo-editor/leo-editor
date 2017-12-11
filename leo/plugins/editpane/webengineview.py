@@ -31,7 +31,11 @@ class LEP_WebEngineView(QtWebKitWidgets.QWebEngineView):
 
         :param str text: new text
         """
+        # see https://stackoverflow.com/questions/36609489,
+        # widget grabs focus on .setHTML()
+        self.setEnabled(False)
         self.setHtml(text)
+        self.setEnabled(True)
 
     #@+node:tbrown.20171028115459.5: *3* update_text
     def update_text(self, text):

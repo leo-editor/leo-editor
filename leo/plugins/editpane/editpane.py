@@ -429,8 +429,7 @@ class LeoEditPane(QtWidgets.QWidget):
                         pass
                 DBG("Loaded module: %s" % name)
             except ImportError as err:
-                DBG("Failed to load module: %s" % name)
-                print(err)
+                DBG("Module not loaded (unmet dependencies?): %s" % name)
 
         for module in modules:
             for key in dir(module):
@@ -440,7 +439,6 @@ class LeoEditPane(QtWidgets.QWidget):
                         self.modules.append(module)
                     self.widget_classes.append(value)
                     self.widget_for[value.lep_type].append(value)
-
     #@+node:tbrown.20171028115438.27: *3* misc_menu
     def misc_menu(self):
         """build menu on Action button"""
