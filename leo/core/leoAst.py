@@ -441,14 +441,15 @@ class AstFormatter(object):
             print('Error: f.Dict: len(keys) != len(values)\nkeys: %s\nvals: %s' % (
                 repr(keys), repr(values)))
         return ''.join(result)
-    #@+node:ekr.20160523101618.1: *4* f.DictComp (new)
+    #@+node:ekr.20160523101618.1: *4* f.DictComp
     # DictComp(expr key, expr value, comprehension* generators)
 
     def do_DictComp(self, node):
-        elt = self.visit(node.elt)
+        key = self.visit(node.key)
+        value = self.visit(node.value)
         gens = [self.visit(z) for z in node.generators]
         gens = [z if z else '<**None**>' for z in gens] # Kludge: probable bug.
-        return '%s for %s' % (elt, ''.join(gens))
+        return '%s:%s for %s' % (key, value, ''.join(gens))
     #@+node:ekr.20141012064706.18424: *4* f.Ellipsis
     def do_Ellipsis(self, node):
         return '...'

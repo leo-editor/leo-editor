@@ -184,7 +184,7 @@ class ConventionChecker (object):
 
     def do_assn_to_c(self, kind, m, s):
         
-        trace = True ### and self.enable_trace
+        trace = False and self.enable_trace
         trace_dict = False
         if trace:
             print('%14s: %s' % (kind, s.strip()))
@@ -212,6 +212,7 @@ class ConventionChecker (object):
     patterns.append(assn_to_self_pattern)
 
     def do_assn_to_self(self, kind, m, s):
+
         trace = False and self.enable_trace
         trace_dict = False
         assert self.class_name
@@ -233,6 +234,7 @@ class ConventionChecker (object):
     patterns.append(call_pattern)
 
     def do_call(self, kind, m, s):
+
         trace = False and self.pass_n == 2
         if trace: print('%14s: %s' % (kind, s.strip()))
         if self.pass_n == 1:
@@ -261,7 +263,8 @@ class ConventionChecker (object):
     patterns.append(class_pattern)
 
     def do_class(self, kind, m, s):
-        trace = False and self.enable_trace
+
+        trace = True and self.enable_trace
         self.start_class(m)
         if trace: print(s.rstrip())
 
@@ -270,7 +273,8 @@ class ConventionChecker (object):
     patterns.append(def_pattern)
 
     def do_def(self, kind, m, s):
-        trace = True and self.enable_trace
+
+        trace = False and self.enable_trace
         if trace: print('%4s%s' % ('', s.strip()))
         # Not quite accurate..
         # if trace: print('')
@@ -362,7 +366,7 @@ class ConventionChecker (object):
         class_name = 'Commands' if obj.name == 'c' else obj.name
         the_class = self.classes.get(class_name)
         self.recursion_count += 1
-        if self.recursion_count > 5:
+        if self.recursion_count > 10:
             print('')
             g.trace('UNBOUNDED RECURSION: %r %r %s' % (ivar, obj, g.callers()))
             if trace_c_dict_on_error:
