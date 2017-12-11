@@ -22,6 +22,18 @@ import time
 #@-<< imports >>
 #@+others
 #@+node:ekr.20161021091557.1: **  Commands
+#@+node:ekr.20171211055756.1: *3* checkConventions (checkerCommands.py)
+@g.command('check-conventions')
+def checkConventsion(event):
+    c = event.get('c')
+    if c:
+        if c.changed: c.save()
+        import imp
+        import leo.core.leoAst as leoAst
+        import leo.core.leoCheck as leoCheck
+        imp.reload(leoAst)
+        imp.reload(leoCheck)
+        leoCheck.checkConventions(c)
 #@+node:ekr.20161026092059.1: *3* kill-pylint
 @g.command('kill-pylint')
 @g.command('pylint-kill')

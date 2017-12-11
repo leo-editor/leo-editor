@@ -264,17 +264,16 @@ class ConventionChecker (object):
 
     def do_class(self, kind, m, s):
 
-        trace = False # and self.enable_trace
+        trace = True # and self.enable_trace
         self.start_class(m)
         if trace: print(s.rstrip())
-
     #@+node:ekr.20171209063559.5: *4* checker.do_def
     def_pattern = ('def', re.compile(r'^\s*def\s+([\w0-9]+)\s*\((.*)\)\s*:'))
     patterns.append(def_pattern)
 
     def do_def(self, kind, m, s):
 
-        trace = False # and self.enable_trace
+        trace = True # and self.enable_trace
         if trace: print('%4s%s' % ('', s.strip()))
         # Not quite accurate..
         # if trace: print('')
@@ -1772,7 +1771,7 @@ class Stats(object):
                 print('%s%s: %s' % (pad,s,getattr(sd,var)))
         print('')
     #@-others
-#@+node:ekr.20150704135836.1: ** test
+#@+node:ekr.20150704135836.1: ** testShowData (leoCheck.py)
 def test(c, files):
     r'''
     A stand-alone version of @button show-data.  Call as follows:
@@ -1789,6 +1788,137 @@ def test(c, files):
     # pylint: disable=import-self
     import leo.core.leoCheck as leoCheck
     leoCheck.ShowData(c=c).run(files)
+#@+node:ekr.20171211054600.1: ** checkConventions (leoCheck.py)
+def checkConventions(c):
+    '''
+    A stand-alone version of the @button node that tests the
+    ConventionChecker class.
+    
+    The check-conventions command in checkerCommands.py saves c and reloads
+    the leoAst and leoCheck modules before calling this function.
+    '''
+    import leo.core.leoCheck as leoCheck
+    do_all = True
+    do_string = False
+    g.cls()
+    fails = []
+        # All of Leo's core files pass!
+    fn = g.os_path_finalize_join(g.app.loadDir, '..', 'core', 'leoTest.py')
+    #@+<< define s >>
+    #@+node:ekr.20171211054736.2: *3* << define s >>
+    s = '''\
+    class T:
+        
+        def __init__(self, tempNode):
+            self.tempNode = tempNode.copy()
+        
+        def setUp(self):
+            tempNode = self.tempNode
+            while tempNode.firstChild():
+                tempNode.firstChild().doDelete()
+    '''
+
+    s_ok2 = '''
+    class Context(object):
+        def __init__ (self, parent_context):
+            self.parent_context = parent_context
+            if parent_context:
+                parent_context.inner_contexts_list.append(self)
+    '''
+    assert s_ok2
+
+    s_ok= '''
+    class TC:
+        def __init__(self, c):
+            c.tc = self
+        def add_tag(self, p):
+            print(p.v) # AttributeError if p is a vnode.
+
+    class Test:
+        def __init__(self,c):
+            self.c = c
+            self.tc = self.c.tc
+        def add_tag(self):
+            p = self.c.p
+            self.tc.add_tag(p.v) # WRONG: arg should be p.
+    '''
+    assert s_ok
+
+    #@-<< define s >>
+    s = g.adjustTripleString(s, c.tab_width)
+    #@+<< old tests >>
+    #@+node:ekr.20171211054736.3: *3* << old tests >>
+    s_passes_1 = '''\
+    class C1:
+            
+        def f1(self, p):
+            print(p.v)
+            
+        def f2(self, p):
+            self.f1(p.v) # WRONG
+
+    '''
+    assert s_passes_1
+
+    s_1 = '''\
+    class C1:
+
+        def __init__(self, c):
+            self.c = c
+            c.theTagController = self
+            
+        def add_tag(self, p):
+            pass
+
+    class C2:
+
+        def oops(self, p):
+            c.tagController.add_tag(p.v,tag)
+                # WRONG: should be p.
+
+    '''
+    assert s_1
+
+
+    s_2 = '''\
+    class TagController:
+
+        def __init__(self, c):
+            self.c = c
+            c.theTagController = self
+
+        def add_tag(self, p, tag):
+            # Will fail if p is a vnode
+            tags = set(p.v.u.get('__node_tags', set([])))
+
+    class LeoTagWidget(QtWidgets.QWidget):
+
+        def __init__(self,c,parent=None):
+            self.c = c
+            self.tc = self.c.theTagController
+
+        def add_tag(self, event=None):
+            p = self.c.p
+            self.tc.add_tag(p.v,tag) # WRONG: should be p.
+
+    '''
+    assert s_2
+    #@-<< old tests >>
+    if do_all:
+        utils = leoCheck.ProjectUtils()
+        aList = utils.project_files('leo', force_all=False)
+        # g.printList(aList)
+        for fn in aList:
+            sfn = g.shortFileName(fn)
+            if sfn in fails or fn in fails:
+                print('===== skipping', sfn)
+            else:
+                print('==== fn', sfn)
+                leoCheck.ConventionChecker(c).check(fn=fn)
+    elif do_string: # Test string s.
+        leoCheck.ConventionChecker(c).check(s=s)
+    else: # Test an actual file.
+        leoCheck.ConventionChecker(c).check(fn=fn)
 #@-others
 #@@language python
 #@@tabwidth -4
