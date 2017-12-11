@@ -44,9 +44,10 @@ class ConventionChecker (object):
 
     #@+others
     #@+node:ekr.20171210134449.1: *3* checker.Birth
-    def __init__(self, c):
+    def __init__(self, c, stats):
         self.c = c
         self.class_name = None
+        self.stats = stats
         # Rudimentary symbol tables...
         self.classes = self.init_classes()
         self.special_names = self.init_special_names()
@@ -191,6 +192,7 @@ class ConventionChecker (object):
         if trace:
             print('%14s: %s' % (kind, s.strip()))
         if self.pass_n == 1:
+            self.stats.assignments += 1
             ivar = m.group(1)
             val = m.group(2).strip()
             # Resolve val, if possible.
@@ -221,6 +223,7 @@ class ConventionChecker (object):
         if trace:
             print('%14s: %s' % (kind, s.strip()))
         if self.pass_n == 1:
+            self.stats.assignments += 1
             ivar = m.group(1)
             val = m.group(2).strip()
             d = self.classes.get(self.class_name)
@@ -246,6 +249,7 @@ class ConventionChecker (object):
             trace = not any([call.startswith(z) for z in self.ignore])
         except IndexError:
             pass # No m.group(1)
+        self.stats.calls += 1
         obj = self.resolve_call(kind, m, s)
         if obj and obj.kind == 'instance':
             m = self.call_pattern.match(s.strip())
@@ -280,6 +284,7 @@ class ConventionChecker (object):
         # Not quite accurate..
         # if trace: print('')
         if self.class_name and self.pass_n == 1:
+            self.stats.defs += 1
             def_name = m.group(1)
             def_args = m.group(2)
             the_class = self.classes[self.class_name]
@@ -302,6 +307,7 @@ class ConventionChecker (object):
         trace_resolve = True
         if trace and trace_resolve:
             g.trace('      ===== name: %s obj: %r' % (name, obj))
+        self.stats.resolve += 1
         if obj:
             if obj.kind in ('error', 'unknown'):
                 result = obj
@@ -324,6 +330,7 @@ class ConventionChecker (object):
         trace = False and self.enable_trace
         trace_entry = True
         trace_result = False
+        self.stats.resolve_call += 1
         s = s.strip()
         m = self.call_pattern.match(s)
         aList = m.group(1).split('.')
@@ -350,6 +357,8 @@ class ConventionChecker (object):
         trace = False and self.enable_trace
         if trace:
             g.trace('=====', chain, context)
+        self.stats.resolve_chain += 1
+        name = '<no name>'
         for name in chain:
             context = self.resolve(name, context)
             if trace: g.trace('%4s ==> %r' % (name, context))
@@ -366,6 +375,7 @@ class ConventionChecker (object):
         trace_dict_on_error = False
         trace_c_dict_on_error = True
         raise_on_error = True
+        self.stats.resolve_ivar += 1
         class_name = 'Commands' if obj.name == 'c' else obj.name
         the_class = self.classes.get(class_name)
         self.recursion_count += 1
@@ -441,6 +451,7 @@ class ConventionChecker (object):
                 print('----- END class %s', self.class_name)
         # Switch classes.
         if m:
+            self.stats.classes += 1
             self.class_name = m.group(1)
             if trace: print('===== START class', self.class_name)
             if self.pass_n == 1:
@@ -555,6 +566,8 @@ class Pass1 (leoAst.AstFullTraverser): # V2
     2. Calls the following Context methods: cx.define/global/import/reference_name.
        These methods update lists used later to bind names to objects.
     '''
+    # pylint: disable=no-member
+        # Stats class defines __setattr__
 
     #@+others
     #@+node:ekr.20160108105958.2: *3*  p1.ctor
@@ -1651,9 +1664,12 @@ class Stats(object):
         self.d[name] = val
         
     def report(self):
-        n = max([len(key) for key in self.d])
-        for key, val in sorted(self.d.items()):
-            print('%*s: %s' % (n, key, val))
+        if self.d:
+            n = max([len(key) for key in self.d])
+            for key, val in sorted(self.d.items()):
+                print('%*s: %s' % (n, key, val))
+        else:
+            print('no stats')
 #@+node:ekr.20171211061816.1: ** top-level test functions
 #@+node:ekr.20150704135836.1: *3* testShowData (leoCheck.py)
 def test(c, files):
@@ -1681,14 +1697,14 @@ def checkConventions(c):
     The check-conventions command in checkerCommands.py saves c and reloads
     the leoAst and leoCheck modules before calling this function.
     '''
-    import leo.core.leoCheck as leoCheck
-    production = True
-    do_all = True
-    do_string = False
+    g.cls()
+    kind = 'production'
+    assert kind in ('all', 'file', 'production', 'string'), repr(kind)
+    project_name = 'leo'  # 'coverage', 'leo', 'lib2to3', 'pylint', 'rope'
+    fn = g.os_path_finalize_join(g.app.loadDir, '..', 'core', 'leoCheck.py')
+    report_stats = True
     trace_fn = True
     trace_skipped = False
-    project_name = 'leo'  # 'coverage', 'leo', 'lib2to3', 'pylint', 'rope'
-    g.cls()
     fails_dict = {
         'coverage': ['cmdline.py',],
         'lib2to3': ['fixer_util.py', 'fix_dict.py', 'patcomp.py', 'refactor.py'],
@@ -1701,7 +1717,6 @@ def checkConventions(c):
         'rope': ['objectinfo.py', 'objectdb.py', 'runmod.py',],
     }
     fails = fails_dict.get(project_name, [])
-    fn = g.os_path_finalize_join(g.app.loadDir, '..', 'core', 'leoTest.py')
     #@+<< define s >>
     #@+node:ekr.20171211054736.2: *4* << define s >>
     s = '''\
@@ -1802,16 +1817,17 @@ def checkConventions(c):
     '''
     assert s_2
     #@-<< old tests >>
-    if production:
+    stats = Stats()
+    if kind == 'production':
         
         def predicate(p):
             return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
 
-        for p2 in g.findRootsWithPredicate(c, c.p, predicate):
-            fn = p2.anyAtFileNodeName()
-            leoCheck.ConventionChecker(c).check(fn=fn, trace_fn=trace_fn)
-    elif do_all:
-        utils = leoCheck.ProjectUtils()
+        for p in g.findRootsWithPredicate(c, c.p, predicate):
+            x = ConventionChecker(c, stats)
+            x.check(fn=g.fullPath(c, p), trace_fn=trace_fn)
+    elif kind == 'all':
+        utils = ProjectUtils()
         aList = utils.project_files(project_name, force_all=False)
         if aList:
             t1 = time.clock()
@@ -1820,15 +1836,18 @@ def checkConventions(c):
                 if sfn in fails or fn in fails:
                     if trace_skipped: print('===== skipping', sfn)
                 else:
-                    leoCheck.ConventionChecker(c).check(fn=fn, trace_fn=trace_fn)
+                    ConventionChecker(c, stats).check(fn=fn, trace_fn=trace_fn)
             t2 = time.clock()
             print('%s files in %4.2f sec.' % (len(aList), (t2-t1)))
         else:
             print('no files for project: %s' % (project_name))
-    elif do_string: # Test string s.
-        leoCheck.ConventionChecker(c).check(s=s)
-    else: # Test an actual file.
-        leoCheck.ConventionChecker(c).check(fn=fn)
+    elif kind == 'string':
+        ConventionChecker(c, stats).check(s=s)
+    else:
+        assert kind == 'file', repr(kind)
+        ConventionChecker(c, stats).check(fn=fn)
+    if report_stats:
+        stats.report()
 #@-others
 #@@language python
 #@@tabwidth -4
