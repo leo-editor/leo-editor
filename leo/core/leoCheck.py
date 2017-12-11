@@ -1631,121 +1631,29 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         if node.value:
             self.visit(node.value)
     #@-others
-#@+node:ekr.20160109150703.1: ** class Stats
+#@+node:ekr.20171211163833.1: ** class Stats
 class Stats(object):
-    '''A class containing global statistics & other data'''
-    #@+others
-    #@+node:ekr.20160109150703.2: *3*  sd.ctor
-    def __init__ (self):
+    '''
+    A basic statistics class.  Use this way:
+        
+        stats = Stats()
+        stats.classes += 1
+        stats.defs += 1
+        stats.report()
+    '''
 
-        # Files...
-        # self.completed_files = [] # Files handled by do_files.
-        # self.failed_files = [] # Files that could not be opened.
-        # self.files_list = [] # Files given by user or by import statements.
-        # self.module_names = [] # Module names corresponding to file names.
-
-        # Contexts.
-        # self.context_list = {}
-            # Keys are fully qualified context names; values are contexts.
-        # self.modules_dict = {}
-            # Keys are full file names; values are ModuleContext's.
-
-        # Statistics...
-        # self.n_chains = 0
-        self.n_contexts = 0
-        # self.n_errors = 0
-        self.n_lambdas = 0
-        self.n_modules = 0
-        # self.n_relinked_pointers = 0
-        # self.n_resolvable_names = 0
-        # self.n_resolved_contexts = 0
-        # self.n_relinked_names = 0
-
-        # Names...
-        self.n_attributes = 0
-        self.n_expressions = 0
-        self.n_ivars = 0
-        self.n_names = 0        # Number of symbol table entries.
-        self.n_del_names = 0
-        self.n_load_names = 0
-        self.n_param_names = 0
-        self.n_param_refs = 0
-        self.n_store_names = 0
-
-        # Statements...
-        self.n_assignments = 0
-        self.n_calls = 0
-        self.n_classes = 0
-        self.n_defs = 0
-        self.n_fors = 0
-        self.n_globals = 0
-        self.n_imports = 0
-        self.n_lambdas = 0
-        self.n_list_comps = 0
-        self.n_returns = 0
-        self.n_withs = 0
-
-        # Times...
-        self.parse_time = 0.0
-        self.pass1_time = 0.0
-        self.pass2_time = 0.0
-        self.total_time = 0.0
-    #@+node:ekr.20160109150703.6: *3* sd.print_times
-    def print_times (self):
-
-        sd = self
-        times = (
-            'parse_time',
-            'pass1_time',
-            # 'pass2_time', # the resolve_names pass is no longer used.
-            'total_time',
-        )
-        max_n = 5
-        for s in times:
-            max_n = max(max_n,len(s))
-        print('\nScan times...\n')
-        for s in times:
-            pad = ' ' * (max_n - len(s))
-            print('%s%s: %2.2f' % (pad,s,getattr(sd,s)))
-        print('')
-    #@+node:ekr.20160109150703.7: *3* sd.print_stats
-    def print_stats (self):
-
-        sd = self
-        table = (
-            '*', 'errors',
-
-            '*Contexts',
-            'classes','contexts','defs','modules',
-
-            '*Statements',
-            'assignments','calls','fors','globals','imports',
-            'lambdas','list_comps','returns','withs',
-
-            '*Names',
-            'attributes','del_names','load_names','names',
-            'param_names','param_refs','store_names',
-            #'resolvable_names','relinked_names','relinked_pointers',
-            # 'ivars',
-            # 'resolved_contexts',
-        )
-        max_n = 5
-        for s in table:
-            max_n = max(max_n,len(s))
-        print('\nStatistics...\n')
-        for s in table:
-            var = 'n_%s' % s
-            pad = ' ' * (max_n - len(s))
-            if s.startswith('*'):
-                if s[1:].strip():
-                    print('\n%s\n' % s[1:])
-                else:
-                    pass # print('')
-            else:
-                pad = ' ' * (max_n - len(s))
-                print('%s%s: %s' % (pad,s,getattr(sd,var)))
-        print('')
-    #@-others
+    d = {}
+    
+    def __getattr__(self, name):
+        return self.d.get(name, 0)
+        
+    def __setattr__(self, name, val):
+        self.d[name] = val
+        
+    def report(self):
+        n = max([len(key) for key in self.d])
+        for key, val in sorted(self.d.items()):
+            print('%*s: %s' % (n, key, val))
 #@+node:ekr.20171211061816.1: ** top-level test functions
 #@+node:ekr.20150704135836.1: *3* testShowData (leoCheck.py)
 def test(c, files):
