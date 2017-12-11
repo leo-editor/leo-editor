@@ -264,7 +264,7 @@ class ConventionChecker (object):
 
     def do_class(self, kind, m, s):
 
-        trace = True and self.enable_trace
+        trace = False # and self.enable_trace
         self.start_class(m)
         if trace: print(s.rstrip())
 
@@ -274,7 +274,7 @@ class ConventionChecker (object):
 
     def do_def(self, kind, m, s):
 
-        trace = False and self.enable_trace
+        trace = False # and self.enable_trace
         if trace: print('%4s%s' % ('', s.strip()))
         # Not quite accurate..
         # if trace: print('')
@@ -297,7 +297,7 @@ class ConventionChecker (object):
     #@+node:ekr.20171208142646.1: *3* checker.resolve & helpers
     def resolve(self, name, obj, trace=None):
         '''Resolve name in the context of obj.'''
-        trace = False and self.enable_trace
+        trace = False # and self.enable_trace
         trace_resolve = True
         if trace and trace_resolve:
             g.trace('      ===== name: %s obj: %r' % (name, obj))
@@ -356,6 +356,8 @@ class ConventionChecker (object):
             g.trace('%4s ----> %r' % (name, context))
         return context
     #@+node:ekr.20171208173323.1: *4* checker.resolve_ivar
+    # id_pattern = re.compile('\w+')
+
     def resolve_ivar(self, ivar, obj):
         '''Resolve obj.ivar'''
         trace = False # and self.enable_trace
@@ -366,7 +368,7 @@ class ConventionChecker (object):
         class_name = 'Commands' if obj.name == 'c' else obj.name
         the_class = self.classes.get(class_name)
         self.recursion_count += 1
-        if self.recursion_count > 10:
+        if self.recursion_count > 5:
             print('')
             g.trace('UNBOUNDED RECURSION: %r %r %s' % (ivar, obj, g.callers()))
             if trace_c_dict_on_error:
@@ -405,11 +407,15 @@ class ConventionChecker (object):
                     # Resovle the rest of the tail in the found context.
                     if trace: g.trace('TAIL: %s => %s.%s' % (val, special_obj, tail))
                     return self.resolve_chain(tail[1:], special_obj)
-            # Avoid recursion.
-            if val == ivar: ### val in (ivar, 'True', 'False'):
+            # Avoid recursion 1.
+            if ivar == val:
                 if trace: g.trace('AVOID RECURSION: self.%s=%s' % (ivar, val))
                 return self.Type('unknown', ivar)
             head2 = val.split('.')
+            # Avoid recursion 2.
+            if ivar == head2[0]:
+                if trace: g.trace('AVOID RECURSION2: %s=%s' % (ivar, val))
+                return self.Type('unknown', ivar)
             if trace: g.trace('RECURSIVE', head2)
             obj2 = obj
             for name2 in head2:
