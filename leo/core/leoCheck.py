@@ -1771,7 +1771,8 @@ class Stats(object):
                 print('%s%s: %s' % (pad,s,getattr(sd,var)))
         print('')
     #@-others
-#@+node:ekr.20150704135836.1: ** testShowData (leoCheck.py)
+#@+node:ekr.20171211061816.1: ** top-level test functions
+#@+node:ekr.20150704135836.1: *3* testShowData (leoCheck.py)
 def test(c, files):
     r'''
     A stand-alone version of @button show-data.  Call as follows:
@@ -1788,24 +1789,24 @@ def test(c, files):
     # pylint: disable=import-self
     import leo.core.leoCheck as leoCheck
     leoCheck.ShowData(c=c).run(files)
-#@+node:ekr.20171211054600.1: ** checkConventions (leoCheck.py)
+#@+node:ekr.20171211054600.1: *3* checkConventions (leoCheck.py)
 def checkConventions(c):
     '''
-    A stand-alone version of the @button node that tests the
+    A stand-alone version of the @button node that tested the
     ConventionChecker class.
     
     The check-conventions command in checkerCommands.py saves c and reloads
     the leoAst and leoCheck modules before calling this function.
     '''
     import leo.core.leoCheck as leoCheck
-    do_all = True
+    do_all = False
     do_string = False
     g.cls()
     fails = []
         # All of Leo's core files pass!
     fn = g.os_path_finalize_join(g.app.loadDir, '..', 'core', 'leoTest.py')
     #@+<< define s >>
-    #@+node:ekr.20171211054736.2: *3* << define s >>
+    #@+node:ekr.20171211054736.2: *4* << define s >>
     s = '''\
     class T:
         
@@ -1847,7 +1848,7 @@ def checkConventions(c):
     #@-<< define s >>
     s = g.adjustTripleString(s, c.tab_width)
     #@+<< old tests >>
-    #@+node:ekr.20171211054736.3: *3* << old tests >>
+    #@+node:ekr.20171211054736.3: *4* << old tests >>
     s_passes_1 = '''\
     class C1:
             
