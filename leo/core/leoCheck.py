@@ -34,6 +34,9 @@ class ConventionChecker (object):
         leoCheck.ConventionChecker(c).check(fn=fn)
     '''
     
+    ignore = ('bool', 'dict', 'enumerate', 'list', 'tuple')
+        # Things that look like function calls.
+    
     patterns = []
         # Set below.
 
@@ -123,7 +126,7 @@ class ConventionChecker (object):
             g.trace('done')
     #@+node:ekr.20171207101337.1: *4* checker.check_helper
     def check_helper(self, fn, node, s):
-        trace = True and self.enable_trace
+        trace = False and self.enable_trace
         trace_source = False
         self.file_name = fn
         dispatch = {
@@ -181,7 +184,7 @@ class ConventionChecker (object):
 
     def do_assn_to_c(self, kind, m, s):
         
-        trace = False and self.enable_trace
+        trace = True ### and self.enable_trace
         trace_dict = False
         if trace:
             print('%14s: %s' % (kind, s.strip()))
@@ -193,6 +196,7 @@ class ConventionChecker (object):
                 context = self.Type('class', self.class_name)
             else:
                 context = self.Type('module', self.file_name)
+            self.recursion_count = 0
             val = self.resolve(val, context, trace=False)
             d = self.classes.get('Commands')
             assert d
@@ -228,9 +232,6 @@ class ConventionChecker (object):
     call_pattern = ('call',  re.compile(r'^\s*(\w+(\.\w+)*)\s*\((.*)\)'))
     patterns.append(call_pattern)
 
-    ignore = ('dict', 'enumerate', 'list', 'tuple')
-        # Things that look like function calls.
-
     def do_call(self, kind, m, s):
         trace = False and self.pass_n == 2
         if trace: print('%14s: %s' % (kind, s.strip()))
@@ -260,7 +261,7 @@ class ConventionChecker (object):
     patterns.append(class_pattern)
 
     def do_class(self, kind, m, s):
-        trace = True and self.enable_trace
+        trace = False and self.enable_trace
         self.start_class(m)
         if trace: print(s.rstrip())
 
@@ -353,17 +354,23 @@ class ConventionChecker (object):
     #@+node:ekr.20171208173323.1: *4* checker.resolve_ivar
     def resolve_ivar(self, ivar, obj):
         '''Resolve obj.ivar'''
-        trace = False and self.enable_trace
+        trace = False # and self.enable_trace
         trace_dict = False
+        trace_dict_on_error = False
+        trace_c_dict_on_error = True
         raise_on_error = True
         class_name = 'Commands' if obj.name == 'c' else obj.name
         the_class = self.classes.get(class_name)
         self.recursion_count += 1
         if self.recursion_count > 5:
             print('')
-            g.trace('UNBOUNDED RECURSION: %s' % g.callers())
-            g.trace('CLASS DICT', class_name)
-            g.printDict(the_class)
+            g.trace('UNBOUNDED RECURSION: %r %r %s' % (ivar, obj, g.callers()))
+            if trace_c_dict_on_error:
+                g.trace('CLASS DICT: Commands')
+                g.printDict(self.classes.get('Commands'))
+            if trace_dict_on_error:
+                g.trace('CLASS DICT', class_name)
+                g.printDict(the_class)
             if raise_on_error:
                 assert False, self.recursion_count
             return self.Type('error', 'recursion')
@@ -395,26 +402,24 @@ class ConventionChecker (object):
                     if trace: g.trace('TAIL: %s => %s.%s' % (val, special_obj, tail))
                     return self.resolve_chain(tail[1:], special_obj)
             # Avoid recursion.
-            if ivar == val:
-                g.trace('AVOID RECURSION: self.%s=%s' % (ivar, val))
+            if val == ivar: ### val in (ivar, 'True', 'False'):
+                if trace: g.trace('AVOID RECURSION: self.%s=%s' % (ivar, val))
                 return self.Type('unknown', ivar)
             head2 = val.split('.')
-            if trace:
-                g.trace('RECURSIVE', head2)
+            if trace: g.trace('RECURSIVE', head2)
             obj2 = obj
             for name2 in head2:
                 old_obj2 = obj2
                 obj2 = self.resolve(name2, obj2)
                 if trace: g.trace('recursive %s: %r --> %r' % (name2, old_obj2, obj2))
-            if trace:
-                g.trace('END RECURSIVE: %r', obj2)
+            if trace: g.trace('END RECURSIVE: %r', obj2)
             return obj2
         else:
             return self.Type('error', 'no member %s' % ivar)
     #@+node:ekr.20171208111655.1: *3* checker.start_class
     def start_class(self, m=None):
         '''Start a new class, ending the old class.'''
-        trace = True and self.enable_trace
+        trace = False and self.enable_trace
         trace_dict = False
         # Trace the old class.
         if trace and self.class_name:
@@ -438,7 +443,7 @@ class ConventionChecker (object):
     class Type (object):
         '''A class to hold all type-related data.'''
 
-        kinds = ('error', 'class', 'instance', 'module', 'unknown')
+        kinds = ('error', 'class', 'func', 'instance', 'module', 'unknown')
         
         def __init__(self, kind, name, source=None, tag=None):
 
