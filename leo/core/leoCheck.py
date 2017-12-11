@@ -6,13 +6,13 @@
 # To do:
 # - Option to ignore defs without args if all calls have no args.
 # * explain typical entries
+import imp
 import leo.core.leoGlobals as g
 import leo.core.leoAst as leoAst
+imp.reload(leoAst)
 import ast
 import glob
-import imp
 import re
-    # Used only in the disused prototype code.
 import time
 #@+others
 #@+node:ekr.20171207095816.1: ** class ConventionChecker
@@ -273,7 +273,7 @@ class ConventionChecker (object):
 
     def do_def(self, kind, m, s):
 
-        trace = True # and self.enable_trace
+        trace = False # and self.enable_trace
         if trace: print('%4s%s' % ('', s.strip()))
         # Not quite accurate..
         # if trace: print('')
@@ -1799,7 +1799,7 @@ def checkConventions(c):
     the leoAst and leoCheck modules before calling this function.
     '''
     import leo.core.leoCheck as leoCheck
-    do_all = False
+    do_all = True
     do_string = False
     g.cls()
     fails = []
@@ -1914,7 +1914,7 @@ def checkConventions(c):
             if sfn in fails or fn in fails:
                 print('===== skipping', sfn)
             else:
-                print('==== fn', sfn)
+                print('=====', sfn)
                 leoCheck.ConventionChecker(c).check(fn=fn)
     elif do_string: # Test string s.
         leoCheck.ConventionChecker(c).check(s=s)

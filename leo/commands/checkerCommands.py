@@ -29,9 +29,10 @@ def checkConventsion(event):
     if c:
         if c.changed: c.save()
         import imp
-        import leo.core.leoAst as leoAst
         import leo.core.leoCheck as leoCheck
-        imp.reload(leoAst)
+        # import leo.core.leoAst as leoAst
+        # imp.reload(leoAst)
+            # Done in leoCheck module.
         imp.reload(leoCheck)
         leoCheck.checkConventions(c)
 #@+node:ekr.20161026092059.1: *3* kill-pylint
