@@ -98,9 +98,11 @@ class ConventionChecker (object):
             'v': t('instance', 'VNode'),
         }
     #@+node:ekr.20171207100432.1: *3* checker.check & helper
-    def check(self, fn=None, s=None):
+    def check(self, fn=None, s=None, trace_fn=False):
         '''Check the contents of fn or the string s.'''
         # Get the source.
+        trace = True
+        trace_time = True
         if fn:
             sfn = g.shortFileName(fn)
             if g.os_path_exists(fn):
@@ -116,14 +118,13 @@ class ConventionChecker (object):
         else:
             return g.trace('no fn or s argument')
         # Check the source
+        if fn and trace_fn: print('=====', sfn)
         t1 = time.clock()
         node = ast.parse(s, filename='before', mode='exec')
         self.check_helper(fn=sfn, node=node, s=s)
         t2 = time.clock()
-        if fn:
-            g.trace('done: %4.2f sec. %s' % ((t2-t1), sfn))
-        else:
-            g.trace('done')
+        if trace and trace_time and fn:
+            print('%4.2f sec. %s' % ((t2-t1), sfn))
     #@+node:ekr.20171207101337.1: *4* checker.check_helper
     def check_helper(self, fn, node, s):
         trace = False and self.enable_trace
@@ -147,7 +148,6 @@ class ConventionChecker (object):
                     print('===== source')
                     print(s1)
                     print('----- end source')
-            
             for s in g.splitLines(s1):
                 for kind, pattern in self.patterns:
                     m = pattern.match(s)
@@ -264,7 +264,7 @@ class ConventionChecker (object):
 
     def do_class(self, kind, m, s):
 
-        trace = True # and self.enable_trace
+        trace = False and self.pass_n == 1 # and self.enable_trace
         self.start_class(m)
         if trace: print(s.rstrip())
     #@+node:ekr.20171209063559.5: *4* checker.do_def
@@ -273,7 +273,7 @@ class ConventionChecker (object):
 
     def do_def(self, kind, m, s):
 
-        trace = False # and self.enable_trace
+        trace = False and self.pass_n == 1 # and self.enable_trace
         if trace: print('%4s%s' % ('', s.strip()))
         # Not quite accurate..
         # if trace: print('')
@@ -1110,7 +1110,8 @@ class ProjectUtils(object):
         d = {
             # Change these paths as required for your system.
             'coverage': (
-                r'C:\Python26\Lib\site-packages\coverage-3.5b1-py2.6-win32.egg\coverage',
+                # r'C:\Python26\Lib\site-packages\coverage-3.5b1-py2.6-win32.egg\coverage',
+                r'C:\Anaconda3\Lib\site-packages\coverage',
                 ['.py'], ['.bzr', 'htmlfiles']),
             'leo': (
                 r'C:\leo.repo\leo-editor\leo\core',
@@ -1154,7 +1155,7 @@ class ProjectUtils(object):
             if g.app.runningAllUnitTests and len(files) > 1 and not force_all:
                 return [files[0]]
         if not files:
-            g.trace(theDir)
+            g.trace('no files found in', theDir)
         if g.app.runningAllUnitTests and len(files) > 1 and not force_all:
             return [files[0]]
         else:
@@ -1801,8 +1802,15 @@ def checkConventions(c):
     import leo.core.leoCheck as leoCheck
     do_all = True
     do_string = False
+    trace_fn = True
+    trace_skipped = False
+    project_name = 'leo'
+        # 'coverage', 'leo', 'lib2to3', 'pylint', 'rope'
     g.cls()
-    fails = []
+    if project_name == 'coverage':
+        fails = ['cmdline.py',]
+    else:
+        fails = []
         # All of Leo's core files pass!
     fn = g.os_path_finalize_join(g.app.loadDir, '..', 'core', 'leoTest.py')
     #@+<< define s >>
@@ -1907,15 +1915,19 @@ def checkConventions(c):
     #@-<< old tests >>
     if do_all:
         utils = leoCheck.ProjectUtils()
-        aList = utils.project_files('leo', force_all=False)
-        # g.printList(aList)
-        for fn in aList:
-            sfn = g.shortFileName(fn)
-            if sfn in fails or fn in fails:
-                print('===== skipping', sfn)
-            else:
-                print('=====', sfn)
-                leoCheck.ConventionChecker(c).check(fn=fn)
+        aList = utils.project_files(project_name, force_all=False)
+        if aList:
+            t1 = time.clock()
+            for fn in aList:
+                sfn = g.shortFileName(fn)
+                if sfn in fails or fn in fails:
+                    if trace_skipped: print('===== skipping', sfn)
+                else:
+                    leoCheck.ConventionChecker(c).check(fn=fn, trace_fn=trace_fn)
+            t2 = time.clock()
+            print('%s files in %4.2f sec.' % (len(aList), (t2-t1)))
+        else:
+            print('no files for project: %s' % (project_name))
     elif do_string: # Test string s.
         leoCheck.ConventionChecker(c).check(s=s)
     else: # Test an actual file.
