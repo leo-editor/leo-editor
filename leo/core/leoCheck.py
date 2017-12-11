@@ -1774,6 +1774,7 @@ def checkConventions(c):
     the leoAst and leoCheck modules before calling this function.
     '''
     import leo.core.leoCheck as leoCheck
+    production = True
     do_all = True
     do_string = False
     trace_fn = True
@@ -1893,7 +1894,15 @@ def checkConventions(c):
     '''
     assert s_2
     #@-<< old tests >>
-    if do_all:
+    if production:
+        
+        def predicate(p):
+            return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
+
+        for p2 in g.findRootsWithPredicate(c, c.p, predicate):
+            fn = p2.anyAtFileNodeName()
+            leoCheck.ConventionChecker(c).check(fn=fn, trace_fn=trace_fn)
+    elif do_all:
         utils = leoCheck.ProjectUtils()
         aList = utils.project_files(project_name, force_all=False)
         if aList:
