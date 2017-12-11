@@ -28,7 +28,7 @@ class LEP_PlainTextView(QtWidgets.QTextBrowser):
 
         :param str text: new text
         """
-        self.setText(text)
+        self.setPlainText(text)
 
     #@+node:tbrown.20171028115502.5: *3* update_text
     def update_text(self, text):
