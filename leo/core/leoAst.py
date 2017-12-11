@@ -495,7 +495,8 @@ class AstFormatter(object):
 
     def do_NameConstant(self, node): # Python 3 only.
         s = repr(node.value)
-        return 'bool' if s in ('True', 'False') else s
+        ### return 'bool' if s in ('True', 'False') else s
+        return s
     #@+node:ekr.20141012064706.18430: *4* f.Num
     def do_Num(self, node):
         return repr(node.n)
@@ -1577,7 +1578,7 @@ class AstPatternFormatter(AstFormatter):
 
     def do_NameConstant(self, node): # Python 3 only.
         s = repr(node.value)
-        return 'bool' if s in ('True', 'False') else s
+        return 'Bool' if s in ('True', 'False') else s
 
     def do_Num(self, node):
         return 'Num' # return repr(node.n)
