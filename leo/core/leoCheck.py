@@ -568,6 +568,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
     '''
     # pylint: disable=no-member
         # Stats class defines __setattr__
+        # This is a known limitation of pylint.
 
     #@+others
     #@+node:ekr.20160108105958.2: *3*  p1.ctor
