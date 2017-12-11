@@ -12,6 +12,8 @@ import leo.core.leoAst as leoAst
 imp.reload(leoAst)
 import ast
 import glob
+import importlib
+import os
 import re
 import time
 #@+others
@@ -1074,6 +1076,8 @@ class ProjectUtils(object):
             g.trace('directory not found:' % (dir_))
         return dir_ or ''
     #@+node:ekr.20150525123715.4: *3* pu.project_files
+    #@@nobeautify
+
     def project_files(self, name, force_all=False):
         '''Return a list of all files in the named project.'''
         # Ignore everything after the first space.
@@ -1081,48 +1085,44 @@ class ProjectUtils(object):
         if i > -1:
             name = name[: i].strip()
         leo_path, junk = g.os_path_split(__file__)
+        # Import the appropriate module.
+        try:
+            m = importlib.import_module(
+                'core' if name == 'leo' else name, # module name.
+                name, # package name.
+            )
+            theDir = g.os_path_dirname(m.__file__)
+        except ImportError:
+            g.trace('package not found', name)
+            return []
         d = {
-            # Change these paths as required for your system.
-            'coverage': (
-                # r'C:\Python26\Lib\site-packages\coverage-3.5b1-py2.6-win32.egg\coverage',
-                r'C:\Anaconda3\Lib\site-packages\coverage',
-                ['.py'], ['.bzr', 'htmlfiles']),
-            'leo': (
-                r'C:\leo.repo\leo-editor\leo\core',
-                ['.py'], ['.git']), # ['.bzr']
-            'lib2to3': (
-                r'C:\Python26\Lib\lib2to3',
-                ['.py'], ['tests']),
-            'pylint': (
-                r'C:\Python26\Lib\site-packages\pylint',
-                ['.py'], ['.bzr', 'test']),
-            'rope': (
-                r'C:\Python26\Lib\site-packages\rope-0.9.4-py2.6.egg\rope\base', ['.py'], ['.bzr']),
-            # 'test': (
-                # g.os_path_finalize_join(leo_path,'test-proj'),
-                # ['.py'],['.bzr']),
+            'coverage': (['.py'], ['.bzr', 'htmlfiles']),
+            'leo':      (['.py'], ['.git']),
+            'lib2to3':  (['.py'], ['tests']),
+            'pylint':   (['.py'], ['.bzr', 'test']),
+            'rope':     (['.py'], ['.bzr']),
         }
         data = d.get(name.lower())
         if not data:
             g.trace('bad project name: %s' % (name))
             return []
-        theDir, extList, excludeDirs = data
-        files = self.files_in_dir(theDir, recursive=True, extList=extList, excludeDirs=excludeDirs)
+        extList, excludeDirs = data
+        files = self.files_in_dir(theDir,
+            recursive=True,
+            extList=extList,
+            excludeDirs=excludeDirs,
+        )
         if files:
             if name.lower() == 'leo':
                 for exclude in ['__init__.py', 'format-code.py']:
                     files = [z for z in files if not z.endswith(exclude)]
-                table = (
-                    r'C:\leo.repo\leo-editor\leo\commands',
-                    # r'C:\leo.repo\leo-editor\leo\plugins\importers',
-                    # r'C:\leo.repo\leo-editor\leo\plugins\writers',
-                )
-                for dir_ in table:
-                    files2 = self.files_in_dir(dir_, recursive=True, extList=['.py',], excludeDirs=[])
-                    files2 = [z for z in files2 if not z.endswith('__init__.py')]
-                    # g.trace(g.os_path_exists(dir_), dir_, '\n'.join(files2))
-                    files.extend(files2)
-                files.extend(glob.glob(r'C:\leo.repo\leo-editor\leo\plugins\qt_*.py'))
+                commands_dir = g.os_path_finalize_join(theDir, '..', 'commands')
+                command_files = glob.glob('%s%s%s' % (commands_dir, os.sep, '*.py'))
+                command_files = [z for z in command_files if not z.endswith('__init__.py')]
+                files.extend(command_files)
+                plugins_dir = g.os_path_finalize_join(theDir, '..', 'plugins')
+                plugins_files = glob.glob('%s%s%s' % (plugins_dir, os.sep, 'qt_*.py'))
+                files.extend(plugins_files)
                 fn = g.os_path_finalize_join(theDir, '..', 'plugins', 'qtGui.py')
                 if fn and g.os_path_exists(fn):
                     files.append(fn)
@@ -1778,14 +1778,20 @@ def checkConventions(c):
     do_string = False
     trace_fn = True
     trace_skipped = False
-    project_name = 'leo'
-        # 'coverage', 'leo', 'lib2to3', 'pylint', 'rope'
+    project_name = 'leo'  # 'coverage', 'leo', 'lib2to3', 'pylint', 'rope'
     g.cls()
-    if project_name == 'coverage':
-        fails = ['cmdline.py',]
-    else:
-        fails = []
-        # All of Leo's core files pass!
+    fails_dict = {
+        'coverage': ['cmdline.py',],
+        'lib2to3': ['fixer_util.py', 'fix_dict.py', 'patcomp.py', 'refactor.py'],
+        'leo': [], # All of Leo's core files pass.
+        'pylint': [
+            'base.py', 'classes.py', 'format.py',
+            'logging.py', 'python3.py', 'stdlib.py', 
+            'docparams.py', 'lint.py',
+        ],
+        'rope': ['objectinfo.py', 'objectdb.py', 'runmod.py',],
+    }
+    fails = fails_dict.get(project_name, [])
     fn = g.os_path_finalize_join(g.app.loadDir, '..', 'core', 'leoTest.py')
     #@+<< define s >>
     #@+node:ekr.20171211054736.2: *4* << define s >>
