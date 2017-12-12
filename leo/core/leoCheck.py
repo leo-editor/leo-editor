@@ -119,11 +119,9 @@ class ConventionChecker (object):
         '''
         g.cls()
         c = self.c
-        kind = 'file'
-        project_name = 'leo'  # 'coverage', 'leo', 'lib2to3', 'pylint', 'rope'
+        kind = 'production'
         assert kind in ('all', 'file', 'production', 'test'), repr(kind)
-        fn = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'qt_tree.py')
-        report_stats = True # and kind != 'production'
+        report_stats = True
         trace_fn = True
         trace_skipped = False
         fails_dict = {
@@ -137,13 +135,13 @@ class ConventionChecker (object):
             ],
             'rope': ['objectinfo.py', 'objectdb.py', 'runmod.py',],
         }
-        fails = fails_dict.get(project_name, [])
-        stats = Stats()
         if kind == 'production':
             for p in g.findRootsWithPredicate(c, c.p, predicate=None):
-                ### x = ConventionChecker(c, stats)
                 self.check_file(fn=g.fullPath(c, p), trace_fn=trace_fn)
         elif kind == 'all':
+            project_name = 'leo'
+                # in ('coverage', 'leo', 'lib2to3', 'pylint', 'rope')
+            fails = fails_dict.get(project_name, [])
             utils = ProjectUtils()
             aList = utils.project_files(project_name, force_all=False)
             if aList:
@@ -153,7 +151,6 @@ class ConventionChecker (object):
                     if sfn in fails or fn in fails:
                         if trace_skipped: print('===== skipping', sfn)
                     else:
-                        ### ConventionChecker(c, stats).check(fn=fn, trace_fn=trace_fn)
                         self.check_file(fn=fn, trace_fn=trace_fn)
                         
                 t2 = time.clock()
@@ -161,14 +158,13 @@ class ConventionChecker (object):
             else:
                 print('no files for project: %s' % (project_name))
         elif kind == 'test':
-            ### ConventionChecker(c, stats).check(s=s)
             self.test()
         else:
             assert kind == 'file', repr(kind)
-            ### ConventionChecker(c, stats).check(fn=fn)
+            fn = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'qt_tree.py')
             self.check_file(fn=fn)
         if report_stats:
-            stats.report()
+            self.stats.report()
     #@+node:ekr.20171207100432.1: *4* checker.check_file
     def check_file(self, fn=None, s=None, trace_fn=False):
         '''Check the contents of fn or the string s.'''
