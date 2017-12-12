@@ -53,6 +53,7 @@ class ConventionChecker (object):
         self.class_name = None
         # Rudimentary symbol tables...
         self.classes = self.init_classes()
+        self.special_class_names = ['Commands', 'Position', 'String', 'VNode']
         self.special_names = self.init_special_names()
         # Other ivars...
         self.enable_trace = True
@@ -119,8 +120,8 @@ class ConventionChecker (object):
         '''
         g.cls()
         c = self.c
-        kind = 'production'
-        assert kind in ('all', 'file', 'production', 'test'), repr(kind)
+        kind = 'all'
+        assert kind in ('all', 'files', 'production', 'test'), repr(kind)
         report_stats = True
         trace_fn = True
         trace_skipped = False
@@ -152,7 +153,6 @@ class ConventionChecker (object):
                         if trace_skipped: print('===== skipping', sfn)
                     else:
                         self.check_file(fn=fn, trace_fn=trace_fn)
-                        
                 t2 = time.clock()
                 print('%s files in %4.2f sec.' % (len(aList), (t2-t1)))
             else:
@@ -160,9 +160,16 @@ class ConventionChecker (object):
         elif kind == 'test':
             self.test()
         else:
-            assert kind == 'file', repr(kind)
-            fn = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'qt_tree.py')
-            self.check_file(fn=fn)
+            assert kind == 'files', repr(kind)
+            join = g.os_path_finalize_join
+            loadDir = g.app.loadDir
+            files_table = (
+                join(loadDir, 'leoNodes.py'),
+                    # Destroys position class.
+                join(loadDir, '..', 'plugins', 'qt_tree.py'),
+            )
+            for fn in files_table:
+                self.check_file(fn=fn, trace_fn=True)
         if report_stats:
             self.stats.report()
     #@+node:ekr.20171207100432.1: *4* checker.check_file
@@ -186,7 +193,8 @@ class ConventionChecker (object):
         else:
             return g.trace('no fn or s argument')
         # Check the source
-        if fn and trace_fn: print('=====', sfn)
+        if trace_fn:
+            print(('===== %s' % (sfn)) if fn else s)
         t1 = time.clock()
         node = ast.parse(s, filename='before', mode='exec')
         self.check_helper(fn=sfn, node=node, s=s)
@@ -202,8 +210,9 @@ class ConventionChecker (object):
             'call':     self.do_call,
             'class':    self.do_class,
             'def':      self.do_def,
-            'self.x=':  self.do_assn_to_self,
-            'c.x=':     self.do_assn_to_c,
+            'assign':   self.do_assn,
+            # 'self.x=':  self.do_assn_to_self,
+            # 'c.x=':     self.do_assn_to_c,
         }
         s1 = leoAst.AstFormatter().format(node)
         for n in (1, 2):
@@ -228,7 +237,7 @@ class ConventionChecker (object):
     #@+node:ekr.20171209065852.1: *3* checker_check_signature & helpers
     def check_signature(self, func, args, signature):
         
-        trace = False # and self.enable_trace
+        trace = False
         if trace: g.trace('%s(%s) ==> %s' % (func, args, signature))
         self.stats.check_signature += 1
         if signature[0] == 'self':
@@ -238,7 +247,7 @@ class ConventionChecker (object):
             if i < len(signature):
                 result = self.check_arg(func, arg, signature[i])
                 if result == 'fail':
-                    print('\nline %s %s\n%s(%s) != %s(%s)\n' % (
+                    print('\nline %s %s\n%s(%s) incompatible with %s(%s)\n' % (
                         self.line_number, self.file_name,
                         func, ','.join(args),
                         func, ','.join(signature)))
@@ -283,30 +292,63 @@ class ConventionChecker (object):
                 g.trace('line %4s %s %20s: %20r == %r' % (
                     self.line_number, self.file_name, func, call_arg, sig_arg))
             return 'ok'
-        elif sig_arg in special_names and call_arg in special_names:
+        # Resolve the call_arg if possible.
+        chain = call_arg.split('.')
+        if len(chain) > 1:
+            head, tail = chain[0], chain[1:]
+            if head in special_names:
+                context = special_names.get(head)
+                context = self.resolve_chain(tail, context)
+                if context.kind == 'error':
+                    # Caller will report the error.
+                    g.trace('FAIL', call_arg, context)
+                    return 'fail'
+                if sig_arg in special_names:
+                    sig_class = special_names.get(sig_arg)
+                    return self.compare_classes(call_arg, sig_arg, context, sig_class)
+        if sig_arg in special_names and call_arg in special_names:
             sig_class = special_names.get(sig_arg)
             call_class = special_names.get(call_arg)
-            if sig_class == call_class:
-                if trace and trace_ok:
-                    print('')
-                    g.trace('inferred ok: ', call_arg, sig_arg, sig_class)
-                    print('')
-                self.stats.sig_infer_ok += 1
-                return 'ok'
-            else:
-                # check_signature reports the failure.
-                self.stats.sig_infer_fail += 1
-                return 'fail'
+            return self.compare_classes(call_arg, sig_arg, call_class, sig_class)
+        if trace and trace_unknown:
+            g.trace('line %4s %s %20s: %20r ?? %r' % (
+                self.line_number, self.file_name, func, call_arg, sig_arg))
+        return 'unknown'
+    #@+node:ekr.20171212044621.1: *4* checker.compare_classes
+    def compare_classes(self, arg1, arg2, class1, class2):
+
+        trace = True
+        trace_ok = False
+        if class1 == class2:
+            if trace and trace_ok:
+                g.trace('infer ok', arg1, arg2, class1)
+            self.stats.sig_infer_ok += 1
+            return 'ok'
         else:
-            if trace and trace_unknown:
-                g.trace('line %4s %s %20s: %20r ?? %r' % (
-                    self.line_number, self.file_name, func, call_arg, sig_arg))
-            return 'unknown'
+            # The caller reports the failure.
+            if trace:
+                g.trace('FAIL', arg1, arg2, class1, class2)
+            self.stats.sig_infer_fail += 1
+            return 'fail'
     #@+node:ekr.20171208090003.1: *3* checker.do_*
     # These are like string-oriented visitors.
+    #@+node:ekr.20171212035529.1: *4* checker.do_assn
+    assign_pattern = ('assign', re.compile(r'^\s*(\w+(\.\w+)*)\s*=(.*)'))
+    patterns.append(assign_pattern)
+
+    def do_assn(self, kind, m, s):
+        
+        table = (
+            (self.assign_to_c_pattern, self.do_assn_to_c),
+            (self.assn_to_self_pattern, self.do_assn_to_self),
+        )
+        for pattern, func in table:
+            m = pattern.match(s)
+            if m:
+                func(kind, m, s)
+                return
     #@+node:ekr.20171209063559.1: *4* checker.do_assn_to_c
-    assign_to_c_pattern = ('c.x=',  re.compile(r'^\s*c\.([\w.]+)\s*=(.*)'))
-    patterns.append(assign_to_c_pattern)
+    assign_to_c_pattern = re.compile(r'^\s*c\.([\w.]+)\s*=(.*)')
 
     def do_assn_to_c(self, kind, m, s):
         
@@ -333,10 +375,8 @@ class ConventionChecker (object):
             if trace and trace_dict:
                 g.trace('dict for class Commands...')
                 g.printDict(d)
-        
     #@+node:ekr.20171209063559.2: *4* checker.do_assn_to_self
-    assn_to_self_pattern = ('self.x=', re.compile(r'^\s*self\.(\w+)\s*=(.*)'))
-    patterns.append(assn_to_self_pattern)
+    assn_to_self_pattern = re.compile(r'^\s*self\.(\w+)\s*=(.*)')
 
     def do_assn_to_self(self, kind, m, s):
 
@@ -345,6 +385,10 @@ class ConventionChecker (object):
         assert self.class_name
         if trace:
             print('%14s: %s' % (kind, s.strip()))
+        ###
+        # if self.class_name in ('Commands', 'Position'):
+            # g.trace('IGNORE', s.strip())
+            # return
         if self.pass_n == 1:
             self.stats.assignments += 1
             ivar = m.group(1)
@@ -378,8 +422,6 @@ class ConventionChecker (object):
             m = self.call_pattern.match(s.strip())
             chain = m.group(1).split('.')
             func = chain[-1]
-            # args = m.group(3).split(',')
-                # This does not handle nested commas.
             args = self.split_args(m.group(3))
             instance = self.classes.get(obj.name)
             if instance:
@@ -436,18 +478,18 @@ class ConventionChecker (object):
 
     def do_def(self, kind, m, s):
 
-        trace = False and self.pass_n == 1 # and self.enable_trace
+        trace = False and self.pass_n == 1
         if trace: print('%4s%s' % ('', s.strip()))
         # Not quite accurate..
-        # if trace: print('')
         if self.class_name and self.pass_n == 1:
             self.stats.defs += 1
-            def_name = m.group(1)
-            def_args = m.group(2)
-            the_class = self.classes[self.class_name]
-            methods = the_class.get('methods')
-            methods [def_name] = def_args
-            
+            if self.class_name not in self.special_class_names:
+                def_name = m.group(1)
+                def_args = m.group(2)
+                the_class = self.classes.get(self.class_name)
+                methods = the_class.get('methods')
+                assert methods is not None
+                methods [def_name] = def_args
     #@+node:ekr.20171208135642.1: *3* checker.end_program
     def end_program(self):
         
@@ -458,10 +500,11 @@ class ConventionChecker (object):
                 print('class %s' % key)
                 g.printDict(val)
     #@+node:ekr.20171208142646.1: *3* checker.resolve & helpers
-    def resolve(self, name, obj, trace=None):
+    def resolve(self, name, obj, trace=False):
         '''Resolve name in the context of obj.'''
-        trace = False # and self.enable_trace
         trace_resolve = True
+        # if trace and self.file_name == 'qt_tree.py':
+            # g.printDict(self.classes.get('Position'))
         if trace and trace_resolve:
             g.trace('      ===== name: %s obj: %r' % (name, obj))
         self.stats.resolve += 1
@@ -509,15 +552,14 @@ class ConventionChecker (object):
             result = None
         return result
     #@+node:ekr.20171209034244.1: *4* checker.resolve_chain
-    def resolve_chain(self, chain, context):
-        
-        trace = False and self.enable_trace
+    def resolve_chain(self, chain, context, trace=False):
+
         if trace:
             g.trace('=====', chain, context)
         self.stats.resolve_chain += 1
         name = '<no name>'
         for name in chain:
-            context = self.resolve(name, context)
+            context = self.resolve(name, context, trace=trace)
             if trace: g.trace('%4s ==> %r' % (name, context))
         if trace:
             g.trace('%4s ----> %r' % (name, context))
@@ -529,14 +571,14 @@ class ConventionChecker (object):
         '''Resolve obj.ivar'''
         trace = False # and self.enable_trace
         trace_dict = False
-        trace_dict_on_error = False
+        trace_dict_on_error = True
         trace_c_dict_on_error = True
         raise_on_error = True
         self.stats.resolve_ivar += 1
         class_name = 'Commands' if obj.name == 'c' else obj.name
         the_class = self.classes.get(class_name)
         self.recursion_count += 1
-        if self.recursion_count > 5:
+        if self.recursion_count > 20:
             print('')
             g.trace('UNBOUNDED RECURSION: %r %r %s' % (ivar, obj, g.callers()))
             if trace_c_dict_on_error:
@@ -603,7 +645,7 @@ class ConventionChecker (object):
         if trace and self.class_name:
             if trace_dict:
                 print('----- END class %s. class dict...' % self.class_name)
-                g.printDict(self.classes[self.class_name])
+                g.printDict(self.classes.get(self.class_name))
             else:
                 print('----- END class %s', self.class_name)
         # Switch classes.
@@ -612,10 +654,11 @@ class ConventionChecker (object):
             self.class_name = m.group(1)
             if trace: print('===== START class', self.class_name)
             if self.pass_n == 1:
-                self.classes [self.class_name] = {
-                    'ivars': {},
-                    'methods': {},
-                }
+                if self.class_name not in self.special_class_names:
+                    self.classes [self.class_name] = {
+                        'ivars': {},
+                        'methods': {},
+                    }
         else:
             self.class_name = None
     #@+node:ekr.20171212020013.1: *3* checker.test
@@ -638,7 +681,7 @@ class ConventionChecker (object):
     '''
         c = self.c
         s = g.adjustTripleString(s, c.tab_width)
-        self.check_file(s=s)
+        self.check_file(s=s,trace_fn=True)
     #@+node:ekr.20171209030742.1: *3* class Type
     class Type (object):
         '''A class to hold all type-related data.'''
