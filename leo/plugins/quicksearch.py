@@ -707,9 +707,11 @@ class QuickSearchController(object):
         """ Return list (a PosList) of all nodes where zero or more characters at
         the beginning of the headline match regex
         """
-
-        pat = re.compile(regex, flags)
         res = leoNodes.PosList()
+        try:
+            pat = re.compile(regex, flags)
+        except:
+            return res
         for p in nodes:
             m = re.match(pat, p.h)
             if m:
@@ -723,8 +725,11 @@ class QuickSearchController(object):
         one or more times.
 
         """
-        pat = re.compile(regex, flags)
         res = leoNodes.PosList()
+        try:
+            pat = re.compile(regex, flags)
+        except:
+            return res
         for p in nodes:
             m = re.finditer(pat, p.b)
             t1, t2 = itertools.tee(m, 2)
