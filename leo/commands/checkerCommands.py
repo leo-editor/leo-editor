@@ -30,11 +30,8 @@ def checkConventsion(event):
         if c.changed: c.save()
         import imp
         import leo.core.leoCheck as leoCheck
-        # import leo.core.leoAst as leoAst
-        # imp.reload(leoAst)
-            # Done in leoCheck module.
         imp.reload(leoCheck)
-        leoCheck.checkConventions(c)
+        leoCheck.ConventionChecker(c).check()
 #@+node:ekr.20161026092059.1: *3* kill-pylint
 @g.command('kill-pylint')
 @g.command('pylint-kill')
@@ -257,11 +254,7 @@ class PyflakesCommand(object):
         if leo_path not in sys.path:
             sys.path.append(leo_path)
         t1 = time.time()
-
-        def predicate(p):
-            return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
-
-        roots = g.findRootsWithPredicate(c, root, predicate)
+        roots = g.findRootsWithPredicate(c, root, predicate=None)
         if root:
             paths = [self.finalize(z) for z in roots]
             # These messages are important for clarity.
@@ -345,11 +338,7 @@ class PylintCommand(object):
         if leo_path not in sys.path:
             sys.path.append(leo_path)
         t1 = time.time()
-
-        def predicate(p):
-            return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
-
-        roots = g.findRootsWithPredicate(c, root, predicate)
+        roots = g.findRootsWithPredicate(c, root, predicate=None)
         for p in roots:
             self.check(p, rc_fn)
         if self.wait:

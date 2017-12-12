@@ -26283,6 +26283,160 @@ def print_stats (self):
             pad = ' ' * (max_n - len(s))
             print('%s%s: %s' % (pad,s,getattr(sd,var)))
     print('')
+.. @+node:ekr.20171211054600.1: *3* OLD checkConventions (leoCheck.py)
+def checkConventions(c):
+    '''
+    A stand-alone version of the @button node that tested the
+    ConventionChecker class.
+    
+    The check-conventions command in checkerCommands.py saves c and reloads
+    the leoCheck module before calling this function.
+    '''
+    g.cls()
+    kind = 'all'
+    project_name = 'leo'  # 'coverage', 'leo', 'lib2to3', 'pylint', 'rope'
+    assert kind in ('all', 'file', 'production', 'string'), repr(kind)
+    fn = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'qt_tree.py')
+    report_stats = True # and kind != 'production'
+    trace_fn = True
+    trace_skipped = False
+    fails_dict = {
+        'coverage': ['cmdline.py',],
+        'lib2to3': ['fixer_util.py', 'fix_dict.py', 'patcomp.py', 'refactor.py'],
+        'leo': [], # All of Leo's core files pass.
+        'pylint': [
+            'base.py', 'classes.py', 'format.py',
+            'logging.py', 'python3.py', 'stdlib.py', 
+            'docparams.py', 'lint.py',
+        ],
+        'rope': ['objectinfo.py', 'objectdb.py', 'runmod.py',],
+    }
+    fails = fails_dict.get(project_name, [])
+    << define s >>
+    s = g.adjustTripleString(s, c.tab_width)
+    << old tests >>
+    stats = Stats()
+    if kind == 'production':
+        for p in g.findRootsWithPredicate(c, c.p, predicate=None):
+            x = ConventionChecker(c, stats)
+            x.check(fn=g.fullPath(c, p), trace_fn=trace_fn)
+    elif kind == 'all':
+        utils = ProjectUtils()
+        aList = utils.project_files(project_name, force_all=False)
+        if aList:
+            t1 = time.clock()
+            for fn in aList:
+                sfn = g.shortFileName(fn)
+                if sfn in fails or fn in fails:
+                    if trace_skipped: print('===== skipping', sfn)
+                else:
+                    ConventionChecker(c, stats).check(fn=fn, trace_fn=trace_fn)
+            t2 = time.clock()
+            print('%s files in %4.2f sec.' % (len(aList), (t2-t1)))
+        else:
+            print('no files for project: %s' % (project_name))
+    elif kind == 'string':
+        ConventionChecker(c, stats).check(s=s)
+    else:
+        assert kind == 'file', repr(kind)
+        ConventionChecker(c, stats).check(fn=fn)
+    if report_stats:
+        stats.report()
+.. @+node:ekr.20171211054736.2: *4* << define s >>
+s = '''\
+class T:
+    
+    def __init__(self, tempNode):
+        self.tempNode = tempNode.copy()
+    
+    def setUp(self):
+        tempNode = self.tempNode
+        while tempNode.firstChild():
+            tempNode.firstChild().doDelete()
+'''
+
+s_ok2 = '''
+class Context(object):
+    def __init__ (self, parent_context):
+        self.parent_context = parent_context
+        if parent_context:
+            parent_context.inner_contexts_list.append(self)
+'''
+assert s_ok2
+
+s_ok= '''
+class TC:
+    def __init__(self, c):
+        c.tc = self
+    def add_tag(self, p):
+        print(p.v) # AttributeError if p is a vnode.
+
+class Test:
+    def __init__(self,c):
+        self.c = c
+        self.tc = self.c.tc
+    def add_tag(self):
+        p = self.c.p
+        self.tc.add_tag(p.v) # WRONG: arg should be p.
+'''
+assert s_ok
+
+.. @+node:ekr.20171211054736.3: *4* << old tests >>
+s_passes_1 = '''\
+class C1:
+        
+    def f1(self, p):
+        print(p.v)
+        
+    def f2(self, p):
+        self.f1(p.v) # WRONG
+
+'''
+assert s_passes_1
+
+s_1 = '''\
+class C1:
+
+    def __init__(self, c):
+        self.c = c
+        c.theTagController = self
+        
+    def add_tag(self, p):
+        pass
+
+class C2:
+
+    def oops(self, p):
+        c.tagController.add_tag(p.v,tag)
+            # WRONG: should be p.
+
+'''
+assert s_1
+
+
+s_2 = '''\
+class TagController:
+
+    def __init__(self, c):
+        self.c = c
+        c.theTagController = self
+
+    def add_tag(self, p, tag):
+        # Will fail if p is a vnode
+        tags = set(p.v.u.get('__node_tags', set([])))
+
+class LeoTagWidget(QtWidgets.QWidget):
+
+    def __init__(self,c,parent=None):
+        self.c = c
+        self.tc = self.c.theTagController
+
+    def add_tag(self, event=None):
+        p = self.c.p
+        self.tc.add_tag(p.v,tag) # WRONG: should be p.
+
+'''
+assert s_2
 .. @-all
 .. @@nosearch
 .. @-leo

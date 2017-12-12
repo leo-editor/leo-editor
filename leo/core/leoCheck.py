@@ -36,6 +36,10 @@ class ConventionChecker (object):
         leoCheck.ConventionChecker(c).check(fn=fn)
     '''
     
+    # pylint: disable=no-member
+        # Stats class defines __setattr__
+        # This is a known limitation of pylint.
+
     ignore = ('bool', 'dict', 'enumerate', 'list', 'tuple')
         # Things that look like function calls.
     
@@ -44,10 +48,9 @@ class ConventionChecker (object):
 
     #@+others
     #@+node:ekr.20171210134449.1: *3* checker.Birth
-    def __init__(self, c, stats):
+    def __init__(self, c):
         self.c = c
         self.class_name = None
-        self.stats = stats
         # Rudimentary symbol tables...
         self.classes = self.init_classes()
         self.special_names = self.init_special_names()
@@ -57,6 +60,7 @@ class ConventionChecker (object):
         self.line_number = 0
         self.pass_n = 0
         self.recursion_count = 0
+        self.stats = Stats()
     #@+node:ekr.20171209044610.1: *4* checker.init_classes
     def init_classes(self):
         '''
@@ -101,8 +105,72 @@ class ConventionChecker (object):
             'p': t('instance', 'Position'),
             'v': t('instance', 'VNode'),
         }
-    #@+node:ekr.20171207100432.1: *3* checker.check & helper
-    def check(self, fn=None, s=None, trace_fn=False):
+    #@+node:ekr.20171212015700.1: *3* checker.check & helpers
+    def check(self):
+        '''
+        The main entry point for the convention checker.
+
+        A stand-alone version of the @button node that tested the
+        ConventionChecker class.
+        
+        The check-conventions command in checkerCommands.py saves c and
+        reloads the leoCheck module before instantiating this class and
+        calling this method.
+        '''
+        g.cls()
+        c = self.c
+        kind = 'file'
+        project_name = 'leo'  # 'coverage', 'leo', 'lib2to3', 'pylint', 'rope'
+        assert kind in ('all', 'file', 'production', 'test'), repr(kind)
+        fn = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'qt_tree.py')
+        report_stats = True # and kind != 'production'
+        trace_fn = True
+        trace_skipped = False
+        fails_dict = {
+            'coverage': ['cmdline.py',],
+            'lib2to3': ['fixer_util.py', 'fix_dict.py', 'patcomp.py', 'refactor.py'],
+            'leo': [], # All of Leo's core files pass.
+            'pylint': [
+                'base.py', 'classes.py', 'format.py',
+                'logging.py', 'python3.py', 'stdlib.py', 
+                'docparams.py', 'lint.py',
+            ],
+            'rope': ['objectinfo.py', 'objectdb.py', 'runmod.py',],
+        }
+        fails = fails_dict.get(project_name, [])
+        stats = Stats()
+        if kind == 'production':
+            for p in g.findRootsWithPredicate(c, c.p, predicate=None):
+                ### x = ConventionChecker(c, stats)
+                self.check_file(fn=g.fullPath(c, p), trace_fn=trace_fn)
+        elif kind == 'all':
+            utils = ProjectUtils()
+            aList = utils.project_files(project_name, force_all=False)
+            if aList:
+                t1 = time.clock()
+                for fn in aList:
+                    sfn = g.shortFileName(fn)
+                    if sfn in fails or fn in fails:
+                        if trace_skipped: print('===== skipping', sfn)
+                    else:
+                        ### ConventionChecker(c, stats).check(fn=fn, trace_fn=trace_fn)
+                        self.check_file(fn=fn, trace_fn=trace_fn)
+                        
+                t2 = time.clock()
+                print('%s files in %4.2f sec.' % (len(aList), (t2-t1)))
+            else:
+                print('no files for project: %s' % (project_name))
+        elif kind == 'test':
+            ### ConventionChecker(c, stats).check(s=s)
+            self.test()
+        else:
+            assert kind == 'file', repr(kind)
+            ### ConventionChecker(c, stats).check(fn=fn)
+            self.check_file(fn=fn)
+        if report_stats:
+            stats.report()
+    #@+node:ekr.20171207100432.1: *4* checker.check_file
+    def check_file(self, fn=None, s=None, trace_fn=False):
         '''Check the contents of fn or the string s.'''
         # Get the source.
         trace = True
@@ -504,6 +572,27 @@ class ConventionChecker (object):
                 }
         else:
             self.class_name = None
+    #@+node:ekr.20171212020013.1: *3* checker.test
+    def test(self):
+        
+        s = '''\
+    class TC:
+        def __init__(self, c):
+            c.tc = self
+        def add_tag(self, p):
+            print(p.v) # AttributeError if p is a vnode.
+
+    class Test:
+        def __init__(self,c):
+            self.c = c
+            self.tc = self.c.tc
+        def add_tag(self):
+            p = self.c.p
+            self.tc.add_tag(p.v) # WRONG: arg should be p.
+    '''
+        c = self.c
+        s = g.adjustTripleString(s, c.tab_width)
+        self.check_file(s=s)
     #@+node:ekr.20171209030742.1: *3* class Type
     class Type (object):
         '''A class to hold all type-related data.'''
@@ -1736,166 +1825,6 @@ def test(c, files):
     # pylint: disable=import-self
     import leo.core.leoCheck as leoCheck
     leoCheck.ShowData(c=c).run(files)
-#@+node:ekr.20171211054600.1: *3* checkConventions (leoCheck.py)
-def checkConventions(c):
-    '''
-    A stand-alone version of the @button node that tested the
-    ConventionChecker class.
-    
-    The check-conventions command in checkerCommands.py saves c and reloads
-    the leoCheck module before calling this function.
-    '''
-    g.cls()
-    kind = 'all'
-    project_name = 'leo'  # 'coverage', 'leo', 'lib2to3', 'pylint', 'rope'
-    assert kind in ('all', 'file', 'production', 'string'), repr(kind)
-    fn = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'qt_tree.py')
-    report_stats = True # and kind != 'production'
-    trace_fn = True
-    trace_skipped = False
-    fails_dict = {
-        'coverage': ['cmdline.py',],
-        'lib2to3': ['fixer_util.py', 'fix_dict.py', 'patcomp.py', 'refactor.py'],
-        'leo': [], # All of Leo's core files pass.
-        'pylint': [
-            'base.py', 'classes.py', 'format.py',
-            'logging.py', 'python3.py', 'stdlib.py', 
-            'docparams.py', 'lint.py',
-        ],
-        'rope': ['objectinfo.py', 'objectdb.py', 'runmod.py',],
-    }
-    fails = fails_dict.get(project_name, [])
-    #@+<< define s >>
-    #@+node:ekr.20171211054736.2: *4* << define s >>
-    s = '''\
-    class T:
-        
-        def __init__(self, tempNode):
-            self.tempNode = tempNode.copy()
-        
-        def setUp(self):
-            tempNode = self.tempNode
-            while tempNode.firstChild():
-                tempNode.firstChild().doDelete()
-    '''
-
-    s_ok2 = '''
-    class Context(object):
-        def __init__ (self, parent_context):
-            self.parent_context = parent_context
-            if parent_context:
-                parent_context.inner_contexts_list.append(self)
-    '''
-    assert s_ok2
-
-    s_ok= '''
-    class TC:
-        def __init__(self, c):
-            c.tc = self
-        def add_tag(self, p):
-            print(p.v) # AttributeError if p is a vnode.
-
-    class Test:
-        def __init__(self,c):
-            self.c = c
-            self.tc = self.c.tc
-        def add_tag(self):
-            p = self.c.p
-            self.tc.add_tag(p.v) # WRONG: arg should be p.
-    '''
-    assert s_ok
-
-    #@-<< define s >>
-    s = g.adjustTripleString(s, c.tab_width)
-    #@+<< old tests >>
-    #@+node:ekr.20171211054736.3: *4* << old tests >>
-    s_passes_1 = '''\
-    class C1:
-            
-        def f1(self, p):
-            print(p.v)
-            
-        def f2(self, p):
-            self.f1(p.v) # WRONG
-
-    '''
-    assert s_passes_1
-
-    s_1 = '''\
-    class C1:
-
-        def __init__(self, c):
-            self.c = c
-            c.theTagController = self
-            
-        def add_tag(self, p):
-            pass
-
-    class C2:
-
-        def oops(self, p):
-            c.tagController.add_tag(p.v,tag)
-                # WRONG: should be p.
-
-    '''
-    assert s_1
-
-
-    s_2 = '''\
-    class TagController:
-
-        def __init__(self, c):
-            self.c = c
-            c.theTagController = self
-
-        def add_tag(self, p, tag):
-            # Will fail if p is a vnode
-            tags = set(p.v.u.get('__node_tags', set([])))
-
-    class LeoTagWidget(QtWidgets.QWidget):
-
-        def __init__(self,c,parent=None):
-            self.c = c
-            self.tc = self.c.theTagController
-
-        def add_tag(self, event=None):
-            p = self.c.p
-            self.tc.add_tag(p.v,tag) # WRONG: should be p.
-
-    '''
-    assert s_2
-    #@-<< old tests >>
-    stats = Stats()
-    if kind == 'production':
-        
-        def predicate(p):
-            return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
-
-        for p in g.findRootsWithPredicate(c, c.p, predicate):
-            x = ConventionChecker(c, stats)
-            x.check(fn=g.fullPath(c, p), trace_fn=trace_fn)
-    elif kind == 'all':
-        utils = ProjectUtils()
-        aList = utils.project_files(project_name, force_all=False)
-        if aList:
-            t1 = time.clock()
-            for fn in aList:
-                sfn = g.shortFileName(fn)
-                if sfn in fails or fn in fails:
-                    if trace_skipped: print('===== skipping', sfn)
-                else:
-                    ConventionChecker(c, stats).check(fn=fn, trace_fn=trace_fn)
-            t2 = time.clock()
-            print('%s files in %4.2f sec.' % (len(aList), (t2-t1)))
-        else:
-            print('no files for project: %s' % (project_name))
-    elif kind == 'string':
-        ConventionChecker(c, stats).check(s=s)
-    else:
-        assert kind == 'file', repr(kind)
-        ConventionChecker(c, stats).check(fn=fn)
-    if report_stats:
-        stats.report()
 #@-others
 #@@language python
 #@@tabwidth -4
