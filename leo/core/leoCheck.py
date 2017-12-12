@@ -54,6 +54,7 @@ class ConventionChecker (object):
         # Other ivars...
         self.enable_trace = True
         self.file_name = None
+        self.line_number = 0
         self.pass_n = 0
         self.recursion_count = 0
     #@+node:ekr.20171209044610.1: *4* checker.init_classes
@@ -151,7 +152,8 @@ class ConventionChecker (object):
                     print('===== source')
                     print(s1)
                     print('----- end source')
-            for s in g.splitLines(s1):
+            for n, s in enumerate(g.splitLines(s1)):
+                self.line_number = n
                 for kind, pattern in self.patterns:
                     m = pattern.match(s)
                     if m:
@@ -164,21 +166,63 @@ class ConventionChecker (object):
         
         trace = False and self.enable_trace
         if trace: g.trace('%s(%s) ==> %s' % (func, args, signature))
+        self.stats.check_signature += 1
         if signature[0] == 'self':
             signature = signature[1:]
+        result = 'ok'
         for i, arg in enumerate(args):
             if i < len(signature):
-                self.check_arg(arg, signature[i])
+                result = self.check_arg(arg, signature[i])
+                if result == 'fail':
+                    print('\nline %s %s\n%s(%s) != %s(%s)\n' % (
+                        self.line_number, self.file_name,
+                        func, ','.join(args),
+                        func, ','.join(signature)))
+                    break
             elif trace:
                 g.trace('possible extra arg', arg)
         if len(args) > len(signature):
             if trace:
                 g.trace('possible missing args', signature[len(args)-1:])
+        if result == 'ok':
+            self.stats.sig_ok += 1
+        elif result == 'fail':
+            self.stats.sig_fail += 1
+        else:
+            assert result == 'unknown'
+            self.stats.sig_unknown += 1
                 
     def check_arg(self, call_arg, sig_arg):
         
-        trace = False and self.enable_trace
-        if trace: g.trace('CHECK', call_arg, sig_arg)
+        trace = False
+        special_names = self.special_names
+        call_arg = call_arg.split('=')[0]
+        sig_arg = sig_arg.split('=')[0]
+        if call_arg == sig_arg:
+            # if trace: g.trace('ok', call_arg, sig_arg)
+            return 'ok'
+        elif sig_arg in special_names and call_arg in special_names:
+            sig_class = special_names.get(sig_arg)
+            call_class = special_names.get(call_arg)
+            if sig_class == call_class:
+                if trace:
+                    print('')
+                    g.trace('inferred ok: ', call_arg, sig_arg, sig_class)
+                    print('')
+                self.stats.sig_infer_ok += 1
+                return 'ok'
+            else:
+                if trace:
+                    print('')
+                    g.trace('inferred fail: %s --> %r, %s --> %r' % (
+                        call_arg, call_class, sig_arg, sig_class))
+                    print('')
+                self.stats.sig_infer_fail += 1
+                return 'fail'
+        else:
+            # if trace: g.trace('unknown', call_arg, sig_arg)
+            return 'unknown'
+            
     #@+node:ekr.20171208090003.1: *3* checker.do_*
     # These are like string-oriented visitors.
     #@+node:ekr.20171209063559.1: *4* checker.do_assn_to_c
@@ -263,7 +307,6 @@ class ConventionChecker (object):
                 if signature:
                     signature = signature.split(',')
                     self.check_signature(func, args, signature)
-
     #@+node:ekr.20171209063559.4: *4* checker.do_class
     class_pattern = ('class', re.compile(r'class\s+([a-z_A-Z][a-z_A-Z0-9]*).*:'))
     patterns.append(class_pattern)
@@ -478,6 +521,10 @@ class ConventionChecker (object):
         def __repr__(self):
 
             return '<%s: %s>' % (self.kind, self.name)
+            
+        def __eq__(self, other):
+            
+            return self.kind == other.kind and self.name == other.name
     #@-others
 #@+node:ekr.20160109102859.1: ** class Context
 class Context(object):
@@ -1700,10 +1747,10 @@ def checkConventions(c):
     '''
     g.cls()
     kind = 'production'
-    assert kind in ('all', 'file', 'production', 'string'), repr(kind)
     project_name = 'leo'  # 'coverage', 'leo', 'lib2to3', 'pylint', 'rope'
-    fn = g.os_path_finalize_join(g.app.loadDir, '..', 'core', 'leoCheck.py')
-    report_stats = True
+    assert kind in ('all', 'file', 'production', 'string'), repr(kind)
+    fn = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'qt_tree.py')
+    report_stats = True and kind != 'production'
     trace_fn = True
     trace_skipped = False
     fails_dict = {
