@@ -53,7 +53,9 @@ class ConventionChecker (object):
         self.class_name = None
         # Rudimentary symbol tables...
         self.classes = self.init_classes()
-        self.special_class_names = ['Commands', 'Position', 'String', 'VNode']
+        self.special_class_names = [
+            'Commands', 'LeoGlobals', 'Position', 'String', 'VNode'
+        ]
         self.special_names = self.init_special_names()
         # Other ivars...
         self.enable_trace = True
@@ -63,6 +65,7 @@ class ConventionChecker (object):
         self.recursion_count = 0
         self.s = '' # The line being examined.
         self.stats = Stats()
+        self.unknowns = {} # Keys are expression, values are (line, fn) pairs.
     #@+node:ekr.20171209044610.1: *4* checker.init_classes
     def init_classes(self):
         '''
@@ -75,6 +78,12 @@ class ConventionChecker (object):
                     'p': self.Type('instance', 'Position'),
                 },
                 'methods': {},
+            },
+            'LeoGlobals': {
+                'ivars': {}, # g.app, g.app.gui.
+                'methods': {
+                    'trace': self.Type('instance', 'None')
+                },
             },
             'Position': {
                 'ivars': {
@@ -103,11 +112,11 @@ class ConventionChecker (object):
         return {
             'c': t('instance', 'Commands'),
             'c.p': t('instance', 'Position'),
-            'g': t('module', 'leo.core.leoGlobals'),
+            'g': t('instance', 'LeoGlobals'), ### module?
             'p': t('instance', 'Position'),
             'v': t('instance', 'VNode'),
         }
-    #@+node:ekr.20171212015700.1: *3* checker.check & helpers
+    #@+node:ekr.20171212015700.1: *3* checker.check & helpers (main entry)
     def check(self):
         '''
         The main entry point for the convention checker.
@@ -165,8 +174,7 @@ class ConventionChecker (object):
             join = g.os_path_finalize_join
             loadDir = g.app.loadDir
             files_table = (
-                join(loadDir, 'leoNodes.py'),
-                    # Destroys position class.
+                # join(loadDir, 'leoNodes.py'),
                 join(loadDir, '..', 'plugins', 'qt_tree.py'),
             )
             for fn in files_table:
@@ -228,14 +236,14 @@ class ConventionChecker (object):
                     print('----- end source')
             for n, s in enumerate(g.splitLines(s1)):
                 self.line_number = n
-                self.s = s
+                self.s = s.rstrip()
                 for kind, pattern in self.patterns:
                     m = pattern.match(s)
                     if m:
                         f = dispatch.get(kind)
                         f(kind, m, s)
             self.end_class()
-        self.end_program()
+        self.end_file()
     #@+node:ekr.20171209065852.1: *3* checker_check_signature & helpers
     def check_signature(self, func, args, signature):
         
@@ -430,8 +438,11 @@ class ConventionChecker (object):
                 d = instance.get('methods')
                 signature = d.get(func)
                 if signature:
-                    signature = signature.split(',')
-                    self.check_signature(func, args, signature)
+                    if isinstance(signature, self.Type):
+                        pass
+                    else:
+                        signature = signature.split(',')
+                        self.check_signature(func, args, signature)
     #@+node:ekr.20171212032532.1: *5* checker.split_args
     def split_args(self, args):
         '''
@@ -513,15 +524,40 @@ class ConventionChecker (object):
                 methods = the_class.get('methods')
                 assert methods is not None
                 methods [def_name] = def_args
-    #@+node:ekr.20171208135642.1: *3* checker.end_program
-    def end_program(self):
+    #@+node:ekr.20171208135642.1: *3* checker.end_file & helper
+    def end_file(self):
         
         trace = False
+        trace_classes = False
+        trace_unknowns = True
         if trace:
-            print('----- END OF PROGRAM')
-            for key, val in sorted(self.classes.items()):
-                print('class %s' % key)
-                g.printDict(val)
+            print('----- END OF FILE: %s' % self.file_name)
+            if trace_classes:
+                for key, val in sorted(self.classes.items()):
+                    print('class %s' % key)
+                    g.printDict(val)
+            if trace_unknowns:
+                self.trace_unknowns()
+        # Do *not* clear self.classes.
+        self.unknowns = {}
+    #@+node:ekr.20171212100005.1: *4* checker.trace_unknowns
+    def trace_unknowns(self):
+        print('----- Unknown ivars...')
+        d = self.unknowns
+        max_key = max([len(key) for key in d ]) if d else 2
+        for key, aList in sorted(d.items()):
+            # Remove duplicates that vary only in line number.
+            aList2, seen = [], []
+            for data in aList:
+                line, fn, s = data
+                data2 = (key, fn, s)
+                if data2 not in seen:
+                    seen.append(data2)
+                    aList2.append(data)
+            for data in aList2:
+                line, fn, s = data
+                print('%*s %4s %s: %s' % (
+                    max_key, key, line, fn, g.truncate(s, 60)))
     #@+node:ekr.20171208142646.1: *3* checker.resolve & helpers
     def resolve(self, name, obj, trace=False):
         '''Resolve name in the context of obj.'''
@@ -592,10 +628,15 @@ class ConventionChecker (object):
 
     def resolve_ivar(self, ivar, obj):
         '''Resolve obj.ivar'''
-        trace = False # and self.enable_trace
+        trace = False
+        trace_c_dict_on_error = False
         trace_dict = False
-        trace_dict_on_error = True
-        trace_c_dict_on_error = True
+        trace_dict_on_error = False
+        trace_error = True
+        trace_ivar = False
+        trace_recursive = False
+        trace_special = False
+        trace_unknown = True
         raise_on_error = True
         self.stats.resolve_ivar += 1
         class_name = 'Commands' if obj.name == 'c' else obj.name
@@ -626,7 +667,8 @@ class ConventionChecker (object):
             return self.Type('func', ivar)
         elif ivars.get(ivar):
             val = ivars.get(ivar)
-            if trace: g.trace('IVAR:', ivar, 'CONTEXT', obj, 'VAL', val)
+            if trace and trace_ivar:
+                g.trace('IVAR:', ivar, 'CONTEXT', obj, 'VAL', val)
             if isinstance(val, self.Type):
                 if trace: g.trace('KNOWN: %s %r ==> %r' % (ivar, obj, val))
                 return val
@@ -634,7 +676,8 @@ class ConventionChecker (object):
             for special_name, special_obj in self.special_names.items():
                 tail = val[len(special_name):]
                 if val == special_name:
-                    if trace: g.trace('SPECIAL: %s ==> %s' % (val, special_obj))
+                    if trace and trace_special:
+                        g.trace('SPECIAL: %s ==> %s' % (val, special_obj))
                     return special_obj
                 elif val.startswith(special_name) and tail.startswith('.'):
                     # Resovle the rest of the tail in the found context.
@@ -642,22 +685,45 @@ class ConventionChecker (object):
                     return self.resolve_chain(tail[1:], special_obj)
             # Avoid recursion 1.
             if ivar == val:
-                if trace: g.trace('AVOID RECURSION: self.%s=%s' % (ivar, val))
+                if trace and trace_unknown:
+                    g.trace('AVOID RECURSION: self.%s=%s' % (ivar, val))
                 return self.Type('unknown', ivar)
             head2 = val.split('.')
             # Avoid recursion 2.
             if ivar == head2[0]:
-                if trace: g.trace('AVOID RECURSION2: %s=%s' % (ivar, val))
+                if trace and trace_unknown:
+                    g.trace('AVOID RECURSION2: %s=%s' % (ivar, val))
                 return self.Type('unknown', ivar)
-            if trace: g.trace('RECURSIVE', head2)
+            if trace and trace_recursive:
+                g.trace('RECURSIVE', head2)
             obj2 = obj
             for name2 in head2:
                 old_obj2 = obj2
                 obj2 = self.resolve(name2, obj2)
-                if trace: g.trace('recursive %s: %r --> %r' % (name2, old_obj2, obj2))
-            if trace: g.trace('END RECURSIVE: %r', obj2)
+                if trace and trace_recursive:
+                    g.trace('recursive %s: %r --> %r' % (
+                        name2, old_obj2, obj2))
+            if trace and trace_recursive:
+                g.trace('END RECURSIVE: %r', obj2)
             return obj2
+        elif ivar in self.special_names:
+            val = self.special_names.get(ivar)
+            if trace and trace_special:
+                g.trace('FOUND SPECIAL', ivar, val)
+            return val
         else:
+            # Remember the unknown.
+            d = self.unknowns
+            aList = d.get(ivar, [])
+            data = (self.line_number, self.file_name, self.s.strip())
+            aList.append(data)
+            d[ivar] = aList
+            if trace and trace_error:
+                g.trace('NO MEMBER: %-s %s: %s' % (
+                    self.line_number,
+                    self.file_name,
+                    g.truncate(self.s.strip(), 60),
+                ))
             return self.Type('error', 'no member %s' % ivar)
     #@+node:ekr.20171212020013.1: *3* checker.test
     def test(self):
