@@ -1743,10 +1743,10 @@ def checkConventions(c):
     ConventionChecker class.
     
     The check-conventions command in checkerCommands.py saves c and reloads
-    the leoAst and leoCheck modules before calling this function.
+    the leoCheck module before calling this function.
     '''
     g.cls()
-    kind = 'production'
+    kind = 'all'
     project_name = 'leo'  # 'coverage', 'leo', 'lib2to3', 'pylint', 'rope'
     assert kind in ('all', 'file', 'production', 'string'), repr(kind)
     fn = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'qt_tree.py')
