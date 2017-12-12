@@ -767,22 +767,13 @@ class ConventionChecker (object):
         sig_infer_ok = 0
         sig_ok = 0
         sig_unknown = 0
-
-        d = {}
-        
-        def __getattr__(self, name):
-            return self.d.get(name, 0)
-            
-        def __setattr__(self, name, val):
-            self.d[name] = val
             
         def report(self):
-            if self.d:
-                n = max([len(key) for key in self.d])
-                for key, val in sorted(self.d.items()):
-                    print('%*s: %s' % (n, key, val))
-            else:
-                print('no stats')
+            aList = [z for z in dir(self) if not z.startswith('_') and z != 'report']
+            n = max([len(z) for z in aList])
+            for ivar in aList:
+                print('%*s: %s' % (n, ivar, getattr(self, ivar)))
+        
     #@+node:ekr.20171209030742.1: *3* class Type
     class Type (object):
         '''A class to hold all type-related data.'''
