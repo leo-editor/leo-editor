@@ -554,15 +554,15 @@ class LeoQtTree(leoFrame.LeoTree):
     def onClickBoxClick(self, event, p=None):
         if self.busy(): return
         c = self.c
-        g.doHook("boxclick1", c=c, p=p, v=p, event=event)
-        g.doHook("boxclick2", c=c, p=p, v=p, event=event)
+        g.doHook("boxclick1", c=c, p=p, event=event)
+        g.doHook("boxclick2", c=c, p=p, event=event)
         c.outerUpdate()
     #@+node:ekr.20110605121601.17889: *5* qtree.onClickBoxRightClick
     def onClickBoxRightClick(self, event, p=None):
         if self.busy(): return
         c = self.c
-        g.doHook("boxrclick1", c=c, p=p, v=p, event=event)
-        g.doHook("boxrclick2", c=c, p=p, v=p, event=event)
+        g.doHook("boxrclick1", c=c, p=p, event=event)
+        g.doHook("boxrclick2", c=c, p=p, event=event)
         c.outerUpdate()
     #@+node:ekr.20110605121601.17890: *5* qtree.onPlusBoxRightClick
     def onPlusBoxRightClick(self, event, p=None):
@@ -576,26 +576,26 @@ class LeoQtTree(leoFrame.LeoTree):
     def onIconBoxClick(self, event, p=None):
         if self.busy(): return
         c = self.c
-        g.doHook("iconclick1", c=c, p=p, v=p, event=event)
-        g.doHook("iconclick2", c=c, p=p, v=p, event=event)
+        g.doHook("iconclick1", c=c, p=p, event=event)
+        g.doHook("iconclick2", c=c, p=p, event=event)
         c.outerUpdate()
     #@+node:ekr.20110605121601.17893: *5* qtree.onIconBoxRightClick
     def onIconBoxRightClick(self, event, p=None):
         """Handle a right click in any outline widget."""
         if self.busy(): return
         c = self.c
-        g.doHook("iconrclick1", c=c, p=p, v=p, event=event)
-        g.doHook("iconrclick2", c=c, p=p, v=p, event=event)
+        g.doHook("iconrclick1", c=c, p=p, event=event)
+        g.doHook("iconrclick2", c=c, p=p, event=event)
         c.outerUpdate()
     #@+node:ekr.20110605121601.17894: *5* qtree.onIconBoxDoubleClick
     def onIconBoxDoubleClick(self, event, p=None):
         if self.busy(): return
         c = self.c
         if not p: p = c.p
-        if not g.doHook("icondclick1", c=c, p=p, v=p, event=event):
+        if not g.doHook("icondclick1", c=c, p=p, event=event):
             self.endEditLabel()
             self.OnIconDoubleClick(p) # Call the method in the base class.
-        g.doHook("icondclick2", c=c, p=p, v=p, event=event)
+        g.doHook("icondclick2", c=c, p=p, event=event)
         c.outerUpdate()
     #@+node:ekr.20110605121601.17886: *4* qtree.busy
     def busy(self):
@@ -715,13 +715,13 @@ class LeoQtTree(leoFrame.LeoTree):
                 if trace: g.trace('auto_edit', auto_edit, 'ctrl', isCtrl, p.h)
                 # We could also add support for QtConst.ShiftModifier, QtConst.AltModifier	& QtConst.MetaModifier.
                 if isCtrl:
-                    if g.doHook("iconctrlclick1", c=c, p=p, v=p, event=event) is None:
+                    if g.doHook("iconctrlclick1", c=c, p=p, event=event) is None:
                         c.frame.tree.OnIconCtrlClick(p) # Call the base class method.
-                    g.doHook("iconctrlclick2", c=c, p=p, v=p, event=event)
+                    g.doHook("iconctrlclick2", c=c, p=p, event=event)
                 else:
                     # 2014/02/21: generate headclick1/2 instead of iconclick1/2
-                    g.doHook("headclick1", c=c, p=p, v=p, event=event)
-                    g.doHook("headclick2", c=c, p=p, v=p, event=event)
+                    g.doHook("headclick1", c=c, p=p, event=event)
+                    g.doHook("headclick2", c=c, p=p, event=event)
             else:
                 auto_edit = None
                 g.trace('*** no p')
@@ -776,9 +776,9 @@ class LeoQtTree(leoFrame.LeoTree):
         if p:
             # 2014/02/21: generate headddlick1/2 instead of icondclick1/2.
             event = None
-            if g.doHook("headdclick1", c=c, p=p, v=p, event=event) is None:
+            if g.doHook("headdclick1", c=c, p=p, event=event) is None:
                 c.frame.tree.OnIconDoubleClick(p) # Call the base class method.
-            g.doHook("headclick2", c=c, p=p, v=p, event=event)
+            g.doHook("headclick2", c=c, p=p, event=event)
         else:
             g.trace('*** no p')
         c.outerUpdate()
@@ -832,11 +832,11 @@ class LeoQtTree(leoFrame.LeoTree):
         if event:
             c = self.c
             c.setLog()
-            if not g.doHook("create-popup-menu", c=c, p=p, v=p, event=event):
+            if not g.doHook("create-popup-menu", c=c, p=p, event=event):
                 self.createPopupMenu(event)
-            if not g.doHook("enable-popup-menu-items", c=c, p=p, v=p, event=event):
+            if not g.doHook("enable-popup-menu-items", c=c, p=p, event=event):
                 self.enablePopupMenuItems(p, event)
-            if not g.doHook("show-popup-menu", c=c, p=p, v=p, event=event):
+            if not g.doHook("show-popup-menu", c=c, p=p, event=event):
                 self.showPopupMenu(event)
         return "break"
     #@+node:ekr.20110605121601.17901: *5* qtree.OnPopupFocusLost
@@ -860,7 +860,7 @@ class LeoQtTree(leoFrame.LeoTree):
     def createPopupMenu(self, event):
         '''This might be a placeholder for plugins.  Or not :-)'''
     #@+node:ekr.20110605121601.17903: *5* qtree.enablePopupMenuItems
-    def enablePopupMenuItems(self, v, event):
+    def enablePopupMenuItems(self, p, event):
         """Enable and disable items in the popup menu."""
     #@+node:ekr.20110605121601.17904: *5* qtree.showPopupMenu
     def showPopupMenu(self, event):
