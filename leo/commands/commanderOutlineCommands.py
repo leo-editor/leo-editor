@@ -1121,7 +1121,7 @@ def unmarkAll(self, event=None):
             changed = True
     dirtyVnodeList = [p.v for p in c.all_unique_positions() if p.v.isDirty()]
     if changed:
-        g.doHook("clear-all-marks", c=c, p=p, v=p)
+        g.doHook("clear-all-marks", c=c, p=p)
         c.setChanged(True)
     u.afterChangeGroup(current, undoType, dirtyVnodeList=dirtyVnodeList)
     c.redraw_after_icons_changed()

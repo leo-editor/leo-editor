@@ -1627,7 +1627,7 @@ class FileCommands(object):
         c = self.c
         p = c.p
         # New in 4.2.  Return ok flag so shutdown logic knows if all went well.
-        ok = g.doHook("save1", c=c, p=p, v=p.v, fileName=fileName)
+        ok = g.doHook("save1", c=c, p=p, fileName=fileName)
         if ok is None:
             c.endEditing() # Set the current headline text.
             self.setDefaultDirectoryForNewFiles(fileName)
@@ -1646,7 +1646,7 @@ class FileCommands(object):
                     g.es("clearing undo")
                     c.undoer.clearUndoState()
             c.redraw_after_icons_changed()
-        g.doHook("save2", c=c, p=p, v=p, fileName=fileName)
+        g.doHook("save2", c=c, p=p, fileName=fileName)
         return ok
     #@+node:vitalije.20170831135146.1: *5* fc.save_ref
     def save_ref(self):
@@ -1695,7 +1695,7 @@ class FileCommands(object):
         else:
             fileName = c.mFileName
         # New in 4.2.  Return ok flag so shutdown logic knows if all went well.
-        ok = g.doHook("save1", c=c, p=p, v=p.v, fileName=fileName)
+        ok = g.doHook("save1", c=c, p=p, fileName=fileName)
         if ok is None:
             fileName, content = getPublicLeoFile()
             fileName = g.os_path_finalize_join(c.openDirectory, fileName)
@@ -1703,13 +1703,13 @@ class FileCommands(object):
                 out.write(content)
             g.es('updated reference file:',
                   g.shortFileName(fileName))
-        g.doHook("save2", c=c, p=p, v=p, fileName=fileName)
+        g.doHook("save2", c=c, p=p, fileName=fileName)
         return ok
     #@+node:ekr.20031218072017.3043: *5* fc.saveAs
     def saveAs(self, fileName):
         c = self.c
         p = c.p
-        if not g.doHook("save1", c=c, p=p, v=p.v, fileName=fileName):
+        if not g.doHook("save1", c=c, p=p, fileName=fileName):
             c.endEditing() # Set the current headline text.
             if c.sqlite_connection:
                 c.sqlite_connection.close()
@@ -1725,12 +1725,12 @@ class FileCommands(object):
             finally:
                 c.ignoreChangedPaths = True
             c.redraw_after_icons_changed()
-        g.doHook("save2", c=c, p=p, v=p, fileName=fileName)
+        g.doHook("save2", c=c, p=p, fileName=fileName)
     #@+node:ekr.20031218072017.3044: *5* fc.saveTo
     def saveTo(self, fileName):
         c = self.c
         p = c.p
-        if not g.doHook("save1", c=c, p=p, v=p.v, fileName=fileName):
+        if not g.doHook("save1", c=c, p=p, fileName=fileName):
             c.endEditing() # Set the current headline text.
             if c.sqlite_connection:
                 c.sqlite_connection.close()
@@ -1745,7 +1745,7 @@ class FileCommands(object):
                 c.ignoreChangedPaths = False
             self.putSavedMessage(fileName)
             c.redraw_after_icons_changed()
-        g.doHook("save2", c=c, p=p, v=p, fileName=fileName)
+        g.doHook("save2", c=c, p=p, fileName=fileName)
     #@+node:ekr.20070413061552: *5* fc.putSavedMessage
     def putSavedMessage(self, fileName):
         c = self.c

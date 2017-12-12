@@ -2674,7 +2674,7 @@ class CoreTree (leoFrame.LeoTree):
         self.revertHeadline = s
         p.initHeadString(s)
         if trace: g.trace('changed', changed, 'new', repr(s))
-        if g.doHook("headkey1", c=c, p=p, v=p, ch=ch, changed=changed):
+        if g.doHook("headkey1", c=c, p=p, ch=ch, changed=changed):
             return # The hook claims to have handled the event.
         if changed:
             undoData = u.beforeChangeNodeContents(p, oldHead=oldRevert)
@@ -2690,7 +2690,7 @@ class CoreTree (leoFrame.LeoTree):
         # if changed:
         #    c.redraw_after_head_changed()
             # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
-        g.doHook("headkey2", c=c, p=p, v=p, ch=ch, changed=changed)
+        g.doHook("headkey2", c=c, p=p, ch=ch, changed=changed)
     #@+node:ekr.20170511104121.1: *4* CTree.Scroll bars
     #@+node:ekr.20170511104121.2: *5* Ctree.getScroll
     def getScroll(self):

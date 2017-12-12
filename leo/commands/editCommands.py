@@ -1646,7 +1646,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         #@-<< set local vars >>
         assert g.isStrokeOrNone(stroke)
         if trace: g.trace('ch', repr(ch), 'stroke', stroke)
-        if g.doHook("bodykey1", c=c, p=p, v=p, ch=ch, oldSel=oldSel, undoType=undoType):
+        if g.doHook("bodykey1", c=c, p=p, ch=ch, oldSel=oldSel, undoType=undoType):
             return
         if ch == '\t':
             self.updateTab(p, w)
@@ -1674,7 +1674,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         if changed:
             c.frame.body.onBodyChanged(undoType=undoType,
                 oldSel=oldSel, oldText=oldText, oldYview=None)
-        g.doHook("bodykey2", c=c, p=p, v=p, ch=ch, oldSel=oldSel, undoType=undoType)
+        g.doHook("bodykey2", c=c, p=p, ch=ch, oldSel=oldSel, undoType=undoType)
     #@+node:ekr.20160924135613.1: *5* ec.doPlainChar
     def doPlainChar(self, action, ch, event, inBrackets, oldSel, stroke, w):
         c, p = self.c, self.c.p

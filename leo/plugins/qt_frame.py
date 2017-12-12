@@ -2685,24 +2685,24 @@ class LeoQtFrame(leoFrame.LeoFrame):
         g.trace()
         try:
             c = self.c; p = c.currentPosition()
-            if g.doHook("bodyclick1", c=c, p=p, v=p, event=event):
-                g.doHook("bodyclick2", c=c, p=p, v=p, event=event)
+            if g.doHook("bodyclick1", c=c, p=p, event=event):
+                g.doHook("bodyclick2", c=c, p=p, event=event)
                 return
             else:
                 c.k.showStateAndMode(w=c.frame.body.wrapper)
-                g.doHook("bodyclick2", c=c, p=p, v=p, event=event)
+                g.doHook("bodyclick2", c=c, p=p, event=event)
         except Exception:
             g.es_event_exception("bodyclick")
 
     def OnBodyRClick(self, event=None):
         try:
             c = self.c; p = c.currentPosition()
-            if g.doHook("bodyrclick1", c=c, p=p, v=p, event=event):
-                g.doHook("bodyrclick2", c=c, p=p, v=p, event=event)
+            if g.doHook("bodyrclick1", c=c, p=p, event=event):
+                g.doHook("bodyrclick2", c=c, p=p, event=event)
                 return
             else:
                 c.k.showStateAndMode(w=c.frame.body.wrapper)
-                g.doHook("bodyrclick2", c=c, p=p, v=p, event=event)
+                g.doHook("bodyrclick2", c=c, p=p, event=event)
         except Exception:
             g.es_event_exception("iconrclick")
     #@+node:ekr.20110605121601.18292: *4* qtFrame.OnBodyDoubleClick (Events) (not used)
@@ -2711,10 +2711,10 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def OnBodyDoubleClick(self, event=None):
         try:
             c = self.c; p = c.currentPosition()
-            if event and not g.doHook("bodydclick1", c=c, p=p, v=p, event=event):
+            if event and not g.doHook("bodydclick1", c=c, p=p, event=event):
                 c.editCommands.extendToWord(event) # Handles unicode properly.
                 c.k.showStateAndMode(w=c.frame.body.wrapper)
-            g.doHook("bodydclick2", c=c, p=p, v=p, event=event)
+            g.doHook("bodydclick2", c=c, p=p, event=event)
         except Exception:
             g.es_event_exception("bodydclick")
         return "break" # Restore this to handle proper double-click logic.

@@ -7092,9 +7092,9 @@ def openUrl(p):
         url = g.getUrlFromNode(p)
         if url:
             c = p.v.context
-            if not g.doHook("@url1", c=c, p=p, v=p, url=url):
+            if not g.doHook("@url1", c=c, p=p, url=url):
                 g.handleUrl(url, c=c, p=p)
-            g.doHook("@url2", c=c, p=p, v=p, url=url)
+            g.doHook("@url2", c=c, p=p, url=url)
 #@+node:ekr.20110605121601.18135: *3* g.openUrlOnClick (open-url-under-cursor)
 def openUrlOnClick(event, url=None):
     '''Open the URL under the cursor.  Return it for unit testing.'''
@@ -7148,9 +7148,9 @@ def openUrlHelper(event, url=None):
     if url and g.isValidUrl(url):
         # Part 2: handle the url
         p = c.p
-        if not g.doHook("@url1", c=c, p=p, v=p, url=url):
+        if not g.doHook("@url1", c=c, p=p, url=url):
             g.handleUrl(url, c=c, p=p)
-        g.doHook("@url2", c=c, p=p, v=p)
+        g.doHook("@url2", c=c, p=p)
         return url
     else:
         # Part 3: call find-def.

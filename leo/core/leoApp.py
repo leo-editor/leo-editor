@@ -2844,7 +2844,7 @@ class LoadManager(object):
         if c: c.setLog()
         # print('doPostPluginsInit: ***** set log')
         p = c.p if c else None
-        g.doHook("start2", c=c, p=p, v=p, fileName=fileName)
+        g.doHook("start2", c=c, p=p, fileName=fileName)
         if c: lm.initFocusAndDraw(c, fileName)
         screenshot_fn = lm.options.get('screenshot_fn')
         if screenshot_fn:

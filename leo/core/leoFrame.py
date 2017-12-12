@@ -1371,7 +1371,7 @@ class LeoTree(object):
         self.revertHeadline = s
         p.initHeadString(s)
         if trace: g.trace('changed', changed, 'new', repr(s))
-        if g.doHook("headkey1", c=c, p=p, v=p, ch=ch, changed=changed):
+        if g.doHook("headkey1", c=c, p=p, ch=ch, changed=changed):
             return # The hook claims to have handled the event.
         if changed:
             undoData = u.beforeChangeNodeContents(p, oldHead=oldRevert)
@@ -1386,7 +1386,7 @@ class LeoTree(object):
         if changed:
             c.redraw_after_head_changed()
             # Fix bug 1280689: don't call the non-existent c.treeEditFocusHelper
-        g.doHook("headkey2", c=c, p=p, v=p, ch=ch, changed=changed)
+        g.doHook("headkey2", c=c, p=p, ch=ch, changed=changed)
     #@+node:ekr.20061109165848: *3* LeoTree.Must be defined in base class
     #@+node:ekr.20040803072955.126: *4* LeoTree.endEditLabel
     def endEditLabel(self):
@@ -1418,11 +1418,11 @@ class LeoTree(object):
             p = self
             if c and c.exists:
                 try:
-                    if not g.doHook("hypercclick1", c=c, p=p, v=p, event=event):
+                    if not g.doHook("hypercclick1", c=c, p=p, event=event):
                         c.selectPosition(p)
                         c.redraw()
                         c.frame.body.wrapper.setInsertPoint(0)
-                    g.doHook("hypercclick2", c=c, p=p, v=p, event=event)
+                    g.doHook("hypercclick2", c=c, p=p, event=event)
                 except Exception:
                     g.es_event_exception("hypercclick")
         #@+node:ekr.20040803072955.24: *6* OnHyperLinkEnter
@@ -1430,8 +1430,8 @@ class LeoTree(object):
             '''Callback injected into position class.'''
             try:
                 p = self
-                g.doHook("hyperenter1", c=c, p=p, v=p, event=event)
-                g.doHook("hyperenter2", c=c, p=p, v=p, event=event)
+                g.doHook("hyperenter1", c=c, p=p, event=event)
+                g.doHook("hyperenter2", c=c, p=p, event=event)
             except Exception:
                 g.es_event_exception("hyperenter")
         #@+node:ekr.20040803072955.25: *6* OnHyperLinkLeave
@@ -1439,8 +1439,8 @@ class LeoTree(object):
             '''Callback injected into position class.'''
             try:
                 p = self
-                g.doHook("hyperleave1", c=c, p=p, v=p, event=event)
-                g.doHook("hyperleave2", c=c, p=p, v=p, event=event)
+                g.doHook("hyperleave1", c=c, p=p, event=event)
+                g.doHook("hyperleave2", c=c, p=p, event=event)
             except Exception:
                 g.es_event_exception("hyperleave")
         #@-others

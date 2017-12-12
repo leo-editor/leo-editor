@@ -1750,7 +1750,7 @@ def checkConventions(c):
     project_name = 'leo'  # 'coverage', 'leo', 'lib2to3', 'pylint', 'rope'
     assert kind in ('all', 'file', 'production', 'string'), repr(kind)
     fn = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'qt_tree.py')
-    report_stats = True and kind != 'production'
+    report_stats = True # and kind != 'production'
     trace_fn = True
     trace_skipped = False
     fails_dict = {

@@ -1178,7 +1178,7 @@ class Commands(object):
     def clearMarked(self, p):
         c = self
         p.v.clearMarked()
-        g.doHook("clear-mark", c=c, p=p, v=p)
+        g.doHook("clear-mark", c=c, p=p)
     #@+node:ekr.20040305223522: *5* c.setBodyString
     def setBodyString(self, p, s):
         c = self; v = p.v
@@ -1302,7 +1302,7 @@ class Commands(object):
     def setMarked(self, p):
         c = self
         p.v.setMarked()
-        g.doHook("set-mark", c=c, p=p, v=p)
+        g.doHook("set-mark", c=c, p=p)
     #@+node:ekr.20040803140033.3: *5* c.setRootPosition (A do-nothing)
     def setRootPosition(self, unused_p=None):
         """Set c._rootPosition."""
@@ -1958,7 +1958,7 @@ class Commands(object):
             if label == "cantredo": label = "redo"
             if label == "cantundo": label = "undo"
             g.app.commandName = label
-        if not g.doHook("command1", c=c, p=p, v=p, label=label):
+        if not g.doHook("command1", c=c, p=p, label=label):
             try:
                 c.inCommand = True
                 val = c.executeAnyCommand(command, event)
@@ -1985,7 +1985,7 @@ class Commands(object):
         # Be careful: the command could destroy c.
         if c and c.exists:
             p = c.p
-            g.doHook("command2", c=c, p=p, v=p, label=label)
+            g.doHook("command2", c=c, p=p, label=label)
     #@+node:ekr.20171124074112.1: *4* c.executeAnyCommand
     def executeAnyCommand(self, command, event):
         '''
