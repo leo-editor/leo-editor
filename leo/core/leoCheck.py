@@ -61,6 +61,7 @@ class ConventionChecker (object):
         self.line_number = 0
         self.pass_n = 0
         self.recursion_count = 0
+        self.s = '' # The line being examined.
         self.stats = Stats()
     #@+node:ekr.20171209044610.1: *4* checker.init_classes
     def init_classes(self):
@@ -227,12 +228,13 @@ class ConventionChecker (object):
                     print('----- end source')
             for n, s in enumerate(g.splitLines(s1)):
                 self.line_number = n
+                self.s = s
                 for kind, pattern in self.patterns:
                     m = pattern.match(s)
                     if m:
                         f = dispatch.get(kind)
                         f(kind, m, s)
-            self.start_class()
+            self.end_class()
         self.end_program()
     #@+node:ekr.20171209065852.1: *3* checker_check_signature & helpers
     def check_signature(self, func, args, signature):
@@ -463,15 +465,36 @@ class ConventionChecker (object):
             g.printList(result)
         return result
                 
-    #@+node:ekr.20171209063559.4: *4* checker.do_class
+    #@+node:ekr.20171209063559.4: *4* checker.do_class & end_class
     class_pattern = ('class', re.compile(r'class\s+([a-z_A-Z][a-z_A-Z0-9]*).*:'))
     patterns.append(class_pattern)
 
     def do_class(self, kind, m, s):
 
-        trace = False and self.pass_n == 1 # and self.enable_trace
-        self.start_class(m)
+        trace = False
+        self.end_class()
+        self.class_name = name = m.group(1) if m else None
+        if self.pass_n > 1 or not m:
+            return
         if trace: print(s.rstrip())
+        self.stats.classes += 1
+        if name not in self.special_class_names:
+            self.classes [name] = {
+                'ivars': {},
+                'methods': {},
+            }
+    #@+node:ekr.20171212085210.1: *5* checker.end_class
+    def end_class(self):
+        '''End (trace) the old class, if it exists'''
+        trace = False and self.enable_trace
+        trace_dict = False
+        # Trace the old class.
+        if trace and self.class_name:
+            if trace_dict:
+                print('----- END class %s. class dict...' % self.class_name)
+                g.printDict(self.classes.get(self.class_name))
+            else:
+                print('----- END class %s', self.class_name)
     #@+node:ekr.20171209063559.5: *4* checker.do_def
     def_pattern = ('def', re.compile(r'^\s*def\s+([\w0-9]+)\s*\((.*)\)\s*:'))
     patterns.append(def_pattern)
@@ -636,31 +659,6 @@ class ConventionChecker (object):
             return obj2
         else:
             return self.Type('error', 'no member %s' % ivar)
-    #@+node:ekr.20171208111655.1: *3* checker.start_class
-    def start_class(self, m=None):
-        '''Start a new class, ending the old class.'''
-        trace = False and self.enable_trace
-        trace_dict = False
-        # Trace the old class.
-        if trace and self.class_name:
-            if trace_dict:
-                print('----- END class %s. class dict...' % self.class_name)
-                g.printDict(self.classes.get(self.class_name))
-            else:
-                print('----- END class %s', self.class_name)
-        # Switch classes.
-        if m:
-            self.stats.classes += 1
-            self.class_name = m.group(1)
-            if trace: print('===== START class', self.class_name)
-            if self.pass_n == 1:
-                if self.class_name not in self.special_class_names:
-                    self.classes [self.class_name] = {
-                        'ivars': {},
-                        'methods': {},
-                    }
-        else:
-            self.class_name = None
     #@+node:ekr.20171212020013.1: *3* checker.test
     def test(self):
         
