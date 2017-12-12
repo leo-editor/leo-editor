@@ -126,7 +126,7 @@ class ConventionChecker (object):
         '''
         g.cls()
         c = self.c
-        kind = 'all'
+        kind = 'production'
         assert kind in ('all', 'files', 'production', 'test'), repr(kind)
         report_stats = True
         trace_fn = True
