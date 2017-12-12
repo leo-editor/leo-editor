@@ -35,10 +35,6 @@ class ConventionChecker (object):
         fn = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'nodetags.py')
         leoCheck.ConventionChecker(c).check(fn=fn)
     '''
-    
-    # pylint: disable=no-member
-        # Stats class defines __setattr__
-        # This is a known limitation of pylint.
 
     ignore = ('bool', 'dict', 'enumerate', 'list', 'tuple')
         # Things that look like function calls.
@@ -64,7 +60,7 @@ class ConventionChecker (object):
         self.pass_n = 0
         self.recursion_count = 0
         self.s = '' # The line being examined.
-        self.stats = Stats()
+        self.stats = self.CCStats()
         self.unknowns = {} # Keys are expression, values are (line, fn) pairs.
     #@+node:ekr.20171209044610.1: *4* checker.init_classes
     def init_classes(self):
@@ -746,6 +742,47 @@ class ConventionChecker (object):
         c = self.c
         s = g.adjustTripleString(s, c.tab_width)
         self.check_file(s=s,trace_fn=True)
+    #@+node:ekr.20171212101613.1: *3* class CCStats
+    class CCStats(object):
+        '''
+        A basic statistics class.  Use this way:
+            
+            stats = Stats()
+            stats.classes += 1
+            stats.defs += 1
+            stats.report()
+        '''
+        # Big sigh: define these to placate pylint.
+        assignments = 0
+        calls = 0
+        check_signature = 0
+        classes = 0
+        defs = 0
+        resolve = 0
+        resolve_call = 0
+        resolve_chain = 0
+        resolve_ivar = 0
+        sig_fail = 0
+        sig_infer_fail = 0
+        sig_infer_ok = 0
+        sig_ok = 0
+        sig_unknown = 0
+
+        d = {}
+        
+        def __getattr__(self, name):
+            return self.d.get(name, 0)
+            
+        def __setattr__(self, name, val):
+            self.d[name] = val
+            
+        def report(self):
+            if self.d:
+                n = max([len(key) for key in self.d])
+                for key, val in sorted(self.d.items()):
+                    print('%*s: %s' % (n, key, val))
+            else:
+                print('no stats')
     #@+node:ekr.20171209030742.1: *3* class Type
     class Type (object):
         '''A class to hold all type-related data.'''
