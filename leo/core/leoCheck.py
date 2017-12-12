@@ -225,10 +225,10 @@ class ConventionChecker (object):
                         f(kind, m, s)
             self.start_class()
         self.end_program()
-    #@+node:ekr.20171209065852.1: *3* checker_check_signature & helper
+    #@+node:ekr.20171209065852.1: *3* checker_check_signature & helpers
     def check_signature(self, func, args, signature):
         
-        trace = False and self.enable_trace
+        trace = False # and self.enable_trace
         if trace: g.trace('%s(%s) ==> %s' % (func, args, signature))
         self.stats.check_signature += 1
         if signature[0] == 'self':
@@ -236,7 +236,7 @@ class ConventionChecker (object):
         result = 'ok'
         for i, arg in enumerate(args):
             if i < len(signature):
-                result = self.check_arg(arg, signature[i])
+                result = self.check_arg(func, arg, signature[i])
                 if result == 'fail':
                     print('\nline %s %s\n%s(%s) != %s(%s)\n' % (
                         self.line_number, self.file_name,
@@ -256,37 +256,52 @@ class ConventionChecker (object):
             assert result == 'unknown'
             self.stats.sig_unknown += 1
                 
-    def check_arg(self, call_arg, sig_arg):
+    #@+node:ekr.20171212034531.1: *4* checker.check_arg
+    def check_arg(self, func, call_arg, sig_arg):
         
+        # First, check the ags.
+        call_argv = call_arg.split('=')
+        sig_argv = sig_arg.split('=')
+        result = self.check_arg_helper(func, call_argv[0], sig_argv[0])
+        if result == 'fail':
+            return result
+        # Next, check a keyword call arg against it's assigned value.
+        if len(call_argv) > 1:
+            arg1, arg2 = call_argv[0], ''.join(call_argv[1:])
+            return self.check_arg_helper('KEYWORD', arg1, arg2)
+        else:
+            return result
+    #@+node:ekr.20171212035137.1: *4* checker.check_arg_helper
+    def check_arg_helper(self, func, call_arg, sig_arg):
         trace = False
+        trace_ok = True
+        trace_unknown = True
         special_names = self.special_names
-        call_arg = call_arg.split('=')[0]
-        sig_arg = sig_arg.split('=')[0]
-        if call_arg == sig_arg:
-            # if trace: g.trace('ok', call_arg, sig_arg)
+        if call_arg == sig_arg or sig_arg in (None, 'None'):
+            # Match anything against a default value of None.
+            if trace and trace_ok:
+                g.trace('line %4s %s %20s: %20r == %r' % (
+                    self.line_number, self.file_name, func, call_arg, sig_arg))
             return 'ok'
         elif sig_arg in special_names and call_arg in special_names:
             sig_class = special_names.get(sig_arg)
             call_class = special_names.get(call_arg)
             if sig_class == call_class:
-                if trace:
+                if trace and trace_ok:
                     print('')
                     g.trace('inferred ok: ', call_arg, sig_arg, sig_class)
                     print('')
                 self.stats.sig_infer_ok += 1
                 return 'ok'
             else:
-                if trace:
-                    print('')
-                    g.trace('inferred fail: %s --> %r, %s --> %r' % (
-                        call_arg, call_class, sig_arg, sig_class))
-                    print('')
+                # check_signature reports the failure.
                 self.stats.sig_infer_fail += 1
                 return 'fail'
         else:
-            # if trace: g.trace('unknown', call_arg, sig_arg)
+            if trace and trace_unknown:
+                g.trace('line %4s %s %20s: %20r ?? %r' % (
+                    self.line_number, self.file_name, func, call_arg, sig_arg))
             return 'unknown'
-            
     #@+node:ekr.20171208090003.1: *3* checker.do_*
     # These are like string-oriented visitors.
     #@+node:ekr.20171209063559.1: *4* checker.do_assn_to_c
@@ -342,7 +357,7 @@ class ConventionChecker (object):
             if trace and trace_dict:
                 g.trace('dict for class', self.class_name)
                 g.printDict(d)
-    #@+node:ekr.20171209063559.3: *4* checker.do_call
+    #@+node:ekr.20171209063559.3: *4* checker.do_call & helper
     call_pattern = ('call',  re.compile(r'^\s*(\w+(\.\w+)*)\s*\((.*)\)'))
     patterns.append(call_pattern)
 
@@ -363,7 +378,9 @@ class ConventionChecker (object):
             m = self.call_pattern.match(s.strip())
             chain = m.group(1).split('.')
             func = chain[-1]
-            args = m.group(3).split(',')
+            # args = m.group(3).split(',')
+                # This does not handle nested commas.
+            args = self.split_args(m.group(3))
             instance = self.classes.get(obj.name)
             if instance:
                 d = instance.get('methods')
@@ -371,6 +388,39 @@ class ConventionChecker (object):
                 if signature:
                     signature = signature.split(',')
                     self.check_signature(func, args, signature)
+    #@+node:ekr.20171212032532.1: *5* checker.split_args
+    def split_args(self, args):
+        '''
+        Args is a string representing actual arguments.
+        This could contain '=' and ',' within calls.
+        return an array of actual args.
+        '''
+        trace = False
+        arg, i, result = '', 0, []
+        while i < len(args):
+            ch = args[i]
+            if ch == ',':
+                result.append(arg)
+                arg = ''
+                i += 1
+            elif ch == '(':
+                j, s = g.skip_to_char(args, i, ')')
+                if i < j < len(args) and args[j] == ')':
+                    arg += args[i:j+1]
+                    i = j+1
+                else:
+                    g.trace('unmatched paren')
+                    return []
+            else:
+                arg += ch
+                i += 1
+        if arg:
+            result.append(arg)
+        if trace:
+            g.trace(args)
+            g.printList(result)
+        return result
+                
     #@+node:ekr.20171209063559.4: *4* checker.do_class
     class_pattern = ('class', re.compile(r'class\s+([a-z_A-Z][a-z_A-Z0-9]*).*:'))
     patterns.append(class_pattern)
