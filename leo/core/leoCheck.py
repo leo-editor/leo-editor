@@ -131,7 +131,7 @@ class ConventionChecker (object):
         '''
         g.cls()
         c = self.c
-        kind = 'production' # Allow names of projects?
+        kind = 'project' # Allow names of projects?
         assert kind in ('files', 'production', 'project', 'test'), repr(kind)
         report_stats = True
         if kind == 'files':
@@ -325,7 +325,7 @@ class ConventionChecker (object):
                 if context.kind == 'error':
                     # Caller will report the error.
                     # g.trace('FAIL', call_arg, context)
-                    return 'fail'
+                    return 'unknown' ### was 'fail'
                 if sig_arg in special_names_dict:
                     sig_class = special_names_dict.get(sig_arg)
                     return self.compare_classes(call_arg, sig_arg, context, sig_class)
