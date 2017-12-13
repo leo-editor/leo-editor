@@ -130,7 +130,7 @@ class ConventionChecker (object):
         '''
         g.cls()
         c = self.c
-        kind = 'files'
+        kind = 'project'
         assert kind in ('files', 'production', 'project', 'test'), repr(kind)
         report_stats = True
         if kind == 'files':
@@ -191,7 +191,7 @@ class ConventionChecker (object):
         '''Check the contents of fn or the string s.'''
         # Get the source.
         trace = True
-        trace_time = True
+        trace_time = False
         if fn:
             sfn = g.shortFileName(fn)
             if g.os_path_exists(fn):
@@ -1445,6 +1445,25 @@ class ProjectUtils(object):
         if not g.os_path_exists(dir_):
             g.trace('directory not found:' % (dir_))
         return dir_ or ''
+    #@+node:ekr.20171213071416.1: *3* pu.leo_core_files
+    def leo_core_files(self):
+        '''Return all the files in Leo's core.'''
+        trace = False
+        loadDir = g.app.loadDir
+        # Compute directories.
+        commands_dir = g.os_path_finalize_join(loadDir, '..', 'commands')
+        plugins_dir = g.os_path_finalize_join(loadDir, '..', 'plugins')
+        # Compute files.
+        core_files = glob.glob('%s%s%s' % (loadDir, os.sep, '*.py'))
+        for exclude in ['format-code.py',]:
+            core_files = [z for z in core_files if not z.endswith(exclude)]
+        command_files = glob.glob('%s%s%s' % (commands_dir, os.sep, '*.py'))
+        plugins_files = glob.glob('%s%s%s' % (plugins_dir, os.sep, 'qt_*.py'))
+        # Compute the result.
+        files = core_files + command_files + plugins_files
+        files = [z for z in files if not z.endswith('__init__.py')]
+        if trace: g.printList(files)
+        return files
     #@+node:ekr.20150525123715.4: *3* pu.project_files
     #@@nobeautify
 
@@ -1455,19 +1474,19 @@ class ProjectUtils(object):
         if i > -1:
             name = name[: i].strip()
         leo_path, junk = g.os_path_split(__file__)
-        # Import the appropriate module.
-        try:
-            m = importlib.import_module(
-                'core' if name == 'leo' else name, # module name.
-                name, # package name.
-            )
-            theDir = g.os_path_dirname(m.__file__)
-        except ImportError:
-            g.trace('package not found', name)
-            return []
+        if name == 'leo':
+            # Get the leo files directly.
+            return self.leo_core_files()
+        else:
+            # Import the appropriate module.
+            try:
+                m = importlib.import_module(name, name)
+                theDir = g.os_path_dirname(m.__file__)
+            except ImportError:
+                g.trace('package not found', name)
+                return []
         d = {
             'coverage': (['.py'], ['.bzr', 'htmlfiles']),
-            'leo':      (['.py'], ['.git']),
             'lib2to3':  (['.py'], ['tests']),
             'pylint':   (['.py'], ['.bzr', 'test']),
             'rope':     (['.py'], ['.bzr']),
@@ -1483,23 +1502,10 @@ class ProjectUtils(object):
             excludeDirs=excludeDirs,
         )
         if files:
-            if name.lower() == 'leo':
-                for exclude in ['__init__.py', 'format-code.py']:
-                    files = [z for z in files if not z.endswith(exclude)]
-                commands_dir = g.os_path_finalize_join(theDir, '..', 'commands')
-                command_files = glob.glob('%s%s%s' % (commands_dir, os.sep, '*.py'))
-                command_files = [z for z in command_files if not z.endswith('__init__.py')]
-                files.extend(command_files)
-                plugins_dir = g.os_path_finalize_join(theDir, '..', 'plugins')
-                plugins_files = glob.glob('%s%s%s' % (plugins_dir, os.sep, 'qt_*.py'))
-                files.extend(plugins_files)
-                fn = g.os_path_finalize_join(theDir, '..', 'plugins', 'qtGui.py')
-                if fn and g.os_path_exists(fn):
-                    files.append(fn)
             if g.app.runningAllUnitTests and len(files) > 1 and not force_all:
                 return [files[0]]
         if not files:
-            g.trace('no files found in', theDir)
+            g.trace('no files found for %s in %s' % (name, theDir))
         if g.app.runningAllUnitTests and len(files) > 1 and not force_all:
             return [files[0]]
         else:
