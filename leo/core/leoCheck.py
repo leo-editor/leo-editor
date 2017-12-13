@@ -131,7 +131,7 @@ class ConventionChecker (object):
         '''
         g.cls()
         c = self.c
-        kind = 'production'
+        kind = 'production' # Allow names of projects?
         assert kind in ('files', 'production', 'project', 'test'), repr(kind)
         report_stats = True
         if kind == 'files':
@@ -270,8 +270,8 @@ class ConventionChecker (object):
             if i < len(signature):
                 result = self.check_arg(func, arg, signature[i])
                 if result == 'fail':
-                    print('\nline %s %s\n%s(%s) incompatible with %s(%s)\n' % (
-                        self.line_number, self.file_name,
+                    print('\nline %s %s: %s\n%s(%s) incompatible with %s(%s)\n' % (
+                        self.line_number, self.file_name, self.s.strip(),
                         func, ','.join(args),
                         func, ','.join(signature)))
                     break
@@ -324,7 +324,7 @@ class ConventionChecker (object):
                 context = self.resolve_chain(tail, context)
                 if context.kind == 'error':
                     # Caller will report the error.
-                    g.trace('FAIL', call_arg, context)
+                    # g.trace('FAIL', call_arg, context)
                     return 'fail'
                 if sig_arg in special_names_dict:
                     sig_class = special_names_dict.get(sig_arg)
@@ -786,9 +786,28 @@ class ConventionChecker (object):
                 ))
             return self.Type('error', 'no member %s' % ivar)
     #@+node:ekr.20171212020013.1: *3* checker.test
-    def test(self):
-        
-        s = '''\
+    #@+at
+    # line 305 leoConfig.py: self.doItems(p.copy(),patch)
+    # doItems(p.copy(),patch) incompatible with doItems(p,aList)
+    # 
+    # line 1678 leoImport.py: self.minimize_headlines(p.firstChild(),prefix)
+    # minimize_headlines(p.firstChild(),prefix) incompatible with minimize_headlines(p,prefix)
+    # 
+    # line 405 leoRst.py: self.initSettings(p.copy())
+    # initSettings(p.copy()) incompatible with initSettings(p,script_d=None)
+    # 
+    # line 987 leoRst.py: self.dumpDict(d,p.h)
+    # dumpDict(d,p.h) incompatible with dumpDict(d,tag)
+    # 
+    # line 1085 leoRst.py: self.relocate_references(p.self_and_subtree)
+    # relocate_references(p.self_and_subtree) incompatible with relocate_references(iterator_generator)
+    # 
+    # line 288 qt_tree.py: self.setItemText(item,p.h)
+    # setItemText(item,p.h) incompatible with setItemText(item,s)
+    #@@c
+
+    tests = [
+    '''\
     class TC:
         def __init__(self, c):
             c.tc = self
@@ -802,10 +821,14 @@ class ConventionChecker (object):
         def add_tag(self):
             p = self.c.p
             self.tc.add_tag(p.v) # WRONG: arg should be p.
-    '''
-        c = self.c
-        s = g.adjustTripleString(s, c.tab_width)
-        self.check_file(s=s, test_kind='test', trace_fn=True)
+    ''', # comma required!
+    ]
+
+    def test(self):
+
+        for s in self.tests:
+            s = g.adjustTripleString(s, self.c.tab_width)
+            self.check_file(s=s, test_kind='test', trace_fn=True)
     #@+node:ekr.20171212101613.1: *3* class CCStats
     class CCStats(object):
         '''
