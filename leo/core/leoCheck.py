@@ -380,40 +380,6 @@ class ConventionChecker (object):
                     if trace and trace_found: g.trace(func.__name__)
                     func(kind, m, s)
                     return
-    #@+node:ekr.20171209063559.1: *4* checker.do_assn_to_c
-    assign_to_c_pattern = re.compile(r'^\s*c\.([\w.]+)\s*=(.*)')
-
-    def do_assn_to_c(self, kind, m, s):
-        
-        trace = True
-        trace_dict = True
-        trace_suppress = True
-        assert self.pass_n == 1, repr(self.pass_n)
-        class_name = self.class_name
-        # Do not set commands members within the Commands class!
-        if class_name == 'Commands':
-            if trace and trace_suppress:
-                print('SKIP: %s: %s' % (kind, s.strip()))
-            return
-        ivar = m.group(1)
-        val = m.group(2).strip()
-        # Resolve val, if possible.
-        context = self.Type(
-            'class' if class_name else 'module',
-            class_name or self.file_name,
-        )
-        self.recursion_count = 0
-        val = self.resolve(val, context, trace=False)
-        d = self.classes.get('Commands')
-        if trace and trace_dict:
-            g.trace('BEFORE class Commands...')
-            g.printDict(d)
-        ivars = d.get('ivars')
-        ivars[ivar] = val
-        d['ivars'] = ivars
-        if trace and trace_dict:
-            g.trace('AFTER class Commands...')
-            g.printDict(d)
     #@+node:ekr.20171213074017.1: *4* checker.do_assn_to_special
     assign_to_special_pattern = re.compile(r'^\s*(\w+)\.([\w.]+)\s*=(.*)')
         # The code below tests m.group(1)
