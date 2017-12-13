@@ -1858,6 +1858,78 @@ class ProjectUtils(object):
         else:
             return files
     #@-others
+#@+node:ekr.20171213155537.1: ** class NewShowData
+class NewShowData(object):
+    '''The driver class for analysis project.'''
+    assigns_d = {}
+    calls_d = {}
+    classes_d = {}
+    defs_d = {}
+    returns_d = {}
+
+    #@+others
+    #@+node:ekr.20171213160214.1: *3* sd.analyze
+    def analyze(self, fn, root):
+
+        table = (
+            (self.assigns_d, (ast.Assign, ast.AugAssign)),
+            (self.calls_d, ast.Call),
+            (self.classes_d, ast.ClassDef),
+            (self.defs_d, ast.FunctionDef),
+            (self.returns_d, ast.Return),
+        )
+        self.fn = fn = g.shortFileName(fn)
+        for d, ast_types in table:
+            d[fn] = []
+        for node in ast.walk(root):
+            for d, types in table:
+                d[fn].extend(self.visit(node, types))
+    #@+node:ekr.20171213163216.1: *3* sd.format
+    def format(self, node):
+        
+        class Formatter(leoAst.AstFormatter):
+            level = 0
+        
+        s = Formatter().visit(node)
+        line1 = g.splitLines(s)[0].strip()
+        return g.truncate(line1, 80)
+    #@+node:ekr.20171213155537.3: *3* sd.run
+    def run(self, files):
+        '''Process all files'''
+        t1 = time.time()
+        for fn in files:
+            s, e = g.readFileIntoString(fn)
+            if s:
+                print('=====', g.shortFileName(fn))
+                s1 = g.toEncodedString(s)
+                root = ast.parse(s1, filename='before', mode='exec')
+                self.analyze(fn, root)
+            else:
+                g.trace('skipped', g.shortFileName(fn))
+        t2 = time.time()
+        self.show_results()
+        g.trace('done: %s files in %4.1f sec.' % (len(files), (t2 - t1)))
+    #@+node:ekr.20171213155537.7: *3* sd.show_results
+    def show_results(self):
+        '''Print a summary of the test results.'''
+        table = (
+            ('assignments', self.assigns_d),
+            ('calls', self.calls_d),
+            ('classes', self.classes_d),
+            ('defs', self.defs_d),
+            ('returns', self.returns_d),
+        )
+        for (name, d) in table:
+            print('%s...' % name)
+            d2 = {}
+            for key in d:
+                d2[key] = sorted(set(d.get(key)))
+            g.printDict(d2)
+    #@+node:ekr.20171213174732.1: *3* sd.visit
+    def visit(self, node, types):
+        if isinstance(node, types):
+            yield self.format(node)
+    #@-others
 #@+node:ekr.20150604164113.1: ** class ShowData
 class ShowData(object):
     '''The driver class for analysis project.'''
