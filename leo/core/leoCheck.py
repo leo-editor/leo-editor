@@ -52,7 +52,7 @@ class ConventionChecker (object):
         self.special_class_names = [
             'Commands', 'LeoGlobals', 'Position', 'String', 'VNode'
         ]
-        self.special_names = self.init_special_names()
+        self.special_names_dict = self.init_special_names()
         # Other ivars...
         self.enable_trace = True
         self.file_name = None
@@ -296,7 +296,7 @@ class ConventionChecker (object):
         trace = False
         trace_ok = True
         trace_unknown = True
-        special_names = self.special_names
+        special_names_dict = self.special_names_dict
         if call_arg == sig_arg or sig_arg in (None, 'None'):
             # Match anything against a default value of None.
             if trace and trace_ok:
@@ -307,19 +307,19 @@ class ConventionChecker (object):
         chain = call_arg.split('.')
         if len(chain) > 1:
             head, tail = chain[0], chain[1:]
-            if head in special_names:
-                context = special_names.get(head)
+            if head in special_names_dict:
+                context = special_names_dict.get(head)
                 context = self.resolve_chain(tail, context)
                 if context.kind == 'error':
                     # Caller will report the error.
                     g.trace('FAIL', call_arg, context)
                     return 'fail'
-                if sig_arg in special_names:
-                    sig_class = special_names.get(sig_arg)
+                if sig_arg in special_names_dict:
+                    sig_class = special_names_dict.get(sig_arg)
                     return self.compare_classes(call_arg, sig_arg, context, sig_class)
-        if sig_arg in special_names and call_arg in special_names:
-            sig_class = special_names.get(sig_arg)
-            call_class = special_names.get(call_arg)
+        if sig_arg in special_names_dict and call_arg in special_names_dict:
+            sig_class = special_names_dict.get(sig_arg)
+            call_class = special_names_dict.get(call_arg)
             return self.compare_classes(call_arg, sig_arg, call_class, sig_class)
         if trace and trace_unknown:
             g.trace('line %4s %s %20s: %20r ?? %r' % (
@@ -701,7 +701,7 @@ class ConventionChecker (object):
                 if trace: g.trace('KNOWN: %s %r ==> %r' % (ivar, obj, val))
                 return val
             # Check for pre-defined special names.
-            for special_name, special_obj in self.special_names.items():
+            for special_name, special_obj in self.special_names_dict.items():
                 tail = val[len(special_name):]
                 if val == special_name:
                     if trace and trace_special:
@@ -734,8 +734,8 @@ class ConventionChecker (object):
             if trace and trace_recursive:
                 g.trace('END RECURSIVE: %r', obj2)
             return obj2
-        elif ivar in self.special_names:
-            val = self.special_names.get(ivar)
+        elif ivar in self.special_names_dict:
+            val = self.special_names_dict.get(ivar)
             if trace and trace_special:
                 g.trace('FOUND SPECIAL', ivar, val)
             return val
