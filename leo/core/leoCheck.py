@@ -17,6 +17,304 @@ import os
 import re
 import time
 #@+others
+#@+node:ekr.20171213100313.1: ** @@button vitalije-cc
+#@@first
+# pylint: disable=pointless-string-statement
+'''Experimental code checking for Leo.'''
+g.cls()
+c = g.app.commanders()[0]
+if c.changed:
+    c.save()
+# import ast
+# import re
+from collections import defaultdict
+#@+others
+#@+node:ekr.20171213100313.2: *3* my_check_func2 & helpers
+def my_check_func(filename):
+    g.cls()
+    root = parse_node(filename)
+    newcls = lambda:dict(ivars={}, methods={})
+    known_classes = defaultdict(newcls, **known_classes0())
+    #@+others
+    #@+node:ekr.20171213100313.3: *4* is_assign_to
+    def is_assign_to(node, _id):
+        '''
+        returns True if this node is assingment to some attribute of variable named _id.
+        
+        Something like: `_id.<some ivar> = ...`
+        '''
+        if isinstance(node, ast.Assign) and len(node.targets) == 1:
+            arg = node.targets[0]
+            return (
+                isinstance(arg, ast.Attribute) and
+                isinstance(arg.value, ast.Name) and
+                arg.value.id == _id
+            )
+        else:
+            return False
+    #@+node:ekr.20171213100313.4: *4* is_assign_to_attr
+    def is_assign_to_attr(node, _id):
+        '''
+        returns True if this node is assingment to some attribute
+        of variable named _id, or to some chain ending in _id.
+        Something like: `<var1>.<var2>...<_id>.<some ivar> = ...`
+        
+        For example: for node representing c.frame.top.dc = dummyController
+        is_assign_to_attr(node, 'top') would return True
+        '''
+        if isinstance(node, ast.Assign) and len(node.targets) == 1:
+            arg = node.targets[0]
+            return (
+                isinstance(arg, ast.Attribute) and
+                isinstance(arg.value, ast.Attribute) and
+                arg.value.attr == _id
+            )
+        else:
+            return False
+    #@+node:ekr.20171213100313.5: *4* is_assign_self
+    def is_assign_self(node):
+        '''returns True if this node is like `... = self`'''
+        return (
+            isinstance(node, ast.Assign) and
+            isinstance(node.value, ast.Name) and
+            node.value.id == 'self'
+        )
+    #@+node:ekr.20171213100313.6: *4* self_assigns
+    def self_assigns(node):
+        '''A generator yielding data for each assignment to self.'''
+        if not is_assign_to(node, 'self'):
+            return
+        arg = node.targets[0]
+        # Don't alter known classes.
+        if arg.attr in ('c', 'p', 'v', 'g'):
+            return
+        # For debugging. We may yield other data in the final version.
+        data = (node.lineno, node.col_offset, 'self.%s = ' % arg.attr, node.value)
+        g.trace('yields', data)
+        yield data
+           
+    #@+node:ekr.20171213100313.7: *4* c_assigns
+    def c_assigns(node, self_only=True):
+        '''A generator yielding data for each assignment to a c ivar.'''
+        if not is_assign_to(node, 'c') and not is_assign_to_attr(node, 'c'):
+            return
+        arg = node.targets[0]
+
+        # for type checking we are interested mostly in 
+        # assignments c ivars which are instances of leo classes
+        # i.e. we are interested in all classes which use 
+        #   c.<ivar> = self in their __init__ methods
+
+        if self_only and not is_assign_self(node):
+            return
+        # Don't inject into known classes.
+        if arg.attr in ('c', 'p', 'v', 'g'):
+            return
+        # For debugging. We may yield other data in the final version.
+        data = (node.lineno, node.col_offset, 'c.%s = ' % arg.attr)
+        g.trace('yields', data)
+        yield data
+    #@+node:ekr.20171213100313.8: *4* do_class
+    def do_class(node):
+        if not isinstance(node, ast.ClassDef):
+            return
+        # data about this class definition
+        cdef = known_classes[node.name]
+        for x in node.body:
+            if isinstance(x, ast.FunctionDef):
+                # inside method definition all assignments to self.<ivar>
+                # are recorded in known_classes[classname][ivars] ...
+                for _n in ast.walk(x):
+                    for sa in self_assigns(_n):
+                        cdef['ivars'][_n.targets[0].attr] = _n.value
+                xn = x.name
+                if xn == '__init__': continue
+                #
+                cdef['methods'][x.name] = x
+
+                yield 'class', node.name, 'method', xn
+            elif isinstance(x, ast.Assign):
+                cdef['ivars'][x.targets[0].id] = x.value
+                yield 'class', node.name, 'class_attr', x.targets[0].id
+        # as before what we yield from this function is only for
+        # debuging purposes, until we find something useful to yield
+    #@-others
+    c_assigns_list, s_assigns_list, classes_list = [], [], []
+    for node in ast.walk(root):
+        classes_list.extend(do_class(node))
+        for x in c_assigns(node):
+            c_assigns_list.append(x)
+            ivar = node.targets[0].attr
+            known_classes['Commands']['ivars'][ivar] = node.value
+        for x in self_assigns(node):
+            s_assigns_list.append(x)
+    g.es('---self-assigns----')
+    for x in s_assigns_list: g.es(*x)
+    g.es('---c-assigns----')
+    for x in c_assigns_list: g.es(*x)
+    g.es('---classes----')
+    for x in classes_list: g.es(*x)
+    # g.printDict(known_classes)
+#@+node:ekr.20171213102842.1: *3* helpers
+# None of these will change existing code.
+#@+node:ekr.20171213100313.12: *4* get_file
+def get_file(filename):
+    if filename == 'toCheck':
+        return toCheck
+    s, e = g.readFileIntoString(filename)
+    return s
+#@+node:ekr.20171213100313.9: *4* known_classes0
+def known_classes0():
+    '''
+    Init the symbol tables with known classes.
+    '''
+    return {
+        # Pre-enter known classes.
+        'Commands': {
+            'ivars': {
+                'p': ('instance', 'Position'),
+            },
+            'methods': {},
+        },
+        'LeoGlobals': {
+            'ivars': {}, # g.app, g.app.gui.
+            'methods': {
+                'trace': ('instance', 'None')
+            },
+        },
+        'Position': {
+            'ivars': {
+                'v': ('instance', 'VNode'),
+                'h': ('instance', 'String'),
+            },
+            'methods': {},
+        },
+        'VNode': {
+            'ivars': {
+                'h': ('instance', 'String'),
+                # Vnode has no v instance!
+            },
+            'methods': {},
+        },
+        'String': {
+            'ivars': {},
+            'methods': {}, ### Possible?
+        },
+    }
+#@+node:ekr.20171213100313.10: *4* leoFiles (not used)
+leoFiles = '''${LEO}/core/leoApp.py
+${LEO}/core/leoAst.py
+${LEO}/core/leoAtFile.py
+${LEO}/core/leoBackground.py
+${LEO}/core/leoBeautify.py
+${LEO}/core/leoBridge.py
+${LEO}/core/leoBridgeTest.py
+${LEO}/core/leoCache.py
+${LEO}/core/leoChapters.py
+${LEO}/core/leoCheck.py
+${LEO}/core/leoColor.py
+${LEO}/core/leoColorizer.py
+${LEO}/core/leoCommands.py
+${LEO}/core/leoCompare.py
+${LEO}/core/leoConfig.py
+${LEO}/core/leoDebugger.py
+${LEO}/core/leoDynamicTest.py
+${LEO}/core/leoExternalFiles.py
+${LEO}/core/leoFileCommands.py
+${LEO}/core/leoFind.py
+${LEO}/core/leoFrame.py
+${LEO}/core/leoGlobals.py
+${LEO}/core/leoGui.py
+${LEO}/core/leoHistory.py
+${LEO}/core/leoIPython.py
+${LEO}/core/leoImport.py
+${LEO}/core/leoKeys.py
+${LEO}/core/leoMenu.py
+${LEO}/core/leoNodes.py
+${LEO}/core/leoPersistence.py
+${LEO}/core/leoPlugins.py
+${LEO}/core/leoPrinting.py
+${LEO}/core/leoPymacs.py
+${LEO}/core/leoQt.py
+${LEO}/core/leoRope.py
+${LEO}/core/leoRst.py
+${LEO}/core/leoSessions.py
+${LEO}/core/leoShadow.py
+${LEO}/core/leoTangle.py
+${LEO}/core/leoTest.py
+${LEO}/core/leoUndo.py
+${LEO}/core/leoVersion.py
+${LEO}/core/leoVim.py
+${LEO}/core/runLeo.py
+${LEO}/core/signal_manager.py
+${LEO}/commands/commanderOutlineCommands.py
+${LEO}/commands/killBufferCommands.py
+${LEO}/commands/baseCommands.py
+${LEO}/commands/convertCommands.py
+${LEO}/commands/abbrevCommands.py
+${LEO}/commands/controlCommands.py
+${LEO}/commands/searchCommands.py
+${LEO}/commands/spellCommands.py
+${LEO}/commands/commanderHelpCommands.py
+${LEO}/commands/gotoCommands.py
+${LEO}/commands/checkerCommands.py
+${LEO}/commands/debugCommands.py
+${LEO}/commands/commanderFileCommands.py
+${LEO}/commands/commanderFindCommands.py
+${LEO}/commands/helpCommands.py
+${LEO}/commands/keyCommands.py
+${LEO}/commands/bufferCommands.py
+${LEO}/commands/rectangleCommands.py
+${LEO}/commands/editFileCommands.py
+${LEO}/commands/commanderEditCommands.py
+${LEO}/commands/editCommands.py
+${LEO}/plugins/qt_frame.py
+${LEO}/plugins/qt_quicksearch_sub.py
+${LEO}/plugins/qt_text.py
+${LEO}/plugins/qt_tree.py
+${LEO}/plugins/qt_gui.py
+${LEO}/plugins/qt_commands.py
+${LEO}/plugins/qt_quicksearch.py
+${LEO}/plugins/qt_idle_time.py
+${LEO}/plugins/qt_quickheadlines.py
+${LEO}/plugins/qt_events.py
+${LEO}/plugins/qt_main.py
+${LEO}/plugins/qtGui.py'''.replace('${LEO}', g.app.leoDir).splitlines(False)
+#@+node:ekr.20171213100313.13: *4* parse_node
+def parse_node(filename):
+    return ast.parse(get_file(filename), filename, 'exec')
+#@+node:ekr.20171213100313.11: *4* toCheck
+toCheck = '''
+class TagController:
+
+    def __init__(self, c):
+        self.c = c
+        c.theTagController = self
+        self.c.theTagController2 = self
+        
+    def add_tag(self, p, tag):
+        # Will fail if p is a vnode
+        tags = set(p.v.u.get('__node_tags', set([])))
+        
+class LeoTagWidget(QtWidgets.QWidget):
+    
+    def __init__(self,c,parent=None):
+        self.c = c
+        self.tc = self.c.theTagController
+        
+    def add_tag(self, event=None):
+        p = self.c.p
+        self.tc.add_tag(p.v,tag) # WRONG: should be p.
+    dummy = 1'''
+#@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
+c.frame.log.selectTab('Log')
+c.frame.log.clearLog()
+my_check_func('toCheck')
+#my_check_func(leoFiles[0])
+print('done: @button vilalije-cc')
 #@+node:ekr.20171207095816.1: ** class ConventionChecker
 class ConventionChecker (object):
     '''
@@ -641,6 +939,7 @@ class ConventionChecker (object):
             result = self.Type('error', 'unbound name: %s' % name)
         if trace and trace_resolve: g.trace('      ----->', result)
         return result
+    #@+node:ekr.20171213104154.1: *4* checker.resolve_name (TO DO)
     #@+node:ekr.20171208134737.1: *4* checker.resolve_call
     call_pattern = re.compile(r'(\w+(\.\w+)*)\s*\((.*)\)')
 
