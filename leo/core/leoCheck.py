@@ -127,8 +127,33 @@ class ConventionChecker (object):
         g.cls()
         c = self.c
         kind = 'production'
-        assert kind in ('all', 'files', 'production', 'test'), repr(kind)
+        assert kind in ('files', 'production', 'project', 'test'), repr(kind)
         report_stats = True
+        if kind == 'files':
+            join = g.os_path_finalize_join
+            loadDir = g.app.loadDir
+            table = (
+                join(loadDir, 'leoCommands.py'),
+                join(loadDir, 'leoNodes.py'),
+                join(loadDir, '..', 'plugins', 'qt_tree.py'),
+            )
+            for fn in table:
+                self.check_file(fn=fn, trace_fn=True)
+        elif kind == 'production':
+            for p in g.findRootsWithPredicate(c, c.p, predicate=None):
+                self.check_file(fn=g.fullPath(c, p), trace_fn=True)
+        elif kind == 'project':
+            self.check_project(project_name='leo')
+                # 'coverage', 'leo', 'lib2to3', 'pylint', 'rope'
+        elif kind == 'test':
+            self.test()
+        else:
+            g.trace('unknown kind', repr(kind))
+        if report_stats:
+            self.stats.report()
+    #@+node:ekr.20171213013004.1: *4* checker.check_project
+    def check_project(self, project_name):
+        
         trace_fn = True
         trace_skipped = False
         fails_dict = {
@@ -142,41 +167,21 @@ class ConventionChecker (object):
             ],
             'rope': ['objectinfo.py', 'objectdb.py', 'runmod.py',],
         }
-        if kind == 'production':
-            for p in g.findRootsWithPredicate(c, c.p, predicate=None):
-                self.check_file(fn=g.fullPath(c, p), trace_fn=trace_fn)
-        elif kind == 'all':
-            project_name = 'leo'
-                # in ('coverage', 'leo', 'lib2to3', 'pylint', 'rope')
-            fails = fails_dict.get(project_name, [])
-            utils = ProjectUtils()
-            aList = utils.project_files(project_name, force_all=False)
-            if aList:
-                t1 = time.clock()
-                for fn in aList:
-                    sfn = g.shortFileName(fn)
-                    if sfn in fails or fn in fails:
-                        if trace_skipped: print('===== skipping', sfn)
-                    else:
-                        self.check_file(fn=fn, trace_fn=trace_fn)
-                t2 = time.clock()
-                print('%s files in %4.2f sec.' % (len(aList), (t2-t1)))
-            else:
-                print('no files for project: %s' % (project_name))
-        elif kind == 'test':
-            self.test()
+        fails = fails_dict.get(project_name, [])
+        utils = ProjectUtils()
+        files = utils.project_files(project_name, force_all=False)
+        if files:
+            t1 = time.clock()
+            for fn in files:
+                sfn = g.shortFileName(fn)
+                if sfn in fails or fn in fails:
+                    if trace_skipped: print('===== skipping', sfn)
+                else:
+                    self.check_file(fn=fn, trace_fn=trace_fn)
+            t2 = time.clock()
+            print('%s files in %4.2f sec.' % (len(files), (t2-t1)))
         else:
-            assert kind == 'files', repr(kind)
-            join = g.os_path_finalize_join
-            loadDir = g.app.loadDir
-            files_table = (
-                # join(loadDir, 'leoNodes.py'),
-                join(loadDir, '..', 'plugins', 'qt_tree.py'),
-            )
-            for fn in files_table:
-                self.check_file(fn=fn, trace_fn=True)
-        if report_stats:
-            self.stats.report()
+            print('no files for project: %s' % (project_name))
     #@+node:ekr.20171207100432.1: *4* checker.check_file
     def check_file(self, fn=None, s=None, trace_fn=False):
         '''Check the contents of fn or the string s.'''
@@ -358,19 +363,26 @@ class ConventionChecker (object):
 
     def do_assn_to_c(self, kind, m, s):
         
-        trace = False and self.enable_trace
+        trace = False
         trace_dict = False
-        if trace:
-            print('%14s: %s' % (kind, s.strip()))
+        trace_suppress = False
         if self.pass_n == 1:
             self.stats.assignments += 1
+            name = self.class_name
+            # Do not set commands members within the Commands class!
+            if name == 'Commands':
+                if trace and trace_suppress:
+                    print('SKIP: %s: %s' % (kind, s.strip()))
+                return
+            if trace:
+                print('%14s: %s' % (kind, s.strip()))
             ivar = m.group(1)
             val = m.group(2).strip()
             # Resolve val, if possible.
-            if self.class_name:
-                context = self.Type('class', self.class_name)
-            else:
-                context = self.Type('module', self.file_name)
+            context = self.Type(
+                'class' if name else 'module',
+                name or self.file_name,
+            )
             self.recursion_count = 0
             val = self.resolve(val, context, trace=False)
             d = self.classes.get('Commands')
@@ -386,17 +398,20 @@ class ConventionChecker (object):
 
     def do_assn_to_self(self, kind, m, s):
 
-        trace = False and self.enable_trace
+        trace = False and self.pass_n == 1
         trace_dict = False
+        trace_normal = False
+        trace_suppress = True
         assert self.class_name
-        if trace:
-            print('%14s: %s' % (kind, s.strip()))
-        ###
-        # if self.class_name in ('Commands', 'Position'):
-            # g.trace('IGNORE', s.strip())
-            # return
         if self.pass_n == 1:
             self.stats.assignments += 1
+            name = self.class_name
+            if name in self.special_class_names:
+                if trace and trace_suppress:
+                    print('SKIP: %s: %s' % (kind, g.truncate(s.strip(), 80)))
+                return
+            if trace and trace_normal:
+                print('%14s: %s' % (kind, s.strip()))
             ivar = m.group(1)
             val = m.group(2).strip()
             d = self.classes.get(self.class_name)
@@ -445,8 +460,11 @@ class ConventionChecker (object):
         Args is a string representing actual arguments.
         This could contain '=' and ',' within calls.
         return an array of actual args.
+        
+        It could also contain an unbalanced ')'.
         '''
         trace = False
+        if trace: g.trace(args)
         arg, i, result = '', 0, []
         while i < len(args):
             ch = args[i]
@@ -454,14 +472,28 @@ class ConventionChecker (object):
                 result.append(arg)
                 arg = ''
                 i += 1
+            elif ch == ')':
+                # Unbalanced ')'.
+                # A scanning/parser error in the regex.
+                if trace:
+                    print('')
+                    g.trace('UNBALANCED: regex error?\n',
+                        self.line_number, self.file_name,
+                        g.truncate(self.s.strip(),80))
+                break
             elif ch == '(':
+                if trace: g.pdb()
                 j, s = g.skip_to_char(args, i, ')')
                 if i < j < len(args) and args[j] == ')':
                     arg += args[i:j+1]
                     i = j+1
                 else:
-                    g.trace('unmatched paren')
-                    return []
+                    if trace:
+                        print('')
+                        g.trace('NO MATCHING ")"\n',
+                            self.line_number, self.file_name,
+                            g.truncate(self.s.strip(),80))
+                    break
             else:
                 arg += ch
                 i += 1

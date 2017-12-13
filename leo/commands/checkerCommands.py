@@ -24,6 +24,7 @@ import time
 #@+node:ekr.20161021091557.1: **  Commands
 #@+node:ekr.20171211055756.1: *3* checkConventions (checkerCommands.py)
 @g.command('check-conventions')
+@g.command('cc')
 def checkConventsion(event):
     c = event.get('c')
     if c:
