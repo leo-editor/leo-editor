@@ -61,6 +61,7 @@ class ConventionChecker (object):
         self.recursion_count = 0
         self.s = '' # The line being examined.
         self.stats = self.CCStats()
+        self.test_kind = None
         self.unknowns = {} # Keys are expression, values are (line, fn) pairs.
     #@+node:ekr.20171209044610.1: *4* checker.init_classes
     def init_classes(self):
@@ -130,7 +131,7 @@ class ConventionChecker (object):
         '''
         g.cls()
         c = self.c
-        kind = 'project'
+        kind = 'production'
         assert kind in ('files', 'production', 'project', 'test'), repr(kind)
         report_stats = True
         if kind == 'files':
@@ -145,7 +146,7 @@ class ConventionChecker (object):
                 self.check_file(fn=fn, trace_fn=True)
         elif kind == 'production':
             for p in g.findRootsWithPredicate(c, c.p, predicate=None):
-                self.check_file(fn=g.fullPath(c, p), trace_fn=True)
+                self.check_file(fn=g.fullPath(c, p), test_kind=kind, trace_fn=True)
         elif kind == 'project':
             self.check_project(project_name='leo')
                 # 'coverage', 'leo', 'lib2to3', 'pylint', 'rope'
@@ -160,6 +161,7 @@ class ConventionChecker (object):
         
         trace_fn = True
         trace_skipped = False
+        self.test_kind = 'project'
         fails_dict = {
             'coverage': ['cmdline.py',],
             'lib2to3': ['fixer_util.py', 'fix_dict.py', 'patcomp.py', 'refactor.py'],
@@ -187,11 +189,12 @@ class ConventionChecker (object):
         else:
             print('no files for project: %s' % (project_name))
     #@+node:ekr.20171207100432.1: *4* checker.check_file
-    def check_file(self, fn=None, s=None, trace_fn=False):
+    def check_file(self, fn=None, s=None, test_kind=None, trace_fn=False):
         '''Check the contents of fn or the string s.'''
         # Get the source.
         trace = True
         trace_time = False
+        if test_kind: self.test_kind = test_kind
         if fn:
             sfn = g.shortFileName(fn)
             if g.os_path_exists(fn):
@@ -358,13 +361,15 @@ class ConventionChecker (object):
 
     def do_assn(self, kind, m, s):
         
-        trace = False
+        trace = False or self.test_kind == 'test'
+        trace_found = False
         table = (
             (self.assn_to_self_pattern, self.do_assn_to_self),
                 # Must be first.
-            (self.assign_to_c_pattern, self.do_assn_to_c),
+            # (self.assign_to_c_pattern, self.do_assn_to_c),
                 # Second, during transition.
-            # (self.assign_to_special_pattern, self.assign_to_special),
+            (self.assign_to_special_pattern, self.do_assn_to_special),
+                # Must be last.
         )
         if self.pass_n == 1:
             self.stats.assignments += 1
@@ -372,6 +377,7 @@ class ConventionChecker (object):
             for pattern, func in table:
                 m = pattern.match(s)
                 if m:
+                    if trace and trace_found: g.trace(func.__name__)
                     func(kind, m, s)
                     return
     #@+node:ekr.20171209063559.1: *4* checker.do_assn_to_c
@@ -379,13 +385,13 @@ class ConventionChecker (object):
 
     def do_assn_to_c(self, kind, m, s):
         
-        trace = False
-        trace_dict = False
-        trace_suppress = False
+        trace = True
+        trace_dict = True
+        trace_suppress = True
         assert self.pass_n == 1, repr(self.pass_n)
-        name = self.class_name
+        class_name = self.class_name
         # Do not set commands members within the Commands class!
-        if name == 'Commands':
+        if class_name == 'Commands':
             if trace and trace_suppress:
                 print('SKIP: %s: %s' % (kind, s.strip()))
             return
@@ -393,51 +399,69 @@ class ConventionChecker (object):
         val = m.group(2).strip()
         # Resolve val, if possible.
         context = self.Type(
-            'class' if name else 'module',
-            name or self.file_name,
+            'class' if class_name else 'module',
+            class_name or self.file_name,
         )
         self.recursion_count = 0
         val = self.resolve(val, context, trace=False)
         d = self.classes.get('Commands')
-        assert d
+        if trace and trace_dict:
+            g.trace('BEFORE class Commands...')
+            g.printDict(d)
         ivars = d.get('ivars')
         ivars[ivar] = val
         d['ivars'] = ivars
         if trace and trace_dict:
-            g.trace('dict for class Commands...')
+            g.trace('AFTER class Commands...')
             g.printDict(d)
     #@+node:ekr.20171213074017.1: *4* checker.do_assn_to_special
     assign_to_special_pattern = re.compile(r'^\s*(\w+)\.([\w.]+)\s*=(.*)')
-        # The code must test m.group(1)
+        # The code below tests m.group(1)
 
     def do_assn_to_special(self, kind, m, s):
         
-        trace = True
-        trace_dict = True
+        trace = False or self.test_kind == 'test'
+        trace_dict = False
+        trace_not_special = False
         trace_suppress = True
+        trace_val = True
         assert self.pass_n == 1, repr(self.pass_n)
-        name = self.class_name
-        # Do not set commands members within the Commands class!
-        if name == 'Commands':
+        class_name = self.class_name
+        ivar1 = m.group(1)
+        ivar2 = m.group(2)
+        val = m.group(3).strip()
+        t = self.special_names_dict.get(ivar1)
+        if not t:
+            if trace and trace_not_special:
+                g.trace('not special', ivar1, s.strip())
+            return
+        if trace:
+            g.trace('special', ivar1, t.kind, t.name, s.strip())
+        # Do not set members within the class itself.
+        if t.kind == 'instance' and t.name == class_name:
             if trace and trace_suppress:
                 print('SKIP: %s: %s' % (kind, s.strip()))
             return
-        ivar = m.group(2) ### (1)
-        val = m.group(3).strip() ### m.group(2).strip()
         # Resolve val, if possible.
         context = self.Type(
-            'class' if name else 'module',
-            name or self.file_name,
+            'class' if class_name else 'module',
+            class_name or self.file_name,
         )
         self.recursion_count = 0
+        old_val = val
         val = self.resolve(val, context, trace=False)
-        d = self.classes.get('Commands')
-        assert d
+        if trace and trace_val:
+            g.trace('context %s : %s ==> %s' % (context, old_val, val))
+        # Update var1's dict, not class_name's dict.
+        d = self.classes.get(t.name)
+        if trace and trace_dict:
+            g.trace('BEFORE: class %s...' % t.name)
+            g.printDict(d)
         ivars = d.get('ivars')
-        ivars[ivar] = val
+        ivars[ivar2] = val
         d['ivars'] = ivars
         if trace and trace_dict:
-            g.trace('dict for class Commands...')
+            g.trace('AFTER: class %s...' % t.name)
             g.printDict(d)
     #@+node:ekr.20171209063559.2: *4* checker.do_assn_to_self
     assn_to_self_pattern = re.compile(r'^\s*self\.(\w+)\s*=(.*)')
@@ -449,8 +473,8 @@ class ConventionChecker (object):
         trace_suppress = True
         assert self.class_name
         assert self.pass_n == 1, repr(self.pass_n)
-        name = self.class_name
-        if name in self.special_class_names:
+        class_name = self.class_name
+        if class_name in self.special_class_names:
             if trace and trace_suppress:
                 print('SKIP: %s: %s' % (kind, g.truncate(s.strip(), 80)))
             return
@@ -813,7 +837,7 @@ class ConventionChecker (object):
     '''
         c = self.c
         s = g.adjustTripleString(s, c.tab_width)
-        self.check_file(s=s,trace_fn=True)
+        self.check_file(s=s, test_kind='test', trace_fn=True)
     #@+node:ekr.20171212101613.1: *3* class CCStats
     class CCStats(object):
         '''
