@@ -358,15 +358,22 @@ class ConventionChecker (object):
 
     def do_assn(self, kind, m, s):
         
+        trace = False
         table = (
-            (self.assign_to_c_pattern, self.do_assn_to_c),
             (self.assn_to_self_pattern, self.do_assn_to_self),
+                # Must be first.
+            (self.assign_to_c_pattern, self.do_assn_to_c),
+                # Second, during transition.
+            # (self.assign_to_special_pattern, self.assign_to_special),
         )
-        for pattern, func in table:
-            m = pattern.match(s)
-            if m:
-                func(kind, m, s)
-                return
+        if self.pass_n == 1:
+            self.stats.assignments += 1
+            if trace: print('%14s: %s' % (kind, s.strip()))
+            for pattern, func in table:
+                m = pattern.match(s)
+                if m:
+                    func(kind, m, s)
+                    return
     #@+node:ekr.20171209063559.1: *4* checker.do_assn_to_c
     assign_to_c_pattern = re.compile(r'^\s*c\.([\w.]+)\s*=(.*)')
 
@@ -375,33 +382,63 @@ class ConventionChecker (object):
         trace = False
         trace_dict = False
         trace_suppress = False
-        if self.pass_n == 1:
-            self.stats.assignments += 1
-            name = self.class_name
-            # Do not set commands members within the Commands class!
-            if name == 'Commands':
-                if trace and trace_suppress:
-                    print('SKIP: %s: %s' % (kind, s.strip()))
-                return
-            if trace:
-                print('%14s: %s' % (kind, s.strip()))
-            ivar = m.group(1)
-            val = m.group(2).strip()
-            # Resolve val, if possible.
-            context = self.Type(
-                'class' if name else 'module',
-                name or self.file_name,
-            )
-            self.recursion_count = 0
-            val = self.resolve(val, context, trace=False)
-            d = self.classes.get('Commands')
-            assert d
-            ivars = d.get('ivars')
-            ivars[ivar] = val
-            d['ivars'] = ivars
-            if trace and trace_dict:
-                g.trace('dict for class Commands...')
-                g.printDict(d)
+        assert self.pass_n == 1, repr(self.pass_n)
+        name = self.class_name
+        # Do not set commands members within the Commands class!
+        if name == 'Commands':
+            if trace and trace_suppress:
+                print('SKIP: %s: %s' % (kind, s.strip()))
+            return
+        ivar = m.group(1)
+        val = m.group(2).strip()
+        # Resolve val, if possible.
+        context = self.Type(
+            'class' if name else 'module',
+            name or self.file_name,
+        )
+        self.recursion_count = 0
+        val = self.resolve(val, context, trace=False)
+        d = self.classes.get('Commands')
+        assert d
+        ivars = d.get('ivars')
+        ivars[ivar] = val
+        d['ivars'] = ivars
+        if trace and trace_dict:
+            g.trace('dict for class Commands...')
+            g.printDict(d)
+    #@+node:ekr.20171213074017.1: *4* checker.do_assn_to_special
+    assign_to_special_pattern = re.compile(r'^\s*(\w+)\.([\w.]+)\s*=(.*)')
+        # The code must test m.group(1)
+
+    def do_assn_to_special(self, kind, m, s):
+        
+        trace = True
+        trace_dict = True
+        trace_suppress = True
+        assert self.pass_n == 1, repr(self.pass_n)
+        name = self.class_name
+        # Do not set commands members within the Commands class!
+        if name == 'Commands':
+            if trace and trace_suppress:
+                print('SKIP: %s: %s' % (kind, s.strip()))
+            return
+        ivar = m.group(2) ### (1)
+        val = m.group(3).strip() ### m.group(2).strip()
+        # Resolve val, if possible.
+        context = self.Type(
+            'class' if name else 'module',
+            name or self.file_name,
+        )
+        self.recursion_count = 0
+        val = self.resolve(val, context, trace=False)
+        d = self.classes.get('Commands')
+        assert d
+        ivars = d.get('ivars')
+        ivars[ivar] = val
+        d['ivars'] = ivars
+        if trace and trace_dict:
+            g.trace('dict for class Commands...')
+            g.printDict(d)
     #@+node:ekr.20171209063559.2: *4* checker.do_assn_to_self
     assn_to_self_pattern = re.compile(r'^\s*self\.(\w+)\s*=(.*)')
 
@@ -409,28 +446,24 @@ class ConventionChecker (object):
 
         trace = False and self.pass_n == 1
         trace_dict = False
-        trace_normal = False
         trace_suppress = True
         assert self.class_name
-        if self.pass_n == 1:
-            self.stats.assignments += 1
-            name = self.class_name
-            if name in self.special_class_names:
-                if trace and trace_suppress:
-                    print('SKIP: %s: %s' % (kind, g.truncate(s.strip(), 80)))
-                return
-            if trace and trace_normal:
-                print('%14s: %s' % (kind, s.strip()))
-            ivar = m.group(1)
-            val = m.group(2).strip()
-            d = self.classes.get(self.class_name)
-            assert d is not None, self.class_name
-            ivars = d.get('ivars')
-            ivars[ivar] = val
-            d['ivars'] = ivars
-            if trace and trace_dict:
-                g.trace('dict for class', self.class_name)
-                g.printDict(d)
+        assert self.pass_n == 1, repr(self.pass_n)
+        name = self.class_name
+        if name in self.special_class_names:
+            if trace and trace_suppress:
+                print('SKIP: %s: %s' % (kind, g.truncate(s.strip(), 80)))
+            return
+        ivar = m.group(1)
+        val = m.group(2).strip()
+        d = self.classes.get(self.class_name)
+        assert d is not None, self.class_name
+        ivars = d.get('ivars')
+        ivars[ivar] = val
+        d['ivars'] = ivars
+        if trace and trace_dict:
+            g.trace('dict for class', self.class_name)
+            g.printDict(d)
     #@+node:ekr.20171209063559.3: *4* checker.do_call & helper
     call_pattern = ('call',  re.compile(r'^\s*(\w+(\.\w+)*)\s*\((.*)\)'))
     patterns.append(call_pattern)
