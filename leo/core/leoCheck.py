@@ -50,7 +50,7 @@ class ConventionChecker (object):
         # Rudimentary symbol tables...
         self.classes = self.init_classes()
         self.special_class_names = [
-            'Commands', 'LeoGlobals', 'Position', 'String', 'VNode'
+            'Commands', 'LeoGlobals', 'Position', 'String', 'VNode', 'VNodeBase',
         ]
         self.special_names_dict = self.init_special_names()
         # Other ivars...
@@ -95,6 +95,10 @@ class ConventionChecker (object):
                 },
                 'methods': {},
             },
+            'VNodeBase': {
+                'ivars': {},
+                'methods': {},
+            },
             'String': {
                 'ivars': {},
                 'methods': {}, ### Possible?
@@ -126,15 +130,15 @@ class ConventionChecker (object):
         '''
         g.cls()
         c = self.c
-        kind = 'production'
+        kind = 'files'
         assert kind in ('files', 'production', 'project', 'test'), repr(kind)
         report_stats = True
         if kind == 'files':
             join = g.os_path_finalize_join
             loadDir = g.app.loadDir
             table = (
-                join(loadDir, 'leoCommands.py'),
-                join(loadDir, 'leoNodes.py'),
+                # join(loadDir, 'leoCommands.py'),
+                # join(loadDir, 'leoNodes.py'),
                 join(loadDir, '..', 'plugins', 'qt_tree.py'),
             )
             for fn in table:
@@ -211,9 +215,11 @@ class ConventionChecker (object):
         t2 = time.clock()
         if trace and trace_time and fn:
             print('%4.2f sec. %s' % ((t2-t1), sfn))
-    #@+node:ekr.20171207101337.1: *4* checker.check_helper
+    #@+node:ekr.20171207101337.1: *4* checker.check_helper (traces)
     def check_helper(self, fn, node, s):
         trace = False and self.enable_trace
+        trace_classes=False
+        trace_unknowns=False
         trace_source = False
         self.file_name = fn
         dispatch = {
@@ -244,7 +250,10 @@ class ConventionChecker (object):
                         f = dispatch.get(kind)
                         f(kind, m, s)
             self.end_class()
-        self.end_file()
+        self.end_file(
+            trace_classes=trace_classes,
+            trace_unknowns=trace_unknowns,
+        )
     #@+node:ekr.20171209065852.1: *3* checker_check_signature & helpers
     def check_signature(self, func, args, signature):
         
@@ -553,11 +562,9 @@ class ConventionChecker (object):
                 assert methods is not None
                 methods [def_name] = def_args
     #@+node:ekr.20171208135642.1: *3* checker.end_file & helper
-    def end_file(self):
+    def end_file(self,trace_classes=False, trace_unknowns=False):
         
-        trace = False
-        trace_classes = False
-        trace_unknowns = True
+        trace = trace_classes or trace_unknowns
         if trace:
             print('----- END OF FILE: %s' % self.file_name)
             if trace_classes:
