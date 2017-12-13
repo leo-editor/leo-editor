@@ -386,11 +386,11 @@ class ConventionChecker (object):
 
     def do_assn_to_special(self, kind, m, s):
         
-        trace = False or self.test_kind == 'test'
+        trace = False # or self.test_kind == 'test'
         trace_dict = False
         trace_not_special = False
         trace_suppress = True
-        trace_val = True
+        trace_val = False
         assert self.pass_n == 1, repr(self.pass_n)
         class_name = self.class_name
         ivar1 = m.group(1)
@@ -401,13 +401,15 @@ class ConventionChecker (object):
             if trace and trace_not_special:
                 g.trace('not special', ivar1, s.strip())
             return
-        if trace:
-            g.trace('special', ivar1, t.kind, t.name, s.strip())
+        
         # Do not set members within the class itself.
         if t.kind == 'instance' and t.name == class_name:
             if trace and trace_suppress:
                 print('SKIP: %s: %s' % (kind, s.strip()))
             return
+        if trace:
+            # g.trace('special', ivar1, t.kind, t.name, s.strip())
+            if trace: print('INJECT %s' % s.strip())
         # Resolve val, if possible.
         context = self.Type(
             'class' if class_name else 'module',
