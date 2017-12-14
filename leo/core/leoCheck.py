@@ -1879,7 +1879,7 @@ class NewShowData(object):
             (self.returns_d, ast.Return),
         )
         self.fn = fn = g.shortFileName(fn)
-        for d, ast_types in table:
+        for d, types in table:
             d[fn] = []
         for node in ast.walk(root):
             for d, types in table:
@@ -1919,7 +1919,7 @@ class NewShowData(object):
             ('defs', self.defs_d),
             ('returns', self.returns_d),
         )
-        for (name, d) in table:
+        for name, d in table:
             print('%s...' % name)
             g.printDict({key: sorted(set(d.get(key))) for key in d})
     #@+node:ekr.20171213174732.1: *3* sd.visit
