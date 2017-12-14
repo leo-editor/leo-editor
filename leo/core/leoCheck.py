@@ -1895,17 +1895,16 @@ class NewShowData(object):
             'Load', 'List', 'ListComp', 'Name', 'NameConstant', 'Num',
             'Slice', 'Store', 'Str', 'Subscript', 'Tuple', 'UnaryOp',
         ]
-        statements = ['Assign', 'AugAssign', 'Call', 'Expr', 'If', 'Return',]
-        assert statements
+        # statements = ['Assign', 'AugAssign', 'Call', 'Expr', 'If', 'Return',]
         errors = set()
         fn = g.shortFileName(fn)
         for node in ast.walk(root):
             name = node.__class__.__name__
-            try:
-                if name not in suppress:
+            if name not in suppress:
+                try:
                     print('%15s: %s' % (name, self.format(node,strip=False)))
-            except AttributeError:
-                errors.add(name)
+                except AttributeError:
+                    errors.add(name)
         g.trace('errors', sorted(errors))
         # g.printList(sorted(errors))
     #@+node:ekr.20171213163216.1: *3* sd.format
