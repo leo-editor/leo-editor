@@ -1884,7 +1884,7 @@ class NewShowData(object):
             d[fn] = []
         for node in ast.walk(root):
             d = ast_d.get(node.__class__)
-            if d:
+            if d is not None:
                 d[fn].append(self.format(node))
     #@+node:ekr.20171213163216.1: *3* sd.format
     def format(self, node):
