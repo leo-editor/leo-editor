@@ -1588,11 +1588,8 @@ class PatternMatchingFormatter (AstFormatter):
         if node.__class__ in self.match_all_list:
             return True
         for t, regex in self.match_regex_list:
-            m = regex.match(s)
-            if t == None:
-                return m
-            elif isinstance(node, t):
-                return m
+            if t is None or isinstance(node, t):
+                return regex.match(s)
         return True
     #@+node:ekr.20171214104350.1: *3* pmf.validate_regexs
     def validate_regexs(self):
