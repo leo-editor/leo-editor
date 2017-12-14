@@ -1870,20 +1870,22 @@ class NewShowData(object):
     #@+others
     #@+node:ekr.20171213160214.1: *3* sd.analyze
     def analyze(self, fn, root):
-
-        table = (
-            (self.assigns_d, (ast.Assign, ast.AugAssign)),
-            (self.calls_d, ast.Call),
-            (self.classes_d, ast.ClassDef),
-            (self.defs_d, ast.FunctionDef),
-            (self.returns_d, ast.Return),
-        )
-        self.fn = fn = g.shortFileName(fn)
-        for d, types in table:
+        
+        ast_d = {
+            ast.Assign: self.assigns_d,
+            ast.AugAssign: self.assigns_d,
+            ast.Call: self.calls_d,
+            ast.ClassDef: self.classes_d,
+            ast.FunctionDef: self.defs_d,
+            ast.Return: self.returns_d, 
+        }
+        fn = g.shortFileName(fn)
+        for d in ast_d.values():
             d[fn] = []
         for node in ast.walk(root):
-            for d, types in table:
-                d[fn].extend(self.visit(node, types))
+            d = ast_d.get(node.__class__)
+            if d:
+                d[fn].append(self.format(node))
     #@+node:ekr.20171213163216.1: *3* sd.format
     def format(self, node):
         
