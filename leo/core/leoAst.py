@@ -2,7 +2,7 @@
 #@+node:ekr.20141012064706.18389: * @file leoAst.py
 '''AST (Abstract Syntax Tree) related classes.'''
 import ast
-import re
+# import re
 import xml.sax.saxutils as saxutils
 import textwrap
 import token as token_module
@@ -1035,6 +1035,10 @@ class AstFullTraverser(object):
 
     def do_Store(self, node):
         pass
+    #@+node:ekr.20171214150138.1: *3* ft.format (new)
+    def format(node):
+        
+        return AstFormatter().format(node)
     #@+node:ekr.20141012064706.18479: *3* ft.kind
     def kind(self, node):
         return node.__class__.__name__
@@ -1534,15 +1538,24 @@ class AstFullTraverser(object):
     #@+node:ekr.20141012064706.18528: *3* ft.visit
     def visit(self, node):
         '''Visit a *single* ast node.  Visitors are responsible for visiting children!'''
-        assert isinstance(node, ast.AST), node.__class__.__name__
         trace = False
+        name = node.__class__.__name__
+        assert isinstance(node, ast.AST), repr(node)
         # Visit the children with the new parent.
         old_parent = self.parent
-        self.parent = node # Bug fix: 2016/05/18.
-        method_name = 'do_' + node.__class__.__name__
-        method = getattr(self, method_name)
-        if trace: g.trace(method_name)
-        val = method(node)
+        self.parent = node
+        before_method = getattr(self, 'before_'+name, None)
+        if before_method:
+            before_method(node)
+        do_method = getattr(self, 'do_'+name, None)
+        if do_method:
+            val = do_method(node)
+        elif trace:
+            g.trace('no do_%s method' % name)
+            val = None
+        # after_method = getattr(self, 'after_'+name, None)
+        # if after_method:
+            # after_method(node)
         self.parent = old_parent
         return val
 
@@ -1555,127 +1568,6 @@ class AstFullTraverser(object):
         for z in aList:
             self.visit(z)
         return None
-    #@-others
-#@+node:ekr.20171214103209.1: ** class PatternMatchingFormatter (AstFormatter)
-class PatternMatchingFormatter (AstFormatter):
-    '''A class to format an ast under control of patterns.'''
-    #
-    # Pattern matching data.
-    match_all_list = []
-        # A list of ast node classes that will always match.
-    match_regex_list = []
-        # A list of tuples, (filter, regex)
-        # Filter may be None, an ast node class, or a tuple of ast node classes.
-    suppress_list = []
-        # A list of ast node classes that will never match.
-    #
-    # Context data.
-    context = None
-    parent = None
-    #@+others
-    #@+node:ekr.20171214103654.1: *3* pmf.format
-    def format(self, node):
-        '''Format the node (or list of nodes) and its descendants.'''
-        self.level = 0
-        self.validate_regexs()
-        val = self.visit(node)
-        return val.strip() if val else ''
-    #@+node:ekr.20171214103819.1: *3* pmf.match
-    def match(self, node, s):
-        '''Return True if formatting the given node is allowed.'''
-        if node.__class__ in self.suppress_list:
-            return False
-        if node.__class__ in self.match_all_list:
-            return True
-        for t, regex in self.match_regex_list:
-            if t is None or isinstance(node, t):
-                return regex.match(s)
-        return True
-    #@+node:ekr.20171214104350.1: *3* pmf.validate_regexs
-    def validate_regexs(self):
-
-        result = []
-        try:
-            for types, regex in self.match_regex_list:
-                try:
-                    regex = re.compile(regex)
-                    result.append(types, regex)
-                except Exception:
-                    g.trace('ignoring invalid regex', repr(regex))
-        except Exception:
-            g.trace('invalid match_regex_list')
-            g.printObj(self.match_regex_list)
-        self.match_regex_list = result
-    #@+node:ekr.20171214103812.1: *3* pmf.visit
-    def visit(self, node):
-        '''
-        Visit a *single* ast node.
-        
-        A merger of AstFullTraverser.visit and AstFormatter.visit.
-
-        Visitors are responsible for visiting children!
-        '''
-        name = node.__class__.__name__
-        
-        trace = False
-        # Visit the children with the new parent.
-        old_parent = self.parent
-        self.parent = node
-        if isinstance(node, (list, tuple)):
-            aList = [self.visit(z) for z in node]
-            aList = [z for z in aList if z not in (None, '', 'None')]
-                ### Test.
-            return ','.join(aList)
-        elif node is None:
-            return ''
-        assert isinstance(node, ast.AST), name
-        method_name = 'do_' + name
-        method = getattr(self, method_name)
-        if trace: g.trace(method_name)
-        s = method(node)
-        assert g.isString(s), type(s)
-        if not self.match(node, s): # Eureka, part 1.
-            val = '' 
-        on_func = getattr(self, 'on_match_', name)
-        if on_func: # Eureka, part 2.
-            val2 = on_func(node)
-            if val2: val = val2 
-        self.parent = old_parent
-        return val
-
-    def visit_children(self, node):
-        assert False, 'must visit children explicitly'
-    #@+node:ekr.20171214103705.1: *3* f.visit (REF)
-    # def visit(self, node):
-        # '''Return the formatted version of an Ast node, or list of Ast nodes.'''
-        # if isinstance(node, (list, tuple)):
-            # return ','.join([self.visit(z) for z in node])
-        # elif node is None:
-            # return 'None'
-        # else:
-            # assert isinstance(node, ast.AST), node.__class__.__name__
-            # method_name = 'do_' + node.__class__.__name__
-            # method = getattr(self, method_name)
-            # s = method(node)
-            # assert g.isString(s), type(s)
-            # return s
-    #@+node:ekr.20171214103725.1: *3* ft.visit (REF)
-    # def visit(self, node):
-        # '''Visit a *single* ast node.  Visitors are responsible for visiting children!'''
-        # assert isinstance(node, ast.AST), node.__class__.__name__
-        # trace = False
-        # # Visit the children with the new parent.
-        # old_parent = self.parent
-        # self.parent = node # Bug fix: 2016/05/18.
-        # method_name = 'do_' + node.__class__.__name__
-        # method = getattr(self, method_name)
-        # if trace: g.trace(method_name)
-        # val = method(node)
-        # self.parent = old_parent
-        # return val
-
-    # def visit_children(self, node):
-        # assert False, 'must visit children explicitly'
     #@-others
 #@+node:ekr.20141012064706.18530: ** class AstPatternFormatter (AstFormatter)
 class AstPatternFormatter(AstFormatter):
