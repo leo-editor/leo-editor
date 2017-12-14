@@ -664,8 +664,6 @@ class ConventionChecker (object):
         table = (
             (self.assn_to_self_pattern, self.do_assn_to_self),
                 # Must be first.
-            # (self.assign_to_c_pattern, self.do_assn_to_c),
-                # Second, during transition.
             (self.assign_to_special_pattern, self.do_assn_to_special),
                 # Must be last.
         )
@@ -734,7 +732,7 @@ class ConventionChecker (object):
 
     def do_assn_to_self(self, kind, m, s):
 
-        trace = False and self.pass_n == 1
+        trace = False
         trace_dict = False
         trace_suppress = True
         assert self.class_name
@@ -744,6 +742,8 @@ class ConventionChecker (object):
             if trace and trace_suppress:
                 print('SKIP: %s: %s' % (kind, g.truncate(s.strip(), 80)))
             return
+        if trace:
+            print('%s: %s' % (kind, g.truncate(s.strip(), 80)))
         ivar = m.group(1)
         val = m.group(2).strip()
         d = self.classes.get(self.class_name)
@@ -845,15 +845,14 @@ class ConventionChecker (object):
         trace = False
         self.end_class()
         self.class_name = name = m.group(1) if m else None
-        if self.pass_n > 1 or not m:
-            return
-        if trace: print(s.rstrip())
-        self.stats.classes += 1
-        if name not in self.special_class_names:
-            self.classes [name] = {
-                'ivars': {},
-                'methods': {},
-            }
+        if self.pass_n == 1 and m:
+            if trace: print(s.rstrip())
+            self.stats.classes += 1
+            if name not in self.special_class_names:
+                self.classes [name] = {
+                    'ivars': {},
+                    'methods': {},
+                }
     #@+node:ekr.20171212085210.1: *5* checker.end_class
     def end_class(self):
         '''End (trace) the old class, if it exists'''
