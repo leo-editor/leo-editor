@@ -202,10 +202,10 @@ class AstFormatter(object):
 
     Also supports optional annotations such as line numbers, file names, etc.
     '''
-    # No ctor.
     # pylint: disable=consider-using-enumerate
     
-    level = 0
+    def __init__(self, level=0):
+        self.level = level
 
     #@+others
     #@+node:ekr.20141012064706.18400: *3*  f.Entries
@@ -244,7 +244,7 @@ class AstFormatter(object):
     # keyword arguments supplied to call (NULL identifier for **kwargs)
     # keyword = (identifier? arg, expr value)
 
-    def do_ClassDef(self, node):
+    def do_ClassDef(self, node, print_body=True):
 
         result = []
         name = node.name # Only a plain string is valid.
@@ -260,17 +260,18 @@ class AstFormatter(object):
             result.append(self.indent('class %s(%s):\n' % (name, ','.join(bases))))
         else:
             result.append(self.indent('class %s:\n' % name))
-        for z in node.body:
-            self.level += 1
-            result.append(self.visit(z))
-            self.level -= 1
+        if print_body:
+            for z in node.body:
+                self.level += 1
+                result.append(self.visit(z))
+                self.level -= 1
         return ''.join(result)
     #@+node:ekr.20141012064706.18406: *4* f.FunctionDef & AsyncFunctionDef
     # 2: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
     # 3: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
     #                expr? returns)
 
-    def do_FunctionDef(self, node, async_flag=False):
+    def do_FunctionDef(self, node, async_flag=False, print_body=True):
         '''Format a FunctionDef node.'''
         result = []
         if node.decorator_list:
@@ -286,10 +287,11 @@ class AstFormatter(object):
         else:
             result.append(self.indent('%sdef %s(%s):\n' % (
                 asynch_prefix, name, args)))
-        for z in node.body:
-            self.level += 1
-            result.append(self.visit(z))
-            self.level -= 1
+        if print_body:
+            for z in node.body:
+                self.level += 1
+                result.append(self.visit(z))
+                self.level -= 1
         return ''.join(result)
 
     def do_AsyncFunctionDef(self, node):
@@ -962,9 +964,11 @@ class AstFullTraverser(object):
     # keyword arguments supplied to call (NULL identifier for **kwargs)
     # keyword = (identifier? arg, expr value)
 
-    def do_ClassDef(self, node):
+    def do_ClassDef(self, node, visit_body=True):
         old_context = self.context
         self.context = node
+        for z in node.decorator_list:
+            self.visit(z)
         for z in node.bases:
             self.visit(z)
         if getattr(node, 'keywords', None): # Python 3
@@ -974,17 +978,16 @@ class AstFullTraverser(object):
             self.visit(node.starargs)
         if getattr(node, 'kwargs', None): # Python 3
             self.visit(node.kwargs)
-        for z in node.body:
-            self.visit(z)
-        for z in node.decorator_list:
-            self.visit(z)
+        if visit_body:
+            for z in node.body:
+                self.visit(z)
         self.context = old_context
     #@+node:ekr.20141012064706.18474: *4* ft.FunctionDef
     # 2: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
     # 3: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list,
     #                expr? returns)
 
-    def do_FunctionDef(self, node):
+    def do_FunctionDef(self, node, visit_body=True):
 
         old_context = self.context
         self.context = node
@@ -995,8 +998,9 @@ class AstFullTraverser(object):
         self.visit(node.args)
         if getattr(node, 'returns', None): # Python 3.
             self.visit(node.returns)
-        for z in node.body:
-            self.visit(z)
+        if visit_body:
+            for z in node.body:
+                self.visit(z)
         self.context = old_context
 
     do_AsyncFunctionDef = do_FunctionDef
@@ -1036,9 +1040,9 @@ class AstFullTraverser(object):
     def do_Store(self, node):
         pass
     #@+node:ekr.20171214150138.1: *3* ft.format (new)
-    def format(node):
+    # def format(self, node, *args, **kwargs):
         
-        return AstFormatter().format(node)
+        # return AstFormatter().format(node, *args, **kwargs)
     #@+node:ekr.20141012064706.18479: *3* ft.kind
     def kind(self, node):
         return node.__class__.__name__
@@ -1050,11 +1054,18 @@ class AstFullTraverser(object):
         if strict: assert name, self.kind(node)
         return name
     #@+node:ekr.20141012064706.18482: *4* ft.arguments & arg
-    # 2: arguments = (expr* args, identifier? vararg,
-    #                 identifier? kwarg, expr* defaults)
-    # 3: arguments = (arg*  args, arg? vararg,
-    #                 arg* kwonlyargs, expr* kw_defaults,
-    #                 arg? kwarg, expr* defaults)
+    # 2: arguments = (
+    # expr* args,
+    #   identifier? vararg,
+    #   identifier? kwarg,
+    #   expr* defaults)
+    # 3: arguments = (
+    #   arg*  args,
+    #   arg? vararg,
+    #   arg* kwonlyargs,
+    #   expr* kw_defaults,
+    #   arg? kwarg,
+    #   expr* defaults)
 
     def do_arguments(self, node):
 
@@ -1062,14 +1073,14 @@ class AstFullTraverser(object):
             self.visit(z)
         if g.isPython3 and getattr(node, 'vararg', None):
             # An identifier in Python 2.
-            self.visit_list(node.vararg)
+            self.visit(node.vararg)
+        if g.isPython3 and getattr(node, 'kwarg', None):
+            # An identifier in Python 2.
+            self.visit_list(node.kwarg)
         if getattr(node, 'kwonlyargs', None): # Python 3.
             self.visit_list(node.kwonlyargs)
         if getattr(node, 'kw_defaults', None): # Python 3.
             self.visit_list(node.kw_defaults)
-        if g.isPython3 and getattr(node, 'kwarg', None):
-            # An identifier in Python 2.
-            self.visit_list(node.kwarg)
         for z in node.defaults:
             self.visit(z)
 
@@ -1535,7 +1546,7 @@ class AstFullTraverser(object):
             self.visit(node.value)
 
     do_Await = do_YieldFrom = do_Yield
-    #@+node:ekr.20141012064706.18528: *3* ft.visit
+    #@+node:ekr.20141012064706.18528: *3* ft.visit (supports before_* & after_*)
     def visit(self, node):
         '''Visit a *single* ast node.  Visitors are responsible for visiting children!'''
         trace = False
@@ -1549,25 +1560,30 @@ class AstFullTraverser(object):
             before_method(node)
         do_method = getattr(self, 'do_'+name, None)
         if do_method:
+            if trace: g.trace(g.truncate(repr(do_method), 80))
             val = do_method(node)
         elif trace:
             g.trace('no do_%s method' % name)
             val = None
-        # after_method = getattr(self, 'after_'+name, None)
-        # if after_method:
-            # after_method(node)
+        after_method = getattr(self, 'after_'+name, None)
+        if after_method:
+            after_method(node)
         self.parent = old_parent
         return val
 
     def visit_children(self, node):
         assert False, 'must visit children explicitly'
     #@+node:ekr.20141012064706.18529: *3* ft.visit_list
+
+
     def visit_list(self, aList):
         '''Visit all ast nodes in aList.'''
-        assert isinstance(aList, (list, tuple)), repr(aList)
-        for z in aList:
-            self.visit(z)
-        return None
+        if isinstance(aList, (list, tuple)):
+            for z in aList:
+                self.visit(z)
+        else:
+            g.trace('oops', aList.__class__.__name__, g.callers())
+            
     #@-others
 #@+node:ekr.20141012064706.18530: ** class AstPatternFormatter (AstFormatter)
 class AstPatternFormatter(AstFormatter):

@@ -429,7 +429,7 @@ class ConventionChecker (object):
         '''
         g.cls()
         c = self.c
-        kind = 'project' # Allow names of projects?
+        kind = 'test' # Allow names of projects?
         assert kind in ('files', 'production', 'project', 'test'), repr(kind)
         report_stats = True
         if kind == 'files':
@@ -509,52 +509,27 @@ class ConventionChecker (object):
             return g.trace('no fn or s argument')
         # Check the source
         if trace_fn:
-            print(('===== %s' % (sfn)) if fn else s)
+            if fn:
+                print('===== %s' % (sfn))
+            else:
+                print('===== <string>\n%s\n----- </string>\n' % s.rstrip())
         t1 = time.clock()
         node = ast.parse(s, filename='before', mode='exec')
         self.check_helper(fn=sfn, node=node, s=s)
         t2 = time.clock()
         if trace and trace_time and fn:
             print('%4.2f sec. %s' % ((t2-t1), sfn))
-    #@+node:ekr.20171207101337.1: *4* checker.check_helper (traces)
+    #@+node:ekr.20171214150828.1: *4* checker.check_helper
     def check_helper(self, fn, node, s):
-        trace = False and self.enable_trace
-        trace_classes=False
-        trace_unknowns=False
-        trace_source = False
-        self.file_name = fn
-        dispatch = {
-            'call':     self.do_call,
-            'class':    self.do_class,
-            'def':      self.do_def,
-            'assign':   self.do_assn,
-            # 'self.x=':  self.do_assn_to_self,
-            # 'c.x=':     self.do_assn_to_c,
-        }
-        s1 = leoAst.AstFormatter().format(node)
-        for n in (1, 2):
-            self.enable_trace = n == 2
-            self.class_name = None
-            self.pass_n = n
-            if trace:
-                print('===== pass: %s' % n)
-                if trace_source and n == 2:
-                    print('===== source')
-                    print(s1)
-                    print('----- end source')
-            for n, s in enumerate(g.splitLines(s1)):
-                self.line_number = n
-                self.s = s.rstrip()
-                for kind, pattern in self.patterns:
-                    m = pattern.match(s)
-                    if m:
-                        f = dispatch.get(kind)
-                        f(kind, m, s)
-            self.end_class()
-        self.end_file(
-            trace_classes=trace_classes,
-            trace_unknowns=trace_unknowns,
-        )
+
+        cct = self.CCTraverser(fn=fn)
+        cct.visit(node)
+        ### self.end_class()
+        # cct.pass_n = 2
+        # cct.visit(node)
+        ### self.end_file()
+            # trace_classes=trace_classes,
+            # trace_unknowns=trace_unknowns,
     #@+node:ekr.20171209065852.1: *3* checker_check_signature & helpers
     def check_signature(self, func, args, signature):
         
@@ -814,7 +789,6 @@ class ConventionChecker (object):
                         g.truncate(self.s.strip(),80))
                 break
             elif ch == '(':
-                if trace: g.pdb()
                 j, s = g.skip_to_char(args, i, ')')
                 if i < j < len(args) and args[j] == ')':
                     arg += args[i:j+1]
@@ -1084,26 +1058,6 @@ class ConventionChecker (object):
                 ))
             return self.Type('error', 'no member %s' % ivar)
     #@+node:ekr.20171212020013.1: *3* checker.test
-    #@+at
-    # line 305 leoConfig.py: self.doItems(p.copy(),patch)
-    # doItems(p.copy(),patch) incompatible with doItems(p,aList)
-    # 
-    # line 1678 leoImport.py: self.minimize_headlines(p.firstChild(),prefix)
-    # minimize_headlines(p.firstChild(),prefix) incompatible with minimize_headlines(p,prefix)
-    # 
-    # line 405 leoRst.py: self.initSettings(p.copy())
-    # initSettings(p.copy()) incompatible with initSettings(p,script_d=None)
-    # 
-    # line 987 leoRst.py: self.dumpDict(d,p.h)
-    # dumpDict(d,p.h) incompatible with dumpDict(d,tag)
-    # 
-    # line 1085 leoRst.py: self.relocate_references(p.self_and_subtree)
-    # relocate_references(p.self_and_subtree) incompatible with relocate_references(iterator_generator)
-    # 
-    # line 288 qt_tree.py: self.setItemText(item,p.h)
-    # setItemText(item,p.h) incompatible with setItemText(item,s)
-    #@@c
-
     tests = [
     '''\
     class TC:
@@ -1127,6 +1081,54 @@ class ConventionChecker (object):
         for s in self.tests:
             s = g.adjustTripleString(s, self.c.tab_width)
             self.check_file(s=s, test_kind='test', trace_fn=True)
+    #@+node:ekr.20171214151001.1: *3* class CCTraverser (AstFullTraverser)
+    class CCTraverser (leoAst.AstFullTraverser):
+        
+        def __init__(self, fn):
+
+            leoAst.AstFullTraverser.__init__(self)
+            self.fn = fn
+            self.level = 0
+            self.pass_n = 1
+        
+        #@+others
+        #@+node:ekr.20171214164458.1: *4* CCT.format & formatter
+        def format(self,node, *args, **keys):
+            f = self.formatter()
+            func_name = 'do_' + node.__class__.__name__
+            func = getattr(f, func_name)
+            s = func(node, *args, **keys)
+            return s.rstrip()
+
+        def formatter(self):
+            return leoAst.AstFormatter(level=self.level)
+        #@+node:ekr.20171214151114.1: *4* CCT.before_* & after_*
+        def before_Assign(self, node):
+            print(self.format(node))
+            
+        def before_AugAssign(self, node):
+            print(self.format(node))
+            
+        # def before_Call(self, node):
+            # g.trace(node)
+
+        def before_ClassDef(self, node):
+            print(self.format(node, print_body=False))
+            self.level += 1
+            
+        def after_ClassDef(self, node):
+            self.level -= 1
+            
+        def before_Expr(self, node):
+            print(self.format(node))
+            
+        def before_FunctionDef(self, node):
+            print(self.format(node, print_body=False))
+            self.level += 1
+            
+        def after_FunctionDef(self, node):
+            self.level -= 1
+        #@-others
     #@+node:ekr.20171212101613.1: *3* class CCStats
     class CCStats(object):
         '''
