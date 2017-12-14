@@ -1886,17 +1886,40 @@ class NewShowData(object):
             d = ast_d.get(node.__class__)
             if d is not None:
                 d[fn].append(self.format(node))
+    #@+node:ekr.20171214040822.1: *3* sd.dump
+    def dump(self, fn, root):
+        
+        suppress = [
+            'arg', 'arguments', 'comprehension', 'keyword',
+            'Attribute', 'BinOp', 'BoolOp', 'Dict', 'IfExp', 'Index',
+            'Load', 'List', 'ListComp', 'Name', 'NameConstant', 'Num',
+            'Slice', 'Store', 'Str', 'Subscript', 'Tuple', 'UnaryOp',
+        ]
+        statements = ['Assign', 'AugAssign', 'Call', 'Expr', 'If', 'Return',]
+        assert statements
+        errors = set()
+        fn = g.shortFileName(fn)
+        for node in ast.walk(root):
+            name = node.__class__.__name__
+            try:
+                if name not in suppress:
+                    print('%15s: %s' % (name, self.format(node,strip=False)))
+            except AttributeError:
+                errors.add(name)
+        g.trace('errors', sorted(errors))
+        # g.printList(sorted(errors))
     #@+node:ekr.20171213163216.1: *3* sd.format
-    def format(self, node):
+    def format(self, node, strip=True):
         
         class Formatter(leoAst.AstFormatter):
             level = 0
         
         s = Formatter().visit(node)
-        line1 = g.splitLines(s)[0].strip()
+        line1 = g.splitLines(s)[0]
+        line1 = line1.strip() if strip else line1.rstrip()
         return g.truncate(line1, 80)
     #@+node:ekr.20171213155537.3: *3* sd.run
-    def run(self, files):
+    def run(self, files, dump=False, show_results=True):
         '''Process all files'''
         t1 = time.time()
         for fn in files:
@@ -1905,11 +1928,15 @@ class NewShowData(object):
                 print('=====', g.shortFileName(fn))
                 s1 = g.toEncodedString(s)
                 root = ast.parse(s1, filename='before', mode='exec')
-                self.analyze(fn, root)
+                if dump:
+                    self.dump(fn, root)
+                else:
+                    self.analyze(fn, root)
             else:
                 g.trace('skipped', g.shortFileName(fn))
         t2 = time.time()
-        self.show_results()
+        if show_results:
+            self.show_results()
         g.trace('done: %s files in %4.1f sec.' % (len(files), (t2 - t1)))
     #@+node:ekr.20171213155537.7: *3* sd.show_results
     def show_results(self):
