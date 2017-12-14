@@ -1921,10 +1921,8 @@ class NewShowData(object):
         )
         for (name, d) in table:
             print('%s...' % name)
-            d2 = {}
-            for key in d:
-                d2[key] = sorted(set(d.get(key)))
-            g.printDict(d2)
+            g.printDict({key: sorted(set(d.get(key))) for key in d})
+
     #@+node:ekr.20171213174732.1: *3* sd.visit
     def visit(self, node, types):
         if isinstance(node, types):
