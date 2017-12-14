@@ -3601,6 +3601,7 @@ def findRootsWithPredicate(c, root, predicate=None):
     if predicate is None:
 
         # A useful default predicate for python.
+        # pylint: disable=function-redefined
         def predicate(p):
             return p.isAnyAtFileNode() and p.h.strip().endswith('.py')
 
