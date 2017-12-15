@@ -1387,7 +1387,7 @@ else:
     leoAst.AstFullTraverser().visit(node)
     s = leoAst.HTMLReportTraverser(debug=True).main(fn, node)
     assert s
-    s = leoAst.AstFormatter().format(node)
+    s = leoAst.AstFormatter().format(node,level=0)
     assert s
     s = py2cs.CoffeeScriptTraverser(controller=g.NullObject()).format(node, src, tokens)
     assert s
