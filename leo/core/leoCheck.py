@@ -1087,68 +1087,46 @@ class ConventionChecker (object):
         def __init__(self, fn):
 
             leoAst.AstFullTraverser.__init__(self)
-            self.fn = fn
+            self.fn = fn # Only for debugging.
             self.in_expr = False
-            self.level = 0
-            self.pass_n = 1
+            self.indent = 0 # Don't use AstFullTraverser level!
+            # self.pass_n = 1
         
         #@+others
         #@+node:ekr.20171214151114.1: *4* CCT.before_* & after_*
         def before_Assign(self, node):
-            print(self.format(node, self.level))
+            print(self.format(node, self.indent))
 
         def before_AugAssign(self, node):
-            print(self.format(node, self.level))
+            print(self.format(node, self.indent))
             
         def before_Call(self, node):
             if not self.in_expr:
-                g.trace(node)
-                print(self.format(node, self.level))
+                print(self.format(node, self.indent))
                 
         def before_ClassDef(self, node):
-            print(self.format(node, self.level, print_body=False))
+            print(self.format(node, self.indent, print_body=False))
+            self.indent += 1
+            
+        def after_ClassDef(self, node):
+            self.indent -= 1
             
         def before_Expr(self, node):
             self.in_expr = True
-            print(self.format(node, self.level))
+            print(self.format(node, self.indent))
             
         def after_Expr(self, node):
             self.in_expr = False
             
         def before_FunctionDef(self, node):
-            print(self.format(node, self.level, print_body=False))
+            print(self.format(node, self.indent, print_body=False))
+            self.indent += 1
+            
+        def after_FunctionDef(self, node):
+            self.indent -= 1
             
         def before_Print(self, node):
-            print(self.format(node, self.level))
-
-
-        ### Older version, before handling context level in full traverser.
-
-            # def before_Assign(self, node):
-                # print(self.format(node))
-                
-            # def before_AugAssign(self, node):
-                # print(self.format(node))
-                
-            # # def before_Call(self, node):
-                # # g.trace(node)
-            
-            # def before_ClassDef(self, node):
-                # print(self.format(node, print_body=False))
-                # self.level += 1
-                
-            # def after_ClassDef(self, node):
-                # self.level -= 1
-                
-            # def before_Expr(self, node):
-                # print(self.format(node))
-                
-            # def before_FunctionDef(self, node):
-                # print(self.format(node, print_body=False))
-                # self.level += 1
-                
-            # def after_FunctionDef(self, node):
-                # self.level -= 1
+            print(self.format(node, self.indent))
         #@-others
     #@+node:ekr.20171212101613.1: *3* class CCStats
     class CCStats(object):
