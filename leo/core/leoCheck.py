@@ -428,7 +428,7 @@ class ConventionChecker (object):
         '''
         g.cls()
         c = self.c
-        kind = 'project' # Allow names of projects?
+        kind = 'test' # Allow names of projects?
         assert kind in ('files', 'production', 'project', 'test'), repr(kind)
         report_stats = True
         if kind == 'files':
@@ -524,102 +524,6 @@ class ConventionChecker (object):
         cct = self.CCTraverser(controller=self)
         cct.visit(node)
         self.end_file()
-    #@+node:ekr.20171209065852.1: *3* checker_check_signature & helpers
-    def check_signature(self, func, args, signature):
-        
-        trace = False
-        if trace: g.trace('%s(%s) ==> %s' % (func, args, signature))
-        self.stats.check_signature += 1
-        if signature[0] == 'self':
-            signature = signature[1:]
-        result = 'ok'
-        for i, arg in enumerate(args):
-            if i < len(signature):
-                result = self.check_arg(func, arg, signature[i])
-                if result == 'fail':
-                    print('\nline %s %s: %s\n%s(%s) incompatible with %s(%s)\n' % (
-                        self.line_number, self.file_name, self.s.strip(),
-                        func, ','.join(args),
-                        func, ','.join(signature)))
-                    break
-            elif trace:
-                g.trace('possible extra arg', arg)
-        if len(args) > len(signature):
-            if trace:
-                g.trace('possible missing args', signature[len(args)-1:])
-        if result == 'ok':
-            self.stats.sig_ok += 1
-        elif result == 'fail':
-            self.stats.sig_fail += 1
-        else:
-            assert result == 'unknown'
-            self.stats.sig_unknown += 1
-                
-    #@+node:ekr.20171212034531.1: *4* checker.check_arg
-    def check_arg(self, func, call_arg, sig_arg):
-        
-        # First, check the ags.
-        call_argv = call_arg.split('=')
-        sig_argv = sig_arg.split('=')
-        result = self.check_arg_helper(func, call_argv[0], sig_argv[0])
-        if result == 'fail':
-            return result
-        # Next, check a keyword call arg against it's assigned value.
-        if len(call_argv) > 1:
-            arg1, arg2 = call_argv[0], ''.join(call_argv[1:])
-            return self.check_arg_helper('KEYWORD', arg1, arg2)
-        else:
-            return result
-    #@+node:ekr.20171212035137.1: *4* checker.check_arg_helper
-    def check_arg_helper(self, func, call_arg, sig_arg):
-        trace = False
-        trace_ok = True
-        trace_unknown = True
-        special_names_dict = self.special_names_dict
-        if call_arg == sig_arg or sig_arg in (None, 'None'):
-            # Match anything against a default value of None.
-            if trace and trace_ok:
-                g.trace('line %4s %s %20s: %20r == %r' % (
-                    self.line_number, self.file_name, func, call_arg, sig_arg))
-            return 'ok'
-        # Resolve the call_arg if possible.
-        chain = call_arg.split('.')
-        if len(chain) > 1:
-            head, tail = chain[0], chain[1:]
-            if head in special_names_dict:
-                context = special_names_dict.get(head)
-                context = self.resolve_chain(tail, context)
-                if context.kind == 'error':
-                    # Caller will report the error.
-                    # g.trace('FAIL', call_arg, context)
-                    return 'unknown' ### was 'fail'
-                if sig_arg in special_names_dict:
-                    sig_class = special_names_dict.get(sig_arg)
-                    return self.compare_classes(call_arg, sig_arg, context, sig_class)
-        if sig_arg in special_names_dict and call_arg in special_names_dict:
-            sig_class = special_names_dict.get(sig_arg)
-            call_class = special_names_dict.get(call_arg)
-            return self.compare_classes(call_arg, sig_arg, call_class, sig_class)
-        if trace and trace_unknown:
-            g.trace('line %4s %s %20s: %20r ?? %r' % (
-                self.line_number, self.file_name, func, call_arg, sig_arg))
-        return 'unknown'
-    #@+node:ekr.20171212044621.1: *4* checker.compare_classes
-    def compare_classes(self, arg1, arg2, class1, class2):
-
-        trace = True
-        trace_ok = False
-        if class1 == class2:
-            if trace and trace_ok:
-                g.trace('infer ok', arg1, arg2, class1)
-            self.stats.sig_infer_ok += 1
-            return 'ok'
-        else:
-            # The caller reports the failure.
-            if trace:
-                g.trace('FAIL', arg1, arg2, class1, class2)
-            self.stats.sig_infer_fail += 1
-            return 'fail'
     #@+node:ekr.20171215074959.1: *3* checker.do_* & end_*(new)
     #@+node:ekr.20171215074959.2: *4* checker.do_assign
     assign_pattern = re.compile(r'^\s*(\w+(\.\w+)*)\s*=(.*)')
@@ -902,18 +806,6 @@ class ConventionChecker (object):
 
         top = self.context_stack.pop()
         assert node == top, (node, top)
-    #@+node:ekr.20171215082648.1: *3* checker.show_stack
-    def show_stack(self):
-
-        return g.listToString([
-            '%15s %s' % (node.__class__.__name__, node.name)
-                for node in self.context_stack
-            ])
-    #@+node:ekr.20171215080831.1: *3* checker.format
-    def format(self, node):
-        '''Format the node and possibly its descendants, depending on args.'''
-        s = leoAst.AstFormatter().format(node, level=0)
-        return s.rstrip()
     #@+node:ekr.20171208135642.1: *3* checker.end_file & helper
     def end_file(self,trace_classes=False, trace_unknowns=False):
         
@@ -946,6 +838,11 @@ class ConventionChecker (object):
                 line, fn, s = data
                 print('%*s %4s %s: %s' % (
                     max_key, key, line, fn, g.truncate(s, 60)))
+    #@+node:ekr.20171215080831.1: *3* checker.format
+    def format(self, node):
+        '''Format the node and possibly its descendants, depending on args.'''
+        s = leoAst.AstFormatter().format(node, level=0)
+        return s.rstrip()
     #@+node:ekr.20171208142646.1: *3* checker.resolve & helpers
     def resolve(self, name, obj, trace=False):
         '''Resolve name in the context of obj.'''
@@ -1117,6 +1014,13 @@ class ConventionChecker (object):
                     g.truncate(self.s.strip(), 60),
                 ))
             return self.Type('error', 'no member %s' % ivar)
+    #@+node:ekr.20171215082648.1: *3* checker.show_stack
+    def show_stack(self):
+
+        return g.listToString([
+            '%15s %s' % (node.__class__.__name__, node.name)
+                for node in self.context_stack
+            ])
     #@+node:ekr.20171212020013.1: *3* checker.test
     tests = [
     '''\
@@ -1141,6 +1045,134 @@ class ConventionChecker (object):
         for s in self.tests:
             s = g.adjustTripleString(s, self.c.tab_width)
             self.check_file(s=s, test_kind='test', trace_fn=True)
+    #@+node:ekr.20171209065852.1: *3* checker_check_signature & helpers
+    def check_signature(self, func, args, signature):
+        
+        trace = False
+        if trace: g.trace('%s(%s) ==> %s' % (func, args, signature))
+        self.stats.check_signature += 1
+        if signature[0] == 'self':
+            signature = signature[1:]
+        result = 'ok'
+        for i, arg in enumerate(args):
+            if i < len(signature):
+                result = self.check_arg(func, arg, signature[i])
+                if result == 'fail':
+                    print('\nline %s %s: %s\n%s(%s) incompatible with %s(%s)\n' % (
+                        self.line_number, self.file_name, self.s.strip(),
+                        func, ','.join(args),
+                        func, ','.join(signature)))
+                    break
+            elif trace:
+                g.trace('possible extra arg', arg)
+        if len(args) > len(signature):
+            if trace:
+                g.trace('possible missing args', signature[len(args)-1:])
+        if result == 'ok':
+            self.stats.sig_ok += 1
+        elif result == 'fail':
+            self.stats.sig_fail += 1
+        else:
+            assert result == 'unknown'
+            self.stats.sig_unknown += 1
+                
+    #@+node:ekr.20171212034531.1: *4* checker.check_arg
+    def check_arg(self, func, call_arg, sig_arg):
+        
+        # First, check the ags.
+        call_argv = call_arg.split('=')
+        sig_argv = sig_arg.split('=')
+        result = self.check_arg_helper(func, call_argv[0], sig_argv[0])
+        if result == 'fail':
+            return result
+        # Next, check a keyword call arg against it's assigned value.
+        if len(call_argv) > 1:
+            arg1, arg2 = call_argv[0], ''.join(call_argv[1:])
+            return self.check_arg_helper('KEYWORD', arg1, arg2)
+        else:
+            return result
+    #@+node:ekr.20171212035137.1: *4* checker.check_arg_helper
+    def check_arg_helper(self, func, call_arg, sig_arg):
+        trace = False
+        trace_ok = True
+        trace_unknown = True
+        special_names_dict = self.special_names_dict
+        if call_arg == sig_arg or sig_arg in (None, 'None'):
+            # Match anything against a default value of None.
+            if trace and trace_ok:
+                g.trace('line %4s %s %20s: %20r == %r' % (
+                    self.line_number, self.file_name, func, call_arg, sig_arg))
+            return 'ok'
+        # Resolve the call_arg if possible.
+        chain = call_arg.split('.')
+        if len(chain) > 1:
+            head, tail = chain[0], chain[1:]
+            if head in special_names_dict:
+                context = special_names_dict.get(head)
+                context = self.resolve_chain(tail, context)
+                if context.kind == 'error':
+                    # Caller will report the error.
+                    # g.trace('FAIL', call_arg, context)
+                    return 'unknown' ### was 'fail'
+                if sig_arg in special_names_dict:
+                    sig_class = special_names_dict.get(sig_arg)
+                    return self.compare_classes(call_arg, sig_arg, context, sig_class)
+        if sig_arg in special_names_dict and call_arg in special_names_dict:
+            sig_class = special_names_dict.get(sig_arg)
+            call_class = special_names_dict.get(call_arg)
+            return self.compare_classes(call_arg, sig_arg, call_class, sig_class)
+        if trace and trace_unknown:
+            g.trace('line %4s %s %20s: %20r ?? %r' % (
+                self.line_number, self.file_name, func, call_arg, sig_arg))
+        return 'unknown'
+    #@+node:ekr.20171212044621.1: *4* checker.compare_classes
+    def compare_classes(self, arg1, arg2, class1, class2):
+
+        trace = True
+        trace_ok = False
+        if class1 == class2:
+            if trace and trace_ok:
+                g.trace('infer ok', arg1, arg2, class1)
+            self.stats.sig_infer_ok += 1
+            return 'ok'
+        else:
+            # The caller reports the failure.
+            if trace:
+                g.trace('FAIL', arg1, arg2, class1, class2)
+            self.stats.sig_infer_fail += 1
+            return 'fail'
+    #@+node:ekr.20171212101613.1: *3* class CCStats
+    class CCStats(object):
+        '''
+        A basic statistics class.  Use this way:
+            
+            stats = Stats()
+            stats.classes += 1
+            stats.defs += 1
+            stats.report()
+        '''
+        # Big sigh: define these to placate pylint.
+        assignments = 0
+        calls = 0
+        check_signature = 0
+        classes = 0
+        defs = 0
+        resolve = 0
+        resolve_call = 0
+        resolve_chain = 0
+        resolve_ivar = 0
+        sig_fail = 0
+        sig_infer_fail = 0
+        sig_infer_ok = 0
+        sig_ok = 0
+        sig_unknown = 0
+            
+        def report(self):
+            aList = [z for z in dir(self) if not z.startswith('_') and z != 'report']
+            n = max([len(z) for z in aList])
+            for ivar in aList:
+                print('%*s: %s' % (n, ivar, getattr(self, ivar)))
+        
     #@+node:ekr.20171214151001.1: *3* class CCTraverser (AstFullTraverser)
     class CCTraverser (leoAst.AstFullTraverser):
         
@@ -1195,38 +1227,6 @@ class ConventionChecker (object):
         def before_Print(self, node):
             if self.trace: print(self.format(node, self.indent))
         #@-others
-    #@+node:ekr.20171212101613.1: *3* class CCStats
-    class CCStats(object):
-        '''
-        A basic statistics class.  Use this way:
-            
-            stats = Stats()
-            stats.classes += 1
-            stats.defs += 1
-            stats.report()
-        '''
-        # Big sigh: define these to placate pylint.
-        assignments = 0
-        calls = 0
-        check_signature = 0
-        classes = 0
-        defs = 0
-        resolve = 0
-        resolve_call = 0
-        resolve_chain = 0
-        resolve_ivar = 0
-        sig_fail = 0
-        sig_infer_fail = 0
-        sig_infer_ok = 0
-        sig_ok = 0
-        sig_unknown = 0
-            
-        def report(self):
-            aList = [z for z in dir(self) if not z.startswith('_') and z != 'report']
-            n = max([len(z) for z in aList])
-            for ivar in aList:
-                print('%*s: %s' % (n, ivar, getattr(self, ivar)))
-        
     #@+node:ekr.20171209030742.1: *3* class Type
     class Type (object):
         '''A class to hold all type-related data.'''
