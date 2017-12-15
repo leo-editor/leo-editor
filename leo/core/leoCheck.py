@@ -336,9 +336,6 @@ class ConventionChecker (object):
 
     ignore = ('bool', 'dict', 'enumerate', 'list', 'tuple')
         # Things that look like function calls.
-    
-    patterns = []
-        # Set below.
 
     #@+others
     #@+node:ekr.20171210134449.1: *3* checker.Birth
@@ -625,131 +622,234 @@ class ConventionChecker (object):
             return 'fail'
     #@+node:ekr.20171215074959.1: *3* checker.do_* & end_*(new)
     #@+node:ekr.20171215074959.2: *4* checker.do_assign
+    assign_pattern = re.compile(r'^\s*(\w+(\.\w+)*)\s*=(.*)')
+    assn_to_self_pattern = re.compile(r'^\s*self\.(\w+)\s*=(.*)')
+    assign_to_special_pattern = re.compile(r'^\s*(\w+)\.([\w.]+)\s*=(.*)')
+
     def do_assign(self, node):
         
-        # g.trace('=====', self.format(node))
-        for target in node.targets:
-            attr = None
-            while not isinstance(target, ast.Name):
-                if isinstance(target, ast.Attribute):
-                    attr = target
-                    target = target.value
-                else:
-                    g.trace('UNKNOWN:', target)
-                    break
-            if isinstance(target, ast.Name):
-                name = target.id
-                attr = attr.attr if attr else None
-                if name == 'self':
-                    self.do_assn_to_self(node, name, attr)
-                elif name in self.special_names_dict:
-                    self.do_assn_to_special(node, name, attr)
-    #@+node:ekr.20171215074959.3: *4* checker.do_assn_to_special
-    def do_assn_to_special(self, node, name, attr):
-        g.trace('=====', name, repr(attr), self.format(node))
+        s = self.format(node)
+        table = (
+            (self.assn_to_self_pattern, self.do_assn_to_self),
+                # Must be first.
+            (self.assign_to_special_pattern, self.do_assn_to_special),
+                # Must be last.
+        )
+        self.stats.assignments += 1
+        for pattern, func in table:
+            m = pattern.match(s)
+            if m:
+                # g.trace(func.__name__)
+                func(node, m, s)
+                return
         
-        # trace = False # or self.test_kind == 'test'
-        # trace_dict = False
-        # trace_not_special = False
-        # trace_suppress = True
-        # trace_val = False
-        # assert self.pass_n == 1, repr(self.pass_n)
-        # class_name = self.class_name
-        # ivar1 = m.group(1)
-        # ivar2 = m.group(2)
-        # val = m.group(3).strip()
-        # t = self.special_names_dict.get(ivar1)
-        # if not t:
-            # if trace and trace_not_special:
-                # g.trace('not special', ivar1, s.strip())
-            # return
-        
-        # # Do not set members within the class itself.
-        # if t.kind == 'instance' and t.name == class_name:
-            # if trace and trace_suppress:
-                # print('SKIP: %s: %s' % (kind, s.strip()))
-            # return
-        # if trace:
-            # # g.trace('special', ivar1, t.kind, t.name, s.strip())
-            # if trace: print('INJECT %s' % s.strip())
-        # # Resolve val, if possible.
-        # context = self.Type(
-            # 'class' if class_name else 'module',
-            # class_name or self.file_name,
-        # )
-        # self.recursion_count = 0
-        # old_val = val
-        # val = self.resolve(val, context, trace=False)
-        # if trace and trace_val:
-            # g.trace('context %s : %s ==> %s' % (context, old_val, val))
-        # # Update var1's dict, not class_name's dict.
-        # d = self.classes.get(t.name)
-        # if trace and trace_dict:
-            # g.trace('BEFORE: class %s...' % t.name)
-            # g.printDict(d)
-        # ivars = d.get('ivars')
-        # ivars[ivar2] = val
-        # d['ivars'] = ivars
-        # if trace and trace_dict:
-            # g.trace('AFTER: class %s...' % t.name)
-            # g.printDict(d)
+        # This code also works.
+        # for target in node.targets:
+            # attr = None
+            # while not isinstance(target, ast.Name):
+                # if isinstance(target, ast.Attribute):
+                    # attr = target
+                    # target = target.value
+                # else:
+                    # g.trace('UNKNOWN:', target)
+                    # break
+            # if isinstance(target, ast.Name):
+                # name = target.id
+                # attr = attr.attr if attr else None
+                # if name == 'self':
+                    # self.do_assn_to_self(node, name, attr)
+                # elif name in self.special_names_dict:
+                    # self.do_assn_to_special(node, name, attr)
     #@+node:ekr.20171215074959.4: *4* checker.do_assn_to_self
-    def do_assn_to_self(self, node, name, attr):
-        g.trace('=====', name, repr(attr), self.format(node))
+    def do_assn_to_self(self, node, m, s):
 
-        # trace = False
-        # trace_dict = False
-        # trace_suppress = True
-        # assert self.class_name
-        # assert self.pass_n == 1, repr(self.pass_n)
+        assert self.class_name
+        class_name = self.class_name
+        if class_name in self.special_class_names:
+            # g.trace('SKIP' % g.truncate(s.strip(), 80))
+            return
+        ivar = m.group(1)
+        val = m.group(2).strip()
+        d = self.classes.get(self.class_name)
+        assert d is not None, self.class_name
+        ivars = d.get('ivars')
+        ivars[ivar] = val
+        d['ivars'] = ivars
+        if 0:
+            g.trace('dict for class', self.class_name)
+            g.printDict(d)
+
+        ### New code
+        # g.trace('=====', name, repr(attr), self.format(node))
         # class_name = self.class_name
         # if class_name in self.special_class_names:
-            # if trace and trace_suppress:
-                # print('SKIP: %s: %s' % (kind, g.truncate(s.strip(), 80)))
+            # g.trace('SKIP:')
             # return
-        # if trace:
-            # print('%s: %s' % (kind, g.truncate(s.strip(), 80)))
-        # ivar = m.group(1)
-        # val = m.group(2).strip()
+        # ivar = name
+        # val = self.format(node.value)
         # d = self.classes.get(self.class_name)
         # assert d is not None, self.class_name
         # ivars = d.get('ivars')
         # ivars[ivar] = val
         # d['ivars'] = ivars
-        # if trace and trace_dict:
-            # g.trace('dict for class', self.class_name)
+        # if 1:
+            # g.trace('class %s...' % self.class_name)
             # g.printDict(d)
-    #@+node:ekr.20171215074959.5: *4* checker.do_call & helper
-    def do_call(self, node):
-        # g.trace(self.format(node))
-        pass
+    #@+node:ekr.20171215074959.3: *4* checker.do_assn_to_special
+    def do_assn_to_special(self, node, m, s):
         
+        trace = False
+        class_name = self.class_name
+        ivar1 = m.group(1)
+        ivar2 = m.group(2)
+        val = m.group(3).strip()
+        t = self.special_names_dict.get(ivar1)
+        if not t:
+            if trace: g.trace('not special', ivar1, s.strip())
+            return
+        # Do not set members within the class itself.
+        if t.kind == 'instance' and t.name == class_name:
+            if trace: g.trace('SKIP', s.strip())
+            return
+        # g.trace('INJECT %s' % s.strip())
+        # Resolve val, if possible.
+        context = self.Type(
+            'class' if class_name else 'module',
+            class_name or self.file_name,
+        )
+        self.recursion_count = 0
+        old_val = val
+        val = self.resolve(val, context, trace=False)
+        if trace: g.trace('context %s : %s ==> %s' % (context, old_val, val))
+        # Update var1's dict, not class_name's dict.
+        d = self.classes.get(t.name)
+        if trace:
+            g.trace('BEFORE: class %s...' % t.name)
+            g.printDict(d)
+        ivars = d.get('ivars')
+        ivars[ivar2] = val
+        d['ivars'] = ivars
+        if trace:
+            g.trace('AFTER: class %s...' % t.name)
+            g.printDict(d)
 
-        # trace = False and self.pass_n == 2
-        # if trace: print('%14s: %s' % (kind, s.strip()))
-        # if self.pass_n == 1: return
-        # try:
-            # call = m.group(1)
+        
+        ### New code
+            # g.trace('=====', name, repr(attr), self.format(node))
+            # ivar1 = name
+            # ivar2 = attr
+            # if not attr:
+                # return ###
+            # val = self.format(node.value)
+            # class_name = self.class_name
+            # t = self.special_names_dict.get(ivar1)
+            # if not t:
+                # g.trace('not special', ivar1)
+                # return
+            # # Do not set members within the class itself.
+            # if t.kind == 'instance' and t.name == class_name:
+                # g.trace('SKIP:', ivar1, 'in', class_name)
+                # return
+            # g.trace('INJECT', ivar1, t.name)
+            # if 0: ### Not ready yet.
+                # # Resolve val, if possible.
+                # context = self.Type(
+                    # 'class' if class_name else 'module',
+                    # class_name or self.file_name,
+                # )
+                # self.recursion_count = 0
+                # old_val = val
+                # val = self.resolve(val, context, trace=False)
+                # g.trace('context %s : %s ==> %s' % (context, old_val, val))
+            # # Update var1's dict, not class_name's dict.
+            # d = self.classes.get(t.name)
+            # if 1:
+                # g.trace('BEFORE: class %s...' % t.name)
+                # g.printDict(d)
+            # ivars = d.get('ivars')
+            # ivars[ivar2] = val
+            # d['ivars'] = ivars
+            # if 1:
+                # g.trace('AFTER: class %s...' % t.name)
+                # g.printDict(d)
+    #@+node:ekr.20171215074959.5: *4* checker.do_call & helper
+    call_pattern = re.compile(r'^\s*(\w+(\.\w+)*)\s*\((.*)\)')
+
+    def do_call(self, node):
+
+        s = self.format(node)
+        m = self.call_pattern.match(s)
+        try:
+            m.group(1)
             # trace = not any([call.startswith(z) for z in self.ignore])
-        # except IndexError:
-            # pass # No m.group(1)
-        # self.stats.calls += 1
-        # obj = self.resolve_call(kind, m, s)
-        # if obj and obj.kind == 'instance':
-            # m = self.call_pattern.match(s.strip())
-            # chain = m.group(1).split('.')
-            # func = chain[-1]
-            # args = self.split_args(m.group(3))
-            # instance = self.classes.get(obj.name)
-            # if instance:
-                # d = instance.get('methods')
-                # signature = d.get(func)
-                # if signature:
-                    # if isinstance(signature, self.Type):
-                        # pass
-                    # else:
-                        # signature = signature.split(',')
-                        # self.check_signature(func, args, signature)
+        except IndexError:
+            pass # No m.group(1)
+        self.stats.calls += 1
+        obj = self.resolve_call('call', m, s)
+        if obj and obj.kind == 'instance':
+            m = self.call_pattern.match(s.strip())
+            chain = m.group(1).split('.')
+            func = chain[-1]
+            args = self.split_args(m.group(3))
+            instance = self.classes.get(obj.name)
+            if instance:
+                d = instance.get('methods')
+                signature = d.get(func)
+                if signature:
+                    if isinstance(signature, self.Type):
+                        pass
+                    else:
+                        signature = signature.split(',')
+                        self.check_signature(func, args, signature)
+    #@+node:ekr.20171215103935.1: *5* checker.split_args
+    def split_args(self, args):
+        '''
+        Args is a string representing actual arguments.
+        This could contain '=' and ',' within calls.
+        return an array of actual args.
+        
+        It could also contain an unbalanced ')'.
+        '''
+        trace = False
+        if trace: g.trace(args)
+        arg, i, result = '', 0, []
+        while i < len(args):
+            ch = args[i]
+            if ch == ',':
+                result.append(arg)
+                arg = ''
+                i += 1
+            elif ch == ')':
+                # Unbalanced ')'.
+                # A scanning/parser error in the regex.
+                if trace:
+                    print('')
+                    g.trace('UNBALANCED: regex error?\n',
+                        self.line_number, self.file_name,
+                        g.truncate(self.s.strip(),80))
+                break
+            elif ch == '(':
+                j, s = g.skip_to_char(args, i, ')')
+                if i < j < len(args) and args[j] == ')':
+                    arg += args[i:j+1]
+                    i = j+1
+                else:
+                    if trace:
+                        print('')
+                        g.trace('NO MATCHING ")"\n',
+                            self.line_number, self.file_name,
+                            g.truncate(self.s.strip(),80))
+                    break
+            else:
+                arg += ch
+                i += 1
+        if arg:
+            result.append(arg)
+        if trace:
+            g.trace(args)
+            g.printList(result)
+        return result
+                
     #@+node:ekr.20171215074959.7: *4* checker.do_class & end_class
     def do_class(self, node):
 
@@ -763,9 +863,7 @@ class ConventionChecker (object):
 
     def end_class(self, node):
 
-        # g.trace(node.name)
-        trace = False
-        if trace:
+        if 0:
             g.trace(node, self.show_stack())
             print('----- END class %s. class dict...' % self.class_name)
             g.printDict(self.classes.get(self.class_name))
@@ -775,14 +873,12 @@ class ConventionChecker (object):
         self.class_name = None
         for node2 in reversed(self.context_stack):
             if isinstance(node2, ast.ClassDef):
-                if trace: g.trace('class_name:', node2.name)
+                # g.trace('class_name:', node2.name)
                 self.class_name = node2.name
                 break
     #@+node:ekr.20171215074959.9: *4* checker.do_def & end_def
     def do_def(self, node):
 
-        # if self.pass_n == 1:
-        # g.trace(node.name)
         self.stats.defs += 1
         self.context_stack.append(node)
         if self.class_name not in self.special_class_names:
@@ -790,7 +886,7 @@ class ConventionChecker (object):
             the_class = self.classes.get(self.class_name)
             methods = the_class.get('methods')
             assert methods is not None
-            methods [def_name] = node.args
+            methods [def_name] = self.format(node.args) # .split(',')
                 
     def end_def(self, node):
 
@@ -815,11 +911,11 @@ class ConventionChecker (object):
         trace = trace_classes or trace_unknowns
         if trace:
             print('----- END OF FILE: %s' % self.file_name)
-            if trace_classes:
+            if 1:
                 for key, val in sorted(self.classes.items()):
                     print('class %s' % key)
                     g.printDict(val)
-            if trace_unknowns:
+            if 1:
                 self.trace_unknowns()
         # Do *not* clear self.classes.
         self.unknowns = {}
