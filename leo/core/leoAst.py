@@ -202,25 +202,21 @@ class AstFormatter(object):
 
     Also supports optional annotations such as line numbers, file names, etc.
     '''
+    # No ctor.
     # pylint: disable=consider-using-enumerate
     
-    def __init__(self, level=0):
-        self.level = level
+    level = 0
 
     #@+others
     #@+node:ekr.20141012064706.18400: *3*  f.Entries
-    #@+node:ekr.20141012064706.18401: *4* f.__call__ (not used)
-    # def __call__(self,node):
-        # '''__call__ method for AstFormatter class.'''
-        # return self.format(node)
     #@+node:ekr.20141012064706.18402: *4* f.format
-    def format(self, node):
-        '''Format the node (or list of nodes) and its descendants.'''
-        self.level = 0
-        val = self.visit(node)
-        return val.strip() if val else ''
+    def format(self, node, level, *args, **keys):
+        '''Format the node and possibly its descendants, depending on args.'''
+        self.level = level
+        val = self.visit(node, *args, **keys)
+        return val.rstrip() if val else ''
     #@+node:ekr.20141012064706.18403: *4* f.visit
-    def visit(self, node):
+    def visit(self, node, *args, **keys):
         '''Return the formatted version of an Ast node, or list of Ast nodes.'''
         if isinstance(node, (list, tuple)):
             return ','.join([self.visit(z) for z in node])
@@ -230,7 +226,7 @@ class AstFormatter(object):
             assert isinstance(node, ast.AST), node.__class__.__name__
             method_name = 'do_' + node.__class__.__name__
             method = getattr(self, method_name)
-            s = method(node)
+            s = method(node, *args, **keys)
             assert g.isString(s), type(s)
             return s
     #@+node:ekr.20141012064706.18404: *3* f.Contexts
@@ -314,7 +310,8 @@ class AstFormatter(object):
     #@+node:ekr.20141012064706.18411: *4* f.Expr
     def do_Expr(self, node):
         '''An outer expression: must be indented.'''
-        return self.indent('%s\n' % self.visit(node.value))
+        s = self.indent('%s\n' % self.visit(node.value))
+        return s
     #@+node:ekr.20141012064706.18412: *4* f.Expression
     def do_Expression(self, node):
         '''An inner expression: do not indent.'''
@@ -951,6 +948,7 @@ class AstFullTraverser(object):
     def __init__(self):
         '''Ctor for AstFullTraverser class.'''
         self.context = None
+        self.level = 0 # The context level only.
         self.parent = None
         self.trace = False
     #@+others
@@ -967,6 +965,7 @@ class AstFullTraverser(object):
     def do_ClassDef(self, node, visit_body=True):
         old_context = self.context
         self.context = node
+        self.level += 1
         for z in node.decorator_list:
             self.visit(z)
         for z in node.bases:
@@ -981,6 +980,7 @@ class AstFullTraverser(object):
         if visit_body:
             for z in node.body:
                 self.visit(z)
+        self.level -= 1
         self.context = old_context
     #@+node:ekr.20141012064706.18474: *4* ft.FunctionDef
     # 2: FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
@@ -991,6 +991,7 @@ class AstFullTraverser(object):
 
         old_context = self.context
         self.context = node
+        self.level += 1
         # Visit the tree in token order.
         for z in node.decorator_list:
             self.visit(z)
@@ -1001,6 +1002,7 @@ class AstFullTraverser(object):
         if visit_body:
             for z in node.body:
                 self.visit(z)
+        self.level -= 1
         self.context = old_context
 
     do_AsyncFunctionDef = do_FunctionDef
@@ -1039,13 +1041,14 @@ class AstFullTraverser(object):
 
     def do_Store(self, node):
         pass
-    #@+node:ekr.20171214150138.1: *3* ft.format (new)
-    # def format(self, node, *args, **kwargs):
-        
-        # return AstFormatter().format(node, *args, **kwargs)
     #@+node:ekr.20141012064706.18479: *3* ft.kind
     def kind(self, node):
         return node.__class__.__name__
+    #@+node:ekr.20171214200319.1: *3* ft.format
+    def format(self, node, level, *args, **keys):
+        '''Format the node and possibly its descendants, depending on args.'''
+        s = AstFormatter().format(node, level, *args, **keys)
+        return s.rstrip()
     #@+node:ekr.20141012064706.18480: *3* ft.operators & operands
     #@+node:ekr.20160521102250.1: *4* ft.op_name
     def op_name (self,node,strict=True):

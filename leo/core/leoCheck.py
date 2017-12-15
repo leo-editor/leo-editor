@@ -1088,46 +1088,69 @@ class ConventionChecker (object):
 
             leoAst.AstFullTraverser.__init__(self)
             self.fn = fn
+            self.in_expr = False
             self.level = 0
             self.pass_n = 1
         
         #@+others
-        #@+node:ekr.20171214164458.1: *4* CCT.format & formatter
-        def format(self,node, *args, **keys):
-            f = self.formatter()
-            func_name = 'do_' + node.__class__.__name__
-            func = getattr(f, func_name)
-            s = func(node, *args, **keys)
-            return s.rstrip()
-
-        def formatter(self):
-            return leoAst.AstFormatter(level=self.level)
         #@+node:ekr.20171214151114.1: *4* CCT.before_* & after_*
         def before_Assign(self, node):
-            print(self.format(node))
-            
-        def before_AugAssign(self, node):
-            print(self.format(node))
-            
-        # def before_Call(self, node):
-            # g.trace(node)
+            print(self.format(node, self.level))
 
-        def before_ClassDef(self, node):
-            print(self.format(node, print_body=False))
-            self.level += 1
+        def before_AugAssign(self, node):
+            print(self.format(node, self.level))
             
-        def after_ClassDef(self, node):
-            self.level -= 1
+        def before_Call(self, node):
+            if not self.in_expr:
+                g.trace(node)
+                print(self.format(node, self.level))
+                
+        def before_ClassDef(self, node):
+            print(self.format(node, self.level, print_body=False))
             
         def before_Expr(self, node):
-            print(self.format(node))
+            self.in_expr = True
+            print(self.format(node, self.level))
+            
+        def after_Expr(self, node):
+            self.in_expr = False
             
         def before_FunctionDef(self, node):
-            print(self.format(node, print_body=False))
-            self.level += 1
+            print(self.format(node, self.level, print_body=False))
             
-        def after_FunctionDef(self, node):
-            self.level -= 1
+        def before_Print(self, node):
+            print(self.format(node, self.level))
+
+        # Do *not* print Call nodes!
+            # before_Call = print_node
+
+        ### Older version, before handling context level in full traverser.
+
+            # def before_Assign(self, node):
+                # print(self.format(node))
+                
+            # def before_AugAssign(self, node):
+                # print(self.format(node))
+                
+            # # def before_Call(self, node):
+                # # g.trace(node)
+            
+            # def before_ClassDef(self, node):
+                # print(self.format(node, print_body=False))
+                # self.level += 1
+                
+            # def after_ClassDef(self, node):
+                # self.level -= 1
+                
+            # def before_Expr(self, node):
+                # print(self.format(node))
+                
+            # def before_FunctionDef(self, node):
+                # print(self.format(node, print_body=False))
+                # self.level += 1
+                
+            # def after_FunctionDef(self, node):
+                # self.level -= 1
         #@-others
     #@+node:ekr.20171212101613.1: *3* class CCStats
     class CCStats(object):
@@ -1327,6 +1350,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
 
     def do_ClassDef (self,node):
 
+        # pylint: disable=arguments-differ
         old_cx = self.context
         name = node.name
         # Define the class name in the old context.
@@ -1352,7 +1376,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
     #    expr? returns)
 
     def do_FunctionDef (self,node):
-
+        # pylint: disable=arguments-differ
         # Define the function/method name in the old context.
         old_cx = self.context
         name = node.name
@@ -2270,7 +2294,7 @@ class ShowData(object):
         else:
             return ['', '']
     #@-others
-#@+node:ekr.20150606024455.1: ** class ShowDataTraverser
+#@+node:ekr.20150606024455.1: ** class ShowDataTraverser (AstFullTraverser)
 class ShowDataTraverser(leoAst.AstFullTraverser):
     '''
     Add data about classes, defs, returns and calls to controller's
@@ -2314,9 +2338,9 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         # g.trace(list(reversed(result)))
         return reversed(result)
     #@+node:ekr.20150609053010.1: *4* sd.format
-    def format(self, node):
+    def format(self, node, level, *args, **kwargs):
         '''Return the formatted version of an Ast Node.'''
-        return self.formatter.format(node).strip()
+        return self.formatter.format(node, level, *args, **kwargs).strip()
     #@+node:ekr.20150606024455.62: *3* sd.visit
     def visit(self, node):
         '''
@@ -2387,6 +2411,7 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         Handle a class defintion:
         ClassDef(identifier name, expr* bases, stmt* body, expr* decorator_list)
         '''
+        # pylint: disable=arguments-differ
         # Format.
         if node.bases:
             bases = [self.format(z) for z in node.bases]
@@ -2417,6 +2442,7 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         Visit a function defintion:
         FunctionDef(identifier name, arguments args, stmt* body, expr* decorator_list)
         '''
+        # pylint: disable=arguments-differ
         # Format.
         args = self.format(node.args) if node.args else ''
         s = 'def %s(%s):' % (node.name, args)

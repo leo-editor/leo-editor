@@ -170,7 +170,7 @@ class AstFormatter(object):
 
     # Entries...
     #@+node:ekr.20160317055215.3: *4* f.__call__ (not used)
-    #@+node:ekr.20160317055215.4: *4* f.format
+    #@+node:ekr.20160317055215.4: *4* f.format (make_stub_files)
     def format(self, node):
         '''Format the node (or list of nodes) and its descendants.'''
         self.level = 0
