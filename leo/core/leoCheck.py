@@ -1121,8 +1121,6 @@ class ConventionChecker (object):
         def before_Print(self, node):
             print(self.format(node, self.level))
 
-        # Do *not* print Call nodes!
-            # before_Call = print_node
 
         ### Older version, before handling context level in full traverser.
 
