@@ -710,7 +710,7 @@ class QuickSearchController(object):
         res = leoNodes.PosList()
         try:
             pat = re.compile(regex, flags)
-        except:
+        except Exception:
             return res
         for p in nodes:
             m = re.match(pat, p.h)
@@ -728,7 +728,7 @@ class QuickSearchController(object):
         res = leoNodes.PosList()
         try:
             pat = re.compile(regex, flags)
-        except:
+        except Exception:
             return res
         for p in nodes:
             m = re.finditer(pat, p.b)
