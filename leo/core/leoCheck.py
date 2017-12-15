@@ -522,7 +522,10 @@ class ConventionChecker (object):
     def check_helper(self, fn, node, s):
 
         cct = self.CCTraverser(controller=self)
-        cct.visit(node)
+        for n in 1, 2:
+            g.trace('===== PASS', n)
+            self.pass_n = cct.pass_n = n
+            cct.visit(node)
         self.end_file()
     #@+node:ekr.20171215074959.1: *3* checker.do_* & end_*(new)
     #@+node:ekr.20171215074959.2: *4* checker.do_assign
@@ -1175,45 +1178,51 @@ class ConventionChecker (object):
         
     #@+node:ekr.20171214151001.1: *3* class CCTraverser (AstFullTraverser)
     class CCTraverser (leoAst.AstFullTraverser):
-        
-        trace = False
-        
+
         def __init__(self, controller):
 
             leoAst.AstFullTraverser.__init__(self)
             self.cc = controller
             self.in_expr = False
             self.indent = 0
+            self.pass_n = 0
+            self.trace = True
         
         #@+others
         #@+node:ekr.20171214151114.1: *4* CCT.before_* & after_*
         def before_Assign(self, node):
-            if self.trace: print(self.format(node, self.indent))
-            self.cc.do_assign(node)
+            if self.pass_n == 2:
+                if self.trace: print(self.format(node, self.indent))
+                self.cc.do_assign(node)
 
         def before_AugAssign(self, node):
-            if self.trace: print(self.format(node, self.indent))
+            if self.pass_n == 2:
+                if self.trace: print(self.format(node, self.indent))
+                self.cc.do_assign(node)
             
         def before_Call(self, node):
-            if not self.in_expr:
-                if self.trace: print(self.format(node, self.indent))
-            self.cc.do_call(node)
+            if self.pass_n == 2:
+                if not self.in_expr:
+                    if self.trace: print(self.format(node, self.indent))
+                self.cc.do_call(node)
                 
         def before_ClassDef(self, node):
             print(self.format(node, self.indent, print_body=False))
             self.cc.do_class(node)
             self.indent += 1
-            
+
         def after_ClassDef(self, node):
             self.cc.end_class(node)
             self.indent -= 1
             
         def before_Expr(self, node):
-            self.in_expr = True
-            if self.trace: print(self.format(node, self.indent))
+            if self.pass_n == 2:
+                self.in_expr = True
+                if self.trace: print(self.format(node, self.indent))
             
         def after_Expr(self, node):
-            self.in_expr = False
+            if self.pass_n == 2:
+                self.in_expr = False
             
         def before_FunctionDef(self, node):
             if self.trace: print(self.format(node, self.indent, print_body=False))
@@ -1225,7 +1234,8 @@ class ConventionChecker (object):
             self.indent -= 1
             
         def before_Print(self, node):
-            if self.trace: print(self.format(node, self.indent))
+            if self.pass_n == 2:
+                if self.trace: print(self.format(node, self.indent))
         #@-others
     #@+node:ekr.20171209030742.1: *3* class Type
     class Type (object):
