@@ -624,31 +624,29 @@ class ConventionChecker (object):
             self.stats.sig_infer_fail += 1
             return 'fail'
     #@+node:ekr.20171215074959.1: *3* checker.do_* & end_*(new)
-    #@+node:ekr.20171215074959.2: *4* checker.do_assn
-    def do_assn(self, node):
+    #@+node:ekr.20171215074959.2: *4* checker.do_assign
+    def do_assign(self, node):
         
-        g.trace(self.format(node))
+        # g.trace('=====', self.format(node))
         for target in node.targets:
-            self.format(target)
-        
-        # table = (
-            # (self.assn_to_self_pattern, self.do_assn_to_self),
-                # # Must be first.
-            # (self.assign_to_special_pattern, self.do_assn_to_special),
-                # # Must be last.
-        # )
-        # ### if self.pass_n == 1:
-        # self.stats.assignments += 1
-        # if trace: print('%14s: %s' % (kind, s.strip()))
-        # for pattern, func in table:
-            # m = pattern.match(s)
-            # if m:
-                # if trace and trace_found: g.trace(func.__name__)
-                # func(kind, m, s)
-                # return
+            attr = None
+            while not isinstance(target, ast.Name):
+                if isinstance(target, ast.Attribute):
+                    attr = target
+                    target = target.value
+                else:
+                    g.trace('UNKNOWN:', target)
+                    break
+            if isinstance(target, ast.Name):
+                name = target.id
+                attr = attr.attr if attr else None
+                if name == 'self':
+                    self.do_assn_to_self(node, name, attr)
+                elif name in self.special_names_dict:
+                    self.do_assn_to_special(node, name, attr)
     #@+node:ekr.20171215074959.3: *4* checker.do_assn_to_special
-    def do_assn_to_special(self, node):
-        g.trace(self.format(node))
+    def do_assn_to_special(self, node, name, attr):
+        g.trace('=====', name, repr(attr), self.format(node))
         
         # trace = False # or self.test_kind == 'test'
         # trace_dict = False
@@ -696,8 +694,8 @@ class ConventionChecker (object):
             # g.trace('AFTER: class %s...' % t.name)
             # g.printDict(d)
     #@+node:ekr.20171215074959.4: *4* checker.do_assn_to_self
-    def do_assn_to_self(self, node):
-        g.trace(self.format(node))
+    def do_assn_to_self(self, node, name, attr):
+        g.trace('=====', name, repr(attr), self.format(node))
 
         # trace = False
         # trace_dict = False
@@ -1049,6 +1047,7 @@ class ConventionChecker (object):
         #@+node:ekr.20171214151114.1: *4* CCT.before_* & after_*
         def before_Assign(self, node):
             print(self.format(node, self.indent))
+            self.cc.do_assign(node)
 
         def before_AugAssign(self, node):
             print(self.format(node, self.indent))
