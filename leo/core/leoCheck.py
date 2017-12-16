@@ -882,9 +882,6 @@ class ConventionChecker (object):
             return 'fail'
     #@+node:ekr.20171215074959.1: *3* checker.Visitors & helpers
     #@+node:ekr.20171215074959.2: *4* checker.Assign & helpers
-    assn_to_self_pattern = re.compile(r'^\s*self\.(\w+)\s*=(.*)')
-    assign_to_special_pattern = re.compile(r'^\s*(\w+)\.([\w.]+)\s*=(.*)')
-
     def before_Assign(self, node):
         
         s = self.format(node)
@@ -918,6 +915,8 @@ class ConventionChecker (object):
         
     #@+node:ekr.20171215074959.4: *5* checker.do_assn_to_self
     assn_to_self_pattern = re.compile(r'^\s*self\.(\w+)\s*=(.*)')
+
+
 
     def do_assn_to_self(self, node):
 
