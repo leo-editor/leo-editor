@@ -881,7 +881,7 @@ class ConventionChecker (object):
             self.stats.sig_infer_fail += 1
             return 'fail'
     #@+node:ekr.20171215074959.1: *3* checker.Visitors & helpers
-    #@+node:ekr.20171215074959.2: *4* checker.Assign & helpers (remove regex in helpers)
+    #@+node:ekr.20171215074959.2: *4* checker.Assign & helpers
     def before_Assign(self, node):
         
         s = self.format(node)
@@ -922,29 +922,33 @@ class ConventionChecker (object):
         if 0:
             g.trace('dict for class', class_name)
             g.printDict(d)
-    #@+node:ekr.20171215074959.3: *5* checker.do_assn_to_special (remove regex)
-    assign_to_special_pattern = re.compile(r'^\s*(\w+)\.([\w.]+)\s*=(.*)')
-
+    #@+node:ekr.20171215074959.3: *5* checker.do_assn_to_special
     def do_assn_to_special(self, node, var1, var2):
-        
-        trace = False
+
         assert self.pass_n == 2
+        assert var1 in self.special_names_dict, (repr(var1))
         class_name = self.class_name
         s = self.format(node)
-        m = self.assign_to_special_pattern.match(s)
-        if not m:
-            g.trace('No match', s)
-            return
-        ivar1 = m.group(1)
-        ivar2 = m.group(2)
-        val = m.group(3).strip()
+        if 0:
+            assign_to_special_pattern = re.compile(r'^\s*(\w+)\.([\w.]+)\s*=(.*)')
+            m = assign_to_special_pattern.match(s)
+            if not m:
+                g.trace('No match', s)
+                return
+            ivar1 = m.group(1)
+            ivar2 = m.group(2)
+            val = m.group(3).strip()
+        else:
+            ivar1 = var1
+            ivar2 = var2
+            val = self.format(node.value)
         t = self.special_names_dict.get(ivar1)
         if not t:
-            if trace: g.trace('not special', ivar1, s.strip())
+            # self.note(node, 'not special', ivar1, s.strip())
             return
         # Do not set members within the class itself.
         if t.kind == 'instance' and t.name == class_name:
-            if trace: g.trace('SKIP', s.strip())
+            # self.note(node, 'SKIP', ivar1, class_name)
             return
         # Resolve val, if possible.
         context = self.Type(
@@ -954,57 +958,19 @@ class ConventionChecker (object):
         self.recursion_count = 0
         old_val = val
         val = self.resolve(node, val, context, trace=False)
-        if trace: g.trace('context %s : %s ==> %s' % (context, old_val, val))
+        if 0:
+            self.note(node, 'context %s : %s ==> %s' % (context, old_val, val))
         # Update var1's dict, not class_name's dict.
         d = self.classes.get(t.name)
-        if trace:
+        if 0:
             g.trace('BEFORE: class %s...' % t.name)
             g.printDict(d)
         ivars = d.get('ivars')
         ivars[ivar2] = val
         d['ivars'] = ivars
-        if trace:
+        if 0:
             g.trace('AFTER: class %s...' % t.name)
             g.printDict(d)
-
-        ### New code
-            # g.trace('=====', name, repr(attr), self.format(node))
-            # ivar1 = name
-            # ivar2 = attr
-            # if not attr:
-                # return ###
-            # val = self.format(node.value)
-            # class_name = self.class_name
-            # t = self.special_names_dict.get(ivar1)
-            # if not t:
-                # g.trace('not special', ivar1)
-                # return
-            # # Do not set members within the class itself.
-            # if t.kind == 'instance' and t.name == class_name:
-                # g.trace('SKIP:', ivar1, 'in', class_name)
-                # return
-            # g.trace('INJECT', ivar1, t.name)
-            # if 0: ### Not ready yet.
-                # # Resolve val, if possible.
-                # context = self.Type(
-                    # 'class' if class_name else 'module',
-                    # class_name or self.file_name,
-                # )
-                # self.recursion_count = 0
-                # old_val = val
-                # val = self.resolve(node, val, context, trace=False)
-                # g.trace('context %s : %s ==> %s' % (context, old_val, val))
-            # # Update var1's dict, not class_name's dict.
-            # d = self.classes.get(t.name)
-            # if 1:
-                # g.trace('BEFORE: class %s...' % t.name)
-                # g.printDict(d)
-            # ivars = d.get('ivars')
-            # ivars[ivar2] = val
-            # d['ivars'] = ivars
-            # if 1:
-                # g.trace('AFTER: class %s...' % t.name)
-                # g.printDict(d)
     #@+node:ekr.20171215074959.5: *4* checker.Call & helper (remove regex)
     call_pattern = re.compile(r'^\s*(\w+(\.\w+)*)\s*\((.*)\)')
 
