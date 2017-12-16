@@ -430,7 +430,7 @@ class ConventionChecker (object):
         '''
         g.cls()
         c = self.c
-        kind = 'project' # Allow names of projects?
+        kind = 'test' # Allow names of projects?
         assert kind in ('files', 'production', 'project', 'test'), repr(kind)
         report_stats = True
         if kind == 'files':
@@ -929,26 +929,14 @@ class ConventionChecker (object):
         assert var1 in self.special_names_dict, (repr(var1))
         class_name = self.class_name
         s = self.format(node)
-        if 0:
-            assign_to_special_pattern = re.compile(r'^\s*(\w+)\.([\w.]+)\s*=(.*)')
-            m = assign_to_special_pattern.match(s)
-            if not m:
-                g.trace('No match', s)
-                return
-            ivar1 = m.group(1)
-            ivar2 = m.group(2)
-            val = m.group(3).strip()
-        else:
-            ivar1 = var1
-            ivar2 = var2
-            val = self.format(node.value)
-        t = self.special_names_dict.get(ivar1)
+        val = self.format(node.value)
+        t = self.special_names_dict.get(var1)
         if not t:
-            # self.note(node, 'not special', ivar1, s.strip())
+            if 0: self.note(node, 'not special', var1, s.strip())
             return
         # Do not set members within the class itself.
         if t.kind == 'instance' and t.name == class_name:
-            # self.note(node, 'SKIP', ivar1, class_name)
+            if 0: self.note(node, 'SKIP', var1, class_name)
             return
         # Resolve val, if possible.
         context = self.Type(
@@ -966,7 +954,7 @@ class ConventionChecker (object):
             g.trace('BEFORE: class %s...' % t.name)
             g.printDict(d)
         ivars = d.get('ivars')
-        ivars[ivar2] = val
+        ivars[var2] = val
         d['ivars'] = ivars
         if 0:
             g.trace('AFTER: class %s...' % t.name)
