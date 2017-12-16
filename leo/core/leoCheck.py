@@ -532,7 +532,7 @@ class ConventionChecker (object):
             self.pass_n = n
             cct.visit(node)
         self.end_file()
-    #@+node:ekr.20171215074959.1: *3* checker.do_* & end_*(new)
+    #@+node:ekr.20171215074959.1: *3* checker.Visitors
     #@+node:ekr.20171215074959.2: *4* checker.Assign & helpers
     assign_pattern = re.compile(r'^\s*(\w+(\.\w+)*)\s*=(.*)')
     assn_to_self_pattern = re.compile(r'^\s*self\.(\w+)\s*=(.*)')
