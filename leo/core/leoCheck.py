@@ -537,7 +537,7 @@ class ConventionChecker (object):
     assn_to_self_pattern = re.compile(r'^\s*self\.(\w+)\s*=(.*)')
     assign_to_special_pattern = re.compile(r'^\s*(\w+)\.([\w.]+)\s*=(.*)')
 
-    def do_assign(self, node):
+    def do_Assign(self, node):
         
         table = (
             # Order important.
@@ -694,7 +694,7 @@ class ConventionChecker (object):
     #@+node:ekr.20171215074959.5: *4* checker.do_call & helper
     call_pattern = re.compile(r'^\s*(\w+(\.\w+)*)\s*\((.*)\)')
 
-    def do_call(self, node):
+    def do_Call(self, node):
 
         s = self.format(node)
         if self.test_kind == 'test': print(s)
@@ -775,7 +775,7 @@ class ConventionChecker (object):
         return result
                 
     #@+node:ekr.20171215074959.7: *4* checker.do_class & end_class
-    def do_class(self, node):
+    def do_ClassDef(self, node):
 
         print(self.format(node, print_body=False))
         self.indent += 1
@@ -786,7 +786,7 @@ class ConventionChecker (object):
             if name not in self.special_class_names:
                 self.classes [name] = {'ivars': {}, 'methods': {}}
 
-    def end_class(self, node):
+    def end_ClassDef(self, node):
 
         self.indent -= 1
         if 0 and self.pass_n == 1:
@@ -805,7 +805,7 @@ class ConventionChecker (object):
     #@+node:ekr.20171215074959.9: *4* checker.do_def & end_def
     def_pattern = re.compile(r'^\s*def\s+([\w0-9]+)\s*\((.*)\)\s*:')
 
-    def do_def(self, node):
+    def do_FunctionDef(self, node):
 
         s = self.format(node, print_body=False)
         if self.test_kind == 'test': print(s)
@@ -831,7 +831,7 @@ class ConventionChecker (object):
                 ### This is not an error.
                 # else: g.trace('===== no class', node.name)
 
-    def end_def(self, node):
+    def end_FunctionDef(self, node):
 
         self.indent -= 1
         top = self.context_stack.pop()
@@ -1208,35 +1208,17 @@ class ConventionChecker (object):
 
             leoAst.AstFullTraverser.__init__(self)
             self.cc = controller
-        
-        #@+others
-        #@+node:ekr.20171214151114.1: *4* CCT.before_* & after_*
-        def before_Assign(self, node):
-            self.cc.do_assign(node)
-
-        def before_AugAssign(self, node):
-            self.cc.do_assign(node)
             
-        def before_Call(self, node):
-            self.cc.do_call(node)
-                
-        def before_ClassDef(self, node):
-            self.cc.do_class(node)
-
-        def after_ClassDef(self, node):
-            self.cc.end_class(node)
-            
-        def before_FunctionDef(self, node):
-            self.cc.do_def(node)
-            
-        def after_FunctionDef(self, node):
-            self.cc.end_def(node)
-            
-        def before_Print(self, node):
-            # There is no cc.do_Print handler.
-            if self.cc.test_kind == 'test':
-                print(self.cc.format(node))
-        #@-others
+        def __getattr__ (self, name):
+            table = (
+                name.replace('before_', 'do_'),
+                name.replace('after_', 'end_'),
+            )
+            for name2 in table:
+                func = getattr(self.cc, name2, None)
+                if func:
+                    return func
+            raise AttributeError
     #@+node:ekr.20171209030742.1: *3* class Type
     class Type (object):
         '''A class to hold all type-related data.'''
