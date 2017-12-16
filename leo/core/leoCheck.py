@@ -430,7 +430,7 @@ class ConventionChecker (object):
         '''
         g.cls()
         c = self.c
-        kind = 'test' # Allow names of projects?
+        kind = 'project' # Allow names of projects?
         assert kind in ('files', 'production', 'project', 'test'), repr(kind)
         report_stats = True
         if kind == 'files':
@@ -644,23 +644,25 @@ class ConventionChecker (object):
         if trace and trace_resolve: g.trace('      ----->', result)
         return result
     #@+node:ekr.20171213104154.1: *4* checker.resolve_name (TO DO)
-    #@+node:ekr.20171208134737.1: *4* checker.resolve_call
+    #@+node:ekr.20171208134737.1: *4* checker.resolve_call (remove regex)
     call_pattern = re.compile(r'(\w+(\.\w+)*)\s*\((.*)\)')
+        # Used in two places.
 
     def resolve_call(self, node, kind, m, s):
 
-        trace = False and self.enable_trace
-        trace_entry = True
-        trace_result = False
+        assert self.pass_n == 2
         self.stats.resolve_call += 1
         s = s.strip()
-        m = self.call_pattern.match(s)
-        aList = m.group(1).split('.')
-        chain, func = aList[:-1], aList[-1]
-        args = m.group(3).split(',')
+        if 1:
+            m = self.call_pattern.match(s)
+            aList = m.group(1).split('.')
+            chain, func = aList[:-1], aList[-1]
+            args = m.group(3).split(',')
+        else:
+            pass ### Not ready yet.
         if chain:
             self.recursion_count = 0
-            if trace and trace_entry:
+            if 0:
                 g.trace(' ===== %s.%s(%s)' % (
                     '.'.join(chain), func, ','.join(args)))
             if self.class_name:
@@ -668,7 +670,7 @@ class ConventionChecker (object):
             else:
                 context = self.Type('module', self.file_name)
             result = self.resolve_chain(node, chain, context)
-            if trace and trace_result:
+            if 0:
                 g.trace(' ----> %s.%s' % (result, func))
         else:
             result = None
@@ -960,7 +962,6 @@ class ConventionChecker (object):
             g.trace('AFTER: class %s...' % t.name)
             g.printDict(d)
     #@+node:ekr.20171215074959.5: *4* checker.Call & helper (remove regex)
-    call_pattern = re.compile(r'^\s*(\w+(\.\w+)*)\s*\((.*)\)')
 
     def before_Call(self, node):
 
@@ -969,10 +970,9 @@ class ConventionChecker (object):
         if self.pass_n == 1:
             return
         self.stats.calls += 1
-        if 0:
-            pass ### To do
-        else:
-            m = self.call_pattern.match(s.strip())
+        if 1:
+            call_pattern = re.compile(r'^\s*(\w+(\.\w+)*)\s*\((.*)\)')
+            m = call_pattern.match(s.strip())
                 # It's weird that this strip() is needed.
             try:
                 m.group(1)
@@ -996,6 +996,8 @@ class ConventionChecker (object):
                         else:
                             signature = signature.split(',')
                             self.check_signature(node, func, args, signature)
+        else:
+            pass
     #@+node:ekr.20171215103935.1: *5* checker.split_args
     def split_args(self, node, args):
         '''
