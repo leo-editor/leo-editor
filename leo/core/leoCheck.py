@@ -430,7 +430,7 @@ class ConventionChecker (object):
         '''
         g.cls()
         c = self.c
-        kind = 'project' # Allow names of projects?
+        kind = 'test' # Allow names of projects?
         assert kind in ('files', 'production', 'project', 'test'), repr(kind)
         report_stats = True
         if kind == 'files':
@@ -593,7 +593,7 @@ class ConventionChecker (object):
             self.check_file(s=s, test_kind='test', trace_fn=True)
         if self.errors:
             print('%s error%s' % (self.errors, g.plural(self.errors)))
-    #@+node:ekr.20171216063026.1: *3* checker.error & log_line
+    #@+node:ekr.20171216063026.1: *3* checker.error, node & log_line
     def error(self, node, *args, **kwargs):
         
         self.errors += 1
@@ -608,6 +608,10 @@ class ConventionChecker (object):
             self.file_name or '<string>',
             ' '.join([z if g.isString(z) else repr(z) for z in args]),
         )
+        
+    def note(self, node, *args, **kwargs):
+
+        print('Note: %s' % self.log_line(node, *args, **kwargs))
     #@+node:ekr.20171215080831.1: *3* checker.format
     def format(self, node, *args, **kwargs):
         '''Format the node and possibly its descendants, depending on args.'''
@@ -878,43 +882,40 @@ class ConventionChecker (object):
             return 'fail'
     #@+node:ekr.20171215074959.1: *3* checker.Visitors & helpers
     #@+node:ekr.20171215074959.2: *4* checker.Assign & helpers
-    assign_pattern = re.compile(r'^\s*(\w+(\.\w+)*)\s*=(.*)')
     assn_to_self_pattern = re.compile(r'^\s*self\.(\w+)\s*=(.*)')
     assign_to_special_pattern = re.compile(r'^\s*(\w+)\.([\w.]+)\s*=(.*)')
 
     def before_Assign(self, node):
         
-        table = (
-            # Order important.
-            (self.assn_to_self_pattern, self.do_assn_to_self),
-            (self.assign_to_special_pattern, self.do_assn_to_special),
-        )
         s = self.format(node)
         if self.test_kind == 'test': print(s)
-        if self.pass_n == 2:
-            self.stats.assignments += 1
-            for pattern, func in table:
-                m = pattern.match(s)
-                if m:
-                    func(node)
-                    return
-        # This code also works.
-        # for target in node.targets:
-            # attr = None
-            # while not isinstance(target, ast.Name):
-                # if isinstance(target, ast.Attribute):
-                    # attr = target
-                    # target = target.value
-                # else:
-                    # g.trace('UNKNOWN:', target)
-                    # break
-            # if isinstance(target, ast.Name):
-                # name = target.id
-                # attr = attr.attr if attr else None
-                # if name == 'self':
-                    # self.do_assn_to_self(node, name, attr)
-                # elif name in self.special_names_dict:
-                    # self.do_assn_to_special(node, name, attr)
+        if self.pass_n == 1:
+            return
+        self.stats.assignments += 1
+        for target in node.targets:
+            attr = None
+            while not isinstance(target, ast.Name):
+                if isinstance(target, ast.Attribute):
+                    attr = target
+                    target = target.value
+                else:
+                    name = target.__class__.__name__
+                    if name not in (
+                        'Call', # c1.rootPosition().h = whatever
+                        'Subscript', # d[x] = whatever
+                        'Tuple', # (hPos,vPos) = self.getScroll()
+                    ):
+                        self.note(node, 'target %s: %s' % (name, s.strip()))
+                    break
+            if isinstance(target, ast.Name):
+                name = target.id
+                attr = attr.attr if attr else None
+                if attr:
+                    if name == 'self':
+                        self.do_assn_to_self(node)
+                    elif name in self.special_names_dict:
+                        self.do_assn_to_special(node)
+        
     #@+node:ekr.20171215074959.4: *5* checker.do_assn_to_self
     assn_to_self_pattern = re.compile(r'^\s*self\.(\w+)\s*=(.*)')
 
@@ -929,6 +930,9 @@ class ConventionChecker (object):
             # g.trace('SKIP' % g.truncate(s.strip(), 80))
             return
         m = self.assn_to_self_pattern.match(s)
+        if not m:
+            # g.trace('No match', s)
+            return
         ivar = m.group(1)
         val = m.group(2).strip()
         d = self.classes.get(self.class_name)
@@ -966,6 +970,9 @@ class ConventionChecker (object):
         class_name = self.class_name
         s = self.format(node)
         m = self.assign_to_special_pattern.match(s)
+        if not m:
+            g.trace('No match', s)
+            return
         ivar1 = m.group(1)
         ivar2 = m.group(2)
         val = m.group(3).strip()
