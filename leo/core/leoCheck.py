@@ -455,40 +455,6 @@ class ConventionChecker (object):
             g.trace('unknown kind', repr(kind))
         if report_stats:
             self.stats.report()
-    #@+node:ekr.20171213013004.1: *4* checker.check_project
-    def check_project(self, project_name):
-        
-        trace_fn = True
-        trace_skipped = False
-        self.test_kind = 'project'
-        fails_dict = {
-            'coverage': ['cmdline.py',],
-            'lib2to3': ['fixer_util.py', 'fix_dict.py', 'patcomp.py', 'refactor.py'],
-            'leo': [], # All of Leo's core files pass.
-            'pylint': [
-                'base.py', 'classes.py', 'format.py',
-                'logging.py', 'python3.py', 'stdlib.py', 
-                'docparams.py', 'lint.py',
-            ],
-            'rope': ['objectinfo.py', 'objectdb.py', 'runmod.py',],
-        }
-        fails = fails_dict.get(project_name, [])
-        utils = ProjectUtils()
-        files = utils.project_files(project_name, force_all=False)
-        if files:
-            t1 = time.clock()
-            for fn in files:
-                sfn = g.shortFileName(fn)
-                if sfn in fails or fn in fails:
-                    if trace_skipped: print('===== skipping', sfn)
-                else:
-                    self.check_file(fn=fn, trace_fn=trace_fn)
-            t2 = time.clock()
-            print('%s files in %4.2f sec.' % (len(files), (t2-t1)))
-            if self.errors:
-                print('%s error%s' % (self.errors, g.plural(self.errors)))
-        else:
-            print('no files for project: %s' % (project_name))
     #@+node:ekr.20171207100432.1: *4* checker.check_file
     def check_file(self, fn=None, s=None, test_kind=None, trace_fn=False):
         '''Check the contents of fn or the string s.'''
@@ -535,6 +501,98 @@ class ConventionChecker (object):
             self.pass_n = n
             cct.visit(node)
         self.end_file()
+    #@+node:ekr.20171213013004.1: *4* checker.check_project
+    def check_project(self, project_name):
+        
+        trace_fn = True
+        trace_skipped = False
+        self.test_kind = 'project'
+        fails_dict = {
+            'coverage': ['cmdline.py',],
+            'lib2to3': ['fixer_util.py', 'fix_dict.py', 'patcomp.py', 'refactor.py'],
+            'leo': [], # All of Leo's core files pass.
+            'pylint': [
+                'base.py', 'classes.py', 'format.py',
+                'logging.py', 'python3.py', 'stdlib.py', 
+                'docparams.py', 'lint.py',
+            ],
+            'rope': ['objectinfo.py', 'objectdb.py', 'runmod.py',],
+        }
+        fails = fails_dict.get(project_name, [])
+        utils = ProjectUtils()
+        files = utils.project_files(project_name, force_all=False)
+        if files:
+            t1 = time.clock()
+            for fn in files:
+                sfn = g.shortFileName(fn)
+                if sfn in fails or fn in fails:
+                    if trace_skipped: print('===== skipping', sfn)
+                else:
+                    self.check_file(fn=fn, trace_fn=trace_fn)
+            t2 = time.clock()
+            print('%s files in %4.2f sec.' % (len(files), (t2-t1)))
+            if self.errors:
+                print('%s error%s' % (self.errors, g.plural(self.errors)))
+        else:
+            print('no files for project: %s' % (project_name))
+    #@+node:ekr.20171208135642.1: *4* checker.end_file & helper
+    def end_file(self,trace_classes=False, trace_unknowns=False):
+        
+        trace = trace_classes or trace_unknowns
+        if trace:
+            print('----- END OF FILE: %s' % self.file_name)
+            if 1:
+                for key, val in sorted(self.classes.items()):
+                    print('class %s' % key)
+                    g.printDict(val)
+            if 1:
+                self.trace_unknowns()
+        # Do *not* clear self.classes.
+        self.unknowns = {}
+    #@+node:ekr.20171212100005.1: *5* checker.trace_unknowns
+    def trace_unknowns(self):
+        print('----- Unknown ivars...')
+        d = self.unknowns
+        max_key = max([len(key) for key in d ]) if d else 2
+        for key, aList in sorted(d.items()):
+            # Remove duplicates that vary only in line number.
+            aList2, seen = [], []
+            for data in aList:
+                line, fn, s = data
+                data2 = (key, fn, s)
+                if data2 not in seen:
+                    seen.append(data2)
+                    aList2.append(data)
+            for data in aList2:
+                line, fn, s = data
+                print('%*s %4s %s: %s' % (
+                    max_key, key, line, fn, g.truncate(s, 60)))
+    #@+node:ekr.20171212020013.1: *4* checker.test
+    tests = [
+    '''\
+    class TC:
+        def __init__(self, c):
+            c.tc = self
+        def add_tag(self, p):
+            print(p.v) # AttributeError if p is a vnode.
+
+    class Test:
+        def __init__(self,c):
+            self.c = c
+            self.tc = self.c.tc
+        def add_tag(self):
+            p = self.c.p
+            self.tc.add_tag(p.v) # WRONG: arg should be p.
+    ''', # comma required!
+    ]
+
+    def test(self):
+
+        for s in self.tests:
+            s = g.adjustTripleString(s, self.c.tab_width)
+            self.check_file(s=s, test_kind='test', trace_fn=True)
+        if self.errors:
+            print('%s error%s' % (self.errors, g.plural(self.errors)))
     #@+node:ekr.20171216063026.1: *3* checker.error & log_line
     def error(self, node, *args, **kwargs):
         
@@ -550,7 +608,275 @@ class ConventionChecker (object):
             self.file_name or '<string>',
             ' '.join([z if g.isString(z) else repr(z) for z in args]),
         )
-    #@+node:ekr.20171215074959.1: *3* checker.Visitors
+    #@+node:ekr.20171215080831.1: *3* checker.format
+    def format(self, node, *args, **kwargs):
+        '''Format the node and possibly its descendants, depending on args.'''
+        s = leoAst.AstFormatter().format(node, level=self.indent, *args, **kwargs)
+        return s.rstrip()
+    #@+node:ekr.20171208142646.1: *3* checker.resolve & helpers
+    def resolve(self, node, name, obj, trace=False):
+        '''Resolve name in the context of obj.'''
+        trace_resolve = True
+        # if trace and self.file_name == 'qt_tree.py':
+            # g.printDict(self.classes.get('Position'))
+        if trace and trace_resolve:
+            g.trace('      ===== name: %s obj: %r' % (name, obj))
+        self.stats.resolve += 1
+        if obj:
+            if obj.kind in ('error', 'unknown'):
+                result = obj
+            elif name == 'self':
+                if obj.name:
+                    result = self.Type('instance', obj.name)
+                else:
+                    g.trace('===== NO OBJECT NAME')
+                    result = self.Type('error', 'no object name')
+            elif obj.kind in ('class', 'instance'):
+                result = self.resolve_ivar(node, name, obj)
+            else:
+                result = self.Type('error', 'unknown kind: %s' % obj.kind)
+        else:
+            result = self.Type('error', 'unbound name: %s' % name)
+        if trace and trace_resolve: g.trace('      ----->', result)
+        return result
+    #@+node:ekr.20171213104154.1: *4* checker.resolve_name (TO DO)
+    #@+node:ekr.20171208134737.1: *4* checker.resolve_call
+    call_pattern = re.compile(r'(\w+(\.\w+)*)\s*\((.*)\)')
+
+    def resolve_call(self, node, kind, m, s):
+
+        trace = False and self.enable_trace
+        trace_entry = True
+        trace_result = False
+        self.stats.resolve_call += 1
+        s = s.strip()
+        m = self.call_pattern.match(s)
+        aList = m.group(1).split('.')
+        chain, func = aList[:-1], aList[-1]
+        args = m.group(3).split(',')
+        if chain:
+            self.recursion_count = 0
+            if trace and trace_entry:
+                g.trace(' ===== %s.%s(%s)' % (
+                    '.'.join(chain), func, ','.join(args)))
+            if self.class_name:
+                context = self.Type('class', self.class_name)
+            else:
+                context = self.Type('module', self.file_name)
+            result = self.resolve_chain(node, chain, context)
+            if trace and trace_result:
+                g.trace(' ----> %s.%s' % (result, func))
+        else:
+            result = None
+        return result
+    #@+node:ekr.20171209034244.1: *4* checker.resolve_chain
+    def resolve_chain(self, node, chain, context, trace=False):
+
+        if trace:
+            g.trace('=====', chain, context)
+        self.stats.resolve_chain += 1
+        name = '<no name>'
+        for name in chain:
+            context = self.resolve(node, name, context, trace=trace)
+            if trace: g.trace('%4s ==> %r' % (name, context))
+        if trace:
+            g.trace('%4s ----> %r' % (name, context))
+        return context
+    #@+node:ekr.20171208173323.1: *4* checker.resolve_ivar
+    # id_pattern = re.compile('\w+')
+
+    def resolve_ivar(self, node, ivar, obj):
+        '''Resolve obj.ivar'''
+        trace = False
+        trace_c_dict_on_error = False
+        trace_dict = False
+        trace_dict_on_error = False
+        trace_error = True
+        trace_ivar = False
+        trace_recursive = False
+        trace_special = False
+        trace_unknown = True
+        raise_on_error = False
+        self.stats.resolve_ivar += 1
+        class_name = 'Commands' if obj.name == 'c' else obj.name
+        the_class = self.classes.get(class_name)
+        self.recursion_count += 1
+        if self.recursion_count > 20:
+            self.error(node, 'UNBOUNDED RECURSION: %r %r\nCallers: %s' % (
+                ivar, obj, g.callers()))
+            if trace_c_dict_on_error:
+                g.trace('CLASS DICT: Commands')
+                g.printDict(self.classes.get('Commands'))
+            if trace_dict_on_error:
+                g.trace('CLASS DICT', class_name)
+                g.printDict(the_class)
+            if raise_on_error:
+                assert False, self.recursion_count
+            return self.Type('error', 'recursion')
+        if not the_class:
+            return self.Type('error', 'no class %s' % ivar)
+        if trace and trace_dict:
+            g.trace('CLASS DICT', class_name)
+            g.printDict(the_class)
+        ivars = the_class.get('ivars')
+        methods = the_class.get('methods')
+        if ivar == 'self':
+            return self.Type('class', class_name)
+        elif methods.get(ivar):
+            return self.Type('func', ivar)
+        elif ivars.get(ivar):
+            val = ivars.get(ivar)
+            if trace and trace_ivar:
+                g.trace('IVAR:', ivar, 'CONTEXT', obj, 'VAL', val)
+            if isinstance(val, self.Type):
+                if trace: g.trace('KNOWN: %s %r ==> %r' % (ivar, obj, val))
+                return val
+            # Check for pre-defined special names.
+            for special_name, special_obj in self.special_names_dict.items():
+                tail = val[len(special_name):]
+                if val == special_name:
+                    if trace and trace_special:
+                        g.trace('SPECIAL: %s ==> %s' % (val, special_obj))
+                    return special_obj
+                elif val.startswith(special_name) and tail.startswith('.'):
+                    # Resovle the rest of the tail in the found context.
+                    if trace: g.trace('TAIL: %s => %s.%s' % (val, special_obj, tail))
+                    return self.resolve_chain(node, tail[1:], special_obj)
+            # Avoid recursion 1.
+            if ivar == val:
+                if trace and trace_unknown:
+                    g.trace('AVOID RECURSION: self.%s=%s' % (ivar, val))
+                return self.Type('unknown', ivar)
+            head2 = val.split('.')
+            # Avoid recursion 2.
+            if ivar == head2[0]:
+                if trace and trace_unknown:
+                    g.trace('AVOID RECURSION2: %s=%s' % (ivar, val))
+                return self.Type('unknown', ivar)
+            if trace and trace_recursive:
+                g.trace('RECURSIVE', head2)
+            obj2 = obj
+            for name2 in head2:
+                old_obj2 = obj2
+                obj2 = self.resolve(node, name2, obj2)
+                if trace and trace_recursive:
+                    g.trace('recursive %s: %r --> %r' % (
+                        name2, old_obj2, obj2))
+            if trace and trace_recursive:
+                g.trace('END RECURSIVE: %r', obj2)
+            return obj2
+        elif ivar in self.special_names_dict:
+            val = self.special_names_dict.get(ivar)
+            if trace and trace_special:
+                g.trace('FOUND SPECIAL', ivar, val)
+            return val
+        else:
+            # Remember the unknown.
+            d = self.unknowns
+            aList = d.get(ivar, [])
+            data = (self.line_number, self.file_name)
+            aList.append(data)
+            d[ivar] = aList
+            if trace and trace_error:
+                self.error(node, 'No member:', ivar)
+            return self.Type('error', 'no member %s' % ivar)
+    #@+node:ekr.20171209065852.1: *4* checker_check_signature & helpers
+    def check_signature(self, node, func, args, signature):
+        
+        trace = False
+        if trace: g.trace('%s(%s) ==> %s' % (func, args, signature))
+        self.stats.check_signature += 1
+        if signature[0] == 'self':
+            signature = signature[1:]
+        result = 'ok'
+        for i, arg in enumerate(args):
+            if i < len(signature):
+                result = self.check_arg(node, func, arg, signature[i])
+                if result == 'fail':
+                    self.error(node, '%s(%s) incompatible with %s(%s)' % (
+                        func, ','.join(args),
+                        func, ','.join(signature),
+                    ))
+                    break
+            elif trace:
+                g.trace('possible extra arg', arg)
+        if len(args) > len(signature):
+            if trace:
+                g.trace('possible missing args', signature[len(args)-1:])
+        if result == 'ok':
+            self.stats.sig_ok += 1
+        elif result == 'fail':
+            self.stats.sig_fail += 1
+        else:
+            assert result == 'unknown'
+            self.stats.sig_unknown += 1
+                
+    #@+node:ekr.20171212034531.1: *5* checker.check_arg
+    def check_arg(self, node, func, call_arg, sig_arg):
+        
+        # First, check the ags.
+        call_argv = call_arg.split('=')
+        sig_argv = sig_arg.split('=')
+        result = self.check_arg_helper(node, func, call_argv[0], sig_argv[0])
+        if result == 'fail':
+            return result
+        # Next, check a keyword call arg against it's assigned value.
+        if len(call_argv) > 1:
+            arg1, arg2 = call_argv[0], ''.join(call_argv[1:])
+            return self.check_arg_helper(node, 'KEYWORD', arg1, arg2)
+        else:
+            return result
+    #@+node:ekr.20171212035137.1: *5* checker.check_arg_helper
+    def check_arg_helper(self, node, func, call_arg, sig_arg):
+        trace = False
+        trace_ok = True
+        trace_unknown = True
+        special_names_dict = self.special_names_dict
+        if call_arg == sig_arg or sig_arg in (None, 'None'):
+            # Match anything against a default value of None.
+            if trace and trace_ok:
+                g.trace(self.log_line(node, '%20s: %20r == %r' % (
+                    func, call_arg, sig_arg)))
+            return 'ok'
+        # Resolve the call_arg if possible.
+        chain = call_arg.split('.')
+        if len(chain) > 1:
+            head, tail = chain[0], chain[1:]
+            if head in special_names_dict:
+                context = special_names_dict.get(head)
+                context = self.resolve_chain(node, tail, context)
+                if context.kind == 'error':
+                    # Caller will report the error.
+                    # g.trace('FAIL', call_arg, context)
+                    return 'unknown' ### was 'fail'
+                if sig_arg in special_names_dict:
+                    sig_class = special_names_dict.get(sig_arg)
+                    return self.compare_classes(
+                        node, call_arg, sig_arg, context, sig_class)
+        if sig_arg in special_names_dict and call_arg in special_names_dict:
+            sig_class = special_names_dict.get(sig_arg)
+            call_class = special_names_dict.get(call_arg)
+            return self.compare_classes(
+                node, call_arg, sig_arg, call_class, sig_class)
+        if trace and trace_unknown:
+            g.trace(self.log_line('%20s: %20r ?? %r' % (func, call_arg, sig_arg)))
+        return 'unknown'
+    #@+node:ekr.20171212044621.1: *5* checker.compare_classes
+    def compare_classes(self, node, arg1, arg2, class1, class2):
+
+        trace = True
+        trace_ok = False
+        if class1 == class2:
+            if trace and trace_ok:
+                g.trace('infer ok', arg1, arg2, class1)
+            self.stats.sig_infer_ok += 1
+            return 'ok'
+        else:
+            # The caller reports the failure.
+            # self.error(node, 'FAIL', arg1, arg2, class1, class2)
+            self.stats.sig_infer_fail += 1
+            return 'fail'
+    #@+node:ekr.20171215074959.1: *3* checker.Visitors & helpers
     #@+node:ekr.20171215074959.2: *4* checker.Assign & helpers
     assign_pattern = re.compile(r'^\s*(\w+(\.\w+)*)\s*=(.*)')
     assn_to_self_pattern = re.compile(r'^\s*self\.(\w+)\s*=(.*)')
@@ -852,339 +1178,13 @@ class ConventionChecker (object):
         self.indent -= 1
         top = self.context_stack.pop()
         assert node == top, (node, top)
-    #@+node:ekr.20171208135642.1: *3* checker.end_file & helper
-    def end_file(self,trace_classes=False, trace_unknowns=False):
-        
-        trace = trace_classes or trace_unknowns
-        if trace:
-            print('----- END OF FILE: %s' % self.file_name)
-            if 1:
-                for key, val in sorted(self.classes.items()):
-                    print('class %s' % key)
-                    g.printDict(val)
-            if 1:
-                self.trace_unknowns()
-        # Do *not* clear self.classes.
-        self.unknowns = {}
-    #@+node:ekr.20171212100005.1: *4* checker.trace_unknowns
-    def trace_unknowns(self):
-        print('----- Unknown ivars...')
-        d = self.unknowns
-        max_key = max([len(key) for key in d ]) if d else 2
-        for key, aList in sorted(d.items()):
-            # Remove duplicates that vary only in line number.
-            aList2, seen = [], []
-            for data in aList:
-                line, fn, s = data
-                data2 = (key, fn, s)
-                if data2 not in seen:
-                    seen.append(data2)
-                    aList2.append(data)
-            for data in aList2:
-                line, fn, s = data
-                print('%*s %4s %s: %s' % (
-                    max_key, key, line, fn, g.truncate(s, 60)))
-    #@+node:ekr.20171215080831.1: *3* checker.format
-    def format(self, node, *args, **kwargs):
-        '''Format the node and possibly its descendants, depending on args.'''
-        s = leoAst.AstFormatter().format(node, level=self.indent, *args, **kwargs)
-        return s.rstrip()
-    #@+node:ekr.20171208142646.1: *3* checker.resolve & helpers
-    def resolve(self, node, name, obj, trace=False):
-        '''Resolve name in the context of obj.'''
-        trace_resolve = True
-        # if trace and self.file_name == 'qt_tree.py':
-            # g.printDict(self.classes.get('Position'))
-        if trace and trace_resolve:
-            g.trace('      ===== name: %s obj: %r' % (name, obj))
-        self.stats.resolve += 1
-        if obj:
-            if obj.kind in ('error', 'unknown'):
-                result = obj
-            elif name == 'self':
-                if obj.name:
-                    result = self.Type('instance', obj.name)
-                else:
-                    g.trace('===== NO OBJECT NAME')
-                    result = self.Type('error', 'no object name')
-            elif obj.kind in ('class', 'instance'):
-                result = self.resolve_ivar(node, name, obj)
-            else:
-                result = self.Type('error', 'unknown kind: %s' % obj.kind)
-        else:
-            result = self.Type('error', 'unbound name: %s' % name)
-        if trace and trace_resolve: g.trace('      ----->', result)
-        return result
-    #@+node:ekr.20171213104154.1: *4* checker.resolve_name (TO DO)
-    #@+node:ekr.20171208134737.1: *4* checker.resolve_call
-    call_pattern = re.compile(r'(\w+(\.\w+)*)\s*\((.*)\)')
-
-    def resolve_call(self, node, kind, m, s):
-
-        trace = False and self.enable_trace
-        trace_entry = True
-        trace_result = False
-        self.stats.resolve_call += 1
-        s = s.strip()
-        m = self.call_pattern.match(s)
-        aList = m.group(1).split('.')
-        chain, func = aList[:-1], aList[-1]
-        args = m.group(3).split(',')
-        if chain:
-            self.recursion_count = 0
-            if trace and trace_entry:
-                g.trace(' ===== %s.%s(%s)' % (
-                    '.'.join(chain), func, ','.join(args)))
-            if self.class_name:
-                context = self.Type('class', self.class_name)
-            else:
-                context = self.Type('module', self.file_name)
-            result = self.resolve_chain(node, chain, context)
-            if trace and trace_result:
-                g.trace(' ----> %s.%s' % (result, func))
-        else:
-            result = None
-        return result
-    #@+node:ekr.20171209034244.1: *4* checker.resolve_chain
-    def resolve_chain(self, node, chain, context, trace=False):
-
-        if trace:
-            g.trace('=====', chain, context)
-        self.stats.resolve_chain += 1
-        name = '<no name>'
-        for name in chain:
-            context = self.resolve(node, name, context, trace=trace)
-            if trace: g.trace('%4s ==> %r' % (name, context))
-        if trace:
-            g.trace('%4s ----> %r' % (name, context))
-        return context
-    #@+node:ekr.20171208173323.1: *4* checker.resolve_ivar
-    # id_pattern = re.compile('\w+')
-
-    def resolve_ivar(self, node, ivar, obj):
-        '''Resolve obj.ivar'''
-        trace = False
-        trace_c_dict_on_error = False
-        trace_dict = False
-        trace_dict_on_error = False
-        trace_error = True
-        trace_ivar = False
-        trace_recursive = False
-        trace_special = False
-        trace_unknown = True
-        raise_on_error = False
-        self.stats.resolve_ivar += 1
-        class_name = 'Commands' if obj.name == 'c' else obj.name
-        the_class = self.classes.get(class_name)
-        self.recursion_count += 1
-        if self.recursion_count > 20:
-            self.error(node, 'UNBOUNDED RECURSION: %r %r\nCallers: %s' % (
-                ivar, obj, g.callers()))
-            if trace_c_dict_on_error:
-                g.trace('CLASS DICT: Commands')
-                g.printDict(self.classes.get('Commands'))
-            if trace_dict_on_error:
-                g.trace('CLASS DICT', class_name)
-                g.printDict(the_class)
-            if raise_on_error:
-                assert False, self.recursion_count
-            return self.Type('error', 'recursion')
-        if not the_class:
-            return self.Type('error', 'no class %s' % ivar)
-        if trace and trace_dict:
-            g.trace('CLASS DICT', class_name)
-            g.printDict(the_class)
-        ivars = the_class.get('ivars')
-        methods = the_class.get('methods')
-        if ivar == 'self':
-            return self.Type('class', class_name)
-        elif methods.get(ivar):
-            return self.Type('func', ivar)
-        elif ivars.get(ivar):
-            val = ivars.get(ivar)
-            if trace and trace_ivar:
-                g.trace('IVAR:', ivar, 'CONTEXT', obj, 'VAL', val)
-            if isinstance(val, self.Type):
-                if trace: g.trace('KNOWN: %s %r ==> %r' % (ivar, obj, val))
-                return val
-            # Check for pre-defined special names.
-            for special_name, special_obj in self.special_names_dict.items():
-                tail = val[len(special_name):]
-                if val == special_name:
-                    if trace and trace_special:
-                        g.trace('SPECIAL: %s ==> %s' % (val, special_obj))
-                    return special_obj
-                elif val.startswith(special_name) and tail.startswith('.'):
-                    # Resovle the rest of the tail in the found context.
-                    if trace: g.trace('TAIL: %s => %s.%s' % (val, special_obj, tail))
-                    return self.resolve_chain(node, tail[1:], special_obj)
-            # Avoid recursion 1.
-            if ivar == val:
-                if trace and trace_unknown:
-                    g.trace('AVOID RECURSION: self.%s=%s' % (ivar, val))
-                return self.Type('unknown', ivar)
-            head2 = val.split('.')
-            # Avoid recursion 2.
-            if ivar == head2[0]:
-                if trace and trace_unknown:
-                    g.trace('AVOID RECURSION2: %s=%s' % (ivar, val))
-                return self.Type('unknown', ivar)
-            if trace and trace_recursive:
-                g.trace('RECURSIVE', head2)
-            obj2 = obj
-            for name2 in head2:
-                old_obj2 = obj2
-                obj2 = self.resolve(node, name2, obj2)
-                if trace and trace_recursive:
-                    g.trace('recursive %s: %r --> %r' % (
-                        name2, old_obj2, obj2))
-            if trace and trace_recursive:
-                g.trace('END RECURSIVE: %r', obj2)
-            return obj2
-        elif ivar in self.special_names_dict:
-            val = self.special_names_dict.get(ivar)
-            if trace and trace_special:
-                g.trace('FOUND SPECIAL', ivar, val)
-            return val
-        else:
-            # Remember the unknown.
-            d = self.unknowns
-            aList = d.get(ivar, [])
-            data = (self.line_number, self.file_name)
-            aList.append(data)
-            d[ivar] = aList
-            if trace and trace_error:
-                self.error(node, 'No member:', ivar)
-            return self.Type('error', 'no member %s' % ivar)
-    #@+node:ekr.20171215082648.1: *3* checker.show_stack
+    #@+node:ekr.20171215082648.1: *4* checker.show_stack
     def show_stack(self):
 
         return g.listToString([
             '%15s %s' % (node.__class__.__name__, node.name)
                 for node in self.context_stack
             ])
-    #@+node:ekr.20171212020013.1: *3* checker.test
-    tests = [
-    '''\
-    class TC:
-        def __init__(self, c):
-            c.tc = self
-        def add_tag(self, p):
-            print(p.v) # AttributeError if p is a vnode.
-
-    class Test:
-        def __init__(self,c):
-            self.c = c
-            self.tc = self.c.tc
-        def add_tag(self):
-            p = self.c.p
-            self.tc.add_tag(p.v) # WRONG: arg should be p.
-    ''', # comma required!
-    ]
-
-    def test(self):
-
-        for s in self.tests:
-            s = g.adjustTripleString(s, self.c.tab_width)
-            self.check_file(s=s, test_kind='test', trace_fn=True)
-        if self.errors:
-            print('%s error%s' % (self.errors, g.plural(self.errors)))
-    #@+node:ekr.20171209065852.1: *3* checker_check_signature & helpers
-    def check_signature(self, node, func, args, signature):
-        
-        trace = False
-        if trace: g.trace('%s(%s) ==> %s' % (func, args, signature))
-        self.stats.check_signature += 1
-        if signature[0] == 'self':
-            signature = signature[1:]
-        result = 'ok'
-        for i, arg in enumerate(args):
-            if i < len(signature):
-                result = self.check_arg(node, func, arg, signature[i])
-                if result == 'fail':
-                    self.error(node, '%s(%s) incompatible with %s(%s)' % (
-                        func, ','.join(args),
-                        func, ','.join(signature),
-                    ))
-                    break
-            elif trace:
-                g.trace('possible extra arg', arg)
-        if len(args) > len(signature):
-            if trace:
-                g.trace('possible missing args', signature[len(args)-1:])
-        if result == 'ok':
-            self.stats.sig_ok += 1
-        elif result == 'fail':
-            self.stats.sig_fail += 1
-        else:
-            assert result == 'unknown'
-            self.stats.sig_unknown += 1
-                
-    #@+node:ekr.20171212034531.1: *4* checker.check_arg
-    def check_arg(self, node, func, call_arg, sig_arg):
-        
-        # First, check the ags.
-        call_argv = call_arg.split('=')
-        sig_argv = sig_arg.split('=')
-        result = self.check_arg_helper(node, func, call_argv[0], sig_argv[0])
-        if result == 'fail':
-            return result
-        # Next, check a keyword call arg against it's assigned value.
-        if len(call_argv) > 1:
-            arg1, arg2 = call_argv[0], ''.join(call_argv[1:])
-            return self.check_arg_helper(node, 'KEYWORD', arg1, arg2)
-        else:
-            return result
-    #@+node:ekr.20171212035137.1: *4* checker.check_arg_helper
-    def check_arg_helper(self, node, func, call_arg, sig_arg):
-        trace = False
-        trace_ok = True
-        trace_unknown = True
-        special_names_dict = self.special_names_dict
-        if call_arg == sig_arg or sig_arg in (None, 'None'):
-            # Match anything against a default value of None.
-            if trace and trace_ok:
-                g.trace(self.log_line(node, '%20s: %20r == %r' % (
-                    func, call_arg, sig_arg)))
-            return 'ok'
-        # Resolve the call_arg if possible.
-        chain = call_arg.split('.')
-        if len(chain) > 1:
-            head, tail = chain[0], chain[1:]
-            if head in special_names_dict:
-                context = special_names_dict.get(head)
-                context = self.resolve_chain(node, tail, context)
-                if context.kind == 'error':
-                    # Caller will report the error.
-                    # g.trace('FAIL', call_arg, context)
-                    return 'unknown' ### was 'fail'
-                if sig_arg in special_names_dict:
-                    sig_class = special_names_dict.get(sig_arg)
-                    return self.compare_classes(
-                        node, call_arg, sig_arg, context, sig_class)
-        if sig_arg in special_names_dict and call_arg in special_names_dict:
-            sig_class = special_names_dict.get(sig_arg)
-            call_class = special_names_dict.get(call_arg)
-            return self.compare_classes(
-                node, call_arg, sig_arg, call_class, sig_class)
-        if trace and trace_unknown:
-            g.trace(self.log_line('%20s: %20r ?? %r' % (func, call_arg, sig_arg)))
-        return 'unknown'
-    #@+node:ekr.20171212044621.1: *4* checker.compare_classes
-    def compare_classes(self, node, arg1, arg2, class1, class2):
-
-        trace = True
-        trace_ok = False
-        if class1 == class2:
-            if trace and trace_ok:
-                g.trace('infer ok', arg1, arg2, class1)
-            self.stats.sig_infer_ok += 1
-            return 'ok'
-        else:
-            # The caller reports the failure.
-            # self.error(node, 'FAIL', arg1, arg2, class1, class2)
-            self.stats.sig_infer_fail += 1
-            return 'fail'
     #@+node:ekr.20171212101613.1: *3* class CCStats
     class CCStats(object):
         '''
