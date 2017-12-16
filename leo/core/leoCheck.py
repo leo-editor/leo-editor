@@ -881,7 +881,7 @@ class ConventionChecker (object):
             self.stats.sig_infer_fail += 1
             return 'fail'
     #@+node:ekr.20171215074959.1: *3* checker.Visitors & helpers
-    #@+node:ekr.20171215074959.2: *4* checker.Assign & helpers
+    #@+node:ekr.20171215074959.2: *4* checker.Assign & helpers (remove regex in helpers)
     def before_Assign(self, node):
         
         s = self.format(node)
@@ -890,30 +890,43 @@ class ConventionChecker (object):
             return
         self.stats.assignments += 1
         for target in node.targets:
-            attr = None
-            while not isinstance(target, ast.Name):
-                if isinstance(target, ast.Attribute):
-                    attr = target
-                    target = target.value
-                else:
-                    name = target.__class__.__name__
-                    if name not in (
-                        'Call', # c1.rootPosition().h = whatever
-                        'Subscript', # d[x] = whatever
-                        'Tuple', # (hPos,vPos) = self.getScroll()
-                    ):
-                        self.note(node, 'target %s: %s' % (name, s.strip()))
-                    break
-            if isinstance(target, ast.Name):
-                name = target.id
-                attr = attr.attr if attr else None
-                if attr:
+            if 1:
+                chain = self.get_chain(target)
+                if len(chain) == 2:
+                    node2, node3 = chain ### chain[0], chain[1]
+                    assert isinstance(node2, ast.Name), repr(node2)
+                    assert g.isString(node3), repr(node3)
+                    name = node2.id
                     if name == 'self':
                         self.do_assn_to_self(node)
                     elif name in self.special_names_dict:
                         self.do_assn_to_special(node)
+            else:
+                attr = None
+                while not isinstance(target, ast.Name):
+                    if isinstance(target, ast.Attribute):
+                        attr = target
+                        target = target.value
+                    else:
+                        name = target.__class__.__name__
+                        if name not in (
+                            'Call', # c1.rootPosition().h = whatever
+                            'Subscript', # d[x] = whatever
+                            'Tuple', # (hPos,vPos) = self.getScroll()
+                        ):
+                            self.note(node, 'target %s: %s' % (name, s.strip()))
+                        break
+                if isinstance(target, ast.Name):
+                    name = target.id
+                    attr = attr.attr if attr else None
+                    if attr:
+                        g.trace([name, attr])
+                        if name == 'self':
+                            self.do_assn_to_self(node)
+                        elif name in self.special_names_dict:
+                            self.do_assn_to_special(node)
         
-    #@+node:ekr.20171215074959.4: *5* checker.do_assn_to_self
+    #@+node:ekr.20171215074959.4: *5* checker.do_assn_to_self (remove regex)
     assn_to_self_pattern = re.compile(r'^\s*self\.(\w+)\s*=(.*)')
 
     def do_assn_to_self(self, node):
@@ -957,7 +970,7 @@ class ConventionChecker (object):
         # if 1:
             # g.trace('class %s...' % self.class_name)
             # g.printDict(d)
-    #@+node:ekr.20171215074959.3: *5* checker.do_assn_to_special
+    #@+node:ekr.20171215074959.3: *5* checker.do_assn_to_special (remove regex)
     assign_to_special_pattern = re.compile(r'^\s*(\w+)\.([\w.]+)\s*=(.*)')
 
     def do_assn_to_special(self, node):
@@ -1040,7 +1053,7 @@ class ConventionChecker (object):
             # if 1:
                 # g.trace('AFTER: class %s...' % t.name)
                 # g.printDict(d)
-    #@+node:ekr.20171215074959.5: *4* checker.Call & helper
+    #@+node:ekr.20171215074959.5: *4* checker.Call & helper (remove regex)
     call_pattern = re.compile(r'^\s*(\w+(\.\w+)*)\s*\((.*)\)')
 
     def before_Call(self, node):
@@ -1050,33 +1063,33 @@ class ConventionChecker (object):
         if self.pass_n == 1:
             return
         self.stats.calls += 1
-        m = self.call_pattern.match(s.strip())
-            # It's weird that this strip() is needed.
-        try:
-            m.group(1)
-            if any([m.group(1).startswith(z) for z in self.ignore]):
-                # g.trace('IGNORE', m.group(1))
-                return
-        except Exception:
-            ### Requires more than regex can give.
-            # g.trace('========== NO MATCH', s)
-            return
-        obj = self.resolve_call(node, 'call', m, s)
-        if obj and obj.kind == 'instance':
+        if 0:
+            pass ### To do
+        else:
             m = self.call_pattern.match(s.strip())
-            chain = m.group(1).split('.')
-            func = chain[-1]
-            args = self.split_args(node, m.group(3))
-            instance = self.classes.get(obj.name)
-            if instance:
-                d = instance.get('methods')
-                signature = d.get(func)
-                if signature:
-                    if isinstance(signature, self.Type):
-                        pass
-                    else:
-                        signature = signature.split(',')
-                        self.check_signature(node, func, args, signature)
+                # It's weird that this strip() is needed.
+            try:
+                m.group(1)
+                if any([m.group(1).startswith(z) for z in self.ignore]):
+                    return
+            except Exception:
+                return
+            obj = self.resolve_call(node, 'call', m, s)
+            if obj and obj.kind == 'instance':
+                m = self.call_pattern.match(s.strip())
+                chain = m.group(1).split('.')
+                func = chain[-1]
+                args = self.split_args(node, m.group(3))
+                instance = self.classes.get(obj.name)
+                if instance:
+                    d = instance.get('methods')
+                    signature = d.get(func)
+                    if signature:
+                        if isinstance(signature, self.Type):
+                            pass
+                        else:
+                            signature = signature.split(',')
+                            self.check_signature(node, func, args, signature)
     #@+node:ekr.20171215103935.1: *5* checker.split_args
     def split_args(self, node, args):
         '''
@@ -1173,6 +1186,35 @@ class ConventionChecker (object):
         self.indent -= 1
         top = self.context_stack.pop()
         assert node == top, (node, top)
+    #@+node:ekr.20171216110107.1: *4* checker.get_chain
+    def get_chain(self,node):
+        '''Scan node for a chain of names.'''
+        chain, node1 = [], node
+        while not isinstance(node, ast.Name):
+            if isinstance(node, ast.Attribute):
+                assert g.isString(node.attr), repr(node.attr)
+                chain.append(node.attr)
+                node = node.value
+                # if g.isString(node.attr):
+                    # chain.append(node.attr)
+                    # node = node.value
+                # else:
+                    # self.error(node1, 'Complex attr', node.attr, node)
+                    # return []
+            else:
+                name = node.__class__.__name__
+                if name not in (
+                    'Call', # c1.rootPosition().h = whatever
+                    'Subscript', # d[x] = whatever
+                    'Tuple', # (hPos,vPos) = self.getScroll()
+                ):
+                    self.note(node1, 'target %s: %s' % (name, self.format(node1)))
+                return []
+        if isinstance(node, ast.Name):
+            chain.append(node)
+            return list(reversed(chain))
+        else:
+            return []
     #@+node:ekr.20171215082648.1: *4* checker.show_stack
     def show_stack(self):
 
