@@ -430,7 +430,7 @@ class ConventionChecker (object):
         '''
         g.cls()
         c = self.c
-        kind = 'project' # Allow names of projects?
+        kind = 'test' # Allow names of projects?
         assert kind in ('files', 'production', 'project', 'test'), repr(kind)
         report_stats = True
         if kind == 'files':
@@ -495,7 +495,7 @@ class ConventionChecker (object):
         for n in 1, 2:
             if self.test_kind == 'test':
                 g.trace('===== PASS', n)
-            # Simple inits.
+            # Init this pass.
             self.file_name = fn
             self.indent = 0
             self.pass_n = n
@@ -593,7 +593,7 @@ class ConventionChecker (object):
             self.check_file(s=s, test_kind='test', trace_fn=True)
         if self.errors:
             print('%s error%s' % (self.errors, g.plural(self.errors)))
-    #@+node:ekr.20171216063026.1: *3* checker.error, node & log_line
+    #@+node:ekr.20171216063026.1: *3* checker.error, note & log_line
     def error(self, node, *args, **kwargs):
         
         self.errors += 1
@@ -612,7 +612,11 @@ class ConventionChecker (object):
     def note(self, node, *args, **kwargs):
 
         print('Note: %s' % self.log_line(node, *args, **kwargs))
-    #@+node:ekr.20171215080831.1: *3* checker.format
+    #@+node:ekr.20171215080831.1: *3* checker.dump & format
+    def dump(self, node, level=0):
+        '''Dump the node.'''
+        return leoAst.AstDumper().dump(node, level=level)
+
     def format(self, node, *args, **kwargs):
         '''Format the node and possibly its descendants, depending on args.'''
         s = leoAst.AstFormatter().format(node, level=self.indent, *args, **kwargs)
@@ -645,6 +649,8 @@ class ConventionChecker (object):
         return result
     #@+node:ekr.20171213104154.1: *4* checker.resolve_name (TO DO)
     #@+node:ekr.20171208134737.1: *4* checker.resolve_call (remove regex)
+    # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
+
     call_pattern = re.compile(r'(\w+(\.\w+)*)\s*\((.*)\)')
         # Used in two places.
 
@@ -962,6 +968,7 @@ class ConventionChecker (object):
             g.trace('AFTER: class %s...' % t.name)
             g.printDict(d)
     #@+node:ekr.20171215074959.5: *4* checker.Call & helper (remove regex)
+    # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
     def before_Call(self, node):
 
@@ -970,6 +977,7 @@ class ConventionChecker (object):
         if self.pass_n == 1:
             return
         self.stats.calls += 1
+        g.trace(self.dump(node))
         if 1:
             call_pattern = re.compile(r'^\s*(\w+(\.\w+)*)\s*\((.*)\)')
             m = call_pattern.match(s.strip())

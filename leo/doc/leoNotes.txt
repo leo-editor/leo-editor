@@ -26437,6 +26437,41 @@ class LeoTagWidget(QtWidgets.QWidget):
 
 '''
 assert s_2
+.. @+node:ekr.20141012064706.18394: *3* d.extra_attributes & helpers (not used)
+def extra_attributes(self, node):
+    '''Return the tuple (field,repr(field)) for all extra fields.'''
+    d = {
+        # 'e': self.do_repr,
+        # 'cache':self.do_cache_list,
+        # 'reach':self.do_reaching_list,
+        # 'typ':  self.do_types_list,
+    }
+    aList = []
+    for attr in sorted(d.keys()):
+        if hasattr(node, attr):
+            val = getattr(node, attr)
+            f = d.get(attr)
+            s = f(attr, node, val)
+            if s:
+                aList.append((attr, s),)
+    return aList
+.. @+node:ekr.20141012064706.18395: *4* d.do_cache_list
+def do_cache_list(self, attr, node, val):
+    return self.node.dump_cache(node)
+.. @+node:ekr.20141012064706.18396: *4* d.do_reaching_list
+def do_reaching_list(self, attr, node, val):
+    assert attr == 'reach'
+    return '[%s]' % ','.join([repr(z) for z in getattr(node, attr)])
+        # self.format(z).strip() or repr(z)
+        # for z in getattr(node, attr)])
+.. @+node:ekr.20141012064706.18397: *4* d.do_repr
+def do_repr(self, attr, node, val):
+    return repr(val)
+.. @+node:ekr.20141012064706.18398: *4* d.do_types_list
+def do_types_list(self, attr, node, val):
+    assert attr == 'typ'
+    return '[%s]' % ','.join(
+        [repr(z) for z in getattr(node, attr)])
 .. @-all
 .. @@nosearch
 .. @-leo

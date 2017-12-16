@@ -102,34 +102,27 @@ class AstDumper(object):
     Return a formatted dump (a string) of the AST node.
 
     Adapted from Python's ast.dump.
-
-    annotate_fields:    True: show names of fields (can't eval the dump).
-    disabled_field:     List of names of fields not to show: e.g. ['ctx',]
-    include_attributes: True: show line numbers and column offsets.
-    indent:             Number of spaces for each indent.
     '''
-    #@+others
-    #@+node:ekr.20141012064706.18391: *3* d.ctor
-    def __init__(self, u, annotate_fields, disabled_fields, format, include_attributes, indent_ws):
-        '''Ctor for AstDumper class.'''
-        self.u = u
+    def __init__(self,
+        annotate_fields=False, # True: show names of fields.
+        disabled_fields=None, # List of names of fields not to show.
+        include_attributes=False, # True: show line numbers and column offsets.
+        indent_ws='  ', # Number of spaces for each indent.
+    ):
         self.annotate_fields = annotate_fields
-        self.disabled_fields = disabled_fields
-        self.format = format
+        self.disabled_fields = disabled_fields or ['ctx',]
         self.include_attributes = include_attributes
         self.indent_ws = indent_ws
+
+    #@+others
     #@+node:ekr.20141012064706.18392: *3* d.dump
     def dump(self, node, level=0):
         sep1 = '\n%s' % (self.indent_ws * (level + 1))
         if isinstance(node, ast.AST):
             fields = [(a, self.dump(b, level + 1)) for a, b in self.get_fields(node)]
-                # ast.iter_fields(node)]
             if self.include_attributes and node._attributes:
                 fields.extend([(a, self.dump(getattr(node, a), level + 1))
                     for a in node._attributes])
-            # Not used at present.
-            # aList = self.extra_attributes(node)
-            # if aList: fields.extend(aList)
             if self.annotate_fields:
                 aList = ['%s=%s' % (a, b) for a, b in fields]
             else:
@@ -150,48 +143,10 @@ class AstDumper(object):
             return repr(node)
     #@+node:ekr.20141012064706.18393: *3* d.get_fields
     def get_fields(self, node):
-        fields = [z for z in ast.iter_fields(node)]
-        result = []
-        for a, b in fields:
-            if a not in self.disabled_fields:
-                if b not in (None, []):
-                    result.append((a, b),)
-        return result
-    #@+node:ekr.20141012064706.18394: *3* d.extra_attributes & helpers (not used)
-    def extra_attributes(self, node):
-        '''Return the tuple (field,repr(field)) for all extra fields.'''
-        d = {
-            # 'e': self.do_repr,
-            # 'cache':self.do_cache_list,
-            # 'reach':self.do_reaching_list,
-            # 'typ':  self.do_types_list,
-        }
-        aList = []
-        for attr in sorted(d.keys()):
-            if hasattr(node, attr):
-                val = getattr(node, attr)
-                f = d.get(attr)
-                s = f(attr, node, val)
-                if s:
-                    aList.append((attr, s),)
-        return aList
-    #@+node:ekr.20141012064706.18395: *4* d.do_cache_list
-    def do_cache_list(self, attr, node, val):
-        return self.u.dump_cache(node)
-    #@+node:ekr.20141012064706.18396: *4* d.do_reaching_list
-    def do_reaching_list(self, attr, node, val):
-        assert attr == 'reach'
-        return '[%s]' % ','.join(
-            [self.format(z).strip() or repr(z)
-                for z in getattr(node, attr)])
-    #@+node:ekr.20141012064706.18397: *4* d.do_repr
-    def do_repr(self, attr, node, val):
-        return repr(val)
-    #@+node:ekr.20141012064706.18398: *4* d.do_types_list
-    def do_types_list(self, attr, node, val):
-        assert attr == 'typ'
-        return '[%s]' % ','.join(
-            [repr(z) for z in getattr(node, attr)])
+        return (
+            (a, b) for a, b in ast.iter_fields(node)
+                if a not in self.disabled_fields and b not in (None, [])
+        )
     #@-others
 #@+node:ekr.20141012064706.18399: ** class AstFormatter
 class AstFormatter(object):
