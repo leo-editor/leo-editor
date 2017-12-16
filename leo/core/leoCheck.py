@@ -350,14 +350,16 @@ class ConventionChecker (object):
             'Commands', 'LeoGlobals', 'Position', 'String', 'VNode', 'VNodeBase',
         ]
         self.special_names_dict = self.init_special_names()
-        # Other ivars...
+        # Debugging
         self.enable_trace = True
         self.file_name = None
+        self.indent = 0 # For self.format.
+        self.recursion_count = 0
+        ### self.s = '' # The line being examined.
+        self.stats = self.CCStats()
+        # Other ivars...
         self.line_number = 0
         self.pass_n = 0
-        self.recursion_count = 0
-        self.s = '' # The line being examined.
-        self.stats = self.CCStats()
         self.test_kind = None
         self.unknowns = {} # Keys are expression, values are (line, fn) pairs.
     #@+node:ekr.20171209044610.1: *4* checker.init_classes
@@ -524,7 +526,9 @@ class ConventionChecker (object):
         cct = self.CCTraverser(controller=self)
         for n in 1, 2:
             g.trace('===== PASS', n)
-            self.pass_n = cct.pass_n = n
+            # Simple inits.
+            self.indent = 0
+            self.pass_n = n
             cct.visit(node)
         self.end_file()
     #@+node:ekr.20171215074959.1: *3* checker.do_* & end_*(new)
@@ -535,20 +539,20 @@ class ConventionChecker (object):
 
     def do_assign(self, node):
         
-        s = self.format(node)
         table = (
             # Order important.
             (self.assn_to_self_pattern, self.do_assn_to_self),
             (self.assign_to_special_pattern, self.do_assn_to_special),
         )
-        self.stats.assignments += 1
-        for pattern, func in table:
-            m = pattern.match(s)
-            if m:
-                # g.trace(func.__name__)
-                func(node, m, s)
-                return
-        
+        s = self.format(node)
+        if self.test_kind == 'test': print(s)
+        if self.pass_n == 2:
+            self.stats.assignments += 1
+            for pattern, func in table:
+                m = pattern.match(s)
+                if m:
+                    func(node)
+                    return
         # This code also works.
         # for target in node.targets:
             # attr = None
@@ -567,13 +571,19 @@ class ConventionChecker (object):
                 # elif name in self.special_names_dict:
                     # self.do_assn_to_special(node, name, attr)
     #@+node:ekr.20171215074959.4: *4* checker.do_assn_to_self
-    def do_assn_to_self(self, node, m, s):
+    assn_to_self_pattern = re.compile(r'^\s*self\.(\w+)\s*=(.*)')
 
-        assert self.class_name
+    def do_assn_to_self(self, node):
+
+        assert self.pass_n == 2
+        s = self.format(node)
         class_name = self.class_name
+        if not class_name:
+            g.trace('SKIP: no class name')
         if class_name in self.special_class_names:
             # g.trace('SKIP' % g.truncate(s.strip(), 80))
             return
+        m = self.assn_to_self_pattern.match(s)
         ivar = m.group(1)
         val = m.group(2).strip()
         d = self.classes.get(self.class_name)
@@ -602,10 +612,15 @@ class ConventionChecker (object):
             # g.trace('class %s...' % self.class_name)
             # g.printDict(d)
     #@+node:ekr.20171215074959.3: *4* checker.do_assn_to_special
-    def do_assn_to_special(self, node, m, s):
+    assign_to_special_pattern = re.compile(r'^\s*(\w+)\.([\w.]+)\s*=(.*)')
+
+    def do_assn_to_special(self, node):
         
         trace = False
+        assert self.pass_n == 2
         class_name = self.class_name
+        s = self.format(node)
+        m = self.assign_to_special_pattern.match(s)
         ivar1 = m.group(1)
         ivar2 = m.group(2)
         val = m.group(3).strip()
@@ -617,7 +632,6 @@ class ConventionChecker (object):
         if t.kind == 'instance' and t.name == class_name:
             if trace: g.trace('SKIP', s.strip())
             return
-        # g.trace('INJECT %s' % s.strip())
         # Resolve val, if possible.
         context = self.Type(
             'class' if class_name else 'module',
@@ -682,15 +696,21 @@ class ConventionChecker (object):
 
     def do_call(self, node):
 
-        self.stats.calls += 1
         s = self.format(node)
-        m = self.call_pattern.match(s)
+        if self.test_kind == 'test': print(s)
+        if self.pass_n == 1:
+            return
+        self.stats.calls += 1
+        m = self.call_pattern.match(s.strip())
+            # It's weird that this strip() is needed.
         try:
             m.group(1)
-            # trace = not any([m.group(1).startswith(z) for z in self.ignore])
+            if any([m.group(1).startswith(z) for z in self.ignore]):
+                g.trace('IGNORE', m.group(1))
+                return
         except Exception:
             g.trace('========== NO MATCH', s)
-            return ###
+            return
         obj = self.resolve_call('call', m, s)
         if obj and obj.kind == 'instance':
             m = self.call_pattern.match(s.strip())
@@ -717,7 +737,6 @@ class ConventionChecker (object):
         It could also contain an unbalanced ')'.
         '''
         trace = False
-        if trace: g.trace(args)
         arg, i, result = '', 0, []
         while i < len(args):
             ch = args[i]
@@ -731,8 +750,7 @@ class ConventionChecker (object):
                 if trace:
                     print('')
                     g.trace('UNBALANCED: regex error?\n',
-                        self.line_number, self.file_name,
-                        g.truncate(self.s.strip(),80))
+                        self.line_number, self.file_name, args)
                 break
             elif ch == '(':
                 j, s = g.skip_to_char(args, i, ')')
@@ -743,8 +761,7 @@ class ConventionChecker (object):
                     if trace:
                         print('')
                         g.trace('NO MATCHING ")"\n',
-                            self.line_number, self.file_name,
-                            g.truncate(self.s.strip(),80))
+                            self.line_number, self.file_name, args)
                     break
             else:
                 arg += ch
@@ -759,15 +776,19 @@ class ConventionChecker (object):
     #@+node:ekr.20171215074959.7: *4* checker.do_class & end_class
     def do_class(self, node):
 
+        print(self.format(node, print_body=False))
+        self.indent += 1
         self.context_stack.append(node)
         self.class_name = name = node.name
-        self.stats.classes += 1
-        if name not in self.special_class_names:
-            self.classes [name] = {'ivars': {}, 'methods': {}}
+        if self.pass_n == 1:
+            self.stats.classes += 1
+            if name not in self.special_class_names:
+                self.classes [name] = {'ivars': {}, 'methods': {}}
 
     def end_class(self, node):
 
-        if 0:
+        self.indent -= 1
+        if 0 and self.pass_n == 1:
             g.trace(node, self.show_stack())
             print('----- END class %s. class dict...' % self.class_name)
             g.printDict(self.classes.get(self.class_name))
@@ -785,28 +806,33 @@ class ConventionChecker (object):
 
     def do_def(self, node):
 
-        s = self.format(node)
-        m = self.def_pattern.match(s)
-        self.stats.defs += 1
+        s = self.format(node, print_body=False)
+        if self.test_kind == 'test': print(s)
+        self.indent += 1
         self.context_stack.append(node)
-        if self.class_name not in self.special_class_names:
-            # Works either way for simple tests.
-            if self.class_name in self.classes:
-                if 1:
-                    def_name = node.name
-                    def_args = self.format(node.args)
+        if self.pass_n == 1:
+            self.stats.defs += 1
+            if self.class_name not in self.special_class_names:
+                # Works either way for simple tests.
+                if self.class_name in self.classes:
+                    if 1:
+                        def_name = node.name
+                        def_args = self.format(node.args)
+                    else:
+                        # This will fail for function decorators, etc.
+                        m = self.def_pattern.match(s)
+                        def_name = m.group(1)
+                        def_args = m.group(2)
+                    the_class = self.classes.get(self.class_name)
+                    methods = the_class.get('methods')
+                    assert methods is not None
+                    methods [def_name] = def_args ### self.format(node.args) # .split(',')
                 else:
-                    def_name = m.group(1)
-                    def_args = m.group(2)
-                the_class = self.classes.get(self.class_name)
-                methods = the_class.get('methods')
-                assert methods is not None
-                methods [def_name] = def_args ### self.format(node.args) # .split(',')
-            else:
-                g.trace('===== no class', node.name)
+                    g.trace('===== no class', node.name)
 
     def end_def(self, node):
 
+        self.indent -= 1
         top = self.context_stack.pop()
         assert node == top, (node, top)
     #@+node:ekr.20171208135642.1: *3* checker.end_file & helper
@@ -842,9 +868,9 @@ class ConventionChecker (object):
                 print('%*s %4s %s: %s' % (
                     max_key, key, line, fn, g.truncate(s, 60)))
     #@+node:ekr.20171215080831.1: *3* checker.format
-    def format(self, node):
+    def format(self, node, *args, **kwargs):
         '''Format the node and possibly its descendants, depending on args.'''
-        s = leoAst.AstFormatter().format(node, level=0)
+        s = leoAst.AstFormatter().format(node, level=self.indent, *args, **kwargs)
         return s.rstrip()
     #@+node:ekr.20171208142646.1: *3* checker.resolve & helpers
     def resolve(self, name, obj, trace=False):
@@ -1007,15 +1033,11 @@ class ConventionChecker (object):
             # Remember the unknown.
             d = self.unknowns
             aList = d.get(ivar, [])
-            data = (self.line_number, self.file_name, self.s.strip())
+            data = (self.line_number, self.file_name)
             aList.append(data)
             d[ivar] = aList
             if trace and trace_error:
-                g.trace('NO MEMBER: %-s %s: %s' % (
-                    self.line_number,
-                    self.file_name,
-                    g.truncate(self.s.strip(), 60),
-                ))
+                g.trace('NO MEMBER: %-s %s' % (self.line_number, self.file_name))
             return self.Type('error', 'no member %s' % ivar)
     #@+node:ekr.20171215082648.1: *3* checker.show_stack
     def show_stack(self):
@@ -1061,8 +1083,8 @@ class ConventionChecker (object):
             if i < len(signature):
                 result = self.check_arg(func, arg, signature[i])
                 if result == 'fail':
-                    print('\nline %s %s: %s\n%s(%s) incompatible with %s(%s)\n' % (
-                        self.line_number, self.file_name, self.s.strip(),
+                    print('\n%s(%s) incompatible with %s(%s)\n' % (
+                        ### self.line_number, self.file_name, self.s.strip(),
                         func, ','.join(args),
                         func, ','.join(signature)))
                     break
@@ -1178,64 +1200,41 @@ class ConventionChecker (object):
         
     #@+node:ekr.20171214151001.1: *3* class CCTraverser (AstFullTraverser)
     class CCTraverser (leoAst.AstFullTraverser):
+        
+        '''A traverser class that *only* calls controller methods.'''
 
         def __init__(self, controller):
 
             leoAst.AstFullTraverser.__init__(self)
             self.cc = controller
-            self.in_expr = False
-            self.indent = 0
-            self.pass_n = 0
-            self.trace = True
         
         #@+others
         #@+node:ekr.20171214151114.1: *4* CCT.before_* & after_*
         def before_Assign(self, node):
-            if self.pass_n == 2:
-                if self.trace: print(self.format(node, self.indent))
-                self.cc.do_assign(node)
+            self.cc.do_assign(node)
 
         def before_AugAssign(self, node):
-            if self.pass_n == 2:
-                if self.trace: print(self.format(node, self.indent))
-                self.cc.do_assign(node)
+            self.cc.do_assign(node)
             
         def before_Call(self, node):
-            if self.pass_n == 2:
-                if not self.in_expr:
-                    if self.trace: print(self.format(node, self.indent))
-                self.cc.do_call(node)
+            self.cc.do_call(node)
                 
         def before_ClassDef(self, node):
-            print(self.format(node, self.indent, print_body=False))
             self.cc.do_class(node)
-            self.indent += 1
 
         def after_ClassDef(self, node):
             self.cc.end_class(node)
-            self.indent -= 1
-            
-        def before_Expr(self, node):
-            if self.pass_n == 2:
-                self.in_expr = True
-                if self.trace: print(self.format(node, self.indent))
-            
-        def after_Expr(self, node):
-            if self.pass_n == 2:
-                self.in_expr = False
             
         def before_FunctionDef(self, node):
-            if self.trace: print(self.format(node, self.indent, print_body=False))
             self.cc.do_def(node)
-            self.indent += 1
             
         def after_FunctionDef(self, node):
             self.cc.end_def(node)
-            self.indent -= 1
             
         def before_Print(self, node):
-            if self.pass_n == 2:
-                if self.trace: print(self.format(node, self.indent))
+            # There is no cc.do_Print handler.
+            if self.cc.test_kind == 'test':
+                print(self.cc.format(node))
         #@-others
     #@+node:ekr.20171209030742.1: *3* class Type
     class Type (object):
