@@ -430,7 +430,7 @@ class ConventionChecker (object):
         '''
         g.cls()
         c = self.c
-        kind = 'project' # Allow names of projects?
+        kind = 'test' # Allow names of projects?
         assert kind in ('files', 'production', 'project', 'test'), repr(kind)
         report_stats = True
         if kind == 'files':
@@ -890,61 +890,43 @@ class ConventionChecker (object):
             return
         self.stats.assignments += 1
         for target in node.targets:
-            if 1:
-                chain = self.get_chain(target)
-                if len(chain) == 2:
-                    node2, node3 = chain ### chain[0], chain[1]
-                    assert isinstance(node2, ast.Name), repr(node2)
-                    assert g.isString(node3), repr(node3)
-                    name = node2.id
-                    if name == 'self':
-                        self.do_assn_to_self(node)
-                    elif name in self.special_names_dict:
-                        self.do_assn_to_special(node)
-            else:
-                attr = None
-                while not isinstance(target, ast.Name):
-                    if isinstance(target, ast.Attribute):
-                        attr = target
-                        target = target.value
-                    else:
-                        name = target.__class__.__name__
-                        if name not in (
-                            'Call', # c1.rootPosition().h = whatever
-                            'Subscript', # d[x] = whatever
-                            'Tuple', # (hPos,vPos) = self.getScroll()
-                        ):
-                            self.note(node, 'target %s: %s' % (name, s.strip()))
-                        break
-                if isinstance(target, ast.Name):
-                    name = target.id
-                    attr = attr.attr if attr else None
-                    if attr:
-                        g.trace([name, attr])
-                        if name == 'self':
-                            self.do_assn_to_self(node)
-                        elif name in self.special_names_dict:
-                            self.do_assn_to_special(node)
-        
+            chain = self.get_chain(target)
+            if len(chain) == 2:
+                var1, var2 = chain
+                assert isinstance(var1, ast.Name), repr(var1)
+                assert g.isString(var2), repr(var2)
+                name = var1.id
+                if name == 'self':
+                    self.do_assn_to_self(node, name, var2)
+                elif name in self.special_names_dict:
+                    self.do_assn_to_special(node, name, var2)
     #@+node:ekr.20171215074959.4: *5* checker.do_assn_to_self (remove regex)
-    assn_to_self_pattern = re.compile(r'^\s*self\.(\w+)\s*=(.*)')
-
-    def do_assn_to_self(self, node):
+    def do_assn_to_self(self, node, var1, var2):
 
         assert self.pass_n == 2
+        assert var1 == 'self'
         s = self.format(node)
         class_name = self.class_name
         if not class_name:
-            g.trace('SKIP: no class name')
+            self.note(node, 'SKIP: no class name', s)
+            return
         if class_name in self.special_class_names:
             # g.trace('SKIP' % g.truncate(s.strip(), 80))
             return
-        m = self.assn_to_self_pattern.match(s)
-        if not m:
-            # g.trace('No match', s)
-            return
-        ivar = m.group(1)
-        val = m.group(2).strip()
+        if 0:
+            assn_to_self_pattern = re.compile(r'^\s*self\.(\w+)\s*=(.*)')
+            m = assn_to_self_pattern.match(s)
+            if not m:
+                # g.trace('No match', s)
+                return
+            ivar = m.group(1)
+            val = m.group(2).strip()
+            if ivar != var2:
+                self.note(node, 'regex mismatch', ivar, var2, s)
+                return
+        else:
+            ivar = var2
+            val = self.format(node.value)
         d = self.classes.get(self.class_name)
         assert d is not None, self.class_name
         ivars = d.get('ivars')
@@ -973,7 +955,7 @@ class ConventionChecker (object):
     #@+node:ekr.20171215074959.3: *5* checker.do_assn_to_special (remove regex)
     assign_to_special_pattern = re.compile(r'^\s*(\w+)\.([\w.]+)\s*=(.*)')
 
-    def do_assn_to_special(self, node):
+    def do_assn_to_special(self, node, var1, var2):
         
         trace = False
         assert self.pass_n == 2
@@ -1195,12 +1177,6 @@ class ConventionChecker (object):
                 assert g.isString(node.attr), repr(node.attr)
                 chain.append(node.attr)
                 node = node.value
-                # if g.isString(node.attr):
-                    # chain.append(node.attr)
-                    # node = node.value
-                # else:
-                    # self.error(node1, 'Complex attr', node.attr, node)
-                    # return []
             else:
                 name = node.__class__.__name__
                 if name not in (
