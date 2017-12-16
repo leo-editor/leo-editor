@@ -205,6 +205,7 @@ class AstFormatter(object):
     # No ctor.
     # pylint: disable=consider-using-enumerate
     
+    in_expr = False
     level = 0
 
     #@+others
@@ -310,8 +311,11 @@ class AstFormatter(object):
     #@+node:ekr.20141012064706.18411: *4* f.Expr
     def do_Expr(self, node):
         '''An outer expression: must be indented.'''
-        s = self.indent('%s\n' % self.visit(node.value))
-        return s
+        assert not self.in_expr
+        self.in_expr = True
+        value = self.visit(node.value)
+        self.in_expr = False
+        return self.indent('%s\n' % value)
     #@+node:ekr.20141012064706.18412: *4* f.Expression
     def do_Expression(self, node):
         '''An inner expression: do not indent.'''
@@ -405,7 +409,9 @@ class AstFormatter(object):
         if getattr(node, 'kwargs', None):
             args.append('**%s' % (self.visit(node.kwargs)))
         args = [z for z in args if z] # Kludge: Defensive coding.
-        return '%s(%s)' % (func, ','.join(args))
+        s = '%s(%s)' % (func, ','.join(args))
+        return s if self.in_expr else self.indent(s+'\n')
+            # 2017/12/15.
     #@+node:ekr.20141012064706.18421: *5* f.keyword
     # keyword = (identifier arg, expr value)
 
