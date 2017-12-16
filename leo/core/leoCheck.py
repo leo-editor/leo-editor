@@ -525,19 +525,20 @@ class ConventionChecker (object):
 
         cct = self.CCTraverser(controller=self)
         for n in 1, 2:
-            g.trace('===== PASS', n)
+            if self.test_kind == 'test':
+                g.trace('===== PASS', n)
             # Simple inits.
             self.indent = 0
             self.pass_n = n
             cct.visit(node)
         self.end_file()
     #@+node:ekr.20171215074959.1: *3* checker.do_* & end_*(new)
-    #@+node:ekr.20171215074959.2: *4* checker.do_assign
+    #@+node:ekr.20171215074959.2: *4* checker.Assign & helpers
     assign_pattern = re.compile(r'^\s*(\w+(\.\w+)*)\s*=(.*)')
     assn_to_self_pattern = re.compile(r'^\s*self\.(\w+)\s*=(.*)')
     assign_to_special_pattern = re.compile(r'^\s*(\w+)\.([\w.]+)\s*=(.*)')
 
-    def do_Assign(self, node):
+    def before_Assign(self, node):
         
         table = (
             # Order important.
@@ -570,7 +571,7 @@ class ConventionChecker (object):
                     # self.do_assn_to_self(node, name, attr)
                 # elif name in self.special_names_dict:
                     # self.do_assn_to_special(node, name, attr)
-    #@+node:ekr.20171215074959.4: *4* checker.do_assn_to_self
+    #@+node:ekr.20171215074959.4: *5* checker.do_assn_to_self
     assn_to_self_pattern = re.compile(r'^\s*self\.(\w+)\s*=(.*)')
 
     def do_assn_to_self(self, node):
@@ -611,7 +612,7 @@ class ConventionChecker (object):
         # if 1:
             # g.trace('class %s...' % self.class_name)
             # g.printDict(d)
-    #@+node:ekr.20171215074959.3: *4* checker.do_assn_to_special
+    #@+node:ekr.20171215074959.3: *5* checker.do_assn_to_special
     assign_to_special_pattern = re.compile(r'^\s*(\w+)\.([\w.]+)\s*=(.*)')
 
     def do_assn_to_special(self, node):
@@ -691,10 +692,10 @@ class ConventionChecker (object):
             # if 1:
                 # g.trace('AFTER: class %s...' % t.name)
                 # g.printDict(d)
-    #@+node:ekr.20171215074959.5: *4* checker.do_call & helper
+    #@+node:ekr.20171215074959.5: *4* checker.Call & helper
     call_pattern = re.compile(r'^\s*(\w+(\.\w+)*)\s*\((.*)\)')
 
-    def do_Call(self, node):
+    def before_Call(self, node):
 
         s = self.format(node)
         if self.test_kind == 'test': print(s)
@@ -774,10 +775,11 @@ class ConventionChecker (object):
             g.printList(result)
         return result
                 
-    #@+node:ekr.20171215074959.7: *4* checker.do_class & end_class
-    def do_ClassDef(self, node):
+    #@+node:ekr.20171215074959.7: *4* checker.ClassDef
+    def before_ClassDef(self, node):
 
-        print(self.format(node, print_body=False))
+        s = self.format(node, print_body=False)
+        if self.test_kind == 'test': print(s)
         self.indent += 1
         self.context_stack.append(node)
         self.class_name = name = node.name
@@ -786,7 +788,7 @@ class ConventionChecker (object):
             if name not in self.special_class_names:
                 self.classes [name] = {'ivars': {}, 'methods': {}}
 
-    def end_ClassDef(self, node):
+    def after_ClassDef(self, node):
 
         self.indent -= 1
         if 0 and self.pass_n == 1:
@@ -802,10 +804,10 @@ class ConventionChecker (object):
                 # g.trace('class_name:', node2.name)
                 self.class_name = node2.name
                 break
-    #@+node:ekr.20171215074959.9: *4* checker.do_def & end_def
+    #@+node:ekr.20171215074959.9: *4* checker.FunctionDef
     def_pattern = re.compile(r'^\s*def\s+([\w0-9]+)\s*\((.*)\)\s*:')
 
-    def do_FunctionDef(self, node):
+    def before_FunctionDef(self, node):
 
         s = self.format(node, print_body=False)
         if self.test_kind == 'test': print(s)
@@ -831,7 +833,7 @@ class ConventionChecker (object):
                 ### This is not an error.
                 # else: g.trace('===== no class', node.name)
 
-    def end_FunctionDef(self, node):
+    def after_FunctionDef(self, node):
 
         self.indent -= 1
         top = self.context_stack.pop()
@@ -1208,17 +1210,22 @@ class ConventionChecker (object):
 
             leoAst.AstFullTraverser.__init__(self)
             self.cc = controller
-            
-        def __getattr__ (self, name):
-            table = (
-                name.replace('before_', 'do_'),
-                name.replace('after_', 'end_'),
-            )
-            for name2 in table:
-                func = getattr(self.cc, name2, None)
-                if func:
-                    return func
-            raise AttributeError
+        
+        def visit(self, node):
+            '''
+            Visit a *single* ast node.
+            Visitors are responsible for visiting children!
+            '''
+            name = node.__class__.__name__
+            assert isinstance(node, ast.AST), repr(node)
+            before_method = getattr(self.cc, 'before_'+name, None)
+            if before_method:
+                before_method(node)
+            do_method = getattr(self, 'do_'+name, None)
+            do_method(node)
+            after_method = getattr(self.cc, 'after_'+name, None)
+            if after_method:
+                after_method(node)
     #@+node:ekr.20171209030742.1: *3* class Type
     class Type (object):
         '''A class to hold all type-related data.'''
