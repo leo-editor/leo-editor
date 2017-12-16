@@ -1583,16 +1583,17 @@ class AstFullTraverser(object):
     def visit_children(self, node):
         assert False, 'must visit children explicitly'
     #@+node:ekr.20141012064706.18529: *3* ft.visit_list
-
-
     def visit_list(self, aList):
-        '''Visit all ast nodes in aList.'''
+        '''Visit all ast nodes in aList or ast.node.'''
         if isinstance(aList, (list, tuple)):
             for z in aList:
                 self.visit(z)
+            return None
+        elif isinstance(aList, ast.AST):
+            return self.visit(aList)
         else:
-            g.trace('(AstFullTraverser) ===== oops', aList.__class__.__name__, g.callers())
-            
+            g.trace('(CCTraverser) ===== oops', repr(aList), g.callers())
+            return None
     #@-others
 #@+node:ekr.20141012064706.18530: ** class AstPatternFormatter (AstFormatter)
 class AstPatternFormatter(AstFormatter):
