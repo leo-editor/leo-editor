@@ -430,7 +430,7 @@ class ConventionChecker (object):
         '''
         g.cls()
         c = self.c
-        kind = 'test' # Allow names of projects?
+        kind = 'project' # Allow names of projects?
         assert kind in ('files', 'production', 'project', 'test'), repr(kind)
         report_stats = True
         if kind == 'files':
@@ -916,8 +916,6 @@ class ConventionChecker (object):
     #@+node:ekr.20171215074959.4: *5* checker.do_assn_to_self
     assn_to_self_pattern = re.compile(r'^\s*self\.(\w+)\s*=(.*)')
 
-
-
     def do_assn_to_self(self, node):
 
         assert self.pass_n == 2
@@ -1151,8 +1149,6 @@ class ConventionChecker (object):
                 self.class_name = node2.name
                 break
     #@+node:ekr.20171215074959.9: *4* checker.FunctionDef
-    def_pattern = re.compile(r'^\s*def\s+([\w0-9]+)\s*\((.*)\)\s*:')
-
     def before_FunctionDef(self, node):
 
         s = self.format(node, print_body=False)
@@ -1162,22 +1158,15 @@ class ConventionChecker (object):
         if self.pass_n == 1:
             self.stats.defs += 1
             if self.class_name not in self.special_class_names:
-                # Works either way for simple tests.
                 if self.class_name in self.classes:
-                    if 1:
-                        def_name = node.name
-                        def_args = self.format(node.args)
-                    else:
-                        # This will fail for function decorators, etc.
-                        m = self.def_pattern.match(s)
-                        def_name = m.group(1)
-                        def_args = m.group(2)
+                    def_name = node.name
+                    def_args = self.format(node.args)
                     the_class = self.classes.get(self.class_name)
                     methods = the_class.get('methods')
                     assert methods is not None
-                    methods [def_name] = def_args ### self.format(node.args) # .split(',')
-                ### This is not an error.
-                # else: g.trace('===== no class', node.name)
+                    methods [def_name] = def_args
+                # This is not an error.
+                # else: g.error(node 'no class', node.name)
 
     def after_FunctionDef(self, node):
 
