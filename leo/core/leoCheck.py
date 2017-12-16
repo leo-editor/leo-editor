@@ -430,7 +430,7 @@ class ConventionChecker (object):
         '''
         g.cls()
         c = self.c
-        kind = 'test' # Allow names of projects?
+        kind = 'project' # Allow names of projects?
         assert kind in ('files', 'production', 'project', 'test'), repr(kind)
         report_stats = True
         if kind == 'files':
@@ -900,58 +900,28 @@ class ConventionChecker (object):
                     self.do_assn_to_self(node, name, var2)
                 elif name in self.special_names_dict:
                     self.do_assn_to_special(node, name, var2)
-    #@+node:ekr.20171215074959.4: *5* checker.do_assn_to_self (remove regex)
+    #@+node:ekr.20171215074959.4: *5* checker.do_assn_to_self
     def do_assn_to_self(self, node, var1, var2):
 
         assert self.pass_n == 2
         assert var1 == 'self'
+        val = self.format(node.value)
         s = self.format(node)
         class_name = self.class_name
         if not class_name:
             self.note(node, 'SKIP: no class name', s)
             return
         if class_name in self.special_class_names:
-            # g.trace('SKIP' % g.truncate(s.strip(), 80))
+            # self.note(node, 'SKIP: not special', s)
             return
-        if 0:
-            assn_to_self_pattern = re.compile(r'^\s*self\.(\w+)\s*=(.*)')
-            m = assn_to_self_pattern.match(s)
-            if not m:
-                # g.trace('No match', s)
-                return
-            ivar = m.group(1)
-            val = m.group(2).strip()
-            if ivar != var2:
-                self.note(node, 'regex mismatch', ivar, var2, s)
-                return
-        else:
-            ivar = var2
-            val = self.format(node.value)
-        d = self.classes.get(self.class_name)
-        assert d is not None, self.class_name
+        d = self.classes.get(class_name)
+        assert d is not None, class_name
         ivars = d.get('ivars')
-        ivars[ivar] = val
+        ivars[var2] = val
         d['ivars'] = ivars
         if 0:
-            g.trace('dict for class', self.class_name)
+            g.trace('dict for class', class_name)
             g.printDict(d)
-
-        ### New code
-        # g.trace('=====', name, repr(attr), self.format(node))
-        # class_name = self.class_name
-        # if class_name in self.special_class_names:
-            # g.trace('SKIP:')
-            # return
-        # ivar = name
-        # val = self.format(node.value)
-        # d = self.classes.get(self.class_name)
-        # assert d is not None, self.class_name
-        # ivars = d.get('ivars')
-        # ivars[ivar] = val
-        # d['ivars'] = ivars
-        # if 1:
-            # g.trace('class %s...' % self.class_name)
-            # g.printDict(d)
     #@+node:ekr.20171215074959.3: *5* checker.do_assn_to_special (remove regex)
     assign_to_special_pattern = re.compile(r'^\s*(\w+)\.([\w.]+)\s*=(.*)')
 
