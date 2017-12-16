@@ -430,7 +430,7 @@ class ConventionChecker (object):
         '''
         g.cls()
         c = self.c
-        kind = 'test' # Allow names of projects?
+        kind = 'production' # Allow names of projects?
         assert kind in ('files', 'production', 'project', 'test'), repr(kind)
         report_stats = True
         if kind == 'files':
@@ -706,10 +706,11 @@ class ConventionChecker (object):
         try:
             m.group(1)
             if any([m.group(1).startswith(z) for z in self.ignore]):
-                g.trace('IGNORE', m.group(1))
+                # g.trace('IGNORE', m.group(1))
                 return
         except Exception:
-            g.trace('========== NO MATCH', s)
+            ### Requires more than regex can give.
+            # g.trace('========== NO MATCH', s)
             return
         obj = self.resolve_call('call', m, s)
         if obj and obj.kind == 'instance':
@@ -827,8 +828,8 @@ class ConventionChecker (object):
                     methods = the_class.get('methods')
                     assert methods is not None
                     methods [def_name] = def_args ### self.format(node.args) # .split(',')
-                else:
-                    g.trace('===== no class', node.name)
+                ### This is not an error.
+                # else: g.trace('===== no class', node.name)
 
     def end_def(self, node):
 

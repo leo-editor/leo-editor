@@ -1591,7 +1591,7 @@ class AstFullTraverser(object):
             for z in aList:
                 self.visit(z)
         else:
-            g.trace('oops', aList.__class__.__name__, g.callers())
+            g.trace('===== oops', aList.__class__.__name__, g.callers())
             
     #@-others
 #@+node:ekr.20141012064706.18530: ** class AstPatternFormatter (AstFormatter)
