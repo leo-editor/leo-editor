@@ -412,7 +412,7 @@ class ConventionChecker (object):
         return {
             'c': t('instance', 'Commands'),
             'c.p': t('instance', 'Position'),
-            'g': t('instance', 'LeoGlobals'), ### module?
+            'g': t('instance', 'LeoGlobals'), # module?
             'p': t('instance', 'Position'),
             'v': t('instance', 'VNode'),
         }
@@ -660,9 +660,6 @@ class ConventionChecker (object):
     #@+node:ekr.20171208134737.1: *4* checker.resolve_call
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
-    ### call_pattern = re.compile(r'(\w+(\.\w+)*)\s*\((.*)\)')
-        # Used in two places.
-
     def resolve_call(self, node):
         
         trace = self.test_kind is 'test'
@@ -813,7 +810,7 @@ class ConventionChecker (object):
         else:
             assert result == 'unknown'
             self.stats.sig_unknown += 1
-    #@+node:ekr.20171212034531.1: *5* checker.check_arg (remove regex)
+    #@+node:ekr.20171212034531.1: *5* checker.check_arg (FINISH)
     def check_arg(self, node, func, call_arg, sig_arg):
 
         result = self.check_arg_helper(node, func, call_arg, sig_arg)
@@ -963,21 +960,19 @@ class ConventionChecker (object):
         if self.pass_n == 1:
             return
         self.stats.calls += 1
-        # g.trace(self.dump(node))
         obj = self.resolve_call(node)
         if obj and obj.kind == 'instance':
-            func = node.func
-            chain = self.get_chain(node.func)
-            func = chain[-1]
-            args = [self.format(z) for z in node.args]
             instance = self.classes.get(obj.name)
             if instance:
+                chain = self.get_chain(node.func)
+                func = chain[-1]
                 d = instance.get('methods')
                 signature = d.get(func)
                 if signature:
                     if isinstance(signature, self.Type):
                         pass
                     else:
+                        args = [self.format(z) for z in node.args]
                         signature = signature.split(',')
                         self.check_signature(node, func, args, signature)
     #@+node:ekr.20171215074959.7: *4* checker.ClassDef
