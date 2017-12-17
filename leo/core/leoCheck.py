@@ -818,30 +818,31 @@ class ConventionChecker (object):
         else:
             assert result == 'unknown'
             self.stats.sig_unknown += 1
-    #@+node:ekr.20171212034531.1: *5* checker.check_arg (FINISH)
+    #@+node:ekr.20171212034531.1: *5* checker.check_arg (Finish)
     def check_arg(self, node, func, args, call_arg, sig_arg):
-
-        if 0: g.trace('=====', args, 'call:', call_arg, 'sig:', sig_arg)
+        '''
+        Check call_arg and sig_arg with arg (a list).
+        
+        To do: check keyword args.
+        '''
+        trace = self.test_kind is 'test'
+        if trace: g.trace('===== args:', args, 'call:', call_arg, 'sig:', sig_arg)
         result = self.check_arg_helper(node, func, call_arg, sig_arg)
-        if result is 'fail' or len(args) < 2:
-            return result
-        # Next, check a keyword call arg against it's assigned value.
-        if False and len(args) < 2: ### Not ready yet.
-            arg1, arg2 = args[0], ''.join(args[1:])
-            return self.check_arg_helper(node, 'KEYWORD', arg1, arg2)
+        if result is not 'fail' and len(args) > 1:
+            # Check a keyword call arg against it's assigned value.
+            if 1: # Not ready yet.
+                arg1, arg2 = args[0], ''.join(args[1:])
+                result = self.check_arg_helper(node, 'KEYWORD', arg1, arg2)
+        assert result in ('fail', 'ok', 'unknown'), repr(result)
         return result
-            
     #@+node:ekr.20171212035137.1: *5* checker.check_arg_helper
     def check_arg_helper(self, node, func, call_arg, sig_arg):
-        trace = False
-        trace_ok = True
-        trace_unknown = True
+        trace = False and self.test_kind is 'test'
         special_names_dict = self.special_names_dict
         if call_arg == sig_arg or sig_arg in (None, 'None'):
             # Match anything against a default value of None.
-            if trace and trace_ok:
-                g.trace(self.log_line(node, '%20s: %20r == %r' % (
-                    func, call_arg, sig_arg)))
+            if trace: g.trace(self.log_line(node, '%20s: %20r == %r' % (
+                func, call_arg, sig_arg)))
             return 'ok'
         # Resolve the call_arg if possible.
         chain = call_arg.split('.')
@@ -852,7 +853,6 @@ class ConventionChecker (object):
                 context = self.resolve_chain(node, tail, context)
                 if context.kind == 'error':
                     # Caller will report the error.
-                    # g.trace('FAIL', call_arg, context)
                     return 'unknown'
                 if sig_arg in special_names_dict:
                     sig_class = special_names_dict.get(sig_arg)
@@ -863,8 +863,7 @@ class ConventionChecker (object):
             call_class = special_names_dict.get(call_arg)
             return self.compare_classes(
                 node, call_arg, sig_arg, call_class, sig_class)
-        if trace and trace_unknown:
-            g.trace(self.log_line('%20s: %20r ?? %r' % (func, call_arg, sig_arg)))
+        if trace: g.trace(self.log_line('%20s: %20r ?? %r' % (func, call_arg, sig_arg)))
         return 'unknown'
     #@+node:ekr.20171212044621.1: *5* checker.compare_classes
     def compare_classes(self, node, arg1, arg2, class1, class2):
@@ -915,7 +914,7 @@ class ConventionChecker (object):
         d = self.classes.get(class_name)
         assert d is not None, class_name
         ivars = d.get('ivars')
-        # tag:setter self.var2 = String ### Why not type???
+        # tag:setter self.var2 = String ### Why not Type???
         ivars[var2] = self.format(node.value)
         d['ivars'] = ivars
         if 0:
@@ -981,7 +980,7 @@ class ConventionChecker (object):
         if not signature:
             return
         if isinstance(signature, self.Type):
-            pass ### Already checked? 
+            pass # Already checked?
         else:
             args = [self.format(z) for z in node.args]
             signature = signature.split(',')
@@ -1007,6 +1006,8 @@ class ConventionChecker (object):
             g.trace(node, self.show_stack())
             print('----- END class %s. class dict...' % self.class_name)
             g.printDict(self.classes.get(self.class_name))
+        #
+        # This code must execute in *both* passes.
         top = self.context_stack.pop()
         assert node == top, (node, top)
         # Set the class name
