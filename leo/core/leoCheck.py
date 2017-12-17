@@ -814,10 +814,9 @@ class ConventionChecker (object):
     def check_arg(self, node, func, call_arg, sig_arg):
 
         result = self.check_arg_helper(node, func, call_arg, sig_arg)
-        # g.trace(func, call_arg, sig_arg, '==>', result)
         return result
-        ###
-        # # Next, check a keyword call arg against it's assigned value.
+      
+        # Next, check a keyword call arg against it's assigned value.
         # if len(call_argv) > 1:
             # arg1, arg2 = call_argv[0], ''.join(call_argv[1:])
             # return self.check_arg_helper(node, 'KEYWORD', arg1, arg2)
@@ -955,8 +954,8 @@ class ConventionChecker (object):
 
     def before_Call(self, node):
 
-        s = self.format(node)
-        if self.test_kind is 'test': print(s)
+        if self.test_kind is 'test':
+            print(self.format(node))
         if self.pass_n == 1:
             return
         self.stats.calls += 1
