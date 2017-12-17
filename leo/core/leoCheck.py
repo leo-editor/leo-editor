@@ -430,8 +430,7 @@ class ConventionChecker (object):
         '''
         g.cls()
         c = self.c
-        kind = 'test' # Allow names of projects?
-        assert kind in ('files', 'production', 'project', 'test'), repr(kind)
+        kind = 'leo' # <----- Change only this line.
         report_stats = True
         if kind == 'files':
             join = g.os_path_finalize_join
@@ -446,9 +445,9 @@ class ConventionChecker (object):
         elif kind == 'production':
             for p in g.findRootsWithPredicate(c, c.p, predicate=None):
                 self.check_file(fn=g.fullPath(c, p), test_kind=kind, trace_fn=True)
-        elif kind == 'project':
-            self.check_project(project_name='leo')
-                # 'coverage', 'leo', 'lib2to3', 'pylint', 'rope'
+        elif kind in ('project', 'coverage', 'leo', 'lib2to3', 'pylint', 'rope'):
+            project_name = 'leo' if kind == 'project' else kind
+            self.check_project(project_name)
         elif kind == 'test':
             self.test()
         else:
@@ -593,12 +592,18 @@ class ConventionChecker (object):
             self.check_file(s=s, test_kind='test', trace_fn=True)
         if self.errors:
             print('%s error%s' % (self.errors, g.plural(self.errors)))
-    #@+node:ekr.20171216063026.1: *3* checker.error, note & log_line
+    #@+node:ekr.20171216063026.1: *3* checker.error, fail, note & log_line
     def error(self, node, *args, **kwargs):
         
         self.errors += 1
         print('')
         print('Error: %s' % self.log_line(node, *args, **kwargs))
+        print('')
+        
+    def fail(self, node, *args, **kwargs):
+        self.stats.inference_fails += 1
+        print('')
+        print('Inference failure: %s' % self.log_line(node, *args, **kwargs))
         print('')
         
     def log_line(self, node=None, *args, **kwargs):
@@ -612,10 +617,11 @@ class ConventionChecker (object):
     def note(self, node, *args, **kwargs):
 
         print('Note: %s' % self.log_line(node, *args, **kwargs))
-    #@+node:ekr.20171215080831.1: *3* checker.dump & format
-    def dump(self, node, level=0):
+    #@+node:ekr.20171215080831.1: *3* checker.dump, format
+    def dump(self, node, annotate_fields=True, level=0, **kwargs):
         '''Dump the node.'''
-        return leoAst.AstDumper().dump(node, level=level)
+        d = leoAst.AstDumper(annotate_fields=annotate_fields,**kwargs) 
+        return d.dump(node, level=level)
 
     def format(self, node, *args, **kwargs):
         '''Format the node and possibly its descendants, depending on args.'''
@@ -805,7 +811,7 @@ class ConventionChecker (object):
             if i < len(signature):
                 result = self.check_arg(node, func, arg, signature[i])
                 if result == 'fail':
-                    self.error(node, '%s(%s) incompatible with %s(%s)' % (
+                    self.fail(node, '%s(%s) incompatible with %s(%s)' % (
                         func, ','.join(args),
                         func, ','.join(signature),
                     ))
@@ -977,7 +983,7 @@ class ConventionChecker (object):
         if self.pass_n == 1:
             return
         self.stats.calls += 1
-        g.trace(self.dump(node))
+        if self.test_kind == 'test': g.trace(self.dump(node))
         if 1:
             call_pattern = re.compile(r'^\s*(\w+(\.\w+)*)\s*\((.*)\)')
             m = call_pattern.match(s.strip())
@@ -1148,6 +1154,7 @@ class ConventionChecker (object):
         check_signature = 0
         classes = 0
         defs = 0
+        inference_fails = 0
         resolve = 0
         resolve_call = 0
         resolve_chain = 0
