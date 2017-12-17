@@ -430,7 +430,7 @@ class ConventionChecker (object):
         '''
         g.cls()
         c = self.c
-        kind = 'test' # <----- Change only this line.
+        kind = 'leo' # <----- Change only this line.
             # 'project', 'coverage', 'leo', 'lib2to3', 'pylint', 'rope'
         join = g.os_path_finalize_join
         loadDir = g.app.loadDir
@@ -663,43 +663,42 @@ class ConventionChecker (object):
     call_pattern = re.compile(r'(\w+(\.\w+)*)\s*\((.*)\)')
         # Used in two places.
 
-    def resolve_call(self, node, kind, m, s):
+    def resolve_call(self, node): ###, kind, m, s):
         
         trace = self.test_kind is 'test'
         assert self.pass_n == 2
         self.stats.resolve_call += 1
-        s = s.strip()
-        if self.OLD:
-            m = self.call_pattern.match(s)
-            aList = m.group(1).split('.')
-            chain, func = aList[:-1], aList[-1]
-            args = m.group(3).split(',')
-        else:
-            chain = self.get_chain(node.func)
-            if chain:
-                func = chain.pop()
-                if isinstance(func, ast.Name):
-                    func = func.id
-                assert g.isString(func), repr(func)
-            else:
-                func = None
-            if chain:
-                assert isinstance(chain[0], ast.Name), repr(chain[0])
-                chain[0] = chain[0].id
-            args = ','.join([self.format(z) for z in node.args]) ### Temp???
+        ###
+            # if self.OLD:
+                # s = s.strip()
+                # m = self.call_pattern.match(s)
+                # aList = m.group(1).split('.')
+                # chain, func = aList[:-1], aList[-1]
+                # args = m.group(3).split(',')
+
+        chain = self.get_chain(node.func)
         if chain:
-            self.recursion_count = 0
-            if trace:
-                g.trace(' ===== %s.%s(%s)' % (chain, func, args))
-            if self.class_name:
-                context = self.Type('class', self.class_name)
-            else:
-                context = self.Type('module', self.file_name)
-            result = self.resolve_chain(node, chain, context)
-            if trace:
-                g.trace(' ----> %s.%s' % (result, func))
+            func = chain.pop()
+            if isinstance(func, ast.Name):
+                func = func.id
+            assert g.isString(func), repr(func)
+        ### else:
+            ### func = None
+        if not chain:
+            return None
+        assert isinstance(chain[0], ast.Name), repr(chain[0])
+        chain[0] = chain[0].id
+        args = ','.join([self.format(z) for z in node.args]) ### Temp???
+        self.recursion_count = 0
+        if trace:
+            g.trace(' ===== %s.%s(%s)' % (chain, func, args))
+        if self.class_name:
+            context = self.Type('class', self.class_name)
         else:
-            result = None
+            context = self.Type('module', self.file_name)
+        result = self.resolve_chain(node, chain, context)
+        if trace:
+            g.trace(' ----> %s.%s' % (result, func))
         return result
     #@+node:ekr.20171209034244.1: *4* checker.resolve_chain
     def resolve_chain(self, node, chain, context, trace=False):
@@ -717,8 +716,6 @@ class ConventionChecker (object):
             g.trace('%4s ----> %r' % (name, context))
         return context
     #@+node:ekr.20171208173323.1: *4* checker.resolve_ivar
-    # id_pattern = re.compile('\w+')
-
     def resolve_ivar(self, node, ivar, obj):
         '''Resolve obj.ivar'''
         trace = self.test_kind is 'test'
@@ -831,31 +828,31 @@ class ConventionChecker (object):
     #@+node:ekr.20171212034531.1: *5* checker.check_arg (remove regex)
     def check_arg(self, node, func, call_arg, sig_arg):
         
-        if self.OLD:
-            # First, check the ags.
-            call_argv = call_arg.split('=')
-            sig_argv = sig_arg.split('=')
-            result = self.check_arg_helper(node, func, call_argv[0], sig_argv[0])
-            if result == 'fail':
-                return result
-            # Next, check a keyword call arg against it's assigned value.
-            if len(call_argv) > 1:
-                arg1, arg2 = call_argv[0], ''.join(call_argv[1:])
-                return self.check_arg_helper(node, 'KEYWORD', arg1, arg2)
-            else:
-                return result
-        else:
-            result = self.check_arg_helper(node, func, call_arg, sig_arg)
-            # g.trace(func, call_arg, sig_arg, '==>', result)
-            return result
-            ###
-            # # Next, check a keyword call arg against it's assigned value.
-            # if len(call_argv) > 1:
-                # arg1, arg2 = call_argv[0], ''.join(call_argv[1:])
-                # return self.check_arg_helper(node, 'KEYWORD', arg1, arg2)
-            # else:
-                # return result
-            
+        ###
+            # if self.OLD:
+                # # First, check the ags.
+                # call_argv = call_arg.split('=')
+                # sig_argv = sig_arg.split('=')
+                # result = self.check_arg_helper(node, func, call_argv[0], sig_argv[0])
+                # if result == 'fail':
+                    # return result
+                # # Next, check a keyword call arg against it's assigned value.
+                # if len(call_argv) > 1:
+                    # arg1, arg2 = call_argv[0], ''.join(call_argv[1:])
+                    # return self.check_arg_helper(node, 'KEYWORD', arg1, arg2)
+                # else:
+                    # return result
+
+        result = self.check_arg_helper(node, func, call_arg, sig_arg)
+        # g.trace(func, call_arg, sig_arg, '==>', result)
+        return result
+        ###
+        # # Next, check a keyword call arg against it's assigned value.
+        # if len(call_argv) > 1:
+            # arg1, arg2 = call_argv[0], ''.join(call_argv[1:])
+            # return self.check_arg_helper(node, 'KEYWORD', arg1, arg2)
+        # else:
+            # return result
     #@+node:ekr.20171212035137.1: *5* checker.check_arg_helper
     def check_arg_helper(self, node, func, call_arg, sig_arg):
         trace = False
@@ -986,7 +983,7 @@ class ConventionChecker (object):
     #@+node:ekr.20171215074959.5: *4* checker.Call & helper (remove regex)
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
-    OLD = False
+    ### OLD = False
 
     def before_Call(self, node):
 
@@ -996,31 +993,32 @@ class ConventionChecker (object):
             return
         self.stats.calls += 1
         # if self.test_kind is 'test': g.trace(self.dump(node))
-        if self.OLD:
-            call_pattern = re.compile(r'^\s*(\w+(\.\w+)*)\s*\((.*)\)')
-            m = call_pattern.match(s.strip())
-                # It's weird that this strip() is needed.
-            try:
-                m.group(1)
-                if any([m.group(1).startswith(z) for z in self.ignore]):
-                    return
-            except Exception:
-                return
-        else:
-            m = None # resolve call doesn't need help
-        obj = self.resolve_call(node, 'call', m, s)
+        
+        ###
+            # if self.OLD:
+                # call_pattern = re.compile(r'^\s*(\w+(\.\w+)*)\s*\((.*)\)')
+                # m = call_pattern.match(s.strip())
+                    # # It's weird that this strip() is needed.
+                # try:
+                    # m.group(1)
+                    # if any([m.group(1).startswith(z) for z in self.ignore]):
+                        # return
+                # except Exception:
+                    # return
+            # else:
+                # m = None # resolve call doesn't need help
+        obj = self.resolve_call(node) ###, 'call', m, s)
         if obj and obj.kind == 'instance':
-            if self.OLD:
-                m = self.call_pattern.match(s.strip())
-                chain = m.group(1).split('.')
-                func = chain[-1]
-                args = self.split_args(node, m.group(3))
-            else:
-                func = node.func
-                chain = self.get_chain(node.func)
-                func = chain[-1]
-                # args = node.args
-                args = [self.format(z) for z in node.args]
+            ###
+            # if self.OLD:
+                # m = self.call_pattern.match(s.strip())
+                # chain = m.group(1).split('.')
+                # func = chain[-1]
+                # args = self.split_args(node, m.group(3))
+            func = node.func
+            chain = self.get_chain(node.func)
+            func = chain[-1]
+            args = [self.format(z) for z in node.args]
             instance = self.classes.get(obj.name)
             if instance:
                 d = instance.get('methods')
@@ -1031,48 +1029,6 @@ class ConventionChecker (object):
                     else:
                         signature = signature.split(',')
                         self.check_signature(node, func, args, signature)
-    #@+node:ekr.20171215103935.1: *5* checker.split_args
-    def split_args(self, node, args):
-        '''
-        Args is a string representing actual arguments.
-        This could contain '=' and ',' within calls.
-        return an array of actual args.
-        
-        It could also contain an unbalanced ')'.
-        '''
-        trace = False
-        arg, i, result = '', 0, []
-        while i < len(args):
-            ch = args[i]
-            if ch == ',':
-                result.append(arg)
-                arg = ''
-                i += 1
-            elif ch == ')':
-                # Unbalanced ')'.
-                # A scanning/parser error in the regex.
-                if trace:
-                    self.error(node, 'UNBALANCED: regex error?', self.format(args))
-                break
-            elif ch == '(':
-                j, s = g.skip_to_char(args, i, ')')
-                if i < j < len(args) and args[j] == ')':
-                    arg += args[i:j+1]
-                    i = j+1
-                else:
-                    if trace:
-                        self.error(node, 'NO MATCHING ")"', self.format(args))
-                    break
-            else:
-                arg += ch
-                i += 1
-        if arg:
-            result.append(arg)
-        if trace:
-            g.trace(args)
-            g.printList(result)
-        return result
-                
     #@+node:ekr.20171215074959.7: *4* checker.ClassDef
     def before_ClassDef(self, node):
 
