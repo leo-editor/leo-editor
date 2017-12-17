@@ -528,7 +528,7 @@ class AstFormatter(object):
     #@+node:ekr.20141012064706.18438: *4* f.BoolOp
     def do_BoolOp(self, node):
         op_name = self.op_name(node.op)
-        values = [self.visit(z) for z in node.values]
+        values = [self.visit(z).strip() for z in node.values]
         return op_name.join(values)
     #@+node:ekr.20141012064706.18439: *4* f.Compare
     def do_Compare(self, node):
