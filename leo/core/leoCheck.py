@@ -430,7 +430,7 @@ class ConventionChecker (object):
         '''
         g.cls()
         c = self.c
-        kind = 'leo' # <----- Change only this line.
+        kind = 'test' # <----- Change only this line.
             # 'project', 'coverage', 'leo', 'lib2to3', 'pylint', 'rope'
         join = g.os_path_finalize_join
         loadDir = g.app.loadDir
@@ -494,7 +494,7 @@ class ConventionChecker (object):
 
         cct = self.CCTraverser(controller=self)
         for n in 1, 2:
-            if self.test_kind == 'test':
+            if self.test_kind is 'test':
                 g.trace('===== PASS', n)
             # Init this pass.
             self.file_name = fn
@@ -618,7 +618,9 @@ class ConventionChecker (object):
         
     def note(self, node, *args, **kwargs):
 
+        print('')
         print('Note: %s' % self.log_line(node, *args, **kwargs))
+        print('')
     #@+node:ekr.20171215080831.1: *3* checker.dump, format
     def dump(self, node, annotate_fields=True, level=0, **kwargs):
         '''Dump the node.'''
@@ -634,7 +636,7 @@ class ConventionChecker (object):
         '''Resolve name in the given context.'''
         if self.test_kind is 'test': trace = True
         if trace:
-            g.trace('      ===== name: %s context: %r' % (name, context))
+            g.trace('      ===== %s context: %r' % (name, context))
         self.stats.resolve += 1
         assert g.isString(name), (repr(name), g.callers())
         if context:
@@ -652,7 +654,8 @@ class ConventionChecker (object):
                 result = self.Type('error', 'unknown kind: %s' % context.kind)
         else:
             result = self.Type('error', 'unbound name: %s' % name)
-        if trace: g.trace('      ----->', result)
+        if trace:
+            g.trace('      ----->', result)
         return result
     #@+node:ekr.20171208134737.1: *4* checker.resolve_call (remove regex)
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
@@ -673,11 +676,21 @@ class ConventionChecker (object):
             args = m.group(3).split(',')
         else:
             chain = self.get_chain(node.func)
+            if chain:
+                func = chain.pop()
+                if isinstance(func, ast.Name):
+                    func = func.id
+                assert g.isString(func), repr(func)
+            else:
+                func = None
+            if chain:
+                assert isinstance(chain[0], ast.Name), repr(chain[0])
+                chain[0] = chain[0].id
+            args = ','.join([self.format(z) for z in node.args]) ### Temp???
         if chain:
             self.recursion_count = 0
             if trace:
-                g.trace(' ===== %s.%s(%s)' % (
-                    chain, func, ','.join(args)))
+                g.trace(' ===== %s.%s(%s)' % (chain, func, args))
             if self.class_name:
                 context = self.Type('class', self.class_name)
             else:
@@ -708,35 +721,27 @@ class ConventionChecker (object):
 
     def resolve_ivar(self, node, ivar, obj):
         '''Resolve obj.ivar'''
-        trace = False
-        trace_c_dict_on_error = False
-        trace_dict = False
-        trace_dict_on_error = False
-        trace_error = True
-        trace_ivar = False
-        trace_recursive = False
-        trace_special = False
-        trace_unknown = True
-        raise_on_error = False
+        trace = self.test_kind is 'test'
         self.stats.resolve_ivar += 1
         class_name = 'Commands' if obj.name == 'c' else obj.name
         the_class = self.classes.get(class_name)
+        # g.trace(class_name, the_class)
         self.recursion_count += 1
         if self.recursion_count > 20:
             self.error(node, 'UNBOUNDED RECURSION: %r %r\nCallers: %s' % (
                 ivar, obj, g.callers()))
-            if trace_c_dict_on_error:
+            if 0:
                 g.trace('CLASS DICT: Commands')
                 g.printDict(self.classes.get('Commands'))
-            if trace_dict_on_error:
+            if 0:
                 g.trace('CLASS DICT', class_name)
                 g.printDict(the_class)
-            if raise_on_error:
+            if 0:
                 assert False, self.recursion_count
             return self.Type('error', 'recursion')
         if not the_class:
             return self.Type('error', 'no class %s' % ivar)
-        if trace and trace_dict:
+        if 0:
             g.trace('CLASS DICT', class_name)
             g.printDict(the_class)
         ivars = the_class.get('ivars')
@@ -747,17 +752,15 @@ class ConventionChecker (object):
             return self.Type('func', ivar)
         elif ivars.get(ivar):
             val = ivars.get(ivar)
-            if trace and trace_ivar:
-                g.trace('IVAR:', ivar, 'CONTEXT', obj, 'VAL', val)
+            if 0: g.trace('IVAR:', ivar, 'CONTEXT', obj, 'VAL', val)
             if isinstance(val, self.Type):
-                if trace: g.trace('KNOWN: %s %r ==> %r' % (ivar, obj, val))
+                if trace: g.trace('KNOWN: %s.%s %r ==> %r' % (class_name, ivar, obj, val))
                 return val
             # Check for pre-defined special names.
             for special_name, special_obj in self.special_names_dict.items():
                 tail = val[len(special_name):]
                 if val == special_name:
-                    if trace and trace_special:
-                        g.trace('SPECIAL: %s ==> %s' % (val, special_obj))
+                    if 0: g.trace('SPECIAL: %s ==> %s' % (val, special_obj))
                     return special_obj
                 elif val.startswith(special_name) and tail.startswith('.'):
                     # Resovle the rest of the tail in the found context.
@@ -765,31 +768,24 @@ class ConventionChecker (object):
                     return self.resolve_chain(node, tail[1:], special_obj)
             # Avoid recursion 1.
             if ivar == val:
-                if trace and trace_unknown:
-                    g.trace('AVOID RECURSION: self.%s=%s' % (ivar, val))
+                if 0: g.trace('AVOID RECURSION: self.%s=%s' % (ivar, val))
                 return self.Type('unknown', ivar)
             head2 = val.split('.')
             # Avoid recursion 2.
             if ivar == head2[0]:
-                if trace and trace_unknown:
-                    g.trace('AVOID RECURSION2: %s=%s' % (ivar, val))
+                if 0: g.trace('AVOID RECURSION2: %s=%s' % (ivar, val))
                 return self.Type('unknown', ivar)
-            if trace and trace_recursive:
-                g.trace('RECURSIVE', head2)
+            if 0: g.trace('RECURSIVE', head2)
             obj2 = obj
             for name2 in head2:
                 old_obj2 = obj2
                 obj2 = self.resolve(node, name2, obj2)
-                if trace and trace_recursive:
-                    g.trace('recursive %s: %r --> %r' % (
-                        name2, old_obj2, obj2))
-            if trace and trace_recursive:
-                g.trace('END RECURSIVE: %r', obj2)
+                if 0: g.trace('recursive %s: %r --> %r' % (name2, old_obj2, obj2))
+            if 0: g.trace('END RECURSIVE: %r', obj2)
             return obj2
         elif ivar in self.special_names_dict:
             val = self.special_names_dict.get(ivar)
-            if trace and trace_special:
-                g.trace('FOUND SPECIAL', ivar, val)
+            if 0: g.trace('FOUND SPECIAL', ivar, val)
             return val
         else:
             # Remember the unknown.
@@ -798,14 +794,15 @@ class ConventionChecker (object):
             data = (self.line_number, self.file_name)
             aList.append(data)
             d[ivar] = aList
-            if trace and trace_error:
-                self.error(node, 'No member:', ivar)
+            if trace: self.error(node, 'No member:', ivar)
             return self.Type('error', 'no member %s' % ivar)
     #@+node:ekr.20171209065852.1: *4* checker_check_signature & helpers
     def check_signature(self, node, func, args, signature):
         
         trace = self.test_kind is 'test'
-        if trace: g.trace('%s(%s) ==> %s' % (func, args, signature))
+        if trace:
+            g.trace('%s(%s) ==> %s' % (func, args, signature))
+            g.trace(g.callers())
         self.stats.check_signature += 1
         if signature[0] == 'self':
             signature = signature[1:]
@@ -849,7 +846,7 @@ class ConventionChecker (object):
                 return result
         else:
             result = self.check_arg_helper(node, func, call_arg, sig_arg)
-            g.trace(func, call_arg, sig_arg, '==>', result)
+            # g.trace(func, call_arg, sig_arg, '==>', result)
             return result
             ###
             # # Next, check a keyword call arg against it's assigned value.
@@ -912,7 +909,7 @@ class ConventionChecker (object):
     def before_Assign(self, node):
         
         s = self.format(node)
-        if self.test_kind == 'test': print(s)
+        if self.test_kind is 'test': print(s)
         if self.pass_n == 1:
             return
         self.stats.assignments += 1
@@ -989,16 +986,16 @@ class ConventionChecker (object):
     #@+node:ekr.20171215074959.5: *4* checker.Call & helper (remove regex)
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
-    OLD = True
+    OLD = False
 
     def before_Call(self, node):
 
         s = self.format(node)
-        if self.test_kind == 'test': print(s)
+        if self.test_kind is 'test': print(s)
         if self.pass_n == 1:
             return
         self.stats.calls += 1
-        if self.test_kind == 'test': g.trace(self.dump(node))
+        # if self.test_kind is 'test': g.trace(self.dump(node))
         if self.OLD:
             call_pattern = re.compile(r'^\s*(\w+(\.\w+)*)\s*\((.*)\)')
             m = call_pattern.match(s.strip())
@@ -1021,7 +1018,9 @@ class ConventionChecker (object):
             else:
                 func = node.func
                 chain = self.get_chain(node.func)
-                args = node.args
+                func = chain[-1]
+                # args = node.args
+                args = [self.format(z) for z in node.args]
             instance = self.classes.get(obj.name)
             if instance:
                 d = instance.get('methods')
@@ -1030,8 +1029,7 @@ class ConventionChecker (object):
                     if isinstance(signature, self.Type):
                         pass
                     else:
-                        if self.OLD:
-                            signature = signature.split(',')
+                        signature = signature.split(',')
                         self.check_signature(node, func, args, signature)
     #@+node:ekr.20171215103935.1: *5* checker.split_args
     def split_args(self, node, args):
@@ -1079,7 +1077,7 @@ class ConventionChecker (object):
     def before_ClassDef(self, node):
 
         s = self.format(node, print_body=False)
-        if self.test_kind == 'test': print(s)
+        if self.test_kind is 'test': print(s)
         self.indent += 1
         self.context_stack.append(node)
         self.class_name = name = node.name
@@ -1108,7 +1106,7 @@ class ConventionChecker (object):
     def before_FunctionDef(self, node):
 
         s = self.format(node, print_body=False)
-        if self.test_kind == 'test': print(s)
+        if self.test_kind is 'test': print(s)
         self.indent += 1
         self.context_stack.append(node)
         if self.pass_n == 1:
@@ -1141,11 +1139,15 @@ class ConventionChecker (object):
             else:
                 name = node.__class__.__name__
                 if name not in (
+                    'BoolOp', # c.config.getString('stylesheet') or ''.strip
                     'Call', # c1.rootPosition().h = whatever
+                    'Dict', # {}.whatever.
                     'Subscript', # d[x] = whatever
+                    'Str', # ''.join(), etc
                     'Tuple', # (hPos,vPos) = self.getScroll()
                 ):
-                    self.note(node1, 'target %s: %s' % (name, self.format(node1)))
+                    self.note(node1, '(get_chain) target %s:\n%s' % (
+                        name, self.format(node1)))
                 return []
         if isinstance(node, ast.Name):
             chain.append(node)
