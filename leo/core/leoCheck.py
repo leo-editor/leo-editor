@@ -430,7 +430,7 @@ class ConventionChecker (object):
         '''
         g.cls()
         c = self.c
-        kind = 'test' # <----- Change only this line.
+        kind = 'leo' # <----- Change only this line.
             # 'project', 'coverage', 'leo', 'lib2to3', 'pylint', 'rope'
         join = g.os_path_finalize_join
         loadDir = g.app.loadDir
@@ -967,21 +967,25 @@ class ConventionChecker (object):
         if self.pass_n == 1:
             return
         self.stats.calls += 1
-        obj = self.resolve_call(node)
-        if obj and obj.kind == 'instance':
-            instance = self.classes.get(obj.name)
-            if instance:
-                chain = self.get_chain(node.func)
-                func = chain[-1]
-                d = instance.get('methods')
-                signature = d.get(func)
-                if signature:
-                    if isinstance(signature, self.Type):
-                        pass
-                    else:
-                        args = [self.format(z) for z in node.args]
-                        signature = signature.split(',')
-                        self.check_signature(node, func, args, signature)
+        context = self.resolve_call(node)
+        assert isinstance(context, self.Type)
+        if context.kind != 'instance':
+            return
+        instance = self.classes.get(context.name)
+        if not instance:
+            return
+        chain = self.get_chain(node.func)
+        func = chain[-1]
+        d = instance.get('methods')
+        signature = d.get(func)
+        if not signature:
+            return
+        if isinstance(signature, self.Type):
+            pass ### Already checked? 
+        else:
+            args = [self.format(z) for z in node.args]
+            signature = signature.split(',')
+            self.check_signature(node, func, args, signature)
     #@+node:ekr.20171215074959.7: *4* checker.ClassDef
     def before_ClassDef(self, node):
 
