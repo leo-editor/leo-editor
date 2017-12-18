@@ -35,7 +35,11 @@ import sys
 try:
     from tkinter import Tk # Python 3
 except ImportError:
-    from Tkinter import Tk # Python 2
+    try:
+        from Tkinter import Tk # Python 2
+    except ImportError:
+        print('cursesGui.py: Tk required for clipboard handling.')
+        raise
 import leo.core.leoGlobals as g
 import leo.core.leoFrame as leoFrame
 import leo.core.leoGui as leoGui
