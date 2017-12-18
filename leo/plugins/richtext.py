@@ -61,6 +61,7 @@ To make a button to toggle the editor on and off, use::
 #@+node:tbrown.20130813134319.14335: ** << imports >> (richtext.py)
 import leo.core.leoGlobals as g
 from leo.core.leoQt import QtCore,QtWidgets,QtWebKit,QtWebKitWidgets
+real_webkit = 'engine' not in g.os_path_basename(QtWebKit.__file__).lower()
 import time
 # pylint: disable=no-name-in-module
 if g.isPython3:
@@ -108,16 +109,17 @@ if QtWidgets:
             self.setLayout(QtWidgets.QVBoxLayout())
             self.layout().setSpacing(0)
             self.layout().setContentsMargins(0,0,0,0)
-            # enable inspector
-            QtWebKit.QWebSettings.globalSettings().setAttribute(
-                QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
+            # enable inspector, if this really is QtWebKit
+            if real_webkit:
+                QtWebKit.QWebSettings.globalSettings().setAttribute(
+                    QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
             self.webview = QtWebKitWidgets.QWebView()
             self.layout().addWidget(self.webview)
             g.registerHandler('select3', self.select_node)
             g.registerHandler('unselect1', self.unselect_node)
             # load current node
             self.select_node('', {'c': self.c, 'new_p': self.c.p})
-            
+
         def reloadSettings(self):
             c = self.c
             c.registerReloadSettings(self)
