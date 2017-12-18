@@ -204,7 +204,7 @@ class Commands(object):
         self.tangle_batch_flag = False
         self.target_language = "python"
         self.untangle_batch_flag = False
-        self.use_body_focus_border = True
+        # self.use_body_focus_border = True
         # self.use_focus_border = False
             # Replaced by style-sheet entries.
         self.vim_mode = False
@@ -575,7 +575,7 @@ class Commands(object):
         c.stayInTreeAfterSelect = getBool('stayInTreeAfterSelect')
         c.smart_tab = getBool('smart_tab')
         c.tab_width = getInt('tab_width') or -4
-        c.use_body_focus_border = getBool('use_body_focus_border', default=True)
+        # c.use_body_focus_border = getBool('use_body_focus_border', default=True)
         # c.use_focus_border = getBool('use_focus_border', default=True)
             # Not used: replaced by stylesheet settings.
         c.verbose_check_outline = getBool('verbose_check_outline', default=False)
