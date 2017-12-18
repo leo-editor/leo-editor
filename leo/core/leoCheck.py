@@ -430,7 +430,7 @@ class ConventionChecker (object):
         '''
         g.cls()
         c = self.c
-        kind = 'leo' # <----- Change only this line.
+        kind = 'production' # <----- Change only this line.
             # 'project', 'coverage', 'leo', 'lib2to3', 'pylint', 'rope'
         join = g.os_path_finalize_join
         loadDir = g.app.loadDir
@@ -678,7 +678,7 @@ class ConventionChecker (object):
             self.recursion_count = 0
             if trace: g.trace(' ===== %s.%s(%s)' % (chain, func, args))
             if self.class_name:
-                context = self.Type('class', self.class_name)
+                context = self.Type('instance', self.class_name)
             else:
                 context = self.Type('module', self.file_name)
             result = self.resolve_chain(node, chain, context)
@@ -704,14 +704,15 @@ class ConventionChecker (object):
         assert isinstance(context, self.Type), repr(context)
         return context
     #@+node:ekr.20171208173323.1: *4* checker.resolve_ivar & helpers
-    def resolve_ivar(self, node, ivar, obj):
-        '''Resolve obj.ivar to a Type.'''
+    def resolve_ivar(self, node, ivar, context):
+        '''Resolve context.ivar to a Type.'''
         trace = self.test_kind is 'test'
+        assert self.pass_n == 2, repr(self.pass_n)
         self.stats.resolve_ivar += 1
-        class_name = 'Commands' if obj.name == 'c' else obj.name
+        class_name = 'Commands' if context.name == 'c' else context.name
         self.recursion_count += 1
         if self.recursion_count > 20:
-            self.report_unbounded_recursion(node, class_name, ivar, obj)
+            self.report_unbounded_recursion(node, class_name, ivar, context)
             return self.Type('error', 'recursion')
         the_class = self.classes.get(class_name)
         if not the_class:
@@ -719,14 +720,14 @@ class ConventionChecker (object):
         ivars = the_class.get('ivars')
         methods = the_class.get('methods')
         if ivar == 'self':
-            return self.Type('class', class_name)
+            return self.Type('instance', class_name)
         elif methods.get(ivar):
             return self.Type('func', ivar)
         elif ivars.get(ivar):
             val = ivars.get(ivar)
-            # g.trace('IVAR:', ivar, 'CONTEXT', obj, 'VAL', val)
+            # g.trace('IVAR:', ivar, 'CONTEXT', context, 'VAL', val)
             if isinstance(val, self.Type):
-                # g.trace('KNOWN: %s.%s %r ==> %r' % (class_name, ivar, obj, val))
+                # g.trace('KNOWN: %s.%s %r ==> %r' % (class_name, ivar, context, val))
                 return val
             # Check for pre-defined special names.
             for special_name, special_obj in self.special_names_dict.items():
@@ -738,23 +739,18 @@ class ConventionChecker (object):
                     # Resovle the rest of the tail in the found context.
                     if trace: g.trace('TAIL: %s => %s.%s' % (val, special_obj, tail))
                     return self.resolve_chain(node, tail[1:], special_obj)
-            # Avoid recursion 1.
-            if ivar == val:
+            # Avoid recursion .
+            head = val.split('.')
+            if ivar in (val, head[0]):
                 # g.trace('AVOID RECURSION: self.%s=%s' % (ivar, val))
                 return self.Type('unknown', ivar)
-            head2 = val.split('.')
-            # Avoid recursion 2.
-            if ivar == head2[0]:
-                # g.trace('AVOID RECURSION2: %s=%s' % (ivar, val))
-                return self.Type('unknown', ivar)
-            # g.trace('RECURSIVE', head2)
-            obj2 = obj
-            for name2 in head2:
-                old_obj2 = obj2
-                obj2 = self.resolve(node, name2, obj2)
-                if 0: g.trace('recursive %s: %r --> %r' % (name2, old_obj2, obj2))
-            if 0: g.trace('END RECURSIVE: %r', obj2)
-            return obj2
+            # g.trace('RECURSIVE', head)
+            for name2 in head:
+                old_context = context
+                context = self.resolve(node, name2, context)
+                if 0: g.trace('recursive %s: %r --> %r' % (name2, old_context, context))
+            if 0: g.trace('END RECURSIVE: %r', context)
+            return context
         elif ivar in self.special_names_dict:
             val = self.special_names_dict.get(ivar)
             # g.trace('FOUND SPECIAL', ivar, val)
@@ -775,11 +771,11 @@ class ConventionChecker (object):
         # self.error(node, 'No member:', ivar)
         return self.Type('error', 'no member %s' % ivar)
     #@+node:ekr.20171217102055.1: *5* checker.report_unbounded_recursion
-    def report_unbounded_recursion(self, node, class_name, ivar, obj):
+    def report_unbounded_recursion(self, node, class_name, ivar, context):
         
         the_class = self.classes.get(class_name)
         self.error(node, 'UNBOUNDED RECURSION: %r %r\nCallers: %s' % (
-            ivar, obj, g.callers()))
+            ivar, context, g.callers()))
         if 0:
             g.trace('CLASS DICT: Commands')
             g.printDict(self.classes.get('Commands'))
@@ -827,14 +823,14 @@ class ConventionChecker (object):
         '''
         trace = self.test_kind is 'test'
         if trace: g.trace('===== args:', args, 'call:', call_arg, 'sig:', sig_arg)
-        result = self.check_arg_helper(node, func, call_arg, sig_arg)
-        if result is not 'fail' and len(args) > 1:
-            # Check a keyword call arg against it's assigned value.
-            if 1: # Not ready yet.
-                arg1, arg2 = args[0], ''.join(args[1:])
-                result = self.check_arg_helper(node, 'KEYWORD', arg1, arg2)
-        assert result in ('fail', 'ok', 'unknown'), repr(result)
-        return result
+        return self.check_arg_helper(node, func, call_arg, sig_arg)
+        ### This code should be somewhere else
+            # if result is not 'fail' and len(args) > 1:
+                # # Check a keyword call arg against it's assigned value.
+                    # arg1, arg2 = args[0], ''.join(args[1:])
+                    # result = self.check_arg_helper(node, 'KEYWORD', arg1, arg2)
+            # assert result in ('fail', 'ok', 'unknown'), repr(result)
+            # return result
     #@+node:ekr.20171212035137.1: *5* checker.check_arg_helper
     def check_arg_helper(self, node, func, call_arg, sig_arg):
         trace = False and self.test_kind is 'test'
@@ -936,7 +932,7 @@ class ConventionChecker (object):
             return
         # Resolve val, if possible.
         context = self.Type(
-            'class' if class_name else 'module',
+            'instance' if class_name else 'module',
             class_name or self.file_name,
         )
         self.recursion_count = 0
