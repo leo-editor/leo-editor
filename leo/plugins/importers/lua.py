@@ -16,7 +16,7 @@ Target = linescanner.Target
 class Lua_Importer(Importer):
     '''The importer for the lua lanuage.'''
 
-    def __init__(self, importCommands):
+    def __init__(self, importCommands, **kwargs):
         '''Lua_Importer.__init__'''
         # Init the base class.
         Importer.__init__(self,

@@ -9,7 +9,7 @@ Importer = linescanner.Importer
 #@+node:ekr.20140723122936.18043: ** class Ini_Importer
 class Ini_Importer(Importer):
 
-    def __init__(self, importCommands):
+    def __init__(self, importCommands, **kwargs):
         '''Ini_Importer.__init__'''
         # Init the base class.
         Importer.__init__(self,

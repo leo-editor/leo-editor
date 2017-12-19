@@ -104,6 +104,7 @@ class Importer(object):
         name=None, # The kind of importer, usually the same as language
         state_class=None, # For i.scan_line
         strict=False,
+        **kwargs
     ):
         '''Importer.__init__.'''
         # Copies of args...

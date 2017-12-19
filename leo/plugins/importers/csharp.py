@@ -8,7 +8,7 @@ Importer = linescanner.Importer
 class Csharp_Importer(Importer):
     '''The importer for the csharp lanuage.'''
 
-    def __init__(self, importCommands):
+    def __init__(self, importCommands, **kwargs):
         '''Csharp_Importer.__init__'''
         # Init the base class.
         Importer.__init__(self,

@@ -10,7 +10,7 @@ Target = linescanner.Target
 #@+node:ekr.20140723122936.17928: ** class C_Importer
 class C_Importer(Importer):
 
-    def __init__(self, importCommands):
+    def __init__(self, importCommands, **kwargs):
         '''C_Importer.__init__'''
         # Init the base class.
         Importer.__init__(self,

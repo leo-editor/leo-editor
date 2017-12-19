@@ -17,6 +17,7 @@ class JSON_Scanner:
         importCommands,
         language='json',
         alternate_language=None,
+        **kwargs
     ):
         '''The ctor for the JSON_Scanner class.'''
         self.c = c = importCommands.c

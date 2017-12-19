@@ -10,7 +10,7 @@ import leo.core.leoGlobals as g
 class Elisp_Importer(Importer):
     '''The importer for the elisp lanuage.'''
 
-    def __init__(self, importCommands):
+    def __init__(self, importCommands, **kwargs):
         '''Elisp_Importer.__init__'''
         # Init the base class.
         Importer.__init__(self,

@@ -10,7 +10,7 @@ Importer = linescanner.Importer
 class Perl_Importer(Importer):
     '''A scanner for the perl language.'''
 
-    def __init__(self, importCommands,language=None, alternate_language=None):
+    def __init__(self, importCommands, **kwargs):
         '''The ctor for the Perl_ImportController class.'''
         # Init the base class.
         Importer.__init__(self,

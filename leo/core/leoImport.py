@@ -760,12 +760,7 @@ class LeoImportCommands(object):
         if func and not c.config.getBool('suppress_import_parsing', default=False):
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')
-            # A hack until all importers support **kwargs.
-            if ext == '.js':
-                # Only javascript importer allows force_at_others keyword.
-                func(c=c, parent=p, s=s, force_at_others=True)
-            else:
-                func(c=c, parent=p, s=s)
+            func(c=c, parent=p, s=s, force_at_others=force_at_others)
         else:
             # Just copy the file to the parent node.
             s = g.toUnicode(s, encoding=self.encoding)
@@ -2012,7 +2007,7 @@ class RecursiveImportController(object):
                 for dir_ in sorted(dirs):
                     self.import_dir(dir_, parent)
     #@+node:ekr.20170404103953.1: *4* ric.import_one_file
-    def import_one_file(self, path, parent, force_at_others=False):
+    def import_one_file(self, path, parent):
         '''Import one file to the last top-level node.'''
         c = self.c
         self.n_files += 1
@@ -2030,7 +2025,7 @@ class RecursiveImportController(object):
         else:
             c.importCommands.importFilesCommand(
                 files=[path],
-                force_at_others = force_at_others,
+                force_at_others = self.force_at_others,
                 parent=parent,
                 redrawFlag=False,
                 shortFn=True,

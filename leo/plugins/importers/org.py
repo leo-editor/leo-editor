@@ -10,7 +10,7 @@ Importer = linescanner.Importer
 class Org_Importer(Importer):
     '''The importer for the org lanuage.'''
 
-    def __init__(self, importCommands):
+    def __init__(self, importCommands, **kwargs):
         '''Org_Importer.__init__'''
         # Init the base class.
         Importer.__init__(self,

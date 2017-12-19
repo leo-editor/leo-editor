@@ -17,7 +17,7 @@ class Import_IPYNB(object):
 
     #@+others
     #@+node:ekr.20160412101537.3: *3* ctor
-    def __init__(self, c=None, importCommands=None):
+    def __init__(self, c=None, importCommands=None, **kwargs):
         '''Ctor for Import_IPYNB class.'''
         self.c = importCommands.c if importCommands else c
             # Commander of present outline.

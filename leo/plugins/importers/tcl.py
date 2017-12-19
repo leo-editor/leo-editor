@@ -16,7 +16,7 @@ Target = linescanner.Target
 class Tcl_Importer(Importer):
     '''The importer for the tcl lanuage.'''
 
-    def __init__(self, importCommands):
+    def __init__(self, importCommands, **kwargs):
         '''Tcl_Importer.__init__'''
         # Init the base class.
         Importer.__init__(self,
