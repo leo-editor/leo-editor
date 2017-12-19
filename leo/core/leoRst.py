@@ -272,6 +272,7 @@ class RstCommands(object):
             '@rst-head',
             '@rst-ignore-node',
             '@rst-ignore-tree',
+            '@rst-ignore',
             '@rst-no-head',
             '@rst-no-headlines',
             '@rst-table', # New in Leo 5.3.
@@ -554,7 +555,7 @@ class RstCommands(object):
             h = p.h.strip()
             if g.match_word(h, 0, '@rst-ignore-tree'):
                 p.moveToNodeAfterTree()
-            elif g.match_word(h, 0, '@rst-ignore'):
+            elif g.match_word(h, 0, '@rst-ignore') or g.match_word(h, 0, '@rst-ignore-node'):
                 p.moveToThreadNext()
             elif g.match_word(h, 0, "@rst"):
                 self.rst_nodes.append(p.copy())
@@ -1308,7 +1309,7 @@ class RstCommands(object):
                 ('@rst-doc-only', 'doc_only_mode', True),
                 ('@rst-head', 'show_this_headline', True),
                 # ('@rst-head' ,        'show_headlines',False),
-                ('@rst-ignore', 'ignore_this_tree', True),
+                ('@rst-ignore', 'ignore_this_node', True),
                 ('@rst-ignore-node', 'ignore_this_node', True),
                 ('@rst-ignore-tree', 'ignore_this_tree', True),
                 ('@rst-no-head', 'ignore_this_headline', True),
