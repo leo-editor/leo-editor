@@ -1706,9 +1706,7 @@
 <v t="maphew.20171129131746.1"><vh>Computer with python already</vh></v>
 <v t="maphew.20171129131759.1"><vh>No python yet</vh></v>
 </v>
-<v t="ekr.20170618113437.1"></v>
 <v t="ekr.20171204111545.1"><vh>update cheat sheet</vh></v>
-<v t="ekr.20050818163826"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -7652,10 +7650,11 @@ Directive
 
     A keyword, preceded by an '@' sign, in body text that controls Leo's
     operation. The keyword is empty for the @ directive.
-    
-    
+
 .. index::
     pair: Dirty Node; Glossary
+
+Dirty Node
 
     A node whose headline or body text has changed.
 
@@ -23428,18 +23427,19 @@ This ensures that base classes are defined before their subclasses.
 
     a = 1 &lt;&lt; 5 + 2 &gt;&gt; 3;
     
-You could rewrite this as:
+You could rewrite this as::
 
     a = 1 &lt;&lt; 5 + \
         2 &gt;&gt; 3;
         
-g.angleBrackets(s) returns string s enclosed in angle brackets.  For instance::
+g.angleBrackets(s) returns string s enclosed in angle brackets.
+For instance::
 
-​   headline = g.angleBrackets("my section")
+​   headline = g.angleBrackets('abc')
 
 sets headline to::
 
-    "&lt;&lt;my section&gt;&gt;"
+    &lt;&lt;abc&gt;&gt;
 </t>
 <t tx="ekr.20170618015524.1">I thought I would write my own testimonial. I don't ever do this, as I often roll my eyes at testimonials, but my enthusiasm is at such a degree about Leo, that I must give "props" where props are due.
 
@@ -24452,8 +24452,7 @@ Changes to read/write code:
 - at.write updates cache. Previously only at.read updated the cache!
 - at.deleteUnvisitedNodes no longer creates resurrected nodes.
 - at.new_createThinChild4 *always* updates headlines.
-- at.terminateBody just sets v.tempRoots.
-  It no longer calls at.indicateNodeChanged.
+- at.terminateBody just sets v.tempRoots. It no longer calls at.indicateNodeChanged.
 - fc.handleNodeConflicts reports changed headlines differently.
 
 Changes to cacher code:
