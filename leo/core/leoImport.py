@@ -749,7 +749,7 @@ class LeoImportCommands(object):
             return
         if trace and not s:
             g.trace('empty file: but calling importer', fileName)
-        # Get the scanning function.
+        # Get the so-called scanning func.
         func = self.dispatch(ext, p)
             # Func is a callback. It must have a c argument.
         if trace: g.trace('%8s %20s %20s %s' % (
@@ -760,6 +760,7 @@ class LeoImportCommands(object):
         if func and not c.config.getBool('suppress_import_parsing', default=False):
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')
+            # func is actually a factory: it instantiates the importer class.
             func(c=c, parent=p, s=s, force_at_others=force_at_others)
         else:
             # Just copy the file to the parent node.
