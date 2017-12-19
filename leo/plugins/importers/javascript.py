@@ -9,12 +9,12 @@ Importer = linescanner.Importer
 #@+node:ekr.20140723122936.18049: ** class JS_Importer
 class JS_Importer(Importer):
 
-    def __init__(self, importCommands, language=None, alternate_language=None):
+    def __init__(self, importCommands, force_at_others=False, **kwargs):
         '''The ctor for the JS_ImportController class.'''
         # Init the base class.
         Importer.__init__(self,
             importCommands,
-            gen_refs = True,
+            gen_refs = not force_at_others,
             language = 'javascript',
             state_class = JS_ScanState,
         )

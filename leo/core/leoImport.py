@@ -719,6 +719,7 @@ class LeoImportCommands(object):
         atShadow=False, # For error messages only.
         ext=None,
         s=None,
+        force_at_others=False, # For javascript importer.
     ):
         '''
         Create an outline by importing a file, reading the file with the
@@ -759,7 +760,12 @@ class LeoImportCommands(object):
         if func and not c.config.getBool('suppress_import_parsing', default=False):
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')
-            func(c=c, parent=p, s=s)
+            # A hack until all importers support **kwargs.
+            if ext == '.js':
+                # Only javascript importer allows force_at_others keyword.
+                func(c=c, parent=p, s=s, force_at_others=True)
+            else:
+                func(c=c, parent=p, s=s)
         else:
             # Just copy the file to the parent node.
             s = g.toUnicode(s, encoding=self.encoding)
@@ -925,6 +931,7 @@ class LeoImportCommands(object):
         redrawFlag=True,
         shortFn=False,
         treeType=None,
+        force_at_others=False,
     ):
         # Not a command.  It must *not* have an event arg.
         c, u = self.c, self.c.undoer
@@ -944,7 +951,7 @@ class LeoImportCommands(object):
                 p = parent.insertAsLastChild()
                 p.h = '%s %s' % (treeType, fn)
                 u.afterInsertNode(p, 'Import', undoData)
-                p = self.createOutline(fn, parent=p)
+                p = self.createOutline(fn, parent=p, force_at_others=force_at_others)
                 if p: # createOutline may fail.
                     if not g.unitTesting:
                         g.blue("imported", g.shortFileName(fn) if shortFn else fn)
@@ -1914,6 +1921,7 @@ class RecursiveImportController(object):
     #@+others
     #@+node:ekr.20130823083943.12615: *3* ric.ctor (RecursiveImportController)
     def __init__(self, c, kind,
+        force_at_others = False,
         recursive=True,
         safe_at_file=True,
         theTypes=None,
@@ -1922,6 +1930,7 @@ class RecursiveImportController(object):
         self.c = c
         self.kind = kind
             # in ('@auto', '@clean', '@edit', '@file', '@nosent')
+        self.force_at_others = force_at_others
         self.recursive = recursive
         self.root = None
         self.safe_at_file = safe_at_file
@@ -2003,7 +2012,7 @@ class RecursiveImportController(object):
                 for dir_ in sorted(dirs):
                     self.import_dir(dir_, parent)
     #@+node:ekr.20170404103953.1: *4* ric.import_one_file
-    def import_one_file(self, path, parent):
+    def import_one_file(self, path, parent, force_at_others=False):
         '''Import one file to the last top-level node.'''
         c = self.c
         self.n_files += 1
@@ -2021,6 +2030,7 @@ class RecursiveImportController(object):
         else:
             c.importCommands.importFilesCommand(
                 files=[path],
+                force_at_others = force_at_others,
                 parent=parent,
                 redrawFlag=False,
                 shortFn=True,

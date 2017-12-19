@@ -1438,7 +1438,7 @@ class LeoApp(object):
                 text="Ok")
     #@+node:ekr.20171127111141.1: *3* app.Import utils
     #@+node:ekr.20140727180847.17985: *4* app.scanner_for_at_auto
-    def scanner_for_at_auto(self, c, p):
+    def scanner_for_at_auto(self, c, p, **kwargs):
         '''A factory returning a scanner function for p, an @auto node.'''
         trace = False and not g.unitTesting
         d = g.app.atAutoDict
@@ -1449,10 +1449,10 @@ class LeoApp(object):
             if aClass and g.match_word(p.h, 0, key):
                 if trace: g.trace('found', aClass.__name__)
 
-                def scanner_for_at_auto_cb(c, parent, s):
+                def scanner_for_at_auto_cb(c, parent, s, **kwargs):
                     try:
                         ic = c.importCommands
-                        scanner = aClass(importCommands=ic)
+                        scanner = aClass(importCommands=ic, **kwargs)
                         return scanner.run(s, parent)
                     except Exception:
                         g.es_print('Exception running', aClass.__name__)
@@ -1466,17 +1466,17 @@ class LeoApp(object):
         if trace: g.trace('not found', p.h, sorted(d.keys()))
         return None
     #@+node:ekr.20140130172810.15471: *4* app.scanner_for_ext
-    def scanner_for_ext(self, c, ext):
+    def scanner_for_ext(self, c, ext, **kwargs):
         '''A factory returning a scanner function for the given file extension.'''
         trace = False and not g.unitTesting
         aClass = g.app.classDispatchDict.get(ext)
         if trace: g.trace(ext, aClass.__name__)
         if aClass:
 
-            def scanner_for_ext_cb(c, parent, s):
+            def scanner_for_ext_cb(c, parent, s, **kwargs):
                 try:
                     ic = c.importCommands
-                    scanner = aClass(importCommands=ic)
+                    scanner = aClass(importCommands=ic, **kwargs)
                     return scanner.run(s, parent)
                 except Exception:
                     g.es_print('Exception running', aClass.__name__)

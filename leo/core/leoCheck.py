@@ -35,6 +35,8 @@ class ConventionChecker (object):
         fn = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins', 'nodetags.py')
         leoCheck.ConventionChecker(c).check(fn=fn)
     '''
+    # pylint: disable=literal-comparison
+        # What's wrong with `if self.test_kind is 'test'`?
 
     ignore = ('bool', 'dict', 'enumerate', 'list', 'tuple')
         # Things that look like function calls.
