@@ -3127,16 +3127,21 @@ class LeoQtLog(leoFrame.LeoLog):
         option = QtGui.QTextOption
         logWidget.setWordWrapMode(
             option.WordWrap if self.wrap else option.NoWrap)
-        if 0:
-            logWidget.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse)
-            logWidget.setOpenLinks(False)
-            logWidget.setOpenExternalLinks(False)
-            logWidget.anchorClicked.connect(lambda link: g.es(link))
         for i in range(w.count()):
             if w.tabText(i) == 'Log':
                 w.removeTab(i)
         w.insertTab(0, logWidget, 'Log')
         c.spellCommands.openSpellTab()
+
+        # set up links in log handling
+        logWidget.setTextInteractionFlags(
+            QtCore.Qt.LinksAccessibleByMouse |
+            QtCore.Qt.TextEditable |
+            QtCore.Qt.TextSelectableByMouse
+        )
+        logWidget.setOpenLinks(False)
+        logWidget.setOpenExternalLinks(False)
+        logWidget.anchorClicked.connect(self.linkClicked)
     #@+node:ekr.20110605121601.18316: *4* LeoQtLog.getName
     def getName(self):
         return 'log' # Required for proper pane bindings.
@@ -3199,6 +3204,19 @@ class LeoQtLog(leoFrame.LeoLog):
         val = w == self or w in list(self.contentsDict.values())
         # g.trace(val,w)
         return val
+    #@+node:tbnorth.20171220123648.1: *3* LeoQtLog.linkClicked
+    def linkClicked(self, link):
+        """linkClicked - link clicked in log
+
+        :param QUrl link: link that was clicked
+        """
+        url = link.url()
+        # see addition of '/' in LeoQtLog.put()
+        if platform.system() == 'Windows':
+            for scheme in 'file', 'unl':
+                if url.startswith(scheme+':///') and url[len(scheme)+5] == ':':
+                    url = url.replace(':///', '://', 1)
+        g.handleUrl(url, c=self.c)
     #@+node:ekr.20120304214900.9940: *3* LeoQtLog.onCurrentChanged
     def onCurrentChanged(self, idx):
         trace = False and not g.unitTesting
@@ -3245,7 +3263,12 @@ class LeoQtLog(leoFrame.LeoLog):
                 # The caller is responsible for newlines!
             s = '<font color="%s">%s</font>' % (color, s)
             if nodeLink:
-                s = '<a href="%s" title="%s">%s</a>' % (nodeLink, nodeLink, s)
+                url = nodeLink
+                for scheme in 'file', 'unl':
+                    # QUrl requires paths start with '/'
+                    if url.startswith(scheme+'://') and not url.startswith(scheme+':///'):
+                        url = url.replace('://', ':///', 1)
+                s = '<a href="%s" title="%s">%s</a>' % (url, nodeLink, s)
             if trace and trace_s:
                 print('LeoQtLog.put: %r' % (s))
             w.insertHtml(s)
