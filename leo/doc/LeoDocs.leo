@@ -124,15 +124,7 @@
 <v t="ville.20090705225609.5738"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20150314044011.7"><vh>@@button remove dups</vh></v>
-<v t="ekr.20161120074501.1"><vh>@button make-md-heads</vh>
-<v t="ekr.20161120075731.1"><vh>markup</vh></v>
-</v>
-<v t="ekr.20131016083406.16724"><vh>@button make-sphinx</vh></v>
-<v t="ekr.20161204055040.1"><vh>@button make-md-toc</vh>
-<v t="ekr.20161204055436.1"><vh>run</vh></v>
-<v t="ekr.20161204060843.1"><vh>mak_link</vh></v>
-<v t="ekr.20161204055804.1"><vh>make_toc</vh></v>
-</v>
+<v t="ekr.20171220050925.1"><vh>@button get-tips</vh></v>
 <v t="ekr.20170212105226.1"><vh>@button IntroSlides @key=Ctrl-9</vh>
 <v t="ekr.20170212105226.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20170212105226.3"><vh>&lt;&lt; class IntroSlides &gt;&gt;</vh>
@@ -338,6 +330,15 @@
 <v t="ekr.20170212105226.11"><vh>Slide 1: Leo's main window</vh></v>
 </v>
 </v>
+<v t="ekr.20161120074501.1"><vh>@button make-md-heads</vh>
+<v t="ekr.20161120075731.1"><vh>markup</vh></v>
+</v>
+<v t="ekr.20161204055040.1"><vh>@button make-md-toc</vh>
+<v t="ekr.20161204055436.1"><vh>run</vh></v>
+<v t="ekr.20161204060843.1"><vh>mak_link</vh></v>
+<v t="ekr.20161204055804.1"><vh>make_toc</vh></v>
+</v>
+<v t="ekr.20131016083406.16724"><vh>@button make-sphinx</vh></v>
 </v>
 <v t="ekr.20131017051340.16850"><vh>Scripts</vh>
 <v t="ekr.20150313192232.12"><vh>Script: check all command names</vh></v>
@@ -1707,6 +1708,7 @@
 <v t="maphew.20171129131759.1"><vh>No python yet</vh></v>
 </v>
 <v t="ekr.20171204111545.1"><vh>update cheat sheet</vh></v>
+<v t="ekr.20171220050925.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -24692,6 +24694,60 @@ Options:
   -v, --version         print version number and exit
   --window-size=WINDOW_SIZE
                         initial window size (height x width)</t>
+<t tx="ekr.20171220050925.1">@language python
+
+"""
+get_tips.py - download current tips from GitHub
+NOTE: if the list of tips gets long enough, GitHub may stop serving them
+all in a single request, and serve them page by page - not hard to
+handle if it happens.
+Terry Brown, terrynbrown@gmail.com, Thu Dec  7 09:10:54 2017
+"""
+
+from collections import namedtuple
+
+import requests
+
+Tip = namedtuple('Tip', 'number title tip tags')
+
+base_url = 'https://api.github.com/repos/leo-editor/leo-editor/issues?labels=Tip&amp;state='
+
+def get_tips(data):
+    """get_tips - get tips from GitHub issues
+    :param dict data: GitHub API issues list
+    :return: list of Tips
+    """
+    tips = []
+    for issue in data:
+        if '\n' in issue['body']:
+            tip, tags = issue['body'].strip().rsplit('\n', 1)
+        else:
+            tip, tags = issue['body'].strip(), ''
+        if tags.lower().startswith('tags:'):
+            tags = [i.strip().strip('.') for i in tags[5:].split(',')]
+        else:
+            tags = []
+            tip = "%s\n%s" % (tip, tags)
+        if isinstance(tip, (tuple, list)):
+            tip = (z for z in tip if z and z.strip())
+        tips.append(Tip(issue['number'], issue['title'], tip, tags))
+    return tips
+
+def main():
+    g.cls()
+    for kind in 'open', 'closed':
+        URL = base_url+kind
+        data = requests.get(URL).json()
+        for tip in get_tips(data):
+            print('%s %s tip #%s %s...' % (('-'*10), kind, tip.number, tip.title))
+            print('')
+            print("TAGS: %s" % tip.tags or "**NO TAGS**")
+            print('')
+            print(tip.tip.strip().strip('[]').strip())
+            print('')
+
+if __name__ == '__main__':
+    main()</t>
 <t tx="maphew.20171129131746.1">Python 3.0+::
 
     pip install leo
@@ -24735,7 +24791,7 @@ From Anaconda shell::
 Installing dependencies
 #######################
 </t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
