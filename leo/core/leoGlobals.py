@@ -5515,6 +5515,7 @@ def es(*args, **keys):
         'newline': True,
         'spaces': True,
         'tabName': 'Log',
+        'nodeLink': None,
     }
     d = g.doKeywordArgs(keys, d)
     color = d.get('color')
@@ -5535,7 +5536,7 @@ def es(*args, **keys):
     elif log and app.logInited:
         if newline:
             s += '\n'
-        log.put(s, color=color, tabName=tabName)
+        log.put(s, color=color, tabName=tabName, nodeLink=d['nodeLink'])
         # Count the number of *trailing* newlines.
         for ch in s:
             if ch == '\n': log.newlines += 1

@@ -3127,6 +3127,11 @@ class LeoQtLog(leoFrame.LeoLog):
         option = QtGui.QTextOption
         logWidget.setWordWrapMode(
             option.WordWrap if self.wrap else option.NoWrap)
+        if 0:
+            logWidget.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse)
+            logWidget.setOpenLinks(False)
+            logWidget.setOpenExternalLinks(False)
+            logWidget.anchorClicked.connect(lambda link: g.es(link))
         for i in range(w.count()):
             if w.tabText(i) == 'Log':
                 w.removeTab(i)
@@ -3206,7 +3211,7 @@ class LeoQtLog(leoFrame.LeoLog):
         if trace: g.trace(idx, tabw.tabText(idx), self.c.frame.title) # wrapper and wrapper.widget)
     #@+node:ekr.20110605121601.18321: *3* LeoQtLog.put & putnl
     #@+node:ekr.20110605121601.18322: *4* LeoQtLog.put
-    def put(self, s, color=None, tabName='Log', from_redirect=False):
+    def put(self, s, color=None, tabName='Log', from_redirect=False, nodeLink=None):
         '''
         Put s to the Qt Log widget, converting to html.
         All output to the log stream eventually comes here.
@@ -3239,6 +3244,8 @@ class LeoQtLog(leoFrame.LeoLog):
             s = s.replace('\n', '<br>')
                 # The caller is responsible for newlines!
             s = '<font color="%s">%s</font>' % (color, s)
+            if nodeLink:
+                s = '<a href="%s" title="%s">%s</a>' % (nodeLink, nodeLink, s)
             if trace and trace_s:
                 print('LeoQtLog.put: %r' % (s))
             w.insertHtml(s)

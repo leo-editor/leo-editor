@@ -1248,7 +1248,7 @@ class LeoLog(object):
     #@+node:ekr.20070302101304: *3* LeoLog.put & putnl
     # All output to the log stream eventually comes here.
 
-    def put(self, s, color=None, tabName='Log', from_redirect=False):
+    def put(self, s, color=None, tabName='Log', from_redirect=False, nodeLink=None):
         print(s)
 
     def putnl(self, tabName='Log'):
@@ -1975,7 +1975,7 @@ class NullLog(LeoLog):
     def oops(self):
         g.trace("NullLog:", g.callers(4))
     #@+node:ekr.20041012083237.3: *3* put and putnl (NullLog)
-    def put(self, s, color=None, tabName='Log', from_redirect=False):
+    def put(self, s, color=None, tabName='Log', from_redirect=False, nodeLink=None):
         # print('(nullGui) print',repr(s))
         if self.enabled:
             try:
