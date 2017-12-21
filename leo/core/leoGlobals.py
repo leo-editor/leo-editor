@@ -3651,13 +3651,16 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
             c.expandAllAncestors(p)
             c.selectPosition(p)
             if line_num:
-                pos = sum(len(i)+1 for i in p.b.split('\n')[:line_num-1])
+                pos = sum(len(i)+1 for i in p.b.split('\n')[:line_num[0]-1])
+                if line_num[1]:
+                    pos += line_num[1] - 1
                 c.frame.body.wrapper.setInsertPoint(pos)
             if p.hasChildren():
                 p.expand()
                 # n = min(3, p.numberOfChildren())
             c.redraw()
             c.frame.bringToFront()
+            c.bodyWantsFocusNow()
             timer.stop()
 
         timer = g.IdleTime(focus_callback, delay=0.1, tag='g.recursiveUNLSearch')
@@ -3666,10 +3669,11 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     line_num = []
     found, maxdepth, maxp = recursiveUNLFind(
         unlList, c, depth, p, maxdepth, maxp,
-        soft_idx=soft_idx, hard_idx=hard_idx, line_num=line_num)
+        soft_idx=soft_idx, hard_idx=hard_idx, line_num=line_num
+    )
     if maxp:
         if trace: g.trace('FOUND', maxp and maxp.h)
-        moveToP(c, maxp, line_num[0] if line_num else None)
+        moveToP(c, maxp, line_num)
     elif trace:
         g.trace('NOT FOUND', '-->'.join(unlList))
     return found, maxdepth, maxp
@@ -3710,7 +3714,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     heads = [i.h for i in nds]
     # work out order in which to try nodes
     order = []
-    pos_pattern = re.compile(r':(\d+),?(\d+)?,?(\d+)?$')
+    pos_pattern = re.compile(r':(\d+),?(\d+)?,?(\d+)?,?(\d+)?$')
     target = unlList[depth]
     try:
         target = pos_pattern.sub('', unlList[depth])
@@ -3718,10 +3722,10 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     except IndexError:
         # Fix bug https://github.com/leo-editor/leo-editor/issues/36
         pos = None
-    nth_sib = nth_same = nth_line_no = None
+    nth_sib = nth_same = nth_line_no = nth_col_no = None
     if pos:
         use_idx_mode = True # ok to use hard/soft_idx
-        nth_sib, nth_same, nth_line_no = [int(i) if i else 0 for i in pos[0]]
+        nth_sib, nth_same, nth_line_no, nth_col_no = [int(i) if i else 0 for i in pos[0]]
         target = re.sub(pos_pattern, "", target).replace('--%3E', '-->')
         if hard_idx:
             if nth_sib < len(heads):
@@ -3754,7 +3758,7 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
         ):
             if depth + 1 == len(unlList): # found it
                 if nth_line_no and line_num is not None:  # not None *or* zero
-                    line_num[:] = [nth_line_no]
+                    line_num[:] = [nth_line_no, nth_col_no]
                 return True, maxdepth, nd
             else:
                 if maxdepth < depth + 1:
