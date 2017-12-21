@@ -3644,16 +3644,17 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
         g.app.unitTestDict['g.recursiveUNLSearch'] = True
         return True, maxdepth, maxp
 
-    def moveToP(c, p, line_num):
+    def moveToP(c, p, unlList):
 
-        def focus_callback(timer, c=c, p=p.copy(), line_num=line_num):
+        def focus_callback(timer, c=c, p=p.copy(), unlList=unlList):
             '''Idle-time handler for g.recursiveUNLSearch'''
             c.expandAllAncestors(p)
             c.selectPosition(p)
-            if line_num:
-                pos = sum(len(i)+1 for i in p.b.split('\n')[:line_num[0]-1])
-                if line_num[1]:
-                    pos += line_num[1] - 1
+            nth_sib, nth_same, nth_line_no, nth_col_no = recursiveUNLParts(unlList[-1])
+            if nth_line_no:
+                pos = sum(len(i)+1 for i in p.b.split('\n')[:nth_line_no-1])
+                if nth_col_no:
+                    pos += nth_col_no - 1
                 c.frame.body.wrapper.setInsertPoint(pos)
             if p.hasChildren():
                 p.expand()
@@ -3666,20 +3667,19 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
         timer = g.IdleTime(focus_callback, delay=0.1, tag='g.recursiveUNLSearch')
         if timer: timer.start()
 
-    line_num = []
     found, maxdepth, maxp = recursiveUNLFind(
         unlList, c, depth, p, maxdepth, maxp,
-        soft_idx=soft_idx, hard_idx=hard_idx, line_num=line_num
+        soft_idx=soft_idx, hard_idx=hard_idx
     )
     if maxp:
         if trace: g.trace('FOUND', maxp and maxp.h)
-        moveToP(c, maxp, line_num)
+        moveToP(c, maxp, unlList)
     elif trace:
         g.trace('NOT FOUND', '-->'.join(unlList))
     return found, maxdepth, maxp
 #@+node:ekr.20140711071454.17654: *4* g.recursiveUNLFind
 def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
-                     soft_idx=False, hard_idx=False, line_num=None):
+                     soft_idx=False, hard_idx=False):
     """
     Internal part of recursiveUNLSearch which doesn't change the
     selected position or call c.frame.bringToFront()
@@ -3703,7 +3703,6 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     - `p`: part of recursion, don't set explicitly
     - `maxdepth`: part of recursion, don't set explicitly
     - `maxp`: part of recursion, don't set explicitly
-    - `line_num`: a container to place the target line number in
     """
     if depth == 0:
         nds = list(c.rootPosition().self_and_siblings())
@@ -3714,18 +3713,17 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     heads = [i.h for i in nds]
     # work out order in which to try nodes
     order = []
-    pos_pattern = re.compile(r':(\d+),?(\d+)?,?(\d+)?,?(\d+)?$')
     target = unlList[depth]
+    nth_sib = nth_same = nth_line_no = nth_col_no = None
     try:
         target = pos_pattern.sub('', unlList[depth])
-        pos = re.findall(pos_pattern, unlList[depth])
+        nth_sib, nth_same, nth_line_no, nth_col_no = recursiveUNLParts(unlList[depth])
+        pos = nth_sib is not None
     except IndexError:
         # Fix bug https://github.com/leo-editor/leo-editor/issues/36
-        pos = None
-    nth_sib = nth_same = nth_line_no = nth_col_no = None
+        pos = False
     if pos:
         use_idx_mode = True # ok to use hard/soft_idx
-        nth_sib, nth_same, nth_line_no, nth_col_no = [int(i) if i else 0 for i in pos[0]]
         target = re.sub(pos_pattern, "", target).replace('--%3E', '-->')
         if hard_idx:
             if nth_sib < len(heads):
@@ -3757,8 +3755,6 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
             (use_idx_mode and (soft_idx or hard_idx) and ndi == nth_sib)
         ):
             if depth + 1 == len(unlList): # found it
-                if nth_line_no and line_num is not None:  # not None *or* zero
-                    line_num[:] = [nth_line_no, nth_col_no]
                 return True, maxdepth, nd
             else:
                 if maxdepth < depth + 1:
@@ -3799,6 +3795,23 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
             maxp = p
             maxdepth = p.level()
     return False, maxdepth, maxp
+#@+node:tbrown.20171221094755.1: *4* g.recursiveUNLParts
+pos_pattern = re.compile(r':(\d+),?(\d+)?,?([-\d]+)?,?(\d+)?$')
+
+def recursiveUNLParts(text):
+    """recursiveUNLParts - return index, occurence, line_number, col_number
+    from an UNL fragment.  line_number is allowed to be negative to indicate
+    a "global" line number within the file.
+
+    :param str text: the fragment, foo or foo:2 or foo:2,0,4,10
+    :return: index, occurence, line_number, col_number
+    :rtype: (int, int, int, int) or (None, None, None, None)
+    """
+    pos = re.findall(pos_pattern, text)
+    if pos:
+        return tuple(int(i) if i else 0 for i in pos[0])
+    else:
+        return (None, None, None, None)
 #@+node:ekr.20031218072017.3156: *3* g.scanError
 # It is dubious to bump the Tangle error count here, but it really doesn't hurt.
 
