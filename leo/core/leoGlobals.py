@@ -3652,10 +3652,16 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
             c.selectPosition(p)
             nth_sib, nth_same, nth_line_no, nth_col_no = recursiveUNLParts(unlList[-1])
             if nth_line_no:
-                pos = sum(len(i)+1 for i in p.b.split('\n')[:nth_line_no-1])
-                if nth_col_no:
-                    pos += nth_col_no - 1
-                c.frame.body.wrapper.setInsertPoint(pos)
+                if nth_line_no < 0:
+                    c.goToLineNumber(-nth_line_no)
+                    if nth_col_no:
+                        pos = c.frame.body.wrapper.getInsertPoint() + nth_col_no
+                        c.frame.body.wrapper.setInsertPoint(pos)
+                else:
+                    pos = sum(len(i)+1 for i in p.b.split('\n')[:nth_line_no-1])
+                    if nth_col_no:
+                        pos += nth_col_no
+                    c.frame.body.wrapper.setInsertPoint(pos)
             if p.hasChildren():
                 p.expand()
                 # n = min(3, p.numberOfChildren())

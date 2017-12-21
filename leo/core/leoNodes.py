@@ -756,14 +756,16 @@ class Position(object):
     hasVisBack = visBack
     hasVisNext = visNext
     #@+node:tbrown.20111010104549.26758: *4* p.get_UNL
-    def get_UNL(self, with_file=True, with_proto=False, with_index=True):
+    def get_UNL(self, with_file=True, with_proto=False, with_index=True, with_count=False):
         """
         with_file=True - include path to Leo file
         with_proto=False - include 'file://'
+        with_index - include ',x' at end where x is child index in parent
+        with_count - include ',x,y' at end where y zero based count of same headlines
         """
         aList = []
         for i in self.self_and_parents():
-            if with_index:
+            if with_index or with_count:
                 i = i.copy()
                 count = 0
                 ind = 0
@@ -775,7 +777,7 @@ class Position(object):
                         count = count + 1
                 aList.append(i.h.replace('-->', '--%3E') + ":" + str(ind))
                     # g.recursiveUNLFind and sf.copy_to_my_settings undo this replacement.
-                if count:
+                if count or with_count:
                     aList[-1] = aList[-1] + "," + str(count)
             else:
                 aList.append(i.h.replace('-->', '--%3E'))
