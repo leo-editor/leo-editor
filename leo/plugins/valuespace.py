@@ -38,6 +38,13 @@ allowing execution of indented code.
 ``g``, ``c``, and ``p`` are available to executing code, assignments
 are made in the ``c.vs`` namespace and persist for the life of ``c``.
 
+vs-eval-replace
+---------------
+
+Execute the selected text, if any.  Replace the selected text with the
+result.
+
+
 vs-eval-block
 -------------
 
@@ -459,6 +466,23 @@ def vs_eval_block(event):
     c.redraw()
     c.bodyWantsFocusNow()
 
+#@+node:tbnorth.20171222141907.1: *3* vs-eval-replace
+@g.command("vs-eval-replace")
+def vs_eval_replace(event):
+    """Execute the selected text, if any.  Replace it with the result."""
+    c = event['c']
+    w = c.frame.body.wrapper
+    txt = w.getSelectedText()
+    eval_text(c, txt)
+    result = pprint.pformat(get_vs(c).d.get('_last'))
+    i, j = w.getSelectionRange()
+    new_text = c.p.b[:i]+result+c.p.b[j:]
+    bunch = c.undoer.beforeChangeNodeContents(c.p)
+    w.setAllText(new_text)
+    c.p.b = new_text
+    w.setInsertPoint(i+len(result))
+    c.undoer.afterChangeNodeContents(c.p, 'Insert result', bunch)
+    c.setChanged()
 #@+node:tbrown.20130227164110.21223: *3* vs-last
 @g.command("vs-last")
 def vs_last(event, text=None):
