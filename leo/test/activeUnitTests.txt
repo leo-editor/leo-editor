@@ -14852,6 +14852,37 @@ console.log("Listening on " + port);
 '''
 
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
+#@+node:ekr.20171222103210.1: *6* @test Javascript-rpg_core.js
+s = '''\
+//=============================================================================
+// rpg_core.js v1.3.0
+//=============================================================================
+
+//-----------------------------------------------------------------------------
+/**
+ * This is not a class, but contains some methods that will be added to the
+ * standard Javascript objects.
+ *
+ * @class JsExtensions
+ */
+function JsExtensions() {
+    throw new Error('This is not a class');
+}
+
+/**
+ * Returns a number whose value is limited to the given range.
+ *
+ * @method Number.prototype.clamp
+ * @param {Number} min The lower boundary
+ * @param {Number} max The upper boundary
+ * @return {Number} A number in the range (min, max)
+ */
+Number.prototype.clamp = function(min, max) {
+    return Math.min(Math.max(this, min), max);
+};
+'''
+
+c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
 #@+node:ekr.20161123202857.1: *5* org tests
 #@+node:ekr.20161123202924.1: *6* @test org-1
 s = '''\
