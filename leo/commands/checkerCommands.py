@@ -196,11 +196,11 @@ class PyflakesCommand(object):
 
     #@+others
     #@+node:ekr.20160516072613.6: *3* pyflakes.check_all
-    def check_all(self, log_flag, paths, pyflakes_errors_only):
+    def check_all(self, log_flag, paths, pyflakes_errors_only, roots=None):
         '''Run pyflakes on all files in paths.'''
         from pyflakes import api, reporter
         total_errors = 0
-        for fn in sorted(paths):
+        for fn_n, fn in enumerate(sorted(paths)):
             # Report the file name.
             sfn = g.shortFileName(fn)
             s = g.readFileIntoEncodedString(fn)
@@ -213,8 +213,19 @@ class PyflakesCommand(object):
 
                     def write(self, s):
                         if s.strip():
-                            g.es_print(s)
-                                # It *is* useful to send pyflakes errors to the console.
+                            g.pr(s)
+                            # It *is* useful to send pyflakes errors to the console.
+                            if roots:
+                                try:
+                                    root = roots[fn_n]
+                                    line = int(s.split(':')[1])
+                                    unl = root.get_UNL(with_proto=True, with_count=True)
+                                    g.es(s, nodeLink="%s,%d" % (unl, -line))
+                                except (IndexError, TypeError, ValueError):
+                                    # in case any assumptions fail
+                                    g.es(s)
+                            else:
+                                g.es(s)
 
                 r = reporter.Reporter(
                         errorStream=LogStream(),
@@ -260,7 +271,7 @@ class PyflakesCommand(object):
             paths = [self.finalize(z) for z in roots]
             # These messages are important for clarity.
             log_flag = not force
-            total_errors = self.check_all(log_flag, paths, pyflakes_errors_only)
+            total_errors = self.check_all(log_flag, paths, pyflakes_errors_only, roots=roots)
             if total_errors > 0:
                 g.es('ERROR: pyflakes: %s error%s' % (
                     total_errors, g.plural(total_errors)))
