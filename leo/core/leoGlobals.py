@@ -5571,7 +5571,7 @@ def es(*args, **keys):
             if ch == '\n': log.newlines += 1
             else: log.newlines = 0
     else:
-        app.logWaiting.append((s, color, newline),)
+        app.logWaiting.append((s, color, newline, d),)
 
 #@+node:ekr.20141107085700.4: *3* g.es_debug
 def es_debug(*args, **keys):

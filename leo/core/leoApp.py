@@ -1227,8 +1227,11 @@ class LeoApp(object):
                 if s:
                     app.logWaiting.insert(0, (s, color, True),)
             # Write all the queued log entries.
-            for s, color, newline in app.logWaiting:
-                g.es('', s, color=color, newline=newline)
+            for msg in app.logWaiting:
+                s, color, newline = msg[:3]
+                kwargs = {} if len(msg) < 4 else msg[3]
+                kwargs = {k:v for k,v in kwargs.items() if k not in ('color', 'newline')}
+                g.es('', s, color=color, newline=newline, **kwargs)
             if hasattr(c.frame.log, 'scrollToEnd'):
                 g.app.gui.runAtIdle(c.frame.log.scrollToEnd)
         app.logWaiting = []

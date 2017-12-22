@@ -796,7 +796,7 @@ class AtFile(object):
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
         fileName = c.os_path_finalize_join(at.default_directory, fileName)
         if not g.os_path_exists(fileName):
-            g.error('not found: %r' % (p.h))
+            g.error('not found: %r' % (p.h), nodeLink=p.get_UNL(with_proto=True))
             return p
         # Remember that we have seen the @auto node.
         # Fix bug 889175: Remember the full fileName.
@@ -885,7 +885,8 @@ class AtFile(object):
         at, c, x = self, self.c, self.c.shadowController
         fileName = g.fullPath(c, root)
         if not g.os_path_exists(fileName):
-            g.es('not found: %s' % (fileName), color='red')
+            g.es_print('not found: %s' % (fileName), color='red',
+                nodeLink=root.get_UNL(with_proto=True))
             return
         at.rememberReadPath(fileName, root)
         # Set at.encoding first.
