@@ -14852,8 +14852,10 @@ console.log("Listening on " + port);
 '''
 
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
-#@+node:ekr.20171222103210.1: *6* @test Javascript-rpg_core.js
+#@+node:ekr.20171222103210.1: *6* @test Javascript #639: many top-level nodes
 s = '''\
+// Easy test for #639: https://github.com/leo-editor/leo-editor/issues/639
+
 //=============================================================================
 // rpg_core.js v1.3.0
 //=============================================================================
@@ -14882,7 +14884,67 @@ Number.prototype.clamp = function(min, max) {
 };
 '''
 
-c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
+c.importCommands.javaScriptUnitTest(p,s=s,showTree=True)
+#@+node:ekr.20171223094900.1: *6* @test Javascript #639 acid test
+s = '''\
+// Acid test for #639: https://github.com/leo-editor/leo-editor/issues/639
+require([
+    'jquery',
+], function(
+        $,
+        termjs,
+){
+    var header = $("#header")[0];
+    function calculate_size() {
+        var height = $(window).height() - header.offsetHeight;
+    }
+    page.show_header();
+    window.onresize = function() {
+      terminal.socket.send(JSON.stringify([
+            "set_size", geom.rows, geom.cols,
+            $(window).height(), $(window).width()])
+        );
+    };
+    window.terminal = terminal;
+});
+'''
+
+c.importCommands.javaScriptUnitTest(p,s=s,showTree=True)
+#@+node:ekr.20171223095417.1: *7* @@file @test Javascript #639 acid test
+// Acid test for #639: https://github.com/leo-editor/leo-editor/issues/639
+<< require([ >>
+@language javascript
+@tabwidth -4
+#@+node:ekr.20171223095417.2: *8* << require([ >>
+require([
+    'jquery',
+<< ], function( >>
+#@+node:ekr.20171223095417.3: *9* << ], function( >>
+], function(
+        $,
+        termjs,
+<< ){ >>
+#@+node:ekr.20171223095417.4: *10* << ){ >>
+){
+    var header = $("#header")[0];
+    << function calculate_size() { >>
+    page.show_header();
+    << window.onresize = function() { >>
+    window.terminal = terminal;
+});
+#@+node:ekr.20171223095417.5: *11* << function calculate_size() { >>
+function calculate_size() {
+    var height = $(window).height() - header.offsetHeight;
+}
+#@+node:ekr.20171223095417.6: *11* << window.onresize = function() { >>
+window.onresize = function() {
+  << terminal.socket.send(JSON.stringify([ >>
+    );
+};
+#@+node:ekr.20171223095417.7: *12* << terminal.socket.send(JSON.stringify([ >>
+terminal.socket.send(JSON.stringify([
+      "set_size", geom.rows, geom.cols,
+      $(window).height(), $(window).width()])
 #@+node:ekr.20161123202857.1: *5* org tests
 #@+node:ekr.20161123202924.1: *6* @test org-1
 s = '''\

@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.52" body_secondary_ratio="0.84">
-	<global_window_position top="46" left="327" height="1027" width="1033"/>
+	<global_window_position top="52" left="327" height="1027" width="1033"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -246,7 +246,8 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285508302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735508302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735508302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735509302e362e31392e3431710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735508302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3431710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
+expanded="ekr.20171223095417.1,ekr.20171223095417.2,ekr.20171223095417.3,ekr.20171223095417.4,ekr.20171223095417.6,"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -527,14 +528,28 @@
 <v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
 <v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
 </v>
-<v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
+<v t="ekr.20090529141856.4774" a="E"><vh>Javascript tests</vh>
 <v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
 <v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
 <v t="ekr.20090529141856.4777"><vh>@@test JSON</vh></v>
 <v t="ekr.20090529141856.4778"><vh>@test Javascript-3</vh></v>
 <v t="ekr.20140218042220.4347"><vh>@test Javascript-4</vh></v>
 <v t="ekr.20140218151418.4353"><vh>@test Javascript-5</vh></v>
-<v t="ekr.20171222103210.1"><vh>@test Javascript-rpg_core.js</vh></v>
+<v t="ekr.20171222103210.1"><vh>@test Javascript #639: many top-level nodes</vh></v>
+<v t="ekr.20171223094900.1"><vh>@test Javascript #639 acid test</vh>
+<v t="ekr.20171223095417.1" a="E"><vh>@@file @test Javascript #639 acid test</vh>
+<v t="ekr.20171223095417.2" a="E"><vh>&lt;&lt; require([ &gt;&gt;</vh>
+<v t="ekr.20171223095417.3" a="E"><vh>&lt;&lt; ], function( &gt;&gt;</vh>
+<v t="ekr.20171223095417.4" a="E"><vh>&lt;&lt; ){ &gt;&gt;</vh>
+<v t="ekr.20171223095417.5"><vh>&lt;&lt; function calculate_size() { &gt;&gt;</vh></v>
+<v t="ekr.20171223095417.6" a="E"><vh>&lt;&lt; window.onresize = function() { &gt;&gt;</vh>
+<v t="ekr.20171223095417.7"><vh>&lt;&lt; terminal.socket.send(JSON.stringify([ &gt;&gt;</vh></v>
+</v>
+</v>
+</v>
+</v>
+</v>
+</v>
 </v>
 <v t="ekr.20161123202857.1"><vh>org tests</vh>
 <v t="ekr.20161123202924.1"><vh>@test org-1</vh></v>
@@ -1287,7 +1302,7 @@
 </v>
 <v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
 </v>
-<v t="ekr.20090529141856.4774"></v>
+<v t="ekr.20090529141856.4774" a="E"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1704,7 +1719,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="4">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="8,7">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -16512,6 +16527,8 @@ finally:
 </t>
 <t tx="ekr.20171126172628.1"></t>
 <t tx="ekr.20171222103210.1">s = '''\
+// Easy test for #639: https://github.com/leo-editor/leo-editor/issues/639
+
 //=============================================================================
 // rpg_core.js v1.3.0
 //=============================================================================
@@ -16540,7 +16557,67 @@ Number.prototype.clamp = function(min, max) {
 };
 '''
 
-c.importCommands.javaScriptUnitTest(p,s=s,showTree=False)
+c.importCommands.javaScriptUnitTest(p,s=s,showTree=True)
+</t>
+<t tx="ekr.20171223094900.1">s = '''\
+// Acid test for #639: https://github.com/leo-editor/leo-editor/issues/639
+require([
+    'jquery',
+], function(
+        $,
+        termjs,
+){
+    var header = $("#header")[0];
+    function calculate_size() {
+        var height = $(window).height() - header.offsetHeight;
+    }
+    page.show_header();
+    window.onresize = function() {
+      terminal.socket.send(JSON.stringify([
+            "set_size", geom.rows, geom.cols,
+            $(window).height(), $(window).width()])
+        );
+    };
+    window.terminal = terminal;
+});
+'''
+
+c.importCommands.javaScriptUnitTest(p,s=s,showTree=True)
+</t>
+<t tx="ekr.20171223095417.1">// Acid test for #639: https://github.com/leo-editor/leo-editor/issues/639
+&lt;&lt; require([ &gt;&gt;
+@language javascript
+@tabwidth -4
+</t>
+<t tx="ekr.20171223095417.2">require([
+    'jquery',
+&lt;&lt; ], function( &gt;&gt;
+</t>
+<t tx="ekr.20171223095417.3">], function(
+        $,
+        termjs,
+&lt;&lt; ){ &gt;&gt;
+</t>
+<t tx="ekr.20171223095417.4">){
+    var header = $("#header")[0];
+    &lt;&lt; function calculate_size() { &gt;&gt;
+    page.show_header();
+    &lt;&lt; window.onresize = function() { &gt;&gt;
+    window.terminal = terminal;
+});
+</t>
+<t tx="ekr.20171223095417.5">function calculate_size() {
+    var height = $(window).height() - header.offsetHeight;
+}
+</t>
+<t tx="ekr.20171223095417.6">window.onresize = function() {
+  &lt;&lt; terminal.socket.send(JSON.stringify([ &gt;&gt;
+    );
+};
+</t>
+<t tx="ekr.20171223095417.7">terminal.socket.send(JSON.stringify([
+      "set_size", geom.rows, geom.cols,
+      $(window).height(), $(window).width()])
 </t>
 </tnodes>
 </leo_file>

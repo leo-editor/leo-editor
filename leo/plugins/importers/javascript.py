@@ -5,6 +5,7 @@ import re
 import leo.core.leoGlobals as g
 import leo.plugins.importers.linescanner as linescanner
 Importer = linescanner.Importer
+Target = linescanner.Target
 #@+others
 #@+node:ekr.20140723122936.18049: ** class JS_Importer
 class JS_Importer(Importer):
@@ -20,6 +21,269 @@ class JS_Importer(Importer):
         )
 
     #@+others
+    #@+node:ekr.20171223054538.1: *3* js_i.gen_lines & helpers NEW
+    def gen_lines(self, s, parent):
+        '''
+        Non-recursively parse all lines of s into parent, creating descendant
+        nodes as needed.
+        '''
+        trace = False # and g.unitTesting
+        tail_p = None
+        prev_state = self.state_class()
+        target = Target(parent, prev_state)
+        stack = [target, target]
+        self.inject_lines_ivar(parent)
+        lines = g.splitLines(s)
+        self.skip = 0
+        for i, line in enumerate(lines):
+            new_state = self.scan_line(line, prev_state)
+            top = stack[-1]
+            if trace: self.trace_status(line, new_state, prev_state, stack, top)
+            if self.skip > 0:
+                self.skip -= 1
+            elif self.is_ws_line(line):
+                p = tail_p or top.p
+                self.add_line(p, line)
+            elif self.starts_block(i, lines, new_state, prev_state):
+                tail_p = None
+                self.start_new_block(i, lines, new_state, prev_state, stack)
+            elif self.ends_block(line, new_state, prev_state, stack):
+                tail_p = self.end_block(line, new_state, stack)
+            else:
+                p = tail_p or top.p
+                self.add_line(p, line)
+            prev_state = new_state
+    #@+node:ekr.20171223054538.2: *4* i.create_child_node
+    def create_child_node(self, parent, body, headline):
+        '''Create a child node of parent.'''
+        child = parent.insertAsLastChild()
+        self.inject_lines_ivar(child)
+        if body:
+            self.add_line(child, body)
+        assert g.isString(headline), repr(headline)
+        child.h = headline.strip()
+        return child
+    #@+node:ekr.20171223054538.3: *4* i.cut_stack
+    def cut_stack(self, new_state, stack):
+        '''Cut back the stack until stack[-1] matches new_state.'''
+        trace = False and g.unitTesting
+        if trace:
+            g.trace(new_state)
+            g.printList(stack)
+        assert len(stack) > 1 # Fail on entry.
+        while stack:
+            top_state = stack[-1].state
+            if new_state.level() < top_state.level():
+                if trace: g.trace('new_state < top_state', top_state)
+                assert len(stack) > 1, stack # <
+                stack.pop()
+            elif top_state.level() == new_state.level():
+                if trace: g.trace('new_state == top_state', top_state)
+                assert len(stack) > 1, stack # ==
+                # This is the only difference between i.cut_stack and python/cs.cut_stack
+                # stack.pop()
+                break
+            else:
+                # This happens often in valid Python programs.
+                if trace: g.trace('new_state > top_state', top_state)
+                break
+        # Restore the guard entry if necessary.
+        if len(stack) == 1:
+            if trace: g.trace('RECOPY:', stack)
+            stack.append(stack[-1])
+        assert len(stack) > 1 # Fail on exit.
+        if trace: g.trace('new target.p:', stack[-1].p.h)
+    #@+node:ekr.20171223054538.4: *4* i.end_block
+    def end_block(self, line, new_state, stack):
+        # The block is ending. Add tail lines until the start of the next block.
+        p = stack[-1].p
+        self.add_line(p, line)
+        self.cut_stack(new_state, stack)
+        tail_p = None if self.gen_refs else p
+        return tail_p
+    #@+node:ekr.20171223054538.5: *4* i.ends_block
+    def ends_block(self, line, new_state, prev_state, stack):
+        '''True if line ends the block.'''
+        # Comparing new_state against prev_state does not work for python.
+        top = stack[-1]
+        return new_state.level() < top.state.level()
+    #@+node:ekr.20171223054538.6: *4* i.gen_ref
+    def gen_ref(self, line, parent, target):
+        '''
+        Generate the ref line. Return the headline.
+        '''
+        trace = False and g.unitTesting
+        indent_ws = self.get_str_lws(line)
+        h = self.clean_headline(line, p=None)
+        if self.gen_refs:
+            # Fix #441: Make sure all section refs are unique.
+            d = self.refs_dict
+            n = d.get(h, 0)
+            d [h] = n + 1
+            if n > 0:
+                h = '%s: %s' % (n, h)
+            headline = g.angleBrackets(' %s ' % h)
+            ref = '%s%s\n' % (
+                indent_ws,
+                g.angleBrackets(' %s ' % h))
+        else:
+            if target.ref_flag:
+                ref = None
+            else:
+                ref = '%s@others\n' % indent_ws
+                target.at_others_flag = True
+            target.ref_flag = True
+                # Don't generate another @others in this target.
+            headline = h
+        if ref:
+            if trace:
+                g.trace('%s indent_ws: %r line: %r parent: %s' % (
+                '*' * 20, indent_ws, line, parent.h))
+                g.printList(self.get_lines(parent))
+            self.add_line(parent,ref)
+        return headline
+    #@+node:ekr.20171223054538.7: *4* i.start_new_block
+    def start_new_block(self, i, lines, new_state, prev_state, stack):
+        '''Create a child node and update the stack.'''
+        trace = False and g.unitTesting
+        if hasattr(new_state, 'in_context'):
+            assert not new_state.in_context(), ('start_new_block', new_state)
+        line = lines[i]
+        target=stack[-1]
+        # Insert the reference in *this* node.
+        h = self.gen_ref(line, target.p, target)
+        # Create a new child and associated target.
+        child = self.create_child_node(target.p, line, h)
+        stack.append(Target(child, new_state))
+        if trace:
+            g.trace('=====', repr(line))
+            g.printList(stack)
+    #@+node:ekr.20171223054538.8: *4* i.starts_block
+    def starts_block(self, i, lines, new_state, prev_state):
+        '''True if the new state starts a block.'''
+        return new_state.level() > prev_state.level()
+    #@+node:ekr.20171223054538.9: *4* i.trace_status
+    def trace_status(self, line, new_state, prev_state, stack, top):
+        '''Print everything important in the i.gen_lines loop.'''
+        print('')
+        try:
+            g.trace('===== %r' % line)
+        except Exception:
+            g.trace('     top.p: %s' % g.toEncodedString(top.p.h))
+        # print('len(stack): %s' % len(stack))
+        print(' new_state: %s' % new_state)
+        print('prev_state: %s' % prev_state)
+        # print(' top.state: %s' % top.state)
+        g.printList(stack)
+    #@+node:ekr.20171223054637.1: *3* js_i.post_pass & helpers NEW
+    def post_pass(self, parent):
+        '''
+        Optional Stage 2 of the importer pipeline, consisting of zero or more
+        substages. Each substage alters nodes in various ways.
+
+        Subclasses may freely override this method, **provided** that all
+        substages use the API for setting body text. Changing p.b directly will
+        cause asserts to fail later in i.finish().
+        '''
+        # g.trace('='*40)
+        self.clean_all_headlines(parent)
+        self.clean_all_nodes(parent)
+        self.unindent_all_nodes(parent)
+        #
+        # This sub-pass must follow unindent_all_nodes.
+        self.promote_trailing_underindented_lines(parent)
+        self.promote_last_lines(parent)
+        #
+        # This probably should be the last sub-pass.
+        self.delete_all_empty_nodes(parent)
+    #@+node:ekr.20171223054637.2: *4* i.clean_all_headlines
+    def clean_all_headlines(self, parent):
+        '''
+        Clean all headlines in parent's tree by calling the language-specific
+        clean_headline method.
+        '''
+        for p in parent.subtree():
+            # Note: i.gen_ref calls clean_headline without knowing p.
+            # As a result, the first argument is required.
+            h = self.clean_headline(p.h, p=p)
+            if h and h != p.h:
+                p.h = h
+        
+    #@+node:ekr.20171223054637.3: *4* i.clean_all_nodes
+    def clean_all_nodes(self, parent):
+        '''Clean the nodes in parent's tree, in a language-dependent way.'''
+        # i.clean_nodes does nothing.
+        # Subclasses may override as desired.
+        # See perl_i.clean_nodes for an example.
+        self.clean_nodes(parent)
+    #@+node:ekr.20171223054637.4: *4* i.delete_all_empty_nodes
+    def delete_all_empty_nodes(self, parent):
+        '''
+        Delete nodes consisting of nothing but whitespace.
+        Move the whitespace to the preceding node.
+        '''
+        c = self.c
+        aList = []
+        for p in parent.subtree():
+            back = p.threadBack()
+            if back and back.v != parent.v and back.v != self.root.v and not p.isCloned():
+                lines = self.get_lines(p)
+                # Move the whitespace from p to back.
+                if all([z.isspace() for z in lines]):
+                    self.extend_lines(back, lines)
+                    aList.append(p.copy())
+        if aList:
+            g.trace('='*40, parent.h)
+            c.deletePositionsInList(aList, redraw=False)
+                # Suppress redraw.
+    #@+node:ekr.20171223054637.5: *4* i.promote_last_lines
+    def promote_last_lines(self, parent):
+        '''A placeholder for python_i.promote_last_lines.'''
+    #@+node:ekr.20171223054637.6: *4* i.promote_trailing_underindented_lines
+    def promote_trailing_underindented_lines(self, parent):
+        '''
+        Promote all trailing underindent lines to the node's parent node,
+        deleting one tab's worth of indentation. Typically, this will remove
+        the underindent escape.
+        '''
+        pattern = self.escape_pattern # A compiled regex pattern
+        for p in parent.subtree():
+            lines = self.get_lines(p)
+            tail = []
+            while lines:
+                line = lines[-1]
+                m = pattern.match(line)
+                if m:
+                    lines.pop()
+                    n_str = m.group(1)
+                    try:
+                        n = int(n_str)
+                    except ValueError:
+                        break
+                    if n == abs(self.tab_width):
+                        new_line = line[len(m.group(0)):]
+                        tail.append(new_line)
+                    else:
+                        g.trace('unexpected unindent value', n)
+                        break
+                else:
+                    break
+            if tail:
+                parent = p.parent()
+                if parent.parent() == self.root:
+                    parent = parent.parent()
+                self.set_lines(p, lines)
+                self.extend_lines(parent, reversed(tail))
+    #@+node:ekr.20171223054637.7: *4* i.unindent_all_nodes
+    def unindent_all_nodes(self, parent):
+        '''Unindent all nodes in parent's tree.'''
+        for p in parent.subtree():
+            lines = self.get_lines(p)
+            if all([z.isspace() for z in lines]):
+                # Somewhat dubious, but i.check covers for us.
+                self.clear_lines(p)
+            else:
+                self.set_lines(p, self.undent(p))
     #@+node:ekr.20161105140842.5: *3* js_i.scan_line & helpers
     #@@nobeautify
 
