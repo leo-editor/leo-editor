@@ -307,21 +307,13 @@ def run(self):
     assert rst,'rst'
     assert html,'html'
     # Kludge: disregard version of docutils.
-    if 1:
-        import re
-        html = re.sub('Docutils [\.0-9]*:','Docutils VER:',html)
-    else:
-        html = html.replace('Docutils 0.8.1:','Docutils VER:')
-        html = html.replace('Docutils 0.6:','Docutils VER:')
-        html = html.replace('Docutils 0.7:','Docutils VER:')
-        html = html.replace('Docutils 0.8:','Docutils VER:')
-        html = html.replace('Docutils 0.10:','Docutils VER:')
-        html = html.replace('Docutils 0.12:','Docutils VER:')
+    html = self.munge(html)
     if expected.hasChildren():
         child1 = expected.firstChild()
         child2 = expected.firstChild().next()
         child1_b = clean(child1.b)
         child2_b = clean(child2.b)
+        child2_b = self.munge(child2.b) ###
         ok = rst == child1_b and html == child2_b
         if not ok:
             got_html,got_rst = self.set_got(expected,got)
@@ -338,6 +330,13 @@ def run(self):
         child.h,child.b = 'rst',rst
         child = expected.insertAsNthChild(1)
         child.h,child.b = ' html',html
+#@+node:ekr.20171223221351.1: *5* munge NEW
+def munge(self, html):
+    '''Ignore local differences in output of docutils.'''
+    import re
+    html = re.sub('Docutils [\.0-9]*:','Docutils VER:',html)
+    html = re.sub('<title>.*</title>','<title></title>',html)
+    return html
 #@+node:ekr.20100827183358.5958: *5* setup
 def setup (self):
     
@@ -26555,6 +26554,7 @@ This is the body of the section.</p>
 #@+node:ekr.20120307070541.3937: *4* @test rst3Test unicode characters
 @first # -*- coding: utf-8 -*-
 
+# Note: rst3Test.munge in *this* file accounts for local docutils differences.
 import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
     self.skipTest('no docutils')
@@ -26847,6 +26847,7 @@ hr { /* EKR */
 #@+node:ekr.20120307070541.3948: *6* rst
 .. rst3: filename: test.html
 
+
 Test of unicode characters: ÀǋϢﻙ
 
 End of test.
@@ -26858,7 +26859,7 @@ End of test.
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" />
-<title></title>
+<title>&lt;string&gt;</title>
 <style type="text/css">
 
 /*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
