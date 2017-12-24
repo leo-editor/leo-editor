@@ -201,6 +201,14 @@ class JS_Importer(Importer):
                 i += 1
             assert progress < i
         return i1 # Don't skip ahead.
+    #@+node:ekr.20171224145755.1: *3* js_i.starts_block
+    def starts_block(self, i, lines, new_state, prev_state):
+        '''True if the new state starts a block.'''
+        line = lines[i]
+        j = line.find('function')
+        is_function = j > -1 and g.match_word(line, j, 'function')
+        return new_state.level() > prev_state.level() and is_function
+        # return new_state.level() > prev_state.level()
     #@+node:ekr.20161101183354.1: *3* js_i.clean_headline
     def clean_headline(self, s, p=None):
         '''Return a cleaned up headline s.'''
@@ -208,7 +216,9 @@ class JS_Importer(Importer):
         # Don't clean a headline twice.
         if s.endswith('>>') and s.startswith('<<'):
             return s
-        elif 1:
+        if s.endswith('{'):
+            s = s[:-1].strip()
+        if 1:
             # Imo, showing the whole line is better than truncating it.
             # However the lines must have a reasonable length.
             return g.truncate(s, 100)
