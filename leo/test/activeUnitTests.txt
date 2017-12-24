@@ -14893,57 +14893,89 @@ require([
         $,
         termjs,
 ){
-    var header = $("#header")[0];
-    function calculate_size() {
-        var height = $(window).height() - header.offsetHeight;
+    var head = "head"
+    function f1() {
+        var head1 = "head1"
+        function f11 () {
+            var v11 ="v1.1"
+        }
+        var middle1 = "middle1"
+        function f12 () {
+            var v12 ="v1.2"
+        }
+        var tail1 = "tail1"
     }
-    page.show_header();
-    window.onresize = function() {
-      terminal.socket.send(JSON.stringify([
-            "set_size", geom.rows, geom.cols,
-            $(window).height(), $(window).width()])
-        );
-    };
-    window.terminal = terminal;
+    var middle = "middle"
+    function f2() {
+        var head2 = "head2"
+        function f21 () {
+            var v21 ="2.1"
+        }
+        var middle2 = "middle2"
+        function f22 () {
+            var v22 = "2.2.1"
+        }
+        var tail2 = "tail2"
+    }
+    var tail = "tail"
 });
 '''
 
 c.importCommands.javaScriptUnitTest(p,s=s,showTree=True)
-#@+node:ekr.20171223095417.1: *7* @@file @test Javascript #639 acid test
+#@+node:ekr.20171224041222.1: *7* @@file @test Javascript #639 acid test
 // Acid test for #639: https://github.com/leo-editor/leo-editor/issues/639
 << require([ >>
 @language javascript
 @tabwidth -4
-#@+node:ekr.20171223095417.2: *8* << require([ >>
+#@+node:ekr.20171224041222.2: *8* << require([ >>
 require([
     'jquery',
 << ], function( >>
-#@+node:ekr.20171223095417.3: *9* << ], function( >>
+#@+node:ekr.20171224041222.3: *9* << ], function( >>
 ], function(
         $,
         termjs,
 << ){ >>
-#@+node:ekr.20171223095417.4: *10* << ){ >>
+#@+node:ekr.20171224041222.4: *10* << ){ >>
 ){
-    var header = $("#header")[0];
-    << function calculate_size() { >>
-    page.show_header();
-    << window.onresize = function() { >>
-    window.terminal = terminal;
+    var head = "head"
+    << function f1() { >>
+    var middle = "middle"
+    << function f2() { >>
+    var tail = "tail"
 });
-#@+node:ekr.20171223095417.5: *11* << function calculate_size() { >>
-function calculate_size() {
-    var height = $(window).height() - header.offsetHeight;
+#@+node:ekr.20171224041222.5: *11* << function f1() { >>
+function f1() {
+    var head1 = "head1"
+    << function f11 () { >>
+    var middle1 = "middle1"
+    << function f12 () { >>
+    var tail1 = "tail1"
 }
-#@+node:ekr.20171223095417.6: *11* << window.onresize = function() { >>
-window.onresize = function() {
-  << terminal.socket.send(JSON.stringify([ >>
-    );
-};
-#@+node:ekr.20171223095417.7: *12* << terminal.socket.send(JSON.stringify([ >>
-terminal.socket.send(JSON.stringify([
-      "set_size", geom.rows, geom.cols,
-      $(window).height(), $(window).width()])
+#@+node:ekr.20171224041222.6: *12* << function f11 () { >>
+function f11 () {
+    var v11 ="v1.1"
+}
+#@+node:ekr.20171224041222.7: *12* << function f12 () { >>
+function f12 () {
+    var v12 ="v1.2"
+}
+#@+node:ekr.20171224041222.8: *11* << function f2() { >>
+function f2() {
+    var head2 = "head2"
+    << function f21 () { >>
+    var middle2 = "middle2"
+    << function f22 () { >>
+    var tail2 = "tail2"
+}
+#@+node:ekr.20171224041222.9: *12* << function f21 () { >>
+function f21 () {
+    var v21 ="2.1"
+}
+#@+node:ekr.20171224041222.10: *12* << function f22 () { >>
+function f22 () {
+    var v22 = "2.2.1"
+}
 #@+node:ekr.20161123202857.1: *5* org tests
 #@+node:ekr.20161123202924.1: *6* @test org-1
 s = '''\
