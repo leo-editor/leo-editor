@@ -2198,14 +2198,17 @@ class LoadManager(object):
         if g.app.killed: return
         g.app.idleTimeManager.start()
         # Phase 3: after loading plugins. Create one or more frames.
-        ok = lm.doPostPluginsInit()
-        # Fix #579: Key bindings don't take for commands defined in plugins
-        g.app.makeAllBindings()
-        if ok and g.app.diff:
-            lm.doDiff()
-        if trace:
-            t2 = time.clock()
-            g.trace('load time: %5.2f sec.' % (t2-t1))
+        if lm.options.get('script') and not self.files:
+            ok = True
+        else:
+            ok = lm.doPostPluginsInit()
+            # Fix #579: Key bindings don't take for commands defined in plugins
+            g.app.makeAllBindings()
+            if ok and g.app.diff:
+                lm.doDiff()
+            if trace:
+                t2 = time.clock()
+                g.trace('load time: %5.2f sec.' % (t2-t1))
         if ok:
             g.es('') # Clears horizontal scrolling in the log pane.
             if g.app.listen_to_log_flag:

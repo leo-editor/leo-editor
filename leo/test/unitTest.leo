@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.52" body_secondary_ratio="0.84">
-	<global_window_position top="52" left="327" height="1027" width="1033"/>
+	<global_window_position top="56" left="392" height="1027" width="1033"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -246,8 +246,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3431710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"
-expanded="ekr.20171223095417.1,ekr.20171223095417.2,ekr.20171223095417.3,ekr.20171223095417.4,ekr.20171223095417.6,"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3431710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -528,7 +527,7 @@ expanded="ekr.20171223095417.1,ekr.20171223095417.2,ekr.20171223095417.3,ekr.201
 <v t="ekr.20090529141856.4767"><vh>@test java interface test1</vh></v>
 <v t="ekr.20090529141856.4768"><vh>@test java interface test2</vh></v>
 </v>
-<v t="ekr.20090529141856.4774" a="E"><vh>Javascript tests</vh>
+<v t="ekr.20090529141856.4774"><vh>Javascript tests</vh>
 <v t="ekr.20090529141856.4775"><vh>Problems</vh></v>
 <v t="ekr.20090529141856.4776"><vh>@test Javascript-regex-1</vh></v>
 <v t="ekr.20090529141856.4777"><vh>@@test JSON</vh></v>
@@ -537,12 +536,12 @@ expanded="ekr.20171223095417.1,ekr.20171223095417.2,ekr.20171223095417.3,ekr.201
 <v t="ekr.20140218151418.4353"><vh>@test Javascript-5</vh></v>
 <v t="ekr.20171222103210.1"><vh>@test Javascript #639: many top-level nodes</vh></v>
 <v t="ekr.20171223094900.1"><vh>@test Javascript #639 acid test</vh>
-<v t="ekr.20171223095417.1" a="E"><vh>@@file @test Javascript #639 acid test</vh>
-<v t="ekr.20171223095417.2" a="E"><vh>&lt;&lt; require([ &gt;&gt;</vh>
-<v t="ekr.20171223095417.3" a="E"><vh>&lt;&lt; ], function( &gt;&gt;</vh>
-<v t="ekr.20171223095417.4" a="E"><vh>&lt;&lt; ){ &gt;&gt;</vh>
+<v t="ekr.20171223095417.1"><vh>@@file @test Javascript #639 acid test</vh>
+<v t="ekr.20171223095417.2"><vh>&lt;&lt; require([ &gt;&gt;</vh>
+<v t="ekr.20171223095417.3"><vh>&lt;&lt; ], function( &gt;&gt;</vh>
+<v t="ekr.20171223095417.4"><vh>&lt;&lt; ){ &gt;&gt;</vh>
 <v t="ekr.20171223095417.5"><vh>&lt;&lt; function calculate_size() { &gt;&gt;</vh></v>
-<v t="ekr.20171223095417.6" a="E"><vh>&lt;&lt; window.onresize = function() { &gt;&gt;</vh>
+<v t="ekr.20171223095417.6"><vh>&lt;&lt; window.onresize = function() { &gt;&gt;</vh>
 <v t="ekr.20171223095417.7"><vh>&lt;&lt; terminal.socket.send(JSON.stringify([ &gt;&gt;</vh></v>
 </v>
 </v>
@@ -1302,7 +1301,23 @@ expanded="ekr.20171223095417.1,ekr.20171223095417.2,ekr.20171223095417.3,ekr.201
 </v>
 <v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
 </v>
-<v t="ekr.20090529141856.4774" a="E"></v>
+<v t="ekr.20090529141856.4774"></v>
+<v t="ekr.20171223215615.1" a="E"><vh>Recent failures</vh>
+<v t="ekr.20100131171342.5483"></v>
+</v>
+<v t="ekr.20120307070541.3937"><vh>@test rst3Test unicode characters</vh>
+<v t="ekr.20120307070541.3941"><vh>source</vh>
+<v t="ekr.20120307070541.3942"><vh>@rst test.html</vh></v>
+</v>
+<v t="ekr.20120307070541.3944"><vh>expected</vh>
+<v t="ekr.20120307070541.3946"><vh>rst</vh></v>
+<v t="ekr.20120307070541.3947"><vh>html</vh></v>
+</v>
+<v t="ekr.20120307070541.3945"><vh>got</vh>
+<v t="ekr.20120307070541.3948"><vh>rst</vh></v>
+<v t="ekr.20120307070541.3949"><vh>html</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1719,7 +1734,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8,7">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="9,0">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -4742,6 +4757,565 @@ try:
         test_node.deleteAllChildren()
 finally:
     c.redraw()
+</t>
+<t tx="ekr.20120307070541.3937">@first # -*- coding: utf-8 -*-
+
+import leo.core.leoImport as leoImport
+if leoImport.docutils is None:
+    self.skipTest('no docutils')
+s = g.findTestScript(c,'@common leoRst test code',warn=True)
+assert s, repr(p)
+exec(s)
+    # Defines rst3Test class.
+rst3Test(c,p)
+</t>
+<t tx="ekr.20120307070541.3941">@language rest
+</t>
+<t tx="ekr.20120307070541.3942">@language rest
+@ @rst-options
+call_docutils=True
+@c
+
+Test of unicode characters: ÀǋϢﻙ
+
+End of test.
+</t>
+<t tx="ekr.20120307070541.3944"></t>
+<t tx="ekr.20120307070541.3945"></t>
+<t tx="ekr.20120307070541.3946">.. rst3: filename: test.html
+
+
+Test of unicode characters: ÀǋϢﻙ
+
+End of test.
+
+</t>
+<t tx="ekr.20120307070541.3947">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" /&gt;
+&lt;title&gt;&lt;/title&gt;
+&lt;style type="text/css"&gt;
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="document"&gt;
+
+
+&lt;!-- rst3: filename: test.html --&gt;
+&lt;p&gt;Test of unicode characters: ÀǋϢﻙ&lt;/p&gt;
+&lt;p&gt;End of test.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</t>
+<t tx="ekr.20120307070541.3948">.. rst3: filename: test.html
+
+Test of unicode characters: ÀǋϢﻙ
+
+End of test.
+
+</t>
+<t tx="ekr.20120307070541.3949">&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+&lt;meta name="generator" content="Docutils VER: http://docutils.sourceforge.net/" /&gt;
+&lt;title&gt;&lt;/title&gt;
+&lt;style type="text/css"&gt;
+
+/*ORIGINAL GOODGER + changes; up to line 224 it's standard reST stylesheet
+:Author: David Goodger
+:Contact: goodger@users.sourceforge.net
+:date: $Date: 2006/10/19 13:23:15 $
+:version: $Revision: 1.2 $
+:copyright: This stylesheet has been placed in the public domain.
+
+Default cascading style sheet for the HTML output of Docutils.
+*/
+
+/* EKR 10/19/06 */
+/* some browsers require imported rules to precede all rulesets */
+@import url(leo_rst.css);
+@import url(silver_city.css);
+
+.first {
+  margin-top: 0 }
+
+.last {
+  margin-bottom: 0 }
+
+a.toc-backref {
+  text-decoration: none ;
+  color: black }
+
+dd {
+  margin-bottom: 0.5em }
+
+div.abstract {
+  margin: 2em 5em }
+
+div.abstract p.topic-title {
+  font-weight: bold ;
+  text-align: center }
+
+div.attention, div.caution, div.danger, div.error, div.hint,
+div.important, div.note, div.tip, div.warning, div.admonition {
+  margin: 2em ;
+  border: medium outset ;
+  padding: 1em }
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  color: red ;
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.hint p.admonition-title, div.important p.admonition-title,
+div.note p.admonition-title, div.tip p.admonition-title,
+div.admonition p.admonition-title {
+  font-weight: bold ;
+  font-family: sans-serif }
+
+div.dedication {
+  margin: 2em 5em ;
+  text-align: center ;
+  font-style: italic }
+
+div.dedication p.topic-title {
+  font-weight: bold ;
+  font-style: normal }
+
+div.figure {
+  margin-left: 2em }
+
+div.footer, div.header {
+  font-size: smaller }
+
+div.sidebar {
+  margin-left: 1em ;
+  border: medium outset ;
+  padding: 0em 1em ;
+  background-color: #ffffee ;
+  width: 40% ;
+  float: right ;
+  clear: right }
+
+div.sidebar p.rubric {
+  font-family: sans-serif ;
+  font-size: medium }
+
+div.system-messages {
+  margin: 5em }
+
+div.system-messages h1 {
+  color: red }
+
+div.system-message {
+  border: medium outset ;
+  padding: 1em }
+
+div.system-message p.system-message-title {
+  color: red ;
+  font-weight: bold }
+
+div.topic {
+  margin: 2em }
+
+h1.title {
+  text-align: center }
+
+h2.subtitle {
+  text-align: center }
+
+ol.simple, ul.simple {
+  margin-bottom: 1em }
+
+ol.arabic {
+  list-style: decimal }
+
+ol.loweralpha {
+  list-style: lower-alpha }
+
+ol.upperalpha {
+  list-style: upper-alpha }
+
+ol.lowerroman {
+  list-style: lower-roman }
+
+ol.upperroman {
+  list-style: upper-roman }
+
+p.attribution {
+  text-align: right ;
+  margin-left: 50% }
+
+p.caption {
+  font-style: italic }
+
+p.credits {
+  font-style: italic ;
+  font-size: smaller }
+
+p.label {
+  white-space: nowrap }
+
+p.rubric {
+  font-weight: bold ;
+  font-size: larger ;
+  color: maroon ;
+  text-align: center }
+
+p.sidebar-title {
+  font-family: sans-serif ;
+  font-weight: bold ;
+  font-size: larger }
+
+p.sidebar-subtitle {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+p.topic-title {
+  font-weight: bold }
+
+pre.address {
+  margin-bottom: 0 ;
+  margin-top: 0 ;
+  font-family: serif ;
+  font-size: 100% }
+
+pre.line-block {
+  font-family: serif ;
+  font-size: 100% }
+
+pre.literal-block, pre.doctest-block {
+  margin-left: 2em ;
+  margin-right: 2em ;}
+  /*background-color: #eeeeee }*/
+  /*for some reason i can't overide in an import*/
+
+span.classifier {
+  font-family: sans-serif ;
+  font-style: oblique }
+
+span.classifier-delimiter {
+  font-family: sans-serif ;
+  font-weight: bold }
+
+span.interpreted {
+  font-family: sans-serif }
+
+span.option {
+  white-space: nowrap }
+
+span.option-argument {
+  font-style: italic }
+
+span.pre {
+  white-space: pre }
+
+span.problematic {
+  color: red }
+
+table {
+  margin-top: 0.5em ;
+  margin-bottom: 0.5em }
+
+table.citation {
+  border-left: solid thin gray ;
+  padding-left: 0.5ex }
+
+table.docinfo {
+  margin: 2em 4em }
+
+table.footnote {
+  border-left: solid thin black ;
+  padding-left: 0.5ex }
+
+td, th {
+  padding-left: 0.5em ;
+  padding-right: 0.5em ;
+  vertical-align: top }
+
+th.docinfo-name, th.field-name {
+  font-weight: bold ;
+  text-align: left ;
+  white-space: nowrap }
+
+h1 tt, h2 tt, h3 tt, h4 tt, h5 tt, h6 tt {
+  font-size: 100% }
+
+/*for some reason, the following isn't being overridden by the imports
+at the end of this style sheet so I've commented it out*/
+/*tt {
+  background-color: #eeeeee }*/
+
+ul.auto-toc {
+  list-style-type: none }
+
+hr { /* EKR */
+  width: 100%;
+  height: 1pt;
+  color: gray;
+}
+
+
+
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;div class="document"&gt;
+
+
+&lt;!-- rst3: filename: test.html --&gt;
+&lt;p&gt;Test of unicode characters: ÀǋϢﻙ&lt;/p&gt;
+&lt;p&gt;End of test.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
 </t>
 <t tx="ekr.20120309155126.3949">w = c.frame.body.wrapper
 p = g.findNodeInTree(c,p,'rest and python')
@@ -16619,5 +17193,6 @@ c.importCommands.javaScriptUnitTest(p,s=s,showTree=True)
       "set_size", geom.rows, geom.cols,
       $(window).height(), $(window).width()])
 </t>
+<t tx="ekr.20171223215615.1"></t>
 </tnodes>
 </leo_file>
