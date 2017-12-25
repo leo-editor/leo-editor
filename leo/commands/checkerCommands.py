@@ -200,6 +200,7 @@ class PyflakesCommand(object):
         '''Run pyflakes on all files in paths.'''
         from pyflakes import api, reporter
         total_errors = 0
+        # pylint: disable=cell-var-from-loop
         for fn_n, fn in enumerate(sorted(paths)):
             # Report the file name.
             sfn = g.shortFileName(fn)
