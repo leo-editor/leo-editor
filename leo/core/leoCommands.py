@@ -3289,7 +3289,7 @@ class Commands(object):
         recursive=True,
         safe_at_file=True,
         theTypes=None,
-        force_at_others=False,
+        # force_at_others=False, # tag:no-longer-used
     ):
         #@+<< docstring >>
         #@+node:ekr.20130823083943.12614: *4* << docstring >>
@@ -3321,7 +3321,7 @@ class Commands(object):
                     recursive=recursive,
                     safe_at_file=safe_at_file,
                     theTypes=['.py'] if not theTypes else theTypes,
-                    force_at_others = force_at_others,
+                    # force_at_others = force_at_others,  # tag:no-longer-used
                 )
                 cc.run(dir_)
             finally:

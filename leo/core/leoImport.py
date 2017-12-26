@@ -719,7 +719,7 @@ class LeoImportCommands(object):
         atShadow=False, # For error messages only.
         ext=None,
         s=None,
-        force_at_others=False, # For javascript importer.
+        # force_at_others=False,  # tag:no-longer-used
     ):
         '''
         Create an outline by importing a file, reading the file with the
@@ -761,7 +761,8 @@ class LeoImportCommands(object):
             s = g.toUnicode(s, encoding=self.encoding)
             s = s.replace('\r', '')
             # func is actually a factory: it instantiates the importer class.
-            func(c=c, parent=p, s=s, force_at_others=force_at_others)
+            func(c=c, parent=p, s=s)
+                # force_at_others=force_at_others #tag:no-longer-used
         else:
             # Just copy the file to the parent node.
             s = g.toUnicode(s, encoding=self.encoding)
@@ -927,7 +928,7 @@ class LeoImportCommands(object):
         redrawFlag=True,
         shortFn=False,
         treeType=None,
-        force_at_others=False,
+        # force_at_others=False, #tag:no-longer-used
     ):
         # Not a command.  It must *not* have an event arg.
         c, u = self.c, self.c.undoer
@@ -947,7 +948,8 @@ class LeoImportCommands(object):
                 p = parent.insertAsLastChild()
                 p.h = '%s %s' % (treeType, fn)
                 u.afterInsertNode(p, 'Import', undoData)
-                p = self.createOutline(fn, parent=p, force_at_others=force_at_others)
+                p = self.createOutline(fn, parent=p)
+                    #  force_at_others=force_at_others) #tag:no-longer-used
                 if p: # createOutline may fail.
                     if not g.unitTesting:
                         g.blue("imported", g.shortFileName(fn) if shortFn else fn)
@@ -1917,7 +1919,7 @@ class RecursiveImportController(object):
     #@+others
     #@+node:ekr.20130823083943.12615: *3* ric.ctor (RecursiveImportController)
     def __init__(self, c, kind,
-        force_at_others = False,
+        # force_at_others = False, #tag:no-longer-used
         recursive=True,
         safe_at_file=True,
         theTypes=None,
@@ -1926,7 +1928,7 @@ class RecursiveImportController(object):
         self.c = c
         self.kind = kind
             # in ('@auto', '@clean', '@edit', '@file', '@nosent')
-        self.force_at_others = force_at_others
+        # self.force_at_others = force_at_others #tag:no-longer-used
         self.recursive = recursive
         self.root = None
         self.safe_at_file = safe_at_file
@@ -2026,7 +2028,7 @@ class RecursiveImportController(object):
         else:
             c.importCommands.importFilesCommand(
                 files=[path],
-                force_at_others = self.force_at_others,
+                # force_at_others = self.force_at_others, #tag:no-longer-used
                 parent=parent,
                 redrawFlag=False,
                 shortFn=True,
