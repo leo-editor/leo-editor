@@ -86,10 +86,7 @@ class CS_Importer(Importer):
         self.cut_stack(new_state, stack)
         top = stack[-1]
         self.add_line(top.p, line)
-        # Tricky: force section references for later class/def lines.
-        if top.at_others_flag:
-            top.gen_refs = True
-        tail_p = None if self.gen_refs else top.p
+        tail_p = None if top.at_others_flag else top.p
         return tail_p
     #@+node:ekr.20161118134555.3: *4* coffee_i.cut_stack (Same as Python)
     def cut_stack(self, new_state, stack):
@@ -142,7 +139,6 @@ class CS_Importer(Importer):
         # Create the child.
         top = stack[-1]
         parent = top.p
-        self.gen_refs = top.gen_refs
         h = self.gen_ref(line, parent, top)
         child = self.create_child_node(parent, line, h)
         stack.append(Target(child, new_state))

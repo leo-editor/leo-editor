@@ -16241,6 +16241,19 @@ bar
 EOT;
 }
 ?>
+#@+node:ekr.20171225163019.33: *7* @@file @test php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20171225163019.34: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
 #@+node:ekr.20090529141856.4736: *5* Python tests
 
 #@+node:ekr.20161204042938.1: *6* @@test print('end python tests')
