@@ -160,9 +160,9 @@ class ParamClass(object):
             return
         c.setCurrentPosition(node)
         if trace: g.trace("found: %s'\n%s" % (node.h,node.b))
-        for i in range(0,len(sections)):
+        for i, section in enumerate(sections):
             p = c.p.insertAsNthChild(i)
-            p.b = sections [i]
+            p.b = section
             p.h = g.angleBrackets(str(i+1)+"$")
         c.redraw()
     #@+node:ekr.20040916084945.2: *3* findParameters
