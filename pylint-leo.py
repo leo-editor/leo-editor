@@ -98,11 +98,21 @@ def run(fn, verbose):
 def report_version():
     try:
         from pylint import lint
-        rc_fn = os.path.abspath(os.path.join('leo', 'test', 'pylint-leo-rc.txt'))
-        rc_fn = rc_fn.replace('\\', '/')
-        lint.Run(["--rcfile=%s" % (rc_fn), '--version',])
     except ImportError:
         g.trace('can not import pylint')
+    table = (
+        os.path.abspath(os.path.expanduser('~/.leo/pylint-leo-rc.txt')),
+        os.path.abspath(os.path.join('leo', 'test', 'pylint-leo-rc.txt')),
+    )
+    for rc_fn in table:
+        try:
+            rc_fn = rc_fn.replace('\\', '/')
+            lint.Run(["--rcfile=%s" % (rc_fn), '--version',])
+        except OSError:
+            pass
+    g.trace('no rc file found in')
+    g.printList(table)
+
 #@+node:ekr.20120307142211.9886: ** scanOptions (pylint-leo.py)
 def scanOptions():
     '''Handle all options, remove them from sys.argv.'''
