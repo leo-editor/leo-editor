@@ -1813,7 +1813,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             bracketWidths = [width]
             tabex = 0
             for i, ch in enumerate(s):
-                g.trace(i,ch)
                 if ch == '\t':
                     tabex += tab_width - 1
                 if ch in '([{':

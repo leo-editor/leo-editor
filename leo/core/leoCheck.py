@@ -319,7 +319,7 @@ class ConventionChecker (object):
         print('Inference failure: %s' % self.log_line(node, *args, **kwargs))
         print('')
         
-    def log_line(self, node=None, *args, **kwargs):
+    def log_line(self, *args, node=None, **kwargs):
 
         return 'line: %s file: %s: %s' % (
             getattr(node, 'lineno', '??'),
