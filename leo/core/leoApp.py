@@ -2953,7 +2953,7 @@ class LoadManager(object):
                             self.root = None # Created in createTopFrame.
                             self.top = None # The toplevel Tk widget.
                             self.createTopFrame()
-                            buttons = {"text": "OK", "command": self.okButton, "default": True},
+                            buttons = tuple({"text": "OK", "command": self.okButton, "default": True})
                                 # Singleton tuple.
                             self.createButtons(buttons)
                             self.top.bind("<Key>", self.onKey)
