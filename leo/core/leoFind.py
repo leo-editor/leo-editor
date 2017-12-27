@@ -172,13 +172,17 @@ class LeoFind(object):
         self.buttonFlag = False
         self.changeAllFlag = False
         self.findAllFlag = False
+        self.findAllUniqueFlag = False
         self.in_headline = False
             # True: searching headline text.
+        self.match_obj = None
+            # The match object returned for regex or find-all-unique-regex searches.
         self.p = None
             # The position being searched.
             # Never saved between searches!
         self.previous_find_pattern = ''
             # The previous find pattern, used to disable auto-setting ignore-case.
+        self.unique_matches = set()
         self.was_in_headline = None
             # Fix bug: https://groups.google.com/d/msg/leo-editor/RAzVPihqmkI/-tgTQw0-LtwJ
         self.onlyPosition = None
@@ -889,6 +893,17 @@ class LeoFind(object):
         '''
         self.ftm.clear_focus()
         self.searchWithPresentOptions(event, findAllFlag=True)
+    #@+node:ekr.20171226140643.1: *4* find.minibufferFindAllUnique
+    @cmd('find-all-unique-regex')
+    def minibufferFindAllUniqueRegex(self, event=None):
+        '''
+        Create a summary node containing all unique matches of the regex search
+        string. This command shows only the matched string itself.
+        '''
+        self.ftm.clear_focus()
+        self.match_obj = None
+        self.unique_matches = set()
+        self.searchWithPresentOptions(event, findAllFlag=True, findAllUniqueFlag=True)
     #@+node:ekr.20131117164142.16994: *4* find.minibufferReplaceAll
     @cmd('replace-all')
     def minibufferReplaceAll(self, event=None):
@@ -1078,13 +1093,18 @@ class LeoFind(object):
         self.generalChangeHelper(self._sString, k.arg, changeAll=self.changeAllFlag)
     #@+node:ekr.20131117164142.17005: *4* find.searchWithPresentOptions & helpers
     @cmd('set-search-string')
-    def searchWithPresentOptions(self, event, findAllFlag=False, changeAllFlag=False):
+    def searchWithPresentOptions(self, event,
+    findAllFlag=False,
+    findAllUniqueFlag=False,
+    changeAllFlag=False,
+    ):
         '''Open the search pane and get the search string.'''
         trace = False and not g.unitTesting
         if trace: g.trace('=====')
         # Remember the entry focus, just as when using the find pane.
         self.changeAllFlag = changeAllFlag
         self.findAllFlag = findAllFlag
+        self.findAllUniqueFlag = findAllUniqueFlag
         self.ftm.set_entry_focus()
         escapes = ['\t']
         escapes.extend(self.findEscapes())
@@ -1561,7 +1581,7 @@ class LeoFind(object):
         if trace: g.trace(self.find_text)
         # Init suboutline-only for clone-find-all commands
         # Much simpler: does not set self.p or any other state.
-        if self.pattern_match:
+        if self.pattern_match or self.findAllUniqueFlag:
             ok = self.precompilePattern()
             if not ok: return
         if self.suboutline_only:
@@ -1677,7 +1697,11 @@ class LeoFind(object):
             s = w.getAllText()
             i, j = g.getLine(s, pos)
             line = s[i: j]
-            if both:
+            if self.findAllUniqueFlag:
+                m = self.match_obj
+                if m:
+                    self.unique_matches.add(m.group(0).strip())
+            elif both:
                 result.append('%s%s\n%s%s\n' % (
                     '-' * 20, self.p.h,
                     "head: " if self.in_headline else "body: ",
@@ -1687,9 +1711,13 @@ class LeoFind(object):
             else:
                 result.append('%s%s\n%s' % ('-' * 20, self.p.h, line.rstrip()+'\n'))
                 self.p.setVisited()
-        if result:
+        if result or self.unique_matches:
             undoData = u.beforeInsertNode(c.p)
-            found = self.createFindAllNode(result)
+            if self.findAllUniqueFlag:
+                found = self.createFindUniqueNode()
+                count = len(list(self.unique_matches))
+            else:
+                found = self.createFindAllNode(result)
             u.afterInsertNode(found, undoType, undoData, dirtyVnodeList=[])
             c.selectPosition(found)
             c.setChanged(True)
@@ -1706,6 +1734,19 @@ class LeoFind(object):
         status = self.getFindResultStatus(find_all=True)
         status = status.strip().lstrip('(').rstrip(')').strip()
         found.b = '# %s\n%s' % (status, ''.join(result))
+        return found
+    #@+node:ekr.20171226143621.1: *6* find.createFindUniqueNode
+    def createFindUniqueNode(self):
+        '''Create a "Found Unique" node as the last node of the outline.'''
+        c = self.c
+        found = c.lastTopLevel().insertAfter()
+        assert found
+        found.h = 'Found Unique Regex:%s' % self.find_text
+        # status = self.getFindResultStatus(find_all=True)
+        # status = status.strip().lstrip('(').rstrip(')').strip()
+        # found.b = '# %s\n%s' % (status, ''.join(result))
+        result = sorted(self.unique_matches)
+        found.b = '\n'.join(result)
         return found
     #@+node:ekr.20160224141710.1: *6* find.findNextBatchMatch
     def findNextBatchMatch(self, p):
@@ -1794,7 +1835,7 @@ class LeoFind(object):
             return None, None
         self.errors = 0
         attempts = 0
-        if self.pattern_match:
+        if self.pattern_match or self.findAllUniqueFlag:
             ok = self.precompilePattern()
             if not ok: return None, None
         while p:
@@ -1948,6 +1989,7 @@ class LeoFind(object):
         '''Precompile the regexp pattern if necessary.'''
         trace = False and not g.unitTesting
         try: # Precompile the regexp.
+            # pylint: disable=no-member
             flags = re.MULTILINE
             if self.ignore_case: flags |= re.IGNORECASE
             # Escape the search text.
@@ -2058,7 +2100,7 @@ class LeoFind(object):
         trace = False and not g.unitTesting
         backwards = self.reverse
         nocase = self.ignore_case
-        regexp = self.pattern_match
+        regexp = self.pattern_match or self.findAllUniqueFlag
         word = self.whole_word
         if backwards: i, j = j, i
         if trace: g.trace('entry', i, j, repr(s[min(i, j): max(i, j)]))
