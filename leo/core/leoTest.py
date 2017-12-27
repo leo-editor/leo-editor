@@ -717,6 +717,8 @@ class TestManager(object):
                     result = runner.run(suite)
                 if stream:
                     if stream.aList:
+                        # pylint: disable=logging-not-lazy
+                            # This may be a pylint issue.
                         logger.info('\n'+''.join(stream.aList))
                     logger.removeHandler(handler)
                 # put info to db as well
