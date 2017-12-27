@@ -610,7 +610,7 @@ class linkItem(QtWidgets.QGraphicsItemGroup):
     """Node on the canvas"""
     #@+others
     #@+node:bob.20110119123023.7405: *3* __init__
-    def __init__(self, glue, hierarchyLink=False, *args, **kargs):
+    def __init__(self, glue, *args, hierarchyLink=False, **kargs):
         """:Parameters:
             - `glue`: glue object owning this
 
