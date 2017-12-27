@@ -1011,7 +1011,7 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     d[name.strip()] = value.strip()
                 if trace:
                     print('@data %s...' % kind)
-                    for key in sorted(d.keys()):
+                    for key in sorted(d):
                         print('  %s: %s' % (key, d.get(key)))
                 return d
             #@+node:ekr.20160213070235.5: *6* msf.scan_patterns
