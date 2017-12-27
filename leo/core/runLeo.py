@@ -64,7 +64,7 @@ def profile_leo():
 
 prof = profile_leo
 #@+node:ekr.20120219154958.10499: ** run (runLeo.py)
-def run(fileName=None, pymacs=None, *args, **keywords):
+def run(*args, fileName=None, pymacs=None, **keywords):
     """Initialize and run Leo"""
     assert g.app
     # g.trace('runLeo.py', fileName, args, keywords)
