@@ -1812,12 +1812,13 @@ class EditCommandsClass(BaseEditCommandsClass):
             # Determine if prev line has unclosed parens/brackets/braces
             bracketWidths = [width]
             tabex = 0
-            for i in range(0, len(s)):
-                if s[i] == '\t':
+            for i, ch in enumerate(s):
+                g.trace(i,ch)
+                if ch == '\t':
                     tabex += tab_width - 1
-                if s[i] in '([{':
+                if ch in '([{':
                     bracketWidths.append(i + tabex + 1)
-                elif s[i] in '}])' and len(bracketWidths) > 1:
+                elif ch in '}])' and len(bracketWidths) > 1:
                     bracketWidths.pop()
             width = bracketWidths.pop()
         ws = g.computeLeadingWhitespace(width, tab_width)
