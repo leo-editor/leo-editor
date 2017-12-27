@@ -2236,7 +2236,7 @@ class Commands(object):
     def recreateGnxDict(self):
         '''Recreate the gnx dict prior to refreshing nodes from disk.'''
         trace = False and not g.unitTesting
-        c, d = self, {},
+        c, d = self, {}
         for v in c.all_unique_nodes():
             gnxString = v.fileIndex
             assert g.isUnicode(gnxString)
@@ -3357,7 +3357,7 @@ class Commands(object):
         '''
         c = self
         u, undoType = c.undoer, undoType or 'clone-find-predicate'
-        clones, root, seen = [], None, set(),
+        clones, root, seen = [], None, set()
         for p in generator():
             if predicate(p) and p.v not in seen:
                 c.setCloneFindByPredicateIcon(iconPath, p)
