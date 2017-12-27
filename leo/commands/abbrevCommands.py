@@ -195,7 +195,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             g.app.disable_redraw = False
         if trace and trace_dict:
             g.trace(fn)
-            for key in sorted(d.keys()):
+            for key in sorted(d):
                 g.trace(key, '...\n\n', d.get(key))
     #@+node:ekr.20170227062001.1: *7* abbrev.init_tree_abbrev_helper
     def init_tree_abbrev_helper(self, d, tree_s):
