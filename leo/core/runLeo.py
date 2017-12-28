@@ -64,8 +64,10 @@ def profile_leo():
 
 prof = profile_leo
 #@+node:ekr.20120219154958.10499: ** run (runLeo.py)
-def run(*args, fileName=None, pymacs=None, **keywords):
+def run(fileName=None, pymacs=None, *args, **keywords):
     """Initialize and run Leo"""
+    # pylint: disable=keyword-arg-before-vararg
+        # putting *args first is invalid in Python 2.x.
     assert g.app
     # g.trace('runLeo.py', fileName, args, keywords)
     g.app.loadManager = leoApp.LoadManager()
