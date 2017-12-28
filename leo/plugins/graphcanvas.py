@@ -610,12 +610,14 @@ class linkItem(QtWidgets.QGraphicsItemGroup):
     """Node on the canvas"""
     #@+others
     #@+node:bob.20110119123023.7405: *3* __init__
-    def __init__(self, glue, *args, hierarchyLink=False, **kargs):
+    def __init__(self, glue, hierarchyLink=False, *args, **kargs):
         """:Parameters:
             - `glue`: glue object owning this
 
         pass glue object and let it key nodeItems to leo nodes
         """
+        # pylint: disable=keyword-arg-before-vararg
+            # putting *args first is invalid in Python 2.x.
         self.glue = glue
         QtWidgets.QGraphicsItemGroup.__init__(self)
         self.line = QtWidgets.QGraphicsLineItem(*args)

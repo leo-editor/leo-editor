@@ -1025,7 +1025,7 @@ for theDir in ('core','external','extensions','plugins','scripts','test'):
             if not c.testManager.checkFileSyntax(fn,s,reraise=False,suppress=False):
                 failed.append(z)
 if trace: print('tested %s files' % n)
-assert not failed,'failed %s\n' % g.listToString(failed,sort=True)
+assert not failed,'failed %s\n' % g.listToString(failed)
 #@+node:ekr.20110612071416.3311: *3* @test syntax of setup.py
 fn = g.os_path_finalize_join(g.app.loadDir,'..','..','setup.py')
 

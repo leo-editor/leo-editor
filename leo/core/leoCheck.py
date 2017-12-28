@@ -319,8 +319,9 @@ class ConventionChecker (object):
         print('Inference failure: %s' % self.log_line(node, *args, **kwargs))
         print('')
         
-    def log_line(self, *args, node=None, **kwargs):
-
+    def log_line(self, node=None, *args, **kwargs):
+        # pylint: disable=keyword-arg-before-vararg
+            # putting *args first is invalid in Python 2.x.
         return 'line: %s file: %s: %s' % (
             getattr(node, 'lineno', '??'),
             self.file_name or '<string>',
