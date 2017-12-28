@@ -195,6 +195,30 @@ class PyflakesCommand(object):
         self.seen = [] # List of checked paths.
 
     #@+others
+    #@+node:ekr.20171228013818.1: *3* class LogStream
+    class LogStream:
+         
+        def __init__(self, fn_n=0, roots=None):
+             self.fn_n = fn_n
+             self.roots = roots
+
+        def write(self, s):
+            fn_n, roots = self.fn_n, self.roots
+            if not s.strip():
+                return
+            g.pr(s)
+            # It *is* useful to send pyflakes errors to the console.
+            if roots:
+                try:
+                    root = roots[fn_n]
+                    line = int(s.split(':')[1])
+                    unl = root.get_UNL(with_proto=True, with_count=True)
+                    g.es(s, nodeLink="%s,%d" % (unl, -line))
+                except (IndexError, TypeError, ValueError):
+                    # in case any assumptions fail
+                    g.es(s)
+            else:
+                g.es(s)
     #@+node:ekr.20160516072613.6: *3* pyflakes.check_all
     def check_all(self, log_flag, paths, pyflakes_errors_only, roots=None):
         '''Run pyflakes on all files in paths.'''
@@ -209,33 +233,23 @@ class PyflakesCommand(object):
                 if not pyflakes_errors_only:
                     g.es('Pyflakes: %s' % sfn)
                 # Send all output to the log pane.
-
-                class LogStream:
-
-                    def write(self, s):
-                        if s.strip():
-                            g.pr(s)
-                            # It *is* useful to send pyflakes errors to the console.
-                            if roots:
-                                try:
-                                    root = roots[fn_n]
-                                    line = int(s.split(':')[1])
-                                    unl = root.get_UNL(with_proto=True, with_count=True)
-                                    g.es(s, nodeLink="%s,%d" % (unl, -line))
-                                except (IndexError, TypeError, ValueError):
-                                    # in case any assumptions fail
-                                    g.es(s)
-                            else:
-                                g.es(s)
-
                 r = reporter.Reporter(
-                        errorStream=LogStream(),
-                        warningStream=LogStream(),
-                    )
+                    errorStream=self.LogStream(fn_n, roots),
+                    warningStream=self.LogStream(fn_n, roots),
+                )
                 errors = api.check(s, sfn, r)
                 total_errors += errors
         return total_errors
-    #@+node:ekr.20170220114553.1: *3* pyflakes.finalize (new)
+    #@+node:ekr.20171228013625.1: *3* pyflakes.check_script
+    def check_script(self, p, script):
+        from pyflakes import api, reporter
+        r = reporter.Reporter(
+            errorStream=self.LogStream(),
+            warningStream=self.LogStream(),
+        )
+        errors = api.check(script, '', r)
+        return errors == 0
+    #@+node:ekr.20170220114553.1: *3* pyflakes.finalize
     def finalize(self, p):
 
         aList = g.get_directives_dict_list(p)

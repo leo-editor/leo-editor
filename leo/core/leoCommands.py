@@ -616,12 +616,22 @@ class Commands(object):
         raiseFlag=False         True: reraise any exceptions.
         '''
         c, script1 = self, script
+        run_pyflakes = c.config.getBool('run-pyflakes-on-write', default=False) 
         if not script:
             if c.forceExecuteEntireBody:
                 useSelectedText = False
             script = g.getScript(c, p or c.p, useSelectedText=useSelectedText)
         script_p = p or c.p
             # Only for error reporting below.
+        # #532: check all scripts with pyflakes.
+        if run_pyflakes and not g.unitTesting:
+            import leo.commands.checkerCommands as cc
+            # at = c.atFileCommands
+            ok = (
+                # at.checkPythonSyntax(script_p, script, supress=False) and
+                cc.PyflakesCommand(c).check_script(script_p, script)
+            )
+            if not ok: return
         self.redirectScriptOutput()
         try:
             oldLog = g.app.log
