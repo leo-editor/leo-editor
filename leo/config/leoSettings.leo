@@ -1213,7 +1213,9 @@
 <v t="ekr.20131213135427.21954"><vh>@item open-myLeoSettings-leo</vh></v>
 <v t="ekr.20131213135427.21955"><vh>@item open-local-settings</vh></v>
 <v t="ekr.20131213135427.21956"><vh>@item -</vh></v>
-<v t="tbrown.20140814090009.57476"><vh>@item style-reload</vh></v>
+<v t="ekr.20171229135829.1"><vh>@item reload-all-settings</vh></v>
+<v t="ekr.20171229135843.1"><vh>@item reload-settings</vh></v>
+<v t="tbrown.20140814090009.57476"><vh>@item reload-style-sheets</vh></v>
 <v t="tbrown.20140814090009.57475"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21957"><vh>@item *pri&amp;nt-bindings</vh></v>
 <v t="ekr.20131213135427.21958"><vh>@item *print-c&amp;ommands</vh></v>
@@ -2858,7 +2860,6 @@
 </v>
 </v>
 <v t="ekr.20171121100639.1"></v>
-<v t="ekr.20070411101857"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -14536,6 +14537,8 @@ arg:    C:\apps\SciTE\scite.exe
 kind:   subprocess.Popen
 arg:    "%ProgramFiles%/Windows NT/Accessories/wordpad.exe"
 </t>
+<t tx="ekr.20171229135829.1"></t>
+<t tx="ekr.20171229135843.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
@@ -14877,7 +14880,7 @@ c.k.simulateCommand('show-color-names')
 c.k.simulateCommand('show-fonts')
 </t>
 <t tx="tbrown.20140814090009.57475"></t>
-<t tx="tbrown.20140814090009.57476">Reload Styles</t>
+<t tx="tbrown.20140814090009.57476"></t>
 <t tx="tbrown.20141101105337.1"></t>
 <t tx="tbrown.20141101105337.2"># regex patterns for text to be hidden by the wikiview plugin
 # Blanks lines and lines starting with '#' are comment lines.

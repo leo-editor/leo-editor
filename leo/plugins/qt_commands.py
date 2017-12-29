@@ -211,6 +211,7 @@ def showFonts(self, event=None):
         c.undoer.afterChangeNodeContents(p, 'change-font', udata)
 #@+node:ekr.20140918124632.17891: ** qt: style-reload
 @g.command('style-reload')
+@g.command('reload-style-sheets')
 def style_reload(event):
     """reload-styles command.
 

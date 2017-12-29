@@ -3779,7 +3779,7 @@ class Commands(object):
         Call all reloadSettings method in c.subcommanders, c.configurables and
         other known classes.
         '''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self
         table = [
             g.app.gui,
