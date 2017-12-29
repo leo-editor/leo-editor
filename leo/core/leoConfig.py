@@ -1973,10 +1973,7 @@ class SettingsTreeParser(ParserBaseClass):
                 g.pr("*** no handler", kind)
         return None
     #@-others
-#@-others
-#@@language python
-#@@tabwidth -4
-#@@pagewidth 70
+#@+node:ekr.20171229131953.1: ** parseFont (leoConfig.py)
 def parseFont(b):
     family = None
     weight = None
@@ -2004,4 +2001,8 @@ def parseFont(b):
         if settings_name is None and name.endswith(('_family', '_slant', '_weight','_size')):
             settings_name = name.rsplit('_', 1)[0]
     return settings_name, family, weight == 'bold', slant in ('slant', 'italic'), size
+#@-others
+#@@language python
+#@@tabwidth -4
+#@@pagewidth 70
 #@-leo
