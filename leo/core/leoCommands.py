@@ -627,9 +627,10 @@ class Commands(object):
         if run_pyflakes and not g.unitTesting:
             import leo.commands.checkerCommands as cc
             # at = c.atFileCommands
+            prefix = 'c,g,p=None,None,None; assert c and g and p;\n'
             ok = (
                 # at.checkPythonSyntax(script_p, script, supress=False) and
-                cc.PyflakesCommand(c).check_script(script_p, script)
+                cc.PyflakesCommand(c).check_script(script_p, prefix+script)
             )
             if not ok: return
         self.redirectScriptOutput()
