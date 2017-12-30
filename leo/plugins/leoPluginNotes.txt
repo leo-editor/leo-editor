@@ -41,71 +41,8 @@ a = # This is the syntax error
 def init ():
     '''Return True if the plugin has loaded successfully.'''
     return True
-#@+node:ekr.20161003204921.1: ** old code in mod_http.py
-#@+node:EKR.20040517080250.24: *3* format_leo_node (old)
-def format_leo_node(self, f, window, node):
-    """
-    Given a node 'node', return the contents of that node as html text.
-
-    Include some navigational references too
-    """
-    if node:
-        headString = node.h
-        bodyString = node.b
-        format_info = get_http_attribute(node)
-    else:
-        headString, bodyString = "Top level", ""
-        format_info = None
-    self.write_head(f, headString, window)
-    # write navigation
-    self.add_leo_links(window, node, f)
-    # write path
-    self.write_path(node, f)
-    f.write("<hr />\n") # horizontal rule
-    # f.write('<span style="font-family: monospace;">')
-    if format_info:
-        f.write("<p>\n")
-        html_lines = reconstruct_html_from_attrs(format_info, 3)
-        for line in html_lines:
-            f.write(line)
-        f.write("\n</p>\n")
-    else:
-        if (bodyString):
-            f.write("<p>\n")
-        f.write(escape(bodyString))
-        if (bodyString):
-            f.write("\n</p>\n")
-    # f.write("</span>\n")
-    f.write("\n</body>\n</html>\n")
-    # return f
-#@+node:EKR.20040517080250.25: *3* get_leo_nameparts
-def get_leo_nameparts(self, node):
-    """
-    Given a 'node', construct a list of sibling numbers to get to that node.
-    """
-    result = []
-    if node:
-        cnode = node
-        parent = cnode.parent()
-        while parent:
-            i = 0
-            child = parent.firstChild()
-            while child != cnode:
-                child = child.next()
-                i += 1
-            result.append(str(i))
-            cnode = parent
-            parent = cnode.parent()
-        i = 0
-        previous = cnode.back()
-        while previous:
-            i += 1
-            previous = previous.back()
-        result.append(str(i))
-        result.reverse()
-    return result
 #@+node:ekr.20161014155650.1: ** Structured vr docstring
-# Alas, this does not work because comment delimiters are python delims, not rST delims.
+# Alas, this DOES NOT WORK because comment delimiters are python delims, not rST delims.
 #@+node:ekr.20161014155647.1: *3* << vr docstring >>
 @language rest
 @wrap
@@ -277,18 +214,49 @@ Terry Brown created this initial version of this plugin, and the free_layout and
 EKR generalized this plugin and added communication and coordination between the free_layout, NestedSplitter and viewrendered plugins.
 
 Jacob Peck added markdown support.
-#@+node:ekr.20171121020232.1: ** orgw.compute_headline (not used)
-###
-# def compute_headline(self, p):
-    # '''
-    # Return the headline to be written, possibly adding tags.
-    # '''
-    # if self.remove_tags and self.tc:
-        # tags = self.tc.get_tags(p.v)
-        # if tags:
-            # # Sort the tags for unit tests.
-            # return '%s :%s:' % (p.h.strip(), ':'.join(sorted(tags)))
-    # return p.h
+#@+node:ekr.20171230051636.1: ** OLD org_i.gen_lines
+org_pattern = re.compile(r'^(\*+)(.*)$')
+
+def gen_lines(self, s, parent):
+    '''Node generator for org mode.'''
+    self.inject_lines_ivar(parent)
+    # We may as well do this first.  See note below.
+    self.add_line(parent, '@others\n')
+    self.parents = [parent]
+    for line in g.splitLines(s):
+        m = self.org_pattern.match(line)
+        if m:
+            # Cut back the stack, then allocate a new node.
+            level = len(m.group(1))
+            self.parents = self.parents[:level]
+            self.find_parent(
+                level = level,
+                h = m.group(2).strip())
+        else:
+            p = self.parents[-1]
+            self.add_line(p, line)
+    note = (
+        'Note: This node\'s body text is ignored when writing this file.\n\n' +
+        'The @others directive is not required.\n'
+    )
+    self.add_line(parent, note)
+#@+node:ekr.20171230051823.1: ** OLD orgw.write
+def write(self, root):
+    """Write all the *descendants* of an @auto-org-mode node."""
+    root_level = root.level()
+    first = root.firstChild()
+    for p in root.subtree():
+        if p == first and p.h == 'declarations':
+            pass
+        else:
+            if hasattr(self.at, 'force_sentinels'):
+                self.put_node_sentinel(p, '#')
+            indent = p.level() - root_level
+            self.put('%s %s' % ('*' * indent, p.h))
+        for s in p.b.splitlines(False):
+            self.put(s)
+    root.setVisited()
+    return True
 #@-all
 #@@killbeautify
 # This file contains unused plugins and code

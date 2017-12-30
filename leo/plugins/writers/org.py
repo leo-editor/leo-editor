@@ -27,19 +27,22 @@ class OrgModeWriter(basewriter.BaseWriter):
     def write(self, root):
         """Write all the *descendants* of an @auto-org-mode node."""
         root_level = root.level()
-        first = root.firstChild()
+        self.write_root(root)
         for p in root.subtree():
-            if p == first and p.h == 'declarations':
-                pass
-            else:
-                if hasattr(self.at, 'force_sentinels'):
-                    self.put_node_sentinel(p, '#')
-                indent = p.level() - root_level
-                self.put('%s %s' % ('*' * indent, p.h))
+            if hasattr(self.at, 'force_sentinels'):
+                self.put_node_sentinel(p, '#')
+            indent = p.level() - root_level
+            self.put('%s %s' % ('*' * indent, p.h))
             for s in p.b.splitlines(False):
                 self.put(s)
         root.setVisited()
         return True
+    #@+node:ekr.20171230050625.1: *3* orgw.write_root
+    def write_root(self, root):
+        '''Write the root @auto-org node.'''
+        lines = [z for z in g.splitLines(root.b) if not g.isDirective(z)]
+        for s in lines:
+            self.put(s)
     #@-others
 #@-others
 writer_dict = {

@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.65" body_secondary_ratio="0.84">
-	<global_window_position top="68" left="671" height="1027" width="1033"/>
+<globals body_outline_ratio="0.62" body_secondary_ratio="0.72">
+	<global_window_position top="76" left="842" height="801" width="942"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -22,6 +22,9 @@
 <v t="ekr.20170818044949.4"><vh>@data:#@auto</vh></v>
 <v t="ekr.20170818044949.5"><vh>@data:#@auto</vh>
 <v t="ekr.20170818044949.6"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20171230052539.1"><vh>@data:@auto-org unittest/at-auto-org-line-number-test.py</vh>
+<v t="ekr.20171230053135.8"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20041121151002"><vh>@settings</vh>
@@ -141,7 +144,7 @@
 <v t="ekr.20111214104615.3942"><vh>@@@auto unittest/at-auto-section-ref-test.py</vh>
 <v t="ekr.20161011092326.7"><vh>at-auto-section-ref-test declarations</vh></v>
 </v>
-<v t="ekr.20161130041921.1"><vh>@@auto-rst unittest/at-auto-rst-line-number-test.py</vh>
+<v t="ekr.20161130041921.1"><vh>@@auto-rst unittest/at-auto-rst-line-number-test.rst</vh>
 <v t="ekr.20161228071435.1"><vh>@nosent c:\test\bug-354-test.py</vh>
 <v t="ekr.20161228071822.1"><vh>&lt;&lt; u:1 &gt;&gt;</vh></v>
 <v t="ekr.20161228071836.1"><vh>&lt;&lt; ue:1 &gt;&gt;</vh></v>
@@ -193,7 +196,7 @@
 <v t="ekr.20170504122721.14"><vh>A level 2 node</vh></v>
 </v>
 </v>
-<v t="ekr.20150626101627.1"><vh>@auto-org unittest/at-auto-org-line-number-test.py</vh>
+<v t="ekr.20150626101627.1"><vh>@auto-org unittest/at-auto-org-line-number-test.org</vh>
 <v t="ekr.20170504122721.15"><vh>section 1</vh></v>
 <v t="ekr.20170504122721.16"><vh>section 2</vh></v>
 </v>
@@ -246,7 +249,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285508302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735508302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735508302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735509302e362e31392e3431710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735508302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343171097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -432,6 +435,28 @@
 <v t="ekr.20161123202857.1"><vh>org tests</vh>
 <v t="ekr.20161123202924.1"><vh>@test org-1</vh></v>
 <v t="ekr.20171120113732.1"><vh>@test org tags</vh></v>
+<v t="ekr.20171230050347.1"><vh>@test org intro</vh>
+<v t="ekr.20171230051109.1"><vh>@@auto-org @test org intro</vh>
+<v t="ekr.20171230051109.2"><vh>Section 1</vh></v>
+<v t="ekr.20171230051109.3"><vh>Section 2</vh></v>
+</v>
+<v t="ekr.20171230051251.1"><vh>@@auto-org @test org intro</vh>
+<v t="ekr.20171230051251.2"><vh>Section 1</vh></v>
+<v t="ekr.20171230051251.3"><vh>Section 2</vh></v>
+</v>
+<v t="ekr.20171230051443.1"><vh>@@auto-org @test org intro</vh>
+<v t="ekr.20171230051443.2"><vh>Section 1</vh></v>
+<v t="ekr.20171230051443.3"><vh>Section 2</vh></v>
+</v>
+<v t="ekr.20171230051547.1"><vh>@@auto-org @test org intro</vh>
+<v t="ekr.20171230051547.2"><vh>Section 1</vh></v>
+<v t="ekr.20171230051547.3"><vh>Section 2</vh></v>
+</v>
+<v t="ekr.20171230052239.1"><vh>@@auto-org @test org intro</vh>
+<v t="ekr.20171230052239.2"><vh>Section 1</vh></v>
+<v t="ekr.20171230052239.3"><vh>Section 2</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20161124040933.1"><vh>otl (vim-outline) tests</vh>
 <v t="ekr.20161124040933.2"><vh>@test otl-1</vh></v>
@@ -1183,7 +1208,8 @@
 </v>
 <v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
 </v>
-<v t="ekr.20090529141856.4774"></v>
+<v t="ekr.20161123202857.1"></v>
+<v t="ekr.20170401123840.5"><vh>@test find_file_line: @auto-org</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4512,7 +4538,7 @@ if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 else:
     trace = True
-    h = '@auto-rst unittest/at-auto-rst-line-number-test.py'
+    h = '@auto-rst unittest/at-auto-rst-line-number-test.rst'
     root = g.findNodeAnywhere(c, h)
     assert root
     assert root.isAtAutoRstNode(), root
@@ -4541,10 +4567,9 @@ The @others directive is not required.
 @language plain
 @tabwidth -4
 </t>
-<t tx="ekr.20150626101627.1">@others
-Note: This node's body text is ignored when writing this file.
-
-The @others directive is not required.
+<t tx="ekr.20150626101627.1">Introduction line 1.
+Introduction line 2.
+@others
 @language plain
 @tabwidth -4
 </t>
@@ -14856,6 +14881,26 @@ EOT;
 }
 ?&gt;
 </t>
+<t tx="ekr.20170401123840.5"># Not valid for external tests: uses @&lt;file&gt; node.
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
+    trace = False
+    h = '@auto-org unittest/at-auto-org-line-number-test.org'
+    root = g.findNodeAnywhere(c, h)
+    assert root
+    s = c.gotoCommands.get_external_file_with_sentinels(root)
+    if trace:
+        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
+    for n in range(20):
+        p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
+        if found:
+            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
+        else:
+            if trace: print('not found: %s' % (n+1))
+            assert n == 6, n
+            break
+</t>
 <t tx="ekr.20170407065952.1">import imp
 import leo.plugins.importers.javascript as js
 imp.reload(js)
@@ -15704,6 +15749,82 @@ bar
 EOT;
 }
 ?&gt;
+</t>
+<t tx="ekr.20171230050347.1">s = '''\
+Intro line.
+* Section 1
+Sec 1.
+* Section 2
+Sec 2.
+'''
+table = (
+    'Section 1',
+    'Section 2',
+)
+try:
+    c.importCommands.orgUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 1:
+        p.deleteAllChildren()
+    c.redraw()
+
+</t>
+<t tx="ekr.20171230051109.1">Intro line.
+@language plain
+@tabwidth -4
+@ignore
+</t>
+<t tx="ekr.20171230051109.2">Sec 1.
+</t>
+<t tx="ekr.20171230051109.3">Sec 2.
+</t>
+<t tx="ekr.20171230051251.1">Intro line.
+@language plain
+@tabwidth -4
+@ignore
+</t>
+<t tx="ekr.20171230051251.2">Sec 1.
+</t>
+<t tx="ekr.20171230051251.3">Sec 2.
+</t>
+<t tx="ekr.20171230051443.1">Intro line.
+@language plain
+@tabwidth -4
+@ignore
+</t>
+<t tx="ekr.20171230051443.2">Sec 1.
+</t>
+<t tx="ekr.20171230051443.3">Sec 2.
+</t>
+<t tx="ekr.20171230051547.1">Intro line.
+@language plain
+@tabwidth -4
+</t>
+<t tx="ekr.20171230051547.2">Sec 1.
+</t>
+<t tx="ekr.20171230051547.3">Sec 2.
+</t>
+<t tx="ekr.20171230052239.1">Intro line.
+@language plain
+@tabwidth -4
+</t>
+<t tx="ekr.20171230052239.2">Sec 1.
+</t>
+<t tx="ekr.20171230052239.3">Sec 2.
+</t>
+<t tx="ekr.20171230052539.1">gnx: ekr.20150626101627.1
+</t>
+<t tx="ekr.20171230053135.8">gnx: ekr.20170504122721.15
+unl: section 1
+gnx: ekr.20170504122721.16
+unl: section 2
 </t>
 </tnodes>
 </leo_file>
