@@ -36,6 +36,7 @@ class RstWriter(basewriter.BaseWriter):
         trace = False and not g.unitTesting
         root_level = root.level()
         if trace: g.trace('='*20, root.h)
+        self.write_root(root)
         for p in root.subtree():
             if hasattr(self.at, 'force_sentinels'):
                 self.put_node_sentinel(p, '.. ')
@@ -56,6 +57,12 @@ class RstWriter(basewriter.BaseWriter):
                 self.put(s)
         root.setVisited()
         return True
+    #@+node:ekr.20171230165645.1: *3* otlw.write_root
+    def write_root(self, root):
+        '''Write the root @auto-org node.'''
+        lines = [z for z in g.splitLines(root.b) if not g.isDirective(z)]
+        for s in lines:
+            self.put(s)
     #@-others
 #@-others
 writer_dict = {

@@ -15031,49 +15031,6 @@ finally:
         p.deleteAllChildren()
     c.redraw()
 
-#@+node:ekr.20171230051109.1: *7* @@auto-org @test org intro
-Intro line.
-@language plain
-@tabwidth -4
-@ignore
-#@+node:ekr.20171230051109.2: *8* Section 1
-Sec 1.
-#@+node:ekr.20171230051109.3: *8* Section 2
-Sec 2.
-#@+node:ekr.20171230051251.1: *7* @@auto-org @test org intro
-Intro line.
-@language plain
-@tabwidth -4
-@ignore
-#@+node:ekr.20171230051251.2: *8* Section 1
-Sec 1.
-#@+node:ekr.20171230051251.3: *8* Section 2
-Sec 2.
-#@+node:ekr.20171230051443.1: *7* @@auto-org @test org intro
-Intro line.
-@language plain
-@tabwidth -4
-@ignore
-#@+node:ekr.20171230051443.2: *8* Section 1
-Sec 1.
-#@+node:ekr.20171230051443.3: *8* Section 2
-Sec 2.
-#@+node:ekr.20171230051547.1: *7* @@auto-org @test org intro
-Intro line.
-@language plain
-@tabwidth -4
-#@+node:ekr.20171230051547.2: *8* Section 1
-Sec 1.
-#@+node:ekr.20171230051547.3: *8* Section 2
-Sec 2.
-#@+node:ekr.20171230052239.1: *7* @@auto-org @test org intro
-Intro line.
-@language plain
-@tabwidth -4
-#@+node:ekr.20171230052239.2: *8* Section 1
-Sec 1.
-#@+node:ekr.20171230052239.3: *8* Section 2
-Sec 2.
 #@+node:ekr.20161124040933.1: *5* otl (vim-outline) tests
 #@+node:ekr.20161124040933.2: *6* @test otl-1
 @tabwidth 4 # Required
@@ -16317,6 +16274,19 @@ EOT;
 @language php
 @tabwidth -4
 #@+node:ekr.20171225163019.34: *8* class foo
+class foo {
+    public $bar = <<<EOT
+a test.
+bar
+EOT;
+}
+?>
+#@+node:ekr.20171230165904.48: *7* @@file @test php here doc
+<?php
+@others
+@language php
+@tabwidth -4
+#@+node:ekr.20171230165904.49: *8* class foo
 class foo {
     public $bar = <<<EOT
 a test.

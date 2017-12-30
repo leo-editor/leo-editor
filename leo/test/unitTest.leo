@@ -2,7 +2,7 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.75" body_secondary_ratio="0.72">
+<globals body_outline_ratio="0.61" body_secondary_ratio="0.72">
 	<global_window_position top="76" left="842" height="801" width="942"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -28,6 +28,9 @@
 </v>
 <v t="ekr.20171230164813.1"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.otl</vh>
 <v t="ekr.20171230164922.1"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20171230170021.1"><vh>@data:@auto unittest/at-auto-md-line-number-test.md</vh>
+<v t="ekr.20171230170254.1"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20041121151002"><vh>@settings</vh>
@@ -252,7 +255,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735809000000302e362e31392e343171117d711258090000006d795f706c7567696e7113580300000076616c711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343171117d711258090000006d795f706c7567696e7113580300000076616c711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -438,28 +441,7 @@
 <v t="ekr.20161123202857.1"><vh>org tests</vh>
 <v t="ekr.20161123202924.1"><vh>@test org-1</vh></v>
 <v t="ekr.20171120113732.1"><vh>@test org tags</vh></v>
-<v t="ekr.20171230050347.1"><vh>@test org intro</vh>
-<v t="ekr.20171230051109.1"><vh>@@auto-org @test org intro</vh>
-<v t="ekr.20171230051109.2"><vh>Section 1</vh></v>
-<v t="ekr.20171230051109.3"><vh>Section 2</vh></v>
-</v>
-<v t="ekr.20171230051251.1"><vh>@@auto-org @test org intro</vh>
-<v t="ekr.20171230051251.2"><vh>Section 1</vh></v>
-<v t="ekr.20171230051251.3"><vh>Section 2</vh></v>
-</v>
-<v t="ekr.20171230051443.1"><vh>@@auto-org @test org intro</vh>
-<v t="ekr.20171230051443.2"><vh>Section 1</vh></v>
-<v t="ekr.20171230051443.3"><vh>Section 2</vh></v>
-</v>
-<v t="ekr.20171230051547.1"><vh>@@auto-org @test org intro</vh>
-<v t="ekr.20171230051547.2"><vh>Section 1</vh></v>
-<v t="ekr.20171230051547.3"><vh>Section 2</vh></v>
-</v>
-<v t="ekr.20171230052239.1"><vh>@@auto-org @test org intro</vh>
-<v t="ekr.20171230052239.2"><vh>Section 1</vh></v>
-<v t="ekr.20171230052239.3"><vh>Section 2</vh></v>
-</v>
-</v>
+<v t="ekr.20171230050347.1"><vh>@test org intro</vh></v>
 </v>
 <v t="ekr.20161124040933.1"><vh>otl (vim-outline) tests</vh>
 <v t="ekr.20161124040933.2"><vh>@test otl-1</vh></v>
@@ -682,6 +664,9 @@
 </v>
 <v t="ekr.20171225163019.33"><vh>@@file @test php here doc</vh>
 <v t="ekr.20171225163019.34"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20171230165904.48"><vh>@@file @test php here doc</vh>
+<v t="ekr.20171230165904.49"><vh>class foo</vh></v>
 </v>
 </v>
 </v>
@@ -1211,10 +1196,10 @@
 </v>
 <v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
 </v>
-<v t="ekr.20161123202857.1"></v>
-<v t="ekr.20161124040933.1"></v>
+<v t="ekr.20150626101842.1"></v>
 <v t="ekr.20170401123840.5"><vh>@test find_file_line: @auto-org</vh></v>
 <v t="ekr.20170401123840.6"><vh>@test find_file_line: @auto-otl</vh></v>
+<v t="ekr.20170401123840.4"><vh>@test find_file_line: @auto-md</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1631,7 +1616,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="4">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="8">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -4576,10 +4561,8 @@ Introduction line 2.
 @language plain
 @tabwidth -4
 </t>
-<t tx="ekr.20150626101842.1">@others
-Note: This node's body text is ignored when writing this file.
-
-The @others directive is not required.
+<t tx="ekr.20150626101842.1">Leading line 1
+@others
 @language md
 @tabwidth -4
 </t>
@@ -14885,6 +14868,29 @@ EOT;
 }
 ?&gt;
 </t>
+<t tx="ekr.20170401123840.4">import sys
+# Not valid for external tests: uses @&lt;file&gt; node.
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+elif sys.platform.startswith('win'):
+    trace = False
+    h = '@auto unittest/at-auto-md-line-number-test.md'
+    root = g.findNodeAnywhere(c, h)
+    assert root
+    s = c.gotoCommands.get_external_file_with_sentinels(root)
+    if trace:
+        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
+    for n in range(20):
+        p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
+        if found:
+            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
+        else:
+            if trace: print('not found: %s' % (n+1))
+            assert n == 6, n
+            break
+else:
+    self.skipTest('Skip on Linux')
+</t>
 <t tx="ekr.20170401123840.5"># Not valid for external tests: uses @&lt;file&gt; node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -15800,49 +15806,6 @@ finally:
     c.redraw()
 
 </t>
-<t tx="ekr.20171230051109.1">Intro line.
-@language plain
-@tabwidth -4
-@ignore
-</t>
-<t tx="ekr.20171230051109.2">Sec 1.
-</t>
-<t tx="ekr.20171230051109.3">Sec 2.
-</t>
-<t tx="ekr.20171230051251.1">Intro line.
-@language plain
-@tabwidth -4
-@ignore
-</t>
-<t tx="ekr.20171230051251.2">Sec 1.
-</t>
-<t tx="ekr.20171230051251.3">Sec 2.
-</t>
-<t tx="ekr.20171230051443.1">Intro line.
-@language plain
-@tabwidth -4
-@ignore
-</t>
-<t tx="ekr.20171230051443.2">Sec 1.
-</t>
-<t tx="ekr.20171230051443.3">Sec 2.
-</t>
-<t tx="ekr.20171230051547.1">Intro line.
-@language plain
-@tabwidth -4
-</t>
-<t tx="ekr.20171230051547.2">Sec 1.
-</t>
-<t tx="ekr.20171230051547.3">Sec 2.
-</t>
-<t tx="ekr.20171230052239.1">Intro line.
-@language plain
-@tabwidth -4
-</t>
-<t tx="ekr.20171230052239.2">Sec 1.
-</t>
-<t tx="ekr.20171230052239.3">Sec 2.
-</t>
 <t tx="ekr.20171230052539.1">gnx: ekr.20150626101627.1
 </t>
 <t tx="ekr.20171230164813.1">gnx: ekr.20150626100719.1
@@ -15855,6 +15818,26 @@ unl: section 2
 <t tx="ekr.20171230164930.1">gnx: ekr.20170504122721.15
 unl: section 1
 gnx: ekr.20170504122721.16
+unl: section 2
+</t>
+<t tx="ekr.20171230165904.48">&lt;?php
+@others
+@language php
+@tabwidth -4
+</t>
+<t tx="ekr.20171230165904.49">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
+</t>
+<t tx="ekr.20171230170021.1">gnx: ekr.20150626101842.1
+</t>
+<t tx="ekr.20171230170254.1">gnx: ekr.20170504122721.2
+unl: section 1
+gnx: ekr.20170504122721.3
 unl: section 2
 </t>
 </tnodes>
