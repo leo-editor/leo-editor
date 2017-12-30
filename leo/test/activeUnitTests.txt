@@ -8124,7 +8124,7 @@ if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
 else:
     trace = False
-    h = '@auto-otl unittest/at-auto-otl-line-number-test.py'
+    h = '@auto-otl unittest/at-auto-otl-line-number-test.otl'
     root = g.findNodeAnywhere(c, h)
     assert root
     s = c.gotoCommands.get_external_file_with_sentinels(root)
@@ -8136,7 +8136,7 @@ else:
             if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
         else:
             if trace: print('not found: %s' % n)
-            assert n == 4, n
+            assert n == 5, n
             break
 #@+node:ekr.20170401123840.7: *6* @test find_file_line: @auto-py
 import sys
@@ -15078,6 +15078,7 @@ Sec 2.
 #@+node:ekr.20161124040933.2: *6* @test otl-1
 @tabwidth 4 # Required
 s = '''\
+preamble.
 Section 1
 : Sec 1.
 Section 2

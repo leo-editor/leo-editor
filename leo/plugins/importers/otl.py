@@ -29,8 +29,6 @@ class Otl_Importer(Importer):
     def gen_lines(self, s, parent):
         '''Node generator for otl (vim-outline) mode.'''
         self.inject_lines_ivar(parent)
-        # We may as well do this first.  See note below.
-        self.add_line(parent, '@others\n')
         self.parents = [parent]
         for line in g.splitLines(s):
             m = self.otl_body_pattern.match(line)
@@ -48,11 +46,6 @@ class Otl_Importer(Importer):
                         h = m.group(2).strip())
                 else:
                     self.error('Bad otl line: %r' % line)
-        note = (
-            'Note: This node\'s body text is ignored when writing this file.\n\n' +
-            'The @others directive is not required.\n'
-        )
-        self.add_line(parent, note)
     #@+node:ekr.20161124035243.2: *4* otl_i.find_parent
     def find_parent(self, level, h):
         '''

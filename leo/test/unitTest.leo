@@ -2,7 +2,7 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.62" body_secondary_ratio="0.72">
+<globals body_outline_ratio="0.75" body_secondary_ratio="0.72">
 	<global_window_position top="76" left="842" height="801" width="942"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -24,7 +24,10 @@
 <v t="ekr.20170818044949.6"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20171230052539.1"><vh>@data:@auto-org unittest/at-auto-org-line-number-test.py</vh>
-<v t="ekr.20171230053135.8"><vh>@gnxs</vh></v>
+<v t="ekr.20171230164930.1"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20171230164813.1"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.otl</vh>
+<v t="ekr.20171230164922.1"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20041121151002"><vh>@settings</vh>
@@ -200,7 +203,7 @@
 <v t="ekr.20170504122721.15"><vh>section 1</vh></v>
 <v t="ekr.20170504122721.16"><vh>section 2</vh></v>
 </v>
-<v t="ekr.20150626100719.1"><vh>@auto-otl unittest/at-auto-otl-line-number-test.py</vh>
+<v t="ekr.20150626100719.1"><vh>@auto-otl unittest/at-auto-otl-line-number-test.otl</vh>
 <v t="ekr.20170504122721.17"><vh>section 1</vh></v>
 <v t="ekr.20170504122721.18"><vh>section 2</vh></v>
 </v>
@@ -249,7 +252,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343171097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31382e3771017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31362e3371097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31322e39710d7d710e5809000000756e69745f74657374710f5804000000616263647110735809000000302e362e31392e343171117d711258090000006d795f706c7567696e7113580300000076616c711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -1209,7 +1212,9 @@
 <v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
 </v>
 <v t="ekr.20161123202857.1"></v>
+<v t="ekr.20161124040933.1"></v>
 <v t="ekr.20170401123840.5"><vh>@test find_file_line: @auto-org</vh></v>
+<v t="ekr.20170401123840.6"><vh>@test find_file_line: @auto-otl</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -4560,10 +4565,8 @@ else:
 <t tx="ekr.20150626093745.1">@language rest
 @tabwidth -4
 </t>
-<t tx="ekr.20150626100719.1">@others
-Note: This node's body text is ignored when writing this file.
-
-The @others directive is not required.
+<t tx="ekr.20150626100719.1">First line.
+@others
 @language plain
 @tabwidth -4
 </t>
@@ -8077,6 +8080,7 @@ finally:
 <t tx="ekr.20161124040933.1"></t>
 <t tx="ekr.20161124040933.2">@tabwidth 4 # Required
 s = '''\
+preamble.
 Section 1
 : Sec 1.
 Section 2
@@ -14901,6 +14905,26 @@ else:
             assert n == 6, n
             break
 </t>
+<t tx="ekr.20170401123840.6"># Not valid for external tests: uses @&lt;file&gt; node.
+if g.app.isExternalUnitTest:
+    self.skipTest('Can not be run externally')
+else:
+    trace = False
+    h = '@auto-otl unittest/at-auto-otl-line-number-test.otl'
+    root = g.findNodeAnywhere(c, h)
+    assert root
+    s = c.gotoCommands.get_external_file_with_sentinels(root)
+    if trace:
+        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
+    for n in range(20):
+        p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
+        if found:
+            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
+        else:
+            if trace: print('not found: %s' % n)
+            assert n == 5, n
+            break
+</t>
 <t tx="ekr.20170407065952.1">import imp
 import leo.plugins.importers.javascript as js
 imp.reload(js)
@@ -15821,7 +15845,14 @@ finally:
 </t>
 <t tx="ekr.20171230052539.1">gnx: ekr.20150626101627.1
 </t>
-<t tx="ekr.20171230053135.8">gnx: ekr.20170504122721.15
+<t tx="ekr.20171230164813.1">gnx: ekr.20150626100719.1
+</t>
+<t tx="ekr.20171230164922.1">gnx: ekr.20170504122721.17
+unl: section 1
+gnx: ekr.20170504122721.18
+unl: section 2
+</t>
+<t tx="ekr.20171230164930.1">gnx: ekr.20170504122721.15
 unl: section 1
 gnx: ekr.20170504122721.16
 unl: section 2
