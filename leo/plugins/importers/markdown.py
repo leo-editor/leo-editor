@@ -30,7 +30,6 @@ class Markdown_Importer(Importer):
             return
         self.inject_lines_ivar(parent)
         # We may as well do this first.  See warning below.
-        self.add_line(parent, '@others\n')
         self.stack = [parent]
         in_code = False
         lines = g.splitLines(s)
@@ -58,11 +57,6 @@ class Markdown_Importer(Importer):
                 self.add_line(top, line)
             else:
                 self.add_line(top, line)
-        note = (
-            'Note: This node\'s body text is ignored when writing this file.\n\n' +
-            'The @others directive is not required.\n'
-        )
-        self.add_line(parent, note)
     #@+node:ekr.20161124193148.2: *4* md_i.find_parent
     def find_parent(self, level, h):
         '''

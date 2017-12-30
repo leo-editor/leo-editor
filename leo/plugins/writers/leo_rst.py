@@ -57,7 +57,7 @@ class RstWriter(basewriter.BaseWriter):
                 self.put(s)
         root.setVisited()
         return True
-    #@+node:ekr.20171230165645.1: *3* otlw.write_root
+    #@+node:ekr.20171230165645.1: *3* rstw.write_root
     def write_root(self, root):
         '''Write the root @auto-org node.'''
         lines = [z for z in g.splitLines(root.b) if not g.isDirective(z)]

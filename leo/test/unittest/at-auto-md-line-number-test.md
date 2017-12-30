@@ -1,3 +1,5 @@
+Header line.
+
 # section 1
 Sec 1.
 

@@ -24,13 +24,28 @@
 <v t="ekr.20170818044949.6"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20171230052539.1"><vh>@data:@auto-org unittest/at-auto-org-line-number-test.py</vh>
-<v t="ekr.20171230164930.1"><vh>@gnxs</vh></v>
+<v t="ekr.20171230171407.6"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20171230164813.1"><vh>@data:@auto-otl unittest/at-auto-otl-line-number-test.otl</vh>
-<v t="ekr.20171230164922.1"><vh>@gnxs</vh></v>
+<v t="ekr.20171230171407.7"><vh>@gnxs</vh></v>
 </v>
 <v t="ekr.20171230170021.1"><vh>@data:@auto unittest/at-auto-md-line-number-test.md</vh>
-<v t="ekr.20171230170254.1"><vh>@gnxs</vh></v>
+<v t="ekr.20171230171614.10"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20171230171343.1"><vh>@data:@auto unittest/at-auto-line-number-test.py</vh>
+<v t="ekr.20171230171407.1"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20171230171343.4"><vh>@data:@auto unittest/at-auto-test.py</vh>
+<v t="ekr.20171230171407.3"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20171230171343.6"><vh>@data:@auto unittest/at-auto-unit-test.py</vh>
+<v t="ekr.20171230171407.4"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20171230171343.8"><vh>@data:@auto-ctext unittest/at-auto-ctext-test.txt</vh>
+<v t="ekr.20171230171407.5"><vh>@gnxs</vh></v>
+</v>
+<v t="ekr.20171230171343.12"><vh>@data:@auto-rst unittest/at-auto-rst-line-number-test.txt</vh>
+<v t="ekr.20171230171407.8"><vh>@gnxs</vh></v>
 </v>
 </v>
 <v t="ekr.20041121151002"><vh>@settings</vh>
@@ -179,6 +194,7 @@
 <v t="ekr.20170504122721.1"><vh>at_auto_child</vh></v>
 </v>
 <v t="ekr.20150626101842.1"><vh>@auto unittest/at-auto-md-line-number-test.md</vh>
+<v t="ekr.20171230171138.1"><vh>!Declarations</vh></v>
 <v t="ekr.20170504122721.2"><vh>section 1</vh></v>
 <v t="ekr.20170504122721.3"><vh>section 2</vh></v>
 </v>
@@ -207,6 +223,7 @@
 <v t="ekr.20170504122721.16"><vh>section 2</vh></v>
 </v>
 <v t="ekr.20150626100719.1"><vh>@auto-otl unittest/at-auto-otl-line-number-test.otl</vh>
+<v t="ekr.20171230171355.20"><vh>First line.</vh></v>
 <v t="ekr.20170504122721.17"><vh>section 1</vh></v>
 <v t="ekr.20170504122721.18"><vh>section 2</vh></v>
 </v>
@@ -255,7 +272,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343171117d711258090000006d795f706c7567696e7113580300000076616c711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735809000000302e362e31392e343171057d710658090000006d795f706c7567696e7107580300000076616c7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31322e3971117d71125809000000756e69745f746573747113580400000061626364711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -1196,10 +1213,6 @@
 </v>
 <v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
 </v>
-<v t="ekr.20150626101842.1"></v>
-<v t="ekr.20170401123840.5"><vh>@test find_file_line: @auto-org</vh></v>
-<v t="ekr.20170401123840.6"><vh>@test find_file_line: @auto-otl</vh></v>
-<v t="ekr.20170401123840.4"><vh>@test find_file_line: @auto-md</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1616,7 +1629,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="8">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="4">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -4550,20 +4563,15 @@ else:
 <t tx="ekr.20150626093745.1">@language rest
 @tabwidth -4
 </t>
-<t tx="ekr.20150626100719.1">First line.
-@others
-@language plain
+<t tx="ekr.20150626100719.1">@language plain
 @tabwidth -4
 </t>
 <t tx="ekr.20150626101627.1">Introduction line 1.
 Introduction line 2.
-@others
 @language plain
 @tabwidth -4
 </t>
-<t tx="ekr.20150626101842.1">Leading line 1
-@others
-@language md
+<t tx="ekr.20150626101842.1">@language md
 @tabwidth -4
 </t>
 <t tx="ekr.20150626101920.1">import sys
@@ -14868,69 +14876,6 @@ EOT;
 }
 ?&gt;
 </t>
-<t tx="ekr.20170401123840.4">import sys
-# Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-elif sys.platform.startswith('win'):
-    trace = False
-    h = '@auto unittest/at-auto-md-line-number-test.md'
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % (n+1))
-            assert n == 6, n
-            break
-else:
-    self.skipTest('Skip on Linux')
-</t>
-<t tx="ekr.20170401123840.5"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    h = '@auto-org unittest/at-auto-org-line-number-test.org'
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % (n+1))
-            assert n == 6, n
-            break
-</t>
-<t tx="ekr.20170401123840.6"># Not valid for external tests: uses @&lt;file&gt; node.
-if g.app.isExternalUnitTest:
-    self.skipTest('Can not be run externally')
-else:
-    trace = False
-    h = '@auto-otl unittest/at-auto-otl-line-number-test.otl'
-    root = g.findNodeAnywhere(c, h)
-    assert root
-    s = c.gotoCommands.get_external_file_with_sentinels(root)
-    if trace:
-        print(''.join(['%3s %s' % (i+1, s) for i, s in enumerate(g.splitLines(s))]))
-    for n in range(20):
-        p, offset, found = c.gotoCommands.find_file_line(n+1, p=root)
-        if found:
-            if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
-        else:
-            if trace: print('not found: %s' % n)
-            assert n == 5, n
-            break
-</t>
 <t tx="ekr.20170407065952.1">import imp
 import leo.plugins.importers.javascript as js
 imp.reload(js)
@@ -15171,6 +15116,7 @@ And this.
 
 </t>
 <t tx="ekr.20170504122721.3">Sec 2.
+
 </t>
 <t tx="ekr.20170504122721.4">def spam():
     pass
@@ -15810,16 +15756,6 @@ finally:
 </t>
 <t tx="ekr.20171230164813.1">gnx: ekr.20150626100719.1
 </t>
-<t tx="ekr.20171230164922.1">gnx: ekr.20170504122721.17
-unl: section 1
-gnx: ekr.20170504122721.18
-unl: section 2
-</t>
-<t tx="ekr.20171230164930.1">gnx: ekr.20170504122721.15
-unl: section 1
-gnx: ekr.20170504122721.16
-unl: section 2
-</t>
 <t tx="ekr.20171230165904.48">&lt;?php
 @others
 @language php
@@ -15835,7 +15771,64 @@ EOT;
 </t>
 <t tx="ekr.20171230170021.1">gnx: ekr.20150626101842.1
 </t>
-<t tx="ekr.20171230170254.1">gnx: ekr.20170504122721.2
+<t tx="ekr.20171230171138.1">Header line.
+
+</t>
+<t tx="ekr.20171230171343.1">gnx: ekr.20080904084223.1
+</t>
+<t tx="ekr.20171230171343.12">gnx: ekr.20150626093745.1
+</t>
+<t tx="ekr.20171230171343.4">gnx: ekr.20090704085350.5056
+</t>
+<t tx="ekr.20171230171343.6">gnx: ekr.20110610122533.3407
+</t>
+<t tx="ekr.20171230171343.8">gnx: ekr.20161130052935.1
+</t>
+<t tx="ekr.20171230171355.20"></t>
+<t tx="ekr.20171230171407.1">gnx: ekr.20170504122721.1
+unl: at_auto_child
+</t>
+<t tx="ekr.20171230171407.3">gnx: ekr.20170504122721.4
+unl: spam
+gnx: ekr.20170504122721.5
+unl: eggs
+</t>
+<t tx="ekr.20171230171407.4">gnx: ekr.20170504122721.6
+unl: class class1
+gnx: ekr.20170504122721.7
+unl: class class1--&gt;class1_method1
+gnx: ekr.20170504122721.8
+unl: class class1--&gt;class1_method2
+gnx: ekr.20170504122721.9
+unl: class class2
+gnx: ekr.20170504122721.10
+unl: class class2--&gt;class2_method1
+gnx: ekr.20170504122721.11
+unl: class class2--&gt;class2_method2
+</t>
+<t tx="ekr.20171230171407.5">gnx: ekr.20170504122721.12
+unl: A level one node
+gnx: ekr.20170504122721.13
+unl: Another level one node
+gnx: ekr.20170504122721.14
+unl: Another level one node--&gt;A level 2 node
+</t>
+<t tx="ekr.20171230171407.6">gnx: ekr.20170504122721.15
+unl: section 1
+gnx: ekr.20170504122721.16
+unl: section 2
+</t>
+<t tx="ekr.20171230171407.7">gnx: ekr.20171230171355.20
+unl: First line.
+gnx: ekr.20170504122721.17
+unl: section 1
+gnx: ekr.20170504122721.18
+unl: section 2
+</t>
+<t tx="ekr.20171230171407.8"></t>
+<t tx="ekr.20171230171614.10">gnx: ekr.20171230171138.1
+unl: !Declarations
+gnx: ekr.20170504122721.2
 unl: section 1
 gnx: ekr.20170504122721.3
 unl: section 2

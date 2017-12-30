@@ -17,6 +17,7 @@ class MarkdownWriter(basewriter.BaseWriter):
         # Fix bug 66: errors inhibited read @auto foo.md.
         # New in Leo 5.5: Skip !headlines. Convert all others to '#' sections.
         self.root = root
+        self.write_root(root)
         for p in root.subtree():
             if hasattr(self.at, 'force_sentinels'):
                 self.put_node_sentinel(p, '<!--', delim2='-->')
@@ -48,6 +49,12 @@ class MarkdownWriter(basewriter.BaseWriter):
             # self.put(kind*max(4,len(p.h)))
         else:
             self.put('%s %s' % ('#'*level, p.h))
+    #@+node:ekr.20171230170642.1: *3* mdw.write_root
+    def write_root(self, root):
+        '''Write the root @auto-org node.'''
+        lines = [z for z in g.splitLines(root.b) if not g.isDirective(z)]
+        for s in lines:
+            self.put(s)
     #@-others
 #@-others
 writer_dict = {

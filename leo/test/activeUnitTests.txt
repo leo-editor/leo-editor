@@ -8094,7 +8094,7 @@ elif sys.platform.startswith('win'):
             if trace: print('found: %2s %2s %s' % (n+1, offset, p and p.h))
         else:
             if trace: print('not found: %s' % (n+1))
-            assert n == 6, n
+            assert n == 8, n
             break
 else:
     self.skipTest('Skip on Linux')
