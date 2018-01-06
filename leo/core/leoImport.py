@@ -2164,7 +2164,7 @@ class TabImporter:
                     s = s.replace('\r', '')
                 except Exception:
                     continue
-                if s.strip() and self.check(s):
+                if s.strip() and self.check(g.splitLines(s)):
                     undoData = u.beforeInsertNode(c.p)
                     last = c.lastTopLevel()
                     self.root = p = last.insertAfter()
