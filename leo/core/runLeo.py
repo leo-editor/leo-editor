@@ -73,14 +73,17 @@ def run(fileName=None, pymacs=None, *args, **keywords):
     g.app.loadManager = leoApp.LoadManager()
     g.app.loadManager.load(fileName, pymacs)
 
-def run_console(fileName=None, pymacs=None, *args, **keywords):
-    """Initialize and run Leo"""
-    run(fileName=None, pymacs=None, gui=console, *args, **keywords)
+def run_console(fileName=None, pymacs=None, gui='console', *args, **keywords):
+    """Initialize and run Leo in console mode"""
+    assert g.app
+    # g.trace('runLeo.py', fileName, args, keywords)
+    g.app.loadManager = leoApp.LoadManager()
+    g.app.loadManager.load(fileName, pymacs)
 
 #@-others
 #@@language python
 #@@tabwidth -4
 #@@pagewidth 70
 if __name__ == "__main__":
-    run()
+    run_console()
 #@-leo
