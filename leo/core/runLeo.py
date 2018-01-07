@@ -72,6 +72,11 @@ def run(fileName=None, pymacs=None, *args, **keywords):
     # g.trace('runLeo.py', fileName, args, keywords)
     g.app.loadManager = leoApp.LoadManager()
     g.app.loadManager.load(fileName, pymacs)
+
+def run_console(fileName=None, pymacs=None, *args, **keywords):
+    """Initialize and run Leo"""
+    run(fileName=None, pymacs=None, gui=console, *args, **keywords)
+
 #@-others
 #@@language python
 #@@tabwidth -4

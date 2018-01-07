@@ -112,8 +112,11 @@ setup(
     include_package_data=True, # also include MANIFEST files in wheels
     install_requires=user_requires,
     entry_points={
-       'console_scripts': ['leoc = leo.core.runLeo:run'],
-       'gui_scripts': ['leo = leo.core.runLeo:run']
+       'console_scripts': ['leo-c = leo.core.runLeo:run',
+            'leo-console = leo.core.runLeo:run_console',
+            'leo-m = leo.core.runLeo:run',
+            'leo-messages = leo.core.runLeo:run'],
+            'gui_scripts': ['leo = leo.core.runLeo:run']
        }
 )
 
