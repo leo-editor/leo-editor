@@ -72,7 +72,7 @@ def run(fileName=None, pymacs=None, *args, **keywords):
     # g.trace('runLeo.py', fileName, args, keywords)
     g.app.loadManager = leoApp.LoadManager()
     g.app.loadManager.load(fileName, pymacs)
-
+#@+node:maphew.20180110221247.1: ** run console (runLeo.py)
 def run_console(*args, **keywords):
     """Initialize and run Leo in console mode gui"""
     import sys
