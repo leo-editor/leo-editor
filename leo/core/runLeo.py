@@ -77,7 +77,7 @@ def run_console(*args, **keywords):
     """Initialize and run Leo in console mode gui"""
     import sys
     sys.argv.append('--gui=console')
-    run(*args, *keywords)
+    run(*args, **keywords)
 #@-others
 #@@language python
 #@@tabwidth -4
