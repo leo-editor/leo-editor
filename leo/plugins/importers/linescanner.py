@@ -813,6 +813,10 @@ class Importer(object):
                         tail.append(new_line)
                     else:
                         g.trace('unexpected unindent value', n)
+                        g.trace(line)
+                        # Fix #652 by restoring the line.
+                        new_line = line[len(m.group(0)):].lstrip()
+                        lines.append(new_line)
                         break
                 else:
                     break
