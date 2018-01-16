@@ -82,7 +82,8 @@ class JS_Importer(Importer):
                 else:
                     i += 1 # Eat the next comment char.
             elif context:
-                assert context in ('"', "'"), repr(context)
+                assert context in ('"', "'", '`'), repr(context)
+                    # #651: support back tick
                 if ch == '\\':
                     i += 2
                 elif context == ch:
@@ -97,7 +98,8 @@ class JS_Importer(Importer):
                 # Start a comment.
                 i += 2
                 context = '/*'
-            elif ch in ('"', "'"):
+            elif ch in ('"', "'", '`',):
+                # #651: support back tick
                 # Start a string.
                 i += 1
                 context = ch
