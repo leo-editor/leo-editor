@@ -210,7 +210,10 @@ class JS_Importer(Importer):
         j = line.find('function')
         is_function = j > -1 and g.match_word(line, j, 'function')
         return new_state.level() > prev_state.level() and is_function
-        # return new_state.level() > prev_state.level()
+        # return (
+            # not prev_state.context and
+            # new_state.level() > prev_state.level() and
+            # is_function)
     #@+node:ekr.20161101183354.1: *3* js_i.clean_headline
     def clean_headline(self, s, p=None):
         '''Return a cleaned up headline s.'''
