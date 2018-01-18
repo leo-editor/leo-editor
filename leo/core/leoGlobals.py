@@ -6626,10 +6626,12 @@ def findNodeInChildren(c, p, headline):
             return p.copy()
     return None
 
-def findNodeInTree(c, p, headline):
+def findNodeInTree(c, p, headline, prefix=False):
     """Search for a node in v's tree matching the given headline."""
     for p in p.subtree():
         if p.h.strip() == headline.strip():
+            return p.copy()
+        elif prefix and p.h.strip().startswith(headline):
             return p.copy()
     return None
 

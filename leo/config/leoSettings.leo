@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="43" left="298" height="1048" width="1293"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -493,6 +493,7 @@
 <v t="ekr.20131112150804.18737"><vh>@bool force_execute_entire_body = False</vh></v>
 <v t="ekr.20111115083813.12518"><vh>@bool indent_added_comments = True</vh></v>
 <v t="ekr.20150227102835.1"><vh>@bool make_node_conflicts_node = True</vh></v>
+<v t="ekr.20180117074230.1"><vh>@bool show-tips = True</vh></v>
 <v t="ekr.20160428072005.1"><vh>@data history-list</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove_sentinels_extension = .txt</vh></v>
 <v t="ekr.20141010095448.19776"><vh>Beautify command settings</vh>
@@ -507,10 +508,6 @@
 <v t="ekr.20110917104720.9415"><vh>@data c-to-python-class-list</vh></v>
 <v t="ekr.20110917104720.9416"><vh>@data c-to-python-type-list</vh></v>
 <v t="ekr.20110917104720.9417"><vh>@data c-to-python-ivars-dict</vh></v>
-</v>
-<v t="ekr.20160316111054.1"><vh>python-to-coffeescript settings</vh>
-<v t="ekr.20160316112407.2"><vh>@bool py2cs-overwrite = True</vh></v>
-<v t="ekr.20160316112407.8"><vh>@string py2cs-output-directory = ~/py2cs</vh></v>
 </v>
 <v t="ekr.20110611092035.16479"><vh>Emacs-like commands</vh>
 <v t="ekr.20071006153053"><vh>@bool add_ws_to_kill_ring = False</vh></v>
@@ -532,6 +529,10 @@
 <v t="ekr.20160112111247.1"><vh>@data stub-prefix-lines</vh></v>
 <v t="ekr.20160317062151.1"><vh>@data stub-regex-patterns</vh></v>
 <v t="ekr.20160127051243.1"><vh>@string stub-output-directory = ~/stubs</vh></v>
+</v>
+<v t="ekr.20160316111054.1"><vh>python-to-coffeescript settings</vh>
+<v t="ekr.20160316112407.2"><vh>@bool py2cs-overwrite = True</vh></v>
+<v t="ekr.20160316112407.8"><vh>@string py2cs-output-directory = ~/py2cs</vh></v>
 </v>
 <v t="ekr.20071213060239"><vh>rst3 command</vh>
 <v t="ekr.20071213060239.1"><vh>rst3 http options</vh>
@@ -4780,7 +4781,7 @@ menu-shortcut = Alt-S # Search and Settings menus.
 menu-shortcut = Alt-W # Window menu.
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401">@nocolor-node
+<t tx="ekr.20070622214401" str_leo_pos="3,5,3">@nocolor-node
 
 Please don't change this node and its descendants; they are for Leo's
 developers.
@@ -14539,6 +14540,7 @@ arg:    "%ProgramFiles%/Windows NT/Accessories/wordpad.exe"
 </t>
 <t tx="ekr.20171229135829.1"></t>
 <t tx="ekr.20171229135843.1"></t>
+<t tx="ekr.20180117074230.1"># True: Show user tips on startup.</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

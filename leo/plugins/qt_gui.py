@@ -1070,6 +1070,7 @@ class LeoQtGui(leoGui.LeoGui):
     def runMainLoop(self):
         '''Start the Qt main loop.'''
         g.app.gui.dismiss_splash_screen()
+        g.app.gui.show_tips()
         if self.script:
             log = g.app.log
             if log:
@@ -1110,6 +1111,78 @@ class LeoQtGui(leoGui.LeoGui):
                     g.app.ipk.run_script(file_name=c.p.h,script=script)
 
         ipk.kernelApp.start()
+    #@+node:ekr.20180117053546.1: *3* qt_gui.show_tips & helpers
+    @g.command('show-next-tip')
+    def show_next_tip(self, event=None):
+        g.app.gui.show_tips(force=True)
+
+    def show_tips(self, force=False):
+        c = g.app.log.c
+        g.trace(c)
+        self.show_tips_flag = c.config.getBool('show-tips', default=False)
+        if not force and not self.show_tips_flag:
+            g.trace('not enabled')
+            return
+        m = QtWidgets.QMessageBox()
+        m.leo_checked = True
+        m.setObjectName('TipMessageBox')
+        m.setIcon(m.Information)
+        m.setWindowTitle('Leo Tips')
+        m.setText("This is a tip.")
+        # m.setInformativeText("This is additional information")
+        # m.setDetailedText("The details are as follows:")
+        cb = QtWidgets.QCheckBox('Show tips on startup')
+        cb.setCheckState(2)
+        cb.stateChanged.connect(self.onClick)
+        m.setCheckBox(cb)
+        m.setStandardButtons(m.Ok)
+        if 1: # QMessageBox is always a modal dialog.
+            m.exec_()
+            self.update_tips_setting()
+        else:
+            m.buttonClicked.connect(self.onButton)
+            m.setModal(False)
+            m.show()
+    #@+node:ekr.20180117080131.1: *4* onButton (not used)
+    def onButton(self, m):
+        g.trace(m)
+        m.hide()
+    #@+node:ekr.20180117073603.1: *4* onClick
+    def onClick(self, state):
+        
+        self.show_tips_flag = bool(state)
+    #@+node:ekr.20180117083930.1: *4* update_tips_setting
+    def update_tips_setting(self):
+        trace = True
+        c = g.app.log.c
+        if not c: return
+        if self.show_tips_flag == c.config.getBool('show-tips', default=False):
+            if trace: g.trace('no change')
+            return
+        c2 = c.openMyLeoSettings()
+        g.trace(c2)
+        root = g.findNodeAnywhere(c2, '@settings')
+        if not root:
+            if trace: g.trace('no @settings node')
+            return
+        h = '@bool show-tips'
+        p = g.findNodeInTree(c2, root, h, prefix=True)
+        if not p:
+            p = root.insertAsLastChild()
+        if trace: g.trace(p and p.h)
+        p.h = '%s = %s' % (h, self.show_tips_flag)
+        # Delay the second redraw until idle time.
+
+        def handler(timer, c=c2, p=p):
+            c.setChanged()
+            p.setDirty()
+            c.selectPosition(p)
+            c.redraw_now()
+            timer.stop()
+
+        timer = g.IdleTime(handler, delay=0, tag='show_tips')
+        if timer:
+            timer.start()
     #@+node:ekr.20111215193352.10220: *3* qt_gui.Splash Screen
     #@+node:ekr.20110605121601.18479: *4* qt_gui.createSplashScreen
     def createSplashScreen(self):
