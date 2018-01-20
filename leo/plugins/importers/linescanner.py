@@ -615,21 +615,32 @@ class Importer(object):
     def cut_stack(self, new_state, stack):
         '''Cut back the stack until stack[-1] matches new_state.'''
         trace = False and g.unitTesting
+        
+        def underflow(n):
+            g.trace(n)
+            g.trace(new_state)
+            g.printList(stack)
+            
         if trace:
             g.trace(new_state)
             g.printList(stack)
-        assert len(stack) > 1 # Fail on entry.
+        # assert len(stack) > 1 # Fail on entry.
+        if len(stack) <= 1:
+            return underflow(0)
         while stack:
             top_state = stack[-1].state
             if new_state.level() < top_state.level():
                 if trace: g.trace('new_state < top_state', top_state)
-                assert len(stack) > 1, stack # <
-                stack.pop()
+                if len(stack) > 1:
+                    stack.pop()
+                else:
+                    return underflow(1)
             elif top_state.level() == new_state.level():
                 if trace: g.trace('new_state == top_state', top_state)
-                assert len(stack) > 1, stack # ==
+                # assert len(stack) > 1, stack # ==
                 # This is the only difference between i.cut_stack and python/cs.cut_stack
-                # stack.pop()
+                if len(stack) <= 1:
+                    return underflow(2)
                 break
             else:
                 # This happens often in valid Python programs.
@@ -639,7 +650,8 @@ class Importer(object):
         if len(stack) == 1:
             if trace: g.trace('RECOPY:', stack)
             stack.append(stack[-1])
-        assert len(stack) > 1 # Fail on exit.
+        elif len(stack) <= 1:
+            return underflow(3)
         if trace: g.trace('new target.p:', stack[-1].p.h)
     #@+node:ekr.20161108160409.3: *5* i.end_block
     def end_block(self, line, new_state, stack):

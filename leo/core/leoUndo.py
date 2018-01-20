@@ -964,7 +964,7 @@ class Undoer(object):
             u.setUndoTypes() # Must still recalculate the menu labels.
             return None
         #@-<< return if there is nothing to do >>
-        if trace: g.trace(undo_type, oldSel, newSel)
+        if trace: g.trace(undo_type, 'oldSel', oldSel, 'newSel', newSel)
         #@+<< init the undo params >>
         #@+node:ekr.20040324061854.1: *5* << init the undo params >>
         # Clear all optional params.
@@ -1088,7 +1088,6 @@ class Undoer(object):
         # get treated like typing (by updateBodyPane and onBodyChanged) don't get lumped
         # with 'real' typing.
         #@@c
-        # g.trace(granularity)
         if (
             not old_d or not old_p or
             old_p.v != p.v or
@@ -1108,17 +1107,26 @@ class Undoer(object):
                 old_d.get('leading', 0) != u.leading or
                 old_d.get('trailing', 0) != u.trailing
             )
+            # g.trace('granularity', granularity, 'newBead', newBead)
             if granularity == 'word' and not newBead:
                 # Protect the method that may be changed by the user
                 try:
                     #@+<< set newBead if the change does not continue a word >>
                     #@+node:ekr.20050125203937: *7* << set newBead if the change does not continue a word >>
-                    old_start, old_end = oldSel if oldSel else 0, 0
-                    new_start, new_end = newSel if newSel else 0, 0
+                    # Fix #653: undoer problem: be wary of the ternary operator here.
+                    old_start = old_end = new_start = new_end = 0
+                    if oldSel:
+                        old_start, old_end = oldSel
+                    if newSel:
+                        new_start, new_end = newSel
                     prev_start, prev_end = u.prevSel
-                    # g.trace('new_start',new_start,'old_start',old_start)
+                    if trace:
+                        g.trace('oldSel: %s newSel: %s' % (oldSel, newSel))
+                        g.trace('old_start: %s old_end: %s new_start: %s new_end: %s' % (
+                            old_start, old_end, new_start, new_end))
                     if old_start != old_end or new_start != new_end:
                         # The new and old characters are not contiguous.
+                        if trace: g.trace('not contiguous')
                         newBead = True
                     else:
                         # 2011/04/01: Patch by Sam Hartsfield
@@ -1148,7 +1156,7 @@ class Undoer(object):
                             if old_col - 1 >= len(old_s) or new_col - 1 >= len(new_s):
                                 newBead = True
                             else:
-                                # g.trace(new_col,len(new_s),repr(new_s))
+                                if trace: g.trace(new_col,len(new_s),repr(new_s))
                                 old_ch = old_s[old_col - 1]
                                 new_ch = new_s[new_col - 1]
                                 # g.trace(repr(old_ch),repr(new_ch))

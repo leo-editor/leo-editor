@@ -11914,6 +11914,15 @@ for data in table:
     got = g.match_word(line + '\n', i, word)
     assert expected == got, (expected, i, word, line)
 # print('done')
+#@+node:ekr.20180120142320.1: *4* @test g.os_path_expandExpression
+import os
+sep = os.sep
+table = (
+    ('~{{sep}}tmp{{sep}}x.py', '~%stmp%sx.py' % (sep, sep)),
+)
+for s, expected in table:
+    got = g.os_path_expandExpression(s, c=c)
+    assert got==expected,'s: %r expected: %r got: %r' % (s,expected,got)
 #@+node:ekr.20111104112332.3953: *4* @test g.os_path_finalize_join with thumb drive
 import os
 
