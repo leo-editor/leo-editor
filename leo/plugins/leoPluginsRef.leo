@@ -145,12 +145,13 @@
 </v>
 <v t="ekr.20041030092101"><vh>Dyna plugins by e</vh></v>
 <v t="ekr.20040722141148"><vh>Examples</vh>
-<v t="edream.110203113231.916"><vh>@file examples/override_classes.py</vh></v>
-<v t="edream.110203113231.919"><vh>@file examples/override_commands.py</vh></v>
-<v t="edream.110203113231.921"><vh>@file examples/redefine_put.py</vh></v>
-<v t="ekr.20060621123339"><vh>@file examples/print_cp.py</vh></v>
 <v t="ekr.20040828105233"><vh>@file examples/chinese_menu.py</vh></v>
 <v t="EKR.20040517080202.3"><vh>@file examples/french_fm.py</vh></v>
+<v t="edream.110203113231.916"><vh>@file examples/override_classes.py</vh></v>
+<v t="edream.110203113231.919"><vh>@file examples/override_commands.py</vh></v>
+<v t="ekr.20060621123339"><vh>@file examples/print_cp.py</vh></v>
+<v t="edream.110203113231.921"><vh>@file examples/redefine_put.py</vh></v>
+<v t="ekr.20180119164431.1"><vh>@file patch_python_colorizer.py</vh></v>
 </v>
 <v t="ekr.20101110150056.9457"><vh>Experimental</vh>
 <v t="ekr.20090704103932.5160"><vh>@file leo_pdf.py</vh></v>
@@ -2834,7 +2835,7 @@ if not g.unitTesting:
         g.es_print('not found', fn)
         return None
 </t>
-<t tx="ekr.20160412101537.3">def __init__(self, c=None, importCommands=None):
+<t tx="ekr.20160412101537.3">def __init__(self, c=None, importCommands=None, **kwargs):
     '''Ctor for Import_IPYNB class.'''
     self.c = importCommands.c if importCommands else c
         # Commander of present outline.
