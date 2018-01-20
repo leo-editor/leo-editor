@@ -623,8 +623,13 @@ class Importer(object):
             top_state = stack[-1].state
             if new_state.level() < top_state.level():
                 if trace: g.trace('new_state < top_state', top_state)
-                assert len(stack) > 1, stack # <
-                stack.pop()
+                if len(stack) > 1:
+                    stack.pop()
+                else:
+                    g.trace('stack underflow 1')
+                    g.trace(new_state)
+                    g.printList(stack)
+                    break
             elif top_state.level() == new_state.level():
                 if trace: g.trace('new_state == top_state', top_state)
                 assert len(stack) > 1, stack # ==
@@ -639,7 +644,10 @@ class Importer(object):
         if len(stack) == 1:
             if trace: g.trace('RECOPY:', stack)
             stack.append(stack[-1])
-        assert len(stack) > 1 # Fail on exit.
+        elif len(stack) <= 1:
+            g.trace('stack underflow 2')
+            g.trace(new_state)
+            g.printList(stack)
         if trace: g.trace('new target.p:', stack[-1].p.h)
     #@+node:ekr.20161108160409.3: *5* i.end_block
     def end_block(self, line, new_state, stack):

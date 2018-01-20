@@ -182,7 +182,7 @@ class JS_Importer(Importer):
     def skip_regex(self, s, i):
         '''Skip an *actual* regex /'''
         trace = False # and not g.unitTesting
-        trace_ch = True
+        trace_ch = False
         if trace: g.trace('ENTRY', i, repr(s[i:]))
         assert s[i] == '/', (i, repr(s))
         i1 = i
