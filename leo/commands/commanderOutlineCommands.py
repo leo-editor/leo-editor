@@ -803,31 +803,49 @@ def insertChild(self, event=None):
     '''Insert a node after the presently selected node.'''
     c = self
     return c.insertHeadline(event=event, op_name='Insert Child', as_child=True)
-#@+node:ekr.20031218072017.1761: *3* c_oc.insertHeadline
+#@+node:ekr.20031218072017.1761: *3* c_oc.insertHeadline (insert-*)
 @g.commander_command('insert-node')
 def insertHeadline(self, event=None, op_name="Insert Node", as_child=False):
     '''Insert a node after the presently selected node.'''
     c = self
     # Fix #600.
     return insertHeadlineHelper(c, event=event, as_child=as_child)
+    
+@g.commander_command('insert-as-first-child')
+def insertNodeAsFirstChild(self, event=None):
+    '''Insert a node as the last child of the previous node.'''
+    c = self
+    return insertHeadlineHelper(c, event=event, as_first_child=True)
+
+@g.commander_command('insert-as-last-child')
+def insertNodeAsLastChild(self, event=None):
+    '''Insert a node as the last child of the previous node.'''
+    c = self
+    return insertHeadlineHelper(c, event=event, as_last_child=True)
 #@+node:ekr.20171124091846.1: *4* def insertHeadlineHelper
-def insertHeadlineHelper(c, event=None, op_name="Insert Node", as_child=False):
+def insertHeadlineHelper(c,
+    event=None,
+    op_name="Insert Node",
+    as_child=False,
+    as_first_child=False,
+    as_last_child=False,
+):
     '''Insert a node after the presently selected node.'''
-    trace = False and not g.unitTesting
     u = c.undoer
     current = c.p
     if not current:
         return None
     c.endEditing()
-    if trace:
-        # g.trace('==========', c.p.h, g.app.gui.get_focus())
-        g.trace('as_child', as_child, current.h)
     undoData = c.undoer.beforeInsertNode(current)
-    # Make sure the new node is visible when hoisting.
-    if (as_child or
+    if as_first_child:
+        p = current.insertAsNthChild(0)
+    elif as_last_child:
+        p = current.insertAsLastChild()
+    elif (as_child or
         (current.hasChildren() and current.isExpanded()) or
         (c.hoistStack and current == c.hoistStack[-1].p)
     ):
+        # Make sure the new node is visible when hoisting.
         if c.config.getBool('insert_new_nodes_at_end'):
             p = current.insertAsLastChild()
         else:
