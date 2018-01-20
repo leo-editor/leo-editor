@@ -221,17 +221,10 @@ class JS_Importer(Importer):
         # Don't clean a headline twice.
         if s.endswith('>>') and s.startswith('<<'):
             return s
-        if s.endswith('{'):
-            s = s[:-1].strip()
-        if 1:
-            # Imo, showing the whole line is better than truncating it.
-            # However the lines must have a reasonable length.
-            return g.truncate(s, 100)
-        else:
-            i = s.find('(')
-            if i > -1:
-                s = s[:i]
-            return g.truncate(s, 100)
+        for ch in '{(=':
+            if s.endswith(ch):
+                s = s[:-1].strip()
+        return g.truncate(s, 100)
     #@-others
 #@+node:ekr.20161105092745.1: ** class JS_ScanState
 class JS_ScanState:
