@@ -6184,10 +6184,10 @@ def os_path_exists(path):
     path = g.toUnicodeFileEncoding(path)
     path = path.replace('\x00','') # Fix Pytyon 3 bug on Windows 10.
     return os.path.exists(path)
-#@+node:ekr.20080922124033.6: *3* g.os_path_expandExpression
+#@+node:ekr.20080922124033.6: *3* g.os_path_expandExpression & helper
 def os_path_expandExpression(s, **keys):
-    '''Expand {{anExpression}} in c's context.'''
-    trace = False
+    '''Expand all {{anExpression}} in c's context.'''
+    trace = False and g.unitTesting
     c = keys.get('c')
     if not c:
         g.trace('can not happen: no c', g.callers())
@@ -6195,32 +6195,49 @@ def os_path_expandExpression(s, **keys):
     if not s:
         if trace: g.trace('no s')
         return ''
-    s = g.toUnicode(s) # 2017/02/02: # Attempt a fix for #343:
-    i = s.find('{{')
-    j = s.find('}}')
-    if -1 < i < j:
-        exp = s[i + 2: j].strip()
-        if exp:
-            try:
-                p = c.p
-                d = {
-                    'c': c,
-                    'g': g,
-                    # 'getString': c.config.getString,
-                    'p': p,
-                    'os': os,
-                    'sep': os.sep,
-                    'sys': sys,
-                }
-                val = eval(exp, d)
-                # Fix #343:
-                val = g.toUnicode(val, encoding='utf-8', reportErrors=True)
-                s = s[: i] + val + s[j + 2:]
-                if trace: g.trace('returns', s)
-            except Exception:
-                g.trace(g.callers())
-                g.es_exception(full=True, c=c)
-    return s
+    s = g.toUnicode(s)
+    # find and replace repeated path expressions
+    previ, aList = 0, []
+    while previ < len(s):
+        i = s.find('{{', previ)
+        j = s.find('}}', previ)
+        if -1 < i < j:
+            # Add anything from previous index up to '{{'
+            if previ < i:
+                aList.append(s[previ:i])
+            # Get expression and find substitute
+            exp = s[i + 2: j].strip()
+            if exp:
+                try:
+                    s2 = replace_path_expression(c, exp)
+                    if trace: g.trace('%r ==> %r' % (exp, s2))
+                    aList.append(s2)
+                except Exception:
+                    g.es('Exception evaluating {{%s}} in %s' % (exp, s.strip()))
+                    g.es_exception(full=True, c=c)
+            # Prepare to search again after the last '}}'
+            previ = j+2
+        else:
+            # Add trailing fragment (fragile in case of mismatched '{{'/'}}')
+            aList.append(s[previ:])
+            break
+    val = ''.join(aList)
+    if trace: g.trace(' returns', val)
+    return val
+#@+node:ekr.20180120140558.1: *4* g.replace_path_expression
+def replace_path_expression(c, expr):
+    ''' local function to replace a single path expression.'''
+    d = {
+        'c': c,
+        'g': g,
+        # 'getString': c.config.getString,
+        'p': c.p,
+        'os': os,
+        'sep': os.sep,
+        'sys': sys,
+    }
+    val = eval(expr, d)
+    return g.toUnicode(val, encoding='utf-8', reportErrors=True)
 #@+node:ekr.20080921060401.13: *3* g.os_path_expanduser
 def os_path_expanduser(path):
     """wrap os.path.expanduser"""
