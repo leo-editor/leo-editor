@@ -42,7 +42,7 @@ class TipManager(object):
 class UserTip(object):
     '''A User Tip.'''
     
-    def __init__(self, n, tags=None, text='', title=''):
+    def __init__(self, n=0, tags=None, text='', title=''):
         self.n = n # Not used.
         self.tags = tags or [] # Not used.
         self.title = title.strip()
@@ -311,8 +311,6 @@ Put your personal settings in myLeoSettings.leo, not leoSettings.leo.
 - Copy the desired settings nodes from leoSettings.leo to myLeoSettings.leo.
 
 """),
-
-### New tips
 
 UserTip(
     n=615,
