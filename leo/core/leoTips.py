@@ -121,9 +121,8 @@ UserTip(
         data = requests.get(url+kind).json()
         for tip in get_tips(data):
             tags = ["%s" % (z) for z in tip.tags or []]
-            text = tip.text.replace('\n', '\\n')
-            title = tip.title.lstrip('Tip: ').strip()
-            print(template % (tip.n, tags, title, text))
+            title = tip.title.lstrip('Tip:').lstrip('tip:').strip()
+            print(template % (tip.n, tags, title, tip.text))
 #@-others
 #@+<< define tips >>
 #@+node:ekr.20180121053422.1: ** << define tips >>
