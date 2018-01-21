@@ -1927,6 +1927,38 @@ class LocalConfigManager(object):
                 g.es("over-riding setting:", name, "from", path)
         gs = g.GeneralSetting(kind, path=c.mFileName, val=val, tag='setting')
         d.replace(key, gs)
+    #@+node:ekr.20180121135120.1: *3* c.config.setUserSetting
+    def setUserSetting(self, setting, value):
+        '''Find and set the indicated setting, either in c or in myLeoSettings.leo'''
+        c = self.c
+        p = self.findSettingsPosition(setting)
+        if not p:
+            c = c.openMyLeoSettings()
+            if not c: return
+            p = c.config.findSettingsPosition(setting)
+        if not p:
+            root = c.config.settingsRoot()
+            if not root: return
+            p = c.config.findSettingsPosition(setting)
+            if not p:
+                p = root.insertAsLastChild()
+        h = setting
+        i = h.find('=')
+        if i > -1:
+            h = h[:i].strip()
+        p.h = '%s = %s' % (h, value)
+        # Delay the second redraw until idle time.
+
+        def handler(timer, c=c, p=p):
+            c.setChanged()
+            p.setDirty()
+            c.selectPosition(p)
+            c.redraw_now()
+            timer.stop()
+
+        timer = g.IdleTime(handler, delay=0, tag='c.config.setUserSetting')
+        if timer:
+            timer.start()
     #@-others
 #@+node:ekr.20041119203941.3: ** class SettingsTreeParser (ParserBaseClass)
 class SettingsTreeParser(ParserBaseClass):

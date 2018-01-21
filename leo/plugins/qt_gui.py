@@ -1118,10 +1118,12 @@ class LeoQtGui(leoGui.LeoGui):
 
     def show_tips(self, force=False):
         import leo.core.leoTips as leoTips
+        if g.app.unitTesting:
+            return
         c = g.app.log.c
         self.show_tips_flag = c.config.getBool('show-tips', default=False)
         if not force and not self.show_tips_flag:
-            g.trace('not enabled')
+            # g.trace('not enabled')
             return
         tm = leoTips.TipManager(c)
         tip = tm.get_next_tip()
@@ -1156,36 +1158,9 @@ class LeoQtGui(leoGui.LeoGui):
         self.show_tips_flag = bool(state)
     #@+node:ekr.20180117083930.1: *4* update_tips_setting
     def update_tips_setting(self):
-        trace = False
         c = g.app.log.c
-        if not c: return
-        if self.show_tips_flag == c.config.getBool('show-tips', default=False):
-            if trace: g.trace('no change')
-            return
-        c2 = c.openMyLeoSettings()
-        g.trace(c2)
-        root = g.findNodeAnywhere(c2, '@settings')
-        if not root:
-            if trace: g.trace('no @settings node')
-            return
-        h = '@bool show-tips'
-        p = g.findNodeInTree(c2, root, h, prefix=True)
-        if not p:
-            p = root.insertAsLastChild()
-        if trace: g.trace(p and p.h)
-        p.h = '%s = %s' % (h, self.show_tips_flag)
-        # Delay the second redraw until idle time.
-
-        def handler(timer, c=c2, p=p):
-            c.setChanged()
-            p.setDirty()
-            c.selectPosition(p)
-            c.redraw_now()
-            timer.stop()
-
-        timer = g.IdleTime(handler, delay=0, tag='show_tips')
-        if timer:
-            timer.start()
+        if c and self.show_tips_flag != c.config.getBool('show-tips', default=False):
+            c.config.setUserSetting('@bool show-tips', self.show_tips_flag)
     #@+node:ekr.20111215193352.10220: *3* qt_gui.Splash Screen
     #@+node:ekr.20110605121601.18479: *4* qt_gui.createSplashScreen
     def createSplashScreen(self):
