@@ -1136,6 +1136,7 @@ class LeoQtGui(leoGui.LeoGui):
         cb.stateChanged.connect(self.onClick)
         m.setCheckBox(cb)
         m.setStandardButtons(m.Ok)
+        c.styleSheetManager.set_style_sheets(w=m)
         if 1: # QMessageBox is always a modal dialog.
             m.exec_()
             self.update_tips_setting()
