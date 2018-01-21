@@ -7,6 +7,7 @@ import random
 import leo.core.leoGlobals as g
 assert g
 tips = []
+    # The global tips array, created by make_tips script.
 #@+others
 #@+node:ekr.20180121041252.1: ** class TipManager
 class TipManager(object):
@@ -41,12 +42,60 @@ class TipManager(object):
 class UserTip(object):
     '''A User Tip.'''
     
-    def __init__(self, n):
+    def __init__(self, n, tags=None, text='', title=''):
         self.n = n
+        self.tags = tags or []
+        self.title = title
+        self.text = text.strip()
         
     def __repr__(self):
         return 'This is user tip %s' % self.n
     __str__ = __repr__
+#@+node:ekr.20180121045646.1: ** make_tips
+def make_tips():
+    '''A script to make entries in the global tips array.'''
+    import requests
+    base_url = 'https://api.github.com/repos/leo-editor/leo-editor/issues?labels=Tip&state='
+    
+    def get_tips(data):
+        """get_tips - get tips from GitHub issues
+        :param dict data: GitHub API issues list
+        :return: list of Tips
+        """
+        tips = []
+        for issue in data:
+            if '\n' in issue['body']:
+                tip, tags = issue['body'].strip().rsplit('\n', 1)
+            else:
+                tip, tags = issue['body'].strip(), ''
+            if tags.lower().startswith('tags:'):
+                tags = [i.strip().strip('.') for i in tags[5:].split(',')]
+            else:
+                tags = []
+                tip = "%s\n%s" % (tip, tags)
+            if isinstance(tip, (tuple, list)):
+                tip = (z for z in tip if z and z.strip())
+            tips.append(
+                UserTip(
+                    n=issue['number'],
+                    tags=tags,
+                    text=tip.strip().strip('[]').strip(),
+                    title=issue['title'],
+                ))
+        return tips
+    
+    g.cls()
+    for kind in 'open', 'closed':
+        URL = base_url+kind
+        data = requests.get(URL).json()
+        for tip in get_tips(data):
+            print('%s %s tip #%s %s...' % (('-'*10), kind, tip.n, tip.title))
+            print('')
+            print("TAGS: %s" % tip.tags or "**NO TAGS**")
+            print('')
+            # print(tip.text.strip().strip('[]').strip())
+            print(tip.text)
+            print('')
 #@-others
 #@@language python
 #@@tabwidth -4
