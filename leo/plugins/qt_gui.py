@@ -1117,18 +1117,20 @@ class LeoQtGui(leoGui.LeoGui):
         g.app.gui.show_tips(force=True)
 
     def show_tips(self, force=False):
+        import leo.core.leoTips as leoTips
         c = g.app.log.c
-        g.trace(c)
         self.show_tips_flag = c.config.getBool('show-tips', default=False)
         if not force and not self.show_tips_flag:
             g.trace('not enabled')
             return
+        tm = leoTips.TipManager(c)
+        tip = tm.get_next_tip()
         m = QtWidgets.QMessageBox()
         m.leo_checked = True
         m.setObjectName('TipMessageBox')
         m.setIcon(m.Information)
         m.setWindowTitle('Leo Tips')
-        m.setText("This is a tip.")
+        m.setText(repr(tip))
         # m.setInformativeText("This is additional information")
         # m.setDetailedText("The details are as follows:")
         cb = QtWidgets.QCheckBox('Show tips on startup')
@@ -1154,7 +1156,7 @@ class LeoQtGui(leoGui.LeoGui):
         self.show_tips_flag = bool(state)
     #@+node:ekr.20180117083930.1: *4* update_tips_setting
     def update_tips_setting(self):
-        trace = True
+        trace = False
         c = g.app.log.c
         if not c: return
         if self.show_tips_flag == c.config.getBool('show-tips', default=False):
