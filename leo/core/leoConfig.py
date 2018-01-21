@@ -1929,7 +1929,10 @@ class LocalConfigManager(object):
         d.replace(key, gs)
     #@+node:ekr.20180121135120.1: *3* c.config.setUserSetting
     def setUserSetting(self, setting, value):
-        '''Find and set the indicated setting, either in c or in myLeoSettings.leo'''
+        '''
+        Find and set the indicated setting, either in the local file or in
+        myLeoSettings.leo.
+        '''
         c = self.c
         p = self.findSettingsPosition(setting)
         if not p:
