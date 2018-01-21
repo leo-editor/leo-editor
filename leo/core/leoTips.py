@@ -95,8 +95,6 @@ def make_tips(c):
             else:
                 tags = []
                 text = body.strip()
-            # text = text.strip().strip('[]').strip()
-            # g.trace('%s: text...\n%r\n' % (n, text.strip()))
             tips.append(
                 UserTip(
                     n=n,
