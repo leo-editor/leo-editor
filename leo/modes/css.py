@@ -559,6 +559,25 @@ def css_rule7(colorer, s, i):
 def css_rule8(colorer, s, i):
     return colorer.match_mark_following(s, i, kind="literal2", pattern="#",
         at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+        
+# For selectors...
+        
+def css_rule8A(colorer, s, i):
+    return colorer.match_mark_following(s, i, kind="literal2", pattern=".",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+        
+def css_rule8B(colorer, s, i):
+    return colorer.match_mark_following(s, i, kind="literal2", pattern=">",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+        
+def css_rule8C(colorer, s, i):
+    return colorer.match_mark_following(s, i, kind="literal2", pattern="+",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+        
+def css_rule8D(colorer, s, i):
+    return colorer.match_mark_following(s, i, kind="literal2", pattern="~",
+        at_line_start=False, at_whitespace_end=False, at_word_start=False, exclude_match=False)
+
 
 def css_rule9(colorer, s, i):
     return colorer.match_span(s, i, kind="comment1", begin="/*", end="*/",
@@ -576,7 +595,10 @@ rulesDict1 = {
     "(": [css_rule2,],
     ",": [css_rule5,],
     "-": [css_rule10,],
-    ".": [css_rule6,],
+    ".": [css_rule8A,], # Fix #585. Was css_rule6
+    ">": [css_rule8B,], # Fix #585.
+    "+": [css_rule8C,], # Fix #585.
+    "~": [css_rule8D,], # Fix #585.
     "/": [css_rule9,],
     "0": [css_rule10,],
     "1": [css_rule10,],

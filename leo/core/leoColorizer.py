@@ -1407,10 +1407,17 @@ class JEditColorizer(BaseColorizer):
         show that token means a word, as defined by word_chars.'''
         # 2011/05/31: Might we extend the concept of token?
         # If s[i] is not a word char, should we return just it?
+        i0 = i
+        while i < len(s) and s[i].isspace():
+            i += 1
+        i1 = i
         while i < len(s) and s[i] in self.word_chars:
             i += 1
-        # 2011/05/31: was i+1
-        return min(len(s), i)
+        if i == i1:
+            return i0
+        else:
+            # 2011/05/31: was i+1
+            return min(len(s), i)
     #@+node:ekr.20110605121601.18618: *4* jedit.match_mark_previous
     def match_mark_previous(self, s, i,
         kind='', pattern='',
