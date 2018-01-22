@@ -422,12 +422,24 @@ The parse-body command parses p.b (the body text of the selected node) into sepa
 
 UserTip(
     n=605,
-    tags=['Commands', ],
+    tags=['Commands',],
     title="The sort-siblings command",
     text="""
 
 The sort-siblings (Alt-A) command sorts all the child nodes of their parent, or all top-level nodes.
 
+"""),
+
+UserTip(
+    n=0,
+    tags=['Settings',],
+    title="Search for settings in leoSettings.leo",
+    text="""
+    
+leoSettings.leo contains the defaults for all of Leo's
+settings, with documentation for each. Searching
+leoSettings.leo is thus a good way to find settings.
+    
 """),
 
 ]
