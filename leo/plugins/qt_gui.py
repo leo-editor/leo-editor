@@ -1115,6 +1115,31 @@ class LeoQtGui(leoGui.LeoGui):
     @g.command('show-next-tip')
     def show_next_tip(self, event=None):
         g.app.gui.show_tips(force=True)
+        
+    class DialogWithCheckBox(QtWidgets.QMessageBox):
+
+        def __init__(self, controller, tip):
+            QtWidgets.QMessageBox.__init__(self)
+            c = g.app.log.c
+            self.leo_checked = True
+            self.setObjectName('TipMessageBox')
+            self.setIcon(self.Information)
+            self.setWindowTitle('Leo Tips')
+            self.setText(repr(tip))
+            self.setStandardButtons(self.Ok)
+            cb = QtWidgets.QCheckBox('Show tips on startup',parent=self)
+            cb.setCheckState(2)
+            cb.stateChanged.connect(controller.onClick)
+            layout = self.layout()
+            g.trace(layout.rowCount(), layout.columnCount())
+            if 0:
+                layout.addWidget(cb,
+                    3, # layout.rowCount()+1,
+                    0, # layout.columnCount(),
+                    # 1, 3,
+                )
+                layout.update()
+            c.styleSheetManager.set_style_sheets(w=self)
 
     def show_tips(self, force=False):
         import leo.core.leoTips as leoTips
@@ -1125,22 +1150,9 @@ class LeoQtGui(leoGui.LeoGui):
         if not force and not self.show_tips_flag:
             # g.trace('not enabled')
             return
-        tm = leoTips.TipManager(c)
+        tm = leoTips.TipManager()
         tip = tm.get_next_tip()
-        m = QtWidgets.QMessageBox()
-        m.leo_checked = True
-        m.setObjectName('TipMessageBox')
-        m.setIcon(m.Information)
-        m.setWindowTitle('Leo Tips')
-        m.setText(repr(tip))
-        # m.setInformativeText("This is additional information")
-        # m.setDetailedText("The details are as follows:")
-        cb = QtWidgets.QCheckBox('Show tips on startup')
-        cb.setCheckState(2)
-        cb.stateChanged.connect(self.onClick)
-        m.setCheckBox(cb)
-        m.setStandardButtons(m.Ok)
-        c.styleSheetManager.set_style_sheets(w=m)
+        m = self.DialogWithCheckBox(controller=self,tip=tip)
         if 1: # QMessageBox is always a modal dialog.
             m.exec_()
             self.update_tips_setting()
@@ -1150,16 +1162,16 @@ class LeoQtGui(leoGui.LeoGui):
             m.show()
     #@+node:ekr.20180117080131.1: *4* onButton (not used)
     def onButton(self, m):
-        g.trace(m)
         m.hide()
     #@+node:ekr.20180117073603.1: *4* onClick
     def onClick(self, state):
-        
         self.show_tips_flag = bool(state)
-    #@+node:ekr.20180117083930.1: *4* update_tips_setting
+    #@+node:ekr.20180117083930.1: *5* update_tips_setting
     def update_tips_setting(self):
         c = g.app.log.c
+        g.trace()
         if c and self.show_tips_flag != c.config.getBool('show-tips', default=False):
+            g.trace(self.show_tips_flag)
             c.config.setUserSetting('@bool show-tips', self.show_tips_flag)
     #@+node:ekr.20111215193352.10220: *3* qt_gui.Splash Screen
     #@+node:ekr.20110605121601.18479: *4* qt_gui.createSplashScreen

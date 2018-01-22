@@ -10,23 +10,19 @@ assert g
 #@+node:ekr.20180121041252.1: ** class TipManager
 class TipManager(object):
     '''A class to manage user tips.'''
+    
+    key = 'shown-tips'
+    
     #@+others
-    #@+node:ekr.20180121041822.1: *3* tipm.__init__
-    def __init__(self, c):
-        '''ctor for TipManager class.'''
-        self.key = 'shown-tips'
-        # Testing only.
-        # self.tips = [UserTip(i) for i in range(4)]
     #@+node:ekr.20180121041748.1: *3* tipm.get_next_tip
     def get_next_tip(self):
-        trace = False
         global tips
         db = g.app.db
         # Compute list of unseen tips.
         seen = db.get(self.key, [])
         unseen = [i for i in range(len(tips)) if i not in seen]
         if not unseen:
-            if trace: g.trace('===== reinit tips')
+            # g.trace('===== reinit tips')
             db [self.key] = []
             unseen = list(range(len(tips)))
             seen = []
@@ -35,7 +31,6 @@ class TipManager(object):
         assert i not in seen, (i, seen)
         seen.append(i)
         db [self.key] = seen
-        if trace: g.trace('returns', i)
         return tips[i]
     #@-others
 #@+node:ekr.20180121041301.1: ** class UserTip
