@@ -10330,6 +10330,9 @@ QLabel {
     font-style:     @dialog-font-style;
 }
 
+QCheckBox#TipCheckbox {
+    background: lightgrey;
+}
 </t>
 <t tx="ekr.20140915194122.19467">/* ========== Buttons ========== 
 
