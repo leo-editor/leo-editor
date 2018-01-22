@@ -1127,20 +1127,15 @@ class LeoQtGui(leoGui.LeoGui):
             self.setWindowTitle('Leo Tips')
             self.setText(repr(tip))
             self.setStandardButtons(self.Ok)
-            cb = QtWidgets.QCheckBox('Show tips on startup',parent=self)
+            c.styleSheetManager.set_style_sheets(w=self)
+            layout = self.layout()
+            cb = QtWidgets.QCheckBox()
+            cb.setObjectName('TipCheckbox')
+            cb.setText('Show Tip On Startup')
             cb.setCheckState(2)
             cb.stateChanged.connect(controller.onClick)
-            layout = self.layout()
-            g.trace(layout.rowCount(), layout.columnCount())
-            if 0:
-                layout.addWidget(cb,
-                    3, # layout.rowCount()+1,
-                    0, # layout.columnCount(),
-                    # 1, 3,
-                )
-                layout.update()
-            c.styleSheetManager.set_style_sheets(w=self)
-
+            layout.addWidget(cb, 4, 0, -1, -1)
+            
     def show_tips(self, force=False):
         import leo.core.leoTips as leoTips
         if g.app.unitTesting:
@@ -1148,7 +1143,6 @@ class LeoQtGui(leoGui.LeoGui):
         c = g.app.log.c
         self.show_tips_flag = c.config.getBool('show-tips', default=False)
         if not force and not self.show_tips_flag:
-            # g.trace('not enabled')
             return
         tm = leoTips.TipManager()
         tip = tm.get_next_tip()
@@ -1169,9 +1163,7 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20180117083930.1: *5* update_tips_setting
     def update_tips_setting(self):
         c = g.app.log.c
-        g.trace()
         if c and self.show_tips_flag != c.config.getBool('show-tips', default=False):
-            g.trace(self.show_tips_flag)
             c.config.setUserSetting('@bool show-tips', self.show_tips_flag)
     #@+node:ekr.20111215193352.10220: *3* qt_gui.Splash Screen
     #@+node:ekr.20110605121601.18479: *4* qt_gui.createSplashScreen
