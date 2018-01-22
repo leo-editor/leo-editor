@@ -1344,6 +1344,10 @@ class JEditColorizer(BaseColorizer):
         while j < n and s[j] in chars:
             j += 1
         word = s[i: j]
+        # Fix part of #585: A kludge for css.
+        if self.language == 'css' and word.endswith(':'):
+            j -= 1
+            word = word[:-1]
         if not word:
             g.trace('can not happen', repr(s[i: max(j, i + 1)]), repr(s[i: i + 10]), g.callers())
             return 0
