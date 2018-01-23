@@ -2,7 +2,7 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.61" body_secondary_ratio="0.72">
+<globals body_outline_ratio="0.43" body_secondary_ratio="0.72">
 	<global_window_position top="79" left="304" height="801" width="1160"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -272,7 +272,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31322e3971097d710a5809000000756e69745f74657374710b580400000061626364710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343171117d711258090000006d795f706c7567696e7113580300000076616c711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285508302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735508302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735508302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735509302e362e31392e3431710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735508302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -459,15 +459,7 @@
 <v t="ekr.20161123202924.1"><vh>@test org-1</vh></v>
 <v t="ekr.20171120113732.1"><vh>@test org tags</vh></v>
 <v t="ekr.20171230050347.1"><vh>@test org intro</vh></v>
-<v t="ekr.20180123104303.1"><vh>@test org #552</vh>
-<v t="ekr.20180123131756.1"><vh>@@auto-org-mode @test org #552</vh>
-<v t="ekr.20180123131756.2"><vh>Events</vh>
-<v t="ekr.20180123131756.3"><vh>整理个人生活</vh>
-<v t="ekr.20180123131756.4"><vh>每周惯例</vh></v>
-</v>
-</v>
-</v>
-</v>
+<v t="ekr.20180123104303.1"><vh>@test org #552</vh></v>
 </v>
 <v t="ekr.20161124040933.1"><vh>otl (vim-outline) tests</vh>
 <v t="ekr.20161124040933.2"><vh>@test otl-1</vh></v>
@@ -693,6 +685,9 @@
 </v>
 <v t="ekr.20171230165904.48"><vh>@@file @test php here doc</vh>
 <v t="ekr.20171230165904.49"><vh>class foo</vh></v>
+</v>
+<v t="ekr.20180123135055.48"><vh>@@file @test php here doc</vh>
+<v t="ekr.20180123135055.49"><vh>class foo</vh></v>
 </v>
 </v>
 </v>
@@ -15862,22 +15857,26 @@ try:
         root = c.p.firstChild()
         p2 = root.firstChild()
         for h in table:
-            assert p2.h == h, (p2.h, h)
+            assert p2.h == g.toUnicode(h), (p2.h, g.toUnicode(h))
             p2.moveToThreadNext()
         assert not root.isAncestorOf(p2), p2.h # Extra nodes
 finally:
-    if 0:
+    if 1:
         p.deleteAllChildren()
     c.redraw()
 </t>
-<t tx="ekr.20180123131756.1">@language plain
+<t tx="ekr.20180123135055.48">&lt;?php
+@others
+@language php
 @tabwidth -4
 </t>
-<t tx="ekr.20180123131756.2">  :PROPERTIES:
-  :CATEGORY: events
-  :END:
+<t tx="ekr.20180123135055.49">class foo {
+    public $bar = &lt;&lt;&lt;EOT
+a test.
+bar
+EOT;
+}
+?&gt;
 </t>
-<t tx="ekr.20180123131756.3"></t>
-<t tx="ekr.20180123131756.4"></t>
 </tnodes>
 </leo_file>
