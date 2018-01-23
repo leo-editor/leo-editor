@@ -1201,9 +1201,13 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
 
         def tabContextMenu(point):
             index = self.tabBar().tabAt(point)
-            if index < 0 or (self.count() < 2 and not self.detached):
+            if index < 0: # or (self.count() < 1 and not self.detached):
                 return
             menu = QtWidgets.QMenu()
+            # #310: Create new file on right-click in file tab in UI.
+            if True:
+                a = menu.addAction("New Outline")
+                a.triggered.connect(lambda checked: self.new_outline(index))
             if self.count() > 1:
                 a = menu.addAction("Detach")
                 a.triggered.connect(lambda checked: self.detach(index))
@@ -1220,6 +1224,12 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
 
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(tabContextMenu)
+    #@+node:ekr.20180123082452.1: *3* new_outline (LeoBaseTabWidget) 
+    def new_outline(self, index):
+        '''Open a new outline tab.'''
+        w = self.widget(index)
+        c = w.leo_c
+        c.new()
     #@+node:ekr.20131115120119.17391: *3* detach (LeoBaseTabWidget)
     def detach(self, index):
         """detach tab (from tab's context menu)"""
@@ -1237,7 +1247,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
             w.move(20, 20)
                 # Windows (XP and 7) put the windows title bar off screen.
         return w
-    #@+node:ekr.20131115120119.17392: *3* tile
+    #@+node:ekr.20131115120119.17392: *3* tile (LeoBaseTabWidget)
     def tile(self, index, orientation='V'):
         """detach tab and tile with parent window"""
         w = self.widget(index)
@@ -1263,7 +1273,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
             window.move(x, y)
             w.resize(ww, wh / 2)
             w.move(x, y + fh / 2)
-    #@+node:ekr.20131115120119.17393: *3* reattach_all
+    #@+node:ekr.20131115120119.17393: *3* reattach_all (LeoBaseTabWidget)
     def reattach_all(self):
         """reattach all detached tabs"""
         for name, w in self.detached:
