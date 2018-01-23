@@ -15040,6 +15040,43 @@ finally:
         p.deleteAllChildren()
     c.redraw()
 
+#@+node:ekr.20180123104303.1: *6* @test org #552
+@first # -*- coding: utf-8 -*-
+s = '''\
+* Events
+  :PROPERTIES:
+  :CATEGORY: events
+  :END:
+** 整理个人生活
+*** 每周惯例
+'''
+table = (
+    'Events',
+    '整理个人生活',
+    '每周惯例',
+)
+try:
+    c.importCommands.orgUnitTest(p,s=s,showTree=True)
+    if 1:
+        root = c.p.firstChild()
+        p2 = root.firstChild()
+        for h in table:
+            assert p2.h == h, (p2.h, h)
+            p2.moveToThreadNext()
+        assert not root.isAncestorOf(p2), p2.h # Extra nodes
+finally:
+    if 0:
+        p.deleteAllChildren()
+    c.redraw()
+#@+node:ekr.20180123131756.1: *7* @@auto-org-mode @test org #552
+@language plain
+@tabwidth -4
+#@+node:ekr.20180123131756.2: *8* Events
+  :PROPERTIES:
+  :CATEGORY: events
+  :END:
+#@+node:ekr.20180123131756.3: *9* 整理个人生活
+#@+node:ekr.20180123131756.4: *10* 每周惯例
 #@+node:ekr.20161124040933.1: *5* otl (vim-outline) tests
 #@+node:ekr.20161124040933.2: *6* @test otl-1
 @tabwidth 4 # Required
