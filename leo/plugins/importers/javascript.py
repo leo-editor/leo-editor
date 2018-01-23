@@ -21,6 +21,79 @@ class JS_Importer(Importer):
         )
 
     #@+others
+    #@+node:ekr.20180123051226.1: *3* js_i.post_pass & helpers
+    def post_pass(self, parent):
+        '''
+        Optional Stage 2 of the importer pipeline, consisting of zero or more
+        substages. Each substage alters nodes in various ways.
+
+        Subclasses may freely override this method, **provided** that all
+        substages use the API for setting body text. Changing p.b directly will
+        cause asserts to fail later in i.finish().
+        '''
+        self.clean_all_headlines(parent)
+        self.clean_all_nodes(parent)
+        self.remove_singleton_at_others(parent)
+        self.unindent_all_nodes(parent)
+        #
+        # This sub-pass must follow unindent_all_nodes.
+        self.promote_trailing_underindented_lines(parent)
+        self.promote_last_lines(parent)
+        #
+        # Usually the last sub-pass, but not in javascript.
+        self.delete_all_empty_nodes(parent)
+        #
+        # Must follow delete_all_empty_nodes.
+        self.remove_organizer_nodes(parent)
+    #@+node:ekr.20180123051401.1: *4* js_i.remove_singleton_at_others
+    at_others = re.compile(r'^\s*@others\b')
+
+    def remove_singleton_at_others(self, parent):
+        '''Replace @others by the body of a singleton child node.'''
+        trace = False
+        if trace:
+            print('')
+            g.trace(parent.h)
+            print('')
+        for p in parent.subtree():
+            if p.numberOfChildren() == 1:
+                child = p.firstChild()
+                lines = self.get_lines(p)
+                matches = [i for i,s in enumerate(lines) if self.at_others.match(s)]
+                if len(matches) == 1:
+                    i = matches[0]
+                    if trace:
+                        g.trace('===== @others, line', i)
+                        g.printList(lines)
+                        g.trace('.....')
+                        g.printList(self.get_lines(child))
+                    lines = lines[:i] + self.get_lines(child) + lines[i+1:]
+                    if trace:
+                        g.trace('----- result')
+                        g.printList(lines)
+                    self.set_lines(p, lines)
+                    self.clear_lines(child) # Delete child later. Is this enough???
+                elif len(matches) > 1:
+                    if trace: g.trace('Ambiguous @others', p.h)
+                else:
+                    if trace: g.trace('No @others directive', p.h)
+        
+                
+    #@+node:ekr.20180123060307.1: *4* js_i.remove_organizer_nodes
+    def remove_organizer_nodes(self, parent):
+        '''Removed all organizer nodes created by i.delete_all_empty_nodes.'''
+        trace = False and not g.unitTesting
+        if trace: g.trace('=====', parent.h)
+        # Careful: Restart this loop whenever we find an organizer.
+        found = True
+        while found:
+            found = False
+            for p in parent.subtree():
+                if p.h.lower() == 'organizer' and not self.get_lines(p):
+                    if trace: g.trace('FOUND', p.h)
+                    p.promote()
+                    p.doDelete()
+                    found = True # Restart the loop.
     #@+node:ekr.20161105140842.5: *3* js_i.scan_line & helpers
     #@@nobeautify
 

@@ -782,6 +782,7 @@ class Importer(object):
         Delete nodes consisting of nothing but whitespace.
         Move the whitespace to the preceding node.
         '''
+        trace = False and not g.unitTesting
         c = self.c
         aList = []
         for p in parent.subtree():
@@ -791,9 +792,16 @@ class Importer(object):
                 # Move the whitespace from p to back.
                 if all([z.isspace() for z in lines]):
                     self.extend_lines(back, lines)
-                    aList.append(p.copy())
+                    # New in Leo 5.7: empty nodes may have children.
+                    if p.hasChildren():
+                        # Don't delete p.
+                        p.h = 'organizer'
+                        self.clear_lines(p)
+                    else:
+                        # Do delete p.
+                        aList.append(p.copy())
         if aList:
-            g.trace('='*40, parent.h)
+            if trace: g.trace('=====', parent.h)
             c.deletePositionsInList(aList, redraw=False)
                 # Suppress redraw.
     #@+node:ekr.20161222122914.1: *5* i.promote_last_lines
