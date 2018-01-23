@@ -24,12 +24,10 @@ class JS_Importer(Importer):
     #@+node:ekr.20180123051226.1: *3* js_i.post_pass & helpers
     def post_pass(self, parent):
         '''
-        Optional Stage 2 of the importer pipeline, consisting of zero or more
-        substages. Each substage alters nodes in various ways.
+        Optional Stage 2 of the javascript pipeline.
 
-        Subclasses may freely override this method, **provided** that all
-        substages use the API for setting body text. Changing p.b directly will
-        cause asserts to fail later in i.finish().
+        All substages **must** use the API for setting body text. Changing
+        p.b directly will cause asserts to fail later in i.finish().
         '''
         self.clean_all_headlines(parent)
         self.clean_all_nodes(parent)
@@ -45,12 +43,20 @@ class JS_Importer(Importer):
         #
         # Must follow delete_all_empty_nodes.
         self.remove_organizer_nodes(parent)
+        # 
+        # Remove up to 5 more levels of @others.
+        for i in range(5):
+            if self.remove_singleton_at_others(parent):
+                self.remove_organizer_nodes(parent)
+            else:
+                break
     #@+node:ekr.20180123051401.1: *4* js_i.remove_singleton_at_others
     at_others = re.compile(r'^\s*@others\b')
 
     def remove_singleton_at_others(self, parent):
         '''Replace @others by the body of a singleton child node.'''
         trace = False
+        found = False
         if trace:
             print('')
             g.trace(parent.h)
@@ -61,6 +67,7 @@ class JS_Importer(Importer):
                 lines = self.get_lines(p)
                 matches = [i for i,s in enumerate(lines) if self.at_others.match(s)]
                 if len(matches) == 1:
+                    found = True
                     i = matches[0]
                     if trace:
                         g.trace('===== @others, line', i)
@@ -77,6 +84,7 @@ class JS_Importer(Importer):
                     if trace: g.trace('Ambiguous @others', p.h)
                 else:
                     if trace: g.trace('No @others directive', p.h)
+        return found
         
                 
     #@+node:ekr.20180123060307.1: *4* js_i.remove_organizer_nodes
