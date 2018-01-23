@@ -272,7 +272,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e32372e3771097d710a5808000000616e6e6f74617465710b7d710c735808000000302e362e31382e37710d7d710e5808000000616e6e6f74617465710f7d7110735809000000302e362e31392e343171117d711258090000006d795f706c7567696e7113580300000076616c711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31382e3771057d71065808000000616e6e6f7461746571077d7108735809000000302e362e31392e343171097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e31362e33710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -1377,6 +1377,7 @@
 <v t="ekr.20071113202153.2"><vh>@test zz end of leoGlobals tests</vh></v>
 </v>
 <v t="ekr.20180120142320.1"></v>
+<v t="ekr.20080503082625.4"><vh>@test promote</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -2371,6 +2372,65 @@ g.pr('\nEnd of leoUndo tests.')
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
 Important: this may cause crashes on some platforms.
+</t>
+<t tx="ekr.20080503082625.4">root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+
+try:
+    p2 = p.insertAsNthChild(0)
+    p2.setHeadString('A')
+    p3 = p.insertAsNthChild(1)
+    p3.setHeadString('B')
+    p4 = p3.insertAsNthChild(0)
+    p4.setHeadString('child 1')
+    p5 = p3.insertAsNthChild(1)
+    p5.setHeadString('child 2')
+    p.expand()
+    p6 = p.insertAsNthChild(2)
+    p6.setHeadString('C')
+    c.setCurrentPosition(p3)
+    c.promote()
+    p = c.p
+    assert p == p3,         'fail 1'
+    assert p.h == 'B',      'fail 2'
+    assert p.next().h=='child 1',            'fail 3'
+    assert p.next().next().h == 'child 2',   'fail child 1'
+    assert p.next().next().next().h == 'C',  'fail child 2'
+    c.undoer.undo()
+    p = c.p
+    assert p == p3
+    assert p.back() == p2,  'fail 5'
+    assert p.next() == p6,  'fail 6'
+    assert p.firstChild().h=='child 1',          'fail child 3'
+    assert p.firstChild().next().h == 'child 2', 'fail child 4'
+    c.undoer.redo()
+    p = c.p
+    assert p == p3,         'fail 1-2'
+    assert p.h == 'B',      'fail 2-2'
+    assert p.next().h=='child 1',            'fail 3-2'
+    assert p.next().next().h == 'child 2',   'fail child 1-2'
+    assert p.next().next().next().h == 'C',  'fail child 2-2'
+    c.undoer.undo()
+    p = c.p
+    assert p == p3
+    assert p.back() == p2,                      'fail 5-2'
+    assert p.next() == p6,                      'fail 6-2'
+    assert p.firstChild().h=='child 1',         'fail child 3-2'
+    assert p.firstChild().next().h == 'child 2','fail child 4-2'
+    c.undoer.redo()
+    p = c.p
+    assert p == p3,     'fail 1-3'
+    assert p.h == 'B',  'fail 2-3'
+    assert p.next().h=='child 1',            'fail 3-3'
+    assert p.next().next().h == 'child 2',   'fail child 1-3'
+    assert p.next().next().next().h == 'C',  'fail child 2-3'
+
+finally:
+    if 1:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode=None)
+    c.redraw_now(root)
 </t>
 <t tx="ekr.20080904084223.1"># changed.
 @others

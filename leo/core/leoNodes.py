@@ -1572,6 +1572,25 @@ class Position(object):
         p._unlink()
         p._linkAsRoot(oldRoot)
         return p
+    #@+node:ekr.20180123062833.1: *4* p.promote
+    def promote(self):
+        '''A low-level promote helper.'''
+        p = self # Do NOT copy the position.
+        parent_v = p._parentVnode()
+        children = p.v.children
+        # Add the children to parent_v's children.
+        n = p.childIndex() + 1
+        z = parent_v.children[:]
+        parent_v.children = z[: n]
+        parent_v.children.extend(children)
+        parent_v.children.extend(z[n:])
+        # Remove v's children.
+        p.v.children = []
+        # Adjust the parent links in the moved children.
+        # There is no need to adjust descendant links.
+        for child in children:
+            child.parents.remove(p.v)
+            child.parents.append(parent_v)
     #@+node:ekr.20040303175026.13: *4* p.validateOutlineWithParent
     # This routine checks the structure of the receiver's tree.
 

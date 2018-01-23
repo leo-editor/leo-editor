@@ -1379,21 +1379,8 @@ def promote(self, event=None, undoFlag=True, redrawFlag=True):
     isAtIgnoreNode = p.isAtIgnoreNode()
     inAtIgnoreRange = p.inAtIgnoreRange()
     c.endEditing()
-    parent_v = p._parentVnode()
-    children = p.v.children
-    # Add the children to parent_v's children.
-    n = p.childIndex() + 1
-    z = parent_v.children[:]
-    parent_v.children = z[: n]
-    parent_v.children.extend(children)
-    parent_v.children.extend(z[n:])
-    # Remove v's children.
-    p.v.children = []
-    # Adjust the parent links in the moved children.
-    # There is no need to adjust descendant links.
-    for child in children:
-        child.parents.remove(p.v)
-        child.parents.append(parent_v)
+    children = p.v.children # First, for undo.
+    p.promote()
     c.setChanged(True)
     if undoFlag:
         if not inAtIgnoreRange and isAtIgnoreNode:

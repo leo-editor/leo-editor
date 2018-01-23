@@ -44,6 +44,7 @@ if fail:
     Qt = QtConst = QtCore = QtGui = QtWidgets = QUrl = None
     QtDeclarative = Qsci = QtSvg = QtWebKit = QtWebKitWidgets = None
     phonon = uic = None
+    QtMultimedia = None # Replacement for phonon.
     qt_version = '<no version>'
     printsupport = None
 elif isQt5:
@@ -95,6 +96,10 @@ elif isQt5:
         phonon = phonon.Phonon
     except ImportError:
         phonon = None
+    try:
+        from PyQt5 import QtMultimedia
+    except ImportError:
+        QtMultimedia = None
     try:
         from PyQt5 import Qsci
     except ImportError:
