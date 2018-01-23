@@ -355,6 +355,8 @@ class ScriptingController(object):
         self.seen = set()
             # Fix bug 74: problems with @button if defined in myLeoSettings.leo
             # Set of gnx's (not vnodes!) that created buttons or commands.
+        # Fix bug 657:
+        self.rclick_seen = set()
     #@+node:ekr.20150401113822.1: *3* sc.Callbacks
     #@+node:ekr.20060328125248.23: *4* sc.addScriptButtonCommand
     def addScriptButtonCommand(self, event=None):
@@ -464,6 +466,9 @@ class ScriptingController(object):
             if p.isAtIgnoreNode():
                 p.moveToNodeAfterTree()
             elif gnx in self.seen:
+                # Fix #657: @rclick button-name not working if under @buttons node.
+                if g.match_word(p.h, 0, '@rclick'):
+                    self.handleAtRclickNode(p)
                 p.moveToThreadNext()
             else:
                 self.seen.add(gnx)
@@ -801,7 +806,13 @@ class ScriptingController(object):
     def handleAtRclickNode(self, p):
         '''Handle @rclick name [@key[=]shortcut].'''
         c = self.c
-        if not p.h.strip(): return
+        if not p.h.strip():
+            return
+        # #657: make sure we handle this node at most once.
+        gnx = p.v.gnx
+        if gnx in self.rclick_seen:
+            return
+        self.rclick_seen.add(gnx)
         args = self.getArgs(p)
 
         def atCommandCallback(event=None, args=args, c=c, p=p.copy()):
