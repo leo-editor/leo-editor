@@ -437,6 +437,35 @@ leoSettings.leo is thus a good way to find settings.
     
 """),
 
+UserTip(
+    n=0,
+    tags=['Commands', 'Power User',],
+    title='Use Alt-N (goto-next-clone) to find "primary" clone',
+    text="""
+    
+Use Alt-N to cycle through the clones of the present cloned node.
+
+This is a fast way of finding the clone whose ancestor is an @<file> node.
+    
+"""),
+
+UserTip(
+    n=0,
+    tags=['Power User',],
+    title='Move clones to the last top-level node',
+    text="""
+    
+Focus your attention of the task at hand by cloning nodes,
+including @file nodes, then moving those clones so they are
+the last top-level nodes in the outline.
+
+This allows you to work on nodes scattered throughout an
+outline without altering the structure of @file nodes.
+
+"""),
+
+
+
 ]
 #@-<< define tips >>
 #@@language python
