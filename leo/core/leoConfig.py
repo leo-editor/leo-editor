@@ -125,7 +125,7 @@ class ParserBaseClass(object):
             self.set(p, kind, name, False)
         else:
             self.valueError(p, kind, name, val)
-    #@+node:ekr.20070925144337: *4* doButtons
+    #@+node:ekr.20070925144337: *4* doButtons (ParserBaseClass)
     def doButtons(self, p, kind, name, val):
         '''Create buttons for each @button node in an @buttons tree.'''
         trace = False and not g.unitTesting

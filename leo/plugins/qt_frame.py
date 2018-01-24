@@ -2458,10 +2458,12 @@ class LeoQtFrame(leoFrame.LeoFrame):
             else:
                 g.trace('not found', gnx)
         #@+node:ekr.20110605121601.18271: *4* setCommandForButton (@rclick nodes) & helper
+        # qtFrame.QtIconBarClass.setCommandForButton
+
         def setCommandForButton(self, button, command, command_p, controller, gnx, script):
             '''
             Set the "Goto Script" rlick item of an @button button.
-            Called from mod_scripting plugin.
+            Called from mod_scripting.py plugin.
 
             button is a leoIconBarButton.
             command is a callback, defined in mod_scripting.py.

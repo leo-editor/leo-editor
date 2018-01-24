@@ -381,22 +381,18 @@ class quickMove(object):
         text = txt + ":" + header if txt else header
         # createButton truncates text.
 
-        if parent and g.app.gui.guiName() == "qt":
+        if parent and g.app.gui.guiName().startswith("qt"):
             pb = parent.button
             rc = QtWidgets.QAction(text, pb)
             rc.triggered.connect(mb.moveCurrentNodeToTarget)
-            pb.insertAction(pb.actions()[0], rc)  # insert at top
+            pb.insertAction(pb.actions()[0], rc) # insert at top
             b = None
             mb.has_parent = True
-            ### New code.
+            # New code.
             t = c.config.getString('mod_scripting_subtext') or ''
             t2 = g.u(pb.text())
             if not t.endswith(t):
                 pb.setText(t2+t)
-            # else:
-                # t = QtCore.QString(c.config.getString('mod_scripting_subtext') or '')
-                # if not g.u(pb.text()).endswith(g.u(t)):
-                    # pb.setText(pb.text()+t)
         else:
             b = sc.createIconButton(
                 args=None,

@@ -209,6 +209,8 @@ def build_rclick_tree(command_p, rclicks=None, top_level=False):
     - `rclicks`: list of RClicks to add to, created if needed
     - `top_level`: is this the top level?
     """
+    # Called from QtIconBarClass.setCommandForButton.
+    # g.trace('=====', command_p and command_p.h or 'no command_p')
     if rclicks is None:
         rclicks = list()
     if top_level:
@@ -230,9 +232,9 @@ def build_rclick_tree(command_p, rclicks=None, top_level=False):
             build_rclick_tree(rc.position, rc.children, top_level=False)
     else: # recursive mode below top level
         if not command_p:
-            return
+            return []
         if command_p.b.strip():
-            return # sub menus can't have body text
+            return [] # sub menus can't have body text
         for child in command_p.children():
             # pylint: disable=no-member
             rc = RClick(position=child.copy(), children=[])
@@ -355,8 +357,6 @@ class ScriptingController(object):
         self.seen = set()
             # Fix bug 74: problems with @button if defined in myLeoSettings.leo
             # Set of gnx's (not vnodes!) that created buttons or commands.
-        # Fix bug 657:
-        self.rclick_seen = set()
     #@+node:ekr.20150401113822.1: *3* sc.Callbacks
     #@+node:ekr.20060328125248.23: *4* sc.addScriptButtonCommand
     def addScriptButtonCommand(self, event=None):
@@ -466,7 +466,7 @@ class ScriptingController(object):
             if p.isAtIgnoreNode():
                 p.moveToNodeAfterTree()
             elif gnx in self.seen:
-                # Fix #657: @rclick button-name not working if under @buttons node.
+                # tag:#657
                 if g.match_word(p.h, 0, '@rclick'):
                     self.handleAtRclickNode(p)
                 p.moveToThreadNext()
@@ -680,14 +680,14 @@ class ScriptingController(object):
             c=c,
             buttonText=buttonText,
             docstring=docstring,
-            gnx=gnx, # Fix #367: the gnx is needed for the Goto Script command.
+            gnx=gnx, # tag:#367: the gnx is needed for the Goto Script command.
             script=script,
         )
         # Now patch the button.
         self.iconBar.setCommandForButton(
             button=b,
             command=cb, # This encapsulates the script.
-            command_p=None,
+            command_p=p and p.copy(), # tag:#567
             controller=self,
             gnx=gnx, # For the find-button function.
             script=script,
@@ -808,11 +808,6 @@ class ScriptingController(object):
         c = self.c
         if not p.h.strip():
             return
-        # #657: make sure we handle this node at most once.
-        gnx = p.v.gnx
-        if gnx in self.rclick_seen:
-            return
-        self.rclick_seen.add(gnx)
         args = self.getArgs(p)
 
         def atCommandCallback(event=None, args=args, c=c, p=p.copy()):

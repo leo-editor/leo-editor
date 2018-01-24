@@ -95,6 +95,7 @@
 <v t="ekr.20130503155210.16364"><vh>\@menuat </vh></v>
 <v t="ekr.20070411172718"><vh>\@openwith name = shortcut</vh></v>
 <v t="ekr.20131115075142.18226"><vh>\@outline-data setting-name</vh></v>
+<v t="ekr.20180124050114.1"><vh>\@rclick</vh></v>
 <v t="ekr.20041119105509"><vh>\@set name = value</vh></v>
 <v t="ekr.20041120155431.1"><vh>\@shortcuts</vh></v>
 <v t="ekr.20041119035704.3"><vh>\@type type-name: base-type = [list of valid values]</vh></v>
@@ -2861,10 +2862,7 @@
 </v>
 </v>
 <v t="ekr.20171121100639.1"></v>
-<v t="ekr.20180122090459.1"><vh>Found:@bool.*chapter</vh>
-<v t="ekr.20070604075218"></v>
-<v t="ekr.20070318065601"></v>
-</v>
+<v t="ekr.20180124050114.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -14551,9 +14549,29 @@ arg:    "%ProgramFiles%/Windows NT/Accessories/wordpad.exe"
 <t tx="ekr.20171229135829.1"></t>
 <t tx="ekr.20171229135843.1"></t>
 <t tx="ekr.20180117074230.1"># True: Show user tips on startup.</t>
-<t tx="ekr.20180122090459.1"># flattened, ignore-case, regex, head, body
+<t tx="ekr.20180124050114.1">For each @button node, Leo adds right-click menu items for:
 
-# found 2 nodes</t>
+- @rclick nodes directly *following* the @button.
+
+- @rclick nodes that are *children* of the @button node, provided that the
+  @button node has no ``@others`` directive.
+
+**Standard rclick items**: Leo adds two standard right-click menu items for
+each @button node: ``Remove Button`` and ``Goto Script``. Leo adds the
+indicator text **only** to buttons that contain right-click menu items in
+addition to these two standard right-click menu items.
+
+The headline of the @rclick node gives the menu title. The body contains a
+Leo script to execute when the user selects the menu item.
+
+**Related Setting**:
+
+@string mod_scripting_subtext = ▼
+
+This setting specifies **indicator text** that indicates that an @button button has right-click menu items created by @rclick nodes.
+
+Unicode chars like ▼ ▾ and … are typical choices for this text.
+</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
