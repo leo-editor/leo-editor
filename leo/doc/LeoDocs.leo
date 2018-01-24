@@ -372,7 +372,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1759,14 +1759,24 @@
 </v>
 </v>
 <v t="ekr.20180124100440.1"><vh>Leo 5.7 docs</vh>
-<v t="ekr.20180124100440.2"><vh>Branch: string-gui</vh></v>
-<v t="ekr.20180124100440.3"><vh>Branch: redraw</vh></v>
+<v t="ekr.20180124124714.1"><vh>Outline tabs now have a New Outline popup</vh></v>
+<v t="ekr.20180124124532.1"><vh>Improved javascript importer</vh></v>
+<v t="ekr.20180124124409.1"><vh>Added insert-as-first-child &amp; insert-as-last-child</vh></v>
+<v t="ekr.20180124123920.1"><vh>Added find-all-unique-regex command</vh></v>
+<v t="ekr.20180124123454.1"><vh>Added check-conventions command</vh></v>
+<v t="ekr.20180124122913.1"><vh>Investigated #493: </vh></v>
+<v t="ekr.20180124122401.1"><vh>Added git-diff command</vh></v>
+<v t="ekr.20180124122055.1"><vh>new line_numbering.py plugin</vh></v>
+<v t="ekr.20180124121851.1"><vh>Debian package for Leo</vh></v>
+<v t="ekr.20180124121124.1"><vh>Improved Leo read/write code in leoAtFile.py</vh></v>
+<v t="ekr.20180124120513.1"><vh>Added backup-repo script in leoPy.leo</vh></v>
+<v t="ekr.20180124100440.2"><vh>Use string gui for unit tests</vh></v>
+<v t="ekr.20180124100440.3"><vh>New redraw code</vh></v>
 <v t="ekr.20180124100440.4"><vh>#327: Create a way to unbind bindings in leoSettings.leo.</vh></v>
 <v t="ekr.20180124100440.5"><vh>Added verbose option to g.callers()</vh></v>
 <v t="ekr.20180124100440.6"><vh>leo_cloud notes</vh></v>
 </v>
 <v t="ekr.20180124100450.1"><vh>Leo 5.7 code</vh>
-<v t="ekr.20180124100450.2"><vh> Done</vh>
 <v t="ekr.20180124100450.3"><vh>#327: Create a way to unbind bindings in leoSettings.leo</vh>
 <v t="ekr.20180124100450.4"><vh>&lt;&lt; about key dicts &gt;&gt;</vh></v>
 <v t="ekr.20180124100450.5"><vh>=== Changed &amp; new</vh>
@@ -1918,7 +1928,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20180124100450.126"><vh>#488: Create a curses gui plugin</vh>
+<v t="ekr.20180124100450.126"><vh>#488: Create a console gui plugin</vh>
 <v t="ekr.20180124100450.259"><vh>IH.handle_input</vh></v>
 </v>
 <v t="ekr.20180124100450.128"><vh>#501: Create outline-oriented git diff</vh>
@@ -2690,7 +2700,6 @@
 <v t="ekr.20180124100450.833"><vh>rst.processTree</vh></v>
 <v t="ekr.20180124100450.834"><vh>rst.scanHeadlineForOptions</vh></v>
 <v t="ekr.20180124100450.835"><vh>rst.write_code_headline_helper</vh></v>
-</v>
 </v>
 </v>
 <v t="ekr.20180124100450.836"><vh>** No @data path-demangle setting</vh>
@@ -26098,39 +26107,60 @@ The compile node has something like this::
     open_file('myproject.pdf')
 </t>
 <t tx="ekr.20180124100440.1"></t>
-<t tx="ekr.20180124100440.2">Status: merged into master
-
-TM.doTests now runs all unit tests with string gui (StringTextWrapper class).
+<t tx="ekr.20180124100440.2">TM.doTests now runs all unit tests with string gui (StringTextWrapper class).
 
 This has three advantages:
 
 1. The tests run much more quickly than before.
 2. Leo does no redraws during the tests.
 3. Clicks in the Leo window can now longer spoil running unit tests.
-
-Notes:
-
-1. Several unit tests that require the qt gui now call skipTest.  This is an interim measure. 
-
-2. TM.doTests contains a switch that determines which gui will be used.
 </t>
-<t tx="ekr.20180124100440.3">Note: cc.selectChapterForPosition calls c.redraw *only* if the chapter changes.
+<t tx="ekr.20180124100440.3">This project makes major improvements to Leo's redraw logic with virtually
+no effect on existing code. The highlights of the changes are as follows:
 
-- Investigate running unit tests without redraw.
-  Related to string-gui branch: Use string/null gui for unit tests.
-  https://github.com/leo-editor/leo-editor/issues/503
+1. Redrawing the screen happens only as the result of an explicit call to
+   c.redraw. In particular, neither c.selectPosition nor its helpers redraw
+   the screen immediately. However, cc.selectChapterForPosition ensures
+   that a redraw happens eventually using...
+
+2. c.redraw_later() sets a flag requesting that c.outerUpdate call c.redraw
+   if necessary. Any call to c.redraw resets this flag.
+
+3. c.disable_redraw() sets a flag disabling all outline redraws.
+   c.enable_redraw() re-enables redrawing. Use these methods as follows::
+
+    try:
+        c.disable_redraw()
+        # Code that might otherwise redraw the tree.
+    finally:
+        c.enable_redraw()
+
+This pattern is essential in the new git-diff code. Lots of redraw code
+changed, but in similar and straightforward ways. In effect, the new code
+is exactly the same as the old unless c.disable_redraw() has been called, I
+do not expect problems here.
+
+4. c.outerUpdate has been drastically simplified. It now only handles
+   requests for delayed focus changes (as before) and the new delayed
+   redraws.
+
+
+Note: cc.selectChapterForPosition calls c.redraw *only* if the chapter
+changes.
 
 - Added support for c.redraw_later, called from cc.selectChapterForPosition.
 - c.bringToFront now works without using c.outerUpdate.
-- c.widgetWantsFocusNow now just calls c.set_focus &amp; clears c.requestedFocusWidget.
+- c.widgetWantsFocusNow now just calls c.set_focus &amp; clears
+  c.requestedFocusWidget.
 - c.outerUpdate no longer handles recoloring or redrawing.
 - Replaced all calls to c.recolor_now by c.recolor.
 - Replaced all calls to redraw_now by redraw.
 - Removed all calls to body.forceFullRecolor.
 - Removed forceFullRecolorFlag.
-- Done: removed c.incrementalRecolorFlag.
-- Done: c.selectPosition never calls c.redraw. All unit tests pass.
-- Done: Removed c.requestRedrawFlag and c.outerUpdate never calls c.redraw.  All tests pass.
+- Removed c.incrementalRecolorFlag.
+- c.selectPosition never calls c.redraw.
+- Removed c.requestRedrawFlag and c.outerUpdate never calls c.redraw.
+
 </t>
 <t tx="ekr.20180124100440.4">Rev 24da84a completes #327: Create a way to unbind bindings in leoSettings.leo.
 https://github.com/leo-editor/leo-editor/issues/327
@@ -27689,6 +27719,36 @@ def undoHelper(self):
 https://github.com/leo-editor/leo-editor/issues/488
 Docs: http://leoeditor.com/console-gui.html
 
+The highlights of recent work:
+
+1. The label above the minibuffer now contains the present state. For
+   example, after Ctrl-F the label is::
+
+    Mini-buffer: Search:
+
+indicating that a search string is expected.
+
+2. When selected, the tree pane highlights the '*' line containing c.p.
+
+3. The status pane shows Find options after Ctrl-F and various toggle-find-* and set-find-* commands.
+
+So it is now clear what is going on at all times.  This clarity is more important than features!
+
+4. The minibuffer works with tab completion. Examples:
+
+    run-a&lt;tab&gt;l&lt;tab&gt;&lt;return&gt; executes run-all-unit-tests-locally.
+    toggle-find-r&lt;tab&gt;&lt;return&gt; executes toggle-find-regex-option. # Shows results in status area.
+
+This is a huge step forward in power.
+
+5. Aha: the reason that all (enabled) unit tests work with the console gui is that the string representations of the body, tree and log (including headlines) are completely functional.  True, the npyscreen views of same are weak and/or buggy, but that is a secondary matter.
+
+For example, the Find commands probably work completely, even though the found text is not selected.  Furthermore, there are workarounds.  It is possible to select all lines containing the text selection, even though npyscreen does not support character selections.
+
+Summary
+
+The curses gui plugin is more functional and less confusing than before.
+
 - leo-c starts the test.
 - listen-to-log command to get message in THIS console.
 - Tab and Shift Tab switch panes.
@@ -28362,7 +28422,6 @@ Traceback (most recent call last):
   File "C:\leo.repo\leo-editor\leo\test\scriptFile.py", line 14, in test
     assert c.p.h == 'Moved marked nodes'
 AssertionError</t>
-<t tx="ekr.20180124100450.2"></t>
 <t tx="ekr.20180124100450.200">FAIL: runTest (leo.core.leoTest.GeneralTestCase)
 @test c.frame.minimize-all
 
@@ -42165,10 +42224,7 @@ else:
     val = eval(expr, d)
     return g.toUnicode(val, encoding='utf-8', reportErrors=True)
 </t>
-<t tx="ekr.20180124100450.906">- Edit tips.
-- Generalize user settings code.
-- (Done) Cache already-shown tips.
-- (Done) Attach style sheet
+<t tx="ekr.20180124100450.906">https://github.com/leo-editor/leo-editor/issues/597
 </t>
 <t tx="ekr.20180124100450.907">def setUserSetting(self, setting, value):
     '''
@@ -44503,6 +44559,233 @@ of the @shadow logic.
 Summary of a *long* discussion: this may be a docutils issue, and does not
 seem easy to fix.
 </t>
+<t tx="ekr.20180124120513.1"></t>
+<t tx="ekr.20180124121124.1"></t>
+<t tx="ekr.20180124121851.1">I'm happy to announce first releases of Leo 5.0 as a debian/ubuntu packages
+
+Please try my builds on your debian based environment::
+
+    On Ubuntu :
+    sudo add-apt-repository ppa:davy39/ppa
+    sudo apt-get update
+    sudo apt-get leo
+
+    On other Debian based system :
+    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B84B2247  
+    sudo add-apt-repository "http://ppa.launchpad.net/davy39/ppa/ubuntu utopic main"
+    sudo apt-get update
+    sudo apt-get leo
+
+FYI, Debian no longer uses / supports add-apt-repository.  It is my understanding that only ubuntu systems still support this.  The procedure I used to successfully install Leo on Debian 8 was the following:
+
+1.  I added the key as instructed above.
+2.  I manually added the repository to my /etc/apt/sources.list
+3.  the command to install leo I needed was:  sudo apt-get install leo
+ 
+The menu item was found under "Development" and Leo appears to be working just fine. 
+</t>
+<t tx="ekr.20180124122055.1">This plugin shows real line numbers (as they are in external file) in the
+gutter.
+
+**Commands**
+
+line-numbering-toggle toggles whether this plugin has any effect.
+
+toggle-line-numbering-root marks the presently selected node as fictive
+root for line numbering purposes.
+
+**Setting**
+
+Requires @bool use-gutter=True</t>
+<t tx="ekr.20180124122401.1">The new git-diff command shows the diffs between any uncommitted work and
+git's HEAD in an outline. This is the best outline-oriented diff in Leo's
+history.
+
+**Outline organization**
+
+This command creates a single tree as the last top-level node of the outline:
+
+- git diff  # The single organizer node for the command
+  - file A # The organizer node for file A. Body contains the text diff of the entire file.
+    - Added # An organizer node for all added nodes, created only if necessary.
+      - node 1 # A copy of the first added node.
+      - node 2 # A copy of the second added node.
+        ...
+    - Deleted # An organizer node for all deleted nodes, created only if necessary.
+      - node 1 # A copy of the first deleted node.
+        ...
+    - Changed # An organizer node for all changed nodes, created only if necessary.
+      - node 1 # An organizer node for the changed node. Body contains the text diff of that node.
+        - old: node1 # A copy of the old node.
+        - new: node1 # A copy of the new node.
+
+This command creates text diffs node-by-node, using the nodes created in
+the hidden commanders. The command uses git only to fetch the two versions
+to be diffed. This command does not use git diff in any way. This means,
+for example, that moving a node affects only the overall diff in the
+organizer node for the file. Moved nodes do not otherwise appear in the
+diff.
+
+**Text diffs**
+
+Organizer nodes for files and changed nodes contain text diffs. Diffs look
+like this::
+
+    @language patch
+    
+    --- HEAD
+    +++ uncommitted
+    @@ -553,8 +553,8 @@
+                 c1 = self.make_outline(fn, s1, self.rev1)
+                 c2 = self.make_outline(fn, s2, self.rev2)
+                 assert c1 and c2
+    -            for p in c1.all_positions():
+    -                print('%25s %s' % (p.gnx, p.h))
+    +            # for p in c1.all_positions():
+    +                # print('%25s %s' % (p.gnx, p.h))
+                 self.make_diff_outlines(fn, c1, c2)
+                 # try:
+                     # c.disable_redraw()
+    @@ -578,6 +578,7 @@
+    ...
+
+@language rest
+
+**Settings**
+
+leoSettings.leo contains new colorizer settings for @language patch:
+
+    @settings--&gt;Syntax coloring--&gt;Language-specific colors--&gt;patch
+    
+**Notes**
+
+- Shows outline-oriented diffs for all files, using modified @clean logic for files without sentinels.
+- Does not diff .db, .leo, zip files, or commit_timestamp.json.
+- Diffs HEAD{0} and HEAD{1} if there are no uncommitted changes.
+- Creates clones of "new" changed nodes.
+- Shows abbreviated sha-1 hash for revs.
+
+**Theory of operation**
+
+For each diffed file, this command uses a variant of the atFile read logic
+to create the corresponding outline in a hidden commander. Separate hidden
+commanders contain the "before" and "after" versions of the file. These
+outlines preserve gnx's, so it is easy to create dicts of inserted, deleted
+and changed nodes. For changed nodes, the command uses difflib.Differ to
+create per-node diffs of body text. Similarly, the command uses
+difflib.unified_diff to create the text diff of the entire file.
+</t>
+<t tx="ekr.20180124122913.1">https://github.com/leo-editor/leo-editor/issues/493
+
+The solution is to set the desired window position in each environment with::
+
+    @bool fixed_window = True
+    @data fixedWindowPosition
+ 
+The body text of the @data node contains the desired window coordinates.
+
+Place these in myLeoSettings.leo, not in individual .leo files.</t>
+<t tx="ekr.20180124123454.1">**Status**
+
+1. This project does real checking, something that none of my type-related
+   projects has ever done before. The cc.resolve* methods are simple and
+   straightforward by the standards of tools like pylint and rope. Recent
+   revs have cleaned up these methods a bit.
+
+   From the start, the code has been able to detect violations of naming
+   conventions that neither pylint nor pyflakes are ever going to find.
+   Speed has always been good enough. On my machine the checker checks the
+   77 of Leo's sources in about 5.5 seconds. Greater speed would be
+   possible using a one-pass algorithm, but that is not necessary now.
+
+2. The "before and after" design/coding pattern is a spectacular success.
+   It completely decouples the cc and cct classes. Neither is aware of each
+   other in any way. In effect, before and after methods add to ast node
+   visitors without changing those visitors in any way and without any
+   knowledge of the node visitors.
+
+3. The present code is sound. It parses the code correctly, and visits
+   nodes in the proper order.
+
+   The initial prototype used regex patterns to do a quick, inaccurate,
+   parse of the file. This strategy allowed me to focus on the cc.resolve*
+   methods first, not later. Imo this was the only way I could have made
+   the progress I did make.
+
+   Recent revs have removed all regex patterns from the code. This could
+   only be done once the cc.resolve methods were in place. Removing regex
+   patterns makes parsing sound, which simplifies code downstream.
+
+4. The new cc.get_chain helper preprocesses chains like a.b.c or a.b().c or
+   a.b[].c. This method is crucial, for several reasons:
+
+- It clarifies and simplifies various parts of the code.
+- It reveals the complexity of ast.Attribute trees.
+- It shows just where type inference or convention checking is likely to fail.
+
+None of the benefits of cc.get_chain was obvious to me before creating it.
+
+**To do**
+
+1. [Most important] At present, the check-conventions (cc) command only
+   knows about Leo conventions. Instead, the command should used @data
+   nodes to define conventions.
+
+2. [Important] The cc command should be able to check global naming
+   conventions. For Leo, this would include the convention that self.c is a
+   Commands object and that g is the leoGlobals module, etc.
+
+3. [Important] At present the cc command does not check keyword arguments
+   to function calls.
+
+**Summary**
+
+The cc command must be extended using @data settings and global patterns.
+It should also check keyword args.
+
+The check-conventions command is a successful proof of concept:
+
+- It finds real problems quickly.
+- The code is sound. It parses code properly, and in the proper order.
+- Before and after methods collapse code complexity.
+- It will be easy for me to resume work on this project in future
+
+As a result, this project is at a reasonable stopping point. </t>
+<t tx="ekr.20180124123920.1">The find-all-unique-regex pattern command creates a node that lists all matches of the given regex pattern.  Not the matching lines, just the matching text itself, discarding duplicates. In other words, only m.group(0) is shown, where m is the re match object.
+
+For example, suppose there are multiple nodes containing each of the following::
+
+    whatever # tag:important-script
+    whatever # tag:important-setting
+
+The find-all-unique-regex command with the pattern `tag:.*` will produce a
+node whose headline is::
+
+    Found Unique Regex:tag:.*
+
+and whose body is::
+
+    tag:important-script
+    tag:important-setting
+
+The command supports **tag patterns** of the form::
+
+    #tag:&lt;kind&gt;
+</t>
+<t tx="ekr.20180124124409.1">These commands always add the new node as the first/last node of the
+preceding node, regardless of the setting @bool insert_new_nodes_at_end.</t>
+<t tx="ekr.20180124124532.1">The code promotes replaces @others with the body text of the node's child
+when the node has exactly one child. The singleton child becomes an
+organizer node without body text whose headline is 'organizer'.
+
+Later, the importer deletes organizer nodes after promoting their children.
+This is an iterative process, so that even more @others may be replaced
+later.</t>
+<t tx="ekr.20180124124714.1">https://github.com/leo-editor/leo-editor/issues/310
+
+As a happy side effect, right clicking now always shows this popup. That's
+because "New Outline" is always valid regardless of how many tabs there are
+and regardless of whether tabs have been detached.</t>
 <t tx="maphew.20171129131746.1">Python 3.0+::
 
     pip install leo
@@ -44546,7 +44829,7 @@ From Anaconda shell::
 Installing dependencies
 #######################
 </t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
