@@ -179,7 +179,7 @@ class Demo(object):
             c.executeScript(
                 namespace=self.namespace,
                 script=script,
-                raiseFlag=True,
+                raiseFlag=False,
                 useSelectedText=False,
             )
         except Exception:

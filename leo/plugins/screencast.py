@@ -608,7 +608,7 @@ class ScreenCastController(object):
         m.node_stack.append(p)
         try:
             undoData = c.undoer.beforeChangeGroup(c.p, tag, verboseUndoGroup=False)
-            c.executeScript(p=p, namespace=d, useSelectedText=False, raiseFlag=True)
+            c.executeScript(p=p, namespace=d, useSelectedText=False, raiseFlag=False)
             c.undoer.afterChangeGroup(c.p, tag, undoData)
         except Exception:
             g.es_exception()

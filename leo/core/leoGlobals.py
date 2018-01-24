@@ -6739,25 +6739,31 @@ def handleScriptException(c, p, script, script1):
     g.warning("exception executing script")
     full = c.config.getBool('show_full_tracebacks_in_scripts')
     fileName, n = g.es_exception(full=full)
-    c.goToScriptLineNumber(n, p)
-    #@+<< dump the lines near the error >>
-    #@+node:EKR.20040612215018: *4* << dump the lines near the error >>
-    if g.os_path_exists(fileName):
-        with open(fileName) as f:
-            lines = f.readlines()
-    else:
-        lines = g.splitLines(script)
-    s = '-' * 20
-    g.es_print('', s)
-    # Print surrounding lines.
-    i = max(0, n - 2)
-    j = min(n + 2, len(lines))
-    while i < j:
-        ch = '*' if i == n - 1 else ' '
-        s = "%s line %d: %s" % (ch, i + 1, lines[i])
-        g.es('', s, newline=False)
-        i += 1
-    #@-<< dump the lines near the error >>
+    # Careful: this test is no longer guaranteed.
+    if p.v.context == c:
+        try:
+            c.goToScriptLineNumber(n, p)
+            #@+<< dump the lines near the error >>
+            #@+node:EKR.20040612215018: *4* << dump the lines near the error >>
+            if g.os_path_exists(fileName):
+                with open(fileName) as f:
+                    lines = f.readlines()
+            else:
+                lines = g.splitLines(script)
+            s = '-' * 20
+            g.es_print('', s)
+            # Print surrounding lines.
+            i = max(0, n - 2)
+            j = min(n + 2, len(lines))
+            while i < j:
+                ch = '*' if i == n - 1 else ' '
+                s = "%s line %d: %s" % (ch, i + 1, lines[i])
+                g.es('', s, newline=False)
+                i += 1
+            #@-<< dump the lines near the error >>
+        except Exception:
+            g.es_print('Unexpected exception in g.handleScriptException')
+            g.es_exception()
 #@+node:ekr.20031218072017.2418: *3* g.initScriptFind (no longer used)
 def initScriptFind(c,
     findHeadline,
