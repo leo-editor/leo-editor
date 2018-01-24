@@ -330,7 +330,7 @@
 <v t="ekr.20090905082405.1487"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
 <v t="ekr.20110614062644.1379"><vh>&lt;&lt; define global paths and file names &gt;&gt;</vh></v>
 <v t="ekr.20101027070126.1643"><vh>class LeoMaker</vh>
-<v t="ekr.20101027070126.1662" a="E"><vh>run &amp; helpers</vh>
+<v t="ekr.20101027070126.1662"><vh>run &amp; helpers</vh>
 <v t="ekr.20101105103524.1494"><vh>clean_manifest</vh></v>
 <v t="ekr.20110603171959.1506"><vh>clean_spellpyx</vh></v>
 <v t="ekr.20141016123713.2120"><vh>copy_nsi_files (Not used)</vh></v>
@@ -355,6 +355,7 @@
 </v>
 </v>
 <v t="ekr.20141118074110.2"></v>
+<v t="ekr.20180124100848.1"><vh>Failures in unified version</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -4024,6 +4025,104 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
 </t>
+<t tx="ekr.20180124100848.1">c:\Test\LeoAppFolder&gt;LeoApp.exe
+
+
+reading settings in C:\Users\edreamleo\.leo\workbook.leo
+reading settings in C:\Test\LEOAPP~1\leo\test\unitTest.leo
+reading: @file unitTestStartup.txt
+reading: @file activeUnitTests.txt
+.saved: save-new-test.py
+....
+Traceback (most recent call last):
+  File "launchLeo.py", line 8, in &lt;module&gt;
+  File "leo\core\runLeo.py", line 71, in run
+    g.app.loadManager.load(fileName, pymacs)
+  File "leo\core\leoApp.py", line 2117, in load
+    ok = lm.doPostPluginsInit()
+  File "leo\core\leoApp.py", line 2722, in doPostPluginsInit
+    c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
+  File "leo\core\leoApp.py", line 2959, in loadLocalFile
+    c = lm.openFileByName(fn, gui, old_c, previousSettings)
+  File "leo\core\leoApp.py", line 3007, in openFileByName
+    lm.initWrapperLeoFile(c, fn)
+  File "leo\core\leoApp.py", line 3084, in initWrapperLeoFile
+    p.h = g.shortFileName(fn) if fn.endswith('.leo') else '@edit %s' % fn
+AttributeError: 'NoneType' object has no attribute 'h'
+Failed to execute script launchLeo
+F...................test of at.printError: La Pe?a
+..............s...........................
+End of leoAtFile tests
+..........s...
+c:\Test\LeoAppFolder&gt;python2 C:\Test\LEOAPP~1\leo\test\leo-bridge-test.py
+
+c:\Test\LeoAppFolder&gt;c:\Anaconda2\python.exe C:\Test\LEOAPP~1\leo\test\leo-bridge-test.py
+.ssss........................................
+End of leoColor tests
+................................
+End of leoCommands tests
+........
+End of leoConfig tests
+....ss...................................
+.........................................................................................................................................s...........................
+End of typing tests
+.
+End of leoEditCommands tests.
+............
+End of leoFileCommands tests.
+.....
+End of leoFind tests.
+.............
+End of leoFrame tests.
+..........................F.............................................
+End of leoGlobals tests.
+...
+End of leoGui tests.
+...............................................................................................................................
+End of leoImport tests.
+..s....
+End of leoKeys tests.
+.........................................
+End of leoNodes tests.
+................................s..................................................................
+End of leoUndo tests.
+...............................................................................................................................................................
+End of plugins unit tests
+.@test print redraw count: 736
+..all unit tests done
+..
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test batch mode
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "leo\core\leoTest.py", line 211, in runTest
+    builtins.execfile(scriptFile, d)
+  File "C:\Test\LEOAPP~1\leo\test\scriptFile.py", line 38, in &lt;module&gt;
+    assert(g.os_path_exists(test_file))
+AssertionError
+
+======================================================================
+FAIL: runTest (leo.core.leoTest.GeneralTestCase)
+@test g.importModule
+
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "leo\core\leoTest.py", line 211, in runTest
+    builtins.execfile(scriptFile, d)
+  File "C:\Test\LEOAPP~1\leo\test\scriptFile.py", line 5, in &lt;module&gt;
+    assert g.importModule('rope',verbose=False)
+AssertionError
+
+----------------------------------------------------------------------
+Ran 916 tests in 123.577s
+
+FAILED (failures=2, skipped=11)
+
+c:\Test\LeoAppFolder&gt;
+
+##### can not open @edit C:\Test\LEOAPP~1\README.MD</t>
 <t tx="maphew.20171107045903.1">Leo 5.6 September 25, 2017
 
 [Leo](http://leoeditor.com/) 5.6 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
