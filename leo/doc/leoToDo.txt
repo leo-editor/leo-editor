@@ -3,16 +3,7 @@
 .. @@language rest
 .. @@wrap
 .. @+all
-.. @+node:ekr.20161231072528.1: ** Maybe
-- reload-abbreviations command.
-
-* Allow key unbinding.
-
-- Unit tests should preserve find state.
-  The find command doesn't seem to work after unit tests.
-.. @+node:ekr.20160318113505.1: *3* Avoid mouse in nodetags & other plugins
-We want the alternatives to clones to be mouse free.
-.. @+node:ekr.20160315141751.1: *3* Code Academy: possible topics
+.. @+node:ekr.20160315141751.1: ** Code Academy: possible topics
 @language rest
 @wrap
 
@@ -37,9 +28,9 @@ We want the alternatives to clones to be mouse free.
 - Scripts can handle events.
 
 
-.. @+node:ekr.20160309105419.1: *4* Chapters & hoists
+.. @+node:ekr.20160309105419.1: *3* Chapters & hoists
 How to change what is shown in the outline pane.  Chapters and hoists exploit existing capabilities.  If need be, more could be added with just a few lines of code in Leo's main outline redrawing code.
-.. @+node:ekr.20160309105156.1: *4* uA's & views
+.. @+node:ekr.20160309105156.1: *3* uA's & views
 Quick additions to Leo's core:
 - Define the p.u property, so code can do p.u instead of p.v.u.
 - Possibly make the api for uA's more convenient.
@@ -61,22 +52,13 @@ Being able to make uA's visible somehow would give Leo many of the cool features
 - See all and only nodes with given attributes.  This is similar to Leo's clone-find-all (or clone-find-all-flattened) commands, combined with something like a hoist.
 
 - List all such nodes in the uA pane, similar to the Nav Pane (Quicksearch plugin), so that clicking on a node would select the node in the entire outline, with only ancestors of the selected node expanded.  Pretty easy to do.  Alternatively, perhaps some  tag (uA) oriented features can be added to existing plugins.
-.. @+node:ekr.20160309105326.1: *4* API for windows
+.. @+node:ekr.20160309105326.1: *3* API for windows
 The so-called Easter-Egg interface creates new panes from the gui.
 
 A summary of how to do this programmatically is needed.
 
 Note: it's possible to save the layout so that Leo will restore it when Leo starts up the next time.
-.. @+node:ekr.20161205102034.1: *3* Maybe: Temp vim modes
-The idea is to be able to define the dot easily.
-
-- Allow Leo to enter vim-mode temporarily.
-- Define the dot.
-- Leave vim-mode.
-- Use the dot.
-.. @+node:ekr.20161106074940.1: *3* Maybe: Visualize massive git changes
-This is likely impossible, but git contains all history...
-.. @+node:ekr.20120516140545.9987: ** Wishlist: no due date
+.. @+node:ekr.20120516140545.9987: ** Enhancements
 @language rest
 @wrap
 .. @+node:ekr.20140704052551.17951: *3* Code
@@ -492,539 +474,8 @@ There are several ways to run code externally:
 
 - time-between-notifications: 0 means disable notifications.
 - Decrease time between calls to idle-time handler.
-.. @+node:ekr.20160405063258.1: *4* Unlikely
-.. @+node:ekr.20150215102218.4: *5* Unlikely: @ns-rst/vo/otl commands
-@language rest
-
-===== @ns-* write logic
-
-In his initial post, Rob said, "when I change my @auto-rst files to @nosent
-files, the resulting files do not contain the RST section headers that were
-automatically added by @auto-rst."
-
-This proves that @ns-rst must have special logic that writes the proper
-section headers. Happily, this can be done easily with special cases in
-at.putOpenNodeSentinel. Ditto for @ns-md, @ns-vimoutline and @ns-otl.
-
-From https://groups.google.com/d/msg/leo-editor/QxK2V62ESLw/vCSolavmw4YJ
-
-===== @ns-* read logic
-
-No change is actually *required* for @ns-rst and @ns-md. When reading an
-@ns-rst or @ns-md file, added sections could be slurped into the outline as
-under/overlining text. The user could leave the changed node as it is. Or
-the user could create a new node with the indicated headline. Either way,
-the @ns-rst write logic would recreate the changed file.
-
-However, a simple, fast post-pass in the @ns-rst/md read logic could create
-the new nodes automagically. The post-pass would traverse the tree created
-by the @nosent logic looking for under/overlined lines (or # lines for md),
-creating new nodes as needed. The actual code would be similar to the
-@auto-rst logic,but it exists in a far simpler context than @auto-rst.
-
-Post passes are probably *required* for @ns-vimoutline and @ns-otl. Indeed,
-vimoutline or otl sentinels should *never* be left as plain text in an
-existing node. The "raw" sentinels would corrupt the vim or Emacs outline
-if the node were later moved. An unpleasant time bomb.
-.. @+node:ekr.20130806072439.21337: *5* Unlikely: better C importer
-From: ne1uno <eltronis@gmail.com>
-
-wouldn't it be great to have a first class c importer?
-
-hiding the complexity of platform & compiler/option #defines. invisible (TM) nodes would be fruitful here. switched on by @#define. with an @#define=3D collection node or using a bunch of headlines. and an rclick flipper for true/false, defined/not defined declarations.
-
-meanwhile I wait for the inspiration or someone else to nail down a regular expression c language parser. maybe a tokenizer is enough. I did run c code through AStyle then through your old c2py via buttons. for code that would remain in c, in SciTE through google CPPlint program to point up flaws, and to get the context sensitive help from various CHM. running flawfinder good to do now and then old or new code. post processing and displaying the report in a browser. but it doesn't go far enough & too many false positives.
-
-there is splint, maybe the only free lint left. the need to inject "hints" all over the code make it less than ideal for perusing unknown source and generally a deal breaker for project code. sometimes all you need is a function/var list to get by. deeper static analysis is quite the serious business. so, it's not a surprise those programs are not easily found, or used. there are a few code flow programs that could be harnessed to colorize headlines indicating relations. taking all this in, marking nodes that need work with a popup or tooltip action event when you view that node with the details of one or another parser to annotate what needs work.
-
-we have had a few plugins/buttons/attempts at designing an interface to get a program node compiled. this is also a decent way to get info on the quality of code by turning all warnings on. fails for snippits. never quite simple to hookup or modify painless. perhaps the biggest problem is knowing what is available and where. more toolbars, no reason they can't dock. drag & dropping buttons. one of the huge advantages of Qt over Tk so far barely tapped. you begin to accept the fact that you need to create a temp file instead of real process control. managing program quirks & options becomes more trouble than it's worth just to protect the purity of the operation sans temp files. QTprocess has more options than the process in pythons libs. if it ever works as well as it should. but, a little hard to wrap. not going to venture a guess if pyqt gets it right or not. not to mention how bungled up OS process control still is. process control will be essential to any inter-process operations. that is, unless you backslide into wanting to build everything "in" and invent everything new again. re: blender, I haven't looked at blender code in a while, but I would be shocked if there weren't some well established way to hook into a script. sounds like noone has found them yet.
-
-not sure how to grab a window handle on other OS but for windows it's fairly straight forward. blender or GTK could setup blocks. another great Qt based project is universal indenter, a front end
-
-for many indenters for many languages. this would be a good place to look for how to manage inter-process communication in Qt. a first class editor will have to include first class importer for javascript at the least and probably lua and one or two others. one could imagine niceties like clickable links on #include files. right clickable options on them such as import, simple view, htmlize.
-
-also about styles, astyle has the options on the commandline, the builtin/compiled in defaults and an ~/.astyle.rc for personal style. some will find an indenter that has no options useless. I know the indenter created is purely for internal use, as it were, at this point. adding selectable options later will complicate the program and for most use will have little payback. you may as well expect to have some want a plugable option for style. exposing a general use tokenizer could have many callers.
-.. @+node:ekr.20110529115328.18238: *5* Unlikely: Emacs related
-I'll do these if and and only if somebody asks for them.
-.. @+node:ekr.20110529104352.18248: *6* Complete k.universalDispatcher
-.. @+node:ekr.20110529104352.18249: *6* Complete number-to-register command
-.. @+node:ekr.20031218072017.753: *6* Emacs comint-mode
-Summary: The improved Execute Script command does most of this
-
-Michael Manti
-mmanti@mac.com
-
-The feature that could make Leo *the* IDE for developing in interpreted languages is something like the (X)Emacs comint-mode.el for interacting with the shell and interpreters.
-
-comint-mode.el serves as the basis for interactive modes for a number of languages--OCaml, Haskell, SML, among them. It allows for editing expressions in one buffer and triggering their evaluation in another buffer that has an interpreter running in it, along with entering commands in the interpreter buffer and moving back and forth through the history of their evaluation.
-
-Imagine being able to highlight a node in Leo, and have all the code in it and its children evaluated in an interpreter running in a separate window or pane, much as Leo can open a Python shell now. Users of those languages could build plug-ins specific to their language atop that layer, and the @language directive could activate that. I think that would be very cool.
-.. @+node:ekr.20060116090428: *6* Expand 'point' so it indicates node as well as text location
-.. @+node:ekr.20071004120359.2: *6* expand-region-abbrev
-See: regionalExpandAbbrev.
-
-You may wish to expand an abbrev with a prefix attached; for example, if `cnst' expands into `construction', you might want to use it to enter `reconstruction`. It does not work to type recnst, because that is not necessarily a defined abbrev. What you can do is use the command M-' (abbrev-prefix-mark) in between the prefix `re' and the abbrev `cnst`. First, insert `re`. Then type M-'; this inserts a hyphen in the buffer to indicate that it has done its work. Then insert the abbrev `cnst'; the buffer now contains `re-cnst'. Now insert a non-word character to expand the abbrev `cnst' into `construction'. This expansion step also deletes the hyphen that indicated M-' had been used. The result is the desired `reconstruction'.
-
-If you actually want the text of the abbrev in the buffer, rather than its expansion, you can accomplish this by inserting the following punctuation with C-q. Thus, foo C-q , leaves `foo,' in the buffer.
-.. @+node:ekr.20060123091352: *6* Incremental search in switch-to-buffer
-.. @+node:ekr.20060628103226.3: *6* Make sure repeat counts work on basic editing commands
-.. @+node:ekr.20051021074728: *6* Space completion
-.. @+node:ekr.20100830120622.5829: *5* Unlikely: Improve python import
-> > Hmm, I guess that would be more clear, although I think I'd like an option
-to include it in the following def to avoid
-
-> > Decoration
-> > index
-> > Decoration
-> > add_user
->
-> Sure.  Decorations must always be part of a definition.
-
-Well, personally I'd like to have them included in the definition, but I think Kent's preference for a separate node is reasonable to. If your function and hence definition node is called "pluralize", and it's decorated with something like "@authenticate_user", you may never check the innocent looking pluralize definition to find out what on earth's triggering the mysterious network database call. And this isn't a completely specious example, authentication may have been added to stop pluralize being used in a user existence detection exploit or something. OTOH in well behaved code like CherryPy apps you don't want a separate node for every @cherrypy.expose.
-
-Bottom line is I think we're asking for a set of @settings to fine tune python import behavior::
-
-    @python_import_interdef = previous | next | own_node | ai
-    @python_import_decoration = next | own_node
-
-I'm not sure I believe the AI option is possible / practical, and am not asking for it, just listing it :-)
-
-I'd also like::
-
-    @python_import_init_in_class_node = true | false
-
-as often there's more docs on a class in the __init__ than the class docstring.
-
-I think that's really all we're talking about, some @settings to test during import.
-.. @+node:ekr.20150408193842.1: *5* Unlikely: Limit searches so clones are found at most once
-This doesn't seem very important in practice.
-
-An easy workaround is to start the search from a place where clones are likely to be found just a few times.
-.. @+node:ekr.20041016134312.2: *5* Unlikely: Standard Weave command
-Use noweb and TeX, or maybe Pyx.
-.. @+node:ekr.20160405063304.1: *4* Won't do
-.. @+node:ekr.20131121050226.16327: *5* Won't do: reload command
-- Don't reload any files!
-- Only reprocess leoSettings.leo or myLeoSettings.leo if they are actually open.
-- Change LoadManager to handle a reload flag.
-.. @+node:ekr.20130806072439.21443: *5* Won't do: threaded saveAll()
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-I often need to save 4, 6, even more open changed Leo files at once.  Mainly when I'm filing / adjusting todo items, although at the end of a session having 4 changed files open can't be that unlikely.
-
-So it would be really nice if c.saveAll() could be threaded.  Even as I write this, it gets more complicated...
-
-  - each thread should do no user interface calls, or at least no calls
-    that aren't deferred to the main thread
-
-    - that's ok, would take quite a bit of tracing to catch them all,
-      but doable - except - plugins called from save hooks might break
-      the rule
-
-  - updating recent files list would have to be done properly, not a
-    big deal
-
-  - multiple threads saving to the same external files would be a
-    problem, that's the complication that only just occurred to me
-
-I don't typically have the same external file referenced from multiple Leo files, why would you do that... so the last problem, although potentially major, might be theoretical more than practical.
-
-Hmm, well it's a thought.  First thing to check, is saving IO bound or CPU bound...
-.. @+node:ekr.20130806072439.21444: *6* Re: threaded saveAll()
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
-Since the flat document is a sort of "rambling" blue sky topic, I added some more thought on G+ leo community instead of increasing mailing list noise:
-
-https://plus.google.com/103097156557482112329/posts/Vp5ansTdLwq
-.. @+node:ekr.20130806072439.21445: *6* Re: threaded saveAll()
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
-I'm pretty sure saving is cpu bound; for "normal" size documents, flushing that kind of stuff to disk (or memory buffers that are to be written to disk) shouldn't take significant amount of time.
-
-.. @+node:ekr.20130806072439.21446: *6* Re: threaded saveAll()
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-On Sat, 9 Mar 2013 14:46:09 -0600
-Terry Brown <terry_n_brown@yahoo.com> wrote:
-
-> I guess this is a wishlist item - I suspect it's a result of my
-> workflow that might be quite different from other peoples, but I often
-> need to save 4, 6, even more open changed Leo files at once.  Mainly
-> when I'm filing / adjusting todo items, although at the end of a
-> session having 4 changed files open can't be that unlikely.
-
-I've just found that, because these todo items are always in the outline itself and not external files, I can just do 'write outline only' on all the open outlines, and this is much faster and smooths out the bump in my workflow that got me started thinking about this.
-.. @+node:ekr.20130806072439.21447: *6* Re: threaded saveAll()
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-On Sun, 10 Mar 2013 08:13:41 +0200
-"Ville M. Vainio" <vivainio@gmail.com> wrote:
-
-> I'm pretty sure saving is cpu bound; for "normal" size documents, flushing
-> that kind of stuff to disk (or memory buffers that are to be written to
-> disk) shouldn't take significant amount of time.
-
-Probably right, so could you use `multiprocessing` instead of `threading`?  More challenging implementation wise, but I'm wondering if it's even possible, in terms of handing over the in-memory data structure?
-.. @+node:ekr.20130806072439.21448: *6* Re: threaded saveAll()
-From: "Ville M. Vainio" <vivainio@gmail.com>
-
-Multiprocessing based implementation will likely be quite hard, and once you walk the trees anyway and copy the data over the process boundary, it could cause bad pauses in execution.
-
-I have often thought how nice it would be to have "flat" storage for the leo document, so that you could just copy over a flat chunk of memory and let other processes traverse that. Doing that is a somewhat nontrivial undertaking, to say the least :).
-
-I'd just start with threads, despite the GIL problems.
-.. @+node:ekr.20111017132257.15883: *5* Won't do: Use IPython completion
-http://groups.google.com/group/leo-editor/browse_thread/thread/014fe61ff9480b2b
-
-I don't know if this is relevant or not, but the IPython autocompletion
-capability is awesome.
-
-If I'm investigating code I tend to do the following.
-
-list the modules in a package:
-In [1]: from fs import <tab>
-
-this lists the modules, in a package so I pick one
-In [1]: from fs import osfs
-<the osfs entry is tab-completable>
-
-now I can check the usage of fs.osfs
-In [2]: osfs? <enter>
-
-or the source:
-In [2]: osfs?? <enter>
-
-or the contents of the module
-In [2]: osfs. <tab>
-
-I can instantiate a class:
-In [3]: myfs = osfs.OSFS('/')
-
-and examine the ivars and methods:
-In [4]: myfs. <tab>
-
-It is such an efficient way to learn and remember the details of code.
-
-I know a bunch of work was done on Leo/IPython integration, don't
-know the current status, my wish of synchronized IPython and Leo
-may well be one of the many granted wishes I have forgotten about.
-
-I certainly think IPython autocompletion is the gold standard.
-
-===== EKR:
-
-This can't be done because IPython has access to live objects.  Leo does not.
-.. @+node:ekr.20150420100543.1: *3* Config
-.. @+node:ekr.20111026075003.16481: *4* Unlikely: Support ~/.leo_config.py
-Supposedly would make Leo more professional/standard. However, Leo has plenty of ways to execute code or set settings at startup. Nobody is asking for it.
-.. @+node:ekr.20081119132758.2: *4* Won't do: @ifgui in settings trees
-@language rest
-
-This could be done now that gui's are created on the command line.
-However, it's not useful because the only gui is Qt.
-
-@language python
-
-.. @+node:ekr.20150412054121.1: *3* Directives
-.. @+node:ekr.20130806072439.20369: *4* @paragraph(s)
-From: <offray@riseup.net>
-
-I have been using txt2tags + Nested Editor to produce structured docs in 
-a light markup and exporting them to HTML and LaTeX > pdf. The fine 
-tunning on the pdf output is done by editing the LaTeX source in Leo. I 
-like the aesthetic of the source code and the outputs and I have 
-contacted the Nested author in order to get some cross-pollination 
-between it and Leo [1].
-
-[1] 
-https://groups.google.com/group/nestededitor/browse_thread/thread/7068e3cd229d4614 
-
-Now I think that is time to start hacking Leo for a better support of my 
-work flow and the first thing I would like to have is a "@paragraph" 
-directive that works the same as @rst-no-head but can be used in any 
-part of a (sub)tree, even if is not @rst (sub)tree. This would come 
-handy in chunking and reassembling LaTeX docs without marking up the 
-parts with "<<chunk>>" tags.
-
-===== EKR
-
-Interesting idea. Please file a wishlist bug at https://bugs.launchpad.net/leo-editor.
-
-===== offray As I have say repeatedly I'm an "end user" 
-of Leo and I have browse the doc about developing in Leo in [2] and I 
-plan to follow it as a tutorial, but any pointer to a more detailed 
-section to pay attention or to the Leo trees to start hacking is welcomed
-
-[2] scripting.html
-
-.. @+node:ekr.20031218072017.797: *4* Won't do: @file http & @file ftp
-I'd like to see leo's @file can be extended to cover more protocols, like REBOL's "read" does. 
-
-in short, it would be very sweet if the following work::
-
-    @file http://www.somedomain.org/python/foo.py 
-    
-    @file pass@ftp.sd.org/python/foo.py" target="_blank"    
-    target="_new">ftp://user:pass@ftp.sd.org/python/foo.py> 
-
-while we are at it, what about xmlrpc/soap? 
-
-should there be new directive, like @source ?
-.. @+node:ekr.20031218072017.810: *5* Remote access Scott Powell
-I will wait. Here's clarification, when you're ready for it:
-
-All of my projects are stored on remote computers, and accessed via FTP. What I want is basically the ability to open up these projects directly through leo, instead of transferring the files manually between my computer and the computers that hold my projects, preferably through FTP.
-
-My solution: A new menu item called 'FTP' or 'Remote'. Click on this, and an FTP dialog opens up, with an empty list of FTP sites, and the ability to add more. You select a site, and it brings up a list of files. You select a file, and it is added to your project. When you hit 'save', it automatically does an FTP send.
-
-Python makes this a lot easier with the builtin module 'ftplib'. I'm sure there are similar things for C++. I hope you take this idea into consideration.
-
-Scott Powell
-CEO, Dev Designs
-.. @+node:ekr.20031218072017.745: *4* Won't do: @first <n>
-Here's a hopefully small thing. If you need to place a good sized copyright statement at the top of your files, LEO doesn't handle this case very cleanly. As I'm sure you're aware, you wind up with a matching number of @@first lines for each leading line in your source.
-
-As an example: 
-# 1 
-# 2 
-# 3 
-# 4 
-# 5 
-@verbatim
-@verbatim
-@verbatim
-#@+leo 
-@verbatim
-@verbatim
-@verbatim
-#@+node:0::@file /tmp/firstcheck.py 
-@verbatim
-@verbatim
-@verbatim
-#@+body 
-@verbatim
-@verbatim
-@verbatim
-#@@first 
-@verbatim
-@verbatim
-@verbatim
-#@@first 
-@verbatim
-@verbatim
-@verbatim
-#@@first 
-@verbatim
-@verbatim
-@verbatim
-#@@first 
-@verbatim
-@verbatim
-@verbatim
-#@@first 
-@verbatim
-@verbatim
-@verbatim
-#@+doc 
-# 
-# How many firsts do I get? 
-
-@verbatim
-@verbatim
-@verbatim
-#@-doc 
-@verbatim
-@verbatim
-@verbatim
-#@@c 
-Start code. 
-@verbatim
-@verbatim
-@verbatim
-#@-body 
-@verbatim
-@verbatim
-@verbatim
-#@-node:0::@file /tmp/firstcheck.py 
-@verbatim
-@verbatim
-@verbatim
-#@-leo 
-
-My fellow co-workers who don't use LEO, aren't exactly loving me here. 
-
-Might we introduce an: 
-
-@@first <num> 
-
-Type tag instead? So one '@@first 5' could represent all 5 of the above @@first lines? It makes for a smaller, cleaner LEO footprint and will tick off non-LEO users much less.
-
-Thanks. 
-
-- ordinarius 
-.. @+node:ekr.20040216054459: *4* Won't do: @h @f @endh and @endf directives
-http://sourceforge.net/forum/message.php?msg_id=2424151
-By: ksejlod ( Peter Barrel ) 
- I Have a (maybe) great idea!   
-2004-02-15 04:29
-
-I've been using LEO for a while and finding surprinsingly powerfull new uses now
-and then, (hey, not a week passes that i dont think to myself : "why did'nt
-anyone thought of that kind of tool that is LEO. It's so stupid to program such
-a tool, yet no one thought of doing such a thing ! ")
-
-I was wondering if there was a leo keyword (beginning with "@") that would do a
-feature I thought would be great: something such as :
-@h
-@endh
-and of course, similarily...
-@f
-@endf
-
-Standing for "Header", "End Header", "Footer" and "End Footer". Let me please explain ...
-
-When creating files with @file (or nosentinels) I use the keyword "@others" in
-the starting node body of the file and place in the file, as it's decendants
-(children, grand-children & so on) some clones of other stuff somewhere else
-outside of this file (usualy, clones of parts of program regrouped as children
-of a "components" node up in the leo outline. Typical Example:
-
--Introduction
--+components
--a
--b
--c
--+@file program.BAS
--b
--c
--a
-
-a, b, and c are clones and the @file node contains @others.
-
-As you see, I proceed that way because in older programming languages or in
-lower level languages, the order of components such as procs, declarations, etc
-as an importance. It also has the implication that << and >> brackets are
-irrelevant in my way of using leo.
-
-Now, my feature that I looked for in the doc but could not find (so i suggest it
-here in case no one had any need of this before) is that when used in the BODY
-of a node part of an "@file" the @h and @endh would define a chunk of text in
-the body, you've guessed it, to be added before _each_ children node and ONLY
-children no grandchildren or any deeper. But It could also be used INSIDE the
-body of a children to define headers or footers for IT'S OWN direct children.
-
-so, eehh, do you see the relevance of such a feature? Have i explained it
-clearly? maybe this would help:'
-
-CONST baba=2 AS INTEGER
-CONST bebe=7 AS INTEGER
-CONST zaza=5 AS INTEGER
-CONST bobo=1 AS INTEGER
-... the beginning and end of each of those "parts-of-a-program" is the same for a potential lot of lines... 
-
-To Be Precise : It's just really for adding something at end or beginning of a
-direct children of a node part of an @file in the tangling process.
-
-Is this feature already implemented but i have not found it? I'm pretty sure it easy to implement... what do you people think of this?
-Thanks 
---
-k
-
-p.s. I'm the guy who proposed that in the untangling process, a clone would not
-be updated by it's _Last-Instance-Found_ in the @file beeing untangled, but
-instead updated by the _Last-Modified-One-Found_ in the @file... :)
-
-(ooouuuuhh that would be slick...)  
-
-By: ksejlod ( Peter Barrel ) 
- RE: I Have a (maybe) great idea!   
-2004-02-15 04:35  
-
- The tree i tried to draw in ascii did not came out the way i did it,
-sourceforge "eated" leading spaces sorry a, b and c are children of their "+"
-node just above them . -- k
-.. @+node:ekr.20041130104552: *4* Won't do: bird-track programs
-By: Guenther Enthaler - genthaler
-RE: Haskell support  
-2004-11-18 22:55
-
-There's a literate programming mode in Haskell (and in a number of other functional programming languages such as Clean & Curry), where the program is in a comment, usually where the line starts with ">" (bird track style, I think it's called), and the comments/documentation are freeform. It would be difficult but cool if Leo could support it, if only because the sentinels in the derived files wouldn't make whole file look so busy.
-
-Günther 
-
-===== EKR: @clean eliminates this problem.
-.. @+node:ekr.20031218072017.805: *4* Won't do: other section delims besides << and >>
-Maybe the section operator could be customizable, 
-
-I personally prefer the wiki way [[name of section]]. 
-
-@setlink-tag [[ ]] 
-.. @+node:ekr.20141103113220.10: *4* Won't do: parameterized template nodes
-From: Alexandre_Toledo <jalexandretoledo@gmail.com>
-
-As I use Leo to write PL/SQL code, I need to write similar text several times, changing only small parts of it. It would be great if I could create a node with the "template" and then clone it everywhere it should be written, and then providing the parameters to be used in this writing.
-
-Let me try to clarify it. I'd like to create a tree like this:
-
-    +- @file something.sql
-       +- Section 1
-          + << Clone >> with Parameters A, B
-       +- Section 2
-          + << Clone >> with Parameters C, D
-
-In this tree, both "Clone" nodes would be generated from a template specified somewhere in the tree, and would have parts of its text replaced with values "A" and "B" in Section 1, and "C" and "D" in Section 2.
-
-I've searched but couldn't find anything like this, then I've thought of trying to write a hook to intercept the "save" command, but couldn't think of a way to pass the parameters; I think the obvious way would be to put the parameters after the "<< >>", but then all cloned nodes are changed, so it wouldn't work.
-
-Another alternative would be creating some kind of directive @something, but I have no idea of how to do that.
-
-Any ideas?
-
-===== EKR: This is not likely ever to happen.
-.. @+node:ekr.20141103113220.11: *5* OP: Re: Parameterized template nodes
-I've tried it and it's great, I think it will be useful, but it's not what I was thinking of...
-
-Let me try to explain what I had thought about.  What I would like to do is:
-
- 1. create a new .leo file
- 2. add a "template" node (eventually with sub nodes) with some ${schema}
-    and ${table} macro place holders in its contents
- 3. add a @file node to the .leo file
- 4. add to this @file node a new one with definitions such as
-    schema=3DSCHEMA_NAME and table=3DTABLE_NAME
- 5. add as a sub node to this last one a clone from the "template" node;
- 6. then, when I save everything, the @file would have "SCHEMA_NAME" and
-    "TABLE_NAME" everywhere a "${schema}" or a "${table}" were in the original
-    template node.
-
-It would be important that, when I reopen the .leo file later, the macros in the @file node where shown as ${schema} and ${table}, and not as it's substituted text.
-
-Now that I've described it, I can't see how it would be done... The ${macro} place holders should be on the contents of the @file node, so after substitution, how could we recover it?
-
-That's also why the code from Jacob is not what I need (but I'm already thinking of other uses for it :) ): it will create a text when the button is pressed, but the generated nodes will be just static text.
-.. @+node:ekr.20140824043305.18292: *3* Docs
-.. @+node:ekr.20130909111702.13058: *4* Allow paypal donations to Leo
-.. @+node:ekr.20130503155210.24814: *4* Tutorials/Screencasts (revise)
-Rewrite in screencast-script style:
-- Docstrings for the most important plugins.
-- All help-for-<topic> text.
-- Leo's tutorials.
-
-** Screencast style for plugins docstrings.
-* Screencast style for help messages.
-* Screencast style for tutorials.
-* Create YouTube channel for Leo screencasts.
-
-Topics:
-- Minibuffer: alt-x, tab-completion.
-- @button.
-- @rclick
-- Find/Change (done)
-- execute-script.
-- bookmarks.py.
-
-.. @+node:ekr.20160318134258.1: *4* Wiki stuff
-.. @+node:ekr.20130806072439.21301: *5* LeoWiki using GitIt and Pandocs
+.. @+node:ekr.20160318134258.1: *3* Docs
+.. @+node:ekr.20130806072439.21301: *4* LeoWiki using GitIt and Pandocs
 From: HansBKK <hansbkk@gmail.com>
 
 This is highly off-topic for most on the list, so feel free to ignore, but anyone using Leo for single-source documentation generation/conversion, including future googlers, please reply with comments or notes on your experiences.
@@ -1038,7 +489,7 @@ Gitit also incorporates the Pandoc <http://johnmacfarlane.net/pandoc/>project fo
 With the increasing likelihood that I'll be using Leo as the centerpiece of my toolchain, plus the fact that Pandoc is much more actively maintained, it's starting to look worth my while to consider switching my "master source" content syntax over from Txt2tags to reST. The only downsides are that Gitit is a Haskell project rather than Python, and one thing I like about Txt2tags is its support for conversion to AsciiDoc, rather than Pandoc's direct output to full-blown DocBook XML - but apparently even that's in the works in Pandoc's dev version.
 
 Anyone in the Leo community using Gitit, especially for use beyond simple code documentation?
-.. @+node:ekr.20130806072439.21302: *6* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
+.. @+node:ekr.20130806072439.21302: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Thu, Jan 19, 2012 at 8:09 PM, HansBKK <hansbkk@gmail.com> wrote:
@@ -1050,7 +501,7 @@ On Thu, Jan 19, 2012 at 8:09 PM, HansBKK <hansbkk@gmail.com> wrote:
 No experience myself, but thanks for these interesting links.
 
 EKR
-.. @+node:ekr.20130806072439.21303: *6* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
+.. @+node:ekr.20130806072439.21303: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
 From: =?UTF-8?B?T2ZmcmF5IFZsYWRpbWlyIEx1bmEgQ8OhcmRlbmFz?= <offray@riseup.net>
 
 Hi,
@@ -1076,7 +527,7 @@ Cheers,
 
 Offray
 
-.. @+node:ekr.20130806072439.21304: *6* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
+.. @+node:ekr.20130806072439.21304: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
 From: <offray@riseup.net>
 
 El jue 19 ene 2012 21:09:26 COT, HansBKK escribi=F3:
@@ -1187,7 +638,7 @@ Cheers,
 
 Offray
 
-.. @+node:ekr.20130806072439.21305: *6* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
+.. @+node:ekr.20130806072439.21305: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
 From: Matt Wilkie <maphew@gmail.com>
 
 > Wow I think that this is the first time I have the opportunity to
@@ -1199,7 +650,7 @@ From: Matt Wilkie <maphew@gmail.com>
 
 I am reading, and enjoying. The clouds you've placed in my mind are
 making interesting shapes and I am intrigued. ;-)
-.. @+node:ekr.20130806072439.21306: *6* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
+.. @+node:ekr.20130806072439.21306: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
 From: =?UTF-8?B?T2ZmcmF5IFZsYWRpbWlyIEx1bmEgQ8OhcmRlbmFz?= <offray@riseup.net>
 
 Hi,
@@ -1394,7 +845,7 @@ Thanks,
 
 Offray
 
-.. @+node:ekr.20130806072439.21307: *6* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
+.. @+node:ekr.20130806072439.21307: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
 From: HansBKK <hansbkk@gmail.com>
 
 
@@ -1557,14 +1008,14 @@ because coders would have to put so much effort into infrastructure=20
 overhead work to be able to keep working with their preferred toolset.=20
 Anyway 'nuff said on that.
 
-.. @+node:ekr.20130806072439.21308: *6* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
+.. @+node:ekr.20130806072439.21308: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
 From: Largo84 <Largo84@gmail.com>
 
 This topic is of much interest to me as I use Leo primarily for writing 
 documentation (mostly LaTex, some html and some rST). I haven't worked w/ 
 Pandoc yet but am interested in some of the possibilities. Thanks for the 
 links, I'll check them out.
-.. @+node:ekr.20130806072439.21309: *6* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
+.. @+node:ekr.20130806072439.21309: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
 From: HansBKK <hansbkk@gmail.com>
 
 
@@ -1664,7 +1115,7 @@ as my plans for enabling community editing of Leo-managed content will be=
 wiki-platform agnostic.
 
 To me, the key enabler for that is "everything as a file". . .
-.. @+node:ekr.20060227123536: *5* Mulder: Tiddlywiki and related comments about rendering body text
+.. @+node:ekr.20060227123536: *4* Mulder: Tiddlywiki and related comments about rendering body text
 http://sourceforge.net/forum/message.php?msg_id=3578252
 By: bwmulder
 
@@ -1685,135 +1136,6 @@ Maybe Leo can be split up into three components:
 I don't know much about javascript, so I would have to learn more about this language before doing anything in this direction.
 
 As an intermediate step, maybe we could allow mixing RST processing with regular program text.  Leo would produce two documents out of a source file: a version for the compiler in plain ascii, and an HTML file for reading the source.
-.. @+node:ekr.20131213072223.16397: *4* Video tutorials (revise)
-Are any more needed?
-
-When ready to release:
-
-- Note to Dave Winer.
-- Announce to comp.lang.python & SourceForge.
-.. @+node:ekr.20131221065129.16519: *5* - Basic: Basic operations
-
-.. @+node:ekr.20131221065129.16522: *6* Basic focus operations
-The presently selected pane has a blue border.
-We say that the selected pane **has focus**.
-
-Regardless of what pane has focus:
-
-- Alt-T puts selects the outline pane.
-- Alt-D puts selects the body pane.
-- Alt-Arrow key select another outline node
-  and put focus in the outline pane.
-
-A handy shortcut:
-
-- When the outline pane has focus,
-  the Return puts focus in the body pane.
-.. @+node:ekr.20131221065129.16524: *6* Basic outline operations
-Ctrl-N creates a new file.
-Ctrl-S saves the file.
-
-When focus is in the outline pane:
-
-- The Insert key inserts a new node.
-  Type the headline text followed by Return.
-- The Delete key or the BackSpace key deletes a node.
-- Plain Arrow keys select nodes.
-- Shift-Arrow keys move nodes.
-
-The following commands work regardless of focus.
-
-
-- Ctrl-I inserts a new node.
-- Ctrl-H edits the headline of the selected node.
-- Ctrl-Shift-X deletes (cuts) the node.
-  (Ctrl-Shift-C copies the selected node)
-- Ctrl-Shift-V copies a previously copied or cut node.
-- Alt-Arrow keys select nodes, as in Windows explorer.
-- Alt-Shift-Arrow keys move nodes.
-- Ctrl-U, Ctrl-D, Ctrl-L and Ctrl-R move nodes up, down, left and right.
-- Ctrl-Z undoes the last operation. 
-  Ctrl-Shift-Z redoes the last operation.
-.. @+node:ekr.20131221065129.16520: *6* Basic text operations
-- Return inserts a newline.
-- Arrow keys move the cursor by characters.
-- Ctrl-Arrow keys move the cursor by words.
-- Home and End move the cursor to the start/end of a line.
-- PageUp and Page-Down move the cursor by pages.
-- Ctrl-Home and Ctrl-End move the cursor to the start/end of the body text.
-
-- Adding the Shift modifier to any of these keys extends the selection:
-
-- Shift Arrow keys.
-- Shift-Ctrl-Arrow keys.
-- Shift-PageUp and Shift-PageDown.
-- Shift-Home and Shift-End.
-- Shift-Ctrl-Home and Shift-Ctrl-End.
-.. @+node:ekr.20131211054925.16380: *5* - Basic: Creating external files
-Using Leo *is* easy.
-
-The rule (of thumb) that helper methods should be children of the method
-that calls them instantly reveals that programs are outlines in disguise.
-Once you have a way of seeing that fact *at all times*, one can never go
-back to the flat, myopic way of seeing. It's really that simple.
-
-And finally, there is @others. I created it within the first hour of
-prototyping Leo in the MORE outliner. It has remained unchanged all these
-years because it is, fundamentally, a very simple idea.
-
-.. @+node:ekr.20131208103040.16343: *5* - Basic: Getting help
-.. @+node:ekr.20131208103040.16342: *5* - Basic: Settings
-- focus on visual settings.
-@menu
-leo-x-pt.leo files.
-- Small test .leo files: useful for settings.
-.. @+node:ekr.20131121050226.16328: *6* settings vid
-open leoSettings.leo.
-open myLeoSettings.leo.
-
-Concentrate on:
-    - visual settings.
-    - keyboard shortcuts.
-
-print-settings, print-bindings, print-commands.
-
-Trick: use small, easily/quickly started, file to test settings.
-    Demo: put console *behind* window.
-.. @+node:ekr.20131208103040.16350: *5* - Find command (needed?)
-- Ctrl-G hides the Find pane.
-
-- Show how to use the minibuffer to discover the toggle commands:
-    <Alt-X>tog<tab>f<tab>   or
-    <Alt-X>set<tab>f<tab>
-.. @+node:ekr.20131116123026.16661: *6* Example
-# For the Find screencast.  It could be improved so the differences between nodes is more apparent.
-.. @+node:ekr.20131116123026.16662: *7* spam
-DEF spam():
-    pass
-.. @+node:ekr.20131116123026.16663: *7* eggs
-def eggs():
-    pass
-.. @+node:ekr.20131208103040.16344: *5* - Intermediate: Auto-completion
-.. @+node:ekr.20131208103040.16349: *5* - Intermediate: Importing files
-recursive import.  Where is it?
-active-path plugin, 
-.. @+node:ekr.20131116212505.16666: *5* - Intermediate: More about scripting
-c, g, p: commanders, generators, p.b, p.h etc.
-
-@button (already covered)
-@test (already covered)
-.. @+node:ekr.20131116212505.16668: *6* Ctrl-B (execute-script)
-Ctrl-B executes the Python code in the presently-selected body pane. g.es('hello world')
-
-.. @+node:ekr.20131116212505.16669: *6* Ctrl-B on selected text
-print('hi')
-print('there')
-.. @+node:ekr.20131116212505.16667: *6* g
-# g is a Python module containing global utility functions and classes.
-# g.es prints its arguments to Leo's log pane.
-g.es(g.es)
-# g is a large module:
-g.es(len(list(dir(g))))
 .. @+node:ekr.20120515193246.10087: *3* DOM
 .. @+node:ekr.20071001052501: *4* Versioning for nodes
 One feature I have not seen in SCS system is something which might be called "history compression": I might be interested in having both version 5 and 6 in my source tree, when the current version is 7, but I am not really interested in the 2000 steps which transformed 5 into 6 (just suggested this feature to the bazaar people). This happens actually quite often to me, since I use the SCS as a back-up system, saving many (uninteresting) intermediate steps while implementing a new feature.
@@ -1829,6 +1151,37 @@ Each vnode has a parents list and a children list.  All we have to do is replace
 
 As far as the rest of Leo is concerned, vnodes still have parents and children lists.  The switcheroo happens totally invisibly, when the user wants to see another view.  The attribute changes and that changes what the vnode dictionary/properties "deliver" to the rest of Leo.
 .. @+node:ekr.20160405061740.1: *3* Features
+.. @+node:ekr.20130806072439.20369: *4* @paragraph(s)
+From: <offray@riseup.net>
+
+I have been using txt2tags + Nested Editor to produce structured docs in 
+a light markup and exporting them to HTML and LaTeX > pdf. The fine 
+tunning on the pdf output is done by editing the LaTeX source in Leo. I 
+like the aesthetic of the source code and the outputs and I have 
+contacted the Nested author in order to get some cross-pollination 
+between it and Leo [1].
+
+[1] 
+https://groups.google.com/group/nestededitor/browse_thread/thread/7068e3cd229d4614 
+
+Now I think that is time to start hacking Leo for a better support of my 
+work flow and the first thing I would like to have is a "@paragraph" 
+directive that works the same as @rst-no-head but can be used in any 
+part of a (sub)tree, even if is not @rst (sub)tree. This would come 
+handy in chunking and reassembling LaTeX docs without marking up the 
+parts with "<<chunk>>" tags.
+
+===== EKR
+
+Interesting idea. Please file a wishlist bug at https://bugs.launchpad.net/leo-editor.
+
+===== offray As I have say repeatedly I'm an "end user" 
+of Leo and I have browse the doc about developing in Leo in [2] and I 
+plan to follow it as a tutorial, but any pointer to a more detailed 
+section to pay attention or to the Leo trees to start hacking is welcomed
+
+[2] scripting.html
+
 .. @+node:ekr.20130806072439.21204: *4* Comparison leo outline type with other outliner's types?
 From: Todd Mars <tamnt54@gmail.com>
 
@@ -1883,6 +1236,16 @@ I do this kind of thing by keeping buttons in @files...
 so changes made in one outline are automatically propagated to other
 outlines next time they're reloaded.  You just reference the files
 in each outline where you want those buttons.
+.. @+node:ekr.20151130084237.1: *4* Improve load-leo page
+@language rest
+@wrap
+
+http://leoeditor.com/load-leo.html
+
+* There are bugs re clones.
+
+- Allow outline/body panes to be resized.
+- Support hightlight.js: https://highlightjs.org/
 .. @+node:ekr.20150311051910.4: *4* Improve recovered nodes operation
 - Detect changes in root node, if possible.
 - Detect changes in headlines, if possible.
@@ -1900,9 +1263,13 @@ From: Joon Ro <joonpyro@gmail.com>
 
 I think it would make more sense if leo checks the file modification time when it makes decision which node is new, instead of just depending on the order of files in the outline.
 .. @+node:ekr.20141210123805.9: *4* Support rope
-.. @+node:ekr.20150616085806.1: *4* Support solorized selected text
-I don't believe this can be done just using stylesheets.
-Probably will need custom painters.
+.. @+node:ekr.20161205102034.1: *4* Temp vim modes
+The idea is to be able to define the dot easily.
+
+- Allow Leo to enter vim-mode temporarily.
+- Define the dot.
+- Leave vim-mode.
+- Use the dot.
 .. @+node:ekr.20090131200406.15: *3* File & file format
 .. @+node:ekr.20061002093442: *4* Add opml support to new, open, save commands
 .. @+node:ekr.20111019104425.15895: *4* LeoFS (Kent)
@@ -2530,87 +1897,14 @@ Some ideas could be:
 - Use Redis to store tree
 - Keep the "clean" body texts in contiguous block (most bodies will always be clean), append dirty (modified) body texts after it
 - Keeping the outline structure in memory block is quite easy, since there is not a lot of data. You could have just a list of [parent, child] id's or whatever
-.. @+node:ekr.20141017110114.18265: *4* Won't do: Use uuid's in gnx's
-https://groups.google.com/d/msg/leo-editor/p_b2LLBAqps/aTQoyGBec68J
-
-This post discusses a new command line argument for Leo: --uuid
-
-I have no plans to implement --uuid now, but it may have to be done in future.
-
-===== Rationale
-
-Terry has convinced me that collisions between both user ids and timestamps will become more frequent as Leo becomes more popular. Such collisions are not a serious problem at present: the odds of two different people with the same user id sharing .leo files is small.
-
-Nevertheless, a serious problem lurks, one that can not, even in principle, be solved with Leo's present gnx's.
-
-Suppose two people have the same id. Then Leo *must* assume that those people are actually the same person! As I have explained in other post, this can lead to data loss if the two people create two *distinct* nodes with the same gnx, and then try to merge those nodes into the same .leo file. The odds of this happening are small, but increasing.
-
-A good way to solve this problem is to use uuids, http://en.wikipedia.org/wiki/Universally_unique_identifier and python's uuid module: https://docs.python.org/2/library/uuid.html
-
-===== Operation
-
-The --uuid should cause Leo to use uuid's for all *new* gnx's. The uuid option should not convert *existing* gnx's to uuid-based gnx's.
-
-A new Leo command would convert all existing gnx's to uuid-based gnxs. Such mass conversions should *never* be done automatically.
-
-===== Format of uuid-based gnxs
-
-I would like the uuid-based gnx's to use uuid's in *addition* to the id and timestamp fields. Something like::
-
-    id.timestamp..uuid
-
-Alas, that does not seem possible, unless this kind of gnx is written to external files (in node sentinels). But many users would complain that such very-long gnx's clutters external files too much.
-
-So it seems that new-style gnxs would have something like this form::
-
-    ..uuid
-
-The leading dots allow Leo to distinguish this kind of gnx from the old
-forms::
-
-    id.timestamp.n
-    id.timestamp
-
-provided that dots are not allowed in ids.
-
-===== Summary
-
-Recent work shows that this is not necessary or desirable.
-https://github.com/leo-editor/leo-editor/issues/130
-
-Leo's uuid-based gnxs can contain neither user ids nor timestamps.
-
-We must ensure we stick with whatever new-style gnx format we choose initially: we don't want to burden Leo with distinguishing between several different forms of uuid-based gnxs.
 .. @+node:ekr.20120515193246.10085: *3* Gui
-.. @+node:ekr.20160318113605.1: *4* * Rethink windows
-- Decouple commander from outline?
-- Notifications might simplify multiple body panes.
-- A good platform for web development and anything
-  needing multiple consoles.
-- Add status line showing type of window. Like Emacs.
-.. @+node:ekr.20130806072439.21241: *5* Free range body editors
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-I suspect that if body editors could be made just slightly more flexible it would open up whole new ways of using Leo.  It seems they just need two or three things to make them really flexible.
-
-- a flag to indicate whether the tree pane should select the body editor's node when the body editor is focused.  To see an example of editing bodies without the tree selecting the node you're editing, see the stickynotes plugin
-
-- a flag to indicate whether the body editor should track the node currently selected in the tree
-
-- it needs to not care about what it's contained in, GUI wise.  I don't know how much work's involved in this.
-
-I'll try and contribute to things moving in this direction when I have time, just throwing it out there for others to think on.
-
-If you could have a body editor edit the node indicated by an UNL, it would basically be a clone...
-.. @+node:ekr.20110929074744.15499: *5* Allow more panes to be part of the free_layout "action" buttons
-.. @+node:ekr.20160405063110.1: *4* Maybe
-.. @+node:ekr.20120604071051.10187: *5* Add multiple body editors to session machinery
+.. @+node:ekr.20120604071051.10187: *4* Add multiple body editors to session machinery
 Terry will do this, or help with it.
-.. @+node:ekr.20111019104425.15892: *5* Buttons (Kent)
+.. @+node:ekr.20111019104425.15892: *4* Buttons (Kent)
 Enhance the button machinery to allow mixed case, spaces, colors.
 
 Provide cascading rclick capability: rclick on an rclick list ...
-.. @+node:ekr.20130806072439.21380: *5* QML - new window / gui / coding for Leo?
+.. @+node:ekr.20130806072439.21380: *4* QML - new window / gui / coding for Leo?
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 This thread will need Ville to set it on the right track, I barely know the names of the technologies, but Qt has been advancing with, quoting from their site:
@@ -2641,7 +1935,7 @@ QML is actually lower level than QWidgets / "regular" PyQt programming. Key sell
 QML would be natural for graphcanvas / tabula / other "custom" ui plugins, but it doesn't yet have text editor as powerful as QTextEdit, not tree widget as powerful as QTreeWidget / QTreeView.
 
 I expect QML to be first used in mobile version of Leo (I have one actually, that I will publish "at later date" ;-). For desktop, QML is not yet as attractive as the "old stuff".
-.. @+node:ekr.20130806072439.21464: *5* UI idea: body editors in a grid
+.. @+node:ekr.20130806072439.21464: *4* UI idea: body editors in a grid
 From: "Ville M. Vainio" <vivainio@gmail.com>
 
 Hey,
@@ -2661,7 +1955,7 @@ Outline  | Child 2
 That is, you would edit and view all the children of the currently focused node all at once. We can already do two body editors at once, so this would seem like natural extension.
 
 Of course you could only see a small amount of text per body, but for a "workbook" / sheet like use cases it would be fine.
-.. @+node:ekr.20130806072439.21465: *6* Re: UI idea: body editors in a grid
+.. @+node:ekr.20130806072439.21465: *5* Re: UI idea: body editors in a grid
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Apr 18, 10:53=A0am, Terry Brown <terry_n_br...@yahoo.com> wrote:
@@ -2685,7 +1979,7 @@ becoming essential.
 
 Edward
 
-.. @+node:ekr.20130806072439.21466: *6* Re: UI idea: body editors in a grid
+.. @+node:ekr.20130806072439.21466: *5* Re: UI idea: body editors in a grid
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Wed, Apr 18, 2012 at 4:37 AM, Ville M. Vainio <vivainio@gmail.com> wrote:
@@ -2730,7 +2024,7 @@ context to be visible without actually having to show the outline
 pane.
 
 Edward
-.. @+node:ekr.20130806072439.21467: *6* Re: UI idea: body editors in a grid
+.. @+node:ekr.20130806072439.21467: *5* Re: UI idea: body editors in a grid
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Wed, Apr 18, 2012 at 10:53 AM, Terry Brown <terry_n_brown@yahoo.com> wrote:
@@ -2743,7 +2037,7 @@ On Wed, Apr 18, 2012 at 10:53 AM, Terry Brown <terry_n_brown@yahoo.com> wrote:
 Are you suggesting doing free-layout in tabula?
 
 EKR
-.. @+node:ekr.20130806072439.21468: *6* Re: UI idea: body editors in a grid
+.. @+node:ekr.20130806072439.21468: *5* Re: UI idea: body editors in a grid
 From: "Ville M. Vainio" <vivainio@gmail.com>
 
 --20cf3005df0ef84cc304be0227bb
@@ -2755,7 +2049,7 @@ least stick to the nodes.
 Otoh, if more felxible body editors are just around the corner, it may not
 be worth the hassle.
 
-.. @+node:ekr.20130806072439.21469: *6* Re: UI idea: body editors in a grid
+.. @+node:ekr.20130806072439.21469: *5* Re: UI idea: body editors in a grid
 From: Kent Tenney <ktenney@gmail.com>
 
 On Wed, Apr 18, 2012 at 2:57 PM, Edward K. Ream <edreamleo@gmail.com> wrote=
@@ -2776,7 +2070,7 @@ On Wed, Apr 18, 2012 at 2:57 PM, Edward K. Ream <edreamleo@gmail.com> wrote=
 'publish / subscribe' has buzzword cred these days, there are several
 protocols out there, reportedly fairly simple to implement, don't know
 if any are a fit here.
-.. @+node:ekr.20130806072439.21470: *6* Re: UI idea: body editors in a grid
+.. @+node:ekr.20130806072439.21470: *5* Re: UI idea: body editors in a grid
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 --MP_/YLiyZOi3S=ZU5mZC9llHxW5
@@ -2802,7 +2096,7 @@ Cheers -Terry
 
 (*) I think there's a way to lock/unlock a special case singleton
 view-rendered pane, but not a flock of them like this.
-.. @+node:ekr.20130806072439.21471: *6* RE: UI idea: body editors in a grid
+.. @+node:ekr.20130806072439.21471: *5* RE: UI idea: body editors in a grid
 From: Ville Vainio <vivainio@gmail.com>
 
 You are probably right. We Could also adjust the sizes dynamically
@@ -2830,7 +2124,7 @@ free-layout system, so that your grid could be a separate window, or
 not, as desired.  free-layout is basically nested QSplitters, so it can
 represent a grid, but with more flexibility (cell 1,0 doesn't have to
 be the same height as cell 0,0, etc.)
-.. @+node:ekr.20130806072439.21472: *6* Re: UI idea: body editors in a grid
+.. @+node:ekr.20130806072439.21472: *5* Re: UI idea: body editors in a grid
 From: Matt Wilkie <maphew@gmail.com>
 
 > That is, you would edit and view all the children of the currently
@@ -2839,7 +2133,7 @@ From: Matt Wilkie <maphew@gmail.com>
 I often use "Edit in notepad" (or more likely pyscripter) for this
 purpose. It would be nice to stay inside Leo; I sometimes lose data by
 forgetting which editor has the most current version.
-.. @+node:ekr.20130806072439.21473: *6* Re: UI idea: body editors in a grid
+.. @+node:ekr.20130806072439.21473: *5* Re: UI idea: body editors in a grid
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Wed, 18 Apr 2012 21:42:21 +0300
@@ -2859,7 +2153,7 @@ free-layout system, so that your grid could be a separate window, or
 not, as desired.  free-layout is basically nested QSplitters, so it can
 represent a grid, but with more flexibility (cell 1,0 doesn't have to
 be the same height as cell 0,0, etc.)
-.. @+node:ekr.20130806072439.21474: *6* Re: UI idea: body editors in a grid
+.. @+node:ekr.20130806072439.21474: *5* Re: UI idea: body editors in a grid
 From: Kent Tenney <ktenney@gmail.com>
 
 On Wed, Apr 18, 2012 at 10:53 AM, Terry Brown <terry_n_brown@yahoo.com> wro=
@@ -2878,7 +2172,7 @@ Plus, free-layout provides persistence: it's worth putting effort into
 configuring pane configuration because it will be available next time.
 
 (I guess I'm persistent about wanting persistence)
-.. @+node:ekr.20130806072439.21475: *6* Re: UI idea: body editors in a grid
+.. @+node:ekr.20130806072439.21475: *5* Re: UI idea: body editors in a grid
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Wed, 18 Apr 2012 12:57:03 -0700 (PDT)
@@ -2905,7 +2199,7 @@ simpler and faster than a broadcaster / listener framework.  And the
 current multiple body editors code could just be dropped completely, so
 while I suspect you're right about it being on the edge of implosion, I
 don't think that's a problem :-)
-.. @+node:ekr.20130806072439.21476: *6* Re: UI idea: body editors in a grid
+.. @+node:ekr.20130806072439.21476: *5* Re: UI idea: body editors in a grid
 From: "Ville M. Vainio" <vivainio@gmail.com>
 
 --20cf305b11c06d69c404bdf86a61
@@ -2920,12 +2214,12 @@ Expanding the scope to a grid, we could have a grid-lock-column that would
 freeze the current column, allowing you to move the selected position in
 the tree to another node, and locking the nodes for column 2 etc etc
 
-.. @+node:ekr.20130806072439.21477: *6* Re: UI idea: body editors in a grid
+.. @+node:ekr.20130806072439.21477: *5* Re: UI idea: body editors in a grid
 From: "Ville M. Vainio" <vivainio@gmail.com>
 
 Have you tried alt-x stickynote from stickynotes plugin?
 
-.. @+node:ekr.20130806072439.21478: *6* Re: UI idea: body editors in a grid
+.. @+node:ekr.20130806072439.21478: *5* Re: UI idea: body editors in a grid
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Wed, 18 Apr 2012 11:45:25 -0500
@@ -2946,7 +2240,7 @@ splitter handle context menu.
 
 Even made a screencast to demonstrate, but unfortunately the sound was
 useless, despite being ok in trials before hand.  Might try again later.
-.. @+node:ekr.20130806072439.21479: *6* Re: UI idea: body editors in a grid
+.. @+node:ekr.20130806072439.21479: *5* Re: UI idea: body editors in a grid
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Wed, 18 Apr 2012 12:37:22 +0300
@@ -2960,7 +2254,7 @@ forward to place them where ever you want in using the free-layout
 mechanism.  I think that's a better goal, it allows you more
 flexibility in terms of maybe one small (both dimensions) and one large
 editor, for example.
-.. @+node:ekr.20130806072439.21480: *6* Re: UI idea: body editors in a grid
+.. @+node:ekr.20130806072439.21480: *5* Re: UI idea: body editors in a grid
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Apr 18, 1:42=A0pm, "Ville M. Vainio" <vivai...@gmail.com> wrote:
@@ -2986,7 +2280,7 @@ node", that is, an explicit collection of nodes.
 
 EKR
 
-.. @+node:ekr.20130806072439.21481: *6* Re: UI idea: body editors in a grid
+.. @+node:ekr.20130806072439.21481: *5* Re: UI idea: body editors in a grid
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 On Wed, 18 Apr 2012 11:12:45 -0500
@@ -3015,12 +2309,12 @@ an intent to replace tabula.
 
 Not that tabular needs replacing, but I think it's benefits can be
 generalized.
-.. @+node:ekr.20130806072439.21482: *5* xiki window for leo
+.. @+node:ekr.20130806072439.21482: *4* xiki window for leo
 From: wgw <wgwinder@gmail.com>
 
 Xiki.org gives a demo of a "wiki" shell for command execution. Leo should be able to do the same thing (and more!), in the sense that leoscreen, for example, has two way communication with the command line. I suppose a "Lxiki" is really just a question of setting up the right shortcuts (like a shift-ctrl-b that would run highlighted python code from the command line... with a tmp file?).
 
-.. @+node:ekr.20130806072439.21483: *6* Re: Wish list: xiki window for leo
+.. @+node:ekr.20130806072439.21483: *5* Re: Wish list: xiki window for leo
 From: wgw <wgwinder@gmail.com>
 
 Thanks for the tip -- it will take me a while to get my head around vspace (will keep an eye on Ville's blog post).
@@ -3028,7 +2322,7 @@ Thanks for the tip -- it will take me a while to get my head around vspace (will
 I'm just beginning to appreciate (or imagine) what Ipython, sublime text editor, leo, xiki, etc could mean for some kind of intelligent document workbench. Of course the big hurdle is not so much the string processing (sublime is a good example of how that can be done), but rather the syntax processing -- i.e. the docbench  (to coin a phrase) should understand the syntax of whatever is being input and then offer syntax-aware functions.... Sorry, getting a little obscure: all I mean by syntax-aware is the ability to propose text completions (Leo's autocompletion is a good example -- everything should work like autocomplete!) and allow for intelligent text changes depending on a database of information (for example, a search and replace that would  know how to search on "caterpillar" and turn it into "butterfly" but would not touch "caterpillar truck").
 
 Seems like Leo is not far from doing that synthesis, but it would require more database integration. So for example, even the python help system does not have autocomplete. (No criticism there! The great thing about Leo is that if you want something, you just have to dive in and build it. My day job might just let me do that!)
-.. @+node:ekr.20130806072439.21484: *6* Re: Wish list: xiki window for leo
+.. @+node:ekr.20130806072439.21484: *5* Re: Wish list: xiki window for leo
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 > Thanks for the tip -- it will take me a while to get my head around vspace
@@ -3057,11 +2351,11 @@ execute (Alt-x or key binding) vs-eval 4 times
 
 executing vs-last(-pretty) would insert the last result (None, 7, 3,
 10) in the body.
-.. @+node:ekr.20130806072439.21485: *6* Re: Wish list: xiki window for leo
+.. @+node:ekr.20130806072439.21485: *5* Re: Wish list: xiki window for leo
 From: wgw <wgwinder@gmail.com>
 
 Got it! The value of valuespace (!) is that that you can make a pythonesque session persist. I did not realize that there was no direct two-way bridge to the python window that leo launches. Even if there were, we would want to make the session persist by logging it into the outline, as valuespace (vs-create-tree) does.
-.. @+node:ekr.20130806072439.21487: *6* Re: Wish list: xiki window for leo
+.. @+node:ekr.20130806072439.21487: *5* Re: Wish list: xiki window for leo
 From: Terry Brown <terry_n_brown@yahoo.com>
 
 In addition to the outline as a active data document functions of Ville's value-space plugin, I recently added some simple ;-) commands::
@@ -3078,31 +2372,6 @@ vs-last inserts the last result into the body, and vs-last-pretty does the same,
 Ctrl-B also runs the script in the body, but not in a persistent namespace, running only the selected text doesn't seem to be working, and it doesn't work so hard to work out the output.
 
 I guess leoscreen would do the same things as the vs-* commands if you used it against a python shell.  The inspiration for the vs-* commands was wanting Leo to tell you what 3.57 * 365 / 12 was without a lot of effort, but of course you can define functions etc. etc.
-.. @+node:ekr.20160405063138.1: *4* Won't do
-.. @+node:ekr.20120516140545.9992: *5* Won't do: Different settings interface
-Matt Wilkie
-
-As for user interface, I'd love to see myLeoSettings with a checkbox interface and filter bar at the top, and a feature to "merge or reset from LeoSettings".
-
-Or maybe something like Firefox's "about:config" would be better suited (and probably faster to build).
-.. @+node:ekr.20111011062533.15693: *5* Won't do: Make headline widgets scrollable
-It doesn't seem easy.
-.. @+node:ekr.20130919120947.12506: *5* Won't do: Why Leo will never be a web app
-There are two reasons why Leo is unlikely ever to be a web app.
-
-1. There are somewhere around a million lines of Python code in Leo's core and plugins. Thus, a *solid* python in javascript system is required. This isn't likely to happen.
-
-2. Creating a Leo outline widget is extremely complex. Even starting with a working javascript outliner, one has to deal with events (commands) coming from Leo scripts rather than from the user.
-
-These seem like the most important obstacles. There may be others, but these
-suffice.
-.. @+node:ekr.20160405063125.1: *4* Unlikely
-.. @+node:ekr.20111019104425.15887: *5* Unlikely: Host the PyQt demo inside Leo
-.. @+node:ekr.20111019104425.15894: *5* Unlikely: Use templates to create Wizards (Kent)
-Leverage the template capability to offer form-based content creation:
-- create a plugin
-- generate a test node
-- generate a wizard :-]
 .. @+node:ekr.20120515193246.10084: *3* Importers
 .. @+node:ekr.20101004092958.5914: *4* Add treepad scanner (contains code!)
 treepad.py is from the treepad website
@@ -3373,254 +2642,9 @@ Need a good yaml parser first: I don't want to write another parser by hand.
     #-----------------------------------------------------------------------------
 
 to organizer node whose headline is Imports.
-.. @+node:ekr.20050509085713: *3* Install/installers
-.. @+node:ekr.20160305055206.1: *4* Davy Cottet: apt-get install leo
-apt-get install leo
-https://groups.google.com/forum/#!searchin/leo-editor/apt-get$20install$20leo/leo-editor/AwYeds6PSn4/OtqtDYfktKAJ
-.. @+node:ekr.20130807203905.16773: *4* Leo for portableapps?
-.. @+node:ekr.20130807203905.16596: *4* PortableFileAssociator
-From the thread: Cannot open Leo files by double-click in Windows Explorer?
-https://groups.google.com/d/msg/leo-editor/KwrqYGMH20Q/z1uc-99vsnsJ
-
-From: HansBKK <hansbkk@gmail.com>
-
-For those like me who work in "portable" mode, there's a very cool tool
-called "PortableFileAssociator" that allows you to create a set of windows
-file associations, icons etc and enable/disable the whole profile at one
-time, without messing with the local system's registry.
-
-Also handy for those not in portable mode, but working on different windows
-boxes and bored with having to tweak each one separately.
-.. @+node:ekr.20130806072439.20732: *4* Runnable Leo in one .zip file w/ virtual machine
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-Summary - it's easy to make a .zip file containing Leo and all it's
-dependencies.
-
-Inspired by Matt's recipe, using VirtualBox throw away 1GB Windows XP
-32 bit machines, I tried the following.
-
-Install Python (installer from python.org) 2.7.2 to 
-
-  C:\Docouments and Settings\someuser\Desktop\leo\python27
-
-Install PyQt (installer from Riverbank) 4.9 into the same folder (it
-goes there by default)
-
-Unzip http://www.greygreen.org/leo/leo-editor-latest.zip into
-
-  C:\Docouments and Settings\someuser\Desktop\leo\leo-editor-latest
-
-Make leo.zip from C:\Docouments and Settings\someuser\Desktop\leo
-
-Delete the virtual machine, purging any registry entries etc. created
-by the two installers.
-
-On a fresh machine, searched the registry for 'python' just to be sure,
-found nothing.
-
-Unzip the .zip file, then
-
-  cd C:\Docouments and Settings\someuser\Desktop\leo
-  python27\python.exe leo-editor-latest\launchLeo.py
-
-And Leo opens a blank outline, after asking for an ID, as it's supposed
-to.  Didn't test it beyond that.
-
-So, the .zip file contains all Leo needs to run, and obviously
-runLeo.bat could be added in the top level to actually launch it.
-
-Of course this is for Windows, so I think it's an improvement over
-asking people to install Python and PyQt first, but neither of those
-steps was that hard in Windows anyway.
-
-===== EKR
-
-Is this a technique that we could use for official Windows releases?
-If so, what exactly would we do?
-
-===== Terry
-
-I guess, perhaps as an all-in-one option with a system integrated
-option for those who want to use system python/qt.  Don't know if it
-violates and licensing on Python / Qt, everything's being distributed
-unaltered, so I wouldn't think so.
-
-So basically you'd give people a large .zip file and tell them to
-extract it to a folder and run the batchfile at the top level.  If they
-can't do that, they might not be ready for Leo :-)  I guess you could
-make it a self-extracting .zip, for that matter.
-
-Also, the daily snapshot could be made this way, seeing once Python and
-Qt are installed in the folder the Leo version can just be copied in.
-
-It's not uncommon for FLOSS to be distributed this way, both Blender
-and Inkscape use this approach, particularly for recent builds.
-
-===== From: HansBKK <hansbkk@gmail.com>
-
-If something like this **is** done, it should IMO be packaged as an
-alternative to the normal installation procedure.
-
-You would definitely get marketing exposure by getting the specs from
-PortableApps.com and let them host it there as  "Portable Leo", tracking
-the "official" Portable Python (currently 2.7.2) as a dependency, obviously
-including QT etc as well. But it would need to be kept up to date. . .
-
-Most Windows users would be better served by following the normal
-installation procedure and ending up with a
-registry-and-environment-variables-complete install of Python et al which
-they can use for other things beyond Leo. Ending up with multiple instances
-of Python to maintain is likely to cause more problems.
-
-And the normal Windows install just isn't that hard, really! Improving the
-current instructions, by providing a step-by-step "cookbook" with direct
-links to the download packages etc might make it a **little** easier (IMO
-only for the clueless), but then of course that would be a doc that would
-need pretty frequent updates, which if I may be so bold doesn't seem to
-happen too quickly on the doc side.
-.. @+node:ekr.20130806072439.20736: *5* Re: Runnable Leo in one .zip file.
-From: Matt Wilkie <maphew@gmail.com>
-
-Since this topical today, almost a year later, I thought I'd take a run at 
-repeating this using Portable Python (http://www.portablepython.com) as a 
-base. It didn't work, but I think it should. Maybe someone else knows why. 
-
-I ran the installer for 2.7.3 since 3.2 doesn't include PyQt4. At install 
-time I selected only the Python and PyQt4 packages. Then from a fresh 
-command shell:
-
-{{{
-path=c:\windows;c:\windows\system32
-pushd x:\portapy27\App
-path=%cd%;%cd%\Scripts;%cd%\Lib\site-packages\PyQt4;%path%
-set pythonhome=%cd%
-set pythonpath=%cd%\Lib
-
-popd
-
-python --version
-Python 2.7.3
-
-python -c "import PyQt4"
-:: no error returned, we're good.
-
-python c:\apps\leo-editor-latest\launchLeo.py
-Leo requires Qt to be installed.
-}}}
-
-oh well.
-.. @+node:ekr.20130806072439.20744: *5* Re: Runnable Leo in one .zip file.
-From: HansBKK <hansbkk@gmail.com>
-
-> PortableApps version would be FANTASTIC!!
-
-A couple of versions have been posted here already, including Terry's very
-simple sequence in the first message of this thread. Of course, we're only
-talking about Windows, but note that it works equally well either syncing
-with whatever tool (I favor Unison over SSH) or carrying around on an
-arbitrary-path'd external device, including flash drives (but they can be
-slow).
-
-Here's my more robust (hence more complex) version, xx indicating your 
-python version (mine is 27):
-
-Use the normal .MSI, setup.exe etc processes to Install a clean "canonical" 
-version of your "python dev stack" to say C:\PythonXX, reboot if needed, 
-test thoroughly. Note any new environment variables pointing to your new 
-binary locations.
-
-Now create a corresponding PythonXX folder in your "PortableApps" location 
-(I put it under "CommonFiles" along with GTK and Java) and copy everything 
-from your installed location to the portable one.
-
-You can then use the project-provided tools on the "master" computer to 
-keep your binaries updated, and they will see any local Registry entries 
-and the environment variables they created and operate normally wrt your 
-installed location (e.g. C:\PythonXX).
-
-If you have a local folder sync tool (I use Unison and WinMerge) you can 
-add to/remove from/configure your Python environment from either location, 
-otherwise just keep your installed location as the "master" and just copy 
-the whole stack over each time you do so.
-
-The whole PortableApps tree can then be sync'd/copied to any other 
-desktop(s) you like, either over the wire or via an external device, and 
-the latter can be carried for use in say an Internet cafe or client-site 
-situation.
-
-====================
-
-For use on those other computers, for running in portable mode, I use a
-"portable start menu" (PStart) which allows for its own "autolaunch" batch
-files, where I set some global environment variables to be used by
-app-specific launch batch files, including :
-
-%Path% (I add my batch folder and a general utility/tools folder)
-%HOME% (usually "E:\aasync\Data\H_HOME"
-and a custom one called %h_pa%, which points to the root of my PortableApps 
-parent (usually "D:\aasync\PortableApps")
-
-Then for each environment that requires its own custom settings, I create a 
-launch batch file that builds on that base. In the case of Python apps, 
-here's an example that opens a CMD console window:
-
-@ECHO OFF
-set 
-PATH=%PATH%;%h_pa%\CommonFiles\Python27;%h_pa%\CommonFiles\Python27\Lib\site-packages\PyQt4;%h_pa%\CommonFiles\Python27\Lib\idlelib;%h_pa%\CommonFiles\Python27\Scripts;
-set PROMPT=$p_python$g
-E:
-cd \aasync
-CMD.exe
-
-I'm not sure which if any of the environment stuff Leo requires, but I 
-figure it might as well have the same environment as my Python CLI, since 
-I'll be testing shell integration, including iPython. In my leo-win.bat, 
-the last three lines above are replaced with:
-
-D:
-cd \aasync\PortableApps\leo-editor
-start "" "..\CommonFiles\Python27\pythonw.exe" 
-"..\CommonFiles\Python27\Lib\site-packages\leo-editor4\launchLeo.py" %*
-
-====================
-
-Note this is more than the minimum you need to just run Leo - you could of 
-course simplify it; for example, only set the environment variables Leo 
-requires, or you could just set the master computer' installation routines 
-to use a single location under PortableApps, but I prefer to keep them 
-separate for testing purposes.
-
-I hope you (and others googling this later) find this useful.
 .. @+node:ekr.20150505084549.1: *3* Plugins
-.. @+node:ekr.20150503061351.1: *4* Won't do: Enable plugins separately from loading plugins?
-@language rest
-@wrap
-
-https://groups.google.com/forum/#!topic/leo-editor/K4rzqDE8emA
-
-The consensus is that this is a bad idea.
-
-
-Original post:
-
-Leo's plugins manager can and imo should dispatch events registered to a plugin only to commanders for which the plugin is enabled in an @enabled-plugins node.
-
-This would make @enabled-plugins nodes work like all other settings.  Not enabling a plugin in a local (per .leo file) @enabled-plugin node would disable that plugin for that outline even if the plugin is enabled in myLeoSettings.leo or leoSettings.leo.
-
-In practice, the plugins manager would dispatch an event registered by a plugin to a commander only if the plugin is actually enabled in the commander.  Events would be dispatched as always.  For example:
-
-    def onCreate (tag, keys):
-        c = keys.get('c')
-        if c: << do something >>
-
-The only difference is that this event handler would be called only for outlines in which the plugin was enabled.
-
-.. @+node:ekr.20160405062908.1: *3* Scripts
-.. @+node:ekr.20160320072517.1: *4* javascript-to-coffeescript command
-Use external code.
-.. @+node:ekr.20150707052758.1: *4* py2cython: Like make_stub_files
-Generate type declarations from a given set of naming conventions.
+.. @+node:ekr.20160318113505.1: *4* Avoid mouse in nodetags & other plugins
+We want the alternatives to clones to be mouse free.
 .. @+node:ekr.20140730175636.17982: *3* Vim emulation (completed)
 No further work is planned.
 
@@ -4986,18 +4010,595 @@ Automatic execution of commands on certain events.
 :wv[iminfo]! [file]             write info to viminfo file [file]
 :x[it][!] [file]                like ":wq" but write only when changes have been made
 :xall[!]  or :wqall[!]          Write all changed buffers and exit
-.. @+node:ekr.20160405061600.1: *3* Web stuff
-.. @+node:ekr.20160318133309.1: *4* Leo in coffeescript
-.. @+node:ekr.20151130084237.1: *4* Improve load-leo page
+.. @+node:ekr.20160405063258.1: ** Unlikely
+.. @+node:ekr.20180124140252.1: *3* Coloring
+.. @+node:ekr.20150616085806.1: *4* Unlikely: Support solorized selected text
+I don't believe this can be done just using stylesheets.
+Probably will need custom painters.
+.. @+node:ekr.20180124135223.1: *3* Commands
+.. @+node:ekr.20150215102218.4: *4* Unlikely: @ns-rst/vo/otl commands
+@language rest
+
+===== @ns-* write logic
+
+In his initial post, Rob said, "when I change my @auto-rst files to @nosent
+files, the resulting files do not contain the RST section headers that were
+automatically added by @auto-rst."
+
+This proves that @ns-rst must have special logic that writes the proper
+section headers. Happily, this can be done easily with special cases in
+at.putOpenNodeSentinel. Ditto for @ns-md, @ns-vimoutline and @ns-otl.
+
+From https://groups.google.com/d/msg/leo-editor/QxK2V62ESLw/vCSolavmw4YJ
+
+===== @ns-* read logic
+
+No change is actually *required* for @ns-rst and @ns-md. When reading an
+@ns-rst or @ns-md file, added sections could be slurped into the outline as
+under/overlining text. The user could leave the changed node as it is. Or
+the user could create a new node with the indicated headline. Either way,
+the @ns-rst write logic would recreate the changed file.
+
+However, a simple, fast post-pass in the @ns-rst/md read logic could create
+the new nodes automagically. The post-pass would traverse the tree created
+by the @nosent logic looking for under/overlined lines (or # lines for md),
+creating new nodes as needed. The actual code would be similar to the
+@auto-rst logic,but it exists in a far simpler context than @auto-rst.
+
+Post passes are probably *required* for @ns-vimoutline and @ns-otl. Indeed,
+vimoutline or otl sentinels should *never* be left as plain text in an
+existing node. The "raw" sentinels would corrupt the vim or Emacs outline
+if the node were later moved. An unpleasant time bomb.
+.. @+node:ekr.20130806072439.21337: *4* Unlikely: better C importer
+From: ne1uno <eltronis@gmail.com>
+
+wouldn't it be great to have a first class c importer?
+
+hiding the complexity of platform & compiler/option #defines. invisible (TM) nodes would be fruitful here. switched on by @#define. with an @#define=3D collection node or using a bunch of headlines. and an rclick flipper for true/false, defined/not defined declarations.
+
+meanwhile I wait for the inspiration or someone else to nail down a regular expression c language parser. maybe a tokenizer is enough. I did run c code through AStyle then through your old c2py via buttons. for code that would remain in c, in SciTE through google CPPlint program to point up flaws, and to get the context sensitive help from various CHM. running flawfinder good to do now and then old or new code. post processing and displaying the report in a browser. but it doesn't go far enough & too many false positives.
+
+there is splint, maybe the only free lint left. the need to inject "hints" all over the code make it less than ideal for perusing unknown source and generally a deal breaker for project code. sometimes all you need is a function/var list to get by. deeper static analysis is quite the serious business. so, it's not a surprise those programs are not easily found, or used. there are a few code flow programs that could be harnessed to colorize headlines indicating relations. taking all this in, marking nodes that need work with a popup or tooltip action event when you view that node with the details of one or another parser to annotate what needs work.
+
+we have had a few plugins/buttons/attempts at designing an interface to get a program node compiled. this is also a decent way to get info on the quality of code by turning all warnings on. fails for snippits. never quite simple to hookup or modify painless. perhaps the biggest problem is knowing what is available and where. more toolbars, no reason they can't dock. drag & dropping buttons. one of the huge advantages of Qt over Tk so far barely tapped. you begin to accept the fact that you need to create a temp file instead of real process control. managing program quirks & options becomes more trouble than it's worth just to protect the purity of the operation sans temp files. QTprocess has more options than the process in pythons libs. if it ever works as well as it should. but, a little hard to wrap. not going to venture a guess if pyqt gets it right or not. not to mention how bungled up OS process control still is. process control will be essential to any inter-process operations. that is, unless you backslide into wanting to build everything "in" and invent everything new again. re: blender, I haven't looked at blender code in a while, but I would be shocked if there weren't some well established way to hook into a script. sounds like noone has found them yet.
+
+not sure how to grab a window handle on other OS but for windows it's fairly straight forward. blender or GTK could setup blocks. another great Qt based project is universal indenter, a front end
+
+for many indenters for many languages. this would be a good place to look for how to manage inter-process communication in Qt. a first class editor will have to include first class importer for javascript at the least and probably lua and one or two others. one could imagine niceties like clickable links on #include files. right clickable options on them such as import, simple view, htmlize.
+
+also about styles, astyle has the options on the commandline, the builtin/compiled in defaults and an ~/.astyle.rc for personal style. some will find an indenter that has no options useless. I know the indenter created is purely for internal use, as it were, at this point. adding selectable options later will complicate the program and for most use will have little payback. you may as well expect to have some want a plugable option for style. exposing a general use tokenizer could have many callers.
+.. @+node:ekr.20110529115328.18238: *4* Unlikely: Emacs related
+I'll do these if and and only if somebody asks for them.
+.. @+node:ekr.20110529104352.18248: *5* Complete k.universalDispatcher
+.. @+node:ekr.20110529104352.18249: *5* Complete number-to-register command
+.. @+node:ekr.20031218072017.753: *5* Emacs comint-mode
+Summary: The improved Execute Script command does most of this
+
+Michael Manti
+mmanti@mac.com
+
+The feature that could make Leo *the* IDE for developing in interpreted languages is something like the (X)Emacs comint-mode.el for interacting with the shell and interpreters.
+
+comint-mode.el serves as the basis for interactive modes for a number of languages--OCaml, Haskell, SML, among them. It allows for editing expressions in one buffer and triggering their evaluation in another buffer that has an interpreter running in it, along with entering commands in the interpreter buffer and moving back and forth through the history of their evaluation.
+
+Imagine being able to highlight a node in Leo, and have all the code in it and its children evaluated in an interpreter running in a separate window or pane, much as Leo can open a Python shell now. Users of those languages could build plug-ins specific to their language atop that layer, and the @language directive could activate that. I think that would be very cool.
+.. @+node:ekr.20060116090428: *5* Expand 'point' so it indicates node as well as text location
+.. @+node:ekr.20071004120359.2: *5* expand-region-abbrev
+See: regionalExpandAbbrev.
+
+You may wish to expand an abbrev with a prefix attached; for example, if `cnst' expands into `construction', you might want to use it to enter `reconstruction`. It does not work to type recnst, because that is not necessarily a defined abbrev. What you can do is use the command M-' (abbrev-prefix-mark) in between the prefix `re' and the abbrev `cnst`. First, insert `re`. Then type M-'; this inserts a hyphen in the buffer to indicate that it has done its work. Then insert the abbrev `cnst'; the buffer now contains `re-cnst'. Now insert a non-word character to expand the abbrev `cnst' into `construction'. This expansion step also deletes the hyphen that indicated M-' had been used. The result is the desired `reconstruction'.
+
+If you actually want the text of the abbrev in the buffer, rather than its expansion, you can accomplish this by inserting the following punctuation with C-q. Thus, foo C-q , leaves `foo,' in the buffer.
+.. @+node:ekr.20060123091352: *5* Incremental search in switch-to-buffer
+.. @+node:ekr.20060628103226.3: *5* Make sure repeat counts work on basic editing commands
+.. @+node:ekr.20051021074728: *5* Space completion
+.. @+node:ekr.20100830120622.5829: *4* Unlikely: Improve python import
+> > Hmm, I guess that would be more clear, although I think I'd like an option
+to include it in the following def to avoid
+
+> > Decoration
+> > index
+> > Decoration
+> > add_user
+>
+> Sure.  Decorations must always be part of a definition.
+
+Well, personally I'd like to have them included in the definition, but I think Kent's preference for a separate node is reasonable to. If your function and hence definition node is called "pluralize", and it's decorated with something like "@authenticate_user", you may never check the innocent looking pluralize definition to find out what on earth's triggering the mysterious network database call. And this isn't a completely specious example, authentication may have been added to stop pluralize being used in a user existence detection exploit or something. OTOH in well behaved code like CherryPy apps you don't want a separate node for every @cherrypy.expose.
+
+Bottom line is I think we're asking for a set of @settings to fine tune python import behavior::
+
+    @python_import_interdef = previous | next | own_node | ai
+    @python_import_decoration = next | own_node
+
+I'm not sure I believe the AI option is possible / practical, and am not asking for it, just listing it :-)
+
+I'd also like::
+
+    @python_import_init_in_class_node = true | false
+
+as often there's more docs on a class in the __init__ than the class docstring.
+
+I think that's really all we're talking about, some @settings to test during import.
+.. @+node:ekr.20150408193842.1: *4* Unlikely: Limit searches so clones are found at most once
+This doesn't seem very important in practice.
+
+An easy workaround is to start the search from a place where clones are likely to be found just a few times.
+.. @+node:ekr.20041016134312.2: *4* Unlikely: Standard Weave command
+Use noweb and TeX, or maybe Pyx.
+.. @+node:ekr.20180124135408.1: *3* Config
+.. @+node:ekr.20111026075003.16481: *4* Unlikely: Support ~/.leo_config.py
+Supposedly would make Leo more professional/standard. However, Leo has plenty of ways to execute code or set settings at startup. Nobody is asking for it.
+.. @+node:ekr.20160405063125.1: *3* Gui
+.. @+node:ekr.20111019104425.15887: *4* Unlikely: Host the PyQt demo inside Leo
+.. @+node:ekr.20111019104425.15894: *4* Unlikely: Use templates to create Wizards (Kent)
+Leverage the template capability to offer form-based content creation:
+- create a plugin
+- generate a test node
+- generate a wizard :-]
+.. @+node:ekr.20180124135104.1: ** Won't do
+.. @+node:ekr.20160405063304.1: *3* Commands
+.. @+node:ekr.20130806072439.21443: *4* Won't do: threaded saveAll()
+From: Terry Brown <terry_n_brown@yahoo.com>
+
+I often need to save 4, 6, even more open changed Leo files at once.  Mainly when I'm filing / adjusting todo items, although at the end of a session having 4 changed files open can't be that unlikely.
+
+So it would be really nice if c.saveAll() could be threaded.  Even as I write this, it gets more complicated...
+
+  - each thread should do no user interface calls, or at least no calls
+    that aren't deferred to the main thread
+
+    - that's ok, would take quite a bit of tracing to catch them all,
+      but doable - except - plugins called from save hooks might break
+      the rule
+
+  - updating recent files list would have to be done properly, not a
+    big deal
+
+  - multiple threads saving to the same external files would be a
+    problem, that's the complication that only just occurred to me
+
+I don't typically have the same external file referenced from multiple Leo files, why would you do that... so the last problem, although potentially major, might be theoretical more than practical.
+
+Hmm, well it's a thought.  First thing to check, is saving IO bound or CPU bound...
+.. @+node:ekr.20130806072439.21444: *5* Re: threaded saveAll()
+From: "Ville M. Vainio" <vivainio@gmail.com>
+
+Since the flat document is a sort of "rambling" blue sky topic, I added some more thought on G+ leo community instead of increasing mailing list noise:
+
+https://plus.google.com/103097156557482112329/posts/Vp5ansTdLwq
+.. @+node:ekr.20130806072439.21445: *5* Re: threaded saveAll()
+From: "Ville M. Vainio" <vivainio@gmail.com>
+
+I'm pretty sure saving is cpu bound; for "normal" size documents, flushing that kind of stuff to disk (or memory buffers that are to be written to disk) shouldn't take significant amount of time.
+
+.. @+node:ekr.20130806072439.21446: *5* Re: threaded saveAll()
+From: Terry Brown <terry_n_brown@yahoo.com>
+
+On Sat, 9 Mar 2013 14:46:09 -0600
+Terry Brown <terry_n_brown@yahoo.com> wrote:
+
+> I guess this is a wishlist item - I suspect it's a result of my
+> workflow that might be quite different from other peoples, but I often
+> need to save 4, 6, even more open changed Leo files at once.  Mainly
+> when I'm filing / adjusting todo items, although at the end of a
+> session having 4 changed files open can't be that unlikely.
+
+I've just found that, because these todo items are always in the outline itself and not external files, I can just do 'write outline only' on all the open outlines, and this is much faster and smooths out the bump in my workflow that got me started thinking about this.
+.. @+node:ekr.20130806072439.21447: *5* Re: threaded saveAll()
+From: Terry Brown <terry_n_brown@yahoo.com>
+
+On Sun, 10 Mar 2013 08:13:41 +0200
+"Ville M. Vainio" <vivainio@gmail.com> wrote:
+
+> I'm pretty sure saving is cpu bound; for "normal" size documents, flushing
+> that kind of stuff to disk (or memory buffers that are to be written to
+> disk) shouldn't take significant amount of time.
+
+Probably right, so could you use `multiprocessing` instead of `threading`?  More challenging implementation wise, but I'm wondering if it's even possible, in terms of handing over the in-memory data structure?
+.. @+node:ekr.20130806072439.21448: *5* Re: threaded saveAll()
+From: "Ville M. Vainio" <vivainio@gmail.com>
+
+Multiprocessing based implementation will likely be quite hard, and once you walk the trees anyway and copy the data over the process boundary, it could cause bad pauses in execution.
+
+I have often thought how nice it would be to have "flat" storage for the leo document, so that you could just copy over a flat chunk of memory and let other processes traverse that. Doing that is a somewhat nontrivial undertaking, to say the least :).
+
+I'd just start with threads, despite the GIL problems.
+.. @+node:ekr.20111017132257.15883: *4* Won't do: Use IPython completion
+http://groups.google.com/group/leo-editor/browse_thread/thread/014fe61ff9480b2b
+
+I don't know if this is relevant or not, but the IPython autocompletion
+capability is awesome.
+
+If I'm investigating code I tend to do the following.
+
+list the modules in a package:
+In [1]: from fs import <tab>
+
+this lists the modules, in a package so I pick one
+In [1]: from fs import osfs
+<the osfs entry is tab-completable>
+
+now I can check the usage of fs.osfs
+In [2]: osfs? <enter>
+
+or the source:
+In [2]: osfs?? <enter>
+
+or the contents of the module
+In [2]: osfs. <tab>
+
+I can instantiate a class:
+In [3]: myfs = osfs.OSFS('/')
+
+and examine the ivars and methods:
+In [4]: myfs. <tab>
+
+It is such an efficient way to learn and remember the details of code.
+
+I know a bunch of work was done on Leo/IPython integration, don't
+know the current status, my wish of synchronized IPython and Leo
+may well be one of the many granted wishes I have forgotten about.
+
+I certainly think IPython autocompletion is the gold standard.
+
+===== EKR:
+
+This can't be done because IPython has access to live objects.  Leo does not.
+.. @+node:ekr.20180124135356.1: *3* Config
+.. @+node:ekr.20081119132758.2: *4* Won't do: @ifgui in settings trees
+@language rest
+
+This could be done now that gui's are created on the command line.
+However, it's not useful because the only gui is Qt.
+
+@language python
+
+.. @+node:ekr.20180124135340.1: *3* Directives
+.. @+node:ekr.20031218072017.797: *4* Won't do: @file http & @file ftp
+I'd like to see leo's @file can be extended to cover more protocols, like REBOL's "read" does. 
+
+in short, it would be very sweet if the following work::
+
+    @file http://www.somedomain.org/python/foo.py 
+    
+    @file pass@ftp.sd.org/python/foo.py" target="_blank"    
+    target="_new">ftp://user:pass@ftp.sd.org/python/foo.py> 
+
+while we are at it, what about xmlrpc/soap? 
+
+should there be new directive, like @source ?
+.. @+node:ekr.20031218072017.810: *5* Remote access Scott Powell
+I will wait. Here's clarification, when you're ready for it:
+
+All of my projects are stored on remote computers, and accessed via FTP. What I want is basically the ability to open up these projects directly through leo, instead of transferring the files manually between my computer and the computers that hold my projects, preferably through FTP.
+
+My solution: A new menu item called 'FTP' or 'Remote'. Click on this, and an FTP dialog opens up, with an empty list of FTP sites, and the ability to add more. You select a site, and it brings up a list of files. You select a file, and it is added to your project. When you hit 'save', it automatically does an FTP send.
+
+Python makes this a lot easier with the builtin module 'ftplib'. I'm sure there are similar things for C++. I hope you take this idea into consideration.
+
+Scott Powell
+CEO, Dev Designs
+.. @+node:ekr.20031218072017.745: *4* Won't do: @first <n>
+Here's a hopefully small thing. If you need to place a good sized copyright statement at the top of your files, LEO doesn't handle this case very cleanly. As I'm sure you're aware, you wind up with a matching number of @@first lines for each leading line in your source.
+
+As an example: 
+# 1 
+# 2 
+# 3 
+# 4 
+# 5 
+@verbatim
+@verbatim
+@verbatim
+#@+leo 
+@verbatim
+@verbatim
+@verbatim
+#@+node:0::@file /tmp/firstcheck.py 
+@verbatim
+@verbatim
+@verbatim
+#@+body 
+@verbatim
+@verbatim
+@verbatim
+#@@first 
+@verbatim
+@verbatim
+@verbatim
+#@@first 
+@verbatim
+@verbatim
+@verbatim
+#@@first 
+@verbatim
+@verbatim
+@verbatim
+#@@first 
+@verbatim
+@verbatim
+@verbatim
+#@@first 
+@verbatim
+@verbatim
+@verbatim
+#@+doc 
+# 
+# How many firsts do I get? 
+
+@verbatim
+@verbatim
+@verbatim
+#@-doc 
+@verbatim
+@verbatim
+@verbatim
+#@@c 
+Start code. 
+@verbatim
+@verbatim
+@verbatim
+#@-body 
+@verbatim
+@verbatim
+@verbatim
+#@-node:0::@file /tmp/firstcheck.py 
+@verbatim
+@verbatim
+@verbatim
+#@-leo 
+
+My fellow co-workers who don't use LEO, aren't exactly loving me here. 
+
+Might we introduce an: 
+
+@@first <num> 
+
+Type tag instead? So one '@@first 5' could represent all 5 of the above @@first lines? It makes for a smaller, cleaner LEO footprint and will tick off non-LEO users much less.
+
+Thanks. 
+
+- ordinarius 
+.. @+node:ekr.20040216054459: *4* Won't do: @h @f @endh and @endf directives
+http://sourceforge.net/forum/message.php?msg_id=2424151
+By: ksejlod ( Peter Barrel ) 
+ I Have a (maybe) great idea!   
+2004-02-15 04:29
+
+I've been using LEO for a while and finding surprinsingly powerfull new uses now
+and then, (hey, not a week passes that i dont think to myself : "why did'nt
+anyone thought of that kind of tool that is LEO. It's so stupid to program such
+a tool, yet no one thought of doing such a thing ! ")
+
+I was wondering if there was a leo keyword (beginning with "@") that would do a
+feature I thought would be great: something such as :
+@h
+@endh
+and of course, similarily...
+@f
+@endf
+
+Standing for "Header", "End Header", "Footer" and "End Footer". Let me please explain ...
+
+When creating files with @file (or nosentinels) I use the keyword "@others" in
+the starting node body of the file and place in the file, as it's decendants
+(children, grand-children & so on) some clones of other stuff somewhere else
+outside of this file (usualy, clones of parts of program regrouped as children
+of a "components" node up in the leo outline. Typical Example:
+
+-Introduction
+-+components
+-a
+-b
+-c
+-+@file program.BAS
+-b
+-c
+-a
+
+a, b, and c are clones and the @file node contains @others.
+
+As you see, I proceed that way because in older programming languages or in
+lower level languages, the order of components such as procs, declarations, etc
+as an importance. It also has the implication that << and >> brackets are
+irrelevant in my way of using leo.
+
+Now, my feature that I looked for in the doc but could not find (so i suggest it
+here in case no one had any need of this before) is that when used in the BODY
+of a node part of an "@file" the @h and @endh would define a chunk of text in
+the body, you've guessed it, to be added before _each_ children node and ONLY
+children no grandchildren or any deeper. But It could also be used INSIDE the
+body of a children to define headers or footers for IT'S OWN direct children.
+
+so, eehh, do you see the relevance of such a feature? Have i explained it
+clearly? maybe this would help:'
+
+CONST baba=2 AS INTEGER
+CONST bebe=7 AS INTEGER
+CONST zaza=5 AS INTEGER
+CONST bobo=1 AS INTEGER
+... the beginning and end of each of those "parts-of-a-program" is the same for a potential lot of lines... 
+
+To Be Precise : It's just really for adding something at end or beginning of a
+direct children of a node part of an @file in the tangling process.
+
+Is this feature already implemented but i have not found it? I'm pretty sure it easy to implement... what do you people think of this?
+Thanks 
+--
+k
+
+p.s. I'm the guy who proposed that in the untangling process, a clone would not
+be updated by it's _Last-Instance-Found_ in the @file beeing untangled, but
+instead updated by the _Last-Modified-One-Found_ in the @file... :)
+
+(ooouuuuhh that would be slick...)  
+
+By: ksejlod ( Peter Barrel ) 
+ RE: I Have a (maybe) great idea!   
+2004-02-15 04:35  
+
+ The tree i tried to draw in ascii did not came out the way i did it,
+sourceforge "eated" leading spaces sorry a, b and c are children of their "+"
+node just above them . -- k
+.. @+node:ekr.20041130104552: *4* Won't do: bird-track programs
+By: Guenther Enthaler - genthaler
+RE: Haskell support  
+2004-11-18 22:55
+
+There's a literate programming mode in Haskell (and in a number of other functional programming languages such as Clean & Curry), where the program is in a comment, usually where the line starts with ">" (bird track style, I think it's called), and the comments/documentation are freeform. It would be difficult but cool if Leo could support it, if only because the sentinels in the derived files wouldn't make whole file look so busy.
+
+Günther 
+
+===== EKR: @clean eliminates this problem.
+.. @+node:ekr.20031218072017.805: *4* Won't do: other section delims besides << and >>
+Maybe the section operator could be customizable, 
+
+I personally prefer the wiki way [[name of section]]. 
+
+@setlink-tag [[ ]] 
+.. @+node:ekr.20141103113220.10: *4* Won't do: parameterized template nodes
+From: Alexandre_Toledo <jalexandretoledo@gmail.com>
+
+As I use Leo to write PL/SQL code, I need to write similar text several times, changing only small parts of it. It would be great if I could create a node with the "template" and then clone it everywhere it should be written, and then providing the parameters to be used in this writing.
+
+Let me try to clarify it. I'd like to create a tree like this:
+
+    +- @file something.sql
+       +- Section 1
+          + << Clone >> with Parameters A, B
+       +- Section 2
+          + << Clone >> with Parameters C, D
+
+In this tree, both "Clone" nodes would be generated from a template specified somewhere in the tree, and would have parts of its text replaced with values "A" and "B" in Section 1, and "C" and "D" in Section 2.
+
+I've searched but couldn't find anything like this, then I've thought of trying to write a hook to intercept the "save" command, but couldn't think of a way to pass the parameters; I think the obvious way would be to put the parameters after the "<< >>", but then all cloned nodes are changed, so it wouldn't work.
+
+Another alternative would be creating some kind of directive @something, but I have no idea of how to do that.
+
+Any ideas?
+
+===== EKR: This is not likely ever to happen.
+.. @+node:ekr.20141103113220.11: *5* OP: Re: Parameterized template nodes
+I've tried it and it's great, I think it will be useful, but it's not what I was thinking of...
+
+Let me try to explain what I had thought about.  What I would like to do is:
+
+ 1. create a new .leo file
+ 2. add a "template" node (eventually with sub nodes) with some ${schema}
+    and ${table} macro place holders in its contents
+ 3. add a @file node to the .leo file
+ 4. add to this @file node a new one with definitions such as
+    schema=3DSCHEMA_NAME and table=3DTABLE_NAME
+ 5. add as a sub node to this last one a clone from the "template" node;
+ 6. then, when I save everything, the @file would have "SCHEMA_NAME" and
+    "TABLE_NAME" everywhere a "${schema}" or a "${table}" were in the original
+    template node.
+
+It would be important that, when I reopen the .leo file later, the macros in the @file node where shown as ${schema} and ${table}, and not as it's substituted text.
+
+Now that I've described it, I can't see how it would be done... The ${macro} place holders should be on the contents of the @file node, so after substitution, how could we recover it?
+
+That's also why the code from Jacob is not what I need (but I'm already thinking of other uses for it :) ): it will create a text when the button is pressed, but the generated nodes will be just static text.
+.. @+node:ekr.20180124135930.1: *3* File format
+.. @+node:ekr.20141017110114.18265: *4* Won't do: Use uuid's in gnx's
+https://groups.google.com/d/msg/leo-editor/p_b2LLBAqps/aTQoyGBec68J
+
+This post discusses a new command line argument for Leo: --uuid
+
+I have no plans to implement --uuid now, but it may have to be done in future.
+
+===== Rationale
+
+Terry has convinced me that collisions between both user ids and timestamps will become more frequent as Leo becomes more popular. Such collisions are not a serious problem at present: the odds of two different people with the same user id sharing .leo files is small.
+
+Nevertheless, a serious problem lurks, one that can not, even in principle, be solved with Leo's present gnx's.
+
+Suppose two people have the same id. Then Leo *must* assume that those people are actually the same person! As I have explained in other post, this can lead to data loss if the two people create two *distinct* nodes with the same gnx, and then try to merge those nodes into the same .leo file. The odds of this happening are small, but increasing.
+
+A good way to solve this problem is to use uuids, http://en.wikipedia.org/wiki/Universally_unique_identifier and python's uuid module: https://docs.python.org/2/library/uuid.html
+
+===== Operation
+
+The --uuid should cause Leo to use uuid's for all *new* gnx's. The uuid option should not convert *existing* gnx's to uuid-based gnx's.
+
+A new Leo command would convert all existing gnx's to uuid-based gnxs. Such mass conversions should *never* be done automatically.
+
+===== Format of uuid-based gnxs
+
+I would like the uuid-based gnx's to use uuid's in *addition* to the id and timestamp fields. Something like::
+
+    id.timestamp..uuid
+
+Alas, that does not seem possible, unless this kind of gnx is written to external files (in node sentinels). But many users would complain that such very-long gnx's clutters external files too much.
+
+So it seems that new-style gnxs would have something like this form::
+
+    ..uuid
+
+The leading dots allow Leo to distinguish this kind of gnx from the old
+forms::
+
+    id.timestamp.n
+    id.timestamp
+
+provided that dots are not allowed in ids.
+
+===== Summary
+
+Recent work shows that this is not necessary or desirable.
+https://github.com/leo-editor/leo-editor/issues/130
+
+Leo's uuid-based gnxs can contain neither user ids nor timestamps.
+
+We must ensure we stick with whatever new-style gnx format we choose initially: we don't want to burden Leo with distinguishing between several different forms of uuid-based gnxs.
+.. @+node:ekr.20180124140045.1: *3* Gui
+.. @+node:ekr.20160318113605.1: *4* Won't do: Rethink windows
+- Decouple commander from outline?
+- Notifications might simplify multiple body panes.
+- A good platform for web development and anything
+  needing multiple consoles.
+- Add status line showing type of window. Like Emacs.
+.. @+node:ekr.20120516140545.9992: *4* Won't do: Different settings interface
+Matt Wilkie
+
+As for user interface, I'd love to see myLeoSettings with a checkbox interface and filter bar at the top, and a feature to "merge or reset from LeoSettings".
+
+Or maybe something like Firefox's "about:config" would be better suited (and probably faster to build).
+.. @+node:ekr.20111011062533.15693: *4* Won't do: Make headline widgets scrollable
+It doesn't seem easy.
+.. @+node:ekr.20130919120947.12506: *4* Won't do: Why Leo will never be a web app
+There are two reasons why Leo is unlikely ever to be a web app.
+
+1. There are somewhere around a million lines of Python code in Leo's core and plugins. Thus, a *solid* python in javascript system is required. This isn't likely to happen.
+
+2. Creating a Leo outline widget is extremely complex. Even starting with a working javascript outliner, one has to deal with events (commands) coming from Leo scripts rather than from the user.
+
+These seem like the most important obstacles. There may be others, but these
+suffice.
+.. @+node:ekr.20180124135606.1: *3* Plugins
+.. @+node:ekr.20150503061351.1: *4* Won't do: Enable plugins separately from loading plugins?
 @language rest
 @wrap
 
-http://leoeditor.com/load-leo.html
+https://groups.google.com/forum/#!topic/leo-editor/K4rzqDE8emA
 
-* There are bugs re clones.
+The consensus is that this is a bad idea.
 
-- Allow outline/body panes to be resized.
-- Support hightlight.js: https://highlightjs.org/
+
+Original post:
+
+Leo's plugins manager can and imo should dispatch events registered to a plugin only to commanders for which the plugin is enabled in an @enabled-plugins node.
+
+This would make @enabled-plugins nodes work like all other settings.  Not enabling a plugin in a local (per .leo file) @enabled-plugin node would disable that plugin for that outline even if the plugin is enabled in myLeoSettings.leo or leoSettings.leo.
+
+In practice, the plugins manager would dispatch an event registered by a plugin to a commander only if the plugin is actually enabled in the commander.  Events would be dispatched as always.  For example:
+
+    def onCreate (tag, keys):
+        c = keys.get('c')
+        if c: << do something >>
+
+The only difference is that this event handler would be called only for outlines in which the plugin was enabled.
+
 .. @-all
 .. @@nosearch
 .. @-leo
