@@ -79,48 +79,6 @@ This is likely impossible, but git contains all history...
 .. @+node:ekr.20120516140545.9987: ** Wishlist: no due date
 @language rest
 @wrap
-.. @+node:ekr.20131101080215.16488: *3* * Outreach to magazine editors: create videos
-@language rest
-@wrap
-
-Steve Litt
-
-EKR summary: Videos will encourage magazine editors to write about Leo.
-
-**Get more fans who can write and who are listened to**
-
-To do that, you'd need to give them enough of a burning desire to spend a few days learning the ins and outs of Leo.
-
-**Leo has an image problem**
-
-Mention Leo, and most people say "it's an outliner." If that's all Leo was, VimOutliner would have eaten Leo's lunch years ago. VimOutliner is faster and has the 90% of outlining features that people use 90% of the time.
-
-95% of the population will never believe they need an outliner or that an outliner would do them any good, or that outlining is a skill they need to bother to acquire.
-
-**Make a 3 minute video**
-
-Leo is a mechanism by which you can specify a computer program as an outline-like thing in an outliner-like setting, flip a switch, and bang, there's your program. THAT'S what's going to hook people.
-
-**Video 1**: will show how to compose an application outline and turn it into a program.
-
-The program can be trivially simple, but make the program as 2014 relevant as possible: A web app would be nice. At the end of the video explain that although this video's program was simple, Leo can be used to make arbitrarily complex apps, and make them well.
-
-**Video 2**: will show hhow to make a GUI app.
-
-**Video 3**: will show how to write a book in Leo.
-
-Flip a switch, and have it be a book, flip it back, and see your book as an outline again, ready for changes, either minor, or structurally major.
-
-**Publicize these videos**
-
-You're going to get some journalists excited, and those are your reviews.
-
-**Start publicizing different ways people use Leo.**
-
-Encourage them to write in with their unique uses, and publicize them. I bet people are doing things with Leo you never dreamed of, and some of those things might be the itch some journalist wants to scratch.
-.. @+node:ekr.20150412034943.1: *4* Show what rST & css can do in Leo
-.. @+node:ekr.20131121211048.16378: *3* * More screenshots!
-Different font sizes, coloring schemes, plugins, etc.
 .. @+node:ekr.20140704052551.17951: *3* Code
 .. @+node:ekr.20130806072439.21341: *4* * Node pipes
 From: Kent Tenney <ktenney@gmail.com>
@@ -293,37 +251,8 @@ http://groups.google.com/group/leo-editor/browse_thread/thread/b851e7d9855a57c2
 
 http://www.voom.net/pyqt-qtest-example
 .. @+node:ekr.20140704052551.17957: *3* Coloring
-.. @+node:ekr.20060824110846: *4* Add colorizing for cweb, rapidq
-.. @+node:ekr.20110614123640.6587: *4* Add headline/color functions to Leo's core
-http://groups.google.com/group/leo-editor/browse_thread/thread/7e279fe3dedf42be/f00fde4df5b39ded
-
-What uA should be used to specify node colors?
-
-if the foreground / background color API uses uAs,
-would/should the uAs use the reserved "leo_&lt;something&gt;"
-namespace?
-
--------------------
-
-Terry Brown
-
-Sounds like something I may have brought up, long ago.
-
-I was thinking that setting the fore/background color of nodes in the tree should be a "gui core" function, and that the info should be stored in uA, and so wanted to know what key should be used in uA for that.  I think the docs say top level keys starting with "leo_" are reserved, and probably wanted a ruling on
-
-v.u['leo_fg'] = 'red'
-
-vs
-
-v.u['leo_tree_style']['fg'] = 'red'
-
-etc.
-
-I think the question may be more complicated than just what to call the key, so you can probably retire the todo item.
 .. @+node:ekr.20111028195854.16607: *4* Allow ruleset-specific colors
 Like @color html::tags_markup_color = blue
-.. @+node:ekr.20111019104425.15863: *4* Won't do: use pygments for syntax coloring
-This has little chance of improving Leo
 .. @+node:ekr.20120229094652.15178: *3* Commands
 .. @+node:ekr.20041130123243: *4* Clear Undo command
 http://sourceforge.net/forum/message.php?msg_id=2859273
@@ -1900,8 +1829,6 @@ Each vnode has a parents list and a children list.  All we have to do is replace
 
 As far as the rest of Leo is concerned, vnodes still have parents and children lists.  The switcheroo happens totally invisibly, when the user wants to see another view.  The attribute changes and that changes what the vnode dictionary/properties "deliver" to the rest of Leo.
 .. @+node:ekr.20160405061740.1: *3* Features
-.. @+node:ekr.20150602122614.1: *4* Beautifier warns about long lines
-compute_line_length helper: just scans backward.
 .. @+node:ekr.20130806072439.21204: *4* Comparison leo outline type with other outliner's types?
 From: Todd Mars <tamnt54@gmail.com>
 
