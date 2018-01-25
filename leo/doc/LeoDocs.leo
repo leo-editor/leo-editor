@@ -124,8 +124,23 @@
 <v t="ville.20090705225609.5738"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20150314044011.7"><vh>@@button remove dups</vh></v>
-<v t="ekr.20171220050925.1"><vh>@button get-tips</vh></v>
-<v t="ekr.20170212105226.1"><vh>@button IntroSlides @key=Ctrl-9</vh>
+<v t="ekr.20171220050925.1"><vh>@@@button get-tips</vh></v>
+<v t="ekr.20180125112749.1"><vh>@button get-tips</vh></v>
+<v t="ekr.20180125112540.1"><vh>@button get-issues</vh></v>
+<v t="ekr.20180125094702.1"><vh>@button demo</vh>
+<v t="ekr.20180125113535.1"><vh>&lt;&lt; utils &gt;&gt;</vh>
+<v t="ekr.20180125101040.1"><vh>hightlight</vh></v>
+<v t="ekr.20180125102041.1"><vh>unhighlight</vh></v>
+<v t="ekr.20180125102554.1"><vh>update</vh></v>
+<v t="ekr.20180125101033.1"><vh>wait</vh></v>
+</v>
+<v t="ekr.20180125113541.1"><vh>slides</vh>
+<v t="ekr.20180125113620.1"><vh>Body pane</vh></v>
+<v t="ekr.20180125113622.1"><vh>Tree pane</vh></v>
+<v t="ekr.20180125113623.1"><vh>Log pane</vh></v>
+</v>
+</v>
+<v t="ekr.20170212105226.1"><vh>@button IntroSlides</vh>
 <v t="ekr.20170212105226.2"><vh>&lt;&lt; imports &gt;&gt;</vh></v>
 <v t="ekr.20170212105226.3"><vh>&lt;&lt; class IntroSlides &gt;&gt;</vh>
 <v t="ekr.20170212105226.4"><vh>setup</vh></v>
@@ -383,7 +398,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1713,23 +1728,8 @@
 </v>
 </v>
 <v t="ekr.20180125034531.1"><vh>What's new in Leo 5.7</vh></v>
-<v t="ekr.20180125034327.1"><vh>Leo 5.7b1 release notes</vh></v>
-<v t="ekr.20180125032239.1"><vh>Leo 5.7 Summary</vh>
-<v t="ekr.20180125041552.1"><vh>To do</vh>
-<v t="maphew.20171129140022.1"><vh>@rst html/quick.html</vh>
-<v t="maphew.20171129131746.1"><vh>Computer with python already</vh></v>
-<v t="maphew.20171129131759.1"><vh>No python yet</vh></v>
-</v>
-<v t="ekr.20180124094454.1"><vh>FAQ How to use Leo with LaTex to get PDF output</vh></v>
-<v t="ekr.20171204111545.1"><vh>update cheat sheet</vh></v>
-<v t="ekr.20180124100450.708"><vh>Document ref file commands</vh>
-<v t="ekr.20180124100450.709"><vh>Reference outline commands</vh>
-<v t="ekr.20180124100450.710"><vh>c_file.updateRefLeoFile</vh></v>
-<v t="ekr.20180124100450.711"><vh>c_file.readRefLeoFile</vh></v>
-<v t="ekr.20180124100450.712"><vh>c_file.setReferenceFile</vh></v>
-</v>
-</v>
-</v>
+<v t="ekr.20180125034327.1"><vh>Leo 5.7b1 release notes</vh>
+<v t="ekr.20180125032239.1"><vh>Leo 5.7 Summary</vh></v>
 <v t="ekr.20180125041229.1"><vh>Leo 5.7 Major features</vh>
 <v t="ekr.20180124100450.49"><vh>#417: reload-settings command</vh>
 <v t="ekr.20180124100450.655"><vh>c.registerReloadSettings</vh></v>
@@ -1889,6 +1889,22 @@
 <v t="ekr.20180124122055.1"><vh>New line_numbering.py plugin</vh></v>
 </v>
 </v>
+<v t="ekr.20180125041552.1"><vh>To do</vh>
+<v t="maphew.20171129140022.1"><vh>@rst html/quick.html</vh>
+<v t="maphew.20171129131746.1"><vh>Computer with python already</vh></v>
+<v t="maphew.20171129131759.1"><vh>No python yet</vh></v>
+</v>
+<v t="ekr.20180124094454.1"><vh>FAQ How to use Leo with LaTex to get PDF output</vh></v>
+<v t="ekr.20171204111545.1"><vh>update cheat sheet</vh></v>
+<v t="ekr.20180124100450.708"><vh>Document ref file commands</vh>
+<v t="ekr.20180124100450.709"><vh>Reference outline commands</vh>
+<v t="ekr.20180124100450.710"><vh>c_file.updateRefLeoFile</vh></v>
+<v t="ekr.20180124100450.711"><vh>c_file.readRefLeoFile</vh></v>
+<v t="ekr.20180124100450.712"><vh>c_file.setReferenceFile</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20180125112540.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -22252,7 +22268,7 @@ g.cls()
 if getattr(g.app, 'demo', None):
     g.app.demo.next()
 else:
-    root = g.findTopLevelNode(c, '@button IntroSlides @key=Ctrl-9')
+    root = g.findTopLevelNode(c, '@button IntroSlides')
     demo = IntroSlides(c)
     main(c, demo,
         auto_run=False,
@@ -22293,7 +22309,7 @@ w = Image(fn=demo.get_icon_fn('box01.png'),
 Callout('&lt;-- An Icon',position=(20+w.width(), w.y()-3))
 ###
 demo.next()</t>
-<t tx="ekr.20170212105226.2">from leo.core.leoQt import QtCore, QtGui
+<t tx="ekr.20170212105226.2"># from leo.core.leoQt import QtCore, QtGui
 import leo.plugins.demo as demo_module
 import imp
 imp.reload(demo_module)</t>
@@ -22356,7 +22372,7 @@ def teardown(self):
     k.demoNextKey = k.strokeFromSetting('Ctrl-9')
         # Tell k.masterKeyHandler to process Ctrl-9 immediately.
         # Binding demo-next in a setting does *not* work.
-    h = '@button %s @key=Ctrl-9' % class_name
+    h = '@button %s' % class_name
     p = g.findNodeAnywhere(c, h)
     assert p, h
     script_tree = g.findNodeInTree(c, p, script_name)
@@ -27947,7 +27963,8 @@ You can see all 5.7 issues by visiting:
 https://github.com/leo-editor/leo-editor/issues?page=1&amp;q=is%3Aissue+milestone%3A5.7+is%3Aclosed+-label%3ATip+-label%3AWon%27tDo+-label%3AWon%27tFix+-label%3AHelp&amp;utf8=%E2%9C%93
 
 This uses the following filters:
-is:issue milestone:5.7 is:closed -label:Tip -label:Won'tDo -label:Won'tFix -label:Help </t>
+is:issue milestone:5.7 is:closed -label:Tip -label:Won'tDo -label:Won'tFix -label:Help
+</t>
 <t tx="ekr.20180125034327.1">Leo 5.7b1 January 27, 2018
 
 [Leo](http://leoeditor.com/) 5.7b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
@@ -27988,6 +28005,166 @@ https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+
 <t tx="ekr.20180125041552.1"></t>
 <t tx="ekr.20180125041723.1"></t>
 <t tx="ekr.20180125042412.1"></t>
+<t tx="ekr.20180125094702.1">@language python
+import time
+import leo.plugins.demo as demo
+&lt;&lt; utils &gt;&gt;
+@others
+</t>
+<t tx="ekr.20180125101033.1">def wait(n=2):
+    update()
+    time.sleep(n)
+    d.delete_widgets()
+    update()
+    
+</t>
+<t tx="ekr.20180125101040.1">def highlight(pane):
+
+    w = d.pane_widget(pane)
+    if not w:
+        return g.trace('bad pane', pane)
+    sd = {
+        'body': 'QTextEdit#richTextEdit { border: 5px solid red; }',
+        'log': 'QTextEdit#log-widget { border: 5px solid red; }',
+        'tree': 'QTreeWidget { border: 5px solid red; }',
+    }
+    sheet2 = sd.get(pane)
+    if not sheet2:
+        return g.trace('bad pane', pane)
+    sheet1 = ssm.expand_css_constants(c.active_stylesheet)
+    w.setStyleSheet('%s\n\n%s' % (sheet1, sheet2))
+    d.repaint_pane(pane)
+    update()
+</t>
+<t tx="ekr.20180125102041.1">def unhighlight(pane):
+    
+    w = d.pane_widget(pane)
+    if not w:
+        return g.trace('bad pane', pane)
+    sd = {
+        'body': 'QTextEdit#richTextEdit { border: 5px solid white; }',
+        'log': 'QTextEdit#log-widget { border: 5px solid white; }',
+        'tree': 'QTreeWidget { border: 5px solid white; }',
+    }
+    sheet2 = sd.get(pane)
+    if not sheet2:
+        return g.trace('bad pane', pane)
+    # sheet1 = ssm.expand_css_constants(c.active_stylesheet)
+    sheet1 = ssm.default_style_sheet
+    w.setStyleSheet('%s\n\n%s' % (sheet1, sheet2))
+    d.repaint_pane(pane)
+    update()
+</t>
+<t tx="ekr.20180125102554.1">def update():
+    g.app.gui.qtApp.processEvents()
+    </t>
+<t tx="ekr.20180125112540.1">@language python
+
+### from collections import namedtuple
+
+import requests
+print(requests)
+
+def make_tips(c):
+    '''
+    A script to make entries in the global tips array.
+    
+    Each printed entry has the form:
+        
+        UserTip(
+            n=anInt
+            tags=[list of tags],
+            title=aString,
+            text="""
+            
+            aString
+            
+            """)
+        
+    After running this script, copy the result from the console to the
+    &lt;define tips&gt; section of leoTips.py.
+    '''
+    url = 'https://api.github.com/repos/leo-editor/leo-editor/issues?labels=Tip&amp;state='
+    
+    def get_tips(data):
+        """get_tips - get tips from GitHub issues
+        :param dict data: GitHub API issues list
+        :return: list of Tips
+        """
+        tips = []
+        for issue in data:
+            body, n, title = issue['body'], issue['number'], issue['title']
+            lines = g.splitLines(body)
+            for i, s in enumerate(lines):
+                if s.strip().lower().startswith('tags:'):
+                    lines = lines[:i] + lines[i+1:]
+                    text = ''.join(lines).strip()
+                    s = s.strip().rstrip('.').strip()
+                    s = s[len('tags:'):].strip()
+                    tags = [z.strip() for z in s.split(',')]
+                    break
+            else:
+                tags = []
+                text = body.strip()
+            tips.append(
+                UserTip(
+                    n=n,
+                    tags=tags,
+                    text=text.strip(),
+                    title=title.strip(),
+                ))
+        return tips
+    
+    g.cls()
+    template = '''\
+UserTip(
+    n=%s,
+    tags=%s,
+    title="%s",
+    text="""\
+    
+%s
+
+"""),
+'''
+if 0:
+    template = g.adjustTripleString(template, c.tab_width)
+    for kind in ('open',): # 'closed':
+        data = requests.get(url+kind).json()
+        for tip in get_tips(data):
+            tags = ["%s" % (z) for z in tip.tags or []]
+            title = tip.title.lstrip('Tip:').lstrip('tip:').strip()
+            print(template % (tip.n, tags, title, tip.text))
+</t>
+<t tx="ekr.20180125112749.1"># This prints only open tips.
+import leo.core.leoTips as leoTips
+leoTips.make_tips(c)
+</t>
+<t tx="ekr.20180125113535.1">@others</t>
+<t tx="ekr.20180125113541.1"># Setup
+# c.frame.log.selectTab('Log')
+# c.frame.log.clearLog()
+ssm = c.styleSheetManager
+d = demo.Demo(c)
+d.delete_widgets()
+# Slides
+@others
+# Teardown
+update()
+c.bodyWantsFocusNow()
+</t>
+<t tx="ekr.20180125113620.1">highlight('body')
+d.Callout('Body Pane')
+wait()
+unhighlight('body')</t>
+<t tx="ekr.20180125113622.1">highlight('tree')
+d.Callout('Outline Pane',pane='tree')
+wait()
+unhighlight('tree')</t>
+<t tx="ekr.20180125113623.1">highlight('log')
+d.Callout('Log Pane',pane='log')
+wait()
+unhighlight('log')</t>
 <t tx="maphew.20171129131746.1">Python 3.0+::
 
     pip install leo
@@ -28031,7 +28208,7 @@ From Anaconda shell::
 Installing dependencies
 #######################
 </t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_ctime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
