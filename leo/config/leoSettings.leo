@@ -102,6 +102,592 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
+<v t="ekr.20170304074559.1"><vh>Themes</vh>
+<v t="ekr.20140912072521.19160"><vh>@data qt-gui-plugin-style-sheet</vh>
+<v t="ekr.20140915194122.19458"><vh>Body pane</vh></v>
+<v t="ekr.20140915194122.19467"><vh>Buttons</vh></v>
+<v t="ekr.20140915194122.19466"><vh>Dialogs (QLabel)</vh></v>
+<v t="ekr.20140915194122.19459"><vh>Find Tab</vh></v>
+<v t="ekr.20150701073123.1"><vh>Gutter</vh></v>
+<v t="ekr.20140915194122.19461"><vh>Log panes</vh></v>
+<v t="ekr.20140915194122.19462"><vh>Minibuffer</vh></v>
+<v t="ekr.20140915194122.19474"><vh>Outline pane (change default path)</vh></v>
+<v t="ekr.20140915194122.19463"><vh>Plugins</vh>
+<v t="ekr.20140915194122.19464"><vh>Bookmarks plugin (stylesheet)</vh></v>
+<v t="ekr.20140915194122.19465"><vh>Screencast plugin</vh></v>
+<v t="ekr.20140915194122.19468"><vh>Interact plugin</vh></v>
+<v t="ekr.20140915194122.19469"><vh>Quickmove plugin</vh></v>
+</v>
+<v t="edward.20150614045745.1"><vh>Rendering pane</vh></v>
+<v t="ekr.20140915194122.19471"><vh>Splitter</vh></v>
+<v t="ekr.20140915194122.19473"><vh>Status areas</vh></v>
+<v t="ekr.20140915194122.19475"><vh>Vim mode borders</vh></v>
+<v t="ekr.20140915194122.19470"><vh>Widgets</vh></v>
+</v>
+<v t="ekr.20170310072826.1"><vh>@theme base dark</vh>
+<v t="ekr.20170310072826.2"><vh>settings (base dark)</vh>
+<v t="ekr.20170310072814.3"><vh>style sheet settings (base dark)</vh>
+<v t="ekr.20170310072814.4"><vh>border settings (base dark)</vh>
+<v t="ekr.20170310072814.5"><vh>@@@color focused-border-hover-color = red</vh></v>
+<v t="ekr.20170310072814.6"><vh>@color focused-border-focus-color = red</vh></v>
+<v t="ekr.20170310072814.7"><vh>@string focused-border-style = solid</vh></v>
+<v t="ekr.20170310072814.8"><vh>@string focused-border-unfocus-color = @solarized-base02</vh></v>
+<v t="ekr.20170310072814.9"><vh>@string focused-border-width = 5px</vh></v>
+</v>
+<v t="ekr.20170310072814.10"><vh>color settings (base dark)</vh>
+<v t="ekr.20170310072814.11"><vh>@color button-hover-bg = @solarized-base01</vh></v>
+<v t="ekr.20170310072814.12"><vh>@color button-hover-fg = @solarized-base03</vh></v>
+<v t="ekr.20170310072814.13"><vh>@color log_error_color = #dc322f</vh></v>
+<v t="ekr.20170310072814.14"><vh>@color log_text_background_color = #073642</vh></v>
+<v t="ekr.20170310072814.15"><vh>@color log_text_foreground_color = #93a1a1</vh></v>
+<v t="ekr.20170310072814.16"><vh>@color log_warning_color = #268bd2</vh></v>
+<v t="ekr.20170310072814.17"><vh>@color minibuffer_background_color = @solarized-base03</vh></v>
+<v t="ekr.20170310072814.18"><vh>@color minibuffer_error_color = @solarized-red</vh></v>
+<v t="ekr.20170310072814.19"><vh>@color minibuffer_foreground_color = @solarized-yellow</vh></v>
+<v t="ekr.20170310072814.20"><vh>@color minibuffer_warning_color = @solarized-base02</vh></v>
+<v t="ekr.20170310072814.21"><vh>@color splitter-bg = @solarized-base01</vh></v>
+<v t="ekr.20170310072814.22"><vh>@color splitter-hover-bg = @solarized-violet</vh></v>
+<v t="ekr.20170310072814.23"><vh>@color text-background = @solarized-base03</vh></v>
+<v t="ekr.20170310072814.24"><vh>@color text-background-bright = @solarized-base02</vh></v>
+<v t="ekr.20170310072814.25"><vh>@color text-foreground = @solarized-base0</vh></v>
+<v t="ekr.20170310072814.26"><vh>@color text-foreground-bright = @solarized-base2</vh></v>
+</v>
+<v t="ekr.20170310072814.27"><vh>font settings (base dark)</vh>
+<v t="ekr.20170310072814.28"><vh>@string font-family = DejaVu Sans Mono</vh></v>
+<v t="ekr.20170310072814.29"><vh>@string font-family = DejaVu Sans Mono</vh></v>
+<v t="ekr.20170310072814.30"><vh>@string font-family-tree = @font-family</vh></v>
+<v t="ekr.20170310072814.31"><vh>@string font-family-body = @font-family</vh></v>
+<v t="ekr.20170310072814.32"><vh>@string font-family-log = @font-family</vh></v>
+<v t="ekr.20170310082759.1"><vh>@string font-size = 12pt</vh></v>
+<v t="ekr.20170310072814.33"><vh>@string font-size-body = 12pt</vh></v>
+<v t="ekr.20170310072814.34"><vh>@string font-size-tree = 12pt</vh></v>
+<v t="ekr.20170310072814.35"><vh>@string font-size-log = 12pt</vh></v>
+</v>
+<v t="ekr.20170310072814.36"><vh>gradients (base dark)</vh>
+<v t="ekr.20170310072814.37"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @text-background-bright, stop:0.4 @text-background, stop:0.6 @text-background, stop:0.9 @text-background-bright)</vh></v>
+<v t="ekr.20170310072814.38"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)</vh></v>
+</v>
+<v t="ekr.20170310072814.39"><vh>outline indicators (base dark)</vh>
+<v t="ekr.20170310072814.40"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
+<v t="ekr.20170310072814.41"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
+</v>
+<v t="ekr.20170310072814.42"><vh>plugins settings (base dark)</vh>
+<v t="ekr.20170310072814.43"><vh>bookmark settings (base dark)</vh>
+<v t="ekr.20170310072814.44"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20170304074559.413"><vh>syntax coloring settings (common to all themes)</vh>
+<v t="ekr.20170310102041.1"><vh>Colors for Leo constructs (all themes)</vh>
+<v t="ekr.20170310102041.2"><vh>@color doc_part_color = #d33682</vh></v>
+<v t="ekr.20170310102041.3"><vh>@color leo_keyword_color = #268bd2</vh></v>
+<v t="ekr.20170310102041.4"><vh>@color section_name_brackets_color = #268bd2</vh></v>
+<v t="ekr.20170310102041.5"><vh>@color section_name_color = #d33682</vh></v>
+<v t="ekr.20170310102041.6"><vh>@color show_invisibles_space_color = #d33682</vh></v>
+<v t="ekr.20170310102041.7"><vh>@color show_invisibles_tab_color = red</vh></v>
+<v t="ekr.20170310102041.8"><vh>@color undefined_section_name_color = #d33682</vh></v>
+<v t="ekr.20170310102041.9"><vh>@color url_color = #6c71c4</vh></v>
+</v>
+<v t="ekr.20170310102041.10"><vh>Colors for jEdit constructs (all themes)</vh>
+<v t="ekr.20170310102041.11"><vh>@color blank_color = #d33682</vh></v>
+<v t="ekr.20170310102041.12"><vh>@color comment1_color = #d33682</vh></v>
+<v t="ekr.20170310102041.13"><vh>@color comment2_color = #d33682</vh></v>
+<v t="ekr.20170310102041.14"><vh>@color comment3_color = #d33682</vh></v>
+<v t="ekr.20170310102041.15"><vh>@color comment4_color = #d33682</vh></v>
+<v t="ekr.20170310102041.16"><vh>@color keyword1_color = #268bd2</vh></v>
+<v t="ekr.20170310102041.17"><vh>@color keyword2_color = #268bd2</vh></v>
+<v t="ekr.20170310102041.18"><vh>@color keyword3_color = #268bd2</vh></v>
+<v t="ekr.20170310102041.19"><vh>@color keyword4_color = #268bd2</vh></v>
+<v t="ekr.20170310102041.20"><vh>@color literal1_color = #2aa198</vh></v>
+<v t="ekr.20170310102041.21"><vh>@color literal2_color = #2aa198</vh></v>
+<v t="ekr.20170310102041.22"><vh>@color literal3_color = #2aa198</vh></v>
+<v t="ekr.20170310102041.23"><vh>@color literal4_color = #2aa198</vh></v>
+<v t="ekr.20170310102041.24"><vh>@color markup_color = #eee8d5</vh></v>
+<v t="ekr.20170310102041.25"><vh>@color operator_color = #eee8d5</vh></v>
+<v t="ekr.20170310102041.26"><vh>@color plain null color = None</vh></v>
+<v t="ekr.20170310102041.27"><vh>@color tab_color = red</vh></v>
+</v>
+</v>
+<v t="ekr.20170310072826.73"><vh>theme settings (base dark)</vh>
+<v t="ekr.20170310072826.74"><vh>@string color_theme = base_dark</vh></v>
+<v t="ekr.20170310072826.75"><vh>@bool color_theme_is_dark = True</vh></v>
+</v>
+</v>
+<v t="ekr.20170310072826.76"><vh>@data qt-gui-plugin-style-sheet</vh>
+<v t="ekr.20170310072826.77"><vh>style-sheet (base dark)</vh>
+<v t="ekr.20170310072826.78"><vh>active pane highlighting (base dark)</vh></v>
+<v t="ekr.20170310072826.79"><vh>body editor (base dark)</vh></v>
+<v t="ekr.20170310072826.80"><vh>bookmarks (base dark)</vh></v>
+<v t="ekr.20170310072826.81"><vh>buttons (base dark)</vh></v>
+<v t="ekr.20170310072826.82"><vh>log pane (base dark)</vh></v>
+<v t="ekr.20170310072826.83"><vh>menus (base dark)</vh></v>
+<v t="ekr.20170310072826.84"><vh>mini-buffer (base dark)</vh></v>
+<v t="ekr.20170310072826.85"><vh>status line (base dark)</vh></v>
+<v t="ekr.20170310072826.86"><vh>scrollbar (base dark)</vh></v>
+<v t="ekr.20170310072826.87"><vh>splitters (base dark)</vh></v>
+<v t="ekr.20170310072826.88"><vh>tab bar (base dark)</vh></v>
+<v t="ekr.20170310072826.89"><vh>tree (base dark) </vh></v>
+<v t="ekr.20170310072826.90"><vh>widgets (base dark)</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20170312082833.1"><vh>@theme windows ekr light</vh>
+<v t="ekr.20170312082833.2"><vh>@string focused-border-unfocus-color = @solarized-base2</vh></v>
+<v t="ekr.20140912072521.19160"></v>
+<v t="ekr.20170312082833.3"><vh>@data qt-gui-user-style-sheet</vh></v>
+</v>
+<v t="ekr.20170310100532.1"><vh>@theme windows ekr dark</vh>
+<v t="ekr.20170310100532.2"><vh>settings</vh>
+<v t="ekr.20170310100532.3"><vh>style sheet settings (base dark)</vh>
+<v t="ekr.20170310100532.4"><vh>border settings (base dark)</vh>
+<v t="ekr.20170310100532.5"><vh>@@@color focused-border-hover-color = red</vh></v>
+<v t="ekr.20170310100532.6"><vh>@color focused-border-focus-color = red</vh></v>
+<v t="ekr.20170310100532.7"><vh>@string focused-border-style = solid</vh></v>
+<v t="ekr.20170310100532.8"><vh>@string focused-border-unfocus-color = @solarized-base02</vh></v>
+<v t="ekr.20170310100532.9"><vh>@string focused-border-width = 5px</vh></v>
+</v>
+<v t="ekr.20170310100532.10"><vh>color settings (base dark)</vh>
+<v t="ekr.20170310100532.11"><vh>@color button-hover-bg = @solarized-base01</vh></v>
+<v t="ekr.20170310100532.12"><vh>@color button-hover-fg = @solarized-base03</vh></v>
+<v t="ekr.20170310100532.13"><vh>@color log_error_color = #dc322f</vh></v>
+<v t="ekr.20170310100532.14"><vh>@color log_text_background_color = #073642</vh></v>
+<v t="ekr.20170310100532.15"><vh>@color log_text_foreground_color = #93a1a1</vh></v>
+<v t="ekr.20170310100532.16"><vh>@color log_warning_color = #268bd2</vh></v>
+<v t="ekr.20170310100532.17"><vh>@color minibuffer_background_color = @solarized-base03</vh></v>
+<v t="ekr.20170310100532.18"><vh>@color minibuffer_error_color = @solarized-red</vh></v>
+<v t="ekr.20170310100532.19"><vh>@color minibuffer_foreground_color = @solarized-yellow</vh></v>
+<v t="ekr.20170310100532.20"><vh>@color minibuffer_warning_color = @solarized-base02</vh></v>
+<v t="ekr.20170310100532.21"><vh>@color splitter-bg = @solarized-base01</vh></v>
+<v t="ekr.20170310100532.22"><vh>@color splitter-hover-bg = @solarized-violet</vh></v>
+<v t="ekr.20170310100532.23"><vh>@color text-background = @solarized-base03</vh></v>
+<v t="ekr.20170310100532.24"><vh>@color text-background-bright = @solarized-base02</vh></v>
+<v t="ekr.20170310100532.25"><vh>@color text-foreground = @solarized-base0</vh></v>
+<v t="ekr.20170310100532.26"><vh>@color text-foreground-bright = @solarized-base2</vh></v>
+</v>
+<v t="ekr.20170310100532.27"><vh>font settings (base dark)</vh>
+<v t="ekr.20170310100532.28"><vh>@string font-family = DejaVu Sans Mono</vh></v>
+<v t="ekr.20170310100532.29"><vh>@string font-family = DejaVu Sans Mono</vh></v>
+<v t="ekr.20170310100532.30"><vh>@string font-family-tree = @font-family</vh></v>
+<v t="ekr.20170310100532.31"><vh>@string font-family-body = @font-family</vh></v>
+<v t="ekr.20170310100532.32"><vh>@string font-family-log = @font-family</vh></v>
+<v t="ekr.20170310100532.33"><vh>@string font-size = 12pt</vh></v>
+<v t="ekr.20170310100532.34"><vh>@string font-size-body = 12pt</vh></v>
+<v t="ekr.20170310100532.35"><vh>@string font-size-tree = 12pt</vh></v>
+<v t="ekr.20170310100532.36"><vh>@string font-size-log = 12pt</vh></v>
+</v>
+<v t="ekr.20170310100532.37"><vh>gradients (base dark)</vh>
+<v t="ekr.20170310100532.38"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @text-background-bright, stop:0.4 @text-background, stop:0.6 @text-background, stop:0.9 @text-background-bright)</vh></v>
+<v t="ekr.20170310100532.39"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)</vh></v>
+</v>
+<v t="ekr.20170310100532.40"><vh>outline indicators (base dark)</vh>
+<v t="ekr.20170310100532.41"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
+<v t="ekr.20170310100532.42"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
+</v>
+<v t="ekr.20170310100532.43"><vh>plugins settings (base dark)</vh>
+<v t="ekr.20170310100532.44"><vh>bookmark settings (base dark)</vh>
+<v t="ekr.20170310100532.45"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20170310100532.46"><vh>syntax coloring settings (common to all themes)</vh>
+<v t="ekr.20170310100532.47"><vh>Colors for Leo constructs (all themes)</vh>
+<v t="ekr.20170310100532.48"><vh>@color doc_part_color = #d33682</vh></v>
+<v t="ekr.20170310100532.49"><vh>@color leo_keyword_color = #268bd2</vh></v>
+<v t="ekr.20170310100532.50"><vh>@color section_name_brackets_color = #268bd2</vh></v>
+<v t="ekr.20170310100532.51"><vh>@color section_name_color = #d33682</vh></v>
+<v t="ekr.20170310100532.52"><vh>@color show_invisibles_space_color = #d33682</vh></v>
+<v t="ekr.20170310100532.53"><vh>@color show_invisibles_tab_color = red</vh></v>
+<v t="ekr.20170310100532.54"><vh>@color undefined_section_name_color = #d33682</vh></v>
+<v t="ekr.20170310100532.55"><vh>@color url_color = #6c71c4</vh></v>
+</v>
+<v t="ekr.20170310100532.56"><vh>Colors for jEdit constructs (all themes)</vh>
+<v t="ekr.20170310100532.57"><vh>@color blank_color = #d33682</vh></v>
+<v t="ekr.20170310100532.58"><vh>@color comment1_color = #d33682</vh></v>
+<v t="ekr.20170310100532.59"><vh>@color comment2_color = #d33682</vh></v>
+<v t="ekr.20170310100532.60"><vh>@color comment3_color = #d33682</vh></v>
+<v t="ekr.20170310100532.61"><vh>@color comment4_color = #d33682</vh></v>
+<v t="ekr.20170310100532.62"><vh>@color keyword1_color = #268bd2</vh></v>
+<v t="ekr.20170310100532.63"><vh>@color keyword2_color = #268bd2</vh></v>
+<v t="ekr.20170310100532.64"><vh>@color keyword3_color = #268bd2</vh></v>
+<v t="ekr.20170310100532.65"><vh>@color keyword4_color = #268bd2</vh></v>
+<v t="ekr.20170310100532.66"><vh>@color literal1_color = #2aa198</vh></v>
+<v t="ekr.20170310100532.67"><vh>@color literal2_color = #2aa198</vh></v>
+<v t="ekr.20170310100532.68"><vh>@color literal3_color = #2aa198</vh></v>
+<v t="ekr.20170310100532.69"><vh>@color literal4_color = #2aa198</vh></v>
+<v t="ekr.20170310100532.70"><vh>@color markup_color = #eee8d5</vh></v>
+<v t="ekr.20170310100532.71"><vh>@color operator_color = #eee8d5</vh></v>
+<v t="ekr.20170310100532.72"><vh>@color plain null color = None</vh></v>
+<v t="ekr.20170310100532.73"><vh>@color tab_color = red</vh></v>
+</v>
+</v>
+<v t="ekr.20170310100532.74"><vh>zz settings overrides (ekr dark)</vh>
+<v t="ekr.20170310100532.75"><vh>@string focused-border-width = 5px</vh></v>
+<v t="ekr.20170310100532.76"><vh>@string font-size = 16pt</vh></v>
+<v t="ekr.20170310100532.77"><vh>@string font-size-body = 16pt</vh></v>
+<v t="ekr.20170310100532.78"><vh>@string font-size-tree = 16pt</vh></v>
+<v t="ekr.20170310100532.79"><vh>@string font-size-log = 16pt</vh></v>
+</v>
+<v t="ekr.20170310100532.80"><vh>theme settings</vh>
+<v t="ekr.20170310100532.81"><vh>@string color_theme = leo_dark_0</vh></v>
+<v t="ekr.20170310100532.82"><vh>@bool color_theme_is_dark = True</vh></v>
+</v>
+</v>
+<v t="ekr.20170310100532.83"><vh>@data qt-gui-plugin-style-sheet</vh>
+<v t="ekr.20170310100532.84"><vh>style-sheet (base dark)</vh>
+<v t="ekr.20170310100532.85"><vh>active pane highlighting (base dark)</vh></v>
+<v t="ekr.20170310100532.86"><vh>body editor (base dark)</vh></v>
+<v t="ekr.20170310100532.87"><vh>bookmarks (base dark)</vh></v>
+<v t="ekr.20170310100532.88"><vh>buttons (base dark)</vh></v>
+<v t="ekr.20170310100532.89"><vh>log pane (base dark)</vh></v>
+<v t="ekr.20170310100532.90"><vh>menus (base dark)</vh></v>
+<v t="ekr.20170310100532.91"><vh>mini-buffer (base dark)</vh></v>
+<v t="ekr.20170310100532.92"><vh>status line (base dark)</vh></v>
+<v t="ekr.20170310100532.93"><vh>scrollbar (base dark)</vh></v>
+<v t="ekr.20170310100532.94"><vh>splitters (base dark)</vh></v>
+<v t="ekr.20170310100532.95"><vh>tab bar (base dark)</vh></v>
+<v t="ekr.20170310100532.96"><vh>tree (base dark) </vh></v>
+<v t="ekr.20170310100532.97"><vh>widgets (base dark)</vh></v>
+</v>
+<v t="ekr.20170310100532.98"><vh>zz overrides</vh></v>
+</v>
+</v>
+<v t="ekr.20170310095804.1"><vh>@theme linux ekr dark</vh>
+<v t="ekr.20170310095804.2"><vh>settings</vh>
+<v t="ekr.20170310095804.3"><vh>style sheet settings (base dark)</vh>
+<v t="ekr.20170310095804.4"><vh>border settings (base dark)</vh>
+<v t="ekr.20170310095804.5"><vh>@@@color focused-border-hover-color = red</vh></v>
+<v t="ekr.20170310095804.6"><vh>@color focused-border-focus-color = red</vh></v>
+<v t="ekr.20170310095804.7"><vh>@string focused-border-style = solid</vh></v>
+<v t="ekr.20170310095804.8"><vh>@string focused-border-unfocus-color = @solarized-base02</vh></v>
+<v t="ekr.20170310095804.9"><vh>@string focused-border-width = 5px</vh></v>
+</v>
+<v t="ekr.20170310095804.10"><vh>color settings (base dark)</vh>
+<v t="ekr.20170310095804.11"><vh>@color button-hover-bg = @solarized-base01</vh></v>
+<v t="ekr.20170310095804.12"><vh>@color button-hover-fg = @solarized-base03</vh></v>
+<v t="ekr.20170310095804.13"><vh>@color log_error_color = #dc322f</vh></v>
+<v t="ekr.20170310095804.14"><vh>@color log_text_background_color = #073642</vh></v>
+<v t="ekr.20170310095804.15"><vh>@color log_text_foreground_color = #93a1a1</vh></v>
+<v t="ekr.20170310095804.16"><vh>@color log_warning_color = #268bd2</vh></v>
+<v t="ekr.20170310095804.17"><vh>@color minibuffer_background_color = @solarized-base03</vh></v>
+<v t="ekr.20170310095804.18"><vh>@color minibuffer_error_color = @solarized-red</vh></v>
+<v t="ekr.20170310095804.19"><vh>@color minibuffer_foreground_color = @solarized-yellow</vh></v>
+<v t="ekr.20170310095804.20"><vh>@color minibuffer_warning_color = @solarized-base02</vh></v>
+<v t="ekr.20170310095804.21"><vh>@color splitter-bg = @solarized-base01</vh></v>
+<v t="ekr.20170310095804.22"><vh>@color splitter-hover-bg = @solarized-violet</vh></v>
+<v t="ekr.20170310095804.23"><vh>@color text-background = @solarized-base03</vh></v>
+<v t="ekr.20170310095804.24"><vh>@color text-background-bright = @solarized-base02</vh></v>
+<v t="ekr.20170310095804.25"><vh>@color text-foreground = @solarized-base0</vh></v>
+<v t="ekr.20170310095804.26"><vh>@color text-foreground-bright = @solarized-base2</vh></v>
+</v>
+<v t="ekr.20170310095804.27"><vh>font settings (base dark)</vh>
+<v t="ekr.20170310095804.28"><vh>@string font-family = DejaVu Sans Mono</vh></v>
+<v t="ekr.20170310095804.29"><vh>@string font-family = DejaVu Sans Mono</vh></v>
+<v t="ekr.20170310095804.30"><vh>@string font-family-tree = @font-family</vh></v>
+<v t="ekr.20170310095804.31"><vh>@string font-family-body = @font-family</vh></v>
+<v t="ekr.20170310095804.32"><vh>@string font-family-log = @font-family</vh></v>
+<v t="ekr.20170310095804.33"><vh>@string font-size = 12pt</vh></v>
+<v t="ekr.20170310095804.34"><vh>@string font-size-body = 12pt</vh></v>
+<v t="ekr.20170310095804.35"><vh>@string font-size-tree = 12pt</vh></v>
+<v t="ekr.20170310095804.36"><vh>@string font-size-log = 12pt</vh></v>
+</v>
+<v t="ekr.20170310095804.37"><vh>gradients (base dark)</vh>
+<v t="ekr.20170310095804.38"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @text-background-bright, stop:0.4 @text-background, stop:0.6 @text-background, stop:0.9 @text-background-bright)</vh></v>
+<v t="ekr.20170310095804.39"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)</vh></v>
+</v>
+<v t="ekr.20170310095804.40"><vh>outline indicators (base dark)</vh>
+<v t="ekr.20170310095804.41"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
+<v t="ekr.20170310095804.42"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
+</v>
+<v t="ekr.20170310095804.43"><vh>plugins settings (base dark)</vh>
+<v t="ekr.20170310095804.44"><vh>bookmark settings (base dark)</vh>
+<v t="ekr.20170310095804.45"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20170310095804.46"><vh>syntax coloring settings (common to all themes)</vh>
+<v t="ekr.20170310095804.47"><vh>Colors for Leo constructs (all themes)</vh>
+<v t="ekr.20170310095804.48"><vh>@color doc_part_color = #d33682</vh></v>
+<v t="ekr.20170310095804.49"><vh>@color leo_keyword_color = #268bd2</vh></v>
+<v t="ekr.20170310095804.50"><vh>@color section_name_brackets_color = #268bd2</vh></v>
+<v t="ekr.20170310095804.51"><vh>@color section_name_color = #d33682</vh></v>
+<v t="ekr.20170310095804.52"><vh>@color show_invisibles_space_color = #d33682</vh></v>
+<v t="ekr.20170310095804.53"><vh>@color show_invisibles_tab_color = red</vh></v>
+<v t="ekr.20170310095804.54"><vh>@color undefined_section_name_color = #d33682</vh></v>
+<v t="ekr.20170310095804.55"><vh>@color url_color = #6c71c4</vh></v>
+</v>
+<v t="ekr.20170310095804.56"><vh>Colors for jEdit constructs (all themes)</vh>
+<v t="ekr.20170310095804.57"><vh>@color blank_color = #d33682</vh></v>
+<v t="ekr.20170310095804.58"><vh>@color comment1_color = #d33682</vh></v>
+<v t="ekr.20170310095804.59"><vh>@color comment2_color = #d33682</vh></v>
+<v t="ekr.20170310095804.60"><vh>@color comment3_color = #d33682</vh></v>
+<v t="ekr.20170310095804.61"><vh>@color comment4_color = #d33682</vh></v>
+<v t="ekr.20170310095804.62"><vh>@color keyword1_color = #268bd2</vh></v>
+<v t="ekr.20170310095804.63"><vh>@color keyword2_color = #268bd2</vh></v>
+<v t="ekr.20170310095804.64"><vh>@color keyword3_color = #268bd2</vh></v>
+<v t="ekr.20170310095804.65"><vh>@color keyword4_color = #268bd2</vh></v>
+<v t="ekr.20170310095804.66"><vh>@color literal1_color = #2aa198</vh></v>
+<v t="ekr.20170310095804.67"><vh>@color literal2_color = #2aa198</vh></v>
+<v t="ekr.20170310095804.68"><vh>@color literal3_color = #2aa198</vh></v>
+<v t="ekr.20170310095804.69"><vh>@color literal4_color = #2aa198</vh></v>
+<v t="ekr.20170310095804.70"><vh>@color markup_color = #eee8d5</vh></v>
+<v t="ekr.20170310095804.71"><vh>@color operator_color = #eee8d5</vh></v>
+<v t="ekr.20170310095804.72"><vh>@color plain null color = None</vh></v>
+<v t="ekr.20170310095804.73"><vh>@color tab_color = red</vh></v>
+</v>
+</v>
+<v t="ekr.20170310095804.74"><vh>zz settings overrides (windows ekr dark)</vh>
+<v t="ekr.20170310095804.75"><vh>@string focused-border-width = 5px</vh></v>
+<v t="ekr.20170310095804.76"><vh>@string font-size = 14pt</vh></v>
+<v t="ekr.20170310095804.77"><vh>@string font-size-body = 14pt</vh></v>
+<v t="ekr.20170310095804.78"><vh>@string font-size-tree = 14pt</vh></v>
+<v t="ekr.20170310095804.79"><vh>@string font-size-log = 14pt</vh></v>
+</v>
+<v t="ekr.20170310095804.80"><vh>theme settings</vh>
+<v t="ekr.20170310095804.81"><vh>@string color_theme = leo_dark_0</vh></v>
+<v t="ekr.20170310095804.82"><vh>@bool color_theme_is_dark = True</vh></v>
+</v>
+</v>
+<v t="ekr.20170310095804.83"><vh>@data qt-gui-plugin-style-sheet</vh>
+<v t="ekr.20170310095804.84"><vh>style-sheet (base dark)</vh>
+<v t="ekr.20170310095804.85"><vh>active pane highlighting (base dark)</vh></v>
+<v t="ekr.20170310095804.86"><vh>body editor (base dark)</vh></v>
+<v t="ekr.20170310095804.87"><vh>bookmarks (base dark)</vh></v>
+<v t="ekr.20170310095804.88"><vh>buttons (base dark)</vh></v>
+<v t="ekr.20170310095804.89"><vh>log pane (base dark)</vh></v>
+<v t="ekr.20170310095804.90"><vh>menus (base dark)</vh></v>
+<v t="ekr.20170310095804.91"><vh>mini-buffer (base dark)</vh></v>
+<v t="ekr.20170310095804.92"><vh>status line (base dark)</vh></v>
+<v t="ekr.20170310095804.93"><vh>scrollbar (base dark)</vh></v>
+<v t="ekr.20170310095804.94"><vh>splitters (base dark)</vh></v>
+<v t="ekr.20170310095804.95"><vh>tab bar (base dark)</vh></v>
+<v t="ekr.20170310095804.96"><vh>tree (base dark) </vh></v>
+<v t="ekr.20170310095804.97"><vh>widgets (base dark)</vh></v>
+</v>
+<v t="ekr.20170310095804.98"><vh>zz overrides (linux ekr dark)</vh></v>
+</v>
+</v>
+<v t="ekr.20170310063446.1"><vh>Monolithic themes</vh>
+<v t="ekr.20170304074559.185"><vh>@theme leo_dark theme 0</vh>
+<v t="ekr.20170304074559.186"><vh>settings</vh>
+<v t="ekr.20170304074559.187"><vh>style sheet settings</vh>
+<v t="ekr.20170304074559.214"><vh>@ignore border</vh>
+<v t="ekr.20170304074559.216"><vh>@string focused-border-style = solid</vh></v>
+<v t="ekr.20170304074559.217"><vh>@string focused-border-width = 3px</vh></v>
+<v t="ekr.20170304074559.218"><vh>@color focused-border-focus-color = red</vh></v>
+<v t="ekr.20170304074559.219"><vh>@color focused-border-hover-color = red</vh></v>
+<v t="ekr.20170304074559.220"><vh>@string focused-border-unfocus-color = white</vh></v>
+</v>
+<v t="ekr.20170304074559.188"><vh>colors</vh>
+<v t="ekr.20170304074559.189"><vh>@color button-hover-bg = @solarized-base01</vh></v>
+<v t="ekr.20170304074559.190"><vh>@color button-hover-fg = @solarized-base03</vh></v>
+<v t="ekr.20170304074559.191"><vh>@color log_error_color = #dc322f</vh></v>
+<v t="ekr.20170304074559.192"><vh>@color log_text_background_color = #073642</vh></v>
+<v t="ekr.20170304074559.193"><vh>@color log_text_foreground_color = #93a1a1</vh></v>
+<v t="ekr.20170304074559.194"><vh>@color log_warning_color = #268bd2</vh></v>
+<v t="ekr.20170304074559.195"><vh>@color minibuffer_background_color = @solarized-base03</vh></v>
+<v t="ekr.20170304074559.196"><vh>@color minibuffer_error_color = @solarized-red</vh></v>
+<v t="ekr.20170304074559.197"><vh>@color minibuffer_foreground_color = @solarized-yellow</vh></v>
+<v t="ekr.20170304074559.198"><vh>@color minibuffer_warning_color = @solarized-base02</vh></v>
+<v t="ekr.20170304074559.199"><vh>@color splitter-bg = @solarized-base01</vh></v>
+<v t="ekr.20170304074559.200"><vh>@color splitter-hover-bg = @solarized-violet</vh></v>
+<v t="ekr.20170304074559.201"><vh>@color text-background = @solarized-base03</vh></v>
+<v t="ekr.20170304074559.202"><vh>@color text-background-bright = @solarized-base02</vh></v>
+<v t="ekr.20170304074559.203"><vh>@color text-foreground = @solarized-base0</vh></v>
+<v t="ekr.20170304074559.204"><vh>@color text-foreground-bright = @solarized-base2</vh></v>
+</v>
+<v t="ekr.20170304074559.205"><vh>fonts</vh>
+<v t="ekr.20170304074559.206"><vh>@string font-family = DejaVu Sans Mono</vh></v>
+<v t="ekr.20170304074559.207"><vh>@string font-family = DejaVu Sans Mono</vh></v>
+<v t="ekr.20170304074559.208"><vh>@string font-family-tree = @font-family</vh></v>
+<v t="ekr.20170304074559.209"><vh>@string font-family-body = @font-family</vh></v>
+<v t="ekr.20170304074559.210"><vh>@string font-family-log = @font-family</vh></v>
+<v t="ekr.20170304074559.211"><vh>@string font-size-body = 16pt</vh></v>
+<v t="ekr.20170304074559.212"><vh>@string font-size-tree = 16pt</vh></v>
+<v t="ekr.20170304074559.213"><vh>@string font-size-log = 16pt</vh></v>
+</v>
+<v t="ekr.20170304074559.221"><vh>gradients</vh>
+<v t="ekr.20170304074559.222"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @text-background-bright, stop:0.4 @text-background, stop:0.6 @text-background, stop:0.9 @text-background-bright)</vh></v>
+<v t="ekr.20170304074559.223"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)</vh></v>
+</v>
+<v t="ekr.20170308061124.1"><vh>outline indicators</vh>
+<v t="ekr.20170308061124.2"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
+<v t="ekr.20170308061124.3"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
+</v>
+<v t="ekr.20170304074559.224"><vh>plugins</vh>
+<v t="ekr.20170304074559.225"><vh>bookmarks</vh>
+<v t="ekr.20170304074559.226"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20170304074559.413"></v>
+<v t="ekr.20170304074559.258"><vh>theme settings</vh>
+<v t="ekr.20170304074559.259"><vh>@string color_theme = leo_dark_0</vh></v>
+<v t="ekr.20170304074559.260"><vh>@bool color_theme_is_dark = True</vh></v>
+</v>
+</v>
+<v t="ekr.20170304074559.261"><vh>@data qt-gui-plugin-style-sheet</vh>
+<v t="ekr.20170308051519.1"><vh>active pane highlighting</vh></v>
+<v t="ekr.20170304074559.264"><vh>body editor</vh></v>
+<v t="ekr.20170304074559.287"><vh>bookmarks</vh></v>
+<v t="ekr.20170304074559.270"><vh>buttons</vh></v>
+<v t="ekr.20170304074559.266"><vh>log pane</vh></v>
+<v t="ekr.20170304074559.272"><vh>menus</vh></v>
+<v t="ekr.20170304074559.267"><vh>mini-buffer</vh></v>
+<v t="ekr.20170304074559.285"><vh>status line</vh></v>
+<v t="ekr.20170304074559.273"><vh>scrollbar</vh></v>
+<v t="ekr.20170304074559.274"><vh>splitters</vh></v>
+<v t="ekr.20170304074559.271"><vh>tab bar</vh></v>
+<v t="ekr.20170304074559.265"><vh>tree</vh></v>
+<v t="ekr.20170304074559.263"><vh>widgets</vh></v>
+</v>
+</v>
+<v t="ekr.20170304074559.291"><vh>@theme leo_dark theme 1</vh>
+<v t="ekr.20170304074559.292"><vh>settings</vh>
+<v t="ekr.20170304074559.293"><vh>style sheet settings</vh>
+<v t="ekr.20170309055108.1"><vh>@ignore border</vh>
+<v t="ekr.20170309055108.2"><vh>@string focused-border-style = solid</vh></v>
+<v t="ekr.20170309055108.3"><vh>@string focused-border-width = 3px</vh></v>
+<v t="ekr.20170309055108.4"><vh>@color focused-border-focus-color = red</vh></v>
+<v t="ekr.20170309055108.5"><vh>@color focused-border-hover-color = red</vh></v>
+<v t="ekr.20170309055108.6"><vh>@string focused-border-unfocus-color = white</vh></v>
+</v>
+<v t="ekr.20170308082507.1"><vh>colors</vh>
+<v t="ekr.20170304074559.294"><vh>Body pane colors</vh>
+<v t="ekr.20170304074559.295"><vh>@color body_text_background_color = #002b36</vh></v>
+<v t="ekr.20170304074559.296"><vh>@color unselected_body_bg_color = #002b36</vh></v>
+<v t="ekr.20170304074559.297"><vh>@color unselected_body_fg_color = #839496</vh></v>
+<v t="ekr.20170304074559.298"><vh>@color body_text_foreground_color = #839496</vh></v>
+<v t="ekr.20170304074559.299"><vh>@color insert_mode_bg_color = #002b36</vh></v>
+<v t="ekr.20170304074559.300"><vh>@color insert_mode_fg_color = #839496</vh></v>
+</v>
+<v t="ekr.20170304074559.301"><vh>Log pane colors</vh>
+<v t="ekr.20170304074559.302"><vh>@color log_error_color = #dc322f</vh></v>
+<v t="ekr.20170304074559.303"><vh>@color log_warning_color = #268bd2</vh></v>
+<v t="ekr.20170304074559.304"><vh>@color log_text_foreground_color = #93a1a1</vh></v>
+<v t="ekr.20170304074559.305"><vh>@color log_text_background_color = #073642</vh></v>
+<v t="ekr.20170304074559.306"><vh>@color log_pane_background_color = #002b36</vh></v>
+<v t="ekr.20170304074559.307"><vh>@color log_pane_Find_tab_background_color = #d6c7d3</vh></v>
+<v t="ekr.20170304074559.308"><vh>@color log_pane_Spell_tab_background_color = MistyRose1</vh></v>
+</v>
+<v t="ekr.20170304074559.309"><vh>Minibuffer colors</vh>
+<v t="ekr.20170304074559.310"><vh>@color minibuffer_background_color = #073642</vh></v>
+<v t="ekr.20170304074559.311"><vh>@color minibuffer_foreground_color = #b58900</vh></v>
+</v>
+<v t="ekr.20170304074559.312"><vh>Outline pane colors</vh>
+<v t="ekr.20170304074559.313"><vh>@color headline_text_unselected_background_color = #ffffff</vh></v>
+<v t="ekr.20170304074559.314"><vh>@color headline_text_unselected_foreground_color = None</vh></v>
+<v t="ekr.20170304074559.315"><vh>@color headline_text_selected_background_color = #586e75</vh></v>
+<v t="ekr.20170304074559.316"><vh>@color headline_text_selected_foreground_color = #002b36</vh></v>
+<v t="ekr.20170304074559.317"><vh>@color headline_text_editing_background_color = None</vh></v>
+<v t="ekr.20170304074559.318"><vh>@color headline_text_editing_foreground_color = None</vh></v>
+<v t="ekr.20170304074559.319"><vh>@color headline_text_editing_selection_foreground_color = None</vh></v>
+<v t="ekr.20170304074559.320"><vh>@color headline_text_editing_selection_background_color = None</vh></v>
+<v t="ekr.20170304074559.321"><vh>@color outline_pane_background_color = #ffffff</vh></v>
+</v>
+<v t="ekr.20170308061334.1"><vh>Outline indicators</vh>
+<v t="ekr.20170308061334.2"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
+<v t="ekr.20170308061334.3"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
+</v>
+</v>
+<v t="ekr.20170308082458.1"><vh>gradients</vh>
+<v t="ekr.20170308082458.2"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @text-background-bright, stop:0.4 @text-background, stop:0.6 @text-background, stop:0.9 @text-background-bright)</vh></v>
+<v t="ekr.20170308082458.3"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)</vh></v>
+</v>
+</v>
+<v t="ekr.20170304074559.413"></v>
+<v t="ekr.20170304074559.353"><vh>theme settings</vh>
+<v t="ekr.20170304074559.354"><vh>@string color_theme = leo_dark_1</vh></v>
+<v t="ekr.20170304074559.355"><vh>@bool color_theme_is_dark = True</vh></v>
+</v>
+</v>
+<v t="ekr.20170304074559.356"><vh>@data qt-gui-plugin-style-sheet</vh>
+<v t="ekr.20170304074559.360"><vh>body pane</vh></v>
+<v t="ekr.20170304074559.366"><vh>buttons</vh></v>
+<v t="ekr.20170304074559.362"><vh>log</vh></v>
+<v t="ekr.20170304074559.368"><vh>menus</vh></v>
+<v t="ekr.20170304074559.363"><vh>mini-buffer</vh></v>
+<v t="ekr.20170304074559.374"><vh>scroll bars</vh></v>
+<v t="ekr.20170304074559.369"><vh>splitters</vh></v>
+<v t="ekr.20170304074559.377"><vh>status line</vh></v>
+<v t="ekr.20170304074559.367"><vh>tab bar</vh></v>
+<v t="ekr.20170304074559.361"><vh>tree</vh></v>
+<v t="ekr.20170308055019.1"><vh>widgets</vh></v>
+</v>
+</v>
+<v t="ekr.20170304074559.382"><vh>@theme leo_dark theme 2</vh>
+<v t="ekr.20170304074559.383"><vh>settings</vh>
+<v t="ekr.20170304074559.384"><vh>style sheet settings</vh>
+<v t="ekr.20170309055240.1"><vh>@ignore border</vh>
+<v t="ekr.20170309055240.2"><vh>@string focused-border-style = solid</vh></v>
+<v t="ekr.20170309055240.3"><vh>@string focused-border-width = 3px</vh></v>
+<v t="ekr.20170309055240.4"><vh>@color focused-border-focus-color = red</vh></v>
+<v t="ekr.20170309055240.5"><vh>@color focused-border-hover-color = red</vh></v>
+<v t="ekr.20170309055240.6"><vh>@string focused-border-unfocus-color = white</vh></v>
+</v>
+<v t="ekr.20170308082535.1"><vh>colors</vh>
+<v t="ekr.20170304074559.385"><vh>Body pane colors</vh>
+<v t="ekr.20170304074559.386"><vh>@color body_text_background_color = #002b36</vh></v>
+<v t="ekr.20170304074559.387"><vh>@color unselected_body_bg_color = #002b36</vh></v>
+<v t="ekr.20170304074559.388"><vh>@color unselected_body_fg_color = #839496</vh></v>
+<v t="ekr.20170304074559.389"><vh>@color body_text_foreground_color = #839496</vh></v>
+<v t="ekr.20170304074559.390"><vh>@color insert_mode_bg_color = #002b36</vh></v>
+<v t="ekr.20170304074559.391"><vh>@color insert_mode_fg_color = #839496</vh></v>
+</v>
+<v t="ekr.20170304074559.402"><vh>Log pane colors</vh>
+<v t="ekr.20170304074559.403"><vh>@color log_error_color = #dc322f</vh></v>
+<v t="ekr.20170304074559.404"><vh>@color log_warning_color = #268bd2</vh></v>
+<v t="ekr.20170304074559.405"><vh>@color log_text_foreground_color = #93a1a1</vh></v>
+<v t="ekr.20170304074559.406"><vh>@color log_text_background_color = #073642</vh></v>
+<v t="ekr.20170304074559.407"><vh>@color log_pane_background_color = #002b36</vh></v>
+<v t="ekr.20170304074559.408"><vh>@color log_pane_Find_tab_background_color = #d6c7d3</vh></v>
+<v t="ekr.20170304074559.409"><vh>@color log_pane_Spell_tab_background_color = MistyRose1</vh></v>
+</v>
+<v t="ekr.20170304074559.410"><vh>Minibuffer colors</vh>
+<v t="ekr.20170304074559.411"><vh>@color minibuffer_background_color = #073642</vh></v>
+<v t="ekr.20170304074559.412"><vh>@color minibuffer_foreground_color = #b58900</vh></v>
+</v>
+<v t="ekr.20170308061534.1"><vh>Outline indicators</vh>
+<v t="ekr.20170308061534.2"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
+<v t="ekr.20170308061534.3"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
+</v>
+<v t="ekr.20170304074559.392"><vh>Outline pane colors</vh>
+<v t="ekr.20170304074559.393"><vh>@color headline_text_unselected_background_color = #ffffff</vh></v>
+<v t="ekr.20170304074559.394"><vh>@color headline_text_unselected_foreground_color = None</vh></v>
+<v t="ekr.20170304074559.395"><vh>@color headline_text_selected_background_color = #586e75</vh></v>
+<v t="ekr.20170304074559.396"><vh>@color headline_text_selected_foreground_color = #002b36</vh></v>
+<v t="ekr.20170304074559.397"><vh>@color headline_text_editing_background_color = None</vh></v>
+<v t="ekr.20170304074559.398"><vh>@color headline_text_editing_foreground_color = None</vh></v>
+<v t="ekr.20170304074559.399"><vh>@color headline_text_editing_selection_foreground_color = None</vh></v>
+<v t="ekr.20170304074559.400"><vh>@color headline_text_editing_selection_background_color = None</vh></v>
+<v t="ekr.20170304074559.401"><vh>@color outline_pane_background_color = #ffffff</vh></v>
+</v>
+</v>
+<v t="ekr.20170308082541.1"><vh>gradients</vh>
+<v t="ekr.20170308082541.2"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @text-background-bright, stop:0.4 @text-background, stop:0.6 @text-background, stop:0.9 @text-background-bright)</vh></v>
+<v t="ekr.20170308082541.3"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)</vh></v>
+</v>
+</v>
+<v t="ekr.20170304074559.413"></v>
+<v t="ekr.20170304074559.444"><vh>theme settings</vh>
+<v t="ekr.20170304074559.445"><vh>@string color_theme = leo_dark_2</vh></v>
+<v t="ekr.20170304074559.446"><vh>@bool color_theme_is_dark = True</vh></v>
+</v>
+</v>
+<v t="ekr.20170304074559.447"><vh>@data qt-gui-plugin-style-sheet</vh>
+<v t="ekr.20170304074559.451"><vh>body editor</vh></v>
+<v t="ekr.20170304074559.453"><vh>log</vh></v>
+<v t="ekr.20170304074559.459"><vh>menus</vh></v>
+<v t="ekr.20170304074559.454"><vh>mini-buffer</vh></v>
+<v t="ekr.20170304074559.465"><vh>scroll bars</vh></v>
+<v t="ekr.20170304074559.460"><vh>splitters</vh></v>
+<v t="ekr.20170304074559.468"><vh>status area</vh></v>
+<v t="ekr.20170304074559.458"><vh>tab bar</vh></v>
+<v t="ekr.20170304074559.452"><vh>tree</vh></v>
+<v t="ekr.20170308061934.1"><vh>widgets</vh></v>
+</v>
+</v>
+</v>
+</v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = True</vh></v>
@@ -445,27 +1031,7 @@
 </v>
 </v>
 <v t="ekr.20131119143342.18879"><vh>Qt Gui style sheet</vh>
-<v t="ekr.20140912072521.19160"><vh>@data qt-gui-plugin-style-sheet</vh>
-<v t="ekr.20140915194122.19458"><vh>Body pane</vh></v>
-<v t="ekr.20140915194122.19467"><vh>Buttons</vh></v>
-<v t="ekr.20140915194122.19466"><vh>Dialogs (QLabel)</vh></v>
-<v t="ekr.20140915194122.19459"><vh>Find Tab</vh></v>
-<v t="ekr.20150701073123.1"><vh>Gutter</vh></v>
-<v t="ekr.20140915194122.19461"><vh>Log panes</vh></v>
-<v t="ekr.20140915194122.19462"><vh>Minibuffer</vh></v>
-<v t="ekr.20140915194122.19474"><vh>Outline pane (change default path)</vh></v>
-<v t="ekr.20140915194122.19463"><vh>Plugins</vh>
-<v t="ekr.20140915194122.19464"><vh>Bookmarks plugin (stylesheet)</vh></v>
-<v t="ekr.20140915194122.19465"><vh>Screencast plugin</vh></v>
-<v t="ekr.20140915194122.19468"><vh>Interact plugin</vh></v>
-<v t="ekr.20140915194122.19469"><vh>Quickmove plugin</vh></v>
-</v>
-<v t="edward.20150614045745.1"><vh>Rendering pane</vh></v>
-<v t="ekr.20140915194122.19471"><vh>Splitter</vh></v>
-<v t="ekr.20140915194122.19473"><vh>Status areas</vh></v>
-<v t="ekr.20140915194122.19475"><vh>Vim mode borders</vh></v>
-<v t="ekr.20140915194122.19470"><vh>Widgets</vh></v>
-</v>
+<v t="ekr.20140912072521.19160"></v>
 </v>
 <v t="ekr.20150620100951.1"><vh>User Qt Gui style sheet</vh>
 <v t="ekr.20150620100923.1"><vh>@ignore @data qt-gui-user-style-sheet</vh></v>
@@ -2295,574 +2861,6 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20170304074559.1"><vh>Themes</vh>
-<v t="ekr.20140912072521.19160"></v>
-<v t="ekr.20170310072826.1"><vh>@theme base dark</vh>
-<v t="ekr.20170310072826.2"><vh>settings (base dark)</vh>
-<v t="ekr.20170310072814.3"><vh>style sheet settings (base dark)</vh>
-<v t="ekr.20170310072814.4"><vh>border settings (base dark)</vh>
-<v t="ekr.20170310072814.5"><vh>@@@color focused-border-hover-color = red</vh></v>
-<v t="ekr.20170310072814.6"><vh>@color focused-border-focus-color = red</vh></v>
-<v t="ekr.20170310072814.7"><vh>@string focused-border-style = solid</vh></v>
-<v t="ekr.20170310072814.8"><vh>@string focused-border-unfocus-color = @solarized-base02</vh></v>
-<v t="ekr.20170310072814.9"><vh>@string focused-border-width = 5px</vh></v>
-</v>
-<v t="ekr.20170310072814.10"><vh>color settings (base dark)</vh>
-<v t="ekr.20170310072814.11"><vh>@color button-hover-bg = @solarized-base01</vh></v>
-<v t="ekr.20170310072814.12"><vh>@color button-hover-fg = @solarized-base03</vh></v>
-<v t="ekr.20170310072814.13"><vh>@color log_error_color = #dc322f</vh></v>
-<v t="ekr.20170310072814.14"><vh>@color log_text_background_color = #073642</vh></v>
-<v t="ekr.20170310072814.15"><vh>@color log_text_foreground_color = #93a1a1</vh></v>
-<v t="ekr.20170310072814.16"><vh>@color log_warning_color = #268bd2</vh></v>
-<v t="ekr.20170310072814.17"><vh>@color minibuffer_background_color = @solarized-base03</vh></v>
-<v t="ekr.20170310072814.18"><vh>@color minibuffer_error_color = @solarized-red</vh></v>
-<v t="ekr.20170310072814.19"><vh>@color minibuffer_foreground_color = @solarized-yellow</vh></v>
-<v t="ekr.20170310072814.20"><vh>@color minibuffer_warning_color = @solarized-base02</vh></v>
-<v t="ekr.20170310072814.21"><vh>@color splitter-bg = @solarized-base01</vh></v>
-<v t="ekr.20170310072814.22"><vh>@color splitter-hover-bg = @solarized-violet</vh></v>
-<v t="ekr.20170310072814.23"><vh>@color text-background = @solarized-base03</vh></v>
-<v t="ekr.20170310072814.24"><vh>@color text-background-bright = @solarized-base02</vh></v>
-<v t="ekr.20170310072814.25"><vh>@color text-foreground = @solarized-base0</vh></v>
-<v t="ekr.20170310072814.26"><vh>@color text-foreground-bright = @solarized-base2</vh></v>
-</v>
-<v t="ekr.20170310072814.27"><vh>font settings (base dark)</vh>
-<v t="ekr.20170310072814.28"><vh>@string font-family = DejaVu Sans Mono</vh></v>
-<v t="ekr.20170310072814.29"><vh>@string font-family = DejaVu Sans Mono</vh></v>
-<v t="ekr.20170310072814.30"><vh>@string font-family-tree = @font-family</vh></v>
-<v t="ekr.20170310072814.31"><vh>@string font-family-body = @font-family</vh></v>
-<v t="ekr.20170310072814.32"><vh>@string font-family-log = @font-family</vh></v>
-<v t="ekr.20170310082759.1"><vh>@string font-size = 12pt</vh></v>
-<v t="ekr.20170310072814.33"><vh>@string font-size-body = 12pt</vh></v>
-<v t="ekr.20170310072814.34"><vh>@string font-size-tree = 12pt</vh></v>
-<v t="ekr.20170310072814.35"><vh>@string font-size-log = 12pt</vh></v>
-</v>
-<v t="ekr.20170310072814.36"><vh>gradients (base dark)</vh>
-<v t="ekr.20170310072814.37"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @text-background-bright, stop:0.4 @text-background, stop:0.6 @text-background, stop:0.9 @text-background-bright)</vh></v>
-<v t="ekr.20170310072814.38"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)</vh></v>
-</v>
-<v t="ekr.20170310072814.39"><vh>outline indicators (base dark)</vh>
-<v t="ekr.20170310072814.40"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
-<v t="ekr.20170310072814.41"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
-</v>
-<v t="ekr.20170310072814.42"><vh>plugins settings (base dark)</vh>
-<v t="ekr.20170310072814.43"><vh>bookmark settings (base dark)</vh>
-<v t="ekr.20170310072814.44"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20170304074559.413"><vh>syntax coloring settings (common to all themes)</vh>
-<v t="ekr.20170310102041.1"><vh>Colors for Leo constructs (all themes)</vh>
-<v t="ekr.20170310102041.2"><vh>@color doc_part_color = #d33682</vh></v>
-<v t="ekr.20170310102041.3"><vh>@color leo_keyword_color = #268bd2</vh></v>
-<v t="ekr.20170310102041.4"><vh>@color section_name_brackets_color = #268bd2</vh></v>
-<v t="ekr.20170310102041.5"><vh>@color section_name_color = #d33682</vh></v>
-<v t="ekr.20170310102041.6"><vh>@color show_invisibles_space_color = #d33682</vh></v>
-<v t="ekr.20170310102041.7"><vh>@color show_invisibles_tab_color = red</vh></v>
-<v t="ekr.20170310102041.8"><vh>@color undefined_section_name_color = #d33682</vh></v>
-<v t="ekr.20170310102041.9"><vh>@color url_color = #6c71c4</vh></v>
-</v>
-<v t="ekr.20170310102041.10"><vh>Colors for jEdit constructs (all themes)</vh>
-<v t="ekr.20170310102041.11"><vh>@color blank_color = #d33682</vh></v>
-<v t="ekr.20170310102041.12"><vh>@color comment1_color = #d33682</vh></v>
-<v t="ekr.20170310102041.13"><vh>@color comment2_color = #d33682</vh></v>
-<v t="ekr.20170310102041.14"><vh>@color comment3_color = #d33682</vh></v>
-<v t="ekr.20170310102041.15"><vh>@color comment4_color = #d33682</vh></v>
-<v t="ekr.20170310102041.16"><vh>@color keyword1_color = #268bd2</vh></v>
-<v t="ekr.20170310102041.17"><vh>@color keyword2_color = #268bd2</vh></v>
-<v t="ekr.20170310102041.18"><vh>@color keyword3_color = #268bd2</vh></v>
-<v t="ekr.20170310102041.19"><vh>@color keyword4_color = #268bd2</vh></v>
-<v t="ekr.20170310102041.20"><vh>@color literal1_color = #2aa198</vh></v>
-<v t="ekr.20170310102041.21"><vh>@color literal2_color = #2aa198</vh></v>
-<v t="ekr.20170310102041.22"><vh>@color literal3_color = #2aa198</vh></v>
-<v t="ekr.20170310102041.23"><vh>@color literal4_color = #2aa198</vh></v>
-<v t="ekr.20170310102041.24"><vh>@color markup_color = #eee8d5</vh></v>
-<v t="ekr.20170310102041.25"><vh>@color operator_color = #eee8d5</vh></v>
-<v t="ekr.20170310102041.26"><vh>@color plain null color = None</vh></v>
-<v t="ekr.20170310102041.27"><vh>@color tab_color = red</vh></v>
-</v>
-</v>
-<v t="ekr.20170310072826.73"><vh>theme settings (base dark)</vh>
-<v t="ekr.20170310072826.74"><vh>@string color_theme = base_dark</vh></v>
-<v t="ekr.20170310072826.75"><vh>@bool color_theme_is_dark = True</vh></v>
-</v>
-</v>
-<v t="ekr.20170310072826.76"><vh>@data qt-gui-plugin-style-sheet</vh>
-<v t="ekr.20170310072826.77"><vh>style-sheet (base dark)</vh>
-<v t="ekr.20170310072826.78"><vh>active pane highlighting (base dark)</vh></v>
-<v t="ekr.20170310072826.79"><vh>body editor (base dark)</vh></v>
-<v t="ekr.20170310072826.80"><vh>bookmarks (base dark)</vh></v>
-<v t="ekr.20170310072826.81"><vh>buttons (base dark)</vh></v>
-<v t="ekr.20170310072826.82"><vh>log pane (base dark)</vh></v>
-<v t="ekr.20170310072826.83"><vh>menus (base dark)</vh></v>
-<v t="ekr.20170310072826.84"><vh>mini-buffer (base dark)</vh></v>
-<v t="ekr.20170310072826.85"><vh>status line (base dark)</vh></v>
-<v t="ekr.20170310072826.86"><vh>scrollbar (base dark)</vh></v>
-<v t="ekr.20170310072826.87"><vh>splitters (base dark)</vh></v>
-<v t="ekr.20170310072826.88"><vh>tab bar (base dark)</vh></v>
-<v t="ekr.20170310072826.89"><vh>tree (base dark) </vh></v>
-<v t="ekr.20170310072826.90"><vh>widgets (base dark)</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20170312082833.1"><vh>@theme windows ekr light</vh>
-<v t="ekr.20170312082833.2"><vh>@string focused-border-unfocus-color = @solarized-base2</vh></v>
-<v t="ekr.20140912072521.19160"></v>
-<v t="ekr.20170312082833.3"><vh>@data qt-gui-user-style-sheet</vh></v>
-</v>
-<v t="ekr.20170310100532.1"><vh>@theme windows ekr dark</vh>
-<v t="ekr.20170310100532.2"><vh>settings</vh>
-<v t="ekr.20170310100532.3"><vh>style sheet settings (base dark)</vh>
-<v t="ekr.20170310100532.4"><vh>border settings (base dark)</vh>
-<v t="ekr.20170310100532.5"><vh>@@@color focused-border-hover-color = red</vh></v>
-<v t="ekr.20170310100532.6"><vh>@color focused-border-focus-color = red</vh></v>
-<v t="ekr.20170310100532.7"><vh>@string focused-border-style = solid</vh></v>
-<v t="ekr.20170310100532.8"><vh>@string focused-border-unfocus-color = @solarized-base02</vh></v>
-<v t="ekr.20170310100532.9"><vh>@string focused-border-width = 5px</vh></v>
-</v>
-<v t="ekr.20170310100532.10"><vh>color settings (base dark)</vh>
-<v t="ekr.20170310100532.11"><vh>@color button-hover-bg = @solarized-base01</vh></v>
-<v t="ekr.20170310100532.12"><vh>@color button-hover-fg = @solarized-base03</vh></v>
-<v t="ekr.20170310100532.13"><vh>@color log_error_color = #dc322f</vh></v>
-<v t="ekr.20170310100532.14"><vh>@color log_text_background_color = #073642</vh></v>
-<v t="ekr.20170310100532.15"><vh>@color log_text_foreground_color = #93a1a1</vh></v>
-<v t="ekr.20170310100532.16"><vh>@color log_warning_color = #268bd2</vh></v>
-<v t="ekr.20170310100532.17"><vh>@color minibuffer_background_color = @solarized-base03</vh></v>
-<v t="ekr.20170310100532.18"><vh>@color minibuffer_error_color = @solarized-red</vh></v>
-<v t="ekr.20170310100532.19"><vh>@color minibuffer_foreground_color = @solarized-yellow</vh></v>
-<v t="ekr.20170310100532.20"><vh>@color minibuffer_warning_color = @solarized-base02</vh></v>
-<v t="ekr.20170310100532.21"><vh>@color splitter-bg = @solarized-base01</vh></v>
-<v t="ekr.20170310100532.22"><vh>@color splitter-hover-bg = @solarized-violet</vh></v>
-<v t="ekr.20170310100532.23"><vh>@color text-background = @solarized-base03</vh></v>
-<v t="ekr.20170310100532.24"><vh>@color text-background-bright = @solarized-base02</vh></v>
-<v t="ekr.20170310100532.25"><vh>@color text-foreground = @solarized-base0</vh></v>
-<v t="ekr.20170310100532.26"><vh>@color text-foreground-bright = @solarized-base2</vh></v>
-</v>
-<v t="ekr.20170310100532.27"><vh>font settings (base dark)</vh>
-<v t="ekr.20170310100532.28"><vh>@string font-family = DejaVu Sans Mono</vh></v>
-<v t="ekr.20170310100532.29"><vh>@string font-family = DejaVu Sans Mono</vh></v>
-<v t="ekr.20170310100532.30"><vh>@string font-family-tree = @font-family</vh></v>
-<v t="ekr.20170310100532.31"><vh>@string font-family-body = @font-family</vh></v>
-<v t="ekr.20170310100532.32"><vh>@string font-family-log = @font-family</vh></v>
-<v t="ekr.20170310100532.33"><vh>@string font-size = 12pt</vh></v>
-<v t="ekr.20170310100532.34"><vh>@string font-size-body = 12pt</vh></v>
-<v t="ekr.20170310100532.35"><vh>@string font-size-tree = 12pt</vh></v>
-<v t="ekr.20170310100532.36"><vh>@string font-size-log = 12pt</vh></v>
-</v>
-<v t="ekr.20170310100532.37"><vh>gradients (base dark)</vh>
-<v t="ekr.20170310100532.38"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @text-background-bright, stop:0.4 @text-background, stop:0.6 @text-background, stop:0.9 @text-background-bright)</vh></v>
-<v t="ekr.20170310100532.39"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)</vh></v>
-</v>
-<v t="ekr.20170310100532.40"><vh>outline indicators (base dark)</vh>
-<v t="ekr.20170310100532.41"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
-<v t="ekr.20170310100532.42"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
-</v>
-<v t="ekr.20170310100532.43"><vh>plugins settings (base dark)</vh>
-<v t="ekr.20170310100532.44"><vh>bookmark settings (base dark)</vh>
-<v t="ekr.20170310100532.45"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20170310100532.46"><vh>syntax coloring settings (common to all themes)</vh>
-<v t="ekr.20170310100532.47"><vh>Colors for Leo constructs (all themes)</vh>
-<v t="ekr.20170310100532.48"><vh>@color doc_part_color = #d33682</vh></v>
-<v t="ekr.20170310100532.49"><vh>@color leo_keyword_color = #268bd2</vh></v>
-<v t="ekr.20170310100532.50"><vh>@color section_name_brackets_color = #268bd2</vh></v>
-<v t="ekr.20170310100532.51"><vh>@color section_name_color = #d33682</vh></v>
-<v t="ekr.20170310100532.52"><vh>@color show_invisibles_space_color = #d33682</vh></v>
-<v t="ekr.20170310100532.53"><vh>@color show_invisibles_tab_color = red</vh></v>
-<v t="ekr.20170310100532.54"><vh>@color undefined_section_name_color = #d33682</vh></v>
-<v t="ekr.20170310100532.55"><vh>@color url_color = #6c71c4</vh></v>
-</v>
-<v t="ekr.20170310100532.56"><vh>Colors for jEdit constructs (all themes)</vh>
-<v t="ekr.20170310100532.57"><vh>@color blank_color = #d33682</vh></v>
-<v t="ekr.20170310100532.58"><vh>@color comment1_color = #d33682</vh></v>
-<v t="ekr.20170310100532.59"><vh>@color comment2_color = #d33682</vh></v>
-<v t="ekr.20170310100532.60"><vh>@color comment3_color = #d33682</vh></v>
-<v t="ekr.20170310100532.61"><vh>@color comment4_color = #d33682</vh></v>
-<v t="ekr.20170310100532.62"><vh>@color keyword1_color = #268bd2</vh></v>
-<v t="ekr.20170310100532.63"><vh>@color keyword2_color = #268bd2</vh></v>
-<v t="ekr.20170310100532.64"><vh>@color keyword3_color = #268bd2</vh></v>
-<v t="ekr.20170310100532.65"><vh>@color keyword4_color = #268bd2</vh></v>
-<v t="ekr.20170310100532.66"><vh>@color literal1_color = #2aa198</vh></v>
-<v t="ekr.20170310100532.67"><vh>@color literal2_color = #2aa198</vh></v>
-<v t="ekr.20170310100532.68"><vh>@color literal3_color = #2aa198</vh></v>
-<v t="ekr.20170310100532.69"><vh>@color literal4_color = #2aa198</vh></v>
-<v t="ekr.20170310100532.70"><vh>@color markup_color = #eee8d5</vh></v>
-<v t="ekr.20170310100532.71"><vh>@color operator_color = #eee8d5</vh></v>
-<v t="ekr.20170310100532.72"><vh>@color plain null color = None</vh></v>
-<v t="ekr.20170310100532.73"><vh>@color tab_color = red</vh></v>
-</v>
-</v>
-<v t="ekr.20170310100532.74"><vh>zz settings overrides (ekr dark)</vh>
-<v t="ekr.20170310100532.75"><vh>@string focused-border-width = 5px</vh></v>
-<v t="ekr.20170310100532.76"><vh>@string font-size = 16pt</vh></v>
-<v t="ekr.20170310100532.77"><vh>@string font-size-body = 16pt</vh></v>
-<v t="ekr.20170310100532.78"><vh>@string font-size-tree = 16pt</vh></v>
-<v t="ekr.20170310100532.79"><vh>@string font-size-log = 16pt</vh></v>
-</v>
-<v t="ekr.20170310100532.80"><vh>theme settings</vh>
-<v t="ekr.20170310100532.81"><vh>@string color_theme = leo_dark_0</vh></v>
-<v t="ekr.20170310100532.82"><vh>@bool color_theme_is_dark = True</vh></v>
-</v>
-</v>
-<v t="ekr.20170310100532.83"><vh>@data qt-gui-plugin-style-sheet</vh>
-<v t="ekr.20170310100532.84"><vh>style-sheet (base dark)</vh>
-<v t="ekr.20170310100532.85"><vh>active pane highlighting (base dark)</vh></v>
-<v t="ekr.20170310100532.86"><vh>body editor (base dark)</vh></v>
-<v t="ekr.20170310100532.87"><vh>bookmarks (base dark)</vh></v>
-<v t="ekr.20170310100532.88"><vh>buttons (base dark)</vh></v>
-<v t="ekr.20170310100532.89"><vh>log pane (base dark)</vh></v>
-<v t="ekr.20170310100532.90"><vh>menus (base dark)</vh></v>
-<v t="ekr.20170310100532.91"><vh>mini-buffer (base dark)</vh></v>
-<v t="ekr.20170310100532.92"><vh>status line (base dark)</vh></v>
-<v t="ekr.20170310100532.93"><vh>scrollbar (base dark)</vh></v>
-<v t="ekr.20170310100532.94"><vh>splitters (base dark)</vh></v>
-<v t="ekr.20170310100532.95"><vh>tab bar (base dark)</vh></v>
-<v t="ekr.20170310100532.96"><vh>tree (base dark) </vh></v>
-<v t="ekr.20170310100532.97"><vh>widgets (base dark)</vh></v>
-</v>
-<v t="ekr.20170310100532.98"><vh>zz overrides</vh></v>
-</v>
-</v>
-<v t="ekr.20170310095804.1"><vh>@theme linux ekr dark</vh>
-<v t="ekr.20170310095804.2"><vh>settings</vh>
-<v t="ekr.20170310095804.3"><vh>style sheet settings (base dark)</vh>
-<v t="ekr.20170310095804.4"><vh>border settings (base dark)</vh>
-<v t="ekr.20170310095804.5"><vh>@@@color focused-border-hover-color = red</vh></v>
-<v t="ekr.20170310095804.6"><vh>@color focused-border-focus-color = red</vh></v>
-<v t="ekr.20170310095804.7"><vh>@string focused-border-style = solid</vh></v>
-<v t="ekr.20170310095804.8"><vh>@string focused-border-unfocus-color = @solarized-base02</vh></v>
-<v t="ekr.20170310095804.9"><vh>@string focused-border-width = 5px</vh></v>
-</v>
-<v t="ekr.20170310095804.10"><vh>color settings (base dark)</vh>
-<v t="ekr.20170310095804.11"><vh>@color button-hover-bg = @solarized-base01</vh></v>
-<v t="ekr.20170310095804.12"><vh>@color button-hover-fg = @solarized-base03</vh></v>
-<v t="ekr.20170310095804.13"><vh>@color log_error_color = #dc322f</vh></v>
-<v t="ekr.20170310095804.14"><vh>@color log_text_background_color = #073642</vh></v>
-<v t="ekr.20170310095804.15"><vh>@color log_text_foreground_color = #93a1a1</vh></v>
-<v t="ekr.20170310095804.16"><vh>@color log_warning_color = #268bd2</vh></v>
-<v t="ekr.20170310095804.17"><vh>@color minibuffer_background_color = @solarized-base03</vh></v>
-<v t="ekr.20170310095804.18"><vh>@color minibuffer_error_color = @solarized-red</vh></v>
-<v t="ekr.20170310095804.19"><vh>@color minibuffer_foreground_color = @solarized-yellow</vh></v>
-<v t="ekr.20170310095804.20"><vh>@color minibuffer_warning_color = @solarized-base02</vh></v>
-<v t="ekr.20170310095804.21"><vh>@color splitter-bg = @solarized-base01</vh></v>
-<v t="ekr.20170310095804.22"><vh>@color splitter-hover-bg = @solarized-violet</vh></v>
-<v t="ekr.20170310095804.23"><vh>@color text-background = @solarized-base03</vh></v>
-<v t="ekr.20170310095804.24"><vh>@color text-background-bright = @solarized-base02</vh></v>
-<v t="ekr.20170310095804.25"><vh>@color text-foreground = @solarized-base0</vh></v>
-<v t="ekr.20170310095804.26"><vh>@color text-foreground-bright = @solarized-base2</vh></v>
-</v>
-<v t="ekr.20170310095804.27"><vh>font settings (base dark)</vh>
-<v t="ekr.20170310095804.28"><vh>@string font-family = DejaVu Sans Mono</vh></v>
-<v t="ekr.20170310095804.29"><vh>@string font-family = DejaVu Sans Mono</vh></v>
-<v t="ekr.20170310095804.30"><vh>@string font-family-tree = @font-family</vh></v>
-<v t="ekr.20170310095804.31"><vh>@string font-family-body = @font-family</vh></v>
-<v t="ekr.20170310095804.32"><vh>@string font-family-log = @font-family</vh></v>
-<v t="ekr.20170310095804.33"><vh>@string font-size = 12pt</vh></v>
-<v t="ekr.20170310095804.34"><vh>@string font-size-body = 12pt</vh></v>
-<v t="ekr.20170310095804.35"><vh>@string font-size-tree = 12pt</vh></v>
-<v t="ekr.20170310095804.36"><vh>@string font-size-log = 12pt</vh></v>
-</v>
-<v t="ekr.20170310095804.37"><vh>gradients (base dark)</vh>
-<v t="ekr.20170310095804.38"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @text-background-bright, stop:0.4 @text-background, stop:0.6 @text-background, stop:0.9 @text-background-bright)</vh></v>
-<v t="ekr.20170310095804.39"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)</vh></v>
-</v>
-<v t="ekr.20170310095804.40"><vh>outline indicators (base dark)</vh>
-<v t="ekr.20170310095804.41"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
-<v t="ekr.20170310095804.42"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
-</v>
-<v t="ekr.20170310095804.43"><vh>plugins settings (base dark)</vh>
-<v t="ekr.20170310095804.44"><vh>bookmark settings (base dark)</vh>
-<v t="ekr.20170310095804.45"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20170310095804.46"><vh>syntax coloring settings (common to all themes)</vh>
-<v t="ekr.20170310095804.47"><vh>Colors for Leo constructs (all themes)</vh>
-<v t="ekr.20170310095804.48"><vh>@color doc_part_color = #d33682</vh></v>
-<v t="ekr.20170310095804.49"><vh>@color leo_keyword_color = #268bd2</vh></v>
-<v t="ekr.20170310095804.50"><vh>@color section_name_brackets_color = #268bd2</vh></v>
-<v t="ekr.20170310095804.51"><vh>@color section_name_color = #d33682</vh></v>
-<v t="ekr.20170310095804.52"><vh>@color show_invisibles_space_color = #d33682</vh></v>
-<v t="ekr.20170310095804.53"><vh>@color show_invisibles_tab_color = red</vh></v>
-<v t="ekr.20170310095804.54"><vh>@color undefined_section_name_color = #d33682</vh></v>
-<v t="ekr.20170310095804.55"><vh>@color url_color = #6c71c4</vh></v>
-</v>
-<v t="ekr.20170310095804.56"><vh>Colors for jEdit constructs (all themes)</vh>
-<v t="ekr.20170310095804.57"><vh>@color blank_color = #d33682</vh></v>
-<v t="ekr.20170310095804.58"><vh>@color comment1_color = #d33682</vh></v>
-<v t="ekr.20170310095804.59"><vh>@color comment2_color = #d33682</vh></v>
-<v t="ekr.20170310095804.60"><vh>@color comment3_color = #d33682</vh></v>
-<v t="ekr.20170310095804.61"><vh>@color comment4_color = #d33682</vh></v>
-<v t="ekr.20170310095804.62"><vh>@color keyword1_color = #268bd2</vh></v>
-<v t="ekr.20170310095804.63"><vh>@color keyword2_color = #268bd2</vh></v>
-<v t="ekr.20170310095804.64"><vh>@color keyword3_color = #268bd2</vh></v>
-<v t="ekr.20170310095804.65"><vh>@color keyword4_color = #268bd2</vh></v>
-<v t="ekr.20170310095804.66"><vh>@color literal1_color = #2aa198</vh></v>
-<v t="ekr.20170310095804.67"><vh>@color literal2_color = #2aa198</vh></v>
-<v t="ekr.20170310095804.68"><vh>@color literal3_color = #2aa198</vh></v>
-<v t="ekr.20170310095804.69"><vh>@color literal4_color = #2aa198</vh></v>
-<v t="ekr.20170310095804.70"><vh>@color markup_color = #eee8d5</vh></v>
-<v t="ekr.20170310095804.71"><vh>@color operator_color = #eee8d5</vh></v>
-<v t="ekr.20170310095804.72"><vh>@color plain null color = None</vh></v>
-<v t="ekr.20170310095804.73"><vh>@color tab_color = red</vh></v>
-</v>
-</v>
-<v t="ekr.20170310095804.74"><vh>zz settings overrides (windows ekr dark)</vh>
-<v t="ekr.20170310095804.75"><vh>@string focused-border-width = 5px</vh></v>
-<v t="ekr.20170310095804.76"><vh>@string font-size = 14pt</vh></v>
-<v t="ekr.20170310095804.77"><vh>@string font-size-body = 14pt</vh></v>
-<v t="ekr.20170310095804.78"><vh>@string font-size-tree = 14pt</vh></v>
-<v t="ekr.20170310095804.79"><vh>@string font-size-log = 14pt</vh></v>
-</v>
-<v t="ekr.20170310095804.80"><vh>theme settings</vh>
-<v t="ekr.20170310095804.81"><vh>@string color_theme = leo_dark_0</vh></v>
-<v t="ekr.20170310095804.82"><vh>@bool color_theme_is_dark = True</vh></v>
-</v>
-</v>
-<v t="ekr.20170310095804.83"><vh>@data qt-gui-plugin-style-sheet</vh>
-<v t="ekr.20170310095804.84"><vh>style-sheet (base dark)</vh>
-<v t="ekr.20170310095804.85"><vh>active pane highlighting (base dark)</vh></v>
-<v t="ekr.20170310095804.86"><vh>body editor (base dark)</vh></v>
-<v t="ekr.20170310095804.87"><vh>bookmarks (base dark)</vh></v>
-<v t="ekr.20170310095804.88"><vh>buttons (base dark)</vh></v>
-<v t="ekr.20170310095804.89"><vh>log pane (base dark)</vh></v>
-<v t="ekr.20170310095804.90"><vh>menus (base dark)</vh></v>
-<v t="ekr.20170310095804.91"><vh>mini-buffer (base dark)</vh></v>
-<v t="ekr.20170310095804.92"><vh>status line (base dark)</vh></v>
-<v t="ekr.20170310095804.93"><vh>scrollbar (base dark)</vh></v>
-<v t="ekr.20170310095804.94"><vh>splitters (base dark)</vh></v>
-<v t="ekr.20170310095804.95"><vh>tab bar (base dark)</vh></v>
-<v t="ekr.20170310095804.96"><vh>tree (base dark) </vh></v>
-<v t="ekr.20170310095804.97"><vh>widgets (base dark)</vh></v>
-</v>
-<v t="ekr.20170310095804.98"><vh>zz overrides (linux ekr dark)</vh></v>
-</v>
-</v>
-<v t="ekr.20170310063446.1"><vh>Monolithic themes</vh>
-<v t="ekr.20170304074559.185"><vh>@theme leo_dark theme 0</vh>
-<v t="ekr.20170304074559.186"><vh>settings</vh>
-<v t="ekr.20170304074559.187"><vh>style sheet settings</vh>
-<v t="ekr.20170304074559.214"><vh>@ignore border</vh>
-<v t="ekr.20170304074559.216"><vh>@string focused-border-style = solid</vh></v>
-<v t="ekr.20170304074559.217"><vh>@string focused-border-width = 3px</vh></v>
-<v t="ekr.20170304074559.218"><vh>@color focused-border-focus-color = red</vh></v>
-<v t="ekr.20170304074559.219"><vh>@color focused-border-hover-color = red</vh></v>
-<v t="ekr.20170304074559.220"><vh>@string focused-border-unfocus-color = white</vh></v>
-</v>
-<v t="ekr.20170304074559.188"><vh>colors</vh>
-<v t="ekr.20170304074559.189"><vh>@color button-hover-bg = @solarized-base01</vh></v>
-<v t="ekr.20170304074559.190"><vh>@color button-hover-fg = @solarized-base03</vh></v>
-<v t="ekr.20170304074559.191"><vh>@color log_error_color = #dc322f</vh></v>
-<v t="ekr.20170304074559.192"><vh>@color log_text_background_color = #073642</vh></v>
-<v t="ekr.20170304074559.193"><vh>@color log_text_foreground_color = #93a1a1</vh></v>
-<v t="ekr.20170304074559.194"><vh>@color log_warning_color = #268bd2</vh></v>
-<v t="ekr.20170304074559.195"><vh>@color minibuffer_background_color = @solarized-base03</vh></v>
-<v t="ekr.20170304074559.196"><vh>@color minibuffer_error_color = @solarized-red</vh></v>
-<v t="ekr.20170304074559.197"><vh>@color minibuffer_foreground_color = @solarized-yellow</vh></v>
-<v t="ekr.20170304074559.198"><vh>@color minibuffer_warning_color = @solarized-base02</vh></v>
-<v t="ekr.20170304074559.199"><vh>@color splitter-bg = @solarized-base01</vh></v>
-<v t="ekr.20170304074559.200"><vh>@color splitter-hover-bg = @solarized-violet</vh></v>
-<v t="ekr.20170304074559.201"><vh>@color text-background = @solarized-base03</vh></v>
-<v t="ekr.20170304074559.202"><vh>@color text-background-bright = @solarized-base02</vh></v>
-<v t="ekr.20170304074559.203"><vh>@color text-foreground = @solarized-base0</vh></v>
-<v t="ekr.20170304074559.204"><vh>@color text-foreground-bright = @solarized-base2</vh></v>
-</v>
-<v t="ekr.20170304074559.205"><vh>fonts</vh>
-<v t="ekr.20170304074559.206"><vh>@string font-family = DejaVu Sans Mono</vh></v>
-<v t="ekr.20170304074559.207"><vh>@string font-family = DejaVu Sans Mono</vh></v>
-<v t="ekr.20170304074559.208"><vh>@string font-family-tree = @font-family</vh></v>
-<v t="ekr.20170304074559.209"><vh>@string font-family-body = @font-family</vh></v>
-<v t="ekr.20170304074559.210"><vh>@string font-family-log = @font-family</vh></v>
-<v t="ekr.20170304074559.211"><vh>@string font-size-body = 16pt</vh></v>
-<v t="ekr.20170304074559.212"><vh>@string font-size-tree = 16pt</vh></v>
-<v t="ekr.20170304074559.213"><vh>@string font-size-log = 16pt</vh></v>
-</v>
-<v t="ekr.20170304074559.221"><vh>gradients</vh>
-<v t="ekr.20170304074559.222"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @text-background-bright, stop:0.4 @text-background, stop:0.6 @text-background, stop:0.9 @text-background-bright)</vh></v>
-<v t="ekr.20170304074559.223"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)</vh></v>
-</v>
-<v t="ekr.20170308061124.1"><vh>outline indicators</vh>
-<v t="ekr.20170308061124.2"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
-<v t="ekr.20170308061124.3"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
-</v>
-<v t="ekr.20170304074559.224"><vh>plugins</vh>
-<v t="ekr.20170304074559.225"><vh>bookmarks</vh>
-<v t="ekr.20170304074559.226"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20170304074559.413"></v>
-<v t="ekr.20170304074559.258"><vh>theme settings</vh>
-<v t="ekr.20170304074559.259"><vh>@string color_theme = leo_dark_0</vh></v>
-<v t="ekr.20170304074559.260"><vh>@bool color_theme_is_dark = True</vh></v>
-</v>
-</v>
-<v t="ekr.20170304074559.261"><vh>@data qt-gui-plugin-style-sheet</vh>
-<v t="ekr.20170308051519.1"><vh>active pane highlighting</vh></v>
-<v t="ekr.20170304074559.264"><vh>body editor</vh></v>
-<v t="ekr.20170304074559.287"><vh>bookmarks</vh></v>
-<v t="ekr.20170304074559.270"><vh>buttons</vh></v>
-<v t="ekr.20170304074559.266"><vh>log pane</vh></v>
-<v t="ekr.20170304074559.272"><vh>menus</vh></v>
-<v t="ekr.20170304074559.267"><vh>mini-buffer</vh></v>
-<v t="ekr.20170304074559.285"><vh>status line</vh></v>
-<v t="ekr.20170304074559.273"><vh>scrollbar</vh></v>
-<v t="ekr.20170304074559.274"><vh>splitters</vh></v>
-<v t="ekr.20170304074559.271"><vh>tab bar</vh></v>
-<v t="ekr.20170304074559.265"><vh>tree</vh></v>
-<v t="ekr.20170304074559.263"><vh>widgets</vh></v>
-</v>
-</v>
-<v t="ekr.20170304074559.291"><vh>@theme leo_dark theme 1</vh>
-<v t="ekr.20170304074559.292"><vh>settings</vh>
-<v t="ekr.20170304074559.293"><vh>style sheet settings</vh>
-<v t="ekr.20170309055108.1"><vh>@ignore border</vh>
-<v t="ekr.20170309055108.2"><vh>@string focused-border-style = solid</vh></v>
-<v t="ekr.20170309055108.3"><vh>@string focused-border-width = 3px</vh></v>
-<v t="ekr.20170309055108.4"><vh>@color focused-border-focus-color = red</vh></v>
-<v t="ekr.20170309055108.5"><vh>@color focused-border-hover-color = red</vh></v>
-<v t="ekr.20170309055108.6"><vh>@string focused-border-unfocus-color = white</vh></v>
-</v>
-<v t="ekr.20170308082507.1"><vh>colors</vh>
-<v t="ekr.20170304074559.294"><vh>Body pane colors</vh>
-<v t="ekr.20170304074559.295"><vh>@color body_text_background_color = #002b36</vh></v>
-<v t="ekr.20170304074559.296"><vh>@color unselected_body_bg_color = #002b36</vh></v>
-<v t="ekr.20170304074559.297"><vh>@color unselected_body_fg_color = #839496</vh></v>
-<v t="ekr.20170304074559.298"><vh>@color body_text_foreground_color = #839496</vh></v>
-<v t="ekr.20170304074559.299"><vh>@color insert_mode_bg_color = #002b36</vh></v>
-<v t="ekr.20170304074559.300"><vh>@color insert_mode_fg_color = #839496</vh></v>
-</v>
-<v t="ekr.20170304074559.301"><vh>Log pane colors</vh>
-<v t="ekr.20170304074559.302"><vh>@color log_error_color = #dc322f</vh></v>
-<v t="ekr.20170304074559.303"><vh>@color log_warning_color = #268bd2</vh></v>
-<v t="ekr.20170304074559.304"><vh>@color log_text_foreground_color = #93a1a1</vh></v>
-<v t="ekr.20170304074559.305"><vh>@color log_text_background_color = #073642</vh></v>
-<v t="ekr.20170304074559.306"><vh>@color log_pane_background_color = #002b36</vh></v>
-<v t="ekr.20170304074559.307"><vh>@color log_pane_Find_tab_background_color = #d6c7d3</vh></v>
-<v t="ekr.20170304074559.308"><vh>@color log_pane_Spell_tab_background_color = MistyRose1</vh></v>
-</v>
-<v t="ekr.20170304074559.309"><vh>Minibuffer colors</vh>
-<v t="ekr.20170304074559.310"><vh>@color minibuffer_background_color = #073642</vh></v>
-<v t="ekr.20170304074559.311"><vh>@color minibuffer_foreground_color = #b58900</vh></v>
-</v>
-<v t="ekr.20170304074559.312"><vh>Outline pane colors</vh>
-<v t="ekr.20170304074559.313"><vh>@color headline_text_unselected_background_color = #ffffff</vh></v>
-<v t="ekr.20170304074559.314"><vh>@color headline_text_unselected_foreground_color = None</vh></v>
-<v t="ekr.20170304074559.315"><vh>@color headline_text_selected_background_color = #586e75</vh></v>
-<v t="ekr.20170304074559.316"><vh>@color headline_text_selected_foreground_color = #002b36</vh></v>
-<v t="ekr.20170304074559.317"><vh>@color headline_text_editing_background_color = None</vh></v>
-<v t="ekr.20170304074559.318"><vh>@color headline_text_editing_foreground_color = None</vh></v>
-<v t="ekr.20170304074559.319"><vh>@color headline_text_editing_selection_foreground_color = None</vh></v>
-<v t="ekr.20170304074559.320"><vh>@color headline_text_editing_selection_background_color = None</vh></v>
-<v t="ekr.20170304074559.321"><vh>@color outline_pane_background_color = #ffffff</vh></v>
-</v>
-<v t="ekr.20170308061334.1"><vh>Outline indicators</vh>
-<v t="ekr.20170308061334.2"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
-<v t="ekr.20170308061334.3"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
-</v>
-</v>
-<v t="ekr.20170308082458.1"><vh>gradients</vh>
-<v t="ekr.20170308082458.2"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @text-background-bright, stop:0.4 @text-background, stop:0.6 @text-background, stop:0.9 @text-background-bright)</vh></v>
-<v t="ekr.20170308082458.3"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)</vh></v>
-</v>
-</v>
-<v t="ekr.20170304074559.413"></v>
-<v t="ekr.20170304074559.353"><vh>theme settings</vh>
-<v t="ekr.20170304074559.354"><vh>@string color_theme = leo_dark_1</vh></v>
-<v t="ekr.20170304074559.355"><vh>@bool color_theme_is_dark = True</vh></v>
-</v>
-</v>
-<v t="ekr.20170304074559.356"><vh>@data qt-gui-plugin-style-sheet</vh>
-<v t="ekr.20170304074559.360"><vh>body pane</vh></v>
-<v t="ekr.20170304074559.366"><vh>buttons</vh></v>
-<v t="ekr.20170304074559.362"><vh>log</vh></v>
-<v t="ekr.20170304074559.368"><vh>menus</vh></v>
-<v t="ekr.20170304074559.363"><vh>mini-buffer</vh></v>
-<v t="ekr.20170304074559.374"><vh>scroll bars</vh></v>
-<v t="ekr.20170304074559.369"><vh>splitters</vh></v>
-<v t="ekr.20170304074559.377"><vh>status line</vh></v>
-<v t="ekr.20170304074559.367"><vh>tab bar</vh></v>
-<v t="ekr.20170304074559.361"><vh>tree</vh></v>
-<v t="ekr.20170308055019.1"><vh>widgets</vh></v>
-</v>
-</v>
-<v t="ekr.20170304074559.382"><vh>@theme leo_dark theme 2</vh>
-<v t="ekr.20170304074559.383"><vh>settings</vh>
-<v t="ekr.20170304074559.384"><vh>style sheet settings</vh>
-<v t="ekr.20170309055240.1"><vh>@ignore border</vh>
-<v t="ekr.20170309055240.2"><vh>@string focused-border-style = solid</vh></v>
-<v t="ekr.20170309055240.3"><vh>@string focused-border-width = 3px</vh></v>
-<v t="ekr.20170309055240.4"><vh>@color focused-border-focus-color = red</vh></v>
-<v t="ekr.20170309055240.5"><vh>@color focused-border-hover-color = red</vh></v>
-<v t="ekr.20170309055240.6"><vh>@string focused-border-unfocus-color = white</vh></v>
-</v>
-<v t="ekr.20170308082535.1"><vh>colors</vh>
-<v t="ekr.20170304074559.385"><vh>Body pane colors</vh>
-<v t="ekr.20170304074559.386"><vh>@color body_text_background_color = #002b36</vh></v>
-<v t="ekr.20170304074559.387"><vh>@color unselected_body_bg_color = #002b36</vh></v>
-<v t="ekr.20170304074559.388"><vh>@color unselected_body_fg_color = #839496</vh></v>
-<v t="ekr.20170304074559.389"><vh>@color body_text_foreground_color = #839496</vh></v>
-<v t="ekr.20170304074559.390"><vh>@color insert_mode_bg_color = #002b36</vh></v>
-<v t="ekr.20170304074559.391"><vh>@color insert_mode_fg_color = #839496</vh></v>
-</v>
-<v t="ekr.20170304074559.402"><vh>Log pane colors</vh>
-<v t="ekr.20170304074559.403"><vh>@color log_error_color = #dc322f</vh></v>
-<v t="ekr.20170304074559.404"><vh>@color log_warning_color = #268bd2</vh></v>
-<v t="ekr.20170304074559.405"><vh>@color log_text_foreground_color = #93a1a1</vh></v>
-<v t="ekr.20170304074559.406"><vh>@color log_text_background_color = #073642</vh></v>
-<v t="ekr.20170304074559.407"><vh>@color log_pane_background_color = #002b36</vh></v>
-<v t="ekr.20170304074559.408"><vh>@color log_pane_Find_tab_background_color = #d6c7d3</vh></v>
-<v t="ekr.20170304074559.409"><vh>@color log_pane_Spell_tab_background_color = MistyRose1</vh></v>
-</v>
-<v t="ekr.20170304074559.410"><vh>Minibuffer colors</vh>
-<v t="ekr.20170304074559.411"><vh>@color minibuffer_background_color = #073642</vh></v>
-<v t="ekr.20170304074559.412"><vh>@color minibuffer_foreground_color = #b58900</vh></v>
-</v>
-<v t="ekr.20170308061534.1"><vh>Outline indicators</vh>
-<v t="ekr.20170308061534.2"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
-<v t="ekr.20170308061534.3"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
-</v>
-<v t="ekr.20170304074559.392"><vh>Outline pane colors</vh>
-<v t="ekr.20170304074559.393"><vh>@color headline_text_unselected_background_color = #ffffff</vh></v>
-<v t="ekr.20170304074559.394"><vh>@color headline_text_unselected_foreground_color = None</vh></v>
-<v t="ekr.20170304074559.395"><vh>@color headline_text_selected_background_color = #586e75</vh></v>
-<v t="ekr.20170304074559.396"><vh>@color headline_text_selected_foreground_color = #002b36</vh></v>
-<v t="ekr.20170304074559.397"><vh>@color headline_text_editing_background_color = None</vh></v>
-<v t="ekr.20170304074559.398"><vh>@color headline_text_editing_foreground_color = None</vh></v>
-<v t="ekr.20170304074559.399"><vh>@color headline_text_editing_selection_foreground_color = None</vh></v>
-<v t="ekr.20170304074559.400"><vh>@color headline_text_editing_selection_background_color = None</vh></v>
-<v t="ekr.20170304074559.401"><vh>@color outline_pane_background_color = #ffffff</vh></v>
-</v>
-</v>
-<v t="ekr.20170308082541.1"><vh>gradients</vh>
-<v t="ekr.20170308082541.2"><vh>@string bg-gradient = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @text-background-bright, stop:0.4 @text-background, stop:0.6 @text-background, stop:0.9 @text-background-bright)</vh></v>
-<v t="ekr.20170308082541.3"><vh>@string bg-gradient-hover = qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00, stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9 @solarized-base00)</vh></v>
-</v>
-</v>
-<v t="ekr.20170304074559.413"></v>
-<v t="ekr.20170304074559.444"><vh>theme settings</vh>
-<v t="ekr.20170304074559.445"><vh>@string color_theme = leo_dark_2</vh></v>
-<v t="ekr.20170304074559.446"><vh>@bool color_theme_is_dark = True</vh></v>
-</v>
-</v>
-<v t="ekr.20170304074559.447"><vh>@data qt-gui-plugin-style-sheet</vh>
-<v t="ekr.20170304074559.451"><vh>body editor</vh></v>
-<v t="ekr.20170304074559.453"><vh>log</vh></v>
-<v t="ekr.20170304074559.459"><vh>menus</vh></v>
-<v t="ekr.20170304074559.454"><vh>mini-buffer</vh></v>
-<v t="ekr.20170304074559.465"><vh>scroll bars</vh></v>
-<v t="ekr.20170304074559.460"><vh>splitters</vh></v>
-<v t="ekr.20170304074559.468"><vh>status area</vh></v>
-<v t="ekr.20170304074559.458"><vh>tab bar</vh></v>
-<v t="ekr.20170304074559.452"><vh>tree</vh></v>
-<v t="ekr.20170308061934.1"><vh>widgets</vh></v>
-</v>
-</v>
-</v>
-</v>
-<v t="ekr.20171121100639.1"></v>
-<v t="ekr.20180124050114.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
