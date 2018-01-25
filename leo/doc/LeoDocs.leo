@@ -126,7 +126,9 @@
 <v t="ekr.20150314044011.7"><vh>@@button remove dups</vh></v>
 <v t="ekr.20171220050925.1"><vh>@@@button get-tips</vh></v>
 <v t="ekr.20180125112749.1"><vh>@button get-tips</vh></v>
-<v t="ekr.20180125112540.1"><vh>@button get-issues</vh></v>
+<v t="ekr.20180125112540.1"><vh>@button get-issues</vh>
+<v t="ekr.20180125114521.1"><vh>get_issues</vh></v>
+</v>
 <v t="ekr.20180125094702.1"><vh>@button demo</vh>
 <v t="ekr.20180125113535.1"><vh>&lt;&lt; utils &gt;&gt;</vh>
 <v t="ekr.20180125101040.1"><vh>hightlight</vh></v>
@@ -398,7 +400,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1905,6 +1907,55 @@
 </v>
 </v>
 <v t="ekr.20180125112540.1"></v>
+<v t="ekr.20180125130447.1"><vh>Issues for 5.7</vh>
+<v t="ekr.20180125130448.1"><vh>30 Bug issues for milestone 5.7</vh>
+<v t="ekr.20180125130448.31"><vh>#556: AttributeError: 'LeoApp' object has no attribute 'cacher'</vh></v>
+<v t="ekr.20180125130448.30"><vh>#560: simulateCommand: no command for &lt;command-defined-by-plugin&gt;</vh></v>
+<v t="ekr.20180125130448.29"><vh>#571: Hyperlink click does not launch the page</vh></v>
+<v t="ekr.20180125130448.28"><vh>#573: leoDist: some external files missing when installed by pip</vh></v>
+<v t="ekr.20180125130448.27"><vh>#578: Support for org-mode tags on import</vh></v>
+<v t="ekr.20180125130448.26"><vh>#579: Key bindings don't take for commands defined in plugins</vh></v>
+<v t="ekr.20180125130448.25"><vh>#585: css syntax coloring (@language css)</vh></v>
+<v t="ekr.20180125130448.24"><vh>#586: Pip install fails on gitDescribe --&gt; need to distinguish Dev and User installs</vh></v>
+<v t="ekr.20180125130448.23"><vh>#591: LEP will strip HTML from HTML nodes</vh></v>
+<v t="ekr.20180125130448.22"><vh>#593: File --&gt; RecentFiles can not work</vh></v>
+<v t="ekr.20180125130448.21"><vh>#595: The dark theme is broken on Windows</vh></v>
+<v t="ekr.20180125130448.20"><vh>#600: `insert-child` worked same as `insert-node`</vh></v>
+<v t="ekr.20180125130448.19"><vh>#603: Missing files when installing Leo from PyPI using "pip install leo"</vh></v>
+<v t="ekr.20180125130448.18"><vh>#604: Missing files when installing Leo from PyPI using "pip install leo[develop]"</vh></v>
+<v t="ekr.20180125130448.17"><vh>#627: cft error</vh></v>
+<v t="ekr.20180125130448.16"><vh>#630: Do we need both rst-ignore-tree and rst-ignore?</vh></v>
+<v t="ekr.20180125130448.15"><vh>#634: Hard crash in quicksearch when using regular expressions</vh></v>
+<v t="ekr.20180125130448.14"><vh>#638: gui console mode broken on Linux py2.7 </vh></v>
+<v t="ekr.20180125130448.13"><vh>#639: Javascript importer should use @others everywhere</vh></v>
+<v t="ekr.20180125130448.12"><vh>#640: .org importer fails for leading introduction lines</vh></v>
+<v t="ekr.20180125130448.11"><vh>#641: invalid syntax after git pull</vh></v>
+<v t="ekr.20180125130448.10"><vh>#645: TabImporter fails on files with both tabs and spaces</vh></v>
+<v t="ekr.20180125130448.9"><vh>#648: pyflakes warnings should not prevent script execution</vh></v>
+<v t="ekr.20180125130448.8"><vh>#649: Leo only evaluates one path expression in @path &amp; @&lt;file&gt; paths</vh></v>
+<v t="ekr.20180125130448.7"><vh>#651: Javascript importer fails for leo.js</vh></v>
+<v t="ekr.20180125130448.6"><vh>#652: leovue/src/components/viewgrid.js dos not import perfectly</vh></v>
+<v t="ekr.20180125130448.5"><vh>#653: Javascript importer crashes on jqterm.js</vh></v>
+<v t="ekr.20180125130448.4"><vh>#654: Undoer class problem</vh></v>
+<v t="ekr.20180125130448.3"><vh>#656: @buttons defined in local myLeoSettings.leo not appearing in work files</vh></v>
+<v t="ekr.20180125130448.2"><vh>#657: @rclick button-name not working if under @buttons node</vh></v>
+</v>
+<v t="ekr.20180125130448.32"><vh>13 Enhancement issues for milestone 5.7</vh>
+<v t="ekr.20180125130448.45"><vh>#523: Check *all* scripts with pyflakes</vh></v>
+<v t="ekr.20180125130448.44"><vh>#552: @clean is not compatible with org mode files</vh></v>
+<v t="ekr.20180125130448.43"><vh>#577: Let reformatting unit tests run in more environments</vh></v>
+<v t="ekr.20180125130448.42"><vh>#583: Remove top-level docs folder</vh></v>
+<v t="ekr.20180125130448.41"><vh>#584: Clean up the worst pep8 offenses</vh></v>
+<v t="ekr.20180125130448.40"><vh>#587: Dynamic display of node attributes (headline tags)</vh></v>
+<v t="ekr.20180125130448.39"><vh>#589: Use @g.commander_command to define commands in Commands class</vh></v>
+<v t="ekr.20180125130448.38"><vh>#596: Use @ifplatform to create platform-specific settings in leoSettings.leo</vh></v>
+<v t="ekr.20180125130448.37"><vh>#597: Show tips when Leo starts up</vh></v>
+<v t="ekr.20180125130448.36"><vh>#602: Add ability to modify spell-check dictionary</vh></v>
+<v t="ekr.20180125130448.35"><vh>#613: Support patching of Leo's colorizer tables</vh></v>
+<v t="ekr.20180125130448.34"><vh>#635: Link to nodes from log</vh></v>
+<v t="ekr.20180125130448.33"><vh>#655: The js importer could remove @others when a node has only one child</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -28059,82 +28110,18 @@ import leo.plugins.demo as demo
     g.app.gui.qtApp.processEvents()
     </t>
 <t tx="ekr.20180125112540.1">@language python
-
-### from collections import namedtuple
-
+g.cls()
 import requests
-print(requests)
-
-def make_tips(c):
-    '''
-    A script to make entries in the global tips array.
-    
-    Each printed entry has the form:
-        
-        UserTip(
-            n=anInt
-            tags=[list of tags],
-            title=aString,
-            text="""
-            
-            aString
-            
-            """)
-        
-    After running this script, copy the result from the console to the
-    &lt;define tips&gt; section of leoTips.py.
-    '''
-    url = 'https://api.github.com/repos/leo-editor/leo-editor/issues?labels=Tip&amp;state='
-    
-    def get_tips(data):
-        """get_tips - get tips from GitHub issues
-        :param dict data: GitHub API issues list
-        :return: list of Tips
-        """
-        tips = []
-        for issue in data:
-            body, n, title = issue['body'], issue['number'], issue['title']
-            lines = g.splitLines(body)
-            for i, s in enumerate(lines):
-                if s.strip().lower().startswith('tags:'):
-                    lines = lines[:i] + lines[i+1:]
-                    text = ''.join(lines).strip()
-                    s = s.strip().rstrip('.').strip()
-                    s = s[len('tags:'):].strip()
-                    tags = [z.strip() for z in s.split(',')]
-                    break
-            else:
-                tags = []
-                text = body.strip()
-            tips.append(
-                UserTip(
-                    n=n,
-                    tags=tags,
-                    text=text.strip(),
-                    title=title.strip(),
-                ))
-        return tips
-    
-    g.cls()
-    template = '''\
-UserTip(
-    n=%s,
-    tags=%s,
-    title="%s",
-    text="""\
-    
-%s
-
-"""),
-'''
-if 0:
-    template = g.adjustTripleString(template, c.tab_width)
-    for kind in ('open',): # 'closed':
-        data = requests.get(url+kind).json()
-        for tip in get_tips(data):
-            tags = ["%s" % (z) for z in tip.tags or []]
-            title = tip.title.lstrip('Tip:').lstrip('tip:').strip()
-            print(template % (tip.n, tags, title, tip.text))
+milestone = '5.7'
+include_body = False
+@others
+root = c.lastTopLevel().insertAfter()
+root.h = 'Issues for ' + milestone
+get_issues('Bug', milestone, root)
+get_issues('Enhancement', milestone, root)
+root.expand()
+c.selectPosition(root)
+c.redraw()
 </t>
 <t tx="ekr.20180125112749.1"># This prints only open tips.
 import leo.core.leoTips as leoTips
@@ -28165,6 +28152,72 @@ unhighlight('tree')</t>
 d.Callout('Log Pane',pane='log')
 wait()
 unhighlight('log')</t>
+<t tx="ekr.20180125114521.1">def get_issues(kind,milestone,root):
+    
+    url = 'https://api.github.com/repos/leo-editor/leo-editor/issues?labels=%s&amp;state=closed' % kind
+    aList = requests.get(url).json()
+    aList = [z for z in aList if z.get('milestone') and milestone==z.get('milestone').get('title')]
+    if not aList: return
+    root = root.insertAsLastChild()
+    root.h = '%s %s issues for milestone %s' % (len(aList), kind, milestone)
+    if 0: # To discover the available keys.
+        d = aList[0]
+        for key in sorted(d):
+            print(key)
+            g.printObj(d.get(key))
+            print('')
+    for d in aList:
+        p = root.insertAsNthChild(0)
+        p.h = '#%s: %s' % (d.get('number'), d.get('title'))
+        if include_body:
+            p.b = d.get('body').strip()
+</t>
+<t tx="ekr.20180125130447.1"></t>
+<t tx="ekr.20180125130448.1"></t>
+<t tx="ekr.20180125130448.10"></t>
+<t tx="ekr.20180125130448.11"></t>
+<t tx="ekr.20180125130448.12"></t>
+<t tx="ekr.20180125130448.13"></t>
+<t tx="ekr.20180125130448.14"></t>
+<t tx="ekr.20180125130448.15"></t>
+<t tx="ekr.20180125130448.16"></t>
+<t tx="ekr.20180125130448.17"></t>
+<t tx="ekr.20180125130448.18"></t>
+<t tx="ekr.20180125130448.19"></t>
+<t tx="ekr.20180125130448.2"></t>
+<t tx="ekr.20180125130448.20"></t>
+<t tx="ekr.20180125130448.21"></t>
+<t tx="ekr.20180125130448.22"></t>
+<t tx="ekr.20180125130448.23"></t>
+<t tx="ekr.20180125130448.24"></t>
+<t tx="ekr.20180125130448.25"></t>
+<t tx="ekr.20180125130448.26"></t>
+<t tx="ekr.20180125130448.27"></t>
+<t tx="ekr.20180125130448.28"></t>
+<t tx="ekr.20180125130448.29"></t>
+<t tx="ekr.20180125130448.3"></t>
+<t tx="ekr.20180125130448.30"></t>
+<t tx="ekr.20180125130448.31"></t>
+<t tx="ekr.20180125130448.32"></t>
+<t tx="ekr.20180125130448.33"></t>
+<t tx="ekr.20180125130448.34"></t>
+<t tx="ekr.20180125130448.35"></t>
+<t tx="ekr.20180125130448.36"></t>
+<t tx="ekr.20180125130448.37"></t>
+<t tx="ekr.20180125130448.38"></t>
+<t tx="ekr.20180125130448.39"></t>
+<t tx="ekr.20180125130448.4"></t>
+<t tx="ekr.20180125130448.40"></t>
+<t tx="ekr.20180125130448.41"></t>
+<t tx="ekr.20180125130448.42"></t>
+<t tx="ekr.20180125130448.43"></t>
+<t tx="ekr.20180125130448.44"></t>
+<t tx="ekr.20180125130448.45"></t>
+<t tx="ekr.20180125130448.5"></t>
+<t tx="ekr.20180125130448.6"></t>
+<t tx="ekr.20180125130448.7"></t>
+<t tx="ekr.20180125130448.8"></t>
+<t tx="ekr.20180125130448.9"></t>
 <t tx="maphew.20171129131746.1">Python 3.0+::
 
     pip install leo
@@ -28208,7 +28261,7 @@ From Anaconda shell::
 Installing dependencies
 #######################
 </t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
