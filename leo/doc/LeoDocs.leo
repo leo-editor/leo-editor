@@ -1823,7 +1823,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20180124100450.126"><vh>#488: Improved console gui plugin</vh></v>
 <v t="ekr.20180124100450.168"><vh>#503: Use string/null gui for unit tests</vh></v>
 <v t="ekr.20180124100450.906"><vh>#597: Show tips when Leo starts up</vh></v>
 <v t="ekr.20180124100450.913"><vh>#635: Link to nodes from log pane</vh></v>
@@ -1836,7 +1835,7 @@
 <v t="ekr.20180124100450.360"><vh>#556: AttributeError: 'LeoApp' object has no attribute 'cacher'</vh></v>
 <v t="ekr.20180124100450.367"><vh>#571: Hyperlink click does not launch the page</vh></v>
 <v t="ekr.20180124100450.371"><vh>#579: Key bindings don't take for commands defined in plugins</vh></v>
-<v t="ekr.20180124100450.941"><vh>#585 css coloring</vh></v>
+<v t="ekr.20180124100450.941"><vh>#585: css coloring</vh></v>
 <v t="ekr.20180124100450.698"><vh>#627: crash in cft</vh></v>
 <v t="ekr.20180124100450.903"><vh>#649: path expressions</vh></v>
 <v t="ekr.20180124100450.891"><vh>#654: undoer problem</vh></v>
@@ -1884,9 +1883,10 @@
 <v t="ekr.20180124100450.797"><vh>sort cff results</vh></v>
 </v>
 <v t="ekr.20180125041723.1"><vh>Leo 5.7 Plugins</vh>
-<v t="ekr.20180124122055.1"><vh>new line_numbering.py plugin</vh></v>
-<v t="ekr.20180124100440.6"><vh>New leo_cloud.py plugin</vh></v>
+<v t="ekr.20180124100450.126"><vh>#488: Improved the console_gui plugin</vh></v>
 <v t="ekr.20180124100450.888"><vh>#613: patch_python_colorizer.py plugin</vh></v>
+<v t="ekr.20180124100440.6"><vh>New leo_cloud.py plugin</vh></v>
+<v t="ekr.20180124122055.1"><vh>New line_numbering.py plugin</vh></v>
 </v>
 </v>
 </vnodes>
@@ -27961,9 +27961,10 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - Added Debian package for Leo.
 - New reload-settings command.
 - Leo optionally shows user tips on startup.
-- Improved the console gui plugin.
+- Improved the console_gui plugin.
 - Added live links from urls in the log pane.
 - Unit tests use a string gui, making them faster and more robust.
+- The line_numbering plugin shows line numbers in external files.
 
 **Links**
 
