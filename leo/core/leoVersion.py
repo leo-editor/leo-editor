@@ -27,6 +27,7 @@ import leo.core.leoGlobals as g
 # Leo 5.3 final: May 2, 2016.
 # Leo 5.4 final: October 22, 2016.
 # Leo 5.5 final: March 23, 2017.
+# Leo 5.6 final: September 27, 2017.
 #@-<< version dates >>
 #@+<< about install hooks >>
 #@+node:ekr.20150409201910.1: ** << about install hooks >>
