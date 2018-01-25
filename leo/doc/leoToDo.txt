@@ -3,6 +3,191 @@
 .. @@language rest
 .. @@wrap
 .. @+all
+.. @+node:ekr.20180125042230.1: ** Create/update issues
+.. @+node:ekr.20180125042230.2: *3* Regularize slashes and back-slashes
+http://groups.google.com/group/leo-editor/browse_thread/thread/0d48b507bc8ffc05
+
+If I 'Open' a file, I get the following node header:
+
+@edit E:/Documents/index.html
+
+If I 'Import' the same file, I get the following:
+
+@file E:\Documents\index.html
+
+Just wondering why the difference between
+
+E:/ and E:\
+
+This is probably trivial and of no consequence, but I thought it curious.
+
+Create unit tests illustrating path ops
+.. @+node:ekr.20180125042230.3: *3* Use c.db for marks & expansion bits
+This would allow us to eliminate @bool put_expansion_bits_in_leo_files.
+.. @+node:ekr.20180125042230.4: *3* Improve quicksearch (Nav pane)
+- Key bindings in the nav pane.
+    - Arrow keys.
+    - Enter shift to outline pane.
+    - Some key to shift back to the nav pane.
+- Focus to Nav pane should select search area.
+    - Something like ctrl-Enter shouild go back to Nav pane.
+.. @+node:ekr.20180125042230.5: *3* Improve pylint command
+- enable more pylint checks
+- pylint command should ensure that the leo directory is on the path.
+  At present, Leo seems to need sitecustomize.py.
+- Pylint --recent option.  Last hour? Last day?
+.. @+node:ekr.20180125042230.6: *3* Minor issues (Jon N)
+I do not think the 'use lossage()' key functions should be in the core, unless you know better...
+
+A few things:
+
+- depending on the actual size of the Body pane, there can be a small amount of 'micro-scrolling' as you move the cursor to the top/bottom of the pane. I think my other editor resizes the pane so as not to have partial text lines. The current behaviour seems liveable with, although I might be interested in learning how to 'fix' this.
+
+- I don't currently deal with any existing selected region. If this were to go into the core this would probably all be refactored, maybe using some of the existing helper functions
+
+- the doKey() function has to know about the key(s) that are calling it, "Home" or "End" in the lossage() list. How might I improve this?
+
+- I had some trouble calling the pre-existing editor commands, like c.editCommand.beginningOfBuffer() etc. Not 100% sure I am doing this correctly.
+
+- as per the comments I am currently assuming that lossage() has at least three entries. I'll fix this shortly.
+       
+Anyway, here's what I have. I am currently using two @command nodes
+    @command myCtrlHome @key=Ctrl+Home
+    @command myCtrlEnd @key=Ctrl+End
+with content like below (merged a bit from two nodes for 'clarity')
+.. @+node:ekr.20180125042230.7: *4* Declarations
+​
+from leo.core.leoQt import QtCore
+
+.. @+node:ekr.20180125042230.8: *4* cursorToEndOfPane
+def cursorToEndOfPane():
+    """ move the text cursor to the last character visible in the body pane
+    """
+    w = c.frame.body.widget
+    # get viewport of the body widget
+    vp = w.viewport()
+   
+    # get the coordinates of the bottom of the visible area
+    vWidth = vp.width() -1
+    vHeight = vp.height() -1
+    # g.es("width", vWidth, "height", vHeight)
+   
+    # create a QPoint from this
+    bottom_right = QtCore.QPoint(vWidth, vHeight)
+   
+    # get the (text)'position' within the widget of the bottom right QPoint
+    end_pos = w.cursorForPosition(bottom_right).position()
+   
+    # create a cursor and set it to this position
+    cursor = w.textCursor()
+    cursor.setPosition(end_pos)
+    # set the Leo cursor from this
+    w.setTextCursor(cursor)
+   
+    c.bodyWantsFocusNow()
+   
+.. @+node:ekr.20180125042230.9: *4* cursorToTopOfPane
+def cursorToTopOfPane():
+    """ move the text cursor to the first character visible in the body pane
+    """
+    w = c.frame.body.widget
+
+    # create a QPoint of the top of the widget (client area)
+    top_left = QtCore.QPoint(0, 0)
+   
+    # get the (text)'position' within the widget of the top left QPoint
+    start_pos = w.cursorForPosition(top_left).position()
+   
+    # create a cursor and set it to this position
+    cursor = w.textCursor()
+    cursor.setPosition(start_pos)
+    # set the Leo cursor from this
+    w.setTextCursor(cursor)
+   
+    c.bodyWantsFocusNow()
+
+# arrive here with 'Ctrl-Home' the first entry in lossage
+# XXX for now, assume we have pressed more than three keys...
+.. @+node:ekr.20180125042230.10: *4* doMyCtrlHomeKey
+def doMyCtrlHomeKey():
+    if g.app.lossage[1][1] == "Ctrl+Home":
+        if g.app.lossage[2][1] == "Ctrl+Home":
+            g.es("would move to top of buffer")
+            c.editCommands.beginningOfBuffer(None)
+        else:
+            g.es("would move to top of body")
+            cursorToTopOfPane()
+    else:
+        g.es("would move to beginning of line")
+        c.editCommands.beginningOfLine(None)
+
+doMyCtrlHomeKey()
+
+# arrive here with 'Ctrl-End' the first entry in lossage
+# XXX for now, assume we have pressed more than three keys...
+.. @+node:ekr.20180125042230.11: *4* doCtrlEndKey
+def doCtrlEndKey():
+    showLossage()
+    if g.app.lossage[1][1] == "Ctrl+End":
+        if g.app.lossage[2][1] == "Ctrl+End":
+            g.es("would move to end of buffer")
+            c.editCommands.endOfBuffer(None)
+        else:
+            g.es("would move to end of body pane")
+            cursorToEndOfPane()
+    else:
+        g.es("would move to end of line")
+        c.editCommands.endOfLine(None)
+
+
+doCtrlEndKey()
+.. @+node:ekr.20180125042230.12: *3* API's for icons, attributes & windows
+Must be easy to use.
+
+- Add p/v.temp_u properties. Revise docs.
+
+- Use Terry's window code to create all panes:
+    - New console window plugin.
+.. @+node:ekr.20180125042230.13: *4* Found:['"]icons[i"]
+.. @+node:ekr.20180125042230.14: *4* simplifying uA access
+d = p.u.get(plugin_name, {})
+d['duration'] = 5
+p.u[plugin_name] = d
+.. @+node:ekr.20180125042230.15: *4* Make node attributes visible, and supported by Leo's core
+.. @+node:ekr.20180125042230.16: *3* Added org-mode features
+Better support for org-mode:
+- p.drawer and p.results properties.
+- If no text selection, only execute between @language directives.
+- Add arguments to @language directive.
+- Rendering of Latex, and *images* in Leo's body pane.
+- Better support for shell console & scripts.
+- Better support for make, C, C++, Java, etc.
+- Support .org files and .org.leo files.
+
+Maybe:
+- Agenda: an agenda plugin.
+- Tables: a tables plugin.
+
+Use client/server architecture?
+- Emulate/ use pyzo server?
+- A short prototype of @jupyter?
+  https://groups.google.com/d/msg/leo-editor/wRQfJ5UdsFU/yPEZheV8EwAJ
+  Appears to work only with Python 2.
+
+.. @+node:ekr.20180125042230.17: *3* Improved VR plugin
+1. At present, the VR pane renders an entire node the same way, namely as indicated by the first @language directive.​ Instead, the VR plugin should be re-architected to that it composes its results from multiple pieces (delimited by @language) in the same node. Not a huge thing, but it makes the rendering compatible in spirit of (the hidden relationships in) the body pane.
+
+2. A new directive, say @rendertree would tell VR to render the node and its subtree.  This makes visible and explicit what would otherwise be a VR option.
+
+3. Support for rendering @language latex.  I am about to up code to render such nodes as plain text rather than the default.  Next, I'll add the actual rendering.
+.. @+node:ekr.20180125042230.18: *3* Support jedi auto-completion (& valuespace)
+https://github.com/davidhalter/jedi
+
+Terry: valuespace remarks
+https://groups.google.com/d/msg/leo-editor/u5fToKw2wEU/Cl1Wy3whAgAJ
+
+Terry: autocomplete code looks at objects in c.vs namespace
+https://groups.google.com/d/msg/leo-editor/u5fToKw2wEU/2ag8PH3oAAAJ
 .. @+node:ekr.20160315141751.1: ** Code Academy: possible topics
 @language rest
 @wrap
