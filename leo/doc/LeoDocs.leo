@@ -361,6 +361,17 @@
 <v t="ekr.20131007143750.16111"><vh>To do</vh>
 <v t="ekr.20131108071132.17025"><vh>improve MacOS install: chmod</vh></v>
 <v t="ekr.20131028213522.17137"><vh>Examples for cheat sheet</vh></v>
+<v t="ekr.20180124100723.1"><vh>New docs: To do</vh>
+<v t="ekr.20180124100723.2"><vh>Consider using Leo if...</vh></v>
+<v t="ekr.20180124100723.3"><vh>Leo as a compendium</vh></v>
+<v t="ekr.20180124100723.4"><vh>Reproducible research</vh></v>
+<v t="ekr.20180124100723.5"><vh>Scripting for scientists</vh></v>
+<v t="ekr.20180124100723.6"><vh>Underlying technologies</vh>
+<v t="ekr.20180124100723.7"><vh>LP and RR</vh></v>
+<v t="ekr.20180124100723.8"><vh>Scripting</vh></v>
+<v t="ekr.20180124100723.9"><vh>Data model</vh></v>
+</v>
+</v>
 </v>
 </v>
 <v t="ekr.20100805171546.4412"><vh>Web pages</vh>
@@ -1700,27 +1711,14 @@
 <v t="ekr.20170707034853.72"><vh>screen_capture.py now enabled by default</vh></v>
 </v>
 </v>
-<v t="ekr.20170228112643.1"></v>
-<v t="ekr.20131008041326.16092"></v>
-<v t="ekr.20101125062332.5090"></v>
+<v t="ekr.20180125032239.1"><vh>Leo 5.7 Summary</vh>
 <v t="maphew.20171129140022.1"><vh>@rst html/quick.html</vh>
 <v t="maphew.20171129131746.1"><vh>Computer with python already</vh></v>
 <v t="maphew.20171129131759.1"><vh>No python yet</vh></v>
 </v>
-<v t="ekr.20171204111545.1"><vh>update cheat sheet</vh></v>
 <v t="ekr.20180124094454.1"><vh>FAQ How to use Leo with LaTex to get PDF output</vh></v>
+<v t="ekr.20171204111545.1"><vh>update cheat sheet</vh></v>
 <v t="ekr.20180124101128.1"><vh>Create/update issues</vh>
-<v t="ekr.20180124101209.1"><vh>Won't/Can't fix</vh>
-<v t="ekr.20180124101209.2"><vh>Can't Fix: Mac bugs</vh>
-<v t="ekr.20180124101209.3"><vh>Fix end-of-line problem (MacOS)</vh>
-<v t="ekr.20180124101209.4"><vh>Report</vh></v>
-</v>
-</v>
-<v t="ekr.20180124101209.5"><vh>Can't Fix: possible webbrowser bug</vh></v>
-<v t="ekr.20180124101209.6"><vh>Can't Fix: Wrong modality level on autocompleter</vh></v>
-<v t="ekr.20180124101209.7"><vh>Won't fix: #1226353: @shadow does not retain outline structure properly</vh></v>
-<v t="ekr.20180124101209.8"><vh>Won't fix: #914221: bound method ViewRenderedController.updated</vh></v>
-</v>
 <v t="ekr.20180124101128.2"><vh>Regularize slashes and back-slashes</vh>
 <v t="ekr.20180124101128.3"><vh>@@test path computations</vh>
 <v t="ekr.20180124101128.4"><vh>@path rel-path</vh>
@@ -1746,17 +1744,6 @@
 <v t="ekr.20180124101128.19"><vh>Add org-mode features</vh></v>
 <v t="ekr.20180124101128.20"><vh>Improve VR plugin</vh></v>
 <v t="ekr.20180124101128.21"><vh>Support jedi auto-completion (&amp; valuespace)</vh></v>
-</v>
-<v t="ekr.20180124100723.1"><vh>New docs: To do</vh>
-<v t="ekr.20180124100723.2"><vh>Consider using Leo if...</vh></v>
-<v t="ekr.20180124100723.3"><vh>Leo as a compendium</vh></v>
-<v t="ekr.20180124100723.4"><vh>Reproducible research</vh></v>
-<v t="ekr.20180124100723.5"><vh>Scripting for scientists</vh></v>
-<v t="ekr.20180124100723.6"><vh>Underlying technologies</vh>
-<v t="ekr.20180124100723.7"><vh>LP and RR</vh></v>
-<v t="ekr.20180124100723.8"><vh>Scripting</vh></v>
-<v t="ekr.20180124100723.9"><vh>Data model</vh></v>
-</v>
 </v>
 <v t="ekr.20180124100440.1"><vh>Leo 5.7 docs</vh>
 <v t="ekr.20180124124714.1"><vh>Outline tabs now have a New Outline popup</vh></v>
@@ -2946,6 +2933,7 @@
 <v t="ekr.20180124100450.1036"><vh>#657: @rclick button-name not working if under @buttons node</vh>
 <v t="ekr.20180124100450.1037"><vh>setCommandForButton (@rclick nodes) &amp; helper</vh>
 <v t="ekr.20180124100450.1038"><vh>add_rclick_menu (QtIconBarClass)</vh></v>
+</v>
 </v>
 </v>
 </v>
@@ -44160,23 +44148,6 @@ def reloadSettings(self):
         return end - start
 </t>
 <t tx="ekr.20180124100723.1">- Leo scripting for scientists.
-
-- (Maybe) execute-script-in-common-namespace command. It's needed to simulate pyzo/jupyter/org mode calculations.
-
-- show-drawer command. It will pop up a window showing a special 'core-drawer' uA. Saving the popup will update the uA.  No need for changes to Leo's body pane.
-
-The easy way to simulate org-mode's window, and improve upon it, will be to allow Leo's body pane to contain multiple, vertically aligned panes.  Like this:
-
-    Overall body pane:
-    
-    pane 1
-    ----- (separator)
-    pane 2
-    ----- (separator)
-    pane 3
-    ...
-
-Users will be able to see the various panes without intervening headlines, although separators may show headlines.  Only one of the panes will be active.  It is the "real" body pane.  This can be done in a plugin.
 </t>
 <t tx="ekr.20180124100723.2">Feature table
 
@@ -44492,73 +44463,6 @@ Anyway, here's what I have. I am currently using two @command nodes
     @command myCtrlEnd @key=Ctrl+End
 with content like below (merged a bit from two nodes for 'clarity')
 </t>
-<t tx="ekr.20180124101209.1"></t>
-<t tx="ekr.20180124101209.2">- Icon buttons are not colored, nor do they have square borders, etc.
-- Can't delete script buttons
-</t>
-<t tx="ekr.20180124101209.3">Apparently, ctrl-e is not passed to Leo at all.
-
-This probably can't be fixed.
-</t>
-<t tx="ekr.20180124101209.4">http://mail.google.com/mail/#inbox/12c5646c646a90d2
-
-I expect C-e to go to end-of-line, but C-e works as the next line.
-Alt-x and check end-of-line and I get the following result.
-
-I use Mac OS X 10.6.5, newest Leo, and Python/Qt.
-
-Leo 4.8 rc1, build 3715, November 15, 2010
-Python 2.6.1, qt version 4.7.0
-darwin
-
-I remember I could use C-e, but it doesn't work anymore even after I
-reinstall the Leo.
-
-As I explained in this post - http://groups.google.com/group/leo-editor/browse_thread/thread/1ee0b35b4f76c999
-After having @bool swap_mac_keys = True, I can use C-e.
-
-C-a move the cursor to the start of line, but C-e seems to move the
-cursor the first of the next line, which is the end of last line + 1.
-If the line is the final one, C-e moves the cursor to the end of line
-as there's no next line.
-
-</t>
-<t tx="ekr.20180124101209.5">(In Linux) The home page and online tutorial options in the menu only work properly if Mozilla window is already open. If not, a Mozilla window opens, but with empty page and url field.
-</t>
-<t tx="ekr.20180124101209.6">Just noticed the autocompleter pop-up is modal globally, not just for the Leo windows.  Probably should only block the Leo windows.
-</t>
-<t tx="ekr.20180124101209.7">@language rest
-
-https://bugs.launchpad.net/leo-editor/+bug/1226353
-
-===== EKR
-
-The most important problem is compatibility.  As I have just verified,
-@shadow will work even if the private file does not exist,
-but all outline structure will be lost.  Therefore, it may be best
-not to try to read old (ver-4thin) files at all.
-
-@shadow does not reload the following simple file correctly!
-
-+ @shadow
-   @others
-  + child 1
-    child 1.1
-
-shadow files (the private files containing the sentinels) use the *old*
-(#@+leo-ver=4-thin) sentinels, rather than the new (#@+leo-ver=5-thin)
-sentinels.
-
-The old sentinels don't have an explicit notion of nesting level; the new
-sentinels do, so it would seem that the way to fix this problem is to use
-new sentinels. However, this would be a major change to the inner workings
-of the @shadow logic.
-</t>
-<t tx="ekr.20180124101209.8">https://bugs.launchpad.net/leo-editor/+bug/914221
-
-Summary of a *long* discussion: this may be a docutils issue, and does not
-seem easy to fix.
-</t>
 <t tx="ekr.20180124120513.1"></t>
 <t tx="ekr.20180124121124.1"></t>
 <t tx="ekr.20180124121851.1">I'm happy to announce first releases of Leo 5.0 as a debian/ubuntu packages
@@ -44786,6 +44690,11 @@ later.</t>
 As a happy side effect, right clicking now always shows this popup. That's
 because "New Outline" is always valid regardless of how many tabs there are
 and regardless of whether tabs have been detached.</t>
+<t tx="ekr.20180125032239.1">You can see all 5.7 issues by visiting:
+https://github.com/leo-editor/leo-editor/issues?page=1&amp;q=is%3Aissue+milestone%3A5.7+is%3Aclosed+-label%3ATip+-label%3AWon%27tDo+-label%3AWon%27tFix+-label%3AHelp&amp;utf8=%E2%9C%93
+
+This uses the following filters:
+is:issue milestone:5.7 is:closed -label:Tip -label:Won'tDo -label:Won'tFix -label:Help </t>
 <t tx="maphew.20171129131746.1">Python 3.0+::
 
     pip install leo
