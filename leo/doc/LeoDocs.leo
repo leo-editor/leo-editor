@@ -700,6 +700,42 @@
 <v t="ekr.20131017051340.16735"><vh>Example position scripts</vh></v>
 </v>
 </v>
+<v t="ekr.20180126061923.1"><vh>@rst html\tutorial-tips.html</vh>
+<v t="ekr.20180126063015.1"><vh>The most important tips</vh>
+<v t="ekr.20180126061429.16"><vh>You don't have to remember command names</vh></v>
+<v t="ekr.20180126061429.15"><vh>Learn to use clones</vh></v>
+</v>
+<v t="ekr.20180126062746.1"><vh>Learning to use Leo</vh>
+<v t="ekr.20180126061429.13"><vh>Leo's most important plugins</vh></v>
+<v t="ekr.20180126061429.27"><vh>Move clones to the last top-level node</vh></v>
+<v t="ekr.20180126061429.14"><vh>Put personal settings myLeoSettings.leo</vh></v>
+<v t="ekr.20180126061429.25"><vh>Search for settings in leoSettings.leo</vh></v>
+<v t="ekr.20180126061429.10"><vh>Use abbreviations</vh></v>
+</v>
+<v t="ekr.20180126062558.1"><vh>Useful commands</vh>
+<v t="ekr.20180126061429.7"><vh>The beautify command &amp; @nobeautify directive</vh></v>
+<v t="ekr.20180126061429.22"><vh>The find-quick-selected command</vh></v>
+<v t="ekr.20180126061429.23"><vh>The parse-body command</vh></v>
+<v t="ekr.20180126061429.6"><vh>The pyflakes command</vh></v>
+<v t="ekr.20180126061429.8"><vh>The pylint command</vh></v>
+<v t="ekr.20180126061429.9"><vh>The rst3 command</vh></v>
+<v t="ekr.20180126061429.24"><vh>The sort-siblings command</vh></v>
+<v t="ekr.20180126061429.26"><vh>Use Alt-N (goto-next-clone) to find "primary" clone</vh></v>
+<v t="ekr.20180126061429.18"><vh>Use cffm to gather outline nodes</vh></v>
+</v>
+<v t="ekr.20180126062701.1"><vh>Scripting tips</vh>
+<v t="ekr.20180126061429.3"><vh>Clearing the Log window</vh></v>
+<v t="ekr.20180126061429.19"><vh>g.callers() returns a list of callers</vh></v>
+<v t="ekr.20180126061429.5"><vh>The @button make-md-toc script in LeoDocs.leo</vh></v>
+<v t="ekr.20180126061429.12"><vh>Use @button nodes</vh></v>
+<v t="ekr.20180126061429.11"><vh>Use @test nodes</vh></v>
+<v t="ekr.20180126061429.2"><vh>Use a universal shortcut for your scripts</vh></v>
+<v t="ekr.20180126061429.17"><vh>Use cff to gather nodes matching a pattern</vh></v>
+<v t="ekr.20180126061429.21"><vh>Use g.pdb from the console</vh></v>
+<v t="ekr.20180126061429.20"><vh>Use g.trace to debug scripts</vh></v>
+<v t="ekr.20180126061429.4"><vh>Use section references sparingly</vh></v>
+</v>
+</v>
 </v>
 <v t="ekr.20131008041326.16080"><vh>Users Guide</vh>
 <v t="ekr.20131008041326.16082"><vh>@rst html/usersguide.html</vh></v>
@@ -1902,8 +1938,9 @@
 <v t="ekr.20180124124409.1"><vh>Added insert-as-first-child &amp; insert-as-last-child commands</vh></v>
 <v t="ekr.20180124100450.797"><vh>The cff commands now sort their results</vh></v>
 </v>
-<v t="ekr.20180126001345.1"><vh>Leo 5.7 Command-line arguments: reinstated --trace-shutdown</vh>
+<v t="ekr.20180126001345.1"><vh>Leo 5.7 Settings and command-line arguments</vh>
 <v t="ekr.20180124100450.803"><vh>Reinstated --trace-shutdown command-line argument</vh></v>
+<v t="ekr.20180126063712.1"><vh>@bool show-tips</vh></v>
 </v>
 <v t="ekr.20180124100450.1"><vh>Leo 5.7 Enhancements: Completed 19 issues and 2 others </vh>
 <v t="ekr.20180125235816.1"><vh>#310: Create new file in right-click in file tab in UI</vh></v>
@@ -1951,35 +1988,8 @@
 <v t="ekr.20180124100450.712"><vh>c_file.setReferenceFile</vh></v>
 </v>
 </v>
-<v t="ekr.20180126061429.1"><vh>26 User Tips</vh>
-<v t="ekr.20180126061429.3"><vh>Clearing the Log window</vh></v>
-<v t="ekr.20180126061429.19"><vh>g.callers() returns a list of callers</vh></v>
-<v t="ekr.20180126061429.15"><vh>Learn to use clones</vh></v>
-<v t="ekr.20180126061429.13"><vh>Leo's most important plugins</vh></v>
-<v t="ekr.20180126061429.27"><vh>Move clones to the last top-level node</vh></v>
-<v t="ekr.20180126061429.14"><vh>Put personal settings myLeoSettings.leo</vh></v>
-<v t="ekr.20180126061429.25"><vh>Search for settings in leoSettings.leo</vh></v>
-<v t="ekr.20180126061429.5"><vh>The @button make-md-toc script in LeoDocs.leo</vh></v>
-<v t="ekr.20180126061429.7"><vh>The beautify command &amp; @nobeautify directive</vh></v>
-<v t="ekr.20180126061429.22"><vh>The find-quick-selected command</vh></v>
-<v t="ekr.20180126061429.23"><vh>The parse-body command</vh></v>
-<v t="ekr.20180126061429.6"><vh>The pyflakes command</vh></v>
-<v t="ekr.20180126061429.8"><vh>The pylint command</vh></v>
-<v t="ekr.20180126061429.9"><vh>The rst3 command</vh></v>
-<v t="ekr.20180126061429.24"><vh>The sort-siblings command</vh></v>
-<v t="ekr.20180126061429.12"><vh>Use @button nodes</vh></v>
-<v t="ekr.20180126061429.11"><vh>Use @test nodes</vh></v>
-<v t="ekr.20180126061429.2"><vh>Use a universal shortcut for your scripts</vh></v>
-<v t="ekr.20180126061429.10"><vh>Use abbreviations</vh></v>
-<v t="ekr.20180126061429.26"><vh>Use Alt-N (goto-next-clone) to find "primary" clone</vh></v>
-<v t="ekr.20180126061429.17"><vh>Use cff to gather nodes matching a pattern</vh></v>
-<v t="ekr.20180126061429.18"><vh>Use cffm to gather outline nodes</vh></v>
-<v t="ekr.20180126061429.21"><vh>Use g.pdb from the console</vh></v>
-<v t="ekr.20180126061429.20"><vh>Use g.trace to debug scripts</vh></v>
-<v t="ekr.20180126061429.4"><vh>Use section references sparingly</vh></v>
-<v t="ekr.20180126061429.16"><vh>You don't have to remember command names</vh></v>
 </v>
-</v>
+<v t="ekr.20180126063122.1"><vh>** Ctrl-P tip</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -7520,6 +7530,13 @@ The last tutorial is for programmers:
     :maxdepth: 1
 
     tutorial-scripting
+    
+And finally, here is a list of helpful tips:
+
+.. toctree::
+    :maxdepth: 1
+
+    tutorial-tips
 
 Ask for help at `leo-editor &lt;https://groups.google.com/forum/#!forum/leo-editor&gt;`_.
 
@@ -27598,6 +27615,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - Added Debian package for Leo.
 - New reload-settings command.
 - Leo optionally shows user tips on startup.
+- Added a new Tips page to Leo's documentation.
 - Improved the console_gui plugin.
 - Added live links from urls in the log pane.
 - Unit tests use a string gui, making them faster and more robust.
@@ -27794,10 +27812,12 @@ and regardless of whether tabs have been detached.</t>
 <t tx="ekr.20180126002550.1">- Added Debian package for Leo.
 - New reload-settings command.
 - Leo optionally shows user tips on startup.
+- Added a new Tips page to Leo's documentation.
 - Improved the console_gui plugin.
 - Added live links from urls in the log pane.
 - Unit tests use a string gui, making them faster and more robust.
-- The line_numbering plugin shows line numbers in external files.</t>
+- The line_numbering plugin shows line numbers in external files.
+</t>
 <t tx="ekr.20180126002657.1">- Unit tests can run in more environments.
 - The @g.commander_command decorator injects ivars into the Commands class.
 - Added verbose option to g.callers().
@@ -27827,9 +27847,6 @@ Improved the console_gui plugin.
 </t>
 <t tx="ekr.20180126060924.1"></t>
 <t tx="ekr.20180126060940.1"></t>
-<t tx="ekr.20180126061429.1">@language rest
-@wrap
-From leo.core.leoTips.py</t>
 <t tx="ekr.20180126061429.10">Leo's abbreviations can correct spelling mistakes, expand to multiple lines or even trees of nodes.
 
 Abbreviations can execute scripts and can prompt for values to be substituted within the abbreviation.
@@ -27840,11 +27857,12 @@ See http://leoeditor.com/tutorial-pim.html#using-abbreviations-and-templates.</t
 Leo's run-* commands execute unit tests.
 
 See http://leoeditor.com/tutorial-basics.html#test-nodes.</t>
-<t tx="ekr.20180126061429.12">@button nodes create commands. For example, `@button my-command` creates the `my-command` button and the `my-command` command.
+<t tx="ekr.20180126061429.12">\@button nodes create commands. For example, `@button my-command` creates the `my-command` button and the `my-command` command.
 
 Within `@button` scripts, c.p is the presently selected outline node.
 
-As a result, @button nodes bring scripts to data.</t>
+As a result, @button nodes bring scripts to data.
+</t>
 <t tx="ekr.20180126061429.13">Become familiar with Leo's most important plugins:
     
 - bookmarks.py manages bookmarks.
@@ -27869,7 +27887,7 @@ This is a great way to study code.</t>
 <t tx="ekr.20180126061429.18">The cff command (aka clone-find-flattened-marked) clones all marked nodes as a children of a new node, created as the last top-level node.
 
 Use this to gather nodes throughout an outline.</t>
-<t tx="ekr.20180126061429.19">g.callers() returns the last n callers (default 4) callers of a function or method. The verbose option shows each caller on a separate line.  For example:
+<t tx="ekr.20180126061429.19">g.callers() returns the last n callers (default 4) callers of a function or method. The verbose option shows each caller on a separate line.  For example::
     
     g.trace(g.callers())
 
@@ -27882,7 +27900,7 @@ If your script grows to several subnodes, you won't have to select top node ever
 
 It's great for seeing patterns in running code.
 
-You must [launch Leo from a console for this to work.
+You must launch Leo from a console for this to work.
 See http://leoeditor.com/running.html#running-leo-from-a-console-window.</t>
 <t tx="ekr.20180126061429.21">g.pdb launches Python's pdb debugger, adapted for Leo.
 
@@ -27905,7 +27923,7 @@ the last top-level nodes in the outline.
 
 This allows you to work on nodes scattered throughout an
 outline without altering the structure of @file nodes.</t>
-<t tx="ekr.20180126061429.3">When developing scripts that use Log window to display results, it is sometimes useful to clear Log window by inserting the following two lines at the beginning of your script:
+<t tx="ekr.20180126061429.3">When developing scripts that use Log window to display results, it is sometimes useful to clear Log window by inserting the following two lines at the beginning of your script::
 
     c.frame.log.selectTab('Log')
     c.frame.log.clearLog()</t>
@@ -27921,7 +27939,7 @@ You can then copy the text from the console to your document.
 The selected outline node should be an `@auto-md` node.</t>
 <t tx="ekr.20180126061429.6">pyflakes is a superb programming tool. It checks python files almost instantly.
 
-These settings cause Leo to run pyflakes whenever saving a .py file and to raise a dialog if any errors are found:
+These settings cause Leo to run pyflakes whenever saving a .py file and to raise a dialog if any errors are found::
 
     @bool run-pyflakes-on-write = True
     @bool syntax-error-popup = True
@@ -27936,6 +27954,25 @@ See: https://www.pylint.org/.</t>
 <t tx="ekr.20180126061429.9">The rst3 command converts an @rst tree to a document file.
 
 See http://leoeditor.com/tutorial-rst3.html.</t>
+<t tx="ekr.20180126061923.1">#############################
+Useful Tips
+#############################
+
+One of these tips appears on startup, by default.
+
+You can disable these tips by setting @bool show-tips = False.
+
+.. contents:: Contents
+    :depth: 3
+    :local:
+</t>
+<t tx="ekr.20180126062558.1"></t>
+<t tx="ekr.20180126062701.1"></t>
+<t tx="ekr.20180126062746.1"></t>
+<t tx="ekr.20180126063015.1"></t>
+<t tx="ekr.20180126063122.1"></t>
+<t tx="ekr.20180126063712.1">When True, Leo shows User Tips in a dialog on startup.
+</t>
 <t tx="maphew.20171129131746.1">Python 3.0+::
 
     pip install leo
