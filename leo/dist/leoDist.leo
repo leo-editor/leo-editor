@@ -303,7 +303,7 @@
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
 </v>
-<v t="ekr.20141118074110.4"><vh>Discussions</vh>
+<v t="ekr.20141118074110.4" a="E"><vh>Discussions</vh>
 <v t="ekr.20141118074110.2"><vh>Matt's workflow for updating pypi</vh></v>
 <v t="ekr.20141118074110.3"><vh>Installing Leo on Linux</vh></v>
 </v>
@@ -1594,23 +1594,27 @@ Quotes:    http://leoeditor.com/testimonials.html
 </t>
 <t tx="ekr.20141117135127.2"></t>
 <t tx="ekr.20141117135127.3"></t>
-<t tx="ekr.20141118074110.2">@language rest
+<t tx="ekr.20141118074110.2">@language md
 
 2017
 ----
 https://github.com/leo-editor/leo-editor/issues/562
+
+***Begin  package upload recipe***
 
 _Quick reference recipe is at top. See next section for build environment pre-requisites._
 
 
 Production Release
 ==================
-Remove stale distribution files &amp; folders.  
-Optionally set local checkout to specific version tag.  
-Build redistributable source and binary wheel package.  
-Upload to PyPi (assumes account registration already completed).  
-Test download and install from PyPi. Best to uninstall old Leo first or run in clean virtual env.
+## Overview
+* Remove stale distribution files &amp; folders.  
+* Optionally set local checkout to specific version tag.  
+* Build redistributable source and binary wheel package.  
+* Upload to PyPi (assumes account registration already completed).  
+* Test download and install from PyPi. Best to uninstall old Leo first or run in clean virtual env.
 
+## Example
 Windows syntax. 'Activate/deactivate' assume using virtual envs; skip those lines if not:
 
     activate leo-build
@@ -1621,7 +1625,7 @@ Windows syntax. 'Activate/deactivate' assume using virtual envs; skip those line
     
     :: Optional, test install locally
     pip install dist\*.whl
-    leoc --version
+    leo-console --version
     pip uninstall leo
     
     twine upload https://pypi.org/legacy/ dist\*.whl
@@ -1639,8 +1643,10 @@ Twine upload will use username and password stored in `.pypirc`, or will prompt
 if that doesn't exist.
 
 
-### Pre-requisites, pip installable
+Pre-requisites
+-----------------
 
+###  pip installable
 - Wheel: for building cross platform binaries (might be installed already)
 - Setuptools: because ...setup!
 - Twine: for secure upload to pypi.org
@@ -1658,12 +1664,13 @@ work (or use your own preferred method):
     from pypandoc.pandoc_download import download_pandoc
     download_pandoc()
 
-
+### PyPi
 Verify can login to PyPi and access Leo package edit page:
 https://pypi.python.org/pypi?%3Aaction=pkg_edit&amp;name=leo
 Contact one of the _Package Index Owners_ to be added as a maintainer if needed
 (see end of https://pypi.python.org/pypi/leo).
 
+***/end package upload recipe***
 
 Caveats
 =======
