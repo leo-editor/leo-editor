@@ -124,13 +124,8 @@
 <v t="ville.20090705225609.5738"><vh>&lt;&lt; pdf manual &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20150314044011.7"><vh>@@button remove dups</vh></v>
-<v t="ekr.20171220050925.1"><vh>@@@button get-tips</vh></v>
 <v t="ekr.20180125112749.1"><vh>@button get-tips</vh></v>
-<v t="ekr.20180125112540.1"><vh>@button get-issues</vh>
-<v t="ekr.20180125183826.1"><vh>show_dict</vh></v>
-<v t="ekr.20180125114521.1"><vh>get_issues</vh></v>
-<v t="ekr.20180125184055.1"><vh>get_page</vh></v>
-</v>
+<v t="ekr.20180125112540.1"><vh>@button get-issues</vh></v>
 <v t="ekr.20180125094702.1"><vh>@button demo</vh>
 <v t="ekr.20180125113535.1"><vh>&lt;&lt; utils &gt;&gt;</vh>
 <v t="ekr.20180125101040.1"><vh>hightlight</vh></v>
@@ -1740,21 +1735,6 @@
 </v>
 </v>
 <v t="ekr.20180125034531.1"></v>
-<v t="ekr.20180125041552.1"><vh>To do</vh>
-<v t="maphew.20171129140022.1"><vh>@rst html/quick.html</vh>
-<v t="maphew.20171129131746.1"><vh>Computer with python already</vh></v>
-<v t="maphew.20171129131759.1"><vh>No python yet</vh></v>
-</v>
-<v t="ekr.20180124094454.1"><vh>FAQ How to use Leo with LaTex to get PDF output</vh></v>
-<v t="ekr.20171204111545.1"><vh>update cheat sheet</vh></v>
-<v t="ekr.20180124100450.708"><vh>Document ref file commands</vh>
-<v t="ekr.20180124100450.709"><vh>Reference outline commands</vh>
-<v t="ekr.20180124100450.710"><vh>c_file.updateRefLeoFile</vh></v>
-<v t="ekr.20180124100450.711"><vh>c_file.readRefLeoFile</vh></v>
-<v t="ekr.20180124100450.712"><vh>c_file.setReferenceFile</vh></v>
-</v>
-</v>
-</v>
 <v t="ekr.20180125034327.1"><vh>Leo 5.7b1 release notes</vh>
 <v t="ekr.20180125032239.1"><vh>Leo 5.7 Summary</vh></v>
 <v t="ekr.20180125041229.1"><vh>Leo 5.7 Major features: 4 issues and 1 other</vh>
@@ -1955,6 +1935,45 @@
 <v t="ekr.20180124122055.1"><vh>New line_numbering.py plugin</vh></v>
 </v>
 </v>
+<v t="ekr.20180125041552.1"><vh>To do</vh>
+<v t="maphew.20171129140022.1"><vh>@rst html/quick.html</vh>
+<v t="maphew.20171129131746.1"><vh>Computer with python already</vh></v>
+<v t="maphew.20171129131759.1"><vh>No python yet</vh></v>
+</v>
+<v t="ekr.20180124094454.1"><vh>FAQ How to use Leo with LaTex to get PDF output</vh></v>
+<v t="ekr.20171204111545.1"><vh>update cheat sheet</vh></v>
+<v t="ekr.20180124100450.708"><vh>Document ref file commands</vh>
+<v t="ekr.20180124100450.709"><vh>Reference outline commands</vh>
+<v t="ekr.20180124100450.710"><vh>c_file.updateRefLeoFile</vh></v>
+<v t="ekr.20180124100450.711"><vh>c_file.readRefLeoFile</vh></v>
+<v t="ekr.20180124100450.712"><vh>c_file.setReferenceFile</vh></v>
+</v>
+</v>
+<v t="ekr.20180126004533.2"><vh>21 Tip issues for milestone 5.7</vh>
+<v t="ekr.20180126004533.23"><vh>#605: Tip: Alt-A (sort-siblings)</vh></v>
+<v t="ekr.20180126004533.22"><vh>#606: Tip: parse-body</vh></v>
+<v t="ekr.20180126004533.21"><vh>#607: Tip: Ctrl-Shift-F (find-quick-selected)</vh></v>
+<v t="ekr.20180126004533.20"><vh>#608: Tip: use g.pdb from the console</vh></v>
+<v t="ekr.20180126004533.19"><vh>#609: Tip: Use g.trace to debug scripts</vh></v>
+<v t="ekr.20180126004533.18"><vh>#610: Tip: Use g.trace(g.callers())</vh></v>
+<v t="ekr.20180126004533.17"><vh>#611: Tip: Use cffm to gather outline nodes</vh></v>
+<v t="ekr.20180126004533.16"><vh>#612: Use cff to gather nodes matching a pattern</vh></v>
+<v t="ekr.20180126004533.15"><vh>#614: Tip: You don't have to remember command names</vh></v>
+<v t="ekr.20180126004533.14"><vh>#615: Tip: Clones are live copies of a node and its descendants</vh></v>
+<v t="ekr.20180126004533.13"><vh>#616: Tip: Put personal settings myLeoSettings.leo</vh></v>
+<v t="ekr.20180126004533.12"><vh>#617: Tip: Leo's most important plugins</vh></v>
+<v t="ekr.20180126004533.11"><vh>#618: Tip: @button nodes</vh></v>
+<v t="ekr.20180126004533.10"><vh>#619: Tip: @test nodes</vh></v>
+<v t="ekr.20180126004533.9"><vh>#620: Tip: Use abbreviations</vh></v>
+<v t="ekr.20180126004533.8"><vh>#621: Tip: the rst3 command converts outlines to documents</vh></v>
+<v t="ekr.20180126004533.7"><vh>#622: Tip: pylint command</vh></v>
+<v t="ekr.20180126004533.6"><vh>#623: Tip: the beautify command and @nobeautify</vh></v>
+<v t="ekr.20180126004533.5"><vh>#624: Tip: run pyflakes automatically</vh></v>
+<v t="ekr.20180126004533.4"><vh>#625: Tip: @button make-md-toc in LeoDocs.leo</vh></v>
+<v t="ekr.20180126004533.3"><vh>#626: Tip: Use section references sparingly</vh></v>
+</v>
+</v>
+<v t="ekr.20180125112749.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -24940,60 +24959,6 @@ Options:
   -v, --version         print version number and exit
   --window-size=WINDOW_SIZE
                         initial window size (height x width)</t>
-<t tx="ekr.20171220050925.1">@language python
-
-"""
-get_tips.py - download current tips from GitHub
-NOTE: if the list of tips gets long enough, GitHub may stop serving them
-all in a single request, and serve them page by page - not hard to
-handle if it happens.
-Terry Brown, terrynbrown@gmail.com, Thu Dec  7 09:10:54 2017
-"""
-
-from collections import namedtuple
-
-import requests
-
-Tip = namedtuple('Tip', 'number title tip tags')
-
-base_url = 'https://api.github.com/repos/leo-editor/leo-editor/issues?labels=Tip&amp;state='
-
-def get_tips(data):
-    """get_tips - get tips from GitHub issues
-    :param dict data: GitHub API issues list
-    :return: list of Tips
-    """
-    tips = []
-    for issue in data:
-        if '\n' in issue['body']:
-            tip, tags = issue['body'].strip().rsplit('\n', 1)
-        else:
-            tip, tags = issue['body'].strip(), ''
-        if tags.lower().startswith('tags:'):
-            tags = [i.strip().strip('.') for i in tags[5:].split(',')]
-        else:
-            tags = []
-            tip = "%s\n%s" % (tip, tags)
-        if isinstance(tip, (tuple, list)):
-            tip = (z for z in tip if z and z.strip())
-        tips.append(Tip(issue['number'], issue['title'], tip, tags))
-    return tips
-
-def main():
-    g.cls()
-    for kind in 'open', 'closed':
-        URL = base_url+kind
-        data = requests.get(URL).json()
-        for tip in get_tips(data):
-            print('%s %s tip #%s %s...' % (('-'*10), kind, tip.number, tip.title))
-            print('')
-            print("TAGS: %s" % tip.tags or "**NO TAGS**")
-            print('')
-            print(tip.tip.strip().strip('[]').strip())
-            print('')
-
-if __name__ == '__main__':
-    main()</t>
 <t tx="ekr.20180124094454.1">From a [long discussion](https://groups.google.com/d/msg/leo-editor/83avo6mgHXY/nIKOpztyAAAJ) on leo-editor:
 
 From [Rob Keeney](https://plus.google.com/u/0/111638648831776420240):
@@ -27709,22 +27674,22 @@ import leo.plugins.demo as demo
     g.app.gui.qtApp.processEvents()
     </t>
 <t tx="ekr.20180125112540.1">@language python
-g.cls()
-import requests
-milestone = '5.7'
-include_body = False
-@others
-root = c.lastTopLevel().insertAfter()
-root.h = 'Issues for ' + milestone
-get_issues('Bug', milestone, root)
-get_issues('Enhancement', milestone, root)
-root.expand()
-c.selectPosition(root)
-c.redraw()
+
+g.getGitIssues(
+    c = c,
+    include_body=False,
+    label_list = ['Bug',],
+    milestone = '5.7',
+)
 </t>
-<t tx="ekr.20180125112749.1"># This prints only open tips.
+<t tx="ekr.20180125112749.1">@language python
+
 import leo.core.leoTips as leoTips
-leoTips.make_tips(c)
+
+if 1: # Creates a tree of tips from leoTips.
+    leoTips.make_tip_nodes(c)
+else: # Prints only open tips from GitHub.
+    leoTips.make_tips(c)
 </t>
 <t tx="ekr.20180125113535.1">@others</t>
 <t tx="ekr.20180125113541.1"># Setup
@@ -27751,66 +27716,6 @@ unhighlight('tree')</t>
 d.Callout('Log Pane',pane='log')
 wait()
 unhighlight('log')</t>
-<t tx="ekr.20180125114521.1">def get_issues(kind,milestone,root):
-    
-    root = root.insertAsLastChild()
-    page, total = 1, 0
-    while True:
-        n = get_page(kind, page, root)
-        if n is -1:
-            break
-        total += n
-        page += 1
-        if page &gt; 15:
-            g.trace('too many pages')
-            break
-    root.h = '%s %s issues for milestone %s' % (total, kind, milestone)
-</t>
-<t tx="ekr.20180125183826.1">def show_dict(aList):
-    
-    if 0:
-        g.printObj(aList)
-    else:
-        d = aList[0]
-        for key in sorted(d):
-            print(key)
-            g.printObj(d.get(key))
-            print('')</t>
-<t tx="ekr.20180125184055.1">def get_page(kind, page, root):
-    trace = True
-    url = 'https://api.github.com/repos/leo-editor/leo-editor/issues?labels=%s&amp;state=closed&amp;page=%s' % (
-        kind, page)
-    aList = requests.get(url).json()
-    try:
-        empty = not any([z for z in aList if z.get('milestone') is not None])
-        if empty:
-            if trace: g.trace(kind, page, 'EMPTY 1')
-            return -1
-    except AttributeError:
-        g.trace(kind, page, 'AttributeError 1')
-        g.printObj(aList)
-        return -1
-    aList1 = aList[:]
-    try:
-        aList = [z for z in aList if z.get('milestone') and milestone==z.get('milestone').get('title')]
-    except AttributeError:
-        # Rate limit or querry error.
-        g.trace(kind, page, 'AttributeError 2')
-        g.printObj(aList)
-        return -1
-    if not aList:
-        if trace: g.trace(kind, page, 'EMPTY 2')
-        return 0
-    if trace: g.trace(kind, page, len(aList))
-    for d in aList:
-        n, title = d.get('number'), d.get('title')
-        p = root.insertAsNthChild(0)
-        p.h = '#%s: %s' % (n, title)
-        p.b = 'https://github.com/leo-editor/leo-editor/issues/%s' % n
-        if include_body:
-            p.b += d.get('body').strip()
-    return len(aList)
-</t>
 <t tx="ekr.20180125235809.10">https://github.com/leo-editor/leo-editor/issues/648</t>
 <t tx="ekr.20180125235809.11">https://github.com/leo-editor/leo-editor/issues/645</t>
 <t tx="ekr.20180125235809.12">https://github.com/leo-editor/leo-editor/issues/641</t>
@@ -27915,6 +27820,28 @@ Also, improved the javascript importer.</t>
 
 Improved the console_gui plugin.
 </t>
+<t tx="ekr.20180126004533.10">https://github.com/leo-editor/leo-editor/issues/619</t>
+<t tx="ekr.20180126004533.11">https://github.com/leo-editor/leo-editor/issues/618</t>
+<t tx="ekr.20180126004533.12">https://github.com/leo-editor/leo-editor/issues/617</t>
+<t tx="ekr.20180126004533.13">https://github.com/leo-editor/leo-editor/issues/616</t>
+<t tx="ekr.20180126004533.14">https://github.com/leo-editor/leo-editor/issues/615</t>
+<t tx="ekr.20180126004533.15">https://github.com/leo-editor/leo-editor/issues/614</t>
+<t tx="ekr.20180126004533.16">https://github.com/leo-editor/leo-editor/issues/612</t>
+<t tx="ekr.20180126004533.17">https://github.com/leo-editor/leo-editor/issues/611</t>
+<t tx="ekr.20180126004533.18">https://github.com/leo-editor/leo-editor/issues/610</t>
+<t tx="ekr.20180126004533.19">https://github.com/leo-editor/leo-editor/issues/609</t>
+<t tx="ekr.20180126004533.2"></t>
+<t tx="ekr.20180126004533.20">https://github.com/leo-editor/leo-editor/issues/608</t>
+<t tx="ekr.20180126004533.21">https://github.com/leo-editor/leo-editor/issues/607</t>
+<t tx="ekr.20180126004533.22">https://github.com/leo-editor/leo-editor/issues/606</t>
+<t tx="ekr.20180126004533.23">https://github.com/leo-editor/leo-editor/issues/605</t>
+<t tx="ekr.20180126004533.3">https://github.com/leo-editor/leo-editor/issues/626</t>
+<t tx="ekr.20180126004533.4">https://github.com/leo-editor/leo-editor/issues/625</t>
+<t tx="ekr.20180126004533.5">https://github.com/leo-editor/leo-editor/issues/624</t>
+<t tx="ekr.20180126004533.6">https://github.com/leo-editor/leo-editor/issues/623</t>
+<t tx="ekr.20180126004533.7">https://github.com/leo-editor/leo-editor/issues/622</t>
+<t tx="ekr.20180126004533.8">https://github.com/leo-editor/leo-editor/issues/621</t>
+<t tx="ekr.20180126004533.9">https://github.com/leo-editor/leo-editor/issues/620</t>
 <t tx="maphew.20171129131746.1">Python 3.0+::
 
     pip install leo

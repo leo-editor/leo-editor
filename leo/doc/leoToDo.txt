@@ -3,7 +3,7 @@
 .. @@language rest
 .. @@wrap
 .. @+all
-.. @+node:ekr.20180125042230.1: ** Create/update issues
+.. @+node:ekr.20180125042230.1: ** To do: create/update issues
 .. @+node:ekr.20180125042230.2: *3* Regularize slashes and back-slashes
 http://groups.google.com/group/leo-editor/browse_thread/thread/0d48b507bc8ffc05
 

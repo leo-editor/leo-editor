@@ -4351,6 +4351,91 @@ def execGitCommand(command, directory):
     out, err = p.communicate()
     lines = [g.toUnicode(z) for z in g.splitLines(out or [])]
     return lines
+#@+node:ekr.20180126043905.1: *3* g.getGitIssues
+def getGitIssues(c, label_list, milestone, base_url=None, include_body=False):
+    '''Get a list of issues from Leo's GitHub site.'''
+    if base_url is None:
+        base_url = 'https://api.github.com/repos/leo-editor/leo-editor/issues'
+    if isinstance(label_list, (list, tuple)):
+        root = c.lastTopLevel().insertAfter()
+        root.h = 'Issues for ' + milestone
+        GitIssueController().get_issues(
+            base_url, include_body, label_list, milestone, root)
+        root.expand()
+        c.selectPosition(root)
+        c.redraw()
+        g.trace('done')
+    else:
+        g.trace('label_list must be a list or tuple', repr(label_list))
+#@+node:ekr.20180126044602.1: *4* class GitIssueController
+class GitIssueController(object):
+    '''A class encapsulating the retrieval of GitHub issues.'''
+    #@+others
+    #@+node:ekr.20180126044850.1: *5* git.get_issues
+    def get_issues(self, base_url, include_body, label_list, milestone, root):
+        '''Create a list of issues for each label in label_list.'''
+        self.base_url = base_url
+        self.include_body = include_body
+        self.milestone = milestone
+        self.root = root
+        for label in label_list:
+            self.get_one_issue(label)
+    #@+node:ekr.20180126043719.3: *5* git.get_issue
+    def get_one_issue(self, label):
+        '''Create a list of issues with the given label.'''
+        root = self.root.insertAsLastChild()
+        page, total = 1, 0
+        while True:
+            n = self.get_one_page(label, page, root)
+            if n is -1:
+                break
+            total += n
+            page += 1
+            if page > 15:
+                g.trace('too many pages')
+                break
+        root.h = '%s %s issues for milestone %s' % (total, label, self.milestone)
+    #@+node:ekr.20180126043719.4: *5* git.get_one_page
+    def get_one_page(self, label, page, root):
+        
+        import requests
+        trace = True
+        # url = 'https://api.github.com/repos/leo-editor/leo-editor/issues?labels=%s&state=closed&page=%s' % (
+            # label, page)
+        url = self.base_url + '?labels=%s&state=closed&page=%s' % (label, page)
+        aList = requests.get(url).json()
+        try:
+            empty = not any([z for z in aList if z.get('milestone') is not None])
+            if empty:
+                if trace: g.trace(label, page, 'EMPTY 1')
+                return -1
+        except AttributeError:
+            g.trace(label, page, 'AttributeError 1')
+            g.printObj(aList)
+            return -1
+        aList1 = aList[:]
+        try:
+            aList = [z for z in aList if z.get('milestone') is not None and
+                self.milestone==z.get('milestone').get('title')
+            ]
+        except AttributeError:
+            # Rate limit or querry error.
+            g.trace(label, page, 'AttributeError 2')
+            g.printObj(aList1)
+            return -1
+        if not aList:
+            if trace: g.trace(label, page, 'EMPTY 2')
+            return 0
+        if trace: g.trace(label, page, len(aList))
+        for d in aList:
+            n, title = d.get('number'), d.get('title')
+            p = root.insertAsNthChild(0)
+            p.h = '#%s: %s' % (n, title)
+            p.b = 'https://github.com/leo-editor/leo-editor/issues/%s' % n
+            if self.include_body:
+                p.b += d.get('body').strip()
+        return len(aList)
+    #@-others
 #@+node:ekr.20170414034616.2: *3* g.gitBranchName
 def gitBranchName(path=None):
     '''

@@ -47,7 +47,7 @@ class UserTip(object):
         return '%s\n\n%s\n' % (self.title, self.text)
 
     __str__ = __repr__
-#@+node:ekr.20180121045646.1: ** make_tips
+#@+node:ekr.20180121045646.1: ** make_tips (leoTips.py)
 def make_tips(c):
     '''
     A script to make entries in the global tips array.
@@ -118,6 +118,22 @@ UserTip(
             tags = ["%s" % (z) for z in tip.tags or []]
             title = tip.title.lstrip('Tip:').lstrip('tip:').strip()
             print(template % (tip.n, tags, title, tip.text))
+#@+node:ekr.20180126052528.1: ** make_tip_nodes (leoTips.py)
+def make_tip_nodes(c):
+    '''Create a list of all tips as the last top-level node.'''
+    global tips
+    root = c.lastTopLevel().insertAfter()
+    root.h = 'User Tips'
+    root.b = '@language rest\n@wrap\nFrom leo.core.leoTips.py'
+    for tip in tips:
+        p = root.insertAsLastChild()
+        p.h = tip.title
+        p.b = tip.text
+    if root.hasChildren():
+        c.sortSiblings(p=root.firstChild())
+    root.expand()
+    c.selectPosition(root)
+    c.redraw()
 #@-others
 #@+<< define tips >>
 #@+node:ekr.20180121053422.1: ** << define tips >>
