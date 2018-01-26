@@ -1375,6 +1375,14 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20180125034531.1"><vh>What's new in Leo 5.7</vh>
+<v t="ekr.20180126002550.1"><vh>Highlights</vh></v>
+<v t="ekr.20180126002657.1"><vh>Code</vh></v>
+<v t="ekr.20180126003100.1"><vh>Commands</vh></v>
+<v t="ekr.20180126003454.1"><vh>Enhancements</vh></v>
+<v t="ekr.20180126003617.1"><vh>Plugins</vh></v>
+<v t="ekr.20180126003420.1"><vh>Settings &amp; command-line arguments</vh></v>
+</v>
 <v t="ekr.20170911082347.1"><vh>What's new in Leo 5.6</vh>
 <v t="ekr.20170911082432.2"><vh>Highlights</vh>
 <v t="ekr.20170911082432.3"><vh>#488: Created a console gui for Leo</vh></v>
@@ -1731,7 +1739,7 @@
 </v>
 </v>
 </v>
-<v t="ekr.20180125034531.1"><vh>What's new in Leo 5.7</vh></v>
+<v t="ekr.20180125034531.1"></v>
 <v t="ekr.20180125041552.1"><vh>To do</vh>
 <v t="maphew.20171129140022.1"><vh>@rst html/quick.html</vh>
 <v t="maphew.20171129131746.1"><vh>Computer with python already</vh></v>
@@ -1893,7 +1901,7 @@
 <v t="ekr.20180125235809.3"><vh>#657: @rclick button-name not working if under @buttons node</vh></v>
 <v t="ekr.20180124100450.728"><vh>Fixed can not open message in leoBridge test</vh></v>
 </v>
-<v t="ekr.20180125035840.1"><vh>Leo 5.7 Code improvements: 2 issues and 5 others</vh>
+<v t="ekr.20180125035840.1"><vh>Leo 5.7 Code improvements: 2 issues and 6 others</vh>
 <v t="ekr.20180124100450.369"><vh>#577: reformatting unit tests...</vh></v>
 <v t="ekr.20180124100450.427"><vh>#589 @g.commander_command</vh></v>
 <v t="ekr.20180124100440.5"><vh>Added verbose option to g.callers()</vh></v>
@@ -1904,9 +1912,9 @@
 <v t="ekr.20180124100450.1032"><vh>p.promote</vh></v>
 </v>
 <v t="ekr.20180124120513.1"><vh>Added backup-repo script in leoPy.leo</vh></v>
+<v t="ekr.20180126003014.1"><vh>Added @button get-issues to LeoDocs.leo</vh></v>
 </v>
-<v t="ekr.20180125042412.1"><vh>Leo 5.7 Commands: 4 new and 1 improved</vh>
-<v t="ekr.20180124100450.692"><vh>#600: insert-child/insert-node</vh></v>
+<v t="ekr.20180125042412.1"><vh>Leo 5.7 Commands: 3 new and 1 improved</vh>
 <v t="ekr.20180124100450.839"><vh>#632: check-conventions command</vh></v>
 <v t="ekr.20180124123920.1"><vh>Added find-all-unique-regex command</vh></v>
 <v t="ekr.20180124124409.1"><vh>Added insert-as-first-child &amp; insert-as-last-child commands</vh></v>
@@ -1940,7 +1948,7 @@
 <v t="ekr.20180124100450.704"><vh>Added HEAD, TAIL, REST declutter replacement "patterns"</vh></v>
 <v t="ekr.20180124124532.1"><vh>Improved javascript importer</vh></v>
 </v>
-<v t="ekr.20180125041723.1"><vh>Leo 5.7 Plugins: 2 new and two improved</vh>
+<v t="ekr.20180125041723.1"><vh>Leo 5.7 Plugins: 3 new and 1 improved</vh>
 <v t="ekr.20180124100450.126"><vh>#488: Improved the console_gui plugin</vh></v>
 <v t="ekr.20180124100450.888"><vh>#613: patch_python_colorizer.py plugin</vh></v>
 <v t="ekr.20180124100440.6"><vh>New leo_cloud.py plugin</vh></v>
@@ -25919,7 +25927,7 @@ In unitTest.leo:
 </t>
 <t tx="ekr.20180124100450.427">https://github.com/leo-editor/leo-editor/issues/589
 
-</t>
+The @g.commander_command decorator injects ivars into the Commands class.</t>
 <t tx="ekr.20180124100450.49">https://github.com/leo-editor/leo-editor/issues/417
 </t>
 <t tx="ekr.20180124100450.52"></t>
@@ -26241,8 +26249,6 @@ def initObjects(self, gui):
     # Undo vars
     self.changed = False
     self.dirtyVnodeList = []
-</t>
-<t tx="ekr.20180124100450.692">https://github.com/leo-editor/leo-editor/issues/600
 </t>
 <t tx="ekr.20180124100450.70">def __init__(self,c):
     '''Ctor for Python_To_Coffeescript_Adapter class.'''
@@ -27625,6 +27631,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - Added live links from urls in the log pane.
 - Unit tests use a string gui, making them faster and more robust.
 - The line_numbering plugin shows line numbers in external files.
+- Improved the javascript importer.
 
 **Links**
 
@@ -27874,6 +27881,40 @@ As a happy side effect, right clicking now always shows this popup. That's
 because "New Outline" is always valid regardless of how many tabs there are
 and regardless of whether tabs have been detached.</t>
 <t tx="ekr.20180126001345.1"></t>
+<t tx="ekr.20180126002550.1">- Added Debian package for Leo.
+- New reload-settings command.
+- Leo optionally shows user tips on startup.
+- Improved the console_gui plugin.
+- Added live links from urls in the log pane.
+- Unit tests use a string gui, making them faster and more robust.
+- The line_numbering plugin shows line numbers in external files.</t>
+<t tx="ekr.20180126002657.1">- Unit tests can run in more environments.
+- The @g.commander_command decorator injects ivars into the Commands class.
+- Added verbose option to g.callers().
+- Revised redraw code.
+- Added backup-repo script in leoPy.leo.
+- Added @button get-issues to LeoDocs.leo.
+</t>
+<t tx="ekr.20180126003014.1"></t>
+<t tx="ekr.20180126003100.1">New commands:
+- check-conventions
+- find-all-unique-regex
+- insert-as-first-child
+- insert-as-last-child
+
+The cff commands now sort their results.</t>
+<t tx="ekr.20180126003420.1">reinstated --trace-shutdown</t>
+<t tx="ekr.20180126003454.1">Completed 19 enhancement issues.  See
+https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A5.7+label%3Aenhancement
+
+Also, improved the javascript importer.</t>
+<t tx="ekr.20180126003617.1">New plugins:
+- patch_python_colorizer.py.
+- leo_cloud.py.
+- line_numbering.py
+
+Improved the console_gui plugin.
+</t>
 <t tx="maphew.20171129131746.1">Python 3.0+::
 
     pip install leo
