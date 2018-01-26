@@ -27854,21 +27854,21 @@ Improved the console_gui plugin.
 </t>
 <t tx="ekr.20180126060924.1"></t>
 <t tx="ekr.20180126060940.1"></t>
-<t tx="ekr.20180126061429.10">.. _`the abbreviations tutorial`: tutorial-pim.html#using-abbreviations-and-templates
+<t tx="ekr.20180126061429.10">.. _`abbreviations tutorial`: tutorial-pim.html#using-abbreviations-and-templates
 
 Leo's abbreviations can correct spelling mistakes, expand to multiple lines
 or even trees of nodes. Abbreviations can execute scripts and can prompt
 for values to be substituted within the abbreviation.
-See `the abbreviations tutorial`_ for more details
+See the `abbreviations tutorial`_ for more details.
 </t>
-<t tx="ekr.20180126061429.11">.. _`test nodes`: tutorial-basics.html#test-nodes
+<t tx="ekr.20180126061429.11">.. _`@test nodes`: tutorial-basics.html#test-nodes
 
-\@`test nodes`_ create unit tests. They automatically convert the body to a
+`@test nodes`_ create unit tests. They automatically convert the body to a
 subclass of unittest.TestCase. Leo's run-* commands execute unit tests.
 </t>
-<t tx="ekr.20180126061429.12">.. _`button nodes`: tutorial-basics.html#button-and-command-nodes
+<t tx="ekr.20180126061429.12">.. _`@button nodes`: tutorial-basics.html#button-and-command-nodes
 
-\@`button nodes`_ create commands. For example, `@button my-command` creates
+`@button nodes`_ create commands. For example, `@button my-command` creates
 the `my-command` button and the `my-command` command. Within `@button`
 scripts, c.p is the presently selected outline node.
 **@button nodes bring scripts to data**.
@@ -27876,12 +27876,13 @@ scripts, c.p is the presently selected outline node.
 <t tx="ekr.20180126061429.13">Become familiar with Leo's most important plugins:
     
 - bookmarks.py manages bookmarks.
-- contextmenu.py shows a menu when when righ-clicking.
+- contextmenu.py shows a menu when when right-clicking.
 - mod_scripting.py supports @button and @command nodes.
 - quicksearch.py adds a Nav tab for searching.
 - todo.py handles to-do lists and is a project manager.
 - valuespace.py creates an outline-oriented spreadsheet.
-- viewrendered.py renders content in the rendering pane.</t>
+- viewrendered.py renders content in the rendering pane.
+</t>
 <t tx="ekr.20180126061429.14">.. _`personal settings`: customizing.html#specifying-settings
 
 Put your `personal settings`_ in myLeoSettings.leo, not leoSettings.leo.
@@ -27890,10 +27891,10 @@ Put your `personal settings`_ in myLeoSettings.leo, not leoSettings.leo.
 - The my-leo-settings-leo command opens myLeoSettings.leo.
 - Copy the desired settings nodes from leoSettings.leo to myLeoSettings.leo.
 </t>
-<t tx="ekr.20180126061429.15">.. _`the clones tutorial`: tutorial-pim.html#clones
+<t tx="ekr.20180126061429.15">.. _`clones tutorial`: tutorial-pim.html#clones
 
 Clones are "live" copies of the node itself and all its descendants.
-See `the clones tutorial`_ for more details.</t>
+See the `clones tutorial`_ for more details.</t>
 <t tx="ekr.20180126061429.16">.. _`commands tutorial`: tutorial-basics.html#commands
 
 To execute a command, type `Alt-X` followed by the first few characters of command name, followed by `Tab`. The list of commands matching what you have typed appears.
@@ -27913,9 +27914,10 @@ example::
 
 You must `launch Leo from a console window`_.
 </t>
-<t tx="ekr.20180126061429.2">You can have a personal shortcut to run script while developing it. For example: put `@key=Alt-4` in headline.
-
-If your script grows to several subnodes, you won't have to select top node every time you wish to run script. It would be enough to just press your universal shortcut.</t>
+<t tx="ekr.20180126061429.2">You can have a personal shortcut to run script while developing it. For
+example: put `@key=Alt-4` in headline. If your script grows to several
+subnodes, you won't have to select top node every time you wish to run
+script. It would be enough to just press your universal shortcut.</t>
 <t tx="ekr.20180126061429.20">The g.trace function prints all its arguments to the console. It's great
 for seeing patterns in running code.
 You must `launch Leo from a console window`_ to see the output of g.trace.
@@ -27946,7 +27948,8 @@ at the beginning of your script::
 
     c.frame.log.selectTab('Log')
     c.frame.log.clearLog()</t>
-<t tx="ekr.20180126061429.4">Within scripts, use section references only when code must be placed exactly. Here is a common pattern for @file nodes for python files::
+<t tx="ekr.20180126061429.4">Within scripts, use section references only when code must be placed
+exactly. Here is a common pattern for @file nodes for python files::
 
     @first # -*- coding: utf-8 -*-
     &lt;&lt;imports&gt;&gt;
@@ -27954,7 +27957,7 @@ at the beginning of your script::
 <t tx="ekr.20180126061429.5">The @button make-md-toc script in LeoDocs.leo writes a markdown table of
 contents to the console. You can then copy the text from the console to
 your document. The selected outline node should be an `@auto-md` node.</t>
-<t tx="ekr.20180126061429.6">.. _`pyflakes`: https://pypi.python.org/pypi/pyflakes.
+<t tx="ekr.20180126061429.6">.. _`pyflakes`: https://pypi.python.org/pypi/pyflakes
 
 `pyflakes`_ is a superb programming tool. It checks python files almost instantly.
 
@@ -27969,7 +27972,7 @@ These settings cause Leo to run pyflakes whenever saving a .py file and to raise
 Leo's pylint command runs `pylint`_ on all `@&lt;file&gt;` nodes in the selected trees.
 Pylint runs in the background, so you can continue to use Leo while pylint runs.
 </t>
-<t tx="ekr.20180126061429.9">.. _`rst3 command`: tutorial-rst3.html.
+<t tx="ekr.20180126061429.9">.. _`rst3 command`: tutorial-rst3.html
 
 The `rst3 command`_ converts an @rst tree to a document file.
 </t>
@@ -27986,7 +27989,8 @@ You can disable these tips by setting @bool show-tips = False.
     :local:
 </t>
 <t tx="ekr.20180126062558.1"></t>
-<t tx="ekr.20180126062701.1">.. _`launch Leo from a console window`: running.html#running-leo-from-a-console-window.
+<t tx="ekr.20180126062701.1">.. _`launch Leo from a console window`: running.html#running-leo-from-a-console-window
+
 </t>
 <t tx="ekr.20180126062746.1"></t>
 <t tx="ekr.20180126063015.1"></t>
