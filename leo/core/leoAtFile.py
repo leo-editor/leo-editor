@@ -4257,9 +4257,16 @@ class AtFile(object):
         offset = val.offset or 0
         if n is None: return
         i = val.lineno - 1
-        for j in range(max(0, i - 3), min(i + 3, len(lines) - 1)):
-            g.es_print('%5s:%s %s' % (
-                j, '*' if j == i else ' ', lines[j].rstrip()))
+        for j in range(max(0, i - 2), min(i + 2, len(lines) - 1)):
+            if j == i:
+                mark = '*'
+                node_link = "%s,-%d" % (
+                    p.get_UNL(with_proto=True, with_count=True), j+1)
+            else:
+                mark = ' '
+                node_link = None
+            text = '%5s:%s %s' % (j+1, mark, lines[j].rstrip())
+            g.es_print(text, nodeLink=node_link)
             if j == i:
                 g.es_print(' ' * (7 + offset) + '^')
     #@+node:ekr.20161021084954.1: *6* at.runPyflakes
