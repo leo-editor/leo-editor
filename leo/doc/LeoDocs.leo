@@ -1732,6 +1732,21 @@
 </v>
 </v>
 <v t="ekr.20180125034531.1"><vh>What's new in Leo 5.7</vh></v>
+<v t="ekr.20180125041552.1"><vh>To do</vh>
+<v t="maphew.20171129140022.1"><vh>@rst html/quick.html</vh>
+<v t="maphew.20171129131746.1"><vh>Computer with python already</vh></v>
+<v t="maphew.20171129131759.1"><vh>No python yet</vh></v>
+</v>
+<v t="ekr.20180124094454.1"><vh>FAQ How to use Leo with LaTex to get PDF output</vh></v>
+<v t="ekr.20171204111545.1"><vh>update cheat sheet</vh></v>
+<v t="ekr.20180124100450.708"><vh>Document ref file commands</vh>
+<v t="ekr.20180124100450.709"><vh>Reference outline commands</vh>
+<v t="ekr.20180124100450.710"><vh>c_file.updateRefLeoFile</vh></v>
+<v t="ekr.20180124100450.711"><vh>c_file.readRefLeoFile</vh></v>
+<v t="ekr.20180124100450.712"><vh>c_file.setReferenceFile</vh></v>
+</v>
+</v>
+</v>
 <v t="ekr.20180125034327.1"><vh>Leo 5.7b1 release notes</vh>
 <v t="ekr.20180125032239.1"><vh>Leo 5.7 Summary</vh></v>
 <v t="ekr.20180125041229.1"><vh>Leo 5.7 Major features</vh>
@@ -1832,85 +1847,7 @@
 <v t="ekr.20180124100450.913"><vh>#635: Link to nodes from log pane</vh></v>
 <v t="ekr.20180124121851.1"><vh>Added Debian package for Leo</vh></v>
 </v>
-<v t="ekr.20180125034637.1"><vh>Leo 5.7 Bugs</vh>
-<v t="ekr.20180124100450.31"><vh>#362: rst3 problem with @rst-options</vh></v>
-<v t="ekr.20180124100450.203"><vh>#509: Fixed console gui problems</vh></v>
-<v t="ekr.20180124100450.328"><vh>#528: @menuat duplicates menus when myLeoSettings is opened</vh></v>
-<v t="ekr.20180124100450.360"><vh>#556: AttributeError: 'LeoApp' object has no attribute 'cacher'</vh></v>
-<v t="ekr.20180124100450.367"><vh>#571: Hyperlink click does not launch the page</vh></v>
-<v t="ekr.20180124100450.371"><vh>#579: Key bindings don't take for commands defined in plugins</vh></v>
-<v t="ekr.20180124100450.941"><vh>#585: css coloring</vh></v>
-<v t="ekr.20180124100450.698"><vh>#627: crash in cft</vh></v>
-<v t="ekr.20180124100450.903"><vh>#649: path expressions</vh></v>
-<v t="ekr.20180124100450.891"><vh>#654: undoer problem</vh></v>
-<v t="ekr.20180124100450.1036"><vh>#657: @rclick button-name not working if under @buttons node</vh></v>
-<v t="ekr.20180124100450.728"><vh>Fixed can not open message in leoBridge test</vh></v>
-</v>
-<v t="ekr.20180125035840.1"><vh>Leo 5.7 Code improvements</vh>
-<v t="ekr.20180124100450.369"><vh>#577: reformatting unit tests...</vh></v>
-<v t="ekr.20180124100450.427"><vh>#589 @g.commander_command</vh></v>
-<v t="ekr.20180124100440.5"><vh>Added verbose option to g.callers()</vh></v>
-<v t="ekr.20180124121124.1"><vh>Improved Leo read/write code in leoAtFile.py</vh></v>
-<v t="ekr.20180124100440.3"><vh>New redraw code</vh></v>
-<v t="ekr.20180124100450.1030"><vh>Added p.promote</vh>
-<v t="ekr.20180124100450.1031"><vh>c_oc.promote</vh></v>
-<v t="ekr.20180124100450.1032"><vh>p.promote</vh></v>
-</v>
-<v t="ekr.20180124120513.1"><vh>Added backup-repo script in leoPy.leo</vh></v>
-</v>
-<v t="ekr.20180124100450.1"><vh>Leo 5.7 Enhancements</vh>
-<v t="ekr.20180124100450.1033"><vh>#310: Added Open File to tabs context menu</vh>
-<v t="ekr.20180124100450.1034"><vh>__init__ (LeoBaseTabWidget)</vh></v>
-<v t="ekr.20180124100450.1035"><vh>new_outline (LeoBaseTabWidget) </vh></v>
-</v>
-<v t="ekr.20180124100450.3"><vh>#327: Create a way to unbind bindings in leoSettings.leo</vh></v>
-<v t="ekr.20180124100450.357"><vh>#529: Improved documentation</vh></v>
-<v t="ekr.20180124100450.680"><vh>#596: @ifplatform</vh></v>
-<v t="ekr.20180124100450.704"><vh>Added HEAD, TAIL, REST declutter replacement "patterns"</vh>
-<v t="ekr.20180124100450.705"><vh>qtree.declutter_node &amp; helpers</vh>
-<v t="ekr.20180124100450.706"><vh>qtree.declutter_replace</vh></v>
-<v t="ekr.20180124100450.707"><vh>qtree.declutter_style</vh></v>
-</v>
-</v>
-<v t="ekr.20180124124532.1"><vh>Improved javascript importer</vh></v>
-<v t="ekr.20180124100450.803"><vh>Reinstated --trace-shutdown command-line argument</vh>
-<v t="ekr.20180124100450.804"><vh>LM.scanOptions &amp; helper</vh>
-<v t="ekr.20180124100450.805"><vh>LM.computeFilesList</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20180125042412.1"><vh>Leo 5.7 New and improved commands</vh>
-<v t="ekr.20180124100450.692"><vh>#600: insert-child/insert-node</vh></v>
-<v t="ekr.20180124100450.839"><vh>#632: check-conventions command</vh></v>
-<v t="ekr.20180124123920.1"><vh>Added find-all-unique-regex command</vh></v>
-<v t="ekr.20180124124409.1"><vh>Added insert-as-first-child &amp; insert-as-last-child</vh></v>
-<v t="ekr.20180124100450.797"><vh>sort cff results</vh></v>
-</v>
-<v t="ekr.20180125041723.1"><vh>Leo 5.7 Plugins</vh>
-<v t="ekr.20180124100450.126"><vh>#488: Improved the console_gui plugin</vh></v>
-<v t="ekr.20180124100450.888"><vh>#613: patch_python_colorizer.py plugin</vh></v>
-<v t="ekr.20180124100440.6"><vh>New leo_cloud.py plugin</vh></v>
-<v t="ekr.20180124122055.1"><vh>New line_numbering.py plugin</vh></v>
-</v>
-</v>
-<v t="ekr.20180125041552.1"><vh>To do</vh>
-<v t="maphew.20171129140022.1"><vh>@rst html/quick.html</vh>
-<v t="maphew.20171129131746.1"><vh>Computer with python already</vh></v>
-<v t="maphew.20171129131759.1"><vh>No python yet</vh></v>
-</v>
-<v t="ekr.20180124094454.1"><vh>FAQ How to use Leo with LaTex to get PDF output</vh></v>
-<v t="ekr.20171204111545.1"><vh>update cheat sheet</vh></v>
-<v t="ekr.20180124100450.708"><vh>Document ref file commands</vh>
-<v t="ekr.20180124100450.709"><vh>Reference outline commands</vh>
-<v t="ekr.20180124100450.710"><vh>c_file.updateRefLeoFile</vh></v>
-<v t="ekr.20180124100450.711"><vh>c_file.readRefLeoFile</vh></v>
-<v t="ekr.20180124100450.712"><vh>c_file.setReferenceFile</vh></v>
-</v>
-</v>
-</v>
-<v t="ekr.20180125112540.1"></v>
-<v t="ekr.20180125235809.1"><vh>Issues for 5.7</vh>
-<v t="ekr.20180125235809.2"><vh>42 Bug issues for milestone 5.7</vh>
+<v t="ekr.20180125034637.1"><vh>Leo 5.7 Fixed 42 Bug issues and one others</vh>
 <v t="ekr.20180125235811.3"><vh>#327: Create a way to unbind bindings in leoSettings.leo</vh></v>
 <v t="ekr.20180125235811.2"><vh>#362: default_path within @rst-options honoured or ignored depending on the node where rst3 command is executed</vh></v>
 <v t="ekr.20180125235811.1"><vh>#384: open files with very long path</vh></v>
@@ -1918,14 +1855,15 @@
 <v t="ekr.20180125235810.8"><vh>#493: Leo GUI window not repositioning properly with changing monitor configuration</vh></v>
 <v t="ekr.20180125235810.7"><vh>#509: Fix console gui problems</vh></v>
 <v t="ekr.20180125235810.6"><vh>#510: Improve how Leo handles settings</vh></v>
+<v t="ekr.20180124100450.328"><vh>#528: @menuat duplicates menus when myLeoSettings is opened</vh></v>
 <v t="ekr.20180125235810.5"><vh>#550: Refresh from disk not working for @shadow nodes</vh></v>
 <v t="ekr.20180125235810.4"><vh>#552: @clean is not compatible with org mode files</vh></v>
 <v t="ekr.20180125235810.3"><vh>#553: leo crashes using iPython bridge</vh></v>
 <v t="ekr.20180125235810.2"><vh>#554: ipython leo window blank (Not Responding)</vh></v>
 <v t="ekr.20180125235810.1"><vh>#555: @path exception</vh></v>
-<v t="ekr.20180125235809.32"><vh>#556: AttributeError: 'LeoApp' object has no attribute 'cacher'</vh></v>
+<v t="ekr.20180124100450.360"><vh>#556: AttributeError: 'LeoApp' object has no attribute 'cacher'</vh></v>
 <v t="ekr.20180125235809.31"><vh>#560: simulateCommand: no command for &lt;command-defined-by-plugin&gt;</vh></v>
-<v t="ekr.20180125235809.30"><vh>#571: Hyperlink click does not launch the page</vh></v>
+<v t="ekr.20180124100450.367"><vh>#571: Hyperlink click does not launch the page</vh></v>
 <v t="ekr.20180125235809.29"><vh>#573: leoDist: some external files missing when installed by pip</vh></v>
 <v t="ekr.20180125235809.28"><vh>#578: Support for org-mode tags on import</vh></v>
 <v t="ekr.20180125235809.27"><vh>#579: Key bindings don't take for commands defined in plugins</vh></v>
@@ -1953,15 +1891,37 @@
 <v t="ekr.20180125235809.5"><vh>#654: Undoer class problem</vh></v>
 <v t="ekr.20180125235809.4"><vh>#656: @buttons defined in local myLeoSettings.leo not appearing in work files</vh></v>
 <v t="ekr.20180125235809.3"><vh>#657: @rclick button-name not working if under @buttons node</vh></v>
+<v t="ekr.20180124100450.728"><vh>Fixed can not open message in leoBridge test</vh></v>
 </v>
-<v t="ekr.20180125235813.1"><vh>19 Enhancement issues for milestone 5.7</vh>
+<v t="ekr.20180125035840.1"><vh>Leo 5.7 Code improvements</vh>
+<v t="ekr.20180124100450.369"><vh>#577: reformatting unit tests...</vh></v>
+<v t="ekr.20180124100450.427"><vh>#589 @g.commander_command</vh></v>
+<v t="ekr.20180124100440.5"><vh>Added verbose option to g.callers()</vh></v>
+<v t="ekr.20180124121124.1"><vh>Improved Leo read/write code in leoAtFile.py</vh></v>
+<v t="ekr.20180124100440.3"><vh>New redraw code</vh></v>
+<v t="ekr.20180124100450.1030"><vh>Added p.promote</vh>
+<v t="ekr.20180124100450.1031"><vh>c_oc.promote</vh></v>
+<v t="ekr.20180124100450.1032"><vh>p.promote</vh></v>
+</v>
+<v t="ekr.20180124120513.1"><vh>Added backup-repo script in leoPy.leo</vh></v>
+</v>
+<v t="ekr.20180126001345.1"><vh>Leo 5.7 Command-line arguments</vh>
+<v t="ekr.20180124100450.803"><vh>Reinstated --trace-shutdown command-line argument</vh>
+<v t="ekr.20180124100450.804"><vh>LM.scanOptions &amp; helper</vh>
+<v t="ekr.20180124100450.805"><vh>LM.computeFilesList</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20180124100450.1"><vh>Leo 5.7 Completed 19 Enhancement issues and 2 others </vh>
 <v t="ekr.20180125235816.1"><vh>#310: Create new file in right-click in file tab in UI</vh></v>
+<v t="ekr.20180124100450.3"><vh>#327: Create a way to unbind bindings in leoSettings.leo</vh></v>
 <v t="ekr.20180125235814.18"><vh>#414: Add p.drawer, p.results, etc.</vh></v>
 <v t="ekr.20180125235814.17"><vh>#417: Complete reload-settings</vh></v>
 <v t="ekr.20180125235814.16"><vh>#428: Code review: tree redrawing logic</vh></v>
 <v t="ekr.20180125235814.15"><vh>#503: Use string/null gui for unit tests</vh></v>
 <v t="ekr.20180125235814.14"><vh>#510: Improve how Leo handles settings</vh></v>
 <v t="ekr.20180125235814.13"><vh>#523: Check *all* scripts with pyflakes</vh></v>
+<v t="ekr.20180124100450.357"><vh>#529: Improved documentation</vh></v>
 <v t="ekr.20180125235814.12"><vh>#552: @clean is not compatible with org mode files</vh></v>
 <v t="ekr.20180125235814.11"><vh>#577: Let reformatting unit tests run in more environments</vh></v>
 <v t="ekr.20180125235814.10"><vh>#583: Remove top-level docs folder</vh></v>
@@ -1974,6 +1934,26 @@
 <v t="ekr.20180125235814.3"><vh>#613: Support patching of Leo's colorizer tables</vh></v>
 <v t="ekr.20180125235814.2"><vh>#635: Link to nodes from log</vh></v>
 <v t="ekr.20180125235814.1"><vh>#655: The js importer could remove @others when a node has only one child</vh></v>
+<v t="ekr.20180124100450.704"><vh>Added HEAD, TAIL, REST declutter replacement "patterns"</vh>
+<v t="ekr.20180124100450.705"><vh>qtree.declutter_node &amp; helpers</vh>
+<v t="ekr.20180124100450.706"><vh>qtree.declutter_replace</vh></v>
+<v t="ekr.20180124100450.707"><vh>qtree.declutter_style</vh></v>
+</v>
+</v>
+<v t="ekr.20180124124532.1"><vh>Improved javascript importer</vh></v>
+</v>
+<v t="ekr.20180125042412.1"><vh>Leo 5.7 New and improved commands</vh>
+<v t="ekr.20180124100450.692"><vh>#600: insert-child/insert-node</vh></v>
+<v t="ekr.20180124100450.839"><vh>#632: check-conventions command</vh></v>
+<v t="ekr.20180124123920.1"><vh>Added find-all-unique-regex command</vh></v>
+<v t="ekr.20180124124409.1"><vh>Added insert-as-first-child &amp; insert-as-last-child</vh></v>
+<v t="ekr.20180124100450.797"><vh>The cff commands now sort their results</vh></v>
+</v>
+<v t="ekr.20180125041723.1"><vh>Leo 5.7 Plugins</vh>
+<v t="ekr.20180124100450.126"><vh>#488: Improved the console_gui plugin</vh></v>
+<v t="ekr.20180124100450.888"><vh>#613: patch_python_colorizer.py plugin</vh></v>
+<v t="ekr.20180124100440.6"><vh>New leo_cloud.py plugin</vh></v>
+<v t="ekr.20180124122055.1"><vh>New line_numbering.py plugin</vh></v>
 </v>
 </v>
 </vnodes>
@@ -25222,7 +25202,7 @@ There's also a file system backend, which would look like this::
 
 The FileSystem backend was meant to be for development, but of course if you map it into a folder that is sync'ed externally, as shown above, it can serve as a cloud adapter too.
 </t>
-<t tx="ekr.20180124100450.1">Added 20 enhancements.  See
+<t tx="ekr.20180124100450.1">Added 19 enhancements.  See
 https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A5.7+label%3Aenhancement
 </t>
 <t tx="ekr.20180124100450.100">def __init__(self, frame, parentFrame):
@@ -25409,52 +25389,6 @@ def promote(self, event=None, undoFlag=True, redrawFlag=True):
     for child in children:
         child.parents.remove(p.v)
         child.parents.append(parent_v)</t>
-<t tx="ekr.20180124100450.1033">https://github.com/leo-editor/leo-editor/issues/310
-
-As a happy side effect, right clicking now always shows this popup. That's
-because "New Outline" is always valid regardless of how many tabs there are
-and regardless of whether tabs have been detached.</t>
-<t tx="ekr.20180124100450.1034">def __init__(self, *args, **kwargs):
-    self.factory = kwargs.get('factory')
-    if self.factory:
-        del kwargs['factory']
-    QtWidgets.QTabWidget.__init__(self, *args, **kwargs)
-    self.detached = []
-    self.setMovable(True)
-
-    def tabContextMenu(point):
-        index = self.tabBar().tabAt(point)
-        if index &lt; 0: # or (self.count() &lt; 1 and not self.detached):
-            return
-        menu = QtWidgets.QMenu()
-        # #310: Create new file on right-click in file tab in UI.
-        if True:
-            a = menu.addAction("New Outline")
-            a.triggered.connect(lambda checked: self.new_outline(index))
-        if self.count() &gt; 1:
-            a = menu.addAction("Detach")
-            a.triggered.connect(lambda checked: self.detach(index))
-            a = menu.addAction("Horizontal tile")
-            a.triggered.connect(
-                lambda checked: self.tile(index, orientation='H'))
-            a = menu.addAction("Vertical tile")
-            a.triggered.connect(
-                lambda checked: self.tile(index, orientation='V'))
-        if self.detached:
-            a = menu.addAction("Re-attach All")
-            a.triggered.connect(lambda checked: self.reattach_all())
-        menu.exec_(self.mapToGlobal(point))
-
-    self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-    self.customContextMenuRequested.connect(tabContextMenu)
-</t>
-<t tx="ekr.20180124100450.1035">def new_outline(self, index):
-    '''Open a new outline tab.'''
-    w = self.widget(index)
-    c = w.leo_c
-    c.new()
-</t>
-<t tx="ekr.20180124100450.1036"></t>
 <t tx="ekr.20180124100450.104">def createFirstTreeNode(self):
     f = self; c = f.c
     v = leoNodes.VNode(context=c)
@@ -25946,11 +25880,6 @@ This has three advantages:
 2. Leo does no redraws during the tests.
 3. Clicks in the Leo window can now longer spoil running unit tests.
 </t>
-<t tx="ekr.20180124100450.203">https://github.com/leo-editor/leo-editor/issues/509
-
-Serious unfixable bugs:
-http://leoeditor.com/console-gui.html#unfixed-bugs
-</t>
 <t tx="ekr.20180124100450.3">https://github.com/leo-editor/leo-editor/issues/327
 
 This enhancement allows you to override bindings made in leoSettings.leo or myLeoSettings.leo by setting:
@@ -25971,12 +25900,6 @@ What I did:
 - ParserBaseClass.doShortcuts appends command names k.killedBindings.
 - Added c.config.isLocalSettingFile
 </t>
-<t tx="ekr.20180124100450.31">https://github.com/leo-editor/leo-editor/issues/362
-
-When I use the rst3 command on (or below) the node that defines the @rst-options it is honored.
-
-When I use the rst3 command on a node higher up in the outline hierarchy it is ignored.
-</t>
 <t tx="ekr.20180124100450.328">https://github.com/leo-editor/leo-editor/issues/528
 
 </t>
@@ -25986,10 +25909,8 @@ When I use the rst3 command on a node higher up in the outline hierarchy it is i
 </t>
 <t tx="ekr.20180124100450.367">https://github.com/leo-editor/leo-editor/issues/571
 
-This only happens when clicking the link in the VR pane,
-and only with Python 2.
-
-http://leoeditor.com/running.html</t>
+This only happens when clicking the link in the VR pane, and only with Python 2.
+</t>
 <t tx="ekr.20180124100450.369">Let reformatting unit tests run in more environments
 https://github.com/leo-editor/leo-editor/issues/577
 
@@ -26005,7 +25926,6 @@ In unitTest.leo:
     @pagewidth 40
     @tabwidth 8
 </t>
-<t tx="ekr.20180124100450.371">Added k.remove_conflicting_definitions.</t>
 <t tx="ekr.20180124100450.427">https://github.com/leo-editor/leo-editor/issues/589
 
 </t>
@@ -26287,8 +26207,6 @@ def initObjects(self, gui):
             for val in d.get(key):
                 print('  %s' % (val))
 </t>
-<t tx="ekr.20180124100450.680">https://github.com/leo-editor/leo-editor/issues/596
-</t>
 <t tx="ekr.20180124100450.69">def __init__(self, c):
     '''Ctor for PythonPrettyPrinter class.'''
     self.c = c
@@ -26334,8 +26252,6 @@ def initObjects(self, gui):
     self.dirtyVnodeList = []
 </t>
 <t tx="ekr.20180124100450.692">https://github.com/leo-editor/leo-editor/issues/600
-</t>
-<t tx="ekr.20180124100450.698">https://github.com/leo-editor/leo-editor/issues/627
 </t>
 <t tx="ekr.20180124100450.70">def __init__(self,c):
     '''Ctor for Python_To_Coffeescript_Adapter class.'''
@@ -27498,8 +27414,6 @@ def reloadSettings(self):
     self.page_width = c.config.getInt("page-width")
         # for wrapping
 </t>
-<t tx="ekr.20180124100450.891">https://github.com/leo-editor/leo-editor/issues/654
-</t>
 <t tx="ekr.20180124100450.90">def construct(self, master=None):
     """ Factor 'heavy duty' code out from the DynamicWindow ctor """
     # g.trace('(DynamicWindow)')
@@ -27542,9 +27456,6 @@ def reloadSettings(self):
         else:
             self.iconBar.hide()
 </t>
-<t tx="ekr.20180124100450.903">https://github.com/leo-editor/leo-editor/issues/649
-
-</t>
 <t tx="ekr.20180124100450.906">https://github.com/leo-editor/leo-editor/issues/597
 </t>
 <t tx="ekr.20180124100450.91">def set_icon_bar_orientation(self, c):
@@ -27584,7 +27495,6 @@ def reload_settings(self):
     
 reloadSettings = reload_settings
 </t>
-<t tx="ekr.20180124100450.941">https://github.com/leo-editor/leo-editor/issues/585</t>
 <t tx="ekr.20180124100450.944">def __init__(self, c, widget, wrapper):
     '''Ctor for JEditColorizer class.'''
     # g.trace('(JEditColorizer) widget', widget)
@@ -28032,9 +27942,6 @@ later.</t>
 
 You can see all 5.7 issues by visiting:
 https://github.com/leo-editor/leo-editor/issues?page=1&amp;q=is%3Aissue+milestone%3A5.7+is%3Aclosed+-label%3ATip+-label%3AWon%27tDo+-label%3AWon%27tFix+-label%3AHelp&amp;utf8=%E2%9C%93
-
-This uses the following filters:
-is:issue milestone:5.7 is:closed -label:Tip -label:Won'tDo -label:Won'tFix -label:Help
 </t>
 <t tx="ekr.20180125034327.1">Leo 5.7b1 January 27, 2018
 
@@ -28232,7 +28139,6 @@ unhighlight('log')</t>
             p.b += d.get('body').strip()
     return len(aList)
 </t>
-<t tx="ekr.20180125235809.1"></t>
 <t tx="ekr.20180125235809.10">https://github.com/leo-editor/leo-editor/issues/648</t>
 <t tx="ekr.20180125235809.11">https://github.com/leo-editor/leo-editor/issues/645</t>
 <t tx="ekr.20180125235809.12">https://github.com/leo-editor/leo-editor/issues/641</t>
@@ -28243,7 +28149,6 @@ unhighlight('log')</t>
 <t tx="ekr.20180125235809.17">https://github.com/leo-editor/leo-editor/issues/630</t>
 <t tx="ekr.20180125235809.18">https://github.com/leo-editor/leo-editor/issues/627</t>
 <t tx="ekr.20180125235809.19">https://github.com/leo-editor/leo-editor/issues/604</t>
-<t tx="ekr.20180125235809.2"></t>
 <t tx="ekr.20180125235809.20">https://github.com/leo-editor/leo-editor/issues/603</t>
 <t tx="ekr.20180125235809.21">https://github.com/leo-editor/leo-editor/issues/600</t>
 <t tx="ekr.20180125235809.22">https://github.com/leo-editor/leo-editor/issues/595</t>
@@ -28251,13 +28156,13 @@ unhighlight('log')</t>
 <t tx="ekr.20180125235809.24">https://github.com/leo-editor/leo-editor/issues/591</t>
 <t tx="ekr.20180125235809.25">https://github.com/leo-editor/leo-editor/issues/586</t>
 <t tx="ekr.20180125235809.26">https://github.com/leo-editor/leo-editor/issues/585</t>
-<t tx="ekr.20180125235809.27">https://github.com/leo-editor/leo-editor/issues/579</t>
+<t tx="ekr.20180125235809.27">https://github.com/leo-editor/leo-editor/issues/579
+
+Added k.remove_conflicting_definitions.</t>
 <t tx="ekr.20180125235809.28">https://github.com/leo-editor/leo-editor/issues/578</t>
 <t tx="ekr.20180125235809.29">https://github.com/leo-editor/leo-editor/issues/573</t>
 <t tx="ekr.20180125235809.3">https://github.com/leo-editor/leo-editor/issues/657</t>
-<t tx="ekr.20180125235809.30">https://github.com/leo-editor/leo-editor/issues/571</t>
 <t tx="ekr.20180125235809.31">https://github.com/leo-editor/leo-editor/issues/560</t>
-<t tx="ekr.20180125235809.32">https://github.com/leo-editor/leo-editor/issues/556</t>
 <t tx="ekr.20180125235809.4">https://github.com/leo-editor/leo-editor/issues/656</t>
 <t tx="ekr.20180125235809.5">https://github.com/leo-editor/leo-editor/issues/654</t>
 <t tx="ekr.20180125235809.6">https://github.com/leo-editor/leo-editor/issues/653</t>
@@ -28270,13 +28175,16 @@ unhighlight('log')</t>
 <t tx="ekr.20180125235810.4">https://github.com/leo-editor/leo-editor/issues/552</t>
 <t tx="ekr.20180125235810.5">https://github.com/leo-editor/leo-editor/issues/550</t>
 <t tx="ekr.20180125235810.6">https://github.com/leo-editor/leo-editor/issues/510</t>
-<t tx="ekr.20180125235810.7">https://github.com/leo-editor/leo-editor/issues/509</t>
+<t tx="ekr.20180125235810.7">https://github.com/leo-editor/leo-editor/issues/509
+
+Serious unfixable bugs:
+http://leoeditor.com/console-gui.html#unfixed-bugs
+</t>
 <t tx="ekr.20180125235810.8">https://github.com/leo-editor/leo-editor/issues/493</t>
 <t tx="ekr.20180125235810.9">https://github.com/leo-editor/leo-editor/issues/489</t>
 <t tx="ekr.20180125235811.1">https://github.com/leo-editor/leo-editor/issues/384</t>
 <t tx="ekr.20180125235811.2">https://github.com/leo-editor/leo-editor/issues/362</t>
 <t tx="ekr.20180125235811.3">https://github.com/leo-editor/leo-editor/issues/327</t>
-<t tx="ekr.20180125235813.1"></t>
 <t tx="ekr.20180125235814.1">https://github.com/leo-editor/leo-editor/issues/655</t>
 <t tx="ekr.20180125235814.10">https://github.com/leo-editor/leo-editor/issues/583</t>
 <t tx="ekr.20180125235814.11">https://github.com/leo-editor/leo-editor/issues/577</t>
@@ -28295,7 +28203,12 @@ unhighlight('log')</t>
 <t tx="ekr.20180125235814.7">https://github.com/leo-editor/leo-editor/issues/589</t>
 <t tx="ekr.20180125235814.8">https://github.com/leo-editor/leo-editor/issues/587</t>
 <t tx="ekr.20180125235814.9">https://github.com/leo-editor/leo-editor/issues/584</t>
-<t tx="ekr.20180125235816.1">https://github.com/leo-editor/leo-editor/issues/310</t>
+<t tx="ekr.20180125235816.1">https://github.com/leo-editor/leo-editor/issues/310
+
+As a happy side effect, right clicking now always shows this popup. That's
+because "New Outline" is always valid regardless of how many tabs there are
+and regardless of whether tabs have been detached.</t>
+<t tx="ekr.20180126001345.1"></t>
 <t tx="maphew.20171129131746.1">Python 3.0+::
 
     pip install leo
