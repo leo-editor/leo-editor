@@ -720,7 +720,7 @@
 <v t="ekr.20180126061429.8"><vh>The pylint command</vh></v>
 <v t="ekr.20180126061429.9"><vh>The rst3 command</vh></v>
 <v t="ekr.20180126061429.24"><vh>The sort-siblings command</vh></v>
-<v t="ekr.20180126061429.26"><vh>Use Alt-N (goto-next-clone) to find "primary" clone</vh></v>
+<v t="ekr.20180126061429.26"><vh>Use Alt-N (goto-next-clone) to find "primary" clones</vh></v>
 <v t="ekr.20180126061429.18"><vh>Use cffm to gather outline nodes</vh></v>
 </v>
 <v t="ekr.20180126062701.1"><vh>Scripting tips</vh>
@@ -1990,6 +1990,7 @@
 </v>
 </v>
 <v t="ekr.20180126063122.1"><vh>** Ctrl-P tip</vh></v>
+<v t="ekr.20180126061923.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -3546,8 +3547,8 @@ The latter two style sheets are imported at the end of the default.css.
 
 **Important:** You can use cascading style sheets to do things that otherwise wouldn't be possible with "plain" rST. For instance, the background color of this page was specified in a body style.
 </t>
-<t tx="ekr.20050818163826.13">.. _ListManagerDocs.html: http://leoeditor.com/ListManagerDocs.html
-.. _wxListManager.leo:    http://leoeditor.com/wxListManager.leo
+<t tx="ekr.20050818163826.13">.. _ListManagerDocs.html: ListManagerDocs.html
+.. _wxListManager.leo:    wxListManager.leo
 
 The file `ListManagerDocs.html`_ is an impressive example of the kind of output that can be generated relatively easily using the rst3 command.
 
@@ -3998,7 +3999,7 @@ Leo's `git repository`_ and Leo distributions contain the following reference fi
 You could probably generalize this idea of "collect all @url nodes under current node_ and display as HTML in browser" into a general-purpose plugin. However, the plugin would have to be somewhat smart in mapping a link to its corresponding HTML code (e.g. an image link gets mapped to an &lt;img&gt; HTML tag, a link to a Flash file gets mapped to an &lt;embed&gt; tag, etc).
 </t>
 <t tx="ekr.20050830115714.13"></t>
-<t tx="ekr.20050830115714.14">.. _`Mulder/Ream update algorithm`: http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
+<t tx="ekr.20050830115714.14">.. _`Mulder/Ream update algorithm`: appendices.html#the-mulder-ream-update-algorithm
 
 Use @clean trees. Files derived from @clean trees contain no sentinels_. However, Leo can update @clean trees from changes made to the corresponding external file.  The `Mulder/Ream update algorithm`_ makes this magic happen.
 </t>
@@ -6164,10 +6165,10 @@ winpdb_ and its documentation have been improved recently. For more details, see
 
 4. Use winpdb's File:Attach command to attach winpdb to Leo. Specify the password as 'go' and you will see the scriptFile.py containing your entire script. You can now execute or single-step through the script. To repeat, c, g and p are defined, so you can debug any script this way.
 </t>
-<t tx="ekr.20070116062405">.. _`FAQ`: http://leoeditor.com/FAQ.html#how-can-i-use-python-s-pdb-debugger-with-leo
-.. _`pdb`: https://docs.python.org/3/library/pdb.html
+<t tx="ekr.20070116062405">.. _`FAQ`:                  FAQ.html#how-can-i-use-python-s-pdb-debugger-with-leo
+.. _`pdb`:                  https://docs.python.org/3/library/pdb.html
 .. _`run Leo in a console`: installing.html#running-leo-from-a-console-window
-.. _`work flow`: http://leoeditor.com/FAQ.html#how-can-i-use-leo-to-develop-leo-itself
+.. _`work flow`:            FAQ.html#how-can-i-use-leo-to-develop-leo-itself
 
 Inserting g.trace statements in my Python code is usually my first debugging choice. The g.trace statement prints the name of the function in which the call to g.trace occurs, followed by the value of its arguments. The output of the g.trace goes to the console, so you must `run Leo in a console`_ to use g.trace.
 
@@ -7259,9 +7260,9 @@ To load Leo's source, load leoPyRef.leo::
     python launchLeo.py --gui=qt leo\\core\\leoPyRef.leo
 </t>
 <t tx="ekr.20090212054250.5"></t>
-<t tx="ekr.20090212054250.6">See `Leo's download page &lt;http://leoeditor.com/download.html&gt;`_.
+<t tx="ekr.20090212054250.6">See `Leo's download page &lt;download.html&gt;`_.
 </t>
-<t tx="ekr.20090212054250.7">Daily snapshots are available `here &lt;http://leoeditor.com/download.html&gt;`_.
+<t tx="ekr.20090212054250.7">Daily snapshots are available `here &lt;download.html&gt;`_.
 </t>
 <t tx="ekr.20090221070927.1">#################
 Leo's MIT license
@@ -7987,7 +7988,7 @@ External file
     pair: gnx; Glossary
     pair: Global Node Index; Glossary
     
-.. _`format of external files`: http://leoeditor.com/appendices.html#format-of-external-files
+.. _`format of external files`: appendices.html#format-of-external-files
     
 Gnx (Global Node Index)
 
@@ -8245,7 +8246,7 @@ Underindent line
 .. index::
     pair: uA; Glossary
 
-.. _`extensible attributes`: http://leoeditor.com/customizing.html#adding-extensible-attributes-to-nodes-and-leo-files
+.. _`extensible attributes`: customizing.html#adding-extensible-attributes-to-nodes-and-leo-files
     
 uA
     
@@ -8668,12 +8669,12 @@ You can also specify importers *explicitly* as follows::
     @auto-vim-outline   vimoutline          1, 4      
     @auto-rst           reStructuredText    1, 5
     
-.. _`org-mode`: http://en.wikipedia.org/wiki/Org-mode
-.. _`Emacs`:    http://leoeditor.com/emacs.html#using-org-mode-org-files-in-leo
-.. _`markdown`:  http://en.wikipedia.org/wiki/Markdown
-.. _`reStructuredText`:     http://docutils.sourceforge.net/rst.html
-.. _`vim outline`:  http://www.vim.org/scripts/script.php?script_id=3515
-.. _`vim`:          http://leoeditor.com/vimBindings.html#using-vimoutline-otl-files-in-leo
+.. _`org-mode`:         http://en.wikipedia.org/wiki/Org-mode
+.. _`Emacs`:            emacs.html#using-org-mode-org-files-in-leo
+.. _`markdown`:         http://en.wikipedia.org/wiki/Markdown
+.. _`reStructuredText`: http://docutils.sourceforge.net/rst.html
+.. _`vim outline`:      http://www.vim.org/scripts/script.php?script_id=3515
+.. _`vim`:              vimBindings.html#using-vimoutline-otl-files-in-leo
 
 **Note 1**: The importers/exporters for markdown, org-mode, reStructuredText and vimoutline files automatically generate section heading of the appropriate level. Body text of the top-level @auto node is ignored.
 
@@ -8727,7 +8728,7 @@ These directives typically affect the node in which they appear and all descenda
     directive overrides the @color and @nocolor directives within the same
     node.
 </t>
-<t tx="ekr.20100806170836.4399">.. _`Mulder/Ream update algorithm`: http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
+<t tx="ekr.20100806170836.4399">.. _`Mulder/Ream update algorithm`: appendices.html#the-mulder-ream-update-algorithm
 
 .. index::
     pair: @clean; Reference
@@ -8756,7 +8757,7 @@ The default is True.
 
 The @shadow directive creates *two* external files, a **public** file without sentinels, and a **private** file containing sentinels.
 
-.. _`Mulder/Ream update algorithm`: http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
+.. _`Mulder/Ream update algorithm`: appendices.html#the-mulder-ream-update-algorithm
 
 When reading an @shadow node, Leo uses the `Mulder/Ream update algorithm`_ to compare the public and private files, then updates the outline based on changes to the *public* file.
 
@@ -10146,7 +10147,9 @@ Pudb is a full-screen Python debugger: http://pypi.python.org/pypi/pudb
 
 Using this bridge, scripts running in Leo can affect IPython, and vice versa. In particular, scripts running in IPython can alter Leo outlines!
 
-For full details, see Leo Users Guide: http://leoeditor.com/IPythonBridge.html
+.. _`IPython Bridge Guide`: IPythonBridge.html
+
+For full details, see the `IPython Bridge Guide`.
 </t>
 <t tx="ekr.20101113063552.9442">Creates an 'Extensions' menu containing two commands: Open Console Window and Open Explorer.
 
@@ -12171,9 +12174,9 @@ Downloading Leo
 
 We recommend using `git &lt;https://git-scm.com/&gt;`_ to download Leo. Using git gives you the latest, thoroughly tested code. With git, you can review all the new features and update when you decide. Git also makes it easy to revert to previous versions when problems arise.
 
-- To install using git, follow the instructions at `Installing Leo with git &lt;http://leoeditor.com/installing.html#installing-leo-with-git&gt;`_.
+- To install using git, follow the instructions at `Installing Leo with git &lt;installing.html#installing-leo-with-git&gt;`_.
 
-- If you prefer a new development version, or a version from from 1, 2, 5, 10, 30 or 90 days ago, download a `Nightly snapshot &lt;http://leoeditor.com/download.html#snapshots&gt;`_.
+- If you prefer a new development version, or a version from from 1, 2, 5, 10, 30 or 90 days ago, download a `Nightly snapshot &lt;download.html#snapshots&gt;`_.
 
 - If you want a stable release download from `SourceForge &lt;https://sourceforge.net/projects/leo/files/Leo/&gt;`_. Remember that it *won't* have the latest features and bug fixes.
 </t>
@@ -15207,7 +15210,7 @@ headlines in that file::
     for p in newFrame.c.all_positions():
         g.es(g.toEncodedString(p.h,"utf-8"))
 </t>
-<t tx="ekr.20131008041326.16154">.. _`associating .leo files with python.exe`: http://leoeditor.com/installing.html#creating-windows-file-associations
+<t tx="ekr.20131008041326.16154">.. _`associating .leo files with python.exe`: installing.html#creating-windows-file-associations
 
 Leo sends more detailed error messages to stderr,
 the output stream that goes to the console window. In Linux and MacOS
@@ -16301,15 +16304,15 @@ A Brief Summary of Leo
 .. Use full links here so links are active in LeoDocs.leo
 
 .. _`Emacs`: https://www.gnu.org/software/emacs/
-.. _`Leo's tutorial`: http://leoeditor.com/tutorial.html
+.. _`Leo's tutorial`: tutorial.html
 .. _`ask for help`:   https://groups.google.com/forum/#!forum/leo-editor
 .. _`Directed Acyclic Graphs`: https://en.wikipedia.org/wiki/Directed_acyclic_graph
 .. _`group of developers and users`: https://groups.google.com/forum/#!forum/leo-editor
-.. _`Leonine`: http://leoeditor.com/leonine-world.html
-.. _`Clones`: http://leoeditor.com/tutorial-pim.html
-.. _`Python API`: http://leoeditor.com/tutorial-scripting.html
-.. _`outline-oriented directives`: http://leoeditor.com/tutorial-programming.html
-.. _`Next`: http://leoeditor.com/testimonials.html
+.. _`Leonine`: leonine-world.html
+.. _`Clones`: tutorial-pim.html
+.. _`Python API`: tutorial-scripting.html
+.. _`outline-oriented directives`: tutorial-programming.html
+.. _`Next`: testimonials.html
 
     "Word outlines are very useful. But Leo makes Word look like a clunky toy."---Joe Orr
 
@@ -16928,7 +16931,7 @@ More Leo Resources
 
 .. _`blog post`: http://rickardlindberg.me/writing/reflections-on-programming/2013-02-24-related-things-are-not-kept-together/
 .. _`2012 PyOhio talk`:     http://www.youtube.com/watch?v=JgJ89ekGj-s
-.. _`Icons`:                http://leoeditor.com/icons.html
+.. _`Icons`:                icons.html
 .. _`Introduction to Leo`:  http://www.youtube.com/watch?v=Zu6J-J0qFi0
 .. _`Leo in a nutshell`:    https://groups.google.com/d/msg/leo-editor/lgHE4OJSLzw/2VXkckrvnsIJ
 .. _`Leo page viewer`:      https://bl.ocks.org/kaleguy/cef095e16e147bc04dd6c5812d732fb2
@@ -16936,8 +16939,8 @@ More Leo Resources
 .. _`bookmarks plugin video`: https://vimeo.com/77720098 
 .. _`literate programming`: http://www.literateprogramming.com/
 .. _`scripting tutorial`:   http://blog.suspended-chord.info/2014/01/28/intro-to-leo-scripting/
-.. _`slashdot article`:     http://leoeditor.com/testimonials.html#speed-ream-s-slashdot-article
-.. _`web viewer`:           http://leoeditor.com/load-leo.html
+.. _`slashdot article`:     testimonials.html#speed-ream-s-slashdot-article
+.. _`web viewer`:           load-leo.html
 .. _`wikipedia page`:       http://en.wikipedia.org/wiki/Leo_(editor)
 
 Videos:
@@ -17046,7 +17049,7 @@ This page links to videos about Leo.  **Important notes**:
   YouTube videos typically become clearer after a few seconds.
   
 **Potential screencasters**: please read these
-`tips for screencast authors &lt;http://leoeditor.com/FAQ.html#how-to-make-a-screencast&gt;`_.
+`tips for screencast authors &lt;FAQ.html#how-to-make-a-screencast&gt;`_.
 
 .. list-table::
    :widths: 10 30 10 10
@@ -17746,7 +17749,9 @@ To see all of Leo's unit testing commands, do::
 
 Leo pre-defines 'c', 'g' and 'p' in unit tests just as in scripts.
 
-For more details about unit testing, see: http://leoeditor.com/unitTesting.html
+.. _`unit testing`: unitTesting.html
+
+For more details about unit testing, the `unit testing`_ page.
 
 **Notes for Leo developers**
 
@@ -22196,7 +22201,7 @@ or download Leo's sources directly.
 
 Leo has a binary installer for Windows, available at the `SourceForge download page`_. The binary installer installs Leo and sets Windows file associations. Now see `Running Leo`_ for how to run Leo after installing it.
 </t>
-<t tx="ekr.20170206073747.4">.. _`Leo's download page`: http://leoeditor.com/download.html
+<t tx="ekr.20170206073747.4">.. _`Leo's download page`: download.html
 
 You may download Leo's sources in one of three ways, as described at `Leo's download page`_. If the sources are zipped, unpack them into a temp folder. You may place the sources anywhere you like, including Python's \*site-packages* folder, for example, C:\\Python26\\Lib\\site-packages.
 
@@ -22260,9 +22265,11 @@ Then run::
     sudo apt-get update
     sudo apt-get install leo
 </t>
-<t tx="ekr.20170206073747.8">You may download Leo's sources in one of three ways, as described at:
-http://leoeditor.com/download.html If the sources are zipped, unzip them
-into a folder in your home directory, say ~/leo-5.6.
+<t tx="ekr.20170206073747.8">.. _`download Leo's sources`: download.html
+
+You may `download Leo's sources`_ in one of three ways. If the sources
+are zipped, unzip them into a folder in your home directory, say
+~/leo-5.6.
 
 You now have several choices.
 
@@ -22817,7 +22824,7 @@ Leo's markup applies to scripts as well as external files. Leo's execute-script 
         @others
     Controller(c).run # c *is* defined.
 
-**Important**: Leo recognizes section references *everywhere*, even inside strings or comments. See `this FAQ entry &lt;http://leoeditor.com/FAQ.html#what-about-code-that-looks-like-a-section-reference&gt;`_.</t>
+**Important**: Leo recognizes section references *everywhere*, even inside strings or comments. See `this FAQ entry &lt;FAQ.html#what-about-code-that-looks-like-a-section-reference&gt;`_.</t>
 <t tx="ekr.20170217093639.1">.. _`commander`: tutorial-basics.html#accessing-outline-data
 .. _`position`: tutorial-scripting.html#positions-and-vnodes
 
@@ -23383,7 +23390,7 @@ I realize this is a "why" and not a "how" and that this doesn't help anyone get 
 <t tx="ekr.20170311055647.1">Thanks to Tsuchi Noko for these.</t>
 <t tx="ekr.20170311120214.1">- Use `imp.reload &lt;https://docs.python.org/3/library/imp.html&gt;`_ to reload all changed modules.
 - Make sure to *instantiate* any changed objects.
-- See `this section &lt;http://leoeditor.com/unitTesting.html#test-driven-development-in-leo&gt;`_ for full details.
+- See `this section &lt;unitTesting.html#test-driven-development-in-leo&gt;`_ for full details.
 </t>
 <t tx="ekr.20170312083548.1">.. index::
     pair: Chapter; Tutorial
@@ -23601,7 +23608,7 @@ More generally, org mode lacks the following Leonine features:
 - A full Python API and DOM, including generators.
 - @command, @button, @test.
 
-.. _`algorithm`: http://leoeditor.com/appendices.html#the-mulder-ream-update-algorithm
+.. _`algorithm`: appendices.html#the-mulder-ream-update-algorithm
 .. _`Directed Acyclic Graphs`:  https://en.wikipedia.org/wiki/Directed_acyclic_graph
 
 Leo's is based on technologies missing from org mode:
@@ -27847,21 +27854,24 @@ Improved the console_gui plugin.
 </t>
 <t tx="ekr.20180126060924.1"></t>
 <t tx="ekr.20180126060940.1"></t>
-<t tx="ekr.20180126061429.10">Leo's abbreviations can correct spelling mistakes, expand to multiple lines or even trees of nodes.
+<t tx="ekr.20180126061429.10">.. _`the abbreviations tutorial`: tutorial-pim.html#using-abbreviations-and-templates
 
-Abbreviations can execute scripts and can prompt for values to be substituted within the abbreviation.
+Leo's abbreviations can correct spelling mistakes, expand to multiple lines
+or even trees of nodes. Abbreviations can execute scripts and can prompt
+for values to be substituted within the abbreviation.
+See `the abbreviations tutorial`_ for more details
+</t>
+<t tx="ekr.20180126061429.11">.. _`test nodes`: tutorial-basics.html#test-nodes
 
-See http://leoeditor.com/tutorial-pim.html#using-abbreviations-and-templates.</t>
-<t tx="ekr.20180126061429.11">@test nodes create unit tests. They automatically convert the body to a subclass of unittest.TestCase.
+\@`test nodes`_ create unit tests. They automatically convert the body to a
+subclass of unittest.TestCase. Leo's run-* commands execute unit tests.
+</t>
+<t tx="ekr.20180126061429.12">.. _`button nodes`: tutorial-basics.html#button-and-command-nodes
 
-Leo's run-* commands execute unit tests.
-
-See http://leoeditor.com/tutorial-basics.html#test-nodes.</t>
-<t tx="ekr.20180126061429.12">\@button nodes create commands. For example, `@button my-command` creates the `my-command` button and the `my-command` command.
-
-Within `@button` scripts, c.p is the presently selected outline node.
-
-As a result, @button nodes bring scripts to data.
+\@`button nodes`_ create commands. For example, `@button my-command` creates
+the `my-command` button and the `my-command` command. Within `@button`
+scripts, c.p is the presently selected outline node.
+**@button nodes bring scripts to data**.
 </t>
 <t tx="ekr.20180126061429.13">Become familiar with Leo's most important plugins:
     
@@ -27872,42 +27882,49 @@ As a result, @button nodes bring scripts to data.
 - todo.py handles to-do lists and is a project manager.
 - valuespace.py creates an outline-oriented spreadsheet.
 - viewrendered.py renders content in the rendering pane.</t>
-<t tx="ekr.20180126061429.14">Put your personal settings in myLeoSettings.leo, not leoSettings.leo.
+<t tx="ekr.20180126061429.14">.. _`personal settings`: customizing.html#specifying-settings
+
+Put your `personal settings`_ in myLeoSettings.leo, not leoSettings.leo.
 
 - The leo-settings-leo command opens leoSettings.leo.
 - The my-leo-settings-leo command opens myLeoSettings.leo.
-- Copy the desired settings nodes from leoSettings.leo to myLeoSettings.leo.</t>
-<t tx="ekr.20180126061429.15">Clones are "live" copies of the node itself and all its descendants.
+- Copy the desired settings nodes from leoSettings.leo to myLeoSettings.leo.
+</t>
+<t tx="ekr.20180126061429.15">.. _`the clones tutorial`: tutorial-pim.html#clones
 
-See http://leoeditor.com/tutorial-pim.html#clones.</t>
-<t tx="ekr.20180126061429.16">To execute a command, type `Alt-X` followed by the first few characters of command name, followed by `Tab`. The list of commands matching what you have typed appears.</t>
-<t tx="ekr.20180126061429.17">The cff command (aka clone-find-flattened) prompts for a search pattern, then clones all matching nodes so they are the children of a new last top-level node.
+Clones are "live" copies of the node itself and all its descendants.
+See `the clones tutorial`_ for more details.</t>
+<t tx="ekr.20180126061429.16">.. _`commands tutorial`: tutorial-basics.html#commands
 
-This is a great way to study code.</t>
-<t tx="ekr.20180126061429.18">The cff command (aka clone-find-flattened-marked) clones all marked nodes as a children of a new node, created as the last top-level node.
-
-Use this to gather nodes throughout an outline.</t>
-<t tx="ekr.20180126061429.19">g.callers() returns the last n callers (default 4) callers of a function or method. The verbose option shows each caller on a separate line.  For example::
+To execute a command, type `Alt-X` followed by the first few characters of command name, followed by `Tab`. The list of commands matching what you have typed appears.
+For more details, see the `commands tutorial`_.
+</t>
+<t tx="ekr.20180126061429.17">The cff command (aka clone-find-flattened) prompts for a search pattern,
+then clones all matching nodes so they are the children of a new last
+top-level node. This is a great way to study code.</t>
+<t tx="ekr.20180126061429.18">The cff command (aka clone-find-flattened-marked) clones all marked nodes
+as a children of a new node, created as the last top-level node. Use this
+to gather nodes throughout an outline.</t>
+<t tx="ekr.20180126061429.19">g.callers() returns the last n callers (default 4) callers of a function or
+method. The verbose option shows each caller on a separate line. For
+example::
     
     g.trace(g.callers())
 
-You must [launch Leo from a console for this to work.
-See http://leoeditor.com/running.html#running-leo-from-a-console-window.</t>
+You must `launch Leo from a console window`_.
+</t>
 <t tx="ekr.20180126061429.2">You can have a personal shortcut to run script while developing it. For example: put `@key=Alt-4` in headline.
 
 If your script grows to several subnodes, you won't have to select top node every time you wish to run script. It would be enough to just press your universal shortcut.</t>
-<t tx="ekr.20180126061429.20">The g.trace function prints all its arguments to the console.
+<t tx="ekr.20180126061429.20">The g.trace function prints all its arguments to the console. It's great
+for seeing patterns in running code.
+You must `launch Leo from a console window`_ to see the output of g.trace.
+</t>
+<t tx="ekr.20180126061429.21">.. _`Python's pdb debugger`: https://docs.python.org/3/library/pdb.html
 
-It's great for seeing patterns in running code.
-
-You must launch Leo from a console for this to work.
-See http://leoeditor.com/running.html#running-leo-from-a-console-window.</t>
-<t tx="ekr.20180126061429.21">g.pdb launches Python's pdb debugger, adapted for Leo.
-
-See https://docs.python.org/3/library/pdb.html.
-
-You must [launch Leo from a console for this to work.
-See http://leoeditor.com/running.html#running-leo-from-a-console-window.</t>
+g.pdb launches `Python's pdb debugger`_, adapted for Leo.
+You must `launch Leo from a console window`_ to use the pdb debugger.
+</t>
 <t tx="ekr.20180126061429.22">The find-quick-selected (Ctrl-Shift-F) command finds all nodes containing the selected text.</t>
 <t tx="ekr.20180126061429.23">The parse-body command parses p.b (the body text of the selected node) into separate nodes.</t>
 <t tx="ekr.20180126061429.24">The sort-siblings (Alt-A) command sorts all the child nodes of their parent, or all top-level nodes.</t>
@@ -27915,45 +27932,47 @@ See http://leoeditor.com/running.html#running-leo-from-a-console-window.</t>
 settings, with documentation for each. Searching
 leoSettings.leo is thus a good way to find settings.</t>
 <t tx="ekr.20180126061429.26">Use Alt-N to cycle through the clones of the present cloned node.
-
 This is a fast way of finding the clone whose ancestor is an @&lt;file&gt; node.</t>
-<t tx="ekr.20180126061429.27">Focus your attention of the task at hand by cloning nodes,
-including @file nodes, then moving those clones so they are
-the last top-level nodes in the outline.
+<t tx="ekr.20180126061429.27">.. _`cloning nodes`: tutorial-pim.html#clones
 
-This allows you to work on nodes scattered throughout an
-outline without altering the structure of @file nodes.</t>
-<t tx="ekr.20180126061429.3">When developing scripts that use Log window to display results, it is sometimes useful to clear Log window by inserting the following two lines at the beginning of your script::
+Focus your attention of the task at hand by `cloning nodes`, including
+\@file nodes, then moving those clones so they are the last top-level nodes
+in the outline. This allows you to work on nodes scattered throughout an
+outline without altering the structure of @file nodes.
+</t>
+<t tx="ekr.20180126061429.3">When developing scripts that use Log window to display results, it is
+sometimes useful to clear Log window by inserting the following two lines
+at the beginning of your script::
 
     c.frame.log.selectTab('Log')
     c.frame.log.clearLog()</t>
-<t tx="ekr.20180126061429.4">Within scripts, use section references only when code must be placed exactly. Here is a common pattern for @file nodes for python files:
+<t tx="ekr.20180126061429.4">Within scripts, use section references only when code must be placed exactly. Here is a common pattern for @file nodes for python files::
 
     @first # -*- coding: utf-8 -*-
     &lt;&lt;imports&gt;&gt;
     @others</t>
-<t tx="ekr.20180126061429.5">The @button make-md-toc script in LeoDocs.leo writes a markdown table of contents to the console.
+<t tx="ekr.20180126061429.5">The @button make-md-toc script in LeoDocs.leo writes a markdown table of
+contents to the console. You can then copy the text from the console to
+your document. The selected outline node should be an `@auto-md` node.</t>
+<t tx="ekr.20180126061429.6">.. _`pyflakes`: https://pypi.python.org/pypi/pyflakes.
 
-You can then copy the text from the console to your document.
-
-The selected outline node should be an `@auto-md` node.</t>
-<t tx="ekr.20180126061429.6">pyflakes is a superb programming tool. It checks python files almost instantly.
+`pyflakes`_ is a superb programming tool. It checks python files almost instantly.
 
 These settings cause Leo to run pyflakes whenever saving a .py file and to raise a dialog if any errors are found::
 
     @bool run-pyflakes-on-write = True
     @bool syntax-error-popup = True
-    
-See https://pypi.python.org/pypi/pyflakes.</t>
+</t>
 <t tx="ekr.20180126061429.7">The @nobeautify directive suppresses beautification of the node in which it appears.</t>
-<t tx="ekr.20180126061429.8">Leo's pylint command runs pylint on all `@&lt;file&gt;` nodes in the selected trees.
+<t tx="ekr.20180126061429.8">.. _`pylint`: https://www.pylint.org/
 
+Leo's pylint command runs `pylint`_ on all `@&lt;file&gt;` nodes in the selected trees.
 Pylint runs in the background, so you can continue to use Leo while pylint runs.
+</t>
+<t tx="ekr.20180126061429.9">.. _`rst3 command`: tutorial-rst3.html.
 
-See: https://www.pylint.org/.</t>
-<t tx="ekr.20180126061429.9">The rst3 command converts an @rst tree to a document file.
-
-See http://leoeditor.com/tutorial-rst3.html.</t>
+The `rst3 command`_ converts an @rst tree to a document file.
+</t>
 <t tx="ekr.20180126061923.1">#############################
 Useful Tips
 #############################
@@ -27967,7 +27986,8 @@ You can disable these tips by setting @bool show-tips = False.
     :local:
 </t>
 <t tx="ekr.20180126062558.1"></t>
-<t tx="ekr.20180126062701.1"></t>
+<t tx="ekr.20180126062701.1">.. _`launch Leo from a console window`: running.html#running-leo-from-a-console-window.
+</t>
 <t tx="ekr.20180126062746.1"></t>
 <t tx="ekr.20180126063015.1"></t>
 <t tx="ekr.20180126063122.1"></t>
