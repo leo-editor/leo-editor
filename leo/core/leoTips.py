@@ -481,7 +481,15 @@ outline without altering the structure of @file nodes.
 
 """),
 
+UserTip(
+    n=0,
+    tags=['Beginner',],
+    title='Search LeoDocs.leo',
+    text="""
+    
+The easiest way to find information on a topic is to search LeoDocs.leo.
 
+"""),
 
 ]
 #@-<< define tips >>
