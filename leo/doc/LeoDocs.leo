@@ -1749,7 +1749,7 @@
 </v>
 <v t="ekr.20180125034327.1"><vh>Leo 5.7b1 release notes</vh>
 <v t="ekr.20180125032239.1"><vh>Leo 5.7 Summary</vh></v>
-<v t="ekr.20180125041229.1"><vh>Leo 5.7 Major features</vh>
+<v t="ekr.20180125041229.1"><vh>Leo 5.7 Major features: 4 issues and 1 other</vh>
 <v t="ekr.20180124100450.49"><vh>#417: reload-settings command</vh>
 <v t="ekr.20180124100450.655"><vh>c.registerReloadSettings</vh></v>
 <v t="ekr.20180124100450.656"><vh>c.reloadConfigurableSettings</vh></v>
@@ -1847,7 +1847,7 @@
 <v t="ekr.20180124100450.913"><vh>#635: Link to nodes from log pane</vh></v>
 <v t="ekr.20180124121851.1"><vh>Added Debian package for Leo</vh></v>
 </v>
-<v t="ekr.20180125034637.1"><vh>Leo 5.7 Fixed 42 Bug issues and one others</vh>
+<v t="ekr.20180125034637.1"><vh>Leo 5.7 Bugs: Fixed 42 issues and one other</vh>
 <v t="ekr.20180125235811.3"><vh>#327: Create a way to unbind bindings in leoSettings.leo</vh></v>
 <v t="ekr.20180125235811.2"><vh>#362: default_path within @rst-options honoured or ignored depending on the node where rst3 command is executed</vh></v>
 <v t="ekr.20180125235811.1"><vh>#384: open files with very long path</vh></v>
@@ -1893,7 +1893,7 @@
 <v t="ekr.20180125235809.3"><vh>#657: @rclick button-name not working if under @buttons node</vh></v>
 <v t="ekr.20180124100450.728"><vh>Fixed can not open message in leoBridge test</vh></v>
 </v>
-<v t="ekr.20180125035840.1"><vh>Leo 5.7 Code improvements</vh>
+<v t="ekr.20180125035840.1"><vh>Leo 5.7 Code improvements: 2 issues and 5 others</vh>
 <v t="ekr.20180124100450.369"><vh>#577: reformatting unit tests...</vh></v>
 <v t="ekr.20180124100450.427"><vh>#589 @g.commander_command</vh></v>
 <v t="ekr.20180124100440.5"><vh>Added verbose option to g.callers()</vh></v>
@@ -1905,14 +1905,21 @@
 </v>
 <v t="ekr.20180124120513.1"><vh>Added backup-repo script in leoPy.leo</vh></v>
 </v>
-<v t="ekr.20180126001345.1"><vh>Leo 5.7 Command-line arguments</vh>
+<v t="ekr.20180125042412.1"><vh>Leo 5.7 Commands: 4 new and 1 improved</vh>
+<v t="ekr.20180124100450.692"><vh>#600: insert-child/insert-node</vh></v>
+<v t="ekr.20180124100450.839"><vh>#632: check-conventions command</vh></v>
+<v t="ekr.20180124123920.1"><vh>Added find-all-unique-regex command</vh></v>
+<v t="ekr.20180124124409.1"><vh>Added insert-as-first-child &amp; insert-as-last-child commands</vh></v>
+<v t="ekr.20180124100450.797"><vh>The cff commands now sort their results</vh></v>
+</v>
+<v t="ekr.20180126001345.1"><vh>Leo 5.7 Command-line arguments: reinstated --trace-shutdown</vh>
 <v t="ekr.20180124100450.803"><vh>Reinstated --trace-shutdown command-line argument</vh>
 <v t="ekr.20180124100450.804"><vh>LM.scanOptions &amp; helper</vh>
 <v t="ekr.20180124100450.805"><vh>LM.computeFilesList</vh></v>
 </v>
 </v>
 </v>
-<v t="ekr.20180124100450.1"><vh>Leo 5.7 Completed 19 Enhancement issues and 2 others </vh>
+<v t="ekr.20180124100450.1"><vh>Leo 5.7 Enhancements: Completed 19 issues and 2 others </vh>
 <v t="ekr.20180125235816.1"><vh>#310: Create new file in right-click in file tab in UI</vh></v>
 <v t="ekr.20180124100450.3"><vh>#327: Create a way to unbind bindings in leoSettings.leo</vh></v>
 <v t="ekr.20180125235814.18"><vh>#414: Add p.drawer, p.results, etc.</vh></v>
@@ -1942,14 +1949,7 @@
 </v>
 <v t="ekr.20180124124532.1"><vh>Improved javascript importer</vh></v>
 </v>
-<v t="ekr.20180125042412.1"><vh>Leo 5.7 New and improved commands</vh>
-<v t="ekr.20180124100450.692"><vh>#600: insert-child/insert-node</vh></v>
-<v t="ekr.20180124100450.839"><vh>#632: check-conventions command</vh></v>
-<v t="ekr.20180124123920.1"><vh>Added find-all-unique-regex command</vh></v>
-<v t="ekr.20180124124409.1"><vh>Added insert-as-first-child &amp; insert-as-last-child</vh></v>
-<v t="ekr.20180124100450.797"><vh>The cff commands now sort their results</vh></v>
-</v>
-<v t="ekr.20180125041723.1"><vh>Leo 5.7 Plugins</vh>
+<v t="ekr.20180125041723.1"><vh>Leo 5.7 Plugins: 2 new and two improved</vh>
 <v t="ekr.20180124100450.126"><vh>#488: Improved the console_gui plugin</vh></v>
 <v t="ekr.20180124100450.888"><vh>#613: patch_python_colorizer.py plugin</vh></v>
 <v t="ekr.20180124100440.6"><vh>New leo_cloud.py plugin</vh></v>
