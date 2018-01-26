@@ -1951,29 +1951,6 @@
 <v t="ekr.20180124100450.712"><vh>c_file.setReferenceFile</vh></v>
 </v>
 </v>
-<v t="ekr.20180126004533.2"><vh>21 Tip issues for milestone 5.7</vh>
-<v t="ekr.20180126004533.23"><vh>#605: Tip: Alt-A (sort-siblings)</vh></v>
-<v t="ekr.20180126004533.22"><vh>#606: Tip: parse-body</vh></v>
-<v t="ekr.20180126004533.21"><vh>#607: Tip: Ctrl-Shift-F (find-quick-selected)</vh></v>
-<v t="ekr.20180126004533.20"><vh>#608: Tip: use g.pdb from the console</vh></v>
-<v t="ekr.20180126004533.19"><vh>#609: Tip: Use g.trace to debug scripts</vh></v>
-<v t="ekr.20180126004533.18"><vh>#610: Tip: Use g.trace(g.callers())</vh></v>
-<v t="ekr.20180126004533.17"><vh>#611: Tip: Use cffm to gather outline nodes</vh></v>
-<v t="ekr.20180126004533.16"><vh>#612: Use cff to gather nodes matching a pattern</vh></v>
-<v t="ekr.20180126004533.15"><vh>#614: Tip: You don't have to remember command names</vh></v>
-<v t="ekr.20180126004533.14"><vh>#615: Tip: Clones are live copies of a node and its descendants</vh></v>
-<v t="ekr.20180126004533.13"><vh>#616: Tip: Put personal settings myLeoSettings.leo</vh></v>
-<v t="ekr.20180126004533.12"><vh>#617: Tip: Leo's most important plugins</vh></v>
-<v t="ekr.20180126004533.11"><vh>#618: Tip: @button nodes</vh></v>
-<v t="ekr.20180126004533.10"><vh>#619: Tip: @test nodes</vh></v>
-<v t="ekr.20180126004533.9"><vh>#620: Tip: Use abbreviations</vh></v>
-<v t="ekr.20180126004533.8"><vh>#621: Tip: the rst3 command converts outlines to documents</vh></v>
-<v t="ekr.20180126004533.7"><vh>#622: Tip: pylint command</vh></v>
-<v t="ekr.20180126004533.6"><vh>#623: Tip: the beautify command and @nobeautify</vh></v>
-<v t="ekr.20180126004533.5"><vh>#624: Tip: run pyflakes automatically</vh></v>
-<v t="ekr.20180126004533.4"><vh>#625: Tip: @button make-md-toc in LeoDocs.leo</vh></v>
-<v t="ekr.20180126004533.3"><vh>#626: Tip: Use section references sparingly</vh></v>
-</v>
 </v>
 </vnodes>
 <tnodes>
@@ -27820,28 +27797,6 @@ Also, improved the javascript importer.</t>
 
 Improved the console_gui plugin.
 </t>
-<t tx="ekr.20180126004533.10">https://github.com/leo-editor/leo-editor/issues/619</t>
-<t tx="ekr.20180126004533.11">https://github.com/leo-editor/leo-editor/issues/618</t>
-<t tx="ekr.20180126004533.12">https://github.com/leo-editor/leo-editor/issues/617</t>
-<t tx="ekr.20180126004533.13">https://github.com/leo-editor/leo-editor/issues/616</t>
-<t tx="ekr.20180126004533.14">https://github.com/leo-editor/leo-editor/issues/615</t>
-<t tx="ekr.20180126004533.15">https://github.com/leo-editor/leo-editor/issues/614</t>
-<t tx="ekr.20180126004533.16">https://github.com/leo-editor/leo-editor/issues/612</t>
-<t tx="ekr.20180126004533.17">https://github.com/leo-editor/leo-editor/issues/611</t>
-<t tx="ekr.20180126004533.18">https://github.com/leo-editor/leo-editor/issues/610</t>
-<t tx="ekr.20180126004533.19">https://github.com/leo-editor/leo-editor/issues/609</t>
-<t tx="ekr.20180126004533.2"></t>
-<t tx="ekr.20180126004533.20">https://github.com/leo-editor/leo-editor/issues/608</t>
-<t tx="ekr.20180126004533.21">https://github.com/leo-editor/leo-editor/issues/607</t>
-<t tx="ekr.20180126004533.22">https://github.com/leo-editor/leo-editor/issues/606</t>
-<t tx="ekr.20180126004533.23">https://github.com/leo-editor/leo-editor/issues/605</t>
-<t tx="ekr.20180126004533.3">https://github.com/leo-editor/leo-editor/issues/626</t>
-<t tx="ekr.20180126004533.4">https://github.com/leo-editor/leo-editor/issues/625</t>
-<t tx="ekr.20180126004533.5">https://github.com/leo-editor/leo-editor/issues/624</t>
-<t tx="ekr.20180126004533.6">https://github.com/leo-editor/leo-editor/issues/623</t>
-<t tx="ekr.20180126004533.7">https://github.com/leo-editor/leo-editor/issues/622</t>
-<t tx="ekr.20180126004533.8">https://github.com/leo-editor/leo-editor/issues/621</t>
-<t tx="ekr.20180126004533.9">https://github.com/leo-editor/leo-editor/issues/620</t>
 <t tx="ekr.20180126060924.1"></t>
 <t tx="ekr.20180126060940.1"></t>
 <t tx="maphew.20171129131746.1">Python 3.0+::

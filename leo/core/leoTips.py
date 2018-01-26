@@ -130,6 +130,7 @@ def make_tip_nodes(c):
         p.h = tip.title
         p.b = tip.text
     if root.hasChildren():
+        root.h = '%s User Tips' % root.numberOfChildren()
         c.sortSiblings(p=root.firstChild())
     root.expand()
     c.selectPosition(root)
