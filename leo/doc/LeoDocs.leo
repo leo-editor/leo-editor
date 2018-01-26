@@ -1881,7 +1881,7 @@
 <v t="ekr.20180125235809.3"><vh>#657: @rclick button-name not working if under @buttons node</vh></v>
 <v t="ekr.20180124100450.728"><vh>Fixed can not open message in leoBridge test</vh></v>
 </v>
-<v t="ekr.20180125035840.1"><vh>Leo 5.7 Code improvements: 2 issues and 6 others</vh>
+<v t="ekr.20180125035840.1"><vh>Leo 5.7 Code improvements: 2 issues and 8 others</vh>
 <v t="ekr.20180124100450.369"><vh>#577: reformatting unit tests...</vh></v>
 <v t="ekr.20180124100450.427"><vh>#589 @g.commander_command</vh></v>
 <v t="ekr.20180124100440.5"><vh>Added verbose option to g.callers()</vh></v>
@@ -1893,6 +1893,8 @@
 </v>
 <v t="ekr.20180124120513.1"><vh>Added backup-repo script in leoPy.leo</vh></v>
 <v t="ekr.20180126003014.1"><vh>Added @button get-issues to LeoDocs.leo</vh></v>
+<v t="ekr.20180126060924.1"><vh>Added g.getGitIssues</vh></v>
+<v t="ekr.20180126060940.1"><vh>Added top-level make_tip_nodes in leoTips.py</vh></v>
 </v>
 <v t="ekr.20180125042412.1"><vh>Leo 5.7 Commands: 3 new and 1 improved</vh>
 <v t="ekr.20180124100450.839"><vh>#632: check-conventions command</vh></v>
@@ -1973,7 +1975,6 @@
 <v t="ekr.20180126004533.3"><vh>#626: Tip: Use section references sparingly</vh></v>
 </v>
 </v>
-<v t="ekr.20180125112749.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -27841,6 +27842,8 @@ Improved the console_gui plugin.
 <t tx="ekr.20180126004533.7">https://github.com/leo-editor/leo-editor/issues/622</t>
 <t tx="ekr.20180126004533.8">https://github.com/leo-editor/leo-editor/issues/621</t>
 <t tx="ekr.20180126004533.9">https://github.com/leo-editor/leo-editor/issues/620</t>
+<t tx="ekr.20180126060924.1"></t>
+<t tx="ekr.20180126060940.1"></t>
 <t tx="maphew.20171129131746.1">Python 3.0+::
 
     pip install leo

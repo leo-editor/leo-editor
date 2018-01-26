@@ -4400,8 +4400,6 @@ class GitIssueController(object):
         
         import requests
         trace = True
-        # url = 'https://api.github.com/repos/leo-editor/leo-editor/issues?labels=%s&state=closed&page=%s' % (
-            # label, page)
         url = self.base_url + '?labels=%s&state=closed&page=%s' % (label, page)
         aList = requests.get(url).json()
         try:
