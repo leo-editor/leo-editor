@@ -367,7 +367,7 @@ for commercial use (including resale). There is no GNU-like "copyleft"
 restriction. The Open Source Initiative board has voted to certify the
 MIT license as Open Source. This license is compatible with the GPL.
 
-Copyright (c) 1997-2017 by Edward K. Ream. All Rights Reserved.
+Copyright (c) 1997-2018 by Edward K. Ream. All Rights Reserved.
 
 Permission to use, copy, modify, and distribute this software and its
 documentation for any purpose and without fee is hereby granted,
@@ -734,7 +734,7 @@ Make these files in the top-level folder::
     leo.zip.
 '''
 
-version = '5.6' ##version
+version = '5.7b1' ##version
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
 
@@ -1057,7 +1057,7 @@ def deleteTempFiles (self,lines):
         # This commit ensures the proper files are included in the distribution.
         # r'git commit -m "commit doc files during make"',
         ##version
-        r'%s archive --format zip --output "%s" --prefix=Leo-5.6/ master' % (
+        r'%s archive --format zip --output "%s" --prefix=Leo-5.7b1/ master' % (
             r'c:\apps\Git\bin\git.exe',zipFile),
     )
     g.execute_shell_commands(commands,trace=True)
@@ -1719,7 +1719,7 @@ https://testpypi.python.org/pypi?%3Aaction=pkg_edit&amp;name=leo
 </t>
 <t tx="ekr.20141118074110.3">https://groups.google.com/forum/#!topic/leo-editor/VvnDYjV4aIk</t>
 <t tx="ekr.20141118074110.4"></t>
-<t tx="ekr.20150326055410.1">##version@language rest
+<t tx="ekr.20150326055410.1">@language rest
 
 1. Search for ##version
 
@@ -1728,7 +1728,7 @@ https://testpypi.python.org/pypi?%3Aaction=pkg_edit&amp;name=leo
 
 2. Search for copyright
 
-    Latest copyright date: 2017.
+    Latest copyright date: 2018.
 
     Note: install.txt file embeds a copyright message in the nsi installer.</t>
 <t tx="ekr.20150415145711.1">April 16, 2015
