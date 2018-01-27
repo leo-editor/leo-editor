@@ -2827,7 +2827,11 @@ class LoadManager(object):
                 aList = m.load_snapshot()
                 if aList:
                     m.load_session(c1, aList)
-                    c = c1 = g.app.windowList[0].c
+                    # tag:#659.
+                    if g.app.windowList:
+                        c = c1 = g.app.windowList[0].c
+                    else:
+                        c = c1 = None
         if not c1 or not g.app.windowList:
             c1 = lm.openEmptyWorkBook()
         # Fix bug #199.
