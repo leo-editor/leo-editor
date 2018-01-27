@@ -1889,13 +1889,11 @@
 <v t="ekr.20180124122055.1"><vh>New line_numbering.py plugin</vh></v>
 </v>
 </v>
-<v t="ekr.20180125041552.1"><vh>To do</vh></v>
-<v t="ekr.20180124100450.708"><vh>*-ref-file commands</vh>
+<v t="ekr.20180124100450.708"><vh>** Document *-ref-file commands</vh>
 <v t="ekr.20180124100450.710"><vh>update-ref-file</vh></v>
 <v t="ekr.20180124100450.711"><vh>read-ref-file</vh></v>
 <v t="ekr.20180124100450.712"><vh>set-ref-file</vh></v>
 </v>
-<v t="ekr.20131008041326.16094"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -25545,7 +25543,6 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A5.7+label%3ABug</t>
 <t tx="ekr.20180125035840.1"></t>
 <t tx="ekr.20180125041229.1"></t>
-<t tx="ekr.20180125041552.1"></t>
 <t tx="ekr.20180125041723.1"></t>
 <t tx="ekr.20180125042412.1"></t>
 <t tx="ekr.20180125094702.1">@language python
