@@ -4381,50 +4381,40 @@ class GitIssueController(object):
         for label in label_list:
             self.get_one_issue(label)
     #@+node:ekr.20180126043719.3: *5* git.get_issue
-    def get_one_issue(self, label):
+    def get_one_issue(self, label, limit=20):
         '''Create a list of issues with the given label.'''
+        import requests
         root = self.root.insertAsLastChild()
         page, total = 1, 0
+        page_url = self.base_url + '?labels=%s&state=closed&page=%s'
         while True:
-            n = self.get_one_page(label, page, root)
-            if n == -1:
+            url =  page_url % (label, page)
+            r = requests.get(url)
+            try:
+                done, n = self.get_one_page(label, page, r, root)
+                # if page == 1: self.print_header(r)
+            except AttributeError:
+                g.trace('Possible rate limit')
+                self.print_header(r)
+                g.es_exception()
                 break
             total += n
+            if done:
+                break
             page += 1
-            if page > 15:
+            if page > limit:
                 g.trace('too many pages')
                 break
         root.h = '%s %s issues for milestone %s' % (total, label, self.milestone)
     #@+node:ekr.20180126043719.4: *5* git.get_one_page
-    def get_one_page(self, label, page, root):
+    def get_one_page(self, label, page, r, root):
         
-        import requests
         trace = True
-        url = self.base_url + '?labels=%s&state=closed&page=%s' % (label, page)
-        aList = requests.get(url).json()
-        try:
-            empty = not any([z for z in aList if z.get('milestone') is not None])
-            if empty:
-                if trace: g.trace(label, page, 'EMPTY 1')
-                return -1
-        except AttributeError:
-            g.trace(label, page, 'AttributeError 1')
-            g.printObj(aList)
-            return -1
-        aList1 = aList[:]
-        try:
-            aList = [z for z in aList if z.get('milestone') is not None and
-                self.milestone==z.get('milestone').get('title')
-            ]
-        except AttributeError:
-            # Rate limit or querry error.
-            g.trace(label, page, 'AttributeError 2')
-            g.printObj(aList1)
-            return -1
-        if not aList:
-            if trace: g.trace(label, page, 'EMPTY 2')
-            return 0
-        if trace: g.trace(label, page, len(aList))
+        aList = [
+            z for z in r.json()
+                if z.get('milestone') is not None and
+                    self.milestone==z.get('milestone').get('title')
+        ]
         for d in aList:
             n, title = d.get('number'), d.get('title')
             p = root.insertAsNthChild(0)
@@ -4432,7 +4422,20 @@ class GitIssueController(object):
             p.b = 'https://github.com/leo-editor/leo-editor/issues/%s' % n
             if self.include_body:
                 p.b += d.get('body').strip()
-        return len(aList)
+        link = r.headers.get('Link')
+        done = not link or link.find('rel="next"') == -1
+        if trace: g.trace(label, page, len(aList), 'done', done)
+        return done, len(aList)
+    #@+node:ekr.20180127092201.1: *5* git.print_header
+    def print_header(self, r):
+        
+        # r.headers is a CaseInsensitiveDict
+        # so g.printObj(r.headers) is just repr(r.headers)
+        if 0:
+            print('Link', r.headers.get('Link'))
+        else:
+            for key in r.headers:
+                print('%35s: %s' % (key, r.headers.get(key)))
     #@-others
 #@+node:ekr.20170414034616.2: *3* g.gitBranchName
 def gitBranchName(path=None):
