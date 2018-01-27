@@ -491,6 +491,21 @@ The easiest way to find information on a topic is to search LeoDocs.leo.
 
 """),
 
+UserTip(
+    n=0,
+    tags=['Power User',],
+    title='Use Ctrl-P (repeat-complex-command) to avoid key bindings',
+    text="""
+    
+Ctrl-P re-executes the last command made from the minibuffer.
+You can use this to avoid having to define key bindings.
+
+For example, instead of pressing an @button button, execute
+its command from the minibuffer. Now you can re-execute the
+button using Ctrl-P.
+
+"""),
+
 ]
 #@-<< define tips >>
 #@@language python

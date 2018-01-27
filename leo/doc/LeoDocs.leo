@@ -722,6 +722,7 @@
 <v t="ekr.20180126061429.24"><vh>The sort-siblings command</vh></v>
 <v t="ekr.20180126061429.26"><vh>Use Alt-N (goto-next-clone) to find "primary" clones</vh></v>
 <v t="ekr.20180126061429.18"><vh>Use cffm to gather outline nodes</vh></v>
+<v t="ekr.20180126184230.1"><vh>Use Ctrl-P (repeat-complex-command) to avoid key bindings</vh></v>
 </v>
 <v t="ekr.20180126062701.1"><vh>Scripting tips</vh>
 <v t="ekr.20180126061429.3"><vh>Clearing the Log window</vh></v>
@@ -25927,6 +25928,13 @@ You can disable these tips by setting @bool show-tips = False.
 <t tx="ekr.20180126063015.1"></t>
 <t tx="ekr.20180126063122.1"></t>
 <t tx="ekr.20180126063712.1">When True, Leo shows User Tips in a dialog on startup.
+</t>
+<t tx="ekr.20180126184230.1">Ctrl-P re-executes the last command made from the minibuffer.
+You can use this to avoid having to define key bindings.
+
+For example, instead of pressing an @button button, execute
+its command from the minibuffer. Now you can re-execute the
+button using Ctrl-P.
 </t>
 <t tx="maphew.20171129131746.1">Python 3.0+::
 
