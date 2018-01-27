@@ -1,21 +1,22 @@
-Leo 5.6 September 25, 2017
+Leo 5.7b1 January 27, 2018
 
-[Leo](http://leoeditor.com/) 5.6 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+[Leo](http://leoeditor.com/) 5.7b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
 Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is possible to simulate Python in assembly language...
 
-**The highlights of Leo 5.6**
+**The highlights of Leo 5.7**
 
-- The cursesGui2.py plugin creates a console gui for Leo.
-- Added "Yes to All" and "No to All" buttons to file-changed dialog.
-- Improved how Leo switches between git branches.
-- Created outline-oriented git-diff command.
-
-**Leo 5.6.1, November 9, 2017**
-
-- Published on Python Package Index (PyPi) and pip installable, `pip install leo`
+- Added Debian package for Leo.
+- New reload-settings command.
+- Leo optionally shows user tips on startup.
+- Added a new Tips page to Leo's documentation.
+- Improved the console_gui plugin.
+- Added live links from urls in the log pane.
+- Unit tests use a string gui, making them faster and more robust.
+- The line_numbering plugin shows line numbers in external files.
+- Improved the javascript importer.
 
 **Links**
 

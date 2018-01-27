@@ -28,20 +28,21 @@ import leo.core.leoGlobals as g
 # Leo 5.4 final: October 22, 2016.
 # Leo 5.5 final: March 23, 2017.
 # Leo 5.6 final: September 27, 2017.
+# Leo 5.7b1: January 27, 2018.
 #@-<< version dates >>
 #@+<< about install hooks >>
 #@+node:ekr.20150409201910.1: ** << about install hooks >>
 #@@nocolor-node
 #@+at
 # 
-# Developers should copy commit-msg & pre-commit from leo/extentions/hooks to
+# Developers should copy commit-msg & pre-commit from leo/extensions/hooks to
 # leo-editor/.git/hooks.
 # 
 # These hooks cause Leo to update commit_timestamp.json automatically.
 # 
 # The install_hooks.py script copies these two files to leo-editor/.git/hooks.
 #@-<< about install hooks >>
-version = "5.6"
+version = "5.7b1"
 date, build = g.jsonCommitInfo()
 branch = g.gitBranchName()
 #@@language python
