@@ -487,6 +487,7 @@
 </v>
 <v t="ekr.20170206073747.9"><vh>Installing Leo on MacOs 10.7 (Lion) and later</vh></v>
 </v>
+<v t="ekr.20180126191031.1"><vh>Installing everything with Anaconda or Miniconda</vh></v>
 </v>
 <v t="ekr.20131008041326.16140"><vh>@rst html/running.html</vh>
 <v t="ekr.20131008041326.16151"><vh>Running Leo</vh>
@@ -1888,17 +1889,13 @@
 <v t="ekr.20180124122055.1"><vh>New line_numbering.py plugin</vh></v>
 </v>
 </v>
-<v t="ekr.20180125041552.1"><vh>To do</vh>
-<v t="maphew.20171129140022.1"><vh>@rst html/quick.html</vh>
-<v t="maphew.20171129131746.1"><vh>Computer with python already</vh></v>
-<v t="maphew.20171129131759.1"><vh>No python yet</vh></v>
-</v>
-</v>
+<v t="ekr.20180125041552.1"><vh>To do</vh></v>
 <v t="ekr.20180124100450.708"><vh>*-ref-file commands</vh>
 <v t="ekr.20180124100450.710"><vh>update-ref-file</vh></v>
 <v t="ekr.20180124100450.711"><vh>read-ref-file</vh></v>
 <v t="ekr.20180124100450.712"><vh>set-ref-file</vh></v>
 </v>
+<v t="ekr.20131008041326.16094"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -17588,7 +17585,9 @@ FYI, this FAQ entry fixes the following bug: https://bugs.launchpad.net/leo-edit
         insert-file-name
         pylint
         style-reload</t>
-<t tx="ekr.20141105052052.4">.. _`Docutils`:   http://docutils.sourceforge.net
+<t tx="ekr.20141105052052.4">.. _`Anaconda`:   https://www.anaconda.com/download/
+.. _`Miniconda`:  https://conda.io/miniconda.html
+.. _`Docutils`:   http://docutils.sourceforge.net
 .. _`feedparser`: https://pypi.python.org/pypi/feedparser
 .. _`Markdown`:   http://daringfireball.net/projects/markdown/syntax
 .. _`Python`:     https://www.python.org/
@@ -25904,48 +25903,18 @@ button using Ctrl-P.
 <t tx="ekr.20180126185857.1"></t>
 <t tx="ekr.20180126190015.1"></t>
 <t tx="ekr.20180126190053.1"></t>
-<t tx="maphew.20171129131746.1">Python 3.0+::
+<t tx="ekr.20180126191031.1">The `Anaconda`_ scientific computing environment includes Python, NumPy, SciPy, PyQt, and over a thousand other tools, packages and libraries. It's a 500+ MB download but you're guaranteed to have everything needed.
+
+To install Leo do this from a console::
 
     pip install leo
 
-Python 2.7+ on Windows::
+The `Miniconda`_ environment includes just Python and the `conda` package management tool. Pick and choose from the full Anaconda ecosystem.
 
-    pip install python-qt5
-    pip install leo
-
-Python 2.7+ on Linux (debian/ubuntu/mint)::
-
-    apt install python-pyqt5
-    pip install leo
-
-See [Installing &gt;&gt; Dependencies] for additional packages and tools you might want.
-
-*Tested: Windows 7,10, Linux Mint.*
-</t>
-<t tx="maphew.20171129131759.1">.. _`Anaconda`:   https://www.anaconda.com/download/
-.. _`Miniconda`:  https://conda.io/miniconda.html
-
-All-in
-------
-Install `Anaconda`_ scientific computing environment which includes Python, NumPy, SciPy, PyQt, and over a thousand tools, packages and libraries commonly used for Data Science. It's a 500+ MB download but you're guaranteed to have everything needed.
-
-Then from Anaconda shell::
-
-    pip install leo
-
-
-Lean
-----
-Install the `Miniconda`_ Anaconda environment, which is stripped down to just Python and the `conda` package management tool. Pick and choose from the full 1000+ Anaconda package ecosystem.
-
-From Anaconda shell::
+To install Leo do this from a console::
 
     conda install pyqt5
     pip install leo
-</t>
-<t tx="maphew.20171129140022.1">#######################
-Installing dependencies
-#######################
 </t>
 <t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
