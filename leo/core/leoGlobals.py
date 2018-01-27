@@ -4387,7 +4387,7 @@ class GitIssueController(object):
         page, total = 1, 0
         while True:
             n = self.get_one_page(label, page, root)
-            if n is -1:
+            if n == -1:
                 break
             total += n
             page += 1
