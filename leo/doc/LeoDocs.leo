@@ -397,7 +397,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1889,6 +1889,7 @@
 <v t="ekr.20180124122055.1"><vh>New line_numbering.py plugin</vh></v>
 </v>
 </v>
+<v t="ekr.20180127032545.1"><vh>PyPi notes</vh></v>
 <v t="ekr.20180124100450.708"><vh>** Document *-ref-file commands</vh>
 <v t="ekr.20180124100450.710"><vh>update-ref-file</vh></v>
 <v t="ekr.20180124100450.711"><vh>read-ref-file</vh></v>
@@ -25913,7 +25914,20 @@ To install Leo do this from a console::
     conda install pyqt5
     pip install leo
 </t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_ctime="1376412039.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20180127032545.1">## Current status
+
+- Work is now being carried out in master.
+- PyPi compliant wheel packages are built and install successfully on Windows (7,10) and Linux (Mint) with python 2.7 and 3.6.
+- leoDist.leo contains the **package upload recipe** in the node `Matt's workflow for updating pypi`.  At present, a clone of this node appears at the top level.  The clone will remain at the top level until this issue is closed, or perhaps even longer.
+
+@maphew  **I have removed the package upload recipe from this comment**.  I see no reason for the duplication.  It will be easy enough to restore if necessary.
+
+## To do
+
+- [ ] Update installation docs. **In Progress**. @maphew Please put the various documentation sections in leoDist.leo into separate nodes, with subsidiary discussions in child nodes, or even grandchild nodes.  That way devs can see the logical relationships between sections.  In general, **never** rely on markup when outline structure is available.
+
+- [ ] Someone besides Matt runs through process from start to finish and is successful. @maphew Is further "internal" testing really necessary?  Can't we simply test the wheel after you upload it?</t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
