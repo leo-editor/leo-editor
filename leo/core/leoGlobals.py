@@ -4424,7 +4424,7 @@ class GitIssueController(object):
                 p.b += d.get('body').strip()
         link = r.headers.get('Link')
         done = not link or link.find('rel="next"') == -1
-        if trace: g.trace(label, page, len(aList), 'done', done)
+        if trace: g.trace('%12s %2s %2s done: %s' % (label, page, len(aList), done))
         return done, len(aList)
     #@+node:ekr.20180127092201.1: *5* git.print_header
     def print_header(self, r):
