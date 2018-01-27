@@ -303,7 +303,7 @@
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
 </v>
-<v t="ekr.20141118074110.4" a="E"><vh>Discussions</vh>
+<v t="ekr.20141118074110.4"><vh>Discussions</vh>
 <v t="ekr.20141118074110.2"><vh>Matt's workflow for updating pypi</vh></v>
 <v t="ekr.20141118074110.3"><vh>Installing Leo on Linux</vh></v>
 </v>
@@ -2845,7 +2845,7 @@ it is possible to simulate Python in assembly language...
     - pip2/3 install setuptools==19.2
 </t>
 <t tx="ekr.20161015091350.1">- Make sure no distributed .leo file contains xml-stylesheet elements.
-  Run @button check .leo files.
+  Run @button check .leo files in leo-dist.leo.
 - Make sure Leo looks good without myLeoSettings.leo.
 - Run the "check-bindings" button in leoSettings.leo.
 - Run all unit tests with *both* Python 2 and 3.
