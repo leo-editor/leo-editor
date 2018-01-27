@@ -397,7 +397,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1789,7 +1789,7 @@
 <v t="ekr.20180124100450.913"><vh>#635: Link to nodes from log pane</vh></v>
 <v t="ekr.20180124121851.1"><vh>Added Debian package for Leo</vh></v>
 </v>
-<v t="ekr.20180125034637.1"><vh>Leo 5.7 Bugs: Fixed 42 issues and one other</vh>
+<v t="ekr.20180125034637.1"><vh>Leo 5.7 Bugs: Fixed 43 issues and one other</vh>
 <v t="ekr.20180125235811.3"><vh>#327: Create a way to unbind bindings in leoSettings.leo</vh></v>
 <v t="ekr.20180125235811.2"><vh>#362: default_path within @rst-options honoured or ignored depending on the node where rst3 command is executed</vh></v>
 <v t="ekr.20180125235811.1"><vh>#384: open files with very long path</vh></v>
@@ -1833,6 +1833,7 @@
 <v t="ekr.20180125235809.5"><vh>#654: Undoer class problem</vh></v>
 <v t="ekr.20180125235809.4"><vh>#656: @buttons defined in local myLeoSettings.leo not appearing in work files</vh></v>
 <v t="ekr.20180125235809.3"><vh>#657: @rclick button-name not working if under @buttons node</vh></v>
+<v t="ekr.20180127092625.1"><vh>#659: --session-restore causes failure on first launch</vh></v>
 <v t="ekr.20180124100450.728"><vh>Fixed can not open message in leoBridge test</vh></v>
 </v>
 <v t="ekr.20180125035840.1"><vh>Leo 5.7 Code improvements: 2 issues and 8 others</vh>
@@ -1895,6 +1896,9 @@
 <v t="ekr.20180124100450.711"><vh>read-ref-file</vh></v>
 <v t="ekr.20180124100450.712"><vh>set-ref-file</vh></v>
 </v>
+<v t="ekr.20131008041326.16092"></v>
+<v t="ekr.20180127062046.1"><vh>New installation page</vh></v>
+<v t="ekr.20180125112540.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -25927,7 +25931,69 @@ To install Leo do this from a console::
 - [ ] Update installation docs. **In Progress**. @maphew Please put the various documentation sections in leoDist.leo into separate nodes, with subsidiary discussions in child nodes, or even grandchild nodes.  That way devs can see the logical relationships between sections.  In general, **never** rely on markup when outline structure is available.
 
 - [ ] Someone besides Matt runs through process from start to finish and is successful. @maphew Is further "internal" testing really necessary?  Can't we simply test the wheel after you upload it?</t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20180127062046.1">**Installing Leo
+
+First you will need to install python. Python3 is recommended but you can install Python 2.7 if you prefer. Download from www.python.org
+Quick and easy
+
+Recommended for most users. If you are a developer, you may prefer other 'Options for installing Leo'
+Install Leo using pip
+
+Installing Leo using pip will take care of the dependencies &amp; install them automatically. Pip is included with python3.
+
+Open a terminal window and cd to where you have python 3.x installed. Change to your home directory ~home\&lt;path-to-python&gt;\Python3
+
+&gt; C:\~\AppData\Local\Programs\Python36&gt;
+
+
+
+Optional - verify you have pip installed
+
+&gt; pip --version
+
+you should see 'pip 9.0.1' from your &lt;path-to-python&gt;
+
+
+
+Now enter
+
+&gt; pip3 install leo
+
+Pip will proceed to download and install Leo and it's required packages.
+Running Leo
+
+Time to start Leo. In a Console or Terminal window (cmd.exe), cd to the Leo directory.
+
+&gt; C:\~\AppData\Local\Programs\Python\Python36\site-packages\leo-editor
+
+or
+
+&gt; C:\Users\~home\AppData\Local\Programs\Python\Python36\site-packages\leo-editor
+
+
+start Leo by typing
+
+&gt; launchleo.py
+
+
+Running Leo (http://leoeditor.com/running.html) has further options.
+
+
+Options for installing Leo.
+
+Recommended for coders, developers, users with specific needs, or those who prefer to use the latest development version of Leo.
+Dependencies
+
+Leo requires PyQt for GUI functions and widgets. PyQt5 is recommended. The following packages are optional, but recommended:
+
+    Docutils: required for the rst3 command and the viewrendered plugins.
+
+    Sphinx: required to regenerate Leo’s documentation.
+
+    PyEnchant: required for spell checking with Leo’s Spell tab.
+</t>
+<t tx="ekr.20180127092625.1">https://github.com/leo-editor/leo-editor/issues/659</t>
+<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
