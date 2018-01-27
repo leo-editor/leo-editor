@@ -1126,6 +1126,7 @@ class LeoQtGui(leoGui.LeoGui):
             self.setIcon(self.Information)
             self.setWindowTitle('Leo Tips')
             self.setText(repr(tip))
+            self.next_tip_button = self.addButton('Show Next Tip', self.ActionRole)
             self.setStandardButtons(self.Ok)
             c.styleSheetManager.set_style_sheets(w=self)
             layout = self.layout()
@@ -1145,11 +1146,15 @@ class LeoQtGui(leoGui.LeoGui):
         if not force and not self.show_tips_flag:
             return
         tm = leoTips.TipManager()
-        tip = tm.get_next_tip()
-        m = self.DialogWithCheckBox(controller=self,tip=tip)
         if 1: # QMessageBox is always a modal dialog.
-            m.exec_()
-            self.update_tips_setting()
+            while True:
+                tip = tm.get_next_tip()
+                m = self.DialogWithCheckBox(controller=self,tip=tip)
+                m.exec_()
+                b = m.clickedButton()
+                self.update_tips_setting()
+                if b != m.next_tip_button:
+                    break
         else:
             m.buttonClicked.connect(self.onButton)
             m.setModal(False)
@@ -1165,6 +1170,10 @@ class LeoQtGui(leoGui.LeoGui):
         c = g.app.log.c
         if c and self.show_tips_flag != c.config.getBool('show-tips', default=False):
             c.config.setUserSetting('@bool show-tips', self.show_tips_flag)
+    #@+node:ekr.20180127103142.1: *4* onNext
+    def onNext(self, *args, **keys):
+        g.trace(args, keys)
+        return True
     #@+node:ekr.20111215193352.10220: *3* qt_gui.Splash Screen
     #@+node:ekr.20110605121601.18479: *4* qt_gui.createSplashScreen
     def createSplashScreen(self):
