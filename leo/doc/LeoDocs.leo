@@ -541,10 +541,19 @@
 <v t="ekr.20050830115714.4"><vh>Why should I use clones?</vh></v>
 </v>
 <v t="ekr.20101025080245.6084"><vh>Leo in Shared environments</vh>
-<v t="ekr.20050830115714.12"><vh>How should I use Leo with git, etc.?</vh></v>
-<v t="ekr.20171027125705.1"><vh>Why do files sometimes change when switching branches?</vh></v>
 <v t="ekr.20090706042206.14718"><vh>How can I use Leo cooperatively without sentinels?</vh></v>
 <v t="ekr.20120229094652.15137"><vh>What's the recommended way to upgrade Leo?</vh></v>
+</v>
+<v t="ekr.20180126190053.1"><vh>Leo and Git</vh>
+<v t="ekr.20050830115714.12"><vh>How should I use Leo with git, etc.?</vh></v>
+<v t="ekr.20171027125705.1"><vh>Why do files sometimes change when switching branches?</vh></v>
+</v>
+<v t="ekr.20180126190015.1"><vh>Leo and Excel</vh>
+<v t="ekr.20050830115714.116"><vh>How can I show Leo files with Excel?</vh></v>
+</v>
+<v t="ekr.20180126185857.1"><vh>Leo and LaTeX</vh>
+<v t="ekr.20180124094454.1"><vh>How can I produce PDF output from LaTex input?</vh></v>
+<v t="ekr.20120229094652.15148"><vh>How can I use BibTeX citations from Leo?</vh></v>
 </v>
 <v t="ekr.20141109053526.4"><vh>Scripting &amp; Testing</vh>
 <v t="ekr.20141108064630.15"><vh>How can I create buttons with dropdown menus?</vh></v>
@@ -567,20 +576,7 @@
 <v t="ekr.20050830115714.120"><vh>How can I display graphics in Leo?</vh></v>
 <v t="ekr.20150415110715.1"><vh>How can I eliminate clone wars?</vh></v>
 <v t="ekr.20050830115714.74"><vh>How can I import many files at once?</vh></v>
-<v t="ekr.20150416100041.1"><vh>How can I organize data so I can find stuff later?</vh></v>
-<v t="ekr.20120229094652.15124"><vh>How can I restore focus without using the mouse</vh></v>
-<v t="ekr.20050830115714.116"><vh>How can I show Leo files with Excel?</vh></v>
-<v t="ekr.20160414191631.1"><vh>How can I simulate more flexible clones?</vh></v>
-<v t="ekr.20141030042423.9"><vh>How can I specify the root directory of a thumb drive?</vh></v>
-<v t="ekr.20120229094652.15148"><vh>How can I use BibTeX citations from Leo?</vh></v>
-<v t="ekr.20150415111217.1"><vh>How can I use clones to reorganize an outline?</vh></v>
-<v t="ekr.20130807203905.16526"><vh>How can I use git to check Leo's importers?</vh></v>
-<v t="ekr.20160304081437.4"><vh>How can I use Leo in virtualenv?</vh></v>
-<v t="ekr.20050830120857"><vh>How can I use Leo to develop Leo itself?</vh></v>
-<v t="ekr.20160304081437.5"><vh>How can I use Leo with git?</vh></v>
-<v t="ekr.20141109053526.8"><vh>How can I use the GTD workflow in Leo?</vh></v>
-<v t="ekr.20050830115714.119"><vh>How can I use two copies of Leo to advantage?</vh></v>
-<v t="ekr.20131122055946.16401"><vh>How to make a screencast</vh>
+<v t="ekr.20131122055946.16401"><vh>How can I make a screencast?</vh>
 <v t="ekr.20131122055946.16402"><vh>Use a script to open your app</vh></v>
 <v t="ekr.20131122055946.16403"><vh>Debug your workflow with short videos</vh></v>
 <v t="ekr.20131122055946.16404"><vh>Emulate the screencast.com tutorials</vh></v>
@@ -590,6 +586,17 @@
 <v t="ekr.20131129061821.16884"><vh>Additional tips</vh></v>
 <v t="ekr.20131211054925.16388"><vh>Tips for improving audio</vh></v>
 </v>
+<v t="ekr.20150416100041.1"><vh>How can I organize data so I can find stuff later?</vh></v>
+<v t="ekr.20120229094652.15124"><vh>How can I restore focus without using the mouse</vh></v>
+<v t="ekr.20160414191631.1"><vh>How can I simulate more flexible clones?</vh></v>
+<v t="ekr.20141030042423.9"><vh>How can I specify the root directory of a thumb drive?</vh></v>
+<v t="ekr.20150415111217.1"><vh>How can I use clones to reorganize an outline?</vh></v>
+<v t="ekr.20130807203905.16526"><vh>How can I use git to check Leo's importers?</vh></v>
+<v t="ekr.20160304081437.4"><vh>How can I use Leo in virtualenv?</vh></v>
+<v t="ekr.20050830120857"><vh>How can I use Leo to develop Leo itself?</vh></v>
+<v t="ekr.20160304081437.5"><vh>How can I use Leo with git?</vh></v>
+<v t="ekr.20141109053526.8"><vh>How can I use the GTD workflow in Leo?</vh></v>
+<v t="ekr.20050830115714.119"><vh>How can I use two copies of Leo to advantage?</vh></v>
 <v t="ekr.20170228104217.1"><vh>What are some useful abbreviations?</vh></v>
 <v t="ekr.20150415105956.1"><vh>Why is Alt-N (goto-next-clone) important?</vh></v>
 </v>
@@ -1886,14 +1893,11 @@
 <v t="maphew.20171129131746.1"><vh>Computer with python already</vh></v>
 <v t="maphew.20171129131759.1"><vh>No python yet</vh></v>
 </v>
-<v t="ekr.20180124094454.1"><vh>FAQ How to use Leo with LaTex to get PDF output</vh></v>
-<v t="ekr.20180124100450.708"><vh>Document ref file commands</vh>
-<v t="ekr.20180124100450.709"><vh>Reference outline commands</vh>
-<v t="ekr.20180124100450.710"><vh>c_file.updateRefLeoFile</vh></v>
-<v t="ekr.20180124100450.711"><vh>c_file.readRefLeoFile</vh></v>
-<v t="ekr.20180124100450.712"><vh>c_file.setReferenceFile</vh></v>
 </v>
-</v>
+<v t="ekr.20180124100450.708"><vh>*-ref-file commands</vh>
+<v t="ekr.20180124100450.710"><vh>update-ref-file</vh></v>
+<v t="ekr.20180124100450.711"><vh>read-ref-file</vh></v>
+<v t="ekr.20180124100450.712"><vh>set-ref-file</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -24855,9 +24859,11 @@ To enable tracing for these methods, and many others, set the trace variable at 
 - Shifting focus to the minibuffer after Ctrl-F works initially, but thereafter Tab and Shift-Tab don't work as expected until all widgets have been visited.  A workaround is to navigate to the minibuffer *before* using Ctrl-F, but this is not a perfect fix either.
 
 - After startup, the output from g.es correctly goes to the log widget, but it is scrolled out of view!</t>
-<t tx="ekr.20180124094454.1">From a [long discussion](https://groups.google.com/d/msg/leo-editor/83avo6mgHXY/nIKOpztyAAAJ) on leo-editor:
+<t tx="ekr.20180124094454.1">.. _`long discussion`: https://groups.google.com/d/msg/leo-editor/83avo6mgHXY/nIKOpztyAAAJ
 
-From [Rob Keeney](https://plus.google.com/u/0/111638648831776420240):
+From this `long discussion`_ on leo-editor:
+
+From Rob Keeney:
 
 **Typical Use case**
 
@@ -24912,7 +24918,9 @@ protect using standard PDFs.
 
 **Example Leo file**
 
-[This page](https://github.com/leo-editor/snippets/tree/master/examples/workflow/latex-pdf) contains an example .leo file.
+.. _`example Leo file`: https://github.com/leo-editor/snippets/tree/master/examples/workflow/latex-pdf
+
+See this `example Leo file`_.
 
 **Questions**
 
@@ -24924,7 +24932,7 @@ project. That way it's easier to clean up the extra files created during
 the process steps. HTH. There might be a way to invoke the LaTex commands
 through Leo, but that's way above my pay grade.
 
-From [Arjan Mossel](https://plus.google.com/u/0/100174058931254366165):
+From Arjan Mossel:
 
 I'm using Leo to organize sections like \chapter, \section and \subsection.
 Since I'm just writing latex in Leo, I need to keep track of the right
@@ -25178,7 +25186,6 @@ The @g.commander_command decorator injects ivars into the Commands class.</t>
 <t tx="ekr.20180124100450.708">https://groups.google.com/forum/#!topic/leo-editor/yAtfcG6AL70
 
 </t>
-<t tx="ekr.20180124100450.709"></t>
 <t tx="ekr.20180124100450.710">@g.commander_command('update-ref-file')
 def updateRefLeoFile(self, event=None):
     '''
@@ -25894,6 +25901,9 @@ For example, instead of pressing an @button button, execute
 its command from the minibuffer. Now you can re-execute the
 button using Ctrl-P.
 </t>
+<t tx="ekr.20180126185857.1"></t>
+<t tx="ekr.20180126190015.1"></t>
+<t tx="ekr.20180126190053.1"></t>
 <t tx="maphew.20171129131746.1">Python 3.0+::
 
     pip install leo
