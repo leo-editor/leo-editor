@@ -397,7 +397,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e332e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -416,8 +416,7 @@
 </v>
 <v t="ekr.20131120115900.16329"><vh>@rst html/screencasts.html</vh></v>
 <v t="ekr.20100821182153.4343"><vh>@rst html/slides.html</vh></v>
-<v t="ekr.20170130080532.1"
-expanded="ekr.20180126181140.13,"><vh>@auto-md ../doc/demo.md</vh></v>
+<v t="ekr.20170130080532.1"><vh>@auto-md ../doc/demo.md</vh></v>
 <v t="ekr.20170202125807.1"><vh>@auto-md ../doc/colorizer.md</vh></v>
 <v t="ekr.20161120073024.1"><vh>Technical docs on GitHub</vh>
 <v t="ekr.20161120073038.1"><vh>@auto-md importers.md </vh></v>
@@ -1841,14 +1840,15 @@ expanded="ekr.20180126181140.13,"><vh>@auto-md ../doc/demo.md</vh></v>
 <v t="ekr.20180125035840.1"><vh>Leo 5.7 Code improvements: 2 issues and 8 others</vh>
 <v t="ekr.20180124100450.369"><vh>#577: reformatting unit tests...</vh></v>
 <v t="ekr.20180124100450.427"><vh>#589 @g.commander_command</vh></v>
+<v t="ekr.20180128112939.1"><vh>Added "exact" keyword arg to g.findNode* functions</vh></v>
+<v t="ekr.20180126003014.1"><vh>Added @button get-issues to LeoDocs.leo</vh></v>
+<v t="ekr.20180124120513.1"><vh>Added backup-repo script in leoPy.leo</vh></v>
+<v t="ekr.20180126060924.1"><vh>Added g.getGitIssues</vh></v>
+<v t="ekr.20180124100450.1030"><vh>Added p.promote</vh></v>
+<v t="ekr.20180126060940.1"><vh>Added top-level make_tip_nodes in leoTips.py</vh></v>
 <v t="ekr.20180124100440.5"><vh>Added verbose option to g.callers()</vh></v>
 <v t="ekr.20180124121124.1"><vh>Improved Leo read/write code in leoAtFile.py</vh></v>
 <v t="ekr.20180124100440.3"><vh>New redraw code</vh></v>
-<v t="ekr.20180124100450.1030"><vh>Added p.promote</vh></v>
-<v t="ekr.20180124120513.1"><vh>Added backup-repo script in leoPy.leo</vh></v>
-<v t="ekr.20180126003014.1"><vh>Added @button get-issues to LeoDocs.leo</vh></v>
-<v t="ekr.20180126060924.1"><vh>Added g.getGitIssues</vh></v>
-<v t="ekr.20180126060940.1"><vh>Added top-level make_tip_nodes in leoTips.py</vh></v>
 </v>
 <v t="ekr.20180125042412.1"><vh>Leo 5.7 Commands: 3 new and 1 improved</vh>
 <v t="ekr.20180124100450.839"><vh>#632: check-conventions command</vh></v>
@@ -1900,8 +1900,7 @@ expanded="ekr.20180126181140.13,"><vh>@auto-md ../doc/demo.md</vh></v>
 </v>
 <v t="ekr.20131008041326.16092"></v>
 <v t="ekr.20180127062046.1"><vh>New installation page</vh></v>
-<v t="ekr.20170130080532.1"
-expanded="ekr.20180126181140.13,"></v>
+<v t="ekr.20170130080532.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -25993,7 +25992,16 @@ Leo requires PyQt for GUI functions and widgets. PyQt5 is recommended. The follo
 <t tx="ekr.20180128052016.1"></t>
 <t tx="ekr.20180128101447.1">https://github.com/leo-editor/leo-editor/issues/661
 </t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20180128112939.1">g.findNodeInChildren, g.findNodeInTree, and g.findNodeAnywhere now take an
+"exact" keyword argument. The default (True) ensures current behavior does
+not change.
+
+All three methods first look for an exact match, regardless of the exact
+keyword, just as before. If no match is found, and exact is False, these
+methods then search again, matching if the given headline is a prefix of
+the headline of any node.
+</t>
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
