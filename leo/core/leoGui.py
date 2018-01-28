@@ -303,6 +303,8 @@ class NullGui(LeoGui):
         self.lastFrame = None
             # The outer frame, used only to set the g.app.log in runMainLoop.
         self.isNullGui = True
+        self.idleTimeClass = g.NullObject
+
     #@+node:ekr.20031218072017.3744: *3* NullGui.dialogs
     def runAboutLeoDialog(self, c, version, theCopyright, url, email):
         return self.simulateDialog("aboutLeoDialog", None)
@@ -410,12 +412,13 @@ class NullGui(LeoGui):
     #@+node:ekr.20031218072017.2229: *3* NullGui.runMainLoop
     def runMainLoop(self):
         """Run the null gui's main loop."""
+        trace = False
         if self.script:
             frame = self.lastFrame
             g.app.log = frame.log
-            # g.es("start of batch script...\n")
+            if trace: g.trace("NullGui: start of batch script")
             self.lastFrame.c.executeScript(script=self.script)
-            # g.es("\nend of batch script")
+            if trace: g.trace("NullGui: end of batch script")
         else:
             print('**** NullGui.runMainLoop: terminating Leo.')
         # Getting here will terminate Leo.

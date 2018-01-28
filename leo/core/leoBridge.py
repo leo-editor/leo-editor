@@ -62,7 +62,13 @@ def controller(
     '''Create an singleton instance of a bridge controller.'''
     global gBridgeController
     if not gBridgeController:
-        gBridgeController = BridgeController(gui, loadPlugins, readSettings, silent, tracePlugins, verbose)
+        gBridgeController = BridgeController(
+            gui,
+            loadPlugins,
+            readSettings,
+            silent,
+            tracePlugins,
+            verbose)
     return gBridgeController
 #@+node:ekr.20070227092442.2: ** class BridgeController
 class BridgeController(object):
