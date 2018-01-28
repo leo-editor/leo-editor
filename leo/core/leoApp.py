@@ -3616,7 +3616,8 @@ class RecentFilesManager(object):
         '''
         tag = '.leoRecentFiles.txt'
         rf = self
-        if g.app.unitTesting:
+        # tag:#661. Do nothing if in leoBride.
+        if g.app.unitTesting or g.app.inBridge:
             return
         localFileName = c.fileName()
         if localFileName:
