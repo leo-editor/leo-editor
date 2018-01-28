@@ -416,7 +416,8 @@
 </v>
 <v t="ekr.20131120115900.16329"><vh>@rst html/screencasts.html</vh></v>
 <v t="ekr.20100821182153.4343"><vh>@rst html/slides.html</vh></v>
-<v t="ekr.20170130080532.1"><vh>@auto-md ../doc/demo.md</vh></v>
+<v t="ekr.20170130080532.1"
+expanded="ekr.20180126181140.13,"><vh>@auto-md ../doc/demo.md</vh></v>
 <v t="ekr.20170202125807.1"><vh>@auto-md ../doc/colorizer.md</vh></v>
 <v t="ekr.20161120073024.1"><vh>Technical docs on GitHub</vh>
 <v t="ekr.20161120073038.1"><vh>@auto-md importers.md </vh></v>
@@ -1899,7 +1900,8 @@
 </v>
 <v t="ekr.20131008041326.16092"></v>
 <v t="ekr.20180127062046.1"><vh>New installation page</vh></v>
-<v t="ekr.20170130080532.1"></v>
+<v t="ekr.20170130080532.1"
+expanded="ekr.20180126181140.13,"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
