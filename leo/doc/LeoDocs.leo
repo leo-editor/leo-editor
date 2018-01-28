@@ -133,10 +133,10 @@
 <v t="ekr.20180125102554.1"><vh>update</vh></v>
 <v t="ekr.20180125101033.1"><vh>wait</vh></v>
 </v>
-<v t="ekr.20180125113541.1"><vh>slides</vh>
-<v t="ekr.20180125113620.1"><vh>Body pane</vh></v>
-<v t="ekr.20180125113622.1"><vh>Tree pane</vh></v>
-<v t="ekr.20180125113623.1"><vh>Log pane</vh></v>
+<v t="ekr.20180125113541.1"><vh>top-level</vh>
+<v t="ekr.20180128052016.1"><vh>slides</vh>
+<v t="ekr.20180128051013.1"><vh>panes</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20170212105226.1"><vh>@button IntroSlides</vh>
@@ -397,7 +397,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e322e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1899,6 +1899,7 @@
 <v t="ekr.20131008041326.16092"></v>
 <v t="ekr.20180127062046.1"><vh>New installation page</vh></v>
 <v t="ekr.20180125112540.1"></v>
+<v t="ekr.20180125094702.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -25633,18 +25634,6 @@ d.delete_widgets()
 update()
 c.bodyWantsFocusNow()
 </t>
-<t tx="ekr.20180125113620.1">highlight('body')
-d.Callout('Body Pane')
-wait()
-unhighlight('body')</t>
-<t tx="ekr.20180125113622.1">highlight('tree')
-d.Callout('Outline Pane',pane='tree')
-wait()
-unhighlight('tree')</t>
-<t tx="ekr.20180125113623.1">highlight('log')
-d.Callout('Log Pane',pane='log')
-wait()
-unhighlight('log')</t>
 <t tx="ekr.20180125235809.10">https://github.com/leo-editor/leo-editor/issues/648</t>
 <t tx="ekr.20180125235809.11">https://github.com/leo-editor/leo-editor/issues/645</t>
 <t tx="ekr.20180125235809.12">https://github.com/leo-editor/leo-editor/issues/641</t>
@@ -25993,7 +25982,14 @@ Leo requires PyQt for GUI functions and widgets. PyQt5 is recommended. The follo
     PyEnchant: required for spell checking with Leo’s Spell tab.
 </t>
 <t tx="ekr.20180127092625.1">https://github.com/leo-editor/leo-editor/issues/659</t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20180128051013.1">for pane in ('body', 'tree', 'log'):
+    highlight(pane)
+    d.Callout('%s %s' % (pane.capitalize(), pane), pane=pane)
+    wait()
+    unhighlight(pane)
+</t>
+<t tx="ekr.20180128052016.1"></t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
