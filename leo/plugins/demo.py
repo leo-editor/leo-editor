@@ -5,6 +5,7 @@
 '''
 A plugin that makes making Leo demos easy. See:
 https://github.com/leo-editor/leo-editor/blob/master/leo/doc/demo.md
+generated in LeoDocs.leo: demo.md
 
 Written by Edward K. Ream, January 29-31, 2017.
 Revised by EKR February 6-7, 2017.

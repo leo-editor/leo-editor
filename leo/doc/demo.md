@@ -4,6 +4,7 @@ The demo.py plugin helps presenters run dynamic demos from Leo files.
 
 - [Leo's demo.py plugin](../doc/demo.md#leos-demopy-plugin)
 - [Overview](../doc/demo.md#overview)
+- [A simpler work flow](../doc/demo.md#a-simpler-work-flow)
 - [Graphics classes & helpers](../doc/demo.md#graphics-classes--helpers)
 - [Using demo scripts](../doc/demo.md#using-demo-scripts)
     - [Script trees and lists](../doc/demo.md#script-trees-and-lists)
@@ -49,6 +50,43 @@ For example, this demo script executes the insert-node command:
 **Controlling the presentation**: The **demo-next** command executes the next demo script. The **demo-prev** command executes the previous demo. The presentation ends after executing the last demo script. The **demo-end** command ends the demo early. Presentations can be made fully automated by having demo scripts move from slide to slide with appropriate delays between each.
 
 **Adding graphic to slides**: Demo scripts may use predefined **graphics classes** to show callouts, subtitles or images. These graphics persist from slide to slide until deleted. Subclasses of Demo may easily subclass the predefined classes.
+
+# A simpler work flow
+The workflow just described demo works well for interactive demos. An easier work flow suffices for non-interactive demos. Two \@button nodes in LeoDocs.leo illustrate the difference in these two approaches:
+
+\@button IntroSlides uses the interactive work flow. It defines a subclass of the Demo class, including setup and teardown methods when entering and leaving a slide.  And it defines a "slides tree" that contains the actual slides.
+
+@button demo creates a non-interactive demo. It uses the base Demo class, and defines a single script to be run from start to finish. The <\< utils >\> section defines some simple utilities:  highlight, unhighlight, update, wait. Everything else (@others) defines a sequence of actions.
+
+The top-level node (its headline is top-level) is:
+
+```python
+ssm = c.styleSheetManager
+d = demo.Demo(c)
+d.delete_widgets()
+update()
+c.bodyWantsFocusNow()
+```
+
+A single node suffices to demonstrate three panes:
+
+```python
+for pane in ('body', 'tree', 'log'):
+    highlight(pane)
+    d.Callout('%s %s' % (pane.capitalize(), pane), pane=pane)
+    wait()
+    unhighlight(pane)
+```
+
+highlight(pane) is the "setup" action, wait() denotes the end of the slide, and unhighlight(pane) is the "teardown" action.
+
+Now here is the important part:  **@others organizes the slides**.  No need for any fancy conventions about where slides start and end.  Just use Leo's natural tree structure, including empty organizer nodes if you like.
+
+**Summary**
+
+The wait() utility waits for a fixed length of time, which can be set by a keyword arg.  It could also call Python's input() function to wait for a keystroke.
+
+The non-interactive pattern is simpler than the interactive pattern. The interactive pattern is more flexible. It allows the presenter to move backward and forward through slides, something that is not possible with the new, simpler pattern.  Otoh, the new pattern is a good way to prototype interactive demos.
 
 # Graphics classes & helpers
 
