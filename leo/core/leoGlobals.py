@@ -6722,30 +6722,52 @@ def executeScript(name):
     if theFile:
         theFile.close()
 #@+node:ekr.20040321065415: *3* g.findNode... &,findTopLevelNode
-def findNodeInChildren(c, p, headline):
+def findNodeInChildren(c, p, headline, exact=True):
     """Search for a node in v's tree matching the given headline."""
-    for p in p.children():
-        if p.h.strip() == headline.strip():
+    p1 = p.copy()
+    h = headline.strip()
+    for p in p1.children():
+        if p.h.strip() == h:
             return p.copy()
+    if not exact:
+        for p in p1.children():
+            if p.h.strip().startswith(h):
+                return p.copy()
     return None
 
-def findNodeInTree(c, p, headline):
+def findNodeInTree(c, p, headline, exact=True):
     """Search for a node in v's tree matching the given headline."""
-    for p in p.subtree():
-        if p.h.strip() == headline.strip():
+    h = headline.strip()
+    p1 = p.copy()
+    for p in p1.subtree():
+        if p.h.strip() == h:
             return p.copy()
+    if not exact:
+        for p in p1.subtree():
+            if p.h.strip().startswith(h):
+                return p.copy()
     return None
 
-def findNodeAnywhere(c, headline):
+def findNodeAnywhere(c, headline, exact=True):
+    h = headline.strip()
     for p in c.all_unique_positions():
-        if p.h.strip() == headline.strip():
+        if p.h.strip() == h:
             return p.copy()
+    if not exact:
+        for p in c.all_unique_positions():
+            if p.h.strip().startswith(h):
+                return p.copy()
     return None
 
-def findTopLevelNode(c, headline):
+def findTopLevelNode(c, headline, exact=True):
+    h = headline.strip()
     for p in c.rootPosition().self_and_siblings():
-        if p.h.strip() == headline.strip():
+        if p.h.strip() == h:
             return p.copy()
+    if not exact:
+        for p in c.rootPosition().self_and_siblings():
+            if p.h.strip().startswith(h):
+                return p.copy()
     return None
 #@+node:EKR.20040614071102.1: *3* g.getScript & helpers
 def getScript(c, p,

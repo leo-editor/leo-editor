@@ -11751,6 +11751,45 @@ else:
         test()
     finally:
         sys.stdout = sys.__stdout__
+#@+node:ekr.20180128105733.1: *4* @test g.findNode*
+trace = False
+skipped = 0
+p0 = p.copy()
+p2 = g.findNodeAnywhere(c,'@test g.findNode*')
+assert p2 and p2.v == p.v, ('1', repr(p2), repr(p))
+p2 = g.findNodeAnywhere(c,'@test g.findNode',exact=False)
+assert p2 and p2.v == p.v, ('2', repr(p2), repr(p))
+#
+parent = p0.parent()
+if parent: # Will fail for a top-level clone
+    p2 = g.findNodeInChildren(c,parent,'@test g.findNode*')
+    assert p2 and p2.v == p.v, ('3', repr(p2), repr(p))
+    p2 = g.findNodeInChildren(c,parent,'@test g.findNode',exact=False)
+    assert p2 and p2.v == p.v, ('4', repr(p2), repr(p))
+else:
+    skipped += 1
+#
+parent = p0.parent()
+if parent: # Will fail for a top-level clone
+    p2 = g.findNodeInTree(c,parent,'@test g.findNode*')
+    assert p2 and p2.v == p.v, ('5', repr(p2), repr(p))
+    p2 = g.findNodeInTree(c,parent,'@test g.findNode',exact=False)
+    assert p2 and p2.v == p.v, ('6', repr(p2), repr(p))
+else:
+    skipped += 1
+#
+p1 = g.findTopLevelNode(c,'Active Unit Tests')
+if p1:
+    p2 = g.findTopLevelNode(c,'Active Unit Test',exact=False)
+    assert p2 and p2.v == p1.v, ('7', repr(p2), repr(p1))
+    p2 = g.findNodeInTree(c,p1,'@test g.findNode*')
+    assert p2 and p2.v == p.v, ('8', repr(p2), repr(p))
+    p2 = g.findNodeInTree(c,p1,'@test g.findNode',exact=False)
+    assert p2 and p2.v == p.v, ('9', repr(p2), repr(p))
+else:
+    skipped += 1
+if trace and skipped:
+    print('%s: skipped %s sub-tests' % (p0.h, skipped))
 #@+node:ekr.20140702101937.4245: *4* @test g.find_word
 table = (
     ('abc a bc x','bc',0,6),

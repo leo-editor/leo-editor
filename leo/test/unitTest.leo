@@ -272,7 +272,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285508302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735508302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735508302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735509302e362e31392e3431710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735508302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31362e3371017d71025808000000616e6e6f7461746571037d7104735808000000302e362e31322e3971057d71065809000000756e69745f7465737471075804000000616263647108735809000000302e362e31392e343171097d710a58090000006d795f706c7567696e710b580300000076616c710c735808000000302e362e32372e37710d7d710e5808000000616e6e6f74617465710f7d7110735808000000302e362e31382e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -385,6 +385,99 @@
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 </v>
 </v>
+<v t="ekr.20071113194033.3"><vh>leoGlobals</vh>
+<v t="ekr.20100131180007.5398"><vh>@test g.adjustTripleString</vh></v>
+<v t="ekr.20110510054817.3476"><vh>@test g.alert</vh></v>
+<v t="ekr.20040917062206"><vh>@test g.cantImport returns None</vh></v>
+<v t="ekr.20060921115303"><vh>@test g.checkVersion</vh></v>
+<v t="ekr.20071113143844.9"><vh>@test g.CheckVersionToInt</vh></v>
+<v t="ekr.20100131180007.5428"><vh>@test g.comment_delims_from_extension</vh></v>
+<v t="ekr.20160327132053.1"><vh>@test g.compute_directives_re</vh></v>
+<v t="ekr.20071113145804.26"><vh>@test g.convertPythonIndexToRowCol</vh></v>
+<v t="ekr.20071113145804.27"><vh>@test g.convertRowColToPythonIndex</vh></v>
+<v t="ekr.20071113145804.21"><vh>@test g.create_temp_file</vh></v>
+<v t="ekr.20100131180007.5403"><vh>@test g.ensureLeadingNewlines</vh></v>
+<v t="ekr.20100131180007.5404"><vh>@test g.ensureTrailingNewlines</vh></v>
+<v t="ekr.20111110073834.3843"><vh>@test g.es_print</vh></v>
+<v t="ekr.20071113145804.22"><vh>@test g.es_trace</vh></v>
+<v t="ekr.20180128105733.1"><vh>@test g.findNode*</vh></v>
+<v t="ekr.20140702101937.4245"><vh>@test g.find_word</vh></v>
+<v t="ekr.20100131180007.5455"><vh>@test g.fullPath</vh>
+<v t="ekr.20100131180007.5456"><vh>@path abc</vh>
+<v t="ekr.20100131180007.5457"><vh>xyz</vh></v>
+</v>
+</v>
+<v t="ekr.20071113090055.5"><vh>@test g.get_directives_dict</vh></v>
+<v t="ekr.20100131180007.5434"><vh>@test g.get_directives_dict 2</vh></v>
+<v t="ekr.20111018163546.3690"><vh>@test g.getDocString</vh></v>
+<v t="ekr.20061104172236.18"><vh>@test g.getLine</vh></v>
+<v t="ekr.20071113145804.28"><vh>@test g.getScript strips crlf</vh></v>
+<v t="ekr.20061104172236.11"><vh>@test g.getWord</vh></v>
+<v t="ekr.20110612064437.3310"><vh>@test g.guessExternalEditor</vh></v>
+<v t="ekr.20120307133953.3947"><vh>@test g.handleUrl</vh></v>
+<v t="ekr.20111103213154.3824"><vh>@test g.importFromPath</vh></v>
+<v t="ekr.20141208130803.11"><vh>@test g.importModule</vh></v>
+<v t="ekr.20170122164330.1"><vh>@test g.isDirective</vh></v>
+<v t="ekr.20170601070526.1"><vh>@test g.match_word</vh></v>
+<v t="ekr.20180120142320.1"><vh>@test g.os_path_expandExpression</vh></v>
+<v t="ekr.20111104112332.3953"><vh>@test g.os_path_finalize_join with thumb drive</vh></v>
+<v t="ekr.20071113145804.19"><vh>@test g.pdb</vh></v>
+<v t="ekr.20111110073528.3843"><vh>@test g.pr</vh></v>
+<v t="ekr.20100212112056.5361"><vh>@test g.printGcAll</vh></v>
+<v t="ekr.20100131180007.5396"><vh>@test g.removeBlankLines</vh></v>
+<v t="ekr.20071113145804.29"><vh>@test g.removeExtraLws</vh></v>
+<v t="ekr.20100131180007.5395"><vh>@test g.removeLeadingBlankLines</vh></v>
+<v t="ekr.20100131180007.5402"><vh>@test g.removeTrailing</vh></v>
+<v t="ekr.20150328120706.1"><vh>@test g.sanitize_filename</vh></v>
+<v t="ekr.20080917151620.13"><vh>@test g.scanAtHeaderDirectives header</vh></v>
+<v t="ekr.20100131180007.5435"><vh>@test g.scanAtHeaderDirectives header</vh></v>
+<v t="ekr.20080917151620.14"><vh>@test g.scanAtHeaderDirectives noheader</vh></v>
+<v t="ekr.20080917151620.15"><vh>@test g.scanAtLineendingDirectives cr</vh></v>
+<v t="ekr.20080917151620.16"><vh>@test g.scanAtLineendingDirectives crlf</vh></v>
+<v t="ekr.20080917151620.17"><vh>@test g.scanAtLineendingDirectives lf</vh></v>
+<v t="ekr.20080917151620.18"><vh>@test g.scanAtLineendingDirectives nl</vh></v>
+<v t="ekr.20080917151620.19"><vh>@test g.scanAtLineendingDirectives platform</vh></v>
+<v t="ekr.20100131180007.5442"><vh>@test g.scanAtPagewidthDirectives -40</vh></v>
+<v t="ekr.20080917151620.21"><vh>@test g.scanAtPagewidthDirectives 40</vh></v>
+<v t="ekr.20080917151620.22"><vh>@test g.scanAtPathDirectives ../test/unittest/at-path-test1.py</vh>
+<v t="ekr.20120228145505.4834"><vh>@thin ../test/unittest/at-path-test1.py</vh></v>
+</v>
+<v t="ekr.20080917151620.27"><vh>@test g.scanAtPathDirectives @path ../test @path unittest @thin at-path-test3.py</vh>
+<v t="ekr.20080917151620.28"><vh>@path ../test</vh>
+<v t="ekr.20080917151620.29"><vh>@path unittest</vh>
+<v t="ekr.20120228145505.4838"><vh>@thin at-path-test3.py</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20080917151620.24"><vh>@test g.scanAtPathDirectives @path ../test/unittest @thin at-path-test2.py</vh>
+<v t="ekr.20080917151620.25"><vh>@path ../test/unittest</vh>
+<v t="ekr.20120228145505.4841"><vh>@thin at-path-test2.py</vh></v>
+</v>
+</v>
+<v t="ekr.20080917151620.31"><vh>@test g.scanAtTabwidthDirectives +6</vh></v>
+<v t="ekr.20080917151620.32"><vh>@test g.scanAtTabwidthDirectives -6</vh></v>
+<v t="ekr.20080917151620.33"><vh>@test g.scanAtWrapDirectives nowrap</vh></v>
+<v t="ekr.20080917151620.34"><vh>@test g.scanAtWrapDirectives wrap (with @wrap)</vh></v>
+<v t="ekr.20080917151620.35"><vh>@test g.scanAtWrapDirectives wrap (without @nowrap)</vh></v>
+<v t="ekr.20100131180007.5426"><vh>@test g.set_delims_from_language</vh></v>
+<v t="ekr.20100131180007.5425"><vh>@test g.set_delims_from_string</vh></v>
+<v t="ekr.20100131180007.5421"><vh>@test g.setDefaultDirectory</vh></v>
+<v t="sps.20100609234650.16094"><vh>@test g.skip_blank_lines</vh></v>
+<v t="ekr.20061104172236.15"><vh>@test g.skip_line</vh></v>
+<v t="ekr.20061104172236.16"><vh>@test g.skip_to_end_of_line</vh></v>
+<v t="ekr.20061104172236.17"><vh>@test g.skip_to_start_of_line</vh></v>
+<v t="ekr.20150610130646.1"><vh>@test g.splitLongFileName</vh></v>
+<v t="ekr.20130910062920.4149"><vh>@test g.stripBOM</vh></v>
+<v t="ekr.20100131180007.5427"><vh>@test g.stripPathCruft</vh></v>
+<v t="ekr.20141223125432.11"><vh>@test g.toUnicode(QString)</vh></v>
+<v t="ekr.20111110072415.3841"><vh>@test g.trace</vh></v>
+<v t="ekr.20050105084757.1"><vh>@test g.utils_remove</vh></v>
+<v t="ekr.20050105091547"><vh>@test g.utils_rename</vh></v>
+<v t="ekr.20100131180007.5429"><vh>@test g.warnOnReadOnlyFile</vh></v>
+<v t="ekr.20050208135429"><vh>@test pre-definition of g in scripts</vh></v>
+<v t="ekr.20071113202153.2"><vh>@test zz end of leoGlobals tests</vh></v>
+</v>
+<v t="ekr.20180128105733.1"></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -408,8 +501,57 @@ code for @test, @suite, etc. so if you want all the gory details you can read
 the code. It's not complicated: Leo creates UnitTest classes automatically whose
 run method is the body of the @suite or @test node.
 </t>
+<t tx="ekr.20040917062206">assert(g.cantImport("xyzzy","during unit testing") is None)
+</t>
 <t tx="ekr.20041121151002"># Many of these are required for unit tests.
 # Do not change them without running all unit tests.</t>
+<t tx="ekr.20050105084757.1">import os
+
+exists = g.os_path_exists
+
+path = g.os_path_join(g.app.testDir,'xyzzy')
+if exists(path):
+    os.remove(path)
+
+assert not exists(path)
+assert not g.utils_remove(path,verbose=False)
+
+f = open(path,'w')
+f.write('test')
+f.close()
+
+assert exists(path)
+assert g.utils_remove(path,verbose=True)
+assert not exists(path)
+</t>
+<t tx="ekr.20050105091547">import os
+
+exists = g.os_path_exists
+path = g.os_path_join(g.app.testDir,'xyzzy')
+path2 = g.os_path_join(g.app.testDir,'xyzzy2')
+
+# Create both paths.
+for p in (path,path2):
+    if exists(p):
+        os.remove(p)
+    assert not exists(p)
+    f = open(p,'w')
+    f.write('test %s' % p)
+    f.close()
+    assert exists(p)
+
+assert g.utils_rename(c,path,path2) #,verbose=True)
+assert exists(path2)
+f = open(path2)
+s = f.read()
+f.close()
+assert s == 'test %s' % path
+os.remove(path2)
+assert not exists(path)
+</t>
+<t tx="ekr.20050208135429">for ivar in ('c','g','p'):
+    assert ivar in dir()
+</t>
 <t tx="ekr.20050328101834"></t>
 <t tx="ekr.20050328101834.1"></t>
 <t tx="ekr.20050328101834.2"></t>
@@ -651,6 +793,76 @@ It also includes a trace back, but for AssertionErrors, it does not seem to offe
 assert('Spam' == 'Ham')</t>
 <t tx="ekr.20051012104957"></t>
 <t tx="ekr.20051013162226"></t>
+<t tx="ekr.20060921115303"># for condition in ('&lt;','&lt;=','&gt;','&gt;='):
+
+for v1,condition,v2 in (
+    ('8.4.12','&gt;','8.4.3'),
+    ('1','==','1.0'),
+    ('2','&gt;','1'),
+    ('1.2','&gt;','1'),
+    ('2','&gt;','1.2.3'),
+    ('1.2.3','&lt;','2'),
+    ('1','&lt;','1.1'),
+):
+    assert g.CheckVersion(v1,v2,condition=condition,trace=False)
+</t>
+<t tx="ekr.20061104172236.11">s = 'abc xy_z5 pdq'
+i,j = g.getWord(s,5)
+assert s[i:j] == 'xy_z5','got %s' % s[i:j]
+</t>
+<t tx="ekr.20061104172236.15">s = 'a\n\nc'
+
+for i,result in (
+    (-1,2), # One too few.
+    (0,2),(1,2),
+    (2,3),
+    (3,4),
+    (4,4), # One too many.
+):
+    j = g.skip_line(s,i)
+    assert j == result, 'i: %d, expected %d, got %d' % (i,result,j)
+</t>
+<t tx="ekr.20061104172236.16">s = 'a\n\nc'
+
+for i,result in (
+    (-1,1), # One too few.
+    (0,1),(1,1),
+    (2,2),
+    (3,4),
+    (4,4), # One too many.
+):
+    j = g.skip_to_end_of_line(s,i)
+    assert j == result, 'i: %d, expected %d, got %d' % (i,result,j)
+</t>
+<t tx="ekr.20061104172236.17">s1 = 'a\n\nc'
+table1 = (
+    (-1,0), # One too few.
+    (0,0),(1,0),
+    (2,2),
+    (3,3),
+    (4,4), # One too many.
+)
+s2 = 'a\n'
+table2 = ((1,0),(2,2)) # A special case at end.
+
+for s,table in ((s1,table1),(s2,table2)):
+    for i,result in table:
+        j = g.skip_to_start_of_line(s,i)
+        assert j == result, 'i: %d, expected %d, got %d' % (i,result,j)
+</t>
+<t tx="ekr.20061104172236.18">s = 'a\ncd\n\ne'
+
+for i,result in (
+    (-1,(0,2)), # One too few.
+    (0,(0,2)),(1,(0,2)),
+    (2,(2,5)),(3,(2,5)),(4,(2,5)),
+    (5,(5,6)),
+    (6,(6,7)),
+    (7,(6,7)), # One too many.
+):
+    j,k = g.getLine(s,i)
+    assert (j,k) == result, 'i: %d, expected %d,%d, got %d,%d' % (i,result[0],result[1],j,k)
+</t>
 <t tx="ekr.20070113145100"># Not part of cvs distributions, but needed for two unit tests.
 
 dir = g.os_path_join(g.app.loadDir,'..','test','unittest',g.u('chinese\u8116folder'),encoding='utf-8')
@@ -840,6 +1052,18 @@ except Exception:
     g.es_exception()
 assert g.os_path_exists(path), 'batchTest.py failed'
 </t>
+<t tx="ekr.20071113090055.5"># This will work regardless of where this method is.
+@language python
+@tabwidth -4
+# @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
+@pagewidth 120
+
+d = c.atFileCommands.scanAllDirectives(p)
+assert d.get('language') == 'python'
+assert d.get('tabwidth') == -4
+# assert d.get('path').endswith('xyzzy')
+assert d.get('pagewidth') == 120
+</t>
 <t tx="ekr.20071113140035">fn = g.os_path_abspath(g.os_path_join(g.app.loadDir,'..','core','leoPy.leo'))
 assert g.os_path_exists(fn),fn
 c1 = c
@@ -865,6 +1089,136 @@ print('\n----- Only in leoPy.leo')
 for h in sorted(d2.keys()):
     if not d1.get(h):
         print(h)</t>
+<t tx="ekr.20071113143844.9">assert g.CheckVersionToInt('12') == 12,'fail 1'
+assert g.CheckVersionToInt('2a5') == 2, 'fail 2'
+assert g.CheckVersionToInt('b2') == 0, 'fail 3'
+</t>
+<t tx="ekr.20071113145804.19">import sys
+
+# Not a good unit test; it probably will never fail.
+def aFunction(): pass
+assert type(g.pdb)==type(aFunction), 'wrong type for g.pdb: %s' % type(g.pdb)
+
+class myStdout:
+    def write(self,s):
+        pass # g.es('From pdb:',s)
+
+class myStdin:
+    def readline (self):
+        return 'c' # Return 'c' (continue) for all requests for input.
+
+def restore():
+    sys.stdout,sys.stdin = sys.__stdout__,sys.__stdin__
+
+try:
+    sys.stdin = myStdin() # Essential
+    sys.stdout=myStdout() # Optional
+    g.pdb()
+    restore()
+    # assert False,'test of reraising'
+except Exception:
+    restore()
+    raise
+</t>
+<t tx="ekr.20071113145804.21">theFile,fn = g.create_temp_file()
+assert theFile
+assert g.isString(fn)
+</t>
+<t tx="ekr.20071113145804.22">@first # -*- coding: utf-8 -*-
+if g.app.gui.guiName() == 'curses':
+    self.skipTest('Not for curses gui')
+else:
+    import sys
+    s = 'test ɯ'
+    
+    def test():
+        g.es_trace(s,color='red')
+    
+    try:
+        # Don't worry about the exact output.
+        # Just test that it doesn't throw an exception.
+        sys.stdout = g.fileLikeObject()
+        test()
+    finally:
+        sys.stdout = sys.__stdout__
+</t>
+<t tx="ekr.20071113145804.26">s1 = 'abc\n\np\nxy'
+table1 = (
+    (-1,(0,0)), # One too small.
+    (0,(0,0)),
+    (1,(0,1)),
+    (2,(0,2)),
+    (3,(0,3)), # The newline ends a row.
+    (4,(1,0)),
+    (5,(2,0)),
+    (6,(2,1)),
+    (7,(3,0)),
+    (8,(3,1)),
+    (9,(3,2)), # One too many.
+    (10,(3,2)), # Two too many.
+)
+s2 = 'abc\n\np\nxy\n'
+table2 = (
+    (9,(3,2)),
+    (10,(4,0)), # One too many.
+    (11,(4,0)), # Two too many.
+)
+s3 = 'ab' # Test special case.  This was the cause of off-by-one problems.
+table3 = (
+    (-1,(0,0)), # One too small.
+    (0,(0,0)),
+    (1,(0,1)),
+    (2,(0,2)), # One too many.
+    (3,(0,3)), # Two too many.
+)
+
+for s,table in ((s1,table1),(s2,table2)):
+    for i,result in table:
+        row,col = g.convertPythonIndexToRowCol(s,i)
+        assert row == result[0], 'i: %d, expected row %d, got %d' % (i,result[0],row)
+        assert col == result[1], 'i: %d, expected col %d, got %d' % (i,result[1],col)
+</t>
+<t tx="ekr.20071113145804.27">s1 = 'abc\n\np\nxy'
+s2 = 'abc\n\np\nxy\n'
+table1 = (
+    (0,(-1,0)), # One too small.
+    (0,(0,0)),
+    (1,(0,1)),
+    (2,(0,2)),
+    (3,(0,3)), # The newline ends a row.
+    (4,(1,0)),
+    (5,(2,0)),
+    (6,(2,1)),
+    (7,(3,0)),
+    (8,(3,1)),
+    (9,(3,2)), # One too large.
+)
+table2 = (
+    (9,(3,2)),
+    (10,(4,0)), # One two many.
+)
+for s,table in ((s1,table1),(s2,table2)):
+    for i,data in table:
+        row,col = data
+        result = g.convertRowColToPythonIndex(s,row,col)
+        assert i == result, 'row: %d, col: %d, expected: %d, got: %s' % (row,col,i,result)
+</t>
+<t tx="ekr.20071113145804.28">script = g.getScript(c,p) # This will get the text of this node.
+assert script.find('\r\n') == -1, repr(script)
+</t>
+<t tx="ekr.20071113145804.29">for s,expected in (
+    (' a\n b\n c', 'a\nb\nc'),
+    (' \n  A\n    B\n  C\n', '\nA\n  B\nC\n'),
+):
+    result = g.removeExtraLws(s,c.tab_width)
+    assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
+        repr(s),repr(expected),repr(result))
+</t>
+<t tx="ekr.20071113194033.3"># No failures with Alt-5 but warnings about no tnode lists.
+</t>
+<t tx="ekr.20071113202153.2"># Print does not work: it is redirected.
+g.pr('\nEnd of leoGlobals tests.')
+</t>
 <t tx="ekr.20071113203234"></t>
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
@@ -897,6 +1251,119 @@ Important: this may cause crashes on some platforms.
 # last line: line 6</t>
 <t tx="ekr.20080907123324.3">def spam(): # line 2
     pass
+</t>
+<t tx="ekr.20080917151620.13">@header
+
+aList = g.get_directives_dict_list(p)
+g.scanAtHeaderDirectives(aList)
+</t>
+<t tx="ekr.20080917151620.14">@noheader
+
+aList = g.get_directives_dict_list(p)
+g.scanAtHeaderDirectives(aList)
+</t>
+<t tx="ekr.20080917151620.15">@lineending cr
+
+aList = g.get_directives_dict_list(p)
+s = g.scanAtLineendingDirectives(aList)
+
+assert s == '\r'
+</t>
+<t tx="ekr.20080917151620.16">@lineending crlf
+
+aList = g.get_directives_dict_list(p)
+s = g.scanAtLineendingDirectives(aList)
+assert s == '\r\n', repr(s)
+
+</t>
+<t tx="ekr.20080917151620.17">@lineending lf
+
+aList = g.get_directives_dict_list(p)
+s = g.scanAtLineendingDirectives(aList)
+
+assert s == '\n'
+</t>
+<t tx="ekr.20080917151620.18">@lineending nl
+
+aList = g.get_directives_dict_list(p)
+s = g.scanAtLineendingDirectives(aList)
+
+assert s == '\n'
+</t>
+<t tx="ekr.20080917151620.19">@lineending platform
+
+import sys
+
+aList = g.get_directives_dict_list(p)
+s = g.scanAtLineendingDirectives(aList)
+
+if sys.platform.startswith('win'):
+    assert s == '\r\n'
+else:
+    assert s == '\n'
+</t>
+<t tx="ekr.20080917151620.21">@pagewidth 40
+
+aList = g.get_directives_dict_list(p)
+n = g.scanAtPagewidthDirectives(aList)
+
+assert n == 40
+</t>
+<t tx="ekr.20080917151620.22">aList = g.get_directives_dict_list(p.firstChild())
+s = c.scanAtPathDirectives(aList)
+end = g.os_path_normpath(r'leo/test')
+
+assert s.endswith(end),repr(s)
+</t>
+<t tx="ekr.20080917151620.24">grandChild = p.firstChild().firstChild()
+aList = g.get_directives_dict_list(grandChild)
+s = c.scanAtPathDirectives(aList)
+end = g.os_path_normpath(r'leo/test/unittest')
+
+assert s.endswith(end),repr(s)
+</t>
+<t tx="ekr.20080917151620.25"></t>
+<t tx="ekr.20080917151620.27">greatGrandChild = p.firstChild().firstChild().firstChild()
+aList = g.get_directives_dict_list(greatGrandChild)
+s = c.scanAtPathDirectives(aList)
+end = g.os_path_normpath(r'leo/test/unittest')
+
+assert s.endswith(end),repr(s)
+</t>
+<t tx="ekr.20080917151620.28"></t>
+<t tx="ekr.20080917151620.29"></t>
+<t tx="ekr.20080917151620.31">@tabwidth 6
+
+aList = g.get_directives_dict_list(p)
+n = g.scanAtTabwidthDirectives(aList)
+
+assert n == 6,repr(n)
+</t>
+<t tx="ekr.20080917151620.32">@tabwidth -6
+
+aList = g.get_directives_dict_list(p)
+n = g.scanAtTabwidthDirectives(aList)
+
+assert n == -6
+</t>
+<t tx="ekr.20080917151620.33">@nowrap
+
+aList = g.get_directives_dict_list(p)
+s = g.scanAtWrapDirectives(aList)
+
+assert s is False,repr(s)
+</t>
+<t tx="ekr.20080917151620.34">@wrap
+
+aList = g.get_directives_dict_list(p)
+s = g.scanAtWrapDirectives(aList)
+
+assert s is True,repr(s)
+</t>
+<t tx="ekr.20080917151620.35">aList = g.get_directives_dict_list(p)
+s = g.scanAtWrapDirectives(aList)
+
+assert s is None,repr(s)
 </t>
 <t tx="ekr.20090306091634.1">tree = c.frame.tree
 if hasattr(tree,'redrawCount'):
@@ -1492,6 +1959,189 @@ for key in keys:
     message = '\nno event arg for command %s, func: %s\nargs: %s' % (key,name,data)
     assert arg0 in expected or arg1 in expected, message
 </t>
+<t tx="ekr.20100131180007.5395">for s,expected in (
+    ('a\nb', 'a\nb'),
+    ('\n  \nb\n', 'b\n'),
+    (' \t \n\n\n c', ' c'),
+):
+    result = g.removeLeadingBlankLines(s)
+    assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
+        repr(s),repr(expected),repr(result))
+</t>
+<t tx="ekr.20100131180007.5396">for s,expected in (
+    ('a\nb', 'a\nb'),
+    ('\n  \n\nb\n', 'b\n'),
+    (' \t \n\n  \n c\n\t\n', ' c\n'),
+):
+    result = g.removeBlankLines(s)
+    assert result == expected, '\ns: %s\nexpected: %s\nresult:   %s' % (
+        repr(s),repr(expected),repr(result))
+</t>
+<t tx="ekr.20100131180007.5398">if 1: # The following must be indented.
+
+    s = '''\
+    a
+      b
+
+c
+    d'''
+
+    s2 = '    a\n      b\n\nc\n    d'
+
+    result = g.adjustTripleString(s,c.tab_width)
+    # print(c.tab_width)
+    # print(result)
+    # print('=====')
+    # print(s2)
+    assert result == s2,repr(result)
+</t>
+<t tx="ekr.20100131180007.5402">s = 'aa bc \n \n\t\n'
+table = (
+    ('\t\n ','aa bc'),
+    ('abc\t\n ',''),
+    ('c\t\n ','aa b'),
+)
+
+for arg,val in table:
+    result = g.removeTrailing(s,arg)
+    assert result == val, 'expected %s, got %s' % (val,result)
+</t>
+<t tx="ekr.20100131180007.5403">s = ' \n \n\t\naa bc'
+s2 = 'aa bc'
+
+for i in range(3):
+    result = g.ensureLeadingNewlines(s,i)
+    val = ('\n' * i) + s2
+    assert result == val, 'expected %s, got %s' % (
+        repr(val),repr(result))
+</t>
+<t tx="ekr.20100131180007.5404">s = 'aa bc \n \n\t\n'
+s2 = 'aa bc'
+
+for i in range(3):
+    result = g.ensureTrailingNewlines(s,i)
+    val = s2 + ('\n' * i)
+    assert result == val, 'expected %s, got %s' % (
+        repr(val),repr(result))
+</t>
+<t tx="ekr.20100131180007.5421">c,p = g.getTestVars()
+
+# result,error = g.setDefaultDirectory(c,p,importing=False)
+# assert error == ''
+# assert result == c.openDirectory,result
+
+result = g.setDefaultDirectory(c,p,importing=False)
+assert result == c.openDirectory,result
+</t>
+<t tx="ekr.20100131180007.5425"># New in Leo 4.6, set_delims_from_string returns '' instead of None.
+table = (
+    ('c','@comment // /* */',   ('//','/*','*/')),
+    ('c','// /* */',            ('//','/*','*/')),
+    ('python','@comment #',     ('#','','')),
+    ('python','#',              ('#','','')),
+    ('xxxyyy','@comment a b c', ('a','b','c')),
+    ('xxxyyy','a b c',          ('a','b','c')),
+)
+
+for language,s,expected in table:
+    result = g.set_delims_from_string(s)
+    assert result==expected,'language %s expected %s, got %s' % (
+        language,expected,result)
+</t>
+<t tx="ekr.20100131180007.5426"># New in Leo 4.6, set_delims_from_language returns '' instead of None.
+table = (
+    ('c',       ('//','/*','*/')),
+    ('python',  ('#','','')),
+    ('xxxyyy',  ('','','')),
+)
+
+for language, expected in table:
+    result = g.set_delims_from_language(language)
+    assert result==expected,'language %s expected %s, got %s' % (
+        language,expected,result)
+</t>
+<t tx="ekr.20100131180007.5427">table =  (
+    (None,None), # Retain empty paths for warnings.
+    ('',''),
+    (g.app.loadDir,g.app.loadDir),
+    ('&lt;abc&gt;','abc'),
+    ('"abc"','abc'),
+    ("'abc'",'abc'),
+)
+
+for path,expected in table:
+    result = g.stripPathCruft(path)
+    assert result == expected
+</t>
+<t tx="ekr.20100131180007.5428"># New in Leo 4.6, set_delims_from_language returns '' instead of None.
+table = (
+    ('.c',      ('//','/*','*/')),
+    ('.html',   ('', '&lt;!--', '--&gt;')),
+    ('.py',     ('#','','')),
+    ('.xxx',    ('','','')),
+)
+
+for ext, expected in table:
+    result = g.comment_delims_from_extension(ext)
+    assert result==expected,'ext %s expected %s, got %s' % (
+        ext,expected,result)
+</t>
+<t tx="ekr.20100131180007.5429">import os,stat
+
+fc = c.fileCommands
+path = g.os_path_finalize_join(g.app.loadDir,'..','test','test-read-only.txt')
+if os.path.exists(path):
+    os.chmod(path, stat.S_IREAD)
+    fc.warnOnReadOnlyFiles(path)
+    assert fc.read_only
+else:
+    fc.warnOnReadOnlyFiles(path)
+</t>
+<t tx="ekr.20100131180007.5434">@language python
+@comment a b c
+    # @comment must follow @language.
+@tabwidth -8
+@pagewidth 72
+@encoding utf-8
+# @path: anError # @path ends with ':'.
+
+# @path xyzzy # Creates folder called xyzzy: interferes with other unit tests.
+
+d = g.get_directives_dict(p)
+
+# assert d.get('_p') == p # Never used, and a bad idea.
+assert d.get('language') == 'python'
+assert d.get('tabwidth') == '-8'
+assert d.get('pagewidth') == '72'
+assert d.get('encoding') == 'utf-8'
+assert d.get('comment') == 'a b c'
+assert not d.get('path'),d.get('path')
+# assert d.get('path').endswith('xyzzy')
+</t>
+<t tx="ekr.20100131180007.5435">@header
+
+c,p = g.getTestVars()
+aList = g.get_directives_dict_list(p)
+g.scanAtHeaderDirectives(aList)
+</t>
+<t tx="ekr.20100131180007.5442">@pagewidth -40
+
+aList = g.get_directives_dict_list(p)
+n = g.scanAtPagewidthDirectives(aList)
+
+# The @pagewidth directive in the parent should control.
+# Depending on how this test is run, the result could be 80 or None.
+assert n in (None,80),repr(n)
+</t>
+<t tx="ekr.20100131180007.5455">p2 = p.firstChild().firstChild()
+path = g.fullPath(c,p2,simulate=True)
+end = g.os_path_normpath('abc/xyz')
+assert path.endswith(end),repr(path)
+</t>
+<t tx="ekr.20100131180007.5456"></t>
+<t tx="ekr.20100131180007.5457"></t>
+<t tx="ekr.20100212112056.5361">g.printGcAll()
+</t>
 <t tx="ekr.20100731163237.5782">@language html
 
 &lt;&lt; a section reference &gt;&gt;
@@ -1515,6 +2165,8 @@ False:
 
 # Some tests are disabled when g.app.isExternalUnitTest is True.
 # Using self.skipTest(reason) is now preferred.</t>
+<t tx="ekr.20110510054817.3476">g.alert(c,'test of g.alert')
+</t>
 <t tx="ekr.20110521073115.3494"></t>
 <t tx="ekr.20110521073115.3495">builtins, including cython builtins
 </t>
@@ -1524,8 +2176,31 @@ False:
 @language python
 @tabwidth -4
 </t>
+<t tx="ekr.20110612064437.3310">val = g.guessExternalEditor(c)
+assert val,'no val' # This can be different on different platforms.
+</t>
 <t tx="ekr.20110615130436.3317"># This was used by @test writing a .leo file retains orphan bits.
 # but this test is moot because Leo no longer writes orphan bits.</t>
+<t tx="ekr.20111018163546.3690">s1 = 'no docstring'
+s2 = '''
+# comment
+"""docstring2."""
+'''
+s3 = '''
+"""docstring3."""
+\'\'\'docstring2.\'\'\'
+'''
+
+table = (
+    (s1,''),
+    (s2,'docstring2.'),
+    (s3,'docstring3.'),
+)
+
+for s,result in table:
+    s2 = g.getDocString(s)
+    assert s2 == result,'Expected %s, got %s' % (repr(result),repr(s2))
+</t>
 <t tx="ekr.20111021115306.3697">\begin{document}
 &lt;&lt; Document &gt;&gt;
 % hidden comment
@@ -1542,6 +2217,80 @@ div
 table
 nodeA
 nodeB
+</t>
+<t tx="ekr.20111103213154.3824">'''Make sure that trying to import a non-existent file does not crash g.importFromPath.'''
+
+path = g.os_path_finalize_join(g.app.loadDir,'does_not_exist')
+assert not g.os_path_exists(path)
+module = g.importFromPath ('xyz',path,verbose=False)
+assert not module,repr(module)
+</t>
+<t tx="ekr.20111104112332.3953">import os
+
+path1 = r'C:\Python32\Lib\site-packages\leo-editor\leo\core'
+path2 = r'\N:Home\PTC_Creo\Creo.wmv'
+path3 = r'N:\Home\PTC_Creo\Creo.wmv'
+
+path12 = os.path.join(path1,path2)
+path13 = os.path.join(path1,path3)
+
+if 0:
+    print(path12,g.os.path.abspath(path12))
+    print(path13,g.os.path.abspath(path13))
+</t>
+<t tx="ekr.20111110072415.3841">'''Make sure that g.trace doesn't add an extra newline.'''
+if g.app.gui.guiName() in ('nullGui', 'curses'):
+    self.skipTest('Not for curses gui')
+else:
+    import sys
+    
+    def test():
+        g.trace('a')
+        g.trace('b')
+    
+    try:
+        sys.stdout = g.fileLikeObject()
+        test()
+        result = sys.stdout.get()
+        assert result == 'test a\ntest b\n',repr(result)
+    finally:
+        sys.stdout = sys.__stdout__
+</t>
+<t tx="ekr.20111110073528.3843">'''Make sure that g.trace doesn't add an extra newline.'''
+if g.app.gui.guiName() in ('nullGui', 'curses'):
+    self.skipTest('Not for curses gui')
+else:
+    import sys
+    
+    def test():
+        g.pr('a')
+        g.pr('b')
+    
+    try:
+        sys.stdout = g.fileLikeObject()
+        test()
+        result = sys.stdout.get()
+        assert result == 'a\nb\n',repr(result)
+    finally:
+        sys.stdout = sys.__stdout__
+</t>
+<t tx="ekr.20111110073834.3843">'''Make sure that g.trace doesn't add an extra newline.'''
+if g.app.gui.guiName() in ('nullGui', 'curses'):
+    self.skipTest('Not for curses gui')
+else:
+    import sys
+
+    def test():
+        g.es_print('a')
+        g.es_print('b')
+    
+    try:
+        sys.stdout = g.fileLikeObject()
+        test()
+        result = sys.stdout.get()
+        assert result == 'a\nb\n',repr(result)
+    finally:
+        sys.stdout = sys.__stdout__
 </t>
 <t tx="ekr.20111112092813.4154">g.cls()</t>
 <t tx="ekr.20111112093605.4679"># leoSettings.leo no longer sets any bindings for run-xxx-unit-test.
@@ -1733,6 +2482,33 @@ finally:
 @others
 # end.
 </t>
+<t tx="ekr.20120307133953.3947">import sys
+if sys.platform.startswith('win'):
+    file_, http, unl1 = 'file://', 'http://', 'unl:' + '//'
+    fn1 = 'LeoDocs.leo#'
+    fn2 = 'doc/LeoDocs.leo#'
+    unl2 = '@settings--&gt;Plugins--&gt;wikiview plugin'
+    unl3 = '@settings--&gt;Plugins--&gt;wikiview%20plugin'
+    table = (
+        (http + 'writemonkey.com/index.php', ['browser']),
+        (file_ + 'x.py',        ['os_startfile']),
+        (file_ + fn1,           ['g.recursiveUNLSearch']),
+        (file_ + fn2,           ['g.recursiveUNLSearch']),
+        (unl1 + fn1 + unl2,     ['g.recursiveUNLSearch']),
+        (unl1 + fn1 + unl3,     ['g.recursiveUNLSearch']),
+        (unl1 + '#' + unl2,     ['g.recursiveUNLSearch']),
+        (unl1 + '#' + unl3,     ['g.recursiveUNLSearch']),
+        (unl1 + unl2,           ['g.recursiveUNLSearch']),
+        (unl1 + unl3,           ['g.recursiveUNLSearch']),
+    )
+    d = g.app.unitTestDict
+    for url,aList in table:
+        d = g.app.unitTestDict = {}
+        g.handleUrl(c=c,p=c.p,url=url)
+        for kind in aList:
+            assert d.get(kind), 'kind: %r\nurl: %r\n%s' % (
+                kind,url,g.dictToString(d))
+</t>
 <t tx="ekr.20120309155126.3949">w = c.frame.body.wrapper
 p = g.findNodeInTree(c,p,'rest and python')
 assert p,'not found: rest and python'
@@ -1775,6 +2551,25 @@ rest text.
 def spam():
     # pass
 # after
+</t>
+<t tx="ekr.20130910062920.4149">import codecs
+
+# The hack of computing s below is not valid in Python 3.
+if not g.isPython3:
+    table = (
+        ('utf-8',  codecs.BOM_UTF8),
+        ('utf-16', codecs.BOM_UTF16_BE),
+        ('utf-16', codecs.BOM_UTF16_LE),
+        ('utf-32', codecs.BOM_UTF32_BE),
+        ('utf-32', codecs.BOM_UTF32_LE),
+    )
+    for e,bom in table:
+        s1 = 'this is a test'
+        s = bom + 'this is a test'
+        # print('%6s bom: %18r s: %s' % (e,bom,repr(s)))
+        e2,s2 = g.stripBOM(s)
+        assert e2 == e,'%s,%s' % (e,e2)
+        assert s2 == s1,repr(s2)
 </t>
 <t tx="ekr.20130912092638.4150">@first # -*- coding: utf-16 -*-
 @encoding utf-16
@@ -2072,6 +2867,15 @@ finally:
     c.redraw()
 </t>
 <t tx="ekr.20140217055617.4231"># For a unit test.</t>
+<t tx="ekr.20140702101937.4245">table = (
+    ('abc a bc x','bc',0,6),
+    ('abc a bc x','bc',1,6),
+    ('abc a x','bc',0,-1),
+)
+for s,word,i,expected in table:
+    actual = g.find_word(s,word,i)
+    assert actual == expected
+</t>
 <t tx="ekr.20140716121225.4354">print(p.v.gnx)</t>
 <t tx="ekr.20140725132959.4593">import leo.core.leoImport as leoImport
 if leoImport.docutils is None:
@@ -2111,6 +2915,19 @@ finally:
     # Now works with curses gui.
 </t>
 <t tx="ekr.20140902101931.4478"></t>
+<t tx="ekr.20141208130803.11">assert g.importModule('codewise',verbose=False)
+    # Top-level .py file.
+assert g.importModule('rope',verbose=False)
+    # In a folder.
+</t>
+<t tx="ekr.20141223125432.11">if not g.isPython3 and g.app.gui.guiName().startswith('qt'):
+    import leo.core.leoQt as leoQt
+    QString = leoQt.QString
+    s = g.toUnicode(QString('abc'))
+    assert s == 'abc',repr(s)
+else:
+    self.skipTest('Requires Qt Gui')
+</t>
 <t tx="ekr.20150208213643.12">def spam():
     pass</t>
 <t tx="ekr.20150208213643.13">def eggs():
@@ -2126,9 +2943,29 @@ finally:
 <t tx="ekr.20150216110251.11"># Do not delete this node.
 # It is used by unit tests.</t>
 <t tx="ekr.20150321155210.11"></t>
+<t tx="ekr.20150328120706.1">table = (
+    ('A25&amp;()','A'),         # Non-alpha characters.
+    ('B\tc','B c'),         # Tabs.
+    ('"AB"',"'AB'"),        # Double quotes.
+    ('\\/:|&lt;&gt;*:.','_'),     # Special characters.
+    ('_____________','_'),  # Combining underscores.
+    ('A' * 200,'A' * 128),  # Maximum length.
+    ('abc.','abc_'),        # Trailing dots.
+)
+for s,expected in table:
+    got = g.sanitize_filename(s)
+    assert got==expected,'s: %r expected: %r got: %r' % (s,expected,got)
+</t>
 <t tx="ekr.20150602215639.1">True: Automatically beautify all @&lt;file&gt; nodes when saving an outline.
 
 # This *must* be False in unitTest.leo!</t>
+<t tx="ekr.20150610130646.1">table = (
+    r'abcd/xy\pdqabc/aaa.py',
+)
+for s in table:
+    g.splitLongFileName(s,limit=3)
+    
+</t>
 <t tx="ekr.20150626093653.1"># Not valid for external tests: uses @&lt;file&gt; node.
 if g.app.isExternalUnitTest:
     self.skipTest('Can not be run externally')
@@ -2538,6 +3375,20 @@ def __init__(self, s: Type) -&gt; None:
 </t>
 <t tx="ekr.20150919074321.3">def spam(self):
     pass
+</t>
+<t tx="ekr.20160327132053.1"># Mimic the code in g.get_directives_dict
+import re
+pat = g.compute_directives_re()
+pat = re.compile(pat, re.MULTILINE)
+table = (
+    '@wrap', # The failure case.
+    '@wrap ',
+    '@wrap\n',
+    '@wrap\t',
+)
+for s in table:
+    m = pat.search(s)
+    assert m, repr(s)
 </t>
 <t tx="ekr.20160403123754.1">@language c
 @tabwidth -4
@@ -3068,6 +3919,21 @@ else:
         return builtins.unicode(s, encoding)
 </t>
 <t tx="ekr.20170101134417.1"></t>
+<t tx="ekr.20170122164330.1"># Do not try to reload g.
+table = (
+    (True, '@language python\n'),
+    (True, '@tabwidth -4 #test\n'),
+    (True, '@others\n'),
+    (True, '    @others\n'),
+    (True, '@encoding\n'),
+    (False, '@encoding.setter\n'),
+    (False, '@encoding("abc")\n'),
+    (False, 'encoding = "abc"\n'),
+)
+for expected, s in table:
+    result = g.isDirective(s)
+    assert expected == bool(result), (expected, bool(result), repr(s))
+</t>
 <t tx="ekr.20170128023431.1">@language html
 </t>
 <t tx="ekr.20170401122024.7">@language cweb
@@ -6659,6 +7525,23 @@ And this.
     @others
 # last line
 </t>
+<t tx="ekr.20170601070526.1">table = (
+    (True, 0, 'a', 'a'),
+    (False, 0, 'a', 'b'),
+    (True, 0, 'a', 'a b'),
+    (False, 1, 'a', 'aa b'), # Tests bug fixed 2017/06/01.
+    (False, 1, 'a', '_a b'),
+    (False, 0, 'a', 'aw b'),
+    (False, 0, 'a', 'a_'),
+    (True, 2, 'a', 'b a c'),
+    (False, 0, 'a', 'b a c'),
+)
+for data in table:
+    expected, i, word, line = data
+    got = g.match_word(line + '\n', i, word)
+    assert expected == got, (expected, i, word, line)
+# print('done')
+</t>
 <t tx="ekr.20170701153730.1"></t>
 <t tx="ekr.20170712045534.1"></t>
 <t tx="ekr.20170712045644.1">======================================================================
@@ -6992,6 +7875,67 @@ gnx: ekr.20170504122721.2
 unl: section 1
 gnx: ekr.20170504122721.3
 unl: section 2
+</t>
+<t tx="ekr.20180120142320.1">import os
+sep = os.sep
+table = (
+    ('~{{sep}}tmp{{sep}}x.py', '~%stmp%sx.py' % (sep, sep)),
+)
+for s, expected in table:
+    got = g.os_path_expandExpression(s, c=c)
+    assert got==expected,'s: %r expected: %r got: %r' % (s,expected,got)
+</t>
+<t tx="ekr.20180128105733.1">trace = False
+skipped = 0
+p0 = p.copy()
+p2 = g.findNodeAnywhere(c,'@test g.findNode*')
+assert p2 and p2.v == p.v, ('1', repr(p2), repr(p))
+p2 = g.findNodeAnywhere(c,'@test g.findNode',exact=False)
+assert p2 and p2.v == p.v, ('2', repr(p2), repr(p))
+#
+parent = p0.parent()
+if parent: # Will fail for a top-level clone
+    p2 = g.findNodeInChildren(c,parent,'@test g.findNode*')
+    assert p2 and p2.v == p.v, ('3', repr(p2), repr(p))
+    p2 = g.findNodeInChildren(c,parent,'@test g.findNode',exact=False)
+    assert p2 and p2.v == p.v, ('4', repr(p2), repr(p))
+else:
+    skipped += 1
+#
+parent = p0.parent()
+if parent: # Will fail for a top-level clone
+    p2 = g.findNodeInTree(c,parent,'@test g.findNode*')
+    assert p2 and p2.v == p.v, ('5', repr(p2), repr(p))
+    p2 = g.findNodeInTree(c,parent,'@test g.findNode',exact=False)
+    assert p2 and p2.v == p.v, ('6', repr(p2), repr(p))
+else:
+    skipped += 1
+#
+p1 = g.findTopLevelNode(c,'Active Unit Tests')
+if p1:
+    p2 = g.findTopLevelNode(c,'Active Unit Test',exact=False)
+    assert p2 and p2.v == p1.v, ('7', repr(p2), repr(p1))
+    p2 = g.findNodeInTree(c,p1,'@test g.findNode*')
+    assert p2 and p2.v == p.v, ('8', repr(p2), repr(p))
+    p2 = g.findNodeInTree(c,p1,'@test g.findNode',exact=False)
+    assert p2 and p2.v == p.v, ('9', repr(p2), repr(p))
+else:
+    skipped += 1
+if trace and skipped:
+    print('%s: skipped %s sub-tests' % (p0.h, skipped))
+</t>
+<t tx="sps.20100609234650.16094">end = g.skip_blank_lines("",0)
+assert end == 0, "expected 0, got %d" % end
+end = g.skip_blank_lines(" ",0)
+assert end == 0, "expected 0, got %d" % end
+end = g.skip_blank_lines("\n",0)
+assert end == 1, "expected 1, got %d" % end
+end = g.skip_blank_lines(" \n",0)
+assert end == 2, "expected 1, got %d" % end
+end = g.skip_blank_lines("\n\na\n",0)
+assert end == 2, "expected 2, got %d" % end
+end = g.skip_blank_lines("\n\n a\n",0)
+assert end == 2, "expected 2, got %d" % end
 </t>
 </tnodes>
 </leo_file>
