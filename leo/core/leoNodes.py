@@ -56,19 +56,23 @@ class NodeIndices(object):
     def compute_last_index(self, c):
         '''Scan the entire leo outline to compute ni.last_index.'''
         trace = False and not g.unitTesting
-        verbose = False # Report only if lastIndex was changed.
+        verbose = True # Report only if lastIndex was changed.
         if trace: t1 = time.time()
         ni = self
         old_lastIndex = self.lastIndex
-        self.lastIndex = 0
+        # Partial, experimental, fix for #658.
+        # Do not change self.lastIndex here!
+            # self.lastIndex = 0
         for v in c.all_unique_nodes():
             gnx = v.fileIndex
+            if trace and verbose: g.trace(gnx)
             if gnx:
                 id_, t, n = self.scanGnx(gnx)
                 if t == ni.timeString and n is not None:
                     try:
                         n = int(n)
                         self.lastIndex = max(self.lastIndex, n)
+                        if trace and verbose: g.trace(n, gnx)
                     except Exception:
                         g.es_exception()
                         self.lastIndex += 1
