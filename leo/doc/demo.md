@@ -64,7 +64,6 @@ The top-level node (its headline is top-level) is:
 ssm = c.styleSheetManager
 d = demo.Demo(c)
 d.delete_widgets()
-\@others # slides
 update()
 c.bodyWantsFocusNow()
 ```
