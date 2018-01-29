@@ -397,7 +397,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1892,15 +1892,15 @@
 <v t="ekr.20180124122055.1"><vh>New line_numbering.py plugin</vh></v>
 </v>
 </v>
-<v t="ekr.20180127032545.1"><vh>PyPi notes</vh></v>
+<v t="ekr.20131008041326.16092"></v>
+<v t="ekr.20180127062046.1"><vh>New installation page</vh></v>
+<v t="ekr.20091111112709.6672"></v>
+<v t="ekr.20131004191204.16079"></v>
 <v t="ekr.20180124100450.708"><vh>** Document *-ref-file commands</vh>
 <v t="ekr.20180124100450.710"><vh>update-ref-file</vh></v>
 <v t="ekr.20180124100450.711"><vh>read-ref-file</vh></v>
 <v t="ekr.20180124100450.712"><vh>set-ref-file</vh></v>
 </v>
-<v t="ekr.20131008041326.16092"></v>
-<v t="ekr.20180127062046.1"><vh>New installation page</vh></v>
-<v t="ekr.20170130080532.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -3896,7 +3896,7 @@ My solution is to open a second editor with its focus on the main node_. Switch 
 </t>
 <t tx="ekr.20050830115714.12">Use @clean or @auto unless everyone in your work group uses Leo.  In that case, using @file is best.
 
-Leo's repository contains **reference** .leo files. These reference files should contain nothing but @file nodes. Reference files should change only when new external files get added to the project.
+Leo's repository contains **reference .leo files**. These reference files should contain nothing but @file nodes. Reference files should change only when new external files get added to the project.
 
 Leo's `git repository`_ and Leo distributions contain the following reference files: LeoPyRef.leo, LeoPluginsRef.leo and leoGuiPluginsRef.leo. Developers should use local copies of reference files for their own work. For example, instead of using LeoPyRef.leo directly, I use a copy called LeoPy.leo.
 </t>
@@ -7395,6 +7395,7 @@ Glossary
 
 .. Links
 .. _`Customizing Leo`:              customizing.html
+.. _`git repository`:               https://github.com/leo-editor/leo-editor
 .. _`Writing plugins and hooks`:    writingPlugins.html
 .. _`Leo's reference`:              directives.html
 .. _`leo's tutorial`:               tutorial.html
@@ -8038,12 +8039,21 @@ Promote
 
     To move all children of a node in an outline so that they become siblings of
     the node.
+    
+.. index::
+    pair: FAQ; Glossary
+
+Reference .leo file
+
+Leo's `git repository`_ and Leo distributions contain the following reference files: LeoPyRef.leo, LeoPluginsRef.leo and leoGuiPluginsRef.leo. These reference files should contain nothing but @file nodes and should change only when new external files get added to the project. Developers should use *local copies* of reference files for their own work. For example, instead of using LeoPyRef.leo directly, I use a copy called LeoPy.leo.
+
 
 .. index::
     pair: reStructuredText; Glossary
     pair: rST; Glossary
 
 .. _`rST primer`: http://docutils.sourceforge.net/docs/user/rst/quickstart.html
+
 
 reStructuredText (rST)
 
@@ -14793,6 +14803,8 @@ Please take a few moments to experiment with clones:
     Exits Leo.  Leo will prompt you to save any unsaved outlines.
     
 A **session** specifies a list of tabs (.leo files) that Leo opens automatically when Leo first starts. When the ``--session-save`` and ``--session-restore`` command-line options are in effect, Leo will save session data on exit and will reload outlines when Leo restarts. For full details, see `Using sessions &lt;commands.html#using-sessions&gt;`_ in Leo's `Users Guide &lt;usersguide.html&gt;`_.
+
+The following commands manage Leo's `reference files`_.
 </t>
 <t tx="ekr.20131005214621.16088"></t>
 <t tx="ekr.20131005214621.16090">Leo is a full-featured outliner with the following special features:
@@ -25908,19 +25920,6 @@ To install Leo do this from a console::
     conda install pyqt5
     pip install leo
 </t>
-<t tx="ekr.20180127032545.1">## Current status
-
-- Work is now being carried out in master.
-- PyPi compliant wheel packages are built and install successfully on Windows (7,10) and Linux (Mint) with python 2.7 and 3.6.
-- leoDist.leo contains the **package upload recipe** in the node `Matt's workflow for updating pypi`.  At present, a clone of this node appears at the top level.  The clone will remain at the top level until this issue is closed, or perhaps even longer.
-
-@maphew  **I have removed the package upload recipe from this comment**.  I see no reason for the duplication.  It will be easy enough to restore if necessary.
-
-## To do
-
-- [ ] Update installation docs. **In Progress**. @maphew Please put the various documentation sections in leoDist.leo into separate nodes, with subsidiary discussions in child nodes, or even grandchild nodes.  That way devs can see the logical relationships between sections.  In general, **never** rely on markup when outline structure is available.
-
-- [ ] Someone besides Matt runs through process from start to finish and is successful. @maphew Is further "internal" testing really necessary?  Can't we simply test the wheel after you upload it?</t>
 <t tx="ekr.20180127062046.1">**Installing Leo
 
 First you will need to install python. Python3 is recommended but you can install Python 2.7 if you prefer. Download from www.python.org
@@ -26001,7 +26000,7 @@ keyword, just as before. If no match is found, and exact is False, these
 methods then search again, matching if the given headline is a prefix of
 the headline of any node.
 </t>
-<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_atime="1376414164.0" str_mtime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
