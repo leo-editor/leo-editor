@@ -309,7 +309,7 @@
 <v t="maphew.20180128212042.3"><vh>Create an PyPi.org account</vh></v>
 <v t="maphew.20180128212042.2"><vh>Build requirements</vh></v>
 <v t="maphew.20180128212042.4"><vh>Build &amp; publish a release</vh></v>
-<v t="maphew.20180128213245.1"><vh>Optional: Test with TestPyPI</vh></v>
+<v t="maphew.20180128213245.1"><vh>Not recommended: Test with TestPyPI</vh></v>
 <v t="maphew.20180128212042.5"><vh>Caveats</vh></v>
 </v>
 </v>
