@@ -94,7 +94,8 @@ def renumber(c):
         at.scanAllDirectives(new_p)
         delim_st = at.startSentinelComment
         delim_en = at.endSentinelComment
-        if p.isAtCleanNode() or p.isAtAutoNode() or p.isAtEditNode():
+        if p.isAtCleanNode() or p.isAtAutoNode() or p.isAtEditNode() \
+            or p.isAtNoSentFileNode():
             delim_st = ''
             delim_en = ''
         nums = universal_line_numbers(root, new_p, delim_st, delim_en)
