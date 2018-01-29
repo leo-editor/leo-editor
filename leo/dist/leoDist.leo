@@ -303,9 +303,15 @@
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
 </v>
-<v t="ekr.20141118074110.4"><vh>Discussions</vh>
-<v t="ekr.20141118074110.2"><vh>Matt's workflow for updating pypi</vh></v>
-<v t="ekr.20141118074110.3"><vh>Installing Leo on Linux</vh></v>
+<v t="ekr.20141118074110.4"><vh>How to...</vh>
+<v t="ekr.20141118074110.3"><vh>How to Install Leo on Linux</vh></v>
+<v t="maphew.20180128212042.1"><vh>How to build Leo's PyPi Package</vh>
+<v t="maphew.20180128212042.3"><vh>Create an PyPi.org account</vh></v>
+<v t="maphew.20180128212042.2"><vh>Build requirements</vh></v>
+<v t="maphew.20180128212042.4"><vh>Build &amp; publish a release</vh></v>
+<v t="maphew.20180128213245.1"><vh>Optional: Test with TestPyPI</vh></v>
+<v t="maphew.20180128212042.5"><vh>Caveats</vh></v>
+</v>
 </v>
 <v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh>
 <v t="ekr.20161015091350.1"><vh>Pre-testing</vh></v>
@@ -325,15 +331,6 @@
 </v>
 <v t="ekr.20160510090441.1"><vh>@file ../../leo_assoc.nsi</vh></v>
 <v t="ekr.20101027054254.1590"><vh>@file ../../leo.nsi</vh></v>
-</v>
-<v t="maphew.20180128212042.1" a="E"><vh>PyPi</vh>
-<v t="maphew.20180128212042.2" a="E"><vh>Build requirements</vh>
-<v t="maphew.20180128212042.3"><vh>PyPi.org account</vh></v>
-</v>
-<v t="maphew.20180128212042.4" a="E"><vh>Build &amp; publish a release</vh>
-<v t="maphew.20180128213245.1"><vh>Test PyPi</vh></v>
-</v>
-<v t="maphew.20180128212042.5"><vh>Caveats</vh></v>
 </v>
 <v t="ekr.20101027070126.1639"><vh>@button make leo</vh>
 <v t="ekr.20090905082405.1487"><vh>&lt;&lt; includes &gt;&gt;</vh></v>
@@ -363,7 +360,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20141118074110.2"></v>
 <v t="ekr.20180124100848.1"><vh>Failures in unified version</vh></v>
 </vnodes>
 <tnodes>
@@ -1603,129 +1599,6 @@ Quotes:    http://leoeditor.com/testimonials.html
 </t>
 <t tx="ekr.20141117135127.2"></t>
 <t tx="ekr.20141117135127.3"></t>
-<t tx="ekr.20141118074110.2">@language md
-
-2017
-----
-https://github.com/leo-editor/leo-editor/issues/562
-
-***Begin  package upload recipe***
-
-_Quick reference recipe is at top. See next section for build environment pre-requisites._
-
-
-Production Release
-==================
-## Overview
-* Remove stale distribution files &amp; folders.  
-* Optionally set local checkout to specific version tag.  
-* Build redistributable source and binary wheel package.  
-* Upload to PyPi (assumes account registration already completed).  
-* Test download and install from PyPi. Best to uninstall old Leo first or run in clean virtual env.
-
-## Example
-Windows syntax. 'Activate/deactivate' assume using virtual envs; skip those lines if not:
-
-    activate leo-build
-    
-    rmdir /s/q dist build leo.egg-info
-    git checkout tags/5.7
-    python setup.py bdist_wheel
-    
-    :: Optional, test install locally
-    pip install dist\*.whl
-    leo-console --version
-    pip uninstall leo
-    
-    twine upload https://pypi.org/legacy/ dist\*.whl
-    
-    :: Optional, inspect public page for problems
-    start https://pypi.python.org/pypi/leo
-    
-    deactivate
-    activate py3-clean
-    
-    pip install leo
-    leo-console --version
-
-Twine upload will use username and password stored in `.pypirc`, or will prompt
-if that doesn't exist.
-
-
-Pre-requisites
------------------
-
-###  pip installable
-- Wheel: for building cross platform binaries (might be installed already)
-- Setuptools: because ...setup!
-- Twine: for secure upload to pypi.org
-- PyPandoc: to convert markdown to rst for Readme.
-
-    pip install pypandoc setuptools twine wheel
-
-Pandoc executable must be in PATH. If not installed already one these should
-work (or use your own preferred method):
-
-    # Preferred
-    conda install pandoc
-
-    # Alternate
-    from pypandoc.pandoc_download import download_pandoc
-    download_pandoc()
-
-### PyPi
-Verify can login to PyPi and access Leo package edit page:
-https://pypi.python.org/pypi?%3Aaction=pkg_edit&amp;name=leo
-Contact one of the _Package Index Owners_ to be added as a maintainer if needed
-(see end of https://pypi.python.org/pypi/leo).
-
-***/end package upload recipe***
-
-Caveats
-=======
-
-`pip install leo` only installs the contents of `leo` folder. So links to files in the project root or other folders will be broken. (Background https://github.com/leo-editor/leo-editor/issues/573)
-
-    ./leo-editor/*         --&gt; left out
-    ./leo-editor/docs/*    --&gt; left out
-    ./leo-editor/leo/*/*/* --&gt; PYTHONHOME/Lib/site-packages/leo
-
-Docs: of litte concern. These can regenerated from sources in ./leo (leoDocs.leo), and are on the website: http://leoeditor.com
-
-Root: these files should only be involved in building installers and similar activities (e.g. leoDist.leo). Work from a git checkout or source tarball instead: https://github.com/leo-editor/leo-editor
-
-
-
-Packaging a new release for Test PyPi
-=====================================
-
-I (Matt) don't recommend using Test PyPi unless problems with the package on the
-PyPi side are anticipated. It's too much of a pain to switch back and forth
-between test and production when testing installs. In practice most problems
-will be found and encountered when testing an install straight from the whl file
-on disk `pip install dist\Leo-*.whl`
-
-(Windows syntax)
-
-    ::Verify integrity and Build (see leo\dist\build-*.bat)
-    python setup.py check
-    python setup.py bdist_wheel
-
-    ::Test default install locally
-    pip install dist\leo-5.7.dev344-py2.py3-none-any.whl
-    leoc --version
-    pip uninstall leo
-
-    ::Upload
-    twine upload --repository-url https://test.pypi.org/legacy/ dist/leo-5.7.dev344-py2.py3-none-any
-
-    ::Install from remote
-    pip install --pre --index-url https://test.pypi.org/simple/ leo
-    leoc --version
-
-Remove broken releases (still can't re-use identical version numbers and file names though):
-https://testpypi.python.org/pypi?%3Aaction=pkg_edit&amp;name=leo
-</t>
 <t tx="ekr.20141118074110.3">https://groups.google.com/forum/#!topic/leo-editor/VvnDYjV4aIk</t>
 <t tx="ekr.20141118074110.4"></t>
 <t tx="ekr.20150326055410.1">@language rest
@@ -4172,7 +4045,13 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - [More links](http://leoeditor.com/leoLinks.html)
 </t>
 <t tx="maphew.20180128212042.1">@language md
-PyPi is the [Python Package Index Page](https://pypi.python.org/pypi)
+@wrap
+
+Written by Matt Wilkie. Slightly revised by EKR.
+
+PyPi is the Python Package Index Page: https://pypi.python.org/pypi
+
+See https://github.com/leo-editor/leo-editor/issues/562
 
 Once published to pypi Leo can be installed with:
 
@@ -4191,12 +4070,8 @@ Developers should install from git as some files are left out when using pip (se
 nb: Optional `--depth=500` fetches the last 3-4 months of activity and is
     orders of magnitude faster than a full clone. If needed later use `git pull
     --unshallow` to grab everything that was missed.
-
-
-Master GitHub issue for this section:
-https://github.com/leo-editor/leo-editor/issues/562
 </t>
-<t tx="maphew.20180128212042.2">Pip installable
+<t tx="maphew.20180128212042.2">Install using pip if needed:
 
  - Wheel: for building cross platform binaries (might be installed already)
  - Setuptools: because ...setup!
@@ -4215,8 +4090,8 @@ work (or use your own preferred method):
     from pypandoc.pandoc_download import download_pandoc
     download_pandoc()</t>
 <t tx="maphew.20180128212042.3">A PyPi account is needed to update Leo's pypi reference. Contact one of the
-_Package Index Owners_ to be added as a maintainer if needed (see end of
-https://pypi.python.org/pypi/leo).
+package index owners to be added as a maintainer if needed. See end of
+https://pypi.python.org/pypi/leo
 
 Verify access Leo package edit page at:
 https://pypi.python.org/pypi?%3Aaction=pkg_edit&amp;name=leo
@@ -4257,7 +4132,8 @@ Windows syntax. 'Activate/deactivate' assume using virtual envs; skip those line
 
 Twine upload will use username and password stored in `.pypirc`, or will prompt
 if that doesn't exist.</t>
-<t tx="maphew.20180128212042.5">`pip install leo` only installs the contents of `leo` folder. So links to files in the project root or other folders will be broken. (Background https://github.com/leo-editor/leo-editor/issues/573)
+<t tx="maphew.20180128212042.5">`pip install leo` only installs the contents of `leo` folder.
+So links to files in the project root or other folders will be broken. (Background https://github.com/leo-editor/leo-editor/issues/573)
 
     ./leo-editor/*         --&gt; left out
     ./leo-editor/docs/*    --&gt; left out
@@ -4266,11 +4142,10 @@ if that doesn't exist.</t>
 Docs: of litte concern. These can regenerated from sources in ./leo (leoDocs.leo), and are on the website: http://leoeditor.com
 
 Root: these files should only be involved in building installers and similar activities (e.g. leoDist.leo). Work from a git checkout or source tarball instead: https://github.com/leo-editor/leo-editor</t>
-<t tx="maphew.20180128213245.1">_TestPyPI_ is a separate instance of the Python Package Index (PyPI) that allows
+<t tx="maphew.20180128213245.1">TestPyPI: https://packaging.python.org/guides/using-testpypi/
+is a separate instance of the Python Package Index (PyPI) that allows
 trying out the distribution tools and process without worrying about affecting
 the real index.
-
-https://packaging.python.org/guides/using-testpypi/#using-test-pypi
 
 I (Matt) don't recommend using Test PyPi for Leo unless problems with the
 package on the PyPi side are anticipated. It's too much of a pain to switch back
