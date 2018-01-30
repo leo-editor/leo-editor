@@ -17976,7 +17976,7 @@ It's super important to deal with new ideas *instantly* but *without* greatly in
 
     leo --session-save --session-restore &lt;list of .leo files&gt;
     
-When Leo closes, it stores session state in ``~/.leo/leo.session``. Session state consists of the list of open files and the selected node in each file. The next time Leo starts with those options, Leo will open these files and will select the appropropriate nodes.
+When Leo closes, it stores session state in ``~/.leo/leo.session``. Session state consists of the list of open files and the selected node in each file. The next time Leo starts with those options, Leo will open these files and will select the appropriate nodes.
 </t>
 <t tx="ekr.20141210095600.11">I am a microbiologist mostly analyzing large numbers of bacteria genomes for which I use almost entirely Python tools. A couple of years ago while working at Yale University I gave Leo go for writing Python and organizing my notes with.
 
@@ -24909,10 +24909,10 @@ protect using standard PDFs.
 
 **Workflow Notes and Shortcuts**
 
-- Years ago, I discovered the incredible exam class for LaTex and now use
-  it almost exclusively. It makes it much easier to create student and
-  teacher versions of the same content (eg. handout for students and
-  training manual with speaking notes for the teacher).
+- Years ago, I discovered the incredible exam class for LaTex and now
+  use it almost exclusively. It makes it much easier to create student
+  and teacher versions of the same content (for example, handouts for
+  students and training manual with speaking notes for the teacher).
 - I use \@outline-data tree-abbreviations in Leo to create each new
   Document.tex file from a template with variables (very cool!)
 - I created many @data abbreviations in Leo to speed up typing of standard
@@ -25948,7 +25948,7 @@ The body of the separation node contains the **.leo reference**, a path to the r
 
 **update-ref-file** saves public part of this outline to reference .leo file.
 
-Develpers will typically execute the read-ref-file command after any git pull that changes any reference .leo file.  Similarly, devs will typically execute the update-ref-file command before doing a git commit that changes a reference .leo file.
+Developers will typically execute the read-ref-file command after any git pull that changes any reference .leo file.  Similarly, devs will typically execute the update-ref-file command before doing a git commit that changes a reference .leo file.
 </t>
 <t tx="ekr.20180130105010.1">Leo's repository contains **reference .leo files**. These reference files should contain nothing but @file nodes. Reference files should change only when new external files get added to the project.
 
