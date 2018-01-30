@@ -695,12 +695,13 @@ SectionEnd
 </t>
 <t tx="ekr.20090905082405.1487">import os
 import shutil
-import string
-import struct
-import subprocess
-import sys
-import time
-import leo.core.leoVersion as leoVersion</t>
+# import string
+# import struct
+# import subprocess
+# import sys
+# import time
+# import leo.core.leoVersion as leoVersion
+</t>
 <t tx="ekr.20090905082405.1490">def unlink (self,fn):
 
     # print('command: unlink: %s' % fn)
