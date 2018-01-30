@@ -547,6 +547,7 @@
 <v t="ekr.20120229094652.15137"><vh>What's the recommended way to upgrade Leo?</vh></v>
 </v>
 <v t="ekr.20180126190053.1"><vh>Leo and Git</vh>
+<v t="ekr.20180130105010.1"><vh>What is a reference .leo file?</vh></v>
 <v t="ekr.20050830115714.12"><vh>How should I use Leo with git, etc.?</vh></v>
 <v t="ekr.20171027125705.1"><vh>Why do files sometimes change when switching branches?</vh></v>
 </v>
@@ -1896,9 +1897,6 @@
 <v t="ekr.20180124122055.1"><vh>New line_numbering.py plugin</vh></v>
 </v>
 </v>
-<v t="ekr.20180130092843.1"></v>
-<v t="ekr.20131004191204.16079"></v>
-<v t="ekr.20180130094948.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -3892,11 +3890,9 @@ In Excel you would see 4500 below those two numbers. This is completely independ
 
 My solution is to open a second editor with its focus on the main node_. Switch to the other editor, and, referring to the first editor pane, move the nodes as you like. The second editor's pane will change focus to the node_ you're moving, but the first editor will stay focused on the main node_. It's a lot easier to do than to describe!
 </t>
-<t tx="ekr.20050830115714.12">Use @clean or @auto unless everyone in your work group uses Leo.  In that case, using @file is best.
+<t tx="ekr.20050830115714.12">.. _`reference .leo files`: FAQ.html#what-is-a-reference-leo-file
 
-Leo's repository contains **reference .leo files**. These reference files should contain nothing but @file nodes. Reference files should change only when new external files get added to the project.
-
-Leo's `git repository`_ and Leo distributions contain the following reference files: LeoPyRef.leo, LeoPluginsRef.leo and leoGuiPluginsRef.leo. Developers should use local copies of reference files for their own work. For example, instead of using LeoPyRef.leo directly, I use a copy called LeoPy.leo.
+Use @clean or @auto unless everyone in your work group uses Leo.  In that case, using @file is best.  Use local copies of `reference .leo files`_ instead of the reference files themselves.
 </t>
 <t tx="ekr.20050830115714.120">One way is to link directly to the media file from a Leo node_ (with @url) and write a script button to wrap all URL-nodes under the current node_ in a single HTML page. Then, you can view your media in two ways:
 
@@ -25918,7 +25914,7 @@ This will download and install all required packages (except PyQt).
 <t tx="ekr.20180130055320.1">https://github.com/leo-editor/leo-editor/issues/562</t>
 <t tx="ekr.20180130092843.1">.. https://groups.google.com/forum/#!topic/leo-editor/yAtfcG6AL70
 
-.. _`reference .leo files`: http://leoeditor.com/FAQ.html#how-should-i-use-leo-with-git-etc
+.. _`reference .leo files`: FAQ.html#what-is-a-reference-leo-file
 
 These commands make it easier to use Leo's `reference .leo files`_. From time to time, developers needs to open reference Leo file and copy its content to and from their personal file.
 
@@ -25938,7 +25934,7 @@ You would typically execute the read-ref-file command after any git pull that ch
 </t>
 <t tx="ekr.20180130094948.1">.. .. https://groups.google.com/forum/#!topic/leo-editor/yAtfcG6AL70
 
-.. _`reference .leo files`: http://leoeditor.com/FAQ.html#how-should-i-use-leo-with-git-etc
+.. _`reference .leo files`: FAQ.html#what-is-a-reference-leo-file
 
 These commands make it easier to use Leo's `reference .leo files`_. From time to time, developers needs to open reference Leo file and copy its content to and from their personal file. These commands use a **separation node**, a top-level node whose headline is::
 
@@ -25952,8 +25948,11 @@ The body of the separation node contains the **.leo reference**, a path to the r
 
 **update-ref-file** saves public part of this outline to reference .leo file.
 
-Develpers would typically execute the read-ref-file command after any git pull that changes any reference .leo file.  Similarly, you would typically execute the update-ref-file command before doing a git commit that changes a .leo file.
+Develpers will typically execute the read-ref-file command after any git pull that changes any reference .leo file.  Similarly, devs will typically execute the update-ref-file command before doing a git commit that changes a reference .leo file.
 </t>
+<t tx="ekr.20180130105010.1">Leo's repository contains **reference .leo files**. These reference files should contain nothing but @file nodes. Reference files should change only when new external files get added to the project.
+
+Leo's `git repository`_ and Leo distributions contain the following reference files: LeoPyRef.leo, LeoPluginsRef.leo and leoGuiPluginsRef.leo. Developers should use local copies of reference files for their own work. For example, instead of using LeoPyRef.leo directly, I use a copy called LeoPy.leo.</t>
 <t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
