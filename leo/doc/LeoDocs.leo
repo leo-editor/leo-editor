@@ -397,7 +397,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e342e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -473,6 +473,7 @@
 </v>
 <v t="ekr.20131008041326.16094"><vh>@rst html/installing.html</vh>
 <v t="ekr.20141105052052.4"><vh>Dependencies</vh></v>
+<v t="ekr.20180130033527.1"><vh>Installing Leo with pip</vh></v>
 <v t="ekr.20101125062332.5090"><vh>Installing packages</vh></v>
 <v t="ekr.20170206073848.1"><vh>Installing Leo itself</vh>
 <v t="ekr.20170206073747.2"><vh>Installing Leo on Windows</vh>
@@ -1892,15 +1893,13 @@
 <v t="ekr.20180124122055.1"><vh>New line_numbering.py plugin</vh></v>
 </v>
 </v>
-<v t="ekr.20131008041326.16092"></v>
-<v t="ekr.20180127062046.1"><vh>New installation page</vh></v>
-<v t="ekr.20091111112709.6672"></v>
 <v t="ekr.20131004191204.16079"></v>
 <v t="ekr.20180124100450.708"><vh>** Document *-ref-file commands</vh>
 <v t="ekr.20180124100450.710"><vh>update-ref-file</vh></v>
 <v t="ekr.20180124100450.711"><vh>read-ref-file</vh></v>
 <v t="ekr.20180124100450.712"><vh>set-ref-file</vh></v>
 </v>
+<v t="ekr.20131008041326.16092"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -7402,9 +7401,12 @@ Glossary
 
 This is a short glossary of important terms in Leo's world. For more information about terms, look in the index for links to discussions in other places, especially in `Leo's Tutorial`_ and `Leo's Reference`_.
 
-.. glossary::
-    :sorted:
-</t>
+.. .. glossary::
+..    :sorted:
+
+.. contents:: Contents
+    :depth: 2
+    :local:</t>
 <t tx="ekr.20091130111843.6787"></t>
 <t tx="ekr.20091130111843.6788">.. |---| unicode:: U+02015 .. for quotes
    :trim:
@@ -11452,16 +11454,14 @@ Leo's scripting environment takes full advantage of outline structure:
 </t>
 <t tx="ekr.20101125062332.5090">**Python**: Leo will work on any platform that supports Python 2.6 or above, including Python 3.0 and above. To install Python, see http://python.org.
 
-**PyQt**: `PyQt`_ provides Leo's widgets.
+**PyQt**: `PyQt`_ provides Leo's widgets:
 
 * Download PyQt4 from http://www.riverbankcomputing.com/software/pyqt/download.
 * Download PyQt5 from http://www.riverbankcomputing.com/software/pyqt/download5.
 
 **Important**: The PyQt version must match your installed Python version. Remember that Leo requires Python 2.6 or later, or Python 3.0 or later.
 
-**PyEnchant**: You must install `PyEnchant`_ if you want to use Leo's Spell tab.
-
-There is an executable installer for Windows users.
+**PyEnchant**: You must install `PyEnchant`_ if you want to use Leo's Spell tab. There is an executable installer for Windows users.
 </t>
 <t tx="ekr.20110521135104.18151">Cross-file clones are cloned nodes in one outline that refer to data in another outline. This is a frequently requested feature. For example::
 
@@ -12088,17 +12088,26 @@ stylesheet_path=..\doc
 write_intermediate_file = True
 @c
 
+.. _`Installing Leo with git`:  installing.html#installing-leo-with-git
+.. _`Installing Leo with pip`:  installing.html#installing-leo-with-pip
+.. _`Nightly snapshot`:         download.html#snapshots
+.. _`Python wheel`:             https://pythonwheels.com/
+.. _`SourceForge`:              https://sourceforge.net/projects/leo/files/Leo/
+.. _`git`:                      https://git-scm.com/
+
 ###############
 Downloading Leo
 ###############
 
-We recommend using `git &lt;https://git-scm.com/&gt;`_ to download Leo. Using git gives you the latest, thoroughly tested code. With git, you can review all the new features and update when you decide. Git also makes it easy to revert to previous versions when problems arise.
+There are four ways to download Leo:
 
-- To install using git, follow the instructions at `Installing Leo with git &lt;installing.html#installing-leo-with-git&gt;`_.
+- **New**: Leo 5.7 final will have a `Python wheel`_, so ``pip install leo`` will automatically download *and* install Leo, including all Leo's dependencies. See `Installing Leo with pip`_.
 
-- If you prefer a new development version, or a version from from 1, 2, 5, 10, 30 or 90 days ago, download a `Nightly snapshot &lt;download.html#snapshots&gt;`_.
+- We recommend installing Leo using `git`_, see `Installing Leo with git`_. Git gives you the latest, thoroughly tested code. All of Leo's developers use git.
 
-- If you want a stable release download from `SourceForge &lt;https://sourceforge.net/projects/leo/files/Leo/&gt;`_. Remember that it *won't* have the latest features and bug fixes.
+- If you prefer a new development version, or a version from from 1, 2, 5, 10, 30 or 90 days ago, download a `Nightly snapshot`_.
+
+- If you want a stable release download from `SourceForge`_. Remember that it *won't* have the latest features and bug fixes.
 </t>
 <t tx="ekr.20120130101219.10182">def computeBindingLetter(self, kind):
     # lm = self
@@ -17966,15 +17975,11 @@ Now I can continue what I was doing! This is such a simple idea, but it's really
 It's super important to deal with new ideas *instantly* but *without* greatly interrupting the task at hand. Creating "**" nodes does that. This new workflow has been a big improvement to my GTD practice.
 </t>
 <t tx="ekr.20141117065749.3"></t>
-<t tx="ekr.20141124094250.2">A **session** specifies a list of tabs (.leo files) that Leo opens
-automatically when Leo first starts.
+<t tx="ekr.20141124094250.2">A **session** specifies a list of .leo files that Leo opens automatically when Leo first starts. Like this::
 
-The typical usage is to start Leo with the ``--session-save --session-restore`` command-line options, open several Leo files and exit.
-
-The next time Leo is started with those options, the files will be
-open, and the nodes focused as when the previous session ended.
-
-Leo stores session state in ``~/.leo/leo.session``
+    leo --session-save --session-restore &lt;list of .leo files&gt;
+    
+When Leo closes, it stores session state in ``~/.leo/leo.session``. Session state consists of the list of open files and the selected node in each file. The next time Leo starts with those options, Leo will open these files and will select the appropropriate nodes.
 </t>
 <t tx="ekr.20141210095600.11">I am a microbiologist mostly analyzing large numbers of bacteria genomes for which I use almost entirely Python tools. A couple of years ago while working at Yale University I gave Leo go for writing Python and organizing my notes with.
 
@@ -22168,15 +22173,11 @@ And put this leo.bat in %PATH%::
 You may omit the /b option if you want to create a separate console window for Leo.
 </t>
 <t tx="ekr.20170206073747.6">.. _`install Leo from a debian package`: installing.html#installing-from-a-debian-package
-.. _`install Leo using pip`: installing.html#installing-using-pip
 .. _`install Leo from sources`: installing.html#installing-from-sources-linux
 
 If you are using Debian/Ubuntu, it's best to
 `install Leo from a debian package`_, as described next.
 This provides file associations, icons, launcher items, etc.
-
-.. Otherwise, you may `install Leo using pip`_ or `install Leo from sources`_.
-
 Otherwise, you may `install Leo from sources`_.
 </t>
 <t tx="ekr.20170206073747.7">Add these files to `/etc/apt/sources.list`::
@@ -25920,67 +25921,6 @@ To install Leo do this from a console::
     conda install pyqt5
     pip install leo
 </t>
-<t tx="ekr.20180127062046.1">**Installing Leo
-
-First you will need to install python. Python3 is recommended but you can install Python 2.7 if you prefer. Download from www.python.org
-Quick and easy
-
-Recommended for most users. If you are a developer, you may prefer other 'Options for installing Leo'
-Install Leo using pip
-
-Installing Leo using pip will take care of the dependencies &amp; install them automatically. Pip is included with python3.
-
-Open a terminal window and cd to where you have python 3.x installed. Change to your home directory ~home\&lt;path-to-python&gt;\Python3
-
-&gt; C:\~\AppData\Local\Programs\Python36&gt;
-
-
-
-Optional - verify you have pip installed
-
-&gt; pip --version
-
-you should see 'pip 9.0.1' from your &lt;path-to-python&gt;
-
-
-
-Now enter
-
-&gt; pip3 install leo
-
-Pip will proceed to download and install Leo and it's required packages.
-Running Leo
-
-Time to start Leo. In a Console or Terminal window (cmd.exe), cd to the Leo directory.
-
-&gt; C:\~\AppData\Local\Programs\Python\Python36\site-packages\leo-editor
-
-or
-
-&gt; C:\Users\~home\AppData\Local\Programs\Python\Python36\site-packages\leo-editor
-
-
-start Leo by typing
-
-&gt; launchleo.py
-
-
-Running Leo (http://leoeditor.com/running.html) has further options.
-
-
-Options for installing Leo.
-
-Recommended for coders, developers, users with specific needs, or those who prefer to use the latest development version of Leo.
-Dependencies
-
-Leo requires PyQt for GUI functions and widgets. PyQt5 is recommended. The following packages are optional, but recommended:
-
-    Docutils: required for the rst3 command and the viewrendered plugins.
-
-    Sphinx: required to regenerate Leo’s documentation.
-
-    PyEnchant: required for spell checking with Leo’s Spell tab.
-</t>
 <t tx="ekr.20180127092625.1">https://github.com/leo-editor/leo-editor/issues/659</t>
 <t tx="ekr.20180128051013.1">for pane in ('body', 'tree', 'log'):
     highlight(pane)
@@ -26000,7 +25940,29 @@ keyword, just as before. If no match is found, and exact is False, these
 methods then search again, matching if the given headline is a prefix of
 the headline of any node.
 </t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20180130033527.1">.. _`Install pip`:      https://pip.pypa.io/en/stable/installing/               
+.. _`Install Python`:   http://python.org.
+.. _`pip`:              https://pypi.python.org/pypi/pip
+
+Python's `pip`_ tool will download *and* install Leo and all of Leo's dependencies automatically:
+
+1. `Install Python`_ first, if necessary. If you are new to Python, install Python 3, not Python 2. Python 3 installs pip automatically.
+
+2. (Python 2 only) `Install pip`_ itself, if necessary.  To check whether pip has been installed, open a terminal window and type::
+
+    pip --version
+   
+3. (Python 2 only) From a terminal, install `PyQt`_ with::
+
+    pip install pyqt
+
+4. Install Leo with::
+
+    pip install leo
+    
+This will download and install all required packages (except PyQt).
+</t>
+<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
