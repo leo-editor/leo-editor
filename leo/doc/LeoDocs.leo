@@ -394,8 +394,7 @@
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
-<v t="ekr.20100808060203.4273"
-expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
+<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
@@ -970,6 +969,7 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20131002055813.19837"><vh>Undoing and redoing changes</vh></v>
 <v t="ekr.20160428113347.1"><vh>Clone-find commands</vh></v>
 <v t="ekr.20131001100335.15947"><vh>Help commands</vh></v>
+<v t="ekr.20180130094948.1"><vh>Operations on reference .leo files</vh></v>
 </v>
 <v t="ekr.20170215103337.1"><vh>All other commands</vh>
 <v t="ekr.20160428110816.1"><vh>Clone-find commands</vh></v>
@@ -1853,10 +1853,11 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20180124121124.1"><vh>Improved Leo read/write code in leoAtFile.py</vh></v>
 <v t="ekr.20180124100440.3"><vh>New redraw code</vh></v>
 </v>
-<v t="ekr.20180125042412.1"><vh>Leo 5.7 Commands: 3 new and 1 improved</vh>
+<v t="ekr.20180125042412.1"><vh>Leo 5.7 Commands: 6 new and 1 improved</vh>
 <v t="ekr.20180124100450.839"><vh>#632: check-conventions command</vh></v>
 <v t="ekr.20180124123920.1"><vh>Added find-all-unique-regex command</vh></v>
 <v t="ekr.20180124124409.1"><vh>Added insert-as-first-child &amp; insert-as-last-child commands</vh></v>
+<v t="ekr.20180130092843.1"><vh>Added read/set/update-ref-file commands</vh></v>
 <v t="ekr.20180124100450.797"><vh>The cff commands now sort their results</vh></v>
 </v>
 <v t="ekr.20180126001345.1"><vh>Leo 5.7 Settings and command-line arguments</vh>
@@ -1895,12 +1896,9 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20180124122055.1"><vh>New line_numbering.py plugin</vh></v>
 </v>
 </v>
+<v t="ekr.20180130092843.1"></v>
 <v t="ekr.20131004191204.16079"></v>
-<v t="ekr.20180124100450.708"><vh>** Document *-ref-file commands</vh>
-<v t="ekr.20180124100450.710"><vh>update-ref-file</vh></v>
-<v t="ekr.20180124100450.711"><vh>read-ref-file</vh></v>
-<v t="ekr.20180124100450.712"><vh>set-ref-file</vh></v>
-</v>
+<v t="ekr.20180130094948.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -14813,8 +14811,6 @@ Please take a few moments to experiment with clones:
     Exits Leo.  Leo will prompt you to save any unsaved outlines.
     
 A **session** specifies a list of tabs (.leo files) that Leo opens automatically when Leo first starts. When the ``--session-save`` and ``--session-restore`` command-line options are in effect, Leo will save session data on exit and will reload outlines when Leo restarts. For full details, see `Using sessions &lt;commands.html#using-sessions&gt;`_ in Leo's `Users Guide &lt;usersguide.html&gt;`_.
-
-The following commands manage Leo's `reference files`_.
 </t>
 <t tx="ekr.20131005214621.16088"></t>
 <t tx="ekr.20131005214621.16090">Leo is a full-featured outliner with the following special features:
@@ -25205,70 +25201,6 @@ The @g.commander_command decorator injects ivars into the Commands class.</t>
 <t tx="ekr.20180124100450.49">https://github.com/leo-editor/leo-editor/issues/417
 </t>
 <t tx="ekr.20180124100450.704">Changed qtree.declutter_node.</t>
-<t tx="ekr.20180124100450.708">https://groups.google.com/forum/#!topic/leo-editor/yAtfcG6AL70
-
-</t>
-<t tx="ekr.20180124100450.710">@g.commander_command('update-ref-file')
-def updateRefLeoFile(self, event=None):
-    '''
-    Saves only the **public part** of this outline to the reference Leo
-    file. The public part consists of all nodes above the **special
-    separator node**, a top-level node whose headline is
-    `---begin-private-area---`.
-   
-    Below this special node is **private area** where one can freely make
-    changes that should not be copied (published) to the reference Leo file.
-    
-    **Note**: Use the set-reference-file command to create the separator node.
-    '''
-    c = self
-    c.fileCommands.save_ref()
-</t>
-<t tx="ekr.20180124100450.711">@g.commander_command('read-ref-file')
-def readRefLeoFile(self, event=None):
-    '''
-    This command *completely replaces* the **public part** of this outline
-    with the contents of the reference Leo file. The public part consists
-    of all nodes above the top-level node whose headline is
-    `---begin-private-area---`.
-
-    Below this special node is **private area** where one can freely make
-    changes that should not be copied (published) to the reference Leo file.
-    
-    **Note**: Use the set-reference-file command to create the separator node.
-    '''
-    c = self
-    c.fileCommands.updateFromRefFile()
-</t>
-<t tx="ekr.20180124100450.712">@g.commander_command('set-reference-file')
-def setReferenceFile(self, event=None):
-    '''
-    Shows a file open dialog allowing you to select a **reference** Leo
-    document to which this outline will be connected.
-       
-    This command creates a **special separator node**, a top-level node
-    whose headline is `---begin-private-area---` and whose body is the path
-    to reference Leo file.
-    
-    The separator node splits the outline into two parts. The **public
-    part** consists of all nodes above the separator node. The **private
-    part** consists of all nodes below the separator node.
-       
-    The update-ref-file and read-ref-file commands operate on the **public
-    part** of the outline. The update-ref-file command saves *only* the
-    public part of the outline to reference Leo file. The read-ref-file
-    command *completely replaces* the public part of the outline with the
-    contents of reference Leo file.
-    '''
-    c = self
-    table = [ g.fileFilters("LEOFILES"),]
-    fileName = g.app.gui.runOpenFileDialog(c,
-            title="Select reference Leo file",
-            filetypes=table,
-            defaultextension=g.defaultLeoFileExtension(c))
-    if not fileName: return
-    c.fileCommands.setReferenceFile(fileName)
-</t>
 <t tx="ekr.20180124100450.728">The bug was in LM.computeWorkbookFileName.
 It's fine to return the name if the file already exists.
 
@@ -25550,6 +25482,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - Unit tests use a string gui, making them faster and more robust.
 - The line_numbering plugin shows line numbers in external files.
 - Improved the javascript importer.
+- Added 6 new commands.
 - Dozens of bug fixes.
 
 **Links**
@@ -25561,7 +25494,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
-- [LeoVue](https://github.com/kaleguy/leovue)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
@@ -25754,6 +25687,9 @@ and regardless of whether tabs have been detached.</t>
     find-all-unique-regex
     insert-as-first-child
     insert-as-last-child
+    read-ref-file
+    set-ref-file
+    update-ref-file
 
 - The cff commands now sort their results.
 </t>
@@ -25980,6 +25916,44 @@ Python's `pip`_ tool will download *and* install Leo and all of Leo's dependenci
 This will download and install all required packages (except PyQt).
 </t>
 <t tx="ekr.20180130055320.1">https://github.com/leo-editor/leo-editor/issues/562</t>
+<t tx="ekr.20180130092843.1">.. https://groups.google.com/forum/#!topic/leo-editor/yAtfcG6AL70
+
+.. _`reference .leo files`: http://leoeditor.com/FAQ.html#how-should-i-use-leo-with-git-etc
+
+These commands make it easier to use Leo's `reference .leo files`_. From time to time, developers needs to open reference Leo file and copy its content to and from their personal file.
+
+These commands use a **separation node**, a top-level node** whose headline is::
+
+    ---begin-private-area---
+    
+The body of the separation node contains the **.leo reference**, a path to the reference .leo file. Everything above this node is the **public part** of the outline.  Everything below this node is the **private part** of the outline.
+
+**set-reference-file** selects the reference .leo file corresponding to the local .leo file. It creates the separation node if it doesn't exists, changing the .leo reference as needed.
+
+**read-ref-file** reads the public part of this outline from the reference .leo file given in the separation node. **Warning**: This command **deletes all nodes above separation node**, recreating them from the reference file.
+
+**update-ref-file** saves public part of this outline to reference .leo file.
+
+You would typically execute the read-ref-file command after any git pull that changes any reference .leo file.  Similarly, you would typically execute the update-ref-file command before doing a git commit that changes a .leo file.
+</t>
+<t tx="ekr.20180130094948.1">.. .. https://groups.google.com/forum/#!topic/leo-editor/yAtfcG6AL70
+
+.. _`reference .leo files`: http://leoeditor.com/FAQ.html#how-should-i-use-leo-with-git-etc
+
+These commands make it easier to use Leo's `reference .leo files`_. From time to time, developers needs to open reference Leo file and copy its content to and from their personal file. These commands use a **separation node**, a top-level node whose headline is::
+
+    ---begin-private-area---
+    
+The body of the separation node contains the **.leo reference**, a path to the reference .leo file. Everything above this node is the **public part** of the outline.  Everything below this node is the **private part** of the outline.
+
+**set-reference-file** selects the reference .leo file corresponding to the local .leo file. It creates the separation node if it doesn't exists, changing the .leo reference as needed.
+
+**read-ref-file** reads the public part of this outline from the reference .leo file given in the separation node. **Warning**: This command **deletes all nodes above separation node**, recreating them from the reference file.
+
+**update-ref-file** saves public part of this outline to reference .leo file.
+
+Develpers would typically execute the read-ref-file command after any git pull that changes any reference .leo file.  Similarly, you would typically execute the update-ref-file command before doing a git commit that changes a .leo file.
+</t>
 <t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
