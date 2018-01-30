@@ -413,24 +413,29 @@ Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 
 </t>
-<t tx="EKR.20040519090846.9">Leo 5.6 September 25, 2017
+<t tx="EKR.20040519090846.9">Leo 5.7b1 January 30, 2018
 
-[Leo](http://leoeditor.com/) 5.6 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+[Leo](http://leoeditor.com/) 5.7b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
 Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is possible to simulate Python in assembly language...
 
-**The highlights of Leo 5.6**
+**The highlights of Leo 5.7**
 
-- The cursesGui2.py plugin creates a console gui for Leo.
-- Added "Yes to All" and "No to All" buttons to file-changed dialog.
-- Improved how Leo switches between git branches.
-- Created outline-oriented git-diff command.
-
-**Leo 5.6.1, November 9, 2017**
-
-- Published on Python Package Index (PyPi) and pip installable, `pip install leo`
+- Added Debian package for Leo.
+- pip install leo (After 5.7 final)
+- A web-based Leo Viewer, written by Joe Orr.
+- New reload-settings command.
+- Leo optionally shows user tips on startup.
+- Added a new Tips page to Leo's documentation.
+- Improved the console_gui plugin.
+- Added live links from urls in the log pane.
+- Unit tests use a string gui, making them faster and more robust.
+- The line_numbering plugin shows line numbers in external files.
+- Improved the javascript importer.
+- Added 6 new commands.
+- Dozens of bug fixes.
 
 **Links**
 
@@ -441,6 +446,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
@@ -4139,7 +4145,7 @@ So links to files in the project root or other folders will be broken. (Backgrou
     ./leo-editor/docs/*    --&gt; left out
     ./leo-editor/leo/*/*/* --&gt; PYTHONHOME/Lib/site-packages/leo
 
-Docs: of litte concern. These can regenerated from sources in ./leo (leoDocs.leo), and are on the website: http://leoeditor.com
+Docs: of little concern. These can regenerated from sources in ./leo (leoDocs.leo), and are on the website: http://leoeditor.com
 
 Root: these files should only be involved in building installers and similar activities (e.g. leoDist.leo). Work from a git checkout or source tarball instead: https://github.com/leo-editor/leo-editor</t>
 <t tx="maphew.20180128213245.1">TestPyPI: https://packaging.python.org/guides/using-testpypi/

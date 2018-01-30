@@ -1,4 +1,4 @@
-Leo 5.7b1 January 27, 2018
+Leo 5.7b1 January 30, 2018
 
 [Leo](http://leoeditor.com/) 5.7b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
@@ -9,6 +9,8 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 **The highlights of Leo 5.7**
 
 - Added Debian package for Leo.
+- pip install leo (After 5.7 final)
+- A web-based Leo Viewer, written by Joe Orr.
 - New reload-settings command.
 - Leo optionally shows user tips on startup.
 - Added a new Tips page to Leo's documentation.
@@ -17,6 +19,8 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - Unit tests use a string gui, making them faster and more robust.
 - The line_numbering plugin shows line numbers in external files.
 - Improved the javascript importer.
+- Added 6 new commands.
+- Dozens of bug fixes.
 
 **Links**
 
@@ -27,6 +31,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
