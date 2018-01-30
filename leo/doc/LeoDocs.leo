@@ -1783,9 +1783,10 @@
 <v t="ekr.20180125034531.1"></v>
 <v t="ekr.20180125034327.1"><vh>Leo 5.7b1 release notes</vh>
 <v t="ekr.20180125032239.1"><vh>Leo 5.7 Summary</vh></v>
-<v t="ekr.20180125041229.1"><vh>Leo 5.7 Major features: 4 issues and 1 other</vh>
+<v t="ekr.20180125041229.1"><vh>Leo 5.7 Major features: 5 issues and 1 other</vh>
 <v t="ekr.20180124100450.49"><vh>#417: reload-settings command</vh></v>
 <v t="ekr.20180124100450.168"><vh>#503: Use string/null gui for unit tests</vh></v>
+<v t="ekr.20180130055320.1"><vh>#562: A PyPi wheel for Leo</vh></v>
 <v t="ekr.20180124100450.906"><vh>#597: Show tips when Leo starts up</vh></v>
 <v t="ekr.20180124100450.913"><vh>#635: Link to nodes from log pane</vh></v>
 <v t="ekr.20180124121851.1"><vh>Added Debian package for Leo</vh></v>
@@ -1899,7 +1900,6 @@
 <v t="ekr.20180124100450.711"><vh>read-ref-file</vh></v>
 <v t="ekr.20180124100450.712"><vh>set-ref-file</vh></v>
 </v>
-<v t="ekr.20131008041326.16092"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -25528,7 +25528,7 @@ later.</t>
 You can see all 5.7 issues by visiting:
 https://github.com/leo-editor/leo-editor/issues?page=1&amp;q=is%3Aissue+milestone%3A5.7+is%3Aclosed+-label%3ATip+-label%3AWon%27tDo+-label%3AWon%27tFix+-label%3AHelp&amp;utf8=%E2%9C%93
 </t>
-<t tx="ekr.20180125034327.1">Leo 5.7b1 January 27, 2018
+<t tx="ekr.20180125034327.1">Leo 5.7b1 January 30, 2018
 
 [Leo](http://leoeditor.com/) 5.7b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
@@ -25539,6 +25539,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 **The highlights of Leo 5.7**
 
 - Added Debian package for Leo.
+- pip install leo (After 5.7 final)
 - New reload-settings command.
 - Leo optionally shows user tips on startup.
 - Added a new Tips page to Leo's documentation.
@@ -25547,6 +25548,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - Unit tests use a string gui, making them faster and more robust.
 - The line_numbering plugin shows line numbers in external files.
 - Improved the javascript importer.
+- Dozens of bug fixes.
 
 **Links**
 
@@ -25723,6 +25725,7 @@ because "New Outline" is always valid regardless of how many tabs there are
 and regardless of whether tabs have been detached.</t>
 <t tx="ekr.20180126001345.1"></t>
 <t tx="ekr.20180126002550.1">- Added Debian package for Leo.
+- pip install leo (After 5.7 final).
 - New reload-settings command.
 - Leo optionally shows user tips on startup.
 - Added a new Tips page to Leo's documentation.
@@ -25739,24 +25742,28 @@ and regardless of whether tabs have been detached.</t>
 - Added @button get-issues to LeoDocs.leo.
 </t>
 <t tx="ekr.20180126003014.1"></t>
-<t tx="ekr.20180126003100.1">New commands:
-- check-conventions
-- find-all-unique-regex
-- insert-as-first-child
-- insert-as-last-child
+<t tx="ekr.20180126003100.1">- New commands::
 
-The cff commands now sort their results.</t>
+    check-conventions
+    find-all-unique-regex
+    insert-as-first-child
+    insert-as-last-child
+
+- The cff commands now sort their results.
+</t>
 <t tx="ekr.20180126003420.1">reinstated --trace-shutdown</t>
-<t tx="ekr.20180126003454.1">Completed 19 enhancement issues.  See
-https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A5.7+label%3Aenhancement
+<t tx="ekr.20180126003454.1">.. _`5.7 enhancements page`: https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A5.7+label%3Aenhancement
 
-Also, improved the javascript importer.</t>
-<t tx="ekr.20180126003617.1">New plugins:
-- patch_python_colorizer.py.
-- leo_cloud.py.
-- line_numbering.py
+- Completed 19 enhancement issues.  See the `5.7 enhancements page`_.
+- Improved the javascript importer.
+</t>
+<t tx="ekr.20180126003617.1">- New plugins::
 
-Improved the console_gui plugin.
+    patch_python_colorizer.py.
+    leo_cloud.py.
+    line_numbering.py
+
+- Improved the console_gui plugin.
 </t>
 <t tx="ekr.20180126060924.1"></t>
 <t tx="ekr.20180126060940.1"></t>
@@ -25966,6 +25973,7 @@ Python's `pip`_ tool will download *and* install Leo and all of Leo's dependenci
     
 This will download and install all required packages (except PyQt).
 </t>
+<t tx="ekr.20180130055320.1">https://github.com/leo-editor/leo-editor/issues/562</t>
 <t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
