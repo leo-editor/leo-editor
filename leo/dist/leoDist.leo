@@ -312,6 +312,7 @@
 <v t="maphew.20180128213245.1"><vh>Not recommended: Test with TestPyPI</vh></v>
 <v t="maphew.20180128212042.5"><vh>Caveats</vh></v>
 </v>
+<v t="ekr.20180124100848.1"><vh>Failures in unified version</vh></v>
 </v>
 <v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh>
 <v t="ekr.20161015091350.1"><vh>Pre-testing</vh></v>
@@ -360,7 +361,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20180124100848.1"><vh>Failures in unified version</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
