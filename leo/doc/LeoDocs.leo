@@ -1899,6 +1899,7 @@
 <v t="ekr.20180124100450.711"><vh>read-ref-file</vh></v>
 <v t="ekr.20180124100450.712"><vh>set-ref-file</vh></v>
 </v>
+<v t="ekr.20131008041326.16092"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -12089,7 +12090,7 @@ write_intermediate_file = True
 
 .. _`Installing Leo with git`:  installing.html#installing-leo-with-git
 .. _`Installing Leo with pip`:  installing.html#installing-leo-with-pip
-.. _`Nightly snapshot`:         download.html#snapshots
+.. _`Nightly snapshot`:         download.html#snapshots       
 .. _`Python wheel`:             https://pythonwheels.com/
 .. _`SourceForge`:              https://sourceforge.net/projects/leo/files/Leo/
 .. _`git`:                      https://git-scm.com/
@@ -16039,7 +16040,11 @@ You might call this a FAQ for scripts...
 Downloading, Installing &amp; Running Leo
 #####################################
 
-.. This page exists simply to organize the main TOC.
+.. _`Python`:                   https://www.python.org/
+.. _`Leo's dependencies`:       installing.html#dependencies
+.. _`Installing Leo using pip`:    installing.html#installing-leo-with-pip
+
+**Overview**: Leo is a `Python`_ program.  You must install Python itself, `Leo's dependencies`_, and then download and install Leo itself.
 
 .. toctree::
    :maxdepth: 4
