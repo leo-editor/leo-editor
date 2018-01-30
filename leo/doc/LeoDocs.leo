@@ -394,7 +394,8 @@
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
-<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
+<v t="ekr.20100808060203.4273"
+expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
@@ -25540,6 +25541,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 
 - Added Debian package for Leo.
 - pip install leo (After 5.7 final)
+- A web-based Leo Viewer, written by Joe Orr.
 - New reload-settings command.
 - Leo optionally shows user tips on startup.
 - Added a new Tips page to Leo's documentation.
@@ -25559,6 +25561,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - [Forum](http://groups.google.com/group/leo-editor)
 - [Download](http://sourceforge.net/projects/leo/files/)
 - [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue)
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
@@ -25724,8 +25727,11 @@ As a happy side effect, right clicking now always shows this popup. That's
 because "New Outline" is always valid regardless of how many tabs there are
 and regardless of whether tabs have been detached.</t>
 <t tx="ekr.20180126001345.1"></t>
-<t tx="ekr.20180126002550.1">- Added Debian package for Leo.
+<t tx="ekr.20180126002550.1">.. _`LeoVue`: https://github.com/kaleguy/leovue#leo-vue
+
+- Added Debian package for Leo.
 - pip install leo (After 5.7 final).
+- A web based Leo viewer, `LeoVue`_, written by Joe Orr.
 - New reload-settings command.
 - Leo optionally shows user tips on startup.
 - Added a new Tips page to Leo's documentation.
