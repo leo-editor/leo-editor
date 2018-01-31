@@ -3,7 +3,7 @@
 .. @@language rest
 .. @@wrap
 .. @+all
-.. @+node:ekr.20180131053148.1: ** Move 30 items to issues
+.. @+node:ekr.20180131053148.1: ** Move about 30 items to issues
 print(p.numberOfChildren())
 
 ** Tag issues with names: Kent, Terry, Ville, etc.
@@ -711,9 +711,7 @@ Ctrl-B also runs the script in the body, but not in a persistent namespace, runn
 
 I guess leoscreen would do the same things as the vs-* commands if you used it against a python shell.  The inspiration for the vs-* commands was wanting Leo to tell you what 3.57 * 365 / 12 was without a lot of effort, but of course you can define functions etc. etc.
 .. @+node:ekr.20180131065401.1: *3* Rendering: 4
-.. @+node:ekr.20130806072439.20369: *4* @paragraph(s)
-From: <offray@riseup.net>
-
+.. @+node:ekr.20130806072439.20369: *4* @paragraph (offray)
 I have been using txt2tags + Nested Editor to produce structured docs in a light markup and exporting them to HTML and LaTeX > pdf. The fine tunning on the pdf output is done by editing the LaTeX source in Leo. I like the aesthetic of the source code and the outputs and I have contacted the Nested author in order to get some cross-pollination between it and Leo.
 
 See https://groups.google.com/group/nestededitor/browse_thread/thread/7068e3cd229d4614 
@@ -724,19 +722,17 @@ http://leo.zwiki.org/GraphsInTrees, particularly the 'Older notes' section towar
 .. @+node:ekr.20180131054718.1: *4* Support cmap-like data (Terry)
 I'd like Leo to be able to behave like CmapTools, http://cmap.ihmc.us/ but maybe it can, essentially, and it's really a matter of defining some new interface bells and whistles.
 .. @+node:ekr.20050127110221: *4* More flexible output (jasonic)
-**pdf**
-PDF has it uses.  If nicely embedded into Leo via 'reportwriter'  and some export scripts {and clear useinterfance} would stillbe a good thing.
+.. @+node:ekr.20180131075327.1: *5* pdb
+PDF has it uses. If nicely embedded into Leo via 'reportwriter'and some export scripts {and clear useinterfance} would still be a good thing.
 
 As I start to think about how to print Leo, I become more aware of the differneces between Leo structures and linear [print] layouts.
 
 Different kinds of outlines obviously will need different kinds of printing. I don't yet have enough experience or overview.
+.. @+node:ekr.20180131075414.1: *5* xslt
+Seems a natural way to go for printing Leo, but yet another langauge and syntax to wrassle with.
 
-**xslt**
-
-Seems a natural way to go for printing Leo, but yet another langauge and syntax to wrassle with. Last time I looked I went from being horrified to very impressed to be being exhausted.
-
-**swf [flash]**
-
+Last time I looked I went from being horrified to very impressed to be being exhausted.
+.. @+node:ekr.20180131075435.1: *5* flash/swf
 This printing topic pushes me harder to get FLC  [my FlashLeoClient project] into the Leosphere.
 
 Flash has *limited*  CSS handling, but enough to do some nice and useful typographic formatting in a pretty clean object-oriented manner.
@@ -745,41 +741,38 @@ FLC parses .leo files into a Flash object. Flash Textformat instances are create
 
 Since FLC is in the very first instance a READ-ONLY client tool for Leo, it makes it a natural Leo printing service.
 
-To complete full service, it woudl be good if Leo could create SWF files directly itself, just like using PDF reportwriter. There are a couple of libraries to help this
+To complete full service, it woudl be good if Leo could create SWF files directly itself, just like using PDF reportwriter. There are a couple of libraries to help this:
+
 - Ming [with PHP, Perl, Python and Ruby wrappers] http://ming.sourceforge.net/
 
-- makeswf.r [interesting REBOL/Flash dialect by David Oldes]
-http://sweb.cz/oliva.david/swf/
+- makeswf.r [interesting REBOL/Flash dialect by David Oldes] http://sweb.cz/oliva.david/swf/
 
 These could also be both configured as web-services. So Leo print-to-web would include by default rendering a flash swf file versoin of itself either using locally installed libraries or by passing a view of itself to a chosen client or server-based tool.
 
 But even without those extra 'services' and libraries a single flash file in the form of FLC could become an effective Leo printing kit. Using a standalone desktop  version [not embedded in the browser, out of the sandbox] much more is possible - remote control, peer-peer editing, file writing etc.
+.. @+node:ekr.20180131075537.1: *5* flashpaper2 (commercial)
+I've been using Flashpaper2 a lot to print all kinds of stuff, often from web pages to my local adhoc home filebase. It's a very fast lighweight alternative to PDF, saves paper, has excellent zooming and nice search features built-in.
 
-**flashpaper2**
-
-btw, Lately I've been using Flashpaper2 a lot to print all kinds of stuff, Often from web pages to my local adhoc home filebase. It's a very fast lighweight alternative to PDF, saves paper, has excellent zooming and nice search features built-in. Flashpaper renders a very litteral snapshot, but as I am discovering that turns out to be extremely useful. For example you visit a page and click on some links. Flashpaper saves teh pages exactly as it looks, viisted links disntinguished.  In the era of info-overload, even that crude mnemonic is valuable.
+Flashpaper renders a very literal snapshot, but that turns out to be extremely useful. For example, you visit a page and click on some links. Flashpaper saves the pages exactly as they looks, visted links disntinguished.  In the era of info-overload, even that crude mnemonic is valuable.
 
 Alas, Flashpaper2 is not free nor open in the way Leo is. But worth to play with it if only for for the experience. 30 day trial downlaod from http://www.macromedia.com/software/flashpaper/
 
-And of course the flash _players_ is free, so can send people flashpaper documents just like PDF. Brilliant when you have a big Excel spreadsheet or CAD document which would normally get all messy printing across pages, confusing people. Instead adjust and print to a generous 'piece' of flashpaper - letting your coleagues pan and zoom to their comfort.
+Flash *players* are free, so can send people flashpaper documents just like PDF. Brilliant when you have a big Excel spreadsheet or CAD document which would normally get all messy printing across pages, confusing people. Instead adjust and print to a generous 'piece' of flashpaper. Your coleagues can pan and zoom as they like.
 
-I've not quite figured out the place where  Leo meets Flashpaper, because Leo needs to preserve its full pane contents. Flashpaper works fine with long web pages, automatically reading the full window contents and cutting into a paginated sequence, ready for paper printing. Leo's does not have aprint menu, so it's off the sytem's print-devices map, which Flash paper appearing just  like any phtycial printer.
+I've not quite figured where Leo meets Flashpaper, because Leo needs to preserve its full pane contents. Flashpaper works fine with long web pages, automatically reading the full window contents and cutting into a paginated sequence, ready for paper printing.
 
-I imagine is possible to fix that in Leo, but I do not where to begin and woudl not be surprised to learn its a major heachche to write adn debug for multiple operating systems.
+[Obsolete] Leo's does not have a Print menu, so it's off the sytem's print-devices map, which Flash paper appearing just like any phtycial printer.
 
 An immediate alternative are screencapture tools like vnc2swf or MDM Capture.
 
-[vnc2swf uses Ming-0.2a]
-http://www.unixuser.org/~euske/vnc2swf/
+[vnc2swf uses Ming-0.2a] http://www.unixuser.org/~euske/vnc2swf/
 
 http://www.multidmedia.com/software/capture/index.php
 
 But much is hidden or lost from view. 
 Still very vauable for creating dynamic narrative tutorials [aka screencasting]
 
-AS you know I am very excited about what flash can do for Leo, and vice versa.
-But I am concerned that there is not yet a 100% Leo means which supports people's
-standard print needs and habits.
+I am very excited about what flash can do for Leo, and vice versa. But I am concerned that there is not yet a 100% Leo means which supports people's standard print needs and habits.
 .. @+node:ekr.20160405063258.1: ** Unlikely
 .. @+node:ekr.20160315141751.1: *3* Code Academy
 - Redraw mode that hides siblings.
