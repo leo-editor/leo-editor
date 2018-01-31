@@ -138,64 +138,8 @@ Maybe Leo can be split up into three components:
 3. A display component is responsible for interfacing with the user. If can be TK, but it can also be something like the Tiddlywiki interface, which immediately shows the formatting applied to text.
 
 As an intermediate step, maybe we could allow mixing RST processing with regular program text.  Leo would produce two documents out of a source file: a version for the compiler in plain ascii, and an HTML file for reading the source.
-.. @+node:ekr.20180131065339.1: *3* Commands: 2
+.. @+node:ekr.20180131074957.1: *3* Commands & Features: 6
 .. @+node:ekr.20180131061006.1: *4* Add count-children command (EKR)
-.. @+node:ekr.20041130123243: *4* Clear Undo command (e)
-http://sourceforge.net/forum/message.php?msg_id=2859273
-e
-
-theres a config option to clear undo on save.
-can that be a menu choice as well? 
-clear undo now.
-enable clear undo on save.
-moot as it will be with the new config options
-and any undo changes on the table.
-maybe there is a single point to involke clear 
-undo that could be run from a button?
-
-with py2.3 after allot of small edits on an open leo after a few hours gc can
-hit unexpectedly and last several minutes
-and return at any time lasting several more minutes.
-I think its gc related because the memory use and disk grinding demanding I
-free up memory or kill python.
-
-I have no idea if undo is the cause,
- just guessing.
-using cvs of last week. I just updated, 
-will let you know if it happens again.
-(new error reporting jump to error is great)
-
-usually I don't edit in the same process that long.
-I have run scripts from leo that run 6, 12 
-or 24 hours no problem. 
-maybe I can turn on some internals reporting and
-get some feedback on whats going on from python if it happens again. 
-or run the gc script before and after.
-
- win98 128meg w/maxmem memory defrager that works well.
-but I go from 50% free to 10% when this starts happening.
-I haven't noticed this problem yet in py2.4, and it is peppier,
-but don't use py2.4 enough. it doesn't happen every day.
-I reboot at least once a day for various reasons.
-so it isn't that either. 
-you do need to reboot and or exit python once it starts.
-this was never an issue with py2.2 and Leo 4.1 or less with only 64 megs.
-I don't really have any other long running python processes to compare to Leo. 
-can't say what it is.
-Aha, progress. 
-this started sometime early in 4.2 or late 4.1
-but I can still be persuaded something in my 
-local system is to blame, some install or dll update. or script, psyco or plugin
-related.
-
-nonwithstanding, I should be taking better advantage Moore's law in my CPU and
-memory.
-I only notice this when I'm running the same leo over a few hours of constant
-editing and running scrips.
-and when I exit python and restart leo everything returns to normal.
-more a supporting anomaly report 
-than a bug report or feature request.
-.. @+node:ekr.20180131074957.1: *3* Features: 5
 .. @+node:ekr.20041219162724: *4* Add dialog to insert recent directories
 http://sourceforge.net/forum/message.php?msg_id=2903742
 
@@ -260,7 +204,7 @@ The 'ileo workbook' concept is relevant; it allowed you to easily reference othe
 It's nice in theory, but the rigid ui model where we show only one node at a time made it hard to visualize. Tabula or grid would make it more concrete and intuitive - you could show input, output and the manipulator script at the same time. Or make small nodes with intermedote results etc.
 
 How this would relate to 'pipeline' - you would have explicit way to say what nodes are input, whan nodes are output and what are the scripts that transform input to output. Editing inputs or scriyts would ping you somehow that outputs are out of date, allowing you to easily press button to recalculate outputs.
-.. @+node:ekr.20130806072439.21342: *5* Re: Node pipes
+.. @+node:ekr.20130806072439.21342: *5* Re: Node pipes (EKR)
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Wed, Apr 18, 2012 at 9:48 AM, Kent Tenney <ktenney@gmail.com> wrote:
@@ -300,7 +244,7 @@ A new idea!  This could be revolutionary!
 To paraphrase: nodes and links are not simply ways to represent structure.  They may have independent identity and function.  A brilliant idea.
 
 Edward
-.. @+node:ekr.20130806072439.21344: *5* Re: Node pipes
+.. @+node:ekr.20130806072439.21344: *5* Re: Node pipes (EKR)
 From: "Edward K. Ream" <edreamleo@gmail.com>
 
 On Wed, Apr 18, 2012 at 11:47 AM, Kent Tenney <ktenney@gmail.com> wrote:
@@ -330,7 +274,7 @@ Keeping up with ourselves these days seems like a full-time job.
 
 I believe a broadcaster/listener event framework is an essential ingredient.  It shouldn't be too hard to do, it will simplify existing code, and it will be an enabling technology that will stimulate further development.
 .. @+node:ekr.20090131200406.15: *3* DOM & files: 4
-.. @+node:ekr.20061002093442: *4* Add opml support to open & save commands
+.. @+node:ekr.20061002093442: *4* Add opml support to open & save commands (EKR)
 .. @+node:ekr.20071001052501: *4* Versioning for nodes (Kent)
 One feature I have not seen in SCS system is something which might be called "history compression": I might be interested in having both version 5 and 6 in my source tree, when the current version is 7, but I am not really interested in the 2000 steps which transformed 5 into 6 (just suggested this feature to the bazaar people). This happens actually quite often to me, since I use the SCS as a back-up system, saving many (uninteresting) intermediate steps while implementing a new feature.
 .. @+node:ekr.20111019104425.15896: *4* Enhanced node attributes: ctime, atime, mtime (Kent)
@@ -890,6 +834,12 @@ This would be more convenient than manually writing @url file://a/long/path/to/t
 Davide
 .. @+node:ekr.20041016134312.2: *4* Unlikely: Standard Weave command
 Use noweb and TeX, or maybe Pyx.
+.. @+node:ekr.20041130123243: *4* Unlikely: clear-undo command (e)
+http://sourceforge.net/forum/message.php?msg_id=2859273
+
+EKR: There's a config option to clear undo on save. That should suffice
+
+Many small edits on an open leo after a few hours can trigger a slow GC cycle. I have no idea if undo is the cause, just guessing.
 .. @+node:ekr.20180124135104.1: ** Won't do
 .. @+node:ekr.20160405063304.1: *3* Commands & features
 .. @+node:ekr.20160503093454.2: *4* Won't do: Ignore URL's in scripts
