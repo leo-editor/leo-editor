@@ -27,28 +27,30 @@ http://radar.oreilly.com/2012/08/smart-notebooks-for-linking-virtual-teams-acros
 Leo could push Leo-derived content to DokuWiki as a platform for "wiki-publishing" to enable collaborative/community editing of content.  See
 
 <../d/msg/leo-editor/fSzVi1Rh5Tg/uu85satgb9YJ>
-<../d/msg/leo-editor/xf6_HBxlV_c/4RgGYdDh8ywJ>).
+<../d/msg/leo-editor/xf6_HBxlV_c/4RgGYdDh8ywJ>
 
 I've also talked about the markup syntax/doc generation tool Txt2tags:
 
-<https://groups.google.com/d/msg/leo-editor/nNEnxoohFBM/XkMPQhqhDRsJ>:
-2<https://groups.google.com/d/msg/leo-editor/HBhBnAyVG3E/UXHC1jq50iYJ> ).
+https://groups.google.com/d/msg/leo-editor/nNEnxoohFBM/XkMPQhqhDRsJ
+https://groups.google.com/d/msg/leo-editor/HBhBnAyVG3E/UXHC1jq50iYJ
 
 I have recently learned of the wiki platform Gitit <https://github.com/jgm/gitit#readme>, which apparently, like DW, also uses plain-text files rather than a database back-end, and integrates with git, mercurial, and darcs.
 
 Gitit also incorporates the Pandoc for its markup syntax, therefore enabling not only markdown but reST as a master source input format, while DokuWiki has its own, unique, markup syntax.
 
-It's starting to look worth my while to switch my "master source" content syntax from Txt2tags to reST. The only downsides are that Gitit is a Haskell project rather than Python, and one thing I like about Txt2tags is its support for conversion to AsciiDoc, rather than Pandoc's direct output to full-blown DocBook XML - but apparently even that's in the works in Pandoc's dev version.
+I may be worthwhile to switch my "master source" content syntax from Txt2tags to reST. The only downsides are that Gitit is a Haskell project rather than Python, and one thing I like about Txt2tags is its support for conversion to AsciiDoc, rather than Pandoc's direct output to full-blown DocBook XML - but apparently even that's in the works in Pandoc's dev version.
 
 Anyone in the Leo community using Gitit, especially for use beyond simple code documentation?
-.. @+node:ekr.20130806072439.21304: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs (offray)
+.. @+node:ekr.20130806072439.21304: *5* Reply (offray)
 > HansBKK: anyone using Leo for single-source documentation generation/conversion
 
-When you suggested DocuWiki I thought of MoinMoin which has also support of plain files as storage mechanism but is also scalable to databases if this is needed and it supports reStructuredText and is made in python, a language that "leonizens" are familiar with.
+MoinMoin has also support of plain files as storage mechanism but is also scalable to databases if this is needed and it supports reStructuredText and is made in python, a language that "leonizens" are familiar with.
+
+HansBKK: I missed the MoinMoin's "simple page storage" option. Thanks for pointing that out. For all the reasons you cite, and most importantly is much more mainstream, more actively developed and well-supported than Gitit, I'll definitely give it a higher priority in my testing.
 
 I use Leo + Fossil for my documentation related matters and distributed work.
 
-I certainly think that a distributed off-line collaboration system for documentation is needed and, if MoinMoin can't support the use of distributed wikis (and seems is not planned or in development [1][2])
+A distributed off-line collaboration system for documentation is needed and, if MoinMoin can't support the use of distributed wikis (and seems is not planned or in development [1][2])
 
 Gitit would be a nice place to start with this idea and would offer advantages over the non-distributed and outdated Zope's actual implementation, so, interested ones in the community could offer an implementation of Gitit. 
 
@@ -66,9 +68,8 @@ Pandoc was a compelling reason to learn Haskell[3] because it deals elegantly wi
 Have been reading some about Combined Object Lambda Architecture[4].
 
 The comprehensive "Concepts, Techniques, and Models of Computer Programming" by Van Roy and Haridi would be a nice reading.
-.. @+node:ekr.20130806072439.21306: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs (offray)
+.. @+node:ekr.20130806072439.21306: *5* Reply (offray)
 I think that putting documentation also in the center is required if we want to break the Leo's self-fulfilled prophesy about being a "ghetto tool" for programmers only.
-
 
 I enjoyed using MoinMoin for this project: http://el-directorio.org/
 
@@ -110,16 +111,12 @@ Agreed. Having Leo + Fossil + Laptop ( ;-P ) gives me some kind of portability, 
 
 
 Fossil compared with GitHub was not because of the equivalence of Git and GitHub, but because of the integration of web characteristics of GitHub in Fossil (wiki, tickets, web interface and so on).
-.. @+node:ekr.20130806072439.21307: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs (HansBKK)
+.. @+node:ekr.20130806072439.21307: *5* Reply (HansBKK)
 > (offray) documentation also in the center is required if we want to break the Leo's self-fulfilled prophesy about being a "ghetto tool" for programmers only
 
-ACLs is one of DokuWiki's strengths, as they target the corporate world (as much as a FOSS tool can)
+ACLs (access control lists) are one of DokuWiki's strengths, as they target the corporate world (as much as a Free Software tool can).
 
 Most of the mainstream distros now have easy-to-customize create-your-own-distro LiveCD/USB+persistent storage projects. I've got a portable drive that launches a GRUB2 boot menu letting me choose between various configs of Fedora, Red Hat, Debian, Ubuntu and Slax, all of which access shared /home and server-data partitions (which gets sync'd with my central filer). Check out Sardu <http://www.sarducd.it/>, which also handles all the mainstream recovery/rescue/sysadmin tools like grml, pmagic, sysresccd - even BartPE, Win7 repair etc all on the same pocket drive...
-.. @+node:ekr.20130806072439.21309: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs (HansBKK)
-From: HansBKK <hansbkk@gmail.com>
-
-I missed the MoinMoin's "simple page storage" option. Thanks for pointing that out. For all the reasons you cite, and most importantly is much more mainstream, more actively developed and well-supported than Gitit, I'll definitely give it a higher priority in my testing.
 .. @+node:ekr.20060227123536: *4* Tiddlywiki & rendering body text (Mulder)
 http://sourceforge.net/forum/message.php?msg_id=3578252
 
