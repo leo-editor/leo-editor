@@ -3,20 +3,688 @@
 .. @@language rest
 .. @@wrap
 .. @+all
-.. @+node:ekr.20180131053148.1: ** Move 21 items to issues
+.. @+node:ekr.20180131053148.1: ** Move 30 items to issues
 print(p.numberOfChildren())
 
 ** Tag issues with names: Kent, Terry, Ville, etc.
-.. @+node:ekr.20130806072439.20369: *3* @paragraph(s)
+.. @+node:ekr.20180131065328.1: *3* Collaboration: 3
+.. @+node:ekr.20130806072439.21225: *4* Distributed collaboration tool (Fidelman)
+===== Miles Fidelman <mfidelman@meetinghouse.net>
+
+Here are some details about a project that I've been working on:
+
+Basic model is synchronized copies of documents, linked by an asynchronous pub-sub channel. Think of a personal Wiki (like TiddlyWiki) linked to copies of itself. Compose a document, email copies to collaborators. Everyone saves a local copy, which link to each other via a pub-sub protocol to distribute updates.  All in JavaScript, embedded in the "smart documents" - nothing special to install.
+
+See:
+http://www.kickstarter.com/projects/1947703258/smart-notebooks-keeping-on-the-same-page-across-th
+
+Andy Oram wrote a background piece for O'Reilly Radar:
+http://radar.oreilly.com/2012/08/smart-notebooks-for-linking-virtual-teams-across-the-net.html
+
+
+
+.. @+node:ekr.20130806072439.21301: *4* LeoWiki using GitIt and Pandocs
+From: HansBKK <hansbkk@gmail.com>
+
+I have been advocating the idea of pushing Leo-derived content to DokuWiki as a platform for "wiki-publishing" to enable collaborative/community editing of content (1 <../d/msg/leo-editor/fSzVi1Rh5Tg/uu85satgb9YJ>, 2<../d/msg/leo-editor/xf6_HBxlV_c/4RgGYdDh8ywJ>). I've also talked about the markup syntax/doc generation tool Txt2tags (1<https://groups.google.com/d/msg/leo-editor/nNEnxoohFBM/XkMPQhqhDRsJ>, 2 <https://groups.google.com/d/msg/leo-editor/HBhBnAyVG3E/UXHC1jq50iYJ> ).
+
+However, I have recently learned of the wiki platform Gitit <https://github.com/jgm/gitit#readme>, which apparently, like DW, also uses plain-text files rather than a database back-end, and integrates not only with git but mercurial (and darcs).
+
+Gitit also incorporates the Pandoc <http://johnmacfarlane.net/pandoc/>project for its markup syntax, therefore enabling not only markdown but reST as a master source input format, while DokuWiki has its own (yet another unique) markup syntax 8-(
+
+With the increasing likelihood that I'll be using Leo as the centerpiece of my toolchain, plus the fact that Pandoc is much more actively maintained, it's starting to look worth my while to consider switching my "master source" content syntax over from Txt2tags to reST. The only downsides are that Gitit is a Haskell project rather than Python, and one thing I like about Txt2tags is its support for conversion to AsciiDoc, rather than Pandoc's direct output to full-blown DocBook XML - but apparently even that's in the works in Pandoc's dev version.
+
+Anyone in the Leo community using Gitit, especially for use beyond simple code documentation?
+.. @+node:ekr.20130806072439.21302: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+On Thu, Jan 19, 2012 at 8:09 PM, HansBKK <hansbkk@gmail.com> wrote:
+> This is highly off-topic for most on the list, so feel free to ignore, but
+> anyone using Leo for single-source documentation generation/conversion,
+> including future googlers, please reply with comments or notes on your
+> experiences.
+
+No experience myself, but thanks for these interesting links.
+
+EKR
+.. @+node:ekr.20130806072439.21303: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
+From: =?UTF-8?B?T2ZmcmF5IFZsYWRpbWlyIEx1bmEgQ8OhcmRlbmFz?= <offray@riseup.net>
+
+Hi,
+
+I made some errors.
+
+In this part:
+
+El lun 23 ene 2012 07:22:21 COT, Offray Vladimir Luna C=E1rdenas escribi=F3=
+:
+>
+> but at the end we could not intervene MoinMoin as much as we would=20
+> like because of the server permissions, that why I started to look=20
+> more integrated solutions of the development and deployment=20
+> environment as web2py or seaside, but they're not wiki engines=20
+> properly but web application frameworks (where you could build a=20
+> wiki-engine if needed). But surely
+>
+
+"But surely" was not intended.
+
+Cheers,
+
+Offray
+
+.. @+node:ekr.20130806072439.21304: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
 From: <offray@riseup.net>
 
-I have been using txt2tags + Nested Editor to produce structured docs in a light markup and exporting them to HTML and LaTeX > pdf. The fine tunning on the pdf output is done by editing the LaTeX source in Leo. I like the aesthetic of the source code and the outputs and I have contacted the Nested author in order to get some cross-pollination between it and Leo.
+El jue 19 ene 2012 21:09:26 COT, HansBKK escribi=F3:
+> This is highly off-topic for most on the list, so feel free to ignore, bu=
+t
+> anyone using Leo for single-source documentation generation/conversion,
+> including future googlers, please reply with comments or notes on your ex=
+periences.
 
-See https://groups.google.com/group/nestededitor/browse_thread/thread/7068e3cd229d4614 
+I'm using Leo in that scenario (for writing my Thesis and I hope my=20
+students will use it in a similar fashion), so is not off-topic for me=20
+and not for people who is using Leo primary for documentation.
 
-I would like to have is a "@paragraph" directive that works the same as @rst-no-head but can be used in any part of a (sub)tree, even if is not @rst (sub)tree. This would come handy in chunking and reassembling LaTeX docs without marking up the parts with "<<chunk>>" tags.
-.. @+node:ekr.20180131061006.1: *3* Add count-children command (EKR)
-.. @+node:ekr.20041219162724: *3* Add dialog to insert recent directories
+> I have been advocating the idea of pushing Leo-derived content to DokuWik=
+i as a
+> platform for "wiki-publishing" to enable collaborative/community editing =
+of
+> content (1<../d/msg/leo-editor/fSzVi1Rh5Tg/uu85satgb9YJ>, 2
+> <../d/msg/leo-editor/xf6_HBxlV_c/4RgGYdDh8ywJ>). I've also talked about t=
+he
+> markup syntax/doc generation tool Txt2tags (1
+> <https://groups.google.com/d/msg/leo-editor/nNEnxoohFBM/XkMPQhqhDRsJ>, 2
+> <https://groups.google.com/d/msg/leo-editor/HBhBnAyVG3E/UXHC1jq50iYJ>  ).
+
+
+When you suggested DocuWiki I thought of MoinMoin which has also=20
+support of plain files as storage mechanism but is also scalable to=20
+databases if this is needed and it supports reStructuredText and is=20
+made in python, a language that "leonizens" are familiar with.
+
+> However, I have recently learned of the wiki platform Gitit
+> <https://github.com/jgm/gitit#readme>, which apparently, like DW, also us=
+es
+> plain-text files rather than a database back-end, and integrates not only=
+ with
+> git but mercurial (and darcs).
+>
+> Gitit also incorporates the Pandoc<http://johnmacfarlane.net/pandoc/>  pr=
+oject
+> for its markup syntax, therefore enabling not only markdown but reST as a=
+ master
+> source input format, while DokuWiki has its own (yet another unique) mark=
+up
+> syntax 8-(
+>
+> With the increasing likelihood that I'll be using Leo as the centerpiece =
+of my
+> toolchain, plus the fact that Pandoc is much more actively maintained, it=
+'s
+> starting to look worth my while to consider switching my "master source" =
+content
+> syntax over from Txt2tags to reST. The only downsides are that Gitit is a
+> Haskell project rather than Python, and one thing I like about Txt2tags i=
+s its
+> support for conversion to AsciiDoc, rather than Pandoc's direct output to
+> full-blown DocBook XML - but apparently even that's in the works in Pando=
+c's dev
+> version.
+>
+> Anyone in the Leo community using Gitit, especially for use beyond simple=
+ code
+> documentation?
+
+Now that I'm using Leo + Fossil for my documentation related matters=20
+and distributed work I certainly think that a distributed off-line=20
+collaboration system for documentation is needed and, if MoinMoin can't=20
+support the use of distributed wikis (and seems is not planned or in=20
+development [1][2]) Gitit would be a nice place to start with this idea=20
+and would offer advantages over the non-distributed and outdated Zope's=20
+actual implementation, so, interested ones in the community could offer=20
+an implementation of Gitit. On a related matter one of the problems I=20
+see with actual server technology is its gigantism which concentrates=20
+power in the people who has the resources, knowledge and time to=20
+possess, understand and administer/intervene this technology so a=20
+Global South Test for me about which server technology to choose is:=20
+"it runs from a USB thumb drive?". This, for example, favors=20
+Web2py/Smalltalk instead of Zope and Fossil instead of GitHub. May be=20
+you should put this in the panorama when you judge GitIt or=20
+Haskell/Pandoc. Pandoc, by the way, was for me a compelling reason to=20
+learn Haskell[3] (but I thought that I would learn Smalltalk before)=20
+because it deals elegantly with a problem in the diversity of markup=20
+languages (txt2tags makes something similar but only in one way=20
+translation) and for me the point of using Leo is having a tool to deal=20
+consistently with diversity in the "sub-optimal distopic world of=20
+everything is a file".
+
+[1] http://moinmo.in/PawelPacana/MercurialBackend
+[2] http://moinmo.in/MoinMoin2.0
+[3] http://learnyouahaskell.com/
+
+We could get philosophical here, and think about different programming=20
+paradigms and languages that implement them with elegant syntaxes, like=20
+Smalltalk, Haskell and Python versus the non elegant ones of .java, php=20
+or ... (put your hated language here) and how this elegant syntaxes,=20
+languages and computer using experience could cross-pollinate. If that=20
+is the case, may be reading some about Combined Object Lambda=20
+Architecture[4] and the comprehensive "Concepts, Techniques, and Models=20
+of Computer Programming" by Van Roy and Haridi would be a nice reading.=20
+Some times I dream of a world connected diversity where all the=20
+problems of computer interaction can be solved by expressing that=20
+diversity in fundamental constructs that respect it at the same time=20
+that bring consistency and interface solving the apparent chaos and=20
+noise.
+
+[4] https://en.wikipedia.org/wiki/COLA_%28software_architecture%29
+
+Cheers,
+
+Offray
+
+.. @+node:ekr.20130806072439.21305: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
+From: Matt Wilkie <maphew@gmail.com>
+
+> Wow I think that this is the first time I have the opportunity to
+> write (curiously in English instead of my native tongue) about
+> that dystopy, because most of the time I just talk about this
+> with my students or friends but not as detailed and contextually,
+> so thanks for bring this up Hans, and thanks everyone else
+> here who is still reading :-)
+
+I am reading, and enjoying. The clouds you've placed in my mind are
+making interesting shapes and I am intrigued. ;-)
+.. @+node:ekr.20130806072439.21306: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
+From: =?UTF-8?B?T2ZmcmF5IFZsYWRpbWlyIEx1bmEgQ8OhcmRlbmFz?= <offray@riseup.net>
+
+Hi,
+
+El lun 23 ene 2012 01:18:48 COT, HansBKK escribi=F3:
+> Thanks Offray for your detailed and informative response.
+
+Well I'm enjoying also these talks with you. I think that putting=20
+documentation also in the center is required if we want to break the=20
+Leo's self-fulfilled prophesy about being a "ghetto tool" for=20
+programmers only and I want this in the best way.
+
+[..]
+>
+> I for some reason missed the MoinMoin's "simple page storage" option - th=
+anks so
+> much for pointing that out. For all the reasons you cite, and most import=
+antly
+> is much more mainstream, more actively developed and well-supported than =
+Gitit,
+> I'll definitely give it a higher priority in my testing.
+[...]
+
+I enjoyed using MoinMoin for this project:
+
+http://el-directorio.org/
+
+but at the end we could not intervene MoinMoin as much as we would like=20
+because of the server permissions, that why I started to look more=20
+integrated solutions of the development and deployment environment as=20
+web2py or seaside, but they're not wiki engines properly but web=20
+application frameworks (where you could build a wiki-engine if needed).=20
+But surely
+
+>      the "sub-optimal distopic world of everything is a file".
+>
+>
+> I personally disagree with your dislike for "everything is a file" - I se=
+e that
+> principle as a fundamental part of the *nix tool philosophy, and IMO this=
+ is a
+> perfect example:
+>
+>      I certainly think that a distributed off-line collaboration system f=
+or
+>      documentation is needed and, if MoinMoin can't
+>
+>      support the use of distributed wikis (and seems is not planned or in=
+ development
+>
+> To my mind, any wiki platform that can store the page data as plain text =
+(as
+> opposed to binary/database), in a format suitable for diff tools ("light"=
+ markup
+> as opposed to html/xml) can make use of whatever VCS for distribution/rep=
+lication.
+
+You're right and I like the idea of "everything is a something" when=20
+that something is powerful unifying idea. That's the case with Unix's=20
+"everything is a file" or Smalltalk's "everything is an object" (in=20
+Unix you have also every tool makes one thing and makes it right,=20
+combined with pipes). For me these two paradigm's were the ones that,=20
+in 70's, were fighting for the mind share  about computer experience of=20
+today and both of them won in a dystopic way, but for me "taking genius=20
+to understand Unix simplicity"[0], was even more dystopic. When you're=20
+trying to empower users the impedance between development and=20
+deployment shows the dystopia, at least compared with the original=20
+visions, so most of the "end users" cant change the tool that changes=20
+them, so, someone else is making decisions about that changes and that=20
+users.
+
+[0] https://en.wikipedia.org/wiki/Unix_philosophy#Quotes
+
+I like the simplicity of light markups and I try myself of not using=20
+explicitly nothing as xml and I like also the idea of the light markup=20
+being used by VCS tools. That's not where dystopia lies. The problem is=20
+not about files or structure but about "meta-structure" (structure=20
+talking about structure, as in meta-languages), specially=20
+self-referential meta-structure, because self-referential=20
+meta-structures are the key for self-directed change, as opposed with=20
+change directed by others. When you see how the "world of everything is=20
+a file" talks about itself, there is a lot of impedance and=20
+discontinuity between source code, binary, apps and docs and there is a=20
+long path for the user who is confined to using apps to create docs,=20
+but never change the apps that could let she/he to change his/her=20
+writing and that's why I want to use Leo this semester with=20
+non-technical writers to explore the way that writing change the tool=20
+that writes and not only the human who does.
+
+For me a unified emergent meta-structure in the world of "everything is=20
+a file" is where lies the power of Leo. You can use an outline to=20
+change the way that Leo behaves and that's why having the Leo's=20
+self-referential meta-structure is more powerful that the "dystopic=20
+world of everything is a file" (in that world you don't have=20
+meta-structure, only structure, mostly for storage purposes and the=20
+intelligence to read/process it is mostly outside the file, in the=20
+human reader, the compiler or the binary). What Leo does is to create=20
+self-referentiality in the world of everything is a file by introducing=20
+outlines that can talk/structure the files and that can talk about=20
+outlines, i.e outlines that can talk about files and about themselves=20
+and can reprogram the way Leo itself works, and so Leo is bridging the=20
+gap between objects and files in a valuable and unique way.  But we=20
+need still to improve, specifically we need a more elegant way to talk=20
+about that files, specially about their changes in time, because is in=20
+that change where talking with the distopic world has more problems and=20
+possibilities, and that way I'm making the Fossil/VCS experiment and=20
+also.
+
+Wow I think that this is the first time I have the opportunity to write=20
+(curiously in English instead of my native tongue) about that dystopy,=20
+because most of the time I just talk about this with my students or=20
+friends but not as detailed and contextually, so thanks for bring this=20
+up Hans, and thanks everyone else here who is still reading :-)
+
+>      On a related matter one of the problems I see with actual server tec=
+hnology
+>      is its gigantism which concentrates
+>      power in the people who has the resources, knowledge and time to pos=
+sess,
+>      understand and administer/intervene this technology so a Global Sout=
+h Test
+>      for me about which server technology to choose is: "it runs from a U=
+SB thumb
+>      drive?".
+>
+> IMO "server" is a function, not a question of scale or complexity - the b=
+etter
+> question for my workflow is "does the app run portably?". I personally fi=
+nd
+> actually running stuff from flash drives too slow and data-dangerous.
+
+I'm agree with you. Server and gigantism have not to be equal, but=20
+unfortunately in the "dystopic informatic world" (where the previous=20
+dystopia is just a part) they're most of the time. Portability is the=20
+key, not flash drives. In my context they're just a medium to ask the=20
+same as you, but also a way to let people take the technology with=20
+them, no matter if they have access to a "classical" server.
+
+>
+> So far I've found that anything that runs under Linux is inherently porta=
+ble in
+> that sense.
+
+Agreed. Having Leo + Fossil + Laptop ( ;-P ) gives me some kind of=20
+portability, but we need more. That's why I think that we need a self=20
+contained version of Leo with a default discourse about file flat world=20
+change in time (at least for Windows), but ideally would be nice to=20
+have something like the self-contained multiplatform Pharo's One Click=20
+Experience[1]
+
+[1] http://www.pharo-project.org/pharo-download
+
+>      This, for example, favors Web2py/Smalltalk instead of Zope and Fossi=
+l
+>      instead of GitHub.
+>
+> I haven't any experience with these others, but note that Git does not =
+=3D GitHub.
+> I share your dislike for server/storage platforms out of my direct contro=
+l, not
+> least for privacy/security issues for many use cases. If I used Git for d=
+ata
+> distribution I wouldn't use GitHub, and my understanding is that even "Gi=
+t for
+> Windows" is already fully portable.
+
+Oohh I don't make myself clear, sorry. Fossil compared with GitHub was=20
+not because of the equivalence of Git and GitHub, but because of the=20
+integration of web characteristics of GitHub in Fossil (wiki, tickets,=20
+web interface and so on).
+
+> For myself, I think mercurial would be a good fit, but my main point is t=
+hat any
+> moves toward a "distributed Leo" should IMO be VCS-agnostic, just as my p=
+lans
+> for enabling community editing of Leo-managed content will be wiki-platfo=
+rm
+> agnostic.
+
+I fully share your opinion on that subjects, but in this case I want to=20
+start by some specific implementation from which one start to abstract=20
+that to think abstractly without any particular implementation in the=20
+road, which is not your case, I just point to different implementation=20
+strategies based on the same agnosticism/diversity as a valuable thing=20
+to preserve.
+
+> To me, the key enabler for that is "everything as a file". . .
+
+For me the enabler is self-referential meta-structure
+
+Thanks,
+
+Offray
+
+.. @+node:ekr.20130806072439.21307: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
+From: HansBKK <hansbkk@gmail.com>
+
+
+
+Content-Transfer-Encoding: quoted-printable
+
+On Monday, January 23, 2012 7:22:21 PM UTC+7, Offray Vladimir Luna C=E1rden=
+as=20
+wrote:
+>
+>
+> documentation also in the center is required if we want to break the Leo'=
+s=20
+> self-fulfilled prophesy about being a "ghetto tool" for programmers only
+
+
+Usability for clueless noobs is a lot of work, probably harder than the=20
+complex whiz-bang functionality part.
+
+And to take something as powerful and flexible as Leo and make it=20
+accessible for noobs would require "lobotomizing" it to some extent, at=20
+least hiding those features that weren't relevant to the intended=20
+more-mainstream task at hand.
+
+I imagine something like "application mode" flag at launch time=20
+  - Leo as a journaling tool (like Rednotebook on steroids)
+  - Leo as an Evernote-style note-taking brain extension
+    - with user-accessible tagging, perhaps multiple headings per node?
+  - Leo as a delicous-replacement (import/export/backup) bookmarks=20
+management tool
+  - Leo as a single-source multiple-output documentation management=20
+meta-organizer and conversion-supporting tool
+
+etc - very different UX - pane layouts, menu structures etc - for each=20
+mode, but the same underlying code and data structures
+
+but at the end we could not intervene MoinMoin as much as we would like=20
+> because of the server permissions
+
+
+ACLs is one of DokuWiki's strengths, as they target the corporate world (as=
+=20
+much as a FOSS tool can 8-)
+
+> So far I've found that anything that runs under Linux is inherently=20
+> portable in
+>
+> > that sense.
+>
+> Agreed. Having Leo + Fossil + Laptop ( ;-P ) gives me some kind of=20
+> portability, but we need more.
+>
+Pocket-size portable HDD with USB2 / SATA2  (will soon start converting to=
+=20
+v3 of both, used to use Firewire), booted up using any arbitrary internet=
+=20
+cafe / friend / customer desktop.
+
+ideally would be nice to have something like the self-contained=20
+> multiplatform Pharo's One Click=20
+> Experience[1]
+>
+> [1] http://www.pharo-project.org/pharo-download
+>
+Most of the mainstream distros now have easy-to-customize=20
+create-your-own-distro LiveCD/USB+persistent storage projects. I've got a=
+=20
+portable drive that launches a GRUB2 boot menu letting me choose between=20
+various configs of Fedora, Red Hat, Debian, Ubuntu and Slax, all of which=
+=20
+access shared /home and server-data partitions (which gets sync'd with my=
+=20
+central filer). Check out Sardu <http://www.sarducd.it/>, which also=20
+handles all the mainstream recovery/rescue/sysadmin tools like grml,=20
+pmagic, sysresccd - even BartPE, Win7 repair etc all on the same pocket=20
+drive. . .
+=20
+
+> integration of web characteristics of GitHub in Fossil (wiki, tickets, we=
+b=20
+> interface and so on).
+>
+=20
+
+> agnosticism/diversity as a valuable thing to preserve.
+
+=20
+Personally I prefer using CLI batch/scripts and/or TortoiseXX rather than a=
+=20
+web interface for my VCS usage, and my ticket/project management/GTD system=
+=20
+of choice is Redmine (likely Chili soon).=20
+
+Both of these integrate well with the important VCSs, so when I finally get=
+=20
+away from SVN and get familiar with the distributed new kids, I can keep my=
+=20
+other tools - Redmine/Chili now has such a custom-infrastructure encrusted=
+=20
+around it sync'ing with gcal, printing pocketmods for my calendar and=20
+@context to-do's that have become indispensable to my day-to-day life=20
+management.
+
+=20
+
+> "dystopic world of everything is a file" (in that world you don't have=20
+> meta-structure, only structure, mostly for storage purposes and the=20
+> intelligence to read/process it is mostly outside the file, in the human=
+=20
+> reader, the compiler or the binary). What Leo does is to create=20
+> self-referentiality in the world of everything is a file by introducing=
+=20
+> outlines that can talk/structure the files and that can talk about=20
+> outlines, i.e outlines that can talk about files and about themselves=20
+> and can reprogram the way Leo itself works, and so Leo is bridging the ga=
+p=20
+> between objects and files in a valuable and unique way.  But we need stil=
+l=20
+> to improve, specifically we need a more elegant way to talk about that=20
+> files, specially about their changes in time, because is in that change=
+=20
+> where talking with the distopic world has more problems and=20
+> possibilities, and that way I'm making the Fossil/VCS experiment and also=
+.
+>
+
+> To me, the key enabler for that is "everything as a file". . .
+>
+> For me the enabler is self-referential meta-structure
+>
+=20
+I don't see any conflict between the two, IOW no inherent limitations to=20
+"everything is a file" other than (to me, at least within the personal-use=
+=20
+prototyping context) unimportant factors like relative speed/scaleability -=
+=20
+it's "just" an implementation detail.=20
+
+The various levels of structural overlays as presented within Leo as=20
+"uber-manager of the metadata" can be as flexible and complex as can be,=20
+and still be stored/distributed as diffed/versionable/convertable files at=
+=20
+whatever appropriate level of granularity to support integration with=20
+outside toolchains. To the extent design choices are made that "lock in" to=
+=20
+a particular "higher level" technology bet, e.g. a specific database engine=
+=20
+or DVCS, then much higher-level programming/sysadmin skills are required in=
+=20
+order to integrate Leo into the thousands of mainstream tools that have=20
+evolved over time to support structured-plain-text.
+
+Look at source code - after all these decades, it's still stored as plain=
+=20
+text in a filesystem. There's a reason for that - any language that=20
+required its modules/functions/objects whatever to be stored in a=20
+"proprietary" database engine for example would have very limited uptake,=
+=20
+because coders would have to put so much effort into infrastructure=20
+overhead work to be able to keep working with their preferred toolset.=20
+Anyway 'nuff said on that.
+
+.. @+node:ekr.20130806072439.21308: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
+From: Largo84 <Largo84@gmail.com>
+
+This topic is of much interest to me as I use Leo primarily for writing 
+documentation (mostly LaTex, some html and some rST). I haven't worked w/ 
+Pandoc yet but am interested in some of the possibilities. Thanks for the 
+links, I'll check them out.
+.. @+node:ekr.20130806072439.21309: *5* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
+From: HansBKK <hansbkk@gmail.com>
+
+
+
+Content-Transfer-Encoding: quoted-printable
+
+Thanks Offray for your detailed and informative response.
+
+On Friday, January 20, 2012 5:34:21 PM UTC+7, Offray Vladimir Luna C=E1rden=
+as=20
+wrote:
+>
+> When you suggested DocuWiki I thought of MoinMoin which has also support=
+=20
+> of plain files as storage mechanism but is also scalable to databases if=
+=20
+> this is needed and it supports reStructuredText and is made in python, a=
+=20
+> language that "leonizens" are familiar with.
+>
+ I for some reason missed the MoinMoin's "simple page storage" option -=20
+thanks so much for pointing that out. For all the reasons you cite, and=20
+most importantly is much more mainstream, more actively developed and=20
+well-supported than Gitit, I'll definitely give it a higher priority in my=
+=20
+testing.
+
+=20
+
+> the "sub-optimal distopic world of everything is a file".
+>
+ =20
+I personally disagree with your dislike for "everything is a file" - I see=
+=20
+that principle as a fundamental part of the *nix tool philosophy, and IMO=
+=20
+this is a perfect example:
+
+ I certainly think that a distributed off-line collaboration system for=20
+> documentation is needed and, if MoinMoin can't=20
+>
+> support the use of distributed wikis (and seems is not planned or in=20
+> development
+>
+To my mind, any wiki platform that can store the page data as plain text=20
+(as opposed to binary/database), in a format suitable for diff tools=20
+("light" markup as opposed to html/xml) can make use of whatever VCS for=20
+distribution/replication.
+
+=20
+
+> On a related matter one of the problems I see with actual server=20
+> technology is its gigantism which concentrates=20
+> power in the people who has the resources, knowledge and time to possess,=
+=20
+> understand and administer/intervene this technology so a Global South Tes=
+t=20
+> for me about which server technology to choose is: "it runs from a USB=20
+> thumb drive?".
+>
+IMO "server" is a function, not a question of scale or complexity - the=20
+better question for my workflow is "does the app run portably?". I=20
+personally find actually running stuff from flash drives too slow and=20
+data-dangerous.
+
+In my workflow, at the beginning of a session I first sync the relevant=20
+data and "portable apps" filesystem branches, then run everything off the=
+=20
+local HD. At the end of a session I sync it all back - most of the time=20
+these days this is to/from a central filer, but I do have portable drives I=
+=20
+use for this when that's required or more convenient, which then get sync'd=
+=20
+to the filer next chance I get.
+
+So far I've found that anything that runs under Linux is inherently=20
+portable in that sense.
+=20
+
+> This, for example, favors Web2py/Smalltalk instead of Zope and Fossil=20
+> instead of GitHub.
+>
+I haven't any experience with these others, but note that Git does not =3D=
+=20
+GitHub. I share your dislike for server/storage platforms out of my direct=
+=20
+control, not least for privacy/security issues for many use cases. If I=20
+used Git for data distribution I wouldn't use GitHub, and my understanding=
+=20
+is that even "Git for Windows" is already fully portable.
+
+For myself, I think mercurial would be a good fit, but my main point is=20
+that any moves toward a "distributed Leo" should IMO be VCS-agnostic, just=
+=20
+as my plans for enabling community editing of Leo-managed content will be=
+=20
+wiki-platform agnostic.
+
+To me, the key enabler for that is "everything as a file". . .
+.. @+node:ekr.20060227123536: *4* Tiddlywiki and related comments about rendering body text (Mulder)
+http://sourceforge.net/forum/message.php?msg_id=3578252
+By: bwmulder
+
+I have been thinking for a while that it ought to be possible to somehow to unite Leo with wiki features (my thinking is still vague at this point).
+
+If you look at systems like Tiddlywiki (http://www.tiddlywiki.com/) you will find that they already pretty much provide all the formatting features mentioned in the article.
+
+MoinMoin, another wiki (http://moinmoin.wikiwikiweb.de), has started to use a graphical interface for editing in the latest version.
+
+Maybe Leo can be split up into three components:
+
+1. A storage component is responsible for storing nodes. Currently, this is just memory, but databases like shelve, Zope or sqllite should also be possible.
+
+2. The control component is responsible for converting from the internal format to external files which can be processed by existing compilers, searching within a document, and the like.
+
+3. A display component is responsible for interfacing with the user. If can be TK, but it can also be something like the Tiddlywiki interface, which immediately shows the formatting applied to text.
+
+I don't know much about javascript, so I would have to learn more about this language before doing anything in this direction.
+
+As an intermediate step, maybe we could allow mixing RST processing with regular program text.  Leo would produce two documents out of a source file: a version for the compiler in plain ascii, and an HTML file for reading the source.
+.. @+node:ekr.20180131065339.1: *3* Commands & features: 8
+.. @+node:ekr.20180131061006.1: *4* Add count-children command (EKR)
+.. @+node:ekr.20041219162724: *4* Add dialog to insert recent directories
 http://sourceforge.net/forum/message.php?msg_id=2903742
 
 The multifile plugin contains option to insert a directory string.  I use it alot for the @path directive.  This opens a FileDialog and the user selects the directory he wants to use as a directory string. When chosen the directory string is inserted into the text editor.
@@ -24,11 +692,9 @@ The multifile plugin contains option to insert a directory string.  I use it alo
 The good of this:
 
 It makes using path simpler, you dont have to type out the directory path yourself, just use the tkFileDialog to select it and have Leo insert the string. For long directories this saves a lot of typing.
-.. @+node:ekr.20160318113505.1: *3* Avoid mouse in nodetags & other plugins
+.. @+node:ekr.20160318113505.1: *4* Avoid mouse in nodetags & other plugins
 We want the alternatives to clones to be mouse free.
-.. @+node:ekr.20141210123805.9: *3* Better support for rope
-Make leo.core.leoRope.py more useful
-.. @+node:ekr.20041130123243: *3* Clear Undo command (e)
+.. @+node:ekr.20041130123243: *4* Clear Undo command (e)
 http://sourceforge.net/forum/message.php?msg_id=2859273
 e
 
@@ -83,31 +749,7 @@ editing and running scrips.
 and when I exit python and restart leo everything returns to normal.
 more a supporting anomaly report 
 than a bug report or feature request.
-.. @+node:ekr.20130806072439.21225: *3* Distributed collaboration tool (Fidelman)
-===== Miles Fidelman <mfidelman@meetinghouse.net>
-
-Here are some details about a project that I've been working on:
-
-Basic model is synchronized copies of documents, linked by an asynchronous pub-sub channel. Think of a personal Wiki (like TiddlyWiki) linked to copies of itself. Compose a document, email copies to collaborators. Everyone saves a local copy, which link to each other via a pub-sub protocol to distribute updates.  All in JavaScript, embedded in the "smart documents" - nothing special to install.
-
-See:
-http://www.kickstarter.com/projects/1947703258/smart-notebooks-keeping-on-the-same-page-across-th
-
-Andy Oram wrote a background piece for O'Reilly Radar:
-http://radar.oreilly.com/2012/08/smart-notebooks-for-linking-virtual-teams-across-the-net.html
-
-
-
-.. @+node:ekr.20090131200406.15: *3* DOM & files
-.. @+node:ekr.20061002093442: *4* Add opml support to new, open, save commands
-.. @+node:ekr.20111019104425.15895: *4* Create a Leo implementation of pyfilesystem
-Kent Tenny
-https://docs.pyfilesystem.org/en/latest/
-
-.. @+node:ekr.20071001052501: *4* Versioning for nodes
-One feature I have not seen in SCS system is something which might be called "history compression": I might be interested in having both version 5 and 6 in my source tree, when the current version is 7, but I am not really interested in the 2000 steps which transformed 5 into 6 (just suggested this feature to the bazaar people). This happens actually quite often to me, since I use the SCS as a back-up system, saving many (uninteresting) intermediate steps while implementing a new feature.
-.. @+node:ekr.20111019104425.15896: *4* Enhanced node attributes: ctime, atime, mtime (Kent)
-.. @+node:ekr.20031218072017.790: *3* Import dialog improvements
+.. @+node:ekr.20031218072017.790: *4* Import dialog improvements
 Other options I though would be really handy:
 
 1. Use an existing node as a source also
@@ -124,7 +766,121 @@ that's easy in Python. Rebol is great at that too.
 That's probably a much bigger project like Leo 3.10  
 
 Jason
-.. @+node:ekr.20120515193246.10084: *3* Importers
+.. @+node:ekr.20161205102034.1: *4* Modes to support vim dot (EKR)
+The idea is to be able to define the dot easily.
+
+- Allow Leo to enter vim-mode temporarily.
+- Define the dot.
+- Leave vim-mode.
+- Use the dot.
+.. @+node:ekr.20130806072439.21341: *4* Node pipes (Kent)
+The editor envy resulting from the Light Table demo has me revisiting a feature that's been percolating.
+
+Sending output to the log pane is very useful, it's how Leo talks back.
+
+Executing from the command line means one space for input and output.
+
+Executing in a Leo node and writing to the log improves on this by providing different spaces for input and output.
+
+Could Leo generalize this concept such that any node could be designated as a destination for output?
+
+Given multiple visible nodes, akin to Terry's stickynotes, or Ville's recent grid suggestion, Leo could duplicate the power of simultaneous feedback shown by Light Table.
+
+I guess 'rendering' addresses this to some degree.
+
+Reminds me of the power graph database folks talk about, where you can define nodes and edges to be whatever you want.
+
+The nodes could be sources or sinks. Sources: code or commands ... Sinks: standard out, tail -f logfile, network traffic, introspection ...
+
+The edges would define handlers for the content of the sources, format the results and send to the sinks.
+
+So, as I write code in one node, I can see a node displaying stdout, another watching a log file, another showing docstrings, another showing test results ...
+
+===== Ville
+
+The 'ileo workbook' concept is relevant; it allowed you to easily reference other nodes in your scripts (wb.foo meant node with headline 'foo').
+
+It's nice in theory, but the rigid ui model where we show only one node at a time made it hard to visualize. Tabula or grid would make it more concrete and intuitive - you could show input, output and the manipulator script at the same time. Or make small nodes with intermedote results etc.
+
+How this would relate to 'pipeline' - you would have explicit way to say what nodes are input, whan nodes are output and what are the scripts that transform input to output. Editing inputs or scriyts would ping you somehow that outputs are out of date, allowing you to easily press button to recalculate outputs.
+.. @+node:ekr.20130806072439.21342: *5* Re: Node pipes
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+On Wed, Apr 18, 2012 at 9:48 AM, Kent Tenney <ktenney@gmail.com> wrote:
+
+> Could...any node...be designated as a destination for output?
+
+Certainly.  Just assign to v.b in the appropriate place.
+
+> could [Leo] duplicate the power of simultaneous feedback shown by Light Table.
+
+Yes, provided somebody understands what the simultaneous feedback is ;-)
+
+Tabula might be natural for that, perhaps enhanced via free_layout.
+
+> I guess 'rendering' addresses this to some degree.
+
+Interesting connection.  We might want to render to tabula nodes.
+
+> Reminds me of the power graph database folks talk about, where you can
+> define nodes and edges to be whatever you want.
+
+This is coming.  Redefining edges would be easy provided that they had
+different colors from the "main" edges.
+
+> The nodes could be sources or sinks.
+> Sources: code or commands ...
+> Sinks: standard out, tail -f logfile, network traffic, introspection ...
+
+Yes.  This is a straightforward generalization of your first question.
+
+> The edges would define handlers for the content of the sources, format the results and send to the sinks.
+
+A new idea!  This could be revolutionary!
+
+> So, as I write code in one node, I can see a node displaying stdout, another watching a log file, another showing docstrings, another showing test results ...
+
+To paraphrase: nodes and links are not simply ways to represent structure.  They may have independent identity and function.  A brilliant idea.
+
+Edward
+.. @+node:ekr.20130806072439.21344: *5* Re: Node pipes
+From: "Edward K. Ream" <edreamleo@gmail.com>
+
+On Wed, Apr 18, 2012 at 11:47 AM, Kent Tenney <ktenney@gmail.com> wrote:
+
+>> Certainly. Just assign to v.b in the appropriate place.
+>
+> Right. Leo can be considered a programming language, it is able
+> to do most anything one dreams up. Here we are discussing what
+> features are appropriate to add to the 'standard library' IE: put the
+> effort into making the capability an API call instead of a bunch of code.
+
+In fact, the inadequacy of my remark that assigning to v.b was all that was needed lead me to consider the broadcaster/listener framework.
+
+The idea is that the v.b setter property would broadcast the fact that v.b has changed to all the listeners connected to v.  Presumably, those listeners will be UI elements that will update their text from v.b and recolor as appropriate.
+
+We might generalize this concept to update outline structure in those UI elements that show outlines.
+
+> My impression of the Light Table demo is that the right side of the screen was reporting interesting information about what was being typed on the left side. Seems like it could be called "simultaneous feedback"
+
+An excellent generalization.  We can use this without knowing exactly what the feedback is, or where it comes from.
+
+> I'm unable to keep up, unaware of the capability of free_layout,
+> tabula, rendering, but I expect most if not all of the tools are availabl=
+e.
+
+Keeping up with ourselves these days seems like a full-time job.
+
+I believe a broadcaster/listener event framework is an essential ingredient.  It shouldn't be too hard to do, it will simplify existing code, and it will be an enabling technology that will stimulate further development.
+.. @+node:ekr.20090131200406.15: *3* DOM & files: 4
+.. @+node:ekr.20061002093442: *4* Add opml support to open & save commands
+.. @+node:ekr.20071001052501: *4* Versioning for nodes (Kent)
+One feature I have not seen in SCS system is something which might be called "history compression": I might be interested in having both version 5 and 6 in my source tree, when the current version is 7, but I am not really interested in the 2000 steps which transformed 5 into 6 (just suggested this feature to the bazaar people). This happens actually quite often to me, since I use the SCS as a back-up system, saving many (uninteresting) intermediate steps while implementing a new feature.
+.. @+node:ekr.20111019104425.15896: *4* Enhanced node attributes: ctime, atime, mtime (Kent)
+.. @+node:ekr.20111019104425.15895: *4* Create a Leo implementation of pyfilesystem (Kent)
+https://docs.pyfilesystem.org/en/latest/
+
+.. @+node:ekr.20120515193246.10084: *3* Importers: 6
 .. @+node:ekr.20101004092958.5914: *4* Add treepad scanner (contains code!)
 treepad.py is from the treepad website
 .. @+node:ekr.20101004092958.5939: *5* treepad.py
@@ -377,25 +1133,7 @@ Need a good yaml parser first: I don't want to write another parser by hand.
     #-----------------------------------------------------------------------------
 
 to organizer node whose headline is Imports.
-.. @+node:ekr.20130806072439.21337: *4* Improve C importer
-From: ne1uno <eltronis@gmail.com>
-
-wouldn't it be great to have a first class c importer?
-
-hiding the complexity of platform & compiler/option #defines. invisible (TM) nodes would be fruitful here. switched on by @#define. with an @#define=3D collection node or using a bunch of headlines. and an rclick flipper for true/false, defined/not defined declarations.
-
-meanwhile I wait for the inspiration or someone else to nail down a regular expression c language parser. maybe a tokenizer is enough. I did run c code through AStyle then through your old c2py via buttons. for code that would remain in c, in SciTE through google CPPlint program to point up flaws, and to get the context sensitive help from various CHM. running flawfinder good to do now and then old or new code. post processing and displaying the report in a browser. but it doesn't go far enough & too many false positives.
-
-there is splint, maybe the only free lint left. the need to inject "hints" all over the code make it less than ideal for perusing unknown source and generally a deal breaker for project code. sometimes all you need is a function/var list to get by. deeper static analysis is quite the serious business. so, it's not a surprise those programs are not easily found, or used. there are a few code flow programs that could be harnessed to colorize headlines indicating relations. taking all this in, marking nodes that need work with a popup or tooltip action event when you view that node with the details of one or another parser to annotate what needs work.
-
-we have had a few plugins/buttons/attempts at designing an interface to get a program node compiled. this is also a decent way to get info on the quality of code by turning all warnings on. fails for snippits. never quite simple to hookup or modify painless. perhaps the biggest problem is knowing what is available and where. more toolbars, no reason they can't dock. drag & dropping buttons. one of the huge advantages of Qt over Tk so far barely tapped. you begin to accept the fact that you need to create a temp file instead of real process control. managing program quirks & options becomes more trouble than it's worth just to protect the purity of the operation sans temp files. QTprocess has more options than the process in pythons libs. if it ever works as well as it should. but, a little hard to wrap. not going to venture a guess if pyqt gets it right or not. not to mention how bungled up OS process control still is. process control will be essential to any inter-process operations. that is, unless you backslide into wanting to build everything "in" and invent everything new again. re: blender, I haven't looked at blender code in a while, but I would be shocked if there weren't some well established way to hook into a script. sounds like noone has found them yet.
-
-not sure how to grab a window handle on other OS but for windows it's fairly straight forward. blender or GTK could setup blocks. another great Qt based project is universal indenter, a front end
-
-for many indenters for many languages. this would be a good place to look for how to manage inter-process communication in Qt. a first class editor will have to include first class importer for javascript at the least and probably lua and one or two others. one could imagine niceties like clickable links on #include files. right clickable options on them such as import, simple view, htmlize.
-
-also about styles, astyle has the options on the commandline, the builtin/compiled in defaults and an ~/.astyle.rc for personal style. some will find an indenter that has no options useless. I know the indenter created is purely for internal use, as it were, at this point. adding selectable options later will complicate the program and for most use will have little payback. you may as well expect to have some want a plugable option for style. exposing a general use tokenizer could have many callers.
-.. @+node:ekr.20100830120622.5829: *4* Unlikely: Improve python import
+.. @+node:ekr.20100830120622.5829: *5* Post
 > > Hmm, I guess that would be more clear, although I think I'd like an option
 to include it in the following def to avoid
 
@@ -422,663 +1160,113 @@ I'd also like::
 as often there's more docs on a class in the __init__ than the class docstring.
 
 I think that's really all we're talking about, some @settings to test during import.
-.. @+node:ekr.20060227131611: *3* Kent: extensible auto-completion-like capabilities
-http://sourceforge.net/forum/message.php?msg_id=3593116
-By: ktenney
+.. @+node:ekr.20130806072439.21337: *4* Improve C importer
+From: ne1uno <eltronis@gmail.com>
 
-Zope3, with it's component based architecture, has machinery which hooks components together .. Interfaces, Adapters and ZCML, the configuration language.
+wouldn't it be great to have a first class c importer?
 
-It sounds like the autocompleter code is able to build indexes of classes and methods. It would be cool if that capability could be extensible, allowing building indexes of the couplings between components.
+hiding the complexity of platform & compiler/option #defines. invisible (TM) nodes would be fruitful here. switched on by @#define. with an @#define=3D collection node or using a bunch of headlines. and an rclick flipper for true/false, defined/not defined declarations.
 
-I think this might look like some kind of automatic hyperlinking, providing access to related code, as defined for that application.
+meanwhile I wait for the inspiration or someone else to nail down a regular expression c language parser. maybe a tokenizer is enough. I did run c code through AStyle then through your old c2py via buttons. for code that would remain in c, in SciTE through google CPPlint program to point up flaws, and to get the context sensitive help from various CHM. running flawfinder good to do now and then old or new code. post processing and displaying the report in a browser. but it doesn't go far enough & too many false positives.
 
-I really don't know if this makes sense, but I see you moving in the direction of making Leo capable of doing some _explaining_ of the code being written.
-.. @+node:ekr.20130806072439.21301: *3* LeoWiki using GitIt and Pandocs
-From: HansBKK <hansbkk@gmail.com>
+there is splint, maybe the only free lint left. the need to inject "hints" all over the code make it less than ideal for perusing unknown source and generally a deal breaker for project code. sometimes all you need is a function/var list to get by. deeper static analysis is quite the serious business. so, it's not a surprise those programs are not easily found, or used. there are a few code flow programs that could be harnessed to colorize headlines indicating relations. taking all this in, marking nodes that need work with a popup or tooltip action event when you view that node with the details of one or another parser to annotate what needs work.
 
-I have been advocating the idea of pushing Leo-derived content to DokuWiki as a platform for "wiki-publishing" to enable collaborative/community editing of content (1 <../d/msg/leo-editor/fSzVi1Rh5Tg/uu85satgb9YJ>, 2<../d/msg/leo-editor/xf6_HBxlV_c/4RgGYdDh8ywJ>). I've also talked about the markup syntax/doc generation tool Txt2tags (1<https://groups.google.com/d/msg/leo-editor/nNEnxoohFBM/XkMPQhqhDRsJ>, 2 <https://groups.google.com/d/msg/leo-editor/HBhBnAyVG3E/UXHC1jq50iYJ> ).
+we have had a few plugins/buttons/attempts at designing an interface to get a program node compiled. this is also a decent way to get info on the quality of code by turning all warnings on. fails for snippits. never quite simple to hookup or modify painless. perhaps the biggest problem is knowing what is available and where. more toolbars, no reason they can't dock. drag & dropping buttons. one of the huge advantages of Qt over Tk so far barely tapped. you begin to accept the fact that you need to create a temp file instead of real process control. managing program quirks & options becomes more trouble than it's worth just to protect the purity of the operation sans temp files. QTprocess has more options than the process in pythons libs. if it ever works as well as it should. but, a little hard to wrap. not going to venture a guess if pyqt gets it right or not. not to mention how bungled up OS process control still is. process control will be essential to any inter-process operations. that is, unless you backslide into wanting to build everything "in" and invent everything new again. re: blender, I haven't looked at blender code in a while, but I would be shocked if there weren't some well established way to hook into a script. sounds like noone has found them yet.
 
-However, I have recently learned of the wiki platform Gitit <https://github.com/jgm/gitit#readme>, which apparently, like DW, also uses plain-text files rather than a database back-end, and integrates not only with git but mercurial (and darcs).
+not sure how to grab a window handle on other OS but for windows it's fairly straight forward. blender or GTK could setup blocks. another great Qt based project is universal indenter, a front end
 
-Gitit also incorporates the Pandoc <http://johnmacfarlane.net/pandoc/>project for its markup syntax, therefore enabling not only markdown but reST as a master source input format, while DokuWiki has its own (yet another unique) markup syntax 8-(
+for many indenters for many languages. this would be a good place to look for how to manage inter-process communication in Qt. a first class editor will have to include first class importer for javascript at the least and probably lua and one or two others. one could imagine niceties like clickable links on #include files. right clickable options on them such as import, simple view, htmlize.
 
-With the increasing likelihood that I'll be using Leo as the centerpiece of my toolchain, plus the fact that Pandoc is much more actively maintained, it's starting to look worth my while to consider switching my "master source" content syntax over from Txt2tags to reST. The only downsides are that Gitit is a Haskell project rather than Python, and one thing I like about Txt2tags is its support for conversion to AsciiDoc, rather than Pandoc's direct output to full-blown DocBook XML - but apparently even that's in the works in Pandoc's dev version.
+also about styles, astyle has the options on the commandline, the builtin/compiled in defaults and an ~/.astyle.rc for personal style. some will find an indenter that has no options useless. I know the indenter created is purely for internal use, as it were, at this point. adding selectable options later will complicate the program and for most use will have little payback. you may as well expect to have some want a plugable option for style. exposing a general use tokenizer could have many callers.
+.. @+node:ekr.20180131065625.1: *3* Major features: 4
+.. @+node:ekr.20141210123805.9: *4* Better support for rope
+Make leo.core.leoRope.py more useful
+.. @+node:ekr.20111014134653.15672: *4* Search across multiple Leo files (EKR)
+http://groups.google.com/group/leo-editor/browse_thread/thread/cf5ab54f29a6c128
 
-Anyone in the Leo community using Gitit, especially for use beyond simple code documentation?
-.. @+node:ekr.20130806072439.21302: *4* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
-From: "Edward K. Ream" <edreamleo@gmail.com>
+This would also be a substitute for cross-file clones.
+.. @+node:ekr.20130807203905.16681: *4* Use travis-ci: continuous integration for Leo (Ville)
+Someone may be interested in investigating a free CI system for Leo:
 
-On Thu, Jan 19, 2012 at 8:09 PM, HansBKK <hansbkk@gmail.com> wrote:
-> This is highly off-topic for most on the list, so feel free to ignore, but
-> anyone using Leo for single-source documentation generation/conversion,
-> including future googlers, please reply with comments or notes on your
-> experiences.
+https://travis-ci.org/
 
-No experience myself, but thanks for these interesting links.
+This could e.g. create debian packages for daily builds, run unit tests, check stuff with lint, try compiling with python3 so we (*cough*) wouldn't have accidental print statements in the source...
+.. @+node:ekr.20130806072439.21482: *4* xiki console for leo (wgw)
+From: wgw <wgwinder@gmail.com>
 
-EKR
-.. @+node:ekr.20130806072439.21303: *4* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
-From: =?UTF-8?B?T2ZmcmF5IFZsYWRpbWlyIEx1bmEgQ8OhcmRlbmFz?= <offray@riseup.net>
+Xiki.org gives a demo of a "wiki" shell for command execution. Leo should be able to do the same thing (and more!), in the sense that leoscreen, for example, has two way communication with the command line. I suppose a "Lxiki" is really just a question of setting up the right shortcuts (like a shift-ctrl-b that would run highlighted python code from the command line... with a tmp file?).
+.. @+node:ekr.20130806072439.21483: *5* Re: Wish list: xiki window for leo
+From: wgw <wgwinder@gmail.com>
 
-Hi,
+Thanks for the tip -- it will take me a while to get my head around vspace (will keep an eye on Ville's blog post).
 
-I made some errors.
+I'm just beginning to appreciate (or imagine) what Ipython, sublime text editor, leo, xiki, etc could mean for some kind of intelligent document workbench. Of course the big hurdle is not so much the string processing (sublime is a good example of how that can be done), but rather the syntax processing -- i.e. the docbench  (to coin a phrase) should understand the syntax of whatever is being input and then offer syntax-aware functions.... Sorry, getting a little obscure: all I mean by syntax-aware is the ability to propose text completions (Leo's autocompletion is a good example -- everything should work like autocomplete!) and allow for intelligent text changes depending on a database of information (for example, a search and replace that would  know how to search on "caterpillar" and turn it into "butterfly" but would not touch "caterpillar truck").
 
-In this part:
+Seems like Leo is not far from doing that synthesis, but it would require more database integration. So for example, even the python help system does not have autocomplete. (No criticism there! The great thing about Leo is that if you want something, you just have to dive in and build it. My day job might just let me do that!)
+.. @+node:ekr.20130806072439.21484: *5* Re: Wish list: xiki window for leo
+From: Terry Brown <terry_n_brown@yahoo.com>
 
-El lun 23 ene 2012 07:22:21 COT, Offray Vladimir Luna C=E1rdenas escribi=F3=
-:
->
-> but at the end we could not intervene MoinMoin as much as we would=20
-> like because of the server permissions, that why I started to look=20
-> more integrated solutions of the development and deployment=20
-> environment as web2py or seaside, but they're not wiki engines=20
-> properly but web application frameworks (where you could build a=20
-> wiki-engine if needed). But surely
->
+> Thanks for the tip -- it will take me a while to get my head around vspace
+> (will keep an eye on Ville's blog post).
 
-"But surely" was not intended.
+Just to clarify, vs-eval, vs-last, vs-last-pretty are quite straight forward, as I described them below, and do not require comprehension of the esoterica of value-space :-) I just put them in that plugin (a) to avoid creating yet another plugin, and (b) because it seemed sensible to have them use the value-space namespace c.vs, but all that means for vs-eval, vs-last, vs-last-pretty is that
 
-Cheers,
+  a =3D 7
 
-Offray
+executed by vs-eval assigns a value to a which can be used by subsequent vs-eval calls (persistent for the lifetime of the session).
 
-.. @+node:ekr.20130806072439.21304: *4* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
+For example, make a body with this text
+
+a =3D 7
+b =3D 3
+a + b
+
+and place the cursor in front of the first 'a'
+
+execute (Alt-x or key binding) vs-eval 4 times
+
+ - first time executes the empty selection and selects the next line
+ - second time assigns 7 to a and report 7 in the log
+ - third time assigns 3 to b and report 3 in the log
+ - forth time calculates a + b and report 10 in the log
+
+executing vs-last(-pretty) would insert the last result (None, 7, 3,
+10) in the body.
+.. @+node:ekr.20130806072439.21485: *5* Re: Wish list: xiki window for leo
+From: wgw <wgwinder@gmail.com>
+
+Got it! The value of valuespace (!) is that that you can make a pythonesque session persist. I did not realize that there was no direct two-way bridge to the python window that leo launches. Even if there were, we would want to make the session persist by logging it into the outline, as valuespace (vs-create-tree) does.
+.. @+node:ekr.20130806072439.21487: *5* Re: Wish list: xiki window for leo
+From: Terry Brown <terry_n_brown@yahoo.com>
+
+In addition to the outline as a active data document functions of Ville's value-space plugin, I recently added some simple ;-) commands::
+
+    Alt+A vs-eval
+    Alt+S vs-last
+    Alt+D vs-last-pretty
+    (my key bindings)
+
+vs-eval evaluates the selected python in the c.vs namespace.  It makes an effort to workout what the output should be, and puts it in the log.  It captures print output to the log too.  It selects the next line, ready for execution.
+
+vs-last inserts the last result into the body, and vs-last-pretty does the same, but using pprint formatting.
+
+Ctrl-B also runs the script in the body, but not in a persistent namespace, running only the selected text doesn't seem to be working, and it doesn't work so hard to work out the output.
+
+I guess leoscreen would do the same things as the vs-* commands if you used it against a python shell.  The inspiration for the vs-* commands was wanting Leo to tell you what 3.57 * 365 / 12 was without a lot of effort, but of course you can define functions etc. etc.
+.. @+node:ekr.20180131065401.1: *3* Rendering: 4
+.. @+node:ekr.20130806072439.20369: *4* @paragraph(s)
 From: <offray@riseup.net>
 
-El jue 19 ene 2012 21:09:26 COT, HansBKK escribi=F3:
-> This is highly off-topic for most on the list, so feel free to ignore, bu=
-t
-> anyone using Leo for single-source documentation generation/conversion,
-> including future googlers, please reply with comments or notes on your ex=
-periences.
-
-I'm using Leo in that scenario (for writing my Thesis and I hope my=20
-students will use it in a similar fashion), so is not off-topic for me=20
-and not for people who is using Leo primary for documentation.
-
-> I have been advocating the idea of pushing Leo-derived content to DokuWik=
-i as a
-> platform for "wiki-publishing" to enable collaborative/community editing =
-of
-> content (1<../d/msg/leo-editor/fSzVi1Rh5Tg/uu85satgb9YJ>, 2
-> <../d/msg/leo-editor/xf6_HBxlV_c/4RgGYdDh8ywJ>). I've also talked about t=
-he
-> markup syntax/doc generation tool Txt2tags (1
-> <https://groups.google.com/d/msg/leo-editor/nNEnxoohFBM/XkMPQhqhDRsJ>, 2
-> <https://groups.google.com/d/msg/leo-editor/HBhBnAyVG3E/UXHC1jq50iYJ>  ).
-
-
-When you suggested DocuWiki I thought of MoinMoin which has also=20
-support of plain files as storage mechanism but is also scalable to=20
-databases if this is needed and it supports reStructuredText and is=20
-made in python, a language that "leonizens" are familiar with.
-
-> However, I have recently learned of the wiki platform Gitit
-> <https://github.com/jgm/gitit#readme>, which apparently, like DW, also us=
-es
-> plain-text files rather than a database back-end, and integrates not only=
- with
-> git but mercurial (and darcs).
->
-> Gitit also incorporates the Pandoc<http://johnmacfarlane.net/pandoc/>  pr=
-oject
-> for its markup syntax, therefore enabling not only markdown but reST as a=
- master
-> source input format, while DokuWiki has its own (yet another unique) mark=
-up
-> syntax 8-(
->
-> With the increasing likelihood that I'll be using Leo as the centerpiece =
-of my
-> toolchain, plus the fact that Pandoc is much more actively maintained, it=
-'s
-> starting to look worth my while to consider switching my "master source" =
-content
-> syntax over from Txt2tags to reST. The only downsides are that Gitit is a
-> Haskell project rather than Python, and one thing I like about Txt2tags i=
-s its
-> support for conversion to AsciiDoc, rather than Pandoc's direct output to
-> full-blown DocBook XML - but apparently even that's in the works in Pando=
-c's dev
-> version.
->
-> Anyone in the Leo community using Gitit, especially for use beyond simple=
- code
-> documentation?
-
-Now that I'm using Leo + Fossil for my documentation related matters=20
-and distributed work I certainly think that a distributed off-line=20
-collaboration system for documentation is needed and, if MoinMoin can't=20
-support the use of distributed wikis (and seems is not planned or in=20
-development [1][2]) Gitit would be a nice place to start with this idea=20
-and would offer advantages over the non-distributed and outdated Zope's=20
-actual implementation, so, interested ones in the community could offer=20
-an implementation of Gitit. On a related matter one of the problems I=20
-see with actual server technology is its gigantism which concentrates=20
-power in the people who has the resources, knowledge and time to=20
-possess, understand and administer/intervene this technology so a=20
-Global South Test for me about which server technology to choose is:=20
-"it runs from a USB thumb drive?". This, for example, favors=20
-Web2py/Smalltalk instead of Zope and Fossil instead of GitHub. May be=20
-you should put this in the panorama when you judge GitIt or=20
-Haskell/Pandoc. Pandoc, by the way, was for me a compelling reason to=20
-learn Haskell[3] (but I thought that I would learn Smalltalk before)=20
-because it deals elegantly with a problem in the diversity of markup=20
-languages (txt2tags makes something similar but only in one way=20
-translation) and for me the point of using Leo is having a tool to deal=20
-consistently with diversity in the "sub-optimal distopic world of=20
-everything is a file".
-
-[1] http://moinmo.in/PawelPacana/MercurialBackend
-[2] http://moinmo.in/MoinMoin2.0
-[3] http://learnyouahaskell.com/
-
-We could get philosophical here, and think about different programming=20
-paradigms and languages that implement them with elegant syntaxes, like=20
-Smalltalk, Haskell and Python versus the non elegant ones of .java, php=20
-or ... (put your hated language here) and how this elegant syntaxes,=20
-languages and computer using experience could cross-pollinate. If that=20
-is the case, may be reading some about Combined Object Lambda=20
-Architecture[4] and the comprehensive "Concepts, Techniques, and Models=20
-of Computer Programming" by Van Roy and Haridi would be a nice reading.=20
-Some times I dream of a world connected diversity where all the=20
-problems of computer interaction can be solved by expressing that=20
-diversity in fundamental constructs that respect it at the same time=20
-that bring consistency and interface solving the apparent chaos and=20
-noise.
-
-[4] https://en.wikipedia.org/wiki/COLA_%28software_architecture%29
-
-Cheers,
-
-Offray
-
-.. @+node:ekr.20130806072439.21305: *4* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
-From: Matt Wilkie <maphew@gmail.com>
-
-> Wow I think that this is the first time I have the opportunity to
-> write (curiously in English instead of my native tongue) about
-> that dystopy, because most of the time I just talk about this
-> with my students or friends but not as detailed and contextually,
-> so thanks for bring this up Hans, and thanks everyone else
-> here who is still reading :-)
-
-I am reading, and enjoying. The clouds you've placed in my mind are
-making interesting shapes and I am intrigued. ;-)
-.. @+node:ekr.20130806072439.21306: *4* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
-From: =?UTF-8?B?T2ZmcmF5IFZsYWRpbWlyIEx1bmEgQ8OhcmRlbmFz?= <offray@riseup.net>
-
-Hi,
-
-El lun 23 ene 2012 01:18:48 COT, HansBKK escribi=F3:
-> Thanks Offray for your detailed and informative response.
-
-Well I'm enjoying also these talks with you. I think that putting=20
-documentation also in the center is required if we want to break the=20
-Leo's self-fulfilled prophesy about being a "ghetto tool" for=20
-programmers only and I want this in the best way.
-
-[..]
->
-> I for some reason missed the MoinMoin's "simple page storage" option - th=
-anks so
-> much for pointing that out. For all the reasons you cite, and most import=
-antly
-> is much more mainstream, more actively developed and well-supported than =
-Gitit,
-> I'll definitely give it a higher priority in my testing.
-[...]
-
-I enjoyed using MoinMoin for this project:
-
-http://el-directorio.org/
-
-but at the end we could not intervene MoinMoin as much as we would like=20
-because of the server permissions, that why I started to look more=20
-integrated solutions of the development and deployment environment as=20
-web2py or seaside, but they're not wiki engines properly but web=20
-application frameworks (where you could build a wiki-engine if needed).=20
-But surely
-
->      the "sub-optimal distopic world of everything is a file".
->
->
-> I personally disagree with your dislike for "everything is a file" - I se=
-e that
-> principle as a fundamental part of the *nix tool philosophy, and IMO this=
- is a
-> perfect example:
->
->      I certainly think that a distributed off-line collaboration system f=
-or
->      documentation is needed and, if MoinMoin can't
->
->      support the use of distributed wikis (and seems is not planned or in=
- development
->
-> To my mind, any wiki platform that can store the page data as plain text =
-(as
-> opposed to binary/database), in a format suitable for diff tools ("light"=
- markup
-> as opposed to html/xml) can make use of whatever VCS for distribution/rep=
-lication.
-
-You're right and I like the idea of "everything is a something" when=20
-that something is powerful unifying idea. That's the case with Unix's=20
-"everything is a file" or Smalltalk's "everything is an object" (in=20
-Unix you have also every tool makes one thing and makes it right,=20
-combined with pipes). For me these two paradigm's were the ones that,=20
-in 70's, were fighting for the mind share  about computer experience of=20
-today and both of them won in a dystopic way, but for me "taking genius=20
-to understand Unix simplicity"[0], was even more dystopic. When you're=20
-trying to empower users the impedance between development and=20
-deployment shows the dystopia, at least compared with the original=20
-visions, so most of the "end users" cant change the tool that changes=20
-them, so, someone else is making decisions about that changes and that=20
-users.
-
-[0] https://en.wikipedia.org/wiki/Unix_philosophy#Quotes
-
-I like the simplicity of light markups and I try myself of not using=20
-explicitly nothing as xml and I like also the idea of the light markup=20
-being used by VCS tools. That's not where dystopia lies. The problem is=20
-not about files or structure but about "meta-structure" (structure=20
-talking about structure, as in meta-languages), specially=20
-self-referential meta-structure, because self-referential=20
-meta-structures are the key for self-directed change, as opposed with=20
-change directed by others. When you see how the "world of everything is=20
-a file" talks about itself, there is a lot of impedance and=20
-discontinuity between source code, binary, apps and docs and there is a=20
-long path for the user who is confined to using apps to create docs,=20
-but never change the apps that could let she/he to change his/her=20
-writing and that's why I want to use Leo this semester with=20
-non-technical writers to explore the way that writing change the tool=20
-that writes and not only the human who does.
-
-For me a unified emergent meta-structure in the world of "everything is=20
-a file" is where lies the power of Leo. You can use an outline to=20
-change the way that Leo behaves and that's why having the Leo's=20
-self-referential meta-structure is more powerful that the "dystopic=20
-world of everything is a file" (in that world you don't have=20
-meta-structure, only structure, mostly for storage purposes and the=20
-intelligence to read/process it is mostly outside the file, in the=20
-human reader, the compiler or the binary). What Leo does is to create=20
-self-referentiality in the world of everything is a file by introducing=20
-outlines that can talk/structure the files and that can talk about=20
-outlines, i.e outlines that can talk about files and about themselves=20
-and can reprogram the way Leo itself works, and so Leo is bridging the=20
-gap between objects and files in a valuable and unique way.  But we=20
-need still to improve, specifically we need a more elegant way to talk=20
-about that files, specially about their changes in time, because is in=20
-that change where talking with the distopic world has more problems and=20
-possibilities, and that way I'm making the Fossil/VCS experiment and=20
-also.
-
-Wow I think that this is the first time I have the opportunity to write=20
-(curiously in English instead of my native tongue) about that dystopy,=20
-because most of the time I just talk about this with my students or=20
-friends but not as detailed and contextually, so thanks for bring this=20
-up Hans, and thanks everyone else here who is still reading :-)
-
->      On a related matter one of the problems I see with actual server tec=
-hnology
->      is its gigantism which concentrates
->      power in the people who has the resources, knowledge and time to pos=
-sess,
->      understand and administer/intervene this technology so a Global Sout=
-h Test
->      for me about which server technology to choose is: "it runs from a U=
-SB thumb
->      drive?".
->
-> IMO "server" is a function, not a question of scale or complexity - the b=
-etter
-> question for my workflow is "does the app run portably?". I personally fi=
-nd
-> actually running stuff from flash drives too slow and data-dangerous.
-
-I'm agree with you. Server and gigantism have not to be equal, but=20
-unfortunately in the "dystopic informatic world" (where the previous=20
-dystopia is just a part) they're most of the time. Portability is the=20
-key, not flash drives. In my context they're just a medium to ask the=20
-same as you, but also a way to let people take the technology with=20
-them, no matter if they have access to a "classical" server.
-
->
-> So far I've found that anything that runs under Linux is inherently porta=
-ble in
-> that sense.
-
-Agreed. Having Leo + Fossil + Laptop ( ;-P ) gives me some kind of=20
-portability, but we need more. That's why I think that we need a self=20
-contained version of Leo with a default discourse about file flat world=20
-change in time (at least for Windows), but ideally would be nice to=20
-have something like the self-contained multiplatform Pharo's One Click=20
-Experience[1]
-
-[1] http://www.pharo-project.org/pharo-download
-
->      This, for example, favors Web2py/Smalltalk instead of Zope and Fossi=
-l
->      instead of GitHub.
->
-> I haven't any experience with these others, but note that Git does not =
-=3D GitHub.
-> I share your dislike for server/storage platforms out of my direct contro=
-l, not
-> least for privacy/security issues for many use cases. If I used Git for d=
-ata
-> distribution I wouldn't use GitHub, and my understanding is that even "Gi=
-t for
-> Windows" is already fully portable.
-
-Oohh I don't make myself clear, sorry. Fossil compared with GitHub was=20
-not because of the equivalence of Git and GitHub, but because of the=20
-integration of web characteristics of GitHub in Fossil (wiki, tickets,=20
-web interface and so on).
-
-> For myself, I think mercurial would be a good fit, but my main point is t=
-hat any
-> moves toward a "distributed Leo" should IMO be VCS-agnostic, just as my p=
-lans
-> for enabling community editing of Leo-managed content will be wiki-platfo=
-rm
-> agnostic.
-
-I fully share your opinion on that subjects, but in this case I want to=20
-start by some specific implementation from which one start to abstract=20
-that to think abstractly without any particular implementation in the=20
-road, which is not your case, I just point to different implementation=20
-strategies based on the same agnosticism/diversity as a valuable thing=20
-to preserve.
-
-> To me, the key enabler for that is "everything as a file". . .
-
-For me the enabler is self-referential meta-structure
-
-Thanks,
-
-Offray
-
-.. @+node:ekr.20130806072439.21307: *4* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
-From: HansBKK <hansbkk@gmail.com>
-
-
-
-Content-Transfer-Encoding: quoted-printable
-
-On Monday, January 23, 2012 7:22:21 PM UTC+7, Offray Vladimir Luna C=E1rden=
-as=20
-wrote:
->
->
-> documentation also in the center is required if we want to break the Leo'=
-s=20
-> self-fulfilled prophesy about being a "ghetto tool" for programmers only
-
-
-Usability for clueless noobs is a lot of work, probably harder than the=20
-complex whiz-bang functionality part.
-
-And to take something as powerful and flexible as Leo and make it=20
-accessible for noobs would require "lobotomizing" it to some extent, at=20
-least hiding those features that weren't relevant to the intended=20
-more-mainstream task at hand.
-
-I imagine something like "application mode" flag at launch time=20
-  - Leo as a journaling tool (like Rednotebook on steroids)
-  - Leo as an Evernote-style note-taking brain extension
-    - with user-accessible tagging, perhaps multiple headings per node?
-  - Leo as a delicous-replacement (import/export/backup) bookmarks=20
-management tool
-  - Leo as a single-source multiple-output documentation management=20
-meta-organizer and conversion-supporting tool
-
-etc - very different UX - pane layouts, menu structures etc - for each=20
-mode, but the same underlying code and data structures
-
-but at the end we could not intervene MoinMoin as much as we would like=20
-> because of the server permissions
-
-
-ACLs is one of DokuWiki's strengths, as they target the corporate world (as=
-=20
-much as a FOSS tool can 8-)
-
-> So far I've found that anything that runs under Linux is inherently=20
-> portable in
->
-> > that sense.
->
-> Agreed. Having Leo + Fossil + Laptop ( ;-P ) gives me some kind of=20
-> portability, but we need more.
->
-Pocket-size portable HDD with USB2 / SATA2  (will soon start converting to=
-=20
-v3 of both, used to use Firewire), booted up using any arbitrary internet=
-=20
-cafe / friend / customer desktop.
-
-ideally would be nice to have something like the self-contained=20
-> multiplatform Pharo's One Click=20
-> Experience[1]
->
-> [1] http://www.pharo-project.org/pharo-download
->
-Most of the mainstream distros now have easy-to-customize=20
-create-your-own-distro LiveCD/USB+persistent storage projects. I've got a=
-=20
-portable drive that launches a GRUB2 boot menu letting me choose between=20
-various configs of Fedora, Red Hat, Debian, Ubuntu and Slax, all of which=
-=20
-access shared /home and server-data partitions (which gets sync'd with my=
-=20
-central filer). Check out Sardu <http://www.sarducd.it/>, which also=20
-handles all the mainstream recovery/rescue/sysadmin tools like grml,=20
-pmagic, sysresccd - even BartPE, Win7 repair etc all on the same pocket=20
-drive. . .
-=20
-
-> integration of web characteristics of GitHub in Fossil (wiki, tickets, we=
-b=20
-> interface and so on).
->
-=20
-
-> agnosticism/diversity as a valuable thing to preserve.
-
-=20
-Personally I prefer using CLI batch/scripts and/or TortoiseXX rather than a=
-=20
-web interface for my VCS usage, and my ticket/project management/GTD system=
-=20
-of choice is Redmine (likely Chili soon).=20
-
-Both of these integrate well with the important VCSs, so when I finally get=
-=20
-away from SVN and get familiar with the distributed new kids, I can keep my=
-=20
-other tools - Redmine/Chili now has such a custom-infrastructure encrusted=
-=20
-around it sync'ing with gcal, printing pocketmods for my calendar and=20
-@context to-do's that have become indispensable to my day-to-day life=20
-management.
-
-=20
-
-> "dystopic world of everything is a file" (in that world you don't have=20
-> meta-structure, only structure, mostly for storage purposes and the=20
-> intelligence to read/process it is mostly outside the file, in the human=
-=20
-> reader, the compiler or the binary). What Leo does is to create=20
-> self-referentiality in the world of everything is a file by introducing=
-=20
-> outlines that can talk/structure the files and that can talk about=20
-> outlines, i.e outlines that can talk about files and about themselves=20
-> and can reprogram the way Leo itself works, and so Leo is bridging the ga=
-p=20
-> between objects and files in a valuable and unique way.  But we need stil=
-l=20
-> to improve, specifically we need a more elegant way to talk about that=20
-> files, specially about their changes in time, because is in that change=
-=20
-> where talking with the distopic world has more problems and=20
-> possibilities, and that way I'm making the Fossil/VCS experiment and also=
-.
->
-
-> To me, the key enabler for that is "everything as a file". . .
->
-> For me the enabler is self-referential meta-structure
->
-=20
-I don't see any conflict between the two, IOW no inherent limitations to=20
-"everything is a file" other than (to me, at least within the personal-use=
-=20
-prototyping context) unimportant factors like relative speed/scaleability -=
-=20
-it's "just" an implementation detail.=20
-
-The various levels of structural overlays as presented within Leo as=20
-"uber-manager of the metadata" can be as flexible and complex as can be,=20
-and still be stored/distributed as diffed/versionable/convertable files at=
-=20
-whatever appropriate level of granularity to support integration with=20
-outside toolchains. To the extent design choices are made that "lock in" to=
-=20
-a particular "higher level" technology bet, e.g. a specific database engine=
-=20
-or DVCS, then much higher-level programming/sysadmin skills are required in=
-=20
-order to integrate Leo into the thousands of mainstream tools that have=20
-evolved over time to support structured-plain-text.
-
-Look at source code - after all these decades, it's still stored as plain=
-=20
-text in a filesystem. There's a reason for that - any language that=20
-required its modules/functions/objects whatever to be stored in a=20
-"proprietary" database engine for example would have very limited uptake,=
-=20
-because coders would have to put so much effort into infrastructure=20
-overhead work to be able to keep working with their preferred toolset.=20
-Anyway 'nuff said on that.
-
-.. @+node:ekr.20130806072439.21308: *4* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
-From: Largo84 <Largo84@gmail.com>
-
-This topic is of much interest to me as I use Leo primarily for writing 
-documentation (mostly LaTex, some html and some rST). I haven't worked w/ 
-Pandoc yet but am interested in some of the possibilities. Thanks for the 
-links, I'll check them out.
-.. @+node:ekr.20130806072439.21309: *4* Re: Leo doc-generation and Wiki integration - GitIt and Pandocs
-From: HansBKK <hansbkk@gmail.com>
-
-
-
-Content-Transfer-Encoding: quoted-printable
-
-Thanks Offray for your detailed and informative response.
-
-On Friday, January 20, 2012 5:34:21 PM UTC+7, Offray Vladimir Luna C=E1rden=
-as=20
-wrote:
->
-> When you suggested DocuWiki I thought of MoinMoin which has also support=
-=20
-> of plain files as storage mechanism but is also scalable to databases if=
-=20
-> this is needed and it supports reStructuredText and is made in python, a=
-=20
-> language that "leonizens" are familiar with.
->
- I for some reason missed the MoinMoin's "simple page storage" option -=20
-thanks so much for pointing that out. For all the reasons you cite, and=20
-most importantly is much more mainstream, more actively developed and=20
-well-supported than Gitit, I'll definitely give it a higher priority in my=
-=20
-testing.
-
-=20
-
-> the "sub-optimal distopic world of everything is a file".
->
- =20
-I personally disagree with your dislike for "everything is a file" - I see=
-=20
-that principle as a fundamental part of the *nix tool philosophy, and IMO=
-=20
-this is a perfect example:
-
- I certainly think that a distributed off-line collaboration system for=20
-> documentation is needed and, if MoinMoin can't=20
->
-> support the use of distributed wikis (and seems is not planned or in=20
-> development
->
-To my mind, any wiki platform that can store the page data as plain text=20
-(as opposed to binary/database), in a format suitable for diff tools=20
-("light" markup as opposed to html/xml) can make use of whatever VCS for=20
-distribution/replication.
-
-=20
-
-> On a related matter one of the problems I see with actual server=20
-> technology is its gigantism which concentrates=20
-> power in the people who has the resources, knowledge and time to possess,=
-=20
-> understand and administer/intervene this technology so a Global South Tes=
-t=20
-> for me about which server technology to choose is: "it runs from a USB=20
-> thumb drive?".
->
-IMO "server" is a function, not a question of scale or complexity - the=20
-better question for my workflow is "does the app run portably?". I=20
-personally find actually running stuff from flash drives too slow and=20
-data-dangerous.
-
-In my workflow, at the beginning of a session I first sync the relevant=20
-data and "portable apps" filesystem branches, then run everything off the=
-=20
-local HD. At the end of a session I sync it all back - most of the time=20
-these days this is to/from a central filer, but I do have portable drives I=
-=20
-use for this when that's required or more convenient, which then get sync'd=
-=20
-to the filer next chance I get.
-
-So far I've found that anything that runs under Linux is inherently=20
-portable in that sense.
-=20
-
-> This, for example, favors Web2py/Smalltalk instead of Zope and Fossil=20
-> instead of GitHub.
->
-I haven't any experience with these others, but note that Git does not =3D=
-=20
-GitHub. I share your dislike for server/storage platforms out of my direct=
-=20
-control, not least for privacy/security issues for many use cases. If I=20
-used Git for data distribution I wouldn't use GitHub, and my understanding=
-=20
-is that even "Git for Windows" is already fully portable.
-
-For myself, I think mercurial would be a good fit, but my main point is=20
-that any moves toward a "distributed Leo" should IMO be VCS-agnostic, just=
-=20
-as my plans for enabling community editing of Leo-managed content will be=
-=20
-wiki-platform agnostic.
-
-To me, the key enabler for that is "everything as a file". . .
-.. @+node:ekr.20161205102034.1: *3* Modes to support vim dot
-The idea is to be able to define the dot easily.
-
-- Allow Leo to enter vim-mode temporarily.
-- Define the dot.
-- Leave vim-mode.
-- Use the dot.
-.. @+node:ekr.20050127110221: *3* more flexible output (jasonic)
+I have been using txt2tags + Nested Editor to produce structured docs in a light markup and exporting them to HTML and LaTeX > pdf. The fine tunning on the pdf output is done by editing the LaTeX source in Leo. I like the aesthetic of the source code and the outputs and I have contacted the Nested author in order to get some cross-pollination between it and Leo.
+
+See https://groups.google.com/group/nestededitor/browse_thread/thread/7068e3cd229d4614 
+
+I would like to have is a "@paragraph" directive that works the same as @rst-no-head but can be used in any part of a (sub)tree, even if is not @rst (sub)tree. This would come handy in chunking and reassembling LaTeX docs without marking up the parts with "<<chunk>>" tags.
+.. @+node:ekr.20180131054918.1: *4* Render Leo trees on "canvas" (Terry)
+http://leo.zwiki.org/GraphsInTrees, particularly the 'Older notes' section towards the end.
+.. @+node:ekr.20180131054718.1: *4* Support cmap-like data (Terry)
+I'd like Leo to be able to behave like CmapTools, http://cmap.ihmc.us/ but maybe it can, essentially, and it's really a matter of defining some new interface bells and whistles.
+.. @+node:ekr.20050127110221: *4* More flexible output (jasonic)
 **pdf**
 PDF has it uses.  If nicely embedded into Leo via 'reportwriter'  and some export scripts {and clear useinterfance} would stillbe a good thing.
 
@@ -1135,212 +1323,8 @@ Still very vauable for creating dynamic narrative tutorials [aka screencasting]
 AS you know I am very excited about what flash can do for Leo, and vice versa.
 But I am concerned that there is not yet a 100% Leo means which supports people's
 standard print needs and habits.
-.. @+node:ekr.20130806072439.21341: *3* Node pipes (Kent)
-The editor envy resulting from the Light Table demo has me revisiting a feature that's been percolating.
-
-Sending output to the log pane is very useful, it's how Leo talks back.
-
-Executing from the command line means one space for input and output.
-
-Executing in a Leo node and writing to the log improves on this by providing different spaces for input and output.
-
-Could Leo generalize this concept such that any node could be designated as a destination for output?
-
-Given multiple visible nodes, akin to Terry's stickynotes, or Ville's recent grid suggestion, Leo could duplicate the power of simultaneous feedback shown by Light Table.
-
-I guess 'rendering' addresses this to some degree.
-
-Reminds me of the power graph database folks talk about, where you can define nodes and edges to be whatever you want.
-
-The nodes could be sources or sinks. Sources: code or commands ... Sinks: standard out, tail -f logfile, network traffic, introspection ...
-
-The edges would define handlers for the content of the sources, format the results and send to the sinks.
-
-So, as I write code in one node, I can see a node displaying stdout, another watching a log file, another showing docstrings, another showing test results ...
-
-===== Ville
-
-The 'ileo workbook' concept is relevant; it allowed you to easily reference other nodes in your scripts (wb.foo meant node with headline 'foo').
-
-It's nice in theory, but the rigid ui model where we show only one node at a time made it hard to visualize. Tabula or grid would make it more concrete and intuitive - you could show input, output and the manipulator script at the same time. Or make small nodes with intermedote results etc.
-
-How this would relate to 'pipeline' - you would have explicit way to say what nodes are input, whan nodes are output and what are the scripts that transform input to output. Editing inputs or scriyts would ping you somehow that outputs are out of date, allowing you to easily press button to recalculate outputs.
-.. @+node:ekr.20130806072439.21342: *4* Re: Node pipes
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-On Wed, Apr 18, 2012 at 9:48 AM, Kent Tenney <ktenney@gmail.com> wrote:
-
-> Could...any node...be designated as a destination for output?
-
-Certainly.  Just assign to v.b in the appropriate place.
-
-> could [Leo] duplicate the power of simultaneous feedback shown by Light Table.
-
-Yes, provided somebody understands what the simultaneous feedback is ;-)
-
-Tabula might be natural for that, perhaps enhanced via free_layout.
-
-> I guess 'rendering' addresses this to some degree.
-
-Interesting connection.  We might want to render to tabula nodes.
-
-> Reminds me of the power graph database folks talk about, where you can
-> define nodes and edges to be whatever you want.
-
-This is coming.  Redefining edges would be easy provided that they had
-different colors from the "main" edges.
-
-> The nodes could be sources or sinks.
-> Sources: code or commands ...
-> Sinks: standard out, tail -f logfile, network traffic, introspection ...
-
-Yes.  This is a straightforward generalization of your first question.
-
-> The edges would define handlers for the content of the sources, format the results and send to the sinks.
-
-A new idea!  This could be revolutionary!
-
-> So, as I write code in one node, I can see a node displaying stdout, another watching a log file, another showing docstrings, another showing test results ...
-
-To paraphrase: nodes and links are not simply ways to represent structure.  They may have independent identity and function.  A brilliant idea.
-
-Edward
-.. @+node:ekr.20130806072439.21344: *4* Re: Node pipes
-From: "Edward K. Ream" <edreamleo@gmail.com>
-
-On Wed, Apr 18, 2012 at 11:47 AM, Kent Tenney <ktenney@gmail.com> wrote:
-
->> Certainly. Just assign to v.b in the appropriate place.
->
-> Right. Leo can be considered a programming language, it is able
-> to do most anything one dreams up. Here we are discussing what
-> features are appropriate to add to the 'standard library' IE: put the
-> effort into making the capability an API call instead of a bunch of code.
-
-In fact, the inadequacy of my remark that assigning to v.b was all that was needed lead me to consider the broadcaster/listener framework.
-
-The idea is that the v.b setter property would broadcast the fact that v.b has changed to all the listeners connected to v.  Presumably, those listeners will be UI elements that will update their text from v.b and recolor as appropriate.
-
-We might generalize this concept to update outline structure in those UI elements that show outlines.
-
-> My impression of the Light Table demo is that the right side of the screen was reporting interesting information about what was being typed on the left side. Seems like it could be called "simultaneous feedback"
-
-An excellent generalization.  We can use this without knowing exactly what the feedback is, or where it comes from.
-
-> I'm unable to keep up, unaware of the capability of free_layout,
-> tabula, rendering, but I expect most if not all of the tools are availabl=
-e.
-
-Keeping up with ourselves these days seems like a full-time job.
-
-I believe a broadcaster/listener event framework is an essential ingredient.  It shouldn't be too hard to do, it will simplify existing code, and it will be an enabling technology that will stimulate further development.
-.. @+node:ekr.20180131054918.1: *3* Render Leo trees on "canvas" (Terry)
-http://leo.zwiki.org/GraphsInTrees, particularly the 'Older notes' section towards the end.
-.. @+node:ekr.20111014134653.15672: *3* Search across multiple Leo files (EKR)
-http://groups.google.com/group/leo-editor/browse_thread/thread/cf5ab54f29a6c128
-
-This would also be a substitute for cross-file clones.
-.. @+node:ekr.20180131054718.1: *3* Support cmap-like data (Terry)
-Terry
-
-Personally I think Leo could navigate cyclic graphs, see http://leo.zwiki.org/GraphsInTrees particularly the 'Older notes' section towards the end. But it's a major issue with regard to all the algorithms which don't expect to run in to loops. And the extra layer of connections from the backlinks plugin allows the same functionality, so it may be that it's more an interface issue than a data model issue.
-
-I'd like Leo to be able to behave like CmapTools, http://cmap.ihmc.us/ but maybe it can, essentially, and it's really a matter of defining some new interface bells and whistles.
-.. @+node:ekr.20060227123536: *3* Tiddlywiki and related comments about rendering body text (Mulder)
-http://sourceforge.net/forum/message.php?msg_id=3578252
-By: bwmulder
-
-I have been thinking for a while that it ought to be possible to somehow to unite Leo with wiki features (my thinking is still vague at this point).
-
-If you look at systems like Tiddlywiki (http://www.tiddlywiki.com/) you will find that they already pretty much provide all the formatting features mentioned in the article.
-
-MoinMoin, another wiki (http://moinmoin.wikiwikiweb.de), has started to use a graphical interface for editing in the latest version.
-
-Maybe Leo can be split up into three components:
-
-1. A storage component is responsible for storing nodes. Currently, this is just memory, but databases like shelve, Zope or sqllite should also be possible.
-
-2. The control component is responsible for converting from the internal format to external files which can be processed by existing compilers, searching within a document, and the like.
-
-3. A display component is responsible for interfacing with the user. If can be TK, but it can also be something like the Tiddlywiki interface, which immediately shows the formatting applied to text.
-
-I don't know much about javascript, so I would have to learn more about this language before doing anything in this direction.
-
-As an intermediate step, maybe we could allow mixing RST processing with regular program text.  Leo would produce two documents out of a source file: a version for the compiler in plain ascii, and an HTML file for reading the source.
-.. @+node:ekr.20130807203905.16681: *3* Use travis-ci: continuous integration for Leo (Ville)
-Someone may be interested in investigating a free CI system for Leo:
-
-https://travis-ci.org/
-
-This could e.g. create debian packages for daily builds, run unit tests, check stuff with lint, try compiling with python3 so we (*cough*) wouldn't have accidental print statements in the source...
-.. @+node:ekr.20130806072439.21482: *3* xiki window for leo (wgw)
-From: wgw <wgwinder@gmail.com>
-
-Xiki.org gives a demo of a "wiki" shell for command execution. Leo should be able to do the same thing (and more!), in the sense that leoscreen, for example, has two way communication with the command line. I suppose a "Lxiki" is really just a question of setting up the right shortcuts (like a shift-ctrl-b that would run highlighted python code from the command line... with a tmp file?).
-
-.. @+node:ekr.20130806072439.21483: *4* Re: Wish list: xiki window for leo
-From: wgw <wgwinder@gmail.com>
-
-Thanks for the tip -- it will take me a while to get my head around vspace (will keep an eye on Ville's blog post).
-
-I'm just beginning to appreciate (or imagine) what Ipython, sublime text editor, leo, xiki, etc could mean for some kind of intelligent document workbench. Of course the big hurdle is not so much the string processing (sublime is a good example of how that can be done), but rather the syntax processing -- i.e. the docbench  (to coin a phrase) should understand the syntax of whatever is being input and then offer syntax-aware functions.... Sorry, getting a little obscure: all I mean by syntax-aware is the ability to propose text completions (Leo's autocompletion is a good example -- everything should work like autocomplete!) and allow for intelligent text changes depending on a database of information (for example, a search and replace that would  know how to search on "caterpillar" and turn it into "butterfly" but would not touch "caterpillar truck").
-
-Seems like Leo is not far from doing that synthesis, but it would require more database integration. So for example, even the python help system does not have autocomplete. (No criticism there! The great thing about Leo is that if you want something, you just have to dive in and build it. My day job might just let me do that!)
-.. @+node:ekr.20130806072439.21484: *4* Re: Wish list: xiki window for leo
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-> Thanks for the tip -- it will take me a while to get my head around vspace
-> (will keep an eye on Ville's blog post).
-
-Just to clarify, vs-eval, vs-last, vs-last-pretty are quite straight forward, as I described them below, and do not require comprehension of the esoterica of value-space :-) I just put them in that plugin (a) to avoid creating yet another plugin, and (b) because it seemed sensible to have them use the value-space namespace c.vs, but all that means for vs-eval, vs-last, vs-last-pretty is that
-
-  a =3D 7
-
-executed by vs-eval assigns a value to a which can be used by subsequent vs-eval calls (persistent for the lifetime of the session).
-
-For example, make a body with this text
-
-a =3D 7
-b =3D 3
-a + b
-
-and place the cursor in front of the first 'a'
-
-execute (Alt-x or key binding) vs-eval 4 times
-
- - first time executes the empty selection and selects the next line
- - second time assigns 7 to a and report 7 in the log
- - third time assigns 3 to b and report 3 in the log
- - forth time calculates a + b and report 10 in the log
-
-executing vs-last(-pretty) would insert the last result (None, 7, 3,
-10) in the body.
-.. @+node:ekr.20130806072439.21485: *4* Re: Wish list: xiki window for leo
-From: wgw <wgwinder@gmail.com>
-
-Got it! The value of valuespace (!) is that that you can make a pythonesque session persist. I did not realize that there was no direct two-way bridge to the python window that leo launches. Even if there were, we would want to make the session persist by logging it into the outline, as valuespace (vs-create-tree) does.
-.. @+node:ekr.20130806072439.21487: *4* Re: Wish list: xiki window for leo
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-In addition to the outline as a active data document functions of Ville's value-space plugin, I recently added some simple ;-) commands::
-
-    Alt+A vs-eval
-    Alt+S vs-last
-    Alt+D vs-last-pretty
-    (my key bindings)
-
-vs-eval evaluates the selected python in the c.vs namespace.  It makes an effort to workout what the output should be, and puts it in the log.  It captures print output to the log too.  It selects the next line, ready for execution.
-
-vs-last inserts the last result into the body, and vs-last-pretty does the same, but using pprint formatting.
-
-Ctrl-B also runs the script in the body, but not in a persistent namespace, running only the selected text doesn't seem to be working, and it doesn't work so hard to work out the output.
-
-I guess leoscreen would do the same things as the vs-* commands if you used it against a python shell.  The inspiration for the vs-* commands was wanting Leo to tell you what 3.57 * 365 / 12 was without a lot of effort, but of course you can define functions etc. etc.
 .. @+node:ekr.20160405063258.1: ** Unlikely
 .. @+node:ekr.20160315141751.1: *3* Code Academy
-@language rest
-@wrap
-
 - Redraw mode that hides siblings.
 
 - Clones: making and deleting them.
@@ -1402,8 +1386,6 @@ I don't believe this can be done just using stylesheets.
 Probably will need custom painters.
 .. @+node:ekr.20180124135223.1: *3* Commands & features
 .. @+node:ekr.20150215102218.4: *4* Unlikely: @ns-rst/vo/otl commands
-@language rest
-
 ===== @ns-* write logic
 
 In his initial post, Rob said, "when I change my @auto-rst files to @nosent files, the resulting files do not contain the RST section headers that were automatically added by @auto-rst."
@@ -1575,12 +1557,28 @@ I certainly think IPython autocompletion is the gold standard.
 This can't be done because IPython has access to live objects.  Leo does not.
 .. @+node:ekr.20180124135356.1: *3* Config
 .. @+node:ekr.20081119132758.2: *4* Won't do: @ifgui in settings trees
-@language rest
-
 This could be done now that gui's are created on the command line.
-However, it's not useful because the only gui is Qt.
 
-@language python
+However, it's not useful because the only gui is Qt.
+.. @+node:ekr.20150503061351.1: *4* Won't do: Enable plugins separately from loading plugins?
+https://groups.google.com/forum/#!topic/leo-editor/K4rzqDE8emA
+
+The consensus is that this is a bad idea.
+
+
+Original post:
+
+Leo's plugins manager can and imo should dispatch events registered to a plugin only to commanders for which the plugin is enabled in an @enabled-plugins node.
+
+This would make @enabled-plugins nodes work like all other settings.  Not enabling a plugin in a local (per .leo file) @enabled-plugin node would disable that plugin for that outline even if the plugin is enabled in myLeoSettings.leo or leoSettings.leo.
+
+In practice, the plugins manager would dispatch an event registered by a plugin to a commander only if the plugin is actually enabled in the commander.  Events would be dispatched as always.  For example:
+
+    def onCreate (tag, keys):
+        c = keys.get('c')
+        if c: << do something >>
+
+The only difference is that this event handler would be called only for outlines in which the plugin was enabled.
 
 .. @+node:ekr.20111026075003.16481: *4* Won't do: Support ~/.leo_config.py
 Supposedly would make Leo more professional/standard. However, Leo has plenty of ways to execute code or set settings at startup. Nobody is asking for it.
@@ -2936,30 +2934,6 @@ There are two reasons why Leo is unlikely ever to be a web app.
 
 These seem like the most important obstacles. There may be others, but these
 suffice.
-.. @+node:ekr.20180124135606.1: *3* Plugins
-.. @+node:ekr.20150503061351.1: *4* Won't do: Enable plugins separately from loading plugins?
-@language rest
-@wrap
-
-https://groups.google.com/forum/#!topic/leo-editor/K4rzqDE8emA
-
-The consensus is that this is a bad idea.
-
-
-Original post:
-
-Leo's plugins manager can and imo should dispatch events registered to a plugin only to commanders for which the plugin is enabled in an @enabled-plugins node.
-
-This would make @enabled-plugins nodes work like all other settings.  Not enabling a plugin in a local (per .leo file) @enabled-plugin node would disable that plugin for that outline even if the plugin is enabled in myLeoSettings.leo or leoSettings.leo.
-
-In practice, the plugins manager would dispatch an event registered by a plugin to a commander only if the plugin is actually enabled in the commander.  Events would be dispatched as always.  For example:
-
-    def onCreate (tag, keys):
-        c = keys.get('c')
-        if c: << do something >>
-
-The only difference is that this event handler would be called only for outlines in which the plugin was enabled.
-
 .. @+node:ekr.20180131055225.1: ** zz Completed
 .. @+node:ekr.20140730175636.17982: *3* Completed: Vim emulation
 No further work is planned.
