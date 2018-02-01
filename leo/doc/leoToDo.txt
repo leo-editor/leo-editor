@@ -3,155 +3,6 @@
 .. @@language rest
 .. @@wrap
 .. @+all
-.. @+node:ekr.20180131053148.1: ** Move items to issues
-@language rest
-@wrap
-
-** Tag issues with names: Kent, Terry, Ville, etc.
-.. @+node:ekr.20180131065401.1: *3* Rendering: 5
-.. @+node:ekr.20130806072439.20369: *4* @paragraph (offray)
-I have been using txt2tags + Nested Editor to produce structured docs in a light markup and exporting them to HTML and LaTeX > pdf. The fine tunning on the pdf output is done by editing the LaTeX source in Leo. I like the aesthetic of the source code and the outputs and I have contacted the Nested author in order to get some cross-pollination between it and Leo.
-
-See https://groups.google.com/group/nestededitor/browse_thread/thread/7068e3cd229d4614 
-
-I would like to have is a "@paragraph" directive that works the same as @rst-no-head but can be used in any part of a (sub)tree, even if is not @rst (sub)tree. This would come handy in chunking and reassembling LaTeX docs without marking up the parts with "<<chunk>>" tags.
-.. @+node:ekr.20130806211959.17365: *4* Docear, Latex, PDF enhancements
-https://groups.google.com/d/msg/leo-editor/QbQHzlRtioc/uviFCvR9DeMJ
-Leo as PIM and authoring tool
-
-Josef <joe_da@gmx.net> 7/30/12
-		
-Recently I evaluated docear - a mind-mapping tool for collecting reference data (written in Java). It automatically extracts bookmarks and annotations from PDF files, and more, but it's support for authoring is still not up to the task. I think it would be great if Leo could do some of the tasks docear is doing.
-
-Dragging a PDF into Leo currently just creates an url to the PDF. This could be expanded to also extract data (bookmarks, notes) from the PDF and to sync this data between Leo and the PDF. This info could be placed in child nodes: bookmarks and notes could even jump directly to the page in the PDF (although each PDF viewer seems to have a different syntax for doing that). This would be a great way to organize data sheets and specifications stemming from external sources.
-
-Combining the above with an improved LaTeX support, one would get a very powerful research and authoring tool - in my opinion with a much more convenient interface than docear.
-
-Perhaps it is too much work to duplicate all the work docear is doing. An alternative may be to sync data somehow between docear and Leo. Docear stores the data in a freeplane mind-map. Has anyone else thoughts about this? Offray Vladimir Luna Cárdenas offray@riseup.net via googlegroups.com
-	
-7/30/12
-		
-I have been using Leo to write my thesis. I didn't know about Docear, but my use was in some sense similar. I have a lot of @url links pointint to the pdfs files and in a subtree I cut and paste the text of the pdf I want to comment and made the comments inside the tree. These pdf were part of my bibliographic entries and I'm now writing a .bib file for these, so I can have in only one Leo tree all my thesis, with all the references to external files and the annotations and bibtex entries for them. For me the key point of Leo in academic writing is the tree view plus the clones and ignore nodes. My thesis can have several layers, the external ones being the actual writing and the deeper ones the references, texts, images, tools that enable me to do that writing. Using clones and @rst-no-head directives I can have the level of granularity of a paragraph, something that is not possible on traditional word processor which are the writing tool of tools like docear. This approach have some glitches:
-
-* I still need to do some fine tunning to the LaTeX export for writing the pdf as I want. I imagine that putting sphinx in the tool chain could change that.
-
-* I can not get much people of my companions using this advangages, besides of myself, because of the difficult installation process of Leo in Windows/Mac and the not so friendly interface for non-programmers. Other light markup structured text writing programs like Nested[1] are more easily used and understood despite of not having all the advantages and flexibility of Leo.
-
-So, in resume, may be the better approach is connecting Leo to Docear, so you can have the advantages of both in terms of easy multiplataform installation and friendly interface of the later and programmability, flexibility and deeper organic structure of the former.
-
-Offray
-
-===== Terry Brown <terry_n_brown@yahoo.com>
-
-> Dragging a PDF into Leo currently just
-> creates an url to the PDF. This could be expanded to also extract data
-> (bookmarks, notes) from the PDF and to sync this data between Leo and the
-> PDF. This info could be placed in child nodes: bookmarks and notes could
-> even jump directly to the page in the PDF (although each PDF viewer seems
-> to have a different syntax for doing that). This would be a great way to
-> organize data sheets and specifications stemming from external sources.
-
-I'm not really sure how notes get embedded in PDFs.  As an aside, there is also capability for using Leo to manage bookmarks to web pages, with notes, tags, and snippets.  Look at the mod_http plugin.  It uses a javascript bookmark button in your browser to communicate with Leo.
-
-> Combining the above with an improved LaTeX support, one would get a very
-> powerful research and authoring tool - in my opinion with a much more
-> convenient interface than docear.
->
-> Perhaps it is too much work to duplicate all the work docear is doing. An
-> alternative may be to sync data somehow between docear and Leo. Docear
-> stores the data in a freeplane mind-map. Has anyone else thoughts about
-> this?
-
-Syncing between the two sounds a little cumbersome to me.  I wonder if the PDF stuff could be integrated with some sort of BibTeX .bib file management?
-
-Do you really need the mindmap UI of docear?  I used to use Freemind which has a very similar interface, but switched to Leo.  I like what http://cmap.ihmc.us/ does, but it only does idea organization, no authoring etc.  To me cmaptools is better at idea organizing than mindmaps.
-
-There is also the backlinks plugin for Leo, which allows arbitrary networks of links instead of just the directed tree, and graphcanvas, which allows graph layout of nodes.  There aren't comparable with the mindmap layouts, but they head in that direction.  Also note Leo's hidden UI flexibility in the context menus on the pane dividers, you can open a new window for the graphcanvas plugin, which gives it much needed screen real estate.
-
-Cheers -Terry
-
-===== Josef <joe_da@gmx.net>
-		
-no, I do not need the mindmap stuff at all. I had a look at short look at cmaptools, and I agree the generalized graph approach seems better than a standard mindmap. But I am quite happy with the tree view in Leo and as you already mentioned, this can be extended with backlinks etc. I have used Leo already to organize reference documents and write documentation (using Latex).
-
-What I do want is links to a particular page of a PDF - links to just a file are not enough when you refer to documents with 100+ pages. Unfortunately this seems to be difficult to achieve in a cross-platform way, particular when trying to support different PDF viewers. Docear is solving this (and other compatibility problems) by developing its own integrated viewer (I do not suggest to do this for Leo).
-
-On second thought, I don't think that extracting the bookmark and annotation info is really important to me - I would keep that info in the PDF, anyhow. I would write inside Leo addional notes, and the output text (in Latex).
-
-Some integration of Bibtex may be a good thing and needs to be thought out. perhaps by using JabRef for this, or by recycling some pyBibliographer code, but this is also low on my priority list.
-
-Offray seems to have a very similar use case as I - although I do not write a thesis, but specifications for scientific instruments. The point about cross-platform installation ease is also well taken, so I will look into some inter-operability here (either with docear or cmaptools). I see Leo mainly as a personal project / information manager: the leo tree is not easily shared with others, while the files Leo points to with @url, @auto,
-@file etc can be shared quite easily. In this I use Leo as *my personal*
-view on the project.
-
-Ville Vainio <vivainio@gmail.com>
-7/30/12
-		
-It seems that e.g. w/ foxit reader, you can open selected page from command line (-n 123). Abstracting this for other pdf readers that support such a thing should be no problem.
- 
-On Monday, July 30, 2012 8:08:23 PM UTC+2, Ville M. Vainio wrote:
-     
-    It seems that e.g. w/ foxit reader, you can open selected page from
-    command line (-n 123). Abstracting this for other pdf readers that
-    support such a thing should be no problem.
-    
-Yes, I suppose one could translate from a canonical representation inside Leo to whatever the tool needs (using @setting). Ideally, one would even have a choice between opening the new page in a different or in the same PDF viewer instance as the last page, but few viewers support that (Okular does - but I don't know any cross-platform solution).
-.. @+node:ekr.20050127110221: *4* More flexible output (jasonic)
-.. @+node:ekr.20180131075327.1: *5* pdb
-PDF has it uses. If nicely embedded into Leo via 'reportwriter'and some export scripts {and clear useinterfance} would still be a good thing.
-
-As I start to think about how to print Leo, I become more aware of the differneces between Leo structures and linear [print] layouts.
-
-Different kinds of outlines obviously will need different kinds of printing. I don't yet have enough experience or overview.
-.. @+node:ekr.20180131075414.1: *5* xslt
-Seems a natural way to go for printing Leo, but yet another langauge and syntax to wrassle with.
-
-Last time I looked I went from being horrified to very impressed to be being exhausted.
-.. @+node:ekr.20180131075435.1: *5* flash/swf
-This printing topic pushes me harder to get FLC  [my FlashLeoClient project] into the Leosphere.
-
-Flash has *limited*  CSS handling, but enough to do some nice and useful typographic formatting in a pretty clean object-oriented manner.
-
-FLC parses .leo files into a Flash object. Flash Textformat instances are created using CSS and can be applied then to rendering any parts of  the deserialized Leo object.. The beauty is it can be very fast and ynamic so I can imagine a real-time WYSIWYG laytou tool for printing Leo to web and at the same making it suitable at the same time for print-to-paper.
-
-Since FLC is in the very first instance a READ-ONLY client tool for Leo, it makes it a natural Leo printing service.
-
-To complete full service, it woudl be good if Leo could create SWF files directly itself, just like using PDF reportwriter. There are a couple of libraries to help this:
-
-- Ming [with PHP, Perl, Python and Ruby wrappers] http://ming.sourceforge.net/
-
-- makeswf.r [interesting REBOL/Flash dialect by David Oldes] http://sweb.cz/oliva.david/swf/
-
-These could also be both configured as web-services. So Leo print-to-web would include by default rendering a flash swf file versoin of itself either using locally installed libraries or by passing a view of itself to a chosen client or server-based tool.
-
-But even without those extra 'services' and libraries a single flash file in the form of FLC could become an effective Leo printing kit. Using a standalone desktop  version [not embedded in the browser, out of the sandbox] much more is possible - remote control, peer-peer editing, file writing etc.
-.. @+node:ekr.20180131075537.1: *5* flashpaper2 (commercial)
-I've been using Flashpaper2 a lot to print all kinds of stuff, often from web pages to my local adhoc home filebase. It's a very fast lighweight alternative to PDF, saves paper, has excellent zooming and nice search features built-in.
-
-Flashpaper renders a very literal snapshot, but that turns out to be extremely useful. For example, you visit a page and click on some links. Flashpaper saves the pages exactly as they looks, visted links disntinguished.  In the era of info-overload, even that crude mnemonic is valuable.
-
-Alas, Flashpaper2 is not free nor open in the way Leo is. But worth to play with it if only for for the experience. 30 day trial downlaod from http://www.macromedia.com/software/flashpaper/
-
-Flash *players* are free, so can send people flashpaper documents just like PDF. Brilliant when you have a big Excel spreadsheet or CAD document which would normally get all messy printing across pages, confusing people. Instead adjust and print to a generous 'piece' of flashpaper. Your coleagues can pan and zoom as they like.
-
-I've not quite figured where Leo meets Flashpaper, because Leo needs to preserve its full pane contents. Flashpaper works fine with long web pages, automatically reading the full window contents and cutting into a paginated sequence, ready for paper printing.
-
-[Obsolete] Leo's does not have a Print menu, so it's off the sytem's print-devices map, which Flash paper appearing just like any phtycial printer.
-
-An immediate alternative are screencapture tools like vnc2swf or MDM Capture.
-
-[vnc2swf uses Ming-0.2a] http://www.unixuser.org/~euske/vnc2swf/
-
-http://www.multidmedia.com/software/capture/index.php
-
-But much is hidden or lost from view. 
-Still very vauable for creating dynamic narrative tutorials [aka screencasting]
-
-I am very excited about what flash can do for Leo, and vice versa. But I am concerned that there is not yet a 100% Leo means which supports people's standard print needs and habits.
-.. @+node:ekr.20180131054918.1: *4* Render Leo trees on "canvas" (Terry)
-http://leo.zwiki.org/GraphsInTrees, particularly the 'Older notes' section towards the end.
-.. @+node:ekr.20180131054718.1: *4* Support cmap-like data (Terry)
-I'd like Leo to be able to behave like CmapTools, http://cmap.ihmc.us/ but maybe it can, essentially, and it's really a matter of defining some new interface bells and whistles.
 .. @+node:ekr.20160405063258.1: ** Unlikely
 .. @+node:ekr.20160315141751.1: *3* Code Academy
 - Redraw mode that hides siblings.
@@ -231,6 +82,10 @@ However, a simple, fast post-pass in the @ns-rst/md read logic could create the 
 @auto-rst logic,but it exists in a far simpler context than @auto-rst.
 
 Post passes are probably *required* for @ns-vimoutline and @ns-otl. Indeed, vimoutline or otl sentinels should *never* be left as plain text in an existing node. The "raw" sentinels would corrupt the vim or Emacs outline if the node were later moved. An unpleasant time bomb.
+.. @+node:ekr.20130806072439.20369: *4* Unlikely: @paragraph (offray)
+EKR: I don't understand why this would be useful.
+
+I would like to have a "@paragraph" directive that works the same as @rst-no-head but can be used in any part of a (sub)tree, even if is not @rst (sub)tree. This would come handy in chunking and reassembling LaTeX docs without marking up the parts with "<<chunk>>" tags.
 .. @+node:ekr.20041219162724: *4* Unlikely: Add dialog to insert recent directories
 The multifile plugin contains option to insert a directory string.  I use it alot for the @path directive.  This opens a FileDialog and the user selects the directory he wants to use as a directory string. When chosen the directory string is inserted into the text editor.
 
@@ -243,6 +98,47 @@ http://sourceforge.net/forum/message.php?msg_id=2859273
 EKR: There's a config option to clear undo on save. That should suffice
 
 Many small edits on an open leo after a few hours can trigger a slow GC cycle. I have no idea if undo is the cause, just guessing.
+.. @+node:ekr.20130806211959.17365: *4* Unlikely: Docear, Latex, PDF enhancements
+@language rest
+@wrap
+
+EIR: To summarize: It seems that Leo already has most of what is needed.
+
+From https://groups.google.com/d/msg/leo-editor/QbQHzlRtioc/uviFCvR9DeMJ
+
+===== Josef <joe_da@gmx.net> 7/30/12
+		
+Recently I evaluated [docear](http://www.docear.org/), a mind-mapping tool for collecting reference data (written in Java).
+
+It automatically extracts bookmarks and annotations from PDF files, and more, but it's support for authoring is still not up to the task. I think it would be great if Leo could do some of the tasks docear is doing. Dragging a PDF into Leo currently just creates an url to the PDF. This could be expanded to also extract data (bookmarks, notes) from the PDF and to sync this data between Leo and the PDF. This info could be placed in child nodes: bookmarks and notes could even jump directly to the page in the PDF (although each PDF viewer seems to have a different syntax for doing that). This would be a great way to organize data sheets and specifications stemming from external sources.
+
+Combining the above with an improved LaTeX support, one would get a very powerful research and authoring tool. Imo it would have a much more convenient interface than docear.
+
+Perhaps it is too much work to duplicate all the work docear is doing. An alternative may be to sync data somehow between docear and Leo. Docear stores the data in a freeplane mind-map. Has anyone else thoughts about this?
+	
+7/30/12
+		
+I have a lot of @url links pointint to the pdfs files and in a subtree I cut and paste the text of the pdf I want to comment and made the comments inside the tree.
+
+These pdf were part of my bibliographic entries and I'm now writing a .bib file for these, so I can have in only one Leo tree all my thesis, with all the references to external files and the annotations and bibtex entries for them.
+
+Maybe the better approach is connecting Leo to Docear, so you can have the advantages of both.
+
+Offray
+
+===== Terry
+
+I'm not sure how notes get embedded in PDFs.
+
+Leo can manage bookmarks to web pages, with notes, tags, and snippets. Look at the mod_http plugin.  It uses a javascript bookmark button in your browser to communicate with Leo.
+
+> An alternative may be to sync data somehow between docear and Leo.
+
+Syncing between the two sounds a little cumbersome to me.  I wonder if the PDF stuff could be integrated with some sort of BibTeX .bib file management?
+
+Do you really need the mindmap UI of docear?  I used to use Freemind which has a very similar interface, but switched to Leo.  I like what http://cmap.ihmc.us/ does, but it only does idea organization, no authoring etc.  To me cmap is better at idea organizing than mindmaps.
+
+The backlinks plugin for Leo allows arbitrary networks of links instead of just the directed tree. The graphcanvas plugin allows graph layout of nodes.  There aren't comparable with the mindmap layouts, but they head in that direction.
 .. @+node:ekr.20110529115328.18238: *4* Unlikely: Emacs related
 I'll do these if and and only if somebody asks for them.
 .. @+node:ekr.20110529104352.18248: *5* Complete k.universalDispatcher
@@ -272,6 +168,10 @@ If you actually want the text of the abbrev in the buffer, rather than its expan
 Enhance the button machinery to allow mixed case, spaces, colors.
 .. @+node:ekr.20031218072017.748: *4* Unlikely: Import/Export to yaml
 Need a good yaml parser first: I don't want to write another parser by hand.
+.. @+node:ekr.20130806072439.21337: *4* Unlikely: Improve C importer
+From: ne1uno <eltronis@gmail.com>
+
+The new C importer probably suffices.
 .. @+node:ekr.20161205102034.1: *4* Unlikely: Modes to support vim dot (EKR)
 The idea is to be able to define the dot easily.
 
@@ -279,6 +179,61 @@ The idea is to be able to define the dot easily.
 - Define the dot.
 - Leave vim-mode.
 - Use the dot.
+.. @+node:ekr.20050127110221: *4* Unlikely: More flexible output (jasonic)
+@language rest
+@wrap
+
+.. @+node:ekr.20180131075327.1: *5* pdf
+PDF has it uses. If nicely embedded into Leo via 'reportwriter'and some export scripts {and clear useinterfance} would still be a good thing.
+
+As I start to think about how to print Leo, I become more aware of the differneces between Leo structures and linear [print] layouts.
+
+Different kinds of outlines obviously will need different kinds of printing. I don't yet have enough experience or overview.
+.. @+node:ekr.20180131075414.1: *5* xslt
+Seems a natural way to go for printing Leo, but yet another langauge and syntax to wrassle with.
+
+Last time I looked I went from being horrified to very impressed to be being exhausted.
+.. @+node:ekr.20180131075435.1: *5* flash/swf
+This printing topic pushes me harder to get FLC  [my FlashLeoClient project] into the Leosphere.
+
+Flash has *limited*  CSS handling, but enough to do some nice and useful typographic formatting in a pretty clean object-oriented manner.
+
+FLC parses .leo files into a Flash object. Flash Textformat instances are created using CSS and can be applied then to rendering any parts of  the deserialized Leo object.. The beauty is it can be very fast and ynamic so I can imagine a real-time WYSIWYG laytou tool for printing Leo to web and at the same making it suitable at the same time for print-to-paper.
+
+Since FLC is in the very first instance a READ-ONLY client tool for Leo, it makes it a natural Leo printing service.
+
+To complete full service, it woudl be good if Leo could create SWF files directly itself, just like using PDF reportwriter. There are a couple of libraries to help this:
+
+- Ming [with PHP, Perl, Python and Ruby wrappers] http://ming.sourceforge.net/
+
+- makeswf.r [interesting REBOL/Flash dialect by David Oldes] http://sweb.cz/oliva.david/swf/
+
+These could also be both configured as web-services. So Leo print-to-web would include by default rendering a flash swf file versoin of itself either using locally installed libraries or by passing a view of itself to a chosen client or server-based tool.
+
+But even without those extra 'services' and libraries a single flash file in the form of FLC could become an effective Leo printing kit. Using a standalone desktop  version [not embedded in the browser, out of the sandbox] much more is possible - remote control, peer-peer editing, file writing etc.
+.. @+node:ekr.20180131075537.1: *5* flashpaper2 (commercial)
+I've been using Flashpaper2 a lot to print all kinds of stuff, often from web pages to my local adhoc home filebase. It's a very fast lighweight alternative to PDF, saves paper, has excellent zooming and nice search features built-in.
+
+Flashpaper renders a very literal snapshot, but that turns out to be extremely useful. For example, you visit a page and click on some links. Flashpaper saves the pages exactly as they looks, visted links disntinguished.  In the era of info-overload, even that crude mnemonic is valuable.
+
+Alas, Flashpaper2 is not free nor open in the way Leo is. But worth to play with it if only for for the experience. 30 day trial downlaod from http://www.macromedia.com/software/flashpaper/
+
+Flash *players* are free, so can send people flashpaper documents just like PDF. Brilliant when you have a big Excel spreadsheet or CAD document which would normally get all messy printing across pages, confusing people. Instead adjust and print to a generous 'piece' of flashpaper. Your coleagues can pan and zoom as they like.
+
+I've not quite figured where Leo meets Flashpaper, because Leo needs to preserve its full pane contents. Flashpaper works fine with long web pages, automatically reading the full window contents and cutting into a paginated sequence, ready for paper printing.
+
+[Obsolete] Leo's does not have a Print menu, so it's off the sytem's print-devices map, which Flash paper appearing just like any phtycial printer.
+
+An immediate alternative are screencapture tools like vnc2swf or MDM Capture.
+
+[vnc2swf uses Ming-0.2a] http://www.unixuser.org/~euske/vnc2swf/
+
+http://www.multidmedia.com/software/capture/index.php
+
+But much is hidden or lost from view. 
+Still very vauable for creating dynamic narrative tutorials [aka screencasting]
+
+I am very excited about what flash can do for Leo, and vice versa. But I am concerned that there is not yet a 100% Leo means which supports people's standard print needs and habits.
 .. @+node:ekr.20031218072017.807: *4* Unlikely: Put up file dialog on empty @url, etc.
 https://sourceforge.net/forum/message.php?msg_id=2003457
 By: dsalomoni
@@ -290,10 +245,6 @@ This would be more convenient than manually writing @url file://a/long/path/to/t
 Davide
 .. @+node:ekr.20041016134312.2: *4* Unlikely: Standard Weave command
 Use noweb and TeX, or maybe Pyx.
-.. @+node:ekr.20130806072439.21337: *4* Unlikely: Improve C importer
-From: ne1uno <eltronis@gmail.com>
-
-The new C importer probably suffices.
 .. @+node:ekr.20180124135104.1: ** Won't do
 .. @+node:ekr.20160405063304.1: *3* Commands & features
 .. @+node:ekr.20160503093454.2: *4* Won't do: Ignore URL's in scripts
