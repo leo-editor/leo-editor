@@ -66,13 +66,16 @@ I don't believe this can be done just using stylesheets.
 Probably will need custom painters.
 .. @+node:ekr.20180124135223.1: *3* Commands & features
 .. @+node:ekr.20150215102218.4: *4* Unlikely: @ns-rst/vo/otl commands
+From https://groups.google.com/d/msg/leo-editor/QxK2V62ESLw/vCSolavmw4YJ
+
+EKR: The new importers do most of these.
+
 ===== @ns-* write logic
 
 In his initial post, Rob said, "when I change my @auto-rst files to @nosent files, the resulting files do not contain the RST section headers that were automatically added by @auto-rst."
 
 This proves that @ns-rst must have special logic that writes the proper section headers. Happily, this can be done easily with special cases in at.putOpenNodeSentinel. Ditto for @ns-md, @ns-vimoutline and @ns-otl.
 
-From https://groups.google.com/d/msg/leo-editor/QxK2V62ESLw/vCSolavmw4YJ
 
 ===== @ns-* read logic
 
@@ -180,9 +183,7 @@ The idea is to be able to define the dot easily.
 - Leave vim-mode.
 - Use the dot.
 .. @+node:ekr.20050127110221: *4* Unlikely: More flexible output (jasonic)
-@language rest
-@wrap
-
+Most of this has already been done.  Flash is dying.
 .. @+node:ekr.20180131075327.1: *5* pdf
 PDF has it uses. If nicely embedded into Leo via 'reportwriter'and some export scripts {and clear useinterfance} would still be a good thing.
 
@@ -338,47 +339,6 @@ Multiprocessing based implementation will likely be quite hard, and once you wal
 I have often thought how nice it would be to have "flat" storage for the leo document, so that you could just copy over a flat chunk of memory and let other processes traverse that. Doing that is a somewhat nontrivial undertaking, to say the least :).
 
 I'd just start with threads, despite the GIL problems.
-.. @+node:ekr.20111017132257.15883: *4* Won't do: Use IPython completion
-http://groups.google.com/group/leo-editor/browse_thread/thread/014fe61ff9480b2b
-
-I don't know if this is relevant or not, but the IPython autocompletion
-capability is awesome.
-
-If I'm investigating code I tend to do the following.
-
-list the modules in a package:
-In [1]: from fs import <tab>
-
-this lists the modules, in a package so I pick one
-In [1]: from fs import osfs
-<the osfs entry is tab-completable>
-
-now I can check the usage of fs.osfs
-In [2]: osfs? <enter>
-
-or the source:
-In [2]: osfs?? <enter>
-
-or the contents of the module
-In [2]: osfs. <tab>
-
-I can instantiate a class:
-In [3]: myfs = osfs.OSFS('/')
-
-and examine the ivars and methods:
-In [4]: myfs. <tab>
-
-It is such an efficient way to learn and remember the details of code.
-
-I know a bunch of work was done on Leo/IPython integration, don't
-know the current status, my wish of synchronized IPython and Leo
-may well be one of the many granted wishes I have forgotten about.
-
-I certainly think IPython autocompletion is the gold standard.
-
-===== EKR:
-
-This can't be done because IPython has access to live objects.  Leo does not.
 .. @+node:ekr.20180124135356.1: *3* Config
 .. @+node:ekr.20081119132758.2: *4* Won't do: @ifgui in settings trees
 This could be done now that gui's are created on the command line.
@@ -1335,11 +1295,7 @@ opml is an xml format!
 .. @+node:ekr.20130806072439.21464: *4* Won't do: body editors in a grid
 From: "Ville M. Vainio" <vivainio@gmail.com>
 
-Hey,
-
-No time to mock this up right now, just throwing it out there.
-
-"tabula" plugin allowed you to edit many nodes simultaneously in an MDI canvas - i.e. you could move the body editors around freely.
+The old "tabula" plugin allowed you to edit many nodes simultaneously in an MDI canvas - i.e. you could move the body editors around freely.
 
 How about taking this idea further and locking the body editors in a grid, or column?
 
