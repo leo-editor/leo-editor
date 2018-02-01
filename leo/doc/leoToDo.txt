@@ -8,50 +8,14 @@
 @wrap
 
 ** Tag issues with names: Kent, Terry, Ville, etc.
-.. @+node:ekr.20180131074957.1: *3* Commands & Features: 4
-.. @+node:ekr.20041219162724: *4* Add dialog to insert recent directories
-http://sourceforge.net/forum/message.php?msg_id=2903742
-
-The multifile plugin contains option to insert a directory string.  I use it alot for the @path directive.  This opens a FileDialog and the user selects the directory he wants to use as a directory string. When chosen the directory string is inserted into the text editor.
-
-The good of this:
-
-It makes using path simpler, you dont have to type out the directory path yourself, just use the tkFileDialog to select it and have Leo insert the string. For long directories this saves a lot of typing.
-.. @+node:ekr.20160318113505.1: *4* Avoid mouse in nodetags & other plugins
-We want the alternatives to clones to be mouse free.
-.. @+node:ekr.20031218072017.790: *4* Import dialog improvements
-Other options I though would be really handy:
-
-1. Use an existing node as a source also
-
-2. Use an node from another Leo file.. I am not sure what the syntax for that
-would be exactly
-
-3. From a URL.. this would be really cool. People could post outlines not only
-as existing Leo xml files, but as text files or even dynamic scripts. The code
-to handle these would presumably need to deal with http:// intelligently. But
-that's easy in Python. Rebol is great at that too.
-
-4. Other XML file with valid filepaths in them.
-That's probably a much bigger project like Leo 3.10  
-
-Jason
-.. @+node:ekr.20161205102034.1: *4* Modes to support vim dot (EKR)
-The idea is to be able to define the dot easily.
-
-- Allow Leo to enter vim-mode temporarily.
-- Define the dot.
-- Leave vim-mode.
-- Use the dot.
-.. @+node:ekr.20090131200406.15: *3* DOM & files: 4
-.. @+node:ekr.20061002093442: *4* Add opml support to open & save commands (EKR)
+.. @+node:ekr.20090131200406.15: *3* DOM & files: 3
 .. @+node:ekr.20071001052501: *4* Versioning for nodes (Kent)
 One feature I have not seen in SCS system is something which might be called "history compression": I might be interested in having both version 5 and 6 in my source tree, when the current version is 7, but I am not really interested in the 2000 steps which transformed 5 into 6 (just suggested this feature to the bazaar people). This happens actually quite often to me, since I use the SCS as a back-up system, saving many (uninteresting) intermediate steps while implementing a new feature.
 .. @+node:ekr.20111019104425.15896: *4* Enhanced node attributes: ctime, atime, mtime (Kent)
 .. @+node:ekr.20111019104425.15895: *4* Create a Leo implementation of pyfilesystem (Kent)
 https://docs.pyfilesystem.org/en/latest/
 
-.. @+node:ekr.20120515193246.10084: *3* Importers: 6
+.. @+node:ekr.20120515193246.10084: *3* Importers: 2
 .. @+node:ekr.20101004092958.5914: *4* Add treepad scanner (contains code!)
 treepad.py is from the treepad website
 .. @+node:ekr.20101004092958.5939: *5* treepad.py
@@ -193,6 +157,31 @@ def __init__(self):
 def Run(self):
     self.reader.read()
     self.writer.write(self.reader.root)
+.. @+node:ekr.20130806072439.21337: *4* Improve C importer
+From: ne1uno <eltronis@gmail.com>
+
+wouldn't it be great to have a first class c importer?
+
+hiding the complexity of platform & compiler/option #defines. invisible (TM) nodes would be fruitful here. switched on by @#define. with an @#define=3D collection node or using a bunch of headlines. and an rclick flipper for true/false, defined/not defined declarations.
+
+meanwhile I wait for the inspiration or someone else to nail down a regular expression c language parser. maybe a tokenizer is enough. I did run c code through AStyle then through your old c2py via buttons. for code that would remain in c, in SciTE through google CPPlint program to point up flaws, and to get the context sensitive help from various CHM. running flawfinder good to do now and then old or new code. post processing and displaying the report in a browser. but it doesn't go far enough & too many false positives.
+
+there is splint, maybe the only free lint left. the need to inject "hints" all over the code make it less than ideal for perusing unknown source and generally a deal breaker for project code. sometimes all you need is a function/var list to get by. deeper static analysis is quite the serious business. so, it's not a surprise those programs are not easily found, or used. there are a few code flow programs that could be harnessed to colorize headlines indicating relations. taking all this in, marking nodes that need work with a popup or tooltip action event when you view that node with the details of one or another parser to annotate what needs work.
+
+we have had a few plugins/buttons/attempts at designing an interface to get a program node compiled. this is also a decent way to get info on the quality of code by turning all warnings on. fails for snippits. never quite simple to hookup or modify painless. perhaps the biggest problem is knowing what is available and where. more toolbars, no reason they can't dock. drag & dropping buttons. one of the huge advantages of Qt over Tk so far barely tapped. you begin to accept the fact that you need to create a temp file instead of real process control. managing program quirks & options becomes more trouble than it's worth just to protect the purity of the operation sans temp files. QTprocess has more options than the process in pythons libs. if it ever works as well as it should. but, a little hard to wrap. not going to venture a guess if pyqt gets it right or not. not to mention how bungled up OS process control still is. process control will be essential to any inter-process operations. that is, unless you backslide into wanting to build everything "in" and invent everything new again. re: blender, I haven't looked at blender code in a while, but I would be shocked if there weren't some well established way to hook into a script. sounds like noone has found them yet.
+
+not sure how to grab a window handle on other OS but for windows it's fairly straight forward. blender or GTK could setup blocks. another great Qt based project is universal indenter, a front end
+
+for many indenters for many languages. this would be a good place to look for how to manage inter-process communication in Qt. a first class editor will have to include first class importer for javascript at the least and probably lua and one or two others. one could imagine niceties like clickable links on #include files. right clickable options on them such as import, simple view, htmlize.
+
+also about styles, astyle has the options on the commandline, the builtin/compiled in defaults and an ~/.astyle.rc for personal style. some will find an indenter that has no options useless. I know the indenter created is purely for internal use, as it were, at this point. adding selectable options later will complicate the program and for most use will have little payback. you may as well expect to have some want a plugable option for style. exposing a general use tokenizer could have many callers.
+.. @+node:ekr.20180131065401.1: *3* Rendering: 5
+.. @+node:ekr.20130806072439.20369: *4* @paragraph (offray)
+I have been using txt2tags + Nested Editor to produce structured docs in a light markup and exporting them to HTML and LaTeX > pdf. The fine tunning on the pdf output is done by editing the LaTeX source in Leo. I like the aesthetic of the source code and the outputs and I have contacted the Nested author in order to get some cross-pollination between it and Leo.
+
+See https://groups.google.com/group/nestededitor/browse_thread/thread/7068e3cd229d4614 
+
+I would like to have is a "@paragraph" directive that works the same as @rst-no-head but can be used in any part of a (sub)tree, even if is not @rst (sub)tree. This would come handy in chunking and reassembling LaTeX docs without marking up the parts with "<<chunk>>" tags.
 .. @+node:ekr.20130806211959.17365: *4* Docear, Latex, PDF enhancements
 https://groups.google.com/d/msg/leo-editor/QbQHzlRtioc/uviFCvR9DeMJ
 Leo as PIM and authoring tool
@@ -274,167 +263,6 @@ On Monday, July 30, 2012 8:08:23 PM UTC+2, Ville M. Vainio wrote:
     support such a thing should be no problem.
     
 Yes, I suppose one could translate from a canonical representation inside Leo to whatever the tool needs (using @setting). Ideally, one would even have a choice between opening the new page in a different or in the same PDF viewer instance as the last page, but few viewers support that (Okular does - but I don't know any cross-platform solution).
-.. @+node:ekr.20060227124411: *4* Import/export from wiki's
-http://sourceforge.net/forum/message.php?msg_id=3583737
-By: Offray
-
-I was previously thinking in the relation between Leo and Wikis, and I think that may be a thing that would help to make Leo more visible in Wiki space could be if Leo can export/import to/from a Wiki (something limilar to th @file or @url directives). Let me explain a little better the scenary where this idea come.
-
-We have a local wiki for colombian Free Software Community related issues, and I have used Leo for writing the migration scripts from Mediawiki to MoinMoin (wich I think is more flexible and extensible that the popular wiki behind wikipedia). I was probing also the idea of a Wiki like environment for solving colaborative problems, so I was posting the scripts I made on Leo in a Wiki page, and republishing them in the moment they changed. This keeps me pasting all the time the script and in some moments I was thinking what about if someone make a change in the Wiki page. Would be nice then to have the same capability to detect and sincronize that change as Leo make with the hard disk files.
-
-But this doesnt end here. Another Wiki-Leo interaction is to use outlines as a way to organice Wiki content. For example "= Title =" in a Wiki would be a Outline Node in Leo and "== Subtitle ==" Would become a outline subnode all arranged in the proper hierarchy.
-
-Somekind of Wisiwyg display would be nice, but this must be a plugin or something like that, so Leo could become a "Layered" front end to some kind of data.
-
-About and article on Wikipedia. That would be nice, but I'm a little tired of fighting with some wikipedians ignorance on certain matters combined with power (a pretty bad combination). I think that a Wiki page is nice because its live comes from the community knowledge, but I'm not interested in that fighting, so I have made a Leo wiki page in our local Wiki:
-
-http://www.el-directorio.org:8080/Leo
-
-and when I have enough knowledge about Leo (and time) I hope to start making contribs in the spanish documentation (for the moment I'm only workind in the evangelism here).
-.. @+node:ekr.20031218072017.748: *4* Import/Export to yaml
-Need a good yaml parser first: I don't want to write another parser by hand.
-.. @+node:ekr.20150120155724.4: *4* Improve python importer
-- Handle properties.
-- Show base classes in headlines.
-- Put @language and @tabwidth directives at end of body.
-- Translate::
-
-    #-----------------------------------------------------------------------------
-    # Imports
-    #-----------------------------------------------------------------------------
-
-to organizer node whose headline is Imports.
-.. @+node:ekr.20100830120622.5829: *5* Post
-> > Hmm, I guess that would be more clear, although I think I'd like an option
-to include it in the following def to avoid
-
-> > Decoration
-> > index
-> > Decoration
-> > add_user
->
-> Sure.  Decorations must always be part of a definition.
-
-Well, personally I'd like to have them included in the definition, but I think Kent's preference for a separate node is reasonable to. If your function and hence definition node is called "pluralize", and it's decorated with something like "@authenticate_user", you may never check the innocent looking pluralize definition to find out what on earth's triggering the mysterious network database call. And this isn't a completely specious example, authentication may have been added to stop pluralize being used in a user existence detection exploit or something. OTOH in well behaved code like CherryPy apps you don't want a separate node for every @cherrypy.expose.
-
-Bottom line is I think we're asking for a set of @settings to fine tune python import behavior::
-
-    @python_import_interdef = previous | next | own_node | ai
-    @python_import_decoration = next | own_node
-
-I'm not sure I believe the AI option is possible / practical, and am not asking for it, just listing it :-)
-
-I'd also like::
-
-    @python_import_init_in_class_node = true | false
-
-as often there's more docs on a class in the __init__ than the class docstring.
-
-I think that's really all we're talking about, some @settings to test during import.
-.. @+node:ekr.20130806072439.21337: *4* Improve C importer
-From: ne1uno <eltronis@gmail.com>
-
-wouldn't it be great to have a first class c importer?
-
-hiding the complexity of platform & compiler/option #defines. invisible (TM) nodes would be fruitful here. switched on by @#define. with an @#define=3D collection node or using a bunch of headlines. and an rclick flipper for true/false, defined/not defined declarations.
-
-meanwhile I wait for the inspiration or someone else to nail down a regular expression c language parser. maybe a tokenizer is enough. I did run c code through AStyle then through your old c2py via buttons. for code that would remain in c, in SciTE through google CPPlint program to point up flaws, and to get the context sensitive help from various CHM. running flawfinder good to do now and then old or new code. post processing and displaying the report in a browser. but it doesn't go far enough & too many false positives.
-
-there is splint, maybe the only free lint left. the need to inject "hints" all over the code make it less than ideal for perusing unknown source and generally a deal breaker for project code. sometimes all you need is a function/var list to get by. deeper static analysis is quite the serious business. so, it's not a surprise those programs are not easily found, or used. there are a few code flow programs that could be harnessed to colorize headlines indicating relations. taking all this in, marking nodes that need work with a popup or tooltip action event when you view that node with the details of one or another parser to annotate what needs work.
-
-we have had a few plugins/buttons/attempts at designing an interface to get a program node compiled. this is also a decent way to get info on the quality of code by turning all warnings on. fails for snippits. never quite simple to hookup or modify painless. perhaps the biggest problem is knowing what is available and where. more toolbars, no reason they can't dock. drag & dropping buttons. one of the huge advantages of Qt over Tk so far barely tapped. you begin to accept the fact that you need to create a temp file instead of real process control. managing program quirks & options becomes more trouble than it's worth just to protect the purity of the operation sans temp files. QTprocess has more options than the process in pythons libs. if it ever works as well as it should. but, a little hard to wrap. not going to venture a guess if pyqt gets it right or not. not to mention how bungled up OS process control still is. process control will be essential to any inter-process operations. that is, unless you backslide into wanting to build everything "in" and invent everything new again. re: blender, I haven't looked at blender code in a while, but I would be shocked if there weren't some well established way to hook into a script. sounds like noone has found them yet.
-
-not sure how to grab a window handle on other OS but for windows it's fairly straight forward. blender or GTK could setup blocks. another great Qt based project is universal indenter, a front end
-
-for many indenters for many languages. this would be a good place to look for how to manage inter-process communication in Qt. a first class editor will have to include first class importer for javascript at the least and probably lua and one or two others. one could imagine niceties like clickable links on #include files. right clickable options on them such as import, simple view, htmlize.
-
-also about styles, astyle has the options on the commandline, the builtin/compiled in defaults and an ~/.astyle.rc for personal style. some will find an indenter that has no options useless. I know the indenter created is purely for internal use, as it were, at this point. adding selectable options later will complicate the program and for most use will have little payback. you may as well expect to have some want a plugable option for style. exposing a general use tokenizer could have many callers.
-.. @+node:ekr.20180131065625.1: *3* Major features: 4
-.. @+node:ekr.20141210123805.9: *4* Better support for rope
-Make leo.core.leoRope.py more useful.
-.. @+node:ekr.20111014134653.15672: *4* Search across multiple Leo files (EKR)
-http://groups.google.com/group/leo-editor/browse_thread/thread/cf5ab54f29a6c128
-
-This would also be a substitute for cross-file clones.
-.. @+node:ekr.20130807203905.16681: *4* Use travis-ci: continuous integration for Leo (Ville)
-Someone may be interested in investigating a free CI system for Leo:
-
-https://travis-ci.org/
-
-This could e.g. create debian packages for daily builds, run unit tests, check stuff with lint, try compiling with python3 so we (*cough*) wouldn't have accidental print statements in the source...
-.. @+node:ekr.20130806072439.21482: *4* xiki console for leo (wgw)
-From: wgw <wgwinder@gmail.com>
-
-Xiki.org gives a demo of a "wiki" shell for command execution. Leo should be able to do the same thing (and more!), in the sense that leoscreen, for example, has two way communication with the command line. I suppose a "Lxiki" is really just a question of setting up the right shortcuts (like a shift-ctrl-b that would run highlighted python code from the command line... with a tmp file?).
-.. @+node:ekr.20130806072439.21483: *5* Re: Wish list: xiki window for leo
-From: wgw <wgwinder@gmail.com>
-
-Thanks for the tip -- it will take me a while to get my head around vspace (will keep an eye on Ville's blog post).
-
-I'm just beginning to appreciate (or imagine) what Ipython, sublime text editor, leo, xiki, etc could mean for some kind of intelligent document workbench. Of course the big hurdle is not so much the string processing (sublime is a good example of how that can be done), but rather the syntax processing -- i.e. the docbench  (to coin a phrase) should understand the syntax of whatever is being input and then offer syntax-aware functions.... Sorry, getting a little obscure: all I mean by syntax-aware is the ability to propose text completions (Leo's autocompletion is a good example -- everything should work like autocomplete!) and allow for intelligent text changes depending on a database of information (for example, a search and replace that would  know how to search on "caterpillar" and turn it into "butterfly" but would not touch "caterpillar truck").
-
-Seems like Leo is not far from doing that synthesis, but it would require more database integration. So for example, even the python help system does not have autocomplete. (No criticism there! The great thing about Leo is that if you want something, you just have to dive in and build it. My day job might just let me do that!)
-.. @+node:ekr.20130806072439.21484: *5* Re: Wish list: xiki window for leo
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-> Thanks for the tip -- it will take me a while to get my head around vspace
-> (will keep an eye on Ville's blog post).
-
-Just to clarify, vs-eval, vs-last, vs-last-pretty are quite straight forward, as I described them below, and do not require comprehension of the esoterica of value-space :-) I just put them in that plugin (a) to avoid creating yet another plugin, and (b) because it seemed sensible to have them use the value-space namespace c.vs, but all that means for vs-eval, vs-last, vs-last-pretty is that
-
-  a =3D 7
-
-executed by vs-eval assigns a value to a which can be used by subsequent vs-eval calls (persistent for the lifetime of the session).
-
-For example, make a body with this text
-
-a =3D 7
-b =3D 3
-a + b
-
-and place the cursor in front of the first 'a'
-
-execute (Alt-x or key binding) vs-eval 4 times
-
- - first time executes the empty selection and selects the next line
- - second time assigns 7 to a and report 7 in the log
- - third time assigns 3 to b and report 3 in the log
- - forth time calculates a + b and report 10 in the log
-
-executing vs-last(-pretty) would insert the last result (None, 7, 3,
-10) in the body.
-.. @+node:ekr.20130806072439.21485: *5* Re: Wish list: xiki window for leo
-From: wgw <wgwinder@gmail.com>
-
-Got it! The value of valuespace (!) is that that you can make a pythonesque session persist. I did not realize that there was no direct two-way bridge to the python window that leo launches. Even if there were, we would want to make the session persist by logging it into the outline, as valuespace (vs-create-tree) does.
-.. @+node:ekr.20130806072439.21487: *5* Re: Wish list: xiki window for leo
-From: Terry Brown <terry_n_brown@yahoo.com>
-
-In addition to the outline as a active data document functions of Ville's value-space plugin, I recently added some simple ;-) commands::
-
-    Alt+A vs-eval
-    Alt+S vs-last
-    Alt+D vs-last-pretty
-    (my key bindings)
-
-vs-eval evaluates the selected python in the c.vs namespace.  It makes an effort to workout what the output should be, and puts it in the log.  It captures print output to the log too.  It selects the next line, ready for execution.
-
-vs-last inserts the last result into the body, and vs-last-pretty does the same, but using pprint formatting.
-
-Ctrl-B also runs the script in the body, but not in a persistent namespace, running only the selected text doesn't seem to be working, and it doesn't work so hard to work out the output.
-
-I guess leoscreen would do the same things as the vs-* commands if you used it against a python shell.  The inspiration for the vs-* commands was wanting Leo to tell you what 3.57 * 365 / 12 was without a lot of effort, but of course you can define functions etc. etc.
-.. @+node:ekr.20180131065401.1: *3* Rendering: 4
-.. @+node:ekr.20130806072439.20369: *4* @paragraph (offray)
-I have been using txt2tags + Nested Editor to produce structured docs in a light markup and exporting them to HTML and LaTeX > pdf. The fine tunning on the pdf output is done by editing the LaTeX source in Leo. I like the aesthetic of the source code and the outputs and I have contacted the Nested author in order to get some cross-pollination between it and Leo.
-
-See https://groups.google.com/group/nestededitor/browse_thread/thread/7068e3cd229d4614 
-
-I would like to have is a "@paragraph" directive that works the same as @rst-no-head but can be used in any part of a (sub)tree, even if is not @rst (sub)tree. This would come handy in chunking and reassembling LaTeX docs without marking up the parts with "<<chunk>>" tags.
-.. @+node:ekr.20180131054918.1: *4* Render Leo trees on "canvas" (Terry)
-http://leo.zwiki.org/GraphsInTrees, particularly the 'Older notes' section towards the end.
-.. @+node:ekr.20180131054718.1: *4* Support cmap-like data (Terry)
-I'd like Leo to be able to behave like CmapTools, http://cmap.ihmc.us/ but maybe it can, essentially, and it's really a matter of defining some new interface bells and whistles.
 .. @+node:ekr.20050127110221: *4* More flexible output (jasonic)
 .. @+node:ekr.20180131075327.1: *5* pdb
 PDF has it uses. If nicely embedded into Leo via 'reportwriter'and some export scripts {and clear useinterfance} would still be a good thing.
@@ -487,6 +315,10 @@ But much is hidden or lost from view.
 Still very vauable for creating dynamic narrative tutorials [aka screencasting]
 
 I am very excited about what flash can do for Leo, and vice versa. But I am concerned that there is not yet a 100% Leo means which supports people's standard print needs and habits.
+.. @+node:ekr.20180131054918.1: *4* Render Leo trees on "canvas" (Terry)
+http://leo.zwiki.org/GraphsInTrees, particularly the 'Older notes' section towards the end.
+.. @+node:ekr.20180131054718.1: *4* Support cmap-like data (Terry)
+I'd like Leo to be able to behave like CmapTools, http://cmap.ihmc.us/ but maybe it can, essentially, and it's really a matter of defining some new interface bells and whistles.
 .. @+node:ekr.20160405063258.1: ** Unlikely
 .. @+node:ekr.20160315141751.1: *3* Code Academy
 - Redraw mode that hides siblings.
@@ -566,6 +398,18 @@ However, a simple, fast post-pass in the @ns-rst/md read logic could create the 
 @auto-rst logic,but it exists in a far simpler context than @auto-rst.
 
 Post passes are probably *required* for @ns-vimoutline and @ns-otl. Indeed, vimoutline or otl sentinels should *never* be left as plain text in an existing node. The "raw" sentinels would corrupt the vim or Emacs outline if the node were later moved. An unpleasant time bomb.
+.. @+node:ekr.20041219162724: *4* Unlikely: Add dialog to insert recent directories
+The multifile plugin contains option to insert a directory string.  I use it alot for the @path directive.  This opens a FileDialog and the user selects the directory he wants to use as a directory string. When chosen the directory string is inserted into the text editor.
+
+The good of this:
+
+It makes using path simpler, you dont have to type out the directory path yourself, just use the tkFileDialog to select it and have Leo insert the string. For long directories this saves a lot of typing.
+.. @+node:ekr.20041130123243: *4* Unlikely: clear-undo command (e)
+http://sourceforge.net/forum/message.php?msg_id=2859273
+
+EKR: There's a config option to clear undo on save. That should suffice
+
+Many small edits on an open leo after a few hours can trigger a slow GC cycle. I have no idea if undo is the cause, just guessing.
 .. @+node:ekr.20110529115328.18238: *4* Unlikely: Emacs related
 I'll do these if and and only if somebody asks for them.
 .. @+node:ekr.20110529104352.18248: *5* Complete k.universalDispatcher
@@ -593,6 +437,15 @@ If you actually want the text of the abbrev in the buffer, rather than its expan
 .. @+node:ekr.20051021074728: *5* Space completion
 .. @+node:ekr.20111019104425.15892: *4* Unlikely: Enhance Buttons (Kent)
 Enhance the button machinery to allow mixed case, spaces, colors.
+.. @+node:ekr.20031218072017.748: *4* Unlikely: Import/Export to yaml
+Need a good yaml parser first: I don't want to write another parser by hand.
+.. @+node:ekr.20161205102034.1: *4* Unlikely: Modes to support vim dot (EKR)
+The idea is to be able to define the dot easily.
+
+- Allow Leo to enter vim-mode temporarily.
+- Define the dot.
+- Leave vim-mode.
+- Use the dot.
 .. @+node:ekr.20031218072017.807: *4* Unlikely: Put up file dialog on empty @url, etc.
 https://sourceforge.net/forum/message.php?msg_id=2003457
 By: dsalomoni
@@ -604,16 +457,29 @@ This would be more convenient than manually writing @url file://a/long/path/to/t
 Davide
 .. @+node:ekr.20041016134312.2: *4* Unlikely: Standard Weave command
 Use noweb and TeX, or maybe Pyx.
-.. @+node:ekr.20041130123243: *4* Unlikely: clear-undo command (e)
-http://sourceforge.net/forum/message.php?msg_id=2859273
-
-EKR: There's a config option to clear undo on save. That should suffice
-
-Many small edits on an open leo after a few hours can trigger a slow GC cycle. I have no idea if undo is the cause, just guessing.
 .. @+node:ekr.20180124135104.1: ** Won't do
 .. @+node:ekr.20160405063304.1: *3* Commands & features
 .. @+node:ekr.20160503093454.2: *4* Won't do: Ignore URL's in scripts
 EKR summary: There is no need for this: @button nodes now have a "goto script" popup item.
+.. @+node:ekr.20031218072017.790: *4* Won't do: Import dialog improvements
+EKR: I'm not sure these kinds of imports are safe.
+
+Other options I though would be really handy:
+
+1. Use an existing node as a source also: parse-body does something like this.
+
+2. Use an node from another Leo file.. I am not sure what the syntax for that
+would be exactly
+
+3. From a URL.. this would be really cool. People could post outlines not only
+as existing Leo xml files, but as text files or even dynamic scripts. The code
+to handle these would presumably need to deal with http:// intelligently. But
+that's easy in Python. Rebol is great at that too.
+
+4. Other XML file with valid filepaths in them.
+That's probably a much bigger project like Leo 3.10  
+
+Jason
 .. @+node:ekr.20111010122531.15569: *4* Won't do: print-bindings/commands/settings create nodes
 Leo's print-settings, print-commands and print-bindings commands could create nodes.
 
@@ -1675,6 +1541,8 @@ Some ideas could be:
 - Use Redis to store tree
 - Keep the "clean" body texts in contiguous block (most bodies will always be clean), append dirty (modified) body texts after it
 - Keeping the outline structure in memory block is quite easy, since there is not a lot of data. You could have just a list of [parent, child] id's or whatever
+.. @+node:ekr.20061002093442: *4* Won't do: Add opml support to open & save commands
+opml is an xml format!
 .. @+node:ekr.20180124140045.1: *3* Gui
 .. @+node:ekr.20130806072439.21464: *4* Won't do: body editors in a grid
 From: "Ville M. Vainio" <vivainio@gmail.com>
