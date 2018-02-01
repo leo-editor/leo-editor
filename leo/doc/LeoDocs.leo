@@ -19894,7 +19894,6 @@ register-point-to
 register-prepend-to
 register-view
 
-
 .. Deprecated tangle/untangle commands.
 tangle
 tangle-all
@@ -19924,7 +19923,6 @@ number-command-9
 universal-argument
 .. removed
 self-insert-command
-
 </t>
 <t tx="ekr.20150323103115.1">.. _`Emacs rectangle commands`: http://www.gnu.org/software/emacs/manual/html_node/emacs/Rectangles.html
 
