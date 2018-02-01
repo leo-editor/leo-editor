@@ -397,7 +397,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e332e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1854,8 +1854,9 @@
 <v t="ekr.20180124121124.1"><vh>Improved Leo read/write code in leoAtFile.py</vh></v>
 <v t="ekr.20180124100440.3"><vh>New redraw code</vh></v>
 </v>
-<v t="ekr.20180125042412.1"><vh>Leo 5.7 Commands: 6 new and 1 improved</vh>
+<v t="ekr.20180125042412.1"><vh>Leo 5.7 Commands: 7 new and 1 improved</vh>
 <v t="ekr.20180124100450.839"><vh>#632: check-conventions command</vh></v>
+<v t="ekr.20180201041411.1"><vh>Added count-children command</vh></v>
 <v t="ekr.20180124123920.1"><vh>Added find-all-unique-regex command</vh></v>
 <v t="ekr.20180124124409.1"><vh>Added insert-as-first-child &amp; insert-as-last-child commands</vh></v>
 <v t="ekr.20180130092843.1"><vh>Added read/set/update-ref-file commands</vh></v>
@@ -25680,6 +25681,7 @@ and regardless of whether tabs have been detached.</t>
 <t tx="ekr.20180126003100.1">- New commands::
 
     check-conventions
+    count-children
     find-all-unique-regex
     insert-as-first-child
     insert-as-last-child
@@ -25953,7 +25955,8 @@ Developers will typically execute the read-ref-file command after any git pull t
 <t tx="ekr.20180130105010.1">Leo's repository contains **reference .leo files**. These reference files should contain nothing but @file nodes. Reference files should change only when new external files get added to the project.
 
 Leo's `git repository`_ and Leo distributions contain the following reference files: LeoPyRef.leo, LeoPluginsRef.leo and leoGuiPluginsRef.leo. Developers should use local copies of reference files for their own work. For example, instead of using LeoPyRef.leo directly, I use a copy called LeoPy.leo.</t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20180201041411.1"></t>
+<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
