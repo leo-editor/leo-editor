@@ -8,13 +8,6 @@
 @wrap
 
 ** Tag issues with names: Kent, Terry, Ville, etc.
-.. @+node:ekr.20090131200406.15: *3* DOM & files: 3
-.. @+node:ekr.20071001052501: *4* Versioning for nodes (Kent)
-One feature I have not seen in SCS system is something which might be called "history compression": I might be interested in having both version 5 and 6 in my source tree, when the current version is 7, but I am not really interested in the 2000 steps which transformed 5 into 6 (just suggested this feature to the bazaar people). This happens actually quite often to me, since I use the SCS as a back-up system, saving many (uninteresting) intermediate steps while implementing a new feature.
-.. @+node:ekr.20111019104425.15896: *4* Enhanced node attributes: ctime, atime, mtime (Kent)
-.. @+node:ekr.20111019104425.15895: *4* Create a Leo implementation of pyfilesystem (Kent)
-https://docs.pyfilesystem.org/en/latest/
-
 .. @+node:ekr.20180131065401.1: *3* Rendering: 5
 .. @+node:ekr.20130806072439.20369: *4* @paragraph (offray)
 I have been using txt2tags + Nested Editor to produce structured docs in a light markup and exporting them to HTML and LaTeX > pdf. The fine tunning on the pdf output is done by editing the LaTeX source in Leo. I like the aesthetic of the source code and the outputs and I have contacted the Nested author in order to get some cross-pollination between it and Leo.
