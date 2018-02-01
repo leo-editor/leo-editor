@@ -1455,5 +1455,11 @@ def cantMoveMessage(c):
     h = c.rootPosition().h
     kind = 'chapter' if h.startswith('@chapter') else 'hoist'
     g.warning("can't move node out of", kind)
+#@+node:ekr.20180201040936.1: ** count-children
+@g.command('count-children')
+def count_children(event=None):
+    c = event and event.get('c')
+    if c:
+        g.es_print('%s children' % c.p.numberOfChildren())
 #@-others
 #@-leo
