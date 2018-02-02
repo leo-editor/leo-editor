@@ -397,7 +397,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e352e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e342e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e322e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e352e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e332e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1889,6 +1889,7 @@
 <v t="ekr.20180125235814.3"><vh>#613: Support patching of Leo's colorizer tables</vh></v>
 <v t="ekr.20180125235814.2"><vh>#635: Link to nodes from log</vh></v>
 <v t="ekr.20180125235814.1"><vh>#655: The js importer could remove @others when a node has only one child</vh></v>
+<v t="ekr.20180202061934.1"><vh>#674: Add a treepad importer</vh></v>
 <v t="ekr.20180124100450.704"><vh>Added HEAD, TAIL, REST declutter replacement "patterns"</vh></v>
 <v t="ekr.20180124124532.1"><vh>Improved javascript importer</vh></v>
 </v>
@@ -25478,6 +25479,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - Unit tests use a string gui, making them faster and more robust.
 - The line_numbering plugin shows line numbers in external files.
 - Improved the javascript importer.
+- Added a TreePad importer.
 - Added 6 new commands.
 - Dozens of bug fixes.
 
@@ -25668,6 +25670,7 @@ and regardless of whether tabs have been detached.</t>
 - Added live links from urls in the log pane.
 - Unit tests use a string gui, making them faster and more robust.
 - The line_numbering plugin shows line numbers in external files.
+- Added a TreePad importer.
 </t>
 <t tx="ekr.20180126002657.1">- Unit tests can run in more environments.
 - The @g.commander_command decorator injects ivars into the Commands class.
@@ -25960,7 +25963,8 @@ Leo's `git repository`_ and Leo distributions contain the following reference fi
 The fix was in ni.compute_last_index.
 
 </t>
-<t tx="peckj.20130813123907.6841" str_atime="1376414164.0" str_mtime="1376412039.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20180202061934.1">https://github.com/leo-editor/leo-editor/issues/674</t>
+<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
