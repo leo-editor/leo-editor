@@ -1,18 +1,18 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20180201203240.2: * @file importers/treetab.py
-'''The @auto importer for the TreeTab file format.'''
+#@+node:ekr.20180201203240.2: * @file importers/treepad.py
+'''The @auto importer for the TreePad file format.'''
 import leo.core.leoGlobals as g
 import re
 #@+others
-#@+node:ekr.20180201203240.3: ** class Treetab_Scanner
-class Treetab_Scanner():
-    '''The importer for the TreeTab file format.'''
+#@+node:ekr.20180201203240.3: ** class TreePad_Scanner
+class TreePad_Scanner():
+    '''The importer for the TreePad file format.'''
 
     def __init__(self, importCommands, atAuto):
         self.c = importCommands.c
         
     #@+others
-    #@+node:ekr.20180201204402.2: *3* treetab.add_node
+    #@+node:ekr.20180201204402.2: *3* treepad.add_node
     def add_node(self, article, level, title):
         
         # g.trace(level, title)
@@ -25,7 +25,7 @@ class Treetab_Scanner():
         p.h = title
         p.b = '\n'.join(article) if article else ''
         return p
-    #@+node:ekr.20180201204402.3: *3* treetab.expect
+    #@+node:ekr.20180201204402.3: *3* treepad.expect
     def expect(self, expected, line=None, prefix=False):
         '''Read the next line if it isn't given, and check it.'''
         if line is None:
@@ -34,7 +34,7 @@ class Treetab_Scanner():
         if not match:
             g.trace('expected: %r' % expected)
             g.trace('     got: %r' % line)
-    #@+node:ekr.20180201204402.4: *3* treetab.read_file
+    #@+node:ekr.20180201204402.4: *3* treepad.read_file
     def read_file(self, fname, root):
         '''Read the entire file, producing the Leo outline.'''
         try:
@@ -48,7 +48,7 @@ class Treetab_Scanner():
             g.trace('Exception reading', fname)
             g.es_exception()
             return False
-    #@+node:ekr.20180201204402.5: *3* treetab.read_node
+    #@+node:ekr.20180201204402.5: *3* treepad.read_node
     END_RE = re.compile(r'^<end node> ([^ ]+)$')
 
     def read_node(self):
@@ -74,7 +74,7 @@ class Treetab_Scanner():
                 break
             article.append(line.strip())
         return self.add_node(article, level, title)
-    #@+node:ekr.20180201204000.1: *3* treetab.run (entry)
+    #@+node:ekr.20180201204000.1: *3* treepad.run (entry)
     def run(self, s, parent, parse_body=False):
         '''The common top-level code for all scanners.'''
         c = self.c
@@ -91,7 +91,7 @@ class Treetab_Scanner():
     #@-others
 #@-others
 importer_dict = {
-    'class': Treetab_Scanner,
+    'class': TreePad_Scanner,
     'extensions': ['.hjt',],
 }
 #@@language python
