@@ -12,15 +12,14 @@ class TreePad_Writer(basewriter.BaseWriter):
     #@+node:ekr.20180202053206.3: *3* treepad_w.write
     def write(self, root):
         """Write the entire @auto tree."""
-        g.trace('=====', root.h)
         self.put("<Treepad version 3.0>")
         root_level = root.level()
         for p in root.self_and_subtree():
+            h = 'Root' if p.v == root.v else p.h
+            indent = p.level() - root_level
             self.put('dt=Text')
             self.put('<node>')
-            h = 'Root' if p.v == root.v else p.h
             self.put(h)
-            indent = p.level()-root_level
             self.put(str(indent))
             for s in g.splitLines(p.b):
                 if not g.isDirective(s):
