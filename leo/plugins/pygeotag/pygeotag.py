@@ -169,7 +169,7 @@ class GeoTagRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type', 'text/plain')
             self.end_headers()
-            self.wfile.write("TERMINATING SERVER")
+            self.wfile.write("TERMINATING SERVER".encode('utf-8'))
             # threading.Timer(2,self.server.shutdown).start()
             self.owner.stop_server()
             return
@@ -180,8 +180,8 @@ class GeoTagRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-type', 'text/html')
             self.end_headers()
-            self.wfile.write(file(
-                os.path.join(self.owner.basedir,self.staticMap[path[0]])).read())
+            self.wfile.write(open(
+                os.path.join(self.owner.basedir,self.staticMap[path[0]])).read().encode('utf-8'))
             return
 
         if self.path.startswith("/sendPos?"):
@@ -209,7 +209,7 @@ class GeoTagRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                 data = self.owner.request_queue.get_nowait()
             except Queue.Empty:
                 data = {}
-            self.wfile.write(json.dumps(data))
+            self.wfile.write(json.dumps(data).encode('utf-8'))
             return
 
 if __name__ == '__main__':
