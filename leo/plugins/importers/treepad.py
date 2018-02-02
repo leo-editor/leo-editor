@@ -8,7 +8,7 @@ import re
 class TreePad_Scanner():
     '''The importer for the TreePad file format.'''
 
-    def __init__(self, importCommands, atAuto):
+    def __init__(self, importCommands, **kwargs):
         self.c = importCommands.c
         
     #@+others
@@ -29,31 +29,40 @@ class TreePad_Scanner():
     def expect(self, expected, line=None, prefix=False):
         '''Read the next line if it isn't given, and check it.'''
         if line is None:
-            line = self.fp.readline().strip()
+            line = self.read_line().strip()
         match = line.startswith(expected) if prefix else line == expected
         if not match:
             g.trace('expected: %r' % expected)
             g.trace('     got: %r' % line)
     #@+node:ekr.20180201204402.4: *3* treepad.read_file
-    def read_file(self, fname, root):
+    def read_file(self, s, root):
         '''Read the entire file, producing the Leo outline.'''
         try:
-            self.fp = open(fname, 'r')
+            self.lines = g.splitLines(s)
+            self.i = 0
+            g.printList(self.lines)
             self.root = root
             self.expect("<Treepad version", prefix=True)
             while self.read_node():
                 pass
             return True
         except Exception:
-            g.trace('Exception reading', fname)
+            g.trace('Exception reading', root.h)
             g.es_exception()
             return False
+    #@+node:ekr.20180201210026.1: *3* treepad.read_line
+    def read_line(self):
+        
+        if self.i >= len(self.lines):
+            return None
+        else:
+            self.i += 1
+            return self.lines[self.i-1]
     #@+node:ekr.20180201204402.5: *3* treepad.read_node
     END_RE = re.compile(r'^<end node> ([^ ]+)$')
 
     def read_node(self):
-        readline = self.fp.readline
-        line = readline()
+        line = self.read_line()
         if line is None:
             return None
         line = line.strip()
@@ -62,13 +71,13 @@ class TreePad_Scanner():
         article = []
         self.expect("dt=Text", line)
         self.expect("<node>")
-        title = readline().strip()
+        title = self.read_line().strip()
         try:
-            level = int(readline().strip())
+            level = int(self.read_line().strip())
         except ValueError:
             level = 0
         while 1:
-            line = readline()
+            line = self.read_line()
             m = re.match(self.END_RE, line)
             if m:
                 break
@@ -78,6 +87,7 @@ class TreePad_Scanner():
     def run(self, s, parent, parse_body=False):
         '''The common top-level code for all scanners.'''
         c = self.c
+        g.trace(s)
         changed = c.isChanged()
         ok = self.read_file(s, parent)
         if ok:
