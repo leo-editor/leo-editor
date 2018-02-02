@@ -17,13 +17,19 @@ class TreePad_Scanner():
         
         # g.trace(level, title)
         assert level >= 0, level
-        parent = self.root
-        while level > 0:
+        if level == 0:
+            # Special case: use the @auto node.
+            p = self.root
+            p.b = '\n'.join(article) if article else ''
+        else:
+            parent = self.root
             level -= 1
-            parent = parent.lastChild()
-        p = parent.insertAsLastChild()
-        p.h = title
-        p.b = '\n'.join(article) if article else ''
+            while level > 0:
+                level -= 1
+                parent = parent.lastChild()
+            p = parent.insertAsLastChild()
+            p.h = title
+            p.b = '\n'.join(article) if article else ''
         return p
     #@+node:ekr.20180201204402.3: *3* treepad.expect
     def expect(self, expected, line=None, prefix=False):
@@ -38,9 +44,10 @@ class TreePad_Scanner():
     def read_file(self, s, root):
         '''Read the entire file, producing the Leo outline.'''
         try:
+            # Init ivars for self.read_lines.
             self.lines = g.splitLines(s)
             self.i = 0
-            g.printList(self.lines)
+            # g.printList(self.lines)
             self.root = root
             self.expect("<Treepad version", prefix=True)
             while self.read_node():
@@ -52,7 +59,7 @@ class TreePad_Scanner():
             return False
     #@+node:ekr.20180201210026.1: *3* treepad.read_line
     def read_line(self):
-        
+        '''Return the next line from self.lines, or None.'''
         if self.i >= len(self.lines):
             return None
         else:
@@ -87,7 +94,6 @@ class TreePad_Scanner():
     def run(self, s, parent, parse_body=False):
         '''The common top-level code for all scanners.'''
         c = self.c
-        g.trace(s)
         changed = c.isChanged()
         ok = self.read_file(s, parent)
         if ok:
