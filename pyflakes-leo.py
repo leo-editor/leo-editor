@@ -44,7 +44,7 @@ def report_version():
     try:
         import flake8
         print('flake8 version: %s' % flake8.__version__)
-    except ImportError:
+    except Exception:
         g.trace('can not import flake8')
 #@+node:ekr.20160518000549.15: ** scanOptions
 def scanOptions():

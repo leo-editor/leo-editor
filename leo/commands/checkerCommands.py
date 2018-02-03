@@ -8,7 +8,7 @@
 import leo.core.leoGlobals as g
 try:
     import flake8
-except ImportError:
+except Exception: # May not be ImportError.
     flake8 = None
 try:
     import pyflakes
@@ -95,7 +95,10 @@ class Flake8Command(object):
     #@+node:ekr.20160517133049.2: *3* flake8.check_all
     def check_all(self, paths):
         '''Run flake8 on all paths.'''
-        from flake8 import engine, main
+        try:
+            from flake8 import engine, main
+        except Exception:
+            return
         config_file = self.get_flake8_config()
         if config_file:
             style = engine.get_style_guide(

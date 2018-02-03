@@ -4278,6 +4278,8 @@ class AtFile(object):
                 x = checkerCommands.PyflakesCommand(self.c)
                 ok = x.run(p=root,pyflakes_errors_only=pyflakes_errors_only)
                 return ok
+            else:
+                return True # Suppress error if pyflakes can not be imported.
         except Exception:
             g.es_exception()
     #@+node:ekr.20090514111518.5665: *6* at.tabNannyNode

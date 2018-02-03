@@ -22,7 +22,10 @@ import time
 #@+node:ekr.20160517182239.10: ** main & helpers
 def main(files):
     '''Call run on all tables in tables_table.'''
-    from flake8 import engine
+    try:
+        from flake8 import engine
+    except Exception:
+        print('can not import flake8')
     config_file = get_flake8_config()
     if config_file:
         style = engine.get_style_guide(
