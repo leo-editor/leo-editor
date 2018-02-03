@@ -2807,7 +2807,9 @@ Create the executable installer:
 
 Run pyinstaller on Windows:
 - (optional) Delete leo-editor/dist and leo-editor/build folders.
-- Run pyinstaller2 --clean --win-private-assemblies launchLeo-unified.spec
+- Run (python2) pyinstaller --clean --win-private-assemblies launchLeo-unified.spec
+    # Does not work: --path C:\Miniconda3\envs\python2\Lib\site-packages\PyQt5
+
 - Test a *copy* of the result so .pyo files are not added to the package)
 - Compress the folder to Leo_&lt;version&gt;_Win.zip.
     
