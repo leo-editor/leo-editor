@@ -24,6 +24,7 @@ from leo.core import leoPlugins
     # Uses leoPlugins.TryNext
 import feedparser
 if g.isPython3:
+    # pylint: disable=no-name-in-module
     import html.parser as HTMLParser
 else:
     import HTMLParser

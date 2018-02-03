@@ -20,6 +20,7 @@ import leo.core.leoGlobals as g
 import mailbox
 
 if g.isPython3:
+    # pylint: disable=no-name-in-module
     from html.parser import HTMLParser
 else:
     from HTMLParser import HTMLParser

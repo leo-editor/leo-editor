@@ -39,6 +39,7 @@ if docutils:
         g.es_exception()
         docutils = None
 if g.isPython3:
+    # pylint: disable=no-name-in-module
     import html.parser as HTMLParser
 else:
     import HTMLParser
