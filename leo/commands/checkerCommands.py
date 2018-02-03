@@ -222,7 +222,10 @@ class PyflakesCommand(object):
     #@+node:ekr.20160516072613.6: *3* pyflakes.check_all
     def check_all(self, log_flag, paths, pyflakes_errors_only, roots=None):
         '''Run pyflakes on all files in paths.'''
-        from pyflakes import api, reporter
+        try:
+            from pyflakes import api, reporter
+        except Exception: # ModuleNotFoundError
+            return True # Pretend all is fine.
         total_errors = 0
         # pylint: disable=cell-var-from-loop
         for fn_n, fn in enumerate(sorted(paths)):
@@ -242,7 +245,10 @@ class PyflakesCommand(object):
         return total_errors
     #@+node:ekr.20171228013625.1: *3* pyflakes.check_script
     def check_script(self, p, script):
-        from pyflakes import api, reporter
+        try:
+            from pyflakes import api, reporter
+        except Exception: # ModuleNotFoundError
+            return True # Pretend all is fine.
         r = reporter.Reporter(
             errorStream=self.LogStream(),
             warningStream=self.LogStream(),
