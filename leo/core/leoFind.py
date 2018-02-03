@@ -864,12 +864,12 @@ class LeoFind(object):
         '''
         clone-find-tag (aka find-clone-tag and cft).
 
-        Create an organizer node whose descendants contain clones of all nodes
-        matching the given tag, except @nosearch trees.
+        Create an organizer node whose descendants contain clones of all
+        nodes matching the given tag, except @nosearch trees.
 
-         The list is *always* flattened: every cloned node appears as a direct child
-        of the organizer node, even if the clone also is a descendant of
-        another cloned node.
+        The list is *always* flattened: every cloned node appears as a
+        direct child of the organizer node, even if the clone also is a
+        descendant of another cloned node.
         '''
         if self.editWidget(event): # sets self.w
             self.stateZeroHelper(event,
