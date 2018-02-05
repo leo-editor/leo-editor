@@ -6,6 +6,7 @@
 from setuptools import setup, find_packages # Always prefer setuptools over distutils
 from codecs import open # To use a consistent encoding
 import os
+import semantic_version
 from shutil import rmtree, copytree
 import leo.core.leoGlobals as g
 
@@ -22,22 +23,23 @@ import leo.core.leoGlobals as g
     https://blog.ionelmc.ro/2014/05/25/python-packaging/
 '''
 #@+node:maphew.20171112223922.1: ** git_version
-def git_version():
+def git_version(file):
     '''
     Fetch from Git: {tag} {distance-from-tag} {current commit hash}
     Increment minor # by 1 and
     Return as single string compliant with PEP440
     '''
-    root = os.path.dirname(os.path.realpath(__file__))
+    root = os.path.dirname(os.path.realpath(file))
     tag, distance, commit = g.gitDescribe(root)
         # 5.6, 55, e1129da
-    major, minor = tag.split('.')
-    minor = int(minor) + 1
+    semver = semantic_version.Version.coerce(tag, partial=True)
+    #major, minor = semver.split('.')
+    #minor = int(minor) + 1
     # version = '{}.{}.dev{}+{}'.format(major, minor, distance, commit)
         # # 5.7.dev55+e1129da
         # disabled. Can't use local PEP440 names on pypi!
         # https://github.com/pypa/pypi-legacy/issues/731
-    version = '{}.{}.dev{}'.format(major, minor, distance)
+    version = '{}.{}.dev{}'.format(semver.major, semver.minor, distance)
         # 5.7.dev55
     return version
 #@+node:maphew.20171006124415.1: ** Get description
@@ -73,7 +75,7 @@ classifiers = [
 user_requires = [
     'PyQt5; python_version >= "3.0"',
     #'python-qt5; python_version < "3.0" and platform_system=="Windows"',
-		# disabled, pending "pip install from .whl fails conditional dependency check" https://github.com/pypa/pip/issues/4886
+        # disabled, pending "pip install from .whl fails conditional dependency check" https://github.com/pypa/pip/issues/4886
     ## missing: pyqt for Linux python 2.x (doesn't exist on PyPi)
 
     'docutils', # used by Sphinx, rST plugin
@@ -98,7 +100,7 @@ clean()
 setup(
     name='leo',
     # version = leo.core.leoVersion.version,
-    version=git_version(),
+    version=git_version(__file__),
     author='Edward K. Ream',
     author_email='edreamleo@gmail.com',
     url='http://leoeditor.com',
