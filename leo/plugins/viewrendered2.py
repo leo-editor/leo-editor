@@ -199,7 +199,7 @@ import leo.core.leoGlobals as g
 import leo.plugins.qt_text as qt_text
 import leo.plugins.free_layout as free_layout
 from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
-from leo.core.leoQt import phonon, QtSvg, QtWebKitWidgets, QUrl
+from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets, QUrl
 import_ok = not isQt5
     # for now, no commands should work when Qt5 is enabled.
 try:
@@ -275,17 +275,16 @@ def decorate_window(w):
     w.setStyleSheet(stickynote_stylesheet)
     w.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     w.resize(600, 300)
-#@+node:ekr.20140226074510.4192: *3* init
+#@+node:ekr.20140226074510.4192: *3* init (VR2)
 def init():
     '''Return True if the plugin has loaded successfully.'''
-    ok = not isQt5
-    if ok:
-        g.plugin_signon(__name__)
-        g.registerHandler('after-create-leo-frame', onCreate)
-        g.registerHandler('scrolledMessage', show_scrolled_message)
-    else:
-        g.es_print('The viewrendered2 plugin is not compatible with PyQt5')
-    return ok
+    global got_docutils
+    if not got_docutils:
+        g.es_print('Warning: viewrendered2.py running without docutils.')
+    g.plugin_signon(__name__)
+    g.registerHandler('after-create-leo-frame', onCreate)
+    g.registerHandler('scrolledMessage', show_scrolled_message)
+    return True
 #@+node:ekr.20140226074510.4193: *3* onCreate (viewrendered2.py)
 def onCreate(tag, keys):
     c = keys.get('c')
@@ -1763,22 +1762,31 @@ class ViewRenderedController(QtWidgets.QWidget):
             pc.vp.stop()
             pc.vp.deleteLater()
         # Create a fresh player.
-        pc.vp = vp = phonon.VideoPlayer(phonon.VideoCategory)
-        vw = vp.videoWidget()
-        vw.setObjectName('video-renderer')
-        # Embed the widgets
-
-        def delete_callback():
-            if pc.vp:
-                pc.vp.stop()
-                pc.vp.deleteLater()
-                pc.vp = None
-
-        pc.embed_widget(vp, delete_callback=delete_callback)
-        pc.show()
-        vp = pc.vp
-        vp.load(phonon.MediaSource(path))
-        vp.play()
+        g.es_print('playing', path)
+        if QtMultimedia:
+            url= QtCore.QUrl.fromLocalFile(path)
+            content= QtMultimedia.QMediaContent(url)
+            pc.vp = vp = QtMultimedia.QMediaPlayer()
+            vp.setMedia(content)
+            # Won't play .mp4 files: https://bugreports.qt.io/browse/QTBUG-32783
+            vp.play()
+        else:
+            pc.vp = vp = phonon.VideoPlayer(phonon.VideoCategory)
+            vw = vp.videoWidget()
+            vw.setObjectName('video-renderer')
+            # Embed the widgets
+        
+            def delete_callback():
+                if pc.vp:
+                    pc.vp.stop()
+                    pc.vp.deleteLater()
+                    pc.vp = None
+        
+            pc.embed_widget(vp, delete_callback=delete_callback)
+            pc.show()
+            vp = pc.vp
+            vp.load(phonon.MediaSource(path))
+            vp.play()
     #@+node:ekr.20140226074510.4229: *4* vr2.update_networkx
     def update_networkx(self, s, keywords):
         pc = self
