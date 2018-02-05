@@ -1,18 +1,18 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20171028115143.2: * @file ../plugins/editpane/webengineview.py
+#@+node:tbrown.20171028115143.2: * @file webengineview.py
 #@+<< webengineview.py imports >>
 #@+node:tbrown.20171028115459.1: ** << webengineview.py imports >>
 import leo.core.leoGlobals as g
 assert g
 ### EKR: Use QtWebKitWidgets instead of QtWebEngineWidgets
-from leo.core.leoQt import QtWebKitWidgets # QtCore, QtGui, QtWidgets, QtConst
-# from PyQt5 import QtWebEngineWidgets
+### TNB: No, there are two HTML viewers, this one must be QtWebEngineWidgets
+###      it's ok if it fails to load
+from PyQt5 import QtWebEngineWidgets
 
 #@-<< webengineview.py imports >>
 #@+others
 #@+node:tbrown.20171028115459.2: ** class LEP_WebEngineView
-# class LEP_WebEngineView(QtWebEngineWidgets.QWebEngineView):
-class LEP_WebEngineView(QtWebKitWidgets.QWebEngineView):
+class LEP_WebEngineView(QtWebEngineWidgets.QWebEngineView):
     """LEP_PlainTextView - simplest possible LeoEditorPane viewer
     """
     lep_type = "HTML"
