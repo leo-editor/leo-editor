@@ -1127,7 +1127,7 @@ class LeoQtGui(leoGui.LeoGui):
             self.setWindowTitle('Leo Tips')
             self.setText(repr(tip))
             self.next_tip_button = self.addButton('Show Next Tip', self.ActionRole)
-            self.setStandardButtons(self.Ok)
+            self.setStandardButtons(self.Ok | self.Close)
             c.styleSheetManager.set_style_sheets(w=self)
             layout = self.layout()
             cb = QtWidgets.QCheckBox()
@@ -1150,7 +1150,9 @@ class LeoQtGui(leoGui.LeoGui):
             while True:
                 tip = tm.get_next_tip()
                 m = self.DialogWithCheckBox(controller=self,tip=tip)
+                c.in_qt_dialog = True
                 m.exec_()
+                c.in_qt_dialog = False
                 b = m.clickedButton()
                 self.update_tips_setting()
                 if b != m.next_tip_button:
