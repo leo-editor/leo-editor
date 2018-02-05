@@ -3,6 +3,120 @@
 .. @@language rest
 .. @@killbeautify
 .. @+all
+.. @+node:ekr.20180205125343.1: ** Backups of issues
+@language rest
+@wrap
+.. @+node:ekr.20180205125401.1: *3* #701: Summary of installing zerorpc on Windows
+Installing the **python** zerorpc is easy: `PIP install zerorpc`
+
+Install node.js from node-v8.9.4-x64.msi. To test, type `npm` from a console.
+
+`npm install zerorpc` **FAILS**
+
+Googling finds [npm windows-build-tools](https://github.com/felixrieseberg/windows-build-tools/issues/56). This installs Visual C++ Build Tools 2015(!)
+
+Install windows-build-tools, do the following **in an administrative powershell**:
+```
+    npm install --global --production --windows-build-tools
+    added 128 packages in 460.125s
+```
+Now the following works:
+
+    npm install zerorpc
+
+To test, run the following in **separate consoles**:
+```
+python c:\test\zerorpc.py
+node c:\test\zerorpc.js
+```
+The output in the node console is "Hello, World!"
+.. @+node:ekr.20180205125504.1: *3* #699: Summary of installing Anaconda3 on Windows
+Here is how I installed Anaconda3 on Windows 10:
+
+  Downloaded Anaconda3-5.0.1-Windows-x86_64.exe
+  Install to c:\Anaconda3
+  Added c:\Anaconda3 and c:\Anaconda3\scripts to my user path
+  PIP install zerorpc
+  Install node.js from node-v8.9.4-x64.msi
+  npm install zerorpc **FAILS** Googling gives [this page about windows-build-tools](https://github.com/felixrieseberg/windows-build-tools/issues/56).
+
+**Install [windows-build-tools](https://www.npmjs.com/package/windows-build-tools)**
+
+Run in administrative powershell:
+```
+    npm install --global --production --windows-build-tools
+    added 128 packages in 460.125s
+```
+This downloads and installs Visual C++ Build Tools 2015.
+
+**Status**
+
+- pylint version is 1.7.4: no need to downgrade to 1.7
+- Leo runs, but without spell checking. See [this post](https://groups.google.com/d/msg/leo-editor/HzxTtIQjxuY/29JoaJYDBgAJ).
+`conda install pyenchant` fails: The 'enchant' C library was not found.
+.. @+node:ekr.20180205125540.1: *3* #688: Summary of installing miniconda on Windows 10
+Here is how I installed python2 and python3 on Windows.  This issue will remain open indefinitely.
+```
+# Install Miniconda itself
+Install Miniconda3 to c:\Miniconda3.
+Added c:\Miniconda3 and c:\Miniconda3\scripts to my local PATH variable.
+
+   `conda list` lists only basic install tools: There is no python installed yet.
+
+# Create the python2 and python3 environments
+conda create -n python3 python=3
+conda create -n python2 python=2
+
+# Install pyqt
+conda install -n python2 pyqt
+conda install -n python3 pyqt
+
+# Note: this would also have worked:
+activate python2
+conda install pyqt
+activate python3
+conda install pyqt
+
+# Test launching Leo:
+python c:\leo.repo\leo-editor\launchLeo.py --gui=qttabs
+
+# Add a2 and a3 batch files as abbreviations:
+a2.bat: activate python2
+a3.bat: activate python3
+
+# The rest of the installations were done after doing a2 and/or a3:
+(python2/3) PIP install pyenchant
+(python3) conda install jupyter
+(python2/3) conda install docutils
+(python2/3) conda install pyflakes
+(python2) PIP install html
+(python3) PIP install html **FAILS**
+(python2/3) conda install markdown
+(python2/3) conda install networkx
+(python2/3) conda install pylint (works, but pylint is buggy)
+(python2/3) conda install pylint=1.7 (downgrade warning accepted)
+
+# Install pyinstaller and fix for a recent pyinstaller bug:
+# https://github.com/pyinstaller/pyinstaller/pull/3233#issuecomment-362094587
+(python2/3) PIP install pyinstaller
+(python2/3) PIP install https://github.com/bjones1/pyinstaller/archive/pyqt5_fix.zip
+
+pyinstaller --clean --win-private-assemblies launchLeo-unified.spec FAILS:
+    Cannot find existing PyQt5 plugin directories
+    Paths checked: C:/Users/builder/3/conda-bld/qt_1505994166793/_h_env/Library/plugins
+
+renamed pylint.bat to ll.bat, to invoke pylint properly.
+
+# Changed the target of the command-prompt alias:
+
+    %windir%\system32\cmd.exe "/k c:\scripts\a3.bat"
+    # /k executes a3.bat without ending the shell
+```
+
+**Notes**
+
+- jupyter should have been installed in a separate jupyter environment, not in the python3 environment.
+- Pylint complains about html.parser in the python2 environment.
 .. @+node:ekr.20131005214621.16081: ** Notes
 .. @+node:ekr.20090202064534.4: *3*  Your mission, should you choose to accept it
 @language rest
