@@ -35,9 +35,9 @@ class ListTable(QtCore.QAbstractTableModel):
         QtCore.QAbstractTableModel.__init__(self, *args, **kwargs)
 
     def rowCount(self, parent):
-        return len(self.data)
+        return len(self.data) if self.data else 0
     def columnCount(self, parent):
-        return len(self.data[0])
+        return len(self.data[0]) if self.data and self.data[0] else 0
     def data(self, index, role):
         if role in (QtConst.DisplayRole, QtConst.EditRole):
             return self.data[index.row()][index.column()]
