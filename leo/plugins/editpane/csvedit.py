@@ -5,7 +5,7 @@ assert g
 from leo.core.leoQt import QtCore, QtWidgets, QtConst
 
 try:
-    from cStringIO import StringIOStringIO
+    from cStringIO import StringIO
 except ImportError:
     from io import StringIO
 
@@ -44,7 +44,7 @@ class ListTable(QtCore.QAbstractTableModel):
         return None
     def setData(self, index, value, role):
         self.data[index.row()][index.column()] = value
-        print(value)
+        self.dataChanged.emit(index, index)
         return True
     def flags(self, index):
         return QtConst.ItemIsSelectable | QtConst.ItemIsEditable | QtConst.ItemIsEnabled
@@ -80,7 +80,6 @@ class LEP_CSVEdit(QtWidgets.QWidget):
         self.c = c
         self.lep = lep
         self.ui = self.make_ui()
-        self.ui.text.textChanged.connect(self.text_changed)
 
     def make_ui(self):
         """make_ui - build up UI"""
@@ -92,11 +91,7 @@ class LEP_CSVEdit(QtWidgets.QWidget):
         button = QtWidgets.QPushButton("Test")
         buttons.addWidget(button)
         # button.clicked.connect(something)
-        ui.text = QtWidgets.QTextEdit()
-        self.layout().addWidget(ui.text)
-        # ui.data = ListTable()
         ui.table = QtWidgets.QTableView()
-        # ui.table.setModel(ui.data)
         self.layout().addWidget(ui.table)
         return ui
 
@@ -109,22 +104,20 @@ class LEP_CSVEdit(QtWidgets.QWidget):
     def focusOutEvent (self, event):
         QtWidgets.QTextEdit.focusOutEvent(self, event)
         DBG("focusout()")
+    def new_data(self, top_left, bottom_right, roles):
+        print(top_left, bottom_right, roles)
+        text = '\n'.join(','.join(i) for i in self.ui.data.data)
+        self.lep.text_changed(text)  # FIXME: use csv.writer
+
+
     def new_text(self, text):
         """new_text - update for new text
 
         :param str text: new text
         """
-        self.ui.text.setPlainText(text)
         self.ui.data = ListTable(text=text)
+        self.ui.data.dataChanged.connect(self.new_data)
         self.ui.table.setModel(self.ui.data)
-
-    def text_changed(self):
-        """text_changed - text editor text changed"""
-        if QtWidgets.QApplication.focusWidget() == self.ui.text:
-            DBG("text changed, focused")
-            self.lep.text_changed(self.ui.text.toPlainText())
-        else:
-            DBG("text changed, NOT focused")
 
     def update_text(self, text):
         """update_text - update for current text
@@ -132,6 +125,4 @@ class LEP_CSVEdit(QtWidgets.QWidget):
         :param str text: current text
         """
         DBG("update editor text")
-        self.ui.text.setPlainText(text)
-
-
+        self.new_text(text)
