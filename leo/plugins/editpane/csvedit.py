@@ -2,7 +2,7 @@ import csv
 from collections import namedtuple
 import leo.core.leoGlobals as g
 assert g
-from leo.core.leoQt import QtCore, QtWidgets, QtConst
+from leo.core.leoQt import QtCore, QtWidgets, QtConst, QtGui
 
 try:
     from cStringIO import StringIO
@@ -88,13 +88,25 @@ class LEP_CSVEdit(QtWidgets.QWidget):
         self.setLayout(QtWidgets.QVBoxLayout())
         buttons = QtWidgets.QHBoxLayout()
         self.layout().addLayout(buttons)
-        button = QtWidgets.QPushButton("Test")
-        buttons.addWidget(button)
-        # button.clicked.connect(something)
+        insert = [
+            ('go-bottom', "Insert row below", QtWidgets.QStyle.SP_ArrowDown),
+            ('go-top', "Insert row above", QtWidgets.QStyle.SP_ArrowUp),
+            ('go-first', "Insert row left", QtWidgets.QStyle.SP_ArrowLeft),
+            ('go-last', "Insert row right", QtWidgets.QStyle.SP_ArrowRight),
+        ]
+        for name, tip, fallback in insert:
+            button = QtWidgets.QPushButton()
+            button.setIcon(QtGui.QIcon.fromTheme(name,
+                QtWidgets.QApplication.style().standardIcon(fallback)))
+            button.setToolTip(tip)
+            button.clicked.connect(lambda checked, name=name: self.insert(name))
+            buttons.addWidget(button)
         ui.table = QtWidgets.QTableView()
         self.layout().addWidget(ui.table)
         return ui
 
+    def insert(self, name=None):
+        print(name)
     def focusInEvent (self, event):
         QtWidgets.QTextEdit.focusInEvent(self, event)
         DBG("focusin()")
