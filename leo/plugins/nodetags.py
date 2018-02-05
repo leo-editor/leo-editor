@@ -435,6 +435,8 @@ class LeoTagWidget(QtWidgets.QWidget):
         if keywords.get('label') in paste_cmds:
             self.tc.initialize_taglist()
             self.update_all()
+    #@+node:tbnorth.20170313095036.1: *5* sf.find_setting
+    #Plugins:2-->User interface:21-->@file settings_finder.py:11-->class SettingsFinder:2-->sf.find_setting:5
     #@-others
 #@-others
 #@@language python
