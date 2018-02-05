@@ -2,7 +2,7 @@ import csv
 from collections import namedtuple
 import leo.core.leoGlobals as g
 assert g
-from leo.core.leoQt import QtWidgets
+from leo.core.leoQt import QtCore, QtWidgets, QtConst
 
 try:
     from cStringIO import StringIO as StringIOClass
@@ -19,6 +19,35 @@ def DBG(text):
     :param str text: text to print
     """
     print("LEP: %s" % text)
+
+class ListTable(QtCore.QAbstractTableModel):
+    """ListTable - a list backed datastore for a Qt Model
+    """
+
+    def __init__(self, *args, **kwargs):
+        # FIXME: use super()
+        QtCore.QAbstractTableModel.__init__(self, *args, **kwargs)
+        self.data = [
+            'one two three four'.split(),
+            '1 2 3 4'.split(),
+            'I II II IV'.split(),
+            'a b c d'.split(),
+        ]
+
+    def rowCount(self, parent):
+        return len(self.data)
+    def columnCount(self, parent):
+        return len(self.data[0])
+    def data(self, index, role):
+        if role in (QtConst.DisplayRole, QtConst.EditRole):
+            return self.data[index.row()][index.column()]
+        return None
+    def setData(self, index, value, role):
+        self.data[index.row()][index.column()] = value
+        print(value)
+        return True
+    def flags(self, index):
+        return QtConst.ItemIsSelectable | QtConst.ItemIsEditable | QtConst.ItemIsEnabled
 
 class LEP_CSVEdit(QtWidgets.QWidget):
     """LEP_PlainTextEdit - simple LeoEditorPane editor
@@ -65,6 +94,10 @@ class LEP_CSVEdit(QtWidgets.QWidget):
         # button.clicked.connect(something)
         ui.text = QtWidgets.QTextEdit()
         self.layout().addWidget(ui.text)
+        ui.data = ListTable()
+        ui.table = QtWidgets.QTableView()
+        ui.table.setModel(ui.data)
+        self.layout().addWidget(ui.table)
         return ui
 
     def focusInEvent (self, event):
