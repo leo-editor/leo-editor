@@ -5,9 +5,9 @@ assert g
 from leo.core.leoQt import QtCore, QtWidgets, QtConst
 
 try:
-    from cStringIO import StringIO as StringIOClass
+    from cStringIO import StringIOStringIO
 except ImportError:
-    from io import BytesIO as StringIOClass
+    from io import StringIO
 
 TableOffset = namedtuple('TableOffset', 'row width')
 
@@ -25,14 +25,14 @@ class ListTable(QtCore.QAbstractTableModel):
     """
 
     def __init__(self, *args, **kwargs):
+        self.data = list(csv.reader(StringIO(kwargs['text'])))
+        del kwargs['text']
+        for i in range(len(self.data)-2):
+            if len(self.data[i]) != len(self.data[0]):
+                del self.data[i:]
+                break
         # FIXME: use super()
         QtCore.QAbstractTableModel.__init__(self, *args, **kwargs)
-        self.data = [
-            'one two three four'.split(),
-            '1 2 3 4'.split(),
-            'I II II IV'.split(),
-            'a b c d'.split(),
-        ]
 
     def rowCount(self, parent):
         return len(self.data)
@@ -66,7 +66,7 @@ class LEP_CSVEdit(QtWidgets.QWidget):
 
         offsets = [
             TableOffset(row=n, width=len(row))
-            for n, row in enumerate(csv.reader(StringIOClass(text)))
+            for n, row in enumerate(csv.reader(StringIO(text)))
         ]
         # delete all but first row reference for each block of same width
         for i in range(len(offsets)-1, 0, -1):
@@ -94,9 +94,9 @@ class LEP_CSVEdit(QtWidgets.QWidget):
         # button.clicked.connect(something)
         ui.text = QtWidgets.QTextEdit()
         self.layout().addWidget(ui.text)
-        ui.data = ListTable()
+        # ui.data = ListTable()
         ui.table = QtWidgets.QTableView()
-        ui.table.setModel(ui.data)
+        # ui.table.setModel(ui.data)
         self.layout().addWidget(ui.table)
         return ui
 
@@ -115,6 +115,8 @@ class LEP_CSVEdit(QtWidgets.QWidget):
         :param str text: new text
         """
         self.ui.text.setPlainText(text)
+        self.ui.data = ListTable(text=text)
+        self.ui.table.setModel(self.ui.data)
 
     def text_changed(self):
         """text_changed - text editor text changed"""
