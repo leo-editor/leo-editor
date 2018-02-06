@@ -1,6 +1,5 @@
 import csv
 from collections import namedtuple
-from pprint import pprint
 import leo.core.leoGlobals as g
 assert g
 from leo.core.leoQt import QtCore, QtWidgets, QtConst, QtGui
@@ -56,20 +55,12 @@ class ListTable(QtCore.QAbstractTableModel):
 
     def get_table(self, text):
         tables = self.get_table_list(text)
-        pprint(tables)
-        print("-"*20)
+        self.tbl = min(self.tbl, len(tables)-1)
         lines = text.split('\n')
         self.pretext = lines[:tables[self.tbl][0].line]
         self.posttext = lines[tables[self.tbl][-1].line+1:]
         self.data = [row.row for row in tables[self.tbl]]
-        pprint(self.pretext)
-        print("-"*20)
-        pprint(self.data)
-        print("-"*20)
-        pprint(self.posttext)
-        print("-"*20)
-        print(self.get_text())
-        print("="*20)
+
     def rowCount(self, parent=None):
         return len(self.data) if self.data else 0
     def columnCount(self, parent=None):
