@@ -9,7 +9,7 @@ try:
 except ImportError:
     from io import StringIO
 
-TableOffset = namedtuple('TableOffset', 'row width')
+TableRow = namedtuple('TableRow', 'line row')
 
 DELTA = {  # offsets for selection when moving row/column
     'go-top': (-1, 0),
@@ -31,16 +31,35 @@ class ListTable(QtCore.QAbstractTableModel):
     """ListTable - a list backed datastore for a Qt Model
     """
 
+    @staticmethod
+    def get_table_list(text):
+        """get_table_list - return a list of tables, based
+        on number of columns
+
+        :param str text: text
+        """
+
+        reader = csv.reader(StringIO(text))
+        rows = [TableRow(line=reader.line_num, row=row) for row in reader]
+        tables = []
+        for row in rows:
+            if not tables or len(row.row) != len(tables[-1][0].row):
+                tables.append([])
+            tables[-1].append(row)
+        return tables
     def __init__(self, *args, **kwargs):
-        self.data = list(csv.reader(StringIO(kwargs['text'])))
+        self.tbl = 0
+        self.get_table(kwargs['text'])
         del kwargs['text']
-        for i in range(len(self.data)-2):
-            if len(self.data[i]) != len(self.data[0]):
-                del self.data[i:]
-                break
         # FIXME: use super()
         QtCore.QAbstractTableModel.__init__(self, *args, **kwargs)
 
+    def get_table(self, text):
+        tables = self.get_table_list(text)
+        lines = text.split('\n')
+        self.pretext = lines[:tables[self.tbl][0].line]
+        self.posttext = lines[tables[self.tbl][-1].line+1:]
+        self.data = [row.row for row in tables[self.tbl]]
     def rowCount(self, parent=None):
         return len(self.data) if self.data else 0
     def columnCount(self, parent=None):
@@ -49,6 +68,17 @@ class ListTable(QtCore.QAbstractTableModel):
         if role in (QtConst.DisplayRole, QtConst.EditRole):
             return self.data[index.row()][index.column()]
         return None
+    def get_text(self):
+        out = StringIO()
+        writer = csv.writer(out)
+        writer.writerows(self.data)
+        text = out.getvalue()
+        text = self.pretext + [text] + self.posttext
+        return '\n'.join(text)
+    def prev_tbl(self, next=False):
+        self.tbl += 1 if next else -1
+        self.tbl = max(0, self.tbl)
+        self.get_table(self.get_text())
     def setData(self, index, value, role):
         self.data[index.row()][index.column()] = value
         self.dataChanged.emit(index, index)
@@ -61,33 +91,12 @@ class LEP_CSVEdit(QtWidgets.QWidget):
     """
     lep_type = "EDITOR"
     lep_name = "CSV Editor"
-    @staticmethod
-    def get_table_list(text):
-        """get_table_list - return a list of line offsets to CSV tables, based
-        on number of columns
-
-        :param str text: text
-        :return: a list of line offsets
-        :rtype: [int,...]
-        """
-
-        offsets = [
-            TableOffset(row=n, width=len(row))
-            for n, row in enumerate(csv.reader(StringIO(text)))
-        ]
-        # delete all but first row reference for each block of same width
-        for i in range(len(offsets)-1, 0, -1):
-            if offsets[i-1].width == offsets[i].width:
-                del offsets[i]
-        return offsets
-
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""
         super(LEP_CSVEdit, self).__init__(*args, **kwargs)
         self.c = c
         self.lep = lep
         self.ui = self.make_ui()
-
     def make_ui(self):
         """make_ui - build up UI"""
 
@@ -116,12 +125,17 @@ class LEP_CSVEdit(QtWidgets.QWidget):
 
         mkbuttons("Insert", self.insert)
         mkbuttons("Move", self.move)
-        delete = QtWidgets.QPushButton("Del. row")
-        buttons.addWidget(delete)
-        delete.clicked.connect(lambda clicked: self.delete_col(row=True))
-        delete = QtWidgets.QPushButton("Del. col.")
-        buttons.addWidget(delete)
-        delete.clicked.connect(lambda clicked: self.delete_col())
+
+        for text, function in [
+            ("Del. row", lambda clicked: self.delete_col(row=True)),
+            ("Del. col.", lambda clicked: self.delete_col()),
+            ("Prev. tbl.", lambda clicked: self.ui.data.prev_tbl()),
+            ("Next tbl.", lambda clicked: self.ui.data.prev_tbl(next=True)),
+        ]:
+            btn = QtWidgets.QPushButton(text)
+            buttons.addWidget(btn)
+            btn.clicked.connect(function)
+
         buttons.addStretch(1)
 
         ui.table = QtWidgets.QTableView()
@@ -209,11 +223,7 @@ class LEP_CSVEdit(QtWidgets.QWidget):
         QtWidgets.QTextEdit.focusOutEvent(self, event)
         DBG("focusout()")
     def new_data(self, top_left=None, bottom_right=None, roles=None):
-        out = StringIO()
-        writer = csv.writer(out)
-        writer.writerows(self.ui.data.data)
-        text = out.getvalue()
-        out.close()
+        text = self.ui.data.get_text()
         self.lep.text_changed(text)
         return text
     def new_text(self, text):
