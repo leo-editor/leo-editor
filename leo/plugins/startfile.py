@@ -42,6 +42,8 @@ def init():
         # Register the handlers...
         g.registerHandler("icondclick1",onIconDoubleClick)
         g.plugin_signon(__name__)
+    else:
+        g.es_print('The startfile.py plugin requires os.startfile (Windows)')
     return ok
 #@+node:ekr.20040828103325.3: ** onIconDoubleClick
 def onIconDoubleClick(tag,keywords):

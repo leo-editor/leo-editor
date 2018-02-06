@@ -1127,15 +1127,19 @@ class LeoQtGui(leoGui.LeoGui):
             self.setWindowTitle('Leo Tips')
             self.setText(repr(tip))
             self.next_tip_button = self.addButton('Show Next Tip', self.ActionRole)
-            self.setStandardButtons(self.Ok)
+            self.setStandardButtons(self.Ok) # | self.Close)
+            self.setDefaultButton(self.Ok)
             c.styleSheetManager.set_style_sheets(w=self)
-            layout = self.layout()
-            cb = QtWidgets.QCheckBox()
-            cb.setObjectName('TipCheckbox')
-            cb.setText('Show Tip On Startup')
-            cb.setCheckState(2)
-            cb.stateChanged.connect(controller.onClick)
-            layout.addWidget(cb, 4, 0, -1, -1)
+            if isQt5:
+                # Workaround #693: show-next-tip display overlapped in
+                # Python 2.7.12, PyQt version 4.8.7
+                layout = self.layout()
+                cb = QtWidgets.QCheckBox()
+                cb.setObjectName('TipCheckbox')
+                cb.setText('Show Tip On Startup')
+                cb.setCheckState(2)
+                cb.stateChanged.connect(controller.onClick)
+                layout.addWidget(cb, 4, 0, -1, -1)
             
     def show_tips(self, force=False):
         import leo.core.leoTips as leoTips
@@ -1150,7 +1154,9 @@ class LeoQtGui(leoGui.LeoGui):
             while True:
                 tip = tm.get_next_tip()
                 m = self.DialogWithCheckBox(controller=self,tip=tip)
+                c.in_qt_dialog = True
                 m.exec_()
+                c.in_qt_dialog = False
                 b = m.clickedButton()
                 self.update_tips_setting()
                 if b != m.next_tip_button:

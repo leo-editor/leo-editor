@@ -893,6 +893,7 @@ class LeoApp(object):
             "xom":      "omnimark",
             "xsl":      "xsl",
             "yaml":     "yaml",
+            "vue":      "javascript",
             "zpt":      "zpt",
         }
 

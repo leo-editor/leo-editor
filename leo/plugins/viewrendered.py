@@ -194,7 +194,7 @@ import leo.core.leoGlobals as g
 import leo.plugins.qt_text as qt_text
 import leo.plugins.free_layout as free_layout
 from leo.core.leoQt import isQt5, QtCore, QtGui, QtWidgets
-from leo.core.leoQt import phonon, QtSvg, QtWebKitWidgets
+from leo.core.leoQt import phonon, QtMultimedia, QtSvg, QtWebKitWidgets
 try:
     import docutils
     import docutils.core
@@ -289,12 +289,11 @@ def decorate_window(w):
     w.setStyleSheet(stickynote_stylesheet)
     w.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     w.resize(600, 300)
-#@+node:tbrown.20100318101414.5995: *3* init
+#@+node:tbrown.20100318101414.5995: *3* init (VR)
 def init():
     '''Return True if the plugin has loaded successfully.'''
     global got_docutils
-    ok = bool(got_docutils and QtSvg and QtWebKitWidgets)
-    if not ok:
+    if not got_docutils:
         g.es_print('Warning: viewrendered.py running without docutils.')
     # Always enable this plugin, even if imports fail.
     g.plugin_signon(__name__)
@@ -1048,10 +1047,10 @@ if QtWidgets: # NOQA
                 w = pc.ensure_text_widget()
                 w.setPlainText('Not found: %s' % (path))
                 return
-            if not phonon:
+            if not phonon and not QtMultimedia:
                 if not self.movie_warning:
                     self.movie_warning = True
-                    g.es_print('No phonon movie player')
+                    g.es_print('No phonon and no QtMultimedia modules')
                 w = pc.ensure_text_widget()
                 w.setPlainText('')
                 return
@@ -1060,23 +1059,31 @@ if QtWidgets: # NOQA
                 pc.vp.stop()
                 pc.vp.deleteLater()
             # Create a fresh player.
-            pc.vp = vp = phonon.VideoPlayer(phonon.VideoCategory)
-            vw = vp.videoWidget()
-            vw.setObjectName('video-renderer')
-            # Embed the widgets
-
-            def delete_callback():
-                if pc.vp:
-                    pc.vp.stop()
-                    pc.vp.deleteLater()
-                    pc.vp = None
-
             g.es_print('playing', path)
-            pc.embed_widget(vp, delete_callback=delete_callback)
-            pc.show()
-            vp = pc.vp
-            vp.load(phonon.MediaSource(path))
-            vp.play()
+            if QtMultimedia:
+                url= QtCore.QUrl.fromLocalFile(path)
+                content= QtMultimedia.QMediaContent(url)
+                pc.vp = vp = QtMultimedia.QMediaPlayer()
+                vp.setMedia(content)
+                # Won't play .mp4 files: https://bugreports.qt.io/browse/QTBUG-32783
+                vp.play()
+            else:
+                pc.vp = vp = phonon.VideoPlayer(phonon.VideoCategory)
+                vw = vp.videoWidget()
+                vw.setObjectName('video-renderer')
+                # Embed the widgets
+            
+                def delete_callback():
+                    if pc.vp:
+                        pc.vp.stop()
+                        pc.vp.deleteLater()
+                        pc.vp = None
+
+                pc.embed_widget(vp, delete_callback=delete_callback)
+                pc.show()
+                vp = pc.vp
+                vp.load(phonon.MediaSource(path))
+                vp.play()
         #@+node:ekr.20110320120020.14484: *4* vr.update_networkx
         def update_networkx(self, s, keywords):
             '''Update a networkx graphic in the vr pane.'''
