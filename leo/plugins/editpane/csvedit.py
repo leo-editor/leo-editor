@@ -89,10 +89,10 @@ class LEP_CSVEdit(QtWidgets.QWidget):
         buttons = QtWidgets.QHBoxLayout()
         self.layout().addLayout(buttons)
         insert = [
-            ('go-bottom', "Insert row below", QtWidgets.QStyle.SP_ArrowDown),
-            ('go-top', "Insert row above", QtWidgets.QStyle.SP_ArrowUp),
             ('go-first', "Insert row left", QtWidgets.QStyle.SP_ArrowLeft),
             ('go-last', "Insert row right", QtWidgets.QStyle.SP_ArrowRight),
+            ('go-top', "Insert row above", QtWidgets.QStyle.SP_ArrowUp),
+            ('go-bottom', "Insert row below", QtWidgets.QStyle.SP_ArrowDown),
         ]
         for name, tip, fallback in insert:
             button = QtWidgets.QPushButton()
@@ -117,11 +117,10 @@ class LEP_CSVEdit(QtWidgets.QWidget):
         QtWidgets.QTextEdit.focusOutEvent(self, event)
         DBG("focusout()")
     def new_data(self, top_left, bottom_right, roles):
-        print(top_left, bottom_right, roles)
-        text = '\n'.join(','.join(i) for i in self.ui.data.data)
-        self.lep.text_changed(text)  # FIXME: use csv.writer
-
-
+        out = StringIO()
+        writer = csv.writer(out)
+        writer.writerows(self.ui.data.data)
+        self.lep.text_changed(out.getvalue())
     def new_text(self, text):
         """new_text - update for new text
 
