@@ -24,24 +24,33 @@ import leo.core.leoGlobals as g
 '''
 #@+node:maphew.20171112223922.1: ** git_version
 def git_version(file):
-    '''
-    Fetch from Git: {tag} {distance-from-tag} {current commit hash}
-    Increment minor # by 1 and
-    Return as single string compliant with PEP440
-    '''
+    '''Fetch from Git: {tag} {distance-from-tag} {current commit hash}
+       Return as semantic version string compliant with PEP440'''
     root = os.path.dirname(os.path.realpath(file))
     tag, distance, commit = g.gitDescribe(root)
-        # 5.6, 55, e1129da
-    semver = semantic_version.Version.coerce(tag, partial=True)
-    #major, minor = semver.split('.')
-    #minor = int(minor) + 1
-    # version = '{}.{}.dev{}+{}'.format(major, minor, distance, commit)
-        # # 5.7.dev55+e1129da
-        # disabled. Can't use local PEP440 names on pypi!
-        # https://github.com/pypa/pypi-legacy/issues/731
-    version = '{}.{}.dev{}'.format(semver.major, semver.minor, distance)
-        # 5.7.dev55
+        # 5.6b2, 55, e1129da
+    ctag = clean_git_tag(tag)
+    try:
+        version = semantic_version.Version.coerce(ctag, partial=True)
+            # tuple of major, minor, build, pre-release, patch
+            # 5.6b2 --> 5.6-b2
+    except ValueError:
+        print('*** Failed to parse Semantic Version from git tag')
+    if int(distance) > 0:
+        version = '{}-dev{}'.format(version, distance)
     return version
+def clean_git_tag(tag):
+    '''Return only version number from tag name. Ignore unkown formats. Specific
+       to tags in Leo's repository.
+            5.7b1          -->	5.7b1
+            Leo-4-4-8-b1   -->	4-4-8-b1
+            v5.3           -->	5.3
+            Fixed-bug-149  -->  Fixed-bug-149
+    '''
+    if tag.lower().startswith('leo-'): tag = tag[4:]
+    if tag.lower().startswith('v'): tag = tag[1:]
+    return tag
+    
 #@+node:maphew.20171006124415.1: ** Get description
 # Get the long description from the README file
 # And also convert to reST
