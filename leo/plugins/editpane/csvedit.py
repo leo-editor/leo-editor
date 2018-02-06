@@ -116,11 +116,31 @@ class LEP_CSVEdit(QtWidgets.QWidget):
 
         mkbuttons("Insert", self.insert)
         mkbuttons("Move", self.move)
+        delete = QtWidgets.QPushButton("Del. row")
+        buttons.addWidget(delete)
+        delete.clicked.connect(lambda clicked: self.delete_col(row=True))
+        delete = QtWidgets.QPushButton("Del. col.")
+        buttons.addWidget(delete)
+        delete.clicked.connect(lambda clicked: self.delete_col())
+        buttons.addStretch(1)
 
         ui.table = QtWidgets.QTableView()
         self.layout().addWidget(ui.table)
         return ui
 
+    def delete_col(self, row=False):
+        d = self.ui.data.data
+        index = self.ui.table.currentIndex()
+        r = index.row()
+        c = index.column()
+        if r < 0 or c < 0:
+            return  # no cell selected
+        if row:
+            d[:] = d[:r] + d[r+1:]
+        else:
+            d[:] = [d[i][:c] + d[i][c+1:] for i in range(len(d))]
+        self.new_text(self.new_data())
+        self.ui.table.setCurrentIndex(self.ui.data.index(r, c))
     def insert(self, name, move=False):
         index = self.ui.table.currentIndex()
         row = None
