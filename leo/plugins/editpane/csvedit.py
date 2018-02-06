@@ -11,6 +11,13 @@ except ImportError:
 
 TableOffset = namedtuple('TableOffset', 'row width')
 
+DELTA = {  # offsets for selection when moving row/column
+    'go-top': (-1, 0),
+    'go-bottom': (+1, 0),
+    'go-first': (0, -1),
+    'go-last': (0, +1)
+}
+
 # import time  # temporary for debugging
 
 def DBG(text):
@@ -34,9 +41,9 @@ class ListTable(QtCore.QAbstractTableModel):
         # FIXME: use super()
         QtCore.QAbstractTableModel.__init__(self, *args, **kwargs)
 
-    def rowCount(self, parent):
+    def rowCount(self, parent=None):
         return len(self.data) if self.data else 0
-    def columnCount(self, parent):
+    def columnCount(self, parent=None):
         return len(self.data[0]) if self.data and self.data[0] else 0
     def data(self, index, role):
         if role in (QtConst.DisplayRole, QtConst.EditRole):
@@ -88,25 +95,90 @@ class LEP_CSVEdit(QtWidgets.QWidget):
         self.setLayout(QtWidgets.QVBoxLayout())
         buttons = QtWidgets.QHBoxLayout()
         self.layout().addLayout(buttons)
-        insert = [
-            ('go-first', "Insert row left", QtWidgets.QStyle.SP_ArrowLeft),
-            ('go-last', "Insert row right", QtWidgets.QStyle.SP_ArrowRight),
-            ('go-top', "Insert row above", QtWidgets.QStyle.SP_ArrowUp),
-            ('go-bottom', "Insert row below", QtWidgets.QStyle.SP_ArrowDown),
-        ]
-        for name, tip, fallback in insert:
-            button = QtWidgets.QPushButton()
-            button.setIcon(QtGui.QIcon.fromTheme(name,
-                QtWidgets.QApplication.style().standardIcon(fallback)))
-            button.setToolTip(tip)
-            button.clicked.connect(lambda checked, name=name: self.insert(name))
-            buttons.addWidget(button)
+
+        def mkbuttons(what, function):
+
+            list_ = [
+                ('go-first', "%s column left", QtWidgets.QStyle.SP_ArrowLeft),
+                ('go-last', "%s column right", QtWidgets.QStyle.SP_ArrowRight),
+                ('go-top', "%s row above", QtWidgets.QStyle.SP_ArrowUp),
+                ('go-bottom', "%s row below", QtWidgets.QStyle.SP_ArrowDown),
+            ]
+
+            buttons.addWidget(QtWidgets.QLabel(what+": "))
+            for name, tip, fallback in list_:
+                button = QtWidgets.QPushButton()
+                button.setIcon(QtGui.QIcon.fromTheme(name,
+                    QtWidgets.QApplication.style().standardIcon(fallback)))
+                button.setToolTip(tip % what)
+                button.clicked.connect(lambda checked, name=name: function(name))
+                buttons.addWidget(button)
+
+        mkbuttons("Insert", self.insert)
+        mkbuttons("Move", self.move)
+
         ui.table = QtWidgets.QTableView()
         self.layout().addWidget(ui.table)
         return ui
 
-    def insert(self, name=None):
-        print(name)
+    def insert(self, name, move=False):
+        index = self.ui.table.currentIndex()
+        row = None
+        col = None
+        r = index.row()
+        c = index.column()
+        if move and (r < 0 or c < 0):
+            return  # no cell selected
+        d = self.ui.data.data
+        if name == 'go-top':
+            # insert at row, or swap a and b for move
+            if move and r == 0:
+                return
+            row = r
+            a = r-1
+            b = r
+        if name == 'go-bottom':
+            row = r + 1
+            a = r
+            b = r+1
+        if row is not None:
+            if move:
+                d[:] = d[:a] + [d[b], d[a]] + d[b+1:]
+            else:
+                d[:] = d[:row] + [[''] * len(d[0])] + d[row:]
+            self.new_text(self.new_data())
+
+        if name == 'go-first':
+            if move and c == 0:
+                return
+            col = c
+            a = c-1
+            b = c
+        if name == 'go-last':
+            col = c + 1
+            a = c
+            b = c+1
+        if col is not None:
+            if move:
+                d[:] = [
+                    d[i][:a] + [d[i][b], d[i][a]] + d[i][b+1:]
+                    for i in range(len(d))
+                ]
+            else:
+                d[:] = [
+                    d[i][:col] + [''] + d[i][col:]
+                    for i in range(len(d))
+                ]
+            self.new_text(self.new_data())
+
+        if move:
+            r = max(0, r+DELTA[name][0])
+            c = max(0, c+DELTA[name][1])
+        self.ui.table.setCurrentIndex(self.ui.data.index(r, c))
+        self.ui.table.setFocus(QtConst.OtherFocusReason)
+
+    def move(self, name):
+        self.insert(name, move=True)
     def focusInEvent (self, event):
         QtWidgets.QTextEdit.focusInEvent(self, event)
         DBG("focusin()")
@@ -116,11 +188,14 @@ class LEP_CSVEdit(QtWidgets.QWidget):
     def focusOutEvent (self, event):
         QtWidgets.QTextEdit.focusOutEvent(self, event)
         DBG("focusout()")
-    def new_data(self, top_left, bottom_right, roles):
+    def new_data(self, top_left=None, bottom_right=None, roles=None):
         out = StringIO()
         writer = csv.writer(out)
         writer.writerows(self.ui.data.data)
-        self.lep.text_changed(out.getvalue())
+        text = out.getvalue()
+        out.close()
+        self.lep.text_changed(text)
+        return text
     def new_text(self, text):
         """new_text - update for new text
 
