@@ -123,18 +123,25 @@ class LEP_CSVEdit(QtWidgets.QWidget):
                 button.clicked.connect(lambda checked, name=name: function(name))
                 buttons.addWidget(button)
 
-        mkbuttons("Insert", self.insert)
         mkbuttons("Move", self.move)
+        mkbuttons("Insert", self.insert)
 
         for text, function in [
-            ("Del. row", lambda clicked: self.delete_col(row=True)),
-            ("Del. col.", lambda clicked: self.delete_col()),
-            ("Prev. tbl.", lambda clicked: self.prev_tbl()),
-            ("Next tbl.", lambda clicked: self.prev_tbl(next=True)),
+            ("Del row", lambda clicked: self.delete_col(row=True)),
+            ("Del col.", lambda clicked: self.delete_col()),
+            ("Prev", lambda clicked: self.prev_tbl()),
+            ("Next", lambda clicked: self.prev_tbl(next=True)),
         ]:
             btn = QtWidgets.QPushButton(text)
             buttons.addWidget(btn)
             btn.clicked.connect(function)
+
+        ui.min_rows = QtWidgets.QSpinBox()
+        buttons.addWidget(ui.min_rows)
+        ui.min_rows.setMinimum(1)
+        ui.min_rows.setPrefix("tbl with ")
+        ui.min_rows.setSuffix(" rows")
+        ui.min_rows.setValue(4)
 
         buttons.addStretch(1)
 
@@ -153,7 +160,7 @@ class LEP_CSVEdit(QtWidgets.QWidget):
             d[:] = d[:r] + d[r+1:]
         else:
             d[:] = [d[i][:c] + d[i][c+1:] for i in range(len(d))]
-        self.new_text(self.new_data())
+        self.update_text(self.new_data())
         self.ui.table.setCurrentIndex(self.ui.data.index(r, c))
     def insert(self, name, move=False):
         index = self.ui.table.currentIndex()
@@ -180,7 +187,7 @@ class LEP_CSVEdit(QtWidgets.QWidget):
                 d[:] = d[:a] + [d[b], d[a]] + d[b+1:]
             else:
                 d[:] = d[:row] + [[''] * len(d[0])] + d[row:]
-            self.new_text(self.new_data())
+            self.update_text(self.new_data())
 
         if name == 'go-first':
             if move and c == 0:
@@ -203,7 +210,7 @@ class LEP_CSVEdit(QtWidgets.QWidget):
                     d[i][:col] + [''] + d[i][col:]
                     for i in range(len(d))
                 ]
-            self.new_text(self.new_data())
+            self.update_text(self.new_data())
 
         if move:
             r = max(0, r+DELTA[name][0])
@@ -214,9 +221,15 @@ class LEP_CSVEdit(QtWidgets.QWidget):
     def move(self, name):
         self.insert(name, move=True)
     def prev_tbl(self, next=False):
+        text = self.ui.data.get_text()
+        tables = ListTable.get_table_list(text)
         self.tbl += 1 if next else -1
-        self.tbl = max(0, self.tbl)
-        self.new_text(self.ui.data.get_text())
+        while 0 <= self.tbl <= len(tables)-1:
+            if len(tables[self.tbl]) >= self.ui.min_rows.value():
+                break
+            self.tbl += 1 if next else -1
+        self.tbl = min(max(0, self.tbl), len(tables)-1)
+        self.update_text(text)
     def focusInEvent (self, event):
         QtWidgets.QTextEdit.focusInEvent(self, event)
         DBG("focusin()")
@@ -235,9 +248,15 @@ class LEP_CSVEdit(QtWidgets.QWidget):
 
         :param str text: new text
         """
-        self.ui.data = ListTable(text, self.tbl)
-        self.ui.data.dataChanged.connect(self.new_data)
-        self.ui.table.setModel(self.ui.data)
+        tables = ListTable.get_table_list(text)
+        self.tbl = 0
+        # find largest table, or first table of more than n rows
+        for i in range(1, len(tables)):
+            if len(tables[i]) > len(tables[self.tbl]):
+                self.tbl = i
+            if len(tables[self.tbl]) > self.ui.min_rows.value():
+                break
+        self.update_text(text)
 
     def update_text(self, text):
         """update_text - update for current text
@@ -245,4 +264,6 @@ class LEP_CSVEdit(QtWidgets.QWidget):
         :param str text: current text
         """
         DBG("update editor text")
-        self.new_text(text)
+        self.ui.data = ListTable(text, self.tbl)
+        self.ui.data.dataChanged.connect(self.new_data)
+        self.ui.table.setModel(self.ui.data)
