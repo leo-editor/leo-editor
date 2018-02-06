@@ -47,10 +47,9 @@ class ListTable(QtCore.QAbstractTableModel):
                 tables.append([])
             tables[-1].append(row)
         return tables
-    def __init__(self, *args, **kwargs):
-        self.tbl = 0
-        self.get_table(kwargs['text'])
-        del kwargs['text']
+    def __init__(self, text, tbl, *args, **kwargs):
+        self.tbl = tbl
+        self.get_table(text)
         # FIXME: use super()
         QtCore.QAbstractTableModel.__init__(self, *args, **kwargs)
 
@@ -75,10 +74,6 @@ class ListTable(QtCore.QAbstractTableModel):
         text = out.getvalue()
         text = self.pretext + [text] + self.posttext
         return '\n'.join(text)
-    def prev_tbl(self, next=False):
-        self.tbl += 1 if next else -1
-        self.tbl = max(0, self.tbl)
-        self.get_table(self.get_text())
     def setData(self, index, value, role):
         self.data[index.row()][index.column()] = value
         self.dataChanged.emit(index, index)
@@ -96,6 +91,7 @@ class LEP_CSVEdit(QtWidgets.QWidget):
         super(LEP_CSVEdit, self).__init__(*args, **kwargs)
         self.c = c
         self.lep = lep
+        self.tbl = 0
         self.ui = self.make_ui()
     def make_ui(self):
         """make_ui - build up UI"""
@@ -129,8 +125,8 @@ class LEP_CSVEdit(QtWidgets.QWidget):
         for text, function in [
             ("Del. row", lambda clicked: self.delete_col(row=True)),
             ("Del. col.", lambda clicked: self.delete_col()),
-            ("Prev. tbl.", lambda clicked: self.ui.data.prev_tbl()),
-            ("Next tbl.", lambda clicked: self.ui.data.prev_tbl(next=True)),
+            ("Prev. tbl.", lambda clicked: self.prev_tbl()),
+            ("Next tbl.", lambda clicked: self.prev_tbl(next=True)),
         ]:
             btn = QtWidgets.QPushButton(text)
             buttons.addWidget(btn)
@@ -213,6 +209,10 @@ class LEP_CSVEdit(QtWidgets.QWidget):
 
     def move(self, name):
         self.insert(name, move=True)
+    def prev_tbl(self, next=False):
+        self.tbl += 1 if next else -1
+        self.tbl = max(0, self.tbl)
+        self.new_text(self.ui.data.get_text())
     def focusInEvent (self, event):
         QtWidgets.QTextEdit.focusInEvent(self, event)
         DBG("focusin()")
@@ -231,7 +231,7 @@ class LEP_CSVEdit(QtWidgets.QWidget):
 
         :param str text: new text
         """
-        self.ui.data = ListTable(text=text)
+        self.ui.data = ListTable(text, self.tbl)
         self.ui.data.dataChanged.connect(self.new_data)
         self.ui.table.setModel(self.ui.data)
 
