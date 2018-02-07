@@ -57,9 +57,14 @@ class ListTable(QtCore.QAbstractTableModel):
         tables = self.get_table_list(text)
         self.tbl = min(self.tbl, len(tables)-1)
         lines = text.split('\n')
-        self.pretext = lines[:tables[self.tbl][0].line]
-        self.posttext = lines[tables[self.tbl][-1].line+1:]
-        self.data = [row.row for row in tables[self.tbl]]
+        if tables and tables[self.tbl]:
+            self.pretext = lines[:tables[self.tbl][0].line]
+            self.posttext = lines[tables[self.tbl][-1].line+1:]
+            self.data = [row.row for row in tables[self.tbl]]
+        else:
+            self.pretext = []
+            self.posttext = []
+            self.data = []
 
     def rowCount(self, parent=None):
         return len(self.data) if self.data else 0
