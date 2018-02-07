@@ -3,11 +3,11 @@
 #@+node:maphew.20171207193249.1: * @file setup.py
 #@@first
 '''setup.py for leo'''
-from setuptools import setup, find_packages # Always prefer setuptools over distutils
 from codecs import open # To use a consistent encoding
 import os
+from shutil import rmtree
+from setuptools import setup, find_packages # Always prefer setuptools over distutils
 import semantic_version
-from shutil import rmtree, copytree
 import leo.core.leoGlobals as g
 
 #@+others
@@ -16,7 +16,7 @@ import leo.core.leoGlobals as g
 
     Nov 2014: strip to bare minimum and rebuild using ONLY
     https://python-packaging-user-guide.readthedocs.org/en/latest/index.html
-        
+    
     Oct 2017: Excellent guide "﻿Less known packaging features and tricks"
     Ionel Cristian Mărieș, @ionelmc
     https://blog.ionelmc.ro/presentations/packaging/#slide:2
@@ -43,7 +43,7 @@ def git_version(file):
         version = '{}-dev{}'.format(version, distance)
     return version
 def clean_git_tag(tag):
-    '''Return only version number from tag name. Ignore unkown formats. 
+    '''Return only version number from tag name. Ignore unkown formats.
        Is specific to tags in Leo's repository.
             5.7b1          -->	5.7b1
             Leo-4-4-8-b1   -->	4-4-8-b1
@@ -53,7 +53,6 @@ def clean_git_tag(tag):
     if tag.lower().startswith('leo-'): tag = tag[4:]
     if tag.lower().startswith('v'): tag = tag[1:]
     return tag
-    
 #@+node:maphew.20171006124415.1: ** Get description
 # Get the long description from the README file
 # And also convert to reST
@@ -103,7 +102,7 @@ def clean():
     print('Removing build and dist directories')
     root = os.path.dirname(os.path.realpath(__file__))
     for d in ['build', 'dist', 'leo.egg-info']:
-        dpath = os.path.join(root,d)
+        dpath = os.path.join(root, d)
         if os.path.isdir(dpath):
             rmtree(dpath)
 clean()
@@ -127,10 +126,10 @@ setup(
     install_requires=user_requires,
     entry_points={
        'console_scripts': ['leo-c = leo.core.runLeo:run_console',
-                'leo-console = leo.core.runLeo:run_console',
-                'leo-m = leo.core.runLeo:run',
-                'leo-messages = leo.core.runLeo:run'],
-            'gui_scripts': ['leo = leo.core.runLeo:run']
+            'leo-console = leo.core.runLeo:run_console',
+            'leo-m = leo.core.runLeo:run',
+            'leo-messages = leo.core.runLeo:run'],
+        'gui_scripts': ['leo = leo.core.runLeo:run']
        }
 )
 
