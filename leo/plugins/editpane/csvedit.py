@@ -93,7 +93,7 @@ class ListTable(QtCore.QAbstractTableModel):
 class LEP_CSVEdit(QtWidgets.QWidget):
     """LEP_PlainTextEdit - simple LeoEditorPane editor
     """
-    lep_type = "EDITOR"
+    lep_type = "EDITOR-CSV"
     lep_name = "CSV Editor"
     def __init__(self, c=None, lep=None, *args, **kwargs):
         """set up"""

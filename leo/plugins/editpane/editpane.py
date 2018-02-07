@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20171028115144.6: * @file ../plugins/editpane/editpane.py
+#@+node:tbrown.20171028115144.6: * @file editpane/editpane.py
 '''Support for the edit-pane-test-open command and window.'''
 #@+<<editpane.py imports>>
 #@+node:tbrown.20171028115438.1: ** <<editpane.py imports>>
@@ -66,6 +66,14 @@ def edit_pane_test_open(event):
 
     s = c.free_layout.get_top_splitter()
     s.open_window("__demo_provider_minimal_slider")
+#@+node:tbrown.20180207103918.1: ** edit_pane_csv
+def edit_pane_csv(event):
+    from leo.plugins.nested_splitter import NestedSplitter
+    c = event['c']
+    w = c.frame.body.widget
+    while not isinstance(w, NestedSplitter):
+        w = w.parent()
+    w.insert(-1, LeoEditPane(c=c, show_control=False, lep_type='EDITOR-CSV'))
 #@+node:tbrown.20171028115438.4: ** class LeoEditPane
 class LeoEditPane(QtWidgets.QWidget):
     """
@@ -594,7 +602,7 @@ class LeoEditPane(QtWidgets.QWidget):
 
         if widget_class is None:
             widget_class = [i for i in self.widget_classes if i.lep_type == lep_type][0]
-        if hasattr(widget_class, 'lep_type') and widget_class.lep_type == 'EDITOR':
+        if hasattr(widget_class, 'lep_type') and widget_class.lep_type.startswith('EDITOR'):
             frame = self.edit_frame
             attr = 'edit_widget'
             update = self.new_position_edit
