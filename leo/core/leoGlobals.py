@@ -4461,15 +4461,15 @@ def gitDescribe(path=None):
     Return the Git tag, distance-from-tag, and commit hash for the
     associated path. If path is None, use the leo-editor directory.
     
-    Given `git describe` cmd line output: `v5.6-55-ge1129da\n`
-    This function returns ('v5.6', '55', 'e1129da')
+    Given `git describe` cmd line output: `x-leo-v5.6-55-ge1129da\n`
+    This function returns ('x-leo-v5.6', '55', 'e1129da')
     '''
-    describe = g.execGitCommand('git describe', path)
-    tag, distance, commit = describe[0].split('-')
-    #strip leading 'g' from commit hash (it's not part of the hash)
+    describe = g.execGitCommand('git describe --tags --long', path)
+    tag, distance, commit = describe[0].rsplit('-',2)
+        # rsplit not split, as '-' might be in tag name
     if 'g' in commit[0:]: commit = commit[1:]
+        # leading 'g' isn't part of the commit hash
     commit = commit.rstrip()
-
     return tag, distance, commit
 #@+node:ekr.20170414034616.6: *3* g.gitHeadPath
 def gitHeadPath(path=None):
