@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20171028115144.6: * @file editpane/editpane.py
+#@+node:tbrown.20171028115144.6: * @file ../plugins/editpane/editpane.py
 '''Support for the edit-pane-test-open command and window.'''
 #@+<<editpane.py imports>>
 #@+node:tbrown.20171028115438.1: ** <<editpane.py imports>>
@@ -98,6 +98,7 @@ class LeoEditPane(QtWidgets.QWidget):
         """
         DBG("__init__ LEP")
         super(LeoEditPane, self).__init__(*args, **kwargs)
+        self.setAttribute(QtConst.WA_DeleteOnClose)
 
         lep_type = lep_type or ['EDITOR', 'TEXT']
         if isinstance(lep_type, StringTypes):
