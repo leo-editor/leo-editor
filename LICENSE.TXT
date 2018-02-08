@@ -1,24 +1,21 @@
-Leo is Open Software and is distributed under the terms of the MIT
-License. The gist of the license is that Leo is absolutely free, even
-for commercial use (including resale). There is no GNU-like "copyleft"
-restriction. The Open Source Initiative board has voted to certify the
-MIT license as Open Source. This license is compatible with the GPL.
+MIT License
 
-Copyright (c) 1997-2018 by Edward K. Ream. All Rights Reserved.
+Copyright (c) 1997-2018 by Edward K. Ream.
 
-Permission to use, copy, modify, and distribute this software and its
-documentation for any purpose and without fee is hereby granted,
-provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in
-supporting documentation, and that the names of Leo or Edward K. Ream
-not be used in advertising or publicity pertaining to distribution of
-the software without specific, written prior permission.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-DISCLAIMER OF WARRANTIES
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-EDWARD K. REAM (REAM) SPECIFICALLY DISCLAIMS ALL WARRANTIES, EXPRESSED
-OR IMPLIED, WITH RESPECT TO THIS COMPUTER SOFTWARE, INCLUDING BUT NOT
-LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-PARTICULAR PURPOSE. IN NO EVENT SHALL REAM BE LIABLE FOR ANY LOSS OF
-PROFIT OR ANY COMMERCIAL DAMAGE, INCLUDING BUT NOT LIMITED TO SPECIAL,
-INCIDENTAL, CONSEQUENTIAL OR OTHER DAMAGES.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
