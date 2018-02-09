@@ -152,8 +152,10 @@ class DefaultDict(object):
     #@+node:ekr.20180207101513.1: *3* dict.add_words_from_dict
     def add_words_from_dict(self, kind, fn, words):
         '''For use by DefaultWrapper.'''
-        g.es_print('%6s words in %6s dictionary: %s' % (
-            len(words or []), kind, g.os_path_normpath(fn)))
+        trace = False and not g.unitTesting
+        if trace:
+            g.es_print('%6s words in %6s dictionary: %s' % (
+                len(words or []), kind, g.os_path_normpath(fn)))
         for word in words or []:
             self.words.add(word)
             self.words.add(word.lower())
@@ -201,10 +203,15 @@ class DefaultDict(object):
 #@+node:ekr.20180207071114.1: ** class DefaultWrapper (BaseSpellWrapper)
 class DefaultWrapper(BaseSpellWrapper):
     """
-    A class using the nltk toolkit for spell checking.
+    A default spell checker for when pyenchant is not available.
     
-    https://stackoverflow.com/questions/13928155/spell-checker-for-python
-    http://norvig.com/spell-correct.html
+    Based on http://norvig.com/spell-correct.html
+    
+    Main dictionary: ~/.leo/main_spelling_dict.txt
+    User dictionary:
+    - @string enchant_local_dictionary or
+    - leo/plugins/spellpyx.txt or
+    - ~/.leo/spellpyx.txt
     """
     #@+others
     #@+node:ekr.20180207071114.2: *3* default. __init__
@@ -224,8 +231,8 @@ class DefaultWrapper(BaseSpellWrapper):
             self.create(self.local_fn)
         self.global_fn = self.find_global_dict()
         table = (
-            ('local', self.local_fn),
-            ('global', self.global_fn),
+            ('user', self.local_fn),
+            ('main', self.global_fn),
         )
         for kind, fn in table:
             words = self.read_words(kind, fn)
@@ -276,7 +283,7 @@ class DefaultWrapper(BaseSpellWrapper):
         '''Save the local dictionary.'''
         fn = self.local_fn
         if fn:
-            words = self.read_words('local', fn)
+            words = self.read_words('user', fn)
             words = set(words)
             for word in self.d.added_words:
                 words.add(word)
@@ -285,6 +292,17 @@ class DefaultWrapper(BaseSpellWrapper):
             f.write(g.toEncodedString(s))
             f.close()
         
+    #@+node:ekr.20180209141933.1: *3* default.show_info
+    def show_info(self):
+        
+        g.es_print('Default spell checker')
+        table = (
+            ('main', self.global_fn),
+            ('user', self.local_fn),
+        )
+        for kind, fn in table:
+            g.es_print('%s dictionary: %s' % (
+                kind, g.os_path_normpath(fn)))
     #@-others
 #@+node:ekr.20150514063305.510: ** class EnchantWrapper (BaseSpellWrapper)
 class EnchantWrapper(BaseSpellWrapper):
@@ -398,6 +416,18 @@ class EnchantWrapper(BaseSpellWrapper):
             return None
         else:
             return d.suggest(word)
+    #@+node:ekr.20180209142310.1: *3* spell.show_info
+    def show_info(self):
+
+        g.es_print('pyenchant spell checker')
+        g.es_print('user dictionary:   %s' % self.find_local_dict())
+        try:
+            aList = enchant.list_dicts()
+            aList2 = [a for a, b in aList]
+            g.es_print('main dictionaries: %s' % ', '.join(aList2))
+        except Exception:
+            g.es_exception()
+
     #@-others
 #@+node:ekr.20150514063305.481: ** class SpellCommandsClass
 class SpellCommandsClass(BaseEditCommandsClass):
@@ -655,7 +685,7 @@ class SpellTabHandler(object):
     def __init__(self, c, tabName):
         """Ctor for SpellTabHandler class."""
         if g.app.gui.isNullGui:
-            return ###
+            return
         self.c = c
         self.body = c.frame.body
         self.currentWord = None
@@ -807,6 +837,12 @@ class SpellTabHandler(object):
                 self.spellController.ignore(w)
                 self.tab.onFindButton()
     #@-others
+#@+node:ekr.20180209141207.1: ** @g.command('show-spell-info')
+@g.command('show-spell-info')
+def show_spell_info(event=None):
+    c = event.get('c')
+    if c:
+        c.spellCommands.handler.spellController.show_info()
 #@-others
 #@@language python
 #@@tabwidth -4
