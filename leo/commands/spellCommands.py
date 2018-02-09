@@ -211,7 +211,7 @@ class DefaultWrapper(BaseSpellWrapper):
     def __init__(self, c):
         """Ctor for DefaultWrapper class."""
         # pylint: disable=super-init-not-called
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         self.c = c
         if g.app.spellDict:
             if trace: g.trace('already open', c.fileName())
@@ -276,7 +276,7 @@ class DefaultWrapper(BaseSpellWrapper):
         '''Save the local dictionary.'''
         fn = self.local_fn
         if fn:
-            words = self.read_words(fn)
+            words = self.read_words('local', fn)
             words = set(words)
             for word in self.d.added_words:
                 words.add(word)
@@ -673,7 +673,7 @@ class SpellTabHandler(object):
         if enchant:
             self.spellController = EnchantWrapper(c)
         else:
-            g.es_print('Using default spell checker')
+            # g.es_print('Using default spell checker')
             self.spellController = DefaultWrapper(c)
         self.tab = g.app.gui.createSpellTab(c, self, tabName)
         self.loaded = True
