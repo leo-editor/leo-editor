@@ -303,7 +303,7 @@ class DefaultWrapper(BaseSpellWrapper):
         )
         for kind, fn in table:
             g.es_print('%s dictionary: %s' % (
-                kind, g.os_path_normpath(fn)))
+                kind, g.os_path_normpath(fn) if fn else 'None'))
     #@-others
 #@+node:ekr.20150514063305.510: ** class EnchantWrapper (BaseSpellWrapper)
 class EnchantWrapper(BaseSpellWrapper):
