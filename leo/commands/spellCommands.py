@@ -252,7 +252,7 @@ class DefaultWrapper(BaseSpellWrapper):
                 s = g.toUnicode(f.read())
                 for line in g.splitLines(s):
                     self.add_expanded_line(line, words)
-        except IOError:
+        except Exception:
             g.es_print('can not open %s dictionary: %s' % (kind, fn))
         return words
     #@+node:ekr.20180207132550.1: *4* default.add_expanded_line
