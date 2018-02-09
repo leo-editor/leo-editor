@@ -14,7 +14,8 @@ Callers are expected to use the *PyQt5* spellings of modules:
 
 # Define...
     # Qt, QtConst, QtCore, QtGui, QtWidgets, QUrl
-    # QtDeclarative, Qsci, QString, QtSvg, QtWebKit, QtWebKitWidgets
+    # QtDeclarative, QtMultimedia, Qsci, QString, QtSvg,
+    # QtWebKit, QtWebKitWidgets
     # printsupport
 import leo.core.leoGlobals as g
 strict = False
@@ -42,7 +43,7 @@ if fail:
     isQt5 = False
     QString = g.u
     Qt = QtConst = QtCore = QtGui = QtWidgets = QUrl = None
-    QtDeclarative = Qsci = QtSvg = QtWebKit = QtWebKitWidgets = None
+    QtDeclarative = Qsci = QtSvg = QtMultimedia = QtWebKit = QtWebKitWidgets = None
     phonon = uic = None
     QtMultimedia = None # Replacement for phonon.
     qt_version = '<no version>'
@@ -142,6 +143,8 @@ else:
         import PyQt4.QtDeclarative as QtDeclarative
     except ImportError:
         QtDeclarative = None
+    QtMultimedia = None
+        # Does not exist on Qt4.
     try:
         import PyQt4.phonon as phonon
         phonon = phonon.Phonon
