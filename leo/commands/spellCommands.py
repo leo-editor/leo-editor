@@ -29,10 +29,16 @@ class EnchantClass(object):
         self.c = c
         language = g.toUnicode(c.config.getString('enchant_language'))
         # Set the base language
-        if language and not enchant.dict_exists(language):
-            g.warning('Invalid language code for Enchant', repr(language))
-            g.es_print('Using "en_US" instead')
-            language = 'en_US'
+        if language:
+            # Fix #707: Don't assume dict_exists exists.
+            try:
+                ok = enchant.dict_exists(language)
+            except Exception:
+                ok = False
+            if not ok:
+                g.warning('Invalid language code for Enchant', repr(language))
+                g.es_print('Using "en_US" instead')
+                language = 'en_US'
         # Compute fn, the full path to the local dictionary.
         fn = c.config.getString('enchant_local_dictionary')
         if not fn:
@@ -395,7 +401,7 @@ class SpellTabHandler(object):
     def __init__(self, c, tabName):
         """Ctor for SpellTabHandler class."""
         if g.app.gui.isNullGui:
-            return ###
+            return
         self.c = c
         self.body = c.frame.body
         self.currentWord = None
@@ -415,6 +421,7 @@ class SpellTabHandler(object):
             self.tab = g.app.gui.createSpellTab(c, self, tabName)
             self.loaded = True
         else:
+            # g.es_print('pyenchant not installed')
             self.spellController = None
             self.tab = None
             self.loaded = False
