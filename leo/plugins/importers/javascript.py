@@ -285,15 +285,18 @@ class JS_Importer(Importer):
             assert progress < i
         return i1 # Don't skip ahead.
     #@+node:ekr.20171224145755.1: *3* js_i.starts_block
-    arrow_pattern = re.compile(r'\)\s*=>\s*\{')
-    func_pattern = re.compile(r'\bfunction\b')
+    func_patterns = [
+        re.compile(r'\)\s*=>\s*\{'),
+        re.compile(r'\bclass\b'),
+        re.compile(r'\bfunction\b'),
+    ]
 
     def starts_block(self, i, lines, new_state, prev_state):
         '''True if the new state starts a block.'''
         if new_state.level() <= prev_state.level():
             return False
         line = lines[i]
-        for pattern in (self.func_pattern, self.arrow_pattern):
+        for pattern in self.func_patterns:
             if pattern.search(line) is not None:
                 # g.trace('FOUND:', line.strip())
                 return True
