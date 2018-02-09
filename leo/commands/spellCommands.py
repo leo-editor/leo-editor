@@ -235,8 +235,9 @@ class DefaultWrapper(BaseSpellWrapper):
             ('main', self.global_fn),
         )
         for kind, fn in table:
-            words = self.read_words(kind, fn)
-            self.d.add_words_from_dict(kind, fn, words)
+            if fn:
+                words = self.read_words(kind, fn)
+                self.d.add_words_from_dict(kind, fn, words)
     #@+node:ekr.20180207110701.1: *3* default.add
     def add(self, word):
         '''Add a word to the user dictionary.'''
