@@ -285,16 +285,19 @@ class JS_Importer(Importer):
             assert progress < i
         return i1 # Don't skip ahead.
     #@+node:ekr.20171224145755.1: *3* js_i.starts_block
+    arrow_pattern = re.compile(r'\)\s*=>\s*\{')
+    func_pattern = re.compile(r'\bfunction\b')
+
     def starts_block(self, i, lines, new_state, prev_state):
         '''True if the new state starts a block.'''
+        if new_state.level() <= prev_state.level():
+            return False
         line = lines[i]
-        j = line.find('function')
-        is_function = j > -1 and g.match_word(line, j, 'function')
-        return new_state.level() > prev_state.level() and is_function
-        # return (
-            # not prev_state.context and
-            # new_state.level() > prev_state.level() and
-            # is_function)
+        for pattern in (self.func_pattern, self.arrow_pattern):
+            if pattern.search(line) is not None:
+                # g.trace('FOUND:', line.strip())
+                return True
+        return False
     #@+node:ekr.20161101183354.1: *3* js_i.clean_headline
     def clean_headline(self, s, p=None):
         '''Return a cleaned up headline s.'''
