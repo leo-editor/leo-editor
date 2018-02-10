@@ -1727,7 +1727,7 @@ class FileCommands(object):
             c.redraw_after_icons_changed()
         g.doHook("save2", c=c, p=p, fileName=fileName)
     #@+node:ekr.20031218072017.3044: *5* fc.saveTo
-    def saveTo(self, fileName):
+    def saveTo(self, fileName, silent=False):
         c = self.c
         p = c.p
         if not g.doHook("save1", c=c, p=p, fileName=fileName):
@@ -1743,7 +1743,8 @@ class FileCommands(object):
                 self.write_Leo_file(fileName, outlineOnlyFlag=False)
             finally:
                 c.ignoreChangedPaths = False
-            self.putSavedMessage(fileName)
+            if not silent:
+                self.putSavedMessage(fileName)
             c.redraw_after_icons_changed()
         g.doHook("save2", c=c, p=p, fileName=fileName)
     #@+node:ekr.20070413061552: *5* fc.putSavedMessage

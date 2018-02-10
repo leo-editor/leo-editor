@@ -2116,7 +2116,7 @@ class Commands(object):
         return path
     #@+node:ekr.20171124101444.1: *3* c.File
     #@+node:ekr.20150422080541.1: *4* c.backup
-    def backup(self, fileName=None, prefix=None, useTimeStamp=True):
+    def backup(self, fileName=None, prefix=None, silent=False, useTimeStamp=True):
         '''
         Back up given fileName or c.fileName().
         If useTimeStamp is True, append a timestamp to the filename.
@@ -2138,9 +2138,37 @@ class Commands(object):
         if path:
             # pylint: disable=no-member
                 # Defined in commanderFileCommands.py.
-            c.saveTo(fileName=path)
+            c.saveTo(fileName=path, silent=silent)
                 # Issues saved message.
-            g.es('in', theDir)
+            # g.es('in', theDir)
+        return path
+    #@+node:ekr.20180210092235.1: *4* c.backup_helper
+    def backup_helper(self, base_dir=None, env_key='LEO_BACKUP', sub_dir=None):
+        '''
+        A helper for scripts that back up a .leo file.
+        Use os.environ[env_key] as the base_dir only if base_dir is not given.
+        Backup to base_dir or join(base_dir, sub_dir).
+        '''
+        c = self
+        join = g.os_path_finalize_join
+        if not base_dir:
+            if env_key:
+                try:
+                    base_dir = os.environ[env_key]
+                except KeyError:
+                    print('No environment var: %s' % env_key)
+                    base_dir = None
+        if base_dir and g.os_path_exists(base_dir):
+            theDir, fn = g.os_path_split(c.fileName())
+            backup_dir = join(base_dir, sub_dir) if sub_dir else base_dir
+            path = join(backup_dir, fn)
+            if g.os_path_exists(backup_dir):
+                written_fn = c.backup(path, silent=True, useTimeStamp=True)
+                g.es_print('wrote: %s' % written_fn)
+            else:
+                g.es_print('backup_dir not found: %r' % backup_dir)
+        else:
+            g.es_print('base_dir not found: %r' % base_dir)
     #@+node:ekr.20090103070824.11: *4* c.checkFileTimeStamp
     def checkFileTimeStamp(self, fn):
         '''

@@ -431,7 +431,7 @@ def saveAs(self, event=None, fileName=None):
         c.treeWantsFocus()
 #@+node:ekr.20031218072017.2836: *3* c_file.saveTo
 @g.commander_command('save-file-to')
-def saveTo(self, event=None, fileName=None):
+def saveTo(self, event=None, fileName=None, silent=False):
     '''Save a Leo outline to a file, leaving the file associated with the Leo outline unchanged.'''
     c = self; p = c.p
     # Do this now: w may go away.
@@ -456,7 +456,7 @@ def saveTo(self, event=None, fileName=None):
     c.bringToFront()
     if fileName:
         fileName = g.ensure_extension(fileName, g.defaultLeoFileExtension(c))
-        c.fileCommands.saveTo(fileName)
+        c.fileCommands.saveTo(fileName, silent=silent)
         g.app.recentFilesManager.updateRecentFiles(fileName)
         g.chdir(fileName)
     c.raise_error_dialogs(kind='write')
