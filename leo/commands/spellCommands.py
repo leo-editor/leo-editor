@@ -87,17 +87,6 @@ class BaseSpellWrapper(object):
                 '.leo',
                 'spellpyx.txt')
         return fn
-    #@+node:ekr.20180207100238.1: *3* spell.find_global_dict
-    def find_global_dict(self):
-        '''Return the full path to the global dictionary.'''
-        c = self.c
-        fn = c.config.getString('main_spelling_dictionary')
-        if fn and g.os_path_exists(fn):
-            return fn
-        # Default to ~/.leo/main_spelling_dict.txt
-        fn = g.os_path_finalize_join(
-            g.app.homeDir, '.leo', 'main_spelling_dict.txt')
-        return fn if g.os_path_exists(fn) else None
     #@+node:ekr.20150514063305.515: *3* spell.ignore
     def ignore(self, word):
         
@@ -229,7 +218,7 @@ class DefaultWrapper(BaseSpellWrapper):
             # Fix bug 1175013: leo/plugins/spellpyx.txt is
             # both source controlled and customized.
             self.create(self.local_fn)
-        self.global_fn = self.find_global_dict()
+        self.global_fn = self.find_main_dict()
         table = (
             ('user', self.local_fn),
             ('main', self.global_fn),
@@ -244,6 +233,17 @@ class DefaultWrapper(BaseSpellWrapper):
         self.d.add(word)
         self.d.add(word.lower())
         self.save_local_dict()
+    #@+node:ekr.20180207100238.1: *3* default.find_main_dict
+    def find_main_dict(self):
+        '''Return the full path to the global dictionary.'''
+        c = self.c
+        fn = c.config.getString('main_spelling_dictionary')
+        if fn and g.os_path_exists(fn):
+            return fn
+        # Default to ~/.leo/main_spelling_dict.txt
+        fn = g.os_path_finalize_join(
+            g.app.homeDir, '.leo', 'main_spelling_dict.txt')
+        return fn if g.os_path_exists(fn) else None
     #@+node:ekr.20180207073815.1: *3* default.read_words & helper
     def read_words(self, kind, fn):
         '''Return all the words from the dictionary file.'''
