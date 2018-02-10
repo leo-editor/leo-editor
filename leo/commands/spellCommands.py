@@ -203,15 +203,15 @@ class DefaultWrapper(BaseSpellWrapper):
             if trace: g.trace('already open', c.fileName())
             return
         g.app.spellDict = self.d = DefaultDict()
-        self.local_fn = self.find_user_dict()
-        if not g.os_path_exists(self.local_fn):
+        self.user_fn = self.find_user_dict()
+        if not g.os_path_exists(self.user_fn):
             # Fix bug 1175013: leo/plugins/spellpyx.txt is
             # both source controlled and customized.
-            self.create(self.local_fn)
-        self.global_fn = self.find_main_dict()
+            self.create(self.user_fn)
+        self.main_fn = self.find_main_dict()
         table = (
-            ('user', self.local_fn),
-            ('main', self.global_fn),
+            ('user', self.user_fn),
+            ('main', self.main_fn),
         )
         for kind, fn in table:
             if fn:
@@ -272,7 +272,7 @@ class DefaultWrapper(BaseSpellWrapper):
     #@+node:ekr.20180207110718.1: *3* default.save
     def save_local_dict(self):
         '''Save the local dictionary.'''
-        fn = self.local_fn
+        fn = self.user_fn
         if fn:
             words = self.read_words('user', fn)
             words = set(words)
@@ -286,11 +286,19 @@ class DefaultWrapper(BaseSpellWrapper):
     #@+node:ekr.20180209141933.1: *3* default.show_info
     def show_info(self):
         
-        g.es_print('Default spell checker')
-        table = (
-            ('main', self.global_fn),
-            ('user', self.local_fn),
-        )
+        if self.main_fn:
+            g.es_print('Default spell checker')
+            table = (
+                ('main', self.main_fn),
+                ('user', self.user_fn),
+            )
+        else:
+            g.es_print('\nSpell checking has been disabled.')
+            g.es_print('To enable, put a main dictionary at:')
+            g.es_print('~/.leo/main_spelling_dict.txt')
+            table = (
+                ('user', self.user_fn),
+            )
         for kind, fn in table:
             g.es_print('%s dictionary: %s' % (
                 kind, g.os_path_normpath(fn) if fn else 'None'))
@@ -693,11 +701,18 @@ class SpellTabHandler(object):
             # Must have a parent frame even though it is not packed.
         if enchant:
             self.spellController = EnchantWrapper(c)
+            self.tab = g.app.gui.createSpellTab(c, self, tabName)
+            self.loaded = True
+            return
+        # Create the spellController for the show-spell-info command.
+        self.spellController = DefaultWrapper(c)
+        self.loaded = bool(self.spellController.main_fn)
+        if self.loaded:
+            # Create the spell tab only if the main dict exists.
+            self.tab = g.app.gui.createSpellTab(c, self, tabName)
         else:
-            # g.es_print('Using default spell checker')
-            self.spellController = DefaultWrapper(c)
-        self.tab = g.app.gui.createSpellTab(c, self, tabName)
-        self.loaded = True
+            # g.es_print('No main dictionary')
+            self.tab = None
     #@+node:ekr.20150514063305.502: *3* Commands
     #@+node:ekr.20150514063305.503: *4* add (spellTab)
     def add(self, event=None):
