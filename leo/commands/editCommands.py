@@ -3708,10 +3708,7 @@ def mark_first_parents(event):
 #@+node:ekr.20180210161001.1: ** @g.command('unmark-first-parents')
 @g.command('unmark-first-parents')
 def unmark_first_parents(event=None):
-    """
-    Unmark the first parent of each node, moving up the tree
-    to the top level. print the list of unmarked parents.
-    """
+    '''Mark the node and all its parents.'''
     c = event.get('c')
     if not c:
         return
