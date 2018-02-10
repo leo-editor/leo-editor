@@ -9,20 +9,10 @@
 import re
 import leo.core.leoGlobals as g
 from leo.commands.baseCommands import BaseEditCommandsClass as BaseEditCommandsClass
-# Prefer enchant to experimental nltk code.
-###
-# enchant = None
-# nltk = None
 try:
     import enchant
 except Exception: # May throw WinError(!)
     enchant = None
-    ###
-    # try:
-        # import nltk
-        # from nltk.metrics import edit_distance
-    # except Exception:
-        # nltk = None
 #@-<< imports >>
 
 def cmd(name):
