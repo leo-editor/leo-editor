@@ -3687,5 +3687,44 @@ class EditCommandsClass(BaseEditCommandsClass):
         k.resetLabel()
         k.showStateAndMode()
     #@-others
+#@+node:ekr.20180210160930.1: ** @g.command('mark-first-parents')
+@g.command('mark-first-parents')
+def mark_first_parents(event):
+    '''Mark the node and all its parents.'''
+    c = event.get('c')
+    if not c:
+        return
+    changed = []
+    for parent in c.p.self_and_parents():
+        if not parent.isMarked():
+            parent.v.setMarked()
+            parent.setAllAncestorAtFileNodesDirty()
+            changed.append(parent.copy())
+    if changed:
+        # g.es("marked: " + ', '.join([z.h for z in changed]))
+        c.setChanged()
+        c.redraw()
+    return changed
+#@+node:ekr.20180210161001.1: ** @g.command('unmark-first-parents')
+@g.command('unmark-first-parents')
+def unmark_first_parents(event=None):
+    """
+    Unmark the first parent of each node, moving up the tree
+    to the top level. print the list of unmarked parents.
+    """
+    c = event.get('c')
+    if not c:
+        return
+    changed = []
+    for parent in c.p.self_and_parents():
+        if parent.isMarked():
+            parent.v.clearMarked()
+            parent.setAllAncestorAtFileNodesDirty()
+            changed.append(parent.copy())
+    if changed:
+        # g.es("unmarked: " + ', '.join([z.h for z in changed]))
+        c.setChanged()
+        c.redraw()
+    return changed
 #@-others
 #@-leo
