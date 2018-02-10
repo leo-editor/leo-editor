@@ -69,8 +69,8 @@ class BaseSpellWrapper(object):
         except Exception:
             g.error('unexpected error creating: %s' % (fn))
             g.es_exception()
-    #@+node:ekr.20180207072351.1: *3* spell.find_local_dict
-    def find_local_dict(self):
+    #@+node:ekr.20180207072351.1: *3* spell.find_user_dict
+    def find_user_dict(self):
         '''Return the full path to the local dictionary.'''
         c = self.c
         fn = c.config.getString('enchant_local_dictionary')
@@ -213,7 +213,7 @@ class DefaultWrapper(BaseSpellWrapper):
             if trace: g.trace('already open', c.fileName())
             return
         g.app.spellDict = self.d = DefaultDict()
-        self.local_fn = self.find_local_dict()
+        self.local_fn = self.find_user_dict()
         if not g.os_path_exists(self.local_fn):
             # Fix bug 1175013: leo/plugins/spellpyx.txt is
             # both source controlled and customized.
@@ -315,7 +315,7 @@ class EnchantWrapper(BaseSpellWrapper):
         # pylint: disable=super-init-not-called
         self.c = c
         self.init_language()
-        fn = self.find_local_dict()
+        fn = self.find_user_dict()
         g.app.spellDict = self.d = self.open_dict_file(fn)
     #@+node:ekr.20180207073536.1: *3* enchant.create_dict_from_file
     def create_dict_from_file(self, fn, language):
@@ -421,7 +421,7 @@ class EnchantWrapper(BaseSpellWrapper):
     def show_info(self):
 
         g.es_print('pyenchant spell checker')
-        g.es_print('user dictionary:   %s' % self.find_local_dict())
+        g.es_print('user dictionary:   %s' % self.find_user_dict())
         try:
             aList = enchant.list_dicts()
             aList2 = [a for a, b in aList]
