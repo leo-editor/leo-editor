@@ -84,7 +84,8 @@ class EditFileCommandsClass(BaseEditCommandsClass):
             c.undoer.afterChangeTree(p, undoType, bunch)
         g.es_print('%s node%s cleaned' % (n, g.plural(n)))
     #@+node:ekr.20170806094317.6: *3* efc.compareAnyTwoFiles & helpers
-    @cmd('file-compare-leo-files')
+    @cmd('file-compare-two-leo-files')
+    @cmd('compare-two-leo-files')
     def compareAnyTwoFiles(self, event):
         '''Compare two files.'''
         trace = False and not g.unitTesting
