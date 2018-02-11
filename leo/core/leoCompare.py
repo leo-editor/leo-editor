@@ -2,6 +2,7 @@
 #@+node:ekr.20031218072017.3630: * @file leoCompare.py
 """Leo's base compare class."""
 import leo.core.leoGlobals as g
+import difflib
 import filecmp
 import os
 #@+others
@@ -164,6 +165,19 @@ class BaseLeoCompare(object):
         if name1 == name2:
             self.show("File names are identical.\nPlease pick distinct files.")
             return
+        self.compare_two_files(name1, name2)
+    #@+node:ekr.20180211123531.1: *3* compare_list_of_files (entry for scripts)
+    def compare_list_of_files(self, aList1):
+        
+        aList = list(set(aList1))
+        while len(aList) > 1:
+            path1 = aList[0]
+            for path2 in aList[1:]:
+                g.trace('COMPARE', path1, path2)
+                self.compare_two_files(path1, path2)
+    #@+node:ekr.20180211123741.1: *3* compare_two_files
+    def compare_two_files(self, name1, name2):
+        '''A helper function.'''
         f1 = f2 = None
         try:
             f1 = self.doOpen(name1)
@@ -172,7 +186,8 @@ class BaseLeoCompare(object):
                 self.openOutputFile()
             ok = self.outputFileName is None or self.outputFile
             ok = 1 if ok and ok != 0 else 0
-            if f1 and f2 and ok: # Don't compare if there is an error opening the output file.
+            if f1 and f2 and ok:
+                # Don't compare if there is an error opening the output file.
                 self.compare_open_files(f1, f2, name1, name2)
         except Exception:
             self.show("exception comparing files")
@@ -294,7 +309,7 @@ class BaseLeoCompare(object):
         self.show("lines2:" + str(lines2))
         self.show("mismatches:" + str(mismatches))
         #@-<< handle reporting after at least one eof is seen >>
-    #@+node:ekr.20031218072017.3644: *3* filecmp
+    #@+node:ekr.20031218072017.3644: *3* compare.filecmp
     def filecmp(self, f1, f2):
         val = filecmp.cmp(f1, f2)
         if 1:
@@ -305,8 +320,8 @@ class BaseLeoCompare(object):
             if val: self.show(str(val) + " (equal)")
             else: self.show(str(val) + " (not equal)")
         return val
-    #@+node:ekr.20031218072017.3645: *3* utils...
-    #@+node:ekr.20031218072017.3646: *4* doOpen
+    #@+node:ekr.20031218072017.3645: *3* compare.utils...
+    #@+node:ekr.20031218072017.3646: *4* compare.doOpen
     def doOpen(self, name):
         try:
             f = open(name, 'r')
@@ -314,7 +329,7 @@ class BaseLeoCompare(object):
         except Exception:
             self.show("can not open:" + '"' + name + '"')
             return None
-    #@+node:ekr.20031218072017.3647: *4* dump
+    #@+node:ekr.20031218072017.3647: *4* compare.dump
     def dump(self, tag, s):
         compare = self; out = tag
         for ch in s[: -1]: # don't print the newline
@@ -333,7 +348,7 @@ class BaseLeoCompare(object):
                     else:
                         out += ch
         self.show(out)
-    #@+node:ekr.20031218072017.3648: *4* dumpToEndOfFile
+    #@+node:ekr.20031218072017.3648: *4* compare.dumpToEndOfFile
     def dumpToEndOfFile(self, tag, f, s, line, printTrailing):
         trailingLines = 0
         while 1:
@@ -349,7 +364,7 @@ class BaseLeoCompare(object):
             s = None
         self.show(tag + str(trailingLines) + " trailing lines")
         return trailingLines
-    #@+node:ekr.20031218072017.3649: *4* isLeoHeader & isSentinel
+    #@+node:ekr.20031218072017.3649: *4* compare.isLeoHeader & isSentinel
     #@+at These methods are based on AtFile.scanHeader(). They are simpler
     # because we only care about the starting sentinel comment: any line
     # starting with the starting sentinel comment is presumed to be a
@@ -368,7 +383,7 @@ class BaseLeoCompare(object):
     def isSentinel(self, s, sentinelComment):
         i = g.skip_ws(s, 0)
         return g.match(s, i, sentinelComment)
-    #@+node:ekr.20031218072017.1144: *4* openOutputFile (compare)
+    #@+node:ekr.20031218072017.1144: *4* compare.openOutputFile
     def openOutputFile(self):
         if self.outputFileName is None:
             return
@@ -393,7 +408,7 @@ class BaseLeoCompare(object):
                 self.outputFile = None
                 self.show("exception opening output file")
                 g.es_exception()
-    #@+node:ekr.20031218072017.3650: *4* show (LeoCompare) (not changed)
+    #@+node:ekr.20031218072017.3650: *4* compare.show
     def show(self, s):
         # g.pr(s)
         if self.outputFile:
@@ -405,7 +420,7 @@ class BaseLeoCompare(object):
         else:
             g.pr(s)
             g.pr('')
-    #@+node:ekr.20031218072017.3651: *4* showIvars
+    #@+node:ekr.20031218072017.3651: *4* compare.showIvars
     def showIvars(self):
         self.show("fileName1:" + str(self.fileName1))
         self.show("fileName2:" + str(self.fileName2))
@@ -426,8 +441,196 @@ class BaseLeoCompare(object):
     #@-others
 
 class LeoCompare(BaseLeoCompare):
-    """A class containing Leo's compare code."""
+    """
+    A class containing Leo's compare code.
+    
+    These are not very useful comparisons.
+    """
     pass
+#@+node:ekr.20180211170333.1: ** class CompareLeoOutlines
+class CompareLeoOutlines:
+    '''
+    A class to do outline-oriented diffs of two or more .leo files.
+    Similar to GitDiffController, adapted for use by scripts.
+    '''
+    
+    def __init__ (self, c):
+        '''Ctor for the LeoOutlineCompare class.'''
+        self.c = c
+        self.file_node = None
+        self.open_commanders = [frame.c for frame in g.app.windowList]
+        self.root = None
+        self.path1 = None
+        self.path2 = None
+
+    #@+others
+    #@+node:ekr.20180211170333.2: *3* loc.diff_list_of_files (entry)
+    def diff_list_of_files(self, aList):
+        '''The main entry point for scripts.'''
+        if len(aList) < 2:
+            g.trace('Not enough files in', repr(aList))
+            return
+        self.root = self.create_root(aList)
+        while len(aList) > 1:
+            self.path1 = aList[0]
+            aList = aList[1:]
+            for path2 in aList:
+                self.path2 = path2
+                self.diff_two_files(self.path1, self.path2)
+        self.finish()
+    #@+node:ekr.20180211170333.3: *3* loc.diff_two_files
+    def diff_two_files(self, fn1, fn2):
+        '''Create an outline describing the git diffs for fn.'''
+        g.trace('DIFF:...\n%s\n%s' % (fn1, fn2))
+        s1 = self.get_file(fn1)
+        s2 = self.get_file(fn2)
+        lines1 = g.splitLines(s1)
+        lines2 = g.splitLines(s2)
+        diff_list = list(difflib.unified_diff(lines1, lines2, fn1, fn2))
+        diff_list.insert(0, '@language patch\n')
+        self.file_node = self.create_file_node(diff_list, fn1, fn2)
+        c1 = self.make_hidden_outline(fn1)
+        c2 = self.make_hidden_outline(fn2)
+        if c1 and c2:
+            self.make_diff_outlines(c1, c2)
+            for hidden_c in (c1, c2):
+                if hidden_c not in self.open_commanders:
+                    del hidden_c
+        ### Not yet
+            # self.file_node.b = '%s\n@language %s\n' % (
+                # self.file_node.b.rstrip(), c2.target_language)
+    #@+node:ekr.20180211170333.4: *3* loc.Utils
+    #@+node:ekr.20180211170333.5: *4* loc.compute_dicts
+    def compute_dicts(self, c1, c2):
+        '''Compute inserted, deleted, changed dictionaries.'''
+        trace = False and not g.unitTesting
+        d1 = {v.fileIndex: v for v in c1.all_unique_nodes()} 
+        d2 = {v.fileIndex: v for v in c2.all_unique_nodes()}
+        if trace:
+            g.trace('len(d1)', len(d1.keys()))
+            g.trace('len(d2)', len(d2.keys()))
+        added   = {key: d2.get(key) for key in d2 if not d1.get(key)}
+        deleted = {key: d1.get(key) for key in d1 if not d2.get(key)}
+        changed = {}
+        for key in d1:
+            if key in d2:
+                v1 = d1.get(key)
+                v2 = d2.get(key)
+                assert v1 and v2
+                assert v1.context != v2.context
+                if v1.h != v2.h or v1.b != v2.b:
+                    changed[key] = (v1, v2)
+        if trace:
+            for kind, d in (('added', added), ('deleted', deleted), ('changed', changed)):
+                g.trace(kind)
+                g.printObj(d)
+        return added, deleted, changed
+    #@+node:ekr.20180211170333.6: *4* loc.create_compare_node
+    def create_compare_node(self, c1, c2, d, kind):
+        '''Create nodes describing the changes.'''
+        if not d:
+            return
+        parent = self.file_node.insertAsLastChild()
+        parent.setHeadString(kind)
+        for key in d:
+            if kind.lower() == 'changed':
+                v1, v2 = d.get(key)
+                # Organizer node: contains diff
+                organizer = parent.insertAsLastChild()
+                organizer.h = v2.h
+                body = list(difflib.unified_diff(
+                    g.splitLines(v1.b),
+                    g.splitLines(v2.b),
+                    self.path1,
+                    self.path2,
+                ))
+                if ''.join(body).strip():
+                    body.insert(0, '@language patch\n')
+                    body.append('@language %s\n' % (c2.target_language))
+                else:
+                    body = ['Only headline has changed']
+                organizer.b = ''.join(body)
+                # Node 2: Old node
+                p2 = organizer.insertAsLastChild()
+                p2.h = 'Old:' + v1.h
+                p2.b = v1.b
+                # Node 3: New node
+                assert v1.fileIndex == v2.fileIndex
+                p_in_c = self.find_gnx(self.c, v1.fileIndex)
+                if p_in_c: # Make a clone, if possible.
+                    p3 = p_in_c.clone()
+                    p3.moveToLastChildOf(organizer)
+                else:
+                    p3 = organizer.insertAsLastChild()
+                    p3.h = 'New:' + v2.h
+                    p3.b = v2.b
+            else:
+                v = d.get(key)
+                p = parent.insertAsLastChild()
+                p.h = v.h
+                p.b = v.b
+    #@+node:ekr.20180211170333.7: *4* loc.create_file_node
+    def create_file_node(self, diff_list, fn1, fn2):
+        '''Create an organizer node for the file.'''
+        p = self.root.insertAsLastChild()
+        p.h = '%s, %s' % (g.shortFileName(fn1).strip(), g.shortFileName(fn2).strip())
+        p.b = ''.join(diff_list)
+        return p
+    #@+node:ekr.20180211170333.8: *4* loc.create_root
+    def create_root(self, aList):
+        '''Create the top-level organizer node describing all the diffs.'''
+        c = self.c
+        g.trace('*****', g.callers())
+        p = c.lastTopLevel().insertAfter()
+        p.h = 'outline diff'
+        p.b = '\n'.join(aList) + '\n'
+        return p
+    #@+node:ekr.20180211170333.9: *4* loc.find_gnx
+    def find_gnx(self, c, gnx):
+        '''Return a position in c having the given gnx.'''
+        for p in c.all_unique_positions():
+            if p.v.fileIndex == gnx:
+                return p
+        return None
+    #@+node:ekr.20180211170333.10: *4* loc.finish
+    def finish(self):
+        '''Finish execution of this command.'''
+        c = self.c
+        c.contractAllHeadlines(redrawFlag=False)
+        self.root.expand()
+        c.selectPosition(self.root)
+        c.redraw()
+    #@+node:ekr.20180211170333.11: *4* loc.get_file
+    def get_file(self, path):
+        '''Return the contents of the file whose path is given.'''
+        with open(path, 'rb') as f:
+            s = f.read()
+        return g.toUnicode(s).replace('\r','')
+    #@+node:ekr.20180211170333.13: *4* loc.make_diff_outlines
+    def make_diff_outlines(self, c1, c2):
+        '''Create an outline-oriented diff from the outlines c1 and c2.'''
+        added, deleted, changed = self.compute_dicts(c1, c2)
+        table = (
+            (added, 'Added'),
+            (deleted, 'Deleted'),
+            (changed, 'Changed'))
+        for d, kind in table:
+            self.create_compare_node(c1, c2, d, kind)
+    #@+node:ekr.20180211170333.14: *4* loc.make_hidden_outline
+    def make_hidden_outline(self, fn):
+        '''Create a hidden temp outline for fn.'''
+        # Compare only headlines that have not been loaded.
+        for c2 in self.open_commanders:
+            if c2.fileName() == fn:
+                g.trace('Can not use an open commander:', c2.shortFileName())
+                return None
+        # Like readOutlineOnly.
+        f = open(fn, 'rb')
+        c2 = g.app.newCommander(fn, gui=g.app.nullGui)
+        c2.fileCommands.readOutlineOnly(f, fn)
+            # Closes the file
+        return c2
+    #@-others
 #@-others
 #@@language python
 #@@tabwidth -4
