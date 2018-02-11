@@ -197,12 +197,10 @@ class DefaultWrapper(BaseSpellWrapper):
     def __init__(self, c):
         """Ctor for DefaultWrapper class."""
         # pylint: disable=super-init-not-called
-        trace = False and not g.unitTesting
         self.c = c
-        if g.app.spellDict:
-            if trace: g.trace('already open', c.fileName())
-            return
-        g.app.spellDict = self.d = DefaultDict()
+        if not g.app.spellDict:
+            g.app.spellDict = DefaultDict()
+        self.d = g.app.spellDict
         self.user_fn = self.find_user_dict()
         if not g.os_path_exists(self.user_fn):
             # Fix bug 1175013: leo/plugins/spellpyx.txt is
