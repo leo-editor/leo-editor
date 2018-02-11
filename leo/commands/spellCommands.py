@@ -64,7 +64,6 @@ class BaseSpellWrapper(object):
         '''Return the full path to the local dictionary.'''
         c = self.c
         fn = c.config.getString('enchant_local_dictionary')
-        g.trace(fn)
         if not fn:
             fn = g.os_path_finalize_join(
                 g.app.loadDir,
