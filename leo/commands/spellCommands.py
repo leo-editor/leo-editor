@@ -220,7 +220,7 @@ class DefaultWrapper(BaseSpellWrapper):
         '''Add a word to the user dictionary.'''
         self.d.add(word)
         self.d.add(word.lower())
-        self.save_local_dict()
+        self.save_user_dict()
     #@+node:ekr.20180207100238.1: *3* default.find_main_dict
     def find_main_dict(self):
         '''Return the full path to the global dictionary.'''
@@ -267,21 +267,37 @@ class DefaultWrapper(BaseSpellWrapper):
             words.add(s+'s')
             words.add(s.lower()+'s')
       
-    #@+node:ekr.20180207110718.1: *3* default.save_local_dict
-    def save_local_dict(self):
-        '''Save the local dictionary.'''
-        fn = self.user_fn
-        if fn:
-            words = self.read_words('user', fn)
-            words = set(words)
+    #@+node:ekr.20180207110718.1: *3* default.save_dict
+    def save_dict(self, kind, fn, trace=False):
+        '''
+        Save the dictionary whose name is given, alphabetizing the file.
+        Write added words to the file if kind is 'user'.
+        '''
+        if not fn:
+            return
+        words = self.read_words(kind, fn)
+        if not words:
+            return
+        words = set(words)
+        if kind == 'user':
             for word in self.d.added_words:
                 words.add(word)
-            f = open(fn, mode='wb')
-            aList = sorted(words, key=lambda s: s.lower())
-            # g.trace(len(aList))
-            s = '\n'.join(aList) + '\n'
-            f.write(g.toEncodedString(s))
-            f.close()
+        aList = sorted(words, key=lambda s: s.lower())
+        if trace:
+            # The clean-*-spell-dict commands set trace = True.
+            print('%s words in %s' % (len(aList), fn))
+        f = open(fn, mode='wb')
+        s = '\n'.join(aList) + '\n'
+        f.write(g.toEncodedString(s))
+        f.close()
+    #@+node:ekr.20180211104628.1: *3* default.save_main/user_dict
+    def save_main_dict(self, trace=False):
+        
+        self.save_dict('main', self.main_fn, trace=trace)
+        
+    def save_user_dict(self, trace=False):
+
+        self.save_dict('user', self.user_fn, trace=trace)
     #@+node:ekr.20180209141933.1: *3* default.show_info
     def show_info(self):
         
@@ -678,8 +694,7 @@ class SpellCommandsClass(BaseEditCommandsClass):
 class SpellTabHandler(object):
     """A class to create and manage Leo's Spell Check dialog."""
     #@+others
-    #@+node:ekr.20150514063305.500: *3* Birth & death
-    #@+node:ekr.20150514063305.501: *4* SpellTabHandler.__init__
+    #@+node:ekr.20150514063305.501: *3* SpellTabHandler.__init__
     def __init__(self, c, tabName):
         """Ctor for SpellTabHandler class."""
         if g.app.gui.isNullGui:
@@ -848,6 +863,30 @@ def show_spell_info(event=None):
     c = event.get('c')
     if c:
         c.spellCommands.handler.spellController.show_info()
+#@+node:ekr.20180211104019.1: ** @g.command('clean-main-spell-dict')
+@g.command('clean-main-spell-dict')
+def clean_main_spell_dict(event):
+    '''
+    Clean the main spelling dictionary used *only* by the default spell
+    checker.
+    
+    This command works regardless of the spell checker being used.
+    '''
+    c = event and event.get('c')
+    if c:
+        DefaultWrapper(c).save_main_dict(trace=True)
+#@+node:ekr.20180211105748.1: ** @g.command('clean-user-spell-dict')
+@g.command('clean-user-spell-dict')
+def clean_user_spell_dict(event):
+    '''
+    Clean the user spelling dictionary used *only* by the default spell
+    checker. Mostly for debugging, because this happens automatically.
+    
+    This command works regardless of the spell checker being used.
+    '''
+    c = event and event.get('c')
+    if c:
+        DefaultWrapper(c).save_user_dict(trace=True)
 #@-others
 #@@language python
 #@@tabwidth -4
