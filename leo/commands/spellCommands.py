@@ -267,7 +267,7 @@ class DefaultWrapper(BaseSpellWrapper):
             words.add(s+'s')
             words.add(s.lower()+'s')
       
-    #@+node:ekr.20180207110718.1: *3* default.save
+    #@+node:ekr.20180207110718.1: *3* default.save_local_dict
     def save_local_dict(self):
         '''Save the local dictionary.'''
         fn = self.user_fn
@@ -277,10 +277,11 @@ class DefaultWrapper(BaseSpellWrapper):
             for word in self.d.added_words:
                 words.add(word)
             f = open(fn, mode='wb')
-            s = '\n'.join(sorted(words)) + '\n'
+            aList = sorted(words, key=lambda s: s.lower())
+            # g.trace(len(aList))
+            s = '\n'.join(aList) + '\n'
             f.write(g.toEncodedString(s))
             f.close()
-        
     #@+node:ekr.20180209141933.1: *3* default.show_info
     def show_info(self):
         
