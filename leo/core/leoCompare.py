@@ -459,6 +459,7 @@ class CompareLeoOutlines:
         self.c = c
         self.file_node = None
         self.open_commanders = [frame.c for frame in g.app.windowList]
+        self.newly_opened_commanders = []
         self.root = None
         self.path1 = None
         self.path2 = None
@@ -489,16 +490,14 @@ class CompareLeoOutlines:
         diff_list = list(difflib.unified_diff(lines1, lines2, fn1, fn2))
         diff_list.insert(0, '@language patch\n')
         self.file_node = self.create_file_node(diff_list, fn1, fn2)
-        c1 = self.make_hidden_outline(fn1)
-        c2 = self.make_hidden_outline(fn2)
+        # These will be left open
+        c1 = self.open_outline_only(fn1)
+        c2 = self.open_outline_only(fn2)
         if c1 and c2:
             self.make_diff_outlines(c1, c2)
-            for hidden_c in (c1, c2):
-                if hidden_c not in self.open_commanders:
-                    del hidden_c
-        ### Not yet
-            # self.file_node.b = '%s\n@language %s\n' % (
-                # self.file_node.b.rstrip(), c2.target_language)
+            self.file_node.b = '%s\n@language %s\n' % (
+                self.file_node.b.rstrip(),
+                c2.target_language)
     #@+node:ekr.20180211170333.4: *3* loc.Utils
     #@+node:ekr.20180211170333.5: *4* loc.compute_dicts
     def compute_dicts(self, c1, c2):
@@ -596,6 +595,9 @@ class CompareLeoOutlines:
     def finish(self):
         '''Finish execution of this command.'''
         c = self.c
+        if hasattr(g.app.gui, 'frameFactory'):
+            tff = g.app.gui.frameFactory
+            tff.setTabForCommander(c)
         c.contractAllHeadlines(redrawFlag=False)
         self.root.expand()
         c.selectPosition(self.root)
@@ -616,19 +618,24 @@ class CompareLeoOutlines:
             (changed, 'Changed'))
         for d, kind in table:
             self.create_compare_node(c1, c2, d, kind)
-    #@+node:ekr.20180211170333.14: *4* loc.make_hidden_outline
-    def make_hidden_outline(self, fn):
+    #@+node:ekr.20180211170333.14: *4* loc.open_outline_only
+    def open_outline_only(self, fn):
         '''Create a hidden temp outline for fn.'''
-        # Compare only headlines that have not been loaded.
+        # Use previously-opened outlines if possible.
+        for c2 in self.newly_opened_commanders:
+            if c2.fileName() == fn:
+                return c2
+        # Don't use any other open commanders.
         for c2 in self.open_commanders:
             if c2.fileName() == fn:
                 g.trace('Can not use an open commander:', c2.shortFileName())
                 return None
         # Like readOutlineOnly.
         f = open(fn, 'rb')
-        c2 = g.app.newCommander(fn, gui=g.app.nullGui)
+        c2 = g.app.newCommander(fn) # gui=g.app.nullGui)
         c2.fileCommands.readOutlineOnly(f, fn)
             # Closes the file
+        self.newly_opened_commanders.append(c2)
         return c2
     #@-others
 #@-others
