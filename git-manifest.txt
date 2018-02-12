@@ -1,7 +1,7 @@
 .gitattributes
 About leo.exe.TXT
 INSTALL.TXT
-LICENSE.TXT
+LICENSE
 MANIFEST.in
 Makefile
 PKG-INFO.TXT
@@ -3713,6 +3713,7 @@ leo/plugins/dtest.py
 leo/plugins/dump_globals.py
 leo/plugins/editpane/__init__.py
 leo/plugins/editpane/clicky_splitter.py
+leo/plugins/editpane/csvedit.py
 leo/plugins/editpane/editpane.py
 leo/plugins/editpane/leotextedit.py
 leo/plugins/editpane/markdownview.py
@@ -3765,6 +3766,7 @@ leo/plugins/importers/php.py
 leo/plugins/importers/python.py
 leo/plugins/importers/readme.txt
 leo/plugins/importers/tcl.py
+leo/plugins/importers/treepad.py
 leo/plugins/importers/typescript.py
 leo/plugins/importers/xml.py
 leo/plugins/initinclass.py
@@ -3923,6 +3925,7 @@ leo/plugins/writers/org.py
 leo/plugins/writers/otl.py
 leo/plugins/writers/readme.txt
 leo/plugins/writers/test.py
+leo/plugins/writers/treepad.py
 leo/plugins/xemacs.py
 leo/plugins/xml_edit.py
 leo/plugins/xsltWithNodes.py
