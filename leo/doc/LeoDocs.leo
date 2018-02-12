@@ -595,6 +595,7 @@
 <v t="ekr.20141030042423.9"><vh>How can I specify the root directory of a thumb drive?</vh></v>
 <v t="ekr.20150415111217.1"><vh>How can I use clones to reorganize an outline?</vh></v>
 <v t="ekr.20130807203905.16526"><vh>How can I use git to check Leo's importers?</vh></v>
+<v t="ekr.20180212165141.1"><vh>How can I open special .leo files easily?</vh></v>
 <v t="ekr.20160304081437.4"><vh>How can I use Leo in virtualenv?</vh></v>
 <v t="ekr.20050830120857"><vh>How can I use Leo to develop Leo itself?</vh></v>
 <v t="ekr.20160304081437.5"><vh>How can I use Leo with git?</vh></v>
@@ -1910,7 +1911,6 @@
 </v>
 </v>
 <v t="ekr.20180212163926.1"></v>
-<v t="ekr.20180212163710.1"><vh>** Update tips page</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -25892,12 +25892,25 @@ The show-spell-info command tells what spell checker is in effect and the locati
 
 Otherwise, Leo will use a pure python spell checker, provided that a spell dictionary exists at ~/.leo/main_spelling_dict.txt.  You may download a compressed version of this dictionary from https://sourceforge.net/projects/leo/files/Miscellaneous/</t>
 <t tx="ekr.20180212071157.1"></t>
-<t tx="ekr.20180212163710.1"></t>
 <t tx="ekr.20180212163926.1">The edit-pane-csv command opens a CSV table editor pane. Very useful for editing CSV data in Leo.
 
 Here is a demo: https://youtu.be/hca3x5SXNqs
 </t>
 <t tx="ekr.20180212164854.1"></t>
+<t tx="ekr.20180212165141.1">You can open files such as CheatSheet.leo, quickstart.leo, leoSettings.leo, myLeoSettings.leo and scripts.leo with commands starting with 'leo-'.
+
+&lt;Alt-X&gt;leo-&lt;tab&gt; shows the complete list of commands::
+
+    leo-cheat-sheet
+    leo-dist-leo
+    leo-docs-leo
+    leo-plugins-leo
+    leo-py-leo
+    leo-quickstart-leo
+    leo-scripts-leo
+    leo-settings-leo
+    leo-unittest-leo
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
