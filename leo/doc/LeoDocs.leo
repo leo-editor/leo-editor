@@ -397,7 +397,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1780,12 +1780,13 @@
 <v t="ekr.20180125034531.1"></v>
 <v t="ekr.20180125034327.1"><vh>Leo 5.7b2 release notes</vh>
 <v t="ekr.20180125032239.1"><vh>Leo 5.7 Summary</vh></v>
-<v t="ekr.20180125041229.1"><vh>Leo 5.7 Major features: 5 issues and 2 others</vh>
+<v t="ekr.20180125041229.1"><vh>Leo 5.7 Major features: 5 issues and 4 others</vh>
 <v t="ekr.20180124100450.49"><vh>#417: reload-settings command</vh></v>
 <v t="ekr.20180124100450.168"><vh>#503: Use string/null gui for unit tests</vh></v>
 <v t="ekr.20180130055320.1"><vh>#562: A PyPi wheel for Leo</vh></v>
 <v t="ekr.20180124100450.906"><vh>#597: Show tips when Leo starts up</vh></v>
 <v t="ekr.20180124100450.913"><vh>#635: Link to nodes from log pane</vh></v>
+<v t="ekr.20180212163926.1"><vh>Added a cvs table editing widget</vh></v>
 <v t="ekr.20180124121851.1"><vh>Added Debian package for Leo</vh></v>
 <v t="ekr.20180212065030.1"><vh>Added Outline-oriented diffs of .leo files</vh></v>
 <v t="ekr.20180212070925.1"><vh>Spell checking works without pyenchant</vh></v>
@@ -1907,6 +1908,8 @@
 <v t="ekr.20180212070925.1"></v>
 </v>
 </v>
+<v t="ekr.20180212163926.1"></v>
+<v t="ekr.20180212163710.1"><vh>** Update tips page</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -25323,6 +25326,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - New reload-settings command.
 - Leo optionally shows user tips on startup.
 - Added a new Tips page to Leo's documentation.
+- A visual widget for editing cvs tables.
 - Spell checking works without pyenchant
 - Improved the console_gui plugin.
 - Added live links from urls in the log pane.
@@ -25517,6 +25521,7 @@ and regardless of whether tabs have been detached.</t>
 - New reload-settings command.
 - Leo optionally shows user tips on startup.
 - Added a new Tips page to Leo's documentation.
+- A visual widget for editing cvs tables.
 - Improved the console_gui plugin.
 - Added live links from urls in the log pane.
 - Unit tests use a string gui, making them faster and more robust.
@@ -25884,7 +25889,12 @@ The show-spell-info command tells what spell checker is in effect and the locati
 
 Otherwise, Leo will use a pure python spell checker, provided that a spell dictionary exists at ~/.leo/main_spelling_dict.txt.  You may download a compressed version of this dictionary from https://sourceforge.net/projects/leo/files/Miscellaneous/</t>
 <t tx="ekr.20180212071157.1"></t>
-<t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
+<t tx="ekr.20180212163710.1"></t>
+<t tx="ekr.20180212163926.1">The edit-pane-csv command opens a CSV table editor pane. Very useful for editing CSV data in Leo.
+
+Here is a demo: https://youtu.be/hca3x5SXNqs
+</t>
+<t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
   
