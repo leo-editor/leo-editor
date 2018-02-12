@@ -466,12 +466,13 @@ class CompareLeoOutlines:
 
     #@+others
     #@+node:ekr.20180211170333.2: *3* loc.diff_list_of_files (entry)
-    def diff_list_of_files(self, aList):
+    def diff_list_of_files(self, aList, show_files=False):
         '''The main entry point for scripts.'''
         if len(aList) < 2:
             g.trace('Not enough files in', repr(aList))
             return
         self.root = self.create_root(aList)
+        self.show_files = show_files
         while len(aList) > 1:
             self.path1 = aList[0]
             aList = aList[1:]
@@ -531,6 +532,8 @@ class CompareLeoOutlines:
             return
         parent = self.file_node.insertAsLastChild()
         parent.setHeadString(kind)
+        fn1, fn2 = c1.fileName(), c2.fileName()
+        sfn1, sfn2 = c1.shortFileName(), c2.shortFileName()
         for key in d:
             if kind.lower() == 'changed':
                 v1, v2 = d.get(key)
@@ -551,7 +554,9 @@ class CompareLeoOutlines:
                 organizer.b = ''.join(body)
                 # Node 2: Old node
                 p2 = organizer.insertAsLastChild()
-                p2.h = 'Old:' + v1.h
+                # p2.h = 'Old:' + v1.h
+                p2.h = fn1 if sfn1 == sfn2 else sfn1
+                p2.h = p2.h + ':' + v1.h
                 p2.b = v1.b
                 # Node 3: New node
                 assert v1.fileIndex == v2.fileIndex
@@ -561,7 +566,9 @@ class CompareLeoOutlines:
                     p3.moveToLastChildOf(organizer)
                 else:
                     p3 = organizer.insertAsLastChild()
-                    p3.h = 'New:' + v2.h
+                    # p3.h = 'New:' + v2.h
+                    p3.h = fn2 if sfn1 == sfn2 else sfn2
+                    p3.h = p3.h + ':' + v2.h
                     p3.b = v2.b
             else:
                 v = d.get(key)
@@ -595,9 +602,10 @@ class CompareLeoOutlines:
     def finish(self):
         '''Finish execution of this command.'''
         c = self.c
-        if hasattr(g.app.gui, 'frameFactory'):
-            tff = g.app.gui.frameFactory
-            tff.setTabForCommander(c)
+        if self.show_files:
+            if hasattr(g.app.gui, 'frameFactory'):
+                tff = g.app.gui.frameFactory
+                tff.setTabForCommander(c)
         c.contractAllHeadlines(redrawFlag=False)
         self.root.expand()
         c.selectPosition(self.root)
@@ -632,7 +640,8 @@ class CompareLeoOutlines:
                 return None
         # Like readOutlineOnly.
         f = open(fn, 'rb')
-        c2 = g.app.newCommander(fn) # gui=g.app.nullGui)
+        gui = None if self.show_files else g.app.nullGui
+        c2 = g.app.newCommander(fn, gui=gui)
         c2.fileCommands.readOutlineOnly(f, fn)
             # Closes the file
         self.newly_opened_commanders.append(c2)
