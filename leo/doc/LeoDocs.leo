@@ -1898,7 +1898,6 @@
 <v t="ekr.20180124100440.6"><vh>New leo_cloud.py plugin</vh></v>
 <v t="ekr.20180124122055.1"><vh>New line_numbering.py plugin</vh></v>
 </v>
-</v>
 <v t="ekr.20180212070807.1"><vh>New in Leo 5.7b2</vh>
 <v t="ekr.20180211112158.1"></v>
 <v t="ekr.20180212065845.1"></v>
@@ -1906,7 +1905,7 @@
 <v t="ekr.20180212071157.1"></v>
 <v t="ekr.20180212070925.1"><vh>Spell checking works without pyenchant</vh></v>
 </v>
-<v t="ekr.20180212070758.1"></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -25315,7 +25314,7 @@ Leo 5.7b2, http://leoeditor.com, is now available on [SourceForge](http://source
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
-Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is possible to simulate Python in assembly language...
+Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is possible to simulate Python in C or assembly language...
 
 **The highlights of Leo 5.7**
 
@@ -25338,7 +25337,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 
 **Links**
 
-- [Leo's home page](http://leoeditor.com)
+- Leo's home page: http://leoeditor.com
 - [Documentation](http://leoeditor.com/leo_toc.html)
 - [Tutorials](http://leoeditor.com/tutorial.html)
 - [Video tutorials](http://leoeditor.com/screencasts.html)
