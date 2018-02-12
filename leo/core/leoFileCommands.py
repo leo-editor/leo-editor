@@ -1459,7 +1459,8 @@ class FileCommands(object):
         '''Return a VNode corresponding to the archived position relative to root node root_v.'''
 
         def oops(message):
-            if not g.app.unitTesting:
+            '''Give an error only if no file errors have been seen.'''
+            if not g.unitTesting and self.c.atFileCommands.errors == 0:
                 g.error('bad archived position: %s' % (message))
 
         try:
