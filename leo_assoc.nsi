@@ -21,7 +21,7 @@ Var PythonExecutable
 !define doc_icon        "leo\Icons\LeoDoc.ico"
 !define ext             ".leo"
 !define leo_hklm        "SOFTWARE\EKR\Leo"
-!define license         "License.txt"
+!define license         "LICENSE"
 !define name            "Leo"
 !define publisher       "Edward K. Ream"
 !define site            "http://leoeditor.com/"

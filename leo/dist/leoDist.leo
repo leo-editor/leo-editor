@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="34" left="572" height="1048" width="1197"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -296,7 +296,7 @@
 <v t="ekr.20130809141000.1997"><vh>Adding Leo to your path</vh></v>
 <v t="ekr.20130809141000.1998"><vh>Running Leo for the first time</vh></v>
 </v>
-<v t="EKR.20040519090846.1"><vh>@asis ../../LICENSE.TXT</vh></v>
+<v t="EKR.20040519090846.1"><vh>@asis ../../LICENSE</vh></v>
 <v t="EKR.20040519090846.8"><vh>@asis ../../PKG-INFO.TXT</vh></v>
 <v t="EKR.20040519090846.9"><vh>@asis ../../README.md</vh></v>
 <v t="ekr.20151227063335.1"><vh>@asis ../../About leo.exe.TXT</vh></v>
@@ -367,30 +367,27 @@
 <t tx="EKR.20040519090846">@language rest
 @wrap
 </t>
-<t tx="EKR.20040519090846.1">Leo is Open Software and is distributed under the terms of the MIT
-License. The gist of the license is that Leo is absolutely free, even
-for commercial use (including resale). There is no GNU-like "copyleft"
-restriction. The Open Source Initiative board has voted to certify the
-MIT license as Open Source. This license is compatible with the GPL.
+<t tx="EKR.20040519090846.1">MIT License
 
-Copyright (c) 1997-2018 by Edward K. Ream. All Rights Reserved.
+Copyright (c) 1997-2018 by Edward K. Ream.
 
-Permission to use, copy, modify, and distribute this software and its
-documentation for any purpose and without fee is hereby granted,
-provided that the above copyright notice appear in all copies and that
-both that copyright notice and this permission notice appear in
-supporting documentation, and that the names of Leo or Edward K. Ream
-not be used in advertising or publicity pertaining to distribution of
-the software without specific, written prior permission.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-DISCLAIMER OF WARRANTIES
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-EDWARD K. REAM (REAM) SPECIFICALLY DISCLAIMS ALL WARRANTIES, EXPRESSED
-OR IMPLIED, WITH RESPECT TO THIS COMPUTER SOFTWARE, INCLUDING BUT NOT
-LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-PARTICULAR PURPOSE. IN NO EVENT SHALL REAM BE LIABLE FOR ANY LOSS OF
-PROFIT OR ANY COMMERCIAL DAMAGE, INCLUDING BUT NOT LIMITED TO SPECIAL,
-INCIDENTAL, CONSEQUENTIAL OR OTHER DAMAGES.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
@@ -544,7 +541,7 @@ makes the system more flexible...
 now for about 2 -- 3 months. It has totally changed not only the way that I
 program, but also the way that I store and organize all of the information that
 I need for the job that I do. -- Ian Mulvany</t>
-<t tx="ekr.20050315084904"></t>
+<t tx="ekr.20050315084904" str_leo_pos="8,2,0"></t>
 <t tx="ekr.20060213160806">"Thanks for a wonderful program – everybody should be using it! It blows the
 socks off that Java Mind mapping software that won project of the month a while
 back on sourceforge!" -- Derick van Niekerk.
