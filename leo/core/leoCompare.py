@@ -448,7 +448,7 @@ class LeoCompare(BaseLeoCompare):
     """
     pass
 #@+node:ekr.20180211170333.1: ** class CompareLeoOutlines
-class CompareLeoOutlines:
+class CompareLeoOutlines(object):
     '''
     A class to do outline-oriented diffs of two or more .leo files.
     Similar to GitDiffController, adapted for use by scripts.
