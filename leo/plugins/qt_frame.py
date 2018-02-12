@@ -1224,7 +1224,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
 
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.customContextMenuRequested.connect(tabContextMenu)
-    #@+node:ekr.20180123082452.1: *3* new_outline (LeoBaseTabWidget) 
+    #@+node:ekr.20180123082452.1: *3* new_outline (LeoBaseTabWidget)
     def new_outline(self, index):
         '''Open a new outline tab.'''
         w = self.widget(index)

@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20171028115143.2: * @file webengineview.py
+#@+node:tbrown.20171028115143.2: * @file ../plugins/editpane/webengineview.py
 #@+<< webengineview.py imports >>
 #@+node:tbrown.20171028115459.1: ** << webengineview.py imports >>
 import leo.core.leoGlobals as g
