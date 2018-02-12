@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="57" left="480" height="1048" width="1003"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1288,6 +1288,7 @@
 <v t="tbrown.20081003103821.1"><vh>@bool recent_files_group = False</vh></v>
 <v t="tbrown.20081003103821.2"><vh>@bool recent_files_group_always = False</vh></v>
 <v t="ekr.20061009190510"><vh>@bool write_recent_files_as_needed = True</vh></v>
+<v t="tbrown.20180212145842.1"><vh>@data path-demangle</vh></v>
 </v>
 <v t="ekr.20060730101451"><vh>Shadow files</vh>
 <v t="ekr.20060730101451.3"><vh>@string shadow_prefix = x</vh></v>
@@ -4784,7 +4785,7 @@ menu-shortcut = Alt-S # Search and Settings menus.
 menu-shortcut = Alt-W # Window menu.
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="4">@nocolor-node
+<t tx="ekr.20070622214401">@nocolor-node
 
 Please don't change this node and its descendants; they are for Leo's
 developers.
@@ -15231,6 +15232,16 @@ Control delete_bookmark
 Shift add_child
 AltShift navigate
 AltControlShift hoist
+</t>
+<t tx="tbrown.20180212145842.1"># pairs of lines in this text indicate search and replace targets for
+# cleaning the recent files list.  Each pair of lines should start with
+# "REPLACE:" (first line) and "WITH:" (second line).  For example:
+#
+#  REPLACE: .gnome-desktop
+#     WITH: My Desktop
+#  REPLACE: /mnt/usr1/
+#     WITH: /
+
 </t>
 <t tx="ville.20090701225947.3902"># Open current node in external editor. 'v' is mnemonic for 'vi', because vi users request this most
 # cm-external-editor = Alt-v</t>
