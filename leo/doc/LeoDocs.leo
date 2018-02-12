@@ -1780,7 +1780,7 @@
 <v t="ekr.20180125034531.1"></v>
 <v t="ekr.20180125034327.1"><vh>Leo 5.7b2 release notes</vh>
 <v t="ekr.20180125032239.1"><vh>Leo 5.7 Summary</vh></v>
-<v t="ekr.20180125041229.1"><vh>Leo 5.7 Major features: 5 issues and 1 other</vh>
+<v t="ekr.20180125041229.1"><vh>Leo 5.7 Major features: 5 issues and 2 others</vh>
 <v t="ekr.20180124100450.49"><vh>#417: reload-settings command</vh></v>
 <v t="ekr.20180124100450.168"><vh>#503: Use string/null gui for unit tests</vh></v>
 <v t="ekr.20180130055320.1"><vh>#562: A PyPi wheel for Leo</vh></v>
@@ -1788,6 +1788,7 @@
 <v t="ekr.20180124100450.913"><vh>#635: Link to nodes from log pane</vh></v>
 <v t="ekr.20180124121851.1"><vh>Added Debian package for Leo</vh></v>
 <v t="ekr.20180212065030.1"><vh>Added Outline-oriented diffs of .leo files</vh></v>
+<v t="ekr.20180212070925.1"><vh>Spell checking works without pyenchant</vh></v>
 </v>
 <v t="ekr.20180125034637.1"><vh>Leo 5.7 Bugs: Fixed 46 issues and one other bug</vh>
 <v t="ekr.20180125235811.3"><vh>#327: Create a way to unbind bindings in leoSettings.leo</vh></v>
@@ -1903,7 +1904,7 @@
 <v t="ekr.20180212065845.1"></v>
 <v t="ekr.20180212065030.1"></v>
 <v t="ekr.20180212071157.1"></v>
-<v t="ekr.20180212070925.1"><vh>Spell checking works without pyenchant</vh></v>
+<v t="ekr.20180212070925.1"></v>
 </v>
 </v>
 </vnodes>
@@ -23657,15 +23658,12 @@ You could rewrite this as::
 
     a = 1 &lt;&lt; 5 + \
         2 &gt;&gt; 3;
-        
+
+.. Smart quotes are probably causing problems here:
+
 g.angleBrackets(s) returns string s enclosed in angle brackets.
-For instance::
 
-​   headline = g.angleBrackets('abc')
-
-sets headline to::
-
-    &lt;&lt;abc&gt;&gt;
+For example, h = g.anglebrackets(\"abc\") sets h to &lt;&lt;abc&gt;&gt;.
 </t>
 <t tx="ekr.20170618015524.1">I thought I would write my own testimonial. I don't ever do this, as I often roll my eyes at testimonials, but my enthusiasm is at such a degree about Leo, that I must give "props" where props are due.
 
@@ -25875,7 +25873,7 @@ Changing just the LEO_BACKUP environment value will change the destination of al
 So if the Spell tab is not visible do the following:
 
 - Download main_spelling_dict.zip from
-https://sourceforge.net/projects/leo/files/Miscellaneous/
+  https://sourceforge.net/projects/leo/files/Miscellaneous/
 
 - Unzip this file to ~/.leo/main_spelling_dict.txt.
    

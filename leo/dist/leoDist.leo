@@ -159,7 +159,6 @@
 <v t="ekr.20160314155002.95"><vh>Settings for gutter numbers</vh></v>
 </v>
 </v>
-</v>
 <v t="ekr.20160428153901.1"><vh>Leo 5.3-final</vh></v>
 <v t="ekr.20161015114905.1"><vh>Leo 5.4-final</vh></v>
 <v t="ekr.20170316113823.1"><vh>Leo 5.5</vh>
@@ -258,6 +257,8 @@
 </v>
 <v t="ekr.20170911085243.1"><vh>Leo 5.6</vh></v>
 <v t="maphew.20171107045903.1"><vh>Leo 5.6.1</vh></v>
+</v>
+<v t="ekr.20180212094405.1"><vh>Leo 5.7b2 release notes</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
@@ -413,33 +414,36 @@ Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 
 </t>
-<t tx="EKR.20040519090846.9">Leo 5.7b1 January 30, 2018
+<t tx="EKR.20040519090846.9">Leo 5.7b2 February 12, 2018
 
-[Leo](http://leoeditor.com/) 5.7b1 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+Leo 5.7b2, http://leoeditor.com, is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
-Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is possible to simulate Python in assembly language...
+Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is possible to simulate Python in C or assembly language...
 
 **The highlights of Leo 5.7**
 
 - Added Debian package for Leo.
 - pip install leo (After 5.7 final)
 - A web-based Leo Viewer, written by Joe Orr.
+- Outline-oriented diffs for .leo files.
 - New reload-settings command.
 - Leo optionally shows user tips on startup.
 - Added a new Tips page to Leo's documentation.
+- Spell checking works without pyenchant
 - Improved the console_gui plugin.
 - Added live links from urls in the log pane.
 - Unit tests use a string gui, making them faster and more robust.
 - The line_numbering plugin shows line numbers in external files.
 - Improved the javascript importer.
+- Added a TreePad importer.
 - Added 6 new commands.
 - Dozens of bug fixes.
 
 **Links**
 
-- [Leo's home page](http://leoeditor.com)
+- Leo's home page: http://leoeditor.com
 - [Documentation](http://leoeditor.com/leo_toc.html)
 - [Tutorials](http://leoeditor.com/tutorial.html)
 - [Video tutorials](http://leoeditor.com/screencasts.html)
@@ -746,7 +750,7 @@ Make these files in the top-level folder::
     leo.zip.
 '''
 
-version = '5.7b1' ##version
+version = '5.7b2' ##version
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
 
@@ -1069,7 +1073,7 @@ def deleteTempFiles (self,lines):
         # This commit ensures the proper files are included in the distribution.
         # r'git commit -m "commit doc files during make"',
         ##version
-        r'%s archive --format zip --output "%s" --prefix=Leo-5.7b1/ master' % (
+        r'%s archive --format zip --output "%s" --prefix=Leo-5.7b2/ master' % (
             r'c:\apps\Git\bin\git.exe',zipFile),
     )
     g.execute_shell_commands(commands,trace=True)
@@ -2738,7 +2742,7 @@ it is possible to simulate Python in assembly language...
 - Make sure Leo looks good without myLeoSettings.leo.
 - Run the "check-bindings" button in leoSettings.leo.
 - Run all unit tests with *both* Python 2 and 3.
-- Run ll -a.</t>
+- Run ll -a with *both* Python 2 and 3.</t>
 <t tx="ekr.20161015091353.1">- Regenerate all .html files.
 - Copy files to web, including leo/doc/html/index.html</t>
 <t tx="ekr.20161015091353.2">LeoDocs.leo:
@@ -4019,6 +4023,47 @@ FAILED (failures=2, skipped=11)
 c:\Test\LeoAppFolder&gt;
 
 ##### can not open @edit C:\Test\LEOAPP~1\README.MD</t>
+<t tx="ekr.20180212094405.1">Leo 5.7b2 February 12, 2018
+
+Leo 5.7b2, http://leoeditor.com, is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+
+Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is possible to simulate Python in C or assembly language...
+
+**The highlights of Leo 5.7**
+
+- Added Debian package for Leo.
+- pip install leo (After 5.7 final)
+- A web-based Leo Viewer, written by Joe Orr.
+- Outline-oriented diffs for .leo files.
+- New reload-settings command.
+- Leo optionally shows user tips on startup.
+- Added a new Tips page to Leo's documentation.
+- Spell checking works without pyenchant
+- Improved the console_gui plugin.
+- Added live links from urls in the log pane.
+- Unit tests use a string gui, making them faster and more robust.
+- The line_numbering plugin shows line numbers in external files.
+- Improved the javascript importer.
+- Added a TreePad importer.
+- Added 6 new commands.
+- Dozens of bug fixes.
+
+**Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+</t>
 <t tx="maphew.20171107045903.1">Leo 5.6 September 25, 2017
 
 [Leo](http://leoeditor.com/) 5.6 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
@@ -4113,7 +4158,7 @@ https://pypi.python.org/pypi?%3Aaction=pkg_edit&amp;name=leo
 
 ## Example
 
-Windows syntax. 'Activate/deactivate' assume using virtual envs; skip those lines if not:
+Windows syntax. 'Activate/deactivate' assume using virtual environments; skip those lines if not:
 
     activate leo-build
     
