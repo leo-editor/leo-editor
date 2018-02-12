@@ -1858,6 +1858,7 @@
 <v t="ekr.20180124100450.839"><vh>#632: check-conventions command</vh></v>
 <v t="ekr.20180211112158.1"><vh>Added clean-main-user-dict &amp; clean-user-spell-dict</vh></v>
 <v t="ekr.20180201041411.1"><vh>Added count-children command</vh></v>
+<v t="ekr.20180212164854.1"><vh>Added edit-pane-csv &amp; edit-pane-test-open</vh></v>
 <v t="ekr.20180124123920.1"><vh>Added find-all-unique-regex command</vh></v>
 <v t="ekr.20180124124409.1"><vh>Added insert-as-first-child &amp; insert-as-last-child commands</vh></v>
 <v t="ekr.20180130092843.1"><vh>Added read/set/update-ref-file commands</vh></v>
@@ -25543,6 +25544,8 @@ and regardless of whether tabs have been detached.</t>
     clean-main-spell-dict
     clean-user-spell-dict
     count-children
+    edit-pane-csv
+    edit-pane-test-open
     find-all-unique-regex
     insert-as-first-child
     insert-as-last-child
@@ -25894,6 +25897,7 @@ Otherwise, Leo will use a pure python spell checker, provided that a spell dicti
 
 Here is a demo: https://youtu.be/hca3x5SXNqs
 </t>
+<t tx="ekr.20180212164854.1"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
