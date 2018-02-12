@@ -506,6 +506,20 @@ button using Ctrl-P.
 
 """),
 
+UserTip(
+    n=0,
+    tags=['Commands',],
+    title='Use leo-* commands to open common .leo files',
+    text="""
+    
+You can open files such as CheatSheet.leo, quickstart.leo,
+leoSettings.leo, myLeoSettings.leo and scripts.leo with
+commands starting with 'leo-'.
+
+<Alt-X>leo-<tab> shows the complete list.
+
+"""),
+
 ]
 #@-<< define tips >>
 #@@language python
