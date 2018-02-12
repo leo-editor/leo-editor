@@ -620,6 +620,7 @@
 <v t="ekr.20170612101117.1"><vh>What about code that looks like a section reference?</vh></v>
 <v t="ekr.20101026082911.5538"><vh>Why didn't Leo update my @clean outline as expected?</vh></v>
 <v t="ekr.20120229094652.15130"><vh>Why do Qt windows disappear in my scripts?</vh></v>
+<v t="ekr.20180212070758.1"><vh>Why isn't the Spell tab showing?</vh></v>
 </v>
 <v t="ekr.20071026055929"><vh>Unicode issues</vh>
 <v t="ekr.20061021164213"><vh>I can not enter non-ascii characters.  What can I do?</vh></v>
@@ -1777,7 +1778,7 @@
 </v>
 </v>
 <v t="ekr.20180125034531.1"></v>
-<v t="ekr.20180125034327.1"><vh>Leo 5.7b1 release notes</vh>
+<v t="ekr.20180125034327.1"><vh>Leo 5.7b2 release notes</vh>
 <v t="ekr.20180125032239.1"><vh>Leo 5.7 Summary</vh></v>
 <v t="ekr.20180125041229.1"><vh>Leo 5.7 Major features: 5 issues and 1 other</vh>
 <v t="ekr.20180124100450.49"><vh>#417: reload-settings command</vh></v>
@@ -1786,6 +1787,7 @@
 <v t="ekr.20180124100450.906"><vh>#597: Show tips when Leo starts up</vh></v>
 <v t="ekr.20180124100450.913"><vh>#635: Link to nodes from log pane</vh></v>
 <v t="ekr.20180124121851.1"><vh>Added Debian package for Leo</vh></v>
+<v t="ekr.20180212065030.1"><vh>Added Outline-oriented diffs of .leo files</vh></v>
 </v>
 <v t="ekr.20180125034637.1"><vh>Leo 5.7 Bugs: Fixed 46 issues and one other bug</vh>
 <v t="ekr.20180125235811.3"><vh>#327: Create a way to unbind bindings in leoSettings.leo</vh></v>
@@ -1836,12 +1838,13 @@
 <v t="ekr.20180128101447.1"><vh>#661: leoBridge scripts should not update the recent files list</vh></v>
 <v t="ekr.20180124100450.728"><vh>Fixed can not open message in leoBridge test</vh></v>
 </v>
-<v t="ekr.20180125035840.1"><vh>Leo 5.7 Code improvements: 2 issues and 8 others</vh>
+<v t="ekr.20180125035840.1"><vh>Leo 5.7 Code improvements: 2 issues and 9 others</vh>
 <v t="ekr.20180124100450.369"><vh>#577: reformatting unit tests...</vh></v>
 <v t="ekr.20180124100450.427"><vh>#589 @g.commander_command</vh></v>
 <v t="ekr.20180128112939.1"><vh>Added "exact" keyword arg to g.findNode* functions</vh></v>
 <v t="ekr.20180126003014.1"><vh>Added @button get-issues to LeoDocs.leo</vh></v>
 <v t="ekr.20180124120513.1"><vh>Added backup-repo script in leoPy.leo</vh></v>
+<v t="ekr.20180212065845.1"><vh>Added c.backup_helper</vh></v>
 <v t="ekr.20180126060924.1"><vh>Added g.getGitIssues</vh></v>
 <v t="ekr.20180124100450.1030"><vh>Added p.promote</vh></v>
 <v t="ekr.20180126060940.1"><vh>Added top-level make_tip_nodes in leoTips.py</vh></v>
@@ -1849,13 +1852,14 @@
 <v t="ekr.20180124121124.1"><vh>Improved Leo read/write code in leoAtFile.py</vh></v>
 <v t="ekr.20180124100440.3"><vh>New redraw code</vh></v>
 </v>
-<v t="ekr.20180125042412.1"><vh>Leo 5.7 Commands: 9 new and 1 improved</vh>
+<v t="ekr.20180125042412.1"><vh>Leo 5.7 Commands: 10 new and 1 improved</vh>
 <v t="ekr.20180124100450.839"><vh>#632: check-conventions command</vh></v>
-<v t="ekr.20180201041411.1"><vh>Added count-children command</vh></v>
 <v t="ekr.20180211112158.1"><vh>Added clean-main-user-dict &amp; clean-user-spell-dict</vh></v>
+<v t="ekr.20180201041411.1"><vh>Added count-children command</vh></v>
 <v t="ekr.20180124123920.1"><vh>Added find-all-unique-regex command</vh></v>
 <v t="ekr.20180124124409.1"><vh>Added insert-as-first-child &amp; insert-as-last-child commands</vh></v>
 <v t="ekr.20180130092843.1"><vh>Added read/set/update-ref-file commands</vh></v>
+<v t="ekr.20180212071157.1"><vh>Added show-spell-info command</vh></v>
 <v t="ekr.20180124100450.797"><vh>The cff commands now sort their results</vh></v>
 </v>
 <v t="ekr.20180126001345.1"><vh>Leo 5.7 Settings and command-line arguments</vh>
@@ -1895,6 +1899,14 @@
 <v t="ekr.20180124122055.1"><vh>New line_numbering.py plugin</vh></v>
 </v>
 </v>
+<v t="ekr.20180212070807.1"><vh>New in Leo 5.7b2</vh>
+<v t="ekr.20180211112158.1"></v>
+<v t="ekr.20180212065845.1"></v>
+<v t="ekr.20180212065030.1"></v>
+<v t="ekr.20180212071157.1"></v>
+<v t="ekr.20180212070925.1"><vh>Spell checking works without pyenchant</vh></v>
+</v>
+<v t="ekr.20180212070758.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -25297,9 +25309,9 @@ later.</t>
 You can see all 5.7 issues by visiting:
 https://github.com/leo-editor/leo-editor/issues?page=1&amp;q=is%3Aissue+milestone%3A5.7+is%3Aclosed+-label%3ATip+-label%3AWon%27tDo+-label%3AWon%27tFix+-label%3AHelp&amp;utf8=%E2%9C%93
 </t>
-<t tx="ekr.20180125034327.1">Leo 5.7b1 January 30, 2018
+<t tx="ekr.20180125034327.1">Leo 5.7b2 February 12, 2018
 
-Leo 5.7b1, http://leoeditor.com, is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+Leo 5.7b2, http://leoeditor.com, is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
@@ -25310,9 +25322,11 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - Added Debian package for Leo.
 - pip install leo (After 5.7 final)
 - A web-based Leo Viewer, written by Joe Orr.
+- Outline-oriented diffs for .leo files.
 - New reload-settings command.
 - Leo optionally shows user tips on startup.
 - Added a new Tips page to Leo's documentation.
+- Spell checking works without pyenchant
 - Improved the console_gui plugin.
 - Added live links from urls in the log pane.
 - Unit tests use a string gui, making them faster and more robust.
@@ -25502,6 +25516,7 @@ and regardless of whether tabs have been detached.</t>
 - Added Debian package for Leo.
 - pip install leo (After 5.7 final).
 - A web based Leo viewer, `LeoVue`_, written by Joe Orr.
+- Outline-oriented diffs for .leo files.
 - New reload-settings command.
 - Leo optionally shows user tips on startup.
 - Added a new Tips page to Leo's documentation.
@@ -25513,6 +25528,7 @@ and regardless of whether tabs have been detached.</t>
 </t>
 <t tx="ekr.20180126002657.1">- Unit tests can run in more environments.
 - The @g.commander_command decorator injects ivars into the Commands class.
+- Added CompareLeoOutlines class in leoCompare.py
 - Added verbose option to g.callers().
 - Revised redraw code.
 - Added backup-repo script in leoPy.leo.
@@ -25806,6 +25822,71 @@ The fix was in ni.compute_last_index.
 </t>
 <t tx="ekr.20180202061934.1">https://github.com/leo-editor/leo-editor/issues/674</t>
 <t tx="ekr.20180211112158.1"></t>
+<t tx="ekr.20180212065030.1">The new CompareLeoOutlines class in leo/core/leoCompare.py allows scripts to generate outline-based diffs for arbitrarily many .leo files. Previously, only the git-diff command created outline-based diffs.
+
+Here is an example script::
+
+    import leo.core.leoCompare as leoCompare
+    outlines = ['LeoDocs.leo', 'LeoDocs1.leo', 'LeoDocs2.leo']
+    paths = [g.os_path_finalize_join('~/compare', z) for z in outlines]
+    leoCompare.CompareLeoOutlines(c).diff_list_of_files(paths)
+
+This script will present three sets of diffs, in a new top-level node whose nodes are as follows::
+
+    - outline diff
+        Body: LeoDocs.leo, LeoDocs1.leo, LeoDocs2.leo
+        - LeoDocs.leo, LeoDocs1.leo
+          Body: the entire diff of LeoDocs.leo and LeoDocs1.leo
+          - added
+            copies of added nodes
+          - deleted
+            copies of deleted nodes
+         - changed
+            diff nodes for all changed nodes.
+            Body: the diff of each node.
+            - LeoDocs.leo: copy of old node
+            - LeoDocs1: copy of new node
+        - LeoDocs.leo, LeoDocs1.leo
+          Ditto
+        - LeoDocs1.leo, LeoDocs1.leo
+          Ditto
+</t>
+<t tx="ekr.20180212065845.1">The signature of c.backup_helper is::
+
+    def backup_helper(self, base_dir=None, env_key='LEO_BACKUP', sub_dir=None):
+
+c.backup_helper uses the LEO_BACKUP environment variable as the base of the save if it exists. Otherwise it uses the given base_dir directory. If given, the sub_dir path is applied to the base directory.
+
+This method does careful error checking and reporting. The body text of the following four @button backup nodes are all just one line::
+
+    c.backup_helper(sub_dir='leoPy') # In leoPy.leo
+    c.backup_helper(sub_dir='leoPlugins') # In leoPlugins.leo
+    c.backup_helper(sub_dir='ekr-projects') # In ekr-projects.leo
+    c.backup_helper(sub_dir='ekr') # In ekr.leo
+
+Changing just the LEO_BACKUP environment value will change the destination of all these scripts.
+</t>
+<t tx="ekr.20180212070758.1">Leo will show the Spell tab if:
+
+1. The pyenchant spell checker has been installed or,
+
+2. Leo finds a main spelling dictionary at ~/.leo/main_spelling_dict.txt.
+   In this case, Leo uses a pure-python spell checker.
+
+So if the Spell tab is not visible do the following:
+
+- Download main_spelling_dict.zip from
+https://sourceforge.net/projects/leo/files/Miscellaneous/
+
+- Unzip this file to ~/.leo/main_spelling_dict.txt.
+   
+The show-spell-info command tells what spell checker is in effect and the location of the main and user spell dictionaries.
+</t>
+<t tx="ekr.20180212070807.1"></t>
+<t tx="ekr.20180212070925.1">Leo uses the pyenchant spell checker if it has been installed.
+
+Otherwise, Leo will use a pure python spell checker, provided that a spell dictionary exists at ~/.leo/main_spelling_dict.txt.  You may download a compressed version of this dictionary from https://sourceforge.net/projects/leo/files/Miscellaneous/</t>
+<t tx="ekr.20180212071157.1"></t>
 <t tx="peckj.20130813123907.6841" str_mtime="1376412039.0" str_atime="1376414164.0" str_ctime="1376412039.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
