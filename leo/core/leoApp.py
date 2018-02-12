@@ -3346,17 +3346,18 @@ class RecentFilesManager(object):
                 if munge(name) == munge(name2):
                     rf.recentFiles.remove(name2)
             rf.recentFiles.append(name)
-    #@+node:ekr.20120225072226.10289: *3* rf.cleanRecentFiles
+    #@+node:ekr.20120225072226.10289: *3* rf.cleanRecentFiles & helpers
     def cleanRecentFiles(self, c):
         '''Remove items from the recent files list that are no longer valid.'''
-        rf = self
-        dat = c.config.getData('path-demangle')
-        if not dat:
-            g.es('No @data path-demangle setting')
-            return
+        data = c.config.getData('path-demangle')
+        if data:
+            self.demangleRecentFiles(c, data)
+    #@+node:ekr.20180212141017.1: *4* rf.demangleRecentFiles
+    def demangleRecentFiles(self, c, data):
+        '''Rewrite recent files based on c.config.getData('path-demangle')'''
         changes = []
         replace = None
-        for line in dat:
+        for line in data:
             text = line.strip()
             if text.startswith('REPLACE: '):
                 replace = text.split(None, 1)[1].strip()
@@ -3364,14 +3365,14 @@ class RecentFilesManager(object):
                 with_ = text[5:].strip()
                 changes.append((replace, with_))
                 g.es('%s -> %s' % changes[-1])
-        orig = [z for z in rf.recentFiles if z.startswith("/")]
-        rf.recentFiles = []
+        orig = [z for z in self.recentFiles if z.startswith("/")]
+        self.recentFiles = []
         for i in orig:
             t = i
             for change in changes:
                 t = t.replace(*change)
-            rf.updateRecentFiles(t)
-        rf.writeRecentFilesFile(c, force=True)
+            self.updateRecentFiles(t)
+        self.writeRecentFilesFile(c, force=True)
             # Force the write message.
     #@+node:ekr.20120225072226.10297: *3* rf.clearRecentFiles
     def clearRecentFiles(self, c):
