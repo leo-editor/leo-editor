@@ -458,21 +458,18 @@ class CompareLeoOutlines(object):
         '''Ctor for the LeoOutlineCompare class.'''
         self.c = c
         self.file_node = None
-        self.open_commanders = [frame.c for frame in g.app.windowList]
-        self.newly_opened_commanders = []
         self.root = None
         self.path1 = None
         self.path2 = None
 
     #@+others
     #@+node:ekr.20180211170333.2: *3* loc.diff_list_of_files (entry)
-    def diff_list_of_files(self, aList, show_files=False):
+    def diff_list_of_files(self, aList):
         '''The main entry point for scripts.'''
         if len(aList) < 2:
             g.trace('Not enough files in', repr(aList))
             return
         self.root = self.create_root(aList)
-        self.show_files = show_files
         while len(aList) > 1:
             self.path1 = aList[0]
             aList = aList[1:]
@@ -483,7 +480,7 @@ class CompareLeoOutlines(object):
     #@+node:ekr.20180211170333.3: *3* loc.diff_two_files
     def diff_two_files(self, fn1, fn2):
         '''Create an outline describing the git diffs for fn.'''
-        g.trace('DIFF:...\n%s\n%s' % (fn1, fn2))
+        g.trace('\n%s\n%s' % (fn1, fn2))
         s1 = self.get_file(fn1)
         s2 = self.get_file(fn2)
         lines1 = g.splitLines(s1)
@@ -492,8 +489,8 @@ class CompareLeoOutlines(object):
         diff_list.insert(0, '@language patch\n')
         self.file_node = self.create_file_node(diff_list, fn1, fn2)
         # These will be left open
-        c1 = self.open_outline_only(fn1)
-        c2 = self.open_outline_only(fn2)
+        c1 = self.open_outline(fn1)
+        c2 = self.open_outline(fn2)
         if c1 and c2:
             self.make_diff_outlines(c1, c2)
             self.file_node.b = '%s\n@language %s\n' % (
@@ -532,8 +529,6 @@ class CompareLeoOutlines(object):
             return
         parent = self.file_node.insertAsLastChild()
         parent.setHeadString(kind)
-        fn1, fn2 = c1.fileName(), c2.fileName()
-        sfn1, sfn2 = c1.shortFileName(), c2.shortFileName()
         for key in d:
             if kind.lower() == 'changed':
                 v1, v2 = d.get(key)
@@ -552,24 +547,15 @@ class CompareLeoOutlines(object):
                 else:
                     body = ['Only headline has changed']
                 organizer.b = ''.join(body)
-                # Node 2: Old node
-                p2 = organizer.insertAsLastChild()
-                # p2.h = 'Old:' + v1.h
-                p2.h = fn1 if sfn1 == sfn2 else sfn1
-                p2.h = p2.h + ':' + v1.h
-                p2.b = v1.b
-                # Node 3: New node
+                # Node 1:
+                p1 = organizer.insertAsLastChild()
+                p1.h = '1:' + v1.h
+                p1.b = v1.b
+                # Node 2:
                 assert v1.fileIndex == v2.fileIndex
-                p_in_c = self.find_gnx(self.c, v1.fileIndex)
-                if p_in_c: # Make a clone, if possible.
-                    p3 = p_in_c.clone()
-                    p3.moveToLastChildOf(organizer)
-                else:
-                    p3 = organizer.insertAsLastChild()
-                    # p3.h = 'New:' + v2.h
-                    p3.h = fn2 if sfn1 == sfn2 else sfn2
-                    p3.h = p3.h + ':' + v2.h
-                    p3.b = v2.b
+                p2 = organizer.insertAsLastChild()
+                p2.h = '2:' + v2.h
+                p2.b = v2.b
             else:
                 v = d.get(key)
                 p = parent.insertAsLastChild()
@@ -586,12 +572,11 @@ class CompareLeoOutlines(object):
     def create_root(self, aList):
         '''Create the top-level organizer node describing all the diffs.'''
         c = self.c
-        g.trace('*****', g.callers())
         p = c.lastTopLevel().insertAfter()
         p.h = 'outline diff'
         p.b = '\n'.join(aList) + '\n'
         return p
-    #@+node:ekr.20180211170333.9: *4* loc.find_gnx
+    #@+node:ekr.20180211170333.9: *4* loc.find_gnx (no longer used)
     def find_gnx(self, c, gnx):
         '''Return a position in c having the given gnx.'''
         for p in c.all_unique_positions():
@@ -602,13 +587,13 @@ class CompareLeoOutlines(object):
     def finish(self):
         '''Finish execution of this command.'''
         c = self.c
-        if self.show_files:
-            if hasattr(g.app.gui, 'frameFactory'):
-                tff = g.app.gui.frameFactory
-                tff.setTabForCommander(c)
+        if hasattr(g.app.gui, 'frameFactory'):
+            tff = g.app.gui.frameFactory
+            tff.setTabForCommander(c)
         c.contractAllHeadlines(redrawFlag=False)
         self.root.expand()
         c.selectPosition(self.root)
+        c.bodyWantsFocus()
         c.redraw()
     #@+node:ekr.20180211170333.11: *4* loc.get_file
     def get_file(self, path):
@@ -626,26 +611,17 @@ class CompareLeoOutlines(object):
             (changed, 'Changed'))
         for d, kind in table:
             self.create_compare_node(c1, c2, d, kind)
-    #@+node:ekr.20180211170333.14: *4* loc.open_outline_only
-    def open_outline_only(self, fn):
-        '''Create a hidden temp outline for fn.'''
-        # Use previously-opened outlines if possible.
-        for c2 in self.newly_opened_commanders:
-            if c2.fileName() == fn:
-                return c2
-        # Don't use any other open commanders.
-        for c2 in self.open_commanders:
-            if c2.fileName() == fn:
-                g.trace('Can not use an open commander:', c2.shortFileName())
-                return None
-        # Like readOutlineOnly.
-        f = open(fn, 'rb')
-        gui = None if self.show_files else g.app.nullGui
-        c2 = g.app.newCommander(fn, gui=gui)
-        c2.fileCommands.readOutlineOnly(f, fn)
-            # Closes the file
-        self.newly_opened_commanders.append(c2)
-        return c2
+    #@+node:ekr.20180211170333.14: *4* loc.open_outline
+    def open_outline(self, fn):
+        '''
+        Find the commander for fn, creating a new outline tab if necessary.
+        
+        Using open commanders works because we always read entire .leo files.
+        '''
+        for frame in g.app.windowList:
+            if frame.c.fileName() == fn:
+                return frame.c
+        return g.openWithFileName(fn)
     #@-others
 #@-others
 #@@language python
