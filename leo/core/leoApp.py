@@ -3346,7 +3346,7 @@ class RecentFilesManager(object):
                 if munge(name) == munge(name2):
                     rf.recentFiles.remove(name2)
             rf.recentFiles.append(name)
-    #@+node:ekr.20120225072226.10289: *3* rf.cleanRecentFiles & helpers
+    #@+node:ekr.20120225072226.10289: *3* rf.cleanRecentFiles & helper
     def cleanRecentFiles(self, c):
         '''Remove items from the recent files list that are no longer valid.'''
         data = c.config.getData('path-demangle')
