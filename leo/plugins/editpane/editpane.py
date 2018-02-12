@@ -1,5 +1,5 @@
 #@+leo-ver=5-thin
-#@+node:tbrown.20171028115144.6: * @file ../plugins/editpane/editpane.py
+#@+node:tbrown.20171028115144.6: * @file editpane/editpane.py
 '''Support for the edit-pane-test-open command and window.'''
 #@+<<editpane.py imports>>
 #@+node:tbrown.20171028115438.1: ** <<editpane.py imports>>
@@ -103,6 +103,8 @@ class LeoEditPane(QtWidgets.QWidget):
         lep_type = lep_type or ['EDITOR', 'TEXT']
         if isinstance(lep_type, StringTypes):
             lep_type = [lep_type]
+        if len(lep_type) < 2:
+            lep_type.append('TEXT')
 
         self.modules = []  # modules we collect widgets from
         self.widget_classes = []  # collected widgets
