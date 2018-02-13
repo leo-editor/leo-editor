@@ -3346,13 +3346,19 @@ class RecentFilesManager(object):
                 if munge(name) == munge(name2):
                     rf.recentFiles.remove(name2)
             rf.recentFiles.append(name)
-    #@+node:ekr.20120225072226.10289: *3* rf.cleanRecentFiles & helper
+    #@+node:ekr.20120225072226.10289: *3* rf.cleanRecentFiles
     def cleanRecentFiles(self, c):
         '''Remove items from the recent files list that are no longer valid.'''
         data = c.config.getData('path-demangle')
         if data:
             self.demangleRecentFiles(c, data)
-    #@+node:ekr.20180212141017.1: *4* rf.demangleRecentFiles
+        else:
+            result = [z for z in self.recentFiles if g.os_path_exists(z)]
+            if result != self.recentFiles:
+                for path in result:
+                    self.updateRecentFiles(path)
+                self.writeRecentFilesFile(c, force=True)
+    #@+node:ekr.20180212141017.1: *3* rf.demangleRecentFiles
     def demangleRecentFiles(self, c, data):
         '''Rewrite recent files based on c.config.getData('path-demangle')'''
         changes = []
@@ -3692,6 +3698,18 @@ def ctrlClickAtCursor(event):
     c = event.get('c')
     if c:
         g.openUrlOnClick(event)
+#@+node:ekr.20180213045148.1: *3* demangle-recent-files
+@g.command('demangle-recent-files')
+def demangle_recent_files_command(event):
+    c = event and event.get('c')
+    if c:
+        data = c.config.getData('path-demangle')
+        if data:
+            g.app.recentFilesManager.demangleRecentFiles(c, data)
+        else:
+            g.es_print('Not found: @data path-demangle')
+
+    
 #@+node:ekr.20150514125218.3: *3* enable/disable/toggle-idle-time-events
 @g.command('disable-idle-time-events')
 def disable_idle_time_events(event):
