@@ -6,10 +6,6 @@ import difflib
 import filecmp
 import os
 #@+others
-#@+node:ekr.20031218072017.3631: ** choose
-def choose(cond, a, b): # warning: evaluates all arguments
-    if cond: return a
-    else: return b
 #@+node:ekr.20160331191740.1: ** @g.command(diff-marked-nodes)
 @g.command('diff-marked-nodes')
 def diffMarkedNodes(event):
@@ -54,6 +50,32 @@ def diffMarkedNodes(event):
     else:
         g.es_print('Please mark at least 2 nodes')
 
+#@+node:ekr.20180213040339.1: ** @g.command(diff-leo-files)
+@g.command('diff-leo-files')
+def giff_leo_files(event):
+    '''
+    Open a dialog prompting for two or more .leo files.
+
+    Creates a top-level node showing the diffs of those files, two at a time.
+    '''
+    c = event and event.get('c')
+    if not c:
+        return
+    types = [
+        ("Leo files", "*.leo"),
+        ("All files", "*"),
+    ]
+    paths = g.app.gui.runOpenFileDialog(c,
+        title="Compare Leo Files",
+        filetypes=types,
+        defaultextension=".leo",
+        multiple=True)
+    c.bringToFront()
+    paths = [z for z in paths if g.os_path_exists(z)]
+    if len(paths) > 1:
+        CompareLeoOutlines(c).diff_list_of_files(paths, visible=False)
+    else:
+        g.es_print('Please pick two or more files')
 #@+node:ekr.20031218072017.3632: ** go
 def go():
     compare = LeoCompare(
@@ -508,12 +530,13 @@ class CompareLeoOutlines(object):
 
     #@+others
     #@+node:ekr.20180211170333.2: *3* loc.diff_list_of_files (entry)
-    def diff_list_of_files(self, aList):
+    def diff_list_of_files(self, aList, visible=True):
         '''The main entry point for scripts.'''
         if len(aList) < 2:
             g.trace('Not enough files in', repr(aList))
             return
         self.root = self.create_root(aList)
+        self.visible = visible
         while len(aList) > 1:
             path1 = aList[0]
             aList = aList[1:]
@@ -617,7 +640,7 @@ class CompareLeoOutlines(object):
         '''Create the top-level organizer node describing all the diffs.'''
         c = self.c
         p = c.lastTopLevel().insertAfter()
-        p.h = 'outline diff'
+        p.h = 'diff-leo-files'
         p.b = '\n'.join(aList) + '\n'
         return p
     #@+node:ekr.20180211170333.9: *4* loc.find_gnx (no longer used)
@@ -665,7 +688,8 @@ class CompareLeoOutlines(object):
         for frame in g.app.windowList:
             if frame.c.fileName() == fn:
                 return frame.c
-        return g.openWithFileName(fn)
+        gui = None if self.visible else g.app.nullGui
+        return g.openWithFileName(fn, gui=gui)
     #@-others
 #@-others
 #@@language python
