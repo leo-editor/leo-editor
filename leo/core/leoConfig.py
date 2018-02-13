@@ -893,9 +893,9 @@ class ParserBaseClass(object):
             if trace: g.trace('-->', entryCommandName)
             return None, g.ShortcutInfo('*entry-command*', commandName=entryCommandName)
         j = i
-        i = g.skip_id(s, j, '-@') # #717.
+        i = g.skip_id(s, j, '-@') # #718.
         name = s[j: i]
-        # #717: Allow @button- and @command- prefixes.
+        # #718: Allow @button- and @command- prefixes.
         for tag in ('@button-', '@command-'):
             if name.startswith(tag):
                 name = name[len(tag):]
