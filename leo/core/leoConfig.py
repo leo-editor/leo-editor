@@ -693,15 +693,18 @@ class ParserBaseClass(object):
             line = line.strip()
             if line and not g.match(line, 0, '#'):
                 commandName, si = self.parseShortcutLine(fn, line)
-                assert g.isShortcutInfo(si), si
-                if si and si.stroke not in (None, 'none', 'None'):
-                    self.doOneShortcut(si, commandName, p)
+                if si is None: # Fix #718.
+                    print('\nWarning: bad shortcut specifier: %r\n' % line)
                 else:
-                    # New in Leo 5.7: Add local assignments to None to c.k.killedBindings.
-                    if c.config.isLocalSettingsFile():
-                        if trace: g.trace('%s: killing binding to %s' % (
-                            c.shortFileName(), commandName))
-                        c.k.killedBindings.append(commandName)
+                    assert g.isShortcutInfo(si), si
+                    if si and si.stroke not in (None, 'none', 'None'):
+                        self.doOneShortcut(si, commandName, p)
+                    else:
+                        # New in Leo 5.7: Add local assignments to None to c.k.killedBindings.
+                        if c.config.isLocalSettingsFile():
+                            if trace: g.trace('%s: killing binding to %s' % (
+                                c.shortFileName(), commandName))
+                            c.k.killedBindings.append(commandName)
         if trace: g.trace(
             len(list(self.shortcutsDict.keys())), c.shortFileName(), p.h)
     #@+node:ekr.20111020144401.9585: *5* doOneShortcut (ParserBaseClass)
@@ -890,8 +893,13 @@ class ParserBaseClass(object):
             if trace: g.trace('-->', entryCommandName)
             return None, g.ShortcutInfo('*entry-command*', commandName=entryCommandName)
         j = i
-        i = g.skip_id(s, j, '-') # New in 4.4: allow Emacs-style shortcut names.
+        i = g.skip_id(s, j, '-@') # #717.
         name = s[j: i]
+        # #717: Allow @button- and @command- prefixes.
+        for tag in ('@button-', '@command-'):
+            if name.startswith(tag):
+                name = name[len(tag):]
+                break
         if not name:
             if trace: g.trace('no name', repr(s))
             return None, None
