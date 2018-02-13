@@ -1456,12 +1456,16 @@ class FileCommands(object):
                 delattr(p.v, 'tempTnodeList')
     #@+node:ekr.20080805132422.3: *5* fc.resolveArchivedPosition
     def resolveArchivedPosition(self, archivedPosition, root_v):
-        '''Return a VNode corresponding to the archived position relative to root node root_v.'''
+        '''
+        Return a VNode corresponding to the archived position relative to root
+        node root_v.
+        '''
 
         def oops(message):
             '''Give an error only if no file errors have been seen.'''
             if not g.unitTesting and self.c.atFileCommands.errors == 0:
                 g.error('bad archived position: %s' % (message))
+            return None
 
         try:
             aList = [int(z) for z in archivedPosition.split('.')]
