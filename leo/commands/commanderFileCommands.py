@@ -784,7 +784,12 @@ def writeFileFromNode(self, event=None):
 #@+node:tbrown.20080509212202.6: *3* c_file.cleanRecentFiles
 @g.commander_command('clean-recent-files')
 def cleanRecentFiles(self, event=None):
-    '''Remove items from the recent files list that are no longer valid.'''
+    '''
+    Remove items from the recent files list that no longer exist.
+    
+    This almost never does anything because Leo's startup logic removes
+    nonexistent files from the recent files list.
+    '''
     c = self
     g.app.recentFilesManager.cleanRecentFiles(c)
 #@+node:ekr.20031218072017.2080: *3* c_file.clearRecentFiles
