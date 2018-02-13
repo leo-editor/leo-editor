@@ -286,7 +286,9 @@ class Commands(object):
         import leo.commands.killBufferCommands as killBufferCommands
         import leo.commands.rectangleCommands as rectangleCommands
         import leo.commands.spellCommands as spellCommands
-        # Import commander commands to execute @g.commander_command decorators
+        # Import files to execute @g.commander_command decorators
+        import leo.core.leoCompare as leoCompare
+        assert leoCompare
         import leo.commands.commanderEditCommands as commanderEditCommands
         assert commanderEditCommands
         import leo.commands.commanderFileCommands as commanderFileCommands

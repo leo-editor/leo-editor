@@ -5,7 +5,6 @@
 '''Leo's general editing commands.'''
 #@+<< imports >>
 #@+node:ekr.20150514050149.1: ** << imports >> (editCommands.py)
-import difflib
 import os
 import re
 import leo.core.leoGlobals as g
@@ -72,43 +71,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         if c.cacher:
             c.cacher.clearCache()
-    #@+node:ekr.20160331191740.1: *3* ec.diff-marked-nodes
-    @cmd('diff-marked-nodes')
-    def diffMarkedNodes(self, event):
-        '''
-        This command does nothing unless exactly two nodes, say p1 and p2, are marked.
-
-        When two nodes *are* marked, this command does the following:
-
-        1. Creates a **diff node** as the last top-level node. The body of the
-           diff node shows the diffs between the two marked nodes, that is,
-           difflib.Differ().compare(p1.b, p2.b)
-
-        2. Move *clones* of p1 and p2 to be children of the diff node,
-           and unmarks all nodes. This is usually what is wanted.
-
-        To rerun the command, just mark two nodes again.
-        '''
-        c = self.c
-        aList = [z for z in c.all_unique_positions() if z.isMarked()]
-        if len(aList) == 2:
-            p1, p2 = aList[0], aList[1]
-            lines1 = g.splitLines(p1.b.rstrip()+'\n')
-            lines2 = g.splitLines(p2.b.rstrip()+'\n')
-            diffLines = difflib.Differ().compare(lines1, lines2)
-            s = ''.join(list(diffLines))
-            p = c.lastTopLevel().insertAfter()
-            p.h = 'Compare: %s, %s' % (g.truncate(p1.h, 22), g.truncate(p2.h, 22))
-            p.b = '1: %s\n2: %s\n%s' % (p1.h, p2.h, s)
-            for p2 in aList:
-                p3 = p2.clone()
-                p3.moveToLastChildOf(p)
-            p.expand()
-            c.unmarkAll()
-            c.selectPosition(p)
-            c.redraw()
-        else:
-            g.es_print('%s nodes marked instead of 2' % len(aList))
     #@+node:ekr.20150514063305.118: *3* ec.doNothing
     @cmd('do-nothing')
     def doNothing(self, event):

@@ -10,6 +10,50 @@ import os
 def choose(cond, a, b): # warning: evaluates all arguments
     if cond: return a
     else: return b
+#@+node:ekr.20160331191740.1: ** @g.command(diff-marked-nodes)
+@g.command('diff-marked-nodes')
+def diffMarkedNodes(event):
+    '''
+    When two or more nodes are marked, this command does the following:
+
+    - Creates a "diff marked node" as the last top-level node. The body of
+      this node contains "diff n" nodes, one for each pair of compared
+      nodes.
+      
+    - Each diff n contains the diffs between the two diffed nodes, that is,
+      difflib.Differ().compare(p1.b, p2.b).  The children of the diff n are
+      *clones* of the two compared nodes.
+    '''
+    c = event and event.get('c')
+    if not c:
+        return
+    aList = [z for z in c.all_unique_positions() if z.isMarked()]
+    n = 0
+    if len(aList) >= 2:
+        root = c.lastTopLevel().insertAfter()
+        root.h = 'diff marked nodes'
+        root.b = '\n'.join([z.h for z in aList]) + '\n'
+        while len(aList) > 1:
+            n += 1
+            p1, p2 = aList[0], aList[1]
+            aList = aList[1:]
+            lines = difflib.Differ().compare(
+                g.splitLines(p1.b.rstrip()+'\n'),
+                g.splitLines(p2.b.rstrip()+'\n'))
+            p = root.insertAsLastChild()
+            # p.h = 'Compare: %s, %s' % (g.truncate(p1.h, 22), g.truncate(p2.h, 22))
+            p.h = 'diff %s' % n
+            p.b = '1: %s\n2: %s\n%s' % (p1.h, p2.h, ''.join(list(lines)))
+            for p3 in (p1, p2):
+                clone = p3.clone()
+                clone.moveToLastChildOf(p)
+        root.expand()
+        # c.unmarkAll()
+        c.selectPosition(root)
+        c.redraw()
+    else:
+        g.es_print('Please mark at least 2 nodes')
+
 #@+node:ekr.20031218072017.3632: ** go
 def go():
     compare = LeoCompare(
@@ -471,16 +515,16 @@ class CompareLeoOutlines(object):
             return
         self.root = self.create_root(aList)
         while len(aList) > 1:
-            self.path1 = aList[0]
+            path1 = aList[0]
             aList = aList[1:]
             for path2 in aList:
-                self.path2 = path2
-                self.diff_two_files(self.path1, self.path2)
+                self.diff_two_files(path1, path2)
         self.finish()
     #@+node:ekr.20180211170333.3: *3* loc.diff_two_files
     def diff_two_files(self, fn1, fn2):
         '''Create an outline describing the git diffs for fn.'''
         g.trace('\n%s\n%s' % (fn1, fn2))
+        self.path1, self.path2 = fn1, fn2
         s1 = self.get_file(fn1)
         s2 = self.get_file(fn2)
         lines1 = g.splitLines(s1)
