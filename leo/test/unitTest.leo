@@ -1217,13 +1217,13 @@
 </v>
 <v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
 </v>
-</v>
 <v t="ekr.20080501121449.3"><vh>@test insert node</vh>
 <v t="ekr.20171112182742.3"><vh>A</vh></v>
 <v t="ekr.20171112182742.5"><vh>newHeadline</vh></v>
 <v t="ekr.20171112182742.4"><vh>B</vh></v>
 </v>
 <v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
