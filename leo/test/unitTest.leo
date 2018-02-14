@@ -49,16 +49,13 @@
 </v>
 </v>
 <v t="ekr.20041121151002"><vh>@settings</vh>
-<v t="ekr.20171126153138.1"><vh>Required for reformat-paragraph tests</vh>
-<v t="ekr.20171126152936.1"><vh>@int page_width = 80</vh></v>
-<v t="ekr.20171126153044.1"><vh>@int tab_width = -4</vh></v>
-</v>
 <v t="ekr.20080324133327.2"><vh>@bool allow_middle_button_paste = True</vh></v>
 <v t="ekr.20161011095551.1"><vh>@bool allow_section_references_in_at_auto = True</vh></v>
 <v t="ekr.20101009105124.6195"><vh>@bool put_expansion_bits_in_leo_files = True</vh></v>
 <v t="ekr.20140902101931.4478"><vh>@bool qt-use-scintilla = False</vh></v>
 <v t="ekr.20161129030232.1"><vh>@bool run-pyflakes-on-write = False</vh></v>
 <v t="ekr.20140217055617.4231"><vh>@bool scriptingatscriptnodes = True</vh></v>
+<v t="ekr.20180214042153.1"><vh>@bool select-next-after-delete = False</vh></v>
 <v t="ekr.20051013162226"><vh>@bool test_setting = True</vh></v>
 <v t="ekr.20150602215639.1"><vh>@bool tidy_autobeautify = False</vh></v>
 <v t="ekr.20070503064257"><vh>@bool use_chapters = True</vh></v>
@@ -80,6 +77,10 @@
 <v t="ekr.20111124094121.3941"><vh>Empty @buttons and @commands nodes</vh>
 <v t="ekr.20111124094121.3942"><vh>@buttons</vh></v>
 <v t="ekr.20111124094121.3943"><vh>@commands</vh></v>
+</v>
+<v t="ekr.20171126153138.1"><vh>Required for reformat-paragraph tests</vh>
+<v t="ekr.20171126152936.1"><vh>@int page_width = 80</vh></v>
+<v t="ekr.20171126153044.1"><vh>@int tab_width = -4</vh></v>
 </v>
 <v t="ekr.20131111155830.4249"><vh>Vim settings</vh>
 <v t="ekr.20131111155830.4250"><vh>@@@data vim-control-character-commands</vh></v>
@@ -272,7 +273,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285508302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735508302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735508302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735509302e362e31392e3431710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735508302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3431710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -1217,6 +1218,12 @@
 <v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
 </v>
 </v>
+<v t="ekr.20080501121449.3"><vh>@test insert node</vh>
+<v t="ekr.20171112182742.3"><vh>A</vh></v>
+<v t="ekr.20171112182742.5"><vh>newHeadline</vh></v>
+<v t="ekr.20171112182742.4"><vh>B</vh></v>
+</v>
+<v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1701,6 +1708,103 @@ for h in sorted(d2.keys()):
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
 Important: this may cause crashes on some platforms.
+</t>
+<t tx="ekr.20080501121449.3"># This test requires @bool select-next-after-delete = False
+assert p.h == '@test insert node',repr(p.h)
+root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+try:
+    assert p.h == '@test insert node',repr(p.h)
+    p2 = p.insertAsNthChild(0)
+    p2.setHeadString('A')
+    p3 = p.insertAsNthChild(1)
+    p3.setHeadString('B')
+    p.expand()
+    c.setCurrentPosition(p2)
+    p4 = c.insertHeadline()
+    assert p4 == c.p
+    p = c.p
+    assert p,'no p'
+    p.setHeadString('inserted')
+    assert p.back(),'no p.back(): %s' % (p)
+    assert p.back().h == 'A', 'fail 1'
+    assert p.next().h == 'B', 'fail 2'
+    c.undoer.undo()
+    # With the new undo logic, it takes 2 undoes.
+    # The first undo undoes the headline changes,
+    # the second undo undoes the insert node.
+    if g.app.isExternalUnitTest or g.app.gui.guiName() == 'nullGui':
+        # The situation is different in a null Gui.
+        pass
+    else:
+        c.undoer.undo() 
+    p = c.p
+    assert p == p2,         'fail 3:\n p: %s\np2: %s' % (p,p2)
+    assert p.next() == p3,  'fail 4'
+    c.undoer.redo()
+    p = c.p
+    assert p.back(),          'fail 0-2'
+    assert p.back().h == 'A', 'fail 1-2'
+    assert p.next().h == 'B', 'fail 2-2'
+    c.undoer.undo()
+    p = c.p
+    assert p == p2,         'fail 3-2'
+    assert p.next() == p3,  'fail 3-2'
+    c.undoer.redo()
+    p = c.p
+    assert p.back().h == 'A', 'fail 1-3'
+    assert p.next().h == 'B', 'fail 2-3'
+finally:
+    if 0:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode=None)
+    c.redraw_now(root)
+</t>
+<t tx="ekr.20080503082625.3"># This test requires @bool select-next-after-delete = False
+root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode=None)
+try:
+    p2 = p.insertAsNthChild(0)
+    p2.setHeadString('A')
+    p3 = p.insertAsNthChild(1)
+    p3.setHeadString('B')
+    p4 = p.insertAsNthChild(2)
+    p4.setHeadString('C')
+    p.expand()
+    c.selectPosition(p3)
+    c.deleteOutline()
+    c.redraw_now()
+    p = c.p
+    assert p.h == 'A', 'fail 1: got %s' % p.h
+    assert p.next().h == 'C', 'fail 2'
+    c.undoer.undo()
+    c.outerUpdate()
+    p = c.p
+    assert p.back() == p2, 'fail 4 %s' % p.back()
+    assert p.next() == p4, 'fail 5'
+    c.undoer.redo()
+    c.outerUpdate()
+    p = c.p
+    assert p.h == 'A',          'fail 1-2'
+    assert p.next().h == 'C',   'fail 2-2'
+    c.undoer.undo()
+    c.outerUpdate()
+    p = c.p
+    assert p.back() == p2,  'fail 4-2'
+    assert p.next() == p4,  'fail 5-2'
+    c.undoer.redo()
+    c.outerUpdate()
+    p = c.p
+    assert p.h == 'A',          'fail 1-3'
+    assert p.next().h == 'C',   'fail 2-3'
+
+finally:
+    if 1:
+        while root.hasChildren():
+            root.firstChild().doDelete(newNode=None)
+    c.redraw_now(root)
 </t>
 <t tx="ekr.20080904084223.1"># changed.
 @others
@@ -15591,6 +15695,9 @@ unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
 </t>
+<t tx="ekr.20171112182742.3"></t>
+<t tx="ekr.20171112182742.4"></t>
+<t tx="ekr.20171112182742.5"></t>
 <t tx="ekr.20171120113732.1">s = '''\
 * Section 1 :tag1:
 * Section 2 :tag2:
@@ -15878,5 +15985,6 @@ EOT;
 }
 ?&gt;
 </t>
+<t tx="ekr.20180214042153.1">False is the legacy value.</t>
 </tnodes>
 </leo_file>

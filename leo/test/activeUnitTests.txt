@@ -22498,6 +22498,7 @@ finally:
             p.firstChild().doDelete(newNode=None)
     c.redraw_now(p)
 #@+node:ekr.20080503082625.3: *5* @test delete node
+# This test requires @bool select-next-after-delete = False
 root = p.copy()
 while p.hasChildren():
     p.firstChild().doDelete(newNode=None)
@@ -22621,6 +22622,7 @@ finally:
             root.firstChild().doDelete(newNode=None)
     c.redraw_now(root)
 #@+node:ekr.20080501121449.3: *5* @test insert node
+# This test requires @bool select-next-after-delete = False
 assert p.h == '@test insert node',repr(p.h)
 root = p.copy()
 while p.hasChildren():
