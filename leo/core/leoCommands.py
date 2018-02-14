@@ -2968,7 +2968,7 @@ class Commands(object):
             bunch = c.hoistStack[0]
             if p == bunch.p: return False
         if False: # c.config.getBool('select-next-after-delete'):
-            # Select next node if possible.
+            # #721: Optionally select next node after delete.
             return p.hasParent() or p.hasBack()
         else:
             return p.hasParent() or p.hasThreadBack() or p.hasNext()

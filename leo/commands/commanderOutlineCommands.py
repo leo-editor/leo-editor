@@ -788,7 +788,7 @@ def deleteOutline(self, event=None, op_name="Delete Node"):
     if not p: return
     c.endEditing() # Make sure we capture the headline for Undo.
     if False: # c.config.getBool('select-next-after-delete'):
-        # Select next node if possible.
+        # #721: Optionally select next node after delete.
         if p.hasVisNext(c): newNode = p.visNext(c)
         elif p.hasParent(): newNode = p.parent()
         else: newNode = p.back() # _not_ p.visBack(): we are at the top level.
