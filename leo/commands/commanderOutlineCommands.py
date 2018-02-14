@@ -13,7 +13,7 @@ def cutOutline(self, event=None):
     c = self
     if c.canDeleteHeadline():
         c.copyOutline()
-        c.deleteOutline("Cut Node")
+        c.deleteOutline(op_name="Cut Node")
         c.recolor()
 #@+node:ekr.20031218072017.1550: *3* c_oc.copyOutline
 @g.commander_command('copy-node')
@@ -787,8 +787,15 @@ def deleteOutline(self, event=None, op_name="Delete Node"):
     p = c.p
     if not p: return
     c.endEditing() # Make sure we capture the headline for Undo.
-    if p.hasVisBack(c): newNode = p.visBack(c)
-    else: newNode = p.next() # _not_ p.visNext(): we are at the top level.
+    if False: # c.config.getBool('select-next-after-delete'):
+        # Select next node if possible.
+        if p.hasVisNext(c): newNode = p.visNext(c)
+        elif p.hasParent(): newNode = p.parent()
+        else: newNode = p.back() # _not_ p.visBack(): we are at the top level.
+    else:
+        # Legacy: select previous node if possible.
+        if p.hasVisBack(c): newNode = p.visBack(c)
+        else: newNode = p.next() # _not_ p.visNext(): we are at the top level.
     if not newNode: return
     undoData = u.beforeDeleteNode(p)
     dirtyVnodeList = p.setAllAncestorAtFileNodesDirty()
