@@ -6,103 +6,6 @@ import difflib
 import filecmp
 import os
 #@+others
-#@+node:ekr.20160331191740.1: ** @g.command(diff-marked-nodes)
-@g.command('diff-marked-nodes')
-def diffMarkedNodes(event):
-    '''
-    When two or more nodes are marked, this command does the following:
-
-    - Creates a "diff marked node" as the last top-level node. The body of
-      this node contains "diff n" nodes, one for each pair of compared
-      nodes.
-      
-    - Each diff n contains the diffs between the two diffed nodes, that is,
-      difflib.Differ().compare(p1.b, p2.b).  The children of the diff n are
-      *clones* of the two compared nodes.
-    '''
-    c = event and event.get('c')
-    if not c:
-        return
-    aList = [z for z in c.all_unique_positions() if z.isMarked()]
-    n = 0
-    if len(aList) >= 2:
-        root = c.lastTopLevel().insertAfter()
-        root.h = 'diff marked nodes'
-        root.b = '\n'.join([z.h for z in aList]) + '\n'
-        while len(aList) > 1:
-            n += 1
-            p1, p2 = aList[0], aList[1]
-            aList = aList[1:]
-            lines = difflib.Differ().compare(
-                g.splitLines(p1.b.rstrip()+'\n'),
-                g.splitLines(p2.b.rstrip()+'\n'))
-            p = root.insertAsLastChild()
-            # p.h = 'Compare: %s, %s' % (g.truncate(p1.h, 22), g.truncate(p2.h, 22))
-            p.h = 'diff %s' % n
-            p.b = '1: %s\n2: %s\n%s' % (p1.h, p2.h, ''.join(list(lines)))
-            for p3 in (p1, p2):
-                clone = p3.clone()
-                clone.moveToLastChildOf(p)
-        root.expand()
-        # c.unmarkAll()
-        c.selectPosition(root)
-        c.redraw()
-    else:
-        g.es_print('Please mark at least 2 nodes')
-
-#@+node:ekr.20180213040339.1: ** @g.command(diff-leo-files)
-@g.command('diff-leo-files')
-def giff_leo_files(event):
-    '''
-    Open a dialog prompting for two or more .leo files.
-
-    Creates a top-level node showing the diffs of those files, two at a time.
-    '''
-    c = event and event.get('c')
-    if not c:
-        return
-    types = [
-        ("Leo files", "*.leo"),
-        ("All files", "*"),
-    ]
-    paths = g.app.gui.runOpenFileDialog(c,
-        title="Compare Leo Files",
-        filetypes=types,
-        defaultextension=".leo",
-        multiple=True)
-    c.bringToFront()
-    paths = [z for z in paths if g.os_path_exists(z)]
-    if len(paths) > 1:
-        CompareLeoOutlines(c).diff_list_of_files(paths, visible=False)
-    else:
-        g.es_print('Please pick two or more files')
-#@+node:ekr.20031218072017.3632: ** go
-def go():
-    compare = LeoCompare(
-        commands=None,
-        appendOutput=True,
-        ignoreBlankLines=True,
-        ignoreFirstLine1=False,
-        ignoreFirstLine2=False,
-        ignoreInteriorWhitespace=False,
-        ignoreLeadingWhitespace=True,
-        ignoreSentinelLines=False,
-        limitCount=9, # Zero means don't stop.
-        limitToExtension=".py", # For directory compares.
-        makeWhitespaceVisible=True,
-        printBothMatches=False,
-        printMatches=False,
-        printMismatches=True,
-        printTrailingMismatches=False,
-        outputFileName=None)
-    if 1: # Compare all files in Tangle test directories
-        path1 = "c:\\prog\\test\\tangleTest\\"
-        path2 = "c:\\prog\\test\\tangleTestCB\\"
-        compare.compare_directories(path1, path2)
-    else: # Compare two files.
-        name1 = "c:\\prog\\test\\compare1.txt"
-        name2 = "c:\\prog\\test\\compare2.txt"
-        compare.compare_files(name1, name2)
 #@+node:ekr.20031218072017.3633: ** class LeoCompare
 class BaseLeoCompare(object):
     """The base class for Leo's compare code."""
@@ -691,6 +594,125 @@ class CompareLeoOutlines(object):
         gui = None if self.visible else g.app.nullGui
         return g.openWithFileName(fn, gui=gui)
     #@-others
+#@+node:ekr.20180214041049.1: ** Top-level commands and helpers
+#@+node:ekr.20180213104556.1: *3* @g.command(diff-and-open-leo-files)
+@g.command('diff-and-open-leo-files')
+def diff_and_open_leo_files(event):
+    '''
+    Open a dialog prompting for two or more .leo files.
+    
+    Opens all the files and creates a top-level node in c's outline showing
+    the diffs of those files, two at a time.
+    '''
+    diff_leo_files_helper(event,
+        title = "Diff And Open Leo Files",
+        visible = True,
+    )
+#@+node:ekr.20180213040339.1: *3* @g.command(diff-leo-files)
+@g.command('diff-leo-files')
+def diff_leo_files(event):
+    '''
+    Open a dialog prompting for two or more .leo files.
+
+    Creates a top-level node showing the diffs of those files, two at a time.
+    '''
+    diff_leo_files_helper(event,
+        title = "Diff Leo Files",
+        visible = False,
+    )
+#@+node:ekr.20160331191740.1: *3* @g.command(diff-marked-nodes)
+@g.command('diff-marked-nodes')
+def diffMarkedNodes(event):
+    '''
+    When two or more nodes are marked, this command does the following:
+
+    - Creates a "diff marked node" as the last top-level node. The body of
+      this node contains "diff n" nodes, one for each pair of compared
+      nodes.
+      
+    - Each diff n contains the diffs between the two diffed nodes, that is,
+      difflib.Differ().compare(p1.b, p2.b).  The children of the diff n are
+      *clones* of the two compared nodes.
+    '''
+    c = event and event.get('c')
+    if not c:
+        return
+    aList = [z for z in c.all_unique_positions() if z.isMarked()]
+    n = 0
+    if len(aList) >= 2:
+        root = c.lastTopLevel().insertAfter()
+        root.h = 'diff marked nodes'
+        root.b = '\n'.join([z.h for z in aList]) + '\n'
+        while len(aList) > 1:
+            n += 1
+            p1, p2 = aList[0], aList[1]
+            aList = aList[1:]
+            lines = difflib.Differ().compare(
+                g.splitLines(p1.b.rstrip()+'\n'),
+                g.splitLines(p2.b.rstrip()+'\n'))
+            p = root.insertAsLastChild()
+            # p.h = 'Compare: %s, %s' % (g.truncate(p1.h, 22), g.truncate(p2.h, 22))
+            p.h = 'diff %s' % n
+            p.b = '1: %s\n2: %s\n%s' % (p1.h, p2.h, ''.join(list(lines)))
+            for p3 in (p1, p2):
+                clone = p3.clone()
+                clone.moveToLastChildOf(p)
+        root.expand()
+        # c.unmarkAll()
+        c.selectPosition(root)
+        c.redraw()
+    else:
+        g.es_print('Please mark at least 2 nodes')
+
+#@+node:ekr.20180213104627.1: *3* diff_leo_files_helper
+def diff_leo_files_helper(event, title, visible):
+    '''Prompt for a list of .leo files to open.'''
+    c = event and event.get('c')
+    if not c:
+        return
+    types = [
+        ("Leo files", "*.leo"),
+        ("All files", "*"),
+    ]
+    paths = g.app.gui.runOpenFileDialog(c,
+        title=title,
+        filetypes=types,
+        defaultextension=".leo",
+        multiple=True,
+    )
+    c.bringToFront()
+    # paths = [z for z in paths if g.os_path_exists(z)]
+    if len(paths) > 1:
+        CompareLeoOutlines(c).diff_list_of_files(paths, visible=visible)
+    elif len(paths) == 1:
+        g.es_print('Please pick two or more .leo files')
+#@+node:ekr.20031218072017.3632: *3* go
+def go():
+    compare = LeoCompare(
+        commands=None,
+        appendOutput=True,
+        ignoreBlankLines=True,
+        ignoreFirstLine1=False,
+        ignoreFirstLine2=False,
+        ignoreInteriorWhitespace=False,
+        ignoreLeadingWhitespace=True,
+        ignoreSentinelLines=False,
+        limitCount=9, # Zero means don't stop.
+        limitToExtension=".py", # For directory compares.
+        makeWhitespaceVisible=True,
+        printBothMatches=False,
+        printMatches=False,
+        printMismatches=True,
+        printTrailingMismatches=False,
+        outputFileName=None)
+    if 1: # Compare all files in Tangle test directories
+        path1 = "c:\\prog\\test\\tangleTest\\"
+        path2 = "c:\\prog\\test\\tangleTestCB\\"
+        compare.compare_directories(path1, path2)
+    else: # Compare two files.
+        name1 = "c:\\prog\\test\\compare1.txt"
+        name2 = "c:\\prog\\test\\compare2.txt"
+        compare.compare_files(name1, name2)
 #@-others
 #@@language python
 #@@tabwidth -4
