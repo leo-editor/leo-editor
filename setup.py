@@ -35,7 +35,7 @@ def get_version(file, version=None):
 def get_semver(tag):
     '''Return 'Semantic Version' from tag string'''
     try:
-        version = semantic_version.Version.coerce(tag, partial=True)
+        version = str(semantic_version.Version.coerce(tag, partial=True))
             # tuple of major, minor, build, pre-release, patch
             # 5.6b2 --> 5.6-b2
     except ValueError:
