@@ -9,6 +9,7 @@ from shutil import rmtree
 from setuptools import setup, find_packages # Always prefer setuptools over distutils
 import semantic_version
 import leo.core.leoGlobals as g
+import leo.core.leoVersion as leoVersion
 
 #@+others
 #@+node:maphew.20141126230535.3: ** docstring
@@ -22,6 +23,27 @@ import leo.core.leoGlobals as g
     https://blog.ionelmc.ro/presentations/packaging/#slide:2
     https://blog.ionelmc.ro/2014/05/25/python-packaging/
 '''
+def get_version(file, version=None):
+    '''Determine current Leo version. Use git if in checkout, else internal Leo'''
+    root = os.path.dirname(os.path.realpath(file))
+    if os.path.exists(os.path.join(root,'.git')):
+        version = git_version(file)
+    else:
+        version = get_semver(leoVersion.version)
+    return version
+    
+def get_semver(tag):
+    '''Return 'Semantic Version' from tag string'''
+    try:
+        version = semantic_version.Version.coerce(tag, partial=True)
+            # tuple of major, minor, build, pre-release, patch
+            # 5.6b2 --> 5.6-b2
+    except ValueError:
+        print('''*** Failed to parse Semantic Version from git tag '{0}'.
+        Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.
+        This version can't be uploaded to PyPi.org.'''.format(tag))
+        version = tag
+    return version
 #@+node:maphew.20171112223922.1: ** git_version
 def git_version(file):
     '''Fetch from Git: {tag} {distance-from-tag} {current commit hash}
@@ -30,18 +52,11 @@ def git_version(file):
     tag, distance, commit = g.gitDescribe(root)
         # 5.6b2, 55, e1129da
     ctag = clean_git_tag(tag)
-    try:
-        version = semantic_version.Version.coerce(ctag, partial=True)
-            # tuple of major, minor, build, pre-release, patch
-            # 5.6b2 --> 5.6-b2
-    except ValueError:
-        print('''*** Failed to parse Semantic Version from git tag '{0}'.
-        Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.
-        This version can't be uploaded to PyPi.org.'''.format(tag))
-        version = tag
+    version = get_semver(ctag)
     if int(distance) > 0:
         version = '{}-dev{}'.format(version, distance)
     return version
+
 def clean_git_tag(tag):
     '''Return only version number from tag name. Ignore unkown formats.
        Is specific to tags in Leo's repository.
@@ -112,7 +127,7 @@ clean()
 setup(
     name='leo',
     # version = leo.core.leoVersion.version,
-    version=git_version(__file__),
+    version=get_version(__file__),
     author='Edward K. Ream',
     author_email='edreamleo@gmail.com',
     url='http://leoeditor.com',
