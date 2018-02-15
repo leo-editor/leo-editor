@@ -405,6 +405,8 @@ class LeoApp(object):
             "less": "css",
             "hbs": "html",
             "handlebars": "html",
+            "rust": "c", 
+            # "vue": "c",
         }
     #@+node:ekr.20120522160137.9909: *5* app.define_language_delims_dict
     #@@nobeautify
@@ -535,6 +537,7 @@ class LeoApp(object):
             "rib"                : "#",
             "rpmspec"            : "#",
             "rst"                : ".._",
+            "rust"               : "// /* */",
             "ruby"               : "#", # thyrsus 2008-11-05
             "rview"              : "// /* */",
             "sas"                : "* /* */",
