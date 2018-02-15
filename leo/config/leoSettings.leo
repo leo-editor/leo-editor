@@ -10785,7 +10785,7 @@ except KeyError:
     """expand {block content} to 
        {% block content %}\n{% end_block content %} with proper
        indentation (for Django web templates)"""
-    from PyQt4 import QtCore
+    from leo.core.leoQt import QtCore
     widget = c.frame.body.widget
     scrollPosition = widget.getYScrollPosition()
     textCursor = widget.textCursor()
@@ -14575,7 +14575,7 @@ Unicode chars like ▼ ▾ and … are typical choices for this text.
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
-    from PyQt4 import QtCore
+    from leo.core.leoQt import QtCore
     widget = c.frame.body.widget
     scrollPosition = widget.getYScrollPosition()
     textCursor = widget.textCursor()
