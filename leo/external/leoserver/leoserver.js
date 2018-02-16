@@ -3,15 +3,11 @@
 jQ = jQuery
 //@+others
 //@+node:ekr.20180216151656.1: ** key press
-// Get the input field
-var input = document.getElementById("console");
+var console = document.getElementById("console");
 
-// Execute a function when the user releases a key on the keyboard
-input.addEventListener("keyup", function(event) {
-  // Cancel the default action, if needed
+console.addEventListener("keyup", function(event) {
   event.preventDefault();
   if (event.keyCode === 13) {
-    // Trigger the button element with a click
     document.getElementById("go").click();
   }
 });
