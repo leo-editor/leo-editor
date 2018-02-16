@@ -83,20 +83,6 @@ STATIC_FILES = {
 #@-<< define STATIC_FILES >>
 path = join(loadDir, '..', 'doc', 'LeoDocs.leo')
 c = controller.openLeoFile(path)
-g.trace(c)
-server = HTTPServer(('127.0.0.1', 8370), LeoHTTPRequestHandler)
-server.namespace = {'c': c, 'g': g}
-webbrowser.open("http://127.0.0.1:8370/index.html")
-try:
-    server.serve_forever()
-except KeyboardInterrupt:
-    print('Keyboard interrupt. Bye')
-    raise
-
-
-
-
-
 server = HTTPServer(('127.0.0.1', 8370), LeoHTTPRequestHandler)
 server.namespace = {'c': c, 'g': g}
 webbrowser.open("http://127.0.0.1:8370/index.html")
