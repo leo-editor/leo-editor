@@ -2,6 +2,19 @@
 //@+node:ekr.20180216133454.1: * @file c:/leo.repo/leo-editor/leo/external/leoserver/leoserver.js
 jQ = jQuery
 //@+others
+//@+node:ekr.20180216151656.1: ** key press
+// Get the input field
+var input = document.getElementById("console");
+
+// Execute a function when the user releases a key on the keyboard
+input.addEventListener("keyup", function(event) {
+  // Cancel the default action, if needed
+  event.preventDefault();
+  if (event.keyCode === 13) {
+    // Trigger the button element with a click
+    document.getElementById("go").click();
+  }
+});
 //@+node:ekr.20180216133513.1: ** go
 function go() {
     let console = jQ('#console').val()
