@@ -1912,7 +1912,6 @@
 <v t="ekr.20180212070925.1"></v>
 </v>
 </v>
-<v t="ekr.20180216043451.1"><vh>** Use Matt's install docs</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -25766,23 +25765,31 @@ the headline of any node.
 .. _`Install Python`:   http://python.org.
 .. _`pip`:              https://pypi.python.org/pypi/pip
 
-Python's `pip`_ tool will download *and* install Leo and all of Leo's dependencies automatically:
+Python's `pip`_ tool will download *and* install Leo and all of Leo's dependencies automatically.
 
-1. `Install Python`_ first, if necessary. If you are new to Python, install Python 3, not Python 2. Python 3 installs pip automatically.
+1. `Install Python`_ first, if necessary. If you are new to Python, install Python 3, not Python 2.
 
-2. (Python 2 only) `Install pip`_ itself, if necessary.  To check whether pip has been installed, open a terminal window and type::
+2. Check whether pip has been installed using the terminal window command below. If there's an error `Install pip`_:
 
     pip --version
-   
-3. (Python 2 only) From a terminal, install `PyQt`_ with::
 
-    pip install pyqt
+3. Install Leo and all required packages:
 
-4. Install Leo with::
+**Python 3**
 
     pip install leo
-    
-This will download and install all required packages (except PyQt).
+
+**Python 2 with Anaconda**
+
+    conda install pyqt
+    pip install leo
+
+**Python 2 without Anaconda**
+
+* Install `PyQt`_
+* Install Leo:
+
+    pip install leo
 </t>
 <t tx="ekr.20180130055320.1">https://github.com/leo-editor/leo-editor/issues/562</t>
 <t tx="ekr.20180130092843.1">.. https://groups.google.com/forum/#!topic/leo-editor/yAtfcG6AL70
@@ -25920,7 +25927,6 @@ Here is a demo: https://youtu.be/hca3x5SXNqs
     leo-settings-leo
     leo-unittest-leo
 </t>
-<t tx="ekr.20180216043451.1"></t>
 <t tx="ekr.20180216043451.7">https://github.com/leo-editor/leo-editor/issues/718
 </t>
 <t tx="ekr.20180216044139.1">Path demangling potentially alters the paths in the recent files list according to find/replace patterns in the @data path-demangle setting. For example:
