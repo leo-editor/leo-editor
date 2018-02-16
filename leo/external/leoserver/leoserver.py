@@ -14,11 +14,8 @@ class LeoHTTPRequestHandler(BaseHTTPRequestHandler):
         else:
             assert self.path == '/get_tree'
             c = self.server.namespace['c']
-            nodes = [
-                {'h':i.h, 'b':i.b}
-                # for i in c.all_positions()
-                for i in c.p.self_and_siblings()
-            ]
+            nodes = [{'h':i.h, 'b':i.b} for i in c.p.self_and_siblings()]
+                                      # for i in c.all_positions()
             response = {'nodes': nodes}
             self.wfile.write(json.dumps(response).encode('utf-8'))
     def do_POST(self):
@@ -28,21 +25,26 @@ class LeoHTTPRequestHandler(BaseHTTPRequestHandler):
         data = self.rfile.read(content_length).decode('utf-8')
         data = json.loads(data)
         command = data['cmd']
-        if command:
+        if not command:
+            return
+        if command[0] == ':':
+            # A statement.
+            exec(data['cmd'][1:], self.server.namespace)
+            self.wfile.write(json.dumps({'answer': 'OK\n'}).encode('utf-8'))
+        else:
+            # An expression.
+            answer = eval(command, self.server.namespace)
+            # g.trace(type(answer))
+            response = {'answer': answer}
             try:
-                if command[0] == ':':
-                    # A statement.
-                    exec(data['cmd'][1:], self.server.namespace)
-                    self.wfile.write(json.dumps({'answer': 'OK\n'}).encode('utf-8'))
-                else:
-                    # An expression.
-                    ans = eval(command, self.server.namespace)
-                    response = {'answer': ans}
-                    self.wfile.write(json.dumps(response).encode('utf-8'))
+                json.dumps(response)
             except Exception:
                 print('can not evaluate: %s' % command)
                 g.es_exception(full=False)
-
+                response = {'answer': repr(answer)}
+            s = json.dumps(response).encode('utf-8')
+            g.trace(s)
+            self.wfile.write(s)
 def open_bridge():
     '''Open Leo bridge and return g.'''
     print('opening leoBridge...')
@@ -80,8 +82,7 @@ try:
     server.serve_forever()
 except KeyboardInterrupt:
     print('Keyboard interrupt. Bye')
-    
-
+    raise
 
 
 
