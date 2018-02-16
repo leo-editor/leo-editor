@@ -1896,6 +1896,7 @@
 <v t="ekr.20180125235814.2"><vh>#635: Link to nodes from log</vh></v>
 <v t="ekr.20180125235814.1"><vh>#655: The js importer could remove @others when a node has only one child</vh></v>
 <v t="ekr.20180202061934.1"><vh>#674: Add a treepad importer</vh></v>
+<v t="ekr.20180216082220.1"><vh>Added limited support for .rs (rust files)</vh></v>
 <v t="ekr.20180124100450.704"><vh>Added HEAD, TAIL, REST declutter replacement "patterns"</vh></v>
 <v t="ekr.20180124124532.1"><vh>Improved javascript importer</vh></v>
 </v>
@@ -25566,7 +25567,7 @@ and regardless of whether tabs have been detached.</t>
 <t tx="ekr.20180126003420.1">reinstated --trace-shutdown</t>
 <t tx="ekr.20180126003454.1">.. _`5.7 enhancements page`: https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A5.7+label%3Aenhancement
 
-- Completed 19 enhancement issues.  See the `5.7 enhancements page`_.
+- Completed 26 enhancement issues.  See the `5.7 enhancements page`_.
 - Improved the javascript importer.
 </t>
 <t tx="ekr.20180126003617.1">- New plugins::
@@ -25940,6 +25941,8 @@ The default setting specifies no patterns.</t>
 <t tx="ekr.20180216063833.1">fc.resolveArchivedPosition gives errors message onlyi if there have been no read errors (at.errors == 0).
 
 See https://groups.google.com/d/msg/leo-editor/RIwAHLAmq_0/s11zAcbECgAJ.
+</t>
+<t tx="ekr.20180216082220.1">Syntax coloring is based on C.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
