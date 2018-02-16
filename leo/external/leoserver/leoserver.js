@@ -1,4 +1,8 @@
+//@+leo-ver=5-thin
+//@+node:ekr.20180216133454.1: * @file c:/leo.repo/leo-editor/leo/external/leoserver/leoserver.js
 jQ = jQuery
+//@+others
+//@+node:ekr.20180216133513.1: ** go
 function go() {
     let console = jQ('#console').val()
     jQ('#console').val('')
@@ -12,9 +16,11 @@ function go() {
         error: () => show_result({answer:"FAILED\n"})
     })
 }
+//@+node:ekr.20180216133513.2: ** show_result
 function show_result(response) {
     jQ('#results').append(response.answer)
 }
+//@+node:ekr.20180216133513.3: ** show_tree
 function show_tree(response) {
     // FIXME should recurse nodes
     console.log(response)
@@ -26,6 +32,7 @@ function show_tree(response) {
 jQ('#go').click(go)
 jQ('#update').click(update)
 jQ('#clear').click(() => jQ('#results').text(''))
+//@+node:ekr.20180216133513.4: ** update
 function update() {
     jQ.ajax('/get_tree', {
         method: 'GET',
@@ -35,3 +42,7 @@ function update() {
     })
 }
 
+//@-others
+//@@language javascript
+//@@tabwidth -4
+//@-leo

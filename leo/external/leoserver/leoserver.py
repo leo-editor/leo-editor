@@ -1,10 +1,19 @@
+#@+leo-ver=5-thin
+#@+node:ekr.20180216124241.1: * @file c:/leo.repo/leo-editor/leo/external/leoserver/leoserver.py
+#@@language python
+#@@tabwidth -4
+#@+<< imports >>
+#@+node:ekr.20180216124319.1: ** << imports >>
 import json
 import webbrowser
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import leo.core.leoBridge as leoBridge
-# g.app does not exist.
-# import leo.core.leoGlobals as leo_g
+#@-<< imports >>
+#@+others
+#@+node:ekr.20180216124319.2: ** class LeoHTTPRequestHandler
 class LeoHTTPRequestHandler(BaseHTTPRequestHandler):
+    #@+others
+    #@+node:ekr.20180216124319.3: *3* do_GET
     def do_GET(self):
         self.send_response(200)
         self.end_headers()
@@ -18,6 +27,7 @@ class LeoHTTPRequestHandler(BaseHTTPRequestHandler):
                                       # for i in c.all_positions()
             response = {'nodes': nodes}
             self.wfile.write(json.dumps(response).encode('utf-8'))
+    #@+node:ekr.20180216124319.4: *3* do_POST
     def do_POST(self):
         self.send_response(200)
         self.end_headers()
@@ -30,21 +40,15 @@ class LeoHTTPRequestHandler(BaseHTTPRequestHandler):
         if command[0] == ':':
             # A statement.
             exec(data['cmd'][1:], self.server.namespace)
-            self.wfile.write(json.dumps({'answer': 'OK\n'}).encode('utf-8'))
+            response = {'answer': 'OK\n'}
         else:
             # An expression.
-            answer = eval(command, self.server.namespace)
-            # g.trace(type(answer))
-            response = {'answer': answer}
-            try:
-                json.dumps(response)
-            except Exception:
-                print('can not evaluate: %s' % command)
-                g.es_exception(full=False)
-                response = {'answer': repr(answer)}
-            s = json.dumps(response).encode('utf-8')
-            g.trace(s)
-            self.wfile.write(s)
+            result = eval(command, self.server.namespace)
+            response = {'answer': repr(result)+'\n'}
+        s = json.dumps(response).encode('utf-8')
+        self.wfile.write(s)
+    #@-others
+#@+node:ekr.20180216124319.5: ** open_bridge
 def open_bridge():
     '''Open Leo bridge and return g.'''
     print('opening leoBridge...')
@@ -57,9 +61,12 @@ def open_bridge():
     )
     g = controller.globals()
     return controller, g
+#@-others
 controller, g = open_bridge()
 join = g.os_path_finalize_join
 loadDir = g.app.loadDir
+#@+<< define STATIC_FILES >>
+#@+node:ekr.20180216125137.1: ** << define STATIC_FILES >>
 STATIC_FILES = {
     # '/favicon.ico': 'leo/Icons/LeoApp.ico',
     '/favicon.ico': join(loadDir, '..', 'Icons', 'LeoApp.ico'),
@@ -73,8 +80,10 @@ STATIC_FILES = {
     '/leoserver.css': join(loadDir,'..', 'external', 'leoserver', 'leoserver.css'),
 }
 
+#@-<< define STATIC_FILES >>
 path = join(loadDir, '..', 'doc', 'LeoDocs.leo')
 c = controller.openLeoFile(path)
+g.trace(c)
 server = HTTPServer(('127.0.0.1', 8370), LeoHTTPRequestHandler)
 server.namespace = {'c': c, 'g': g}
 webbrowser.open("http://127.0.0.1:8370/index.html")
@@ -95,3 +104,4 @@ try:
     server.serve_forever()
 except KeyboardInterrupt:
     print('Keyboard interrupt. Bye')
+#@-leo
