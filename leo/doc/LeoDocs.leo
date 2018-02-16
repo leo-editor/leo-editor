@@ -1855,6 +1855,7 @@
 <v t="ekr.20180124100440.5"><vh>Added verbose option to g.callers()</vh></v>
 <v t="ekr.20180124121124.1"><vh>Improved Leo read/write code in leoAtFile.py</vh></v>
 <v t="ekr.20180124100440.3"><vh>New redraw code</vh></v>
+<v t="ekr.20180216063833.1"><vh>Suppress warnings in fc.resolveArchivedPosition</vh></v>
 </v>
 <v t="ekr.20180125042412.1"><vh>Leo 5.7 Commands: 11 new and 1 improved</vh>
 <v t="ekr.20180124100450.839"><vh>#632: check-conventions command</vh></v>
@@ -25538,6 +25539,7 @@ and regardless of whether tabs have been detached.</t>
 - Added verbose option to g.callers().
 - Revised redraw code.
 - Added backup-repo script in leoPy.leo.
+- Added c.backup_helper.
 - Added @button get-issues to LeoDocs.leo.
 </t>
 <t tx="ekr.20180126003014.1"></t>
@@ -25935,6 +25937,10 @@ Here is a demo: https://youtu.be/hca3x5SXNqs
     WITH: My Desktop
     
 The default setting specifies no patterns.</t>
+<t tx="ekr.20180216063833.1">fc.resolveArchivedPosition gives errors message onlyi if there have been no read errors (at.errors == 0).
+
+See https://groups.google.com/d/msg/leo-editor/RIwAHLAmq_0/s11zAcbECgAJ.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
