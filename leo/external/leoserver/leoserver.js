@@ -3,14 +3,18 @@
 jQ = jQuery
 //@+others
 //@+node:ekr.20180216151656.1: ** key press
-var console = document.getElementById("console");
+// Somehow this prevents the Tree button from working!
 
-console.addEventListener("keyup", function(event) {
-  event.preventDefault();
-  if (event.keyCode === 13) {
-    document.getElementById("go").click();
-  }
-});
+if (false) {
+    var console = document.getElementById("console");
+    
+    console.addEventListener("keyup", function(event) {
+      // event.preventDefault();
+      if (event.keyCode === 13) {
+        document.getElementById("go").click();
+      }
+    });
+}
 //@+node:ekr.20180216133513.1: ** go
 function go() {
     let console = jQ('#console').val()
