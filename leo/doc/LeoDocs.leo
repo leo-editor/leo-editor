@@ -397,7 +397,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -1839,6 +1839,7 @@
 <v t="ekr.20180201101506.1"><vh>#658: duplicate gnx problem</vh></v>
 <v t="ekr.20180127092625.1"><vh>#659: --session-restore causes failure on first launch</vh></v>
 <v t="ekr.20180128101447.1"><vh>#661: leoBridge scripts should not update the recent files list</vh></v>
+<v t="ekr.20180216043451.7"><vh>#718: @command-x = binding crashes Leo</vh></v>
 <v t="ekr.20180124100450.728"><vh>Fixed can not open message in leoBridge test</vh></v>
 </v>
 <v t="ekr.20180125035840.1"><vh>Leo 5.7 Code improvements: 2 issues and 9 others</vh>
@@ -1855,10 +1856,11 @@
 <v t="ekr.20180124121124.1"><vh>Improved Leo read/write code in leoAtFile.py</vh></v>
 <v t="ekr.20180124100440.3"><vh>New redraw code</vh></v>
 </v>
-<v t="ekr.20180125042412.1"><vh>Leo 5.7 Commands: 10 new and 1 improved</vh>
+<v t="ekr.20180125042412.1"><vh>Leo 5.7 Commands: 11 new and 1 improved</vh>
 <v t="ekr.20180124100450.839"><vh>#632: check-conventions command</vh></v>
 <v t="ekr.20180211112158.1"><vh>Added clean-main-user-dict &amp; clean-user-spell-dict</vh></v>
 <v t="ekr.20180201041411.1"><vh>Added count-children command</vh></v>
+<v t="ekr.20180216044139.1"><vh>Added demangle-recent-files</vh></v>
 <v t="ekr.20180212164854.1"><vh>Added edit-pane-csv &amp; edit-pane-test-open</vh></v>
 <v t="ekr.20180124123920.1"><vh>Added find-all-unique-regex command</vh></v>
 <v t="ekr.20180124124409.1"><vh>Added insert-as-first-child &amp; insert-as-last-child commands</vh></v>
@@ -1910,7 +1912,7 @@
 <v t="ekr.20180212070925.1"></v>
 </v>
 </v>
-<v t="ekr.20180212163926.1"></v>
+<v t="ekr.20180216043451.1"><vh>** Use Matt's install docs</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -25321,9 +25323,10 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 **The highlights of Leo 5.7**
 
 - Added Debian package for Leo.
-- pip install leo (After 5.7 final)
+  pip install leo (After 5.7 final)
 - A web-based Leo Viewer, written by Joe Orr.
-- Outline-oriented diffs for .leo files.
+- Added diff-leo-files and diff-and-open-leo-files commands.
+  These create outline-oriented diffs for .leo files.
 - New reload-settings command.
 - Leo optionally shows user tips on startup.
 - Added a new Tips page to Leo's documentation.
@@ -25528,6 +25531,7 @@ and regardless of whether tabs have been detached.</t>
 - Unit tests use a string gui, making them faster and more robust.
 - The line_numbering plugin shows line numbers in external files.
 - Added a TreePad importer.
+
 </t>
 <t tx="ekr.20180126002657.1">- Unit tests can run in more environments.
 - The @g.commander_command decorator injects ivars into the Commands class.
@@ -25544,6 +25548,9 @@ and regardless of whether tabs have been detached.</t>
     clean-main-spell-dict
     clean-user-spell-dict
     count-children
+    demangle-recent-files
+    diff-leo-files
+    diff-and-open-leo-files
     edit-pane-csv
     edit-pane-test-open
     find-all-unique-regex
@@ -25827,7 +25834,9 @@ The fix was in ni.compute_last_index.
 </t>
 <t tx="ekr.20180202061934.1">https://github.com/leo-editor/leo-editor/issues/674</t>
 <t tx="ekr.20180211112158.1"></t>
-<t tx="ekr.20180212065030.1">The new CompareLeoOutlines class in leo/core/leoCompare.py allows scripts to generate outline-based diffs for arbitrarily many .leo files. Previously, only the git-diff command created outline-based diffs.
+<t tx="ekr.20180212065030.1">The diff-leo-files command diffs arbitrarily many .leo files, two at a time. The diff-and-open-leo-files does the same, and addition opens the diffed files.
+
+The CompareLeoOutlines class in leo/core/leoCompare.py allows scripts to generate outline-based diffs for arbitrarily many .leo files. Previously, only the git-diff command created outline-based diffs.
 
 Here is an example script::
 
@@ -25911,6 +25920,15 @@ Here is a demo: https://youtu.be/hca3x5SXNqs
     leo-settings-leo
     leo-unittest-leo
 </t>
+<t tx="ekr.20180216043451.1"></t>
+<t tx="ekr.20180216043451.7">https://github.com/leo-editor/leo-editor/issues/718
+</t>
+<t tx="ekr.20180216044139.1">Path demangling potentially alters the paths in the recent files list according to find/replace patterns in the @data path-demangle setting. For example:
+        
+    REPLACE: .gnome-desktop
+    WITH: My Desktop
+    
+The default setting specifies no patterns.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
