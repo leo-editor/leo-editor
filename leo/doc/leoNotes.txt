@@ -17874,6 +17874,42 @@ table = (
 for s in table:
     print(s)
     g.printList(g.unCamel(s))
+.. @+node:ekr.20180125040956.1: *3* @@test path computations
+@language python
+fj = g.os_path_finalize_join
+f = g.os_path_finalize
+eu = g.os_path_expanduser
+if g.app.isExternalUnitTest:
+    loadDir = fj(g.app.loadDir, '..', 'test')
+else:
+    loadDir = g.app.loadDir
+table = (
+    (fj, '@@file fj-test-1', fj(loadDir, 'rel-path')),
+)
+for func, h, expected in table:
+    p = g.findNodeAnywhere(c, h)
+    assert p, 'not found: "%s"' % (h)
+    assert p.h.startswith('@@')
+    p.h = p.h[1:] # Remove the first @ sign.
+    try:
+        d = c.scanAllDirectives(p)
+        result = d.get('path')
+        assert result == expected, 'expected "%s", got "%s"' % (
+            expected, result)
+    finally:
+        p.h = '@' + p.h
+        c.redraw()
+.. @+node:ekr.20180125040956.2: *4* @path rel-path
+.. @+node:ekr.20180125040956.3: *5* @@file fj-test-1
+.. @+node:ekr.20180125040406.1: *3* script: clear g.app.db['shown-tips']
+g.app.db ['shown-tips'] = []
+.. @+node:ekr.20180213054048.1: *3* clean recent files test
+self = g.app.recentFilesManager
+result = [z for z in self.recentFiles if g.os_path_exists(z)]
+if result != self.recentFiles:
+    for path in result:
+        self.updateRecentFiles(path)
+    self.writeRecentFilesFile(c, force=True)
 .. @+node:ekr.20170107222248.1: ** Pyzo: do not delete
 @language python
 .. @+node:ekr.20170107211202.1: *3* COPY ../external/pyzo/highlighter.py
