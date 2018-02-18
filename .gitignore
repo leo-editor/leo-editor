@@ -5,6 +5,9 @@ __pycache__/
 # .db files
 *.db
 
+# Files in leo/proto
+leo/proto/*
+
 # C extensions
 *.so
 
