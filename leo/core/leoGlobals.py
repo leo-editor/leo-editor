@@ -6722,29 +6722,29 @@ def computeBaseDir(c, base_dir, path_setting, trace=False):
     Compute a base_directory.
     If given, @string path_setting takes precedence.
     '''
-    if not base_dir and not path_setting:
-        return g.es_print('Please use base_dir, path_setting or both')
-    if path_setting and not c:
-        return g.es_print('@string path_setting requires valid c arg')
+    # Prefer the path setting to the base_dir argument.
     if path_setting:
+        if not c:
+            return g.es_print('@string path_setting requires valid c arg')
         # It's not an error for the setting to be empty.
         base_dir2 = c.config.getString(path_setting)
         if base_dir2:
             base_dir2 = base_dir.replace('\\','/')
             if g.os_path_exists(base_dir2):
                 if trace: g.trace('@string %s = %s' % (path_setting, base_dir2))
-                return base_dir
+                return base_dir2
             else:
-                return g.es_print('@string %s not found: %r' % (
-                    path_setting, base_dir2))
+                return g.es_print('@string %s not found: %r' % (path_setting, base_dir2))
     # Fall back to given base_dir.
-    assert base_dir, g.callers()
-    base_dir = base_dir.replace('\\','/')
-    if g.os_path_exists(base_dir):
-        if trace: g.trace('base_dir: %s' % base_dir)
-        return base_dir
+    if base_dir:
+        base_dir = base_dir.replace('\\','/')
+        if g.os_path_exists(base_dir):
+            if trace: g.trace('base_dir: %s' % base_dir)
+            return base_dir
+        else:
+            return g.es_print('base_dir not found: %r' % base_dir)
     else:
-        return g.es_print('base_dir not found: %r' % base_dir)
+        return g.es_print('Please use @string %s' % path_setting)
 #@+node:ekr.20180218160813.3: *4* g.computeCommands
 def computeCommands(c, commands, command_setting, trace=False):
     '''
