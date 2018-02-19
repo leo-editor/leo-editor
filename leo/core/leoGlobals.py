@@ -6686,7 +6686,7 @@ def execute_shell_commands(commands, trace=False):
         if trace: print('\n>%s%s\n' % ('' if wait else '&', command))
         proc = subprocess.Popen(command, shell=True)
         if wait: proc.communicate()
-#@+node:ekr.20180218160813.1: *3* g.execute_shell_commands_with_options & helpers
+#@+node:ekr.20180217113719.1: *3* g.execute_shell_commands_with_options & helpers
 def execute_shell_commands_with_options(
     base_dir = None,
     c = None,
@@ -6716,7 +6716,7 @@ def execute_shell_commands_with_options(
         g.es_print(warning)
     os.chdir(base_dir) # Can't do this in the commands list.
     g.execute_shell_commands(commands)
-#@+node:ekr.20180218160813.2: *4* g.computeBaseDir
+#@+node:ekr.20180217152624.1: *4* g.computeBaseDir
 def computeBaseDir(c, base_dir, path_setting, trace=False):
     '''
     Compute a base_directory.
@@ -6729,7 +6729,7 @@ def computeBaseDir(c, base_dir, path_setting, trace=False):
         # It's not an error for the setting to be empty.
         base_dir2 = c.config.getString(path_setting)
         if base_dir2:
-            base_dir2 = base_dir.replace('\\','/')
+            base_dir2 = base_dir2.replace('\\','/')
             if g.os_path_exists(base_dir2):
                 if trace: g.trace('@string %s = %s' % (path_setting, base_dir2))
                 return base_dir2
@@ -6745,7 +6745,7 @@ def computeBaseDir(c, base_dir, path_setting, trace=False):
             return g.es_print('base_dir not found: %r' % base_dir)
     else:
         return g.es_print('Please use @string %s' % path_setting)
-#@+node:ekr.20180218160813.3: *4* g.computeCommands
+#@+node:ekr.20180217153459.1: *4* g.computeCommands
 def computeCommands(c, commands, command_setting, trace=False):
     '''
     Get the list of commands.
