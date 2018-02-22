@@ -6686,6 +6686,91 @@ def execute_shell_commands(commands, trace=False):
         if trace: print('\n>%s%s\n' % ('' if wait else '&', command))
         proc = subprocess.Popen(command, shell=True)
         if wait: proc.communicate()
+#@+node:ekr.20180217113719.1: *3* g.execute_shell_commands_with_options & helpers
+def execute_shell_commands_with_options(
+    base_dir = None,
+    c = None,
+    command_setting = None,
+    commands = None,
+    path_setting = None,
+    trace = False,
+    warning = None,
+):
+    '''
+    A helper for prototype commands or any other code that
+    runs programs in a separate process.
+    
+    base_dir:           Base directory to use if no config path given.
+    commands:           A list of commands, for g.execute_shell_commands.
+    commands_setting:   Name of @data setting for commands.
+    path_setting:       Name of @string setting for the base directory.
+    warning:            A warning to be printed before executing the commands.
+    '''
+    base_dir = g.computeBaseDir(c, base_dir, path_setting, trace)
+    if not base_dir:
+        return
+    commands = g.computeCommands(c, commands, command_setting, trace)
+    if not commands:
+        return
+    if warning:
+        g.es_print(warning)
+    os.chdir(base_dir) # Can't do this in the commands list.
+    g.execute_shell_commands(commands)
+#@+node:ekr.20180217152624.1: *4* g.computeBaseDir
+def computeBaseDir(c, base_dir, path_setting, trace=False):
+    '''
+    Compute a base_directory.
+    If given, @string path_setting takes precedence.
+    '''
+    # Prefer the path setting to the base_dir argument.
+    if path_setting:
+        if not c:
+            return g.es_print('@string path_setting requires valid c arg')
+        # It's not an error for the setting to be empty.
+        base_dir2 = c.config.getString(path_setting)
+        if base_dir2:
+            base_dir2 = base_dir2.replace('\\','/')
+            if g.os_path_exists(base_dir2):
+                if trace: g.trace('@string %s = %s' % (path_setting, base_dir2))
+                return base_dir2
+            else:
+                return g.es_print('@string %s not found: %r' % (path_setting, base_dir2))
+    # Fall back to given base_dir.
+    if base_dir:
+        base_dir = base_dir.replace('\\','/')
+        if g.os_path_exists(base_dir):
+            if trace: g.trace('base_dir: %s' % base_dir)
+            return base_dir
+        else:
+            return g.es_print('base_dir not found: %r' % base_dir)
+    else:
+        return g.es_print('Please use @string %s' % path_setting)
+#@+node:ekr.20180217153459.1: *4* g.computeCommands
+def computeCommands(c, commands, command_setting, trace=False):
+    '''
+    Get the list of commands.
+    If given, @data command_setting takes precedence.
+    '''
+    if not commands and not command_setting:
+        g.es_print('Please use commands, command_setting or both')
+        return []
+    # Prefer the setting to the static commands.
+    if command_setting:
+        if c:
+            aList = c.config.getData(command_setting)
+            # It's not an error for the setting to be empty.
+            # Fall back to the commands.
+            if trace and aList:
+                g.trace('@data %s...' % command_setting)
+                g.printList(aList)
+            elif trace:
+                g.trace('@data %s...' % command_setting)
+                g.printList(aList)
+            return aList or commands
+        else:
+            g.es_print('@data command_setting requires valid c arg')
+            return []   
+    return commands
 #@+node:ekr.20050503112513.7: *3* g.executeFile
 def executeFile(filename, options=''):
     if not os.access(filename, os.R_OK): return
