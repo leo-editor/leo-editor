@@ -302,6 +302,16 @@ class JS_Importer(Importer):
                 return True
         return False
     #@+node:ekr.20161101183354.1: *3* js_i.clean_headline
+    clean_regex_list1 = [
+        re.compile(r'\s*\(?(function\b\s*[\w]*)\s*\('),
+        re.compile(r'\s*([\w]+\:\s*\(*\s*function\s*\()'),
+        re.compile(r'\s*(?:const|let|var)\s*(\w+\s*(?:=\s*.*)=>)'),
+    ]
+    clean_regex_list2 = [
+        re.compile(r'(.*)\((\s*function)'),
+        re.compile(r'(.*\=)(\s*function)'),
+    ]
+
     def clean_headline(self, s, p=None):
         '''Return a cleaned up headline s.'''
         s = s.strip()
@@ -311,6 +321,19 @@ class JS_Importer(Importer):
         for ch in '{(=':
             if s.endswith(ch):
                 s = s[:-1].strip()
+        # First regex cleanup.
+        for pattern in self.clean_regex_list1:
+            m = pattern.match(s)
+            if m:
+                s = m.group(1)
+                break
+        # Second regex cleanup.
+        for pattern in self.clean_regex_list2:
+            m = pattern.match(s)
+            if m:
+                s = m.group(1) + m.group(2)
+                break
+        s = s.replace('  ', ' ')
         return g.truncate(s, 100)
     #@-others
 #@+node:ekr.20161105092745.1: ** class JS_ScanState
