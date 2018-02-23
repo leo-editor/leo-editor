@@ -412,6 +412,7 @@ class ScriptingController(object):
                     f.write('# Predefine c, g and p.\n')
                     f.write('import leo.core.leoGlobals as g\n')
                     f.write('c = g.app.scriptDict.get("c")\n')
+                    f.write('script_gnx = g.app.scriptDict.get("script_gnx")\n')
                     f.write('p = c.p\n')
                     f.write('# Actual script starts here.\n')
                     f.write(script + '\n')
@@ -420,6 +421,7 @@ class ScriptingController(object):
                 #@-<< create leoScriptModule >>
                 # pylint: disable=no-name-in-module
                 g.app.scriptDict['c'] = c
+                g.app.scriptDict = {'script_gnx': p.gnx}
                 if 'leoScriptModule' in sys.modules.keys():
                     del sys.modules['leoScriptModule'] # Essential.
                 import leo.core.leoScriptModule as leoScriptModule
@@ -432,6 +434,7 @@ class ScriptingController(object):
         '''Called when user presses the 'run-script' button or executes the run-script command.'''
         c, p = self.c, self.c.p
         args = self.getArgs(p)
+        g.app.scriptDict = {'script_gnx': p.gnx}
         c.executeScript(args=args, p=p, useSelectedText=True, silent=True)
         if 0:
             # Do not assume the script will want to remain in this commander.
