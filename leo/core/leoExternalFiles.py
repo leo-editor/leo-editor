@@ -340,12 +340,19 @@ class ExternalFilesController(object):
                 where = 'the outline node'
         else:
             where = p.h
-        s = '\n'.join([
-            '%s has changed outside Leo.' % (g.splitLongFileName(path)),
-            'Reload %s in Leo?' % (where),
-        ])
+        _is_leo = path.endswith(('.leo', '.db'))
+        if _is_leo:
+            s = '\n'.join([
+                '%s has changed outside Leo.' %(g.splitLongFileName(path)),
+                'Overwrite it?'
+            ])
+        else:
+            s = '\n'.join([
+                '%s has changed outside Leo.' % (g.splitLongFileName(path)),
+                'Reload %s in Leo?' % (where),
+            ])
         result = g.app.gui.runAskYesNoDialog(c, 'Overwrite the version in Leo?', s,
-            yes_all=True, no_all=True)
+            yes_all=not _is_leo, no_all=not _is_leo)
         if result and "-all" in result.lower():
             self.yesno_all_time = time.time()
             self.yesno_all_answer = result.lower()
