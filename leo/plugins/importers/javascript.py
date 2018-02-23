@@ -304,15 +304,24 @@ class JS_Importer(Importer):
     #@+node:ekr.20161101183354.1: *3* js_i.clean_headline
     clean_regex_list1 = [
         re.compile(r'\s*\(?(function\b\s*[\w]*)\s*\('),
-        re.compile(r'\s*([\w]+\:\s*\(*\s*function\s*\()'),
+        re.compile(r'\s*(\w+\s*\:\s*\(*\s*function\s*\()'),
         re.compile(r'\s*(?:const|let|var)\s*(\w+\s*(?:=\s*.*)=>)'),
     ]
     clean_regex_list2 = [
-        re.compile(r'(.*)\((\s*function)'),
         re.compile(r'(.*\=)(\s*function)'),
     ]
+    clean_regex_list3 = [
+        re.compile(r'(.*\=\s*new\s*\w+)\s*\(.*(=>)'),
+        re.compile(r'(.*)\=\s*\(.*(=>)'),
+        re.compile(r'(.*)\((\s*function)'),
+        re.compile(r'(.*)\(.*(=>)'),
+        re.compile(r'(.*)(\(.*\,\s*function)'),
+    ]
+    clean_regex_list4 = [
+        re.compile('(.*)\(\s*(=>)'),
+    ]
 
-    def clean_headline(self, s, p=None):
+    def clean_headline(self, s, p=None, trace=False):
         '''Return a cleaned up headline s.'''
         s = s.strip()
         # Don't clean a headline twice.
@@ -321,19 +330,37 @@ class JS_Importer(Importer):
         for ch in '{(=':
             if s.endswith(ch):
                 s = s[:-1].strip()
-        # First regex cleanup.
+        # First regex cleanup. Use \1.
         for pattern in self.clean_regex_list1:
             m = pattern.match(s)
             if m:
                 s = m.group(1)
+                if trace: g.trace('match 1', pattern)
                 break
-        # Second regex cleanup.
+        # Second regex cleanup. Use \1 + \2
         for pattern in self.clean_regex_list2:
             m = pattern.match(s)
             if m:
                 s = m.group(1) + m.group(2)
+                if trace: g.trace('match 2', pattern)
                 break
+        # Third regex cleanup. Use \1 + ' ' + \2
+        for pattern in self.clean_regex_list3:
+            m = pattern.match(s)
+            if m:
+                s = m.group(1) + ' ' + m.group(2)
+                if trace: g.trace('match 3', pattern)
+                break
+        # Fourth cleanup. Use \1 + ' ' + \2 again
+        for pattern in self.clean_regex_list4:
+            m = pattern.match(s)
+            if m:
+                s = m.group(1) + ' ' + m.group(2)
+                if trace: g.trace('match 4', pattern)
+                break
+        # Final whitespace cleanups.
         s = s.replace('  ', ' ')
+        s = s.replace(' (', '(')
         return g.truncate(s, 100)
     #@-others
 #@+node:ekr.20161105092745.1: ** class JS_ScanState
