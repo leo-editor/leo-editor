@@ -677,6 +677,7 @@ class Commands(object):
         d = {'c': c, 'g': g, 'input': g.input_, 'p': p} if define_g else {}
         if define_name: d['__name__'] = define_name
         d['script_args'] = args or []
+        d['script_gnx'] = g.app.scriptDict.get('script_gnx')
         if namespace: d.update(namespace)
         # A kludge: reset c.inCommand here to handle the case where we *never* return.
         # (This can happen when there are multiple event loops.)

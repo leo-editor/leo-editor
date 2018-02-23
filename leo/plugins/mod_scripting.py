@@ -304,6 +304,7 @@ class AtButtonCallback(object):
                 b=self.b,
                 buttonText=self.buttonText,
                 p=None,
+                script_gnx=gnx,
                 script=script,
             )
     #@-others
@@ -581,7 +582,7 @@ class ScriptingController(object):
             # Reporting this command is way too annoying.
         return b
     #@+node:ekr.20060328125248.28: *3* sc.executeScriptFromButton
-    def executeScriptFromButton(self, b, buttonText, p, script):
+    def executeScriptFromButton(self, b, buttonText, p, script, script_gnx=None):
         '''Execute an @button script in p.b or script.'''
         c = self.c
         if c.disableCommandsMessage:
@@ -590,7 +591,7 @@ class ScriptingController(object):
         if not p and not script:
             g.trace('can not happen: no p and no script')
             return
-        g.app.scriptDict = {}
+        g.app.scriptDict = {'script_gnx': script_gnx}
         args = self.getArgs(p)
         if not script:
             script = self.getScript(p)
