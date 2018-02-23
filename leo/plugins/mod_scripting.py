@@ -898,11 +898,7 @@ class ScriptingController(object):
             aList = [ch if ch in chars else '-' for ch in g.toUnicode(s)]
             s = ''.join(aList)
             s = s.replace('--', '-')
-        while s.startswith('-'):
-            s = s[1:]
-        while s.endswith('-'):
-            s = s[: -1]
-        return s.lower()
+        return s.strip('-').lower()
     #@+node:ekr.20060522104419.1: *4* sc.createBalloon (gui-dependent)
     def createBalloon(self, w, label):
         'Create a balloon for a widget.'
