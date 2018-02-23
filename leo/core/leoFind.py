@@ -483,6 +483,16 @@ class LeoFind(object):
     def changeAllCommand(self, event=None):
         self.setup_command()
         self.changeAll()
+        # Fixes: #722 replace-all leaves unsaved changed files
+        c = self.c
+        def has_dirty_descendant(p):
+            if p.isAnyAtFileNode():
+                for p1 in p.self_and_subtree():
+                    if p1.v.isDirty(): return True
+            return False
+        for p in c.all_unique_positions():
+            if not p.v.isDirty() and has_dirty_descendant(p):
+                p.v.setDirty(True)
     #@+node:ekr.20150629072547.1: *4* find.preloadFindPattern
     def preloadFindPattern(self, w):
         '''Preload the find pattern from the selected text of widget w.'''
