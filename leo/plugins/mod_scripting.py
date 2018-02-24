@@ -646,7 +646,7 @@ class ScriptingController(object):
             if gnx not in self.seen:
                 self.seen.add(gnx)
                 script = self.getScript(p)
-                self.createCommonButton(p, script)
+                self.createCommonButton(p, script, rclicks=p.rclicks)
     #@+node:ekr.20070926084600: *4* sc.createCommonButton (common @button)
     def createCommonButton(self, p, script, rclicks=None):
         '''
@@ -696,8 +696,8 @@ class ScriptingController(object):
             gnx=gnx, # For the find-button function.
             script=script,
         )
-        if rclicks:
-            self.iconBar.add_rclick_menu(b.button, rclicks, self, from_settings=True)
+        for rc in rclicks:
+            self.handleAtRclickNode(rc.position)
         # At last we can define the command.
         self.registerAllCommands(
             args=args,
