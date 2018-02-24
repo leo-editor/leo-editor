@@ -489,7 +489,7 @@ class LeoFind(object):
         def propagate(v):
             for v1 in v.parents:
                 if not v1.isDirty():
-                    v1.setDirty(True)
+                    v1.setDirty()
                     propagate(v1)
         for v in dirtyvnodes:
             propagate(v)
