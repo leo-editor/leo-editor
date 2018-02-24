@@ -771,6 +771,7 @@
 <v t="ekr.20090116094356.10"><vh>\@menuat</vh></v>
 <v t="ekr.20090116094356.9"><vh>\@menus</vh></v>
 <v t="ekr.20090116094356.14"><vh>\@mode</vh></v>
+<v t="ekr.20180224050255.1"><vh>\@rclick</vh></v>
 <v t="ekr.20090116094356.13"><vh>\@recentfiles</vh></v>
 <v t="ekr.20090116094356.12"><vh>\@shortcuts</vh></v>
 </v>
@@ -25947,6 +25948,29 @@ The default setting specifies no patterns.</t>
 See https://groups.google.com/d/msg/leo-editor/RIwAHLAmq_0/s11zAcbECgAJ.
 </t>
 <t tx="ekr.20180216082220.1">Syntax coloring is based on C.
+</t>
+<t tx="ekr.20180224050255.1">For each @button node, Leo adds right-click menu items for:
+
+- @rclick nodes directly *following* the @button.
+
+- @rclick nodes that are *children* of the @button node, provided that the
+  @button node has no ``@others`` directive.
+
+**Standard rclick items**: Leo adds two standard right-click menu items for
+each @button node: ``Remove Button`` and ``Goto Script``. Leo adds the
+indicator text **only** to buttons that contain right-click menu items in
+addition to these two standard right-click menu items.
+
+The headline of the @rclick node gives the menu title. The body contains a
+Leo script to execute when the user selects the menu item.
+
+**Related Setting**:
+
+@string mod_scripting_subtext = ▼
+
+This setting specifies **indicator text** that indicates that an @button button has right-click menu items created by @rclick nodes.
+
+Unicode chars like ▼ ▾ and … are typical choices for this text.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
