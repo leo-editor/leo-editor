@@ -696,8 +696,7 @@ class ScriptingController(object):
             gnx=gnx, # For the find-button function.
             script=script,
         )
-        for rc in rclicks:
-            self.handleAtRclickNode(rc.position)
+        self.handleRclicks(rclicks)
         # At last we can define the command.
         self.registerAllCommands(
             args=args,
@@ -817,15 +816,26 @@ class ScriptingController(object):
         def atCommandCallback(event=None, args=args, c=c, p=p.copy()):
             # pylint: disable=dangerous-default-value
             c.executeScript(args=args, p=p, silent=True)
-
-        self.registerAllCommands(
-            args=args,
-            func=atCommandCallback,
-            h=p.h,
-            pane='all',
-            source_c=p.v.context,
-            tag='local @rclick')
+        if p.b.strip():
+            self.registerAllCommands(
+                args=args,
+                func=atCommandCallback,
+                h=p.h,
+                pane='all',
+                source_c=p.v.context,
+                tag='local @rclick')
         g.app.config.atLocalCommandsList.append(p.copy())
+    #@+node:vitalije.20180224113123.1: *4* sc.handleRclicks
+    def handleRclicks(self, rclicks):
+        def handlerc(rc):
+            if rc.children:
+                for i in rc.children:
+                    handlerc(i)
+            else:
+                self.handleAtRclickNode(rc.position)
+        for rc in rclicks:
+            handlerc(rc)
+        
     #@+node:ekr.20060328125248.14: *4* sc.handleAtScriptNode @script
     def handleAtScriptNode(self, p):
         '''Handle @script nodes.'''
