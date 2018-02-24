@@ -1027,9 +1027,9 @@ class ScriptingController(object):
 
         # 2013/11/13 Jake Peck:
         # include '@rclick-' in list of tags
-        for tag in ('@button-', '@command-', '@rclick-'):
-            if commandName.startswith(tag):
-                commandName2 = commandName[len(tag):].strip()
+        for prefix in ('@button-', '@command-', '@rclick-'):
+            if commandName.startswith(prefix):
+                commandName2 = commandName[len(prefix):].strip()
                 # Create a *second* func, to avoid collision in c.commandsDict.
 
                 def registerAllCommandsCallback(event=None, func=func):
@@ -1049,7 +1049,6 @@ class ScriptingController(object):
                         pane=pane,
                         shortcut=None
                     )
-
     #@+node:ekr.20150402021505.1: *4* sc.setButtonColor
     def setButtonColor(self, b, bg):
         '''Set the background color of Qt button b to bg.'''
