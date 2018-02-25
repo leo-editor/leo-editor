@@ -996,7 +996,7 @@ class LeoQtGui(leoGui.LeoGui):
             if c.disableCommandsMessage:
                 g.blue('', c.disableCommandsMessage)
             else:
-                g.app.scriptDict = {}
+                g.app.scriptDict = {'script_gnx': p.gnx}
                 c.executeScript(args=args, p=p, script=script,
                 define_g=define_g, define_name=define_name, silent=silent)
                 # Remove the button if the script asks to be removed.
@@ -1027,6 +1027,7 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20170612065255.1: *3* qt_gui.put_help
     def put_help(self, c, s, short_title=''):
         '''Put the help command.'''
+        trace = False and not g.unitTesting
         s = g.adjustTripleString(s.rstrip(), c.tab_width)
         if s.startswith('<') and not s.startswith('<<'):
             pass # how to do selective replace??
@@ -1038,9 +1039,11 @@ class LeoQtGui(leoGui.LeoGui):
         )
         for name in table:
             if pc.isLoaded(name):
+                if trace: g.trace('already loaded', name)
                 vr = pc.loadOnePlugin(name)
                 break
         else:
+            if trace: g.trace('auto-loading viewrendered.py')
             vr = pc.loadOnePlugin('viewrendered.py')
         if vr:
             kw = {

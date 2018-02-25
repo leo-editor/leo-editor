@@ -405,6 +405,8 @@ class LeoApp(object):
             "less": "css",
             "hbs": "html",
             "handlebars": "html",
+            "rust": "c", 
+            # "vue": "c",
         }
     #@+node:ekr.20120522160137.9909: *5* app.define_language_delims_dict
     #@@nobeautify
@@ -535,6 +537,7 @@ class LeoApp(object):
             "rib"                : "#",
             "rpmspec"            : "#",
             "rst"                : ".._",
+            "rust"               : "// /* */",
             "ruby"               : "#", # thyrsus 2008-11-05
             "rview"              : "// /* */",
             "sas"                : "* /* */",
@@ -1373,7 +1376,7 @@ class LeoApp(object):
         if g.app.reverting:
             # Fix #302: revert to saved doesn't reset external file change monitoring
             g.app.already_open_files = []
-        if d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting:
+        if d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting or g.app.inBridge:
             return
         aList = g.app.db.get(tag) or []
         if fn in aList:

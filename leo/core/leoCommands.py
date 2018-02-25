@@ -629,7 +629,8 @@ class Commands(object):
         if run_pyflakes and not g.unitTesting:
             import leo.commands.checkerCommands as cc
             # at = c.atFileCommands
-            prefix = 'c,g,p=None,None,None; assert c and g and p;\n'
+            prefix = ('c,g,p,script_gnx=None,None,None,None;'
+                      'assert c and g and p and script_gnx;\n')
             cc.PyflakesCommand(c).check_script(script_p, prefix+script)
         self.redirectScriptOutput()
         try:
@@ -641,6 +642,9 @@ class Commands(object):
                 sys.path.insert(0, c.frame.openDirectory) # per SegundoBob
                 script += '\n' # Make sure we end the script properly.
                 try:
+                    if not namespace or namespace.get('script_gnx') is None:
+                        namespace = namespace or {}
+                        namespace.update(script_gnx=script_p.gnx)
                     # We *always* execute the script with p = c.p.
                     c.executeScriptHelper(args, define_g, define_name, namespace, script)
                 except Exception:
@@ -677,6 +681,7 @@ class Commands(object):
         d = {'c': c, 'g': g, 'input': g.input_, 'p': p} if define_g else {}
         if define_name: d['__name__'] = define_name
         d['script_args'] = args or []
+        d['script_gnx'] = g.app.scriptDict.get('script_gnx')
         if namespace: d.update(namespace)
         # A kludge: reset c.inCommand here to handle the case where we *never* return.
         # (This can happen when there are multiple event loops.)
