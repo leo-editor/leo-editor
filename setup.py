@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:maphew.20171207193249.1: * @file setup.py
+#@+node:maphew.20180224170853.1: * @file setup.py
 #@@first
 '''setup.py for leo'''
 from codecs import open # To use a consistent encoding
@@ -23,6 +23,7 @@ import leo.core.leoVersion as leoVersion
     https://blog.ionelmc.ro/presentations/packaging/#slide:2
     https://blog.ionelmc.ro/2014/05/25/python-packaging/
 '''
+#@+node:maphew.20180224170140.1: ** get_version
 def get_version(file, version=None):
     '''Determine current Leo version. Use git if in checkout, else internal Leo'''
     root = os.path.dirname(os.path.realpath(file))
@@ -31,20 +32,7 @@ def get_version(file, version=None):
     else:
         version = get_semver(leoVersion.version)
     return version
-    
-def get_semver(tag):
-    '''Return 'Semantic Version' from tag string'''
-    try:
-        version = str(semantic_version.Version.coerce(tag, partial=True))
-            # tuple of major, minor, build, pre-release, patch
-            # 5.6b2 --> 5.6-b2
-    except ValueError:
-        print('''*** Failed to parse Semantic Version from git tag '{0}'.
-        Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.
-        This version can't be uploaded to PyPi.org.'''.format(tag))
-        version = tag
-    return version
-#@+node:maphew.20171112223922.1: ** git_version
+#@+node:maphew.20171112223922.1: *3* git_version
 def git_version(file):
     '''Fetch from Git: {tag} {distance-from-tag} {current commit hash}
        Return as semantic version string compliant with PEP440'''
@@ -57,6 +45,7 @@ def git_version(file):
         version = '{}-dev{}'.format(version, distance)
     return version
 
+#@+node:maphew.20180224170257.1: *4* clean_git_tag
 def clean_git_tag(tag):
     '''Return only version number from tag name. Ignore unkown formats.
        Is specific to tags in Leo's repository.
@@ -68,6 +57,19 @@ def clean_git_tag(tag):
     if tag.lower().startswith('leo-'): tag = tag[4:]
     if tag.lower().startswith('v'): tag = tag[1:]
     return tag
+#@+node:maphew.20180224170149.1: *3* get_semver
+def get_semver(tag):
+    '''Return 'Semantic Version' from tag string'''
+    try:
+        version = str(semantic_version.Version.coerce(tag, partial=True))
+            # tuple of major, minor, build, pre-release, patch
+            # 5.6b2 --> 5.6-b2
+    except ValueError:
+        print('''*** Failed to parse Semantic Version from git tag '{0}'.
+        Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.
+        This version can't be uploaded to PyPi.org.'''.format(tag))
+        version = tag
+    return version
 #@+node:maphew.20171006124415.1: ** Get description
 # Get the long description from the README file
 # And also convert to reST
