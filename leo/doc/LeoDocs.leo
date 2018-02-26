@@ -1782,18 +1782,19 @@
 <v t="ekr.20180125034531.1"></v>
 <v t="ekr.20180125034327.1"><vh>Leo 5.7 final release notes</vh>
 <v t="ekr.20180125032239.1"><vh>Leo 5.7 Summary</vh></v>
-<v t="ekr.20180125041229.1"><vh>Leo 5.7 Major features: 5 issues and 4 others</vh>
+<v t="ekr.20180125041229.1"><vh>Leo 5.7 Major features</vh>
 <v t="ekr.20180124100450.49"><vh>#417: reload-settings command</vh></v>
 <v t="ekr.20180124100450.168"><vh>#503: Use string/null gui for unit tests</vh></v>
 <v t="ekr.20180130055320.1"><vh>#562: A PyPi wheel for Leo</vh></v>
 <v t="ekr.20180124100450.906"><vh>#597: Show tips when Leo starts up</vh></v>
 <v t="ekr.20180124100450.913"><vh>#635: Link to nodes from log pane</vh></v>
+<v t="ekr.20180212070925.1"><vh>#700: Spell checking works without pyenchant</vh></v>
 <v t="ekr.20180212163926.1"><vh>Added a cvs table editing widget</vh></v>
 <v t="ekr.20180124121851.1"><vh>Added Debian package for Leo</vh></v>
 <v t="ekr.20180212065030.1"><vh>Added Outline-oriented diffs of .leo files</vh></v>
-<v t="ekr.20180212070925.1"><vh>Spell checking works without pyenchant</vh></v>
 </v>
-<v t="ekr.20180125034637.1"><vh>Leo 5.7 Bugs: Fixed 46 issues and one other bug</vh>
+<v t="ekr.20180125034637.1"><vh>Leo 5.7 Bugs fixed</vh>
+<v t="ekr.20180226091747.1"><vh>Leo 5.7 b1: Bugs fixed</vh>
 <v t="ekr.20180125235811.3"><vh>#327: Create a way to unbind bindings in leoSettings.leo</vh></v>
 <v t="ekr.20180125235811.2"><vh>#362: default_path within @rst-options honoured or ignored depending on the node where rst3 command is executed</vh></v>
 <v t="ekr.20180125235811.1"><vh>#384: open files with very long path</vh></v>
@@ -1843,7 +1844,9 @@
 <v t="ekr.20180216043451.7"><vh>#718: @command-x = binding crashes Leo</vh></v>
 <v t="ekr.20180124100450.728"><vh>Fixed can not open message in leoBridge test</vh></v>
 </v>
-<v t="ekr.20180125035840.1"><vh>Leo 5.7 Code improvements: 2 issues and 9 others</vh>
+<v t="ekr.20180226032107.1"><vh>Leo 5.7 final: Bugs fixed</vh></v>
+</v>
+<v t="ekr.20180125035840.1"><vh>Leo 5.7 Code improvements</vh>
 <v t="ekr.20180124100450.369"><vh>#577: reformatting unit tests...</vh></v>
 <v t="ekr.20180124100450.427"><vh>#589 @g.commander_command</vh></v>
 <v t="ekr.20180128112939.1"><vh>Added "exact" keyword arg to g.findNode* functions</vh></v>
@@ -1858,7 +1861,7 @@
 <v t="ekr.20180124100440.3"><vh>New redraw code</vh></v>
 <v t="ekr.20180216063833.1"><vh>Suppress warnings in fc.resolveArchivedPosition</vh></v>
 </v>
-<v t="ekr.20180125042412.1"><vh>Leo 5.7 Commands: 11 new and 1 improved</vh>
+<v t="ekr.20180125042412.1"><vh>Leo 5.7 Commands</vh>
 <v t="ekr.20180124100450.839"><vh>#632: check-conventions command</vh></v>
 <v t="ekr.20180211112158.1"><vh>Added clean-main-user-dict &amp; clean-user-spell-dict</vh></v>
 <v t="ekr.20180201041411.1"><vh>Added count-children command</vh></v>
@@ -1874,7 +1877,8 @@
 <v t="ekr.20180124100450.803"><vh>Reinstated --trace-shutdown command-line argument</vh></v>
 <v t="ekr.20180126063712.1"><vh>@bool show-tips</vh></v>
 </v>
-<v t="ekr.20180124100450.1"><vh>Leo 5.7 Enhancements: Completed 19 issues and 2 others </vh>
+<v t="ekr.20180124100450.1"><vh>Leo 5.7 Enhancements</vh>
+<v t="ekr.20180226091936.1"><vh>Leo 5.7 b1: Enhancements</vh>
 <v t="ekr.20180125235816.1"><vh>#310: Create new file in right-click in file tab in UI</vh></v>
 <v t="ekr.20180124100450.3"><vh>#327: Create a way to unbind bindings in leoSettings.leo</vh></v>
 <v t="ekr.20180125235814.18"><vh>#414: Add p.drawer, p.results, etc.</vh></v>
@@ -1901,24 +1905,24 @@
 <v t="ekr.20180124100450.704"><vh>Added HEAD, TAIL, REST declutter replacement "patterns"</vh></v>
 <v t="ekr.20180124124532.1"><vh>Improved javascript importer</vh></v>
 </v>
-<v t="ekr.20180125041723.1"><vh>Leo 5.7 Plugins: 3 new and 1 improved</vh>
+<v t="ekr.20180212070807.1"><vh>Leo 5.7 b2: Enhancements</vh>
+<v t="ekr.20180212070925.1"></v>
+<v t="ekr.20180212065845.1"></v>
+<v t="ekr.20180211112158.1"></v>
+<v t="ekr.20180212065030.1"></v>
+<v t="ekr.20180212071157.1"></v>
+</v>
+<v t="ekr.20180226092312.1"><vh>Leo 5.7 final: Enhancements</vh></v>
+</v>
+<v t="ekr.20180125041723.1"><vh>Leo 5.7 Plugins</vh>
 <v t="ekr.20180124100450.126"><vh>#488: Improved the console_gui plugin</vh></v>
 <v t="ekr.20180124100450.888"><vh>#613: patch_python_colorizer.py plugin</vh></v>
 <v t="ekr.20180124100440.6"><vh>New leo_cloud.py plugin</vh></v>
 <v t="ekr.20180124122055.1"><vh>New line_numbering.py plugin</vh></v>
 </v>
-<v t="ekr.20180212070807.1"><vh>New in Leo 5.7b2</vh>
-<v t="ekr.20180211112158.1"></v>
-<v t="ekr.20180212065845.1"></v>
-<v t="ekr.20180212065030.1"></v>
-<v t="ekr.20180212071157.1"></v>
-<v t="ekr.20180212070925.1"></v>
 </v>
-<v t="ekr.20180226032927.1"><vh>New in 5.7 final</vh>
-<v t="ekr.20180226032107.1"><vh>5 Bug fixes</vh></v>
-<v t="ekr.20180226032218.1"><vh>1 Enhancement</vh></v>
-</v>
-</v>
+<v t="ekr.20180226080007.2"><vh>** FAQ: workaround for Ctrl-Shift-(</vh></v>
+<v t="ekr.20180226080007.3"><vh>** Install docs: use 'leo'</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -25976,7 +25980,22 @@ This setting specifies **indicator text** that indicates that an @button button 
 
 Unicode chars like ▼ ▾ and … are typical choices for this text.
 </t>
-<t tx="ekr.20180226032107.1">setup.py broken when installing from zipball: execGitCommand not available
+<t tx="ekr.20180226032107.1">loadOnePlugin: can not load enabled plugin: leo.plugins.viewrendered
+https://github.com/leo-editor/leo-editor/issues/702
+
+Leo fails to load when pyenchant is not installed
+https://github.com/leo-editor/leo-editor/issues/707
+
+TypeError: coercing to Unicode: need string or buffer, NoneType found
+https://github.com/leo-editor/leo-editor/issues/712
+
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+https://github.com/leo-editor/leo-editor/issues/713
+
+LeoBridge not explicitly closing the Leo-Editor file leaves the Leo-Editor file open
+https://github.com/leo-editor/leo-editor/issues/716
+
+setup.py broken when installing from zipball: execGitCommand not available
 https://github.com/leo-editor/leo-editor/issues/720
 
 replace-all can not be saved with crtl + s
@@ -25991,11 +26010,16 @@ https://github.com/leo-editor/leo-editor/issues/734
 @rclick buttons not generating commands in work files
 https://github.com/leo-editor/leo-editor/issues/739
 </t>
-<t tx="ekr.20180226032218.1">Predefine script_p and script_gnx values in Leo scripts
-https://github.com/leo-editor/leo-editor/issues/736
-
+<t tx="ekr.20180226080007.2">Use Ctrl-[ and Ctrl-]</t>
+<t tx="ekr.20180226080007.3">Not 'leoc' or 'launchLeo.py'
 </t>
-<t tx="ekr.20180226032927.1"></t>
+<t tx="ekr.20180226091747.1"></t>
+<t tx="ekr.20180226091936.1"></t>
+<t tx="ekr.20180226092312.1">Add mark/unmark-first-parents commands
+https://github.com/leo-editor/leo-editor/issues/714
+
+Predefine script_p and script_gnx values in Leo scripts
+https://github.com/leo-editor/leo-editor/issues/736</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
