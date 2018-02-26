@@ -462,6 +462,13 @@
 <v t="ekr.20160304081437.8"><vh>Offray Luna Cárdenas</vh></v>
 <v t="ekr.20160304081437.9"><vh>Speed's comments</vh></v>
 </v>
+<v t="ekr.20180226152739.1"><vh>How I discovered Leo</vh>
+<v t="ekr.20180226152802.1"><vh>Satish Goda</vh></v>
+<v t="ekr.20180226152825.1"><vh>Rob Keeney</vh></v>
+<v t="ekr.20180226152847.1"><vh>Chris George</vh></v>
+<v t="ekr.20180226152919.1"><vh>Terry Brown</vh></v>
+<v t="ekr.20180226152943.1"><vh>Kent Tenney</vh></v>
+</v>
 </v>
 <v t="ekr.20040414172218.4"><vh>@rst html/acknowledgements.html</vh></v>
 <v t="ekr.20090221070927.1"><vh>@rst html/license.html</vh></v>
@@ -495,6 +502,7 @@
 <v t="ekr.20131008041326.16152"><vh>Running Leo the first time</vh></v>
 <v t="ekr.20131008041326.16153"><vh>Running Leo in batch mode</vh></v>
 <v t="ekr.20131008041326.16154"><vh>Running Leo from a console window</vh></v>
+<v t="ekr.20180226154417.1"><vh>Running Leo after pip install leo </vh></v>
 <v t="ekr.20131008041326.16155"><vh>The .leo directory</vh></v>
 </v>
 <v t="ekr.20131008041326.16156"><vh>Leo's command-line options</vh></v>
@@ -1255,7 +1263,14 @@
 <v t="ekr.20150318043636.14"><vh>Recursive import script</vh></v>
 <v t="ekr.20120317130339.8282"><vh>Retaining pointers to Qt windows</vh></v>
 <v t="ekr.20150323102036.1"><vh>Running code at idle time</vh></v>
-<v t="ekr.20161029072351.1"><vh>Running code in separate processes</vh></v>
+<v t="ekr.20161029072351.1"><vh>Running code in separate processes</vh>
+<v t="ekr.20180226151003.1"><vh>Using subprocess.popen</vh>
+<v t="ekr.20180226155008.1"><vh>Call subprocess.popen directly</vh></v>
+<v t="ekr.20180226155010.1"><vh>Call g.execute_shell_commands</vh></v>
+<v t="ekr.20180226155010.2"><vh>Call g.execute_shell_commands_with_options</vh></v>
+</v>
+<v t="ekr.20180226153353.1"><vh>Using g.app.backgroundProcessManager</vh></v>
+</v>
 <v t="ekr.20040403173920.24"><vh>Running Leo in batch mode</vh></v>
 <v t="ekr.20081205084002.2"><vh>Working with directives and paths</vh></v>
 <v t="ekr.20131012060912.16788"><vh>Writing g.es output to other tabs</vh></v>
@@ -1847,6 +1862,7 @@
 <v t="ekr.20180226032107.1"><vh>Leo 5.7 final: Bugs fixed</vh></v>
 </v>
 <v t="ekr.20180125035840.1"><vh>Leo 5.7 Code improvements</vh>
+<v t="ekr.20180226150731.1"><vh>Leo 5.7 b1 Code improvements</vh>
 <v t="ekr.20180124100450.369"><vh>#577: reformatting unit tests...</vh></v>
 <v t="ekr.20180124100450.427"><vh>#589 @g.commander_command</vh></v>
 <v t="ekr.20180128112939.1"><vh>Added "exact" keyword arg to g.findNode* functions</vh></v>
@@ -1860,6 +1876,8 @@
 <v t="ekr.20180124121124.1"><vh>Improved Leo read/write code in leoAtFile.py</vh></v>
 <v t="ekr.20180124100440.3"><vh>New redraw code</vh></v>
 <v t="ekr.20180216063833.1"><vh>Suppress warnings in fc.resolveArchivedPosition</vh></v>
+</v>
+<v t="ekr.20180226150747.1"><vh>Leo 5.7 final code improvements</vh></v>
 </v>
 <v t="ekr.20180125042412.1"><vh>Leo 5.7 Commands</vh>
 <v t="ekr.20180124100450.839"><vh>#632: check-conventions command</vh></v>
@@ -1921,8 +1939,14 @@
 <v t="ekr.20180124122055.1"><vh>New line_numbering.py plugin</vh></v>
 </v>
 </v>
-<v t="ekr.20180226080007.2"><vh>** FAQ: workaround for Ctrl-Shift-(</vh></v>
-<v t="ekr.20180226080007.3"><vh>** Install docs: use 'leo'</vh></v>
+<v t="ekr.20180226154735.1"><vh>New/changed documentation</vh>
+<v t="ekr.20131008041326.16140"></v>
+<v t="ekr.20131015091948.16784"></v>
+<v t="ekr.20050830115714"></v>
+<v t="ekr.20161029072351.1"></v>
+<v t="ekr.20160123060917.1"></v>
+<v t="ekr.20180226154417.1"></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -20547,7 +20571,9 @@ I believe with tools of this weight and impact, there will always be an investme
 And this is where Leo does not falter, in the helpfulness of its community (small though it may be). I will reiterate what Edward has said many times, do not struggle on your own if you are lost, confused, or bewildered. Please ask questions. If the documentation or examples do not meet your needs, please ask questions. In my own experience as a once new user (though there may be the occasional disagreement) you will not be chided, scorned, or belittled but will be met with more even more help than you originally asked for. -- John Lunzer &lt;lunzer@gmail.com&gt;</t>
 <t tx="ekr.20160123060917.1">This key is normally bound to delete-comments. It is annoying not to have it work.
 
-For Windows 10, do the following (it may be a bit different for Windows 8):
+The only sure workaround is make other key bindings for add-comments and delete-comments.  I suggest Ctrl-[ and Ctrl-].
+
+At one time I thought the following might work, but it appears that it doesn't:
 
 1. In the control panel, click Language.
    This brings up the "Language" panel.
@@ -21527,39 +21553,11 @@ self.unitTestMenusDict = {}
     # Created in LeoMenu.createMenuEntries for a unit test.
     # keys are command names. values are sets of strokes.
 </t>
-<t tx="ekr.20161029072351.1">@language rest
+<t tx="ekr.20161029072351.1">It is dead easy for scripts, including @button scripts, plugins, etc., to drive any external processes, including compilers and interpreters, from within Leo.
 
-g.app.backgroundProcessManager is the singleton instance of the BackgroundProcessManager (BPM) class. This class runs background processes, *without blocking Leo*. The BPM manages a queue of processes, and runs them *one at a time* so that their output remains separate.
+- The first section discusses three ways of calling subprocess.popen directly or via Leo helper functions.
 
-BPM.start_process(c, command, kind, fn=None, shell=False) adds a process to the queue that will run the given command::
-
-@language python
-
-    bpm = g.app.backgroundProcessManager
-    bpm.start_process(c, command='ls', kind='ls', shell=True)
-
-@language rest
-
-BM.kill(kind=None) kills all process with the given kind. If kind is None or 'all', all processes are killed.
-
-You can add processes to the queue at any time. For example, you can rerun the 'pylint' command while a background process is running.
-
-The BackgroundProcessManager is completely safe: all of its code runs in the main process.
-
-**Running multiple processes simultaneously**
-
-Only one process at a time should be producing output. All processes that *do* produce output should be managed by the singleton BPM instance.
-
-To run processes that *don't* produce output, just call subprocess.Popen::
-
-@language python
-
-    import subprocess
-    subprocess.Popen('ls', shell=True)
-
-@language rest
-
-You can run as many of these process as you like, without involving the BPM in any way
+- The second section discusses the BackgroundProcessManager class.  Leo's pylint command uses this class to run pylint commands sequentially *without blocking Leo*. Running processes sequentially prevents unwanted interleaving of output.
 </t>
 <t tx="ekr.20161120073024.1">@language md
 
@@ -26010,16 +26008,143 @@ https://github.com/leo-editor/leo-editor/issues/734
 @rclick buttons not generating commands in work files
 https://github.com/leo-editor/leo-editor/issues/739
 </t>
-<t tx="ekr.20180226080007.2">Use Ctrl-[ and Ctrl-]</t>
-<t tx="ekr.20180226080007.3">Not 'leoc' or 'launchLeo.py'
-</t>
 <t tx="ekr.20180226091747.1"></t>
 <t tx="ekr.20180226091936.1"></t>
 <t tx="ekr.20180226092312.1">Add mark/unmark-first-parents commands
 https://github.com/leo-editor/leo-editor/issues/714
 
 Predefine script_p and script_gnx values in Leo scripts
-https://github.com/leo-editor/leo-editor/issues/736</t>
+https://github.com/leo-editor/leo-editor/issues/736
+
+Improved js_i.clean_headline. This method now applies various regex patterns to the headline to simplify the "summary" of the function, including =&gt; functions.</t>
+<t tx="ekr.20180226150731.1"></t>
+<t tx="ekr.20180226150747.1">Added g.execute_shell_commands_with_options.</t>
+<t tx="ekr.20180226151003.1">The first section discusses three *easy* ways to run code in a separate process by calling subprocess.popen either directly or via Leo helper functions.</t>
+<t tx="ekr.20180226152739.1"></t>
+<t tx="ekr.20180226152802.1">It has been almost 14 months since I discovered Leo and today I recalled how I found it.
+
+I was searching GitHub for the term "QWidgetAction" and came across its usage in Leo codebase. And then curiosity killed the cat and I was curious about Leo and read about it and downloaded it as well.
+</t>
+<t tx="ekr.20180226152825.1">I found Leo when I was looking for a replacement for ECCO (anyone remember that program?) I used ECCO for 15 years after it wasn't supported anymore and the core group of diehard users finally lost hope the program owners would open source the code.
+
+Anyway, I don't remember how long ago that was; at least 10 years ago, as I recall. In most respects, Leo is a *major* improvement over ECCO and I don't regret the switch. However, the one thing I still miss about ECCO and wish there was a good Leo integration is the calendar. ECCO could print almost any kind of calendar, in practically any format on any size. I really miss that. There's no other PIM on the market that I know of that has that kind of flexibility.
+
+Perhaps other Leo users figured out how to integrate their calendar(s) with Leo; I haven't and would love to know how (if it's possible).
+</t>
+<t tx="ekr.20180226152847.1">I found Leo when I was looking for an outliner that supported clones, ran on Linux, and wasn't a website. I live on a farmlet on the edge of the world and our internet has always sucked.
+
+I took Leo up in 2007. And if there is one thing I have learned in the interval it is that with Leo, anything is possible.
+</t>
+<t tx="ekr.20180226152919.1">I think I was using Freemind before Leo, although I'd spent a long time using the console based outliner hnb, which apparently has been resurrected as tines https://github.com/larrykollar/tines
+</t>
+<t tx="ekr.20180226152943.1">I think I discovered Leo as a result of a fleeting interest in literate programming. Don't recall the date, but it was before Leo was ported from C++ to Python.
+
+When I learned that Edward lived across town, kitty-corner from a high school sweetheart, I was SOLD!
+</t>
+<t tx="ekr.20180226153353.1">@language rest
+
+g.app.backgroundProcessManager is the singleton instance of the BackgroundProcessManager (BPM) class. This class runs background processes, *without blocking Leo*. The BPM manages a queue of processes, and runs them *one at a time* so that their output remains separate.
+
+BPM.start_process(c, command, kind, fn=None, shell=False) adds a process to the queue that will run the given command::
+
+@language python
+
+    bpm = g.app.backgroundProcessManager
+    bpm.start_process(c, command='ls', kind='ls', shell=True)
+
+@language rest
+
+BM.kill(kind=None) kills all process with the given kind. If kind is None or 'all', all processes are killed.
+
+You can add processes to the queue at any time. For example, you can rerun the 'pylint' command while a background process is running.
+
+The BackgroundProcessManager is completely safe: all of its code runs in the main process.
+
+**Running multiple processes simultaneously**
+
+Only one process at a time should be producing output. All processes that *do* produce output should be managed by the singleton BPM instance.
+
+To run processes that *don't* produce output, just call subprocess.Popen::
+
+@language python
+
+    import subprocess
+    subprocess.Popen('ls', shell=True)
+
+@language rest
+
+You can run as many of these process as you like, without involving the BPM in any way
+</t>
+<t tx="ekr.20180226154417.1">After running ``pip install leo`` you can just type ``leo`` from a console.
+</t>
+<t tx="ekr.20180226154735.1">@language rest
+@wrap
+</t>
+<t tx="ekr.20180226155008.1">Calling subprocess.popen is often simple and good. For example, the following executes the 'npm run dev' command in a given directory.  Leo continues, without waiting for the command to return::
+
+    os.chdir(base_dir)
+    subprocess.Popen('npm run dev', shell=True)
+
+The following hangs Leo until the command completes::
+
+    os.chdir(base_dir)
+    proc = subprocess.Popen(command, shell=True)
+    proc.communicate()
+
+**Note**: 'cd directory' does not seem to work when run using subprocess.popen on Windows 10.
+</t>
+<t tx="ekr.20180226155010.1">Use g.execute_shell_commands is a thin wrapper around subprocess.popen.  It calls subprocess.popen once for every command in a list.  This function waits for commands that start with '&amp;'. Here it is::
+
+    def execute_shell_commands(commands, trace=False):
+        if g.isString(commands): commands = [commands]
+        for command in commands:
+            wait = not command.startswith('&amp;')
+            if command.startswith('&amp;'): command = command[1:].strip()
+            if trace: print('\n&gt;%s%s\n' % ('' if wait else '&amp;', command))
+            proc = subprocess.Popen(command, shell=True)
+            if wait: proc.communicate()
+
+For example::
+
+    os.chdir(base_dir)
+    g.execute_shell_commands(['&amp;npm run dev',])
+</t>
+<t tx="ekr.20180226155010.2">g.execute_shell_commands_with_options is more flexible.  It allows scripts to get both the starting directory and the commands themselves from Leo's settings. Its signature is:
+
+def execute_shell_commands_with_options(
+    base_dir = None,
+    c = None,
+    command_setting = None,
+    commands = None,
+    path_setting = None,
+    warning = None,
+):
+    '''
+    A helper for prototype commands or any other code that
+    runs programs in a separate process.
+   
+    base_dir:           Base directory to use if no path_setting is given.
+    commands:           A list of commands, for g.execute_shell_commands.
+    commands_setting:   Name of @data setting for commands.
+    path_setting:       Name of @string setting for the base directory.
+    warning:            A warning to be printed before executing the commands.
+    '''
+
+For example, put this in myLeoSettings.leo::
+
+    @data my-npm-commands
+    yarn dev
+    
+    @string my-npm-base = /npmtest
+    
+And then run::
+
+    g.execute_shell_commands_with_options(
+        c = c,
+        command_setting = 'my-npm-commands',
+        path_setting= 'my-npm-base',
+    )
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
