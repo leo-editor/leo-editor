@@ -1780,7 +1780,7 @@
 </v>
 </v>
 <v t="ekr.20180125034531.1"></v>
-<v t="ekr.20180125034327.1"><vh>Leo 5.7b2 release notes</vh>
+<v t="ekr.20180125034327.1"><vh>Leo 5.7 final release notes</vh>
 <v t="ekr.20180125032239.1"><vh>Leo 5.7 Summary</vh></v>
 <v t="ekr.20180125041229.1"><vh>Leo 5.7 Major features: 5 issues and 4 others</vh>
 <v t="ekr.20180124100450.49"><vh>#417: reload-settings command</vh></v>
@@ -1913,6 +1913,10 @@
 <v t="ekr.20180212065030.1"></v>
 <v t="ekr.20180212071157.1"></v>
 <v t="ekr.20180212070925.1"></v>
+</v>
+<v t="ekr.20180226032927.1"><vh>New in 5.7 final</vh>
+<v t="ekr.20180226032107.1"><vh>5 Bug fixes</vh></v>
+<v t="ekr.20180226032218.1"><vh>1 Enhancement</vh></v>
 </v>
 </v>
 </vnodes>
@@ -25318,9 +25322,9 @@ later.</t>
 You can see all 5.7 issues by visiting:
 https://github.com/leo-editor/leo-editor/issues?page=1&amp;q=is%3Aissue+milestone%3A5.7+is%3Aclosed+-label%3ATip+-label%3AWon%27tDo+-label%3AWon%27tFix+-label%3AHelp&amp;utf8=%E2%9C%93
 </t>
-<t tx="ekr.20180125034327.1">Leo 5.7b2 February 12, 2018
+<t tx="ekr.20180125034327.1">Leo 5.7 final February 26, 2018
 
-Leo 5.7b2, http://leoeditor.com, is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+Leo 5.7 final, http://leoeditor.com, is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
@@ -25972,6 +25976,26 @@ This setting specifies **indicator text** that indicates that an @button button 
 
 Unicode chars like ▼ ▾ and … are typical choices for this text.
 </t>
+<t tx="ekr.20180226032107.1">setup.py broken when installing from zipball: execGitCommand not available
+https://github.com/leo-editor/leo-editor/issues/720
+
+replace-all can not be saved with crtl + s
+https://github.com/leo-editor/leo-editor/issues/722
+
+Recover more gracefully from user errors in abbreviations
+https://github.com/leo-editor/leo-editor/issues/725
+
+help-for-command crashes when vr2 plugin is active
+https://github.com/leo-editor/leo-editor/issues/734
+
+@rclick buttons not generating commands in work files
+https://github.com/leo-editor/leo-editor/issues/739
+</t>
+<t tx="ekr.20180226032218.1">Predefine script_p and script_gnx values in Leo scripts
+https://github.com/leo-editor/leo-editor/issues/736
+
+</t>
+<t tx="ekr.20180226032927.1"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
