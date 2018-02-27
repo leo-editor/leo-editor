@@ -422,6 +422,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 **The highlights of Leo 5.7**
 
 - pip install leo.
+- A debian package for Leo.
 - A web-based Leo Viewer, written by Joe Orr.
 - Added diff-leo-files and diff-and-open-leo-files commands.
   These create outline-oriented diffs for .leo files.
@@ -4033,6 +4034,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 **The highlights of Leo 5.7**
 
 - pip install leo.
+- A debian package for Leo.
 - A web-based Leo Viewer, written by Joe Orr.
 - Added diff-leo-files and diff-and-open-leo-files commands.
   These create outline-oriented diffs for .leo files.
