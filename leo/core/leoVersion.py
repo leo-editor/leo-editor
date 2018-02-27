@@ -30,6 +30,7 @@ import leo.core.leoGlobals as g
 # Leo 5.6 final: September 27, 2017.
 # Leo 5.7b1: January 27, 2018.
 # Leo 5.7b2: February 12, 2018.
+# Leo 5.7 final: February 27, 2018.
 #@-<< version dates >>
 #@+<< about install hooks >>
 #@+node:ekr.20150409201910.1: ** << about install hooks >>
@@ -43,7 +44,7 @@ import leo.core.leoGlobals as g
 # 
 # The install_hooks.py script copies these two files to leo-editor/.git/hooks.
 #@-<< about install hooks >>
-version = "5.7b2"
+version = "5.7 final"
 date, build = g.jsonCommitInfo()
 branch = g.gitBranchName()
 #@@language python
