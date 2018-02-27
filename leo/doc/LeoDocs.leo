@@ -1939,14 +1939,6 @@
 <v t="ekr.20180124122055.1"><vh>New line_numbering.py plugin</vh></v>
 </v>
 </v>
-<v t="ekr.20180226154735.1"><vh>New/changed documentation</vh>
-<v t="ekr.20131008041326.16140"></v>
-<v t="ekr.20131015091948.16784"></v>
-<v t="ekr.20050830115714"></v>
-<v t="ekr.20161029072351.1"></v>
-<v t="ekr.20160123060917.1"></v>
-<v t="ekr.20180226154417.1"></v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -26082,9 +26074,6 @@ You can run as many of these process as you like, without involving the BPM in a
     ``leo-m``, ``leo-messages`` - start Leo in normal (qt) mode, and echo log messages to the starting shell
 
 The launchers are installed in ``PYTHONHOME/Scripts``.
-</t>
-<t tx="ekr.20180226154735.1">@language rest
-@wrap
 </t>
 <t tx="ekr.20180226155008.1">Calling subprocess.popen is often simple and good. For example, the following executes the 'npm run dev' command in a given directory.  Leo continues, without waiting for the command to return::
 
