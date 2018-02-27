@@ -2745,6 +2745,7 @@ it is possible to simulate Python in assembly language...
 - Copy files to web, including leo/doc/html/index.html</t>
 <t tx="ekr.20161015091353.2">LeoDocs.leo:
 - Make sure copyright dates are correct.
+- Update the "last updated" text in index.html.
 - Update version numbers in html/conf.py
 - Update the release notes.
 - Remove @language rest where possible in new notes.
