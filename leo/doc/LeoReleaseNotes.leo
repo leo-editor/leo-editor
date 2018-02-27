@@ -23620,7 +23620,7 @@ Changed fc.putSavedMessage and at.replaceTargetFileIfDifferent.
 
 Restored the abbreviation from f10fa02b8cb681, the previous commit.
 </t>
-<t tx="ekr.20180227003757.1">Leo 5.7 final February 26, 2018
+<t tx="ekr.20180227003757.1">Leo 5.7 final February 27, 2018
 
 Leo 5.7 final, http://leoeditor.com, is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
@@ -23631,6 +23631,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 **The highlights of Leo 5.7**
 
 - pip install leo.
+- A debian package for Leo.
 - A web-based Leo Viewer, written by Joe Orr.
 - Added diff-leo-files and diff-and-open-leo-files commands.
   These create outline-oriented diffs for .leo files.

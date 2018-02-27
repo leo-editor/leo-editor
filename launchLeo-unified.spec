@@ -242,6 +242,8 @@ def define_datas():
         ('flake8-leo.py', ''),
         ('load-leo.html', ''),
         ('pyflakes-leo.py', ''),
+        # In leoDist.leo
+        ('readme.md', ''),
         # ('setup.py', ''),
     # leo.commands...
         ext('.py', 'leo/commands'),

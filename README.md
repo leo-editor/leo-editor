@@ -1,4 +1,4 @@
-Leo 5.7 final February 26, 2018
+Leo 5.7 final February 27, 2018
 
 Leo 5.7 final, http://leoeditor.com, is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 

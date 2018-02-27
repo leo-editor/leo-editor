@@ -25316,7 +25316,7 @@ later.</t>
 You can see all 5.7 issues by visiting:
 https://github.com/leo-editor/leo-editor/issues?page=1&amp;q=is%3Aissue+milestone%3A5.7+is%3Aclosed+-label%3ATip+-label%3AWon%27tDo+-label%3AWon%27tFix+-label%3AHelp&amp;utf8=%E2%9C%93
 </t>
-<t tx="ekr.20180125034327.1">Leo 5.7 final February 26, 2018
+<t tx="ekr.20180125034327.1">Leo 5.7 final February 27, 2018
 
 Leo 5.7 final, http://leoeditor.com, is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 

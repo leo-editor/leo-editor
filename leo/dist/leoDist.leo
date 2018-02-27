@@ -411,7 +411,7 @@ Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 
 </t>
-<t tx="EKR.20040519090846.9">Leo 5.7 final February 26, 2018
+<t tx="EKR.20040519090846.9">Leo 5.7 final February 27, 2018
 
 Leo 5.7 final, http://leoeditor.com, is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
@@ -2813,7 +2813,8 @@ Run pyinstaller on Windows:
 - (optional) Delete leo-editor/dist and leo-editor/build folders.
 - Run [a32]&gt; pyinstaller --clean --win-private-assemblies launchLeo-unified.spec
 - Test a *copy* of the result so .pyo files are not added to the package)
-- Compress the folder to Leo_&lt;version&gt;_Win.zip.
+- ***Rename** leo/dist/LeoAppFolder to LeoApp (fixes windows naming problem).
+- Compress the LeoApp folder to Leo_&lt;version&gt;_Win.zip.
     
 Run pyinstaller on Linux:
 - (optional) Delete leo-editor/dist and leo-editor/build folders.
