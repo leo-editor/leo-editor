@@ -3313,6 +3313,10 @@ leo/external/leo2html.leo
 leo/external/leoSAGlobals.py
 leo/external/leoftsindex.py
 leo/external/leosax.py
+leo/external/leoserver/leoserver.css
+leo/external/leoserver/leoserver.html
+leo/external/leoserver/leoserver.js
+leo/external/leoserver/leoserver.py
 leo/external/log_broadcast.py
 leo/external/log_listener.py
 leo/external/lproto.py
