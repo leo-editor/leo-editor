@@ -26075,7 +26075,13 @@ To run processes that *don't* produce output, just call subprocess.Popen::
 
 You can run as many of these process as you like, without involving the BPM in any way
 </t>
-<t tx="ekr.20180226154417.1">After running ``pip install leo`` you can just type ``leo`` from a console.
+<t tx="ekr.20180226154417.1">After running ``pip install leo`` from a console type::
+
+    ``leo`` - start Leo in normal graphical mode (qt)
+    ``leo-c``, ``leo-console`` - start Leo in console (curses) mode
+    ``leo-m``, ``leo-messages`` - start Leo in normal (qt) mode, and echo log messages to the starting shell
+
+The launchers are installed in ``PYTHONHOME/Scripts``.
 </t>
 <t tx="ekr.20180226154735.1">@language rest
 @wrap
