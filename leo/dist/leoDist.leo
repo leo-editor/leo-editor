@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="34" left="572" height="1048" width="1197"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -316,9 +316,9 @@
 <v t="ekr.20180124100848.1"><vh>Failures in unified version</vh></v>
 </v>
 <v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh>
-<v t="ekr.20161015091350.1"><vh>Pre-testing</vh></v>
 <v t="ekr.20161015091353.2"><vh>Files</vh></v>
 <v t="ekr.20161015091353.1"><vh>Web docs</vh></v>
+<v t="ekr.20161015091350.1"><vh>Pre-testing</vh></v>
 <v t="ekr.20161015092224.1"><vh>Create distribution</vh></v>
 <v t="ekr.20161020040946.1"><vh>Test</vh></v>
 <v t="ekr.20161020041000.1"><vh>Create git tag</vh></v>
@@ -541,7 +541,7 @@ makes the system more flexible...
 now for about 2 -- 3 months. It has totally changed not only the way that I
 program, but also the way that I store and organize all of the information that
 I need for the job that I do. -- Ian Mulvany</t>
-<t tx="ekr.20050315084904" str_leo_pos="9"></t>
+<t tx="ekr.20050315084904"></t>
 <t tx="ekr.20060213160806">"Thanks for a wonderful program – everybody should be using it! It blows the
 socks off that Java Mind mapping software that won project of the month a while
 back on sourceforge!" -- Derick van Niekerk.
