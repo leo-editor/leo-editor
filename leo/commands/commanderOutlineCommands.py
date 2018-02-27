@@ -160,7 +160,7 @@ def contractAllOtherNodes(self, event=None):
     c = self
     leaveOpen = c.p
     for p in c.rootPosition().self_and_siblings():
-        c.contractIfNotCurrent(c, p, leaveOpen)
+        contractIfNotCurrent(c, p, leaveOpen)
     c.redraw()
 #@+node:ekr.20080819075811.7: *4* def contractIfNotCurrent
 def contractIfNotCurrent(c, p, leaveOpen):
@@ -168,7 +168,7 @@ def contractIfNotCurrent(c, p, leaveOpen):
         p.contract()
     for child in p.children():
         if child != leaveOpen and child.isAncestorOf(leaveOpen):
-            c.contractIfNotCurrent(child, leaveOpen)
+            contractIfNotCurrent(child, leaveOpen)
         else:
             for p2 in child.self_and_subtree():
                 p2.contract()

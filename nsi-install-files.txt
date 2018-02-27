@@ -829,6 +829,12 @@ File "C:\leo.repo\leo-editor\leo\external\concurrent\futures\_compat.py"
 File "C:\leo.repo\leo-editor\leo\external\concurrent\futures\process.py"
 File "C:\leo.repo\leo-editor\leo\external\concurrent\futures\thread.py"
 
+SetOutPath $INSTDIR\leo\external\leoserver
+File "C:\leo.repo\leo-editor\leo\external\leoserver\leoserver.css"
+File "C:\leo.repo\leo-editor\leo\external\leoserver\leoserver.html"
+File "C:\leo.repo\leo-editor\leo\external\leoserver\leoserver.js"
+File "C:\leo.repo\leo-editor\leo\external\leoserver\leoserver.py"
+
 SetOutPath $INSTDIR\leo\external\npyscreen
 File "C:\leo.repo\leo-editor\leo\external\npyscreen\__init__.py"
 File "C:\leo.repo\leo-editor\leo\external\npyscreen\apNPSApplication.py"

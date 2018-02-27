@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="34" left="572" height="1048" width="1197"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -258,7 +258,7 @@
 <v t="ekr.20170911085243.1"><vh>Leo 5.6</vh></v>
 <v t="maphew.20171107045903.1"><vh>Leo 5.6.1</vh></v>
 </v>
-<v t="ekr.20180212094405.1"><vh>Leo 5.7b2 release notes</vh></v>
+<v t="ekr.20180212094405.1"><vh>Leo 5.7 final release notes</vh></v>
 <v t="EKR.20040519091259.2"><vh>Quotes of the month</vh>
 <v t="ekr.20080901114425.2"><vh>Sept 2008</vh></v>
 <v t="ekr.20070425092712"><vh>April 2007</vh></v>
@@ -316,9 +316,9 @@
 <v t="ekr.20180124100848.1"><vh>Failures in unified version</vh></v>
 </v>
 <v t="ekr.20100202061222.1494"><vh>Distribution checklist</vh>
-<v t="ekr.20161015091350.1"><vh>Pre-testing</vh></v>
 <v t="ekr.20161015091353.2"><vh>Files</vh></v>
 <v t="ekr.20161015091353.1"><vh>Web docs</vh></v>
+<v t="ekr.20161015091350.1"><vh>Pre-testing</vh></v>
 <v t="ekr.20161015092224.1"><vh>Create distribution</vh></v>
 <v t="ekr.20161020040946.1"><vh>Test</vh></v>
 <v t="ekr.20161020041000.1"><vh>Create git tag</vh></v>
@@ -411,9 +411,9 @@ Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 
 </t>
-<t tx="EKR.20040519090846.9">Leo 5.7b2 February 12, 2018
+<t tx="EKR.20040519090846.9">Leo 5.7 final February 27, 2018
 
-Leo 5.7b2, http://leoeditor.com, is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+Leo 5.7 final, http://leoeditor.com, is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
@@ -421,13 +421,15 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 
 **The highlights of Leo 5.7**
 
-- Added Debian package for Leo.
-- pip install leo (After 5.7 final)
+- pip install leo.
+- A debian package for Leo.
 - A web-based Leo Viewer, written by Joe Orr.
-- Outline-oriented diffs for .leo files.
+- Added diff-leo-files and diff-and-open-leo-files commands.
+  These create outline-oriented diffs for .leo files.
 - New reload-settings command.
 - Leo optionally shows user tips on startup.
 - Added a new Tips page to Leo's documentation.
+- A visual widget for editing cvs tables.
 - Spell checking works without pyenchant
 - Improved the console_gui plugin.
 - Added live links from urls in the log pane.
@@ -541,7 +543,7 @@ makes the system more flexible...
 now for about 2 -- 3 months. It has totally changed not only the way that I
 program, but also the way that I store and organize all of the information that
 I need for the job that I do. -- Ian Mulvany</t>
-<t tx="ekr.20050315084904" str_leo_pos="9"></t>
+<t tx="ekr.20050315084904"></t>
 <t tx="ekr.20060213160806">"Thanks for a wonderful program – everybody should be using it! It blows the
 socks off that Java Mind mapping software that won project of the month a while
 back on sourceforge!" -- Derick van Niekerk.
@@ -747,7 +749,7 @@ Make these files in the top-level folder::
     leo.zip.
 '''
 
-version = '5.7b2' ##version
+version = '5.7 final' ##version
 &lt;&lt; includes &gt;&gt;
 &lt;&lt; define global paths and file names &gt;&gt;
 
@@ -1070,7 +1072,7 @@ def deleteTempFiles (self,lines):
         # This commit ensures the proper files are included in the distribution.
         # r'git commit -m "commit doc files during make"',
         ##version
-        r'%s archive --format zip --output "%s" --prefix=Leo-5.7b2/ master' % (
+        r'%s archive --format zip --output "%s" --prefix=Leo-5.7-final/ master' % (
             r'c:\apps\Git\bin\git.exe',zipFile),
     )
     g.execute_shell_commands(commands,trace=True)
@@ -2744,6 +2746,7 @@ it is possible to simulate Python in assembly language...
 - Copy files to web, including leo/doc/html/index.html</t>
 <t tx="ekr.20161015091353.2">LeoDocs.leo:
 - Make sure copyright dates are correct.
+- Update the "last updated" text in index.html.
 - Update version numbers in html/conf.py
 - Update the release notes.
 - Remove @language rest where possible in new notes.
@@ -2757,8 +2760,8 @@ it is possible to simulate Python in assembly language...
 LeoDist.leo:
 - Make sure copyright dates are correct.
 - Update version numbers: search leoDist.leo for ##version.
-- Update readme.txt.
-- Check readme.txt spelling.
+- Update readme.md.
+- Check readme.md spelling.
 - Check 'PKG-INFO.TXT'
 
 leoVersion.py:
@@ -2807,10 +2810,11 @@ Create the executable installer:
 - Double-click leo.nsi. (Run with makeNSIS.exe)
 
 Run pyinstaller on Windows:
-- (optional) Delete leo-editor/dist and leo-editor/build folders.
+- Delete leo-editor/dist and leo-editor/build folders.
 - Run [a32]&gt; pyinstaller --clean --win-private-assemblies launchLeo-unified.spec
 - Test a *copy* of the result so .pyo files are not added to the package)
-- Compress the folder to Leo_&lt;version&gt;_Win.zip.
+- Rename leo/dist/LeoAppFolder to LeoApp (fixes windows naming problem).
+- Compress the LeoApp folder to Leo_&lt;version&gt;_Win.zip.
     
 Run pyinstaller on Linux:
 - (optional) Delete leo-editor/dist and leo-editor/build folders.
@@ -4020,9 +4024,9 @@ FAILED (failures=2, skipped=11)
 c:\Test\LeoAppFolder&gt;
 
 ##### can not open @edit C:\Test\LEOAPP~1\README.MD</t>
-<t tx="ekr.20180212094405.1">Leo 5.7b2 February 12, 2018
+<t tx="ekr.20180212094405.1">Leo 5.7 final February 26, 2018
 
-Leo 5.7b2, http://leoeditor.com, is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+Leo 5.7 final, http://leoeditor.com, is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
@@ -4030,13 +4034,15 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 
 **The highlights of Leo 5.7**
 
-- Added Debian package for Leo.
-- pip install leo (After 5.7 final)
+- pip install leo.
+- A debian package for Leo.
 - A web-based Leo Viewer, written by Joe Orr.
-- Outline-oriented diffs for .leo files.
+- Added diff-leo-files and diff-and-open-leo-files commands.
+  These create outline-oriented diffs for .leo files.
 - New reload-settings command.
 - Leo optionally shows user tips on startup.
 - Added a new Tips page to Leo's documentation.
+- A visual widget for editing cvs tables.
 - Spell checking works without pyenchant
 - Improved the console_gui plugin.
 - Added live links from urls in the log pane.

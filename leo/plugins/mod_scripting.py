@@ -304,6 +304,7 @@ class AtButtonCallback(object):
                 b=self.b,
                 buttonText=self.buttonText,
                 p=None,
+                script_gnx=gnx,
                 script=script,
             )
     #@-others
@@ -411,6 +412,7 @@ class ScriptingController(object):
                     f.write('# Predefine c, g and p.\n')
                     f.write('import leo.core.leoGlobals as g\n')
                     f.write('c = g.app.scriptDict.get("c")\n')
+                    f.write('script_gnx = g.app.scriptDict.get("script_gnx")\n')
                     f.write('p = c.p\n')
                     f.write('# Actual script starts here.\n')
                     f.write(script + '\n')
@@ -419,6 +421,7 @@ class ScriptingController(object):
                 #@-<< create leoScriptModule >>
                 # pylint: disable=no-name-in-module
                 g.app.scriptDict['c'] = c
+                g.app.scriptDict = {'script_gnx': p.gnx}
                 if 'leoScriptModule' in sys.modules.keys():
                     del sys.modules['leoScriptModule'] # Essential.
                 import leo.core.leoScriptModule as leoScriptModule
@@ -431,6 +434,7 @@ class ScriptingController(object):
         '''Called when user presses the 'run-script' button or executes the run-script command.'''
         c, p = self.c, self.c.p
         args = self.getArgs(p)
+        g.app.scriptDict = {'script_gnx': p.gnx}
         c.executeScript(args=args, p=p, useSelectedText=True, silent=True)
         if 0:
             # Do not assume the script will want to remain in this commander.
@@ -581,7 +585,7 @@ class ScriptingController(object):
             # Reporting this command is way too annoying.
         return b
     #@+node:ekr.20060328125248.28: *3* sc.executeScriptFromButton
-    def executeScriptFromButton(self, b, buttonText, p, script):
+    def executeScriptFromButton(self, b, buttonText, p, script, script_gnx=None):
         '''Execute an @button script in p.b or script.'''
         c = self.c
         if c.disableCommandsMessage:
@@ -590,7 +594,7 @@ class ScriptingController(object):
         if not p and not script:
             g.trace('can not happen: no p and no script')
             return
-        g.app.scriptDict = {}
+        g.app.scriptDict = {'script_gnx': script_gnx}
         args = self.getArgs(p)
         if not script:
             script = self.getScript(p)
@@ -642,7 +646,7 @@ class ScriptingController(object):
             if gnx not in self.seen:
                 self.seen.add(gnx)
                 script = self.getScript(p)
-                self.createCommonButton(p, script)
+                self.createCommonButton(p, script, rclicks=p.rclicks)
     #@+node:ekr.20070926084600: *4* sc.createCommonButton (common @button)
     def createCommonButton(self, p, script, rclicks=None):
         '''
@@ -692,8 +696,7 @@ class ScriptingController(object):
             gnx=gnx, # For the find-button function.
             script=script,
         )
-        if rclicks:
-            self.iconBar.add_rclick_menu(b.button, rclicks, self, from_settings=True)
+        self.handleRclicks(rclicks)
         # At last we can define the command.
         self.registerAllCommands(
             args=args,
@@ -813,15 +816,26 @@ class ScriptingController(object):
         def atCommandCallback(event=None, args=args, c=c, p=p.copy()):
             # pylint: disable=dangerous-default-value
             c.executeScript(args=args, p=p, silent=True)
-
-        self.registerAllCommands(
-            args=args,
-            func=atCommandCallback,
-            h=p.h,
-            pane='all',
-            source_c=p.v.context,
-            tag='local @rclick')
+        if p.b.strip():
+            self.registerAllCommands(
+                args=args,
+                func=atCommandCallback,
+                h=p.h,
+                pane='all',
+                source_c=p.v.context,
+                tag='local @rclick')
         g.app.config.atLocalCommandsList.append(p.copy())
+    #@+node:vitalije.20180224113123.1: *4* sc.handleRclicks
+    def handleRclicks(self, rclicks):
+        def handlerc(rc):
+            if rc.children:
+                for i in rc.children:
+                    handlerc(i)
+            else:
+                self.handleAtRclickNode(rc.position)
+        for rc in rclicks:
+            handlerc(rc)
+        
     #@+node:ekr.20060328125248.14: *4* sc.handleAtScriptNode @script
     def handleAtScriptNode(self, p):
         '''Handle @script nodes.'''
@@ -894,11 +908,7 @@ class ScriptingController(object):
             aList = [ch if ch in chars else '-' for ch in g.toUnicode(s)]
             s = ''.join(aList)
             s = s.replace('--', '-')
-        while s.startswith('-'):
-            s = s[1:]
-        while s.endswith('-'):
-            s = s[: -1]
-        return s.lower()
+        return s.strip('-').lower()
     #@+node:ekr.20060522104419.1: *4* sc.createBalloon (gui-dependent)
     def createBalloon(self, w, label):
         'Create a balloon for a widget.'
@@ -1017,9 +1027,9 @@ class ScriptingController(object):
 
         # 2013/11/13 Jake Peck:
         # include '@rclick-' in list of tags
-        for tag in ('@button-', '@command-', '@rclick-'):
-            if commandName.startswith(tag):
-                commandName2 = commandName[len(tag):].strip()
+        for prefix in ('@button-', '@command-', '@rclick-'):
+            if commandName.startswith(prefix):
+                commandName2 = commandName[len(prefix):].strip()
                 # Create a *second* func, to avoid collision in c.commandsDict.
 
                 def registerAllCommandsCallback(event=None, func=func):
@@ -1039,7 +1049,6 @@ class ScriptingController(object):
                         pane=pane,
                         shortcut=None
                     )
-
     #@+node:ekr.20150402021505.1: *4* sc.setButtonColor
     def setButtonColor(self, b, bg):
         '''Set the background color of Qt button b to bg.'''

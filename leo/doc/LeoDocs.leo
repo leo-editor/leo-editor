@@ -397,7 +397,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -462,6 +462,13 @@
 <v t="ekr.20160304081437.8"><vh>Offray Luna Cárdenas</vh></v>
 <v t="ekr.20160304081437.9"><vh>Speed's comments</vh></v>
 </v>
+<v t="ekr.20180226152739.1"><vh>How I discovered Leo</vh>
+<v t="ekr.20180226152802.1"><vh>Satish Goda</vh></v>
+<v t="ekr.20180226152825.1"><vh>Rob Keeney</vh></v>
+<v t="ekr.20180226152847.1"><vh>Chris George</vh></v>
+<v t="ekr.20180226152919.1"><vh>Terry Brown</vh></v>
+<v t="ekr.20180226152943.1"><vh>Kent Tenney</vh></v>
+</v>
 </v>
 <v t="ekr.20040414172218.4"><vh>@rst html/acknowledgements.html</vh></v>
 <v t="ekr.20090221070927.1"><vh>@rst html/license.html</vh></v>
@@ -495,6 +502,7 @@
 <v t="ekr.20131008041326.16152"><vh>Running Leo the first time</vh></v>
 <v t="ekr.20131008041326.16153"><vh>Running Leo in batch mode</vh></v>
 <v t="ekr.20131008041326.16154"><vh>Running Leo from a console window</vh></v>
+<v t="ekr.20180226154417.1"><vh>Running Leo after pip install leo </vh></v>
 <v t="ekr.20131008041326.16155"><vh>The .leo directory</vh></v>
 </v>
 <v t="ekr.20131008041326.16156"><vh>Leo's command-line options</vh></v>
@@ -771,6 +779,7 @@
 <v t="ekr.20090116094356.10"><vh>\@menuat</vh></v>
 <v t="ekr.20090116094356.9"><vh>\@menus</vh></v>
 <v t="ekr.20090116094356.14"><vh>\@mode</vh></v>
+<v t="ekr.20180224050255.1"><vh>\@rclick</vh></v>
 <v t="ekr.20090116094356.13"><vh>\@recentfiles</vh></v>
 <v t="ekr.20090116094356.12"><vh>\@shortcuts</vh></v>
 </v>
@@ -1254,7 +1263,14 @@
 <v t="ekr.20150318043636.14"><vh>Recursive import script</vh></v>
 <v t="ekr.20120317130339.8282"><vh>Retaining pointers to Qt windows</vh></v>
 <v t="ekr.20150323102036.1"><vh>Running code at idle time</vh></v>
-<v t="ekr.20161029072351.1"><vh>Running code in separate processes</vh></v>
+<v t="ekr.20161029072351.1"><vh>Running code in separate processes</vh>
+<v t="ekr.20180226151003.1"><vh>Using subprocess.popen</vh>
+<v t="ekr.20180226155008.1"><vh>Call subprocess.popen directly</vh></v>
+<v t="ekr.20180226155010.1"><vh>Call g.execute_shell_commands</vh></v>
+<v t="ekr.20180226155010.2"><vh>Call g.execute_shell_commands_with_options</vh></v>
+</v>
+<v t="ekr.20180226153353.1"><vh>Using g.app.backgroundProcessManager</vh></v>
+</v>
 <v t="ekr.20040403173920.24"><vh>Running Leo in batch mode</vh></v>
 <v t="ekr.20081205084002.2"><vh>Working with directives and paths</vh></v>
 <v t="ekr.20131012060912.16788"><vh>Writing g.es output to other tabs</vh></v>
@@ -1779,20 +1795,21 @@
 </v>
 </v>
 <v t="ekr.20180125034531.1"></v>
-<v t="ekr.20180125034327.1"><vh>Leo 5.7b2 release notes</vh>
+<v t="ekr.20180125034327.1"><vh>Leo 5.7 final release notes</vh>
 <v t="ekr.20180125032239.1"><vh>Leo 5.7 Summary</vh></v>
-<v t="ekr.20180125041229.1"><vh>Leo 5.7 Major features: 5 issues and 4 others</vh>
+<v t="ekr.20180125041229.1"><vh>Leo 5.7 Major features</vh>
 <v t="ekr.20180124100450.49"><vh>#417: reload-settings command</vh></v>
 <v t="ekr.20180124100450.168"><vh>#503: Use string/null gui for unit tests</vh></v>
 <v t="ekr.20180130055320.1"><vh>#562: A PyPi wheel for Leo</vh></v>
 <v t="ekr.20180124100450.906"><vh>#597: Show tips when Leo starts up</vh></v>
 <v t="ekr.20180124100450.913"><vh>#635: Link to nodes from log pane</vh></v>
+<v t="ekr.20180212070925.1"><vh>#700: Spell checking works without pyenchant</vh></v>
 <v t="ekr.20180212163926.1"><vh>Added a cvs table editing widget</vh></v>
 <v t="ekr.20180124121851.1"><vh>Added Debian package for Leo</vh></v>
 <v t="ekr.20180212065030.1"><vh>Added Outline-oriented diffs of .leo files</vh></v>
-<v t="ekr.20180212070925.1"><vh>Spell checking works without pyenchant</vh></v>
 </v>
-<v t="ekr.20180125034637.1"><vh>Leo 5.7 Bugs: Fixed 46 issues and one other bug</vh>
+<v t="ekr.20180125034637.1"><vh>Leo 5.7 Bugs fixed</vh>
+<v t="ekr.20180226091747.1"><vh>Leo 5.7 b1: Bugs fixed</vh>
 <v t="ekr.20180125235811.3"><vh>#327: Create a way to unbind bindings in leoSettings.leo</vh></v>
 <v t="ekr.20180125235811.2"><vh>#362: default_path within @rst-options honoured or ignored depending on the node where rst3 command is executed</vh></v>
 <v t="ekr.20180125235811.1"><vh>#384: open files with very long path</vh></v>
@@ -1842,7 +1859,10 @@
 <v t="ekr.20180216043451.7"><vh>#718: @command-x = binding crashes Leo</vh></v>
 <v t="ekr.20180124100450.728"><vh>Fixed can not open message in leoBridge test</vh></v>
 </v>
-<v t="ekr.20180125035840.1"><vh>Leo 5.7 Code improvements: 2 issues and 9 others</vh>
+<v t="ekr.20180226032107.1"><vh>Leo 5.7 final: Bugs fixed</vh></v>
+</v>
+<v t="ekr.20180125035840.1"><vh>Leo 5.7 Code improvements</vh>
+<v t="ekr.20180226150731.1"><vh>Leo 5.7 b1 Code improvements</vh>
 <v t="ekr.20180124100450.369"><vh>#577: reformatting unit tests...</vh></v>
 <v t="ekr.20180124100450.427"><vh>#589 @g.commander_command</vh></v>
 <v t="ekr.20180128112939.1"><vh>Added "exact" keyword arg to g.findNode* functions</vh></v>
@@ -1857,7 +1877,9 @@
 <v t="ekr.20180124100440.3"><vh>New redraw code</vh></v>
 <v t="ekr.20180216063833.1"><vh>Suppress warnings in fc.resolveArchivedPosition</vh></v>
 </v>
-<v t="ekr.20180125042412.1"><vh>Leo 5.7 Commands: 11 new and 1 improved</vh>
+<v t="ekr.20180226150747.1"><vh>Leo 5.7 final code improvements</vh></v>
+</v>
+<v t="ekr.20180125042412.1"><vh>Leo 5.7 Commands</vh>
 <v t="ekr.20180124100450.839"><vh>#632: check-conventions command</vh></v>
 <v t="ekr.20180211112158.1"><vh>Added clean-main-user-dict &amp; clean-user-spell-dict</vh></v>
 <v t="ekr.20180201041411.1"><vh>Added count-children command</vh></v>
@@ -1873,7 +1895,8 @@
 <v t="ekr.20180124100450.803"><vh>Reinstated --trace-shutdown command-line argument</vh></v>
 <v t="ekr.20180126063712.1"><vh>@bool show-tips</vh></v>
 </v>
-<v t="ekr.20180124100450.1"><vh>Leo 5.7 Enhancements: Completed 19 issues and 2 others </vh>
+<v t="ekr.20180124100450.1"><vh>Leo 5.7 Enhancements</vh>
+<v t="ekr.20180226091936.1"><vh>Leo 5.7 b1: Enhancements</vh>
 <v t="ekr.20180125235816.1"><vh>#310: Create new file in right-click in file tab in UI</vh></v>
 <v t="ekr.20180124100450.3"><vh>#327: Create a way to unbind bindings in leoSettings.leo</vh></v>
 <v t="ekr.20180125235814.18"><vh>#414: Add p.drawer, p.results, etc.</vh></v>
@@ -1900,18 +1923,20 @@
 <v t="ekr.20180124100450.704"><vh>Added HEAD, TAIL, REST declutter replacement "patterns"</vh></v>
 <v t="ekr.20180124124532.1"><vh>Improved javascript importer</vh></v>
 </v>
-<v t="ekr.20180125041723.1"><vh>Leo 5.7 Plugins: 3 new and 1 improved</vh>
+<v t="ekr.20180212070807.1"><vh>Leo 5.7 b2: Enhancements</vh>
+<v t="ekr.20180212070925.1"></v>
+<v t="ekr.20180212065845.1"></v>
+<v t="ekr.20180211112158.1"></v>
+<v t="ekr.20180212065030.1"></v>
+<v t="ekr.20180212071157.1"></v>
+</v>
+<v t="ekr.20180226092312.1"><vh>Leo 5.7 final: Enhancements</vh></v>
+</v>
+<v t="ekr.20180125041723.1"><vh>Leo 5.7 Plugins</vh>
 <v t="ekr.20180124100450.126"><vh>#488: Improved the console_gui plugin</vh></v>
 <v t="ekr.20180124100450.888"><vh>#613: patch_python_colorizer.py plugin</vh></v>
 <v t="ekr.20180124100440.6"><vh>New leo_cloud.py plugin</vh></v>
 <v t="ekr.20180124122055.1"><vh>New line_numbering.py plugin</vh></v>
-</v>
-<v t="ekr.20180212070807.1"><vh>New in Leo 5.7b2</vh>
-<v t="ekr.20180211112158.1"></v>
-<v t="ekr.20180212065845.1"></v>
-<v t="ekr.20180212065030.1"></v>
-<v t="ekr.20180212071157.1"></v>
-<v t="ekr.20180212070925.1"></v>
 </v>
 </v>
 </vnodes>
@@ -20538,7 +20563,9 @@ I believe with tools of this weight and impact, there will always be an investme
 And this is where Leo does not falter, in the helpfulness of its community (small though it may be). I will reiterate what Edward has said many times, do not struggle on your own if you are lost, confused, or bewildered. Please ask questions. If the documentation or examples do not meet your needs, please ask questions. In my own experience as a once new user (though there may be the occasional disagreement) you will not be chided, scorned, or belittled but will be met with more even more help than you originally asked for. -- John Lunzer &lt;lunzer@gmail.com&gt;</t>
 <t tx="ekr.20160123060917.1">This key is normally bound to delete-comments. It is annoying not to have it work.
 
-For Windows 10, do the following (it may be a bit different for Windows 8):
+The only sure workaround is make other key bindings for add-comments and delete-comments.  I suggest Ctrl-[ and Ctrl-].
+
+At one time I thought the following might work, but it appears that it doesn't:
 
 1. In the control panel, click Language.
    This brings up the "Language" panel.
@@ -21518,39 +21545,11 @@ self.unitTestMenusDict = {}
     # Created in LeoMenu.createMenuEntries for a unit test.
     # keys are command names. values are sets of strokes.
 </t>
-<t tx="ekr.20161029072351.1">@language rest
+<t tx="ekr.20161029072351.1">It is dead easy for scripts, including @button scripts, plugins, etc., to drive any external processes, including compilers and interpreters, from within Leo.
 
-g.app.backgroundProcessManager is the singleton instance of the BackgroundProcessManager (BPM) class. This class runs background processes, *without blocking Leo*. The BPM manages a queue of processes, and runs them *one at a time* so that their output remains separate.
+- The first section discusses three ways of calling subprocess.popen directly or via Leo helper functions.
 
-BPM.start_process(c, command, kind, fn=None, shell=False) adds a process to the queue that will run the given command::
-
-@language python
-
-    bpm = g.app.backgroundProcessManager
-    bpm.start_process(c, command='ls', kind='ls', shell=True)
-
-@language rest
-
-BM.kill(kind=None) kills all process with the given kind. If kind is None or 'all', all processes are killed.
-
-You can add processes to the queue at any time. For example, you can rerun the 'pylint' command while a background process is running.
-
-The BackgroundProcessManager is completely safe: all of its code runs in the main process.
-
-**Running multiple processes simultaneously**
-
-Only one process at a time should be producing output. All processes that *do* produce output should be managed by the singleton BPM instance.
-
-To run processes that *don't* produce output, just call subprocess.Popen::
-
-@language python
-
-    import subprocess
-    subprocess.Popen('ls', shell=True)
-
-@language rest
-
-You can run as many of these process as you like, without involving the BPM in any way
+- The second section discusses the BackgroundProcessManager class.  Leo's pylint command uses this class to run pylint commands sequentially *without blocking Leo*. Running processes sequentially prevents unwanted interleaving of output.
 </t>
 <t tx="ekr.20161120073024.1">@language md
 
@@ -24944,7 +24943,7 @@ There's also a file system backend, which would look like this::
 
 The FileSystem backend was meant to be for development, but of course if you map it into a folder that is sync'ed externally, as shown above, it can serve as a cloud adapter too.
 </t>
-<t tx="ekr.20180124100450.1">Added 19 enhancements.  See
+<t tx="ekr.20180124100450.1">Added over two dozen enhancements.  See
 https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A5.7+label%3Aenhancement
 </t>
 <t tx="ekr.20180124100450.1030"></t>
@@ -25317,9 +25316,9 @@ later.</t>
 You can see all 5.7 issues by visiting:
 https://github.com/leo-editor/leo-editor/issues?page=1&amp;q=is%3Aissue+milestone%3A5.7+is%3Aclosed+-label%3ATip+-label%3AWon%27tDo+-label%3AWon%27tFix+-label%3AHelp&amp;utf8=%E2%9C%93
 </t>
-<t tx="ekr.20180125034327.1">Leo 5.7b2 February 12, 2018
+<t tx="ekr.20180125034327.1">Leo 5.7 final February 27, 2018
 
-Leo 5.7b2, http://leoeditor.com, is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+Leo 5.7 final, http://leoeditor.com, is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
@@ -25327,8 +25326,8 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 
 **The highlights of Leo 5.7**
 
-- Added Debian package for Leo.
-  pip install leo (After 5.7 final)
+- pip install leo.
+- A debian package for Leo.
 - A web-based Leo Viewer, written by Joe Orr.
 - Added diff-leo-files and diff-and-open-leo-files commands.
   These create outline-oriented diffs for .leo files.
@@ -25362,7 +25361,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 </t>
 <t tx="ekr.20180125034510.1"></t>
 <t tx="ekr.20180125034531.1"></t>
-<t tx="ekr.20180125034637.1">Fixed 42 bugs. See:
+<t tx="ekr.20180125034637.1">Fixed dozens of bugs. See:
 https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A5.7+label%3ABug</t>
 <t tx="ekr.20180125035840.1"></t>
 <t tx="ekr.20180125041229.1"></t>
@@ -25942,11 +25941,204 @@ Here is a demo: https://youtu.be/hca3x5SXNqs
     WITH: My Desktop
     
 The default setting specifies no patterns.</t>
-<t tx="ekr.20180216063833.1">fc.resolveArchivedPosition gives errors message onlyi if there have been no read errors (at.errors == 0).
+<t tx="ekr.20180216063833.1">fc.resolveArchivedPosition gives errors message only if there have been no read errors (at.errors == 0).
 
 See https://groups.google.com/d/msg/leo-editor/RIwAHLAmq_0/s11zAcbECgAJ.
 </t>
 <t tx="ekr.20180216082220.1">Syntax coloring is based on C.
+</t>
+<t tx="ekr.20180224050255.1">For each @button node, Leo adds right-click menu items for:
+
+- @rclick nodes directly *following* the @button.
+
+- @rclick nodes that are *children* of the @button node, provided that the
+  @button node has no ``@others`` directive.
+
+**Standard rclick items**: Leo adds two standard right-click menu items for
+each @button node: ``Remove Button`` and ``Goto Script``. Leo adds the
+indicator text **only** to buttons that contain right-click menu items in
+addition to these two standard right-click menu items.
+
+The headline of the @rclick node gives the menu title. The body contains a
+Leo script to execute when the user selects the menu item.
+
+**Related Setting**:
+
+@string mod_scripting_subtext = ▼
+
+This setting specifies **indicator text** that indicates that an @button button has right-click menu items created by @rclick nodes.
+
+Unicode chars like ▼ ▾ and … are typical choices for this text.
+</t>
+<t tx="ekr.20180226032107.1">loadOnePlugin: can not load enabled plugin: leo.plugins.viewrendered
+https://github.com/leo-editor/leo-editor/issues/702
+
+Leo fails to load when pyenchant is not installed
+https://github.com/leo-editor/leo-editor/issues/707
+
+TypeError: coercing to Unicode: need string or buffer, NoneType found
+https://github.com/leo-editor/leo-editor/issues/712
+
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+https://github.com/leo-editor/leo-editor/issues/713
+
+LeoBridge not explicitly closing the Leo-Editor file leaves the Leo-Editor file open
+https://github.com/leo-editor/leo-editor/issues/716
+
+setup.py broken when installing from zipball: execGitCommand not available
+https://github.com/leo-editor/leo-editor/issues/720
+
+replace-all can not be saved with crtl + s
+https://github.com/leo-editor/leo-editor/issues/722
+
+Recover more gracefully from user errors in abbreviations
+https://github.com/leo-editor/leo-editor/issues/725
+
+help-for-command crashes when vr2 plugin is active
+https://github.com/leo-editor/leo-editor/issues/734
+
+@rclick buttons not generating commands in work files
+https://github.com/leo-editor/leo-editor/issues/739
+</t>
+<t tx="ekr.20180226091747.1"></t>
+<t tx="ekr.20180226091936.1"></t>
+<t tx="ekr.20180226092312.1">Add mark/unmark-first-parents commands
+https://github.com/leo-editor/leo-editor/issues/714
+
+Predefine script_p and script_gnx values in Leo scripts
+https://github.com/leo-editor/leo-editor/issues/736
+
+Improved js_i.clean_headline. This method now applies various regex patterns to the headline to simplify the "summary" of the function, including =&gt; functions.</t>
+<t tx="ekr.20180226150731.1"></t>
+<t tx="ekr.20180226150747.1">Added g.execute_shell_commands_with_options.</t>
+<t tx="ekr.20180226151003.1">The first section discusses three *easy* ways to run code in a separate process by calling subprocess.popen either directly or via Leo helper functions.</t>
+<t tx="ekr.20180226152739.1"></t>
+<t tx="ekr.20180226152802.1">It has been almost 14 months since I discovered Leo and today I recalled how I found it.
+
+I was searching GitHub for the term "QWidgetAction" and came across its usage in Leo codebase. And then curiosity killed the cat and I was curious about Leo and read about it and downloaded it as well.
+</t>
+<t tx="ekr.20180226152825.1">I found Leo when I was looking for a replacement for ECCO (anyone remember that program?) I used ECCO for 15 years after it wasn't supported anymore and the core group of diehard users finally lost hope the program owners would open source the code.
+
+Anyway, I don't remember how long ago that was; at least 10 years ago, as I recall. In most respects, Leo is a *major* improvement over ECCO and I don't regret the switch. However, the one thing I still miss about ECCO and wish there was a good Leo integration is the calendar. ECCO could print almost any kind of calendar, in practically any format on any size. I really miss that. There's no other PIM on the market that I know of that has that kind of flexibility.
+
+Perhaps other Leo users figured out how to integrate their calendar(s) with Leo; I haven't and would love to know how (if it's possible).
+</t>
+<t tx="ekr.20180226152847.1">I found Leo when I was looking for an outliner that supported clones, ran on Linux, and wasn't a website. I live on a farmlet on the edge of the world and our internet has always sucked.
+
+I took Leo up in 2007. And if there is one thing I have learned in the interval it is that with Leo, anything is possible.
+</t>
+<t tx="ekr.20180226152919.1">I think I was using Freemind before Leo, although I'd spent a long time using the console based outliner hnb, which apparently has been resurrected as tines https://github.com/larrykollar/tines
+</t>
+<t tx="ekr.20180226152943.1">I think I discovered Leo as a result of a fleeting interest in literate programming. Don't recall the date, but it was before Leo was ported from C++ to Python.
+
+When I learned that Edward lived across town, kitty-corner from a high school sweetheart, I was SOLD!
+</t>
+<t tx="ekr.20180226153353.1">@language rest
+
+g.app.backgroundProcessManager is the singleton instance of the BackgroundProcessManager (BPM) class. This class runs background processes, *without blocking Leo*. The BPM manages a queue of processes, and runs them *one at a time* so that their output remains separate.
+
+BPM.start_process(c, command, kind, fn=None, shell=False) adds a process to the queue that will run the given command::
+
+@language python
+
+    bpm = g.app.backgroundProcessManager
+    bpm.start_process(c, command='ls', kind='ls', shell=True)
+
+@language rest
+
+BM.kill(kind=None) kills all process with the given kind. If kind is None or 'all', all processes are killed.
+
+You can add processes to the queue at any time. For example, you can rerun the 'pylint' command while a background process is running.
+
+The BackgroundProcessManager is completely safe: all of its code runs in the main process.
+
+**Running multiple processes simultaneously**
+
+Only one process at a time should be producing output. All processes that *do* produce output should be managed by the singleton BPM instance.
+
+To run processes that *don't* produce output, just call subprocess.Popen::
+
+@language python
+
+    import subprocess
+    subprocess.Popen('ls', shell=True)
+
+@language rest
+
+You can run as many of these process as you like, without involving the BPM in any way
+</t>
+<t tx="ekr.20180226154417.1">After running ``pip install leo`` from a console type::
+
+    ``leo`` - start Leo in normal graphical mode (qt)
+    ``leo-c``, ``leo-console`` - start Leo in console (curses) mode
+    ``leo-m``, ``leo-messages`` - start Leo in normal (qt) mode, and echo log messages to the starting shell
+
+The launchers are installed in ``PYTHONHOME/Scripts``.
+</t>
+<t tx="ekr.20180226155008.1">Calling subprocess.popen is often simple and good. For example, the following executes the 'npm run dev' command in a given directory.  Leo continues, without waiting for the command to return::
+
+    os.chdir(base_dir)
+    subprocess.Popen('npm run dev', shell=True)
+
+The following hangs Leo until the command completes::
+
+    os.chdir(base_dir)
+    proc = subprocess.Popen(command, shell=True)
+    proc.communicate()
+
+**Note**: 'cd directory' does not seem to work when run using subprocess.popen on Windows 10.
+</t>
+<t tx="ekr.20180226155010.1">Use g.execute_shell_commands is a thin wrapper around subprocess.popen.  It calls subprocess.popen once for every command in a list.  This function waits for commands that start with '&amp;'. Here it is::
+
+    def execute_shell_commands(commands, trace=False):
+        if g.isString(commands): commands = [commands]
+        for command in commands:
+            wait = not command.startswith('&amp;')
+            if command.startswith('&amp;'): command = command[1:].strip()
+            if trace: print('\n&gt;%s%s\n' % ('' if wait else '&amp;', command))
+            proc = subprocess.Popen(command, shell=True)
+            if wait: proc.communicate()
+
+For example::
+
+    os.chdir(base_dir)
+    g.execute_shell_commands(['&amp;npm run dev',])
+</t>
+<t tx="ekr.20180226155010.2">g.execute_shell_commands_with_options is more flexible.  It allows scripts to get both the starting directory and the commands themselves from Leo's settings. Its signature is:
+
+def execute_shell_commands_with_options(
+    base_dir = None,
+    c = None,
+    command_setting = None,
+    commands = None,
+    path_setting = None,
+    warning = None,
+):
+    '''
+    A helper for prototype commands or any other code that
+    runs programs in a separate process.
+   
+    base_dir:           Base directory to use if no path_setting is given.
+    commands:           A list of commands, for g.execute_shell_commands.
+    commands_setting:   Name of @data setting for commands.
+    path_setting:       Name of @string setting for the base directory.
+    warning:            A warning to be printed before executing the commands.
+    '''
+
+For example, put this in myLeoSettings.leo::
+
+    @data my-npm-commands
+    yarn dev
+    
+    @string my-npm-base = /npmtest
+    
+And then run::
+
+    g.execute_shell_commands_with_options(
+        c = c,
+        command_setting = 'my-npm-commands',
+        path_setting= 'my-npm-base',
+    )
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 

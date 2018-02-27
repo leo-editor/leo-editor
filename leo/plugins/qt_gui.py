@@ -996,7 +996,7 @@ class LeoQtGui(leoGui.LeoGui):
             if c.disableCommandsMessage:
                 g.blue('', c.disableCommandsMessage)
             else:
-                g.app.scriptDict = {}
+                g.app.scriptDict = {'script_gnx': p.gnx}
                 c.executeScript(args=args, p=p, script=script,
                 define_g=define_g, define_name=define_name, silent=silent)
                 # Remove the button if the script asks to be removed.

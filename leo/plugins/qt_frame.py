@@ -1453,7 +1453,7 @@ class LeoQtBody(leoFrame.LeoBody):
         if self.totalNumberOfEditors == 2:
             self.editorWidgets['1'] = wrapper
             # Pack the original body editor.
-            self.packLabel(widget, n=1)
+            self.packLabel(widget.parent(), n=1)
         name = '%d' % self.totalNumberOfEditors
         f, wrapper = self.createEditor(name)
         assert g.isTextWrapper(wrapper), wrapper
@@ -1560,7 +1560,8 @@ class LeoQtBody(leoFrame.LeoBody):
         self.numberOfEditors -= 1
         if self.numberOfEditors == 1:
             w = new_wrapper.widget
-            if w.leo_label: # 2011/11/12
+            # if w.leo_label:  # 2011/11/12
+            if getattr(w, 'leo_label', None): # 2018/02/23
                 self.unpackWidget(layout, w.leo_label)
                 w.leo_label = None # 2011/11/12
         self.selectEditor(new_wrapper)

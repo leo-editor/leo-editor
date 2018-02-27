@@ -1376,7 +1376,7 @@ class LeoApp(object):
         if g.app.reverting:
             # Fix #302: revert to saved doesn't reset external file change monitoring
             g.app.already_open_files = []
-        if d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting:
+        if d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting or g.app.inBridge:
             return
         aList = g.app.db.get(tag) or []
         if fn in aList:

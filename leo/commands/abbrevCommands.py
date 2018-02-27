@@ -450,6 +450,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
                 self.expanding = True
                 c.abbrev_subst_env['x'] = ''
                 exec(content, c.abbrev_subst_env, c.abbrev_subst_env)
+            except Exception:
+                g.es_print('exception evaluating', content)
             finally:
                 self.expanding = False
             x = c.abbrev_subst_env.get('x')

@@ -483,6 +483,17 @@ class LeoFind(object):
     def changeAllCommand(self, event=None):
         self.setup_command()
         self.changeAll()
+        # Fixes: #722 replace-all leaves unsaved changed files
+        c = self.c
+        dirtyvnodes = [v for v in c.fileCommands.gnxDict.values() if v.isDirty()]
+        def propagate(v):
+            for v1 in v.parents:
+                if not v1.isDirty():
+                    v1.setDirty()
+                    propagate(v1)
+        for v in dirtyvnodes:
+            propagate(v)
+
     #@+node:ekr.20150629072547.1: *4* find.preloadFindPattern
     def preloadFindPattern(self, w):
         '''Preload the find pattern from the selected text of widget w.'''
