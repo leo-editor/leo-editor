@@ -1,6 +1,6 @@
-Leo 5.7b2 February 12, 2018
+Leo 5.7 final February 26, 2018
 
-Leo 5.7b2, http://leoeditor.com, is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+Leo 5.7 final, http://leoeditor.com, is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
@@ -8,13 +8,14 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 
 **The highlights of Leo 5.7**
 
-- Added Debian package for Leo.
-- pip install leo (After 5.7 final)
+- pip install leo.
 - A web-based Leo Viewer, written by Joe Orr.
-- Outline-oriented diffs for .leo files.
+- Added diff-leo-files and diff-and-open-leo-files commands.
+  These create outline-oriented diffs for .leo files.
 - New reload-settings command.
 - Leo optionally shows user tips on startup.
 - Added a new Tips page to Leo's documentation.
+- A visual widget for editing cvs tables.
 - Spell checking works without pyenchant
 - Improved the console_gui plugin.
 - Added live links from urls in the log pane.
