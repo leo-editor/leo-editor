@@ -243,7 +243,7 @@ def define_datas():
         ('load-leo.html', ''),
         ('pyflakes-leo.py', ''),
         # In leoDist.leo
-        ('readme.md', ''),
+        ('README.md', ''), # Case important!
         # ('setup.py', ''),
     # leo.commands...
         ext('.py', 'leo/commands'),
@@ -271,6 +271,7 @@ def define_datas():
         ext('.py', 'leo/extensions'),
         all('leo/extensions/hooks'),
     # leo/external...
+        # Note: npyscreen is not distributed.
         ext('.cfg', 'leo/external'),
         ext('.md', 'leo/external'),
         ext('.leo', 'leo/external'),
