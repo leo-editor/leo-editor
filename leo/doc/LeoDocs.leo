@@ -24943,7 +24943,7 @@ There's also a file system backend, which would look like this::
 
 The FileSystem backend was meant to be for development, but of course if you map it into a folder that is sync'ed externally, as shown above, it can serve as a cloud adapter too.
 </t>
-<t tx="ekr.20180124100450.1">Added 19 enhancements.  See
+<t tx="ekr.20180124100450.1">Added over two dozen enhancements.  See
 https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A5.7+label%3Aenhancement
 </t>
 <t tx="ekr.20180124100450.1030"></t>
@@ -25326,8 +25326,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 
 **The highlights of Leo 5.7**
 
-- Added Debian package for Leo.
-  pip install leo (After 5.7 final)
+- pip install leo.
 - A web-based Leo Viewer, written by Joe Orr.
 - Added diff-leo-files and diff-and-open-leo-files commands.
   These create outline-oriented diffs for .leo files.
@@ -25361,7 +25360,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 </t>
 <t tx="ekr.20180125034510.1"></t>
 <t tx="ekr.20180125034531.1"></t>
-<t tx="ekr.20180125034637.1">Fixed 42 bugs. See:
+<t tx="ekr.20180125034637.1">Fixed dozens of bugs. See:
 https://github.com/leo-editor/leo-editor/issues?utf8=%E2%9C%93&amp;q=is%3Aissue+milestone%3A5.7+label%3ABug</t>
 <t tx="ekr.20180125035840.1"></t>
 <t tx="ekr.20180125041229.1"></t>
@@ -25941,7 +25940,7 @@ Here is a demo: https://youtu.be/hca3x5SXNqs
     WITH: My Desktop
     
 The default setting specifies no patterns.</t>
-<t tx="ekr.20180216063833.1">fc.resolveArchivedPosition gives errors message onlyi if there have been no read errors (at.errors == 0).
+<t tx="ekr.20180216063833.1">fc.resolveArchivedPosition gives errors message only if there have been no read errors (at.errors == 0).
 
 See https://groups.google.com/d/msg/leo-editor/RIwAHLAmq_0/s11zAcbECgAJ.
 </t>
