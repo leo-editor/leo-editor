@@ -2810,10 +2810,10 @@ Create the executable installer:
 - Double-click leo.nsi. (Run with makeNSIS.exe)
 
 Run pyinstaller on Windows:
-- (optional) Delete leo-editor/dist and leo-editor/build folders.
+- Delete leo-editor/dist and leo-editor/build folders.
 - Run [a32]&gt; pyinstaller --clean --win-private-assemblies launchLeo-unified.spec
 - Test a *copy* of the result so .pyo files are not added to the package)
-- ***Rename** leo/dist/LeoAppFolder to LeoApp (fixes windows naming problem).
+- Rename leo/dist/LeoAppFolder to LeoApp (fixes windows naming problem).
 - Compress the LeoApp folder to Leo_&lt;version&gt;_Win.zip.
     
 Run pyinstaller on Linux:
