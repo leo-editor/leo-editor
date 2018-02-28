@@ -1966,6 +1966,8 @@ def objToString(obj, indent='', tag=None):
         s = listToString(obj, indent=indent)
     elif isinstance(obj, tuple):
         s = tupleToString(obj, indent=indent)
+    # elif g.isString(obj):
+        # s = obj
     else:
         s = repr(obj)
     return '%s...\n%s\n' % (tag, s) if tag else s

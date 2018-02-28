@@ -1143,6 +1143,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
         from:
 
         -     leoSettings.leo,
+        -  @  @button, @command, @mode.
         - [D] default settings.
         - [F] indicates the file being loaded,
         - [M] myLeoSettings.leo,
