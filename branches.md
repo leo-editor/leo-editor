@@ -1,6 +1,6 @@
 # About this file
 
-This file, branches.md, describes the recommended way for Leo's devs to create and use git branches.
+This file, branches.md, describes the recommended way for Leo's devs to create and use git branches. It also describes the most important branches.
 
 This is a shared file, common to all branches.
 
