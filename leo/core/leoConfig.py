@@ -1471,6 +1471,7 @@ class GlobalConfigManager(object):
         limit = c.config.getInt('print-settings-at-data-limit')
         if limit is None:
             limit = 20 # A resonable default.
+        # pylint: disable=len-as-condition
         for key in sorted(list(d.keys())):
             gs = d.get(key)
             assert g.isGeneralSetting(gs), gs
