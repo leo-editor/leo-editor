@@ -1468,6 +1468,9 @@ class GlobalConfigManager(object):
         trace = False and not g.unitTesting
         lm = g.app.loadManager
         d = c.config.settingsDict if c else lm.globalSettingsDict
+        limit = c.config.getInt('print-settings-at-data-limit')
+        if limit is None:
+            limit = 20 # A resonable default.
         for key in sorted(list(d.keys())):
             gs = d.get(key)
             assert g.isGeneralSetting(gs), gs
@@ -1480,11 +1483,11 @@ class GlobalConfigManager(object):
                         if z.strip() and not z.strip().startswith('#')]
                     if trace:
                         g.trace('@data =====', len(aList), key)
-                        if 0 < len(aList) < 20:
+                        if 0 < len(aList) < limit:
                             g.printList(aList)
                     if not aList:
                         val = '[]'
-                    elif len(aList) < 20:
+                    elif limit == 0 or len(aList) < limit:
                         val = '\n    [\n' + '\n'.join(aList) + '\n    ]'
                         # The following doesn't work well.
                         # val = g.objToString(aList, indent=' '*4)
