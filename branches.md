@@ -24,17 +24,17 @@ Devs may create a branch at any time.  The most important branches:
 
 Devs, please add your descriptions here.
 
-##master
+## master
 
 - A permanent, stable branch, suitable for pulling by the most timid users.
 - Updated only as the result of merging a release branch into master.
 
-##devel
+## devel
 
 - A permanent, quasi stable branch, the target of all development work.
 - Devs are expected to run all unit tests before pushing to devel.
 
-##proto
+## proto
 
 - A long-lived branch a long-lived branch containing prototype code related to client/server/javascript/vue.js code.
 - There are no plans to merge or delete this branch at this time.
