@@ -6,7 +6,7 @@ Many thanks to Marcel Franke for suggesting the organization described here.
 
 This is a shared file, common to all branches.
 
-Devs, please add/delete a branch description here when creating/deleting a branch.
+Devs, please add/delete a branch description here when creating/deleting a branch.  Commit the change to the devel branch.
 
 # Overview of branches
 
