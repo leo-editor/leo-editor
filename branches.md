@@ -20,7 +20,7 @@ Devs may create a branch at any time.  The most important branches:
   - All distribution-related work.
   - Urgent last-minute bug fixes.<br>
 
-<img width="75%" height="75%" src="https://blog.seibert-media.net/wp-content/uploads/2014/03/Gitflow-Workflow-3.png">
+<img width="75%" height="75%" src="leo/Icons/Gitflow-Workflow-3.png">
 
 # Branch descriptions
 
