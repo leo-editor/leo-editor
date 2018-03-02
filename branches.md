@@ -1,10 +1,12 @@
 # About this file
 
-This file, branches.md, describes the recommended way for Leo's devs to create and use git branches. It also describes the most important branches.
+This file, branches.md, describes the recommended way for Leo's devs to create and use git branches.<br>
+It also describes Leo's most important branches. 
 
-This is a shared file, common to all branches.
+Many thanks to Marcel Franke for suggesting the organization described here.
 
-Devs, please add/delete a branch description here when creating/deleting a branch.
+Devs, please add/delete a branch description here when creating/deleting a branch. <br>
+*Commit the change to the devel branch*.
 
 # Overview of branches
 
@@ -16,9 +18,9 @@ Devs may create a branch at any time.  The most important branches:
 - **Release branches**: These contain all work on a single, specific release.  Example, 5.7.1.
   These branches should contain *only*:
   - All distribution-related work.
-  - Urgent last-minute bug fixes.
+  - Urgent last-minute bug fixes.<br>
 
-[This picture](https://blog.seibert-media.net/wp-content/uploads/2014/03/Gitflow-Workflow-3.png) is a great overview.
+<img width="75%" height="75%" src="https://blog.seibert-media.net/wp-content/uploads/2014/03/Gitflow-Workflow-3.png">
 
 # Branch descriptions
 
