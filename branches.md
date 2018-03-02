@@ -5,7 +5,8 @@ It also describes Leo's most important branches.
 
 Many thanks to Marcel Franke for suggesting the organization described here.
 
-Devs, please add/delete a branch description here when creating/deleting a branch. <br>Commit the change to the devel branch*.
+Devs, please add/delete a branch description here when creating/deleting a branch. <br>
+*Commit the change to the devel branch*.
 
 # Overview of branches
 
