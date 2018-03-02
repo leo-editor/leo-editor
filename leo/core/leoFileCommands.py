@@ -2406,7 +2406,10 @@ class FileCommands(object):
     def exportHashesToSqlite(self, conn):
         c = self.c
         def md5(x):
-            s = open(x, 'rb').read()
+            try:
+                s = open(x, 'rb').read()
+            except:
+                return ''
             s = s.replace(b'\r\n', b'\n')
             return hashlib.md5(s).hexdigest()
         files = set()
