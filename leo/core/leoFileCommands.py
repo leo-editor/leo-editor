@@ -2409,7 +2409,7 @@ class FileCommands(object):
             try:
                 s = open(x, 'rb').read()
             except:
-                s = b''
+                return ''
             s = s.replace(b'\r\n', b'\n')
             return hashlib.md5(s).hexdigest()
         files = set()
