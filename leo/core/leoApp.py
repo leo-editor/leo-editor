@@ -494,7 +494,7 @@ class LeoApp(object):
             "mail"               : ">",
             "makefile"           : "#",
             "maple"              : "//",
-            "markdown"           : "", # EKR, 2016/11/25
+            "markdown"           : "<!-- -->", # EKR, 2018/03/03: html comments.
             "matlab"             : "%", # EKR: 2011/10/21
             "md"                 : "<!-- -->", # PeckJ: 2013/02/08
             "ml"                 : "(* *)",
