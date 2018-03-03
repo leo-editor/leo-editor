@@ -397,7 +397,7 @@
 <v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
-<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028550b302e312e312e382e342e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473550b302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473550b302e312e312e382e352e3171087d7109580b0000007374725f6c656f5f706f73710a680473550b302e312e312e382e322e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
+<v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
 </v>
 <v t="ekr.20101115152915.4937"><vh>wikipedia entry</vh></v>
 </v>
@@ -463,11 +463,14 @@
 <v t="ekr.20160304081437.9"><vh>Speed's comments</vh></v>
 </v>
 <v t="ekr.20180226152739.1"><vh>How I discovered Leo</vh>
-<v t="ekr.20180226152802.1"><vh>Satish Goda</vh></v>
-<v t="ekr.20180226152825.1"><vh>Rob Keeney</vh></v>
-<v t="ekr.20180226152847.1"><vh>Chris George</vh></v>
 <v t="ekr.20180226152919.1"><vh>Terry Brown</vh></v>
+<v t="ekr.20180303013046.1"><vh>Offray Vladimir Luna Cárdenas </vh></v>
+<v t="ekr.20180226152847.1"><vh>Chris George</vh></v>
+<v t="ekr.20180226152802.1"><vh>Satish Goda</vh></v>
+<v t="ekr.20180303013437.1"><vh>David Szent-Györgyi</vh></v>
+<v t="ekr.20180226152825.1"><vh>Rob Keeney</vh></v>
 <v t="ekr.20180226152943.1"><vh>Kent Tenney</vh></v>
+<v t="ekr.20180303013355.1"><vh>Matt Wilkie</vh></v>
 </v>
 </v>
 <v t="ekr.20040414172218.4"><vh>@rst html/acknowledgements.html</vh></v>
@@ -26139,6 +26142,37 @@ And then run::
         command_setting = 'my-npm-commands',
         path_setting= 'my-npm-base',
     )
+</t>
+<t tx="ekr.20180303013046.1">I came about Leo because I was interested in Learning Python and some forum said that Leo, not Zope, was a superb showcase for this language. I found that it supported a form of literate programming, which I was already interesting into. I started to use it almost exclusively for writing, not for programming, from note keeping to even draft of my thesis, since 2005, when I found Leo, to 2015 and then I found Pharo and Roassal and the idea of software as a graph (https://vimeo.com/94724841)
+
+I decided to create my own outliner with ideas of Leo, Jupyter, Smalltalk and others. These days I still use Leo for quick notes and probably I would use it again to deconstruct some large script or textual program. So, my path was Python -&gt; Zope -&gt; Leo -&gt; Outlining for Literate Programming -&gt; Writing -&gt; Pharo, Roassal -&gt; Reproducible research and data storytelling and visualization -&gt; Grafoscopio. Of course, some parts were traversed in parallel and I still try to combine ideas and communities from several places.
+</t>
+<t tx="ekr.20180303013355.1">I've been trying to recall my own path of discovery. No concrete memory has emerged, but it was somewhere in the intersection of being dissatisfied with wiki notes and mind/concept mapping, starting to learn python, and a multi-decade quest for the perfect text editor (1999-2004, 2010). Gmail says I subscribed to the Leo mailing list in 2009 with my first concrete contribution in August -- a Windows install recipe. Huh. I'm still doing that now!
+
+In spite of the lengthy time since discovering Leo and bringing it into my permanent toolkit, it's still not front and centre for much of my activity. Onenote desktop is my primary writing and organizing tool (the web app is ...meh) and Pyzo the first stop for exploratory python. Much as I love text I'm still a strong graphic creature. My dream writing platform is all of the best parts of rich text &amp; media editing fused with Leo's node management and scripting. Bonus points if it's webby lets me punt Wordpress and all the other web content management things I've tried and discarded (jekyll, acrylamid, drupal, mindtouch, deki-wiki, twiki).
+
+There is substantive aroma of my dream in the air right now, which is very exciting. :)</t>
+<t tx="ekr.20180303013437.1">I employed Leo for an oddball use case, which it addressed beautifully. 
+
+How long ago did this start, perhaps 2005?
+
+The job that I held then required that, without help from work infrastructure or from colleagues, I write tools for diagnosing and repairing problems with installations of a complicated software package and the many libraries it used. The package ran under Microsoft Windows, I had to ship the tools easily via e-mail, and they had to run easily, without requiring installation or uninstallation. 
+
+In those less paranoid days, the flexible packaging method was a Windows Script Host file, in which Microsoft allowed scripts in the supported language of one's choice to call modules written in any other supported scripting language. Microsoft allowed the storage of multiple modules and data files in the WSH file; the format Microsoft employed for this was XML. 
+
+The conventional approach would have been to use a commercial XML editor to build the file. XML editors were specialty products sold for huge sums to industrial combines. Commercial products were aimed at Big Enterprise Publishing with Big Enterprise Money, not at software development by a solitary programmer with a garden-variety PC and no budget. I needed to build my own editor, or I needed to write tools to pre-process each of my tools' source code and the source code for the library routines, then assemble the preprocessed code into the multiple WSFs. This would have been multiple tools, at least a preprocessor akin to the Unix "m4" command and an executable akin to Make, and those would need maintenance. I had no budget for buying software. What to use instead?  
+
+Leo offered me a targeted IDE for Python with the ability to manage all my source code. It offered the PIM I needed to organize my development effort. 
+
+I had to write scripts in Visual Basic Scripting Edition (VBS), because Microsoft deployed it everywhere, and because a lot of modules I could use were written in VBScript. With that in mind, I added support for VBScript to Leo's syntax highlighting. Leo's architecture made that easy. 
+
+Each of the multiple tools that I would write would end up in a WSF of its own. Using Leo's @file commands for the individual WSFs would steer me to use a preprocessor-plus-compiler-plus-Make toolkit, so instead I reached for Leo's heritage in Literate Programming: I used Leo's now-deprecated @root command instead of the @file family of commands, and forced Leo to Tangle the section of the outline required to generate a required WSF.
+
+That allowed me to keep a straightforward correspondence between the section of the Leo file for each tool and the WSF for the tool itself: once I told Leo to Tangle the necessary section of its outline, I knew the resulting WSFs were correctly formatted and included exactly what I required, and nothing more. 
+
+Because the the representation of a module within a WSF was XML, the source code for that module had to be encoded, or it had to be packaged specially so that the Windows Script Host software would handle it in its original form. I did not want to do the filtering, I wanted the outline to contain the unchanged file in a Leo node in a form that would guarantee its correct representation in the WSF. I was able to figure out how to surround the source code's node in the Leo outline in a few extra nodes that would allow me to use the source code exactly as it came. That made it painless for me to add new modules to to my library.  
+
+In those days, Leo's GUI was built on the TKinter package that shipped with Python. That release of TKinter is not beautiful by any means, but its place as one of Python's Batteries Included meant that my entire development environment consisted of the installer for Python; the installer for the pywin32 extensions to Python; the installer for Leo; and the comparatively tiny LEO file that contained my tools' source code, the source code for the library routines, and all my notes. All that went on a single CD-RW, and I could install Python and pywin32 and Leo on a Windows computer in minutes and tweak my code as needed.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
