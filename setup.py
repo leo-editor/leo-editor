@@ -76,8 +76,14 @@ def get_semver(tag):
 # adapted from https://github.com/BonsaiAI/bonsai-config/blob/0.3.1/setup.py#L7
 try:
     from pypandoc import convert
-
-    def read_md(f): return convert(f, 'rst')
+    def read_md(f):
+        text = open(f, 'r').read()
+        #debug
+        print(text)
+        print('↑↑↑ Markdown ***** rST ↓↓↓')
+        print(convert(text, 'rst', format='md'))
+        #/debug
+        return convert(text, 'rst', format='md')
 
 except ImportError:
     print('warning: pypandoc module not found, could not convert Markdown to RST')
@@ -136,6 +142,7 @@ setup(
     license='MIT License',
     description='An IDE, PIM and Outliner', # becomes 'Summary' in pkg-info
     long_description=read_md('README.md'),
+    #long_description=open('README.rst','r').read(),
     platforms=['Linux', 'Windows', 'MacOS'],
     download_url='http://leoeditor.com/download.html',
     classifiers=classifiers,
