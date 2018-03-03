@@ -4565,6 +4565,7 @@ mod_scripting.py
 nav_qt.py
 nodetags.py
 quicksearch.py
+python_terminal.py
 screen_capture.py
 settings_finder.py
 stickynotes.py
