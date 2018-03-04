@@ -1965,7 +1965,7 @@ class FileCommands(object):
         '''Put all referenced tnodes.'''
         c = self.c
         if self.usingClipboard: # write the current tree.
-            theIter = c.p.self_and_subtree()
+            theIter = self.currentPosition.self_and_subtree()
         else: # write everything
             theIter = c.all_unique_positions()
         # Populate tnodes
@@ -2078,13 +2078,13 @@ class FileCommands(object):
             attrs.append(self.putDescendentAttributes(p))
         return ''.join(attrs)
     #@+node:ekr.20031218072017.1579: *5* fc.putVnodes
-    def putVnodes(self):
+    def putVnodes(self, p=None):
         """Puts all <v> elements in the order in which they appear in the outline."""
         c = self.c
         c.clearAllVisited()
         self.put("<vnodes>\n")
         # Make only one copy for all calls.
-        self.currentPosition = c.p
+        self.currentPosition = p or c.p
         self.rootPosition = c.rootPosition()
         self.vnodesDict = {}
         if self.usingClipboard:
@@ -2103,16 +2103,17 @@ class FileCommands(object):
             self.leo_file_encoding,
             g.app.prolog_postfix_string))
     #@+node:ekr.20031218072017.1573: *4* fc.putLeoOutline (to clipboard)
-    def putLeoOutline(self):
+    def putLeoOutline(self, p=None):
         '''
         Return a string, *not unicode*, encoded with self.leo_file_encoding,
         suitable for pasting to the clipboard.
         '''
+        p = p or self.c.p
         self.outputFile = g.FileLikeObject()
         self.usingClipboard = True
         self.putProlog()
         self.putClipboardHeader()
-        self.putVnodes()
+        self.putVnodes(p)
         self.putTnodes()
         self.putPostlog()
         s = self.outputFile.getvalue()
