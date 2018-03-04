@@ -689,6 +689,29 @@
 </v>
 </v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="tbrown.20131122091143.23828"><vh> Color definitions (Do not change)</vh>
+<v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
+<v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
+<v t="ekr.20170304074559.27"><vh>Solarized color definitions</vh>
+<v t="ekr.20170307055039.1"><vh>Reference</vh></v>
+<v t="ekr.20170304074559.29"><vh>@color solarized-base03 = #002b36</vh></v>
+<v t="ekr.20170304074559.30"><vh>@color solarized-base02 = #073642</vh></v>
+<v t="ekr.20170304074559.31"><vh>@color solarized-base01 = #586e75</vh></v>
+<v t="ekr.20170304074559.32"><vh>@color solarized-base00 = #657b83</vh></v>
+<v t="ekr.20170304074559.33"><vh>@color solarized-base0 = #839496</vh></v>
+<v t="ekr.20170304074559.34"><vh>@color solarized-base1 = #93a1a1</vh></v>
+<v t="ekr.20170304074559.35"><vh>@color solarized-base2 = #eee8d5</vh></v>
+<v t="ekr.20170304074559.36"><vh>@color solarized-base3 = #fdf6e3</vh></v>
+<v t="ekr.20170304074559.37"><vh>@color solarized-yellow = #b58900</vh></v>
+<v t="ekr.20170304074559.38"><vh>@color solarized-orange = #cb4b16</vh></v>
+<v t="ekr.20170304074559.39"><vh>@color solarized-red = #dc322f</vh></v>
+<v t="ekr.20170304074559.40"><vh>@color solarized-magenta = #d33682</vh></v>
+<v t="ekr.20170304074559.41"><vh>@color solarized-violet = #6c71c4</vh></v>
+<v t="ekr.20170304074559.42"><vh>@color solarized-blue = #268bd2</vh></v>
+<v t="ekr.20170304074559.43"><vh>@color solarized-cyan = #2aa198</vh></v>
+<v t="ekr.20170304074559.44"><vh>@color solarized-green = #859900</vh></v>
+</v>
+</v>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = True</vh></v>
 <v t="ekr.20130924110246.13745"><vh>@bool scripting-abbreviations = False</vh></v>
@@ -753,29 +776,6 @@
 </v>
 <v t="ekr.20140917051508.19548"><vh>Appearance (change these first)</vh>
 <v t="ekr.20140912075503.19369"><vh>Qt Gui settings</vh>
-<v t="tbrown.20131122091143.23828"><vh> Color definitions</vh>
-<v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
-<v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
-<v t="ekr.20170304074559.27"><vh>Solarized color definitions</vh>
-<v t="ekr.20170307055039.1"><vh>Reference</vh></v>
-<v t="ekr.20170304074559.29"><vh>@color solarized-base03 = #002b36</vh></v>
-<v t="ekr.20170304074559.30"><vh>@color solarized-base02 = #073642</vh></v>
-<v t="ekr.20170304074559.31"><vh>@color solarized-base01 = #586e75</vh></v>
-<v t="ekr.20170304074559.32"><vh>@color solarized-base00 = #657b83</vh></v>
-<v t="ekr.20170304074559.33"><vh>@color solarized-base0 = #839496</vh></v>
-<v t="ekr.20170304074559.34"><vh>@color solarized-base1 = #93a1a1</vh></v>
-<v t="ekr.20170304074559.35"><vh>@color solarized-base2 = #eee8d5</vh></v>
-<v t="ekr.20170304074559.36"><vh>@color solarized-base3 = #fdf6e3</vh></v>
-<v t="ekr.20170304074559.37"><vh>@color solarized-yellow = #b58900</vh></v>
-<v t="ekr.20170304074559.38"><vh>@color solarized-orange = #cb4b16</vh></v>
-<v t="ekr.20170304074559.39"><vh>@color solarized-red = #dc322f</vh></v>
-<v t="ekr.20170304074559.40"><vh>@color solarized-magenta = #d33682</vh></v>
-<v t="ekr.20170304074559.41"><vh>@color solarized-violet = #6c71c4</vh></v>
-<v t="ekr.20170304074559.42"><vh>@color solarized-blue = #268bd2</vh></v>
-<v t="ekr.20170304074559.43"><vh>@color solarized-cyan = #2aa198</vh></v>
-<v t="ekr.20170304074559.44"><vh>@color solarized-green = #859900</vh></v>
-</v>
-</v>
 <v t="ekr.20140915194122.23431"><vh>Colors</vh>
 <v t="ekr.20140912075503.19318"><vh>Body pane colors</vh>
 <v t="ekr.20140912075503.19319"><vh>@color body-bg = white</vh></v>
@@ -14832,28 +14832,26 @@ stylesheet, the other settings in this group should probably be handled
 by the stylesheet and could be considered for removal.</t>
 <t tx="tbrown.20131122091143.23828">This section defines color values not necessarily defined by Qt.
 
+**Please don't change the following definitions**, but feel free to add your own color names in myLeoSettings.leo.
+
+
 For example, you can use @LeoYellow instead of #ffffec
 
-Leo style sheets now support all colors names in Leo's color_db, defined in
-leoColor.py. Case is not important in such definitions.
+Leo style sheets now support all colors names in Leo's color_db, defined in leoColor.py. Case is not important in such definitions.
 
-To see the names for the colors, click the pick-color-name button.
-This creates a color picker in the icon area.
+To see the names for the colors, click the pick-color-name button. This creates a color picker in the icon area.
 
-For example, the following setting works without any explicit
-definition of mistyrose2.
+For example, the following setting works without any explicit definition of mistyrose2:
     
     @color head-bg = @mistyrose2
     
-These colors are (mostly) the same as:
-http://www.yourhtmlsource.com/stylesheets/namedcolours.html
+These colors are (mostly) the same as: http://www.yourhtmlsource.com/stylesheets/namedcolours.html
 
 Finally, there is a semi-interactive color map for these colors here:
 http://leo-editor.github.io/snippets/colormap.html
+
 Hover over a color to get Leo's color name for each color.
 
-Please don't change the following definitions, but feel free to add your
-own color names in myLeoSettings.leo.
 </t>
 <t tx="tbrown.20131122091143.23829"></t>
 <t tx="tbrown.20131122091143.23833"></t>
