@@ -546,6 +546,37 @@ class FileCommands(object):
         finally:
             self.checking = False
             c.loading = False # reenable c.changed
+    #@+node:vitalije.20180304190953.1: *5* fc.getVnodeFromClipboard
+    def getVnodeFromClipboard(self, s):
+        c = self.c
+        self.initReadIvars()
+        # Save the hidden root's children.
+        children = c.hiddenRootNode.children
+        oldGnxDict = self.gnxDict
+        self.gnxDict = {}
+        self.usingClipboard = True
+        try:
+            # This encoding must match the encoding used in putLeoOutline.
+            s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
+            # readSaxFile modifies the hidden root.
+            v = self.readSaxFile(
+                theFile=None, fileName='<clipboard>',
+                silent=True, # don't tell about stylesheet elements.
+                inClipboard=True, reassignIndices=True, s=s)
+            if not v:
+                return g.es("the clipboard is not valid ", color="blue")
+        finally:
+            self.usingClipboard = False
+            self.gnxDict = oldGnxDict
+        # Restore the hidden root's children
+        c.hiddenRootNode.children = children
+        # Unlink v from the hidden root.
+        v.parents.remove(c.hiddenRootNode)
+        return v
+
+    def getPosFromClipboard(self, s):
+        v = self.getVnodeFromClipboard(s)
+        return leoNodes.Position(v)
     #@+node:ekr.20031218072017.1559: *5* fc.getLeoOutlineFromClipboard & helpers
     def getLeoOutlineFromClipboard(self, s, reassignIndices=True, tempOutline=False):
         '''Read a Leo outline from string s in clipboard format.'''

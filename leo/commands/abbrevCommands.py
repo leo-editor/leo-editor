@@ -202,24 +202,20 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
 
         trace = False and not g.unitTesting
         c = self.c
-        old_p = c.p.copy()
-        p = c.pasteOutline(s=tree_s, redrawFlag=False, undoFlag=False, tempOutline=True)
+        p = c.fileCommands.getPosFromClipboard(tree_s)
         if not p: return g.trace('no pasted node')
         for s in g.splitLines(p.b):
             if s.strip() and not s.startswith('#'):
                 abbrev_name = s.strip()
                 for child in p.children():
                     if child.h.strip() == abbrev_name:
-                        # g.trace('calling c.selectPosition', child.h)
-                        c.selectPosition(child)
-                        abbrev_s = c.fileCommands.putLeoOutline()
+                        abbrev_s = c.fileCommands.putLeoOutline(child)
                         if trace: g.trace('define', abbrev_name, len(abbrev_s))
                         d[abbrev_name] = abbrev_s
                         break
                 else:
                     g.trace('no definition for %s' % abbrev_name)
-        p.doDelete(newNode=old_p)
-        c.selectPosition(old_p)
+
     #@+node:ekr.20150514043850.11: *3* abbrev.expandAbbrev & helpers (entry point)
     def expandAbbrev(self, event, stroke):
         '''

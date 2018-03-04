@@ -225,18 +225,14 @@ class ParserBaseClass(object):
     def getOutlineDataHelper(self, p):
         c = self.c
         if not p: return None
-        old_p = c.p
-        c.selectPosition(p)
         try:
             # Copy the entire tree to s.
             c.fileCommands.leo_file_encoding = 'utf-8'
-            s = c.fileCommands.putLeoOutline()
+            s = c.fileCommands.putLeoOutline(p)
             s = g.toUnicode(s, encoding='utf-8')
         except Exception:
             g.es_exception()
             s = None
-        finally:
-            if old_p: c.selectPosition(old_p)
         return s
     #@+node:ekr.20041120094940.3: *4* doDirectory & doPath
     def doDirectory(self, p, kind, name, val):
