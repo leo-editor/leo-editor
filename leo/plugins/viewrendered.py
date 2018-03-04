@@ -238,16 +238,18 @@ import json
 #@+node:ekr.20110317024548.14377: ** << define stylesheets >>
 stickynote_stylesheet = '''
 /* The body pane */
+/*----- No longer used
 QPlainTextEdit {
-    background-color: #fdf5f5; /* A kind of pink. */
+    background-color: #fdf5f5;
     selection-color: white;
     selection-background-color: lightgrey;
     font-family: DejaVu Sans Mono;
     /* font-family: Courier New; */
     font-size: 18px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
+    font-weight: normal;
+    font-style: normal;
 }
+----- */
 '''
 #@-<< define stylesheets >>
 #@+<< define html templates >>
@@ -286,7 +288,9 @@ layouts = {}
 #@+node:ekr.20110320120020.14491: ** Top-level
 #@+node:tbrown.20100318101414.5994: *3* decorate_window
 def decorate_window(w):
-    w.setStyleSheet(stickynote_stylesheet)
+    # Do not override the style sheet!
+    # This interferes with themes
+        # w.setStyleSheet(stickynote_stylesheet)
     w.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     w.resize(600, 300)
 #@+node:tbrown.20100318101414.5995: *3* init (VR)
@@ -706,6 +710,7 @@ if QtWidgets: # NOQA
                 else:
                     # Save the scrollbars
                     d[p.v] = pos = sb.sliderPosition()
+            # if trace: g.trace('\n'+s)
             w.setHtml(s)
             if sb:
                 # Restore the scrollbars
@@ -771,9 +776,11 @@ if QtWidgets: # NOQA
             w.show()
             # Special inits for text widgets...
             if w.__class__ == QtWidgets.QTextBrowser:
+                if trace: g.trace(g.callers())
                 text_name = 'body-text-renderer'
                 w.setObjectName(text_name)
-                pc.setBackgroundColor(pc.background_color, text_name, w)
+                # Do not do this! It interferes with themes.
+                    # pc.setBackgroundColor(pc.background_color, text_name, w)
                 w.setReadOnly(True)
                 # Create the standard Leo bindings.
                 wrapper_name = 'rendering-pane-wrapper'
@@ -784,15 +791,16 @@ if QtWidgets: # NOQA
         #@+node:ekr.20110321072702.14510: *5* vr.setBackgroundColor
         def setBackgroundColor(self, colorName, name, w):
             '''Set the background color of the vr pane.'''
-            pc = self
-            if not colorName: return
-            styleSheet = 'QTextEdit#%s { background-color: %s; }' % (name, colorName)
-            # g.trace(name,colorName)
-            if QtGui.QColor(colorName).isValid():
-                w.setStyleSheet(styleSheet)
-            elif colorName not in pc.badColors:
-                pc.badColors.append(colorName)
-                g.warning('invalid body background color: %s' % (colorName))
+            if 0: # Do not do this! It interferes with themes.
+                pc = self
+                if not colorName: return
+                styleSheet = 'QTextEdit#%s { background-color: %s; }' % (name, colorName)
+                if trace: g.trace(name,colorName, g.callers())
+                if QtGui.QColor(colorName).isValid():
+                    w.setStyleSheet(styleSheet)
+                elif colorName not in pc.badColors:
+                    pc.badColors.append(colorName)
+                    g.warning('invalid body background color: %s' % (colorName))
         #@+node:ekr.20110320120020.14476: *4* vr.must_update
         def must_update(self, keywords):
             '''Return True if we must update the rendering pane.'''
@@ -1359,6 +1367,9 @@ if QtWidgets: # NOQA
             c = self.c
             splitter = self.splitter
             deflo = c.db.get('viewrendered_default_layouts', (None, None))
+            # if trace:
+                # g.trace()
+                # g.printObj(deflo)
             (loc, loo) = layouts.get(c.hash(), deflo)
             if which == 'closed' and loc and splitter:
                 splitter.load_layout(loc)
