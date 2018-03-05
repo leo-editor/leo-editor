@@ -1061,6 +1061,7 @@
 <v t="ekr.20111115083813.12518"><vh>@bool indent_added_comments = True</vh></v>
 <v t="ekr.20150227102835.1"><vh>@bool make_node_conflicts_node = True</vh></v>
 <v t="ekr.20180117074230.1"><vh>@bool show-tips = True</vh></v>
+<v t="ekr.20180301060510.1"><vh>@int print-settings-at-data-limit = 20</vh></v>
 <v t="ekr.20160428072005.1"><vh>@data history-list</vh></v>
 <v t="ekr.20041119041019.1"><vh>@string remove_sentinels_extension = .txt</vh></v>
 <v t="ekr.20141010095448.19776"><vh>Beautify command settings</vh>
@@ -14571,6 +14572,10 @@ Leo script to execute when the user selects the menu item.
 This setting specifies **indicator text** that indicates that an @button button has right-click menu items created by @rclick nodes.
 
 Unicode chars like ▼ ▾ and … are typical choices for this text.
+</t>
+<t tx="ekr.20180301060510.1">The maximum number of lines to show in @data nodes.
+
+0 causes all lines to be shown.
 </t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 

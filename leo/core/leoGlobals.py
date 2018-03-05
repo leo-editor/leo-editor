@@ -435,6 +435,8 @@ class MatchBrackets(object):
         d1, d2, d3 = g.set_delims_from_language(language)
         self.single_comment, self.start_comment, self.end_comment = d1, d2, d3
         # g.trace(repr(d1), repr(d2), repr(d3))
+        # to track expanding selection
+        c.user_dict.setdefault('_match_brackets', {'count': 0, 'range': (0, 0)})
     #@+node:ekr.20160121164723.1: *4* mb.bi-directional helpers
     #@+node:ekr.20160121112812.1: *5* mb.is_regex
     def is_regex(self, s, i):
@@ -509,6 +511,50 @@ class MatchBrackets(object):
         # Annoying when matching brackets on the fly.
         # self.oops('unmatched string')
         return i + offset
+    #@+node:tbrown.20180226113621.1: *4* mb.expand_range
+    def expand_range(self, s, left, right, max_right, expand=False):
+        """
+        Find the bracket nearest the cursor searching outwards left and right.
+
+        Expand the range (left, right) in string s until either s[left] or
+        s[right] is a bracket.  right can not exceed max_right, and if expand is
+        True, the new range must encompass the old range, in addition to s[left]
+        or s[right] being a bracket.
+
+        Returns
+            new_left, new_right, bracket_char, index_of_bracket_char
+        if expansion succeeds, otherwise
+            None, None, None, None
+
+        Note that only one of new_left and new_right will necessarily be a
+        bracket, but index_of_bracket_char will definitely be a bracket.
+        """
+        expanded = False
+        orig_left = left
+        orig_right = right
+        while (s[left] not in self.brackets or expand and not expanded) and \
+              (s[right] not in self.brackets or expand and not expanded) and \
+              (left > 0 or right < max_right):
+            expanded = False
+            if left > 0:
+                left -= 1
+                if s[left] in self.brackets:
+                    other = self.find_matching_bracket(s[left], s, left)
+                    if other is not None and other >= orig_right:
+                        expanded = 'left'
+            if right < max_right:
+                right += 1
+                if s[right] in self.brackets:
+                    other = self.find_matching_bracket(s[right], s, right)
+                    if other is not None and other <= orig_left:
+                        expanded = 'right'
+
+        if s[left] in self.brackets and (not expand or expanded == 'left'):
+            return left, right, s[left], left
+        elif s[right] in self.brackets and (not expand or expanded == 'right'):
+            return left, right, s[right], right
+        else:
+            return None, None, None, None
     #@+node:ekr.20061113221414: *4* mb.find_matching_bracket
     def find_matching_bracket(self, ch1, s, i):
         '''Find the bracket matching s[i] for self.language.'''
@@ -743,25 +789,65 @@ class MatchBrackets(object):
     #@+node:ekr.20160119094053.1: *4* mb.run
     #@@nobeautify
 
+
     def run(self):
-        '''The driver for the MatchBrackets class.'''
+        '''The driver for the MatchBrackets class.
+
+        With no selected range, find the nearest bracket and select from
+        it to it's match, moving cursor to mathc.  With selected range, the
+        first time, move cursor back to other end of range.  The second time,
+        select enclosing range.
+        '''
         trace = False and not g.unitTesting
         # A partial fix for bug 127: Bracket matching is buggy.
         w = self.c.frame.body.wrapper
         s = w.getAllText()
-        ins = w.getInsertPoint()
-        if trace: g.trace(s)
-        ch1 = s[ins-1] if 0 <= ins-1 < len(s) else ''
-        ch2 = s[ins]   if 0 <= ins   < len(s) else ''
-        # g.trace(repr(ch1),repr(ch2),ins)
-        # Prefer to match the character to the left of the cursor.
-        if ch1 and ch1 in self.brackets:
-            ch = ch1; index = max(0, ins - 1)
-        elif ch2 and ch2 in self.brackets:
-            ch = ch2; index = ins
-        else:
+        _mb = self.c.user_dict['_match_brackets']
+        sel_range = w.getSelectionRange()
+
+        if not w.hasSelection():
+            _mb['count'] = 1
+
+        if _mb['range'] == sel_range and _mb['count'] == 1:
+            # haven't been to other end yet
+            _mb['count'] += 1
+            # move insert point to other end of selection
+            insert = 1 if w.getInsertPoint() == sel_range[0] else 0
+            w.setSelectionRange(sel_range[0], sel_range[1], insert=sel_range[insert])
             return
+
+        # find bracket nearest cursor
+        max_right = len(s) - 1 # insert point can be past last char.
+        left = right = min(max_right, w.getInsertPoint())
+        left, right, ch, index = self.expand_range(s, left, right, max_right)
+        if left is None:
+            g.es("Bracket not found")
+            return
+
         index2 = self.find_matching_bracket(ch, s, index)
+
+        # if this is the first time we've selected the range index-index2, do
+        # nothing extra.  The second time, move cursor to other end (requires
+        # no special action here), and the third time, try to expand the range
+        # to any enclosing brackets
+        minmax = (min(index, index2), max(index, index2)+1)
+        # the range, +1 to match w.getSelectionRange()
+        if _mb['range'] == minmax:  # count how many times this has been the answer
+            _mb['count'] += 1
+        else:
+            _mb['count'] = 1
+            _mb['range'] = minmax
+        if _mb['count'] >= 3:  # try to expand range
+            left, right, ch, index3 = self.expand_range(
+                s, max(minmax[0], 0), min(minmax[1], max_right), max_right, expand=True
+            )
+            if index3 is not None:  # found nearest bracket outside range
+                index4 = self.find_matching_bracket(ch, s, index3)
+                if index4 is not None:  # found matching bracket, expand range
+                    index, index2 = index3, index4
+                    _mb['count'] = 1
+                    _mb['range'] = (min(index3, index4), max(index3, index4)+1)
+
         if trace: g.trace('index, index2', index, index2)
         if index2 is not None:
             if index2 < index:
@@ -1880,6 +1966,8 @@ def objToString(obj, indent='', tag=None):
         s = listToString(obj, indent=indent)
     elif isinstance(obj, tuple):
         s = tupleToString(obj, indent=indent)
+    # elif g.isString(obj):
+        # s = obj
     else:
         s = repr(obj)
     return '%s...\n%s\n' % (tag, s) if tag else s

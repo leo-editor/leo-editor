@@ -324,6 +324,7 @@
 <v t="ekr.20161020041000.1"><vh>Create git tag</vh></v>
 <v t="ekr.20170316104916.1"><vh>Publish release</vh></v>
 <v t="ekr.20161015091353.3"><vh>Announcements</vh></v>
+<v t="ekr.20180301115911.1"><vh>Create python wheel</vh></v>
 </v>
 <v t="ekr.20101027131034.1490"><vh>NSIS source files</vh>
 <v t="ekr.20101027160251.1500"><vh>Notes</vh>
@@ -2810,10 +2811,10 @@ Create the executable installer:
 - Double-click leo.nsi. (Run with makeNSIS.exe)
 
 Run pyinstaller on Windows:
-- (optional) Delete leo-editor/dist and leo-editor/build folders.
+- Delete leo-editor/dist and leo-editor/build folders.
 - Run [a32]&gt; pyinstaller --clean --win-private-assemblies launchLeo-unified.spec
 - Test a *copy* of the result so .pyo files are not added to the package)
-- ***Rename** leo/dist/LeoAppFolder to LeoApp (fixes windows naming problem).
+- Rename leo/dist/LeoAppFolder to LeoApp (fixes windows naming problem).
 - Compress the LeoApp folder to Leo_&lt;version&gt;_Win.zip.
     
 Run pyinstaller on Linux:
@@ -4066,6 +4067,10 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20180301115911.1">- git checkout {release-tag}
+- python setup.py bdist_wheel
+- twine upload dist/leo*.whl
 </t>
 <t tx="maphew.20171107045903.1">Leo 5.6 September 25, 2017
 

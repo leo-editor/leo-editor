@@ -1,12 +1,14 @@
 Leo 5.7 final February 27, 2018
 
 Leo 5.7 final, http://leoeditor.com, is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
-
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
-Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is possible to simulate Python in C or assembly language...
+# Install and run
 
-**The highlights of Leo 5.7**
+    >pip install leo
+    >leo
+
+# The highlights of Leo 5.7
 
 - pip install leo.
 - A debian package for Leo.
@@ -27,7 +29,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - Added 6 new commands.
 - Dozens of bug fixes.
 
-**Links**
+# Links
 
 - Leo's home page: http://leoeditor.com
 - [Documentation](http://leoeditor.com/leo_toc.html)

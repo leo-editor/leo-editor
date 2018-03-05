@@ -1465,18 +1465,39 @@ class GlobalConfigManager(object):
         M myLeoSettings.leo
         @ @button, @command, @mode.
         '''
+        trace = False and not g.unitTesting
         lm = g.app.loadManager
-        suppressKind = ('shortcut', 'shortcuts', 'openwithtable')
-        suppressKeys = (None, 'shortcut')
         d = c.config.settingsDict if c else lm.globalSettingsDict
+        limit = c.config.getInt('print-settings-at-data-limit')
+        if limit is None:
+            limit = 20 # A resonable default.
+        # pylint: disable=len-as-condition
         for key in sorted(list(d.keys())):
-            if key not in suppressKeys:
-                gs = d.get(key)
-                assert g.isGeneralSetting(gs), gs
-                if gs and gs.kind not in suppressKind:
-                    letter = lm.computeBindingLetter(gs.path)
-                    # g.trace('%3s %40s %s' % (letter,key,gs.val))
-                    yield key, gs.val, c, letter
+            gs = d.get(key)
+            assert g.isGeneralSetting(gs), gs
+            if gs and gs.kind:
+                letter = lm.computeBindingLetter(gs.path)
+                val = gs.val
+                if gs.kind == 'data':
+                    # #748: Remove comments
+                    aList = [' '*8 + z.rstrip() for z in val
+                        if z.strip() and not z.strip().startswith('#')]
+                    if trace:
+                        g.trace('@data =====', len(aList), key)
+                        if 0 < len(aList) < limit:
+                            g.printList(aList)
+                    if not aList:
+                        val = '[]'
+                    elif limit == 0 or len(aList) < limit:
+                        val = '\n    [\n' + '\n'.join(aList) + '\n    ]'
+                        # The following doesn't work well.
+                        # val = g.objToString(aList, indent=' '*4)
+                    else:
+                        val = '<%s non-comment lines>' % len(aList)
+                elif g.isString(val) and val.startswith('<?xml'):
+                    val = '<xml>'
+                key2 = '@%-6s %s' % (gs.kind, key)
+                yield key2, val, c, letter
     #@+node:ekr.20171115062202.1: *3* gcm.valueInMyLeoSettings
     def valueInMyLeoSettings(self, settingName):
         '''Return the value of the setting, if any, in myLeoSettings.leo.'''
@@ -1893,6 +1914,7 @@ class LocalConfigManager(object):
         The following shows where the active setting came from:
 
         -     leoSettings.leo,
+        -  @  @button, @command, @mode.
         - [D] default settings.
         - [F] indicates the file being loaded,
         - [M] myLeoSettings.leo,
@@ -1901,6 +1923,7 @@ class LocalConfigManager(object):
         legend = '''\
     legend:
         leoSettings.leo
+     @  @button, @command, @mode
     [D] default settings
     [F] loaded .leo File
     [M] myLeoSettings.leo
