@@ -687,93 +687,268 @@
 </v>
 </v>
 </v>
-<v t="ekr.20180305044226.1"><vh>@theme Leo Solarized Dark</vh>
-<v t="ekr.20180305044226.2"><vh>Settings for Leo Solarized Dark theme</vh>
-<v t="ekr.20180305044226.3"><vh>Colors...</vh>
-<v t="ekr.20180305044226.4"><vh>colors: widgets</vh>
-<v t="ekr.20180305044226.5"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
-<v t="ekr.20180305044226.6"><vh>@color button-hover-bg =@solarized-base01</vh></v>
-<v t="ekr.20180305044226.7"><vh>@color button-hover-fg =@solarized-base03</vh></v>
-<v t="ekr.20180305044226.8"><vh>@color log_error_color =#dc322f</vh></v>
-<v t="ekr.20180305044226.9"><vh>@color log_text_background_color =#000005</vh></v>
-<v t="ekr.20180305044226.10"><vh>@color log_text_foreground_color =#ffffff</vh></v>
-<v t="ekr.20180305044226.11"><vh>@color log_warning_color = #268bd2</vh></v>
-<v t="ekr.20180305044226.12"><vh>@color minibuffer_background_color= @solarized-base04</vh></v>
-<v t="ekr.20180305044226.13"><vh>@color minibuffer_error_color =@solarized-red</vh></v>
-<v t="ekr.20180305044226.14"><vh>@color minibuffer_foreground_color= @solarized-yellow</vh></v>
-<v t="ekr.20180305044226.15"><vh>@color minibuffer_warning_color =@solarized-base02</vh></v>
-<v t="ekr.20180305044226.16"><vh>@color text-background =@solarized-base03</vh></v>
-<v t="ekr.20180305044226.17"><vh>@color text-background-bright =@solarized-base02</vh></v>
-<v t="ekr.20180305044226.18"><vh>@color text-foreground =@solarized-base0</vh></v>
-<v t="ekr.20180305044226.19"><vh>@color text-foreground-bright =@solarized-base2</vh></v>
+<v t="ekr.20180305115925.1"><vh>@theme Leo Solarized Dark</vh>
+<v t="ekr.20180305115925.2"><vh>Settings for Leo Solarized Dark theme</vh>
+<v t="ekr.20180305115925.3"><vh>Colors...</vh>
+<v t="ekr.20180305115925.4"><vh>colors: widgets</vh>
+<v t="ekr.20180305115925.5"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
+<v t="ekr.20180305115925.6"><vh>@color button-hover-bg =@solarized-base01</vh></v>
+<v t="ekr.20180305115925.7"><vh>@color button-hover-fg =@solarized-base03</vh></v>
+<v t="ekr.20180305115925.8"><vh>@color log_error_color =#dc322f</vh></v>
+<v t="ekr.20180305115925.9"><vh>@color log_text_background_color =#000005</vh></v>
+<v t="ekr.20180305115925.10"><vh>@color log_text_foreground_color =#ffffff</vh></v>
+<v t="ekr.20180305115925.11"><vh>@color log_warning_color = #268bd2</vh></v>
+<v t="ekr.20180305115925.12"><vh>@color minibuffer_error_color =@solarized-red</vh></v>
+<v t="ekr.20180305115925.13"><vh>@color minibuffer_warning_color =@solarized-red</vh></v>
+<v t="ekr.20180305115925.14"><vh>@color text-background =@solarized-base03</vh></v>
+<v t="ekr.20180305115925.15"><vh>@color text-background-bright =@solarized-base02</vh></v>
+<v t="ekr.20180305115925.16"><vh>@color text-foreground =@solarized-base0</vh></v>
+<v t="ekr.20180305115925.17"><vh>@color text-foreground-bright =@solarized-base2</vh></v>
 </v>
-<v t="ekr.20180305044226.20"><vh>Colors: Syntax coloring</vh>
-<v t="ekr.20180305044226.21"><vh>Colors: defaults</vh>
-<v t="ekr.20180305044226.22"><vh>@color blank_color = grey</vh></v>
-<v t="ekr.20180305044226.23"><vh>@color tab_color = red</vh></v>
-<v t="ekr.20180305044226.24"><vh>@color label_color = red</vh></v>
-<v t="ekr.20180305044226.25"><vh>@color keyword1_color = #268bd2</vh></v>
-<v t="ekr.20180305044226.26"><vh>@color keyword2_color = #268bd2</vh></v>
-<v t="ekr.20180305044226.27"><vh>@color keyword3_color = #268bd2</vh></v>
-<v t="ekr.20180305044226.28"><vh>@color keyword4_color = #268bd2</vh></v>
-<v t="ekr.20180305044226.29"><vh>@color literal1_color = #859900</vh></v>
-<v t="ekr.20180305044226.30"><vh>@color literal2_color = #859900</vh></v>
-<v t="ekr.20180305044226.31"><vh>@color literal3_color = #859900</vh></v>
-<v t="ekr.20180305044226.32"><vh>@color literal4_color = #859900</vh></v>
-<v t="ekr.20180305044226.33"><vh>@color markup_color = #268bd2</vh></v>
-<v t="ekr.20180305044226.34"><vh>@color comment1_color = #d33682</vh></v>
-<v t="ekr.20180305044226.35"><vh>@color comment2_color = #d33682</vh></v>
-<v t="ekr.20180305044226.36"><vh>@color comment3_color = #d33682</vh></v>
-<v t="ekr.20180305044226.37"><vh>@color comment4_color = #d33682</vh></v>
+<v t="ekr.20180305115925.18"><vh>Colors: Syntax coloring</vh>
+<v t="ekr.20180305115925.19"><vh>Colors: defaults</vh>
+<v t="ekr.20180305115925.20"><vh>@color blank_color = grey</vh></v>
+<v t="ekr.20180305115925.21"><vh>@color tab_color = red</vh></v>
+<v t="ekr.20180305115925.22"><vh>@color label_color = red</vh></v>
+<v t="ekr.20180305115925.23"><vh>@color keyword1_color = #268bd2</vh></v>
+<v t="ekr.20180305115925.24"><vh>@color keyword2_color = #268bd2</vh></v>
+<v t="ekr.20180305115925.25"><vh>@color keyword3_color = #268bd2</vh></v>
+<v t="ekr.20180305115925.26"><vh>@color keyword4_color = #268bd2</vh></v>
+<v t="ekr.20180305115925.27"><vh>@color literal1_color = #859900</vh></v>
+<v t="ekr.20180305115925.28"><vh>@color literal2_color = #859900</vh></v>
+<v t="ekr.20180305115925.29"><vh>@color literal3_color = #859900</vh></v>
+<v t="ekr.20180305115925.30"><vh>@color literal4_color = #859900</vh></v>
+<v t="ekr.20180305115925.31"><vh>@color markup_color = #268bd2</vh></v>
+<v t="ekr.20180305115925.32"><vh>@color comment1_color = #d33682</vh></v>
+<v t="ekr.20180305115925.33"><vh>@color comment2_color = #d33682</vh></v>
+<v t="ekr.20180305115925.34"><vh>@color comment3_color = #d33682</vh></v>
+<v t="ekr.20180305115925.35"><vh>@color comment4_color = #d33682</vh></v>
 </v>
-<v t="ekr.20180305044226.38"><vh>@@color plain null color = #6c71c4</vh></v>
-<v t="ekr.20180305044226.39"><vh>Colors: Leo constructs</vh>
-<v t="ekr.20180305044226.40"><vh>@color section_name_brackets_color = @solarized-blue</vh></v>
-<v t="ekr.20180305044226.41"><vh>@color null_color = #6c71c4</vh></v>
-<v t="ekr.20180305044226.42"><vh>@color operator_color = #6c71c4</vh></v>
-<v t="ekr.20180305044226.43"><vh>@color doc_part_color = @solarized-red</vh></v>
-<v t="ekr.20180305044226.44"><vh>@color leo_keyword_color = @solarized-green</vh></v>
-<v t="ekr.20180305044226.45"><vh>@color section_name_color = @solarized-red</vh></v>
-<v t="ekr.20180305044226.46"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
-<v t="ekr.20180305044226.47"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
-<v t="ekr.20180305044226.48"><vh>@color undefined_section_name_color = red</vh></v>
-<v t="ekr.20180305044226.49"><vh>@color url_color = @solarized-purple</vh></v>
+<v t="ekr.20180305115925.36"><vh>@@color plain null color = #6c71c4</vh></v>
+<v t="ekr.20180305115925.37"><vh>Colors: Leo constructs</vh>
+<v t="ekr.20180305115925.38"><vh>@color section_name_brackets_color = @solarized-blue</vh></v>
+<v t="ekr.20180305115925.39"><vh>@color null_color = #6c71c4</vh></v>
+<v t="ekr.20180305115925.40"><vh>@color operator_color = #6c71c4</vh></v>
+<v t="ekr.20180305115925.41"><vh>@color doc_part_color = @solarized-red</vh></v>
+<v t="ekr.20180305115925.42"><vh>@color leo_keyword_color = @solarized-green</vh></v>
+<v t="ekr.20180305115925.43"><vh>@color section_name_color = @solarized-red</vh></v>
+<v t="ekr.20180305115925.44"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
+<v t="ekr.20180305115925.45"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
+<v t="ekr.20180305115925.46"><vh>@color undefined_section_name_color = red</vh></v>
+<v t="ekr.20180305115925.47"><vh>@color url_color = @solarized-purple</vh></v>
 </v>
 </v>
+<v t="ekr.20180305115925.48"><vh>Color: Status area colors for searches</vh>
+<v t="ekr.20180305115925.49"><vh>@color find-found-bg = @solarized-blue</vh></v>
+<v t="ekr.20180305115925.50"><vh>@color find-found-fg = @solarized-white</vh></v>
+<v t="ekr.20180305115925.51"><vh>@color find-not-found-bg = @solarized-red</vh></v>
+<v t="ekr.20180305115925.52"><vh>@color find-not-found-fg = @solarized-white</vh></v>
 </v>
-<v t="ekr.20180305044226.50"><vh>fonts</vh>
-<v t="ekr.20180305044226.51"><vh>@string font-family = Inconsolata,Droid Sans Mono, DejaVu Sans Mono</vh></v>
-<v t="ekr.20180305044226.52"><vh>@string font-family-tree =@font-family</vh></v>
-<v t="ekr.20180305044226.53"><vh>@string font-family-body =@font-family</vh></v>
-<v t="ekr.20180305044226.54"><vh>@string font-family-log =@font-family</vh></v>
-<v t="ekr.20180305044226.55"><vh>@string font-size-body = 17px</vh></v>
-<v t="ekr.20180305044226.56"><vh>@string font-size-tree = 17px</vh></v>
-<v t="ekr.20180305044226.57"><vh>@string font-size-log = 16px</vh></v>
 </v>
-<v t="ekr.20180305044226.58"><vh>gradients</vh>
-<v t="ekr.20180305044226.59"><vh>@string bg-gradient =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1@text-background-bright, stop:0.4 @text-background, stop:0.6@text-background, stop:0.9 @text-background-bright)</vh></v>
-<v t="ekr.20180305044226.60"><vh>@string bg-gradient-hover =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00,stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9@solarized-base00)</vh></v>
+<v t="ekr.20180305115925.53"><vh>Fonts</vh>
+<v t="ekr.20180305115925.54"><vh>@string font-family = Inconsolata,Droid Sans Mono, DejaVu Sans Mono</vh></v>
+<v t="ekr.20180305115925.55"><vh>@string font-family-tree =@font-family</vh></v>
+<v t="ekr.20180305115925.56"><vh>@string font-family-body =@font-family</vh></v>
+<v t="ekr.20180305115925.57"><vh>@string font-family-log =@font-family</vh></v>
+<v t="ekr.20180305115925.58"><vh>@string font-size-body = 17px</vh></v>
+<v t="ekr.20180305115925.59"><vh>@string font-size-tree = 17px</vh></v>
+<v t="ekr.20180305115925.60"><vh>@string font-size-log = 16px</vh></v>
 </v>
-<v t="ekr.20180305044226.61"><vh>outline indicators</vh>
-<v t="ekr.20180305044226.62"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
-<v t="ekr.20180305044226.63"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
+<v t="ekr.20180305115925.61"><vh>Plugins</vh>
+<v t="ekr.20180305115925.62"><vh>bookmarks</vh>
+<v t="ekr.20180305115925.63"><vh>bookmarks base</vh>
+<v t="ekr.20180305115925.64"><vh>@color bookmarks_base_color = @text-foreground</vh></v>
+<v t="ekr.20180305115925.65"><vh>@string bookmarks_base_border = none</vh></v>
+<v t="ekr.20180305115925.66"><vh>@string bookmarks_base_decoration = none</vh></v>
+<v t="ekr.20180305115925.67"><vh>@string bookmarks_base_family = none</vh></v>
+<v t="ekr.20180305115925.68"><vh>@string bookmarks_base_margin = 0</vh></v>
+<v t="ekr.20180305115925.69"><vh>@string bookmarks_base_padding = 1</vh></v>
+<v t="ekr.20180305115925.70"><vh>@string bookmarks_base_size = @bookmarks_font_size</vh></v>
+<v t="ekr.20180305115925.71"><vh>@string bookmarks_base_style = normal</vh></v>
+<v t="ekr.20180305115925.72"><vh>@string bookmarks_base_weight = regular</vh></v>
 </v>
-<v t="ekr.20180305044226.64"><vh>@bool color_theme_is_dark = True</vh></v>
-<v t="ekr.20180305044226.65"><vh>@string color_theme = leo_dark_0</vh></v>
+<v t="ekr.20180305115925.73"><vh>bookmarks children</vh>
+<v t="ekr.20180305115925.74"><vh>@color bookmarks_children_color = @text-foreground</vh></v>
+<v t="ekr.20180305115925.75"><vh>@string bookmarks_children_decoration = underline</vh></v>
+<v t="ekr.20180305115925.76"><vh>@string bookmarks_children_family = none</vh></v>
+<v t="ekr.20180305115925.77"><vh>@string bookmarks_children_size = ignore</vh></v>
+<v t="ekr.20180305115925.78"><vh>@string bookmarks_children_style = ignore</vh></v>
+<v t="ekr.20180305115925.79"><vh>@string bookmarks_children_weight = ignore</vh></v>
 </v>
-<v t="ekr.20180305044226.66"><vh>@data qt-gui-plugin-style-sheet</vh>
-<v t="ekr.20180305044226.67"><vh>Body &amp; other text</vh></v>
-<v t="ekr.20180305044226.68"><vh>Borders</vh></v>
-<v t="ekr.20180305044226.69"><vh>Buttons</vh></v>
-<v t="ekr.20180305044226.70"><vh>Log</vh></v>
-<v t="ekr.20180305044226.71"><vh>Menus</vh></v>
-<v t="ekr.20180305044226.72"><vh>Minibuffer &amp; status</vh></v>
-<v t="ekr.20180305044226.73"><vh>Plugins</vh></v>
-<v t="ekr.20180305044226.74"><vh>Scroll bars</vh></v>
-<v t="ekr.20180305044226.75"><vh>Splitters</vh></v>
-<v t="ekr.20180305044226.76"><vh>Tab bar</vh></v>
-<v t="ekr.20180305044226.77"><vh>Tree</vh></v>
-<v t="ekr.20180305044226.78"><vh>Widgets: general</vh></v>
+<v t="ekr.20180305115925.80"><vh>bookmarks current</vh>
+<v t="ekr.20180305115925.81"><vh>@color bookmarks_current_color = blue</vh></v>
+<v t="ekr.20180305115925.82"><vh>@string bookmarks_current_decoration = ignore</vh></v>
+<v t="ekr.20180305115925.83"><vh>@string bookmarks_current_size = ignore</vh></v>
+<v t="ekr.20180305115925.84"><vh>@string bookmarks_current_style = ignore</vh></v>
+<v t="ekr.20180305115925.85"><vh>@string bookmarks_current_weight = bold</vh></v>
+</v>
+<v t="ekr.20180305115925.86"><vh>bookmarks expanded</vh>
+<v t="ekr.20180305115925.87"><vh>@color bookmarks_expanded_color = @text-foreground</vh></v>
+<v t="ekr.20180305115925.88"><vh>@string bookmarks_expanded_decoration = underline</vh></v>
+<v t="ekr.20180305115925.89"><vh>@string bookmarks_expanded_size = ignore</vh></v>
+<v t="ekr.20180305115925.90"><vh>@string bookmarks_expanded_style = ignore</vh></v>
+<v t="ekr.20180305115925.91"><vh>@string bookmarks_expanded_weight = bold</vh></v>
+<v t="ekr.20180305115925.92"><vh>@string bookmarks_font_size = 11pt</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20180305115925.93"><vh>gradients</vh>
+<v t="ekr.20180305115925.94"><vh>@string bg-gradient =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1@text-background-bright, stop:0.4 @text-background, stop:0.6@text-background, stop:0.9 @text-background-bright)</vh></v>
+<v t="ekr.20180305115925.95"><vh>@string bg-gradient-hover =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00,stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9@solarized-base00)</vh></v>
+</v>
+<v t="ekr.20180305115925.96"><vh>outline indicators</vh>
+<v t="ekr.20180305115925.97"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
+<v t="ekr.20180305115925.98"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
+</v>
+<v t="ekr.20180305115925.99"><vh>@bool color_theme_is_dark = True</vh></v>
+<v t="ekr.20180305115925.100"><vh>@string color_theme = leo_dark_0</vh></v>
+</v>
+<v t="ekr.20180305115925.101"><vh>@data qt-gui-plugin-style-sheet</vh>
+<v t="ekr.20180305115925.102"><vh>Body &amp; other text</vh></v>
+<v t="ekr.20180305115925.103"><vh>Borders</vh></v>
+<v t="ekr.20180305115925.104"><vh>Buttons</vh></v>
+<v t="ekr.20180305115925.105"><vh>Log</vh></v>
+<v t="ekr.20180305115925.106"><vh>Menus</vh></v>
+<v t="ekr.20180305115925.107"><vh>Minibuffer &amp; label</vh></v>
+<v t="ekr.20180305115925.108"><vh>Plugins</vh></v>
+<v t="ekr.20180305115925.109"><vh>Scroll bars</vh></v>
+<v t="ekr.20180305115925.110"><vh>Splitters</vh></v>
+<v t="ekr.20180305115925.111"><vh>Status area</vh></v>
+<v t="ekr.20180305115925.112"><vh>Tab bar</vh></v>
+<v t="ekr.20180305115925.113"><vh>Tree</vh></v>
+<v t="ekr.20180305115925.114"><vh>Widgets: general</vh></v>
+</v>
+</v>
+<v t="ekr.20180305115909.1"><vh>@theme EKR Solarized Dark</vh>
+<v t="ekr.20180305115909.2"><vh>Settings for Leo Solarized Dark theme</vh>
+<v t="ekr.20180305115909.3"><vh>Colors...</vh>
+<v t="ekr.20180305115909.4"><vh>colors: widgets</vh>
+<v t="ekr.20180305115909.5"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
+<v t="ekr.20180305115909.6"><vh>@color button-hover-bg =@solarized-base01</vh></v>
+<v t="ekr.20180305115909.7"><vh>@color button-hover-fg =@solarized-base03</vh></v>
+<v t="ekr.20180305115909.8"><vh>@color log_error_color =#dc322f</vh></v>
+<v t="ekr.20180305115909.9"><vh>@color log_text_background_color =#000005</vh></v>
+<v t="ekr.20180305115909.10"><vh>@color log_text_foreground_color =#ffffff</vh></v>
+<v t="ekr.20180305115909.11"><vh>@color log_warning_color = #268bd2</vh></v>
+<v t="ekr.20180305115909.12"><vh>@color minibuffer_error_color =@solarized-red</vh></v>
+<v t="ekr.20180305115909.13"><vh>@color minibuffer_warning_color =@solarized-red</vh></v>
+<v t="ekr.20180305115909.14"><vh>@color text-background =@solarized-base03</vh></v>
+<v t="ekr.20180305115909.15"><vh>@color text-background-bright =@solarized-base02</vh></v>
+<v t="ekr.20180305115909.16"><vh>@color text-foreground =@solarized-base0</vh></v>
+<v t="ekr.20180305115909.17"><vh>@color text-foreground-bright =@solarized-base2</vh></v>
+</v>
+<v t="ekr.20180305115909.18"><vh>Colors: Syntax coloring</vh>
+<v t="ekr.20180305115909.19"><vh>Colors: defaults</vh>
+<v t="ekr.20180305115909.20"><vh>@color blank_color = grey</vh></v>
+<v t="ekr.20180305115909.21"><vh>@color tab_color = red</vh></v>
+<v t="ekr.20180305115909.22"><vh>@color label_color = red</vh></v>
+<v t="ekr.20180305115909.23"><vh>@color keyword1_color = #268bd2</vh></v>
+<v t="ekr.20180305115909.24"><vh>@color keyword2_color = #268bd2</vh></v>
+<v t="ekr.20180305115909.25"><vh>@color keyword3_color = #268bd2</vh></v>
+<v t="ekr.20180305115909.26"><vh>@color keyword4_color = #268bd2</vh></v>
+<v t="ekr.20180305115909.27"><vh>@color literal1_color = #859900</vh></v>
+<v t="ekr.20180305115909.28"><vh>@color literal2_color = #859900</vh></v>
+<v t="ekr.20180305115909.29"><vh>@color literal3_color = #859900</vh></v>
+<v t="ekr.20180305115909.30"><vh>@color literal4_color = #859900</vh></v>
+<v t="ekr.20180305115909.31"><vh>@color markup_color = #268bd2</vh></v>
+<v t="ekr.20180305115909.32"><vh>@color comment1_color = #d33682</vh></v>
+<v t="ekr.20180305115909.33"><vh>@color comment2_color = #d33682</vh></v>
+<v t="ekr.20180305115909.34"><vh>@color comment3_color = #d33682</vh></v>
+<v t="ekr.20180305115909.35"><vh>@color comment4_color = #d33682</vh></v>
+</v>
+<v t="ekr.20180305115909.36"><vh>@@color plain null color = #6c71c4</vh></v>
+<v t="ekr.20180305115909.37"><vh>Colors: Leo constructs</vh>
+<v t="ekr.20180305115909.38"><vh>@color section_name_brackets_color = @solarized-blue</vh></v>
+<v t="ekr.20180305115909.39"><vh>@color null_color = #6c71c4</vh></v>
+<v t="ekr.20180305115909.40"><vh>@color operator_color = #6c71c4</vh></v>
+<v t="ekr.20180305115909.41"><vh>@color doc_part_color = @solarized-red</vh></v>
+<v t="ekr.20180305115909.42"><vh>@color leo_keyword_color = @solarized-green</vh></v>
+<v t="ekr.20180305115909.43"><vh>@color section_name_color = @solarized-red</vh></v>
+<v t="ekr.20180305115909.44"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
+<v t="ekr.20180305115909.45"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
+<v t="ekr.20180305115909.46"><vh>@color undefined_section_name_color = red</vh></v>
+<v t="ekr.20180305115909.47"><vh>@color url_color = @solarized-purple</vh></v>
+</v>
+</v>
+<v t="ekr.20180305115909.48"><vh>Color: Status area colors for searches</vh>
+<v t="ekr.20180305115909.49"><vh>@color find-found-bg = @solarized-blue</vh></v>
+<v t="ekr.20180305115909.50"><vh>@color find-found-fg = @solarized-white</vh></v>
+<v t="ekr.20180305115909.51"><vh>@color find-not-found-bg = @solarized-red</vh></v>
+<v t="ekr.20180305115909.52"><vh>@color find-not-found-fg = @solarized-white</vh></v>
+</v>
+</v>
+<v t="ekr.20180305115909.53"><vh>Fonts</vh>
+<v t="ekr.20180305115909.54"><vh>@string font-family = Inconsolata,Droid Sans Mono, DejaVu Sans Mono</vh></v>
+<v t="ekr.20180305115909.55"><vh>@string font-family-tree =@font-family</vh></v>
+<v t="ekr.20180305115909.56"><vh>@string font-family-body =@font-family</vh></v>
+<v t="ekr.20180305115909.57"><vh>@string font-family-log =@font-family</vh></v>
+<v t="ekr.20180305115909.58"><vh>@string font-size-body = 18px</vh></v>
+<v t="ekr.20180305115909.59"><vh>@string font-size-tree = 17px</vh></v>
+<v t="ekr.20180305115909.60"><vh>@string font-size-log = 16px</vh></v>
+</v>
+<v t="ekr.20180305115909.61"><vh>Plugins</vh>
+<v t="ekr.20180305115909.62"><vh>bookmarks</vh>
+<v t="ekr.20180305115909.63"><vh>bookmarks base</vh>
+<v t="ekr.20180305115909.64"><vh>@color bookmarks_base_color = @text-foreground</vh></v>
+<v t="ekr.20180305115909.65"><vh>@string bookmarks_base_border = none</vh></v>
+<v t="ekr.20180305115909.66"><vh>@string bookmarks_base_decoration = none</vh></v>
+<v t="ekr.20180305115909.67"><vh>@string bookmarks_base_family = none</vh></v>
+<v t="ekr.20180305115909.68"><vh>@string bookmarks_base_margin = 0</vh></v>
+<v t="ekr.20180305115909.69"><vh>@string bookmarks_base_padding = 1</vh></v>
+<v t="ekr.20180305115909.70"><vh>@string bookmarks_base_size = @bookmarks_font_size</vh></v>
+<v t="ekr.20180305115909.71"><vh>@string bookmarks_base_style = normal</vh></v>
+<v t="ekr.20180305115909.72"><vh>@string bookmarks_base_weight = regular</vh></v>
+</v>
+<v t="ekr.20180305115909.73"><vh>bookmarks children</vh>
+<v t="ekr.20180305115909.74"><vh>@color bookmarks_children_color = @text-foreground</vh></v>
+<v t="ekr.20180305115909.75"><vh>@string bookmarks_children_decoration = underline</vh></v>
+<v t="ekr.20180305115909.76"><vh>@string bookmarks_children_family = none</vh></v>
+<v t="ekr.20180305115909.77"><vh>@string bookmarks_children_size = ignore</vh></v>
+<v t="ekr.20180305115909.78"><vh>@string bookmarks_children_style = ignore</vh></v>
+<v t="ekr.20180305115909.79"><vh>@string bookmarks_children_weight = ignore</vh></v>
+</v>
+<v t="ekr.20180305115909.80"><vh>bookmarks current</vh>
+<v t="ekr.20180305115909.81"><vh>@color bookmarks_current_color = blue</vh></v>
+<v t="ekr.20180305115909.82"><vh>@string bookmarks_current_decoration = ignore</vh></v>
+<v t="ekr.20180305115909.83"><vh>@string bookmarks_current_size = ignore</vh></v>
+<v t="ekr.20180305115909.84"><vh>@string bookmarks_current_style = ignore</vh></v>
+<v t="ekr.20180305115909.85"><vh>@string bookmarks_current_weight = bold</vh></v>
+</v>
+<v t="ekr.20180305115909.86"><vh>bookmarks expanded</vh>
+<v t="ekr.20180305115909.87"><vh>@color bookmarks_expanded_color = @text-foreground</vh></v>
+<v t="ekr.20180305115909.88"><vh>@string bookmarks_expanded_decoration = underline</vh></v>
+<v t="ekr.20180305115909.89"><vh>@string bookmarks_expanded_size = ignore</vh></v>
+<v t="ekr.20180305115909.90"><vh>@string bookmarks_expanded_style = ignore</vh></v>
+<v t="ekr.20180305115909.91"><vh>@string bookmarks_expanded_weight = bold</vh></v>
+<v t="ekr.20180305115909.92"><vh>@string bookmarks_font_size = 11pt</vh></v>
+</v>
+</v>
+</v>
+<v t="ekr.20180305115909.93"><vh>gradients</vh>
+<v t="ekr.20180305115909.94"><vh>@string bg-gradient =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1@text-background-bright, stop:0.4 @text-background, stop:0.6@text-background, stop:0.9 @text-background-bright)</vh></v>
+<v t="ekr.20180305115909.95"><vh>@string bg-gradient-hover =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @solarized-base00,stop:0.4 @solarized-base0, stop:0.6 @solarized-base0, stop:0.9@solarized-base00)</vh></v>
+</v>
+<v t="ekr.20180305115909.96"><vh>outline indicators</vh>
+<v t="ekr.20180305115909.97"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
+<v t="ekr.20180305115909.98"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
+</v>
+<v t="ekr.20180305115909.99"><vh>@bool color_theme_is_dark = True</vh></v>
+<v t="ekr.20180305115909.100"><vh>@string color_theme = leo_dark_0</vh></v>
+</v>
+<v t="ekr.20180305115909.101"><vh>@data qt-gui-plugin-style-sheet</vh>
+<v t="ekr.20180305115909.102"><vh>Body &amp; other text</vh></v>
+<v t="ekr.20180305115909.103"><vh>Borders</vh></v>
+<v t="ekr.20180305115909.104"><vh>Buttons</vh></v>
+<v t="ekr.20180305115909.105"><vh>Log</vh></v>
+<v t="ekr.20180305115909.106"><vh>Menus</vh></v>
+<v t="ekr.20180305115909.107"><vh>Minibuffer &amp; label</vh></v>
+<v t="ekr.20180305115909.108"><vh>Plugins</vh></v>
+<v t="ekr.20180305115909.109"><vh>Scroll bars</vh></v>
+<v t="ekr.20180305115909.110"><vh>Splitters</vh></v>
+<v t="ekr.20180305115909.111"><vh>Status area</vh></v>
+<v t="ekr.20180305115909.112"><vh>Tab bar</vh></v>
+<v t="ekr.20180305115909.113"><vh>Tree</vh></v>
+<v t="ekr.20180305115909.114"><vh>Widgets: general</vh></v>
 </v>
 </v>
 </v>
@@ -14669,166 +14844,27 @@ Unicode chars like ▼ ▾ and … are typical choices for this text.
 
 0 causes all lines to be shown.
 </t>
-<t tx="ekr.20180305044226.1" lineYOffset="4b002e">@language rest
+<t tx="ekr.20180305115909.1" lineYOffset="4b002e">@language rest
 @wrap
 @tabwidth -2
 
-"Solarized" dark theme.  Based on Chris George's superb work.
-
-Copy into mySettings.leo under @settings to enable theme
-
-Place this node at the *bottom* of the list of nodes under
-@settings to ensure it overrides other style settings.</t>
-<t tx="ekr.20180305044226.10">Foreground color of log text.
+Same as Leo Solarized Dark except it use 19px for the body pane.
+</t>
+<t tx="ekr.20180305115909.10">Foreground color of log text.
 
 </t>
-<t tx="ekr.20180305044226.11"></t>
-<t tx="ekr.20180305044226.12"></t>
-<t tx="ekr.20180305044226.13"></t>
-<t tx="ekr.20180305044226.14"></t>
-<t tx="ekr.20180305044226.15"></t>
-<t tx="ekr.20180305044226.16"></t>
-<t tx="ekr.20180305044226.17"></t>
-<t tx="ekr.20180305044226.18"></t>
-<t tx="ekr.20180305044226.19"></t>
-<t tx="ekr.20180305044226.2" lineYOffset="4b002e"></t>
-<t tx="ekr.20180305044226.20" lineYOffset="4b002e">Use these settings to get something like the solarized colors.</t>
-<t tx="ekr.20180305044226.21"></t>
-<t tx="ekr.20180305044226.22"></t>
-<t tx="ekr.20180305044226.23"></t>
-<t tx="ekr.20180305044226.24"></t>
-<t tx="ekr.20180305044226.25">was blue
-
-Solarized blue      #268bd2</t>
-<t tx="ekr.20180305044226.26">was blue
-
-Solarized blue      #268bd2</t>
-<t tx="ekr.20180305044226.27">was blue
-
-Solarized blue      #268bd2</t>
-<t tx="ekr.20180305044226.28">was blue
-
-Solarized blue      #268bd2</t>
-<t tx="ekr.20180305044226.29">was #00aa00 (Idle comment green)
-
-Solarize green      #859900
-Solarized cyan      #2aa198
-Solarized violet    #6c71c4
-Solarized orange    #cb4b16</t>
-<t tx="ekr.20180305044226.3"></t>
-<t tx="ekr.20180305044226.30"></t>
-<t tx="ekr.20180305044226.31"></t>
-<t tx="ekr.20180305044226.32"></t>
-<t tx="ekr.20180305044226.33">was black
-was #2aa198</t>
-<t tx="ekr.20180305044226.34">was firebrick3
-
-Solarized colors:
-
-magenta   #d33682
-
-Dark comments   base01
-Light comments  base1 comments
-</t>
-<t tx="ekr.20180305044226.35"></t>
-<t tx="ekr.20180305044226.36"></t>
-<t tx="ekr.20180305044226.37"></t>
-<t tx="ekr.20180305044226.38" lineYOffset="4b002e"></t>
-<t tx="ekr.20180305044226.39"></t>
-<t tx="ekr.20180305044226.4">Here you can edit the colors by Leo,
-just edit the
-node headings, and click the reload-style button.
-
-Examples:
-
-    @color text-foreground = white
-
-    @color text-foreground = #ffffff
-
-    @color text-foreground = @solarized-red
-
-Most common color names are recognized.  The #RRGGBB format works, and
-you can use reference to @settings defined elsehere, starting with an
-'@', e.g. @solarized-red if a color called @solarized-red is defined
-by a setting somewhere else.
-
-Config. menu entry: Styles / Colors
-</t>
-<t tx="ekr.20180305044226.40"># New: solarized-blue
-</t>
-<t tx="ekr.20180305044226.41"></t>
-<t tx="ekr.20180305044226.42"></t>
-<t tx="ekr.20180305044226.43">The color of text in doc parts.
-
-firebrick3
-</t>
-<t tx="ekr.20180305044226.44">The color of Leo keywords such as @ignore, @color, etc.
-
-#00aa00
-</t>
-<t tx="ekr.20180305044226.45">The color of name in &lt; &lt; name &gt; &gt; when name is defined.
-
-red
-
-</t>
-<t tx="ekr.20180305044226.46">The background color that represents spaces when Show Invisibles mode is in effect.
-
-gray80: #CCCCCC
-gray90: #E5E5E5
-</t>
-<t tx="ekr.20180305044226.47">The foreground color that represents tabs when Show Invisibles mode is in effect.
-
-gray80: #CCCCCC
-gray90: #E5E5E5
-</t>
-<t tx="ekr.20180305044226.48">The color of name in &lt;&lt; name &gt;&gt; when name is undefined.
-</t>
-<t tx="ekr.20180305044226.49">purple
-</t>
-<t tx="ekr.20180305044226.5"></t>
-<t tx="ekr.20180305044226.50"></t>
-<t tx="ekr.20180305044226.51">test text</t>
-<t tx="ekr.20180305044226.52"></t>
-<t tx="ekr.20180305044226.53"></t>
-<t tx="ekr.20180305044226.54"></t>
-<t tx="ekr.20180305044226.55">(some body text here so there's
-something to see)</t>
-<t tx="ekr.20180305044226.56"></t>
-<t tx="ekr.20180305044226.57"></t>
-<t tx="ekr.20180305044226.58"></t>
-<t tx="ekr.20180305044226.59"></t>
-<t tx="ekr.20180305044226.6"></t>
-<t tx="ekr.20180305044226.60"></t>
-<t tx="ekr.20180305044226.61">Outline indicators indicate the expansion state of outline nodes. The leo/Icons/nodes-dark folders contains two sets of indicators::
-    
-    leo/Icons/nodes-dark/plusminus/
-    leo/Icons/nodes-dark/triangles/
-    
-The following settings specify the indicators.  You can use an absolute path, or more conveniently, a path relative either to:
-
-- Your home directory or
-- Leo's leo/Icons directory
-</t>
-<t tx="ekr.20180305044226.62">Must be relative to either the users home directory or leo/Icons directory.
-
-url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)</t>
-<t tx="ekr.20180305044226.63">url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/open.png)</t>
-<t tx="ekr.20180305044226.64" lineYOffset="4b002e">Set to true for dark themes, so bookmarks.py can generate
-random background colors which are appropriate etc.</t>
-<t tx="ekr.20180305044226.65" lineYOffset="4b002e">Name of the theme,
+<t tx="ekr.20180305115909.100" lineYOffset="4b002e">Name of the theme,
 used to find icon files</t>
-<t tx="ekr.20180305044226.66">/*
+<t tx="ekr.20180305115909.101">/*
 @language css
 at-tabwidth -2 causes a crash in parse-template!
 */</t>
-<t tx="ekr.20180305044226.67">/* The body pane */
+<t tx="ekr.20180305115909.102">/* The body pane */
 /* QTextEdit#richTextEdit, QTextBrowser#vr-body { */
 /* QTextBrowser, #body-text-renderer, #viewrendered_pane */
 QTextEdit {
   background: @solarized-base03;
   color: @text-foreground;
-  selection-color: @solarized-base03;
-  selection-background-color: @solarized-yellow;
   font-family: @font-family-body;
   font-size: @font-size-body;
   font-weight: normal; /* normal,bold,100,..,900 */
@@ -14839,9 +14875,12 @@ QTextEdit {
   padding-right: 3px;
   height: 200%;
 }
-
+QWidget#richTextEdit {
+  font-family: @font-family-body;
+  font-size: @font-size-body;
+}
 </t>
-<t tx="ekr.20180305044226.68">/* active pane highlighting */
+<t tx="ekr.20180305115909.103">/* active pane highlighting */
 QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit {
   border-style: solid;
   border-width: 3px;
@@ -14860,7 +14899,7 @@ QTextEdit:focus#log-widget,LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#rich
   border-color: @solarized-blue;
 }
 </t>
-<t tx="ekr.20180305044226.69">QPushButton {
+<t tx="ekr.20180305115909.104">QPushButton {
   color: @text-foreground;
   background: @bg-gradient;
   border: none;
@@ -14872,8 +14911,7 @@ QPushButton:hover {
   background: @bg-gradient-hover;
 }
 </t>
-<t tx="ekr.20180305044226.7"></t>
-<t tx="ekr.20180305044226.70">/* The log pane */
+<t tx="ekr.20180305115909.105">/* The log pane */
 QTextEdit#log-widget {
   background: @log_text_background_color;
   color: @log_text_foreground_color;
@@ -14885,7 +14923,7 @@ QTextEdit#log-widget {
   font-style: normal; /* normal, italic,oblique */
 }
 </t>
-<t tx="ekr.20180305044226.71">QMenu {
+<t tx="ekr.20180305115909.106">QMenu {
   color: @text-foreground-bright
 }
 QMenuBar::item:selected {
@@ -14905,43 +14943,23 @@ QMenuBar::item:pressed {
   background: @bg-gradient;
 }
 </t>
-<t tx="ekr.20180305044226.72">/* The mini-buffer */
+<t tx="ekr.20180305115909.107">/* The mini-buffer */
 QLabel#minibufferLabel {
   color: @solarized-violet;
 }
+/* The minibuffer */
 QLineEdit#lineEdit {
-  color: @minibuffer_foreground_color;
-  background: @minibuffer_background_color;
-  selection-color: white;
-  selection-background-color: red;
+  color: @solarized-yellow; 
+  background: @solarized-base04;
+  selection-color: @solarized-base3; /* Yeah, it's a background color. */
+  selection-background-color: @solarized-red;
   font-family: @font-family;
   font-size: 16px;
   font-weight: normal; /* normal,bold,100,..,900 */
   font-style: normal; /* normal,italic,oblique */
 }
-QLineEdit#lineEdit[style_class = 'minibuffer_warning'] {
-  background: @minibuffer_warning_color;
-}
-QLineEdit#lineEdit[style_class = 'minibuffer_error'] {
-  color: @minibuffer_error_color;
-  background: @minibuffer_warning_color;
-}
-
-/* The status area */
-QLineEdit#status1 {
-  background: @solarized-base03;
-  border-color: @solarized-base02;
-  border-width: 1px;
-  border-style: solid;
-}
-QLineEdit#status2 {
-  background: @solarized-base03;
-  border-color: @solarized-base02;
-  border-width: 1px;
-  border-style: solid;
-}
 </t>
-<t tx="ekr.20180305044226.73">/* bookmarks plugin styling */
+<t tx="ekr.20180305115909.108">/* bookmarks plugin styling */
 
 #show_bookmarks QPushButton {
   margin: 0; padding: 1; border: none;
@@ -14969,7 +14987,7 @@ QLineEdit#status2 {
   text-decoration: @bookmarks_current_decoration;
 }
 </t>
-<t tx="ekr.20180305044226.74">QScrollBar::horizontal {
+<t tx="ekr.20180305115909.109">QScrollBar::horizontal {
    height: 7px;
 }
 QScrollBar::vertical {
@@ -14991,7 +15009,8 @@ QScrollBar::add-line, QScrollBar::sub-line {
   background: @solarized-base01;
   color: @solarized-base01;
 }</t>
-<t tx="ekr.20180305044226.75">QSplitter::handle {
+<t tx="ekr.20180305115909.11"></t>
+<t tx="ekr.20180305115909.110">QSplitter::handle {
   background: @solarized-base01;
 }
 
@@ -14999,41 +15018,60 @@ QSplitter::handle:hover {
   background: @solarized-violet;
 }
 </t>
-<t tx="ekr.20180305044226.76">QTabBar::tab {
-  color: @text-foreground;
+<t tx="ekr.20180305115909.111">/* The status area */
+QLineEdit#status1 {
+  background: @solarized-base03;
+  border-color: @solarized-base02;
+  border-width: 1px;
+  border-style: solid;
+}
+QLineEdit#status2 {
+  background: @solarized-base03;
+  border-color: @solarized-base02;
+  border-width: 1px;
+  border-style: solid;
+}
+QLineEdit#status1[style_class ~= 'info'],
+QLineEdit#status2[style_class ~= 'info'] {
+    background-color:   @find-found-bg;
+    color:              @find-found-fg;
+}
+
+QLineEdit#status1[style_class ~= 'fail'],
+QLineEdit#status2[style_class ~= 'fail'] {
+    background-color:   @find-not-found-bg;
+    color:              @find-not-found-fg;
+}
+</t>
+<t tx="ekr.20180305115909.112">QTabBar::tab {
+  /* color: @text-foreground; */
+  color: @solarized-green;
+    /* EKR: Use *lower* visibility for inactive tabs. */
   background: @bg-gradient;
   margin-right: 5px;
   padding: 2px;
 }
 QTabBar::tab:selected {
-  color: @solarized-green;
+  color: @text-foreground;
+    /* EKR: Use *higher* visibility for active tab. */
+    /* color: @solarized-green; */
 }
 QTabBar::tab:hover {
   background: @bg-gradient-hover;
   color: @button-hover-fg;
 }
+
 </t>
-<t tx="ekr.20180305044226.77">QTreeView {
+<t tx="ekr.20180305115909.113">QTreeView {
   /* These apply to the selected item, but not to editing items.*/
-  background: @solarized-base03;
+  background: @solarized-blue;
   color: @solarized-base0;
-  selection-color: @solarized-orange;
-  selection-background-color: @solarized-base03;
   show-decoration-selected: 1; /* Extend the selection */
-  padding: 2px solid @solarized-base03;
-  /* border-color: none; */
+  padding: 2px solid @solarized-blue;
+  border-color: @solarized-blue;
 }
-QTreeWidget::selected {
+QTreeView::item:selected, QTreeView::item:active:selected {
   background: @solarized-blue;
-  color: @solarized-base03;
-}
-QTreeWidget::active:selected {
-  background: @solarized-blue;
-  color: @solarized-base03;
-}
-QTreeView::item:selected {
-  background: @solarized-blue;
-  color: @solarized-base03;
 }
 QTreeView::item:active:selected {
   background: @solarized-blue;
@@ -15045,25 +15083,35 @@ QTreeView::branch:closed:has-children{
 QTreeView::branch:open:has-children{
     image: @tree-image-open;
 }
-QTreeWidget {
-  /* These apply to the selected item, but not to editing items.*/
+
+/* Headline edit widgets */
+QTreeView QLineEdit {
+  color: @solarized-base03;
+  background: @solarized-violet;
+  selection-color: @solarized-violet; 
+  selection-background-color: @solarized-base3;
   font-family: @font-family-tree;
   font-size: @font-size-tree;
   font-weight: normal; /* normal,bold,100,..,900 */
   font-style: normal; /* normal, italic,oblique */
 }
-/* Headline edit widgets */
-QTreeView QLineEdit {
-  color: @solarized-base03;
+
+QTreeWidget {
+  /* These apply to the selected item, but not to editing items.*/
   background: @solarized-blue;
-  selection-color: @solarized-base3;
-  selection-background-color: @solarized-blue;
   font-family: @font-family-tree;
   font-size: @font-size-tree;
   font-weight: normal; /* normal,bold,100,..,900 */
   font-style: normal; /* normal, italic,oblique */
-}</t>
-<t tx="ekr.20180305044226.78">QDockWidget {
+  padding: 2px solid @solarized-base03;
+  border-color: @solarized-blue;
+}
+QTreeWidget::selected {
+  background: @solarized-blue;
+  color: @solarized-base03; 
+}
+</t>
+<t tx="ekr.20180305115909.114">QDockWidget {
  border: 5px solid red;
 }
 QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit {
@@ -15086,9 +15134,658 @@ QWidget {
   font-size: 16px;
 }
 </t>
-<t tx="ekr.20180305044226.8">Color for error messages written to
+<t tx="ekr.20180305115909.12"></t>
+<t tx="ekr.20180305115909.13">@solarized-base02</t>
+<t tx="ekr.20180305115909.14"></t>
+<t tx="ekr.20180305115909.15"></t>
+<t tx="ekr.20180305115909.16"></t>
+<t tx="ekr.20180305115909.17"></t>
+<t tx="ekr.20180305115909.18" lineYOffset="4b002e">Use these settings to get something like the solarized colors.</t>
+<t tx="ekr.20180305115909.19"></t>
+<t tx="ekr.20180305115909.2" lineYOffset="4b002e"></t>
+<t tx="ekr.20180305115909.20"></t>
+<t tx="ekr.20180305115909.21"></t>
+<t tx="ekr.20180305115909.22"></t>
+<t tx="ekr.20180305115909.23">was blue
+
+Solarized blue      #268bd2</t>
+<t tx="ekr.20180305115909.24">was blue
+
+Solarized blue      #268bd2</t>
+<t tx="ekr.20180305115909.25">was blue
+
+Solarized blue      #268bd2</t>
+<t tx="ekr.20180305115909.26">was blue
+
+Solarized blue      #268bd2</t>
+<t tx="ekr.20180305115909.27">was #00aa00 (Idle comment green)
+
+Solarize green      #859900
+Solarized cyan      #2aa198
+Solarized violet    #6c71c4
+Solarized orange    #cb4b16</t>
+<t tx="ekr.20180305115909.28"></t>
+<t tx="ekr.20180305115909.29"></t>
+<t tx="ekr.20180305115909.3"></t>
+<t tx="ekr.20180305115909.30"></t>
+<t tx="ekr.20180305115909.31">was black
+was #2aa198</t>
+<t tx="ekr.20180305115909.32">was firebrick3
+
+Solarized colors:
+
+magenta   #d33682
+
+Dark comments   base01
+Light comments  base1 comments
+</t>
+<t tx="ekr.20180305115909.33"></t>
+<t tx="ekr.20180305115909.34"></t>
+<t tx="ekr.20180305115909.35"></t>
+<t tx="ekr.20180305115909.36" lineYOffset="4b002e"></t>
+<t tx="ekr.20180305115909.37"></t>
+<t tx="ekr.20180305115909.38"># New: solarized-blue
+</t>
+<t tx="ekr.20180305115909.39"></t>
+<t tx="ekr.20180305115909.4">Here you can edit the colors by Leo,
+just edit the
+node headings, and click the reload-style button.
+
+Examples:
+
+    @color text-foreground = white
+
+    @color text-foreground = #ffffff
+
+    @color text-foreground = @solarized-red
+
+Most common color names are recognized.  The #RRGGBB format works, and
+you can use reference to @settings defined elsehere, starting with an
+'@', e.g. @solarized-red if a color called @solarized-red is defined
+by a setting somewhere else.
+
+Config. menu entry: Styles / Colors
+</t>
+<t tx="ekr.20180305115909.40"></t>
+<t tx="ekr.20180305115909.41">The color of text in doc parts.
+
+firebrick3
+</t>
+<t tx="ekr.20180305115909.42">The color of Leo keywords such as @ignore, @color, etc.
+
+#00aa00
+</t>
+<t tx="ekr.20180305115909.43">The color of name in &lt; &lt; name &gt; &gt; when name is defined.
+
+red
+
+</t>
+<t tx="ekr.20180305115909.44">The background color that represents spaces when Show Invisibles mode is in effect.
+
+gray80: #CCCCCC
+gray90: #E5E5E5
+</t>
+<t tx="ekr.20180305115909.45">The foreground color that represents tabs when Show Invisibles mode is in effect.
+
+gray80: #CCCCCC
+gray90: #E5E5E5
+</t>
+<t tx="ekr.20180305115909.46">The color of name in &lt;&lt; name &gt;&gt; when name is undefined.
+</t>
+<t tx="ekr.20180305115909.47">purple
+</t>
+<t tx="ekr.20180305115909.48"></t>
+<t tx="ekr.20180305115909.49"></t>
+<t tx="ekr.20180305115909.5"></t>
+<t tx="ekr.20180305115909.50"></t>
+<t tx="ekr.20180305115909.51"></t>
+<t tx="ekr.20180305115909.52"></t>
+<t tx="ekr.20180305115909.53"></t>
+<t tx="ekr.20180305115909.54">test text</t>
+<t tx="ekr.20180305115909.55"></t>
+<t tx="ekr.20180305115909.56"></t>
+<t tx="ekr.20180305115909.57"></t>
+<t tx="ekr.20180305115909.58">(some body text here so there's
+something to see)</t>
+<t tx="ekr.20180305115909.59"></t>
+<t tx="ekr.20180305115909.6"></t>
+<t tx="ekr.20180305115909.60"></t>
+<t tx="ekr.20180305115909.61"></t>
+<t tx="ekr.20180305115909.62"></t>
+<t tx="ekr.20180305115909.63"></t>
+<t tx="ekr.20180305115909.64"></t>
+<t tx="ekr.20180305115909.65"></t>
+<t tx="ekr.20180305115909.66">none or underline</t>
+<t tx="ekr.20180305115909.67"></t>
+<t tx="ekr.20180305115909.68"></t>
+<t tx="ekr.20180305115909.69"></t>
+<t tx="ekr.20180305115909.7"></t>
+<t tx="ekr.20180305115909.70"></t>
+<t tx="ekr.20180305115909.71">Valid values are: normal,italic,oblique</t>
+<t tx="ekr.20180305115909.72">Huh?
+valid values are: normal,bold,100,..,900
+</t>
+<t tx="ekr.20180305115909.73"></t>
+<t tx="ekr.20180305115909.74"></t>
+<t tx="ekr.20180305115909.75">none or underline</t>
+<t tx="ekr.20180305115909.76"></t>
+<t tx="ekr.20180305115909.77"></t>
+<t tx="ekr.20180305115909.78"></t>
+<t tx="ekr.20180305115909.79">bold or regular</t>
+<t tx="ekr.20180305115909.8">Color for error messages written to
 the log window.</t>
-<t tx="ekr.20180305044226.9">Background color of log text.</t>
+<t tx="ekr.20180305115909.80"></t>
+<t tx="ekr.20180305115909.81"></t>
+<t tx="ekr.20180305115909.82">none or underline</t>
+<t tx="ekr.20180305115909.83"></t>
+<t tx="ekr.20180305115909.84"></t>
+<t tx="ekr.20180305115909.85">bold or regular</t>
+<t tx="ekr.20180305115909.86"></t>
+<t tx="ekr.20180305115909.87"></t>
+<t tx="ekr.20180305115909.88">none or underline</t>
+<t tx="ekr.20180305115909.89"></t>
+<t tx="ekr.20180305115909.9">Background color of log text.</t>
+<t tx="ekr.20180305115909.90"></t>
+<t tx="ekr.20180305115909.91">bold or regular</t>
+<t tx="ekr.20180305115909.92"></t>
+<t tx="ekr.20180305115909.93"></t>
+<t tx="ekr.20180305115909.94"></t>
+<t tx="ekr.20180305115909.95"></t>
+<t tx="ekr.20180305115909.96">Outline indicators indicate the expansion state of outline nodes. The leo/Icons/nodes-dark folders contains two sets of indicators::
+    
+    leo/Icons/nodes-dark/plusminus/
+    leo/Icons/nodes-dark/triangles/
+    
+The following settings specify the indicators.  You can use an absolute path, or more conveniently, a path relative either to:
+
+- Your home directory or
+- Leo's leo/Icons directory
+</t>
+<t tx="ekr.20180305115909.97">Must be relative to either the users home directory or leo/Icons directory.
+
+url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)</t>
+<t tx="ekr.20180305115909.98">url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/open.png)</t>
+<t tx="ekr.20180305115909.99" lineYOffset="4b002e">Set to true for dark themes, so bookmarks.py can generate
+random background colors which are appropriate etc.</t>
+<t tx="ekr.20180305115925.1" lineYOffset="4b002e">@language rest
+@wrap
+@tabwidth -2
+
+"Solarized" dark theme.  Based on Chris George's superb work.
+
+Summary of theme:
+- Use solarized colors for syntax coloring.
+- Prefer Inconsolata to Droid Sans Mono, DejaVu Sans Mono
+- Use 17px for tree and body.  16px for log.
+- text-background =@solarized-base03
+- text-foreground =@solarized-base0
+
+Modifications by EKR:
+- Use solarized-blue for headline highlighting, with new rules.
+- Increase size of Minibuffer text &amp; label.
+- Reorganized the @data tree by widget type.
+- Removed unnecessary @-constant indirections.
+- Changed colors for tree items.
+- Use platform default colors for selected text in body/log. YMMV.
+- Make the *active* tab more visible than inactive tabs.
+</t>
+<t tx="ekr.20180305115925.10">Foreground color of log text.
+
+</t>
+<t tx="ekr.20180305115925.100" lineYOffset="4b002e">Name of the theme,
+used to find icon files</t>
+<t tx="ekr.20180305115925.101">/*
+@language css
+at-tabwidth -2 causes a crash in parse-template!
+*/</t>
+<t tx="ekr.20180305115925.102">/* The body pane */
+/* QTextEdit#richTextEdit, QTextBrowser#vr-body { */
+/* QTextBrowser, #body-text-renderer, #viewrendered_pane */
+QTextEdit {
+  background: @solarized-base03;
+  color: @text-foreground;
+  font-family: @font-family-body;
+  font-size: @font-size-body;
+  font-weight: normal; /* normal,bold,100,..,900 */
+  font-style: normal; /* normal,italic,oblique */
+  padding-left: 3px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  padding-right: 3px;
+  height: 200%;
+}
+QWidget#richTextEdit {
+  font-family: @font-family-body;
+  font-size: @font-size-body;
+}
+</t>
+<t tx="ekr.20180305115925.103">/* active pane highlighting */
+QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit {
+  border-style: solid;
+  border-width: 3px;
+}
+QTextEdit#log-widget {
+  border-color: @log_text_background_color;
+}
+LeoQTreeWidget#treeWidget {
+  border-color: @solarized-base03;
+}
+QTextEdit#richTextEdit {
+  border-color: @text-background;
+
+}
+QTextEdit:focus#log-widget,LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#richTextEdit {
+  border-color: @solarized-blue;
+}
+</t>
+<t tx="ekr.20180305115925.104">QPushButton {
+  color: @text-foreground;
+  background: @bg-gradient;
+  border: none;
+  padding: 3px;
+  margin-right: 5px;
+}
+QPushButton:hover {
+  color: @button-hover-fg;
+  background: @bg-gradient-hover;
+}
+</t>
+<t tx="ekr.20180305115925.105">/* The log pane */
+QTextEdit#log-widget {
+  background: @log_text_background_color;
+  color: @log_text_foreground_color;
+  selection-color: white;
+  selection-background-color: blue;
+  font-family: @font-family-log;
+  font-size: @font-size-log;
+  font-weight: normal; /* normal,bold,100,..,900 */
+  font-style: normal; /* normal, italic,oblique */
+}
+</t>
+<t tx="ekr.20180305115925.106">QMenu {
+  color: @text-foreground-bright
+}
+QMenuBar::item:selected {
+  color: @button-hover-fg;
+  background: @bg-gradient-hover;
+}
+QMenu::item:selected {
+  color: @button-hover-fg;
+  background: @bg-gradient-hover;
+}
+QMenuBar::item {
+  color: @text-foreground;
+  background: @bg-gradient;
+}
+QMenuBar::item:pressed {
+  color: @text-foreground-bright;
+  background: @bg-gradient;
+}
+</t>
+<t tx="ekr.20180305115925.107">/* The mini-buffer */
+QLabel#minibufferLabel {
+  color: @solarized-violet;
+}
+/* The minibuffer */
+QLineEdit#lineEdit {
+  color: @solarized-yellow; 
+  background: @solarized-base04;
+  selection-color: @solarized-base3; /* Yeah, it's a background color. */
+  selection-background-color: @solarized-red;
+  font-family: @font-family;
+  font-size: 16px;
+  font-weight: normal; /* normal,bold,100,..,900 */
+  font-style: normal; /* normal,italic,oblique */
+}
+</t>
+<t tx="ekr.20180305115925.108">/* bookmarks plugin styling */
+
+#show_bookmarks QPushButton {
+  margin: 0; padding: 1; border: none;
+  font-size: @bookmarks_base_size;
+  color: @bookmarks_base_color;
+  font-weight: @bookmarks_base_weight;
+  text-decoration: @bookmarks_base_decoration;
+}
+#show_bookmarks QPushButton[style_class='bookmark_children'] {
+  font-size: @bookmarks_children_size;
+  color: @bookmarks_children_color;
+  font-weight: @bookmarks_children_weight;
+  text-decoration: @bookmarks_children_decoration;
+}
+#show_bookmarks QPushButton[style_class='bookmark_expanded'] {
+  font-size: @bookmarks_expanded_size;
+  color: @bookmarks_expanded_color;
+  font-weight: @bookmarks_expanded_weight;
+  text-decoration: @bookmarks_expanded_decoration;
+}
+#show_bookmarks QPushButton[style_class='bookmark_current'] {
+  font-size: @bookmarks_current_size;
+  color: @bookmarks_current_color;
+  font-weight: @bookmarks_current_weight;
+  text-decoration: @bookmarks_current_decoration;
+}
+</t>
+<t tx="ekr.20180305115925.109">QScrollBar::horizontal {
+   height: 7px;
+}
+QScrollBar::vertical {
+   width: 7px;
+}
+QScrollBar::add-page, QScrollBar::sub-page {
+  background: @solarized-base03;
+}
+QScrollBar::handle {
+  background: @solarized-base02;
+  color: @solarized-base02;
+}
+QScrollBar::handle:hover {
+  background: @solarized-base0;
+  color: @solarized-base0;
+}
+/* to make these show up, remove the ::handle style above... bug? */
+QScrollBar::add-line, QScrollBar::sub-line {
+  background: @solarized-base01;
+  color: @solarized-base01;
+}</t>
+<t tx="ekr.20180305115925.11"></t>
+<t tx="ekr.20180305115925.110">QSplitter::handle {
+  background: @solarized-base01;
+}
+
+QSplitter::handle:hover {
+  background: @solarized-violet;
+}
+</t>
+<t tx="ekr.20180305115925.111">/* The status area */
+QLineEdit#status1 {
+  background: @solarized-base03;
+  border-color: @solarized-base02;
+  border-width: 1px;
+  border-style: solid;
+}
+QLineEdit#status2 {
+  background: @solarized-base03;
+  border-color: @solarized-base02;
+  border-width: 1px;
+  border-style: solid;
+}
+QLineEdit#status1[style_class ~= 'info'],
+QLineEdit#status2[style_class ~= 'info'] {
+    background-color:   @find-found-bg;
+    color:              @find-found-fg;
+}
+
+QLineEdit#status1[style_class ~= 'fail'],
+QLineEdit#status2[style_class ~= 'fail'] {
+    background-color:   @find-not-found-bg;
+    color:              @find-not-found-fg;
+}
+</t>
+<t tx="ekr.20180305115925.112">QTabBar::tab {
+  /* color: @text-foreground; */
+  color: @solarized-green;
+    /* EKR: Use *lower* visibility for inactive tabs. */
+  background: @bg-gradient;
+  margin-right: 5px;
+  padding: 2px;
+}
+QTabBar::tab:selected {
+  color: @text-foreground;
+    /* EKR: Use *higher* visibility for active tab. */
+    /* color: @solarized-green; */
+}
+QTabBar::tab:hover {
+  background: @bg-gradient-hover;
+  color: @button-hover-fg;
+}
+
+</t>
+<t tx="ekr.20180305115925.113">QTreeView {
+  /* These apply to the selected item, but not to editing items.*/
+  background: @solarized-blue;
+  color: @solarized-base0;
+  show-decoration-selected: 1; /* Extend the selection */
+  padding: 2px solid @solarized-blue;
+  border-color: @solarized-blue;
+}
+QTreeView::item:selected, QTreeView::item:active:selected {
+  background: @solarized-blue;
+}
+QTreeView::item:active:selected {
+  background: @solarized-blue;
+  color: @solarized-base03;
+}
+QTreeView::branch:closed:has-children{
+    image: @tree-image-closed;
+}
+QTreeView::branch:open:has-children{
+    image: @tree-image-open;
+}
+
+/* Headline edit widgets */
+QTreeView QLineEdit {
+  color: @solarized-base03;
+  background: @solarized-violet;
+  selection-color: @solarized-violet; 
+  selection-background-color: @solarized-base3;
+  font-family: @font-family-tree;
+  font-size: @font-size-tree;
+  font-weight: normal; /* normal,bold,100,..,900 */
+  font-style: normal; /* normal, italic,oblique */
+}
+
+QTreeWidget {
+  /* These apply to the selected item, but not to editing items.*/
+  background: @solarized-blue;
+  font-family: @font-family-tree;
+  font-size: @font-size-tree;
+  font-weight: normal; /* normal,bold,100,..,900 */
+  font-style: normal; /* normal, italic,oblique */
+  padding: 2px solid @solarized-base03;
+  border-color: @solarized-blue;
+}
+QTreeWidget::selected {
+  background: @solarized-blue;
+  color: @solarized-base03; 
+}
+</t>
+<t tx="ekr.20180305115925.114">QDockWidget {
+ border: 5px solid red;
+}
+QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit {
+  border: none;
+  padding: 3px;
+  margin-right: 5px;
+}
+QLabel {
+  color: @solarized-base1;
+}
+QLineEdit {
+  border: none;
+  padding: 3px;
+}
+QWidget {
+  /* Not for text widgets */
+  background:  @solarized-base03;
+  color: @solarized-base1;
+  border-color: @solarized-base1;
+  font-size: 16px;
+}
+</t>
+<t tx="ekr.20180305115925.12"></t>
+<t tx="ekr.20180305115925.13">@solarized-base02</t>
+<t tx="ekr.20180305115925.14"></t>
+<t tx="ekr.20180305115925.15"></t>
+<t tx="ekr.20180305115925.16"></t>
+<t tx="ekr.20180305115925.17"></t>
+<t tx="ekr.20180305115925.18" lineYOffset="4b002e">Use these settings to get something like the solarized colors.</t>
+<t tx="ekr.20180305115925.19"></t>
+<t tx="ekr.20180305115925.2" lineYOffset="4b002e"></t>
+<t tx="ekr.20180305115925.20"></t>
+<t tx="ekr.20180305115925.21"></t>
+<t tx="ekr.20180305115925.22"></t>
+<t tx="ekr.20180305115925.23">was blue
+
+Solarized blue      #268bd2</t>
+<t tx="ekr.20180305115925.24">was blue
+
+Solarized blue      #268bd2</t>
+<t tx="ekr.20180305115925.25">was blue
+
+Solarized blue      #268bd2</t>
+<t tx="ekr.20180305115925.26">was blue
+
+Solarized blue      #268bd2</t>
+<t tx="ekr.20180305115925.27">was #00aa00 (Idle comment green)
+
+Solarize green      #859900
+Solarized cyan      #2aa198
+Solarized violet    #6c71c4
+Solarized orange    #cb4b16</t>
+<t tx="ekr.20180305115925.28"></t>
+<t tx="ekr.20180305115925.29"></t>
+<t tx="ekr.20180305115925.3"></t>
+<t tx="ekr.20180305115925.30"></t>
+<t tx="ekr.20180305115925.31">was black
+was #2aa198</t>
+<t tx="ekr.20180305115925.32">was firebrick3
+
+Solarized colors:
+
+magenta   #d33682
+
+Dark comments   base01
+Light comments  base1 comments
+</t>
+<t tx="ekr.20180305115925.33"></t>
+<t tx="ekr.20180305115925.34"></t>
+<t tx="ekr.20180305115925.35"></t>
+<t tx="ekr.20180305115925.36" lineYOffset="4b002e"></t>
+<t tx="ekr.20180305115925.37"></t>
+<t tx="ekr.20180305115925.38"># New: solarized-blue
+</t>
+<t tx="ekr.20180305115925.39"></t>
+<t tx="ekr.20180305115925.4">Here you can edit the colors by Leo,
+just edit the
+node headings, and click the reload-style button.
+
+Examples:
+
+    @color text-foreground = white
+
+    @color text-foreground = #ffffff
+
+    @color text-foreground = @solarized-red
+
+Most common color names are recognized.  The #RRGGBB format works, and
+you can use reference to @settings defined elsehere, starting with an
+'@', e.g. @solarized-red if a color called @solarized-red is defined
+by a setting somewhere else.
+
+Config. menu entry: Styles / Colors
+</t>
+<t tx="ekr.20180305115925.40"></t>
+<t tx="ekr.20180305115925.41">The color of text in doc parts.
+
+firebrick3
+</t>
+<t tx="ekr.20180305115925.42">The color of Leo keywords such as @ignore, @color, etc.
+
+#00aa00
+</t>
+<t tx="ekr.20180305115925.43">The color of name in &lt; &lt; name &gt; &gt; when name is defined.
+
+red
+
+</t>
+<t tx="ekr.20180305115925.44">The background color that represents spaces when Show Invisibles mode is in effect.
+
+gray80: #CCCCCC
+gray90: #E5E5E5
+</t>
+<t tx="ekr.20180305115925.45">The foreground color that represents tabs when Show Invisibles mode is in effect.
+
+gray80: #CCCCCC
+gray90: #E5E5E5
+</t>
+<t tx="ekr.20180305115925.46">The color of name in &lt;&lt; name &gt;&gt; when name is undefined.
+</t>
+<t tx="ekr.20180305115925.47">purple
+</t>
+<t tx="ekr.20180305115925.48"></t>
+<t tx="ekr.20180305115925.49"></t>
+<t tx="ekr.20180305115925.5"></t>
+<t tx="ekr.20180305115925.50"></t>
+<t tx="ekr.20180305115925.51"></t>
+<t tx="ekr.20180305115925.52"></t>
+<t tx="ekr.20180305115925.53"></t>
+<t tx="ekr.20180305115925.54">test text</t>
+<t tx="ekr.20180305115925.55"></t>
+<t tx="ekr.20180305115925.56"></t>
+<t tx="ekr.20180305115925.57"></t>
+<t tx="ekr.20180305115925.58">(some body text here so there's
+something to see)</t>
+<t tx="ekr.20180305115925.59"></t>
+<t tx="ekr.20180305115925.6"></t>
+<t tx="ekr.20180305115925.60"></t>
+<t tx="ekr.20180305115925.61"></t>
+<t tx="ekr.20180305115925.62"></t>
+<t tx="ekr.20180305115925.63"></t>
+<t tx="ekr.20180305115925.64"></t>
+<t tx="ekr.20180305115925.65"></t>
+<t tx="ekr.20180305115925.66">none or underline</t>
+<t tx="ekr.20180305115925.67"></t>
+<t tx="ekr.20180305115925.68"></t>
+<t tx="ekr.20180305115925.69"></t>
+<t tx="ekr.20180305115925.7"></t>
+<t tx="ekr.20180305115925.70"></t>
+<t tx="ekr.20180305115925.71">Valid values are: normal,italic,oblique</t>
+<t tx="ekr.20180305115925.72">Huh?
+valid values are: normal,bold,100,..,900
+</t>
+<t tx="ekr.20180305115925.73"></t>
+<t tx="ekr.20180305115925.74"></t>
+<t tx="ekr.20180305115925.75">none or underline</t>
+<t tx="ekr.20180305115925.76"></t>
+<t tx="ekr.20180305115925.77"></t>
+<t tx="ekr.20180305115925.78"></t>
+<t tx="ekr.20180305115925.79">bold or regular</t>
+<t tx="ekr.20180305115925.8">Color for error messages written to
+the log window.</t>
+<t tx="ekr.20180305115925.80"></t>
+<t tx="ekr.20180305115925.81"></t>
+<t tx="ekr.20180305115925.82">none or underline</t>
+<t tx="ekr.20180305115925.83"></t>
+<t tx="ekr.20180305115925.84"></t>
+<t tx="ekr.20180305115925.85">bold or regular</t>
+<t tx="ekr.20180305115925.86"></t>
+<t tx="ekr.20180305115925.87"></t>
+<t tx="ekr.20180305115925.88">none or underline</t>
+<t tx="ekr.20180305115925.89"></t>
+<t tx="ekr.20180305115925.9">Background color of log text.</t>
+<t tx="ekr.20180305115925.90"></t>
+<t tx="ekr.20180305115925.91">bold or regular</t>
+<t tx="ekr.20180305115925.92"></t>
+<t tx="ekr.20180305115925.93"></t>
+<t tx="ekr.20180305115925.94"></t>
+<t tx="ekr.20180305115925.95"></t>
+<t tx="ekr.20180305115925.96">Outline indicators indicate the expansion state of outline nodes. The leo/Icons/nodes-dark folders contains two sets of indicators::
+    
+    leo/Icons/nodes-dark/plusminus/
+    leo/Icons/nodes-dark/triangles/
+    
+The following settings specify the indicators.  You can use an absolute path, or more conveniently, a path relative either to:
+
+- Your home directory or
+- Leo's leo/Icons directory
+</t>
+<t tx="ekr.20180305115925.97">Must be relative to either the users home directory or leo/Icons directory.
+
+url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)</t>
+<t tx="ekr.20180305115925.98">url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/open.png)</t>
+<t tx="ekr.20180305115925.99" lineYOffset="4b002e">Set to true for dark themes, so bookmarks.py can generate
+random background colors which are appropriate etc.</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
