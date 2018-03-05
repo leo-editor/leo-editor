@@ -782,7 +782,6 @@
 <v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
 <v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
 <v t="ekr.20170304074559.27"><vh>Solarized color definitions</vh>
-<v t="ekr.20170307055039.1"><vh>Reference</vh></v>
 <v t="ekr.20170304074559.29"><vh>@color solarized-base03 = #002b36</vh></v>
 <v t="ekr.20170304074559.30"><vh>@color solarized-base02 = #073642</vh></v>
 <v t="ekr.20170304074559.31"><vh>@color solarized-base01 = #586e75</vh></v>
@@ -800,6 +799,7 @@
 <v t="ekr.20170304074559.43"><vh>@color solarized-cyan = #2aa198</vh></v>
 <v t="ekr.20170304074559.44"><vh>@color solarized-green = #859900</vh></v>
 </v>
+<v t="ekr.20170307055039.1"><vh>Solarized color reference</vh></v>
 </v>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = True</vh></v>
@@ -12759,7 +12759,9 @@ QLineEdit#status2 {
     border-width:       1px;
 }
 </t>
-<t tx="ekr.20170307055039.1">For both light and dark
+<t tx="ekr.20170307055039.1">To see these colors: http://ethanschoonover.com/solarized
+
+For both light and dark
 =======================
 
 blue      #268bd2
@@ -15356,9 +15358,7 @@ For example, the following setting works without any explicit definition of mist
     
 These colors are (mostly) the same as: http://www.yourhtmlsource.com/stylesheets/namedcolours.html
 
-Finally, there is a semi-interactive color map for these colors here:
-http://leo-editor.github.io/snippets/colormap.html
-
+A color map for these colors: http://leo-editor.github.io/snippets/colormap.html
 Hover over a color to get Leo's color name for each color.
 
 </t>
