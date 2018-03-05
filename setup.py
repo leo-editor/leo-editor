@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:maphew.20180224170853.1: * @file ../../setup.py
+#@+node:maphew.20180224170853.1: * @file setup.py
 #@@first
 '''setup.py for leo'''
+#@+others
+#@+node:maphew.20180305124637.1: ** imports
 from codecs import open # To use a consistent encoding
 import os
 from shutil import rmtree
@@ -10,8 +12,6 @@ from setuptools import setup, find_packages # Always prefer setuptools over dist
 import semantic_version
 import leo.core.leoGlobals as g
 import leo.core.leoVersion as leoVersion
-
-#@+others
 #@+node:maphew.20141126230535.3: ** docstring
 '''setup.py for leo
 
@@ -74,14 +74,15 @@ def get_semver(tag):
 # Get the long description from the README file
 # And also convert to reST
 # adapted from https://github.com/BonsaiAI/bonsai-config/blob/0.3.1/setup.py#L7
+# bugfix #773 courtesy @Overdrivr, https://stackoverflow.com/a/35521100/14420
 try:
-    from pypandoc import convert
-
-    def read_md(f): return convert(f, 'rst')
-
+    from pypandoc import convert_file
+    def read_md(f):
+        rst = convert_file(f, 'rst')
+        rst = rst.replace('\r', '') # fix #773
+        return rst
 except ImportError:
     print('warning: pypandoc module not found, could not convert Markdown to RST')
-
     def read_md(f): return open(f, 'r').read()
         # disable to obviously fail if markdown conversion fails
 #@+node:maphew.20141126230535.4: ** classifiers
