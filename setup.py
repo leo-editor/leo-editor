@@ -141,8 +141,8 @@ setup(
     url='http://leoeditor.com',
     license='MIT License',
     description='An IDE, PIM and Outliner', # becomes 'Summary' in pkg-info
-    long_description=read_md('README.md'),
-    #long_description=open('README.rst','r').read(),
+    #long_description=read_md('README.md'),
+    long_description=open('README.rst','r').read(),
     platforms=['Linux', 'Windows', 'MacOS'],
     download_url='http://leoeditor.com/download.html',
     classifiers=classifiers,
