@@ -1,5 +1,6 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20140225222704.16748: * @file viewrendered2.py
+#@@language python
 #@+<< docstring >>
 #@+node:ekr.20140226074510.4187: ** << docstring >> (vr2)
 '''
@@ -90,6 +91,10 @@ will look something like:
 
     `This` is **really** a line of text.
 
+**Code Only** When "Code Only" is selected in the Options menu, only code blocks will be shown.  When the rendered code has been exported to a browser, it can be copied to the clipboard (by selecting the entire browser page).  From there, it can be pasted into a text file.  The result is a clean code file with none of the @language rest blocks.
+
+Currently, this only works for Python code blocks (@language python).
+
 **Important**: reStructuredText errors and warnings will appear in red in the rendering pane.
 
 Rendering markdown
@@ -99,6 +104,12 @@ for more information on markdown.
 
 Unless ``@string view-rendered-default-kind`` is set to ``md``, markdown rendering must be
 specified by putting it in a ``@md`` node.
+
+The background color can be changed by setting vr_md-rendering-pane-background-color, like this:
+
+    @string vr_md-rendering-pane-background-color = black
+    
+Choose any CSS color (it does not have to be black; that is the default).
 
 Special Renderings
 ===================
@@ -191,8 +202,12 @@ See the viewrendered.py plugin for additional acknowledgments.
 
 '''
 #@-<< docstring >>
+# 2018/03/05:
+# - New code by Tom Passin, per #756.
+# - EKR added previous fix for #734.
 # Porting to PyQt5: https://wiki.qt.io/Porting_from_QtWebKit_to_QtWebEngine
-__version__ = '1.1' # EKR: Move class WebViewPlus into it's own subtree.
+__version__ = '1.2' # tbp: added "Code Only" option to emit only code.
+
 #@+<< imports >>
 #@+node:ekr.20140226074510.4188: ** << imports >> (viewrendered2.py)
 import leo.core.leoGlobals as g
@@ -238,6 +253,11 @@ else:
     from StringIO import StringIO
 import sys
 # import traceback
+
+# tbp: Global semi-constant for setting background color of
+# rendering pane.  It's supposed to get changed during the
+# config process.
+MD_RENDERING_BG_COLOR = 'grey'
 #@-<< imports >>
 #@+<< define stylesheet >>
 #@+node:ekr.20140226074510.4189: ** << define stylesheet >>
@@ -278,8 +298,8 @@ def decorate_window(w):
 #@+node:ekr.20140226074510.4192: *3* init (VR2)
 def init():
     '''Return True if the plugin has loaded successfully.'''
+    global got_docutils
     if import_ok: # Fix #734.
-        global got_docutils
         if not got_docutils:
             g.es_print('Warning: viewrendered2.py running without docutils.')
         g.plugin_signon(__name__)
@@ -318,11 +338,7 @@ def show_scrolled_message(tag, kw):
         })
     return True
 #@+node:ekr.20140226074510.4195: ** Commands
-# Fix #734.
-    # A very bad idea.
-    # if import_ok:
-        # # Define the commands only if this plugin is active.
-        # @others
+# Fix #734: Do *not* test import_ok here.
 #@+node:ekr.20140226074510.4196: *3* g.command('vr2-preview')
 
 @g.command('vr2-preview')
@@ -564,6 +580,7 @@ class WebViewPlus(QtWidgets.QWidget):
         #self.s5_mode_action = action('s5 slideshow')
         menu.addSeparator() # Separate render mode and code options
         self.visible_code_action = action('Visible code')
+        self.code_only_action = action('Code Only')
         self.execute_code_action = action('Execute code')
         self.reST_code_action = action('Code outputs reST/md')
         # radio button checkables example at
@@ -661,7 +678,7 @@ class WebViewPlus(QtWidgets.QWidget):
         getConfig(gc.getString, 'stylesheet_path', '')
         getConfig(gc.getInt, 'halt_level', 6)
         getConfig(gc.getInt, 'report_level', 5)
-        getConfig(gc.getString, 'math_output', 'mathjax')
+        getConfig(gc.getString, 'math-output', 'mathjax')
         getConfig(gc.getBool, 'smart_quotes', True)
         getConfig(gc.getBool, 'embed_stylesheet', True)
         getConfig(gc.getBool, 'xml_declaration', False)
@@ -669,6 +686,14 @@ class WebViewPlus(QtWidgets.QWidget):
         getConfig(gc.getString, 'syntax_highlight', 'long')
         getConfig(gc.getBool, 'no_compact_lists', False)
         getConfig(gc.getBool, 'no_compact_field_lists', False)
+        
+        # Markdown values: tbp
+        # This is a bit of a kludge, but getConfig() does not
+        # know about "self", and this way is easier than figuring out
+        # how to get a reference to the WenViewPlus instance.
+        def set_bg_color(color): global MD_RENDERING_BG_COLOR; MD_RENDERING_BG_COLOR = color
+        getConfig(gc.getString, 'md-rendering-pane-background-color', 'black', set_bg_color)
+
         # Do VR2 init values
         getConfig(gc.getBool, 'verbose', False, self.verbose_mode_action.setChecked)
         getConfig(gc.getBool, 'tree_mode', False, self.tree_mode_action.setChecked)
@@ -676,6 +701,8 @@ class WebViewPlus(QtWidgets.QWidget):
         getConfig(gc.getBool, 'lock_node', False, self.lock_mode_action.setChecked)
         getConfig(gc.getBool, 'slideshow', False, self.slideshow_mode_action.setChecked)
         getConfig(gc.getBool, 'visible_code', True, self.visible_code_action.setChecked)
+        getConfig(gc.getBool, 'code_only', False, self.code_only_action.setChecked)
+
         getConfig(gc.getBool, 'execute_code', False, self.execute_code_action.setChecked)
         getConfig(gc.getBool, 'rest_code_output', False, self.reST_code_action.setChecked)
         # Misc other internal settings
@@ -728,6 +755,11 @@ class WebViewPlus(QtWidgets.QWidget):
         self.slideshow = self.slideshow_mode_action.isChecked()
         self.showcode = self.visible_code_action.isChecked()
         self.restoutput = self.reST_code_action.isChecked()
+        self.code_only = self.code_only_action.isChecked()
+        if self.code_only and not self.showcode:
+            self.visible_code_action.setChecked(True)
+            self.showcode = True
+
     #@+node:ekr.20140226075611.16800: *4* lock
     def lock(self):
         """Implement node lock (triggered by "Lock node" action)."""
@@ -967,14 +999,15 @@ class WebViewPlus(QtWidgets.QWidget):
     def process_one_node(self, p, result, environment):
         '''Handle one node.'''
         c = self.c
-        result.append(self.underline2(p))
+        if not self.code_only:
+            result.append(self.underline2(p))
         d = c.scanAllDirectives(p)
         if self.verbose:
             g.trace(d.get('language') or 'None', ':', p.h)
         s, code = self.process_directives(p.b, d)
         result.append(s)
         result.append('\n\n')
-            # Add an empty line so bullet lists display properly.
+        # Add an empty line so bullet lists display properly.
         if code and self.execcode:
             s, err = self.exec_code(code, environment)
                 # execute code found in a node, append to reST
@@ -1045,12 +1078,15 @@ class WebViewPlus(QtWidgets.QWidget):
                 elif word in g.globalDirectiveList:
                     continue
             if codeflag:
-                if self.showcode:
+                emit_line = not (s.startswith('@') or s.startswith('<<')) if self.code_only else True
+                if self.showcode and emit_line:
                     result.append('    ' + s) # 4 space indent on each line
                 code += s # accumulate code lines for execution
             else:
-                result.append(s)
+                if not self.code_only:
+                    result.append(s)
         result = ''.join(result)
+        
         if trace: g.trace('result:\n', result) # ,'\ncode:',code)
         return result, code
     #@+node:ekr.20140226075611.16795: *7* underline2
@@ -1169,6 +1205,15 @@ class WebViewPlus(QtWidgets.QWidget):
             if pygments:
                 mdext.append('codehilite')
             html = markdown(html, mdext)
+            
+            # tbp: this is a kludge to change the background color
+            # of the rendering pane.  Markdown does not emit
+            # a css style sheet, but the browser will apply
+            # a style element at the top of the page to the
+            # whole page. MD_RENDERING_BG_COLOR is a global
+            # variable set during the config process.
+            html = '<style type="text/css">body{background-color:%s;}</style>\n' %(MD_RENDERING_BG_COLOR) + html
+            
             return g.toUnicode(html)
         except Exception as e:
             print(e)
@@ -1216,7 +1261,8 @@ class WebViewPlus(QtWidgets.QWidget):
     def md_process_one_node(self, p, result, environment):
         '''Handle one node.'''
         c = self.c
-        result.append(self.md_underline2(p))
+        if not self.code_only:
+            result.append(self.md_underline2(p))
         d = c.scanAllDirectives(p)
         if self.verbose:
             g.trace(d.get('language') or 'None', ':', p.h)
@@ -1295,11 +1341,13 @@ class WebViewPlus(QtWidgets.QWidget):
                 elif word in g.globalDirectiveList:
                     continue
             if codeflag:
-                if self.showcode:
+                emit_line = not (s.startswith('@') or s.startswith('<<')) if self.code_only else True
+                if self.showcode and emit_line:
                     result.append('    ' + s) # 4 space indent on each line
                 code += s # accumulate code lines for execution
             else:
-                result.append(s)
+                if not self.code_only:
+                    result.append(s)
         result = ''.join(result)
         if trace: g.trace('result:\n', result) # ,'\ncode:',code)
         return result, code
@@ -1408,6 +1456,7 @@ class ViewRenderedController(QtWidgets.QWidget):
         self.output = 'html'
         self.tree = True
         self.showcode = True
+        self.code_only = False
         self.execcode = False
         self.restoutput = False
     #@+node:ekr.20140226074510.4213: *4* vr2.create_dispatch_dict
