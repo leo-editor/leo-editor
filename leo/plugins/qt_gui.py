@@ -1532,14 +1532,20 @@ class StyleSheetManager(object):
                             # value = '%s /* %s */' % (value, key)
                         if trace and trace_color: g.trace('found color', key, value)
                 if value:
-                    sheet = re.sub(
-                        ### '\b%s\b' % (const),
-                        const + "(?![-A-Za-z0-9_])",
-                            # don't replace shorter constants occuring in larger
-                        value,
-                        sheet,
-                    )
-                    changed = True
+                    # Partial fix for #780.
+                    try:
+                        sheet = re.sub(
+                            ### '\b%s\b' % (const),
+                            const + "(?![-A-Za-z0-9_])",
+                                # don't replace shorter constants occuring in larger
+                            value,
+                            sheet,
+                        )
+                        changed = True
+                    except Exception:
+                        g.es_print('Exception handling style sheet')
+                        g.es_print(sheet)
+                        g.es_exception()
                 else:
                     pass
                     # tricky, might be an undefined identifier, but it might
