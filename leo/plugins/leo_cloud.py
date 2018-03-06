@@ -383,7 +383,8 @@ class LeoCloud:
         :param position p: node containing text
         :return: dict
         """
-        kwargs = {}
+        kwargs = {'remote': None}
+        # some methods assume 'remote' exists, but it's absent in LeoCloudIOFileSystem
         for line in p.b.split('\n'):
             kwarg = KWARG_RE.match(line)
             if kwarg:
