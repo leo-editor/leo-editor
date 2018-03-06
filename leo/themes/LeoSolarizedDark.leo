@@ -2,14 +2,39 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.40" body_secondary_ratio="0.51">
+<globals body_outline_ratio="0.64" body_secondary_ratio="0.65">
 	<global_window_position top="90" left="483" height="878" width="1135"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
+<v t="ekr.20180306143912.1"><vh> Color definitions</vh>
+<v t="ekr.20180306143912.2"><vh>@color solarized-base06 = #3b0000</vh></v>
+<v t="ekr.20180306143912.3"><vh>@color solarized-base05 = #003b00</vh></v>
+<v t="ekr.20180306143912.4"><vh>@color solarized-base04 = #000059</vh></v>
+<v t="ekr.20180306143912.5"><vh>@color solarized-base03 = #000005</vh></v>
+<v t="ekr.20180306143912.6"><vh>@color solarized-base02 = #073642</vh></v>
+<v t="ekr.20180306143912.7"><vh>@color solarized-base01 = #586e75</vh></v>
+<v t="ekr.20180306143912.8"><vh>@color solarized-base00 = #657b83</vh></v>
+<v t="ekr.20180306143912.9"><vh>@color solarized-base0 = #fdffdd</vh></v>
+<v t="ekr.20180306143912.10"><vh>@color solarized-base1 = #93a1a1</vh></v>
+<v t="ekr.20180306143912.11"><vh>@color solarized-base2 = #eee8d5</vh></v>
+<v t="ekr.20180306143912.12"><vh>@color solarized-base3 = #fdf6e3</vh></v>
+<v t="ekr.20180306143912.13"><vh>@color solarized-yellow = #b58900</vh></v>
+<v t="ekr.20180306143912.14"><vh>@color solarized-orange = #cb4b16</vh></v>
+<v t="ekr.20180306143912.15"><vh>@color solarized-red = #dc322f</vh></v>
+<v t="ekr.20180306143912.16"><vh>@color solarized-magenta = #d33682</vh></v>
+<v t="ekr.20180306143912.17"><vh>@color solarized-violet = #6c71c4</vh></v>
+<v t="ekr.20180306143912.18"><vh>@color solarized-blue = #268bd2</vh></v>
+<v t="ekr.20180306143912.19"><vh>@color solarized-cyan = #2aa198</vh></v>
+<v t="ekr.20180306143912.20"><vh>@color solarized-green = #859900</vh></v>
+<v t="ekr.20180306143912.21"><vh>@color solarized-black = #000005</vh></v>
+<v t="ekr.20180306143912.22"><vh>@color solarized-white = #fdf6e3 </vh></v>
+</v>
 <v t="ekr.20180306142738.3"><vh>@settings</vh>
+<v t="ekr.20180306144200.1"><vh>@bool show-tips = False</vh></v>
+<v t="ekr.20180306144227.1"><vh>@bool use-gutter = False</vh></v>
 <v t="ekr.20180306142804.1"><vh>@theme Leo Solarized Dark</vh>
 <v t="ekr.20180306142804.2"><vh>Settings for Leo Solarized Dark theme</vh>
 <v t="ekr.20180306142804.3"><vh>Colors: Syntax coloring</vh>
@@ -132,13 +157,14 @@
 <v t="ekr.20180306142804.104"><vh>Widgets: general</vh></v>
 </v>
 </v>
+<v t="ekr.20180306144735.1"><vh>@@string font-size-body = 24px</vh></v>
 </v>
 <v t="ekr.20180306143127.1"><vh>Syntax coloring test</vh>
 <v t="ekr.20180306143127.2"><vh>&lt;&lt; defined section &gt;&gt;</vh></v>
 </v>
 </vnodes>
 <tnodes>
-<t tx="ekr.20180306142738.3" str_leo_pos="1"></t>
+<t tx="ekr.20180306142738.3">@language md</t>
 <t tx="ekr.20180306142804.1" lineYOffset="4b002e">@language rest
 @wrap
 @tabwidth -2
@@ -371,8 +397,7 @@ Only colors appearing in several places are given here.</t>
 <t tx="ekr.20180306142804.43"></t>
 <t tx="ekr.20180306142804.44"></t>
 <t tx="ekr.20180306142804.45"></t>
-<t tx="ekr.20180306142804.46">(some body text here so there's
-something to see)</t>
+<t tx="ekr.20180306142804.46"></t>
 <t tx="ekr.20180306142804.47"></t>
 <t tx="ekr.20180306142804.48"></t>
 <t tx="ekr.20180306142804.49">Utility constants.</t>
@@ -610,6 +635,32 @@ a = 2
 def spam():
     pass
 </t>
-<t tx="ekr.20180306143127.2"></t>
+<t tx="ekr.20180306143127.2">Test.</t>
+<t tx="ekr.20180306143912.1" str_leo_pos="2">These should not be necessary.</t>
+<t tx="ekr.20180306143912.10"></t>
+<t tx="ekr.20180306143912.11"></t>
+<t tx="ekr.20180306143912.12"></t>
+<t tx="ekr.20180306143912.13"></t>
+<t tx="ekr.20180306143912.14"></t>
+<t tx="ekr.20180306143912.15"></t>
+<t tx="ekr.20180306143912.16"></t>
+<t tx="ekr.20180306143912.17"></t>
+<t tx="ekr.20180306143912.18"></t>
+<t tx="ekr.20180306143912.19"></t>
+<t tx="ekr.20180306143912.2"></t>
+<t tx="ekr.20180306143912.20"></t>
+<t tx="ekr.20180306143912.21"># Not an official solarized color.  Same as solarized-base-03</t>
+<t tx="ekr.20180306143912.22"># Not an official solarized color: same as solorarized-base3</t>
+<t tx="ekr.20180306143912.3"></t>
+<t tx="ekr.20180306143912.4"></t>
+<t tx="ekr.20180306143912.5"></t>
+<t tx="ekr.20180306143912.6"></t>
+<t tx="ekr.20180306143912.7"></t>
+<t tx="ekr.20180306143912.8"></t>
+<t tx="ekr.20180306143912.9"></t>
+<t tx="ekr.20180306144200.1">True: show user tips on startup.</t>
+<t tx="ekr.20180306144227.1"># For line_numbering plugin.</t>
+<t tx="ekr.20180306144735.1">The *last* setting in the tree wins.
+</t>
 </tnodes>
 </leo_file>

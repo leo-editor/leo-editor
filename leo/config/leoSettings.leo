@@ -102,6 +102,29 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
+<v t="tbrown.20131122091143.23828"><vh> OLD Color definitions (Do not change)</vh>
+<v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
+<v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
+<v t="ekr.20170304074559.27"><vh>Solarized color definitions</vh>
+<v t="ekr.20170304074559.29"><vh>@color solarized-base03 = #002b36</vh></v>
+<v t="ekr.20170304074559.30"><vh>@color solarized-base02 = #073642</vh></v>
+<v t="ekr.20170304074559.31"><vh>@color solarized-base01 = #586e75</vh></v>
+<v t="ekr.20170304074559.32"><vh>@color solarized-base00 = #657b83</vh></v>
+<v t="ekr.20170304074559.33"><vh>@color solarized-base0 = #839496</vh></v>
+<v t="ekr.20170304074559.34"><vh>@color solarized-base1 = #93a1a1</vh></v>
+<v t="ekr.20170304074559.35"><vh>@color solarized-base2 = #eee8d5</vh></v>
+<v t="ekr.20170304074559.36"><vh>@color solarized-base3 = #fdf6e3</vh></v>
+<v t="ekr.20170304074559.37"><vh>@color solarized-yellow = #b58900</vh></v>
+<v t="ekr.20170304074559.38"><vh>@color solarized-orange = #cb4b16</vh></v>
+<v t="ekr.20170304074559.39"><vh>@color solarized-red = #dc322f</vh></v>
+<v t="ekr.20170304074559.40"><vh>@color solarized-magenta = #d33682</vh></v>
+<v t="ekr.20170304074559.41"><vh>@color solarized-violet = #6c71c4</vh></v>
+<v t="ekr.20170304074559.42"><vh>@color solarized-blue = #268bd2</vh></v>
+<v t="ekr.20170304074559.43"><vh>@color solarized-cyan = #2aa198</vh></v>
+<v t="ekr.20170304074559.44"><vh>@color solarized-green = #859900</vh></v>
+</v>
+<v t="ekr.20170307055039.1"><vh>Solarized color reference</vh></v>
+</v>
 <v t="ekr.20170304074559.1"><vh>Themes</vh>
 <v t="ekr.20140912072521.19160"><vh>@data qt-gui-plugin-style-sheet</vh>
 <v t="ekr.20140915194122.19458"><vh>Body pane</vh></v>
@@ -953,28 +976,28 @@
 </v>
 </v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
-<v t="tbrown.20131122091143.23828"><vh> Color definitions (Do not change)</vh>
-<v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
-<v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
-<v t="ekr.20170304074559.27"><vh>Solarized color definitions</vh>
-<v t="ekr.20170304074559.29"><vh>@color solarized-base03 = #002b36</vh></v>
-<v t="ekr.20170304074559.30"><vh>@color solarized-base02 = #073642</vh></v>
-<v t="ekr.20170304074559.31"><vh>@color solarized-base01 = #586e75</vh></v>
-<v t="ekr.20170304074559.32"><vh>@color solarized-base00 = #657b83</vh></v>
-<v t="ekr.20170304074559.33"><vh>@color solarized-base0 = #839496</vh></v>
-<v t="ekr.20170304074559.34"><vh>@color solarized-base1 = #93a1a1</vh></v>
-<v t="ekr.20170304074559.35"><vh>@color solarized-base2 = #eee8d5</vh></v>
-<v t="ekr.20170304074559.36"><vh>@color solarized-base3 = #fdf6e3</vh></v>
-<v t="ekr.20170304074559.37"><vh>@color solarized-yellow = #b58900</vh></v>
-<v t="ekr.20170304074559.38"><vh>@color solarized-orange = #cb4b16</vh></v>
-<v t="ekr.20170304074559.39"><vh>@color solarized-red = #dc322f</vh></v>
-<v t="ekr.20170304074559.40"><vh>@color solarized-magenta = #d33682</vh></v>
-<v t="ekr.20170304074559.41"><vh>@color solarized-violet = #6c71c4</vh></v>
-<v t="ekr.20170304074559.42"><vh>@color solarized-blue = #268bd2</vh></v>
-<v t="ekr.20170304074559.43"><vh>@color solarized-cyan = #2aa198</vh></v>
-<v t="ekr.20170304074559.44"><vh>@color solarized-green = #859900</vh></v>
-</v>
-<v t="ekr.20170307055039.1"><vh>Solarized color reference</vh></v>
+<v t="ekr.20180306144001.1"><vh> Color definitions</vh>
+<v t="ekr.20180306144001.2"><vh>@color solarized-base06 = #3b0000</vh></v>
+<v t="ekr.20180306144001.3"><vh>@color solarized-base05 = #003b00</vh></v>
+<v t="ekr.20180306144001.4"><vh>@color solarized-base04 = #000059</vh></v>
+<v t="ekr.20180306144001.5"><vh>@color solarized-base03 = #000005</vh></v>
+<v t="ekr.20180306144001.6"><vh>@color solarized-base02 = #073642</vh></v>
+<v t="ekr.20180306144001.7"><vh>@color solarized-base01 = #586e75</vh></v>
+<v t="ekr.20180306144001.8"><vh>@color solarized-base00 = #657b83</vh></v>
+<v t="ekr.20180306144001.9"><vh>@color solarized-base0 = #fdffdd</vh></v>
+<v t="ekr.20180306144001.10"><vh>@color solarized-base1 = #93a1a1</vh></v>
+<v t="ekr.20180306144001.11"><vh>@color solarized-base2 = #eee8d5</vh></v>
+<v t="ekr.20180306144001.12"><vh>@color solarized-base3 = #fdf6e3</vh></v>
+<v t="ekr.20180306144001.13"><vh>@color solarized-yellow = #b58900</vh></v>
+<v t="ekr.20180306144001.14"><vh>@color solarized-orange = #cb4b16</vh></v>
+<v t="ekr.20180306144001.15"><vh>@color solarized-red = #dc322f</vh></v>
+<v t="ekr.20180306144001.16"><vh>@color solarized-magenta = #d33682</vh></v>
+<v t="ekr.20180306144001.17"><vh>@color solarized-violet = #6c71c4</vh></v>
+<v t="ekr.20180306144001.18"><vh>@color solarized-blue = #268bd2</vh></v>
+<v t="ekr.20180306144001.19"><vh>@color solarized-cyan = #2aa198</vh></v>
+<v t="ekr.20180306144001.20"><vh>@color solarized-green = #859900</vh></v>
+<v t="ekr.20180306144001.21"><vh>@color solarized-black = #000005</vh></v>
+<v t="ekr.20180306144001.22"><vh>@color solarized-white = #fdf6e3 </vh></v>
 </v>
 <v t="ekr.20100904134301.11000"><vh>Abbreviations</vh>
 <v t="ekr.20100904134301.11006"><vh>@bool enable-abbreviations = True</vh></v>
@@ -15786,6 +15809,33 @@ url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)<
 <t tx="ekr.20180305115925.98">url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/open.png)</t>
 <t tx="ekr.20180305115925.99" lineYOffset="4b002e">Set to true for dark themes, so bookmarks.py can generate
 random background colors which are appropriate etc.</t>
+<t tx="ekr.20180306144001.1">These are definitions of colors not defined by default, so you can refer to "solarized-red" as "@solarized-red" instead of "#dc322f".
+
+**Please do not change these definitions**.
+
+Feel free to *add* to them.
+</t>
+<t tx="ekr.20180306144001.10"></t>
+<t tx="ekr.20180306144001.11"></t>
+<t tx="ekr.20180306144001.12"></t>
+<t tx="ekr.20180306144001.13"></t>
+<t tx="ekr.20180306144001.14"></t>
+<t tx="ekr.20180306144001.15"></t>
+<t tx="ekr.20180306144001.16"></t>
+<t tx="ekr.20180306144001.17"></t>
+<t tx="ekr.20180306144001.18"></t>
+<t tx="ekr.20180306144001.19"></t>
+<t tx="ekr.20180306144001.2"></t>
+<t tx="ekr.20180306144001.20"></t>
+<t tx="ekr.20180306144001.21"># Not an official solarized color.  Same as solarized-base-03</t>
+<t tx="ekr.20180306144001.22"># Not an official solarized color: same as solorarized-base3</t>
+<t tx="ekr.20180306144001.3"></t>
+<t tx="ekr.20180306144001.4"></t>
+<t tx="ekr.20180306144001.5"></t>
+<t tx="ekr.20180306144001.6"></t>
+<t tx="ekr.20180306144001.7"></t>
+<t tx="ekr.20180306144001.8"></t>
+<t tx="ekr.20180306144001.9"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
