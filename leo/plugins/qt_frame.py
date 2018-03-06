@@ -3257,10 +3257,15 @@ class LeoQtLog(leoFrame.LeoLog):
             if trace:
                 print('LeoQtLog.log.put fails: %r' % s)
             return
+        # Note: g.actualColor does all color translation.
         if color:
-            color = leoColor.getColor(color, 'black')
-        else:
-            color = leoColor.getColor('black')
+            color = leoColor.getColor(color)
+        if not color:
+            # #788: First, fall back to 'log_black_color', not 'black.
+            color = c.config.getColor('log_black_color')
+            if not color:
+                # Should never be necessary.
+                color = 'black'
         self.selectTab(tabName or 'Log')
         # Must be done after the call to selectTab.
         w = self.logCtrl.widget # w is a QTextBrowser
