@@ -9,18 +9,6 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20180307012220.1"><vh>Real solarized colors: not needed</vh>
-<v t="chris.20180306194034.13"><vh>@color solarized-yellow = #b58900</vh></v>
-<v t="chris.20180306194034.14"><vh>@color solarized-orange = #cb4b16</vh></v>
-<v t="chris.20180306194034.15"><vh>@color solarized-red = #dc322f</vh></v>
-<v t="chris.20180306194034.16"><vh>@color solarized-magenta = #d33682</vh></v>
-<v t="chris.20180306194034.17"><vh>@color solarized-violet = #6c71c4</vh></v>
-<v t="chris.20180306194034.18"><vh>@color solarized-blue = #268bd2</vh></v>
-<v t="chris.20180306194034.19"><vh>@color solarized-cyan = #2aa198</vh></v>
-<v t="chris.20180306194034.20"><vh>@color solarized-green = #859900</vh></v>
-<v t="chris.20180306194034.21"><vh>@color solarized-black = #000005</vh></v>
-<v t="chris.20180306194034.22"><vh>@color solarized-white = #fdf6e3 </vh></v>
-</v>
 <v t="ekr.20180307012127.1"><vh>@settings</vh>
 <v t="chris.20180306194051.1"><vh>@theme Breeze Dark</vh>
 <v t="chris.20180306194034.1"><vh>Breeze Dark Color definitions</vh>
@@ -168,17 +156,7 @@
 <t tx="chris.20180306194034.10"></t>
 <t tx="chris.20180306194034.11"></t>
 <t tx="chris.20180306194034.12"></t>
-<t tx="chris.20180306194034.13"></t>
-<t tx="chris.20180306194034.14"></t>
-<t tx="chris.20180306194034.15"></t>
-<t tx="chris.20180306194034.16"></t>
-<t tx="chris.20180306194034.17"></t>
-<t tx="chris.20180306194034.18"></t>
-<t tx="chris.20180306194034.19"></t>
 <t tx="chris.20180306194034.2"></t>
-<t tx="chris.20180306194034.20"></t>
-<t tx="chris.20180306194034.21"># Not an official solarized color.  Same as dark-base-03</t>
-<t tx="chris.20180306194034.22"># Not an official solarized color: same as solorarized-base3</t>
 <t tx="chris.20180306194034.3"></t>
 <t tx="chris.20180306194034.4"></t>
 <t tx="chris.20180306194034.5"></t>
@@ -189,6 +167,13 @@
 <t tx="chris.20180306194051.1" lineYOffset="4b002e">@language rest
 @wrap
 @tabwidth -2
+
+By Chris George.
+Changed by EKR:
+- Changed @solarized-base to @dark-base everywhere.
+- Removed definitions of non-base solarized colors.
+  They are in leoSettings.leo.
+- Put all settings in an @settings tree.
 
 </t>
 <t tx="chris.20180306194051.10">was blue
@@ -650,7 +635,6 @@ QScrollBar::add-line, QScrollBar::sub-line {
   color: @dark-base01;
 }</t>
 <t tx="ekr.20180307012127.1"></t>
-<t tx="ekr.20180307012220.1"></t>
 <t tx="ekr.20180307012426.2">@language python
 
 @ This should be *colored* as rST.
