@@ -2440,7 +2440,7 @@ class FileCommands(object):
         def md5(x):
             try:
                 s = open(x, 'rb').read()
-            except:
+            except Exception:
                 return ''
             s = s.replace(b'\r\n', b'\n')
             return hashlib.md5(s).hexdigest()
