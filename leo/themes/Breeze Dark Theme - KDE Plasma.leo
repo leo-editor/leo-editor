@@ -168,13 +168,14 @@
 @wrap
 @tabwidth -2
 
+*Important*: disable myLeoSettings.leo to test this file.
+
 By Chris George.
 Changed by EKR:
 - Changed @solarized-base to @dark-base everywhere.
 - Removed definitions of non-base solarized colors.
   They are in leoSettings.leo.
 - Put all settings in an @settings tree.
-
 </t>
 <t tx="chris.20180306194051.10">was blue
 
