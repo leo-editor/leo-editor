@@ -12,7 +12,7 @@
 <v t="ekr.20180306142738.3"><vh>@settings</vh>
 <v t="ekr.20180306144200.1"><vh>@bool show-tips = False</vh></v>
 <v t="ekr.20180306144227.1"><vh>@bool use-gutter = False</vh></v>
-<v t="ekr.20180307010409.1"><vh>@theme Leo Solarized Dark</vh>
+<v t="ekr.20180307010409.1"><vh>@theme Leo Black Solarized</vh>
 <v t="ekr.20180307010409.2"><vh>Settings for Leo Solarized Dark theme</vh>
 <v t="ekr.20180307010409.3"><vh>Colors: Logical colors</vh>
 <v t="ekr.20180307010409.4"><vh>@color log_black_color = @text-foreground</vh></v>
@@ -320,14 +320,12 @@ QLabel#minibufferLabel {
 }
 /* The minibuffer */
 QLineEdit#lineEdit {
-  color: @solarized-yellow; 
-  background: @dark-base04;
-  selection-color: @dark-base3; /* Yeah, it's a background color. */
-  selection-background-color: @solarized-red;
+  color: @solarized-blue;
   font-family: @font-family;
   font-size: 16px;
   font-weight: normal; /* normal,bold,100,..,900 */
   font-style: normal; /* normal,italic,oblique */
+  border: 1px solid @solarized-blue;
 }
 </t>
 <t tx="ekr.20180307010409.112">/* bookmarks plugin styling */
