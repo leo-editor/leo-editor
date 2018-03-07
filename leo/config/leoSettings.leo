@@ -102,29 +102,6 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
-<v t="tbrown.20131122091143.23828"><vh> OLD Color definitions (Do not change)</vh>
-<v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
-<v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
-<v t="ekr.20170304074559.27"><vh>Solarized color definitions</vh>
-<v t="ekr.20170304074559.29"><vh>@color solarized-base03 = #002b36</vh></v>
-<v t="ekr.20170304074559.30"><vh>@color solarized-base02 = #073642</vh></v>
-<v t="ekr.20170304074559.31"><vh>@color solarized-base01 = #586e75</vh></v>
-<v t="ekr.20170304074559.32"><vh>@color solarized-base00 = #657b83</vh></v>
-<v t="ekr.20170304074559.33"><vh>@color solarized-base0 = #839496</vh></v>
-<v t="ekr.20170304074559.34"><vh>@color solarized-base1 = #93a1a1</vh></v>
-<v t="ekr.20170304074559.35"><vh>@color solarized-base2 = #eee8d5</vh></v>
-<v t="ekr.20170304074559.36"><vh>@color solarized-base3 = #fdf6e3</vh></v>
-<v t="ekr.20170304074559.37"><vh>@color solarized-yellow = #b58900</vh></v>
-<v t="ekr.20170304074559.38"><vh>@color solarized-orange = #cb4b16</vh></v>
-<v t="ekr.20170304074559.39"><vh>@color solarized-red = #dc322f</vh></v>
-<v t="ekr.20170304074559.40"><vh>@color solarized-magenta = #d33682</vh></v>
-<v t="ekr.20170304074559.41"><vh>@color solarized-violet = #6c71c4</vh></v>
-<v t="ekr.20170304074559.42"><vh>@color solarized-blue = #268bd2</vh></v>
-<v t="ekr.20170304074559.43"><vh>@color solarized-cyan = #2aa198</vh></v>
-<v t="ekr.20170304074559.44"><vh>@color solarized-green = #859900</vh></v>
-</v>
-<v t="ekr.20170307055039.1"><vh>Solarized color reference</vh></v>
-</v>
 <v t="ekr.20170304074559.1"><vh>Themes</vh>
 <v t="ekr.20180306170707.1"><vh>Older themes</vh>
 <v t="ekr.20140912072521.19160"><vh>@data qt-gui-plugin-style-sheet</vh>
@@ -989,6 +966,10 @@
 </v>
 <v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20180306144001.1"><vh> Color definitions</vh>
+<v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
+<v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
+<v t="ekr.20170307055039.1"><vh>Solarized color reference</vh></v>
+<v t="ekr.20180307005901.1"><vh>Solarized colors</vh>
 <v t="ekr.20180306144001.9"><vh>@color solarized-base0 = #fdffdd</vh></v>
 <v t="ekr.20180306144001.8"><vh>@color solarized-base00 = #657b83</vh></v>
 <v t="ekr.20180306144001.7"><vh>@color solarized-base01 = #586e75</vh></v>
@@ -1010,6 +991,26 @@
 <v t="ekr.20180306144001.17"><vh>@color solarized-violet = #6c71c4</vh></v>
 <v t="ekr.20180306144001.22"><vh>@color solarized-white = #fdf6e3 </vh></v>
 <v t="ekr.20180306144001.13"><vh>@color solarized-yellow = #b58900</vh></v>
+</v>
+</v>
+<v t="ekr.20180307005648.1"><vh> Solarized color definitions</vh>
+<v t="ekr.20180307005648.2"><vh>Reference</vh></v>
+<v t="ekr.20180307005648.3"><vh>@color solarized-base03 = #002b36</vh></v>
+<v t="ekr.20180307005648.4"><vh>@color solarized-base02 = #073642</vh></v>
+<v t="ekr.20180307005648.5"><vh>@color solarized-base01 = #586e75</vh></v>
+<v t="ekr.20180307005648.6"><vh>@color solarized-base00 = #657b83</vh></v>
+<v t="ekr.20180307005648.7"><vh>@color solarized-base0 = #839496</vh></v>
+<v t="ekr.20180307005648.8"><vh>@color solarized-base1 = #93a1a1</vh></v>
+<v t="ekr.20180307005648.9"><vh>@color solarized-base2 = #eee8d5</vh></v>
+<v t="ekr.20180307005648.10"><vh>@color solarized-base3 = #fdf6e3</vh></v>
+<v t="ekr.20180307005648.11"><vh>@color solarized-yellow = #b58900</vh></v>
+<v t="ekr.20180307005648.12"><vh>@color solarized-orange = #cb4b16</vh></v>
+<v t="ekr.20180307005648.13"><vh>@color solarized-red = #dc322f</vh></v>
+<v t="ekr.20180307005648.14"><vh>@color solarized-magenta = #d33682</vh></v>
+<v t="ekr.20180307005648.15"><vh>@color solarized-violet = #6c71c4</vh></v>
+<v t="ekr.20180307005648.16"><vh>@color solarized-blue = #268bd2</vh></v>
+<v t="ekr.20180307005648.17"><vh>@color solarized-cyan = #2aa198</vh></v>
+<v t="ekr.20180307005648.18"><vh>@color solarized-green = #859900</vh></v>
 </v>
 <v t="ekr.20180306155607.1"><vh> Logical colors</vh>
 <v t="ekr.20180306155615.1"><vh>@log_error_color = red</vh></v>
@@ -12294,7 +12295,6 @@ QLineEdit#lineEdit[style_class ~= 'minibuffer_error'] {
     background-color:   @minibuffer_warning_color;
 }
 </t>
-<t tx="ekr.20170304074559.27"></t>
 <t tx="ekr.20170304074559.270">/* ===== Buttons ===== */
 
 QPushButton {
@@ -12419,7 +12419,6 @@ QLineEdit#status2 {
     text-decoration: @bookmarks_current_decoration;
 }
 </t>
-<t tx="ekr.20170304074559.29"></t>
 <t tx="ekr.20170304074559.291">Sublime Text 2-like dark theme.
 </t>
 <t tx="ekr.20170304074559.292"></t>
@@ -12443,7 +12442,6 @@ Note: this setting can be overridden by the x_mode_fg_color settings.</t>
 #fdf5f5 A light pink.
 #f0fde1 A light green.
 #f9e6dd A light orange.</t>
-<t tx="ekr.20170304074559.30"></t>
 <t tx="ekr.20170304074559.300">Overrides body_text_foreground_color.</t>
 <t tx="ekr.20170304074559.301"></t>
 <t tx="ekr.20170304074559.302">Color for error messages written to the log window.</t>
@@ -12463,7 +12461,6 @@ Note: this setting can be overridden by the x_mode_fg_color settings.</t>
 #c6d3d7
 #ffffec # Same as outline.</t>
 <t tx="ekr.20170304074559.309"></t>
-<t tx="ekr.20170304074559.31"></t>
 <t tx="ekr.20170304074559.310"></t>
 <t tx="ekr.20170304074559.311"></t>
 <t tx="ekr.20170304074559.312"></t>
@@ -12486,7 +12483,6 @@ Background color must also be specified for either setting to take effect.</t>
 <t tx="ekr.20170304074559.319">Foreground color of selected text headline text in a headline that is being edited.
 
 Background must also be specified for either setting to take effect.</t>
-<t tx="ekr.20170304074559.32"></t>
 <t tx="ekr.20170304074559.320">Background color of selected text headline text in a headline that is being edited.
 
 Foreground must also be specified for either setting to take effect.</t>
@@ -12496,9 +12492,6 @@ LavenderBlush1
 #ffffe1 # a little too yellow.
 #ffffec
 LightSteelBlue1 # Good for testing.</t>
-<t tx="ekr.20170304074559.33"></t>
-<t tx="ekr.20170304074559.34"></t>
-<t tx="ekr.20170304074559.35"></t>
 <t tx="ekr.20170304074559.353"></t>
 <t tx="ekr.20170304074559.354"></t>
 <t tx="ekr.20170304074559.355"></t>
@@ -12507,7 +12500,6 @@ LightSteelBlue1 # Good for testing.</t>
 
 leo_dark theme 1
 */</t>
-<t tx="ekr.20170304074559.36"></t>
 <t tx="ekr.20170304074559.360">/* ===== Body pane ===== */
 
 QTextEdit#richTextEdit {
@@ -12663,7 +12655,6 @@ QSplitter::handle:hover {
     background-color: @splitter-hover-bg;
 }
 </t>
-<t tx="ekr.20170304074559.37"></t>
 <t tx="ekr.20170304074559.374">QScrollBar::horizontal {
     height: 7px;
 }
@@ -12696,7 +12687,6 @@ QLineEdit#status1, QLineEdit#status2 {
     border-width:       1px;
 }
 </t>
-<t tx="ekr.20170304074559.38"></t>
 <t tx="ekr.20170304074559.382">Sublime Text 2-like dark theme.
 
 This is like leo_dark_1, but more appealing on Mac
@@ -12717,7 +12707,6 @@ For some reason, colors in the text widget do not match the colors in the canvas
 <t tx="ekr.20170304074559.389">Foreground color of body text.  This setting *is* used in the QtGui.
 
 Note: this setting can be overridden by the x_mode_fg_color settings.</t>
-<t tx="ekr.20170304074559.39"></t>
 <t tx="ekr.20170304074559.390">Overrides body_text_background_color.
 
 #fdf5f5 A light pink.
@@ -12744,7 +12733,6 @@ Background color must also be specified for either setting to take effect.</t>
 <t tx="ekr.20170304074559.399">Foreground color of selected text headline text in a headline that is being edited.
 
 Background must also be specified for either setting to take effect.</t>
-<t tx="ekr.20170304074559.40"></t>
 <t tx="ekr.20170304074559.400">Background color of selected text headline text in a headline that is being edited.
 
 Foreground must also be specified for either setting to take effect.</t>
@@ -12771,14 +12759,10 @@ LightSteelBlue1 # Good for testing.</t>
 #d2cad0
 #c6d3d7
 #ffffec # Same as outline.</t>
-<t tx="ekr.20170304074559.41"></t>
 <t tx="ekr.20170304074559.410"></t>
 <t tx="ekr.20170304074559.411"></t>
 <t tx="ekr.20170304074559.412"></t>
 <t tx="ekr.20170304074559.413"># All colors are solarized colors, except for 'red', 'white', etc.</t>
-<t tx="ekr.20170304074559.42"></t>
-<t tx="ekr.20170304074559.43"></t>
-<t tx="ekr.20170304074559.44"></t>
 <t tx="ekr.20170304074559.444"></t>
 <t tx="ekr.20170304074559.445"></t>
 <t tx="ekr.20170304074559.446"></t>
@@ -15839,6 +15823,75 @@ The following settings specify the indicators.  You can use an absolute path, or
 - Your home directory or
 - Leo's leo/Icons directory
 </t>
+<t tx="ekr.20180307005648.1"></t>
+<t tx="ekr.20180307005648.10"></t>
+<t tx="ekr.20180307005648.11"></t>
+<t tx="ekr.20180307005648.12"></t>
+<t tx="ekr.20180307005648.13"></t>
+<t tx="ekr.20180307005648.14"></t>
+<t tx="ekr.20180307005648.15"></t>
+<t tx="ekr.20180307005648.16"></t>
+<t tx="ekr.20180307005648.17"></t>
+<t tx="ekr.20180307005648.18"></t>
+<t tx="ekr.20180307005648.2">For both light and dark
+=======================
+
+blue      #268bd2
+cyan      #2aa198 
+green     #859900
+magenta   #d33682
+orange    #cb4b16
+red       #dc322f
+violet    #6c71c4
+yellow    #b58900
+
+
+blue      #268bd2  4/4 blue      33 #0087ff 55 -10 -45  38 139 210 205  82  82
+cyan      #2aa198  6/6 cyan      37 #00afaf 60 -35 -05  42 161 152 175  74  63
+green     #859900  2/2 green     64 #5f8700 60 -20  65 133 153   0  68 100  60
+magenta   #d33682  5/5 magenta  125 #af005f 50  65 -05 211  54 130 331  74  83
+orange    #cb4b16  9/3 brred    166 #d75f00 50  50  55 203  75  22  18  89  80
+red       #dc322f  1/1 red      160 #d70000 50  65  45 220  50  47   1  79  86
+violet    #6c71c4 13/5 brmagenta 61 #5f5faf 50  15 -45 108 113 196 237  45  77
+yellow    #b58900  3/3 yellow   136 #af8700 60  10  65 181 137   0  45 100  71
+
+
+base03    #002b36  8/4 brblack  234 #1c1c1c 15 -12 -12   0  43  54 193 100  21
+base02    #073642  0/4 black    235 #262626 20 -12 -12   7  54  66 192  90  26
+base01    #586e75 10/7 brgreen  240 #585858 45 -07 -07  88 110 117 194  25  46
+base00    #657b83 11/7 bryellow 241 #626262 50 -07 -07 101 123 131 195  23  51
+base0     #839496 12/6 brblue   244 #808080 60 -06 -03 131 148 150 186  13  59
+base1     #93a1a1 14/4 brcyan   245 #8a8a8a 65 -05 -02 147 161 161 180   9  63
+base2     #eee8d5  7/7 white    254 #e4e4e4 92 -00  10 238 232 213  44  11  93
+base3     #fdf6e3 15/7 brwhite  230 #ffffd7 97  00  10 253 246 227  44  10  99
+
+Dark
+====
+
+    base1 optional emphasized content (keywords)
+  * base0 default (body text)
+    
+    base01 comments
+    base02 background highlights (selected background)
+  * base03 background
+    
+Light
+=====
+
+    base01 optional emphasized content (keywords)
+  * base00 default (body text)
+    base1 comments
+    base2 background highlights (selected background)
+  * base3 background
+</t>
+<t tx="ekr.20180307005648.3"></t>
+<t tx="ekr.20180307005648.4"></t>
+<t tx="ekr.20180307005648.5"></t>
+<t tx="ekr.20180307005648.6"></t>
+<t tx="ekr.20180307005648.7"></t>
+<t tx="ekr.20180307005648.8"></t>
+<t tx="ekr.20180307005648.9"></t>
+<t tx="ekr.20180307005901.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
@@ -16091,27 +16144,6 @@ The string must be only two integers, separated by spaces and or commas.
 Dev. note: this setting is new (201309) and can't be replaced by the
 stylesheet, the other settings in this group should probably be handled
 by the stylesheet and could be considered for removal.</t>
-<t tx="tbrown.20131122091143.23828">This section defines color values not necessarily defined by Qt.
-
-**Please don't change the following definitions**, but feel free to add your own color names in myLeoSettings.leo.
-
-
-For example, you can use @LeoYellow instead of #ffffec
-
-Leo style sheets now support all colors names in Leo's color_db, defined in leoColor.py. Case is not important in such definitions.
-
-To see the names for the colors, click the pick-color-name button. This creates a color picker in the icon area.
-
-For example, the following setting works without any explicit definition of mistyrose2:
-    
-    @color head-bg = @mistyrose2
-    
-These colors are (mostly) the same as: http://www.yourhtmlsource.com/stylesheets/namedcolours.html
-
-A color map for these colors: http://leo-editor.github.io/snippets/colormap.html
-Hover over a color to get Leo's color name for each color.
-
-</t>
 <t tx="tbrown.20131122091143.23829"></t>
 <t tx="tbrown.20131122091143.23833"></t>
 <t tx="tbrown.20131122091143.23834"></t>
