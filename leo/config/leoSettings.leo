@@ -112,22 +112,24 @@
 <v t="ekr.20180306155628.1"><vh>@log_warning_color = red</vh></v>
 </v>
 <v t="ekr.20180307005648.1"><vh>Solarized color definitions</vh>
-<v t="ekr.20180307005648.3"><vh>@color solarized-base03 = #002b36</vh></v>
-<v t="ekr.20180307005648.4"><vh>@color solarized-base02 = #073642</vh></v>
-<v t="ekr.20180307005648.5"><vh>@color solarized-base01 = #586e75</vh></v>
-<v t="ekr.20180307005648.6"><vh>@color solarized-base00 = #657b83</vh></v>
 <v t="ekr.20180307005648.7"><vh>@color solarized-base0 = #839496</vh></v>
+<v t="ekr.20180307005648.6"><vh>@color solarized-base00 = #657b83</vh></v>
+<v t="ekr.20180307005648.5"><vh>@color solarized-base01 = #586e75</vh></v>
+<v t="ekr.20180307005648.4"><vh>@color solarized-base02 = #073642</vh></v>
+<v t="ekr.20180307005648.3"><vh>@color solarized-base03 = #002b36</vh></v>
 <v t="ekr.20180307005648.8"><vh>@color solarized-base1 = #93a1a1</vh></v>
 <v t="ekr.20180307005648.9"><vh>@color solarized-base2 = #eee8d5</vh></v>
 <v t="ekr.20180307005648.10"><vh>@color solarized-base3 = #fdf6e3</vh></v>
-<v t="ekr.20180307005648.11"><vh>@color solarized-yellow = #b58900</vh></v>
-<v t="ekr.20180307005648.12"><vh>@color solarized-orange = #cb4b16</vh></v>
-<v t="ekr.20180307005648.13"><vh>@color solarized-red = #dc322f</vh></v>
-<v t="ekr.20180307005648.14"><vh>@color solarized-magenta = #d33682</vh></v>
-<v t="ekr.20180307005648.15"><vh>@color solarized-violet = #6c71c4</vh></v>
+<v t="ekr.20180307030442.1"><vh>@color solarized-black = #000005</vh></v>
 <v t="ekr.20180307005648.16"><vh>@color solarized-blue = #268bd2</vh></v>
 <v t="ekr.20180307005648.17"><vh>@color solarized-cyan = #2aa198</vh></v>
 <v t="ekr.20180307005648.18"><vh>@color solarized-green = #859900</vh></v>
+<v t="ekr.20180307005648.14"><vh>@color solarized-magenta = #d33682</vh></v>
+<v t="ekr.20180307005648.12"><vh>@color solarized-orange = #cb4b16</vh></v>
+<v t="ekr.20180307005648.13"><vh>@color solarized-red = #dc322f</vh></v>
+<v t="ekr.20180307005648.15"><vh>@color solarized-violet = #6c71c4</vh></v>
+<v t="ekr.20180307030430.1"><vh>@color solarized-white = #fdf6e3 </vh></v>
+<v t="ekr.20180307005648.11"><vh>@color solarized-yellow = #b58900</vh></v>
 </v>
 <v t="ekr.20170307055039.1"><vh>Solarized color reference</vh></v>
 </v>
@@ -11724,6 +11726,8 @@ Use different names instead.</t>
 <t tx="ekr.20180307005648.7"></t>
 <t tx="ekr.20180307005648.8"></t>
 <t tx="ekr.20180307005648.9"></t>
+<t tx="ekr.20180307030430.1"># Not an official solarized color: same as solorarized-base3</t>
+<t tx="ekr.20180307030442.1"># Not an official solarized color.  Same as dark-base-03</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
