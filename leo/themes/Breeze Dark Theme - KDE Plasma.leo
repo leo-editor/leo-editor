@@ -10,7 +10,7 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20180307012127.1"><vh>@settings</vh>
-<v t="ekr.20180307024753.1"><vh>@theme Breeze Dark</vh>
+<v t="ekr.20180307024753.1" a="E"><vh>@theme Breeze Dark</vh>
 <v t="ekr.20180307024753.2"><vh>Breeze Dark Color definitions</vh>
 <v t="ekr.20180307024753.3"><vh>@color dark-base06 = #3b0000</vh></v>
 <v t="ekr.20180307024753.4"><vh>@color dark-base05 = #003b00</vh></v>
@@ -24,8 +24,23 @@
 <v t="ekr.20180307024753.12"><vh>@color dark-base2 = #eee8d5</vh></v>
 <v t="ekr.20180307024753.13"><vh>@color dark-base3 = #fdf6e3</vh></v>
 </v>
-<v t="ekr.20180307024753.14"><vh>Settings for Leo Breeze Dark</vh>
-<v t="ekr.20180307024753.15"><vh>Colors: Syntax coloring</vh>
+<v t="ekr.20180307024753.14" a="E"><vh>Settings for Leo Breeze Dark</vh>
+<v t="ekr.20180307025136.1"><vh>Colors: Logical colors</vh>
+<v t="ekr.20180307025136.2"><vh>@color log_black_color = @text-foreground</vh></v>
+<v t="ekr.20180307025136.3"><vh>@color log_blue_color = @solarized-blue</vh></v>
+<v t="ekr.20180307025136.4"><vh>@color log_cyan_color = @solarized-cyan</vh></v>
+<v t="ekr.20180307025136.5"><vh>@color log_error_color = @solarized-red</vh></v>
+<v t="ekr.20180307025136.6"><vh>@color log_green_color = @solarized-green</vh></v>
+<v t="ekr.20180307025136.7"><vh>@color log_info_color = @solarized-blue</vh></v>
+<v t="ekr.20180307025136.8"><vh>@color log_magenta_color = @solarized-magenta</vh></v>
+<v t="ekr.20180307025136.9"><vh>@color log_orange_color = @solarized-orange</vh></v>
+<v t="ekr.20180307025136.10"><vh>@color log_red_color = @solarized-red</vh></v>
+<v t="ekr.20180307025136.11"><vh>@color log_violet_color = @solarized-violet</vh></v>
+<v t="ekr.20180307025136.12"><vh>@color log_warning_color_= @solarized-red</vh></v>
+<v t="ekr.20180307025136.13"><vh>@color log_white_color = @solarized-white</vh></v>
+<v t="ekr.20180307025136.14"><vh>@color log_yellow_color = @solarized-yellow</vh></v>
+</v>
+<v t="ekr.20180307024753.15" a="E"><vh>Colors: Syntax coloring</vh>
 <v t="ekr.20180307024753.16"><vh>Colors: defaults</vh>
 <v t="ekr.20180307024753.17"><vh>@color blank_color = grey</vh></v>
 <v t="ekr.20180307024753.18"><vh>@color tab_color = red</vh></v>
@@ -44,7 +59,7 @@
 <v t="ekr.20180307024753.31"><vh>@color comment3_color = #d33682</vh></v>
 <v t="ekr.20180307024753.32"><vh>@color comment4_color = #d33682</vh></v>
 </v>
-<v t="ekr.20180307024753.33"><vh>Colors: Leo constructs</vh>
+<v t="ekr.20180307024753.33" a="E"><vh>Colors: Leo constructs</vh>
 <v t="ekr.20180307024753.34"><vh>@color section_name_brackets_color = @solarized-blue</vh></v>
 <v t="ekr.20180307024753.35"><vh>@color null_color = #6c71c4</vh></v>
 <v t="ekr.20180307024753.36"><vh>@color operator_color = #6c71c4</vh></v>
@@ -669,5 +684,20 @@ url(/home/chris/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)</t>
 <t tx="ekr.20180307024753.99">url(/home/chris/leo-editor/leo/Icons/nodes-dark/triangles/open.png)</t>
 <t tx="ekr.20180307024846.1">True: show user tips on startup.</t>
 <t tx="ekr.20180307024911.1"># For line_numbering plugin.</t>
+<t tx="ekr.20180307025136.1"></t>
+<t tx="ekr.20180307025136.10"></t>
+<t tx="ekr.20180307025136.11"></t>
+<t tx="ekr.20180307025136.12"></t>
+<t tx="ekr.20180307025136.13"># Not an official solarized color: same as solorarized-base3</t>
+<t tx="ekr.20180307025136.14"></t>
+<t tx="ekr.20180307025136.2">Use a light color, not black!
+@solarized-white</t>
+<t tx="ekr.20180307025136.3"></t>
+<t tx="ekr.20180307025136.4"></t>
+<t tx="ekr.20180307025136.5"></t>
+<t tx="ekr.20180307025136.6"></t>
+<t tx="ekr.20180307025136.7"></t>
+<t tx="ekr.20180307025136.8"></t>
+<t tx="ekr.20180307025136.9"></t>
 </tnodes>
 </leo_file>
