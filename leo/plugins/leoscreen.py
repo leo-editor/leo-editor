@@ -406,6 +406,7 @@ class leoscreen_Controller(object):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
         out, err = proc.communicate()
+        out = out.decode('utf-8')
 
         screens = [[('CURRENT: ' if i == self.use_screen else '')+i, False, i]
                    for i in out.split('\n') if i.startswith('\t')]
