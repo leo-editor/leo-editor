@@ -229,7 +229,7 @@ class PyInterp(QtWidgets.QTextEdit):
             return True
 
         return False
-    #@+node:peckj.20150428142729.19: *3* keyPressEvent
+    #@+node:peckj.20150428142729.19: *3* keyPressEvent & helper
     def keyPressEvent(self, event):
         qt = QtCore.Qt
         if event.key() == qt.Key_Tab:
@@ -281,59 +281,68 @@ class PyInterp(QtWidgets.QTextEdit):
                 return None
 
         if event.key() in [qt.Key_Return, qt.Key_Enter]:
-            # set cursor to end of line to avoid line splitting
-            textCursor = self.textCursor()
-            position   = len(self.document().toPlainText())
-            textCursor.setPosition(position)
-            self.setTextCursor(textCursor)
-
-            line = str(self.document().lastBlock().text())[4:] # remove marker
-            line.rstrip()
-            self.historyIndex = -1
-
-            if self.customCommands(line):
-                return None
-            else:
-                try:
-                    # pylint: disable=pointless-statement
-                    line[-1]
-                    self.haveLine = True
-                    if line[-1] == ':':
-                        self.multiLine = True
-                    self.history.insert(0, line)
-                except Exception:
-                    self.haveLine = False
-
-                if self.haveLine and self.multiLine: # multi line command
-                    self.command += line + '\n' # + command and line
-                    self.append('') # move down one line
-                    self.marker() # handle marker style
-                    return None
-
-                if self.haveLine and not self.multiLine: # one line command
-                    self.command = line # line is the command
-                    self.append('') # move down one line
-                    self.interpreter.runIt(self.command)
-                    self.command = '' # clear command
-                    self.marker() # handle marker style
-                    return None
-
-                if self.multiLine and not self.haveLine: #  multi line done
-                    self.append('') # move down one line
-                    self.interpreter.runIt(self.command)
-                    self.command = '' # clear command
-                    self.multiLine = False # back to single line
-                    self.marker() # handle marker style
-                    return None
-
-                if not self.haveLine and not self.multiLine: # just enter
-                    self.append('')
-                    self.marker()
-                    return None
-                return None
-
+            self.doEnter(event)
+            return None
+            
         # allow all other key events
         super(PyInterp, self).keyPressEvent(event)
+    #@+node:ekr.20180307132016.1: *4* doEnter
+    def doEnter(self, event):
+        # set cursor to end of line to avoid line splitting
+        trace = False and not g.unitTesting
+        textCursor = self.textCursor()
+        position   = len(self.document().toPlainText())
+        textCursor.setPosition(position)
+        self.setTextCursor(textCursor)
+        lines = []
+        block = self.document().lastBlock()
+        # #792: python_console plugin doesn't handle copy/paste properly.
+        while block:
+            line = g.toUnicode(block.text())
+            block = block.previous()
+            done = g.match(line, 0, '>>>')
+            if done: line = line [4:] # remove marker
+            lines.insert(0, line.rstrip())
+            if done: break
+        if trace:
+            g.trace()
+            g.printObj(lines)
+        self.historyIndex = -1
+        if len(lines) > 1:
+            # #792: python_console plugin doesn't handle copy/paste properly.
+            self.append('')
+            self.command = '\n'.join(lines).rstrip() + '\n'
+            self.interpreter.runIt(self.command)
+            self.command = ''
+            self.marker()
+            return
+        if self.customCommands(line):
+            return None
+        self.haveLine = bool(line)
+        if self.haveLine:
+            self.history.insert(0, line)
+            if line[-1] == ':':
+                self.multiLine = True
+        g.trace(self.haveLine, self.multiLine, repr(line))
+        if self.haveLine:
+            if self.multiLine:
+                self.command += line + '\n' # + command and line
+                self.append('')
+            else:
+                self.command = line
+                self.append('')
+                self.interpreter.runIt(self.command)
+                self.command = ''
+        else:
+            if self.multiLine:
+                self.append('')
+                self.interpreter.runIt(self.command)
+                self.command = ''
+                self.multiLine = False # back to single line
+            else: # Do nothing.
+                self.append('')
+        self.marker()
+        return None
     #@+node:peckj.20150428142729.20: *3* focusInEvent
     def focusInEvent(self, event=None):
         # set stdout+stderr properly
