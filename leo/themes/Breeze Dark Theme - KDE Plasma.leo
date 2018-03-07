@@ -207,8 +207,6 @@ for s in table:
 @wrap
 @tabwidth -2
 
-*Important*: disable myLeoSettings.leo to test this file.
-
 By Chris George.
 Changed by EKR:
 - Changed @solarized-base to @dark-base everywhere.
