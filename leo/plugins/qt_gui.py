@@ -1894,13 +1894,11 @@ class StyleSheetManager(object):
         sheet = ''.join(aList1 + aList2)
         sheet = ssm.expand_css_constants(sheet)
         ssm.reload_settings(sheet=sheet)
-    #@+node:ekr.20180308110120.1: *4* ssm.set_theme_settings_from_settings_d(settings_d)
+    #@+node:ekr.20180308110120.1: *4* ssm.set_theme_settings_from_settings_d (experimental)
     def set_theme_settings_from_settings_d(self, settings_d):
-        '''
-        Set @color and @string settings *only* from settings_d,
-        a TypedDict whose values are GeneralSetting objects.
-        '''
+        '''Set @color and (maybe) @string settings from settings_d.'''
         c = self.c
+        # settingsDicst is a g.TypedDict whose values are g.GeneralSetting objects.
         for key in settings_d.d:
             setting = settings_d.get(key)
             if setting.kind in ('color','string',):
