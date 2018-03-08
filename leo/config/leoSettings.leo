@@ -106,10 +106,21 @@
 <v t="ekr.20180306144001.1"><vh> Color definitions</vh>
 <v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
 <v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
-<v t="ekr.20180306155607.1"><vh>Logical colors</vh>
-<v t="ekr.20180306155615.1"><vh>@log_error_color = red</vh></v>
-<v t="ekr.20180306155638.1"><vh>@log_info_color = blue</vh></v>
-<v t="ekr.20180306155628.1"><vh>@log_warning_color = red</vh></v>
+<v t="ekr.20180308050150.1"><vh>Logical colors</vh>
+<v t="ekr.20180308050150.2"><vh>@color log_black_color = black</vh></v>
+<v t="ekr.20180308050150.3"><vh>@color log_blue_color = blue</vh></v>
+<v t="ekr.20180308050150.15"><vh>@color log_cyan_color = cyan</vh></v>
+<v t="ekr.20180308050150.4"><vh>@color log_error_color = red</vh></v>
+<v t="ekr.20180308050150.5"><vh>@color log_green_color = green</vh></v>
+<v t="ekr.20180308050150.6"><vh>@color log_info_color = blue</vh></v>
+<v t="ekr.20180308050150.7"><vh>@color log_magenta_color = magenta</vh></v>
+<v t="ekr.20180308050150.8"><vh>@color log_note_color = blue</vh></v>
+<v t="ekr.20180308050150.9"><vh>@color log_orange_color = orange</vh></v>
+<v t="ekr.20180308050150.10"><vh>@color log_red_color = red</vh></v>
+<v t="ekr.20180308050150.11"><vh>@color log_violet_color = violet</vh></v>
+<v t="ekr.20180306155628.1"><vh>@color log_warning_color = red</vh></v>
+<v t="ekr.20180308050150.13"><vh>@color log_white_color = white</vh></v>
+<v t="ekr.20180308050150.14"><vh>@color log_yellow_color = yellow</vh></v>
 </v>
 <v t="ekr.20180307005648.1"><vh>Solarized color definitions</vh>
 <v t="ekr.20180307005648.7"><vh>@color solarized-base0 = #839496</vh></v>
@@ -11704,11 +11715,9 @@ Unicode chars like ▼ ▾ and … are typical choices for this text.
 
 Feel free to *add* to them.
 </t>
-<t tx="ekr.20180306155607.1">Default logical colors.  May be over-ridden in themes.</t>
-<t tx="ekr.20180306155615.1"></t>
 <t tx="ekr.20180306155628.1"></t>
-<t tx="ekr.20180306155638.1"></t>
 <t tx="ekr.20180307005648.1">Devs *must not* change these definitions, even within a specific theme!
+
 Use different names instead.</t>
 <t tx="ekr.20180307005648.10"></t>
 <t tx="ekr.20180307005648.11"></t>
@@ -11728,6 +11737,22 @@ Use different names instead.</t>
 <t tx="ekr.20180307005648.9"></t>
 <t tx="ekr.20180307030430.1"># Not an official solarized color: same as solorarized-base3</t>
 <t tx="ekr.20180307030442.1"># Not an official solarized color.  Same as dark-base-03</t>
+<t tx="ekr.20180308050150.1">These defaults settings ensure that legacy themes continue to work as before.
+
+May be overridden by themes.</t>
+<t tx="ekr.20180308050150.10"></t>
+<t tx="ekr.20180308050150.11"></t>
+<t tx="ekr.20180308050150.13"></t>
+<t tx="ekr.20180308050150.14"></t>
+<t tx="ekr.20180308050150.15"></t>
+<t tx="ekr.20180308050150.2"></t>
+<t tx="ekr.20180308050150.3"></t>
+<t tx="ekr.20180308050150.4"></t>
+<t tx="ekr.20180308050150.5"></t>
+<t tx="ekr.20180308050150.6"></t>
+<t tx="ekr.20180308050150.7"></t>
+<t tx="ekr.20180308050150.8"></t>
+<t tx="ekr.20180308050150.9"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
