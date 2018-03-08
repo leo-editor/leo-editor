@@ -5722,9 +5722,8 @@ def es(*args, **keys):
     }
     d = g.doKeywordArgs(keys, d)
     color = d.get('color')
-    if color == 'suppress': return # New in 4.3.
-    elif log and color is None:
-        color = g.actualColor('black')
+    if color == 'suppress':
+        return # New in 4.3.
     color = g.actualColor(color)
     tabName = d.get('tabName') or 'Log'
     newline = d.get('newline')
@@ -6132,16 +6131,27 @@ def actualColor(color):
     if not c or not c.config:
         return color
     # Don't change absolute colors.
-    if color.startswith('#'):
+    if color and color.startswith('#'):
         return color
     # #788: Translate colors to theme-defined colors.
-    if color in (None, 'black'):
+    if color is None:
+        # Prefer text_foreground_color'
         color2 = c.config.getColor('log_text_foreground_color')
         if trace: g.trace(repr(color), '=> text_foreground_color', color2)
-        if color2:
-            return color2
-        else:
-            color = 'black' # Try again with log_black_color.
+        if color2: return color2
+        # Fall back to log_black_color.
+        color2 = c.config.getColor('log_black_color')
+        if trace: g.trace(repr(color), '=> log_black_color', color2)
+        return color2 or 'black'
+    if color == 'black':
+        # Prefer log_black_color.
+        color2 = c.config.getColor('log_black_color')
+        if trace: g.trace(repr(color), '=> log_black_color', color2)
+        if color2: return color2
+        # Fall back to log_text_foreground_color.
+        color2 = c.config.getColor('log_text_foreground_color')
+        if trace: g.trace(repr(color), '=> text_foreground_color', color2)
+        return color2 or 'black'
     color2 = c.config.getColor('log_%s_color' % color)
     if trace: g.trace("log_%s_color" % (color), color2)
     return color2 or color
