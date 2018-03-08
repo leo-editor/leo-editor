@@ -6124,24 +6124,27 @@ tr = translateString
 #@+node:ekr.20120928142052.10116: *3* g.actualColor
 def actualColor(color):
     '''Return the actual color corresponding to the requested color.'''
+    trace = False and not g.unitTesting
     c = g.app.log and g.app.log.c
     if g.app.debug:
         return color
-    color1 = color
-    # #788: Translate colors to theme-defined colors.
-    if color is None:
-        color = 'black'
-    setting = 'log_%s_color' % color
     # Careful: c.config may not yet exist.
-    if c and c.config and setting:
-        color2 = c.config.getColor(setting)
-        if not color2:
-            # Let LeoQtLog.put do more translations.
-            color2 = color1
-    else:
-        # Let LeoQtLog.put do more translations.
-        color2 = color1
-    return color2
+    if not c or not c.config:
+        return color
+    # Don't change absolute colors.
+    if color.startswith('#'):
+        return color
+    # #788: Translate colors to theme-defined colors.
+    if color in (None, 'black'):
+        color2 = c.config.getColor('log_text_foreground_color')
+        if trace: g.trace(repr(color), '=> text_foreground_color', color2)
+        if color2:
+            return color2
+        else:
+            color = 'black' # Try again with log_black_color.
+    color2 = c.config.getColor('log_%s_color' % color)
+    if trace: g.trace("log_%s_color" % (color), color2)
+    return color2 or color
 #@+node:ekr.20060921100435: *3* g.CheckVersion & helpers
 # Simplified version by EKR: stringCompare not used.
 
