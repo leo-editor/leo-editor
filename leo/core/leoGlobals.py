@@ -5682,19 +5682,19 @@ def enl(tabName='Log'):
         log.putnl(tabName)
 #@+node:ekr.20100914094836.5892: *3* g.error, g.note, g.warning, g.red, g.blue
 def blue(*args, **keys):
-    g.es_print(color=g.actualColor('blue'), *args, **keys)
+    g.es_print(color='blue', *args, **keys)
 
 def error(*args, **keys):
-    g.es_print(color=g.actualColor('red'), *args, **keys)
+    g.es_print(color='error', *args, **keys)
 
 def note(*args, **keys):
-    g.es_print(color=g.actualColor('black'), *args, **keys)
+    g.es_print(color='note', *args, **keys)
 
 def red(*args, **keys):
-    g.es_print(color=g.actualColor('red'), *args, **keys)
+    g.es_print(color='red', *args, **keys)
 
 def warning(*args, **keys):
-    g.es_print(color=g.actualColor('blue'), *args, **keys)
+    g.es_print(color='warning', *args, **keys)
 #@+node:ekr.20070626132332: *3* g.es
 def es(*args, **keys):
     '''Put all non-keyword args to the log pane.
