@@ -33,6 +33,7 @@
 <v t="ekr.20180307031524.20"><vh>@color log_green_color = @solarized-green</vh></v>
 <v t="ekr.20180307031524.21"><vh>@color log_info_color = @solarized-blue</vh></v>
 <v t="ekr.20180307031524.22"><vh>@color log_magenta_color = @solarized-magenta</vh></v>
+<v t="ekr.20180308045116.1"><vh>@color log_note_color = @solarized-blue</vh></v>
 <v t="ekr.20180307031524.23"><vh>@color log_orange_color = @solarized-orange</vh></v>
 <v t="ekr.20180307031524.24"><vh>@color log_red_color = @solarized-red</vh></v>
 <v t="ekr.20180307031524.25"><vh>@color log_violet_color = @solarized-violet</vh></v>
@@ -697,5 +698,6 @@ valid values are: normal,bold,100,..,900
 <t tx="ekr.20180307031524.97">bold or regular</t>
 <t tx="ekr.20180307031524.98"></t>
 <t tx="ekr.20180307031524.99"></t>
+<t tx="ekr.20180308045116.1"></t>
 </tnodes>
 </leo_file>
