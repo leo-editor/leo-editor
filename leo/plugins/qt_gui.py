@@ -1719,6 +1719,32 @@ class StyleSheetManager(object):
         if top is None: top = self.c.frame.top
         master = top.leo_master or top
         return master
+    #@+node:ekr.20140916170549.19552: *3* ssm.get_style_sheet_from_settings
+    def get_style_sheet_from_settings(self):
+        '''
+        Scan for themes or @data qt-gui-plugin-style-sheet nodes.
+        Return the text of the relevant node.
+        '''
+        if 0: # not ready yet
+            c = self.c
+            d = c.config.settingsDict
+            for key in sorted(d.keys()):
+                gs = d.get(key) # A GeneralSetting object.
+                if gs.kind == 'string':
+                    setting = g.toUnicode(gs.setting)
+                    val = g.toUnicode(gs.val)
+                    if setting and val and val.startswith('color_theme'):
+                        sheet = setting
+                        break
+        else:
+            # No setting found
+            aList1 = self.get_data('qt-gui-plugin-style-sheet')
+            aList2 = self.get_data('qt-gui-user-style-sheet')
+            if aList2: aList1.extend(aList2)
+            sheet = ''.join(aList1)
+            sheet = self.expand_css_constants(sheet)
+        # g.trace(len(sheet))
+        return sheet
     #@+node:ekr.20140912110338.19365: *3* ssm.get_stylesheet & helpers
     def get_stylesheet(self):
         '''
@@ -1809,32 +1835,57 @@ class StyleSheetManager(object):
             data_p.b = stylesheet
             g.es("Stylesheet compiled")
         return stylesheet
-    #@+node:ekr.20140916170549.19552: *3* ssm.get_style_sheet_from_settings
-    def get_style_sheet_from_settings(self):
-        '''
-        Scan for themes or @data qt-gui-plugin-style-sheet nodes.
-        Return the text of the relevant node.
-        '''
-        if 0: # not ready yet
-            c = self.c
-            d = c.config.settingsDict
-            for key in sorted(d.keys()):
-                gs = d.get(key) # A GeneralSetting object.
-                if gs.kind == 'string':
-                    setting = g.toUnicode(gs.setting)
-                    val = g.toUnicode(gs.val)
-                    if setting and val and val.startswith('color_theme'):
-                        sheet = setting
-                        break
-        else:
-            # No setting found
-            aList1 = self.get_data('qt-gui-plugin-style-sheet')
-            aList2 = self.get_data('qt-gui-user-style-sheet')
-            if aList2: aList1.extend(aList2)
-            sheet = ''.join(aList1)
-            sheet = self.expand_css_constants(sheet)
-        # g.trace(len(sheet))
-        return sheet
+    #@+node:ekr.20180308102949.1: *3* ssm.load_theme_file & helper
+    def load_theme_file(self, path):
+        '''Load a theme file, without setting any actual settings.'''
+        trace = False and not g.unitTesting
+        lm, ssm = g.app.loadManager, self
+        path = ssm.find_theme_file(path)
+        if not path: return
+        # Read the theme file into c2, a hidden commander.
+        c2 = lm.openSettingsFile(path)
+        settings_d, junk_shortcuts_d = lm.createDefaultSettingsDicts()
+        settings_d, junk_shortcuts_d = lm.computeLocalSettings(
+            c2,
+            settings_d,
+            junk_shortcuts_d,
+            localFlag=False, # Don't care: affects only menus & shortcuts.
+        )
+        # Clear the cache entries for hidden commander.
+        g.app.forgetOpenFile(c2.fileName())
+        # Compute the final style sheet.
+        d1 = settings_d.get('qtguipluginstylesheet')
+        d2 = settings_d.get('qtguiuserstylesheet')
+        # pylint: disable=consider-using-ternary
+        aList1 = d1 and d1.val or []
+        aList2 = d2 and d2.val or []
+        if trace:
+            g.printObj(aList1[:20])
+            g.printObj(aList2[:20])
+        if aList2: aList1.extend(aList2)
+        sheet = ''.join(aList1)
+        sheet = ssm.expand_css_constants(sheet)
+        ssm.reload_settings(sheet=sheet)
+        print('done')
+            
+    #@+node:ekr.20180308103151.1: *4* ssm.find_theme_file
+    def find_theme_file(self, path):
+        trace = False and not g.unitTesting
+        join = g.os_path_finalize_join
+        home = g.app.homeDir
+        table = (
+            join(home, 'themes', path),
+            join(home, '.leo', 'themes', path),
+            join(g.app.loadDir,'..', 'themes', path),
+        )
+        for path2 in table:
+            if g.os_path_exists(path2):
+                if trace: g.trace('found', path2)
+                return path2
+            elif trace:
+                g.trace('not found', path2)
+        g.es_print('Theme not found:', path)
+        return None
     #@+node:ekr.20140912110338.19372: *3* ssm.munge
     def munge(self, stylesheet):
         '''
@@ -1854,16 +1905,21 @@ class StyleSheetManager(object):
         sheet = w.styleSheet()
         print('style sheet for: %s...\n\n%s' % (w, sheet))
     #@+node:ekr.20170222051716.1: *3* ssm.reload_settings
-    def reload_settings(self):
+    def reload_settings(self, sheet=None):
         '''
         Recompute and apply the stylesheet.
         Called automatically by the reload-settings commands.
         '''
+        trace = False and not g.unitTesting
         # g.trace('(StyleSheetManager)')
-        sheet = self.get_style_sheet_from_settings()
+        if not sheet:
+            sheet = self.get_style_sheet_from_settings()
         if sheet:
             w = self.get_master_widget()
+            if trace: g.trace(w, len(sheet))
             w.setStyleSheet(sheet)
+        elif trace:
+            g.trace('**no style sheet**')
         # self.c.redraw()
 
     reloadSettings = reload_settings

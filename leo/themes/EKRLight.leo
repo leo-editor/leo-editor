@@ -146,6 +146,8 @@ for s in table:
 <t tx="ekr.20180307210716.32">/*
 @language css
 
+    @data qt-gui-plugin-style-sheet: EKR Light
+
     =========== Leo's new, fully parameterized, stylesheet. ===========
     
     This stylesheet is responsible for most of Leo's appearance.
@@ -556,7 +558,9 @@ QStackedWidget {
 }
 </t>
 <t tx="ekr.20180307210716.51">/*
-@language css EKR: qt-gui-user-style-sheet
+@language css
+
+qt-gui-user-style-sheet: EKR Light
 
 solarized-base3 (lightest) provides contrast in the main window.
 

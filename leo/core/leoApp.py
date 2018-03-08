@@ -1946,9 +1946,6 @@ class LoadManager(object):
             d1 = lm.globalSettingsDict.copy(settingsName)
             d2 = lm.globalShortcutsDict.copy(shortcutsName)
         return PreviousSettings(d1, d2)
-    #@+node:ekr.20180305085904.1: *4* LM.loadThemeFile
-    def loadThemeFile(self, path):
-        g.trace(path)
     #@+node:ekr.20120214132927.10723: *4* LM.mergeShortcutsDicts & helpers
     def mergeShortcutsDicts(self, c, old_d, new_d, localFlag):
         '''
