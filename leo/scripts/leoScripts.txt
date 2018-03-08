@@ -3415,7 +3415,7 @@ from _winreg import *
 pyexe = g.sys.executable
 pywexe = pyexe.replace('python.exe', 'pythonw.exe')
 launchLeo = g.os_path_finalize_join(g.computeLeoDir(), '../launchLeo.py')
-icon = "%s\Icons\LeoDoc.ico" % g.computeLeoDir()
+icon = r"%s\Icons\LeoDoc.ico" % g.computeLeoDir()
 
 # use 'pywexe' instead to not open a console window when launching Leo
 register_leo(pywexe, launchLeo, icon)
@@ -3483,7 +3483,7 @@ except WindowsError as e:
 '''This is what the resulting registry key should look like, once exported from
 regedit. The translated hex code is:
     
-    "d:\Python27\python.exe" "C:\Users\Matt\Dropbox\apps\leo-editor\launchLeo.py" "%1" %*
+    "d:\\Python27\\python.exe" "C:\\Users\\Matt\\Dropbox\\apps\\leo-editor\\launchLeo.py" "%1" %*
     
 '''
 @
