@@ -5746,6 +5746,8 @@ def es(*args, **keys):
             else: log.newlines = 0
     else:
         app.logWaiting.append((s, color, newline, d),)
+        
+log = es
 
 #@+node:ekr.20141107085700.4: *3* g.es_debug
 def es_debug(*args, **keys):
@@ -5906,8 +5908,8 @@ def internalError(*args):
     g.es_print(*args)
     g.es_print('Called from', ', '.join(callers[: -1]))
     g.es_print('Please report this error to Leo\'s developers', color='red')
-#@+node:ekr.20150127060254.5: *3* g.log
-def log(s, fn=None):
+#@+node:ekr.20150127060254.5: *3* g.log_to_file
+def log_to_file(s, fn=None):
     '''Write a message to ~/test/leo_log.txt.'''
     # g.trace(s)
     if fn is None:
