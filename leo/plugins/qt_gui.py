@@ -1835,13 +1835,13 @@ class StyleSheetManager(object):
             data_p.b = stylesheet
             g.es("Stylesheet compiled")
         return stylesheet
-    #@+node:ekr.20180308102949.1: *3* ssm.load_theme_file & helper
+    #@+node:ekr.20180308102949.1: *3* ssm.load_theme_file & helpers
     def load_theme_file(self, path):
         '''Load a theme file, without setting any actual settings.'''
-        trace = False and not g.unitTesting
-        lm, ssm = g.app.loadManager, self
-        path = ssm.find_theme_file(path)
+        lm = g.app.loadManager
+        path = self.find_theme_file(path)
         if not path: return
+        old_commanders = g.app.commanders()
         # Read the theme file into c2, a hidden commander.
         c2 = lm.openSettingsFile(path)
         settings_d, junk_shortcuts_d = lm.createDefaultSettingsDicts()
@@ -1852,22 +1852,10 @@ class StyleSheetManager(object):
             localFlag=False, # Don't care: affects only menus & shortcuts.
         )
         # Clear the cache entries for hidden commander.
-        g.app.forgetOpenFile(c2.fileName())
-        # Compute the final style sheet.
-        d1 = settings_d.get('qtguipluginstylesheet')
-        d2 = settings_d.get('qtguiuserstylesheet')
-        # pylint: disable=consider-using-ternary
-        aList1 = d1 and d1.val or []
-        aList2 = d2 and d2.val or []
-        if trace:
-            g.printObj(aList1[:20])
-            g.printObj(aList2[:20])
-        if aList2: aList1.extend(aList2)
-        sheet = ''.join(aList1)
-        sheet = ssm.expand_css_constants(sheet)
-        ssm.reload_settings(sheet=sheet)
-        print('done')
-            
+        if c2 not in old_commanders:
+            g.app.forgetOpenFile(c2.fileName())
+        self.set_style_sheet_from_settings_d(settings_d)
+        self.set_theme_settings_from_settings_d(settings_d)
     #@+node:ekr.20180308103151.1: *4* ssm.find_theme_file
     def find_theme_file(self, path):
         trace = False and not g.unitTesting
@@ -1886,6 +1874,46 @@ class StyleSheetManager(object):
                 g.trace('not found', path2)
         g.es_print('Theme not found:', path)
         return None
+    #@+node:ekr.20180308105850.1: *4* ssm.set_style_sheet_from_settings_d
+
+    def set_style_sheet_from_settings_d(self, settings_d):
+        '''
+        Compute and set the style sheet from settings_d,
+        a TypedDict whose values are GeneralSetting objects.
+        '''
+        trace = False and not g.unitTesting
+        ssm = self
+        d1 = settings_d.get('qtguipluginstylesheet')
+        d2 = settings_d.get('qtguiuserstylesheet')
+        # pylint: disable=consider-using-ternary
+        aList1 = d1 and d1.val or []
+        aList2 = d2 and d2.val or []
+        if trace:
+            g.printObj(aList1[:20])
+            g.printObj(aList2[:20])
+        sheet = ''.join(aList1 + aList2)
+        sheet = ssm.expand_css_constants(sheet)
+        ssm.reload_settings(sheet=sheet)
+    #@+node:ekr.20180308110120.1: *4* ssm.set_theme_settings_from_settings_d(settings_d)
+    def set_theme_settings_from_settings_d(self, settings_d):
+        '''
+        Set @color and @string settings *only* from settings_d,
+        a TypedDict whose values are GeneralSetting objects.
+        '''
+        c = self.c
+        for key in settings_d.d:
+            setting = settings_d.get(key)
+            if setting.kind in ('color','string',):
+                if setting.val not in (None, 'None', 'none'):
+                    print('setting: %6s %20s %s' % (setting.kind, setting.val, key))
+                    # Setting colors does appear to work.
+                    if setting.kind == 'color':
+                        gs = g.GeneralSetting(
+                            kind=setting.kind,
+                            val=setting.val,
+                            tag='theme',
+                        )
+                        c.config.settingsDict.replace(key, gs)
     #@+node:ekr.20140912110338.19372: *3* ssm.munge
     def munge(self, stylesheet):
         '''

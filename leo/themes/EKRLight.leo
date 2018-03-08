@@ -10,6 +10,7 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20180307205349.2"><vh>@settings</vh>
+<v t="ekr.20180308114355.1"><vh>@bool minibuffer_find_mode = False</vh></v>
 <v t="ekr.20180307205435.1"><vh>@bool show-tips = False</vh></v>
 <v t="ekr.20180307205445.1"><vh>@bool use-gutter = False</vh></v>
 <v t="ekr.20180307210716.1"><vh>@theme EKR Light</vh>
@@ -32,11 +33,12 @@
 </v>
 <v t="ekr.20180307210716.18"><vh>Colors: Text</vh>
 <v t="ekr.20180307210716.19"><vh>@color log-bg = pink</vh></v>
+<v t="ekr.20180308121211.1"><vh>@color log_text_foreground_color = black</vh></v>
 </v>
 <v t="ekr.20180307210716.20"><vh>Colors: Widgets</vh>
 <v t="ekr.20180307210716.21"><vh>@color find-tab-bg = pink</vh></v>
-<v t="ekr.20180307210716.22"><vh>@color focused-border-focus-color = blue</vh></v>
-<v t="ekr.20180307210716.23"><vh>@color focused-border-unfocus-color = @solarized-base2</vh></v>
+<v t="ekr.20180307210716.22"><vh>@@@color focused-border-focus-color = blue</vh></v>
+<v t="ekr.20180307210716.23"><vh>@@@color focused-border-unfocus-color = red</vh></v>
 <v t="ekr.20180307210716.24"><vh>@color frame-bg = pink</vh></v>
 <v t="ekr.20180307210716.25"><vh>@color stacked-widget-bg = pink</vh></v>
 <v t="ekr.20180307210716.26"><vh>@color stacked-widget-border-color = pink</vh></v>
@@ -80,10 +82,16 @@
 </v>
 </v>
 </v>
+<v t="ekr.20180308122148.1"><vh>----- To do</vh></v>
+<v t="ekr.20180308122035.1"><vh>*** Wrong icon background</vh></v>
+<v t="ekr.20180307210716.53"></v>
+<v t="ekr.20180308121211.1"></v>
+<v t="ekr.20180308122011.1"><vh>----- Tests</vh></v>
 <v t="ekr.20180307205420.1"><vh>Syntax coloring test</vh>
 <v t="ekr.20180307205420.2"><vh>&lt;&lt; defined section &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20180307205426.1"><vh>Test g.es(color=*)</vh></v>
+<v t="ekr.20180308121517.1"><vh>g.error/note/warning test</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180307205349.2"></t>
@@ -133,7 +141,9 @@ for s in table:
 <t tx="ekr.20180307210716.20"></t>
 <t tx="ekr.20180307210716.21"># Not used.</t>
 <t tx="ekr.20180307210716.22"></t>
-<t tx="ekr.20180307210716.23"></t>
+<t tx="ekr.20180307210716.23"># Not sure this dereferences.
+#eee8d5
+@solarized-base2</t>
 <t tx="ekr.20180307210716.24"></t>
 <t tx="ekr.20180307210716.25"></t>
 <t tx="ekr.20180307210716.26"></t>
@@ -142,7 +152,8 @@ for s in table:
 <t tx="ekr.20180307210716.29"></t>
 <t tx="ekr.20180307210716.3"></t>
 <t tx="ekr.20180307210716.30"></t>
-<t tx="ekr.20180307210716.31"></t>
+<t tx="ekr.20180307210716.31">@language css
+</t>
 <t tx="ekr.20180307210716.32">/*
 @language css
 
@@ -289,7 +300,7 @@ QTextEdit:focus {
 }
 
 QTextEdit {
-    border-color:               @focused-border-unfocus-color; 
+    /* border-color:            @focused-border-unfocus-color;  */
     border-style:               @focused-border-style;
     border-width:               @focused-border-width; 
     background-color:           @log-bg;
@@ -597,13 +608,13 @@ QTextEdit#log-widget {
   border-color: @log_text_background_color;
 }
 LeoQTreeWidget#treeWidget {
-  border-color: @dark-base03;
+  border-color: @dark-base03; */
 }
 QTextEdit#richTextEdit {
   border-color: @text-background;
 }
 QTextEdit:focus#log-widget,LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#richTextEdit {
-  border-color: blue;
+  border-color: red;
 }
 </t>
 <t tx="ekr.20180307210716.54">QMenu,
@@ -646,5 +657,18 @@ QTextEdit#richTextEdit {
 <t tx="ekr.20180307210716.7"></t>
 <t tx="ekr.20180307210716.8"></t>
 <t tx="ekr.20180307210716.9"></t>
+<t tx="ekr.20180308114355.1"></t>
+<t tx="ekr.20180308121211.1"></t>
+<t tx="ekr.20180308121517.1"># g.cls()
+g.error('error')
+g.note('note')
+g.warning('warning')
+g.blue('blue')
+g.red('red')
+g.es_print('test')
+g.es_print('black',color='black')</t>
+<t tx="ekr.20180308122011.1"></t>
+<t tx="ekr.20180308122035.1"></t>
+<t tx="ekr.20180308122148.1"></t>
 </tnodes>
 </leo_file>
