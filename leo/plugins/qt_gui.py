@@ -1847,8 +1847,10 @@ class StyleSheetManager(object):
         # Read the theme file into c2, a hidden commander.
         c2 = lm.openSettingsFile(path)
         # Get settings *without* application defaults.
-        junk_shortcuts_d, settings_d = lm.createSettingsDicts(c2, localFlag=False)
-            # localFlag doesn't matter: it affects only menus & shortcuts.
+        junk_shortcuts_d, settings_d = lm.createSettingsDicts(c2,
+            localFlag=False, # doesn't matter: it affects only menus & shortcuts.
+            theme=True, # start with @theme node.
+        )
         assert isinstance(settings_d, g.TypedDict), repr(settings_d)
         # Clear the cache entries for hidden commander.
         if c2 not in old_commanders:

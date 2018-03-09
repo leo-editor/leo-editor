@@ -1909,11 +1909,11 @@ class LoadManager(object):
             keyType=type('s'), valType=g.ShortcutInfo)
         return settings_d, shortcuts_d
     #@+node:ekr.20120214165710.10726: *4* LM.createSettingsDicts
-    def createSettingsDicts(self, c, localFlag):
+    def createSettingsDicts(self, c, localFlag, theme=False):
         import leo.core.leoConfig as leoConfig
         parser = leoConfig.SettingsTreeParser(c, localFlag)
             # returns the *raw* shortcutsDict, not a *merged* shortcuts dict.
-        shortcutsDict, settingsDict = parser.traverse()
+        shortcutsDict, settingsDict = parser.traverse(theme=theme)
         return shortcutsDict, settingsDict
     #@+node:ekr.20120223062418.10414: *4* LM.getPreviousSettings
     def getPreviousSettings(self, fn):
