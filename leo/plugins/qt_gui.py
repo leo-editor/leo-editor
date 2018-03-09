@@ -1485,7 +1485,7 @@ class StyleSheetManager(object):
     }
     '''
     #@+node:ekr.20140915062551.19510: *3* ssm.expand_css_constants & helpers
-    def expand_css_constants(self, sheet, font_size_delta=None):
+    def expand_css_constants(self, sheet, font_size_delta=None, settingsDict=None):
         '''Expand @ settings into their corresponding constants.'''
         trace = False and not g.unitTesting
         trace_color = False
@@ -1494,7 +1494,9 @@ class StyleSheetManager(object):
         c = self.c
         whine = None
         # Warn once if the stylesheet uses old style style-sheet comment
-        constants, deltas = self.adjust_sizes(font_size_delta)
+        if settingsDict is None:
+            settingsDict = c.config.settingsDict
+        constants, deltas = self.adjust_sizes(font_size_delta, settingsDict)
         passes = 10
         to_do = self.find_constants_referenced(sheet)
         if trace and trace_to_do:
@@ -1519,7 +1521,7 @@ class StyleSheetManager(object):
                 else:
                     key = g.app.config.canonicalizeSettingName(const[1:])
                         # lowercase, without '@','-','_', etc.
-                    value = c.config.settingsDict.get(key)
+                    value = settingsDict.get(key)
                     if value is not None:
                         # New in Leo 5.5: Do NOT add comments here.
                         # They RUIN style sheets if they appear in a nested comment!
@@ -1559,7 +1561,7 @@ class StyleSheetManager(object):
         if trace and trace_result: g.trace('returns...\n', sheet)
         return sheet
     #@+node:ekr.20150617085045.1: *4* ssm.adjust_sizes
-    def adjust_sizes(self, font_size_delta):
+    def adjust_sizes(self, font_size_delta, settingsDict):
         '''Adjust constants to reflect c._style_deltas.'''
         trace = False and not g.unitTesting
         c = self.c
@@ -1577,7 +1579,7 @@ class StyleSheetManager(object):
             passes = 10
             while passes and val and val.startswith('@'):
                 key = g.app.config.canonicalizeSettingName(val[1:])
-                val = c.config.settingsDict.get(key)
+                val = settingsDict.get(key)
                 if val:
                     val = val.val
                 passes -= 1
@@ -1844,18 +1846,19 @@ class StyleSheetManager(object):
         old_commanders = g.app.commanders()
         # Read the theme file into c2, a hidden commander.
         c2 = lm.openSettingsFile(path)
-        settings_d, junk_shortcuts_d = lm.createDefaultSettingsDicts()
-        settings_d, junk_shortcuts_d = lm.computeLocalSettings(
-            c2,
-            settings_d,
-            junk_shortcuts_d,
-            localFlag=False, # Don't care: affects only menus & shortcuts.
-        )
+        # Get settings *without* application defaults.
+        junk_shortcuts_d, settings_d = lm.createSettingsDicts(c2, localFlag=False)
+            # localFlag doesn't matter: it affects only menus & shortcuts.
+        assert isinstance(settings_d, g.TypedDict), repr(settings_d)
         # Clear the cache entries for hidden commander.
         if c2 not in old_commanders:
             g.app.forgetOpenFile(c2.fileName())
+        # Do the real work.
         self.set_style_sheet_from_settings_d(settings_d)
         self.set_theme_settings_from_settings_d(settings_d)
+        # Update the global settings from the settings_d.
+        # self.c.config.settingsDict.update(settings_d)
+
     #@+node:ekr.20180308103151.1: *4* ssm.find_theme_file
     def find_theme_file(self, path):
         trace = False and not g.unitTesting
@@ -1892,18 +1895,20 @@ class StyleSheetManager(object):
             g.printObj(aList1[:20])
             g.printObj(aList2[:20])
         sheet = ''.join(aList1 + aList2)
-        sheet = ssm.expand_css_constants(sheet)
+        sheet = ssm.expand_css_constants(sheet) ### ,settingsDict=settings_d)
+            # Causes problems.
         ssm.reload_settings(sheet=sheet)
     #@+node:ekr.20180308110120.1: *4* ssm.set_theme_settings_from_settings_d (experimental)
     def set_theme_settings_from_settings_d(self, settings_d):
         '''Set @color and (maybe) @string settings from settings_d.'''
+        trace = False and not g.unitTesting
         c = self.c
         # settingsDicst is a g.TypedDict whose values are g.GeneralSetting objects.
         for key in settings_d.d:
             setting = settings_d.get(key)
             if setting.kind in ('color','string',):
                 if setting.val not in (None, 'None', 'none'):
-                    print('setting: %6s %20s %s' % (setting.kind, setting.val, key))
+                    if trace: print('setting: %6s %20s %s' % (setting.kind, setting.val, key))
                     # Setting colors does appear to work.
                     if setting.kind == 'color':
                         gs = g.GeneralSetting(
