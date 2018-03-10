@@ -12,18 +12,16 @@
 <v t="ekr.20180307012127.1" a="E"><vh>@settings</vh>
 <v t="chris.20180308171552.1" a="E"><vh>@theme Breeze Dark</vh>
 <v t="chris.20180308171552.2"><vh>BreezeDark StyleSheet</vh></v>
-<v t="chris.20180308171552.3"><vh>Breeze Dark Color definitions</vh>
-<v t="chris.20180308171552.4"><vh>@color dark-base06 = #3b0000</vh></v>
-<v t="chris.20180308171552.5"><vh>@color dark-base05 = #003b00</vh></v>
-<v t="chris.20180308171552.6"><vh>@color dark-base04 = #000059</vh></v>
-<v t="chris.20180308171552.7"><vh>@color dark-base03 = #31363b</vh></v>
-<v t="chris.20180308171552.8"><vh>@color dark-base02 = #073642</vh></v>
-<v t="chris.20180308171552.9"><vh>@color dark-base01 = #586e75</vh></v>
-<v t="chris.20180308171552.10"><vh>@color dark-base00 = #657b83</vh></v>
-<v t="chris.20180308171552.11"><vh>@color dark-base0 = #fcfcfc</vh></v>
-<v t="chris.20180308171552.12"><vh>@color dark-base1 = #93a1a1</vh></v>
-<v t="chris.20180308171552.13"><vh>@color dark-base2 = #eee8d5</vh></v>
-<v t="chris.20180308171552.14"><vh>@color dark-base3 = #fdf6e3</vh></v>
+<v t="chris.20180308171552.3" a="E"><vh>Breeze Dark Color definitions</vh>
+<v t="chris.20180309180448.2"><vh>@color dark-base0 = #eff0f1</vh></v>
+<v t="chris.20180309180448.3"><vh>@color dark-base1 = #909396</vh></v>
+<v t="chris.20180309180448.4"><vh>@color dark-base2 = #ffffff</vh></v>
+<v t="chris.20180309180448.5"><vh>@color dark-base3 = #31363b</vh></v>
+<v t="chris.20180309180448.6"><vh>@color dark-base4 = #575b5f</vh></v>
+<v t="chris.20180309180448.7"><vh>@color dark-base5 = #232629</vh></v>
+<v t="chris.20180309180448.8"><vh>@color dark-base6 = #3daee9</vh></v>
+<v t="chris.20180309180448.9"><vh>@color dark-base7 = #224e65</vh></v>
+<v t="chris.20180309180448.10"><vh>@color dark-base8 = #ff0000</vh></v>
 </v>
 <v t="chris.20180308171552.15"><vh>Settings for Leo Breeze Dark</vh>
 <v t="chris.20180308171552.16"><vh>Colors: Logical colors</vh>
@@ -75,15 +73,15 @@
 </v>
 </v>
 <v t="chris.20180308171552.60"><vh>Colors: Text</vh>
-<v t="chris.20180308171552.61"><vh>@color log_text_background_color = @dark-base03</vh></v>
+<v t="chris.20180308171552.61"><vh>@color log_text_background_color = @dark-base3</vh></v>
 <v t="chris.20180308171552.62"><vh>@color log_text_foreground_color = @dark-base0</vh></v>
-<v t="chris.20180308171552.63"><vh>@color text-background = @dark-base03</vh></v>
-<v t="chris.20180308171552.64"><vh>@color text-background-bright = @dark-base02</vh></v>
+<v t="chris.20180308171552.63"><vh>@color text-background = @dark-base3</vh></v>
+<v t="chris.20180308171552.64"><vh>@color text-background-bright = @dark-base4</vh></v>
 <v t="chris.20180308171552.65"><vh>@color text-foreground = @dark-base0</vh></v>
 <v t="chris.20180308171552.66"><vh>@color text-foreground-bright = @dark-base2</vh></v>
 </v>
 <v t="chris.20180308171552.67"><vh>Colors: Widgets</vh>
-<v t="chris.20180308171552.68"><vh>@color button-hover-fg =@dark-base03</vh></v>
+<v t="chris.20180308171552.68"><vh>@color button-hover-fg =@dark-base3</vh></v>
 </v>
 <v t="chris.20180308171552.69"><vh>Fonts &amp; text sizes</vh>
 <v t="chris.20180308171552.70"><vh>@string font-family = Inconsolata,Droid Sans Mono, DejaVu Sans Mono</vh></v>
@@ -94,9 +92,9 @@
 <v t="chris.20180308171552.75"><vh>@string font-size-log = 16px</vh></v>
 <v t="chris.20180308171552.76"><vh>@string font-size-tree = 18px</vh></v>
 </v>
-<v t="chris.20180308171552.77"><vh>Gradients</vh>
+<v t="chris.20180308171552.77" a="E"><vh>Gradients</vh>
 <v t="chris.20180308171552.78"><vh>@string bg-gradient =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1@text-background-bright, stop:0.4 @text-background, stop:0.6@text-background, stop:0.9 @text-background-bright)</vh></v>
-<v t="chris.20180308171552.79"><vh>@string bg-gradient-hover =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @dark-base00,stop:0.4 @dark-base0, stop:0.6 @dark-base0, stop:0.9@dark-base00)</vh></v>
+<v t="chris.20180308171552.79"><vh>@string bg-gradient-hover =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @dark-base4,stop:0.4 @dark-base0, stop:0.6 @dark-base0, stop:0.9@dark-base4)</vh></v>
 </v>
 <v t="chris.20180308171552.80"><vh>Plugins settings</vh>
 <v t="chris.20180308171552.81"><vh>bookmarks</vh>
@@ -159,7 +157,7 @@
 <v t="chris.20180308171552.129"><vh>Splitters</vh></v>
 <v t="chris.20180308171552.130"><vh>Status area</vh></v>
 <v t="chris.20180308171552.131"><vh>Tab bar</vh></v>
-<v t="chris.20180308171552.132"><vh>Tree</vh></v>
+<v t="chris.20180309182828.1"><vh>Tree</vh></v>
 </v>
 </v>
 <v t="ekr.20180307024846.1"><vh>@bool show-tips = False</vh></v>
@@ -180,7 +178,6 @@ Modified by Chris George.
 Expect more once I figure out how to source images.
 
 </t>
-<t tx="chris.20180308171552.10"></t>
 <t tx="chris.20180308171552.100"></t>
 <t tx="chris.20180308171552.101"></t>
 <t tx="chris.20180308171552.102">none or underline</t>
@@ -191,7 +188,6 @@ Expect more once I figure out how to source images.
 <t tx="chris.20180308171552.107"></t>
 <t tx="chris.20180308171552.108">none or underline</t>
 <t tx="chris.20180308171552.109"></t>
-<t tx="chris.20180308171552.11"></t>
 <t tx="chris.20180308171552.110"></t>
 <t tx="chris.20180308171552.111">bold or regular</t>
 <t tx="chris.20180308171552.112"></t>
@@ -218,7 +214,6 @@ used to find icon files</t>
 @language css
 at-tabwidth -2 causes a crash in parse-template!
 */</t>
-<t tx="chris.20180308171552.12"></t>
 <t tx="chris.20180308171552.120">QDockWidget {
  border: 5px solid red;
 }
@@ -228,7 +223,7 @@ QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit {
   margin-right: 5px;
 }
 QLabel {
-  color: @dark-base01;
+  color: @dark-base4;
 }
 QLineEdit {
   border: none;
@@ -236,17 +231,16 @@ QLineEdit {
 }
 QWidget {
   /* Not for text widgets */
-  background:  @dark-base03;
+  background:  @dark-base3;
   color: @dark-base0;
-  border-color: @dark-base01;
+  border-color: @dark-base4;
   font-size: 16px;
-}
-</t>
+}</t>
 <t tx="chris.20180308171552.121">/* The body pane */
 QTextEdit#richTextEdit {
-  background-color: #232629;
-  color: #eff0f1;
-  border: 0.1ex solid #76797c;
+  background-color: @dark-base5;
+  color: @dark-base0;
+  border: 0.1ex solid @dark-base4;
   font-family: @font-family-body;
   font-size: @font-size-body;
   font-weight: normal; /* normal,bold,100,..,900 */
@@ -266,7 +260,7 @@ QTextEdit#log-widget {
   border-color: @log_text_background_color;
 }
 LeoQTreeWidget#treeWidget {
-  border-color: @dark-base03;
+  border-color: @dark-base3;
 }
 QTextEdit#richTextEdit {
   border-color: @text-background;
@@ -274,14 +268,13 @@ QTextEdit#richTextEdit {
 }
 QTextEdit:focus#log-widget,LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#richTextEdit {
   border-color: @solarized-blue;
-}
-</t>
+}</t>
 <t tx="chris.20180308171552.123">QPushButton
 {
-    color: #eff0f1;
-    background-color: qlineargradient(x1: 0.5, y1: 0.5 x2: 0.5, y2: 1, stop: 0 #3b4045, stop: 0.5 #31363b);
+    color: @dark-base0;
+    background-color: qlineargradient(x1: 0.5, y1: 0.5 x2: 0.5, y2: 1, stop: 0 @dark-base4, stop: 0.5 @dark-base3);
     border-width: 0.1ex;
-    border-color: #76797c;
+    border-color: @dark-base4;
     border-style: solid;
     padding: 0.5ex;
     border-radius: 0.2ex;
@@ -290,21 +283,21 @@ QTextEdit:focus#log-widget,LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#rich
 
 QPushButton:disabled
 {
-    background-color: #31363b;
+    background-color: @dark-base3;
     border-width: 0.1ex;
-    border-color: #454545;
+    border-color: @dark-base4;
     border-style: solid;
     padding-top: 0.5ex;
     padding-bottom: 0.5ex;
     padding-left: 1ex;
     padding-right: 1ex;
     border-radius: 0.2ex;
-    color: #454545;
+    color: @dark-base4;
 }
 
 QPushButton:hover
 {
-    background-color: #224e65;
+    background-color: @dark-base7;
 }
 
 QPushButton:focus
@@ -314,14 +307,13 @@ QPushButton:focus
 
 QPushButton:pressed
 {
-    background-color: #31363b;
+    background-color: @dark-base3;
     padding-top: -1.5ex;
     padding-bottom: -1.7ex;
-}
-</t>
+}</t>
 <t tx="chris.20180308171552.124">QTextEdit#log-widget {
-  background-color: #31363b;
-  color: #eff0f1;
+  background-color: @dark-base3;
+  color: @dark-base0;
   /* selection-color: white; */
   /* selection-background-color: blue; */
   font-family: @font-family-log;
@@ -331,8 +323,8 @@ QPushButton:pressed
 }</t>
 <t tx="chris.20180308171552.125">QMenuBar
 {
-    background-color: #31363b;
-    color: #eff0f1;
+    background-color: @dark-base3;
+    color: @dark-base0;
 }
 
 QMenuBar::item
@@ -342,23 +334,23 @@ QMenuBar::item
 
 QMenuBar::item:selected
 {
-    background: #225065;
-    border: 0.1ex solid #76797c;
+    background: @dark-base7;
+    border: 0.1ex solid @dark-base4;
 }
 
 QMenuBar::item:pressed
 {
-    border: 0.1ex solid #76797c;
-    background-color: #3daee9;
-    color: #eff0f1;
+    border: 0.1ex solid @dark-base4;
+    background-color: @dark-base6;
+    color: @dark-base0;
     margin-bottom: -0.1ex;
     padding-bottom: 0.1ex;
 }
 
 QMenu
 {
-    border: 0.1ex solid #76797c;
-    color: #eff0f1;
+    border: 0.1ex solid @dark-base4;
+    color: @dark-base0;
     margin: 0.2ex;
 }
 
@@ -376,8 +368,8 @@ QMenu::item
 
 QMenu::item:selected
 {
-    background: #225065;
-    color: #eff0f1;
+    background: @dark-base7;
+    color: @dark-base0;
 }
 
 QMenu::separator
@@ -386,23 +378,20 @@ QMenu::separator
     background: lightblue;
     margin-left: 1ex;
     margin-right: 0.5ex;
-}
-
-</t>
+}</t>
 <t tx="chris.20180308171552.126">/* The mini-buffer */
 QLabel#minibufferLabel {
-  color: #3daee9;
+  color: @dark-base6;
 }
 /* The minibuffer */
 QLineEdit#lineEdit {
-    background-color: #232629;
+    background-color: @dark-base5;
     padding: 0.5ex;
     border-style: solid;
-    border: 0.1ex solid #76797c;
+    border: 0.1ex solid @dark-base4;
     border-radius: 0.2ex;
-    color: #eff0f1;
-}
-</t>
+    color: @dark-base0;
+}</t>
 <t tx="chris.20180308171552.127">/* bookmarks plugin styling */
 
 #show_bookmarks QPushButton {
@@ -434,7 +423,7 @@ QLineEdit#lineEdit {
 <t tx="chris.20180308171552.128">QAbstractScrollArea
 {
     border-radius: 0.2ex;
-    border: 0.1ex solid #76797c;
+    border: 0.1ex solid @dark-base4;
     background-color: transparent;
 }
 
@@ -442,30 +431,30 @@ QScrollBar:horizontal
 {
     height: 1.5ex;
     margin: 0.3ex 1.5ex 0.3ex 1.5ex;
-    border: 0.1ex transparent #31363b;
+    border: 0.1ex transparent @dark-base3;
     border-radius: 0.4ex;
-    background-color: #31363b;
+    background-color: @dark-base3;
 }
 
 QScrollBar:horizontal:hover
 {
     height: 1.5ex;
     margin: 0.3ex 1.5ex 0.3ex 1.5ex;
-    border: 0.1ex transparent #575b5f;
+    border: 0.1ex transparent @dark-base4;
     border-radius: 0.4ex;
-    background-color: #575b5f;
+    background-color: @dark-base4;
 }
 
 QScrollBar::handle:horizontal
 {
-    background-color: #909396;
+    background-color: @dark-base1;
     min-width: 0.5ex;
     border-radius: 0.4ex;
 }
 
 QScrollBar::handle:horizontal:hover
 {
-    background-color: #3daee9;
+    background-color: @dark-base6;
     min-width: 0.5ex;
     border-radius: 0.4ex;
 }
@@ -527,30 +516,30 @@ QScrollBar:vertical
 {
     width: 1.5ex;
     margin: 1.5ex 0.3ex 1.5ex 0.3ex;
-    border: 0.1ex transparent #31363b;
+    border: 0.1ex transparent @dark-base3;
     border-radius: 0.4ex;
-    background-color: #31363b;
+    background-color: @dark-base3;
 }
 
 QScrollBar:vertical:hover
 {
     width: 1.5ex;
     margin: 1.5ex 0.3ex 1.5ex 0.3ex;
-    border: 0.1ex transparent #575b5f;
+    border: 0.1ex transparent @dark-base4;
     border-radius: 0.4ex;
-    background-color: #575b5f;
+    background-color: @dark-base4;
 }
 
 QScrollBar::handle:vertical
 {
-    background-color: #909396;
+    background-color: @dark-base1;
     min-height: 0.5ex;
     border-radius: 0.4ex;
 }
 
 QScrollBar::handle:vertical:hover
 {
-    background-color: #3daee9;
+    background-color: @dark-base6;
     min-height: 0.5ex;
     border-radius: 0.4ex;
 }
@@ -606,18 +595,16 @@ QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical
 QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical
 {
     background: none;
-}
-
-</t>
+}</t>
 <t tx="chris.20180308171552.129">QSplitter::handle
 {
-    border: 0.1ex dashed #76797c;
+    border: 0.1ex dashed @dark-base4;
 }
 
 QSplitter::handle:hover
 {
-    background-color: #787876;
-    border: 0.1ex solid #76797c;
+    background-color: @dark-base1;
+    border: 0.1ex solid @dark-base4;
 }
 
 QSplitter::handle:horizontal
@@ -630,17 +617,16 @@ QSplitter::handle:vertical
     height: 0.1ex;
 }
 </t>
-<t tx="chris.20180308171552.13"></t>
 <t tx="chris.20180308171552.130">/* The status area */
 QLineEdit#status1 {
-  background: @dark-base03;
-  border-color: @dark-base02;
+  background: @dark-base3;
+  border-color: @dark-base4;
   border-width: 1px;
   border-style: solid;
 }
 QLineEdit#status2 {
-  background: @dark-base03;
-  border-color: @dark-base02;
+  background: @dark-base3;
+  border-color: @dark-base4;
   border-width: 1px;
   border-style: solid;
 }
@@ -652,10 +638,9 @@ QLineEdit#status2[style_class ~= 'info'] {
 
 QLineEdit#status1[style_class ~= 'fail'],
 QLineEdit#status2[style_class ~= 'fail'] {
-    background: @solarized-red;
-    color:      @solarized-white;
-}
-</t>
+    background: @dark-base8;
+    color:      @dark-base0;
+}</t>
 <t tx="chris.20180308171552.131">QTabBar
 {
     qproperty-drawBase: 0;
@@ -669,9 +654,9 @@ QTabBar:focus
 }
 
 QTabBar::tab {
-    background: #31363b;
-    border: 3px solid #31363b;
-    border-bottom-color: #31363b; /* same as the pane color */
+    background: @dark-base3;
+    border: 3px solid @dark-base3;
+    border-bottom-color: @dark-base3; /* same as the pane color */
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
     min-width: 8ex;
@@ -679,100 +664,18 @@ QTabBar::tab {
 }
 
 QTabBar::tab:hover {
-    background: #224e65;
-    border-bottom-color: #1a6394;
+    background: @dark-base7;
+    border-bottom-color: @dark-base7;
 }
 
 QTabBar::tab:selected {
-    background-color: #575b5f;
-    border-bottom-color: #3daee9;
+    background-color: @dark-base4;
+    border-bottom-color: @dark-base6;
 }
 
 QTabBar::tab:!selected {
     margin-top: 2px; /* make non-selected tabs look smaller */
 }</t>
-<t tx="chris.20180308171552.132">LeoQTreeWidget#treeWidget 
-{
-  background: #31363b;
-  color: #eff0f1;
-  show-decoration-selected: 1; /* Extend the selection */
-  padding: 2px solid #31363b;
-  border-color: #31363b;
-  font-family: @font-family-tree;
-  font-size: @font-size-tree;
-  font-weight: normal; /* normal,bold,100,..,900 */
-  font-style: normal; /* normal, italic,oblique */
-}
-
-QTreeView:hover
-{
-    border: 0.1ex solid #3daee9;
-    color: #eff0f1;
-}
-
-QTreeView:hover:pressed
-{
-    background-color: #31363b;
-}
-
-QTreeView
-{
-    border: 0.1ex solid #76797c;
-    background-color: #232629;
-}
-
-
-QTreeView::item
-{
-    padding: 0.3ex;
-}
-
-QTreeView::item:!selected:hover
-{
-    background-color: rgba(61, 173, 232, 0.2);
-    outline: 0;
-    color: #eff0f1;
-    padding: 0.3ex;
-}
-
-QTreeView::branch:closed:has-children{
-    image: @tree-image-closed;
-}
-QTreeView::branch:open:has-children{
-    image: @tree-image-open;
-}
-
-
-
-/* Headline edit widgets */
-QTreeView QLineEdit {
-  color: @dark-base03;
-  background: @solarized-violet;
-  selection-color: @solarized-violet; 
-  selection-background-color: @dark-base3;
-  font-family: @font-family-tree;
-  font-size: @font-size-tree;
-  font-weight: normal; /* normal,bold,100,..,900 */
-  font-style: normal; /* normal, italic,oblique */
-  padding: 0px;
-}
-
-QTreeWidget {
-  /* These apply to the selected item, but not to editing items.*/
-  background: @dark-base01;
-  font-family: @font-family-tree;
-  font-size: @font-size-tree;
-  font-weight: normal; /* normal,bold,100,..,900 */
-  font-style: normal; /* normal, italic,oblique */
-  padding: 2px solid @dark-base03;
-  border-color: @dark-base01;
-}
-QTreeWidget::selected {
-  background: @dark-base01;
-  color: @dark-base03; 
-}
-</t>
-<t tx="chris.20180308171552.14"></t>
 <t tx="chris.20180308171552.15" lineYOffset="4b002e"></t>
 <t tx="chris.20180308171552.16"></t>
 <t tx="chris.20180308171552.17">Use a light color, not black!
@@ -871,7 +774,7 @@ Chris George
 QToolTip
 {
     border: 0.1ex solid #eff0f1;
-    background-color: #31363b;
+    background-color: @dark-base3;
     alternate-background-color: #3b4045;
     color: #eff0f1;
     padding: 0.5ex;
@@ -881,7 +784,7 @@ QToolTip
 QWidget
 {
     color: #eff0f1;
-    background-color: #31363b;
+    background-color: @dark-base3;
     selection-background-color:#3daee9;
     selection-color: #eff0f1;
     background-clip: border;
@@ -1040,7 +943,7 @@ QRadioButton::indicator:unchecked:disabled
 
 QMenuBar
 {
-    background-color: #31363b;
+    background-color: @dark-base3;
     color: #eff0f1;
 }
 
@@ -1151,12 +1054,12 @@ QMenu::right-arrow
 QWidget:disabled
 {
     color: #454545;
-    background-color: #31363b;
+    background-color: @dark-base3;
 }
 
 QAbstractItemView
 {
-    alternate-background-color: #31363b;
+    alternate-background-color: @dark-base3;
     color: #eff0f1;
     border: 0.1ex solid 3A3939;
     border-radius: 0.2ex;
@@ -1381,7 +1284,7 @@ QSizeGrip
 
 QMainWindow::separator
 {
-    background-color: #31363b;
+    background-color: @dark-base3;
     color: white;
     padding-left: 0.4ex;
     spacing: 0.2ex;
@@ -1417,7 +1320,7 @@ QFrame[frameShape="6"]  /* QFrame::StyledPanel == 0x0006 */
     border-width: 0.1ex;
     padding: 0.1ex;
     border-style: solid;
-    border-color: #31363b;
+    border-color: @dark-base3;
     background-color: #76797c;
     border-radius: 0.5ex;
 }
@@ -1430,7 +1333,7 @@ QStackedWidget
 QToolBar
 {
     border: 0.1ex transparent #393838;
-    background: 0.1ex solid #31363b;
+    background: 0.1ex solid @dark-base3;
     font-weight: bold;
 }
 
@@ -1465,7 +1368,7 @@ QToolBar::separator:vertical
 QPushButton
 {
     color: #eff0f1;
-    background-color: qlineargradient(x1: 0.5, y1: 0.5 x2: 0.5, y2: 1, stop: 0 #3b4045, stop: 0.5 #31363b);
+    background-color: qlineargradient(x1: 0.5, y1: 0.5 x2: 0.5, y2: 1, stop: 0 #3b4045, stop: 0.5 @dark-base3);
     border-width: 0.1ex;
     border-color: #76797c;
     border-style: solid;
@@ -1476,7 +1379,7 @@ QPushButton
 
 QPushButton:disabled
 {
-    background-color: #31363b;
+    background-color: @dark-base3;
     border-width: 0.1ex;
     border-color: #454545;
     border-style: solid;
@@ -1495,7 +1398,7 @@ QPushButton:focus
 
 QPushButton:pressed
 {
-    background-color: #31363b;
+    background-color: @dark-base3;
     padding-top: -1.5ex;
     padding-bottom: -1.7ex;
 }
@@ -1551,7 +1454,7 @@ QPlainTextEdit:hover:pressed,
 QAbstractView:hover:pressed,
 QTreeView:hover:pressed
 {
-    background-color: #31363b;
+    background-color: @dark-base3;
 }
 
 QComboBox:on
@@ -1732,7 +1635,7 @@ QTabBar::tab:top
     border: 0.1ex transparent black;
     border-left: 0.1ex solid #76797c;
     border-top: 0.1ex solid #76797c;
-    background-color: #31363b;
+    background-color: @dark-base3;
     padding: 0.5ex;
     min-width: 50px;
     border-top-left-radius: 0.2ex;
@@ -1747,7 +1650,7 @@ QTabBar::tab:top:only-one
     border-left: 0.1ex solid #76797c;
     border-right: 0.1ex solid #76797c;
     border-top: 0.1ex solid #76797c;
-    background-color: #31363b;
+    background-color: @dark-base3;
     padding: 0.5ex;
     min-width: 50px;
     border-top-left-radius: 0.2ex;
@@ -1794,7 +1697,7 @@ QTabBar::tab:bottom
     border: 0.1ex transparent black;
     border-left: 0.1ex solid #76797c;
     border-bottom: 0.1ex solid #76797c;
-    background-color: #31363b;
+    background-color: @dark-base3;
     padding: 0.5ex;
     border-bottom-left-radius: 0.2ex;
     border-bottom-right-radius: 0.2ex;
@@ -1809,7 +1712,7 @@ QTabBar::tab:bottom:only-one
     border-left: 0.1ex solid #76797c;
     border-right: 0.1ex solid #76797c;
     border-bottom: 0.1ex solid #76797c;
-    background-color: #31363b;
+    background-color: @dark-base3;
     padding: 0.5ex;
     border-bottom-left-radius: 0.2ex;
     border-bottom-right-radius: 0.2ex;
@@ -1855,7 +1758,7 @@ QTabBar::tab:left
     border: 0.1ex transparent black;
     border-top: 0.1ex solid #76797c;
     border-right: 0.1ex solid #76797c;
-    background-color: #31363b;
+    background-color: @dark-base3;
     padding: 0.5ex;
     border-top-right-radius: 0.2ex;
     border-bottom-right-radius: 0.2ex;
@@ -1870,7 +1773,7 @@ QTabBar::tab:left:only-one
     border-top: 0.1ex solid #76797c;
     border-bottom: 0.1ex solid #76797c;
     border-right: 0.1ex solid #76797c;
-    background-color: #31363b;
+    background-color: @dark-base3;
     padding: 0.5ex;
     border-top-right-radius: 0.2ex;
     border-bottom-right-radius: 0.2ex;
@@ -1907,7 +1810,7 @@ QTabBar::tab:right
     border: 0.1ex transparent black;
     border-top: 0.1ex solid #76797c;
     border-left: 0.1ex solid #76797c;
-    background-color: #31363b;
+    background-color: @dark-base3;
     padding: 0.5ex;
     border-top-left-radius: 0.2ex;
     border-bottom-left-radius: 0.2ex;
@@ -1922,7 +1825,7 @@ QTabBar::tab:right:only-one
     border-top: 0.1ex solid #76797c;
     border-bottom: 0.1ex solid #76797c;
     border-left: 0.1ex solid #76797c;
-    background-color: #31363b;
+    background-color: @dark-base3;
     padding: 0.5ex;
     border-top-left-radius: 0.2ex;
     border-bottom-left-radius: 0.2ex;
@@ -1974,7 +1877,7 @@ QTabBar QToolButton::left-arrow:disabled
 
 QDockWidget
 {
-    background: #31363b;
+    background: @dark-base3;
     border: 0.1ex solid #403F3F;
     titlebar-close-icon: url(:/dark/transparent.svg);
     titlebar-normal-icon: url(:/dark/transparent.svg);
@@ -2066,7 +1969,7 @@ QTreeView::item:!selected:hover
 
 QSlider::groove:horizontal
 {
-    border: 0.1ex solid #31363b;
+    border: 0.1ex solid @dark-base3;
     height: 0.4ex;
     background: #565a5e;
     margin: 0ex;
@@ -2085,7 +1988,7 @@ QSlider::handle:horizontal
 
 QSlider::groove:vertical
 {
-    border: 0.1ex solid #31363b;
+    border: 0.1ex solid @dark-base3;
     width: 0.4ex;
     background: #565a5e;
     margin: 0ex;
@@ -2199,7 +2102,7 @@ QPushButton::menu-indicator
 QTableView
 {
     border: 0.1ex solid #76797c;
-    gridline-color: #31363b;
+    gridline-color: @dark-base3;
     background-color: #232629;
 }
 
@@ -2235,7 +2138,7 @@ QTreeView::item:selected:hover
 
 QHeaderView
 {
-    background-color: #31363b;
+    background-color: @dark-base3;
     border: 0.1ex transparent;
     border-radius: 0px;
     margin: 0px;
@@ -2245,7 +2148,7 @@ QHeaderView
 
 QHeaderView::section
 {
-    background-color: #31363b;
+    background-color: @dark-base3;
     color: #eff0f1;
     padding: 0.5ex;
     border: 0.1ex solid #76797c;
@@ -2295,7 +2198,7 @@ QHeaderView::up-arrow
 
 QTableCornerButton::section
 {
-    background-color: #31363b;
+    background-color: @dark-base3;
     border: 0.1ex transparent #76797c;
     border-radius: 0px;
 }
@@ -2308,7 +2211,7 @@ QToolBox
 
 QToolBox:selected
 {
-    background-color: #31363b;
+    background-color: @dark-base3;
     border-color: #3daee9;
 }
 
@@ -2352,7 +2255,7 @@ QSplitter::handle:vertical
 QProgressBar:horizontal
 {
     background-color: #626568;
-    border: 0.1ex solid #31363b;
+    border: 0.1ex solid @dark-base3;
     border-radius: 0.3ex;
     height: 0.5ex;
     text-align: right;
@@ -2445,8 +2348,7 @@ QDoubleSpinBox::down-arrow:disabled,
 QDoubleSpinBox::down-arrow:off
 {
    border-image: url(:/dark/down_arrow_disabled.svg);
-}
-</t>
+}</t>
 <t tx="chris.20180308171552.30"></t>
 <t tx="chris.20180308171552.31" lineYOffset="4b002e">These settings must exist because they are *not* used in the css.</t>
 <t tx="chris.20180308171552.32"></t>
@@ -2465,7 +2367,6 @@ Solarized blue      #268bd2</t>
 <t tx="chris.20180308171552.39">was blue
 
 Solarized blue      #268bd2</t>
-<t tx="chris.20180308171552.4"></t>
 <t tx="chris.20180308171552.40">was #00aa00 (Idle comment green)
 
 Solarize green      #859900
@@ -2490,7 +2391,6 @@ Light comments  base1 comments
 <t tx="chris.20180308171552.47"></t>
 <t tx="chris.20180308171552.48"></t>
 <t tx="chris.20180308171552.49"></t>
-<t tx="chris.20180308171552.5"></t>
 <t tx="chris.20180308171552.50"># New: solarized-blue
 </t>
 <t tx="chris.20180308171552.51"></t>
@@ -2522,7 +2422,6 @@ gray90: #E5E5E5
 </t>
 <t tx="chris.20180308171552.59">purple
 </t>
-<t tx="chris.20180308171552.6"></t>
 <t tx="chris.20180308171552.60">Text to test with.</t>
 <t tx="chris.20180308171552.61">Background color of log text.</t>
 <t tx="chris.20180308171552.62">Foreground color of log text.
@@ -2537,7 +2436,6 @@ gray90: #E5E5E5
 Only colors appearing in several places are given here.</t>
 <t tx="chris.20180308171552.68"></t>
 <t tx="chris.20180308171552.69"></t>
-<t tx="chris.20180308171552.7"></t>
 <t tx="chris.20180308171552.70">test text</t>
 <t tx="chris.20180308171552.71"></t>
 <t tx="chris.20180308171552.72"></t>
@@ -2548,7 +2446,6 @@ Only colors appearing in several places are given here.</t>
 <t tx="chris.20180308171552.77">Utility constants.</t>
 <t tx="chris.20180308171552.78"></t>
 <t tx="chris.20180308171552.79"></t>
-<t tx="chris.20180308171552.8"></t>
 <t tx="chris.20180308171552.80"></t>
 <t tx="chris.20180308171552.81"></t>
 <t tx="chris.20180308171552.82"></t>
@@ -2559,7 +2456,6 @@ Only colors appearing in several places are given here.</t>
 <t tx="chris.20180308171552.87"></t>
 <t tx="chris.20180308171552.88"></t>
 <t tx="chris.20180308171552.89"></t>
-<t tx="chris.20180308171552.9"></t>
 <t tx="chris.20180308171552.90"></t>
 <t tx="chris.20180308171552.91">Valid values are: normal,italic,oblique</t>
 <t tx="chris.20180308171552.92">Huh?
@@ -2572,6 +2468,77 @@ valid values are: normal,bold,100,..,900
 <t tx="chris.20180308171552.97"></t>
 <t tx="chris.20180308171552.98"></t>
 <t tx="chris.20180308171552.99">bold or regular</t>
+<t tx="chris.20180309180448.10"></t>
+<t tx="chris.20180309180448.2"></t>
+<t tx="chris.20180309180448.3"></t>
+<t tx="chris.20180309180448.4"></t>
+<t tx="chris.20180309180448.5"></t>
+<t tx="chris.20180309180448.6"></t>
+<t tx="chris.20180309180448.7"></t>
+<t tx="chris.20180309180448.8"></t>
+<t tx="chris.20180309180448.9"></t>
+<t tx="chris.20180309182828.1">LeoQTreeWidget#treeWidget 
+{
+  background: @dark-base3;
+  color: @dark-base0;
+  show-decoration-selected: 1; 
+  padding: 2px solid @dark-base3;
+  border-color: @dark-base3;
+  font-family: @font-family-tree;
+  font-size: @font-size-tree;
+  font-weight: normal;
+  font-style: normal;
+}
+
+QTreeView::branch:has-children:!has-siblings:closed,
+QTreeView::branch:closed:has-children:has-siblings
+{
+    border-image: @tree-image-closed;
+}
+
+QTreeView::branch:open:has-children:!has-siblings,
+QTreeView::branch:open:has-children:has-siblings
+{
+    border-image: @tree-image-open;
+}
+
+QTreeView::item:hover {
+  background-color: @dark-base1;
+  color: @dark-base0;
+}
+
+QTreeView::item:selected {
+  background-color: @dark-base6;
+  color: @dark-base0;
+}
+
+QTreeView QLineEdit {
+  color: @dark-base0;
+  background: @dark-base6;
+  selection-color: @dark-base0; 
+  selection-background-color: @dark-base6;
+  font-family: @font-family-tree;
+  font-size: @font-size-tree;
+  font-weight: normal;
+  font-style: normal;
+  padding: 1px;
+}
+
+/*
+
+
+QTreeWidget {
+  
+  background: @dark-base1;
+  font-family: @font-family-tree;
+  font-size: @font-size-tree;
+  font-weight: normal; 
+  font-style: normal; 
+  padding: 2px solid @dark-base3;
+  border-color: @dark-base1;
+}
+
+*/</t>
 <t tx="ekr.20180307012127.1"></t>
 <t tx="ekr.20180307012426.2">@language python
 
