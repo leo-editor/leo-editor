@@ -1488,16 +1488,19 @@ class StyleSheetManager(object):
     def expand_css_constants(self, sheet, font_size_delta=None, settingsDict=None):
         '''Expand @ settings into their corresponding constants.'''
         trace = True and not g.unitTesting
-        trace_color = False
+        trace_dict = False
         trace_found = False
-        trace_loop = False
         trace_result = False
         trace_to_do = False
         c = self.c
-        whine = None
+        warned = None
         # Warn once if the stylesheet uses old style style-sheet comment
         if settingsDict is None:
+            if trace: g.trace('----- using c.config.settingsDict')
             settingsDict = c.config.settingsDict
+        if trace_dict:
+            g.trace('===== settingsDict.keys()...')
+            g.printObj(sorted(settingsDict.keys()))
         constants, deltas = self.adjust_sizes(font_size_delta, settingsDict)
         passes = 10
         to_do = self.find_constants_referenced(sheet)
@@ -1507,7 +1510,7 @@ class StyleSheetManager(object):
         changed = True
         sheet = self.set_indicator_paths(sheet)
         while passes and to_do and changed:
-            if trace and trace_loop: g.trace('='*10, 'pass', 10-passes)
+            if trace and trace_found: g.trace('='*10, 'pass', 10-passes)
             changed = False
             to_do.sort(key=len, reverse=True)
             for const in to_do:
@@ -1515,11 +1518,13 @@ class StyleSheetManager(object):
                 if const in constants:
                     # This constant is about to be removed.
                     value = constants[const]
-                    if const[1:] not in deltas and not whine:
-                        whine = ("'%s' from style-sheet comment definition, "
+                    if const[1:] not in deltas and not warned:
+                        warned = (
+                            "'%s' from style-sheet comment definition, "
                             "please use regular @string / @color type @settings."
-                            % const)
-                        g.es_print(whine)
+                            % const
+                        )
+                        g.es_print(warned)
                 else:
                     key = g.app.config.canonicalizeSettingName(const[1:])
                         # lowercase, without '@','-','_', etc.
@@ -1530,13 +1535,14 @@ class StyleSheetManager(object):
                             # value = '%s /* %s */' % (g.u(value.val), key)
                         value = g.u(value.val)
                         if trace and trace_found:
-                           g.trace('found:', key, value)
+                           g.trace('found: %30s %s' % (key, g.truncate(repr(value), 30)))
                     elif key in self.color_db:
                         # New in Leo 5.5: Do NOT add comments here.
                         # They RUIN style sheets if they appear in a nested comment!
                         value = self.color_db.get(key)
                             # value = '%s /* %s */' % (value, key)
-                        if trace and trace_color: g.trace('found:', key, value)
+                        if trace and trace_found:
+                            g.trace('found: %30s %s' % (key, g.truncate(repr(value), 30)))
                 if value:
                     # Partial fix for #780.
                     try:
@@ -1864,17 +1870,49 @@ class StyleSheetManager(object):
             theme=True, # Parse only the @theme True.
         )
         assert isinstance(settings_d, g.TypedDict), repr(settings_d)
-        # g.printObj(sorted(settings_d.d.keys()))
         # Clear the cache entries for hidden commander.
         if c2 not in old_commanders:
             g.app.forgetOpenFile(c2.fileName())
-        # Do the real work.
-        ### self.set_theme_settings_from_settings_d(settings_d)
-        ### settings_d = self.munge_settings_d(settings_d)
-        self.set_style_sheet_from_settings_d(settings_d)
+        # Compute the style-sheet.
+        sheet = self.compute_style_sheet_from_settings_d(settings_d)
         # Update the global settings from the settings_d.
-        # self.c.config.settingsDict.update(settings_d)
-
+        self.c.config.settingsDict.update(settings_d)
+        # Reload settings *after* updating settings.
+        if sheet:
+            self.reload_settings(sheet=sheet)
+    #@+node:ekr.20180308105850.1: *4* ssm.compute_style_sheet_from_settings_d
+    def compute_style_sheet_from_settings_d(self, settings_d):
+        '''
+        Compute and set the style sheet from settings_d,
+        a TypedDict whose values are GeneralSetting objects.
+        '''
+        trace = False and not g.unitTesting
+        trace_after = True
+        trace_before = False
+        trace_dict = False
+        ssm = self
+        d1 = settings_d.get('qtguipluginstylesheet')
+        d2 = settings_d.get('qtguiuserstylesheet')
+        if not d1 and not d2:
+            # Do nothing if neither stylesheet exists.
+            # This allows settings-only themes.
+            if trace: g.trace('no stylesheets')
+            return None
+        if trace and trace_dict:
+            g.trace('settings_d')
+            g.printObj(settings_d)
+        # pylint: disable=consider-using-ternary
+        aList1 = d1 and d1.val or []
+        aList2 = d2 and d2.val or []
+        if trace and trace_before:
+            g.trace()
+            g.printObj(aList1[:20])
+            g.printObj(aList2[:20])
+        sheet = ''.join(aList1 + aList2)
+        sheet = ssm.expand_css_constants(sheet, settingsDict=settings_d)
+        if trace and trace_after:
+            g.trace('\n'+sheet)
+        return sheet
     #@+node:ekr.20180308103151.1: *4* ssm.find_theme_file
     def find_theme_file(self, path):
         trace = False and not g.unitTesting
@@ -1893,73 +1931,6 @@ class StyleSheetManager(object):
                 g.trace('not found', path2)
         g.es_print('Theme not found:', path)
         return None
-    #@+node:ekr.20180309075154.1: *4* ssm.munge_settings_d
-    def munge_settings_d(self, settings_d):
-        '''Convert a TypedDict to a plain dict.'''
-        d = {key: settings_d.get(key).val for key in settings_d.keys()}
-        # d = {}
-        # for key in settings_d.keys():
-            # setting = settings_d.get(key)
-            # g.trace(key, setting)
-            
-        g.printObj(d)
-        return d
-        
-    #@+node:ekr.20180308105850.1: *4* ssm.set_style_sheet_from_settings_d
-
-    def set_style_sheet_from_settings_d(self, settings_d):
-        '''
-        Compute and set the style sheet from settings_d,
-        a TypedDict whose values are GeneralSetting objects.
-        '''
-        trace = False and not g.unitTesting
-        trace_settings = False
-        trace_dict = False
-        if trace_dict:
-            g.trace('settings_d')
-            g.printObj(settings_d)
-        ssm = self
-        d1 = settings_d.get('qtguipluginstylesheet')
-        d2 = settings_d.get('qtguiuserstylesheet')
-        if 0: # Munged
-            aList1 = d1 or []
-            aList2 = d2 or []
-        else: # Not munged.
-            # pylint: disable=consider-using-ternary
-            aList1 = d1 and d1.val or []
-            aList2 = d2 and d2.val or []
-        if trace and trace_settings:
-            g.trace()
-            g.printObj(aList1[:20])
-            g.printObj(aList2[:20])
-        sheet = ''.join(aList1 + aList2)
-        sheet = ssm.expand_css_constants(sheet, settingsDict=settings_d)
-            # Causes problems.
-        if trace:
-            # g.printObj(sheet.split('\n'))
-            g.trace('\n'+sheet)
-        ssm.reload_settings(sheet=sheet)
-    #@+node:ekr.20180308110120.1: *4* ssm.set_theme_settings_from_settings_d (experimental)
-    def set_theme_settings_from_settings_d(self, settings_d):
-        '''Set @color and (maybe) @string settings from settings_d.'''
-        trace = True and not g.unitTesting
-        c = self.c
-        # settingsDicst is a g.TypedDict whose values are g.GeneralSetting objects.
-        for key in settings_d.d:
-            setting = settings_d.get(key)
-            # if True: ### setting.kind in ('color','string',):
-                # if True: ### setting.val not in (None, 'None', 'none'):
-            if trace:
-                val = g.truncate(repr(setting.val), 50)
-                print('setting: %6s %30s %s' % (setting.kind, key, val))
-            # Setting colors does appear to work.
-            if setting.kind == 'color':
-                gs = g.GeneralSetting(
-                    kind=setting.kind,
-                    val=setting.val,
-                    tag='theme',
-                )
-                c.config.settingsDict.replace(key, gs)
     #@+node:ekr.20140912110338.19372: *3* ssm.munge
     def munge(self, stylesheet):
         '''
