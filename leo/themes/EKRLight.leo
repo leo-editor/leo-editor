@@ -166,7 +166,7 @@
 <v t="ekr.20180309185230.57"><vh>@string font-family-body =@font-family</vh></v>
 <v t="ekr.20180309185230.58"><vh>@string font-family-log =@font-family</vh></v>
 <v t="ekr.20180309185230.59"><vh>@string font-family-tree =@font-family</vh></v>
-<v t="ekr.20180309185230.60"><vh>@string font-size-body = 17px</vh></v>
+<v t="ekr.20180309185230.60"><vh>@string font-size-body = 19px</vh></v>
 <v t="ekr.20180309185230.61"><vh>@string font-size-log = 16px</vh></v>
 <v t="ekr.20180309185230.62"><vh>@string font-size-tree = 17px</vh></v>
 </v>
@@ -210,8 +210,8 @@
 </v>
 </v>
 <v t="ekr.20180309185230.99"><vh>Outline indicators</vh>
-<v t="ekr.20180309185230.100"><vh>@string tree-image-closed = nodes-light/triangles/closed.png</vh></v>
-<v t="ekr.20180309185230.101"><vh>@string tree-image-open = nodes-light/triangles/open.png</vh></v>
+<v t="ekr.20180309185230.100"><vh>@string tree-image-closed = transparent/icons/nodes/triangles/black/closed.png</vh></v>
+<v t="ekr.20180309185230.101"><vh>@string tree-image-open = transparent/icons/nodes/triangles/black/open.png</vh></v>
 </v>
 <v t="ekr.20180309185230.102"><vh>Theme description settings</vh>
 <v t="ekr.20180309185230.103"><vh>@bool color_theme_is_dark = False</vh></v>
@@ -238,7 +238,6 @@
 <v t="ekr.20180309185230.105"></v>
 <v t="ekr.20180309185230.102"></v>
 <v t="ekr.20180309185230.99"></v>
-<v t="ekr.20180309191129.1"></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180307205349.2"></t>
@@ -823,8 +822,12 @@ A Light theme with solarized colors.</t>
 <t tx="ekr.20180309185230.10"></t>
 <t tx="ekr.20180309185230.100">Must be relative to either the users home directory or leo/Icons directory.
 
-url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)</t>
-<t tx="ekr.20180309185230.101">url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/open.png)</t>
+nodes-light/triangles/closed.png
+transparent/icons/nodes/triangles/black/closed.png</t>
+<t tx="ekr.20180309185230.101">url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/open.png)
+
+nodes-light/triangles/open.png
+transparent/icons/nodes/triangles/black/open.png</t>
 <t tx="ekr.20180309185230.102"></t>
 <t tx="ekr.20180309185230.103" lineYOffset="4b002e">Set to true for dark themes, so bookmarks.py can generate
 random background colors which are appropriate etc.</t>
@@ -916,7 +919,7 @@ QTextEdit#log-widget {
 </t>
 <t tx="ekr.20180309185230.11"></t>
 <t tx="ekr.20180309185230.110">QMenu {
-  background: @LeoYellow;
+  background: @LeoBlue;
   color: @text-foreground;
 }
 </t>

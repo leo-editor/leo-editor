@@ -837,8 +837,8 @@ class LeoQtGui(leoGui.LeoGui):
     def getIconImage(self, name):
         '''Load the icon and return it.'''
         trace = False and not g.unitTesting
-        trace_cached = False
-        trace_not_found = False
+        trace_cached = True
+        trace_not_found = True
         # Return the image from the cache if possible.
         if name in self.iconimages:
             image = self.iconimages.get(name)
@@ -906,8 +906,9 @@ class LeoQtGui(leoGui.LeoGui):
         def sfn(fn):
             return g.shortFileName(fn.replace('/', '\\'), n=4)
 
+        if trace:  g.trace('color_theme', repr(self.color_theme))
+        
         if self.color_theme:
-            # if trace: g.trace('color_theme', self.color_theme)
             # normal, unthemed path to image
             pathname = g.os_path_finalize_join(g.app.loadDir, "..", "Icons")
             pathname = g.os_path_normpath(g.os_path_realpath(pathname))
@@ -925,11 +926,11 @@ class LeoQtGui(leoGui.LeoGui):
                     base_dir, 'themes',
                     self.color_theme, 'Icons', namepart)
                 if g.os_path_exists(fullname):
-                    if trace: g.trace('found', sfn(fullname))
+                    if trace: g.trace('found', repr(name), sfn(fullname))
                     return fullname
         # original behavior, if name is absolute this will just return it
         fullname = g.os_path_finalize_join(g.app.loadDir, "..", "Icons", name)
-        if trace: g.trace('found', g.os_path_exists(fullname), sfn(fullname))
+        if trace: g.trace('found', repr(name), g.os_path_exists(fullname), sfn(fullname))
         return fullname
     #@+node:ekr.20110605121601.18518: *4* qt_gui.getTreeImage
     def getTreeImage(self, c, path):
@@ -1708,6 +1709,7 @@ class StyleSheetManager(object):
     #@+node:ekr.20170307083738.1: *5* ssm.get_indicator_path
     def get_indicator_path(self, setting):
         '''Return the path to the open/close indicator icon.'''
+        trace = False and not g.unitTesting
         c = self.c
         s = c.config.getString(setting)
         if s:
@@ -1717,6 +1719,7 @@ class StyleSheetManager(object):
             )
             for path in table:
                 if g.os_path_exists(path):
+                    if trace: g.trace('Found %20s %s' % (setting, path))
                     return path.replace('\\','/')
                         # Required on Windows.
             g.es_print('no icon found for:', setting)
@@ -1858,6 +1861,7 @@ class StyleSheetManager(object):
     #@+node:ekr.20180308102949.1: *3* ssm.load_theme_file & helpers
     def load_theme_file(self, path):
         '''Load a theme file, without setting any actual settings.'''
+        c = self.c
         lm = g.app.loadManager
         path = self.find_theme_file(path)
         if not path: return
@@ -1876,7 +1880,11 @@ class StyleSheetManager(object):
         # Compute the style-sheet.
         sheet = self.compute_style_sheet_from_settings_d(settings_d)
         # Update the global settings from the settings_d.
-        self.c.config.settingsDict.update(settings_d)
+        c.config.settingsDict.update(settings_d)
+        if hasattr(g.app.gui, 'color_theme'):
+            g.app.gui.color_theme = c.config.getString('color_theme')
+            g.app.gui.iconimages = {} # Clear the icon cache.
+        # g.trace('color_theme', c.config.getString('color_theme'))
         # Reload settings *after* updating settings.
         if sheet:
             self.reload_settings(sheet=sheet)
@@ -1898,6 +1906,12 @@ class StyleSheetManager(object):
             # This allows settings-only themes.
             if trace: g.trace('no stylesheets')
             return None
+        # A little hack for ssm.set_indicator_paths.
+        # Update c.config.settingsDict here.
+        for name in ('treeimageclosed', 'treeimageclosed'):
+            val = settings_d.get(name)
+            if val is not None:
+                self.c.config.settingsDict[name] = val
         if trace and trace_dict:
             g.trace('settings_d')
             g.printObj(settings_d)
