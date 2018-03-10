@@ -217,6 +217,8 @@ class LeoApp(object):
             # The global register list.
         self.leoID = None
             # The id part of gnx's.
+        self.loadedThemes = []
+            # List of loaded theme.leo files.
         self.lossage = []
             # List of last 100 keystrokes.
         self.paste_c = None
@@ -1946,6 +1948,16 @@ class LoadManager(object):
             d1 = lm.globalSettingsDict.copy(settingsName)
             d2 = lm.globalShortcutsDict.copy(shortcutsName)
         return PreviousSettings(d1, d2)
+    #@+node:ekr.20180310092706.1: *4* LM.loadAllLoadedThemes
+    def loadAllLoadedThemes(self, c, old_c):
+        '''
+        Load all previously-loaded themes.
+        Do *not* load settings files again.
+        '''
+        ssm = old_c.styleSheetManager
+        for path in g.app.loadedThemes:
+            g.trace('===== Reloading Theme', path)
+            ssm.load_theme_file(c, path, old_c=old_c, reload_flag=True)
     #@+node:ekr.20120214132927.10723: *4* LM.mergeShortcutsDicts & helpers
     def mergeShortcutsDicts(self, c, old_d, new_d, localFlag):
         '''
@@ -2129,9 +2141,12 @@ class LoadManager(object):
     #@+node:ekr.20120213081706.10382: *4* LM.readGlobalSettingsFiles
     def readGlobalSettingsFiles(self):
         '''Read leoSettings.leo and myLeoSettings.leo using a null gui.'''
+        lm = self
         trace = (False or g.trace_startup) and not g.unitTesting
         verbose = False
-        lm = self
+        if g.app.loadedThemes:
+            if trace: g.trace('===== Return')
+            return
         if trace: g.es_debug()
         # Open the standard settings files with a nullGui.
         # Important: their commanders do not exist outside this method!

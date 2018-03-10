@@ -1859,24 +1859,14 @@ class StyleSheetManager(object):
             g.es("Stylesheet compiled")
         return stylesheet
     #@+node:ekr.20180308102949.1: *3* ssm.load_theme_file & helpers
-    def load_theme_file(self, path):
+    def load_theme_file(self, c, path, old_c=None, reload_flag=False):
         '''Load a theme file, without setting any actual settings.'''
-        c = self.c
-        lm = g.app.loadManager
         path = self.find_theme_file(path)
         if not path: return
-        old_commanders = g.app.commanders()
-        # Read the theme file into c2, a hidden commander.
-        c2 = lm.openSettingsFile(path)
-        # Get settings *without* application defaults.
-        junk_shortcuts_d, settings_d = lm.createSettingsDicts(c2,
-            localFlag=False, # doesn't matter: it affects only menus & shortcuts.
-            theme=True, # Parse only the @theme True.
-        )
-        assert isinstance(settings_d, g.TypedDict), repr(settings_d)
-        # Clear the cache entries for hidden commander.
-        if c2 not in old_commanders:
-            g.app.forgetOpenFile(c2.fileName())
+        if old_c:
+            settings_d = old_c.config.settingsDict
+        else:
+            settings_d = self.read_theme_settings(path)
         # Compute the style-sheet.
         sheet = self.compute_style_sheet_from_settings_d(settings_d)
         # Update the global settings from the settings_d.
@@ -1888,6 +1878,9 @@ class StyleSheetManager(object):
         # Reload the stylesheet *after* updating settings.
         if sheet:
             self.reload_settings(sheet=sheet)
+        # Remember the theme.
+        if not reload_flag:
+            g.app.loadedThemes.append(path)
     #@+node:ekr.20180308105850.1: *4* ssm.compute_style_sheet_from_settings_d
     def compute_style_sheet_from_settings_d(self, settings_d):
         '''
@@ -1945,6 +1938,23 @@ class StyleSheetManager(object):
                 g.trace('not found', path2)
         g.es_print('Theme not found:', path)
         return None
+    #@+node:ekr.20180310112320.1: *4* ssm.read_theme_settings
+    def read_theme_settings(self, path):
+        '''Return the theme settings.'''
+        lm = g.app.loadManager
+        old_commanders = g.app.commanders()
+        # Read the theme file into c2, a hidden commander.
+        c2 = lm.openSettingsFile(path)
+        # Get settings *without* application defaults.
+        junk_shortcuts_d, settings_d = lm.createSettingsDicts(c2,
+            localFlag=False, # doesn't matter: it affects only menus & shortcuts.
+            theme=True, # Parse only the @theme True.
+        )
+        assert isinstance(settings_d, g.TypedDict), repr(settings_d)
+        # Clear the cache entries for hidden commander.
+        if c2 not in old_commanders:
+            g.app.forgetOpenFile(c2.fileName())
+        return settings_d
     #@+node:ekr.20140912110338.19372: *3* ssm.munge
     def munge(self, stylesheet):
         '''
@@ -1970,15 +1980,15 @@ class StyleSheetManager(object):
         Called automatically by the reload-settings commands.
         '''
         trace = False and not g.unitTesting
-        # g.trace('(StyleSheetManager)')
+        tag = '(StyleSheetManager)'
         if not sheet:
             sheet = self.get_style_sheet_from_settings()
         if sheet:
             w = self.get_master_widget()
-            if trace: g.trace(w, len(sheet))
+            if trace: g.trace(tag, 'Found', len(sheet))
             w.setStyleSheet(sheet)
         elif trace:
-            g.trace('**no style sheet**')
+            g.trace(tag, 'Not Found')
         # self.c.redraw()
 
     reloadSettings = reload_settings
@@ -1994,7 +2004,10 @@ class StyleSheetManager(object):
     #@+node:ekr.20110605121601.18175: *3* ssm.set_style_sheets
     def set_style_sheets(self, all=True, top=None, w=None):
         '''Set the master style sheet for all widgets using config settings.'''
-        trace = False
+        trace = False and not g.unitTesting
+        if g.app.loadedThemes:
+            if trace: g.trace('===== Return')
+            return
         c = self.c
         if top is None: top = c.frame.top
         selectors = ['qt-gui-plugin-style-sheet']

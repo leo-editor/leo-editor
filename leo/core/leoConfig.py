@@ -1196,11 +1196,15 @@ class GlobalConfigManager(object):
     def setIvarsFromSettings(self, c):
         '''Init g.app.config ivars or c's ivars from settings.
 
-        - Called from readSettingsFiles with c = None to init g.app.config ivars.
-        - Called from c.__init__ to init corresponding commmander ivars.'''
+        - Called from c.initSettings with c = None to init g.app.config ivars.
+        - Called from c.initSettings to init corresponding commmander ivars.'''
         trace = False and not g.unitTesting
         verbose = True
-        if not self.inited: return
+        if g.app.loadedThemes:
+            if trace: g.trace('===== Return')
+            return
+        if not self.inited:
+            return
         # Ignore temporary commanders created by readSettingsFiles.
         if trace and verbose: g.trace('*' * 10)
         if trace: g.trace(
@@ -1517,16 +1521,14 @@ class LocalConfigManager(object):
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: g.es_debug('(c.config)', c and c.shortFileName())
         self.c = c
-        # The shortcuts and settings dicts, set in c.__init__
-        # for local files.
+        lm = g.app.loadManager
+        # c.__init__ and helpers set the shortcuts and settings dicts for local files.
         if previousSettings:
-            # g.trace('(c.config.ctor)',previousSettings)
             self.settingsDict = previousSettings.settingsDict
             self.shortcutsDict = previousSettings.shortcutsDict
             assert g.isTypedDict(self.settingsDict)
             assert g.isTypedDictOfLists(self.shortcutsDict)
         else:
-            lm = g.app.loadManager
             self.settingsDict = d1 = lm.globalSettingsDict
             self.shortcutsDict = d2 = lm.globalShortcutsDict
             assert d1 is None or g.isTypedDict(d1), d1

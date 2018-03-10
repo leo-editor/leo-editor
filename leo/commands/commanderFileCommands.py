@@ -146,6 +146,7 @@ g.command_alias('importTabFiles', importAnyFile)
 def new(self, event=None, gui=None):
     '''Create a new Leo window.'''
     lm = g.app.loadManager
+    old_c = self
     # Clean out the update queue so it won't interfere with the new window.
     self.outerUpdate()
     # Send all log messages to the new frame.
@@ -162,8 +163,11 @@ def new(self, event=None, gui=None):
     c.frame.createFirstTreeNode()
     lm.createMenu(c)
     lm.finishOpen(c)
+    if g.app.loadedThemes:
+        c.config.settingsDict = old_c.config.settingsDict
+        lm.loadAllLoadedThemes(c=c, old_c=old_c)
     g.app.writeWaitingLog(c)
-    g.doHook("new", old_c=self, c=c, new_c=c)
+    g.doHook("new", old_c=old_c, c=c, new_c=c)
     c.setLog()
     c.setChanged(False) # Fix #387
     c.redraw()
