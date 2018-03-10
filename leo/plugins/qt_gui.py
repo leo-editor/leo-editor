@@ -1881,11 +1881,11 @@ class StyleSheetManager(object):
         sheet = self.compute_style_sheet_from_settings_d(settings_d)
         # Update the global settings from the settings_d.
         c.config.settingsDict.update(settings_d)
+        # Update g.app.gui ivars.  g.app.gui.reload_settings() doesn't work.
         if hasattr(g.app.gui, 'color_theme'):
             g.app.gui.color_theme = c.config.getString('color_theme')
             g.app.gui.iconimages = {} # Clear the icon cache.
-        # g.trace('color_theme', c.config.getString('color_theme'))
-        # Reload settings *after* updating settings.
+        # Reload the stylesheet *after* updating settings.
         if sheet:
             self.reload_settings(sheet=sheet)
     #@+node:ekr.20180308105850.1: *4* ssm.compute_style_sheet_from_settings_d
