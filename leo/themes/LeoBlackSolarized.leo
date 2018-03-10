@@ -9,11 +9,40 @@
 <preferences/>
 <find_panel_settings/>
 <vnodes>
+<v t="ekr.20180309203321.1"><vh>Tests</vh>
+<v t="ekr.20180306143127.1"><vh>Syntax coloring test</vh>
+<v t="ekr.20180306143127.2"><vh>&lt;&lt; defined section &gt;&gt;</vh></v>
+</v>
+<v t="ekr.20180306170402.1"><vh>Test g.es(color=*)</vh></v>
+</v>
 <v t="ekr.20180306142738.3"><vh>@settings</vh>
 <v t="ekr.20180306144200.1"><vh>@bool show-tips = False</vh></v>
 <v t="ekr.20180306144227.1"><vh>@bool use-gutter = False</vh></v>
 <v t="ekr.20180307010409.1"><vh>@theme Leo Black Solarized</vh>
 <v t="ekr.20180307010409.2"><vh>Settings for Leo Solarized Dark theme</vh>
+<v t="ekr.20180309203459.1"><vh>Base colors: these are not solarized colors</vh>
+<v t="ekr.20180309203459.2"><vh>@color dark-base0 = #fdffdd</vh></v>
+<v t="ekr.20180309203459.3"><vh>@color dark-base00 = #657b83</vh></v>
+<v t="ekr.20180309203459.4"><vh>@color dark-base01 = #586e75</vh></v>
+<v t="ekr.20180309203459.5"><vh>@color dark-base02 = #073642</vh></v>
+<v t="ekr.20180309203459.6"><vh>@color dark-base03 = #000005</vh></v>
+<v t="ekr.20180309203459.7"><vh>@color dark-base04 = #000059</vh></v>
+<v t="ekr.20180309203459.8"><vh>@color dark-base05 = #003b00</vh></v>
+<v t="ekr.20180309203459.9"><vh>@color dark-base06 = #3b0000</vh></v>
+<v t="ekr.20180309203459.10"><vh>@color dark-base1 = #93a1a1</vh></v>
+<v t="ekr.20180309203459.11"><vh>@color dark-base2 = #eee8d5</vh></v>
+<v t="ekr.20180309203459.12"><vh>@color dark-base3 = #fdf6e3</vh></v>
+<v t="ekr.20180309203459.13"><vh>@color solarized-black = #000005</vh></v>
+<v t="ekr.20180309203459.14"><vh>@color solarized-blue = #268bd2</vh></v>
+<v t="ekr.20180309203459.15"><vh>@color solarized-cyan = #2aa198</vh></v>
+<v t="ekr.20180309203459.16"><vh>@color solarized-green = #859900</vh></v>
+<v t="ekr.20180309203459.17"><vh>@color solarized-magenta = #d33682</vh></v>
+<v t="ekr.20180309203459.18"><vh>@color solarized-orange = #cb4b16</vh></v>
+<v t="ekr.20180309203459.19"><vh>@color solarized-red = #dc322f</vh></v>
+<v t="ekr.20180309203459.20"><vh>@color solarized-violet = #6c71c4</vh></v>
+<v t="ekr.20180309203459.21"><vh>@color solarized-white = #fdf6e3 </vh></v>
+<v t="ekr.20180309203459.22"><vh>@color solarized-yellow = #b58900</vh></v>
+</v>
 <v t="ekr.20180307010409.3"><vh>Colors: Logical colors</vh>
 <v t="ekr.20180307010409.4"><vh>@color log_black_color = @text-foreground</vh></v>
 <v t="ekr.20180307010409.5"><vh>@color log_blue_color = @solarized-blue</vh></v>
@@ -140,7 +169,7 @@
 <v t="ekr.20180307010409.109"><vh>Log</vh></v>
 <v t="ekr.20180307010409.110"><vh>Menus</vh></v>
 <v t="ekr.20180307010409.111"><vh>Minibuffer &amp; label</vh></v>
-<v t="ekr.20180307010409.112"><vh>Plugins</vh></v>
+<v t="ekr.20180309203342.1"><vh>Plugins</vh></v>
 <v t="ekr.20180307010409.113"><vh>Scroll bars</vh></v>
 <v t="ekr.20180307010409.114"><vh>Splitters</vh></v>
 <v t="ekr.20180307010409.115"><vh>Status area</vh></v>
@@ -151,10 +180,8 @@
 </v>
 <v t="ekr.20180306144735.1"><vh>@@string font-size-body = 24px</vh></v>
 </v>
-<v t="ekr.20180306143127.1"><vh>Syntax coloring test</vh>
-<v t="ekr.20180306143127.2"><vh>&lt;&lt; defined section &gt;&gt;</vh></v>
-</v>
-<v t="ekr.20180306170402.1"><vh>Test g.es(color=*)</vh></v>
+<v t="ekr.20180307010409.105"></v>
+<v t="ekr.20180309203421.1"><vh>Unresolved</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180306142738.3">@language md</t>
@@ -326,34 +353,6 @@ QLineEdit#lineEdit {
   font-weight: normal; /* normal,bold,100,..,900 */
   font-style: normal; /* normal,italic,oblique */
   border: 1px solid @solarized-blue;
-}
-</t>
-<t tx="ekr.20180307010409.112">/* bookmarks plugin styling */
-
-#show_bookmarks QPushButton {
-  margin: 0; padding: 1; border: none;
-  font-size: @bookmarks_base_size;
-  color: @bookmarks_base_color;
-  font-weight: @bookmarks_base_weight;
-  text-decoration: @bookmarks_base_decoration;
-}
-#show_bookmarks QPushButton[style_class='bookmark_children'] {
-  font-size: @bookmarks_children_size;
-  color: @bookmarks_children_color;
-  font-weight: @bookmarks_children_weight;
-  text-decoration: @bookmarks_children_decoration;
-}
-#show_bookmarks QPushButton[style_class='bookmark_expanded'] {
-  font-size: @bookmarks_expanded_size;
-  color: @bookmarks_expanded_color;
-  font-weight: @bookmarks_expanded_weight;
-  text-decoration: @bookmarks_expanded_decoration;
-}
-#show_bookmarks QPushButton[style_class='bookmark_current'] {
-  font-size: @bookmarks_current_size;
-  color: @bookmarks_current_color;
-  font-weight: @bookmarks_current_weight;
-  text-decoration: @bookmarks_current_decoration;
 }
 </t>
 <t tx="ekr.20180307010409.113">QScrollBar::horizontal {
@@ -659,5 +658,72 @@ The following settings specify the indicators.  You can use an absolute path, or
 - Your home directory or
 - Leo's leo/Icons directory
 </t>
+<t tx="ekr.20180309203321.1"></t>
+<t tx="ekr.20180309203342.1">/* bookmarks plugin styling */
+
+#show_bookmarks QPushButton {
+  margin: 0; padding: 1; border: none;
+  font-size: @bookmarks_base_size;
+  color: @bookmarks_base_color;
+  font-weight: @bookmarks_base_weight;
+  /* text-decoration: at-bookmarks_base_decoration; */
+}
+#show_bookmarks QPushButton[style_class='bookmark_children'] {
+  /* font-size: at-bookmarks_children_size; */
+  /* font-weight: at-bookmarks_children_weight; */
+  /* text-decoration: at-bookmarks_children_decoration; */
+  color: @bookmarks_children_color;
+}
+#show_bookmarks QPushButton[style_class='bookmark_expanded'] {
+  /* font-size: at-bookmarks_expanded_size; */
+  color: @bookmarks_expanded_color;
+  font-weight: @bookmarks_expanded_weight;
+  text-decoration: @bookmarks_expanded_decoration;
+}
+#show_bookmarks QPushButton[style_class='bookmark_current'] {
+  /* font-size: at-bookmarks_current_size; */
+  /* text-decoration: at-bookmarks_current_decoration; */
+  color: @bookmarks_current_color;
+  font-weight: @bookmarks_current_weight;
+}
+</t>
+<t tx="ekr.20180309203421.1">expand_css_constants Unresolved @constants
+[
+    '@dark-base0',
+    '@dark-base00',
+    '@dark-base01',
+    '@dark-base02',
+    '@dark-base03',
+    '@dark-base1',
+    '@dark-base2',
+    '@dark-base3',
+    '@solarized-blue',
+    '@solarized-green',
+    '@solarized-red',
+    '@solarized-violet',
+    '@solarized-white'
+]</t>
+<t tx="ekr.20180309203459.1"></t>
+<t tx="ekr.20180309203459.10"></t>
+<t tx="ekr.20180309203459.11"></t>
+<t tx="ekr.20180309203459.12"></t>
+<t tx="ekr.20180309203459.13"># Not an official solarized color.  Same as dark-base-03</t>
+<t tx="ekr.20180309203459.14"></t>
+<t tx="ekr.20180309203459.15"></t>
+<t tx="ekr.20180309203459.16"></t>
+<t tx="ekr.20180309203459.17"></t>
+<t tx="ekr.20180309203459.18"></t>
+<t tx="ekr.20180309203459.19"></t>
+<t tx="ekr.20180309203459.2"></t>
+<t tx="ekr.20180309203459.20"></t>
+<t tx="ekr.20180309203459.21"># Not an official solarized color: same as solorarized-base3</t>
+<t tx="ekr.20180309203459.22"></t>
+<t tx="ekr.20180309203459.3"></t>
+<t tx="ekr.20180309203459.4"></t>
+<t tx="ekr.20180309203459.5"></t>
+<t tx="ekr.20180309203459.6"></t>
+<t tx="ekr.20180309203459.7"></t>
+<t tx="ekr.20180309203459.8"></t>
+<t tx="ekr.20180309203459.9"></t>
 </tnodes>
 </leo_file>
