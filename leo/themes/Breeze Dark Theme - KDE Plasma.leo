@@ -250,7 +250,9 @@ QTextEdit#richTextEdit {
   padding-bottom: 3px;
   padding-right: 3px;
   height: 200%;
-}</t>
+}
+
+</t>
 <t tx="chris.20180308171552.122">/* active pane highlighting */
 QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit {
   border-style: solid;
@@ -320,7 +322,16 @@ QPushButton:pressed
   font-size: @font-size-log;
   font-weight: normal; /* normal,bold,100,..,900 */
   font-style: normal; /* normal, italic,oblique */
-}</t>
+}
+
+QLineEdit#findPattern {
+  background-color: @dark-base5
+}
+
+QLineEdit#findChange {
+  background-color: @dark-base5
+}
+</t>
 <t tx="chris.20180308171552.125">QMenuBar
 {
     background-color: @dark-base3;
@@ -2514,8 +2525,8 @@ QTreeView::item:selected {
 
 QTreeView QLineEdit {
   color: @dark-base0;
-  background: @dark-base6;
-  selection-color: @dark-base0; 
+  background: @dark-base5;
+  selection-color: @dark-base5; 
   selection-background-color: @dark-base6;
   font-family: @font-family-tree;
   font-size: @font-size-tree;
