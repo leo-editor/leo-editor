@@ -5,7 +5,7 @@
 '''
 
 Creates a window for *live* rendering of reSTructuredText, markdown text,
-images, movies, sounds, rst, html, etc.
+images, movies, sounds, rst, html, jupyter notebooks, etc.
 
 Dependencies
 ============
@@ -128,8 +128,16 @@ contain a filename.  If relative, the filename is resolved relative to Leo's loa
 
 - ``@html`` renders the body text as html.
 
-` ``@jupyter`` renders the output from Jupyter Notebooks.
+- ``@jupyter`` renders the output from Jupyter Notebooks.
 
+  The contents of the @jupyter node can be either a url to the notebook or
+  the actual JSON notebook itself.
+  
+  Use file:// urls for local files. Some examples:
+      
+      Windows: file:///c:/Test/a_notebook.ipynb
+      
+      Linux:   file:///home/a_notebook.ipynb
 
 - ``@movie`` plays the file as a movie.  @movie also works for music files.
 
