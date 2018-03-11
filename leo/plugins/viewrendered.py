@@ -960,8 +960,8 @@ if QtWidgets: # NOQA
                 e = HTMLExporter()
                 (s, junk_resources) = e.from_notebook_node(nb)
             except nbformat.reader.NotJSONError:
-                # Assume the result is html.
-                return s
+                pass # Assume the result is html.
+            return s
         #@+node:ekr.20170324064811.1: *4* vr.update_latex & helper
         def update_latex(self, s, keywords):
             '''Update latex in the vr pane.'''
