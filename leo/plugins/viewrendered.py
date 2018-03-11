@@ -108,7 +108,7 @@ by default, with all Leo directives removed. However, if the body text
 starts with ``<`` (after removing directives), the body text is rendered as
 html.
 
-This plugin renders @md, @image, @html, @movie, @networkx and @svg nodes as follows:
+This plugin renders @md, @image, @jupyter, @html, @movie, @networkx and @svg nodes as follows:
 
 **Note**: For @image, @movie and @svg nodes, either the headline or the first line of body text may
 contain a filename.  If relative, the filename is resolved relative to Leo's load directory.
@@ -127,6 +127,8 @@ contain a filename.  If relative, the filename is resolved relative to Leo's loa
 
 
 - ``@html`` renders the body text as html.
+
+` ``@jupyter`` renders the output from Jupyter Notebooks.
 
 
 - ``@movie`` plays the file as a movie.  @movie also works for music files.
@@ -908,7 +910,7 @@ if QtWidgets: # NOQA
             w.setReadOnly(False)
             w.setHtml(template)
             w.setReadOnly(True)
-        #@+node:ekr.20170105124347.1: *4* vr.update_jupyter
+        #@+node:ekr.20170105124347.1: *4* vr.update_jupyter & helper
         update_jupyter_count = 0
 
         def update_jupyter(self, s, keywords):
@@ -926,25 +928,40 @@ if QtWidgets: # NOQA
                 assert(w == pc.w)
             else:
                 w = pc.w
-            url = g.getUrlFromNode(c.p)
-            if url and nbformat:
-                s = urlopen(url).read().decode()
-                try:
-                    nb = nbformat.reads(s, as_version=4)
-                    e = HTMLExporter()
-                    (s, junk_resources) = e.from_notebook_node(nb)
-                except nbformat.reader.NotJSONError:
-                    # Assume the result is html.
-                    pass
-            elif url:
-                s = 'can not import nbformt: %r' % url
-            else:
-                s = g.u('')
+            s = self.get_jupyter_source(c)
             if isQt5:
                 w.hide() # This forces a proper update.
+            # g.trace(len(g.splitLines(s)))
             w.setHtml(s)
             w.show()
             c.bodyWantsFocusNow()
+        #@+node:ekr.20180311090852.1: *5* vr.get_jupyter_source
+        def get_jupyter_source(self, c):
+            '''Return the html for the @jupyer node.'''
+            body = c.p.b.lstrip()
+            if body.startswith('<'):
+                # Assume the body is html.
+                return body
+            if body.startswith('{'):
+                # Leo 5.7.1: Allow raw JSON.
+                s = body
+            else:
+                url = g.getUrlFromNode(c.p)
+                if not url:
+                    return g.u('')
+                if not nbformat:
+                    return 'can not import nbformt to render url: %r' % url
+                try:
+                    s = urlopen(url).read().decode()
+                except Exception:
+                    return 'url not found: %s' % url
+            try:
+                nb = nbformat.reads(s, as_version=4)
+                e = HTMLExporter()
+                (s, junk_resources) = e.from_notebook_node(nb)
+            except nbformat.reader.NotJSONError:
+                # Assume the result is html.
+                return s
         #@+node:ekr.20170324064811.1: *4* vr.update_latex & helper
         def update_latex(self, s, keywords):
             '''Update latex in the vr pane.'''
