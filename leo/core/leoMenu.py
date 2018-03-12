@@ -1159,7 +1159,7 @@ class LeoMenu(object):
         try:
             menu = self.getMenu(menuName)
             if menu is None:
-                if trace and not g.app.menuWarningsGiven: ### and not g.app.gui.isNullGui:
+                if trace and not g.app.menuWarningsGiven:
                     g.es_print(g.app.gui.guiName(), g.callers())
                     g.es_print("menu does not exist: %s" % (menuName))
                 return

@@ -1554,6 +1554,10 @@
 <v t="ekr.20131213135427.22319"><vh>@item yank-&amp;pop</vh></v>
 </v>
 </v>
+<v t="ekr.20180312035141.1"><vh>@menu &amp;Themes</vh>
+<v t="ekr.20180312051552.1"><vh>@item apply-theme-file</vh></v>
+<v t="ekr.20180312035333.1"><vh>@item open-theme-file</vh></v>
+</v>
 <v t="ekr.20131213135427.22320"><vh>@menu &amp;Window</vh>
 <v t="ekr.20131213135427.22340"><vh>@item *&amp;resize-to-screen</vh></v>
 <v t="ekr.20131213135427.22341"><vh>@item *&amp;cascade-windows</vh></v>
@@ -2315,6 +2319,7 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
+<v t="ekr.20180312035141.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -6045,7 +6050,7 @@ in myLeoSettings.leo.  But most users will never need to do this.
 False: start-find commands puts focus in Find panel.</t>
 <t tx="ekr.20131119143342.20108"></t>
 <t tx="ekr.20131213135427.21826"></t>
-<t tx="ekr.20131213135427.21827"></t>
+<t tx="ekr.20131213135427.21827">&amp;Open Theme File</t>
 <t tx="ekr.20131213135427.21828"></t>
 <t tx="ekr.20131213135427.21829">&amp;Open</t>
 <t tx="ekr.20131213135427.21830"></t>
@@ -11753,6 +11758,10 @@ May be overridden by themes.</t>
 <t tx="ekr.20180308050150.7"></t>
 <t tx="ekr.20180308050150.8"></t>
 <t tx="ekr.20180308050150.9"></t>
+<t tx="ekr.20180312035141.1">A placeholder for the actual menu.
+Leo's core menu code populates this menu as a special case.</t>
+<t tx="ekr.20180312035333.1">&amp;Open Theme File</t>
+<t tx="ekr.20180312051552.1">&amp;Apply Theme</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

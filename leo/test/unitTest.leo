@@ -1224,6 +1224,7 @@
 </v>
 <v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
 </v>
+<v t="ekr.20180312050443.1"><vh>@test cwd</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -15986,5 +15987,10 @@ EOT;
 ?&gt;
 </t>
 <t tx="ekr.20180214042153.1">False is the legacy value.</t>
+<t tx="ekr.20180312050443.1">import os
+cwd = g.os_path_abspath(os.curdir)
+test_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'test')
+assert cwd == test_dir, (cwd, test_dir)
+</t>
 </tnodes>
 </leo_file>

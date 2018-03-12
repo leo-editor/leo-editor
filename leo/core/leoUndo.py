@@ -449,7 +449,7 @@ class Undoer(object):
     #@+node:ekr.20050318085432.4: *4* u.afterX...
     #@+node:ekr.20050315134017.4: *5* u.afterChangeGroup
     def afterChangeGroup(self, p, undoType, reportFlag=False, dirtyVnodeList=None):
-        '''Create an undo node for general tree operations using d created by beforeChangeTree'''
+        '''Create an undo node for general tree operations using d created by beforeChangeGroup'''
         u = self; c = self.c
         w = c.frame.body.wrapper
         if u.redoing or u.undoing:

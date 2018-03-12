@@ -4,6 +4,7 @@
 #@@first
 '''File commands that used to be defined in leoCommands.py'''
 import leo.core.leoGlobals as g
+import os
 import time
 #@+others
 #@+node:ekr.20170221033738.1: ** c_file.reloadSettings & helper
@@ -938,6 +939,47 @@ def tangle(self, event=None):
     '''
     c = self
     c.tangleCommands.tangle()
+#@+node:ekr.20180312043352.1: ** Themes
+#@+node:ekr.20180312043352.2: *3* c_file.apply/open_theme_file
+@g.commander_command('apply-theme-file')
+def apply_theme_file(self, event=None):
+    open_theme_file_helper(event, closeFlag=True)
+
+@g.commander_command('open-theme-file')
+def open_theme_file(self, event=None):
+    open_theme_file_helper(event, closeFlag=False)
+    
+def open_theme_file_helper(event, closeFlag):
+    '''Open a theme file and apply the theme.'''
+    c = event and event.get('c')
+    if not c: return
+    old_dir = g.os_path_abspath(os.curdir)
+    themes_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'themes')
+    os.chdir(themes_dir)
+    fileName = g.app.gui.runOpenFileDialog(c,
+        title="Open",
+        filetypes=[
+             g.fileFilters("LEOFILES"),
+            ("All files", "*"),
+        ],
+        defaultextension=g.defaultLeoFileExtension(c),
+    )
+    c.bringToFront()
+    c.init_error_dialogs()
+    if fileName:
+        if g.app.loadManager.isLeoFile(fileName):
+            c2 = g.openWithFileName(fileName, old_c=c)
+            if c2:
+                c2.k.makeAllBindings()
+                g.chdir(fileName)
+                g.setGlobalOpenDir(fileName)
+                if closeFlag:
+                    g.app.destroyWindow(c2.frame)
+                    g.app.windowList.remove(c2.frame)
+    os.chdir(old_dir)
+    c.raise_error_dialogs(kind='write')
+    g.app.runAlreadyOpenDialog(c)
+    c.initialFocusHelper()
 #@+node:ekr.20031218072017.2845: ** Untangle
 #@+node:ekr.20031218072017.2846: *3* c_file.untangleAll
 @g.commander_command('untangle-all')
