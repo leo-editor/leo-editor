@@ -2536,8 +2536,8 @@ class LoadManager(object):
         trace = False
         lm = self
         lm.old_argv = sys.argv[:]
-        usage = "usage: launchLeo.py [options] file1, file2, ..."
-        parser = optparse.OptionParser(usage=usage)
+        parser = optparse.OptionParser(
+            usage="usage: launchLeo.py [options] file1, file2, ...")
             # Automatically implements the --help option.
         # Parse the options, and remove them from sys.argv.
         self.addOptionsToParser(parser)
@@ -2560,6 +2560,7 @@ class LoadManager(object):
         else:
             script = self.doScriptOption(options, parser)
             script_path_w = options.script_window
+                # --script-window=script_window
             windowFlag = script and script_path_w
         d = {
             'gui': self.doGuiOption(options),
