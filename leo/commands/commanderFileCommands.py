@@ -966,16 +966,16 @@ def open_theme_file_helper(event, closeFlag):
     )
     c.bringToFront()
     c.init_error_dialogs()
-    if fileName:
-        if g.app.loadManager.isLeoFile(fileName):
-            c2 = g.openWithFileName(fileName, old_c=c)
-            if c2:
-                c2.k.makeAllBindings()
-                g.chdir(fileName)
-                g.setGlobalOpenDir(fileName)
-                if closeFlag:
-                    g.app.destroyWindow(c2.frame)
-                    g.app.windowList.remove(c2.frame)
+    # Adapted from c.open().
+    if fileName and g.app.loadManager.isLeoFile(fileName):
+        c2 = g.openWithFileName(fileName, old_c=c)
+        if c2:
+            c2.k.makeAllBindings()
+            g.chdir(fileName)
+            g.setGlobalOpenDir(fileName)
+            if closeFlag:
+                g.app.destroyWindow(c2.frame)
+                g.app.windowList.remove(c2.frame)
     os.chdir(old_dir)
     c.raise_error_dialogs(kind='write')
     g.app.runAlreadyOpenDialog(c)
