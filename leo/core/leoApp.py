@@ -111,6 +111,8 @@ class LeoApp(object):
             # The gui name given in --gui option.
         self.ipython_inited = False
             # True if leoIpython.py imports succeeded.
+        self.isTheme = False
+            # True: load files as theme files (ignore myLeoSettings.leo).
         self.listen_to_log_flag = False
             # True: execute listen-to-log command.
         self.qt_use_tabs = False
@@ -2528,16 +2530,56 @@ class LoadManager(object):
         g.app.sessionManager = leoSessions.SessionManager()
         # Complete the plugins class last.
         g.app.pluginsController.finishCreate()
-    #@+node:ekr.20120219154958.10486: *5* LM.scanOptions & helper
+    #@+node:ekr.20120219154958.10486: *5* LM.scanOptions & helpers
     def scanOptions(self, fileName, pymacs):
         '''Handle all options, remove them from sys.argv and set lm.options.'''
         trace = False
         lm = self
-        # print('scanOptions',sys.argv)
         lm.old_argv = sys.argv[:]
-        # Note: this automatically implements the --help option.
         usage = "usage: launchLeo.py [options] file1, file2, ..."
         parser = optparse.OptionParser(usage=usage)
+            # Automatically implements the --help option.
+        # Parse the options, and remove them from sys.argv.
+        self.addOptionsToParser(parser)
+        options, args = parser.parse_args()
+        sys.argv = [sys.argv[0]]
+        sys.argv.extend(args)
+        if trace:
+            print('scanOptions: options...')
+            g.printDict({
+                key: value for key, value in options.__dict__.items() if value
+            })
+        # Handle the args...
+        self.doBoolOptions(options)
+        # Compute the lm.files ivar.
+        lm.files = lm.computeFilesList(fileName)
+        # Compute the return values.
+        if pymacs:
+            script = None
+            windowFlag = None
+        else:
+            script = self.doScriptOption(options, parser)
+            script_path_w = options.script_window
+            windowFlag = script and script_path_w
+        d = {
+            'gui': self.doGuiOption(options),
+            'load_type': self.doLoadTypeOption(options),
+            'screenshot_fn': self.doScreenShotOption(options),
+                # --screen-shot=fn
+            'script': script,
+            'select': options.select and options.select.strip('"'),
+                # --select=headline
+            'version': options.version,
+                # --version: print the version and exit.
+            'windowFlag': windowFlag, 
+            'windowSize': self.doWindowSizeOption(options),
+        }
+        if trace:
+            print('scanOptions: returns...')
+            g.printObj(d)
+        return d
+    #@+node:ekr.20180312150559.1: *6* LM.addOptionsToParser
+    def addOptionsToParser(self, parser):
         add = parser.add_option
         add('--debug', action='store_true',
             help='enable debug mode')
@@ -2547,13 +2589,15 @@ class LoadManager(object):
             help='start fullscreen')
         add('--ipython', action='store_true', dest='use_ipython',
             help='enable ipython support')
-        add('--fail-fast', action='store_true', dest='fail_fast',
+        add('--fail-fast', action='store_true', dest='failFast',
             help='stop unit tests after the first failure')
         add('--gui',
             help='gui to use (qt/qttabs/console/null)')
+        add('--is-theme', action='store_true', dest='is_theme',
+            help='load the first file as a theme file')
         add('--listen-to-log', action='store_true', dest='listen_to_log',
             help='start log_listener.py on startup')
-        add('--load-type', dest='load_type',
+        add('--load-type', dest='loadType',
             help='@<file> type for loading non-outlines from command line')
         add('--maximized', action='store_true',
             help='start maximized')
@@ -2593,23 +2637,80 @@ class LoadManager(object):
             help='print version number and exit')
         add('--window-size', dest='window_size',
             help='initial window size (height x width)')
-        # Parse the options, and remove them from sys.argv.
-        options, args = parser.parse_args()
-        sys.argv = [sys.argv[0]]; sys.argv.extend(args)
-        if trace:
-            # print('scanOptions:',sys.argv)
-            g.trace('options', options)
-        # Handle the args...
+        
+    #@+node:ekr.20120219154958.10483: *6* LM.computeFilesList
+    def computeFilesList(self, fileName):
+        lm = self
+        files = []
+        if fileName:
+            files.append(fileName)
+        for arg in sys.argv[1:]:
+            if arg and not arg.startswith('-'):
+                files.append(arg)
+        result = []
+        for z in files:
+            # Fix #245: wrong: result.extend(glob.glob(lm.completeFileName(z)))
+            aList = glob.glob(lm.completeFileName(z))
+            if aList:
+                result.extend(aList)
+            else:
+                result.append(z)
+        return result
+    #@+node:ekr.20180312151544.1: *6* LM.doBoolOptions
+    def doBoolOptions(self, options):
+        '''These args just set g.app ivars.'''
+        trace = False
         # --debug
         g.app.debug = options.debug
-        # if g.app.debug: g.trace_startup = True
+            # if g.app.debug: g.trace_startup = True
         # --fail-fast
-        if options.fail_fast:
-            g.app.failFast = True
+        g.app.failFast = options.failFast
+        # --fullscreen
+        g.app.start_fullscreen = options.fullscreen
         # --git-diff
-        if options.diff:
-            g.app.diff = options.diff
-        # --gui
+        g.app.diff = options.diff
+        # --is_theme
+        g.app.is_theme = options.is_theme
+        # --listen-to-log
+        g.app.listen_to_log_flag = options.listen_to_log
+        # --ipython
+        g.app.useIpython = options.use_ipython
+        if trace: print('scanOptions: g.app.useIpython', g.app.useIpython)
+        # --maximized
+        g.app.start_maximized = options.maximized
+        # --minimized
+        g.app.start_minimized = options.minimized
+        # --no-cache
+        if options.no_cache:
+            if trace: print('scanOptions: disabling caching')
+            g.enableDB = False
+        # --no-plugins
+        if options.no_plugins:
+            if trace: print('scanOptions: disabling plugins')
+            g.app.enablePlugins = False
+        # --no-splash: --minimized disables the splash screen
+        g.app.use_splash_screen = (
+            not options.no_splash_screen and
+            not options.minimized)
+        # --session-restore & --session-save
+        g.app.restore_session = bool(options.session_restore)
+        g.app.save_session = bool(options.session_save)
+        # --silent
+        g.app.silentMode = options.silent
+        # --trace-binding
+        g.app.trace_binding = options.binding
+        # --trace-focus
+        g.app.trace_focus = options.trace_focus
+        # --trace-plugins
+        g.app.trace_plugins = options.trace_plugins
+        # --trace-setting=setting
+        g.app.trace_setting = options.setting
+            # g.app.config does not exist yet.
+        # --trace-shutdown
+        g.app.trace_shutdown = options.trace_shutdown
+       
+    #@+node:ekr.20180312150805.1: *6* LM.doGuiOption
+    def doGuiOption(self, options):
         gui = options.gui
         if gui:
             gui = gui.lower()
@@ -2630,41 +2731,29 @@ class LoadManager(object):
             g.app.qt_use_tabs = True
         assert gui
         g.app.guiArgName = gui
-        # --listen-to-log
-        g.app.listen_to_log_flag = options.listen_to_log
-        # --load-type
-        load_type = options.load_type
-        if load_type:
-            load_type = load_type.lower()
-        else:
-            load_type = 'edit'
-        load_type = '@' + load_type
-        # --ipython
-        g.app.useIpython = options.use_ipython
-        if trace: g.trace('g.app.useIpython', g.app.useIpython)
-        # --fullscreen
-        # --minimized
-        # --maximized
-        g.app.start_fullscreen = options.fullscreen
-        g.app.start_maximized = options.maximized
-        g.app.start_minimized = options.minimized
-        # --no-cache
-        if options.no_cache:
-            if trace: print('scanOptions: disabling caching')
-            g.enableDB = False
-        # --no-plugins
-        if options.no_plugins:
-            if trace: print('scanOptions: disabling plugins')
-            g.app.enablePlugins = False
-        # --no-splash: --minimized disables the splash screen
-        g.app.use_splash_screen = (
-            not options.no_splash_screen and
-            not options.minimized)
+        return gui
+    #@+node:ekr.20180312152329.1: *6* LM.doLoadTypeOption
+    def doLoadTypeOption(self, options):
+        
+        s = options.loadType
+        s = s.lower() if s else 'edit'
+        return '@' + s
+
+        
+    #@+node:ekr.20180312152609.1: *6* LM.doScreenShotOption
+    def doScreenShotOption(self, options):
+
+        trace = False
         # --screen-shot=fn
-        screenshot_fn = options.screenshot_fn
-        if screenshot_fn:
-            screenshot_fn = screenshot_fn.strip('"')
-            if trace: print('scanOptions: screenshot_fn', screenshot_fn)
+        s = options.screenshot_fn
+        if s:
+            s = s.strip('"')
+        if trace: print('scanOptions: screenshot_fn', s)
+        return s
+    #@+node:ekr.20180312153008.1: *6* LM.doScriptOption
+    def doScriptOption(self, options, parser):
+
+        trace = False
         # --script
         script_path = options.script
         script_path_w = options.script_window
@@ -2674,85 +2763,26 @@ class LoadManager(object):
         if script_name:
             script_name = g.os_path_finalize_join(g.app.loadDir, script_name)
             script, e = g.readFileIntoString(script_name, kind='script:')
-            # print('script_name',repr(script_name))
+            if trace: print('scanOptions: script_name',repr(script_name))
         else:
             script = None
-            # if trace: print('scanOptions: no script')
-        # --select
-        select = options.select
-        if select:
-            select = select.strip('"')
-            if trace: print('scanOptions: select', repr(select))
-        # --session-restore & --session-save
-        g.app.restore_session = bool(options.session_restore)
-        g.app.save_session = bool(options.session_save)
-        # --silent
-        g.app.silentMode = options.silent
-        # print('scanOptions: silentMode',g.app.silentMode)
-        # --trace-binding
-        g.app.trace_binding = options.binding
-        # --trace-focus
-        g.app.trace_focus = options.trace_focus
-        # --trace-plugins
-        g.app.trace_plugins = options.trace_plugins
-        # --trace-setting=setting
-        g.app.trace_setting = options.setting
-            # g.app.config does not exist yet.
-            # g.trace('trace_setting:', repr(options.trace_setting))
-        # --trace-shutdown
-        g.app.trace_shutdown = options.trace_shutdown
-        # --version: print the version and exit.
-        versionFlag = options.version
+            if trace: print('scanOptions: no script')
+        return script
+    #@+node:ekr.20180312154839.1: *6* LM.doWindowSizeOption
+    def doWindowSizeOption(self, options):
+        
         # --window-size
+        trace = False
         windowSize = options.window_size
         if windowSize:
-            if trace: print('windowSize', repr(windowSize))
+            if trace: print('scanOptions: windowSize', repr(windowSize))
             try:
                 h, w = windowSize.split('x')
                 windowSize = int(h), int(w)
             except ValueError:
                 windowSize = None
-                g.trace('bad --window-size:', windowSize)
-        # Compute lm.files
-        lm.files = lm.computeFilesList(fileName)
-        # if options.debug:
-        #    g.es_debug('lm.files',lm.files)
-        # Post-process the options.
-        if pymacs:
-            script = None
-            windowFlag = None
-        # Compute the return values.
-        windowFlag = script and script_path_w
-        d = {
-            'gui': gui,
-            'load_type': load_type,
-            'screenshot_fn': screenshot_fn,
-            'script': script,
-            'select': select,
-            'version': versionFlag,
-            'windowFlag': windowFlag,
-            'windowSize': windowSize,
-        }
-        if trace: g.trace(d)
-        return d
-    #@+node:ekr.20120219154958.10483: *6* LM.computeFilesList
-    def computeFilesList(self, fileName):
-        lm = self
-        files = []
-        if fileName:
-            files.append(fileName)
-        for arg in sys.argv[1:]:
-            if arg and not arg.startswith('-'):
-                files.append(arg)
-        result = []
-        for z in files:
-            # Fix #245: wrong: result.extend(glob.glob(lm.completeFileName(z)))
-            aList = glob.glob(lm.completeFileName(z))
-            if aList:
-                result.extend(aList)
-            else:
-                result.append(z)
-        return result
+                print('scanOptions: bad --window-size:', windowSize)
+        return windowSize
     #@+node:ekr.20160718072648.1: *5* LM.setStdStreams
     def setStdStreams(self):
         '''
