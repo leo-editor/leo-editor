@@ -2,15 +2,15 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="107" left="81" height="864" width="1383"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20180307012127.1"><vh>@settings</vh>
-<v t="chris.20180308171552.1"><vh>@theme Breeze Dark</vh>
+<v t="ekr.20180307012127.1" a="E"><vh>@settings</vh>
+<v t="chris.20180308171552.1" a="E"><vh>@theme Breeze Dark</vh>
 <v t="chris.20180308171552.2"><vh>BreezeDark StyleSheet</vh></v>
 <v t="chris.20180308171552.3"><vh>Breeze Dark Color definitions</vh>
 <v t="chris.20180309180448.2"><vh>@color dark-base0 = #eff0f1</vh></v>
@@ -23,7 +23,7 @@
 <v t="chris.20180309180448.9"><vh>@color dark-base7 = #224e65</vh></v>
 <v t="chris.20180309180448.10"><vh>@color dark-base8 = #ff0000</vh></v>
 </v>
-<v t="chris.20180308171552.15"><vh>Settings for Leo Breeze Dark</vh>
+<v t="chris.20180308171552.15" a="E"><vh>Settings for Leo Breeze Dark</vh>
 <v t="chris.20180308171552.16"><vh>Colors: Logical colors</vh>
 <v t="chris.20180308171552.17"><vh>@color log_black_color = @text-foreground</vh></v>
 <v t="chris.20180308171552.18"><vh>@color log_blue_color = @solarized-blue</vh></v>
@@ -96,7 +96,7 @@
 <v t="chris.20180308171552.78"><vh>@string bg-gradient =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1@text-background-bright, stop:0.4 @text-background, stop:0.6@text-background, stop:0.9 @text-background-bright)</vh></v>
 <v t="chris.20180308171552.79"><vh>@string bg-gradient-hover =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @dark-base4,stop:0.4 @dark-base0, stop:0.6 @dark-base0, stop:0.9@dark-base4)</vh></v>
 </v>
-<v t="chris.20180308171552.80"><vh>Plugins settings</vh>
+<v t="chris.20180308171552.80" a="E"><vh>Plugins settings</vh>
 <v t="chris.20180308171552.81"><vh>bookmarks</vh>
 <v t="chris.20180308171552.82"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
 <v t="chris.20180308171552.83"><vh>bookmarks base</vh>
@@ -144,7 +144,7 @@
 <v t="chris.20180308171552.118"><vh>@string color_theme = dark</vh></v>
 </v>
 </v>
-<v t="chris.20180308171552.119"><vh>@data qt-gui-plugin-style-sheet</vh>
+<v t="chris.20180308171552.119" a="E"><vh>@data qt-gui-plugin-style-sheet</vh>
 <v t="chris.20180308171552.120"><vh>All General Widgets</vh></v>
 <v t="chris.20180308171552.121"><vh>Body &amp; other text</vh></v>
 <v t="chris.20180308171552.122"><vh>Borders</vh></v>
@@ -155,10 +155,11 @@
 <v t="chris.20180308171552.127"><vh>Plugins</vh></v>
 <v t="chris.20180308171552.128"><vh>Scroll bars</vh></v>
 <v t="chris.20180308171552.129"><vh>Splitters</vh></v>
-<v t="chris.20180308171552.130"><vh>Status area</vh></v>
 <v t="chris.20180308171552.131"><vh>Tab bar</vh></v>
 <v t="chris.20180309182828.1"><vh>Tree</vh></v>
+<v t="chris.20180308171552.130"><vh>Z Status area</vh></v>
 </v>
+<v t="chris.20180311131013.1"><vh>Full</vh></v>
 </v>
 <v t="ekr.20180307024846.1"><vh>@bool show-tips = False</vh></v>
 <v t="ekr.20180307024911.1"><vh>@bool use-gutter = False</vh></v>
@@ -324,13 +325,21 @@ QPushButton:pressed
   font-style: normal; /* normal, italic,oblique */
 }
 
+
 QLineEdit#findPattern {
-  background-color: @dark-base5
+  background-color: @dark-base5;
 }
 
 QLineEdit#findChange {
-  background-color: @dark-base5
+  background-color: @dark-base5;
 }
+
+QListWidget#nodetags-listWidget {
+  background-color: @dark-base5;
+}
+
+
+
 </t>
 <t tx="chris.20180308171552.125">QMenuBar
 {
@@ -643,8 +652,8 @@ QLineEdit#status2 {
 }
 QLineEdit#status1[style_class ~= 'info'],
 QLineEdit#status2[style_class ~= 'info'] {
-    background: @solarized-blue;
-    color:      @solarized-white;
+    background: @dark-base3;
+    color:      @dark-base0;
 }
 
 QLineEdit#status1[style_class ~= 'fail'],
@@ -654,7 +663,6 @@ QLineEdit#status2[style_class ~= 'fail'] {
 }</t>
 <t tx="chris.20180308171552.131">QTabBar
 {
-    qproperty-drawBase: 0;
     left: 0.5ex; /* move to the right by 0.5ex */
     border-radius: 0.3ex;
 }
@@ -2362,13 +2370,7 @@ QDoubleSpinBox::down-arrow:off
 }</t>
 <t tx="chris.20180308171552.30"></t>
 <t tx="chris.20180308171552.31" lineYOffset="4b002e">These settings must exist because they are *not* used in the css.</t>
-<t tx="chris.20180308171552.32">These @color names map directly to the constants defined in each .py file in the leo/modes folder.
-
-There is a script to generate these .py files directly from the jEdit .xml syntax coloring files.
-
-These names can't be changed.  Leo's colorizing code leoColorizer.py uses these names to init various data structures.  The names are bound (in the modes/*.py files) to arguments to the pattern matches in leoColorizer.py.
-
-Check the .py file in leo/modes for your langauge to see which names are actually used.</t>
+<t tx="chris.20180308171552.32"></t>
 <t tx="chris.20180308171552.33"></t>
 <t tx="chris.20180308171552.34"></t>
 <t tx="chris.20180308171552.35"></t>
@@ -2556,7 +2558,489 @@ QTreeWidget {
 }
 
 */</t>
-<t tx="ekr.20180307012127.1" str_leo_pos="0,0,2,1,0"></t>
+<t tx="chris.20180311131013.1">/* ===== From qt-gui-plugin-style-sheet ===== */
+
+/*
+@language css
+at-tabwidth -2 causes a crash in parse-template!
+*/
+QDockWidget {
+border: 5px solid red;
+}
+QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit {
+border: none;
+padding: 3px;
+margin-right: 5px;
+}
+QLabel {
+color: #575b5f;
+}
+QLineEdit {
+border: none;
+padding: 3px;
+}
+QWidget {
+/* Not for text widgets */
+background:  #31363b;
+color: #eff0f1;
+border-color: #575b5f;
+font-size: 16px;
+}
+/* The body pane */
+QTextEdit#richTextEdit {
+background-color: #232629;
+color: #eff0f1;
+border: 0.1ex solid #575b5f;
+font-family: Inconsolata,Droid Sans Mono, DejaVu Sans Mono;
+font-size: 22px;
+font-weight: normal; /* normal,bold,100,..,900 */
+font-style: normal; /* normal,italic,oblique */
+padding-left: 3px;
+padding-top: 3px;
+padding-bottom: 3px;
+padding-right: 3px;
+height: 200%;
+}
+/* active pane highlighting */
+QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit {
+border-style: solid;
+border-width: 3px;
+}
+QTextEdit#log-widget {
+border-color: #31363b;
+}
+LeoQTreeWidget#treeWidget {
+border-color: #31363b;
+}
+QTextEdit#richTextEdit {
+border-color: #31363b;
+}
+QTextEdit:focus#log-widget,LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#richTextEdit {
+border-color: #268bd2;
+}
+QPushButton
+{
+color: #eff0f1;
+background-color: qlineargradient(x1: 0.5, y1: 0.5 x2: 0.5, y2: 1, stop: 0 #575b5f, stop: 0.5 #31363b);
+border-width: 0.1ex;
+border-color: #575b5f;
+border-style: solid;
+padding: 0.5ex;
+border-radius: 0.2ex;
+outline: none;
+}
+QPushButton:disabled
+{
+background-color: #31363b;
+border-width: 0.1ex;
+border-color: #575b5f;
+border-style: solid;
+padding-top: 0.5ex;
+padding-bottom: 0.5ex;
+padding-left: 1ex;
+padding-right: 1ex;
+border-radius: 0.2ex;
+color: #575b5f;
+}
+QPushButton:hover
+{
+background-color: #224e65;
+}
+QPushButton:focus
+{
+color: white;
+}
+QPushButton:pressed
+{
+background-color: #31363b;
+padding-top: -1.5ex;
+padding-bottom: -1.7ex;
+}
+QTextEdit#log-widget {
+background-color: #31363b;
+color: #eff0f1;
+/* selection-color: white; */
+/* selection-background-color: blue; */
+font-family: Inconsolata,Droid Sans Mono, DejaVu Sans Mono;
+font-size: 16px;
+font-weight: normal; /* normal,bold,100,..,900 */
+font-style: normal; /* normal, italic,oblique */
+}
+QLineEdit#findPattern {
+background-color: #232629;
+}
+QLineEdit#findChange {
+background-color: #232629;
+}
+QListWidget#nodetags-listWidget {
+background-color: #232629;
+}
+QMenuBar
+{
+background-color: #31363b;
+color: #eff0f1;
+}
+QMenuBar::item
+{
+background: transparent;
+}
+QMenuBar::item:selected
+{
+background: #224e65;
+border: 0.1ex solid #575b5f;
+}
+QMenuBar::item:pressed
+{
+border: 0.1ex solid #575b5f;
+background-color: #3daee9;
+color: #eff0f1;
+margin-bottom: -0.1ex;
+padding-bottom: 0.1ex;
+}
+QMenu
+{
+border: 0.1ex solid #575b5f;
+color: #eff0f1;
+margin: 0.2ex;
+}
+QMenu::icon
+{
+margin: 0.5ex;
+}
+QMenu::item
+{
+padding: 0.5ex 3ex 0.5ex 3ex;
+margin-left: 0.5ex;
+border: 0.1ex solid transparent; /* reserve space for selection border */
+}
+QMenu::item:selected
+{
+background: #224e65;
+color: #eff0f1;
+}
+QMenu::separator
+{
+height: 0.2ex;
+background: lightblue;
+margin-left: 1ex;
+margin-right: 0.5ex;
+}
+/* The mini-buffer */
+QLabel#minibufferLabel {
+color: #3daee9;
+}
+/* The minibuffer */
+QLineEdit#lineEdit {
+background-color: #232629;
+padding: 0.5ex;
+border-style: solid;
+border: 0.1ex solid #575b5f;
+border-radius: 0.2ex;
+color: #eff0f1;
+}
+/* bookmarks plugin styling */
+#show_bookmarks QPushButton {
+margin: 0; padding: 1; border: none;
+font-size: 11pt;
+color: #eff0f1;
+font-weight: regular;
+text-decoration: @bookmarks_base_decoration;
+}
+#show_bookmarks QPushButton[style_class='bookmark_children'] {
+font-size: ignore;
+color: #eff0f1;
+font-weight: ignore;
+text-decoration: underline;
+}
+#show_bookmarks QPushButton[style_class='bookmark_expanded'] {
+font-size: ignore;
+color: #eff0f1;
+font-weight: bold;
+text-decoration: underline;
+}
+#show_bookmarks QPushButton[style_class='bookmark_current'] {
+font-size: ignore;
+color: blue;
+font-weight: bold;
+text-decoration: ignore;
+}
+QAbstractScrollArea
+{
+border-radius: 0.2ex;
+border: 0.1ex solid #575b5f;
+background-color: transparent;
+}
+QScrollBar:horizontal
+{
+height: 1.5ex;
+margin: 0.3ex 1.5ex 0.3ex 1.5ex;
+border: 0.1ex transparent #31363b;
+border-radius: 0.4ex;
+background-color: #31363b;
+}
+QScrollBar:horizontal:hover
+{
+height: 1.5ex;
+margin: 0.3ex 1.5ex 0.3ex 1.5ex;
+border: 0.1ex transparent #575b5f;
+border-radius: 0.4ex;
+background-color: #575b5f;
+}
+QScrollBar::handle:horizontal
+{
+background-color: #909396;
+min-width: 0.5ex;
+border-radius: 0.4ex;
+}
+QScrollBar::handle:horizontal:hover
+{
+background-color: #3daee9;
+min-width: 0.5ex;
+border-radius: 0.4ex;
+}
+QScrollBar::add-line:horizontal
+{
+margin: 0px 0.3ex 0px 0.3ex;
+border-image: url(:/dark/right_arrow_disabled.svg);
+width: 1ex;
+height: 1ex;
+subcontrol-position: right;
+subcontrol-origin: margin;
+}
+QScrollBar::sub-line:horizontal
+{
+margin: 0ex 0.3ex 0ex 0.3ex;
+border-image: url(:/dark/left_arrow_disabled.svg);
+width: 1ex;
+height: 1ex;
+subcontrol-position: left;
+subcontrol-origin: margin;
+}
+QScrollBar::add-line:horizontal:hover,
+QScrollBar::add-line:horizontal:on
+{
+border-image: url(:/dark/right_arrow.svg);
+width: 1ex;
+height: 1ex;
+subcontrol-position: right;
+subcontrol-origin: margin;
+}
+QScrollBar::sub-line:horizontal:hover,
+QScrollBar::sub-line:horizontal:on
+{
+border-image: url(:/dark/left_arrow.svg);
+width: 1ex;
+height: 1ex;
+subcontrol-position: left;
+subcontrol-origin: margin;
+}
+QScrollBar::up-arrow:horizontal,
+QScrollBar::down-arrow:horizontal
+{
+background: none;
+}
+QScrollBar::add-page:horizontal,
+QScrollBar::sub-page:horizontal
+{
+background: none;
+}
+QScrollBar:vertical
+{
+width: 1.5ex;
+margin: 1.5ex 0.3ex 1.5ex 0.3ex;
+border: 0.1ex transparent #31363b;
+border-radius: 0.4ex;
+background-color: #31363b;
+}
+QScrollBar:vertical:hover
+{
+width: 1.5ex;
+margin: 1.5ex 0.3ex 1.5ex 0.3ex;
+border: 0.1ex transparent #575b5f;
+border-radius: 0.4ex;
+background-color: #575b5f;
+}
+QScrollBar::handle:vertical
+{
+background-color: #909396;
+min-height: 0.5ex;
+border-radius: 0.4ex;
+}
+QScrollBar::handle:vertical:hover
+{
+background-color: #3daee9;
+min-height: 0.5ex;
+border-radius: 0.4ex;
+}
+QScrollBar::sub-line:vertical
+{
+margin: 0.3ex 0ex 0.3ex 0ex;
+border-image: url(:/dark/up_arrow_disabled.svg);
+height: 1ex;
+width: 1ex;
+subcontrol-position: top;
+subcontrol-origin: margin;
+}
+QScrollBar::add-line:vertical
+{
+margin: 0.3ex 0ex 0.3ex 0ex;
+border-image: url(:/dark/down_arrow_disabled.svg);
+height: 1ex;
+width: 1ex;
+subcontrol-position: bottom;
+subcontrol-origin: margin;
+}
+QScrollBar::sub-line:vertical:hover,
+QScrollBar::sub-line:vertical:on
+{
+border-image: url(:/dark/up_arrow.svg);
+height: 1ex;
+width: 1ex;
+subcontrol-position: top;
+subcontrol-origin: margin;
+}
+QScrollBar::add-line:vertical:hover,
+QScrollBar::add-line:vertical:on
+{
+border-image: url(:/dark/down_arrow.svg);
+height: 1ex;
+width: 1ex;
+subcontrol-position: bottom;
+subcontrol-origin: margin;
+}
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical
+{
+background: none;
+}
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical
+{
+background: none;
+}
+QSplitter::handle
+{
+border: 0.1ex dashed #575b5f;
+}
+QSplitter::handle:hover
+{
+background-color: #909396;
+border: 0.1ex solid #575b5f;
+}
+QSplitter::handle:horizontal
+{
+width: 0.1ex;
+}
+QSplitter::handle:vertical
+{
+height: 0.1ex;
+}
+/* The status area */
+QLineEdit#status1 {
+background: #31363b;
+border-color: #575b5f;
+border-width: 1px;
+border-style: solid;
+}
+QLineEdit#status2 {
+background: #31363b;
+border-color: #575b5f;
+border-width: 1px;
+border-style: solid;
+}
+QLineEdit#status1[style_class ~= 'info'],
+QLineEdit#status2[style_class ~= 'info'] {
+background: #268bd2;
+color:      #fdf6e3;
+}
+QLineEdit#status1[style_class ~= 'fail'],
+QLineEdit#status2[style_class ~= 'fail'] {
+background: #ff0000;
+color:      #eff0f1;
+}
+QTabBar
+{
+qproperty-drawBase: 0;
+left: 0.5ex; /* move to the right by 0.5ex */
+border-radius: 0.3ex;
+}
+QTabBar:focus
+{
+border: 0ex transparent black;
+}
+QTabBar::tab {
+background: #31363b;
+border: 3px solid #31363b;
+border-bottom-color: #31363b; /* same as the pane color */
+border-top-left-radius: 4px;
+border-top-right-radius: 4px;
+min-width: 8ex;
+padding: 2px;
+}
+QTabBar::tab:hover {
+background: #224e65;
+border-bottom-color: #224e65;
+}
+QTabBar::tab:selected {
+background-color: #575b5f;
+border-bottom-color: #3daee9;
+}
+QTabBar::tab:!selected {
+margin-top: 2px; /* make non-selected tabs look smaller */
+}
+LeoQTreeWidget#treeWidget
+{
+background: #31363b;
+color: #eff0f1;
+show-decoration-selected: 1;
+padding: 2px solid #31363b;
+border-color: #31363b;
+font-family: Inconsolata,Droid Sans Mono, DejaVu Sans Mono;
+font-size: 18px;
+font-weight: normal;
+font-style: normal;
+}
+QTreeView::branch:has-children:!has-siblings:closed,
+QTreeView::branch:closed:has-children:has-siblings
+{
+border-image: url(/home/chris/leo-editor/leo/Icons/dark/branch_closed.svg);
+}
+QTreeView::branch:open:has-children:!has-siblings,
+QTreeView::branch:open:has-children:has-siblings
+{
+border-image: url(/home/chris/leo-editor/leo/Icons/dark/branch_open.svg);
+}
+QTreeView::item:hover {
+background-color: #909396;
+color: #eff0f1;
+}
+QTreeView::item:selected {
+background-color: #3daee9;
+color: #eff0f1;
+}
+QTreeView QLineEdit {
+color: #eff0f1;
+background: #232629;
+selection-color: #232629;
+selection-background-color: #3daee9;
+font-family: Inconsolata,Droid Sans Mono, DejaVu Sans Mono;
+font-size: 18px;
+font-weight: normal;
+font-style: normal;
+padding: 1px;
+}
+/*
+QTreeWidget {
+background: #909396;
+font-family: Inconsolata,Droid Sans Mono, DejaVu Sans Mono;
+font-size: 18px;
+font-weight: normal;
+font-style: normal;
+padding: 2px solid #31363b;
+border-color: #909396;
+}
+*/
+
+</t>
+<t tx="ekr.20180307012127.1"></t>
 <t tx="ekr.20180307012426.2">@language python
 
 @ This should be *colored* as rST.
