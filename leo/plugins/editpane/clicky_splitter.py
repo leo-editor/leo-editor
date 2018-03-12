@@ -14,8 +14,9 @@ class ClickySplitterHandle(QtWidgets.QSplitterHandle):
     """Handle which notifies splitter when it's clicked"""
     def mouseReleaseEvent(self, event):
         """mouse event - mouse released on splitter handle,
-    
-        :param QMouseEvent event: mouse event
+
+        Args:
+            event (QMouseEvent): mouse event
         """
         if event.button() == QtCore.Qt.LeftButton:
             return  # might have been resizing panes
