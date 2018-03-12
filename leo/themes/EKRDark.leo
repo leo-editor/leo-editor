@@ -2,13 +2,14 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="107" left="81" height="864" width="1383"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
+<v t="ekr.20180312111155.1"><vh>Read me</vh></v>
 <v t="ekr.20180312110809.1"><vh>Tests</vh>
 <v t="ekr.20180312110655.150"><vh>Syntax coloring template</vh></v>
 <v t="ekr.20180312110809.2"><vh>Syntax coloring test</vh>
@@ -943,7 +944,7 @@ something to see)</t>
 <t tx="ekr.20180312110655.97"></t>
 <t tx="ekr.20180312110655.98"></t>
 <t tx="ekr.20180312110655.99"></t>
-<t tx="ekr.20180312110809.1" str_leo_pos="0"></t>
+<t tx="ekr.20180312110809.1"></t>
 <t tx="ekr.20180312110809.2">@language python
 
 @ This should be *colored* as rST.
@@ -982,5 +983,7 @@ g.red('red')
 g.es_print('test')
 g.es_print('black',color='black')</t>
 <t tx="ekr.20180312110830.1"></t>
+<t tx="ekr.20180312111155.1">A dark theme based on LeoBlackSolarized.leo.
+</t>
 </tnodes>
 </leo_file>

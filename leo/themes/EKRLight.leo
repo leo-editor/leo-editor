@@ -2,13 +2,14 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="107" left="81" height="864" width="1383"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
+<v t="ekr.20180312111251.1"><vh>Read me</vh></v>
 <v t="ekr.20180308122011.1"><vh>Tests</vh>
 <v t="ekr.20180307205420.1"><vh>Syntax coloring test</vh>
 <v t="ekr.20180307205420.2"><vh>&lt;&lt; defined section &gt;&gt;</vh></v>
@@ -213,7 +214,7 @@ g.blue('blue')
 g.red('red')
 g.es_print('test')
 g.es_print('black',color='black')</t>
-<t tx="ekr.20180308122011.1" str_leo_pos="0"></t>
+<t tx="ekr.20180308122011.1"></t>
 <t tx="ekr.20180309185230.1" lineYOffset="4b002e">@language rest
 @wrap
 @tabwidth -2
@@ -671,6 +672,15 @@ The following settings specify the indicators.  You can use an absolute path, or
   color: @bookmarks_current_color;
   font-weight: @bookmarks_current_weight;
 }
+</t>
+<t tx="ekr.20180312111251.1">@language rest
+@wrap
+
+A light theme based on EKR's legacy theme.
+
+Colors are clear, not solarized.
+
+I do not use this theme at present. I much prefer dark/black themes.
 </t>
 </tnodes>
 </leo_file>
