@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="118" left="457" height="864" width="1383"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -272,7 +272,7 @@ for s in table:
 </t>
 <t tx="ekr.20180307205435.1">True: show user tips on startup.</t>
 <t tx="ekr.20180307205445.1"># For line_numbering plugin.</t>
-<t tx="ekr.20180307210716.1"></t>
+<t tx="ekr.20180307210716.1" str_leo_pos="2,3,0,1,0"></t>
 <t tx="ekr.20180307210716.10"></t>
 <t tx="ekr.20180307210716.11"></t>
 <t tx="ekr.20180307210716.12"></t>
@@ -1078,7 +1078,14 @@ QWidget {
 <t tx="ekr.20180309185230.15"></t>
 <t tx="ekr.20180309185230.16"></t>
 <t tx="ekr.20180309185230.17" lineYOffset="4b002e">These settings must exist because they are *not* used in the css.</t>
-<t tx="ekr.20180309185230.18"></t>
+<t tx="ekr.20180309185230.18">These @color names map directly to the constants defined in each .py file in the leo/modes folder.
+
+There is a script to generate these .py files directly from the jEdit .xml syntax coloring files.
+
+These names can't be changed.  Leo's colorizing code leoColorizer.py uses these names to init various data structures.  The names are bound (in the modes/*.py files) to arguments to the pattern matches in leoColorizer.py.
+
+Check the .py file in leo/modes for your langauge to see which names are actually used.
+</t>
 <t tx="ekr.20180309185230.19"></t>
 <t tx="ekr.20180309185230.2" lineYOffset="4b002e"></t>
 <t tx="ekr.20180309185230.20"></t>

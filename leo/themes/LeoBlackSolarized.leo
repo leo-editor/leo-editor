@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="118" left="457" height="864" width="1383"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -18,6 +18,7 @@
 <v t="ekr.20180306142738.3"><vh>@settings</vh>
 <v t="ekr.20180306144200.1"><vh>@bool show-tips = False</vh></v>
 <v t="ekr.20180306144227.1"><vh>@bool use-gutter = False</vh></v>
+<v t="ekr.20180306144735.1"><vh>@@string font-size-body = 24px</vh></v>
 <v t="ekr.20180307010409.1"><vh>@theme Leo Black Solarized</vh>
 <v t="ekr.20180307010409.2"><vh>Settings for Leo Solarized Dark theme</vh>
 <v t="ekr.20180309203459.1"><vh>Base colors: these are not solarized colors</vh>
@@ -178,10 +179,7 @@
 <v t="ekr.20180307010409.118"><vh>Widgets: general</vh></v>
 </v>
 </v>
-<v t="ekr.20180306144735.1"><vh>@@string font-size-body = 24px</vh></v>
 </v>
-<v t="ekr.20180307010409.105"></v>
-<v t="ekr.20180309203421.1"><vh>Unresolved</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180306142738.3">@language md</t>
@@ -508,7 +506,13 @@ QWidget {
 <t tx="ekr.20180307010409.15"># Not an official solarized color: same as solorarized-base3</t>
 <t tx="ekr.20180307010409.16"></t>
 <t tx="ekr.20180307010409.17" lineYOffset="4b002e">These settings must exist because they are *not* used in the css.</t>
-<t tx="ekr.20180307010409.18"></t>
+<t tx="ekr.20180307010409.18">These @color names map directly to the constants defined in each .py file in the leo/modes folder.
+
+There is a script to generate these .py files directly from the jEdit .xml syntax coloring files.
+
+These names can't be changed.  Leo's colorizing code leoColorizer.py uses these names to init various data structures.  The names are bound (in the modes/*.py files) to arguments to the pattern matches in leoColorizer.py.
+
+Check the .py file in leo/modes for your langauge to see which names are actually used.</t>
 <t tx="ekr.20180307010409.19"></t>
 <t tx="ekr.20180307010409.2" lineYOffset="4b002e"></t>
 <t tx="ekr.20180307010409.20"></t>
@@ -658,7 +662,7 @@ The following settings specify the indicators.  You can use an absolute path, or
 - Your home directory or
 - Leo's leo/Icons directory
 </t>
-<t tx="ekr.20180309203321.1"></t>
+<t tx="ekr.20180309203321.1" str_leo_pos="1,3,0,2,0"></t>
 <t tx="ekr.20180309203342.1">/* bookmarks plugin styling */
 
 #show_bookmarks QPushButton {
@@ -687,22 +691,6 @@ The following settings specify the indicators.  You can use an absolute path, or
   font-weight: @bookmarks_current_weight;
 }
 </t>
-<t tx="ekr.20180309203421.1">expand_css_constants Unresolved @constants
-[
-    '@dark-base0',
-    '@dark-base00',
-    '@dark-base01',
-    '@dark-base02',
-    '@dark-base03',
-    '@dark-base1',
-    '@dark-base2',
-    '@dark-base3',
-    '@solarized-blue',
-    '@solarized-green',
-    '@solarized-red',
-    '@solarized-violet',
-    '@solarized-white'
-]</t>
 <t tx="ekr.20180309203459.1"></t>
 <t tx="ekr.20180309203459.10"></t>
 <t tx="ekr.20180309203459.11"></t>
