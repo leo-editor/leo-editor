@@ -2,17 +2,17 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="107" left="81" height="864" width="1383"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20180307012127.1" a="E"><vh>@settings</vh>
-<v t="chris.20180308171552.1" a="E"><vh>@theme Breeze Dark</vh>
+<v t="ekr.20180307012127.1"><vh>@settings</vh>
+<v t="chris.20180308171552.1"><vh>@theme Breeze Dark</vh>
 <v t="chris.20180308171552.2"><vh>BreezeDark StyleSheet</vh></v>
-<v t="chris.20180308171552.3" a="E"><vh>Breeze Dark Color definitions</vh>
+<v t="chris.20180308171552.3"><vh>Breeze Dark Color definitions</vh>
 <v t="chris.20180309180448.2"><vh>@color dark-base0 = #eff0f1</vh></v>
 <v t="chris.20180309180448.3"><vh>@color dark-base1 = #909396</vh></v>
 <v t="chris.20180309180448.4"><vh>@color dark-base2 = #ffffff</vh></v>
@@ -92,7 +92,7 @@
 <v t="chris.20180308171552.75"><vh>@string font-size-log = 16px</vh></v>
 <v t="chris.20180308171552.76"><vh>@string font-size-tree = 18px</vh></v>
 </v>
-<v t="chris.20180308171552.77" a="E"><vh>Gradients</vh>
+<v t="chris.20180308171552.77"><vh>Gradients</vh>
 <v t="chris.20180308171552.78"><vh>@string bg-gradient =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1@text-background-bright, stop:0.4 @text-background, stop:0.6@text-background, stop:0.9 @text-background-bright)</vh></v>
 <v t="chris.20180308171552.79"><vh>@string bg-gradient-hover =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @dark-base4,stop:0.4 @dark-base0, stop:0.6 @dark-base0, stop:0.9@dark-base4)</vh></v>
 </v>
@@ -144,7 +144,7 @@
 <v t="chris.20180308171552.118"><vh>@string color_theme = dark</vh></v>
 </v>
 </v>
-<v t="chris.20180308171552.119" a="E"><vh>@data qt-gui-plugin-style-sheet</vh>
+<v t="chris.20180308171552.119"><vh>@data qt-gui-plugin-style-sheet</vh>
 <v t="chris.20180308171552.120"><vh>All General Widgets</vh></v>
 <v t="chris.20180308171552.121"><vh>Body &amp; other text</vh></v>
 <v t="chris.20180308171552.122"><vh>Borders</vh></v>
@@ -2362,7 +2362,13 @@ QDoubleSpinBox::down-arrow:off
 }</t>
 <t tx="chris.20180308171552.30"></t>
 <t tx="chris.20180308171552.31" lineYOffset="4b002e">These settings must exist because they are *not* used in the css.</t>
-<t tx="chris.20180308171552.32"></t>
+<t tx="chris.20180308171552.32">These @color names map directly to the constants defined in each .py file in the leo/modes folder.
+
+There is a script to generate these .py files directly from the jEdit .xml syntax coloring files.
+
+These names can't be changed.  Leo's colorizing code leoColorizer.py uses these names to init various data structures.  The names are bound (in the modes/*.py files) to arguments to the pattern matches in leoColorizer.py.
+
+Check the .py file in leo/modes for your langauge to see which names are actually used.</t>
 <t tx="chris.20180308171552.33"></t>
 <t tx="chris.20180308171552.34"></t>
 <t tx="chris.20180308171552.35"></t>
@@ -2550,7 +2556,7 @@ QTreeWidget {
 }
 
 */</t>
-<t tx="ekr.20180307012127.1"></t>
+<t tx="ekr.20180307012127.1" str_leo_pos="0,0,2,1,0"></t>
 <t tx="ekr.20180307012426.2">@language python
 
 @ This should be *colored* as rST.
