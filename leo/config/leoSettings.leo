@@ -5784,7 +5784,13 @@ main()
 </t>
 <t tx="ekr.20111017082630.16086"></t>
 <t tx="ekr.20111024091133.16650"></t>
-<t tx="ekr.20111024091133.16651"></t>
+<t tx="ekr.20111024091133.16651">These @color names map directly to the constants defined in each .py file in the leo/modes folder.
+
+There is a script to generate these .py files directly from the jEdit .xml syntax coloring files.
+
+These names can't be changed.  Leo's colorizing code leoColorizer.py uses these names to init various data structures.  The names are bound (in the modes/*.py files) to arguments to the pattern matches in leoColorizer.py.
+
+Check the .py file in leo/modes for your langauge to see which names are actually used.</t>
 <t tx="ekr.20111024091133.16671"></t>
 <t tx="ekr.20111026083456.16490"></t>
 <t tx="ekr.20111026083456.16491">import glob
