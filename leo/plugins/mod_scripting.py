@@ -281,32 +281,54 @@ class AtButtonCallback(object):
             return 'AtButtonCallback: %s' % self.gnx
         else:
             return None
-    #@+node:ekr.20170203043042.1: *3* AtButtonCallback.execute_script
+    #@+node:ekr.20170203043042.1: *3* AtButtonCallback.execute_script & helper
     def execute_script(self):
         '''Execute the script associated with this button.'''
-        trace = False and not g.unitTesting
-        c, gnx, script = self.c, self.gnx, self.script
-        if trace:
-            g.trace('%s len(script): %s' % (
-                self.c.shortFileName(),
-                len(self.script or ''),
-            ))
-        if not script:
-            # Find the node in c with the given gnx.
-            for p in c.all_positions():
-                if p.gnx == gnx:
-                    script = self.controller.getScript(p)
-                    break
-            else:
-                g.trace('can not find gnx: %s in %s' % (gnx, c.shortFileName()))
+        # g.trace('(AtButtonCallback) =====', self.gnx)
+        script = self.find_script()
         if script:
             self.controller.executeScriptFromButton(
                 b=self.b,
                 buttonText=self.buttonText,
                 p=None,
-                script_gnx=gnx,
+                script_gnx=self.gnx,
                 script=script,
             )
+    #@+node:ekr.20180313171043.1: *4* AtButtonCallback.find_script
+    def find_script(self):
+        
+        trace = False and not g.unitTesting
+        gnx = self.gnx
+        # First, search self.c for the gnx.
+        if trace:
+            g.trace('searching %s for %s' % (self.c.shortFileName(), gnx))
+        for p in self.c.all_positions():
+            if p.gnx == gnx:
+                script = self.controller.getScript(p)
+                if trace: g.trace('FOUND', len(script or ''))
+                return script
+        # See if myLeoSettings.leo is open.
+        for c in g.app.commanders():
+            if c.shortFileName().endswith('myLeoSettings.leo'):
+                break
+        else:
+            c = None
+            if trace: g.trace('myLeoSettings.leo is not open')
+        if c:
+            # Search myLeoSettings.leo file for the gnx.
+            if trace:
+                g.trace('searching %s for %s' % (c.shortFileName(), gnx))
+            for p in c.all_positions():
+                if p.gnx == gnx:
+                    script = self.controller.getScript(p)
+                    if trace: g.trace('FOUND', len(script or ''))
+                    return script
+            if trace:
+                g.trace('can not find gnx: %s in %s' % (gnx, c.shortFileName()))
+        if trace:
+            g.trace('Using STATIC script: length: %s' % len(self.script or ''))
+            # g.printObj(g.splitLines(self.script or ''))
+        return self.script
     #@-others
 #@+node:ekr.20060328125248.6: ** class ScriptingController
 class ScriptingController(object):
@@ -611,6 +633,8 @@ class ScriptingController(object):
         Find the node with the given gnx in c, myLeoSettings.leo and leoSettings.leo.
         If found, open the tab/outline and select the specified node.
         Return c,p of the found node.
+        
+        Called only from a callback in QtIconBarClass.setCommandForButton.
         '''
         trace = False and not g.unitTesting
         if not gnx: g.trace('can not happen: no gnx')
@@ -653,9 +677,18 @@ class ScriptingController(object):
         '''
         Create a button in the icon area for a common @button node in an @setting
         tree. Binds button presses to a callback that executes the script.
+        
+        Important: Common @button and @command scripts now *do* update
+        dynamically provided that myLeoSettings.leo is open. Otherwise the
+        callback executes the static script.
+        
+        See https://github.com/leo-editor/leo-editor/issues/171
         '''
+        trace = False and not g.unitTesting
         c = self.c
-        # g.trace('global @button', c.shortFileName(), p.gnx, p.h)
+        if trace:
+            g.trace('global @button IN', c.shortFileName())
+            g.trace('FROM:', p.gnx, p.v.context.shortFileName(), p.h)
         gnx = p.gnx
         args = self.getArgs(p)
         # Fix bug #74: problems with @button if defined in myLeoSettings.leo
@@ -680,12 +713,14 @@ class ScriptingController(object):
         # Yes, the callback *does* use b (to delete b if requested by the script).
         buttonText = self.cleanButtonText(p.h)
         cb = AtButtonCallback(
-            controller=self,
             b=b,
-            c=c,
             buttonText=buttonText,
+            c=c,
+            controller=self,
             docstring=docstring,
-            gnx=gnx, # tag:#367: the gnx is needed for the Goto Script command.
+            gnx=gnx,
+                # tag:#367: the gnx is needed for the Goto Script command.
+                # 2018/03/13: Use gnx to search myLeoSettings.leo if it is open.
             script=script,
         )
         # Now patch the button.
@@ -699,8 +734,6 @@ class ScriptingController(object):
         )
         self.handleRclicks(rclicks)
         # At last we can define the command.
-        # Note: Common @button and @command scripts do NOT update dynamically.
-        # See last comment for https://github.com/leo-editor/leo-editor/issues/171
         self.registerAllCommands(
             args=args,
             func=cb,
@@ -720,28 +753,36 @@ class ScriptingController(object):
                 self.seen.add(gnx)
                 script = self.getScript(p)
                 self.createCommonCommand(p, script)
-    #@+node:ekr.20150401130818.1: *4* sc.createCommonCommand (common @command)
+    #@+node:ekr.20150401130818.1: *4* sc.createCommonCommand (common @command) CHANGED
     def createCommonCommand(self, p, script):
-        '''Handle a single @command node.'''
+        '''
+        Handle a single @command node.
+        
+        Important: Common @button and @command scripts now *do* update
+        dynamically provided that myLeoSettings.leo is open. Otherwise the
+        callback executes the static script.
+        
+        See https://github.com/leo-editor/leo-editor/issues/171
+        '''
         c = self.c
         args = self.getArgs(p)
-
-        def commonCommandCallback(event=None, script=script):
-            # g.printObj(g.splitLines(script))
-            c.executeScript(args=args, script=script, silent=True)
-
-        commonCommandCallback.__doc__ = g.getDocString(script).strip()
-            # Bug fix: 2015/03/28.
-            
-        # Note: Common @button and @command scripts do NOT update dynamically.
-        # See last comment for https://github.com/leo-editor/leo-editor/issues/171
+        commonCommandCallback = AtButtonCallback(
+            b=None,
+            buttonText=None,
+            c=c,
+            controller=self,
+            docstring=g.getDocString(p.b).strip(),
+            gnx=p.v.gnx, # Used to search myLeoSettings.leo if it is open.
+            script=script, # Fallback when myLeoSettings.leo is not open.
+        )
         self.registerAllCommands(
             args=args,
             func=commonCommandCallback,
             h=p.h,
             pane='button', # Fix bug 416: use 'button', NOT 'command', and NOT 'all'
             source_c=p.v.context,
-            tag='global @command')
+            tag='global @command',
+        )
     #@+node:ekr.20150401130313.1: *3* sc.Scripts, individual
     #@+node:ekr.20060328125248.12: *4* sc.handleAtButtonNode @button
     def handleAtButtonNode(self, p):
