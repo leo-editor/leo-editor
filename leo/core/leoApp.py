@@ -1844,6 +1844,7 @@ class LoadManager(object):
         if not verbose: return
         if 1: # old
             for kind, theDir in (
+                ('current', g.os_path_abspath(os.curdir)),
                 ("load", g.app.loadDir),
                 ("global config", g.app.globalConfigDir),
                 ("home", g.app.homeDir),
