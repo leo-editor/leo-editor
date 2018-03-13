@@ -942,37 +942,42 @@ def tangle(self, event=None):
 #@+node:ekr.20180312043352.1: ** Themes
 #@+node:ekr.20180312043352.2: *3* c_file.apply/open_theme_file
 @g.commander_command('apply-theme-file')
-def apply_theme_file(self, event=None):
-    open_theme_file_helper(event, closeFlag=True)
+def apply_theme_file(self, event=None, fn=None):
+    open_theme_file_helper(event, closeFlag=True, fn=fn)
 
 @g.commander_command('open-theme-file')
-def open_theme_file(self, event=None):
-    open_theme_file_helper(event, closeFlag=False)
+def open_theme_file(self, event=None, fn=None):
+    open_theme_file_helper(event, closeFlag=False, fn=fn)
     
-def open_theme_file_helper(event, closeFlag):
+def open_theme_file_helper(event, closeFlag, fn):
     '''Open a theme file and apply the theme.'''
     c = event and event.get('c')
     if not c: return
     old_dir = g.os_path_abspath(os.curdir)
     themes_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'themes')
-    os.chdir(themes_dir)
-    fileName = g.app.gui.runOpenFileDialog(c,
-        title="Open",
-        filetypes=[
-             g.fileFilters("LEOFILES"),
-            ("All files", "*"),
-        ],
-        defaultextension=g.defaultLeoFileExtension(c),
-    )
+    if fn:
+        fn = c.styleSheetManager.find_theme_file(fn)
+        if not fn: return
+    else:
+        os.chdir(themes_dir)
+        g.trace(themes_dir)
+        fn = g.app.gui.runOpenFileDialog(c,
+            title="Open",
+            filetypes=[
+                 g.fileFilters("LEOFILES"),
+                ("All files", "*"),
+            ],
+            defaultextension=g.defaultLeoFileExtension(c),
+        )
     c.bringToFront()
     c.init_error_dialogs()
     # Adapted from c.open().
-    if fileName and g.app.loadManager.isLeoFile(fileName):
-        c2 = g.openWithFileName(fileName, old_c=c)
+    if fn and g.app.loadManager.isLeoFile(fn):
+        c2 = g.openWithFileName(fn, old_c=c)
         if c2:
             c2.k.makeAllBindings()
-            g.chdir(fileName)
-            g.setGlobalOpenDir(fileName)
+            g.chdir(fn)
+            g.setGlobalOpenDir(fn)
             if closeFlag:
                 g.app.destroyWindow(c2.frame)
                 g.app.windowList.remove(c2.frame)
