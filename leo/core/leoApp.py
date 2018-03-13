@@ -2147,8 +2147,15 @@ class LoadManager(object):
         trace = (False or g.trace_startup) and not g.unitTesting
         verbose = False
         if g.app.loadedThemes:
-            if trace: g.trace('===== Return')
+            if trace: g.trace('===== Return: g.app.loadedThemes')
             return
+        ### Fails: read everything EXCEPT @theme trees???
+        # if g.app.is_theme:
+            # if trace: g.trace('===== Return: g.app.is_theme')
+            # settings_d, shortcuts_d = lm.createEmptySettingsDicts()
+            # lm.globalSettingsDict = settings_d
+            # lm.globalShortcutsDict = shortcuts_d
+            # return
         if trace: g.es_debug()
         # Open the standard settings files with a nullGui.
         # Important: their commanders do not exist outside this method!
@@ -2554,14 +2561,7 @@ class LoadManager(object):
         # Compute the lm.files ivar.
         lm.files = lm.computeFilesList(fileName)
         # Compute the return values.
-        if pymacs:
-            script = None
-            windowFlag = None
-        else:
-            script = self.doScriptOption(options, parser)
-            script_path_w = options.script_window
-                # --script-window=script_window
-            windowFlag = script and script_path_w
+        script = None if pymacs else self.doScriptOption(options, parser)
         d = {
             'gui': self.doGuiOption(options),
             'load_type': self.doLoadTypeOption(options),
@@ -2572,7 +2572,7 @@ class LoadManager(object):
                 # --select=headline
             'version': options.version,
                 # --version: print the version and exit.
-            'windowFlag': windowFlag, 
+            'windowFlag': script and options.script_window, 
             'windowSize': self.doWindowSizeOption(options),
         }
         if trace:
@@ -2580,65 +2580,47 @@ class LoadManager(object):
             g.printObj(d)
         return d
     #@+node:ekr.20180312150559.1: *6* LM.addOptionsToParser
+    #@@nobeautify
+
     def addOptionsToParser(self, parser):
         add = parser.add_option
-        add('--debug', action='store_true',
-            help='enable debug mode')
-        add('--diff', action='store_true', dest='diff',
-            help='use Leo as an external git diff')
-        add('--fullscreen', action='store_true',
-            help='start fullscreen')
-        add('--ipython', action='store_true', dest='use_ipython',
-            help='enable ipython support')
-        add('--fail-fast', action='store_true', dest='failFast',
-            help='stop unit tests after the first failure')
-        add('--gui',
-            help='gui to use (qt/qttabs/console/null)')
-        add('--is-theme', action='store_true', dest='is_theme',
-            help='load the first file as a theme file')
-        add('--listen-to-log', action='store_true', dest='listen_to_log',
-            help='start log_listener.py on startup')
-        add('--load-type', dest='loadType',
-            help='@<file> type for loading non-outlines from command line')
-        add('--maximized', action='store_true',
-            help='start maximized')
-        add('--minimized', action='store_true',
-            help='start minimized')
-        add('--no-cache', action='store_true', dest='no_cache',
-            help='disable reading of cached files')
-        add('--no-plugins', action='store_true', dest='no_plugins',
-            help='disable all plugins')
-        add('--no-splash', action='store_true', dest='no_splash_screen',
-            help='disable the splash screen')
-        add('--screen-shot', dest='screenshot_fn',
-            help='take a screen shot and then exit')
-        add('--script', dest='script',
-            help='execute a script and then exit')
-        add('--script-window', dest='script_window',
-            help='open a window for scripts')
-        add('--select', dest='select',
-            help='headline or gnx of node to select')
-        add('--session-restore', action='store_true', dest='session_restore',
-            help='restore previously saved session tabs at startup')
-        add('--session-save', action='store_true', dest='session_save',
-            help='save session tabs on exit')
-        add('--silent', action='store_true', dest='silent',
-            help='disable all log messages')
-        add('--trace-binding', dest='binding',
-            help='trace key bindings')
-        add('--trace-focus', action='store_true', dest='trace_focus',
-            help='trace changes of focus')
-        add('--trace-plugins', action='store_true', dest='trace_plugins',
-            help='trace imports of plugins')
-        add('--trace-setting', dest='setting',
-            help='trace where setting is set')
-        add('--trace-shutdown', action='store_true', dest='trace_shutdown',
-            help='trace shutdown logic')
-        add('-v', '--version', action='store_true', dest='version',
-            help='print version number and exit')
-        add('--window-size', dest='window_size',
-            help='initial window size (height x width)')
         
+        def add_bool(option, help, dest=None):
+            add(option, action='store_true', dest=dest, help=help)
+            
+        def add_other(option, help, dest=None, metavar=None):
+            add(option, dest=dest, help=help, metavar=metavar)
+
+        add_bool('--debug',         'enable debug mode')
+        add_bool('--diff',          'use Leo as an external git diff')
+        add_bool('--fullscreen',    'start fullscreen')
+        add_bool('--ipython',       'enable ipython support')
+        add_bool('--fail-fast',     'stop unit tests after the first failure')
+        add_other('--gui',          'gui to use (qt/qttabs/console/null)')
+        add_bool('--is-theme',      'load the first file as a theme file')
+        add_bool('--listen-to-log', 'start log_listener.py on startup')
+        add_other('--load-type',    '@<file> type for non-outlines', metavar='TYPE')
+        add_bool('--maximized',     'start maximized')
+        add_bool('--minimized',     'start minimized')
+        add_bool('--no-cache',      'disable reading of cached files')
+        add_bool('--no-plugins',    'disable all plugins')
+        add_bool('--no-splash',     'disable the splash screen')
+        add_other('--screen-shot',  'take a screen shot and then exit', metavar='PATH')
+        add_other('--script',       'execute a script and then exit', metavar="PATH")
+        add_bool('--script-window', 'execute script using default gui')
+        add_other('--select',       'headline or gnx of node to select', metavar='ID')
+        add_bool('--session-restore','restore session tabs at startup')
+        add_bool('--session-save',  'save session tabs on exit')
+        add_bool('--silent',        'disable all log messages')
+        add_bool('--trace-binding', 'trace key bindings')
+        add_bool('--trace-focus',   'trace changes of focus')
+        add_bool('--trace-plugins', 'trace imports of plugins')
+        add_other('--trace-setting', 'trace where named setting is set', metavar="NAME")
+        add_bool('--trace-shutdown', 'trace shutdown logic')
+        add_other('--window-size',  'initial window size (height x width)', metavar='SIZE')
+        # Multiple bool values.
+        add('-v', '--version', action='store_true',
+            help='print version number and exit')
     #@+node:ekr.20120219154958.10483: *6* LM.computeFilesList
     def computeFilesList(self, fileName):
         lm = self
@@ -2665,17 +2647,18 @@ class LoadManager(object):
         g.app.debug = options.debug
             # if g.app.debug: g.trace_startup = True
         # --fail-fast
-        g.app.failFast = options.failFast
+        g.app.failFast = options.fail_fast
         # --fullscreen
         g.app.start_fullscreen = options.fullscreen
         # --git-diff
         g.app.diff = options.diff
         # --is_theme
         g.app.is_theme = options.is_theme
+        g.trace('scanOptions: g.app.is_theme', g.app.is_theme)
         # --listen-to-log
         g.app.listen_to_log_flag = options.listen_to_log
         # --ipython
-        g.app.useIpython = options.use_ipython
+        g.app.useIpython = options.ipython
         if trace: print('scanOptions: g.app.useIpython', g.app.useIpython)
         # --maximized
         g.app.start_maximized = options.maximized
@@ -2691,7 +2674,7 @@ class LoadManager(object):
             g.app.enablePlugins = False
         # --no-splash: --minimized disables the splash screen
         g.app.use_splash_screen = (
-            not options.no_splash_screen and
+            not options.no_splash and
             not options.minimized)
         # --session-restore & --session-save
         g.app.restore_session = bool(options.session_restore)
@@ -2699,13 +2682,13 @@ class LoadManager(object):
         # --silent
         g.app.silentMode = options.silent
         # --trace-binding
-        g.app.trace_binding = options.binding
+        g.app.trace_binding = options.trace_binding
         # --trace-focus
         g.app.trace_focus = options.trace_focus
         # --trace-plugins
         g.app.trace_plugins = options.trace_plugins
         # --trace-setting=setting
-        g.app.trace_setting = options.setting
+        g.app.trace_setting = options.trace_setting
             # g.app.config does not exist yet.
         # --trace-shutdown
         g.app.trace_shutdown = options.trace_shutdown
@@ -2736,7 +2719,7 @@ class LoadManager(object):
     #@+node:ekr.20180312152329.1: *6* LM.doLoadTypeOption
     def doLoadTypeOption(self, options):
         
-        s = options.loadType
+        s = options.load_type
         s = s.lower() if s else 'edit'
         return '@' + s
 
@@ -2746,25 +2729,27 @@ class LoadManager(object):
 
         trace = False
         # --screen-shot=fn
-        s = options.screenshot_fn
+        s = options.screen_shot
         if s:
             s = s.strip('"')
-        if trace: print('scanOptions: screenshot_fn', s)
+        if trace: print('scanOptions: screen_shot', s)
         return s
     #@+node:ekr.20180312153008.1: *6* LM.doScriptOption
     def doScriptOption(self, options, parser):
 
         trace = False
         # --script
-        script_path = options.script
-        script_path_w = options.script_window
-        if script_path and script_path_w:
-            parser.error('--script and script-window are mutually exclusive')
-        script_name = script_path or script_path_w
-        if script_name:
-            script_name = g.os_path_finalize_join(g.app.loadDir, script_name)
-            script, e = g.readFileIntoString(script_name, kind='script:')
-            if trace: print('scanOptions: script_name',repr(script_name))
+        ### This makes no sense
+            # script_path = options.script
+            # script_path_w = options.script_window
+            # if script_path and script_path_w:
+                # parser.error('--script and script-window are mutually exclusive')
+            # script_name = script_path or script_path_w
+        script = options.script
+        if script:
+            fn = g.os_path_finalize_join(g.app.loadDir, script)
+            script, e = g.readFileIntoString(fn, kind='script:')
+            if trace: print('scanOptions: script path',repr(fn))
         else:
             script = None
             if trace: print('scanOptions: no script')
