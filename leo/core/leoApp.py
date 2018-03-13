@@ -2556,8 +2556,8 @@ class LoadManager(object):
             g.printDict({
                 key: value for key, value in options.__dict__.items() if value
             })
-        # Handle the args...
-        self.doBoolOptions(options)
+        # Handle simple args...
+        self.doSimpleOptions(options)
         # Compute the lm.files ivar.
         lm.files = lm.computeFilesList(fileName)
         # Compute the return values.
@@ -2639,8 +2639,63 @@ class LoadManager(object):
             else:
                 result.append(z)
         return result
-    #@+node:ekr.20180312151544.1: *6* LM.doBoolOptions
-    def doBoolOptions(self, options):
+    #@+node:ekr.20180312150805.1: *6* LM.doGuiOption
+    def doGuiOption(self, options):
+        gui = options.gui
+        if gui:
+            gui = gui.lower()
+            if gui == 'qttabs':
+                g.app.qt_use_tabs = True
+            elif gui in ('console', 'curses', 'text', 'qt', 'null'):
+                    # text: cursesGui.py, curses: cursesGui2.py.
+                g.app.qt_use_tabs = False
+            else:
+                print('scanOptions: unknown gui: %s.  Using qt gui' % gui)
+                gui = 'qt'
+                g.app.qt_use_tabs = False
+        elif sys.platform == 'darwin':
+            gui = 'qt'
+            g.app.qt_use_tabs = False
+        else:
+            gui = 'qttabs'
+            g.app.qt_use_tabs = True
+        assert gui
+        g.app.guiArgName = gui
+        return gui
+    #@+node:ekr.20180312152329.1: *6* LM.doLoadTypeOption
+    def doLoadTypeOption(self, options):
+        
+        s = options.load_type
+        s = s.lower() if s else 'edit'
+        return '@' + s
+
+        
+    #@+node:ekr.20180312152609.1: *6* LM.doScreenShotOption
+    def doScreenShotOption(self, options):
+
+        trace = False
+        # --screen-shot=fn
+        s = options.screen_shot
+        if s:
+            s = s.strip('"')
+        if trace: print('scanOptions: screen_shot', s)
+        return s
+    #@+node:ekr.20180312153008.1: *6* LM.doScriptOption
+    def doScriptOption(self, options, parser):
+
+        trace = False
+        # --script
+        script = options.script
+        if script:
+            fn = g.os_path_finalize_join(g.app.loadDir, script)
+            script, e = g.readFileIntoString(fn, kind='script:')
+            if trace: print('scanOptions: script path',repr(fn))
+        else:
+            script = None
+            if trace: print('scanOptions: no script')
+        return script
+    #@+node:ekr.20180312151544.1: *6* LM.doSimpleOptions
+    def doSimpleOptions(self, options):
         '''These args just set g.app ivars.'''
         trace = False
         # --debug
@@ -2693,67 +2748,6 @@ class LoadManager(object):
         # --trace-shutdown
         g.app.trace_shutdown = options.trace_shutdown
        
-    #@+node:ekr.20180312150805.1: *6* LM.doGuiOption
-    def doGuiOption(self, options):
-        gui = options.gui
-        if gui:
-            gui = gui.lower()
-            if gui == 'qttabs':
-                g.app.qt_use_tabs = True
-            elif gui in ('console', 'curses', 'text', 'qt', 'null'):
-                    # text: cursesGui.py, curses: cursesGui2.py.
-                g.app.qt_use_tabs = False
-            else:
-                print('scanOptions: unknown gui: %s.  Using qt gui' % gui)
-                gui = 'qt'
-                g.app.qt_use_tabs = False
-        elif sys.platform == 'darwin':
-            gui = 'qt'
-            g.app.qt_use_tabs = False
-        else:
-            gui = 'qttabs'
-            g.app.qt_use_tabs = True
-        assert gui
-        g.app.guiArgName = gui
-        return gui
-    #@+node:ekr.20180312152329.1: *6* LM.doLoadTypeOption
-    def doLoadTypeOption(self, options):
-        
-        s = options.load_type
-        s = s.lower() if s else 'edit'
-        return '@' + s
-
-        
-    #@+node:ekr.20180312152609.1: *6* LM.doScreenShotOption
-    def doScreenShotOption(self, options):
-
-        trace = False
-        # --screen-shot=fn
-        s = options.screen_shot
-        if s:
-            s = s.strip('"')
-        if trace: print('scanOptions: screen_shot', s)
-        return s
-    #@+node:ekr.20180312153008.1: *6* LM.doScriptOption
-    def doScriptOption(self, options, parser):
-
-        trace = False
-        # --script
-        ### This makes no sense
-            # script_path = options.script
-            # script_path_w = options.script_window
-            # if script_path and script_path_w:
-                # parser.error('--script and script-window are mutually exclusive')
-            # script_name = script_path or script_path_w
-        script = options.script
-        if script:
-            fn = g.os_path_finalize_join(g.app.loadDir, script)
-            script, e = g.readFileIntoString(fn, kind='script:')
-            if trace: print('scanOptions: script path',repr(fn))
-        else:
-            script = None
-            if trace: print('scanOptions: no script')
-        return script
     #@+node:ekr.20180312154839.1: *6* LM.doWindowSizeOption
     def doWindowSizeOption(self, options):
         
