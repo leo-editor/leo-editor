@@ -635,6 +635,7 @@ class ScriptingController(object):
                 # c.frame.top.leo_master is a LeoTabbedTopLevel.
         return None, None # 2017/02/02.
     #@+node:ekr.20150401130207.1: *3* sc.Scripts, common
+    # Important: common @button and @command nodes do **not** update dynamically!
     #@+node:ekr.20080312071248.1: *4* sc.createCommonButtons
     def createCommonButtons(self):
         '''Handle all global @button nodes.'''
@@ -698,6 +699,8 @@ class ScriptingController(object):
         )
         self.handleRclicks(rclicks)
         # At last we can define the command.
+        # Note: Common @button and @command scripts do NOT update dynamically.
+        # See last comment for https://github.com/leo-editor/leo-editor/issues/171
         self.registerAllCommands(
             args=args,
             func=cb,
@@ -724,10 +727,14 @@ class ScriptingController(object):
         args = self.getArgs(p)
 
         def commonCommandCallback(event=None, script=script):
+            # g.printObj(g.splitLines(script))
             c.executeScript(args=args, script=script, silent=True)
 
         commonCommandCallback.__doc__ = g.getDocString(script).strip()
             # Bug fix: 2015/03/28.
+            
+        # Note: Common @button and @command scripts do NOT update dynamically.
+        # See last comment for https://github.com/leo-editor/leo-editor/issues/171
         self.registerAllCommands(
             args=args,
             func=commonCommandCallback,
