@@ -4428,7 +4428,7 @@ def execGitCommand(command, directory):
     git_dir = g.os_path_finalize_join(directory, '.git')
     if not g.os_path_exists(git_dir):
         g.trace('not found:', git_dir)
-        return
+        return []
     if '\n' in command:
         g.trace('removing newline from', command)
         command = command.replace('\n','')
@@ -6007,8 +6007,8 @@ def printGlobals(message=None):
     if message:
         leader = "-" * 10
         g.pr(leader, ' ', message, ' ', leader)
-    for glob in globs:
-        g.pr(glob)
+    for name in globs:
+        g.pr(name)
 #@+node:ekr.20031218072017.3115: *3* g.printLeoModules
 def printLeoModules(message=None):
     # Create the list.
