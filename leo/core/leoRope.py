@@ -26,7 +26,7 @@ class RopeController(object):
     #@+node:ekr.20140525065558.15806: *3* modules
     def modules(self):
         '''Return full path names of all Leo modules.'''
-        aList = glob.glob(g.os_path_join(g.app.loadDir, '*.py'))
+        aList = g.glob_glob(g.os_path_join(g.app.loadDir, '*.py'))
         return sorted(aList)
     #@+node:ekr.20140525065558.15808: *3* path
     def path(self, fn):

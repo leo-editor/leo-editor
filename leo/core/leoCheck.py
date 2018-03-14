@@ -11,7 +11,7 @@ import leo.core.leoGlobals as g
 import leo.core.leoAst as leoAst
 imp.reload(leoAst)
 import ast
-import glob
+# import glob
 import importlib
 import os
 import re
@@ -1430,7 +1430,7 @@ class ProjectUtils(object):
         Include all descendants if recursiveFlag is True.
         Include all file types if extList is None.
         '''
-        import glob
+        # import glob
         import os
         # if extList is None: extList = ['.py']
         if excludeDirs is None: excludeDirs = []
@@ -1448,7 +1448,7 @@ class ProjectUtils(object):
                             dirs.remove(z)
         else:
             for ext in extList:
-                result.extend(glob.glob('%s.*%s' % (theDir, ext)))
+                result.extend(g.glob_glob('%s.*%s' % (theDir, ext)))
         return sorted(list(set(result)))
     #@+node:ekr.20150525123715.3: *3* pu.get_project_directory
     def get_project_directory(self, name):
@@ -1482,11 +1482,11 @@ class ProjectUtils(object):
         commands_dir = g.os_path_finalize_join(loadDir, '..', 'commands')
         plugins_dir = g.os_path_finalize_join(loadDir, '..', 'plugins')
         # Compute files.
-        core_files = glob.glob('%s%s%s' % (loadDir, os.sep, '*.py'))
+        core_files = g.glob_glob('%s%s%s' % (loadDir, os.sep, '*.py'))
         for exclude in ['format-code.py',]:
             core_files = [z for z in core_files if not z.endswith(exclude)]
-        command_files = glob.glob('%s%s%s' % (commands_dir, os.sep, '*.py'))
-        plugins_files = glob.glob('%s%s%s' % (plugins_dir, os.sep, 'qt_*.py'))
+        command_files = g.glob_glob('%s%s%s' % (commands_dir, os.sep, '*.py'))
+        plugins_files = g.glob_glob('%s%s%s' % (plugins_dir, os.sep, 'qt_*.py'))
         # Compute the result.
         files = core_files + command_files + plugins_files
         files = [z for z in files if not z.endswith('__init__.py')]

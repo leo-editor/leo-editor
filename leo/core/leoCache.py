@@ -11,7 +11,7 @@ if isPython3:
     import pickle
 else:
     import cPickle as pickle
-import glob
+# import glob
 import fnmatch
 import hashlib
 import os
@@ -686,7 +686,7 @@ class PickleShareDB(object):
         if globpat is None:
             files = self._walkfiles(self.root)
         else:
-            files = [z for z in glob.glob(join(self.root, globpat))]
+            files = [z for z in g.glob_glob(join(self.root, globpat))]
         result = [self._normalized(p) for p in files if isfile(p)]
         if trace: g.trace('(PickleShareDB)', len(result), result)
         return result

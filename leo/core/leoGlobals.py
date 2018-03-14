@@ -61,19 +61,20 @@ except ImportError:
     import __builtin__ as builtins # Python 2.
 import codecs
 try:
+    import filecmp
+except ImportError: # does not exist in jython.
+    filecmp = None
+if isPython3:
+    from functools import reduce
+try:
     import gc
 except ImportError:
     gc = None
 try:
-    import filecmp
-except ImportError: # does not exist in jython.
-    filecmp = None
-try:
     import gettext
 except ImportError: # does not exist in jython.
     gettext = None
-if isPython3:
-    from functools import reduce
+import glob
 if isPython3:
     import io
     StringIO = io.StringIO
@@ -6347,6 +6348,13 @@ def windows():
 #@+node:ekr.20031218072017.2145: ** g.os_path_ Wrappers
 #@+at Note: all these methods return Unicode strings. It is up to the user to
 # convert to an encoded string as needed, say when opening a file.
+#@+node:ekr.20180314120442.1: *3* g.glob_glob
+def glob_glob (pattern):
+    '''Return the regularized glob.glob(pattern)'''
+    aList = glob.glob(pattern)
+    if g.isWindows:
+        aList = [z.replace('\\','/') for z in aList]
+    return aList
 #@+node:ekr.20031218072017.2146: *3* g.os_path_abspath
 def os_path_abspath(path):
     """Convert a path to an absolute path."""

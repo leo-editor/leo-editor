@@ -1035,9 +1035,9 @@ class FileNameChooser(object):
             if trace: g.trace('existing directory', path)
             if g.os_path_isdir(path):
                 if path.endswith(os.sep):
-                    aList = glob.glob(path + '*')
+                    aList = g.glob_glob(path + '*')
                 else:
-                    aList = glob.glob(path + sep + '*')
+                    aList = g.glob_glob(path + sep + '*')
                 tabList = [z + sep if g.os_path_isdir(z) else z for z in aList]
             else:
                 # An existing file.
@@ -1046,7 +1046,7 @@ class FileNameChooser(object):
             if trace: g.trace('does not exist', path)
             if path and path.endswith(sep):
                 path = path[: -1]
-            aList = glob.glob(path + '*')
+            aList = g.glob_glob(path + '*')
             tabList = [z + sep if g.os_path_isdir(z) else z for z in aList]
         if fnc.filterExt:
             for ext in fnc.filterExt:

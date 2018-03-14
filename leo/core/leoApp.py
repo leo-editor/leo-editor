@@ -10,7 +10,7 @@ try:
     import builtins # Python 3
 except ImportError:
     import __builtin__ as builtins # Python 2.
-import glob
+# import glob
 import importlib
 import io
 import os
@@ -2317,7 +2317,7 @@ class LoadManager(object):
         for kind, plugins in (('home', plugins1), ('leo', plugins2)):
             pattern = g.os_path_finalize_join(
                 g.app.loadDir, '..', 'plugins', 'importers', '*.py')
-            for fn in glob.glob(pattern):
+            for fn in g.glob_glob(pattern):
                 sfn = g.shortFileName(fn)
                 if sfn != '__init__.py':
                     try:
@@ -2386,7 +2386,7 @@ class LoadManager(object):
         for kind, plugins in (('home', plugins1), ('leo', plugins2)):
             pattern = g.os_path_finalize_join(g.app.loadDir,
                 '..', 'plugins', 'writers', '*.py')
-            for fn in glob.glob(pattern):
+            for fn in g.glob_glob(pattern):
                 sfn = g.shortFileName(fn)
                 if sfn != '__init__.py':
                     try:
@@ -2634,7 +2634,7 @@ class LoadManager(object):
         result = []
         for z in files:
             # Fix #245: wrong: result.extend(glob.glob(lm.completeFileName(z)))
-            aList = glob.glob(lm.completeFileName(z))
+            aList = g.glob_glob(lm.completeFileName(z))
             if aList:
                 result.extend(aList)
             else:

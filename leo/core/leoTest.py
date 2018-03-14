@@ -15,7 +15,6 @@ except ImportError:
 import cProfile as profile
 import doctest
 import gc
-import glob
 import logging
 import logging.handlers
 import os
@@ -405,7 +404,7 @@ class LinterTable():
             pattern = g.os_path_finalize_join(self.loadDir, 'plugins', theDir, '*.py')
             aList.extend(self.get_files(pattern))
             # Don't use get_files here.
-            # for fn in glob.glob(pattern):
+            # for fn in g.glob_glob(pattern):
                 # sfn = g.shortFileName(fn)
                 # if sfn != '__init__.py':
                     # sfn = os.sep.join([theDir, sfn]) if theDir else sfn
@@ -432,9 +431,10 @@ class LinterTable():
     #@+node:ekr.20160520093506.1: *3* get_files
     def get_files(self, pattern):
         '''Return the list of absolute file names matching the pattern.'''
-        return sorted([
-            fn for fn in glob.glob(pattern)
+        aList = sorted([
+            fn for fn in g.glob_glob(pattern)
                 if g.os_path_isfile(fn) and g.shortFileName(fn) != '__init__.py'])
+        return aList
     #@+node:ekr.20160518074545.9: *3* get_files_for_scope
     def get_files_for_scope(self, scope, fn):
         '''Return a list of absolute filenames for external linters.'''
@@ -1587,7 +1587,7 @@ class TestManager(object):
     #@+node:ekr.20051104075904.91: *4* TM.getAllPluginFilenames
     def getAllPluginFilenames(self):
         path = g.os_path_join(g.app.loadDir, "..", "plugins")
-        files = glob.glob(g.os_path_join(path, "*.py"))
+        files = g.glob_glob(g.os_path_join(path, "*.py"))
         files = [g.os_path_finalize(f) for f in files]
         files.sort()
         return files
@@ -1600,7 +1600,7 @@ class TestManager(object):
             g.es("path does not exist:", path)
             return []
         path2 = g.os_path_join(path, "leo*.py")
-        files = glob.glob(path2)
+        files = g.glob_glob(path2)
         files2 = []
         for theFile in files:
             for z in exclude:
