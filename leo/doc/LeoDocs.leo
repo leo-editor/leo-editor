@@ -394,7 +394,8 @@
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
-<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
+<v t="ekr.20100808060203.4273"
+expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
@@ -1942,6 +1943,7 @@
 <v t="ekr.20180124122055.1"><vh>New line_numbering.py plugin</vh></v>
 </v>
 </v>
+<v t="ekr.20180314170429.1"><vh>==== Fix bad links</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -16295,7 +16297,7 @@ A Brief Summary of Leo
 .. _`Leonine`: leonine-world.html
 .. _`Clones`: tutorial-pim.html
 .. _`Python API`: tutorial-scripting.html
-.. _`outline-oriented directives`: tutorial-programming.html
+.. _`outline-oriented directives`: tutorial-basics.html#markup
 .. _`Next`: testimonials.html
 
     "Word outlines are very useful. But Leo makes Word look like a clunky toy."---Joe Orr
@@ -18613,7 +18615,7 @@ There has been some discussion of @auto v. @clean. Preference is obviously a mat
 
 The ability to work on projects with people who don't have leo is obvious; one perhaps slightly less obvious benefit of no sentinels is that I suspect that the likelihood that someone will clone a git repository is reduced when that repository's code is riddled with leo sentinels (unless the potential cloner is a leo loyalist). The one downside to no sentinels--there is no evidence that leo is being used but I think that raises the broader question of marketing leo, which I certainly believe will be aided significantly by being able to take advantage of leo without sentinels in external files.
 </t>
-<t tx="ekr.20150313053238.45">.. _`import script`: tutorial-scripting.html#import-scripts
+<t tx="ekr.20150313053238.45">.. _`recursive import script`: scripting-miscellany.html#recursive-import-script
 .. _git: http://git-scm.com/
 
 @clean is the long-sought breakthrough that just might allow Leo to "go viral". For the very first time, Leo can be used in *all* situations without compromise.  There is no longer any need to make excuses for sentinel lines, or argue whether people should accept them.  Sentinels are simply gone.
@@ -18624,7 +18626,7 @@ When I study other people's code I do the following:
 
 - Create a git repo of the directory to be studied, adding all the source files and doing an initial commit.
  
-- Use an `import script`_ to create the desired @clean nodes.
+- Use an `recursive import script`_ to create the desired @clean nodes.
 
 - Explicitly save all the imported files using Ctrl-Shift-W (write-at-file-nodes).
 
@@ -26181,6 +26183,42 @@ Because the the representation of a module within a WSF was XML, the source code
 
 In those days, Leo's GUI was built on the TKinter package that shipped with Python. That release of TKinter is not beautiful by any means, but its place as one of Python's Batteries Included meant that my entire development environment consisted of the installer for Python; the installer for the pywin32 extensions to Python; the installer for Leo; and the comparatively tiny LEO file that contained my tools' source code, the source code for the library routines, and all my notes. All that went on a single CD-RW, and I could install Python and pywin32 and Leo on a Windows computer in minutes and tweak my code as needed.
 </t>
+<t tx="ekr.20180314170429.1">​
+(fixed) http://leoeditor.com/tutorial-programming.html
+(fixed) http://leoeditor.com/tutorial-scripting
+(not found) http://leoeditor.com/front.html
+
+Images
+
+http://leoeditor.com/images/newlist.html
+http://leoeditor.com/images/openlist.html
+http://leoeditor.com/images/delete.html
+http://leoeditor.com/images/page_setup.html
+http://leoeditor.com/images/print.html
+http://leoeditor.com/images/printprev.html
+http://leoeditor.com/images/editcut.html
+http://leoeditor.com/images/editcopy.html
+http://leoeditor.com/images/editpaste.html
+http://leoeditor.com/images/find.html
+http://leoeditor.com/images/new_item.html
+http://leoeditor.com/images/complete.html
+http://leoeditor.com/images/owners.html
+http://leoeditor.com/images/duedate.html
+http://leoeditor.com/images/edit_note.html
+http://leoeditor.com/images/mail_item.html
+http://leoeditor.com/images/refresh.html
+http://leoeditor.com/images/toolbar.html
+
+Slides?
+
+http://leoeditor.com/slides/installation/_static/underscore.html
+http://leoeditor.com/slides/installation/index.html
+http://leoeditor.com/slides/leo-basics-step-by-step/index.html
+http://leoeditor.com/slides/external-files/index.html
+http://leoeditor.com/slides/clones-and-views/index.html
+http://leoeditor.com/slides/using-leos-minibuffer/index.html
+http://leoeditor.com/slides/scripting-leo/index.html
+http://leoeditor.com/slides/leo-basics-step-by-step/_sources/slide-010.html</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
