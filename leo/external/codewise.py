@@ -280,7 +280,7 @@ def doKeywordArgs(keys, d=None):
     return result
 #@+node:ekr.20180311191907.1: *5* error (codewise)
 def error(*args, **keys):
-    print(color='error', *args, **keys)
+    print(args, keys)
 #@+node:ekr.20180311192928.1: *5* es_exception (codewise)
 def es_exception(full=True, c=None, color="red"):
     typ, val, tb = sys.exc_info()

@@ -2710,7 +2710,7 @@ class LoadManager(object):
         g.app.diff = options.diff
         # --is_theme
         g.app.is_theme = options.is_theme
-        print('scanOptions: g.app.is_theme', g.app.is_theme)
+        print('scanOptions: g.app.is_theme: %s' % bool(g.app.is_theme))
         # --listen-to-log
         g.app.listen_to_log_flag = options.listen_to_log
         # --ipython
