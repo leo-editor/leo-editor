@@ -14,7 +14,7 @@ import leo.plugins.qt_frame as qt_frame
 import leo.plugins.qt_idle_time as qt_idle_time
 import leo.plugins.qt_text as qt_text
 import datetime
-import os
+# import os
 import re
 import sys
 if 1:
@@ -477,41 +477,47 @@ class LeoQtGui(leoGui.LeoGui):
         s = d.getExistingDirectory(parent, title, startdir)
         return g.u(s)
     #@+node:ekr.20110605121601.18500: *4* qt_gui.runOpenFileDialog
-    def runOpenFileDialog(self, c, title, filetypes, defaultextension='', multiple=False, startpath=None):
+    def runOpenFileDialog(self, c, title, filetypes,
+        defaultextension='',
+        multiple=False,
+        startpath=None,
+    ):
         """Create and run an Qt open file dialog ."""
         trace = False and not g.unitTesting
         if g.unitTesting:
             return ''
-        if startpath is None:
-            startpath = os.curdir
         parent = None
         filter_ = self.makeFilter(filetypes)
         dialog = QtWidgets.QFileDialog()
         dialog.setStyleSheet(c.active_stylesheet)
         self.attachLeoIcon(dialog)
-        if multiple:
-            c.in_qt_dialog = True
-            lst = dialog.getOpenFileNames(parent, title, startpath, filter_)
+        # 2018/03/14: Bug fixes:
+        # - Use init_dialog_folder only if a path is not given
+        # - *Never* Use os.curdir by default!
+        if not startpath:
+            startpath = g.init_dialog_folder(c, c.p, use_at_path=True)
+                # Returns c.last_dir or os.curdir
+        func = dialog.getOpenFileNames if multiple else dialog.getOpenFileName
+        c.in_qt_dialog = True
+        try:
+            val = func(
+                parent=parent,
+                caption=title,
+                directory=startpath,
+                filter=filter_,
+            )
+        finally:
             c.in_qt_dialog = False
-            if isQt5: # this is a *Py*Qt change rather than a Qt change
-                lst, selected_filter = lst
-            files = [g.u(s) for s in lst]
+        if isQt5: # this is a *Py*Qt change rather than a Qt change
+            val, junk_selected_filter = val
+        if multiple:
+            files = [g.os_path_normslashes(g.u(s)) for s in val]
             if files:
                 c.last_dir = g.os_path_dirname(files[-1])
                 if trace: g.trace('c.last_dir', c.last_dir)
             return files
         else:
-            c.in_qt_dialog = True
-            s = dialog.getOpenFileName(
-                parent,
-                title,
-                # startpath,
-                g.init_dialog_folder(c, c.p, use_at_path=True),
-                filter_)
-            c.in_qt_dialog = False
-            if isQt5:
-                s, selected_filter = s
-            s = g.u(s)
+            s = g.os_path_normslashes(g.u(val))
             if s:
                 c.last_dir = g.os_path_dirname(s)
                 if trace: g.trace('c.last_dir', c.last_dir)

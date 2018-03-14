@@ -1014,6 +1014,8 @@ for theDir in ('core','external','extensions','plugins','scripts','test'):
     path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
     assert g.os_path_exists(path),path
     aList = glob.glob(g.os_path_join(path,'*.py'))
+    if g.isWindows:
+        aList = [z.replace('\\','/') for z in aList]
     for z in aList:
         if z in skip_list:
             pass # print('%s: skipped: %s' % (p.h,z))
@@ -11960,6 +11962,8 @@ table = (
     ('~{{sep}}tmp{{sep}}x.py', '~%stmp%sx.py' % (sep, sep)),
 )
 for s, expected in table:
+    if g.isWindows:
+        expected = expected.replace('\\','/')
     got = g.os_path_expandExpression(s, c=c)
     assert got==expected,'s: %r expected: %r got: %r' % (s,expected,got)
 #@+node:ekr.20111104112332.3953: *4* @test g.os_path_finalize_join with thumb drive

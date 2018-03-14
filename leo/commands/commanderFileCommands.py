@@ -951,6 +951,7 @@ def open_theme_file(self, event=None, fn=None):
     
 def open_theme_file_helper(event, closeFlag, fn):
     '''Open a theme file and apply the theme.'''
+    trace = False and not g.unitTesting
     c = event and event.get('c')
     if not c: return
     old_dir = g.os_path_abspath(os.curdir)
@@ -959,20 +960,28 @@ def open_theme_file_helper(event, closeFlag, fn):
         fn = c.styleSheetManager.find_theme_file(fn)
         if not fn: return
     else:
-        os.chdir(themes_dir)
-        g.trace(themes_dir)
         fn = g.app.gui.runOpenFileDialog(c,
-            title="Open",
+            title="Open Theme",
             filetypes=[
                  g.fileFilters("LEOFILES"),
                 ("All files", "*"),
             ],
             defaultextension=g.defaultLeoFileExtension(c),
+            startpath=themes_dir,
         )
     c.bringToFront()
     c.init_error_dialogs()
     # Adapted from c.open().
     if fn and g.app.loadManager.isLeoFile(fn):
+        # Close the file if it is already open, provided there is another.
+        aList = g.app.commanders()
+        if len(aList) > 1:
+            for c2 in aList:
+                if trace: g.trace('COMPARE\n%s\n%s' % (fn, c2.fileName()))
+                if fn == c2.fileName():
+                    if trace: g.trace('===== CLOSING', fn)
+                    c2.close(new_c=c)
+                    break
         c2 = g.openWithFileName(fn, old_c=c)
         if c2:
             c2.k.makeAllBindings()

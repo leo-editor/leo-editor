@@ -13,6 +13,8 @@ Important: This module imports no other Leo module.
 # pylint: disable=deprecated-method
 import sys
 isPython3 = sys.version_info >= (3, 0, 0)
+isMac = sys.platform.startswith('darwin')
+isWindows = sys.platform.startswith('win')
 #@+<< global switches >>
 #@+node:ekr.20120212060348.10374: **  << global switches >> (leoGlobals.py)
 in_bridge = False
@@ -6352,6 +6354,8 @@ def os_path_abspath(path):
     path = path.replace('\x00','') # Fix Pytyon 3 bug on Windows 10.
     path = os.path.abspath(path)
     path = g.toUnicodeFileEncoding(path)
+    if g.isWindows:
+        path = path.replace('\\','/')
     return path
 #@+node:ekr.20031218072017.2147: *3* g.os_path_basename
 def os_path_basename(path):
@@ -6359,6 +6363,8 @@ def os_path_basename(path):
     path = g.toUnicodeFileEncoding(path)
     path = os.path.basename(path)
     path = g.toUnicodeFileEncoding(path)
+    if g.isWindows:
+        path = path.replace('\\','/')
     return path
 #@+node:ekr.20031218072017.2148: *3* g.os_path_dirname
 def os_path_dirname(path):
@@ -6366,6 +6372,8 @@ def os_path_dirname(path):
     path = g.toUnicodeFileEncoding(path)
     path = os.path.dirname(path)
     path = g.toUnicodeFileEncoding(path)
+    if g.isWindows:
+        path = path.replace('\\','/')
     return path
 #@+node:ekr.20031218072017.2149: *3* g.os_path_exists
 def os_path_exists(path):
@@ -6411,6 +6419,8 @@ def os_path_expandExpression(s, **keys):
             aList.append(s[previ:])
             break
     val = ''.join(aList)
+    if g.isWindows:
+        val = val.replace('\\','/')
     if trace: g.trace(' returns', val)
     return val
 #@+node:ekr.20180120140558.1: *4* g.replace_path_expression
@@ -6432,6 +6442,8 @@ def os_path_expanduser(path):
     """wrap os.path.expanduser"""
     path = g.toUnicodeFileEncoding(path)
     result = os.path.normpath(os.path.expanduser(path))
+    if g.isWindows:
+        path = path.replace('\\','/')
     return result
 #@+node:ekr.20080921060401.14: *3* g.os_path_finalize
 def os_path_finalize(path, **keys):
@@ -6448,6 +6460,8 @@ def os_path_finalize(path, **keys):
     path = path.replace('\x00','') # Fix Pytyon 3 bug on Windows 10.
     path = os.path.abspath(path)
     path = os.path.normpath(path)
+    if g.isWindows:
+        path = path.replace('\\','/')
     # calling os.path.realpath here would cause problems in some situations.
     return path
 #@+node:ekr.20140917154740.19483: *3* g.os_path_finalize_join
@@ -6457,8 +6471,11 @@ def os_path_finalize_join(*args, **keys):
     if c:
         args = [g.os_path_expandExpression(z, **keys)
             for z in args if z]
-    return os.path.normpath(os.path.abspath(
+    path = os.path.normpath(os.path.abspath(
         g.os_path_join(*args, **keys))) # Handles expanduser
+    if g.isWindows:
+        path = path.replace('\\','/')
+    return path
 #@+node:ekr.20031218072017.2150: *3* g.os_path_getmtime
 def os_path_getmtime(path):
     """Return the modification time of path."""
@@ -6522,6 +6539,8 @@ def os_path_join(*args, **keys):
     # May not be needed on some Pythons.
     path = g.toUnicodeFileEncoding(path)
     path = path.replace('\x00','') # Fix Pytyon 3 bug on Windows 10.
+    if g.isWindows:
+        path = path.replace('\\','/')
     return path
 #@+node:ekr.20031218072017.2156: *3* g.os_path_normcase
 def os_path_normcase(path):
@@ -6529,6 +6548,8 @@ def os_path_normcase(path):
     path = g.toUnicodeFileEncoding(path)
     path = os.path.normcase(path)
     path = g.toUnicodeFileEncoding(path)
+    if g.isWindows:
+        path = path.replace('\\','/')
     return path
 #@+node:ekr.20031218072017.2157: *3* g.os_path_normpath
 def os_path_normpath(path):
@@ -6536,7 +6557,16 @@ def os_path_normpath(path):
     path = g.toUnicodeFileEncoding(path)
     path = os.path.normpath(path)
     path = g.toUnicodeFileEncoding(path)
+    if g.isWindows:
+        path = path.replace('\\','/')
     return path
+#@+node:ekr.20180314081254.1: *3* g.os_path_normslashes (new)
+def os_path_normslashes(path):
+    if g.isWindows:
+        path = path.replace('\\','/')
+    return path
+    
+    
 #@+node:ekr.20080605064555.2: *3* g.os_path_realpath
 def os_path_realpath(path):
     '''Return the canonical path of the specified filename, eliminating any
@@ -6546,6 +6576,8 @@ def os_path_realpath(path):
     path = g.toUnicodeFileEncoding(path)
     path = os.path.realpath(path)
     path = g.toUnicodeFileEncoding(path)
+    if g.isWindows:
+        path = path.replace('\\','/')
     return path
 #@+node:ekr.20031218072017.2158: *3* g.os_path_split
 def os_path_split(path):

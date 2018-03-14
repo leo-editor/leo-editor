@@ -879,7 +879,10 @@ class Commands(object):
     # Compatibility with scripts
 
     def fileName(self):
-        return self.mFileName
+        s = self.mFileName
+        if g.isWindows:
+            s = s.replace('\\','/')
+        return s
 
     def relativeFileName(self):
         return self.mRelativeFileName or self.mFileName

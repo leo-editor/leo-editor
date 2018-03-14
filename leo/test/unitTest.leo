@@ -1223,8 +1223,8 @@
 <v t="ekr.20171112182742.4"><vh>B</vh></v>
 </v>
 <v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
-</v>
 <v t="ekr.20180312050443.1"><vh>@test cwd</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
