@@ -3,13 +3,16 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="118" left="457" height="864" width="1383"/>
+	<global_window_position top="138" left="562" height="861" width="1109"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20180309203321.1"><vh>Tests</vh>
+<v t="ekr.20180314052647.1"><vh>Syntax coloring template</vh>
+<v t="ekr.20180314052647.2"><vh>&lt;&lt; defined section &gt;&gt;</vh></v>
+</v>
 <v t="ekr.20180306143127.1"><vh>Syntax coloring test</vh>
 <v t="ekr.20180306143127.2"><vh>&lt;&lt; defined section &gt;&gt;</vh></v>
 </v>
@@ -662,7 +665,7 @@ The following settings specify the indicators.  You can use an absolute path, or
 - Your home directory or
 - Leo's leo/Icons directory
 </t>
-<t tx="ekr.20180309203321.1" str_leo_pos="1,3,0,2,0"></t>
+<t tx="ekr.20180309203321.1" str_leo_pos="0"></t>
 <t tx="ekr.20180309203342.1">/* bookmarks plugin styling */
 
 #show_bookmarks QPushButton {
@@ -713,5 +716,55 @@ The following settings specify the indicators.  You can use an absolute path, or
 <t tx="ekr.20180309203459.7"></t>
 <t tx="ekr.20180309203459.8"></t>
 <t tx="ekr.20180309203459.9"></t>
+<t tx="ekr.20180314052647.1">@ A doc part.  *All* languages colorize doc parts as follows:
+
+1. The '@' sign itself is colored with @color leokeyword constant.
+
+2. The rest of the doc parts depends on the @bool color-doc-parts-as-rest setting:
+   True:  Colorize the doc part as **markdown**.
+   False: Colorize the doc part using @color docpart.
+   
+Leo colorizes constructs with two kinds of color constants.
+- **Default colors** defined in the node "Colors: defaults".
+  These constants correspond to jEdit names used in leo/modes/*.py.
+  See the "Colors: defaults" node for more details.
+- **Leo-specific colors**, defined in the node "Colors: Leo constructs".
+  
+Most languages use only a subset of these color names.
+Here are all the colors used to color python:
+@c # @color leo_keyword_color
+
+# Comments: @color comment1
+
+def spam():
+    
+    # Reserved words...
+    pass     # Python keywords: @color keyword1
+    abs(1)   # Standard functions: @color keyword2.
+    __file__ # double underscore names: @color keyword3
+    try:
+        frobnicate()
+            # Function calls are not specially colored.
+            # The default is the text foreground color in the body pane.
+    except IOError: # Exception names: @color keyword3
+        pass
+    a = 2    # Operators (the = sign): @color operator_color
+    
+    # Strings...
+    a = 'Regular string' # @color literal1
+    '''Triple single-quoted docstring''' # @color literal2
+    """Triple double-quoted docstring""" # @color literal2
+    
+# All languages use the following names...
+    
+# Urls: http://leoeditor.com/  @color url_color
+&lt;&lt; undefined section &gt;&gt;      # @color undefined_section_name_color
+&lt;&lt; defined section &gt;&gt;
+    # The brackets:            @color section_name_brackets_color
+    # The section name itself: @color section_name_color
+    
+@language python # @color leo_keyword_color
+</t>
+<t tx="ekr.20180314052647.2"></t>
 </tnodes>
 </leo_file>
