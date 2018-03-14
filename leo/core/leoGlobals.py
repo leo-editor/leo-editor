@@ -5957,7 +5957,12 @@ def pr(*args, **keys):
         s += g.u('\n') if g.isPython3 else '\n'
     # Python's print statement *can* handle unicode, but
     # sitecustomize.py must have sys.setdefaultencoding('utf-8')
-    stdout.write(s)
+    try:
+        # 783: print-* commands fail under pythonw.
+        # https://github.com/leo-editor/leo-editor/issues/783.
+        stdout.write(s)
+    except IOError:
+        pass
 #@+node:ekr.20060221083356: *3* g.prettyPrintType
 def prettyPrintType(obj):
     # pylint: disable=no-member
