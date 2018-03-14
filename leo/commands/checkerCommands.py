@@ -235,7 +235,7 @@ class PyflakesCommand(object):
             # Report the file name.
             sfn = g.shortFileName(fn)
             s = g.readFileIntoEncodedString(fn)
-            if s.strip():
+            if s and s.strip():
                 if not pyflakes_errors_only:
                     g.es('Pyflakes: %s' % sfn)
                 # Send all output to the log pane.
