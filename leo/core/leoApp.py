@@ -3669,7 +3669,7 @@ class RecentFilesManager(object):
         for path in (localPath, g.app.globalConfigDir, g.app.homeLeoDir):
             if path:
                 fileName = g.os_path_join(path, tag)
-                if g.os_path_exists(fileName) and not fileName.lower() in seen:
+                if g.os_path_exists(fileName) and fileName.lower() not in seen:
                     seen.append(fileName.lower())
                     ok = rf.writeRecentFilesFileHelper(fileName)
                     if force or not rf.recentFileMessageWritten:
