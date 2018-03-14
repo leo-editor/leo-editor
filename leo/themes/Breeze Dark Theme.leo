@@ -2,7 +2,7 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.69">
 	<global_window_position top="138" left="562" height="861" width="1109"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -77,6 +77,13 @@
 <v t="chris.20180308171552.57"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
 <v t="chris.20180308171552.58"><vh>@color undefined_section_name_color = red</vh></v>
 <v t="chris.20180308171552.59"><vh>@color url_color = @solarized-purple</vh></v>
+</v>
+<v t="ekr.20180314165755.1"><vh>Colors: patch (diff)</vh>
+<v t="ekr.20180314165755.2"><vh>@color patch_keyword1_color = @solarized-green</vh></v>
+<v t="ekr.20180314165755.3"><vh>@color patch_keyword2_color = @solarized-red</vh></v>
+<v t="ekr.20180314165755.4"><vh>@color patch_keyword3_color = @solarized-blue</vh></v>
+<v t="ekr.20180314165755.5"><vh>@color patch_literal1_color = @solarized-blue</vh></v>
+<v t="ekr.20180314165755.6"><vh>@color patch_literal2_color = @solarized-blue</vh></v>
 </v>
 </v>
 <v t="chris.20180308171552.60"><vh>Colors: Text</vh>
@@ -2592,7 +2599,7 @@ for s in table:
 </t>
 <t tx="ekr.20180307024846.1">True: show user tips on startup.</t>
 <t tx="ekr.20180307024911.1"># For line_numbering plugin.</t>
-<t tx="ekr.20180314052516.1" str_leo_pos="0"></t>
+<t tx="ekr.20180314052516.1" str_leo_pos="1"></t>
 <t tx="ekr.20180314052520.1">@ A doc part.  *All* languages colorize doc parts as follows:
 
 1. The '@' sign itself is colored with @color leokeyword constant.
@@ -2651,5 +2658,11 @@ g.blue('blue')
 g.red('red')
 g.es_print('test')
 g.es_print('black',color='black')</t>
+<t tx="ekr.20180314165755.1"></t>
+<t tx="ekr.20180314165755.2"># +</t>
+<t tx="ekr.20180314165755.3"># -</t>
+<t tx="ekr.20180314165755.4"># @@</t>
+<t tx="ekr.20180314165755.5"># +++</t>
+<t tx="ekr.20180314165755.6"># ---</t>
 </tnodes>
 </leo_file>

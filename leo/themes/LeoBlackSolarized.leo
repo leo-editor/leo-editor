@@ -93,6 +93,13 @@
 <v t="ekr.20180307010409.44"><vh>@color undefined_section_name_color = red</vh></v>
 <v t="ekr.20180307010409.45"><vh>@color url_color = @solarized-purple</vh></v>
 </v>
+<v t="ekr.20180314165700.1"><vh>Colors: patch (diff)</vh>
+<v t="ekr.20180314165700.2"><vh>@color patch_keyword1_color = @solarized-green</vh></v>
+<v t="ekr.20180314165700.3"><vh>@color patch_keyword2_color = @solarized-red</vh></v>
+<v t="ekr.20180314165700.4"><vh>@color patch_keyword3_color = @solarized-blue</vh></v>
+<v t="ekr.20180314165700.5"><vh>@color patch_literal1_color = @solarized-blue</vh></v>
+<v t="ekr.20180314165700.6"><vh>@color patch_literal2_color = @solarized-blue</vh></v>
+</v>
 </v>
 <v t="ekr.20180307010409.46"><vh>Colors: Text</vh>
 <v t="ekr.20180307010409.47"><vh>@color log_text_background_color =#000005</vh></v>
@@ -665,7 +672,7 @@ The following settings specify the indicators.  You can use an absolute path, or
 - Your home directory or
 - Leo's leo/Icons directory
 </t>
-<t tx="ekr.20180309203321.1" str_leo_pos="0"></t>
+<t tx="ekr.20180309203321.1" str_leo_pos="1,3"></t>
 <t tx="ekr.20180309203342.1">/* bookmarks plugin styling */
 
 #show_bookmarks QPushButton {
@@ -766,5 +773,11 @@ def spam():
 @language python # @color leo_keyword_color
 </t>
 <t tx="ekr.20180314052647.2"></t>
+<t tx="ekr.20180314165700.1"></t>
+<t tx="ekr.20180314165700.2"># +</t>
+<t tx="ekr.20180314165700.3"># -</t>
+<t tx="ekr.20180314165700.4"># @@</t>
+<t tx="ekr.20180314165700.5"># +++</t>
+<t tx="ekr.20180314165700.6"># ---</t>
 </tnodes>
 </leo_file>
