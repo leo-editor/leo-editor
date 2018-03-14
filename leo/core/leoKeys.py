@@ -8,7 +8,7 @@
 #@+node:ekr.20061031131434.1: ** << imports >> (leoKeys)
 import leo.core.leoGlobals as g
 import leo.external.codewise as codewise
-import glob
+# import glob
 import inspect
 import os
 import re

@@ -5,7 +5,7 @@
 #@+<< leoRope imports >>
 #@+node:ekr.20140525065558.15807: ** << leoRope imports >>
 import leo.core.leoGlobals as g
-import glob
+# import glob
 import imp
 import rope.base.project
 import rope.base.simplify
