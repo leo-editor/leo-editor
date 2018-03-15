@@ -2,206 +2,194 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.69">
-	<global_window_position top="138" left="562" height="861" width="1109"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20180314052516.1"><vh>Tests</vh>
-<v t="ekr.20180314052520.1"><vh>Syntax coloring template</vh>
-<v t="ekr.20180314052520.2"><vh>&lt;&lt; defined section &gt;&gt;</vh></v>
+<v t="ekr.20180312111155.1"><vh>Read me</vh></v>
+<v t="chris.20180314054143.1"><vh>Tests</vh>
+<v t="chris.20180314054143.2"><vh>Syntax coloring template</vh>
+<v t="chris.20180314054143.3"><vh>&lt;&lt; defined section &gt;&gt;</vh></v>
 </v>
-<v t="ekr.20180307012426.4"><vh>Test g.es(color=*)</vh></v>
-<v t="ekr.20180314052540.1"><vh>g.error/note/warning test</vh></v>
+<v t="chris.20180314054143.4"><vh>Test g.es(color=*)</vh></v>
+<v t="chris.20180314054143.5"><vh>g.error/note/warning test</vh></v>
 </v>
-<v t="ekr.20180307012127.1"><vh>@settings</vh>
-<v t="chris.20180308171552.1"><vh>@theme Breeze Dark</vh>
-<v t="chris.20180308171552.2"><vh>BreezeDark StyleSheet</vh></v>
-<v t="chris.20180308171552.3"><vh>Breeze Dark Color definitions</vh>
-<v t="chris.20180309180448.2"><vh>@color dark-base0 = #eff0f1</vh></v>
-<v t="chris.20180309180448.3"><vh>@color dark-base1 = #909396</vh></v>
-<v t="chris.20180309180448.4"><vh>@color dark-base2 = #ffffff</vh></v>
-<v t="chris.20180309180448.5"><vh>@color dark-base3 = #31363b</vh></v>
-<v t="chris.20180309180448.6"><vh>@color dark-base4 = #575b5f</vh></v>
-<v t="chris.20180309180448.7"><vh>@color dark-base5 = #232629</vh></v>
-<v t="chris.20180309180448.8"><vh>@color dark-base6 = #3daee9</vh></v>
-<v t="chris.20180309180448.9"><vh>@color dark-base7 = #224e65</vh></v>
-<v t="chris.20180309180448.10"><vh>@color dark-base8 = #ff0000</vh></v>
+<v t="chris.20180313181652.1" a="E"><vh>@settings</vh>
+<v t="chris.20180313181652.2" a="E"><vh>@theme Breeze Dark</vh>
+<v t="chris.20180313181652.3"><vh>Resources</vh></v>
+<v t="chris.20180313181652.4"><vh>Breeze Dark Color definitions</vh>
+<v t="chris.20180313181652.5"><vh>@color dark-base0 = #eff0f1</vh></v>
+<v t="chris.20180313181652.6"><vh>@color dark-base1 = #909396</vh></v>
+<v t="chris.20180313181652.7"><vh>@color dark-base2 = #ffffff</vh></v>
+<v t="chris.20180313181652.8"><vh>@color dark-base3 = #31363b</vh></v>
+<v t="chris.20180313181652.9"><vh>@color dark-base4 = #575b5f</vh></v>
+<v t="chris.20180313181652.10"><vh>@color dark-base5 = #232629</vh></v>
+<v t="chris.20180313181652.11"><vh>@color dark-base6 = #3daee9</vh></v>
+<v t="chris.20180313181652.12"><vh>@color dark-base7 = #224e65</vh></v>
+<v t="chris.20180313181652.13"><vh>@color dark-base8 = #ff0000</vh></v>
 </v>
-<v t="chris.20180308171552.15"><vh>Settings for Leo Breeze Dark</vh>
-<v t="chris.20180308171552.16"><vh>Colors: Logical colors</vh>
-<v t="chris.20180308171552.17"><vh>@color log_black_color = @text-foreground</vh></v>
-<v t="chris.20180308171552.18"><vh>@color log_blue_color = @solarized-blue</vh></v>
-<v t="chris.20180308171552.19"><vh>@color log_cyan_color = @solarized-cyan</vh></v>
-<v t="chris.20180308171552.20"><vh>@color log_error_color = @solarized-red</vh></v>
-<v t="chris.20180308171552.21"><vh>@color log_green_color = @solarized-green</vh></v>
-<v t="chris.20180308171552.22"><vh>@color log_info_color = @solarized-blue</vh></v>
-<v t="chris.20180308171552.23"><vh>@color log_magenta_color = @solarized-magenta</vh></v>
-<v t="chris.20180308171552.24"><vh>@color log_note_color = @solarized-blue</vh></v>
-<v t="chris.20180308171552.25"><vh>@color log_orange_color = @solarized-orange</vh></v>
-<v t="chris.20180308171552.26"><vh>@color log_red_color = @solarized-red</vh></v>
-<v t="chris.20180308171552.27"><vh>@color log_violet_color = @solarized-violet</vh></v>
-<v t="chris.20180308171552.28"><vh>@color log_warning_color_= @solarized-red</vh></v>
-<v t="chris.20180308171552.29"><vh>@color log_white_color = @solarized-white</vh></v>
-<v t="chris.20180308171552.30"><vh>@color log_yellow_color = @solarized-yellow</vh></v>
+<v t="chris.20180313181652.14" a="E"><vh>Settings for Leo Breeze Dark</vh>
+<v t="chris.20180313181652.15"><vh>Colors: Logical colors</vh>
+<v t="chris.20180313181652.16"><vh>@color log_black_color = @text-foreground</vh></v>
+<v t="chris.20180313181652.17"><vh>@color log_blue_color = @solarized-blue</vh></v>
+<v t="chris.20180313181652.18"><vh>@color log_cyan_color = @solarized-cyan</vh></v>
+<v t="chris.20180313181652.19"><vh>@color log_error_color = @solarized-red</vh></v>
+<v t="chris.20180313181652.20"><vh>@color log_green_color = @solarized-green</vh></v>
+<v t="chris.20180313181652.21"><vh>@color log_info_color = @solarized-blue</vh></v>
+<v t="chris.20180313181652.22"><vh>@color log_magenta_color = @solarized-magenta</vh></v>
+<v t="chris.20180313181652.23"><vh>@color log_note_color = @solarized-blue</vh></v>
+<v t="chris.20180313181652.24"><vh>@color log_orange_color = @solarized-orange</vh></v>
+<v t="chris.20180313181652.25"><vh>@color log_red_color = @solarized-red</vh></v>
+<v t="chris.20180313181652.26"><vh>@color log_violet_color = @solarized-violet</vh></v>
+<v t="chris.20180313181652.27"><vh>@color log_warning_color_= @solarized-red</vh></v>
+<v t="chris.20180313181652.28"><vh>@color log_white_color = @solarized-white</vh></v>
+<v t="chris.20180313181652.29"><vh>@color log_yellow_color = @solarized-yellow</vh></v>
 </v>
-<v t="chris.20180308171552.31"><vh>Colors: Syntax coloring</vh>
-<v t="chris.20180308171552.32"><vh>Colors: defaults</vh>
-<v t="chris.20180308171552.33"><vh>@color blank_color = grey</vh></v>
-<v t="chris.20180308171552.34"><vh>@color tab_color = red</vh></v>
-<v t="chris.20180308171552.35"><vh>@color label_color = red</vh></v>
-<v t="chris.20180308171552.36"><vh>@color keyword1_color = #268bd2</vh></v>
-<v t="chris.20180308171552.37"><vh>@color keyword2_color = #268bd2</vh></v>
-<v t="chris.20180308171552.38"><vh>@color keyword3_color = #268bd2</vh></v>
-<v t="chris.20180308171552.39"><vh>@color keyword4_color = #268bd2</vh></v>
-<v t="chris.20180308171552.40"><vh>@color literal1_color = #859900</vh></v>
-<v t="chris.20180308171552.41"><vh>@color literal2_color = #859900</vh></v>
-<v t="chris.20180308171552.42"><vh>@color literal3_color = #859900</vh></v>
-<v t="chris.20180308171552.43"><vh>@color literal4_color = #859900</vh></v>
-<v t="chris.20180308171552.44"><vh>@color markup_color = #268bd2</vh></v>
-<v t="chris.20180308171552.45"><vh>@color comment1_color = #d33682</vh></v>
-<v t="chris.20180308171552.46"><vh>@color comment2_color = #d33682</vh></v>
-<v t="chris.20180308171552.47"><vh>@color comment3_color = #d33682</vh></v>
-<v t="chris.20180308171552.48"><vh>@color comment4_color = #d33682</vh></v>
+<v t="chris.20180313181652.30"><vh>Colors: Syntax coloring</vh>
+<v t="chris.20180313181652.31"><vh>Colors: defaults</vh>
+<v t="chris.20180313181652.32"><vh>@color blank_color = grey</vh></v>
+<v t="chris.20180313181652.33"><vh>@color tab_color = red</vh></v>
+<v t="chris.20180313181652.34"><vh>@color label_color = red</vh></v>
+<v t="chris.20180313181652.35"><vh>@color keyword1_color = #268bd2</vh></v>
+<v t="chris.20180313181652.36"><vh>@color keyword2_color = #268bd2</vh></v>
+<v t="chris.20180313181652.37"><vh>@color keyword3_color = #268bd2</vh></v>
+<v t="chris.20180313181652.38"><vh>@color keyword4_color = #268bd2</vh></v>
+<v t="chris.20180313181652.39"><vh>@color literal1_color = #859900</vh></v>
+<v t="chris.20180313181652.40"><vh>@color literal2_color = #859900</vh></v>
+<v t="chris.20180313181652.41"><vh>@color literal3_color = #859900</vh></v>
+<v t="chris.20180313181652.42"><vh>@color literal4_color = #859900</vh></v>
+<v t="chris.20180313181652.43"><vh>@color markup_color = #268bd2</vh></v>
+<v t="chris.20180313181652.44"><vh>@color comment1_color = #d33682</vh></v>
+<v t="chris.20180313181652.45"><vh>@color comment2_color = #d33682</vh></v>
+<v t="chris.20180313181652.46"><vh>@color comment3_color = #d33682</vh></v>
+<v t="chris.20180313181652.47"><vh>@color comment4_color = #d33682</vh></v>
 </v>
-<v t="chris.20180308171552.49"><vh>Colors: Leo constructs</vh>
-<v t="chris.20180308171552.50"><vh>@color section_name_brackets_color = @solarized-blue</vh></v>
-<v t="chris.20180308171552.51"><vh>@color null_color = #6c71c4</vh></v>
-<v t="chris.20180308171552.52"><vh>@color operator_color = #6c71c4</vh></v>
-<v t="chris.20180308171552.53"><vh>@color doc_part_color = @solarized-red</vh></v>
-<v t="chris.20180308171552.54"><vh>@color leo_keyword_color = @solarized-green</vh></v>
-<v t="chris.20180308171552.55"><vh>@color section_name_color = @solarized-red</vh></v>
-<v t="chris.20180308171552.56"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
-<v t="chris.20180308171552.57"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
-<v t="chris.20180308171552.58"><vh>@color undefined_section_name_color = red</vh></v>
-<v t="chris.20180308171552.59"><vh>@color url_color = @solarized-purple</vh></v>
-</v>
-<v t="ekr.20180314165755.1"><vh>Colors: patch (diff)</vh>
-<v t="ekr.20180314165755.2"><vh>@color patch_keyword1_color = @solarized-green</vh></v>
-<v t="ekr.20180314165755.3"><vh>@color patch_keyword2_color = @solarized-red</vh></v>
-<v t="ekr.20180314165755.4"><vh>@color patch_keyword3_color = @solarized-blue</vh></v>
-<v t="ekr.20180314165755.5"><vh>@color patch_literal1_color = @solarized-blue</vh></v>
-<v t="ekr.20180314165755.6"><vh>@color patch_literal2_color = @solarized-blue</vh></v>
+<v t="chris.20180313181652.48"><vh>Colors: Leo constructs</vh>
+<v t="chris.20180313181652.49"><vh>@color section_name_brackets_color = @solarized-blue</vh></v>
+<v t="chris.20180313181652.50"><vh>@color null_color = #6c71c4</vh></v>
+<v t="chris.20180313181652.51"><vh>@color operator_color = #6c71c4</vh></v>
+<v t="chris.20180313181652.52"><vh>@color doc_part_color = @solarized-red</vh></v>
+<v t="chris.20180313181652.53"><vh>@color leo_keyword_color = @solarized-green</vh></v>
+<v t="chris.20180313181652.54"><vh>@color section_name_color = @solarized-red</vh></v>
+<v t="chris.20180313181652.55"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
+<v t="chris.20180313181652.56"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
+<v t="chris.20180313181652.57"><vh>@color undefined_section_name_color = red</vh></v>
+<v t="chris.20180313181652.58"><vh>@color url_color = @solarized-violet</vh></v>
 </v>
 </v>
-<v t="chris.20180308171552.60"><vh>Colors: Text</vh>
-<v t="chris.20180308171552.61"><vh>@color log_text_background_color = @dark-base3</vh></v>
-<v t="chris.20180308171552.62"><vh>@color log_text_foreground_color = @dark-base0</vh></v>
-<v t="chris.20180308171552.63"><vh>@color text-background = @dark-base3</vh></v>
-<v t="chris.20180308171552.64"><vh>@color text-background-bright = @dark-base4</vh></v>
-<v t="chris.20180308171552.65"><vh>@color text-foreground = @dark-base0</vh></v>
-<v t="chris.20180308171552.66"><vh>@color text-foreground-bright = @dark-base2</vh></v>
+<v t="chris.20180313181652.59"><vh>Colors: Text</vh>
+<v t="chris.20180313181652.60"><vh>@color log_text_background_color = @dark-base3</vh></v>
+<v t="chris.20180313181652.61"><vh>@color log_text_foreground_color = @dark-base0</vh></v>
+<v t="chris.20180313181652.62"><vh>@color text-background = @dark-base3</vh></v>
+<v t="chris.20180313181652.63"><vh>@color text-background-bright = @dark-base4</vh></v>
+<v t="chris.20180313181652.64"><vh>@color text-foreground = @dark-base0</vh></v>
+<v t="chris.20180313181652.65"><vh>@color text-foreground-bright = @dark-base2</vh></v>
 </v>
-<v t="chris.20180308171552.67"><vh>Colors: Widgets</vh>
-<v t="chris.20180308171552.68"><vh>@color button-hover-fg =@dark-base3</vh></v>
+<v t="chris.20180313181652.66"><vh>Colors: Widgets</vh>
+<v t="chris.20180313181652.67"><vh>@color button-hover-fg =@dark-base3</vh></v>
 </v>
-<v t="chris.20180308171552.69"><vh>Fonts &amp; text sizes</vh>
-<v t="chris.20180308171552.70"><vh>@string font-family = Inconsolata,Droid Sans Mono, DejaVu Sans Mono</vh></v>
-<v t="chris.20180308171552.71"><vh>@string font-family-body =@font-family</vh></v>
-<v t="chris.20180308171552.72"><vh>@string font-family-log =@font-family</vh></v>
-<v t="chris.20180308171552.73"><vh>@string font-family-tree =@font-family</vh></v>
-<v t="chris.20180308171552.74"><vh>@string font-size-body = 22px</vh></v>
-<v t="chris.20180308171552.75"><vh>@string font-size-log = 16px</vh></v>
-<v t="chris.20180308171552.76"><vh>@string font-size-tree = 18px</vh></v>
+<v t="chris.20180313181652.68" a="E"><vh>Fonts &amp; text sizes</vh>
+<v t="chris.20180313181652.69"><vh>@string font-family = Inconsolata,Droid Sans Mono, DejaVu Sans Mono</vh></v>
+<v t="chris.20180313181652.70"><vh>@string font-family-body =@font-family</vh></v>
+<v t="chris.20180313181652.71"><vh>@string font-family-log =@font-family</vh></v>
+<v t="chris.20180313181652.72"><vh>@string font-family-tree =@font-family</vh></v>
+<v t="chris.20180313181652.73"><vh>@string font-size-body = 21px</vh></v>
+<v t="chris.20180313181652.74"><vh>@string font-size-log = 17px</vh></v>
+<v t="chris.20180313181652.75"><vh>@string font-size-tree = 19px</vh></v>
+<v t="chris.20180315125925.1"><vh>@string font-size-menubar = 17px</vh></v>
+<v t="chris.20180315130317.1"><vh>@string font-size-menu = 16px</vh></v>
+<v t="chris.20180315130516.1"><vh>@string font-size-tabs = 18px</vh></v>
 </v>
-<v t="chris.20180308171552.77"><vh>Gradients</vh>
-<v t="chris.20180308171552.78"><vh>@string bg-gradient =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1@text-background-bright, stop:0.4 @text-background, stop:0.6@text-background, stop:0.9 @text-background-bright)</vh></v>
-<v t="chris.20180308171552.79"><vh>@string bg-gradient-hover =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @dark-base4,stop:0.4 @dark-base0, stop:0.6 @dark-base0, stop:0.9@dark-base4)</vh></v>
+<v t="chris.20180313181652.76"><vh>Gradients</vh>
+<v t="chris.20180313181652.77"><vh>@string bg-gradient =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1@text-background-bright, stop:0.4 @text-background, stop:0.6@text-background, stop:0.9 @text-background-bright)</vh></v>
+<v t="chris.20180313181652.78"><vh>@string bg-gradient-hover =qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0.1 @dark-base4,stop:0.4 @dark-base0, stop:0.6 @dark-base0, stop:0.9@dark-base4)</vh></v>
 </v>
-<v t="chris.20180308171552.80"><vh>Plugins settings</vh>
-<v t="chris.20180308171552.81"><vh>bookmarks</vh>
-<v t="chris.20180308171552.82"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
-<v t="chris.20180308171552.83"><vh>bookmarks base</vh>
-<v t="chris.20180308171552.84"><vh>@color bookmarks_base_color = @text-foreground</vh></v>
-<v t="chris.20180308171552.85"><vh>@string bookmarks_base_border = none</vh></v>
-<v t="chris.20180308171552.86"><vh>@string bookmarks_base_decoration = underline</vh></v>
-<v t="chris.20180308171552.87"><vh>@string bookmarks_base_family = none</vh></v>
-<v t="chris.20180308171552.88"><vh>@string bookmarks_base_margin = 0</vh></v>
-<v t="chris.20180308171552.89"><vh>@string bookmarks_base_padding = 1</vh></v>
-<v t="chris.20180308171552.90"><vh>@string bookmarks_base_size = @bookmarks_font_size</vh></v>
-<v t="chris.20180308171552.91"><vh>@string bookmarks_base_style = normal</vh></v>
-<v t="chris.20180308171552.92"><vh>@string bookmarks_base_weight = regular</vh></v>
+<v t="chris.20180313181652.79"><vh>Plugins settings</vh>
+<v t="chris.20180313181652.80"><vh>bookmarks</vh>
+<v t="chris.20180313181652.81"><vh>@color bookmarks_current_color = @solarized-orange</vh></v>
+<v t="chris.20180313181652.82"><vh>bookmarks base</vh>
+<v t="chris.20180313181652.83"><vh>@color bookmarks_base_color = @text-foreground</vh></v>
+<v t="chris.20180313181652.84"><vh>@string bookmarks_base_border = none</vh></v>
+<v t="chris.20180313181652.85"><vh>@string bookmarks_base_decoration = underline</vh></v>
+<v t="chris.20180313181652.86"><vh>@string bookmarks_base_family = none</vh></v>
+<v t="chris.20180313181652.87"><vh>@string bookmarks_base_margin = 0</vh></v>
+<v t="chris.20180313181652.88"><vh>@string bookmarks_base_padding = 1</vh></v>
+<v t="chris.20180313181652.89"><vh>@string bookmarks_base_size = @bookmarks_font_size</vh></v>
+<v t="chris.20180313181652.90"><vh>@string bookmarks_base_style = normal</vh></v>
+<v t="chris.20180313181652.91"><vh>@string bookmarks_base_weight = regular</vh></v>
 </v>
-<v t="chris.20180308171552.93"><vh>bookmarks children</vh>
-<v t="chris.20180308171552.94"><vh>@color bookmarks_children_color = @text-foreground</vh></v>
-<v t="chris.20180308171552.95"><vh>@string bookmarks_children_decoration = underline</vh></v>
-<v t="chris.20180308171552.96"><vh>@string bookmarks_children_family = none</vh></v>
-<v t="chris.20180308171552.97"><vh>@string bookmarks_children_size = ignore</vh></v>
-<v t="chris.20180308171552.98"><vh>@string bookmarks_children_style = ignore</vh></v>
-<v t="chris.20180308171552.99"><vh>@string bookmarks_children_weight = ignore</vh></v>
+<v t="chris.20180313181652.92"><vh>bookmarks children</vh>
+<v t="chris.20180313181652.93"><vh>@color bookmarks_children_color = @text-foreground</vh></v>
+<v t="chris.20180313181652.94"><vh>@string bookmarks_children_decoration = underline</vh></v>
+<v t="chris.20180313181652.95"><vh>@string bookmarks_children_family = none</vh></v>
+<v t="chris.20180313181652.96"><vh>@string bookmarks_children_size = ignore</vh></v>
+<v t="chris.20180313181652.97"><vh>@string bookmarks_children_style = ignore</vh></v>
+<v t="chris.20180313181652.98"><vh>@string bookmarks_children_weight = ignore</vh></v>
 </v>
-<v t="chris.20180308171552.100"><vh>bookmarks current</vh>
-<v t="chris.20180308171552.101"><vh>@color bookmarks_current_color = blue</vh></v>
-<v t="chris.20180308171552.102"><vh>@string bookmarks_current_decoration = ignore</vh></v>
-<v t="chris.20180308171552.103"><vh>@string bookmarks_current_size = ignore</vh></v>
-<v t="chris.20180308171552.104"><vh>@string bookmarks_current_style = ignore</vh></v>
-<v t="chris.20180308171552.105"><vh>@string bookmarks_current_weight = bold</vh></v>
+<v t="chris.20180313181652.99"><vh>bookmarks current</vh>
+<v t="chris.20180313181652.100"><vh>@color bookmarks_current_color = blue</vh></v>
+<v t="chris.20180313181652.101"><vh>@string bookmarks_current_decoration = ignore</vh></v>
+<v t="chris.20180313181652.102"><vh>@string bookmarks_current_size = ignore</vh></v>
+<v t="chris.20180313181652.103"><vh>@string bookmarks_current_style = ignore</vh></v>
+<v t="chris.20180313181652.104"><vh>@string bookmarks_current_weight = bold</vh></v>
 </v>
-<v t="chris.20180308171552.106"><vh>bookmarks expanded</vh>
-<v t="chris.20180308171552.107"><vh>@color bookmarks_expanded_color = @text-foreground</vh></v>
-<v t="chris.20180308171552.108"><vh>@string bookmarks_expanded_decoration = underline</vh></v>
-<v t="chris.20180308171552.109"><vh>@string bookmarks_expanded_size = ignore</vh></v>
-<v t="chris.20180308171552.110"><vh>@string bookmarks_expanded_style = ignore</vh></v>
-<v t="chris.20180308171552.111"><vh>@string bookmarks_expanded_weight = bold</vh></v>
-<v t="chris.20180308171552.112"><vh>@string bookmarks_font_size = 11pt</vh></v>
+<v t="chris.20180313181652.105"><vh>bookmarks expanded</vh>
+<v t="chris.20180313181652.106"><vh>@color bookmarks_expanded_color = @text-foreground</vh></v>
+<v t="chris.20180313181652.107"><vh>@string bookmarks_expanded_decoration = underline</vh></v>
+<v t="chris.20180313181652.108"><vh>@string bookmarks_expanded_size = ignore</vh></v>
+<v t="chris.20180313181652.109"><vh>@string bookmarks_expanded_style = ignore</vh></v>
+<v t="chris.20180313181652.110"><vh>@string bookmarks_expanded_weight = bold</vh></v>
+<v t="chris.20180313181652.111"><vh>@string bookmarks_font_size = 11pt</vh></v>
 </v>
 </v>
 </v>
-<v t="chris.20180308171552.113"><vh>Outline indicators</vh>
-<v t="chris.20180308171552.114"><vh>@string tree-image-closed = dark/branch_closed.svg</vh></v>
-<v t="chris.20180308171552.115"><vh>@string tree-image-open = dark/branch_open.svg</vh></v>
+<v t="chris.20180313181652.112"><vh>Outline indicators</vh>
+<v t="chris.20180313181652.113"><vh>@string tree-image-closed = dark/branch_closed.svg</vh></v>
+<v t="chris.20180313181652.114"><vh>@string tree-image-open = dark/branch_open.svg</vh></v>
 </v>
-<v t="chris.20180308171552.116"><vh>Theme description settings</vh>
-<v t="chris.20180308171552.117"><vh>@bool color_theme_is_dark = True</vh></v>
-<v t="chris.20180308171552.118"><vh>@string color_theme = dark</vh></v>
-</v>
-</v>
-<v t="chris.20180308171552.119"><vh>@data qt-gui-plugin-style-sheet</vh>
-<v t="chris.20180308171552.120"><vh>All General Widgets</vh></v>
-<v t="chris.20180308171552.121"><vh>Body &amp; other text</vh></v>
-<v t="chris.20180308171552.122"><vh>Borders</vh></v>
-<v t="chris.20180308171552.123"><vh>Buttons</vh></v>
-<v t="chris.20180308171552.124"><vh>Log</vh></v>
-<v t="chris.20180308171552.125"><vh>Menus</vh></v>
-<v t="chris.20180308171552.126"><vh>Minibuffer &amp; label</vh></v>
-<v t="chris.20180308171552.127"><vh>Plugins</vh></v>
-<v t="chris.20180308171552.128"><vh>Scroll bars</vh></v>
-<v t="chris.20180308171552.129"><vh>Splitters</vh></v>
-<v t="chris.20180308171552.131"><vh>Tab bar</vh></v>
-<v t="chris.20180309182828.1"><vh>Tree</vh></v>
-<v t="chris.20180308171552.130"><vh>Z Status area</vh></v>
+<v t="chris.20180313181652.115"><vh>Theme description settings</vh>
+<v t="chris.20180313181652.116"><vh>@bool color_theme_is_dark = True</vh></v>
+<v t="chris.20180313181652.117"><vh>@string color_theme = dark</vh></v>
 </v>
 </v>
-<v t="ekr.20180307024846.1"><vh>@bool show-tips = False</vh></v>
-<v t="ekr.20180307024911.1"><vh>@bool use-gutter = False</vh></v>
+<v t="chris.20180313181652.118" a="E"><vh>@data qt-gui-plugin-style-sheet</vh>
+<v t="chris.20180313181652.119"><vh>General Widgets</vh></v>
+<v t="chris.20180313181652.120"><vh>Body &amp; other text</vh></v>
+<v t="chris.20180313181652.121"><vh>Borders</vh></v>
+<v t="chris.20180313181652.122"><vh>Buttons</vh></v>
+<v t="chris.20180313181652.123"><vh>Log, Find, Spell, Tag</vh></v>
+<v t="chris.20180313181652.124"><vh>Menus</vh></v>
+<v t="chris.20180313181652.125"><vh>Minibuffer &amp; label</vh></v>
+<v t="chris.20180313181652.126"><vh>Plugins</vh></v>
+<v t="chris.20180313181652.127"><vh>Scroll bars</vh></v>
+<v t="chris.20180313181652.128"><vh>Splitters</vh></v>
+<v t="chris.20180313181652.129"><vh>Tab bar</vh></v>
+<v t="chris.20180313181652.130"><vh>Tree</vh></v>
+<v t="chris.20180313181652.131"><vh>Status area</vh></v>
+</v>
+</v>
 </v>
 </vnodes>
 <tnodes>
-<t tx="chris.20180308171552.1" lineYOffset="4b002e">@language rest
-@wrap
-@tabwidth -2
-
-Modified by Chris George.
-
-Expect more once I figure out how to source images.
-
-</t>
-<t tx="chris.20180308171552.100"></t>
-<t tx="chris.20180308171552.101"></t>
-<t tx="chris.20180308171552.102">none or underline</t>
-<t tx="chris.20180308171552.103"></t>
-<t tx="chris.20180308171552.104"></t>
-<t tx="chris.20180308171552.105">bold or regular</t>
-<t tx="chris.20180308171552.106"></t>
-<t tx="chris.20180308171552.107"></t>
-<t tx="chris.20180308171552.108">none or underline</t>
-<t tx="chris.20180308171552.109"></t>
-<t tx="chris.20180308171552.110"></t>
-<t tx="chris.20180308171552.111">bold or regular</t>
-<t tx="chris.20180308171552.112"></t>
-<t tx="chris.20180308171552.113">Outline indicators indicate the expansion state of outline nodes. The leo/Icons/nodes-dark folders contains two sets of indicators::
+<t tx="chris.20180313181652.1"></t>
+<t tx="chris.20180313181652.10"></t>
+<t tx="chris.20180313181652.100"></t>
+<t tx="chris.20180313181652.101">none or underline</t>
+<t tx="chris.20180313181652.102"></t>
+<t tx="chris.20180313181652.103"></t>
+<t tx="chris.20180313181652.104">bold or regular</t>
+<t tx="chris.20180313181652.105"></t>
+<t tx="chris.20180313181652.106"></t>
+<t tx="chris.20180313181652.107">none or underline</t>
+<t tx="chris.20180313181652.108"></t>
+<t tx="chris.20180313181652.109"></t>
+<t tx="chris.20180313181652.11"></t>
+<t tx="chris.20180313181652.110">bold or regular</t>
+<t tx="chris.20180313181652.111"></t>
+<t tx="chris.20180313181652.112">Outline indicators indicate the expansion state of outline nodes. The leo/Icons/nodes-dark folders contains two sets of indicators::
     
     leo/Icons/nodes-dark/plusminus/
     leo/Icons/nodes-dark/triangles/
@@ -211,23 +199,23 @@ The following settings specify the indicators.  You can use an absolute path, or
 - Your home directory or
 - Leo's leo/Icons directory
 </t>
-<t tx="chris.20180308171552.114">Must be relative to either the users home directory or leo/Icons directory.
+<t tx="chris.20180313181652.113">Must be relative to either the users home directory or leo/Icons directory.
 
 </t>
-<t tx="chris.20180308171552.115"></t>
-<t tx="chris.20180308171552.116"></t>
-<t tx="chris.20180308171552.117" lineYOffset="4b002e">Set to true for dark themes, so bookmarks.py can generate
+<t tx="chris.20180313181652.114"></t>
+<t tx="chris.20180313181652.115"></t>
+<t tx="chris.20180313181652.116" lineYOffset="4b002e">Set to true for dark themes, so bookmarks.py can generate
 random background colors which are appropriate etc.</t>
-<t tx="chris.20180308171552.118" lineYOffset="4b002e">Name of the theme,
+<t tx="chris.20180313181652.117" lineYOffset="4b002e">Name of the theme,
 used to find icon files</t>
-<t tx="chris.20180308171552.119">/*
+<t tx="chris.20180313181652.118">/*
 @language css
 at-tabwidth -2 causes a crash in parse-template!
 */</t>
-<t tx="chris.20180308171552.120">QDockWidget {
+<t tx="chris.20180313181652.119">QDockWidget {
  border: 5px solid red;
 }
-QDoubleSpinBox, QSpinBox, QDateEdit, QTimeEdit {
+QSpinBox {
   border: none;
   padding: 3px;
   margin-right: 5px;
@@ -244,9 +232,11 @@ QWidget {
   background:  @dark-base3;
   color: @dark-base0;
   border-color: @dark-base4;
+  font-family: @font-family-tree;
   font-size: 16px;
 }</t>
-<t tx="chris.20180308171552.121">/* The body pane */
+<t tx="chris.20180313181652.12"></t>
+<t tx="chris.20180313181652.120">/* The body pane */
 QTextEdit#richTextEdit {
   background-color: @dark-base5;
   color: @dark-base0;
@@ -262,8 +252,10 @@ QTextEdit#richTextEdit {
   height: 200%;
 }
 
-</t>
-<t tx="chris.20180308171552.122">/* active pane highlighting */
+QTextEdit#richTextEdit {
+  background-image: url(dark/logo.png);
+}</t>
+<t tx="chris.20180313181652.121">/* active pane highlighting */
 QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit {
   border-style: solid;
   border-width: 3px;
@@ -281,7 +273,7 @@ QTextEdit#richTextEdit {
 QTextEdit:focus#log-widget,LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#richTextEdit {
   border-color: @solarized-blue;
 }</t>
-<t tx="chris.20180308171552.123">QPushButton
+<t tx="chris.20180313181652.122">QPushButton
 {
     color: @dark-base0;
     background-color: qlineargradient(x1: 0.5, y1: 0.5 x2: 0.5, y2: 1, stop: 0 @dark-base4, stop: 0.5 @dark-base3);
@@ -336,7 +328,7 @@ QToolButton#next-button
     background-color: qlineargradient(x1: 0.5, y1: 0.5 x2: 0.5, y2: 1, stop: 0 @dark-base4, stop: 0.5 @dark-base3);
 }
 </t>
-<t tx="chris.20180308171552.124">QTextEdit#log-widget {
+<t tx="chris.20180313181652.123">QTextEdit#log-widget {
   background-color: @dark-base3;
   color: @dark-base0;
   /* selection-color: white; */
@@ -360,13 +352,15 @@ QListWidget#nodetags-listWidget {
   background-color: @dark-base5;
 }
 
-
-
+QWidget#qt_scrollarea_viewport {
+  background-color: @dark-base5;
+}
 </t>
-<t tx="chris.20180308171552.125">QMenuBar
+<t tx="chris.20180313181652.124">QMenuBar
 {
     background-color: @dark-base3;
     color: @dark-base0;
+    font-size: @font-size-menubar;
 }
 
 QMenuBar::item
@@ -394,6 +388,7 @@ QMenu
     border: 0.1ex solid @dark-base4;
     color: @dark-base0;
     margin: 0.2ex;
+    font-size: @font-size-menu;
 }
 
 QMenu::icon
@@ -421,7 +416,7 @@ QMenu::separator
     margin-left: 1ex;
     margin-right: 0.5ex;
 }</t>
-<t tx="chris.20180308171552.126">/* The mini-buffer */
+<t tx="chris.20180313181652.125">/* The mini-buffer */
 QLabel#minibufferLabel {
   color: @dark-base6;
 }
@@ -434,7 +429,7 @@ QLineEdit#lineEdit {
     border-radius: 0.2ex;
     color: @dark-base0;
 }</t>
-<t tx="chris.20180308171552.127">/* bookmarks plugin styling */
+<t tx="chris.20180313181652.126">/* bookmarks plugin styling */
 
 #show_bookmarks QPushButton {
   margin: 0; padding: 1; border: none;
@@ -462,7 +457,7 @@ QLineEdit#lineEdit {
   text-decoration: @bookmarks_current_decoration;
 }
 </t>
-<t tx="chris.20180308171552.128">QAbstractScrollArea
+<t tx="chris.20180313181652.127">QAbstractScrollArea
 {
     border-radius: 0.2ex;
     border: 0.1ex solid @dark-base4;
@@ -638,56 +633,32 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical
 {
     background: none;
 }</t>
-<t tx="chris.20180308171552.129">QSplitter::handle
+<t tx="chris.20180313181652.128">QSplitter::handle
 {
-    border: 0.1ex dashed @dark-base4;
+    border: 0.2ex dashed @dark-base4;
 }
 
 QSplitter::handle:hover
 {
     background-color: @dark-base1;
-    border: 0.1ex solid @dark-base4;
+    border: 0.2ex solid @dark-base4;
 }
 
 QSplitter::handle:horizontal
 {
-    width: 0.1ex;
+    width: 0.2ex;
 }
 
 QSplitter::handle:vertical
 {
-    height: 0.1ex;
+    height: 0.2ex;
 }
 </t>
-<t tx="chris.20180308171552.130">QLineEdit#status1 {
-  background: @dark-base3;
-  border-color: @dark-base4;
-  border-width: 1px;
-  border-style: solid;
-}
-QLineEdit#status2 {
-  background: @dark-base3;
-  border-color: @dark-base4;
-  border-width: 1px;
-  border-style: solid;
-}
-/*
-QLineEdit#status1[style_class ~= 'info'],
-QLineEdit#status2[style_class ~= 'info'] {
-    background: @dark-base3;
-    color:      @dark-base0;
-}
-
-QLineEdit#status1[style_class ~= 'fail'],
-QLineEdit#status2[style_class ~= 'fail'] {
-    background: @dark-base8;
-    color:      @dark-base0;
-}
-*/</t>
-<t tx="chris.20180308171552.131">QTabBar
+<t tx="chris.20180313181652.129">QTabBar
 {
     left: 0.5ex; /* move to the right by 0.5ex */
     border-radius: 0.3ex;
+    font-size: @font-size-tabs;
 }
 
 QTabBar:focus
@@ -717,65 +688,120 @@ QTabBar::tab:selected {
 QTabBar::tab:!selected {
     margin-top: 2px; /* make non-selected tabs look smaller */
 }</t>
-<t tx="chris.20180308171552.15" lineYOffset="4b002e"></t>
-<t tx="chris.20180308171552.16"></t>
-<t tx="chris.20180308171552.17">Use a light color, not black!
-@solarized-white</t>
-<t tx="chris.20180308171552.18"></t>
-<t tx="chris.20180308171552.19"></t>
-<t tx="chris.20180308171552.2">/*
- *  BreezeDark stylesheet.
- *
- *  :author: Colin Duquesnoy
- *  :editor: Alex Huszagh
- *  :license: MIT, see LICENSE.md
- *
- *  This is originally a fork of QDarkStyleSheet, and is based on Breeze/
- *  BreezeDark color scheme, but is in no way affiliated with KDE.
- *
- * ---------------------------------------------------------------------
- *  The MIT License (MIT)
- *
- * Copyright (c) &lt;2013-2014&gt; &lt;Colin Duquesnoy&gt;
- * Copyright (c) &lt;2015-2016&gt; &lt;Alex Huszagh&gt;
- *
- * Permission is hereby granted, free of charge, to any person obtaining
- * a copy of this software and associated documentation files (the
- * "Software"), to deal in the Software without restriction, including
- * without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so, subject to
- * the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
- * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
- * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
- * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
- * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * ---------------------------------------------------------------------
- */
+<t tx="chris.20180313181652.13"></t>
+<t tx="chris.20180313181652.130">LeoQTreeWidget#treeWidget 
+{
+  background: @dark-base3;
+  color: @dark-base0;
+  show-decoration-selected: 1; 
+  padding: 2px solid @dark-base3;
+  border: 3px solid @dark-base4;
+  border-color: @dark-base3;
+  font-family: @font-family-tree;
+  font-size: @font-size-tree;
+  font-weight: normal;
+  font-style: normal;
+}
 
-Inspiration and code borrowed shamelessly. Modifications were required. :-)
+QTreeView::branch:has-children:!has-siblings:closed,
+QTreeView::branch:closed:has-children:has-siblings
+{
+    border-image: @tree-image-closed;
+}
+
+QTreeView::branch:open:has-children:!has-siblings,
+QTreeView::branch:open:has-children:has-siblings
+{
+    border-image: @tree-image-open;
+}
+
+QTreeView::item:hover {
+  background-color: @dark-base1;
+  color: @dark-base0;
+}
+
+QTreeView::item:selected {
+  background-color: @dark-base6;
+  color: @dark-base0;
+}
+
+QTreeView QLineEdit {
+  color: @dark-base0;
+  background: @dark-base5;
+  selection-color: @dark-base5; 
+  selection-background-color: @dark-base6;
+  font-family: @font-family-tree;
+  font-size: @font-size-tree;
+  font-weight: normal;
+  font-style: normal;
+  padding: 1px;
+}
+
+/*
+
+
+QTreeWidget {
+  
+  background: @dark-base1;
+  font-family: @font-family-tree;
+  font-size: @font-size-tree;
+  font-weight: normal; 
+  font-style: normal; 
+  padding: 2px solid @dark-base3;
+  border-color: @dark-base1;
+}
+
+*/</t>
+<t tx="chris.20180313181652.131">QLineEdit#status1 {
+  background: @dark-base3;
+  border-color: @dark-base4;
+  border-width: 1px;
+  border-style: solid;
+}
+QLineEdit#status2 {
+  background: @dark-base3;
+  border-color: @dark-base4;
+  border-width: 1px;
+  border-style: solid;
+}
+/*
+QLineEdit#status1[style_class ~= 'info'],
+QLineEdit#status2[style_class ~= 'info'] {
+    background: @dark-base3;
+    color:      @dark-base0;
+}
+
+QLineEdit#status1[style_class ~= 'fail'],
+QLineEdit#status2[style_class ~= 'fail'] {
+    background: @dark-base8;
+    color:      @dark-base0;
+}
+*/</t>
+<t tx="chris.20180313181652.14" lineYOffset="4b002e"></t>
+<t tx="chris.20180313181652.15"></t>
+<t tx="chris.20180313181652.16">Use a light color, not black!
+@solarized-white</t>
+<t tx="chris.20180313181652.17"></t>
+<t tx="chris.20180313181652.18"></t>
+<t tx="chris.20180313181652.19"></t>
+<t tx="chris.20180313181652.2" lineYOffset="4b002e">@language rest
+@wrap
+@tabwidth -2</t>
+<t tx="chris.20180313181652.20"></t>
+<t tx="chris.20180313181652.21"></t>
+<t tx="chris.20180313181652.22"></t>
+<t tx="chris.20180313181652.23"></t>
+<t tx="chris.20180313181652.24"></t>
+<t tx="chris.20180313181652.25"></t>
+<t tx="chris.20180313181652.26"></t>
+<t tx="chris.20180313181652.27"></t>
+<t tx="chris.20180313181652.28"># Not an official solarized color: same as solorarized-base3</t>
+<t tx="chris.20180313181652.29"></t>
+<t tx="chris.20180313181652.3">Inspiration and code borrowed shamelessly. Modifications were required. :-)
 
 Chris George
 
-</t>
-<t tx="chris.20180308171552.20"></t>
-<t tx="chris.20180308171552.21"></t>
-<t tx="chris.20180308171552.22"></t>
-<t tx="chris.20180308171552.23"></t>
-<t tx="chris.20180308171552.24"></t>
-<t tx="chris.20180308171552.25"></t>
-<t tx="chris.20180308171552.26"></t>
-<t tx="chris.20180308171552.27"></t>
-<t tx="chris.20180308171552.28"></t>
-<t tx="chris.20180308171552.29"># Not an official solarized color: same as solorarized-base3</t>
-<t tx="chris.20180308171552.3">/*
+/*
  *  BreezeDark stylesheet.
  *
  *  :author: Colin Duquesnoy
@@ -2390,36 +2416,36 @@ QDoubleSpinBox::down-arrow:off
 {
    border-image: url(:/dark/down_arrow_disabled.svg);
 }</t>
-<t tx="chris.20180308171552.30"></t>
-<t tx="chris.20180308171552.31" lineYOffset="4b002e">These settings must exist because they are *not* used in the css.</t>
-<t tx="chris.20180308171552.32"></t>
-<t tx="chris.20180308171552.33"></t>
-<t tx="chris.20180308171552.34"></t>
-<t tx="chris.20180308171552.35"></t>
-<t tx="chris.20180308171552.36">was blue
+<t tx="chris.20180313181652.30" lineYOffset="4b002e">These settings must exist because they are *not* used in the css.</t>
+<t tx="chris.20180313181652.31"></t>
+<t tx="chris.20180313181652.32"></t>
+<t tx="chris.20180313181652.33"></t>
+<t tx="chris.20180313181652.34"></t>
+<t tx="chris.20180313181652.35">was blue
 
 Solarized blue      #268bd2</t>
-<t tx="chris.20180308171552.37">was blue
+<t tx="chris.20180313181652.36">was blue
 
 Solarized blue      #268bd2</t>
-<t tx="chris.20180308171552.38">was blue
+<t tx="chris.20180313181652.37">was blue
 
 Solarized blue      #268bd2</t>
-<t tx="chris.20180308171552.39">was blue
+<t tx="chris.20180313181652.38">was blue
 
 Solarized blue      #268bd2</t>
-<t tx="chris.20180308171552.40">was #00aa00 (Idle comment green)
+<t tx="chris.20180313181652.39">was #00aa00 (Idle comment green)
 
 Solarize green      #859900
 Solarized cyan      #2aa198
 Solarized violet    #6c71c4
 Solarized orange    #cb4b16</t>
-<t tx="chris.20180308171552.41"></t>
-<t tx="chris.20180308171552.42"></t>
-<t tx="chris.20180308171552.43"></t>
-<t tx="chris.20180308171552.44">was black
+<t tx="chris.20180313181652.4"></t>
+<t tx="chris.20180313181652.40"></t>
+<t tx="chris.20180313181652.41"></t>
+<t tx="chris.20180313181652.42"></t>
+<t tx="chris.20180313181652.43">was black
 was #2aa198</t>
-<t tx="chris.20180308171552.45">was firebrick3
+<t tx="chris.20180313181652.44">was firebrick3
 
 Solarized colors:
 
@@ -2428,179 +2454,95 @@ magenta   #d33682
 Dark comments   base01
 Light comments  base1 comments
 </t>
-<t tx="chris.20180308171552.46"></t>
-<t tx="chris.20180308171552.47"></t>
-<t tx="chris.20180308171552.48"></t>
-<t tx="chris.20180308171552.49"></t>
-<t tx="chris.20180308171552.50"># New: solarized-blue
+<t tx="chris.20180313181652.45"></t>
+<t tx="chris.20180313181652.46"></t>
+<t tx="chris.20180313181652.47"></t>
+<t tx="chris.20180313181652.48"></t>
+<t tx="chris.20180313181652.49"># New: solarized-blue
 </t>
-<t tx="chris.20180308171552.51"></t>
-<t tx="chris.20180308171552.52"></t>
-<t tx="chris.20180308171552.53">The color of text in doc parts.
+<t tx="chris.20180313181652.5"></t>
+<t tx="chris.20180313181652.50"></t>
+<t tx="chris.20180313181652.51"></t>
+<t tx="chris.20180313181652.52">The color of text in doc parts.
 
 firebrick3
 </t>
-<t tx="chris.20180308171552.54">The color of Leo keywords such as @ignore, @color, etc.
+<t tx="chris.20180313181652.53">The color of Leo keywords such as @ignore, @color, etc.
 
 #00aa00
 </t>
-<t tx="chris.20180308171552.55">The color of name in &lt; &lt; name &gt; &gt; when name is defined.
+<t tx="chris.20180313181652.54">The color of name in &lt; &lt; name &gt; &gt; when name is defined.
 
 red
 
 </t>
-<t tx="chris.20180308171552.56">The background color that represents spaces when Show Invisibles mode is in effect.
+<t tx="chris.20180313181652.55">The background color that represents spaces when Show Invisibles mode is in effect.
 
 gray80: #CCCCCC
 gray90: #E5E5E5
 </t>
-<t tx="chris.20180308171552.57">The foreground color that represents tabs when Show Invisibles mode is in effect.
+<t tx="chris.20180313181652.56">The foreground color that represents tabs when Show Invisibles mode is in effect.
 
 gray80: #CCCCCC
 gray90: #E5E5E5
 </t>
-<t tx="chris.20180308171552.58">The color of name in &lt;&lt; name &gt;&gt; when name is undefined.
+<t tx="chris.20180313181652.57">The color of name in &lt;&lt; name &gt;&gt; when name is undefined.
 </t>
-<t tx="chris.20180308171552.59">purple
+<t tx="chris.20180313181652.58">purple
 </t>
-<t tx="chris.20180308171552.60">Text to test with.</t>
-<t tx="chris.20180308171552.61">Background color of log text.</t>
-<t tx="chris.20180308171552.62">Foreground color of log text.
+<t tx="chris.20180313181652.59">Text to test with.</t>
+<t tx="chris.20180313181652.6"></t>
+<t tx="chris.20180313181652.60">Background color of log text.</t>
+<t tx="chris.20180313181652.61">Foreground color of log text.
 
 </t>
-<t tx="chris.20180308171552.63"></t>
-<t tx="chris.20180308171552.64"></t>
-<t tx="chris.20180308171552.65"></t>
-<t tx="chris.20180308171552.66"></t>
-<t tx="chris.20180308171552.67">Most widgets are colored in their css nodes.
+<t tx="chris.20180313181652.62"></t>
+<t tx="chris.20180313181652.63"></t>
+<t tx="chris.20180313181652.64"></t>
+<t tx="chris.20180313181652.65"></t>
+<t tx="chris.20180313181652.66">Most widgets are colored in their css nodes.
 
 Only colors appearing in several places are given here.</t>
-<t tx="chris.20180308171552.68"></t>
-<t tx="chris.20180308171552.69"></t>
-<t tx="chris.20180308171552.70">test text</t>
-<t tx="chris.20180308171552.71"></t>
-<t tx="chris.20180308171552.72"></t>
-<t tx="chris.20180308171552.73"></t>
-<t tx="chris.20180308171552.74"></t>
-<t tx="chris.20180308171552.75"></t>
-<t tx="chris.20180308171552.76"></t>
-<t tx="chris.20180308171552.77">Utility constants.</t>
-<t tx="chris.20180308171552.78"></t>
-<t tx="chris.20180308171552.79"></t>
-<t tx="chris.20180308171552.80"></t>
-<t tx="chris.20180308171552.81"></t>
-<t tx="chris.20180308171552.82"></t>
-<t tx="chris.20180308171552.83"></t>
-<t tx="chris.20180308171552.84"></t>
-<t tx="chris.20180308171552.85"></t>
-<t tx="chris.20180308171552.86">none or underline</t>
-<t tx="chris.20180308171552.87"></t>
-<t tx="chris.20180308171552.88"></t>
-<t tx="chris.20180308171552.89"></t>
-<t tx="chris.20180308171552.90"></t>
-<t tx="chris.20180308171552.91">Valid values are: normal,italic,oblique</t>
-<t tx="chris.20180308171552.92">Huh?
+<t tx="chris.20180313181652.67"></t>
+<t tx="chris.20180313181652.68"></t>
+<t tx="chris.20180313181652.69">test text</t>
+<t tx="chris.20180313181652.7"></t>
+<t tx="chris.20180313181652.70"></t>
+<t tx="chris.20180313181652.71"></t>
+<t tx="chris.20180313181652.72"></t>
+<t tx="chris.20180313181652.73"></t>
+<t tx="chris.20180313181652.74"></t>
+<t tx="chris.20180313181652.75"></t>
+<t tx="chris.20180313181652.76">Utility constants.</t>
+<t tx="chris.20180313181652.77"></t>
+<t tx="chris.20180313181652.78"></t>
+<t tx="chris.20180313181652.79">https://github.com/leo-editor/leo-editor.git</t>
+<t tx="chris.20180313181652.8"></t>
+<t tx="chris.20180313181652.80"></t>
+<t tx="chris.20180313181652.81"></t>
+<t tx="chris.20180313181652.82"></t>
+<t tx="chris.20180313181652.83"></t>
+<t tx="chris.20180313181652.84"></t>
+<t tx="chris.20180313181652.85">none or underline</t>
+<t tx="chris.20180313181652.86"></t>
+<t tx="chris.20180313181652.87"></t>
+<t tx="chris.20180313181652.88"></t>
+<t tx="chris.20180313181652.89"></t>
+<t tx="chris.20180313181652.9"></t>
+<t tx="chris.20180313181652.90">Valid values are: normal,italic,oblique</t>
+<t tx="chris.20180313181652.91">Huh?
 valid values are: normal,bold,100,..,900
 </t>
-<t tx="chris.20180308171552.93"></t>
-<t tx="chris.20180308171552.94"></t>
-<t tx="chris.20180308171552.95">none or underline</t>
-<t tx="chris.20180308171552.96"></t>
-<t tx="chris.20180308171552.97"></t>
-<t tx="chris.20180308171552.98"></t>
-<t tx="chris.20180308171552.99">bold or regular</t>
-<t tx="chris.20180309180448.10"></t>
-<t tx="chris.20180309180448.2"></t>
-<t tx="chris.20180309180448.3"></t>
-<t tx="chris.20180309180448.4"></t>
-<t tx="chris.20180309180448.5"></t>
-<t tx="chris.20180309180448.6"></t>
-<t tx="chris.20180309180448.7"></t>
-<t tx="chris.20180309180448.8"></t>
-<t tx="chris.20180309180448.9"></t>
-<t tx="chris.20180309182828.1">LeoQTreeWidget#treeWidget 
-{
-  background: @dark-base3;
-  color: @dark-base0;
-  show-decoration-selected: 1; 
-  padding: 2px solid @dark-base3;
-  border: 1px solid @dark-base4;
-  border-color: @dark-base3;
-  font-family: @font-family-tree;
-  font-size: @font-size-tree;
-  font-weight: normal;
-  font-style: normal;
-}
-
-QTreeView::branch:has-children:!has-siblings:closed,
-QTreeView::branch:closed:has-children:has-siblings
-{
-    border-image: @tree-image-closed;
-}
-
-QTreeView::branch:open:has-children:!has-siblings,
-QTreeView::branch:open:has-children:has-siblings
-{
-    border-image: @tree-image-open;
-}
-
-QTreeView::item:hover {
-  background-color: @dark-base1;
-  color: @dark-base0;
-}
-
-QTreeView::item:selected {
-  background-color: @dark-base6;
-  color: @dark-base0;
-}
-
-QTreeView QLineEdit {
-  color: @dark-base0;
-  background: @dark-base5;
-  selection-color: @dark-base5; 
-  selection-background-color: @dark-base6;
-  font-family: @font-family-tree;
-  font-size: @font-size-tree;
-  font-weight: normal;
-  font-style: normal;
-  padding: 1px;
-}
-
-/*
-
-
-QTreeWidget {
-  
-  background: @dark-base1;
-  font-family: @font-family-tree;
-  font-size: @font-size-tree;
-  font-weight: normal; 
-  font-style: normal; 
-  padding: 2px solid @dark-base3;
-  border-color: @dark-base1;
-}
-
-*/</t>
-<t tx="ekr.20180307012127.1"></t>
-<t tx="ekr.20180307012426.4">@language python
-
-table = (
-    # g.actualColor calls 
-    'error', 'info', 'warning',
-    'black', 'white',
-    'xxx',
-    'firebrick', 'grey', 'pink', 'purple', # Tk colors.
-    # Solarized colors...
-    'blue', 'cyan', 'green','magenta', 'orange', 'red',
-    'violet', 'yellow',
-)
-for s in table:
-    g.es(s, color=s)
-</t>
-<t tx="ekr.20180307024846.1">True: show user tips on startup.</t>
-<t tx="ekr.20180307024911.1"># For line_numbering plugin.</t>
-<t tx="ekr.20180314052516.1" str_leo_pos="1"></t>
-<t tx="ekr.20180314052520.1">@ A doc part.  *All* languages colorize doc parts as follows:
+<t tx="chris.20180313181652.92"></t>
+<t tx="chris.20180313181652.93"></t>
+<t tx="chris.20180313181652.94">none or underline</t>
+<t tx="chris.20180313181652.95"></t>
+<t tx="chris.20180313181652.96"></t>
+<t tx="chris.20180313181652.97"></t>
+<t tx="chris.20180313181652.98">bold or regular</t>
+<t tx="chris.20180313181652.99"></t>
+<t tx="chris.20180314054143.1"></t>
+<t tx="chris.20180314054143.2">@ A doc part.  *All* languages colorize doc parts as follows:
 
 1. The '@' sign itself is colored with @color leokeyword constant.
 
@@ -2649,8 +2591,23 @@ def spam():
     
 @language python # @color leo_keyword_color
 </t>
-<t tx="ekr.20180314052520.2"></t>
-<t tx="ekr.20180314052540.1"># g.cls()
+<t tx="chris.20180314054143.3"></t>
+<t tx="chris.20180314054143.4">@language python
+
+table = (
+    # g.actualColor calls 
+    'error', 'info', 'warning',
+    'black', 'white',
+    'xxx',
+    'firebrick', 'grey', 'pink', 'purple', # Tk colors.
+    # Solarized colors...
+    'blue', 'cyan', 'green','magenta', 'orange', 'red',
+    'violet', 'yellow',
+)
+for s in table:
+    g.es(s, color=s)
+</t>
+<t tx="chris.20180314054143.5"># g.cls()
 g.error('error')
 g.note('note')
 g.warning('warning')
@@ -2658,11 +2615,11 @@ g.blue('blue')
 g.red('red')
 g.es_print('test')
 g.es_print('black',color='black')</t>
-<t tx="ekr.20180314165755.1"></t>
-<t tx="ekr.20180314165755.2"># +</t>
-<t tx="ekr.20180314165755.3"># -</t>
-<t tx="ekr.20180314165755.4"># @@</t>
-<t tx="ekr.20180314165755.5"># +++</t>
-<t tx="ekr.20180314165755.6"># ---</t>
+<t tx="chris.20180315125925.1"></t>
+<t tx="chris.20180315130317.1"></t>
+<t tx="chris.20180315130516.1"></t>
+<t tx="ekr.20180312111155.1">A dark theme based loosely on Breeze Dark for KDE Plasma and the Breeze Dark stylesheet by Colin Duquesnoy. Some modifications were required. :-)
+
+</t>
 </tnodes>
 </leo_file>
