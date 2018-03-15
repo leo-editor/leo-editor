@@ -3810,9 +3810,9 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     heads = [i.h for i in nds]
     # work out order in which to try nodes
     order = []
-    target = unlList[depth]
     nth_sib = nth_same = nth_line_no = nth_col_no = None
     try:
+        target = unlList[depth]
         target = pos_pattern.sub('', unlList[depth])
         nth_sib, nth_same, nth_line_no, nth_col_no = recursiveUNLParts(unlList[depth])
         pos = nth_sib is not None
