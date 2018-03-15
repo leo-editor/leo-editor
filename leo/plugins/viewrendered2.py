@@ -263,16 +263,17 @@ MD_RENDERING_BG_COLOR = 'grey'
 #@+node:ekr.20140226074510.4189: ** << define stylesheet >>
 stickynote_stylesheet = """
 /* The body pane */
+/*----- No longer used
 QPlainTextEdit {
-    background-color: #fdf5f5; /* A kind of pink. */
+    background-color: #fdf5f5;
     selection-color: white;
     selection-background-color: lightgrey;
     font-family: DejaVu Sans Mono;
     /* font-family: Courier New; */
     font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
+    font-weight: normal;
+    font-style: normal;
+----- */
 """
 #@-<< define stylesheet >>
 # pylint: disable=fixme
