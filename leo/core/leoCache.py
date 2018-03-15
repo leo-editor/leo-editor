@@ -677,7 +677,7 @@ class PickleShareDB(object):
     #@+node:ekr.20100208223942.5981: *3* items
     def items(self):
         return [z for z in self]
-    #@+node:ekr.20100208223942.5982: *3* keys & helpers
+    #@+node:ekr.20100208223942.5982: *3* keys & helpers (PickleShareDB)
     # Called by clear, and during unit testing.
 
     def keys(self, globpat=None):
@@ -686,7 +686,8 @@ class PickleShareDB(object):
         if globpat is None:
             files = self._walkfiles(self.root)
         else:
-            files = [z for z in g.glob_glob(join(self.root, globpat))]
+            # Do not call g.glob_glob here.
+            files = [z for z in join(self.root, globpat)]
         result = [self._normalized(p) for p in files if isfile(p)]
         if trace: g.trace('(PickleShareDB)', len(result), result)
         return result
