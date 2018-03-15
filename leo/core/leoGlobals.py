@@ -5961,7 +5961,7 @@ def pr(*args, **keys):
         # 783: print-* commands fail under pythonw.
         # https://github.com/leo-editor/leo-editor/issues/783.
         stdout.write(s)
-    except IOError:
+    except Exception:
         pass
 #@+node:ekr.20060221083356: *3* g.prettyPrintType
 def prettyPrintType(obj):
