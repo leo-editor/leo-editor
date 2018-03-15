@@ -23,7 +23,7 @@ class RopeController(object):
     def __init__(self, c):
         self.c = c
         self.proj = rope.base.project.Project(g.app.loadDir)
-    #@+node:ekr.20140525065558.15806: *3* modules
+    #@+node:ekr.20140525065558.15806: *3* modules (RopeController)
     def modules(self):
         '''Return full path names of all Leo modules.'''
         aList = g.glob_glob(g.os_path_join(g.app.loadDir, '*.py'))

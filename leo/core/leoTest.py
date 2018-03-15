@@ -396,7 +396,7 @@ class LinterTable():
             'trace_gc_plugin', 'trace_keys', 'trace_tags',
             'vim', 'xemacs',
         )
-    #@+node:ekr.20160518074545.8: *3* plugins
+    #@+node:ekr.20160518074545.8: *3* plugins (LinterTable)
     def plugins(self):
         '''Return a list of all important plugins.'''
         aList = []
@@ -428,7 +428,7 @@ class LinterTable():
                 # aList.remove(z)
         # g.trace('\n'.join(aList))
         return sorted(set(aList))
-    #@+node:ekr.20160520093506.1: *3* get_files
+    #@+node:ekr.20160520093506.1: *3* get_files (LinterTable)
     def get_files(self, pattern):
         '''Return the list of absolute file names matching the pattern.'''
         aList = sorted([
