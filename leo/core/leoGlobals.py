@@ -3813,13 +3813,15 @@ def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     nth_sib = nth_same = nth_line_no = nth_col_no = None
     try:
         target = unlList[depth]
+    except IndexError:
+        target = ''
+    try:
         target = pos_pattern.sub('', unlList[depth])
         nth_sib, nth_same, nth_line_no, nth_col_no = recursiveUNLParts(unlList[depth])
         pos = nth_sib is not None
     except IndexError:
         # Fix bug https://github.com/leo-editor/leo-editor/issues/36
         pos = False
-        target = ''
     if pos:
         use_idx_mode = True # ok to use hard/soft_idx
         target = re.sub(pos_pattern, "", target).replace('--%3E', '-->')
