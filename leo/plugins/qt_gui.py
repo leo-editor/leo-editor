@@ -1907,7 +1907,6 @@ class StyleSheetManager(object):
         
         trace = False and not g.unitTesting
         trace_found = False
-        ### changed = False
         to_do.sort(key=len, reverse=True)
         for const in to_do:
             value = None
@@ -1940,13 +1939,11 @@ class StyleSheetManager(object):
                 # Partial fix for #780.
                 try:
                     sheet = re.sub(
-                        ### '\b%s\b' % (const),
                         const + "(?![-A-Za-z0-9_])",
                             # don't replace shorter constants occuring in larger
                         value,
                         sheet,
                     )
-                    ### changed = True
                 except Exception:
                     g.es_print('Exception handling style sheet')
                     g.es_print(sheet)
