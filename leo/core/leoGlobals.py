@@ -3544,12 +3544,16 @@ def setGlobalOpenDir(fileName):
 def shortFileName(fileName, n=None):
     '''Return the base name of a path.'''
     # pylint: disable=invalid-unary-operand-type
-    if not fileName:
-        return ''
-    elif n is None or n < 1:
-        return g.os_path_basename(fileName)
-    else:
-        return '/'.join(fileName.replace('\\', '/').split('/')[-n:])
+    if n is not None:
+        g.trace('"n" keyword argument is no longer used')
+    return g.os_path_basename(fileName) if fileName else ''
+    ###
+        # if not fileName:
+            # return ''
+        # elif n is None or n < 1:
+            # return g.os_path_basename(fileName)
+        # else:
+            # return '/'.join(fileName.replace('\\', '/').split('/')[-n:])
 
 shortFilename = shortFileName
 #@+node:ekr.20150610125813.1: *3* g.splitLongFileName
