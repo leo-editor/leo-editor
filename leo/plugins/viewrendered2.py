@@ -257,7 +257,7 @@ import sys
 # tbp: Global semi-constant for setting background color of
 # rendering pane.  It's supposed to get changed during the
 # config process.
-MD_RENDERING_BG_COLOR = 'grey'
+### MD_RENDERING_BG_COLOR = 'grey'
 #@-<< imports >>
 #@+<< define stylesheet >>
 #@+node:ekr.20140226074510.4189: ** << define stylesheet >>
@@ -692,8 +692,12 @@ class WebViewPlus(QtWidgets.QWidget):
         # This is a bit of a kludge, but getConfig() does not
         # know about "self", and this way is easier than figuring out
         # how to get a reference to the WenViewPlus instance.
-        def set_bg_color(color): global MD_RENDERING_BG_COLOR; MD_RENDERING_BG_COLOR = color
-        getConfig(gc.getString, 'md-rendering-pane-background-color', 'black', set_bg_color)
+        ###
+            # def set_bg_color(color):
+                # global MD_RENDERING_BG_COLOR;
+                # MD_RENDERING_BG_COLOR = color
+            
+            # getConfig(gc.getString, 'md-rendering-pane-background-color', 'black', set_bg_color)
 
         # Do VR2 init values
         getConfig(gc.getBool, 'verbose', False, self.verbose_mode_action.setChecked)
@@ -1207,13 +1211,11 @@ class WebViewPlus(QtWidgets.QWidget):
                 mdext.append('codehilite')
             html = markdown(html, mdext)
             
-            # tbp: this is a kludge to change the background color
-            # of the rendering pane.  Markdown does not emit
-            # a css style sheet, but the browser will apply
-            # a style element at the top of the page to the
-            # whole page. MD_RENDERING_BG_COLOR is a global
-            # variable set during the config process.
-            html = '<style type="text/css">body{background-color:%s;}</style>\n' %(MD_RENDERING_BG_COLOR) + html
+            # tbp: this is a kludge to change the background color of the rendering pane.  
+            # Markdown does not emit a css style sheet, but the browser will apply
+            # a style element at the top of the page to the whole page.
+            html = '<style type="text/css">body{background-color:%s;}</style>\n' %(self.background_color) + html
+                # EKR: Was MD_RENDERING_BG_COLOR 
             
             return g.toUnicode(html)
         except Exception as e:
