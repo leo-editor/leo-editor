@@ -1452,7 +1452,8 @@ class StyleClassManager(object):
 class StyleSheetManager(object):
     '''A class to manage (reload) Qt style sheets.'''
     #@+others
-    #@+node:ekr.20140912110338.19371: *3* ssm.__init__
+    #@+node:ekr.20180316091829.1: *3*  ssm.Birth
+    #@+node:ekr.20140912110338.19371: *4* ssm.__init__
     def __init__(self, c, safe=False):
         '''Ctor the ReloadStyle class.'''
         self.c = c
@@ -1464,31 +1465,106 @@ class StyleSheetManager(object):
             # if not self.settings_p:
                 # g.es("No '@settings' node found in outline.  See:")
                 # g.es("http://leoeditor.com/tutorial-basics.html#configuring-leo")
-    #@+node:ekr.20110605121601.18176: *3* ssm.default_style_sheet
-    def default_style_sheet(self):
-        '''Return a reasonable default style sheet.'''
-        # Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords
-        g.trace('===== using default style sheet =====')
-        return '''\
+    #@+node:ekr.20170222051716.1: *4* ssm.reload_settings
+    def reload_settings(self, sheet=None):
+        '''
+        Recompute and apply the stylesheet.
+        Called automatically by the reload-settings commands.
+        '''
+        trace = False and not g.unitTesting
+        tag = '(StyleSheetManager)'
+        if not sheet:
+            sheet = self.get_style_sheet_from_settings()
+        if sheet:
+            w = self.get_master_widget()
+            if trace: g.trace(tag, 'Found', len(sheet))
+            w.setStyleSheet(sheet)
+        elif trace:
+            g.trace(tag, 'Not Found')
+        # self.c.redraw()
 
-    /* A QWidget: supports only background attributes.*/
-    QSplitter::handle {
-        background-color: #CAE1FF; /* Leo's traditional lightSteelBlue1 */
-    }
-    QSplitter {
-        border-color: white;
-        background-color: white;
-        border-width: 3px;
-        border-style: solid;
-    }
-    QTreeWidget {
-        background-color: #ffffec; /* Leo's traditional tree color */
-    }
-    QsciScintilla {
-        background-color: pink;
-    }
-    '''
-    #@+node:ekr.20180316065346.1: *3* ssm.compute_icon_directories
+    reloadSettings = reload_settings
+    #@+node:ekr.20180308102949.1: *3* ssm.load_theme_file & helpers
+    def load_theme_file(self, c, path, old_c=None, reload_flag=False):
+        '''Load a theme file, without setting any actual settings.'''
+        path = self.find_theme_file(path)
+        if not path: return
+        if old_c:
+            settings_d = old_c.config.settingsDict
+        else:
+            settings_d = self.read_theme_settings(path)
+        # Compute the style-sheet.
+        sheet = self.compute_style_sheet_from_settings_d(settings_d)
+        # Update the global settings from the settings_d.
+        c.config.settingsDict.update(settings_d)
+        # Update g.app.gui ivars.  g.app.gui.reload_settings() doesn't work.
+        if hasattr(g.app.gui, 'color_theme'):
+            g.app.gui.color_theme = c.config.getString('color_theme')
+            g.app.gui.iconimages = {} # Clear the icon cache.
+        # Reload the stylesheet *after* updating settings.
+        if sheet:
+            self.reload_settings(sheet=sheet)
+        # Remember the theme.
+        if not reload_flag:
+            g.app.loadedThemes.append(path)
+    #@+node:ekr.20180308105850.1: *4* ssm.compute_style_sheet_from_settings_d
+    def compute_style_sheet_from_settings_d(self, settings_d):
+        '''
+        Compute and set the style sheet from settings_d,
+        a TypedDict whose values are GeneralSetting objects.
+        '''
+        trace = False and not g.unitTesting
+        trace_after = True
+        trace_before = False
+        trace_dict = False
+        ssm = self
+        d1 = settings_d.get('qtguipluginstylesheet')
+        d2 = settings_d.get('qtguiuserstylesheet')
+        if not d1 and not d2:
+            # Do nothing if neither stylesheet exists.
+            # This allows settings-only themes.
+            if trace: g.trace('no stylesheets')
+            return None
+        # A little hack for ssm.replace_indicator_constants.
+        # Update c.config.settingsDict here.
+        for name in ('treeimageclosed', 'treeimageclosed'):
+            val = settings_d.get(name)
+            if val is not None:
+                self.c.config.settingsDict[name] = val
+        if trace and trace_dict:
+            g.trace('settings_d')
+            g.printObj(settings_d)
+        # pylint: disable=consider-using-ternary
+        aList1 = d1 and d1.val or []
+        aList2 = d2 and d2.val or []
+        if trace and trace_before:
+            g.trace()
+            g.printObj(aList1[:20])
+            g.printObj(aList2[:20])
+        sheet = ''.join(aList1 + aList2)
+        sheet = ssm.expand_css_constants(sheet, settingsDict=settings_d)
+        if trace and trace_after:
+            g.trace('\n'+sheet)
+        return sheet
+    #@+node:ekr.20180310112320.1: *4* ssm.read_theme_settings
+    def read_theme_settings(self, path):
+        '''Return the theme settings.'''
+        lm = g.app.loadManager
+        old_commanders = g.app.commanders()
+        # Read the theme file into c2, a hidden commander.
+        c2 = lm.openSettingsFile(path)
+        # Get settings *without* application defaults.
+        junk_shortcuts_d, settings_d = lm.createSettingsDicts(c2,
+            localFlag=False, # doesn't matter: it affects only menus & shortcuts.
+            theme=True, # Parse only the @theme True.
+        )
+        assert isinstance(settings_d, g.TypedDict), repr(settings_d)
+        # Clear the cache entries for hidden commander.
+        if c2 not in old_commanders:
+            g.app.forgetOpenFile(c2.fileName())
+        return settings_d
+    #@+node:ekr.20180316091500.1: *3* ssm.Paths...
+    #@+node:ekr.20180316065346.1: *4* ssm.compute_icon_directories
     def compute_icon_directories(self, theme=None):
         '''
         Return a list of directories that could contain theme-related icons.
@@ -1518,7 +1594,7 @@ class StyleSheetManager(object):
                 join(leo, 'Icons'),
             ]
         return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
-    #@+node:ekr.20180315101238.1: *3* ssm.compute_theme_directories
+    #@+node:ekr.20180315101238.1: *4* ssm.compute_theme_directories
     def compute_theme_directories(self, theme=None):
         '''
         Return a list of directories that could contain theme .leo files.
@@ -1539,261 +1615,65 @@ class StyleSheetManager(object):
             table = [join(leo, 'themes')]
         return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
         
-    #@+node:ekr.20140915062551.19510: *3* ssm.expand_css_constants & helpers
-    def expand_css_constants(self, sheet, font_size_delta=None, settingsDict=None):
-        '''Expand @ settings into their corresponding constants.'''
-        trace = False and not g.unitTesting
-        trace_dict = False
-        trace_found = False
-        trace_result = False
-        trace_to_do = False
-        c = self.c
-        warned = None
-        # Warn once if the stylesheet uses old style style-sheet comment
-        if settingsDict is None:
-            if trace: g.trace('----- using c.config.settingsDict')
-            settingsDict = c.config.settingsDict
-        if trace_dict:
-            g.trace('===== settingsDict.keys()...')
-            g.printObj(sorted(settingsDict.keys()))
-        constants, deltas = self.adjust_sizes(font_size_delta, settingsDict)
-        passes = 10
-        to_do = self.find_constants_referenced(sheet)
-        if trace and trace_to_do:
-            g.trace('to do...')
-            g.printList(to_do)
-        changed = True
-        sheet = self.set_indicator_paths(sheet)
-        while passes and to_do and changed:
-            if trace and trace_found: g.trace('='*10, 'pass', 10-passes)
-            changed = False
-            to_do.sort(key=len, reverse=True)
-            for const in to_do:
-                value = None
-                if const in constants:
-                    # This constant is about to be removed.
-                    value = constants[const]
-                    if const[1:] not in deltas and not warned:
-                        warned = (
-                            "'%s' from style-sheet comment definition, "
-                            "please use regular @string / @color type @settings."
-                            % const
-                        )
-                        g.es_print(warned)
-                else:
-                    key = g.app.config.canonicalizeSettingName(const[1:])
-                        # lowercase, without '@','-','_', etc.
-                    value = settingsDict.get(key)
-                    if value is not None:
-                        # New in Leo 5.5: Do NOT add comments here.
-                        # They RUIN style sheets if they appear in a nested comment!
-                            # value = '%s /* %s */' % (g.u(value.val), key)
-                        value = g.u(value.val)
-                        if trace and trace_found:
-                           g.trace('found: %30s %s' % (key, g.truncate(repr(value), 30)))
-                    elif key in self.color_db:
-                        # New in Leo 5.5: Do NOT add comments here.
-                        # They RUIN style sheets if they appear in a nested comment!
-                        value = self.color_db.get(key)
-                            # value = '%s /* %s */' % (value, key)
-                        if trace and trace_found:
-                            g.trace('found: %30s %s' % (key, g.truncate(repr(value), 30)))
-                if value:
-                    # Partial fix for #780.
-                    try:
-                        sheet = re.sub(
-                            ### '\b%s\b' % (const),
-                            const + "(?![-A-Za-z0-9_])",
-                                # don't replace shorter constants occuring in larger
-                            value,
-                            sheet,
-                        )
-                        changed = True
-                    except Exception:
-                        g.es_print('Exception handling style sheet')
-                        g.es_print(sheet)
-                        g.es_exception()
-                else:
-                    pass
-                    # tricky, might be an undefined identifier, but it might
-                    # also be a @foo in a /* comment */, where it's harmless.
-                    # So rely on whoever calls .setStyleSheet() to do the right thing.
-            passes -= 1
-            to_do = self.find_constants_referenced(sheet)
-        if to_do:
-            if not passes:
-                g.trace('Too many iterations')
-            g.trace('Unresolved @constants')
-            g.printObj(to_do)
-        sheet = sheet.replace('\\\n', '') # join lines ending in \
-        if trace and trace_result: g.trace('returns...\n', sheet)
-        return sheet
-    #@+node:ekr.20150617085045.1: *4* ssm.adjust_sizes
-    def adjust_sizes(self, font_size_delta, settingsDict):
-        '''Adjust constants to reflect c._style_deltas.'''
-        trace = False and not g.unitTesting
-        c = self.c
-        constants = {} # old: self.find_constants_defined(sheet)
-        deltas = c._style_deltas
-        # legacy
-        if font_size_delta:
-            deltas['font-size-body'] = font_size_delta
-        if trace:
-            g.trace('c._style_deltas', c._style_deltas)
-        for delta in c._style_deltas:
-            # adjust @font-size-body by font_size_delta
-            # easily extendable to @font-size-*
-            val = c.config.getString(delta)
-            passes = 10
-            while passes and val and val.startswith('@'):
-                key = g.app.config.canonicalizeSettingName(val[1:])
-                val = settingsDict.get(key)
-                if val:
-                    val = val.val
-                passes -= 1
-            if deltas[delta] and (val is not None):
-                size = ''.join(i for i in val if i in '01234567890.')
-                units = ''.join(i for i in val if i not in '01234567890.')
-                size = max(1, int(size) + deltas[delta])
-                constants["@" + delta] = "%s%s" % (size, units)
-        return constants, deltas
-    #@+node:tbrown.20131120093739.27085: *4* ssm.find_constants_referenced
-    def find_constants_referenced(self, text):
-        """find_constants - Return a list of constants referenced in the supplied text,
-        constants match::
-
-            @[A-Za-z_][-A-Za-z0-9_]*
-            i.e. @foo_1-5
-
-        :Parameters:
-        - `text`: text to search
-        """
-        aList = sorted(set(re.findall(r"@[A-Za-z_][-A-Za-z0-9_]*", text)))
-        # Exempt references to Leo constructs.
-        for s in ('@button', '@constants', '@data', '@language'):
-            if s in aList:
-                aList.remove(s)
-        return aList
-    #@+node:tbrown.20130411121812.28335: *4* ssm.find_constants_defined (no longer used)
-    def find_constants_defined(self, text):
-        r"""find_constants - Return a dict of constants defined in the supplied text.
-
-        NOTE: this supports a legacy way of specifying @<identifiers>, regular
-        @string and @color settings should be used instead, so calling this
-        wouldn't be needed.  expand_css_constants() issues a warning when
-        @<identifiers> are found in the output of this method.
-
-        Constants match::
-
-            ^\s*(@[A-Za-z_][-A-Za-z0-9_]*)\s*=\s*(.*)$
-            i.e.
-            @foo_1-5=a
-                @foo_1-5 = a more here
-
-        :Parameters:
-        - `text`: text to search
-        """
-        pattern = re.compile(r"^\s*(@[A-Za-z_][-A-Za-z0-9_]*)\s*=\s*(.*)$")
-        ans = {}
-        text = text.replace('\\\n', '') # merge lines ending in \
-        for line in text.split('\n'):
-            test = pattern.match(line)
-            if test:
-                ans.update([test.groups()])
-        # constants may refer to other constants, de-reference here
-        change = True
-        level = 0
-        while change and level < 10:
-            level += 1
-            change = False
-            for k in ans:
-                # pylint: disable=unnecessary-lambda
-                # process longest first so @solarized-base0 is not replaced
-                # when it's part of @solarized-base03
-                for o in sorted(ans, key=lambda x: len(x), reverse=True):
-                    if o in ans[k]:
-                        change = True
-                        ans[k] = ans[k].replace(o, ans[o])
-        if level == 10:
-            print("Ten levels of recursion processing styles, abandoned.")
-            g.es("Ten levels of recursion processing styles, abandoned.")
-        return ans
-    #@+node:ekr.20150617090104.1: *4* ssm.set_indicator_paths & helper
-    def set_indicator_paths(self, sheet, theme=None):
-        '''
-        In the stylesheet, replace (if they exist)::
-
-            image: @tree-image-closed
-            image: @tree-image-open
-
-        by::
-
-            url(path/closed.png)
-            url(path/open.png)
-
-        path can be relative to ~ or to leo/Icons.
-
-        Assuming that ~/myIcons/closed.png exists, either of these will work::
-
-            @string tree-image-closed = nodes-dark/triangles/closed.png
-            @string tree-image-closed = myIcons/closed.png
-
-        Return the updated stylesheet.
-        '''
-        trace = False and not g.unitTesting
-        close_path = self.get_indicator_path('tree-image-closed', theme=theme)
-        open_path = self.get_indicator_path('tree-image-open', theme=theme)
-        # Make all substitutions in the stylesheet.
-        table = (
-            (open_path,  re.compile(r'\bimage:\s*@tree-image-open', re.IGNORECASE)),
-            (open_path,  re.compile(r'\bimage:\s*at-tree-image-open', re.IGNORECASE)),
-            (close_path, re.compile(r'\bimage:\s*@tree-image-closed', re.IGNORECASE)),
-            (close_path, re.compile(r'\bimage:\s*at-tree-image-closed', re.IGNORECASE)),
-        )
-        if trace:
-            g.trace('open path: ', repr(open_path))
-            g.trace('close_path:', repr(close_path))
-        for path, pattern in table:
-            for mo in pattern.finditer(sheet):
-                old = mo.group(0)
-                new = 'image: url(%s)' % path
-                if trace: g.trace('found', old)
-                sheet = sheet.replace(old, new)
-        return sheet
-    #@+node:ekr.20170307083738.1: *5* ssm.get_indicator_path
-    def get_indicator_path(self, setting, theme=None):
+    #@+node:ekr.20170307083738.1: *4* ssm.find_icon_path
+    def find_icon_path(self, setting, theme=None):
         '''Return the path to the open/close indicator icon.'''
         trace = False and not g.unitTesting
         c = self.c
         s = c.config.getString(setting)
-        if s:
-            for directory in self.compute_icon_directories(theme=theme):
-                if trace: g.trace('directory', directory)
-                path = g.os_path_finalize_join(directory, s)
-                if g.os_path_exists(path):
-                    if trace: g.trace('Found %20s %s' % (setting, path))
-                    return path
-            g.es_print('no icon found for:', setting)
-            return None
-        else:
-            # Not an error.
-            return None
-    #@+node:ekr.20140916170549.19551: *3* ssm.get_data
+        if not s:
+            return None # Not an error.
+        for directory in self.compute_icon_directories(theme=theme):
+            if trace: g.trace('directory', directory)
+            path = g.os_path_finalize_join(directory, s)
+            if g.os_path_exists(path):
+                if trace: g.trace('Found %20s %s' % (setting, path))
+                return path
+        g.es_print('no icon found for:', setting)
+        return None
+    #@+node:ekr.20180308103151.1: *4* ssm.find_theme_file
+    def find_theme_file(self, path, theme=None):
+        trace = False and not g.unitTesting
+        for directory in self.commpute_theme_directories(theme=theme):
+            path2 = g.os_path_finalize_join(directory, path)
+            if g.os_path_exists(path2):
+                if trace: g.trace('found', path2)
+                return path2
+            elif trace:
+                g.trace('not found', path2)
+        g.es_print('Theme not found:', path)
+        return None
+    #@+node:ekr.20180316091920.1: *3* ssm.Settings
+    #@+node:ekr.20110605121601.18176: *4* ssm.default_style_sheet
+    def default_style_sheet(self):
+        '''Return a reasonable default style sheet.'''
+        # Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords
+        g.trace('===== using default style sheet =====')
+        return '''\
+
+    /* A QWidget: supports only background attributes.*/
+    QSplitter::handle {
+        background-color: #CAE1FF; /* Leo's traditional lightSteelBlue1 */
+    }
+    QSplitter {
+        border-color: white;
+        background-color: white;
+        border-width: 3px;
+        border-style: solid;
+    }
+    QTreeWidget {
+        background-color: #ffffec; /* Leo's traditional tree color */
+    }
+    QsciScintilla {
+        background-color: pink;
+    }
+    '''
+    #@+node:ekr.20140916170549.19551: *4* ssm.get_data
     def get_data(self, setting):
         '''Return the value of the @data node for the setting.'''
         c = self.c
         return c.config.getData(setting, strip_comments=False, strip_data=False) or []
-    #@+node:ekr.20140913054442.19390: *3* ssm.get_master_widget
-    def get_master_widget(self, top=None):
-        '''
-        Carefully return the master widget.
-        For --gui=qttabs, c.frame.top.leo_master is a LeoTabbedTopLevel.
-        For --gui=qt,     c.frame.top is a DynamicWindow.
-        '''
-        if top is None: top = self.c.frame.top
-        master = top.leo_master or top
-        return master
-    #@+node:ekr.20140916170549.19552: *3* ssm.get_style_sheet_from_settings
+    #@+node:ekr.20140916170549.19552: *4* ssm.get_style_sheet_from_settings
     def get_style_sheet_from_settings(self):
         '''
         Scan for themes or @data qt-gui-plugin-style-sheet nodes.
@@ -1819,7 +1699,7 @@ class StyleSheetManager(object):
             sheet = self.expand_css_constants(sheet)
         # g.trace(len(sheet))
         return sheet
-    #@+node:ekr.20140912110338.19365: *3* ssm.get_stylesheet & helpers
+    #@+node:ekr.20140912110338.19365: *4* ssm.get_stylesheet & helpers
     def get_stylesheet(self):
         '''
         Scan for themes or @data qt-gui-plugin-style-sheet nodes.
@@ -1831,7 +1711,7 @@ class StyleSheetManager(object):
         else:
             g.es("No theme found, assuming static stylesheet")
             return self.get_last_style_sheet()
-    #@+node:ekr.20140912110338.19368: *4* ssm.find_themes
+    #@+node:ekr.20140912110338.19368: *5* ssm.find_themes
     def find_themes(self):
         '''Find all theme-related nodes in the @settings tree.'''
         themes, theme_name = [], 'unknown'
@@ -1843,7 +1723,7 @@ class StyleSheetManager(object):
                 theme_name = 'unknown'
                 themes.append((theme_name, p.copy()))
         return themes, theme_name
-    #@+node:ekr.20140912110338.19367: *4* ssm.get_last_style_sheet
+    #@+node:ekr.20140912110338.19367: *5* ssm.get_last_style_sheet
     def get_last_style_sheet(self):
         '''Return the body text of the *last* @data qt-gui-plugin-style-sheet node.'''
         sheets = [p.copy() for p in self.settings_p.subtree_iter()
@@ -1861,7 +1741,7 @@ class StyleSheetManager(object):
             # g.es("Typically 'Reload Settings' is used in the Global or Personal "
                  # "settings files, 'leoSettings.leo and 'myLeoSettings.leo'")
             return None
-    #@+node:ekr.20140912110338.19366: *4* ssm.get_last_theme
+    #@+node:ekr.20140912110338.19366: *5* ssm.get_last_theme
     def get_last_theme(self, themes, theme_name):
         '''Return the stylesheet of the last theme.'''
         g.es("Found theme(s):")
@@ -1909,150 +1789,13 @@ class StyleSheetManager(object):
             data_p.b = stylesheet
             g.es("Stylesheet compiled")
         return stylesheet
-    #@+node:ekr.20180308102949.1: *3* ssm.load_theme_file & helpers
-    def load_theme_file(self, c, path, old_c=None, reload_flag=False):
-        '''Load a theme file, without setting any actual settings.'''
-        path = self.find_theme_file(path)
-        if not path: return
-        if old_c:
-            settings_d = old_c.config.settingsDict
-        else:
-            settings_d = self.read_theme_settings(path)
-        # Compute the style-sheet.
-        sheet = self.compute_style_sheet_from_settings_d(settings_d)
-        # Update the global settings from the settings_d.
-        c.config.settingsDict.update(settings_d)
-        # Update g.app.gui ivars.  g.app.gui.reload_settings() doesn't work.
-        if hasattr(g.app.gui, 'color_theme'):
-            g.app.gui.color_theme = c.config.getString('color_theme')
-            g.app.gui.iconimages = {} # Clear the icon cache.
-        # Reload the stylesheet *after* updating settings.
-        if sheet:
-            self.reload_settings(sheet=sheet)
-        # Remember the theme.
-        if not reload_flag:
-            g.app.loadedThemes.append(path)
-    #@+node:ekr.20180308105850.1: *4* ssm.compute_style_sheet_from_settings_d
-    def compute_style_sheet_from_settings_d(self, settings_d):
-        '''
-        Compute and set the style sheet from settings_d,
-        a TypedDict whose values are GeneralSetting objects.
-        '''
-        trace = False and not g.unitTesting
-        trace_after = True
-        trace_before = False
-        trace_dict = False
-        ssm = self
-        d1 = settings_d.get('qtguipluginstylesheet')
-        d2 = settings_d.get('qtguiuserstylesheet')
-        if not d1 and not d2:
-            # Do nothing if neither stylesheet exists.
-            # This allows settings-only themes.
-            if trace: g.trace('no stylesheets')
-            return None
-        # A little hack for ssm.set_indicator_paths.
-        # Update c.config.settingsDict here.
-        for name in ('treeimageclosed', 'treeimageclosed'):
-            val = settings_d.get(name)
-            if val is not None:
-                self.c.config.settingsDict[name] = val
-        if trace and trace_dict:
-            g.trace('settings_d')
-            g.printObj(settings_d)
-        # pylint: disable=consider-using-ternary
-        aList1 = d1 and d1.val or []
-        aList2 = d2 and d2.val or []
-        if trace and trace_before:
-            g.trace()
-            g.printObj(aList1[:20])
-            g.printObj(aList2[:20])
-        sheet = ''.join(aList1 + aList2)
-        sheet = ssm.expand_css_constants(sheet, settingsDict=settings_d)
-        if trace and trace_after:
-            g.trace('\n'+sheet)
-        return sheet
-    #@+node:ekr.20180308103151.1: *4* ssm.find_theme_file
-    def find_theme_file(self, path):
-        trace = False and not g.unitTesting
-        join = g.os_path_finalize_join
-        home = g.app.homeDir
-        table = (
-            join(home, 'themes', path),
-            join(home, '.leo', 'themes', path),
-            join(g.app.loadDir,'..', 'themes', path),
-        )
-        for path2 in table:
-            if g.os_path_exists(path2):
-                if trace: g.trace('found', path2)
-                return path2
-            elif trace:
-                g.trace('not found', path2)
-        g.es_print('Theme not found:', path)
-        return None
-    #@+node:ekr.20180310112320.1: *4* ssm.read_theme_settings
-    def read_theme_settings(self, path):
-        '''Return the theme settings.'''
-        lm = g.app.loadManager
-        old_commanders = g.app.commanders()
-        # Read the theme file into c2, a hidden commander.
-        c2 = lm.openSettingsFile(path)
-        # Get settings *without* application defaults.
-        junk_shortcuts_d, settings_d = lm.createSettingsDicts(c2,
-            localFlag=False, # doesn't matter: it affects only menus & shortcuts.
-            theme=True, # Parse only the @theme True.
-        )
-        assert isinstance(settings_d, g.TypedDict), repr(settings_d)
-        # Clear the cache entries for hidden commander.
-        if c2 not in old_commanders:
-            g.app.forgetOpenFile(c2.fileName())
-        return settings_d
-    #@+node:ekr.20140912110338.19372: *3* ssm.munge
-    def munge(self, stylesheet):
-        '''
-        Return the stylesheet without extra whitespace.
-
-        To avoid false mismatches, this should approximate what Qt does.
-        To avoid false matches, this should not munge too much.
-        '''
-        s = ''.join([s.lstrip().replace('  ', ' ').replace(' \n', '\n')
-            for s in g.splitLines(stylesheet)])
-        return s.rstrip()
-            # Don't care about ending newline.
-    #@+node:ekr.20140915194122.19476: *3* ssm.print_style_sheet
+    #@+node:ekr.20140915194122.19476: *4* ssm.print_style_sheet
     def print_style_sheet(self):
         '''Show the top-level style sheet.'''
         w = self.get_master_widget()
         sheet = w.styleSheet()
         print('style sheet for: %s...\n\n%s' % (w, sheet))
-    #@+node:ekr.20170222051716.1: *3* ssm.reload_settings
-    def reload_settings(self, sheet=None):
-        '''
-        Recompute and apply the stylesheet.
-        Called automatically by the reload-settings commands.
-        '''
-        trace = False and not g.unitTesting
-        tag = '(StyleSheetManager)'
-        if not sheet:
-            sheet = self.get_style_sheet_from_settings()
-        if sheet:
-            w = self.get_master_widget()
-            if trace: g.trace(tag, 'Found', len(sheet))
-            w.setStyleSheet(sheet)
-        elif trace:
-            g.trace(tag, 'Not Found')
-        # self.c.redraw()
-
-    reloadSettings = reload_settings
-    #@+node:ekr.20140913054442.19391: *3* ssm.set selected_style_sheet
-    def set_selected_style_sheet(self):
-        '''For manual testing: update the stylesheet using c.p.b.'''
-        if not g.unitTesting:
-            c = self.c
-            sheet = c.p.b
-            sheet = self.expand_css_constants(sheet)
-            w = self.get_master_widget(c.frame.top)
-            w.setStyleSheet(sheet)
-    #@+node:ekr.20110605121601.18175: *3* ssm.set_style_sheets
+    #@+node:ekr.20110605121601.18175: *4* ssm.set_style_sheets
     def set_style_sheets(self, all=True, top=None, w=None):
         '''Set the master style sheet for all widgets using config settings.'''
         trace = False and not g.unitTesting
@@ -2089,6 +1832,269 @@ class StyleSheetManager(object):
             w.setStyleSheet(sheet)
         else:
             if trace: g.trace('no style sheet')
+    #@+node:ekr.20180316091943.1: *3* ssm.Stylesheet
+    # Computations on stylesheets themeselves.
+    #@+node:ekr.20140915062551.19510: *4* ssm.expand_css_constants & helpers
+    css_warning_given = False
+
+    def expand_css_constants(self, sheet, font_size_delta=None, settingsDict=None):
+        '''Expand @ settings into their corresponding constants.'''
+        trace = False and not g.unitTesting
+        trace_dict = False
+        trace_found = False
+        trace_result = False
+        trace_to_do = False
+        c = self.c
+        # Warn once if the stylesheet uses old style style-sheet comment
+        if settingsDict is None:
+            if trace: g.trace('----- using c.config.settingsDict')
+            settingsDict = c.config.settingsDict
+        if trace_dict:
+            g.trace('===== settingsDict.keys()...')
+            g.printObj(sorted(settingsDict.keys()))
+        constants, deltas = self.adjust_sizes(font_size_delta, settingsDict)
+        sheet = self.replace_indicator_constants(sheet)
+        for pass_n in range(10):
+            to_do = self.find_constants_referenced(sheet)
+            if trace and trace_to_do:
+                g.trace('to do...')
+                g.printList(to_do)
+            if not to_do:
+                break
+            old_sheet = sheet
+            if trace and trace_found:
+                g.trace('='*10, 'pass', 1+pass_n)
+            sheet = self.do_pass(constants, deltas, settingsDict, sheet, to_do)
+            if sheet == old_sheet:
+                break
+        else:
+           g.trace('Too many iterations')
+        if to_do:
+            g.trace('Unresolved @constants')
+            g.printObj(to_do)
+        sheet = sheet.replace('\\\n', '') # join lines ending in \
+        if trace and trace_result:
+            g.trace('returns...\n', sheet)
+        return sheet
+    #@+node:ekr.20150617085045.1: *5* ssm.adjust_sizes
+    def adjust_sizes(self, font_size_delta, settingsDict):
+        '''Adjust constants to reflect c._style_deltas.'''
+        trace = False and not g.unitTesting
+        c = self.c
+        constants = {} # old: self.find_constants_defined(sheet)
+        deltas = c._style_deltas
+        # legacy
+        if font_size_delta:
+            deltas['font-size-body'] = font_size_delta
+        if trace:
+            g.trace('c._style_deltas', c._style_deltas)
+        for delta in c._style_deltas:
+            # adjust @font-size-body by font_size_delta
+            # easily extendable to @font-size-*
+            val = c.config.getString(delta)
+            passes = 10
+            while passes and val and val.startswith('@'):
+                key = g.app.config.canonicalizeSettingName(val[1:])
+                val = settingsDict.get(key)
+                if val:
+                    val = val.val
+                passes -= 1
+            if deltas[delta] and (val is not None):
+                size = ''.join(i for i in val if i in '01234567890.')
+                units = ''.join(i for i in val if i not in '01234567890.')
+                size = max(1, int(size) + deltas[delta])
+                constants["@" + delta] = "%s%s" % (size, units)
+        return constants, deltas
+    #@+node:ekr.20180316093159.1: *5* ssm.do_pass
+    def do_pass(self, constants, deltas, settingsDict, sheet, to_do):
+        
+        trace = False and not g.unitTesting
+        trace_found = False
+        ### changed = False
+        to_do.sort(key=len, reverse=True)
+        for const in to_do:
+            value = None
+            if const in constants:
+                # This constant is about to be removed.
+                value = constants[const]
+                if const[1:] not in deltas and not self.css_warning_given:
+                    self.css_warning_given = True
+                    g.es_print("'%s' from style-sheet comment definition, " % const)
+                    g.es_print("please use regular @string / @color type @settings.")
+            else:
+                key = g.app.config.canonicalizeSettingName(const[1:])
+                    # lowercase, without '@','-','_', etc.
+                value = settingsDict.get(key)
+                if value is not None:
+                    # New in Leo 5.5: Do NOT add comments here.
+                    # They RUIN style sheets if they appear in a nested comment!
+                        # value = '%s /* %s */' % (g.u(value.val), key)
+                    value = g.u(value.val)
+                    if trace and trace_found:
+                       g.trace('found: %30s %s' % (key, g.truncate(repr(value), 30)))
+                elif key in self.color_db:
+                    # New in Leo 5.5: Do NOT add comments here.
+                    # They RUIN style sheets if they appear in a nested comment!
+                    value = self.color_db.get(key)
+                        # value = '%s /* %s */' % (value, key)
+                    if trace and trace_found:
+                        g.trace('found: %30s %s' % (key, g.truncate(repr(value), 30)))
+            if value:
+                # Partial fix for #780.
+                try:
+                    sheet = re.sub(
+                        ### '\b%s\b' % (const),
+                        const + "(?![-A-Za-z0-9_])",
+                            # don't replace shorter constants occuring in larger
+                        value,
+                        sheet,
+                    )
+                    ### changed = True
+                except Exception:
+                    g.es_print('Exception handling style sheet')
+                    g.es_print(sheet)
+                    g.es_exception()
+            else:
+                pass
+                # tricky, might be an undefined identifier, but it might
+                # also be a @foo in a /* comment */, where it's harmless.
+                # So rely on whoever calls .setStyleSheet() to do the right thing.
+        return sheet
+    #@+node:tbrown.20131120093739.27085: *5* ssm.find_constants_referenced
+    def find_constants_referenced(self, text):
+        """find_constants - Return a list of constants referenced in the supplied text,
+        constants match::
+
+            @[A-Za-z_][-A-Za-z0-9_]*
+            i.e. @foo_1-5
+
+        :Parameters:
+        - `text`: text to search
+        """
+        aList = sorted(set(re.findall(r"@[A-Za-z_][-A-Za-z0-9_]*", text)))
+        # Exempt references to Leo constructs.
+        for s in ('@button', '@constants', '@data', '@language'):
+            if s in aList:
+                aList.remove(s)
+        return aList
+    #@+node:tbrown.20130411121812.28335: *5* ssm.find_constants_defined (no longer used)
+    def find_constants_defined(self, text):
+        r"""find_constants - Return a dict of constants defined in the supplied text.
+
+        NOTE: this supports a legacy way of specifying @<identifiers>, regular
+        @string and @color settings should be used instead, so calling this
+        wouldn't be needed.  expand_css_constants() issues a warning when
+        @<identifiers> are found in the output of this method.
+
+        Constants match::
+
+            ^\s*(@[A-Za-z_][-A-Za-z0-9_]*)\s*=\s*(.*)$
+            i.e.
+            @foo_1-5=a
+                @foo_1-5 = a more here
+
+        :Parameters:
+        - `text`: text to search
+        """
+        pattern = re.compile(r"^\s*(@[A-Za-z_][-A-Za-z0-9_]*)\s*=\s*(.*)$")
+        ans = {}
+        text = text.replace('\\\n', '') # merge lines ending in \
+        for line in text.split('\n'):
+            test = pattern.match(line)
+            if test:
+                ans.update([test.groups()])
+        # constants may refer to other constants, de-reference here
+        change = True
+        level = 0
+        while change and level < 10:
+            level += 1
+            change = False
+            for k in ans:
+                # pylint: disable=unnecessary-lambda
+                # process longest first so @solarized-base0 is not replaced
+                # when it's part of @solarized-base03
+                for o in sorted(ans, key=lambda x: len(x), reverse=True):
+                    if o in ans[k]:
+                        change = True
+                        ans[k] = ans[k].replace(o, ans[o])
+        if level == 10:
+            print("Ten levels of recursion processing styles, abandoned.")
+            g.es("Ten levels of recursion processing styles, abandoned.")
+        return ans
+    #@+node:ekr.20150617090104.1: *5* ssm.replace_indicator_constants
+    def replace_indicator_constants(self, sheet, theme=None):
+        '''
+        In the stylesheet, replace (if they exist)::
+
+            image: @tree-image-closed
+            image: @tree-image-open
+
+        by::
+
+            url(path/closed.png)
+            url(path/open.png)
+
+        path can be relative to ~ or to leo/Icons.
+
+        Assuming that ~/myIcons/closed.png exists, either of these will work::
+
+            @string tree-image-closed = nodes-dark/triangles/closed.png
+            @string tree-image-closed = myIcons/closed.png
+
+        Return the updated stylesheet.
+        '''
+        trace = False and not g.unitTesting
+        close_path = self.find_icon_path('tree-image-closed', theme=theme)
+        open_path = self.find_icon_path('tree-image-open', theme=theme)
+        # Make all substitutions in the stylesheet.
+        table = (
+            (open_path,  re.compile(r'\bimage:\s*@tree-image-open', re.IGNORECASE)),
+            (close_path, re.compile(r'\bimage:\s*@tree-image-closed', re.IGNORECASE)),
+            # (open_path,  re.compile(r'\bimage:\s*at-tree-image-open', re.IGNORECASE)),
+            # (close_path, re.compile(r'\bimage:\s*at-tree-image-closed', re.IGNORECASE)),
+        )
+        if trace:
+            g.trace('open path: ', repr(open_path))
+            g.trace('close_path:', repr(close_path))
+        for path, pattern in table:
+            for mo in pattern.finditer(sheet):
+                old = mo.group(0)
+                new = 'image: url(%s)' % path
+                if trace: g.trace('found', old)
+                sheet = sheet.replace(old, new)
+        return sheet
+    #@+node:ekr.20140912110338.19372: *4* ssm.munge
+    def munge(self, stylesheet):
+        '''
+        Return the stylesheet without extra whitespace.
+
+        To avoid false mismatches, this should approximate what Qt does.
+        To avoid false matches, this should not munge too much.
+        '''
+        s = ''.join([s.lstrip().replace('  ', ' ').replace(' \n', '\n')
+            for s in g.splitLines(stylesheet)])
+        return s.rstrip()
+            # Don't care about ending newline.
+    #@+node:ekr.20180316092116.1: *3* ssm.Widgets
+    #@+node:ekr.20140913054442.19390: *4* ssm.get_master_widget
+    def get_master_widget(self, top=None):
+        '''
+        Carefully return the master widget.
+        For --gui=qttabs, c.frame.top.leo_master is a LeoTabbedTopLevel.
+        For --gui=qt,     c.frame.top is a DynamicWindow.
+        '''
+        if top is None: top = self.c.frame.top
+        master = top.leo_master or top
+        return master
+    #@+node:ekr.20140913054442.19391: *4* ssm.set selected_style_sheet
+    def set_selected_style_sheet(self):
+        '''For manual testing: update the stylesheet using c.p.b.'''
+        if not g.unitTesting:
+            c = self.c
+            sheet = c.p.b
+            sheet = self.expand_css_constants(sheet)
+            w = self.get_master_widget(c.frame.top)
+            w.setStyleSheet(sheet)
     #@-others
 #@-others
 #@@language python
