@@ -909,9 +909,6 @@ class LeoQtGui(leoGui.LeoGui):
         '''
         trace = False and not g.unitTesting
 
-        def sfn(fn):
-            return g.shortFileName(fn.replace('/', '\\'), n=4)
-
         if trace:  g.trace('color_theme', repr(self.color_theme))
         
         if self.color_theme:
@@ -932,11 +929,11 @@ class LeoQtGui(leoGui.LeoGui):
                     base_dir, 'themes',
                     self.color_theme, 'Icons', namepart)
                 if g.os_path_exists(fullname):
-                    if trace: g.trace('found', repr(name), sfn(fullname))
+                    if trace: g.trace('found', repr(name), fullname)
                     return fullname
         # original behavior, if name is absolute this will just return it
         fullname = g.os_path_finalize_join(g.app.loadDir, "..", "Icons", name)
-        if trace: g.trace('found', repr(name), g.os_path_exists(fullname), sfn(fullname))
+        if trace: g.trace('found', repr(name), g.os_path_exists(fullname), fullname)
         return fullname
     #@+node:ekr.20110605121601.18518: *4* qt_gui.getTreeImage
     def getTreeImage(self, c, path):
@@ -1491,6 +1488,18 @@ class StyleSheetManager(object):
         background-color: pink;
     }
     '''
+    #@+node:ekr.20180315101238.1: *3* ssm.compute_theme_directories
+    def compute_theme_directories(self, theme_name):
+        '''
+        Return this list of theme-related directories:
+        
+        [
+            ~/themes/theme_name,
+            ~/.leo/themes/theme_name,
+            leo/themes/theme_name,
+        ]
+        '''
+         
     #@+node:ekr.20140915062551.19510: *3* ssm.expand_css_constants & helpers
     def expand_css_constants(self, sheet, font_size_delta=None, settingsDict=None):
         '''Expand @ settings into their corresponding constants.'''
