@@ -14,7 +14,7 @@ Dependencies
 This plugin uses docutils, http://docutils.sourceforge.net/, to render reStructuredText,
 so installing docutils is highly recommended when using this plugin.
 
-This plugin uses markdown, http://http://pypi.python.org/pypi/Markdown, to render Markdown,
+This plugin uses markdown, http://pypi.python.org/pypi/Markdown, to render Markdown,
 so installing markdown is highly recommended when using this plugin.
 
 Commands
