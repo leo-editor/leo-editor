@@ -1841,9 +1841,8 @@ class StyleSheetManager(object):
         '''Expand @ settings into their corresponding constants.'''
         trace = False and not g.unitTesting
         trace_dict = False
-        trace_found = False
+        trace_loop = True
         trace_result = False
-        trace_to_do = False
         c = self.c
         # Warn once if the stylesheet uses old style style-sheet comment
         if settingsDict is None:
@@ -1856,14 +1855,12 @@ class StyleSheetManager(object):
         sheet = self.replace_indicator_constants(sheet)
         for pass_n in range(10):
             to_do = self.find_constants_referenced(sheet)
-            if trace and trace_to_do:
-                g.trace('to do...')
-                g.printList(to_do)
             if not to_do:
                 break
+            if trace and trace_loop:
+                g.trace('===== pass %s, to_do...' % (1+pass_n))
+                g.printList(to_do)
             old_sheet = sheet
-            if trace and trace_found:
-                g.trace('='*10, 'pass', 1+pass_n)
             sheet = self.do_pass(constants, deltas, settingsDict, sheet, to_do)
             if sheet == old_sheet:
                 break
