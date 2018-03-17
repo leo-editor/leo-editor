@@ -87,7 +87,7 @@ class TableController (object):
     #@+node:ekr.20170218130241.1: *3* table.get_table
     def get_table(self, ch, w):
         '''Return i, lines, if w's insert point is inside a table.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         trace_entry = True
         trace_fail = True
         trace_lines = True
