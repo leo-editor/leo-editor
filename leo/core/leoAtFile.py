@@ -520,7 +520,7 @@ class AtFile(object):
                     g.trace('cache miss', sfn)
                 else:
                     g.trace('caching disabled', sfn)
-            g.es_print("reading:", root.h)
+            g.es_print("reading:", g.os_path_normslashes(root.h))
         if isFileLike:
             if g.unitTesting:
                 if 0: print("converting @file format in", root.h)
