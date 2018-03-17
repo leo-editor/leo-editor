@@ -27,17 +27,42 @@
     }
     </style>
 
-    <!--
     <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '5.7',
-        COLLAPSE_MODINDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  false
-      };
+    var DOCUMENTATION_OPTIONS = {
+      URL_ROOT:    './',
+      VERSION:     '5.7',
+      COLLAPSE_INDEX: false,
+      FILE_SUFFIX: '.html',
+      HAS_SOURCE:  true,
+      SOURCELINK_SUFFIX: '.txt'
+    };
     </script>
-    -->
+
+    <script type="text/javascript">
+    function search(event) {
+      if (event === null || (event.keyCode || event.which) === 13) {
+        window.open('http://www.google.com/search?q=site:leoeditor.com+'+document.getElementById('q').value);
+      }
+    }
+    </script>
+
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
+
+    <link rel="search" title="Search" href="search.html" />
+
+    <div id="searchbox" style="display: none" role="search">
+      <h3>Quick search</h3>
+        <form class="search" action="search.html" method="get">
+          <div><input type="text" name="q" /></div>
+          <div><input type="submit" value="Go" /></div>
+          <input type="hidden" name="check_keywords" value="yes" />
+          <input type="hidden" name="area" value="default" />
+        </form>
+    </div>
+
     <!--@+<< flattr head >>-->
     <!--@+node:ekr.20110518101739.18155: *3* << flattr head >>-->
     <script type="text/javascript">
@@ -52,7 +77,6 @@
     /* ]]> */
     </script>
     <!--@-<< flattr head >>-->
-
     <!--@+<< feed2js stylesheet >>-->
     <!--@+node:ekr.20111028195854.16608: *3* << feed2js stylesheet >>-->
     <style type="text/css" media="all">
@@ -77,20 +101,10 @@
 
     </style>
     <!--@-<< feed2js stylesheet >>-->
-
-    <!-- <script type="text/javascript" src="_static/jquery.js"></script>-->
-    <!-- <script type="text/javascript" src="_static/doctools.js"></script>-->
     <link rel="top" title="Leo 5.7 documentation" href="index.html" />
+    <link rel="next" title="Table of Contents" href="leo_toc.html" />
     <link rel="Users Guide" title="Leo&#8217;s Users Guide" href="leo_toc.html" />
-    <!-- <link rel="prev" title="Using Leo's Commands" href="commands.html" />--> 
 
-    <script type="text/javascript">
-    function search(event) {
-      if (event === null || (event.keyCode || event.which) === 13) {
-        window.open('http://www.google.com/search?q=site:leoeditor.com+'+document.getElementById('q').value);
-      }
-    }
-    </script>
     <!--@-<< head >>-->
 </head>
 <body>
@@ -219,7 +233,7 @@
             </p>
 
             <p>
-              <a class="reference external" href="leo_toc.html">Table of contents</a>: click the lion!
+              <a class="reference external" href="leo_toc.html">Table of contents</a>: Click the lion!
             </p>
             <p>
             <form>
@@ -242,10 +256,8 @@
             <a class="reference external" href="screencasts.html">
               Videos</a><br>
               
-            <!--
             <a class="reference external" href="testimonials.html">
-              Quotes from Leo&#8217;s Users</a><br>
-            -->
+              What people are saying</a><br>
               
             <a class="reference external" href="slides.html">
               Tutorial Slide Shows</a><br>
@@ -264,19 +276,9 @@
               
             <a class="reference external" href="https://github.com/leo-editor/snippets">
               Code Snippets</a><br>
-
-            <!--
-            <a class="reference external" href="http://leo.zwiki.org">
-              Leo&#8217;s Wiki</a><br>
-            -->
               
             <a class="reference external" href="http://leo-editor.readthedocs.org/en/latest/">
-              Readthedocs (API)</a><br>
-              
-            <!--
-            <a class="reference external" href="http://www.mind-mapping.org/">
-              Mind Mapping</a><br>
-            -->
+              Read the docs (API)</a><br>
 
             <a class="reference external" href="https://github.com/leo-editor/leo-editor/issues">
               Report a bug</a><br>
@@ -287,18 +289,16 @@
             </p>
             <p>
             <div id="searchbox" style="">
-              <!-- <h4>Google Search</h4> -->
                 <input id='q' type="text" name="q" onkeypress="search(event)">
               <div><button onclick="search(null)">Google Search</button></div>
               <div class="searchtip" style="font-size: 90%">
-                Use quotes for "@file" and similar symbols.
+                <!-- Use quotes for "@file" and similar symbols. -->
               </div>
             </div>
             </p>
 
-            <!-- <p>Leo: Leonine Editor with Outlines</p> -->
-
-            <p>Written by <a HREF="ekr.html">Edward K. Ream</a>
+            <p>Written by <a HREF="ekr.html">Edward K. Ream</a><br>
+            and <a HREF="acknowledgements.html">many others</a>.
             <!--@+<< flattr icon >>-->
             <!--@+node:ekr.20110518101739.18154: *4* << flattr icon >>-->
             <a class="FlattrButton" style="display:none;" rev="flattr;button:compact;"
@@ -340,7 +340,7 @@
   <!--@+node:ekr.20100808060203.4278: ** << div footer >>-->
   <div class="footer">
     &copy; Copyright 1997-2018, Edward K. Ream.
-    Last updated on February 27, 2018.
+    Last updated on March 17, 2018.
     Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.
   </div>
   <!--@-<< div footer >>-->
