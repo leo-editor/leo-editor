@@ -2208,7 +2208,6 @@
 </v>
 </v>
 <v t="ekr.20110611092035.16463"><vh>Tree operation</vh>
-<v t="ekr.20041119050749.3"><vh>@bool allow_clone_drags = False</vh></v>
 <v t="nh910.20110621123823.3423"><vh>@bool collapse_nodes_after_move = True</vh></v>
 <v t="ekr.20060930085532"><vh>@bool collapse_nodes_during_finds = True</vh></v>
 <v t="ekr.20080315083057.7"><vh>@bool collapse_nodes_while_spelling = True</vh></v>
@@ -2770,10 +2769,6 @@ Thu, 30 Jan 2003 16:57:12
 <t tx="ekr.20041119050749.11">True:  use gmt time when inserting time into headlines.
 
 False: use local time.</t>
-<t tx="ekr.20041119050749.3">True:  Allows control-dragging to create clones.
-False: All drags move nodes.
-
-Setting this setting to False allows Leo to be used on Aqua.</t>
 <t tx="ekr.20041119050749.4">True:  Tell whether drags will move nodes or clone nodes.
 False: Don't issue such messages.
 
