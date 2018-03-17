@@ -1555,7 +1555,7 @@ class StyleSheetManager(object):
     #@+node:ekr.20180308103151.1: *4* ssm.find_theme_file
     def find_theme_file(self, path, theme=None):
         trace = False and not g.unitTesting
-        for directory in self.commpute_theme_directories(theme=theme):
+        for directory in self.compute_theme_directories(theme=theme):
             path2 = g.os_path_finalize_join(directory, path)
             if g.os_path_exists(path2):
                 if trace: g.trace('found', path2)
