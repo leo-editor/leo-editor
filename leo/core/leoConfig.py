@@ -1030,7 +1030,6 @@ class GlobalConfigManager(object):
         ("color_directives_in_plain_text", "bool", True),
         ("underline_undefined_section_names", "bool", True),
         # Window options...
-        # ("allow_clone_drags", "bool", True),
         ("body_pane_wraps", "bool", True),
         ("body_text_font_family", "family", "Courier"),
         ("body_text_font_size", "size", defaultBodyFontSize),
