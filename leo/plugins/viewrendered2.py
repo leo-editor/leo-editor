@@ -2,7 +2,7 @@
 #@+node:ekr.20140225222704.16748: * @file viewrendered2.py
 #@@language python
 #@+<< docstring >>
-#@+node:ekr.20140226074510.4187: ** << docstring >> (vr2)
+#@+node:ekr.20140226074510.4187: ** << docstring >> (VR2)
 '''
 
 viewrendered2.py: Creates a window for *live* rendering of reSTructuredText, markdown text,
@@ -209,7 +209,7 @@ See the viewrendered.py plugin for additional acknowledgments.
 __version__ = '1.2' # tbp: added "Code Only" option to emit only code.
 
 #@+<< imports >>
-#@+node:ekr.20140226074510.4188: ** << imports >> (viewrendered2.py)
+#@+node:ekr.20140226074510.4188: ** << imports >> (VR2)
 import leo.core.leoGlobals as g
 import leo.plugins.qt_text as qt_text
 import leo.plugins.free_layout as free_layout
@@ -255,23 +255,6 @@ import sys
 # import traceback
 
 #@-<< imports >>
-#@+<< define stylesheet >>
-#@+node:ekr.20140226074510.4189: ** << define stylesheet >>
-stickynote_stylesheet = """
-/* The body pane */
-/*----- No longer used
-QPlainTextEdit {
-    background-color: #fdf5f5;
-    selection-color: white;
-    selection-background-color: lightgrey;
-    font-family: DejaVu Sans Mono;
-    /* font-family: Courier New; */
-    font-size: 12px;
-    font-weight: normal;
-    font-style: normal;
------ */
-"""
-#@-<< define stylesheet >>
 # pylint: disable=fixme
 #@+at
 # To do:
@@ -286,13 +269,14 @@ QPlainTextEdit {
 controllers = {}
     # Keys are c.hash(): values are PluginControllers
 #@+others
-#@+node:ekr.20140226074510.4190: ** Top-level
-#@+node:ekr.20140226074510.4191: *3* decorate_window
+#@+node:ekr.20140226074510.4190: ** vr2.Top-level
+#@+node:ekr.20140226074510.4191: *3* vr2.decorate_window
 def decorate_window(w):
-    w.setStyleSheet(stickynote_stylesheet)
+    # This plugin should never set the stylesheet.
+        # w.setStyleSheet(stickynote_stylesheet)
     w.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     w.resize(600, 300)
-#@+node:ekr.20140226074510.4192: *3* init (VR2)
+#@+node:ekr.20140226074510.4192: *3* vr2.init
 def init():
     '''Return True if the plugin has loaded successfully.'''
     global got_docutils
@@ -304,13 +288,13 @@ def init():
         g.registerHandler('scrolledMessage', show_scrolled_message)
         return True
     return False
-#@+node:ekr.20140226074510.4193: *3* onCreate (viewrendered2.py)
+#@+node:ekr.20140226074510.4193: *3* vr2.onCreate
 def onCreate(tag, keys):
     c = keys.get('c')
     if c:
         provider = ViewRenderedProvider(c)
         free_layout.register_provider(c, provider)
-#@+node:ekr.20140226074510.4194: *3* show_scrolled_message
+#@+node:ekr.20140226074510.4194: *3* vr2.show_scrolled_message
 def show_scrolled_message(tag, kw):
     if g.unitTesting:
         return # This just slows the unit tests.
@@ -334,7 +318,7 @@ def show_scrolled_message(tag, kw):
             'show-scrolled-message': True,
         })
     return True
-#@+node:ekr.20140226074510.4195: ** Commands
+#@+node:ekr.20140226074510.4195: ** vr2.Commands
 # Fix #734: Do *not* test import_ok here.
 #@+node:ekr.20140226074510.4196: *3* g.command('vr2-preview')
 
@@ -485,10 +469,10 @@ def update_rendering_pane(event):
             vr = viewrendered(event)
         if vr:
             vr.update(tag='view', keywords={'c': c, 'force': True})
-#@+node:ekr.20140226075611.16792: ** class WebViewPlus (QWidget)
+#@+node:ekr.20140226075611.16792: ** class WebViewPlus (QWidget) (vr2)
 class WebViewPlus(QtWidgets.QWidget):
     #@+others
-    #@+node:ekr.20140226075611.16793: *3* ctor (WebViewPlus) & helpers
+    #@+node:ekr.20140226075611.16793: *3* vr2.ctor (WebViewPlus) & helpers
     def __init__(self, pc):
         super(WebViewPlus, self).__init__()
         self.app = QtCore.QCoreApplication.instance()
@@ -697,7 +681,7 @@ class WebViewPlus(QtWidgets.QWidget):
             # Mark of the Web (for IE) to allow sensible security options
             # getConfig(gc.getBool, 'include_MOTW', True, setvar=self.MOTW)
         return ds
-    #@+node:ekr.20140227055626.16844: *4* init_timer
+    #@+node:ekr.20140227055626.16844: *4* vr2.init_timer
     def init_timer(self):
         '''Init the timer for delayed rendering (to allow smooth tree navigation).'''
         timer = QtCore.QTimer()
@@ -706,7 +690,7 @@ class WebViewPlus(QtWidgets.QWidget):
             # just longer than the 1000ms interval of calls from update_rst
         timer.timeout.connect(self.render_delegate)
         return timer
-    #@+node:peckj.20140228114948.6397: *4* get_mode
+    #@+node:peckj.20140228114948.6397: *4* vr2.get_mode
     def get_mode(self):
         if self.lock_mode_action.isChecked():
             return self.plockmode
@@ -716,7 +700,7 @@ class WebViewPlus(QtWidgets.QWidget):
         elif h.startswith('@md'): return 'md'
         elif h.startswith('@html'): return 'html'
         return default
-    #@+node:ekr.20140226081920.16816: *4* tooltip_text
+    #@+node:ekr.20140226081920.16816: *4* vr2.tooltip_text
     def tooltip_text(self, s):
         '''Return the reformatted tooltip text corresponding to the triple string s.'''
         lines = g.splitLines(s)
@@ -725,8 +709,8 @@ class WebViewPlus(QtWidgets.QWidget):
             s = ''.join(lines[i:])
             s = g.adjustTripleString(s, self.c.tab_width)
         return s
-    #@+node:ekr.20140227055626.16845: *3* gui helpers
-    #@+node:ekr.20140226075611.16798: *4* getUIconfig
+    #@+node:ekr.20140227055626.16845: *3* vr2.gui helpers
+    #@+node:ekr.20140226075611.16798: *4* vr2.getUIconfig
     def getUIconfig(self):
         """Get the rendering configuration from the GUI controls."""
         # Pull internal configuration options from GUI
@@ -748,7 +732,7 @@ class WebViewPlus(QtWidgets.QWidget):
             self.visible_code_action.setChecked(True)
             self.showcode = True
 
-    #@+node:ekr.20140226075611.16800: *4* lock
+    #@+node:ekr.20140226075611.16800: *4* vr2.lock
     def lock(self):
         """Implement node lock (triggered by "Lock node" action)."""
         # Lock "action" has been triggered, so state will have changed.
@@ -762,7 +746,7 @@ class WebViewPlus(QtWidgets.QWidget):
             self.render_delegate()
                 # Render again since root node may have changed now
         # Add an icon or marker to node currently locked?
-    #@+node:ekr.20140226075611.16799: *4* render_rst
+    #@+node:ekr.20140226075611.16799: *4* vr2.render_rst
     def render_rst(self, s, keywords):
         """Generate the reST and render it in this pane."""
         self.getUIconfig()
@@ -784,7 +768,7 @@ class WebViewPlus(QtWidgets.QWidget):
             self.view.setUrl(QUrl.fromLocalFile(pathname))
         elif self.auto:
             self.timer.start()
-    #@+node:peckj.20140228095134.6379: *4* render_md
+    #@+node:peckj.20140228095134.6379: *4* vr2.render_md
     def render_md(self, s, keywords):
         """Generate the markdown and render it in this pane."""
         self.getUIconfig()
@@ -809,7 +793,7 @@ class WebViewPlus(QtWidgets.QWidget):
             return
         if self.auto:
             self.timer.start()
-    #@+node:ekr.20150611074733.1: *4* render_html
+    #@+node:ekr.20150611074733.1: *4* vr2.render_html
     def render_html(self, html, keywords = None):
         """Render the string html in this pane."""
             # A new method by EKR.
@@ -820,7 +804,7 @@ class WebViewPlus(QtWidgets.QWidget):
         self.view.setHtml(self.html)
         if self.auto:
             self.timer.start()
-    #@+node:ekr.20140226075611.16802: *4* restore_scroll_position
+    #@+node:ekr.20140226075611.16802: *4* vr2.restore_scroll_position
     def restore_scroll_position(self):
         # Restore scroll bar position for (possibly) new node
         d = self.pc.scrollbar_pos_dict
@@ -832,15 +816,15 @@ class WebViewPlus(QtWidgets.QWidget):
             spos = 0
         mf.setScrollBarValue(QtCore.Qt.Vertical, spos)
         #print 'remembered scroll pos restored, re-read pos:', spos, mf.scrollBarValue(QtCore.Qt.Vertical)
-    #@+node:ekr.20160325203354.1: *4* setHtml (EKR)
+    #@+node:ekr.20160325203354.1: *4* vr2.setHtml
     def setHtml(self, s):
 
         self.view.setHtml(s)
-    #@+node:ekr.20140226075611.16794: *4* state_change
+    #@+node:ekr.20140226075611.16794: *4* vr2.state_change
     def state_change(self, checked):
         """A wrapper for 'render' to re-render on all QAction state changes."""
         self.render_delegate()
-    #@+node:peckj.20140228114948.6398: *3* render_delegate
+    #@+node:peckj.20140228114948.6398: *3* vr2.render_delegate
     def render_delegate(self):
         mode = self.get_mode()
         if mode == 'md':
@@ -849,7 +833,7 @@ class WebViewPlus(QtWidgets.QWidget):
             self.render_html(self.html)
         else:
             self.render()
-    #@+node:ekr.20140226075611.16801: *3* render & helpers
+    #@+node:ekr.20140226075611.16801: *3* vr2.render & helpers
     def render(self):
         """Re-render the existing string, but probably with new configuration."""
         if self.rendering:
@@ -862,7 +846,7 @@ class WebViewPlus(QtWidgets.QWidget):
             finally:
                 # No longer rendering, OK to receive another rendering call
                 self.rendering = False
-    #@+node:ekr.20140226125539.16825: *4* render_helper & helper
+    #@+node:ekr.20140226125539.16825: *4* vr2.render_helper & helper
     def render_helper(self):
         '''Rendinging helper: self.rendering is True.'''
         p, pc = self.c.p, self.pc
@@ -885,7 +869,7 @@ class WebViewPlus(QtWidgets.QWidget):
             self.pbar.setValue(100)
             self.app.processEvents()
             self.pbar_action.setVisible(False)
-    #@+node:ekr.20140226125539.16826: *5* to_html & helper
+    #@+node:ekr.20140226125539.16826: *5* vr2.to_html & helper
     def to_html(self, p):
         '''Convert p.b to html using docutils.'''
         c, pc = self.c, self.pc
@@ -935,7 +919,7 @@ class WebViewPlus(QtWidgets.QWidget):
                 return 'RST error:\n%s\n\n%s' % (msg, html)
             else:
                 return html
-    #@+node:ekr.20140226075611.16797: *6* process_nodes & helpers
+    #@+node:ekr.20140226075611.16797: *6* vr2.process_nodes & helpers
     def process_nodes(self, p, tree=True):
         """
         Process the reST for a node, defaulting to node's entire tree.
@@ -966,7 +950,7 @@ class WebViewPlus(QtWidgets.QWidget):
         if self.verbose:
             self.write_rst(root, s)
         return s
-    #@+node:ekr.20140227055626.16838: *7* code_directive
+    #@+node:ekr.20140227055626.16838: *7* vr2.code_directive
     def code_directive(self, lang):
         '''Return an reST block or code directive.'''
         if pygments:
@@ -975,7 +959,7 @@ class WebViewPlus(QtWidgets.QWidget):
             return '\n\n.. code:: ' + lang + '\n\n'
         else:
             return '\n\n::\n\n'
-    #@+node:ekr.20140227055626.16841: *7* initCodeBlockString (from leoRst, for reference)
+    #@+node:ekr.20140227055626.16841: *7* vr2.initCodeBlockString (from leoRst, for reference)
     def initCodeBlockString(self, p, language):
         '''Reference code illustrating the complications of code blocks.'''
         # Note: lines that end with '\n\n' are a signal to handleCodeMode.
@@ -983,7 +967,7 @@ class WebViewPlus(QtWidgets.QWidget):
             self.code_block_string = '**code**:\n\n.. code-block:: %s\n\n' % language
         else:
             self.code_block_string = '**code**:\n\n.. class:: code\n..\n\n::\n\n'
-    #@+node:ekr.20140226125539.16824: *7* process_one_node
+    #@+node:ekr.20140226125539.16824: *7* vr2.process_one_node
     def process_one_node(self, p, result, environment):
         '''Handle one node.'''
         c = self.c
@@ -1005,7 +989,7 @@ class WebViewPlus(QtWidgets.QWidget):
             if err:
                 err = self.format_output(err, prefix='**Error**::')
                 result.append(err)
-    #@+node:ekr.20140226125539.16822: *7* exec_code
+    #@+node:ekr.20140226125539.16822: *7* vr2.exec_code
     def exec_code(self, code, environment):
         """Execute the code, capturing the output in stdout and stderr."""
         saveout = sys.stdout # save stdout
@@ -1025,7 +1009,7 @@ class WebViewPlus(QtWidgets.QWidget):
         sys.stdout = saveout # was sys.__stdout__
         sys.stderr = saveerr # restore stderr
         return bufferout.getvalue(), buffererr.getvalue()
-    #@+node:ekr.20140226125539.16823: *7* format_output
+    #@+node:ekr.20140226125539.16823: *7* vr2.format_output
     def format_output(self, s, prefix='::'):
         """Formats the multi-line string 's' into a reST literal block."""
         out = '\n\n' + prefix + '\n\n'
@@ -1033,7 +1017,7 @@ class WebViewPlus(QtWidgets.QWidget):
         for line in lines:
             out += '    ' + line
         return out + '\n'
-    #@+node:ekr.20140226075611.16796: *7* process_directives
+    #@+node:ekr.20140226075611.16796: *7* vr2.process_directives
     def process_directives(self, s, d):
         """s is string to process, d is dictionary of directives at the node."""
         trace = False and not g.unitTesting
@@ -1077,7 +1061,7 @@ class WebViewPlus(QtWidgets.QWidget):
         
         if trace: g.trace('result:\n', result) # ,'\ncode:',code)
         return result, code
-    #@+node:ekr.20140226075611.16795: *7* underline2
+    #@+node:ekr.20140226075611.16795: *7* vr2.underline2
     def underline2(self, p):
         r"""
         Use the given string and convert it to an reST headline for display
@@ -1097,7 +1081,7 @@ class WebViewPlus(QtWidgets.QWidget):
         ch = """><:_`*+"';/{|}()$%&@#"""[p.level() - self.reflevel]
         n = max(4, len(g.toEncodedString(p.h, reportErrors=False)))
         return '%s\n%s\n\n' % (p.h, ch * n)
-    #@+node:ekr.20140227055626.16839: *7* write_rst
+    #@+node:ekr.20140227055626.16839: *7* vr2.write_rst
     def write_rst(self, root, s):
         '''Write s, the final assembled reST text, to leo.rst.'''
         c = self.c
@@ -1110,7 +1094,7 @@ class WebViewPlus(QtWidgets.QWidget):
         f = open(pathname, 'wb')
         f.write(s.encode('utf8'))
         f.close()
-    #@+node:peckj.20140228100832.6391: *3* md_render & helpers (md)
+    #@+node:peckj.20140228100832.6391: *3* vr2.md_render & helpers
     def md_render(self):
         """Re-render the existing string, but probably with new configuration."""
         if self.rendering:
@@ -1123,7 +1107,7 @@ class WebViewPlus(QtWidgets.QWidget):
             finally:
                 # No longer rendering, OK to receive another rendering call
                 self.rendering = False
-    #@+node:peckj.20140228100832.6392: *4* md_render_helper & helper
+    #@+node:peckj.20140228100832.6392: *4* vr2.md_render_helper & helper
     def md_render_helper(self):
         '''Rendinging helper: self.rendering is True.'''
         p, pc = self.c.p, self.pc
@@ -1153,7 +1137,7 @@ class WebViewPlus(QtWidgets.QWidget):
             self.pbar.setValue(100)
             self.app.processEvents()
             self.pbar_action.setVisible(False)
-    #@+node:peckj.20140228100832.6393: *5* md_to_html & helper
+    #@+node:peckj.20140228100832.6393: *5* vr2.md_to_html & helper
     def md_to_html(self, p):
         '''Convert p.b to html using markdown.'''
         c, pc = self.c, self.pc
@@ -1202,7 +1186,7 @@ class WebViewPlus(QtWidgets.QWidget):
         except Exception as e:
             print(e)
             return 'Markdown error... %s' % e
-    #@+node:peckj.20140228100832.6394: *6* md_process_nodes & helpers
+    #@+node:peckj.20140228100832.6394: *6* vr2.md_process_nodes & helpers
     def md_process_nodes(self, p, tree=True):
         """
         Process the markdown for a node, defaulting to node's entire tree.
@@ -1233,7 +1217,7 @@ class WebViewPlus(QtWidgets.QWidget):
         if self.verbose:
             self.md_write_md(root, s)
         return s
-    #@+node:peckj.20140228100832.6395: *7* md_code_directive
+    #@+node:peckj.20140228100832.6395: *7* vr2.md_code_directive
     def md_code_directive(self, lang):
         '''Return a markdown block or code directive.'''
         if pygments:
@@ -1241,7 +1225,7 @@ class WebViewPlus(QtWidgets.QWidget):
             return d
         else:
             return '\n'
-    #@+node:peckj.20140228100832.6397: *7* md_process_one_node
+    #@+node:peckj.20140228100832.6397: *7* vr2.md_process_one_node
     def md_process_one_node(self, p, result, environment):
         '''Handle one node.'''
         c = self.c
@@ -1263,7 +1247,7 @@ class WebViewPlus(QtWidgets.QWidget):
             if err:
                 err = self.md_format_output(err, prefix='**Error**:')
                 result.append(err)
-    #@+node:peckj.20140228100832.6398: *7* md_exec_code
+    #@+node:peckj.20140228100832.6398: *7* vr2.md_exec_code
     def md_exec_code(self, code, environment):
         """Execute the code, capturing the output in stdout and stderr."""
         trace = True and not g.unitTesting
@@ -1284,7 +1268,7 @@ class WebViewPlus(QtWidgets.QWidget):
         sys.stdout = saveout # was sys.__stdout__
         sys.stderr = saveerr # restore stderr
         return bufferout.getvalue(), buffererr.getvalue()
-    #@+node:peckj.20140228100832.6399: *7* md_format_output
+    #@+node:peckj.20140228100832.6399: *7* vr2.md_format_output
     def md_format_output(self, s, prefix='```'):
         """Formats the multi-line string 's' into a md literal block."""
         out = '\n\n' + prefix + '\n\n'
@@ -1292,7 +1276,7 @@ class WebViewPlus(QtWidgets.QWidget):
         for line in lines:
             out += '    ' + line
         return out + '\n```\n'
-    #@+node:peckj.20140228100832.6400: *7* md_process_directives
+    #@+node:peckj.20140228100832.6400: *7* vr2.md_process_directives
     def md_process_directives(self, s, d):
         """s is string to process, d is dictionary of directives at the node."""
         trace = False and not g.unitTesting
@@ -1335,7 +1319,7 @@ class WebViewPlus(QtWidgets.QWidget):
         result = ''.join(result)
         if trace: g.trace('result:\n', result) # ,'\ncode:',code)
         return result, code
-    #@+node:peckj.20140228100832.6401: *7* md_underline2
+    #@+node:peckj.20140228100832.6401: *7* vr2.md_underline2
     def md_underline2(self, p):
         """
         Use the given string and convert it to a markdown headline for display
@@ -1345,7 +1329,7 @@ class WebViewPlus(QtWidgets.QWidget):
         ch = '#' * l
         ch += ' ' + p.h
         return ch
-    #@+node:peckj.20140228100832.6402: *7* md_write_md
+    #@+node:peckj.20140228100832.6402: *7* vr2.md_write_md
     def md_write_md(self, root, s):
         '''Write s, the final assembled md text, to leo.md.'''
         c = self.c
@@ -1358,7 +1342,7 @@ class WebViewPlus(QtWidgets.QWidget):
         f = open(pathname, 'wb')
         f.write(s.encode('utf8'))
         f.close()
-    #@+node:ekr.20140226075611.16803: *3* export
+    #@+node:ekr.20140226075611.16803: *3* vr2.export
     def export(self):
         """Sends self.html to an external browser through leo.html.
 
@@ -1376,7 +1360,7 @@ class WebViewPlus(QtWidgets.QWidget):
 #@+node:ekr.20140226074510.4207: ** class ViewRenderedProvider (vr2)
 class ViewRenderedProvider(object):
     #@+others
-    #@+node:ekr.20140226074510.4208: *3* __init__
+    #@+node:ekr.20140226074510.4208: *3* vr2.__init__
     def __init__(self, c):
         self.c = c
         # Careful: we may be unit testing.
@@ -1384,10 +1368,10 @@ class ViewRenderedProvider(object):
             splitter = c.free_layout.get_top_splitter()
             if splitter:
                 splitter.register_provider(self)
-    #@+node:ekr.20140226074510.4209: *3* ns_provides
+    #@+node:ekr.20140226074510.4209: *3* vr2.ns_provides
     def ns_provides(self):
         return [('Viewrendered2', '_leo_viewrendered')]
-    #@+node:ekr.20140226074510.4210: *3* ns_provide
+    #@+node:ekr.20140226074510.4210: *3* vr2.ns_provide
     def ns_provide(self, id_):
         global controllers
         if id_ == '_leo_viewrendered':
