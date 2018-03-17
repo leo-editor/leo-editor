@@ -344,7 +344,7 @@
 <v t="ekr.20170212105226.11"><vh>Slide 1: Leo's main window</vh></v>
 </v>
 </v>
-<v t="ekr.20161120074501.1"><vh>@button make-md-heads</vh>
+<v t="ekr.20161120074501.1"><vh>@@@button make-md-heads</vh>
 <v t="ekr.20161120075731.1"><vh>markup</vh></v>
 </v>
 <v t="ekr.20161204055040.1"><vh>@button make-md-toc</vh>
@@ -21567,7 +21567,10 @@ These .md files are intended to be viewed on [GitHub](https://github.com/leo-edi
 
 [This page](https://github.com/leo-editor/leo-editor/blob/master/leo/doc/importers.md) contains the cheat sheet for the GitHub flavor of markdown.
 </t>
-<t tx="ekr.20161120074501.1">'''Create markdown headers throughout the nearest .md outline.'''
+<t tx="ekr.20161120074501.1">##### No longer needed
+##### The markdown writer converts headlines to markdown sections,
+##### ignoring headlines that start with !
+'''Create markdown headers throughout the nearest .md outline.'''
 g.cls()
 import re
 @others
