@@ -239,10 +239,13 @@ try:
     import nbformat
     from nbconvert import HTMLExporter
     # from traitlets.config import Config
-    from urllib.request import urlopen
 except ImportError:
     nbformat = None
 import json
+try:
+    from urllib.request import urlopen
+except ImportError:
+    urlopen = None
 #@-<< imports >>
 #@+<< define html templates >>
 #@+node:ekr.20170324090828.1: ** << define html templates >> (vr)
