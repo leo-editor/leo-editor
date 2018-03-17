@@ -184,7 +184,7 @@ Jacob Peck added markdown support to this plugin.
 '''
 #@-<< vr docstring >>
 #@+<< to do >>
-#@+node:ekr.20140924060835.19485: ** << to do >>
+#@+node:ekr.20140924060835.19485: ** << to do >> (vr)
 #@+at
 # To do:
 # 
@@ -199,7 +199,7 @@ Jacob Peck added markdown support to this plugin.
 trace = False
     # This global trace is convenient.
 #@+<< imports >>
-#@+node:tbrown.20100318101414.5993: ** << imports >> (viewrendered.py)
+#@+node:tbrown.20100318101414.5993: ** << imports >> (vr)
 import leo.core.leoGlobals as g
 import leo.plugins.qt_text as qt_text
 import leo.plugins.free_layout as free_layout
@@ -244,26 +244,8 @@ except ImportError:
     nbformat = None
 import json
 #@-<< imports >>
-#@+<< define stylesheets >>
-#@+node:ekr.20110317024548.14377: ** << define stylesheets >>
-stickynote_stylesheet = '''
-/* The body pane */
-/*----- No longer used
-QPlainTextEdit {
-    background-color: #fdf5f5;
-    selection-color: white;
-    selection-background-color: lightgrey;
-    font-family: DejaVu Sans Mono;
-    /* font-family: Courier New; */
-    font-size: 18px;
-    font-weight: normal;
-    font-style: normal;
-}
------ */
-'''
-#@-<< define stylesheets >>
 #@+<< define html templates >>
-#@+node:ekr.20170324090828.1: ** << define html templates >>
+#@+node:ekr.20170324090828.1: ** << define html templates >> (vr)
 image_template = '''\
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -295,15 +277,15 @@ controllers = {}
 layouts = {}
     # Keys are c.hash(): values are tuples (layout_when_closed, layout_when_open)
 #@+others
-#@+node:ekr.20110320120020.14491: ** Top-level
-#@+node:tbrown.20100318101414.5994: *3* decorate_window
+#@+node:ekr.20110320120020.14491: ** vr.Top-level
+#@+node:tbrown.20100318101414.5994: *3* vr.decorate_window
 def decorate_window(w):
     # Do not override the style sheet!
     # This interferes with themes
         # w.setStyleSheet(stickynote_stylesheet)
     w.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     w.resize(600, 300)
-#@+node:tbrown.20100318101414.5995: *3* init (VR)
+#@+node:tbrown.20100318101414.5995: *3* vr.init
 def init():
     '''Return True if the plugin has loaded successfully.'''
     global got_docutils
@@ -315,13 +297,13 @@ def init():
     g.registerHandler('close-frame', onClose)
     g.registerHandler('scrolledMessage', show_scrolled_message)
     return True
-#@+node:ekr.20110317024548.14376: *3* onCreate (viewrendered.py)
+#@+node:ekr.20110317024548.14376: *3* vr.onCreate
 def onCreate(tag, keys):
     c = keys.get('c')
     if c:
         provider = ViewRenderedProvider(c)
         free_layout.register_provider(c, provider)
-#@+node:vitalije.20170712174157.1: *3* onClose
+#@+node:vitalije.20170712174157.1: *3* vr.onClose
 def onClose(tag, keys):
     c = keys.get('c')
     h = c.hash()
@@ -331,7 +313,7 @@ def onClose(tag, keys):
         del controllers[h]
         vr.deactivate()
         vr.deleteLater()
-#@+node:tbrown.20110629132207.8984: *3* show_scrolled_message
+#@+node:tbrown.20110629132207.8984: *3* vr.show_scrolled_message
 def show_scrolled_message(tag, kw):
     if g.unitTesting:
         return # This just slows the unit tests.
@@ -351,14 +333,14 @@ def show_scrolled_message(tag, kw):
         keywords={'c': c, 'force': True, 's': s, 'flags': flags},
     )
     return True
-#@+node:vitalije.20170713082256.1: *3* split_last_sizes
+#@+node:vitalije.20170713082256.1: *3* vr.split_last_sizes
 def split_last_sizes(sizes):
     result = [2 * x for x in sizes[:-1]]
     result.append(sizes[-1])
     result.append(sizes[-1])
     return result
-#@+node:ekr.20110320120020.14490: ** Commands
-#@+node:ekr.20131213163822.16471: *3* g.command('preview')
+#@+node:ekr.20110320120020.14490: ** vr.Commands
+#@+node:ekr.20131213163822.16471: *3* g.command('preview') (vr)
 @g.command('preview')
 def preview(event):
     '''A synonym for the vr-toggle command.'''
@@ -555,7 +537,7 @@ def zoom_rendering_pane(event):
 #@+node:tbrown.20110629084915.35149: ** class ViewRenderedProvider (vr)
 class ViewRenderedProvider(object):
     #@+others
-    #@+node:tbrown.20110629084915.35154: *3* __init__
+    #@+node:tbrown.20110629084915.35154: *3* vr.__init__
     def __init__(self, c):
         self.c = c
         # Careful: we may be unit testing.
@@ -563,10 +545,10 @@ class ViewRenderedProvider(object):
             splitter = c.free_layout.get_top_splitter()
             if splitter:
                 splitter.register_provider(self)
-    #@+node:tbrown.20110629084915.35150: *3* ns_provides
+    #@+node:tbrown.20110629084915.35150: *3* vr.ns_provides
     def ns_provides(self):
         return [('Viewrendered', '_leo_viewrendered')]
-    #@+node:tbrown.20110629084915.35151: *3* ns_provide
+    #@+node:tbrown.20110629084915.35151: *3* vr.ns_provide
     def ns_provide(self, id_):
         global controllers, layouts
         if id_ == '_leo_viewrendered':
