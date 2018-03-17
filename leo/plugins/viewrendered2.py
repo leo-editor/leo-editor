@@ -254,10 +254,6 @@ else:
 import sys
 # import traceback
 
-# tbp: Global semi-constant for setting background color of
-# rendering pane.  It's supposed to get changed during the
-# config process.
-### MD_RENDERING_BG_COLOR = 'grey'
 #@-<< imports >>
 #@+<< define stylesheet >>
 #@+node:ekr.20140226074510.4189: ** << define stylesheet >>
@@ -687,18 +683,6 @@ class WebViewPlus(QtWidgets.QWidget):
         getConfig(gc.getString, 'syntax_highlight', 'long')
         getConfig(gc.getBool, 'no_compact_lists', False)
         getConfig(gc.getBool, 'no_compact_field_lists', False)
-        
-        # Markdown values: tbp
-        # This is a bit of a kludge, but getConfig() does not
-        # know about "self", and this way is easier than figuring out
-        # how to get a reference to the WenViewPlus instance.
-        ###
-            # def set_bg_color(color):
-                # global MD_RENDERING_BG_COLOR;
-                # MD_RENDERING_BG_COLOR = color
-            
-            # getConfig(gc.getString, 'md-rendering-pane-background-color', 'black', set_bg_color)
-
         # Do VR2 init values
         getConfig(gc.getBool, 'verbose', False, self.verbose_mode_action.setChecked)
         getConfig(gc.getBool, 'tree_mode', False, self.tree_mode_action.setChecked)
@@ -707,12 +691,11 @@ class WebViewPlus(QtWidgets.QWidget):
         getConfig(gc.getBool, 'slideshow', False, self.slideshow_mode_action.setChecked)
         getConfig(gc.getBool, 'visible_code', True, self.visible_code_action.setChecked)
         getConfig(gc.getBool, 'code_only', False, self.code_only_action.setChecked)
-
         getConfig(gc.getBool, 'execute_code', False, self.execute_code_action.setChecked)
         getConfig(gc.getBool, 'rest_code_output', False, self.reST_code_action.setChecked)
         # Misc other internal settings
-        # Mark of the Web (for IE) to allow sensible security options
-        #getConfig(gc.getBool, 'include_MOTW', True, setvar=self.MOTW)
+            # Mark of the Web (for IE) to allow sensible security options
+            # getConfig(gc.getBool, 'include_MOTW', True, setvar=self.MOTW)
         return ds
     #@+node:ekr.20140227055626.16844: *4* init_timer
     def init_timer(self):
@@ -1215,8 +1198,6 @@ class WebViewPlus(QtWidgets.QWidget):
             # Markdown does not emit a css style sheet, but the browser will apply
             # a style element at the top of the page to the whole page.
             html = '<style type="text/css">body{background-color:%s;}</style>\n' %(self.background_color) + html
-                # EKR: Was MD_RENDERING_BG_COLOR 
-            
             return g.toUnicode(html)
         except Exception as e:
             print(e)
