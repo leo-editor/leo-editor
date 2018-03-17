@@ -283,6 +283,7 @@
 <v t="ekr.20140915194122.23418"><vh>@color splitter-handle-bg = @LightSteelBlue1</vh></v>
 <v t="ekr.20140912075503.19275"><vh>@color splitter-border-fg = white</vh></v>
 <v t="ekr.20140912075503.19276"><vh>@color splitter-border-style = solid</vh></v>
+<v t="ekr.20180317172528.1"><vh>@color splitter-hover-bg = @LightSteelBlue1</vh></v>
 </v>
 <v t="ekr.20140912075503.19345"><vh>Status area colors</vh>
 <v t="ekr.20140912075503.19346"><vh>@color status-bg = lightgrey</vh></v>
@@ -320,13 +321,13 @@
 <v t="tbrown.20131122094200.2512"><vh>@string font-size-body = @body-font-size</vh></v>
 </v>
 <v t="ekr.20140915194122.23441"><vh>Dialog fonts</vh>
-<v t="ekr.20140912075503.19341"><vh>@string dialog-font-family = None</vh></v>
-<v t="ekr.20140912075503.19342"><vh>@string dialog-font-size = None</vh></v>
-<v t="ekr.20140912075503.19343"><vh>@string dialog-font-weight = None </vh></v>
-<v t="ekr.20140912075503.19344"><vh>@string dialog-font-style = None</vh></v>
+<v t="ekr.20140912075503.19341"><vh>@string dialog-font-family = @font-family</vh></v>
+<v t="ekr.20140912075503.19342"><vh>@string dialog-font-size = @font-size</vh></v>
+<v t="ekr.20140912075503.19343"><vh>@string dialog-font-weight = @font-weight </vh></v>
+<v t="ekr.20140912075503.19344"><vh>@string dialog-font-style = @font-style</vh></v>
 </v>
 <v t="ekr.20140912075503.19277"><vh>Find Panel Fonts</vh>
-<v t="ekr.20140915194122.23424"><vh>@string checkbox-font-family = None</vh></v>
+<v t="ekr.20140915194122.23424"><vh>@string checkbox-font-family = @font-family</vh></v>
 <v t="ekr.20140915194122.23422"><vh>@string checkbox-font-size = @medium-font-size</vh></v>
 <v t="ekr.20140912075503.19279"><vh>@string find-font-family = @font-family</vh></v>
 <v t="ekr.20140912075503.19280"><vh>@string find-font-size = @medium-font-size</vh></v>
@@ -375,7 +376,7 @@
 </v>
 </v>
 <v t="ekr.20140915194122.23443"><vh>Status area fonts</vh>
-<v t="ekr.20140912075503.19350"><vh>@string status-font-family = None</vh></v>
+<v t="ekr.20140912075503.19350"><vh>@string status-font-family = @font-family</vh></v>
 <v t="ekr.20140912075503.19351"><vh>@string status-font-size = @small-font-size</vh></v>
 <v t="ekr.20140912075503.19352"><vh>@string status-font-weight = @font-weight</vh></v>
 <v t="ekr.20140912075503.19353"><vh>@string status-font-style = @font-style</vh></v>
@@ -420,9 +421,9 @@
 <v t="ekr.20140912075503.19355"><vh>bookmarks.py plugin</vh>
 <v t="ekr.20140915194122.24259"><vh>bookmarks base</vh>
 <v t="tbrown.20140101093550.25136"><vh>@color bookmarks_base_color = @text-foreground</vh></v>
-<v t="ekr.20140912075503.19358"><vh>@string bookmarks_base_border = none</vh></v>
-<v t="tbrown.20140101093550.25140"><vh>@string bookmarks_base_decoration = none</vh></v>
-<v t="ekr.20140915194122.24263"><vh>@string bookmarks_base_family = none</vh></v>
+<v t="ekr.20140912075503.19358"><vh>@string bookmarks_base_border = "none"</vh></v>
+<v t="tbrown.20140101093550.25140"><vh>@string bookmarks_base_decoration = "none"</vh></v>
+<v t="ekr.20140915194122.24263"><vh>@string bookmarks_base_family = @font-family</vh></v>
 <v t="ekr.20140912075503.19356"><vh>@string bookmarks_base_margin = 0</vh></v>
 <v t="ekr.20140912075503.19357"><vh>@string bookmarks_base_padding = 1</vh></v>
 <v t="tbrown.20140101093550.25165"><vh>@string bookmarks_base_size = @bookmarks_font_size</vh></v>
@@ -432,16 +433,16 @@
 <v t="ekr.20140915194122.24260"><vh>bookmarks children</vh>
 <v t="tbrown.20140101093550.25162"><vh>@color bookmarks_children_color = @text-foreground</vh></v>
 <v t="tbrown.20140101093550.25164"><vh>@string bookmarks_children_decoration = underline</vh></v>
-<v t="ekr.20140915194122.24264"><vh>@string bookmarks_children_family = none</vh></v>
+<v t="ekr.20140915194122.24264"><vh>@string bookmarks_children_family = @font-family</vh></v>
 <v t="tbrown.20140101093550.25171"><vh>@string bookmarks_children_size = ignore</vh></v>
 <v t="ekr.20140915194122.24266"><vh>@string bookmarks_children_style = ignore</vh></v>
 <v t="tbrown.20140101093550.25163"><vh>@string bookmarks_children_weight = ignore</vh></v>
 </v>
 <v t="ekr.20140915194122.24261"><vh>bookmarks current</vh>
 <v t="tbrown.20140101093550.25146"><vh>@color bookmarks_current_color = blue</vh></v>
-<v t="tbrown.20140101093550.25148"><vh>@string bookmarks_current_decoration = ignore</vh></v>
-<v t="tbrown.20140101093550.25167"><vh>@string bookmarks_current_size = ignore</vh></v>
-<v t="ekr.20140915194122.24267"><vh>@string bookmarks_current_style = ignore</vh></v>
+<v t="tbrown.20140101093550.25148"><vh>@string bookmarks_current_decoration = "none"</vh></v>
+<v t="ekr.20180317175351.1"><vh>@string bookmarks_current_size = @bookmarks_font_size</vh></v>
+<v t="ekr.20140915194122.24267"><vh>@string bookmarks_current_style = "none"</vh></v>
 <v t="tbrown.20140101093550.25147"><vh>@string bookmarks_current_weight = bold</vh></v>
 </v>
 <v t="ekr.20140915194122.24262"><vh>bookmarks expanded</vh>
@@ -2318,7 +2319,6 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20180312035141.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -9807,8 +9807,8 @@ QCheckBox#TipCheckbox {
 
 /* -----
 QPushButton {
-    font-family: @push-button-font-family;
-    font-size:   @push-button-font-size;
+    font-family: at-push-button-font-family;
+    font-size:   at-push-button-font-size;
 }
 ----- */
 
@@ -11763,6 +11763,8 @@ May be overridden by themes.</t>
 Leo's core menu code populates this menu as a special case.</t>
 <t tx="ekr.20180312035333.1">&amp;Open Theme File</t>
 <t tx="ekr.20180312051552.1">&amp;Apply Theme</t>
+<t tx="ekr.20180317172528.1"></t>
+<t tx="ekr.20180317175351.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
@@ -12041,7 +12043,6 @@ valid values are: normal,bold,100,..,900
 <t tx="tbrown.20140101093550.25163">bold or regular</t>
 <t tx="tbrown.20140101093550.25164">none or underline</t>
 <t tx="tbrown.20140101093550.25165"></t>
-<t tx="tbrown.20140101093550.25167"></t>
 <t tx="tbrown.20140101093550.25169"></t>
 <t tx="tbrown.20140101093550.25171"></t>
 <t tx="tbrown.20140101093550.25173"></t>
