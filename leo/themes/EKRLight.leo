@@ -2,14 +2,14 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.37" body_secondary_ratio="0.51">
-	<global_window_position top="138" left="562" height="861" width="1109"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
-<v t="ekr.20180312111251.1"><vh>Read me</vh></v>
+<v t="ekr.20180312111251.1"><vh>EKRLight.leo: Read me</vh></v>
 <v t="ekr.20180308122011.1"><vh>Tests</vh>
 <v t="ekr.20180314052351.1"><vh>Syntax coloring template</vh>
 <v t="ekr.20180314052351.2"><vh>&lt;&lt; defined section &gt;&gt;</vh></v>
@@ -17,8 +17,8 @@
 <v t="ekr.20180307205426.1"><vh>Test g.es(color=*)</vh></v>
 <v t="ekr.20180308121517.1"><vh>g.error/note/warning test</vh></v>
 </v>
-<v t="ekr.20180307205349.2"><vh>@settings</vh>
-<v t="ekr.20180308114355.1"><vh>@bool minibuffer_find_mode = True</vh></v>
+<v t="ekr.20180307205349.2" a="E"><vh>@settings</vh>
+<v t="ekr.20180308114355.1"><vh>@bool minibuffer_find_mode = False</vh></v>
 <v t="ekr.20180307205435.1"><vh>@bool show-tips = False</vh></v>
 <v t="ekr.20180307205445.1"><vh>@bool use-gutter = False</vh></v>
 <v t="ekr.20180309185230.1"><vh>@theme Leo Light</vh>
@@ -657,7 +657,7 @@ The following settings specify the indicators.  You can use an absolute path, or
   font-weight: @bookmarks_current_weight;
 }
 </t>
-<t tx="ekr.20180312111251.1" str_leo_pos="1,0">@language rest
+<t tx="ekr.20180312111251.1">@language rest
 @wrap
 
 A light theme based on EKR's legacy theme.
