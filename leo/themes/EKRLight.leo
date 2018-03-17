@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.52" body_secondary_ratio="0.50">
+	<global_window_position top="117" left="473" height="700" width="1035"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -17,10 +17,7 @@
 <v t="ekr.20180307205426.1"><vh>Test g.es(color=*)</vh></v>
 <v t="ekr.20180308121517.1"><vh>g.error/note/warning test</vh></v>
 </v>
-<v t="ekr.20180307205349.2" a="E"><vh>@settings</vh>
-<v t="ekr.20180308114355.1"><vh>@bool minibuffer_find_mode = False</vh></v>
-<v t="ekr.20180307205435.1"><vh>@bool show-tips = False</vh></v>
-<v t="ekr.20180307205445.1"><vh>@bool use-gutter = False</vh></v>
+<v t="ekr.20180307205349.2"><vh>@settings</vh>
 <v t="ekr.20180309185230.1"><vh>@theme Leo Light</vh>
 <v t="ekr.20180309185230.2"><vh>Settings for Leo Light</vh>
 <v t="ekr.20180309185230.3"><vh>Colors: Logical colors</vh>
@@ -168,9 +165,6 @@
 </v>
 </v>
 </v>
-<v t="ekr.20180309185230.105"></v>
-<v t="ekr.20180309185230.102"></v>
-<v t="ekr.20180309185230.99"></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180307205349.2"></t>
@@ -187,9 +181,6 @@
 for s in table:
     g.es(s, color=s)
 </t>
-<t tx="ekr.20180307205435.1">True: show user tips on startup.</t>
-<t tx="ekr.20180307205445.1"># For line_numbering plugin.</t>
-<t tx="ekr.20180308114355.1"></t>
 <t tx="ekr.20180308121517.1"># g.cls()
 g.error('error')
 g.note('note')
@@ -657,7 +648,7 @@ The following settings specify the indicators.  You can use an absolute path, or
   font-weight: @bookmarks_current_weight;
 }
 </t>
-<t tx="ekr.20180312111251.1">@language rest
+<t tx="ekr.20180312111251.1" str_leo_pos="0">@language rest
 @wrap
 
 A light theme based on EKR's legacy theme.
