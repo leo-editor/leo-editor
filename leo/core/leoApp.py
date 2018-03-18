@@ -206,6 +206,9 @@ class LeoApp(object):
             # The leo/core directory.
         self.machineDir = None
             # The machine-specific directory.
+        self.themeDirs = []
+            # A list of directories containing theme files.
+            # Will typically contains ~ or leo/themes.
         #@-<< LeoApp: global directories >>
         #@+<< LeoApp: global data >>
         #@+node:ekr.20161028035956.1: *5* << LeoApp: global data >>
@@ -2150,13 +2153,6 @@ class LoadManager(object):
         if g.app.loadedThemes:
             if trace: g.trace('===== Return: g.app.loadedThemes')
             return
-        ### Fails: read everything EXCEPT @theme trees???
-        # if g.app.is_theme:
-            # if trace: g.trace('===== Return: g.app.is_theme')
-            # settings_d, shortcuts_d = lm.createEmptySettingsDicts()
-            # lm.globalSettingsDict = settings_d
-            # lm.globalShortcutsDict = shortcuts_d
-            # return
         if trace: g.es_debug()
         # Open the standard settings files with a nullGui.
         # Important: their commanders do not exist outside this method!
@@ -2560,7 +2556,7 @@ class LoadManager(object):
         # Handle simple args...
         self.doSimpleOptions(options)
         # Compute the lm.files ivar.
-        lm.files = lm.computeFilesList(fileName)
+        lm.files = lm.computeFilesList(options, fileName)
         # Compute the return values.
         script = None if pymacs else self.doScriptOption(options, parser)
         d = {
@@ -2584,13 +2580,14 @@ class LoadManager(object):
     #@@nobeautify
 
     def addOptionsToParser(self, parser):
+        
         add = parser.add_option
         
         def add_bool(option, help, dest=None):
             add(option, action='store_true', dest=dest, help=help)
             
-        def add_other(option, help, dest=None, metavar=None):
-            add(option, dest=dest, help=help, metavar=metavar)
+        def add_other(option, help, dest=None, m=None):
+            add(option, dest=dest, help=help, metavar=m)
 
         add_bool('--debug',         'enable debug mode')
         add_bool('--diff',          'use Leo as an external git diff')
@@ -2598,34 +2595,48 @@ class LoadManager(object):
         add_bool('--ipython',       'enable ipython support')
         add_bool('--fail-fast',     'stop unit tests after the first failure')
         add_other('--gui',          'gui to use (qt/qttabs/console/null)')
-        add_bool('--is-theme',      'load the first file as a theme file')
         add_bool('--listen-to-log', 'start log_listener.py on startup')
-        add_other('--load-type',    '@<file> type for non-outlines', metavar='TYPE')
+        add_other('--load-type',    '@<file> type for non-outlines', m='TYPE')
         add_bool('--maximized',     'start maximized')
         add_bool('--minimized',     'start minimized')
         add_bool('--no-cache',      'disable reading of cached files')
         add_bool('--no-plugins',    'disable all plugins')
         add_bool('--no-splash',     'disable the splash screen')
-        add_other('--screen-shot',  'take a screen shot and then exit', metavar='PATH')
-        add_other('--script',       'execute a script and then exit', metavar="PATH")
+        add_other('--screen-shot',  'take a screen shot and then exit', m='PATH')
+        add_other('--script',       'execute a script and then exit', m="PATH")
         add_bool('--script-window', 'execute script using default gui')
-        add_other('--select',       'headline or gnx of node to select', metavar='ID')
+        add_other('--select',       'headline or gnx of node to select', m='ID')
         add_bool('--session-restore','restore session tabs at startup')
         add_bool('--session-save',  'save session tabs on exit')
         add_bool('--silent',        'disable all log messages')
+        add_other('--theme',        'use the named theme file', m='NAME')
         add_bool('--trace-binding', 'trace key bindings')
         add_bool('--trace-focus',   'trace changes of focus')
         add_bool('--trace-plugins', 'trace imports of plugins')
-        add_other('--trace-setting', 'trace where named setting is set', metavar="NAME")
+        add_other('--trace-setting', 'trace where named setting is set', m="NAME")
         add_bool('--trace-shutdown', 'trace shutdown logic')
-        add_other('--window-size',  'initial window size (height x width)', metavar='SIZE')
+        add_other('--window-size',  'initial window size (height x width)', m='SIZE')
         # Multiple bool values.
         add('-v', '--version', action='store_true',
             help='print version number and exit')
     #@+node:ekr.20120219154958.10483: *6* LM.computeFilesList
-    def computeFilesList(self, fileName):
+    def computeFilesList(self, options, fileName):
+        trace = True
         lm = self
         files = []
+        theme_file = options.theme
+        if theme_file:
+            if not theme_file.endswith('.leo'):
+                theme_file += '.leo'
+            path = g.os_path_finalize_join(g.app.loadDir, '..', 'themes', theme_file)
+            if  g.os_path_exists(path):
+                path = g.os_path_normslashes(path)
+                g.app.themeDirs.append(path)
+                if trace: print('\n--theme=%s\n' % path)
+                theme_file = path
+            else:
+                print('\nfile not found: --theme=%s\n' % path)
+                theme_file = None
         if fileName:
             files.append(fileName)
         for arg in sys.argv[1:]:
@@ -2639,6 +2650,11 @@ class LoadManager(object):
                 result.extend(aList)
             else:
                 result.append(z)
+        result = [g.os_path_normslashes(z) for z in result]
+        if theme_file:
+            if theme_file in result:
+                result.remove(theme_file)
+            result.append(theme_file)
         return result
     #@+node:ekr.20180312150805.1: *6* LM.doGuiOption
     def doGuiOption(self, options):
@@ -2708,10 +2724,6 @@ class LoadManager(object):
         g.app.start_fullscreen = options.fullscreen
         # --git-diff
         g.app.diff = options.diff
-        # --is_theme
-        g.app.is_theme = options.is_theme
-        if options.is_theme:
-            print('===== scanOptions: g.app.is_theme: %s' % bool(g.app.is_theme))
         # --listen-to-log
         g.app.listen_to_log_flag = options.listen_to_log
         # --ipython

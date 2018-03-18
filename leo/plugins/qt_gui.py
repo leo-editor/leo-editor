@@ -896,7 +896,7 @@ class LeoQtGui(leoGui.LeoGui):
             g.es("exception loading:", name)
             g.es_exception()
             return None
-    #@+node:tbrown.20130316075512.28478: *4* qt_gui.getImageImageFinder
+    #@+node:tbrown.20130316075512.28478: *4* qt_gui.getImageImageFinder (to be generalized)
     def getImageImageFinder(self, name):
         '''Theme aware image (icon) path searching
 
