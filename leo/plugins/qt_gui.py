@@ -1515,7 +1515,7 @@ class StyleSheetManager(object):
                 join(leo, 'Icons'),
             ]
         return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
-    #@+node:ekr.20180315101238.1: *4* ssm.compute_theme_directories
+    #@+node:ekr.20180315101238.1: *4* ssm.compute_theme_directories (remove??)
     def compute_theme_directories(self, theme=None):
         '''
         Return a list of directories that could contain theme .leo files.

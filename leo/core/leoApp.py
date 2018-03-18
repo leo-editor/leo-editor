@@ -1687,6 +1687,22 @@ class LoadManager(object):
         else:
             path = None
         return path
+    #@+node:ekr.20180318120148.1: *4* LM.computeThemeDirectories
+    def computeThemeDirectories(self):
+        '''
+        Return a list of *existing* directories that might contain theme .leo files.
+        '''
+        join = g.os_path_finalize_join
+        home = g.app.homeLeoDir
+        leo = join(g.app.loadDir, '..')
+        table = [
+            home,
+            join(home, 'themes'),
+            join(home, '.leo'),
+            join(home, '.leo', 'themes'),
+            join(leo, 'themes'),
+        ]
+        return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
     #@+node:ekr.20120209051836.10252: *4* LM.computeStandardDirectories & helpers
     def computeStandardDirectories(self):
         '''Compute the locations of standard directories and
@@ -2628,12 +2644,14 @@ class LoadManager(object):
         if theme_file:
             if not theme_file.endswith('.leo'):
                 theme_file += '.leo'
-            path = g.os_path_finalize_join(g.app.loadDir, '..', 'themes', theme_file)
-            if  g.os_path_exists(path):
-                path = g.os_path_normslashes(path)
-                g.app.themeDirs.append(path)
-                if trace: print('\n--theme=%s\n' % path)
-                theme_file = path
+            for directory in lm.computeThemeDirectories():
+                path = g.os_path_finalize_join(directory, theme_file)
+                if  g.os_path_exists(path):
+                    path = g.os_path_normslashes(path)
+                    g.app.themeDirs.append(path)
+                    if trace: print('\n--theme=%s\n' % path)
+                    theme_file = path
+                    break
             else:
                 print('\nfile not found: --theme=%s\n' % path)
                 theme_file = None
