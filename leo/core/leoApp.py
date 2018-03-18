@@ -224,6 +224,7 @@ class LeoApp(object):
             # The id part of gnx's.
         self.loadedThemes = []
             # List of loaded theme.leo files.
+            # This is used by the 'new' command.
         self.lossage = []
             # List of last 100 keystrokes.
         self.paste_c = None
@@ -1805,6 +1806,20 @@ class LoadManager(object):
             join(leo, 'themes'),
         ]
         return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
+    #@+node:ekr.20180318133620.1: *4* LM.computeThemeFilePath
+    def computeThemeFilePath(self, fn):
+
+        lm = self
+        if not fn.endswith('.leo'):
+            fn += '.leo'
+        for directory in lm.computeThemeDirectories():
+            path = g.os_path_finalize_join(directory, fn)
+            if  g.os_path_exists(path):
+                path = g.os_path_normslashes(path)
+                g.app.themeDirs.append(path)
+                return path
+        g.trace('file not found: %s' % fn)
+        return None
     #@+node:ekr.20120211121736.10772: *4* LM.computeWorkbookFileName
     def computeWorkbookFileName(self):
         '''
@@ -1857,20 +1872,6 @@ class LoadManager(object):
             for ivar in aList:
                 val = getattr(g.app, ivar)
                 g.trace('%20s' % (ivar), val)
-    #@+node:ekr.20180318133620.1: *4* LM.resolveThemeFile
-    def resolveThemeFile(self, fn):
-
-        lm = self
-        if not fn.endswith('.leo'):
-            fn += '.leo'
-        for directory in lm.computeThemeDirectories():
-            path = g.os_path_finalize_join(directory, fn)
-            if  g.os_path_exists(path):
-                path = g.os_path_normslashes(path)
-                g.app.themeDirs.append(path)
-                return path
-        g.trace('file not found: %s' % fn)
-        return None
     #@+node:ekr.20120215062153.10740: *3* LM.Settings
     #@+node:ekr.20120130101219.10182: *4* LM.computeBindingLetter
     def computeBindingLetter(self, kind):
@@ -1963,16 +1964,6 @@ class LoadManager(object):
             d1 = lm.globalSettingsDict.copy(settingsName)
             d2 = lm.globalShortcutsDict.copy(shortcutsName)
         return PreviousSettings(d1, d2)
-    #@+node:ekr.20180310092706.1: *4* LM.loadAllLoadedThemes
-    def loadAllLoadedThemes(self, c, old_c):
-        '''
-        Load all previously-loaded themes.
-        Do *not* load settings files again.
-        '''
-        ssm = old_c.styleSheetManager
-        for path in g.app.loadedThemes:
-            g.trace('===== Reloading Theme', path)
-            ssm.load_theme_file(c, path, old_c=old_c, reload_flag=True)
     #@+node:ekr.20120214132927.10723: *4* LM.mergeShortcutsDicts & helpers
     def mergeShortcutsDicts(self, c, old_d, new_d, localFlag):
         '''
@@ -2159,10 +2150,7 @@ class LoadManager(object):
         lm = self
         trace = (False or g.trace_startup) and not g.unitTesting
         verbose = False
-        if g.app.loadedThemes:
-            if trace: g.trace('===== Return: g.app.loadedThemes')
-            return
-        if trace: g.es_debug()
+        ### if trace: g.es_debug()
         # Open the standard settings files with a nullGui.
         # Important: their commanders do not exist outside this method!
         paths = [lm.computeLeoSettingsPath(), lm.computeMyLeoSettingsPath()]
@@ -2265,6 +2253,152 @@ class LoadManager(object):
         if len(commanders) == 2:
             c = commanders[0]
             c.editFileCommands.compareAnyTwoFiles(event=None)
+    #@+node:ekr.20120219154958.10487: *4* LM.doPostPluginsInit & helpers
+    def doPostPluginsInit(self):
+        '''Create a Leo window for each file in the lm.files list.'''
+        # Clear g.app.initing _before_ creating commanders.
+        lm = self
+        g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
+        # Create the main frame.  Show it and all queued messages.
+        c = c1 = None
+        if lm.files:
+            for n, fn in enumerate(lm.files):
+                lm.more_cmdline_files = n < len(lm.files) - 1
+                c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
+                    # Returns None if the file is open in another instance of Leo.
+                if not c1: c1 = c
+            ### It's too late to do this here.
+            ### Theme settings should replace corresponding settings in myLeoSettings.leo
+            ### lm.doThemes()
+        if g.app.restore_session:
+            m = g.app.sessionManager
+            if m:
+                aList = m.load_snapshot()
+                if aList:
+                    m.load_session(c1, aList)
+                    # tag:#659.
+                    if g.app.windowList:
+                        c = c1 = g.app.windowList[0].c
+                    else:
+                        c = c1 = None
+        if not c1 or not g.app.windowList:
+            c1 = lm.openEmptyWorkBook()
+        # Fix bug #199.
+        g.app.runAlreadyOpenDialog(c1)
+        # Put the focus in the first-opened file.
+        fileName = lm.files[0] if lm.files else None
+        c = c1
+        # For qttabs gui, select the first-loaded tab.
+        if hasattr(g.app.gui, 'frameFactory'):
+            factory = g.app.gui.frameFactory
+            if factory and hasattr(factory, 'setTabForCommander'):
+                factory.setTabForCommander(c)
+        if not c:
+            return False # Force an immediate exit.
+        # Fix bug 844953: tell Unity which menu to use.
+            # if c: c.enableMenuBar()
+        # Do the final inits.
+        g.app.logInited = True
+        g.app.initComplete = True
+        if c: c.setLog()
+        # print('doPostPluginsInit: ***** set log')
+        p = c.p if c else None
+        g.doHook("start2", c=c, p=p, fileName=fileName)
+        if c: lm.initFocusAndDraw(c, fileName)
+        screenshot_fn = lm.options.get('screenshot_fn')
+        if screenshot_fn:
+            lm.make_screen_shot(screenshot_fn)
+            return False # Force an immediate exit.
+        else:
+            return True
+    #@+node:ekr.20180318131632.1: *5* LM.doThemes
+    def doThemes(self):
+        '''
+        Close the theme file unless it is the only file.
+        Otherwise, handle @theme-name setting.
+        '''
+        trace = True
+        lm = self
+        aList = g.app.commanders()
+        path = lm.options.get('theme_path')
+        if path and len(aList) > 1:
+            frame = aList[-1].frame
+            if trace: g.trace('CLOSING --THEME FILE:', path)
+            g.app.closeLeoWindow(frame, new_c=None, finish_quit=False)
+            return
+        # Get the setting directly from myLeoSettings.leo.
+        # This can not be done in lm.scanOptions because settings have not been read.
+        gs = lm.globalSettingsDict.get('themename')
+        if not (gs and gs.val and g.isString(gs.val)):
+            return
+        path = g.toUnicode(gs.val)
+        path = lm.computeThemeFilePath(path)
+        # if trace: g.trace('@string theme-name: %s' % path)
+        if path in lm.files:
+            if trace: g.trace('THEME FILE IN FILES LIST: %s' % path)
+            return
+        # Apply the theme by loading the file, then immediately closing it.
+        if trace: g.trace('APPLYING THEME FILE:', path)
+        c = lm.loadLocalFile(path, gui=g.app.gui, old_c=None)
+        g.app.closeLeoWindow(c.frame, new_c=None, finish_quit=False)
+    #@+node:ekr.20120219154958.10488: *5* LM.initFocusAndDraw
+    def initFocusAndDraw(self, c, fileName):
+
+        def init_focus_handler(timer, c=c, p=c.p):
+            '''Idle-time handler for initFocusAndDraw'''
+            c.initialFocusHelper()
+            c.outerUpdate()
+            timer.stop()
+
+        # This must happen after the code in getLeoFile.
+        timer = g.IdleTime(init_focus_handler, delay=0.1, tag='getLeoFile')
+        if timer:
+            timer.start()
+        else:
+            # Default code.
+            c.selectPosition(c.p)
+            c.initialFocusHelper()
+            c.k.showStateAndMode()
+            c.outerUpdate()
+    #@+node:ekr.20120219154958.10489: *5* LM.make_screen_shot
+    def make_screen_shot(self, fn):
+        '''Create a screenshot of the present Leo outline and save it to path.'''
+        # g.trace('runLeo.py',fn)
+        if g.app.gui.guiName() == 'qt':
+            m = g.loadOnePlugin('screenshots')
+            m.make_screen_shot(fn)
+    #@+node:ekr.20131028155339.17098: *5* LM.openEmptyWorkBook
+    def openEmptyWorkBook(self):
+        '''Open an empty frame and paste the contents of CheatSheet.leo into it.'''
+        lm = self
+        # Create an empty frame.
+        fn = lm.computeWorkbookFileName()
+        c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
+        # Open the cheatsheet, but not in batch mode.
+        if not g.app.batchMode and not g.os_path_exists(fn):
+            # Paste the contents of CheetSheet.leo into c.
+            c2 = c.openCheatSheet(redraw=False)
+            if c2:
+                for p2 in c2.rootPosition().self_and_siblings():
+                    c2.selectPosition(p2)
+                    c2.copyOutline()
+                    p = c.pasteOutline()
+                    c.selectPosition(p)
+                    p.contract()
+                    p.clearDirty()
+                c2.close(new_c=c)
+                root = c.rootPosition()
+                if root.h == g.shortFileName(fn):
+                    root.doDelete(newNode=root.next())
+                p = g.findNodeAnywhere(c, "Leo's cheat sheet")
+                if p:
+                    c.selectPosition(p)
+                    p.expand()
+                c.target_language = 'rest'
+                    # Settings not parsed the first time.
+                c.setChanged(False)
+                c.redraw()
+        return c
     #@+node:ekr.20120219154958.10477: *4* LM.doPrePluginsInit & helpers
     def doPrePluginsInit(self, fileName, pymacs):
         ''' Scan options, set directories and read settings.'''
@@ -2638,7 +2772,7 @@ class LoadManager(object):
         theme_file = options.theme
         if theme_file:
             # --theme takes precedence over @string theme-name
-            path = self.resolveThemeFile(theme_file)
+            path = self.computeThemeFilePath(theme_file)
             options.theme = theme_file = path
         if fileName:
             files.append(fileName)
@@ -2854,150 +2988,6 @@ class LoadManager(object):
             sys.stdout = sys.__stdout__ = LeoStdOut('stdout')
         if not sys.stderr:
             sys.stderr = sys.__stderr__ = LeoStdOut('stderr')
-    #@+node:ekr.20120219154958.10487: *4* LM.doPostPluginsInit & helpers
-    def doPostPluginsInit(self):
-        '''Create a Leo window for each file in the lm.files list.'''
-        # Clear g.app.initing _before_ creating commanders.
-        lm = self
-        g.app.initing = False # "idle" hooks may now call g.app.forceShutdown.
-        # Create the main frame.  Show it and all queued messages.
-        c = c1 = None
-        if lm.files:
-            for n, fn in enumerate(lm.files):
-                lm.more_cmdline_files = n < len(lm.files) - 1
-                c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
-                    # Returns None if the file is open in another instance of Leo.
-                if not c1: c1 = c
-            lm.doThemes()
-        if g.app.restore_session:
-            m = g.app.sessionManager
-            if m:
-                aList = m.load_snapshot()
-                if aList:
-                    m.load_session(c1, aList)
-                    # tag:#659.
-                    if g.app.windowList:
-                        c = c1 = g.app.windowList[0].c
-                    else:
-                        c = c1 = None
-        if not c1 or not g.app.windowList:
-            c1 = lm.openEmptyWorkBook()
-        # Fix bug #199.
-        g.app.runAlreadyOpenDialog(c1)
-        # Put the focus in the first-opened file.
-        fileName = lm.files[0] if lm.files else None
-        c = c1
-        # For qttabs gui, select the first-loaded tab.
-        if hasattr(g.app.gui, 'frameFactory'):
-            factory = g.app.gui.frameFactory
-            if factory and hasattr(factory, 'setTabForCommander'):
-                factory.setTabForCommander(c)
-        if not c:
-            return False # Force an immediate exit.
-        # Fix bug 844953: tell Unity which menu to use.
-            # if c: c.enableMenuBar()
-        # Do the final inits.
-        g.app.logInited = True
-        g.app.initComplete = True
-        if c: c.setLog()
-        # print('doPostPluginsInit: ***** set log')
-        p = c.p if c else None
-        g.doHook("start2", c=c, p=p, fileName=fileName)
-        if c: lm.initFocusAndDraw(c, fileName)
-        screenshot_fn = lm.options.get('screenshot_fn')
-        if screenshot_fn:
-            lm.make_screen_shot(screenshot_fn)
-            return False # Force an immediate exit.
-        else:
-            return True
-    #@+node:ekr.20180318131632.1: *5* LM.doThemes
-    def doThemes(self):
-        '''
-        Close the theme file unless it is the only file.
-        Otherwise, handle @theme-name setting.
-        '''
-        trace = True
-        lm = self
-        aList = g.app.commanders()
-        path = lm.options.get('theme_path')
-        if path and len(aList) > 1:
-            frame = aList[-1].frame
-            if trace: g.trace('CLOSING --THEME FILE:', path)
-            g.app.closeLeoWindow(frame, new_c=None, finish_quit=False)
-            return
-        # Get the setting directly from myLeoSettings.leo.
-        # This can not be done in lm.scanOptions because settings have not been read.
-        gs = lm.globalSettingsDict.get('themename')
-        if not (gs and gs.val and g.isString(gs.val)):
-            return
-        path = g.toUnicode(gs.val)
-        path = lm.resolveThemeFile(path)
-        # if trace: g.trace('@string theme-name: %s' % path)
-        if path in lm.files:
-            if trace: g.trace('THEME FILE IN FILES LIST: %s' % path)
-            return
-        # Apply the theme by loading the file, then immediately closing it.
-        if trace: g.trace('APPLYING THEME FILE:', path)
-        c = lm.loadLocalFile(path, gui=g.app.gui, old_c=None)
-        g.app.closeLeoWindow(c.frame, new_c=None, finish_quit=False)
-    #@+node:ekr.20120219154958.10488: *5* LM.initFocusAndDraw
-    def initFocusAndDraw(self, c, fileName):
-
-        def init_focus_handler(timer, c=c, p=c.p):
-            '''Idle-time handler for initFocusAndDraw'''
-            c.initialFocusHelper()
-            c.outerUpdate()
-            timer.stop()
-
-        # This must happen after the code in getLeoFile.
-        timer = g.IdleTime(init_focus_handler, delay=0.1, tag='getLeoFile')
-        if timer:
-            timer.start()
-        else:
-            # Default code.
-            c.selectPosition(c.p)
-            c.initialFocusHelper()
-            c.k.showStateAndMode()
-            c.outerUpdate()
-    #@+node:ekr.20120219154958.10489: *5* LM.make_screen_shot
-    def make_screen_shot(self, fn):
-        '''Create a screenshot of the present Leo outline and save it to path.'''
-        # g.trace('runLeo.py',fn)
-        if g.app.gui.guiName() == 'qt':
-            m = g.loadOnePlugin('screenshots')
-            m.make_screen_shot(fn)
-    #@+node:ekr.20131028155339.17098: *5* LM.openEmptyWorkBook
-    def openEmptyWorkBook(self):
-        '''Open an empty frame and paste the contents of CheatSheet.leo into it.'''
-        lm = self
-        # Create an empty frame.
-        fn = lm.computeWorkbookFileName()
-        c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
-        # Open the cheatsheet, but not in batch mode.
-        if not g.app.batchMode and not g.os_path_exists(fn):
-            # Paste the contents of CheetSheet.leo into c.
-            c2 = c.openCheatSheet(redraw=False)
-            if c2:
-                for p2 in c2.rootPosition().self_and_siblings():
-                    c2.selectPosition(p2)
-                    c2.copyOutline()
-                    p = c.pasteOutline()
-                    c.selectPosition(p)
-                    p.contract()
-                    p.clearDirty()
-                c2.close(new_c=c)
-                root = c.rootPosition()
-                if root.h == g.shortFileName(fn):
-                    root.doDelete(newNode=root.next())
-                p = g.findNodeAnywhere(c, "Leo's cheat sheet")
-                if p:
-                    c.selectPosition(p)
-                    p.expand()
-                c.target_language = 'rest'
-                    # Settings not parsed the first time.
-                c.setChanged(False)
-                c.redraw()
-        return c
     #@+node:ekr.20120219154958.10491: *4* LM.isValidPython & emergency (Tk) dialog class
     def isValidPython(self):
         if sys.platform == 'cli':
@@ -3105,6 +3095,17 @@ class LoadManager(object):
             print("isValidPython: unexpected exception: g.CheckVersion")
             traceback.print_exc()
             return 0
+    #@+node:ekr.20180310092706.1: *4* LM.loadAllLoadedThemes
+    def loadAllLoadedThemes(self, c, old_c):
+        '''
+        Load all previously-loaded themes.
+        Do *not* load settings files again.
+        '''
+        # Called by the 'new' command.
+        ssm = old_c.styleSheetManager
+        for path in g.app.loadedThemes:
+            g.trace('===== Reloading Theme', path)
+            ssm.load_theme_file(c, path, old_c=old_c, reload_flag=True)
     #@+node:ekr.20120223062418.10393: *4* LM.loadLocalFile & helper
     def loadLocalFile(self, fn, gui, old_c):
         '''Completely read a file, creating the corresonding outline.

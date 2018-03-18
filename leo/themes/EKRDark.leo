@@ -10,14 +10,14 @@
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20180312111155.1"><vh>Read me</vh></v>
-<v t="ekr.20180312110809.1"><vh>Tests</vh>
+<v t="ekr.20180312110809.1"><vh>Theme Tests</vh>
 <v t="ekr.20180314052441.1"><vh>Syntax coloring template</vh>
 <v t="ekr.20180314052441.2"><vh>&lt;&lt; defined section &gt;&gt;</vh></v>
 </v>
 <v t="ekr.20180312110809.4"><vh>Test g.es(color=*)</vh></v>
 <v t="ekr.20180312110809.5"><vh>g.error/note/warning test</vh></v>
 </v>
-<v t="ekr.20180318145515.1"><vh>@settings</vh>
+<v t="ekr.20180318145515.1" a="E"><vh>@settings</vh>
 <v t="ekr.20180318145515.178"><vh>Appearance</vh>
 <v t="ekr.20180318145515.179"><vh>@bool auto-scroll-find-tab = False</vh></v>
 <v t="ekr.20180318145515.180"><vh>@bool color_trailing_whitespace = False</vh></v>
