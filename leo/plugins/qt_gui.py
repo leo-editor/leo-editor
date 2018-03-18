@@ -1552,7 +1552,7 @@ class StyleSheetManager(object):
                 return path
         g.es_print('no icon found for:', setting)
         return None
-    #@+node:ekr.20180308103151.1: *4* ssm.find_theme_file
+    #@+node:ekr.20180308103151.1: *4* ssm.find_theme_file (*** USE LM method)
     def find_theme_file(self, path, theme=None):
         trace = False and not g.unitTesting
         for directory in self.compute_theme_directories(theme=theme):

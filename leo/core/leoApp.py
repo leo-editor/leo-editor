@@ -1579,15 +1579,17 @@ class LoadManager(object):
     def __init__(self):
         trace = (False or g.trace_startup) and not g.unitTesting
         if trace: g.es_debug('(LoadManager)')
-        # Global settings & shortcuts dicts.
+        #
+        # Global settings & shortcuts dicts...
         # The are the defaults for computing settings and shortcuts for all loaded files.
+        #
         self.globalSettingsDict = None
-            # A g.TypedDict containing the merger of default settings,
-            # settings in leoSettings.leo and settings in myLeoSettings.leo
+            # A g.TypedDict: the join of settings in leoSettings.leo & myLeoSettings.leo
         self.globalShortcutsDict = None
-            # A g.TypedDictOfLists containg the merger of shortcuts in
-            # leoSettings.leo and settings in myLeoSettings.leo.
-        # LoadManager ivars corresponding to user options....
+            # A g.TypedDictOfLists: the join of shortcuts in leoSettings.leo & myLeoSettings.leo.
+        #
+        # LoadManager ivars corresponding to user options...
+        #
         self.files = []
             # List of files to be loaded.
         self.options = {}
@@ -1600,29 +1602,6 @@ class LoadManager(object):
             # "file already open, open again", this must be False for
             # a complete exit to be appropriate (finish_quit=True param for
             # closeLeoWindow())
-        if 0: # use lm.options.get instead.
-            self.script = None # The fileName of a script, or None.
-            self.script_name = None
-            self.script_path = None
-            self.script_path_w = None
-            self.screenshot_fn = None
-            self.selectHeadline = None
-            self.versionFlag = False
-            self.windowFlag = False
-            self.windowSize = None
-        # Ivars of *other* classes corresponding to command-line arguments...
-            # g.app.batchMode           Set in createNullGuiWithScript
-            # g.app.failFast            --fail-fast
-            # g.app.gui = None          The gui class.
-            # g.app.guiArgName          The gui name given in --gui option.
-            # g.app.qt_use_tabs
-            # g.app.silentMode
-            # g.app.start_fullscreen
-            # g.app.start_maximized    .
-            # g.app.start_minimized
-            # g.app.useIpython
-            # g.app.use_splash_screen
-            # g.enableDB                --no-cache
     #@+node:ekr.20120211121736.10812: *3* LM.Directory & file utils
     #@+node:ekr.20120219154958.10481: *4* LM.completeFileName
     def completeFileName(self, fileName):
@@ -1687,22 +1666,6 @@ class LoadManager(object):
         else:
             path = None
         return path
-    #@+node:ekr.20180318120148.1: *4* LM.computeThemeDirectories
-    def computeThemeDirectories(self):
-        '''
-        Return a list of *existing* directories that might contain theme .leo files.
-        '''
-        join = g.os_path_finalize_join
-        home = g.app.homeLeoDir
-        leo = join(g.app.loadDir, '..')
-        table = [
-            home,
-            join(home, 'themes'),
-            join(home, '.leo'),
-            join(home, '.leo', 'themes'),
-            join(leo, 'themes'),
-        ]
-        return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
     #@+node:ekr.20120209051836.10252: *4* LM.computeStandardDirectories & helpers
     def computeStandardDirectories(self):
         '''Compute the locations of standard directories and
@@ -1826,6 +1789,22 @@ class LoadManager(object):
             name = ''
         # g.trace(name)
         return name
+    #@+node:ekr.20180318120148.1: *4* LM.computeThemeDirectories
+    def computeThemeDirectories(self):
+        '''
+        Return a list of *existing* directories that might contain theme .leo files.
+        '''
+        join = g.os_path_finalize_join
+        home = g.app.homeLeoDir
+        leo = g.os_path_join(g.app.loadDir, '..')
+        table = [
+            home,
+            join(home, 'themes'),
+            join(home, '.leo'),
+            join(home, '.leo', 'themes'),
+            join(leo, 'themes'),
+        ]
+        return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
     #@+node:ekr.20120211121736.10772: *4* LM.computeWorkbookFileName
     def computeWorkbookFileName(self):
         '''
@@ -1878,6 +1857,20 @@ class LoadManager(object):
             for ivar in aList:
                 val = getattr(g.app, ivar)
                 g.trace('%20s' % (ivar), val)
+    #@+node:ekr.20180318133620.1: *4* LM.resolveThemeFile
+    def resolveThemeFile(self, fn):
+
+        lm = self
+        if not fn.endswith('.leo'):
+            fn += '.leo'
+        for directory in lm.computeThemeDirectories():
+            path = g.os_path_finalize_join(directory, fn)
+            if  g.os_path_exists(path):
+                path = g.os_path_normslashes(path)
+                g.app.themeDirs.append(path)
+                return path
+        g.trace('file not found: %s' % fn)
+        return None
     #@+node:ekr.20120215062153.10740: *3* LM.Settings
     #@+node:ekr.20120130101219.10182: *4* LM.computeBindingLetter
     def computeBindingLetter(self, kind):
@@ -2583,6 +2576,8 @@ class LoadManager(object):
             'script': script,
             'select': options.select and options.select.strip('"'),
                 # --select=headline
+            'theme_path': options.theme,
+                # --theme=name
             'version': options.version,
                 # --version: print the version and exit.
             'windowFlag': script and options.script_window, 
@@ -2637,24 +2632,14 @@ class LoadManager(object):
             help='print version number and exit')
     #@+node:ekr.20120219154958.10483: *6* LM.computeFilesList
     def computeFilesList(self, options, fileName):
-        trace = True
+
         lm = self
         files = []
         theme_file = options.theme
         if theme_file:
-            if not theme_file.endswith('.leo'):
-                theme_file += '.leo'
-            for directory in lm.computeThemeDirectories():
-                path = g.os_path_finalize_join(directory, theme_file)
-                if  g.os_path_exists(path):
-                    path = g.os_path_normslashes(path)
-                    g.app.themeDirs.append(path)
-                    if trace: print('\n--theme=%s\n' % path)
-                    theme_file = path
-                    break
-            else:
-                print('\nfile not found: --theme=%s\n' % path)
-                theme_file = None
+            # --theme takes precedence over @string theme-name
+            path = self.resolveThemeFile(theme_file)
+            options.theme = theme_file = path
         if fileName:
             files.append(fileName)
         for arg in sys.argv[1:]:
@@ -2883,6 +2868,7 @@ class LoadManager(object):
                 c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
                     # Returns None if the file is open in another instance of Leo.
                 if not c1: c1 = c
+            lm.doThemes()
         if g.app.restore_session:
             m = g.app.sessionManager
             if m:
@@ -2924,6 +2910,36 @@ class LoadManager(object):
             return False # Force an immediate exit.
         else:
             return True
+    #@+node:ekr.20180318131632.1: *5* LM.doThemes
+    def doThemes(self):
+        '''
+        Close the theme file unless it is the only file.
+        Otherwise, handle @theme-name setting.
+        '''
+        trace = True
+        lm = self
+        aList = g.app.commanders()
+        path = lm.options.get('theme_path')
+        if path and len(aList) > 1:
+            frame = aList[-1].frame
+            if trace: g.trace('CLOSING --THEME FILE:', path)
+            g.app.closeLeoWindow(frame, new_c=None, finish_quit=False)
+            return
+        # Get the setting directly from myLeoSettings.leo.
+        # This can not be done in lm.scanOptions because settings have not been read.
+        gs = lm.globalSettingsDict.get('themename')
+        if not (gs and gs.val and g.isString(gs.val)):
+            return
+        path = g.toUnicode(gs.val)
+        path = lm.resolveThemeFile(path)
+        # if trace: g.trace('@string theme-name: %s' % path)
+        if path in lm.files:
+            if trace: g.trace('THEME FILE IN FILES LIST: %s' % path)
+            return
+        # Apply the theme by loading the file, then immediately closing it.
+        if trace: g.trace('APPLYING THEME FILE:', path)
+        c = lm.loadLocalFile(path, gui=g.app.gui, old_c=None)
+        g.app.closeLeoWindow(c.frame, new_c=None, finish_quit=False)
     #@+node:ekr.20120219154958.10488: *5* LM.initFocusAndDraw
     def initFocusAndDraw(self, c, fileName):
 
