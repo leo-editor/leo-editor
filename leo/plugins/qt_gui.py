@@ -75,7 +75,8 @@ class LeoQtGui(leoGui.LeoGui):
             self.frameFactory = qt_frame.SDIFrameFactory()
         
     def reloadSettings(self):
-        self.color_theme = g.app.config and g.app.config.getString('color_theme')
+        pass
+            # Replace .color_theme ivar by g.app.theme_color global.
     #@+node:ekr.20110605121601.18484: *3*  qt_gui.destroySelf (calls qtApp.quit)
     def destroySelf(self):
         trace = g.app.trace_shutdown
@@ -888,26 +889,17 @@ class LeoQtGui(leoGui.LeoGui):
             g.es("exception loading:", name)
             g.es_exception()
             return None
-    #@+node:tbrown.20130316075512.28478: *4* qt_gui.getImageFinder (to be generalized)
+    #@+node:tbrown.20130316075512.28478: *4* qt_gui.getImageFinder (TEST)
     def getImageFinder(self, name):
         '''Theme aware image (icon) path searching.'''
-        ###
-            # If self.color_theme, set from @settings -> @string color_theme is set,
-            # - look first in $HOME/.leo/themes/<theme_name>/Icons,
-            # - then in .../leo/themes/<theme_name>/Icons,
-            # - then in .../leo/Icons,
-            # - as well as trying absolute path
-       
-        trace = False and not g.unitTesting
-
+        trace = True and not g.unitTesting
+        color = g.app.theme_color
+        directory = g.app.theme_directory
+        theme_name = g.app.theme_name
         if trace:
-            g.trace(g.callers())
-            g.trace(self.color_theme, name)
-            theme = g.app.loadedThemes and g.app.loadedThemes[0]
-            g.trace(theme, name)
-            # g.trace('color_theme', repr(self.color_theme))
-        
-        if self.color_theme:
+            g.trace('\n      name: %s\ntheme_name: %s\n directory: %s\n     color: %s' % (
+                name, theme_name, directory, color))
+        if color:
             # normal, unthemed path to image
             pathname = g.os_path_finalize_join(g.app.loadDir, "..", "Icons")
             pathname = g.os_path_normpath(g.os_path_realpath(pathname))
@@ -922,8 +914,7 @@ class LeoQtGui(leoGui.LeoGui):
                 namepart = testname
             for base_dir in (g.app.homeLeoDir, g.os_path_join(g.app.loadDir, '..')):
                 fullname = g.os_path_finalize_join(
-                    base_dir, 'themes',
-                    self.color_theme, 'Icons', namepart)
+                    base_dir, 'themes', color, 'Icons', namepart)
                 if g.os_path_exists(fullname):
                     if trace: g.trace('found', repr(name), fullname)
                     return fullname
