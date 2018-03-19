@@ -1678,6 +1678,18 @@ class TypedDict(object):
         if default is None and self.isList:
             default = []
         return self.d.get(key, default)
+        
+    # New in Leo 5.7.1
+    def get_setting(self, key):
+        key = key.replace('-','').replace('_','')
+        gs = self.get(key)
+        val = gs and gs.val
+        return val
+        
+    # New in Leo 5.7.1
+    def get_string_setting(self, key):
+        val = self.get_setting(key)
+        return g.toUnicode(val) if val and g.isString(val) else None
 
     def keys(self):
         return self.d.keys()

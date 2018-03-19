@@ -1809,18 +1809,22 @@ class LoadManager(object):
     #@+node:ekr.20180318133620.1: *4* LM.computeThemeFilePath
     def computeThemeFilePath(self):
 
-        trace = False
         lm = self
         # --theme takes precedence over @string theme-name.
         fn = lm.options.get('theme_path')
+        # First, look for the @string theme-name setting in the first loaded file.
+        # This is a hack, but especially useful for test*.leo files in leo/themes.
         if not fn:
-            if trace: g.trace('no --theme')
-            gs = lm.globalSettingsDict.get('themename')
-            if gs and gs.val and g.isString(gs.val):
-                fn = g.toUnicode(gs.val)
-            else:
-                if trace: g.trace('no @string theme-name')
-                return None
+            path = lm.files and lm.files[0]
+            if path and g.os_path_exists(path):
+                previous_setting = lm.getPreviousSettings(path)
+                settings_d = previous_setting.settingsDict
+                fn = settings_d.get_string_setting('theme-name')
+        # Finally, use the setting in myLeoSettings.leo.
+        if not fn:
+            fn = lm.globalSettingsDict.get_string_setting('theme-name')
+        if not fn:
+            return None
         if not fn.endswith('.leo'):
             fn += '.leo'
         for directory in lm.computeThemeDirectories():
