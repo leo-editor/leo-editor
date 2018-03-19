@@ -266,7 +266,7 @@ class LeoQtTree(leoFrame.LeoTree):
             for icon in new_icons:
                 com.appendImageDictToList(
                     icons, self.declutter_iconDir,
-                    g.app.gui.getImageImageFinder(icon), 2,
+                    g.app.gui.getImageFinder(icon), 2,
                     on='vnode', visualIcon='1'
                 )
             com.setIconList(p, icons, False)
