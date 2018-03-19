@@ -1488,34 +1488,8 @@ class StyleSheetManager(object):
     #@+node:ekr.20180316065346.1: *4* ssm.compute_icon_directories
     def compute_icon_directories(self):
         '''
-        Return a list of directories that could contain theme-related icons.
-        All directories in this list do in fact exist.
+        Return a list of *existing* directories that could contain theme-related icons.
         '''
-        ###
-            # join = g.os_path_join
-            # home = g.app.homeLeoDir
-            # leo = join(g.app.loadDir, '..')
-            # if theme:
-                # table = [
-                    # join(home, 'themes', theme, 'Icons'),
-                    # join(home, 'themes', theme),
-                    # join(home, '.leo', 'themes', theme, 'Icons'),
-                    # join(home, '.leo', 'themes', theme),
-                    # #
-                    # join(leo, 'themes', theme, 'Icons'),
-                    # join(leo, 'themes', theme),
-                    # join(leo, 'themes', 'Icons'),
-                    # join(leo, 'themes'),
-                    # join(leo, 'Icons', theme),
-                    # join(leo, 'Icons')
-                # ]
-            # else:
-                # table = [
-                    # join(leo, 'themes', 'Icons'),
-                    # join(leo, 'themes'),
-                    # join(leo, 'Icons'),
-                # ]
-            # return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
         home = g.app.homeLeoDir
         join = g.os_path_join
         leo = join(g.app.loadDir, '..')
@@ -1528,28 +1502,15 @@ class StyleSheetManager(object):
         for directory in self.compute_theme_directories():
             if directory not in table:
                 table.append(directory)
+            directory2 = g.os_path_finalize_join(directory, 'Icons')
+            if directory2 not in table:
+                table.append(directory2)
         return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
     #@+node:ekr.20180315101238.1: *4* ssm.compute_theme_directories
     def compute_theme_directories(self):
         '''
-        Return a list of directories that could contain theme .leo files.
-        All directories in this list do in fact exist.
+        Return a list of *existing* directories that could contain theme .leo files.
         '''
-        ###
-            # join = g.os_path_finalize_join
-            # home = g.app.homeLeoDir
-            # leo = join(g.app.loadDir, '..')
-            # if theme:
-                # table = [
-                    # join(home, 'themes', theme),
-                    # join(home, '.leo', 'themes', theme),
-                    # # 
-                    # join(leo, 'themes', theme),
-                    # join(leo, 'themes'),
-                # ]
-            # else:
-                # table = [join(leo, 'themes')]
-            # return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
         lm = g.app.loadManager
         table = lm.computeThemeDirectories()
         for directory in g.app.themeDirs:
