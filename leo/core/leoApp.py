@@ -1809,7 +1809,7 @@ class LoadManager(object):
     #@+node:ekr.20180318133620.1: *4* LM.computeThemeFilePath
     def computeThemeFilePath(self):
 
-        trace = False
+        trace = False and not g.unitTesting
         lm = self
         # --theme takes precedence over @string theme-name.
         fn = lm.options.get('theme_path')
