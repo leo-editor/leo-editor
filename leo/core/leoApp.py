@@ -1807,9 +1807,20 @@ class LoadManager(object):
         ]
         return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
     #@+node:ekr.20180318133620.1: *4* LM.computeThemeFilePath
-    def computeThemeFilePath(self, fn):
+    def computeThemeFilePath(self):
 
+        trace = False
         lm = self
+        # --theme takes precedence over @string theme-name.
+        fn = lm.options.get('theme_path')
+        if not fn:
+            if trace: g.trace('no --theme')
+            gs = lm.globalSettingsDict.get('themename')
+            if gs and gs.val and g.isString(gs.val):
+                fn = g.toUnicode(gs.val)
+            else:
+                if trace: g.trace('no @string theme-name')
+                return None
         if not fn.endswith('.leo'):
             fn += '.leo'
         for directory in lm.computeThemeDirectories():
@@ -1818,7 +1829,7 @@ class LoadManager(object):
                 path = g.os_path_normslashes(path)
                 g.app.themeDirs.append(path)
                 return path
-        g.trace('file not found: %s' % fn)
+        print('Not found: @string theme-name = %s' % fn)
         return None
     #@+node:ekr.20120211121736.10772: *4* LM.computeWorkbookFileName
     def computeWorkbookFileName(self):
@@ -2149,8 +2160,6 @@ class LoadManager(object):
         '''Read leoSettings.leo and myLeoSettings.leo using a null gui.'''
         lm = self
         trace = (False or g.trace_startup) and not g.unitTesting
-        verbose = False
-        ### if trace: g.es_debug()
         # Open the standard settings files with a nullGui.
         # Important: their commanders do not exist outside this method!
         paths = [lm.computeLeoSettingsPath(), lm.computeMyLeoSettingsPath()]
@@ -2159,18 +2168,26 @@ class LoadManager(object):
         commanders = [z for z in commanders if z]
         settings_d, shortcuts_d = lm.createDefaultSettingsDicts()
         for c in commanders:
+            # Merge the settings dicts from c's outline into
+            # *new copies of* settings_d and shortcuts_d.
             settings_d, shortcuts_d = lm.computeLocalSettings(
                 c, settings_d, shortcuts_d, localFlag=False)
         # Adjust the name.
         shortcuts_d.setName('lm.globalShortcutsDict')
-        if trace:
-            if verbose:
-                for c in commanders:
-                    print(c)
-            lm.traceSettingsDict(settings_d, verbose)
-            lm.traceShortcutsDict(shortcuts_d, verbose)
+        # g.trace('===== settings 1 keys:', len(settings_d.d.keys()))
         lm.globalSettingsDict = settings_d
         lm.globalShortcutsDict = shortcuts_d
+        # Add settings from --theme or @string theme-name files.
+        # This must be done *after* reading myLeoSettigns.leo.
+        theme_path = lm.computeThemeFilePath()
+        if theme_path:
+            if trace: g.trace('===== theme file: %s' % theme_path)
+            theme_c = lm.openSettingsFile(theme_path)
+            # Merge theme_c's settings into globalSettingsDict.
+            settings_d, junk_shortcuts_d = lm.computeLocalSettings(
+                theme_c, settings_d, shortcuts_d, localFlag=False)
+            lm.globalSettingsDict = settings_d
+            # g.trace('===== settings 2 keys:', len(settings_d.d.keys()))
         # Clear the cache entries for the commanders.
         # This allows this method to be called outside the startup logic.
         for c in commanders:
@@ -2185,7 +2202,8 @@ class LoadManager(object):
                 print('%35s %17s %s' % (key, g.shortFileName(gs.path), gs.val))
             if d: print('')
         else:
-            print(d)
+            # print(d)
+            print('%s %s' % (d.name(), len(d.d.keys())))
     #@+node:ekr.20120214165710.10822: *4* LM.traceShortcutsDict
     def traceShortcutsDict(self, d, verbose=False):
         if verbose:
@@ -2267,9 +2285,6 @@ class LoadManager(object):
                 c = lm.loadLocalFile(fn, gui=g.app.gui, old_c=None)
                     # Returns None if the file is open in another instance of Leo.
                 if not c1: c1 = c
-            ### It's too late to do this here.
-            ### Theme settings should replace corresponding settings in myLeoSettings.leo
-            ### lm.doThemes()
         if g.app.restore_session:
             m = g.app.sessionManager
             if m:
@@ -2311,36 +2326,6 @@ class LoadManager(object):
             return False # Force an immediate exit.
         else:
             return True
-    #@+node:ekr.20180318131632.1: *5* LM.doThemes
-    def doThemes(self):
-        '''
-        Close the theme file unless it is the only file.
-        Otherwise, handle @theme-name setting.
-        '''
-        trace = True
-        lm = self
-        aList = g.app.commanders()
-        path = lm.options.get('theme_path')
-        if path and len(aList) > 1:
-            frame = aList[-1].frame
-            if trace: g.trace('CLOSING --THEME FILE:', path)
-            g.app.closeLeoWindow(frame, new_c=None, finish_quit=False)
-            return
-        # Get the setting directly from myLeoSettings.leo.
-        # This can not be done in lm.scanOptions because settings have not been read.
-        gs = lm.globalSettingsDict.get('themename')
-        if not (gs and gs.val and g.isString(gs.val)):
-            return
-        path = g.toUnicode(gs.val)
-        path = lm.computeThemeFilePath(path)
-        # if trace: g.trace('@string theme-name: %s' % path)
-        if path in lm.files:
-            if trace: g.trace('THEME FILE IN FILES LIST: %s' % path)
-            return
-        # Apply the theme by loading the file, then immediately closing it.
-        if trace: g.trace('APPLYING THEME FILE:', path)
-        c = lm.loadLocalFile(path, gui=g.app.gui, old_c=None)
-        g.app.closeLeoWindow(c.frame, new_c=None, finish_quit=False)
     #@+node:ekr.20120219154958.10488: *5* LM.initFocusAndDraw
     def initFocusAndDraw(self, c, fileName):
 
@@ -2703,9 +2688,9 @@ class LoadManager(object):
         # Compute the return values.
         script = None if pymacs else self.doScriptOption(options, parser)
         d = {
-            'gui': self.doGuiOption(options),
-            'load_type': self.doLoadTypeOption(options),
-            'screenshot_fn': self.doScreenShotOption(options),
+            'gui': lm.doGuiOption(options),
+            'load_type': lm.doLoadTypeOption(options),
+            'screenshot_fn': lm.doScreenShotOption(options),
                 # --screen-shot=fn
             'script': script,
             'select': options.select and options.select.strip('"'),
@@ -2715,7 +2700,7 @@ class LoadManager(object):
             'version': options.version,
                 # --version: print the version and exit.
             'windowFlag': script and options.script_window, 
-            'windowSize': self.doWindowSizeOption(options),
+            'windowSize': lm.doWindowSizeOption(options),
         }
         if trace:
             print('scanOptions: returns...')
@@ -2766,14 +2751,9 @@ class LoadManager(object):
             help='print version number and exit')
     #@+node:ekr.20120219154958.10483: *6* LM.computeFilesList
     def computeFilesList(self, options, fileName):
-
+        '''Return the list of files on the command line.'''
         lm = self
         files = []
-        theme_file = options.theme
-        if theme_file:
-            # --theme takes precedence over @string theme-name
-            path = self.computeThemeFilePath(theme_file)
-            options.theme = theme_file = path
         if fileName:
             files.append(fileName)
         for arg in sys.argv[1:]:
@@ -2787,12 +2767,7 @@ class LoadManager(object):
                 result.extend(aList)
             else:
                 result.append(z)
-        result = [g.os_path_normslashes(z) for z in result]
-        if theme_file:
-            if theme_file in result:
-                result.remove(theme_file)
-            result.append(theme_file)
-        return result
+        return [g.os_path_normslashes(z) for z in result]
     #@+node:ekr.20180312150805.1: *6* LM.doGuiOption
     def doGuiOption(self, options):
         gui = options.gui
