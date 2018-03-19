@@ -945,60 +945,34 @@ def tangle(self, event=None):
     c = self
     c.tangleCommands.tangle()
 #@+node:ekr.20180312043352.1: ** Themes
-#@+node:ekr.20180312043352.2: *3* c_file.apply/open_theme_file
-@g.commander_command('apply-theme-file')
-def apply_theme_file(self, event=None, fn=None):
-    open_theme_file_helper(event, closeFlag=True, fn=fn)
-
+#@+node:ekr.20180312043352.2: *3* c_file.open_theme_file
 @g.commander_command('open-theme-file')
-def open_theme_file(self, event=None, fn=None):
-    open_theme_file_helper(event, closeFlag=False, fn=fn)
-    
-def open_theme_file_helper(event, closeFlag, fn):
+def open_theme_file(self, event):
     '''Open a theme file and apply the theme.'''
-    trace = False and not g.unitTesting
+    
     c = event and event.get('c')
     if not c: return
-    old_dir = g.os_path_abspath(os.curdir)
     themes_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'themes')
-    if fn:
-        fn = c.styleSheetManager.find_theme_file(fn)
-        if not fn: return
-    else:
-        fn = g.app.gui.runOpenFileDialog(c,
-            title="Open Theme",
-            filetypes=[
-                 g.fileFilters("LEOFILES"),
-                ("All files", "*"),
-            ],
-            defaultextension=g.defaultLeoFileExtension(c),
-            startpath=themes_dir,
-        )
-    c.bringToFront()
-    c.init_error_dialogs()
-    # Adapted from c.open().
-    if fn and g.app.loadManager.isLeoFile(fn):
-        # Close the file if it is already open, provided there is another.
-        aList = g.app.commanders()
-        if len(aList) > 1:
-            for c2 in aList:
-                if trace: g.trace('COMPARE\n%s\n%s' % (fn, c2.fileName()))
-                if fn == c2.fileName():
-                    if trace: g.trace('===== CLOSING', fn)
-                    c2.close(new_c=c)
-                    break
-        c2 = g.openWithFileName(fn, old_c=c)
-        if c2:
-            c2.k.makeAllBindings()
-            g.chdir(fn)
-            g.setGlobalOpenDir(fn)
-            if closeFlag:
-                g.app.destroyWindow(c2.frame)
-                g.app.windowList.remove(c2.frame)
-    os.chdir(old_dir)
-    c.raise_error_dialogs(kind='write')
-    g.app.runAlreadyOpenDialog(c)
-    c.initialFocusHelper()
+    fn = g.app.gui.runOpenFileDialog(c,
+        title="Open Theme File",
+        filetypes=[
+             g.fileFilters("LEOFILES"),
+            ("All files", "*"),
+        ],
+        defaultextension=g.defaultLeoFileExtension(c),
+        startpath=themes_dir,
+    )
+    if not fn:
+        return
+    leo_dir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
+    os.chdir(leo_dir)
+    command = 'leo "%s"' % fn
+    os.system(command)
+    # os.system("start cmd /c %s" % command)
+        # /c terminates after the command.
+        # /k leaves window open.
+        # /d specifis starting directory.
+    os.chdir(leo_dir)
 #@+node:ekr.20031218072017.2845: ** Untangle
 #@+node:ekr.20031218072017.2846: *3* c_file.untangleAll
 @g.commander_command('untangle-all')
