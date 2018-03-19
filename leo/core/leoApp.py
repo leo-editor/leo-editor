@@ -2184,6 +2184,7 @@ class LoadManager(object):
         # Add settings from --theme or @string theme-name files.
         # This must be done *after* reading myLeoSettigns.leo.
         theme_path = lm.computeThemeFilePath()
+            # Appends path to g.app.themeDirs.
         if theme_path:
             if trace: g.trace('===== theme file: %s' % theme_path)
             theme_c = lm.openSettingsFile(theme_path)

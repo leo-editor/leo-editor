@@ -1486,65 +1486,86 @@ class StyleSheetManager(object):
     reloadSettings = reload_settings
     #@+node:ekr.20180316091500.1: *3* ssm.Paths...
     #@+node:ekr.20180316065346.1: *4* ssm.compute_icon_directories
-    def compute_icon_directories(self, theme=None):
+    def compute_icon_directories(self):
         '''
         Return a list of directories that could contain theme-related icons.
         All directories in this list do in fact exist.
         '''
-        join = g.os_path_finalize_join
+        ###
+            # join = g.os_path_join
+            # home = g.app.homeLeoDir
+            # leo = join(g.app.loadDir, '..')
+            # if theme:
+                # table = [
+                    # join(home, 'themes', theme, 'Icons'),
+                    # join(home, 'themes', theme),
+                    # join(home, '.leo', 'themes', theme, 'Icons'),
+                    # join(home, '.leo', 'themes', theme),
+                    # #
+                    # join(leo, 'themes', theme, 'Icons'),
+                    # join(leo, 'themes', theme),
+                    # join(leo, 'themes', 'Icons'),
+                    # join(leo, 'themes'),
+                    # join(leo, 'Icons', theme),
+                    # join(leo, 'Icons')
+                # ]
+            # else:
+                # table = [
+                    # join(leo, 'themes', 'Icons'),
+                    # join(leo, 'themes'),
+                    # join(leo, 'Icons'),
+                # ]
+            # return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
         home = g.app.homeLeoDir
+        join = g.os_path_join
         leo = join(g.app.loadDir, '..')
-        if theme:
-            table = [
-                join(home, 'themes', theme, 'Icons'),
-                join(home, 'themes', theme),
-                join(home, '.leo', 'themes', theme, 'Icons'),
-                join(home, '.leo', 'themes', theme),
-                #
-                join(leo, 'themes', theme, 'Icons'),
-                join(leo, 'themes', theme),
-                join(leo, 'themes', 'Icons'),
-                join(leo, 'themes'),
-                join(leo, 'Icons', theme),
-                join(leo, 'Icons')
-            ]
-        else:
-            table = [
-                join(leo, 'themes', 'Icons'),
-                join(leo, 'themes'),
-                join(leo, 'Icons'),
-            ]
+        table = [
+            join(home, '.leo', 'Icons'),
+            join(leo, 'themes', 'Icons'),
+            join(leo, 'themes'),
+            join(leo, 'Icons'),
+        ]
+        for directory in self.compute_theme_directories():
+            if directory not in table:
+                table.append(directory)
         return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
-    #@+node:ekr.20180315101238.1: *4* ssm.compute_theme_directories (remove??)
-    def compute_theme_directories(self, theme=None):
+    #@+node:ekr.20180315101238.1: *4* ssm.compute_theme_directories
+    def compute_theme_directories(self):
         '''
         Return a list of directories that could contain theme .leo files.
         All directories in this list do in fact exist.
         '''
-        join = g.os_path_finalize_join
-        home = g.app.homeLeoDir
-        leo = join(g.app.loadDir, '..')
-        if theme:
-            table = [
-                join(home, 'themes', theme),
-                join(home, '.leo', 'themes', theme),
-                # 
-                join(leo, 'themes', theme),
-                join(leo, 'themes'),
-            ]
-        else:
-            table = [join(leo, 'themes')]
-        return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
-        
+        ###
+            # join = g.os_path_finalize_join
+            # home = g.app.homeLeoDir
+            # leo = join(g.app.loadDir, '..')
+            # if theme:
+                # table = [
+                    # join(home, 'themes', theme),
+                    # join(home, '.leo', 'themes', theme),
+                    # # 
+                    # join(leo, 'themes', theme),
+                    # join(leo, 'themes'),
+                # ]
+            # else:
+                # table = [join(leo, 'themes')]
+            # return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
+        lm = g.app.loadManager
+        table = lm.computeThemeDirectories()
+        for directory in g.app.themeDirs:
+            if directory not in table:
+                table.append(directory)
+        return table
+            # All entries are known to exist and have normalized slashes.
     #@+node:ekr.20170307083738.1: *4* ssm.find_icon_path
-    def find_icon_path(self, setting, theme=None):
+    def find_icon_path(self, setting):
         '''Return the path to the open/close indicator icon.'''
         trace = False and not g.unitTesting
         c = self.c
         s = c.config.getString(setting)
         if not s:
             return None # Not an error.
-        for directory in self.compute_icon_directories(theme=theme):
+        for directory in self.compute_icon_directories():
             if trace: g.trace('directory', directory)
             path = g.os_path_finalize_join(directory, s)
             if g.os_path_exists(path):
@@ -1552,10 +1573,10 @@ class StyleSheetManager(object):
                 return path
         g.es_print('no icon found for:', setting)
         return None
-    #@+node:ekr.20180308103151.1: *4* ssm.find_theme_file (*** USE LM method)
-    def find_theme_file(self, path, theme=None):
+    #@+node:ekr.20180308103151.1: *4* ssm.find_theme_file
+    def find_theme_file(self, path):
         trace = False and not g.unitTesting
-        for directory in self.compute_theme_directories(theme=theme):
+        for directory in self.compute_theme_directories():
             path2 = g.os_path_finalize_join(directory, path)
             if g.os_path_exists(path2):
                 if trace: g.trace('found', path2)
@@ -1937,7 +1958,7 @@ class StyleSheetManager(object):
             g.es("Ten levels of recursion processing styles, abandoned.")
         return ans
     #@+node:ekr.20150617090104.1: *5* ssm.replace_indicator_constants
-    def replace_indicator_constants(self, sheet, theme=None):
+    def replace_indicator_constants(self, sheet):
         '''
         In the stylesheet, replace (if they exist)::
 
@@ -1959,8 +1980,8 @@ class StyleSheetManager(object):
         Return the updated stylesheet.
         '''
         trace = False and not g.unitTesting
-        close_path = self.find_icon_path('tree-image-closed', theme=theme)
-        open_path = self.find_icon_path('tree-image-open', theme=theme)
+        close_path = self.find_icon_path('tree-image-closed')
+        open_path = self.find_icon_path('tree-image-open')
         # Make all substitutions in the stylesheet.
         table = (
             (open_path,  re.compile(r'\bimage:\s*@tree-image-open', re.IGNORECASE)),
