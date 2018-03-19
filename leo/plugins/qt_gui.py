@@ -892,7 +892,7 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:tbrown.20130316075512.28478: *4* qt_gui.getImageFinder (TEST)
     def getImageFinder(self, name):
         '''Theme aware image (icon) path searching.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         color = g.app.theme_color
         directory = g.app.theme_directory
         theme_name = g.app.theme_name
