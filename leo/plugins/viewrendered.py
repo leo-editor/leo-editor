@@ -245,8 +245,10 @@ import json
 try:
     from urllib.request import urlopen
 except ImportError:
-    #urlopen = None
-    from urllib import urlopen  # for Python 2.7
+    try:
+        from urllib import urlopen  # for Python 2.7
+    except ImportError:
+        urllib = None
 #@-<< imports >>
 #@+<< define html templates >>
 #@+node:ekr.20170324090828.1: ** << define html templates >> (vr)
