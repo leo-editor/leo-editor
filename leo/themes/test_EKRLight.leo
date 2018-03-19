@@ -11,14 +11,20 @@
 <vnodes>
 <v t="ekr.20180317170608.1"><vh>test_EKRLight.leo: readme</vh></v>
 <v t="ekr.20180317170734.1"><vh>@settings</vh>
-<v t="ekr.20180319051007.1"><vh>@string theme-name = EKRLight</vh></v>
+<v t="ekr.20180319151346.1"><vh>Convenience settings</vh>
 <v t="ekr.20180317170734.2"><vh>@bool minibuffer_find_mode = False</vh></v>
 <v t="ekr.20180317170734.3"><vh>@bool show-tips = False</vh></v>
 <v t="ekr.20180317170734.4"><vh>@bool use-gutter = False</vh></v>
 </v>
+<v t="ekr.20180319151330.1"><vh>Theme description settings</vh>
+<v t="ekr.20180319151330.2"><vh>@bool color_theme_is_dark = False</vh></v>
+<v t="ekr.20180319151330.3"><vh>@string color_theme = generic</vh></v>
+<v t="ekr.20180319151330.4"><vh>@string theme-name = EKRLight</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
-<t tx="ekr.20180317170608.1" str_leo_pos="0">@language rest
+<t tx="ekr.20180317170608.1" str_leo_pos="1,0">@language rest
 @wrap
 
 Opening this file will test the EKRLight theme.</t>
@@ -26,6 +32,12 @@ Opening this file will test the EKRLight theme.</t>
 <t tx="ekr.20180317170734.2"></t>
 <t tx="ekr.20180317170734.3">True: show user tips on startup.</t>
 <t tx="ekr.20180317170734.4"># For line_numbering plugin.</t>
-<t tx="ekr.20180319051007.1"></t>
+<t tx="ekr.20180319151330.1"></t>
+<t tx="ekr.20180319151330.2" lineYOffset="4b002e">Set to true for dark themes, so bookmarks.py can generate
+random background colors which are appropriate etc.</t>
+<t tx="ekr.20180319151330.3" lineYOffset="4b002e">Name of the theme,
+used to find icon files</t>
+<t tx="ekr.20180319151330.4"></t>
+<t tx="ekr.20180319151346.1"></t>
 </tnodes>
 </leo_file>

@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.52" body_secondary_ratio="0.50">
-	<global_window_position top="151" left="552" height="500" width="950"/>
+<globals body_outline_ratio="0.52" body_secondary_ratio="0.74">
+	<global_window_position top="151" left="552" height="825" width="950"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -18,9 +18,13 @@
 <v t="chris.20180314054143.5"><vh>g.error/note/warning test</vh></v>
 </v>
 <v t="chris.20180313181652.1"><vh>@settings</vh>
-<v t="ekr.20180319080848.1"><vh>@string theme-name = Breeze Dark Theme</vh></v>
 <v t="chris.20180313181652.2"><vh>@theme Breeze Dark</vh>
 <v t="chris.20180313181652.3"><vh>Resources</vh></v>
+<v t="chris.20180313181652.115"><vh>Theme description settings</vh>
+<v t="chris.20180313181652.116"><vh>@bool color_theme_is_dark = True</vh></v>
+<v t="chris.20180313181652.117"><vh>@string color_theme = dark</vh></v>
+<v t="ekr.20180319080848.1"><vh>@string theme-name = Breeze Dark Theme</vh></v>
+</v>
 <v t="chris.20180313181652.4"><vh>Breeze Dark Color definitions</vh>
 <v t="chris.20180313181652.5"><vh>@color dark-base0 = #eff0f1</vh></v>
 <v t="chris.20180313181652.6"><vh>@color dark-base1 = #909396</vh></v>
@@ -150,10 +154,6 @@
 <v t="chris.20180313181652.112"><vh>Outline indicators</vh>
 <v t="chris.20180313181652.113"><vh>@string tree-image-closed = dark/branch_closed.svg</vh></v>
 <v t="chris.20180313181652.114"><vh>@string tree-image-open = dark/branch_open.svg</vh></v>
-</v>
-<v t="chris.20180313181652.115"><vh>Theme description settings</vh>
-<v t="chris.20180313181652.116"><vh>@bool color_theme_is_dark = True</vh></v>
-<v t="chris.20180313181652.117"><vh>@string color_theme = dark</vh></v>
 </v>
 </v>
 <v t="chris.20180313181652.118"><vh>@data qt-gui-plugin-style-sheet</vh>
@@ -2619,7 +2619,7 @@ g.es_print('black',color='black')</t>
 <t tx="chris.20180315125925.1"></t>
 <t tx="chris.20180315130317.1"></t>
 <t tx="chris.20180315130516.1"></t>
-<t tx="ekr.20180312111155.1" str_leo_pos="2,0">A dark theme based loosely on Breeze Dark for KDE Plasma and the Breeze Dark stylesheet by Colin Duquesnoy. Some modifications were required. :-)
+<t tx="ekr.20180312111155.1" str_leo_pos="2,0,1">A dark theme based loosely on Breeze Dark for KDE Plasma and the Breeze Dark stylesheet by Colin Duquesnoy. Some modifications were required. :-)
 
 </t>
 <t tx="ekr.20180319080848.1"></t>

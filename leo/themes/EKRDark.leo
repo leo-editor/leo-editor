@@ -18,7 +18,6 @@
 <v t="ekr.20180312110809.5"><vh>g.error/note/warning test</vh></v>
 </v>
 <v t="ekr.20180318145515.1"><vh>@settings</vh>
-<v t="ekr.20180319081014.1"><vh>@theme-name = EKRDark</vh></v>
 <v t="ekr.20180318145515.178"><vh>Appearance</vh>
 <v t="ekr.20180318145515.179"><vh>@bool auto-scroll-find-tab = False</vh></v>
 <v t="ekr.20180318145515.180"><vh>@bool color_trailing_whitespace = False</vh></v>
@@ -51,6 +50,11 @@
 </v>
 </v>
 <v t="ekr.20180318145515.704"><vh>@theme EKR Black Solarized</vh>
+<v t="ekr.20180318145515.810"><vh>Theme description settings</vh>
+<v t="ekr.20180318145515.811"><vh>@bool color_theme_is_dark = True</vh></v>
+<v t="ekr.20180318145515.812"><vh>@string color_theme = leo_dark_0</vh></v>
+<v t="ekr.20180319081014.1"><vh>@string theme-name = EKRDark</vh></v>
+</v>
 <v t="ekr.20180318145515.710"><vh>Settings for Leo Solarized Dark theme</vh>
 <v t="ekr.20180318145515.711"><vh>Colors...</vh>
 <v t="ekr.20180318145515.712"><vh>Base colors: these are not solarized colors</vh>
@@ -163,10 +167,6 @@
 <v t="ekr.20180318145515.808"><vh>@string tree-image-closed = nodes-dark/triangles/closed.png</vh></v>
 <v t="ekr.20180318145515.809"><vh>@string tree-image-open = nodes-dark/triangles/open.png</vh></v>
 </v>
-<v t="ekr.20180318145515.810"><vh>Theme description settings</vh>
-<v t="ekr.20180318145515.811"><vh>@bool color_theme_is_dark = True</vh></v>
-<v t="ekr.20180318145515.812"><vh>@string color_theme = leo_dark_0</vh></v>
-</v>
 </v>
 <v t="ekr.20180318145515.813"><vh>@data qt-gui-plugin-style-sheet</vh>
 <v t="ekr.20180318145515.814"><vh> Widgets: general</vh></v>
@@ -209,7 +209,7 @@ g.blue('blue')
 g.red('red')
 g.es_print('test')
 g.es_print('black',color='black')</t>
-<t tx="ekr.20180312111155.1" str_leo_pos="2,0">A dark theme based on LeoBlackSolarized.leo.
+<t tx="ekr.20180312111155.1" str_leo_pos="2,1,0">A dark theme based on LeoBlackSolarized.leo.
 </t>
 <t tx="ekr.20180314052441.1">@ A doc part.  *All* languages colorize doc parts as follows:
 

@@ -18,8 +18,12 @@
 <v t="ekr.20180308121517.1"><vh>g.error/note/warning test</vh></v>
 </v>
 <v t="ekr.20180307205349.2"><vh>@settings</vh>
-<v t="ekr.20180319081051.1"><vh>@string theme-name = EKRLight</vh></v>
 <v t="ekr.20180309185230.1"><vh>@theme Leo Light</vh>
+<v t="ekr.20180309185230.102"><vh>Theme description settings</vh>
+<v t="ekr.20180309185230.103"><vh>@bool color_theme_is_dark = False</vh></v>
+<v t="ekr.20180309185230.104"><vh>@string color_theme = generic</vh></v>
+<v t="ekr.20180319081051.1"><vh>@string theme-name = EKRLight</vh></v>
+</v>
 <v t="ekr.20180309185230.2"><vh>Settings for Leo Light</vh>
 <v t="ekr.20180309185230.3"><vh>Colors: Logical colors</vh>
 <v t="ekr.20180309191121.1"><vh>@color LeoGreen = #00AA00</vh></v>
@@ -143,10 +147,6 @@
 <v t="ekr.20180309185230.99"><vh>Outline indicators</vh>
 <v t="ekr.20180309185230.100"><vh>@string tree-image-closed = transparent/icons/nodes/triangles/black/closed.png</vh></v>
 <v t="ekr.20180309185230.101"><vh>@string tree-image-open = transparent/icons/nodes/triangles/black/open.png</vh></v>
-</v>
-<v t="ekr.20180309185230.102"><vh>Theme description settings</vh>
-<v t="ekr.20180309185230.103"><vh>@bool color_theme_is_dark = False</vh></v>
-<v t="ekr.20180309185230.104"><vh>@string color_theme = generic</vh></v>
 </v>
 </v>
 <v t="ekr.20180309185230.105"><vh>@data qt-gui-plugin-style-sheet</vh>
@@ -649,7 +649,7 @@ The following settings specify the indicators.  You can use an absolute path, or
   font-weight: @bookmarks_current_weight;
 }
 </t>
-<t tx="ekr.20180312111251.1" str_leo_pos="2,0">@language rest
+<t tx="ekr.20180312111251.1" str_leo_pos="2,0,0">@language rest
 @wrap
 
 A light theme based on EKR's legacy theme.
