@@ -18,6 +18,7 @@
 <v t="ekr.20180308121517.1"><vh>g.error/note/warning test</vh></v>
 </v>
 <v t="ekr.20180307205349.2"><vh>@settings</vh>
+<v t="ekr.20180319081051.1"><vh>@string theme-name = EKRLight</vh></v>
 <v t="ekr.20180309185230.1"><vh>@theme Leo Light</vh>
 <v t="ekr.20180309185230.2"><vh>Settings for Leo Light</vh>
 <v t="ekr.20180309185230.3"><vh>Colors: Logical colors</vh>
@@ -648,7 +649,7 @@ The following settings specify the indicators.  You can use an absolute path, or
   font-weight: @bookmarks_current_weight;
 }
 </t>
-<t tx="ekr.20180312111251.1" str_leo_pos="0">@language rest
+<t tx="ekr.20180312111251.1" str_leo_pos="2,0">@language rest
 @wrap
 
 A light theme based on EKR's legacy theme.
@@ -707,5 +708,6 @@ def spam():
 @language python # @color leo_keyword_color
 </t>
 <t tx="ekr.20180314052351.2"></t>
+<t tx="ekr.20180319081051.1"></t>
 </tnodes>
 </leo_file>

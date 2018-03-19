@@ -17,7 +17,8 @@
 <v t="ekr.20180312110809.4"><vh>Test g.es(color=*)</vh></v>
 <v t="ekr.20180312110809.5"><vh>g.error/note/warning test</vh></v>
 </v>
-<v t="ekr.20180318145515.1" a="E"><vh>@settings</vh>
+<v t="ekr.20180318145515.1"><vh>@settings</vh>
+<v t="ekr.20180319081014.1"><vh>@theme-name = EKRDark</vh></v>
 <v t="ekr.20180318145515.178"><vh>Appearance</vh>
 <v t="ekr.20180318145515.179"><vh>@bool auto-scroll-find-tab = False</vh></v>
 <v t="ekr.20180318145515.180"><vh>@bool color_trailing_whitespace = False</vh></v>
@@ -208,7 +209,7 @@ g.blue('blue')
 g.red('red')
 g.es_print('test')
 g.es_print('black',color='black')</t>
-<t tx="ekr.20180312111155.1" str_leo_pos="1">A dark theme based on LeoBlackSolarized.leo.
+<t tx="ekr.20180312111155.1" str_leo_pos="2,0">A dark theme based on LeoBlackSolarized.leo.
 </t>
 <t tx="ekr.20180314052441.1">@ A doc part.  *All* languages colorize doc parts as follows:
 
@@ -1017,5 +1018,6 @@ QTreeView QLineEdit {
   padding: 0px;
 }
 </t>
+<t tx="ekr.20180319081014.1"></t>
 </tnodes>
 </leo_file>
