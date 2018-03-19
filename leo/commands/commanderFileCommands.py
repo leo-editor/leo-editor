@@ -146,6 +146,7 @@ g.command_alias('importTabFiles', importAnyFile)
 @g.commander_command('new')
 def new(self, event=None, gui=None):
     '''Create a new Leo window.'''
+    import leo.core.leoApp as leoApp
     lm = g.app.loadManager
     old_c = self
     # Clean out the update queue so it won't interfere with the new window.
@@ -153,7 +154,14 @@ def new(self, event=None, gui=None):
     # Send all log messages to the new frame.
     g.app.setLog(None)
     g.app.lockLog()
-    c = g.app.newCommander(fileName=None, gui=gui)
+    # Retain all previous settings. Very important for theme code.
+    c = g.app.newCommander(
+        fileName=None,
+        gui=gui,
+        previousSettings=leoApp.PreviousSettings(
+            settingsDict=lm.globalSettingsDict,
+            shortcutsDict=lm.globalShortcutsDict,
+        ))    
     frame = c.frame
     g.app.unlockLog()
     frame.setInitialWindowGeometry()
@@ -164,9 +172,6 @@ def new(self, event=None, gui=None):
     c.frame.createFirstTreeNode()
     lm.createMenu(c)
     lm.finishOpen(c)
-    if g.app.loadedThemes:
-        c.config.settingsDict = old_c.config.settingsDict
-        lm.loadAllLoadedThemes(c=c, old_c=old_c)
     g.app.writeWaitingLog(c)
     g.doHook("new", old_c=old_c, c=c, new_c=c)
     c.setLog()

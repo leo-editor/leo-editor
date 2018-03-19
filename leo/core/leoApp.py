@@ -1809,6 +1809,7 @@ class LoadManager(object):
     #@+node:ekr.20180318133620.1: *4* LM.computeThemeFilePath
     def computeThemeFilePath(self):
 
+        trace = False
         lm = self
         # --theme takes precedence over @string theme-name.
         fn = lm.options.get('theme_path')
@@ -1817,12 +1818,20 @@ class LoadManager(object):
         if not fn:
             path = lm.files and lm.files[0]
             if path and g.os_path_exists(path):
-                previous_setting = lm.getPreviousSettings(path)
-                settings_d = previous_setting.settingsDict
+                # Tricky: we must call lm.computeLocalSettings *here*.
+                theme_c = lm.openSettingsFile(path)
+                settings_d, junk_shortcuts_d = lm.computeLocalSettings(
+                    c=theme_c,
+                    settings_d=lm.globalSettingsDict,
+                    shortcuts_d=lm.globalShortcutsDict,
+                    localFlag=False,
+                )
                 fn = settings_d.get_string_setting('theme-name')
+                if trace: g.trace('1', fn)
         # Finally, use the setting in myLeoSettings.leo.
         if not fn:
             fn = lm.globalSettingsDict.get_string_setting('theme-name')
+            if trace: g.trace('2', fn)
         if not fn:
             return None
         if not fn.endswith('.leo'):
@@ -1832,6 +1841,7 @@ class LoadManager(object):
             if  g.os_path_exists(path):
                 path = g.os_path_normslashes(path)
                 g.app.themeDirs.append(path)
+                if trace: g.trace('3', path)
                 return path
         print('Not found: @string theme-name = %s' % fn)
         return None
@@ -2186,13 +2196,12 @@ class LoadManager(object):
         theme_path = lm.computeThemeFilePath()
             # Appends path to g.app.themeDirs.
         if theme_path:
-            if trace: g.trace('===== theme file: %s' % theme_path)
+            if trace: g.trace('theme file: %s' % theme_path)
             theme_c = lm.openSettingsFile(theme_path)
             # Merge theme_c's settings into globalSettingsDict.
             settings_d, junk_shortcuts_d = lm.computeLocalSettings(
                 theme_c, settings_d, shortcuts_d, localFlag=False)
             lm.globalSettingsDict = settings_d
-            # g.trace('===== settings 2 keys:', len(settings_d.d.keys()))
         # Clear the cache entries for the commanders.
         # This allows this method to be called outside the startup logic.
         for c in commanders:
@@ -3075,17 +3084,6 @@ class LoadManager(object):
             print("isValidPython: unexpected exception: g.CheckVersion")
             traceback.print_exc()
             return 0
-    #@+node:ekr.20180310092706.1: *4* LM.loadAllLoadedThemes
-    def loadAllLoadedThemes(self, c, old_c):
-        '''
-        Load all previously-loaded themes.
-        Do *not* load settings files again.
-        '''
-        # Called by the 'new' command.
-        ssm = old_c.styleSheetManager
-        for path in g.app.loadedThemes:
-            g.trace('===== Reloading Theme', path)
-            ssm.load_theme_file(c, path, old_c=old_c, reload_flag=True)
     #@+node:ekr.20120223062418.10393: *4* LM.loadLocalFile & helper
     def loadLocalFile(self, fn, gui, old_c):
         '''Completely read a file, creating the corresonding outline.

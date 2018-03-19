@@ -878,16 +878,8 @@ class LeoQtGui(leoGui.LeoGui):
             return None
     #@+node:ekr.20110605121601.18517: *4* qt_gui.getImageImage
     def getImageImage(self, name):
-        '''Load the image in file named `name` and return it.
-
-        If self.color_theme, set from @settings -> @string color_theme is set,
-
-         - look first in $HOME/.leo/themes/<theme_name>/Icons,
-         - then in .../leo/themes/<theme_name>/Icons,
-         - then in .../leo/Icons,
-         - as well as trying absolute path
-        '''
-        fullname = self.getImageImageFinder(name)
+        '''Load the image in file named `name` and return it.'''
+        fullname = self.getImageFinder(name)
         try:
             pixmap = QtGui.QPixmap()
             pixmap.load(fullname)
@@ -896,8 +888,8 @@ class LeoQtGui(leoGui.LeoGui):
             g.es("exception loading:", name)
             g.es_exception()
             return None
-    #@+node:tbrown.20130316075512.28478: *4* qt_gui.getImageImageFinder (to be generalized)
-    def getImageImageFinder(self, name):
+    #@+node:tbrown.20130316075512.28478: *4* qt_gui.getImageFinder (to be generalized)
+    def getImageFinder(self, name):
         '''Theme aware image (icon) path searching
 
         If self.color_theme, set from @settings -> @string color_theme is set,
@@ -1582,25 +1574,11 @@ class StyleSheetManager(object):
         Scan for themes or @data qt-gui-plugin-style-sheet nodes.
         Return the text of the relevant node.
         '''
-        if 0: # not ready yet
-            c = self.c
-            d = c.config.settingsDict
-            for key in sorted(d.keys()):
-                gs = d.get(key) # A GeneralSetting object.
-                if gs.kind == 'string':
-                    setting = g.toUnicode(gs.setting)
-                    val = g.toUnicode(gs.val)
-                    if setting and val and val.startswith('color_theme'):
-                        sheet = setting
-                        break
-        else:
-            # No setting found
-            aList1 = self.get_data('qt-gui-plugin-style-sheet')
-            aList2 = self.get_data('qt-gui-user-style-sheet')
-            if aList2: aList1.extend(aList2)
-            sheet = ''.join(aList1)
-            sheet = self.expand_css_constants(sheet)
-        # g.trace(len(sheet))
+        aList1 = self.get_data('qt-gui-plugin-style-sheet')
+        aList2 = self.get_data('qt-gui-user-style-sheet')
+        if aList2: aList1.extend(aList2)
+        sheet = ''.join(aList1)
+        sheet = self.expand_css_constants(sheet)
         return sheet
     #@+node:ekr.20140912110338.19365: *4* ssm.get_stylesheet & helpers
     def get_stylesheet(self):
@@ -1973,85 +1951,6 @@ class StyleSheetManager(object):
         return s.rstrip()
             # Don't care about ending newline.
     #@+node:ekr.20180317062556.1: *3* sss.Theme files
-    #@+node:ekr.20180308102949.1: *4* ssm.load_theme_file & helpers
-    def load_theme_file(self, c, path, old_c=None, reload_flag=False):
-        '''Load a theme file, without setting any actual settings.'''
-        path = self.find_theme_file(path)
-        if not path: return
-        if old_c:
-            settings_d = old_c.config.settingsDict
-        else:
-            settings_d = self.read_theme_settings(path)
-        # Compute the style-sheet.
-        sheet = self.compute_style_sheet_from_settings_d(settings_d)
-        # Update the global settings from the settings_d.
-        c.config.settingsDict.update(settings_d)
-        # Update g.app.gui ivars.  g.app.gui.reload_settings() doesn't work.
-        if hasattr(g.app.gui, 'color_theme'):
-            g.app.gui.color_theme = c.config.getString('color_theme')
-            g.app.gui.iconimages = {} # Clear the icon cache.
-        # Reload the stylesheet *after* updating settings.
-        if sheet:
-            self.reload_settings(sheet=sheet)
-        # Remember the theme.
-        if not reload_flag:
-            g.app.loadedThemes.append(path)
-    #@+node:ekr.20180308105850.1: *5* ssm.compute_style_sheet_from_settings_d
-    def compute_style_sheet_from_settings_d(self, settings_d):
-        '''
-        Compute and set the style sheet from settings_d,
-        a TypedDict whose values are GeneralSetting objects.
-        '''
-        trace = False and not g.unitTesting
-        trace_after = True
-        trace_before = False
-        trace_dict = False
-        ssm = self
-        d1 = settings_d.get('qtguipluginstylesheet')
-        d2 = settings_d.get('qtguiuserstylesheet')
-        if not d1 and not d2:
-            # Do nothing if neither stylesheet exists.
-            # This allows settings-only themes.
-            if trace: g.trace('no stylesheets')
-            return None
-        # A little hack for ssm.replace_indicator_constants.
-        # Update c.config.settingsDict here.
-        for name in ('treeimageclosed', 'treeimageclosed'):
-            val = settings_d.get(name)
-            if val is not None:
-                self.c.config.settingsDict[name] = val
-        if trace and trace_dict:
-            g.trace('settings_d')
-            g.printObj(settings_d)
-        # pylint: disable=consider-using-ternary
-        aList1 = d1 and d1.val or []
-        aList2 = d2 and d2.val or []
-        if trace and trace_before:
-            g.trace()
-            g.printObj(aList1[:20])
-            g.printObj(aList2[:20])
-        sheet = ''.join(aList1 + aList2)
-        sheet = ssm.expand_css_constants(sheet, settingsDict=settings_d)
-        if trace and trace_after:
-            g.trace('\n'+sheet)
-        return sheet
-    #@+node:ekr.20180310112320.1: *5* ssm.read_theme_settings
-    def read_theme_settings(self, path):
-        '''Return the theme settings.'''
-        lm = g.app.loadManager
-        old_commanders = g.app.commanders()
-        # Read the theme file into c2, a hidden commander.
-        c2 = lm.openSettingsFile(path)
-        # Get settings *without* application defaults.
-        junk_shortcuts_d, settings_d = lm.createSettingsDicts(c2,
-            localFlag=False, # doesn't matter: it affects only menus & shortcuts.
-            theme=True, # Parse only the @theme True.
-        )
-        assert isinstance(settings_d, g.TypedDict), repr(settings_d)
-        # Clear the cache entries for hidden commander.
-        if c2 not in old_commanders:
-            g.app.forgetOpenFile(c2.fileName())
-        return settings_d
     #@+node:ekr.20180316092116.1: *3* ssm.Widgets
     #@+node:ekr.20140913054442.19390: *4* ssm.get_master_widget
     def get_master_widget(self, top=None):
