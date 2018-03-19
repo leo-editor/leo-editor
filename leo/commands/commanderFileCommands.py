@@ -949,7 +949,6 @@ def tangle(self, event=None):
 @g.commander_command('open-theme-file')
 def open_theme_file(self, event):
     '''Open a theme file and apply the theme.'''
-    
     c = event and event.get('c')
     if not c: return
     themes_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'themes')

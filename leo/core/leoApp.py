@@ -206,9 +206,6 @@ class LeoApp(object):
             # The leo/core directory.
         self.machineDir = None
             # The machine-specific directory.
-        self.themeDirs = []
-            # A list of directories containing theme files.
-            # Will typically contains ~ or leo/themes.
         #@-<< LeoApp: global directories >>
         #@+<< LeoApp: global data >>
         #@+node:ekr.20161028035956.1: *5* << LeoApp: global data >>
@@ -326,6 +323,18 @@ class LeoApp(object):
         self.signon = ''
         self.signon2 = ''
         #@-<< LeoApp: the global log >>
+        #@+<< LeoApp: global theme data >>
+        #@+node:ekr.20180319152119.1: *5* << LeoApp: global theme data >>
+        self.theme_color = None
+            # The color theme, used to find icons, etc.
+            # Set by @string color-theme
+        self.theme_directory = None
+            # The directory from which the theme file was loaded, if any.
+            # Used to find icons, etc.
+        self.theme_name = None
+            # The theme's name.
+            # Used to find sub-directories.
+        #@-<< LeoApp: global theme data >>
         #@+<< LeoApp: global types >>
         #@+node:ekr.20161028040204.1: *5* << LeoApp: global types >>
         import leo.core.leoFrame as leoFrame
@@ -382,29 +391,6 @@ class LeoApp(object):
         self.define_language_extension_dict()
         self.define_extension_dict()
         self.define_delegate_language_dict()
-    #@+node:ekr.20140729162415.18086: *5* app.init_at_auto_names
-    def init_at_auto_names(self):
-        '''Init the app.atAutoNames set.'''
-        self.atAutoNames = set([
-            "@auto-rst", "@auto",
-        ])
-    #@+node:ekr.20140729162415.18091: *5* app.init_at_file_names
-    def init_at_file_names(self):
-        '''Init the app.atFileNames set.'''
-        self.atFileNames = set([
-            "@asis",
-            "@edit",
-            "@file-asis", "@file-thin", "@file-nosent", "@file",
-            "@clean", "@nosent",
-            "@shadow",
-            "@thin",
-        ])
-    #@+node:ekr.20031218072017.1417: *5* app.define_global_constants
-    def define_global_constants(self):
-        # self.prolog_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-        self.prolog_prefix_string = "<?xml version=\"1.0\" encoding="
-        self.prolog_postfix_string = "?>"
-        self.prolog_namespace_string = 'xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"'
     #@+node:ekr.20141102043816.5: *5* app.define_delegate_language_dict
     def define_delegate_language_dict(self):
         self.delegate_language_dict = {
@@ -416,6 +402,183 @@ class LeoApp(object):
             "rust": "c", 
             # "vue": "c",
         }
+    #@+node:ekr.20120522160137.9911: *5* app.define_extension_dict
+    #@@nobeautify
+
+    def define_extension_dict(self):
+
+        # Keys are extensions, values are languages
+        self.extension_dict = {
+            # "ada":    "ada",
+            "ada":      "ada95", # modes/ada95.py exists.
+            "ahk":      "autohotkey",
+            "aj":       "aspect_j",
+            "apdl":     "apdl",
+            "as":       "actionscript", # jason 2003-07-03
+            "asp":      "asp",
+            "awk":      "awk",
+            "b":        "b",
+            "bas":      "rapidq", # fil 2004-march-11
+            "bash":     "shellscript",
+            "bat":      "batch",
+            "bbj":      "bbj",
+            "bcel":     "bcel",
+            "bib":      "bibtex",
+            "c":        "c",
+            "c++":      "cplusplus",
+            "cbl":      "cobol", # Only one extension is valid: .cob
+            "cfg":      "config",
+            "cfm":      "coldfusion",
+            "clj":      "clojure", # 2013/09/25: Fix bug 879338.
+            "ch":       "chill", # Other extensions, .c186,.c286
+            "coffee":   "coffeescript",
+            "conf":     "apacheconf",
+            "cpp":      "cpp",
+            "css":      "css",
+            "d":        "d",
+            "dart":     "dart",
+            "e":        "eiffel",
+            "el":       "elisp",
+            "eml":      "mail",
+            "erl":      "erlang",
+            "f":        "fortran",
+            "f90":      "fortran90",
+            "factor":   "factor",
+            "forth":    "forth",
+            "g":        "antlr",
+            "groovy":   "groovy",
+            "h":        "c", # 2012/05/23.
+            "handlebars": "html", # McNab.
+            "hbs":      "html", # McNab.
+            "hs":       "haskell",
+            "html":     "html",
+            "hx":       "haxe",
+            "i":        "swig",
+            "i4gl":     "i4gl",
+            "icn":      "icon",
+            "idl":      "idl",
+            "inf":      "inform",
+            "info":     "texinfo",
+            "ini":      "ini",
+            "io":       "io",
+            "iss":      "inno_setup",
+            "java":     "java",
+            "jhtml":    "jhtml",
+            "jmk":      "jmk",
+            "js":       "javascript", # For javascript import test.
+            "jsp":      "javaserverpage",
+            # "jsp":      "jsp",
+            "ksh":      "kshell",
+            "kv":       "kivy", # PeckJ 2014/05/05
+            "less":     "css", # McNab
+            "lua":      "lua", # ddm 13/02/06
+            "ly":       "lilypond",
+            "m":        "matlab",
+            "mak":      "makefile",
+            "md":       "md", # PeckJ 2013/02/07
+            "ml":       "ml",
+            "mm":       "objective_c", # Only one extension is valid: .m
+            "mod":      "modula3",
+            "mpl":      "maple",
+            "mqsc":     "mqsc",
+            "nqc":      "nqc",
+            "nsi":      "nsi", # EKR: 2010/10/27
+            # "nsi":      "nsis2",
+            "nw":       "noweb",
+            "occ":      "occam",
+            "otl":      "vimoutline", # TL 8/25/08 Vim's outline plugin
+            "p":        "pascal",
+            # "p":      "pop11", # Conflicts with pascal.
+            "php":      "php",
+            "pike":     "pike",
+            "pl":       "perl",
+            "pl1":      "pl1",
+            "po":       "gettext",
+            "pod":      "perlpod",
+            "pov":      "povray",
+            "prg":      "foxpro",
+            "pro":      "prolog",
+            "ps":       "postscript",
+            "psp":      "psp",
+            "ptl":      "ptl",
+            "py":       "python",
+            "pyx":      "cython", # Other extensions, .pyd,.pyi
+            # "pyx":    "pyrex",
+            # "r":      "r", # modes/r.py does not exist.
+            "r":        "rebol", # jason 2003-07-03
+            "rb":       "ruby", # thyrsus 2008-11-05
+            "rest":     "rst",
+            "rex":      "objectrexx",
+            "rhtml":    "rhtml",
+            "rib":      "rib",
+            "sas":      "sas",
+            "scala":    "scala",
+            "scm":      "scheme",
+            "scpt":     "applescript",
+            "sgml":     "sgml",
+            "sh":       "shell", # DS 4/1/04. modes/shell.py exists.
+            "shtml":    "shtml",
+            "sm":       "smalltalk",
+            "splus":    "splus",
+            "sql":      "plsql", # qt02537 2005-05-27
+            "sqr":      "sqr",
+            "ss":       "ssharp",
+            "ssi":      "shtml",
+            "tcl":      "tcl", # modes/tcl.py exists.
+            # "tcl":    "tcltk",
+            "tex":      "latex",
+            # "tex":      "tex",
+            "tpl":      "tpl",
+            "ts":       "typescript",
+            "txt":      "plain",
+            # "txt":      "text",
+            # "txt":      "unknown", # Set when @comment is seen.
+            "uc":       "uscript",
+            "v":        "verilog",
+            "vbs":      "vbscript",
+            "vhd":      "vhdl",
+            "vhdl":     "vhdl",
+            "vim":      "vim",
+            "vtl":      "velocity",
+            "w":        "cweb",
+            "wiki":     "moin",
+            "xml":      "xml",
+            "xom":      "omnimark",
+            "xsl":      "xsl",
+            "yaml":     "yaml",
+            "vue":      "javascript",
+            "zpt":      "zpt",
+        }
+
+        # These aren't real languages, or have no delims...
+            # cvs_commit, dsssl, embperl, freemarker, hex, jcl,
+            # patch, phpsection, progress, props, pseudoplain,
+            # relax_ng_compact, rtf, svn_commit.
+
+        # These have extensions which conflict with other languages.
+            # assembly_macro32: .asm or .a
+            # assembly_mcs51:   .asm or .a
+            # assembly_parrot:  .asm or .a
+            # assembly_r2000:   .asm or .a
+            # assembly_x86:     .asm or .a
+            # squidconf:        .conf
+            # rpmspec:          .rpm
+
+        # Extra language extensions, used to associate extensions with mode files.
+        # Used by importCommands.languageForExtension.
+        # Keys are extensions, values are corresponding mode file (without .py)
+        # A value of 'none' is a signal to unit tests that no extension file exists.
+        self.extra_extension_dict = {
+            'pod'   : 'perl',
+            'unknown_language': 'none',
+            'w'     : 'none', # cweb
+        }
+    #@+node:ekr.20031218072017.1417: *5* app.define_global_constants
+    def define_global_constants(self):
+        # self.prolog_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+        self.prolog_prefix_string = "<?xml version=\"1.0\" encoding="
+        self.prolog_postfix_string = "?>"
+        self.prolog_namespace_string = 'xmlns:leo="http://edreamleo.org/namespaces/leo-python-editor/1.1"'
     #@+node:ekr.20120522160137.9909: *5* app.define_language_delims_dict
     #@@nobeautify
 
@@ -760,177 +923,23 @@ class LeoApp(object):
             # assembly_x86:     .asm or .a
             # squidconf:        .conf
             # rpmspec:          .rpm
-    #@+node:ekr.20120522160137.9911: *5* app.define_extension_dict
-    #@@nobeautify
-
-    def define_extension_dict(self):
-
-        # Keys are extensions, values are languages
-        self.extension_dict = {
-            # "ada":    "ada",
-            "ada":      "ada95", # modes/ada95.py exists.
-            "ahk":      "autohotkey",
-            "aj":       "aspect_j",
-            "apdl":     "apdl",
-            "as":       "actionscript", # jason 2003-07-03
-            "asp":      "asp",
-            "awk":      "awk",
-            "b":        "b",
-            "bas":      "rapidq", # fil 2004-march-11
-            "bash":     "shellscript",
-            "bat":      "batch",
-            "bbj":      "bbj",
-            "bcel":     "bcel",
-            "bib":      "bibtex",
-            "c":        "c",
-            "c++":      "cplusplus",
-            "cbl":      "cobol", # Only one extension is valid: .cob
-            "cfg":      "config",
-            "cfm":      "coldfusion",
-            "clj":      "clojure", # 2013/09/25: Fix bug 879338.
-            "ch":       "chill", # Other extensions, .c186,.c286
-            "coffee":   "coffeescript",
-            "conf":     "apacheconf",
-            "cpp":      "cpp",
-            "css":      "css",
-            "d":        "d",
-            "dart":     "dart",
-            "e":        "eiffel",
-            "el":       "elisp",
-            "eml":      "mail",
-            "erl":      "erlang",
-            "f":        "fortran",
-            "f90":      "fortran90",
-            "factor":   "factor",
-            "forth":    "forth",
-            "g":        "antlr",
-            "groovy":   "groovy",
-            "h":        "c", # 2012/05/23.
-            "handlebars": "html", # McNab.
-            "hbs":      "html", # McNab.
-            "hs":       "haskell",
-            "html":     "html",
-            "hx":       "haxe",
-            "i":        "swig",
-            "i4gl":     "i4gl",
-            "icn":      "icon",
-            "idl":      "idl",
-            "inf":      "inform",
-            "info":     "texinfo",
-            "ini":      "ini",
-            "io":       "io",
-            "iss":      "inno_setup",
-            "java":     "java",
-            "jhtml":    "jhtml",
-            "jmk":      "jmk",
-            "js":       "javascript", # For javascript import test.
-            "jsp":      "javaserverpage",
-            # "jsp":      "jsp",
-            "ksh":      "kshell",
-            "kv":       "kivy", # PeckJ 2014/05/05
-            "less":     "css", # McNab
-            "lua":      "lua", # ddm 13/02/06
-            "ly":       "lilypond",
-            "m":        "matlab",
-            "mak":      "makefile",
-            "md":       "md", # PeckJ 2013/02/07
-            "ml":       "ml",
-            "mm":       "objective_c", # Only one extension is valid: .m
-            "mod":      "modula3",
-            "mpl":      "maple",
-            "mqsc":     "mqsc",
-            "nqc":      "nqc",
-            "nsi":      "nsi", # EKR: 2010/10/27
-            # "nsi":      "nsis2",
-            "nw":       "noweb",
-            "occ":      "occam",
-            "otl":      "vimoutline", # TL 8/25/08 Vim's outline plugin
-            "p":        "pascal",
-            # "p":      "pop11", # Conflicts with pascal.
-            "php":      "php",
-            "pike":     "pike",
-            "pl":       "perl",
-            "pl1":      "pl1",
-            "po":       "gettext",
-            "pod":      "perlpod",
-            "pov":      "povray",
-            "prg":      "foxpro",
-            "pro":      "prolog",
-            "ps":       "postscript",
-            "psp":      "psp",
-            "ptl":      "ptl",
-            "py":       "python",
-            "pyx":      "cython", # Other extensions, .pyd,.pyi
-            # "pyx":    "pyrex",
-            # "r":      "r", # modes/r.py does not exist.
-            "r":        "rebol", # jason 2003-07-03
-            "rb":       "ruby", # thyrsus 2008-11-05
-            "rest":     "rst",
-            "rex":      "objectrexx",
-            "rhtml":    "rhtml",
-            "rib":      "rib",
-            "sas":      "sas",
-            "scala":    "scala",
-            "scm":      "scheme",
-            "scpt":     "applescript",
-            "sgml":     "sgml",
-            "sh":       "shell", # DS 4/1/04. modes/shell.py exists.
-            "shtml":    "shtml",
-            "sm":       "smalltalk",
-            "splus":    "splus",
-            "sql":      "plsql", # qt02537 2005-05-27
-            "sqr":      "sqr",
-            "ss":       "ssharp",
-            "ssi":      "shtml",
-            "tcl":      "tcl", # modes/tcl.py exists.
-            # "tcl":    "tcltk",
-            "tex":      "latex",
-            # "tex":      "tex",
-            "tpl":      "tpl",
-            "ts":       "typescript",
-            "txt":      "plain",
-            # "txt":      "text",
-            # "txt":      "unknown", # Set when @comment is seen.
-            "uc":       "uscript",
-            "v":        "verilog",
-            "vbs":      "vbscript",
-            "vhd":      "vhdl",
-            "vhdl":     "vhdl",
-            "vim":      "vim",
-            "vtl":      "velocity",
-            "w":        "cweb",
-            "wiki":     "moin",
-            "xml":      "xml",
-            "xom":      "omnimark",
-            "xsl":      "xsl",
-            "yaml":     "yaml",
-            "vue":      "javascript",
-            "zpt":      "zpt",
-        }
-
-        # These aren't real languages, or have no delims...
-            # cvs_commit, dsssl, embperl, freemarker, hex, jcl,
-            # patch, phpsection, progress, props, pseudoplain,
-            # relax_ng_compact, rtf, svn_commit.
-
-        # These have extensions which conflict with other languages.
-            # assembly_macro32: .asm or .a
-            # assembly_mcs51:   .asm or .a
-            # assembly_parrot:  .asm or .a
-            # assembly_r2000:   .asm or .a
-            # assembly_x86:     .asm or .a
-            # squidconf:        .conf
-            # rpmspec:          .rpm
-
-        # Extra language extensions, used to associate extensions with mode files.
-        # Used by importCommands.languageForExtension.
-        # Keys are extensions, values are corresponding mode file (without .py)
-        # A value of 'none' is a signal to unit tests that no extension file exists.
-        self.extra_extension_dict = {
-            'pod'   : 'perl',
-            'unknown_language': 'none',
-            'w'     : 'none', # cweb
-        }
+    #@+node:ekr.20140729162415.18086: *5* app.init_at_auto_names
+    def init_at_auto_names(self):
+        '''Init the app.atAutoNames set.'''
+        self.atAutoNames = set([
+            "@auto-rst", "@auto",
+        ])
+    #@+node:ekr.20140729162415.18091: *5* app.init_at_file_names
+    def init_at_file_names(self):
+        '''Init the app.atFileNames set.'''
+        self.atFileNames = set([
+            "@asis",
+            "@edit",
+            "@file-asis", "@file-thin", "@file-nosent", "@file",
+            "@clean", "@nosent",
+            "@shadow",
+            "@thin",
+        ])
     #@+node:ekr.20150509193629.1: *4* app.cmd (decorator)
     def cmd(name):
         '''Command decorator for the LeoApp class.'''
@@ -1840,7 +1849,6 @@ class LoadManager(object):
             path = g.os_path_finalize_join(directory, fn)
             if  g.os_path_exists(path):
                 path = g.os_path_normslashes(path)
-                g.app.themeDirs.append(path)
                 if trace: g.trace('3', path)
                 return path
         print('Not found: @string theme-name = %s' % fn)
@@ -2194,14 +2202,20 @@ class LoadManager(object):
         # Add settings from --theme or @string theme-name files.
         # This must be done *after* reading myLeoSettigns.leo.
         theme_path = lm.computeThemeFilePath()
-            # Appends path to g.app.themeDirs.
         if theme_path:
-            if trace: g.trace('theme file: %s' % theme_path)
             theme_c = lm.openSettingsFile(theme_path)
-            # Merge theme_c's settings into globalSettingsDict.
-            settings_d, junk_shortcuts_d = lm.computeLocalSettings(
-                theme_c, settings_d, shortcuts_d, localFlag=False)
-            lm.globalSettingsDict = settings_d
+            if theme_c:
+                # Merge theme_c's settings into globalSettingsDict.
+                settings_d, junk_shortcuts_d = lm.computeLocalSettings(
+                    theme_c, settings_d, shortcuts_d, localFlag=False)
+                lm.globalSettingsDict = settings_d
+                # Set global vars
+                g.app.theme_color = settings_d.get_string_setting('color-theme')
+                g.app.theme_directory = g.os_path_dirname(theme_path)
+                g.app.theme_name = settings_d.get_string_setting('theme-name')
+                if trace:
+                    g.trace('\n theme_path: %s\n theme_name: %s\ncolor_theme: %s' % (
+                        theme_path, g.app.theme_name, g.app.theme_color))
         # Clear the cache entries for the commanders.
         # This allows this method to be called outside the startup logic.
         for c in commanders:

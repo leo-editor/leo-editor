@@ -890,18 +890,22 @@ class LeoQtGui(leoGui.LeoGui):
             return None
     #@+node:tbrown.20130316075512.28478: *4* qt_gui.getImageFinder (to be generalized)
     def getImageFinder(self, name):
-        '''Theme aware image (icon) path searching
-
-        If self.color_theme, set from @settings -> @string color_theme is set,
-
-         - look first in $HOME/.leo/themes/<theme_name>/Icons,
-         - then in .../leo/themes/<theme_name>/Icons,
-         - then in .../leo/Icons,
-         - as well as trying absolute path
-        '''
+        '''Theme aware image (icon) path searching.'''
+        ###
+            # If self.color_theme, set from @settings -> @string color_theme is set,
+            # - look first in $HOME/.leo/themes/<theme_name>/Icons,
+            # - then in .../leo/themes/<theme_name>/Icons,
+            # - then in .../leo/Icons,
+            # - as well as trying absolute path
+       
         trace = False and not g.unitTesting
 
-        if trace:  g.trace('color_theme', repr(self.color_theme))
+        if trace:
+            g.trace(g.callers())
+            g.trace(self.color_theme, name)
+            theme = g.app.loadedThemes and g.app.loadedThemes[0]
+            g.trace(theme, name)
+            # g.trace('color_theme', repr(self.color_theme))
         
         if self.color_theme:
             # normal, unthemed path to image
@@ -1505,9 +1509,9 @@ class StyleSheetManager(object):
         '''
         lm = g.app.loadManager
         table = lm.computeThemeDirectories()
-        for directory in g.app.themeDirs:
-            if directory not in table:
-                table.append(directory)
+        directory = g.app.theme_directory
+        if directory and directory not in table:
+            table.insert(0, directory)
         return table
             # All entries are known to exist and have normalized slashes.
     #@+node:ekr.20170307083738.1: *4* ssm.find_icon_path
