@@ -1954,15 +1954,15 @@ class StyleSheetManager(object):
             for directory in directories:
                 path = g.os_path_finalize_join(directory, url)
                 if g.os_path_exists(path):
-                    if trace: g.trace('%30s ==> %s' % (url, path))
+                    if trace: g.trace('%35s ==> %s' % (url, path))
                     old = mo.group(0)
                     new = 'url(%s)' % path
                     replacements.append((old, new),)
                     break
             else:
-                if trace: g.trace('%30s ==> %s' % (url, 'NOT FOUND'))
+                if trace: g.trace('%35s ==> %s' % (url, 'NOT FOUND'))
         # Pass 2: Now we can safely make the replacements.
-        for old, new in replacements:
+        for old, new in reversed(replacements):
             sheet = sheet.replace(old, new)
         return sheet
     #@+node:ekr.20140912110338.19372: *4* ssm.munge
