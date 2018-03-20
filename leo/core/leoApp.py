@@ -1815,6 +1815,7 @@ class LoadManager(object):
             join(leo, 'themes'),
         ]
         return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
+            # Make sure home has normalized slashes.
     #@+node:ekr.20180318133620.1: *4* LM.computeThemeFilePath
     def computeThemeFilePath(self):
 
