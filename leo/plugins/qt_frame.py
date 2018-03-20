@@ -2290,13 +2290,13 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 else:
                     row, col, fcol = 0, 0, ''
                 if 1:
-                    self.put1("line: %d col: %d fcol: %s words %u" % (row, col, fcol, wordNum))
+                    self.put1("line: %d col: %d fcol: %s words: %u" % (row, col, fcol, wordNum))
                 else:
                     #283 is not ready yet, and probably will never be.
                     fline = self.file_line()
                     fline = '' if fline is None else fline + row
                     self.put1(
-                        "fline: %s line: %d col: %d fcol: %s words %u" % (fline, row, col, fcol, wordNum))
+                        "fline: %s line: %d col: %d fcol: %s words: %u" % (fline, row, col, fcol, wordNum))
                 self.lastRow = row
                 self.lastCol = col
                 self.lastFcol = fcol
