@@ -2248,7 +2248,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
                 c.styleSheetManager.mng.update_view(w)  # force appearance update
             if trace: g.trace(s)
             w.setText(s)
-        #@+node:ekr.20110605121601.18261: *4* QtStatusLineClass.update & helper
+        #@+node:chris.20180320072817.1: *4* QtStatusLineClass.update & helper
         def update(self):
             if g.app.killed: return
             c = self.c; body = c.frame.body
@@ -2258,6 +2258,50 @@ class LeoQtFrame(leoFrame.LeoFrame):
             # 2010/02/19: Fix bug 525090
             # An added editor window doesn't display line/col
             te = body.widget
+            if c.config.getBool('word-count', default=False):
+                
+                if isinstance(te, QtWidgets.QTextEdit):
+                    offset = c.p.textOffset()
+                    cr = te.textCursor()
+                    bl = cr.block()
+                    col = bl.position()
+                    row = bl.blockNumber() + 1
+                    line = g.u(bl.text())
+                    # Fix bug #195: fcol when using @first directive is inaccurate
+                    # https://github.com/leo-editor/leo-editor/issues/195
+                    offset = c.p.textOffset()
+                    fcol_offset = 0
+                    s2 = line[0: col]
+                    col = g.computeWidth(s2, c.tab_width)
+                    i = line.find('<<')
+                    j = line.find('>>')
+                    if -1 < i < j or g.match_word(line.strip(), 0, '@others'):
+                        offset = None
+                    else:
+                        for tag in ('@first ', '@last '):
+                            if line.startswith(tag):
+                                fcol_offset = len(tag)
+                                break
+                    # New in Leo 5.2. fcol is '' if there is no ancestor @<file> node.
+                    fcol = '' if offset is None else max(0, col + offset - fcol_offset)
+                    u = c.p.b
+                    wordNum = len(u.split(None))
+                        
+                else:
+                    row, col, fcol = 0, 0, ''
+                if 1:
+                    self.put1("line: %d col: %d fcol: %s words %u" % (row, col, fcol, wordNum))
+                else:
+                    #283 is not ready yet, and probably will never be.
+                    fline = self.file_line()
+                    fline = '' if fline is None else fline + row
+                    self.put1(
+                        "fline: %s line: %d col: %d fcol: %s words %u" % (fline, row, col, fcol, wordNum))
+                self.lastRow = row
+                self.lastCol = col
+                self.lastFcol = fcol
+                self.lastwordNum = wordNum
+                return
             if isinstance(te, QtWidgets.QTextEdit):
                 offset = c.p.textOffset()
                 cr = te.textCursor()
@@ -2295,7 +2339,7 @@ class LeoQtFrame(leoFrame.LeoFrame):
             self.lastRow = row
             self.lastCol = col
             self.lastFcol = fcol
-        #@+node:ekr.20160921205759.1: *5* file_line
+        #@+node:chris.20180320072817.2: *5* file_line
         def file_line(self):
             '''
             Return the line of the first line of c.p in its external file.

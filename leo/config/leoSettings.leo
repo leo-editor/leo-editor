@@ -102,7 +102,7 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
 <v t="ekr.20180306144001.1"><vh> Color definitions</vh>
 <v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
 <v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
@@ -703,9 +703,10 @@
 <v t="ekr.20171122044906.1"><vh>declutter: show last part of long filenames</vh></v>
 </v>
 </v>
-<v t="tbnorth.20170111153412.1"><vh>Editing</vh>
+<v t="tbnorth.20170111153412.1" a="E"><vh>Editing</vh>
 <v t="tbnorth.20170111153417.1"><vh>@int autojustify = 78</vh></v>
 <v t="tbnorth.20170111153430.1"><vh>@bool autojustify-on-at-start = False</vh></v>
+<v t="chris.20180320083521.1"><vh>@bool word-count = False</vh></v>
 </v>
 <v t="ekr.20061003173413"><vh>Files &amp; directories</vh>
 <v t="ekr.20170706103545.1"><vh>@bool report_unchanged_files = True</vh></v>
@@ -2361,6 +2362,7 @@ The following integer values are supported:
 4 = Code debugging messages
 </t>
 <t tx="btheado.20131124162237.2493"></t>
+<t tx="chris.20180320083521.1">Enable/Disable word count display in status line.</t>
 <t tx="edward.20081129091117.12">horizontal: body pane to the right
 vertical: body pane on the botton
 </t>
