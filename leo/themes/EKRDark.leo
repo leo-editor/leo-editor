@@ -2,7 +2,7 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.52" body_secondary_ratio="0.51">
+<globals body_outline_ratio="0.52" body_secondary_ratio="0.66">
 	<global_window_position top="31" left="579" height="1048" width="1109"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -57,7 +57,7 @@
 </v>
 <v t="ekr.20180318145515.710"><vh>Settings for Leo Solarized Dark theme</vh>
 <v t="ekr.20180318145515.711"><vh>Colors...</vh>
-<v t="ekr.20180318145515.712"><vh>Base colors: these are not solarized colors</vh>
+<v t="ekr.20180318145515.712"><vh>Base colors: not all are solarized colors</vh>
 <v t="ekr.20180318145515.713"><vh>@color dark-base0 = #fdffdd</vh></v>
 <v t="ekr.20180318145515.714"><vh>@color dark-base00 = #657b83</vh></v>
 <v t="ekr.20180318145515.715"><vh>@color dark-base01 = #586e75</vh></v>
@@ -101,6 +101,7 @@
 </v>
 <v t="ekr.20180318145515.752"><vh>Colors: Syntax coloring</vh>
 <v t="ekr.20180318145515.753"><vh>Colors: defaults</vh>
+<v t="ekr.20180320125351.1"><vh>@color alt_solarized_green = #84c805</vh></v>
 <v t="ekr.20180318145515.754"><vh>@color blank_color = grey</vh></v>
 <v t="ekr.20180318145515.755"><vh>@color tab_color = red</vh></v>
 <v t="ekr.20180318145515.756"><vh>@color label_color = red</vh></v>
@@ -108,10 +109,10 @@
 <v t="ekr.20180318145515.758"><vh>@color keyword2_color = #268bd2</vh></v>
 <v t="ekr.20180318145515.759"><vh>@color keyword3_color = #268bd2</vh></v>
 <v t="ekr.20180318145515.760"><vh>@color keyword4_color = #268bd2</vh></v>
-<v t="ekr.20180318145515.761"><vh>@color literal1_color = #859900</vh></v>
-<v t="ekr.20180318145515.762"><vh>@color literal2_color = #859900</vh></v>
-<v t="ekr.20180318145515.763"><vh>@color literal3_color = #859900</vh></v>
-<v t="ekr.20180318145515.764"><vh>@color literal4_color = #859900</vh></v>
+<v t="ekr.20180318145515.761"><vh>@color literal1_color = @alt-solarized-green</vh></v>
+<v t="ekr.20180318145515.762"><vh>@color literal2_color = @alt-solarized-green</vh></v>
+<v t="ekr.20180318145515.763"><vh>@color literal3_color = @alt-solarized-green</vh></v>
+<v t="ekr.20180318145515.764"><vh>@color literal4_color = @alt-solarized-green</vh></v>
 <v t="ekr.20180318145515.765"><vh>@color markup_color = #268bd2</vh></v>
 <v t="ekr.20180318145515.766"><vh>@color comment1_color = #d33682</vh></v>
 <v t="ekr.20180318145515.767"><vh>@color comment2_color = #d33682</vh></v>
@@ -123,7 +124,7 @@
 <v t="ekr.20180318145515.772"><vh>@color null_color = #6c71c4</vh></v>
 <v t="ekr.20180318145515.773"><vh>@color operator_color = #6c71c4</vh></v>
 <v t="ekr.20180318145515.774"><vh>@color doc_part_color = @solarized-red</vh></v>
-<v t="ekr.20180318145515.775"><vh>@color leo_keyword_color = @solarized-green</vh></v>
+<v t="ekr.20180318145515.775"><vh>@color leo_keyword_color = @literal1_color</vh></v>
 <v t="ekr.20180318145515.776"><vh>@color section_name_color = @solarized-red</vh></v>
 <v t="ekr.20180318145515.777"><vh>@color show_invisibles_space_color = #E5E5E5</vh></v>
 <v t="ekr.20180318145515.778"><vh>@color show_invisibles_tab_color = #CCCCCC</vh></v>
@@ -185,6 +186,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20180320125351.1"></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20180312110809.1"></t>
@@ -209,7 +211,7 @@ g.blue('blue')
 g.red('red')
 g.es_print('test')
 g.es_print('black',color='black')</t>
-<t tx="ekr.20180312111155.1" str_leo_pos="2,1,2,12">A dark theme based on LeoBlackSolarized.leo.
+<t tx="ekr.20180312111155.1" str_leo_pos="1,0">A dark theme based on LeoBlackSolarized.leo.
 </t>
 <t tx="ekr.20180314052441.1">@ A doc part.  *All* languages colorize doc parts as follows:
 
@@ -613,7 +615,8 @@ div#bg {background:#d33682}
 
 firebrick3
 </t>
-<t tx="ekr.20180318145515.775">The color of Leo keywords such as @ignore, @color, etc.
+<t tx="ekr.20180318145515.775">#80cb07
+The color of Leo keywords such as @ignore, @color, etc.
 
 #00aa00
 </t>
@@ -1020,5 +1023,12 @@ QTreeView QLineEdit {
 }
 </t>
 <t tx="ekr.20180319081014.1"></t>
+<t tx="ekr.20180320125351.1">#84c805: good enough.
+
+#94e507: better, but a tad too bright.
+
+#80cb07: too bright
+
+#859900: real solarized green. Bad hue</t>
 </tnodes>
 </leo_file>
