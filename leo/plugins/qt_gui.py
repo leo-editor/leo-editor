@@ -889,7 +889,7 @@ class LeoQtGui(leoGui.LeoGui):
             g.es("exception loading:", name)
             g.es_exception()
             return None
-    #@+node:tbrown.20130316075512.28478: *4* qt_gui.getImageFinder (TEST)
+    #@+node:tbrown.20130316075512.28478: *4* qt_gui.getImageFinder
     def getImageFinder(self, name):
         '''Theme aware image (icon) path searching.'''
         trace = False and not g.unitTesting
@@ -1499,7 +1499,7 @@ class StyleSheetManager(object):
         Return a list of *existing* directories that could contain theme .leo files.
         '''
         lm = g.app.loadManager
-        table = lm.computeThemeDirectories()
+        table = lm.computeThemeDirectories()[:]
         directory = g.app.theme_directory
         if directory and directory not in table:
             table.insert(0, directory)
@@ -1745,6 +1745,7 @@ class StyleSheetManager(object):
         if to_do:
             g.trace('Unresolved @constants')
             g.printObj(to_do)
+        sheet = self.resolve_urls(sheet)
         sheet = sheet.replace('\\\n', '') # join lines ending in \
         if trace and trace_result:
             g.trace('returns...\n', sheet)
@@ -1782,7 +1783,7 @@ class StyleSheetManager(object):
     def do_pass(self, constants, deltas, settingsDict, sheet, to_do):
         
         trace = False and not g.unitTesting
-        trace_found = False
+        trace_found = True
         to_do.sort(key=len, reverse=True)
         for const in to_do:
             value = None
@@ -1932,6 +1933,37 @@ class StyleSheetManager(object):
                 new = 'image: url(%s)' % path
                 if trace: g.trace('found', old)
                 sheet = sheet.replace(old, new)
+        return sheet
+    #@+node:ekr.20180320054305.1: *5* ssm.resolve_urls
+    def resolve_urls(self, sheet):
+        '''Resolve all relative url's so they use absolute paths.'''
+        trace = True and not g.unitTesting
+        pattern = re.compile(r'url\((.*)\)')
+        directories = self.compute_icon_directories()
+        if trace:
+            g.trace('Search paths...')
+            g.printObj(directories)
+        # Pass 1: Find all replacements without changing the sheet.
+        replacements = []
+        for mo in pattern.finditer(sheet):
+            url = mo.group(1)
+            if url.startswith(':/'):
+                url = url[2:]
+            elif g.os_path_isabs(url):
+                continue
+            for directory in directories:
+                path = g.os_path_finalize_join(directory, url)
+                if g.os_path_exists(path):
+                    if trace: g.trace('%30s ==> %s' % (url, path))
+                    old = mo.group(0)
+                    new = 'url(%s)' % path
+                    replacements.append((old, new),)
+                    break
+            else:
+                if trace: g.trace('%30s ==> %s' % (url, 'NOT FOUND'))
+        # Pass 2: Now we can safely make the replacements.
+        for old, new in replacements:
+            sheet = sheet.replace(old, new)
         return sheet
     #@+node:ekr.20140912110338.19372: *4* ssm.munge
     def munge(self, stylesheet):
