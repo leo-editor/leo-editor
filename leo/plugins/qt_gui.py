@@ -1937,7 +1937,7 @@ class StyleSheetManager(object):
     #@+node:ekr.20180320054305.1: *5* ssm.resolve_urls
     def resolve_urls(self, sheet):
         '''Resolve all relative url's so they use absolute paths.'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         pattern = re.compile(r'url\((.*)\)')
         directories = self.compute_icon_directories()
         if trace:
