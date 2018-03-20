@@ -1806,7 +1806,7 @@ class LoadManager(object):
         '''
         join = g.os_path_finalize_join
         home = g.app.homeLeoDir
-        leo = g.os_path_join(g.app.loadDir, '..')
+        leo = join(g.app.loadDir, '..')
         table = [
             home,
             join(home, 'themes'),
@@ -1847,8 +1847,8 @@ class LoadManager(object):
             fn += '.leo'
         for directory in lm.computeThemeDirectories():
             path = g.os_path_finalize_join(directory, fn)
+                # This normalizes slahses.
             if  g.os_path_exists(path):
-                path = g.os_path_normslashes(path)
                 if trace: g.trace('3', path)
                 return path
         print('Not found: @string theme-name = %s' % fn)

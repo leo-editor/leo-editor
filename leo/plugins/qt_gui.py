@@ -1478,7 +1478,7 @@ class StyleSheetManager(object):
         Return a list of *existing* directories that could contain theme-related icons.
         '''
         home = g.app.homeLeoDir
-        join = g.os_path_join
+        join = g.os_path_finalize_join
         leo = join(g.app.loadDir, '..')
         table = [
             join(home, '.leo', 'Icons'),
@@ -1489,7 +1489,7 @@ class StyleSheetManager(object):
         for directory in self.compute_theme_directories():
             if directory not in table:
                 table.append(directory)
-            directory2 = g.os_path_finalize_join(directory, 'Icons')
+            directory2 = join(directory, 'Icons')
             if directory2 not in table:
                 table.append(directory2)
         return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
@@ -1500,7 +1500,7 @@ class StyleSheetManager(object):
         '''
         lm = g.app.loadManager
         table = lm.computeThemeDirectories()[:]
-        directory = g.app.theme_directory
+        directory = g.os_path_normslashes(g.app.theme_directory)
         if directory and directory not in table:
             table.insert(0, directory)
         return table
@@ -1937,10 +1937,13 @@ class StyleSheetManager(object):
     #@+node:ekr.20180320054305.1: *5* ssm.resolve_urls
     def resolve_urls(self, sheet):
         '''Resolve all relative url's so they use absolute paths.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         pattern = re.compile(r'url\((.*)\)')
+        join = g.os_path_finalize_join
         directories = self.compute_icon_directories()
+        paths_traced = False
         if trace:
+            paths_traced = True
             g.trace('Search paths...')
             g.printObj(directories)
         # Pass 1: Find all replacements without changing the sheet.
@@ -1950,9 +1953,10 @@ class StyleSheetManager(object):
             if url.startswith(':/'):
                 url = url[2:]
             elif g.os_path_isabs(url):
+                if trace: g.trace('ABS:', url)
                 continue
             for directory in directories:
-                path = g.os_path_finalize_join(directory, url)
+                path = join(directory, url)
                 if g.os_path_exists(path):
                     if trace: g.trace('%35s ==> %s' % (url, path))
                     old = mo.group(0)
@@ -1960,7 +1964,11 @@ class StyleSheetManager(object):
                     replacements.append((old, new),)
                     break
             else:
-                if trace: g.trace('%35s ==> %s' % (url, 'NOT FOUND'))
+                g.trace('%35s ==> %s' % (url, 'NOT FOUND'))
+                if not paths_traced:
+                    paths_traced = True
+                    g.trace('Search paths...')
+                    g.printObj(directories)
         # Pass 2: Now we can safely make the replacements.
         for old, new in reversed(replacements):
             sheet = sheet.replace(old, new)

@@ -6584,7 +6584,7 @@ def os_path_normpath(path):
     if g.isWindows:
         path = path.replace('\\','/')
     return path
-#@+node:ekr.20180314081254.1: *3* g.os_path_normslashes (new)
+#@+node:ekr.20180314081254.1: *3* g.os_path_normslashes
 def os_path_normslashes(path):
     if g.isWindows:
         path = path.replace('\\','/')
