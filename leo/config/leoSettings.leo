@@ -1231,6 +1231,7 @@
 <v t="ekr.20131213135427.21950"><vh>Proper names</vh></v>
 </v>
 <v t="ekr.20131213135427.21951"><vh>@menu Settings</vh>
+<v t="ekr.20180320113441.1"><vh>@item open-theme-file</vh></v>
 <v t="ekr.20131213135427.21952"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21953"><vh>@item open-leo-settings-leo</vh></v>
 <v t="ekr.20131213135427.21954"><vh>@item open-myLeoSettings-leo</vh></v>
@@ -1554,9 +1555,6 @@
 <v t="ekr.20131213135427.22318"><vh>@item &amp;yank</vh></v>
 <v t="ekr.20131213135427.22319"><vh>@item yank-&amp;pop</vh></v>
 </v>
-</v>
-<v t="ekr.20180312035141.1"><vh>@menu &amp;Themes</vh>
-<v t="ekr.20180312035333.1"><vh>@item open-theme-file</vh></v>
 </v>
 <v t="ekr.20131213135427.22320"><vh>@menu &amp;Window</vh>
 <v t="ekr.20131213135427.22340"><vh>@item *&amp;resize-to-screen</vh></v>
@@ -11758,11 +11756,10 @@ May be overridden by themes.</t>
 <t tx="ekr.20180308050150.7"></t>
 <t tx="ekr.20180308050150.8"></t>
 <t tx="ekr.20180308050150.9"></t>
-<t tx="ekr.20180312035141.1">A placeholder for the actual menu.
-Leo's core menu code populates this menu as a special case.</t>
-<t tx="ekr.20180312035333.1">&amp;Open Theme File</t>
 <t tx="ekr.20180317172528.1"></t>
 <t tx="ekr.20180317175351.1"></t>
+<t tx="ekr.20180320113441.1">&amp;View Theme
+</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
