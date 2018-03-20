@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.52" body_secondary_ratio="0.51">
-	<global_window_position top="138" left="562" height="861" width="1109"/>
+	<global_window_position top="31" left="579" height="1048" width="1109"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -209,7 +209,7 @@ g.blue('blue')
 g.red('red')
 g.es_print('test')
 g.es_print('black',color='black')</t>
-<t tx="ekr.20180312111155.1" str_leo_pos="2,1,0">A dark theme based on LeoBlackSolarized.leo.
+<t tx="ekr.20180312111155.1" str_leo_pos="2,1,2,12">A dark theme based on LeoBlackSolarized.leo.
 </t>
 <t tx="ekr.20180314052441.1">@ A doc part.  *All* languages colorize doc parts as follows:
 
@@ -1013,6 +1013,7 @@ QTreeView::branch:open:has-children{
 
 /* ----- Headline edit widgets ----- */
 QTreeView QLineEdit {
+  font-size: @font-size-tree;
   background: @LeoYellow;
   color: black;
   padding: 0px;
