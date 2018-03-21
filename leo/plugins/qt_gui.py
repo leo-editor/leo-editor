@@ -897,7 +897,7 @@ class LeoQtGui(leoGui.LeoGui):
         trace = g.trace_startup and not g.unitTesting
         
         def dump(var, val):
-            print('%20s %s' % (var, val))
+            print('%20s: %s' % (var, val))
 
         # Abbreviations...
         color = g.app.theme_color
@@ -940,9 +940,9 @@ class LeoQtGui(leoGui.LeoGui):
             getString = g.app.config.getString
             print('')
             g.trace('...')
-            dump('color_theme', getString('color_theme'))
-            dump('theme_name', getString('theme_name'))
-            dump('theme_path', getString('theme_path'))
+            dump('@string color_theme', getString('color_theme'))
+            dump('@string theme_name', getString('theme_name'))
+            dump('@string theme_path', getString('theme_path'))
             dump('home', home)
             dump('leo', leo)
             print('directory table...')
