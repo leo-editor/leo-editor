@@ -1683,8 +1683,8 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.76: *4* k.__init__& helpers
     def __init__(self, c):
         '''Create a key handler for c.'''
-        trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: g.es_debug('(k)')
+        trace = False and not g.unitTesting
+        if trace: g.trace('(k)')
         self.c = c
         self.dispatchEvent = None
         self.fnc = None
@@ -2079,8 +2079,8 @@ class KeyHandlerClass(object):
         Complete the construction of the keyHandler class.
         c.commandsDict has been created when this is called.
         '''
-        trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: g.es_debug('(k)', self.c)
+        trace = False and not g.unitTesting
+        if trace: g.trace('(k)', self.c)
         c, k = self.c, self
         k.w = c.frame.miniBufferWidget
             # Will be None for NullGui.

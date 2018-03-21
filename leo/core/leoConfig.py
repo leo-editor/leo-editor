@@ -1109,8 +1109,8 @@ class GlobalConfigManager(object):
     #@+node:ekr.20041117083202: *3* gcm.Birth...
     #@+node:ekr.20041117062717.2: *4* gcm.ctor
     def __init__(self):
-        trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: g.es_debug('(g.app.config)')
+        trace = False and not g.unitTesting
+        if trace: g.trace('(g.app.config)')
         # Set later.  To keep pylint happy.
         if 0: # No longer needed, now that setIvarsFromSettings always sets gcm ivars.
             self.at_root_bodies_start_in_doc_mode = True
@@ -1517,7 +1517,7 @@ class LocalConfigManager(object):
     #@+node:ekr.20120215072959.12472: *3* c.config.Birth
     #@+node:ekr.20041118104831.2: *4* c.config.ctor
     def __init__(self, c, previousSettings=None):
-        trace = (False or g.trace_startup) and not g.unitTesting
+        trace = False and not g.unitTesting
         if trace: g.es_debug('(c.config)', c and c.shortFileName())
         self.c = c
         lm = g.app.loadManager

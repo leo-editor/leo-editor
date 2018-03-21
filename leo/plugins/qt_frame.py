@@ -2076,8 +2076,8 @@ class LeoQtFrame(leoFrame.LeoFrame):
         return g.new_cmd_decorator(name, ['c', 'frame',])
     #@+node:ekr.20110605121601.18250: *4* qtFrame.finishCreate & helpers
     def finishCreate(self):
-        trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: g.es_debug('(qtFrame)')
+        trace = False and not g.unitTesting
+        if trace: g.trace('(qtFrame)')
         f = self
         c = self.c
         assert c

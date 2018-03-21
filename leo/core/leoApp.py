@@ -1557,8 +1557,6 @@ class LeoApp(object):
     #@+node:ekr.20031218072017.2188: *3* app.newCommander
     def newCommander(self, fileName, relativeFileName=None, gui=None, previousSettings=None):
         """Create a commander and its view frame for the Leo main window."""
-        trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: g.es_debug(repr(fileName), repr(relativeFileName))
         # Create the commander and its subcommanders.
         # This takes about 3/4 sec when called by the leoBridge module.
         import leo.core.leoCommands as leoCommands
@@ -1587,8 +1585,7 @@ class LoadManager(object):
     #@+others
     #@+node:ekr.20120214060149.15851: *3*  LM.ctor
     def __init__(self):
-        trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: g.es_debug('(LoadManager)')
+        # g.trace('(LoadManager)')
         #
         # Global settings & shortcuts dicts...
         # The are the defaults for computing settings and shortcuts for all loaded files.
@@ -1930,9 +1927,7 @@ class LoadManager(object):
         Merge the settings dicts from c's outline into *new copies of*
         settings_d and shortcuts_d.
         '''
-        trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: g.es_debug('%s\n%s\n%s' % (
-            c.shortFileName(), settings_d, shortcuts_d))
+        # g.trace('%s\n%s\n%s' % (c.shortFileName(), settings_d, shortcuts_d))
         lm = self
         shortcuts_d2, settings_d2 = lm.createSettingsDicts(c, localFlag)
         assert shortcuts_d
@@ -2182,7 +2177,7 @@ class LoadManager(object):
     def readGlobalSettingsFiles(self):
         '''Read leoSettings.leo and myLeoSettings.leo using a null gui.'''
         lm = self
-        trace = (False or g.trace_startup) and not g.unitTesting
+        trace = False and not g.unitTesting
         # Open the standard settings files with a nullGui.
         # Important: their commanders do not exist outside this method!
         paths = [lm.computeLeoSettingsPath(), lm.computeMyLeoSettingsPath()]
@@ -2592,8 +2587,7 @@ class LoadManager(object):
             g.warning('leo/plugins/writers/%s has no writer_dict' % sfn)
     #@+node:ekr.20120219154958.10478: *5* LM.createGui
     def createGui(self, pymacs):
-        trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: g.es_debug()
+        trace = False and not g.unitTesting
         lm = self
         gui_option = lm.options.get('gui')
         windowFlag = lm.options.get('windowFlag')
@@ -2605,8 +2599,7 @@ class LoadManager(object):
             else:
                 # This can happen when launching Leo from IPython.
                 # This can also happen when leoID does not exist.
-                if trace:
-                    g.trace('g.app.gui', g.app.gui, g.callers())
+                if trace: g.trace('(LoadManager) g.app.gui:', g.app.gui)
         elif gui_option is None:
             if script and not windowFlag:
                 # Always use null gui for scripts.
@@ -2661,7 +2654,7 @@ class LoadManager(object):
             return None
     #@+node:ekr.20120219154958.10484: *5* LM.initApp
     def initApp(self, verbose):
-        trace = (False or g.trace_startup) and not g.unitTesting
+        trace = False and not g.unitTesting
         if trace: g.es_debug()
         self.createAllImporetersData()
             # Can be done early. Uses only g.app.loadDir
@@ -2774,6 +2767,7 @@ class LoadManager(object):
         add_bool('--trace-plugins', 'trace imports of plugins')
         add_other('--trace-setting', 'trace where named setting is set', m="NAME")
         add_bool('--trace-shutdown', 'trace shutdown logic')
+        add_bool('--trace-startup',  'trace startup logic')
         add_other('--window-size',  'initial window size (height x width)', m='SIZE')
         # Multiple bool values.
         add('-v', '--version', action='store_true',
@@ -2858,7 +2852,6 @@ class LoadManager(object):
         trace = False
         # --debug
         g.app.debug = options.debug
-            # if g.app.debug: g.trace_startup = True
         # --fail-fast
         g.app.failFast = options.fail_fast
         # --fullscreen
@@ -2902,6 +2895,9 @@ class LoadManager(object):
             # g.app.config does not exist yet.
         # --trace-shutdown
         g.app.trace_shutdown = options.trace_shutdown
+        # --trace-startup
+        g.trace_startup = options.trace_startup
+
        
     #@+node:ekr.20180312154839.1: *6* LM.doWindowSizeOption
     def doWindowSizeOption(self, options):
@@ -3115,8 +3111,8 @@ class LoadManager(object):
         get settings from the leoSettings.leo and myLeoSetting.leo or default settings,
         or open an empty outline.
         '''
-        trace = (False or g.trace_startup or g.app.debug) and not g.unitTesting
-        if trace: g.es_debug(fn)
+        trace = False and not g.unitTesting
+        if trace: g.trace(fn)
         lm = self
         # Step 0: Return if the file is already open.
         fn = g.os_path_finalize(fn)
@@ -3145,7 +3141,7 @@ class LoadManager(object):
         Creates an empty outline if fn is a non-existent Leo file.
         Creates an wrapper outline if fn is an external file, existing or not.
         '''
-        trace = (False or g.trace_startup) and not g.unitTesting
+        trace = False and not g.unitTesting
         if trace: g.es_debug(g.shortFileName(fn))
         lm = self
         # Disable the log.

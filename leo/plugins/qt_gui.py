@@ -24,10 +24,10 @@ if 1:
     assert qt_commands
 #@-<< imports >>
 #@+others
-#@+node:ekr.20110605121601.18134: ** init
+#@+node:ekr.20110605121601.18134: ** init (qt_gui.py)
 def init():
-    trace = (False or g.trace_startup) and not g.unitTesting
-    if trace and g.trace_startup: g.es_debug('(gt_gui.py)')
+    trace = False and not g.unitTesting
+    if trace: g.trace('(gt_gui.py)')
     if g.app.unitTesting: # Not Ok for unit testing!
         return False
     if not QtCore:
@@ -890,11 +890,18 @@ class LeoQtGui(leoGui.LeoGui):
             g.es_exception()
             return None
     #@+node:tbrown.20130316075512.28478: *4* qt_gui.getImageFinder
+    dump_given = False
+
     def getImageFinder(self, name):
         '''Theme aware image (icon) path searching.'''
-        trace = True and not g.unitTesting
+        trace = g.trace_startup and not g.unitTesting
+        
+        def dump(var, val):
+            print('%20s %s' % (var, val))
+
         # Abbreviations...
         color = g.app.theme_color
+        exists = g.os_path_exists
         join = g.os_path_finalize_join
             # Normalizes slashes, etc.
         home = g.os_path_normslashes(g.app.homeLeoDir)
@@ -927,12 +934,28 @@ class LeoQtGui(leoGui.LeoGui):
                 join(leo, 'themes'),
                 join(leo, 'Icons'),
             ]
+        table = [z for z in table if exists(z)]
+        if trace and not self.dump_given:
+            self.dump_given = True
+            getString = g.app.config.getString
+            print('')
+            g.trace('...')
+            dump('color_theme', getString('color_theme'))
+            dump('theme_name', getString('theme_name'))
+            dump('theme_path', getString('theme_path'))
+            dump('home', home)
+            dump('leo', leo)
+            print('directory table...')
+            g.printObj(table)
+            print('')
         for base_dir in table:
             path = join(base_dir, name)
-            if g.os_path_exists(path):
-                if trace: g.trace('found %s -> %s' % (color, path))
+            if exists(path):
+                if trace: g.trace('%s is  in %s\n' % (name, base_dir))
                 return path
-        g.trace('not found', color or '<no color>', name)
+            elif trace:
+                g.trace(name, 'not in', base_dir)
+        g.trace('not found:', color or '<no color>', name)
         return None
     #@+node:ekr.20110605121601.18518: *4* qt_gui.getTreeImage
     def getTreeImage(self, c, path):
@@ -1587,96 +1610,6 @@ class StyleSheetManager(object):
         sheet = ''.join(aList1)
         sheet = self.expand_css_constants(sheet)
         return sheet
-    #@+node:ekr.20140912110338.19365: *4* ssm.get_stylesheet & helpers
-    def get_stylesheet(self):
-        '''
-        Scan for themes or @data qt-gui-plugin-style-sheet nodes.
-        Return the text of the relevant node.
-        '''
-        themes, theme_name = self.find_themes()
-        if themes:
-            return self.get_last_theme(themes, theme_name)
-        else:
-            g.es("No theme found, assuming static stylesheet")
-            return self.get_last_style_sheet()
-    #@+node:ekr.20140912110338.19368: *5* ssm.find_themes
-    def find_themes(self):
-        '''Find all theme-related nodes in the @settings tree.'''
-        themes, theme_name = [], 'unknown'
-        for p in self.settings_p.subtree_iter():
-            if p.h.startswith('@string color_theme'):
-                theme_name = p.h.split()[-1]
-                themes.append((theme_name, p.copy()))
-            elif p.h == 'stylesheet & source':
-                theme_name = 'unknown'
-                themes.append((theme_name, p.copy()))
-        return themes, theme_name
-    #@+node:ekr.20140912110338.19367: *5* ssm.get_last_style_sheet
-    def get_last_style_sheet(self):
-        '''Return the body text of the *last* @data qt-gui-plugin-style-sheet node.'''
-        sheets = [p.copy() for p in self.settings_p.subtree_iter()
-            if p.h == '@data qt-gui-plugin-style-sheet']
-        if sheets:
-            if len(sheets) > 1:
-                g.es("WARNING: found multiple\n'@data qt-gui-plugin-style-sheet' nodes")
-                g.es("Using the *last* node found")
-            else:
-                g.es("Stylesheet found")
-            data_p = sheets[-1]
-            return data_p.b
-        else:
-            g.es("No '@data qt-gui-plugin-style-sheet' node")
-            # g.es("Typically 'Reload Settings' is used in the Global or Personal "
-                 # "settings files, 'leoSettings.leo and 'myLeoSettings.leo'")
-            return None
-    #@+node:ekr.20140912110338.19366: *5* ssm.get_last_theme
-    def get_last_theme(self, themes, theme_name):
-        '''Return the stylesheet of the last theme.'''
-        g.es("Found theme(s):")
-        for name, p in themes:
-            g.es('found theme:', name)
-        if len(themes) > 1:
-            g.es("WARNING: using the *last* theme found")
-        theme_p = themes[-1][1]
-        unl = theme_p.get_UNL() + '-->'
-        seen = 0
-        for i in theme_p.subtree_iter():
-            # Disable any @data qt-gui-plugin-style-sheet nodes in theme's tree.
-            if i.h == '@data qt-gui-plugin-style-sheet':
-                i.h = '@@data qt-gui-plugin-style-sheet'
-                seen += 1
-        if seen == 0:
-            g.es("NOTE: Did not find compiled stylesheet for theme")
-        elif seen > 1:
-            g.es("NOTE: Found multiple compiled stylesheets for theme")
-        text = [
-            "/*\n  DON'T EDIT THIS, EDIT THE OTHER NODES UNDER "
-            "('stylesheet & source')\n  AND RECREATE THIS BY "
-            "Alt-X style-reload"
-            "\n\n  AUTOMATICALLY GENERATED FROM:\n  %s\n  %s\n*/\n\n"
-            % (
-                theme_p.get_UNL(with_proto=True),
-                datetime.datetime.now().strftime('%Y-%m-%d %H:%M'),
-            )]
-        for i in theme_p.subtree_iter():
-            src = i.get_UNL().replace(unl, '')
-            if i.h.startswith('@data '):
-                i.h = '@' + i.h
-            if ('@ignore' in src) or ('@data' in src):
-                continue
-            text.append("/*### %s %s*/\n%s\n\n" % (
-                src, '#' * (70 - len(src)),
-                i.b.strip()
-            ))
-        stylesheet = '\n'.join(text)
-        if self.safe:
-            g.trace('Stylesheet:\n' % stylesheet)
-        else:
-            data_p = theme_p.insertAsLastChild()
-            data_p.h = '@data qt-gui-plugin-style-sheet'
-            data_p.b = stylesheet
-            g.es("Stylesheet compiled")
-        return stylesheet
     #@+node:ekr.20140915194122.19476: *4* ssm.print_style_sheet
     def print_style_sheet(self):
         '''Show the top-level style sheet.'''
@@ -1949,7 +1882,7 @@ class StyleSheetManager(object):
     #@+node:ekr.20180320054305.1: *5* ssm.resolve_urls
     def resolve_urls(self, sheet):
         '''Resolve all relative url's so they use absolute paths.'''
-        trace = True and not g.unitTesting
+        trace = g.trace_startup and not g.unitTesting
         pattern = re.compile(r'url\((.*)\)')
         join = g.os_path_finalize_join
         directories = self.compute_icon_directories()

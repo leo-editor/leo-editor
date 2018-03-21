@@ -26807,6 +26807,96 @@ def read_theme_settings(self, path):
     if c2 not in old_commanders:
         g.app.forgetOpenFile(c2.fileName())
     return settings_d
+.. @+node:ekr.20140912110338.19365: *4* ssm.get_stylesheet & helpers (no longer used??)
+def get_stylesheet(self):
+    '''
+    Scan for themes or @data qt-gui-plugin-style-sheet nodes.
+    Return the text of the relevant node.
+    '''
+    themes, theme_name = self.find_themes()
+    if themes:
+        return self.get_last_theme(themes, theme_name)
+    else:
+        g.es("No theme found, assuming static stylesheet")
+        return self.get_last_style_sheet()
+.. @+node:ekr.20140912110338.19368: *5* ssm.find_themes (no longer used)
+def find_themes(self):
+    '''Find all theme-related nodes in the @settings tree.'''
+    themes, theme_name = [], 'unknown'
+    for p in self.settings_p.subtree_iter():
+        if p.h.startswith('@string color_theme'):
+            theme_name = p.h.split()[-1]
+            themes.append((theme_name, p.copy()))
+        elif p.h == 'stylesheet & source':
+            theme_name = 'unknown'
+            themes.append((theme_name, p.copy()))
+    return themes, theme_name
+.. @+node:ekr.20140912110338.19367: *5* ssm.get_last_style_sheet
+def get_last_style_sheet(self):
+    '''Return the body text of the *last* @data qt-gui-plugin-style-sheet node.'''
+    sheets = [p.copy() for p in self.settings_p.subtree_iter()
+        if p.h == '@data qt-gui-plugin-style-sheet']
+    if sheets:
+        if len(sheets) > 1:
+            g.es("WARNING: found multiple\n'@data qt-gui-plugin-style-sheet' nodes")
+            g.es("Using the *last* node found")
+        else:
+            g.es("Stylesheet found")
+        data_p = sheets[-1]
+        return data_p.b
+    else:
+        g.es("No '@data qt-gui-plugin-style-sheet' node")
+        # g.es("Typically 'Reload Settings' is used in the Global or Personal "
+             # "settings files, 'leoSettings.leo and 'myLeoSettings.leo'")
+        return None
+.. @+node:ekr.20140912110338.19366: *5* ssm.get_last_theme
+def get_last_theme(self, themes, theme_name):
+    '''Return the stylesheet of the last theme.'''
+    g.es("Found theme(s):")
+    for name, p in themes:
+        g.es('found theme:', name)
+    if len(themes) > 1:
+        g.es("WARNING: using the *last* theme found")
+    theme_p = themes[-1][1]
+    unl = theme_p.get_UNL() + '-->'
+    seen = 0
+    for i in theme_p.subtree_iter():
+        # Disable any @data qt-gui-plugin-style-sheet nodes in theme's tree.
+        if i.h == '@data qt-gui-plugin-style-sheet':
+            i.h = '@@data qt-gui-plugin-style-sheet'
+            seen += 1
+    if seen == 0:
+        g.es("NOTE: Did not find compiled stylesheet for theme")
+    elif seen > 1:
+        g.es("NOTE: Found multiple compiled stylesheets for theme")
+    text = [
+        "/*\n  DON'T EDIT THIS, EDIT THE OTHER NODES UNDER "
+        "('stylesheet & source')\n  AND RECREATE THIS BY "
+        "Alt-X style-reload"
+        "\n\n  AUTOMATICALLY GENERATED FROM:\n  %s\n  %s\n*/\n\n"
+        % (
+            theme_p.get_UNL(with_proto=True),
+            datetime.datetime.now().strftime('%Y-%m-%d %H:%M'),
+        )]
+    for i in theme_p.subtree_iter():
+        src = i.get_UNL().replace(unl, '')
+        if i.h.startswith('@data '):
+            i.h = '@' + i.h
+        if ('@ignore' in src) or ('@data' in src):
+            continue
+        text.append("/*### %s %s*/\n%s\n\n" % (
+            src, '#' * (70 - len(src)),
+            i.b.strip()
+        ))
+    stylesheet = '\n'.join(text)
+    if self.safe:
+        g.trace('Stylesheet:\n' % stylesheet)
+    else:
+        data_p = theme_p.insertAsLastChild()
+        data_p.h = '@data qt-gui-plugin-style-sheet'
+        data_p.b = stylesheet
+        g.es("Stylesheet compiled")
+    return stylesheet
 .. @-all
 .. @@nosearch
 .. @-leo

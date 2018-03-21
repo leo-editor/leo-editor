@@ -47,8 +47,8 @@ class ChapterController(object):
 
     def finishCreate(self):
         '''Create the box in the icon area.'''
-        trace = (False or g.trace_startup) and not g.unitTesting
-        if trace: g.es_debug('(cc)')
+        trace = False and not g.unitTesting
+        if trace: g.trace('(cc)')
         cc = self
         cc.createIcon()
         if trace: g.trace('===== ChapterController.finishCreate')

@@ -49,11 +49,11 @@ class Commands(object):
     #@+node:ekr.20031218072017.2811: *3*  c.Birth & death
     #@+node:ekr.20031218072017.2812: *4* c.__init__ & helpers
     def __init__(self, fileName, relativeFileName=None, gui=None, previousSettings=None):
-        trace = (False or g.trace_startup) and not g.unitTesting
+        trace = False and not g.unitTesting
         tag = 'Commands.__init__ %s' % (g.shortFileName(fileName))
-        if trace and g.trace_startup: g.es_debug('(Commands)', g.shortFileName(fileName))
+        if trace: g.trace('(Commands)', g.shortFileName(fileName))
         c = self
-        if trace and not g.trace_startup:
+        if trace:
             t1 = time.time()
         # Official ivars.
         self._currentPosition = None
@@ -76,11 +76,11 @@ class Commands(object):
         c.initObjects(self.gui)
         assert c.frame
         assert c.frame.c
-        if trace and not g.trace_startup:
+        if trace:
             g.printDiffTime('%s: after controllers created' % (tag), t1)
         # Complete the init!
         c.finishCreate()
-        if trace and not g.trace_startup:
+        if trace:
             g.printDiffTime('%s: after c.finishCreate' % (tag), t1)
     #@+node:ekr.20120217070122.10475: *5* c.computeWindowTitle
     def computeWindowTitle(self, fileName):
@@ -238,9 +238,9 @@ class Commands(object):
     #@@nobeautify
 
     def initObjects(self, gui):
-        trace = (False or g.trace_startup) and not g.unitTesting
+        trace = False
         c = self
-        if trace: g.es_debug(c.shortFileName(), g.app.gui)
+        if trace: g.trace(c.shortFileName(), g.app.gui)
         gnx = 'hidden-root-vnode-gnx'
         assert not hasattr(c, 'fileCommands'), c.fileCommands
 
@@ -547,7 +547,7 @@ class Commands(object):
     #@+node:ekr.20090213065933.6: *4* c.initConfigSettings
     def initConfigSettings(self):
         '''Init all cached commander config settings.'''
-        trace = (False or g.trace_startup) and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self
         if trace: g.es_debug(c.configInited, c.shortFileName())
         getBool = c.config.getBool
