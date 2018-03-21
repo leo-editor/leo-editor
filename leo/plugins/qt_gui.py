@@ -900,21 +900,6 @@ class LeoQtGui(leoGui.LeoGui):
         home = g.os_path_normslashes(g.app.homeLeoDir)
         leo = join(g.app.loadDir, '..')
         if color:
-            ###
-                # normpath = g.os_path_normpath
-                # realpath = g.os_path_realpath
-                # normal, unthemed path to image
-                # pathname = join(leo, "Icons")
-                # pathname = normpath(realpath(pathname))
-                # if g.os_path_isabs(name):
-                    # testname = normpath(realpath(name))
-                # else:
-                    # testname = name
-                # if testname.startswith(pathname):
-                    # # try after removing icons dir from path
-                    # namepart = testname.replace(pathname, '').strip('\\/')
-                # else:
-                    # namepart = testname
             table = [
                 join(home, 'themes', color, 'Icons'),
                 join(home, 'themes', color),
@@ -936,18 +921,12 @@ class LeoQtGui(leoGui.LeoGui):
                 join(leo, 'Icons'),
             ]
         for base_dir in table:
-            ### fullname = join(base_dir, namepart)
             path = join(base_dir, name)
             if g.os_path_exists(path):
                 if trace: g.trace('found %s -> %s' % (color, path))
                 return path
         g.trace('not found', color or '<no color>', name)
         return None
-            # g.trace('does not exist: %s -> %s' % (color, path))
-        # original behavior, if name is absolute this will just return it
-        # path = join(leo, "Icons", name)
-        # if trace: g.trace('found default (%s) %s' % (color, path))
-        # return path
     #@+node:ekr.20110605121601.18518: *4* qt_gui.getTreeImage
     def getTreeImage(self, c, path):
         image = QtGui.QPixmap(path)
