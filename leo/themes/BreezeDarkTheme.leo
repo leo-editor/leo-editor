@@ -2,30 +2,25 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.52" body_secondary_ratio="0.51">
-	<global_window_position top="197" left="686" height="773" width="1074"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
 <find_panel_settings/>
 <vnodes>
 <v t="ekr.20180312111155.1"><vh>Read me</vh></v>
-<v t="chris.20180314054143.1"><vh>Tests</vh>
+<v t="chris.20180314054143.1" a="E"><vh>Tests</vh>
 <v t="chris.20180314054143.2"><vh>Syntax coloring template</vh>
 <v t="chris.20180314054143.3"><vh>&lt;&lt; defined section &gt;&gt;</vh></v>
 </v>
 <v t="chris.20180314054143.4"><vh>Test g.es(color=*)</vh></v>
 <v t="chris.20180314054143.5"><vh>g.error/note/warning test</vh></v>
 </v>
-<v t="chris.20180313181652.1"><vh>@settings</vh>
-<v t="chris.20180313181652.2"><vh>@theme Breeze Dark</vh>
+<v t="chris.20180313181652.1" a="E"><vh>@settings</vh>
+<v t="chris.20180313181652.2" a="E"><vh>@theme Breeze Dark</vh>
 <v t="chris.20180313181652.3"><vh>Resources</vh></v>
-<v t="chris.20180313181652.115"><vh>Theme description settings</vh>
-<v t="chris.20180313181652.116"><vh>@bool color_theme_is_dark = True</vh></v>
-<v t="chris.20180313181652.117"><vh>@string color_theme = dark</vh></v>
-<v t="ekr.20180321131659.1"><vh>@string theme_name = BreezeDarkTheme</vh></v>
-</v>
-<v t="chris.20180313181652.4"><vh>Breeze Dark Color definitions</vh>
+<v t="chris.20180313181652.4" a="E"><vh>Breeze Dark Color definitions</vh>
 <v t="chris.20180313181652.5"><vh>@color dark-base0 = #eff0f1</vh></v>
 <v t="chris.20180313181652.6"><vh>@color dark-base1 = #909396</vh></v>
 <v t="chris.20180313181652.7"><vh>@color dark-base2 = #ffffff</vh></v>
@@ -36,7 +31,7 @@
 <v t="chris.20180313181652.12"><vh>@color dark-base7 = #224e65</vh></v>
 <v t="chris.20180313181652.13"><vh>@color dark-base8 = #ff0000</vh></v>
 </v>
-<v t="chris.20180313181652.14"><vh>Settings for Leo Breeze Dark</vh>
+<v t="chris.20180313181652.14" a="E"><vh>Settings for Leo Breeze Dark</vh>
 <v t="chris.20180313181652.15"><vh>Colors: Logical colors</vh>
 <v t="chris.20180313181652.16"><vh>@color log_black_color = @text-foreground</vh></v>
 <v t="chris.20180313181652.17"><vh>@color log_blue_color = @solarized-blue</vh></v>
@@ -54,19 +49,19 @@
 <v t="chris.20180313181652.29"><vh>@color log_yellow_color = @solarized-yellow</vh></v>
 </v>
 <v t="chris.20180313181652.30"><vh>Colors: Syntax coloring</vh>
-<v t="chris.20180313181652.31"><vh>Colors: defaults</vh>
+<v t="chris.20180313181652.31" a="E"><vh>Colors: defaults</vh>
 <v t="chris.20180313181652.32"><vh>@color blank_color = grey</vh></v>
 <v t="chris.20180313181652.33"><vh>@color tab_color = red</vh></v>
 <v t="chris.20180313181652.34"><vh>@color label_color = red</vh></v>
-<v t="chris.20180313181652.35"><vh>@color keyword1_color = #268bd2</vh></v>
-<v t="chris.20180313181652.36"><vh>@color keyword2_color = #268bd2</vh></v>
-<v t="chris.20180313181652.37"><vh>@color keyword3_color = #268bd2</vh></v>
-<v t="chris.20180313181652.38"><vh>@color keyword4_color = #268bd2</vh></v>
-<v t="chris.20180313181652.39"><vh>@color literal1_color = #859900</vh></v>
-<v t="chris.20180313181652.40"><vh>@color literal2_color = #859900</vh></v>
-<v t="chris.20180313181652.41"><vh>@color literal3_color = #859900</vh></v>
-<v t="chris.20180313181652.42"><vh>@color literal4_color = #859900</vh></v>
-<v t="chris.20180313181652.43"><vh>@color markup_color = #268bd2</vh></v>
+<v t="chris.20180313181652.35"><vh>@color keyword1_color = #8080c0</vh></v>
+<v t="chris.20180313181652.36"><vh>@color keyword2_color = #008000</vh></v>
+<v t="chris.20180313181652.37"><vh>@color keyword3_color = #808000</vh></v>
+<v t="chris.20180313181652.38"><vh>@color keyword4_color = #c00080</vh></v>
+<v t="chris.20180313181652.39"><vh>@color literal1_color = #0080c0</vh></v>
+<v t="chris.20180313181652.40"><vh>@color literal2_color = #ff4040</vh></v>
+<v t="chris.20180313181652.41"><vh>@color literal3_color = #80ffff</vh></v>
+<v t="chris.20180313181652.42"><vh>@color literal4_color = #ffff40</vh></v>
+<v t="chris.20180313181652.43"><vh>@color markup_color = #ffc000</vh></v>
 <v t="chris.20180313181652.44"><vh>@color comment1_color = #d33682</vh></v>
 <v t="chris.20180313181652.45"><vh>@color comment2_color = #d33682</vh></v>
 <v t="chris.20180313181652.46"><vh>@color comment3_color = #d33682</vh></v>
@@ -85,10 +80,10 @@
 <v t="chris.20180313181652.58"><vh>@color url_color = @solarized-violet</vh></v>
 </v>
 </v>
-<v t="chris.20180313181652.59"><vh>Colors: Text</vh>
+<v t="chris.20180313181652.59" a="E"><vh>Colors: Text</vh>
 <v t="chris.20180313181652.60"><vh>@color log_text_background_color = @dark-base3</vh></v>
 <v t="chris.20180313181652.61"><vh>@color log_text_foreground_color = @dark-base0</vh></v>
-<v t="chris.20180313181652.62"><vh>@color text-background = @dark-base3</vh></v>
+<v t="chris.20180313181652.62"><vh>@color text-background = @dark-base4</vh></v>
 <v t="chris.20180313181652.63"><vh>@color text-background-bright = @dark-base4</vh></v>
 <v t="chris.20180313181652.64"><vh>@color text-foreground = @dark-base0</vh></v>
 <v t="chris.20180313181652.65"><vh>@color text-foreground-bright = @dark-base2</vh></v>
@@ -155,8 +150,12 @@
 <v t="chris.20180313181652.113"><vh>@string tree-image-closed = dark/branch_closed.svg</vh></v>
 <v t="chris.20180313181652.114"><vh>@string tree-image-open = dark/branch_open.svg</vh></v>
 </v>
+<v t="chris.20180313181652.115"><vh>Theme description settings</vh>
+<v t="chris.20180313181652.116"><vh>@bool color_theme_is_dark = True</vh></v>
+<v t="chris.20180313181652.117"><vh>@string color_theme = dark</vh></v>
 </v>
-<v t="chris.20180313181652.118"><vh>@data qt-gui-plugin-style-sheet</vh>
+</v>
+<v t="chris.20180313181652.118" a="E"><vh>@data qt-gui-plugin-style-sheet</vh>
 <v t="chris.20180313181652.119"><vh>General Widgets</vh></v>
 <v t="chris.20180313181652.120"><vh>Body &amp; other text</vh></v>
 <v t="chris.20180313181652.121"><vh>Borders</vh></v>
@@ -242,9 +241,8 @@ QWidget {
 <t tx="chris.20180313181652.12"></t>
 <t tx="chris.20180313181652.120">/* The body pane */
 QTextEdit#richTextEdit {
-  background-color: @dark-base5;
+  background-color: @dark-base3;
   color: @dark-base0;
-  border: 0.1ex solid @dark-base4;
   font-family: @font-family-body;
   font-size: @font-size-body;
   font-weight: normal; /* normal,bold,100,..,900 */
@@ -261,17 +259,18 @@ QTextEdit#log-widget, LeoQTreeWidget#treeWidget, QTextEdit#richTextEdit {
   border-width: 3px;
 }
 QTextEdit#log-widget {
-  border-color: @log_text_background_color;
+  border-color: @text-background;
 }
 LeoQTreeWidget#treeWidget {
-  border-color: @dark-base3;
+  border-color: @dark-base4;
 }
 QTextEdit#richTextEdit {
   border-color: @text-background;
 
 }
 QTextEdit:focus#log-widget,LeoQTreeWidget:focus#treeWidget, QTextEdit:focus#richTextEdit {
-  border-color: @solarized-blue;
+  background-color: @dark-base5;
+  border-color: @dark-base6;
 }</t>
 <t tx="chris.20180313181652.122">QPushButton
 {
@@ -687,15 +686,21 @@ QTabBar::tab:!selected {
     margin-top: 3px; /* make non-selected tabs look smaller */
 }</t>
 <t tx="chris.20180313181652.13"></t>
-<t tx="chris.20180313181652.130">LeoQTreeWidget#treeWidget 
+<t tx="chris.20180313181652.130">
+LeoQTreeWidget#treeWidget 
 {
   color: @dark-base0;
+  background-color: @dark-base3;
   border: 3px solid @dark-base4;
-  border-color: @dark-base3;
   font-family: @font-family-tree;
   font-size: @font-size-tree;
   font-weight: normal;
   font-style: normal;
+}
+
+QTreeView {
+  color: @dark-base0;
+  background: @dark-base5;
 }
 
 QTreeView::branch:has-siblings:!adjoins-item
@@ -2613,9 +2618,8 @@ g.es_print('black',color='black')</t>
 <t tx="chris.20180315125925.1"></t>
 <t tx="chris.20180315130317.1"></t>
 <t tx="chris.20180315130516.1"></t>
-<t tx="ekr.20180312111155.1" str_leo_pos="2,0,1,2">A dark theme based loosely on Breeze Dark for KDE Plasma and the Breeze Dark stylesheet by Colin Duquesnoy. Some modifications were required. :-)
+<t tx="ekr.20180312111155.1">A dark theme based loosely on Breeze Dark for KDE Plasma and the Breeze Dark stylesheet by Colin Duquesnoy. Some modifications were required. :-)
 
 </t>
-<t tx="ekr.20180321131659.1"></t>
 </tnodes>
 </leo_file>
