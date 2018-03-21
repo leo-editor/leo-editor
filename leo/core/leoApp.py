@@ -1813,16 +1813,17 @@ class LoadManager(object):
         ]
         return [g.os_path_normslashes(z) for z in table if g.os_path_exists(z)]
             # Make sure home has normalized slashes.
-    #@+node:ekr.20180318133620.1: *4* LM.computeThemeFilePath
+    #@+node:ekr.20180318133620.1: *4* LM.computeThemeFilePath & helper
     def computeThemeFilePath(self):
-
-        trace = False and not g.unitTesting
+        '''Return the absolute path to the theme .leo file.'''
         lm = self
-        # --theme takes precedence over @string theme-name.
-        fn = lm.options.get('theme_path')
-        # First, look for the @string theme-name setting in the first loaded file.
+        resolve = self.resolve_theme_path
+        # Step 1: Use the --theme file if it exists
+        path = resolve(lm.options.get('theme_path'), tag='--theme')
+        if path: return path
+        # Step 2: look for the @string theme-name setting in the first loaded file.
         # This is a hack, but especially useful for test*.leo files in leo/themes.
-        if not fn:
+        if 1:
             path = lm.files and lm.files[0]
             if path and g.os_path_exists(path):
                 # Tricky: we must call lm.computeLocalSettings *here*.
@@ -1833,23 +1834,34 @@ class LoadManager(object):
                     shortcuts_d=lm.globalShortcutsDict,
                     localFlag=False,
                 )
-                fn = settings_d.get_string_setting('theme-name')
-                if trace: g.trace('1', fn)
+                setting = settings_d.get_string_setting('theme-name')
+                if setting:
+                    tag = '%s: @string theme-name = %s' % (theme_c.shortFileName(), setting)
+                    path = resolve(setting, tag=tag)
+                    if path: return path
         # Finally, use the setting in myLeoSettings.leo.
-        if not fn:
-            fn = lm.globalSettingsDict.get_string_setting('theme-name')
-            if trace: g.trace('2', fn)
+        setting = lm.globalSettingsDict.get_string_setting('theme-name')
+        tag = 'myLeoSettings.leo: @string theme-name = %s' % setting
+        return resolve(setting, tag=tag)
+    #@+node:ekr.20180321124503.1: *5* LM.resolve_theme_path
+    def resolve_theme_path(self, fn, tag):
+        '''Search theme directories for the given .leo file.'''
+        trace = g.trace_startup and not g.unitTesting
         if not fn:
             return None
         if not fn.endswith('.leo'):
             fn += '.leo'
-        for directory in lm.computeThemeDirectories():
-            path = g.os_path_finalize_join(directory, fn)
-                # This normalizes slahses.
-            if  g.os_path_exists(path):
-                if trace: g.trace('3', path)
+        if trace:
+            print('')
+            g.trace('%s: %s' % (tag, fn))
+        for directory in self.computeThemeDirectories():
+            path = g.os_path_join(directory, fn)
+                # Normalizes slashes, etc.
+            if g.os_path_exists(path):
+                if trace: g.trace('%s is  in %s\n' % (fn, directory))
                 return path
-        print('Not found: @string theme-name = %s' % fn)
+            elif trace: g.trace('%s not in %s' % (fn, directory))
+        print('theme .leo file not found: %s' % fn)
         return None
     #@+node:ekr.20120211121736.10772: *4* LM.computeWorkbookFileName
     def computeWorkbookFileName(self):

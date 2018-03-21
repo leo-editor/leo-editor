@@ -916,6 +916,7 @@ class LeoQtGui(leoGui.LeoGui):
                 join(home, '.leo', 'themes', color),
                 join(home, '.leo', 'themes', 'Icons'),
                 join(home, '.leo', 'themes'),
+                # join(home, '.leo'),
                 join(leo, 'themes', color, 'Icons'),
                 join(leo, 'themes', color),
                 join(leo, 'themes', 'Icons'),
@@ -1518,6 +1519,7 @@ class StyleSheetManager(object):
         leo = join(g.app.loadDir, '..')
         table = [
             join(home, '.leo', 'Icons'),
+            # join(home, '.leo'),
             join(leo, 'themes', 'Icons'),
             join(leo, 'themes'),
             join(leo, 'Icons'),
