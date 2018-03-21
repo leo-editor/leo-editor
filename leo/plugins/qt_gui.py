@@ -1512,7 +1512,8 @@ class StyleSheetManager(object):
         '''
         Return a list of *existing* directories that could contain theme-related icons.
         '''
-        home = g.app.homeLeoDir
+        exists = g.os_path_exists
+        home = g.app.homeDir
         join = g.os_path_finalize_join
         leo = join(g.app.loadDir, '..')
         table = [
@@ -1521,6 +1522,7 @@ class StyleSheetManager(object):
             join(leo, 'themes'),
             join(leo, 'Icons'),
         ]
+        table = [z for z in table if exists(z)]
         for directory in self.compute_theme_directories():
             if directory not in table:
                 table.append(directory)
