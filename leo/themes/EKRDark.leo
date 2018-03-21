@@ -18,6 +18,12 @@
 <v t="ekr.20180312110809.5"><vh>g.error/note/warning test</vh></v>
 </v>
 <v t="ekr.20180318145515.1"><vh>@settings</vh>
+<v t="ekr.20180318145515.704"><vh>@theme EKR Black Solarized</vh>
+<v t="ekr.20180318145515.810"><vh>Theme description settings</vh>
+<v t="ekr.20180318145515.811"><vh>@bool color_theme_is_dark = True</vh></v>
+<v t="ekr.20180318145515.812"><vh>@string color_theme = ekr_dark</vh></v>
+<v t="ekr.20180319081014.1"><vh>@string theme-name = EKRDark</vh></v>
+</v>
 <v t="ekr.20180318145515.178"><vh>Appearance</vh>
 <v t="ekr.20180318145515.179"><vh>@bool auto-scroll-find-tab = False</vh></v>
 <v t="ekr.20180318145515.180"><vh>@bool color_trailing_whitespace = False</vh></v>
@@ -48,12 +54,6 @@
 <v t="ekr.20180318145515.202"><vh>@color tree-fg = black</vh></v>
 <v t="ekr.20180318145515.203"><vh>@color tree-bg = @solarized-base2</vh></v>
 </v>
-</v>
-<v t="ekr.20180318145515.704"><vh>@theme EKR Black Solarized</vh>
-<v t="ekr.20180318145515.810"><vh>Theme description settings</vh>
-<v t="ekr.20180318145515.811"><vh>@bool color_theme_is_dark = True</vh></v>
-<v t="ekr.20180318145515.812"><vh>@string color_theme = leo_dark_0</vh></v>
-<v t="ekr.20180319081014.1"><vh>@string theme-name = EKRDark</vh></v>
 </v>
 <v t="ekr.20180318145515.710"><vh>Settings for Leo Solarized Dark theme</vh>
 <v t="ekr.20180318145515.711"><vh>Colors...</vh>
@@ -211,7 +211,7 @@ g.blue('blue')
 g.red('red')
 g.es_print('test')
 g.es_print('black',color='black')</t>
-<t tx="ekr.20180312111155.1" str_leo_pos="1,0">A dark theme based on LeoBlackSolarized.leo.
+<t tx="ekr.20180312111155.1" str_leo_pos="2,0,0,1">A dark theme based on LeoBlackSolarized.leo.
 </t>
 <t tx="ekr.20180314052441.1">@ A doc part.  *All* languages colorize doc parts as follows:
 
@@ -752,8 +752,10 @@ url(/home/edward/leo.repo/leo-editor/leo/Icons/nodes-dark/triangles/closed.png)<
 <t tx="ekr.20180318145515.810"></t>
 <t tx="ekr.20180318145515.811" lineYOffset="4b002e">Set to true for dark themes, so bookmarks.py can generate
 random background colors which are appropriate etc.</t>
-<t tx="ekr.20180318145515.812" lineYOffset="4b002e">Name of the theme,
-used to find icon files</t>
+<t tx="ekr.20180318145515.812" lineYOffset="4b002e">Name of the theme, used to find icon files:
+
+leo_dark_0
+ekr_dark</t>
 <t tx="ekr.20180318145515.813">/*
 @language css
 at-tabwidth -2 causes a crash in parse-template!
