@@ -903,20 +903,27 @@ class LeoQtGui(leoGui.LeoGui):
             table = [
                 join(home, 'themes', color, 'Icons'),
                 join(home, 'themes', color),
+                join(home, 'themes', 'Icons'),
                 join(home, 'themes'),
                 join(home, '.leo', 'themes', color, 'Icons'),
                 join(home, '.leo', 'themes', color),
+                join(home, '.leo', 'themes', 'Icons'),
                 join(home, '.leo', 'themes'),
                 join(leo, 'themes', color, 'Icons'),
                 join(leo, 'themes', color),
+                join(leo, 'themes', 'Icons'),
                 join(leo, 'themes'),
+                join(leo, 'Icons', color, 'Icons'),
                 join(leo, 'Icons', color),
                 join(leo, 'Icons'),
             ]
         else:
             table = [
+                join(home, 'themes', 'Icons'),
                 join(home, 'themes'),
+                join(home, '.leo', 'themes', 'Icons'),
                 join(home, '.leo', 'themes'),
+                join(leo, 'themes', 'Icons'),
                 join(leo, 'themes'),
                 join(leo, 'Icons'),
             ]
