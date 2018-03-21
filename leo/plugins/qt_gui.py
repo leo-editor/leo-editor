@@ -892,36 +892,62 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:tbrown.20130316075512.28478: *4* qt_gui.getImageFinder
     def getImageFinder(self, name):
         '''Theme aware image (icon) path searching.'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
+        # Abbreviations...
         color = g.app.theme_color
-        directory = g.app.theme_directory
-        theme_name = g.app.theme_name
-        if trace:
-            g.trace('\n      name: %s\ntheme_name: %s\n directory: %s\n     color: %s' % (
-                name, theme_name, directory, color))
+        join = g.os_path_finalize_join
+            # Normalizes slashes, etc.
+        home = g.os_path_normslashes(g.app.homeLeoDir)
+        leo = join(g.app.loadDir, '..')
         if color:
-            # normal, unthemed path to image
-            pathname = g.os_path_finalize_join(g.app.loadDir, "..", "Icons")
-            pathname = g.os_path_normpath(g.os_path_realpath(pathname))
-            if g.os_path_isabs(name):
-                testname = g.os_path_normpath(g.os_path_realpath(name))
-            else:
-                testname = name
-            if testname.startswith(pathname):
-                # try after removing icons dir from path
-                namepart = testname.replace(pathname, '').strip('\\/')
-            else:
-                namepart = testname
-            for base_dir in (g.app.homeLeoDir, g.os_path_join(g.app.loadDir, '..')):
-                fullname = g.os_path_finalize_join(
-                    base_dir, 'themes', color, 'Icons', namepart)
-                if g.os_path_exists(fullname):
-                    if trace: g.trace('found', repr(name), fullname)
-                    return fullname
+            ###
+                # normpath = g.os_path_normpath
+                # realpath = g.os_path_realpath
+                # normal, unthemed path to image
+                # pathname = join(leo, "Icons")
+                # pathname = normpath(realpath(pathname))
+                # if g.os_path_isabs(name):
+                    # testname = normpath(realpath(name))
+                # else:
+                    # testname = name
+                # if testname.startswith(pathname):
+                    # # try after removing icons dir from path
+                    # namepart = testname.replace(pathname, '').strip('\\/')
+                # else:
+                    # namepart = testname
+            table = [
+                join(home, 'themes', color, 'Icons'),
+                join(home, 'themes', color),
+                join(home, 'themes'),
+                join(home, '.leo', 'themes', color, 'Icons'),
+                join(home, '.leo', 'themes', color),
+                join(home, '.leo', 'themes'),
+                join(leo, 'themes', color, 'Icons'),
+                join(leo, 'themes', color),
+                join(leo, 'themes'),
+                join(leo, 'Icons', color),
+                join(leo, 'Icons'),
+            ]
+        else:
+            table = [
+                join(home, 'themes'),
+                join(home, '.leo', 'themes'),
+                join(leo, 'themes'),
+                join(leo, 'Icons'),
+            ]
+        for base_dir in table:
+            ### fullname = join(base_dir, namepart)
+            path = join(base_dir, name)
+            if g.os_path_exists(path):
+                if trace: g.trace('found %s -> %s' % (color, path))
+                return path
+        g.trace('not found', color or '<no color>', name)
+        return None
+            # g.trace('does not exist: %s -> %s' % (color, path))
         # original behavior, if name is absolute this will just return it
-        fullname = g.os_path_finalize_join(g.app.loadDir, "..", "Icons", name)
-        if trace: g.trace('found', repr(name), g.os_path_exists(fullname), fullname)
-        return fullname
+        # path = join(leo, "Icons", name)
+        # if trace: g.trace('found default (%s) %s' % (color, path))
+        # return path
     #@+node:ekr.20110605121601.18518: *4* qt_gui.getTreeImage
     def getTreeImage(self, c, path):
         image = QtGui.QPixmap(path)
