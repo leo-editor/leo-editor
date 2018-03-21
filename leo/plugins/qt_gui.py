@@ -904,7 +904,7 @@ class LeoQtGui(leoGui.LeoGui):
         exists = g.os_path_exists
         join = g.os_path_finalize_join
             # Normalizes slashes, etc.
-        home = g.os_path_normslashes(g.app.homeLeoDir)
+        home = g.os_path_normslashes(g.app.homeDir)
         leo = join(g.app.loadDir, '..')
         if color:
             table = [
