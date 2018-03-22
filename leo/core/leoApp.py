@@ -1802,7 +1802,7 @@ class LoadManager(object):
         Return a list of *existing* directories that might contain theme .leo files.
         '''
         join = g.os_path_finalize_join
-        home = g.app.homeLeoDir
+        home = g.app.homeDir
         leo = join(g.app.loadDir, '..')
         table = [
             home,
