@@ -351,6 +351,7 @@ class EnchantWrapper(BaseSpellWrapper):
             if not ok:
                 g.warning('Invalid language code for Enchant', repr(language))
                 g.es_print('Using "en_US" instead')
+                g.es_print('Use @string enchant_language to specify your language')
                 language = 'en_US'
         self.language = language
     #@+node:ekr.20180207102856.1: *3* enchant.open_dict_file
@@ -374,8 +375,9 @@ class EnchantWrapper(BaseSpellWrapper):
                 d = enchant.DictWithPWL(language, fn)
                 if trace: g.trace('open', g.shortFileName(self.c.fileName()), fn)
             except Exception:
-                g.es('Error reading dictionary file', fn)
-                g.es_exception()
+                # This is off-putting, and not necessary.
+                # g.es('Error reading dictionary file', fn)
+                # g.es_exception()
                 d = enchant.Dict(language)
         else:
             # A fallback.  Unlikely to happen.
