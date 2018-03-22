@@ -554,7 +554,8 @@ class GitDiffController:
                 c1 = self.make_at_clean_outline(fn, root, s1, self.rev1)
                 c2 = self.make_at_clean_outline(fn, root, s2, self.rev2)
             else:
-                g.es_print('No outline for', fn)
+                # This warning is silly.
+                # g.es_print('No outline for', fn)
                 c1 = c2 = None
         if c1 and c2:
             self.make_diff_outlines(fn, c1, c2)

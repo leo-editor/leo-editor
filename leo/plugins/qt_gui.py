@@ -895,80 +895,42 @@ class LeoQtGui(leoGui.LeoGui):
     def getImageFinder(self, name):
         '''Theme aware image (icon) path searching.'''
         trace = g.trace_themes and not g.unitTesting
+        color = g.app.theme_color
         exists = g.os_path_exists
         getString = g.app.config.getString
         
         def dump(var, val):
             print('%20s: %s' % (var, val))
             
-        if 1: # Terry Brown: compute table.
-        
-            join = g.os_path_join
-            theme_name = getString('theme-name') or getString('color-theme')
-            roots = [
-                g.os_path_join(g.computeHomeDir(), '.leo'),
-                g.computeLeoDir(),
-            ]
-            theme_subs = [
-                "themes/{theme}/Icons",
-                "themes/{theme}",
-                "Icons/{theme}",
-            ]
-            bare_subs = ["Icons", "."]
-                # "." for icons referred to as Icons/blah/blah.png
-            paths = []
+        join = g.os_path_join
+        theme_name1 = getString('color-theme')
+        theme_name2 = getString('theme-name')
+        roots = [
+            g.os_path_join(g.computeHomeDir(), '.leo'),
+            g.computeLeoDir(),
+        ]
+        theme_subs = [
+            "themes/{theme}/Icons",
+            "themes/{theme}",
+            "Icons/{theme}",
+        ]
+        bare_subs = ["Icons", "."]
+            # "." for icons referred to as Icons/blah/blah.png
+        paths = []
+        for theme_name in (theme_name1, theme_name2):
             for root in roots:
                 for sub in theme_subs:
                     paths.append(join(root, sub.format(theme=theme_name)))
-            for root in roots:
-                for sub in bare_subs:
-                    paths.append(join(root, sub))
-            table = [z for z in paths if exists(z)]
-
-        else: # EKR: compute table
-
-            # Abbreviations...
-            color = g.app.theme_color
-            join = g.os_path_finalize_join
-                # Normalizes slashes, etc.
-            home = g.os_path_normslashes(g.app.homeDir)
-            leo = join(g.app.loadDir, '..')
-            if color:
-                table = [
-                    join(home, 'themes', color, 'Icons'),
-                    join(home, 'themes', color),
-                    join(home, 'themes', 'Icons'),
-                    join(home, 'themes'),
-                    join(home, '.leo', 'themes', color, 'Icons'),
-                    join(home, '.leo', 'themes', color),
-                    join(home, '.leo', 'themes', 'Icons'),
-                    join(home, '.leo', 'themes'),
-                    # join(home, '.leo'),
-                    join(leo, 'themes', color, 'Icons'),
-                    join(leo, 'themes', color),
-                    join(leo, 'themes', 'Icons'),
-                    join(leo, 'themes'),
-                    join(leo, 'Icons', color, 'Icons'),
-                    join(leo, 'Icons', color),
-                    join(leo, 'Icons'),
-                ]
-            else:
-                table = [
-                    join(home, 'themes', 'Icons'),
-                    join(home, 'themes'),
-                    join(home, '.leo', 'themes', 'Icons'),
-                    join(home, '.leo', 'themes'),
-                    join(leo, 'themes', 'Icons'),
-                    join(leo, 'themes'),
-                    join(leo, 'Icons'),
-                ]
-            table = [z for z in table if exists(z)]
-
+        for root in roots:
+            for sub in bare_subs:
+                paths.append(join(root, sub))
+        table = [z for z in paths if exists(z)]
         if trace and not self.dump_given:
             self.dump_given = True
             getString = g.app.config.getString
             print('')
             g.trace('...')
+            dump('theme_name', theme_name)
             dump('@string color_theme', getString('color_theme'))
             dump('@string theme_name', getString('theme_name'))
             # dump('@string theme_path', getString('theme_path'))
