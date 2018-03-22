@@ -1846,7 +1846,7 @@ class LoadManager(object):
     #@+node:ekr.20180321124503.1: *5* LM.resolve_theme_path
     def resolve_theme_path(self, fn, tag):
         '''Search theme directories for the given .leo file.'''
-        trace = g.trace_startup and not g.unitTesting
+        trace = g.trace_themes and not g.unitTesting
         if not fn:
             return None
         if not fn.endswith('.leo'):
@@ -2779,7 +2779,7 @@ class LoadManager(object):
         add_bool('--trace-plugins', 'trace imports of plugins')
         add_other('--trace-setting', 'trace where named setting is set', m="NAME")
         add_bool('--trace-shutdown', 'trace shutdown logic')
-        add_bool('--trace-startup',  'trace startup logic')
+        add_bool('--trace-themes',  'trace theme init logic')
         add_other('--window-size',  'initial window size (height x width)', m='SIZE')
         # Multiple bool values.
         add('-v', '--version', action='store_true',
@@ -2907,8 +2907,8 @@ class LoadManager(object):
             # g.app.config does not exist yet.
         # --trace-shutdown
         g.app.trace_shutdown = options.trace_shutdown
-        # --trace-startup
-        g.trace_startup = options.trace_startup
+        # --trace-themes
+        g.trace_themes = options.trace_themes
 
        
     #@+node:ekr.20180312154839.1: *6* LM.doWindowSizeOption

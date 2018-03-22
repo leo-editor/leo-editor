@@ -20,10 +20,8 @@ isWindows = sys.platform.startswith('win')
 in_bridge = False
     # Set to True in leoBridge.py just before importing leo.core.leoApp.
     # This tells leoApp to load a null Gui.
-trace_startup = False
-    # --debug option sets this flag.
-    # These traces use print instead of g.trace so that
-    # the traces can add class info to the method name.
+trace_themes = False
+    # Trace initialization of themes.
 trace_gnxDict = False
     # True: trace assignments to fc.gnxDict & related.
 # Debugging options...

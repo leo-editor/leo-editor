@@ -894,7 +894,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     def getImageFinder(self, name):
         '''Theme aware image (icon) path searching.'''
-        trace = g.trace_startup and not g.unitTesting
+        trace = g.trace_themes and not g.unitTesting
         exists = g.os_path_exists
         getString = g.app.config.getString
         
@@ -1914,7 +1914,7 @@ class StyleSheetManager(object):
     #@+node:ekr.20180320054305.1: *5* ssm.resolve_urls
     def resolve_urls(self, sheet):
         '''Resolve all relative url's so they use absolute paths.'''
-        trace = g.trace_startup and not g.unitTesting
+        trace = g.trace_themes and not g.unitTesting
         pattern = re.compile(r'url\((.*)\)')
         join = g.os_path_finalize_join
         directories = self.compute_icon_directories()
