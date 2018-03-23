@@ -22,7 +22,7 @@
 <v t="ekr.20180309185230.102"><vh>Theme description settings</vh>
 <v t="ekr.20180309185230.103"><vh>@bool color_theme_is_dark = False</vh></v>
 <v t="ekr.20180309185230.104"><vh>@string color_theme = generic</vh></v>
-<v t="ekr.20180319081051.1"><vh>@string theme-name = EKRLight</vh></v>
+<v t="ekr.20180319081051.1"><vh>@string theme_name = EKRLight</vh></v>
 </v>
 <v t="ekr.20180309185230.2"><vh>Settings for Leo Light</vh>
 <v t="ekr.20180309185230.3"><vh>Colors: Logical colors</vh>
@@ -649,7 +649,7 @@ The following settings specify the indicators.  You can use an absolute path, or
   font-weight: @bookmarks_current_weight;
 }
 </t>
-<t tx="ekr.20180312111251.1" str_leo_pos="2,0,0">@language rest
+<t tx="ekr.20180312111251.1" str_leo_pos="2,0,0,2">@language rest
 @wrap
 
 A light theme based on EKR's legacy theme.

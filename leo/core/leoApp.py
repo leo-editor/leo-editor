@@ -325,15 +325,16 @@ class LeoApp(object):
         #@-<< LeoApp: the global log >>
         #@+<< LeoApp: global theme data >>
         #@+node:ekr.20180319152119.1: *5* << LeoApp: global theme data >>
-        self.theme_color = None
-            # The color theme, used to find icons, etc.
-            # Set by @string color-theme
         self.theme_directory = None
             # The directory from which the theme file was loaded, if any.
-            # Used to find icons, etc.
-        self.theme_name = None
-            # The theme's name.
-            # Used to find sub-directories.
+            # Set only by LM.readGlobalSettingsFiles.
+            # Used by the StyleSheetManager class.
+            
+        # Not necessary **provided** that theme .leo files
+        # set @string theme-name to the name of the .leo file.
+        if 0:
+            self.theme_color = None
+            self.theme_name = None
         #@-<< LeoApp: global theme data >>
         #@+<< LeoApp: global types >>
         #@+node:ekr.20161028040204.1: *5* << LeoApp: global types >>
@@ -1836,17 +1837,17 @@ class LoadManager(object):
                 )
                 setting = settings_d.get_string_setting('theme-name')
                 if setting:
-                    tag = '%s: @string theme-name = %s' % (theme_c.shortFileName(), setting)
+                    tag = theme_c.shortFileName()
                     path = resolve(setting, tag=tag)
                     if path: return path
         # Finally, use the setting in myLeoSettings.leo.
         setting = lm.globalSettingsDict.get_string_setting('theme-name')
-        tag = 'myLeoSettings.leo: @string theme-name = %s' % setting
+        tag = 'myLeoSettings.leo'
         return resolve(setting, tag=tag)
     #@+node:ekr.20180321124503.1: *5* LM.resolve_theme_path
     def resolve_theme_path(self, fn, tag):
         '''Search theme directories for the given .leo file.'''
-        trace = g.trace_themes and not g.unitTesting
+        trace = False and not g.unitTesting # and g.trace_themes
         if not fn:
             return None
         if not fn.endswith('.leo'):
@@ -2188,8 +2189,8 @@ class LoadManager(object):
     #@+node:ekr.20120213081706.10382: *4* LM.readGlobalSettingsFiles
     def readGlobalSettingsFiles(self):
         '''Read leoSettings.leo and myLeoSettings.leo using a null gui.'''
+        trace = g.trace_themes and not g.unitTesting
         lm = self
-        trace = False and not g.unitTesting
         # Open the standard settings files with a nullGui.
         # Important: their commanders do not exist outside this method!
         paths = [lm.computeLeoSettingsPath(), lm.computeMyLeoSettingsPath()]
@@ -2218,12 +2219,20 @@ class LoadManager(object):
                     theme_c, settings_d, shortcuts_d, localFlag=False)
                 lm.globalSettingsDict = settings_d
                 # Set global vars
-                g.app.theme_color = settings_d.get_string_setting('color-theme')
                 g.app.theme_directory = g.os_path_dirname(theme_path)
-                g.app.theme_name = settings_d.get_string_setting('theme-name')
-                if trace:
-                    g.trace('\n theme_path: %s\n theme_name: %s\ncolor_theme: %s' % (
-                        theme_path, g.app.theme_name, g.app.theme_color))
+                    # Used by the StyleSheetManager.
+                if 0:
+                    # Not necessary **provided** that theme .leo files
+                    # set @string theme-name to the name of the .leo file.
+                    g.app.theme_color = settings_d.get_string_setting('color-theme')
+                    g.app.theme_name = settings_d.get_string_setting('theme-name')
+                    if trace:
+                        print('')
+                        g.trace('=====\n')
+                        print(' g.app.theme_path: %s' % g.app.theme_directory)
+                        print(' g.app.theme_name: %s' % g.app.theme_name)
+                        print('g.app.theme_color: %s' % g.app.theme_color)
+                        print('')
         # Clear the cache entries for the commanders.
         # This allows this method to be called outside the startup logic.
         for c in commanders:

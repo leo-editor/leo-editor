@@ -76,7 +76,6 @@ class LeoQtGui(leoGui.LeoGui):
         
     def reloadSettings(self):
         pass
-            # Replace .color_theme ivar by g.app.theme_color global.
     #@+node:ekr.20110605121601.18484: *3*  qt_gui.destroySelf (calls qtApp.quit)
     def destroySelf(self):
         trace = g.app.trace_shutdown
@@ -895,7 +894,6 @@ class LeoQtGui(leoGui.LeoGui):
     def getImageFinder(self, name):
         '''Theme aware image (icon) path searching.'''
         trace = g.trace_themes and not g.unitTesting
-        color = g.app.theme_color
         exists = g.os_path_exists
         getString = g.app.config.getString
         
@@ -903,6 +901,10 @@ class LeoQtGui(leoGui.LeoGui):
             print('%20s: %s' % (var, val))
             
         join = g.os_path_join
+        #
+        # "Just works" for --theme and theme .leo files *provided* that
+        # theme .leo files actually contain these settings!
+        #
         theme_name1 = getString('color-theme')
         theme_name2 = getString('theme-name')
         roots = [
@@ -930,12 +932,10 @@ class LeoQtGui(leoGui.LeoGui):
             getString = g.app.config.getString
             print('')
             g.trace('...')
-            dump('theme_name', theme_name)
+            # dump('g.app.theme_color', g.app.theme_color)
             dump('@string color_theme', getString('color_theme'))
+            # dump('g.app.theme_name', g.app.theme_name)
             dump('@string theme_name', getString('theme_name'))
-            # dump('@string theme_path', getString('theme_path'))
-            # dump('home', home)
-            # dump('leo', leo)
             print('directory table...')
             g.printObj(table)
             print('')
@@ -946,7 +946,7 @@ class LeoQtGui(leoGui.LeoGui):
                 return path
             elif trace:
                 g.trace(name, 'not in', base_dir)
-        g.trace('not found:', color or '<no color>', name)
+        g.trace('not found:', name)
         return None
     #@+node:ekr.20110605121601.18518: *4* qt_gui.getTreeImage
     def getTreeImage(self, c, path):
@@ -1549,18 +1549,6 @@ class StyleSheetManager(object):
                 if trace: g.trace('Found %20s %s' % (setting, path))
                 return path
         g.es_print('no icon found for:', setting)
-        return None
-    #@+node:ekr.20180308103151.1: *4* ssm.find_theme_file
-    def find_theme_file(self, path):
-        trace = False and not g.unitTesting
-        for directory in self.compute_theme_directories():
-            path2 = g.os_path_finalize_join(directory, path)
-            if g.os_path_exists(path2):
-                if trace: g.trace('found', path2)
-                return path2
-            elif trace:
-                g.trace('not found', path2)
-        g.es_print('Theme not found:', path)
         return None
     #@+node:ekr.20180316091920.1: *3* ssm.Settings
     #@+node:ekr.20110605121601.18176: *4* ssm.default_style_sheet
