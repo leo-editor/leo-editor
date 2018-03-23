@@ -26897,6 +26897,18 @@ def get_last_theme(self, themes, theme_name):
         data_p.b = stylesheet
         g.es("Stylesheet compiled")
     return stylesheet
+.. @+node:ekr.20180308103151.1: *4* ssm.find_theme_file
+def find_theme_file(self, path):
+    trace = False and not g.unitTesting
+    for directory in self.compute_theme_directories():
+        path2 = g.os_path_finalize_join(directory, path)
+        if g.os_path_exists(path2):
+            if trace: g.trace('found', path2)
+            return path2
+        elif trace:
+            g.trace('not found', path2)
+    g.es_print('Theme not found:', path)
+    return None
 .. @-all
 .. @@nosearch
 .. @-leo
