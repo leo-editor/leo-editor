@@ -20,9 +20,10 @@
 <v t="chris.20180313181652.1" a="E"><vh>@settings</vh>
 <v t="chris.20180313181652.2" a="E"><vh>@theme Breeze Dark</vh>
 <v t="chris.20180313181652.3"><vh>Resources</vh></v>
-<v t="chris.20180313181652.115"><vh>Theme description settings</vh>
+<v t="chris.20180313181652.115" a="E"><vh>Theme description settings</vh>
 <v t="chris.20180313181652.116"><vh>@bool color_theme_is_dark = True</vh></v>
 <v t="chris.20180313181652.117"><vh>@string color_theme = dark</vh></v>
+<v t="chris.20180322154730.1"><vh>@string theme-name = BreezeDarkTheme</vh></v>
 </v>
 <v t="chris.20180313181652.14" a="E"><vh>Settings for Leo Breeze Dark</vh>
 <v t="chris.20180322072943.1" a="E"><vh>Colors...</vh>
@@ -93,8 +94,8 @@
 <v t="chris.20180313181652.64"><vh>@color text-foreground = @dark-base0</vh></v>
 <v t="chris.20180313181652.65"><vh>@color text-foreground-bright = @dark-base2</vh></v>
 </v>
-<v t="chris.20180313181652.66"><vh>Colors: Widgets</vh>
-<v t="chris.20180313181652.67"><vh>@color button-hover-fg =@dark-base3</vh></v>
+<v t="chris.20180313181652.66" a="E"><vh>Colors: Widgets</vh>
+<v t="chris.20180313181652.67"><vh>@color button-hover-fg = @dark-base7</vh></v>
 </v>
 </v>
 <v t="chris.20180313181652.68"><vh>Fonts &amp; text sizes</vh>
@@ -278,7 +279,7 @@ QLineEdit#lineEdit:focus {
 <t tx="chris.20180313181652.122">QPushButton
 {
     color: @dark-base0;
-    background-color: @dark-base5;
+    background-color: @dark-base3;
     border-width: 0.1ex;
     border-color: @dark-base4;
     border-style: solid;
@@ -322,6 +323,7 @@ QPushButton:pressed
 
 QToolBar
 {
+    background-color: @dark-base3;
     color: @dark-base0;
 }
 
@@ -330,7 +332,7 @@ QToolButton#next-button
 
 {
     color: dark-base0;
-    background-color: @dark-base5;
+    background-color: @dark-base3;
 }
 </t>
 <t tx="chris.20180313181652.123">QTextEdit#log-widget {
@@ -2640,6 +2642,7 @@ g.es_print('black',color='black')</t>
 <t tx="chris.20180315130317.1"></t>
 <t tx="chris.20180315130516.1"></t>
 <t tx="chris.20180322072943.1"></t>
+<t tx="chris.20180322154730.1"></t>
 <t tx="ekr.20180312111155.1">A dark theme based loosely on Breeze Dark for KDE Plasma and the Breeze Dark stylesheet by Colin Duquesnoy. Some modifications were required. :-)
 
 </t>
