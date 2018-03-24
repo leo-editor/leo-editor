@@ -102,7 +102,7 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
-<v t="ekr.20041119034357.1"><vh>@settings</vh>
+<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
 <v t="ekr.20180306144001.1"><vh> Color definitions</vh>
 <v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
 <v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
@@ -2206,7 +2206,7 @@
 <v t="ekr.20090724102842.2492"><vh>@int qt_max_colorized_chars = 0</vh></v>
 </v>
 </v>
-<v t="ekr.20110611092035.16463"><vh>Tree operation</vh>
+<v t="ekr.20110611092035.16463" a="E"><vh>Tree operation</vh>
 <v t="nh910.20110621123823.3423"><vh>@bool collapse_nodes_after_move = True</vh></v>
 <v t="ekr.20060930085532"><vh>@bool collapse_nodes_during_finds = True</vh></v>
 <v t="ekr.20080315083057.7"><vh>@bool collapse_nodes_while_spelling = True</vh></v>
@@ -2222,6 +2222,7 @@
 <v t="ekr.20061007211759"><vh>@bool sparse_move_outline_left = False</vh></v>
 <v t="ekr.20060122105527.7"><vh>@bool stayInTreeAfterSelect = True</vh></v>
 <v t="ekr.20061002115414.1"><vh>@float outline_nav_extend_delay = 2.0</vh></v>
+<v t="chris.20180324074923.1"><vh>@int icon-height = 16</vh></v>
 </v>
 <v t="ekr.20041119034357.15"><vh>Unicode options</vh>
 <v t="ekr.20080212084020"><vh>@string default_at_auto_file_encoding = utf-8</vh></v>
@@ -2363,6 +2364,7 @@ The following integer values are supported:
 </t>
 <t tx="btheado.20131124162237.2493"></t>
 <t tx="chris.20180320083521.1">Enable/Disable word count display in status line.</t>
+<t tx="chris.20180324074923.1"></t>
 <t tx="edward.20081129091117.12">horizontal: body pane to the right
 vertical: body pane on the botton
 </t>

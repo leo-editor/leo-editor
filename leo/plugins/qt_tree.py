@@ -77,7 +77,8 @@ class LeoQtTree(leoFrame.LeoTree):
             w.headerItem().setHidden(True)
         except Exception:
             pass
-        w.setIconSize(QtCore.QSize(160, 16))
+        n = c.config.getInt('icon-height')
+        w.setIconSize(QtCore.QSize(160, n))
     #@+node:ekr.20110605121601.17866: *4* qtree.get_name
     def getName(self):
         '''Return the name of this widget: must start with "canvas".'''
