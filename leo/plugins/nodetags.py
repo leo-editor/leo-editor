@@ -391,10 +391,11 @@ class LeoTagWidget(QtWidgets.QWidget):
         self.listWidget.clear()
         self.mapping = {}
         for gnx in resultset:
-            n = gnxDict[gnx]
-            item = QtWidgets.QListWidgetItem(n.h)
-            self.listWidget.addItem(item)
-            self.mapping[id(item)] = n
+            n = gnxDict.get(gnx)
+            if n is not None:
+                item = QtWidgets.QListWidgetItem(n.h)
+                self.listWidget.addItem(item)
+                self.mapping[id(item)] = n
         count = self.listWidget.count()
         self.label.clear()
         self.label.setText("Total: %s nodes" % count)
