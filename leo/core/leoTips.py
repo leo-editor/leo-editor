@@ -470,6 +470,29 @@ Within scripts, use section references only when code must be placed exactly. He
 
 """ % (g.angleBrackets('imports'), '@others')),
 
+#@+node:ekr.20180324085629.1: *4* Use section refs to avoid "one @others per node" rule
+
+
+UserTip(
+    n=0,
+    tags=['Scripting',],
+    title='Use section refs to avoid one @others per node rule',
+    text="""\
+
+Nodes can have at most one @others directive. You can work around this restriction as follows:
+
+    @file myFile.py
+    #@+others
+    #@-others
+    %(start)s organizer %(end)s
+
+where the body of the %(start)s organizer %(end)s node contains just @others.""" % {
+    'end': ">>",
+    'start': "<<",
+}),
+
+
+
 #@+node:ekr.20180324073458.1: *3* Tips re Work flow
 #@+node:ekr.20180324065153.4: *4* Abbreviations
 UserTip(
