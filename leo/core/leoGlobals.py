@@ -4451,16 +4451,37 @@ def execGitCommand(command, directory):
     out, err = p.communicate()
     lines = [g.toUnicode(z) for z in g.splitLines(out or [])]
     return lines
+#@+node:ekr.20180325025502.1: *3* g.backupGitIssues
+def backupGitIssues(c, base_url=None):
+    '''Get a list of issues from Leo's GitHub site.'''
+    import time
+
+    if base_url is None:
+        base_url = 'https://api.github.com/repos/leo-editor/leo-editor/issues'
+    
+    root = c.lastTopLevel().insertAfter()
+    root.h = 'Backup of issues: %s' % time.strftime("%Y/%m/%d")
+    GitIssueController().backup_issues(base_url, c, root)
+    root.expand()
+    c.selectPosition(root)
+    c.redraw()
+    g.trace('done')
+   
 #@+node:ekr.20180126043905.1: *3* g.getGitIssues
-def getGitIssues(c, label_list, milestone, base_url=None, include_body=False):
+def getGitIssues(c,
+    base_url=None,
+    label_list=None,
+    include_body=False,
+    milestone=None,
+    state=None, # in (None, 'closed', 'open')
+):
     '''Get a list of issues from Leo's GitHub site.'''
     if base_url is None:
         base_url = 'https://api.github.com/repos/leo-editor/leo-editor/issues'
     if isinstance(label_list, (list, tuple)):
         root = c.lastTopLevel().insertAfter()
-        root.h = 'Issues for ' + milestone
-        GitIssueController().get_issues(
-            base_url, include_body, label_list, milestone, root)
+        root.h = 'Issues for ' + milestone if milestone else 'Backup'
+        GitIssueController().backup_issues(base_url, root)
         root.expand()
         c.selectPosition(root)
         c.redraw()
@@ -4471,16 +4492,61 @@ def getGitIssues(c, label_list, milestone, base_url=None, include_body=False):
 class GitIssueController(object):
     '''A class encapsulating the retrieval of GitHub issues.'''
     #@+others
+    #@+node:ekr.20180325023336.1: *5* git.backup_issues
+    def backup_issues(self, base_url, c, root, state=None):
+        
+        self.base_url = base_url
+        self.root = root
+        self.include_body = True
+        self.milestone = None
+        if state is None:
+            for state in ('closed', 'open'):
+                organizer = root.insertAsLastChild()
+                organizer.h = '%s issues...' % state
+                self.get_all_issues(organizer, state)
+        elif state in ('closed', 'open'):
+            self.get_all_issues(root, state)
+        else:
+            g.es_print('state must be in (None, "open", "closed")')
+    #@+node:ekr.20180325024334.1: *5* git.get_all_issues
+    def get_all_issues(self, root, state, limit=100):
+        '''Get all issues for the base url.'''
+        trace = True
+        import requests
+        label = None
+        assert state in ('open', 'closed')
+        page_url = self.base_url + '?&state=%s&page=%s'
+        page, total = 1, 0
+        while True:
+            url =  page_url % (state, page)
+            r = requests.get(url)
+            try:
+                done, n = self.get_one_page(label, page, r, root)
+                if trace and page == 1:
+                    self.print_header(r)
+            except AttributeError:
+                g.trace('Possible rate limit')
+                self.print_header(r)
+                g.es_exception()
+                break
+            total += n
+            if done:
+                break
+            page += 1
+            if page > limit:
+                g.trace('too many pages')
+                break
     #@+node:ekr.20180126044850.1: *5* git.get_issues
-    def get_issues(self, base_url, include_body, label_list, milestone, root):
+    def get_issues(self, base_url, include_body, label_list, milestone, root, state):
         '''Create a list of issues for each label in label_list.'''
         self.base_url = base_url
         self.include_body = include_body
         self.milestone = milestone
         self.root = root
+        self.state = state # in (None, 'closed', 'open')
         for label in label_list:
             self.get_one_issue(label)
-    #@+node:ekr.20180126043719.3: *5* git.get_issue
+    #@+node:ekr.20180126043719.3: *5* git.get_one_issue
     def get_one_issue(self, label, limit=20):
         '''Create a list of issues with the given label.'''
         import requests
@@ -4510,11 +4576,14 @@ class GitIssueController(object):
     def get_one_page(self, label, page, r, root):
         
         trace = True
-        aList = [
-            z for z in r.json()
-                if z.get('milestone') is not None and
-                    self.milestone==z.get('milestone').get('title')
-        ]
+        if self.milestone:
+            aList = [
+                z for z in r.json()
+                    if z.get('milestone') is not None and
+                        self.milestone==z.get('milestone').get('title')
+            ]
+        else:
+            aList = [z for z in r.json()]
         for d in aList:
             n, title = d.get('number'), d.get('title')
             p = root.insertAsNthChild(0)
