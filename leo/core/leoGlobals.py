@@ -4588,7 +4588,7 @@ class GitIssueController(object):
             n, title = d.get('number'), d.get('title')
             p = root.insertAsNthChild(0)
             p.h = '#%s: %s' % (n, title)
-            p.b = 'https://github.com/leo-editor/leo-editor/issues/%s' % n
+            p.b = '%s/%s\n' % (self.base_url, n)
             if self.include_body:
                 p.b += d.get('body').strip()
         link = r.headers.get('Link')
