@@ -4490,7 +4490,11 @@ def getGitIssues(c,
         g.trace('label_list must be a list or tuple', repr(label_list))
 #@+node:ekr.20180126044602.1: *4* class GitIssueController
 class GitIssueController(object):
-    '''A class encapsulating the retrieval of GitHub issues.'''
+    '''
+    A class encapsulating the retrieval of GitHub issues.
+    
+    The GitHub api: https://developer.github.com/v3/issues/
+    '''
     #@+others
     #@+node:ekr.20180325023336.1: *5* git.backup_issues
     def backup_issues(self, base_url, c, root, state=None):
@@ -4511,7 +4515,7 @@ class GitIssueController(object):
     #@+node:ekr.20180325024334.1: *5* git.get_all_issues
     def get_all_issues(self, root, state, limit=100):
         '''Get all issues for the base url.'''
-        trace = True
+        trace = False
         import requests
         label = None
         assert state in ('open', 'closed')
