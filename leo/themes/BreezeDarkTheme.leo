@@ -20,7 +20,7 @@
 <v t="chris.20180313181652.1" a="E"><vh>@settings</vh>
 <v t="chris.20180313181652.2" a="E"><vh>@theme Breeze Dark</vh>
 <v t="chris.20180313181652.3"><vh>Resources</vh></v>
-<v t="chris.20180313181652.115" a="E"><vh>Theme description settings</vh>
+<v t="chris.20180313181652.115"><vh>Theme description settings</vh>
 <v t="chris.20180313181652.116"><vh>@bool color_theme_is_dark = True</vh></v>
 <v t="chris.20180313181652.117"><vh>@string color_theme = dark</vh></v>
 <v t="chris.20180322154730.1"><vh>@string theme-name = BreezeDarkTheme</vh></v>
@@ -98,16 +98,16 @@
 <v t="chris.20180313181652.67"><vh>@color button-hover-fg = @dark-base7</vh></v>
 </v>
 </v>
-<v t="chris.20180313181652.68"><vh>Fonts &amp; text sizes</vh>
+<v t="chris.20180313181652.68" a="E"><vh>Fonts &amp; text sizes</vh>
 <v t="chris.20180313181652.69"><vh>@string font-family = Inconsolata, Droid Sans Mono, DejaVu Sans Mono</vh></v>
 <v t="chris.20180313181652.70"><vh>@string font-family-body =@font-family</vh></v>
 <v t="chris.20180313181652.71"><vh>@string font-family-log =@font-family</vh></v>
 <v t="chris.20180313181652.72"><vh>@string font-family-tree =@font-family</vh></v>
-<v t="chris.20180313181652.73"><vh>@string font-size-body = 21px</vh></v>
+<v t="chris.20180313181652.73"><vh>@string font-size-body = 22px</vh></v>
 <v t="chris.20180313181652.74"><vh>@string font-size-log = 17px</vh></v>
-<v t="chris.20180313181652.75"><vh>@string font-size-tree = 19px</vh></v>
-<v t="chris.20180315125925.1"><vh>@string font-size-menubar = 17px</vh></v>
-<v t="chris.20180315130317.1"><vh>@string font-size-menu = 16px</vh></v>
+<v t="chris.20180313181652.75"><vh>@string font-size-tree = 20px</vh></v>
+<v t="chris.20180315125925.1"><vh>@string font-size-menubar = 18px</vh></v>
+<v t="chris.20180315130317.1"><vh>@string font-size-menu = 17px</vh></v>
 <v t="chris.20180315130516.1"><vh>@string font-size-tabs = 18px</vh></v>
 </v>
 <v t="chris.20180313181652.79"><vh>Plugins settings</vh>
@@ -149,7 +149,7 @@
 </v>
 </v>
 </v>
-<v t="chris.20180313181652.112"><vh>Outline indicators</vh>
+<v t="chris.20180313181652.112" a="E"><vh>Outline indicators</vh>
 <v t="chris.20180313181652.113"><vh>@string tree-image-closed = dark/branch_closed.svg</vh></v>
 <v t="chris.20180313181652.114"><vh>@string tree-image-open = dark/branch_open.svg</vh></v>
 </v>
@@ -742,7 +742,7 @@ QTreeView::item:hover {
 }
 
 QTreeView::item:selected {
-  background-color: @dark-base6;
+  background-color: rgba(61, 174, 233, 80);
   color: @dark-base0;
 }
 
