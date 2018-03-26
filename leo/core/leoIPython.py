@@ -172,8 +172,12 @@ class InternalIPKernel(object):
             # Return the singleton instance, creating it if necessary.
         if kernelApp:
             # pylab is needed for Qt event loop integration.
-            args = ['python', '--pylab=%s' % (gui)]
-            if trace or g.app.debug:
+            # But now: this generates:
+                # RuntimeError: Cannot activate multiple GUI eventloops
+                # GUI event loop or pylab initialization failed
+            args = ['python', '--pylab']
+            ### args = ['python', '--pylab=%s' % (gui)]
+            if trace:
                 args.append('--log-level=20')
                     # Higher is *quieter*
                 # args.append('--debug')
