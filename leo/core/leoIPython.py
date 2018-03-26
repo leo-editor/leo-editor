@@ -84,6 +84,7 @@ class InternalIPKernel(object):
             # that the GUI modifies (the 'Counter++' button increments it)
     #@+node:ekr.20130930062914.15998: *3* ileo.cleanup_consoles
     def cleanup_consoles(self, event=None):
+        '''Kill all ipython consoles.  Called from app.finishQuit.'''
         for console in self.consoles:
             console.kill()
     #@+node:ekr.20130930062914.15997: *3* ileo.count
@@ -91,21 +92,26 @@ class InternalIPKernel(object):
         self.namespace['app_counter'] += 1
     #@+node:ekr.20130930062914.15996: *3* ileo.new_qt_console
     def new_qt_console(self, event=None):
-        '''Start a new qtconsole connected to our kernel.'''
+        '''
+        Start a new qtconsole connected to our kernel.
+        
+        Called from qt_gui.runWithIpythonKernel.
+        '''
         trace = False or g.app.debug
             # For now, always trace when using Python 2.
         console = None
         if not self.namespace.get('_leo'):
             self.namespace['_leo'] = LeoNameSpace()
+        if trace:
+            self.put_log('new_qt_console: connecting...')
+            self.put_log(self.kernelApp.connection_file, raw=True)
         try:
-            if trace:
-                self.put_log('new_qt_console: connecting...')
-                self.put_log(self.kernelApp.connection_file, raw=True)
             # Fix #213: leo --ipython fails to connect with python3.5 and jupyter
             # https://github.com/leo-editor/leo-editor/issues/213
             # The connection file has the form kernel-nnn.json.
             # Using the defaults lets connect_qtconsole find the .json file.
             console = connect_qtconsole()
+                # ipykernel.connect.connect_qtconsole
             if trace: g.trace(console)
             if console:
                 self.consoles.append(console)
