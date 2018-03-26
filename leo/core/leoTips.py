@@ -157,7 +157,7 @@ Become familiar with Leo's most important plugins:
 - mod_scripting.py supports @button and @command nodes.
 - quicksearch.py adds a Nav tab for searching.
 - todo.py handles to-do lists and is a project manager.
-- valuespace.py creates an outline-oriented spreadsheet.
+- valuespace.py adds Jupyter/Ipython-like features, including persistent evaluation.
 - viewrendered.py renders content in the rendering pane.
 
 """),
