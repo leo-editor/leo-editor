@@ -6215,8 +6215,6 @@ def actualColor(color):
     '''Return the actual color corresponding to the requested color.'''
     trace = False and not g.unitTesting
     c = g.app.log and g.app.log.c
-    if g.app.debug:
-        return color
     # Careful: c.config may not yet exist.
     if not c or not c.config:
         return color

@@ -171,8 +171,8 @@ class InternalIPKernel(object):
             # IPKernalApp is a singleton class.
             # Return the singleton instance, creating it if necessary.
         if kernelApp:
-            # pylab is needed for Qt event loop integration.
-            # But now: this generates:
+            # --pylab is no longer needed to create a qt console.
+            # --pylab=qt now generates:
                 # RuntimeError: Cannot activate multiple GUI eventloops
                 # GUI event loop or pylab initialization failed
             args = ['python', '--pylab']

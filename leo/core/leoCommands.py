@@ -3656,7 +3656,7 @@ class Commands(object):
         # solid foundation. Moreover, the new algorithm should be considerably
         # faster than the old: there is no need to sort positions.
         #@-<< theory of operation >>
-        trace = (False or g.app.debug) and not g.unitTesting
+        trace = False and not g.unitTesting
         c = self
         # Verify all positions *before* altering the tree.
         aList2 = []

@@ -1873,11 +1873,13 @@ class LoadManager(object):
         1. The workbook does not exist.
         2. We are unit testing or in batch mode.
         '''
+        trace = False and not g.unitTesting
         # lm = self
         fn = g.app.config.getString(setting='default_leo_file')
             # The default is ~/.leo/workbook.leo
-        if not fn and g.app.debug:
-            g.es_debug("FAILED g.app.config.getString(setting='default_leo_file')")
+        if not fn:
+            if trace:
+                g.es_debug("FAILED g.app.config.getString(setting='default_leo_file')")
             fn = g.os_path_finalize('~/.leo/workbook.leo')
         fn = g.os_path_finalize(fn)
         if not fn:

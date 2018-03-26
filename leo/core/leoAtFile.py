@@ -462,7 +462,7 @@ class AtFile(object):
         fromString=None, atShadow=False, force=False
     ):
         """Read an @thin or @file tree."""
-        trace = (False or g.app.debug) and not g.unitTesting
+        trace = False and not g.unitTesting
         at, c = self, self.c
         fileName = at.initFileName(fromString, importFileName, root)
         sfn = g.shortFileName(fileName)
@@ -790,7 +790,7 @@ class AtFile(object):
     #@+node:ekr.20070909100252: *5* at.readOneAtAutoNode
     def readOneAtAutoNode(self, fileName, p):
         '''Read an @auto file into p. Return the *new* position.'''
-        trace = (False or g.app.debug) and not g.unitTesting
+        trace = False and not g.unitTesting
         at, c, ic = self, self.c, self.c.importCommands
         oldChanged = c.isChanged()
         at.default_directory = g.setDefaultDirectory(c, p, importing=True)
