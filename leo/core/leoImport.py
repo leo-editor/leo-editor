@@ -2493,6 +2493,9 @@ def import_tabbed_files_command(event):
 def import_zim_command(event):
     '''
     Import a zim folder, http://zim-wiki.org/, as the last top-level node of the outline.
+    
+    First use Zim to export your project to rst files.
+    
     This command requires the following Leo settings::
 
         @int rst_level = 0
