@@ -1359,7 +1359,7 @@ class GlobalConfigManager(object):
         data = self.get(setting, "data")
         # New in Leo 4.12.1: add two keyword arguments, with legacy defaults.
         if data and strip_comments:
-            data = [z for z in data if not z.startswith('#')]
+            data = [z for z in data if not z.strip().startswith('#')]
         if data and strip_data:
             data = [z.strip() for z in data if z.strip()]
         return data
@@ -1725,7 +1725,7 @@ class LocalConfigManager(object):
         # New in Leo 4.11: parser.doData strips only comments now.
         # New in Leo 4.12: parser.doData strips *nothing*.
         if data and strip_comments:
-            data = [z for z in data if not z.startswith('#')]
+            data = [z for z in data if not z.strip().startswith('#')]
         if data and strip_data:
             data = [z.strip() for z in data if z.strip()]
         return data
