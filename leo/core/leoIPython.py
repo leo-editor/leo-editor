@@ -2,6 +2,8 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20120401063816.10072: * @file leoIPython.py
 #@@first
+#@+<< leoIpython docstring >>
+#@+node:ekr.20180326102140.1: ** << leoIpython docstring >>
 '''
 Support for the --ipython command-line option and the IPython bridge:
 http://leoeditor.com/IPythonBridge.html
@@ -19,6 +21,7 @@ The startup code injects a single object, _leo, into the IPython namespace.
 This object, a LeoNameSpace instance, simplifies dealing with multiple open
 Leo commanders.
 '''
+#@-<< leoIpython docstring >>
 #@+<< imports >>
 #@+node:ekr.20130930062914.15990: ** << imports >> (leoIpython.py)
 from __future__ import print_function
@@ -182,7 +185,8 @@ class InternalIPKernel(object):
                 # RuntimeError: Cannot activate multiple GUI eventloops
                 # GUI event loop or pylab initialization failed
             args = ['python', '--pylab']
-            ### args = ['python', '--pylab=%s' % (gui)]
+                # Fails
+                # args = ['python', '--pylab=%s' % (gui)]
             if trace:
                 args.append('--log-level=20')
                     # Higher is *quieter*
