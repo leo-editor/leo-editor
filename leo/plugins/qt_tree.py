@@ -51,8 +51,6 @@ class LeoQtTree(leoFrame.LeoTree):
             # w is a LeoQTreeWidget, a subclass of QTreeWidget.
         # "declutter", node appearance tweaking
         self.declutter_patterns = None  # list of pairs of patterns for decluttering
-        self.declutter_iconDir = g.os_path_abspath(g.os_path_normpath(
-            g.os_path_join(g.app.loadDir,"..","Icons")))
         self.declutter_update = False  # true when update on idle needed
         g.registerHandler('save1', self.clear_visual_icons)
         g.registerHandler('headkey2', self.update_appearance)
@@ -234,6 +232,7 @@ class LeoQtTree(leoFrame.LeoTree):
         trace = False and not g.unitTesting
         if self.declutter_patterns is None:
             self.declutter_patterns = []
+            warned = False
             lines = c.config.getData("tree-declutter-patterns")
             for line in lines:
                 try:
@@ -242,10 +241,17 @@ class LeoQtTree(leoFrame.LeoTree):
                     # Allow empty arg, and guard against user errors.
                     cmd = line.strip()
                     arg = ''
-                if cmd == 'RULE':
+                if cmd.startswith('#'):
+                    pass
+                elif cmd == 'RULE':
                     self.declutter_patterns.append((re.compile(arg), []))
                 else:
-                    self.declutter_patterns[-1][1].append((cmd, arg))
+                    if self.declutter_patterns:
+                        self.declutter_patterns[-1][1].append((cmd, arg))
+                    elif not warned:
+                        warned = True
+                        g.log('Declutter patterns must start with RULE*',
+                            color='error')
             if trace: g.trace('PATTERNS', self.declutter_patterns)
         text = str(item.text(0)) if g.isPython3 else g.u(item.text(0))
         new_icons = []
@@ -266,9 +272,7 @@ class LeoQtTree(leoFrame.LeoTree):
         if len(allIcons) != len(icons) or new_icons:
             for icon in new_icons:
                 com.appendImageDictToList(
-                    icons, self.declutter_iconDir,
-                    g.app.gui.getImageFinder(icon), 2,
-                    on='vnode', visualIcon='1'
+                    icons, icon, 2, on='vnode', visualIcon='1'
                 )
             com.setIconList(p, icons, False)
     #@+node:ekr.20171122064635.1: *6* qtree.declutter_replace

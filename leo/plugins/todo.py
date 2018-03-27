@@ -112,6 +112,8 @@ if g.app.gui.guiName() == "qt":
             QtWidgets.QWidget.__init__(self)
             uiPath = g.os_path_join(g.app.leoDir, 'plugins', 'ToDo.ui')
             # change dir to get themed icons, needed for uic resources
+            # 20180327 this is working, these are icons for todo UI, not
+            # the tree.
             theme = g.app.config.getString('color_theme')
             if theme:
                 testPath = g.os_path_join(
@@ -380,8 +382,6 @@ class todoController(object):
         #X self.smiley = None
         self.redrawLevels = 0
         self._widget_to_style = None  # see updateStyle()
-        self.iconDir = g.os_path_abspath(g.os_path_normpath(
-            g.os_path_join(g.app.loadDir,"..","Icons")))
         self.reloadSettings()
         self.handlers = [
            ("close-frame",self.close),
@@ -540,8 +540,7 @@ class todoController(object):
                 pri = self.getat(p.v, 'priority')
                 if pri: pri = int(pri)
                 if pri in self.priorities:
-                    com.appendImageDictToList(icons, self.iconDir,
-                        g.os_path_join('cleo',self.priorities[pri]['icon']),
+                    com.appendImageDictToList(icons, g.os_path_join('cleo', self.priorities[pri]['icon']),
                         2, on='vnode', cleoIcon='1', where=self.icon_location)
                         # Icon location defaults to 'beforeIcon' unless cleo_icon_location global defined.
                         # Example: @strings[beforeIcon,beforeHeadline] cleo_icon_location = beforeHeadline
@@ -552,8 +551,7 @@ class todoController(object):
                     prog = int(prog or 0)
                     use = prog//10*10
                     use = 'prg%03d.png' % use
-                    com.appendImageDictToList(icons, self.iconDir,
-                        g.os_path_join('cleo',use),
+                    com.appendImageDictToList(icons, g.os_path_join('cleo', use),
                         2, on='vnode', cleoIcon='1', where=self.prog_location)
             elif which == 'duedate':
                 duedate = self.getat(p.v, 'duedate')
@@ -566,8 +564,7 @@ class todoController(object):
                         icon = "date_today.png"
                     else:
                         icon = "date_future.png"
-                    com.appendImageDictToList(icons, self.iconDir,
-                        g.os_path_join('cleo', icon),
+                    com.appendImageDictToList(icons, g.os_path_join('cleo', icon),
                         2, on='vnode', cleoIcon='1', where=self.prog_location)
 
         com.setIconList(p, icons, setDirty=False)

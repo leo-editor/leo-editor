@@ -874,10 +874,10 @@ class EditCommandsClass(BaseEditCommandsClass):
     # - Tree control recomputes height of each line.
     #@+node:ekr.20150514063305.230: *4* ec. Helpers
     #@+node:ekr.20150514063305.231: *5* ec.appendImageDictToList
-    def appendImageDictToList(self, aList, iconDir, path, xoffset, **kargs):
+    def appendImageDictToList(self, aList, path, xoffset, **kargs):
         c = self.c
-        path = c.os_path_finalize_join(iconDir, path)
-        relPath = g.makePathRelativeTo(path, iconDir)
+        relPath = path  # for finding icon on load in different environment
+        path = g.app.gui.getImageFinder(path)
         # pylint: disable=unpacking-non-sequence
         image, image_height = g.app.gui.getTreeImage(c, path)
         if not image:
@@ -1031,7 +1031,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         aList = []
         xoffset = 2
         for path in paths:
-            xoffset = self.appendImageDictToList(aList, iconDir, path, xoffset)
+            xoffset = self.appendImageDictToList(aList, path, xoffset)
         aList2 = self.getIconList(p)
         aList2.extend(aList)
         self.setIconList(p, aList2)
@@ -1041,11 +1041,9 @@ class EditCommandsClass(BaseEditCommandsClass):
     def insertIconFromFile(self, path, p=None, pos=None, **kargs):
         c = self.c
         if not p: p = c.p
-        iconDir = c.os_path_finalize_join(g.app.loadDir, "..", "Icons")
-        os.chdir(iconDir)
         aList = []
         xoffset = 2
-        xoffset = self.appendImageDictToList(aList, iconDir, path, xoffset, **kargs)
+        xoffset = self.appendImageDictToList(aList, path, xoffset, **kargs)
         aList2 = self.getIconList(p)
         if pos is None: pos = len(aList2)
         aList2.insert(pos, aList[0])
