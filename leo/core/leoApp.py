@@ -183,8 +183,6 @@ class LeoApp(object):
         #@-<< LeoApp: Debugging & statistics >>
         #@+<< LeoApp: error messages >>
         #@+node:ekr.20161028035902.1: *5* << LeoApp: error messages >>
-        self.atPathInBodyWarning = None
-            # Set by get_directives_dict.
         self.menuWarningsGiven = False
             # True: supress warnings in menu code.
         self.unicodeErrorGiven = True

@@ -5088,7 +5088,7 @@ class AtFile(object):
         Scan p and p's ancestors looking for directives,
         setting corresponding AtFile ivars.
         '''
-        trace = False and not g.unitTesting # and p.h.startswith('@auto')
+        trace = False and not g.unitTesting
         at, c = self, self.c
         g.app.atPathInBodyWarning = None
         #@+<< set ivars >>
@@ -5119,8 +5119,6 @@ class AtFile(object):
         for key, default, func in table:
             val = func(aList)
             d[key] = default if val is None else val
-        if issuePathWarning and g.app.atPathInBodyWarning:
-            g.error('warning: ignoring @path directive in', g.app.atPathInBodyWarning)
         # Post process.
         lineending = d.get('lineending')
         lang_dict = d.get('lang-dict')

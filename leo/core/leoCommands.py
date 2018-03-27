@@ -1843,6 +1843,7 @@ class Commands(object):
         '''Scan aList for @path directives.
         Return a reasonable default if no @path directive is found.'''
         trace = False and not g.unitTesting
+            # This is called at idle time, so it's not very useful.
         verbose = True
         c = self
         c.scanAtPathDirectivesCount += 1 # An important statistic.

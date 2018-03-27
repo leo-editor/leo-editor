@@ -2618,6 +2618,7 @@ def get_directives_dict(p, root=None):
     following the first occurrence of each recognized directive
     """
     trace = False and not g.unitTesting
+        # This is called at idle time, so it's not very useful.
     verbose = False
     if trace and verbose: g.trace('*' * 20, p.h)
     if root: root_node = root[0]
@@ -2645,14 +2646,8 @@ def get_directives_dict(p, root=None):
             if word in ('root-doc', 'root-code'):
                 d['root'] = val # in addition to optioned version
             d[word] = val
-            # Warn about @path in the body text of @<file> nodes.
-            if (kind == 'body' and
-                word == 'path' and
-                p.isAnyAtFileNode()
-            ):
-                g.app.atPathInBodyWarning = p.h
-                d['@path_in_body'] = p.h
-                if trace: g.trace('@path in body', p.h)
+            # New in Leo 5.7.1: @path is allowed in body text.
+            # This is very useful when doing recursive imports.
     if root:
         anIter = g_noweb_root.finditer(p.b)
         for m in anIter:
