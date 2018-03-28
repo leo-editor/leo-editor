@@ -76,23 +76,6 @@ class EditCommandsClass(BaseEditCommandsClass):
     def doNothing(self, event):
         '''A placeholder command, useful for testing bindings.'''
         pass
-    #@+node:ekr.20150514063305.213: *3* ec.evalExpression
-    @cmd('eval-expression')
-    def evalExpression(self, event):
-        '''Evaluate a Python Expression entered in the minibuffer.'''
-        k = self.c.k
-        k.setLabelBlue('Eval: ')
-        k.get1Arg(event, handler=self.evalExpression1)
-
-    def evalExpression1(self, event):
-        k = self.c.k
-        k.clearState()
-        try:
-            e = k.arg
-            result = str(eval(e, {}, {}))
-            k.setLabelGrey('Eval: %s -> %s' % (e, result))
-        except Exception:
-            k.setLabelGrey('Invalid Expression: %s' % e)
     #@+node:ekr.20150514063305.278: *3* ec.insertFileName
     @cmd('insert-file-name')
     def insertFileName(self, event=None):
