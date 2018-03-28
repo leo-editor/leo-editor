@@ -1920,12 +1920,14 @@ class RecursiveImportController(object):
     #@+node:ekr.20130823083943.12615: *3* ric.ctor (RecursiveImportController)
     def __init__(self, c, kind,
         # force_at_others = False, #tag:no-longer-used
+        add_path=True,
         recursive=True,
         safe_at_file=True,
         theTypes=None,
     ):
         '''Ctor for RecursiveImportController class.'''
         self.c = c
+        self.add_path = add_path
         self.kind = kind
             # in ('@auto', '@clean', '@edit', '@file', '@nosent')
         # self.force_at_others = force_at_others #tag:no-longer-used
@@ -2075,7 +2077,7 @@ class RecursiveImportController(object):
             s = p.h.replace('\\', '/')
             if s != p.h:
                 p.v.h = s
-    #@+node:ekr.20130823083943.12611: *5* ric.minimize_headlines
+    #@+node:ekr.20130823083943.12611: *5* ric.minimize_headlines & helper
     file_pattern = re.compile(r'^(([@])+(auto|clean|edit|file|nosent))')
 
     def minimize_headlines(self, p, prefix):
@@ -2089,6 +2091,10 @@ class RecursiveImportController(object):
             path = p.h[len(kind):].strip()
             stripped = self.strip_prefix(path, prefix)
             p.h = '%s %s' % (kind, stripped or path)
+            # Put the *full* @path directive in the body.
+            if self.add_path and prefix:
+                tail = g.os_path_dirname(stripped).rstrip('/')
+                p.b = '@path %s%s\n%s'  % (prefix, tail, p.b)
         else:
             # p.h is a path.
             path = p.h

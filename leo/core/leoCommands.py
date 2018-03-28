@@ -3348,6 +3348,7 @@ class Commands(object):
         return dirtyVnodeList
     #@+node:ekr.20130823083943.12559: *3* c.recursiveImport
     def recursiveImport(self, dir_, kind,
+        add_path=True,
         recursive=True,
         safe_at_file=True,
         theTypes=None,
@@ -3380,6 +3381,7 @@ class Commands(object):
             try:
                 import leo.core.leoImport as leoImport
                 cc = leoImport.RecursiveImportController(c, kind,
+                    add_path=add_path,
                     recursive=recursive,
                     safe_at_file=safe_at_file,
                     theTypes=['.py'] if not theTypes else theTypes,
