@@ -3362,6 +3362,7 @@ class Commands(object):
         Parameters::
             dir_              The root directory or file to import.
             kind              One of ('@clean','@edit','@file','@nosent').
+            add_path=True     True: add a full @path directive to @<file> nodes.
             recursive=True    True: recurse into subdirectories.
             safe_at_file=True True: produce @@file nodes instead of @file nodes.
             theTypes=None     A list of file extensions to import.
