@@ -228,7 +228,6 @@ controllers = {}
 #@+node:ville.20110403115003.10353: *3* colorize_headlines_visitor
 def colorize_headlines_visitor(c,p, item):
     """ Changes @thin, @auto, @shadow to bold """
-
     if p.h.startswith("!= "):
         f = item.font(0)
         f.setBold(True)
@@ -249,9 +248,7 @@ def init ():
 def onCreate (tag,key):
 
     global controllers
-
     c = key.get('c')
-
     if c:
         h = c.hash()
         vc = controllers.get(h)
@@ -304,30 +301,8 @@ def get_vs(c):
         vsc.set_c(c)
         return vsc
     return controllers[c.hash()]
-#@+node:ville.20110407210441.5691: *3* vs-create-tree
-@g.command('vs-create-tree')
-def vs_create_tree(event):
-    """Create tree from all variables."""
-    get_vs(event['c']).create_tree()
-
-#@+node:ekr.20110408065137.14227: *3* vs-dump
-@g.command('vs-dump')
-def vs_dump(event):
-    """Dump the valuespace for this commander."""
-    get_vs(event['c']).dump()
-#@+node:ekr.20110408065137.14220: *3* vs-reset
-@g.command('vs-reset')
-def vs_reset(event):
-
-    # g.vs = types.ModuleType('vs')
-    # sys.modules['vs'] = g.vs
-    get_vs(event['c']).reset()
-#@+node:ville.20110403115003.10356: *3* vs-update
-@g.command('vs-update')
-def vs_update(event):
-
-    get_vs(event['c']).update()
-#@+node:tbrown.20130227164110.21222: *3* vs-eval
+#@+node:ekr.20180328055119.1: *3* Simple eval commands
+#@+node:tbrown.20130227164110.21222: *4* vs-eval
 @g.command("vs-eval")
 def vs_eval(event):
     """
@@ -363,7 +338,6 @@ def vs_eval(event):
         w.setSelectionRange(i,j)
     except ValueError:  # no more \n in text
         w.setSelectionRange(i,i)
-
     eval_text(c, txt)
 
 def eval_text(c, txt):
@@ -439,7 +413,7 @@ def eval_text(c, txt):
 
     return ans
 
-#@+node:tbrown.20170516202419.1: *3* vs-eval-block
+#@+node:tbrown.20170516202419.1: *4* vs-eval-block
 @g.command("vs-eval-block")
 def vs_eval_block(event):
     c = event['c']
@@ -460,13 +434,12 @@ def vs_eval_block(event):
         else:
             lines.append(output)
         lines.append("# <<<")
-
     c.p.b = '\n'.join(lines) + '\n'
     c.frame.body.wrapper.setInsertPoint(pos)
     c.redraw()
     c.bodyWantsFocusNow()
 
-#@+node:tbnorth.20171222141907.1: *3* vs-eval-replace
+#@+node:tbnorth.20171222141907.1: *4* vs-eval-replace
 @g.command("vs-eval-replace")
 def vs_eval_replace(event):
     """Execute the selected text, if any.  Replace it with the result."""
@@ -483,7 +456,7 @@ def vs_eval_replace(event):
     w.setInsertPoint(i+len(result))
     c.undoer.afterChangeNodeContents(c.p, 'Insert result', bunch)
     c.setChanged()
-#@+node:tbrown.20130227164110.21223: *3* vs-last
+#@+node:tbrown.20130227164110.21223: *4* vs-last
 @g.command("vs-last")
 def vs_last(event, text=None):
     """
@@ -500,7 +473,7 @@ def vs_last(event, text=None):
     editor.insert(insert_point, text+'\n')
     editor.setInsertPoint(insert_point+len(text)+1)
     c.setChanged(True)
-#@+node:tbrown.20130227164110.21224: *3* vs-last-pretty
+#@+node:tbrown.20130227164110.21224: *4* vs-last-pretty
 @g.command("vs-last-pretty")
 def vs_last_pretty(event):
     """
@@ -511,6 +484,30 @@ def vs_last_pretty(event):
     """
     c = event['c']
     vs_last(event, text=pprint.pformat(get_vs(c).d.get('_last')))
+#@+node:ekr.20180328055151.1: *3* Ville's original commands
+#@+node:ville.20110407210441.5691: *4* vs-create-tree
+@g.command('vs-create-tree')
+def vs_create_tree(event):
+    """Create tree from all variables."""
+    get_vs(event['c']).create_tree()
+
+#@+node:ekr.20110408065137.14227: *4* vs-dump
+@g.command('vs-dump')
+def vs_dump(event):
+    """Dump the valuespace for this commander."""
+    get_vs(event['c']).dump()
+#@+node:ekr.20110408065137.14220: *4* vs-reset
+@g.command('vs-reset')
+def vs_reset(event):
+
+    # g.vs = types.ModuleType('vs')
+    # sys.modules['vs'] = g.vs
+    get_vs(event['c']).reset()
+#@+node:ville.20110403115003.10356: *4* vs-update
+@g.command('vs-update')
+def vs_update(event):
+
+    get_vs(event['c']).update()
 #@+node:ekr.20110408065137.14219: ** class ValueSpaceController
 class ValueSpaceController(object):
 
