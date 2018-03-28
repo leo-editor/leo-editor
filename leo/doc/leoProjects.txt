@@ -5207,7 +5207,7 @@ def getGitIssues(c,
     if isinstance(label_list, (list, tuple)):
         root = c.lastTopLevel().insertAfter()
         root.h = 'Issues for ' + milestone if milestone else 'Backup'
-        GitIssueController().backup_issues(base_url, root)
+        GitIssueController().backup_issues(base_url, c, root)
         root.expand()
         c.selectPosition(root)
         c.redraw()
