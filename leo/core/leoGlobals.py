@@ -1971,7 +1971,7 @@ def listToString(obj, indent='', tag=None):
     s = ''.join(result)
     return '%s...\n%s\n' % (tag, s) if tag else s
 #@+node:ekr.20050819064157: *4* g.objToSTring & g.toString
-def objToString(obj, indent='', tag=None):
+def objToString(obj, indent='', printCaller=False, tag=None):
     '''Pretty print any Python object to a string.'''
     if isinstance(obj, dict):
         s = dictToString(obj, indent=indent)
@@ -1983,7 +1983,11 @@ def objToString(obj, indent='', tag=None):
         # s = obj
     else:
         s = repr(obj)
-    return '%s...\n%s\n' % (tag, s) if tag else s
+    callers = g.callers(2)
+    caller = callers.split(',')[0]
+    prefix = '%s:' % caller if printCaller else ''
+    prefix += (tag or '')
+    return '%s...\n%s\n' % (prefix, s) if prefix else s
 
 toString = objToString
 #@+node:ekr.20140401054342.16844: *4* g.run_pylint
@@ -2043,9 +2047,9 @@ def sleep(n):
     from time import sleep
     sleep(n) #sleeps for 5 seconds
 #@+node:ekr.20171023140544.1: *4* g.printObj & aliases
-def printObj(obj, indent='', tag=None):
+def printObj(obj, indent='', printCaller=False, tag=None):
     '''Pretty print any Python object using g.pr.'''
-    g.pr(objToString(obj, indent=indent, tag=tag))
+    g.pr(objToString(obj, indent=indent, printCaller=printCaller, tag=tag))
 
 printDict = printObj
 printList = printObj
