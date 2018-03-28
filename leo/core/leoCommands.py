@@ -219,6 +219,7 @@ class Commands(object):
         self.convertCommands = None
         self.debugCommands = None
         self.editFileCommands = None
+        self.evalController = None
         self.gotoCommands = None
         self.helpCommands = None
         self.keyHandler = self.k = None

@@ -137,10 +137,11 @@ of Ctrl+Alt+1, and sets sys.argv to [u,'a',u'b',u'c'] within the context of the 
 import leo.core.leoGlobals as g
 import leo.core.leoColor as leoColor
 import leo.core.leoGui as leoGui
-# import os
+import pprint
+import re
 import string
 import sys
-from collections import namedtuple
+import textwrap
 #@-<< imports >>
 __version__ = '2.5'
 #@+<< version history >>
@@ -163,38 +164,8 @@ __version__ = '2.5'
 # Fix bug: create new command if button command conflicts with existing command.
 # This would fix an unbounded recursion.
 #@+others
-#@+node:ekr.20060328125248.4: ** init
-def init():
-    '''Return True if the plugin has loaded successfully.'''
-    if g.app.gui is None:
-        g.app.createQtGui(__file__)
-    # This plugin is now gui-independent.
-    ok = g.app.gui and g.app.gui.guiName() in ('qt', 'qttabs', 'nullGui')
-    if ok:
-        sc = 'ScriptingControllerClass'
-        if (not hasattr(g.app.gui, sc) or
-            getattr(g.app.gui, sc) is leoGui.NullScriptingControllerClass
-        ):
-            setattr(g.app.gui, sc, ScriptingController)
-        # Note: call onCreate _after_ reading the .leo file.
-        # That is, the 'after-create-leo-frame' hook is too early!
-        g.registerHandler(('new', 'open2'), onCreate)
-        g.plugin_signon(__name__)
-    return ok
-#@+node:ekr.20060328125248.5: ** onCreate
-def onCreate(tag, keys):
-    """Handle the onCreate event in the mod_scripting plugin."""
-    c = keys.get('c')
-    if c:
-        # g.trace('mod_scripting',c)
-        sc = g.app.gui.ScriptingControllerClass(c)
-        c.theScriptingController = sc
-        sc.createAllButtons()
-#@+node:tbrown.20140819100840.37720: ** type RClick
-# representation of an rclick node
-# this used to have more elements, but evolved to be simpler
-RClick = namedtuple('RClick', 'position,children')
-#@+node:tbrown.20140819100840.37719: ** build_rclick_tree (mod_scripting.py)
+#@+node:ekr.20180328085010.1: ** Top level (mod_scripting)
+#@+node:tbrown.20140819100840.37719: *3* build_rclick_tree (mod_scripting.py)
 def build_rclick_tree(command_p, rclicks=None, top_level=False):
     """
     Return a list of top level RClicks for the button at command_p, which can be
@@ -209,6 +180,10 @@ def build_rclick_tree(command_p, rclicks=None, top_level=False):
     - `rclicks`: list of RClicks to add to, created if needed
     - `top_level`: is this the top level?
     """
+    # representation of an rclick node
+    from collections import namedtuple
+    RClick = namedtuple('RClick', 'position,children')
+
     # Called from QtIconBarClass.setCommandForButton.
     # g.trace('=====', command_p and command_p.h or 'no command_p')
     if rclicks is None:
@@ -241,6 +216,34 @@ def build_rclick_tree(command_p, rclicks=None, top_level=False):
             rclicks.append(rc)
             build_rclick_tree(rc.position, rc.children, top_level=False)
     return rclicks
+#@+node:ekr.20060328125248.4: *3* init
+def init():
+    '''Return True if the plugin has loaded successfully.'''
+    if g.app.gui is None:
+        g.app.createQtGui(__file__)
+    # This plugin is now gui-independent.
+    ok = g.app.gui and g.app.gui.guiName() in ('qt', 'qttabs', 'nullGui')
+    if ok:
+        sc = 'ScriptingControllerClass'
+        if (not hasattr(g.app.gui, sc) or
+            getattr(g.app.gui, sc) is leoGui.NullScriptingControllerClass
+        ):
+            setattr(g.app.gui, sc, ScriptingController)
+        # Note: call onCreate _after_ reading the .leo file.
+        # That is, the 'after-create-leo-frame' hook is too early!
+        g.registerHandler(('new', 'open2'), onCreate)
+        g.plugin_signon(__name__)
+    return ok
+#@+node:ekr.20060328125248.5: *3* onCreate
+def onCreate(tag, keys):
+    """Handle the onCreate event in the mod_scripting plugin."""
+    c = keys.get('c')
+    if c:
+        # g.trace('mod_scripting',c)
+        sc = g.app.gui.ScriptingControllerClass(c)
+        c.theScriptingController = sc
+        sc.createAllButtons()
+        c.evalController = EvalController(c)
 #@+node:ekr.20141031053508.7: ** class AtButtonCallback
 class AtButtonCallback(object):
     '''A class whose __call__ method is a callback for @button nodes.'''
@@ -1132,5 +1135,284 @@ class ScriptingController(object):
     #@-others
 
 scriptingController = ScriptingController
+#@+node:ekr.20180328085038.1: ** class EvalController
+class EvalController(object):
+    '''A class defining all eval-* commands.'''
+
+    def __init__(self, c):
+        self.c = c
+        self.c.vs = self.d = {}
+            # self.d is the namespace.
+        self.last_result = None
+
+    def cmd(name):
+        '''Command decorator for the EvalController class.'''
+        # pylint: disable=no-self-argument
+        return g.new_cmd_decorator(name, ['c', 'evalController',])
+
+    #@+others
+    #@+node:ekr.20180328092221.1: *3* Commands
+    #@+node:ekr.20180328085426.2: *4* eval
+    @cmd("eval")
+    def eval_command(self, event):
+        #@+<< eval docstring >>
+        #@+node:ekr.20180328100519.1: *5* << eval docstring >>
+        """
+        Execute the selected text, if any.  Select next line of text.
+
+        Tries hard to capture the result of from the last expression in the
+        selected text::
+
+            import datetime
+            today = datetime.date.today()
+
+        will capture the value of ``today`` even though the last line is a
+        statement, not an expression.
+
+        Stores results in ``c.vs['_last']`` for insertion
+        into body by ``vs-last`` or ``vs-last-pretty``.
+
+        Removes common indentation (``textwrap.dedent()``) before executing,
+        allowing execution of indented code.
+
+        ``g``, ``c``, and ``p`` are available to executing code, assignments
+        are made in the ``c.vs`` namespace and persist for the life of ``c``.
+        """
+        #@-<< eval docstring >>
+        c = self.c
+        if c != event.get('c'):
+            return
+        w = c.frame.body.wrapper
+        txt = w.getSelectedText()
+        # select next line ready for next select/send cycle
+        # copied from .../plugins/leoscreen.py
+        b = w.getAllText()
+        i = w.getInsertPoint()
+        try:
+            j = b[i:].index('\n')+i+1
+            w.setSelectionRange(i,j)
+        except ValueError:  # no more \n in text
+            w.setSelectionRange(i,i)
+        self.eval_text(txt)
+    #@+node:ekr.20180328085426.3: *4* eval-block
+    @cmd("eval-block")
+    def eval_block(self, event):
+        #@+<< eval-block docstring >>
+        #@+node:ekr.20180328100415.1: *5* << eval-block docstring >>
+        '''
+        In the body, "# >>>" marks the end of a code block, and "# <<<" marks
+        the end of an output block.  E.g.::
+
+        a = 2
+        # >>>
+        4
+        # <<<
+        b = 2.0*a
+        # >>>
+        4.0
+        # <<<
+
+        ``vs-eval-block`` evaluates the current code block, either the code block
+        the cursor's in, or the code block preceding the output block the cursor's
+        in.  Subsequent output blocks are marked "# >>> *" to show they may need
+        re-evaluation.
+
+        Note: you don't really need to type the "# >>>" and "# <<<" markers
+        because ``vs-eval-block`` will add them as needed.  So just type the
+        first code block and run ``vs-eval-block``.
+
+        '''
+        #@-<< eval-block docstring >>
+        c = self.c
+        if c != event.get('c'):
+            return
+        pos = 0
+        lines = []
+        current_seen = False
+        for current, source, output in self.get_blocks():
+            lines.append(source)
+            lines.append("# >>>" + (" *" if current_seen else ""))
+            if current:
+                old_log = c.frame.log.logCtrl.getAllText()
+                self.eval_text(source)
+                new_log = c.frame.log.logCtrl.getAllText()[len(old_log):]
+                lines.append(new_log.strip())
+                # lines.append(str(get_vs(c).d.get('_last')))
+                if self.last_result:
+                    lines.append(self.last_result)
+                pos = len('\n'.join(lines))+7
+                current_seen = True
+            else:
+                lines.append(output)
+            lines.append("# <<<")
+        c.p.b = '\n'.join(lines) + '\n'
+        c.frame.body.wrapper.setInsertPoint(pos)
+        c.redraw()
+        c.bodyWantsFocusNow()
+    #@+node:ekr.20180328085426.5: *4* eval-last
+    @cmd("eval-last")
+    def eval_last(self, event, text=None):
+        """
+        Insert the last result from ``vs-eval``.
+
+        Inserted as a string, so ``"1\n2\n3\n4"`` will cover four lines and
+        insert no quotes, for ``repr()`` style insertion use ``vs-last-pretty``.
+        """
+        c  = self.c
+        if c != event.get('c'):
+            return
+        if text is None:
+            ### text = str(self.get_vs(c).d.get('_last'))
+            text = '' if self.last_result is None else str(self.last_result)
+        editor = c.frame.body.wrapper
+        insert_point = editor.getInsertPoint()
+        editor.insert(insert_point, text+'\n')
+        editor.setInsertPoint(insert_point+len(text)+1)
+        c.setChanged(True)
+    #@+node:ekr.20180328085426.6: *4* eval-last-pretty
+    @cmd("eval-last-pretty")
+    def vs_last_pretty(self, event):
+        """
+        Insert the last result from ``vs-eval``.
+
+        Formatted by ``pprint.pformat()``, so ``"1\n2\n3\n4"`` will appear as
+        '``"1\n2\n3\n4"``', see all ``vs-last``.
+        """
+        c  = self.c
+        if c == event.get('c'):
+            ### c = event['c']
+            ### vs_last(event, text=pprint.pformat(get_vs(c).d.get('_last')))
+            self.eval_last(event, text=pprint.pformat(self.last_result))
+    #@+node:ekr.20180328085426.4: *4* eval-replace
+    @cmd("eval-replace")
+    def eval_replace(self, event):
+        """Execute the selected text, if any.  Replace it with the result."""
+        c = self.c
+        if c != event.get('c'):
+            return
+        w = c.frame.body.wrapper
+        txt = w.getSelectedText()
+        self.eval_text(txt)
+        ### result = pprint.pformat(get_vs(c).d.get('_last'))
+        result = pprint.pformat(self.last_result)
+        i, j = w.getSelectionRange()
+        new_text = c.p.b[:i]+result+c.p.b[j:]
+        bunch = c.undoer.beforeChangeNodeContents(c.p)
+        w.setAllText(new_text)
+        c.p.b = new_text
+        w.setInsertPoint(i+len(result))
+        c.undoer.afterChangeNodeContents(c.p, 'Insert result', bunch)
+        c.setChanged()
+    #@+node:ekr.20180328090830.1: *3* eval.eval_text
+    def eval_text(self, txt):
+        '''Evaluate txt.'''
+        # pylint: disable=eval-used
+            # It's essential.
+        if not txt:
+            return ''
+        c, d = self.c, self.d
+        txt = textwrap.dedent(txt)
+        blocks = re.split('\n(?=[^\\s])', txt)
+        leo_globals = {'c':c, 'p':c.p, 'g':g}
+        ans = None
+        dbg = False
+        redirects = c.config.getBool('valuespace_vs_eval_redirect')
+        if redirects:
+            old_stderr = g.stdErrIsRedirected()
+            old_stdout = g.stdOutIsRedirected()
+            if not old_stderr:
+                g.redirectStderr()
+            if not old_stdout:
+                g.redirectStdout()
+        try:
+            # execute all but the last 'block'
+            if dbg: print('all but last')
+            # exec '\n'.join(blocks[:-1]) in leo_globals, c.vs
+            exec('\n'.join(blocks[:-1]), leo_globals, d) # Compatible with Python 3.x.
+            all_done = False
+        except SyntaxError:
+            # splitting of the last block caused syntax error
+            try:
+                # is the whole thing a single expression?
+                if dbg: print('one expression')
+                ans = eval(txt, leo_globals, d)
+            except SyntaxError:
+                if dbg: print('statement block')
+                # exec txt in leo_globals, c.vs
+                try:
+                    exec(txt, leo_globals, d) # Compatible with Python 3.x.
+                except Exception:
+                    g.es_exception()
+            all_done = True  # either way, the last block is used now
+        if not all_done:  # last block still needs using
+            try:
+                if dbg: print('final expression')
+                ans = eval(blocks[-1], leo_globals, d)
+            except SyntaxError:
+                ans = None
+                if dbg: print('final statement')
+                # exec blocks[-1] in leo_globals, c.vs
+                try:
+                    exec(txt, leo_globals, d) # Compatible with Python 3.x.
+                except Exception:
+                    g.es_exception()
+        if redirects:
+            if not old_stderr:
+                g.restoreStderr()
+            if not old_stdout:
+                g.restoreStdout()
+        if ans is None:  # see if last block was a simple "var =" assignment
+            key = blocks[-1].split('=', 1)[0].strip()
+            if key in d:
+                ans = d[key]
+        if ans is None:  # see if whole text was a simple /multi-line/ "var =" assignment
+            key = blocks[0].split('=', 1)[0].strip()
+            if key in d:
+                ans = d[key]
+        d['_last'] = ans
+        if ans is not None:
+            # annoying to echo 'None' to the log during line by line execution
+            txt = str(ans)
+            lines = txt.split('\n')
+            if len(lines) > 10:
+                txt = '\n'.join(lines[:5]+['<snip>']+lines[-5:])
+            if len(txt) > 500:
+                txt = txt[:500] + ' <truncated>'
+            g.es(txt)
+        return ans
+    #@+node:tbrown.20170516194332.1: *3* eval.get_blocks
+    def get_blocks(self):
+        """get_blocks - iterate code blocks
+
+        :return: (current, source, output)
+        :rtype: (bool, str, str)
+        """
+        c = self.c
+        pos = c.frame.body.wrapper.getInsertPoint()
+        chrs = 0
+        lines = c.p.b.split('\n')
+        block = {'source': [], 'output': []}
+        reading = 'source'
+        seeking_current = True
+        # if the last non-blank line isn't the end of a possibly empty
+        # output block, make it one
+        if [i for i in lines if i.strip()][-1] != "# <<<":
+            lines.append("# <<<")
+        while lines:
+            line = lines.pop(0)
+            chrs += len(line)+1
+            if line.startswith("# >>>"):
+                reading = 'output'
+                continue
+            if line.startswith("# <<<"):
+                current = seeking_current and (chrs >= pos+1)
+                if current:
+                    seeking_current = False
+                yield current, '\n'.join(block['source']), '\n'.join(block['output'])
+                block = {'source': [], 'output': []}
+                reading = 'source'
+                continue
+            block[reading].append(line)
+    #@-others
 #@-others
 #@-leo
