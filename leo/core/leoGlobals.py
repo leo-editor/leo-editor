@@ -1753,7 +1753,7 @@ def alert(message, c=None):
     if not g.unitTesting:
         g.es(message)
         g.app.gui.alert(c, message)
-#@+node:ekr.20051023083258: *4* g.callers & _callerName
+#@+node:ekr.20051023083258: *4* g.callers & g.caller & _callerName
 def callers(n=4, count=0, excludeCaller=True, verbose=False):
     '''
     Return a list containing the callers of the function that called g.callerList.
@@ -1809,6 +1809,10 @@ def _callerName(n, verbose=False):
     except Exception:
         es_exception()
         return '' # "<no caller name>"
+#@+node:ekr.20180328170441.1: *5* g.caller
+def caller(i=1):
+    '''Return the caller name i levels up the stack.'''
+    return g.callers(i+1).split(',')[0]
 #@+node:ekr.20031218072017.3109: *4* g.dump
 def dump(s):
     out = ""
@@ -1983,10 +1987,12 @@ def objToString(obj, indent='', printCaller=False, tag=None):
         # s = obj
     else:
         s = repr(obj)
-    callers = g.callers(2)
-    caller = callers.split(',')[0]
-    prefix = '%s:' % caller if printCaller else ''
-    prefix += (tag or '')
+    if printCaller and tag:
+        prefix = '%s: %s' % (g.caller(), tag)
+    elif printCaller or tag:
+        prefix = g.caller() if printCaller else tag
+    else:
+        prefix = None
     return '%s...\n%s\n' % (prefix, s) if prefix else s
 
 toString = objToString
@@ -4480,7 +4486,7 @@ def getGitIssues(c,
     if isinstance(label_list, (list, tuple)):
         root = c.lastTopLevel().insertAfter()
         root.h = 'Issues for ' + milestone if milestone else 'Backup'
-        GitIssueController().backup_issues(base_url, root)
+        GitIssueController().backup_issues(base_url, c, root)
         root.expand()
         c.selectPosition(root)
         c.redraw()
