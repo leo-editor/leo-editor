@@ -1138,27 +1138,31 @@ scriptingController = ScriptingController
 #@+node:ekr.20180328085038.1: ** class EvalController
 class EvalController(object):
     '''A class defining all eval-* commands.'''
-
+    #@+others
+    #@+node:ekr.20180328130835.1: *3* eval.Birth
     def __init__(self, c):
+        '''Ctor for EvalController class.'''
         self.c = c
         self.c.vs = self.d = {}
             # self.d is the namespace.
         self.last_result = None
+        self.old_stderr = None
+        self.old_stdout = None
 
     def cmd(name):
         '''Command decorator for the EvalController class.'''
         # pylint: disable=no-self-argument
         return g.new_cmd_decorator(name, ['c', 'evalController',])
-
-    #@+others
-    #@+node:ekr.20180328092221.1: *3* Commands
+    #@+node:ekr.20180328092221.1: *3* eval.Commands
     #@+node:ekr.20180328085426.2: *4* eval
     @cmd("eval")
     def eval_command(self, event):
         #@+<< eval docstring >>
         #@+node:ekr.20180328100519.1: *5* << eval docstring >>
         """
-        Execute the selected text, if any.  Select next line of text.
+        Execute the selected text, if any, or the line containing the cursor.
+
+        Select next line of text.
 
         Tries hard to capture the result of from the last expression in the
         selected text::
@@ -1183,17 +1187,8 @@ class EvalController(object):
         if c != event.get('c'):
             return
         w = c.frame.body.wrapper
-        txt = w.getSelectedText()
-        # select next line ready for next select/send cycle
-        # copied from .../plugins/leoscreen.py
-        b = w.getAllText()
-        i = w.getInsertPoint()
-        try:
-            j = b[i:].index('\n')+i+1
-            w.setSelectionRange(i,j)
-        except ValueError:  # no more \n in text
-            w.setSelectionRange(i,i)
-        self.eval_text(txt)
+        s = self.get_selected_lines(w)
+        self.eval_text(s)
     #@+node:ekr.20180328085426.3: *4* eval-block
     @cmd("eval-block")
     def eval_block(self, event):
@@ -1303,84 +1298,48 @@ class EvalController(object):
         w.setInsertPoint(i+len(result))
         c.undoer.afterChangeNodeContents(c.p, 'Insert result', bunch)
         c.setChanged()
-    #@+node:ekr.20180328090830.1: *3* eval.eval_text
-    def eval_text(self, txt):
-        '''Evaluate txt.'''
+    #@+node:ekr.20180328151652.1: *3* eval.Helpers
+    #@+node:ekr.20180328130221.1: *4* eval.do_eval
+    def do_eval(self, s):
+        '''do eval(s) or exec(s) in context, catching all exceptions.'''
         # pylint: disable=eval-used
             # It's essential.
-        if not txt:
-            return ''
-        c, d = self.c, self.d
-        txt = textwrap.dedent(txt)
-        blocks = re.split('\n(?=[^\\s])', txt)
+        c = self.c
         leo_globals = {'c':c, 'p':c.p, 'g':g}
-        ans = None
-        dbg = False
-        redirects = c.config.getBool('valuespace_vs_eval_redirect')
-        if redirects:
-            old_stderr = g.stdErrIsRedirected()
-            old_stdout = g.stdOutIsRedirected()
-            if not old_stderr:
-                g.redirectStderr()
-            if not old_stdout:
-                g.redirectStdout()
+        leo_locals = self.d
         try:
-            # execute all but the last 'block'
-            if dbg: print('all but last')
-            # exec '\n'.join(blocks[:-1]) in leo_globals, c.vs
-            exec('\n'.join(blocks[:-1]), leo_globals, d) # Compatible with Python 3.x.
-            all_done = False
+            ans = eval(s, leo_globals, leo_locals)
         except SyntaxError:
-            # splitting of the last block caused syntax error
+            # exec txt in leo_globals, c.vs
             try:
-                # is the whole thing a single expression?
-                if dbg: print('one expression')
-                ans = eval(txt, leo_globals, d)
-            except SyntaxError:
-                if dbg: print('statement block')
-                # exec txt in leo_globals, c.vs
-                try:
-                    exec(txt, leo_globals, d) # Compatible with Python 3.x.
-                except Exception:
-                    g.es_exception()
-            all_done = True  # either way, the last block is used now
-        if not all_done:  # last block still needs using
-            try:
-                if dbg: print('final expression')
-                ans = eval(blocks[-1], leo_globals, d)
-            except SyntaxError:
-                ans = None
-                if dbg: print('final statement')
-                # exec blocks[-1] in leo_globals, c.vs
-                try:
-                    exec(txt, leo_globals, d) # Compatible with Python 3.x.
-                except Exception:
-                    g.es_exception()
-        if redirects:
-            if not old_stderr:
-                g.restoreStderr()
-            if not old_stdout:
-                g.restoreStdout()
-        if ans is None:  # see if last block was a simple "var =" assignment
-            key = blocks[-1].split('=', 1)[0].strip()
-            if key in d:
-                ans = d[key]
-        if ans is None:  # see if whole text was a simple /multi-line/ "var =" assignment
-            key = blocks[0].split('=', 1)[0].strip()
-            if key in d:
-                ans = d[key]
-        d['_last'] = ans
-        if ans is not None:
-            # annoying to echo 'None' to the log during line by line execution
-            txt = str(ans)
-            lines = txt.split('\n')
-            if len(lines) > 10:
-                txt = '\n'.join(lines[:5]+['<snip>']+lines[-5:])
-            if len(txt) > 500:
-                txt = txt[:500] + ' <truncated>'
-            g.es(txt)
+                exec(s, leo_globals, leo_locals)
+                    # Compatible with Python 3.x.
+            except Exception:
+                g.es_exception()
+            ans = None
         return ans
-    #@+node:tbrown.20170516194332.1: *3* eval.get_blocks
+    #@+node:ekr.20180328090830.1: *4* eval.eval_text
+    def eval_text(self, s):
+        '''Evaluate string s.'''
+        lines = self.get_block_lines(s)
+        if not lines:
+            return None
+        self.redirect()
+        answers = [self.do_eval(s) for s in lines]
+        self.unredirect()
+        return self.get_one_answer(answers, lines)
+    #@+node:ekr.20180328134036.1: *4* eval.get_block_lines
+    def get_block_lines(self, s):
+        
+        trace = False and not g.unitTesting
+        if not s:
+            return []
+        s = textwrap.dedent(s)
+        lines = re.split('\n(?=[^\\s])', s)
+        if trace:
+            g.printObj(lines, printCaller=True)
+        return lines
+    #@+node:tbrown.20170516194332.1: *4* eval.get_blocks
     def get_blocks(self):
         """get_blocks - iterate code blocks
 
@@ -1413,6 +1372,71 @@ class EvalController(object):
                 reading = 'source'
                 continue
             block[reading].append(line)
+    #@+node:ekr.20180328132748.1: *4* eval.get_one_answer
+    def get_one_answer(self, answers, lines):
+        d = self.d
+        if not answers:
+            return None
+        ans = lines[-1] ### For now
+        if ans is None:  # see if last block was a simple "var =" assignment
+            key = lines[-1].split('=', 1)[0].strip()
+            if key in d:
+                ans = d[key]
+        if ans is None:  # see if whole text was a simple /multi-line/ "var =" assignment
+            key = lines[0].split('=', 1)[0].strip()
+            if key in d:
+                ans = d[key]
+        d['_last'] = ans
+        if ans is not None:
+            # annoying to echo 'None' to the log during line by line execution
+            txt = str(ans)
+            lines = txt.split('\n')
+            if len(lines) > 10:
+                txt = '\n'.join(lines[:5]+['<snip>']+lines[-5:])
+            if len(txt) > 500:
+                txt = txt[:500] + ' <truncated>'
+            g.es(txt)
+        return ans
+    #@+node:ekr.20180328145035.1: *4* eval.get_selected_lines
+    def get_selected_lines(self, w):
+
+        p = self.c.p
+        body = w.getAllText()
+        if w.hasSelection():
+            j, k = w.getSelectionRange()
+            i1, junk = g.getLine(body, j)
+            junk, i2 = g.getLine(body, k)
+            s = body[i1:i2]
+        else:
+            i = w.getInsertPoint()
+            i1, i2 = g.getLine(body, i)
+            s = body[i1:i2].strip()
+        #
+        # Select next line for next eval.
+        if not body.endswith('\n'):
+            if i >= len(p.b): i2 += 1
+            p.b = p.b + '\n'
+        ins = min(len(p.b), i2)
+        w.setSelectionRange(ins, ins, insert=ins, s=p.b) 
+        return s
+    #@+node:ekr.20180328130526.1: *4* eval.redirect & unredirect
+    def redirect(self):
+        c = self.c
+        if c.config.getBool('eval_redirect'):
+            self.old_stderr = g.stdErrIsRedirected()
+            self.old_stdout = g.stdOutIsRedirected()
+            if not self.old_stderr:
+                g.redirectStderr()
+            if not self.old_stdout:
+                g.redirectStdout()
+
+    def unredirect(self):
+        c = self.c
+        if c.config.getBool('eval_redirect'):
+            if not self.old_stderr:
+                g.restoreStderr()
+            if not self.old_stdout:
+                g.restoreStdout()
     #@-others
 #@-others
 #@-leo
