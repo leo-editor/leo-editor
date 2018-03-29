@@ -493,58 +493,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             w.insert(i, line2)
         w.setInsertPoint(i + c1)
         self.endCommand(changed=True, setLabel=True)
-    #@+node:ekr.20150514063305.210: *3* ec: esc methods for Python evaluation
-    #@+node:ekr.20150514063305.211: *4* ec.watchEscape
-    @cmd('escape')
-    def watchEscape(self, event):
-        '''Enter watch escape mode.'''
-        k = self.c.k
-        char = event.char if event else ''
-        if not k.inState():
-            k.setState('escape', 'start', handler=self.watchEscape)
-            k.setLabelBlue('Esc ')
-        elif k.getStateKind() == 'escape':
-            state = k.getState('escape')
-            # hi1 = k.keysymHistory [0]
-            # hi2 = k.keysymHistory [1]
-            data1 = g.app.lossage[0]
-            data2 = g.app.lossage[1]
-            ch1, stroke1 = data1
-            ch2, stroke2 = data2
-            if state == 'esc esc' and char == ':':
-                self.evalExpression(event)
-            elif state == 'evaluate':
-                self.escEvaluate(event)
-            # elif hi1 == hi2 == 'Escape':
-            elif stroke1 == 'Escape' and stroke2 == 'Escape':
-                k.setState('escape', 'esc esc')
-                k.setLabel('Esc Esc -')
-            elif char not in ('Shift_L', 'Shift_R'):
-                k.keyboardQuit()
-    #@+node:ekr.20150514063305.212: *4* ec.escEvaluate (Revise)
-    def escEvaluate(self, event):
-        k = self.c.k
-        w = self.editWidget(event)
-        if not w:
-            return
-        char = event.char if event else ''
-        if k.getLabel() == 'Eval:':
-            k.setLabel('')
-        if char in ('\n', 'Return'):
-            expression = k.getLabel()
-            try:
-                ok = False
-                result = eval(expression, {}, {})
-                result = str(result)
-                i = w.getInsertPoint()
-                w.insert(i, result)
-                ok = True
-            finally:
-                k.keyboardQuit()
-                if not ok:
-                    k.setStatusLabel('Error: Invalid Expression')
-        else:
-            k.updateLabel(event)
     #@+node:ekr.20150514063305.214: *3* ec: fill column and centering
     #@+at
     # 
