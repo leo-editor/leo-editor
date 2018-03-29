@@ -142,26 +142,9 @@ import string
 import sys
 import textwrap
 #@-<< imports >>
-__version__ = '2.5'
-#@+<< version history >>
-#@+node:ekr.20060328125248.3: ** << version history >>
-#@@nocolor
-#@+at
-# 
-# 2.1 EKR: Support common @button nodes in @settings trees.
-# 2.2 EKR: Bug fix: use g.match_word rather than s.startswith to discover names.
-# This prevents an 's' button from being created from @buttons nodes.
-# 2.3 bobjack:
-#     - added 'event' parameter to deleteButtonCallback to support rClick menus
-#     - exposed the scripting contoller class as
-#          g.app.gui.ScriptingControllerClass
-# 2.4 bobjack:
-#     - exposed the scripting controller instance as
-#         c.theScriptingController
-# 2.5 EKR: call c.outerUpdate in callbacks.
-#@-<< version history >>
-# Fix bug: create new command if button command conflicts with existing command.
-# This would fix an unbounded recursion.
+__version__ = '3.0' # Added EvalController class.
+legacy = False # True: use legacy eval commands.
+
 #@+others
 #@+node:ekr.20180328085010.1: ** Top level (mod_scripting)
 #@+node:tbrown.20140819100840.37719: *3* build_rclick_tree (mod_scripting.py)
@@ -1305,9 +1288,56 @@ class EvalController(object):
         c.undoer.afterChangeNodeContents(c.p, 'Insert result', bunch)
         c.setChanged()
     #@+node:ekr.20180328151652.1: *3* eval.Helpers
-    #@+node:ekr.20180328130221.1: *4* eval.do_exec
+    #@+node:ekr.20180328130221.1: *4* eval.do_exec & variants
     def do_exec(self, s):
         '''do exec(s) in context.'''
+        if legacy:
+            return self.old_exec(s)
+        else:
+            return self.new_exec(s)
+    #@+node:ekr.20180329130623.1: *5* eval.old_exec
+    def old_exec(self, txt):
+        
+        trace = False and not g.unitTesting
+        # pylint: disable=eval-used
+        c, d = self.c, self.d
+        leo_globals = {'c':c, 'g':g, 'p':c.p}
+        all_done, ans = False, None
+        try:
+            # execute all but the last 'block'
+            if trace: g.trace('all but last')
+            # exec '\n'.join(blocks[:-1]) in leo_globals, c.vs
+            exec('\n'.join(blocks[:-1]), leo_globals, d) # Compatible with Python 3.x.
+            all_done = False
+        except SyntaxError:
+            # splitting of the last block caused syntax error
+            try:
+                # is the whole thing a single expression?
+                if trace: g.trace('one expression')
+                ans = eval(txt, leo_globals, d)
+            except SyntaxError:
+                if trace: g.trace('statement block')
+                # exec txt in leo_globals, c.vs
+                try:
+                    exec(txt, leo_globals, d) # Compatible with Python 3.x.
+                except Exception:
+                    g.es_exception()
+            all_done = True  # either way, the last block is used now
+        if not all_done:  # last block still needs using
+            try:
+                if trace: g.trace('final expression')
+                ans = eval(blocks[-1], leo_globals, d)
+            except SyntaxError:
+                ans = None
+                if trace: g.trace('final statement')
+                # exec blocks[-1] in leo_globals, c.vs
+                try:
+                    exec(txt, leo_globals, d) # Compatible with Python 3.x.
+                except Exception:
+                    g.es_exception()
+        return ans
+    #@+node:ekr.20180329130626.1: *5* eval.new_exec
+    def new_exec(self, s):
         try:
             self.answers = []
             self.locals_d = {}
