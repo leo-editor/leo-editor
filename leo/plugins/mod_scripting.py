@@ -1483,7 +1483,8 @@ class EvalController(object):
             if i >= len(p.b): i2 += 1
             p.b = p.b + '\n'
         ins = min(len(p.b), i2)
-        w.setSelectionRange(ins, ins, insert=ins, s=p.b) 
+        # w.setSelectionRange(ins, ins, insert=ins, s=p.b)
+        w.setSelectionRange(i1, ins, insert=ins, s=p.b) 
         return s
     #@-others
 #@-others
