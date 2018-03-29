@@ -140,8 +140,8 @@ The basic form is::
 The query parameters are:
 
 ``cmd`` (required)
-    A valid python snippet for Leo to execute. Executed by the ``vs-eval``
-    command in the ``valuespace`` plug-in. Can be specified multiple times, each
+    A valid python snippet for Leo to execute. Executed by the ``eval``
+    command in the ``mod_scripting`` plug-in. Can be specified multiple times, each
     is executed in order. May contain newlines, see examples.
 
 ``c`` (optional)
@@ -246,8 +246,6 @@ import shutil
 import socket
 import time
 from xml.sax.saxutils import quoteattr
-
-from leo.plugins import valuespace
 #@-<< imports >>
 #@+<< data >>
 #@+node:ekr.20161001100345.1: ** << data >>
@@ -945,12 +943,11 @@ class ExecHandler(object):
             f.write(str(ans))
         return f
 
-    #@+node:tbrown.20150729150843.1: *3* proc_cmds
+    #@+node:tbrown.20150729150843.1: *3* proc_cmds (mod_http.py)
     def proc_cmds(self):
 
         parsed_url = urlparse.urlparse(self.request_handler.path)
         query = urlparse.parse_qs(parsed_url.query)
-
         # work out which commander to use, zero index int, full path name, or file name
         c_idx = query.get('c', [0])[0]
         if c_idx is not 0:
@@ -963,10 +960,11 @@ class ExecHandler(object):
                 else:
                     paths = [os.path.basename(i) for i in paths]
                     c_idx = paths.index(c_idx)
-
         ans = None
-        for cmd in query['cmd']:
-            ans = valuespace.eval_text(g.app.commanders()[c_idx], cmd)
+        c = g.app.commanders()[c_idx]
+        if c and c.evalController:
+            for cmd in query['cmd']:
+                ans = c.evalController.eval_text(cmd)
         return ans  # the last answer, if multiple commands run
     #@-others
 #@+node:EKR.20040517080250.10: ** class nodeNotFound

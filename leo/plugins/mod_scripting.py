@@ -1309,6 +1309,7 @@ class EvalController(object):
     def do_exec(self, s):
         '''do exec(s) in context.'''
         try:
+            self.answers = []
             self.locals_d = {}
             exec(s, self.globals_d, self.locals_d)
             for key in self.locals_d:
@@ -1328,7 +1329,6 @@ class EvalController(object):
         s = textwrap.dedent(s)
         if not s.strip():
             return
-        self.answers = []
         self.redirect()
         self.do_exec(s)
         self.unredirect()
