@@ -1127,13 +1127,13 @@ class EvalController(object):
         self.answers = []
         self.c = c
         self.legacy = c.config.getBool('legacy-eval', default=True)
-        g.trace('(EvalController) legacy: ', self.legacy)
-        self.c.vs = self.globals_d = {'c':c, 'g':g, 'p':c.p}
-            # Updated by do_exec.
+        # g.trace('(EvalController) legacy: ', self.legacy)
         if self.legacy:
             self.d = {}
             self.c.vs = self.d
         else:
+            self.c.vs = self.globals_d = {'c':c, 'g':g, 'p':c.p}
+                # Updated by do_exec.
             self.locals_d = {}
         self.last_result = None
         self.old_stderr = None
