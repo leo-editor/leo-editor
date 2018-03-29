@@ -138,12 +138,12 @@ import leo.core.leoGlobals as g
 import leo.core.leoColor as leoColor
 import leo.core.leoGui as leoGui
 import pprint
+import re
 import string
 import sys
 import textwrap
 #@-<< imports >>
 __version__ = '3.0' # Added EvalController class.
-legacy = False # True: use legacy eval commands.
 
 #@+others
 #@+node:ekr.20180328085010.1: ** Top level (mod_scripting)
@@ -1126,9 +1126,15 @@ class EvalController(object):
         '''Ctor for EvalController class.'''
         self.answers = []
         self.c = c
+        self.legacy = c.config.getBool('legacy-eval', default=True)
+        g.trace('(EvalController) legacy: ', self.legacy)
         self.c.vs = self.globals_d = {'c':c, 'g':g, 'p':c.p}
             # Updated by do_exec.
-        self.locals_d = {}
+        if self.legacy:
+            self.d = {}
+            self.c.vs = self.d
+        else:
+            self.locals_d = {}
         self.last_result = None
         self.old_stderr = None
         self.old_stdout = None
@@ -1215,9 +1221,12 @@ class EvalController(object):
                 self.eval_text(source)
                 new_log = c.frame.log.logCtrl.getAllText()[len(old_log):]
                 lines.append(new_log.strip())
-                # lines.append(str(get_vs(c).d.get('_last')))
-                if self.last_result:
-                    lines.append(self.last_result)
+                if self.legacy:
+                    ### lines.append(str(get_vs(c).d.get('_last')))
+                    lines.append(str(c.vs.get('_last')))
+                else:
+                    if self.last_result:
+                        lines.append(self.last_result)
                 pos = len('\n'.join(lines))+7
                 current_seen = True
             else:
@@ -1239,10 +1248,14 @@ class EvalController(object):
         c  = self.c
         if c != event.get('c'):
             return
-        if not text and not self.last_result:
-            return
-        if not text:
-            text = str(self.last_result)
+        if self.legacy:
+            ### text = str(get_vs(c).d.get('_last'))
+            text = str(c.vs.get('_last'))
+        else:
+            if not text and not self.last_result:
+                return
+            if not text:
+                text = str(self.last_result)
         w = c.frame.body.wrapper
         i = w.getInsertPoint()
         w.insert(i, text+'\n')
@@ -1258,8 +1271,14 @@ class EvalController(object):
         '``"1\n2\n3\n4"``', see all ``vs-last``.
         """
         c  = self.c
-        if c == event.get('c') and self.last_result:
-            text=pprint.pformat(self.last_result)
+        if c != event.get('c'):
+            return
+        if self.legacy:
+            text = str(c.vs.get('_last'))
+        else:
+            text = self.last_result
+        if text:
+            text=pprint.pformat(text)
             self.eval_last(event, text=text)
     #@+node:ekr.20180328085426.4: *4* eval-replace
     @cmd("eval-replace")
@@ -1274,11 +1293,16 @@ class EvalController(object):
         w = c.frame.body.wrapper
         s = w.getSelectedText()
         if not s.strip():
+            g.es_print('no selected text')
             return
         self.eval_text(s)
-        if not self.last_result:
+        if self.legacy:
+            last = c.vs.get('_last')
+        else:
+            last = self.last_result
+        if not last:
             return
-        s = pprint.pformat(self.last_result)
+        s = pprint.pformat(last)
         i, j = w.getSelectionRange()
         new_text = c.p.b[:i]+s+c.p.b[j:]
         bunch = c.undoer.beforeChangeNodeContents(c.p)
@@ -1288,54 +1312,21 @@ class EvalController(object):
         c.undoer.afterChangeNodeContents(c.p, 'Insert result', bunch)
         c.setChanged()
     #@+node:ekr.20180328151652.1: *3* eval.Helpers
-    #@+node:ekr.20180328130221.1: *4* eval.do_exec & variants
-    def do_exec(self, s):
-        '''do exec(s) in context.'''
-        if legacy:
-            return self.old_exec(s)
+    #@+node:ekr.20180328090830.1: *4* eval.eval_text & helpers
+    def eval_text(self, s):
+        '''Evaluate string s.'''
+        s = textwrap.dedent(s)
+        if not s.strip():
+            return
+        self.redirect()
+        if self.legacy:
+            blocks = re.split('\n(?=[^\\s])', s)
+            ans = self.old_exec(blocks, s)
+            self.show_legacy_answer(ans, blocks)
         else:
-            return self.new_exec(s)
-    #@+node:ekr.20180329130623.1: *5* eval.old_exec
-    def old_exec(self, txt):
-        
-        trace = False and not g.unitTesting
-        # pylint: disable=eval-used
-        c, d = self.c, self.d
-        leo_globals = {'c':c, 'g':g, 'p':c.p}
-        all_done, ans = False, None
-        try:
-            # execute all but the last 'block'
-            if trace: g.trace('all but last')
-            # exec '\n'.join(blocks[:-1]) in leo_globals, c.vs
-            exec('\n'.join(blocks[:-1]), leo_globals, d) # Compatible with Python 3.x.
-            all_done = False
-        except SyntaxError:
-            # splitting of the last block caused syntax error
-            try:
-                # is the whole thing a single expression?
-                if trace: g.trace('one expression')
-                ans = eval(txt, leo_globals, d)
-            except SyntaxError:
-                if trace: g.trace('statement block')
-                # exec txt in leo_globals, c.vs
-                try:
-                    exec(txt, leo_globals, d) # Compatible with Python 3.x.
-                except Exception:
-                    g.es_exception()
-            all_done = True  # either way, the last block is used now
-        if not all_done:  # last block still needs using
-            try:
-                if trace: g.trace('final expression')
-                ans = eval(blocks[-1], leo_globals, d)
-            except SyntaxError:
-                ans = None
-                if trace: g.trace('final statement')
-                # exec blocks[-1] in leo_globals, c.vs
-                try:
-                    exec(txt, leo_globals, d) # Compatible with Python 3.x.
-                except Exception:
-                    g.es_exception()
-        return ans
+            self.new_exec(s)
+            self.show_answers()
+        self.unredirect()
     #@+node:ekr.20180329130626.1: *5* eval.new_exec
     def new_exec(self, s):
         try:
@@ -1353,16 +1344,43 @@ class EvalController(object):
                 self.last_result = None
         except Exception:
             g.es_exception()
-    #@+node:ekr.20180328090830.1: *4* eval.eval_text & helpers
-    def eval_text(self, s):
-        '''Evaluate string s.'''
-        s = textwrap.dedent(s)
-        if not s.strip():
-            return
-        self.redirect()
-        self.do_exec(s)
-        self.unredirect()
-        self.show_answers()
+    #@+node:ekr.20180329130623.1: *5* eval.old_exec
+    def old_exec(self, blocks, txt):
+        
+        trace = False and not g.unitTesting
+        # pylint: disable=eval-used
+        c = self.c
+        leo_globals = {'c':c, 'g':g, 'p':c.p}
+        all_done, ans = False, None
+        try:
+            # Execute all but the last 'block'
+            if trace: g.trace('all but last')
+            exec('\n'.join(blocks[:-1]), leo_globals, c.vs) # Compatible with Python 3.x.
+            all_done = False
+        except SyntaxError:
+            # Splitting the last block caused syntax error
+            try:
+                # Is the whole thing a single expression?
+                if trace: g.trace('one expression')
+                ans = eval(txt, leo_globals, c.vs)
+            except SyntaxError:
+                if trace: g.trace('statement block')
+                try:
+                    exec(txt, leo_globals, c.vs)
+                except Exception:
+                    g.es_exception()
+            all_done = True  # Either way, the last block will be used.
+        if not all_done:  # last block still needs using
+            try:
+                if trace: g.trace('final expression')
+                ans = eval(blocks[-1], leo_globals, c.vs)
+            except SyntaxError:
+                if trace: g.trace('final statement')
+                try:
+                    exec(txt, leo_globals, c.vs)
+                except Exception:
+                    g.es_exception()
+        return ans
     #@+node:ekr.20180328130526.1: *5* eval.redirect & unredirect
     def redirect(self):
         c = self.c
@@ -1385,10 +1403,33 @@ class EvalController(object):
     def show_answers(self):
         ''' Show all new values computed by do_exec.'''
         if len(self.answers) > 1:
-            g.es('-----')
+            g.es('')
         for answer in self.answers:
             key, val = answer
             g.es('%s = %s' % (key, val))
+    #@+node:ekr.20180329154232.1: *5* eval.show_legacy_answer
+    def show_legacy_answer(self, ans, blocks):
+
+        cvs = self.c.vs
+        if ans is None:  # see if last block was a simple "var =" assignment
+            key = blocks[-1].split('=', 1)[0].strip()
+            if key in cvs:
+                ans = cvs[key]
+        if ans is None:  # see if whole text was a simple /multi-line/ "var =" assignment
+            key = blocks[0].split('=', 1)[0].strip()
+            if key in cvs:
+                ans = cvs[key]
+        cvs['_last'] = ans
+        if ans is not None:
+            # annoying to echo 'None' to the log during line by line execution
+            txt = str(ans)
+            lines = txt.split('\n')
+            if len(lines) > 10:
+                txt = '\n'.join(lines[:5]+['<snip>']+lines[-5:])
+            if len(txt) > 500:
+                txt = txt[:500] + ' <truncated>'
+            g.es(txt)
+        return ans
     #@+node:tbrown.20170516194332.1: *4* eval.get_blocks
     def get_blocks(self):
         """get_blocks - iterate code blocks
