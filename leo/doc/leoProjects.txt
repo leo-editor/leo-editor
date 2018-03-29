@@ -70,6 +70,8 @@ Removed unnecessary check in g.get_directives_dict.
 .. @+node:ekr.20180308045611.1: ** Feature: g.log is a synonym for g.es
 .. @+node:ekr.20180327151141.1: ** Feature: Optionally put @path in body text during recursive imports
 Added "add_path" kwarg and related logic.
+.. @+node:ekr.20180329075555.1: ** Retired the 'escape' and 'eval-expression' commands
+They have been replaced by new eval- commands.
 .. @+node:ekr.20180318033946.1: ** Won't do: #822: Put outline tabs below the main window bar
 Put outline tabs below the main window bar.
 https://github.com/leo-editor/leo-editor/issues/822
