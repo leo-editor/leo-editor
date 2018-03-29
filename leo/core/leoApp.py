@@ -1822,22 +1822,23 @@ class LoadManager(object):
         if path: return path
         # Step 2: look for the @string theme-name setting in the first loaded file.
         # This is a hack, but especially useful for test*.leo files in leo/themes.
-        if 1:
-            path = lm.files and lm.files[0]
-            if path and g.os_path_exists(path):
-                # Tricky: we must call lm.computeLocalSettings *here*.
-                theme_c = lm.openSettingsFile(path)
-                settings_d, junk_shortcuts_d = lm.computeLocalSettings(
-                    c=theme_c,
-                    settings_d=lm.globalSettingsDict,
-                    shortcuts_d=lm.globalShortcutsDict,
-                    localFlag=False,
-                )
-                setting = settings_d.get_string_setting('theme-name')
-                if setting:
-                    tag = theme_c.shortFileName()
-                    path = resolve(setting, tag=tag)
-                    if path: return path
+        path = lm.files and lm.files[0]
+        if path and g.os_path_exists(path):
+            # Tricky: we must call lm.computeLocalSettings *here*.
+            theme_c = lm.openSettingsFile(path)
+            if not theme_c:
+                return None # Fix #843.
+            settings_d, junk_shortcuts_d = lm.computeLocalSettings(
+                c=theme_c,
+                settings_d=lm.globalSettingsDict,
+                shortcuts_d=lm.globalShortcutsDict,
+                localFlag=False,
+            )
+            setting = settings_d.get_string_setting('theme-name')
+            if setting:
+                tag = theme_c.shortFileName()
+                path = resolve(setting, tag=tag)
+                if path: return path
         # Finally, use the setting in myLeoSettings.leo.
         setting = lm.globalSettingsDict.get_string_setting('theme-name')
         tag = 'myLeoSettings.leo'
@@ -2164,10 +2165,9 @@ class LoadManager(object):
                 g.blue(s)
 
         theFile = lm.openLeoOrZipFile(fn)
-        
-        if theFile:
-            message('reading settings in %s' % (fn))
-            
+        if not theFile:
+            return None # Fix #843.
+        message('reading settings in %s' % (fn))
         # Changing g.app.gui here is a major hack.  It is necessary.
         oldGui = g.app.gui
         g.app.gui = g.app.nullGui
