@@ -57,12 +57,19 @@ PickleShareDB.keys should definitely not call g.glob_glob.
 https://github.com/leo-editor/leo-editor/issues/840
 
 Changed c.config.getData and gcm.getData.
+.. @+node:ekr.20180329072558.1: ** #843: Cannot Open Any Non Leo File From Command Line
+@language rest
+@wrap
+
+https://github.com/leo-editor/leo-editor/issues/843
+
+See #843 for changes.
 .. @+node:ekr.20180325023020.1: ** Added g.backupGitIssues
 .. @+node:ekr.20180327100702.1: ** Feature: Allow @path in body text
 Removed unnecessary check in g.get_directives_dict.
+.. @+node:ekr.20180308045611.1: ** Feature: g.log is a synonym for g.es
 .. @+node:ekr.20180327151141.1: ** Feature: Optionally put @path in body text during recursive imports
 Added "add_path" kwarg and related logic.
-.. @+node:ekr.20180308045611.1: ** Feature: g.log is a synonym for g.es
 .. @+node:ekr.20180318033946.1: ** Won't do: #822: Put outline tabs below the main window bar
 Put outline tabs below the main window bar.
 https://github.com/leo-editor/leo-editor/issues/822
