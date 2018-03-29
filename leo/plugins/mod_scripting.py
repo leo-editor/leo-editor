@@ -1398,13 +1398,13 @@ class EvalController(object):
         c, p = self.c, self.c.p
         w = c.frame.body.wrapper
         body = w.getAllText()
+        i = w.getInsertPoint()
         if w.hasSelection():
             j, k = w.getSelectionRange()
             i1, junk = g.getLine(body, j)
             junk, i2 = g.getLine(body, k)
             s = body[i1:i2]
         else:
-            i = w.getInsertPoint()
             i1, i2 = g.getLine(body, i)
             s = body[i1:i2].strip()
         # Select next line for next eval.
