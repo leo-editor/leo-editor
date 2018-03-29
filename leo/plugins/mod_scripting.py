@@ -1314,7 +1314,12 @@ class EvalController(object):
             for key in self.locals_d:
                 val = self.locals_d.get(key)
                 self.globals_d [key] = val
-                self.answers.append('%s = %s' % (key, val))
+                self.answers.append((key, val),)
+            if len(self.answers) == 1:
+                key, val = self.answers[0]
+                self.last_result = val
+            else:
+                self.last_result = None
         except Exception:
             g.es_exception()
     #@+node:ekr.20180328090830.1: *4* eval.eval_text & helpers
@@ -1327,7 +1332,6 @@ class EvalController(object):
         self.redirect()
         self.do_exec(s)
         self.unredirect()
-        self.last_result = self.answers[0] if len(self.answers) == 1 else None
         self.show_answers()
     #@+node:ekr.20180328130526.1: *5* eval.redirect & unredirect
     def redirect(self):
@@ -1353,7 +1357,8 @@ class EvalController(object):
         if len(self.answers) > 1:
             g.es('-----')
         for answer in self.answers:
-            g.es(answer)
+            key, val = answer
+            g.es('%s = %s' % (key, val))
     #@+node:tbrown.20170516194332.1: *4* eval.get_blocks
     def get_blocks(self):
         """get_blocks - iterate code blocks
