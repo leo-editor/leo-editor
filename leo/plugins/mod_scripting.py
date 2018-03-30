@@ -1248,7 +1248,6 @@ class EvalController(object):
         if c != event.get('c'):
             return
         if self.legacy:
-            ### text = str(get_vs(c).d.get('_last'))
             text = str(c.vs.get('_last'))
         else:
             if not text and not self.last_result:
@@ -1429,6 +1428,18 @@ class EvalController(object):
                 txt = txt[:500] + ' <truncated>'
             g.es(txt)
         return ans
+    #@+node:ekr.20180329125626.1: *4* eval.exec_then_eval (not used yet)
+    def exec_then_eval(self, code, ns):
+        # From Milan Melena.
+        import ast
+        block = ast.parse(code, mode='exec')
+        if len(block.body) > 0 and isinstance(block.body[-1], ast.Expr):
+            last = ast.Expression(block.body.pop().value)
+            exec(compile(block, '<string>', mode='exec'), ns)
+            return eval(compile(last, '<string>', mode='eval'), ns)
+        else:
+            exec(compile(block, '<string>', mode='exec'), ns)
+            return ""
     #@+node:tbrown.20170516194332.1: *4* eval.get_blocks
     def get_blocks(self):
         """get_blocks - iterate code blocks
@@ -1499,7 +1510,6 @@ class EvalController(object):
                 p.b = p.b + '\n'
             ins = min(len(p.b), i2)
             w.setSelectionRange(i1, ins, insert=ins, s=p.b)
-          
         return s
     #@-others
 #@-others
