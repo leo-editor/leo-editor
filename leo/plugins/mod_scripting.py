@@ -1176,6 +1176,8 @@ class EvalController(object):
         c = self.c
         if c == event.get('c'):
             s = self.get_selected_lines()
+            if self.legacy and s is None:
+                return
             self.eval_text(s)
                 # Updates self.last_answer if there is exactly one answer.
     #@+node:ekr.20180328085426.3: *4* eval-block
@@ -1221,10 +1223,7 @@ class EvalController(object):
                 self.eval_text(source)
                 new_log = c.frame.log.logCtrl.getAllText()[len(old_log):]
                 lines.append(new_log.strip())
-                if self.legacy:
-                    ### lines.append(str(get_vs(c).d.get('_last')))
-                    lines.append(str(c.vs.get('_last')))
-                else:
+                if not self.legacy:
                     if self.last_result:
                         lines.append(self.last_result)
                 pos = len('\n'.join(lines))+7
@@ -1471,20 +1470,36 @@ class EvalController(object):
         body = w.getAllText()
         i = w.getInsertPoint()
         if w.hasSelection():
-            j, k = w.getSelectionRange()
-            i1, junk = g.getLine(body, j)
-            junk, i2 = g.getLine(body, k)
+            if self.legacy:
+                i1, i2 = w.getSelectionRange()
+            else:
+                j, k = w.getSelectionRange()
+                i1, junk = g.getLine(body, j)
+                junk, i2 = g.getLine(body, k)
             s = body[i1:i2]
         else:
-            i1, i2 = g.getLine(body, i)
-            s = body[i1:i2].strip()
+            if self.legacy:
+                k = w.getInsertPoint()
+                junk, i2 = g.getLine(body, k)
+                w.setSelectionRange(k, i2)
+                return None
+            else:
+                i1, i2 = g.getLine(body, i)
+                s = body[i1:i2].strip()
         # Select next line for next eval.
-        if not body.endswith('\n'):
-            if i >= len(p.b): i2 += 1
-            p.b = p.b + '\n'
-        ins = min(len(p.b), i2)
-        # w.setSelectionRange(ins, ins, insert=ins, s=p.b)
-        w.setSelectionRange(i1, ins, insert=ins, s=p.b) 
+        if self.legacy:
+            i = j = i2
+            j += 1
+            while j < len(body) and body[j] != '\n':
+                j += 1
+            w.setSelectionRange(i, j)
+        else:
+            if not body.endswith('\n'):
+                if i >= len(p.b): i2 += 1
+                p.b = p.b + '\n'
+            ins = min(len(p.b), i2)
+            w.setSelectionRange(i1, ins, insert=ins, s=p.b)
+          
         return s
     #@-others
 #@-others
