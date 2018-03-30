@@ -989,6 +989,7 @@ class LeoApp(object):
             print('')
             if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
                 print('Note: sys.stdout.encoding is not UTF-8')
+                print('Encoding is: %r' % sys.stdout.encoding)
                 print('See: https://stackoverflow.com/questions/14109024')
                 print('')
             print(app.signon)
