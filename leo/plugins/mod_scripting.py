@@ -1433,9 +1433,10 @@ class EvalController(object):
         # From Milan Melena.
         import ast
         block = ast.parse(code, mode='exec')
-        if len(block.body) > 0 and isinstance(block.body[-1], ast.Expr):
+        if block.body and isinstance(block.body[-1], ast.Expr):
             last = ast.Expression(block.body.pop().value)
             exec(compile(block, '<string>', mode='exec'), ns)
+            # pylint: disable=eval-used
             return eval(compile(last, '<string>', mode='eval'), ns)
         else:
             exec(compile(block, '<string>', mode='exec'), ns)
