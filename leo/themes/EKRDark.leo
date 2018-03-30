@@ -211,7 +211,7 @@ g.blue('blue')
 g.red('red')
 g.es_print('test')
 g.es_print('black',color='black')</t>
-<t tx="ekr.20180312111155.1" str_leo_pos="2,0,0,1">A dark theme based on LeoBlackSolarized.leo.
+<t tx="ekr.20180312111155.1" str_leo_pos="2,0,3">A dark theme based on LeoBlackSolarized.leo.
 </t>
 <t tx="ekr.20180314052441.1">@ A doc part.  *All* languages colorize doc parts as follows:
 
@@ -710,21 +710,7 @@ div#bg {background:#000005}
 &lt;div id="bg"&gt;&lt;/div&gt;&lt;br&gt;
 </t>
 <t tx="ekr.20180318145515.796"></t>
-<t tx="ekr.20180318145515.797">@language md
-&lt;style&gt;
-div {
-  background:white;
-  color:black;
-  font-family: Inconsolata;
-}
-div#20px {font-size: 20px;}
-div#18px {font-size: 18px;}
-div#17px {font-size: 17px;}
-&lt;/style&gt;
-&lt;div id="20px"&gt;Inconsolata 20px.&lt;/div&gt;
-&lt;div id="18px"&gt;Inconsolata 18px.&lt;/div&gt;
-&lt;div id="17px"&gt;Inconsolata 17px.&lt;/div&gt;
-</t>
+<t tx="ekr.20180318145515.797"></t>
 <t tx="ekr.20180318145515.798"></t>
 <t tx="ekr.20180318145515.799"></t>
 <t tx="ekr.20180318145515.800"></t>
