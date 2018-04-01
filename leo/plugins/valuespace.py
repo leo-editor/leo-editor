@@ -7,14 +7,7 @@
 Commands
 ========
 
-.. note::
-
-    The first four commands are a light weight option for python calculations
-    within Leo bodies.  The remainder are a more complex system for tree wide
-    computations.
-
 This plugin supports the following commands:
-
 
 
 vs-create-tree
