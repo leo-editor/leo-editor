@@ -1917,7 +1917,7 @@ class MORE_Importer(object):
 class RecursiveImportController(object):
     '''Recursively import all python files in a directory and clean the result.'''
     #@+others
-    #@+node:ekr.20130823083943.12615: *3* ric.ctor (RecursiveImportController)
+    #@+node:ekr.20130823083943.12615: *3* ric.ctor
     def __init__(self, c, kind,
         # force_at_others = False, #tag:no-longer-used
         add_path=True,
