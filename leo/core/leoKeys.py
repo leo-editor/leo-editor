@@ -1006,27 +1006,25 @@ class ContextSniffer(object):
 #@+node:ekr.20140813052702.18194: ** class FileNameChooser
 class FileNameChooser(object):
     '''A class encapsulation file selection & completion logic.'''
-    # pylint: disable=no-self-argument
-    # The first argument is fnc.
     #@+others
     #@+node:ekr.20140813052702.18195: *3* fnc.__init__
-    def __init__(fnc, c):
+    def __init__(self, c):
         '''Ctor for FileNameChooser class.'''
         # g.trace('(FileNameChooser)',c.shortFileName(),g.callers())
-        fnc.c = c
-        fnc.k = c.k
+        self.c = c
+        self.k = c.k
         assert c and c.k
-        fnc.log = c.frame.log or g.NullObject()
-        fnc.callback = None
-        fnc.filterExt = None
-        fnc.log = None # inited later.
-        fnc.prompt = None
-        fnc.tabName = None
+        self.log = c.frame.log or g.NullObject()
+        self.callback = None
+        self.filterExt = None
+        self.log = None # inited later.
+        self.prompt = None
+        self.tabName = None
     #@+node:ekr.20140813052702.18196: *3* fnc.compute_tab_list
-    def compute_tab_list(fnc):
+    def compute_tab_list(self):
         '''Compute the list of completions.'''
         trace = False and not g.unitTesting
-        path = fnc.get_label()
+        path = self.get_label()
         # Fix bug 215: insert-file-name doesn't process ~
         # https://github.com/leo-editor/leo-editor/issues/215
         path = g.os_path_expanduser(path)
@@ -1048,36 +1046,38 @@ class FileNameChooser(object):
                 path = path[: -1]
             aList = g.glob_glob(path + '*')
             tabList = [z + sep if g.os_path_isdir(z) else z for z in aList]
-        if fnc.filterExt:
-            for ext in fnc.filterExt:
+        if self.filterExt:
+            for ext in self.filterExt:
                 tabList = [z for z in tabList if not z.endswith(ext)]
+        ###
+        tabList = [g.os_path_normslashes(z) for z in tabList]
         junk, common_prefix = g.itemsMatchingPrefixInList(path, tabList)
         if trace: g.trace('common_prefix', common_prefix)
         return common_prefix, tabList
     #@+node:ekr.20140813052702.18197: *3* fnc.do_back_space
-    def do_back_space(fnc):
+    def do_back_space(self):
         '''Handle a back space.'''
-        w = fnc.c.k.w
+        w = self.c.k.w
         if w and w.hasSelection():
             # s = w.getAllText()
             i, j = w.getSelectionRange()
             w.delete(i, j)
-            s = fnc.get_label()
+            s = self.get_label()
         else:
-            s = fnc.get_label()
+            s = self.get_label()
             if s:
                 s = s[: -1]
-            fnc.set_label(s)
+            self.set_label(s)
         if s:
-            common_prefix, tabList = fnc.compute_tab_list()
+            common_prefix, tabList = self.compute_tab_list()
             # Do *not* extend the label to the common prefix.
         else:
             tabList = []
-        fnc.show_tab_list(tabList)
+        self.show_tab_list(tabList)
     #@+node:ekr.20140813052702.18198: *3* fnc.do_char
-    def do_char(fnc, char):
+    def do_char(self, char):
         '''Handle a non-special character.'''
-        w = fnc.c.k.w
+        w = self.c.k.w
         if w and w.hasSelection:
             # s = w.getAllText()
             i, j = w.getSelectionRange()
@@ -1085,38 +1085,41 @@ class FileNameChooser(object):
             w.setInsertPoint(i)
             w.insert(i, char)
         else:
-            fnc.extend_label(char)
-        common_prefix, tabList = fnc.compute_tab_list()
-        fnc.show_tab_list(tabList)
+            self.extend_label(char)
+        common_prefix, tabList = self.compute_tab_list()
+        self.show_tab_list(tabList)
         if common_prefix:
             if 0:
                 # This is a bit *too* helpful.
                 # It's too easy to type ahead by mistake.
                 # Instead, completion should happen only when the user types <tab>.
-                fnc.set_label(common_prefix)
+                self.set_label(common_prefix)
             # Recompute the tab list.
-            common_prefix, tabList = fnc.compute_tab_list()
-            fnc.show_tab_list(tabList)
+            common_prefix, tabList = self.compute_tab_list()
+            self.show_tab_list(tabList)
             if len(tabList) == 1:
                 # Automatically complete the typing only if there is only one item in the list.
-                fnc.set_label(common_prefix)
+                self.set_label(common_prefix)
         else:
             # Restore everything.
-            fnc.set_label(fnc.get_label()[: -1])
-            fnc.extend_label(char)
+            self.set_label(self.get_label()[: -1])
+            self.extend_label(char)
     #@+node:ekr.20140813052702.18199: *3* fnc.do_tab
-    def do_tab(fnc):
+    def do_tab(self):
         '''Handle tab completion.'''
-        old = fnc.get_label()
-        common_prefix, tabList = fnc.compute_tab_list()
-        fnc.show_tab_list(tabList)
-        if len(common_prefix) > len(old):
-            fnc.set_label(common_prefix)
+        old = self.get_label()
+        common_prefix, tabList = self.compute_tab_list()
+        self.show_tab_list(tabList)
+        if len(tabList) == 1:
+            common_prefix = tabList[0]
+            self.set_label(common_prefix)
+        elif len(common_prefix) > len(old):
+            self.set_label(common_prefix)
     #@+node:ekr.20140813052702.18200: *3* fnc.get_file_name (entry)
-    def get_file_name(fnc, event, callback, filterExt, prompt, tabName):
+    def get_file_name(self, event, callback, filterExt, prompt, tabName):
         '''Get a file name, supporting file completion.'''
         trace = False and not g.unitTesting
-        c, k = fnc.c, fnc.c.k
+        c, k = self.c, self.c.k
         tag = 'get-file-name'
         state = k.getState(tag)
         char = event.char if event else ''
@@ -1124,67 +1127,77 @@ class FileNameChooser(object):
             g.trace('state', state, 'char', char or '<**no char**>')
         if state == 0:
             # Re-init all ivars.
-            fnc.log = c.frame.log or g.NullObject()
-            fnc.callback = callback
-            fnc.filterExt = filterExt or ['.pyc', '.bin',]
-            fnc.prompt = prompt
-            fnc.tabName = tabName
+            self.log = c.frame.log or g.NullObject()
+            self.callback = callback
+            self.filterExt = filterExt or ['.pyc', '.bin',]
+            self.prompt = prompt
+            self.tabName = tabName
+            join = g.os_path_finalize_join
+            finalize = g.os_path_finalize
+            normslashes = g.os_path_normslashes
+            # #467: Add setting for preferred directory.
+            directory = c.config.getString('initial-chooser-directory')
+            if directory:
+                directory = finalize(directory)
+                if not g.os_path_exists(directory):
+                    g.es_print('@string initial-chooser-directory not found', 
+                        normslashes(directory))
+                    directory = None
+            if not directory:
+                directory = finalize(os.curdir)
             # Init the label and state.
-            if k.functionTail:
-                path = k.functionTail.strip()
-                fnc.set_label(g.os_path_finalize_join(os.curdir, path))
-            else:
-                fnc.set_label(g.os_path_finalize(os.curdir) + os.sep)
-            k.setState(tag, 1, fnc.get_file_name)
-            fnc.log.selectTab(fnc.tabName)
-            junk, tabList = fnc.compute_tab_list()
-            fnc.show_tab_list(tabList)
+            tail = k.functionTail and k.functionTail.strip()
+            label = join(directory, tail) if tail else directory + os.sep
+            self.set_label(normslashes(label))
+            k.setState(tag, 1, self.get_file_name)
+            self.log.selectTab(self.tabName)
+            junk, tabList = self.compute_tab_list()
+            self.show_tab_list(tabList)
             c.minibufferWantsFocus()
         elif char == 'Escape':
             k.keyboardQuit()
         elif char in ('\n', 'Return'):
-            fnc.log.deleteTab(fnc.tabName)
-            path = fnc.get_label()
+            self.log.deleteTab(self.tabName)
+            path = self.get_label()
             k.keyboardQuit()
-            if fnc.callback:
+            if self.callback:
                 # pylint: disable=not-callable
-                fnc.callback(path)
+                self.callback(path)
             else:
                 g.trace('no callback')
         elif char in ('\t', 'Tab'):
-            fnc.do_tab()
+            self.do_tab()
             c.minibufferWantsFocus()
         elif char in ('\b', 'BackSpace'):
-            fnc.do_back_space()
+            self.do_back_space()
             c.minibufferWantsFocus()
         elif k.isPlainKey(char):
-            fnc.do_char(char)
+            self.do_char(char)
         else:
             pass
     #@+node:ekr.20140813052702.18201: *3* fnc.extend/get/set_label
-    def extend_label(fnc, s):
+    def extend_label(self, s):
         '''Extend the label by s.'''
-        fnc.c.k.extendLabel(s, select=False, protect=False)
+        self.c.k.extendLabel(s, select=False, protect=False)
 
-    def get_label(fnc):
+    def get_label(self):
         '''Return the label, not including the prompt.'''
-        return fnc.c.k.getLabel(ignorePrompt=True)
+        return self.c.k.getLabel(ignorePrompt=True)
 
-    def set_label(fnc, s):
+    def set_label(self, s):
         '''Set the label after the prompt to s. The prompt never changes.'''
-        fnc.c.k.setLabel(fnc.prompt, protect=True)
-        fnc.c.k.extendLabel(s or '', select=False, protect=False)
+        self.c.k.setLabel(self.prompt, protect=True)
+        self.c.k.extendLabel(s or '', select=False, protect=False)
     #@+node:ekr.20140813052702.18202: *3* fnc.show_tab_list
-    def show_tab_list(fnc, tabList):
+    def show_tab_list(self, tabList):
         '''Show the tab list in the log tab.'''
-        fnc.log.clearTab(fnc.tabName)
+        self.log.clearTab(self.tabName)
         s = g.os_path_finalize(os.curdir) + os.sep
-        # g.es('',s,tabName=fnc.tabName)
         for path in tabList:
             theDir, fileName = g.os_path_split(path)
             s = theDir if path.endswith(os.sep) else fileName
             s = fileName or g.os_path_basename(theDir) + os.sep
-            g.es('', s, tabName=fnc.tabName)
+            g.es('', s, tabName=self.tabName)
     #@-others
 #@+node:ekr.20140816165728.18940: ** class GetArg
 class GetArg(object):
