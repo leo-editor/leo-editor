@@ -160,12 +160,22 @@ Suppose you have this text::
 
     The cat is 7 years, or 7*365 days old.
 
-To replace 7*365 with 2555, do the following:
+To replace 7*365 with 2555, do the following::
 
-- select 7*367
-- eval
-- delete 7*365
-- do eval-last
+    select 7*367
+    eval
+    delete 7*365
+    do eval-last
+    
+eval-replace
+------------
+
+Evaluates the expression and replaces it with the computed value.
+For example, the example above can be done as follows::
+
+    
+    select 7*367
+    eval-replace
 
 eval-last-pretty
 ----------------
