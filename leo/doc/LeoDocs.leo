@@ -1944,6 +1944,7 @@
 </v>
 <v t="ekr.20180402104443.1"><vh>** Link to LeoU from Home page</vh></v>
 <v t="ekr.20180402104459.1"><vh>** Update distribution checklist</vh></v>
+<v t="ekr.20180403101933.1"><vh>** Document #444: Themes</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -26189,6 +26190,28 @@ In those days, Leo's GUI was built on the TKinter package that shipped with Pyth
 </t>
 <t tx="ekr.20180402104443.1"></t>
 <t tx="ekr.20180402104459.1"></t>
+<t tx="ekr.20180403101933.1">@language rest
+@wrap
+
+- Document interaction between theme files and settings files.
+- Add section to customizing chapter.
+
+https://github.com/leo-editor/leo-editor/issues/444
+
+Themes are now dead simple easy to install and use.
+
+    ln -s /home/chris/leo-editor/leo/themes/BreezeDarkTheme.leo BreezeDarkThemeLocal.leo
+    Remove ALL @theme trees from myLeoSettings.leo.
+    Anywhere under the @settings node in myLeoSettings.leo, add @string theme-name = BreezeDarkThemeLocal
+    Restart Leo.
+
+Box icons are pulled from ../leo/themes/dark/Icons and theme images from ../leo/themes/dark as "dark" is what the theme itself has as an @string setting for color_theme.
+
+This makes for a simple, clean way of handling themes. The local theme is a symlink to the theme in ../leo/themes so it will be updated automatically when bug fixes etc. are pushed to Leo's git repository. If extensive local customization is desired, change step 1 from creating a symlink to copying the BreezeDarkTheme.leo file from ../leo/themes and renaming it to something like BreezeDarkThemeLocal.leo.
+
+@language python
+
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
