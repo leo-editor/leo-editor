@@ -1050,9 +1050,11 @@
 </v>
 <v t="ekr.20131213135427.21826"><vh>@menus</vh>
 <v t="ekr.20131213135427.21827"><vh>@menu &amp;File</vh>
+<v t="ekr.20131213135427.21833"><vh>@item &amp;close-window</vh></v>
+<v t="ekr.20140917063815.21917"><vh>@item &amp;file-open-by-name</vh></v>
 <v t="ekr.20131213135427.21828"><vh>@item &amp;new</vh></v>
-<v t="ekr.20140917063815.21917"><vh>@item file-open-by-name</vh></v>
 <v t="ekr.20131213135427.21829"><vh>@item &amp;open-outline</vh></v>
+<v t="ekr.20180403155811.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21830"><vh>@menu Open &amp;With</vh></v>
 <v t="ekr.20151225142626.1"><vh>@menu Open Specific &amp;Leo File</vh>
 <v t="ekr.20131213135427.21871"><vh>@item open-cheat-sheet-leo</vh></v>
@@ -1067,7 +1069,6 @@
 <v t="ekr.20151225094956.1"><vh>@item open-unittest-leo</vh></v>
 </v>
 <v t="ekr.20131213135427.21831"><vh>@menu Open Recent &amp;Files</vh></v>
-<v t="ekr.20131213135427.21833"><vh>@item close-window</vh></v>
 <v t="ekr.20131213135427.21832"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21834"><vh>@item save-file</vh></v>
 <v t="ekr.20131213135427.21835"><vh>@item save-file-as</vh></v>
@@ -1075,11 +1076,11 @@
 <v t="ekr.20131213135427.21837"><vh>@item save-file-as-zipped</vh></v>
 <v t="ekr.20131213135427.21838"><vh>@item save-file-to</vh></v>
 <v t="ekr.20140718064506.18998"><vh>@item -</vh></v>
-<v t="ekr.20180403105112.1"><vh>@menu &amp;Compare And Diff Files</vh>
+<v t="ekr.20180403105112.1"><vh>@menu &amp;Compare/Diff Files</vh>
 <v t="ekr.20131213135427.22149"><vh>@item file-&amp;compare-leo-files</vh></v>
 <v t="ekr.20131213135427.22151"><vh>@item file-diff-&amp;files</vh></v>
 </v>
-<v t="ekr.20131213135427.22139"><vh>@menu &amp;Create And Remove Files And Directories</vh>
+<v t="ekr.20131213135427.22139"><vh>@menu &amp;Create/Remove Files Or Directories</vh>
 <v t="ekr.20131213135427.22140"><vh>@item directory-&amp;make</vh></v>
 <v t="ekr.20131213135427.22141"><vh>@item directory-&amp;remove</vh></v>
 <v t="ekr.20131213135427.22148"><vh>@item -</vh></v>
@@ -1158,7 +1159,7 @@
 <v t="ekr.20150420122804.11"><vh>@item preview-tree-bodies</vh></v>
 <v t="ekr.20150420122804.12"><vh>@item preview-tree-html</vh></v>
 </v>
-<v t="ekr.20180403153650.1"><vh>@menu &amp;Revert And Refresh</vh>
+<v t="ekr.20180403153650.1"><vh>@menu &amp;Revert/Refresh Files</vh>
 <v t="ekr.20140718064506.18999"><vh>@item refresh-from-disk</vh></v>
 <v t="ekr.20131213135427.21839"><vh>@item revert</vh></v>
 </v>
@@ -1210,7 +1211,7 @@
 <v t="ekr.20131213135427.22278"><vh>@item u&amp;pcase-region</vh></v>
 <v t="ekr.20131213135427.22275"><vh>@item &amp;upcase-word</vh></v>
 </v>
-<v t="ekr.20180403114558.1"><vh>@menu &amp;Convert/View Tabs And Blanks</vh>
+<v t="ekr.20180403114558.1"><vh>@menu &amp;Convert/View Tabs Or Blanks</vh>
 <v t="ekr.20131213135427.21892"><vh>@item convert-all-b&amp;lanks</vh></v>
 <v t="ekr.20131213135427.21893"><vh>@item convert-all-t&amp;abs</vh></v>
 <v t="ekr.20131213135427.21894"><vh>@item convert-&amp;blanks</vh></v>
@@ -1372,13 +1373,13 @@
 <v t="ekr.20131213135427.22053"><vh>@item abbrev-&amp;list</vh></v>
 <v t="ekr.20131213135427.22059"><vh>@item abbrev-&amp;kill-all</vh></v>
 </v>
-<v t="ekr.20180403122157.1"><vh>@menu &amp;Open Settings And Theme Files</vh>
+<v t="ekr.20180403122157.1"><vh>@menu &amp;Open Settings/Theme Files</vh>
 <v t="ekr.20131213135427.21953"><vh>@item &amp;open-leo-settings-leo</vh></v>
 <v t="ekr.20131213135427.21955"><vh>@item &amp;open-local-settings</vh></v>
 <v t="ekr.20131213135427.21954"><vh>@item &amp;open-myLeoSettings-leo</vh></v>
 <v t="ekr.20180320113441.1"><vh>@item &amp;open-theme-file</vh></v>
 </v>
-<v t="ekr.20131213135427.22201"><vh>@menu &amp;Pick Colors And Fonts</vh>
+<v t="ekr.20131213135427.22201"><vh>@menu &amp;Pick Colors/Fonts</vh>
 <v t="ekr.20131213135427.22202"><vh>@item show-&amp;colors</vh></v>
 <v t="ekr.20131213135427.22204"><vh>@item show-&amp;fonts</vh></v>
 </v>
@@ -1504,6 +1505,26 @@
 <v t="ekr.20131213135427.22048"><vh>@item -</vh></v>
 </v>
 <v t="ekr.20180403122045.1"><vh>@menu Run</vh>
+<v t="ekr.20131213135427.21977"><vh>@menu &amp;Check/Dump Outline</vh>
+<v t="ekr.20131213135427.21978"><vh>@item check-&amp;outline</vh></v>
+<v t="ekr.20131213135427.21979"><vh>@item &amp;dump-outline</vh></v>
+</v>
+<v t="ekr.20131213135427.22131"><vh>@menu &amp;Control Garbage Collection</vh>
+<v t="ekr.20131213135427.22132"><vh>@item gc-&amp;collect-garbage</vh></v>
+<v t="ekr.20131213135427.22133"><vh>@item gc-dump-&amp;all-objects</vh></v>
+<v t="ekr.20131213135427.22134"><vh>@item gc-dump-&amp;new-objects</vh></v>
+<v t="ekr.20131213135427.22135"><vh>@item gc-dump-objects-&amp;verbose</vh></v>
+<v t="ekr.20131213135427.22136"><vh>@item gc-print-&amp;summary</vh></v>
+<v t="ekr.20131213135427.22137"><vh>@item gc-&amp;trace-disable</vh></v>
+<v t="ekr.20131213135427.22138"><vh>@item gc-&amp;trace-enable</vh></v>
+</v>
+<v t="ekr.20180403105510.1"><vh>@menu &amp;Evaluate Python Expressions</vh>
+<v t="ekr.20180403105526.1"><vh>@item &amp;eval</vh></v>
+<v t="ekr.20180403105636.1"><vh>@item &amp;eval-block</vh></v>
+<v t="ekr.20180403105541.1"><vh>@item &amp;eval-last</vh></v>
+<v t="ekr.20180403105609.1"><vh>@item &amp;eval-last-pretty</vh></v>
+<v t="ekr.20180403105722.1"><vh>@item &amp;eval-replace</vh></v>
+</v>
 <v t="ekr.20131213135427.22194"><vh>@menu &amp;Execute Named Commands</vh>
 <v t="ekr.20131213135427.22200"><vh>@item &amp;help-for-minibuffer</vh></v>
 <v t="ekr.20131213135427.22199"><vh>@item -</vh></v>
@@ -1515,13 +1536,6 @@
 <v t="ekr.20131213135427.22258"><vh>@item &amp;shell-command</vh></v>
 <v t="ekr.20131213135427.22259"><vh>@item &amp;shell-command-on-region</vh></v>
 <v t="ekr.20131213135427.22198"><vh>@item &amp;view-lossage</vh></v>
-</v>
-<v t="ekr.20180403105510.1"><vh>@menu &amp;Evaluate Python Expressions</vh>
-<v t="ekr.20180403105526.1"><vh>@item &amp;eval</vh></v>
-<v t="ekr.20180403105636.1"><vh>@item &amp;eval-block</vh></v>
-<v t="ekr.20180403105541.1"><vh>@item &amp;eval-last</vh></v>
-<v t="ekr.20180403105609.1"><vh>@item &amp;eval-last-pretty</vh></v>
-<v t="ekr.20180403105722.1"><vh>@item &amp;eval-replace</vh></v>
 </v>
 <v t="ekr.20131213135427.22127"><vh>@menu &amp;Invoke Debuggers</vh>
 <v t="ekr.20131213135427.22128"><vh>@item debug</vh></v>
@@ -1536,27 +1550,13 @@
 <v t="ekr.20131213135427.22234"><vh>@item run-&amp;marked-unit-tests-externally</vh></v>
 <v t="ekr.20131213135427.22235"><vh>@item run-&amp;selected-unit-tests-externally</vh></v>
 </v>
-<v t="ekr.20180403124006.1"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21977"><vh>@menu &amp;Check/Dump Outline</vh>
-<v t="ekr.20131213135427.21978"><vh>@item check-&amp;outline</vh></v>
-<v t="ekr.20131213135427.21979"><vh>@item &amp;dump-outline</vh></v>
-</v>
-<v t="ekr.20131213135427.22131"><vh>@menu &amp;Control Garbage Collection</vh>
-<v t="ekr.20131213135427.22132"><vh>@item gc-&amp;collect-garbage</vh></v>
-<v t="ekr.20131213135427.22133"><vh>@item gc-dump-&amp;all-objects</vh></v>
-<v t="ekr.20131213135427.22134"><vh>@item gc-dump-&amp;new-objects</vh></v>
-<v t="ekr.20131213135427.22135"><vh>@item gc-dump-objects-&amp;verbose</vh></v>
-<v t="ekr.20131213135427.22136"><vh>@item gc-print-&amp;summary</vh></v>
-<v t="ekr.20131213135427.22137"><vh>@item gc-&amp;trace-disable</vh></v>
-<v t="ekr.20131213135427.22138"><vh>@item gc-&amp;trace-enable</vh></v>
-</v>
 </v>
 <v t="ekr.20131213135427.22320"><vh>@menu &amp;Window</vh>
 <v t="ekr.20131213135427.22341"><vh>@item &amp;cascade-windows</vh></v>
 <v t="ekr.20131213135427.22342"><vh>@item &amp;minimize-all</vh></v>
 <v t="ekr.20131213135427.22340"><vh>@item &amp;resize-to-screen</vh></v>
 <v t="ekr.20180403154533.1"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22060"><vh>@menu &amp;Add And Delete Body Editors</vh>
+<v t="ekr.20131213135427.22060"><vh>@menu &amp;Add/Delete Body Editors</vh>
 <v t="ekr.20131213135427.22061"><vh>@item &amp;add-editor</vh></v>
 <v t="ekr.20131213135427.22062"><vh>@item &amp;cycle-editor-focus</vh></v>
 <v t="ekr.20131213135427.22063"><vh>@item &amp;delete-editor</vh></v>
@@ -11772,7 +11772,6 @@ Alt+Ctrl+S set-find-suboutline-only
 <t tx="ekr.20180403123508.1"></t>
 <t tx="ekr.20180403123532.1"></t>
 <t tx="ekr.20180403123734.1"></t>
-<t tx="ekr.20180403124006.1"></t>
 <t tx="ekr.20180403124541.1"></t>
 <t tx="ekr.20180403153650.1"></t>
 <t tx="ekr.20180403153949.1"></t>
@@ -11780,6 +11779,7 @@ Alt+Ctrl+S set-find-suboutline-only
 <t tx="ekr.20180403154327.1"></t>
 <t tx="ekr.20180403154533.1"></t>
 <t tx="ekr.20180403154703.1"></t>
+<t tx="ekr.20180403155811.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
