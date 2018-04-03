@@ -1332,6 +1332,7 @@
 <v t="ekr.20131213135427.21920"><vh>@item &amp;replace</vh></v>
 <v t="ekr.20131213135427.21921"><vh>@item replace-&amp;then-find</vh></v>
 <v t="ekr.20131213135427.21925"><vh>@item replace-a&amp;ll</vh></v>
+<v t="ekr.20131213135427.22203"><vh>@item show-find-&amp;options</vh></v>
 <v t="ekr.20180403115620.1"><vh>@menu &amp;Clone-Find Commands</vh>
 <v t="ekr.20131213135427.21923"><vh>@item clone-find-all</vh></v>
 <v t="ekr.20180403115639.1"><vh>@item clone-find-all-flattened</vh></v>
@@ -1370,6 +1371,10 @@
 <v t="ekr.20131213135427.21955"><vh>@item &amp;open-local-settings</vh></v>
 <v t="ekr.20131213135427.21954"><vh>@item &amp;open-myLeoSettings-leo</vh></v>
 <v t="ekr.20180320113441.1"><vh>@item &amp;open-theme-file</vh></v>
+</v>
+<v t="ekr.20131213135427.22201"><vh>@menu &amp;Pick Colors And Fonts</vh>
+<v t="ekr.20131213135427.22202"><vh>@item show-&amp;colors</vh></v>
+<v t="ekr.20131213135427.22204"><vh>@item show-&amp;fonts</vh></v>
 </v>
 <v t="ekr.20180403122225.1"><vh>@menu &amp;Reload Settings</vh>
 <v t="ekr.20171229135829.1"><vh>@item reload-all-settings</vh></v>
@@ -1456,6 +1461,13 @@
 <v t="ekr.20131213135427.21973"><vh>@menu &amp;Hoist/Dehoist nodes</vh>
 <v t="ekr.20131213135427.21974"><vh>@item &amp;hoist</vh></v>
 <v t="ekr.20131213135427.21975"><vh>@item de-hoist</vh></v>
+</v>
+<v t="ekr.20131213135427.22177"><vh>@menu &amp;Insert/Delete Icons</vh>
+<v t="ekr.20131213135427.22178"><vh>@item delete-&amp;first-icon</vh></v>
+<v t="ekr.20131213135427.22179"><vh>@item delete-&amp;last-icon</vh></v>
+<v t="ekr.20131213135427.22180"><vh>@item delete-&amp;node-icons</vh></v>
+<v t="ekr.20131213135427.22181"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.22182"><vh>@item &amp;insert-icon</vh></v>
 </v>
 <v t="ekr.20180403123532.1"><vh>@menu &amp;Insert/Delete/Clone Nodes</vh>
 <v t="ekr.20131213135427.21970"><vh>@item &amp;clone-node</vh></v>
@@ -1570,18 +1582,6 @@
 <v t="ekr.20131213135427.22336"><vh>@item full&amp;y-expand-log-pane</vh></v>
 <v t="ekr.20131213135427.22337"><vh>@item fully-e&amp;xpand-outline-pane</vh></v>
 <v t="ekr.20131213135427.22338"><vh>@item fully-exp&amp;and-pane</vh></v>
-</v>
-<v t="ekr.20131213135427.22177"><vh>@menu &amp;Insert And Delete Icons</vh>
-<v t="ekr.20131213135427.22178"><vh>@item delete-&amp;first-icon</vh></v>
-<v t="ekr.20131213135427.22179"><vh>@item delete-&amp;last-icon</vh></v>
-<v t="ekr.20131213135427.22180"><vh>@item delete-&amp;node-icons</vh></v>
-<v t="ekr.20131213135427.22181"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.22182"><vh>@item &amp;insert-icon</vh></v>
-</v>
-<v t="ekr.20131213135427.22201"><vh>@menu &amp;Pick Colors And Fonts</vh>
-<v t="ekr.20131213135427.22202"><vh>@item show-&amp;colors</vh></v>
-<v t="ekr.20131213135427.22203"><vh>@item show-find-&amp;options</vh></v>
-<v t="ekr.20131213135427.22204"><vh>@item show-&amp;fonts</vh></v>
 </v>
 <v t="ekr.20131213135427.22236"><vh>@menu &amp;Scroll Text Areas</vh>
 <v t="ekr.20131213135427.22237"><vh>@item scroll-outline-down-&amp;line</vh></v>
