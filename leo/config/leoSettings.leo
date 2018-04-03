@@ -1051,8 +1051,8 @@
 <v t="ekr.20131213135427.21826"><vh>@menus</vh>
 <v t="ekr.20131213135427.21827"><vh>@menu &amp;File</vh>
 <v t="ekr.20131213135427.21828"><vh>@item &amp;new</vh></v>
-<v t="ekr.20131213135427.21829"><vh>@item open-outline</vh></v>
 <v t="ekr.20140917063815.21917"><vh>@item file-open-by-name</vh></v>
+<v t="ekr.20131213135427.21829"><vh>@item &amp;open-outline</vh></v>
 <v t="ekr.20131213135427.21830"><vh>@menu Open &amp;With</vh></v>
 <v t="ekr.20151225142626.1"><vh>@menu Open Specific &amp;Leo File</vh>
 <v t="ekr.20131213135427.21871"><vh>@item open-cheat-sheet-leo</vh></v>
@@ -1066,51 +1066,15 @@
 <v t="ekr.20170323095724.1"><vh>@item open-leo-settings-leo</vh></v>
 <v t="ekr.20151225094956.1"><vh>@item open-unittest-leo</vh></v>
 </v>
-<v t="ekr.20131213135427.21831"><vh>@menu Recent &amp;Files</vh></v>
-<v t="ekr.20131213135427.21832"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.21831"><vh>@menu Open Recent &amp;Files</vh></v>
 <v t="ekr.20131213135427.21833"><vh>@item close-window</vh></v>
+<v t="ekr.20131213135427.21832"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21834"><vh>@item save-file</vh></v>
 <v t="ekr.20131213135427.21835"><vh>@item save-file-as</vh></v>
 <v t="ekr.20131213135427.21836"><vh>@item save-file-as-unzipped</vh></v>
 <v t="ekr.20131213135427.21837"><vh>@item save-file-as-zipped</vh></v>
 <v t="ekr.20131213135427.21838"><vh>@item save-file-to</vh></v>
 <v t="ekr.20140718064506.18998"><vh>@item -</vh></v>
-<v t="ekr.20140718064506.18999"><vh>@item refresh-from-disk</vh></v>
-<v t="ekr.20131213135427.21839"><vh>@item revert</vh></v>
-<v t="ekr.20150420115701.1"><vh>@item -</vh></v>
-<v t="ekr.20150420122804.1"><vh>@menu &amp;Print Preview</vh>
-<v t="ekr.20150420122804.2"><vh>@item preview-body	</vh></v>
-<v t="ekr.20150420122804.3"><vh>@item preview-html</vh></v>
-<v t="ekr.20150420122804.4"><vh>@item preview-node</vh></v>
-<v t="ekr.20150420122804.5"><vh>@item -</vh></v>
-<v t="peckj.20150421103556.1"><vh>@item preview-expanded-body</vh></v>
-<v t="peckj.20150421103611.1"><vh>@item preview-expanded-html</vh></v>
-<v t="peckj.20150421103616.1"><vh>@item -</vh></v>
-<v t="ekr.20150420122804.6"><vh>@item preview-marked-bodies</vh></v>
-<v t="ekr.20150420122804.7"><vh>@item preview-marked-html</vh></v>
-<v t="ekr.20150420122804.8"><vh>@item preview-marked-nodes</vh></v>
-<v t="ekr.20150420122804.9"><vh>@item -</vh></v>
-<v t="ekr.20150420122804.10"><vh>@item preview-tree-nodes</vh></v>
-<v t="ekr.20150420122804.11"><vh>@item preview-tree-bodies</vh></v>
-<v t="ekr.20150420122804.12"><vh>@item preview-tree-html</vh></v>
-</v>
-<v t="ekr.20150420115709.1"><vh>@menu &amp;Print</vh>
-<v t="ekr.20150420115903.1"><vh>@item print-body	</vh></v>
-<v t="ekr.20150420115928.1"><vh>@item print-html</vh></v>
-<v t="ekr.20150420120009.1"><vh>@item print-node</vh></v>
-<v t="ekr.20150420120016.1"><vh>@item -</vh></v>
-<v t="peckj.20150421103626.1"><vh>@item print-expanded-body</vh></v>
-<v t="peckj.20150421103633.1"><vh>@item print-expanded-html</vh></v>
-<v t="peckj.20150421103639.1"><vh>@item -</vh></v>
-<v t="ekr.20150420120025.1"><vh>@item print-marked-bodies</vh></v>
-<v t="ekr.20150420120034.1"><vh>@item print-marked-html</vh></v>
-<v t="ekr.20150420120051.1"><vh>@item print-marked-nodes</vh></v>
-<v t="ekr.20150420120105.1"><vh>@item -</vh></v>
-<v t="ekr.20150420120154.1"><vh>@item print-tree-nodes</vh></v>
-<v t="ekr.20150420120114.1"><vh>@item print-tree-bodies</vh></v>
-<v t="ekr.20150420115936.1"><vh>@item print-tree-html</vh></v>
-</v>
-<v t="ekr.20180403121827.1"><vh>@item -</vh></v>
 <v t="ekr.20180403105112.1"><vh>@menu &amp;Compare And Diff Files</vh>
 <v t="ekr.20131213135427.22149"><vh>@item file-&amp;compare-leo-files</vh></v>
 <v t="ekr.20131213135427.22151"><vh>@item file-diff-&amp;files</vh></v>
@@ -1162,6 +1126,42 @@
 <v t="ekr.20131213135427.21868"><vh>@item remove-sentinels</vh></v>
 <v t="ekr.20131213135427.21869"><vh>@item weave</vh></v>
 </v>
+<v t="ekr.20150420115709.1"><vh>@menu &amp;Print</vh>
+<v t="ekr.20150420115903.1"><vh>@item print-body	</vh></v>
+<v t="ekr.20150420115928.1"><vh>@item print-html</vh></v>
+<v t="ekr.20150420120009.1"><vh>@item print-node</vh></v>
+<v t="ekr.20150420120016.1"><vh>@item -</vh></v>
+<v t="peckj.20150421103626.1"><vh>@item print-expanded-body</vh></v>
+<v t="peckj.20150421103633.1"><vh>@item print-expanded-html</vh></v>
+<v t="peckj.20150421103639.1"><vh>@item -</vh></v>
+<v t="ekr.20150420120025.1"><vh>@item print-marked-bodies</vh></v>
+<v t="ekr.20150420120034.1"><vh>@item print-marked-html</vh></v>
+<v t="ekr.20150420120051.1"><vh>@item print-marked-nodes</vh></v>
+<v t="ekr.20150420120105.1"><vh>@item -</vh></v>
+<v t="ekr.20150420120154.1"><vh>@item print-tree-nodes</vh></v>
+<v t="ekr.20150420120114.1"><vh>@item print-tree-bodies</vh></v>
+<v t="ekr.20150420115936.1"><vh>@item print-tree-html</vh></v>
+</v>
+<v t="ekr.20150420122804.1"><vh>@menu &amp;Print Preview</vh>
+<v t="ekr.20150420122804.2"><vh>@item preview-body	</vh></v>
+<v t="ekr.20150420122804.3"><vh>@item preview-html</vh></v>
+<v t="ekr.20150420122804.4"><vh>@item preview-node</vh></v>
+<v t="ekr.20150420122804.5"><vh>@item -</vh></v>
+<v t="peckj.20150421103556.1"><vh>@item preview-expanded-body</vh></v>
+<v t="peckj.20150421103611.1"><vh>@item preview-expanded-html</vh></v>
+<v t="peckj.20150421103616.1"><vh>@item -</vh></v>
+<v t="ekr.20150420122804.6"><vh>@item preview-marked-bodies</vh></v>
+<v t="ekr.20150420122804.7"><vh>@item preview-marked-html</vh></v>
+<v t="ekr.20150420122804.8"><vh>@item preview-marked-nodes</vh></v>
+<v t="ekr.20150420122804.9"><vh>@item -</vh></v>
+<v t="ekr.20150420122804.10"><vh>@item preview-tree-nodes</vh></v>
+<v t="ekr.20150420122804.11"><vh>@item preview-tree-bodies</vh></v>
+<v t="ekr.20150420122804.12"><vh>@item preview-tree-html</vh></v>
+</v>
+<v t="ekr.20180403153650.1"><vh>@menu &amp;Revert And Refresh</vh>
+<v t="ekr.20140718064506.18999"><vh>@item refresh-from-disk</vh></v>
+<v t="ekr.20131213135427.21839"><vh>@item revert</vh></v>
+</v>
 <v t="ekr.20131213135427.21876"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21877"><vh>@item exit-leo</vh></v>
 </v>
@@ -1189,7 +1189,8 @@
 </v>
 <v t="ekr.20131213135427.22266"><vh>@menu &amp;Edit Text</vh>
 <v t="ekr.20131213135427.21885"><vh>@item &amp;backward-delete-char</vh></v>
-<v t="ekr.20180403114818.1"><vh>@menu &amp;Add And Delete Comments</vh>
+<v t="ekr.20180403154327.1"><vh>@item -</vh></v>
+<v t="ekr.20180403114818.1"><vh>@menu &amp;Add/Delete Comments</vh>
 <v t="ekr.20131213135427.21902"><vh>@item &amp;add-comments</vh></v>
 <v t="ekr.20131213135427.21903"><vh>@item &amp;delete-comments</vh></v>
 </v>
@@ -1197,20 +1198,19 @@
 <v t="ekr.20131213135427.22270"><vh>@item center-&amp;line</vh></v>
 <v t="ekr.20131213135427.22271"><vh>@item center-&amp;region</vh></v>
 </v>
-<v t="ekr.20180403104558.1"><vh>@menu &amp;Beautify text</vh>
+<v t="ekr.20180403104558.1"><vh>@menu &amp;Beautify Text</vh>
 <v t="ekr.20170316105542.1"><vh>@item beautify-&amp;c</vh></v>
 <v t="ekr.20131213135427.22267"><vh>@item &amp;beautify-node</vh></v>
 <v t="ekr.20131213135427.22268"><vh>@item beautify-&amp;tree</vh></v>
 </v>
-<v t="ekr.20180403104751.1"><vh>@menu &amp;Capitalize text</vh>
+<v t="ekr.20180403104751.1"><vh>@menu &amp;Capitalize Text</vh>
 <v t="ekr.20131213135427.22273"><vh>@item &amp;capitalize-word</vh></v>
-<v t="ekr.20131213135427.22274"><vh>@item &amp;downcase-word</vh></v>
-<v t="ekr.20131213135427.22275"><vh>@item &amp;upcase-word</vh></v>
-<v t="ekr.20131213135427.22276"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22277"><vh>@item d&amp;owncase-region</vh></v>
+<v t="ekr.20131213135427.22274"><vh>@item &amp;downcase-word</vh></v>
 <v t="ekr.20131213135427.22278"><vh>@item u&amp;pcase-region</vh></v>
+<v t="ekr.20131213135427.22275"><vh>@item &amp;upcase-word</vh></v>
 </v>
-<v t="ekr.20180403114558.1"><vh>@menu &amp;Convert And View Tabs And Blanks</vh>
+<v t="ekr.20180403114558.1"><vh>@menu &amp;Convert/View Tabs And Blanks</vh>
 <v t="ekr.20131213135427.21892"><vh>@item convert-all-b&amp;lanks</vh></v>
 <v t="ekr.20131213135427.21893"><vh>@item convert-all-t&amp;abs</vh></v>
 <v t="ekr.20131213135427.21894"><vh>@item convert-&amp;blanks</vh></v>
@@ -1231,12 +1231,14 @@
 <v t="ekr.20131213135427.22212"><vh>@item rectangle-&amp;yank</vh></v>
 </v>
 <v t="ekr.20180403104732.1"><vh>@menu &amp;Indent Text</vh>
+<v t="ekr.20131213135427.22282"><vh>@item indent-ri&amp;gidly</vh></v>
 <v t="ekr.20131213135427.22280"><vh>@item &amp;indent-region</vh></v>
 <v t="ekr.20131213135427.22281"><vh>@item indent-r&amp;elative</vh></v>
-<v t="ekr.20131213135427.22282"><vh>@item indent-ri&amp;gidly</vh></v>
 <v t="ekr.20131213135427.22283"><vh>@item u&amp;nindent-region</vh></v>
 </v>
-<v t="ekr.20131213135427.22079"><vh>@menu &amp;Move The cursor And Make Selections</vh>
+<v t="ekr.20131213135427.22079"><vh>@menu &amp;Move Cursor And Make Selections</vh>
+<v t="ekr.20131213135427.21901"><vh>@item &amp;match-brackets</vh></v>
+<v t="ekr.20180403154314.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22080"><vh>@menu Cursor &amp;Back</vh>
 <v t="ekr.20131213135427.22081"><vh>@item back-&amp;char</vh></v>
 <v t="ekr.20131213135427.22082"><vh>@item back-&amp;paragraph</vh></v>
@@ -1289,14 +1291,13 @@
 <v t="ekr.20131213135427.22125"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22126"><vh>@item &amp;next-line-extend-selection</vh></v>
 </v>
-<v t="ekr.20131213135427.21901"><vh>@item &amp;match-brackets</vh></v>
 </v>
 <v t="ekr.20180403104643.1"><vh>@menu &amp;Sort Text</vh>
 <v t="ekr.20131213135427.22285"><vh>@item sort-&amp;columns</vh></v>
 <v t="ekr.20131213135427.22286"><vh>@item sort-&amp;fields</vh></v>
 <v t="ekr.20131213135427.22287"><vh>@item sort-&amp;lines</vh></v>
 </v>
-<v t="ekr.20131213135427.22306"><vh>@menu &amp;Yank And Kill Text</vh>
+<v t="ekr.20131213135427.22306"><vh>@menu &amp;Yank/Kill Text</vh>
 <v t="ekr.20131213135427.22308"><vh>@item &amp;rectangle-kill</vh></v>
 <v t="ekr.20131213135427.22309"><vh>@item r&amp;ectangle-yank</vh></v>
 <v t="ekr.20131213135427.22310"><vh>@item -</vh></v>
@@ -1333,6 +1334,7 @@
 <v t="ekr.20131213135427.21921"><vh>@item replace-&amp;then-find</vh></v>
 <v t="ekr.20131213135427.21925"><vh>@item replace-a&amp;ll</vh></v>
 <v t="ekr.20131213135427.22203"><vh>@item show-find-&amp;options</vh></v>
+<v t="ekr.20180403153949.1"><vh>@item -</vh></v>
 <v t="ekr.20180403115620.1"><vh>@menu &amp;Clone-Find Commands</vh>
 <v t="ekr.20131213135427.21923"><vh>@item clone-find-all</vh></v>
 <v t="ekr.20180403115639.1"><vh>@item clone-find-all-flattened</vh></v>
@@ -1366,6 +1368,10 @@
 </v>
 </v>
 <v t="ekr.20131213135427.21951"><vh>@menu Settings</vh>
+<v t="ekr.20131213135427.22050"><vh>@menu &amp;List/Kill Abbreviations</vh>
+<v t="ekr.20131213135427.22053"><vh>@item abbrev-&amp;list</vh></v>
+<v t="ekr.20131213135427.22059"><vh>@item abbrev-&amp;kill-all</vh></v>
+</v>
 <v t="ekr.20180403122157.1"><vh>@menu &amp;Open Settings And Theme Files</vh>
 <v t="ekr.20131213135427.21953"><vh>@item &amp;open-leo-settings-leo</vh></v>
 <v t="ekr.20131213135427.21955"><vh>@item &amp;open-local-settings</vh></v>
@@ -1386,10 +1392,6 @@
 <v t="ekr.20131213135427.21958"><vh>@item print-c&amp;ommands</vh></v>
 <v t="ekr.20131213135427.21960"><vh>@item print-&amp;settings</vh></v>
 <v t="ekr.20131213135427.21959"><vh>@item print-&amp;plugins-info</vh></v>
-<v t="ekr.20131213135427.22050"><vh>@menu &amp;List Abbreviations</vh>
-<v t="ekr.20131213135427.22053"><vh>@item abbrev-&amp;list</vh></v>
-<v t="ekr.20131213135427.22059"><vh>@item abbrev-&amp;kill-all</vh></v>
-</v>
 </v>
 <v t="ekr.20131215083347.18154"><vh>@menu &amp;Toggle Settings</vh>
 <v t="ekr.20131213135427.22289"><vh>@item toggle-a&amp;utocompleter</vh></v>
@@ -1433,7 +1435,7 @@
 <v t="ekr.20131213135427.22005"><vh>@item expand-&amp;all</vh></v>
 <v t="ekr.20131213135427.22006"><vh>@item expand-n&amp;ode</vh></v>
 </v>
-<v t="ekr.20131213135427.22021"><vh>@menu &amp;Go To Nodes</vh>
+<v t="ekr.20131213135427.22021"><vh>@menu &amp;Go To Node</vh>
 <v t="ekr.20131213135427.22022"><vh>@item find-next-clone</vh></v>
 <v t="ekr.20131213135427.22023"><vh>@item goto-first-node</vh></v>
 <v t="ekr.20131213135427.22024"><vh>@item goto-first-visible-node</vh></v>
@@ -1553,6 +1555,7 @@
 <v t="ekr.20131213135427.22341"><vh>@item &amp;cascade-windows</vh></v>
 <v t="ekr.20131213135427.22342"><vh>@item &amp;minimize-all</vh></v>
 <v t="ekr.20131213135427.22340"><vh>@item &amp;resize-to-screen</vh></v>
+<v t="ekr.20180403154533.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22060"><vh>@menu &amp;Add And Delete Body Editors</vh>
 <v t="ekr.20131213135427.22061"><vh>@item &amp;add-editor</vh></v>
 <v t="ekr.20131213135427.22062"><vh>@item &amp;cycle-editor-focus</vh></v>
@@ -1633,6 +1636,7 @@
 </v>
 <v t="ekr.20131213135427.22343"><vh>@menu &amp;Help</vh>
 <v t="ekr.20131213135427.22344"><vh>@item &amp;about-leo</vh></v>
+<v t="ekr.20180403154703.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22356"><vh>@menu &amp;Open Help topics</vh>
 <v t="ekr.20131213135427.22357"><vh>@item help</vh></v>
 <v t="ekr.20180403100653.1"><vh>@item help-for-&amp;abbreviations</vh></v>
@@ -1923,7 +1927,7 @@
 <v t="tbrown.20150821171510.142"><vh>Style</vh></v>
 </v>
 </v>
-<v t="tbrown.20150821171510.143"><vh>Margins &amp; borders</vh>
+<v t="tbrown.20150821171510.143"><vh>Margins And borders</vh>
 <v t="tbrown.20150821171510.144"><vh>Dialogs styles</vh>
 <v t="tbrown.20150821171510.145"><vh>Border</vh></v>
 <v t="tbrown.20150821171510.146"><vh>Margin</vh></v>
@@ -6074,12 +6078,12 @@ False: start-find commands puts focus in Find panel.</t>
 <t tx="ekr.20131213135427.21826"></t>
 <t tx="ekr.20131213135427.21827">&amp;Open Theme File</t>
 <t tx="ekr.20131213135427.21828"></t>
-<t tx="ekr.20131213135427.21829">&amp;Open</t>
+<t tx="ekr.20131213135427.21829"></t>
 <t tx="ekr.20131213135427.21830"></t>
 <t tx="ekr.20131213135427.21831">A placeholder for the actual menu.
 Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20131213135427.21832"></t>
-<t tx="ekr.20131213135427.21833">&amp;Close</t>
+<t tx="ekr.20131213135427.21833"></t>
 <t tx="ekr.20131213135427.21834">&amp;Save...</t>
 <t tx="ekr.20131213135427.21835">Save &amp;As...</t>
 <t tx="ekr.20131213135427.21836">Save As &amp;Unzipped...</t>
@@ -6414,7 +6418,6 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20131213135427.22273"></t>
 <t tx="ekr.20131213135427.22274"></t>
 <t tx="ekr.20131213135427.22275"></t>
-<t tx="ekr.20131213135427.22276"></t>
 <t tx="ekr.20131213135427.22277"></t>
 <t tx="ekr.20131213135427.22278"></t>
 <t tx="ekr.20131213135427.22280"></t>
@@ -10045,7 +10048,6 @@ Note: check-outline always writes error messages to both log and console.</t>
 Warning: Checking many networked files can hang Leo. See:
 https://github.com/leo-editor/leo-editor/issues/262
 </t>
-<t tx="ekr.20150420115701.1"></t>
 <t tx="ekr.20150420115709.1"></t>
 <t tx="ekr.20150420115903.1"></t>
 <t tx="ekr.20150420115928.1"></t>
@@ -11764,7 +11766,6 @@ Alt+Ctrl+S set-find-suboutline-only
 <t tx="ekr.20180403115745.1"></t>
 <t tx="ekr.20180403120726.1"></t>
 <t tx="ekr.20180403120838.1"></t>
-<t tx="ekr.20180403121827.1"></t>
 <t tx="ekr.20180403122045.1"></t>
 <t tx="ekr.20180403122157.1"></t>
 <t tx="ekr.20180403122225.1"></t>
@@ -11773,6 +11774,12 @@ Alt+Ctrl+S set-find-suboutline-only
 <t tx="ekr.20180403123734.1"></t>
 <t tx="ekr.20180403124006.1"></t>
 <t tx="ekr.20180403124541.1"></t>
+<t tx="ekr.20180403153650.1"></t>
+<t tx="ekr.20180403153949.1"></t>
+<t tx="ekr.20180403154314.1"></t>
+<t tx="ekr.20180403154327.1"></t>
+<t tx="ekr.20180403154533.1"></t>
+<t tx="ekr.20180403154703.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
@@ -12378,10 +12385,10 @@ absence of this setting.</t>
 <t tx="tbrown.20151114110207.1">"Abbreviation" to trigger the selection of the next placeholder,
 i.e. typing ,, will select the next &lt;|placeholder|&gt; text, after
 removing the &lt;| and |&gt;</t>
-<t tx="tbrown.20160130095933.1">Pane management menu</t>
-<t tx="tbrown.20160130095933.2">Load pane layout</t>
-<t tx="tbrown.20160130095933.3">Restore pane layout</t>
-<t tx="tbrown.20160130095933.4">Zoom pane</t>
+<t tx="tbrown.20160130095933.1"></t>
+<t tx="tbrown.20160130095933.2"></t>
+<t tx="tbrown.20160130095933.3"></t>
+<t tx="tbrown.20160130095933.4"></t>
 <t tx="tbrown.20170710093248.1">If true, tailing whitespace (spaces and tabs) will be underlined
 with small dots in `trailing_whitespace_color` (default red).</t>
 <t tx="tbrown.20171128211219.1"># These control the effects of modifiers (Shift, Control, Alt) on left
