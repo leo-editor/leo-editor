@@ -102,7 +102,7 @@
 <v t="ekr.20041120155431.2"><vh>\@type type-name: script: script-name</vh></v>
 </v>
 <v t="ekr.20061011082224"><vh>About myLeoSettings.leo</vh></v>
-<v t="ekr.20041119034357.1" a="E"><vh>@settings</vh>
+<v t="ekr.20041119034357.1"><vh>@settings</vh>
 <v t="ekr.20180306144001.1"><vh> Color definitions</vh>
 <v t="ekr.20140912072521.19153"><vh>@color LeoGreen = #00AA00</vh></v>
 <v t="ekr.20140912072521.19154"><vh>@color LeoYellow = #ffffec</vh></v>
@@ -1636,14 +1636,21 @@
 <v t="ekr.20131213135427.22355"><vh>@item open-quickstart-leo</vh></v>
 <v t="ekr.20131213135427.22356"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22357"><vh>@item *help</vh></v>
-<v t="ekr.20131213135427.22358"><vh>@item *help-for-autocompletion</vh></v>
+<v t="ekr.20180403100653.1"><vh>@item *help-for-&amp;abbreviations</vh></v>
+<v t="ekr.20131213135427.22358"><vh>@item *help-for-&amp;autocompletion</vh></v>
 <v t="ekr.20131213135427.22359"><vh>@item *help-for-&amp;bindings</vh></v>
 <v t="ekr.20131213135427.22360"><vh>@item *help-for-&amp;command</vh></v>
-<v t="ekr.20131215083347.18147"><vh>@item *help-for-creating-&amp;external-files</vh></v>
+<v t="ekr.20131215083347.18147"><vh>@item *help-for-&amp;creating-external-files</vh></v>
+<v t="ekr.20180403100719.1"><vh>@item *help-for-&amp;drag-and-drop</vh></v>
 <v t="ekr.20131213135427.22361"><vh>@item *help-for-&amp;debugging-commands</vh></v>
+<v t="ekr.20180403100800.1"><vh>@item *help-for-&amp;dynamic-abbreviations</vh></v>
 <v t="ekr.20131213135427.22362"><vh>@item *help-for-&amp;find-commands</vh></v>
+<v t="ekr.20180403100839.1"><vh>@item *help-for-&amp;keystroke</vh></v>
 <v t="ekr.20131213135427.22363"><vh>@item *help-for-&amp;minibuffer</vh></v>
+<v t="ekr.20180403100900.1"><vh>@item *help-for-&amp;python</vh></v>
 <v t="ekr.20131215083347.18148"><vh>@item *help-for-&amp;scripting</vh></v>
+<v t="ekr.20180403100919.1"><vh>@item *help-for-&amp;regular-expressions</vh></v>
+<v t="ekr.20180403100935.1"><vh>@item *help-for-&amp;settings</vh></v>
 </v>
 </v>
 <v t="ekr.20080515053412.3"><vh>@popup_menus</vh>
@@ -2206,7 +2213,7 @@
 <v t="ekr.20090724102842.2492"><vh>@int qt_max_colorized_chars = 0</vh></v>
 </v>
 </v>
-<v t="ekr.20110611092035.16463" a="E"><vh>Tree operation</vh>
+<v t="ekr.20110611092035.16463"><vh>Tree operation</vh>
 <v t="nh910.20110621123823.3423"><vh>@bool collapse_nodes_after_move = True</vh></v>
 <v t="ekr.20060930085532"><vh>@bool collapse_nodes_during_finds = True</vh></v>
 <v t="ekr.20080315083057.7"><vh>@bool collapse_nodes_while_spelling = True</vh></v>
@@ -11764,6 +11771,13 @@ May be overridden by themes.</t>
 <t tx="ekr.20180317175351.1"></t>
 <t tx="ekr.20180320113441.1">&amp;View Theme
 </t>
+<t tx="ekr.20180403100653.1"></t>
+<t tx="ekr.20180403100719.1"></t>
+<t tx="ekr.20180403100800.1"></t>
+<t tx="ekr.20180403100839.1"></t>
+<t tx="ekr.20180403100900.1"></t>
+<t tx="ekr.20180403100919.1"></t>
+<t tx="ekr.20180403100935.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
