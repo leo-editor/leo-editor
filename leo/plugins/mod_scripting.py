@@ -118,19 +118,16 @@ Binding arguments to script buttons with @args
 ----------------------------------------------
 
 You can run @button and @command scripts with sys.argv initialized to string values using @args.
-For example:
+For example::
 
-@button test-args @args = a,b,c
+    @button test-args @args = a,b,c
 
-will set sys.argv to [u'a',u'b',u'c']
+will set sys.argv to [u'a',u'b',u'c'].
 
-You can set the background color of buttons created by @button nodes by using @color:
+You can set the background color of buttons created by @button nodes by using @color.
+For example::
 
-@button name @color=color
-
-For example:
-
-@button my button @key=Ctrl+Alt+1 @color=white @args=a,b,c
+    @button my button @key=Ctrl+Alt+1 @color=white @args=a,b,c
 
 This creates a button named 'my-button', with a color of white, a keyboard shortcut
 of Ctrl+Alt+1, and sets sys.argv to [u,'a',u'b',u'c'] within the context of the script.
@@ -144,7 +141,13 @@ eval
 ----
 
 Evaluates the selected text, if any, and remember the result in c.vs, a global namespace.
-For example, `a = 10` sets `c.vs['a'] = 10`.
+For example::
+    
+    a = 10
+    
+sets:
+    
+    c.vs['a'] = 10
 
 This command prints the result of the last expression or assignment in the log pane
 and select the next line of the body pane. Handy for executing line by line.
@@ -153,10 +156,9 @@ eval-last
 ---------
 
 Inserts the result of the last eval in the body.
+Suppose you have this text::
 
-Suppose you have this text:
-
-The cat is 7 years, or 7*365 days old.
+    The cat is 7 years, or 7*365 days old.
 
 To replace 7*365 with 2555, do the following:
 
