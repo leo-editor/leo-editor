@@ -1,9 +1,11 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20060328125248: * @file mod_scripting.py
-#@+<< docstring >>
-#@+node:ekr.20060328125248.1: ** << docstring >>
-r""" Creates script buttons and @button, @command, @plugin and @script
-nodes.
+#@+<< mod_scripting docstring >>
+#@+node:ekr.20060328125248.1: ** << mod_scripting docstring >>
+r"""This plugin script buttons and eval* commands.
+
+Overview of script buttons
+--------------------------
 
 This plugin puts buttons in the icon area. Depending on settings the plugin will
 create the 'Run Script', the 'Script Button' and the 'Debug Script' buttons.
@@ -23,11 +25,16 @@ For example, to run a script on any part of an outline do the following:
 3.  Select the node on which you want to run the script.
 4.  Push the *new* button.
 
-That's all.
+Script buttons create commands
+------------------------------
 
 For every @button node, this plugin creates two new minibuffer commands: x and
 delete-x-button, where x is the 'cleaned' name of the button. The 'x' command is
 equivalent to pushing the script button.
+
+
+Global buttons and commands
+---------------------------
 
 You can specify **global buttons** in leoSettings.leo or myLeoSettings.leo by
 putting \@button nodes as children of an @buttons node in an \@settings trees.
@@ -49,21 +56,16 @@ Thus, cleaning headline text converts it to a valid minibuffer command name.
 You can delete a script button by right-clicking on it, or by
 executing the delete-x-button command.
 
-The 'Debug Script' button runs a script using an external debugger.
+.. The 'Debug Script' button runs a script using an external debugger.
 
-This plugin optionally scans for @button nodes, @command, @plugin nodes and
-@script nodes whenever a .leo file is opened.
+This plugin optionally scans for @script nodes whenever a .leo file is opened.
+Such @script nodes cause a script to be executed when opening a .leo file.
+They are security risks, and are never enabled by default.
 
-- @button nodes create script buttons.
-- @command nodes create minibuffer commands.
-- @plugin nodes cause plugins to be loaded.
-- @script nodes cause a script to be executed when opening a .leo file.
+Settings
+--------
 
-Such nodes may be security risks. This plugin scans for such nodes only if the
-corresponding atButtonNodes, atPluginNodes, and atScriptNodes constants are set
-to True in this plugin.
-
-You can specify the following options in leoSettings.leo.  See the node:
+You can specify the following options in myLeoSettings.leo.  See the node:
 @settings-->Plugins-->scripting plugin.  Recommended defaults are shown::
 
     @bool scripting-at-button-nodes = True
@@ -95,6 +97,9 @@ You can specify the following options in leoSettings.leo.  See the node:
 
     @int scripting-max-button-size = 18
     The maximum length of button names: longer names are truncated.
+    
+Shortcuts for script buttons
+----------------------------
 
 You can bind key shortcuts to @button and @command nodes as follows:
 
@@ -108,11 +113,11 @@ You can bind key shortcuts to @button and @command nodes as follows:
 
     Creates a new minibuffer command and binds shortcut to it. As with @buffer
     nodes, the name of the command is the cleaned name of the headline.
+    
+Binding arguments to script buttons with @args
+----------------------------------------------
 
-This plugin is based on ideas from e's dynabutton plugin, quite possibly the
-most brilliant idea in Leo's history.
-
-You can run the script with sys.argv initialized to string values using @args.
+You can run @button and @command scripts with sys.argv initialized to string values using @args.
 For example:
 
 @button test-args @args = a,b,c
@@ -130,8 +135,78 @@ For example:
 This creates a button named 'my-button', with a color of white, a keyboard shortcut
 of Ctrl+Alt+1, and sets sys.argv to [u,'a',u'b',u'c'] within the context of the script.
 
+Eval Commands
+-------------
+
+The mod_scripting plugin creates the following 5 eval* commands:
+
+eval
+----
+
+Evaluates the selected text, if any, and remember the result in c.vs, a global namespace.
+For example, `a = 10` sets `c.vs['a'] = 10`.
+
+This command prints the result of the last expression or assignment in the log pane
+and select the next line of the body pane. Handy for executing line by line.
+
+eval-last
+---------
+
+Inserts the result of the last eval in the body.
+
+Suppose you have this text:
+
+The cat is 7 years, or 7*365 days old.
+
+To replace 7*365 with 2555, do the following:
+
+- select 7*367
+- eval
+- delete 7*365
+- do eval-last
+
+eval-last-pretty
+----------------
+
+Like eval-last, but format with pprint.pformat.
+
+eval-block
+----------
+
+Evaluates a series of blocks of code in the body, separated like this::
+
+    # >>>
+    code to run
+    # <<<
+    output of code
+    # >>>
+    code to run
+    # <<<
+    output of code
+    ...
+
+For example::
+
+    import datetime
+    datetime.datetime.now()
+    # >>>
+    2018-03-21 21:46:13.582835
+    # <<<
+    datetime.datetime.now()+datetime.timedelta(days=1000)
+    # >>>
+    2020-12-15 21:46:34.403814
+    # <<<
+
+eval-block inserts the separators, blocks can be re-run by placing the cursor in them and doing eval-block, and the cursor is placed in the next block, so you can go back up, change something, then quickly
+re-execute everything.
+
+Acknowledgements
+----------------
+
+This plugin is based on ideas from e's dynabutton plugin, possibly the
+most brilliant idea in Leo's history.
 """
-#@-<< docstring >>
+#@-<< mod_scripting docstring >>
 #@+<< imports >>
 #@+node:ekr.20060328125248.2: ** << imports >>
 import leo.core.leoGlobals as g
@@ -1164,7 +1239,7 @@ class EvalController(object):
         statement, not an expression.
 
         Stores results in ``c.vs['_last']`` for insertion
-        into body by ``vs-last`` or ``vs-last-pretty``.
+        into body by ``eval-last`` or ``eval-last-pretty``.
 
         Removes common indentation (``textwrap.dedent()``) before executing,
         allowing execution of indented code.
@@ -1198,14 +1273,14 @@ class EvalController(object):
         4.0
         # <<<
 
-        ``vs-eval-block`` evaluates the current code block, either the code block
+        ``eval-block`` evaluates the current code block, either the code block
         the cursor's in, or the code block preceding the output block the cursor's
         in.  Subsequent output blocks are marked "# >>> *" to show they may need
         re-evaluation.
 
         Note: you don't really need to type the "# >>>" and "# <<<" markers
-        because ``vs-eval-block`` will add them as needed.  So just type the
-        first code block and run ``vs-eval-block``.
+        because ``eval-block`` will add them as needed.  So just type the
+        first code block and run ``eval-block``.
 
         '''
         #@-<< eval-block docstring >>
@@ -1239,10 +1314,10 @@ class EvalController(object):
     @cmd("eval-last")
     def eval_last(self, event, text=None):
         """
-        Insert the last result from ``vs-eval``.
+        Insert the last result from ``eval``.
 
         Inserted as a string, so ``"1\n2\n3\n4"`` will cover four lines and
-        insert no quotes, for ``repr()`` style insertion use ``vs-last-pretty``.
+        insert no quotes, for ``repr()`` style insertion use ``last-pretty``.
         """
         c  = self.c
         if c != event.get('c'):
@@ -1263,10 +1338,10 @@ class EvalController(object):
     @cmd("eval-last-pretty")
     def vs_last_pretty(self, event):
         """
-        Insert the last result from ``vs-eval``.
+        Insert the last result from ``eval``.
 
         Formatted by ``pprint.pformat()``, so ``"1\n2\n3\n4"`` will appear as
-        '``"1\n2\n3\n4"``', see all ``vs-last``.
+        '``"1\n2\n3\n4"``', see all ``last``.
         """
         c  = self.c
         if c != event.get('c'):

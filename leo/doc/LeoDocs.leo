@@ -1942,6 +1942,8 @@
 <v t="ekr.20180124122055.1"><vh>New line_numbering.py plugin</vh></v>
 </v>
 </v>
+<v t="ekr.20180402104443.1"><vh>** Link to LeoU from Home page</vh></v>
+<v t="ekr.20180402104459.1"><vh>** Update distribution checklist</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -26185,6 +26187,8 @@ Because the the representation of a module within a WSF was XML, the source code
 
 In those days, Leo's GUI was built on the TKinter package that shipped with Python. That release of TKinter is not beautiful by any means, but its place as one of Python's Batteries Included meant that my entire development environment consisted of the installer for Python; the installer for the pywin32 extensions to Python; the installer for Leo; and the comparatively tiny LEO file that contained my tools' source code, the source code for the library routines, and all my notes. All that went on a single CD-RW, and I could install Python and pywin32 and Leo on a Windows computer in minutes and tweak my code as needed.
 </t>
+<t tx="ekr.20180402104443.1"></t>
+<t tx="ekr.20180402104459.1"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
