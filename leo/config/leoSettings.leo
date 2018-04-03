@@ -1469,7 +1469,6 @@
 <v t="ekr.20131213135427.22178"><vh>@item delete-&amp;first-icon</vh></v>
 <v t="ekr.20131213135427.22179"><vh>@item delete-&amp;last-icon</vh></v>
 <v t="ekr.20131213135427.22180"><vh>@item delete-&amp;node-icons</vh></v>
-<v t="ekr.20131213135427.22181"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22182"><vh>@item &amp;insert-icon</vh></v>
 </v>
 <v t="ekr.20180403123532.1"><vh>@menu &amp;Insert/Delete/Clone Nodes</vh>
@@ -6356,7 +6355,6 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20131213135427.22178"></t>
 <t tx="ekr.20131213135427.22179"></t>
 <t tx="ekr.20131213135427.22180"></t>
-<t tx="ekr.20131213135427.22181"></t>
 <t tx="ekr.20131213135427.22182"></t>
 <t tx="ekr.20131213135427.22194"></t>
 <t tx="ekr.20131213135427.22195"></t>
