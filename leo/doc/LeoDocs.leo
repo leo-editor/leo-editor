@@ -26202,7 +26202,8 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
 </t>
-<t tx="ekr.20180404015558.1">- Improved support for themes, including the open-theme-file command.
+<t tx="ekr.20180404015558.1">- Improved support for themes
+    - Added the open-theme-file command.
     - Added --theme=&lt;name&gt; command-line option.
     - Added @string theme-name setting.
     - Leo warns if stylesheets contain undefined @-constants.
@@ -26211,7 +26212,6 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 - Allow @path in @&lt;file&gt; nodes.
 - Added add_path keyword argument to c.recursiveImportScript.
   This setting adds @path directives to the root node of imported files.
-
 </t>
 <t tx="ekr.20180404015644.1"></t>
 <t tx="ekr.20180404015721.1"></t>

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:maphew.20180224170853.1: * @file setup.py
+#@+node:maphew.20180224170853.1: * @file ../../setup.py
 #@@first
 '''setup.py for leo'''
 #@+others
