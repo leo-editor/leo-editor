@@ -394,7 +394,8 @@
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
-<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
+<v t="ekr.20100808060203.4273"
+expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
@@ -1942,9 +1943,9 @@
 <v t="ekr.20180124122055.1"><vh>New line_numbering.py plugin</vh></v>
 </v>
 </v>
-<v t="ekr.20180402104443.1"><vh>** Link to LeoU from Home page</vh></v>
 <v t="ekr.20180402104459.1"><vh>** Update distribution checklist</vh></v>
 <v t="ekr.20180403101933.1"><vh>** Document #444: Themes</vh></v>
+<v t="EKR.20040524104904.99"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -16921,6 +16922,7 @@ More Leo Resources
 .. _`Introduction to Leo`:  http://www.youtube.com/watch?v=Zu6J-J0qFi0
 .. _`Leo in a nutshell`:    https://groups.google.com/d/msg/leo-editor/lgHE4OJSLzw/2VXkckrvnsIJ
 .. _`Leo page viewer`:      https://bl.ocks.org/kaleguy/cef095e16e147bc04dd6c5812d732fb2
+.. _`Leo University`:       https://github.com/leo-editor/leo-editor/issues/816
 .. _`Mind Mapping`:         http://www.mind-mapping.org/
 .. _`bookmarks plugin video`: https://vimeo.com/77720098 
 .. _`literate programming`: http://www.literateprogramming.com/
@@ -16937,6 +16939,7 @@ Videos:
 
 More resources:
 
+- `Leo University`_: A short series of articles for would-be Leo developers.
 - Speed Ream's `slashdot article`_ about Leo.
 - Jacob Peck's `scripting tutorial`_.
 - Leo's `wikipedia page`_.
@@ -26188,7 +26191,6 @@ Because the the representation of a module within a WSF was XML, the source code
 
 In those days, Leo's GUI was built on the TKinter package that shipped with Python. That release of TKinter is not beautiful by any means, but its place as one of Python's Batteries Included meant that my entire development environment consisted of the installer for Python; the installer for the pywin32 extensions to Python; the installer for Leo; and the comparatively tiny LEO file that contained my tools' source code, the source code for the library routines, and all my notes. All that went on a single CD-RW, and I could install Python and pywin32 and Leo on a Windows computer in minutes and tweak my code as needed.
 </t>
-<t tx="ekr.20180402104443.1"></t>
 <t tx="ekr.20180402104459.1"></t>
 <t tx="ekr.20180403101933.1">@language rest
 @wrap
