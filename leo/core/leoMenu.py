@@ -133,150 +133,15 @@ class LeoMenu(object):
         if aList:
             self.createMenusFromConfigList(aList)
         else:
-            self.defineMenuTables()
-            self.createFileMenuFromTable()
-            self.createEditMenuFromTable()
-            self.createOutlineMenuFromTable()
-            g.doHook("create-optional-menus", c=c)
-            self.createCmndsMenuFromTable()
-            self.createWindowMenuFromTable()
-            self.createHelpMenuFromTable()
-    #@+node:ekr.20031218072017.3790: *5* createFileMenuFromTable
-    def createFileMenuFromTable(self):
-        # c = self.c
-        fileMenu = self.createNewMenu("&File")
-        self.createMenuEntries(fileMenu, self.fileMenuTopTable)
-        self.createNewMenu("Open &With...", "File")
-        self.createMenuEntries(fileMenu, self.fileMenuTop2Table)
-        #@+<< create the recent files submenu >>
-        #@+node:ekr.20031218072017.3791: *6* << create the recent files submenu >>
-        self.createNewMenu("Recent &Files...", "File")
-        #@-<< create the recent files submenu >>
-        self.add_separator(fileMenu)
-        #@+<< create the read/write submenu >>
-        #@+node:ekr.20031218072017.3792: *6* << create the read/write submenu >>
-        readWriteMenu = self.createNewMenu("&Read/Write...", "File")
-        self.createMenuEntries(readWriteMenu, self.fileMenuReadWriteMenuTable)
-        #@-<< create the read/write submenu >>
-        #@+<< create the tangle submenu >>
-        #@+node:ekr.20031218072017.3793: *6* << create the tangle submenu >>
-        tangleMenu = self.createNewMenu("Tan&gle...", "File")
-        self.createMenuEntries(tangleMenu, self.fileMenuTangleMenuTable)
-        #@-<< create the tangle submenu >>
-        #@+<< create the untangle submenu >>
-        #@+node:ekr.20031218072017.3794: *6* << create the untangle submenu >>
-        untangleMenu = self.createNewMenu("&Untangle...", "File")
-        self.createMenuEntries(untangleMenu, self.fileMenuUntangleMenuTable)
-        #@-<< create the untangle submenu >>
-        #@+<< create the import submenu >>
-        #@+node:ekr.20031218072017.3795: *6* << create the import submenu >>
-        importMenu = self.createNewMenu("&Import...", "File")
-        self.createMenuEntries(importMenu, self.fileMenuImportMenuTable)
-        #@-<< create the import submenu >>
-        #@+<< create the export submenu >>
-        #@+node:ekr.20031218072017.3796: *6* << create the export submenu >>
-        exportMenu = self.createNewMenu("&Export...", "File")
-        self.createMenuEntries(exportMenu, self.fileMenuExportMenuTable)
-        #@-<< create the export submenu >>
-        self.add_separator(fileMenu)
-        self.createMenuEntries(fileMenu, self.fileMenuTop3MenuTable)
-    #@+node:ekr.20031218072017.3786: *5* createEditMenuFromTable
-    def createEditMenuFromTable(self):
-        editMenu = self.createNewMenu("&Edit")
-        self.createMenuEntries(editMenu, self.editMenuTopTable)
-        #@+<< create the edit body submenu >>
-        #@+node:ekr.20031218072017.3787: *6* << create the edit body submenu >>
-        editBodyMenu = self.createNewMenu("Edit &Body...", "Edit")
-        self.createMenuEntries(editBodyMenu, self.editMenuEditBodyTable)
-        #@-<< create the edit body submenu >>
-        #@+<< create the edit headline submenu >>
-        #@+node:ekr.20031218072017.3788: *6* << create the edit headline submenu >>
-        editHeadlineMenu = self.createNewMenu("Edit &Headline...", "Edit")
-        self.createMenuEntries(editHeadlineMenu, self.editMenuEditHeadlineTable)
-        #@-<< create the edit headline submenu >>
-        #@+<< create the find submenu >>
-        #@+node:ekr.20031218072017.3789: *6* << create the find submenu >>
-        findMenu = self.createNewMenu("&Find...", "Edit")
-        self.createMenuEntries(findMenu, self.editMenuFindMenuTable)
-        #@-<< create the find submenu >>
-        self.createMenuEntries(editMenu, self.editMenuTop2Table)
-    #@+node:ekr.20031218072017.3797: *5* createOutlineMenuFromTable
-    def createOutlineMenuFromTable(self):
-        outlineMenu = self.createNewMenu("&Outline")
-        self.createMenuEntries(outlineMenu, self.outlineMenuTopMenuTable)
-        #@+<< create check submenu >>
-        #@+node:ekr.20040711140738.1: *6* << create check submenu >>
-        checkOutlineMenu = self.createNewMenu("Chec&k...", "Outline")
-        self.createMenuEntries(checkOutlineMenu, self.outlineMenuCheckOutlineMenuTable)
-        #@-<< create check submenu >>
-        #@+<< create expand/contract submenu >>
-        #@+node:ekr.20031218072017.3798: *6* << create expand/contract submenu >>
-        expandMenu = self.createNewMenu("E&xpand/Contract...", "Outline")
-        self.createMenuEntries(expandMenu, self.outlineMenuExpandContractMenuTable)
-        #@-<< create expand/contract submenu >>
-        #@+<< create move submenu >>
-        #@+node:ekr.20031218072017.3799: *6* << create move submenu >>
-        moveSelectMenu = self.createNewMenu("&Move...", "Outline")
-        self.createMenuEntries(moveSelectMenu, self.outlineMenuMoveMenuTable)
-        #@-<< create move submenu >>
-        #@+<< create mark submenu >>
-        #@+node:ekr.20031218072017.3800: *6* << create mark submenu >>
-        markMenu = self.createNewMenu("M&ark/Unmark...", "Outline")
-        self.createMenuEntries(markMenu, self.outlineMenuMarkMenuTable)
-        #@-<< create mark submenu >>
-        #@+<< create goto submenu >>
-        #@+node:ekr.20031218072017.3801: *6* << create goto submenu >>
-        gotoMenu = self.createNewMenu("&Go To...", "Outline")
-        self.createMenuEntries(gotoMenu, self.outlineMenuGoToMenuTable)
-        #@-<< create goto submenu >>
-    #@+node:ekr.20050921103736: *5* createCmndsMenuFromTable
-    def createCmndsMenuFromTable(self):
-        self.createNewMenu('&Cmds')
-        for name, table in (
-            # &: a,b,c,d,f,g,h,i,m,n,o,p,r,s,t,u
-            ('&Abbrev...', self.cmdsMenuAbbrevTable),
-            ('Body E&ditors', self.cmdsMenuBodyEditorsTable),
-            ('&Buffers...', self.cmdsMenuBuffersTable),
-            ('&Chapters...', self.cmdsMenuChaptersTable),
-            ('C&ursor/Selection...', []),
-            ('&Focus...', self.cmdsMenuFocusTable),
-            ('&Macro...', self.cmdsMenuMacroTable),
-            ('M&inibuffer', self.cmdsMenuMinibufferTable),
-            #('&Panes...',           self.cmdsMenuPanesTable),
-            ('&Pickers...', self.cmdsMenuPickersTable),
-            ('&Rectangles...', self.cmdsMenuRectanglesTable),
-            ('Re&gisters...', self.cmdsMenuRegistersTable),
-            ('R&un Script/Tests', self.cmdsMenuRunTable),
-            ('Scr&olling...', self.cmdsMenuScrollTable),
-            ('Spell C&heck...', self.cmdsMenuSpellCheckTable),
-            ('&Text Commands', self.cmdsMenuTextTable),
-            ('Toggle Setti&ngs', self.cmdsMenuToggleTable),
-        ):
-            if table == self.cmdsMenuChaptersTable and not self.c.chapterController:
-                continue
-            menu = self.createNewMenu(name, '&Cmds')
-            self.createMenuEntries(menu, table)
-        for name, table in (
-            # &: b,e,f,s,t,x
-            ('Cursor &Back...', self.cursorMenuBackTable),
-            ('Cursor Back &Extend Selection...', self.cursorMeuuBackExtendTable),
-            ('Cursor Extend &To...', self.cursorMenuExtendTable),
-            ('Cursor &Forward...', self.cursorMenuForwardTable),
-            ('Cursor Forward E&xtend Selection...', self.cursorMenuForwardExtendTable),
-        ):
-            menu = self.createNewMenu(name, 'C&ursor/Selection...')
-            self.createMenuEntries(menu, table)
-    #@+node:ekr.20031218072017.3802: *5* createWindowMenuFromTable
-    def createWindowMenuFromTable(self):
-        windowMenu = self.createNewMenu("&Window")
-        self.createMenuEntries(windowMenu, self.windowMenuTopTable)
-    #@+node:ekr.20031218072017.3803: *5* createHelpMenuFromTable
-    def createHelpMenuFromTable(self):
-        if sys.platform == 'darwin':
-            pass # self.getMacHelpMenu(table)
-        else:
-            helpMenu = self.createNewMenu("&Help")
-            self.createMenuEntries(helpMenu, self.helpMenuTable)
+            g.es_print('No @menu setting found')
+            # self.defineMenuTables()
+            # self.createFileMenuFromTable()
+            # self.createEditMenuFromTable()
+            # self.createOutlineMenuFromTable()
+            # g.doHook("create-optional-menus", c=c)
+            # self.createCmndsMenuFromTable()
+            # self.createWindowMenuFromTable()
+            # self.createHelpMenuFromTable()
     #@+node:ekr.20070926135612: *5* createMenusFromConfigList & helpers (LeoMenu)
     def createMenusFromConfigList(self, aList):
         '''Create menus from aList instead of 'hard coded' menus.
