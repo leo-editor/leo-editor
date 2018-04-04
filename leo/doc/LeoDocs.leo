@@ -1954,8 +1954,9 @@
 <v t="ekr.20180404015841.12"><vh>#843: Cannot Open Any Non Leo File From Command Line</vh></v>
 </v>
 <v t="ekr.20180404020244.1"><vh>Code</vh>
-<v t="ekr.20180404020037.1"><vh>Added g.caller</vh></v>
+<v t="ekr.20180404172529.1"><vh>Added add_path keyword argument to c.recursiveImport</vh></v>
 <v t="ekr.20180404015841.13"><vh>Added g.backupGitIssues</vh></v>
+<v t="ekr.20180404020037.1"><vh>Added g.caller</vh></v>
 <v t="ekr.20180404015841.15"><vh>g.log is a synonym for g.es</vh></v>
 </v>
 <v t="ekr.20180404021227.1"><vh>Commands</vh>
@@ -1971,7 +1972,6 @@
 <v t="ekr.20180404015841.5"><vh>#766: Create Theme menu, etc.</vh></v>
 <v t="ekr.20180404021847.1"><vh>#784: Warn if stylesheet substitution leaves undefined @-constants</vh></v>
 <v t="ekr.20180404015841.14"><vh>Feature: Allow @path in body text</vh></v>
-<v t="ekr.20180404015841.16"><vh>Feature: c.recursiveImport optionally puts @path in body text</vh></v>
 <v t="ekr.20180404015841.18"><vh>Won't do: #822: Put outline tabs below the main window bar</vh></v>
 </v>
 <v t="ekr.20180404063924.1"><vh>Settings &amp; command-line arguments</vh></v>
@@ -26227,8 +26227,6 @@ Changed c.config.getData and gcm.getData.
 <t tx="ekr.20180404015841.14">Removed unnecessary check in g.get_directives_dict.
 </t>
 <t tx="ekr.20180404015841.15"></t>
-<t tx="ekr.20180404015841.16">Added "add_path" keyword arg to c.recursiveImport.
-</t>
 <t tx="ekr.20180404015841.17">They have been replaced by new eval- commands.
 </t>
 <t tx="ekr.20180404015841.18">https://github.com/leo-editor/leo-editor/issues/822
@@ -26251,7 +26249,7 @@ Changed c.config.getData and gcm.getData.
 <t tx="ekr.20180404015841.9">https://github.com/leo-editor/leo-editor/issues/808
 </t>
 <t tx="ekr.20180404015923.1">https://github.com/leo-editor/leo-editor/issues/467
-</t>
+@string initial-chooser-directory</t>
 <t tx="ekr.20180404020037.1"></t>
 <t tx="ekr.20180404020226.1"></t>
 <t tx="ekr.20180404020244.1"></t>
@@ -26273,11 +26271,14 @@ The eval* commands are now in mod_scripting.py.
 </t>
 <t tx="ekr.20180404022106.1">https://github.com/leo-editor/leo-editor/issues/781
 </t>
-<t tx="ekr.20180404063924.1">- Added --theme=&lt;name&gt; command-line option.
-- Added --trace-themes command-line option.
-- Added @string theme-name setting.
-- Added add_path keyword argument to c.recursiveImportScript.
-  This setting adds @path directives to the root node of imported files.
+<t tx="ekr.20180404063924.1">Command-line options:
+- Added --theme=&lt;name&gt;
+- Added --trace-themes
+
+Settings:
+- Added @string theme-name
+- Added @string initial-chooser-directory
+  Used by Ctrl-O (file-open-by-name)
 </t>
 <t tx="ekr.20180404065846.1">A **theme** file is a .leo file containing appearance-related settings.  The leo/themes folder contains several examples.
 
@@ -26304,6 +26305,8 @@ Theme files should contain three settings that describe the theme::
     @string theme_name # Used to find other graphics elements.
 </t>
 <t tx="ekr.20180404070940.1"></t>
+<t tx="ekr.20180404172529.1">When True, adds @path directives to the root node of imported files.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
