@@ -394,8 +394,7 @@
 <v t="ekr.20101112045055.5064"><vh>@file plugin_catalog.py</vh></v>
 <v t="ekr.20101112045055.5065"><vh>@url docs generated from plugin_catalog.py</vh></v>
 <v t="ekr.20131005214621.16088"><vh>Home page</vh>
-<v t="ekr.20100808060203.4273"
-expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
+<v t="ekr.20100808060203.4273"><vh>@file html/index.html</vh></v>
 </v>
 <v t="ekr.20101007100904.4372"><vh>Slideshows</vh>
 <v t="ekr.20101028110015.8271" descendentVnodeUnknownAttributes="7d710028580b000000302e312e312e382e322e3171017d7102580b0000007374725f6c656f5f706f7371035800000000710473580b000000302e312e312e382e332e3171057d7106580b0000007374725f6c656f5f706f737107680473580b000000302e312e312e382e342e3171087d7109580b0000007374725f6c656f5f706f73710a680473580b000000302e312e312e382e352e31710b7d710c580b0000007374725f6c656f5f706f73710d680473752e"><vh>@file slideshows.txt</vh></v>
@@ -1440,6 +1439,7 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20180404015558.1"><vh>What's new in 5.7.1</vh></v>
 <v t="ekr.20180125034531.1"><vh>What's new in Leo 5.7</vh>
 <v t="ekr.20180126002550.1"><vh>Highlights</vh></v>
 <v t="ekr.20180126002657.1"><vh>Code</vh></v>
@@ -1448,6 +1448,7 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20180126003617.1"><vh>Plugins</vh></v>
 <v t="ekr.20180126003420.1"><vh>Settings &amp; command-line arguments</vh></v>
 </v>
+<v t="ekr.20180404015721.1"><vh>What's new in Leo 5.x</vh>
 <v t="ekr.20170911082347.1"><vh>What's new in Leo 5.6</vh>
 <v t="ekr.20170911082432.2"><vh>Highlights</vh>
 <v t="ekr.20170911082432.3"><vh>#488: Created a console gui for Leo</vh></v>
@@ -1502,6 +1503,8 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20141105050314.181"><vh>Plugins</vh></v>
 <v t="ekr.20141105050314.197"><vh>Settings</vh></v>
 </v>
+</v>
+<v t="ekr.20180404015644.1"><vh>What's new in Leo 4.x</vh>
 <v t="ekr.20131019190351.16664"><vh>What's new in Leo 4.11</vh>
 <v t="ekr.20150312080344.32"><vh>Highlights</vh></v>
 <v t="ekr.20131019190351.16947"><vh>Commands</vh></v>
@@ -1581,6 +1584,7 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20060620133820.16"><vh>Features</vh></v>
 <v t="ekr.20060620140130"><vh>Plugins</vh></v>
 <v t="ekr.20060620140228"><vh>Settings</vh></v>
+</v>
 </v>
 </v>
 </v>
@@ -1796,10 +1800,7 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20170707034853.72"><vh>screen_capture.py now enabled by default</vh></v>
 </v>
 </v>
-</v>
-</v>
-<v t="ekr.20180125034531.1"></v>
-<v t="ekr.20180125034327.1"><vh>Leo 5.7 final release notes</vh>
+<v t="ekr.20180125034327.1"><vh>Leo 5.7 release notes</vh>
 <v t="ekr.20180125032239.1"><vh>Leo 5.7 Summary</vh></v>
 <v t="ekr.20180125041229.1"><vh>Leo 5.7 Major features</vh>
 <v t="ekr.20180124100450.49"><vh>#417: reload-settings command</vh></v>
@@ -1943,9 +1944,47 @@ expanded="ekr.20100808060203.4282,"><vh>@file html/index.html</vh></v>
 <v t="ekr.20180124122055.1"><vh>New line_numbering.py plugin</vh></v>
 </v>
 </v>
+</v>
+</v>
+<v t="ekr.20180404015558.1"></v>
+<v t="ekr.20180404015249.1"><vh>Leo 5.7.1 release notes</vh>
+<v t="ekr.20180404020342.1"><vh>Bugs</vh>
+<v t="ekr.20180404015841.6"><vh>#780: @tabwidth -2 in @data qt-gui-plugin-style-sheet crashes Leo</vh></v>
+<v t="ekr.20180404022106.1"><vh>#781: ViewRendered Plugin fails on Python 2.7 (Bad Import Statement)</vh></v>
+<v t="ekr.20180404015841.7"><vh>#783: print- commands fail under pythonw</vh></v>
+<v t="ekr.20180404015841.8"><vh>#788: Fix theme-related bugs</vh></v>
+<v t="ekr.20180404021814.1"><vh>#792: python_console plugin doesn't handle copy/paste properly</vh></v>
+<v t="ekr.20180404021737.1"><vh>#802: @color @image display in vr pane</vh></v>
+<v t="ekr.20180404015841.9"><vh>#808: Loading Images in Themes is Broken</vh></v>
+<v t="ekr.20180404021630.1"><vh>#809: Themes dialog doesn't always start in leo/themes</vh></v>
+<v t="ekr.20180404015841.10"><vh>#812: g.glob_glob problems</vh></v>
+<v t="ekr.20180404021543.1"><vh>#832: Leo crashes on non English systems</vh></v>
+<v t="ekr.20180404015841.11"><vh>#840: config.getData(foo) strips comments inconsistently</vh></v>
+<v t="ekr.20180404015841.12"><vh>#843: Cannot Open Any Non Leo File From Command Line</vh></v>
+</v>
+<v t="ekr.20180404020244.1"><vh>Code</vh>
+<v t="ekr.20180404020037.1"><vh>Added g.caller</vh></v>
+<v t="ekr.20180404015841.13"><vh>Added g.backupGitIssues</vh></v>
+<v t="ekr.20180404015841.15"><vh>g.log is a synonym for g.es</vh></v>
+</v>
+<v t="ekr.20180404021227.1"><vh>Commands</vh>
+<v t="ekr.20180404021236.1"><vh>#839: Replaced 5 vs-* commands with eval* commands</vh></v>
+<v t="ekr.20180404015841.17"><vh>Retired the 'escape' and 'eval-expression' commands</vh></v>
+</v>
+<v t="ekr.20180404020226.1"><vh>Features</vh>
+<v t="ekr.20180404015923.1"><vh>#467: Add setting for preferred directory</vh></v>
+<v t="ekr.20180404015841.2"><vh>#663: Regularize slashes and back slashes</vh></v>
+<v t="ekr.20180404015841.3"><vh>#748: Improve print-settings command</vh></v>
+<v t="ekr.20180404015841.4"><vh>#763: Use html comments to support @file x.md</vh></v>
+<v t="ekr.20180404015841.5"><vh>#766: Create Theme menu, etc.</vh></v>
+<v t="ekr.20180404021847.1"><vh>#784: Warn if stylesheet substitution leaves undefined @-constants</vh></v>
+<v t="ekr.20180404015841.14"><vh>Feature: Allow @path in body text</vh></v>
+<v t="ekr.20180404015841.16"><vh>Feature: Optionally put @path in body text during recursive imports</vh></v>
+<v t="ekr.20180404015841.18"><vh>Won't do: #822: Put outline tabs below the main window bar</vh></v>
+</v>
+</v>
 <v t="ekr.20180402104459.1"><vh>** Update distribution checklist</vh></v>
 <v t="ekr.20180403101933.1"><vh>** Document #444: Themes</vh></v>
-<v t="EKR.20040524104904.99"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -26192,10 +26231,7 @@ Because the the representation of a module within a WSF was XML, the source code
 In those days, Leo's GUI was built on the TKinter package that shipped with Python. That release of TKinter is not beautiful by any means, but its place as one of Python's Batteries Included meant that my entire development environment consisted of the installer for Python; the installer for the pywin32 extensions to Python; the installer for Leo; and the comparatively tiny LEO file that contained my tools' source code, the source code for the library routines, and all my notes. All that went on a single CD-RW, and I could install Python and pywin32 and Leo on a Windows computer in minutes and tweak my code as needed.
 </t>
 <t tx="ekr.20180402104459.1"></t>
-<t tx="ekr.20180403101933.1">@language rest
-@wrap
-
-- Document interaction between theme files and settings files.
+<t tx="ekr.20180403101933.1">- Document interaction between theme files and settings files.
 - Add section to customizing chapter.
 
 https://github.com/leo-editor/leo-editor/issues/444
@@ -26209,10 +26245,98 @@ Themes are now dead simple easy to install and use.
 
 Box icons are pulled from ../leo/themes/dark/Icons and theme images from ../leo/themes/dark as "dark" is what the theme itself has as an @string setting for color_theme.
 
-This makes for a simple, clean way of handling themes. The local theme is a symlink to the theme in ../leo/themes so it will be updated automatically when bug fixes etc. are pushed to Leo's git repository. If extensive local customization is desired, change step 1 from creating a symlink to copying the BreezeDarkTheme.leo file from ../leo/themes and renaming it to something like BreezeDarkThemeLocal.leo.
+This makes for a simple, clean way of handling themes. The local theme is a symlink to the theme in ../leo/themes so it will be updated automatically when bug fixes etc. are pushed to Leo's git repository. If extensive local customization is desired, change step 1 from creating a symlink to copying the BreezeDarkTheme.leo file from ../leo/themes and renaming it to something like BreezeDarkThemeLocal.leo.</t>
+<t tx="ekr.20180404015249.1">Leo 5.7.1 April 6, 2018
 
-@language python
+Leo 5.7.1, http://leoeditor.com, is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
 
+Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+
+
+**The highlights of Leo 5.7.1**
+
+- Improved support for themes, including the open-theme-file command.
+  Leo warns if stylesheets contain undefined @-constants.
+- Replaced 5 vs-* commands by corresponding eval* commands.
+- Support @file x.md using html sentinels.
+- Allow @path in @&lt;file&gt; nodes, and optionally generate same in recursive imports.
+- Bug fixes.
+
+**Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20180404015558.1"></t>
+<t tx="ekr.20180404015644.1"></t>
+<t tx="ekr.20180404015721.1"></t>
+<t tx="ekr.20180404015841.10">https://github.com/leo-editor/leo-editor/issues/812
+PickleShareDB.keys should definitely not call g.glob_glob.
+</t>
+<t tx="ekr.20180404015841.11">https://github.com/leo-editor/leo-editor/issues/840
+Changed c.config.getData and gcm.getData.
+</t>
+<t tx="ekr.20180404015841.12">https://github.com/leo-editor/leo-editor/issues/843
+</t>
+<t tx="ekr.20180404015841.13"></t>
+<t tx="ekr.20180404015841.14">Removed unnecessary check in g.get_directives_dict.
+</t>
+<t tx="ekr.20180404015841.15"></t>
+<t tx="ekr.20180404015841.16">Added "add_path" kwarg and related logic.
+</t>
+<t tx="ekr.20180404015841.17">They have been replaced by new eval- commands.
+</t>
+<t tx="ekr.20180404015841.18">https://github.com/leo-editor/leo-editor/issues/822
+
+</t>
+<t tx="ekr.20180404015841.2">https://github.com/leo-editor/leo-editor/issues/663
+</t>
+<t tx="ekr.20180404015841.3">https://github.com/leo-editor/leo-editor/issues/748
+</t>
+<t tx="ekr.20180404015841.4">https://github.com/leo-editor/leo-editor/issues/763
+</t>
+<t tx="ekr.20180404015841.5">https://github.com/leo-editor/leo-editor/issues/766
+</t>
+<t tx="ekr.20180404015841.6">https://github.com/leo-editor/leo-editor/issues/780
+</t>
+<t tx="ekr.20180404015841.7">https://github.com/leo-editor/leo-editor/issues/783
+</t>
+<t tx="ekr.20180404015841.8">https://github.com/leo-editor/leo-editor/issues/788
+</t>
+<t tx="ekr.20180404015841.9">https://github.com/leo-editor/leo-editor/issues/808
+</t>
+<t tx="ekr.20180404015923.1">https://github.com/leo-editor/leo-editor/issues/467
+</t>
+<t tx="ekr.20180404020037.1"></t>
+<t tx="ekr.20180404020226.1"></t>
+<t tx="ekr.20180404020244.1"></t>
+<t tx="ekr.20180404020342.1">is:issue milestone:5.7.1 is:closed
+https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A5.7.1+-label%3AWaiting+is%3Aclosed</t>
+<t tx="ekr.20180404021227.1"></t>
+<t tx="ekr.20180404021236.1">https://github.com/leo-editor/leo-editor/issues/839
+The eval* commands are now in mod_scripting.py.
+</t>
+<t tx="ekr.20180404021543.1">https://github.com/leo-editor/leo-editor/issues/832
+</t>
+<t tx="ekr.20180404021630.1">https://github.com/leo-editor/leo-editor/issues/809
+</t>
+<t tx="ekr.20180404021737.1">https://github.com/leo-editor/leo-editor/issues/802
+</t>
+<t tx="ekr.20180404021814.1">https://github.com/leo-editor/leo-editor/issues/792
+</t>
+<t tx="ekr.20180404021847.1">https://github.com/leo-editor/leo-editor/issues/784
+</t>
+<t tx="ekr.20180404022106.1">https://github.com/leo-editor/leo-editor/issues/781
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
