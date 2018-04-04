@@ -363,6 +363,7 @@
 </v>
 </v>
 </v>
+<v t="ekr.20180404072231.1"><vh>** Update distribution checklist</vh></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040519090846">@language rest
@@ -4072,6 +4073,7 @@ Simulating Leo's features in Vim, Emacs or Eclipse is possible, just as it is po
 - python setup.py bdist_wheel
 - twine upload dist/leo*.whl
 </t>
+<t tx="ekr.20180404072231.1"></t>
 <t tx="maphew.20171107045903.1">Leo 5.6 September 25, 2017
 
 [Leo](http://leoeditor.com/) 5.6 is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
