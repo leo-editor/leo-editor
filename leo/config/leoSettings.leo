@@ -1374,10 +1374,10 @@
 <v t="ekr.20131213135427.22059"><vh>@item abbrev-&amp;kill-all</vh></v>
 </v>
 <v t="ekr.20180403122157.1"><vh>@menu &amp;Open Settings/Theme Files</vh>
-<v t="ekr.20131213135427.21953"><vh>@item &amp;open-leo-settings-leo</vh></v>
+<v t="ekr.20131213135427.21953"><vh>@item open-&amp;leo-settings</vh></v>
 <v t="ekr.20131213135427.21955"><vh>@item &amp;open-local-settings</vh></v>
-<v t="ekr.20131213135427.21954"><vh>@item &amp;open-myLeoSettings-leo</vh></v>
-<v t="ekr.20180320113441.1"><vh>@item &amp;open-theme-file</vh></v>
+<v t="ekr.20131213135427.21954"><vh>@item open-&amp;my-leo-settings</vh></v>
+<v t="ekr.20180320113441.1"><vh>@item &amp;open-&amp;theme-file</vh></v>
 </v>
 <v t="ekr.20131213135427.22201"><vh>@menu &amp;Pick Colors/Fonts</vh>
 <v t="ekr.20131213135427.22202"><vh>@item show-&amp;colors</vh></v>
@@ -2341,6 +2341,9 @@
 </v>
 </v>
 <v t="ekr.20070925144552"></v>
+<v t="ekr.20180403122157.1"></v>
+<v t="ekr.20131213135427.21951"></v>
+<v t="ekr.20180403122157.1"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.

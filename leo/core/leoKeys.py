@@ -3744,6 +3744,9 @@ class KeyHandlerClass(object):
         # 2011/10/28: compute func if not given.
         if commandName and not func:
             func = c.commandsDict.get(commandName)
+            if not func:
+                g.es_print('not in c.commandsDict:', commandName, color='red')
+                return
         # Important: it is *not* an error for func to be None.
         commandName = commandName or func and func.__name__ or '<no function>'
         k.funcReturn = None # For unit testing.

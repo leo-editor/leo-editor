@@ -153,7 +153,7 @@ def openLeoScripts(self, event=None):
         if c2: return
     g.es('not found:', fileName)
 #@+node:ekr.20031218072017.2943: *3* c_help.openLeoSettings & openMyLeoSettings & helper
-@g.commander_command('open-leo-settings-leo')
+@g.commander_command('open-leo-settings')
 @g.commander_command('leo-settings-leo')
 def openLeoSettings(self, event=None):
     '''Open leoSettings.leo in a new Leo window.'''
@@ -165,8 +165,8 @@ def openLeoSettings(self, event=None):
         g.es('not found: leoSettings.leo')
         return None
 
-@g.commander_command('open-myLeoSettings-leo')
-@g.commander_command('my-leo-settings-leo')
+@g.commander_command('open-my-leo-settings')
+@g.commander_command('my-leo-settings')
 def openMyLeoSettings(self, event=None):
     '''Open myLeoSettings.leo in a new Leo window.'''
     c, lm = self, g.app.loadManager
