@@ -134,14 +134,6 @@ class LeoMenu(object):
             self.createMenusFromConfigList(aList)
         else:
             g.es_print('No @menu setting found')
-            # self.defineMenuTables()
-            # self.createFileMenuFromTable()
-            # self.createEditMenuFromTable()
-            # self.createOutlineMenuFromTable()
-            # g.doHook("create-optional-menus", c=c)
-            # self.createCmndsMenuFromTable()
-            # self.createWindowMenuFromTable()
-            # self.createHelpMenuFromTable()
     #@+node:ekr.20070926135612: *5* createMenusFromConfigList & helpers (LeoMenu)
     def createMenusFromConfigList(self, aList):
         '''Create menus from aList instead of 'hard coded' menus.
