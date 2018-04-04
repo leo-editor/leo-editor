@@ -143,7 +143,7 @@ class LeoMenu(object):
             self.createHelpMenuFromTable()
     #@+node:ekr.20031218072017.3790: *5* createFileMenuFromTable
     def createFileMenuFromTable(self):
-        c = self.c
+        # c = self.c
         fileMenu = self.createNewMenu("&File")
         self.createMenuEntries(fileMenu, self.fileMenuTopTable)
         self.createNewMenu("Open &With...", "File")
@@ -151,8 +151,6 @@ class LeoMenu(object):
         #@+<< create the recent files submenu >>
         #@+node:ekr.20031218072017.3791: *6* << create the recent files submenu >>
         self.createNewMenu("Recent &Files...", "File")
-        if 0: # Not needed, and causes problems in wxWindows...
-            g.app.recentFilesManager.createRecentFilesMenuItems(c)
         #@-<< create the recent files submenu >>
         self.add_separator(fileMenu)
         #@+<< create the read/write submenu >>

@@ -6079,7 +6079,9 @@ False: start-find commands puts focus in Find panel.</t>
 <t tx="ekr.20131213135427.21828"></t>
 <t tx="ekr.20131213135427.21829"></t>
 <t tx="ekr.20131213135427.21830"></t>
-<t tx="ekr.20131213135427.21831">A placeholder for the actual menu.
+<t tx="ekr.20131213135427.21831">**Note**: The name must be "Open Recent Files" or "Recent Files".
+
+A placeholder for the actual menu.
 Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20131213135427.21832"></t>
 <t tx="ekr.20131213135427.21833"></t>
