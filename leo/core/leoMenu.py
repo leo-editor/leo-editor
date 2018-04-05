@@ -360,7 +360,7 @@ class LeoMenu(object):
         trace = False and not g.unitTesting
         if not trace: return
         format = '%40s %s'
-        g.trace('*' * 40, g.callers())
+        g.trace('*' * 40)
         for data in table:
             if isinstance(data, (list, tuple)):
                 n = len(data)
