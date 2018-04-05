@@ -965,12 +965,8 @@ def open_theme_file(self, event):
         return
     leo_dir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
     os.chdir(leo_dir)
-    command = 'leo "%s"' % fn
+    command = 'python launchLeo.py "%s"' % fn
     os.system(command)
-    # os.system("start cmd /c %s" % command)
-        # /c terminates after the command.
-        # /k leaves window open.
-        # /d specifis starting directory.
     os.chdir(leo_dir)
 #@+node:ekr.20031218072017.2845: ** Untangle
 #@+node:ekr.20031218072017.2846: *3* c_file.untangleAll
