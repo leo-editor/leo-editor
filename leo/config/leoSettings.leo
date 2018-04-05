@@ -1068,7 +1068,7 @@
 <v t="ekr.20170323095724.1"><vh>@item open-leo-settings-leo</vh></v>
 <v t="ekr.20151225094956.1"><vh>@item open-unittest-leo</vh></v>
 </v>
-<v t="ekr.20131213135427.21831"><vh>@menu Open Recent File</vh></v>
+<v t="ekr.20131213135427.21831"><vh>@menu Recent Files</vh></v>
 <v t="ekr.20131213135427.21832"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21834"><vh>@item save-file</vh></v>
 <v t="ekr.20131213135427.21835"><vh>@item save-file-as</vh></v>
@@ -1404,12 +1404,16 @@
 </v>
 </v>
 <v t="ekr.20131213135427.21961"><vh>@menu &amp;Outline</vh>
-<v t="ekr.20180403123508.1"><vh>@menu &amp;Copy/Paste Nodes</vh>
+<v t="ekr.20131213135427.21970"><vh>@item &amp;clone-node</vh></v>
+<v t="ekr.20131213135427.21966"><vh>@item &amp;delete-node</vh></v>
+<v t="ekr.20131213135427.21968"><vh>@item &amp;insert-node</vh></v>
+<v t="ekr.20131213135427.21969"><vh>@item insert-child</vh></v>
+<v t="ekr.20180405112647.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21962"><vh>@item c&amp;ut-node</vh></v>
 <v t="ekr.20131213135427.21963"><vh>@item c&amp;opy-node</vh></v>
 <v t="ekr.20131213135427.21964"><vh>@item &amp;paste-node</vh></v>
 <v t="ekr.20131213135427.21965"><vh>@item paste-retaining-clones</vh></v>
-</v>
+<v t="ekr.20180405112755.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21983"><vh>@menu &amp;Expand/Contract Nodes</vh>
 <v t="ekr.20131213135427.21984"><vh>Accel: a,c,d,e,n,o,p,l,r,t,x</vh></v>
 <v t="ekr.20131213135427.21985"><vh>@item &amp;contract-all</vh></v>
@@ -1470,12 +1474,6 @@
 <v t="ekr.20131213135427.22180"><vh>@item delete-&amp;node-icons</vh></v>
 <v t="ekr.20131213135427.22182"><vh>@item &amp;insert-icon</vh></v>
 </v>
-<v t="ekr.20180403123532.1"><vh>@menu &amp;Insert/Delete/Clone Nodes</vh>
-<v t="ekr.20131213135427.21970"><vh>@item &amp;clone-node</vh></v>
-<v t="ekr.20131213135427.21966"><vh>@item &amp;delete-node</vh></v>
-<v t="ekr.20131213135427.21968"><vh>@item &amp;insert-node</vh></v>
-<v t="ekr.20131213135427.21969"><vh>@item insert-child</vh></v>
-</v>
 <v t="ekr.20131213135427.22015"><vh>@menu &amp;Mark Nodes</vh>
 <v t="ekr.20131213135427.22016"><vh>@item clone-marked-nodes</vh></v>
 <v t="ekr.20131213135427.22017"><vh>@item &amp;mark</vh></v>
@@ -1503,6 +1501,19 @@
 <v t="ekr.20131213135427.22048"><vh>@item -</vh></v>
 </v>
 <v t="ekr.20180403122045.1"><vh>@menu Run</vh>
+<v t="ekr.20131213135427.22200"><vh>@item &amp;help-for-minibuffer</vh></v>
+<v t="ekr.20180403120726.1"><vh>@item &amp;execute-script</vh></v>
+<v t="ekr.20131213135427.22195"><vh>@item &amp;full-command</vh></v>
+<v t="ekr.20131213135427.22196"><vh>@item &amp;keyboard-quit</vh></v>
+<v t="ekr.20131213135427.22197"><vh>@item &amp;repeat-complex-command</vh></v>
+<v t="ekr.20131213135427.22198"><vh>@item &amp;view-lossage</vh></v>
+<v t="ekr.20180405112939.1"><vh>@item -</vh></v>
+<v t="ekr.20180403105526.1"><vh>@item &amp;eval</vh></v>
+<v t="ekr.20180403105636.1"><vh>@item &amp;eval-block</vh></v>
+<v t="ekr.20180403105541.1"><vh>@item &amp;eval-last</vh></v>
+<v t="ekr.20180403105609.1"><vh>@item &amp;eval-last-pretty</vh></v>
+<v t="ekr.20180403105722.1"><vh>@item &amp;eval-replace</vh></v>
+<v t="ekr.20180405112923.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21977"><vh>@menu &amp;Check/Dump Outline</vh>
 <v t="ekr.20131213135427.21978"><vh>@item check-&amp;outline</vh></v>
 <v t="ekr.20131213135427.21979"><vh>@item &amp;dump-outline</vh></v>
@@ -1516,24 +1527,10 @@
 <v t="ekr.20131213135427.22137"><vh>@item gc-&amp;trace-disable</vh></v>
 <v t="ekr.20131213135427.22138"><vh>@item gc-&amp;trace-enable</vh></v>
 </v>
-<v t="ekr.20180403105510.1"><vh>@menu &amp;Evaluate Python Expressions</vh>
-<v t="ekr.20180403105526.1"><vh>@item &amp;eval</vh></v>
-<v t="ekr.20180403105636.1"><vh>@item &amp;eval-block</vh></v>
-<v t="ekr.20180403105541.1"><vh>@item &amp;eval-last</vh></v>
-<v t="ekr.20180403105609.1"><vh>@item &amp;eval-last-pretty</vh></v>
-<v t="ekr.20180403105722.1"><vh>@item &amp;eval-replace</vh></v>
-</v>
-<v t="ekr.20131213135427.22194"><vh>@menu &amp;Execute Named Commands</vh>
-<v t="ekr.20131213135427.22200"><vh>@item &amp;help-for-minibuffer</vh></v>
-<v t="ekr.20131213135427.22199"><vh>@item -</vh></v>
-<v t="ekr.20180403120726.1"><vh>@item &amp;execute-script</vh></v>
-<v t="ekr.20131213135427.22195"><vh>@item &amp;full-command</vh></v>
-<v t="ekr.20131213135427.22196"><vh>@item &amp;keyboard-quit</vh></v>
-<v t="ekr.20131213135427.22197"><vh>@item &amp;repeat-complex-command</vh></v>
+<v t="ekr.20131213135427.22194"><vh>@menu &amp;Execute Shell Commands</vh>
 <v t="ekr.20131213135427.22130"><vh>@item &amp;open-python-window</vh></v>
 <v t="ekr.20131213135427.22258"><vh>@item &amp;shell-command</vh></v>
 <v t="ekr.20131213135427.22259"><vh>@item &amp;shell-command-on-region</vh></v>
-<v t="ekr.20131213135427.22198"><vh>@item &amp;view-lossage</vh></v>
 </v>
 <v t="ekr.20131213135427.22127"><vh>@menu &amp;Invoke Debuggers</vh>
 <v t="ekr.20131213135427.22128"><vh>@item debug</vh></v>
@@ -6077,7 +6074,9 @@ False: start-find commands puts focus in Find panel.</t>
 <t tx="ekr.20131213135427.21828"></t>
 <t tx="ekr.20131213135427.21829"></t>
 <t tx="ekr.20131213135427.21830"></t>
-<t tx="ekr.20131213135427.21831">A placeholder for the actual menu.
+<t tx="ekr.20131213135427.21831">Recent Files
+
+A placeholder for the actual menu.
 Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20131213135427.21832"></t>
 <t tx="ekr.20131213135427.21833"></t>
@@ -6360,7 +6359,6 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20131213135427.22196"></t>
 <t tx="ekr.20131213135427.22197"></t>
 <t tx="ekr.20131213135427.22198"></t>
-<t tx="ekr.20131213135427.22199"></t>
 <t tx="ekr.20131213135427.22200"></t>
 <t tx="ekr.20131213135427.22201"></t>
 <t tx="ekr.20131213135427.22202"></t>
@@ -11739,7 +11737,6 @@ May be overridden by themes.</t>
 <t tx="ekr.20180403104732.1"></t>
 <t tx="ekr.20180403104751.1"></t>
 <t tx="ekr.20180403105112.1"></t>
-<t tx="ekr.20180403105510.1"></t>
 <t tx="ekr.20180403105526.1"></t>
 <t tx="ekr.20180403105541.1"></t>
 <t tx="ekr.20180403105609.1"></t>
@@ -11765,8 +11762,6 @@ Alt+Ctrl+S set-find-suboutline-only
 <t tx="ekr.20180403120838.1"></t>
 <t tx="ekr.20180403122045.1"></t>
 <t tx="ekr.20180403122225.1"></t>
-<t tx="ekr.20180403123508.1"></t>
-<t tx="ekr.20180403123532.1"></t>
 <t tx="ekr.20180403123734.1"></t>
 <t tx="ekr.20180403124541.1"></t>
 <t tx="ekr.20180403153650.1"></t>
@@ -11777,6 +11772,10 @@ Alt+Ctrl+S set-find-suboutline-only
 <t tx="ekr.20180403154703.1"></t>
 <t tx="ekr.20180403155811.1"></t>
 <t tx="ekr.20180405110859.1"></t>
+<t tx="ekr.20180405112647.1"></t>
+<t tx="ekr.20180405112755.1"></t>
+<t tx="ekr.20180405112923.1"></t>
+<t tx="ekr.20180405112939.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
