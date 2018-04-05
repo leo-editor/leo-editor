@@ -46,12 +46,6 @@
 <v t="ekr.20170311121717.1"><vh>Test driven development</vh></v>
 <v t="ekr.20170403190104.1"><vh>Performance gotchas</vh></v>
 <v t="ekr.20170403190120.1"><vh>About names</vh></v>
-<v t="ekr.20160315141648.1"><vh>Code academy</vh>
-<v t="ekr.20160315141648.3"><vh>CA: uA's</vh></v>
-<v t="ekr.20160315141648.4"><vh>CA: icons</vh></v>
-<v t="ekr.20160315141648.5"><vh>CA: using git</vh></v>
-<v t="ekr.20160315141648.6"><vh>CA: finding nodes with c.cloneFindByPredicate</vh></v>
-</v>
 </v>
 <v t="ekr.20170311122518.1"><vh>Command line options</vh></v>
 </v>
@@ -70,22 +64,14 @@
 </v>
 <v t="ekr.20131102044158.16563"><vh>~/myDocument.html.txt</vh></v>
 </v>
-<v t="ekr.20180405093138.1"><vh>Leo University</vh></v>
-<v t="ekr.20131019184243.16694"></v>
 <v t="ekr.20180405093127.1"><vh>Rendering examples</vh>
-<v t="ekr.20180405093127.2"><vh> Fail: graphics movies, etc</vh>
-<v t="ekr.20180405093127.3"><vh>@movie Gayane Ballet (Local file)</vh></v>
-<v t="ekr.20180405093127.4"><vh>@movie Gayane Ballet (Url)</vh></v>
-<v t="ekr.20180405093127.5"><vh>@movie Sample video (Local file)</vh></v>
-<v t="ekr.20180405093127.6"><vh>@movie Sample video (Url)</vh></v>
-<v t="ekr.20180405093127.7"><vh>@graphics-script</vh></v>
-</v>
-<v t="ekr.20180405093127.8"><vh> Python code (@language rest)</vh></v>
-<v t="ekr.20180405093127.9"><vh>@html display Leo tree (cool)</vh></v>
-<v t="ekr.20180405093127.10"><vh>@html Leo's home page</vh></v>
+<v t="ekr.20180405093127.9"><vh>@html display Leo tree using css</vh></v>
 <v t="ekr.20180405093127.11"><vh>@image LeoSplash</vh></v>
 <v t="ekr.20180405093127.12"><vh>@image splash screen</vh></v>
-<v t="ekr.20180405093127.13"><vh>@networkx my network</vh></v>
+<v t="ekr.20180405093127.22" a="M"><vh>@svg bubbles from sources</vh></v>
+<v t="ekr.20180405093127.23"><vh>@svg bubbles.svg from a link</vh></v>
+<v t="ekr.20180405093127.31"><vh>Markdown example</vh></v>
+<v t="ekr.20180405105451.1"><vh>pyplot examples</vh>
 <v t="ekr.20180405093127.14"><vh>@pyplot barchar_demo</vh></v>
 <v t="ekr.20180405093127.15"><vh>@pyplot basic_example</vh>
 <v t="ekr.20180405093127.16"><vh>Figure 1</vh></v>
@@ -96,18 +82,19 @@
 <v t="ekr.20180405093127.20"><vh>init</vh></v>
 <v t="ekr.20180405093127.21"><vh>run</vh></v>
 </v>
-<v t="ekr.20180405093127.22" a="M"><vh>@svg bubbles sources</vh></v>
-<v t="ekr.20180405093127.23"><vh>@svg bubbles.svg</vh></v>
-<v t="ekr.20180405093952.1"><vh>@url YouTube movie</vh></v>
-<v t="ekr.20180405093127.24"><vh>@url Leo's home page (md default)</vh></v>
-<v t="ekr.20180405093127.25"><vh>@url Leo's home page (md explicit)</vh></v>
-<v t="ekr.20180405093127.26"><vh>@url Leo's home page (rST default)</vh></v>
-<v t="ekr.20180405093127.27"><vh>@url Leo's home page (rST explicit)</vh></v>
-<v t="ekr.20180405093127.28"><vh>@url weather (md default)</vh></v>
-<v t="ekr.20180405093127.29"><vh>@url weather (rst default)</vh></v>
-<v t="ekr.20180405093127.30"><vh>docstring test</vh></v>
-<v t="ekr.20180405093127.31" a="M"><vh>markdown test (including url)</vh></v>
-<v t="ekr.20180405093127.32" a="M"><vh>rst test (including url)</vh></v>
+</v>
+<v t="ekr.20180405093127.30"><vh>reStructuredText docstring example</vh></v>
+<v t="ekr.20180405093127.32" a="M"><vh>reStructureText text example</vh></v>
+</v>
+<v t="ekr.20131019184243.16694"></v>
+<v t="ekr.20180405105738.1"><vh>Learning to be a Leo developer</vh>
+<v t="ekr.20160315141648.1"><vh>Code academy</vh>
+<v t="ekr.20160315141648.3"><vh>CA: uA's</vh></v>
+<v t="ekr.20160315141648.4"><vh>CA: icons</vh></v>
+<v t="ekr.20160315141648.5"><vh>CA: using git</vh></v>
+<v t="ekr.20160315141648.6"><vh>CA: finding nodes with c.cloneFindByPredicate</vh></v>
+</v>
+<v t="ekr.20180405093138.1"><vh>Leo University</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -1015,211 +1002,19 @@ These performance gotchas become important for repetitive commands, like cff, re
 </t>
 <t tx="ekr.20170403190120.1">Scripts may safely assume that most names defined in Leo's core will never change. Names used outside their defining module *can't* be changed, because doing so would impact existing user scripts. This includes virtually everything in leoGlobals.py, and many names in leoCommands.py and other files. The only names that might change are unlikely every to be of use to scripts anyway. For example, helper functions.
 </t>
-<t tx="ekr.20180405093127.1">The following demos some of Leo's renderinging capabilities.
+<t tx="ekr.20180405093127.1">Here are some demos of Leo's rendering capabilities.
+
 To see these examples:
 
 1. enable Leo's viewrendered.py (VR) plugin.
 
 2. Show the VR pane with Alt-0, vr-toggle.</t>
-<t tx="ekr.20180405093127.10">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;
-&lt;!--@+leo-ver=5-thin--&gt;
-&lt;!--@+node:ekr.20100808060203.4273: * @thin html/front.html--&gt;
-&lt;!--@@first--&gt;
-&lt;!--@@first--&gt;
-
-&lt;!--@@language html--&gt;
-&lt;!--@@tabwidth -2--&gt;
-
-&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
-&lt;head&gt;
-    &lt;!--@+&lt;&lt; head &gt;&gt;--&gt;
-    &lt;!--@+node:ekr.20100808060203.4274: ** &lt;&lt; head &gt;&gt;--&gt;
-    &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
-
-    &lt;title&gt;Leo's Home Page&lt;/title&gt;
-    &lt;link rel="stylesheet" href="_static/default.css" type="text/css" /&gt;
-    &lt;link rel="stylesheet" href="_static/silver_city.css" type="text/css" /&gt;
-    &lt;!--
-    &lt;script type="text/javascript"&gt;
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '4.7-final',
-        COLLAPSE_MODINDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  false
-      };
-    &lt;/script&gt;
-    --&gt;
-    &lt;!-- &lt;script type="text/javascript" src="_static/jquery.js"&gt;&lt;/script&gt;--&gt;
-    &lt;!-- &lt;script type="text/javascript" src="_static/doctools.js"&gt;&lt;/script&gt;--&gt;
-    &lt;link rel="top" title="Leo v4.7-final documentation" href="index.html" /&gt;
-    &lt;link rel="Users Guide" title="Leo&amp;#8217;s Users Guide" href="leo_toc.html" /&gt;
-    &lt;!-- &lt;link rel="prev" title="Chapter 5: Using LeoÃ¢â‚¬â„¢s Commands" href="commands.html" /&gt;--&gt; 
-    &lt;!--@-&lt;&lt; head &gt;&gt;--&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;!--@+&lt;&lt; div top nav &gt;&gt;--&gt;
-    &lt;!--@+node:ekr.20100808060203.4276: ** &lt;&lt; div top nav &gt;&gt;--&gt;
-    &lt;div class="related"&gt;
-      &lt;h3&gt;Navigation&lt;/h3&gt;
-      &lt;ul&gt;
-        &lt;li class="right" style="margin-right: 10px"&gt;
-          &lt;a href="genindex.html" title="General Index"
-             accesskey="I"&gt;index&lt;/a&gt;&lt;/li&gt;
-        &lt;li class="right" &gt;
-          &lt;a href="leo_toc.html" title="Leo&amp;#8217;s Users Guide"
-             accesskey="N"&gt;contents&lt;/a&gt; |&lt;/li&gt;
-        &lt;!--
-        &lt;li class="right" &gt;
-          &lt;a href="commands.html" title="Chapter 5: Using Leo&amp;#8217;s Commands"
-             accesskey="P"&gt;previous&lt;/a&gt; |&lt;/li&gt;
-        --&gt;
-        &lt;li&gt;&lt;a href="leo_toc.html"&gt;Leo v4.7-final documentation&lt;/a&gt; &amp;raquo;&lt;/li&gt;
-
-      &lt;/ul&gt;
-    &lt;/div&gt;
-    &lt;!--@-&lt;&lt; div top nav &gt;&gt;--&gt;
-    &lt;div class="document"&gt;
-      &lt;div class="documentwrapper"&gt;
-        &lt;div class="bodywrapper"&gt;
-          &lt;div class="body"&gt;
-            &lt;!--@+&lt;&lt; div outer section &gt;&gt;--&gt;
-            &lt;!--@+node:ekr.20100808060203.4286: ** &lt;&lt; div outer section &gt;&gt;--&gt;
-            &lt;div class="section" id="Leo&amp;#8217;s Home page"&gt;
-
-                &lt;h1&gt;Leo&amp;#8217;s Home Page&lt;/h1&gt;
-
-                Leo is...
-
-                &lt;!--@+&lt;&lt; what is Leo list &gt;&gt;--&gt;
-                &lt;!--@+node:ekr.20100808060203.4288: *3* &lt;&lt; what is Leo list &gt;&gt;--&gt;
-                &lt;li&gt;
-                    An outline-oriented &lt;i&gt;browser&lt;/i&gt; and &lt;i&gt;project manager&lt;/i&gt; that organizes&lt;br&gt;
-                    programs, web sites, URL's, pictures, movies or any other kind of data.&lt;br&gt;
-                    You can organize your data in as many ways as you like within a &lt;i&gt;single&lt;/i&gt; outline.&lt;/li&gt;
-                &lt;li&gt;
-                    A &lt;i&gt;programmer's editor&lt;/i&gt; that fully integrates outline structure with programming.
-                    &lt;!--
-                    &lt;a HREF="http://www.eecs.harvard.edu/~nr/noweb/"&gt;noweb&lt;/a&gt; and
-                    &lt;a HREF="http://www-cs-faculty.stanford.edu/~knuth/cweb.html"&gt;CWEB&lt;/a&gt; markup.&lt;/li&gt;
-                    --&gt;
-                &lt;li&gt;
-                    &lt;i&gt;Fully scriptable&lt;/i&gt; using &lt;a HREF="http://www.python.org/"&gt;Python&lt;/a&gt;.
-                    Leo's core is 100% pure Python.&lt;/li&gt;
-                &lt;li&gt;
-                    &lt;i&gt;Portable&lt;/i&gt;. Leo runs on Windows, Linux and MacOS X.&lt;br&gt;
-                    Leo requires either the
-                    &lt;a HREF="http://docs.python.org/library/tkinter.html"&gt;Tkinter&lt;/a&gt; or
-                    &lt;a HREF="http://www.riverbankcomputing.co.uk/software/pyqt/intro"&gt;PyQt&lt;/a&gt; widget set.&lt;br&gt;
-                    Leo's outline files are &lt;a HREF="http://www.w3.org/XML/"&gt;XML&lt;/a&gt; format.&lt;/li&gt;
-                &lt;li&gt;
-                    &lt;a href="http://www.opensource.org/"&gt;&lt;i&gt;Open Software&lt;/i&gt;&lt;/a&gt;,
-                    distributed under the
-                    &lt;a href="http://www.opensource.org/licenses/mit-license.php/"&gt;MIT License&lt;/a&gt;.&lt;/li&gt;
-                &lt;!--@-&lt;&lt; what is Leo list &gt;&gt;--&gt;
-                &lt;!-- div body toc --&gt;
-                &lt;!-- &lt; &lt; inner sections &gt; &gt; --&gt;
-
-                &lt;p&gt;Leo has an active community of helpful users and developers.&lt;br&gt;
-                Please use the &lt;a href="http://groups.google.com/group/leo-editor"&gt;leo-editor&lt;/a&gt;
-                group to ask questions and make suggestions.&lt;/p&gt;
-
-                &lt;p&gt;Leo's author is &lt;a HREF="ekr.html"&gt;Edward K. Ream&lt;/a&gt;&lt;/p&gt;
-
-            &lt;/div&gt;
-            &lt;!--@-&lt;&lt; div outer section &gt;&gt;--&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-      &lt;!--@+&lt;&lt; sidebar &gt;&gt;--&gt;
-      &lt;!--@+node:ekr.20100808060203.4282: ** &lt;&lt; sidebar &gt;&gt;--&gt;
-      &lt;div class="sphinxsidebar"&gt;
-          &lt;div class="sphinxsidebarwrapper"&gt;
-              &lt;!--@+&lt;&lt; sidebar contents &gt;&gt;--&gt;
-              &lt;!--@+node:ekr.20100808060203.4283: *3* &lt;&lt; sidebar contents &gt;&gt;--&gt;
-              &lt;p class="logo"&gt;&lt;a href="leo_toc.html"&gt;
-                &lt;img class="logo" src="_static/Leo4-80-border.jpg" alt="Logo"/&gt;&lt;/a&gt;&lt;/p&gt;
-
-              &lt;a class="reference external" href="intro.html"&gt;
-                Read this tutorial first&lt;/a&gt;&lt;br&gt;
-              &lt;a class="reference external" href="http://www.3dtree.com/ev/e/sbooks/leo/sbframetoc_ie.htm"&gt;
-                Another tutorial&lt;/a&gt;&lt;br&gt;
-              &lt;a class="reference external" href="http:screen-shots.html"&gt;
-                Screen shots of Leo&lt;/a&gt;&lt;br&gt;
-              &lt;a class="reference external" href="testimonials.html"&gt;
-                Quotes from Leo&amp;#8217;s Users&lt;/a&gt;&lt;br&gt;
-              &lt;a class="reference external"
-                href="http://sourceforge.net/project/showfiles.php?group_id=3458&amp;amp;package_id=29106"&gt;
-                Download Leo&lt;/a&gt;&lt;br&gt;
-              &lt;a class="reference external" href="http://groups.google.com/group/leo-editor"&gt;
-                leo-editor: Google Groups&lt;/a&gt;&lt;br&gt;
-              &lt;a class="reference external" href="http://launchpad.net/leo-editor"&gt;
-                leo-editor: Launchpad&lt;/a&gt;&lt;br&gt;
-              &lt;a class="reference external" href="http://leo.zwiki.org"&gt;
-                Leo&amp;#8217;s Wiki&lt;/a&gt;&lt;br&gt;
-              &lt;a class="reference external" href="http://www.mind-mapping.org/"&gt;
-                Mind Mapping&lt;/a&gt;&lt;br&gt;
-              &lt;a class="reference external" href="leoLinks.html"&gt;
-                More links...&lt;/a&gt;&lt;br&gt;
-
-              &lt;!-- &lt;a class="reference external"  href="install.html"&gt;Installing Leo&lt;/a&gt;&lt;br&gt;--&gt; 
-              &lt;!-- &lt;a class="reference external"  href="intro.html"&gt;Beginners Guide&lt;/a&gt;&lt;br&gt;--&gt;
-              &lt;!-- &lt;a class="reference external"  href="leo_toc.html"&gt;Users Guide&lt;/a&gt;&lt;br&gt;--&gt;
-              &lt;!-- &lt;a class="reference external"  href="FAQ.html"&gt;FAQ&lt;/a&gt;&lt;br&gt;--&gt;
-              &lt;!--Leo&amp;#8217;s &lt;a class="reference external" href="http://www.greygreen.org/leo/"&gt;Daily snapshots&lt;/a&gt;&lt;br&gt;--&gt;
-              &lt;!-- 
-              &lt;h5&gt;Edward K. Ream&lt;/h5&gt;
-              &lt;a class="reference external" href="ekr.html"&gt;Home&lt;/a&gt;&lt;br&gt;
-              &lt;a class="reference external" href="mailto:edreamleo@gmail.com"&gt;Contact&lt;/a&gt;&lt;br&gt;
-              --&gt; 
-              &lt;!--@-&lt;&lt; sidebar contents &gt;&gt;--&gt;
-          &lt;!-- &lt; &lt; sidebar links &gt; &gt; --&gt;
-          &lt;!-- &lt; &lt; searchbox &gt; &gt; --&gt;
-          &lt;/div&gt;
-      &lt;/div&gt;
-      &lt;!--@-&lt;&lt; sidebar &gt;&gt;--&gt;
-      &lt;div class="clearer"&gt;&lt;/div&gt;
-    &lt;/div&gt;
-    &lt;!--@+&lt;&lt; div bottom nav &gt;&gt;--&gt;
-    &lt;!--@+node:ekr.20100808060203.4277: ** &lt;&lt; div bottom nav &gt;&gt;--&gt;
-    &lt;div class="related"&gt;
-      &lt;h3&gt;Navigation&lt;/h3&gt;
-      &lt;ul&gt;
-        &lt;li class="right" style="margin-right: 10px"&gt;
-          &lt;a href="genindex.html" title="General Index"
-             &gt;index&lt;/a&gt;&lt;/li&gt;
-        &lt;li class="right" &gt;
-          &lt;a href="leo_toc.html" title="Leo&amp;#8217;s Users Guide"
-             &gt;contents&lt;/a&gt; |&lt;/li&gt;
-        &lt;!--
-        &lt;li class="right" &gt;
-          &lt;a href="commands.html" title="Chapter 5: Using Leo&amp;#8217;s Commands"
-             &gt;previous&lt;/a&gt; |&lt;/li&gt;
-        --&gt;
-        &lt;li&gt;&lt;a href="leo_toc.html"&gt;Leo v4.7-final documentation&lt;/a&gt; &amp;raquo;&lt;/li&gt; 
-      &lt;/ul&gt;
-    &lt;/div&gt;
-    &lt;!--@-&lt;&lt; div bottom nav &gt;&gt;--&gt;
-    &lt;!--@+&lt;&lt; div footer &gt;&gt;--&gt;
-    &lt;!--@+node:ekr.20100808060203.4278: ** &lt;&lt; div footer &gt;&gt;--&gt;
-    &lt;div class="footer"&gt;
-      &amp;copy; Copyright 2010, Edward K. Ream.
-      Last updated on Aug 08, 2010.
-      Created using &lt;a href="http://sphinx.pocoo.org/"&gt;Sphinx&lt;/a&gt; 0.6.3.
-    &lt;/div&gt;
-    &lt;!--@-&lt;&lt; div footer &gt;&gt;--&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-&lt;!--@-leo--&gt;
-</t>
-<t tx="ekr.20180405093127.11">C:\leo.repo\leo-editor\leo\Icons\Leosplash.GIF
+<t tx="ekr.20180405093127.11">../Icons/Leosplash.GIF
 
 This is a comment</t>
 <t tx="ekr.20180405093127.12">c:\leo.repo\leo-editor\leo\Icons\SplashScreen.ico
 
 </t>
-<t tx="ekr.20180405093127.13"></t>
 <t tx="ekr.20180405093127.14">#!/usr/bin/env python
 # a bar plot with errorbars
 import numpy as np
@@ -1334,7 +1129,6 @@ plt.show()</t>
         t += 0.1
         yield t, np.sin(2*np.pi*t) * np.exp(-t/10.)
 </t>
-<t tx="ekr.20180405093127.2"></t>
 <t tx="ekr.20180405093127.20">def init():
     ax.set_ylim(-1.1, 1.1)
     ax.set_xlim(0, 10)
@@ -1570,29 +1364,8 @@ plt.show()</t>
      &lt;/g&gt;
    &lt;/g&gt;
 &lt;/svg&gt;</t>
-<t tx="ekr.20180405093127.23">c:\leo.repo\leo-editor\leo\Icons\bubbles.svg
+<t tx="ekr.20180405093127.23">..\Icons\bubbles.svg
 </t>
-<t tx="ekr.20180405093127.24">[Leo's home page](http://leoeditor.com/)
-</t>
-<t tx="ekr.20180405093127.25">@language md
-@wrap
-
-[Leo's home page](http://leoeditor.com/)
-</t>
-<t tx="ekr.20180405093127.26">`Leo's home page &lt;http://leoeditor.com/&gt;`_
-
-</t>
-<t tx="ekr.20180405093127.27">@language rest
-@wrap
-
-`Leo's home page &lt;http://leoeditor.com/&gt;`_
-
-</t>
-<t tx="ekr.20180405093127.28">[weather.com](http://www.weather.com/weather/today/Madison+WI+53705?from=hp_promolocator&amp;lswe=53705&amp;lwsa=Weather36HourHealthCommand)
-</t>
-<t tx="ekr.20180405093127.29">`weather.com &lt;http://www.weather.com/weather/today/Madison+WI+53705?from=hp_promolocator&amp;lswe=53705&amp;lwsa=Weather36HourHealthCommand&gt;`_
-</t>
-<t tx="ekr.20180405093127.3">C:\Users\edreamleo\Documents\Music\2001- A Space Odyssey [Rhino]\06 Gayane Ballet Suite.mp3</t>
 <t tx="ekr.20180405093127.30">@language rest
 @wrap
 
@@ -1656,13 +1429,21 @@ When True, the plugin will create a rendering pane automatically.
 
 This is **bold** and *italics*.
 
-More info at [Leo's home page](&lt;http://leoeditor.com/).
+Control-clicks follow url's in body text.&lt;br&gt;
+Plain clicks follow url's in the VR pane.
+
+Here is [Leo's home page](&lt;http://leoeditor.com/).
 
 ### Section
 
 - Bullet list
 - Another item
 - Third item.
+
+Here is some python code:
+
+    def spam():
+        pass
 </t>
 <t tx="ekr.20180405093127.32">@language rest
 
@@ -1672,6 +1453,10 @@ Title
 
 This is **bold** and *italics*.
 
+Control-clicks follow url's in body text.
+
+Plain clicks follow url's in the VR pane.
+
 More info at `Leo's home page &lt;http://leoeditor.com/&gt;`_.
 
 Section
@@ -1679,24 +1464,9 @@ Section
 
 - Bullet list
 - Another item
-- Third item.</t>
-<t tx="ekr.20180405093127.4">https://www.youtube.com/watch?v=EB3IokHelRk
+- Third item.
 
-# Doesn't play, probably because of https.</t>
-<t tx="ekr.20180405093127.5">C:\Users\edreamleo\SampleVideo_1280x720_1mb.mp4
-</t>
-<t tx="ekr.20180405093127.6">http://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_1mb.mp4
-
-# This *does* play.</t>
-<t tx="ekr.20180405093127.7" _bklnk="7d71002858010000007971014b0058010000007871024b00580400000074797065710358080000006e6f646552656374710458050000006c696e6b7371055d7106752e">gs.clear()
-gs.addText('\n%s\n%s' % (gv,gs))
-
-if 0:
-    for i in range(50):
-        gs.addText('\n' * i +'More')
-</t>
-<t tx="ekr.20180405093127.8">@language rest
-::
+Here is some python code::
 
     def spam():
         '''This is a docstring.'''
@@ -1811,7 +1581,7 @@ test
 Here is the main page.  It contains links to individual lessons.
 https://github.com/leo-editor/leo-editor/issues/816
 </t>
-<t tx="ekr.20180405093952.1">http://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_1mb.mp4
-</t>
+<t tx="ekr.20180405105451.1">These will work only if numpy and pyplot are installed.</t>
+<t tx="ekr.20180405105738.1"></t>
 </tnodes>
 </leo_file>
