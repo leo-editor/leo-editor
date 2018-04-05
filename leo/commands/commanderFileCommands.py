@@ -512,7 +512,7 @@ def saveAsZipped(self, event=None):
     ensuring that the file is compressed.
     '''
     c = self
-    self.saveAsZippedHelper(c, True)
+    saveAsZippedHelper(c, True)
 
 def saveAsZippedHelper(c, isZipped):
     oldZipped = c.isZipped
