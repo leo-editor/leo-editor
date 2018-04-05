@@ -6180,7 +6180,7 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20131213135427.21953">Open &amp;LeoSettings.leo</t>
 <t tx="ekr.20131213135427.21954">Open &amp;myLeoSettings.leo
 </t>
-<t tx="ekr.20131213135427.21955">&amp;Select Local @settings tree.</t>
+<t tx="ekr.20131213135427.21955">&amp;Select Local @settings tree</t>
 <t tx="ekr.20131213135427.21957"></t>
 <t tx="ekr.20131213135427.21958"></t>
 <t tx="ekr.20131213135427.21959"></t>

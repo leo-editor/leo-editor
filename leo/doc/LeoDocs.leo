@@ -26186,6 +26186,7 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 - Replaced 5 vs-* commands by corresponding eval* commands.
 - Support @file x.md using html sentinels.
 - Allow @path in @&lt;file&gt; nodes, and optionally generate same in recursive imports.
+- Improved menus.
 - The usual minor bug fixes.
 
 **Links**
