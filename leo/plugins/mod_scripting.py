@@ -1213,15 +1213,19 @@ class EvalController(object):
         '''Ctor for EvalController class.'''
         self.answers = []
         self.c = c
+        self.d = {}
+        self.globals_d = {'c':c, 'g':g, 'p':c.p}
+        self.locals_d = {}
         self.legacy = c.config.getBool('legacy-eval', default=True)
         # g.trace('(EvalController) legacy: ', self.legacy)
-        if self.legacy:
-            self.d = {}
+        if g.app.ipk:
+            # Use the IPython namespace.
+            self.c.vs = g.app.ipk.namespace
+        elif self.legacy:
             self.c.vs = self.d
         else:
-            self.c.vs = self.globals_d = {'c':c, 'g':g, 'p':c.p}
+            self.c.vs = self.globals_d
                 # Updated by do_exec.
-            self.locals_d = {}
         self.last_result = None
         self.old_stderr = None
         self.old_stdout = None
