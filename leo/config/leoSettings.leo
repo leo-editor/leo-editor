@@ -1068,7 +1068,7 @@
 <v t="ekr.20170323095724.1"><vh>@item open-leo-settings-leo</vh></v>
 <v t="ekr.20151225094956.1"><vh>@item open-unittest-leo</vh></v>
 </v>
-<v t="ekr.20131213135427.21831"><vh>@menu Open Recent &amp;Files</vh></v>
+<v t="ekr.20131213135427.21831"><vh>@menu Open &amp;Recent File</vh></v>
 <v t="ekr.20131213135427.21832"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21834"><vh>@item save-file</vh></v>
 <v t="ekr.20131213135427.21835"><vh>@item save-file-as</vh></v>
@@ -6078,7 +6078,9 @@ False: start-find commands puts focus in Find panel.</t>
 <t tx="ekr.20131213135427.21828"></t>
 <t tx="ekr.20131213135427.21829"></t>
 <t tx="ekr.20131213135427.21830"></t>
-<t tx="ekr.20131213135427.21831">**Note**: The name must be "Open Recent Files" or "Recent Files".
+<t tx="ekr.20131213135427.21831">Open &amp;Recent File
+
+**Must be singular**
 
 A placeholder for the actual menu.
 Leo's init code populates this menu as a special case.</t>
@@ -11445,8 +11447,8 @@ create the Plugins menu and populate the menu by calling the
 
 - Nested @menu nodes contain submenus.
 
-- The command name follows @item. If the body text of an @item node exists, this
-body text is the menu name. Otherwise, the menu name is the command name.
+- The command name follows @item. If the body text of an @item node exists, the
+first line of the body text is the menu name. Otherwise, the menu name is the command name.
 However, if the command name starts with a '*', hyphens are removed from the
 menu name.
 
