@@ -3487,7 +3487,7 @@ class RecentFilesManager(object):
     def createRecentFilesMenuItems(self, c):
         rf = self
         menu = c.frame.menu
-        recentFilesMenu = menu.getMenu("Open Recent Files") # was "Recent Files"
+        recentFilesMenu = menu.getMenu("Open Recent File") # was "Recent Files"
         if not recentFilesMenu and not g.unitTesting:
             # g.trace('Recent Files Menu does not exist')
             return

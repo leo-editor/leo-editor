@@ -1068,7 +1068,7 @@
 <v t="ekr.20170323095724.1"><vh>@item open-leo-settings-leo</vh></v>
 <v t="ekr.20151225094956.1"><vh>@item open-unittest-leo</vh></v>
 </v>
-<v t="ekr.20131213135427.21831"><vh>@menu Open &amp;Recent File</vh></v>
+<v t="ekr.20131213135427.21831"><vh>@menu Open Recent File</vh></v>
 <v t="ekr.20131213135427.21832"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21834"><vh>@item save-file</vh></v>
 <v t="ekr.20131213135427.21835"><vh>@item save-file-as</vh></v>
@@ -1369,15 +1369,14 @@
 </v>
 </v>
 <v t="ekr.20131213135427.21951"><vh>@menu Settings</vh>
+<v t="ekr.20131213135427.21953"><vh>@item open-leo-settings</vh></v>
+<v t="ekr.20131213135427.21954"><vh>@item open-my-leo-settings</vh></v>
+<v t="ekr.20180320113441.1"><vh>@item open-theme-file</vh></v>
+<v t="ekr.20131213135427.21955"><vh>@item open-local-settings</vh></v>
+<v t="ekr.20180405110859.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22050"><vh>@menu &amp;List/Kill Abbreviations</vh>
 <v t="ekr.20131213135427.22053"><vh>@item abbrev-&amp;list</vh></v>
 <v t="ekr.20131213135427.22059"><vh>@item abbrev-&amp;kill-all</vh></v>
-</v>
-<v t="ekr.20180403122157.1"><vh>@menu &amp;Open Settings/Theme Files</vh>
-<v t="ekr.20131213135427.21953"><vh>@item open-&amp;leo-settings</vh></v>
-<v t="ekr.20131213135427.21955"><vh>@item &amp;open-local-settings</vh></v>
-<v t="ekr.20131213135427.21954"><vh>@item open-&amp;my-leo-settings</vh></v>
-<v t="ekr.20180320113441.1"><vh>@item &amp;open-&amp;theme-file</vh></v>
 </v>
 <v t="ekr.20131213135427.22201"><vh>@menu &amp;Pick Colors/Fonts</vh>
 <v t="ekr.20131213135427.22202"><vh>@item show-&amp;colors</vh></v>
@@ -6078,11 +6077,7 @@ False: start-find commands puts focus in Find panel.</t>
 <t tx="ekr.20131213135427.21828"></t>
 <t tx="ekr.20131213135427.21829"></t>
 <t tx="ekr.20131213135427.21830"></t>
-<t tx="ekr.20131213135427.21831">Open &amp;Recent File
-
-**Must be singular**
-
-A placeholder for the actual menu.
+<t tx="ekr.20131213135427.21831">A placeholder for the actual menu.
 Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20131213135427.21832"></t>
 <t tx="ekr.20131213135427.21833"></t>
@@ -6183,9 +6178,10 @@ Leo's init code populates this menu as a special case.</t>
 <t tx="ekr.20131213135427.21945"></t>
 <t tx="ekr.20131213135427.21946"></t>
 <t tx="ekr.20131213135427.21951"></t>
-<t tx="ekr.20131213135427.21953"></t>
-<t tx="ekr.20131213135427.21954"></t>
-<t tx="ekr.20131213135427.21955"></t>
+<t tx="ekr.20131213135427.21953">Open &amp;LeoSettings.leo</t>
+<t tx="ekr.20131213135427.21954">Open &amp;myLeoSettings.leo
+</t>
+<t tx="ekr.20131213135427.21955">&amp;Select Local @settings tree.</t>
 <t tx="ekr.20131213135427.21957"></t>
 <t tx="ekr.20131213135427.21958"></t>
 <t tx="ekr.20131213135427.21959"></t>
@@ -11729,7 +11725,7 @@ May be overridden by themes.</t>
 <t tx="ekr.20180308050150.9"></t>
 <t tx="ekr.20180317172528.1"></t>
 <t tx="ekr.20180317175351.1"></t>
-<t tx="ekr.20180320113441.1"></t>
+<t tx="ekr.20180320113441.1">Open A &amp;Theme File</t>
 <t tx="ekr.20180403100653.1"></t>
 <t tx="ekr.20180403100719.1"></t>
 <t tx="ekr.20180403100800.1"></t>
@@ -11768,7 +11764,6 @@ Alt+Ctrl+S set-find-suboutline-only
 <t tx="ekr.20180403120726.1"></t>
 <t tx="ekr.20180403120838.1"></t>
 <t tx="ekr.20180403122045.1"></t>
-<t tx="ekr.20180403122157.1"></t>
 <t tx="ekr.20180403122225.1"></t>
 <t tx="ekr.20180403123508.1"></t>
 <t tx="ekr.20180403123532.1"></t>
@@ -11781,6 +11776,7 @@ Alt+Ctrl+S set-find-suboutline-only
 <t tx="ekr.20180403154533.1"></t>
 <t tx="ekr.20180403154703.1"></t>
 <t tx="ekr.20180403155811.1"></t>
+<t tx="ekr.20180405110859.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
