@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.44" body_secondary_ratio="0.72">
-	<global_window_position top="79" left="304" height="801" width="1160"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -273,7 +273,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3431710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285508302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735508302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735508302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735509302e362e31392e3431710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735508302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -1226,6 +1226,7 @@
 <v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
 <v t="ekr.20180312050443.1"><vh>@test cwd</vh></v>
 </v>
+<v t="ekr.20140217055617.4230"><vh>@test c.theScriptingController.atScriptNodes</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1642,7 +1643,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="4">@nosearch</t>
+<t tx="ekr.20070417092935">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -4514,6 +4515,12 @@ try:
 finally:
     before.h = 'before'
     c.redraw()
+</t>
+<t tx="ekr.20140217055617.4230"># This must be true even though @bool scriptingatscriptnodes is True in this file.
+if hasattr(c,'theScriptingController'):
+    # mod_scripting may be disabled when running tests externally.
+    val = g.app.config.valueInMyLeoSettings('scripting-at-script-nodes')
+    assert c.theScriptingController.atScriptNodes in (val, None, False), (val, c.theScriptingController.atScriptNodes)
 </t>
 <t tx="ekr.20140217055617.4231"># For a unit test.</t>
 <t tx="ekr.20140218042220.4347">s = '''\

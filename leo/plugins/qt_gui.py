@@ -675,7 +675,9 @@ class LeoQtGui(leoGui.LeoGui):
             c.vimCommands.on_activate()
         self.active = True
             # Used only by c.idle_focus_helper.
-        if 1:
+        if g.isMac:
+            pass # Fix #757: MacOS: replace-then-find does not work in headlines.
+        else:
             # Leo 5.6: Recover from missing focus.
             # c.idle_focus_handler can't do this.
             if w and w_name in ('log-widget', 'richTextEdit', 'treeWidget'):

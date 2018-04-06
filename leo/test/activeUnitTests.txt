@@ -29228,7 +29228,7 @@ for fn in files:
 if hasattr(c,'theScriptingController'):
     # mod_scripting may be disabled when running tests externally.
     val = g.app.config.valueInMyLeoSettings('scripting-at-script-nodes')
-    assert c.theScriptingController.atScriptNodes == val
+    assert c.theScriptingController.atScriptNodes in (val, None, False), (val, c.theScriptingController.atScriptNodes)
 #@+node:ekr.20100131171342.5501: *4* @test zz end of plugins unit tests
 # Print does not work: it is redirected.
 g.pr('\nEnd of plugins unit tests')
