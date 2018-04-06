@@ -1,35 +1,23 @@
-Leo 5.7 final February 27, 2018
+Leo 5.7.1 April 6, 2018
 
-Leo 5.7 final, http://leoeditor.com, is now available on [SourceForge](http://sourceforge.net/projects/leo/files/Leo/) and on [GitHub](https://github.com/leo-editor/leo-editor).
+Leo 5.7.1, http://leoeditor.com, is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
+
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
-# Install and run
+**The highlights of Leo 5.7.1**
 
-    >pip install leo
-    >leo
+- Improved support for themes, including the open-theme-file command.
+    - Added --theme=<name> command-line option.
+    - Added @string theme-name setting.
+    - Leo warns if stylesheets contain undefined @-constants.
+- Replaced 5 vs-* commands by corresponding eval* commands.
+- Support @file x.md using html sentinels.
+- Allow @path in @<file> nodes, and optionally generate same in recursive imports.
+- Improved menus.
+- The usual minor bug fixes.
 
-# The highlights of Leo 5.7
-
-- pip install leo.
-- A debian package for Leo.
-- A web-based Leo Viewer, written by Joe Orr.
-- Added diff-leo-files and diff-and-open-leo-files commands.
-  These create outline-oriented diffs for .leo files.
-- New reload-settings command.
-- Leo optionally shows user tips on startup.
-- Added a new Tips page to Leo's documentation.
-- A visual widget for editing cvs tables.
-- Spell checking works without pyenchant
-- Improved the console_gui plugin.
-- Added live links from urls in the log pane.
-- Unit tests use a string gui, making them faster and more robust.
-- The line_numbering plugin shows line numbers in external files.
-- Improved the javascript importer.
-- Added a TreePad importer.
-- Added 6 new commands.
-- Dozens of bug fixes.
-
-# Links
+**Links**
 
 - Leo's home page: http://leoeditor.com
 - [Documentation](http://leoeditor.com/leo_toc.html)

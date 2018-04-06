@@ -12,7 +12,7 @@
 !include LogicLib.nsh
 
 ;##version
-!define version         "5.7 final"
+!define version         "5.7.1"
 
 ; These are *not* Python strings--backslashes are fine.
 

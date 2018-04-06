@@ -1062,7 +1062,7 @@
 <v t="ekr.20161025090757.1"><vh>@item open-leo-dist-leo</vh></v>
 <v t="ekr.20131213135427.21873"><vh>@item open-leo-plugins-leo</vh></v>
 <v t="ekr.20151225193848.1"><vh>@item open-leo-py-leo</vh></v>
-<v t="ekr.20170323095822.1"><vh>@item open-myLeoSettings-leo</vh></v>
+<v t="ekr.20170323095822.1"><vh>@item open-my-leo-settings</vh></v>
 <v t="ekr.20131213135427.21874"><vh>@item open-quickstart-leo</vh></v>
 <v t="ekr.20131213135427.21875"><vh>@item open-scripts-leo</vh></v>
 <v t="ekr.20170323095724.1"><vh>@item open-leo-settings-leo</vh></v>
@@ -1077,7 +1077,7 @@
 <v t="ekr.20131213135427.21838"><vh>@item save-file-to</vh></v>
 <v t="ekr.20140718064506.18998"><vh>@item -</vh></v>
 <v t="ekr.20180403105112.1"><vh>@menu &amp;Compare/Diff Files</vh>
-<v t="ekr.20131213135427.22149"><vh>@item file-&amp;compare-leo-files</vh></v>
+<v t="ekr.20131213135427.22149"><vh>@item file-&amp;compare-two-leo-files</vh></v>
 <v t="ekr.20131213135427.22151"><vh>@item file-diff-&amp;files</vh></v>
 </v>
 <v t="ekr.20131213135427.22139"><vh>@menu &amp;Create/Remove Files Or Directories</vh>
@@ -1090,7 +1090,7 @@
 <v t="ekr.20131213135427.21841"><vh>@menu &amp;Read/Write Files</vh>
 <v t="ekr.20131213135427.21842"><vh>@item check-derived-file</vh></v>
 <v t="ekr.20131213135427.21843"><vh>@item check-leo-file</vh></v>
-<v t="ekr.20131213135427.21844"><vh>@item file-compare-leo-files</vh></v>
+<v t="ekr.20131213135427.21844"><vh>@item file-compare-two-leo-files</vh></v>
 <v t="ekr.20131213135427.21845"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.21846"><vh>@item read-outline-only</vh></v>
 <v t="ekr.20131213135427.21847"><vh>@item read-file-into-node</vh></v>
@@ -1369,7 +1369,7 @@
 </v>
 </v>
 <v t="ekr.20131213135427.21951"><vh>@menu Settings</vh>
-<v t="ekr.20131213135427.21953"><vh>@item open-leo-settings</vh></v>
+<v t="ekr.20131213135427.21953"><vh>@item open-leo-settings-leo</vh></v>
 <v t="ekr.20131213135427.21954"><vh>@item open-my-leo-settings</vh></v>
 <v t="ekr.20180320113441.1"><vh>@item open-theme-file</vh></v>
 <v t="ekr.20131213135427.21955"><vh>@item open-local-settings</vh></v>
@@ -1379,7 +1379,8 @@
 <v t="ekr.20131213135427.22059"><vh>@item abbrev-&amp;kill-all</vh></v>
 </v>
 <v t="ekr.20131213135427.22201"><vh>@menu &amp;Pick Colors/Fonts</vh>
-<v t="ekr.20131213135427.22202"><vh>@item show-&amp;colors</vh></v>
+<v t="ekr.20131213135427.22202"><vh>@item show-color-&amp;names</vh></v>
+<v t="ekr.20180406013812.1"><vh>@item show-color-&amp;wheel</vh></v>
 <v t="ekr.20131213135427.22204"><vh>@item show-&amp;fonts</vh></v>
 </v>
 <v t="ekr.20180403122225.1"><vh>@menu &amp;Reload Settings</vh>
@@ -1496,7 +1497,7 @@
 </v>
 </v>
 <v t="ekr.20131213135427.22045"><vh>@menu &amp;Plugins</vh>
-<v t="ekr.20131213135427.22046"><vh>@item open-leoPlugins-leo</vh></v>
+<v t="ekr.20131213135427.22046"><vh>@item open-leo-plugins-leo</vh></v>
 <v t="ekr.20131213135427.22047"><vh>@item print-plugins-info</vh></v>
 <v t="ekr.20131213135427.22048"><vh>@item -</vh></v>
 </v>
@@ -1607,26 +1608,29 @@
 <v t="ekr.20131213135427.22160"><vh>@item focus-to-&amp;tree</vh></v>
 </v>
 <v t="ekr.20170509104039.1"><vh>@menu &amp;Show Or Hide Panes</vh>
-<v t="ekr.20170509104039.2"><vh>@item gui-&amp;all-show</vh></v>
-<v t="ekr.20170509104039.3"><vh>@item gui-&amp;iconbar-show</vh></v>
-<v t="ekr.20170509104039.4"><vh>@item gui-&amp;menu-show</vh></v>
-<v t="ekr.20170509104039.5"><vh>@item gui-&amp;minibuffer-show</vh></v>
-<v t="ekr.20170509104039.6"><vh>@item gui-&amp;statusbar-show</vh></v>
-<v t="ekr.20170509104039.7"><vh>@item gui-&amp;toolbar-show</vh></v>
-<v t="ekr.20170509105101.1"><vh>@item -</vh></v>
 <v t="ekr.20170509103811.1"><vh>@item gui-&amp;all-hide</vh></v>
-<v t="ekr.20170509103833.1"><vh>@item gui-&amp;iconbar-hide</vh></v>
-<v t="ekr.20170509103834.1"><vh>@item gui-&amp;menu-hide</vh></v>
-<v t="ekr.20170509103823.1"><vh>@item gui-&amp;minibuffer-hide</vh></v>
-<v t="ekr.20170509103931.1"><vh>@item gui-&amp;statusbar-hide</vh></v>
-<v t="ekr.20170509103944.1"><vh>@item gui-&amp;toolbar-hide</vh></v>
-<v t="ekr.20170509104140.1"><vh>@item -</vh></v>
+<v t="ekr.20170509104039.2"><vh>@item gui-&amp;all-show</vh></v>
 <v t="ekr.20170509104140.2"><vh>@item gui-&amp;all-toggle</vh></v>
+<v t="ekr.20180406014050.1"><vh>@item-</vh></v>
+<v t="ekr.20170509103833.1"><vh>@item gui-&amp;iconbar-hide</vh></v>
+<v t="ekr.20170509104039.3"><vh>@item gui-&amp;iconbar-show</vh></v>
 <v t="ekr.20170509104140.3"><vh>@item gui-&amp;iconbar-toggle</vh></v>
+<v t="ekr.20180406014102.1"><vh>@item -</vh></v>
+<v t="ekr.20170509103834.1"><vh>@item gui-&amp;menu-hide</vh></v>
+<v t="ekr.20170509104039.4"><vh>@item gui-&amp;menu-show</vh></v>
 <v t="ekr.20170509104140.4"><vh>@item gui-&amp;menu-toggle</vh></v>
+<v t="ekr.20180406014111.1"><vh>@item -</vh></v>
+<v t="ekr.20170509103823.1"><vh>@item gui-&amp;minibuffer-hide</vh></v>
+<v t="ekr.20170509104039.5"><vh>@item gui-&amp;minibuffer-show</vh></v>
 <v t="ekr.20170509104140.5"><vh>@item gui-&amp;minibuffer-toggle</vh></v>
+<v t="ekr.20180406014118.1"><vh>@item -</vh></v>
+<v t="ekr.20170509103931.1"><vh>@item gui-&amp;statusbar-hide</vh></v>
+<v t="ekr.20170509104039.6"><vh>@item gui-&amp;statusbar-show</vh></v>
 <v t="ekr.20170509104140.6"><vh>@item gui-&amp;statusbar-toggle</vh></v>
-<v t="ekr.20170509104140.7"><vh>@item gui-&amp;toolbar-toggle</vh></v>
+<v t="ekr.20180406014127.1"><vh>@item -</vh></v>
+<v t="ekr.20170509103944.1"><vh>@item gui-&amp;tabbar-hide</vh></v>
+<v t="ekr.20170509104039.7"><vh>@item gui-&amp;tabbar-show</vh></v>
+<v t="ekr.20170509104140.7"><vh>@item gui-&amp;tabbar-toggle</vh></v>
 </v>
 </v>
 <v t="ekr.20131213135427.22343"><vh>@menu &amp;Help</vh>
@@ -6575,9 +6579,6 @@ end-of-line                         = Alt-Down
 end-of-line                         = Ctrl-e
 end-of-line-extend-selection        = None
 equal-sized-panes                   = Alt-Shift-E
-escape                              = Escape
-eval-expression                     = Alt-colon
-eval-expression                     = None
 exchange-point-mark                 = None  # Should be Ctrl-X Ctrl-X.
 execute-script                      = None             # Ctrl-e conflicts with end-of-line
 exit-leo                            = Ctrl-Q
@@ -6972,8 +6973,6 @@ end-of-buffer-extend-selection      = None
 end-of-line                         = None
 end-of-line-extend-selection        = None
 equal-sized-panes                   = None
-escape                              = None
-eval-expression                     = None
 exchange-point-mark                 = None
 push-to-ipython                     = None
 execute-script                      = None
@@ -11282,7 +11281,6 @@ Light
 <t tx="ekr.20170509104039.5"></t>
 <t tx="ekr.20170509104039.6"></t>
 <t tx="ekr.20170509104039.7"></t>
-<t tx="ekr.20170509104140.1"></t>
 <t tx="ekr.20170509104140.2"></t>
 <t tx="ekr.20170509104140.3"></t>
 <t tx="ekr.20170509104140.4"></t>
@@ -11291,7 +11289,6 @@ Light
 <t tx="ekr.20170509104140.7"></t>
 <t tx="ekr.20170509104817.1"></t>
 <t tx="ekr.20170509104949.1"></t>
-<t tx="ekr.20170509105101.1"></t>
 <t tx="ekr.20170530035032.1"></t>
 <t tx="ekr.20170530035032.2">'''
 The @auto importer for the {|{x=get_language()}|} language.
@@ -11776,6 +11773,12 @@ Alt+Ctrl+S set-find-suboutline-only
 <t tx="ekr.20180405112755.1"></t>
 <t tx="ekr.20180405112923.1"></t>
 <t tx="ekr.20180405112939.1"></t>
+<t tx="ekr.20180406013812.1"></t>
+<t tx="ekr.20180406014050.1"></t>
+<t tx="ekr.20180406014102.1"></t>
+<t tx="ekr.20180406014111.1"></t>
+<t tx="ekr.20180406014118.1"></t>
+<t tx="ekr.20180406014127.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

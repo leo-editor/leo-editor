@@ -3149,6 +3149,44 @@
 </v>
 </v>
 </v>
+<v t="ekr.20180406011314.1"><vh>Leo 5.7.1 Themes</vh>
+<v t="ekr.20180406011314.2"><vh>Bugs</vh>
+<v t="ekr.20180406011314.3"><vh>#780: @tabwidth -2 in @data qt-gui-plugin-style-sheet crashes Leo</vh></v>
+<v t="ekr.20180406011314.4"><vh>#781: ViewRendered Plugin fails on Python 2.7 (Bad Import Statement)</vh></v>
+<v t="ekr.20180406011314.5"><vh>#783: print- commands fail under pythonw</vh></v>
+<v t="ekr.20180406011314.6"><vh>#788: Fix theme-related bugs</vh></v>
+<v t="ekr.20180406011314.7"><vh>#792: python_console plugin doesn't handle copy/paste properly</vh></v>
+<v t="ekr.20180406011314.8"><vh>#802: @color @image display in vr pane</vh></v>
+<v t="ekr.20180406011314.9"><vh>#808: Loading Images in Themes is Broken</vh></v>
+<v t="ekr.20180406011314.10"><vh>#809: Themes dialog doesn't always start in leo/themes</vh></v>
+<v t="ekr.20180406011314.11"><vh>#812: g.glob_glob problems</vh></v>
+<v t="ekr.20180406011314.12"><vh>#832: Leo crashes on non English systems</vh></v>
+<v t="ekr.20180406011314.13"><vh>#840: config.getData(foo) strips comments inconsistently</vh></v>
+<v t="ekr.20180406011314.14"><vh>#843: Cannot Open Any Non Leo File From Command Line</vh></v>
+</v>
+<v t="ekr.20180406011314.15"><vh>Code</vh>
+<v t="ekr.20180406011314.16"><vh>Added add_path keyword argument to c.recursiveImport</vh></v>
+<v t="ekr.20180406011314.17"><vh>Added g.backupGitIssues</vh></v>
+<v t="ekr.20180406011314.18"><vh>Added g.caller</vh></v>
+<v t="ekr.20180406011314.19"><vh>g.log is a synonym for g.es</vh></v>
+</v>
+<v t="ekr.20180406011314.20"><vh>Commands</vh>
+<v t="ekr.20180406011314.21"><vh>#839: Replaced 5 vs-* commands with eval* commands</vh></v>
+<v t="ekr.20180406011314.22"><vh>Added open-theme-file command</vh></v>
+<v t="ekr.20180406011314.23"><vh>Retired the 'escape' and 'eval-expression' commands</vh></v>
+</v>
+<v t="ekr.20180406011314.24"><vh>Features</vh>
+<v t="ekr.20180406011314.25"><vh>#467: Add setting for preferred directory</vh></v>
+<v t="ekr.20180406011314.26"><vh>#663: Regularize slashes and back slashes</vh></v>
+<v t="ekr.20180406011314.27"><vh>#748: Improve print-settings command</vh></v>
+<v t="ekr.20180406011314.28"><vh>#763: Use html comments to support @file x.md</vh></v>
+<v t="ekr.20180406011314.29"><vh>#766: Create Theme menu, etc.</vh></v>
+<v t="ekr.20180406011314.30"><vh>#784: Warn if stylesheet substitution leaves undefined @-constants</vh></v>
+<v t="ekr.20180406011314.31"><vh>Feature: Allow @path in body text</vh></v>
+<v t="ekr.20180406011314.32"><vh>Won't do: #822: Put outline tabs below the main window bar</vh></v>
+</v>
+<v t="ekr.20180406011314.33"><vh>Settings &amp; command-line arguments</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20150313053238.1"></t>
@@ -24266,5 +24304,106 @@ What I did:
 </t>
 <t tx="ekr.20180227003757.98">https://github.com/leo-editor/leo-editor/issues/414</t>
 <t tx="ekr.20180227003757.99">https://github.com/leo-editor/leo-editor/issues/417</t>
+<t tx="ekr.20180406011314.1">Leo 5.7.1 April 6, 2018
+
+Leo 5.7.1, http://leoeditor.com, is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 5.7.1**
+
+- Improved support for themes, including the open-theme-file command.
+    - Added --theme=&lt;name&gt; command-line option.
+    - Added @string theme-name setting.
+    - Leo warns if stylesheets contain undefined @-constants.
+- Replaced 5 vs-* commands by corresponding eval* commands.
+- Support @file x.md using html sentinels.
+- Allow @path in @&lt;file&gt; nodes, and optionally generate same in recursive imports.
+- Improved menus.
+- The usual minor bug fixes.
+
+**Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20180406011314.10">https://github.com/leo-editor/leo-editor/issues/809
+</t>
+<t tx="ekr.20180406011314.11">https://github.com/leo-editor/leo-editor/issues/812
+PickleShareDB.keys should definitely not call g.glob_glob.
+</t>
+<t tx="ekr.20180406011314.12">https://github.com/leo-editor/leo-editor/issues/832
+</t>
+<t tx="ekr.20180406011314.13">https://github.com/leo-editor/leo-editor/issues/840
+Changed c.config.getData and gcm.getData.
+</t>
+<t tx="ekr.20180406011314.14">https://github.com/leo-editor/leo-editor/issues/843
+</t>
+<t tx="ekr.20180406011314.15"></t>
+<t tx="ekr.20180406011314.16">When True, adds @path directives to the root node of imported files.
+</t>
+<t tx="ekr.20180406011314.17"></t>
+<t tx="ekr.20180406011314.18"></t>
+<t tx="ekr.20180406011314.19"></t>
+<t tx="ekr.20180406011314.2">is:issue milestone:5.7.1 is:closed
+https://github.com/leo-editor/leo-editor/issues?q=is%3Aissue+milestone%3A5.7.1+-label%3AWaiting+is%3Aclosed</t>
+<t tx="ekr.20180406011314.20"></t>
+<t tx="ekr.20180406011314.21">https://github.com/leo-editor/leo-editor/issues/839
+The eval* commands are now in mod_scripting.py.
+</t>
+<t tx="ekr.20180406011314.22"></t>
+<t tx="ekr.20180406011314.23">They have been replaced by new eval- commands.
+</t>
+<t tx="ekr.20180406011314.24"></t>
+<t tx="ekr.20180406011314.25">https://github.com/leo-editor/leo-editor/issues/467
+@string initial-chooser-directory</t>
+<t tx="ekr.20180406011314.26">https://github.com/leo-editor/leo-editor/issues/663
+</t>
+<t tx="ekr.20180406011314.27">https://github.com/leo-editor/leo-editor/issues/748
+</t>
+<t tx="ekr.20180406011314.28">https://github.com/leo-editor/leo-editor/issues/763
+</t>
+<t tx="ekr.20180406011314.29">https://github.com/leo-editor/leo-editor/issues/766
+</t>
+<t tx="ekr.20180406011314.3">https://github.com/leo-editor/leo-editor/issues/780
+</t>
+<t tx="ekr.20180406011314.30">https://github.com/leo-editor/leo-editor/issues/784
+</t>
+<t tx="ekr.20180406011314.31">Removed unnecessary check in g.get_directives_dict.
+</t>
+<t tx="ekr.20180406011314.32">https://github.com/leo-editor/leo-editor/issues/822
+
+</t>
+<t tx="ekr.20180406011314.33">Command-line options:
+- Added --theme=&lt;name&gt;
+- Added --trace-themes
+
+Settings:
+- Added @string theme-name
+- Added @string initial-chooser-directory
+  Used by Ctrl-O (file-open-by-name)
+</t>
+<t tx="ekr.20180406011314.4">https://github.com/leo-editor/leo-editor/issues/781
+</t>
+<t tx="ekr.20180406011314.5">https://github.com/leo-editor/leo-editor/issues/783
+</t>
+<t tx="ekr.20180406011314.6">https://github.com/leo-editor/leo-editor/issues/788
+</t>
+<t tx="ekr.20180406011314.7">https://github.com/leo-editor/leo-editor/issues/792
+</t>
+<t tx="ekr.20180406011314.8">https://github.com/leo-editor/leo-editor/issues/802
+</t>
+<t tx="ekr.20180406011314.9">https://github.com/leo-editor/leo-editor/issues/808
+</t>
 </tnodes>
 </leo_file>

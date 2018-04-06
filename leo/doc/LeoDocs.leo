@@ -14025,8 +14025,8 @@ def define_language_delims_dict(self):
         "pyrex"              : "#",
         "python"             : "#",
         "r"                  : "#",
-        "rapidq"             : "'", # fil 2004-march-11
-        "rebol"              : ";", # jason 2003-07-03
+        "rapidq"             : "'",
+        "rebol"              : ";",
         "redcode"            : ";",
         "rest"               : ".._",
         "rhtml"              : "&lt;%# %&gt;",
