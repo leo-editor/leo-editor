@@ -4,7 +4,6 @@
 # import json
 import re
 import leo.core.leoGlobals as g
-new = True # True: New code
 try:
     import nbformat
 except ImportError:
@@ -38,8 +37,28 @@ class Import_IPYNB(object):
             # A regex matching html headers.
         self.root = None
             # The root of the to-be-created outline.
-    #@+node:ekr.20180407182138.1: *3* ipynb.Entries
-    #@+node:ekr.20160412101537.14: *4* ipynb.import_file: (entry) & helpers
+    #@+node:ekr.20160412103110.1: *3* ipynb.run & helpers
+    def run(self, s, parent, parse_body=False):
+        '''
+        @auto entry point. Called by code in leoImport.py.
+        '''
+        c = self.c
+        fn = parent.atAutoNodeName()
+        if c and fn:
+            changed = c.isChanged()
+            self.import_file(fn, parent)
+            # Similar to Importer.run.
+            parent.b = (
+                '@nocolor-node\n\n' +
+                'Note: This node\'s body text is ignored when writing this file.\n\n' +
+                'The @others directive is not required\n'
+            )
+            for p in parent.self_and_subtree():
+                p.clearDirty()
+            c.setChanged(changed)
+        elif not c or not fn:
+            g.trace('can not happen', c, fn)
+    #@+node:ekr.20160412101537.14: *4* ipynb.import_file & helpers
     def import_file(self, fn, root):
         '''
         Import the given .ipynb file.
@@ -76,20 +95,14 @@ class Import_IPYNB(object):
         if trace:
             print('')
             g.trace('=====', self.cell_n, self.cell_type)
-        if new:
-            for key in ('markdown', 'source', 'text'):
+        # Handle the body text.
+        for key in ('markdown', 'source', 'text'):
+            if key in cell:
                 val = cell.get(key)
-                if val is not None:
+                if val:
                     self.do_source(key, val)
-                    del cell[key]
-            if cell:
-                self.set_ua(self.parent, 'cell', cell)
-        else:
-            for key in sorted(cell):
-                val = cell.get(key)
-                self.do_any(key, val)
-        if trace:
-            print('-----')
+                del cell[key]
+        self.set_ua(self.parent, 'cell', cell)
     #@+node:ekr.20160412101537.9: *6* ipynb.do_source & helpers
     def do_source(self, key, val):
         '''Set the cell's body text, or create a 'source' node.'''
@@ -184,25 +197,12 @@ class Import_IPYNB(object):
         return False
     #@+node:ekr.20160412101537.13: *5* ipynb.do_prefix
     def do_prefix(self, d):
-        '''
-        Handle the top-level non-cell data:
-        metadata (dict)
-        nbformat (int)
-        nbformat_minor (int)
-        '''
-        if not d:
-            return
-        self.cells = d.get('cells',[])
-        if new:
+        '''Handle everything except the 'cells' attribute.'''
+        if d:
+            self.cells = d.get('cells',[])
             if self.cells:
                 del d['cells']
             self.set_ua(self.root, 'prefix', d)
-        else:
-            self.parent = self.new_node('# {prefix}')
-            for key in sorted(d):
-                if key != 'cells':
-                    val = d.get(key)
-                    self.do_any(key, val)
     #@+node:ekr.20160412101537.19: *5* ipynb.get_code_language
     def get_code_language(self, d):
         '''Return the language specified by the top-level metadata.'''
@@ -271,159 +271,13 @@ class Import_IPYNB(object):
         else:
             g.es_print('not found', fn)
             return None
-    #@+node:ekr.20160412103110.1: *4* ipynb.run
-    def run(self, s, parent, parse_body=False):
-        '''
-        @auto entry point. Called by code in leoImport.py.
-        '''
-        c = self.c
-        fn = parent.atAutoNodeName()
-        if c and fn:
-            changed = c.isChanged()
-            self.import_file(fn, parent)
-            # Similar to Importer.run.
-            parent.b = (
-                '@nocolor-node\n\n' +
-                'Note: This node\'s body text is ignored when writing this file.\n\n' +
-                'The @others directive is not required\n'
-            )
-            for p in parent.self_and_subtree():
-                p.clearDirty()
-            c.setChanged(changed)
-        elif not c or not fn:
-            g.trace('can not happen', c, fn)
-    #@+node:ekr.20180407180754.1: *3* ipynb.To be deleted
-    if not new:
-        #@+others
-        #@+node:ekr.20160412101537.4: *4* ipynb.do_any & helpers
-        def do_any(self, key, val):
-            trace = True and not g.unitTesting
-            if trace:
-                if key in ('markdown', 'source', 'text'):
-                    g.trace(key, val.__class__.__name__)
-                else:
-                    g.trace(key, val)
-            if key == 'source':
-                self.do_source(key, val)
-            elif g.isString(val):
-                self.do_string(key, val)
-            elif isinstance(val, (list, tuple)):
-                self.do_list(key, val)
-            elif self.is_dict(val):
-                self.do_dict(key, val)
-            else:
-                # Can be ints, None, etc.
-                self.do_other(key, val)
-        #@+node:ekr.20160412101537.5: *5* ipynb.do_dict
-        def do_dict(self, key, d):
-
-            assert self.is_dict(d), d.__class__.__name__
-            keys = list(d.keys())
-            is_cell = self.parent == self.cell
-            if key == 'metadata' and is_cell:
-                if 'collapsed' in keys:
-                    if d.get('collapsed') in (False, 'false'):
-                        self.cell.expand()
-                    keys.remove('collapsed')
-                if 'leo_headline' in keys:
-                    h = d.get('leo_headline')
-                    if h:
-                        self.cell.h = h
-                    keys.remove('leo_headline')
-            # g.trace(key, is_cell, keys)
-            if is_cell and key == 'metadata' and not keys:
-                return # experimental
-            old_parent = self.parent
-            self.parent = self.new_node('# dict:%s' % key)
-            old_in_dict = self.in_data
-            self.in_data = key == 'data'
-            for key2 in sorted(keys):
-                val2 = d.get(key2)
-                self.do_any(key2, val2)
-            self.in_data = old_in_dict
-            self.parent = old_parent
-        #@+node:ekr.20160412101537.6: *5* ipynb.do_other
-        def do_other(self, key, val):
-
-            if key == 'execution_count' and val is None:
-                pass # The exporter will create the proper value.
-            else:
-                name = 'null' if val is None else val.__class__.__name__
-                p = self.new_node('# %s:%s' % (name, key))
-                if val is None:
-                    p.b = '' # Exporter will translate to 'null'
-                else:
-                    p.b = repr(val)
-        #@+node:ekr.20160412101537.7: *5* ipynb.do_string (test-jup-import)
-        def do_string(self, key, val):
-
-            assert g.isString(val)
-            is_cell = self.parent == self.cell
-            if is_cell and key == 'cell_type':
-                # Do *not* create a cell_type child.
-                pass
-            else:
-                # Do create all other nodes.
-                if self.in_data or len(g.splitLines(val.strip())) > 1:
-                    key = 'list:' + key
-                else:
-                    key = 'str:' + key
-                p = self.new_node('# ' + key)
-                if key.startswith('list:'):
-                    if key.endswith('html'):
-                        val = '@language html\n\n' + val
-                    elif key.endswith('xml'):
-                        val = '@language html\n\n' + val
-                    else:
-                        val = '@nocolor-node\n\n' + val
-                # g.trace(key, g.splitLines(val)[:5])
-                p.b = val
-        #@+node:ekr.20160412101537.8: *5* ipynb.do_list
-        def do_list(self, key, aList):
-
-            assert isinstance(aList, (list, tuple)), aList.__class__.__name__
-            is_cell = self.parent == self.cell
-            if is_cell and not aList:
-                return # Experimental.
-            old_parent = self.parent
-            self.parent = self.new_node('# list:%s' % key)
-            for z in aList:
-                if self.is_dict(z):
-                    for key in sorted(z):
-                        val = z.get(key)
-                        self.do_any(key, val)
-                else:
-                    self.error('unexpected item in list: %r' % z)
-            self.parent = old_parent
-        #@+node:ekr.20160412101537.18: *4* ipynb.error
-        def error(self, s):
-
-            g.es_print('error: %s' % (s), color='red')
-        #@+node:ekr.20160412101537.20: *4* ipynb.get_file_name
-        def get_file_name(self):
-            '''Open a dialog to get a Jupyter (.ipynb) file.'''
-            c = self.c
-            fn = g.app.gui.runOpenFileDialog(
-                c,
-                title="Open Jupyter File",
-                filetypes=[
-                    ("All files", "*"),
-                    ("Jupyter files", "*.ipynb"),
-                ],
-                defaultextension=".ipynb",
-            )
-            c.bringToFront()
-            return fn
-        #@+node:ekr.20160412101537.21: *4* ipynb.is_dict
-        def is_dict(self, obj):
-
-            return isinstance(obj, (dict, nbformat.NotebookNode))
-        #@-others
-    #@+node:ekr.20180407175655.1: *3* ipynb.set_ua
+    #@+node:ekr.20180407175655.1: *4* ipynb.set_ua
     def set_ua(self, p, key, val):
-        '''Set the uA with the given key, value in p.'''
-        g.trace(p.h, key)
-        g.printObj(val)
+        '''Set p.v.u'''
+        trace = True and not g.unitTesting
+        if trace:
+            g.trace(p.h, key)
+            g.printObj(val)
         d = p.v.u
         d2 = d.get('ipynb') or {}
         d2 [key] = val
