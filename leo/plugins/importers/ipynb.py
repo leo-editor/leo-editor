@@ -289,11 +289,12 @@ class Import_IPYNB(object):
         p = self.root.firstChild()
         stack = []
         after = self.root.nodeAfterTree()
+        root_level = self.root.level()
         while p and p != self.root and p != after:
             m = self.re_header.search(p.h)
             n, name = self.check_header(m)
             if n is None: n = 1
-            assert p.level() == 1, (p.level(), p.h)
+            assert p.level() == root_level + 1, (p.level(), p.h)
             # g.trace('n', n, 'stack', len(stack), p.h)
             stack = self.move_node(n, p, stack)
             p.moveToNodeAfterTree()
