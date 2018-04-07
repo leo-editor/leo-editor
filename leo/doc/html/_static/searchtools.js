@@ -613,7 +613,7 @@ var Search = {
         // select one (max) score for the file.
         // for better ranking, we should calculate ranking by using words statistics like basic tf-idf...
         var score = $u.max($u.map(fileMap[file], function(w){return scoreMap[file][w]}));
-        results.push([filenames[file], titles[file], '', null, score]);
+        results.push([filenames[file].replace(".html.txt",""), titles[file], '', null, score]);
       }
     }
     return results;
