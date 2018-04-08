@@ -208,7 +208,7 @@ class Import_IPYNB(object):
     #@+node:ekr.20180407175655.1: *4* ipynb.set_ua
     def set_ua(self, p, key, val):
         '''Set p.v.u'''
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         if trace:
             g.trace(p.h, key)
             g.printObj(val)
