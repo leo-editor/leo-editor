@@ -134,6 +134,12 @@ class Export_IPYNB(object):
         '''Create a JSON notebook'''
         root = self.root
         nb = self.get_ua(root, key='prefix') or self.default_metadata
+        # Write the expansion status of the root.
+        meta = nb.get('metadata') or {}
+        meta ['collapsed'] = 'False' if root.isExpanded() else 'True'
+        # g.trace(meta.get('collapsed'), root.h)
+        nb ['metadata'] = meta
+        # Put all the cells.
         nb ['cells'] = [self.put_body(p) for p in root.subtree()]
         return nb
     #@+node:ekr.20180407195341.1: *3* ipy_w.put_body
@@ -142,8 +148,9 @@ class Export_IPYNB(object):
         cell = self.get_ua(p, 'cell') or {}
         meta = cell.get('metadata') or {}
         meta ['leo_headline'] = p.h
-        meta ['collapsed'] = 'True' if p.isExpanded() else 'False'
+        meta ['collapsed'] = 'False' if p.isExpanded() else 'True'
         cell ['metadata'] = meta
+        # g.trace(meta.get('collapsed'), p.h)
         # g.printObj(meta, tag='metadata')
         # g.printObj(cell, tag='cell')
         lines = [z for z in g.splitLines(p.b) if not g.isDirective(z)]

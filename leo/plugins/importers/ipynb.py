@@ -92,6 +92,11 @@ class Import_IPYNB(object):
             return
         self.parent = cell_p = self.root.insertAsLastChild()
         self.parent.h = 'cell %s' % (n + 1)
+        # Expand the node if metadata: collapsed is False
+        meta = cell.get('metadata')
+        collapsed = meta and meta.get('collapsed')
+        if collapsed and collapsed.lower() in ('0', 'false'):
+            cell_p.v.expand()
         if trace:
             print('')
             g.trace('=====', self.cell_n, cell.get('cell_type'))
@@ -120,6 +125,12 @@ class Import_IPYNB(object):
     def do_prefix(self, d):
         '''Handle everything except the 'cells' attribute.'''
         if d:
+            # Expand the root if requested.
+            if 1: # The @auto logic defeats this, but this is correct.
+                meta = d.get('metadata')
+                collapsed = meta and meta.get('collapsed')
+                if collapsed and collapsed.lower() in ('0', 'false'):
+                    self.root.v.expand()
             self.cells = d.get('cells',[])
             if self.cells:
                 del d['cells']
