@@ -40,9 +40,7 @@ class Import_IPYNB(object):
         d = self.parse(fn)
         if not d:
             return
-        # 1. Do everything except cells.
         self.do_prefix(d)
-        # 2. Do all cells.
         for n, cell in enumerate(self.cells):
             self.do_cell(cell, n)
         self.indent_cells()
@@ -210,10 +208,8 @@ class Import_IPYNB(object):
             n, name = self.check_header(m)
             if n is None: n = 1
             assert p.level() == root_level + 1, (p.level(), p.h)
-            # g.trace('n', n, 'stack', len(stack), p.h)
             stack = self.move_node(n, p, stack)
             p.moveToNodeAfterTree()
-            # g.trace('=====', p and p.h)
     #@+node:ekr.20160412101537.16: *4* ipynb.move_node
     def move_node(self, n, p, stack):
         '''Move node to level n'''
@@ -231,7 +227,6 @@ class Import_IPYNB(object):
                 p.moveToNthChildOf(parent, n2)
         # Push p *after* moving p.
         stack.append(p.copy())
-        # g.trace('   n', n, 'stack', len(stack), p.h)
         return stack
     #@+node:ekr.20160412101537.23: *4* ipynb.new_node
     def new_node(self, h):
