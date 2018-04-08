@@ -16,8 +16,6 @@ class Import_IPYNB(object):
     def __init__(self, c=None, importCommands=None, **kwargs):
         self.c = importCommands.c if importCommands else c
             # Commander of present outline.
-        self.cell_p = None
-            # The present cell node.
         self.cell_n = None
             # The number of the top-level node being scanned.
         self.cell_type = None
@@ -97,7 +95,7 @@ class Import_IPYNB(object):
             if trace: g.trace('skipping empty cell', n)
             return
         # Careful: don't use self.new_node here.
-        self.parent = self.cell_p = self.root.insertAsLastChild()
+        self.parent = cell_p = self.root.insertAsLastChild()
         self.parent.h = 'cell %s' % (n + 1)
         # Pre-compute the cell_type.
         self.cell_type = cell.get('cell_type')
@@ -109,7 +107,7 @@ class Import_IPYNB(object):
             if key in cell:
                 val = cell.get(key)
                 if val:
-                    self.do_source(key, val)
+                    self.do_source(cell_p, key, val)
                 del cell[key]
         self.set_ua(self.parent, 'cell', cell)
     #@+node:ekr.20160412101537.11: *4* ipynb.do_markdown_cell
@@ -134,18 +132,18 @@ class Import_IPYNB(object):
                 del d['cells']
             self.set_ua(self.root, 'prefix', d)
     #@+node:ekr.20160412101537.9: *4* ipynb.do_source
-    def do_source(self, key, val):
+    def do_source(self, cell_p, key, val):
         '''Set the cell's body text, or create a 'source' node.'''
         assert key == 'source', (key, val)
-        is_cell = self.parent == self.cell_p
+        is_cell = self.parent == cell_p
         if is_cell:
             # Set the body's text, splitting markdown nodes as needed.
             if self.cell_type == 'markdown':
-                self.do_markdown_cell(self.cell_p, val)
+                self.do_markdown_cell(cell_p, val)
             elif self.cell_type == 'raw':
-                self.cell_p.b = '@nocolor\n\n' + val.lstrip()
+                cell_p.b = '@nocolor\n\n' + val.lstrip()
             else:
-                self.cell_p.b = '@language python\n\n' + val.lstrip()
+                cell_p.b = '@language python\n\n' + val.lstrip()
         else:
             # Do create a new node.
             p = self.new_node('# list:%s' % key)
