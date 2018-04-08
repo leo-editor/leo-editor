@@ -128,21 +128,13 @@ class Import_IPYNB(object):
     #@+node:ekr.20160412101537.9: *4* ipynb.do_source
     def do_source(self, cell, cell_p, key, val):
         '''Set the cell's body text, or create a 'source' node.'''
-        assert key == 'source', (key, val)
-        is_cell = self.parent == cell_p
-        if is_cell:
-            cell_type = cell.get('cell_type')
-            # Set the body's text, splitting markdown nodes as needed.
-            if cell_type == 'markdown':
-                self.do_markdown_cell(cell_p, val)
-            elif cell_type == 'raw':
-                cell_p.b = '@nocolor\n\n' + val.lstrip()
-            else:
-                cell_p.b = '@language python\n\n' + val.lstrip()
+        cell_type = cell.get('cell_type')
+        if cell_type == 'markdown':
+            self.do_markdown_cell(cell_p, val)
+        elif cell_type == 'raw':
+            cell_p.b = '@nocolor\n\n' + val.lstrip()
         else:
-            # Do create a new node.
-            p = self.new_node('# list:%s' % key)
-            p.b = val
+            cell_p.b = '@language python\n\n' + val.lstrip()
     #@+node:ekr.20160412101537.22: *4* ipynb.is_empty_code
     def is_empty_code(self, cell):
         '''Return True if cell is an empty code cell.'''
