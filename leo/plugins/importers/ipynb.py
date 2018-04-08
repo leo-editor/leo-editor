@@ -95,7 +95,7 @@ class Import_IPYNB(object):
         # Expand the node if metadata: collapsed is False
         meta = cell.get('metadata')
         collapsed = meta and meta.get('collapsed')
-        if collapsed and collapsed.lower() in ('0', 'false'):
+        if collapsed is not None and not collapsed:
             cell_p.v.expand()
         if trace:
             print('')
@@ -129,7 +129,7 @@ class Import_IPYNB(object):
             if 1: # The @auto logic defeats this, but this is correct.
                 meta = d.get('metadata')
                 collapsed = meta and meta.get('collapsed')
-                if collapsed and collapsed.lower() in ('0', 'false'):
+                if collapsed is not None and not collapsed:
                     self.root.v.expand()
             self.cells = d.get('cells',[])
             if self.cells:

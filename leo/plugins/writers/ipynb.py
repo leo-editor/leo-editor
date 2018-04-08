@@ -136,7 +136,7 @@ class Export_IPYNB(object):
         nb = self.get_ua(root, key='prefix') or self.default_metadata
         # Write the expansion status of the root.
         meta = nb.get('metadata') or {}
-        meta ['collapsed'] = 'False' if root.isExpanded() else 'True'
+        meta ['collapsed'] = not root.isExpanded()
         # g.trace(meta.get('collapsed'), root.h)
         nb ['metadata'] = meta
         # Put all the cells.
@@ -148,7 +148,7 @@ class Export_IPYNB(object):
         cell = self.get_ua(p, 'cell') or {}
         meta = cell.get('metadata') or {}
         meta ['leo_headline'] = p.h
-        meta ['collapsed'] = 'False' if p.isExpanded() else 'True'
+        meta ['collapsed'] = not p.isExpanded()
         cell ['metadata'] = meta
         # g.trace(meta.get('collapsed'), p.h)
         # g.printObj(meta, tag='metadata')
