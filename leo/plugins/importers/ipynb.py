@@ -16,7 +16,7 @@ class Import_IPYNB(object):
     def __init__(self, c=None, importCommands=None, **kwargs):
         self.c = importCommands.c if importCommands else c
             # Commander of present outline.
-        self.cell = None
+        self.cell_p = None
             # The present cell node.
         self.cell_n = None
             # The number of the top-level node being scanned.
@@ -25,7 +25,7 @@ class Import_IPYNB(object):
         self.parent = None
             # The parent for the next created node.
         self.re_header = re.compile(r'^.*<[hH]([123456])>(.*)</[hH]([123456])>')
-            # A regex matching html headers.
+            # A common regex matching html headers.
         self.root = None
             # The root of the to-be-created outline.
 
@@ -97,7 +97,7 @@ class Import_IPYNB(object):
             if trace: g.trace('skipping empty cell', n)
             return
         # Careful: don't use self.new_node here.
-        self.parent = self.cell = self.root.insertAsLastChild()
+        self.parent = self.cell_p = self.root.insertAsLastChild()
         self.parent.h = 'cell %s' % (n + 1)
         # Pre-compute the cell_type.
         self.cell_type = cell.get('cell_type')
@@ -137,15 +137,15 @@ class Import_IPYNB(object):
     def do_source(self, key, val):
         '''Set the cell's body text, or create a 'source' node.'''
         assert key == 'source', (key, val)
-        is_cell = self.parent == self.cell
+        is_cell = self.parent == self.cell_p
         if is_cell:
             # Set the body's text, splitting markdown nodes as needed.
             if self.cell_type == 'markdown':
-                self.do_markdown_cell(self.cell, val)
+                self.do_markdown_cell(self.cell_p, val)
             elif self.cell_type == 'raw':
-                self.cell.b = '@nocolor\n\n' + val.lstrip()
+                self.cell_p.b = '@nocolor\n\n' + val.lstrip()
             else:
-                self.cell.b = '@language python\n\n' + val.lstrip()
+                self.cell_p.b = '@language python\n\n' + val.lstrip()
         else:
             # Do create a new node.
             p = self.new_node('# list:%s' % key)
