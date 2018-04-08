@@ -18,8 +18,6 @@ class Import_IPYNB(object):
             # Commander of present outline.
         self.cell_n = None
             # The number of the top-level node being scanned.
-        self.cell_type = None
-            # The pre-computed cell type of the node.
         self.parent = None
             # The parent for the next created node.
         self.re_header = re.compile(r'^.*<[hH]([123456])>(.*)</[hH]([123456])>')
@@ -97,17 +95,15 @@ class Import_IPYNB(object):
         # Careful: don't use self.new_node here.
         self.parent = cell_p = self.root.insertAsLastChild()
         self.parent.h = 'cell %s' % (n + 1)
-        # Pre-compute the cell_type.
-        self.cell_type = cell.get('cell_type')
         if trace:
             print('')
-            g.trace('=====', self.cell_n, self.cell_type)
+            g.trace('=====', self.cell_n, cell.get('cell_type'))
         # Handle the body text.
         for key in ('markdown', 'source', 'text'):
             if key in cell:
                 val = cell.get(key)
                 if val:
-                    self.do_source(cell_p, key, val)
+                    self.do_source(cell, cell_p, key, val)
                 del cell[key]
         self.set_ua(self.parent, 'cell', cell)
     #@+node:ekr.20160412101537.11: *4* ipynb.do_markdown_cell
@@ -132,15 +128,16 @@ class Import_IPYNB(object):
                 del d['cells']
             self.set_ua(self.root, 'prefix', d)
     #@+node:ekr.20160412101537.9: *4* ipynb.do_source
-    def do_source(self, cell_p, key, val):
+    def do_source(self, cell, cell_p, key, val):
         '''Set the cell's body text, or create a 'source' node.'''
         assert key == 'source', (key, val)
         is_cell = self.parent == cell_p
         if is_cell:
+            cell_type = cell.get('cell_type')
             # Set the body's text, splitting markdown nodes as needed.
-            if self.cell_type == 'markdown':
+            if cell_type == 'markdown':
                 self.do_markdown_cell(cell_p, val)
-            elif self.cell_type == 'raw':
+            elif cell_type == 'raw':
                 cell_p.b = '@nocolor\n\n' + val.lstrip()
             else:
                 cell_p.b = '@language python\n\n' + val.lstrip()
@@ -151,16 +148,16 @@ class Import_IPYNB(object):
     #@+node:ekr.20160412101537.22: *4* ipynb.is_empty_code
     def is_empty_code(self, cell):
         '''Return True if cell is an empty code cell.'''
-        if cell.get('cell_type') == 'code':
-            source = cell.get('source','')
-            metadata = cell.get('metadata')
-            keys = sorted(metadata.keys())
-            if 'collapsed' in metadata:
-                keys.remove('collapsed')
-            outputs = cell.get('outputs')
-            # g.trace(len(source), self.parent.h, sorted(cell))
-            return not source and not keys and not outputs
-        return False
+        if cell.get('cell_type') != 'code':
+            return False
+        source = cell.get('source','')
+        metadata = cell.get('metadata')
+        keys = sorted(metadata.keys())
+        if 'collapsed' in metadata:
+            keys.remove('collapsed')
+        outputs = cell.get('outputs')
+        # g.trace(len(source), self.parent.h, sorted(cell))
+        return not source and not keys and not outputs
     #@+node:ekr.20160412101537.24: *4* ipynb.parse
     def parse(self, fn):
         '''Parse the file, which should be JSON format.'''
