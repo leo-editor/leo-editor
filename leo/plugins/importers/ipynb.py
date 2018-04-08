@@ -90,7 +90,6 @@ class Import_IPYNB(object):
         if self.is_empty_code(cell):
             if trace: g.trace('skipping empty cell', n)
             return
-        # Careful: don't use self.new_node here.
         self.parent = cell_p = self.root.insertAsLastChild()
         self.parent.h = 'cell %s' % (n + 1)
         if trace:
@@ -220,13 +219,6 @@ class Import_IPYNB(object):
         # Push p *after* moving p.
         stack.append(p.copy())
         return stack
-    #@+node:ekr.20160412101537.23: *4* ipynb.new_node
-    def new_node(self, h):
-
-        parent = self.parent or self.root
-        p = parent.insertAsLastChild()
-        p.h = h
-        return p
     #@+node:ekr.20180407175655.1: *4* ipynb.set_ua
     def set_ua(self, p, key, val):
         '''Set p.v.u'''
