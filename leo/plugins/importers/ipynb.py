@@ -36,6 +36,22 @@ class Import_IPYNB(object):
             # A regex matching html headers.
         self.root = None
             # The root of the to-be-created outline.
+    #@+node:ekr.20160412101845.24: *3* ipynb.get_file_name
+    def get_file_name(self):
+        '''Open a dialog to write a Jupyter (.ipynb) file.'''
+        c = self.c
+        fn = g.app.gui.runSaveFileDialog(
+            c,
+            defaultextension=".ipynb",
+            filetypes=[
+                ("Jupyter files", "*.ipynb"),
+                ("All files", "*"),
+            ],
+            initialfile='',
+            title="Export To Jupyter File",
+        )
+        c.bringToFront()
+        return fn
     #@+node:ekr.20160412101537.14: *3* ipynb.import_file & helpers
     def import_file(self, fn, root):
         '''

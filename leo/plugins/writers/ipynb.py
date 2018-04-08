@@ -108,7 +108,7 @@ class Export_IPYNB(object):
             "nbformat": 4,
             "nbformat_minor": 0
         }
-    #@+node:ekr.20160412101845.24: *3* ipy_w.get_file_name
+    #@+node:ekr.20180408103729.1: *3* ipy_w.get_file_name
     def get_file_name(self):
         '''Open a dialog to write a Jupyter (.ipynb) file.'''
         c = self.c
