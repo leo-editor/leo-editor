@@ -12,9 +12,7 @@ except ImportError:
 #@+node:ekr.20160412101537.2: ** class Import_IPYNB
 class Import_IPYNB(object):
     '''A class to import .ipynb files.'''
-
-    #@+others
-    #@+node:ekr.20160412101537.3: *3* ipynb.ctor
+    
     def __init__(self, c=None, importCommands=None, **kwargs):
         '''Ctor for Import_IPYNB class.'''
         self.c = importCommands.c if importCommands else c
@@ -36,6 +34,8 @@ class Import_IPYNB(object):
             # A regex matching html headers.
         self.root = None
             # The root of the to-be-created outline.
+
+    #@+others
     #@+node:ekr.20160412101845.24: *3* ipynb.get_file_name
     def get_file_name(self):
         '''Open a dialog to write a Jupyter (.ipynb) file.'''
