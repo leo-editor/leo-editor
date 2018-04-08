@@ -8,16 +8,16 @@ import json
 #@+node:ekr.20160412101845.2: ** class Export_IPYNB
 class Export_IPYNB(object):
     '''A class to export outlines to .ipynb files.'''
-
-    #@+others
-    #@+node:ekr.20160412101845.3: *3* ipy_w.ctor
+    
     def __init__(self, c):
         '''Ctor for Import_IPYNB class.'''
         self.c = c
             # Commander of present outline.
         self.root = None
             # The root of the outline.
-    #@+node:ekr.20160412114852.1: *3* ipy_w.Entries
+
+    #@+others
+    #@+node:ekr.20160412114852.1: *3*  ipy_w.Entries
     #@+node:ekr.20160412101845.4: *4* ipy_w.export_outline
     def export_outline(self, root, fn=None):
         '''
@@ -56,7 +56,7 @@ class Export_IPYNB(object):
         if not at and at.outputFile:
             g.trace('can not happen: no at.outputFile')
             return False
-        # Write the text to at.outputFile and return True.
+        # Write the text to at.outputFile.
         self.root = root
         nb = self.make_notebook()
         s = self.convert_notebook(nb)
@@ -66,8 +66,7 @@ class Export_IPYNB(object):
             s = g.toEncodedString(s, encoding='utf-8', reportErrors=True)
         at.outputFile.write(s)
         return True
-    #@+node:ekr.20180407193242.1: *3* ipy_w.Utils
-    #@+node:ekr.20180407191227.1: *4* ipy_w.convert_notebook
+    #@+node:ekr.20180407191227.1: *3* ipy_w.convert_notebook
     def convert_notebook(self, nb):
         '''Write the notebook using nbconvert.writes.'''
         try:
@@ -80,38 +79,7 @@ class Export_IPYNB(object):
             g.es_print('Error writing notebook', color='red')
             g.es_exception()
             return None
-    #@+node:ekr.20160412101845.24: *4* ipy_w.get_file_name
-    def get_file_name(self):
-        '''Open a dialog to write a Jupyter (.ipynb) file.'''
-        c = self.c
-        fn = g.app.gui.runSaveFileDialog(
-            c,
-            defaultextension=".ipynb",
-            filetypes=[
-                ("Jupyter files", "*.ipynb"),
-                ("All files", "*"),
-            ],
-            initialfile='',
-            title="Export To Jupyter File",
-        )
-        c.bringToFront()
-        return fn
-    #@+node:ekr.20180407193222.1: *4* ipy_w.get_ua
-    def get_ua(self, p):
-
-        return p.v.u.get('ipynb')
-    #@+node:ekr.20180407191219.1: *4* ipy_w.make_notebook & helpers
-    def make_notebook(self):
-        '''Create a JSON notebook'''
-        root = self.root
-        prefix = self.get_ua(root)
-        if prefix: prefix = prefix.get('prefix')
-        if not prefix:
-            prefix = self.default_metadata
-        nb = prefix
-        nb ['cells'] = [self.put_body(p) for p in root.subtree()]
-        return nb
-    #@+node:ekr.20160412101845.21: *5* ipy_w.default_metadata
+    #@+node:ekr.20160412101845.21: *3* ipy_w.default_metadata
     def default_metadata(self):
         '''Return the top-level metadata to use if there is no {prefix} node.'''
         n1, n2 = sys.version_info[0], sys.version_info[1]
@@ -140,7 +108,38 @@ class Export_IPYNB(object):
             "nbformat": 4,
             "nbformat_minor": 0
         }
-    #@+node:ekr.20180407195341.1: *5* ipy_w.put_body
+    #@+node:ekr.20160412101845.24: *3* ipy_w.get_file_name
+    def get_file_name(self):
+        '''Open a dialog to write a Jupyter (.ipynb) file.'''
+        c = self.c
+        fn = g.app.gui.runSaveFileDialog(
+            c,
+            defaultextension=".ipynb",
+            filetypes=[
+                ("Jupyter files", "*.ipynb"),
+                ("All files", "*"),
+            ],
+            initialfile='',
+            title="Export To Jupyter File",
+        )
+        c.bringToFront()
+        return fn
+    #@+node:ekr.20180407193222.1: *3* ipy_w.get_ua
+    def get_ua(self, p):
+
+        return p.v.u.get('ipynb')
+    #@+node:ekr.20180407191219.1: *3* ipy_w.make_notebook
+    def make_notebook(self):
+        '''Create a JSON notebook'''
+        root = self.root
+        prefix = self.get_ua(root)
+        if prefix: prefix = prefix.get('prefix')
+        if not prefix:
+            prefix = self.default_metadata
+        nb = prefix
+        nb ['cells'] = [self.put_body(p) for p in root.subtree()]
+        return nb
+    #@+node:ekr.20180407195341.1: *3* ipy_w.put_body
     def put_body(self, p):
         '''Put the body text of p, as an element of dict d.'''
         trace = False and not g.unitTesting
