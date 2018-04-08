@@ -93,10 +93,9 @@ class Import_IPYNB(object):
             if self.cell_type == 'markdown':
                 self.do_markdown_cell(self.cell, val)
             elif self.cell_type == 'raw':
-                self.cell.b = '@nocolor\n\n' + val
+                self.cell.b = '@nocolor\n\n' + val.lstrip()
             else:
-                ### Is this correct???
-                self.cell.b = '@language python\n\n' + val
+                self.cell.b = '@language python\n\n' + val.lstrip()
         else:
             # Do create a new node.
             p = self.new_node('# list:%s' % key)
@@ -118,43 +117,16 @@ class Import_IPYNB(object):
     #@+node:ekr.20160412101537.11: *6* ipynb.do_markdown_cell
     def do_markdown_cell(self, p, s):
         '''Split the markdown cell p if it contains one or more html headers.'''
-        trace = False and not g.unitTesting
-        SPLIT = False
-            # Perhaps this should be a user option,
-            # but splitting adds signifincant whitespace.
-            # The user can always split nodes manually if desired.
-        i0, last = 0, p.copy()
         if not s.strip():
             return
         lines = g.splitLines(s)
-        if SPLIT:
-            for i, s in enumerate(lines):
-                m = self.re_header.search(s)
-                n, name = self.check_header(m)
-                if n is None: continue
-                h = '<h%s> %s </h%s>' % (n, name.strip(), n)
-                prefix = ''.join(lines[i0: i])
-                suffix = ''.join(lines[i+1:]) # i+1: skip the heading.
-                if trace: g.trace('%2s %2s %s' % (i-i0, len(lines)-i, h))
-                if prefix.strip():
-                    p2 = last.insertAfter()
-                    p2.h = h
-                    p2.b = suffix
-                    last.b = '@language md\n\n' + prefix
-                    last = p2
-                    i0 = i
-                else:
-                    last.h = h
-                    last.b = '@language md\n\n' + suffix
-        else:
-            for i, s in enumerate(lines):
-                m = self.re_header.search(s)
-                n, name = self.check_header(m)
-                if n is not None:
-                    h = '<h%s> %s </h%s>' % (n, name.strip(), n)
-                    p.h = h
-                    break
-            p.b = '@language md\n\n' + ''.join(lines)
+        for s in lines:
+            m = self.re_header.search(s)
+            n, name = self.check_header(m)
+            if n is not None:
+                p.h = '<h%s> %s </h%s>' % (n, name.strip(), n)
+                break
+        p.b = '@language md\n\n' + ''.join(lines).lstrip()
     #@+node:ekr.20160412101537.23: *6* ipynb.new_node
     def new_node(self, h):
 
@@ -236,7 +208,7 @@ class Import_IPYNB(object):
     #@+node:ekr.20180407175655.1: *4* ipynb.set_ua
     def set_ua(self, p, key, val):
         '''Set p.v.u'''
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         if trace:
             g.trace(p.h, key)
             g.printObj(val)

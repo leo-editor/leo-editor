@@ -68,7 +68,7 @@ class Export_IPYNB(object):
         return True
     #@+node:ekr.20180407191227.1: *3* ipy_w.convert_notebook
     def convert_notebook(self, nb):
-        '''Write the notebook using nbconvert.writes.'''
+        '''Convert the notebook to a string.'''
         try:
             s = json.dumps(nb,
                 sort_keys=True,
@@ -81,7 +81,7 @@ class Export_IPYNB(object):
             return None
     #@+node:ekr.20160412101845.21: *3* ipy_w.default_metadata
     def default_metadata(self):
-        '''Return the top-level metadata to use if there is no {prefix} node.'''
+        '''Return the default top-level metadata.'''
         n1, n2 = sys.version_info[0], sys.version_info[1]
         version = n1
         long_version = '%s.%s' % (n1, n2)
@@ -125,35 +125,32 @@ class Export_IPYNB(object):
         c.bringToFront()
         return fn
     #@+node:ekr.20180407193222.1: *3* ipy_w.get_ua
-    def get_ua(self, p):
-
-        return p.v.u.get('ipynb')
+    def get_ua(self, p, key=None):
+        '''Return the ipynb uA. If key is given, return the inner dict.'''
+        d = p.v.u.get('ipynb')
+        return d.get(key) if key else d
     #@+node:ekr.20180407191219.1: *3* ipy_w.make_notebook
     def make_notebook(self):
         '''Create a JSON notebook'''
         root = self.root
-        prefix = self.get_ua(root)
-        if prefix: prefix = prefix.get('prefix')
-        if not prefix:
-            prefix = self.default_metadata
-        nb = prefix
+        nb = self.get_ua(root, key='prefix') or self.default_metadata
         nb ['cells'] = [self.put_body(p) for p in root.subtree()]
         return nb
     #@+node:ekr.20180407195341.1: *3* ipy_w.put_body
     def put_body(self, p):
         '''Put the body text of p, as an element of dict d.'''
-        trace = False and not g.unitTesting
-        ### Should depend @language directives, but ok for testing.
-        cell = self.get_ua(p)
-        cell = cell.get('cell') if cell else {}
-        cell = cell or {}
-        if trace:
-            g.trace(p.h)
-            g.printObj(cell)
-        cell ['source'] = g.splitLines(p.b)
-            # Must be a list.
+        cell = self.get_ua(p, 'cell') or {}
+        meta = cell.get('metadata') or {}
+        meta ['leo_headline'] = p.h
+        meta ['collapsed'] = 'True' if p.isExpanded() else 'False'
+        cell ['metadata'] = meta
+        # g.printObj(meta, tag='metadata')
+        # g.printObj(cell, tag='cell')
+        lines = [z for z in g.splitLines(p.b) if not g.isDirective(z)]
+        # Remove any extra leading whitespace lines inserted during import.
+        s = ''.join(lines).lstrip()
+        cell ['source'] = g.splitLines(s)
         return cell
-
     #@-others
 #@-others
 writer_dict = {
