@@ -17,13 +17,10 @@ class Import_IPYNB(object):
         '''Ctor for Import_IPYNB class.'''
         self.c = importCommands.c if importCommands else c
             # Commander of present outline.
-        # g.trace('(Import_IPYNB)', self.c)
         self.cell = None
             # The present cell node.
         self.cell_n = None
             # The number of the top-level node being scanned.
-        self.code_language = None
-            # The language in effect for code cells.
         self.cell_type = None
             # The pre-computed cell type of the node.
         self.in_data = False
@@ -52,9 +49,7 @@ class Import_IPYNB(object):
             return
         # 1. Do everything except cells.
         self.do_prefix(d)
-        self.code_language = self.get_code_language(d)
         # 2. Do all cells.
-        ### cells = d.get('cells', [])
         for n, cell in enumerate(self.cells):
             self.do_cell(cell, n)
         self.indent_cells()
@@ -158,16 +153,6 @@ class Import_IPYNB(object):
             # Do create a new node.
             p = self.new_node('# list:%s' % key)
             p.b = val
-    #@+node:ekr.20160412101537.19: *4* ipynb.get_code_language (to be removed)
-    def get_code_language(self, d):
-        '''Return the language specified by the top-level metadata.'''
-        name = None
-        m = d.get('metadata')
-        if m:
-            info = m.get('language_info')
-            if info:
-                name = info.get('name')
-        return name
     #@+node:ekr.20160412101537.22: *4* ipynb.is_empty_code
     def is_empty_code(self, cell):
         '''Return True if cell is an empty code cell.'''
@@ -181,13 +166,24 @@ class Import_IPYNB(object):
             # g.trace(len(source), self.parent.h, sorted(cell))
             return not source and not keys and not outputs
         return False
-    #@+node:ekr.20160412101537.23: *4* ipynb.new_node
-    def new_node(self, h):
-
-        parent = self.parent or self.root
-        p = parent.insertAsLastChild()
-        p.h = h
-        return p
+    #@+node:ekr.20160412101537.24: *4* ipynb.parse
+    def parse(self, fn):
+        '''Parse the file, which should be JSON format.'''
+        if g.os_path_exists(fn):
+            with open(fn) as f:
+                # payload_source = f.name
+                payload = f.read()
+            try:
+                nb = nbformat.reads(payload, as_version=4)
+                    # nbformat.NO_CONVERT: no conversion
+                    # as_version=4: Require IPython 4.
+                return nb
+            except Exception:
+                g.es_exception()
+                return None
+        else:
+            g.es_print('not found', fn)
+            return None
     #@+node:ekr.20180408112636.1: *3* ipynb.Utils
     #@+node:ekr.20160412101845.24: *4* ipynb.get_file_name
     def get_file_name(self):
@@ -245,6 +241,13 @@ class Import_IPYNB(object):
         stack.append(p.copy())
         # g.trace('   n', n, 'stack', len(stack), p.h)
         return stack
+    #@+node:ekr.20160412101537.23: *4* ipynb.new_node
+    def new_node(self, h):
+
+        parent = self.parent or self.root
+        p = parent.insertAsLastChild()
+        p.h = h
+        return p
     #@+node:ekr.20180407175655.1: *4* ipynb.set_ua
     def set_ua(self, p, key, val):
         '''Set p.v.u'''
@@ -257,24 +260,6 @@ class Import_IPYNB(object):
         d2 [key] = val
         d ['ipynb'] = d2
         p.v.u = d
-    #@+node:ekr.20160412101537.24: *4* ipynb.parse
-    def parse(self, fn):
-        '''Parse the file, which should be JSON format.'''
-        if g.os_path_exists(fn):
-            with open(fn) as f:
-                # payload_source = f.name
-                payload = f.read()
-            try:
-                nb = nbformat.reads(payload, as_version=4)
-                    # nbformat.NO_CONVERT: no conversion
-                    # as_version=4: Require IPython 4.
-                return nb
-            except Exception:
-                g.es_exception()
-                return None
-        else:
-            g.es_print('not found', fn)
-            return None
     #@-others
 #@-others
 importer_dict = {
