@@ -14,7 +14,6 @@ class Import_IPYNB(object):
     '''A class to import .ipynb files.'''
     
     def __init__(self, c=None, importCommands=None, **kwargs):
-        '''Ctor for Import_IPYNB class.'''
         self.c = importCommands.c if importCommands else c
             # Commander of present outline.
         self.cell = None
@@ -23,8 +22,6 @@ class Import_IPYNB(object):
             # The number of the top-level node being scanned.
         self.cell_type = None
             # The pre-computed cell type of the node.
-        self.in_data = False
-            # True if in range of any dict.
         self.parent = None
             # The parent for the next created node.
         self.re_header = re.compile(r'^.*<[hH]([123456])>(.*)</[hH]([123456])>')
