@@ -16,12 +16,10 @@ class Import_IPYNB(object):
     def __init__(self, c=None, importCommands=None, **kwargs):
         self.c = importCommands.c if importCommands else c
             # Commander of present outline.
-        self.cell_n = None
-            # The number of the top-level node being scanned.
+        self.cell_n = 0
+            # The number of untitled cells.
         self.parent = None
             # The parent for the next created node.
-        self.re_header = re.compile(r'^.*<[hH]([123456])>(.*)</[hH]([123456])>')
-            # A common regex matching html headers.
         self.root = None
             # The root of the to-be-created outline.
 
@@ -41,8 +39,8 @@ class Import_IPYNB(object):
         if not d:
             return
         self.do_prefix(d)
-        for n, cell in enumerate(self.cells):
-            self.do_cell(cell, n)
+        for cell in self.cells:
+            self.do_cell(cell)
         self.indent_cells()
         c.selectPosition(self.root)
         c.redraw()
@@ -68,33 +66,22 @@ class Import_IPYNB(object):
         elif not c or not fn:
             g.trace('can not happen', c, fn)
     #@+node:ekr.20180408112600.1: *3* ipynb.JSON handlers
-    #@+node:ekr.20160412101537.10: *4* ipynb.check_header
-    def check_header(self, m):
-        '''Return (n, name) or (None, None) on error.'''
-        val = (None, None)
-        if m:
-            n1, name, n2 = m.group(1), m.group(2), m.group(3)
-            try:
-                if int(n1) == int(n2):
-                    val = int(n1), name
-            except Exception:
-                pass
-            if val == (None, None):
-                g.trace('malformed header:', m.group(0))
-        return val
     #@+node:ekr.20160412101537.12: *4* ipynb.do_cell
-    def do_cell(self, cell, n):
+    def do_cell(self, cell):
 
         trace = False and not g.unitTesting
-        self.cell_n = n
         if self.is_empty_code(cell):
-            if trace: g.trace('skipping empty cell', n)
+            if trace: g.trace('skipping empty cell')
             return
         self.parent = cell_p = self.root.insertAsLastChild()
-        self.parent.h = 'cell %s' % (n + 1)
         # Expand the node if metadata: collapsed is False
         meta = cell.get('metadata')
         collapsed = meta and meta.get('collapsed')
+        h = meta.get('leo_headline')
+        if not h:
+            self.cell_n += 1
+            h = 'cell %s' % self.cell_n
+        self.parent.h = h
         if collapsed is not None and not collapsed:
             cell_p.v.expand()
         if trace:
@@ -105,22 +92,9 @@ class Import_IPYNB(object):
             if key in cell:
                 val = cell.get(key)
                 if val:
-                    self.do_source(cell, cell_p, key, val)
+                    self.do_source(cell, cell_p, val)
                 del cell[key]
         self.set_ua(self.parent, 'cell', cell)
-    #@+node:ekr.20160412101537.11: *4* ipynb.do_markdown_cell
-    def do_markdown_cell(self, p, s):
-        '''Split the markdown cell p if it contains one or more html headers.'''
-        if not s.strip():
-            return
-        lines = g.splitLines(s)
-        for s in lines:
-            m = self.re_header.search(s)
-            n, name = self.check_header(m)
-            if n is not None:
-                p.h = '<h%s> %s </h%s>' % (n, name.strip(), n)
-                break
-        p.b = '@language md\n\n' + ''.join(lines).lstrip()
     #@+node:ekr.20160412101537.13: *4* ipynb.do_prefix
     def do_prefix(self, d):
         '''Handle everything except the 'cells' attribute.'''
@@ -136,27 +110,27 @@ class Import_IPYNB(object):
                 del d['cells']
             self.set_ua(self.root, 'prefix', d)
     #@+node:ekr.20160412101537.9: *4* ipynb.do_source
-    def do_source(self, cell, cell_p, key, val):
-        '''Set the cell's body text, or create a 'source' node.'''
+    def do_source(self, cell, cell_p, val):
+        '''Set the cell's body text.'''
         cell_type = cell.get('cell_type')
         if cell_type == 'markdown':
-            self.do_markdown_cell(cell_p, val)
+            kind = '@language md'
         elif cell_type == 'raw':
-            cell_p.b = '@nocolor\n\n' + val.lstrip()
+            kind = '@nocolor'
         else:
-            cell_p.b = '@language python\n\n' + val.lstrip()
+            kind = '@language python'
+        cell_p.b = '%s\n\n%s' % (kind, val.lstrip())
     #@+node:ekr.20160412101537.22: *4* ipynb.is_empty_code
     def is_empty_code(self, cell):
         '''Return True if cell is an empty code cell.'''
         if cell.get('cell_type') != 'code':
             return False
-        source = cell.get('source','')
         metadata = cell.get('metadata')
+        outputs = cell.get('outputs')
+        source = cell.get('source')
         keys = sorted(metadata.keys())
         if 'collapsed' in metadata:
             keys.remove('collapsed')
-        outputs = cell.get('outputs')
-        # g.trace(len(source), self.parent.h, sorted(cell))
         return not source and not keys and not outputs
     #@+node:ekr.20160412101537.24: *4* ipynb.parse
     def parse(self, fn):
@@ -193,7 +167,9 @@ class Import_IPYNB(object):
         )
         c.bringToFront()
         return fn
-    #@+node:ekr.20160412101537.15: *4* ipynb.indent_cells
+    #@+node:ekr.20160412101537.15: *4* ipynb.indent_cells & helper
+    re_header = re.compile(r'^.*<[hH]([123456])>(.*)</[hH]([123456])>')
+
     def indent_cells(self):
         '''
         Indent md nodes in self.root.children().
@@ -206,9 +182,16 @@ class Import_IPYNB(object):
         after = self.root.nodeAfterTree()
         root_level = self.root.level()
         while p and p != self.root and p != after:
-            m = self.re_header.search(p.h)
-            n, name = self.check_header(m)
-            if n is None: n = 1
+            # Check the first 5 lines of p.b.
+            n = 1
+            for s in g.splitLines(p.b)[:5]:
+                m = self.re_header.search(s)
+                if m:
+                    try:
+                        n = int(m.group(1))
+                        break
+                    except ValueError:
+                        pass
             assert p.level() == root_level + 1, (p.level(), p.h)
             stack = self.move_node(n, p, stack)
             p.moveToNodeAfterTree()
