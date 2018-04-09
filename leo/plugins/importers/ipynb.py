@@ -24,7 +24,7 @@ class Import_IPYNB(object):
             # The root of the to-be-created outline.
 
     #@+others
-    #@+node:ekr.20180408112531.1: *3* ipynb.Entries
+    #@+node:ekr.20180408112531.1: *3* ipynb.Entries & helpers
     #@+node:ekr.20160412101537.14: *4* ipynb.import_file
     def import_file(self, fn, root):
         '''
@@ -42,6 +42,7 @@ class Import_IPYNB(object):
         for cell in self.cells:
             self.do_cell(cell)
         self.indent_cells()
+        self.add_markup()
         c.selectPosition(self.root)
         c.redraw()
     #@+node:ekr.20160412103110.1: *4* ipynb.run
@@ -65,6 +66,66 @@ class Import_IPYNB(object):
             c.setChanged(changed)
         elif not c or not fn:
             g.trace('can not happen', c, fn)
+    #@+node:ekr.20160412101537.15: *4* ipynb.indent_cells & helper
+    re_header1 = re.compile(r'^.*<[hH]([123456])>(.*)</[hH]([123456])>')
+    re_header2 = re.compile(r'^\s*([#]+)')
+
+    def indent_cells(self):
+        '''
+        Indent md nodes in self.root.children().
+        <h1> nodes and non-md nodes stay where they are,
+        <h2> nodes become children of <h1> nodes, etc.
+        
+        Similarly for indentation based on '#' headline markup.
+        '''
+        # Careful: links change during this loop.
+        p = self.root.firstChild()
+        stack = []
+        after = self.root.nodeAfterTree()
+        root_level = self.root.level()
+        while p and p != self.root and p != after:
+            # Check the first 5 lines of p.b.
+            lines = g.splitLines(p.b)
+            found = None
+            for i, s in enumerate(lines[:5]):
+                m1 = self.re_header1.search(s)
+                m2 = self.re_header2.search(s)
+                if m1:
+                    try:
+                        n = int(m1.group(1))
+                        found = i
+                        break
+                    except ValueError:
+                        pass
+                elif m2:
+                    n = len(m2.group(1))
+                    found = i
+                    break
+            if found is None:
+                cell = self.get_ua(p, 'cell')
+                meta = cell.get('metadata')
+                # g.printObj(meta, tag='metadata')
+                n = meta and meta.get('leo_level')
+                if n is None: n = 1
+            else:
+                p.b = ''.join(lines[:found] + lines[found+1:])
+            assert p.level() == root_level + 1, (p.level(), p.h)
+            stack = self.move_node(n, p, stack)
+            p.moveToNodeAfterTree()
+    #@+node:ekr.20160412101537.9: *4* ipynb.add_markup
+    def add_markup(self):
+        '''Add @language directives, but only if necessary.'''
+        for p in self.root.subtree():
+            level = p.level() - self.root.level()
+            language = g.getLanguageAtPosition(self.c, p)
+            cell = self.get_ua(p, 'cell')
+            # # Always put @language directives in top-level imported nodes.
+            if cell.get('cell_type') == 'markdown':
+                if level < 2 or language not in ('md', 'markdown'):
+                   p.b = '@language md\n@wrap\n\n%s' % p.b
+            else:
+                if level < 2 or language != 'python':
+                    p.b = '@language python\n\n%s' % p.b
     #@+node:ekr.20180408112600.1: *3* ipynb.JSON handlers
     #@+node:ekr.20160412101537.12: *4* ipynb.do_cell
     def do_cell(self, cell):
@@ -88,13 +149,12 @@ class Import_IPYNB(object):
             print('')
             g.trace('=====', self.cell_n, cell.get('cell_type'))
         # Handle the body text.
-        for key in ('markdown', 'source', 'text'):
-            if key in cell:
-                val = cell.get(key)
-                if val:
-                    self.do_source(cell, cell_p, val)
-                del cell[key]
-        self.set_ua(self.parent, 'cell', cell)
+        val = cell.get('source')
+        if val and val.strip():
+            cell_p.b = val.strip() + '\n'
+                # add_markup will add directives later.
+        del cell ['source']
+        self.set_ua(cell_p, 'cell', cell)
     #@+node:ekr.20160412101537.13: *4* ipynb.do_prefix
     def do_prefix(self, d):
         '''Handle everything except the 'cells' attribute.'''
@@ -109,14 +169,6 @@ class Import_IPYNB(object):
             if self.cells:
                 del d['cells']
             self.set_ua(self.root, 'prefix', d)
-    #@+node:ekr.20160412101537.9: *4* ipynb.do_source
-    def do_source(self, cell, cell_p, val):
-        '''Set the cell's body text.'''
-        val = val.strip() + '\n'
-        if cell.get('cell_type') == 'markdown':
-            cell_p.b = '@language md\n@wrap\n\n%s' % val
-        else:
-            cell_p.b = '@language python\n\n%s' % val
     #@+node:ekr.20160412101537.22: *4* ipynb.is_empty_code
     def is_empty_code(self, cell):
         '''Return True if cell is an empty code cell.'''
@@ -164,46 +216,14 @@ class Import_IPYNB(object):
         )
         c.bringToFront()
         return fn
-    #@+node:ekr.20160412101537.15: *4* ipynb.indent_cells & helper
-    re_header1 = re.compile(r'^.*<[hH]([123456])>(.*)</[hH]([123456])>')
-    re_header2 = re.compile(r'^\s*([#]+)')
-
-    def indent_cells(self):
-        '''
-        Indent md nodes in self.root.children().
-        <h1> nodes and non-md nodes stay where they are,
-        <h2> nodes become children of <h1> nodes, etc.
-        
-        Similarly for indentation based on '#' headline markup.
-        '''
-        # Careful: links change during this loop.
-        p = self.root.firstChild()
-        stack = []
-        after = self.root.nodeAfterTree()
-        root_level = self.root.level()
-        while p and p != self.root and p != after:
-            # Check the first 5 lines of p.b.
-            lines = g.splitLines(p.b)
-            found, n = None, 1
-            for i, s in enumerate(lines[:5]):
-                m1 = self.re_header1.search(s)
-                m2 = self.re_header2.search(s)
-                if m1:
-                    try:
-                        n = int(m1.group(1))
-                        found = i
-                        break
-                    except ValueError:
-                        pass
-                elif m2:
-                    n = len(m2.group(1))
-                    found = i
-                    break
-            if found is not None:
-                p.b = ''.join(lines[:found] + lines[found+1:])
-            assert p.level() == root_level + 1, (p.level(), p.h)
-            stack = self.move_node(n, p, stack)
-            p.moveToNodeAfterTree()
+    #@+node:ekr.20180409152738.1: *4* ipynb.get_ua
+    def get_ua(self, p, key=None):
+        '''Return the ipynb uA. If key is given, return the inner dict.'''
+        d = p.v.u.get('ipynb')
+        if not d:
+            return {}
+        else:
+            return d.get(key) if key else d
     #@+node:ekr.20160412101537.16: *4* ipynb.move_node
     def move_node(self, n, p, stack):
         '''Move node to level n'''

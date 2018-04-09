@@ -168,20 +168,30 @@ class Export_IPYNB(object):
 
     def update_cell_body(self, cell, meta, p):
         '''Create a new body text, depending on kind.'''
+        
+        def clean(lines):
+            lines = [z for z in lines if not g.isDirective(z)]
+            s = ''.join(lines).strip() + '\n'
+            return g.splitLines(s)
+            
         kind = self.cell_type(p)
         lines = g.splitLines(p.b)
+        level = p.level() - self.root.level()
+        # g.trace(level, p.h)
         if kind == 'markdown':
             # Remove all header markup lines.
             lines = [z for z in lines if
                 not self.pat1.search(z) and not self.pat2.search(z)]
+            lines = clean(lines)
             # Insert a new header markup line.
-            level = p.level() - self.root.level()
             if level > 0:
                 lines.insert(0, '%s %s\n' % ('#'*level, p.h.strip()))
-        lines = [z for z in lines if not g.isDirective(z)]
-        s = ''.join(lines).lstrip()
+        else:
+            # Remember the level for the importer.
+            meta ['leo_level'] = level
+            lines = clean(lines)
             # Remove leading whitespace lines inserted during import.
-        cell ['source'] = g.splitLines(s)
+        cell ['source'] = lines
     #@+node:ekr.20180409120454.1: *4* ipy_w.update_cell_properties
     def update_cell_properties(self, cell, meta, p):
         '''Update cell properties.'''
