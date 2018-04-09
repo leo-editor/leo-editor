@@ -112,14 +112,11 @@ class Import_IPYNB(object):
     #@+node:ekr.20160412101537.9: *4* ipynb.do_source
     def do_source(self, cell, cell_p, val):
         '''Set the cell's body text.'''
-        cell_type = cell.get('cell_type')
-        if cell_type == 'markdown':
-            kind = '@language md'
-        elif cell_type == 'raw':
-            kind = '@nocolor'
+        val = val.strip() + '\n'
+        if cell.get('cell_type') == 'markdown':
+            cell_p.b = '@language md\n@wrap\n\n%s' % val
         else:
-            kind = '@language python'
-        cell_p.b = '%s\n\n%s' % (kind, val.lstrip())
+            cell_p.b = '@language python\n\n%s' % val
     #@+node:ekr.20160412101537.22: *4* ipynb.is_empty_code
     def is_empty_code(self, cell):
         '''Return True if cell is an empty code cell.'''

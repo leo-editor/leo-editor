@@ -69,16 +69,10 @@ class Export_IPYNB(object):
     #@+node:ekr.20180409081735.1: *3* ipy_w.cell_type
     def cell_type(self, p):
         '''Return the Jupyter cell type of p.b.'''
-        languages = ['python', 'javascript', 'c',]
         for s in g.splitLines(p.b):
-            if s.startswith('@nocolor'):
-                return 'text'
             if s.startswith('@language md'):
                 return 'markdown'
-            for language in languages:
-                if s.startswith('@language %s' % language):
-                    return 'code'
-        return 'text'
+        return 'code'
             
     #@+node:ekr.20180407191227.1: *3* ipy_w.convert_notebook
     def convert_notebook(self, nb):
@@ -175,6 +169,11 @@ class Export_IPYNB(object):
                 cell ['outputs'] = []
             if cell.get('execution_count') is None:
                 cell ['execution_count'] = 0
+        else:
+            # These properties are invalid!
+            for prop in ('execution_count', 'outputs'):
+                if cell.get(prop) is not None:
+                    del cell [prop]
         # g.printObj(meta, tag='metadata')
         # g.printObj(cell, tag='cell')
         lines = [z for z in g.splitLines(p.b) if not g.isDirective(z)]
