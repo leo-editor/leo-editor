@@ -183,19 +183,24 @@ class Import_IPYNB(object):
         root_level = self.root.level()
         while p and p != self.root and p != after:
             # Check the first 5 lines of p.b.
-            n = 1
-            for s in g.splitLines(p.b)[:5]:
+            lines = g.splitLines(p.b)
+            found, n = None, 1
+            for i, s in enumerate(lines[:5]):
                 m1 = self.re_header1.search(s)
                 m2 = self.re_header2.search(s)
                 if m1:
                     try:
                         n = int(m1.group(1))
+                        found = i
                         break
                     except ValueError:
                         pass
                 elif m2:
                     n = len(m2.group(1))
+                    found = i
                     break
+            if found is not None:
+                p.b = ''.join(lines[:found] + lines[found+1:])
             assert p.level() == root_level + 1, (p.level(), p.h)
             stack = self.move_node(n, p, stack)
             p.moveToNodeAfterTree()

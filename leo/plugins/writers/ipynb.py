@@ -1,6 +1,7 @@
 #@+leo-ver=5-thin
 #@+node:ekr.20160412101901.1: * @file writers/ipynb.py
 '''The @auto write code for jupyter (.ipynb) files.'''
+import re
 import sys
 import leo.core.leoGlobals as g
 import json
@@ -68,12 +69,10 @@ class Export_IPYNB(object):
         return True
     #@+node:ekr.20180409081735.1: *3* ipy_w.cell_type
     def cell_type(self, p):
-        '''Return the Jupyter cell type of p.b.'''
-        for s in g.splitLines(p.b):
-            if s.startswith('@language md'):
-                return 'markdown'
-        return 'code'
-            
+        '''Return the Jupyter cell type of p.b, honoring ancestor directives.'''
+        c = self.c
+        language = g.getLanguageAtPosition(c, p)
+        return 'markdown' if language in ('md', 'markdown') else 'code'
     #@+node:ekr.20180407191227.1: *3* ipy_w.convert_notebook
     def convert_notebook(self, nb):
         '''Convert the notebook to a string.'''
@@ -153,11 +152,39 @@ class Export_IPYNB(object):
         # Put all the cells.
         nb ['cells'] = [self.put_body(p) for p in root.subtree()]
         return nb
-    #@+node:ekr.20180407195341.1: *3* ipy_w.put_body
+    #@+node:ekr.20180407195341.1: *3* ipy_w.put_body & helpers
     def put_body(self, p):
         '''Put the body text of p, as an element of dict d.'''
         cell = self.get_ua(p, 'cell') or {}
         meta = cell.get('metadata') or {}
+        self.update_cell_properties(cell, meta, p)
+        self.update_cell_body(cell, meta, p)
+        # g.printObj(meta, tag='metadata')
+        # g.printObj(cell, tag='cell')
+        return cell
+    #@+node:ekr.20180409120613.1: *4* ipy_w.update_cell_body
+    pat1 = re.compile(r'^.*<[hH]([123456])>(.*)</[hH]([123456])>')
+    pat2 = re.compile(r'^\s*([#]+)')
+
+    def update_cell_body(self, cell, meta, p):
+        '''Create a new body text, depending on kind.'''
+        kind = self.cell_type(p)
+        lines = g.splitLines(p.b)
+        if kind == 'markdown':
+            # Remove all header markup lines.
+            lines = [z for z in lines if
+                not self.pat1.search(z) and not self.pat2.search(z)]
+            # Insert a new header markup line.
+            level = p.level() - self.root.level()
+            if level > 0:
+                lines.insert(0, '%s %s\n' % ('#'*level, p.h.strip()))
+        lines = [z for z in lines if not g.isDirective(z)]
+        s = ''.join(lines).lstrip()
+            # Remove leading whitespace lines inserted during import.
+        cell ['source'] = g.splitLines(s)
+    #@+node:ekr.20180409120454.1: *4* ipy_w.update_cell_properties
+    def update_cell_properties(self, cell, meta, p):
+        '''Update cell properties.'''
         # Update the metadata.
         meta ['leo_headline'] = p.h
         meta ['collapsed'] = not p.isExpanded()
@@ -174,13 +201,8 @@ class Export_IPYNB(object):
             for prop in ('execution_count', 'outputs'):
                 if cell.get(prop) is not None:
                     del cell [prop]
-        # g.printObj(meta, tag='metadata')
-        # g.printObj(cell, tag='cell')
-        lines = [z for z in g.splitLines(p.b) if not g.isDirective(z)]
-        s = ''.join(lines).lstrip()
-            # Remove leading whitespace lines inserted during import.
-        cell ['source'] = g.splitLines(s)
-        return cell
+        return kind
+       
     #@-others
 #@-others
 writer_dict = {
