@@ -3542,15 +3542,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         c = self.c
         if v: d, h = v.u, v.h
         else: d, h = c.p.v.u, c.p.h
-        g.es_print(h)
-        keys = list(d.keys())
-        keys.sort()
-        n = 4
-        for key in keys:
-            n = max(len(key), n)
-        for key in keys:
-            pad = ' ' * (len(key) - n)
-            g.es_print('    %s%s: %s' % (pad, key, d.get(key)))
+        print(h)
+        g.printObj(d)
     #@+node:ekr.20150514063305.351: *4* ec.setUa
     @cmd('set-ua')
     def setUa(self, event):
