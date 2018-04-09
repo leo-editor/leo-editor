@@ -66,6 +66,20 @@ class Export_IPYNB(object):
             s = g.toEncodedString(s, encoding='utf-8', reportErrors=True)
         at.outputFile.write(s)
         return True
+    #@+node:ekr.20180409081735.1: *3* ipy_w.cell_type
+    def cell_type(self, p):
+        '''Return the Jupyter cell type of p.b.'''
+        languages = ['python', 'javascript', 'c',]
+        for s in g.splitLines(p.b):
+            if s.startswith('@nocolor'):
+                return 'text'
+            if s.startswith('@language md'):
+                return 'markdown'
+            for language in languages:
+                if s.startswith('@language %s' % language):
+                    return 'code'
+        return 'text'
+            
     #@+node:ekr.20180407191227.1: *3* ipy_w.convert_notebook
     def convert_notebook(self, nb):
         '''Convert the notebook to a string.'''
@@ -128,7 +142,10 @@ class Export_IPYNB(object):
     def get_ua(self, p, key=None):
         '''Return the ipynb uA. If key is given, return the inner dict.'''
         d = p.v.u.get('ipynb')
-        return d.get(key) if key else d
+        if not d:
+            return {}
+        else:
+            return d.get(key) if key else d
     #@+node:ekr.20180407191219.1: *3* ipy_w.make_notebook
     def make_notebook(self):
         '''Create a JSON notebook'''
@@ -147,15 +164,22 @@ class Export_IPYNB(object):
         '''Put the body text of p, as an element of dict d.'''
         cell = self.get_ua(p, 'cell') or {}
         meta = cell.get('metadata') or {}
+        # Update the metadata.
         meta ['leo_headline'] = p.h
         meta ['collapsed'] = not p.isExpanded()
         cell ['metadata'] = meta
-        # g.trace(meta.get('collapsed'), p.h)
+        # Update required properties.
+        cell ['cell_type'] = kind = self.cell_type(p)
+        if kind == 'code':
+            if cell.get('outputs') is None:
+                cell ['outputs'] = []
+            if cell.get('execution_count') is None:
+                cell ['execution_count'] = 0
         # g.printObj(meta, tag='metadata')
         # g.printObj(cell, tag='cell')
         lines = [z for z in g.splitLines(p.b) if not g.isDirective(z)]
-        # Remove any extra leading whitespace lines inserted during import.
         s = ''.join(lines).lstrip()
+            # Remove leading whitespace lines inserted during import.
         cell ['source'] = g.splitLines(s)
         return cell
     #@-others
