@@ -165,13 +165,16 @@ class Import_IPYNB(object):
         c.bringToFront()
         return fn
     #@+node:ekr.20160412101537.15: *4* ipynb.indent_cells & helper
-    re_header = re.compile(r'^.*<[hH]([123456])>(.*)</[hH]([123456])>')
+    re_header1 = re.compile(r'^.*<[hH]([123456])>(.*)</[hH]([123456])>')
+    re_header2 = re.compile(r'^\s*([#]+)')
 
     def indent_cells(self):
         '''
         Indent md nodes in self.root.children().
         <h1> nodes and non-md nodes stay where they are,
         <h2> nodes become children of <h1> nodes, etc.
+        
+        Similarly for indentation based on '#' headline markup.
         '''
         # Careful: links change during this loop.
         p = self.root.firstChild()
@@ -182,13 +185,17 @@ class Import_IPYNB(object):
             # Check the first 5 lines of p.b.
             n = 1
             for s in g.splitLines(p.b)[:5]:
-                m = self.re_header.search(s)
-                if m:
+                m1 = self.re_header1.search(s)
+                m2 = self.re_header2.search(s)
+                if m1:
                     try:
-                        n = int(m.group(1))
+                        n = int(m1.group(1))
                         break
                     except ValueError:
                         pass
+                elif m2:
+                    n = len(m2.group(1))
+                    break
             assert p.level() == root_level + 1, (p.level(), p.h)
             stack = self.move_node(n, p, stack)
             p.moveToNodeAfterTree()
