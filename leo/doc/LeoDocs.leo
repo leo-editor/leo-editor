@@ -1995,7 +1995,6 @@ There are four kinds of settings files:
 
 4. **Theme files**. These are .leo files containing stylesheets and other appearance-related settings.
 
-
 The following sections describe the kinds of nodes in @settings trees.
 </t>
 <t tx="EKR.20040524104904.224" str_atime="1376412038.0">Naively using plugins can expose you and your .leo files to malicious attacks. The fundamental principles are::
@@ -20575,8 +20574,13 @@ At one time I thought the following might work, but it appears that it doesn't:
     This brings up the "Change Key Sequence" panel.
 
 5. Set both radio buttons to "Not Assigned" and click OK.</t>
-<t tx="ekr.20160304081437.3">To enable a theme:
+<t tx="ekr.20160304081437.3">To enable a theme .leo file, put the following setting in myLeoSettings.leo::
 
+    @string theme-name &lt;theme file, without the .leo extension&gt;
+
+You can also define a theme directly in myLeoSettings.leo as follows:
+
+- *Remove* (or disable) any previous @theme tree in myLeoSettings.leo.
 - *Select* one of the @theme trees in leoSettings.leo.
 - *Copy* the entire @theme tree to myLeoSettings.leo.
 - *Move* the copied tree to the *end* of the @settings tree.
