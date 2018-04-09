@@ -9,7 +9,6 @@ from codecs import open # To use a consistent encoding
 import os
 from shutil import rmtree
 from setuptools import setup, find_packages # Always prefer setuptools over distutils
-import semantic_version
 import leo.core.leoGlobals as g
 import leo.core.leoVersion as leoVersion
 #@+node:maphew.20141126230535.3: ** docstring
@@ -23,6 +22,7 @@ import leo.core.leoVersion as leoVersion
     https://blog.ionelmc.ro/presentations/packaging/#slide:2
     https://blog.ionelmc.ro/2014/05/25/python-packaging/
 '''
+
 #@+node:maphew.20180224170140.1: ** get_version
 def get_version(file, version=None):
     '''Determine current Leo version. Use git if in checkout, else internal Leo'''
@@ -31,7 +31,10 @@ def get_version(file, version=None):
         version = git_version(file)
     else:
         version = get_semver(leoVersion.version)
+    if not version:
+        version = leoVersion.version
     return version
+
 #@+node:maphew.20171112223922.1: *3* git_version
 def git_version(file):
     '''Fetch from Git: {tag} {distance-from-tag} {current commit hash}
@@ -61,10 +64,11 @@ def clean_git_tag(tag):
 def get_semver(tag):
     '''Return 'Semantic Version' from tag string'''
     try:
+        import semantic_version
         version = str(semantic_version.Version.coerce(tag, partial=True))
             # tuple of major, minor, build, pre-release, patch
             # 5.6b2 --> 5.6-b2
-    except ValueError:
+    except ImportError or ValueError:
         print('''*** Failed to parse Semantic Version from git tag '{0}'.
         Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.
         This version can't be uploaded to PyPi.org.'''.format(tag))
