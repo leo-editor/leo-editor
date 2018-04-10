@@ -78,11 +78,18 @@ class Import_IPYNB(object):
         
         Similarly for indentation based on '#' headline markup.
         '''
+        def to_int(n):
+            try:
+                return int(n)
+            except ValueError:
+                return None
+
         # Careful: links change during this loop.
         p = self.root.firstChild()
         stack = []
         after = self.root.nodeAfterTree()
         root_level = self.root.level()
+        n = 1
         while p and p != self.root and p != after:
             # Check the first 5 lines of p.b.
             lines = g.splitLines(p.b)
@@ -91,12 +98,10 @@ class Import_IPYNB(object):
                 m1 = self.re_header1.search(s)
                 m2 = self.re_header2.search(s)
                 if m1:
-                    try:
-                        n = int(m1.group(1))
+                    n = to_int(m1.group(1))
+                    if n is not None:
                         found = i
                         break
-                    except ValueError:
-                        pass
                 elif m2:
                     n = len(m2.group(1))
                     found = i
@@ -104,9 +109,8 @@ class Import_IPYNB(object):
             if found is None:
                 cell = self.get_ua(p, 'cell')
                 meta = cell.get('metadata')
-                # g.printObj(meta, tag='metadata')
                 n = meta and meta.get('leo_level')
-                if n is None: n = 1
+                n = to_int(n)
             else:
                 p.b = ''.join(lines[:found] + lines[found+1:])
             assert p.level() == root_level + 1, (p.level(), p.h)
@@ -235,6 +239,8 @@ class Import_IPYNB(object):
     def move_node(self, n, p, stack):
         '''Move node to level n'''
         # Cut back the stack so that p will be at level n (if possible).
+        if n is None:
+            n = 1
         if stack:
             stack = stack[:n]
             if len(stack) == n:
