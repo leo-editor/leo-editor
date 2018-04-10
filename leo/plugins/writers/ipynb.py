@@ -4,7 +4,11 @@
 import re
 import sys
 import leo.core.leoGlobals as g
-import json
+if g.isPython3:
+    import json # This fails in python 2. It yields writers.json
+else:
+    json = g.importModule('json')
+# print('writers/ipynb.py: json: %s' % json)
 #@+others
 #@+node:ekr.20160412101845.2: ** class Export_IPYNB
 class Export_IPYNB(object):
@@ -93,16 +97,11 @@ class Export_IPYNB(object):
     #@+node:ekr.20180407191227.1: *3* ipy_w.convert_notebook
     def convert_notebook(self, nb):
         '''Convert the notebook to a string.'''
-        try:
-            s = json.dumps(nb,
-                sort_keys=True,
-                indent=4, separators=(',', ': '),
-            )
-            return s
-        except Exception:
-            g.es_print('Error writing notebook', color='red')
-            g.es_exception()
-            return None
+        # Do *not* catch exceptions here.
+        s = json.dumps(nb,
+            sort_keys=True,
+            indent=4, separators=(',', ': '))
+        return g.toUnicode(s)
     #@+node:ekr.20160412101845.21: *3* ipy_w.default_metadata
     def default_metadata(self):
         '''Return the default top-level metadata.'''
