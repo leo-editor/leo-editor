@@ -540,23 +540,39 @@ def insertBodyTime(self, event=None):
     i = w.getInsertPoint()
     w.insert(i, s)
     c.frame.body.onBodyChanged(undoType, oldSel=oldSel)
-#@+node:ekr.20180410054716.1: ** c_ec.insert_jupyter_toc & helper
+#@+node:ekr.20180410054716.1: ** c_ec: insert-jupyter-toc & insert-markdown-toc
 @g.commander_command('insert-jupyter-toc')
 def insertJupyterTOC(self, event=None):
-    '''Insert a Jupyter table of contents at the cursor.'''
-    c, undoType = self, 'Insert Jupyter TOC'
+    '''
+    Insert a Jupyter table of contents at the cursor,
+    replacing any selected text.
+    '''
+    insert_toc(c=self, kind='jupyter')
+    
+@g.commander_command('insert-markdown-toc')
+def insertMarkdownTOC(self, event=None):
+    '''
+    Insert a Markdown table of contents at the cursor,
+    replacing any selected text.
+    '''
+    insert_toc(c=self, kind='markdown')
+
+#@+node:ekr.20180410074238.1: *3* insert_toc
+def insert_toc(c, kind):
+    '''Insert a table of contents at the cursor.'''
+    undoType = 'Insert %s TOC' % kind.capitalize()
     w = c.frame.body.wrapper
     if g.app.batchMode:
         c.notValidInBatchMode(undoType)
         return
     oldSel = w.getSelectionRange()
     w.deleteTextSelection()
-    s = make_toc(c, c.p)
+    s = make_toc(c, kind=kind, root=c.p)
     i = w.getInsertPoint()
     w.insert(i, s)
     c.frame.body.onBodyChanged(undoType, oldSel=oldSel)
 #@+node:ekr.20180410054926.1: *3* make_toc
-def make_toc(c, root):
+def make_toc(c, kind, root):
     '''Return the toc for root.b as a list of lines.'''
 
     def cell_type(p):
@@ -579,10 +595,11 @@ def make_toc(c, root):
             n = stack[-1]
             stack[-1] = n+1
             # Use bullets
-            line = '%s- [%s](#%s)\n' % (
-                ' '*4*(level-1),
-                clean_headline(p.h),
-                clean_headline(p.h.replace(' ','-')))
+            title = clean_headline(p.h)
+            url = clean_headline(p.h.replace(' ','-'))
+            if kind == 'markdown':
+                url = url.lower()
+            line = '%s- [%s](#%s)\n' % (' '*4*(level-1), title, url)
             result.append(line)
     if result:
         result.append('\n')
