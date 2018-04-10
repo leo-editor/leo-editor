@@ -3566,7 +3566,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         n = keys.get('underline')
         menu = keys.get('menu') or self
         if not label: return
-        if trace: g.trace(label)
+        if trace: g.trace('%30s %s' % (commandName, label))
             # command is always add_commandCallback,
             # defined in c.add_command.
         if -1 < n < len(label):
@@ -3662,9 +3662,12 @@ class LeoQtMenu(leoMenu.LeoMenu):
         # menu.entryconfig(realName,accelerator='')
     #@+node:ekr.20110605121601.18356: *5* createMenuBar (leoQtmenu)
     def createMenuBar(self, frame):
-        '''Create all top-level menus.
-        The menuBar itself has already been created.'''
+        '''
+        (LeoQtMenu) Create all top-level menus.
+        The menuBar itself has already been created.
+        '''
         self.createMenusFromTables()
+            # This is LeoMenu.createMenusFromTables.
     #@+node:ekr.20110605121601.18357: *5* createOpenWithMenu (LeoQtMenu)
     def createOpenWithMenu(self, parent, label, index, amp_index):
         '''Create the File:Open With submenu.

@@ -1426,7 +1426,7 @@ class GlobalConfigManager(object):
     def getMenusList(self):
         '''Return the list of entries for the @menus tree.'''
         aList = self.get('menus', 'menus')
-        # g.trace(aList and len(aList) or 0)
+        # aList is typically empty.
         return aList or g.app.config.menusList
     #@+node:ekr.20070411101643: *4* gcm.getOpenWith
     def getOpenWith(self):
@@ -1792,7 +1792,7 @@ class LocalConfigManager(object):
     def getMenusList(self):
         '''Return the list of entries for the @menus tree.'''
         aList = self.get('menus', 'menus')
-        # g.trace(aList and len(aList) or 0)
+        # aList is typically empty.
         return aList or g.app.config.menusList
     #@+node:ekr.20120215072959.12535: *5* c.config.getOpenWith
     def getOpenWith(self):
