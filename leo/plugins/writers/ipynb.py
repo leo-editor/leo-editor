@@ -90,25 +90,6 @@ class Export_IPYNB(object):
         '''
         aList = [ch for ch in s if ch in '-: ' or ch.isalnum()]
         return ''.join(aList).rstrip('-').strip()
-        ### 
-            # table = (
-                # # Additional.
-                # ('[', ''),
-                # (']', ''),
-                # ('(', ''),
-                # (')', ''),
-                # ('#', ''),
-                # ('&', ''),
-                # # Urls.
-                # ('"', ''),
-                # ('&', '%26'),
-                # ('`', '%60'),
-                # ('<', '%3C'),
-                # ('>', '%3E'),
-            # )
-            # for ch, ch2 in table:
-                # s = s.replace(ch, ch2)
-            # return s.strip()
     #@+node:ekr.20180407191227.1: *3* ipy_w.convert_notebook
     def convert_notebook(self, nb):
         '''Convert the notebook to a string.'''
@@ -205,7 +186,6 @@ class Export_IPYNB(object):
                 indent = ' '*4*(level-1)
                 h = self.clean_headline(p.h)
                 line = '%s- [%s](#%s)\n' % (indent, h, h)
-                    ### indent, self.clean_headline(p.h), self.make_link(p.h))
                 result.append(line)
         if result:
             result.append('\n')
