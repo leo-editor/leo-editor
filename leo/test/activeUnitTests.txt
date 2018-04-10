@@ -1346,27 +1346,6 @@ g.app.recentFilesManager.writeRecentFilesFileHelper(fn)
 assert g.os_path_exists(fn),'fail 1'
 os.remove(fn)
 assert not g.os_path_exists(fn),'fail 1'
-#@+node:ekr.20130503061820.4186: *4* @test consistency of leoApp tables
-@
-language_delims_dict 
-    # Keys are languages, values are 1,2 or 3-tuples of delims. 
-language_extension_dict
-    # Keys are languages, values are extensions.
-extension_dict = {
-    # Keys are extensions, values are languages.
-@c
-
-delims_d    = g.app.language_delims_dict
-lang_d      = g.app.language_extension_dict
-ext_d       = g.app.extension_dict
-
-for lang in lang_d:
-    ext = lang_d.get(lang)
-    assert lang in delims_d,'fail 1: %s' % lang
-    assert ext in ext_d,'fail 2: %s' % ext
-for ext in ext_d:
-    lang = ext_d.get(ext)
-    assert lang in lang_d,'fail 3: %s' % lang
 #@+node:ekr.20160318094003.1: *3* leoAst
 #@+node:ekr.20160318094009.1: *4* @test Python3 features
 if not g.isPython3:

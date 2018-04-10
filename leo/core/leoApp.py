@@ -831,6 +831,7 @@ class LeoApp(object):
             "jhtml"         : "jhtml",
             "jmk"           : "jmk",
             "jsp"           : "jsp",
+            "jupyter"       : "ipynb",
             "kivy"          : "kv", # PeckJ 2014/05/05
             "kshell"        : "ksh", # Leo 4.5.1.
             "latex"         : "tex", # 1/8/04
