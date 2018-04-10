@@ -169,27 +169,6 @@ class Export_IPYNB(object):
         # Put all the cells.
         nb ['cells'] = [self.put_body(p) for p in root.subtree()]
         return nb
-    #@+node:ekr.20180409184845.4: *3* ipy_w.make_toc
-    def make_toc(self, root):
-        '''Return the toc for root.b as a list of lines.'''
-        result, stack = [], []
-        for p in root.subtree():
-            if self.cell_type(p) == 'markdown':
-                level = p.level() - root.level()
-                if len(stack) < level:
-                    stack.append(1)
-                else:
-                    stack = stack[:level]
-                n = stack[-1]
-                stack[-1] = n+1
-                # Use bullets
-                indent = ' '*4*(level-1)
-                h = self.clean_headline(p.h)
-                line = '%s- [%s](#%s)\n' % (indent, h, h)
-                result.append(line)
-        if result:
-            result.append('\n')
-        return result
     #@+node:ekr.20180407195341.1: *3* ipy_w.put_body & helpers
     def put_body(self, p):
         '''Put the body text of p, as an element of dict d.'''
@@ -203,7 +182,6 @@ class Export_IPYNB(object):
     #@+node:ekr.20180409120613.1: *4* ipy_w.update_cell_body
     pat1 = re.compile(r'^.*<[hH]([123456])>(.*)</[hH]([123456])>')
     pat2 = re.compile(r'^\s*([#]+)')
-    toc_pat = re.compile(r'^\s*@toc')
 
     def update_cell_body(self, cell, meta, p):
         '''Create a new body text, depending on kind.'''
@@ -216,14 +194,10 @@ class Export_IPYNB(object):
         kind = self.cell_type(p)
         lines = g.splitLines(p.b)
         level = p.level() - self.root.level()
-        toc = any([self.toc_pat.match(z) for z in lines])
-        # g.trace(level, p.h)
         if kind == 'markdown':
             # Remove all header markup lines.
             lines = [z for z in lines if
-                not self.pat1.match(z) and
-                not self.pat2.match(z) and
-                not self.toc_pat.match(z)]
+                not self.pat1.match(z) and not self.pat2.match(z)]
             lines = clean(lines)
             # Insert a new header markup line.
             if level > 0:
@@ -233,9 +207,6 @@ class Export_IPYNB(object):
             meta ['leo_level'] = level
             lines = clean(lines)
             # Remove leading whitespace lines inserted during import.
-        if toc:
-            toc_lines = self.make_toc(p)
-            p.b = ''.join(toc_lines).strip() + '\n' + p.b
         cell ['source'] = lines
     #@+node:ekr.20180409120454.1: *4* ipy_w.update_cell_properties
     def update_cell_properties(self, cell, meta, p):

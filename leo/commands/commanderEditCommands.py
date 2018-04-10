@@ -540,7 +540,7 @@ def insertBodyTime(self, event=None):
     i = w.getInsertPoint()
     w.insert(i, s)
     c.frame.body.onBodyChanged(undoType, oldSel=oldSel)
-#@+node:ekr.20180410054716.1: ** c_ec.insert_jupyter_toc & helpers
+#@+node:ekr.20180410054716.1: ** c_ec.insert_jupyter_toc & helper
 @g.commander_command('insert-jupyter-toc')
 def insertJupyterTOC(self, event=None):
     '''Insert a Jupyter table of contents at the cursor.'''
