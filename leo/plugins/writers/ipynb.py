@@ -72,7 +72,7 @@ class Export_IPYNB(object):
         '''Return the Jupyter cell type of p.b, honoring ancestor directives.'''
         c = self.c
         language = g.getLanguageAtPosition(c, p)
-        return 'markdown' if language in ('md', 'markdown') else 'code'
+        return 'code' if language == 'python' else 'markdown'
     #@+node:ekr.20180407191227.1: *3* ipy_w.convert_notebook
     def convert_notebook(self, nb):
         '''Convert the notebook to a string.'''
@@ -162,9 +162,45 @@ class Export_IPYNB(object):
         # g.printObj(meta, tag='metadata')
         # g.printObj(cell, tag='cell')
         return cell
+    #@+node:ekr.20180409184845.4: *4* ipy_w.make_toc & helper
+    def make_toc(self, root):
+        '''Return the toc for root.b as a list of lines.'''
+        result, stack = [], []
+        for p in root.subtree():
+            if self.cell_type(p) == 'markdown':
+                level = p.level() - root.level()
+                if len(stack) < level:
+                    stack.append(1)
+                else:
+                    stack = stack[:level]
+                n = stack[-1]
+                stack[-1] = n+1
+                # Use bullets
+                indent = ' '*4*(level-1)
+                line = '%s- [%s](#%s)\n' % (
+                    indent, p.h.strip(), self.make_link(p.h))
+                result.append(line)
+        if result:
+            result.append('\n')
+        return result
+    #@+node:ekr.20180409184845.3: *5* ipy_w.make_link
+    def make_link(self, s):
+        '''Return the markdown link for s.'''
+        result = []
+        for ch in s: # Jupyter uses case-sensitive links.
+            if ch in ':':
+                result.append(ch)
+            elif ch in ' -':
+                result.append('-')
+            elif ch.isalnum():
+                result.append(ch)
+            else:
+                pass
+        return ''.join(result).rstrip('-').strip()
     #@+node:ekr.20180409120613.1: *4* ipy_w.update_cell_body
     pat1 = re.compile(r'^.*<[hH]([123456])>(.*)</[hH]([123456])>')
     pat2 = re.compile(r'^\s*([#]+)')
+    toc_pat = re.compile(r'^\s*@toc')
 
     def update_cell_body(self, cell, meta, p):
         '''Create a new body text, depending on kind.'''
@@ -177,11 +213,14 @@ class Export_IPYNB(object):
         kind = self.cell_type(p)
         lines = g.splitLines(p.b)
         level = p.level() - self.root.level()
+        toc = any([self.toc_pat.match(z) for z in lines])
         # g.trace(level, p.h)
         if kind == 'markdown':
             # Remove all header markup lines.
             lines = [z for z in lines if
-                not self.pat1.search(z) and not self.pat2.search(z)]
+                not self.pat1.match(z) and
+                not self.pat2.match(z) and
+                not self.toc_pat.match(z)]
             lines = clean(lines)
             # Insert a new header markup line.
             if level > 0:
@@ -191,6 +230,9 @@ class Export_IPYNB(object):
             meta ['leo_level'] = level
             lines = clean(lines)
             # Remove leading whitespace lines inserted during import.
+        if toc:
+            toc_lines = self.make_toc(p)
+            p.b = ''.join(toc_lines).strip() + '\n' + p.b
         cell ['source'] = lines
     #@+node:ekr.20180409120454.1: *4* ipy_w.update_cell_properties
     def update_cell_properties(self, cell, meta, p):
@@ -198,6 +240,9 @@ class Export_IPYNB(object):
         # Update the metadata.
         meta ['leo_headline'] = p.h
         meta ['collapsed'] = not p.isExpanded()
+        # "cell_type" should not be in the metadata.
+        if meta.get('cell_type'):
+            del meta ['cell_type']
         cell ['metadata'] = meta
         # Update required properties.
         cell ['cell_type'] = kind = self.cell_type(p)
