@@ -30,8 +30,12 @@ class Export_IPYNB(object):
             fn = self.get_file_name()
         if not fn:
             return False
-        nb = self.make_notebook()
-        s = self.convert_notebook(nb)
+        try:
+            nb = self.make_notebook()
+            s = self.convert_notebook(nb)
+        except Exception:
+            g.es_exception()
+            return False
         if not s:
             return False
         if g.isUnicode(s):
@@ -59,8 +63,12 @@ class Export_IPYNB(object):
             return False
         # Write the text to at.outputFile.
         self.root = root
-        nb = self.make_notebook()
-        s = self.convert_notebook(nb)
+        try:
+            nb = self.make_notebook()
+            s = self.convert_notebook(nb)
+        except Exception:
+            g.es_exception()
+            return False
         if not s:
             return False
         if g.isUnicode(s):
@@ -73,6 +81,34 @@ class Export_IPYNB(object):
         c = self.c
         language = g.getLanguageAtPosition(c, p)
         return 'code' if language == 'python' else 'markdown'
+    #@+node:ekr.20180410045324.1: *3* ipy_w.clean_headline
+    def clean_headline(self, s):
+        '''
+        Return a cleaned version of a headline.
+        
+        Used to clean section names and the [ ] part of markdown links.
+        '''
+        aList = [ch for ch in s if ch in '-: ' or ch.isalnum()]
+        return ''.join(aList).rstrip('-').strip()
+        ### 
+            # table = (
+                # # Additional.
+                # ('[', ''),
+                # (']', ''),
+                # ('(', ''),
+                # (')', ''),
+                # ('#', ''),
+                # ('&', ''),
+                # # Urls.
+                # ('"', ''),
+                # ('&', '%26'),
+                # ('`', '%60'),
+                # ('<', '%3C'),
+                # ('>', '%3E'),
+            # )
+            # for ch, ch2 in table:
+                # s = s.replace(ch, ch2)
+            # return s.strip()
     #@+node:ekr.20180407191227.1: *3* ipy_w.convert_notebook
     def convert_notebook(self, nb):
         '''Convert the notebook to a string.'''
@@ -152,17 +188,7 @@ class Export_IPYNB(object):
         # Put all the cells.
         nb ['cells'] = [self.put_body(p) for p in root.subtree()]
         return nb
-    #@+node:ekr.20180407195341.1: *3* ipy_w.put_body & helpers
-    def put_body(self, p):
-        '''Put the body text of p, as an element of dict d.'''
-        cell = self.get_ua(p, 'cell') or {}
-        meta = cell.get('metadata') or {}
-        self.update_cell_properties(cell, meta, p)
-        self.update_cell_body(cell, meta, p)
-        # g.printObj(meta, tag='metadata')
-        # g.printObj(cell, tag='cell')
-        return cell
-    #@+node:ekr.20180409184845.4: *4* ipy_w.make_toc & helper
+    #@+node:ekr.20180409184845.4: *3* ipy_w.make_toc
     def make_toc(self, root):
         '''Return the toc for root.b as a list of lines.'''
         result, stack = [], []
@@ -177,26 +203,23 @@ class Export_IPYNB(object):
                 stack[-1] = n+1
                 # Use bullets
                 indent = ' '*4*(level-1)
-                line = '%s- [%s](#%s)\n' % (
-                    indent, p.h.strip(), self.make_link(p.h))
+                h = self.clean_headline(p.h)
+                line = '%s- [%s](#%s)\n' % (indent, h, h)
+                    ### indent, self.clean_headline(p.h), self.make_link(p.h))
                 result.append(line)
         if result:
             result.append('\n')
         return result
-    #@+node:ekr.20180409184845.3: *5* ipy_w.make_link
-    def make_link(self, s):
-        '''Return the markdown link for s.'''
-        result = []
-        for ch in s: # Jupyter uses case-sensitive links.
-            if ch in ':':
-                result.append(ch)
-            elif ch in ' -':
-                result.append('-')
-            elif ch.isalnum():
-                result.append(ch)
-            else:
-                pass
-        return ''.join(result).rstrip('-').strip()
+    #@+node:ekr.20180407195341.1: *3* ipy_w.put_body & helpers
+    def put_body(self, p):
+        '''Put the body text of p, as an element of dict d.'''
+        cell = self.get_ua(p, 'cell') or {}
+        meta = cell.get('metadata') or {}
+        self.update_cell_properties(cell, meta, p)
+        self.update_cell_body(cell, meta, p)
+        # g.printObj(meta, tag='metadata')
+        # g.printObj(cell, tag='cell')
+        return cell
     #@+node:ekr.20180409120613.1: *4* ipy_w.update_cell_body
     pat1 = re.compile(r'^.*<[hH]([123456])>(.*)</[hH]([123456])>')
     pat2 = re.compile(r'^\s*([#]+)')
@@ -224,7 +247,7 @@ class Export_IPYNB(object):
             lines = clean(lines)
             # Insert a new header markup line.
             if level > 0:
-                lines.insert(0, '%s %s\n' % ('#'*level, p.h.strip()))
+                lines.insert(0, '%s %s\n' % ('#'*level, self.clean_headline(p.h)))
         else:
             # Remember the level for the importer.
             meta ['leo_level'] = level
