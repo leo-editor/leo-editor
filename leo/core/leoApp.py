@@ -3418,6 +3418,8 @@ class RecentFilesManager(object):
             # Set in rf.createRecentFilesMenuItems.
         self.recentFiles = []
             # List of g.Bunches describing .leoRecentFiles.txt files.
+        self.recentFilesMenuName = 'Recent Files'
+            # May be changed later.
         self.recentFileMessageWritten = False
             # To suppress all but the first message.
         self.write_recent_files_as_needed = False
@@ -3477,7 +3479,7 @@ class RecentFilesManager(object):
         """Clear the recent files list, then add the present file."""
         rf = self; u = c.undoer; menu = c.frame.menu
         bunch = u.beforeClearRecentFiles()
-        recentFilesMenu = menu.getMenu("Recent Files...")
+        recentFilesMenu = menu.getMenu(self.recentFilesMenuName)
         menu.deleteRecentFilesMenuItems(recentFilesMenu)
         rf.recentFiles = [c.fileName()]
         for frame in g.app.windowList:
@@ -3490,8 +3492,7 @@ class RecentFilesManager(object):
     def createRecentFilesMenuItems(self, c):
         rf = self
         menu = c.frame.menu
-        recentFilesMenu = menu.getMenu("Recent Files")
-            # Do NOT change this name!
+        recentFilesMenu = menu.getMenu(self.recentFilesMenuName)
         if not recentFilesMenu and not g.unitTesting:
             # g.trace('Recent Files Menu does not exist')
             return

@@ -487,7 +487,7 @@ class ParserBaseClass(object):
         return None
     #@+node:ekr.20070925144337.2: *4* doMenus & helper (ParserBaseClass)
     def doMenus(self, p, kind, name, val):
-        trace = True and g.isPython3
+        trace = False and not g.unitTesting
         c = self.c
         p = p.copy()
         aList = []
@@ -512,7 +512,6 @@ class ParserBaseClass(object):
                     p.moveToThreadNext()
             else:
                 p.moveToThreadNext()
-        # Prefer the legacy code now that the localFlag is set correctly.
         if trace:
             g.trace('=====', kind, repr(name), repr(val))
             g.printObj(aList)
@@ -537,7 +536,8 @@ class ParserBaseClass(object):
                 if g.match_word(h, 0, tag):
                     itemName = h[len(tag):].strip()
                     if itemName:
-                        lines = [z for z in g.splitLines(p.b) if z.strip()]
+                        lines = [z for z in g.splitLines(p.b) if
+                            z.strip() and not z.strip().startswith('#')]
                         body = lines[0].strip() if lines else ''
                             # Only the first body line is significant.
                             # This allows following comment lines.

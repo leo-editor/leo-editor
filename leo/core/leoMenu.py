@@ -143,19 +143,19 @@ class LeoMenu(object):
         '''
         # Called from createMenuBar.
         trace = False and not g.unitTesting
-        if trace:
+        trace_list = False
+        if trace and trace_list:
             g.trace('=====')
             g.printObj(aList)
         c = self.c
-        tag = '@menu'
         for z in aList:
             kind, val, val2 = z
-            if kind.startswith(tag):
-                name = kind[len(tag):].strip()
+            if kind.startswith('@menu'):
+                name = kind[len('@menu'):].strip()
                 if not self.handleSpecialMenus(name, parentName=None):
-                    # name is not the name of a special menu.
                     # Fix #528: Don't create duplicate menu items.
-                    menu = self.createNewMenu(name) # Create top-level menu.
+                    menu = self.createNewMenu(name)
+                        # Create top-level menu.
                     if menu:
                         self.createMenuFromConfigList(name, val, level=0)
                     else:
@@ -181,8 +181,8 @@ class LeoMenu(object):
         :param str parentName: name of menu under which to place this one
         :param list aList: list of entries as described above
         """
-
-        table = []; parentMenu = self.getMenu(parentName)
+        parentMenu = self.getMenu(parentName)
+        table = []
         for z in aList:
             kind, val, val2 = z
             if kind.startswith('@menu'):
@@ -190,9 +190,14 @@ class LeoMenu(object):
                 name = kind[5:].strip()
                 if table:
                     self.createMenuEntries(parentMenu, table)
-                if not self.handleSpecialMenus(name, parentName, table):
-                    menu = self.createNewMenu(name, parentName) # Create submenu of parent menu.
-                    if menu: # Partial fix for #528.
+                if not self.handleSpecialMenus(name, parentName,
+                    alt_name=val2, #848.
+                    table=table,
+                ):
+                    menu = self.createNewMenu(name, parentName)
+                        # Create submenu of parent menu.
+                    if menu:
+                        # Partial fix for #528.
                         self.createMenuFromConfigList(name, val, level + 1)
                 table = []
             elif kind == '@item':
@@ -207,7 +212,7 @@ class LeoMenu(object):
         if table:
             self.createMenuEntries(parentMenu, table)
     #@+node:ekr.20070927172712: *6* LeoMenu.handleSpecialMenus
-    def handleSpecialMenus(self, name, parentName, table=None):
+    def handleSpecialMenus(self, name, parentName, alt_name=None, table=None):
         '''
         Handle a special menu if name is the name of a special menu.
         return True if this method handles the menu.
@@ -222,7 +227,9 @@ class LeoMenu(object):
         elif name2.startswith('recentfiles'):
             # Just create the menu.
             # createRecentFilesMenuItems will create the contents later.
-            self.createNewMenu(name, parentName)
+            g.app.recentFilesManager.recentFilesMenuName = alt_name or name
+                #848
+            self.createNewMenu(alt_name or name, parentName)
             return True
         elif name2 == 'help' and sys.platform == 'darwin':
             helpMenu = self.getMacHelpMenu(table)
