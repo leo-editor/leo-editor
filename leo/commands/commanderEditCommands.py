@@ -564,6 +564,7 @@ def make_toc(c, root):
         return 'code' if language == 'python' else 'markdown'
         
     def clean_headline(s):
+        # Surprisingly tricky. This could remove too much, but better to be safe.
         aList = [ch for ch in s if ch in '-: ' or ch.isalnum()]
         return ''.join(aList).rstrip('-').strip()
 
