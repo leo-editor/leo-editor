@@ -184,6 +184,9 @@ class Import_IPYNB(object):
     #@+node:ekr.20160412101537.24: *4* ipynb.parse
     def parse(self, fn):
         '''Parse the file, which should be JSON format.'''
+        if not nbformat:
+            g.es_print('@auto for .ipynb files requires the nbformat package', color='red')
+            return None
         if g.os_path_exists(fn):
             with open(fn) as f:
                 # payload_source = f.name
