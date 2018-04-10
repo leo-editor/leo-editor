@@ -460,6 +460,7 @@ class LeoApp(object):
             "info":     "texinfo",
             "ini":      "ini",
             "io":       "io",
+            "ipynb":    "jupyter",
             "iss":      "inno_setup",
             "java":     "java",
             "jhtml":    "jhtml",
@@ -653,6 +654,7 @@ class LeoApp(object):
             "jhtml"              : "<!-- -->",
             "jmk"                : "#",
             "jsp"                : "<%-- --%>",
+            "jupyter"            : "<%-- --%>", # Default to markdown?
             "kivy"               : "#", # PeckJ 2014/05/05
             "kshell"             : "#", # Leo 4.5.1.
             "latex"              : "%",

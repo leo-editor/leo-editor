@@ -577,7 +577,7 @@ def make_toc(c, kind, root):
 
     def cell_type(p):
         language = g.getLanguageAtPosition(c, p)
-        return 'code' if language == 'python' else 'markdown'
+        return 'markdown' if language in ('jupyter', 'markdown') else 'python'
         
     def clean_headline(s):
         # Surprisingly tricky. This could remove too much, but better to be safe.
