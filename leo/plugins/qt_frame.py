@@ -3534,10 +3534,10 @@ class LeoQtMenu(leoMenu.LeoMenu):
         return '<LeoQtMenu: %s>' % self.leo_menu_label
 
     __str__ = __repr__
-    #@+node:ekr.20110605121601.18342: *3* Tkinter menu bindings
+    #@+node:ekr.20110605121601.18342: *3* LeoQtMenu.Tkinter menu bindings
     # See the Tk docs for what these routines are to do
-    #@+node:ekr.20110605121601.18343: *4* Methods with Tk spellings
-    #@+node:ekr.20110605121601.18344: *5* add_cascade (LeoQtMenu)
+    #@+node:ekr.20110605121601.18343: *4* LeoQtMenu.Methods with Tk spellings
+    #@+node:ekr.20110605121601.18344: *5* LeoQtMenu.add_cascade
     def add_cascade(self, parent, label, menu, underline):
         """Wrapper for the Tkinter add_cascade menu method.
 
@@ -3554,7 +3554,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         label = label.replace('&', '').lower()
         menu.leo_menu_label = label
         return menu
-    #@+node:ekr.20110605121601.18345: *5* add_command (LeoQtMenu) (Called by createMenuEntries)
+    #@+node:ekr.20110605121601.18345: *5* LeoQtMenu.add_command (Called by createMenuEntries)
     def add_command(self, **keys):
         """Wrapper for the Tkinter add_command menu method."""
         # pylint: disable=arguments-differ
@@ -3583,37 +3583,37 @@ class LeoQtMenu(leoMenu.LeoMenu):
                 return command()
 
             action.triggered.connect(qt_add_command_callback)
-    #@+node:ekr.20110605121601.18346: *5* add_separator (LeoQtMenu)
+    #@+node:ekr.20110605121601.18346: *5* LeoQtMenu.add_separator
     def add_separator(self, menu):
         """Wrapper for the Tkinter add_separator menu method."""
         if menu:
             action = menu.addSeparator()
             action.leo_menu_label = '*seperator*'
-    #@+node:ekr.20110605121601.18347: *5* delete (LeoQtMenu)
+    #@+node:ekr.20110605121601.18347: *5* LeoQtMenu.delete
     def delete(self, menu, realItemName='<no name>'):
         """Wrapper for the Tkinter delete menu method."""
         # g.trace(menu)
         # if menu:
             # return menu.delete(realItemName)
-    #@+node:ekr.20110605121601.18348: *5* delete_range (LeoQtMenu)
+    #@+node:ekr.20110605121601.18348: *5* LeoQtMenu.delete_range
     def delete_range(self, menu, n1, n2):
         """Wrapper for the Tkinter delete menu method."""
         # Menu is a subclass of QMenu and LeoQtMenu.
         # g.trace(menu,n1,n2,g.callers(4))
         for z in menu.actions()[n1: n2]:
             menu.removeAction(z)
-    #@+node:ekr.20110605121601.18349: *5* destroy (LeoQtMenu)
+    #@+node:ekr.20110605121601.18349: *5* LeoQtMenu.destroy
     def destroy(self, menu):
         """Wrapper for the Tkinter destroy menu method."""
         # Fixed bug https://bugs.launchpad.net/leo-editor/+bug/1193870
         if menu:
             menu.menuBar.removeAction(menu.menuAction())
-    #@+node:ekr.20110605121601.18350: *5* index (LeoQtMenu)
+    #@+node:ekr.20110605121601.18350: *5* LeoQtMenu.index
     def index(self, label):
         '''Return the index of the menu with the given label.'''
         # g.trace(label)
         return 0
-    #@+node:ekr.20110605121601.18351: *5* insert (LeoQtMenu)
+    #@+node:ekr.20110605121601.18351: *5* LeoQtMenu.insert
     def insert(self, menuName, position, label, command, underline=None):
         # g.trace(menuName,position,label,command,underline)
         menu = self.getMenu(menuName)
@@ -3628,7 +3628,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
                     command()
 
                 action.triggered.connect(insert_callback)
-    #@+node:ekr.20110605121601.18352: *5* insert_cascade (LeoQtMenu)
+    #@+node:ekr.20110605121601.18352: *5* LeoQtMenu.insert_cascade
     def insert_cascade(self, parent, index, label, menu, underline):
         """Wrapper for the Tkinter insert_cascade menu method."""
         menu.setTitle(label)
@@ -3644,15 +3644,15 @@ class LeoQtMenu(leoMenu.LeoMenu):
         else:
             g.trace('no action for menu', label)
         return menu
-    #@+node:ekr.20110605121601.18353: *5* new_menu (LeoQtMenu)
+    #@+node:ekr.20110605121601.18353: *5* LeoQtMenu.new_menu
     def new_menu(self, parent, tearoff=False, label=''): # label is for debugging.
         """Wrapper for the Tkinter new_menu menu method."""
         c, leoFrame = self.c, self.frame
         # Parent can be None, in which case it will be added to the menuBar.
         menu = QtMenuWrapper(c, leoFrame, parent, label)
         return menu
-    #@+node:ekr.20110605121601.18354: *4* Methods with other spellings (leoQtmenu)
-    #@+node:ekr.20110605121601.18355: *5* clearAccel
+    #@+node:ekr.20110605121601.18354: *4* LeoQtMenu.Methods with other spellings
+    #@+node:ekr.20110605121601.18355: *5* LeoQtMenu.clearAccel
     def clearAccel(self, menu, name):
         pass
         # if not menu:
@@ -3660,7 +3660,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         # realName = self.getRealMenuName(name)
         # realName = realName.replace("&","")
         # menu.entryconfig(realName,accelerator='')
-    #@+node:ekr.20110605121601.18356: *5* createMenuBar (leoQtmenu)
+    #@+node:ekr.20110605121601.18356: *5* LeoQtMenu.createMenuBar
     def createMenuBar(self, frame):
         '''
         (LeoQtMenu) Create all top-level menus.
@@ -3668,7 +3668,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         '''
         self.createMenusFromTables()
             # This is LeoMenu.createMenusFromTables.
-    #@+node:ekr.20110605121601.18357: *5* createOpenWithMenu (LeoQtMenu)
+    #@+node:ekr.20110605121601.18357: *5* LeoQtMenu.createOpenWithMenu
     def createOpenWithMenu(self, parent, label, index, amp_index):
         '''Create the File:Open With submenu.
 
@@ -3681,7 +3681,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
             menu.insert_cascade(parent, index,
                 label, menu, underline=amp_index)
         return menu
-    #@+node:ekr.20110605121601.18358: *5* disable/enableMenu (LeoQtMenu) (not used)
+    #@+node:ekr.20110605121601.18358: *5* LeoQtMenu.disable/enableMenu (not used)
     def disableMenu(self, menu, name):
         self.enableMenu(menu, name, False)
 
@@ -3699,12 +3699,12 @@ class LeoQtMenu(leoMenu.LeoMenu):
                     break
             else:
                 if trace: g.trace('not found:', name)
-    #@+node:ekr.20110605121601.18359: *5* getMenuLabel
+    #@+node:ekr.20110605121601.18359: *5* LeoQtMenu.getMenuLabel
     def getMenuLabel(self, menu, name):
         '''Return the index of the menu item whose name (or offset) is given.
         Return None if there is no such menu item.'''
         # At present, it is valid to always return None.
-    #@+node:ekr.20110605121601.18360: *5* setMenuLabel
+    #@+node:ekr.20110605121601.18360: *5* LeoQtMenu.setMenuLabel
     def setMenuLabel(self, menu, name, label, underline=-1):
 
         def munge(s):
@@ -3730,7 +3730,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
             self.activateAllParentMenus(menu)
         else:
             g.trace('No such menu: %s' % (menuName))
-    #@+node:ekr.20120922041923.10607: *4* activateAllParentMenus
+    #@+node:ekr.20120922041923.10607: *4* LeoQtMenu.activateAllParentMenus
     def activateAllParentMenus(self, menu):
         '''menu is a QtMenuWrapper.  Activate it and all parent menus.'''
         parent = menu.parent()
@@ -3752,7 +3752,7 @@ class LeoQtMenu(leoMenu.LeoMenu):
         # menubar = self.c.frame.top.leo_menubar
         # menubar.setActiveAction(None)
         # menubar.repaint()
-    #@+node:ekr.20110605121601.18362: *3* getMacHelpMenu
+    #@+node:ekr.20110605121601.18362: *3* LeoQtMenu.getMacHelpMenu
     def getMacHelpMenu(self, table):
         return None
     #@-others
