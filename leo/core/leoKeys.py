@@ -3743,7 +3743,7 @@ class KeyHandlerClass(object):
         char = ch = event.char if event else ''
         # 2011/10/28: compute func if not given.
         if commandName and not func:
-            func = c.commandsDict.get(commandName)
+            func = c.commandsDict.get(commandName.replace('&', ''))
             if not func:
                 g.es_print('not in c.commandsDict:', commandName, color='red')
                 return
