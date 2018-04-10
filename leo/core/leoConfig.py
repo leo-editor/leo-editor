@@ -515,7 +515,7 @@ class ParserBaseClass(object):
         # Prefer the legacy code now that the localFlag is set correctly.
         if trace:
             g.trace('=====', kind, repr(name), repr(val))
-            # g.printObj(aList)
+            g.printObj(aList)
         if self.localFlag:
             self.set(p, kind='menus', name='menus', val=aList)
         else:
@@ -538,7 +538,7 @@ class ParserBaseClass(object):
                     itemName = h[len(tag):].strip()
                     if itemName:
                         lines = [z for z in g.splitLines(p.b) if z.strip()]
-                        body = lines[0] if lines else ''
+                        body = lines[0].strip() if lines else ''
                             # Only the first body line is significant.
                             # This allows following comment lines.
                         if tag == '@menu':

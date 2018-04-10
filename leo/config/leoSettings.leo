@@ -6079,7 +6079,7 @@ False: start-find commands puts focus in Find panel.</t>
 <t tx="ekr.20131213135427.21828"></t>
 <t tx="ekr.20131213135427.21829"></t>
 <t tx="ekr.20131213135427.21830"></t>
-<t tx="ekr.20131213135427.21831">Recent Files
+<t tx="ekr.20131213135427.21831">Recent Files2
 
 A placeholder for the actual menu.
 Leo's init code populates this menu as a special case.</t>
