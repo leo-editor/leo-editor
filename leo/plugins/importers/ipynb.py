@@ -182,10 +182,14 @@ class Import_IPYNB(object):
             keys.remove('collapsed')
         return not source and not keys and not outputs
     #@+node:ekr.20160412101537.24: *4* ipynb.parse
+    nb_warning_given = False
+
     def parse(self, fn):
         '''Parse the file, which should be JSON format.'''
         if not nbformat:
-            g.es_print('@auto for .ipynb files requires the nbformat package', color='red')
+            if not self.nb_warning_given:
+                self.nb_warning_given = True
+                g.es_print('@auto for .ipynb files requires the nbformat package', color='red')
             return None
         if g.os_path_exists(fn):
             with open(fn) as f:
