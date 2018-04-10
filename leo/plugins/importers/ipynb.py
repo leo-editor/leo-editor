@@ -81,7 +81,7 @@ class Import_IPYNB(object):
         def to_int(n):
             try:
                 return int(n)
-            except ValueError:
+            except Exception:
                 return None
 
         # Careful: links change during this loop.
