@@ -485,16 +485,18 @@ class ParserBaseClass(object):
                 if ans:
                     return ans
         return None
-    #@+node:ekr.20070925144337.2: *4* doMenus & helpers (ParserBaseClass)
+    #@+node:ekr.20070925144337.2: *4* doMenus & helper (ParserBaseClass)
     def doMenus(self, p, kind, name, val):
-        c = self.c; aList = []; tag = '@menu'; trace = False and g.isPython3
-        p = p.copy(); after = p.nodeAfterTree()
-        if trace: g.trace('******', p.h, 'after', after and after.h)
+        trace = True and g.isPython3
+        c = self.c
+        p = p.copy()
+        aList = []
+        after = p.nodeAfterTree()
         while p and p != after:
             self.debug_count += 1
             h = p.h
-            if g.match_word(h, 0, tag):
-                name = h[len(tag):].strip()
+            if g.match_word(h, 0, '@menu'):
+                name = h[len('@menu'):].strip()
                 if name:
                     for z in aList:
                         name2, junk, junk = z
@@ -502,7 +504,7 @@ class ParserBaseClass(object):
                             self.error('Replacing previous @menu %s' % (name))
                             break
                     aList2 = []
-                    kind = '%s %s' % (tag, name)
+                    kind = '%s %s' % ('@menu', name)
                     self.doItems(p, aList2)
                     aList.append((kind, aList2, None),)
                     p.moveToNodeAfterTree()
@@ -510,22 +512,17 @@ class ParserBaseClass(object):
                     p.moveToThreadNext()
             else:
                 p.moveToThreadNext()
-        if 1: # Prefer the legacy code now that the localFlag is set correctly.
-            if self.localFlag:
-                self.set(p, kind='menus', name='menus', val=aList)
-            else:
-                if False and not g.app.unitTesting and not g.app.silentMode:
-                    s = 'using menus from: %s' % c.shortFileName()
-                    g.blue(s)
-                g.app.config.menusList = aList
-                name = c.shortFileName() if c else '<no settings file>'
-                g.app.config.menusFileName = name
-        else:
+        # Prefer the legacy code now that the localFlag is set correctly.
+        if trace:
+            g.trace('=====', kind, repr(name), repr(val))
+            # g.printObj(aList)
+        if self.localFlag:
             self.set(p, kind='menus', name='menus', val=aList)
-            if not g.app.config.menusList:
-                g.app.config.menusList = aList
-                name = c.shortFileName() if c else '<no settings file>'
-                g.app.config.menusFileName = name
+        else:
+            g.app.config.menusList = aList
+            name = c.shortFileName() if c else '<no settings file>'
+            g.app.config.menusFileName = name
+       
     #@+node:ekr.20070926141716: *5* doItems
     def doItems(self, p, aList):
         trace = False and not g.unitTesting
@@ -533,9 +530,6 @@ class ParserBaseClass(object):
         p = p.copy()
         after = p.nodeAfterTree()
         p.moveToThreadNext()
-        if trace:
-            g.trace(p.h)
-            # g.trace(self.debug_count, p.h, 'after', after and after.h)
         while p and p != after:
             self.debug_count += 1
             h = p.h
@@ -543,35 +537,26 @@ class ParserBaseClass(object):
                 if g.match_word(h, 0, tag):
                     itemName = h[len(tag):].strip()
                     if itemName:
+                        lines = [z for z in g.splitLines(p.b) if z.strip()]
+                        body = lines[0] if lines else ''
+                            # Only the first body line is significant.
+                            # This allows following comment lines.
                         if tag == '@menu':
                             aList2 = []
                             kind = '%s %s' % (tag, itemName)
                             self.doItems(p, aList2)
-                            aList.append((kind, aList2, None),)
+                            aList.append((kind, aList2, body),)
+                                # #848: Body was None.
                             p.moveToNodeAfterTree()
                             break
                         else:
                             kind = tag
                             head = itemName
-                            # Only the first body line is significant.
-                            # This allows following comment lines.
-                            lines = [z for z in g.splitLines(p.b) if z.strip()]
-                            body = lines[0] if lines else ''
                             aList.append((kind, head, body),)
                             p.moveToThreadNext()
                             break
             else:
                 p.moveToThreadNext()
-    #@+node:ekr.20070926142312: *5* dumpMenuList
-    def dumpMenuList(self, aList, level=0):
-        for z in aList:
-            kind, val, val2 = z
-            if kind == '@item':
-                g.trace(level, kind, val, val2)
-            else:
-                g.pr('')
-                g.trace(level, kind, '...')
-                self.dumpMenuList(val, level + 1)
     #@+node:ekr.20060102103625.1: *4* doMode (ParserBaseClass)
     def doMode(self, p, kind, name, val):
         '''Parse an @mode node and create the enter-<name>-mode command.'''

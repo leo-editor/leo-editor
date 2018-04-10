@@ -138,10 +138,14 @@ class LeoMenu(object):
     #@+node:ekr.20070926135612: *5* LeoMenu.createMenusFromConfigList & helpers
     def createMenusFromConfigList(self, aList):
         '''
-        Create menus from aList instead of 'hard coded' menus.
+        Create menus from aList.
         The 'top' menu has already been created.
         '''
         # Called from createMenuBar.
+        trace = False and not g.unitTesting
+        if trace:
+            g.trace('=====')
+            g.printObj(aList)
         c = self.c
         tag = '@menu'
         for z in aList:
@@ -149,6 +153,7 @@ class LeoMenu(object):
             if kind.startswith(tag):
                 name = kind[len(tag):].strip()
                 if not self.handleSpecialMenus(name, parentName=None):
+                    # name is not the name of a special menu.
                     # Fix #528: Don't create duplicate menu items.
                     menu = self.createNewMenu(name) # Create top-level menu.
                     if menu:
@@ -203,8 +208,10 @@ class LeoMenu(object):
             self.createMenuEntries(parentMenu, table)
     #@+node:ekr.20070927172712: *6* LeoMenu.handleSpecialMenus
     def handleSpecialMenus(self, name, parentName, table=None):
-        '''Handle a special menu if name is the name of a special menu.
-        return True if this method handles the menu.'''
+        '''
+        Handle a special menu if name is the name of a special menu.
+        return True if this method handles the menu.
+        '''
         c = self.c
         if table is None: table = []
         name2 = name.replace('&', '').replace(' ', '').lower()

@@ -2340,6 +2340,7 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
+<v t="ekr.20070925144552"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -6074,7 +6075,7 @@ in myLeoSettings.leo.  But most users will never need to do this.
 False: start-find commands puts focus in Find panel.</t>
 <t tx="ekr.20131119143342.20108"></t>
 <t tx="ekr.20131213135427.21826"></t>
-<t tx="ekr.20131213135427.21827">&amp;Open Theme File</t>
+<t tx="ekr.20131213135427.21827"></t>
 <t tx="ekr.20131213135427.21828"></t>
 <t tx="ekr.20131213135427.21829"></t>
 <t tx="ekr.20131213135427.21830"></t>
