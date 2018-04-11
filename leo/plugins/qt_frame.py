@@ -3163,8 +3163,7 @@ class LeoQtLog(leoFrame.LeoLog):
     #@+node:ekr.20110605121601.18315: *4* LeoQtLog.finishCreate
     def finishCreate(self):
         '''Finish creating the LeoQtLog class.'''
-        c = self.c; log = self
-        w = self.tabWidget
+        c, log, w = self.c, self, self.tabWidget
         # Remove unneeded tabs.
         for name in ('Tab 1', 'Page'):
             for i in range(w.count()):
@@ -3189,7 +3188,6 @@ class LeoQtLog(leoFrame.LeoLog):
                 w.removeTab(i)
         w.insertTab(0, logWidget, 'Log')
         c.spellCommands.openSpellTab()
-
         # set up links in log handling
         logWidget.setTextInteractionFlags(
             QtCore.Qt.LinksAccessibleByMouse |
@@ -3199,6 +3197,14 @@ class LeoQtLog(leoFrame.LeoLog):
         logWidget.setOpenLinks(False)
         logWidget.setOpenExternalLinks(False)
         logWidget.anchorClicked.connect(self.linkClicked)
+        #794: Clicking Find Tab should do exactly what pushing Ctrl-F does
+        
+        def tab_callback(index):
+            name = w.tabText(index)
+            if name == 'Find':
+                c.findCommands.startSearch(event=None)
+
+        w.currentChanged.connect(tab_callback)
     #@+node:ekr.20110605121601.18316: *4* LeoQtLog.getName
     def getName(self):
         return 'log' # Required for proper pane bindings.
