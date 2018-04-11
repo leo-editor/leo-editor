@@ -1981,7 +1981,12 @@
 </v>
 </v>
 <v t="ekr.20180404015558.1"></v>
-<v t="ekr.20180411070654.1"><vh>Leo 5.7.2 release notes</vh></v>
+<v t="ekr.20180411070654.1"><vh>Leo 5.7.2 release notes</vh>
+<v t="ekr.20180411073507.1"><vh>Features</vh>
+<v t="ekr.20180411073531.1"><vh>#850: Optionally convert Meta to Alt on MacOs</vh></v>
+<v t="ekr.20180411073658.1"><vh>#848: Recent Files menu will break for foreign languages</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -26318,9 +26323,7 @@ Theme files should contain three settings that describe the theme::
 <t tx="ekr.20180404070940.1"></t>
 <t tx="ekr.20180404172529.1">When True, adds @path directives to the root node of imported files.
 </t>
-<t tx="ekr.20180411070654.1">Leo 5.7.1 April 6, 2018
-
-Leo 5.7.2, http://leoeditor.com, is now available on
+<t tx="ekr.20180411070654.1">Leo 5.7.2, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
@@ -26351,6 +26354,15 @@ This feature is disabled by default. To enable, set @bool replace-meta-with-alt 
 </t>
 <t tx="ekr.20180411071733.1">- @bool replace-meta-with-alt.
 </t>
+<t tx="ekr.20180411073507.1"></t>
+<t tx="ekr.20180411073531.1">https://github.com/leo-editor/leo-editor/issues/850
+
+This feature is disabled by default. To enable, set @bool replace-meta-with-alt = True.</t>
+<t tx="ekr.20180411073658.1">https://github.com/leo-editor/leo-editor/issues/848
+
+The first non-blank, non-comment line of the node `@menu Recent Files' can contain an alternate (translated) menu name.
+
+You should not just change the headline of the node: it should remain unchanged. Indeed, the point of this item is that Leo has to know which item is the Recent Files item, so some other way was needed to specify an alternate name.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
