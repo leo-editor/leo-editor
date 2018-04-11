@@ -2,7 +2,7 @@
 #@+node:ekr.20031218072017.3749: * @file leoMenu.py
 """Gui-independent menu handling for Leo."""
 import leo.core.leoGlobals as g
-import sys
+# import sys
 #@+others
 #@+node:ekr.20031218072017.3750: ** class LeoMenu
 class LeoMenu(object):
@@ -231,7 +231,7 @@ class LeoMenu(object):
                 #848
             self.createNewMenu(alt_name or name, parentName)
             return True
-        elif name2 == 'help' and sys.platform == 'darwin':
+        elif name2 == 'help' and g.isMac:
             helpMenu = self.getMacHelpMenu(table)
             return helpMenu is not None
         else:
@@ -289,7 +289,7 @@ class LeoMenu(object):
 
         def setWidget():
             w = c.frame.getFocus()
-            if w and sys.platform.startswith('darwin'):
+            if w and g.isMac:
                  # 2012/01/11: redirect (MacOS only).
                 wname = c.widget_name(w)
                 if wname.startswith('head'):

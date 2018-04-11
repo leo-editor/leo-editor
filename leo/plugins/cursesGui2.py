@@ -1237,22 +1237,6 @@ class KeyHandler (object):
             if ch != shortcut:
                 if trace: g.trace('caps-lock')
                 shortcut = ch
-        # Patch provided by resi147.
-        # See the thread: special characters in MacOSX, like '@'.
-        # Alt keys apparently never generated.
-            # if sys.platform.startswith('darwin'):
-                # darwinmap = {
-                    # 'Alt-Key-5': '[',
-                    # 'Alt-Key-6': ']',
-                    # 'Alt-Key-7': '|',
-                    # 'Alt-slash': '\\',
-                    # 'Alt-Key-8': '{',
-                    # 'Alt-Key-9': '}',
-                    # 'Alt-e': '€',
-                    # 'Alt-l': '@',
-                # }
-                # if tkKey in darwinmap:
-                    # shortcut = darwinmap[tkKey]
         if trace: g.trace('ch: %r, shortcut: %r' % (ch, shortcut))
         import leo.core.leoGui as leoGui
         return leoGui.LeoKeyEvent(

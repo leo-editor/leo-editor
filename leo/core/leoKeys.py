@@ -4498,7 +4498,7 @@ class KeyHandlerClass(object):
         shift = s2.find("shift") >= 0 or s2.find("shft") >= 0
         meta = s2.find("meta") >= 0
         #@-<< define cmd, ctrl, alt, shift >>
-        if k.swap_mac_keys and sys.platform == "darwin":
+        if k.swap_mac_keys and g.isMac:
             #@+<< swap cmd and ctrl keys >>
             #@+node:ekr.20061031131434.186: *5* << swap cmd and ctrl keys >>
             if ctrl and not cmd:
