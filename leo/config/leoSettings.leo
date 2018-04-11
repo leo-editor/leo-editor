@@ -797,6 +797,7 @@
 <v t="ekr.20111029055127.16614"><vh>@data import_xml_tags</vh></v>
 </v>
 <v t="ekr.20060122105527.3"><vh>Keyboard and minibuffer options</vh>
+<v t="ekr.20180411070112.1"><vh>@bool replace-meta-with-alt = False</vh></v>
 <v t="ekr.20160504145653.1"><vh>@bool plain_key_outline_search = True</vh></v>
 <v t="ekr.20120205022040.15410"><vh>@bool enable_alt_ctrl_bindings = True</vh></v>
 <v t="ekr.20131007055150.13034"><vh>@bool ignore_unbound_non_ascii_keys = False</vh></v>
@@ -2340,7 +2341,6 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20070925144552"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -6079,7 +6079,8 @@ False: start-find commands puts focus in Find panel.</t>
 <t tx="ekr.20131213135427.21828"></t>
 <t tx="ekr.20131213135427.21829"></t>
 <t tx="ekr.20131213135427.21830"></t>
-<t tx="ekr.20131213135427.21831"># The first non-blank, non-comment body line is an alternate menu name.
+<t tx="ekr.20131213135427.21831"># 文件
+# The first non-blank, non-comment body line is an alternate menu name.
 #
 # A placeholder for the actual menu.
 # Leo's init code populates this menu as a special case.</t>
@@ -11776,6 +11777,11 @@ May be overridden by themes.</t>
 <t tx="ekr.20180406014111.1"></t>
 <t tx="ekr.20180406014118.1"></t>
 <t tx="ekr.20180406014127.1"></t>
+<t tx="ekr.20180411070112.1">The setting only has effect on MacOS.
+False: Legacy operation.
+True:  Replace the Meta key with the Alt Key.
+       This allows Windows Keyboards to be used without changing key bindings.
+</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
