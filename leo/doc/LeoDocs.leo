@@ -1430,7 +1430,12 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
-<v t="ekr.20180404015558.1"><vh>What's new in 5.7.1</vh></v>
+<v t="ekr.20180404015558.1"><vh>What's new in 5.7.1</vh>
+<v t="ekr.20180411071648.1"><vh>Features</vh>
+<v t="ekr.20180411071654.1"><vh>#850: Optionally convert Meta to Alt on MacOs</vh></v>
+</v>
+<v t="ekr.20180411071733.1"><vh>Settings</vh></v>
+</v>
 <v t="ekr.20180125034531.1"><vh>What's new in Leo 5.7</vh>
 <v t="ekr.20180126002550.1"><vh>Highlights</vh></v>
 <v t="ekr.20180126002657.1"><vh>Code</vh></v>
@@ -26338,6 +26343,13 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 - [What people are saying about Leo](http://leoeditor.com/testimonials.html)
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
+</t>
+<t tx="ekr.20180411071648.1"></t>
+<t tx="ekr.20180411071654.1">https://github.com/leo-editor/leo-editor/issues/850
+
+This feature is disabled by default. To enable, set @bool replace-meta-with-alt = True.
+</t>
+<t tx="ekr.20180411071733.1">- @bool replace-meta-with-alt.
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
