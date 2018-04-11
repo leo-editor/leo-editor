@@ -150,7 +150,8 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20120204061120.10088: *3* filter.Key construction
     #@+node:ekr.20110605195119.16937: *4* filter.create_key_event
     def create_key_event(self, event, c, w, ch, tkKey, shortcut):
-        trace = False and not g.unitTesting; verbose = False
+        trace = False and not g.unitTesting
+        verbose = True
         if trace and verbose: g.trace('ch: %s, tkKey: %s, shortcut: %s' % (
             repr(ch), repr(tkKey), repr(shortcut)))
         # Last-minute adjustments...
@@ -165,7 +166,7 @@ class LeoQtEventFilter(QtCore.QObject):
                 shortcut = ch
         # Patch provided by resi147.
         # See the thread: special characters in MacOSX, like '@'.
-        if sys.platform.startswith('darwin'):
+        if g.isMac:
             darwinmap = {
                 'Alt-Key-5': '[',
                 'Alt-Key-6': ']',
@@ -178,6 +179,14 @@ class LeoQtEventFilter(QtCore.QObject):
             }
             if tkKey in darwinmap:
                 shortcut = darwinmap[tkKey]
+            if c.config.getBool('replace-meta-with-alt', default=False):
+                table = (
+                    ('Meta','Alt'),
+                    ('Ctrl+Alt+', 'Alt+Ctrl+'),
+                    # Shift already follows meta.
+                )
+                for z1, z2 in table:
+                    shortcut = shortcut.replace(z1, z2)
         char = ch
         # Auxiliary info.
         x = getattr(event, 'x', None) or 0
@@ -214,6 +223,7 @@ class LeoQtEventFilter(QtCore.QObject):
         Tk-style binding compatible with Leo's core
         binding dictionaries.'''
         trace = False and not g.unitTesting
+        c = self.c
         ch1 = ch # For tracing.
         use_shift = (
             'Home', 'End', 'Tab',
@@ -243,8 +253,10 @@ class LeoQtEventFilter(QtCore.QObject):
                 # mods.remove('Shift')
         elif len(ch) == 1:
             ch = ch.lower()
-        if ('Alt' in mods or 'Control' in mods) and ch and ch in string.digits:
-            mods.append('Key')
+        if ch and ch in string.digits:
+            replace_meta = g.isMac and c.config.getBool('replace-meta-with-alt', default=False)
+            if ('Alt' in mods or 'Control' in mods or (replace_meta and 'Meta' in mods)):
+                mods.append('Key')
         # *Do* allow bare mod keys, so they won't be passed on.
         tkKey = '%s%s%s' % ('-'.join(mods), mods and '-' or '', ch)
         if trace: g.trace(
