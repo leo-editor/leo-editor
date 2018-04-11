@@ -40,7 +40,7 @@ import leo.core.leoGlobals as g
 import leo.core.leoGui as leoGui
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
 import string
-import sys
+# import sys
 #@+others
 #@+node:ekr.20141028061518.17: ** class LeoQtEventFilter
 class LeoQtEventFilter(QtCore.QObject):
