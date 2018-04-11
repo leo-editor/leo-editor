@@ -1983,6 +1983,7 @@
 <v t="ekr.20180404015558.1"></v>
 <v t="ekr.20180411070654.1"><vh>Leo 5.7.2 release notes</vh>
 <v t="ekr.20180411073507.1"><vh>Features</vh>
+<v t="ekr.20180411102234.1"><vh>#838: Better .ipynb importer/exporters</vh></v>
 <v t="ekr.20180411073531.1"><vh>#850: Optionally convert Meta to Alt on MacOs</vh></v>
 <v t="ekr.20180411073658.1"><vh>#848: Recent Files menu will break for foreign languages</vh></v>
 </v>
@@ -26363,6 +26364,8 @@ This feature is disabled by default. To enable, set @bool replace-meta-with-alt 
 The first non-blank, non-comment line of the node `@menu Recent Files' can contain an alternate (translated) menu name.
 
 You should not just change the headline of the node: it should remain unchanged. Indeed, the point of this item is that Leo has to know which item is the Recent Files item, so some other way was needed to specify an alternate name.</t>
+<t tx="ekr.20180411102234.1">https://github.com/leo-editor/leo-editor/issues/838
+Leo's @auto whatever.ipynb allow close integration with Jupyter notebooks.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
