@@ -1982,6 +1982,9 @@
 </v>
 <v t="ekr.20180404015558.1"></v>
 <v t="ekr.20180411070654.1"><vh>Leo 5.7.2 release notes</vh>
+<v t="ekr.20180411150947.1"><vh>Bugs</vh>
+<v t="ekr.20180411150950.1"><vh>#757: MacOS: replace-then-find does not work in headlines</vh></v>
+</v>
 <v t="ekr.20180411073507.1"><vh>Features</vh>
 <v t="ekr.20180411105215.1"><vh>#794: Clicking Find Tab should do exactly what pushing Ctrl-F does</vh></v>
 <v t="ekr.20180411102234.1"><vh>#838: Better .ipynb importer/exporters</vh></v>
@@ -7312,7 +7315,7 @@ Scripts can get or change the context of the body as follows::
 </t>
 <t tx="ekr.20090401113141.1">To generate .odt or .rtf or .pdf files, you create an intermediate file and ignore the the "official" output file, in this case test.html. The intermediate file contains the rST text corresponding to the @rst tree.
 
-To tell the rst3 plugin to generate an intermediate file, do::
+To tell the rst3 command to generate an intermediate file, do::
 
     write_intermediate_file = True
 
@@ -26368,6 +26371,9 @@ You should not just change the headline of the node: it should remain unchanged.
 <t tx="ekr.20180411102234.1">https://github.com/leo-editor/leo-editor/issues/838
 Leo's @auto whatever.ipynb allow close integration with Jupyter notebooks.</t>
 <t tx="ekr.20180411105215.1">https://github.com/leo-editor/leo-editor/issues/794
+</t>
+<t tx="ekr.20180411150947.1"></t>
+<t tx="ekr.20180411150950.1">https://github.com/leo-editor/leo-editor/issues/757
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
