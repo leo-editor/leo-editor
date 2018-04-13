@@ -17,6 +17,10 @@ isMac = sys.platform.startswith('darwin')
 isWindows = sys.platform.startswith('win')
 #@+<< global switches >>
 #@+node:ekr.20120212060348.10374: **  << global switches >> (leoGlobals.py)
+new_keys = False
+if new_keys:
+    print('===== g.new_keys =====')
+
 in_bridge = False
     # Set to True in leoBridge.py just before importing leo.core.leoApp.
     # This tells leoApp to load a null Gui.

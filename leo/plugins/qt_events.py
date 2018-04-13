@@ -65,88 +65,118 @@ class LeoQtEventFilter(QtCore.QObject):
         self.ctagscompleter_onKey = None
     #@+node:ekr.20110605121601.18540: *3* filter.eventFilter
     def eventFilter(self, obj, event):
-        # g.trace(obj, event)
-        trace = False and not g.unitTesting
-        verbose = False
-        traceEvent = True # True: call self.traceEvent.
-        traceKey = False
-        c = self.c; k = c.k
+        trace = (False or g.new_keys) and not g.unitTesting
+        traceEvent = False # True: call self.traceEvent.
+        traceKeys = True
+        c, k = self.c, self.c.k
         eventType = event.type()
         ev = QtCore.QEvent
-        gui = g.app.gui
-        aList = []
-        # g.app.debug_app enables traceWidget.
+        #
+        # Part 1: Handle non-key event first
+        #
+        if not self.c.p:
+            return False # Startup. Let Qt handle the key event
+        if trace and traceEvent:
+             self.traceEvent(obj, event)
         self.traceWidget(event)
-        kinds = [ev.ShortcutOverride, ev.KeyPress, ev.KeyRelease]
-        # Hack: QLineEdit generates ev.KeyRelease only on Windows,Ubuntu
-        lineEditKeyKinds = [ev.KeyPress, ev.KeyRelease]
-        # Important:
-        # QLineEdit: ignore all key events except keyRelease events.
-        # QTextEdit: ignore all key events except keyPress events.
-        if c.frame and c.frame.top and obj is c.frame.top.lineEdit and eventType == ev.FocusIn:
-            if k.getStateKind() == 'getArg':
-                c.frame.top.lineEdit.restore_selection()
-        if eventType in lineEditKeyKinds:
-            p = c.currentPosition()
-            isEditWidget = obj == c.frame.tree.edit_widget(p)
-            self.keyIsActive = eventType == ev.KeyRelease if isEditWidget else eventType == ev.KeyPress
-        else:
-            self.keyIsActive = False
+        self.do_non_key_event(event, obj)
+        if eventType not in (ev.ShortcutOverride, ev.KeyPress, ev.KeyRelease):
+            if trace and traceEvent: self.traceEvent(obj, event)
+            return False # Let Qt handle the non-key event.
+        #
+        # Part 2: Ignore incomplete key events.
+        #
+        if self.ignore_key_event(event, obj):
+            return False # Let Qt handle the key event.
+        #
+        # Part 3: Generate a key_event for k.masterKeyHandler.
+        #
+        tkKey, ch, ignore = self.toTkKey(event)
+        if not ignore:
+            shortcut = self.toStroke(tkKey)
+            stroke = g.KeyStroke(shortcut) if shortcut else None
+            aList = k.masterGuiBindingsDict.get(stroke, [])
+                # Keys are g.KeyStrokes.
+        #
+        # Part 4: Return if necessary.
+        #
+        if ignore:
+            return False # Allow Qt to handle the key event.
+        significant = (
+            tkKey or
+            ch in self.flashers or 
+            k.inState() or
+            bool(aList)
+        )
+        if not significant:
+            return False # Allow Qt to handle the key event.
+        #
+        # Part 5: Pass a new key event to masterKeyHandler.
+        #
+        if trace and traceKeys:
+            g.trace('shortcut: %r, len(aList): %s' % (shortcut, len(aList)))
+        try:
+            key_event = self.create_key_event(event, c, self.w, ch, tkKey, shortcut)
+            k.masterKeyHandler(key_event)
+            c.outerUpdate()
+        except Exception:
+            g.es_exception()
+        return True
+            # Whatever happens, suppress all other Qt key handling.
+    #@+node:ekr.20180413180751.2: *4* filter.do_non_key_event
+    def do_non_key_event(self, event, obj):
+        '''Handle all non-key event. Return True if the event has been handled.'''
+        c = self.c
+        ev = QtCore.QEvent
+        eventType = event.type()
         if eventType == ev.WindowActivate:
-            gui.onActivateEvent(event, c, obj, self.tag)
-            override = False; tkKey = None
+            g.app.gui.onActivateEvent(event, c, obj, self.tag)
         elif eventType == ev.WindowDeactivate:
-            gui.onDeactivateEvent(event, c, obj, self.tag)
-            override = False; tkKey = None
-        elif eventType in kinds:
-            tkKey, ch, ignore = self.toTkKey(event)
-            aList = c.k.masterGuiBindingsDict.get('<%s>' % tkKey, [])
-            # g.trace('instate',k.inState(),'tkKey',tkKey,'ignore',ignore,'len(aList)',len(aList))
-            if ignore: override = False
-            # This is extremely bad.
-            # At present, it is needed to handle tab properly.
-            elif self.isSpecialOverride(tkKey, ch):
-                override = True
-            elif k.inState():
-                override = not ignore # allow all keystrokes.
-            else:
-                override = bool(aList)
-        else:
-            override = False; tkKey = '<no key>'
+            g.app.gui.onDeactivateEvent(event, c, obj, self.tag)
+        elif eventType == ev.FocusIn:
             if self.tag == 'body':
-                if eventType == ev.FocusIn:
-                    c.frame.body.onFocusIn(obj)
-                elif eventType == ev.FocusOut:
-                    c.frame.body.onFocusOut(obj)
-        if self.keyIsActive:
-            shortcut = self.toStroke(tkKey, ch) # ch is unused.
-            if override:
-                # Essentially *all* keys get passed to masterKeyHandler.
-                if trace and traceKey:
-                    g.trace('ignore', ignore, 'bound', repr(shortcut), repr(aList))
-                w = self.w # Pass the wrapper class, not the wrapped widget.
-                qevent = event
-                event = self.create_key_event(event, c, w, ch, tkKey, shortcut)
-                try:
-                    k.masterKeyHandler(event)
-                except Exception:
-                    g.es_exception()
-                if g.app.gui.insert_char_flag:
-                    # if trace and traceKey: g.trace('*** insert_char_flag',event.text())
-                    g.trace('*** insert_char_flag', qevent.text())
-                    g.app.gui.insert_char_flag = False
-                    override = False # *Do* pass the character back to the widget!
-                c.outerUpdate()
-            else:
-                if trace and traceKey and verbose:
-                    g.trace(self.tag, 'unbound', tkKey, shortcut)
-            if trace and traceEvent:
-                # Trace key events.
-                self.traceEvent(obj, event, tkKey, override)
-        elif trace and traceEvent:
-            # Trace non-key events.
-            self.traceEvent(obj, event, tkKey, override)
-        return override
+                c.frame.body.onFocusIn(obj)
+            if c.frame and c.frame.top and obj is c.frame.top.lineEdit:
+                if c.k.getStateKind() == 'getArg':
+                    c.frame.top.lineEdit.restore_selection()
+        elif eventType == ev.FocusOut and self.tag == 'body':
+            c.frame.body.onFocusOut(obj)
+    #@+node:ekr.20180413180751.3: *4* filter.ignore_key_event
+    def ignore_key_event(self, event, obj):
+        '''
+        Return True if we should ignore the key event.
+        
+        Alas, QLineEdit *only* generates ev.KeyRelease on Windows, Ubuntu,
+        so the following hack is required.
+        '''
+        c = self.c
+        ev = QtCore.QEvent
+        eventType = event.type()
+        isEditWidget = (obj == c.frame.tree.edit_widget(c.p))
+        if isEditWidget:
+            # QLineEdit: ignore all key events except keyRelease events.
+            return eventType != ev.KeyRelease
+        else:
+            # QTextEdit: ignore all key events except keyPress events.
+            return eventType != ev.KeyPress
+    #@+node:ekr.20180413180751.4: *4* filter.toStroke
+    def toStroke(self, tkKey):
+        '''Convert the official tkKey name to a stroke.'''
+        trace = False and not g.unitTesting
+        s = tkKey
+        table = (
+            ('Alt-', 'Alt+'),
+            ('Ctrl-', 'Ctrl+'),
+            ('Control-', 'Ctrl+'),
+            # Use Alt+Key-1, etc.  Sheesh.
+            # ('Key-','Key+'),
+            ('Meta-', 'Meta+'), # 2016/06/13: per Karsten Wolf.
+            ('Shift-', 'Shift+')
+        )
+        for a, b in table:
+            s = s.replace(a, b)
+        if trace: g.trace('tkKey', tkKey, '-->', s)
+        return s
     #@+node:ekr.20120204061120.10088: *3* filter.Key construction
     #@+node:ekr.20110605195119.16937: *4* filter.create_key_event
     def create_key_event(self, event, c, w, ch, tkKey, shortcut):
@@ -336,24 +366,6 @@ class LeoQtEventFilter(QtCore.QObject):
         '''Return True if tkKey is a special Tk key name.
         '''
         return tkKey or ch in self.flashers
-    #@+node:ekr.20110605121601.18542: *5* filter.toStroke
-    def toStroke(self, tkKey, ch): # ch is unused
-        '''Convert the official tkKey name to a stroke.'''
-        trace = False and not g.unitTesting
-        s = tkKey
-        table = (
-            ('Alt-', 'Alt+'),
-            ('Ctrl-', 'Ctrl+'),
-            ('Control-', 'Ctrl+'),
-            # Use Alt+Key-1, etc.  Sheesh.
-            # ('Key-','Key+'),
-            ('Meta-', 'Meta+'), # 2016/06/13: per Karsten Wolf.
-            ('Shift-', 'Shift+')
-        )
-        for a, b in table:
-            s = s.replace(a, b)
-        if trace: g.trace('tkKey', tkKey, '-->', s)
-        return s
     #@+node:ekr.20110605121601.18544: *5* filter.qtKey
     def qtKey(self, event):
         '''
