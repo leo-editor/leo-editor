@@ -1,0 +1,54 @@
+#@+leo-ver=5-thin
+#@+node:bob.20171220112538.1: * @file externalExamples.txt
+#@+others
+#@+node:bob.20180331162720.1: ** |Tests|
+#@+node:bob.20171220112506.8: *3* Script and Results out of Babel Root Subtree to Babel Parameter Script can occupy Babel Root Subtree
+#@+at
+# 
+# I have not been able to come up with a section based scheme that allows the Babel Parameters Script to be split into a subtree when the Babel Root resides in an external file.
+# 
+# So this example uses UNL's to place the Script and the Results Root at the same level as the Babel Root.
+#@@code
+
+#@@language python
+#@+others
+#@+node:bob.20171220115946.2: *4* babel_script_args
+babel_script_args = ['1', '2', '3', '4', '5', '6']
+#@+node:bob.20180108153626.1: *4* babel_script
+babel_script = 'unl:///pri/git/leo_babel/examples/examples_external.leo#@file%20externalExamples.txt-->Babel%20Script%20Root'
+#@+node:bob.20180108153902.1: *4* babel_results
+babel_results = 'unl:///pri/git/leo_babel/examples/examples_external.leo#@file%20externalExamples.txt-->Results%20Root'
+#@+node:bob.20180331163309.1: *4* babel_node_creation
+babel_node_creation = True
+#@-others
+
+#@+at
+# 
+# Note that @ and @doc are equivalent.  And @c and @code are equivalent.
+#@@c
+#@+node:bob.20171220112506.9: ** Babel Script Root
+#@@language shell
+
+for num in $@
+do
+    sum=$(expr $sum + $num)
+done
+echo $sum
+#@+node:bob.20171220112506.10: ** Results Root
+#@+node:bob.20180403121328.1: *3* 00:00:01 Elapsed Time. 2018-04-03 12:13:27 End Time
+0 Subprocess Termination Code
+#@+node:bob.20180403121328.2: *4* stdout
+21
+#@+node:bob.20180403121328.3: *4* stderr
+#@+node:bob.20180402161323.1: *3* 00:00:01 Elapsed Time. 2018-04-02 16:13:22 End Time
+0 Subprocess Termination Code
+#@+node:bob.20180402161323.2: *4* stdout
+21
+#@+node:bob.20180402161323.3: *4* stderr
+#@+node:bob.20180331163324.1: *3* 00:00:01 Elapsed Time. 2018-03-31 16:33:23 End Time
+0 Subprocess Termination Code
+#@+node:bob.20180331163324.2: *4* stdout
+21
+#@+node:bob.20180331163324.3: *4* stderr
+#@-others
+#@-leo
