@@ -50,7 +50,8 @@ class ParserBaseClass(object):
             # as opposed to myLeoSettings.leo or leoSettings.leo.
         self.shortcutsDict = g.TypedDictOfLists(
             name='parser.shortcutsDict',
-            keyType=type('shortcutName'),valType=g.ShortcutInfo)
+            keyType=type('shortcutName'),
+            valType=g.BindingInfo)
         self.openWithList = []
             # A list of dicts containing 'name','shortcut','command' keys.
         # Keys are canonicalized names.
@@ -106,7 +107,7 @@ class ParserBaseClass(object):
         if i > -1:
             # The prompt is everything after the '::'
             prompt = name[i + 2:].strip()
-            modeDict['*command-prompt*'] = g.ShortcutInfo(kind=prompt)
+            modeDict['*command-prompt*'] = g.BindingInfo(kind=prompt)
         # Save the info for k.finishCreate and k.makeAllBindings.
         d = g.app.config.modeCommandsDict
         # New in 4.4.1 b2: silently allow redefinitions of modes.
@@ -567,7 +568,7 @@ class ParserBaseClass(object):
         modeName = self.computeModeName(name)
         d = g.TypedDictOfLists(
             name='modeDict for %s' % (modeName),
-            keyType=type('commandName'), valType=g.ShortcutInfo)
+            keyType=type('commandName'), valType=g.BindingInfo)
         s = p.b
         lines = g.splitLines(s)
         for line in lines:
@@ -581,12 +582,8 @@ class ParserBaseClass(object):
                     # A regular shortcut.
                     bi.pane = modeName
                     aList = d.get(name, [])
-                    for z in aList:
-                        assert g.isShortcutInfo(z), z
                     # Important: use previous bindings if possible.
                     key2, aList2 = c.config.getShortcut(name)
-                    for z in aList2:
-                        assert g.isShortcutInfo(z), z
                     aList3 = [z for z in aList2 if z.pane != modeName]
                     if aList3:
                         # g.trace('inheriting',[b.val for b in aList3])
@@ -870,7 +867,7 @@ class ParserBaseClass(object):
             i = g.skip_id(s, j, '-')
             entryCommandName = s[j: i]
             if trace: g.trace('-->', entryCommandName)
-            return None, g.ShortcutInfo('*entry-command*', commandName=entryCommandName)
+            return None, g.BindingInfo('*entry-command*', commandName=entryCommandName)
         j = i
         i = g.skip_id(s, j, '-@') # #718.
         name = s[j: i]
@@ -907,7 +904,7 @@ class ParserBaseClass(object):
                 val = val[: i].strip()
         stroke = k.strokeFromSetting(val)
         assert g.isStrokeOrNone(stroke), stroke
-        bi = g.ShortcutInfo(kind=kind, nextMode=nextMode, pane=pane, stroke=stroke)
+        bi = g.BindingInfo(kind=kind, nextMode=nextMode, pane=pane, stroke=stroke)
         if trace: g.trace('%25s %s' % (name, bi))
         return name, bi
     #@+node:ekr.20041120094940.9: *3* set (ParserBaseClass)
@@ -943,10 +940,12 @@ class ParserBaseClass(object):
         c = self.c
         self.settingsDict = g.TypedDict(
             name='settingsDict for %s' % (c.shortFileName()),
-            keyType=type('settingName'), valType=g.GeneralSetting)
+            keyType=type('settingName'),
+            valType=g.GeneralSetting)
         self.shortcutsDict = g.TypedDictOfLists(
             name='shortcutsDict for %s' % (c.shortFileName()),
-            keyType=type('s'), valType=g.ShortcutInfo)
+            keyType=type('s'),
+            valType=g.BindingInfo)
         # This must be called after the outline has been inited.
         p = c.config.settingsRoot(theme=theme)
         if not p:

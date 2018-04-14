@@ -1971,7 +1971,8 @@ class LoadManager(object):
         settings_d.setName('lm.globalSettingsDict')
         shortcuts_d = g.TypedDictOfLists(
             name='lm.globalShortcutsDict',
-            keyType=type('s'), valType=g.ShortcutInfo)
+            keyType=type('s'),
+            valType=g.BindingInfo)
         return settings_d, shortcuts_d
     #@+node:ekr.20120214165710.10726: *4* LM.createSettingsDicts
     def createSettingsDicts(self, c, localFlag, theme=False):
@@ -2077,7 +2078,7 @@ class LoadManager(object):
     def checkForDuplicateShortcuts(self, c, d):
         '''
         Check for duplicates in an "inverted" dictionary d
-        whose keys are strokes and whose values are lists of ShortcutInfo nodes.
+        whose keys are strokes and whose values are lists of BindingInfo nodes.
 
         Duplicates happen only if panes conflict.
         '''
@@ -2110,7 +2111,7 @@ class LoadManager(object):
         result = g.TypedDictOfLists(
             name='inverted %s' % d.name(),
             keyType=g.KeyStroke,
-            valType=g.ShortcutInfo)
+            valType=g.BindingInfo)
         for commandName in d.keys():
             for bi in d.get(commandName, []):
                 stroke = bi.stroke # This is canonicalized.
@@ -2134,7 +2135,7 @@ class LoadManager(object):
         result = g.TypedDictOfLists(
             name='uninverted %s' % d.name(),
             keyType=type('commandName'),
-            valType=g.ShortcutInfo)
+            valType=g.BindingInfo)
         for stroke in d.keys():
             for bi in d.get(stroke, []):
                 commandName = bi.commandName

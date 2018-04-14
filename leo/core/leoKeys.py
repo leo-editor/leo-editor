@@ -116,7 +116,7 @@ import time
 # ivar                    Keys                Values
 # ----                    ----                ------
 # c.commandsDict          command names (1)   functions
-# k.bindingsDict          shortcuts           lists of ShortcutInfo objects
+# k.bindingsDict          shortcuts           lists of BindingInfo objects
 # k.masterBindingsDict    scope names (2)     Interior masterBindingDicts (3)
 # k.masterGuiBindingsDict strokes             list of widgets in which stoke is bound
 # k.settingsNameDict (4)  settings.lower()    "Real" Tk specifiers
@@ -130,12 +130,12 @@ import time
 # 
 # (1) Command names are minibuffer names (strings)
 # (2) Scope names are 'all','text',etc.
-# (3) Interior masterBindingDicts: Keys are strokes; values are ShortcutInfo objects.
+# (3) Interior masterBindingDicts: Keys are strokes; values are BindingInfo objects.
 # (4) k.settingsNameDict has no inverse.
 # (5) inverseBindingDict is **not** an ivar: it is computed by k.computeInverseBindingDict.
 # (6) A global dict: g.app.gui.modeCommandsDict
 # (7) enter-x-command
-# (8) Keys are command names, values are lists of ShortcutInfo objects.
+# (8) Keys are command names, values are lists of BindingInfo objects.
 #@-<< about key dicts >>
 #@+others
 #@+node:ekr.20061031131434.4: ** class AutoCompleterClass
@@ -1757,7 +1757,7 @@ class KeyHandlerClass(object):
             # Abbreviations created by @alias nodes.
         # Previously defined bindings...
         self.bindingsDict = {}
-            # Keys are Tk key names, values are lists of ShortcutInfo's.
+            # Keys are Tk key names, values are lists of BindingInfo objects.
         # Previously defined binding tags.
         self.bindtagsDict = {}
             # Keys are strings (the tag), values are 'True'
@@ -1767,7 +1767,7 @@ class KeyHandlerClass(object):
             # Up arrow will select commandHistory[commandIndex]
         self.masterBindingsDict = {}
             # Keys are scope names: 'all','text',etc. or mode names.
-            # Values are dicts: keys are strokes, values are ShortcutInfo's.
+            # Values are dicts: keys are strokes, values are BindingInfo objects.
         self.masterGuiBindingsDict = {}
             # Keys are strokes; value is True;
         # Special bindings for k.fullCommand...
@@ -2200,8 +2200,12 @@ class KeyHandlerClass(object):
                 tag = tag.split(' ')[-1]
                 g.trace('%7s %25r %17s %s' % (pane, stroke and stroke.s, tag, commandName))
                 g.trace(g.callers())
-            bi = g.ShortcutInfo(kind=tag, pane=pane,
-                func=callback, commandName=commandName, stroke=stroke)
+            bi = g.BindingInfo(
+                kind=tag,
+                pane=pane,
+                func=callback,
+                commandName=commandName,
+                stroke=stroke)
             if shortcut:
                 k.bindKeyToDict(pane, shortcut, bi)
                     # Updates k.masterBindingsDict
@@ -2264,7 +2268,7 @@ class KeyHandlerClass(object):
             d = g.TypedDictOfLists(
                 name='empty shortcuts dict',
                 keyType=type('commandName'),
-                valType=g.ShortcutInfo)
+                valType=g.BindingInfo)
         inv_d = lm.invert(d)
         # g.trace('1', stroke, stroke in c.config.shortcutsDict.d)
         inv_d[stroke] = []
@@ -2440,7 +2444,8 @@ class KeyHandlerClass(object):
         # Keys are strokes. Values are lists of bi with bi.stroke == stroke.
         d2 = g.TypedDictOfLists(
             name='makeBindingsFromCommandsDict helper dict',
-            keyType=g.KeyStroke, valType=g.ShortcutInfo)
+            keyType=g.KeyStroke,
+            valType=g.BindingInfo)
         for commandName in sorted(d):
             command = d.get(commandName)
             key, aList = c.config.getShortcut(commandName)
@@ -3716,9 +3721,7 @@ class KeyHandlerClass(object):
                 if d:
                     bi = d.get(stroke)
                     if bi:
-                        assert bi.stroke == stroke, 'bi: %s stroke: %s' % (
-                            bi, stroke)
-                        # assert g.isShortcutInfo(bi), bi
+                        assert bi.stroke == stroke, 'bi: %s stroke: %s' % (bi, stroke)
                         if bi.commandName == 'auto-complete':
                             return True
         return False
@@ -4036,7 +4039,6 @@ class KeyHandlerClass(object):
                 continue
             aList = d.get(commandName, [])
             for bi in aList:
-                assert g.isShortcutInfo(bi), bi
                 stroke = bi.stroke
                 # Important: bi.val is canonicalized.
                 if stroke and stroke not in ('None', 'none', None):
@@ -4052,7 +4054,7 @@ class KeyHandlerClass(object):
                     # Important: this is similar, but not the same as k.bindKeyToDict.
                     # Thus, we should **not** call k.bindKey here!
                     d2 = k.masterBindingsDict.get(modeName, {})
-                    d2[stroke] = g.ShortcutInfo(
+                    d2[stroke] = g.BindingInfo(
                         kind='mode<%s>' % (modeName), # 2012/01/23
                         commandName=commandName,
                         func=func,
@@ -4223,7 +4225,6 @@ class KeyHandlerClass(object):
         aList = d.get('*entry-commands*', [])
         if aList:
             for bi in aList:
-                # assert g.isShortcutInfo(bi), bi
                 commandName = bi.commandName
                 if trace: g.trace('entry command:', commandName)
                 k.simulateCommand(commandName)
@@ -4306,7 +4307,7 @@ class KeyHandlerClass(object):
             for bi in aList:
                 shortcutList = k.bindingsDict.get(bi.commandName, [])
                     # Bug fix: 2017/03/26.
-                bi_list = k.bindingsDict.get(stroke, g.ShortcutInfo(kind='dummy', pane='all'))
+                bi_list = k.bindingsDict.get(stroke, g.BindingInfo(kind='dummy', pane='all'))
                     # Important: only bi.pane is required below.
                 for bi in bi_list:
                     pane = '%s:' % (bi.pane)
@@ -4828,9 +4829,9 @@ class ModeInfo(object):
         g.trace(name, aList)
         self.c = c
         self.d = {} # The bindings in effect for this mode.
-            # Keys are names of (valid) command names, values are ShortcutInfo objects.
+            # Keys are names of (valid) command names, values are BindingInfo objects.
         self.entryCommands = []
-            # A list of ShortcutInfo objects.
+            # A list of BindingInfo objects.
         self.k = c.k
         self.name = self.computeModeName(name)
         self.prompt = self.computeModePrompt(self.name)
@@ -4874,7 +4875,6 @@ class ModeInfo(object):
                 continue
             aList = d.get(commandName, [])
             for bi in aList:
-                assert g.isShortcutInfo(bi), bi
                 if trace: g.trace(bi)
                 stroke = bi.stroke
                 # Important: bi.val is canonicalized.
@@ -4891,7 +4891,7 @@ class ModeInfo(object):
                     # Important: this is similar, but not the same as k.bindKeyToDict.
                     # Thus, we should **not** call k.bindKey here!
                     d2 = k.masterBindingsDict.get(modeName, {})
-                    d2[stroke] = g.ShortcutInfo(
+                    d2[stroke] = g.BindingInfo(
                         kind='mode<%s>' % (modeName), # 2012/01/23
                         commandName=commandName,
                         func=func,
@@ -4932,12 +4932,8 @@ class ModeInfo(object):
                 # A regular shortcut.
                 bi.pane = modeName
                 aList = d.get(name, [])
-                for z in aList:
-                    assert g.isShortcutInfo(z), z
                 # Important: use previous bindings if possible.
                 key2, aList2 = c.config.getShortcut(name)
-                for z in aList2:
-                    assert g.isShortcutInfo(z), z
                 aList3 = [z for z in aList2 if z.pane != modeName]
                 if aList3:
                     if trace: g.trace('inheriting', [bi.val for bi in aList3])

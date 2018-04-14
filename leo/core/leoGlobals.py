@@ -1412,8 +1412,8 @@ class SherlockTracer(object):
         import sys
         sys.settrace(None)
     #@-others
-#@+node:ekr.20120123115816.10209: *3* class g.ShortcutInfo & isShortcutInfo
-class ShortcutInfo(object):
+#@+node:ekr.20120123115816.10209: *3* class g.BindingInfo & isBindingInfo
+class BindingInfo(object):
     '''
     A class representing any kind of key binding line.
 
@@ -1422,11 +1422,11 @@ class ShortcutInfo(object):
     # Important: The startup code uses this class,
     # so it is convenient to define it in leoGlobals.py.
     #@+others
-    #@+node:ekr.20120129040823.10254: *4*  ctor (ShortcutInfo)
+    #@+node:ekr.20120129040823.10254: *4* bi.__init__
     def __init__(self, kind, commandName='', func=None, nextMode=None, pane=None, stroke=None):
         trace = False and commandName == 'new' and not g.unitTesting
         if not (stroke is None or g.isStroke(stroke)):
-            g.trace('***** (ShortcutInfo) oops', repr(stroke))
+            g.trace('***** (BindingInfo) oops', repr(stroke))
         self.kind = kind
         self.commandName = commandName
         self.func = func
@@ -1434,18 +1434,18 @@ class ShortcutInfo(object):
         self.pane = pane
         self.stroke = stroke
             # The *caller* must canonicalize the shortcut.
-        if trace: g.trace('(ShortcutInfo)', commandName, stroke, g.callers())
-    #@+node:ekr.20120203153754.10031: *4* __hash__ (ShortcutInfo)
+        if trace: g.trace('(BindingInfo)', commandName, stroke, g.callers())
+    #@+node:ekr.20120203153754.10031: *4* bi.__hash__
     def __hash__(self):
         return self.stroke.__hash__() if self.stroke else 0
-    #@+node:ekr.20120125045244.10188: *4* __repr__ & ___str_& dump (ShortcutInfo)
+    #@+node:ekr.20120125045244.10188: *4* bi.__repr__ & ___str_& dump
     def __repr__(self):
         return self.dump()
 
     __str__ = __repr__
 
     def dump(self):
-        result = ['ShortcutInfo %17s' % (self.kind)]
+        result = ['BindingInfo %17s' % (self.kind)]
         # Print all existing ivars.
         table = ('commandName', 'func', 'nextMode', 'pane', 'stroke')
         for ivar in table:
@@ -1458,13 +1458,13 @@ class ShortcutInfo(object):
                     s = '%s: %r' % (ivar, val)
                     result.append(s)
         return '[%s]' % ' '.join(result).strip()
-    #@+node:ekr.20120129040823.10226: *4* isModeBinding
+    #@+node:ekr.20120129040823.10226: *4* bi.isModeBinding
     def isModeBinding(self):
         return self.kind.startswith('*mode')
     #@-others
 
-def isShortcutInfo(obj):
-    return isinstance(obj, ShortcutInfo)
+def isBindingInfo(obj):
+    return isinstance(obj, BindingInfo)
 #@+node:ekr.20080531075119.1: *3* class g.Tracer
 class Tracer(object):
     '''A "debugger" that computes a call graph.

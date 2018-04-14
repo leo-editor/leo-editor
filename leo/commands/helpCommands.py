@@ -768,7 +768,7 @@ class HelpCommandsClass(BaseEditCommandsClass):
             d = k.bindingsDict
             k.clearState()
             result = []
-            for bi in d.get(event.stroke, []): # a list of ShortcutInfo objects.
+            for bi in d.get(event.stroke, []): # a list of BindingInfo objects.
                 pane, cmd = bi.pane, bi.commandName
                 result.append(cmd if pane == 'all' else '%s: %s' % (pane, cmd))
             s = '%s: %s' % (event.stroke.s, ','.join(result))
