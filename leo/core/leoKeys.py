@@ -2201,16 +2201,16 @@ class KeyHandlerClass(object):
                 tag = tag.split(' ')[-1]
                 g.trace('%7s %25r %17s %s' % (pane, stroke and stroke.s, tag, commandName))
                 g.trace(g.callers())
-            si = g.ShortcutInfo(kind=tag, pane=pane,
+            bi = g.ShortcutInfo(kind=tag, pane=pane,
                 func=callback, commandName=commandName, stroke=stroke)
             if shortcut:
-                k.bindKeyToDict(pane, shortcut, si)
+                k.bindKeyToDict(pane, shortcut, bi)
                     # Updates k.masterBindingsDict
             if shortcut and not modeFlag:
                 aList = k.remove_conflicting_definitions(
                     aList, commandName, pane, shortcut)
                 # 2013/03/02: a real bug fix.
-            aList.append(si)
+            aList.append(bi)
             if shortcut:
                 assert stroke
                 k.bindingsDict[stroke] = aList
@@ -2225,21 +2225,21 @@ class KeyHandlerClass(object):
 
     bindShortcut = bindKey # For compatibility
     #@+node:ekr.20120130074511.10228: *5* k.check_bind_key
-    def check_bind_key(self, commandName, pane, shortcut):
+    def check_bind_key(self, commandName, pane, stroke):
         '''
-        Return True if the binding of shortcut to commandName for the given
+        Return True if the binding of stroke to commandName for the given
         pane can be made.
         '''
         # k = self
-        assert g.isStroke(shortcut)
+        assert g.isStroke(stroke)
         # Give warning and return if we try to bind to Enter or Leave.
         for s in ('enter', 'leave'):
-            if shortcut.lower().find(s) > -1:
+            if stroke.lower().find(s) > -1:
                 g.warning('ignoring invalid key binding:', '%s = %s' % (
-                    commandName, shortcut))
+                    commandName, stroke))
                 return False
         if pane.endswith('-mode'):
-            g.trace('oops: ignoring mode binding', shortcut, commandName, g.callers())
+            g.trace('oops: ignoring mode binding', stroke, commandName, g.callers())
             return False
         else:
             return True
@@ -2277,20 +2277,21 @@ class KeyHandlerClass(object):
         trace = False and not g.unitTesting
         k = self
         result = []
-        for si in aList:
-            assert g.isShortcutInfo(si), si
-            if pane in ('button', 'all', si.pane):
+        for bi in aList:
+            ### assert g.isShortcutInfo(bi), bi
+            if pane in ('button', 'all', bi.pane):
                 if trace:
                     # This is too annoying to report here. See bug 951921.
                     g.es_print('c for %s in %s' % (
-                        si.stroke, k.c.shortFileName()))
-                    g.es_print('previous: %s new: %s' % (si.commandName, commandName))
+                        bi.stroke, k.c.shortFileName()))
+                    g.es_print('previous: %s new: %s' % (
+                        bi.commandName, commandName))
                 k.kill_one_shortcut(shortcut)
             else:
-                result.append(si)
+                result.append(bi)
         return result
     #@+node:ekr.20061031131434.93: *5* k.bindKeyToDict
-    def bindKeyToDict(self, pane, stroke, si):
+    def bindKeyToDict(self, pane, stroke, bi):
         '''Update k.masterBindingsDict for the stroke.'''
         # New in Leo 4.4.1: Allow redefintions.
         # Called from makeBindingsFromCommandsDict.
@@ -2298,10 +2299,13 @@ class KeyHandlerClass(object):
         k = self
         assert g.isStroke(stroke), stroke
         d = k.masterBindingsDict.get(pane, {})
-        d[stroke] = si
+        d[stroke] = bi
         k.masterBindingsDict[pane] = d
-        if trace and si.commandName.startswith('goto-next-visible'):
-            g.trace('%4s %10s' % (pane, stroke.s), si.commandName, si.func.__name__)
+        if trace and bi.commandName.startswith('goto-next-visible'):
+            g.trace(
+                '%4s %10s' % (pane, stroke.s),
+                bi.commandName,
+                bi.func.__name__)
     #@+node:ekr.20061031131434.94: *5* k.bindOpenWith
     def bindOpenWith(self, d):
         '''Register an open-with command.'''
@@ -2365,9 +2369,9 @@ class KeyHandlerClass(object):
             g.pr(key, '-' * 40)
             d2 = d.get(key)
             for key2 in sorted(d2):
-                si = d2.get(key2)
-                assert g.isShortcutInfo(si), si
-                g.pr('%20s %s' % (key2, si.commandName))
+                bi = d2.get(key2)
+                ### assert g.isShortcutInfo(bi), bi
+                g.pr('%20s %s' % (key2, bi.commandName))
     #@+node:ekr.20061031131434.99: *4* k.initAbbrev & helper
     def initAbbrev(self):
         k = self; c = k.c; d = c.config.getAbbrevDict()
@@ -2407,11 +2411,11 @@ class KeyHandlerClass(object):
             junk, aList = c.config.getShortcut(commandName)
             aList, found = aList or [], False
             for pane in ('text', 'all'):
-                for si in aList:
-                    assert g.isShortcutInfo(si), si
-                    if si.pane == pane:
-                        if trace: g.trace(commandName, ivar, si.stroke)
-                        setattr(k, ivar, si.stroke)
+                for bi in aList:
+                    ### assert g.isShortcutInfo(bi), bi
+                    if bi.pane == pane:
+                        if trace: g.trace(commandName, ivar, bi.stroke)
+                        setattr(k, ivar, bi.stroke)
                         found = True; break
             if not found and warn:
                 g.trace('no setting for %s' % commandName)
@@ -2437,32 +2441,32 @@ class KeyHandlerClass(object):
         d = c.commandsDict
         t1 = time.time()
         # Step 1: Create d2.
-        # Keys are strokes. Values are lists of si with si.stroke == stroke.
+        # Keys are strokes. Values are lists of bi with bi.stroke == stroke.
         d2 = g.TypedDictOfLists(
             name='makeBindingsFromCommandsDict helper dict',
             keyType=g.KeyStroke, valType=g.ShortcutInfo)
         for commandName in sorted(d):
             command = d.get(commandName)
             key, aList = c.config.getShortcut(commandName)
-            for si in aList:
+            for bi in aList:
                 if trace and commandName == 'help':
-                    g.trace(key, repr(si.stroke), aList)
-                assert isinstance(si, g.ShortcutInfo)
-                # Important: si.stroke is already canonicalized.
-                stroke = si.stroke
-                si.commandName = commandName
+                    g.trace(key, repr(bi.stroke), aList)
+                ### assert isinstance(bi, g.ShortcutInfo)
+                # Important: bi.stroke is already canonicalized.
+                stroke = bi.stroke
+                bi.commandName = commandName
                 if stroke:
                     assert g.isStroke(stroke)
-                    d2.add(stroke, si)
+                    d2.add(stroke, bi)
         # Step 2: make the bindings.
         for stroke in sorted(d2.keys()):
             aList2 = d2.get(stroke)
-            for si in aList2:
-                assert isinstance(si, g.ShortcutInfo)
-                commandName = si.commandName
+            for bi in aList2:
+                ### assert isinstance(bi, g.ShortcutInfo)
+                commandName = bi.commandName
                 command = c.commandsDict.get(commandName)
-                tag = si.kind
-                pane = si.pane
+                tag = bi.kind
+                pane = bi.pane
                 if stroke and not pane.endswith('-mode'):
                     k.bindKey(pane, stroke, command, commandName, tag=tag)
         t2 = time.time()
@@ -2739,12 +2743,12 @@ class KeyHandlerClass(object):
         for stroke in sorted(d):
             assert g.isStroke(stroke), stroke
             aList = d.get(stroke, [])
-            for si in aList:
-                assert g.isShortcutInfo(si), si
-                s1 = '' if si.pane == 'all' else si.pane
+            for bi in aList:
+                ### assert g.isShortcutInfo(bi), bi
+                s1 = '' if bi.pane == 'all' else bi.pane
                 s2 = k.prettyPrintKey(stroke)
-                s3 = si.commandName
-                s4 = si.kind or '<no hash>'
+                s3 = bi.commandName
+                s4 = bi.kind or '<no hash>'
                 data.append((s1, s2, s3, s4),)
         # Print keys by type:
         result = []
@@ -3112,11 +3116,11 @@ class KeyHandlerClass(object):
         for key in d:
             d2 = d.get(key)
             for key2 in d2:
-                si = d2.get(key2)
-                assert g.isShortcutInfo(si), si
-                if si.commandName == commandName:
-                    si.func = func
-                    d2[key2] = si
+                bi = d2.get(key2)
+                ### assert g.isShortcutInfo(bi), bi
+                if bi.commandName == commandName:
+                    bi.func = func
+                    d2[key2] = bi
     #@+node:ekr.20061031131434.131: *4* k.registerCommand
     def registerCommand(self, commandName, func,
         allowBinding=False,
@@ -3183,12 +3187,12 @@ class KeyHandlerClass(object):
             # Try to get a stroke from leoSettings.leo.
             stroke = None
             junk, aList = c.config.getShortcut(commandName)
-            for si in aList:
-                assert g.isShortcutInfo(si), si
-                assert g.isStrokeOrNone(si.stroke)
-                if si.stroke and not si.pane.endswith('-mode'):
-                    stroke = si.stroke
-                    pane = si.pane # 2015/05/11.
+            for bi in aList:
+                ### assert g.isShortcutInfo(bi), bi
+                ### assert g.isStrokeOrNone(bi.stroke)
+                if bi.stroke and not bi.pane.endswith('-mode'):
+                    stroke = bi.stroke
+                    pane = bi.pane # 2015/05/11.
                     break
         if stroke:
             k.bindKey(pane, stroke, func, commandName, tag='register-command')
@@ -3345,17 +3349,20 @@ class KeyHandlerClass(object):
                 k.handleUnboundKeys(event, char, stroke)
                 return
         # 2011/02/08: Use getPaneBindings for *all* keys.
-        si = k.getPaneBinding(stroke, w)
-        if si and si.commandName in k.killedBindings:
+        bi = k.getPaneBinding(stroke, w)
+        if bi and bi.commandName in k.killedBindings:
             # 327: ignore killed bindings.
             if trace and trace_unbound: g.trace('  killed', stroke)
             k.handleUnboundKeys(event, char, stroke)
-        elif si:
-            assert g.isShortcutInfo(si), si
+        elif bi:
+            ### assert g.isShortcutInfo(bi), bi
             if traceGC: g.printNewObjects('masterKey 3')
-            if trace: g.trace('   bound', stroke, si.func.__name__)
-            k.masterCommand(event=event,
-                commandName=si.commandName, func=si.func, stroke=si.stroke)
+            if trace: g.trace('   bound', stroke, bi.func.__name__)
+            k.masterCommand(
+                event=event,
+                commandName=bi.commandName,
+                func=bi.func,
+                stroke=bi.stroke)
         elif w_name.startswith('canvas'):
             # 2016/04/09: experimental.
             if trace: g.trace('unbound plain key in tree: search')
@@ -3424,13 +3431,15 @@ class KeyHandlerClass(object):
         d = k.masterBindingsDict.get(state)
         if d:
             assert g.isStrokeOrNone(stroke)
-            si = d.get(stroke)
-            if si:
-                assert g.isShortcutInfo(si), si
+            bi = d.get(stroke)
+            if bi:
+                ### assert g.isShortcutInfo(bi), bi
                 if trace: g.trace('calling generalModeHandler', stroke)
                 k.generalModeHandler(event,
-                    commandName=si.commandName, func=si.func,
-                    modeName=state, nextMode=si.nextMode)
+                    commandName=bi.commandName,
+                    func=bi.func,
+                    modeName=state,
+                    nextMode=bi.nextMode)
                 return True
             else:
                 # New in Leo 4.5: unbound keys end mode.
@@ -3552,18 +3561,19 @@ class KeyHandlerClass(object):
                         (key, name, stroke, stroke in d))
                     # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
                 if d:
-                    si = d.get(stroke)
-                    if si:
-                        assert si.stroke == stroke, 'si: %s stroke: %s' % (si, stroke)
-                            # masterBindingsDict: keys are KeyStrokes
-                        assert g.isShortcutInfo(si), si
+                    bi = d.get(stroke)
+                    if bi:
+                        ### assert bi.stroke == stroke,
+                            ### 'bi: %s stroke: %s' % (bi, stroke)
+                        ### assert g.isShortcutInfo(bi), bi
                         table = ('previous-line', 'next-line',)
-                        if key == 'text' and name == 'head' and si.commandName in table:
-                            if trace: g.trace('***** special case', si.commandName)
+                        if key == 'text' and name == 'head' and bi.commandName in table:
+                            if trace: g.trace(
+                                '***** special case', bi.commandName)
                         else:
-                            if trace: g.trace('key: %7s name: %6s  found: %s = %s' % (
-                                key, name, repr(si.stroke), si.commandName))
-                            return si
+                            if trace: g.trace('key: %7s name: %6s  found: %r = %s' % (
+                                key, name, bi.stroke, bi.commandName))
+                            return bi
         return None
     #@+node:ekr.20061031131434.110: *5* k.handleDefaultChar
     def handleDefaultChar(self, event, stroke):
@@ -3632,23 +3642,28 @@ class KeyHandlerClass(object):
             for pane in ('mini', 'all', 'text'):
                 d = k.masterBindingsDict.get(pane)
                 if d:
-                    si = d.get(stroke)
-                    if si:
-                        assert si.stroke == stroke, 'si: %s stroke: %s' % (si, stroke)
-                            # masterBindingsDict: keys are KeyStrokes
-                        assert g.isShortcutInfo(si), si
-                        if si.commandName == 'replace-string' and state == 'getArg':
+                    bi = d.get(stroke)
+                    if bi:
+                        assert bi.stroke == stroke, 'bi: %s stroke: %s' % (
+                            bi, stroke)
+                        ### assert g.isShortcutInfo(bi), bi
+                        if bi.commandName == 'replace-string' and state == 'getArg':
                             if trace: g.trace('%s binding for replace-string' % (pane), stroke)
                             return False # Let getArg handle it.
-                        elif si.commandName not in k.singleLineCommandList:
-                            if trace: g.trace('%s binding terminates minibuffer' % (
-                                pane), si.commandName, stroke)
+                        elif bi.commandName not in k.singleLineCommandList:
+                            if trace: g.trace(
+                                '%s binding terminates minibuffer' % (pane),
+                                bi.commandName, stroke)
                             k.keyboardQuit()
                         else:
-                            if trace: g.trace(repr(stroke), 'mini binding', si.commandName)
+                            if trace: g.trace(repr(stroke), 'mini binding', bi.commandName)
                             c.minibufferWantsFocus() # New in Leo 4.5.
                         # Pass this on for macro recording.
-                        k.masterCommand(commandName=si.commandName, event=event, func=si.func, stroke=stroke)
+                        k.masterCommand(
+                            commandName=bi.commandName,
+                            event=event,
+                            func=bi.func,
+                            stroke=stroke)
                         # Careful: the command could exit.
                         if c.exists and not k.silentMode:
                             c.minibufferWantsFocus()
@@ -3717,11 +3732,12 @@ class KeyHandlerClass(object):
             for key in (state, 'body', 'log', 'text', 'all'):
                 d = k.masterBindingsDict.get(key, {})
                 if d:
-                    si = d.get(stroke)
-                    if si:
-                        assert si.stroke == stroke, 'si: %s stroke: %s' % (si, stroke)
-                        assert g.isShortcutInfo(si), si
-                        if si.commandName == 'auto-complete':
+                    bi = d.get(stroke)
+                    if bi:
+                        assert bi.stroke == stroke, 'bi: %s stroke: %s' % (
+                            bi, stroke)
+                        # assert g.isShortcutInfo(bi), bi
+                        if bi.commandName == 'auto-complete':
                             return True
         return False
     #@+node:ekr.20061031131434.105: *5* k.masterCommand & helpers
@@ -4037,17 +4053,17 @@ class KeyHandlerClass(object):
                 g.es_print('no such command:', commandName, 'Referenced from', modeName)
                 continue
             aList = d.get(commandName, [])
-            for si in aList:
-                assert g.isShortcutInfo(si), si
-                stroke = si.stroke
-                # Important: si.val is canonicalized.
+            for bi in aList:
+                assert g.isShortcutInfo(bi), bi
+                stroke = bi.stroke
+                # Important: bi.val is canonicalized.
                 if stroke and stroke not in ('None', 'none', None):
                     if trace:
                         g.trace(
                             g.app.gui.widget_name(w), modeName,
                             '%10s' % (stroke),
                             '%20s' % (commandName),
-                            si.nextMode)
+                            bi.nextMode)
                     assert g.isStroke(stroke)
                     k.makeMasterGuiBinding(stroke)
                     # Create the entry for the mode in k.masterBindingsDict.
@@ -4058,7 +4074,7 @@ class KeyHandlerClass(object):
                         kind='mode<%s>' % (modeName), # 2012/01/23
                         commandName=commandName,
                         func=func,
-                        nextMode=si.nextMode,
+                        nextMode=bi.nextMode,
                         stroke=stroke)
                     k.masterBindingsDict[modeName] = d2
     #@+node:ekr.20120208064440.10179: *4* k.endMode
@@ -4113,9 +4129,9 @@ class KeyHandlerClass(object):
                 pass
             else:
                 aList = d.get(key)
-                for si in aList:
-                    assert g.isShortcutInfo(si), si
-                    stroke = si.stroke
+                for bi in aList:
+                    ### assert g.isShortcutInfo(bi), bi
+                    stroke = bi.stroke
                     if stroke not in (None, 'None'):
                         s1 = key
                         s2 = k.prettyPrintKey(stroke)
@@ -4214,9 +4230,9 @@ class KeyHandlerClass(object):
             return
         else:
             k.modeBindingsDict = d
-            si = d.get('*command-prompt*')
-            if si:
-                prompt = si.kind # A kludge.
+            bi = d.get('*command-prompt*')
+            if bi:
+                prompt = bi.kind # A kludge.
             else:
                 prompt = modeName
             if trace: g.trace('modeName: %s prompt: %s d.keys(): %s' % (
@@ -4225,9 +4241,9 @@ class KeyHandlerClass(object):
         k.silentMode = False
         aList = d.get('*entry-commands*', [])
         if aList:
-            for si in aList:
-                assert g.isShortcutInfo(si), si
-                commandName = si.commandName
+            for bi in aList:
+                # assert g.isShortcutInfo(bi), bi
+                commandName = bi.commandName
                 if trace: g.trace('entry command:', commandName)
                 k.simulateCommand(commandName)
                 # Careful, the command can kill the commander.
@@ -4306,19 +4322,19 @@ class KeyHandlerClass(object):
         for stroke in k.bindingsDict:
             assert g.isStroke(stroke), repr(stroke)
             aList = k.bindingsDict.get(stroke, [])
-            for si in aList:
-                assert g.isShortcutInfo(si), si
-                shortcutList = k.bindingsDict.get(si.commandName, [])
+            for bi in aList:
+                ### assert g.isShortcutInfo(bi), bi
+                shortcutList = k.bindingsDict.get(bi.commandName, [])
                     # Bug fix: 2017/03/26.
                 aList = k.bindingsDict.get(stroke, g.ShortcutInfo(kind='dummy', pane='all'))
-                    # Important: only si.pane is required below.
-                for si in aList:
-                    assert g.isShortcutInfo(si), si
-                    pane = '%s:' % (si.pane)
+                    # Important: only bi.pane is required below.
+                for bi in aList:
+                    ### assert g.isShortcutInfo(bi), bi
+                    pane = '%s:' % (bi.pane)
                     data = (pane, stroke)
                     if data not in shortcutList:
                         shortcutList.append(data)
-                d[si.commandName] = shortcutList
+                d[bi.commandName] = shortcutList
         return d
     #@+node:ekr.20061031131434.179: *4* k.getShortcutForCommand/Name
     def getShortcutForCommandName(self, commandName):
@@ -4328,9 +4344,9 @@ class KeyHandlerClass(object):
             for stroke in k.bindingsDict:
                 assert g.isStroke(stroke), repr(stroke)
                 aList = k.bindingsDict.get(stroke, [])
-                for si in aList:
-                    assert g.isShortcutInfo(si), si
-                    if si.commandName == commandName:
+                for bi in aList:
+                    ### assert g.isShortcutInfo(bi), bi
+                    if bi.commandName == commandName:
                         return stroke
         return None
 
@@ -4340,9 +4356,9 @@ class KeyHandlerClass(object):
             for stroke in k.bindingsDict:
                 assert g.isStroke(stroke), repr(stroke)
                 aList = k.bindingsDict.get(stroke, [])
-                for si in aList:
-                    assert g.isShortcutInfo(si), si
-                    if si.commandName == command.__name__:
+                for bi in aList:
+                    ### assert g.isShortcutInfo(bi), bi
+                    if bi.commandName == command.__name__:
                         return stroke
         return None
     #@+node:ekr.20090518072506.8494: *4* k.isFKey
@@ -4435,7 +4451,7 @@ class KeyHandlerClass(object):
         '''
         # pylint: disable=len-as-condition
         trace = False and not g.unitTesting
-        trace = trace and stroke.lower().find('1') > -1
+        trace = trace and stroke.find('1') > -1
         k = self
         if not stroke: return ''
         s = stroke.s if g.isStroke(stroke) else stroke
@@ -4566,14 +4582,16 @@ class KeyHandlerClass(object):
 
     canonicalizeShortcut = strokeFromSetting # For compatibility.
     #@+node:ekr.20061031131434.180: *4* k.traceBinding (not used)
-    def traceBinding(self, si, shortcut, w):
+    def traceBinding(self, bi, shortcut, w):
         k = self; c = k.c; gui = g.app.gui
-        if not c.config.getBool('trace_bindings'): return
+        if not c.config.getBool('trace_bindings'):
+            return
         theFilter = c.config.getString('trace_bindings_filter') or ''
-        if theFilter and shortcut.lower().find(theFilter.lower()) == -1: return
+        if theFilter and shortcut.lower().find(theFilter.lower()) == -1:
+            return
         pane_filter = c.config.getString('trace_bindings_pane_filter')
-        if not pane_filter or pane_filter.lower() == si.pane:
-            g.trace(si.pane, shortcut, si.commandName, gui.widget_name(w))
+        if not pane_filter or pane_filter.lower() == bi.pane:
+            g.trace(bi.pane, shortcut, bi.commandName, gui.widget_name(w))
     #@+node:ekr.20061031131434.193: *3* k.States
     #@+node:ekr.20061031131434.194: *4* k.clearState
     def clearState(self):
@@ -4797,14 +4815,18 @@ class KeyHandlerClass(object):
             for z in range(n):
                 k.fullCommand(event)
         else:
-            si = k.getPaneBinding(stroke, event and event.widget)
-            if si:
-                assert g.isShortcutInfo(si), si
-                if trace: g.trace('repeat', n, 'method', si.func.__name__,
-                    'stroke', stroke, 'widget', w)
+            bi = k.getPaneBinding(stroke, event and event.widget)
+            if bi:
+                ### assert g.isShortcutInfo(bi), bi
+                if trace: g.trace('repeat: %s, func: %s, stroke: %s, widget: %s' % (
+                    n, bi.func.__name__, stroke, w))
                 for z in range(n):
                     event = g.app.gui.create_key_event(c, None, event, stroke, w)
-                    k.masterCommand(commandName=None, event=event, func=si.func, stroke=stroke)
+                    k.masterCommand(
+                        commandName=None,
+                        event=event,
+                        func=bi.func,
+                        stroke=stroke)
             else:
                 for z in range(n):
                     k.masterKeyHandler(event)
@@ -4875,18 +4897,18 @@ class ModeInfo(object):
                     commandName, modeName))
                 continue
             aList = d.get(commandName, [])
-            for si in aList:
-                assert g.isShortcutInfo(si), si
-                if trace: g.trace(si)
-                stroke = si.stroke
-                # Important: si.val is canonicalized.
+            for bi in aList:
+                assert g.isShortcutInfo(bi), bi
+                if trace: g.trace(bi)
+                stroke = bi.stroke
+                # Important: bi.val is canonicalized.
                 if stroke and stroke not in ('None', 'none', None):
                     if trace:
                         g.trace(
                             g.app.gui.widget_name(w), modeName,
                             '%10s' % (stroke),
                             '%20s' % (commandName),
-                            si.nextMode)
+                            bi.nextMode)
                     assert g.isStroke(stroke)
                     k.makeMasterGuiBinding(stroke)
                     # Create the entry for the mode in k.masterBindingsDict.
@@ -4897,7 +4919,7 @@ class ModeInfo(object):
                         kind='mode<%s>' % (modeName), # 2012/01/23
                         commandName=commandName,
                         func=func,
-                        nextMode=si.nextMode,
+                        nextMode=bi.nextMode,
                         stroke=stroke)
                     k.masterBindingsDict[modeName] = d2
                     if trace: g.trace(modeName, d2)
@@ -4922,19 +4944,19 @@ class ModeInfo(object):
         k.generalModeHandler(event, modeName=self.name)
     #@+node:ekr.20120208064440.10153: *3* init (ModeInfo) (Can we check command names here??)
     def init(self, name, dataList):
-        '''aList is a list of tuples (commandName,si).'''
+        '''aList is a list of tuples (commandName,bi).'''
         trace = False and not g.unitTesting
         c, d, modeName = self.c, self.d, self.name
-        for name, si in dataList:
-            assert g.isShortcutInfo(si), si
+        for name, bi in dataList:
+            ### assert g.isShortcutInfo(bi), bi
             if not name:
-                if trace: g.trace('entry command', si)
+                if trace: g.trace('entry command', bi)
                 # An entry command: put it in the special *entry-commands* key.
-                # d.add('*entry-commands*',si)
-                self.entryCommands.append(si)
-            elif si is not None:
+                # d.add('*entry-commands*',bi)
+                self.entryCommands.append(bi)
+            elif bi is not None:
                 # A regular shortcut.
-                si.pane = modeName
+                bi.pane = modeName
                 aList = d.get(name, [])
                 for z in aList:
                     assert g.isShortcutInfo(z), z
@@ -4944,9 +4966,9 @@ class ModeInfo(object):
                     assert g.isShortcutInfo(z), z
                 aList3 = [z for z in aList2 if z.pane != modeName]
                 if aList3:
-                    if trace: g.trace('inheriting', [si.val for si in aList3])
+                    if trace: g.trace('inheriting', [bi.val for bi in aList3])
                     aList.extend(aList3)
-                aList.append(si)
+                aList.append(bi)
                 d[name] = aList
     #@+node:ekr.20120208064440.10158: *3* initMode (ModeInfo)
     def initMode(self):
@@ -4954,9 +4976,9 @@ class ModeInfo(object):
         c, k = self.c, self.c.k
         k.inputModeName = self.name
         k.silentMode = False
-        for si in self.entryCommands:
-            assert g.isShortcutInfo(si), si
-            commandName = si.commandName
+        for bi in self.entryCommands:
+            ### assert g.isShortcutInfo(bi), bi
+            commandName = bi.commandName
             if trace: g.trace('entry command:', commandName)
             k.simulateCommand(commandName)
             # Careful, the command can kill the commander.

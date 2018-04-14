@@ -845,7 +845,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 else:
                     ef = self.eventFilter
                     tkKey, ch, ignore = ef.toTkKey(event)
-                    stroke = ef.toStroke(tkKey, ch) # ch not used.
+                    stroke = ef.toStroke(tkKey)
                     cmd_name = self.d.get(stroke)
                     if trace: g.trace(cmd_name, s, tkKey, stroke)
                     if cmd_name:
@@ -4599,12 +4599,12 @@ class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):
             key, aList = c.config.getShortcut(commandName)
             if aList:
                 result = []
-                for si in aList:
-                    assert g.isShortcutInfo(si), si
+                for bi in aList:
+                    ### assert g.isShortcutInfo(bi), bi
                     # Don't show mode-related bindings.
-                    if not si.isModeBinding():
-                        accel = k.prettyPrintKey(si.stroke)
-                        if trace: g.trace('%20s %s' % (accel, si.dump()))
+                    if not bi.isModeBinding():
+                        accel = k.prettyPrintKey(bi.stroke)
+                        if trace: g.trace('%20s %s' % (accel, bi.dump()))
                         result.append(accel)
                         # Break here if we want to show only one accerator.
                 action.setText('%s\t%s' % (s, ', '.join(result)))

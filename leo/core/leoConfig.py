@@ -573,14 +573,14 @@ class ParserBaseClass(object):
         for line in lines:
             line = line.strip()
             if line and not g.match(line, 0, '#'):
-                name, si = self.parseShortcutLine('*mode-setting*', line)
-                assert g.isShortcutInfo(si), si
+                name, bi = self.parseShortcutLine('*mode-setting*', line)
+                ### assert g.isShortcutInfo(bi), bi
                 if not name:
                     # An entry command: put it in the special *entry-commands* key.
-                    d.add('*entry-commands*', si)
-                elif si is not None:
+                    d.add('*entry-commands*', bi)
+                elif bi is not None:
                     # A regular shortcut.
-                    si.pane = modeName
+                    bi.pane = modeName
                     aList = d.get(name, [])
                     for z in aList:
                         assert g.isShortcutInfo(z), z
@@ -592,7 +592,7 @@ class ParserBaseClass(object):
                     if aList3:
                         # g.trace('inheriting',[b.val for b in aList3])
                         aList.extend(aList3)
-                    aList.append(si)
+                    aList.append(bi)
                     d.replace(name, aList)
             # Restore the global shortcutsDict.
             if trace: g.trace(d.dump())
@@ -673,13 +673,13 @@ class ParserBaseClass(object):
         for line in g.splitLines(s):
             line = line.strip()
             if line and not g.match(line, 0, '#'):
-                commandName, si = self.parseShortcutLine(fn, line)
-                if si is None: # Fix #718.
+                commandName, bi = self.parseShortcutLine(fn, line)
+                if bi is None: # Fix #718.
                     print('\nWarning: bad shortcut specifier: %r\n' % line)
                 else:
-                    assert g.isShortcutInfo(si), si
-                    if si and si.stroke not in (None, 'none', 'None'):
-                        self.doOneShortcut(si, commandName, p)
+                    ### assert g.isShortcutInfo(bi), bi
+                    if bi and bi.stroke not in (None, 'none', 'None'):
+                        self.doOneShortcut(bi, commandName, p)
                     else:
                         # New in Leo 5.7: Add local assignments to None to c.k.killedBindings.
                         if c.config.isLocalSettingsFile():
@@ -689,14 +689,14 @@ class ParserBaseClass(object):
         if trace: g.trace(
             len(list(self.shortcutsDict.keys())), c.shortFileName(), p.h)
     #@+node:ekr.20111020144401.9585: *5* doOneShortcut (ParserBaseClass)
-    def doOneShortcut(self, si, commandName, p):
+    def doOneShortcut(self, bi, commandName, p):
         '''Handle a regular shortcut.'''
         trace = False and not g.unitTesting
         d = self.shortcutsDict
         aList = d.get(commandName, [])
-        aList.append(si)
+        aList.append(bi)
         d[commandName] = aList
-        if trace: g.trace(commandName, si)
+        if trace: g.trace(commandName, bi)
     #@+node:ekr.20041217132028: *4* doString
     def doString(self, p, kind, name, val):
         # At present no checking is done.
@@ -909,9 +909,9 @@ class ParserBaseClass(object):
                 val = val[: i].strip()
         stroke = k.strokeFromSetting(val)
         assert g.isStrokeOrNone(stroke), stroke
-        si = g.ShortcutInfo(kind=kind, nextMode=nextMode, pane=pane, stroke=stroke)
-        if trace: g.trace('%25s %s' % (name, si))
-        return name, si
+        bi = g.ShortcutInfo(kind=kind, nextMode=nextMode, pane=pane, stroke=stroke)
+        if trace: g.trace('%25s %s' % (name, bi))
+        return name, bi
     #@+node:ekr.20041120094940.9: *3* set (ParserBaseClass)
     def set(self, p, kind, name, val):
         """Init the setting for name to val."""
@@ -1804,12 +1804,12 @@ class LocalConfigManager(object):
         d = self.settingsDict
         if d:
             assert g.isTypedDict(d), d
-            si = d.get(setting)
-            if si is None:
+            bi = d.get(setting)
+            if bi is None:
                 return 'unknown setting', None
             else:
-                assert g.isShortcutInfo(si)
-                return si.path, si.val
+                ### assert g.isShortcutInfo(bi)
+                return bi.path, bi.val
         else:
             # lm.readGlobalSettingsFiles is opening a settings file.
             # lm.readGlobalSettingsFiles has not yet set lm.globalSettingsDict.
@@ -1829,11 +1829,13 @@ class LocalConfigManager(object):
             key = c.frame.menu.canonicalizeMenuName(commandName)
             key = key.replace('&', '') # Allow '&' in names.
             aList = d.get(commandName, [])
-            if aList:
-                for si in aList: assert g.isShortcutInfo(si), si
-                # It's very important to filter empty strokes here.
-                aList = [si for si in aList
-                    if si.stroke and si.stroke.lower() != 'none']
+            if aList: # A list of g.BindingIndo objects.
+                # 
+                ### for bi in aList:
+                    ### assert g.isShortcutInfo(bi), bi
+                # It's important to filter empty strokes here.
+                aList = [z for z in aList
+                    if z.stroke and z.stroke.lower() != 'none']
             if trace: g.trace(d, '\n', aList)
             return key, aList
         else:

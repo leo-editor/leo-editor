@@ -1175,9 +1175,9 @@ class LeoFind(object):
         '''Return the escaped command to execute.'''
         d = self.c.k.bindingsDict
         aList = d.get(event.stroke)
-        for si in aList:
-            if si.stroke == event.stroke:
-                return si.commandName
+        for bi in aList:
+            if bi.stroke == event.stroke:
+                return bi.commandName
         return None
     #@+node:ekr.20131117164142.17007: *4* find.stateZeroHelper
     def stateZeroHelper(self, event, prefix, handler, escapes=None):

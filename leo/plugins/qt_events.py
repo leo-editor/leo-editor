@@ -178,7 +178,7 @@ class LeoQtEventFilter(QtCore.QObject):
         if trace: g.trace('tkKey', tkKey, '-->', s)
         return s
     #@+node:ekr.20120204061120.10088: *3* filter.Key construction
-    #@+node:ekr.20110605195119.16937: *4* filter.create_key_event
+    #@+node:ekr.20110605195119.16937: *4* filter.create_key_event (last-minute tweaks)
     def create_key_event(self, event, c, w, ch, tkKey, shortcut):
         trace = False and not g.unitTesting
         verbose = True
@@ -436,7 +436,7 @@ class LeoQtEventFilter(QtCore.QObject):
         return mods
     #@+node:ekr.20140907103315.18767: *3* filter.Tracing
     #@+node:ekr.20110605121601.18548: *4* filter.traceEvent
-    def traceEvent(self, obj, event, tkKey, override):
+    def traceEvent(self, obj, event):
         if g.unitTesting: return
         # http://qt-project.org/doc/qt-4.8/qevent.html#properties
         exclude_names = ('tree', 'log', 'body', 'minibuffer')
@@ -557,12 +557,9 @@ class LeoQtEventFilter(QtCore.QObject):
             if self.tag in exclude_names:
                 return
             if eventType == val:
-                if traceKey:
-                    g.trace(
-                        '%-25s %-25s in-state: %5s key: %s override: %s: obj: %s' % (
-                        kind, self.tag, repr(c.k and c.k.inState()), tkKey, override, obj.__class__.__name__))
-                else:
-                    g.trace('%-25s %-25s %s' % (kind, self.tag, obj.__class__.__name__))
+                if traceKey: g.trace(
+                    '%-25s %-25s in-state: %5r, obj: %s' % (
+                    kind, self.tag, c.k and c.k.inState(), obj.__class__.__name__))
                 return
         if eventType not in ignore:
             g.trace('%-25s %-25s %s' % (eventType, self.tag, obj.__class__.__name__))

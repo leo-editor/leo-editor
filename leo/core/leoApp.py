@@ -2029,17 +2029,17 @@ class LoadManager(object):
             if localFlag:
                 g.trace('new_d.d')
                 g.printDict(new_d.d)
-        si_list = new_d.get(g.app.trace_setting)
-        if si_list:
+        bi_list = new_d.get(g.app.trace_setting)
+        if bi_list:
             # This code executed only if g.app.trace_setting exists.
-            for si in si_list:
-                fn = si.kind.split(' ')[-1]
-                stroke = c.k.prettyPrintKey(si.stroke)
-                if si.pane and si.pane != 'all':
-                    pane = ' in %s panes' % si.pane
+            for bi in bi_list:
+                fn = bi.kind.split(' ')[-1]
+                stroke = c.k.prettyPrintKey(bi.stroke)
+                if bi.pane and bi.pane != 'all':
+                    pane = ' in %s panes' % bi.pane
                 else:
                     pane = ''
-                g.trace(repr(si))
+                g.trace(repr(bi))
                 g.es_print('--trace-setting: %20s binds %s to %-20s%s' %  (
                     fn, g.app.trace_setting, stroke, pane))
         inverted_old_d = lm.invert(old_d)
@@ -2057,17 +2057,17 @@ class LoadManager(object):
                     c.shortFileName(), binding, d.get(binding) or []))
             else:
                 stroke = c.k.canonicalizeShortcut(binding)
-                si_list = inverted_new_d.get(stroke)
-                if si_list:
-                    for si in si_list:
-                        fn = si.kind.split(' ')[-1] # si.kind #
+                bi_list = inverted_new_d.get(stroke)
+                if bi_list:
+                    for bi in bi_list:
+                        fn = bi.kind.split(' ')[-1] # bi.kind #
                         stroke2 = c.k.prettyPrintKey(stroke)
-                        if si.pane and si.pane != 'all':
-                            pane = ' in %s panes' % si.pane
+                        if bi.pane and bi.pane != 'all':
+                            pane = ' in %s panes' % bi.pane
                         else:
                             pane = ''
                         g.es_print('--trace-binding: %20s binds %s to %-20s%s' %  (
-                            fn, stroke2, si.commandName, pane))
+                            fn, stroke2, bi.commandName, pane))
         # Fix bug 951921: check for duplicate shortcuts only in the new file.
         lm.checkForDuplicateShortcuts(c, inverted_new_d)
         inverted_old_d.update(inverted_new_d) # Updates inverted_old_d in place.
@@ -2086,17 +2086,19 @@ class LoadManager(object):
         for ks in sorted(list(d.keys())):
             conflict, panes = False, ['all']
             aList = d.get(ks)
-            aList2 = [si for si in aList if not si.pane.startswith('mode')]
+                # A list of bi objects.
+            aList2 = [z for z in aList if not z.pane.startswith('mode')]
             if len(aList) > 1:
-                for si in aList2:
-                    if si.pane in panes:
+                for bi in aList2:
+                    if bi.pane in panes:
                         conflict = True; break
                     else:
-                        panes.append(si.pane)
+                        panes.append(bi.pane)
             if conflict:
                 g.es_print('conflicting key bindings in %s' % (c.shortFileName()))
-                for si in aList2:
-                    g.es_print('%6s %s %s' % (si.pane, si.stroke.s, si.commandName))
+                for bi in aList2:
+                    g.es_print('%6s %s %s' % (
+                        bi.pane, bi.stroke.s, bi.commandName))
     #@+node:ekr.20120214132927.10724: *5* LM.invert
     def invert(self, d):
         '''
@@ -2110,15 +2112,15 @@ class LoadManager(object):
             keyType=g.KeyStroke,
             valType=g.ShortcutInfo)
         for commandName in d.keys():
-            for si in d.get(commandName, []):
+            for bi in d.get(commandName, []):
                 # This assert can fail if there is an exception in the ShortcutInfo ctor.
-                assert isinstance(si, g.ShortcutInfo), si
-                stroke = si.stroke # This is canonicalized.
-                si.commandName = commandName # Add info.
+                ### assert isinstance(bi, g.ShortcutInfo), bi
+                stroke = bi.stroke # This is canonicalized.
+                bi.commandName = commandName # Add info.
                 assert stroke
                 if trace and verbose:
                     g.trace('%40s %s' % (commandName, stroke))
-                result.add(stroke, si)
+                result.add(stroke, bi)
         if trace: g.trace('returns  %4s %s %s' % (
             len(list(result.keys())), id(d), result.name()))
         return result
@@ -2136,13 +2138,13 @@ class LoadManager(object):
             keyType=type('commandName'),
             valType=g.ShortcutInfo)
         for stroke in d.keys():
-            for si in d.get(stroke, []):
-                assert isinstance(si, g.ShortcutInfo), si
-                commandName = si.commandName
+            for bi in d.get(stroke, []):
+                ### assert isinstance(bi, g.ShortcutInfo), bi
+                commandName = bi.commandName
                 if trace and verbose:
                     g.trace('uninvert %20s %s' % (stroke, commandName))
                 assert commandName
-                result.add(commandName, si)
+                result.add(commandName, bi)
         if trace: g.trace('returns %4s %s %s' % (
             len(list(result.keys())), id(d), result.name()))
         return result

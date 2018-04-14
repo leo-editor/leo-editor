@@ -338,7 +338,7 @@ class GeneralSetting(object):
 
 def isGeneralSetting(obj):
     return isinstance(obj, GeneralSetting)
-#@+node:ekr.20120201164453.10090: *3* class g.KeyStroke & isStroke/OrNone
+#@+node:ekr.20120201164453.10090: *3* class g.KeyStroke & isStroke/OrNone (To be improved)
 class KeyStroke(object):
     '''A class that announces that its contents has been canonicalized by k.strokeFromSetting.
 
@@ -1413,18 +1413,14 @@ class SherlockTracer(object):
         sys.settrace(None)
     #@-others
 #@+node:ekr.20120123115816.10209: *3* class g.ShortcutInfo & isShortcutInfo
-# bindKey:            ShortcutInfo(kind,commandName,func,pane)
-# bindKeyToDict:      ShortcutInfo(kind,commandName,func,pane,stroke)
-# createModeBindings: ShortcutInfo(kind,commandName,func,nextMode,stroke)
-# Important: The startup code uses this class,
-# so it is convenient to define it in leoGlobals.py.
-
 class ShortcutInfo(object):
     '''
     A class representing any kind of key binding line.
 
     This includes other information besides just the KeyStroke.
     '''
+    # Important: The startup code uses this class,
+    # so it is convenient to define it in leoGlobals.py.
     #@+others
     #@+node:ekr.20120129040823.10254: *4*  ctor (ShortcutInfo)
     def __init__(self, kind, commandName='', func=None, nextMode=None, pane=None, stroke=None):
@@ -1449,13 +1445,12 @@ class ShortcutInfo(object):
     __str__ = __repr__
 
     def dump(self):
-        si = self
-        result = ['ShortcutInfo %17s' % (si.kind)]
+        result = ['ShortcutInfo %17s' % (self.kind)]
         # Print all existing ivars.
         table = ('commandName', 'func', 'nextMode', 'pane', 'stroke')
         for ivar in table:
-            if hasattr(si, ivar):
-                val = getattr(si, ivar)
+            if hasattr(self, ivar):
+                val = getattr(self, ivar)
                 if val not in (None, 'none', 'None', ''):
                     if ivar == 'func':
                         # pylint: disable=no-member
