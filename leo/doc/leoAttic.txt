@@ -114,7 +114,7 @@ for image in table:
     cursor = body.widget.textCursor()
     #name = 'leo_image%s' % name_index
     #name_index += 1
-    cursor.insertImage(image) ### , name)
+    cursor.insertImage(image)
     cursors.append(cursor)
 for i, ch in enumerate(p.b):
     if ord(ch) > 128: print('new', i, ord(ch))
@@ -1182,7 +1182,7 @@ def update_after_read_at_auto_file(self,root):
             vc.update_headlines_after_read(root)
         t7 = time.clock()
         c.setChanged(old_changed if ok else False)
-            ### To do: revert if not ok.
+            # To do: revert if not ok.
     except Exception:
         g.es_exception()
         n = 0
@@ -1545,11 +1545,11 @@ def compute_all_organized_positions(self,root):
     for od in vc.all_ods:
         if od.unls:
             # Do a full search only for the first unl.
-            ### parent = vc.find_position_for_relative_unl(root,od.unls[0])
-            if True: ### parent:
+            # parent = vc.find_position_for_relative_unl(root,od.unls[0])
+            if True: # parent:
                 for unl in od.unls:
                     p = vc.find_position_for_relative_unl(root,unl)
-                    ### p = vc.find_position_for_relative_unl(parent,vc.unl_tail(unl))
+                    # p = vc.find_position_for_relative_unl(parent,vc.unl_tail(unl))
                     if p:
                         od.organized_nodes.append(p.copy())
                     if trace: g.trace('exists:',od.exists,
@@ -1608,9 +1608,9 @@ def demote(self,root):
         vc.terminate_organizers(active,parent)
         found = vc.find_organizer(parent,p)
         if found:
-            pass ### vc.enter_organizers(found,p)
+            pass # vc.enter_organizers(found,p)
         else:
-            pass ### vc.terminate_all_open_organizers()
+            pass # vc.terminate_all_open_organizers()
         if trace and trace_loop:
             g.trace(
                 'active:',active and active.h or 'None',
@@ -1685,7 +1685,7 @@ def add_organizer_node (self,od,p):
         if trace and verbose: g.trace(
             '***** existing organizer: do not move:',od.h)
     else:
-        ### This can be pre-computed?
+        # This can be pre-computed?
         bare_list = [p for parent,p,n in vc.global_bare_organizer_node_list]
         if od.p in bare_list:
             if trace and verbose: g.trace(
@@ -1805,7 +1805,7 @@ def terminate_organizers(self,active,p):
 def terminate_all_open_organizers(self):
     '''Terminate all open organizers.'''
     trace = True # and not g.unitTesting
-    if 0: ###
+    if 0:
         g.trace()
         for od in self.all_ods:
             if od.opened and not od.closed:
@@ -2744,27 +2744,8 @@ def prepass(self, root):
     # parts_list = []
     for p in root.subtree():
         ok2 = pd.regularize_node(p, scanner)
-        ok = ok and ok2 ### (ok2 or parts)
+        ok = ok and ok2
     return ok
-        ### if parts: parts_list.append(parts)
-    # Pass 2: actually insert the nodes.
-    ### This no longer happens.
-        # if ok:
-            # for parts in reversed(parts_list):
-                # p0 = None
-                # for part in reversed(parts):
-                    # i1, i2, headline, p = part
-                    # if p0 is None:
-                        # p0 = p
-                    # else:
-                        # assert p == p0, (p, p0)
-                    # s = p.b
-                    # g.trace(p.h, '-->', headline)
-                    # p2 = p.insertAfter()
-                    # p2.b = s[i1: i2]
-                    # p2.h = headline
-                # p0.doDelete()
-        # return ok
 #@+node:ekr.20140131101641.15496: *5* pd.regularize_node
 def regularize_node(self, p, scanner):
     '''Regularize node p so that it will not cause problems.'''

@@ -25,7 +25,7 @@ class TextfieldBase(widget.Widget):
         invert_highlight_color=True,
         **keywords
     ):
-        ### For Leo, called from MultiLine.make_contained_widgets.
+        # For Leo, called from MultiLine.make_contained_widgets.
         # g.trace('TextfieldBase: value', repr(value), g.callers())
         try:
             self.value = value or ""

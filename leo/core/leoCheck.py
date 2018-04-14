@@ -395,7 +395,7 @@ class ConventionChecker (object):
                 context = self.Type('module', self.file_name)
             result = self.resolve_chain(node, chain, context)
         else:
-            result = self.Type('unknown', 'empty chain') ### Was result = None
+            result = self.Type('unknown', 'empty chain')
         if trace: g.trace(' ----> %s.%s' % (result, func))
         assert isinstance(result, self.Type), repr(result)
         return result
@@ -536,13 +536,7 @@ class ConventionChecker (object):
         trace = self.test_kind is 'test'
         if trace: g.trace('===== args:', args, 'call:', call_arg, 'sig:', sig_arg)
         return self.check_arg_helper(node, func, call_arg, sig_arg)
-        ### This code should be somewhere else
-            # if result is not 'fail' and len(args) > 1:
-                # # Check a keyword call arg against it's assigned value.
-                    # arg1, arg2 = args[0], ''.join(args[1:])
-                    # result = self.check_arg_helper(node, 'KEYWORD', arg1, arg2)
-            # assert result in ('fail', 'ok', 'unknown'), repr(result)
-            # return result
+
     #@+node:ekr.20171212035137.1: *5* checker.check_arg_helper
     def check_arg_helper(self, node, func, call_arg, sig_arg):
         trace = False and self.test_kind is 'test'
@@ -622,7 +616,6 @@ class ConventionChecker (object):
         d = self.classes.get(class_name)
         assert d is not None, class_name
         ivars = d.get('ivars')
-        # tag:setter self.var2 = String ### Why not Type???
         ivars[var2] = self.format(node.value)
         d['ivars'] = ivars
         if 0:

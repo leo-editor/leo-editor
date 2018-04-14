@@ -347,7 +347,6 @@ class HelpCommandsClass(BaseEditCommandsClass):
             assert g.isStroke(stroke), repr(stroke)
             aList = d.get(stroke, [])
             for bi in aList:
-                ### assert g.isShortcutInfo(bi), bi
                 if bi.commandName == commandName:
                     pane = '' if bi.pane == 'all' else ' %s:' % (bi.pane)
                     s1 = pane

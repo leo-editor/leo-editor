@@ -4,9 +4,9 @@
 #@+node:tbrown.20171028115459.1: ** << webengineview.py imports >>
 import leo.core.leoGlobals as g
 assert g
-### EKR: Use QtWebKitWidgets instead of QtWebEngineWidgets
-### TNB: No, there are two HTML viewers, this one must be QtWebEngineWidgets
-###      it's ok if it fails to load
+# EKR: Use QtWebKitWidgets instead of QtWebEngineWidgets
+# TNB: No, there are two HTML viewers, this one must be QtWebEngineWidgets
+#      it's ok if it fails to load
 from PyQt5 import QtWebEngineWidgets
 
 #@-<< webengineview.py imports >>

@@ -1346,9 +1346,6 @@ class LeoQtTree(leoFrame.LeoTree):
         """Returns the edit widget for position p."""
         trace = False and not g.unitTesting
         verbose = False
-        # if False and g.unitTesting:
-            # ### Highly experimental: 10 unit tests fail.
-            # return HeadWrapper(c=self.c, name='head', p=p)
         item = self.position2item(p)
         if item:
             e = self.getTreeEditorForItem(item)

@@ -36,7 +36,7 @@ class MultiLineEditable(wgmultiline.MultiLine):
         try:
             active_line = self._my_widgets[(self.cursor_line-self.start_display_at)]
         except IndexError:
-            self._my_widgets[0] ### Huh?
+            self._my_widgets[0] # Huh?
             self.cursor_line = 0
             self.insert_line_value()
             return True

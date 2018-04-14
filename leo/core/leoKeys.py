@@ -1049,7 +1049,6 @@ class FileNameChooser(object):
         if self.filterExt:
             for ext in self.filterExt:
                 tabList = [z for z in tabList if not z.endswith(ext)]
-        ###
         tabList = [g.os_path_normslashes(z) for z in tabList]
         junk, common_prefix = g.itemsMatchingPrefixInList(path, tabList)
         if trace: g.trace('common_prefix', common_prefix)
@@ -2278,7 +2277,6 @@ class KeyHandlerClass(object):
         k = self
         result = []
         for bi in aList:
-            ### assert g.isShortcutInfo(bi), bi
             if pane in ('button', 'all', bi.pane):
                 if trace:
                     # This is too annoying to report here. See bug 951921.
@@ -2370,7 +2368,6 @@ class KeyHandlerClass(object):
             d2 = d.get(key)
             for key2 in sorted(d2):
                 bi = d2.get(key2)
-                ### assert g.isShortcutInfo(bi), bi
                 g.pr('%20s %s' % (key2, bi.commandName))
     #@+node:ekr.20061031131434.99: *4* k.initAbbrev & helper
     def initAbbrev(self):
@@ -2412,7 +2409,6 @@ class KeyHandlerClass(object):
             aList, found = aList or [], False
             for pane in ('text', 'all'):
                 for bi in aList:
-                    ### assert g.isShortcutInfo(bi), bi
                     if bi.pane == pane:
                         if trace: g.trace(commandName, ivar, bi.stroke)
                         setattr(k, ivar, bi.stroke)
@@ -2451,7 +2447,6 @@ class KeyHandlerClass(object):
             for bi in aList:
                 if trace and commandName == 'help':
                     g.trace(key, repr(bi.stroke), aList)
-                ### assert isinstance(bi, g.ShortcutInfo)
                 # Important: bi.stroke is already canonicalized.
                 stroke = bi.stroke
                 bi.commandName = commandName
@@ -2462,7 +2457,6 @@ class KeyHandlerClass(object):
         for stroke in sorted(d2.keys()):
             aList2 = d2.get(stroke)
             for bi in aList2:
-                ### assert isinstance(bi, g.ShortcutInfo)
                 commandName = bi.commandName
                 command = c.commandsDict.get(commandName)
                 tag = bi.kind
@@ -2744,7 +2738,6 @@ class KeyHandlerClass(object):
             assert g.isStroke(stroke), stroke
             aList = d.get(stroke, [])
             for bi in aList:
-                ### assert g.isShortcutInfo(bi), bi
                 s1 = '' if bi.pane == 'all' else bi.pane
                 s2 = k.prettyPrintKey(stroke)
                 s3 = bi.commandName
@@ -3117,7 +3110,6 @@ class KeyHandlerClass(object):
             d2 = d.get(key)
             for key2 in d2:
                 bi = d2.get(key2)
-                ### assert g.isShortcutInfo(bi), bi
                 if bi.commandName == commandName:
                     bi.func = func
                     d2[key2] = bi
@@ -3188,8 +3180,6 @@ class KeyHandlerClass(object):
             stroke = None
             junk, aList = c.config.getShortcut(commandName)
             for bi in aList:
-                ### assert g.isShortcutInfo(bi), bi
-                ### assert g.isStrokeOrNone(bi.stroke)
                 if bi.stroke and not bi.pane.endswith('-mode'):
                     stroke = bi.stroke
                     pane = bi.pane # 2015/05/11.
@@ -3355,7 +3345,6 @@ class KeyHandlerClass(object):
             if trace and trace_unbound: g.trace('  killed', stroke)
             k.handleUnboundKeys(event, char, stroke)
         elif bi:
-            ### assert g.isShortcutInfo(bi), bi
             if traceGC: g.printNewObjects('masterKey 3')
             if trace: g.trace('   bound', stroke, bi.func.__name__)
             k.masterCommand(
@@ -3433,7 +3422,6 @@ class KeyHandlerClass(object):
             assert g.isStrokeOrNone(stroke)
             bi = d.get(stroke)
             if bi:
-                ### assert g.isShortcutInfo(bi), bi
                 if trace: g.trace('calling generalModeHandler', stroke)
                 k.generalModeHandler(event,
                     commandName=bi.commandName,
@@ -3556,16 +3544,11 @@ class KeyHandlerClass(object):
             ):
                 d = k.masterBindingsDict.get(key, {})
                 if trace and verbose:
-                    # g.trace('key',key,'name',name,'stroke',stroke,'stroke in d.keys',stroke in d)
                     g.trace('key: %7s name: %6s stroke: %10s in keys: %s' %
                         (key, name, stroke, stroke in d))
-                    # g.trace(key,'keys',g.listToString(list(d.keys()),sort=True)) # [:5])
                 if d:
                     bi = d.get(stroke)
                     if bi:
-                        ### assert bi.stroke == stroke,
-                            ### 'bi: %s stroke: %s' % (bi, stroke)
-                        ### assert g.isShortcutInfo(bi), bi
                         table = ('previous-line', 'next-line',)
                         if key == 'text' and name == 'head' and bi.commandName in table:
                             if trace: g.trace(
@@ -3646,7 +3629,6 @@ class KeyHandlerClass(object):
                     if bi:
                         assert bi.stroke == stroke, 'bi: %s stroke: %s' % (
                             bi, stroke)
-                        ### assert g.isShortcutInfo(bi), bi
                         if bi.commandName == 'replace-string' and state == 'getArg':
                             if trace: g.trace('%s binding for replace-string' % (pane), stroke)
                             return False # Let getArg handle it.
@@ -4130,7 +4112,6 @@ class KeyHandlerClass(object):
             else:
                 aList = d.get(key)
                 for bi in aList:
-                    ### assert g.isShortcutInfo(bi), bi
                     stroke = bi.stroke
                     if stroke not in (None, 'None'):
                         s1 = key
@@ -4323,13 +4304,11 @@ class KeyHandlerClass(object):
             assert g.isStroke(stroke), repr(stroke)
             aList = k.bindingsDict.get(stroke, [])
             for bi in aList:
-                ### assert g.isShortcutInfo(bi), bi
                 shortcutList = k.bindingsDict.get(bi.commandName, [])
                     # Bug fix: 2017/03/26.
-                aList = k.bindingsDict.get(stroke, g.ShortcutInfo(kind='dummy', pane='all'))
+                bi_list = k.bindingsDict.get(stroke, g.ShortcutInfo(kind='dummy', pane='all'))
                     # Important: only bi.pane is required below.
-                for bi in aList:
-                    ### assert g.isShortcutInfo(bi), bi
+                for bi in bi_list:
                     pane = '%s:' % (bi.pane)
                     data = (pane, stroke)
                     if data not in shortcutList:
@@ -4345,7 +4324,6 @@ class KeyHandlerClass(object):
                 assert g.isStroke(stroke), repr(stroke)
                 aList = k.bindingsDict.get(stroke, [])
                 for bi in aList:
-                    ### assert g.isShortcutInfo(bi), bi
                     if bi.commandName == commandName:
                         return stroke
         return None
@@ -4355,9 +4333,8 @@ class KeyHandlerClass(object):
         if command:
             for stroke in k.bindingsDict:
                 assert g.isStroke(stroke), repr(stroke)
-                aList = k.bindingsDict.get(stroke, [])
-                for bi in aList:
-                    ### assert g.isShortcutInfo(bi), bi
+                bi_list = k.bindingsDict.get(stroke, [])
+                for bi in bi_list:
                     if bi.commandName == command.__name__:
                         return stroke
         return None
@@ -4817,7 +4794,6 @@ class KeyHandlerClass(object):
         else:
             bi = k.getPaneBinding(stroke, event and event.widget)
             if bi:
-                ### assert g.isShortcutInfo(bi), bi
                 if trace: g.trace('repeat: %s, func: %s, stroke: %s, widget: %s' % (
                     n, bi.func.__name__, stroke, w))
                 for z in range(n):
@@ -4948,11 +4924,9 @@ class ModeInfo(object):
         trace = False and not g.unitTesting
         c, d, modeName = self.c, self.d, self.name
         for name, bi in dataList:
-            ### assert g.isShortcutInfo(bi), bi
             if not name:
                 if trace: g.trace('entry command', bi)
                 # An entry command: put it in the special *entry-commands* key.
-                # d.add('*entry-commands*',bi)
                 self.entryCommands.append(bi)
             elif bi is not None:
                 # A regular shortcut.
@@ -4977,7 +4951,6 @@ class ModeInfo(object):
         k.inputModeName = self.name
         k.silentMode = False
         for bi in self.entryCommands:
-            ### assert g.isShortcutInfo(bi), bi
             commandName = bi.commandName
             if trace: g.trace('entry command:', commandName)
             k.simulateCommand(commandName)

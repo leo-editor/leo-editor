@@ -337,7 +337,7 @@ class AstFormatter(object):
         if getattr(node, 'annotation', None):
             return self.visit(node.annotation)
         else:
-            return node.arg ### 2017/12/07
+            return node.arg
     #@+node:ekr.20141012064706.18418: *4* f.Attribute
     # Attribute(expr value, identifier attr, expr_context ctx)
 
@@ -460,7 +460,6 @@ class AstFormatter(object):
 
     def do_NameConstant(self, node): # Python 3 only.
         s = repr(node.value)
-        ### return 'bool' if s in ('True', 'False') else s
         return s
     #@+node:ekr.20141012064706.18430: *4* f.Num
     def do_Num(self, node):

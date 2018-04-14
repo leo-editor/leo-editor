@@ -4600,7 +4600,6 @@ class QtMenuWrapper(LeoQtMenu, QtWidgets.QMenu):
             if aList:
                 result = []
                 for bi in aList:
-                    ### assert g.isShortcutInfo(bi), bi
                     # Don't show mode-related bindings.
                     if not bi.isModeBinding():
                         accel = k.prettyPrintKey(bi.stroke)

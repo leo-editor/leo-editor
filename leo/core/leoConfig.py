@@ -574,7 +574,6 @@ class ParserBaseClass(object):
             line = line.strip()
             if line and not g.match(line, 0, '#'):
                 name, bi = self.parseShortcutLine('*mode-setting*', line)
-                ### assert g.isShortcutInfo(bi), bi
                 if not name:
                     # An entry command: put it in the special *entry-commands* key.
                     d.add('*entry-commands*', bi)
@@ -677,7 +676,6 @@ class ParserBaseClass(object):
                 if bi is None: # Fix #718.
                     print('\nWarning: bad shortcut specifier: %r\n' % line)
                 else:
-                    ### assert g.isShortcutInfo(bi), bi
                     if bi and bi.stroke not in (None, 'none', 'None'):
                         self.doOneShortcut(bi, commandName, p)
                     else:
@@ -1808,7 +1806,6 @@ class LocalConfigManager(object):
             if bi is None:
                 return 'unknown setting', None
             else:
-                ### assert g.isShortcutInfo(bi)
                 return bi.path, bi.val
         else:
             # lm.readGlobalSettingsFiles is opening a settings file.
@@ -1830,9 +1827,6 @@ class LocalConfigManager(object):
             key = key.replace('&', '') # Allow '&' in names.
             aList = d.get(commandName, [])
             if aList: # A list of g.BindingIndo objects.
-                # 
-                ### for bi in aList:
-                    ### assert g.isShortcutInfo(bi), bi
                 # It's important to filter empty strokes here.
                 aList = [z for z in aList
                     if z.stroke and z.stroke.lower() != 'none']

@@ -130,7 +130,7 @@ class BoxTitle(BoxBasic):
 
     #@+node:ekr.20170428084207.511: *3* BoxTitle.make_contained_widget
     def make_contained_widget(self, contained_widget_arguments=None):
-        ### The *only* make_contained_widget (singular) in npyscreen.
+        # The *only* make_contained_widget (singular) in npyscreen.
         self._my_widgets = []
         if contained_widget_arguments:
             self._my_widgets.append(

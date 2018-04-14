@@ -120,22 +120,22 @@ def beautifyPythonTree(event):
 
 def compare_ast(node1, node2):
     return True
-    ### Can hang, for mysterious reasons.
-    # if type(node1) is not type(node2):
-        # return False
-    # if isinstance(node1, ast.AST):
-        # # Py 2/3: Use items, not itertool.iteritems.
-        # for k, v in vars(node1).items():
-            # if k in ('lineno', 'col_offset', 'ctx'):
-                # continue
-            # if not compare_ast(v, getattr(node2, k)):
-                # return False
-        # return True
-    # elif isinstance(node1, list):
-        # return all(itertools.starmap(compare_ast, zip(node1, node2)))
-            # # Py 2/3: Use zip, not itertools.izip.
-    # else:
-        # return node1 == node2
+    # Can hang, for mysterious reasons.
+        # if type(node1) is not type(node2):
+            # return False
+        # if isinstance(node1, ast.AST):
+            # # Py 2/3: Use items, not itertool.iteritems.
+            # for k, v in vars(node1).items():
+                # if k in ('lineno', 'col_offset', 'ctx'):
+                    # continue
+                # if not compare_ast(v, getattr(node2, k)):
+                    # return False
+            # return True
+        # elif isinstance(node1, list):
+            # return all(itertools.starmap(compare_ast, zip(node1, node2)))
+                # # Py 2/3: Use zip, not itertools.izip.
+        # else:
+            # return node1 == node2
 #@+node:ekr.20150524215322.1: *3* dump_tokens & dump_token
 def dump_tokens(tokens, verbose=True):
     last_line_number = 0

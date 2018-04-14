@@ -2113,8 +2113,6 @@ class LoadManager(object):
             valType=g.ShortcutInfo)
         for commandName in d.keys():
             for bi in d.get(commandName, []):
-                # This assert can fail if there is an exception in the ShortcutInfo ctor.
-                ### assert isinstance(bi, g.ShortcutInfo), bi
                 stroke = bi.stroke # This is canonicalized.
                 bi.commandName = commandName # Add info.
                 assert stroke
@@ -2139,7 +2137,6 @@ class LoadManager(object):
             valType=g.ShortcutInfo)
         for stroke in d.keys():
             for bi in d.get(stroke, []):
-                ### assert isinstance(bi, g.ShortcutInfo), bi
                 commandName = bi.commandName
                 if trace and verbose:
                     g.trace('uninvert %20s %s' % (stroke, commandName))
