@@ -160,7 +160,7 @@ def new(self, event=None, gui=None):
         gui=gui,
         previousSettings=leoApp.PreviousSettings(
             settingsDict=lm.globalSettingsDict,
-            shortcutsDict=lm.globalShortcutsDict,
+            shortcutsDict=lm.globalBindingsDict,
         ))    
     frame = c.frame
     g.app.unlockLog()

@@ -157,9 +157,9 @@ class BridgeController(object):
                 # that might contain myLeoSettings.leo.
         else:
             # Bug fix: 2012/11/26: create default global settings dicts.
-            settings_d, shortcuts_d = lm.createDefaultSettingsDicts()
+            settings_d, bindings_d = lm.createDefaultSettingsDicts()
             lm.globalSettingsDict = settings_d
-            lm.globalShortcutsDict = shortcuts_d
+            lm.globalBindingsDict = bindings_d
         self.createGui() # Create the gui *before* loading plugins.
         if self.verbose: self.reportDirectories()
         self.adjustSysPath()

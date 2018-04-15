@@ -1595,7 +1595,7 @@ class LoadManager(object):
         #
         self.globalSettingsDict = None
             # A g.TypedDict: the join of settings in leoSettings.leo & myLeoSettings.leo
-        self.globalShortcutsDict = None
+        self.globalBindingsDict = None
             # A g.TypedDictOfLists: the join of shortcuts in leoSettings.leo & myLeoSettings.leo.
         #
         # LoadManager ivars corresponding to user options...
@@ -1835,7 +1835,7 @@ class LoadManager(object):
             settings_d, junk_shortcuts_d = lm.computeLocalSettings(
                 c=theme_c,
                 settings_d=lm.globalSettingsDict,
-                shortcuts_d=lm.globalShortcutsDict,
+                bindings_d=lm.globalBindingsDict,
                 localFlag=False,
             )
             setting = settings_d.get_string_setting('theme-name')
@@ -1940,15 +1940,15 @@ class LoadManager(object):
         else:
             return 'D'
     #@+node:ekr.20120223062418.10421: *4* LM.computeLocalSettings
-    def computeLocalSettings(self, c, settings_d, shortcuts_d, localFlag):
+    def computeLocalSettings(self, c, settings_d, bindings_d, localFlag):
         '''
         Merge the settings dicts from c's outline into *new copies of*
-        settings_d and shortcuts_d.
+        settings_d and bindings_d.
         '''
-        # g.trace('%s\n%s\n%s' % (c.shortFileName(), settings_d, shortcuts_d))
+        # g.trace('%s\n%s\n%s' % (c.shortFileName(), settings_d, bindings_d))
         lm = self
         shortcuts_d2, settings_d2 = lm.createSettingsDicts(c, localFlag)
-        assert shortcuts_d
+        assert bindings_d
         assert settings_d
         if settings_d2:
             if g.app.trace_setting:
@@ -1961,19 +1961,19 @@ class LoadManager(object):
             settings_d = settings_d.copy()
             settings_d.update(settings_d2)
         if shortcuts_d2:
-            shortcuts_d = lm.mergeShortcutsDicts(c, shortcuts_d, shortcuts_d2, localFlag)
-        return settings_d, shortcuts_d
+            bindings_d = lm.mergeShortcutsDicts(c, bindings_d, shortcuts_d2, localFlag)
+        return settings_d, bindings_d
     #@+node:ekr.20121126202114.3: *4* LM.createDefaultSettingsDicts
     def createDefaultSettingsDicts(self):
-        '''Create lm.globalSettingsDict & lm.globalShortcutsDict.'''
+        '''Create lm.globalSettingsDict & lm.globalBindingsDict.'''
         settings_d = g.app.config.defaultsDict
         assert isinstance(settings_d, g.TypedDict), settings_d
         settings_d.setName('lm.globalSettingsDict')
-        shortcuts_d = g.TypedDictOfLists(
-            name='lm.globalShortcutsDict',
+        bindings_d = g.TypedDictOfLists(
+            name='lm.globalBindingsDict',
             keyType=type('s'),
             valType=g.BindingInfo)
-        return settings_d, shortcuts_d
+        return settings_d, bindings_d
     #@+node:ekr.20120214165710.10726: *4* LM.createSettingsDicts
     def createSettingsDicts(self, c, localFlag, theme=False):
         import leo.core.leoConfig as leoConfig
@@ -2003,14 +2003,14 @@ class LoadManager(object):
                 g.app.preReadFlag = False
             # Merge the settings from c into *copies* of the global dicts.
             d1, d2 = lm.computeLocalSettings(c,
-                lm.globalSettingsDict, lm.globalShortcutsDict, localFlag=True)
+                lm.globalSettingsDict, lm.globalBindingsDict, localFlag=True)
                     # d1 and d2 are copies.
             d1.setName(settingsName)
             d2.setName(shortcutsName)
         else:
             # Get the settings from the globals settings dicts.
             d1 = lm.globalSettingsDict.copy(settingsName)
-            d2 = lm.globalShortcutsDict.copy(shortcutsName)
+            d2 = lm.globalBindingsDict.copy(shortcutsName)
         return PreviousSettings(d1, d2)
     #@+node:ekr.20120214132927.10723: *4* LM.mergeShortcutsDicts & helpers
     def mergeShortcutsDicts(self, c, old_d, new_d, localFlag):
@@ -2201,17 +2201,17 @@ class LoadManager(object):
         old_commanders = g.app.commanders()
         commanders = [lm.openSettingsFile(path) for path in paths]
         commanders = [z for z in commanders if z]
-        settings_d, shortcuts_d = lm.createDefaultSettingsDicts()
+        settings_d, bindings_d = lm.createDefaultSettingsDicts()
         for c in commanders:
             # Merge the settings dicts from c's outline into
-            # *new copies of* settings_d and shortcuts_d.
-            settings_d, shortcuts_d = lm.computeLocalSettings(
-                c, settings_d, shortcuts_d, localFlag=False)
+            # *new copies of* settings_d and bindings_d.
+            settings_d, bindings_d = lm.computeLocalSettings(
+                c, settings_d, bindings_d, localFlag=False)
         # Adjust the name.
-        shortcuts_d.setName('lm.globalShortcutsDict')
+        bindings_d.setName('lm.globalBindingsDict')
         # g.trace('===== settings 1 keys:', len(settings_d.d.keys()))
         lm.globalSettingsDict = settings_d
-        lm.globalShortcutsDict = shortcuts_d
+        lm.globalBindingsDict = bindings_d
         # Add settings from --theme or @string theme-name files.
         # This must be done *after* reading myLeoSettigns.leo.
         theme_path = lm.computeThemeFilePath()
@@ -2220,7 +2220,7 @@ class LoadManager(object):
             if theme_c:
                 # Merge theme_c's settings into globalSettingsDict.
                 settings_d, junk_shortcuts_d = lm.computeLocalSettings(
-                    theme_c, settings_d, shortcuts_d, localFlag=False)
+                    theme_c, settings_d, bindings_d, localFlag=False)
                 lm.globalSettingsDict = settings_d
                 # Set global vars
                 g.app.theme_directory = g.os_path_dirname(theme_path)

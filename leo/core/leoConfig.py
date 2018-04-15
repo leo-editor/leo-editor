@@ -1511,7 +1511,7 @@ class LocalConfigManager(object):
             assert g.isTypedDictOfLists(self.shortcutsDict)
         else:
             self.settingsDict = d1 = lm.globalSettingsDict
-            self.shortcutsDict = d2 = lm.globalShortcutsDict
+            self.shortcutsDict = d2 = lm.globalBindingsDict
             assert d1 is None or g.isTypedDict(d1), d1
             assert d2 is None or g.isTypedDictOfLists(d2), d2
         # Define these explicitly to eliminate a pylint warning.
