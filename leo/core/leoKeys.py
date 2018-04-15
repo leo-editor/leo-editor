@@ -3085,17 +3085,16 @@ class KeyHandlerClass(object):
         k.resetCommandHistory()
     #@+node:ekr.20061031131434.126: *4* k.manufactureKeyPressForCommandName
     def manufactureKeyPressForCommandName(self, w, commandName):
-        '''Implement a command by passing a keypress to the gui.'''
+        '''
+        Implement a command by passing a keypress to the gui.
+        
+        **Only unit tests use this method.**
+        '''
         trace = False and not g.unitTesting
         c, k = self.c, self
         stroke = k.getStrokeForCommandName(commandName)
-        if not stroke:
-            shortcut = None
-        elif g.isStroke(stroke):
-            shortcut = stroke.s
-        else:
-            stroke = k.strokeFromSetting(stroke)
-            shortcut = stroke.s
+        assert g.isStroke(stroke), stroke.__class__.__name__
+        shortcut = stroke.s
         assert g.isString(shortcut)
         if trace and shortcut: g.trace(
             'shortcut', repr(shortcut), 'commandName', commandName)
