@@ -4468,13 +4468,6 @@ class KeyHandlerClass(object):
     if g.new_keys:
         
         pass
-        
-        ###
-        # def strokeFromSetting(self, binding):
-            # # Pylint gets confused by the multiple definitions.
-            # # pylint: disable=unexpected-keyword-arg
-            # # # pylint: disable=no-value-for-parameter
-            # return g.KeyStroke(binding=binding) if binding else None
 
     else:
 

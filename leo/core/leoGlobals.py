@@ -352,25 +352,26 @@ class KeyStroke(object):
         #@+node:ekr.20180414195401.2: *5* new_ks.__init__
         def __init__(self,
             binding = None, # User binding.
-            qt_char = None, # Input Qt char
-            qt_mods = None, # Input Qt mods.
+            char = None, # Input Qt char
+            mods = None, # Input Qt mods.
             s = None, # Legacy  Is this ever used????
         ):
             self.expected_mods = ('alt', 'command', 'control', 'meta', 'shift')
             self.s = None
             if s:
-                assert not binding and not qt_char and not qt_mods
-                g.trace(g.callers())
+                assert not binding and not char and not mods, (repr(mods), repr(char), repr(binding))
                 self.s = s
             elif binding:
-                assert not qt_char and not qt_mods and not s
+                assert not char and not mods and not s, (repr(mods), repr(char))
                 self.s = self.finalize_binding(binding)
             else:
-                assert binding and not s, repr(s)
-                for z in qt_mods or []:
+                assert not binding and not s, (repr(binding), repr(s))
+                mods = [z.lower() for z in mods]
+                for z in mods or []:
                     assert z in self.expected_mods, repr(z)
-                self.mods = qt_mods
-                self.s = self.finalize(qt_char)
+                self.mods = mods
+                self.s = self.finalize(char)
+                g.trace(self.s)
             if not g.isString(self.s):
                 g.trace('Bad call', g.callers())
         #@+node:ekr.20180415083158.1: *5* new_ks.finalize
@@ -401,7 +402,39 @@ class KeyStroke(object):
                 'pagedn': 'Next',
                 'rtarrow': 'Right',
                 'uparrow': 'Up',
+                ### From filter.create_key_event
+                'return': '\n',
+                '\r': '\n',
+                'backspace': 'BackSpace',
+                'backtab': 'Tab', # The shift mod will convert to 'Shift+Tab',
+                'del': 'Delete',
+                'ins': 'Insert',
             }
+            if g.isMac:
+                # Patch provided by resi147.
+                # See the thread: special characters in MacOSX, like '@'.
+                table = (
+                    ('Alt+/', '\\'),
+                    ('Alt+5', '['),
+                    ('Alt+6', ']'),
+                    ('Alt+7', '|'),
+                    ('Alt+8', '{'),
+                    ('Alt+9', '}'),
+                    ('Alt+e', '€'),
+                    ('Alt+l', '@'),
+                )
+                for a, b in table:
+                    d[a] = b
+                ### c does not exist here.
+                    # c = self.c
+                    # if c.config.getBool('replace-meta-with-alt', default=False):
+                        # table = (
+                            # ('Meta+','Alt+'),
+                            # ('Ctrl+Alt+', 'Alt+Ctrl+'),
+                            # # Shift already follows meta.
+                        # )
+                        # for z1, z2 in table:
+                            # s = s.replace(z1, z2)
             if s in (None, 'none'):
                 return ''
             if s.lower() in d:
@@ -446,17 +479,6 @@ class KeyStroke(object):
                     if i > -1:
                         s = s[:i] + s[i+len(target):]
                         break
-            return s
-        #@+node:ekr.20180414195401.9: *5* new_ks.toGuiChar (MERGE INTO FINALIZE)
-        def toGuiChar(self):
-            '''Replace special chars by the actual gui char.'''
-            # pylint: disable=undefined-loop-variable
-            # looks like a pylint bug
-            s = self.s.lower()
-            if s in ('\n', 'return'): s = '\n'
-            elif s in ('\t', 'tab'): s = '\t'
-            elif s in ('\b', 'backspace'): s = '\b'
-            elif s in ('.', 'period'): s = '.'
             return s
         #@-others
         #@-<< new KeyStroke methods >>
