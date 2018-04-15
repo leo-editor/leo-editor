@@ -4824,7 +4824,7 @@ class ModeInfo(object):
 
     __str__ = __repr__
     #@+others
-    #@+node:ekr.20120208064440.10193: *3*  ctor (ModeInfo)
+    #@+node:ekr.20120208064440.10193: *3* mode_i. ctor
     def __init__(self, c, name, aList):
         g.trace(name, aList)
         self.c = c
@@ -4836,7 +4836,7 @@ class ModeInfo(object):
         self.name = self.computeModeName(name)
         self.prompt = self.computeModePrompt(self.name)
         self.init(name, aList)
-    #@+node:ekr.20120208064440.10152: *3* computeModeName (ModeInfo)
+    #@+node:ekr.20120208064440.10152: *3* mode_i.computeModeName
     def computeModeName(self, name):
         s = name.strip().lower()
         j = s.find(' ')
@@ -4851,7 +4851,7 @@ class ModeInfo(object):
             # The prompt is everything after the prompt.
             s = s[: i]
         return s + '-mode'
-    #@+node:ekr.20120208064440.10156: *3* computeModePrompt (ModeInfo)
+    #@+node:ekr.20120208064440.10156: *3* mode_i.computeModePrompt
     def computeModePrompt(self, name):
         assert name == self.name
         s = 'enter-' + name.replace(' ', '-')
@@ -4862,7 +4862,7 @@ class ModeInfo(object):
         else:
             prompt = s
         return prompt
-    #@+node:ekr.20120208064440.10160: *3* createModeBindings (ModeInfo) (NOT USED)
+    #@+node:ekr.20120208064440.10160: *3* mode_i.createModeBindings
     def createModeBindings(self, w):
         '''Create mode bindings for w, a text widget.'''
         trace = False and not g.unitTesting
@@ -4899,7 +4899,7 @@ class ModeInfo(object):
                         stroke=stroke)
                     k.masterBindingsDict[modeName] = d2
                     if trace: g.trace(modeName, d2)
-    #@+node:ekr.20120208064440.10195: *3* createModeCommand (ModeInfo) (not used)
+    #@+node:ekr.20120208064440.10195: *3* mode_i.createModeCommand
     def createModeCommand(self):
         c = self.c
         key = 'enter-' + self.name.replace(' ', '-')
@@ -4910,7 +4910,7 @@ class ModeInfo(object):
         c.commandsDict[key] = f = enterModeCallback
         g.trace('(ModeInfo)', f.__name__, key,
             'len(c.commandsDict.keys())', len(list(c.commandsDict.keys())))
-    #@+node:ekr.20120208064440.10180: *3* enterMode (ModeInfo)
+    #@+node:ekr.20120208064440.10180: *3* mode_i.enterMode
     def enterMode(self):
         g.trace('(ModeInfo)')
         c, k = self.c, self.k
@@ -4918,7 +4918,7 @@ class ModeInfo(object):
             # Allow inner commands in the mode.
         event = None
         k.generalModeHandler(event, modeName=self.name)
-    #@+node:ekr.20120208064440.10153: *3* init (ModeInfo) (Can we check command names here??)
+    #@+node:ekr.20120208064440.10153: *3* mode_i.init
     def init(self, name, dataList):
         '''aList is a list of tuples (commandName,bi).'''
         trace = False and not g.unitTesting
@@ -4940,7 +4940,7 @@ class ModeInfo(object):
                     aList.extend(aList3)
                 aList.append(bi)
                 d[name] = aList
-    #@+node:ekr.20120208064440.10158: *3* initMode (ModeInfo)
+    #@+node:ekr.20120208064440.10158: *3* mode_i.initMode
     def initMode(self):
         trace = False and not g.unitTesting
         c, k = self.c, self.c.k
