@@ -903,9 +903,9 @@ class ParserBaseClass(object):
             if i > 0 and val[i - 1] in (' ', '\t'):
                 val = val[: i].strip()
         if g.new_keys:
-            stroke = k.strokeFromSetting(binding=val)
+            stroke = g.KeyStroke(binding=val) if val else None
         else:
-            stroke = k.strokeFromSetting(setting=val)
+            stroke = k.strokeFromSetting(binding=val)
         assert g.isStrokeOrNone(stroke), stroke
         bi = g.BindingInfo(kind=kind, nextMode=nextMode, pane=pane, stroke=stroke)
         if trace: g.trace('%25s %s' % (name, bi))

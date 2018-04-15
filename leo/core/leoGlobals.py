@@ -349,9 +349,7 @@ class KeyStroke(object):
         #@+<< new KeyStroke methods >>
         #@+node:ekr.20180414195346.1: *4* << new KeyStroke methods >>
         #@+others
-        #@+node:ekr.20180415082811.1: *5* new_ks.Birth
-        #@+others
-        #@+node:ekr.20180414195401.2: *6*  new_ks.__init__
+        #@+node:ekr.20180414195401.2: *5* new_ks.__init__
         def __init__(self,
             binding = None, # User binding.
             qt_char = None, # Input Qt char
@@ -373,21 +371,21 @@ class KeyStroke(object):
                 self.s = self.finalize(qt_char)
             if not g.isString(self.s):
                 g.trace('Bad call', g.callers())
-        #@+node:ekr.20180415083158.1: *6* new_ks.finalize
+        #@+node:ekr.20180415083158.1: *5* new_ks.finalize
         def finalize(self, s):
             
             s = self.finalize_char(s)
                 # May change self.mods.
             mods = ''.join(['%s+' % z.capitalize() for z in self.mods])
             return mods + s
-        #@+node:ekr.20180415082249.1: *6* new_ks.finalize_binding
+        #@+node:ekr.20180415082249.1: *5* new_ks.finalize_binding
         def finalize_binding(self, binding):
             
             self.mods = self.find_mods(binding)
             s = self.strip_mods(binding)
             g.trace('%30s: %25r ==> %20s:%r' % (g.caller(3), binding, self.mods or '', s))
             return self.finalize(s)
-        #@+node:ekr.20180415083926.1: *6* new_ks.finalize_char (Add dict)
+        #@+node:ekr.20180415083926.1: *5* new_ks.finalize_char (Add dict)
         def finalize_char(self, s):
             
             d = {} ### was self.tk_dict.get(s)
@@ -403,7 +401,7 @@ class KeyStroke(object):
                 return s.upper()
             else:
                 return s.lower()
-        #@+node:ekr.20180415081209.2: *6* new_ks.find_mods
+        #@+node:ekr.20180415081209.2: *5* new_ks.find_mods
         def find_mods(self, s):
             '''Return the list of all modifiers seen in s.'''
             s = s.lower()
@@ -424,7 +422,7 @@ class KeyStroke(object):
                             result.append(kind)
                             break
             return result
-        #@+node:ekr.20180415124853.1: *6* new_ks.strip_mods
+        #@+node:ekr.20180415124853.1: *5* new_ks.strip_mods
         def strip_mods(self, s):
             '''Remove all modifiers from s, without changing the case of s.'''
             table = ('alt', 'cmd', 'command', 'control', 'ctrl', 'meta', 'shift', 'shft')
@@ -436,7 +434,7 @@ class KeyStroke(object):
                         s = s[:i] + s[i+len(target):]
                         break
             return s
-        #@+node:ekr.20180414195401.9: *6* new_ks.toGuiChar (MERGE INTO FINALIZE)
+        #@+node:ekr.20180414195401.9: *5* new_ks.toGuiChar (MERGE INTO FINALIZE)
         def toGuiChar(self):
             '''Replace special chars by the actual gui char.'''
             # pylint: disable=undefined-loop-variable
@@ -448,14 +446,14 @@ class KeyStroke(object):
             elif s in ('.', 'period'): s = '.'
             return s
         #@-others
-        #@-others
         #@-<< new KeyStroke methods >>
     else:
         #@+<< old KeyStroke methods >>
         #@+node:ekr.20180414195326.1: *4* << old KeyStroke methods >>
         #@+others
         #@+node:ekr.20120204061120.10066: *5* old_ks.ctor
-        def __init__(self, s):
+        def __init__(self, binding):
+            s = binding
             trace = False and not g.unitTesting and s == 'name'
             if trace: g.trace('(KeyStroke)', s, g.callers())
             assert s and g.isString(s), repr(s)

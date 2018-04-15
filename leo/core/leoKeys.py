@@ -2196,9 +2196,9 @@ class KeyHandlerClass(object):
                 assert stroke.s, stroke
             else:
                 if g.new_keys:
-                    stroke = k.strokeFromSetting(binding=shortcut)
+                    stroke = g.KeyStroke(binding=shortcut) if shortcut else None
                 else:
-                    stroke = k.strokeFromSetting(setting=shortcut)
+                    stroke = k.strokeFromSetting(binding=shortcut)
             if trace:
                 tag = tag.split(' ')[-1]
                 g.trace('%7s %25r %17s %s' % (pane, stroke and stroke.s, tag, commandName))
@@ -3177,9 +3177,9 @@ class KeyHandlerClass(object):
         assert not g.isStroke(shortcut)
         if shortcut:
             if g.new_keys:
-                stroke = k.strokeFromSetting(binding=shortcut)
+                stroke = g.KeyStroke(binding=shortcut) if shortcut else None
             else:
-                stroke = k.strokeFromSetting(setting=shortcut)
+                stroke = k.strokeFromSetting(binding=shortcut)
         elif commandName.lower() == 'shortcut': # Causes problems.
             stroke = None
         elif is_local:
@@ -4468,15 +4468,19 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.184: *4* k.strokeFromSetting & helpers
     if g.new_keys:
         
-        def strokeFromSetting(self, binding):
-            # Pylint gets confused by the multiple definitions.
-            # pylint: disable=unexpected-keyword-arg
-            # # pylint: disable=no-value-for-parameter
-            return g.KeyStroke(binding=binding) if binding else None
+        pass
+        
+        ###
+        # def strokeFromSetting(self, binding):
+            # # Pylint gets confused by the multiple definitions.
+            # # pylint: disable=unexpected-keyword-arg
+            # # # pylint: disable=no-value-for-parameter
+            # return g.KeyStroke(binding=binding) if binding else None
 
     else:
 
-        def strokeFromSetting(self, setting):
+        def strokeFromSetting(self, binding):
+            setting = binding ###
             k = self
             trace = False and not g.unitTesting
             trace = trace and setting.lower().find('1') > -1
