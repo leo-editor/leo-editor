@@ -343,7 +343,7 @@ class KeyStroke(object):
     '''
     A class that represent any key stroke or binding.
     
-    ks.s is what used to be called the "canonicalized" spelling.
+    repr(self) is what used to be called the "canonicalized" spelling.
     '''
     if new_keys: # Can't use g.new_keys.
         #@+<< new KeyStroke methods >>
@@ -354,45 +354,58 @@ class KeyStroke(object):
             binding = None, # User binding.
             qt_char = None, # Input Qt char
             qt_mods = None, # Input Qt mods.
-            s = None, # Legacy
+            s = None, # Legacy  Is this ever used????
         ):
+            self.expected_mods = ('alt', 'command', 'control', 'meta', 'shift')
+            self.s = None
             if s:
                 assert not binding and not qt_char and not qt_mods
+                g.trace(g.callers())
                 self.s = s
             elif binding:
                 assert not qt_char and not qt_mods and not s
                 self.s = self.finalize_binding(binding)
             else:
                 assert binding and not s, repr(s)
-                # These are the expected modifiers from eventFilter.
                 for z in qt_mods or []:
-                    assert z in ('alt', 'command', 'control', 'meta', 'shift'), repr(z)
+                    assert z in self.expected_mods, repr(z)
                 self.mods = qt_mods
                 self.s = self.finalize(qt_char)
             if not g.isString(self.s):
                 g.trace('Bad call', g.callers())
         #@+node:ekr.20180415083158.1: *5* new_ks.finalize
         def finalize(self, s):
-            
+            trace = False and not g.unitTesting
+            s1 = s
             s = self.finalize_char(s)
                 # May change self.mods.
             mods = ''.join(['%s+' % z.capitalize() for z in self.mods])
+            if trace: g.trace('%20s:%-20s ==> %s' % (self.mods, s1, mods+s))
             return mods + s
         #@+node:ekr.20180415082249.1: *5* new_ks.finalize_binding
         def finalize_binding(self, binding):
             
             self.mods = self.find_mods(binding)
             s = self.strip_mods(binding)
-            g.trace('%30s: %25r ==> %20s:%r' % (g.caller(3), binding, self.mods or '', s))
+            # g.trace('%30s: %25r ==> %20s:%r' % (g.caller(3), binding, self.mods or '', s))
             return self.finalize(s)
-        #@+node:ekr.20180415083926.1: *5* new_ks.finalize_char (Add dict)
+        #@+node:ekr.20180415083926.1: *5* new_ks.finalize_char
         def finalize_char(self, s):
             
-            d = {} ### was self.tk_dict.get(s)
+            d = {
+                'bksp': 'BackSpace', # Dubious: should be '\b'
+                'dnarrow': 'Down',
+                'esc': 'Escape',
+                'ltarrow': 'Left',
+                'pageup': 'Prior',
+                'pagedn': 'Next',
+                'rtarrow': 'Right',
+                'uparrow': 'Up',
+            }
             if s in (None, 'none'):
                 return ''
-            if s in d:
-                return d.get(s)
+            if s.lower() in d:
+                return d.get(s.lower())
             if len(s) > 1 or not s.isalpha():
                 return s
             # Change case of single-character alphas.
@@ -1865,6 +1878,19 @@ def alert(message, c=None):
     if not g.unitTesting:
         g.es(message)
         g.app.gui.alert(c, message)
+#@+node:ekr.20180415144534.1: *4* g.assert_is
+def assert_is(obj, list_or_class, warn=True):
+    
+    if warn:
+        ok = isinstance(obj, list_or_class)
+        if not ok:
+            g.es_print('can not happen. %r: expected %s, got: %s' % (
+                obj, list_or_class, obj.__class__.__name__))
+            g.es_print(g.callers())
+        return ok
+    else:
+        assert isinstance(obj, list_or_class), (
+            obj, obj.__class__.__name__, g.callers())
 #@+node:ekr.20051023083258: *4* g.callers & g.caller & _callerName
 def callers(n=4, count=0, excludeCaller=True, verbose=False):
     '''

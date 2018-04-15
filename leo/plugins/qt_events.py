@@ -65,7 +65,7 @@ class LeoQtEventFilter(QtCore.QObject):
         self.ctagscompleter_onKey = None
     #@+node:ekr.20110605121601.18540: *3* filter.eventFilter
     def eventFilter(self, obj, event):
-        trace = (False or g.new_keys) and not g.unitTesting
+        trace = False and not g.unitTesting
         traceEvent = False # True: call self.traceEvent.
         traceKeys = True
         c, k = self.c, self.c.k
@@ -94,8 +94,11 @@ class LeoQtEventFilter(QtCore.QObject):
         tkKey, ch, ignore = self.toTkKey(event)
         if not ignore:
             binding = self.toBinding(tkKey)
-            stroke = g.KeyStroke(binding) if binding else None
-            aList = k.masterGuiBindingsDict.get(stroke, [])
+            if binding:
+                stroke = g.KeyStroke(binding)
+                aList = k.masterGuiBindingsDict.get(stroke, [])
+            else:
+                stroke, aList = None, []
                 # Keys are g.KeyStrokes.
         #
         # Part 4: Return if necessary.
@@ -115,6 +118,9 @@ class LeoQtEventFilter(QtCore.QObject):
         #
         if trace and traceKeys:
             g.trace('binding: %r, len(aList): %s' % (binding, len(aList)))
+            if 0:
+                for z in aList or []:
+                    print('  %s' % z.__class__.__name__)
         try:
             key_event = self.create_key_event(event, c, self.w, ch, tkKey, binding)
             k.masterKeyHandler(key_event)
@@ -285,8 +291,11 @@ class LeoQtEventFilter(QtCore.QObject):
             ch = ch.lower()
         if ch and ch in string.digits:
             replace_meta = g.isMac and c.config.getBool('replace-meta-with-alt', default=False)
-            if ('Alt' in mods or 'Control' in mods or (replace_meta and 'Meta' in mods)):
-                mods.append('Key')
+            if g.new_keys:
+                pass
+            else:
+                if ('Alt' in mods or 'Control' in mods or (replace_meta and 'Meta' in mods)):
+                    mods.append('Key')
         # *Do* allow bare mod keys, so they won't be passed on.
         tkKey = '%s%s%s' % ('-'.join(mods), mods and '-' or '', ch)
         if trace: g.trace(
@@ -357,9 +366,10 @@ class LeoQtEventFilter(QtCore.QObject):
     # Called only by tkKey.
 
     def char2tkName(self, ch):
-        val = self.char2tkNameDict.get(ch)
-        # g.trace(repr(ch),repr(val))
-        return val
+        if g.new_keys:
+            return ch
+        else:
+            return self.char2tkNameDict.get(ch)
     #@+node:ekr.20120204061120.10087: *4* filter.Common key construction helpers
     #@+node:ekr.20110605121601.18544: *5* filter.qtKey
     def qtKey(self, event):

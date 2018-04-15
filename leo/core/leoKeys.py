@@ -2195,8 +2195,9 @@ class KeyHandlerClass(object):
                 stroke = shortcut
                 assert stroke.s, stroke
             else:
+                assert shortcut, g.callers()
                 if g.new_keys:
-                    stroke = g.KeyStroke(binding=shortcut) if shortcut else None
+                    stroke = g.KeyStroke(binding=shortcut)
                 else:
                     stroke = k.strokeFromSetting(binding=shortcut)
             if trace:
@@ -3514,11 +3515,10 @@ class KeyHandlerClass(object):
     def getPaneBinding(self, stroke, w):
         trace = False and not g.unitTesting
         trace_dict = False
-        verbose = False
+        verbose = True
         k, w_name = self, self.c.widget_name(w)
         state = k.unboundKeyAction
-        if not g.isStroke(stroke):
-            g.trace('can not happen: not a stroke', repr(stroke), g.callers())
+        if not g.assert_is(stroke, g.KeyStroke):
             return None
         if trace: g.trace('===== w_name', repr(w_name), 'stroke', stroke,
             # 'w', w,
@@ -3544,7 +3544,6 @@ class KeyHandlerClass(object):
                 if d:
                     g.trace('d.get(%s)' % (stroke))
                     g.trace(d.get(stroke))
-
             if (
                 # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
                 name and w_name.startswith(name) or
@@ -4539,8 +4538,11 @@ class KeyHandlerClass(object):
                             last = last.lower()
                     # New in Leo 4.4.2: Alt-2 is not a key event!
                     # New in Leo 5.3: 2016/04/12: a major bug fix, with new unit test.
-                    if (cmd or ctrl or alt or shift) and last.isdigit():
-                        last = 'Key-' + last
+                    if g.new_keys:
+                        pass
+                    else:
+                        if (cmd or ctrl or alt or shift) and last.isdigit():
+                            last = 'Key-' + last
             else:
                 # Translate from a made-up (or lowercase) name to 'official' Tk binding name.
                 # This is a *one-way* translation, done only here.

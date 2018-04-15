@@ -21582,32 +21582,46 @@ if 0: # Test 2
     g.app.unitTestDict[commandName] = False
     k.manufactureKeyPressForCommandName(w,commandName)
     assert g.app.unitTestDict.get(commandName)
-#@+node:ekr.20100131171342.5608: *4* @test k.strokeFromSetting
-table = (
-    ('Key-1','1'), # 2016/04/12
-    ('key-1','1'), # 2016/04/12
+#@+node:ekr.20100131171342.5608: *4* @test k.strokeFromSetting or g.KeyStroke
+table = [
     ('1', '1'), # 2016/04/12
     ('a','a'),
     ('A','a'),
     ('Alt-a','Alt+a'),
     ('Alt-A','Alt+a'),
     ('Alt-Shift-a','Alt+A'),
-    ('Alt-=','Alt+equal'),
-    ('Alt-+','Alt+plus'),
     # We can no longer igtnore the shift.
     # ('Alt-Shift++','Alt+plus'), # Ignore the shift.
-    ('Alt--','Alt+minus'),
     ('Shift-a','A'),
     ('Shift-A','A'),
     ('RtArrow','Right'),
     ('Shift-RtArrow','Shift+Right'),
-    ('Ctrl-RtArrow','Ctrl+Right'),
-    ('Control-Right','Ctrl+Right'),
     ('PageUp','Prior'), ('Prior','Prior'),('Shift-PageUp','Shift+Prior'),
     ('PageDn','Next'),('Next','Next'),('Shift-Next','Shift+Next'),
-)
+]
+if g.new_keys:
+   table.extend([
+        ('Alt-=','Alt+='),
+        ('Alt-+','Alt++'),
+        ('Alt--','Alt+-'),
+        ('Ctrl-RtArrow','Control+Right'),
+        ('Control-Right','Control+Right'),
+    ])
+else:
+    table.extend([
+        ('Key-1','1'), ('key+1','1'),
+        ('Alt-=','Alt+equal'),
+        ('Alt-+','Alt+plus'),
+        ('Alt--','Alt+minus'),
+        ('Ctrl-RtArrow','Ctrl+Right'),
+        ('Control-Right','Ctrl+Right'),
+    ])
 for setting, result in table:
-    val = c.k.strokeFromSetting(setting)
+    if g.new_keys:
+        stroke = g.KeyStroke(binding=setting)
+        val = stroke.s
+    else:
+        val = c.k.strokeFromSetting(setting)
     assert val==result,'Expected %s, Got %s' % (result,val)
 #@+node:ekr.20100131171342.5609: *4* @test zz end of leoKeys tests
 # Print does not work: it is redirected.
