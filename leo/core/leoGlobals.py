@@ -347,62 +347,78 @@ class KeyStroke(object):
         #@+<< new KeyStroke methods >>
         #@+node:ekr.20180414195346.1: *4* << new KeyStroke methods >>
         #@+others
-        #@+node:ekr.20180414195401.2: *5*  new_ks.ctor
-        def __init__(self, s):
-            trace = False and not g.unitTesting and s == 'name'
-            if trace: g.trace('(KeyStroke)', s, g.callers())
-            assert s and g.isString(s), repr(s)
-            self.s = s
-        #@+node:ekr.20180414195401.3: *5*  Special methods
-        #@+node:ekr.20180414195401.4: *6* new_ks.__hash__ (REVISE)
-        # Allow KeyStroke objects to be keys in dictionaries.
+        #@+node:ekr.20180415082811.1: *5* new_ks.Birth
+        #@+others
+        #@+node:ekr.20180414195401.2: *6*  new_ks.__init__
+        def __init__(self,
+            binding = None, # User binding.
+            qt_char = None, # Input Qt char
+            qt_mods = None, # Input Qt mods.
+            s = None, # Legacy
+        ):
+            if s:
+                assert not binding and not qt_char and not qt_mods
+                self.s = s
+            elif binding:
+                assert not qt_char and not qt_mods and not s
+                self.s = self.finalize_binding(binding)
+            else:
+                assert binding and not s, repr(s)
+                # These are the expected modifiers from eventFilter.
+                for z in qt_mods or []:
+                    assert z in ('alt', 'command', 'control', 'meta', 'shift'), repr(z)
+                self.mods = qt_mods
+                self.s = self.finalize(qt_char)
+            if not g.isString(self.s):
+                g.trace('Bad call', g.callers())
+        #@+node:ekr.20180415081209.2: *6* new_ks.add_mod
+        def add_mod(self, aList, s):
+            
+            s = s.lower()
+            kind = aList[0]
+            for mod in aList:
+                for suffix in '+-':
+                    if s.find(mod+suffix) > -1:
+                        s = s.replace(mod+suffix,'')
+                        self.mods.append(kind)
+                        break
+                #else: g.trace('unexpected mod: %r, s: %r' % (mod, s))
+            return s
+        #@+node:ekr.20180415083158.1: *6* new_ks.finalize
+        def finalize(self, s):
+            
+            s = self.finalize_char(s)
+                # May change self.mods.
+            mods = ''.join(['%s+' % z.capitalize() for z in self.mods])
+            return mods + s
+        #@+node:ekr.20180415083926.1: *6* new_ks.finalize_char (Add dict)
+        def finalize_char(self, s):
+            
+            d = {} ### was self.tk_dict.get(s)
+            if s in (None, 'none'):
+                return ''
+            if s in d:
+                return d.get(s)
+            if len(s) > 1 or not s.isalpha():
+                return s
+            # Change case of single-character alphas.
+            if 'shift' in self.mods:
+                self.mods.remove('shift')
+                return s.upper()
+            else:
+                return s.lower()
+        #@+node:ekr.20180415082249.1: *6* new_ks.finalize_binding
+        def finalize_binding(self, binding):
 
-        def __hash__(self):
-            return self.s.__hash__() if self.s else 0
-        #@+node:ekr.20180414195401.5: *6* new_ks.__repr___ & __str__
-        def __str__(self):
-            return '<KeyStroke: %s>' % (repr(self.s))
-
-        __repr__ = __str__
-        #@+node:ekr.20180414195401.6: *6* new_ks.rich comparisons
-        #@+at All these must be defined in order to say, for example:
-        #     for key in sorted(d)
-        # where the keys of d are KeyStroke objects.
-        #@@c
-
-        def __eq__(self, other):
-            if not other: return False
-            elif hasattr(other, 's'): return self.s == other.s
-            else: return self.s == other
-
-        def __lt__(self, other):
-            if not other: return False
-            elif hasattr(other, 's'): return self.s < other.s
-            else: return self.s < other
-
-        def __le__(self, other): return self.__lt__(other) or self.__eq__(other)
-
-        def __ne__(self, other): return not self.__eq__(other)
-
-        def __gt__(self, other): return not self.__lt__(other) and not self.__eq__(other)
-
-        def __ge__(self, other): return not self.__lt__(other)
-        #@+node:ekr.20180414195401.7: *5* new_ks.find, lower & startswith
-        # These may go away later, but for now they make conversion of string strokes easier.
-
-        def find(self, pattern):
-            return self.s.find(pattern)
-
-        def lower(self):
-            return self.s.lower()
-
-        def startswith(self, s):
-            return self.s.startswith(s)
-        #@+node:ekr.20180414195401.8: *5* new_ks.isFKey
-        def isFKey(self):
-            s = self.s.lower()
-            return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
-        #@+node:ekr.20180414195401.9: *5* new_ks.toGuiChar
+            self.mods, s = [], binding
+            s = self.add_mod(['alt'], s)
+            s = self.add_mod(['command', 'cmd'], s)
+            s = self.add_mod(['ctrl', 'control'], s)
+            s = self.add_mod(['meta'], s)
+            s = self.add_mod(['shift', 'shft'], s)
+            # g.trace('%30s: %25r ==> %20s:%r' % (g.caller(3), binding, self.mods or '', s))
+            return self.finalize(s)
+        #@+node:ekr.20180414195401.9: *6* new_ks.toGuiChar (MERGE INTO FINALIZE)
         def toGuiChar(self):
             '''Replace special chars by the actual gui char.'''
             # pylint: disable=undefined-loop-variable
@@ -414,66 +430,18 @@ class KeyStroke(object):
             elif s in ('.', 'period'): s = '.'
             return s
         #@-others
+        #@-others
         #@-<< new KeyStroke methods >>
     else:
         #@+<< old KeyStroke methods >>
         #@+node:ekr.20180414195326.1: *4* << old KeyStroke methods >>
         #@+others
-        #@+node:ekr.20120204061120.10066: *5*  old_ks.ctor
+        #@+node:ekr.20120204061120.10066: *5* old_ks.ctor
         def __init__(self, s):
             trace = False and not g.unitTesting and s == 'name'
             if trace: g.trace('(KeyStroke)', s, g.callers())
             assert s and g.isString(s), repr(s)
             self.s = s
-        #@+node:ekr.20120204061120.10068: *5*  Special methods
-        #@+node:ekr.20120203053243.10118: *6* old_ks.__hash__
-        # Allow KeyStroke objects to be keys in dictionaries.
-
-        def __hash__(self):
-            return self.s.__hash__() if self.s else 0
-        #@+node:ekr.20120204061120.10067: *6* old_ks.__repr___ & __str__
-        def __str__(self):
-            return '<KeyStroke: %s>' % (repr(self.s))
-
-        __repr__ = __str__
-        #@+node:ekr.20120203053243.10117: *6* old_ks.rich comparisons
-        #@+at All these must be defined in order to say, for example:
-        #     for key in sorted(d)
-        # where the keys of d are KeyStroke objects.
-        #@@c
-
-        def __eq__(self, other):
-            if not other: return False
-            elif hasattr(other, 's'): return self.s == other.s
-            else: return self.s == other
-
-        def __lt__(self, other):
-            if not other: return False
-            elif hasattr(other, 's'): return self.s < other.s
-            else: return self.s < other
-
-        def __le__(self, other): return self.__lt__(other) or self.__eq__(other)
-
-        def __ne__(self, other): return not self.__eq__(other)
-
-        def __gt__(self, other): return not self.__lt__(other) and not self.__eq__(other)
-
-        def __ge__(self, other): return not self.__lt__(other)
-        #@+node:ekr.20120203053243.10124: *5* old_ks.find, lower & startswith
-        # These may go away later, but for now they make conversion of string strokes easier.
-
-        def find(self, pattern):
-            return self.s.find(pattern)
-
-        def lower(self):
-            return self.s.lower()
-
-        def startswith(self, s):
-            return self.s.startswith(s)
-        #@+node:ekr.20120203053243.10121: *5* old_ks.isFKey
-        def isFKey(self):
-            s = self.s.lower()
-            return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
         #@+node:ekr.20120203053243.10125: *5* old_ks.toGuiChar
         def toGuiChar(self):
             '''Replace special chars by the actual gui char.'''
@@ -487,7 +455,59 @@ class KeyStroke(object):
             return s
         #@-others
         #@-<< old KeyStroke methods >>
+    #@+<< common KeyStroke methods >>
+    #@+node:ekr.20180415084824.1: *4* << common KeyStroke methods >>
+    #@+others
+    #@+node:ekr.20120203053243.10117: *5* old_ks.__eq__, etc
+    #@+at All these must be defined in order to say, for example:
+    #     for key in sorted(d)
+    # where the keys of d are KeyStroke objects.
+    #@@c
 
+    def __eq__(self, other):
+        if not other: return False
+        elif hasattr(other, 's'): return self.s == other.s
+        else: return self.s == other
+
+    def __lt__(self, other):
+        if not other: return False
+        elif hasattr(other, 's'): return self.s < other.s
+        else: return self.s < other
+
+    def __le__(self, other): return self.__lt__(other) or self.__eq__(other)
+
+    def __ne__(self, other): return not self.__eq__(other)
+
+    def __gt__(self, other): return not self.__lt__(other) and not self.__eq__(other)
+
+    def __ge__(self, other): return not self.__lt__(other)
+    #@+node:ekr.20120203053243.10118: *5* old_ks.__hash__
+    # Allow KeyStroke objects to be keys in dictionaries.
+
+    def __hash__(self):
+        return self.s.__hash__() if self.s else 0
+    #@+node:ekr.20120204061120.10067: *5* old_ks.__repr___ & __str__
+    def __str__(self):
+        return '<KeyStroke: %s>' % (repr(self.s))
+
+    __repr__ = __str__
+    #@+node:ekr.20120203053243.10124: *5* old_ks.find, lower & startswith
+    # These may go away later, but for now they make conversion of string strokes easier.
+
+    def find(self, pattern):
+        return self.s.find(pattern)
+
+    def lower(self):
+        return self.s.lower()
+
+    def startswith(self, s):
+        return self.s.startswith(s)
+    #@+node:ekr.20120203053243.10121: *5* old_ks.isFKey
+    def isFKey(self):
+        s = self.s.lower()
+        return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
+    #@-others
+    #@-<< common KeyStroke methods >>
 
 def isStroke(obj):
     return isinstance(obj, KeyStroke)

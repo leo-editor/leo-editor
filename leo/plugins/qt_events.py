@@ -361,11 +361,6 @@ class LeoQtEventFilter(QtCore.QObject):
         # g.trace(repr(ch),repr(val))
         return val
     #@+node:ekr.20120204061120.10087: *4* filter.Common key construction helpers
-    #@+node:ekr.20110605121601.18541: *5* filter.isSpecialOverride
-    def isSpecialOverride(self, tkKey, ch):
-        '''Return True if tkKey is a special Tk key name.
-        '''
-        return tkKey or ch in self.flashers
     #@+node:ekr.20110605121601.18544: *5* filter.qtKey
     def qtKey(self, event):
         '''

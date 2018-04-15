@@ -4460,92 +4460,102 @@ class KeyHandlerClass(object):
         val = s if len(s) == 1 else ''
         if trace: g.trace(repr(stroke), repr(val)) # 'shift',shift,
         return val
-    #@+node:ekr.20061031131434.184: *4* k.strokeFromSetting (changed in Leo 5.3)
-    def strokeFromSetting(self, setting):
-        k = self
-        trace = False and not g.unitTesting
-        trace = trace and setting.lower().find('1') > -1
-        verbose = False
-        if not setting:
-            return None
-        assert g.isString(setting)
-        s = g.stripBrackets(setting.strip())
-        #@+<< define cmd, ctrl, alt, shift >>
-        #@+node:ekr.20061031131434.185: *5* << define cmd, ctrl, alt, shift >>
-        s2 = s.lower()
-        cmd = s2.find("cmd") >= 0 or s2.find("command") >= 0
-        ctrl = s2.find("control") >= 0 or s2.find("ctrl") >= 0
-        alt = s2.find("alt") >= 0
-        shift = s2.find("shift") >= 0 or s2.find("shft") >= 0
-        meta = s2.find("meta") >= 0
-        #@-<< define cmd, ctrl, alt, shift >>
-        if k.swap_mac_keys and g.isMac:
-            #@+<< swap cmd and ctrl keys >>
-            #@+node:ekr.20061031131434.186: *5* << swap cmd and ctrl keys >>
-            if ctrl and not cmd:
-                cmd = True; ctrl = False
-            if alt and not ctrl:
-                ctrl = True; alt = False
-            #@-<< swap cmd and ctrl keys >>
-        #@+<< convert minus signs to plus signs >>
-        #@+node:ekr.20061031131434.187: *5* << convert minus signs to plus signs >>
-        # Replace all minus signs by plus signs, except a trailing minus:
-        if s.endswith('-'):
-            s = s[: -1].replace('-', '+') + '-'
-        else:
-            s = s.replace('-', '+')
-        #@-<< convert minus signs to plus signs >>
-        #@+<< compute the last field >>
-        #@+node:ekr.20061031131434.188: *5* << compute the last field >>
-        if s.endswith('+'):
-            last = '+'
-        else:
-            fields = s.split('+') # Don't lower this field.
-            last = fields and fields[-1]
-            if not last:
-                if not g.app.menuWarningsGiven:
-                    g.pr("bad shortcut specifier:", repr(s), repr(setting))
-                    g.trace(g.callers())
-                return None
-        if len(last) == 1:
-            last2 = k.guiBindNamesDict.get(last) # Fix new bug introduced in 4.4b2.
-            if last2:
-                last = last2
-            else:
-                if last.isalpha():
-                    if shift:
-                        last = last.upper()
-                        shift = False # It is Ctrl-A, not Ctrl-Shift-A.
-                    else:
-                        last = last.lower()
-                # New in Leo 4.4.2: Alt-2 is not a key event!
-                # New in Leo 5.3: 2016/04/12: a major bug fix, with new unit test.
-                if (cmd or ctrl or alt or shift) and last.isdigit():
-                    last = 'Key-' + last
-        else:
-            # Translate from a made-up (or lowercase) name to 'official' Tk binding name.
-            # This is a *one-way* translation, done only here.
-            d = k.settingsNameDict
-            last = d.get(last.lower(), last)
-        #@-<< compute the last field >>
-        #@+<< compute shortcut >>
-        #@+node:ekr.20061031131434.189: *5* << compute shortcut >>
-        table = (
-            (alt, 'Alt+'),
-            (ctrl, 'Ctrl+'),
-            (cmd, 'Command+'),
-            (meta, 'Meta+'),
-            (shift, 'Shift+'),
-            (True, last),
-        )
-        # new in 4.4b3: convert all characters to unicode first.
-        shortcut = ''.join([g.toUnicode(val) for flag, val in table if flag])
-        #@-<< compute shortcut >>
-        if trace and verbose:
-            g.trace('%20s %s' % (setting, shortcut), g.callers())
-        return g.KeyStroke(shortcut) if shortcut else None
+    #@+node:ekr.20061031131434.184: *4* k.strokeFromSetting & helpers
+    if g.new_keys:
+        
+        def strokeFromSetting(self, binding):
+            # Pylint gets confused by the multiple definitions.
+            # pylint: disable=unexpected-keyword-arg
+            # # pylint: disable=no-value-for-parameter
+            return g.KeyStroke(binding=binding) if binding else None
 
-    canonicalizeShortcut = strokeFromSetting # For compatibility.
+    else:
+
+        def strokeFromSetting(self, setting):
+            k = self
+            trace = False and not g.unitTesting
+            trace = trace and setting.lower().find('1') > -1
+            verbose = False
+            if not setting:
+                return None
+            assert g.isString(setting)
+            s = g.stripBrackets(setting.strip())
+            #@+<< define cmd, ctrl, alt, shift >>
+            #@+node:ekr.20061031131434.185: *5* << define cmd, ctrl, alt, shift >>
+            s2 = s.lower()
+            cmd = s2.find("cmd") >= 0 or s2.find("command") >= 0
+            ctrl = s2.find("control") >= 0 or s2.find("ctrl") >= 0
+            alt = s2.find("alt") >= 0
+            shift = s2.find("shift") >= 0 or s2.find("shft") >= 0
+            meta = s2.find("meta") >= 0
+            #@-<< define cmd, ctrl, alt, shift >>
+            if k.swap_mac_keys and g.isMac:
+                #@+<< swap cmd and ctrl keys >>
+                #@+node:ekr.20061031131434.186: *5* << swap cmd and ctrl keys >>
+                if ctrl and not cmd:
+                    cmd = True; ctrl = False
+                if alt and not ctrl:
+                    ctrl = True; alt = False
+                #@-<< swap cmd and ctrl keys >>
+            #@+<< convert minus signs to plus signs >>
+            #@+node:ekr.20061031131434.187: *5* << convert minus signs to plus signs >>
+            # Replace all minus signs by plus signs, except a trailing minus:
+            if s.endswith('-'):
+                s = s[: -1].replace('-', '+') + '-'
+            else:
+                s = s.replace('-', '+')
+            #@-<< convert minus signs to plus signs >>
+            #@+<< compute the last field >>
+            #@+node:ekr.20061031131434.188: *5* << compute the last field >>
+            if s.endswith('+'):
+                last = '+'
+            else:
+                fields = s.split('+') # Don't lower this field.
+                last = fields and fields[-1]
+                if not last:
+                    if not g.app.menuWarningsGiven:
+                        g.pr("bad shortcut specifier:", repr(s), repr(setting))
+                        g.trace(g.callers())
+                    return None
+            if len(last) == 1:
+                last2 = k.guiBindNamesDict.get(last) # Fix new bug introduced in 4.4b2.
+                if last2:
+                    last = last2
+                else:
+                    if last.isalpha():
+                        if shift:
+                            last = last.upper()
+                            shift = False # It is Ctrl-A, not Ctrl-Shift-A.
+                        else:
+                            last = last.lower()
+                    # New in Leo 4.4.2: Alt-2 is not a key event!
+                    # New in Leo 5.3: 2016/04/12: a major bug fix, with new unit test.
+                    if (cmd or ctrl or alt or shift) and last.isdigit():
+                        last = 'Key-' + last
+            else:
+                # Translate from a made-up (or lowercase) name to 'official' Tk binding name.
+                # This is a *one-way* translation, done only here.
+                d = k.settingsNameDict
+                last = d.get(last.lower(), last)
+            #@-<< compute the last field >>
+            #@+<< compute shortcut >>
+            #@+node:ekr.20061031131434.189: *5* << compute shortcut >>
+            table = (
+                (alt, 'Alt+'),
+                (ctrl, 'Ctrl+'),
+                (cmd, 'Command+'),
+                (meta, 'Meta+'),
+                (shift, 'Shift+'),
+                (True, last),
+            )
+            # new in 4.4b3: convert all characters to unicode first.
+            shortcut = ''.join([g.toUnicode(val) for flag, val in table if flag])
+            #@-<< compute shortcut >>
+            if trace and verbose:
+                g.trace('%20s %s' % (setting, shortcut), g.callers())
+            return g.KeyStroke(shortcut) if shortcut else None
+        
+        canonicalizeShortcut = strokeFromSetting # For compatibility.
     #@+node:ekr.20061031131434.180: *4* k.traceBinding (not used)
     def traceBinding(self, bi, shortcut, w):
         k = self; c = k.c; gui = g.app.gui
