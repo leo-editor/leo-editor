@@ -3085,7 +3085,7 @@ class KeyHandlerClass(object):
         '''Implement a command by passing a keypress to the gui.'''
         trace = False and not g.unitTesting
         c, k = self.c, self
-        stroke = k.getShortcutForCommandName(commandName)
+        stroke = k.getStrokeForCommandName(commandName)
         if not stroke:
             shortcut = None
         elif g.isStroke(stroke):
@@ -4317,10 +4317,11 @@ class KeyHandlerClass(object):
                 d[bi.commandName] = shortcutList
         return d
     #@+node:ekr.20061031131434.179: *4* k.getShortcutForCommand/Name
-    def getShortcutForCommandName(self, commandName):
+    def getStrokeForCommandName(self, commandName):
         k = self; c = k.c
         command = c.commandsDict.get(commandName)
         if command:
+            ### for stroke, aList in k.bindingsDict.items():
             for stroke in k.bindingsDict:
                 assert g.isStroke(stroke), repr(stroke)
                 aList = k.bindingsDict.get(stroke, [])
@@ -4329,16 +4330,17 @@ class KeyHandlerClass(object):
                         return stroke
         return None
 
-    def getShortcutForCommand(self, command):
-        k = self
-        if command:
-            for stroke in k.bindingsDict:
-                assert g.isStroke(stroke), repr(stroke)
-                bi_list = k.bindingsDict.get(stroke, [])
-                for bi in bi_list:
-                    if bi.commandName == command.__name__:
-                        return stroke
-        return None
+    ### Not used
+        # def getShortcutForCommand(self, command):
+            # k = self
+            # if command:
+                # for stroke in k.bindingsDict:
+                    # assert g.isStroke(stroke), repr(stroke)
+                    # bi_list = k.bindingsDict.get(stroke, [])
+                    # for bi in bi_list:
+                        # if bi.commandName == command.__name__:
+                            # return stroke
+            # return None
     #@+node:ekr.20090518072506.8494: *4* k.isFKey
     def isFKey(self, stroke):
         # k = self

@@ -707,7 +707,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
 
             name = mungeName(label)
             # Prepend the shortcut if it exists:
-            stroke = k.getShortcutForCommandName(cmd_name)
+            stroke = k.getStrokeForCommandName(cmd_name)
             if stroke:
                 label = '%s:  %s' % (label, k.prettyPrintKey(stroke))
             if 1: # Not bad.
@@ -798,7 +798,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                     'set-find-suboutline-only',
                 )
                 for cmd_name in table:
-                    stroke = c.k.getShortcutForCommandName(cmd_name)
+                    stroke = c.k.getStrokeForCommandName(cmd_name)
                     # if not stroke: g.trace('missing',cmd_name)
                     if stroke:
                         d[stroke.s] = cmd_name

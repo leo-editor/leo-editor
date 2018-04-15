@@ -338,7 +338,7 @@ class GeneralSetting(object):
 
 def isGeneralSetting(obj):
     return isinstance(obj, GeneralSetting)
-#@+node:ekr.20120201164453.10090: *3* class g.KeyStroke & isStroke/OrNone (To be improved)
+#@+node:ekr.20120201164453.10090: *3* class g.KeyStroke & isStroke/OrNone
 class KeyStroke(object):
     '''A class that announces that its contents has been canonicalized by k.strokeFromSetting.
 
@@ -1425,7 +1425,7 @@ class BindingInfo(object):
     #@+node:ekr.20120129040823.10254: *4* bi.__init__
     def __init__(self, kind, commandName='', func=None, nextMode=None, pane=None, stroke=None):
         trace = False and commandName == 'new' and not g.unitTesting
-        if not (stroke is None or g.isStroke(stroke)):
+        if not g.isStrokeOrNone(stroke):
             g.trace('***** (BindingInfo) oops', repr(stroke))
         self.kind = kind
         self.commandName = commandName
