@@ -4329,18 +4329,6 @@ class KeyHandlerClass(object):
                     if bi.commandName == commandName:
                         return stroke
         return None
-
-    ### Not used
-        # def getShortcutForCommand(self, command):
-            # k = self
-            # if command:
-                # for stroke in k.bindingsDict:
-                    # assert g.isStroke(stroke), repr(stroke)
-                    # bi_list = k.bindingsDict.get(stroke, [])
-                    # for bi in bi_list:
-                        # if bi.commandName == command.__name__:
-                            # return stroke
-            # return None
     #@+node:ekr.20090518072506.8494: *4* k.isFKey
     def isFKey(self, stroke):
         # k = self
