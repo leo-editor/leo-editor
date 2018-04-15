@@ -369,19 +369,6 @@ class KeyStroke(object):
                 self.s = self.finalize(qt_char)
             if not g.isString(self.s):
                 g.trace('Bad call', g.callers())
-        #@+node:ekr.20180415081209.2: *6* new_ks.add_mod
-        def add_mod(self, aList, s):
-            
-            s = s.lower()
-            kind = aList[0]
-            for mod in aList:
-                for suffix in '+-':
-                    if s.find(mod+suffix) > -1:
-                        s = s.replace(mod+suffix,'')
-                        self.mods.append(kind)
-                        break
-                #else: g.trace('unexpected mod: %r, s: %r' % (mod, s))
-            return s
         #@+node:ekr.20180415083158.1: *6* new_ks.finalize
         def finalize(self, s):
             
@@ -389,6 +376,13 @@ class KeyStroke(object):
                 # May change self.mods.
             mods = ''.join(['%s+' % z.capitalize() for z in self.mods])
             return mods + s
+        #@+node:ekr.20180415082249.1: *6* new_ks.finalize_binding ***
+        def finalize_binding(self, binding):
+            
+            self.mods = self.find_mods(binding)
+            s = self.strip_mods(binding)
+            # g.trace('%30s: %25r ==> %20s:%r' % (g.caller(3), binding, self.mods or '', s))
+            return self.finalize(s)
         #@+node:ekr.20180415083926.1: *6* new_ks.finalize_char (Add dict)
         def finalize_char(self, s):
             
@@ -405,17 +399,39 @@ class KeyStroke(object):
                 return s.upper()
             else:
                 return s.lower()
-        #@+node:ekr.20180415082249.1: *6* new_ks.finalize_binding
-        def finalize_binding(self, binding):
-
-            self.mods, s = [], binding
-            s = self.add_mod(['alt'], s)
-            s = self.add_mod(['command', 'cmd'], s)
-            s = self.add_mod(['ctrl', 'control'], s)
-            s = self.add_mod(['meta'], s)
-            s = self.add_mod(['shift', 'shft'], s)
-            # g.trace('%30s: %25r ==> %20s:%r' % (g.caller(3), binding, self.mods or '', s))
-            return self.finalize(s)
+        #@+node:ekr.20180415081209.2: *6* new_ks.find_mods
+        def find_mods(self, s):
+            '''Return the list of all modifiers seen in s.'''
+            s = s.lower()
+            table = (
+                ['alt'],
+                ['command', 'cmd'],
+                ['ctrl', 'control'],
+                ['meta'],
+                ['shift', 'shft'],
+            )
+            result = []
+            for aList in table:
+                kind = aList[0]
+                for mod in aList:
+                    for suffix in '+-':
+                        if s.find(mod+suffix) > -1:
+                            s = s.replace(mod+suffix,'')
+                            result.append(kind)
+                            break
+            return result
+        #@+node:ekr.20180415124853.1: *6* new_ks.strip_mods
+        def strip_mods(self, s):
+            '''Remove all modifiers from s, without changing the case of s.'''
+            table = ('alt', 'cmd', 'command', 'control', 'ctrl', 'meta', 'shift', 'shft')
+            for mod in table:
+                for suffix in '+-':
+                    target = mod+suffix
+                    i = s.lower().find(target)
+                    if i > -1:
+                        s = s[:i] + s[:i+len(target)]
+                        break
+            return s
         #@+node:ekr.20180414195401.9: *6* new_ks.toGuiChar (MERGE INTO FINALIZE)
         def toGuiChar(self):
             '''Replace special chars by the actual gui char.'''
