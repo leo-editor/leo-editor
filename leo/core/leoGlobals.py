@@ -340,7 +340,11 @@ def isGeneralSetting(obj):
     return isinstance(obj, GeneralSetting)
 #@+node:ekr.20120201164453.10090: *3* class g.KeyStroke & isStroke/OrNone
 class KeyStroke(object):
-    '''A class that represent any key stroke.'''
+    '''
+    A class that represent any key stroke or binding.
+    
+    ks.s is what used to be called the "canonicalized" spelling.
+    '''
     if new_keys: # Can't use g.new_keys.
         #@+<< new KeyStroke methods >>
         #@+node:ekr.20180414195346.1: *4* << new KeyStroke methods >>
@@ -376,12 +380,12 @@ class KeyStroke(object):
                 # May change self.mods.
             mods = ''.join(['%s+' % z.capitalize() for z in self.mods])
             return mods + s
-        #@+node:ekr.20180415082249.1: *6* new_ks.finalize_binding ***
+        #@+node:ekr.20180415082249.1: *6* new_ks.finalize_binding
         def finalize_binding(self, binding):
             
             self.mods = self.find_mods(binding)
             s = self.strip_mods(binding)
-            # g.trace('%30s: %25r ==> %20s:%r' % (g.caller(3), binding, self.mods or '', s))
+            g.trace('%30s: %25r ==> %20s:%r' % (g.caller(3), binding, self.mods or '', s))
             return self.finalize(s)
         #@+node:ekr.20180415083926.1: *6* new_ks.finalize_char (Add dict)
         def finalize_char(self, s):
@@ -404,11 +408,11 @@ class KeyStroke(object):
             '''Return the list of all modifiers seen in s.'''
             s = s.lower()
             table = (
-                ['alt'],
-                ['command', 'cmd'],
-                ['ctrl', 'control'],
-                ['meta'],
-                ['shift', 'shft'],
+                ['alt',],
+                ['command', 'cmd',],
+                ['control', 'ctrl',],
+                ['meta',],
+                ['shift', 'shft',],
             )
             result = []
             for aList in table:
@@ -429,7 +433,7 @@ class KeyStroke(object):
                     target = mod+suffix
                     i = s.lower().find(target)
                     if i > -1:
-                        s = s[:i] + s[:i+len(target)]
+                        s = s[:i] + s[i+len(target):]
                         break
             return s
         #@+node:ekr.20180414195401.9: *6* new_ks.toGuiChar (MERGE INTO FINALIZE)
