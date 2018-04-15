@@ -4321,10 +4321,10 @@ class KeyHandlerClass(object):
         k = self; c = k.c
         command = c.commandsDict.get(commandName)
         if command:
-            ### for stroke, aList in k.bindingsDict.items():
-            for stroke in k.bindingsDict:
-                assert g.isStroke(stroke), repr(stroke)
-                aList = k.bindingsDict.get(stroke, [])
+            for stroke, aList in k.bindingsDict.items():
+            ### for stroke in k.bindingsDict:
+            ###    assert g.isStroke(stroke), repr(stroke)
+            ###    aList = k.bindingsDict.get(stroke, [])
                 for bi in aList:
                     if bi.commandName == commandName:
                         return stroke
