@@ -1219,31 +1219,31 @@ class KeyHandler (object):
     def char_to_tk_name(self, ch):
         return self.tk_dict.get(ch, ch)
     #@+node:ekr.20170430115131.2: *5* CKey.create_key_event
-    def create_key_event(self, c, w, ch, shortcut):
+    def create_key_event(self, c, w, ch, binding):
         trace = False
         # Last-minute adjustments...
-        if shortcut == 'Return':
+        if binding == 'Return':
             ch = '\n' # Somehow Qt wants to return '\r'.
-        elif shortcut == 'Escape':
+        elif binding == 'Escape':
             ch = 'Escape'
         # Switch the Shift modifier to handle the cap-lock key.
         if isinstance(ch, int):
-            g.trace('can not happen: ch: %r shortcut: %r' % (ch, shortcut))
+            g.trace('can not happen: ch: %r binding: %r' % (ch, binding))
         elif (
             ch and len(ch) == 1 and
-            shortcut and len(shortcut) == 1 and
-            ch.isalpha() and shortcut.isalpha()
+            binding and len(binding) == 1 and
+            ch.isalpha() and binding.isalpha()
         ):
-            if ch != shortcut:
+            if ch != binding:
                 if trace: g.trace('caps-lock')
-                shortcut = ch
-        if trace: g.trace('ch: %r, shortcut: %r' % (ch, shortcut))
+                binding = ch
+        if trace: g.trace('ch: %r, binding: %r' % (ch, binding))
         import leo.core.leoGui as leoGui
         return leoGui.LeoKeyEvent(
             c=c,
             char=ch,
             event={'c': c, 'w': w},
-            shortcut=shortcut,
+            binding=binding,
             w=w, x=0, y=0, x_root=0, y_root=0,
         )
     #@+node:ekr.20170430115030.1: *5* CKey.is_key_event

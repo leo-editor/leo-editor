@@ -760,7 +760,7 @@ class ScreenCastController(object):
             stroke = key = ch
         # g.trace(ch,key,stroke)
         return leoGui.LeoKeyEvent(c, key, stroke,
-            shortcut=None,
+            binding=None,
             w=w,
             x=0, y=0,
             x_root=0, y_root=0)
