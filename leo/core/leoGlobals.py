@@ -354,7 +354,7 @@ class KeyStroke(object):
             assert s and g.isString(s), repr(s)
             self.s = s
         #@+node:ekr.20180414195401.3: *5*  Special methods
-        #@+node:ekr.20180414195401.4: *6* new_ks.__hash__
+        #@+node:ekr.20180414195401.4: *6* new_ks.__hash__ (REVISE)
         # Allow KeyStroke objects to be keys in dictionaries.
 
         def __hash__(self):

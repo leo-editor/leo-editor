@@ -51,11 +51,13 @@ class LeoGui(object):
         self.ScriptingControllerClass = NullScriptingControllerClass
     #@+node:ekr.20061109212618.1: *3* LeoGui: Must be defined only in base class
     #@+node:ekr.20110605121601.18847: *4* LeoGui.create_key_event (LeoGui)
-    def create_key_event(self, c, char, stroke, w, event=None, x=None, y=None, x_root=None, y_root=None):
+    def create_key_event(self, c, char, binding, w,
+        event=None, x=None, y=None, x_root=None, y_root=None
+    ):
         # Do not call strokeFromSetting here!
         # For example, this would wrongly convert Ctrl-C to Ctrl-c,
         # in effect, converting a user binding from Ctrl-Shift-C to Ctrl-C.
-        return LeoKeyEvent(c, char, event, stroke, w, x, y, x_root, y_root)
+        return LeoKeyEvent(c, char, event, binding, w, x, y, x_root, y_root)
     #@+node:ekr.20031218072017.3740: *4* LeoGui.guiName
     def guiName(self):
         try:
@@ -247,14 +249,16 @@ class LeoKeyEvent(object):
     '''A gui-independent wrapper for gui events.'''
     #@+others
     #@+node:ekr.20110605121601.18846: *3* LeoKeyEvent.__init__
-    def __init__(self, c, char, event, shortcut, w, x=None, y=None, x_root=None, y_root=None):
+    def __init__(self, c, char, event, binding, w,
+        x=None, y=None, x_root=None, y_root=None
+    ):
         '''Ctor for LeoKeyEvent class.'''
         trace = False and not g.unitTesting
-        if g.isStroke(shortcut):
-            g.trace('***** (LeoKeyEvent) oops: already a stroke', shortcut, g.callers())
-            stroke = shortcut
+        if g.isStroke(binding):
+            g.trace('***** (LeoKeyEvent) oops: already a stroke', binding, g.callers())
+            stroke = binding
         else:
-            stroke = g.KeyStroke(shortcut) if shortcut else None
+            stroke = g.KeyStroke(binding) if binding else None
         assert g.isStrokeOrNone(stroke), '(LeoKeyEvent) %s %s' % (
             repr(stroke), g.callers())
         if trace: g.trace('(LeoKeyEvent) stroke', stroke)

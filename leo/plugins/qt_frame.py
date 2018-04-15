@@ -760,17 +760,20 @@ class DynamicWindow(QtWidgets.QMainWindow):
         #@+others
         #@+node:ekr.20131118172620.16892: *7* class EventWrapper
         class EventWrapper(object):
-            #@+others
-            #@+node:ekr.20131119204029.18406: *8* ctor
+            
             def __init__(self, c, w, next_w, func):
                 self.c = c
-                self.d = self.create_d() # Keys: strokes; values: command-names.
+                self.d = self.create_d()
+                    # Keys: stroke.s; values: command-names.
+                    ### To do: use stroke as the key, not stroke.s.
                 self.w = w
                 self.next_w = next_w
                 self.eventFilter = qt_events.LeoQtEventFilter(c, w, 'EventWrapper')
                 self.func = func
                 self.oldEvent = w.event
                 w.event = self.wrapper
+
+            #@+others
             #@+node:ekr.20131120054058.16281: *8* create_d
             def create_d(self):
                 '''Create self.d dictionary.'''
@@ -818,17 +821,11 @@ class DynamicWindow(QtWidgets.QMainWindow):
                     # http://qt-project.org/doc/qt-4.8/qevent.html#Type-enum
                     g.trace(type_)
                 return self.oldEvent(event)
-            #@+node:ekr.20131118172620.16894: *8* keyPress
+            #@+node:ekr.20131118172620.16894: *8* keyPress (EventWrapper) (Knows too much about eventFilter)
             def keyPress(self, event):
                 trace = False
                 s = g.u(event.text())
-                if 0: # This doesn't work.
-                    eat = isinstance(self.w, (QtWidgets.QCheckBox, QtWidgets.QRadioButton))
-                    g.trace('eat', eat, w)
-                    if eat and s in ('\n', '\r'):
-                        return True
                 out = s and s in '\t\r\n'
-                # if trace: g.trace(out, repr(s))
                 if out:
                     # Move focus to next widget.
                     if s == '\t':
@@ -845,9 +842,9 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 else:
                     ef = self.eventFilter
                     tkKey, ch, ignore = ef.toTkKey(event)
-                    stroke = ef.toStroke(tkKey)
-                    cmd_name = self.d.get(stroke)
-                    if trace: g.trace(cmd_name, s, tkKey, stroke)
+                    binding = ef.toBinding(tkKey)
+                    cmd_name = self.d.get(binding)
+                    if trace: g.trace(cmd_name, s, tkKey, binding)
                     if cmd_name:
                         self.c.k.simulateCommand(cmd_name)
                         return True

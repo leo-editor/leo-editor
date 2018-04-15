@@ -93,8 +93,8 @@ class LeoQtEventFilter(QtCore.QObject):
         #
         tkKey, ch, ignore = self.toTkKey(event)
         if not ignore:
-            shortcut = self.toStroke(tkKey)
-            stroke = g.KeyStroke(shortcut) if shortcut else None
+            binding = self.toBinding(tkKey)
+            stroke = g.KeyStroke(binding) if binding else None
             aList = k.masterGuiBindingsDict.get(stroke, [])
                 # Keys are g.KeyStrokes.
         #
@@ -114,9 +114,9 @@ class LeoQtEventFilter(QtCore.QObject):
         # Part 5: Pass a new key event to masterKeyHandler.
         #
         if trace and traceKeys:
-            g.trace('shortcut: %r, len(aList): %s' % (shortcut, len(aList)))
+            g.trace('binding: %r, len(aList): %s' % (binding, len(aList)))
         try:
-            key_event = self.create_key_event(event, c, self.w, ch, tkKey, shortcut)
+            key_event = self.create_key_event(event, c, self.w, ch, tkKey, binding)
             k.masterKeyHandler(key_event)
             c.outerUpdate()
         except Exception:
@@ -159,9 +159,9 @@ class LeoQtEventFilter(QtCore.QObject):
         else:
             # QTextEdit: ignore all key events except keyPress events.
             return eventType != ev.KeyPress
-    #@+node:ekr.20180413180751.4: *4* filter.toStroke
-    def toStroke(self, tkKey):
-        '''Convert the official tkKey name to a stroke.'''
+    #@+node:ekr.20180413180751.4: *4* filter.toBinding
+    def toBinding(self, tkKey):
+        '''Convert the official tkKey name to a canonicalized binding string.'''
         trace = False and not g.unitTesting
         s = tkKey
         table = (
@@ -424,8 +424,6 @@ class LeoQtEventFilter(QtCore.QObject):
         modifiers = event.modifiers()
         # The order of this table must match the order created by k.strokeFromSetting.
         qt = QtCore.Qt
-        # 2016/06/13: toStroke can now generate meta on MacOS.
-        # In other words: only one version of this table is needed.
         table = (
             (qt.AltModifier, 'Alt'),
             (qt.ControlModifier, 'Control'),
