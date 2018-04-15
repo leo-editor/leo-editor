@@ -902,7 +902,10 @@ class ParserBaseClass(object):
             i = val.find('#')
             if i > 0 and val[i - 1] in (' ', '\t'):
                 val = val[: i].strip()
-        stroke = k.strokeFromSetting(val)
+        if g.new_keys:
+            stroke = k.strokeFromSetting(binding=val)
+        else:
+            stroke = k.strokeFromSetting(setting=val)
         assert g.isStrokeOrNone(stroke), stroke
         bi = g.BindingInfo(kind=kind, nextMode=nextMode, pane=pane, stroke=stroke)
         if trace: g.trace('%25s %s' % (name, bi))

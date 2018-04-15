@@ -340,9 +340,7 @@ def isGeneralSetting(obj):
     return isinstance(obj, GeneralSetting)
 #@+node:ekr.20120201164453.10090: *3* class g.KeyStroke & isStroke/OrNone
 class KeyStroke(object):
-    '''A class that announces that its contents has been canonicalized by k.strokeFromSetting.
-
-    This allows type-checking assertions in the code.'''
+    '''A class that represent any key stroke.'''
     if new_keys: # Can't use g.new_keys.
         #@+<< new KeyStroke methods >>
         #@+node:ekr.20180414195346.1: *4* << new KeyStroke methods >>

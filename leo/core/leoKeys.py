@@ -2195,7 +2195,10 @@ class KeyHandlerClass(object):
                 stroke = shortcut
                 assert stroke.s, stroke
             else:
-                stroke = k.strokeFromSetting(shortcut)
+                if g.new_keys:
+                    stroke = k.strokeFromSetting(binding=shortcut)
+                else:
+                    stroke = k.strokeFromSetting(setting=shortcut)
             if trace:
                 tag = tag.split(' ')[-1]
                 g.trace('%7s %25r %17s %s' % (pane, stroke and stroke.s, tag, commandName))
@@ -3080,7 +3083,7 @@ class KeyHandlerClass(object):
             # This was what caused the unwanted scrolling.
             k.showStateAndMode(setFocus=setFocus)
         k.resetCommandHistory()
-    #@+node:ekr.20061031131434.126: *4* k.manufactureKeyPressForCommandName (changed)
+    #@+node:ekr.20061031131434.126: *4* k.manufactureKeyPressForCommandName
     def manufactureKeyPressForCommandName(self, w, commandName):
         '''Implement a command by passing a keypress to the gui.'''
         trace = False and not g.unitTesting
@@ -3174,7 +3177,10 @@ class KeyHandlerClass(object):
         is_local = c.shortFileName() not in ('myLeoSettings.leo', 'leoSettings.leo')
         assert not g.isStroke(shortcut)
         if shortcut:
-            stroke = k.strokeFromSetting(shortcut)
+            if g.new_keys:
+                stroke = k.strokeFromSetting(binding=shortcut)
+            else:
+                stroke = k.strokeFromSetting(setting=shortcut)
         elif commandName.lower() == 'shortcut': # Causes problems.
             stroke = None
         elif is_local:
