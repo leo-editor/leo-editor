@@ -342,8 +342,7 @@ def isGeneralSetting(obj):
 class KeyStroke(object):
     '''
     A class that represent any key stroke or binding.
-    
-    repr(self) is what used to be called the "canonicalized" spelling.
+    stroke.s is the "canonicalized" stroke.
     '''
     if new_keys: # Can't use g.new_keys.
         #@+<< new KeyStroke methods >>
@@ -352,26 +351,29 @@ class KeyStroke(object):
         #@+node:ekr.20180414195401.2: *5* new_ks.__init__
         def __init__(self,
             binding = None, # User binding.
-            char = None, # Input Qt char
-            mods = None, # Input Qt mods.
+            ### char = None, # Input Qt char
+            ### mods = None, # Input Qt mods.
             s = None, # Legacy  Is this ever used????
         ):
             self.expected_mods = ('alt', 'command', 'control', 'meta', 'shift')
             self.s = None
             if s:
-                assert not binding and not char and not mods, (repr(mods), repr(char), repr(binding))
+                ### assert not binding and not char and not mods, (repr(mods), repr(char), repr(binding))
+                assert not binding, repr(binding)
                 self.s = s
             elif binding:
-                assert not char and not mods and not s, (repr(mods), repr(char))
+                ### assert not char and not mods and not s, (repr(mods), repr(char))
+                assert s is None, repr(s)
                 self.s = self.finalize_binding(binding)
-            else:
-                assert not binding and not s, (repr(binding), repr(s))
-                mods = [z.lower() for z in mods]
-                for z in mods or []:
-                    assert z in self.expected_mods, repr(z)
-                self.mods = mods
-                self.s = self.finalize(char)
-                g.trace(self.s)
+            ###
+            # else:
+                # assert not binding and not s, (repr(binding), repr(s))
+                # mods = [z.lower() for z in mods]
+                # for z in mods or []:
+                    # assert z in self.expected_mods, repr(z)
+                # self.mods = mods
+                # self.s = self.finalize(char)
+                # # g.trace('(KeyStroke)', self.mods, self.s)
             if not g.isString(self.s):
                 g.trace('Bad call', g.callers())
         #@+node:ekr.20180415083158.1: *5* new_ks.finalize
@@ -382,7 +384,7 @@ class KeyStroke(object):
                 # May change self.mods.
             mods = ''.join(['%s+' % z.capitalize() for z in self.mods])
             if trace: g.trace('%20s:%-20s ==> %s' % (self.mods, s1, mods+s))
-            return mods + s
+            return mods+s
         #@+node:ekr.20180415082249.1: *5* new_ks.finalize_binding
         def finalize_binding(self, binding):
             
@@ -393,6 +395,7 @@ class KeyStroke(object):
         #@+node:ekr.20180415083926.1: *5* new_ks.finalize_char
         def finalize_char(self, s):
             
+            trace = False and not g.unitTesting
             d = {
                 'bksp': 'BackSpace', # Dubious: should be '\b'
                 'dnarrow': 'Down',
@@ -425,28 +428,22 @@ class KeyStroke(object):
                 )
                 for a, b in table:
                     d[a] = b
-                ### c does not exist here.
-                    # c = self.c
-                    # if c.config.getBool('replace-meta-with-alt', default=False):
-                        # table = (
-                            # ('Meta+','Alt+'),
-                            # ('Ctrl+Alt+', 'Alt+Ctrl+'),
-                            # # Shift already follows meta.
-                        # )
-                        # for z1, z2 in table:
-                            # s = s.replace(z1, z2)
+            # pylint: disable=undefined-loop-variable
             if s in (None, 'none'):
-                return ''
-            if s.lower() in d:
-                return d.get(s.lower())
-            if len(s) > 1 or not s.isalpha():
-                return s
+                s = ''
+            elif s.lower() in d:
+                s = d.get(s.lower())
+            elif len(s) > 1 or not s.isalpha():
+                pass
             # Change case of single-character alphas.
-            if 'shift' in self.mods:
+            elif 'shift' in self.mods:
                 self.mods.remove('shift')
-                return s.upper()
+                s = s.upper()
             else:
-                return s.lower()
+                s = s.lower()
+            if trace:
+                g.trace(self.mods, repr(s))
+            return s
         #@+node:ekr.20180415081209.2: *5* new_ks.find_mods
         def find_mods(self, s):
             '''Return the list of all modifiers seen in s.'''
@@ -487,7 +484,7 @@ class KeyStroke(object):
         #@+node:ekr.20180414195326.1: *4* << old KeyStroke methods >>
         #@+others
         #@+node:ekr.20120204061120.10066: *5* old_ks.ctor
-        def __init__(self, binding):
+        def __init__(self, binding=None, char=None, mods=None): # char & mods keep pylint happy.
             s = binding
             trace = False and not g.unitTesting and s == 'name'
             if trace: g.trace('(KeyStroke)', s, g.callers())
