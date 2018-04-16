@@ -99,10 +99,7 @@ class LeoQtEventFilter(QtCore.QObject):
             ### ignore == not binding???
 
         if not ignore:
-            if g.new_keys:
-                binding = tkKey if ch else None
-            else:
-                binding = self.toBinding(tkKey)
+            binding = tkKey if ch else None
             if binding:
                 stroke = g.KeyStroke(binding=binding) ### was, just binding.
                 if trace and traceKeys: g.trace(binding, stroke)
@@ -125,9 +122,6 @@ class LeoQtEventFilter(QtCore.QObject):
         #
         # Part 5: Pass a new key event to masterKeyHandler.
         #
-        ###
-            # if trace and traceKeys:
-                # g.trace('binding: %r, len(aList): %s' % (binding, len(aList)))
         try:
             key_event = self.create_key_event(event, c, self.w, ch, tkKey, binding)
             k.masterKeyHandler(key_event)
@@ -136,73 +130,7 @@ class LeoQtEventFilter(QtCore.QObject):
             g.es_exception()
         return True
             # Whatever happens, suppress all other Qt key handling.
-    #@+node:ekr.20110605121601.18547: *4* filter.char2tkName (to be removed)
-    char2tkNameDict = {
-        # Part 1: same as g.app.guiBindNamesDict
-        "&": "ampersand",
-        "^": "asciicircum",
-        "~": "asciitilde",
-        "*": "asterisk",
-        "@": "at",
-        "\\": "backslash",
-        "|": "bar",
-        "{": "braceleft",
-        "}": "braceright",
-        "[": "bracketleft",
-        "]": "bracketright",
-        ":": "colon",
-        ",": "comma",
-        "$": "dollar",
-        "=": "equal",
-        "!": "exclam",
-        ">": "greater",
-        "<": "less",
-        "-": "minus",
-        "#": "numbersign",
-        '"': "quotedbl",
-        "'": "quoteright",
-        "(": "parenleft",
-        ")": "parenright",
-        "%": "percent",
-        ".": "period",
-        "+": "plus",
-        "?": "question",
-        "`": "quoteleft",
-        ";": "semicolon",
-        "/": "slash",
-        " ": "space",
-        "_": "underscore",
-        # Part 2: special Qt translations.
-        'Backspace': 'BackSpace',
-        'Backtab': 'Tab', # The shift mod will convert to 'Shift+Tab',
-        'Esc': 'Escape',
-        'Del': 'Delete',
-        'Ins': 'Insert', # was 'Return',
-        # Comment these out to pass the key to the QTextWidget.
-        # Use these to enable Leo's page-up/down commands.
-        'PgDown': 'Next',
-        'PgUp': 'Prior',
-        # New entries.  These simplify code.
-        'Down': 'Down', 'Left': 'Left', 'Right': 'Right', 'Up': 'Up',
-        'End': 'End',
-        'F1': 'F1', 'F2': 'F2', 'F3': 'F3', 'F4': 'F4', 'F5': 'F5',
-        'F6': 'F6', 'F7': 'F7', 'F8': 'F8', 'F9': 'F9',
-        'F10': 'F10', 'F11': 'F11', 'F12': 'F12',
-        'Home': 'Home',
-        # 'Insert':'Insert',
-        'Return': 'Return',
-        'Tab': 'Tab',
-        # 'Tab':'\t', # A hack for QLineEdit.
-        # Unused: Break, Caps_Lock,Linefeed,Num_lock
-    }
-    # Called only by tkKey.
-
-    def char2tkName(self, ch):
-        if g.new_keys:
-            return ch
-        else:
-            return self.char2tkNameDict.get(ch)
-    #@+node:ekr.20110605195119.16937: *4* filter.create_key_event (last-minute tweaks)
+    #@+node:ekr.20110605195119.16937: *4* filter.create_key_event
     def create_key_event(self, event, c, w, ch, tkKey, shortcut):
         trace = False and not g.unitTesting
         verbose = True
@@ -213,39 +141,6 @@ class LeoQtEventFilter(QtCore.QObject):
             if ch != shortcut:
                 if trace and verbose: g.trace('caps-lock')
                 shortcut = ch
-        if g.new_keys:
-            pass # now done in ks.finalize_char.
-        else:
-            # Last-minute adjustments...
-            if shortcut == 'Return':
-                ch = '\n' # Somehow Qt wants to return '\r'.
-            elif shortcut == 'Escape':
-                ch = 'Escape'
-            # Switch the Shift modifier to handle the cap-lock key.
-          
-            # Patch provided by resi147.
-            # See the thread: special characters in MacOSX, like '@'.
-            if g.isMac:
-                darwinmap = {
-                    'Alt-Key-5': '[',
-                    'Alt-Key-6': ']',
-                    'Alt-Key-7': '|',
-                    'Alt-slash': '\\',
-                    'Alt-Key-8': '{',
-                    'Alt-Key-9': '}',
-                    'Alt-e': '€',
-                    'Alt-l': '@',
-                }
-                if tkKey in darwinmap:
-                    shortcut = darwinmap[tkKey]
-                if c.config.getBool('replace-meta-with-alt', default=False):
-                    table = (
-                        ('Meta','Alt'),
-                        ('Ctrl+Alt+', 'Alt+Ctrl+'),
-                        # Shift already follows meta.
-                    )
-                    for z1, z2 in table:
-                        shortcut = shortcut.replace(z1, z2)
         char = ch
         # Auxiliary info.
         x = getattr(event, 'x', None) or 0
@@ -338,11 +233,7 @@ class LeoQtEventFilter(QtCore.QObject):
         }
         if d.get(keynum):
             # I'm not sure why this is needed, but it is.
-            if g.new_keys:
-                ### Experimental.
-                toString = ''
-            else:
-                toString = d.get(keynum)
+            toString = ''
         else:
             toString = QtGui.QKeySequence(keynum).toString()
         # Fix bug 1244461: Numpad 'Enter' key does not work in minibuffer
@@ -378,78 +269,20 @@ class LeoQtEventFilter(QtCore.QObject):
     def tkKey(self, event, mods, keynum, text, toString, ch):
         '''Carefully convert the Qt key to binding.'''
         trace = False and not g.unitTesting
-        c = self.c
         ch1 = ch # For tracing.
-        use_shift = (
-            'Home', 'End', 'Tab',
-            'Up', 'Down', 'Left', 'Right',
-            'Next', 'Prior', # 2010/01/10: Allow Shift-PageUp and Shift-PageDn.
-            # 2011/05/17: Fix bug 681797.
-            # There is nothing 'dubious' about these provided that they are bound.
-            # If they are not bound, then weird characters will be inserted.
-            'Delete', 'Ins', 'Backspace',
-            'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12',
-        )
-        if g.new_keys:
-            ch2 = ch or toString
-            if ch2: ch = ch2
-        else:
-            # Convert '&' to 'ampersand', etc.
-            ch2 = self.char2tkName(ch or toString)
-            if ch2: ch = ch2
-        if not ch: ch = ''
-        if g.new_keys:
-            pass
-        else:
-            if 'Shift' in mods:
-                if trace: g.trace(repr(ch))
-                if len(ch) == 1 and ch.isalpha():
-                    mods.remove('Shift')
-                    ch = ch.upper()
-                elif len(ch) > 1 and ch not in use_shift:
-                    # Experimental!
-                    mods.remove('Shift')
-            elif len(ch) == 1:
-                ch = ch.lower()
-        #
-        # Never append Key mod in the new_keys scheme.
-        if g.new_keys:
-            pass
-        else:
-            if ch and ch in string.digits:
-                replace_meta = g.isMac and c.config.getBool('replace-meta-with-alt', default=False)
-                if ('Alt' in mods or 'Control' in mods or (replace_meta and 'Meta' in mods)):
-                    mods.append('Key')
-        # *Do* allow bare mod keys, so they won't be passed on.
-        if g.new_keys:
-            tkKey = '%s%s' % (''.join(['%s+' % (z) for z in mods]), ch)
-        else:
-            tkKey = '%s%s%s' % ('-'.join(mods), mods and '-' or '', ch)
+        ch = ch or toString or ''
+        ###
+            # ch2 = ch or toString
+            # if ch2: ch = ch2
+            # if not ch: ch = ''
+        tkKey = '%s%s' % (''.join(['%s+' % (z) for z in mods]), ch)
         if trace: g.trace('text: %r toString: %r ch1: %r ch: %r' % (text, toString, ch1, ch))
         ignore = not ch # Essential
         ch = text or toString
-        if g.new_keys and ch == '\r':
+        if ch == '\r':
             ch = '\n'
         if trace: g.trace(repr(ch))
         return tkKey, ch, ignore
-    #@+node:ekr.20180413180751.4: *4* filter.toBinding (to be removed)
-    def toBinding(self, tkKey):
-        '''Convert the official tkKey name to a canonicalized binding string.'''
-        trace = False and not g.unitTesting
-        s = tkKey
-        table = (
-            ('Alt-', 'Alt+'),
-            ('Ctrl-', 'Ctrl+'),
-            ('Control-', 'Ctrl+'),
-            # Use Alt+Key-1, etc.  Sheesh.
-            # ('Key-','Key+'),
-            ('Meta-', 'Meta+'), # 2016/06/13: per Karsten Wolf.
-            ('Shift-', 'Shift+')
-        )
-        for a, b in table:
-            s = s.replace(a, b)
-        if trace: g.trace(tkKey, '-->', s)
-        return s
     #@+node:ekr.20110605121601.18543: *4* filter.toTkKey
     def toTkKey(self, event):
         '''

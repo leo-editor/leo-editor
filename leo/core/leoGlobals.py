@@ -348,27 +348,12 @@ class KeyStroke(object):
     '''
     #@+others
     #@+node:ekr.20180414195401.2: *4*  ks.__init__
-    def __init__(self,
-        binding = None, # User binding.
-        s = None, # Legacy  Is this ever used????
-    ):
+    def __init__(self, binding):
         trace = False and not g.unitTesting
-        if g.new_keys:
-            if s is not None:
-                assert not binding, repr(binding)
-                self.s = s
-            elif binding:
-                assert s is None, repr(s)
-                self.s = self.finalize_binding(binding)
-            else:
-                self.s = None
+        if binding:
+            self.s = self.finalize_binding(binding)
         else:
-            s = binding
-            if trace: g.trace('(KeyStroke)', s, g.callers())
-            assert s and g.isString(s), (repr(s), g.callers())
-            self.s = s
-        if not g.isString(self.s):
-            g.trace('Bad call', g.callers())
+            self.s = None
         if trace: g.trace(repr(self.s))
     #@+node:ekr.20120203053243.10117: *4* ks.__eq__, etc
     #@+at All these must be defined in order to say, for example:
@@ -424,6 +409,14 @@ class KeyStroke(object):
         '''Perform very-last-minute translations on bindings.'''
         trace = False and not g.unitTesting
         if trace: g.trace('=====', self.mods, repr(s))
+        ### From filter.  All these can take a Shift modifier.
+            # use_shift = (
+                # 'Home', 'End', 'Tab',
+                # 'Up', 'Down', 'Left', 'Right',
+                # 'Next', 'Prior', # 2010/01/10: Allow Shift-PageUp and Shift-PageDn.
+                # 'Delete', 'Ins', 'Backspace',
+                # 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12',
+            # )
         translate_d = {
             'bksp': 'BackSpace', # Dubious: should be '\b'
             'dnarrow': 'Down',
