@@ -3,7 +3,7 @@
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
 <globals body_outline_ratio="0.52" body_secondary_ratio="0.51">
-	<global_window_position top="128" left="375" height="894" width="1228"/>
+	<global_window_position top="128" left="677" height="894" width="1078"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -1226,6 +1226,7 @@
 <v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
 <v t="ekr.20180312050443.1"><vh>@test cwd</vh></v>
 </v>
+<v t="ekr.20100131171342.5608"><vh>@test k.strokeFromSetting or g.KeyStroke</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1642,7 +1643,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="4">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="7">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -3442,6 +3443,59 @@ for key in keys:
     expected = ('event',)
     message = '\nno event arg for command %s, func: %s\nargs: %s' % (key,name,data)
     assert arg0 in expected or arg1 in expected, message
+</t>
+<t tx="ekr.20100131171342.5608">if g.new_keys:
+    table = [
+        ('1', '1'), # 2016/04/12
+        ('a','a'),
+        ('A','A'),
+        ('Alt-a','Alt+a'),
+        ('Alt-A','Alt+a'),
+        ('Alt-Shift-a','Alt+Shift+a'),
+        # We can no longer igtnore the shift.
+        # ('Alt-Shift++','Alt+plus'), # Ignore the shift.
+        ('Shift-a','A'),
+        ('Shift-A','A'),
+        ('RtArrow','Right'),
+        ('Shift-RtArrow','Shift+Right'),
+        ('PageUp','Prior'), ('Prior','Prior'),('Shift-PageUp','Shift+Prior'),
+        ('PageDn','Next'),('Next','Next'),('Shift-Next','Shift+Next'),
+        ('Alt-=','Alt+='),
+        ('Alt-+','Alt++'),
+        ('Alt--','Alt+-'),
+        ('Ctrl-RtArrow','Control+Right'),
+        ('Control-Right','Control+Right'),
+    ]
+else:
+    table = [
+    ('1', '1'), # 2016/04/12
+    ('a','a'),
+    ('A','a'),
+    ('Alt-a','Alt+a'),
+    ('Alt-A','Alt+a'),
+    ('Alt-Shift-a','Alt+A'),
+    # We can no longer igtnore the shift.
+    # ('Alt-Shift++','Alt+plus'), # Ignore the shift.
+    ('Shift-a','A'),
+    ('Shift-A','A'),
+    ('RtArrow','Right'),
+    ('Shift-RtArrow','Shift+Right'),
+    ('PageUp','Prior'), ('Prior','Prior'),('Shift-PageUp','Shift+Prior'),
+    ('PageDn','Next'),('Next','Next'),('Shift-Next','Shift+Next'),
+        ('Key-1','1'), ('key+1','1'),
+        ('Alt-=','Alt+equal'),
+        ('Alt-+','Alt+plus'),
+        ('Alt--','Alt+minus'),
+        ('Ctrl-RtArrow','Ctrl+Right'),
+        ('Control-Right','Ctrl+Right'),
+    ]
+for setting, result in table:
+    if g.new_keys:
+        stroke = g.KeyStroke(binding=setting)
+        val = stroke.s
+    else:
+        val = c.k.strokeFromSetting(setting)
+    assert val==result,'Expected %s, Got %s' % (result,val)
 </t>
 <t tx="ekr.20100219080213.5365"></t>
 <t tx="ekr.20100219080213.5366">s = '''\

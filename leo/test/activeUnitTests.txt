@@ -21583,7 +21583,30 @@ if 0: # Test 2
     k.manufactureKeyPressForCommandName(w,commandName)
     assert g.app.unitTestDict.get(commandName)
 #@+node:ekr.20100131171342.5608: *4* @test k.strokeFromSetting or g.KeyStroke
-table = [
+if g.new_keys:
+    table = [
+        ('1', '1'), # 2016/04/12
+        ('a','a'),
+        ('A','A'),
+        ('Alt-a','Alt+a'),
+        ('Alt-A','Alt+a'),
+        ('Alt-Shift-a','Alt+Shift+a'),
+        # We can no longer igtnore the shift.
+        # ('Alt-Shift++','Alt+plus'), # Ignore the shift.
+        ('Shift-a','A'),
+        ('Shift-A','A'),
+        ('RtArrow','Right'),
+        ('Shift-RtArrow','Shift+Right'),
+        ('PageUp','Prior'), ('Prior','Prior'),('Shift-PageUp','Shift+Prior'),
+        ('PageDn','Next'),('Next','Next'),('Shift-Next','Shift+Next'),
+        ('Alt-=','Alt+='),
+        ('Alt-+','Alt++'),
+        ('Alt--','Alt+-'),
+        ('Ctrl-RtArrow','Control+Right'),
+        ('Control-Right','Control+Right'),
+    ]
+else:
+    table = [
     ('1', '1'), # 2016/04/12
     ('a','a'),
     ('A','a'),
@@ -21598,24 +21621,13 @@ table = [
     ('Shift-RtArrow','Shift+Right'),
     ('PageUp','Prior'), ('Prior','Prior'),('Shift-PageUp','Shift+Prior'),
     ('PageDn','Next'),('Next','Next'),('Shift-Next','Shift+Next'),
-]
-if g.new_keys:
-   table.extend([
-        ('Alt-=','Alt+='),
-        ('Alt-+','Alt++'),
-        ('Alt--','Alt+-'),
-        ('Ctrl-RtArrow','Control+Right'),
-        ('Control-Right','Control+Right'),
-    ])
-else:
-    table.extend([
         ('Key-1','1'), ('key+1','1'),
         ('Alt-=','Alt+equal'),
         ('Alt-+','Alt+plus'),
         ('Alt--','Alt+minus'),
         ('Ctrl-RtArrow','Ctrl+Right'),
         ('Control-Right','Ctrl+Right'),
-    ])
+    ]
 for setting, result in table:
     if g.new_keys:
         stroke = g.KeyStroke(binding=setting)
