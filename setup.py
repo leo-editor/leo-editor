@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
-#@+node:maphew.20180224170853.1: * @file ../../setup.py
+#@+node:maphew.20180224170853.1: * @file setup.py
 #@@first
 '''setup.py for leo'''
 #@+others
@@ -68,25 +68,29 @@ def get_semver(tag):
         version = str(semantic_version.Version.coerce(tag, partial=True))
             # tuple of major, minor, build, pre-release, patch
             # 5.6b2 --> 5.6-b2
-    except ImportError or ValueError:
+    except ImportError or ValueError as err:
+        print('\n', err)
         print('''*** Failed to parse Semantic Version from git tag '{0}'.
         Expecting tag name like '5.7b2', 'leo-4.9.12', 'v4.3' for releases.
         This version can't be uploaded to PyPi.org.'''.format(tag))
         version = tag
     return version
 #@+node:maphew.20171006124415.1: ** Get description
-# Get the long description from the README file
-# And also convert to reST
+# Get the long description from the README file and convert to reST
 # adapted from https://github.com/BonsaiAI/bonsai-config/blob/0.3.1/setup.py#L7
 # bugfix #773 courtesy @Overdrivr, https://stackoverflow.com/a/35521100/14420
 try:
-    from pypandoc import convert_file
+    print('\n--- Getting long description ---')
+    from pypandoc import convert_file, convert_text
+    convert_text('#some title', 'rst', format='md') 
+        # fix #847, will raise OSError if pandoc binary not found
     def read_md(f):
         rst = convert_file(f, 'rst')
         rst = rst.replace('\r', '') # fix #773
         return rst
-except ImportError:
-    print('warning: pypandoc module not found, could not convert Markdown to RST')
+except (ImportError, OSError) as err:
+    print('\n', err)
+    print('*** Warning: could not convert Readme.md to .rst (harmless for users)')
     def read_md(f): return open(f, 'r').read()
         # disable to obviously fail if markdown conversion fails
 #@+node:maphew.20141126230535.4: ** classifiers
@@ -104,13 +108,16 @@ classifiers = [
     'Topic :: Text Editors',
     'Topic :: Text Processing',
     ]
+#@+node:maphew.20180415195922.1: ** Setup requirements
+setup_requires = ['semantic_version']
+    #semantic_version here to force download and making available before installing Leo
+    #Is also in `user_requires` so pip installs it too for general use
 #@+node:maphew.20171120133429.1: ** User requirements
 user_requires = [
     'PyQt5; python_version >= "3.0"',
     #'python-qt5; python_version < "3.0" and platform_system=="Windows"',
         # disabled, pending "pip install from .whl fails conditional dependency check" https://github.com/pypa/pip/issues/4886
     ## missing: pyqt for Linux python 2.x (doesn't exist on PyPi)
-
     'docutils', # used by Sphinx, rST plugin
     'pylint','pyflakes', # coding syntax standards
     'pypandoc', # doc format conversion
@@ -122,9 +129,9 @@ user_requires = [
     ]
 #@+node:maphew.20171122231442.1: ** clean
 def clean():
-    print('Removing build and dist directories')
+    print('\nRemoving build, dist and egg directories')
     root = os.path.dirname(os.path.realpath(__file__))
-    for d in ['build', 'dist', 'leo.egg-info']:
+    for d in ['build', 'dist', 'leo.egg-info', '.eggs']:
         dpath = os.path.join(root, d)
         if os.path.isdir(dpath):
             rmtree(dpath)
@@ -146,6 +153,7 @@ setup(
     classifiers=classifiers,
     packages=find_packages(),
     include_package_data=True, # also include MANIFEST files in wheels
+    setup_requires=setup_requires,
     install_requires=user_requires,
     entry_points={
        'console_scripts': ['leo-c = leo.core.runLeo:run_console',
