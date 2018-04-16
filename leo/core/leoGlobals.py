@@ -17,8 +17,9 @@ isMac = sys.platform.startswith('darwin')
 isWindows = sys.platform.startswith('win')
 #@+<< global switches >>
 #@+node:ekr.20120212060348.10374: **  << global switches >> (leoGlobals.py)
-new_keys = False
+new_keys = True
 if new_keys:
+    
     print('===== g.new_keys =====')
 
 in_bridge = False
@@ -351,10 +352,9 @@ class KeyStroke(object):
         binding = None, # User binding.
         s = None, # Legacy  Is this ever used????
     ):
+        trace = False and not g.unitTesting
         if g.new_keys:
-            self.expected_mods = ('alt', 'command', 'control', 'meta', 'shift')
             if s is not None:
-           
                 assert not binding, repr(binding)
                 self.s = s
             elif binding:
@@ -362,6 +362,7 @@ class KeyStroke(object):
                 self.s = self.finalize_binding(binding)
                 ###
                     # else:
+                        # self.expected_mods = ('alt', 'command', 'control', 'meta', 'shift')
                         # assert not binding and not s, (repr(binding), repr(s))
                         # mods = [z.lower() for z in mods]
                         # for z in mods or []:
@@ -369,8 +370,11 @@ class KeyStroke(object):
                         # self.mods = mods
                         # self.s = self.finalize(char)
                         # # g.trace('(KeyStroke)', self.mods, self.s)
-                if not g.isString(self.s):
-                    g.trace('Bad call', g.callers())
+            else:
+                self.s = None
+            if not g.isString(self.s):
+                g.trace('Bad call', g.callers())
+            if trace: g.trace(repr(self.s))
         else:
             s = binding
             trace = False and not g.unitTesting and s == 'name'

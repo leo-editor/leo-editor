@@ -306,7 +306,6 @@ class LeoQtEventFilter(QtCore.QObject):
             For all others:   QtGui.QKeySequence(keynum).toString()
         text:   event.text()
         '''
-        trace = False and not g.unitTesting
         keynum = event.key()
         text = event.text() # This is the unicode text.
         qt = QtCore.Qt
@@ -320,10 +319,8 @@ class LeoQtEventFilter(QtCore.QObject):
                 # the Ctrl+Alt modifiers are also set.
         }
         if d.get(keynum):
-            if g.new_keys:
-                toString = ''
-            else:
-                toString = d.get(keynum)
+            # I'm not sure why this is needed, but it is.
+            toString = d.get(keynum)
         else:
             toString = QtGui.QKeySequence(keynum).toString()
         # Fix bug 1244461: Numpad 'Enter' key does not work in minibuffer
@@ -339,11 +336,6 @@ class LeoQtEventFilter(QtCore.QObject):
             ch = ch1
         text = g.u(text)
         toString = g.u(toString)
-        if trace and self.keyIsActive:
-            mods = '+'.join(self.qtMods(event))
-            g.trace(
-                'keynum %7x ch %3s toString %s %s' % (
-                keynum, repr(ch), mods, repr(toString)))
         return keynum, text, toString, ch
     #@+node:ekr.20120204061120.10084: *4* filter.qtMods
     def qtMods(self, event):
