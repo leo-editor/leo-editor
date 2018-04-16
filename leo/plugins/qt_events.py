@@ -93,7 +93,7 @@ class LeoQtEventFilter(QtCore.QObject):
         #
         tkKey, ch, ignore = self.toTkKey(event)
         if trace and traceKeys:
-            g.trace(repr(tkKey), repr(ch))
+            g.trace('ignore', ignore, repr(tkKey), repr(ch))
 
             ### just return binding and ignore !!!
             ### ignore == not binding???
@@ -105,6 +105,7 @@ class LeoQtEventFilter(QtCore.QObject):
                 binding = self.toBinding(tkKey)
             if binding:
                 stroke = g.KeyStroke(binding=binding) ### was, just binding.
+                if trace and traceKeys: g.trace(binding, stroke)
                 aList = k.masterGuiBindingsDict.get(stroke, [])
             else:
                 stroke, aList = None, []
@@ -213,7 +214,7 @@ class LeoQtEventFilter(QtCore.QObject):
                 if trace and verbose: g.trace('caps-lock')
                 shortcut = ch
         if g.new_keys:
-            pass
+            pass # now done in ks.finalize_char.
         else:
             # Last-minute adjustments...
             if shortcut == 'Return':
@@ -321,7 +322,11 @@ class LeoQtEventFilter(QtCore.QObject):
         }
         if d.get(keynum):
             # I'm not sure why this is needed, but it is.
-            toString = d.get(keynum)
+            if g.new_keys:
+                ### Experimental.
+                toString = ''
+            else:
+                toString = d.get(keynum)
         else:
             toString = QtGui.QKeySequence(keynum).toString()
         # Fix bug 1244461: Numpad 'Enter' key does not work in minibuffer
@@ -377,16 +382,19 @@ class LeoQtEventFilter(QtCore.QObject):
             ch2 = self.char2tkName(ch or toString)
             if ch2: ch = ch2
         if not ch: ch = ''
-        if 'Shift' in mods:
-            if trace: g.trace(repr(ch))
-            if len(ch) == 1 and ch.isalpha():
-                mods.remove('Shift')
-                ch = ch.upper()
-            elif len(ch) > 1 and ch not in use_shift:
-                # Experimental!
-                mods.remove('Shift')
-        elif len(ch) == 1:
-            ch = ch.lower()
+        if g.new_keys:
+            pass
+        else:
+            if 'Shift' in mods:
+                if trace: g.trace(repr(ch))
+                if len(ch) == 1 and ch.isalpha():
+                    mods.remove('Shift')
+                    ch = ch.upper()
+                elif len(ch) > 1 and ch not in use_shift:
+                    # Experimental!
+                    mods.remove('Shift')
+            elif len(ch) == 1:
+                ch = ch.lower()
         #
         # Never append Key mod in the new_keys scheme.
         if g.new_keys:

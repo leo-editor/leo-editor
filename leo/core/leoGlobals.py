@@ -390,6 +390,7 @@ class KeyStroke(object):
     def finalize_char(self, s):
         '''Perform very-last-minute translations on bindings.'''
         trace = False and not g.unitTesting
+        if trace: g.trace('=====', self.mods, repr(s))
         translate_d = {
             'bksp': 'BackSpace', # Dubious: should be '\b'
             'dnarrow': 'Down',
@@ -429,13 +430,17 @@ class KeyStroke(object):
         elif s.lower() in translate_d:
             s = translate_d.get(s.lower())
         elif s.isalpha():
-            # Change case of single-character alphas.
             if len(s) == 1:
                 if 'shift' in self.mods:
-                    self.mods.remove('shift')
-                    s = s.upper()
-                else:
+                    if len(self.mods) == 1:
+                        self.mods.remove('shift')
+                        s = s.upper()
+                    else:
+                        s = s.lower()
+                elif self.mods:
                     s = s.lower()
+                else:
+                    pass # leave plain keys alone.
         else:
             # Translate possibly-dubious user settings.
             shift_list = "_+{}|:\"<>?"
@@ -463,7 +468,7 @@ class KeyStroke(object):
                 self.mods.remove('shift')
                 s = shift_d.get(s)
         if trace:
-            g.trace(self.mods, repr(s))
+            g.trace('-----', self.mods, repr(s))
         return s
     #@+node:ekr.20180415081209.2: *4* new_ks.find_mods
     def find_mods(self, s):

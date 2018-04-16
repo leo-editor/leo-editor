@@ -3514,7 +3514,7 @@ class KeyHandlerClass(object):
     #@+node:ekr.20091230094319.6240: *5* k.getPaneBinding
     def getPaneBinding(self, stroke, w):
         trace = False and not g.unitTesting
-        trace_dict = False
+        trace_dict = True
         verbose = True
         k, w_name = self, self.c.widget_name(w)
         state = k.unboundKeyAction
