@@ -821,7 +821,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                     # http://qt-project.org/doc/qt-4.8/qevent.html#Type-enum
                     g.trace(type_)
                 return self.oldEvent(event)
-            #@+node:ekr.20131118172620.16894: *8* keyPress (EventWrapper) (Knows too much about eventFilter)
+            #@+node:ekr.20131118172620.16894: *8* keyPress (EventWrapper)
             def keyPress(self, event):
                 trace = False
                 s = g.u(event.text())
@@ -841,9 +841,13 @@ class DynamicWindow(QtWidgets.QMainWindow):
                     return True
                 else:
                     ef = self.eventFilter
+                    ### To be improved.
                     tkKey, ch, ignore = ef.toTkKey(event)
-                    binding = ef.toBinding(tkKey)
-                    cmd_name = self.d.get(binding)
+                    if g.new_keys:
+                        binding = tkKey if ch else None
+                    else:
+                        binding = self.toBinding(tkKey)
+                    cmd_name = self.d.get(binding) if binding else None
                     if trace: g.trace(cmd_name, s, tkKey, binding)
                     if cmd_name:
                         self.c.k.simulateCommand(cmd_name)
