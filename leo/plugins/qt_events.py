@@ -65,9 +65,9 @@ class LeoQtEventFilter(QtCore.QObject):
         self.ctagscompleter_onKey = None
     #@+node:ekr.20110605121601.18540: *3* filter.eventFilter & helpers
     def eventFilter(self, obj, event):
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         traceEvent = False # True: call self.traceEvent.
-        ### traceKeys = True
+        traceKeys = True
         c, k = self.c, self.c.k
         eventType = event.type()
         ev = QtCore.QEvent
@@ -92,7 +92,8 @@ class LeoQtEventFilter(QtCore.QObject):
         # Part 3: Generate a key_event for k.masterKeyHandler.
         #
         tkKey, ch, ignore = self.toTkKey(event)
-            # g.trace(repr(tkKey), repr(ch))
+        if trace and traceKeys:
+            g.trace(repr(tkKey), repr(ch))
 
             ### just return binding and ignore !!!
             ### ignore == not binding???
@@ -431,7 +432,7 @@ class LeoQtEventFilter(QtCore.QObject):
             s = s.replace(a, b)
         if trace: g.trace(tkKey, '-->', s)
         return s
-    #@+node:ekr.20110605121601.18543: *4* filter.toTkKey & helpers (must not change!)
+    #@+node:ekr.20110605121601.18543: *4* filter.toTkKey (must not change!)
     def toTkKey(self, event):
         '''
         Return tkKey,ch,ignore:

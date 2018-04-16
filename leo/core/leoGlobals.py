@@ -17,7 +17,7 @@ isMac = sys.platform.startswith('darwin')
 isWindows = sys.platform.startswith('win')
 #@+<< global switches >>
 #@+node:ekr.20120212060348.10374: **  << global switches >> (leoGlobals.py)
-new_keys = True
+new_keys = False
 if new_keys:
     print('===== g.new_keys =====')
 
@@ -342,171 +342,143 @@ def isGeneralSetting(obj):
 class KeyStroke(object):
     '''
     A class that represent any key stroke or binding.
+    
     stroke.s is the "canonicalized" stroke.
     '''
-    if new_keys: # Can't use g.new_keys.
-        #@+<< new KeyStroke methods >>
-        #@+node:ekr.20180414195346.1: *4* << new KeyStroke methods >>
-        #@+others
-        #@+node:ekr.20180414195401.2: *5* new_ks.__init__
-        def __init__(self,
-            binding = None, # User binding.
-            ### char = None, # Input Qt char
-            ### mods = None, # Input Qt mods.
-            s = None, # Legacy  Is this ever used????
-        ):
+    #@+others
+    #@+node:ekr.20180414195401.2: *4* new_ks.__init__
+    def __init__(self,
+        binding = None, # User binding.
+        s = None, # Legacy  Is this ever used????
+    ):
+        if g.new_keys:
             self.expected_mods = ('alt', 'command', 'control', 'meta', 'shift')
-            self.s = None
-            if s:
-                ### assert not binding and not char and not mods, (repr(mods), repr(char), repr(binding))
+            if s is not None:
+           
                 assert not binding, repr(binding)
                 self.s = s
             elif binding:
-                ### assert not char and not mods and not s, (repr(mods), repr(char))
                 assert s is None, repr(s)
                 self.s = self.finalize_binding(binding)
-            ###
-            # else:
-                # assert not binding and not s, (repr(binding), repr(s))
-                # mods = [z.lower() for z in mods]
-                # for z in mods or []:
-                    # assert z in self.expected_mods, repr(z)
-                # self.mods = mods
-                # self.s = self.finalize(char)
-                # # g.trace('(KeyStroke)', self.mods, self.s)
-            if not g.isString(self.s):
-                g.trace('Bad call', g.callers())
-        #@+node:ekr.20180415083158.1: *5* new_ks.finalize
-        def finalize(self, s):
-            trace = False and not g.unitTesting
-            s1 = s
-            s = self.finalize_char(s)
-                # May change self.mods.
-            mods = ''.join(['%s+' % z.capitalize() for z in self.mods])
-            if trace: g.trace('%20s:%-20s ==> %s' % (self.mods, s1, mods+s))
-            return mods+s
-        #@+node:ekr.20180415082249.1: *5* new_ks.finalize_binding
-        def finalize_binding(self, binding):
-            
-            self.mods = self.find_mods(binding)
-            s = self.strip_mods(binding)
-            # g.trace('%30s: %25r ==> %20s:%r' % (g.caller(3), binding, self.mods or '', s))
-            return self.finalize(s)
-        #@+node:ekr.20180415083926.1: *5* new_ks.finalize_char
-        def finalize_char(self, s):
-            
-            trace = False and not g.unitTesting
-            d = {
-                'bksp': 'BackSpace', # Dubious: should be '\b'
-                'dnarrow': 'Down',
-                'esc': 'Escape',
-                'ltarrow': 'Left',
-                'pageup': 'Prior',
-                'pagedn': 'Next',
-                'rtarrow': 'Right',
-                'uparrow': 'Up',
-                ### From filter.create_key_event
-                'return': '\n',
-                '\r': '\n',
-                'backspace': 'BackSpace',
-                'backtab': 'Tab', # The shift mod will convert to 'Shift+Tab',
-                'del': 'Delete',
-                'ins': 'Insert',
-            }
-            if g.isMac:
-                # Patch provided by resi147.
-                # See the thread: special characters in MacOSX, like '@'.
-                table = (
-                    ('Alt+/', '\\'),
-                    ('Alt+5', '['),
-                    ('Alt+6', ']'),
-                    ('Alt+7', '|'),
-                    ('Alt+8', '{'),
-                    ('Alt+9', '}'),
-                    ('Alt+e', '€'),
-                    ('Alt+l', '@'),
-                )
-                for a, b in table:
-                    d[a] = b
-            # pylint: disable=undefined-loop-variable
-            if s in (None, 'none'):
-                s = ''
-            elif s.lower() in d:
-                s = d.get(s.lower())
-            elif len(s) > 1 or not s.isalpha():
-                pass
-            # Change case of single-character alphas.
-            elif 'shift' in self.mods:
-                self.mods.remove('shift')
-                s = s.upper()
-            else:
-                s = s.lower()
-            if trace:
-                g.trace(self.mods, repr(s))
-            return s
-        #@+node:ekr.20180415081209.2: *5* new_ks.find_mods
-        def find_mods(self, s):
-            '''Return the list of all modifiers seen in s.'''
-            s = s.lower()
-            table = (
-                ['alt',],
-                ['command', 'cmd',],
-                ['control', 'ctrl',],
-                ['meta',],
-                ['shift', 'shft',],
-            )
-            result = []
-            for aList in table:
-                kind = aList[0]
-                for mod in aList:
-                    for suffix in '+-':
-                        if s.find(mod+suffix) > -1:
-                            s = s.replace(mod+suffix,'')
-                            result.append(kind)
-                            break
-            return result
-        #@+node:ekr.20180415124853.1: *5* new_ks.strip_mods
-        def strip_mods(self, s):
-            '''Remove all modifiers from s, without changing the case of s.'''
-            table = ('alt', 'cmd', 'command', 'control', 'ctrl', 'meta', 'shift', 'shft')
-            for mod in table:
-                for suffix in '+-':
-                    target = mod+suffix
-                    i = s.lower().find(target)
-                    if i > -1:
-                        s = s[:i] + s[i+len(target):]
-                        break
-            return s
-        #@-others
-        #@-<< new KeyStroke methods >>
-    else:
-        #@+<< old KeyStroke methods >>
-        #@+node:ekr.20180414195326.1: *4* << old KeyStroke methods >>
-        #@+others
-        #@+node:ekr.20120204061120.10066: *5* old_ks.ctor
-        def __init__(self, binding=None, char=None, mods=None): # char & mods keep pylint happy.
+                ###
+                    # else:
+                        # assert not binding and not s, (repr(binding), repr(s))
+                        # mods = [z.lower() for z in mods]
+                        # for z in mods or []:
+                            # assert z in self.expected_mods, repr(z)
+                        # self.mods = mods
+                        # self.s = self.finalize(char)
+                        # # g.trace('(KeyStroke)', self.mods, self.s)
+                if not g.isString(self.s):
+                    g.trace('Bad call', g.callers())
+        else:
             s = binding
             trace = False and not g.unitTesting and s == 'name'
             if trace: g.trace('(KeyStroke)', s, g.callers())
-            assert s and g.isString(s), repr(s)
+            assert s and g.isString(s), (repr(s), g.callers())
             self.s = s
-        #@+node:ekr.20120203053243.10125: *5* old_ks.toGuiChar
-        def toGuiChar(self):
-            '''Replace special chars by the actual gui char.'''
-            # pylint: disable=undefined-loop-variable
-            # looks like a pylint bug
-            s = self.s.lower()
-            if s in ('\n', 'return'): s = '\n'
-            elif s in ('\t', 'tab'): s = '\t'
-            elif s in ('\b', 'backspace'): s = '\b'
-            elif s in ('.', 'period'): s = '.'
-            return s
-        #@-others
-        #@-<< old KeyStroke methods >>
-    #@+<< common KeyStroke methods >>
-    #@+node:ekr.20180415084824.1: *4* << common KeyStroke methods >>
-    #@+others
-    #@+node:ekr.20120203053243.10117: *5* old_ks.__eq__, etc
+    #@+node:ekr.20180415083158.1: *4* new_ks.finalize
+    def finalize(self, s):
+        trace = False and not g.unitTesting
+        s1 = s
+        s = self.finalize_char(s)
+            # May change self.mods.
+        mods = ''.join(['%s+' % z.capitalize() for z in self.mods])
+        if trace: g.trace('%20s:%-20s ==> %s' % (self.mods, s1, mods+s))
+        return mods+s
+    #@+node:ekr.20180415082249.1: *4* new_ks.finalize_binding
+    def finalize_binding(self, binding):
+        
+        self.mods = self.find_mods(binding)
+        s = self.strip_mods(binding)
+        # g.trace('%30s: %25r ==> %20s:%r' % (g.caller(3), binding, self.mods or '', s))
+        return self.finalize(s)
+    #@+node:ekr.20180415083926.1: *4* new_ks.finalize_char
+    def finalize_char(self, s):
+        
+        trace = False and not g.unitTesting
+        d = {
+            'bksp': 'BackSpace', # Dubious: should be '\b'
+            'dnarrow': 'Down',
+            'esc': 'Escape',
+            'ltarrow': 'Left',
+            'pageup': 'Prior',
+            'pagedn': 'Next',
+            'rtarrow': 'Right',
+            'uparrow': 'Up',
+            ### From filter.create_key_event
+            'return': '\n',
+            '\r': '\n',
+            'backspace': 'BackSpace',
+            'backtab': 'Tab', # The shift mod will convert to 'Shift+Tab',
+            'del': 'Delete',
+            'ins': 'Insert',
+        }
+        if g.isMac:
+            # Patch provided by resi147.
+            # See the thread: special characters in MacOSX, like '@'.
+            table = (
+                ('Alt+/', '\\'),
+                ('Alt+5', '['),
+                ('Alt+6', ']'),
+                ('Alt+7', '|'),
+                ('Alt+8', '{'),
+                ('Alt+9', '}'),
+                ('Alt+e', '€'),
+                ('Alt+l', '@'),
+            )
+            for a, b in table:
+                d[a] = b
+        # pylint: disable=undefined-loop-variable
+        if s in (None, 'none'):
+            s = ''
+        elif s.lower() in d:
+            s = d.get(s.lower())
+        elif len(s) > 1 or not s.isalpha():
+            pass
+        # Change case of single-character alphas.
+        elif 'shift' in self.mods:
+            self.mods.remove('shift')
+            s = s.upper()
+        else:
+            s = s.lower()
+        if trace:
+            g.trace(self.mods, repr(s))
+        return s
+    #@+node:ekr.20180415081209.2: *4* new_ks.find_mods
+    def find_mods(self, s):
+        '''Return the list of all modifiers seen in s.'''
+        s = s.lower()
+        table = (
+            ['alt',],
+            ['command', 'cmd',],
+            ['control', 'ctrl',],
+            ['meta',],
+            ['shift', 'shft',],
+        )
+        result = []
+        for aList in table:
+            kind = aList[0]
+            for mod in aList:
+                for suffix in '+-':
+                    if s.find(mod+suffix) > -1:
+                        s = s.replace(mod+suffix,'')
+                        result.append(kind)
+                        break
+        return result
+    #@+node:ekr.20180415124853.1: *4* new_ks.strip_mods
+    def strip_mods(self, s):
+        '''Remove all modifiers from s, without changing the case of s.'''
+        table = ('alt', 'cmd', 'command', 'control', 'ctrl', 'meta', 'shift', 'shft')
+        for mod in table:
+            for suffix in '+-':
+                target = mod+suffix
+                i = s.lower().find(target)
+                if i > -1:
+                    s = s[:i] + s[i+len(target):]
+                    break
+        return s
+    #@+node:ekr.20120203053243.10117: *4* old_ks.__eq__, etc
     #@+at All these must be defined in order to say, for example:
     #     for key in sorted(d)
     # where the keys of d are KeyStroke objects.
@@ -529,17 +501,17 @@ class KeyStroke(object):
     def __gt__(self, other): return not self.__lt__(other) and not self.__eq__(other)
 
     def __ge__(self, other): return not self.__lt__(other)
-    #@+node:ekr.20120203053243.10118: *5* old_ks.__hash__
+    #@+node:ekr.20120203053243.10118: *4* old_ks.__hash__
     # Allow KeyStroke objects to be keys in dictionaries.
 
     def __hash__(self):
         return self.s.__hash__() if self.s else 0
-    #@+node:ekr.20120204061120.10067: *5* old_ks.__repr___ & __str__
+    #@+node:ekr.20120204061120.10067: *4* old_ks.__repr___ & __str__
     def __str__(self):
         return '<KeyStroke: %s>' % (repr(self.s))
 
     __repr__ = __str__
-    #@+node:ekr.20120203053243.10124: *5* old_ks.find, lower & startswith
+    #@+node:ekr.20120203053243.10124: *4* old_ks.find, lower & startswith
     # These may go away later, but for now they make conversion of string strokes easier.
 
     def find(self, pattern):
@@ -550,12 +522,22 @@ class KeyStroke(object):
 
     def startswith(self, s):
         return self.s.startswith(s)
-    #@+node:ekr.20120203053243.10121: *5* old_ks.isFKey
+    #@+node:ekr.20120203053243.10121: *4* old_ks.isFKey
     def isFKey(self):
         s = self.s.lower()
         return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
+    #@+node:ekr.20120203053243.10125: *4* old_ks.toGuiChar (to be removed)
+    def toGuiChar(self):
+        '''Replace special chars by the actual gui char.'''
+        # pylint: disable=undefined-loop-variable
+        # looks like a pylint bug
+        s = self.s.lower()
+        if s in ('\n', 'return'): s = '\n'
+        elif s in ('\t', 'tab'): s = '\t'
+        elif s in ('\b', 'backspace'): s = '\b'
+        elif s in ('.', 'period'): s = '.'
+        return s
     #@-others
-    #@-<< common KeyStroke methods >>
 
 def isStroke(obj):
     return isinstance(obj, KeyStroke)
