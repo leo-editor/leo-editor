@@ -360,16 +360,6 @@ class KeyStroke(object):
             elif binding:
                 assert s is None, repr(s)
                 self.s = self.finalize_binding(binding)
-                ###
-                    # else:
-                        # self.expected_mods = ('alt', 'command', 'control', 'meta', 'shift')
-                        # assert not binding and not s, (repr(binding), repr(s))
-                        # mods = [z.lower() for z in mods]
-                        # for z in mods or []:
-                            # assert z in self.expected_mods, repr(z)
-                        # self.mods = mods
-                        # self.s = self.finalize(char)
-                        # # g.trace('(KeyStroke)', self.mods, self.s)
             else:
                 self.s = None
             if not g.isString(self.s):
@@ -377,7 +367,6 @@ class KeyStroke(object):
             if trace: g.trace(repr(self.s))
         else:
             s = binding
-            trace = False and not g.unitTesting and s == 'name'
             if trace: g.trace('(KeyStroke)', s, g.callers())
             assert s and g.isString(s), (repr(s), g.callers())
             self.s = s
@@ -399,9 +388,9 @@ class KeyStroke(object):
         return self.finalize(s)
     #@+node:ekr.20180415083926.1: *4* new_ks.finalize_char
     def finalize_char(self, s):
-        
+        '''Perform very-last-minute translations on bindings.'''
         trace = False and not g.unitTesting
-        d = {
+        translate_d = {
             'bksp': 'BackSpace', # Dubious: should be '\b'
             'dnarrow': 'Down',
             'esc': 'Escape',
@@ -421,7 +410,7 @@ class KeyStroke(object):
         if g.isMac:
             # Patch provided by resi147.
             # See the thread: special characters in MacOSX, like '@'.
-            table = (
+            mac_table = (
                 ('Alt+/', '\\'),
                 ('Alt+5', '['),
                 ('Alt+6', ']'),
@@ -431,21 +420,48 @@ class KeyStroke(object):
                 ('Alt+e', '€'),
                 ('Alt+l', '@'),
             )
-            for a, b in table:
-                d[a] = b
+            for a, b in mac_table:
+                translate_d[a] = b
         # pylint: disable=undefined-loop-variable
+        # Looks like a pylint bug.
         if s in (None, 'none'):
             s = ''
-        elif s.lower() in d:
-            s = d.get(s.lower())
-        elif len(s) > 1 or not s.isalpha():
-            pass
-        # Change case of single-character alphas.
-        elif 'shift' in self.mods:
-            self.mods.remove('shift')
-            s = s.upper()
+        elif s.lower() in translate_d:
+            s = translate_d.get(s.lower())
+        elif s.isalpha():
+            # Change case of single-character alphas.
+            if len(s) == 1:
+                if 'shift' in self.mods:
+                    self.mods.remove('shift')
+                    s = s.upper()
+                else:
+                    s = s.lower()
         else:
-            s = s.lower()
+            # Translate possibly-dubious user settings.
+            shift_list = "_+{}|:\"<>?"
+                # Shifting these characters has no effect.
+            shift_d = {
+                # Top row of keyboard.
+                "-": "_",
+                "=": "+",
+                # Second row of keyboard.
+                "[": "{",
+                "]": "}",
+                "\\": '|',
+                # Third row of keyboard.
+                ";": ":",
+                "'": '"',
+                # Fourth row of keyboard.
+                ".": "<",
+                ",": ">",
+                "//": "?",
+            }
+            if 'shift' in self.mods and s in shift_list:
+                # Shifting these chars has no effect.
+                self.mods.remove('shift')
+            elif 'shift' in self.mods and s in shift_d:
+                self.mods.remove('shift')
+                s = shift_d.get(s)
         if trace:
             g.trace(self.mods, repr(s))
         return s

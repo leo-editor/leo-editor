@@ -4972,11 +4972,11 @@ print ('done')
 <t tx="ekr.20090213065933.11"></t>
 <t tx="ekr.20090408091222.1"># These are needed because Qt reports Ctrl-( as Ctrl-Shift-9, etc.
 
-add-comments        = Ctrl-Shift-9  # Ctrl-parenleft
-delete-comments     = Ctrl-Shift-0  # Ctrl-parenright
-demote              = Ctrl-Shift-]  # Ctrl-}
-move-past-close     = Alt-Shift-0   # Alt-parenright
-promote             = Ctrl-Shift-[  # Ctrl-{
+# add-comments        = Ctrl-Shift-9  # Ctrl-parenleft
+# delete-comments     = Ctrl-Shift-0  # Ctrl-parenright
+# demote              = Ctrl-Shift-]  # Ctrl-}
+# move-past-close     = Alt-Shift-0   # Alt-parenright
+# promote             = Ctrl-Shift-[  # Ctrl-{
 </t>
 <t tx="ekr.20090430075506.7">True: write comment line of the form:
     

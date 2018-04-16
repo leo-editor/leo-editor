@@ -97,6 +97,7 @@ class LeoQtEventFilter(QtCore.QObject):
 
             ### just return binding and ignore !!!
             ### ignore == not binding???
+
         if not ignore:
             if g.new_keys:
                 binding = tkKey if ch else None
@@ -350,7 +351,7 @@ class LeoQtEventFilter(QtCore.QObject):
             (qt.ShiftModifier, 'Shift'),
         )
         mods = [b for a, b in table if (modifiers & a)]
-            # Case *does* matter in filter.new_binding.
+            # Case *does* matter below.
         return mods
     #@+node:ekr.20110605121601.18546: *4* filter.tkKey (Part 2)
     def tkKey(self, event, mods, keynum, text, toString, ch):
@@ -369,7 +370,8 @@ class LeoQtEventFilter(QtCore.QObject):
             'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12',
         )
         if g.new_keys:
-            ch = ch or toString
+            ch2 = ch or toString
+            if ch2: ch = ch2
         else:
             # Convert '&' to 'ampersand', etc.
             ch2 = self.char2tkName(ch or toString)
@@ -424,7 +426,7 @@ class LeoQtEventFilter(QtCore.QObject):
             s = s.replace(a, b)
         if trace: g.trace(tkKey, '-->', s)
         return s
-    #@+node:ekr.20110605121601.18543: *4* filter.toTkKey (must not change!)
+    #@+node:ekr.20110605121601.18543: *4* filter.toTkKey
     def toTkKey(self, event):
         '''
         Return tkKey,ch,ignore:

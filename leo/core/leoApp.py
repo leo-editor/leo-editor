@@ -2085,18 +2085,21 @@ class LoadManager(object):
         # lm = self
         # Fix bug 951921: check for duplicate shortcuts only in the new file.
         for ks in sorted(list(d.keys())):
-            conflict, panes = False, ['all']
+            duplicates, panes = [], ['all']
             aList = d.get(ks)
                 # A list of bi objects.
             aList2 = [z for z in aList if not z.pane.startswith('mode')]
             if len(aList) > 1:
                 for bi in aList2:
                     if bi.pane in panes:
-                        conflict = True; break
+                        duplicates.append(bi)
+                        ### break
                     else:
                         panes.append(bi.pane)
-            if conflict:
-                g.es_print('conflicting key bindings in %s' % (c.shortFileName()))
+            if duplicates:
+                bindings = list(set([z.stroke.s for z in duplicates]))
+                kind = 'duplicate, (not conflicting)' if len(bindings) == 1 else 'conflicting'
+                g.es_print('%s key bindings in %s' % (kind, c.shortFileName()))
                 for bi in aList2:
                     g.es_print('%6s %s %s' % (
                         bi.pane, bi.stroke.s, bi.commandName))
