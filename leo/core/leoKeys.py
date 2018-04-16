@@ -4464,7 +4464,7 @@ class KeyHandlerClass(object):
         val = s if len(s) == 1 else ''
         if trace: g.trace(repr(stroke), repr(val)) # 'shift',shift,
         return val
-    #@+node:ekr.20061031131434.184: *4* k.strokeFromSetting & helpers
+    #@+node:ekr.20061031131434.184: *4* k.strokeFromSetting & helpers (to be removed)
     if g.new_keys:
         
         pass

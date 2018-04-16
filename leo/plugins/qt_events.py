@@ -136,7 +136,7 @@ class LeoQtEventFilter(QtCore.QObject):
             g.es_exception()
         return True
             # Whatever happens, suppress all other Qt key handling.
-    #@+node:ekr.20110605121601.18547: *4* filter.char2tkName (not used when g.new_keys)
+    #@+node:ekr.20110605121601.18547: *4* filter.char2tkName (to be removed)
     char2tkNameDict = {
         # Part 1: same as g.app.guiBindNamesDict
         "&": "ampersand",
@@ -292,6 +292,22 @@ class LeoQtEventFilter(QtCore.QObject):
         else:
             # QTextEdit: ignore all key events except keyPress events.
             return eventType != ev.KeyPress
+    #@+node:ekr.20180415182857.1: *4* filter.mac_tweaks
+    def mac_tweaks (self, ch):
+        '''
+        Do MacOS tweaks.
+        This must be done here, because c does not exist in the KeyStroke class.
+        '''
+        c = self.c
+        if c.config.getBool('replace-meta-with-alt', default=False):
+            table = (
+                ('Meta+','Alt+'),
+                ('Ctrl+Alt+', 'Alt+Ctrl+'),
+                # Shift already follows meta.
+            )
+            for z1, z2 in table:
+                ch = ch.replace(z1, z2)
+        return ch
     #@+node:ekr.20110605121601.18544: *4* filter.qtKey (Part 1)
     def qtKey(self, event):
         '''
@@ -416,7 +432,7 @@ class LeoQtEventFilter(QtCore.QObject):
             ch = '\n'
         if trace: g.trace(repr(ch))
         return tkKey, ch, ignore
-    #@+node:ekr.20180413180751.4: *4* filter.toBinding (not used when g.new_keys)
+    #@+node:ekr.20180413180751.4: *4* filter.toBinding (to be removed)
     def toBinding(self, tkKey):
         '''Convert the official tkKey name to a canonicalized binding string.'''
         trace = False and not g.unitTesting
@@ -454,22 +470,6 @@ class LeoQtEventFilter(QtCore.QObject):
         tkKey, ch, ignore = self.tkKey(
             event, mods, keynum, text, toString, ch)
         return tkKey, ch, ignore
-    #@+node:ekr.20180415182857.1: *4* filter.mac_tweaks
-    def mac_tweaks (self, ch):
-        '''
-        Do MacOS tweaks.
-        This must be done here, because c does not exist in the KeyStroke class.
-        '''
-        c = self.c
-        if c.config.getBool('replace-meta-with-alt', default=False):
-            table = (
-                ('Meta+','Alt+'),
-                ('Ctrl+Alt+', 'Alt+Ctrl+'),
-                # Shift already follows meta.
-            )
-            for z1, z2 in table:
-                ch = ch.replace(z1, z2)
-        return ch
     #@+node:ekr.20140907103315.18767: *3* filter.Tracing
     #@+node:ekr.20110605121601.18548: *4* filter.traceEvent
     def traceEvent(self, obj, event):
