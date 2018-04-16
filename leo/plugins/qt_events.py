@@ -406,7 +406,7 @@ class LeoQtEventFilter(QtCore.QObject):
         ignore = not ch # Essential
         ch = text or toString
         return tkKey, ch, ignore
-    #@+node:ekr.20180413180751.4: *4* filter.toBinding
+    #@+node:ekr.20180413180751.4: *4* filter.toBinding (not used when g.new_keys)
     def toBinding(self, tkKey):
         '''Convert the official tkKey name to a canonicalized binding string.'''
         trace = False and not g.unitTesting
