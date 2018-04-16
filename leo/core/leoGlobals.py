@@ -17,7 +17,7 @@ isMac = sys.platform.startswith('darwin')
 isWindows = sys.platform.startswith('win')
 #@+<< global switches >>
 #@+node:ekr.20120212060348.10374: **  << global switches >> (leoGlobals.py)
-new_keys = False
+new_keys = True
 if new_keys:
     print('===== g.new_keys =====')
 

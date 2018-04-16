@@ -92,6 +92,8 @@ class LeoQtEventFilter(QtCore.QObject):
         # Part 3: Generate a key_event for k.masterKeyHandler.
         #
         tkKey, ch, ignore = self.toTkKey(event)
+            ### just return binding and ignore !!!
+            ### ignore == not binding???
         if not ignore:
             if g.new_keys:
                 binding = tkKey if ch else None
