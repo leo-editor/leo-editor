@@ -94,23 +94,20 @@ class LeoQtEventFilter(QtCore.QObject):
         tkKey, ch, ignore = self.toTkKey(event)
         if trace and traceKeys:
             g.trace('ignore', ignore, repr(tkKey), repr(ch))
-
-            ### just return binding and ignore !!!
-            ### ignore == not binding???
-
-        if not ignore:
-            binding = tkKey if ch else None
-            if binding:
-                stroke = g.KeyStroke(binding=binding) ### was, just binding.
-                if trace and traceKeys: g.trace(binding, stroke)
-                aList = k.masterGuiBindingsDict.get(stroke, [])
-            else:
-                stroke, aList = None, []
+        if ignore:
+            return False # Allow Qt to handle the key event.
+        # if not tkKey:
+            # return False ### Experimental
+        binding = tkKey if ch else None
+        if binding:
+            stroke = g.KeyStroke(binding=binding) ### was, just binding.
+            if trace and traceKeys: g.trace(binding, stroke)
+            aList = k.masterGuiBindingsDict.get(stroke, [])
+        else:
+            stroke, aList = None, []
         #
         # Part 4: Return if necessary.
         #
-        if ignore:
-            return False # Allow Qt to handle the key event.
         significant = (
             tkKey or
             ch in self.flashers or 
@@ -286,7 +283,7 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20110605121601.18543: *4* filter.toTkKey
     def toTkKey(self, event):
         '''
-        Return tkKey,ch,ignore:
+        Return tkKey, ch, ignore:
 
         tkKey: the Tk spelling of the event used to look up
                bindings in k.masterGuiBindingsDict.

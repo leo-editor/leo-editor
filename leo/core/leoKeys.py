@@ -2196,10 +2196,7 @@ class KeyHandlerClass(object):
                 assert stroke.s, stroke
             else:
                 assert shortcut, g.callers()
-                if g.new_keys:
-                    stroke = g.KeyStroke(binding=shortcut)
-                else:
-                    stroke = k.strokeFromSetting(binding=shortcut)
+                stroke = g.KeyStroke(binding=shortcut)
             if trace:
                 tag = tag.split(' ')[-1]
                 g.trace('%7s %25r %17s %s' % (pane, stroke and stroke.s, tag, commandName))
@@ -3177,10 +3174,7 @@ class KeyHandlerClass(object):
         is_local = c.shortFileName() not in ('myLeoSettings.leo', 'leoSettings.leo')
         assert not g.isStroke(shortcut)
         if shortcut:
-            if g.new_keys:
-                stroke = g.KeyStroke(binding=shortcut) if shortcut else None
-            else:
-                stroke = k.strokeFromSetting(binding=shortcut)
+            stroke = g.KeyStroke(binding=shortcut) if shortcut else None
         elif commandName.lower() == 'shortcut': # Causes problems.
             stroke = None
         elif is_local:
