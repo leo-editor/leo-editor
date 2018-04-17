@@ -97,19 +97,20 @@ class LeoQtEventFilter(QtCore.QObject):
         if trace and traceKeys: g.trace(repr(binding), repr(ch))
         stroke = g.KeyStroke(binding=binding)
         if trace and traceKeys: g.trace(binding, stroke)
-        aList = k.masterGuiBindingsDict.get(stroke, [])
         #
         # Part 4: Return if necessary.
         #
-        significant = (
-            ch in self.flashers or 
-            k.inState() or
-            bool(aList)
-        )
-        if not significant:
-            return False # Allow Qt to handle the key event.
+        # if 0:
+            # aList = k.masterGuiBindingsDict.get(stroke, [])
+            # significant = (
+                # aList or
+                # ch in self.flashers or 
+                # k.inState()
+            # )
+            # if not significant:
+                # return False # Allow Qt to handle the key event.
         #
-        # Part 5: Pass a new key event to masterKeyHandler.
+        # Part 4: Pass a new key event to masterKeyHandler.
         #
         try:
             key_event = self.createKeyEvent(event, c, self.w, ch, binding)
