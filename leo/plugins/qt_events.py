@@ -72,21 +72,21 @@ class LeoQtEventFilter(QtCore.QObject):
         eventType = event.type()
         ev = QtCore.QEvent
         #
-        # Part 1: Handle non-key event first
+        # Part 1: Handle non-key events first.
         #
         if not self.c.p:
             return False # Startup. Let Qt handle the key event
         if trace and traceEvent:
              self.traceEvent(obj, event)
         self.traceWidget(event)
-        self.do_non_key_event(event, obj)
+        self.doNoneKeyEvent(event, obj)
         if eventType not in (ev.ShortcutOverride, ev.KeyPress, ev.KeyRelease):
             if trace and traceEvent: self.traceEvent(obj, event)
             return False # Let Qt handle the non-key event.
         #
         # Part 2: Ignore incomplete key events.
         #
-        if self.ignore_key_event(event, obj):
+        if self.shouldIgnoreKeyEvent(event, obj):
             return False # Let Qt handle the key event.
         #
         # Part 3: Generate a key_event for k.masterKeyHandler.
@@ -133,8 +133,8 @@ class LeoQtEventFilter(QtCore.QObject):
             x_root = getattr(event, 'x_root', None) or 0,
             y_root = getattr(event, 'y_root', None) or 0,
         )
-    #@+node:ekr.20180413180751.2: *4* filter.do_non_key_event
-    def do_non_key_event(self, event, obj):
+    #@+node:ekr.20180413180751.2: *4* filter.doNoneKeyEvent
+    def doNoneKeyEvent(self, event, obj):
         '''Handle all non-key event. Return True if the event has been handled.'''
         c = self.c
         ev = QtCore.QEvent
@@ -151,8 +151,8 @@ class LeoQtEventFilter(QtCore.QObject):
                     c.frame.top.lineEdit.restore_selection()
         elif eventType == ev.FocusOut and self.tag == 'body':
             c.frame.body.onFocusOut(obj)
-    #@+node:ekr.20180413180751.3: *4* filter.ignore_key_event
-    def ignore_key_event(self, event, obj):
+    #@+node:ekr.20180413180751.3: *4* filter.shouldIgnoreKeyEvent
+    def shouldIgnoreKeyEvent(self, event, obj):
         '''
         Return True if we should ignore the key event.
         
