@@ -3471,8 +3471,6 @@ class KeyHandlerClass(object):
             g.trace('widget_name', name, 'stroke', stroke,
             'enable alt-ctrl', self.enable_alt_ctrl_bindings)
         if stroke and stroke.isAltCtrl() and k.ignore_unbound_non_ascii_keys:
-            ### not stroke.startswith('Alt+Ctrl') and
-            ### (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1)
             if trace: g.trace('*** ignoring unbound ctrl/alt key:', stroke)
             g.app.unitTestDict['handleUnboundChar-ignore-alt-or-ctrl'] = True
         elif name.startswith('body'):
@@ -3576,10 +3574,6 @@ class KeyHandlerClass(object):
             if trace: g.trace('plain key in insert mode', repr(stroke))
             k.masterCommand(event=event, stroke=stroke)
             return
-        ###
-        # elif(not self.enable_alt_ctrl_bindings and
-            # (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)
-        # ):
         elif stroke.isAltCtrl() and not self.enable_alt_ctrl_bindings:
             # 2011/02/11: Always ignore unbound Alt/Ctrl keys.
             if trace: g.trace('ignoring unbound Alt/Ctrl key',

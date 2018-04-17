@@ -345,7 +345,6 @@ class KeyStroke(object):
     #@+node:ekr.20180414195401.2: *4*  ks.__init__
     def __init__(self, binding):
         trace = False and not g.unitTesting
-        ### self.inverseDict = self.createInverseDict()
         if binding:
             self.s = self.finalize_binding(binding)
         else:
@@ -384,44 +383,6 @@ class KeyStroke(object):
         return '<KeyStroke: %s>' % (repr(self.s))
 
     __repr__ = __str__
-    #@+node:ekr.20180417103048.1: *4* ks.createInverseDict (not used)
-    def createInverseDict(self):
-        ### Was k.guiBindNamesInverseDict
-        ### Is this needed ???
-        return {
-            "ampersand": "&",
-            "asciicircum": "^",
-            "asciitilde": "~",
-            "asterisk": "*",
-            "at": "@",
-            "backslash": "\\",
-            "bar": "|",
-            "braceleft": "{",
-            "braceright": "}",
-            "bracketleft": "[",
-            "bracketright": "]",
-            "colon": ":", 
-            "comma": ",",
-            "dollar": "$",
-            "equal": "=",
-            "exclam": "!",
-            "greater": ">",
-            "less": "<",
-            "minus": "-",
-            "numbersign": "#",
-            "quoteright": "'",
-            "parenleft": "(",
-            "parenright": ")",
-            "percent": "%",
-            "period": ".",
-            "plus": "+",
-            "question": "?",
-            "quoteleft": "`",
-            "semicolon": ";",
-            "slash": "/",
-            "space": " ", # removed from code.
-        }
-      
     #@+node:ekr.20180415083158.1: *4* ks.finalize
     def finalize(self, s):
         trace = False and not g.unitTesting
@@ -447,7 +408,7 @@ class KeyStroke(object):
             # use_shift = (
                 # 'Home', 'End', 'Tab',
                 # 'Up', 'Down', 'Left', 'Right',
-                # 'Next', 'Prior', # 2010/01/10: Allow Shift-PageUp and Shift-PageDn.
+                # 'Next', 'Prior',
                 # 'Delete', 'Ins', 'Backspace',
                 # 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12',
             # )
@@ -456,11 +417,13 @@ class KeyStroke(object):
             'dnarrow': 'Down',
             'esc': 'Escape',
             'ltarrow': 'Left',
-            'pageup': 'Prior',
             'pagedn': 'Next',
+            'pageup': 'Prior',
+            'pgdown': 'Next',
+            'pgup': 'Prior',
             'rtarrow': 'Right',
             'uparrow': 'Up',
-            ### From filter.create_key_event
+            # From filter.create_key_event
             '\r': '\n',
             'return': '\n',
             'linefeed': '\n',

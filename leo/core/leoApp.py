@@ -2093,7 +2093,6 @@ class LoadManager(object):
                 for bi in aList2:
                     if bi.pane in panes:
                         duplicates.append(bi)
-                        ### break
                     else:
                         panes.append(bi.pane)
             if duplicates:
