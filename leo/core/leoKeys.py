@@ -4227,12 +4227,14 @@ class KeyHandlerClass(object):
         s = stroke.s if g.isStroke(stroke) else stroke
         s = s.lower()
         return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
-    #@+node:ekr.20061031131434.182: *4* k.isPlainKey
+    #@+node:ekr.20061031131434.182: *4* k.isPlainKey (changed)
     def isPlainKey(self, stroke):
         '''Return true if the shortcut refers to a plain (non-Alt,non-Ctl) key.'''
         if not stroke:
             return False
         if not g.isStroke(stroke):
+            # Happens during unit tests.
+            # g.trace('=====', stroke, g.callers())
             stroke = g.KeyStroke(stroke)
         #
         # altgr combos (Alt+Ctrl) are always plain keys
@@ -4241,29 +4243,7 @@ class KeyHandlerClass(object):
         if stroke.isAltCtrl() and not self.enable_alt_ctrl_bindings:
             return True
         return stroke.isPlainKey()
-        ###
-            # k = self
-            # trace = False and not g.unitTesting
-            # assert g.isString(stroke) or g.isStroke(stroke)
-            # shortcut = stroke.s if g.isStroke(stroke) else stroke
-            # # altgr combos (Alt+Ctrl) are always plain keys
-            # if shortcut.startswith('Alt+Ctrl+') and not self.enable_alt_ctrl_bindings:
-                # return True
-            # for z in ('Alt', 'Ctrl', 'Command', 'Meta'):
-                # if shortcut.find(z) != -1:
-                    # return False
-            # # Careful, allow bare angle brackets for unit tests.
-            # if shortcut.startswith('<') and shortcut.endswith('>'):
-                # shortcut = shortcut[1: -1]
-            # isPlain = (
-                # len(shortcut) == 1 or
-                # len(k.guiBindNamesInverseDict.get(shortcut, '')) == 1 or
-                # # A hack: allow Return to be bound to command.
-                # shortcut in ('Tab', '\t')
-            # )
-            # if trace: g.trace(isPlain,repr(shortcut))
-            # return isPlain and not self.isFKey(shortcut)
-    #@+node:ekr.20061031131434.191: *4* k.prettyPrintKey
+    #@+node:ekr.20061031131434.191: *4* k.prettyPrintKey (changed)
     def prettyPrintKey(self, stroke, brief=False):
         
         if not stroke:
@@ -4272,43 +4252,6 @@ class KeyHandlerClass(object):
             return stroke.s
         stroke = g.KeyStroke(stroke)
         return stroke.s
-        ###
-            # trace = False and not g.unitTesting
-            # k = self
-            # if not stroke:
-                # s = ''
-            # elif g.isStroke(stroke):
-                # s = stroke.s
-            # else:
-                # s = stroke
-            # if not s: return ''
-            # shift = s.find("shift") >= 0 or s.find("shft") >= 0
-            # # Replace all minus signs by plus signs, except a trailing minus:
-            # if s.endswith('-'): s = s[: -1].replace('-', '+') + '-'
-            # else: s = s.replace('-', '+')
-            # fields = s.split('+')
-            # last = fields and fields[-1]
-            # if trace: g.trace('fields', fields)
-            # if last and len(last) == 1:
-                # prev = s[: -1]
-                # if last.isalpha():
-                    # if last.isupper():
-                        # if not shift:
-                            # s = prev + 'Shift+' + last
-                    # elif last.islower():
-                        # if not prev:
-                            # s = last.upper()
-                        # else:
-                            # s = prev + last.upper()
-            # else:
-                # last = k.guiBindNamesInverseDict.get(last, last)
-                # if fields and fields[: -1]:
-                    # s = '%s+%s' % ('+'.join(fields[: -1]), last)
-                # else:
-                    # s = last
-            # if s.endswith(' '):
-                # s = s[: -1] + 'Space' # 2010/11/06
-            # return s
     #@+node:ekr.20110609161752.16459: *4* k.setLossage
     def setLossage(self, ch, stroke):
         trace = False and not g.unitTesting
@@ -4319,7 +4262,7 @@ class KeyHandlerClass(object):
                 g.app.lossage.pop()
         # This looks like a memory leak, but isn't.
         g.app.lossage.insert(0, (ch, stroke),)
-    #@+node:ekr.20110606004638.16929: *4* k.stroke2char
+    #@+node:ekr.20110606004638.16929: *4* k.stroke2char (changed)
     def stroke2char(self, stroke):
         '''
         Convert a stroke to an (insertable) char.
@@ -4328,55 +4271,9 @@ class KeyHandlerClass(object):
         if not stroke:
             return ''
         if not g.isStroke(stroke):
+            g.trace('=====', stroke, g.callers())
             stroke = g.KeyStroke(stroke)
         return stroke.toInsertableChar()
-        ###
-            # # pylint: disable=len-as-condition
-            # trace = False and not g.unitTesting
-            # trace = trace and stroke.find('1') > -1
-            # k = self
-            # if not stroke: return ''
-            # s = stroke.s if g.isStroke(stroke) else stroke
-            # # Allow bare angle brackets for unit tests.
-            # if s.startswith('<') and s.endswith('>'):
-                # s = s[1: -1]
-            # if len(s) == 0: return ''
-            # if len(s) == 1: return s
-            # for z in ('Alt', 'Ctrl', 'Command', 'Meta'):
-                # if s.find(z) != -1:
-                    # return ''
-                    # # This is not accurate: LeoQtEventFilter retains
-                    # # the spelling of Alt-Ctrl keys because of the
-                    # # @bool enable_alt_ctrl_bindings setting.
-            # # Special case the gang of four, plus 'Escape', 'PageDn', 'PageUp',
-            # d = {
-                # 'BackSpace': '\b',
-                # 'Escape': 'Escape',
-                # 'Linefeed': '\r',
-                # 'PageDn': 'Next', # Fix #416.
-                # 'PageUp': 'Prior', # Fix #416.
-                # 'Return': '\n',
-                # 'Tab': '\t',
-            # }
-            # ch = d.get(s)
-            # if ch: return ch
-            # # First, do the common translations.
-            # ch = k.guiBindNamesInverseDict.get(s)
-            # if ch:
-                # if trace: g.trace(repr(stroke), repr(ch))
-                # return ch
-            # # A much-simplified form of code in k.strokeFromSetting.
-            # shift = s.find('Shift+') > -1 or s.find('Shift-') > -1
-            # s = s.replace('Shift+', '').replace('Shift-', '')
-            # last = s #  Everything should have been stripped.
-            # if len(s) == 1 and s.isalpha():
-                # if shift:
-                    # s = last.upper()
-                # else:
-                    # s = last.lower()
-            # val = s if len(s) == 1 else ''
-            # if trace: g.trace(repr(stroke), repr(val)) # 'shift',shift,
-            # return val
     #@+node:ekr.20061031131434.180: *4* k.traceBinding (not used)
     def traceBinding(self, bi, shortcut, w):
         k = self; c = k.c; gui = g.app.gui

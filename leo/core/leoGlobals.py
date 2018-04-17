@@ -569,16 +569,7 @@ class KeyStroke(object):
         if self.find_mods(s) or self.isFKey():
             return False
         return len(s) == 1 or s in ('BackSpace', 'Return', 'Tab')
-            # The "Gang of Four", without "LineFeed"
-
-        # if len(s) == 1:
-            # return True
-        # return (
-            # ### len(k.guiBindNamesInverseDict.get(shortcut, '')) == 1 or
-            # self.inverseDict(s, '') == 1 or
-            # # A hack: allow Return to be bound to command.
-            # s in ('Tab', '\t')
-        # )
+            # The "Gang of Four", without "LineFeed".
     #@+node:ekr.20180417160703.1: *4* ks.dump
     def dump(self):
         '''Show results of printable chars.'''

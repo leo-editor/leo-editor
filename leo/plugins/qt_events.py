@@ -272,6 +272,11 @@ class LeoQtEventFilter(QtCore.QObject):
                 binding = ch
                 return binding, ch
         #
+        # This is needed, because ch is separate from binding.
+        #
+        if ch == '\r':
+            ch = '\n'
+        #
         # Adjust the case of the binding string (for the minibuffer).
         #
         if len(ch) == 1 and len(binding) == 1 and ch.isalpha() and binding.isalpha():
