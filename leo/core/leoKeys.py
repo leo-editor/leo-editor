@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 #@+leo-ver=5-thin
 #@+node:ekr.20061031131434: * @file leoKeys.py
+#@@first
 """Gui-independent keystroke handling for Leo."""
 # pylint: disable=eval-used
 # pylint: disable=deprecated-method
@@ -119,7 +121,6 @@ import time
 # k.bindingsDict          shortcuts           lists of BindingInfo objects
 # k.masterBindingsDict    scope names (2)     Interior masterBindingDicts (3)
 # k.masterGuiBindingsDict strokes             list of widgets in which stoke is bound
-# k.settingsNameDict (4)  settings.lower()    "Real" Tk specifiers
 # inverseBindingDict (5)  command names       lists of tuples (pane,key)
 # modeCommandsDict (6)    command name (7)    inner modeCommandsDicts (8)
 # 
@@ -131,7 +132,6 @@ import time
 # (1) Command names are minibuffer names (strings)
 # (2) Scope names are 'all','text',etc.
 # (3) Interior masterBindingDicts: Keys are strokes; values are BindingInfo objects.
-# (4) k.settingsNameDict has no inverse.
 # (5) inverseBindingDict is **not** an ivar: it is computed by k.computeInverseBindingDict.
 # (6) A global dict: g.app.gui.modeCommandsDict
 # (7) enter-x-command
@@ -1720,8 +1720,8 @@ class KeyHandlerClass(object):
         self.defineExternallyVisibleIvars()
         self.defineInternalIvars()
         self.reloadSettings()
-        self.defineTkNames()
-        self.defineSpecialKeys()
+        ### self.defineTkNames()
+        ### self.defineSpecialKeys()
         self.defineSingleLineCommands()
         self.defineMultiLineCommands()
         self.autoCompleter = AutoCompleterClass(self)
@@ -1978,108 +1978,6 @@ class KeyHandlerClass(object):
             'toggle-find-word-option',
             'toggle-find-wrap-around-option',
         ]
-    #@+node:ekr.20070123085931: *5* k.defineSpecialKeys
-    def defineSpecialKeys(self):
-        '''Define k.guiBindNamesDict and k.guiBindNamesInverseDict.
-
-        Important: all gui's use these dictionaries because bindings in
-        leoSettings.leo use these representations.'''
-        k = self
-        # These are defined at http://tcl.activestate.com/man/tcl8.4/TkCmd/keysyms.htm.
-        # Important: only the inverse dict is actually used in the new key binding scheme.
-        # Tk may return the *values* of this dict in event.keysym fields.
-        # Leo will warn if it gets a event whose keysym not in values of this table.
-        k.guiBindNamesDict = {
-            "&": "ampersand",
-            "^": "asciicircum",
-            "~": "asciitilde",
-            "*": "asterisk",
-            "@": "at",
-            "\\": "backslash",
-            "|": "bar",
-            "{": "braceleft",
-            "}": "braceright",
-            "[": "bracketleft",
-            "]": "bracketright",
-            ":": "colon", # removed from code.
-            ",": "comma",
-            "$": "dollar",
-            "=": "equal",
-            "!": "exclam", # removed from code.
-            ">": "greater",
-            "<": "less",
-            "-": "minus",
-            "#": "numbersign",
-            '"': "quotedbl",
-            "'": "quoteright",
-            "(": "parenleft",
-            ")": "parenright", # removed from code.
-            "%": "percent",
-            ".": "period", # removed from code.
-            "+": "plus",
-            "?": "question",
-            "`": "quoteleft",
-            ";": "semicolon",
-            "/": "slash",
-            " ": "space", # removed from code.
-            "_": "underscore",
-        }
-        # No translation.
-        for s in k.tkNamesList:
-            k.guiBindNamesDict[s] = s
-        # Create the inverse dict.
-        k.guiBindNamesInverseDict = {}
-        for key in k.guiBindNamesDict:
-            k.guiBindNamesInverseDict[k.guiBindNamesDict.get(key)] = key
-    #@+node:ekr.20070123143428: *5* k.defineTkNames
-    def defineTkNames(self):
-        k = self
-        # These are the key names used in Leo's core *regardless* of the gui actually in effect.
-        # The gui is responsible for translating gui-dependent keycodes into these values.
-        k.tkNamesList = (
-            # Arrow keys.
-            'Left', 'Right', 'Up', 'Down',
-            # Page up/down keys.
-            'Next', 'Prior',
-            # Home end keys.
-            'Home', 'End'
-            # Modifier keys.
-            'Caps_Lock', 'Num_Lock',
-            # F-keys.
-            'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12',
-            # All others.
-            'Begin', 'Break', 'Clear', 'Delete', 'Escape',
-            # Dubious: these are ascii characters!
-            # But there is no harm in retaining these in Leo's core.
-            'BackSpace', 'Linefeed', 'Return', 'Tab',
-        )
-        # These keys settings that may be specied in leoSettings.leo.
-        # Keys are lowercase, so that case is not significant *for these items only* in leoSettings.leo.
-        k.settingsNameDict = {
-            'bksp': 'BackSpace', # Dubious: should be '\b'
-            'dnarrow': 'Down',
-            'esc': 'Escape',
-            'ltarrow': 'Left',
-            'pageup': 'Prior',
-            'pagedn': 'Next',
-            'rtarrow': 'Right',
-            'uparrow': 'Up',
-        }
-        # Add lowercase version of special keys.
-        for s in k.tkNamesList:
-            k.settingsNameDict[s.lower()] = s
-    #@+at
-    # The following are not translated, so what appears in the menu is the
-    # same as what is passed to the gui. Case is significant. Note: the Tk
-    # documentation states that not all of these may be available on all
-    # platforms.
-    # 
-    # Num_Lock, Pause, Scroll_Lock, Sys_Req,
-    # KP_Add, KP_Decimal, KP_Divide, KP_Enter, KP_Equal,
-    # KP_Multiply, KP_Separator,KP_Space, KP_Subtract, KP_Tab,
-    # KP_F1,KP_F2,KP_F3,KP_F4,
-    # KP_0,KP_1,KP_2,KP_3,KP_4,KP_5,KP_6,KP_7,KP_8,KP_9,
-    # Insert
     #@+node:ekr.20150509035028.1: *4* k.cmd (decorator)
     def cmd(name):
         '''Command decorator for the leoKeys class.'''
@@ -4335,67 +4233,85 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.182: *4* k.isPlainKey
     def isPlainKey(self, stroke):
         '''Return true if the shortcut refers to a plain (non-Alt,non-Ctl) key.'''
-        trace = False and not g.unitTesting
-        k = self
         if not stroke:
             return False
-        assert g.isString(stroke) or g.isStroke(stroke)
-        shortcut = stroke.s if g.isStroke(stroke) else stroke
+        if not g.isStroke(stroke):
+            stroke = g.KeyStroke(stroke)
+        #
         # altgr combos (Alt+Ctrl) are always plain keys
-        if shortcut.startswith('Alt+Ctrl+') and not self.enable_alt_ctrl_bindings:
+        # g.KeyStroke does not handle this, because it has no "c" ivar.
+        #
+        if stroke.isAltCtrl() and not self.enable_alt_ctrl_bindings:
             return True
-        for z in ('Alt', 'Ctrl', 'Command', 'Meta'):
-            if shortcut.find(z) != -1:
-                return False
-        # Careful, allow bare angle brackets for unit tests.
-        if shortcut.startswith('<') and shortcut.endswith('>'):
-            shortcut = shortcut[1: -1]
-        isPlain = (
-            len(shortcut) == 1 or
-            len(k.guiBindNamesInverseDict.get(shortcut, '')) == 1 or
-            # A hack: allow Return to be bound to command.
-            shortcut in ('Tab', '\t')
-        )
-        if trace: g.trace(isPlain,repr(shortcut))
-        return isPlain and not self.isFKey(shortcut)
+        return stroke.isPlainKey()
+        ###
+            # k = self
+            # trace = False and not g.unitTesting
+            # assert g.isString(stroke) or g.isStroke(stroke)
+            # shortcut = stroke.s if g.isStroke(stroke) else stroke
+            # # altgr combos (Alt+Ctrl) are always plain keys
+            # if shortcut.startswith('Alt+Ctrl+') and not self.enable_alt_ctrl_bindings:
+                # return True
+            # for z in ('Alt', 'Ctrl', 'Command', 'Meta'):
+                # if shortcut.find(z) != -1:
+                    # return False
+            # # Careful, allow bare angle brackets for unit tests.
+            # if shortcut.startswith('<') and shortcut.endswith('>'):
+                # shortcut = shortcut[1: -1]
+            # isPlain = (
+                # len(shortcut) == 1 or
+                # len(k.guiBindNamesInverseDict.get(shortcut, '')) == 1 or
+                # # A hack: allow Return to be bound to command.
+                # shortcut in ('Tab', '\t')
+            # )
+            # if trace: g.trace(isPlain,repr(shortcut))
+            # return isPlain and not self.isFKey(shortcut)
     #@+node:ekr.20061031131434.191: *4* k.prettyPrintKey
     def prettyPrintKey(self, stroke, brief=False):
-        trace = False and not g.unitTesting
-        k = self
+        
         if not stroke:
-            s = ''
-        elif g.isStroke(stroke):
-            s = stroke.s
-        else:
-            s = stroke
-        if not s: return ''
-        shift = s.find("shift") >= 0 or s.find("shft") >= 0
-        # Replace all minus signs by plus signs, except a trailing minus:
-        if s.endswith('-'): s = s[: -1].replace('-', '+') + '-'
-        else: s = s.replace('-', '+')
-        fields = s.split('+')
-        last = fields and fields[-1]
-        if trace: g.trace('fields', fields)
-        if last and len(last) == 1:
-            prev = s[: -1]
-            if last.isalpha():
-                if last.isupper():
-                    if not shift:
-                        s = prev + 'Shift+' + last
-                elif last.islower():
-                    if not prev:
-                        s = last.upper()
-                    else:
-                        s = prev + last.upper()
-        else:
-            last = k.guiBindNamesInverseDict.get(last, last)
-            if fields and fields[: -1]:
-                s = '%s+%s' % ('+'.join(fields[: -1]), last)
-            else:
-                s = last
-        if s.endswith(' '):
-            s = s[: -1] + 'Space' # 2010/11/06
-        return s
+            return
+        if g.isStroke(stroke):
+            return stroke.s
+        stroke = g.KeyStroke(stroke)
+        return stroke.s
+        ###
+            # trace = False and not g.unitTesting
+            # k = self
+            # if not stroke:
+                # s = ''
+            # elif g.isStroke(stroke):
+                # s = stroke.s
+            # else:
+                # s = stroke
+            # if not s: return ''
+            # shift = s.find("shift") >= 0 or s.find("shft") >= 0
+            # # Replace all minus signs by plus signs, except a trailing minus:
+            # if s.endswith('-'): s = s[: -1].replace('-', '+') + '-'
+            # else: s = s.replace('-', '+')
+            # fields = s.split('+')
+            # last = fields and fields[-1]
+            # if trace: g.trace('fields', fields)
+            # if last and len(last) == 1:
+                # prev = s[: -1]
+                # if last.isalpha():
+                    # if last.isupper():
+                        # if not shift:
+                            # s = prev + 'Shift+' + last
+                    # elif last.islower():
+                        # if not prev:
+                            # s = last.upper()
+                        # else:
+                            # s = prev + last.upper()
+            # else:
+                # last = k.guiBindNamesInverseDict.get(last, last)
+                # if fields and fields[: -1]:
+                    # s = '%s+%s' % ('+'.join(fields[: -1]), last)
+                # else:
+                    # s = last
+            # if s.endswith(' '):
+                # s = s[: -1] + 'Space' # 2010/11/06
+            # return s
     #@+node:ekr.20110609161752.16459: *4* k.setLossage
     def setLossage(self, ch, stroke):
         trace = False and not g.unitTesting
@@ -4412,52 +4328,58 @@ class KeyHandlerClass(object):
         Convert a stroke to an (insertable) char.
         This method allows Leo to use strokes everywhere.
         '''
-        # pylint: disable=len-as-condition
-        trace = False and not g.unitTesting
-        trace = trace and stroke.find('1') > -1
-        k = self
-        if not stroke: return ''
-        s = stroke.s if g.isStroke(stroke) else stroke
-        # Allow bare angle brackets for unit tests.
-        if s.startswith('<') and s.endswith('>'):
-            s = s[1: -1]
-        if len(s) == 0: return ''
-        if len(s) == 1: return s
-        for z in ('Alt', 'Ctrl', 'Command', 'Meta'):
-            if s.find(z) != -1:
-                return ''
-                # This is not accurate: LeoQtEventFilter retains
-                # the spelling of Alt-Ctrl keys because of the
-                # @bool enable_alt_ctrl_bindings setting.
-        # Special case the gang of four, plus 'Escape', 'PageDn', 'PageUp',
-        d = {
-            'BackSpace': '\b',
-            'Escape': 'Escape',
-            'Linefeed': '\r',
-            'PageDn': 'Next', # Fix #416.
-            'PageUp': 'Prior', # Fix #416.
-            'Return': '\n',
-            'Tab': '\t',
-        }
-        ch = d.get(s)
-        if ch: return ch
-        # First, do the common translations.
-        ch = k.guiBindNamesInverseDict.get(s)
-        if ch:
-            if trace: g.trace(repr(stroke), repr(ch))
-            return ch
-        # A much-simplified form of code in k.strokeFromSetting.
-        shift = s.find('Shift+') > -1 or s.find('Shift-') > -1
-        s = s.replace('Shift+', '').replace('Shift-', '')
-        last = s #  Everything should have been stripped.
-        if len(s) == 1 and s.isalpha():
-            if shift:
-                s = last.upper()
-            else:
-                s = last.lower()
-        val = s if len(s) == 1 else ''
-        if trace: g.trace(repr(stroke), repr(val)) # 'shift',shift,
-        return val
+        if not stroke:
+            return ''
+        if not g.isStroke(stroke):
+            stroke = g.KeyStroke(stroke)
+        return stroke.toInsertableChar()
+        ###
+            # # pylint: disable=len-as-condition
+            # trace = False and not g.unitTesting
+            # trace = trace and stroke.find('1') > -1
+            # k = self
+            # if not stroke: return ''
+            # s = stroke.s if g.isStroke(stroke) else stroke
+            # # Allow bare angle brackets for unit tests.
+            # if s.startswith('<') and s.endswith('>'):
+                # s = s[1: -1]
+            # if len(s) == 0: return ''
+            # if len(s) == 1: return s
+            # for z in ('Alt', 'Ctrl', 'Command', 'Meta'):
+                # if s.find(z) != -1:
+                    # return ''
+                    # # This is not accurate: LeoQtEventFilter retains
+                    # # the spelling of Alt-Ctrl keys because of the
+                    # # @bool enable_alt_ctrl_bindings setting.
+            # # Special case the gang of four, plus 'Escape', 'PageDn', 'PageUp',
+            # d = {
+                # 'BackSpace': '\b',
+                # 'Escape': 'Escape',
+                # 'Linefeed': '\r',
+                # 'PageDn': 'Next', # Fix #416.
+                # 'PageUp': 'Prior', # Fix #416.
+                # 'Return': '\n',
+                # 'Tab': '\t',
+            # }
+            # ch = d.get(s)
+            # if ch: return ch
+            # # First, do the common translations.
+            # ch = k.guiBindNamesInverseDict.get(s)
+            # if ch:
+                # if trace: g.trace(repr(stroke), repr(ch))
+                # return ch
+            # # A much-simplified form of code in k.strokeFromSetting.
+            # shift = s.find('Shift+') > -1 or s.find('Shift-') > -1
+            # s = s.replace('Shift+', '').replace('Shift-', '')
+            # last = s #  Everything should have been stripped.
+            # if len(s) == 1 and s.isalpha():
+                # if shift:
+                    # s = last.upper()
+                # else:
+                    # s = last.lower()
+            # val = s if len(s) == 1 else ''
+            # if trace: g.trace(repr(stroke), repr(val)) # 'shift',shift,
+            # return val
     #@+node:ekr.20061031131434.180: *4* k.traceBinding (not used)
     def traceBinding(self, bi, shortcut, w):
         k = self; c = k.c; gui = g.app.gui

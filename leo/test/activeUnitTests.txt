@@ -21546,7 +21546,8 @@ for ch in (string.printable):
     assert k.isPlainKey(ch), 'wrong: not plain: %s' % (ch)
 
 special = (
-    'Return', # A special case.
+    ### 'Return', # A special case.
+    ### In the new scheme this is handled correctly without a special case.
     'Begin','Break','Caps_Lock','Clear','Down','End','Escape',
     'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12',
     'KP_Add', 'KP_Decimal', 'KP_Divide', 'KP_Enter', 'KP_Equal',

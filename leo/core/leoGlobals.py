@@ -345,6 +345,7 @@ class KeyStroke(object):
     #@+node:ekr.20180414195401.2: *4*  ks.__init__
     def __init__(self, binding):
         trace = False and not g.unitTesting
+        ### self.inverseDict = self.createInverseDict()
         if binding:
             self.s = self.finalize_binding(binding)
         else:
@@ -383,6 +384,44 @@ class KeyStroke(object):
         return '<KeyStroke: %s>' % (repr(self.s))
 
     __repr__ = __str__
+    #@+node:ekr.20180417103048.1: *4* ks.createInverseDict (not used)
+    def createInverseDict(self):
+        ### Was k.guiBindNamesInverseDict
+        ### Is this needed ???
+        return {
+            "ampersand": "&",
+            "asciicircum": "^",
+            "asciitilde": "~",
+            "asterisk": "*",
+            "at": "@",
+            "backslash": "\\",
+            "bar": "|",
+            "braceleft": "{",
+            "braceright": "}",
+            "bracketleft": "[",
+            "bracketright": "]",
+            "colon": ":", 
+            "comma": ",",
+            "dollar": "$",
+            "equal": "=",
+            "exclam": "!",
+            "greater": ">",
+            "less": "<",
+            "minus": "-",
+            "numbersign": "#",
+            "quoteright": "'",
+            "parenleft": "(",
+            "parenright": ")",
+            "percent": "%",
+            "period": ".",
+            "plus": "+",
+            "question": "?",
+            "quoteleft": "`",
+            "semicolon": ";",
+            "slash": "/",
+            "space": " ", # removed from code.
+        }
+      
     #@+node:ekr.20180415083158.1: *4* ks.finalize
     def finalize(self, s):
         trace = False and not g.unitTesting
@@ -413,7 +452,7 @@ class KeyStroke(object):
                 # 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12',
             # )
         translate_d = {
-            'bksp': 'BackSpace', # Dubious: should be '\b'
+            'bksp': 'BackSpace',
             'dnarrow': 'Down',
             'esc': 'Escape',
             'ltarrow': 'Left',
@@ -422,8 +461,9 @@ class KeyStroke(object):
             'rtarrow': 'Right',
             'uparrow': 'Up',
             ### From filter.create_key_event
-            'return': '\n',
             '\r': '\n',
+            'return': '\n',
+            'linefeed': '\n',
             'backspace': 'BackSpace',
             'backtab': 'Tab', # The shift mod will convert to 'Shift+Tab',
             'del': 'Delete',
@@ -510,7 +550,7 @@ class KeyStroke(object):
         table = (
             ['alt',],
             ['command', 'cmd',],
-            ['control', 'ctrl',],
+            ['ctrl', 'control',], # Use ctrl, not control.
             ['meta',],
             ['shift', 'shft',],
         )
@@ -524,10 +564,36 @@ class KeyStroke(object):
                         result.append(kind)
                         break
         return result
+    #@+node:ekr.20180417101435.1: *4* ks.isAltCtl
+    def isAltCtrl(self):
+        '''Return True if this is an Alt-Ctrl character.'''
+        mods = self.find_mods(self.s)
+        return 'alt' in mods and 'ctrl' in mods
     #@+node:ekr.20120203053243.10121: *4* ks.isFKey
     def isFKey(self):
         s = self.s.lower()
         return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
+    #@+node:ekr.20180417102341.1: *4* ks.isPlainKey (does not handle alt-ctrl chars)
+    def isPlainKey(self):
+        '''
+        Return True if self.s represents a plain key.
+        
+        **Note**: The caller is responsible for handling Alt-Ctrl keys.
+        '''
+        s = self.s
+        if self.find_mods(s) or self.isFKey():
+            return False
+        return len(s) == 1 or s in ('BackSpace', 'Return', 'Tab')
+            # The "Gang of Four", without "LineFeed"
+
+        # if len(s) == 1:
+            # return True
+        # return (
+            # ### len(k.guiBindNamesInverseDict.get(shortcut, '')) == 1 or
+            # self.inverseDict(s, '') == 1 or
+            # # A hack: allow Return to be bound to command.
+            # s in ('Tab', '\t')
+        # )
     #@+node:ekr.20180415124853.1: *4* ks.strip_mods
     def strip_mods(self, s):
         '''Remove all modifiers from s, without changing the case of s.'''
@@ -551,6 +617,55 @@ class KeyStroke(object):
         elif s in ('\b', 'backspace'): s = '\b'
         elif s in ('.', 'period'): s = '.'
         return s
+    #@+node:ekr.20180417100834.1: *4* ks.toInsertableChar (replace guiBindNamesInverseDict)
+    def toInsertableChar(self):
+        '''Convert self to an (insertable) char.'''
+        # pylint: disable=len-as-condition
+        s = self.s
+        if not s or self.find_mods(s):
+            return ''
+        # Handle the "Gang of Four"
+        d = {
+            'BackSpace': '\b',
+            'LineSpace': '\n',
+            'Return': '\n',
+            'Tab': '\t',
+        }
+        if s in d:
+            return d.get(s)
+        return s if len(s) == 1 else ''
+
+        ###
+            #trace = False and not g.unitTesting
+            # Special case the gang of four, plus 'Escape', 'PageDn', 'PageUp',
+            # d = {
+                # 'BackSpace': '\b',
+                # 'Escape': 'Escape',
+                # 'Linefeed': '\r',
+                # 'PageDn': 'Next', # Fix #416.
+                # 'PageUp': 'Prior', # Fix #416.
+                # 'Return': '\n',
+                # 'Tab': '\t',
+            # }
+            # ch = d.get(s)
+            # if ch: return ch
+            # # First, do the common translations.
+            # ch = k.guiBindNamesInverseDict.get(s)
+            # if ch:
+                # if trace: g.trace(repr(stroke), repr(ch))
+                # return ch
+            # # A much-simplified form of code in k.strokeFromSetting.
+            # shift = s.find('Shift+') > -1 or s.find('Shift-') > -1
+            # s = s.replace('Shift+', '').replace('Shift-', '')
+            # last = s #  Everything should have been stripped.
+            # if len(s) == 1 and s.isalpha():
+                # if shift:
+                    # s = last.upper()
+                # else:
+                    # s = last.lower()
+            # val = s if len(s) == 1 else ''
+            # if trace: g.trace(repr(stroke), repr(val)) # 'shift',shift,
+            # return val
     #@-others
 
 def isStroke(obj):
