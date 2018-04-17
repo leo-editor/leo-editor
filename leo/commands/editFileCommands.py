@@ -654,8 +654,13 @@ class GitDiffController:
             # Get the file from the working directory.
             path = g.os_path_finalize_join(self.repo_dir, fn)
             if g.os_path_exists(path):
-                with open(path, 'r') as f:
-                    s = f.read()
+                try:
+                    with open(path, 'rb') as f: # Was 'r'
+                        s = f.read()
+                except Exception:
+                    g.es_print('Can not read', path)
+                    g.es_exception()
+                    s = ''
             else:
                 g.trace('not found:', path)
                 s = ''
