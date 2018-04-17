@@ -69,27 +69,24 @@ class LeoQtEventFilter(QtCore.QObject):
         traceEvent = False # True: call self.traceEvent.
         traceKeys = True
         c, k = self.c, self.c.k
-        eventType = event.type()
-        ev = QtCore.QEvent
         #
-        # Part 1: Handle non-key events first.
+        # Handle non-key events first.
         #
         if not self.c.p:
             return False # Startup. Let Qt handle the key event
         if trace and traceEvent:
              self.traceEvent(obj, event)
         self.traceWidget(event)
-        self.doNoneKeyEvent(event, obj)
-        if eventType not in (ev.ShortcutOverride, ev.KeyPress, ev.KeyRelease):
+        if self.doNonKeyEvent(event, obj):
             if trace and traceEvent: self.traceEvent(obj, event)
             return False # Let Qt handle the non-key event.
         #
-        # Part 2: Ignore incomplete key events.
+        # Ignore incomplete key events.
         #
         if self.shouldIgnoreKeyEvent(event, obj):
             return False # Let Qt handle the key event.
         #
-        # Part 3: Generate a key_event for k.masterKeyHandler.
+        # Generate a g.KeyStroke for k.masterKeyHandler.
         #
         binding, ch = self.toBinding(event)
         if not binding:
@@ -98,19 +95,7 @@ class LeoQtEventFilter(QtCore.QObject):
         stroke = g.KeyStroke(binding=binding)
         if trace and traceKeys: g.trace(binding, stroke)
         #
-        # Part 4: Return if necessary.
-        #
-        # if 0:
-            # aList = k.masterGuiBindingsDict.get(stroke, [])
-            # significant = (
-                # aList or
-                # ch in self.flashers or 
-                # k.inState()
-            # )
-            # if not significant:
-                # return False # Allow Qt to handle the key event.
-        #
-        # Part 4: Pass a new key event to masterKeyHandler.
+        # Pass the KeyStroke to masterKeyHandler.
         #
         try:
             key_event = self.createKeyEvent(event, c, self.w, ch, binding)
@@ -134,9 +119,9 @@ class LeoQtEventFilter(QtCore.QObject):
             x_root = getattr(event, 'x_root', None) or 0,
             y_root = getattr(event, 'y_root', None) or 0,
         )
-    #@+node:ekr.20180413180751.2: *4* filter.doNoneKeyEvent
-    def doNoneKeyEvent(self, event, obj):
-        '''Handle all non-key event. Return True if the event has been handled.'''
+    #@+node:ekr.20180413180751.2: *4* filter.doNonKeyEvent
+    def doNonKeyEvent(self, event, obj):
+        '''Handle all non-key event. '''
         c = self.c
         ev = QtCore.QEvent
         eventType = event.type()
@@ -152,6 +137,8 @@ class LeoQtEventFilter(QtCore.QObject):
                     c.frame.top.lineEdit.restore_selection()
         elif eventType == ev.FocusOut and self.tag == 'body':
             c.frame.body.onFocusOut(obj)
+        return eventType not in (ev.ShortcutOverride, ev.KeyPress, ev.KeyRelease)
+            # Return True if the event has been handled.
     #@+node:ekr.20180413180751.3: *4* filter.shouldIgnoreKeyEvent
     def shouldIgnoreKeyEvent(self, event, obj):
         '''

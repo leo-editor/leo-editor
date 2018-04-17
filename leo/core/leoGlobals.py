@@ -594,6 +594,17 @@ class KeyStroke(object):
             # # A hack: allow Return to be bound to command.
             # s in ('Tab', '\t')
         # )
+    #@+node:ekr.20180417160703.1: *4* ks.dump
+    def dump(self):
+        '''Show results of printable chars.'''
+        for i in range(128):
+            s = chr(i)
+            stroke = g.KeyStroke(s)
+            if stroke.s != s:
+                print('%2s %10r %r' % (i, s, stroke.s))
+        for ch in ('backspace', 'linefeed', 'return', 'tab'):
+            stroke = g.KeyStroke(ch)
+            print('%2s %10r %r' % ('', ch, stroke.s))
     #@+node:ekr.20180415124853.1: *4* ks.strip_mods
     def strip_mods(self, s):
         '''Remove all modifiers from s, without changing the case of s.'''
