@@ -198,8 +198,6 @@ class LeoQtEventFilter(QtCore.QObject):
             if ch != binding:
                 # This happens in the minibuffer.
                 binding = ch
-        if g.isMac:
-            binding = self.doMacTweaks(binding)
         return binding, ch
     #@+node:ekr.20110605121601.18544: *5* filter.qtKey
     def qtKey(self, event):
