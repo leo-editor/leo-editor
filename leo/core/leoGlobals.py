@@ -99,6 +99,7 @@ import tempfile
 import time
 import traceback
 import types
+import unicodedata
 if isPython3:
     # pylint: disable=no-name-in-module
     import urllib.parse as urlparse
@@ -531,8 +532,13 @@ class KeyStroke(object):
         s = self.s
         if self.find_mods(s) or self.isFKey():
             return False
-        return len(s) == 1 or s in ('BackSpace', 'Return', 'Tab')
+        if s in ('BackSpace', 'Return', 'Tab'):
             # The "Gang of Four", without "LineFeed".
+            return True
+        if len(s) == 1:
+            return not unicodedata.category(s).startswith('C')
+        else:
+            return False
     #@+node:ekr.20180417160703.1: *4* ks.dump
     def dump(self):
         '''Show results of printable chars.'''
