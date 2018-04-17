@@ -91,25 +91,27 @@ class LeoQtEventFilter(QtCore.QObject):
         #
         # Part 3: Generate a key_event for k.masterKeyHandler.
         #
-        tkKey, ch, ignore = self.toTkKey(event)
-        if trace and traceKeys:
-            g.trace('ignore', ignore, repr(tkKey), repr(ch))
-        if ignore:
+        binding, ch = self.toBinding(event)
+        if not binding:
             return False # Allow Qt to handle the key event.
-        # if not tkKey:
-            # return False ### Experimental
-        binding = tkKey if ch else None
-        if binding:
-            stroke = g.KeyStroke(binding=binding) ### was, just binding.
-            if trace and traceKeys: g.trace(binding, stroke)
-            aList = k.masterGuiBindingsDict.get(stroke, [])
-        else:
-            stroke, aList = None, []
+        if trace and traceKeys:
+            g.trace(repr(binding), repr(ch))
+        ###
+            # if not tkKey: ### Experimental
+                # return False
+            # binding = tkKey if ch else None
+        ### if binding:
+        stroke = g.KeyStroke(binding=binding)
+        if trace and traceKeys: g.trace(binding, stroke)
+        aList = k.masterGuiBindingsDict.get(stroke, [])
+        ###
+        # else:
+            # stroke, aList = None, []
         #
         # Part 4: Return if necessary.
         #
         significant = (
-            tkKey or
+            ### tkKey or
             ch in self.flashers or 
             k.inState() or
             bool(aList)
@@ -120,7 +122,8 @@ class LeoQtEventFilter(QtCore.QObject):
         # Part 5: Pass a new key event to masterKeyHandler.
         #
         try:
-            key_event = self.create_key_event(event, c, self.w, ch, tkKey, binding)
+            ### key_event = self.create_key_event(event, c, self.w, ch, tkKey, binding)
+            key_event = self.create_key_event(event, c, self.w, ch, binding, binding)
             k.masterKeyHandler(key_event)
             c.outerUpdate()
         except Exception:
@@ -262,44 +265,28 @@ class LeoQtEventFilter(QtCore.QObject):
         mods = [b for a, b in table if (modifiers & a)]
             # Case *does* matter below.
         return mods
-    #@+node:ekr.20110605121601.18546: *4* filter.tkKey (Part 2)
-    def tkKey(self, event, mods, keynum, text, toString, ch):
-        '''Carefully convert the Qt key to binding.'''
-        trace = False and not g.unitTesting
-        ch1 = ch # For tracing.
-        ch = ch or toString or ''
-        ###
-            # ch2 = ch or toString
-            # if ch2: ch = ch2
-            # if not ch: ch = ''
-        tkKey = '%s%s' % (''.join(['%s+' % (z) for z in mods]), ch)
-        if trace: g.trace('text: %r toString: %r ch1: %r ch: %r' % (text, toString, ch1, ch))
-        ignore = not ch # Essential
-        ch = text or toString
-        if ch == '\r':
-            ch = '\n'
-        if trace: g.trace(repr(ch))
-        return tkKey, ch, ignore
-    #@+node:ekr.20110605121601.18543: *4* filter.toTkKey
-    def toTkKey(self, event):
+    #@+node:ekr.20110605121601.18543: *4* filter.toBinding
+    def toBinding(self, event):
         '''
-        Return tkKey, ch, ignore:
+        Return binding, ch
 
-        tkKey: the Tk spelling of the event used to look up
-               bindings in k.masterGuiBindingsDict.
-               **This must not ever change!**
-
-        ch:    the insertable key, or ''.
-
-        ignore: True if the key should be ignored.
-                This is **not** the same as 'not ch'.
+        binding:    A user binding, to create g.KeyStroke.
+                    Spelling no longer fragile.
+        ch:         the insertable key, or ''.
         '''
         mods = self.qtMods(event)
         keynum, text, toString, ch = self.qtKey(event)
-        # g.trace('keynum',repr(keynum),'text',repr(text),'toString',toString,'ch',repr(ch))
-        tkKey, ch, ignore = self.tkKey(
-            event, mods, keynum, text, toString, ch)
-        return tkKey, ch, ignore
+        ###
+        ###tkKey, ch, ignore = self.tkKey(event, mods, keynum, text, toString, ch)
+        ch = ch or toString or ''
+        ### ignore = not ch # Essential
+        if not ch:
+            return None, None
+        binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), ch)
+        ch = text or toString
+        if ch == '\r':
+            ch = '\n'
+        return binding, ch
     #@+node:ekr.20140907103315.18767: *3* filter.Tracing
     #@+node:ekr.20110605121601.18548: *4* filter.traceEvent
     def traceEvent(self, obj, event):
