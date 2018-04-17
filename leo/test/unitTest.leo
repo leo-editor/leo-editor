@@ -3446,29 +3446,23 @@ for key in keys:
     assert arg0 in expected or arg1 in expected, message
 </t>
 <t tx="ekr.20100131171342.5605">import string
-
 k = c.k
-
 for ch in (string.printable):
     if ch == '\n': continue # A special case.
-    assert k.isPlainKey(ch), 'wrong: not plain: %s' % (ch)
-
+    assert k.isPlainKey(ch), 'not plain 1: %s' % (ch)
 special = (
-    ### 'Return', # A special case.
-    ### In the new scheme this is handled correctly without a special case.
     'Begin','Break','Caps_Lock','Clear','Down','End','Escape',
     'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12',
     'KP_Add', 'KP_Decimal', 'KP_Divide', 'KP_Enter', 'KP_Equal',
     'KP_Multiply, KP_Separator,KP_Space, KP_Subtract, KP_Tab',
     'KP_F1','KP_F2','KP_F3','KP_F4',
     'KP_0','KP_1','KP_2','KP_3','KP_4','KP_5','KP_6','KP_7','KP_8','KP_9',
-    'Home','Left','Linefeed','Next','Num_Lock',
+    'Home','Left','Next','Num_Lock',
     'PageDn','PageUp','Pause','Prior','Right','Up',
     'Sys_Req',
 )
-
 for ch in special:
-    assert not k.isPlainKey(ch), 'wrong: is plain: %s' % (ch)
+    assert not k.isPlainKey(ch), 'is plain: %s' % (ch)
 </t>
 <t tx="ekr.20100131171342.5608">table = [
     ('1', '1'), # 2016/04/12
