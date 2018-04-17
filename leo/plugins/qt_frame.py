@@ -839,17 +839,16 @@ class DynamicWindow(QtWidgets.QMainWindow):
                         if trace: g.trace('return func', self.func.__name__)
                         self.func()
                     return True
-                else:
-                    ### Test
-                    binding, ch = self.eventFilter.toBinding(event)
-                    cmd_name = self.d.get(binding) if binding else None
-                    if trace: g.trace(cmd_name, s, binding, ch)
+                # Stay in the present widget.
+                binding, ch = self.eventFilter.toBinding(event)
+                if  binding:
+                    cmd_name = self.d.get(binding)
                     if cmd_name:
+                        if trace: g.trace(cmd_name, s, binding, ch)
                         self.c.k.simulateCommand(cmd_name)
                         return True
-                    else:
-                        # Do the normal processing.
-                        return self.oldEvent(event)
+                # Do the normal processing.
+                return self.oldEvent(event)
             #@+node:ekr.20131118172620.16895: *8* keyRelease
             def keyRelease(self, event):
                 return self.oldEvent(event)
