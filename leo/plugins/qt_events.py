@@ -39,7 +39,7 @@
 import leo.core.leoGlobals as g
 import leo.core.leoGui as leoGui
 from leo.core.leoQt import QtCore, QtGui, QtWidgets
-import string
+# import string
 # import sys
 #@+others
 #@+node:ekr.20141028061518.17: ** class LeoQtEventFilter
@@ -94,19 +94,10 @@ class LeoQtEventFilter(QtCore.QObject):
         binding, ch = self.toBinding(event)
         if not binding:
             return False # Allow Qt to handle the key event.
-        if trace and traceKeys:
-            g.trace(repr(binding), repr(ch))
-        ###
-            # if not tkKey: ### Experimental
-                # return False
-            # binding = tkKey if ch else None
-        ### if binding:
+        if trace and traceKeys: g.trace(repr(binding), repr(ch))
         stroke = g.KeyStroke(binding=binding)
         if trace and traceKeys: g.trace(binding, stroke)
         aList = k.masterGuiBindingsDict.get(stroke, [])
-        ###
-        # else:
-            # stroke, aList = None, []
         #
         # Part 4: Return if necessary.
         #
@@ -122,35 +113,33 @@ class LeoQtEventFilter(QtCore.QObject):
         # Part 5: Pass a new key event to masterKeyHandler.
         #
         try:
-            ### key_event = self.create_key_event(event, c, self.w, ch, tkKey, binding)
-            key_event = self.create_key_event(event, c, self.w, ch, binding, binding)
+            key_event = self.createKeyEvent(event, c, self.w, ch, binding)
             k.masterKeyHandler(key_event)
             c.outerUpdate()
         except Exception:
             g.es_exception()
         return True
             # Whatever happens, suppress all other Qt key handling.
-    #@+node:ekr.20110605195119.16937: *4* filter.create_key_event
-    def create_key_event(self, event, c, w, ch, tkKey, shortcut):
-        trace = False and not g.unitTesting
-        verbose = True
-        if trace and verbose: g.trace('ch: %s, tkKey: %s, shortcut: %s' % (
-            repr(ch), repr(tkKey), repr(shortcut)))
+    #@+node:ekr.20110605195119.16937: *4* filter.createKeyEvent
+    def createKeyEvent(self, event, c, w, ch, binding): ### tkKey, shortcut):
+
+        ### Move this to to-binding
         # Always do this.
-        if len(ch) == 1 and len(shortcut) == 1 and ch.isalpha() and shortcut.isalpha():
-            if ch != shortcut:
-                if trace and verbose: g.trace('caps-lock')
-                shortcut = ch
-        char = ch
-        # Auxiliary info.
-        x = getattr(event, 'x', None) or 0
-        y = getattr(event, 'y', None) or 0
-        # Support for fastGotoNode plugin
-        x_root = getattr(event, 'x_root', None) or 0
-        y_root = getattr(event, 'y_root', None) or 0
-        if trace and verbose: g.trace('ch: %s, shortcut: %s printable: %s' % (
-            repr(ch), repr(shortcut), ch in string.printable))
-        return leoGui.LeoKeyEvent(c, char, event, shortcut, w, x, y, x_root, y_root)
+        if len(ch) == 1 and len(binding) == 1 and ch.isalpha() and binding.isalpha():
+            if ch != binding:
+                g.trace('caps-lock: %r --> %r' % (binding, ch))
+                binding = ch
+        return leoGui.LeoKeyEvent(
+            c=self.c,
+            char=ch,
+            event=event,
+            binding=binding,
+            w = w,
+            x = getattr(event, 'x', None) or 0,
+            y = getattr(event, 'y', None) or 0,
+            x_root = getattr(event, 'x_root', None) or 0,
+            y_root = getattr(event, 'y_root', None) or 0,
+        )
     #@+node:ekr.20180413180751.2: *4* filter.do_non_key_event
     def do_non_key_event(self, event, obj):
         '''Handle all non-key event. Return True if the event has been handled.'''
