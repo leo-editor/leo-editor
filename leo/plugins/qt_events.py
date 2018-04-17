@@ -121,14 +121,8 @@ class LeoQtEventFilter(QtCore.QObject):
         return True
             # Whatever happens, suppress all other Qt key handling.
     #@+node:ekr.20110605195119.16937: *4* filter.createKeyEvent
-    def createKeyEvent(self, event, c, w, ch, binding): ### tkKey, shortcut):
+    def createKeyEvent(self, event, c, w, ch, binding):
 
-        ### Move this to to-binding
-        # Always do this.
-        if len(ch) == 1 and len(binding) == 1 and ch.isalpha() and binding.isalpha():
-            if ch != binding:
-                g.trace('caps-lock: %r --> %r' % (binding, ch))
-                binding = ch
         return leoGui.LeoKeyEvent(
             c=self.c,
             char=ch,
@@ -176,12 +170,34 @@ class LeoQtEventFilter(QtCore.QObject):
         else:
             # QTextEdit: ignore all key events except keyPress events.
             return eventType != ev.KeyPress
-    #@+node:ekr.20180415182857.1: *4* filter.mac_tweaks
-    def mac_tweaks (self, ch):
+    #@+node:ekr.20110605121601.18543: *4* filter.toBinding & helpers
+    def toBinding(self, event):
         '''
-        Do MacOS tweaks.
-        This must be done here, because c does not exist in the KeyStroke class.
+        Return binding, ch
+
+        binding:    A user binding, to create g.KeyStroke.
+                    Spelling no longer fragile.
+        ch:         the insertable key, or ''.
         '''
+        mods = self.qtMods(event)
+        keynum, text, toString, ch = self.qtKey(event)
+        ch = ch or toString or ''
+        if not ch:
+            return None, None
+        binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), ch)
+        ch = text or toString
+        if ch == '\r':
+            ch = '\n'
+        if len(ch) == 1 and len(binding) == 1 and ch.isalpha() and binding.isalpha():
+            if ch != binding:
+                # This happens in the minibuffer.
+                binding = ch
+        if g.isMac:
+            binding = self.mac_tweaks(binding)
+        return binding, ch
+    #@+node:ekr.20180415182857.1: *5* filter.mac_tweaks
+    def mac_tweaks (self, binding):
+        '''Do MacOS tweaks.'''
         c = self.c
         if c.config.getBool('replace-meta-with-alt', default=False):
             table = (
@@ -190,9 +206,9 @@ class LeoQtEventFilter(QtCore.QObject):
                 # Shift already follows meta.
             )
             for z1, z2 in table:
-                ch = ch.replace(z1, z2)
-        return ch
-    #@+node:ekr.20110605121601.18544: *4* filter.qtKey (Part 1)
+                binding = binding.replace(z1, z2)
+        return binding
+    #@+node:ekr.20110605121601.18544: *5* filter.qtKey
     def qtKey(self, event):
         '''
         Return the components of a Qt key event.
@@ -239,7 +255,7 @@ class LeoQtEventFilter(QtCore.QObject):
         text = g.u(text)
         toString = g.u(toString)
         return keynum, text, toString, ch
-    #@+node:ekr.20120204061120.10084: *4* filter.qtMods
+    #@+node:ekr.20120204061120.10084: *5* filter.qtMods
     def qtMods(self, event):
         '''Return the text version of the modifiers of the key event.'''
         modifiers = event.modifiers()
@@ -254,28 +270,6 @@ class LeoQtEventFilter(QtCore.QObject):
         mods = [b for a, b in table if (modifiers & a)]
             # Case *does* matter below.
         return mods
-    #@+node:ekr.20110605121601.18543: *4* filter.toBinding
-    def toBinding(self, event):
-        '''
-        Return binding, ch
-
-        binding:    A user binding, to create g.KeyStroke.
-                    Spelling no longer fragile.
-        ch:         the insertable key, or ''.
-        '''
-        mods = self.qtMods(event)
-        keynum, text, toString, ch = self.qtKey(event)
-        ###
-        ###tkKey, ch, ignore = self.tkKey(event, mods, keynum, text, toString, ch)
-        ch = ch or toString or ''
-        ### ignore = not ch # Essential
-        if not ch:
-            return None, None
-        binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), ch)
-        ch = text or toString
-        if ch == '\r':
-            ch = '\n'
-        return binding, ch
     #@+node:ekr.20140907103315.18767: *3* filter.Tracing
     #@+node:ekr.20110605121601.18548: *4* filter.traceEvent
     def traceEvent(self, obj, event):
