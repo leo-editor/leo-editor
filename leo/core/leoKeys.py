@@ -3558,13 +3558,12 @@ class KeyHandlerClass(object):
         verbose = True
         k = self; c = k.c
         modesTuple = ('insert', 'overwrite')
-        # g.trace('self.enable_alt_ctrl_bindings',self.enable_alt_ctrl_bindings)
         if not g.isStroke(stroke):
             g.trace('can not happen: not a stroke', repr(stroke), g.callers())
             return
         if trace and verbose: g.trace('ch: %s, stroke %s' % (
             repr(event and event.char), repr(stroke)))
-        # g.trace('stroke',repr(stroke),'isFKey',k.isFKey(stroke))
+        #
         if k.unboundKeyAction == 'command':
             # Ignore all unbound characters in command mode.
             w = g.app.gui.get_focus(c)
@@ -3580,9 +3579,11 @@ class KeyHandlerClass(object):
             if trace: g.trace('plain key in insert mode', repr(stroke))
             k.masterCommand(event=event, stroke=stroke)
             return
-        elif(not self.enable_alt_ctrl_bindings and
-            (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)
-        ):
+        ###
+        # elif(not self.enable_alt_ctrl_bindings and
+            # (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)
+        # ):
+        elif not stroke.isAltCtrl():
             # 2011/02/11: Always ignore unbound Alt/Ctrl keys.
             if trace: g.trace('ignoring unbound Alt/Ctrl key',
                 repr(char), repr(stroke))
@@ -3591,8 +3592,7 @@ class KeyHandlerClass(object):
             len(char) > 1 or
             char not in string.printable # 2011/06/10: risky test?
         ):
-            if trace: g.trace('ignoring unbound non-ascii key',
-                repr(char), repr(stroke))
+            if trace: g.trace('ignoring unbound non-ascii key', repr(char), repr(stroke))
             return
         elif(
             stroke and stroke.find('Escape') != -1 or

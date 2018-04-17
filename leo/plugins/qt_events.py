@@ -266,6 +266,8 @@ class LeoQtEventFilter(QtCore.QObject):
                 ('e', '€'), ('l', '@'),
             }
             if ch in mac_d:
+                # pylint: disable=no-member
+                # A pylint bug, apparently.
                 ch = mac_d.get(ch)
                 binding = ch
                 return binding, ch
