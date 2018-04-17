@@ -183,19 +183,26 @@ class LeoQtEventFilter(QtCore.QObject):
         ch = ch or toString or ''
         if not ch:
             return None, None
+        # Tricky code:
+        # We *must* use the *first* value of ch in the binding.
+        # We *must* redefine the value of ch after creating the binding.
         binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), ch)
         ch = text or toString
+        #
+        # Last-minute tweaks. g.KeyStroke does many more.
+        #
         if ch == '\r':
             ch = '\n'
+        # Adjust the case of the binding string.
         if len(ch) == 1 and len(binding) == 1 and ch.isalpha() and binding.isalpha():
             if ch != binding:
                 # This happens in the minibuffer.
                 binding = ch
         if g.isMac:
-            binding = self.mac_tweaks(binding)
+            binding = self.doMacTweaks(binding)
         return binding, ch
-    #@+node:ekr.20180415182857.1: *5* filter.mac_tweaks
-    def mac_tweaks (self, binding):
+    #@+node:ekr.20180415182857.1: *5* filter.doMacTweaks
+    def doMacTweaks (self, binding):
         '''Do MacOS tweaks.'''
         c = self.c
         if c.config.getBool('replace-meta-with-alt', default=False):
