@@ -3459,7 +3459,7 @@ class KeyHandlerClass(object):
                                 key, name, bi.stroke, bi.commandName))
                             return bi
         return None
-    #@+node:ekr.20061031131434.110: *5* k.handleDefaultChar
+    #@+node:ekr.20061031131434.110: *5* k.handleDefaultChar (changed)
     def handleDefaultChar(self, event, stroke):
         '''Handle an unbound key.'''
         trace = False and not g.unitTesting
@@ -3470,12 +3470,9 @@ class KeyHandlerClass(object):
         if trace and verbose:
             g.trace('widget_name', name, 'stroke', stroke,
             'enable alt-ctrl', self.enable_alt_ctrl_bindings)
-        if (stroke and
-            not stroke.startswith('Alt+Ctrl') and
-            # not k.enable_alt_ctrl_bindings and # Old code: this isn't an alt-ctrl key!
-            k.ignore_unbound_non_ascii_keys and # Bug fix: 2011/11/23
-            (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1)
-        ):
+        if stroke and stroke.isAltCtrl() and k.ignore_unbound_non_ascii_keys:
+            ### not stroke.startswith('Alt+Ctrl') and
+            ### (stroke.find('Ctrl') > -1 or stroke.find('Alt') > -1)
             if trace: g.trace('*** ignoring unbound ctrl/alt key:', stroke)
             g.app.unitTestDict['handleUnboundChar-ignore-alt-or-ctrl'] = True
         elif name.startswith('body'):
@@ -3552,7 +3549,7 @@ class KeyHandlerClass(object):
                             c.minibufferWantsFocus()
                         return True
         return False
-    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys
+    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys (changed)
     def handleUnboundKeys(self, event, char, stroke):
         trace = False and not g.unitTesting
         verbose = True
@@ -3583,7 +3580,7 @@ class KeyHandlerClass(object):
         # elif(not self.enable_alt_ctrl_bindings and
             # (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1)
         # ):
-        elif not stroke.isAltCtrl():
+        elif stroke.isAltCtrl() and not self.enable_alt_ctrl_bindings:
             # 2011/02/11: Always ignore unbound Alt/Ctrl keys.
             if trace: g.trace('ignoring unbound Alt/Ctrl key',
                 repr(char), repr(stroke))
