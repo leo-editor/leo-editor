@@ -603,7 +603,7 @@ class KeyStroke(object):
         elif s in ('\b', 'backspace'): s = '\b'
         elif s in ('.', 'period'): s = '.'
         return s
-    #@+node:ekr.20180417100834.1: *4* ks.toInsertableChar (replace guiBindNamesInverseDict)
+    #@+node:ekr.20180417100834.1: *4* ks.toInsertableChar
     def toInsertableChar(self):
         '''Convert self to an (insertable) char.'''
         # pylint: disable=len-as-condition
@@ -620,38 +620,6 @@ class KeyStroke(object):
         if s in d:
             return d.get(s)
         return s if len(s) == 1 else ''
-
-        ###
-            #trace = False and not g.unitTesting
-            # Special case the gang of four, plus 'Escape', 'PageDn', 'PageUp',
-            # d = {
-                # 'BackSpace': '\b',
-                # 'Escape': 'Escape',
-                # 'Linefeed': '\r',
-                # 'PageDn': 'Next', # Fix #416.
-                # 'PageUp': 'Prior', # Fix #416.
-                # 'Return': '\n',
-                # 'Tab': '\t',
-            # }
-            # ch = d.get(s)
-            # if ch: return ch
-            # # First, do the common translations.
-            # ch = k.guiBindNamesInverseDict.get(s)
-            # if ch:
-                # if trace: g.trace(repr(stroke), repr(ch))
-                # return ch
-            # # A much-simplified form of code in k.strokeFromSetting.
-            # shift = s.find('Shift+') > -1 or s.find('Shift-') > -1
-            # s = s.replace('Shift+', '').replace('Shift-', '')
-            # last = s #  Everything should have been stripped.
-            # if len(s) == 1 and s.isalpha():
-                # if shift:
-                    # s = last.upper()
-                # else:
-                    # s = last.lower()
-            # val = s if len(s) == 1 else ''
-            # if trace: g.trace(repr(stroke), repr(val)) # 'shift',shift,
-            # return val
     #@-others
 
 def isStroke(obj):
