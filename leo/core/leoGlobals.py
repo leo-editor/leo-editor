@@ -470,21 +470,6 @@ class KeyStroke(object):
             'ins': 'Insert',
             'tab': 'Tab', # To ensure proper capitalization.
         }
-        if g.isMac:
-            # Patch provided by resi147.
-            # See the thread: special characters in MacOSX, like '@'.
-            mac_table = (
-                ('Alt+/', '\\'),
-                ('Alt+5', '['),
-                ('Alt+6', ']'),
-                ('Alt+7', '|'),
-                ('Alt+8', '{'),
-                ('Alt+9', '}'),
-                ('Alt+e', '€'),
-                ('Alt+l', '@'),
-            )
-            for a, b in mac_table:
-                translate_d[a] = b
         # pylint: disable=undefined-loop-variable
         # Looks like a pylint bug.
         if s in (None, 'none'):

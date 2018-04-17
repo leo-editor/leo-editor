@@ -176,16 +176,8 @@ class LeoQtEventFilter(QtCore.QObject):
         # We *must* redefine the value of ch after creating the binding.
         binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), ch)
         ch = text or toString
-        #
-        # Last-minute tweaks. g.KeyStroke does many more.
-        #
-        if ch == '\r':
-            ch = '\n'
-        # Adjust the case of the binding string.
-        if len(ch) == 1 and len(binding) == 1 and ch.isalpha() and binding.isalpha():
-            if ch != binding:
-                # This happens in the minibuffer.
-                binding = ch
+        # Do "early" tweaks, before calling g.KeyStroke().
+        binding, ch = self.tweak(binding, ch, mods)
         return binding, ch
     #@+node:ekr.20110605121601.18544: *5* filter.qtKey
     def qtKey(self, event):
@@ -257,6 +249,34 @@ class LeoQtEventFilter(QtCore.QObject):
                 mods.remove('Meta')
                 mods.append('Alt')
         return mods
+    #@+node:ekr.20180417161548.1: *5* filter.tweak
+    def tweak(self, binding, ch, mods):
+        '''Do *early* tweaks. g.KeyStroke does *late* tweaks.'''
+        #
+        # First, adjust ch & binding for MacOS
+        #
+        if g.isMac and len(mods) == 1 and mods[0] == 'Alt':
+            # Patch provided by resi147.
+            # See the thread: special characters in MacOSX, like '@'.
+            mac_d = {
+                ('/', '\\'),
+                ('5', '['), ('6', ']'),
+                ('7', '|'),
+                ('8', '{'), ('9', '}'),
+                ('e', '€'), ('l', '@'),
+            }
+            if ch in mac_d:
+                ch = mac_d.get(ch)
+                binding = ch
+                return binding, ch
+        #
+        # Adjust the case of the binding string (for the minibuffer).
+        #
+        if len(ch) == 1 and len(binding) == 1 and ch.isalpha() and binding.isalpha():
+            if ch != binding:
+                binding = ch
+        return binding, ch
+        
     #@+node:ekr.20140907103315.18767: *3* filter.Tracing
     #@+node:ekr.20110605121601.18548: *4* filter.traceEvent
     def traceEvent(self, obj, event):
