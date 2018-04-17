@@ -273,7 +273,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3431710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3671097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3431710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -1226,7 +1226,7 @@
 <v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
 <v t="ekr.20180312050443.1"><vh>@test cwd</vh></v>
 </v>
-<v t="ekr.20100131171342.5608"><vh>@test k.strokeFromSetting or g.KeyStroke</vh></v>
+<v t="ekr.20100131171342.5608"><vh>@test g.KeyStroke</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -3444,36 +3444,13 @@ for key in keys:
     message = '\nno event arg for command %s, func: %s\nargs: %s' % (key,name,data)
     assert arg0 in expected or arg1 in expected, message
 </t>
-<t tx="ekr.20100131171342.5608">if g.new_keys:
-    table = [
-        ('1', '1'), # 2016/04/12
-        ('a','a'),
-        ('A','A'),
-        ('Alt-a','Alt+a'),
-        ('Alt-A','Alt+a'),
-        ('Alt-Shift-a','Alt+Shift+a'),
-        # We can no longer igtnore the shift.
-        # ('Alt-Shift++','Alt+plus'), # Ignore the shift.
-        ('Shift-a','A'),
-        ('Shift-A','A'),
-        ('RtArrow','Right'),
-        ('Shift-RtArrow','Shift+Right'),
-        ('PageUp','Prior'), ('Prior','Prior'),('Shift-PageUp','Shift+Prior'),
-        ('PageDn','Next'),('Next','Next'),('Shift-Next','Shift+Next'),
-        ('Alt-=','Alt+='),
-        ('Alt-+','Alt++'),
-        ('Alt--','Alt+-'),
-        ('Ctrl-RtArrow','Control+Right'),
-        ('Control-Right','Control+Right'),
-    ]
-else:
-    table = [
+<t tx="ekr.20100131171342.5608">table = [
     ('1', '1'), # 2016/04/12
     ('a','a'),
-    ('A','a'),
+    ('A','A'),
     ('Alt-a','Alt+a'),
     ('Alt-A','Alt+a'),
-    ('Alt-Shift-a','Alt+A'),
+    ('Alt-Shift-a','Alt+Shift+a'),
     # We can no longer igtnore the shift.
     # ('Alt-Shift++','Alt+plus'), # Ignore the shift.
     ('Shift-a','A'),
@@ -3482,19 +3459,15 @@ else:
     ('Shift-RtArrow','Shift+Right'),
     ('PageUp','Prior'), ('Prior','Prior'),('Shift-PageUp','Shift+Prior'),
     ('PageDn','Next'),('Next','Next'),('Shift-Next','Shift+Next'),
-        ('Key-1','1'), ('key+1','1'),
-        ('Alt-=','Alt+equal'),
-        ('Alt-+','Alt+plus'),
-        ('Alt--','Alt+minus'),
-        ('Ctrl-RtArrow','Ctrl+Right'),
-        ('Control-Right','Ctrl+Right'),
-    ]
+    ('Alt-=','Alt+='),
+    ('Alt-+','Alt++'),
+    ('Alt--','Alt+-'),
+    ('Ctrl-RtArrow','Control+Right'),
+    ('Control-Right','Control+Right'),
+]
 for setting, result in table:
-    if g.new_keys:
-        stroke = g.KeyStroke(binding=setting)
-        val = stroke.s
-    else:
-        val = c.k.strokeFromSetting(setting)
+    stroke = g.KeyStroke(binding=setting)
+    val = stroke.s
     assert val==result,'Expected %s, Got %s' % (result,val)
 </t>
 <t tx="ekr.20100219080213.5365"></t>

@@ -858,8 +858,7 @@ class ParserBaseClass(object):
         command-name --> same = binding
         '''
         trace = False and not g.unitTesting and kind == '*mode-setting*'
-        c, k = self.c, self.c.k
-        assert c
+        # c = self.c
         name = val = nextMode = None; nextMode = 'none'
         i = g.skip_ws(s, 0)
         if g.match(s, i, '-->'): # New in 4.4.1 b1: allow mode-entry commands.
@@ -902,13 +901,14 @@ class ParserBaseClass(object):
             i = val.find('#')
             if i > 0 and val[i - 1] in (' ', '\t'):
                 val = val[: i].strip()
-        if g.new_keys:
-            stroke = g.KeyStroke(binding=val) if val else None
-        else:
-            stroke = k.strokeFromSetting(binding=val)
-        assert g.isStrokeOrNone(stroke), stroke
-        bi = g.BindingInfo(kind=kind, nextMode=nextMode, pane=pane, stroke=stroke)
-        if trace: g.trace('%25s %s' % (name, bi))
+        if not val:
+            return name, None
+        stroke = g.KeyStroke(binding=val) if val else None
+        bi = g.BindingInfo(
+            kind=kind,
+            nextMode=nextMode,
+            pane=pane,
+            stroke=stroke)
         return name, bi
     #@+node:ekr.20041120094940.9: *3* set (ParserBaseClass)
     def set(self, p, kind, name, val):

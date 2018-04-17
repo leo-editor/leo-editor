@@ -840,15 +840,10 @@ class DynamicWindow(QtWidgets.QMainWindow):
                         self.func()
                     return True
                 else:
-                    ef = self.eventFilter
-                    ### To be improved.
-                    tkKey, ch, ignore = ef.toTkKey(event)
-                    if g.new_keys:
-                        binding = tkKey if ch else None
-                    else:
-                        binding = self.toBinding(tkKey)
+                    ### Test
+                    binding, ch = self.eventFilter.toBinding(event)
                     cmd_name = self.d.get(binding) if binding else None
-                    if trace: g.trace(cmd_name, s, tkKey, binding)
+                    if trace: g.trace(cmd_name, s, binding, ch)
                     if cmd_name:
                         self.c.k.simulateCommand(cmd_name)
                         return True

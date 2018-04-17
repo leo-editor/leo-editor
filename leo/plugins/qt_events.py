@@ -201,19 +201,6 @@ class LeoQtEventFilter(QtCore.QObject):
         if g.isMac:
             binding = self.doMacTweaks(binding)
         return binding, ch
-    #@+node:ekr.20180415182857.1: *5* filter.doMacTweaks
-    def doMacTweaks (self, binding):
-        '''Do MacOS tweaks.'''
-        c = self.c
-        if c.config.getBool('replace-meta-with-alt', default=False):
-            table = (
-                ('Meta+','Alt+'),
-                ('Ctrl+Alt+', 'Alt+Ctrl+'),
-                # Shift already follows meta.
-            )
-            for z1, z2 in table:
-                binding = binding.replace(z1, z2)
-        return binding
     #@+node:ekr.20110605121601.18544: *5* filter.qtKey
     def qtKey(self, event):
         '''
@@ -264,8 +251,9 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20120204061120.10084: *5* filter.qtMods
     def qtMods(self, event):
         '''Return the text version of the modifiers of the key event.'''
+        c = self.c
         modifiers = event.modifiers()
-        # The order of this table must match the order created by k.strokeFromSetting.
+        # The order of this table no longer matters.
         qt = QtCore.Qt
         table = (
             (qt.AltModifier, 'Alt'),
@@ -275,6 +263,13 @@ class LeoQtEventFilter(QtCore.QObject):
         )
         mods = [b for a, b in table if (modifiers & a)]
             # Case *does* matter below.
+        #
+        # MacOS: optionally convert Meta to Atl.
+        #
+        if c.config.getBool('replace-meta-with-alt', default=False):
+            if 'Meta' in mods:
+                mods.remove('Meta')
+                mods.append('Alt')
         return mods
     #@+node:ekr.20140907103315.18767: *3* filter.Tracing
     #@+node:ekr.20110605121601.18548: *4* filter.traceEvent
