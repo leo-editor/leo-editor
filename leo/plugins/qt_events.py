@@ -102,7 +102,6 @@ class LeoQtEventFilter(QtCore.QObject):
         # Part 4: Return if necessary.
         #
         significant = (
-            ### tkKey or
             ch in self.flashers or 
             k.inState() or
             bool(aList)
@@ -173,7 +172,7 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20110605121601.18543: *4* filter.toBinding & helpers
     def toBinding(self, event):
         '''
-        Return binding, ch
+        Return (binding, ch):
 
         binding:    A user binding, to create g.KeyStroke.
                     Spelling no longer fragile.
