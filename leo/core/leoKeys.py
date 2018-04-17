@@ -4228,7 +4228,7 @@ class KeyHandlerClass(object):
             return False
         if not g.isStroke(stroke):
             # Happens during unit tests.
-            # g.trace('=====', stroke, g.callers())
+            # g.trace('=====', repr(stroke), g.callers())
             stroke = g.KeyStroke(stroke)
         #
         # altgr combos (Alt+Ctrl) are always plain keys

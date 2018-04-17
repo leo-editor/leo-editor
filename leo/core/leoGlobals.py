@@ -405,34 +405,62 @@ class KeyStroke(object):
         '''Perform very-last-minute translations on bindings.'''
         trace = False and not g.unitTesting
         if trace: g.trace('=====', self.mods, repr(s))
-        ### From filter.  All these can take a Shift modifier.
-            # use_shift = (
-                # 'Home', 'End', 'Tab',
-                # 'Up', 'Down', 'Left', 'Right',
-                # 'Next', 'Prior',
-                # 'Delete', 'Ins', 'Backspace',
-                # 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12',
-            # )
+        # This dict ensures proper capitalization.
+        # It also translates legacy Tk binding names to ascii chars.
         translate_d = {
+            # Qt key names...
+            '\r': '\n',
+            'backspace': 'BackSpace',
+            'backtab': 'Tab', # The shift mod will convert to 'Shift+Tab',
             'bksp': 'BackSpace',
+            'del': 'Delete',
             'dnarrow': 'Down',
             'esc': 'Escape',
+            'ins': 'Insert',
+            'linefeed': '\n',
             'ltarrow': 'Left',
             'pagedn': 'Next',
             'pageup': 'Prior',
             'pgdown': 'Next',
             'pgup': 'Prior',
-            'rtarrow': 'Right',
-            'uparrow': 'Up',
-            # From filter.create_key_event
-            '\r': '\n',
             'return': '\n',
-            'linefeed': '\n',
-            'backspace': 'BackSpace',
-            'backtab': 'Tab', # The shift mod will convert to 'Shift+Tab',
-            'del': 'Delete',
-            'ins': 'Insert',
-            'tab': 'Tab', # To ensure proper capitalization.
+            'rtarrow': 'Right',
+            'tab': 'Tab',
+            'uparrow': 'Up',
+            # Legacy Tk binding names...
+            "ampersand": "&",
+            "asciicircum": "^",
+            "asciitilde": "~",
+            "asterisk": "*",
+            "at": "@",
+            "backslash": "\\",
+            "bar": "|",
+            "braceleft": "{",
+            "braceright": "}",
+            "bracketleft": "[",
+            "bracketright": "]",
+            "colon": ":",
+            "comma": ",",
+            "dollar": "$",
+            "equal": "=",
+            "exclam": "!",
+            "greater": ">",
+            "less": "<",
+            "minus": "-",
+            "numbersign": "#",
+            "quotedbl": '"',
+            "quoteright": "'",
+            "parenleft": "(",
+            "parenright": ")",
+            "percent": "%",
+            "period": ".",
+            "plus": "+",
+            "question": "?",
+            "quoteleft": "`",
+            "semicolon": ";",
+            "slash": "/",
+            "space": " ",
+            "underscore": "_",
         }
         # pylint: disable=undefined-loop-variable
         # Looks like a pylint bug.
@@ -532,13 +560,15 @@ class KeyStroke(object):
         s = self.s
         if self.find_mods(s) or self.isFKey():
             return False
-        if s in ('BackSpace', 'Return', 'Tab'):
+        if s in ('\b', 'BackSpace', '\n', 'Return', '\t', 'Tab'):
             # The "Gang of Four", without "LineFeed".
+            # These are "plain" keys, s.printable() is False.
             return True
-        if len(s) == 1:
-            return not unicodedata.category(s).startswith('C')
-        else:
+        if s in string.printable:
+            return True
+        if len(s) > 1:
             return False
+        return unicodedata.category(s).startswith('C')
     #@+node:ekr.20180417160703.1: *4* ks.dump
     def dump(self):
         '''Show results of printable chars.'''
