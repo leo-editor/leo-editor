@@ -3183,7 +3183,7 @@ class KeyHandlerClass(object):
         
     #@+node:ekr.20061031131434.108: *5* k.callStateFunction
     def callStateFunction(self, event):
-        trace = False and not g.unitTesting
+        '''Call the state handler associated with this event.'''
         k = self
         ch = event.char
         #
@@ -3200,7 +3200,6 @@ class KeyHandlerClass(object):
         if k.state.kind == 'auto-complete':
             # k.auto_completer_state_handler returns 'do-standard-keys' for control keys.
             val = k.state.handler(event)
-            if trace: g.trace('auto-complete returns', repr(val))
             return val
         #
         # Ignore unbound non-ascii keys.
@@ -3232,33 +3231,44 @@ class KeyHandlerClass(object):
         assert g.isStrokeOrNone(event.stroke)
     #@+node:ekr.20180418033838.1: *5* k.doBinding
     def doBinding(self, event):
-        trace = False and not g.unitTesting
-        trace_unbound = True
+        '''
+        The last phase of k.masertKeyHandler.
+        Execute the command associated with stroke's binding.
+        Call k.handleUnboundKeys for killed or non-existent bindings.
+        '''
         c, k = self.c, self
-        char = event.char
-        stroke = event.stroke
-        w = event.widget
-        w_name = c.widget_name(w)
+        char, stroke, w = event.char, event.stroke, event.widget
+        #
         # Use getPaneBindings for *all* keys.
+        #
         bi = k.getPaneBinding(stroke, w)
+        #
+        # Call k.handleUnboudKeys for all killed bindings.
+        #
         if bi and bi.commandName in k.killedBindings:
-            # 327: ignore killed bindings.
-            if trace and trace_unbound: g.trace('  killed', stroke)
+            #327: ignore killed bindings.
             k.handleUnboundKeys(event)
-        elif bi:
-            if trace: g.trace('   bound', stroke, bi.func.__name__)
+            return
+        #
+        # Call k.masterCommandHandler if the binding exists.
+        #
+        if bi:
             k.masterCommand(
                 event=event,
                 commandName=bi.commandName,
                 func=bi.func,
                 stroke=bi.stroke)
-        elif w_name.startswith('canvas'):
-            # 2016/04/09: experimental.
-            if trace: g.trace('unbound plain key in tree: search')
+            return
+        #
+        # Handle unbound keys in the tree (not headlines).
+        # 
+        if c.widget_name(w).startswith('canvas'):
             k.searchTree(char)
-        else:
-            if trace and trace_unbound: g.trace(' unbound', stroke)
-            k.handleUnboundKeys(event)
+            return
+        #
+        # No binding exists. Call k.handleUnboundKey.
+        #
+        k.handleUnboundKeys(event)
     #@+node:ekr.20180418023827.1: *5* k.doDemo
     def doDemo(self, event):
         '''
