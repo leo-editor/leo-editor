@@ -280,16 +280,17 @@ class LeoQtEventFilter(QtCore.QObject):
         #
         # Handle bare modifier keys
         #
-        mod_d = {
-            'Alt+Key_Alt': 'Alt+',
-            'Alt+Ctrl+Key_AltGr': 'Alt+Ctrl+',
-            'Control+Key_Control': 'Ctrl+',
-            'Meta+Key_Meta': 'Key_Meta',
-            'Shift+Key_Shift': 'Key_Shift',
-        }
-        if binding in mod_d:
-            binding = mod_d.get(binding)
-            ch = ''
+        if 0: # This is not needed with the present qtKey code.
+            mod_d = {
+                'Alt+Key_Alt': 'Alt+',
+                'Alt+Ctrl+Key_AltGr': 'Alt+Ctrl+',
+                'Control+Key_Control': 'Ctrl+',
+                'Meta+Key_Meta': 'Key_Meta',
+                'Shift+Key_Shift': 'Key_Shift',
+            }
+            if binding in mod_d:
+                binding = mod_d.get(binding)
+                ch = ''
         #
         # Adjust the case of the binding string (for the minibuffer).
         #
