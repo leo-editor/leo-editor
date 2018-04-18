@@ -3573,7 +3573,7 @@ class KeyHandlerClass(object):
                             c.minibufferWantsFocus()
                         return True
         return False
-    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys 
+    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys
     def handleUnboundKeys(self, event):
         trace = False and not g.unitTesting
         verbose = True
@@ -3639,7 +3639,7 @@ class KeyHandlerClass(object):
                         if bi.commandName == 'auto-complete':
                             return True
         return False
-    #@+node:ekr.20180418031118.1: *5* k.isSpecialKey 
+    #@+node:ekr.20180418031118.1: *5* k.isSpecialKey
     def isSpecialKey(self, event):
         '''Return True if char is a special key.'''
         trace = False and not g.unitTesting
@@ -3656,7 +3656,7 @@ class KeyHandlerClass(object):
             if trace : g.trace('is special', char)
             return True
         return False
-    #@+node:ekr.20180418024449.1: *5* k.keyboardQuit 
+    #@+node:ekr.20180418024449.1: *5* k.keyboardQuit
     def doKeyboardQuit(self, event):
         '''
         Handle keyboard-quit logic.
