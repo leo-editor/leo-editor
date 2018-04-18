@@ -3312,7 +3312,9 @@ class KeyHandlerClass(object):
         if state in ('getArg', 'getFileName', 'full-command', 'auto-complete', 'vim-mode'):
             if k.handleMiniBindings(event, state, stroke):
                 return True
+        #
         # Second, honor general modes.
+        #
         if state == 'getArg':
             k.getArg(event, stroke=stroke)
             return True
@@ -3361,20 +3363,26 @@ class KeyHandlerClass(object):
         Handle unbound plain keys.
         Return True if k.masterKeyHandler should return.
         '''
-        trace = False and not g.unitTesting
         c, k = self.c, self
-        stroke = event.stroke
-        w = event.widget
-        w_name = c.widget_name(w)
+        stroke, w = event.stroke, event.widget
+        #
+        # Ignore non-plain keys.
+        #
         if not k.isPlainKey(stroke):
             return False
-        if w_name.startswith('canvas'):
-            if trace: g.trace('plain key in tree')
+        #
+        # Ignore any keys in the background tree widget.
+        #
+        if c.widget_name(w).startswith('canvas'):
             return False
+        #
+        # Ignore the char if it is bound to the auto-complete command.
+        #
         if self.isAutoCompleteChar(stroke):
-            if trace: g.trace('autocomplete key', stroke)
             return False
-        if trace: g.trace('inserted %-10s (insert/overwrite mode)' % (stroke))
+        #
+        # Handle the unbound key.
+        #
         k.handleUnboundKeys(event)
         return True
     #@+node:ekr.20180418025241.1: *5* k.doVim
@@ -3645,8 +3653,10 @@ class KeyHandlerClass(object):
             return
     #@+node:ekr.20110209083917.16004: *5* k.isAutoCompleteChar
     def isAutoCompleteChar(self, stroke):
-        '''Return True if stroke is bound to the auto-complete in
-        the insert or overwrite state.'''
+        '''
+        Return True if stroke is bound to the auto-complete in
+        the insert or overwrite state.
+        '''
         k = self; state = k.unboundKeyAction
         assert g.isStrokeOrNone(stroke)
         if stroke and state in ('insert', 'overwrite'):
