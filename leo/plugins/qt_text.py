@@ -938,8 +938,7 @@ class QMinibufferWrapper(QLineEditWrapper):
             c, k = self.c, self.c.k
             if not k.state.kind:
                 # c.widgetWantsFocusNow(w) # Doesn't work.
-                event2 = g.app.gui.create_key_event(c,
-                    char='', stroke='', w=c.frame.body.wrapper)
+                event2 = g.app.gui.create_key_event(c, w=c.frame.body.wrapper)
                 k.fullCommand(event2)
                 # c.outerUpdate() # Doesn't work.
         #@-<< define mouseReleaseEvent >>

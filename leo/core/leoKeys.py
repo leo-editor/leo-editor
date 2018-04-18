@@ -3121,7 +3121,7 @@ class KeyHandlerClass(object):
             elif commandName.startswith('specialCallback'):
                 event = None # A legacy function.
             else: # Create a dummy event as a signal.
-                event = g.app.gui.create_key_event(c, None, None, None)
+                event = g.app.gui.create_key_event(c)
             if trace: g.trace(event)
             k.masterCommand(event=event, func=func)
             if c.exists:
@@ -4069,7 +4069,7 @@ class KeyHandlerClass(object):
                 if event:
                     event.w = event.widget = k.modeWidget
                 else:
-                    event = g.app.gui.create_key_event(c, None, None, k.modeWidget)
+                    event = g.app.gui.create_key_event(c, w=k.modeWidget)
                 if trace: g.trace(modeName, 'state', state, commandName, 'nextMode', nextMode)
                 func(event)
                 if g.app.quitting or not c.exists:
@@ -4163,7 +4163,7 @@ class KeyHandlerClass(object):
                 if event:
                     event.w = event.widget = k.modeWidget
                 else:
-                    event = g.app.gui.create_key_event(c, None, None, k.modeWidget)
+                    event = g.app.gui.create_key_event(c, w=k.modeWidget)
                 if trace: g.trace(modeName, 'state', state, commandName, 'nextMode', nextMode)
                 func(event)
                 if g.app.quitting or not c.exists:
@@ -4507,7 +4507,7 @@ class KeyHandlerClass(object):
                 if trace: g.trace('repeat: %s, func: %s, stroke: %s, widget: %s' % (
                     n, bi.func.__name__, stroke, w))
                 for z in range(n):
-                    event = g.app.gui.create_key_event(c, None, event, stroke, w)
+                    event = g.app.gui.create_key_event(c, event=event, w=w)
                     k.masterCommand(
                         commandName=None,
                         event=event,

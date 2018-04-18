@@ -693,7 +693,7 @@ class LeoFind(object):
         else:
             g.es("not found: %s" % (pattern))
             if not again:
-                event = g.app.gui.create_key_event(c, '\b', 'BackSpace', w)
+                event = g.app.gui.create_key_event(c, binding='BackSpace', char='\b', w=w)
                 k.updateLabel(event)
     #@+node:ekr.20131117164142.16950: *4* find.iSearchStateHandler
     def iSearchStateHandler(self, event):

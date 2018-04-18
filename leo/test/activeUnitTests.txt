@@ -499,7 +499,7 @@ for key in keys:
 #@+node:ekr.20110613143220.3314: *3* @test All menus execute the proper command
 @ We want to ensure that when masterMenuHandler does::
     
-    event = g.app.gui.create_key_event(c,None,stroke,w)
+    event = g.app.gui.create_key_event(c,binding=stroke,w=w)
     return k.masterKeyHandler(event)
     
 that the effect will be to call commandName, where commandName
@@ -9022,8 +9022,9 @@ try:
     u = g.u('(pdq):\n')
     w.setInsertPoint(len(s))
     for char in u:
-        stroke = g.choose(char=='\n','Return',char)
-        event = g.app.gui.create_key_event(c,char,stroke,w)
+        ### stroke = g.choose(char=='\n','Return',char)
+        binding = 'Return' if char == '\n' else char
+        event = g.app.gui.create_key_event(c,char=char,binding=binding,w=w)
         ec.selfInsertCommand(event)
     result = w.getAllText()
     #g.trace('result',repr(result))
@@ -9045,7 +9046,7 @@ try:
     ec = c.editCommands ; w = c.frame.body.wrapper
     s = w.getAllText()
     w.setSelectionRange(len(s)-9,len(s)-6)
-    event = g.app.gui.create_key_event(c,'\t','Tab',w)
+    event = g.app.gui.create_key_event(c, binding='Tab', char='\t', w=w)
     ec.selfInsertCommand(event)
     result = w.getAllText()
     assert result.endswith('\n    ###abcdef\n'),'result\n%s' % (repr(result))
@@ -10391,7 +10392,7 @@ w = c.frame.body.wrapper
 
 for direction in ('up','down'):
     for distance in ('line','page','half-page'):
-        event = g.app.gui.create_key_event(c,None,None,w)
+        event = g.app.gui.create_key_event(c,w=w)
         ec.scrollHelper(event,direction,distance)
 #@+node:ekr.20061104172236.4: *5* @test setMoveCol
 w = c.frame.body.wrapper
@@ -10744,7 +10745,7 @@ elif c.k.defaultUnboundKeyAction == 'insert':
     c.bodyWantsFocus()
     paste = 'ABC'
     g.app.gui.replaceClipboardWith(paste)
-    event = g.app.gui.create_key_event(c,None,None,c.frame.body.wrapper)
+    event = g.app.gui.create_key_event(c,w=c.frame.body.wrapper)
     c.frame.pasteText(event)
     
     # Move around and and make sure it doesn't change.
@@ -10768,7 +10769,7 @@ w = c.edit_widget(p)
 w.setSelectionRange('end','end',insert='end')
 paste = 'ABC'
 g.app.gui.replaceClipboardWith(paste)
-event = g.app.gui.create_key_event(c,None,None,w)
+event = g.app.gui.create_key_event(c,w=w)
 c.frame.pasteText(event)
 # Move around and and make sure it doesn't change.
 try:
@@ -10797,7 +10798,7 @@ else:
     paste = '# Should be a comment'
     g.app.gui.replaceClipboardWith(paste)
     c.outerUpdate()
-    event = g.app.gui.create_key_event(c,None,None,c.frame.body.wrapper)
+    event = g.app.gui.create_key_event(c,w=c.frame.body.wrapper)
     c.frame.pasteText(event)
     try:
         assert c.frame.body.colorizer.recolorCount > n
@@ -11492,7 +11493,7 @@ else:
         s = w.getAllText()
         w.setInsertPoint(len(s))
         c.k.previousSelection = 2,8
-        event = g.app.gui.create_key_event(c,None,None,w)
+        event = g.app.gui.create_key_event(c,w=w)
         c.frame.pasteText(event=event,middleButton=True)
         s2 = w.getAllText()
         assert len(s2) == len(s) + len('target')
@@ -11516,7 +11517,7 @@ else:
         assert s == s2, 'w.getAllText() != p.b: len(w)=%d, len(p)=%d' % (len(s),len(s2))
         w.setInsertPoint(len(s))
         c.k.previousSelection = 2,8
-        event = g.app.gui.create_key_event(c,None,None,w)
+        event = g.app.gui.create_key_event(c,w=w)
         c.frame.pasteText(event=event,middleButton=True)
         s2 = w.getAllText()
         assert len(s2) == len(s) + len('target')

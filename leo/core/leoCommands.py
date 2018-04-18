@@ -2022,7 +2022,7 @@ class Commands(object):
         c = self; k = c.k
         func = c.commandsDict.get(commandName)
         if func:
-            event = g.app.gui.create_key_event(c, None, None, None)
+            event = g.app.gui.create_key_event(c)
             k.masterCommand(commandName=None, event=event, func=func)
             return k.funcReturn
         else:

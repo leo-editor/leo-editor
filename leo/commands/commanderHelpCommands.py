@@ -41,7 +41,7 @@ def editOneSetting(self, event=None):
         g.es('not in a setting node')
         return
     if func:
-        event = g.app.gui.create_key_event(c, None, None, None)
+        event = g.app.gui.create_key_event(c)
         func(event)
 #@+node:vitalije.20170708172746.1: ** c_help.editShortcut
 @g.commander_command('edit-shortcut')

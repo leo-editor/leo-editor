@@ -306,7 +306,7 @@ class LeoMenu(object):
                     # 2012/01/07: set w here.
                     w = setWidget()
                     if trace: g.trace(command.__name__, w)
-                    event = g.app.gui.create_key_event(c, None, None, w)
+                    event = g.app.gui.create_key_event(c, w=w)
                     return c.k.masterCommand(func=command, event=event)
 
                 return masterDynamicMenuCallback
@@ -324,7 +324,7 @@ class LeoMenu(object):
                 # 2012/01/07: Bug fix: set w here.
                 w = setWidget()
                 if trace: g.trace(commandName, w, c)
-                event = g.app.gui.create_key_event(c, None, None, w)
+                event = g.app.gui.create_key_event(c, w=w)
                 return c.k.masterCommand(commandName=commandName, event=event)
 
             return masterStaticMenuCallback
@@ -545,7 +545,7 @@ class LeoMenu(object):
         c = self.c
         if minibufferCommand:
             # Create a dummy event as a signal to doCommand.
-            event = g.app.gui.create_key_event(c, None, None, None)
+            event = g.app.gui.create_key_event(c)
             # The first parameter must be event, and it must default to None.
 
             def minibufferMenuCallback(event=event, self=self, command=command, label=name):

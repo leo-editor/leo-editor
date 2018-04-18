@@ -51,8 +51,10 @@ class LeoGui(object):
         self.ScriptingControllerClass = NullScriptingControllerClass
     #@+node:ekr.20061109212618.1: *3* LeoGui: Must be defined only in base class
     #@+node:ekr.20110605121601.18847: *4* LeoGui.create_key_event (LeoGui)
-    def create_key_event(self, c, char, binding, w,
-        event=None, x=None, y=None, x_root=None, y_root=None
+    def create_key_event(self, c,
+        binding=None, char=None, event=None, w=None,
+        x=None, x_root=None,
+        y=None, y_root=None,
     ):
         # Do not call strokeFromSetting here!
         # For example, this would wrongly convert Ctrl-C to Ctrl-c,
@@ -70,7 +72,7 @@ class LeoGui(object):
         self.scriptFileName = scriptFileName
     #@+node:ekr.20110605121601.18845: *4* LeoGui.event_generate (LeoGui)
     def event_generate(self, c, char, shortcut, w):
-        event = self.create_key_event(c, char, shortcut, w)
+        event = self.create_key_event(c, binding=shortcut, char=char, w=w)
         c.k.masterKeyHandler(event)
         c.outerUpdate()
     #@+node:ekr.20061109212618: *3* LeoGu: Must be defined in subclasses

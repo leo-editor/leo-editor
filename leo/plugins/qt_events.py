@@ -198,17 +198,19 @@ class LeoQtEventFilter(QtCore.QObject):
         text = event.text() # This is the unicode text.
         qt = QtCore.Qt
         d = {
-            qt.Key_Shift: 'Key_Shift',
-            qt.Key_Control: 'Key_Control', # MacOS: Command key
-            qt.Key_Meta: 'Key_Meta', # MacOS: Control key, Alt-Key on Microsoft keyboard on MacOs.
             qt.Key_Alt: 'Key_Alt',
             qt.Key_AltGr: 'Key_AltGr',
                 # On Windows, when the KeyDown event for this key is sent,
                 # the Ctrl+Alt modifiers are also set.
+            qt.Key_Control: 'Key_Control', # MacOS: Command key
+            qt.Key_Meta: 'Key_Meta', # MacOS: Control key, Alt-Key on Microsoft keyboard on MacOs.
+            qt.Key_Shift: 'Key_Shift',
         }
         if d.get(keynum):
-            # I'm not sure why this is needed, but it is.
-            toString = ''
+            if 1: # Allow bare modifier key.
+                toString = d.get(keynum)
+            else:
+                toString = ''
         else:
             toString = QtGui.QKeySequence(keynum).toString()
         # Fix bug 1244461: Numpad 'Enter' key does not work in minibuffer
@@ -275,6 +277,19 @@ class LeoQtEventFilter(QtCore.QObject):
         #
         if ch == '\r':
             ch = '\n'
+        #
+        # Handle bare modifier keys
+        #
+        mod_d = {
+            'Alt+Key_Alt': 'Alt+',
+            'Alt+Ctrl+Key_AltGr': 'Alt+Ctrl+',
+            'Control+Key_Control': 'Ctrl+',
+            'Meta+Key_Meta': 'Key_Meta',
+            'Shift+Key_Shift': 'Key_Shift',
+        }
+        if binding in mod_d:
+            binding = mod_d.get(binding)
+            ch = ''
         #
         # Adjust the case of the binding string (for the minibuffer).
         #
