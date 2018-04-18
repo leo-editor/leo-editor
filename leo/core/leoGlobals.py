@@ -384,22 +384,17 @@ class KeyStroke(object):
         return '<KeyStroke: %s>' % (repr(self.s))
 
     __repr__ = __str__
-    #@+node:ekr.20180415083158.1: *4* ks.finalize
-    def finalize(self, s):
-        trace = False and not g.unitTesting
-        s1 = s
-        s = self.finalize_char(s)
-            # May change self.mods.
-        mods = ''.join(['%s+' % z.capitalize() for z in self.mods])
-        if trace: g.trace('%20s:%-20s ==> %s' % (self.mods, s1, mods+s))
-        return mods+s
     #@+node:ekr.20180415082249.1: *4* ks.finalize_binding
     def finalize_binding(self, binding):
         
+        trace = False and not g.unitTesting
         self.mods = self.find_mods(binding)
         s = self.strip_mods(binding)
-        # g.trace('%30s: %25r ==> %20s:%r' % (g.caller(3), binding, self.mods or '', s))
-        return self.finalize(s)
+        s = self.finalize_char(s)
+            # May change self.mods.
+        mods = ''.join(['%s+' % z.capitalize() for z in self.mods])
+        if trace: g.trace('%20s:%-20s ==> %s' % (binding, self.mods, mods+s))
+        return mods+s
     #@+node:ekr.20180415083926.1: *4* ks.finalize_char
     def finalize_char(self, s):
         '''Perform very-last-minute translations on bindings.'''
