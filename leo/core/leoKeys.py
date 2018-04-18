@@ -3849,8 +3849,6 @@ class KeyHandlerClass(object):
     #@+node:ekr.20160409035115.1: *5* k.searchTree
     def searchTree(self, char):
         '''Search all visible nodes for a headline starting with stroke.'''
-        trace = False and not g.unitTesting
-        if trace: g.trace(char)
         if not char: return
         c = self.c
         if not c.config.getBool('plain-key-outline-search'):
@@ -3867,7 +3865,6 @@ class KeyHandlerClass(object):
             if p == c.p and match(p):
                 p.moveToVisNext(c)
             while p:
-                if trace: g.trace(p.h)
                 if match(p):
                     c.selectPosition(p)
                     c.redraw()
