@@ -3482,44 +3482,60 @@ class KeyHandlerClass(object):
         return bi
     #@+node:ekr.20061031131434.110: *5* k.handleDefaultChar
     def handleDefaultChar(self, event, stroke):
-        '''Handle an unbound key.'''
-        trace = False and not g.unitTesting
-        verbose = True
-        c, k = self.c, self
-        w = event.widget
+        '''
+        Handle an unbound key, based on the event's widget.
+        Do not assume that stroke exists.
+        '''
+        c, k, w = self.c, self, event.widget
         name = c.widget_name(w)
-        if trace and verbose:
-            g.trace('widget_name', name, 'stroke', stroke,
-            'enable alt-ctrl', self.enable_alt_ctrl_bindings)
+        #
+        # Ignore unbound alt-ctrl key
+        #
         if stroke and stroke.isAltCtrl() and k.ignore_unbound_non_ascii_keys:
-            if trace: g.trace('*** ignoring unbound ctrl/alt key:', stroke)
             g.app.unitTestDict['handleUnboundChar-ignore-alt-or-ctrl'] = True
-        elif name.startswith('body'):
+            return
+        #
+        # Handle events in the body pane.
+        #
+        if name.startswith('body'):
             action = k.unboundKeyAction
             if action in ('insert', 'overwrite'):
                 c.editCommands.selfInsertCommand(event, action=action)
-            else: # Ignore the key
-                if trace: g.trace('ignoring', stroke)
-        elif name.startswith('head'):
+            else:
+                pass # Ignore the key
+            return
+        #
+        # Handle events in headlines.
+        #
+        if name.startswith('head'):
             c.frame.tree.onHeadlineKey(event)
-        elif name.startswith('canvas'):
+            return
+        #
+        # Handle events in the background tree.
+        #
+        if name.startswith('canvas'):
             if not stroke: # Not exactly right, but it seems to be good enough.
-                c.onCanvasKey(event) # New in Leo 4.4.2
-        elif name.startswith('log'):
-            # Bug fix: 2011/11/21: Because of universal bindings
-            # we may not be able to insert anything into w.
+                c.onCanvasKey(event)
+            return
+        #
+        # Handle events in the log pane.
+        #
+        if name.startswith('log'):
+            # Make sure we can insert into w.
             log_w = event.widget
-            if log_w and hasattr(log_w, 'supportsHighLevelInterface'):
-                # Send the event to the text widget, not the LeoLog instance.
+            if not hasattr(log_w, 'supportsHighLevelInterface'):
+                return
+            # Send the event to the text widget, not the LeoLog instance.
+            if not stroke:
+                stroke = event.stroke
+            if stroke:
                 i = log_w.getInsertPoint()
-                if not stroke:
-                    stroke = event.stroke
-                if stroke:
-                    s = stroke.toGuiChar()
-                    log_w.insert(i, s)
-            elif trace: g.trace('not supportsHighLevelInterface', log_w)
-        else:
-            pass # Ignore the event
+                s = stroke.toGuiChar()
+                log_w.insert(i, s)
+            return
+        #
+        # Ignore all other events.
+        #
     #@+node:vitalije.20170708161511.1: *5* k.handleInputShortcut
     def handleInputShortcut(self, event, stroke):
         k = self; c = k.c; p = c.p
