@@ -3282,7 +3282,6 @@ class KeyHandlerClass(object):
             return False
         #
         # Shortcut everything so that demo-next or demo-prev won't alter of our ivars.
-        #
         if k.demoNextKey and stroke == k.demoNextKey:
             if demo.trace: g.trace('demo-next', stroke)
             demo.next_command()
@@ -3305,7 +3304,6 @@ class KeyHandlerClass(object):
             return False
         #
         # First, honor minibuffer bindings for all except user modes.
-        #
         if state == 'input-shortcut':
             k.handleInputShortcut(event, stroke)
             return True
@@ -3362,22 +3360,18 @@ class KeyHandlerClass(object):
         stroke, w = event.stroke, event.widget
         #
         # Ignore non-plain keys.
-        #
         if not k.isPlainKey(stroke):
             return False
         #
         # Ignore any keys in the background tree widget.
-        #
         if c.widget_name(w).startswith('canvas'):
             return False
         #
         # Ignore the char if it is bound to the auto-complete command.
-        #
         if self.isAutoCompleteChar(stroke):
             return False
         #
         # Handle the unbound key.
-        #
         k.handleUnboundKeys(event)
         return True
     #@+node:ekr.20110209083917.16004: *6* k.isAutoCompleteChar
@@ -3442,7 +3436,6 @@ class KeyHandlerClass(object):
         c, k = self.c, self
         #
         # Return if the pane's name doesn't match the event's widget.
-        #
         state = k.unboundKeyAction
         w_name = c.widget_name(w)
         pane_matches = (
@@ -3455,7 +3448,6 @@ class KeyHandlerClass(object):
             return None
         #
         # Return if there is no binding at all.
-        #
         d = k.masterBindingsDict.get(key, {})
         if not d:
             return None
@@ -3464,7 +3456,6 @@ class KeyHandlerClass(object):
             return None
         #
         # Ignore previous/next-line commands while editing headlines.
-        #
         if (
             key == 'text' and
             name == 'head' and
@@ -3473,7 +3464,6 @@ class KeyHandlerClass(object):
             return None
         #
         # The binding has been found.
-        #
         return bi
     #@+node:ekr.20061031131434.110: *5* k.handleDefaultChar
     def handleDefaultChar(self, event, stroke):
@@ -3485,13 +3475,11 @@ class KeyHandlerClass(object):
         name = c.widget_name(w)
         #
         # Ignore unbound alt-ctrl key
-        #
         if stroke and stroke.isAltCtrl() and k.ignore_unbound_non_ascii_keys:
             g.app.unitTestDict['handleUnboundChar-ignore-alt-or-ctrl'] = True
             return
         #
         # Handle events in the body pane.
-        #
         if name.startswith('body'):
             action = k.unboundKeyAction
             if action in ('insert', 'overwrite'):
@@ -3501,20 +3489,17 @@ class KeyHandlerClass(object):
             return
         #
         # Handle events in headlines.
-        #
         if name.startswith('head'):
             c.frame.tree.onHeadlineKey(event)
             return
         #
         # Handle events in the background tree.
-        #
         if name.startswith('canvas'):
             if not stroke: # Not exactly right, but it seems to be good enough.
                 c.onCanvasKey(event)
             return
         #
         # Handle events in the log pane.
-        #
         if name.startswith('log'):
             # Make sure we can insert into w.
             log_w = event.widget
@@ -3530,7 +3515,6 @@ class KeyHandlerClass(object):
             return
         #
         # Ignore all other events.
-        #
     #@+node:vitalije.20170708161511.1: *5* k.handleInputShortcut
     def handleInputShortcut(self, event, stroke):
         c, k, p = self.c, self, self.c.p
@@ -3592,12 +3576,10 @@ class KeyHandlerClass(object):
         k = self
         #
         # Special case for bindings handled in k.getArg:
-        #
         if state == 'full-command' and stroke in ('Up', 'Down'):
             return False
         #
         # Ignore other special keys in the minibuffer.
-        #
         if state in ('getArg', 'full-command'):
             if stroke in (
                 '\b', 'BackSpace',
@@ -3611,17 +3593,14 @@ class KeyHandlerClass(object):
                 return False
         #
         # Ignore autocompletion state.
-        #
         if state.startswith('auto-'):
             return False
         # 
         # Ignore plain key binding in the minibuffer.
-        #
         if not stroke or k.isPlainKey(stroke):
             return False
         #
         # Get the command, based on the pane.
-        #
         for pane in ('mini', 'all', 'text'):
             result = k.handleMinibufferHelper(event, pane, state, stroke)
             assert result in ('continue', 'found', 'ignore')
@@ -3631,7 +3610,6 @@ class KeyHandlerClass(object):
                 return True
         #
         # No binding exists.
-        #
         return False
     #@+node:ekr.20180418114300.1: *6* k.handleMinibufferHelper
     def handleMinibufferHelper(self, event, pane, state, stroke):
@@ -3680,7 +3658,6 @@ class KeyHandlerClass(object):
             return
         #
         # Ignore all unbound characters in command mode.
-        #
         if k.unboundKeyAction == 'command':
             w = g.app.gui.get_focus(c)
             if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
@@ -3688,24 +3665,20 @@ class KeyHandlerClass(object):
             return
         #
         # Ignore unbound F-keys.
-        #
         if stroke.isFKey():
             return
         #
         #  Handle a normal character in insert/overwrite.
         # <Return> is *not* a normal character.
-        #
         if stroke and k.isPlainKey(stroke) and k.unboundKeyAction in ('insert', 'overwrite'):
             k.masterCommand(event=event, stroke=stroke)
             return
         #
         # Always ignore unbound Alt/Ctrl keys.
-        #
         if stroke.isAltCtrl() and not self.enable_alt_ctrl_bindings:
             return
         #
         # Ignore unbound non-ascii character.
-        #
         if (
             k.ignore_unbound_non_ascii_keys and
             (len(char) > 1 or char not in string.printable)
@@ -3714,7 +3687,6 @@ class KeyHandlerClass(object):
             return
         #
         # Never insert escape or insert characters.
-        #
         if (
             stroke and stroke.find('Escape') != -1 or
             stroke and stroke.find('Insert') != -1
@@ -3722,7 +3694,6 @@ class KeyHandlerClass(object):
             return
         #
         # Let k.masterCommand handle the unbound character.
-        #
         k.masterCommand(event=event, stroke=stroke)
 
     #@+node:ekr.20180418031118.1: *5* k.isSpecialKey
@@ -3741,6 +3712,7 @@ class KeyHandlerClass(object):
         )
         if char in special_keys:
             return True
+        #
         # A last-minute attempt:
         if char.find('NumLock') > -1:
             return True
@@ -3775,9 +3747,11 @@ class KeyHandlerClass(object):
         c.setLog()
         k.stroke = stroke # Set this global for general use.
         ch = event.char if event else ''
+        #
         # Ignore all special keys.
         if k.isSpecialKey(event):
             return
+        #
         # Compute func if not given.
         # It is *not* an error for func to be None.
         if commandName and not func:
@@ -3786,16 +3760,20 @@ class KeyHandlerClass(object):
                 return
         commandName = commandName or func and func.__name__ or '<no function>'
         k.funcReturn = None # For unit testing.
+        #
         # Remember the key.
         k.setLossage(ch, stroke)
+        #
         # Handle keyboard-quit.
         if k.abortAllModesKey and stroke == k.abortAllModesKey:
             k.keyboardQuit()
             k.endCommand(commandName)
             return
+        #
         # Ignore abbreviations.
         if k.abbrevOn and c.abbrevCommands.expandAbbrev(event, stroke):
             return
+        #
         # Handle the func argument, if given.
         if func:
             if commandName.startswith('specialCallback'):
@@ -3810,9 +3788,11 @@ class KeyHandlerClass(object):
                 k.endCommand(commandName)
                 c.frame.updateStatusLine()
             return
+        #
         # Ignore unbound keys in a state.
         if k.inState():
             return
+        #
         # Finally, call k.handleDefaultChar.
         k.handleDefaultChar(event, stroke)
         if c.exists:
