@@ -3538,7 +3538,7 @@ class KeyHandlerClass(object):
         #
     #@+node:vitalije.20170708161511.1: *5* k.handleInputShortcut
     def handleInputShortcut(self, event, stroke):
-        k = self; c = k.c; p = c.p
+        c, k, p = self.c, self, self.c.p
         k.clearState()
         if p.h.startswith(('@shortcuts', '@mode')):
             # line of text in body
@@ -3593,11 +3593,16 @@ class KeyHandlerClass(object):
             g.es('bound', stroke, 'to command', cmdname)
     #@+node:ekr.20061031131434.152: *5* k.handleMiniBindings
     def handleMiniBindings(self, event, state, stroke):
-        trace = False and not g.app.unitTesting
-        c, k = self.c, self
+        '''Find and execute commands bound to the event.'''
+        k = self
+        #
         # Special case for bindings handled in k.getArg:
+        #
         if state == 'full-command' and stroke in ('Up', 'Down'):
             return False
+        #
+        # Ignore other special keys in the minibuffer.
+        #
         if state in ('getArg', 'full-command'):
             if stroke in (
                 '\b', 'BackSpace',
@@ -3609,42 +3614,67 @@ class KeyHandlerClass(object):
                 return False
             if k.isFKey(stroke):
                 return False
-        if not state.startswith('auto-'):
-            # New in Leo 4.5: ignore plain key binding in the minibuffer.
-            if not stroke or k.isPlainKey(stroke):
-                if trace: g.trace('plain key', stroke)
-                return False
-            # New in Leo 4.5: The minibuffer inherits 'text' and 'all' bindings
-            # for all single-line editing commands.
-            for pane in ('mini', 'all', 'text'):
-                d = k.masterBindingsDict.get(pane)
-                if d:
-                    bi = d.get(stroke)
-                    if bi:
-                        assert bi.stroke == stroke, 'bi: %s stroke: %s' % (
-                            bi, stroke)
-                        if bi.commandName == 'replace-string' and state == 'getArg':
-                            if trace: g.trace('%s binding for replace-string' % (pane), stroke)
-                            return False # Let getArg handle it.
-                        elif bi.commandName not in k.singleLineCommandList:
-                            if trace: g.trace(
-                                '%s binding terminates minibuffer' % (pane),
-                                bi.commandName, stroke)
-                            k.keyboardQuit()
-                        else:
-                            if trace: g.trace(repr(stroke), 'mini binding', bi.commandName)
-                            c.minibufferWantsFocus() # New in Leo 4.5.
-                        # Pass this on for macro recording.
-                        k.masterCommand(
-                            commandName=bi.commandName,
-                            event=event,
-                            func=bi.func,
-                            stroke=stroke)
-                        # Careful: the command could exit.
-                        if c.exists and not k.silentMode:
-                            c.minibufferWantsFocus()
-                        return True
+        #
+        # Ignore autocompletion state.
+        #
+        if state.startswith('auto-'):
+            return False
+        # 
+        # Ignore plain key binding in the minibuffer.
+        #
+        if not stroke or k.isPlainKey(stroke):
+            return False
+        #
+        # Get the command, based on the pane.
+        #
+        for pane in ('mini', 'all', 'text'):
+            result = k.handleMinibufferHelper(event, pane, state, stroke)
+            assert result in ('continue', 'found', 'ignore')
+            if result == 'ignore':
+                return False # Let getArg handle it.
+            if result == 'found':
+                return True
+        #
+        # No binding exists.
+        #
         return False
+    #@+node:ekr.20180418114300.1: *6* k.handleMinibufferHelper
+    def handleMinibufferHelper(self, event, pane, state, stroke):
+        '''
+        Execute a pane binding in the minibuffer.
+        
+        Return 'continue', 'ignore', 'found'
+        '''
+        c, k = self.c, self
+        d = k.masterBindingsDict.get(pane)
+        if not d:
+            return 'continue'
+        bi = d.get(stroke)
+        if not bi:
+            return 'continue'
+        assert bi.stroke == stroke, 'bi: %s stroke: %s' % (bi, stroke)
+        #
+        # Special case the replace-string command in the minibuffer.
+        #
+        if bi.commandName == 'replace-string' and state == 'getArg':
+            return 'ignore'
+        #
+        # Execute this command.
+        #
+        if bi.commandName not in k.singleLineCommandList:
+            k.keyboardQuit()
+        else:
+            c.minibufferWantsFocus() # New in Leo 4.5.
+        # Pass this on for macro recording.
+        k.masterCommand(
+            commandName=bi.commandName,
+            event=event,
+            func=bi.func,
+            stroke=stroke)
+        # Careful: the command could exit.
+        if c.exists and not k.silentMode:
+            c.minibufferWantsFocus()
+        return 'found'
     #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys
     def handleUnboundKeys(self, event):
         trace = False and not g.unitTesting
