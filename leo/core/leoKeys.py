@@ -3273,15 +3273,16 @@ class KeyHandlerClass(object):
     def doDemo(self, event):
         '''
         Support the demo.py plugin.
-        Return True if k.masterKeyHandler should
+        Return True if k.masterKeyHandler should return.
         '''
         k = self
         stroke = event.stroke
         demo = getattr(g.app, 'demo', None)
         if not demo:
             return False
-        # Shortcut everything so that demo-next or demo-prev
-        # won't alter of our ivars.
+        #
+        # Shortcut everything so that demo-next or demo-prev won't alter of our ivars.
+        #
         if k.demoNextKey and stroke == k.demoNextKey:
             if demo.trace: g.trace('demo-next', stroke)
             demo.next_command()
@@ -3297,15 +3298,14 @@ class KeyHandlerClass(object):
         Handle mode bindings.
         Return True if k.masterKeyHandler should return.
         '''
-        trace = False and not g.unitTesting
         k = self
         state = k.state.kind
         stroke = event.stroke
         if not k.inState():
             return False
+        #
         # First, honor minibuffer bindings for all except user modes.
-        if trace:
-            g.trace('   state %-15s %s' % (state, stroke))
+        #
         if state == 'input-shortcut':
             k.handleInputShortcut(event, stroke)
             return True
@@ -3318,23 +3318,23 @@ class KeyHandlerClass(object):
         if state == 'getArg':
             k.getArg(event, stroke=stroke)
             return True
-        elif state in ('getFileName', 'get-file-name'):
-            if trace: g.trace(event, state, stroke)
+        if state in ('getFileName', 'get-file-name'):
             k.getFileName(event)
             return True
-        elif state in ('full-command', 'auto-complete'):
-            # Do the default state action.
-            if trace: g.trace('calling state function', k.state.kind)
-            val = k.callStateFunction(event) # Calls end-command.
-            if trace: g.trace('state function returns', repr(val))
+        if state in ('full-command', 'auto-complete'):
+            val = k.callStateFunction(event)
+                # Do the default state action.
+                # Calls end-command.
             return val != 'do-standard-keys'
+        #
         # Third, pass keys to user modes.
+        #
         d = k.masterBindingsDict.get(state)
         if d:
             assert g.isStrokeOrNone(stroke)
             bi = d.get(stroke)
             if bi:
-                if trace: g.trace('calling generalModeHandler', stroke)
+                # Bound keys continue the mode.
                 k.generalModeHandler(event,
                     commandName=bi.commandName,
                     func=bi.func,
@@ -3342,21 +3342,16 @@ class KeyHandlerClass(object):
                     nextMode=bi.nextMode)
                 return True
             else:
-                # New in Leo 4.5: unbound keys end mode.
-                # if trace: g.trace('unbound key ends mode',stroke,state)
-                if 0: # 2012/05/20: I dislike this warning.
-                    g.warning('unbound key ends mode', stroke) # 2011/02/02
+                # Unbound keys end mode.
                 k.endMode()
                 return False
-        else:
-            # New in 4.4b4.
-            handler = k.getStateHandler()
-            if handler:
-                if trace: g.trace('handler', handler)
-                handler(event)
-            else:
-                if trace: g.trace('No state handler for %s' % state)
-            return True
+        #
+        # Fourth, call the state handler.
+        #
+        handler = k.getStateHandler()
+        if handler:
+            handler(event)
+        return True
     #@+node:ekr.20180418025702.1: *5* k.doUnboundPlainKey & helper
     def doUnboundPlainKey(self, event):
         '''
@@ -3677,54 +3672,59 @@ class KeyHandlerClass(object):
         return 'found'
     #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys
     def handleUnboundKeys(self, event):
-        trace = False and not g.unitTesting
-        verbose = True
+       
         c, k = self.c, self
-        char = event.char
-        stroke = event.stroke
-        modesTuple = ('insert', 'overwrite')
+        char, stroke = event.char, event.stroke
         if not g.isStroke(stroke):
             g.trace('can not happen: not a stroke', repr(stroke), g.callers())
             return
-        if trace and verbose:
-            g.trace('ch: %r, stroke %r' % (event.char, stroke))
+        #
+        # Ignore all unbound characters in command mode.
+        #
         if k.unboundKeyAction == 'command':
-            # Ignore all unbound characters in command mode.
             w = g.app.gui.get_focus(c)
             if w and g.app.gui.widget_name(w).lower().startswith('canvas'):
                 c.onCanvasKey(event)
-            if trace: g.trace('ignoring unbound character in command mode', stroke)
             return
-        elif stroke.isFKey():
-            if trace: g.trace('ignoring F-key', stroke)
+        #
+        # Ignore unbound F-keys.
+        #
+        if stroke.isFKey():
             return
-        elif stroke and k.isPlainKey(stroke) and k.unboundKeyAction in modesTuple:
-            # insert/overwrite normal character.  <Return> is *not* a normal character.
-            if trace: g.trace('plain key in insert mode', repr(stroke))
+        #
+        #  Handle a normal character in insert/overwrite.
+        # <Return> is *not* a normal character.
+        #
+        if stroke and k.isPlainKey(stroke) and k.unboundKeyAction in ('insert', 'overwrite'):
             k.masterCommand(event=event, stroke=stroke)
             return
-        elif stroke.isAltCtrl() and not self.enable_alt_ctrl_bindings:
-            # 2011/02/11: Always ignore unbound Alt/Ctrl keys.
-            if trace: g.trace('ignoring unbound Alt/Ctrl key',
-                repr(char), repr(stroke))
+        #
+        # Always ignore unbound Alt/Ctrl keys.
+        #
+        if stroke.isAltCtrl() and not self.enable_alt_ctrl_bindings:
             return
-        elif k.ignore_unbound_non_ascii_keys and (
-            len(char) > 1 or
-            char not in string.printable # 2011/06/10: risky test?
+        #
+        # Ignore unbound non-ascii character.
+        #
+        if (
+            k.ignore_unbound_non_ascii_keys and
+            (len(char) > 1 or char not in string.printable)
+                ### k.isPlainKey (same as stroke.isPlainKey) should be better.
         ):
-            if trace: g.trace('ignoring unbound non-ascii key', repr(char), repr(stroke))
             return
-        elif(
+        #
+        # Never insert escape or insert characters.
+        #
+        if (
             stroke and stroke.find('Escape') != -1 or
             stroke and stroke.find('Insert') != -1
         ):
-            # Never insert escape or insert characters.
-            if trace: g.trace('ignore Escape/Ignore', stroke)
             return
-        else:
-            if trace: g.trace('no func', repr(char), repr(stroke))
-            k.masterCommand(event=event, stroke=stroke)
-            return
+        #
+        # Let k.masterCommand handle the unbound character.
+        #
+        k.masterCommand(event=event, stroke=stroke)
+
     #@+node:ekr.20180418031118.1: *5* k.isSpecialKey
     def isSpecialKey(self, event):
         '''Return True if char is a special key.'''
