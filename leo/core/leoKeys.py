@@ -3728,6 +3728,8 @@ class KeyHandlerClass(object):
     #@+node:ekr.20180418031118.1: *5* k.isSpecialKey
     def isSpecialKey(self, event):
         '''Return True if char is a special key.'''
+        if not event:
+            return False # not special.
         char = event.char
         special_keys = (
             'Alt_L', 'Alt_R',
@@ -3772,55 +3774,29 @@ class KeyHandlerClass(object):
         if event: c.check_event(event)
         c.setLog()
         k.stroke = stroke # Set this global for general use.
-        char = ch = event.char if event else ''
-        #
+        ch = event.char if event else ''
         # Ignore all special keys.
-        #
-        #@+<< define specialKeysyms >>
-        #@+node:ekr.20061031131434.106: *6* << define specialKeysyms >>
-        specialKeysyms = (
-            'Alt_L', 'Alt_R',
-            'Meta_L', 'Meta_R', # Meta support.
-            'Caps_Lock', 'Control_L', 'Control_R',
-            'Num_Lock',
-            'Shift_L', 'Shift_R',
-        )
-        #@-<< define specialKeysyms >>
-        special = char in specialKeysyms
-        if special:
+        if k.isSpecialKey(event):
             return
-        #
         # Compute func if not given.
         # It is *not* an error for func to be None.
-        #
         if commandName and not func:
             func = c.commandsDict.get(commandName.replace('&', ''))
             if not func:
                 return
-        #
-        # Setup
-        #
         commandName = commandName or func and func.__name__ or '<no function>'
         k.funcReturn = None # For unit testing.
-        inserted = not special
-        if inserted:
-            k.setLossage(ch, stroke)
-        #
+        # Remember the key.
+        k.setLossage(ch, stroke)
         # Handle keyboard-quit.
-        #
         if k.abortAllModesKey and stroke == k.abortAllModesKey:
             k.keyboardQuit()
             k.endCommand(commandName)
             return
-        #
         # Ignore abbreviations.
-        #
-        if k.abbrevOn:
-            if c.abbrevCommands.expandAbbrev(event, stroke):
-                return
-        #
+        if k.abbrevOn and c.abbrevCommands.expandAbbrev(event, stroke):
+            return
         # Handle the func argument, if given.
-        #
         if func:
             if commandName.startswith('specialCallback'):
                 # The callback function will call c.doCommand.
@@ -3834,14 +3810,10 @@ class KeyHandlerClass(object):
                 k.endCommand(commandName)
                 c.frame.updateStatusLine()
             return
-        #
         # Ignore unbound keys in a state.
-        #
         if k.inState():
             return
-        #
-        # Finally, call k.handleDefaultChar
-        #
+        # Finally, call k.handleDefaultChar.
         k.handleDefaultChar(event, stroke)
         if c.exists:
             c.frame.updateStatusLine()
