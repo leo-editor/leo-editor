@@ -3159,16 +3159,14 @@ class KeyHandlerClass(object):
         k.fnc.get_file_name(event, callback, filterExt, prompt, tabName)
     #@+node:ekr.20061031131434.145: *3* k.Master event handlers
     #@+node:ekr.20061031131434.146: *4* k.masterKeyHandler & helpers
-    master_key_count = 0
-
     def masterKeyHandler(self, event):
         '''The master key handler for almost all key bindings.'''
         k = self
-        k.master_key_count += 1
+        # Setup...
         k.checkKeyEvent(event)
         k.setEventWidget(event)
         k.traceVars(event)
-        # Order is very important here.
+        # Order is very important here...
         if k.isSpecialKey(event):
             return
         if k.doKeyboardQuit(event):
@@ -3187,8 +3185,8 @@ class KeyHandlerClass(object):
     def callStateFunction(self, event):
         trace = False and not g.unitTesting
         k, val = self, None
-        ch = event.char if event else ''
-        stroke = event.stroke if event else ''
+        ch = event.char
+        stroke = event.stroke
         if trace: g.trace(k.state.kind, 'ch', ch, 'stroke', stroke,
             'ignore_unbound_non_ascii_keys', k.ignore_unbound_non_ascii_keys)
         if k.state.kind == 'auto-complete':
@@ -3261,7 +3259,7 @@ class KeyHandlerClass(object):
         Return True if k.masterKeyHandler should
         '''
         k = self
-        stroke = event.stroke if event else ''
+        stroke = event.stroke
         demo = getattr(g.app, 'demo', None)
         if not demo:
             return False
@@ -3285,7 +3283,7 @@ class KeyHandlerClass(object):
         trace = False and not g.unitTesting
         k = self
         state = k.state.kind
-        stroke = event.stroke if event else ''
+        stroke = event.stroke
         if not k.inState():
             return False
         # First, honor minibuffer bindings for all except user modes.
@@ -3584,8 +3582,8 @@ class KeyHandlerClass(object):
         trace = False and not g.unitTesting
         verbose = True
         c, k = self.c, self
-        char = event.char if event else ''
-        stroke = event.stroke if event else ''
+        char = event.char
+        stroke = event.stroke
         modesTuple = ('insert', 'overwrite')
         if not g.isStroke(stroke):
             g.trace('can not happen: not a stroke', repr(stroke), g.callers())
@@ -3649,7 +3647,7 @@ class KeyHandlerClass(object):
     def isSpecialKey(self, event):
         '''Return True if char is a special key.'''
         trace = False and not g.unitTesting
-        char = event.char if event else ''
+        char = event.char
         special_keys = (
             'Alt_L', 'Alt_R',
             'Caps_Lock', 'Control_L', 'Control_R',
@@ -3669,7 +3667,7 @@ class KeyHandlerClass(object):
         return True if k.masterKeyHandler should return.
         '''
         c, k = self.c, self
-        stroke = event.stroke if event else ''
+        stroke = event.stroke
         if k.abortAllModesKey and stroke == k.abortAllModesKey:
             if getattr(c, 'screenCastController', None):
                 c.screenCastController.quit()
