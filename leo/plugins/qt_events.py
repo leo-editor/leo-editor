@@ -78,7 +78,6 @@ class LeoQtEventFilter(QtCore.QObject):
              self.traceEvent(obj, event)
         self.traceWidget(event)
         if self.doNonKeyEvent(event, obj):
-            if trace and traceEvent: self.traceEvent(obj, event)
             return False # Let Qt handle the non-key event.
         #
         # Ignore incomplete key events.
