@@ -3761,7 +3761,7 @@ class KeyHandlerClass(object):
                 stroke=stroke)
             return True
         return False
-    #@+node:ekr.20061031131434.105: *5* k.masterCommand & helpers
+    #@+node:ekr.20061031131434.105: *5* k.masterCommand
     def masterCommand(self, commandName=None, event=None, func=None, stroke=None):
         '''
         This is the central dispatching method.
@@ -3769,24 +3769,13 @@ class KeyHandlerClass(object):
         This returns None, but may set k.funcReturn.
         '''
         c, k = self.c, self
-        trace = False and not g.unitTesting
-        traceGC = False
-        traceStroke = True
-        # if trace: g.trace(commandName, func)
-        if traceGC: g.printNewObjects('masterCom 1')
         if event: c.check_event(event)
         c.setLog()
         k.stroke = stroke # Set this global for general use.
         char = ch = event.char if event else ''
-        # 2011/10/28: compute func if not given.
-        if commandName and not func:
-            func = c.commandsDict.get(commandName.replace('&', ''))
-            if not func:
-                g.es_print('not in c.commandsDict:', commandName, color='red')
-                return
-        # Important: it is *not* an error for func to be None.
-        commandName = commandName or func and func.__name__ or '<no function>'
-        k.funcReturn = None # For unit testing.
+        #
+        # Ignore all special keys.
+        #
         #@+<< define specialKeysyms >>
         #@+node:ekr.20061031131434.106: *6* << define specialKeysyms >>
         specialKeysyms = (
@@ -3798,47 +3787,65 @@ class KeyHandlerClass(object):
         )
         #@-<< define specialKeysyms >>
         special = char in specialKeysyms
+        if special:
+            return
+        #
+        # Compute func if not given.
+        # It is *not* an error for func to be None.
+        #
+        if commandName and not func:
+            func = c.commandsDict.get(commandName.replace('&', ''))
+            if not func:
+                return
+        #
+        # Setup
+        #
+        commandName = commandName or func and func.__name__ or '<no function>'
+        k.funcReturn = None # For unit testing.
         inserted = not special
-        if trace and traceStroke: # Useful.
-            g.trace('stroke: %s ch: %s func: %s' % (
-                stroke, repr(ch), func and func.__name__))
         if inserted:
             k.setLossage(ch, stroke)
-        if k.abortAllModesKey and stroke == k.abortAllModesKey: # 'Control-g'
+        #
+        # Handle keyboard-quit.
+        #
+        if k.abortAllModesKey and stroke == k.abortAllModesKey:
             k.keyboardQuit()
             k.endCommand(commandName)
             return
-        if special: # Don't pass these on.
-            return
+        #
+        # Ignore abbreviations.
+        #
         if k.abbrevOn:
-            expanded = c.abbrevCommands.expandAbbrev(event, stroke)
-            if expanded: return
-        if func: # Func is an argument.
+            if c.abbrevCommands.expandAbbrev(event, stroke):
+                return
+        #
+        # Handle the func argument, if given.
+        #
+        if func:
             if commandName.startswith('specialCallback'):
-                # The callback function will call c.doCommand
-                if trace: g.trace('calling specialCallback for', commandName)
-                # if commandName != 'repeat-complex-command': # 2010/01/11
-                    # k.mb_history.insert(0,commandName)
+                # The callback function will call c.doCommand.
                 val = func(event)
-                # k.simulateCommand uses k.funcReturn.
-                k.funcReturn = k.funcReturn or val # For unit tests.
+                # Set k.funcReturn for k.simulateCommand..
+                k.funcReturn = k.funcReturn or val
             else:
                 # Call c.doCommand directly.
-                if trace:
-                    g.trace('calling command directly', commandName)
                 c.doCommand(func, commandName, event=event)
             if c.exists:
                 k.endCommand(commandName)
                 c.frame.updateStatusLine()
-            if traceGC: g.printNewObjects('masterCom 2')
-        elif k.inState():
-            pass #Ignore unbound keys in a state.
-        else:
-            if traceGC: g.printNewObjects('masterCom 3')
-            k.handleDefaultChar(event, stroke)
-            if c.exists:
-                c.frame.updateStatusLine()
-            if traceGC: g.printNewObjects('masterCom 4')
+            return
+        #
+        # Ignore unbound keys in a state.
+        #
+        if k.inState():
+            return
+        #
+        # Finally, call k.handleDefaultChar
+        #
+        k.handleDefaultChar(event, stroke)
+        if c.exists:
+            c.frame.updateStatusLine()
+        
     #@+node:ekr.20160409035115.1: *5* k.searchTree
     def searchTree(self, char):
         '''Search all visible nodes for a headline starting with stroke.'''
