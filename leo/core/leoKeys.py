@@ -3642,7 +3642,6 @@ class KeyHandlerClass(object):
     #@+node:ekr.20180418031118.1: *5* k.isSpecialKey
     def isSpecialKey(self, event):
         '''Return True if char is a special key.'''
-        trace = False and not g.unitTesting
         char = event.char
         special_keys = (
             'Alt_L', 'Alt_R',
@@ -3653,7 +3652,9 @@ class KeyHandlerClass(object):
             'Win_L', 'Win_R',
         )
         if char in special_keys:
-            if trace : g.trace('is special', char)
+            return True
+        # A last-minute attempt:
+        if char.find('NumLock') > -1:
             return True
         return False
     #@+node:ekr.20180418024449.1: *5* k.keyboardQuit
