@@ -398,8 +398,6 @@ class KeyStroke(object):
     #@+node:ekr.20180415083926.1: *4* ks.finalize_char
     def finalize_char(self, s):
         '''Perform very-last-minute translations on bindings.'''
-        trace = False and not g.unitTesting
-        if trace: g.trace('=====', self.mods, repr(s))
         # This dict ensures proper capitalization.
         # It also translates legacy Tk binding names to ascii chars.
         translate_d = {
@@ -460,10 +458,13 @@ class KeyStroke(object):
         # pylint: disable=undefined-loop-variable
         # Looks like a pylint bug.
         if s in (None, 'none'):
-            s = ''
-        elif s.lower() in translate_d:
-            s = translate_d.get(s.lower())
-        elif s.isalpha():
+            return ''
+        if s.find('NumLock') > -1:
+            ### Experimental.
+            return s.replace('NumLock', '')
+        if s.lower() in translate_d:
+            return translate_d.get(s.lower())
+        if s.isalpha():
             if len(s) == 1:
                 if 'shift' in self.mods:
                     if len(self.mods) == 1:
@@ -473,36 +474,32 @@ class KeyStroke(object):
                         s = s.lower()
                 elif self.mods:
                     s = s.lower()
-                else:
-                    pass # leave plain keys alone.
-        else:
-            # Translate possibly-dubious user settings.
-            shift_list = "_+{}|:\"<>?"
-                # Shifting these characters has no effect.
-            shift_d = {
-                # Top row of keyboard.
-                "-": "_",
-                "=": "+",
-                # Second row of keyboard.
-                "[": "{",
-                "]": "}",
-                "\\": '|',
-                # Third row of keyboard.
-                ";": ":",
-                "'": '"',
-                # Fourth row of keyboard.
-                ".": "<",
-                ",": ">",
-                "//": "?",
-            }
-            if 'shift' in self.mods and s in shift_list:
-                # Shifting these chars has no effect.
-                self.mods.remove('shift')
-            elif 'shift' in self.mods and s in shift_d:
-                self.mods.remove('shift')
-                s = shift_d.get(s)
-        if trace:
-            g.trace('-----', self.mods, repr(s))
+            return s
+        # Translate possibly-dubious user settings.
+        shift_list = "_+{}|:\"<>?"
+            # Shifting these characters has no effect.
+        shift_d = {
+            # Top row of keyboard.
+            "-": "_",
+            "=": "+",
+            # Second row of keyboard.
+            "[": "{",
+            "]": "}",
+            "\\": '|',
+            # Third row of keyboard.
+            ";": ":",
+            "'": '"',
+            # Fourth row of keyboard.
+            ".": "<",
+            ",": ">",
+            "//": "?",
+        }
+        if 'shift' in self.mods and s in shift_list:
+            # Shifting these chars has no effect.
+            self.mods.remove('shift')
+        elif 'shift' in self.mods and s in shift_d:
+            self.mods.remove('shift')
+            s = shift_d.get(s)
         return s
     #@+node:ekr.20120203053243.10124: *4* ks.find, lower & startswith
     # These may go away later, but for now they make conversion of string strokes easier.
