@@ -3357,7 +3357,7 @@ class KeyHandlerClass(object):
             else:
                 if trace: g.trace('No state handler for %s' % state)
             return True
-    #@+node:ekr.20180418025702.1: *5* k.doUnboundPlainKey
+    #@+node:ekr.20180418025702.1: *5* k.doUnboundPlainKey & helper
     def doUnboundPlainKey(self, event):
         '''
         Handle unbound plain keys.
@@ -3385,6 +3385,24 @@ class KeyHandlerClass(object):
         #
         k.handleUnboundKeys(event)
         return True
+    #@+node:ekr.20110209083917.16004: *6* k.isAutoCompleteChar
+    def isAutoCompleteChar(self, stroke):
+        '''
+        Return True if stroke is bound to the auto-complete in
+        the insert or overwrite state.
+        '''
+        k = self; state = k.unboundKeyAction
+        assert g.isStrokeOrNone(stroke)
+        if stroke and state in ('insert', 'overwrite'):
+            for key in (state, 'body', 'log', 'text', 'all'):
+                d = k.masterBindingsDict.get(key, {})
+                if d:
+                    bi = d.get(stroke)
+                    if bi:
+                        assert bi.stroke == stroke, 'bi: %s stroke: %s' % (bi, stroke)
+                        if bi.commandName == 'auto-complete':
+                            return True
+        return False
     #@+node:ekr.20180418025241.1: *5* k.doVim
     def doVim(self, event):
         '''
@@ -3398,17 +3416,12 @@ class KeyHandlerClass(object):
             if trace: g.trace('vc.do_key returns', ok)
             return ok
         return False
-    #@+node:ekr.20091230094319.6240: *5* k.getPaneBinding
+    #@+node:ekr.20091230094319.6240: *5* k.getPaneBinding & helper
     def getPaneBinding(self, stroke, w):
-        trace = False and not g.unitTesting
-        trace_dict = True
-        verbose = True
-        k, w_name = self, self.c.widget_name(w)
-        state = k.unboundKeyAction
+       
+        k = self
         if not g.assert_is(stroke, g.KeyStroke):
             return None
-        if trace: g.trace('===== w_name: %r, stroke: %s, isTextWrapper(w): %s' % (
-            w_name, stroke, g.isTextWrapper(w)))
         for key, name in (
             # Order here is similar to bindtags order.
             ('command', None),
@@ -3424,34 +3437,49 @@ class KeyHandlerClass(object):
             ('text', None),
             ('all', None),
         ):
-            if trace and trace_dict:
-                d = k.masterBindingsDict.get(key, {})
-                g.trace('key:', key)
-                if d:
-                    g.trace('d.get(%s)' % (stroke))
-                    g.trace(d.get(stroke))
-            if (
-                # key in keyStatesTuple and isPlain and k.unboundKeyAction == key or
-                name and w_name.startswith(name) or
-                key in ('command', 'insert', 'overwrite') and state == key or # 2010/02/09
-                key in ('text', 'all') and g.isTextWrapper(w) or
-                key in ('button', 'all')
-            ):
-                d = k.masterBindingsDict.get(key, {})
-                if trace and verbose:
-                    g.trace('key: %7s name: %6s stroke: %10s in keys: %s' %
-                        (key, name, stroke, stroke in d))
-                if d:
-                    bi = d.get(stroke)
-                    if bi:
-                        table = ('previous-line', 'next-line',)
-                        if key == 'text' and name == 'head' and bi.commandName in table:
-                            if trace: g.trace('***** special case', bi.commandName)
-                        else:
-                            if trace: g.trace('key: %7s name: %6s  found: %r = %s' % (
-                                key, name, bi.stroke, bi.commandName))
-                            return bi
+            val = k.getBindingHelper(key, name, stroke, w)
+            if val:
+                return val
         return None
+    #@+node:ekr.20180418105228.1: *6* getPaneBindingHelper
+    def getBindingHelper(self, key, name, stroke, w):
+        '''Find a binding for the widget with the given name.'''
+        c, k = self.c, self
+        #
+        # Return if the pane's name doesn't match the event's widget.
+        #
+        state = k.unboundKeyAction
+        w_name = c.widget_name(w)
+        pane_matches = (
+            name and w_name.startswith(name) or
+            key in ('command', 'insert', 'overwrite') and state == key or
+            key in ('text', 'all') and g.isTextWrapper(w) or
+            key in ('button', 'all')
+        )
+        if not pane_matches:
+            return None
+        #
+        # Return if there is no binding at all.
+        #
+        d = k.masterBindingsDict.get(key, {})
+        if not d:
+            return None
+        bi = d.get(stroke)
+        if not bi:
+            return None
+        #
+        # Ignore previous/next-line commands while editing headlines.
+        #
+        if (
+            key == 'text' and
+            name == 'head' and
+            bi.commandName in ('previous-line', 'next-line')
+        ):
+            return None
+        #
+        # The binding has been found.
+        #
+        return bi
     #@+node:ekr.20061031131434.110: *5* k.handleDefaultChar
     def handleDefaultChar(self, event, stroke):
         '''Handle an unbound key.'''
@@ -3651,24 +3679,6 @@ class KeyHandlerClass(object):
             if trace: g.trace('no func', repr(char), repr(stroke))
             k.masterCommand(event=event, stroke=stroke)
             return
-    #@+node:ekr.20110209083917.16004: *5* k.isAutoCompleteChar
-    def isAutoCompleteChar(self, stroke):
-        '''
-        Return True if stroke is bound to the auto-complete in
-        the insert or overwrite state.
-        '''
-        k = self; state = k.unboundKeyAction
-        assert g.isStrokeOrNone(stroke)
-        if stroke and state in ('insert', 'overwrite'):
-            for key in (state, 'body', 'log', 'text', 'all'):
-                d = k.masterBindingsDict.get(key, {})
-                if d:
-                    bi = d.get(stroke)
-                    if bi:
-                        assert bi.stroke == stroke, 'bi: %s stroke: %s' % (bi, stroke)
-                        if bi.commandName == 'auto-complete':
-                            return True
-        return False
     #@+node:ekr.20180418031118.1: *5* k.isSpecialKey
     def isSpecialKey(self, event):
         '''Return True if char is a special key.'''
