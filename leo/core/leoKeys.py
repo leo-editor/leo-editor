@@ -3190,7 +3190,6 @@ class KeyHandlerClass(object):
         if trace: g.trace(k.state.kind, 'ch', ch, 'stroke', stroke,
             'ignore_unbound_non_ascii_keys', k.ignore_unbound_non_ascii_keys)
         if k.state.kind == 'auto-complete':
-            # 2011/06/17.
             # k.auto_completer_state_handler returns 'do-standard-keys' for control keys.
             val = k.state.handler(event)
             if trace: g.trace('auto-complete returns', repr(val))
@@ -3202,10 +3201,8 @@ class KeyHandlerClass(object):
                 ch and ch not in ('\b', '\n', '\r', '\t') and
                 (ord(ch) < 32 or ord(ch) > 128)
             ):
-                # g.trace('non-ascii',ord(ch))
                 pass
             elif k.state.handler:
-                # if trace: g.trace(k.state.handler.__name__)
                 val = k.state.handler(event)
                 if val != 'continue':
                     k.endCommand(k.commandName)
@@ -3223,7 +3220,7 @@ class KeyHandlerClass(object):
         if not hasattr(event, 'widget'):
             event.widget = None
         assert g.isStrokeOrNone(event.stroke)
-    #@+node:ekr.20180418033838.1: *5* k.doBinding (new)
+    #@+node:ekr.20180418033838.1: *5* k.doBinding
     def doBinding(self, event):
         trace = False and not g.unitTesting
         trace_unbound = True
@@ -3252,7 +3249,7 @@ class KeyHandlerClass(object):
         else:
             if trace and trace_unbound: g.trace(' unbound', stroke)
             k.handleUnboundKeys(event)
-    #@+node:ekr.20180418023827.1: *5* k.doDemo (new)
+    #@+node:ekr.20180418023827.1: *5* k.doDemo
     def doDemo(self, event):
         '''
         Support the demo.py plugin.
@@ -3338,7 +3335,7 @@ class KeyHandlerClass(object):
             else:
                 if trace: g.trace('No state handler for %s' % state)
             return True
-    #@+node:ekr.20180418025702.1: *5* k.doUnboundPlainKey (new)
+    #@+node:ekr.20180418025702.1: *5* k.doUnboundPlainKey
     def doUnboundPlainKey(self, event):
         '''
         Handle unbound plain keys.
@@ -3360,7 +3357,7 @@ class KeyHandlerClass(object):
         if trace: g.trace('inserted %-10s (insert/overwrite mode)' % (stroke))
         k.handleUnboundKeys(event)
         return True
-    #@+node:ekr.20180418025241.1: *5* k.doVim (new)
+    #@+node:ekr.20180418025241.1: *5* k.doVim
     def doVim(self, event):
         '''
         Handle vim mode.
@@ -3382,9 +3379,8 @@ class KeyHandlerClass(object):
         state = k.unboundKeyAction
         if not g.assert_is(stroke, g.KeyStroke):
             return None
-        if trace: g.trace('===== w_name', repr(w_name), 'stroke', stroke,
-            # 'w', w,
-            'isTextWrapper(w)', g.isTextWrapper(w))
+        if trace: g.trace('===== w_name: %r, stroke: %s, isTextWrapper(w): %s' % (
+            w_name, stroke, g.isTextWrapper(w)))
         for key, name in (
             # Order here is similar to bindtags order.
             ('command', None),
@@ -3422,14 +3418,13 @@ class KeyHandlerClass(object):
                     if bi:
                         table = ('previous-line', 'next-line',)
                         if key == 'text' and name == 'head' and bi.commandName in table:
-                            if trace: g.trace(
-                                '***** special case', bi.commandName)
+                            if trace: g.trace('***** special case', bi.commandName)
                         else:
                             if trace: g.trace('key: %7s name: %6s  found: %r = %s' % (
                                 key, name, bi.stroke, bi.commandName))
                             return bi
         return None
-    #@+node:ekr.20061031131434.110: *5* k.handleDefaultChar (changed)
+    #@+node:ekr.20061031131434.110: *5* k.handleDefaultChar
     def handleDefaultChar(self, event, stroke):
         '''Handle an unbound key.'''
         trace = False and not g.unitTesting
@@ -3503,6 +3498,7 @@ class KeyHandlerClass(object):
             g.error('not in settings node shortcut')
     #@+node:vitalije.20170709151653.1: *6* k.isInShortcutBodyLine
     _cmd_handle_input_pattern = re.compile(g.u('[A-Za-z0-9_\\-]+\\s*='))
+
     def isInShortcutBodyLine(self):
         k = self; c = k.c; p = c.p
         if p.h.startswith(('@shortcuts', '@mode')):
@@ -3577,7 +3573,7 @@ class KeyHandlerClass(object):
                             c.minibufferWantsFocus()
                         return True
         return False
-    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys (changed)
+    #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys 
     def handleUnboundKeys(self, event):
         trace = False and not g.unitTesting
         verbose = True
@@ -3643,7 +3639,7 @@ class KeyHandlerClass(object):
                         if bi.commandName == 'auto-complete':
                             return True
         return False
-    #@+node:ekr.20180418031118.1: *5* k.isSpecialKey (new)
+    #@+node:ekr.20180418031118.1: *5* k.isSpecialKey 
     def isSpecialKey(self, event):
         '''Return True if char is a special key.'''
         trace = False and not g.unitTesting
@@ -3660,7 +3656,7 @@ class KeyHandlerClass(object):
             if trace : g.trace('is special', char)
             return True
         return False
-    #@+node:ekr.20180418024449.1: *5* k.keyboardQuit (new)
+    #@+node:ekr.20180418024449.1: *5* k.keyboardQuit 
     def doKeyboardQuit(self, event):
         '''
         Handle keyboard-quit logic.
@@ -3800,7 +3796,7 @@ class KeyHandlerClass(object):
                 # c.selectPosition(p)
                 # c.redraw()
             # return found
-    #@+node:ekr.20180418034305.1: *5* k.setEventWidget (new)
+    #@+node:ekr.20180418034305.1: *5* k.setEventWidget
     def setEventWidget(self, event):
         '''
         A hack: redirect the event to the text part of the log.
