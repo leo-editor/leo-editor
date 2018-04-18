@@ -3184,30 +3184,40 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.108: *5* k.callStateFunction
     def callStateFunction(self, event):
         trace = False and not g.unitTesting
-        k, val = self, None
+        k = self
         ch = event.char
-        stroke = event.stroke
-        if trace: g.trace(k.state.kind, 'ch', ch, 'stroke', stroke,
-            'ignore_unbound_non_ascii_keys', k.ignore_unbound_non_ascii_keys)
+        #
+        # Defensive programming
+        #
+        if not k.state.kind:
+            return None
+        if not k.state.handler:
+            g.error('callStateFunction: no state function for', k.state.kind)
+            return None
+        #
+        # Handle auto-completion before checking for unbound keys.
+        #
         if k.state.kind == 'auto-complete':
             # k.auto_completer_state_handler returns 'do-standard-keys' for control keys.
             val = k.state.handler(event)
             if trace: g.trace('auto-complete returns', repr(val))
             return val
-        elif k.state.kind:
-            if (
-                k.ignore_unbound_non_ascii_keys and
-                len(ch) == 1 and # 2011/04/01
-                ch and ch not in ('\b', '\n', '\r', '\t') and
-                (ord(ch) < 32 or ord(ch) > 128)
-            ):
-                pass
-            elif k.state.handler:
-                val = k.state.handler(event)
-                if val != 'continue':
-                    k.endCommand(k.commandName)
-            else:
-                g.error('callStateFunction: no state function for', k.state.kind)
+        #
+        # Ignore unbound non-ascii keys.
+        #
+        if (
+            k.ignore_unbound_non_ascii_keys and
+            len(ch) == 1 and
+            ch and ch not in ('\b', '\n', '\r', '\t') and
+            (ord(ch) < 32 or ord(ch) > 128)
+        ):
+            return None
+        #
+        # Call the state handler.
+        #
+        val = k.state.handler(event)
+        if val != 'continue':
+            k.endCommand(k.commandName)
         return val
     #@+node:ekr.20180418040158.1: *5* k.checkKeyEvent
     def checkKeyEvent(self, event):
