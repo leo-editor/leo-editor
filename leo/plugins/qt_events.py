@@ -207,7 +207,7 @@ class LeoQtEventFilter(QtCore.QObject):
             qt.Key_Shift: 'Key_Shift',
         }
         if d.get(keynum):
-            if 1: # Allow bare modifier key.
+            if 0: # Allow bare modifier key.
                 toString = d.get(keynum)
             else:
                 toString = ''
