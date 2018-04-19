@@ -65,7 +65,7 @@ class LeoQtEventFilter(QtCore.QObject):
         self.ctagscompleter_onKey = None
     #@+node:ekr.20110605121601.18540: *3* filter.eventFilter & helpers
     def eventFilter(self, obj, event):
-        trace = True and not g.unitTesting
+        trace = False and not g.unitTesting
         traceEvent = False # True: call self.traceEvent.
         traceKeys = True
         c, k = self.c, self.c.k
