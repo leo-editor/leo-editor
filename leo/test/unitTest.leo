@@ -3448,7 +3448,6 @@ for key in keys:
 <t tx="ekr.20100131171342.5605">import string
 k = c.k
 for ch in (string.printable):
-    ### if ch == '\n': continue # A special case.
     assert k.isPlainKey(ch), 'not plain: %s' % (repr(ch))
 special = (
     'Begin','Break','Caps_Lock','Clear','Down','End','Escape',
