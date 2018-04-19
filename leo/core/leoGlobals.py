@@ -354,7 +354,12 @@ ignoreChars = [
     'KP_Add', 'KP_Decimal', 'KP_Divide', 'KP_Enter', 'KP_Equal',
         # Keypad chars should be have been converted to other keys.
         # Users should just bind to the corresponding normal keys.
-    'Caps_Lock', 'Num_Lock', 'ScrollLock',
+    'Caps_Lock', 'NumLock', 'Num_Lock', 'ScrollLock',
+    'Alt_L', 'Alt_R',
+    'Control_L', 'Control_R',
+    'Meta_L', 'Meta_R',
+    'Shift_L', 'Shift_R',
+    'Win_L', 'Win_R',
         # Clearly, these should never be generated.
     'Break', 'Pause', 'Sys_Req',
         # These are real keys, but they don't mean anything.

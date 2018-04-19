@@ -2475,7 +2475,7 @@ class KeyHandlerClass(object):
             c.check_event(event)
             ch = char = event.char if event else ''
             stroke = event.stroke if event else ''
-            g.trace('char', repr(char), 'stroke', repr(stroke))
+            ### g.trace('char', repr(char), 'stroke', repr(stroke))
             if trace: g.trace('state', state, repr(char))
             if state > 0:
                 k.setLossage(char, stroke)
@@ -3364,7 +3364,7 @@ class KeyHandlerClass(object):
         #
         # Ignore non-plain keys.
         if not k.isPlainKey(stroke):
-            g.trace('IGNORE', stroke)
+            ### g.trace('IGNORE', stroke)
             return False
         #
         # Ignore any keys in the background tree widget.
@@ -3709,22 +3709,25 @@ class KeyHandlerClass(object):
         '''Return True if char is a special key.'''
         if not event:
             return False # not special.
-        char = event.char
-        special_keys = (
-            'Alt_L', 'Alt_R',
-            'Caps_Lock', 'Control_L', 'Control_R',
-            'Meta_L', 'Meta_R', # Meta support.
-            'Num_Lock',
-            'Shift_L', 'Shift_R',
-            'Win_L', 'Win_R',
-        )
-        if char in special_keys:
-            return True
-        #
-        # A last-minute attempt:
-        if char.find('NumLock') > -1:
-            return True
-        return False
+        return event.char in g.ignoreChars
+        
+        ###
+            # char = event.char
+            # special_keys = (
+                # 'Alt_L', 'Alt_R',
+                # 'Caps_Lock', 'Control_L', 'Control_R',
+                # 'Meta_L', 'Meta_R', # Meta support.
+                # 'Num_Lock',
+                # 'Shift_L', 'Shift_R',
+                # 'Win_L', 'Win_R',
+            # )
+            # if char in special_keys:
+                # return True
+            # #
+            # # A last-minute attempt:
+            # if char.find('NumLock') > -1:
+                # return True
+            # return False
     #@+node:ekr.20180418024449.1: *5* k.keyboardQuit
     def doKeyboardQuit(self, event):
         '''
