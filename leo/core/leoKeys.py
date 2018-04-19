@@ -4373,11 +4373,19 @@ class KeyHandlerClass(object):
     def prettyPrintKey(self, stroke, brief=False):
         
         if not stroke:
-            return
-        if g.isStroke(stroke):
-            return stroke.s
-        stroke = g.KeyStroke(stroke)
+            return ''
+        if not g.assert_is(stroke, g.KeyStroke):
+            return stroke
         return stroke.s
+        
+            # if g.isStroke(stroke):
+                # return stroke.s
+            # g.trace('not a g.KeyStroke', repr(stroke))
+            # if g.unitTesting:
+                # assert False
+            # return stroke
+            # # stroke = g.KeyStroke(stroke)
+            # # return stroke.s
     #@+node:ekr.20110609161752.16459: *4* k.setLossage
     def setLossage(self, ch, stroke):
         trace = False and not g.unitTesting
