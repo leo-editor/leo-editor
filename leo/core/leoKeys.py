@@ -2475,6 +2475,7 @@ class KeyHandlerClass(object):
             c.check_event(event)
             ch = char = event.char if event else ''
             stroke = event.stroke if event else ''
+            g.trace('char', repr(char), 'stroke', repr(stroke))
             if trace: g.trace('state', state, repr(char))
             if state > 0:
                 k.setLossage(char, stroke)
@@ -3229,6 +3230,8 @@ class KeyHandlerClass(object):
         if not hasattr(event, 'widget'):
             event.widget = None
         assert g.isStrokeOrNone(event.stroke)
+        if event:
+            assert event.stroke.s not in g.ignoreChars, repr(event.stroke.s)
     #@+node:ekr.20180418033838.1: *5* k.doBinding
     def doBinding(self, event):
         '''
@@ -3361,6 +3364,7 @@ class KeyHandlerClass(object):
         #
         # Ignore non-plain keys.
         if not k.isPlainKey(stroke):
+            g.trace('IGNORE', stroke)
             return False
         #
         # Ignore any keys in the background tree widget.
@@ -3473,6 +3477,7 @@ class KeyHandlerClass(object):
         '''
         c, k, w = self.c, self, event.widget
         name = c.widget_name(w)
+        ### g.trace(stroke)
         #
         # Ignore unbound alt-ctrl key
         if stroke and stroke.isAltCtrl() and k.ignore_unbound_non_ascii_keys:
@@ -3653,9 +3658,12 @@ class KeyHandlerClass(object):
        
         c, k = self.c, self
         char, stroke = event.char, event.stroke
+        ### if not g.assert_is(stroke, g.KeyStroke):
+            ### return
         if not g.isStroke(stroke):
             g.trace('can not happen: not a stroke', repr(stroke), g.callers())
             return
+        ### g.trace('k.isPlainKey:', k.isPlainKey(stroke), stroke)
         #
         # Ignore all unbound characters in command mode.
         if k.unboundKeyAction == 'command':

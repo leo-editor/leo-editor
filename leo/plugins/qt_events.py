@@ -65,7 +65,7 @@ class LeoQtEventFilter(QtCore.QObject):
         self.ctagscompleter_onKey = None
     #@+node:ekr.20110605121601.18540: *3* filter.eventFilter & helpers
     def eventFilter(self, obj, event):
-        trace = False and not g.unitTesting
+        trace = True and not g.unitTesting
         traceEvent = False # True: call self.traceEvent.
         traceKeys = True
         c, k = self.c, self.c.k
@@ -84,7 +84,7 @@ class LeoQtEventFilter(QtCore.QObject):
             return False # Let Qt handle the key event.
         #
         # Generate a g.KeyStroke for k.masterKeyHandler.
-        binding, ch = self.toBinding(event)
+        binding, ch = self.toBinding(event, trace and traceKeys)
         if not binding:
             return False # Allow Qt to handle the key event.
         stroke = g.KeyStroke(binding=binding)
@@ -154,7 +154,7 @@ class LeoQtEventFilter(QtCore.QObject):
             # QTextEdit: ignore all key events except keyPress events.
             return eventType != ev.KeyPress
     #@+node:ekr.20110605121601.18543: *4* filter.toBinding & helpers
-    def toBinding(self, event):
+    def toBinding(self, event, traceFlag):
         '''
         Return (binding, ch):
 
@@ -162,8 +162,12 @@ class LeoQtEventFilter(QtCore.QObject):
                     Spelling no longer fragile.
         ch:         the insertable key, or ''.
         '''
-        mods = self.qtMods(event)
-        keynum, text, toString, ch = self.qtKey(event)
+        mods = self.qtMods(event, traceFlag)
+        keynum, text, toString, ch = self.qtKey(event, traceFlag)
+        if toString in g.ignoreChars:
+            # Never allow these chars.
+            g.trace('IGNORE', toString, repr(ch))
+            return None, None
         ch = ch or toString or ''
         if not ch:
             return None, None
@@ -173,16 +177,16 @@ class LeoQtEventFilter(QtCore.QObject):
         binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), ch)
         ch = text or toString
         # Do "early" tweaks, before calling g.KeyStroke().
-        binding, ch = self.tweak(binding, ch, mods)
+        binding, ch = self.tweak(binding, ch, mods, traceFlag)
         return binding, ch
     #@+node:ekr.20110605121601.18544: *5* filter.qtKey
-    def qtKey(self, event):
+    def qtKey(self, event, traceFlag):
         '''
         Return the components of a Qt key event.
 
         Modifiers are handled separately.
 
-        Return keynum,text,toString,ch
+        Return (keynum, text, toString, ch).
 
         keynum: event.key()
         ch:     g.u(chr(keynum)) or '' if there is an exception.
@@ -192,7 +196,7 @@ class LeoQtEventFilter(QtCore.QObject):
         text:   event.text()
         '''
         keynum = event.key()
-        text = event.text() # This is the unicode text.
+        text = event.text() # This is the unicode character!
         qt = QtCore.Qt
         d = {
             qt.Key_Alt: 'Key_Alt',
@@ -210,9 +214,12 @@ class LeoQtEventFilter(QtCore.QObject):
                 toString = ''
         else:
             toString = QtGui.QKeySequence(keynum).toString()
+        if traceFlag: g.trace('BEFORE text: %r toString: %r' % (g.u(text), g.u(toString)))
         # Fix bug 1244461: Numpad 'Enter' key does not work in minibuffer
         if toString == 'Enter':
             toString = 'Return'
+        if toString == 'Esc':
+            toString = 'Escape'
         try:
             ch1 = chr(keynum)
         except ValueError:
@@ -223,9 +230,10 @@ class LeoQtEventFilter(QtCore.QObject):
             ch = ch1
         text = g.u(text)
         toString = g.u(toString)
+        if traceFlag: g.trace('AFTER  text: %r toString: %r' % (g.u(text), g.u(toString)))
         return keynum, text, toString, ch
     #@+node:ekr.20120204061120.10084: *5* filter.qtMods
-    def qtMods(self, event):
+    def qtMods(self, event, traceFlag):
         '''Return the text version of the modifiers of the key event.'''
         c = self.c
         modifiers = event.modifiers()
@@ -241,18 +249,17 @@ class LeoQtEventFilter(QtCore.QObject):
             # Case *does* matter below.
         #
         # MacOS: optionally convert Meta to Atl.
-        #
         if c.config.getBool('replace-meta-with-alt', default=False):
             if 'Meta' in mods:
                 mods.remove('Meta')
                 mods.append('Alt')
+        if traceFlag: g.trace(mods)
         return mods
     #@+node:ekr.20180417161548.1: *5* filter.tweak
-    def tweak(self, binding, ch, mods):
+    def tweak(self, binding, ch, mods, traceFlag):
         '''Do *early* tweaks. g.KeyStroke does *late* tweaks.'''
         #
         # First, adjust ch & binding for MacOS
-        #
         if g.isMac and len(mods) == 1 and mods[0] == 'Alt':
             # Patch provided by resi147.
             # See the thread: special characters in MacOSX, like '@'.
@@ -270,10 +277,11 @@ class LeoQtEventFilter(QtCore.QObject):
                 binding = ch
                 return binding, ch
         #
-        # This is needed, because ch is separate from binding.
-        #
+        # These needed, because ch is separate from binding.
         if ch == '\r':
             ch = '\n'
+        if binding == 'Escape':
+            ch = 'Escape'
         #
         # Handle bare modifier keys
         #
@@ -290,9 +298,9 @@ class LeoQtEventFilter(QtCore.QObject):
                 ch = ''
         #
         # Adjust the case of the binding string (for the minibuffer).
-        #
         if len(ch) == 1 and len(binding) == 1 and ch.isalpha() and binding.isalpha():
             if ch != binding:
+                if traceFlag: g.trace('TWEAK', repr(ch))
                 binding = ch
         return binding, ch
         
