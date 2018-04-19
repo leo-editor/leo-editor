@@ -88,7 +88,8 @@ class LeoQtEventFilter(QtCore.QObject):
         if not binding:
             return False # Allow Qt to handle the key event.
         stroke = g.KeyStroke(binding=binding)
-        if trace and traceKeys: g.trace(binding, stroke, repr(ch))
+        if trace and traceKeys:
+            g.trace('binding: %s, stroke: %s, char: %r' % (binding, stroke, ch))
         #
         # Pass the KeyStroke to masterKeyHandler.
         try:

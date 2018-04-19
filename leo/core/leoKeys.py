@@ -3364,7 +3364,6 @@ class KeyHandlerClass(object):
         #
         # Ignore non-plain keys.
         if not k.isPlainKey(stroke):
-            ### g.trace('IGNORE', stroke)
             return False
         #
         # Ignore any keys in the background tree widget.
@@ -3477,7 +3476,6 @@ class KeyHandlerClass(object):
         '''
         c, k, w = self.c, self, event.widget
         name = c.widget_name(w)
-        ### g.trace(stroke)
         #
         # Ignore unbound alt-ctrl key
         if stroke and stroke.isAltCtrl() and k.ignore_unbound_non_ascii_keys:
@@ -3658,12 +3656,8 @@ class KeyHandlerClass(object):
        
         c, k = self.c, self
         char, stroke = event.char, event.stroke
-        ### if not g.assert_is(stroke, g.KeyStroke):
-            ### return
-        if not g.isStroke(stroke):
-            g.trace('can not happen: not a stroke', repr(stroke), g.callers())
+        if not g.assert_is(stroke, g.KeyStroke):
             return
-        ### g.trace('k.isPlainKey:', k.isPlainKey(stroke), stroke)
         #
         # Ignore all unbound characters in command mode.
         if k.unboundKeyAction == 'command':
@@ -3708,26 +3702,9 @@ class KeyHandlerClass(object):
     def isSpecialKey(self, event):
         '''Return True if char is a special key.'''
         if not event:
-            return False # not special.
+            # An empty event is not an error.
+            return False
         return event.char in g.ignoreChars
-        
-        ###
-            # char = event.char
-            # special_keys = (
-                # 'Alt_L', 'Alt_R',
-                # 'Caps_Lock', 'Control_L', 'Control_R',
-                # 'Meta_L', 'Meta_R', # Meta support.
-                # 'Num_Lock',
-                # 'Shift_L', 'Shift_R',
-                # 'Win_L', 'Win_R',
-            # )
-            # if char in special_keys:
-                # return True
-            # #
-            # # A last-minute attempt:
-            # if char.find('NumLock') > -1:
-                # return True
-            # return False
     #@+node:ekr.20180418024449.1: *5* k.keyboardQuit
     def doKeyboardQuit(self, event):
         '''

@@ -540,10 +540,6 @@ class KeyStroke(object):
         # Looks like a pylint bug.
         if s in (None, 'none'):
             return ''
-        ### NumLock (Num_Lock) is always ignored.
-        # if s.find('NumLock') > -1:
-            # ### Experimental.
-            # return s.replace('NumLock', '')
         if s.lower() in translate_d:
             return translate_d.get(s.lower())
         if s.isalpha():
@@ -625,18 +621,6 @@ class KeyStroke(object):
         if s in self.specialChars:
             return False
         return True
-        
-        ###
-        # import unicodedata
-        # if s in ('\b', 'BackSpace', '\n', 'Return', '\t', 'Tab'):
-            # # The "Gang of Four", without "LineFeed".
-            # # These are "plain" keys, s.printable() is False.
-            # return True
-        # if s in string.printable:
-            # return True
-        # if len(s) > 1:
-            # return False
-        # return unicodedata.category(s).startswith('C')
     #@+node:ekr.20180417160703.1: *4* ks.dump
     def dump(self):
         '''Show results of printable chars.'''
