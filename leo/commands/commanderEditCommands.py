@@ -433,7 +433,7 @@ def extractSectionNames(self, event=None):
         name = findSectionName(c, s)
         if name:
             undoData = u.beforeInsertNode(current)
-            p = c.createLastChildNode(current, name, None)
+            p = createLastChildNode(c, current, name, None)
             u.afterInsertNode(p, undoType, undoData)
             found = True
     c.validateOutline()
