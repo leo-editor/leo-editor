@@ -119,6 +119,7 @@ user_requires = [
         # disabled, pending "pip install from .whl fails conditional dependency check" https://github.com/pypa/pip/issues/4886
     ## missing: pyqt for Linux python 2.x (doesn't exist on PyPi)
     'docutils', # used by Sphinx, rST plugin
+    'nbformat', # for Jupyter notebook integration
     'pylint','pyflakes', # coding syntax standards
     'pypandoc', # doc format conversion
     'sphinx', # rST plugin
