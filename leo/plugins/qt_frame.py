@@ -1232,7 +1232,7 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
         name = self.tabText(index)
         self.detached.append((name, w))
         self.factory.detachTab(w)
-        icon = g.app.gui.getImageImageFinder("application-x-leo-outline.png")
+        icon = g.app.gui.getImageFinder("application-x-leo-outline.png")
         icon = QtGui.QIcon(icon)
         w.window().setWindowIcon(icon)
         c = w.leo_c
