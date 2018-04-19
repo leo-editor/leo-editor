@@ -164,21 +164,88 @@ class LeoQtEventFilter(QtCore.QObject):
         '''
         mods = self.qtMods(event, traceFlag)
         keynum, text, toString, ch = self.qtKey(event, traceFlag)
+        # 
+        # Never allow empty chars, or chars in g.ignoreChars
         if toString in g.ignoreChars:
-            # Never allow these chars.
-            g.trace('IGNORE', toString, repr(ch))
             return None, None
         ch = ch or toString or ''
         if not ch:
             return None, None
+        #
+        # Check for AltGr and Alt+Ctrl keys *before* creating a binding.
+        ch, mods = self.doMacTweaks(ch, mods)
+        mods = self.doEarlyTweaks(ch, keynum, mods, toString, traceFlag)
+        #
         # Tricky code:
         # We *must* use the *first* value of ch in the binding.
         # We *must* redefine the value of ch after creating the binding.
         binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), ch)
         ch = text or toString
+        #
         # Do "early" tweaks, before calling g.KeyStroke().
-        binding, ch = self.tweak(binding, ch, mods, traceFlag)
+        binding, ch = self.doLateTweaks(binding, ch, traceFlag)
         return binding, ch
+    #@+node:ekr.20180419154543.1: *5* filter.doEarlyTweaks
+    def doEarlyTweaks(self, ch, keynum, mods, toString, traceFlag):
+        '''Turn AltGr and some Alt-Ctrl keys into plain keys.'''
+        qt = QtCore.Qt
+       
+        def removeAltCtrl(mods):
+            for mod in ('Alt', 'Control'):
+                if mod in mods:
+                    mods.remove(mod)
+            return mods
+        #   
+        # Remove Alt, Ctrl for AltGr keys.
+        # See https://en.wikipedia.org/wiki/AltGr_key
+        #
+        if keynum == qt.Key_AltGr:
+            return removeAltCtrl(mods)
+        #
+        # Handle Alt-Ctrl modifiers for chars whose that are not ascii.
+        # Testing: Alt-Ctrl-E is '€'.
+        #
+        if len(ch) == 1 and ord(ch) > 127 and 'Alt' in mods and 'Control' in mods:
+            return removeAltCtrl(mods)
+        return mods
+    #@+node:ekr.20180417161548.1: *5* filter.doLateTweaks
+    def doLateTweaks(self, binding, ch, traceFlag):
+        '''Make final tweaks. g.KeyStroke does other tweaks later.'''
+        #
+        # These are needed  because ch is separate from binding.
+        if ch == '\r':
+            ch = '\n'
+        if binding == 'Escape':
+            ch = 'Escape'
+        #
+        # Adjust the case of the binding string (for the minibuffer).
+        if len(ch) == 1 and len(binding) == 1 and ch.isalpha() and binding.isalpha():
+            if ch != binding:
+                if traceFlag: g.trace('TWEAK', repr(ch))
+                binding = ch
+        return binding, ch
+        
+    #@+node:ekr.20180419160958.1: *5* filter.doMacTweaks
+    def doMacTweaks(self, ch, mods):
+        '''Replace MacOS Alt characters.'''
+        if g.isMac and len(mods) == 1 and mods[0] == 'Alt':
+            # Patch provided by resi147.
+            # See the thread: special characters in MacOSX, like '@'.
+            mac_d = {
+                ('/', '\\'),
+                ('5', '['), ('6', ']'),
+                ('7', '|'),
+                ('8', '{'), ('9', '}'),
+                ('e', '€'), ('l', '@'),
+            }
+            if ch in mac_d:
+                # pylint: disable=no-member
+                # A pylint bug, apparently.
+                ch = mac_d.get(ch)
+                mods = []
+        return ch, mods
+        
+        
     #@+node:ekr.20110605121601.18544: *5* filter.qtKey
     def qtKey(self, event, traceFlag):
         '''
@@ -236,7 +303,9 @@ class LeoQtEventFilter(QtCore.QObject):
     def qtMods(self, event, traceFlag):
         '''Return the text version of the modifiers of the key event.'''
         c = self.c
+        qt = QtCore.Qt
         modifiers = event.modifiers()
+        #
         # The order of this table no longer matters.
         qt = QtCore.Qt
         table = (
@@ -246,7 +315,6 @@ class LeoQtEventFilter(QtCore.QObject):
             (qt.ShiftModifier, 'Shift'),
         )
         mods = [b for a, b in table if (modifiers & a)]
-            # Case *does* matter below.
         #
         # MacOS: optionally convert Meta to Atl.
         if c.config.getBool('replace-meta-with-alt', default=False):
@@ -255,55 +323,6 @@ class LeoQtEventFilter(QtCore.QObject):
                 mods.append('Alt')
         if traceFlag: g.trace(mods)
         return mods
-    #@+node:ekr.20180417161548.1: *5* filter.tweak
-    def tweak(self, binding, ch, mods, traceFlag):
-        '''Do *early* tweaks. g.KeyStroke does *late* tweaks.'''
-        #
-        # First, adjust ch & binding for MacOS
-        if g.isMac and len(mods) == 1 and mods[0] == 'Alt':
-            # Patch provided by resi147.
-            # See the thread: special characters in MacOSX, like '@'.
-            mac_d = {
-                ('/', '\\'),
-                ('5', '['), ('6', ']'),
-                ('7', '|'),
-                ('8', '{'), ('9', '}'),
-                ('e', '€'), ('l', '@'),
-            }
-            if ch in mac_d:
-                # pylint: disable=no-member
-                # A pylint bug, apparently.
-                ch = mac_d.get(ch)
-                binding = ch
-                return binding, ch
-        #
-        # These needed, because ch is separate from binding.
-        if ch == '\r':
-            ch = '\n'
-        if binding == 'Escape':
-            ch = 'Escape'
-        #
-        # Handle bare modifier keys
-        #
-        if 0: # This is not needed with the present qtKey code.
-            mod_d = {
-                'Alt+Key_Alt': 'Alt+',
-                'Alt+Ctrl+Key_AltGr': 'Alt+Ctrl+',
-                'Control+Key_Control': 'Ctrl+',
-                'Meta+Key_Meta': 'Key_Meta',
-                'Shift+Key_Shift': 'Key_Shift',
-            }
-            if binding in mod_d:
-                binding = mod_d.get(binding)
-                ch = ''
-        #
-        # Adjust the case of the binding string (for the minibuffer).
-        if len(ch) == 1 and len(binding) == 1 and ch.isalpha() and binding.isalpha():
-            if ch != binding:
-                if traceFlag: g.trace('TWEAK', repr(ch))
-                binding = ch
-        return binding, ch
-        
     #@+node:ekr.20140907103315.18767: *3* filter.Tracing
     #@+node:ekr.20110605121601.18548: *4* filter.traceEvent
     def traceEvent(self, obj, event):
