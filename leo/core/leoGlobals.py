@@ -397,6 +397,14 @@ class KeyStroke(object):
         # These do not generate keystrokes on MacOs.
     #@-<< define ks.FKeys >>
     #@+others
+    #@+node:ekr.20180414195401.2: *4*  ks.__init__
+    def __init__(self, binding):
+        trace = False and not g.unitTesting
+        if binding:
+            self.s = self.finalize_binding(binding)
+        else:
+            self.s = None
+        if trace: g.trace(repr(self.s))
     #@+node:ekr.20120203053243.10117: *4* ks.__eq__, etc
     #@+at All these must be defined in order to say, for example:
     #     for key in sorted(d)
@@ -430,41 +438,17 @@ class KeyStroke(object):
         return '<KeyStroke: %s>' % (repr(self.s))
 
     __repr__ = __str__
-    #@+node:ekr.20120203053243.10124: *4* ks.find, lower & startswith
-    # These may go away later, but for now they make conversion of string strokes easier.
-
-    def find(self, pattern):
-        return self.s.find(pattern)
-
-    def lower(self):
-        return self.s.lower()
-
-    def startswith(self, s):
-        return self.s.startswith(s)
-    #@+node:ekr.20120203053243.10121: *4* ks.isFKey
-    def isFKey(self):
-        return self.s in self.FKeys
-        # s = self.s.lower()
-        # return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
-    #@+node:ekr.20120203053243.10125: *4* ks.toGuiChar
-    def toGuiChar(self):
-        '''Replace special chars by the actual gui char.'''
-        # pylint: disable=undefined-loop-variable
-        # looks like a pylint bug
-        s = self.s.lower()
-        if s in ('\n', 'return'): s = '\n'
-        elif s in ('\t', 'tab'): s = '\t'
-        elif s in ('\b', 'backspace'): s = '\b'
-        elif s in ('.', 'period'): s = '.'
-        return s
-    #@+node:ekr.20180414195401.2: *4*  ks.__init__
-    def __init__(self, binding):
-        trace = False and not g.unitTesting
-        if binding:
-            self.s = self.finalize_binding(binding)
-        else:
-            self.s = None
-        if trace: g.trace(repr(self.s))
+    #@+node:ekr.20180417160703.1: *4* ks.dump
+    def dump(self):
+        '''Show results of printable chars.'''
+        for i in range(128):
+            s = chr(i)
+            stroke = g.KeyStroke(s)
+            if stroke.s != s:
+                print('%2s %10r %r' % (i, s, stroke.s))
+        for ch in ('backspace', 'linefeed', 'return', 'tab'):
+            stroke = g.KeyStroke(ch)
+            print('%2s %10r %r' % ('', ch, stroke.s))
     #@+node:ekr.20180415082249.1: *4* ks.finalize_binding
     def finalize_binding(self, binding):
         
@@ -579,6 +563,17 @@ class KeyStroke(object):
             self.mods.remove('shift')
             s = shift_d.get(s)
         return s
+    #@+node:ekr.20120203053243.10124: *4* ks.find, lower & startswith
+    # These may go away later, but for now they make conversion of string strokes easier.
+
+    def find(self, pattern):
+        return self.s.find(pattern)
+
+    def lower(self):
+        return self.s.lower()
+
+    def startswith(self, s):
+        return self.s.startswith(s)
     #@+node:ekr.20180415081209.2: *4* ks.find_mods
     def find_mods(self, s):
         '''Return the list of all modifiers seen in s.'''
@@ -605,6 +600,11 @@ class KeyStroke(object):
         '''Return True if this is an Alt-Ctrl character.'''
         mods = self.find_mods(self.s)
         return 'alt' in mods and 'ctrl' in mods
+    #@+node:ekr.20120203053243.10121: *4* ks.isFKey
+    def isFKey(self):
+        return self.s in self.FKeys
+        # s = self.s.lower()
+        # return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
     #@+node:ekr.20180417102341.1: *4* ks.isPlainKey (does not handle alt-ctrl chars)
     def isPlainKey(self):
         '''
@@ -621,17 +621,15 @@ class KeyStroke(object):
         if s in self.specialChars:
             return False
         return True
-    #@+node:ekr.20180417160703.1: *4* ks.dump
-    def dump(self):
-        '''Show results of printable chars.'''
-        for i in range(128):
-            s = chr(i)
-            stroke = g.KeyStroke(s)
-            if stroke.s != s:
-                print('%2s %10r %r' % (i, s, stroke.s))
-        for ch in ('backspace', 'linefeed', 'return', 'tab'):
-            stroke = g.KeyStroke(ch)
-            print('%2s %10r %r' % ('', ch, stroke.s))
+    #@+node:ekr.20180419170934.1: *4* ks.prettyPrint
+    def prettyPrint(self):
+        
+        s = self.s
+        if not s:
+            return '<None>'
+        d = {' ': 'Space', '\t': 'Tab', '\n': 'Return', '\r': 'LineFeed'}
+        ch = s[-1]
+        return s[:-1] + d.get(ch, ch)
     #@+node:ekr.20180415124853.1: *4* ks.strip_mods
     def strip_mods(self, s):
         '''Remove all modifiers from s, without changing the case of s.'''
@@ -643,6 +641,17 @@ class KeyStroke(object):
                 if i > -1:
                     s = s[:i] + s[i+len(target):]
                     break
+        return s
+    #@+node:ekr.20120203053243.10125: *4* ks.toGuiChar
+    def toGuiChar(self):
+        '''Replace special chars by the actual gui char.'''
+        # pylint: disable=undefined-loop-variable
+        # looks like a pylint bug
+        s = self.s.lower()
+        if s in ('\n', 'return'): s = '\n'
+        elif s in ('\t', 'tab'): s = '\t'
+        elif s in ('\b', 'backspace'): s = '\b'
+        elif s in ('.', 'period'): s = '.'
         return s
     #@+node:ekr.20180417100834.1: *4* ks.toInsertableChar
     def toInsertableChar(self):

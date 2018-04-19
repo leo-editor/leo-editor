@@ -2685,7 +2685,7 @@ class KeyHandlerClass(object):
             key = key.replace('+Key', '')
             # g.trace('%10s %s' % (key, repr(kind)))
             letter = lm.computeBindingLetter(kind)
-            pane = '%s: ' % (pane) if pane else ''
+            pane = '%4s: ' % (pane if pane else 'all')
             left = pane + key # pane and shortcut fields
             n = max(n, len(left))
             data2.append((letter, left, commandName),)
@@ -4364,16 +4364,7 @@ class KeyHandlerClass(object):
             return ''
         if not g.assert_is(stroke, g.KeyStroke):
             return stroke
-        return stroke.s
-        
-            # if g.isStroke(stroke):
-                # return stroke.s
-            # g.trace('not a g.KeyStroke', repr(stroke))
-            # if g.unitTesting:
-                # assert False
-            # return stroke
-            # # stroke = g.KeyStroke(stroke)
-            # # return stroke.s
+        return stroke.prettyPrint()
     #@+node:ekr.20110609161752.16459: *4* k.setLossage
     def setLossage(self, ch, stroke):
         trace = False and not g.unitTesting
