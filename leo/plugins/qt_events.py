@@ -71,7 +71,6 @@ class LeoQtEventFilter(QtCore.QObject):
         c, k = self.c, self.c.k
         #
         # Handle non-key events first.
-        #
         if not self.c.p:
             return False # Startup. Let Qt handle the key event
         if trace and traceEvent:
@@ -81,12 +80,10 @@ class LeoQtEventFilter(QtCore.QObject):
             return False # Let Qt handle the non-key event.
         #
         # Ignore incomplete key events.
-        #
         if self.shouldIgnoreKeyEvent(event, obj):
             return False # Let Qt handle the key event.
         #
         # Generate a g.KeyStroke for k.masterKeyHandler.
-        #
         binding, ch = self.toBinding(event)
         if not binding:
             return False # Allow Qt to handle the key event.
@@ -94,7 +91,6 @@ class LeoQtEventFilter(QtCore.QObject):
         if trace and traceKeys: g.trace(binding, stroke, repr(ch))
         #
         # Pass the KeyStroke to masterKeyHandler.
-        #
         try:
             key_event = self.createKeyEvent(event, c, self.w, ch, binding)
             k.masterKeyHandler(key_event)
@@ -109,6 +105,8 @@ class LeoQtEventFilter(QtCore.QObject):
         return leoGui.LeoKeyEvent(
             c=self.c,
             char=ch,
+                # char = None doesn't work at present.
+                # But really, the binding should suffice.
             event=event,
             binding=binding,
             w = w,
