@@ -4341,7 +4341,7 @@ class KeyHandlerClass(object):
         s = stroke.s if g.isStroke(stroke) else stroke
         s = s.lower()
         return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
-    #@+node:ekr.20061031131434.182: *4* k.isPlainKey (changed)
+    #@+node:ekr.20061031131434.182: *4* k.isPlainKey
     def isPlainKey(self, stroke):
         '''Return true if the shortcut refers to a plain (non-Alt,non-Ctl) key.'''
         if not stroke:
@@ -4357,7 +4357,7 @@ class KeyHandlerClass(object):
         if stroke.isAltCtrl() and not self.enable_alt_ctrl_bindings:
             return True
         return stroke.isPlainKey()
-    #@+node:ekr.20061031131434.191: *4* k.prettyPrintKey (changed)
+    #@+node:ekr.20061031131434.191: *4* k.prettyPrintKey
     def prettyPrintKey(self, stroke, brief=False):
         
         if not stroke:
@@ -4375,7 +4375,7 @@ class KeyHandlerClass(object):
                 g.app.lossage.pop()
         # This looks like a memory leak, but isn't.
         g.app.lossage.insert(0, (ch, stroke),)
-    #@+node:ekr.20110606004638.16929: *4* k.stroke2char (changed)
+    #@+node:ekr.20110606004638.16929: *4* k.stroke2char
     def stroke2char(self, stroke):
         '''
         Convert a stroke to an (insertable) char.

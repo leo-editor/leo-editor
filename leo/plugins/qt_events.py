@@ -155,7 +155,7 @@ class LeoQtEventFilter(QtCore.QObject):
             # QTextEdit: ignore all key events except keyPress events.
             return eventType != ev.KeyPress
     #@+node:ekr.20110605121601.18543: *4* filter.toBinding & helpers
-    def toBinding(self, event, traceFlag):
+    def toBinding(self, event, traceFlag=None):
         '''
         Return (binding, ch):
 
