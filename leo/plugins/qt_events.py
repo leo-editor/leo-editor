@@ -160,7 +160,7 @@ class LeoQtEventFilter(QtCore.QObject):
             # QTextEdit: ignore all key events except keyPress events.
             return eventType != ev.KeyPress
     #@+node:ekr.20180413180751.4: *4* filter.toStroke
-    def toStroke(self, tkKey):
+    def toStroke(self, tkKey, ch=None): # Defensive programming re #865.
         '''Convert the official tkKey name to a stroke.'''
         trace = False and not g.unitTesting
         s = tkKey

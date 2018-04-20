@@ -845,7 +845,7 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 else:
                     ef = self.eventFilter
                     tkKey, ch, ignore = ef.toTkKey(event)
-                    stroke = ef.toStroke(tkKey, ch) # ch not used.
+                    stroke = ef.toStroke(tkKey)
                     cmd_name = self.d.get(stroke)
                     if trace: g.trace(cmd_name, s, tkKey, stroke)
                     if cmd_name:
