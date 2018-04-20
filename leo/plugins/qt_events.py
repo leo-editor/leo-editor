@@ -84,15 +84,15 @@ class LeoQtEventFilter(QtCore.QObject):
             return False # Let Qt handle the key event.
         #
         # Generate a g.KeyStroke for k.masterKeyHandler.
-        binding, ch = self.toBinding(event, trace and traceKeys)
-        if not binding:
-            return False # Allow Qt to handle the key event.
-        stroke = g.KeyStroke(binding=binding)
-        if trace and traceKeys:
-            g.trace('binding: %s, stroke: %s, char: %r' % (binding, stroke, ch))
-        #
-        # Pass the KeyStroke to masterKeyHandler.
         try:
+            binding, ch = self.toBinding(event, trace and traceKeys)
+            if not binding:
+                return False # Allow Qt to handle the key event.
+            stroke = g.KeyStroke(binding=binding)
+            if trace and traceKeys:
+                g.trace('binding: %s, stroke: %s, char: %r' % (binding, stroke, ch))
+            #
+            # Pass the KeyStroke to masterKeyHandler.
             key_event = self.createKeyEvent(event, c, self.w, ch, binding)
             k.masterKeyHandler(key_event)
             c.outerUpdate()
@@ -166,8 +166,8 @@ class LeoQtEventFilter(QtCore.QObject):
         mods = self.qtMods(event, traceFlag)
         keynum, text, toString, ch = self.qtKey(event, traceFlag)
         # 
-        # Never allow empty chars, or chars in g.ignoreChars
-        if toString in g.ignoreChars:
+        # Never allow empty chars, or chars in g.app.gui.ignoreChars
+        if toString in g.app.gui.ignoreChars:
             return None, None
         ch = ch or toString or ''
         if not ch:

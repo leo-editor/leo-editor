@@ -3231,7 +3231,7 @@ class KeyHandlerClass(object):
             event.widget = None
         assert g.isStrokeOrNone(event.stroke)
         if event:
-            assert event.stroke.s not in g.ignoreChars, repr(event.stroke.s)
+            assert event.stroke.s not in g.app.gui.ignoreChars, repr(event.stroke.s)
     #@+node:ekr.20180418033838.1: *5* k.doBinding
     def doBinding(self, event):
         '''
@@ -3704,7 +3704,7 @@ class KeyHandlerClass(object):
         if not event:
             # An empty event is not an error.
             return False
-        return event.char in g.ignoreChars
+        return event.char in g.app.gui.ignoreChars
     #@+node:ekr.20180418024449.1: *5* k.keyboardQuit
     def doKeyboardQuit(self, event):
         '''

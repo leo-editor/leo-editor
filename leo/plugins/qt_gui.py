@@ -62,6 +62,63 @@ class LeoQtGui(leoGui.LeoGui):
         self.qtApp = QtWidgets.QApplication(sys.argv)
         self.reloadSettings()
         self.appIcon = self.getIconImage('leoapp32.png')
+        #
+        # Define various classes key stokes.
+        #@+<< define FKeys >>
+        #@+node:ekr.20180419110303.1: *4* << define FKeys >>
+        self.FKeys = ['F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12']
+            # These do not generate keystrokes on MacOs.
+        #@-<< define FKeys >>
+        #@+<< define ignoreChars >>
+        #@+node:ekr.20180419105250.1: *4* << define ignoreChars >>
+        # Always ignore these characters
+        self.ignoreChars = [
+            # These are in ks.special characters.
+            # They should *not* be ignored.
+                # 'Left', 'Right', 'Up', 'Down',
+                # 'Next', 'Prior',
+                # 'Home', 'End',
+                # 'Delete', 'Escape',
+                # 'BackSpace', 'Linefeed', 'Return', 'Tab',
+            # F-Keys are also ok.
+                # 'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12',
+            'KP_0','KP_1','KP_2','KP_3','KP_4','KP_5','KP_6','KP_7','KP_8','KP_9',
+            'KP_Multiply, KP_Separator,KP_Space, KP_Subtract, KP_Tab',
+            'KP_F1','KP_F2','KP_F3','KP_F4',
+            'KP_Add', 'KP_Decimal', 'KP_Divide', 'KP_Enter', 'KP_Equal',
+                # Keypad chars should be have been converted to other keys.
+                # Users should just bind to the corresponding normal keys.
+            'Caps_Lock', 'NumLock', 'Num_Lock', 'ScrollLock',
+            'Alt_L', 'Alt_R',
+            'Control_L', 'Control_R',
+            'Meta_L', 'Meta_R',
+            'Shift_L', 'Shift_R',
+            'Win_L', 'Win_R',
+                # Clearly, these should never be generated.
+            'Break', 'Pause', 'Sys_Req',
+                # These are real keys, but they don't mean anything.
+            'Begin', 'Clear',
+                # Don't know what these are.
+        ]
+        #@-<< define ignoreChars >>
+        #@+<< define specialChars >>
+        #@+node:ekr.20180419081404.1: *4* << define specialChars >>
+        # Keys whose names must never be inserted into text.
+        self.specialChars = [
+            # These are *not* special keys.
+                # 'BackSpace', 'Linefeed', 'Return', 'Tab',
+            'Left', 'Right', 'Up', 'Down',
+                # Arrow keys
+            'Next', 'Prior',
+                # Page up/down keys.
+            'Home', 'End',
+                # Home end keys.
+            'Delete', 'Escape',
+                # Others.
+            'Insert', 'Ins',
+                # These should only work if bound.
+        ]
+        #@-<< define specialChars >>
         # Put up the splash screen()
         if (g.app.use_splash_screen and
             not g.app.batchMode and

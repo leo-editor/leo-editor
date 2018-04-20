@@ -335,67 +335,12 @@ class GeneralSetting(object):
 def isGeneralSetting(obj):
     return isinstance(obj, GeneralSetting)
 #@+node:ekr.20120201164453.10090: *3* class g.KeyStroke & isStroke/OrNone
-#@+<< define g.ignoreChars >>
-#@+node:ekr.20180419105250.1: *4* << define g.ignoreChars >>
-# Always ignore these characters
-ignoreChars = [
-    # These are in ks.special characters.
-    # They should *not* be ignored.
-        # 'Left', 'Right', 'Up', 'Down',
-        # 'Next', 'Prior',
-        # 'Home', 'End',
-        # 'Delete', 'Escape',
-        # 'BackSpace', 'Linefeed', 'Return', 'Tab',
-    # F-Keys are also ok.
-        # 'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12',
-    'KP_0','KP_1','KP_2','KP_3','KP_4','KP_5','KP_6','KP_7','KP_8','KP_9',
-    'KP_Multiply, KP_Separator,KP_Space, KP_Subtract, KP_Tab',
-    'KP_F1','KP_F2','KP_F3','KP_F4',
-    'KP_Add', 'KP_Decimal', 'KP_Divide', 'KP_Enter', 'KP_Equal',
-        # Keypad chars should be have been converted to other keys.
-        # Users should just bind to the corresponding normal keys.
-    'Caps_Lock', 'NumLock', 'Num_Lock', 'ScrollLock',
-    'Alt_L', 'Alt_R',
-    'Control_L', 'Control_R',
-    'Meta_L', 'Meta_R',
-    'Shift_L', 'Shift_R',
-    'Win_L', 'Win_R',
-        # Clearly, these should never be generated.
-    'Break', 'Pause', 'Sys_Req',
-        # These are real keys, but they don't mean anything.
-    'Begin', 'Clear',
-        # Don't know what these are.
-]
-#@-<< define g.ignoreChars >>
-
 class KeyStroke(object):
     '''
     A class that represent any key stroke or binding.
     
     stroke.s is the "canonicalized" stroke.
     '''
-    #@+<< define ks.specialChars >>
-    #@+node:ekr.20180419081404.1: *4* << define ks.specialChars >>
-    specialChars = [
-        # These are *not* special keys.
-            # 'BackSpace', 'Linefeed', 'Return', 'Tab',
-        'Left', 'Right', 'Up', 'Down',
-            # Arrow keys
-        'Next', 'Prior',
-            # Page up/down keys.
-        'Home', 'End',
-            # Home end keys.
-        'Delete', 'Escape',
-            # Others.
-        'Insert', 'Ins',
-            # These should only work if bound.
-    ]
-    #@-<< define ks.specialChars >>
-    #@+<< define ks.FKeys >>
-    #@+node:ekr.20180419110303.1: *4* << define ks.FKeys >>
-    FKeys = ['F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12']
-        # These do not generate keystrokes on MacOs.
-    #@-<< define ks.FKeys >>
     #@+others
     #@+node:ekr.20180414195401.2: *4*  ks.__init__
     def __init__(self, binding):
@@ -474,7 +419,7 @@ class KeyStroke(object):
             'del': 'Delete',
             'dnarrow': 'Down',
             'esc': 'Escape',
-            # 'ins': 'Insert', # in g.ignoreChars.
+            # 'ins': 'Insert', # in g.app.gui.ignoreChars.
             'linefeed': '\n',
             'ltarrow': 'Left',
             'pagedn': 'Next',
@@ -602,9 +547,8 @@ class KeyStroke(object):
         return 'alt' in mods and 'ctrl' in mods
     #@+node:ekr.20120203053243.10121: *4* ks.isFKey
     def isFKey(self):
-        return self.s in self.FKeys
-        # s = self.s.lower()
-        # return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
+        return self.s in g.app.gui.FKeys
+       
     #@+node:ekr.20180417102341.1: *4* ks.isPlainKey (does not handle alt-ctrl chars)
     def isPlainKey(self):
         '''
@@ -613,12 +557,12 @@ class KeyStroke(object):
         **Note**: The caller is responsible for handling Alt-Ctrl keys.
         '''
         s = self.s
-        if s in g.ignoreChars:
+        if s in g.app.gui.ignoreChars:
             # For unit tests.
             return False
         if self.find_mods(s) or self.isFKey():
             return False
-        if s in self.specialChars:
+        if s in g.app.gui.specialChars:
             return False
         return True
     #@+node:ekr.20180419170934.1: *4* ks.prettyPrint

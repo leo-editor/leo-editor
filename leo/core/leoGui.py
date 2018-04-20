@@ -28,7 +28,6 @@ class LeoGui(object):
     #@+node:ekr.20031218072017.3722: *3* LeoGui.__init__
     def __init__(self, guiName):
         '''Ctor for the LeoGui class.'''
-        # g.trace("LeoGui",guiName,g.callers())
         self.active = None # Used only by qt_gui.
         self.consoleOnly = True # True if g.es goes to console.
         self.globalFindTabManager = None
@@ -49,6 +48,14 @@ class LeoGui(object):
         self.utils = None
         # To keep pylint happy.
         self.ScriptingControllerClass = NullScriptingControllerClass
+        #
+        # Define special keys that may be overridden is subclasses.
+        self.ignoreChars = []
+            # Keys that are always to be ignore.
+        self.FKeys = []
+            # The representation of F-keys.
+        self.specialChars = []
+            # A list of characters/keys to be handle specially.
     #@+node:ekr.20061109212618.1: *3* LeoGui: Must be defined only in base class
     #@+node:ekr.20110605121601.18847: *4* LeoGui.create_key_event (LeoGui)
     def create_key_event(self, c,
