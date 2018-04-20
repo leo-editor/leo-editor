@@ -350,18 +350,32 @@ class KeyStroke(object):
         if trace: g.trace('(KeyStroke)', s, g.callers())
         assert s and g.isString(s), repr(s)
         self.s = s
-    #@+node:ekr.20120204061120.10068: *4*  Special methods
-    #@+node:ekr.20120203053243.10118: *5* ks.__hash__
+    #@+node:ekr.20120203053243.10118: *4* ks.__hash__
     # Allow KeyStroke objects to be keys in dictionaries.
 
     def __hash__(self):
         return self.s.__hash__() if self.s else 0
-    #@+node:ekr.20120204061120.10067: *5* ks.__repr___ & __str__
+    #@+node:ekr.20120204061120.10067: *4* ks.__repr___ & __str__
     def __str__(self):
         return '<KeyStroke: %s>' % (repr(self.s))
 
     __repr__ = __str__
-    #@+node:ekr.20120203053243.10117: *5* ks.rich comparisons
+    #@+node:ekr.20120203053243.10124: *4* ks.find, lower & startswith
+    # These may go away later, but for now they make conversion of string strokes easier.
+
+    def find(self, pattern):
+        return self.s.find(pattern)
+
+    def lower(self):
+        return self.s.lower()
+
+    def startswith(self, s):
+        return self.s.startswith(s)
+    #@+node:ekr.20120203053243.10121: *4* ks.isFKey
+    def isFKey(self):
+        s = self.s.lower()
+        return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
+    #@+node:ekr.20120203053243.10117: *4* ks.rich comparisons
     #@+at All these must be defined in order to say, for example:
     #     for key in sorted(d)
     # where the keys of d are KeyStroke objects.
@@ -384,21 +398,6 @@ class KeyStroke(object):
     def __gt__(self, other): return not self.__lt__(other) and not self.__eq__(other)
 
     def __ge__(self, other): return not self.__lt__(other)
-    #@+node:ekr.20120203053243.10124: *4* ks.find, lower & startswith
-    # These may go away later, but for now they make conversion of string strokes easier.
-
-    def find(self, pattern):
-        return self.s.find(pattern)
-
-    def lower(self):
-        return self.s.lower()
-
-    def startswith(self, s):
-        return self.s.startswith(s)
-    #@+node:ekr.20120203053243.10121: *4* ks.isFKey
-    def isFKey(self):
-        s = self.s.lower()
-        return s.startswith('f') and len(s) <= 3 and s[1:].isdigit()
     #@+node:ekr.20120203053243.10125: *4* ks.toGuiChar
     def toGuiChar(self):
         '''Replace special chars by the actual gui char.'''
