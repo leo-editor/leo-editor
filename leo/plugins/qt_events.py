@@ -157,14 +157,15 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20110605121601.18543: *4* filter.toBinding & helpers
     def toBinding(self, event, traceFlag=None):
         '''
-        Return (binding, ch):
+        Return (binding, actual_ch):
 
         binding:    A user binding, to create g.KeyStroke.
                     Spelling no longer fragile.
-        ch:         the insertable key, or ''.
+        actual_ch:  The insertable key, or ''.
         '''
         mods = self.qtMods(event, traceFlag)
         keynum, text, toString, ch = self.qtKey(event, traceFlag)
+        actual_ch = text or toString
         # 
         # Never allow empty chars, or chars in g.app.gui.ignoreChars
         if toString in g.app.gui.ignoreChars:
@@ -176,18 +177,15 @@ class LeoQtEventFilter(QtCore.QObject):
         # Check for AltGr and Alt+Ctrl keys *before* creating a binding.
         changed, ch, mods = self.doMacTweaks(ch, mods)
         if changed:
-            text = ch # Force ch to be the new ch below.
+            actual_ch = ch # Force ch to be the new ch below.
         mods = self.doAltTweaks(ch, keynum, mods, toString, traceFlag)
         #
-        # Tricky code:
-        # We *must* use the *first* value of ch in the binding.
-        # We *must* redefine the value of ch after creating the binding.
+        # Use ch in the binding.
         binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), ch)
-        ch = text or toString
         #
-        # Do "early" tweaks, before calling g.KeyStroke().
-        binding, ch = self.doLateTweaks(binding, ch, traceFlag)
-        return binding, ch
+        # Return the tweaked the actual char.
+        binding, actual_ch = self.doLateTweaks(binding, actual_ch, traceFlag)
+        return binding, actual_ch
     #@+node:ekr.20180419154543.1: *5* filter.doAltTweaks
     def doAltTweaks(self, ch, keynum, mods, toString, traceFlag):
         '''Turn AltGr and some Alt-Ctrl keys into plain keys.'''
