@@ -180,10 +180,10 @@ class LeoQtEventFilter(QtCore.QObject):
             actual_ch = ch # Force ch to be the new ch below.
         mods = self.doAltTweaks(ch, keynum, mods, toString, traceFlag)
         #
-        # Use ch in the binding.
+        # Use *ch* in the binding.
         binding = '%s%s' % (''.join(['%s+' % (z) for z in mods]), ch)
         #
-        # Return the tweaked the actual char.
+        # Return the tweaked *actual* char.
         binding, actual_ch = self.doLateTweaks(binding, actual_ch, traceFlag)
         return binding, actual_ch
     #@+node:ekr.20180419154543.1: *5* filter.doAltTweaks
