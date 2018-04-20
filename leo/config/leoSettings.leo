@@ -1416,6 +1416,10 @@
 <v t="ekr.20131213135427.21964"><vh>@item &amp;paste-node</vh></v>
 <v t="ekr.20131213135427.21965"><vh>@item paste-retaining-clones</vh></v>
 <v t="ekr.20180405112755.1"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.21977"><vh>@menu &amp;Check/Dump Outline</vh>
+<v t="ekr.20131213135427.21978"><vh>@item check-&amp;outline</vh></v>
+<v t="ekr.20131213135427.21979"><vh>@item &amp;dump-outline</vh></v>
+</v>
 <v t="ekr.20131213135427.21983"><vh>@menu &amp;Expand/Contract Nodes</vh>
 <v t="ekr.20131213135427.21984"><vh>Accel: a,c,d,e,n,o,p,l,r,t,x</vh></v>
 <v t="ekr.20131213135427.21985"><vh>@item &amp;contract-all</vh></v>
@@ -1516,10 +1520,6 @@
 <v t="ekr.20180403105609.1"><vh>@item &amp;eval-last-pretty</vh></v>
 <v t="ekr.20180403105722.1"><vh>@item &amp;eval-replace</vh></v>
 <v t="ekr.20180405112923.1"><vh>@item -</vh></v>
-<v t="ekr.20131213135427.21977"><vh>@menu &amp;Check/Dump Outline</vh>
-<v t="ekr.20131213135427.21978"><vh>@item check-&amp;outline</vh></v>
-<v t="ekr.20131213135427.21979"><vh>@item &amp;dump-outline</vh></v>
-</v>
 <v t="ekr.20131213135427.22131"><vh>@menu &amp;Control Garbage Collection</vh>
 <v t="ekr.20131213135427.22132"><vh>@item gc-&amp;collect-garbage</vh></v>
 <v t="ekr.20131213135427.22133"><vh>@item gc-dump-&amp;all-objects</vh></v>
