@@ -174,8 +174,10 @@ class LeoQtEventFilter(QtCore.QObject):
             return None, None
         #
         # Check for AltGr and Alt+Ctrl keys *before* creating a binding.
-        ch, mods = self.doMacTweaks(ch, mods)
-        mods = self.doEarlyTweaks(ch, keynum, mods, toString, traceFlag)
+        changed, ch, mods = self.doMacTweaks(ch, mods)
+        if changed:
+            text = ch # Force ch to be the new ch below.
+        mods = self.doAltTweaks(ch, keynum, mods, toString, traceFlag)
         #
         # Tricky code:
         # We *must* use the *first* value of ch in the binding.
@@ -186,8 +188,8 @@ class LeoQtEventFilter(QtCore.QObject):
         # Do "early" tweaks, before calling g.KeyStroke().
         binding, ch = self.doLateTweaks(binding, ch, traceFlag)
         return binding, ch
-    #@+node:ekr.20180419154543.1: *5* filter.doEarlyTweaks
-    def doEarlyTweaks(self, ch, keynum, mods, toString, traceFlag):
+    #@+node:ekr.20180419154543.1: *5* filter.doAltTweaks
+    def doAltTweaks(self, ch, keynum, mods, toString, traceFlag):
         '''Turn AltGr and some Alt-Ctrl keys into plain keys.'''
         qt = QtCore.Qt
        
@@ -229,24 +231,26 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20180419160958.1: *5* filter.doMacTweaks
     def doMacTweaks(self, ch, mods):
         '''Replace MacOS Alt characters.'''
+        changed = False
         if g.isMac and len(mods) == 1 and mods[0] == 'Alt':
             # Patch provided by resi147.
             # See the thread: special characters in MacOSX, like '@'.
             mac_d = {
-                ('/', '\\'),
-                ('5', '['), ('6', ']'),
-                ('7', '|'),
-                ('8', '{'), ('9', '}'),
-                ('e', '€'), ('l', '@'),
+                '/': '\\',
+                '5': '[',
+                '6': ']',
+                '7': '|',
+                '8': '{',
+                '9': '}',
+                'e': '€',
+                'l': '@',
             }
-            if ch in mac_d:
-                # pylint: disable=no-member
-                # A pylint bug, apparently.
-                ch = mac_d.get(ch)
+            if ch.lower() in mac_d:
+                # Ignore the case.
+                ch = mac_d.get(ch.lower())
                 mods = []
-        return ch, mods
-        
-        
+                changed = True
+        return changed, ch, mods
     #@+node:ekr.20110605121601.18544: *5* filter.qtKey
     def qtKey(self, event, traceFlag):
         '''
