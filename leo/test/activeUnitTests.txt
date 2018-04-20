@@ -21503,6 +21503,32 @@ finally:
     c.recolor()
 
 # c.frame
+#@+node:ekr.20100131171342.5608: *4* @test g.KeyStroke
+table = [
+    ('1', '1'), # 2016/04/12
+    ('a','a'),
+    ('A','A'),
+    ('Alt-a','Alt+a'),
+    ('Alt-A','Alt+a'),
+    ('Alt-Shift-a','Alt+Shift+a'),
+    # We can no longer igtnore the shift.
+    # ('Alt-Shift++','Alt+plus'), # Ignore the shift.
+    ('Shift-a','A'),
+    ('Shift-A','A'),
+    ('RtArrow','Right'),
+    ('Shift-RtArrow','Shift+Right'),
+    ('PageUp','Prior'), ('Prior','Prior'),('Shift-PageUp','Shift+Prior'),
+    ('PageDn','Next'),('Next','Next'),('Shift-Next','Shift+Next'),
+    ('Alt-=','Alt+='),
+    ('Alt-+','Alt++'),
+    ('Alt--','Alt+-'),
+    ('Ctrl-RtArrow','Ctrl+Right'),
+    ('Control-Right','Ctrl+Right'),
+]
+for setting, result in table:
+    stroke = g.KeyStroke(binding=setting)
+    val = stroke.s
+    assert val==result,'Expected %s, Got %s' % (result,val)
 #@+node:ekr.20110509104953.3474: *4* @test k.get_leo_completions
 table = (
     ( 50,'c.'),
@@ -21542,22 +21568,21 @@ import string
 k = c.k
 for ch in (string.printable):
     assert k.isPlainKey(ch), 'not plain: %s' % (repr(ch))
-#
-# These are not in NullGui, so this test can't be made here.
-special = (
-    'Begin','Break','Caps_Lock','Clear','Down','End','Escape',
-    'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12',
-    'KP_Add', 'KP_Decimal', 'KP_Divide', 'KP_Enter', 'KP_Equal',
-    'KP_Multiply, KP_Separator,KP_Space, KP_Subtract, KP_Tab',
-    'KP_F1','KP_F2','KP_F3','KP_F4',
-    'KP_0','KP_1','KP_2','KP_3','KP_4','KP_5','KP_6','KP_7','KP_8','KP_9',
-    'Home','Left','Next','Num_Lock',
-    'PageDn','PageUp','Pause','Prior','Right','Up',
-    'Sys_Req',
-)
 if 0:
-    # Can't run this test now:
-    # The NullGui class knows nothing about these characters.
+    # The NullGui class knows nothing about these characters,
+    # so these tests now fail.
+    # Happily, there is a continuous unit test in k.checkKeyEvent.
+    special = (
+        'Begin','Break','Caps_Lock','Clear','Down','End','Escape',
+        'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12',
+        'KP_Add', 'KP_Decimal', 'KP_Divide', 'KP_Enter', 'KP_Equal',
+        'KP_Multiply, KP_Separator,KP_Space, KP_Subtract, KP_Tab',
+        'KP_F1','KP_F2','KP_F3','KP_F4',
+        'KP_0','KP_1','KP_2','KP_3','KP_4','KP_5','KP_6','KP_7','KP_8','KP_9',
+        'Home','Left','Next','Num_Lock',
+        'PageDn','PageUp','Pause','Prior','Right','Up',
+        'Sys_Req',
+    )
     for ch in special:
         assert not k.isPlainKey(ch), 'is plain: %s' % (ch)
 #@+node:ekr.20100212110954.5359: *4* @test k.print-bindings
