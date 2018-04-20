@@ -2050,7 +2050,8 @@ class VNodeBase(object):
         assert self.fileIndex, g.callers()
     #@+node:ekr.20031218072017.3345: *4* v.__repr__ & v.__str__
     def __repr__(self):
-        return "<VNode %7x %s>" % (id(self), self.cleanHeadString())
+        # return "<VNode %7x %s>" % (id(self), self.cleanHeadString())
+        return "<VNode %s %s>" % (self.gnx, self.cleanHeadString())
 
     __str__ = __repr__
     #@+node:ekr.20040312145256: *4* v.dump
@@ -2060,10 +2061,11 @@ class VNodeBase(object):
     def dump(self, label=""):
         v = self
         print('%s %s %s' % ('-' * 10, label, v))
-        print('len(parents) %s' % len(v.parents))
-        print('len(children) %s' % len(v.children))
-        print('parents %s' % g.listToString(v.parents))
-        print('children%s' % g.listToString(v.children))
+        # print('gnx: %s' % v.gnx)
+        print('len(parents): %s' % len(v.parents))
+        print('len(children): %s' % len(v.children))
+        print('parents: %s' % g.listToString(v.parents))
+        print('children: %s' % g.listToString(v.children))
     #@+node:ekr.20060910100316: *4* v.__hash__ (only for zodb)
     if use_zodb and ZODB:
 

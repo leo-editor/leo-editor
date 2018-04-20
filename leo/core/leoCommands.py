@@ -251,6 +251,7 @@ class Commands(object):
 
         c.fileCommands = DummyFileCommands()
         self.hiddenRootNode = leoNodes.VNode(context=c, gnx=gnx)
+        self.hiddenRootNode.h = "<hidden root vnode>"
         c.fileCommands = None
         # Create the gui frame.
         title = c.computeWindowTitle(c.mFileName)
