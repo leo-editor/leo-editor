@@ -3222,6 +3222,8 @@ class KeyHandlerClass(object):
     #@+node:ekr.20180418040158.1: *5* k.checkKeyEvent
     def checkKeyEvent(self, event):
         '''Perform sanity checks on the incoming event.'''
+        # These assert's should be safe, because eventFilter
+        # calls k.masterKeyHandler inside a try/except block.
         c = self.c
         assert event is not None
         c.check_event(event)
@@ -3232,6 +3234,8 @@ class KeyHandlerClass(object):
         assert g.isStrokeOrNone(event.stroke)
         if event:
             assert event.stroke.s not in g.app.gui.ignoreChars, repr(event.stroke.s)
+                # A continuous unit test, better than "@test k.isPlainKey".
+
     #@+node:ekr.20180418033838.1: *5* k.doBinding
     def doBinding(self, event):
         '''
