@@ -1523,6 +1523,7 @@ class Commands(object):
         Check for errors in the outline.
         Return the count of serious structure errors.
         """
+        # The check-outline command sets check_links = True.
         c = self
         g.app.structure_errors = 0
         structure_errors = c.checkGnxs()
