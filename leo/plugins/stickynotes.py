@@ -83,7 +83,7 @@ if isQt5:
         from PyQt5.QtCore import QString
     except ImportError:
         QString = str
-    from PyQt5.QtGui import QFont,QIcon,QTextCharFormat
+    from PyQt5.QtGui import QFont,QTextCharFormat # QIcon
     from PyQt5.QtWidgets import (
         QAction,QInputDialog,QLineEdit,QMainWindow,QMdiArea,QTextEdit)
             # QPlainTextEdit,
@@ -93,7 +93,7 @@ else:
         from PyQt4.QtCore import QString
     except ImportError:
         QString = str
-    from PyQt4.QtGui import QAction,QFont,QIcon,QTextCharFormat,QTextEdit
+    from PyQt4.QtGui import QAction,QFont,QTextCharFormat,QTextEdit # QIcon
     from PyQt4.QtGui import QInputDialog,QMainWindow,QMdiArea,QLineEdit
         # QPlainTextEdit,
 #@-<< imports >>
@@ -101,7 +101,8 @@ else:
 #@+node:vivainio2.20091008140054.14555: ** decorate_window
 def decorate_window(c, w):
     w.setStyleSheet(c.styleSheetManager.get_master_widget().styleSheet())
-    w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
+    g.app.gui.attachLeoIcon(w)
+        ### w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     w.resize(600, 300)
 #@+node:vivainio2.20091008133028.5824: ** init
 def init ():

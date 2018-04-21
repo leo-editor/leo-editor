@@ -251,6 +251,7 @@ class Commands(object):
 
         c.fileCommands = DummyFileCommands()
         self.hiddenRootNode = leoNodes.VNode(context=c, gnx=gnx)
+        self.hiddenRootNode.h = "<hidden root vnode>"
         c.fileCommands = None
         # Create the gui frame.
         title = c.computeWindowTitle(c.mFileName)
@@ -1522,6 +1523,7 @@ class Commands(object):
         Check for errors in the outline.
         Return the count of serious structure errors.
         """
+        # The check-outline command sets check_links = True.
         c = self
         g.app.structure_errors = 0
         structure_errors = c.checkGnxs()

@@ -64,7 +64,8 @@ QPlainTextEdit {
 
 def decorate_window(w):
     w.setStyleSheet(stickynote_stylesheet)
-    w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
+    g.app.gui.attachLeoIcon(w)
+        ### w.setWindowIcon(QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     w.resize(600, 300)
 
 #@+node:ekr.20100103100944.5393: ** init
