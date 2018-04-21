@@ -956,7 +956,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
     #@+node:ekr.20110605121601.18177: *3* dw.setLeoWindowIcon
     def setLeoWindowIcon(self):
         """ Set icon visible in title bar and task bar """
-        self.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
+        # self.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
+        g.app.gui.attachLeoIcon(self)
     #@+node:ekr.20110605121601.18174: *3* dw.setSplitDirection
     def setSplitDirection(self, main_splitter, secondary_splitter, orientation):
         '''Set the orientations of the splitters in the Leo main window.'''
@@ -1239,7 +1240,8 @@ class LeoBaseTabWidget(QtWidgets.QTabWidget):
         self.factory.detachTab(w)
         icon = g.app.gui.getImageFinder("application-x-leo-outline.png")
         icon = QtGui.QIcon(icon)
-        w.window().setWindowIcon(icon)
+        if icon:
+            w.window().setWindowIcon(icon)
         c = w.leo_c
         if c.styleSheetManager:
             c.styleSheetManager.set_style_sheets(w=w)

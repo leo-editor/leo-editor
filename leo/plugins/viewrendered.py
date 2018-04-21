@@ -289,7 +289,8 @@ def decorate_window(w):
     # Do not override the style sheet!
     # This interferes with themes
         # w.setStyleSheet(stickynote_stylesheet)
-    w.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
+    g.app.gui.attachLeoIcon(w)
+        ### w.setWindowIcon(QtGui.QIcon(g.app.leoDir + "/Icons/leoapp32.png"))
     w.resize(600, 300)
 #@+node:tbrown.20100318101414.5995: *3* vr.init
 def init():

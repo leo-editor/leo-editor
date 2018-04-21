@@ -838,9 +838,8 @@ class LeoQtGui(leoGui.LeoGui):
     def attachLeoIcon(self, window):
         """Attach a Leo icon to the window."""
         #icon = self.getIconImage('leoApp.ico')
-        #window.setWindowIcon(icon)
-        window.setWindowIcon(self.appIcon)
-        #window.setLeoWindowIcon()
+        if self.appIcon:
+            window.setWindowIcon(self.appIcon)
     #@+node:ekr.20110605121601.18516: *4* qt_gui.getIconImage
     def getIconImage(self, name):
         '''Load the icon and return it.'''
