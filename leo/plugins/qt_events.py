@@ -227,6 +227,7 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20180419160958.1: *5* filter.doMacTweaks
     def doMacTweaks(self, actual_ch, ch, mods):
         '''Replace MacOS Alt characters.'''
+        ### g.trace(mods, repr(actual_ch), repr(ch)
         if g.isMac and len(mods) == 1 and mods[0] == 'Alt':
             # Patch provided by resi147.
             # See the thread: special characters in MacOSX, like '@'.
@@ -240,9 +241,9 @@ class LeoQtEventFilter(QtCore.QObject):
                 'e': '€',
                 'l': '@',
             }
-            if actual_ch.lower() in mac_d:
+            if ch.lower() in mac_d:
                 # Ignore the case.
-                actual_ch = ch = g.toUnicode(mac_d.get(actual_ch.lower()))
+                actual_ch = ch = g.toUnicode(mac_d.get(ch.lower()))
                 mods = []
         return actual_ch, ch, mods
     #@+node:ekr.20110605121601.18544: *5* filter.qtKey
