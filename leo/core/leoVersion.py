@@ -14,23 +14,24 @@ import leo.core.leoGlobals as g
 #@+node:ekr.20141117073519.12: ** << version dates >>
 #@@nocolor-node
 #@+at
-# Leo 4.5.1 final: September 14, 2008
-# Leo 4.6.1 final: July 30, 2009.
-# Leo 4.7.1 final: February 26, 2010.
-# Leo 4.8   final: November 26, 2010.
-# Leo 4.9   final: June 21, 2011.
-# Leo 4.10  final: March 29, 2012.
-# Leo 4.11 final: November 6, 2013.
-# Leo 5.0 final: November 24, 2014.
-# Leo 5.1 final: April 17, 2015.
-# Leo 5.2 final: March 18, 2016.
-# Leo 5.3 final: May 2, 2016.
-# Leo 5.4 final: October 22, 2016.
-# Leo 5.5 final: March 23, 2017.
-# Leo 5.6 final: September 27, 2017.
-# Leo 5.7b1: January 27, 2018.
-# Leo 5.7b2: February 12, 2018.
-# Leo 5.7 final: February 27, 2018.
+# 4.5.1:  September 14, 2008
+# 4.6.1:  July 30, 2009.
+# 4.7.1:  February 26, 2010.
+# 4.8:    November 26, 2010.
+# 4.9:    June 21, 2011.
+# 4.10:   March 29, 2012.
+# 4.11:   November 6, 2013.
+# 5.0:    November 24, 2014.
+# 5.1:    April 17, 2015.
+# 5.2:    March 18, 2016.
+# 5.3:    May 2, 2016.
+# 5.4:    October 22, 2016.
+# 5.5:    March 23, 2017.
+# 5.6:    September 27, 2017.
+# 5.7b1:  January 27, 2018.
+# 5.7b2:  February 12, 2018.
+# 5.7:    February 27, 2018.
+# 5.7.1:  April 6, 2018.
 #@-<< version dates >>
 #@+<< about install hooks >>
 #@+node:ekr.20150409201910.1: ** << about install hooks >>
