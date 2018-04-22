@@ -419,7 +419,7 @@ class KeyStroke(object):
             'del': 'Delete',
             'dnarrow': 'Down',
             'esc': 'Escape',
-            # 'ins': 'Insert', # in g.app.gui.ignoreChars.
+            'ins': 'Insert',
             'linefeed': '\n',
             'ltarrow': 'Left',
             'pagedn': 'Next',
