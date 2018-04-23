@@ -219,7 +219,7 @@ class FreeLayoutController(object):
         c = self.c
         if not (g.app and g.app.db):
             return # Can happen when running from the Leo bridge.
-        d = g.app.db.get('ns_layouts', {})
+        d = g.app.db.get('ns_layouts') or {}
         if c != keys.get('c'):
             return
         # g.trace(c.frame.title)
