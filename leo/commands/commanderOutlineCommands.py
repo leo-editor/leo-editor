@@ -33,13 +33,17 @@ def pasteOutline(self, event=None,
     reassignIndices=True,
     redrawFlag=True,
     s=None,
-    tempOutline=False, # True: don't make entries in the gnxDict.
+    ### tempOutline=False, # True: don't make entries in the gnxDict.
     undoFlag=True
 ):
     '''
     Paste an outline into the present outline from the clipboard.
     Nodes do *not* retain their original identify.
     '''
+    ###
+        # if tempOutline:
+            # g.trace('===== tempOutline is True', g.callers())
+            # if g.unitTesting: assert False
     c = self
     if s is None:
         s = g.app.gui.getTextFromClipboard()
@@ -57,7 +61,8 @@ def pasteOutline(self, event=None,
     vnodeInfoDict = computeVnodeInfoDict(c) if pasteAsClone else {}
     # create a *position* to be pasted.
     if isLeo:
-        pasted = c.fileCommands.getLeoOutlineFromClipboard(s, reassignIndices, tempOutline)
+        pasted = c.fileCommands.getLeoOutlineFromClipboard(s, reassignIndices)
+            ###, tempOutline)
     if not pasted:
         # 2016/10/06:
         # We no longer support pasting MORE outlines. Use import-MORE-files instead.
@@ -70,9 +75,11 @@ def pasteOutline(self, event=None,
         undoData = c.undoer.beforeInsertNode(c.p,
             pasteAsClone=pasteAsClone, copiedBunchList=copiedBunchList)
     c.validateOutline()
-    if not tempOutline:
-        # Fix #427: Don't check for duplicate vnodes.
-        c.checkOutline()
+    c.checkOutline()
+    ###
+        # if not tempOutline:
+            # # Fix #427: Don't check for duplicate vnodes.
+            # c.checkOutline()
     c.selectPosition(pasted)
     pasted.setDirty()
     c.setChanged(True, redrawFlag=redrawFlag) # Prevent flash when fixing #387.

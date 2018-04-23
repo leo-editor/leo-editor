@@ -578,23 +578,24 @@ class FileCommands(object):
         v = self.getVnodeFromClipboard(s)
         return leoNodes.Position(v)
     #@+node:ekr.20031218072017.1559: *5* fc.getLeoOutlineFromClipboard & helpers
-    def getLeoOutlineFromClipboard(self, s, reassignIndices=True, tempOutline=False):
+    def getLeoOutlineFromClipboard(self, s, reassignIndices=True): ###, tempOutline=False):
         '''Read a Leo outline from string s in clipboard format.'''
-        trace = False and not g.unitTesting
-        verbose = False
+        ###
+            # if tempOutline:
+                # g.trace('===== tempOutline is True', g.callers())
+                # if g.unitTesting: assert False
         c = self.c
         current = c.p
         if not current:
             g.trace('no c.p')
             return None
-        if trace: g.trace('reassign', reassignIndices, 'temp', tempOutline)
         check = not reassignIndices
         self.initReadIvars()
         # Save the hidden root's children.
         children = c.hiddenRootNode.children
         # 2011/12/12: save and clear gnxDict.
         # This ensures that new indices will be used for all nodes.
-        if reassignIndices or tempOutline:
+        if reassignIndices: ### or tempOutline:
             oldGnxDict = self.gnxDict
             self.gnxDict = {}
         else:
@@ -606,7 +607,6 @@ class FileCommands(object):
         try:
             # This encoding must match the encoding used in putLeoOutline.
             s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)
-            if trace and verbose: g.trace(s)
             # readSaxFile modifies the hidden root.
             v = self.readSaxFile(
                 theFile=None, fileName='<clipboard>',
@@ -631,18 +631,18 @@ class FileCommands(object):
             if check and not self.checkPaste(current.parent(), p):
                 return None
             p._linkAfter(current, adjust=False)
-        if tempOutline:
-            self.gnxDict = oldGnxDict
-        elif reassignIndices:
+        ###
+            # if tempOutline:
+                # self.gnxDict = oldGnxDict
+            # elif reassignIndices:
+        if reassignIndices:
             self.gnxDict = oldGnxDict
             ni = g.app.nodeIndices
             for p2 in p.self_and_subtree():
                 v = p2.v
                 index = ni.getNewIndex(v)
-                if g.trace_gnxDict: g.trace(c.shortFileName(), '**restoring**', index, v)
-        if trace and verbose:
-            g.trace('**** dumping outline...')
-            c.dumpOutline()
+                if g.trace_gnxDict:
+                    g.trace(c.shortFileName(), '**restoring**', index, v)
         c.selectPosition(p)
         self.initReadIvars()
         return p
@@ -656,7 +656,6 @@ class FileCommands(object):
         parents = list(parent.self_and_parents())
         for p in p.self_and_subtree():
             for z in parents:
-                # g.trace(p.h,id(p.v),id(z.v))
                 if p.v == z.v:
                     g.warning('Invalid paste: nodes may not descend from themselves')
                     return False
