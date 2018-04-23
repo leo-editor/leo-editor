@@ -104,34 +104,63 @@ class VimCommands(object):
         Keys are strokes, values are methods.
         '''
         d = {
-        'asciicircum': vc.vim_caret,# '^'
-        'asciitilde': None,         # '~'
-        'asterisk': None,           # '*'
-        'at': None,                 # '@'
-        'bar': None,                # '|'
-        'braceleft': None,          # '{'
-        'braceright': None,         # '}'
-        'bracketleft': None,        # '['
-        'bracketright': None,       # ']'
-        'colon': None,              # ':' Not a motion.
-        'comma': None,              # ','
-        'dollar': vc.vim_dollar,    # '$'
-        'greater': None,            # '>'
-        'less': None,               # '<'
-        'minus': None,              # '-'
-        'numbersign': None,         # '#'
-        'parenleft': None,          # '('
-        'parenright': None,         # ')'
-        'percent': None,            # '%'
-        'period': None,             # '.' Not a motion.
-        'plus': None,               # '+'
-        'question': vc.vim_question, # '?'
-        'quotedbl': None,           # '"'
-        'quoteleft': None,          # '`'
-        'Return': vc.vim_return,    # '\n'
-        'semicolon': None,          # ';'
-        'slash': vc.vim_slash,      # '/'
-        'underscore': None,         # '_'
+        ###
+            # 'asciicircum': vc.vim_caret,# '^'
+            # 'asciitilde': None,         # '~'
+            # 'asterisk': None,           # '*'
+            # 'at': None,                 # '@'
+            # 'bar': None,                # '|'
+            # 'braceleft': None,          # '{'
+            # 'braceright': None,         # '}'
+            # 'bracketleft': None,        # '['
+            # 'bracketright': None,       # ']'
+            # 'colon': None,              # ':' Not a motion.
+            # 'comma': None,              # ','
+            # 'dollar': vc.vim_dollar,    # '$'
+            # 'greater': None,            # '>'
+            # 'less': None,               # '<'
+            # 'minus': None,              # '-'
+            # 'numbersign': None,         # '#'
+            # 'parenleft': None,          # '('
+            # 'parenright': None,         # ')'
+            # 'percent': None,            # '%'
+            # 'period': None,             # '.' Not a motion.
+            # 'plus': None,               # '+'
+            # 'question': vc.vim_question, # '?'
+            # 'quotedbl': None,           # '"'
+            # 'quoteleft': None,          # '`'
+            # 'Return': vc.vim_return,    # '\n'
+            # 'semicolon': None,          # ';'
+            # 'slash': vc.vim_slash,      # '/'
+            # 'underscore': None,         # '_'
+        '^': vc.vim_caret,
+        '~': None,
+        '*': None,
+        '@': None,
+        '|': None,
+        '{': None,
+        '}': None,
+        '[': None,
+        ']': None,
+        ':': None, # Not a motion.
+        ',': None,
+        '$': vc.vim_dollar,
+        '>': None,
+        '<': None,
+        '-': None,
+        '#': None,
+        '(': None,
+        ')': None,
+        '%': None,
+        '.': None, # Not a motion.
+        '+': None,
+        '?': vc.vim_question,
+        '"': None,
+        '`': None,
+        '\n': vc.vim_return,
+        ';': None,
+        '/': vc.vim_slash,
+        '_': None,
         # Digits.
         '0': vc.vim_0, # Only 0 starts a motion.
         # Uppercase letters.
@@ -199,34 +228,63 @@ class VimCommands(object):
         # Vim hard-coded control characters...
         # 'Ctrl+r': vc.vim_ctrl_r,
         # Special chars: these are the Leo's official (tk) strokes.
-        'asciicircum': vc.vim_caret, # '^'
-        'asciitilde': None, # '~'
-        'asterisk': vc.vim_star, # '*'
-        'at': None, # '@'
-        'bar': None, # '|'
-        'braceleft': None, # '{'
-        'braceright': None, # '}'
-        'bracketleft': None, # '['
-        'bracketright': None, # ']'
-        'colon': vc.vim_colon, # ':'
-        'comma': None, # ','
-        'dollar': vc.vim_dollar, # '$'
-        'greater': None, # '>'
-        'less': None, # '<'
-        'minus': None, # '-'
-        'numbersign': vc.vim_pound, # '#'
-        'parenleft': None, # '('
-        'parenright': None, # ')'
-        'percent': None, # '%'
-        'period': vc.vim_dot, # '.'
-        'plus': None, # '+'
-        'question': vc.vim_question, # '?'
-        'quotedbl': None, # '"'
-        'quoteleft': None, # '`'
-        'Return': vc.vim_return, # '\n'
-        'semicolon': None, # ';'
-        'slash': vc.vim_slash, # '/'
-        'underscore': None, # '_'
+        ###
+            # 'asciicircum': vc.vim_caret, # '^'
+            # 'asciitilde': None, # '~'
+            # 'asterisk': vc.vim_star, # '*'
+            # 'at': None, # '@'
+            # 'bar': None, # '|'
+            # 'braceleft': None, # '{'
+            # 'braceright': None, # '}'
+            # 'bracketleft': None, # '['
+            # 'bracketright': None, # ']'
+            # 'colon': vc.vim_colon, # ':'
+            # 'comma': None, # ','
+            # 'dollar': vc.vim_dollar, # '$'
+            # 'greater': None, # '>'
+            # 'less': None, # '<'
+            # 'minus': None, # '-'
+            # 'numbersign': vc.vim_pound, # '#'
+            # 'parenleft': None, # '('
+            # 'parenright': None, # ')'
+            # 'percent': None, # '%'
+            # 'period': vc.vim_dot, # '.'
+            # 'plus': None, # '+'
+            # 'question': vc.vim_question, # '?'
+            # 'quotedbl': None, # '"'
+            # 'quoteleft': None, # '`'
+            # 'Return': vc.vim_return, # '\n'
+            # 'semicolon': None, # ';'
+            # 'slash': vc.vim_slash, # '/'
+            # 'underscore': None, # '_'
+        '^': vc.vim_caret,
+        '~': None,
+        '*': vc.vim_star,
+        '@': None,
+        '|': None,
+        '{': None,
+        '}': None,
+        '[': None,
+        ']': None,
+        ':': vc.vim_colon,
+        ',': None,
+        '$': vc.vim_dollar,
+        '>': None,
+        '<': None,
+        '-': None,
+        '#': vc.vim_pound,
+        '(': None,
+        ')': None,
+        '%': None,
+        '.': vc.vim_dot,
+        '+': None,
+        '?': vc.vim_question,
+        '"': None,
+        '`': None,
+        '\n':vc.vim_return,
+        ';': None,
+        '/': vc.vim_slash,
+        '_': None,
         # Digits.
         '0': vc.vim_0,
         '1': vc.vim_digits,
@@ -300,8 +358,10 @@ class VimCommands(object):
         Keys are strokes, values are methods.
         '''
         d = {
-        'Return': vc.vim_return,
-        'space': vc.vim_l,
+        ### 'Return': vc.vim_return,
+        '\n': vc.vim_return,
+        ### 'space': vc.vim_l,
+        ' ': vc.vim_l,
         # Terminating commands...
         'Escape': vc.vis_escape,
         'J': vc.vis_J,
@@ -325,9 +385,11 @@ class VimCommands(object):
         'G': vc.vim_G,
         'T': vc.vim_T,
         'Y': vc.vim_Y,
-        'asciicircum': vc.vim_caret,
+        ### 'asciicircum': vc.vim_caret,
+        '^': vc.vim_caret,
         'b': vc.vim_b,
-        'dollar': vc.vim_dollar,
+        ### 'dollar': vc.vim_dollar,
+        '$': vc.vim_dollar,
         'e': vc.vim_e,
         'f': vc.vim_f,
         'g': vc.vim_g,
@@ -336,8 +398,10 @@ class VimCommands(object):
         'k': vc.vim_k,
         'l': vc.vim_l,
         'n': vc.vim_n,
-        'question': vc.vim_question,
-        'slash': vc.vim_slash,
+        ### 'question': vc.vim_question,
+        '?': vc.vim_question,
+        ### 'slash': vc.vim_slash,
+        '/': vc.vim_slash,
         't': vc.vim_t,
         'V': vc.vim_V,
         'w': vc.vim_w,
@@ -2236,6 +2300,7 @@ class VimCommands(object):
             assert vc.in_motion
             if restart:
                 vc.next_func = None
+            g.trace(vc.stroke)
             func = vc.next_func or vc.motion_dispatch_d.get(vc.stroke)
             if func:
                 func()
