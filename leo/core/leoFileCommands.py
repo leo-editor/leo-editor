@@ -632,6 +632,8 @@ class FileCommands(object):
                 return None
             p._linkAfter(current, adjust=False)
         ###
+        c.dumpOutline()
+        ###
             # if tempOutline:
                 # self.gnxDict = oldGnxDict
             # elif reassignIndices:
