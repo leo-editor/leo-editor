@@ -88,7 +88,9 @@ class LeoQtGui(leoGui.LeoGui):
             'KP_Add', 'KP_Decimal', 'KP_Divide', 'KP_Enter', 'KP_Equal',
                 # Keypad chars should be have been converted to other keys.
                 # Users should just bind to the corresponding normal keys.
-            'Caps_Lock', 'NumLock', 'Num_Lock', 'ScrollLock',
+            'CapsLock', 'Caps_Lock',
+            'NumLock', 'Num_Lock',
+            'ScrollLock',
             'Alt_L', 'Alt_R',
             'Control_L', 'Control_R',
             'Meta_L', 'Meta_R',
