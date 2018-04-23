@@ -117,7 +117,7 @@ class LeoQtGui(leoGui.LeoGui):
                 # Home end keys.
             'Delete', 'Escape',
                 # Others.
-            'Insert', 'Ins',
+            'Enter', 'Insert', 'Ins',
                 # These should only work if bound.
         ]
         #@-<< define specialChars >>
