@@ -607,7 +607,8 @@ class KeyStroke(object):
         # Handle the "Gang of Four"
         d = {
             'BackSpace': '\b',
-            'LineSpace': '\n',
+            'LineFeed': '\n',
+            # 'Insert': '\n',
             'Return': '\n',
             'Tab': '\t',
         }
