@@ -3183,43 +3183,6 @@ class KeyHandlerClass(object):
             return
         k.doBinding(event)
         
-    #@+node:ekr.20061031131434.108: *5* k.callStateFunction
-    def callStateFunction(self, event):
-        '''Call the state handler associated with this event.'''
-        k = self
-        ch = event.char
-        #
-        # Defensive programming
-        #
-        if not k.state.kind:
-            return None
-        if not k.state.handler:
-            g.error('callStateFunction: no state function for', k.state.kind)
-            return None
-        #
-        # Handle auto-completion before checking for unbound keys.
-        #
-        if k.state.kind == 'auto-complete':
-            # k.auto_completer_state_handler returns 'do-standard-keys' for control keys.
-            val = k.state.handler(event)
-            return val
-        #
-        # Ignore unbound non-ascii keys.
-        #
-        if (
-            k.ignore_unbound_non_ascii_keys and
-            len(ch) == 1 and
-            ch and ch not in ('\b', '\n', '\r', '\t') and
-            (ord(ch) < 32 or ord(ch) > 128)
-        ):
-            return None
-        #
-        # Call the state handler.
-        #
-        val = k.state.handler(event)
-        if val != 'continue':
-            k.endCommand(k.commandName)
-        return val
     #@+node:ekr.20180418040158.1: *5* k.checkKeyEvent
     def checkKeyEvent(self, event):
         '''Perform sanity checks on the incoming event.'''
@@ -3299,6 +3262,98 @@ class KeyHandlerClass(object):
             demo.prev_command()
             return True
         return False
+    #@+node:ekr.20061031131434.108: *5* k.callStateFunction
+    def callStateFunction(self, event):
+        '''Call the state handler associated with this event.'''
+        k = self
+        ch = event.char
+        #
+        # Defensive programming
+        #
+        if not k.state.kind:
+            return None
+        if not k.state.handler:
+            g.error('callStateFunction: no state function for', k.state.kind)
+            return None
+        #
+        # Handle auto-completion before checking for unbound keys.
+        #
+        if k.state.kind == 'auto-complete':
+            # k.auto_completer_state_handler returns 'do-standard-keys' for control keys.
+            val = k.state.handler(event)
+            return val
+        #
+        # Ignore unbound non-ascii keys.
+        #
+        if (
+            k.ignore_unbound_non_ascii_keys and
+            len(ch) == 1 and
+            ch and ch not in ('\b', '\n', '\r', '\t') and
+            (ord(ch) < 32 or ord(ch) > 128)
+        ):
+            return None
+        #
+        # Call the state handler.
+        #
+        val = k.state.handler(event)
+        if val != 'continue':
+            k.endCommand(k.commandName)
+        return val
+    #@+node:ekr.20180418025702.1: *5* k.doUnboundPlainKey & helper
+    def doUnboundPlainKey(self, event):
+        '''
+        Handle unbound plain keys.
+        Return True if k.masterKeyHandler should return.
+        '''
+        c, k = self.c, self
+        stroke, w = event.stroke, event.widget
+        #
+        # Ignore non-plain keys.
+        if not k.isPlainKey(stroke):
+            return False
+        #
+        # Ignore any keys in the background tree widget.
+        if c.widget_name(w).startswith('canvas'):
+            return False
+        #
+        # Ignore the char if it is bound to the auto-complete command.
+        if self.isAutoCompleteChar(stroke):
+            return False
+        #
+        # Handle the unbound key.
+        k.handleUnboundKeys(event)
+        return True
+    #@+node:ekr.20110209083917.16004: *6* k.isAutoCompleteChar
+    def isAutoCompleteChar(self, stroke):
+        '''
+        Return True if stroke is bound to the auto-complete in
+        the insert or overwrite state.
+        '''
+        k = self; state = k.unboundKeyAction
+        assert g.isStrokeOrNone(stroke)
+        if stroke and state in ('insert', 'overwrite'):
+            for key in (state, 'body', 'log', 'text', 'all'):
+                d = k.masterBindingsDict.get(key, {})
+                if d:
+                    bi = d.get(stroke)
+                    if bi:
+                        assert bi.stroke == stroke, 'bi: %s stroke: %s' % (bi, stroke)
+                        if bi.commandName == 'auto-complete':
+                            return True
+        return False
+    #@+node:ekr.20180418025241.1: *5* k.doVim
+    def doVim(self, event):
+        '''
+        Handle vim mode.
+        Return True if k.masterKeyHandler should return.
+        '''
+        trace = False and not g.unitTesting
+        c = self.c
+        if c.vim_mode and c.vimCommands:
+            ok = c.vimCommands.do_key(event)
+            if trace: g.trace('vc.do_key returns', ok)
+            return ok
+        return False
     #@+node:ekr.20091230094319.6244: *5* k.doMode
     def doMode(self, event):
         '''
@@ -3358,61 +3413,6 @@ class KeyHandlerClass(object):
         if handler:
             handler(event)
         return True
-    #@+node:ekr.20180418025702.1: *5* k.doUnboundPlainKey & helper
-    def doUnboundPlainKey(self, event):
-        '''
-        Handle unbound plain keys.
-        Return True if k.masterKeyHandler should return.
-        '''
-        c, k = self.c, self
-        stroke, w = event.stroke, event.widget
-        #
-        # Ignore non-plain keys.
-        if not k.isPlainKey(stroke):
-            return False
-        #
-        # Ignore any keys in the background tree widget.
-        if c.widget_name(w).startswith('canvas'):
-            return False
-        #
-        # Ignore the char if it is bound to the auto-complete command.
-        if self.isAutoCompleteChar(stroke):
-            return False
-        #
-        # Handle the unbound key.
-        k.handleUnboundKeys(event)
-        return True
-    #@+node:ekr.20110209083917.16004: *6* k.isAutoCompleteChar
-    def isAutoCompleteChar(self, stroke):
-        '''
-        Return True if stroke is bound to the auto-complete in
-        the insert or overwrite state.
-        '''
-        k = self; state = k.unboundKeyAction
-        assert g.isStrokeOrNone(stroke)
-        if stroke and state in ('insert', 'overwrite'):
-            for key in (state, 'body', 'log', 'text', 'all'):
-                d = k.masterBindingsDict.get(key, {})
-                if d:
-                    bi = d.get(stroke)
-                    if bi:
-                        assert bi.stroke == stroke, 'bi: %s stroke: %s' % (bi, stroke)
-                        if bi.commandName == 'auto-complete':
-                            return True
-        return False
-    #@+node:ekr.20180418025241.1: *5* k.doVim
-    def doVim(self, event):
-        '''
-        Handle vim mode.
-        Return True if k.masterKeyHandler should return.
-        '''
-        trace = False and not g.unitTesting
-        c = self.c
-        if c.vim_mode and c.vimCommands:
-            ok = c.vimCommands.do_key(event)
-            if trace: g.trace('vc.do_key returns', ok)
-            return ok
-        return False
     #@+node:ekr.20091230094319.6240: *5* k.getPaneBinding & helper
     def getPaneBinding(self, stroke, w):
        
@@ -3656,6 +3656,31 @@ class KeyHandlerClass(object):
         if c.exists and not k.silentMode:
             c.minibufferWantsFocus()
         return 'found'
+    #@+node:ekr.20180418031118.1: *5* k.isSpecialKey
+    def isSpecialKey(self, event):
+        '''Return True if char is a special key.'''
+        if not event:
+            # An empty event is not an error.
+            return False
+        return event.char in g.app.gui.ignoreChars
+    #@+node:ekr.20180418024449.1: *5* k.keyboardQuit
+    def doKeyboardQuit(self, event):
+        '''
+        Handle keyboard-quit logic.
+        return True if k.masterKeyHandler should return.
+        '''
+        c, k = self.c, self
+        stroke = event.stroke
+        if k.abortAllModesKey and stroke == k.abortAllModesKey:
+            if getattr(c, 'screenCastController', None):
+                c.screenCastController.quit()
+            k.masterCommand(
+                commandName='keyboard-quit',
+                event=event,
+                func=k.keyboardQuit,
+                stroke=stroke)
+            return True
+        return False
     #@+node:ekr.20080510095819.1: *5* k.handleUnboundKeys
     def handleUnboundKeys(self, event):
        
@@ -3703,31 +3728,6 @@ class KeyHandlerClass(object):
         # Let k.masterCommand handle the unbound character.
         k.masterCommand(event=event, stroke=stroke)
 
-    #@+node:ekr.20180418031118.1: *5* k.isSpecialKey
-    def isSpecialKey(self, event):
-        '''Return True if char is a special key.'''
-        if not event:
-            # An empty event is not an error.
-            return False
-        return event.char in g.app.gui.ignoreChars
-    #@+node:ekr.20180418024449.1: *5* k.keyboardQuit
-    def doKeyboardQuit(self, event):
-        '''
-        Handle keyboard-quit logic.
-        return True if k.masterKeyHandler should return.
-        '''
-        c, k = self.c, self
-        stroke = event.stroke
-        if k.abortAllModesKey and stroke == k.abortAllModesKey:
-            if getattr(c, 'screenCastController', None):
-                c.screenCastController.quit()
-            k.masterCommand(
-                commandName='keyboard-quit',
-                event=event,
-                func=k.keyboardQuit,
-                stroke=stroke)
-            return True
-        return False
     #@+node:ekr.20061031131434.105: *5* k.masterCommand
     def masterCommand(self, commandName=None, event=None, func=None, stroke=None):
         '''
@@ -3791,6 +3791,33 @@ class KeyHandlerClass(object):
         if c.exists:
             c.frame.updateStatusLine()
         
+    #@+node:ekr.20180418034305.1: *5* k.setEventWidget
+    def setEventWidget(self, event):
+        '''
+        A hack: redirect the event to the text part of the log.
+        '''
+        c = self.c
+        w = event.widget
+        w_name = c.widget_name(w)
+        if w_name.startswith('log'):
+            event.widget = c.frame.log.logCtrl
+    #@+node:ekr.20180418031417.1: *5* k.traceVars
+    def traceVars(self, event):
+        
+        trace = False and not g.unitTesting
+        traceGC = False
+        verbose = False
+        k = self
+        if not trace:
+            return
+        if traceGC:
+            g.printNewObjects('masterKey 1')
+        if verbose:
+            char = event.char
+            state = k.state.kind
+            stroke = event.stroke
+            g.trace('stroke: %r, char: %r, state: %s, state2: %s' % (
+                stroke, char, state, k.unboundKeyAction))
     #@+node:ekr.20160409035115.1: *5* k.searchTree
     def searchTree(self, char):
         '''Search all visible nodes for a headline starting with stroke.'''
@@ -3832,33 +3859,6 @@ class KeyHandlerClass(object):
                 # c.selectPosition(p)
                 # c.redraw()
             # return found
-    #@+node:ekr.20180418034305.1: *5* k.setEventWidget
-    def setEventWidget(self, event):
-        '''
-        A hack: redirect the event to the text part of the log.
-        '''
-        c = self.c
-        w = event.widget
-        w_name = c.widget_name(w)
-        if w_name.startswith('log'):
-            event.widget = c.frame.log.logCtrl
-    #@+node:ekr.20180418031417.1: *5* k.traceVars
-    def traceVars(self, event):
-        
-        trace = False and not g.unitTesting
-        traceGC = False
-        verbose = False
-        k = self
-        if not trace:
-            return
-        if traceGC:
-            g.printNewObjects('masterKey 1')
-        if verbose:
-            char = event.char
-            state = k.state.kind
-            stroke = event.stroke
-            g.trace('stroke: %r, char: %r, state: %s, state2: %s' % (
-                stroke, char, state, k.unboundKeyAction))
     #@+node:ekr.20061031170011.3: *3* k.Minibuffer
     # These may be overridden, but this code is now gui-independent.
     #@+node:ekr.20061031170011.9: *4* k.extendLabel
@@ -4389,7 +4389,7 @@ class KeyHandlerClass(object):
         if not stroke:
             return ''
         if not g.isStroke(stroke):
-            g.trace('=====', stroke, g.callers())
+            # vim commands pass a plain key.
             stroke = g.KeyStroke(stroke)
         return stroke.toInsertableChar()
     #@+node:ekr.20061031131434.180: *4* k.traceBinding (not used)

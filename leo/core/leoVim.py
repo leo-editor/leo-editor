@@ -58,7 +58,7 @@ class VimCommands(object):
         '''The ctor for the VimCommands class.'''
         vc.c = c
         vc.k = c.k
-        vc.trace = False # set by :toggle-vim-trace.
+        vc.trace_flag = True # set by :toggle-vim-trace.
         vc.init_constant_ivars()
         vc.init_dot_ivars()
         vc.init_persistent_ivars()
@@ -541,8 +541,7 @@ class VimCommands(object):
         Optionally, this can set the dot or change vc.handler.
         This can be a no-op, but even then it is recommended.
         '''
-        trace = (False or vc.trace) and not g.unitTesting
-        if trace: g.trace(vc.stroke)
+        vc.do_trace()
         if handler:
             if vc.in_motion:
                 # Tricky: queue up vc.do_inner_motion to continue the motion.
@@ -558,15 +557,13 @@ class VimCommands(object):
     #@+node:ekr.20140802225657.18024: *5* vc.delegate
     def delegate(vc):
         '''Delegate the present key to k.masterKeyHandler.'''
-        trace = (False or vc.trace) and not g.unitTesting
-        if trace: g.trace(vc.stroke)
+        vc.do_trace()
         vc.show_status()
         vc.return_value = False
     #@+node:ekr.20140222064735.16631: *5* vc.done
     def done(vc, add_to_dot=True, return_value=True, set_dot=True, stroke=None):
         '''Complete a command, preserving text and optionally updating the dot.'''
-        trace = (False or vc.trace) and not g.unitTesting
-        if trace: g.trace(vc.state, vc.stroke)
+        vc.do_trace()
         if vc.state == 'visual':
             vc.handler = vc.do_visual_mode
                 # A major bug fix.
@@ -598,8 +595,7 @@ class VimCommands(object):
         **Important**: all code now calls vc.quit() after vc.ignore.
         This code could do that, but the calling v.quit() emphasizes what happens.
         '''
-        trace = (False or vc.trace) and not g.unitTesting
-        if trace: g.trace(vc.stroke)
+        vc.do_trace()
         aList = [z.stroke if isinstance(z, VimEvent) else z for z in vc.command_list]
         aList = [show_stroke(vc.c.k.stroke2char(z)) for z in aList]
         g.es_print('ignoring %s in %s mode after %s' % (
@@ -627,8 +623,7 @@ class VimCommands(object):
         Abort any present command.
         Don't set the dot and enter normal mode.
         '''
-        trace = (False or vc.trace) and not g.unitTesting
-        if trace: g.trace(vc.stroke)
+        vc.do_trace()
         # Undoably preserve any changes to the body.
         # g.trace('no change! old vc.state:',vc.state)
         vc.save_body()
@@ -642,8 +637,7 @@ class VimCommands(object):
         Called from k.keyboardQuit when the user types Ctrl-G (setFocus = True).
         Also called when the user clicks the mouse (setFocus = False).
         '''
-        trace = (False or vc.trace) and not g.unitTesting
-        if trace: g.trace(vc.stroke)
+        vc.do_trace()
         if setFocus:
             # A hard reset.
             vc.quit()
@@ -654,8 +648,7 @@ class VimCommands(object):
     #@+node:ekr.20140222064735.16709: *5* vc.begin_insert_mode
     def begin_insert_mode(vc, i=None, w=None):
         '''Common code for beginning insert mode.'''
-        trace = (False or vc.trace) and not g.unitTesting
-        if trace: g.trace(vc.stroke)
+        vc.do_trace()
         # c = vc.c
         if not w: w = vc.w
         vc.state = 'insert'
@@ -671,9 +664,7 @@ class VimCommands(object):
     #@+node:ekr.20140222064735.16706: *5* vc.begin_motion
     def begin_motion(vc, motion_func):
         '''Start an inner motion.'''
-        # g.trace(motion_func.__name__,g.callers(2))
-        trace = (False or vc.trace) and not g.unitTesting
-        if trace: g.trace(vc.stroke)
+        vc.do_trace()
         w = vc.w
         vc.command_w = w
         vc.in_motion = True
@@ -688,8 +679,7 @@ class VimCommands(object):
     def end_insert_mode(vc):
         '''End an insert mode started with the a,A,i,o and O commands.'''
         # Called from vim_esc.
-        trace = (False or vc.trace) and not g.unitTesting
-        if trace: g.trace(vc.stroke)
+        vc.do_trace()
         w = vc.w
         s = w.getAllText()
         i1 = vc.command_i
@@ -706,19 +696,15 @@ class VimCommands(object):
     #@+node:ekr.20140222064735.16629: *5* vc.vim_digits
     def vim_digits(vc):
         '''Handle a digit that starts an outer repeat count.'''
-        trace = (False or vc.trace) and not g.unitTesting
-        if trace: g.trace(vc.stroke)
-        if trace: g.trace(vc.stroke)
+        vc.do_trace()
         vc.repeat_list = []
         vc.repeat_list.append(vc.stroke)
         vc.accept(handler=vc.vim_digits_2)
 
     def vim_digits_2(vc):
-        trace = (False or vc.trace) and not g.unitTesting
-        if trace: g.trace(vc.stroke)
+        vc.do_trace()
         if vc.stroke in '0123456789':
             vc.repeat_list.append(vc.stroke)
-            # g.trace('added',vc.stroke,vc.repeat_list)
             vc.accept(handler=vc.vim_digits_2)
         else:
             # Set vc.n1 before vc.n, so that inner motions won't repeat
@@ -1974,10 +1960,9 @@ class VimCommands(object):
         - Call vc.handler.
         Return True if k.masterKeyHandler should handle this key.
         '''
-        trace = (False or vc.trace) and not g.unitTesting
         try:
             vc.init_scanner_vars(event)
-            if trace: g.trace('stroke: %s' % vc.stroke)
+            vc.do_trace(blank_line=True)
             vc.return_value = None
             if not vc.handle_specials():
                 vc.handler()
@@ -2260,8 +2245,8 @@ class VimCommands(object):
     @cmd(':toggle-vim-trace')
     def toggle_vim_trace(vc, event=None):
         '''toggle vim tracing.'''
-        vc.trace = not vc.trace
-        g.es_print('vim tracing: %s' % ('On' if vc.trace else 'Off'))
+        vc.trace_flag = not vc.trace_flag
+        g.es_print('vim tracing: %s' % ('On' if vc.trace_flag else 'Off'))
     #@+node:ekr.20140815160132.18831: *4* vc.toggle_vim_trainer_mode
     @cmd(':toggle-vim-trainer-mode')
     def toggle_vim_trainer_mode(vc, event=None):
@@ -2294,8 +2279,7 @@ class VimCommands(object):
     #@+node:ekr.20140803220119.18089: *4* vc.do_inner_motion
     def do_inner_motion(vc, restart=False):
         '''Handle strokes in motions.'''
-        trace = (False or vc.trace) and not g.unitTesting
-        if trace: g.trace(vc.command_list)
+        # g.trace(vc.command_list)
         try:
             assert vc.in_motion
             if restart:
@@ -2321,13 +2305,12 @@ class VimCommands(object):
     def do_insert_mode(vc):
         '''Handle insert mode: delegate all strokes to k.masterKeyHandler.'''
         # Support the jj abbreviation when there is no selection.
-        trace = (False or vc.trace) and not g.unitTesting
-        if trace: g.trace(show_stroke(vc.stroke), g.callers(2))
+        vc.do_trace()
         try:
             vc.state = 'insert'
             w = vc.w
             if vc.is_text_wrapper(w) and vc.test_for_insert_escape(w):
-                if trace: g.trace('*** abort ***', w)
+                if vc.trace_flag: g.trace('*** abort ***', w)
                 return
             # Special case for arrow keys.
             if vc.stroke in vc.arrow_d:
@@ -2368,19 +2351,15 @@ class VimCommands(object):
     #@+node:ekr.20140802225657.18029: *4* vc.do_state
     def do_state(vc, d, mode_name):
         '''General dispatcher code. d is a dispatch dict.'''
-        trace = (False or vc.trace) and not g.unitTesting
         try:
             func = d.get(vc.stroke)
             if func:
-                if trace: g.trace(mode_name, vc.stroke, func.__name__)
                 func()
             elif vc.is_plain_key(vc.stroke):
-                if trace: g.trace('ignore', vc.stroke)
                 vc.ignore()
                 vc.quit()
             else:
                 # Pass non-plain keys to k.masterKeyHandler
-                if trace: g.trace('delegate', vc.stroke)
                 vc.delegate()
         except Exception:
             g.es_exception()
@@ -2429,38 +2408,13 @@ class VimCommands(object):
                 vc.c.k.simulateCommand(z, event=event)
         else:
             vc.c.k.simulateCommand(o, event=event)
-    #@+node:ekr.20140822072856.18256: *4* vc.visual_line_helper
-    def visual_line_helper(vc):
-        '''Extend the selection as necessary in visual line mode.'''
-        bx = 'beginning-of-line-extend-selection'
-        ex = 'end-of-line-extend-selection'
-        w = vc.w
-        i = w.getInsertPoint()
-        # We would like to set insert=i0, but
-        # w.setSelectionRange requires either insert==i or insert==j.
-            # i0 = i
-        if vc.vis_mode_i < i:
-            # Select from the beginning of the line containing vc.vismode_i
-            # to the end of the line containing i.
-            w.setInsertPoint(vc.vis_mode_i)
-            vc.do(bx)
-            i1, i2 = w.getSelectionRange()
-            w.setInsertPoint(i)
-            vc.do(ex)
-            j1, j2 = w.getSelectionRange()
-            i, j = min(i1, i2), max(j1, j2)
-            w.setSelectionRange(i, j, insert=j)
-        else:
-            # Select from the beginning of the line containing i
-            # to the end of the line containing vc.vismode_i.
-            w.setInsertPoint(i)
-            vc.do(bx)
-            i1, i2 = w.getSelectionRange()
-            w.setInsertPoint(vc.vis_mode_i)
-            vc.do(ex)
-            j1, j2 = w.getSelectionRange()
-            i, j = min(i1, i2), max(j1, j2)
-            w.setSelectionRange(i, j, insert=i)
+    #@+node:ekr.20180424055522.1: *4* vc.do_trace
+    def do_trace(vc, blank_line=False):
+        
+        if vc.trace_flag and not g.unitTesting:
+            if blank_line:
+                print('')
+            g.es_print('%20s: %r' % (g.caller(), vc.stroke))
     #@+node:ekr.20140802183521.17999: *4* vc.in_headline & vc.in_tree
     def in_headline(vc, w):
         '''Return True if we are in a headline edit widget.'''
@@ -2616,6 +2570,38 @@ class VimCommands(object):
         while i < len(s) and s[i] != '\n':
             i += 1
         return i
+    #@+node:ekr.20140822072856.18256: *4* vc.visual_line_helper
+    def visual_line_helper(vc):
+        '''Extend the selection as necessary in visual line mode.'''
+        bx = 'beginning-of-line-extend-selection'
+        ex = 'end-of-line-extend-selection'
+        w = vc.w
+        i = w.getInsertPoint()
+        # We would like to set insert=i0, but
+        # w.setSelectionRange requires either insert==i or insert==j.
+            # i0 = i
+        if vc.vis_mode_i < i:
+            # Select from the beginning of the line containing vc.vismode_i
+            # to the end of the line containing i.
+            w.setInsertPoint(vc.vis_mode_i)
+            vc.do(bx)
+            i1, i2 = w.getSelectionRange()
+            w.setInsertPoint(i)
+            vc.do(ex)
+            j1, j2 = w.getSelectionRange()
+            i, j = min(i1, i2), max(j1, j2)
+            w.setSelectionRange(i, j, insert=j)
+        else:
+            # Select from the beginning of the line containing i
+            # to the end of the line containing vc.vismode_i.
+            w.setInsertPoint(i)
+            vc.do(bx)
+            i1, i2 = w.getSelectionRange()
+            w.setInsertPoint(vc.vis_mode_i)
+            vc.do(ex)
+            j1, j2 = w.getSelectionRange()
+            i, j = min(i1, i2), max(j1, j2)
+            w.setSelectionRange(i, j, insert=i)
     #@+node:ekr.20140805064952.18152: *4* vc.widget_name
     def widget_name(vc, w):
         return vc.c.widget_name(w)
