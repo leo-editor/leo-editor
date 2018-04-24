@@ -1970,7 +1970,7 @@ def assert_is(obj, list_or_class, warn=True):
         assert isinstance(obj, list_or_class), (
             obj, obj.__class__.__name__, g.callers())
 #@+node:ekr.20180420081530.1: *4* g._assert
-def _assert(condition):
+def _assert(condition, show_callers=True):
     '''A safer alternative to a bare assert.'''
     if g.unitTesting:
         assert condition
@@ -1978,8 +1978,11 @@ def _assert(condition):
     ok = bool(condition)
     if ok:
         return True
-    g.es_print('g._assert failed')
-    g.es_print(g.callers())
+    print('')
+    g.es_print('===== g._assert failed =====')
+    print('')
+    if show_callers:
+        g.es_print(g.callers())
     return False
 #@+node:ekr.20051023083258: *4* g.callers & g.caller & _callerName
 def callers(n=4, count=0, excludeCaller=True, verbose=False):

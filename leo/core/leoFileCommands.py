@@ -632,7 +632,7 @@ class FileCommands(object):
                 return None
             p._linkAfter(current, adjust=False)
         ###
-        c.dumpOutline()
+        ### c.dumpOutline()
         ###
             # if tempOutline:
                 # self.gnxDict = oldGnxDict

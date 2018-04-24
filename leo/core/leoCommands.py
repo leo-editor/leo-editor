@@ -1373,7 +1373,7 @@ class Commands(object):
             # g.trace(body)
             c.setBodyString(p, body)
             # Don't set the dirty bit: it would just be annoying.
-    #@+node:ekr.20171124081419.1: *3* c.Check Outline
+    #@+node:ekr.20171124081419.1: *3* c.Check Outline...
     #@+node:ekr.20141024211256.22: *4* c.checkGnxs
     def checkGnxs(self):
         '''
@@ -1430,14 +1430,20 @@ class Commands(object):
         count, errors = 0, 0
         for p in c.safe_all_positions():
             count += 1
-            try:
-                c.checkThreadLinks(p)
-                c.checkSiblings(p)
-                c.checkParentAndChildren(p)
-            except AssertionError:
+            # try:
+            if not c.checkThreadLinks(p):
                 errors += 1
-                junk, value, junk = sys.exc_info()
-                g.error("test failed at position %s\n%s" % (repr(p), value))
+                break
+            if not c.checkSiblings(p):
+                errors += 1
+                break
+            if not c.checkParentAndChildren(p):
+                errors += 1
+                break
+            # except AssertionError:
+                # errors += 1
+                # junk, value, junk = sys.exc_info()
+                # g.error("test failed at position %s\n%s" % (repr(p), value))
         t2 = time.time()
         g.es_print('check-links: %4.2f sec. %s %s nodes' % (
             t2 - t1, c.shortFileName(), count), color='blue')
@@ -1445,42 +1451,93 @@ class Commands(object):
     #@+node:ekr.20040314035615.2: *5* c.checkParentAndChildren
     def checkParentAndChildren(self, p):
         '''Check consistency of parent and child data structures.'''
-        # Check consistency of parent and child links.
+        c = self
+        
+        def _assert(condition):
+            return g._assert(condition, show_callers=False)
+
+        def dump(p):
+            if p and p.v:
+                p.v.dump()
+            elif p:
+                print('<no p.v>')
+            else:
+                print('<no p>')
+            if g.unitTesting:
+                assert False, g.callers()
+            
         if p.hasParent():
             n = p.childIndex()
-            assert p == p.parent().moveToNthChild(n), "p!=parent.moveToNthChild"
+            if not _assert(p == p.parent().moveToNthChild(n)):
+                g.trace("p != parent().moveToNthChild(%s)" % (n))
+                dump(p)
+                dump(p.parent())
+                return False
+        if p.level() > 0 and not _assert(p.v.parents):
+            g.trace("no parents")
+            dump(p)
+            return False
         for child in p.children():
-            assert p == child.parent(), "p!=child.parent"
+            if not c.checkParentAndChildren(child):
+                return False
+            if not _assert(p == child.parent()):
+                g.trace("p != child.parent()")
+                dump(p)
+                dump(child.parent())
+                return False
         if p.hasNext():
-            assert p.next().parent() == p.parent(), "next.parent!=parent"
+            if not _assert(p.next().parent() == p.parent()):
+                g.trace("p.next().parent() != p.parent()")
+                dump(p.next().parent())
+                dump(p.parent())
+                return False
         if p.hasBack():
-            assert p.back().parent() == p.parent(), "back.parent!=parent"
+            if not _assert(p.back().parent() == p.parent()):
+                g.trace("p.back().parent() != parent()")
+                dump(p.back().parent())
+                dump(p.parent())
+                return False
         # Check consistency of parent and children arrays.
         # Every nodes gets visited, so a strong test need only check consistency
         # between p and its parent, not between p and its children.
         parent_v = p._parentVnode()
         n = p.childIndex()
-        assert parent_v.children[n] == p.v, 'fail 1'
+        if not _assert(parent_v.children[n] == p.v):
+            g.trace("parent_v.children[n] != p.v")
+            parent_v.dump()
+            p.v.dump()
+            return False
+        return True
     #@+node:ekr.20040314035615.1: *5* c.checkSiblings
     def checkSiblings(self, p):
         '''Check the consistency of next and back links.'''
         back = p.back()
         next = p.next()
         if back:
-            assert p == back.next(), 'p!=p.back().next(),  back: %s\nback.next: %s' % (
-                back, back.next())
+            if not g._assert(p == back.next()):
+                g.trace('p!=p.back().next(),  back: %s\nback.next: %s' % (
+                    back, back.next()))
+                return False
         if next:
-            assert p == next.back(), 'p!=p.next().back, next: %s\nnext.back: %s' % (
-                next, next.back())
+            if not g._assert(p == next.back()):
+                g.trace('p!=p.next().back, next: %s\nnext.back: %s' % (
+                    next, next.back()))
+                return False
+        return True
     #@+node:ekr.20040314035615: *5* c.checkThreadLinks
     def checkThreadLinks(self, p):
         '''Check consistency of threadNext & threadBack links.'''
         threadBack = p.threadBack()
         threadNext = p.threadNext()
         if threadBack:
-            assert p == threadBack.threadNext(), "p!=p.threadBack().threadNext()"
+            if not g._assert(p == threadBack.threadNext()):
+                g.trace("p!=p.threadBack().threadNext()")
+                return False
         if threadNext:
-            assert p == threadNext.threadBack(), "p!=p.threadNext().threadBack()"
+            if not g._assert(p == threadNext.threadBack()):
+                g.trace("p!=p.threadNext().threadBack()")
+                return False
+        return True
     #@+node:ekr.20031218072017.1760: *4* c.checkMoveWithParentWithWarning & c.checkDrag
     #@+node:ekr.20070910105044: *5* c.checkMoveWithParentWithWarning
     def checkMoveWithParentWithWarning(self, root, parent, warningFlag):
