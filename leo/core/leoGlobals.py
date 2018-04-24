@@ -2211,8 +2211,14 @@ def objToString(obj, indent='', printCaller=False, tag=None):
         s = listToString(obj, indent=indent)
     elif isinstance(obj, tuple):
         s = tupleToString(obj, indent=indent)
-    # elif g.isString(obj):
-        # s = obj
+    elif g.isString(obj):
+        # Print multi-line strings as lists.
+        s = obj
+        lines = g.splitLines(s)
+        if len(lines) > 1:
+            s = listToString(lines, indent=indent)
+        else:
+            s = repr(s)
     else:
         s = repr(obj)
     if printCaller and tag:
