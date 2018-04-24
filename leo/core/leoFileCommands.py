@@ -578,12 +578,8 @@ class FileCommands(object):
         v = self.getVnodeFromClipboard(s)
         return leoNodes.Position(v)
     #@+node:ekr.20031218072017.1559: *5* fc.getLeoOutlineFromClipboard & helpers
-    def getLeoOutlineFromClipboard(self, s, reassignIndices=True): ###, tempOutline=False):
+    def getLeoOutlineFromClipboard(self, s, reassignIndices=True):
         '''Read a Leo outline from string s in clipboard format.'''
-        ###
-            # if tempOutline:
-                # g.trace('===== tempOutline is True', g.callers())
-                # if g.unitTesting: assert False
         c = self.c
         current = c.p
         if not current:
@@ -595,7 +591,7 @@ class FileCommands(object):
         children = c.hiddenRootNode.children
         # 2011/12/12: save and clear gnxDict.
         # This ensures that new indices will be used for all nodes.
-        if reassignIndices: ### or tempOutline:
+        if reassignIndices:
             oldGnxDict = self.gnxDict
             self.gnxDict = {}
         else:
@@ -631,12 +627,6 @@ class FileCommands(object):
             if check and not self.checkPaste(current.parent(), p):
                 return None
             p._linkAfter(current, adjust=False)
-        ###
-        ### c.dumpOutline()
-        ###
-            # if tempOutline:
-                # self.gnxDict = oldGnxDict
-            # elif reassignIndices:
         if reassignIndices:
             self.gnxDict = oldGnxDict
             ni = g.app.nodeIndices

@@ -33,68 +33,68 @@ def pasteOutline(self, event=None,
     reassignIndices=True,
     redrawFlag=True,
     s=None,
-    ### tempOutline=False, # True: don't make entries in the gnxDict.
     undoFlag=True
 ):
     '''
     Paste an outline into the present outline from the clipboard.
     Nodes do *not* retain their original identify.
     '''
-    ###
-        # if tempOutline:
-            # g.trace('===== tempOutline is True', g.callers())
-            # if g.unitTesting: assert False
     c = self
     if s is None:
         s = g.app.gui.getTextFromClipboard()
     pasteAsClone = not reassignIndices
     # commenting following block fixes #478
-    #if pasteAsClone and g.app.paste_c != c:
-    #    g.es('illegal paste-retaining-clones', color='red')
-    #    g.es('only valid in same outline.')
-    #    return
-    undoType = 'Paste Node' if reassignIndices else 'Paste As Clone'
+        # if pasteAsClone and g.app.paste_c != c:
+        #    g.es('illegal paste-retaining-clones', color='red')
+        #    g.es('only valid in same outline.')
+        #    return
     c.endEditing()
     if not s or not c.canPasteOutline(s):
         return # This should never happen.
     isLeo = g.match(s, 0, g.app.prolog_prefix_string)
     vnodeInfoDict = computeVnodeInfoDict(c) if pasteAsClone else {}
-    # create a *position* to be pasted.
+    #
+    # Get *position* to be pasted.
     if isLeo:
         pasted = c.fileCommands.getLeoOutlineFromClipboard(s, reassignIndices)
-            ###, tempOutline)
     if not pasted:
-        # 2016/10/06:
-        # We no longer support pasting MORE outlines. Use import-MORE-files instead.
+        # Leo no longer supports MORE outlines. Use import-MORE-files instead.
         return None
-    if pasteAsClone:
-        copiedBunchList = computeCopiedBunchList(c, pasted, vnodeInfoDict)
-    else:
-        copiedBunchList = []
-    if undoFlag:
-        undoData = c.undoer.beforeInsertNode(c.p,
-            pasteAsClone=pasteAsClone, copiedBunchList=copiedBunchList)
+    #
+    # Validate.
     c.validateOutline()
     c.checkOutline()
-    ###
-        # if not tempOutline:
-            # # Fix #427: Don't check for duplicate vnodes.
-            # c.checkOutline()
+    #
+    # Handle the "before" data for undo.
+    if undoFlag:
+        if pasteAsClone:
+            copiedBunchList = computeCopiedBunchList(c, pasted, vnodeInfoDict)
+        else:
+            copiedBunchList = []
+        undoData = c.undoer.beforeInsertNode(c.p,
+            pasteAsClone=pasteAsClone,
+            copiedBunchList=copiedBunchList)
+    #
+    # Paste the node into the outline.
     c.selectPosition(pasted)
     pasted.setDirty()
-    c.setChanged(True, redrawFlag=redrawFlag) # Prevent flash when fixing #387.
-    # paste as first child if back is expanded.
+    c.setChanged(True, redrawFlag=redrawFlag)
+        # Prevent flash when fixing #387.
     back = pasted.back()
     if back and back.hasChildren() and back.isExpanded():
         # 2011/06/21: fixed hanger: test back.hasChildren().
         pasted.moveToNthChildOf(back, 0)
+    #
+    # Set dirty bits for ancestors of *all* pasted nodes.
+    # Note: the setDescendentsDirty flag does not do what we want.
     if pasteAsClone:
-        # Set dirty bits for ancestors of *all* pasted nodes.
-        # Note: the setDescendentsDirty flag does not do what we want.
         for p in pasted.self_and_subtree():
             p.setAllAncestorAtFileNodesDirty(
                 setDescendentsDirty=False)
+    #
+    # Finish the command.
     if undoFlag:
+        undoType = 'Paste Node' if reassignIndices else 'Paste As Clone'
         c.undoer.afterInsertNode(pasted, undoType, undoData)
     if redrawFlag:
         c.redraw(pasted)
