@@ -589,7 +589,8 @@ class FileCommands(object):
         self.initReadIvars()
         # Save the hidden root's children.
         children = c.hiddenRootNode.children
-        # 2011/12/12: save and clear gnxDict.
+        #
+        # Save and clear gnxDict.
         # This ensures that new indices will be used for all nodes.
         if reassignIndices:
             oldGnxDict = self.gnxDict
@@ -617,6 +618,7 @@ class FileCommands(object):
         # Unlink v from the hidden root.
         v.parents.remove(c.hiddenRootNode)
         p = leoNodes.Position(v)
+        #
         # Important: we must not adjust links when linking v
         # into the outline.  The read code has already done that.
         if current.hasChildren() and current.isExpanded():
@@ -903,7 +905,8 @@ class FileCommands(object):
                 tnx = sax_child.tnx
                 v = fc.gnxDict.get(tnx)
                 if v: # A clone.
-                    v = fc.createSaxVnode(sax_child, parent_v, v=v)
+                    ### v = fc.createSaxVnode(sax_child, parent_v, v=v)
+                    fc.updateSaxClone(sax_child, parent_v, v)
                 else:
                     v = fc.createSaxVnode(sax_child, parent_v)
                     createSaxChildren2(sax_child, v)
@@ -1160,14 +1163,13 @@ class FileCommands(object):
     #@+node:ekr.20060919110638.5: *5* fc.createSaxChildren & helpers
     def createSaxChildren(self, sax_node, parent_v):
         '''Create vnodes for all children in sax_node.children.'''
-        trace = False and not g.unitTesting
         children = []
         for sax_child in sax_node.children:
             tnx = sax_child.tnx
             v = self.gnxDict.get(tnx)
-            if v: # A clone.
-                if trace: g.trace('**clone', tnx, v.gnx, v)
-                v = self.createSaxVnode(sax_child, parent_v, v=v)
+            if v: # A clone. Don't look at the children.
+                ### v = self.createSaxVnode(sax_child, parent_v, v=v)
+                self.updateSaxClone(sax_child, parent_v, v)
             else:
                 v = self.createSaxVnode(sax_child, parent_v)
                 self.createSaxChildren(sax_child, v)
@@ -1175,131 +1177,100 @@ class FileCommands(object):
         parent_v.children = children
         for child in children:
             child.parents.append(parent_v)
-            if trace: g.trace(
-                '*** added parent', parent_v, 'to', child,
-                'len(child.parents)', len(child.parents))
         return children
     #@+node:ekr.20060919110638.7: *6* fc.createSaxVnode & helpers
-    def createSaxVnode(self, sax_node, parent_v, v=None):
+    def createSaxVnode(self, sax_node, parent_v):
         '''Create a vnode, or use an existing vnode.'''
-        c, at = self.c, self.c.atFileCommands
-        trace = False and not g.unitTesting
-            # and self.mFileName and sax_node.headString == 'clone-test'
-            # and not g.app.openingSettingsFile)
-        trace_update, verbose = False, False
-        h = sax_node.headString
-        b = sax_node.bodyString
-        # trace = trace and v and v.gnx == "vitalije.20150316130845.1"
-        if v:
-            # The body of the later node overrides the earlier.
-            # Don't set t.h: h is always empty.
-            if v.b == b:
-                # if trace: g.trace('old: %r new: %r' % (v.bodyString(),b),h)
-                if trace and verbose: g.trace(
-                    '***no update\nold: %s\nnew: %s' % (v.b, b))
-            else:
-                if trace and trace_update: g.trace(
-                    '***update\nold: %s\nnew: %s' % (v.b, b))
-                v.setBodyString(b)
-                at.bodySetInited(v)
+        c = self.c
+        at = c.atFileCommands
+        #
+        # Fix #158: Corrupt .leo files cause Leo to hang.
+        # Explicitly test against None: tnx could be 0.
+        if sax_node.tnx is None:
+            gnx = None
         else:
-            # Fix bug 158: Corrupt .leo files cause Leo to hang.
-            # Part 1: must explicitly test against None: tnx could be 0.
-            if sax_node.tnx is not None:
-                # Important: this should retain compatibility with old .leo files.
-                gnx = g.toUnicode(self.canonicalTnodeIndex(sax_node.tnx))
-            else:
-                # Part 2: Do *not* call ni.getNewIndex here: v is None!
-                # Instead, let the VNode ctor below allocate the gnx.
-                gnx = None
-            # if trace and gnx: g.trace('%-25s new: %3s %s' % (gnx,len(b),h))
-            v = leoNodes.VNode(context=c, gnx=gnx)
-            v.setBodyString(b)
-            at.bodySetInited(v)
-            v.setHeadString(h)
-        if g.trace_gnxDict: g.trace(c.shortFileName(), gnx, v)
-        if trace and verbose: g.trace(
-            'tnx', '%-22s' % (gnx), 'v', id(v),
-            'len(body)', '%-4d' % (len(b)), h)
+            gnx = g.toUnicode(self.canonicalTnodeIndex(sax_node.tnx))
+        #
+        # Allocate and init a new vnode.
+        v = leoNodes.VNode(context=c, gnx=gnx)
+        v.setBodyString(sax_node.bodyString)
+        at.bodySetInited(v)
+        v.setHeadString(sax_node.headString)
         self.handleVnodeSaxAttributes(sax_node, v)
         self.handleTnodeSaxAttributes(sax_node, v)
         return v
     #@+node:ekr.20060919110638.8: *7* fc.handleTnodeSaxAttributes
     def handleTnodeSaxAttributes(self, sax_node, v):
-        trace = False and not g.unitTesting
+
         d = sax_node.tnodeAttributes
-        if trace and d: g.trace(sax_node, list(d.keys()))
         aDict = {}
         for key in d:
-            val = g.toUnicode(d.get(key)) # 2011/02/22
+            val = g.toUnicode(d.get(key))
             val2 = self.getSaxUa(key, val)
-            # g.trace(key,val,val2)
             aDict[key] = val2
         if aDict:
-            if trace: g.trace('uA', v, list(aDict.keys()))
             v.unknownAttributes = aDict
     #@+node:ekr.20061004053644: *7* fc.handleVnodeSaxAttributes
-    # The native attributes of <v> elements are a, t, vtag, tnodeList,
-    # marks, expanded, and descendentTnodeUnknownAttributes.
-    # New in Leo 4.5: added descendentVnodeUnknownAttributes to native attributes.
-
     def handleVnodeSaxAttributes(self, sax_node, v):
-        trace = False and not g.unitTesting
+        '''
+        The native attributes of <v> elements are a, t, vtag, tnodeList,
+        marks, expanded, and descendentTnode/VnodeUnknownAttributes.
+        '''
         d = sax_node.attributes
         s = d.get('a')
         if s:
-            if trace and 'E' in s: g.trace('expand', v)
-            # g.trace('%s a=%s %s' % (id(sax_node),s,v.headString()))
-            # 'C' (clone) and 'D' bits are not used.
             if 'M' in s: v.setMarked()
             if 'E' in s: v.expand()
             if 'O' in s: v.setOrphan()
-            # if 'T' in s: self.topVnode = v
-            if 'V' in s:
-                # g.red('handleVnodeSaxAttributes: setting currentVnode',v)
-                self.currentVnode = v
+            if 'V' in s: self.currentVnode = v
         s = d.get('tnodeList', '')
         tnodeList = s and s.split(',')
         if tnodeList:
             # This tnodeList will be resolved later.
-            if trace: g.trace('found tnodeList', v.headString(), tnodeList)
             v.tempTnodeList = tnodeList
         s = d.get('descendentTnodeUnknownAttributes')
         if s:
             aDict = self.getDescendentUnknownAttributes(s, v=v)
             if aDict:
-                # g.trace('descendentTnodeUaDictList',aDict)
                 self.descendentTnodeUaDictList.append(aDict)
         s = d.get('descendentVnodeUnknownAttributes')
         if s:
             aDict = self.getDescendentUnknownAttributes(s, v=v)
             if aDict:
-                # g.trace('descendentVnodeUaDictList',aDict)
                 self.descendentVnodeUaDictList.append((v, aDict),)
         s = d.get('expanded')
         if s:
             aList = self.getDescendentAttributes(s, tag="expanded")
-            # g.trace('expanded list',len(aList))
             self.descendentExpandedList.extend(aList)
         s = d.get('marks')
         if s:
             aList = self.getDescendentAttributes(s, tag="marks")
-            # g.trace('marks list',len(aList))
             self.descendentMarksList.extend(aList)
         aDict = {}
         for key in d:
             if key in self.nativeVnodeAttributes:
-                # This is not a bug.
-                if False and trace: g.trace(
-                    '****ignoring***', key, d.get(key))
+                pass # This is not a bug.
             else:
                 val = d.get(key)
                 val2 = self.getSaxUa(key, val)
                 aDict[key] = val2
-                # g.trace(key,val,val2)
         if aDict:
-            # if trace: g.trace('uA',v,aDict)
             v.unknownAttributes = aDict
+    #@+node:ekr.20180424120245.1: *6* fc.updateSaxClone
+    def updateSaxClone(self, sax_node, parent_v, v):
+        '''
+        Update the body text of v. It overrides any previous body text.
+        '''
+        c = self.c
+        at = c.atFileCommands
+        b = sax_node.bodyString
+        if v.b != b:
+            v.setBodyString(b)
+            at.bodySetInited(v)
+        ###
+        ### Should these override ???
+        ### self.handleVnodeSaxAttributes(sax_node, v)
+        ### self.handleTnodeSaxAttributes(sax_node, v)
     #@+node:ekr.20060919110638.2: *5* fc.dumpSaxTree
     def dumpSaxTree(self, root, dummy):
         if not root:
@@ -1436,20 +1407,22 @@ class FileCommands(object):
 
         if fileName.endswith('.db'):
             return fc.retrieveVnodesFromDb(theFile) or fc.initNewDb(theFile)
-
+        #
         # Pass one: create the intermediate nodes.
         saxRoot = fc.parse_leo_file(theFile, fileName,
             silent=silent, inClipboard=inClipboard, s=s)
-        # Pass two: create the tree of vnodes from the intermediate nodes.
-        if saxRoot:
-            if dump: fc.dumpSaxTree(saxRoot, dummy=True)
-            parent_v = c.hiddenRootNode
-            children = fc.createSaxChildren(saxRoot, parent_v)
-            assert c.hiddenRootNode.children == children
-            v = children[0] if children else None
-            return v
-        else:
+        if not saxRoot:
             return None
+        #
+        # Pass two: create the tree of vnodes from the intermediate nodes.
+        if dump: fc.dumpSaxTree(saxRoot, dummy=True)
+        parent_v = c.hiddenRootNode
+        children = fc.createSaxChildren(saxRoot, parent_v)
+        assert c.hiddenRootNode.children == children
+        v = children[0] if children else None
+        return v
+       
+            
                 
     #@+node:ekr.20060919110638.11: *5* fc.resolveTnodeLists
     def resolveTnodeLists(self):
