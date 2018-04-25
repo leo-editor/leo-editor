@@ -669,7 +669,7 @@ class FileCommands(object):
         for p2 in p.self_and_subtree():
             v = p2.v
             index = ni.getNewIndex(v)
-            if g.trace_gnxDict:
+            if 'gnx' in g.app.debug:
                 g.trace(c.shortFileName(), '**reassigning**', index, v)
     #@+node:ekr.20031218072017.1553: *5* fc.getLeoFile & helpers
     def getLeoFile(self,

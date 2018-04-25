@@ -228,7 +228,8 @@ class Cacher(object):
             if gnxString:
                 assert g.isUnicode(gnxString)
                 v = leoNodes.VNode(context=c, gnx=gnxString)
-                if g.trace_gnxDict: g.trace(c.shortFileName(), gnxString, v)
+                if 'gnx' in g.app.debug:
+                    g.trace(c.shortFileName(), gnxString, v)
             else:
                 v = leoNodes.VNode(context=c)
                 # This is not an error: it can happen with @auto nodes.

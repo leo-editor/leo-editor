@@ -1227,6 +1227,7 @@
 <v t="ekr.20180312050443.1"><vh>@test cwd</vh></v>
 </v>
 <v t="ekr.20100204053330.5367"><vh>@test koi8-r encoding</vh></v>
+<v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1643,7 +1644,7 @@ else:
         i = j = w.getInsertPoint()
         sel = (i,i)
     return i,j</t>
-<t tx="ekr.20070417092935" str_leo_pos="4">@nosearch</t>
+<t tx="ekr.20070417092935" str_leo_pos="8">@nosearch</t>
 <t tx="ekr.20070503064257"></t>
 <t tx="ekr.20070528100318"># Required to make a typing test work.
 </t>
@@ -3417,6 +3418,40 @@ for tag,aList in table:
         d1 = inspect.getargspec(func)
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
+</t>
+<t tx="ekr.20100131171342.5482">
+ivars = (
+    # Global managers.
+    'config','externalFilesController',
+    'loadManager','pluginsController','recentFilesManager',
+    # Official ivars.
+    'gui',
+    'initing','killed','quitting',
+    'leoID','log','logIsLocked','logWaiting',
+    'nodeIndices',
+    'unitTesting','unitTestDict',
+    'windowList',
+    # Less-official and might be removed...
+    'batchMode',
+    # 'debugSwitch',
+    'disableSave',
+    'hookError','hookFunction',
+    'numberOfUntitledWindows',
+    'realMenuNameDict',
+    'searchDict','scriptDict',
+    'use_psyco',
+)
+
+if g.app.isExternalUnitTest:
+    mayBeNone = ('hookFunction','idleTimeHook','log','openWithInstance')
+else:
+    mayBeNone = ('hookFunction','openWithInstance')
+
+for ivar in ivars:
+    assert hasattr(g.app,ivar), 'missing app ivar: %s %r' % (ivar,g.app)
+    if ivar not in mayBeNone:
+        val = getattr(g.app,ivar)
+        assert val is not None, 'null app ivar: %s %r'% (ivar,g.app)
 </t>
 <t tx="ekr.20100131171342.5485">import inspect
 

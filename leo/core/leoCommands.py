@@ -456,8 +456,7 @@ class Commands(object):
 
     def idle_focus_helper(self, tag, keys):
         '''An idle-tme handler that ensures that focus is *somewhere*.'''
-        trace = (False or g.app.trace_focus) and not g.unitTesting
-        # if trace: g.trace('active:', g.app.gui and g.app.gui.active)
+        trace = 'focus' in g.app.debug
         trace_inactive_focus = True
         trace_in_dialog = True
         c = self
@@ -517,7 +516,7 @@ class Commands(object):
         '''Trace the focus for w, minimizing chatter.'''
         from leo.core.leoQt import QtWidgets
         import leo.plugins.qt_frame as qt_frame
-        trace = (False or g.app.trace_focus) and not g.unitTesting
+        trace = 'focus' in g.app.debug
         trace_known = False
         c = self
         table = (
@@ -2353,13 +2352,13 @@ class Commands(object):
     #@+node:ekr.20140717074441.17770: *4* c.recreateGnxDict
     def recreateGnxDict(self):
         '''Recreate the gnx dict prior to refreshing nodes from disk.'''
-        trace = False and not g.unitTesting
         c, d = self, {}
         for v in c.all_unique_nodes():
             gnxString = v.fileIndex
             assert g.isUnicode(gnxString)
             d[gnxString] = v
-            if trace or g.trace_gnxDict: g.trace(c.shortFileName(), gnxString, v)
+            if 'gnx' in g.app.debug:
+                g.trace(c.shortFileName(), gnxString, v)
         c.fileCommands.gnxDict = d
     #@+node:ekr.20171124100534.1: *3* c.Gui
     #@+node:ekr.20111217154130.10286: *4* c.Dialogs & messages
@@ -2872,9 +2871,8 @@ class Commands(object):
     #@+node:ekr.20080514131122.9: *5* c.get/request/set_focus
     def get_focus(self):
         c = self
-        trace = (False or g.app.trace_focus) and not g.unitTesting
         w = g.app.gui and g.app.gui.get_focus(c)
-        if trace:
+        if 'focus' in g.app.debug:
             g.trace('(c)', repr(w and g.app.gui.widget_name(w)), w)
             g.callers()
         return w
@@ -2884,16 +2882,15 @@ class Commands(object):
         return c.requestedFocusWidget
 
     def request_focus(self, w):
-        trace = (False or g.app.trace_focus) and not g.unitTesting
         c = self
         if w and g.app.gui:
-            if trace:
+            if 'focus' in g.app.debug:
                 g.trace('(c)', repr(g.app.gui.widget_name(w)), w)
                 g.callers()
             c.requestedFocusWidget = w
 
     def set_focus(self, w, force=False):
-        trace = (False or g.app.trace_focus) and not g.unitTesting
+        trace = 'focus' in g.app.debug
         c = self
         if w and g.app.gui:
             if trace:
@@ -2912,7 +2909,7 @@ class Commands(object):
     #@+node:ekr.20080514131122.16: *5* c.traceFocus (not used)
     def traceFocus(self, w):
         c = self
-        if False or (not g.app.unitTesting and c.config.getBool('trace_focus')):
+        if 'focus' in g.app.debug or c.config.getBool('trace_focus'):
             c.trace_focus_count += 1
             g.pr('%4d' % (c.trace_focus_count), c.widget_name(w), g.callers(8))
     #@+node:ekr.20070226121510: *5* c.xFocusHelper & initialFocusHelper

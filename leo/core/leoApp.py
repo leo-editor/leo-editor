@@ -97,8 +97,8 @@ class LeoApp(object):
         #@+node:ekr.20161028035755.1: *5* << LeoApp: command-line arguments >>
         self.batchMode = False
             # True: run in batch mode.
-        self.debug = False
-            # True: run Leo in debug mode.
+        self.debug = []
+            # A list of switches to be enabled.
         self.diff = False
             # True: run Leo in diff mode.
         self.enablePlugins = True
@@ -129,12 +129,18 @@ class LeoApp(object):
             # For qt_frame plugin.
         self.start_minimized = False
             # For qt_frame plugin.
-        self.trace_binding = None
-            # True: name of binding to trace, or None.
-        self.trace_focus = False
-            # True: trace changes in focus.
-        self.trace_plugins = False
-            # True: trace imports of plugins.
+        ###
+            ### self.trace_binding = None
+                # True: name of binding to trace, or None.
+            ### self.trace_focus = False
+                # True: trace changes in focus.
+            ### self.trace_plugins = False
+                # True: trace imports of plugins.
+            ### self.trace_open_with = True
+                # True: trace open-with logic in core and vim and xemacs plugins.
+            ### self.trace_shutdown = False
+                # # True: trace shutdown logic.
+            
         self.trace_setting = None
             # The name of a setting to trace, or None.
         self.translateToUpperCase = False
@@ -150,14 +156,8 @@ class LeoApp(object):
         #@+node:ekr.20161028035835.1: *5* << LeoApp: Debugging & statistics >>
         self.count = 0
             # General purpose debugging count.
-        self.debug_app = False
-            # True: Enable debugging (of widgets)
         self.debug_dict = {}
             # For general use.
-        self.debug_widgets = False
-            # True: enable verbose tracing of widgets.
-        self.debugSwitch = 0
-            # For g.es_exception: 0: Brief; 1: Full.
         self.disable_redraw = False
             # True: disable all redraws.
         self.disableSave = False
@@ -174,10 +174,6 @@ class LeoApp(object):
             # Set by p.safeMoveToThreadNext.
         self.statsDict = {}
             # dict used by g.stat, g.clear_stats, g.print_stats.
-        self.trace_open_with = True
-            # True: trace open-with logic in core and vim and xemacs plugins.
-        self.trace_shutdown = False
-            # True: trace shutdown logic.
         self.validate_outline = False
             # True: enables c.validate_outline. (slow)
         #@-<< LeoApp: Debugging & statistics >>
@@ -1275,11 +1271,10 @@ class LeoApp(object):
                       during initial load, so UI remains for files
                       further along the command line.
         """
-        trace = self.trace_shutdown and not g.unitTesting
         c = frame.c
-        if trace: g.pr('closeLeoWindow: changed: %s %s' % (c.changed, c.shortFileName()))
+        if 'shutdown' in g.app.debug:
+            g.pr('closeLeoWindow: changed: %s %s' % (c.changed, c.shortFileName()))
         c.endEditing() # Commit any open edits.
-        if trace: g.trace('changed', c.changed)
         if c.promptingForClose:
             # There is already a dialog open asking what to do.
             return False
@@ -1309,16 +1304,16 @@ class LeoApp(object):
     #@+node:ekr.20031218072017.2612: *4* app.destroyAllOpenWithFiles
     def destroyAllOpenWithFiles(self):
         '''Remove temp files created with the Open With command.'''
-        trace = self.trace_shutdown and not g.unitTesting
-        if trace: g.pr('destroyAllOpenWithFiles')
+        if 'shutdown' in g.app.debug:
+            g.pr('destroyAllOpenWithFiles')
         if g.app.externalFilesController:
             g.app.externalFilesController.shut_down()
             g.app.externalFilesController = None
     #@+node:ekr.20031218072017.2615: *4* app.destroyWindow
     def destroyWindow(self, frame):
         '''Destroy all ivars in a Leo frame.'''
-        trace = self.trace_shutdown and not g.unitTesting
-        if trace: g.pr('destroyWindow:  %s' % frame.c.shortFileName())
+        if 'shutdown' in g.app.debug:
+            g.pr('destroyWindow:  %s' % frame.c.shortFileName())
         if g.app.externalFilesController:
             g.app.externalFilesController.destroy_frame(frame)
         if frame in g.app.windowList:
@@ -1330,8 +1325,8 @@ class LeoApp(object):
     #@+node:ekr.20031218072017.1732: *4* app.finishQuit
     def finishQuit(self):
         # forceShutdown may already have fired the "end1" hook.
-        trace = self.trace_shutdown and not g.unitTesting
-        if trace: g.pr('finishQuit')
+        if 'shutdown' in g.app.debug:
+            g.pr('finishQuit')
         if not g.app.killed:
             g.doHook("end1")
             g.app.cacher.commit()
@@ -1353,9 +1348,10 @@ class LeoApp(object):
 
         In particular, may be called from plugins during startup.
         """
-        trace = self.trace_shutdown and not g.unitTesting
+        trace = 'shutdown' in g.app.debug
         app = self
-        if trace: g.pr('forceShutdown')
+        if trace:
+            g.pr('forceShutdown')
         for c in app.commanders():
             app.forgetOpenFile(c.fileName(), force=True)
         # Wait until everything is quiet before really quitting.
@@ -1413,7 +1409,7 @@ class LeoApp(object):
     #@+node:ekr.20120427064024.10066: *4* app.forgetOpenFile
     def forgetOpenFile(self, fn, force=False):
         '''Forget the open file, so that is no longer considered open.'''
-        trace = self.trace_shutdown and not g.unitTesting
+        trace = 'shutdown' in g.app.debug
         d, tag = g.app.db, 'open-leo-files'
         if not d or not fn:
             # Fix https://github.com/leo-editor/leo-editor/issues/69
@@ -1425,8 +1421,6 @@ class LeoApp(object):
             aList.remove(fn)
             if trace:
                 g.pr('forgetOpenFile: %s' % g.shortFileName(fn))
-                # for z in aList:
-                #    g.pr('  %s' % (z))
             d[tag] = aList
         else:
             if trace: g.pr('forgetOpenFile: did not remove: %s' % (fn))
@@ -1850,7 +1844,7 @@ class LoadManager(object):
     #@+node:ekr.20180321124503.1: *5* LM.resolve_theme_path
     def resolve_theme_path(self, fn, tag):
         '''Search theme directories for the given .leo file.'''
-        trace = False and not g.unitTesting # and g.trace_themes
+        trace = False and not g.unitTesting
         if not fn:
             return None
         if not fn.endswith('.leo'):
@@ -2046,7 +2040,7 @@ class LoadManager(object):
         inverted_old_d = lm.invert(old_d)
         inverted_new_d = lm.invert(new_d)
         # #510 & #327: always honor --trace-binding here.
-        if g.app.trace_binding:
+        if 'binding' in g.app.debug:
             binding = g.app.trace_binding
             # First, see if the binding is for a command. (Doesn't work for plugin commands).
             if localFlag and binding in c.k.killedBindings:
@@ -2195,7 +2189,7 @@ class LoadManager(object):
     #@+node:ekr.20120213081706.10382: *4* LM.readGlobalSettingsFiles
     def readGlobalSettingsFiles(self):
         '''Read leoSettings.leo and myLeoSettings.leo using a null gui.'''
-        trace = g.trace_themes and not g.unitTesting
+        trace = 'themes' in g.app.debug
         lm = self
         # Open the standard settings files with a nullGui.
         # Important: their commanders do not exist outside this method!
@@ -2720,6 +2714,8 @@ class LoadManager(object):
         parser = optparse.OptionParser(
             usage="usage: launchLeo.py [options] file1, file2, ...")
             # Automatically implements the --help option.
+            # Apparently requires the --debug option.
+        #
         # Parse the options, and remove them from sys.argv.
         self.addOptionsToParser(parser)
         options, args = parser.parse_args()
@@ -2734,7 +2730,6 @@ class LoadManager(object):
         self.doSimpleOptions(options)
         # Compute the lm.files ivar.
         lm.files = lm.computeFilesList(options, fileName)
-        # Compute the return values.
         script = None if pymacs else self.doScriptOption(options, parser)
         d = {
             'gui': lm.doGuiOption(options),
@@ -2764,11 +2759,12 @@ class LoadManager(object):
         
         def add_bool(option, help, dest=None):
             add(option, action='store_true', dest=dest, help=help)
-            
+
         def add_other(option, help, dest=None, m=None):
             add(option, dest=dest, help=help, metavar=m)
 
-        add_bool('--debug',         'enable debug mode')
+        add_bool('--debug',        'enable debugging')
+            # The tracing options append items to the g.app.debug list.
         add_bool('--diff',          'use Leo as an external git diff')
         add_bool('--fullscreen',    'start fullscreen')
         add_bool('--ipython',       'enable ipython support')
@@ -2790,11 +2786,16 @@ class LoadManager(object):
         add_bool('--silent',        'disable all log messages')
         add_other('--theme',        'use the named theme file', m='NAME')
         add_bool('--trace-binding', 'trace key bindings')
+        add_bool('--trace-events',  'trace non-key events')
         add_bool('--trace-focus',   'trace changes of focus')
+        add_bool('--trace-gnx',     'trace gnx logic')
+        add_bool('--trace-ipython', 'trace ipython bridge')
+        add_bool('--trace-keys',    'trace key events')
         add_bool('--trace-plugins', 'trace imports of plugins')
         add_other('--trace-setting', 'trace where named setting is set', m="NAME")
         add_bool('--trace-shutdown', 'trace shutdown logic')
         add_bool('--trace-themes',  'trace theme init logic')
+        add_bool('--trace-vim',     'trace vim mode')
         add_other('--window-size',  'initial window size (height x width)', m='SIZE')
         # Multiple bool values.
         add('-v', '--version', action='store_true',
@@ -2877,8 +2878,6 @@ class LoadManager(object):
     def doSimpleOptions(self, options):
         '''These args just set g.app ivars.'''
         trace = False
-        # --debug
-        g.app.debug = options.debug
         # --fail-fast
         g.app.failFast = options.fail_fast
         # --fullscreen
@@ -2911,21 +2910,28 @@ class LoadManager(object):
         g.app.save_session = bool(options.session_save)
         # --silent
         g.app.silentMode = options.silent
-        # --trace-binding
-        g.app.trace_binding = options.trace_binding
-        # --trace-focus
-        g.app.trace_focus = options.trace_focus
-        # --trace-plugins
-        g.app.trace_plugins = options.trace_plugins
-        # --trace-setting=setting
+        #
+        # Most --trace- options append items to g.app.debug.
+        table = (
+            ('binding', options.trace_binding), # Replaced.
+            ('events', options.trace_events), # New
+            ('focus', options.trace_focus), # Replaced.
+            ('gnx', options.trace_gnx), # New. Replaced trace_gnxDict.
+            ('keys', options.trace_keys), # New
+            ('ipython', options.trace_ipython), # New
+            ('plugins', options.trace_plugins), # Replaced
+            ('shutdown', options.trace_shutdown), # Replaced.
+            ('themes', options.trace_themes),
+            ('vim', options.trace_vim), # New
+        )
+        for val, option in table:
+            if option:
+                g.app.debug.append(val)
+        #
+        # --trace-setting=setting (not a bool).
         g.app.trace_setting = options.trace_setting
             # g.app.config does not exist yet.
-        # --trace-shutdown
-        g.app.trace_shutdown = options.trace_shutdown
-        # --trace-themes
-        g.trace_themes = options.trace_themes
-
-       
+        
     #@+node:ekr.20180312154839.1: *6* LM.doWindowSizeOption
     def doWindowSizeOption(self, options):
         

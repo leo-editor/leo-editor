@@ -1669,7 +1669,8 @@ class AtFile(object):
             v = leoNodes.VNode(context=c, gnx=gnx)
             v._headString = headline # Allowed use of v._headString.
             gnxDict[gnxString] = v
-            if g.trace_gnxDict: g.trace(c.shortFileName(), gnxString, v)
+            if 'gnx' in g.app.debug:
+                g.trace(c.shortFileName(), gnxString, v)
             child = v
             child._linkAsNthChild(parent, n)
             if trace and v.h == 'clone-test':
@@ -1727,7 +1728,8 @@ class AtFile(object):
                 v = leoNodes.VNode(context=c, gnx=gnx)
                 v._headString = headline # Allowed use of v._headString.
                 gnxDict[gnxString] = v
-                if g.trace_gnxDict: g.trace(c.shortFileName(), gnxString, v)
+                if 'gnx' in g.app.debug:
+                    g.trace(c.shortFileName(), gnxString, v)
             child = v
             child._linkAsNthChild(parent, parent.numberOfChildren())
         if trace: g.trace('new node: %s' % child.h)

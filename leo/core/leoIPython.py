@@ -80,7 +80,7 @@ class InternalIPKernel(object):
         self.namespace = kernelApp.shell.user_ns
             # Import the shell namespace.
         self._init_keys = set(self.namespace.keys())
-        if g.app.debug:
+        if 'ipython' in g.app.debug:
             self.namespace['kernelApp'] = kernelApp
             self.namespace['app_counter'] = 0
             # Example: a variable that will be seen by the user in the shell, and
@@ -100,8 +100,7 @@ class InternalIPKernel(object):
         
         Called from qt_gui.runWithIpythonKernel.
         '''
-        trace = False or g.app.debug
-            # For now, always trace when using Python 2.
+        trace = 'ipython' in g.app.debug
         console = None
         if not self.namespace.get('_leo'):
             self.namespace['_leo'] = LeoNameSpace()

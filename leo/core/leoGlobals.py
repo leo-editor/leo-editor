@@ -20,24 +20,24 @@ isWindows = sys.platform.startswith('win')
 in_bridge = False
     # Set to True in leoBridge.py just before importing leo.core.leoApp.
     # This tells leoApp to load a null Gui.
-trace_themes = False
-    # Trace initialization of themes.
-trace_gnxDict = False
-    # True: trace assignments to fc.gnxDict & related.
+#
 # Debugging options...
 enableDB = True
     # Don't even think about eliminating this constant:
     # it is needed for debugging.
+#
 # Switches to trace the garbage collector.
 trace_gc = False
 trace_gc_calls = False
 trace_gc_verbose = False
 trace_gc_inited = False
+#
 # Other tracing options...
 trace_scroll = False
     # Trace calls to get/setYScrollPosition.
 trace_minibuffer = False
 trace_modes = False
+#
 # These print statements have been moved to writeWaitingLog.
 # This allows for better --silent operation.
 if 0:
@@ -2208,6 +2208,10 @@ def listToString(obj, indent='', tag=None):
 #@+node:ekr.20050819064157: *4* g.objToSTring & g.toString
 def objToString(obj, indent='', printCaller=False, tag=None):
     '''Pretty print any Python object to a string.'''
+    # pylint: disable=undefined-loop-variable
+        # Looks like a a pylint bug.
+    #
+    # Compute s.
     if isinstance(obj, dict):
         s = dictToString(obj, indent=indent)
     elif isinstance(obj, list):
@@ -2224,6 +2228,8 @@ def objToString(obj, indent='', printCaller=False, tag=None):
             s = repr(s)
     else:
         s = repr(obj)
+    #
+    # Compute the return value.
     if printCaller and tag:
         prefix = '%s: %s' % (g.caller(), tag)
     elif printCaller or tag:
@@ -5150,7 +5156,7 @@ def importModule(moduleName, pluginName=None, verbose=False):
     then from the extensions and external directories.
     '''
     # Important: g is Null during startup.
-    trace = (False or g.app.trace_plugins) and not g.unitTesting
+    trace = 'plugins' in g.app.debug
     # if moduleName == 'rope': g.pdb()
     module = sys.modules.get(moduleName)
     if module:
@@ -5221,7 +5227,7 @@ def importFromPath(moduleName, path, verbose=False):
     **Warning**: This is a thin wrapper for imp.load_module, which is
     equivalent to reload! Reloading Leo files while running will crash Leo.
     '''
-    trace = g.app.trace_plugins and not g.unitTesting
+    trace = 'plugins' in g.app.debug
     path = g.os_path_normpath(path)
     if g.isPython3:
         assert g.isString(path)
@@ -6134,15 +6140,12 @@ def es_event_exception(eventName, full=False):
 def es_exception(full=True, c=None, color="red"):
     typ, val, tb = sys.exc_info()
     # val is the second argument to the raise statement.
-    if full or g.app.debugSwitch > 0:
+    if full:
         lines = traceback.format_exception(typ, val, tb)
     else:
         lines = traceback.format_exception_only(typ, val)
     for line in lines:
         g.es_print_error(line, color=color)
-    # if g.app.debugSwitch > 1:
-        # import pdb # Be careful: g.pdb may or may not have been defined.
-        # pdb.set_trace()
     fileName, n = g.getLastTracebackFileAndLineNumber()
     return fileName, n
 #@+node:ekr.20061015090538: *3* g.es_exception_type
@@ -6168,7 +6171,7 @@ def es_print_exception(full=True, c=None, color="red"):
     '''Print exception info about the last exception.'''
     typ, val, tb = sys.exc_info()
         # val is the second argument to the raise statement.
-    if full or g.app.debugSwitch > 0:
+    if full:
         lines = traceback.format_exception(typ, val, tb)
     else:
         lines = traceback.format_exception_only(typ, val)

@@ -17,7 +17,7 @@ available.'''
 #@+<< imports >>
 #@+node:ekr.20100908120927.5971: ** << imports >> (leoRst)
 import leo.core.leoGlobals as g
-verbose = g.app.trace_plugins
+verbose = 'plugins' in g.app.debug
 try:
     import docutils
     import docutils.core
