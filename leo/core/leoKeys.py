@@ -3164,7 +3164,8 @@ class KeyHandlerClass(object):
         '''The master key handler for almost all key bindings.'''
         k = self
         # Setup...
-        ### g.trace(repr(event.char), event.stroke)
+        if 'keys' in g.app.debug:
+            g.trace(repr(event.char), event.stroke)
         k.checkKeyEvent(event)
         k.setEventWidget(event)
         k.traceVars(event)
