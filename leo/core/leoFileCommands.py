@@ -1282,10 +1282,10 @@ class FileCommands(object):
         if v.b != b:
             v.setBodyString(b)
             at.bodySetInited(v)
-        ###
-        ### Should these override ???
-        ### self.handleVnodeSaxAttributes(sax_node, v)
-        ### self.handleTnodeSaxAttributes(sax_node, v)
+        #
+        # New in Leo 5.7.2. Don't call these
+            # self.handleVnodeSaxAttributes(sax_node, v)
+            # self.handleTnodeSaxAttributes(sax_node, v)
     #@+node:ekr.20060919110638.2: *5* fc.dumpSaxTree
     def dumpSaxTree(self, root, dummy):
         if not root:
