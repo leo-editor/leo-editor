@@ -452,13 +452,9 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20131121050226.16331: *4* filter.traceWidget
     def traceWidget(self, event):
         '''Show unexpected events in unusual widgets.'''
-        # py-lint: disable=E1101
-        # E1101:9240,0:Class 'QEvent' has no 'CloseSoftwareInputPanel' member
-        # E1101:9267,0:Class 'QEvent' has no 'RequestSoftwareInputPanel' member
         verbose = False # Not good for --trace-events
         if 'events' not in g.app.debug:
             return
-        ### c = self.c
         e = QtCore.QEvent
         assert isinstance(event, QtCore.QEvent)
         et = event.type()
@@ -529,6 +525,7 @@ class LeoQtEventFilter(QtCore.QObject):
             e.FocusOut: 'focus-out', # 9
             e.WindowActivate: 'window-activate', # 24
         }
+        # c = self.c
         # table = (
             # c.frame.miniBufferWidget and c.frame.miniBufferWidget.widget,
             # c.frame.body.wrapper and c.frame.body.wrapper.widget,
