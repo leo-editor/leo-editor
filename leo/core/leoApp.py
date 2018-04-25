@@ -129,18 +129,8 @@ class LeoApp(object):
             # For qt_frame plugin.
         self.start_minimized = False
             # For qt_frame plugin.
-        ###
-            ### self.trace_binding = None
-                # True: name of binding to trace, or None.
-            ### self.trace_focus = False
-                # True: trace changes in focus.
-            ### self.trace_plugins = False
-                # True: trace imports of plugins.
-            ### self.trace_open_with = True
-                # True: trace open-with logic in core and vim and xemacs plugins.
-            ### self.trace_shutdown = False
-                # # True: trace shutdown logic.
-            
+        self.trace_binding = None
+            # The name of a binding to trace, or None.
         self.trace_setting = None
             # The name of a setting to trace, or None.
         self.translateToUpperCase = False
@@ -2034,13 +2024,14 @@ class LoadManager(object):
                     pane = ' in %s panes' % bi.pane
                 else:
                     pane = ''
-                g.trace(repr(bi))
-                g.es_print('--trace-setting: %20s binds %s to %-20s%s' %  (
-                    fn, g.app.trace_setting, stroke, pane))
+                if trace:
+                    g.trace(repr(bi))
+                    g.es_print('--trace-setting: %20s binds %s to %-20s%s' %  (
+                        fn, g.app.trace_setting, stroke, pane))
         inverted_old_d = lm.invert(old_d)
         inverted_new_d = lm.invert(new_d)
         # #510 & #327: always honor --trace-binding here.
-        if 'binding' in g.app.debug:
+        if g.app.trace_binding:
             binding = g.app.trace_binding
             # First, see if the binding is for a command. (Doesn't work for plugin commands).
             if localFlag and binding in c.k.killedBindings:
@@ -2785,7 +2776,7 @@ class LoadManager(object):
         add_bool('--session-save',  'save session tabs on exit')
         add_bool('--silent',        'disable all log messages')
         add_other('--theme',        'use the named theme file', m='NAME')
-        add_bool('--trace-binding', 'trace key bindings')
+        add_other('--trace-binding', 'trace key bindings', m='NAME')
         add_bool('--trace-events',  'trace non-key events')
         add_bool('--trace-focus',   'trace changes of focus')
         add_bool('--trace-gnx',     'trace gnx logic')
@@ -2913,7 +2904,6 @@ class LoadManager(object):
         #
         # Most --trace- options append items to g.app.debug.
         table = (
-            ('binding', options.trace_binding), # Replaced.
             ('events', options.trace_events), # New
             ('focus', options.trace_focus), # Replaced.
             ('gnx', options.trace_gnx), # New. Replaced trace_gnxDict.
@@ -2928,7 +2918,12 @@ class LoadManager(object):
             if option:
                 g.app.debug.append(val)
         #
-        # --trace-setting=setting (not a bool).
+        # These are not bool options.
+        # --trace-binding
+        g.app.trace_binding = options.trace_binding
+            # g.app.config does not exist yet.
+        #
+        # --trace-setting=setting
         g.app.trace_setting = options.trace_setting
             # g.app.config does not exist yet.
         
