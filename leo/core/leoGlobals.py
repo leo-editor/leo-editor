@@ -411,6 +411,21 @@ class KeyStroke(object):
         # This dict ensures proper capitalization.
         # It also translates legacy Tk binding names to ascii chars.
         translate_d = {
+            #
+            # Special chars...
+            'delete': 'Delete',
+            'down': 'Down',
+            'end': 'End',
+            'enter': 'Enter',
+            'escape': 'Escape',
+            'home': 'Home',
+            'insert': 'Insert',
+            'left':'Left',
+            'next': 'Next',
+            'prior': 'Prior',
+            'right': 'Right',
+            'up': 'Up',
+            #
             # Qt key names...
             '\r': '\n',
             'backspace': 'BackSpace',
@@ -430,6 +445,7 @@ class KeyStroke(object):
             'rtarrow': 'Right',
             'tab': 'Tab',
             'uparrow': 'Up',
+            #
             # Legacy Tk binding names...
             "ampersand": "&",
             "asciicircum": "^",
@@ -481,6 +497,11 @@ class KeyStroke(object):
                         s = s.lower()
                 elif self.mods:
                     s = s.lower()
+            else:
+                # Make sure all special chars are in translate_d.
+                if g.app.gui: # It may not exist yet.
+                    if s.capitalize() in g.app.gui.specialChars:
+                        s = s.capitalize()
             return s
         # Translate possibly-dubious user settings.
         shift_list = "_+{}|:\"<>?"

@@ -2042,9 +2042,11 @@ class LoadManager(object):
                  g.trace('--trace-binding: %20s binds %s to %s' % (
                     c.shortFileName(), binding, d.get(binding) or []))
             else:
-                stroke = c.k.canonicalizeShortcut(binding)
+                binding = g.app.trace_binding
+                stroke = g.KeyStroke(binding)
                 bi_list = inverted_new_d.get(stroke)
                 if bi_list:
+                    print('')
                     for bi in bi_list:
                         fn = bi.kind.split(' ')[-1] # bi.kind #
                         stroke2 = c.k.prettyPrintKey(stroke)
@@ -2054,6 +2056,7 @@ class LoadManager(object):
                             pane = ''
                         g.es_print('--trace-binding: %20s binds %s to %-20s%s' %  (
                             fn, stroke2, bi.commandName, pane))
+                    print('')
         # Fix bug 951921: check for duplicate shortcuts only in the new file.
         lm.checkForDuplicateShortcuts(c, inverted_new_d)
         inverted_old_d.update(inverted_new_d) # Updates inverted_old_d in place.
@@ -2093,7 +2096,8 @@ class LoadManager(object):
         Invert a shortcut dict whose keys are command names,
         returning a dict whose keys are strokes.
         '''
-        trace = False and not g.unitTesting; verbose = True
+        trace = False and not g.unitTesting
+        verbose = True
         if trace: g.trace('*' * 40, d.name())
         result = g.TypedDictOfLists(
             name='inverted %s' % d.name(),
@@ -2776,7 +2780,7 @@ class LoadManager(object):
         add_bool('--session-save',  'save session tabs on exit')
         add_bool('--silent',        'disable all log messages')
         add_other('--theme',        'use the named theme file', m='NAME')
-        add_other('--trace-binding', 'trace key bindings', m='NAME')
+        add_other('--trace-binding', 'trace commands bound to a key', m='KEY')
         add_bool('--trace-events',  'trace non-key events')
         add_bool('--trace-focus',   'trace changes of focus')
         add_bool('--trace-gnx',     'trace gnx logic')

@@ -1084,7 +1084,9 @@ class LeoQtGui(leoGui.LeoGui):
             #@+node:ekr.20110605121601.18531: *4* << bind the shortcut to executeScriptCallback >>
             # In qt_gui.makeScriptButton.
             func = executeScriptCallback
-            shortcut = k.canonicalizeShortcut(shortcut)
+            ### shortcut = k.canonicalizeBinding(shortcut)
+            if shortcut:
+                shortcut = g.KeyStroke(shortcut)
             ok = k.bindKey('button', shortcut, func, buttonText)
             if ok:
                 g.blue('bound @button', buttonText, 'to', shortcut)

@@ -338,6 +338,7 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         return fn
     #@+node:ekr.20170819035801.90: *3* efc.gitDiff
     @cmd('git-diff')
+    @cmd('gd')
     def gitDiff(self, event):
 
         GitDiffController(self.c, 'HEAD').run()
