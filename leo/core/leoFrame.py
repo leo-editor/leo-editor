@@ -1297,7 +1297,6 @@ class LeoTree(object):
         self.use_chapters = False # May be overridden in subclasses.
         # Define these here to keep pylint happy.
         self.canvas = None
-        self.trace_select = None
     #@+node:ekr.20081005065934.8: *3* LeoTree.May be defined in subclasses
     # These are new in Leo 4.6.
 
@@ -2066,8 +2065,6 @@ class NullTree(LeoTree):
         self.fontName = None
         self.canvas = None
         self.redrawCount = 0
-        self.trace_edit = False
-        self.trace_select = False
         self.updateCount = 0
     #@+node:ekr.20070228163350.2: *3* NullTree.edit_widget
     def edit_widget(self, p):

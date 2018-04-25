@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
-	<global_window_position top="50" left="50" height="500" width="700"/>
+<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
+	<global_window_position top="31" left="797" height="1048" width="1100"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -645,41 +645,10 @@
 </v>
 <v t="ekr.20051126062243"><vh>Debugging</vh>
 <v t="ekr.20060408090018"><vh>@bool added_setting = True</vh></v>
-<v t="ekr.20060212101234"><vh>@bool gc_before_redraw = True</vh></v>
-<v t="ekr.20060202113731"><vh>@bool show_tree_stats = False</vh></v>
-<v t="ekr.20060114073238"><vh>@bool trace_bindings = False</vh></v>
-<v t="ekr.20060616172614"><vh>@bool trace_bindings_verbose = False</vh></v>
-<v t="ekr.20060425124142"><vh>@bool trace_color_parser = True</vh></v>
-<v t="ekr.20060309022759"><vh>@bool trace_colorizer = False</vh></v>
-<v t="ekr.20060204093736"><vh>@bool trace_doCommand = False</vh></v>
-<v t="ekr.20060204102644"><vh>@bool trace_f.set_focus = False</vh></v>
-<v t="ekr.20060207142012"><vh>@bool trace_focus = False</vh></v>
-<v t="ekr.20051126062830"><vh>@bool trace_g.app.gui.set_focus = False</vh></v>
-<v t="ekr.20060126075152"><vh>@bool trace_gc = False</vh></v>
-<v t="ekr.20060212103826"><vh>@bool trace_gc_calls = False</vh></v>
-<v t="ekr.20060126083715"><vh>@bool trace_gc_verbose = False</vh></v>
 <v t="ekr.20070729101310"><vh>@bool trace_import = False</vh></v>
-<v t="ekr.20060215054710"><vh>@bool trace_key_event= False</vh></v>
-<v t="ekr.20051126062525"><vh>@bool trace_masterCommand = False</vh></v>
-<v t="ekr.20060209045356"><vh>@bool trace_masterFocusHandler = False</vh></v>
-<v t="ekr.20060131071612"><vh>@bool trace_masterKeyHandler = False</vh></v>
-<v t="ekr.20060216091239"><vh>@bool trace_minibuffer = False</vh></v>
-<v t="ekr.20060121102627"><vh>@bool trace_modes = False</vh></v>
-<v t="ekr.20060306031258"><vh>@bool trace_onBodyChanged = False</vh></v>
-<v t="ekr.20070417071249"><vh>@bool trace_plugins = False</vh></v>
-<v t="ekr.20060210105437"><vh>@bool trace_select = False</vh></v>
-<v t="ekr.20060216130607"><vh>@bool trace_status_line = False</vh></v>
-<v t="ekr.20060202092911"><vh>@bool trace_tree = False</vh></v>
-<v t="ekr.20060206155101"><vh>@bool trace_tree_alloc = False</vh></v>
-<v t="ekr.20060206161839"><vh>@bool trace_tree_edit = False</vh></v>
-<v t="ekr.20070503080312"><vh>@bool trace_tree_gc = False</vh></v>
-<v t="ekr.20051126062243.1"><vh>@bool trace_tree_redraw = False</vh></v>
-<v t="ekr.20060425125015"><vh>@bool verbose_trace_color_parser = False</vh></v>
 <v t="ekr.20060323131801"><vh>@bool warn_about_missing_settings = False</vh></v>
 <v t="ekr.20060521134125"><vh>@string debugger_default_target = None</vh></v>
 <v t="ekr.20060521134125.1"><vh>@string debugger_force_target = None</vh></v>
-<v t="ekr.20060114082205"><vh>@string trace_bindings_filter = </vh></v>
-<v t="ekr.20060114083009"><vh>@string trace_bindings_pane_filter =</vh></v>
 <v t="ekr.20060325071916"><vh>For unit tests</vh>
 <v t="ekr.20060325071042"><vh>@ifplatform win32</vh>
 <v t="ekr.20060325071042.1"><vh>@bool test_win32_setting = True</vh></v>
@@ -2340,6 +2309,40 @@
 </v>
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
+</v>
+<v t="ekr.20051126062243"></v>
+<v t="ekr.20180425150938.1"><vh>No longer used trace settings</vh>
+<v t="ekr.20060212101234"><vh>@bool gc_before_redraw = True</vh></v>
+<v t="ekr.20060202113731"><vh>@bool show_tree_stats = False</vh></v>
+<v t="ekr.20060114073238"><vh>@bool trace_bindings = False</vh></v>
+<v t="ekr.20060616172614"><vh>@bool trace_bindings_verbose = False</vh></v>
+<v t="ekr.20060425124142"><vh>@bool trace_color_parser = True</vh></v>
+<v t="ekr.20060309022759"><vh>@bool trace_colorizer = False</vh></v>
+<v t="ekr.20060204093736"><vh>@bool trace_doCommand = False</vh></v>
+<v t="ekr.20060204102644"><vh>@bool trace_f.set_focus = False</vh></v>
+<v t="ekr.20060207142012"><vh>@bool trace_focus = False</vh></v>
+<v t="ekr.20051126062830"><vh>@bool trace_g.app.gui.set_focus = False</vh></v>
+<v t="ekr.20060126075152"><vh>@bool trace_gc = False</vh></v>
+<v t="ekr.20060212103826"><vh>@bool trace_gc_calls = False</vh></v>
+<v t="ekr.20060126083715"><vh>@bool trace_gc_verbose = False</vh></v>
+<v t="ekr.20060215054710"><vh>@bool trace_key_event= False</vh></v>
+<v t="ekr.20051126062525"><vh>@bool trace_masterCommand = False</vh></v>
+<v t="ekr.20060209045356"><vh>@bool trace_masterFocusHandler = False</vh></v>
+<v t="ekr.20060131071612"><vh>@bool trace_masterKeyHandler = False</vh></v>
+<v t="ekr.20060216091239"><vh>@bool trace_minibuffer = False</vh></v>
+<v t="ekr.20060121102627"><vh>@bool trace_modes = False</vh></v>
+<v t="ekr.20060306031258"><vh>@bool trace_onBodyChanged = False</vh></v>
+<v t="ekr.20070417071249"><vh>@bool trace_plugins = False</vh></v>
+<v t="ekr.20060210105437"><vh>@bool trace_select = False</vh></v>
+<v t="ekr.20060216130607"><vh>@bool trace_status_line = False</vh></v>
+<v t="ekr.20060202092911"><vh>@bool trace_tree = False</vh></v>
+<v t="ekr.20060206155101"><vh>@bool trace_tree_alloc = False</vh></v>
+<v t="ekr.20060206161839"><vh>@bool trace_tree_edit = False</vh></v>
+<v t="ekr.20070503080312"><vh>@bool trace_tree_gc = False</vh></v>
+<v t="ekr.20051126062243.1"><vh>@bool trace_tree_redraw = False</vh></v>
+<v t="ekr.20060425125015"><vh>@bool verbose_trace_color_parser = False</vh></v>
+<v t="ekr.20060114082205"><vh>@string trace_bindings_filter = </vh></v>
+<v t="ekr.20060114083009"><vh>@string trace_bindings_pane_filter =</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -4263,7 +4266,7 @@ menu-shortcut = Alt-S # Search and Settings menus.
 menu-shortcut = Alt-W # Window menu.
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401">@nocolor-node
+<t tx="ekr.20070622214401" str_leo_pos="5">@nocolor-node
 
 Please don't change this node and its descendants; they are for Leo's
 developers.
@@ -11782,6 +11785,7 @@ False: Legacy operation.
 True:  Replace the Meta key with the Alt Key.
        This allows Windows Keyboards to be used without changing key bindings.
 </t>
+<t tx="ekr.20180425150938.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""

@@ -2018,7 +2018,6 @@ class Commands(object):
         This provides a simple mechanism for overriding commands.
         """
         c, p = self, self.p
-        trace = (False or c.config.getBool('trace_doCommand')) and not g.unitTesting
         c.setLog()
         self.command_count += 1
         # The presence of this message disables all commands.
@@ -2026,7 +2025,6 @@ class Commands(object):
             g.blue(c.disableCommandsMessage)
             return
         if c.exists and c.inCommand and not g.unitTesting:
-            # g.trace('inCommand',c)
             g.app.commandInterruptFlag = True
             g.error('ignoring command: already executing a command.')
             return
@@ -2039,11 +2037,9 @@ class Commands(object):
             try:
                 c.inCommand = True
                 val = c.executeAnyCommand(command, event)
-                if trace: g.trace('end', command)
                 if c and c.exists: # Be careful: the command could destroy c.
                     c.inCommand = False
                     c.k.funcReturn = val
-                # else: g.pr('c no longer exists',c)
             except Exception:
                 c.inCommand = False
                 if g.app.unitTesting:
@@ -2053,11 +2049,9 @@ class Commands(object):
                     g.es_exception(c=c)
             if c and c.exists:
                 if c.requestCloseWindow:
-                    if trace: g.trace('closing window after command')
                     c.requestCloseWindow = False
                     g.app.closeLeoWindow(c.frame)
                 else:
-                    if trace: g.trace('calling outerUpdate')
                     c.outerUpdate()
         # Be careful: the command could destroy c.
         if c and c.exists:
@@ -2909,7 +2903,7 @@ class Commands(object):
     #@+node:ekr.20080514131122.16: *5* c.traceFocus (not used)
     def traceFocus(self, w):
         c = self
-        if 'focus' in g.app.debug or c.config.getBool('trace_focus'):
+        if 'focus' in g.app.debug:
             c.trace_focus_count += 1
             g.pr('%4d' % (c.trace_focus_count), c.widget_name(w), g.callers(8))
     #@+node:ekr.20070226121510: *5* c.xFocusHelper & initialFocusHelper

@@ -1376,14 +1376,8 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20140901062324.18562: *5* LeoQtBody.reloadSettings
     def reloadSettings(self):
         c = self.c
-        self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
         self.useScintilla = c.config.getBool('qt-use-scintilla')
         self.use_chapters = c.config.getBool('use_chapters')
-        # These are no longer used.
-            # self.unselectedBackgroundColor = c.config.getColor(
-                # 'unselected_body_bg_color')
-            # self.unselectedForegroundColor = c.config.getColor(
-                # 'unselected_body_fg_color')
     #@+node:ekr.20160309074124.1: *5* LeoQtBody.set_invisibles
     def set_invisibles(self, c):
         '''Set the show-invisibles bit in the document.'''
@@ -2034,7 +2028,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def reloadSettings(self):
         c = self.c
         self.cursorStay = c.config.getBool("cursor_stay_on_paste", default=True)
-        self.trace_status_line = c.config.getBool('trace_status_line')
         self.use_chapters = c.config.getBool('use_chapters')
         self.use_chapter_tabs = c.config.getBool('use_chapter_tabs')
     #@+node:ekr.20110605121601.18248: *5* qtFrame.setIvars

@@ -26,17 +26,9 @@ enableDB = True
     # Don't even think about eliminating this constant:
     # it is needed for debugging.
 #
-# Switches to trace the garbage collector.
-trace_gc = False
-trace_gc_calls = False
-trace_gc_verbose = False
-trace_gc_inited = False
-#
 # Other tracing options...
 trace_scroll = False
     # Trace calls to get/setYScrollPosition.
-trace_minibuffer = False
-trace_modes = False
 #
 # These print statements have been moved to writeWaitingLog.
 # This allows for better --silent operation.
@@ -2355,61 +2347,47 @@ def clearAllIvars(o):
 #@+node:ekr.20031218072017.1590: *4* g.collectGarbage
 def collectGarbage():
     try:
-        if not g.trace_gc_inited:
-            g.enable_gc_debug()
-        if g.trace_gc_verbose or g.trace_gc_calls:
-            g.pr('collectGarbage:')
         gc.collect()
     except Exception:
         pass
-    # Only init once, regardless of what happens.
-    g.trace_gc_inited = True
 #@+node:ekr.20060127162818: *4* g.enable_gc_debug
-no_gc_message = False
-
 def enable_gc_debug(event=None):
     # pylint: disable=no-member
-    if gc:
-        if g.trace_gc_verbose:
-
-            if g.isPython3:
-                gc.set_debug(
-                    gc.DEBUG_STATS | # prints statistics.
-                    gc.DEBUG_LEAK | # Same as all below.
-                    gc.DEBUG_COLLECTABLE |
-                    gc.DEBUG_UNCOLLECTABLE |
-                    # gc.DEBUG_INSTANCES |
-                    # gc.DEBUG_OBJECTS |
-                    gc.DEBUG_SAVEALL)
-            else:
-                gc.set_debug(
-                    gc.DEBUG_STATS | # prints statistics.
-                    gc.DEBUG_LEAK | # Same as all below.
-                    gc.DEBUG_COLLECTABLE |
-                    gc.DEBUG_UNCOLLECTABLE |
-                    gc.DEBUG_INSTANCES |
-                    gc.DEBUG_OBJECTS |
-                    gc.DEBUG_SAVEALL)
-        # else:
-            # gc.set_debug(gc.DEBUG_STATS)
-    elif not g.no_gc_message:
-        g.no_gc_message = True
+    if not gc:
         g.error('can not import gc module')
+        return
+    if g.isPython3:
+        gc.set_debug(
+            gc.DEBUG_STATS | # prints statistics.
+            gc.DEBUG_LEAK | # Same as all below.
+            gc.DEBUG_COLLECTABLE |
+            gc.DEBUG_UNCOLLECTABLE |
+            # gc.DEBUG_INSTANCES |
+            # gc.DEBUG_OBJECTS |
+            gc.DEBUG_SAVEALL)
+    else:
+        gc.set_debug(
+            gc.DEBUG_STATS | # prints statistics.
+            gc.DEBUG_LEAK | # Same as all below.
+            gc.DEBUG_COLLECTABLE |
+            gc.DEBUG_UNCOLLECTABLE |
+            gc.DEBUG_INSTANCES |
+            gc.DEBUG_OBJECTS |
+            gc.DEBUG_SAVEALL)
 #@+node:ekr.20031218072017.1592: *4* g.printGc
 # Formerly called from unit tests.
 
 def printGc(tag=None):
-    if not g.trace_gc: return None
     tag = tag or g._callerName(n=2)
     printGcObjects(tag=tag)
     printGcRefs(tag=tag)
-    if g.trace_gc_verbose:
-        printGcVerbose(tag=tag)
+    printGcVerbose(tag=tag)
 #@+node:ekr.20031218072017.1593: *5* g.printGcRefs
 def printGcRefs(tag=''):
+    verbose = False
     refs = gc.get_referrers(app.windowList[0])
     g.pr('-' * 30, tag)
-    if g.trace_gc_verbose:
+    if verbose:
         g.pr("refs of", app.windowList[0])
         for ref in refs:
             g.pr(type(ref))
@@ -2428,8 +2406,6 @@ def printGcAll(tag=''):
         if t == 'instance':
             try: t = obj.__class__
             except Exception: pass
-        # if isinstance(obj, (tuple, list)):
-            # g.pr(id(obj),repr(obj))
         # 2011/02/28: Some types may not be hashable.
         try:
             d[t] = d.get(t, 0) + 1
