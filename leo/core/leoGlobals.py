@@ -20,24 +20,16 @@ isWindows = sys.platform.startswith('win')
 in_bridge = False
     # Set to True in leoBridge.py just before importing leo.core.leoApp.
     # This tells leoApp to load a null Gui.
-trace_themes = False
-    # Trace initialization of themes.
-trace_gnxDict = False
-    # True: trace assignments to fc.gnxDict & related.
+#
 # Debugging options...
 enableDB = True
     # Don't even think about eliminating this constant:
     # it is needed for debugging.
-# Switches to trace the garbage collector.
-trace_gc = False
-trace_gc_calls = False
-trace_gc_verbose = False
-trace_gc_inited = False
+#
 # Other tracing options...
 trace_scroll = False
     # Trace calls to get/setYScrollPosition.
-trace_minibuffer = False
-trace_modes = False
+#
 # These print statements have been moved to writeWaitingLog.
 # This allows for better --silent operation.
 if 0:
@@ -411,6 +403,21 @@ class KeyStroke(object):
         # This dict ensures proper capitalization.
         # It also translates legacy Tk binding names to ascii chars.
         translate_d = {
+            #
+            # Special chars...
+            'delete': 'Delete',
+            'down': 'Down',
+            'end': 'End',
+            'enter': 'Enter',
+            'escape': 'Escape',
+            'home': 'Home',
+            'insert': 'Insert',
+            'left':'Left',
+            'next': 'Next',
+            'prior': 'Prior',
+            'right': 'Right',
+            'up': 'Up',
+            #
             # Qt key names...
             '\r': '\n',
             'backspace': 'BackSpace',
@@ -430,6 +437,7 @@ class KeyStroke(object):
             'rtarrow': 'Right',
             'tab': 'Tab',
             'uparrow': 'Up',
+            #
             # Legacy Tk binding names...
             "ampersand": "&",
             "asciicircum": "^",
@@ -481,6 +489,11 @@ class KeyStroke(object):
                         s = s.lower()
                 elif self.mods:
                     s = s.lower()
+            else:
+                # Make sure all special chars are in translate_d.
+                if g.app.gui: # It may not exist yet.
+                    if s.capitalize() in g.app.gui.specialChars:
+                        s = s.capitalize()
             return s
         # Translate possibly-dubious user settings.
         shift_list = "_+{}|:\"<>?"
@@ -1971,7 +1984,7 @@ def assert_is(obj, list_or_class, warn=True):
         assert isinstance(obj, list_or_class), (
             obj, obj.__class__.__name__, g.callers())
 #@+node:ekr.20180420081530.1: *4* g._assert
-def _assert(condition):
+def _assert(condition, show_callers=True):
     '''A safer alternative to a bare assert.'''
     if g.unitTesting:
         assert condition
@@ -1979,8 +1992,11 @@ def _assert(condition):
     ok = bool(condition)
     if ok:
         return True
-    g.es_print('g._assert failed')
-    g.es_print(g.callers())
+    print('')
+    g.es_print('===== g._assert failed =====')
+    print('')
+    if show_callers:
+        g.es_print(g.callers())
     return False
 #@+node:ekr.20051023083258: *4* g.callers & g.caller & _callerName
 def callers(n=4, count=0, excludeCaller=True, verbose=False):
@@ -2206,16 +2222,28 @@ def listToString(obj, indent='', tag=None):
 #@+node:ekr.20050819064157: *4* g.objToSTring & g.toString
 def objToString(obj, indent='', printCaller=False, tag=None):
     '''Pretty print any Python object to a string.'''
+    # pylint: disable=undefined-loop-variable
+        # Looks like a a pylint bug.
+    #
+    # Compute s.
     if isinstance(obj, dict):
         s = dictToString(obj, indent=indent)
     elif isinstance(obj, list):
         s = listToString(obj, indent=indent)
     elif isinstance(obj, tuple):
         s = tupleToString(obj, indent=indent)
-    # elif g.isString(obj):
-        # s = obj
+    elif g.isString(obj):
+        # Print multi-line strings as lists.
+        s = obj
+        lines = g.splitLines(s)
+        if len(lines) > 1:
+            s = listToString(lines, indent=indent)
+        else:
+            s = repr(s)
     else:
         s = repr(obj)
+    #
+    # Compute the return value.
     if printCaller and tag:
         prefix = '%s: %s' % (g.caller(), tag)
     elif printCaller or tag:
@@ -2320,61 +2348,47 @@ def clearAllIvars(o):
 #@+node:ekr.20031218072017.1590: *4* g.collectGarbage
 def collectGarbage():
     try:
-        if not g.trace_gc_inited:
-            g.enable_gc_debug()
-        if g.trace_gc_verbose or g.trace_gc_calls:
-            g.pr('collectGarbage:')
         gc.collect()
     except Exception:
         pass
-    # Only init once, regardless of what happens.
-    g.trace_gc_inited = True
 #@+node:ekr.20060127162818: *4* g.enable_gc_debug
-no_gc_message = False
-
 def enable_gc_debug(event=None):
     # pylint: disable=no-member
-    if gc:
-        if g.trace_gc_verbose:
-
-            if g.isPython3:
-                gc.set_debug(
-                    gc.DEBUG_STATS | # prints statistics.
-                    gc.DEBUG_LEAK | # Same as all below.
-                    gc.DEBUG_COLLECTABLE |
-                    gc.DEBUG_UNCOLLECTABLE |
-                    # gc.DEBUG_INSTANCES |
-                    # gc.DEBUG_OBJECTS |
-                    gc.DEBUG_SAVEALL)
-            else:
-                gc.set_debug(
-                    gc.DEBUG_STATS | # prints statistics.
-                    gc.DEBUG_LEAK | # Same as all below.
-                    gc.DEBUG_COLLECTABLE |
-                    gc.DEBUG_UNCOLLECTABLE |
-                    gc.DEBUG_INSTANCES |
-                    gc.DEBUG_OBJECTS |
-                    gc.DEBUG_SAVEALL)
-        # else:
-            # gc.set_debug(gc.DEBUG_STATS)
-    elif not g.no_gc_message:
-        g.no_gc_message = True
+    if not gc:
         g.error('can not import gc module')
+        return
+    if g.isPython3:
+        gc.set_debug(
+            gc.DEBUG_STATS | # prints statistics.
+            gc.DEBUG_LEAK | # Same as all below.
+            gc.DEBUG_COLLECTABLE |
+            gc.DEBUG_UNCOLLECTABLE |
+            # gc.DEBUG_INSTANCES |
+            # gc.DEBUG_OBJECTS |
+            gc.DEBUG_SAVEALL)
+    else:
+        gc.set_debug(
+            gc.DEBUG_STATS | # prints statistics.
+            gc.DEBUG_LEAK | # Same as all below.
+            gc.DEBUG_COLLECTABLE |
+            gc.DEBUG_UNCOLLECTABLE |
+            gc.DEBUG_INSTANCES |
+            gc.DEBUG_OBJECTS |
+            gc.DEBUG_SAVEALL)
 #@+node:ekr.20031218072017.1592: *4* g.printGc
 # Formerly called from unit tests.
 
 def printGc(tag=None):
-    if not g.trace_gc: return None
     tag = tag or g._callerName(n=2)
     printGcObjects(tag=tag)
     printGcRefs(tag=tag)
-    if g.trace_gc_verbose:
-        printGcVerbose(tag=tag)
+    printGcVerbose(tag=tag)
 #@+node:ekr.20031218072017.1593: *5* g.printGcRefs
 def printGcRefs(tag=''):
+    verbose = False
     refs = gc.get_referrers(app.windowList[0])
     g.pr('-' * 30, tag)
-    if g.trace_gc_verbose:
+    if verbose:
         g.pr("refs of", app.windowList[0])
         for ref in refs:
             g.pr(type(ref))
@@ -2393,8 +2407,6 @@ def printGcAll(tag=''):
         if t == 'instance':
             try: t = obj.__class__
             except Exception: pass
-        # if isinstance(obj, (tuple, list)):
-            # g.pr(id(obj),repr(obj))
         # 2011/02/28: Some types may not be hashable.
         try:
             d[t] = d.get(t, 0) + 1
@@ -5142,7 +5154,7 @@ def importModule(moduleName, pluginName=None, verbose=False):
     then from the extensions and external directories.
     '''
     # Important: g is Null during startup.
-    trace = (False or g.app.trace_plugins) and not g.unitTesting
+    trace = 'plugins' in g.app.debug
     # if moduleName == 'rope': g.pdb()
     module = sys.modules.get(moduleName)
     if module:
@@ -5213,7 +5225,7 @@ def importFromPath(moduleName, path, verbose=False):
     **Warning**: This is a thin wrapper for imp.load_module, which is
     equivalent to reload! Reloading Leo files while running will crash Leo.
     '''
-    trace = g.app.trace_plugins and not g.unitTesting
+    trace = 'plugins' in g.app.debug
     path = g.os_path_normpath(path)
     if g.isPython3:
         assert g.isString(path)
@@ -6126,15 +6138,12 @@ def es_event_exception(eventName, full=False):
 def es_exception(full=True, c=None, color="red"):
     typ, val, tb = sys.exc_info()
     # val is the second argument to the raise statement.
-    if full or g.app.debugSwitch > 0:
+    if full:
         lines = traceback.format_exception(typ, val, tb)
     else:
         lines = traceback.format_exception_only(typ, val)
     for line in lines:
         g.es_print_error(line, color=color)
-    # if g.app.debugSwitch > 1:
-        # import pdb # Be careful: g.pdb may or may not have been defined.
-        # pdb.set_trace()
     fileName, n = g.getLastTracebackFileAndLineNumber()
     return fileName, n
 #@+node:ekr.20061015090538: *3* g.es_exception_type
@@ -6160,7 +6169,7 @@ def es_print_exception(full=True, c=None, color="red"):
     '''Print exception info about the last exception.'''
     typ, val, tb = sys.exc_info()
         # val is the second argument to the raise statement.
-    if full or g.app.debugSwitch > 0:
+    if full:
         lines = traceback.format_exception(typ, val, tb)
     else:
         lines = traceback.format_exception_only(typ, val)

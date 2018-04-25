@@ -1614,7 +1614,7 @@ class LeoCursesGui(leoGui.LeoGui):
             stdscr.keypad(0)
             curses.echo()
             curses.endwin()
-            if g.app.trace_shutdown:
+            if 'shutdown' in g.app.debug:
                 g.pr('Exiting Leo...')
     #@+node:ekr.20170502020354.1: *5* CGui.run
     def run(self):
@@ -1860,7 +1860,7 @@ class LeoCursesGui(leoGui.LeoGui):
         Return the Leo wrapper for the npyscreen widget that is being edited.
         '''
         # Careful during startup.
-        trace = (False or g.app.trace_focus) and not g.unitTesting
+        trace = 'focus' in g.app.debug
         editw = getattr(g.app.gui.curses_form, 'editw', None)
         if editw is None:
             if trace: g.trace('(CursesGui) no editw')
@@ -1890,7 +1890,7 @@ class LeoCursesGui(leoGui.LeoGui):
         '''
         Given a Leo wrapper w, set focus to the underlying npyscreen widget.
         '''
-        trace = (True or g.app.trace_focus) and not g.unitTesting
+        trace = 'focus' in g.app.debug
         verbose = True # verbose trace of callers.
         # Get the wrapper's npyscreen widget.
         widget = getattr(w, 'widget', None)
@@ -1921,7 +1921,7 @@ class LeoCursesGui(leoGui.LeoGui):
     #@+node:ekr.20171204040620.2: *7* CGui.switch_editing
     def switch_editing(self, i, w):
         '''Clear editing for *all* widgets and set form.editw to i'''
-        trace = (True or g.app.trace_focus) and not g.unitTesting
+        trace = 'focus' in g.app.debug
         how = None # 'leo-set-focus'
         form = self.curses_form
         if i == form.editw:
@@ -1975,7 +1975,7 @@ class LeoCursesGui(leoGui.LeoGui):
     #@+node:ekr.20171204100910.1: *6* CGui.OLD_set_focus
     def OLD_set_focus(self, c, w):
         '''Given a Leo wrapper, set focus to the underlying npyscreen widget.'''
-        trace = (False or g.app.trace_focus) and not g.unitTesting
+        trace = 'focus' in g.app.debug
         verbose = True # Full trace of callers.
         # Get the wrapper's npyscreen widget.
         widget = getattr(w, 'widget', None)

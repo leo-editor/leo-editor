@@ -2297,8 +2297,7 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.101: *4* k.initSpecialIvars
     def initSpecialIvars(self):
         '''Set ivars for special keystrokes from previously-existing bindings.'''
-        k = self; c = k.c
-        trace = False or c.config.getBool('trace_bindings_verbose')
+        c, k = self.c, self
         warn = c.config.getBool('warn_about_missing_settings')
         for ivar, commandName in (
             ('fullCommandKey', 'full-command'),
@@ -2313,7 +2312,6 @@ class KeyHandlerClass(object):
             for pane in ('text', 'all'):
                 for bi in aList:
                     if bi.pane == pane:
-                        if trace: g.trace(commandName, ivar, bi.stroke)
                         setattr(k, ivar, bi.stroke)
                         found = True; break
             if not found and warn:
@@ -3165,6 +3163,8 @@ class KeyHandlerClass(object):
         ### g.trace(event.stroke, repr(event.char))
         k = self
         # Setup...
+        if 'keys' in g.app.debug:
+            g.trace(repr(event.char), event.stroke)
         k.checkKeyEvent(event)
         k.setEventWidget(event)
         k.traceVars(event)
@@ -3992,7 +3992,7 @@ class KeyHandlerClass(object):
     def updateLabel(self, event):
         '''Mimic what would happen with the keyboard and a Text editor
         instead of plain accumulation.'''
-        trace = False or g.trace_minibuffer and not g.app.unitTesting
+        trace = False and not g.app.unitTesting
         k = self; c = k.c; w = self.w
         ch = event.char if event else ''
         if trace: g.trace('ch', ch, 'k.stroke', k.stroke)
@@ -4167,8 +4167,6 @@ class KeyHandlerClass(object):
         '''Handle a mode defined by an @mode node in leoSettings.leo.'''
         k = self; c = k.c
         state = k.getState(modeName)
-        trace = (False or g.trace_modes) and not g.unitTesting
-        if trace: g.trace(modeName, 'state', state)
         if state == 0:
             k.inputModeName = modeName
             k.modePrompt = prompt or modeName
@@ -4189,13 +4187,11 @@ class KeyHandlerClass(object):
                 func(event)
             else:
                 self.endMode()
-                if trace or c.config.getBool('trace_doCommand'): g.trace(func.__name__)
                 # New in 4.4.1 b1: pass an event describing the original widget.
                 if event:
                     event.w = event.widget = k.modeWidget
                 else:
                     event = g.app.gui.create_key_event(c, w=k.modeWidget)
-                if trace: g.trace(modeName, 'state', state, commandName, 'nextMode', nextMode)
                 func(event)
                 if g.app.quitting or not c.exists:
                     pass
@@ -4215,7 +4211,7 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.163: *4* k.initMode (changed)
     def initMode(self, event, modeName):
         k = self; c = k.c
-        trace = (False or g.trace_modes) and not g.unitTesting
+        trace = False and not g.unitTesting
         if not modeName:
             g.trace('oops: no modeName')
             return
@@ -4261,8 +4257,6 @@ class KeyHandlerClass(object):
         '''Handle a mode defined by an @mode node in leoSettings.leo.'''
         k = self; c = k.c
         state = k.getState(modeName)
-        trace = (False or g.trace_modes) and not g.unitTesting
-        if trace: g.trace(modeName, 'state', state)
         if state == 0:
             k.inputModeName = modeName
             k.modePrompt = prompt or modeName
@@ -4283,13 +4277,11 @@ class KeyHandlerClass(object):
                 func(event)
             else:
                 self.endMode()
-                if trace or c.config.getBool('trace_doCommand'): g.trace(func.__name__)
                 # New in 4.4.1 b1: pass an event describing the original widget.
                 if event:
                     event.w = event.widget = k.modeWidget
                 else:
                     event = g.app.gui.create_key_event(c, w=k.modeWidget)
-                if trace: g.trace(modeName, 'state', state, commandName, 'nextMode', nextMode)
                 func(event)
                 if g.app.quitting or not c.exists:
                     pass
@@ -4392,17 +4384,6 @@ class KeyHandlerClass(object):
             # vim commands pass a plain key.
             stroke = g.KeyStroke(stroke)
         return stroke.toInsertableChar()
-    #@+node:ekr.20061031131434.180: *4* k.traceBinding (not used)
-    def traceBinding(self, bi, shortcut, w):
-        k = self; c = k.c; gui = g.app.gui
-        if not c.config.getBool('trace_bindings'):
-            return
-        theFilter = c.config.getString('trace_bindings_filter') or ''
-        if theFilter and shortcut.lower().find(theFilter.lower()) == -1:
-            return
-        pane_filter = c.config.getString('trace_bindings_pane_filter')
-        if not pane_filter or pane_filter.lower() == bi.pane:
-            g.trace(bi.pane, shortcut, bi.commandName, gui.widget_name(w))
     #@+node:ekr.20061031131434.193: *3* k.States
     #@+node:ekr.20061031131434.194: *4* k.clearState
     def clearState(self):

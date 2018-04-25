@@ -144,8 +144,8 @@ class QTextMixin(object):
     #@+node:ekr.20140901062324.18698: *4* qtm.setFocus
     def setFocus(self):
         '''QTextMixin'''
-        trace = (False or g.app.trace_focus) and not g.unitTesting
-        if trace: print('BaseQTextWrapper.setFocus', self.widget)
+        if 'focus' in g.app.debug:
+            print('BaseQTextWrapper.setFocus', self.widget)
         # Call the base class
         assert isinstance(self.widget, (
             QtWidgets.QTextBrowser,

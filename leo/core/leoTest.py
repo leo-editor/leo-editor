@@ -710,7 +710,7 @@ class TestManager(object):
                         c.k.w = old_k_w
                         # Allow unit tests to kill the console gui.
                         if g.app.killed:
-                            if g.app.trace_shutdown:
+                            if 'shutdown' in g.app.debug:
                                 g.trace('calling sys.exit(0) after unit test')
                             sys.exit(0)
                 else:

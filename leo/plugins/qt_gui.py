@@ -137,9 +137,10 @@ class LeoQtGui(leoGui.LeoGui):
         pass
     #@+node:ekr.20110605121601.18484: *3*  qt_gui.destroySelf (calls qtApp.quit)
     def destroySelf(self):
-        trace = g.app.trace_shutdown
+
         QtCore.pyqtRemoveInputHook()
-        if trace: g.pr('LeoQtGui.destroySelf: calling qtApp.Quit')
+        if 'shutdown' in g.app.debug:
+            g.pr('LeoQtGui.destroySelf: calling qtApp.Quit')
         self.qtApp.quit()
     #@+node:ekr.20110605121601.18485: *3* qt_gui.Clipboard
 
@@ -694,26 +695,24 @@ class LeoQtGui(leoGui.LeoGui):
         Gracefully deactivate the Leo window.
         Called several times for each window activation.
         '''
-        trace = (False or g.app.trace_focus) and not g.unitTesting
         w = self.get_focus()
         w_name = w and w.objectName()
-        if trace: g.trace(repr(w_name))
+        if 'focus' in g.app.debug:
+            g.trace(repr(w_name))
         self.active = False
             # Used only by c.idle_focus_helper.
-        if 1: # Leo 5.6: Recover from missing focus.
-            # Careful: never save headline widgets.
-            if w_name == 'headline':
-                self.deactivated_widget = c.frame.tree.treeWidget
-            else:
-                self.deactivated_widget = w if w_name else None
-        if 0: # Cause problems elsewhere.
-            trace = False and not g.unitTesting
-            if c.exists and not self.deactivated_name:
-                self.deactivated_name = self.widget_name(self.get_focus())
-                self.active = False
-                if trace: g.trace(self.deactivated_name)
-                c.k.keyboardQuit(setFocus=False)
-                    # The best way to retain as much focus as possible.
+        #
+        # Careful: never save headline widgets.
+        if w_name == 'headline':
+            self.deactivated_widget = c.frame.tree.treeWidget
+        else:
+            self.deactivated_widget = w if w_name else None
+        #
+        # Causes problems elsewhere...
+            # if c.exists and not self.deactivated_name:
+                # self.deactivated_name = self.widget_name(self.get_focus())
+                # self.active = False
+                # c.k.keyboardQuit(setFocus=False)
         g.doHook('deactivate', c=c, p=c.p, v=c.p, event=event)
     #@+node:ekr.20110605121601.18480: *4* LeoQtGui.onActivateEvent
     # Called from eventFilter
@@ -723,7 +722,7 @@ class LeoQtGui(leoGui.LeoGui):
         Restore the focus when the Leo window is activated.
         Called several times for each window activation.
         '''
-        trace = (False or g.app.trace_focus) and not g.unitTesting
+        trace = 'focus' in g.app.debug
         w = self.get_focus() or self.deactivated_widget
         self.deactivated_widget = None
         w_name = w and w.objectName()
@@ -746,19 +745,17 @@ class LeoQtGui(leoGui.LeoGui):
             else:
                 if trace: g.trace(repr(w_name), '==> BODY')
                 c.bodyWantsFocusNow()
-        if 0: # Cause problems elsewhere.
-            trace = False and not g.unitTesting
-            if c.exists and self.deactivated_name:
-                self.active = True
-                w_name = self.deactivated_name
-                self.deactivated_name = None
-                if trace: g.trace(w_name)
-                if c.p.v:
-                    c.p.v.restoreCursorAndScroll()
-                if w_name.startswith('tree') or w_name.startswith('head'):
-                    c.treeWantsFocusNow()
-                else:
-                    c.bodyWantsFocusNow()
+        ### Cause problems elsewhere.
+            # if c.exists and self.deactivated_name:
+                # self.active = True
+                # w_name = self.deactivated_name
+                # self.deactivated_name = None
+                # if c.p.v:
+                    # c.p.v.restoreCursorAndScroll()
+                # if w_name.startswith('tree') or w_name.startswith('head'):
+                    # c.treeWantsFocusNow()
+                # else:
+                    # c.bodyWantsFocusNow()
         g.doHook('activate', c=c, p=c.p, v=c.p, event=event)
     #@+node:ekr.20130921043420.21175: *4* qt_gui.setFilter
     # w's type is in (DynamicWindow,QMinibufferWrapper,LeoQtLog,LeoQtTree,
@@ -787,7 +784,7 @@ class LeoQtGui(leoGui.LeoGui):
     def get_focus(self, c=None, raw=False, at_idle=False):
         """Returns the widget that has focus."""
         # pylint: disable=arguments-differ
-        trace = (False or g.app.trace_focus) and not g.unitTesting
+        trace = 'focus' in g.app.debug
         trace_idle = False
         trace = trace and (trace_idle or not at_idle)
         app = QtWidgets.QApplication
@@ -808,12 +805,11 @@ class LeoQtGui(leoGui.LeoGui):
     def set_focus(self, c, w):
         """Put the focus on the widget."""
         # pylint: disable=arguments-differ
-        trace = (False or g.app.trace_focus) and not g.unitTesting
         # gui = self
         if w:
             if hasattr(w, 'widget') and w.widget:
                 w = w.widget
-            if trace:
+            if 'focus' in g.app.debug:
                 g.trace('(LeoQtGui)', w.__class__.__name__)
                 g.trace(g.callers())
             w.setFocus()
@@ -828,8 +824,8 @@ class LeoQtGui(leoGui.LeoGui):
         # START: copy from Code-->Startup & external files-->
         # @file runLeo.py -->run & helpers-->doPostPluginsInit & helpers (runLeo.py)
         # For qttabs gui, select the first-loaded tab.
-        trace = (False or g.app.trace_focus) and not g.unitTesting
-        if trace: g.trace(c1)
+        if 'focus' in g.app.debug:
+            g.trace(c1)
         if hasattr(g.app.gui, 'frameFactory'):
             factory = g.app.gui.frameFactory
             if factory and hasattr(factory, 'setTabForCommander'):
@@ -953,7 +949,7 @@ class LeoQtGui(leoGui.LeoGui):
 
     def getImageFinder(self, name):
         '''Theme aware image (icon) path searching.'''
-        trace = g.trace_themes and not g.unitTesting
+        trace = 'themes' in g.app.debug
         exists = g.os_path_exists
         getString = g.app.config.getString
         
@@ -1086,8 +1082,11 @@ class LeoQtGui(leoGui.LeoGui):
         if shortcut:
             #@+<< bind the shortcut to executeScriptCallback >>
             #@+node:ekr.20110605121601.18531: *4* << bind the shortcut to executeScriptCallback >>
+            # In qt_gui.makeScriptButton.
             func = executeScriptCallback
-            shortcut = k.canonicalizeShortcut(shortcut)
+            ### shortcut = k.canonicalizeBinding(shortcut)
+            if shortcut:
+                shortcut = g.KeyStroke(shortcut)
             ok = k.bindKey('button', shortcut, func, buttonText)
             if ok:
                 g.blue('bound @button', buttonText, 'to', shortcut)
@@ -1924,7 +1923,7 @@ class StyleSheetManager(object):
     #@+node:ekr.20180320054305.1: *5* ssm.resolve_urls
     def resolve_urls(self, sheet):
         '''Resolve all relative url's so they use absolute paths.'''
-        trace = g.trace_themes and not g.unitTesting
+        trace = 'themes' in g.app.debug
         pattern = re.compile(r'url\((.*)\)')
         join = g.os_path_finalize_join
         directories = self.compute_icon_directories()

@@ -829,7 +829,8 @@ ivars = (
     'windowList',
     # Less-official and might be removed...
     'batchMode',
-    'debugSwitch','disableSave',
+    # 'debugSwitch',
+    'disableSave',
     'hookError','hookFunction',
     'numberOfUntitledWindows',
     'realMenuNameDict',

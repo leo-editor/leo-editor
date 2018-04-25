@@ -456,8 +456,7 @@ class Commands(object):
 
     def idle_focus_helper(self, tag, keys):
         '''An idle-tme handler that ensures that focus is *somewhere*.'''
-        trace = (False or g.app.trace_focus) and not g.unitTesting
-        # if trace: g.trace('active:', g.app.gui and g.app.gui.active)
+        trace = 'focus' in g.app.debug
         trace_inactive_focus = True
         trace_in_dialog = True
         c = self
@@ -517,7 +516,7 @@ class Commands(object):
         '''Trace the focus for w, minimizing chatter.'''
         from leo.core.leoQt import QtWidgets
         import leo.plugins.qt_frame as qt_frame
-        trace = (False or g.app.trace_focus) and not g.unitTesting
+        trace = 'focus' in g.app.debug
         trace_known = False
         c = self
         table = (
@@ -1373,7 +1372,7 @@ class Commands(object):
             # g.trace(body)
             c.setBodyString(p, body)
             # Don't set the dirty bit: it would just be annoying.
-    #@+node:ekr.20171124081419.1: *3* c.Check Outline
+    #@+node:ekr.20171124081419.1: *3* c.Check Outline...
     #@+node:ekr.20141024211256.22: *4* c.checkGnxs
     def checkGnxs(self):
         '''
@@ -1430,14 +1429,20 @@ class Commands(object):
         count, errors = 0, 0
         for p in c.safe_all_positions():
             count += 1
-            try:
-                c.checkThreadLinks(p)
-                c.checkSiblings(p)
-                c.checkParentAndChildren(p)
-            except AssertionError:
+            # try:
+            if not c.checkThreadLinks(p):
                 errors += 1
-                junk, value, junk = sys.exc_info()
-                g.error("test failed at position %s\n%s" % (repr(p), value))
+                break
+            if not c.checkSiblings(p):
+                errors += 1
+                break
+            if not c.checkParentAndChildren(p):
+                errors += 1
+                break
+            # except AssertionError:
+                # errors += 1
+                # junk, value, junk = sys.exc_info()
+                # g.error("test failed at position %s\n%s" % (repr(p), value))
         t2 = time.time()
         g.es_print('check-links: %4.2f sec. %s %s nodes' % (
             t2 - t1, c.shortFileName(), count), color='blue')
@@ -1445,42 +1450,93 @@ class Commands(object):
     #@+node:ekr.20040314035615.2: *5* c.checkParentAndChildren
     def checkParentAndChildren(self, p):
         '''Check consistency of parent and child data structures.'''
-        # Check consistency of parent and child links.
+        c = self
+        
+        def _assert(condition):
+            return g._assert(condition, show_callers=False)
+
+        def dump(p):
+            if p and p.v:
+                p.v.dump()
+            elif p:
+                print('<no p.v>')
+            else:
+                print('<no p>')
+            if g.unitTesting:
+                assert False, g.callers()
+            
         if p.hasParent():
             n = p.childIndex()
-            assert p == p.parent().moveToNthChild(n), "p!=parent.moveToNthChild"
+            if not _assert(p == p.parent().moveToNthChild(n)):
+                g.trace("p != parent().moveToNthChild(%s)" % (n))
+                dump(p)
+                dump(p.parent())
+                return False
+        if p.level() > 0 and not _assert(p.v.parents):
+            g.trace("no parents")
+            dump(p)
+            return False
         for child in p.children():
-            assert p == child.parent(), "p!=child.parent"
+            if not c.checkParentAndChildren(child):
+                return False
+            if not _assert(p == child.parent()):
+                g.trace("p != child.parent()")
+                dump(p)
+                dump(child.parent())
+                return False
         if p.hasNext():
-            assert p.next().parent() == p.parent(), "next.parent!=parent"
+            if not _assert(p.next().parent() == p.parent()):
+                g.trace("p.next().parent() != p.parent()")
+                dump(p.next().parent())
+                dump(p.parent())
+                return False
         if p.hasBack():
-            assert p.back().parent() == p.parent(), "back.parent!=parent"
+            if not _assert(p.back().parent() == p.parent()):
+                g.trace("p.back().parent() != parent()")
+                dump(p.back().parent())
+                dump(p.parent())
+                return False
         # Check consistency of parent and children arrays.
         # Every nodes gets visited, so a strong test need only check consistency
         # between p and its parent, not between p and its children.
         parent_v = p._parentVnode()
         n = p.childIndex()
-        assert parent_v.children[n] == p.v, 'fail 1'
+        if not _assert(parent_v.children[n] == p.v):
+            g.trace("parent_v.children[n] != p.v")
+            parent_v.dump()
+            p.v.dump()
+            return False
+        return True
     #@+node:ekr.20040314035615.1: *5* c.checkSiblings
     def checkSiblings(self, p):
         '''Check the consistency of next and back links.'''
         back = p.back()
         next = p.next()
         if back:
-            assert p == back.next(), 'p!=p.back().next(),  back: %s\nback.next: %s' % (
-                back, back.next())
+            if not g._assert(p == back.next()):
+                g.trace('p!=p.back().next(),  back: %s\nback.next: %s' % (
+                    back, back.next()))
+                return False
         if next:
-            assert p == next.back(), 'p!=p.next().back, next: %s\nnext.back: %s' % (
-                next, next.back())
+            if not g._assert(p == next.back()):
+                g.trace('p!=p.next().back, next: %s\nnext.back: %s' % (
+                    next, next.back()))
+                return False
+        return True
     #@+node:ekr.20040314035615: *5* c.checkThreadLinks
     def checkThreadLinks(self, p):
         '''Check consistency of threadNext & threadBack links.'''
         threadBack = p.threadBack()
         threadNext = p.threadNext()
         if threadBack:
-            assert p == threadBack.threadNext(), "p!=p.threadBack().threadNext()"
+            if not g._assert(p == threadBack.threadNext()):
+                g.trace("p!=p.threadBack().threadNext()")
+                return False
         if threadNext:
-            assert p == threadNext.threadBack(), "p!=p.threadNext().threadBack()"
+            if not g._assert(p == threadNext.threadBack()):
+                g.trace("p!=p.threadNext().threadBack()")
+                return False
+        return True
     #@+node:ekr.20031218072017.1760: *4* c.checkMoveWithParentWithWarning & c.checkDrag
     #@+node:ekr.20070910105044: *5* c.checkMoveWithParentWithWarning
     def checkMoveWithParentWithWarning(self, root, parent, warningFlag):
@@ -1962,7 +2018,6 @@ class Commands(object):
         This provides a simple mechanism for overriding commands.
         """
         c, p = self, self.p
-        trace = (False or c.config.getBool('trace_doCommand')) and not g.unitTesting
         c.setLog()
         self.command_count += 1
         # The presence of this message disables all commands.
@@ -1970,7 +2025,6 @@ class Commands(object):
             g.blue(c.disableCommandsMessage)
             return
         if c.exists and c.inCommand and not g.unitTesting:
-            # g.trace('inCommand',c)
             g.app.commandInterruptFlag = True
             g.error('ignoring command: already executing a command.')
             return
@@ -1983,11 +2037,9 @@ class Commands(object):
             try:
                 c.inCommand = True
                 val = c.executeAnyCommand(command, event)
-                if trace: g.trace('end', command)
                 if c and c.exists: # Be careful: the command could destroy c.
                     c.inCommand = False
                     c.k.funcReturn = val
-                # else: g.pr('c no longer exists',c)
             except Exception:
                 c.inCommand = False
                 if g.app.unitTesting:
@@ -1997,11 +2049,9 @@ class Commands(object):
                     g.es_exception(c=c)
             if c and c.exists:
                 if c.requestCloseWindow:
-                    if trace: g.trace('closing window after command')
                     c.requestCloseWindow = False
                     g.app.closeLeoWindow(c.frame)
                 else:
-                    if trace: g.trace('calling outerUpdate')
                     c.outerUpdate()
         # Be careful: the command could destroy c.
         if c and c.exists:
@@ -2296,13 +2346,13 @@ class Commands(object):
     #@+node:ekr.20140717074441.17770: *4* c.recreateGnxDict
     def recreateGnxDict(self):
         '''Recreate the gnx dict prior to refreshing nodes from disk.'''
-        trace = False and not g.unitTesting
         c, d = self, {}
         for v in c.all_unique_nodes():
             gnxString = v.fileIndex
             assert g.isUnicode(gnxString)
             d[gnxString] = v
-            if trace or g.trace_gnxDict: g.trace(c.shortFileName(), gnxString, v)
+            if 'gnx' in g.app.debug:
+                g.trace(c.shortFileName(), gnxString, v)
         c.fileCommands.gnxDict = d
     #@+node:ekr.20171124100534.1: *3* c.Gui
     #@+node:ekr.20111217154130.10286: *4* c.Dialogs & messages
@@ -2815,9 +2865,8 @@ class Commands(object):
     #@+node:ekr.20080514131122.9: *5* c.get/request/set_focus
     def get_focus(self):
         c = self
-        trace = (False or g.app.trace_focus) and not g.unitTesting
         w = g.app.gui and g.app.gui.get_focus(c)
-        if trace:
+        if 'focus' in g.app.debug:
             g.trace('(c)', repr(w and g.app.gui.widget_name(w)), w)
             g.callers()
         return w
@@ -2827,16 +2876,15 @@ class Commands(object):
         return c.requestedFocusWidget
 
     def request_focus(self, w):
-        trace = (False or g.app.trace_focus) and not g.unitTesting
         c = self
         if w and g.app.gui:
-            if trace:
+            if 'focus' in g.app.debug:
                 g.trace('(c)', repr(g.app.gui.widget_name(w)), w)
                 g.callers()
             c.requestedFocusWidget = w
 
     def set_focus(self, w, force=False):
-        trace = (False or g.app.trace_focus) and not g.unitTesting
+        trace = 'focus' in g.app.debug
         c = self
         if w and g.app.gui:
             if trace:
@@ -2855,7 +2903,7 @@ class Commands(object):
     #@+node:ekr.20080514131122.16: *5* c.traceFocus (not used)
     def traceFocus(self, w):
         c = self
-        if False or (not g.app.unitTesting and c.config.getBool('trace_focus')):
+        if 'focus' in g.app.debug:
             c.trace_focus_count += 1
             g.pr('%4d' % (c.trace_focus_count), c.widget_name(w), g.callers(8))
     #@+node:ekr.20070226121510: *5* c.xFocusHelper & initialFocusHelper

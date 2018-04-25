@@ -2,7 +2,7 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.52" body_secondary_ratio="0.51">
+<globals body_outline_ratio="0.52" body_secondary_ratio="0.66">
 	<global_window_position top="111" left="720" height="894" width="1078"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
@@ -1226,6 +1226,8 @@
 <v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
 <v t="ekr.20180312050443.1"><vh>@test cwd</vh></v>
 </v>
+<v t="ekr.20100204053330.5367"><vh>@test koi8-r encoding</vh></v>
+<v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -3417,6 +3419,40 @@ for tag,aList in table:
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
 </t>
+<t tx="ekr.20100131171342.5482">
+ivars = (
+    # Global managers.
+    'config','externalFilesController',
+    'loadManager','pluginsController','recentFilesManager',
+    # Official ivars.
+    'gui',
+    'initing','killed','quitting',
+    'leoID','log','logIsLocked','logWaiting',
+    'nodeIndices',
+    'unitTesting','unitTestDict',
+    'windowList',
+    # Less-official and might be removed...
+    'batchMode',
+    # 'debugSwitch',
+    'disableSave',
+    'hookError','hookFunction',
+    'numberOfUntitledWindows',
+    'realMenuNameDict',
+    'searchDict','scriptDict',
+    'use_psyco',
+)
+
+if g.app.isExternalUnitTest:
+    mayBeNone = ('hookFunction','idleTimeHook','log','openWithInstance')
+else:
+    mayBeNone = ('hookFunction','openWithInstance')
+
+for ivar in ivars:
+    assert hasattr(g.app,ivar), 'missing app ivar: %s %r' % (ivar,g.app)
+    if ivar not in mayBeNone:
+        val = getattr(g.app,ivar)
+        assert val is not None, 'null app ivar: %s %r'% (ivar,g.app)
+</t>
 <t tx="ekr.20100131171342.5485">import inspect
 
 d = c.commandsDict
@@ -3442,6 +3478,29 @@ for key in keys:
     expected = ('event',)
     message = '\nno event arg for command %s, func: %s\nargs: %s' % (key,name,data)
     assert arg0 in expected or arg1 in expected, message
+</t>
+<t tx="ekr.20100204053330.5367">root = p.copy()
+while p.hasChildren():
+    p.firstChild().doDelete(newNode = None)
+try:
+    p1 = p.insertAsLastChild()
+    s = '\xd4\xc5\xd3\xd4' # the word 'test' in Russian, koi8-r
+    if g.isPython3:
+        assert g.isUnicode(s)
+    else:
+        s = unicode(s,'koi8-r')
+    p1.setBodyString(s)
+    c.selectPosition(p1)
+    c.copyOutline()
+    c.pasteOutline()
+    p2 = p1.next()
+    # self.assertEqual(p1.b, p2.b) # 'self' defined only when unit-testing.
+    assert p1.b == p2.b
+finally:
+    if 1:
+         while root.hasChildren():
+              root.firstChild().doDelete(newNode = None)
+    c.redraw_now(p)
 </t>
 <t tx="ekr.20100219080213.5365"></t>
 <t tx="ekr.20100219080213.5366">s = '''\
