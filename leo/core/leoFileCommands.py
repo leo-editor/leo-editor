@@ -631,18 +631,16 @@ class FileCommands(object):
             p._linkAfter(current, adjust=False)
         if reassignIndices:
             self.gnxDict = oldGnxDict
-            ni = g.app.nodeIndices
-            for p2 in p.self_and_subtree():
-                v = p2.v
-                index = ni.getNewIndex(v)
-                if g.trace_gnxDict:
-                    g.trace(c.shortFileName(), '**restoring**', index, v)
+            self.reassignAllIndices(p)
+        else:
+            # Fix #862: paste-retaining-clones can corrupt the outline.
+            self.linkChildrenToParents(p)
         c.selectPosition(p)
         self.initReadIvars()
         return p
 
     getLeoOutline = getLeoOutlineFromClipboard # for compatibility
-    #@+node:ekr.20080410115129.1: *6* checkPaste
+    #@+node:ekr.20080410115129.1: *6* fc.checkPaste
     def checkPaste(self, parent, p):
         '''Return True if p may be pasted as a child of parent.'''
         if not parent:
@@ -654,6 +652,25 @@ class FileCommands(object):
                     g.warning('Invalid paste: nodes may not descend from themselves')
                     return False
         return True
+    #@+node:ekr.20180424123010.1: *6* fc.linkChildrenToParents
+    def linkChildrenToParents(self, p):
+        '''
+        Populate the parent links in all children of p.
+        '''
+        for child in p.children():
+            if not child.v.parents:
+                child.v.parents.append(p.v)
+            self.linkChildrenToParents(child)
+    #@+node:ekr.20180425034856.1: *6* fc.reassignAllIndices
+    def reassignAllIndices(self, p):
+        '''Reassign all indices in p's subtree.'''
+        c = self.c
+        ni = g.app.nodeIndices
+        for p2 in p.self_and_subtree():
+            v = p2.v
+            index = ni.getNewIndex(v)
+            if g.trace_gnxDict:
+                g.trace(c.shortFileName(), '**reassigning**', index, v)
     #@+node:ekr.20031218072017.1553: *5* fc.getLeoFile & helpers
     def getLeoFile(self,
         theFile,
@@ -1168,7 +1185,6 @@ class FileCommands(object):
             tnx = sax_child.tnx
             v = self.gnxDict.get(tnx)
             if v: # A clone. Don't look at the children.
-                ### v = self.createSaxVnode(sax_child, parent_v, v=v)
                 self.updateSaxClone(sax_child, parent_v, v)
             else:
                 v = self.createSaxVnode(sax_child, parent_v)
@@ -1261,8 +1277,7 @@ class FileCommands(object):
         '''
         Update the body text of v. It overrides any previous body text.
         '''
-        c = self.c
-        at = c.atFileCommands
+        at = self.c.atFileCommands
         b = sax_node.bodyString
         if v.b != b:
             v.setBodyString(b)
