@@ -209,7 +209,7 @@ class Cacher(object):
         Create new VNode as last child of the receiver.
         If the gnx exists already, create a clone instead of new VNode.
         '''
-        trace = False and not g.unitTesting
+        trace = 'gnx' in g.app.debug
         c = self.c
         gnxString = g.toUnicode(gnxString)
         gnxDict = c.fileCommands.gnxDict

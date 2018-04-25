@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="31" left="797" height="1048" width="1100"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -2311,39 +2311,6 @@
 </v>
 </v>
 <v t="ekr.20051126062243"></v>
-<v t="ekr.20180425150938.1"><vh>No longer used trace settings</vh>
-<v t="ekr.20060212101234"><vh>@bool gc_before_redraw = True</vh></v>
-<v t="ekr.20060202113731"><vh>@bool show_tree_stats = False</vh></v>
-<v t="ekr.20060114073238"><vh>@bool trace_bindings = False</vh></v>
-<v t="ekr.20060616172614"><vh>@bool trace_bindings_verbose = False</vh></v>
-<v t="ekr.20060425124142"><vh>@bool trace_color_parser = True</vh></v>
-<v t="ekr.20060309022759"><vh>@bool trace_colorizer = False</vh></v>
-<v t="ekr.20060204093736"><vh>@bool trace_doCommand = False</vh></v>
-<v t="ekr.20060204102644"><vh>@bool trace_f.set_focus = False</vh></v>
-<v t="ekr.20060207142012"><vh>@bool trace_focus = False</vh></v>
-<v t="ekr.20051126062830"><vh>@bool trace_g.app.gui.set_focus = False</vh></v>
-<v t="ekr.20060126075152"><vh>@bool trace_gc = False</vh></v>
-<v t="ekr.20060212103826"><vh>@bool trace_gc_calls = False</vh></v>
-<v t="ekr.20060126083715"><vh>@bool trace_gc_verbose = False</vh></v>
-<v t="ekr.20060215054710"><vh>@bool trace_key_event= False</vh></v>
-<v t="ekr.20051126062525"><vh>@bool trace_masterCommand = False</vh></v>
-<v t="ekr.20060209045356"><vh>@bool trace_masterFocusHandler = False</vh></v>
-<v t="ekr.20060131071612"><vh>@bool trace_masterKeyHandler = False</vh></v>
-<v t="ekr.20060216091239"><vh>@bool trace_minibuffer = False</vh></v>
-<v t="ekr.20060121102627"><vh>@bool trace_modes = False</vh></v>
-<v t="ekr.20060306031258"><vh>@bool trace_onBodyChanged = False</vh></v>
-<v t="ekr.20070417071249"><vh>@bool trace_plugins = False</vh></v>
-<v t="ekr.20060210105437"><vh>@bool trace_select = False</vh></v>
-<v t="ekr.20060216130607"><vh>@bool trace_status_line = False</vh></v>
-<v t="ekr.20060202092911"><vh>@bool trace_tree = False</vh></v>
-<v t="ekr.20060206155101"><vh>@bool trace_tree_alloc = False</vh></v>
-<v t="ekr.20060206161839"><vh>@bool trace_tree_edit = False</vh></v>
-<v t="ekr.20070503080312"><vh>@bool trace_tree_gc = False</vh></v>
-<v t="ekr.20051126062243.1"><vh>@bool trace_tree_redraw = False</vh></v>
-<v t="ekr.20060425125015"><vh>@bool verbose_trace_color_parser = False</vh></v>
-<v t="ekr.20060114082205"><vh>@string trace_bindings_filter = </vh></v>
-<v t="ekr.20060114083009"><vh>@string trace_bindings_pane_filter =</vh></v>
-</v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -3084,9 +3051,6 @@ vim_exe = /Applications/gvim.app/Contents/MacOS/gvim
 <t tx="ekr.20051123100536.2"></t>
 <t tx="ekr.20051123100536.3"></t>
 <t tx="ekr.20051126062243"></t>
-<t tx="ekr.20051126062243.1"></t>
-<t tx="ekr.20051126062525"></t>
-<t tx="ekr.20051126062830">This is the most useful focus trace: it tells what really is happening.</t>
 <t tx="ekr.20060112103537.17">'''Check for commands that exist in some but not all key- binding sets.'''
 g.cls()
 import leo.core.leoConfig as leoConfig
@@ -3254,24 +3218,6 @@ main()
     setsDict[setName] = d
 </t>
 <t tx="ekr.20060112110750"></t>
-<t tx="ekr.20060114073238">If True, Leo will report to the console which bindings have been created.
-
-Thus, you must be running from a console window for this setting to be useful.</t>
-<t tx="ekr.20060114082205">If this setting is non-empty the trace_bindings setting will report only
-bindings that match the string (ignoring case).
-
-For this setting to be useful the following must be true:
-
-- you must be running from a console window.
-
-- @bool trace_bindings must be True.</t>
-<t tx="ekr.20060114083009">If this setting is non-empty the trace_bindings setting will report only bindings for matching panes.  For example, to see all ! text bindings, set this setting to text.
-
-For this setting to be useful the following must be true:
-
-- you must be running from a console window.
-
-- @bool trace_bindings must be True.</t>
 <t tx="ekr.20060116090646">@nocolor
 
 Standard keys (Windows defaults in parens)
@@ -3351,7 +3297,6 @@ special case,
     command-name -&gt; same = binding
 
 will cause the command to be executed without changing mode.</t>
-<t tx="ekr.20060121102627"></t>
 <t tx="ekr.20060122105527.3"></t>
 <t tx="ekr.20060122105527.7">True: (Recommended) Selecting an outline node leaves the focus in the outline pane.
 
@@ -3361,32 +3306,13 @@ False: (Legacy) Selecting an outline node transfers focus to the body pane.</t>
 <t tx="ekr.20060122105527.8"></t>
 <t tx="ekr.20060125104049">True: (recommended) The Find tab shows only options, not text or buttons.
 False: (legacy)     The Find tab shows text, options and buttons.</t>
-<t tx="ekr.20060126075152"># True: calls to the garbage collector.</t>
-<t tx="ekr.20060126083715"># True: verbose trace the garbage collector.</t>
 <t tx="ekr.20060127050605">Zero (recommended): unlimited stack size.
 Non-zero: limit the maximum stack size to the given number.</t>
-<t tx="ekr.20060131071612">
-</t>
 <t tx="ekr.20060201111002"></t>
-<t tx="ekr.20060202092911"></t>
-<t tx="ekr.20060202113731"></t>
-<t tx="ekr.20060204093736"></t>
-<t tx="ekr.20060204102644"></t>
 <t tx="ekr.20060204124608">True: minibuffer commands show the Find Tab.
 False: minibuffer commands hide the Find Tab.
 
 Important: the Find Tab always exists regardless of this setting.</t>
-<t tx="ekr.20060206155101"></t>
-<t tx="ekr.20060206161839"></t>
-<t tx="ekr.20060207142012"></t>
-<t tx="ekr.20060209045356"></t>
-<t tx="ekr.20060210105437"></t>
-<t tx="ekr.20060212101234"># True: call Python's garbage collector before every screen redraw.
-# There used to be a warning about this slowing Leo, but I seen now problem with it at present.</t>
-<t tx="ekr.20060212103826"># True (recommended): print a message when Leo calls gc.collect explicitly.</t>
-<t tx="ekr.20060215054710"></t>
-<t tx="ekr.20060216091239">True: trace all changes to the minibuffer</t>
-<t tx="ekr.20060216130607">True: trace all changes to the status line.</t>
 <t tx="ekr.20060216135834">True:  enable autocompletion initially.
 False: disable autocomopletion initially.
 
@@ -3576,8 +3502,6 @@ toggle-find-word-option
 toggle-find-wrap-around-option
 word-search-backward
 word-search-forward</t>
-<t tx="ekr.20060306031258"></t>
-<t tx="ekr.20060309022759"></t>
 <t tx="ekr.20060323131801">True: warn if a command has no setting.</t>
 <t tx="ekr.20060325071042"></t>
 <t tx="ekr.20060325071042.1"></t>
@@ -3585,8 +3509,6 @@ word-search-forward</t>
 <t tx="ekr.20060325071042.3"></t>
 <t tx="ekr.20060325071916"></t>
 <t tx="ekr.20060408090018"></t>
-<t tx="ekr.20060425124142"></t>
-<t tx="ekr.20060425125015"></t>
 <t tx="ekr.20060504131831.1"></t>
 <t tx="ekr.20060504131831.2"></t>
 <t tx="ekr.20060504134056"></t>
@@ -3694,7 +3616,6 @@ LavenderBlush1
 azure2
 aquamarine1</t>
 <t tx="ekr.20060606085536.1">Overrides body_text_foreground_color.</t>
-<t tx="ekr.20060616172614"></t>
 <t tx="ekr.20060620085654">vertical:   pack body-pane editors vertically.
 horizontal: pack body-pane editors horizontally.</t>
 <t tx="ekr.20060627065953"></t>
@@ -4248,10 +4169,8 @@ the temp file. Notes:
 menu contains only the items created by those nodes. Similarly, @openwith nodes
 in myLeoSettings.leo override entries in leoSettings.leo.
 </t>
-<t tx="ekr.20070417071249">True: show info as plugins are loaded.</t>
 <t tx="ekr.20070419103554">True:  Leo ensures that non-empty body text ends in a newline in @nosent trees.
 False: Leo leaves body text alone when writing @nosent trees.</t>
-<t tx="ekr.20070503080312">True: trace storage allocation in Leo's tree.</t>
 <t tx="ekr.20070531103454"></t>
 <t tx="ekr.20070604075218">True:  Chapter tabs appear in the outline pane.
 False: Chapter tabs do not appear.</t>
@@ -4266,7 +4185,7 @@ menu-shortcut = Alt-S # Search and Settings menus.
 menu-shortcut = Alt-W # Window menu.
 </t>
 <t tx="ekr.20070615094204">True: goto-next-node and goto-prev-node commands contract the selected node.</t>
-<t tx="ekr.20070622214401" str_leo_pos="5">@nocolor-node
+<t tx="ekr.20070622214401">@nocolor-node
 
 Please don't change this node and its descendants; they are for Leo's
 developers.
@@ -11785,7 +11704,6 @@ False: Legacy operation.
 True:  Replace the Meta key with the Alt Key.
        This allows Windows Keyboards to be used without changing key bindings.
 </t>
-<t tx="ekr.20180425150938.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
