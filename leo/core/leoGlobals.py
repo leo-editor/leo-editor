@@ -388,21 +388,48 @@ class KeyStroke(object):
             print('%2s %10r %r' % ('', ch, stroke.s))
     #@+node:ekr.20180415082249.1: *4* ks.finalize_binding
     def finalize_binding(self, binding):
-        
-        trace = False and not g.unitTesting
+
+        trace = False and 'keys' in g.app.debug
         self.mods = self.find_mods(binding)
         s = self.strip_mods(binding)
         s = self.finalize_char(s)
             # May change self.mods.
         mods = ''.join(['%s+' % z.capitalize() for z in self.mods])
-        if trace: g.trace('%20s:%-20s ==> %s' % (binding, self.mods, mods+s))
+        if trace:
+            g.trace('%20s:%-20s ==> %s' % (binding, self.mods, mods+s))
         return mods+s
     #@+node:ekr.20180415083926.1: *4* ks.finalize_char
     def finalize_char(self, s):
         '''Perform very-last-minute translations on bindings.'''
+        #
+        # Retain "bigger" spelling for gang-of-four bindings with modifiers.
+        shift_d = {
+            'bksp': 'BackSpace',
+            'backspace': 'BackSpace',
+            'backtab': 'Tab', # The shift mod will convert to 'Shift+Tab',
+            'linefeed': 'Return',
+            '\r': 'Return',
+            'return': 'Return',
+            'tab': 'Tab',
+        }
+        if self.mods and s.lower() in shift_d:
+            return shift_d.get(s.lower())
+                # Returning '' breaks existing code.
+        #
+        # Make all other translations...
+        #
         # This dict ensures proper capitalization.
         # It also translates legacy Tk binding names to ascii chars.
         translate_d = {
+            #
+            # The gang of four...
+            'bksp': 'BackSpace',
+            'backspace': 'BackSpace',
+            'backtab': 'Tab', # The shift mod will convert to 'Shift+Tab',
+            'linefeed': '\n',
+            '\r': '\n',
+            'return': '\n',
+            'tab': 'Tab',
             #
             # Special chars...
             'delete': 'Delete',
@@ -419,23 +446,16 @@ class KeyStroke(object):
             'up': 'Up',
             #
             # Qt key names...
-            '\r': '\n',
-            'backspace': 'BackSpace',
-            'backtab': 'Tab', # The shift mod will convert to 'Shift+Tab',
-            'bksp': 'BackSpace',
             'del': 'Delete',
             'dnarrow': 'Down',
             'esc': 'Escape',
             'ins': 'Insert',
-            'linefeed': '\n',
             'ltarrow': 'Left',
             'pagedn': 'Next',
             'pageup': 'Prior',
             'pgdown': 'Next',
             'pgup': 'Prior',
-            'return': '\n',
             'rtarrow': 'Right',
-            'tab': 'Tab',
             'uparrow': 'Up',
             #
             # Legacy Tk binding names...

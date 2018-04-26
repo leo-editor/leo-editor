@@ -1228,6 +1228,7 @@
 </v>
 <v t="ekr.20100204053330.5367"><vh>@test koi8-r encoding</vh></v>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
+<v t="ekr.20100131171342.5608"><vh>@test g.KeyStroke</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -3478,6 +3479,62 @@ for key in keys:
     expected = ('event',)
     message = '\nno event arg for command %s, func: %s\nargs: %s' % (key,name,data)
     assert arg0 in expected or arg1 in expected, message
+</t>
+<t tx="ekr.20100131171342.5608">table = [
+    # Gang of four, unmodified)
+    ('bksp', 'BackSpace'),
+    ('backspace', 'BackSpace'),
+    ('backtab', 'Tab'),
+    ('linefeed', '\n'),
+    ('\r', '\n'),
+    ('return', '\n'),
+    ('tab', 'Tab'),
+    # Gang of four, with shift mod.
+    ('Shift-bksp', 'Shift+BackSpace'),
+    ('Shift-backspace', 'Shift+BackSpace'),
+    ('Shift-backtab', 'Shift+Tab'),
+    ('Shift-linefeed', 'Shift+Return'),
+    ('Shift-\r', 'Shift+Return'),
+    ('Shift-return', 'Shift+Return'),
+    ('Shift-tab', 'Shift+Tab'),
+    # Gang of four, with Alt mod.
+    ('Alt-bksp', 'Alt+BackSpace'),
+    ('Alt-backspace', 'Alt+BackSpace'),
+    ('Alt-backtab', 'Alt+Tab'),
+    ('Alt-linefeed', 'Alt+Return'),
+    ('Alt-\r', 'Alt+Return'),
+    ('Alt-return', 'Alt+Return'),
+    ('Alt-tab', 'Alt+Tab'),
+    #
+    # Alpha
+    ('1', '1'),
+    ('a','a'),
+    ('A','A'),
+    ('Alt-a','Alt+a'),
+    ('Alt-A','Alt+a'),
+    ('Alt-Shift-a','Alt+Shift+a'),
+    # We can no longer ignore the shift.
+    # ('Alt-Shift++','Alt+plus'), # Ignore the shift.
+    ('Shift-a','A'),
+    ('Shift-A','A'),
+    ('RtArrow','Right'),
+    ('Shift-RtArrow','Shift+Right'),
+    ('PageUp','Prior'),
+    ('Prior','Prior'),
+    ('Shift-PageUp','Shift+Prior'),
+    ('PageDn','Next'),
+    ('Next','Next'),
+    ('Shift-Next','Shift+Next'),
+    ('Alt-=','Alt+='),
+    ('Alt-+','Alt++'),
+    ('Alt--','Alt+-'),
+    ('Ctrl-RtArrow','Ctrl+Right'),
+    ('Control-Right','Ctrl+Right'),
+]
+for setting, result in table:
+    stroke = g.KeyStroke(binding=setting)
+    val = stroke.s
+    assert val==result,'For %r, expected %r, Got %r' % (setting, result,val)
 </t>
 <t tx="ekr.20100204053330.5367">root = p.copy()
 while p.hasChildren():

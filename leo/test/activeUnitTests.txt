@@ -21506,20 +21506,50 @@ finally:
 # c.frame
 #@+node:ekr.20100131171342.5608: *4* @test g.KeyStroke
 table = [
-    ('1', '1'), # 2016/04/12
+    # Gang of four, unmodified)
+    ('bksp', 'BackSpace'),
+    ('backspace', 'BackSpace'),
+    ('backtab', 'Tab'),
+    ('linefeed', '\n'),
+    ('\r', '\n'),
+    ('return', '\n'),
+    ('tab', 'Tab'),
+    # Gang of four, with shift mod.
+    ('Shift-bksp', 'Shift+BackSpace'),
+    ('Shift-backspace', 'Shift+BackSpace'),
+    ('Shift-backtab', 'Shift+Tab'),
+    ('Shift-linefeed', 'Shift+Return'),
+    ('Shift-\r', 'Shift+Return'),
+    ('Shift-return', 'Shift+Return'),
+    ('Shift-tab', 'Shift+Tab'),
+    # Gang of four, with Alt mod.
+    ('Alt-bksp', 'Alt+BackSpace'),
+    ('Alt-backspace', 'Alt+BackSpace'),
+    ('Alt-backtab', 'Alt+Tab'),
+    ('Alt-linefeed', 'Alt+Return'),
+    ('Alt-\r', 'Alt+Return'),
+    ('Alt-return', 'Alt+Return'),
+    ('Alt-tab', 'Alt+Tab'),
+    #
+    # Alpha
+    ('1', '1'),
     ('a','a'),
     ('A','A'),
     ('Alt-a','Alt+a'),
     ('Alt-A','Alt+a'),
     ('Alt-Shift-a','Alt+Shift+a'),
-    # We can no longer igtnore the shift.
+    # We can no longer ignore the shift.
     # ('Alt-Shift++','Alt+plus'), # Ignore the shift.
     ('Shift-a','A'),
     ('Shift-A','A'),
     ('RtArrow','Right'),
     ('Shift-RtArrow','Shift+Right'),
-    ('PageUp','Prior'), ('Prior','Prior'),('Shift-PageUp','Shift+Prior'),
-    ('PageDn','Next'),('Next','Next'),('Shift-Next','Shift+Next'),
+    ('PageUp','Prior'),
+    ('Prior','Prior'),
+    ('Shift-PageUp','Shift+Prior'),
+    ('PageDn','Next'),
+    ('Next','Next'),
+    ('Shift-Next','Shift+Next'),
     ('Alt-=','Alt+='),
     ('Alt-+','Alt++'),
     ('Alt--','Alt+-'),
@@ -21529,7 +21559,7 @@ table = [
 for setting, result in table:
     stroke = g.KeyStroke(binding=setting)
     val = stroke.s
-    assert val==result,'Expected %s, Got %s' % (result,val)
+    assert val==result,'For %r, expected %r, Got %r' % (setting, result,val)
 #@+node:ekr.20110509104953.3474: *4* @test k.get_leo_completions
 table = (
     ( 50,'c.'),
