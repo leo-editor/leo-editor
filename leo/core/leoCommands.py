@@ -457,8 +457,8 @@ class Commands(object):
     def idle_focus_helper(self, tag, keys):
         '''An idle-tme handler that ensures that focus is *somewhere*.'''
         trace = 'focus' in g.app.debug
-        trace_inactive_focus = True
-        trace_in_dialog = True
+        trace_inactive_focus = False # Too disruptive for --trace-focus
+        trace_in_dialog = False # Not useful enough for --trace-focus
         c = self
         assert tag == 'idle'
         if g.app.unitTesting:
