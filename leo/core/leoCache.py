@@ -192,6 +192,12 @@ class Cacher(object):
                 if v.gnx not in gnxes_in_cache]
             for i, v in reversed(for_removal):
                 v._cutLink(i, child_v)
+            #
+            # sort children in the order from cache
+            for i, grand_child in enumerate(grand_children):
+                gnx = grand_child[2]
+                child_v.children[i] = self.c.fileCommands.gnxDict.get(gnx)
+
         else:
             # If the outline is out of sync, there may be write errors later,
             # but the user should be handle them easily enough.
