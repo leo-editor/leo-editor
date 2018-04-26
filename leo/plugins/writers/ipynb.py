@@ -5,6 +5,8 @@ import re
 import sys
 import leo.core.leoGlobals as g
 if g.isPython3:
+    # pylint: disable=relative-import
+        # an unhelpful warning.
     import json # This fails in python 2. It yields writers.json
 else:
     json = g.importModule('json')
