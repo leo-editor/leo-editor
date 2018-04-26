@@ -1984,7 +1984,7 @@ class VimCommands(object):
             # Escape will end insert mode.
             vc.vim_esc()
             return True
-        elif vc.stroke == 'Return' and vc.in_headline(vc.w):
+        elif vc.stroke == '\n' and vc.in_headline(vc.w):
             # End headline editing and enter normal mode.
             vc.c.endEditing()
             vc.done()
