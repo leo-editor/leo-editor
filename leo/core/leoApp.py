@@ -2709,7 +2709,6 @@ class LoadManager(object):
         parser = optparse.OptionParser(
             usage="usage: launchLeo.py [options] file1, file2, ...")
             # Automatically implements the --help option.
-            # Apparently requires the --debug option.
         #
         # Parse the options, and remove them from sys.argv.
         self.addOptionsToParser(parser)
@@ -2758,8 +2757,6 @@ class LoadManager(object):
         def add_other(option, help, dest=None, m=None):
             add(option, dest=dest, help=help, metavar=m)
 
-        add_bool('--debug',        'enable debugging')
-            # The tracing options append items to the g.app.debug list.
         add_bool('--diff',          'use Leo as an external git diff')
         add_bool('--fullscreen',    'start fullscreen')
         add_bool('--ipython',       'enable ipython support')
@@ -2908,14 +2905,13 @@ class LoadManager(object):
         # Most --trace- options append items to g.app.debug.
         table = (
             ('events', options.trace_events), # New
-            ('focus', options.trace_focus), # Replaced.
-            ('gnx', options.trace_gnx), # New. Replaced trace_gnxDict.
+            ('focus', options.trace_focus),
+            ('gnx', options.trace_gnx), # New.
             ('keys', options.trace_keys), # New
             ('ipython', options.trace_ipython), # New
-            ('plugins', options.trace_plugins), # Replaced
-            ('shutdown', options.trace_shutdown), # Replaced.
+            ('plugins', options.trace_plugins),
+            ('shutdown', options.trace_shutdown),
             ('themes', options.trace_themes),
-            # ('vim', options.trace_vim), # Use --trace-keys instead.
         )
         for val, option in table:
             if option:
