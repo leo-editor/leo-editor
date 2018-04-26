@@ -58,7 +58,7 @@ class VimCommands(object):
         '''The ctor for the VimCommands class.'''
         vc.c = c
         vc.k = c.k
-        vc.trace_flag = 'vim' in g.app.debug
+        vc.trace_flag = 'keys' in g.app.debug
             # Toggled by :toggle-vim-trace.
         vc.init_constant_ivars()
         vc.init_dot_ivars()

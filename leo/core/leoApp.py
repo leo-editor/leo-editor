@@ -2790,7 +2790,6 @@ class LoadManager(object):
         add_other('--trace-setting', 'trace where named setting is set', m="NAME")
         add_bool('--trace-shutdown', 'trace shutdown logic')
         add_bool('--trace-themes',  'trace theme init logic')
-        add_bool('--trace-vim',     'trace vim mode')
         add_other('--window-size',  'initial window size (height x width)', m='SIZE')
         # Multiple bool values.
         add('-v', '--version', action='store_true',
@@ -2916,7 +2915,7 @@ class LoadManager(object):
             ('plugins', options.trace_plugins), # Replaced
             ('shutdown', options.trace_shutdown), # Replaced.
             ('themes', options.trace_themes),
-            ('vim', options.trace_vim), # New
+            # ('vim', options.trace_vim), # Use --trace-keys instead.
         )
         for val, option in table:
             if option:
