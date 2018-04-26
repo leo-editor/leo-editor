@@ -3468,16 +3468,18 @@ class LeoQtLog(leoFrame.LeoLog):
             self.selectHelper(tabName)
     #@+node:ekr.20110605121601.18332: *5* LeoQtLog.selectHelper
     def selectHelper(self, tabName):
-        trace = False and not g.unitTesting
+
         c, w = self.c, self.tabWidget
         for i in range(w.count()):
             if tabName == w.tabText(i):
                 w.setCurrentIndex(i)
                 widget = w.widget(i)
-                # 2011/11/21: Set the .widget ivar only if there is a wrapper.
+                #
+                # Set the .widget ivar only if there is a wrapper.
                 wrapper = hasattr(widget, 'leo_log_wrapper') and widget.leo_log_wrapper
-                if wrapper: self.logCtrl = wrapper
-                if trace: g.trace(tabName, 'widget', widget, 'wrapper', wrapper)
+                if wrapper:
+                    self.logCtrl = wrapper
+                #
                 # Do *not* set focus here!
                     # c.widgetWantsFocus(tab_widget)
                 if tabName == 'Find':
@@ -3490,14 +3492,14 @@ class LeoQtLog(leoFrame.LeoLog):
                         else:
                             findbox.setFocus()
                 elif tabName == 'Spell':
-                    # the base class uses this as a flag to see if
-                    # the spell system needs initing
+                    #
+                    # the base class uses this as a flag to see if the spell system needs initing
                     self.frameDict['Spell'] = widget
-                self.tabName = tabName # 2011/11/20
+                self.tabName = tabName
                 return True
+        #
         # General case.
-        self.tabName = None # 2011/11/20
-        if trace: g.trace('** not found', tabName)
+        self.tabName = None
         return False
     #@-others
 #@+node:ekr.20110605121601.18340: ** class LeoQtMenu (LeoMenu)
