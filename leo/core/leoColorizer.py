@@ -1865,7 +1865,7 @@ class JEditColorizer(BaseColorizer):
         '''Actually colorize the selected range.
 
         This is called whenever a pattern matcher succeed.'''
-        trace = False and not g.unitTesting
+        trace = 'coloring' in g.app.debug
             # A superb trace: enable this first to see what gets colored.
         if not self.inColorState():
             # Do *not* check x.flag here. It won't work.
