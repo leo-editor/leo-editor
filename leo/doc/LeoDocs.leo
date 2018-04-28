@@ -1981,16 +1981,20 @@
 </v>
 </v>
 <v t="ekr.20180404015558.1"></v>
+<v t="ekr.20180427130312.1"><vh>What's new in 5.7.2 (TO DO)</vh></v>
 <v t="ekr.20180411070654.1"><vh>Leo 5.7.2 release notes</vh>
 <v t="ekr.20180411150947.1"><vh>Bugs</vh>
 <v t="ekr.20180411150950.1"><vh>#757: MacOS: replace-then-find does not work in headlines</vh></v>
 </v>
+<v t="ekr.20180427130017.1"><vh>Code</vh></v>
 <v t="ekr.20180411073507.1"><vh>Features</vh>
 <v t="ekr.20180411105215.1"><vh>#794: Clicking Find Tab should do exactly what pushing Ctrl-F does</vh></v>
 <v t="ekr.20180411102234.1"><vh>#838: Better .ipynb importer/exporters</vh></v>
 <v t="ekr.20180411073658.1"><vh>#848: Recent Files menu will break for foreign languages</vh></v>
 <v t="ekr.20180411073531.1"><vh>#850: Optionally convert Meta to Alt on MacOs</vh></v>
+<v t="ekr.20180427125919.1"><vh>New command-line arguments</vh></v>
 </v>
+<v t="ekr.20180427130028.1"><vh>Removed unused settings</vh></v>
 </v>
 </vnodes>
 <tnodes>
@@ -26375,6 +26379,53 @@ Leo's @auto whatever.ipynb allow close integration with Jupyter notebooks.</t>
 <t tx="ekr.20180411150947.1"></t>
 <t tx="ekr.20180411150950.1">https://github.com/leo-editor/leo-editor/issues/757
 </t>
+<t tx="ekr.20180427125919.1">The following command-line arguments are new:
+
+    --trace-coloring
+    --trace-events
+    --trace-gnx
+    --trace-keys
+    --trace-ipython
+    
+Removed the --debug command-line argument.
+    
+</t>
+<t tx="ekr.20180427130017.1"></t>
+<t tx="ekr.20180427130028.1">The following settings are no longer used.
+They no longer appear in leoSettings.leo:
+
+    @bool gc_before_redraw = True
+    @bool show_tree_stats = False
+    @bool trace_bindings = False
+    @bool trace_bindings_verbose = False
+    @bool trace_color_parser = True
+    @bool trace_colorizer = False
+    @bool trace_doCommand = False
+    @bool trace_f.set_focus = False
+    @bool trace_focus = False
+    @bool trace_g.app.gui.set_focus = False
+    @bool trace_gc = False
+    @bool trace_gc_calls = False
+    @bool trace_gc_verbose = False
+    @bool trace_key_event= False
+    @bool trace_masterCommand = False
+    @bool trace_masterFocusHandler = False
+    @bool trace_masterKeyHandler = False
+    @bool trace_minibuffer = False
+    @bool trace_modes = False
+    @bool trace_onBodyChanged = False
+    @bool trace_plugins = False
+    @bool trace_select = False
+    @bool trace_status_line = False
+    @bool trace_tree = False
+    @bool trace_tree_alloc = False
+    @bool trace_tree_edit = False
+    @bool trace_tree_gc = False
+    @bool trace_tree_redraw = False
+    @bool verbose_trace_color_parser = False
+    @string trace_bindings_filter = 
+    @string trace_bindings_pane_filter =</t>
+<t tx="ekr.20180427130312.1"></t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
