@@ -1465,22 +1465,28 @@ class LeoTree(object):
         '''Update a headline from an event.
 
         The headline officially changes only when editing ends.'''
-        c = self.c; k = c.k
+        k = self.c.k
         ch = event.char if event else ''
         i, j = w.getSelectionRange()
         ins = w.getInsertPoint()
-        if i != j: ins = i
+        if i != j:
+            ins = i
         if ch in ('\b', 'BackSpace'):
             if i != j:
                 w.delete(i, j)
                 # Bug fix: 2018/04/19.
                 w.setSelectionRange(i, i, insert=i)
+            elif i > 0:
+                i -= 1
+                w.delete(i)
+                w.setSelectionRange(i, i, insert=i)
             else:
-                w.delete(ins - 1)
-                w.setSelectionRange(i - 1, i - 1, insert=i - 1)
+                w.setSelectionRange(0, 0, insert=0)
         elif ch and ch not in ('\n', '\r'):
-            if i != j: w.delete(i, j)
-            elif k.unboundKeyAction == 'overwrite': w.delete(i, i + 1)
+            if i != j:
+                w.delete(i, j)
+            elif k.unboundKeyAction == 'overwrite':
+                w.delete(i, i + 1)
             w.insert(ins, ch)
             w.setSelectionRange(ins + 1, ins + 1, insert=ins + 1)
         s = w.getAllText()
