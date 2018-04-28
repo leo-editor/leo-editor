@@ -1444,7 +1444,7 @@ class LeoQtBody(leoFrame.LeoBody):
         if self.totalNumberOfEditors == 2:
             self.editorWidgets['1'] = wrapper
             # Pack the original body editor.
-            self.packLabel(widget.parent(), n=1)
+            self.packLabel(widget, n=1)
         name = '%d' % self.totalNumberOfEditors
         f, wrapper = self.createEditor(name)
         assert g.isTextWrapper(wrapper), wrapper
