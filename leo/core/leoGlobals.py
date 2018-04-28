@@ -597,6 +597,8 @@ class KeyStroke(object):
             return False
         if s in g.app.gui.specialChars:
             return False
+        if s == 'BackSpace':
+            return False
         return True
     #@+node:ekr.20180419170934.1: *4* ks.prettyPrint
     def prettyPrint(self):

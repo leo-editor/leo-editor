@@ -3160,7 +3160,6 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.146: *4* k.masterKeyHandler & helpers
     def masterKeyHandler(self, event):
         '''The master key handler for almost all key bindings.'''
-        ### g.trace(event.stroke, repr(event.char))
         k = self
         # Setup...
         if 'keys' in g.app.debug:
@@ -3727,7 +3726,6 @@ class KeyHandlerClass(object):
         #
         # Let k.masterCommand handle the unbound character.
         k.masterCommand(event=event, stroke=stroke)
-
     #@+node:ekr.20061031131434.105: *5* k.masterCommand
     def masterCommand(self, commandName=None, event=None, func=None, stroke=None):
         '''
