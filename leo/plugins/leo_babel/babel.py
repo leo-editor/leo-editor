@@ -31,6 +31,7 @@ except ImportError as err:
         'Importing Python module {0} failed.'.format(err.name))
     print(errMsg)
     errorList.append(errMsg)
+    raise ImportError(errMsg)
 #@-<< imports >>
 #@+<< documentation >>
 #@+node:bob.20170502131205.1: ** << documentation >>
