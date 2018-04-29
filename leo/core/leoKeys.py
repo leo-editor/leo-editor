@@ -1192,11 +1192,13 @@ class FileNameChooser(object):
         '''Show the tab list in the log tab.'''
         self.log.clearTab(self.tabName)
         s = g.os_path_finalize(os.curdir) + os.sep
+        es = []
         for path in tabList:
             theDir, fileName = g.os_path_split(path)
             s = theDir if path.endswith(os.sep) else fileName
             s = fileName or g.os_path_basename(theDir) + os.sep
-            g.es('', s, tabName=self.tabName)
+            es.append(s)
+        g.es('', '\n'.join(es), tabName=self.tabName)
     #@-others
 #@+node:ekr.20140816165728.18940: ** class GetArg
 class GetArg(object):
