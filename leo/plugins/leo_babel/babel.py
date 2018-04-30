@@ -11,10 +11,6 @@
 #@+node:bob.20170311140807.2: ** << version >>
 __version__ = '1.0.0'
 #@-<< version >>
-#@+<< errorList >>
-#@+node:bob.20170819121708.1: ** << errorList >>
-errorList = list()
-#@-<< errorList >>
 #@+<< imports >>
 #@+node:bob.20170311140940.1: ** << imports >>
 try:
@@ -27,11 +23,7 @@ try:
     from leo.plugins.leo_babel import babel_lib
 
 except ImportError as err:
-    errMsg = ('Python Packages required by Leo-Babel are missing.\n'
-        'Importing Python module {0} failed.'.format(err.name))
-    print(errMsg)
-    errorList.append(errMsg)
-    raise ImportError(errMsg)
+    raise ImportError('Python Package required by Leo-Babel is missing')
 #@-<< imports >>
 #@+<< documentation >>
 #@+node:bob.20170502131205.1: ** << documentation >>
@@ -54,18 +46,11 @@ def onCreate (tag, keys):
     if not cmdr: return
 
     if six.PY2:
-        errorList.append('Leo-Babel requires Python 3')
+        raise babel_api.BABEL_ERROR('Leo-Babel requires Python 3')
 
     if not leoG.app.gui.guiName() in ('qt', 'nullGui'):
-        errorList.append('Leo-Babel requires PyQt as the Leo-Editor Graphical User Interface.  '
+        raise babel_api.BABEL_ERROR('Leo-Babel requires PyQt as the Leo-Editor Graphical User Interface.  '
             'But Leo-Babel runs automated tests with Leo-Bridge.')
-
-    if errorList:
-        errorList.reverse()
-        while errorList:
-            errMsg = errorList.pop()
-            leoG.es_print_error(errMsg)
-        raise babel_api.BABEL_ERROR
 
     babelG = babel_api.BabelGlobals()
     leoG.user_dict['leo_babel'] = babelG
