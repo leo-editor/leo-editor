@@ -1988,8 +1988,9 @@
 </v>
 <v t="ekr.20180427130017.1"><vh>Code</vh></v>
 <v t="ekr.20180411073507.1"><vh>Features</vh>
+<v t="ekr.20180501163005.1"><vh>insert-jupyter-toc and insert-markdown-toc commands</vh></v>
 <v t="ekr.20180411105215.1"><vh>#794: Clicking Find Tab should do exactly what pushing Ctrl-F does</vh></v>
-<v t="ekr.20180411102234.1"><vh>#838: Better .ipynb importer/exporters</vh></v>
+<v t="ekr.20180411102234.1"><vh>#838: Better .ipynb importer/exporters (REVISE)</vh></v>
 <v t="ekr.20180411073658.1"><vh>#848: Recent Files menu will break for foreign languages</vh></v>
 <v t="ekr.20180411073531.1"><vh>#850: Optionally convert Meta to Alt on MacOs</vh></v>
 <v t="ekr.20180427125919.1"><vh>New command-line arguments</vh></v>
@@ -1999,6 +2000,7 @@
 <v t="ekr.20101121021109.5351"><vh>@slide Using iterators</vh>
 <v t="ekr.20101121125326.4968"><vh>@url built slide</vh></v>
 </v>
+<v t="ekr.20180411102234.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -26406,22 +26408,92 @@ The first non-blank, non-comment line of the node `@menu Recent Files' can conta
 
 You should not just change the headline of the node: it should remain unchanged. Indeed, the point of this item is that Leo has to know which item is the Recent Files item, so some other way was needed to specify an alternate name.</t>
 <t tx="ekr.20180411102234.1">https://github.com/leo-editor/leo-editor/issues/838
-Leo's @auto whatever.ipynb allow close integration with Jupyter notebooks.</t>
+Leo's @auto whatever.ipynb allow close integration with Jupyter notebooks.
+
+-----
+
+Perhaps a lot of people don't know what I'm talking about.  Here is the script, j.bat, that I use. I execute it in a separate console:
+
+cd c:\test
+jupyter notebook %*
+
+The test directory contains the .ipynb files.  I open a new console and just type "j".  This starts the Jupyter server, which then opens my web browser on a Jupyter "home" page.  This page shows the contents of the test folder.  I select my test .ipynb and it appears in another tab.  Simple as that.
+
+I can change any cell in Jupyter and save the file.  If the corresponding .leo file is running the new code appears in the @auto tree.  Simple as that.  I can also change the @auto tree.  The Jupyter web page will (I think) eventually reload automatically.  Or I can reload the page myself.  Simple as that.
+
+-----
+
+Folks, this a remarkable level of integration.  It feels Leonine to author in Leo (with all of Leo's organizing capabilities) and then render or run code in Jupyter.
+
+A few more tweaks are coming, but the code should be usable right now.  For example, I test everything by alternating between:
+
+In Leo: Loading, changing and saving a .leo file with an @auto node based on this file.
+
+In Jupyter: Loading, changing and saving the resulting .ipynb file.
+
+===== Revise
+
+Jupyter integration just keeps getting better and better. Straightforward changes will:
+
+1. Generate markdown section markup automatically, based on outline level and headlines.
+
+2. Allow code nodes to be indented (in the Leo outline) wherever we like.
+
+These changes will bring Leo organization to Jupyter notebooks, and will make Leo a superior Jupyter authoring tool.
+
+=====
+
+Yesterday's work drastically simplified the code.  Today's work ensures that Leo writes .ipynb files that pass all Jupyter validation tests.  This involved writing the proper JSON attributes at all time, even when changing @language python to @language md.
+
+Today's testing involved opening a Jupyter server and changing an .ipynb both on the Jupyter web interface or in Leo.  Either way, @auto "just works".
+
+When writing, Leo uses @language directives to determine cell type.
+
+When reading, Leo indents nodes based on body lines of the form:
+
+    &lt;h1...9&gt;title&lt;/h1...9&gt;
+
+Such markup affects Jupyter rendering, but the Leo headline of the node can be anything you want.
+
+As I write this, I see that I should investigate whether markdown # headlines work in Jupyter.  If so, they should be supported.
+
+The integration between @auto whatever.ipynb and Jupyter's web interface is good enough that:
+
+    You can use Jupyter's web page to render markdown
+
+In some cases, math in particular, Jupyter's rendering is significantly better than the VR plugin's rendering.
+
+Summary
+
+@auto x.ipynb is much better than expected. Jupyter can render markdown in Leo nodes.
+
+As a result further markdown support becomes even more important.  See #767: Add markdown command similar to rst3 command.</t>
 <t tx="ekr.20180411105215.1">https://github.com/leo-editor/leo-editor/issues/794
 </t>
 <t tx="ekr.20180411150947.1"></t>
 <t tx="ekr.20180411150950.1">https://github.com/leo-editor/leo-editor/issues/757
 </t>
-<t tx="ekr.20180427125919.1">The following command-line arguments are new:
+<t tx="ekr.20180427125919.1">Leo's --trace command-line arguments now allow users and devs to enable important traces without changing Leo's sources in any way::
+
+    --trace-binding=KEY   trace commands bound to a key
+    --trace-coloring      trace syntax coloring
+    --trace-events        trace non-key events
+    --trace-focus         trace changes of focus
+    --trace-gnx           trace gnx logic
+    --trace-ipython       trace ipython bridge
+    --trace-keys          trace key events
+    --trace-plugins       trace imports of plugins
+    --trace-setting=NAME  trace where named setting is set
+    --trace-shutdown      trace shutdown logic
+    --trace-themes        trace theme init logic
+
+The following command-line arguments are new::
 
     --trace-coloring
     --trace-events
     --trace-gnx
     --trace-keys
     --trace-ipython
-    
-Removed the --debug command-line argument.
-    
 </t>
 <t tx="ekr.20180427130017.1"></t>
 <t tx="ekr.20180427130028.1">The following settings are no longer used.
@@ -26459,6 +26531,34 @@ They no longer appear in leoSettings.leo:
     @string trace_bindings_filter = 
     @string trace_bindings_pane_filter =</t>
 <t tx="ekr.20180427130312.1"></t>
+<t tx="ekr.20180501163005.1">The new insert-jupyter-toc and insert-markdown-toc commands produce a toc (table of contents) for in the selected node, at insert point of the body text.  They replace any selected text.
+
+These two commands are almost identical.  They very only in the details of how they generate the url part of markdown links.  See Note 2 below.
+
+Tip: These commands produce a toc only for the selected node and it's descendants, but that is not a real limitation.  For example, you can produce a complete toc for an @auto .ipynb tree by executing the command in the @auto node itself, then cutting and pasting the toc into the first child of the @auto node.
+
+Notes
+
+1. You must use the insert-jupyter-toc command inside .ipynb files.  The Jupyter online notebook is picky about what links it will accept.  In particular, case is important in url's.  You probably should use insert-markdown-toc for all other files.
+
+2. Both commands clean both parts of markdown links, that is, the [*] part and the (*) part. It's not clear what characters can be allowed in general, but for now the rules are:
+
+A. Within [*] parts, all non alpha-nums are removed, except ":" and "-" and blanks.
+B. Same for (*) parts, except that blanks are converted to "-".
+
+3. Similar logic is used in the exporter to clean section names.
+
+The cleaning of markdown links is over-zealous, but it's not clear exactly what characters are valid.  In particular, html escapes will not work. 
+
+4. These two commands are defined in Leo's core. They are completely separate from the @auto (importer/export) logic.
+
+Summary
+
+These two commands are important tools.  Please try them and report any problems or desired improvements.
+
+I will be happy to allow more characters in markdown links, should you want them. Just let me know.
+
+The insert-markdown-toc is a component of #767: Add markdown command similar to rst3 command.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
