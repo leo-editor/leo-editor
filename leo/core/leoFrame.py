@@ -651,8 +651,7 @@ class LeoBody(object):
             changed = oldText != newText
         if not changed: return
         if trace:
-            # g.trace(repr(ch),'changed:',changed,'newText:',len(newText),'w',w)
-            g.trace('oldSel', oldSel, 'newSel', newSel)
+            g.trace('changed: p.isDirty():', p.isDirty())
         c.undoer.setUndoTypingParams(p, undoType,
             oldText=oldText, newText=newText, oldSel=oldSel, newSel=newSel, oldYview=oldYview)
         p.v.setBodyString(newText)
