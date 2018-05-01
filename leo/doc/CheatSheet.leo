@@ -96,6 +96,7 @@
 </v>
 <v t="ekr.20180405093138.1"><vh>Leo University</vh></v>
 </v>
+<v t="ekr.20180429040113.1"><vh>Post</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20131019184243.16683">@wrap
@@ -1583,5 +1584,51 @@ https://github.com/leo-editor/leo-editor/issues/816
 </t>
 <t tx="ekr.20180405105451.1">These will work only if numpy and pyplot are installed.</t>
 <t tx="ekr.20180405105738.1"></t>
+<t tx="ekr.20180429040113.1">​
+On Sat, Apr 28, 2018 at 6:46 AM, vitalije &lt;vitalijem@gmail.com&gt; wrote:
+
+    ​​
+    O.k. No more complains from me.
+
+
+​ Well, I hope you mean, no more complaints about the VNode class ;-) 
+
+Please do continue to question Leo's design, code and style, or anything else. The very last thing I want is to stifle discussion and debate.
+
+My brother (a very fine programmer) and I have a running joke.  We ask, "Who wrote this ***?  Oh yeah, I did".  Every time we look at our code with fresh eyes we see something that could be improved.
+
+Thinking back about my reply, it seems that all the italics and boldface might be misunderstood. The tone of voice is missing in writing.
+
+I was not at all upset about your criticisms and questions. I was trying to emphasize what I think are truly important ideas underlying Leo's architecture.  These ideas exist explicitly nowhere in the code itself! So I welcome any chance to explain them more fully.
+
+Indeed, I want to say at least a few more things about Leo's architecture.  The fundamental principle could be restated as follows:
+
+    Modules and classes should never know about
+    the inner workings of other classes
+
+Just now I see that this isn't as simple an idea as I thought.
+
+Usually, knowing about the existence of methods of other classes is benign.  But calling low-level methods of other classes would be asking for trouble.  But what is a low-level method?
+
+The outline for the VNode class has an organizer node for its low-level methods. Furthermore, all low-level methods of the VNode class have names starting with underscore.  So, for the VNode class, we know for sure what the low-level methods are.
+
+But for other classes, it might not be so obvious what the low-level helpers are.  Leo's code doesn't follow the underscore convention consistently.  I often use the "Helper" suffix instead.
+
+Turning from methods to ivars, the rule is:
+
+    Code should use only official ivars from other classes
+
+"@test official g.app ivars" defines the official ivars of one class.  Other classes have comments about what their official ivars are. CheatSheet.leo contains lists of the important ivars, so I guess the concept of official ivar isn't too mysterious.  In any case, code like:
+
+    c.frame.body.wrapper
+
+should be fairly easy to understand.
+
+Dubious design and code
+
+This is a good time to discuss truly dubious aspects of Leo's code base.
+
+
+</t>
 </tnodes>
 </leo_file>

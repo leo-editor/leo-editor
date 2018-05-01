@@ -587,6 +587,8 @@ class KeyStroke(object):
         '''
         Return True if self.s represents a plain key.
         
+        A plain key is a key that can be inserted into text.
+        
         **Note**: The caller is responsible for handling Alt-Ctrl keys.
         '''
         s = self.s

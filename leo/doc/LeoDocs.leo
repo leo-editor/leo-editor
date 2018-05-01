@@ -1996,6 +1996,9 @@
 </v>
 <v t="ekr.20180427130028.1"><vh>Removed unused settings</vh></v>
 </v>
+<v t="ekr.20101121021109.5351"><vh>@slide Using iterators</vh>
+<v t="ekr.20101121125326.4968"><vh>@url built slide</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -11544,6 +11547,36 @@ Leo's scripting environment takes full advantage of outline structure:
 [[Category:Free text editors]]
 [[Category:Free software programmed in Python]]
 [[Category:Outliners]]
+</t>
+<t tx="ekr.20101121021109.5351">Using iterators, it is easy to gain access to all the data in a Leo outline. For example, the following script prints all headlines in an outline, indented to show outline level::
+
+    for p in c.all_positions():
+        print(' '*p.level(), p.h)
+
+The output of this script, when run from LeoDocs.leo,
+will look something like this::
+
+    Startup
+     @file doc-startup.txt
+      Buttons
+       Disabled buttons
+       ... and hundreds of other nodes.
+
+**Note**: p.level() is a method of the position class that returns the outline level of the node at position p: 0 for top-level nodes, 1 for their children, and so on.
+
+**Note**: There are performance problems when writing many strings to Leo's log pane. The following will hang Leo when run within large .leo files:
+
+    for p in c.all_positions():
+        g.es(' '*p.level(), p.h)
+        
+The workaround is to precompute a single string, and pass it to c.frame.log.put:
+
+    s = ''.join([
+        '%s%s\n' % (' '*p.level(), p.h) for p in c.all_positions()
+    ])
+    c.frame.log.put(s)
+</t>
+<t tx="ekr.20101121125326.4968">c:\leo.repo\leo-editor\leo\doc\html\slides\scripting-leo\_build\html\slide-007.html
 </t>
 <t tx="ekr.20101125062332.5090">**Python**: Leo will work on any platform that supports Python 2.6 or above, including Python 3.0 and above. To install Python, see http://python.org.
 
