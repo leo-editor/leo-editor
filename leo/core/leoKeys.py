@@ -2832,9 +2832,9 @@ class KeyHandlerClass(object):
         #@+<< docstring for k.get1arg >>
         #@+node:ekr.20161020031633.1: *5* << docstring for k.get1arg >>
         '''
-        k.get1Arg: Handle the next character the user types when accumulating a
-        user argument from the minibuffer. Ctrl-G will abort this processing at any
-        time.
+        k.get1Arg: Handle the next character the user types when accumulating
+        a user argument from the minibuffer. Ctrl-G will abort this processing
+        at any time.
 
         Commands should use k.get1Arg to get the first minibuffer argument and
         k.getNextArg to get all other arguments.
@@ -2884,15 +2884,15 @@ class KeyHandlerClass(object):
                 k.resetLabel()
                 k.showStateAndMode()
 
-        k.get1Arg and k.getNextArg are a convenience methods. They simply passes
-        their arguments to the get_arg method of the singleton GetArg instance. This
-        docstring describes k.get1arg and k.getNextArg as if they were the
-        corresponding methods of the GetArg class.
+        k.get1Arg and k.getNextArg are a convenience methods. They simply pass
+        their arguments to the get_arg method of the singleton GetArg
+        instance. This docstring describes k.get1arg and k.getNextArg as if
+        they were the corresponding methods of the GetArg class.
 
-        k.get1Arg is a state machine. Logically, states are tuples (kind, n, handler)
-        though they aren't represented that way. When the state machine in the
-        GetArg class is active, the kind is 'getArg'.  This constant has special
-        meaning to Leo's key-handling code.
+        k.get1Arg is a state machine. Logically, states are tuples (kind, n,
+        handler) though they aren't represented that way. When the state
+        machine in the GetArg class is active, the kind is 'getArg'. This
+        constant has special meaning to Leo's key-handling code.
 
         The arguments to k.get1Arg are as follows:
 
