@@ -398,7 +398,7 @@ class KeyStroke(object):
         if trace:
             g.trace('%20s:%-20s ==> %s' % (binding, self.mods, mods+s))
         return mods+s
-    #@+node:ekr.20180415083926.1: *4* ks.finalize_char
+    #@+node:ekr.20180415083926.1: *4* ks.finalize_char & helper
     def finalize_char(self, s):
         '''Perform very-last-minute translations on bindings.'''
         #
@@ -498,7 +498,8 @@ class KeyStroke(object):
         if s in (None, 'none'):
             return ''
         if s.lower() in translate_d:
-            return translate_d.get(s.lower())
+            s = translate_d.get(s.lower())
+            return self.strip_shift(s)
         if s.isalpha():
             if len(s) == 1:
                 if 'shift' in self.mods:
@@ -515,39 +516,49 @@ class KeyStroke(object):
                     if s.capitalize() in g.app.gui.specialChars:
                         s = s.capitalize()
             return s
-        # Translate possibly-dubious user settings.
-        shift_list = "_+{}|:\"<>?"
-            # Shifting these characters has no effect.
+        #
+        # Translate shifted keys to their appropriate alternatives.
+        return self.strip_shift(s)
+    #@+node:ekr.20180502104829.1: *5* ks.strip_shift
+    def strip_shift(self, s):
+        '''
+        Handle supposedly shifted keys.
+        
+        User settings might specify an already-shifted key, which is not an error.
+            
+        The legacy Tk binding names have already been translated,
+        so we don't have to worry about Shift-ampersand, etc.
+        '''
+        #
+        # The second entry in each line handles shifting an already-shifted character.
+        # That's ok in user settings: the Shift modifier is just removed.
         shift_d = {
             # Top row of keyboard.
-            "1": "!",
-            "2": "@",
-            "3": "#",
-            "4": "$",
-            "5": "%",
-            "6": "^",
-            "7": "&",
-            "8": "*",
-            "9": "(",
-            "0": ")",
-            "-": "_",
-            "=": "+",
+            "1": "!", "!": "!",
+            "2": "@", "@": "@",
+            "3": "#", "#": "#",
+            "4": "$", "$": "$",
+            "5": "%", "%": "%",
+            "6": "^", "^": "^",
+            "7": "&", "&": "&",
+            "8": "*", "*": "*",
+            "9": "(", "(": "(",
+            "0": ")", ")": ")",
+            "-": "_", "_": "_",
+            "=": "+", "+": "+",
             # Second row of keyboard.
-            "[": "{",
-            "]": "}",
-            "\\": '|',
+            "[": "{", "{": "{",
+            "]": "}", "}": "}",
+            "\\": '|', "|": "|",
             # Third row of keyboard.
-            ";": ":",
-            "'": '"',
+            ";": ":", ":": ":",
+            "'": '"', '"': '"',
             # Fourth row of keyboard.
-            ".": "<",
-            ",": ">",
-            "//": "?",
+            ".": "<", "<": "<",
+            ",": ">", ">": ">",
+            "//": "?", "?": "?",
         }
-        if 'shift' in self.mods and s in shift_list:
-            # Shifting these chars has no effect.
-            self.mods.remove('shift')
-        elif 'shift' in self.mods and s in shift_d:
+        if 'shift' in self.mods and s in shift_d:
             self.mods.remove('shift')
             s = shift_d.get(s)
         return s
