@@ -520,6 +520,16 @@ class KeyStroke(object):
             # Shifting these characters has no effect.
         shift_d = {
             # Top row of keyboard.
+            "1": "!",
+            "2": "@",
+            "3": "#",
+            "4": "$",
+            "5": "%",
+            "6": "^",
+            "7": "&",
+            "8": "*",
+            "9": "(",
+            "0": ")",
             "-": "_",
             "=": "+",
             # Second row of keyboard.
