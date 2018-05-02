@@ -65,17 +65,14 @@ class LeoQtEventFilter(QtCore.QObject):
         self.ctagscompleter_onKey = None
     #@+node:ekr.20110605121601.18540: *3* filter.eventFilter & helpers
     def eventFilter(self, obj, event):
-        trace = False and not g.unitTesting
-        traceEvent = False # True: call self.traceEvent.
-        traceKeys = True
         c, k = self.c, self.c.k
         #
         # Handle non-key events first.
         if not self.c.p:
             return False # Startup. Let Qt handle the key event
-        if trace and traceEvent:
-             self.traceEvent(obj, event)
-        self.traceWidget(event)
+        if 'events' in g.app.debug:
+            self.traceEvent(obj, event)
+            self.traceWidget(event)
         if self.doNonKeyEvent(event, obj):
             return False # Let Qt handle the non-key event.
         #
@@ -89,7 +86,7 @@ class LeoQtEventFilter(QtCore.QObject):
             if not binding:
                 return False # Allow Qt to handle the key event.
             stroke = g.KeyStroke(binding=binding)
-            if trace and traceKeys:
+            if 'keys' in g.app.debug:
                 g.trace('binding: %s, stroke: %s, char: %r' % (binding, stroke, ch))
             #
             # Pass the KeyStroke to masterKeyHandler.
@@ -452,9 +449,8 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20131121050226.16331: *4* filter.traceWidget
     def traceWidget(self, event):
         '''Show unexpected events in unusual widgets.'''
-        verbose = False # Not good for --trace-events
-        if 'events' not in g.app.debug:
-            return
+        verbose = False
+            # Not good for --trace-events
         e = QtCore.QEvent
         assert isinstance(event, QtCore.QEvent)
         et = event.type()
