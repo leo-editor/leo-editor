@@ -3332,8 +3332,8 @@ class LeoQtLog(leoFrame.LeoLog):
     #@+node:ekr.20110605121601.18323: *4* LeoQtLog.putnl
     def putnl(self, tabName='Log'):
         '''Put a newline to the Qt log.'''
+        # 
         # This is not called normally.
-        # print('LeoQtLog.put: %s' % g.callers())
         if g.app.quitting:
             return
         if tabName:
