@@ -3290,13 +3290,8 @@ class LeoQtLog(leoFrame.LeoLog):
 
         The from_redirect keyword argument is no longer used.
         '''
-        trace = False and not g.unitTesting
-        trace_entry = True
-        trace_s = False
         c = self.c
         if g.app.quitting or not c or not c.exists:
-            if trace:
-                print('LeoQtLog.log.put fails: %r' % s)
             return
         # Note: g.actualColor does all color translation.
         if color:
@@ -3311,12 +3306,14 @@ class LeoQtLog(leoFrame.LeoLog):
         # Must be done after the call to selectTab.
         w = self.logCtrl.widget # w is a QTextBrowser
         if w:
-            if trace and trace_entry:
-                print('LeoQtLog.log.put: %r' % s)
             sb = w.horizontalScrollBar()
             s = s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+            # #884: Always convert leading blanks and tabs to &nbsp.
+            n = len(s) - len(s.lstrip())
+            if n > 0 and s.strip():
+                s = '&nbsp;' * (n+1) + s[n:]
             if not self.wrap:
-                # Use &nbsp; only when not wrapping!
+                # Convert all other blanks to &nbsp;
                 s = s.replace(' ', '&nbsp;')
             s = s.replace('\n', '<br>')
                 # The caller is responsible for newlines!
@@ -3328,17 +3325,10 @@ class LeoQtLog(leoFrame.LeoLog):
                     if url.startswith(scheme+'://') and not url.startswith(scheme+':///'):
                         url = url.replace('://', ':///', 1)
                 s = '<a href="%s" title="%s">%s</a>' % (url, nodeLink, s)
-            if trace and trace_s:
-                print('LeoQtLog.put: %r' % (s))
             w.insertHtml(s)
             w.moveCursor(QtGui.QTextCursor.End)
             sb.setSliderPosition(0) # Force the slider to the initial position.
             w.repaint() # Slow, but essential.
-        #
-        # else:
-            # # Does this ever happen?
-            # g.app.logWaiting.append((s, color, True),)
-            # g.pr(s, color=color, newline=True)
     #@+node:ekr.20110605121601.18323: *4* LeoQtLog.putnl
     def putnl(self, tabName='Log'):
         '''Put a newline to the Qt log.'''
