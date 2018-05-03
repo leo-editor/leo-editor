@@ -29,7 +29,7 @@ def cmd(name):
     return g.new_cmd_decorator(name, ['c',])
 
 #@+others
-#@+node:ekr.20160514120615.1: ** class Commands
+#@+node:ekr.20160514120615.1: ** class Commands (object)
 class Commands(object):
     """
     A per-outline class that implements most of Leo's commands. The
@@ -1772,6 +1772,128 @@ class Commands(object):
     #@+node:ekr.20031218072017.3000: *4* c.updateSyntaxColorer
     def updateSyntaxColorer(self, v):
         self.frame.body.updateSyntaxColorer(v)
+    #@+node:ekr.20180503110307.1: *4* c.interactive/2/3...
+
+        
+    #@+node:ekr.20180503111213.1: *5* c.interactive
+    def interactive(self, callback, event, prompt):
+        #@+<< c.interactive docstring >>
+        #@+node:ekr.20180503131222.1: *6* << c.interactive docstring >>
+        '''
+        c.interactive: Prompt for a single argument from the minibuffer.
+
+        Can optionally define commands. Example::
+
+            @g.command('i1')
+            def i1_command(event):
+                c = event.get('c')
+                if not c: return
+                    
+                def callback(arg, c, event):
+                    g.trace(arg)
+                    c.bodyWantsFocus()
+            
+                c.interactive(callback, event, prompt='Prompt: ')
+        '''
+        #@-<< c.interactive docstring >>
+        
+        c, k = self, self.k
+        
+        def state1(event):
+            callback(arg=k.arg, c=c, event=event)
+            k.clearState()
+            k.resetLabel()
+            k.showStateAndMode()
+            
+        k.setLabelBlue(prompt)
+        k.get1Arg(event, handler=state1)
+    #@+node:ekr.20180503111249.1: *5* c.interactive2
+    def interactive2(self, callback, event, prompt1, prompt2):
+        #@+<< c.interactive2 docstring >>
+        #@+node:ekr.20180503131401.1: *6* << c.interactive2 docstring >>
+        '''
+        c.interactive2: Prompt for two arguments from the minibuffer.
+
+        Can optionally define commands. Example::
+
+            @g.command('i2')
+            def i2_command(event):
+                c = event.get('c')
+                if not c: return
+                    
+                def callback(arg1, arg2, c, event):
+                    g.trace(arg1, arg2)
+                    c.bodyWantsFocus()
+            
+                c.interactive2(callback, event,
+                    prompt1='Find: ', prompt2=' Replace: ')
+        '''
+        #@-<< c.interactive2 docstring >>
+
+        c, d, k = self, {}, self.k
+
+        def state1(event):
+            d['arg1'] = k.arg
+            k.extendLabel(prompt2, select=False, protect=True)
+            k.getNextArg(handler=state2)
+        
+        def state2(event):
+            callback(arg1=d.get('arg1'), arg2=k.arg, c=c, event=event)
+            k.clearState()
+            k.resetLabel()
+            k.showStateAndMode()
+
+        k.setLabelBlue(prompt1)
+        k.get1Arg(event, handler=state1)
+    #@+node:ekr.20180503111249.2: *5* c.interactive3
+    def interactive3(self, callback, event, prompt1, prompt2, prompt3):
+        #@+<< c.interactive3 docstring >>
+        #@+node:ekr.20180503131653.1: *6* << c.interactive3 docstring >>
+        '''
+        c.interactive3: Prompt for three arguments from the minibuffer.
+
+        Can optionally define commands. Example::
+
+            @g.command('i3')
+            def i3_command(event):
+                c = event.get('c')
+                if not c: return
+                    
+                def callback(arg1, arg2, arg3, c, event):
+                    g.trace(arg1, arg2, arg3)
+                    c.bodyWantsFocus()
+
+                c.interactive3(callback, event,
+                    prompt1='One: ', prompt2=' Two: ', prompt3=' Three: ')
+        '''
+        #@-<< c.interactive3 docstring >>
+
+        c, d, k = self, {}, self.k
+
+        def state1(event):
+            d ['arg1'] = k.arg
+            k.extendLabel(prompt2, select=False, protect=True)
+            k.getNextArg(handler=state2)
+            
+        def state2(event):
+            d ['arg2'] = k.arg
+            k.extendLabel(prompt3, select=False, protect=True)
+            k.get1Arg(event, handler=state3)
+                # Restart.
+
+        def state3(event):
+            callback(
+                arg1=d.get('arg1'),
+                arg2=d.get('arg2'),
+                arg3=k.arg,
+                c=c,
+                event=event)
+            k.clearState()
+            k.resetLabel()
+            k.showStateAndMode()
+
+        k.setLabelBlue(prompt1)
+        k.get1Arg(event, handler=state1)
     #@+node:ekr.20080901124540.1: *3* c.Directive scanning
     # These are all new in Leo 4.5.1.
     #@+node:ekr.20171123135625.33: *4* c.getLanguageAtCursor
