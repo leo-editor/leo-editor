@@ -1,25 +1,5 @@
 -  `Introduction <#introduction>`__
 -  `Babel Root <#babel-root>`__
--  `Babel Parameters Script <#babel-parameters-script>`__
-
-   -  `babel\_script <#babel_script>`__
-   -  `babel\_results <#babel_results>`__
-   -  `Node Position or UNL <#node-position-or-unl>`__
-   -  `babel\_node\_creation <#babel_node_creation>`__
-   -  `Python Interpreter <#python-interpreter>`__
-   -  `Shell Interpreter <#shell-interpreter>`__
-   -  `Redirect Stdout to Stderr <#redirect-stdout-to-stderr>`__
-   -  `Babel Script arguments <#babel-script-arguments>`__
-   -  `Splitting a Large Babel Parameters Script into several
-      nodes <#splitting-a-large-babel-parameters-script-into-several-nodes>`__
-   -  `babel - The Babel API object <#babel---the-babel-api-object>`__
-
-      -  `babel.unl2pos() <#babel.unl2pos>`__
-
-   -  `UNL Quoted <#unl-quoted>`__
-   -  `Debugging a Babel Parameter
-      Script <#debugging-a-babel-parameter-script>`__
-
 -  `UNL's <#unls>`__
 
    -  `Pound Sign (#) Caution <#pound-sign-caution>`__
@@ -59,6 +39,26 @@
    -  `Second Node <#second-node>`__
    -  `Third Node <#third-node>`__
    -  `Emacs-Babel Limitation <#emacs-babel-limitation-1>`__
+
+-  `Babel Parameters Script <#babel-parameters-script>`__
+
+   -  `babel\_script <#babel_script>`__
+   -  `babel\_results <#babel_results>`__
+   -  `Node Position or UNL <#node-position-or-unl>`__
+   -  `babel\_node\_creation <#babel_node_creation>`__
+   -  `Python Interpreter <#python-interpreter>`__
+   -  `Shell Interpreter <#shell-interpreter>`__
+   -  `Redirect Stdout to Stderr <#redirect-stdout-to-stderr>`__
+   -  `Babel Script arguments <#babel-script-arguments>`__
+   -  `Splitting a Large Babel Parameters Script into several
+      nodes <#splitting-a-large-babel-parameters-script-into-several-nodes>`__
+   -  `babel - The Babel API object <#babel---the-babel-api-object>`__
+
+      -  `babel.unl2pos() <#babel.unl2pos>`__
+
+   -  `UNL Quoted <#unl-quoted>`__
+   -  `Debugging a Babel Parameter
+      Script <#debugging-a-babel-parameter-script>`__
 
 -  `Leo-Editor Settings <#leo-editor-settings>`__
 
@@ -124,248 +124,6 @@ be empty.
 You can put comments in the "Babel Root" body just begin your comments
 with an ampersand "@" in column 1, this begins a Leo-Editor comment
 section.
-
-Babel Parameters Script
-=======================
-
-The Babel Parameters Script is executed with the following objects
-available:
-
-1. babel - The Babel API object.
-
-2. b - The Babel API object.
-
-3. c - The Leo-Editor commander for the Leo-Editor file containing the
-   Babel Root node.
-
-4. g - The Leo-Editor globals.
-
-5. p - The position of the Babel Root node.
-
-The Babel Parameters Script can define the following parameters that
-affect Babel Script execution:
-
-1. babel\_script
-
-2. babel\_results
-
-3. babel\_node\_creation
-
-4. babel\_python
-
-5. babel\_shell
-
-6. babel\_redirect\_stdout
-
-7. babel\_script\_args
-
-The current working directory for the Babel Parameters Script is the
-working directory for the Babel Script node. See section "Current
-working directory for a node".
-
-babel\_script
--------------
-
-If the script in the Babel Root body defines babel\_script, then the
-specified node is used as the root of the script subtree; else, the
-first child of the Babel Root node is used as the root of the script
-subtree.
-
-babel\_results
---------------
-
-If the script in the Babel Root body defines babel\_results, then the
-specified node is used as the root of the results subtree; else, the
-second child of the Babel Root node is used as the root of the results
-subtree.
-
-Node Position or UNL
---------------------
-
-babel\_script and babel\_results can be either a Leo-Editor (commander,
-node position) pair or a UNL.
-
-The commander, node position pair can be any iterable, for example a
-tuple or a list.
-
-If the UNL contains a file pathname part, it can refer to any Leo-Editor
-file. If the UNL does **NOT** contain a file pathname part, then it
-refers to the Leo-Editor file containing the UNL.
-
-babel\_node\_creation
----------------------
-
-If babel\_node\_creation is not defined, then the default for Babel node
-creation applies.
-
-If babel\_node\_creation is False, then Leo-Babel does not create its
-three results nodes for each script run. But it does still display all
-the resuls data in the log pane.
-
-If babel\_node\_creation is True, then Leo-Babel creates three results
-nodes for each script run.
-
-Python Interpreter
-------------------
-
-If babel\_python is not defined, then the default program for
-interpreting Python language scripts is used.
-
-If babel\_python is defined, then the specified program is used for
-interpreting Python language scripts.
-
-The program specified must exist somewhere on the path specified by the
-environment variable PATH or the absolute path to the program must be
-specified.
-
-Examples:
-
-babel\_python = 'python2'
-
-The Python 2 program is used to interpret a Python language script.
-
-babel\_python = 'python3'
-
-The Python 3 program is used to interpret a Python language script.
-
-Shell Interpreter
------------------
-
-If babel\_shell is not defined, then the default program for
-interpreting "shell" language scripts is used.
-
-If babel\_shell is defined, then the specified program is used for
-interpreting shell language scripts.
-
-The program specified must exist somewhere on the path specified by the
-environment variable PATH or the absolute path to the program must be
-specified.
-
-Examples:
-
-babel\_shell = 'bash'
-
-The Bourne shell.
-
-babel\_shell = 'sh'
-
-The POSIX standard shell interpreter chosen by your Linux distribution.
-
-babel\_shell = 'zsh'
-
-The Z shell.
-
-Redirect Stdout to Stderr
--------------------------
-
-If the script in the Babel Root body defines babel\_redirect\_stdout, it
-specifies whether or not stdout is redirected to stderr. By default,
-stdout is **NOT** redirected to stderr.
-
-babel\_redirect\_stdout
-
--  False --> Do not redirect stdout. This is the default, if
-   babel\_redirect\_stdout does not exist.
--  True --> Redirect stdout to stderr
-
-Babel Script arguments
-----------------------
-
-If the Babel Parameters Script defines babel\_script\_args, then these
-arguments are passed to the Babel Script as command line arguments. So
-if babel\_script\_args is defined, then it must be a list of strings.
-
-The first command line argument is always the file pathname of the
-script file. The babel\_script\_args begin with the second command line
-argument. For Python scripts the babel\_script\_args are sys.argv[1:].
-For Bash scripts the babel\_script\_args are $@.
-
-Splitting a Large Babel Parameters Script into several nodes
-------------------------------------------------------------
-
-A Babel Parameters Script can be split into a subtree of nodes using any
-one of several schemes.
-
-A section reference in the Babel Root node can refer to the third child
-of the Babel Root node. This third child can be the root of the script
-subtree.
-
-If babel\_script and babel\_results are used to place the script and
-results nodes outside the subtree rooted by the Babel Root node, then
-the Babel Parameters Script can occupy the subtree rooted by the Babel
-Root node.
-
-babel - The Babel API object
-----------------------------
-
-When the Babel Parameters Script is executed, "babel" is defined in the
-global dictionary and it provides access to the Babel API.
-
-babel.unl2pos()
-~~~~~~~~~~~~~~~
-
-Univeral Node Locator to Leo-Editor Commander, Position List -
-babel.unl2pos()
-
-::
-
-    Call:
-        cmdrUnl, posList = babel.unl2pos(unl, cmdr=None)
-
-    Arguments:
-        unl: Universal Node Locator
-        cmdr:  Optional Leo-Editor commander for the file containing the node(s)
-            specified by unl. Default:  None
-
-    Returns:
-        cmdrUnl: Commander for the file containing the position(s) in posList.
-        posList:   A list containing in tree order all the positions
-            that satisfy the UNL.
-            [] (empty list) --> No position satisfies the UNL
-
-    Exceptions:
-        ValueError
-
-            If unl contains a file pathname part and cmdr is not None,
-            then ValueError is raised because both the pathname part
-            and the cmdr specify files. This is either redundant or contradictory.
-
-            If unl does NOT contain a file pathname and cmdr is None,
-            then ValueError is raised because there is no specification
-            of the target file.
-
-A UNL consists of an optional protocol prefix, an optional file pathname
-part, and a required node path part.
-
-If the optional protocol prefix is present, then it must be "unl://". If
-the optional protocol prefix is present, then the UNL must be "UNL
-quoted". If the optional protocol prefix is **NOT** present, then the
-UNL must **NOT** be "UNL quoted".
-
-In order to resolve the specified UNL, babel.unl2pos() opens the
-specified Leo-Editor file if it is not already open, and it leaves it
-open. Hence, if in Leo-Editor file X you pass babel.unl2pos() a UNL for
-Leo-Editor file Y, this always leaves with files X and Y open in
-Leo-Editor.
-
-UNL Quoted
-----------
-
-"UNL Quoting" a string replaces " " (space) with %20.
-
-Note carefully, "UNL Quoting" differs from "URL Quoting". "URL Quoting"
-a string replaces " " (space) with %20, '\\t' (tab) with %09, and "'"
-(single quote) with %27.
-
-Debugging a Babel Parameter Script
-----------------------------------
-
-A Babel Parameter Script is executed without writing it to disk as a
-"script" file. To aid debugging when a Babel Parameter Script raises an
-exception, Leo-Babel writes the script with line numbers to the
-Leo-Editor Log pane. Then it re-raises the exception. The exception
-message almost always contains a line number which matches the line
-numbers Leo-Babel writes.
 
 UNL's
 =====
@@ -661,6 +419,249 @@ Emacs-Babel Limitation
 Emacs-Babel only captures stdout. For Emacs-Babel the only way to
 capture stderr for a script X is to have script X itself redirect stderr
 to stdout.
+
+Babel Parameters Script
+=======================
+
+The "Babel Root" body contains the "Babel Parameters Script" which can
+be empty. The Babel Parameters Script is executed with the following
+objects available:
+
+1. babel - The Babel API object.
+
+2. b - The Babel API object.
+
+3. c - The Leo-Editor commander for the Leo-Editor file containing the
+   Babel Root node.
+
+4. g - The Leo-Editor globals.
+
+5. p - The position of the Babel Root node.
+
+The Babel Parameters Script can define the following parameters that
+affect Babel Script execution:
+
+1. babel\_script
+
+2. babel\_results
+
+3. babel\_node\_creation
+
+4. babel\_python
+
+5. babel\_shell
+
+6. babel\_redirect\_stdout
+
+7. babel\_script\_args
+
+The current working directory for the Babel Parameters Script is the
+working directory for the Babel Script node. See section "Current
+working directory for a node".
+
+babel\_script
+-------------
+
+If the script in the Babel Root body defines babel\_script, then the
+specified node is used as the root of the script subtree; else, the
+first child of the Babel Root node is used as the root of the script
+subtree.
+
+babel\_results
+--------------
+
+If the script in the Babel Root body defines babel\_results, then the
+specified node is used as the root of the results subtree; else, the
+second child of the Babel Root node is used as the root of the results
+subtree.
+
+Node Position or UNL
+--------------------
+
+babel\_script and babel\_results can be either a Leo-Editor (commander,
+node position) pair or a UNL.
+
+The commander, node position pair can be any iterable, for example a
+tuple or a list.
+
+If the UNL contains a file pathname part, it can refer to any Leo-Editor
+file. If the UNL does **NOT** contain a file pathname part, then it
+refers to the Leo-Editor file containing the UNL.
+
+babel\_node\_creation
+---------------------
+
+If babel\_node\_creation is not defined, then the default for Babel node
+creation applies.
+
+If babel\_node\_creation is False, then Leo-Babel does not create its
+three results nodes for each script run. But it does still display all
+the resuls data in the log pane.
+
+If babel\_node\_creation is True, then Leo-Babel creates three results
+nodes for each script run.
+
+Python Interpreter
+------------------
+
+If babel\_python is not defined, then the default program for
+interpreting Python language scripts is used.
+
+If babel\_python is defined, then the specified program is used for
+interpreting Python language scripts.
+
+The program specified must exist somewhere on the path specified by the
+environment variable PATH or the absolute path to the program must be
+specified.
+
+Examples:
+
+babel\_python = 'python2'
+
+The Python 2 program is used to interpret a Python language script.
+
+babel\_python = 'python3'
+
+The Python 3 program is used to interpret a Python language script.
+
+Shell Interpreter
+-----------------
+
+If babel\_shell is not defined, then the default program for
+interpreting "shell" language scripts is used.
+
+If babel\_shell is defined, then the specified program is used for
+interpreting shell language scripts.
+
+The program specified must exist somewhere on the path specified by the
+environment variable PATH or the absolute path to the program must be
+specified.
+
+Examples:
+
+babel\_shell = 'bash'
+
+The Bourne shell.
+
+babel\_shell = 'sh'
+
+The POSIX standard shell interpreter chosen by your Linux distribution.
+
+babel\_shell = 'zsh'
+
+The Z shell.
+
+Redirect Stdout to Stderr
+-------------------------
+
+If the script in the Babel Root body defines babel\_redirect\_stdout, it
+specifies whether or not stdout is redirected to stderr. By default,
+stdout is **NOT** redirected to stderr.
+
+babel\_redirect\_stdout
+
+-  False --> Do not redirect stdout. This is the default, if
+   babel\_redirect\_stdout does not exist.
+-  True --> Redirect stdout to stderr
+
+Babel Script arguments
+----------------------
+
+If the Babel Parameters Script defines babel\_script\_args, then these
+arguments are passed to the Babel Script as command line arguments. So
+if babel\_script\_args is defined, then it must be a list of strings.
+
+The first command line argument is always the file pathname of the
+script file. The babel\_script\_args begin with the second command line
+argument. For Python scripts the babel\_script\_args are sys.argv[1:].
+For Bash scripts the babel\_script\_args are $@.
+
+Splitting a Large Babel Parameters Script into several nodes
+------------------------------------------------------------
+
+A Babel Parameters Script can be split into a subtree of nodes using any
+one of several schemes.
+
+A section reference in the Babel Root node can refer to the third child
+of the Babel Root node. This third child can be the root of the script
+subtree.
+
+If babel\_script and babel\_results are used to place the script and
+results nodes outside the subtree rooted by the Babel Root node, then
+the Babel Parameters Script can occupy the subtree rooted by the Babel
+Root node.
+
+babel - The Babel API object
+----------------------------
+
+When the Babel Parameters Script is executed, "babel" is defined in the
+global dictionary and it provides access to the Babel API.
+
+babel.unl2pos()
+~~~~~~~~~~~~~~~
+
+Univeral Node Locator to Leo-Editor Commander, Position List -
+babel.unl2pos()
+
+::
+
+    Call:
+        cmdrUnl, posList = babel.unl2pos(unl, cmdr=None)
+
+    Arguments:
+        unl: Universal Node Locator
+        cmdr:  Optional Leo-Editor commander for the file containing the node(s)
+            specified by unl. Default:  None
+
+    Returns:
+        cmdrUnl: Commander for the file containing the position(s) in posList.
+        posList:   A list containing in tree order all the positions
+            that satisfy the UNL.
+            [] (empty list) --> No position satisfies the UNL
+
+    Exceptions:
+        ValueError
+
+            If unl contains a file pathname part and cmdr is not None,
+            then ValueError is raised because both the pathname part
+            and the cmdr specify files. This is either redundant or contradictory.
+
+            If unl does NOT contain a file pathname and cmdr is None,
+            then ValueError is raised because there is no specification
+            of the target file.
+
+A UNL consists of an optional protocol prefix, an optional file pathname
+part, and a required node path part.
+
+If the optional protocol prefix is present, then it must be "unl://". If
+the optional protocol prefix is present, then the UNL must be "UNL
+quoted". If the optional protocol prefix is **NOT** present, then the
+UNL must **NOT** be "UNL quoted".
+
+In order to resolve the specified UNL, babel.unl2pos() opens the
+specified Leo-Editor file if it is not already open, and it leaves it
+open. Hence, if in Leo-Editor file X you pass babel.unl2pos() a UNL for
+Leo-Editor file Y, this always leaves with files X and Y open in
+Leo-Editor.
+
+UNL Quoted
+----------
+
+"UNL Quoting" a string replaces " " (space) with %20.
+
+Note carefully, "UNL Quoting" differs from "URL Quoting". "URL Quoting"
+a string replaces " " (space) with %20, '\\t' (tab) with %09, and "'"
+(single quote) with %27.
+
+Debugging a Babel Parameter Script
+----------------------------------
+
+A Babel Parameter Script is executed without writing it to disk as a
+"script" file. To aid debugging when a Babel Parameter Script raises an
+exception, Leo-Babel writes the script with line numbers to the
+Leo-Editor Log pane. Then it re-raises the exception. The exception
+message almost always contains a line number which matches the line
+numbers Leo-Babel writes.
 
 Leo-Editor Settings
 ===================
