@@ -1443,6 +1443,7 @@ class GetArg(object):
         c, k = ga.c, ga.k
         state = k.getState('getArg')
         c.check_event(event)
+        c.minibufferWantsFocusNow()
         char = event.char if event else ''
         if state > 0:
             k.setLossage(char, stroke)
@@ -2822,6 +2823,7 @@ class KeyHandlerClass(object):
         '''
         # Replace the current handler.
         self.getArgInstance.after_get_arg_state = ('getarg', 1, handler)
+        self.c.minibufferWantsFocusNow()
 
     # New in Leo 5.4
     def get1Arg(self, event, handler,
@@ -2844,7 +2846,7 @@ class KeyHandlerClass(object):
 
         Example 1: get one argument from the user:
 
-            @cmd('my-command')
+            @g.command('my-command')
             def myCommand(self, event):
                 k = self.c.k
                 k.setLabelBlue('prompt: ')
@@ -2862,7 +2864,7 @@ class KeyHandlerClass(object):
 
         Example 2: get two arguments from the user:
 
-            @cmd('my-command')
+            @g.command('my-command')
             def myCommand(self, event):
                 k = self.c.k
                 k.setLabelBlue('first prompt: ')
@@ -2871,7 +2873,7 @@ class KeyHandlerClass(object):
             def myCommand1(self, event):
                 k = self.c.k
                 self.arg1 = k.arg
-                k.setLabelBlue('second prompt: ')
+                k.extendLabel(' second prompt: ', select=False, protect=True)
                 k.getNextArg(handler=self.myCommand2)
 
             def myCommand2(self, event):

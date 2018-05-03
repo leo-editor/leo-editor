@@ -46,6 +46,10 @@
 <v t="ekr.20170311121717.1"><vh>Test driven development</vh></v>
 <v t="ekr.20170403190104.1"><vh>Performance gotchas</vh></v>
 <v t="ekr.20170403190120.1"><vh>About names</vh></v>
+<v t="ekr.20180503073939.1"><vh>Prompting for command arguments</vh>
+<v t="ekr.20180503073954.1"><vh>Example 1: Prompting for one arg</vh></v>
+<v t="ekr.20180503074530.1"><vh>Example 2: get two arguments from the user</vh></v>
+</v>
 </v>
 <v t="ekr.20170311122518.1"><vh>Command line options</vh></v>
 </v>
@@ -1629,6 +1633,63 @@ Dubious design and code
 This is a good time to discuss truly dubious aspects of Leo's code base.
 
 
+</t>
+<t tx="ekr.20180503073939.1">
+
+</t>
+<t tx="ekr.20180503073954.1">@language python
+#
+# To see this in action (from this file):
+# - Ctrl-B to define the command.
+# - &lt;Alt-X)my-command&lt;Return&gt;
+#
+@g.command('my-command')
+def myCommand(event):
+    k = c.k
+    # Init the minibuffer.
+    k.setLabelBlue('prompt: ')
+    k.get1Arg(event, handler=myCommand1)
+
+def myCommand1(event):
+    k = c.k
+    # Now k.arg contains the argument.
+    g.es(k.arg)
+    # Reset the minibuffer.
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
+</t>
+<t tx="ekr.20180503074530.1">@language python
+#
+# To see this in action (from this file):
+# - Ctrl-B to define the command.
+# - &lt;Alt-X)my-command&lt;Return&gt;
+#
+arg1 = None
+
+@g.command('my-command2')
+def myCommand(event):
+    k = c.k
+    k.setLabelBlue('first prompt: ')
+    k.get1Arg(event, handler=myCommand1)
+
+def myCommand1(event):
+    global arg1
+    k = c.k
+    arg1 = k.arg
+    k.extendLabel(' second prompt: ', select=False, protect=True)
+    k.getNextArg(handler=myCommand2)
+
+def myCommand2(event):
+    k = c.k
+    # Now k.arg contains second argument.
+    #
+    # Finish the command, using self.arg1 and k.arg.
+    g.es('arg1', arg1, 'arg2', k.arg)
+    # Reset the minibuffer.
+    k.clearState()
+    k.resetLabel()
+    k.showStateAndMode()
 </t>
 </tnodes>
 </leo_file>
