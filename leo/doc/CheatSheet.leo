@@ -47,8 +47,9 @@
 <v t="ekr.20170403190104.1"><vh>Performance gotchas</vh></v>
 <v t="ekr.20170403190120.1"><vh>About names</vh></v>
 <v t="ekr.20180503073939.1"><vh>Prompting for command arguments</vh>
-<v t="ekr.20180503073954.1"><vh>Example 1: Prompting for one arg</vh></v>
-<v t="ekr.20180503074530.1"><vh>Example 2: get two arguments from the user</vh></v>
+<v t="ekr.20180503073954.1"><vh>Example 1: Prompt for one arg</vh></v>
+<v t="ekr.20180503074530.1"><vh>Example 2: Prompt for 2 args</vh></v>
+<v t="ekr.20180503132659.1"><vh>Example 3: Prompt for 3 args</vh></v>
 </v>
 </v>
 <v t="ekr.20170311122518.1"><vh>Command line options</vh></v>
@@ -100,7 +101,6 @@
 </v>
 <v t="ekr.20180405093138.1"><vh>Leo University</vh></v>
 </v>
-<v t="ekr.20180429040113.1"><vh>Post</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20131019184243.16683">@wrap
@@ -1588,108 +1588,60 @@ https://github.com/leo-editor/leo-editor/issues/816
 </t>
 <t tx="ekr.20180405105451.1">These will work only if numpy and pyplot are installed.</t>
 <t tx="ekr.20180405105738.1"></t>
-<t tx="ekr.20180429040113.1">​
-On Sat, Apr 28, 2018 at 6:46 AM, vitalije &lt;vitalijem@gmail.com&gt; wrote:
-
-    ​​
-    O.k. No more complains from me.
-
-
-​ Well, I hope you mean, no more complaints about the VNode class ;-) 
-
-Please do continue to question Leo's design, code and style, or anything else. The very last thing I want is to stifle discussion and debate.
-
-My brother (a very fine programmer) and I have a running joke.  We ask, "Who wrote this ***?  Oh yeah, I did".  Every time we look at our code with fresh eyes we see something that could be improved.
-
-Thinking back about my reply, it seems that all the italics and boldface might be misunderstood. The tone of voice is missing in writing.
-
-I was not at all upset about your criticisms and questions. I was trying to emphasize what I think are truly important ideas underlying Leo's architecture.  These ideas exist explicitly nowhere in the code itself! So I welcome any chance to explain them more fully.
-
-Indeed, I want to say at least a few more things about Leo's architecture.  The fundamental principle could be restated as follows:
-
-    Modules and classes should never know about
-    the inner workings of other classes
-
-Just now I see that this isn't as simple an idea as I thought.
-
-Usually, knowing about the existence of methods of other classes is benign.  But calling low-level methods of other classes would be asking for trouble.  But what is a low-level method?
-
-The outline for the VNode class has an organizer node for its low-level methods. Furthermore, all low-level methods of the VNode class have names starting with underscore.  So, for the VNode class, we know for sure what the low-level methods are.
-
-But for other classes, it might not be so obvious what the low-level helpers are.  Leo's code doesn't follow the underscore convention consistently.  I often use the "Helper" suffix instead.
-
-Turning from methods to ivars, the rule is:
-
-    Code should use only official ivars from other classes
-
-"@test official g.app ivars" defines the official ivars of one class.  Other classes have comments about what their official ivars are. CheatSheet.leo contains lists of the important ivars, so I guess the concept of official ivar isn't too mysterious.  In any case, code like:
-
-    c.frame.body.wrapper
-
-should be fairly easy to understand.
-
-Dubious design and code
-
-This is a good time to discuss truly dubious aspects of Leo's code base.
-
-
-</t>
 <t tx="ekr.20180503073939.1">
 
 </t>
 <t tx="ekr.20180503073954.1">@language python
-#
+
 # To see this in action (from this file):
 # - Ctrl-B to define the command.
-# - &lt;Alt-X)my-command&lt;Return&gt;
-#
-@g.command('my-command')
-def myCommand(event):
-    k = c.k
-    # Init the minibuffer.
-    k.setLabelBlue('prompt: ')
-    k.get1Arg(event, handler=myCommand1)
+# - Execute the i1 command
 
-def myCommand1(event):
-    k = c.k
-    # Now k.arg contains the argument.
-    g.es(k.arg)
-    # Reset the minibuffer.
-    k.clearState()
-    k.resetLabel()
-    k.showStateAndMode()
-</t>
+@g.command('i1')
+def i1_command(event):
+    c = event.get('c')
+    if not c: return
+        
+    def callback(arg, c, event):
+        g.trace(arg)
+        c.bodyWantsFocus()
+
+    c.interactive(callback, event, prompt='Prompt: ')</t>
 <t tx="ekr.20180503074530.1">@language python
-#
+
 # To see this in action (from this file):
 # - Ctrl-B to define the command.
-# - &lt;Alt-X)my-command&lt;Return&gt;
-#
-arg1 = None
+# - Execute the i2 command.
 
-@g.command('my-command2')
-def myCommand(event):
-    k = c.k
-    k.setLabelBlue('first prompt: ')
-    k.get1Arg(event, handler=myCommand1)
+@g.command('i2')
+def i2_command(event):
+    c = event.get('c')
+    if not c: return
+        
+    def callback(arg1, arg2, c, event):
+        g.trace(arg1, arg2)
+        c.bodyWantsFocus()
 
-def myCommand1(event):
-    global arg1
-    k = c.k
-    arg1 = k.arg
-    k.extendLabel(' second prompt: ', select=False, protect=True)
-    k.getNextArg(handler=myCommand2)
+    c.interactive2(callback, event,
+        prompt1='Find: ', prompt2=' Replace: ')
+</t>
+<t tx="ekr.20180503132659.1">@language python
 
-def myCommand2(event):
-    k = c.k
-    # Now k.arg contains second argument.
-    #
-    # Finish the command, using self.arg1 and k.arg.
-    g.es('arg1', arg1, 'arg2', k.arg)
-    # Reset the minibuffer.
-    k.clearState()
-    k.resetLabel()
-    k.showStateAndMode()
+# To see this in action (from this file):
+# - Ctrl-B to define the command.
+# - Execute the i3 command
+
+@g.command('i3')
+def i3_command(event):
+    c = event.get('c')
+    if not c: return
+        
+    def callback(arg1, arg2, arg3, c, event):
+        g.trace(arg1, arg2, arg3)
+        c.bodyWantsFocus()
+
+    c.interactive3(callback, event,
+        prompt1='One: ', prompt2=' Two: ', prompt3=' Three: ')
 </t>
 </tnodes>
 </leo_file>
