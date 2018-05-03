@@ -486,14 +486,17 @@ class LeoFind(object):
         # Fixes: #722 replace-all leaves unsaved changed files
         c = self.c
         dirtyvnodes = [v for v in c.fileCommands.gnxDict.values() if v.isDirty()]
+        
         def propagate(v):
             for v1 in v.parents:
                 if not v1.isDirty():
                     v1.setDirty()
                     propagate(v1)
+
         for v in dirtyvnodes:
             propagate(v)
-
+        # Fix #880.
+        c.redraw()
     #@+node:ekr.20150629072547.1: *4* find.preloadFindPattern
     def preloadFindPattern(self, w):
         '''Preload the find pattern from the selected text of widget w.'''
@@ -1423,12 +1426,11 @@ class LeoFind(object):
     replace = change
     #@+node:ekr.20031218072017.3069: *4* find.changeAll
     def changeAll(self):
-        trace = False and not g.unitTesting
+
         c = self.c; u = c.undoer; undoType = 'Replace All'
         current = c.p
         t1 = time.clock()
         if not self.checkArgs():
-            if trace: g.trace('checkArgs failed')
             return
         self.initInHeadline()
         saveData = self.save()
@@ -1441,9 +1443,7 @@ class LeoFind(object):
         while 1:
             pos1, pos2 = self.findNextMatch()
             if pos1 is None:
-                if trace: g.trace('findNextMatch failed')
                 break
-            if trace: g.trace(pos1, pos2, self.p and self.p.h)
             count += 1
             self.batchChange(pos1, pos2)
         p = c.p
