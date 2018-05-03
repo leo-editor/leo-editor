@@ -1209,29 +1209,27 @@ class GetArg(object):
 
     For details, see the docstring for ga.get_arg
     '''
-    # pylint: disable=no-self-argument
-    # The first argument is ga.
     #@+others
     #@+node:ekr.20140818052417.18241: *3* ga.birth
     #@+node:ekr.20140816165728.18952: *4* ga.__init__
-    def __init__(ga, c, prompt='full-command: ', tabName='Completion'):
+    def __init__(self, c, prompt='full-command: ', tabName='Completion'):
         '''Ctor for GetArg class.'''
         # Common ivars.
-        ga.c = c
-        ga.k = c.k
+        self.c = c
+        self.k = c.k
         assert c
         assert c.k
-        ga.log = c.frame.log or g.NullObject()
-        ga.tabName = tabName
+        self.log = c.frame.log or g.NullObject()
+        self.tabName = tabName
         # State vars.
-        ga.after_get_arg_state = None, None, None
-        ga.arg_completion = True
-        ga.handler = None
-        ga.tabList = []
+        self.after_get_arg_state = None, None, None
+        self.arg_completion = True
+        self.handler = None
+        self.tabList = []
         # Tab cycling ivars...
-        ga.cycling_prefix = None
-        ga.cycling_index = -1
-        ga.cycling_tabList = []
+        self.cycling_prefix = None
+        self.cycling_index = -1
+        self.cycling_tabList = []
         # The following are k globals.
             # k.arg.
             # k.argSelectedText
@@ -1239,29 +1237,29 @@ class GetArg(object):
     #@+node:ekr.20140817110228.18321: *3* ga.compute_tab_list
     # Called from k.doTabCompletion: with tabList = list(c.commandsDict.keys())
 
-    def compute_tab_list(ga, tabList, backspace=False, allow_empty_completion=False):
+    def compute_tab_list(self, tabList, backspace=False, allow_empty_completion=False):
         '''Compute and show the available completions.'''
         # Support vim-mode commands.
-        command = ga.get_label()
-        # g.trace(len(tabList), ga.is_command(command),command)
-        if ga.is_command(command):
+        command = self.get_label()
+        # g.trace(len(tabList), self.is_command(command),command)
+        if self.is_command(command):
             # if trace: g.trace('\n'.join(tabList))
             tabList, common_prefix = g.itemsMatchingPrefixInList(command, tabList)
             return common_prefix, tabList
                 # note order.
         else:
             # For now, disallow further completions if something follows the command.
-            command = ga.get_command(command)
+            command = self.get_command(command)
             return command, [command]
     #@+node:ekr.20140816165728.18965: *3* ga.do_back_space (entry)
     # Called from k.fullCommand: with defaultTabList = list(c.commandsDict.keys())
 
-    def do_back_space(ga, tabList, completion=True):
+    def do_back_space(self, tabList, completion=True):
         '''Handle a backspace and update the completion list.'''
         trace = False and not g.unitTesting
-        k = ga.k
-        ga.tabList = tabList[:] if tabList else []
-        if trace: g.trace('len(ga.tabList)', len(ga.tabList))
+        k = self.k
+        self.tabList = tabList[:] if tabList else []
+        if trace: g.trace('len(ga.tabList)', len(self.tabList))
         # Update the label.
         w = k.w
         i, j = w.getSelectionRange()
@@ -1278,57 +1276,57 @@ class GetArg(object):
                 w.delete(i, j)
                 w.setSelectionRange(i, i, insert=ins)
         if w.getAllText().strip():
-            junk, tabList = ga.compute_tab_list(ga.tabList)
+            junk, tabList = self.compute_tab_list(self.tabList)
             # Do *not* extend the label to the common prefix.
         else:
             tabList = []
         if completion:
             # Fix #323: https://github.com/leo-editor/leo-editor/issues/323
-            common_prefix, tabList = ga.compute_tab_list(tabList)
-            ga.show_tab_list(tabList)
-            ga.reset_tab_cycling()
+            common_prefix, tabList = self.compute_tab_list(tabList)
+            self.show_tab_list(tabList)
+            self.reset_tab_cycling()
     #@+node:ekr.20140817110228.18323: *3* ga.do_tab (entry) & helpers
     # Used by ga.get_arg and k.fullCommand.
 
-    def do_tab(ga, tabList, completion=True):
+    def do_tab(self, tabList, completion=True):
         '''Handle tab completion when the user hits a tab.'''
         trace = False and not g.unitTesting
         # g.trace('\n'+'\n'.join([z for z in tabList if z.startswith('@')]))
-        c = ga.c
+        c = self.c
         if completion:
-            tabList = ga.tabList = tabList[:] if tabList else []
+            tabList = self.tabList = tabList[:] if tabList else []
             if trace: g.trace('len(ga.tabList)', len(tabList))
             # command = ga.get_label()
-            common_prefix, tabList = ga.compute_tab_list(tabList)
-            if ga.cycling_prefix and not ga.cycling_prefix.startswith(common_prefix):
-                ga.cycling_prefix = common_prefix
+            common_prefix, tabList = self.compute_tab_list(tabList)
+            if self.cycling_prefix and not self.cycling_prefix.startswith(common_prefix):
+                self.cycling_prefix = common_prefix
             if trace:
                 g.trace('len(tabList): %s common_prefix: %r cycling_prefix: %r' % (
-                    len(tabList), common_prefix, ga.cycling_prefix))
+                    len(tabList), common_prefix, self.cycling_prefix))
                 g.printList(tabList)
             # No tab cycling for completed commands having
             # a 'tab_callback' attribute.
-            if len(tabList) == 1 and ga.do_tab_callback():
+            if len(tabList) == 1 and self.do_tab_callback():
                 return
             else:
                 # Fix #323: https://github.com/leo-editor/leo-editor/issues/323
                 # A big simplifcation: always call ga.do_tab_list
-                ga.do_tab_cycling(common_prefix, tabList)
+                self.do_tab_cycling(common_prefix, tabList)
 
         c.minibufferWantsFocus()
     #@+node:ekr.20140818145250.18235: *4* ga.do_tab_callback
-    def do_tab_callback(ga):
+    def do_tab_callback(self):
         '''
         If the command-name handler has a tab_callback,
         call handler.tab_callback() and return True.
         '''
         trace = False and not g.unitTesting
-        c, k = ga.c, ga.k
+        c, k = self.c, self.k
         commandName, tail = k.getMinibufferCommandName()
         handler = c.commandsDict.get(commandName)
         if trace: g.trace(commandName, handler and handler.__name__ or 'None')
         if hasattr(handler, 'tab_callback'):
-            ga.reset_tab_cycling()
+            self.reset_tab_cycling()
             k.functionTail = tail
                 # For k.getFileName.
             handler.tab_callback()
@@ -1336,69 +1334,70 @@ class GetArg(object):
         else:
             return False
     #@+node:ekr.20140819050118.18317: *4* ga.do_tab_cycling
-    def do_tab_cycling(ga, common_prefix, tabList):
+    def do_tab_cycling(self, common_prefix, tabList):
         '''Put the next (or first) completion in the minibuffer.'''
         trace = False and not g.unitTesting
-        s = ga.get_label()
+        s = self.get_label()
         if trace:
             g.trace('===== label: %r prefix: %r len(tabList): %s' % (
-                s, ga.cycling_prefix, len(tabList)))
+                s, self.cycling_prefix, len(tabList)))
         if not common_prefix:
             # Leave the minibuffer as it is.
             if trace: g.trace('0: NO COMMON PREFIX')
-            ga.show_tab_list(tabList)
+            self.show_tab_list(tabList)
         # Fix #323: https://github.com/leo-editor/leo-editor/issues/323
         elif (
-            ga.cycling_prefix and s.startswith(ga.cycling_prefix) and
-            sorted(ga.cycling_tabList) == sorted(tabList) # Bug fix: 2016/10/14
+            self.cycling_prefix and
+            s.startswith(self.cycling_prefix) and
+            sorted(self.cycling_tabList) == sorted(tabList) # Bug fix: 2016/10/14
         ):
             if trace: g.trace('1: CYCLE: %s %r: tabList[0]: %r' % (
-                ga.cycling_index, s, tabList and tabList[0] or '<none>'))
-            n = ga.cycling_index
-            n = ga.cycling_index = n + 1 if n + 1 < len(ga.cycling_tabList) else 0
-            ga.set_label(ga.cycling_tabList[n])
-            ga.show_tab_list(ga.cycling_tabList)
+                self.cycling_index, s, tabList and tabList[0] or '<none>'))
+            n = self.cycling_index
+            n = self.cycling_index = n + 1 if n + 1 < len(self.cycling_tabList) else 0
+            self.set_label(self.cycling_tabList[n])
+            self.show_tab_list(self.cycling_tabList)
         else:
             # Restart.
             if trace:
                 g.trace('2: RESTART: %r:' % (s))
                 g.printList(tabList)
-            ga.show_tab_list(tabList)
-            ga.cycling_tabList = tabList[:]
-            ga.cycling_prefix = common_prefix
-            ga.set_label(common_prefix)
+            self.show_tab_list(tabList)
+            self.cycling_tabList = tabList[:]
+            self.cycling_prefix = common_prefix
+            self.set_label(common_prefix)
             if tabList and common_prefix == tabList[0]:
                 if trace: g.trace('select the first command.')
-                ga.cycling_index = 0
+                self.cycling_index = 0
             else:
                 if trace: g.trace('show common prefix.')
-                ga.cycling_index = -1
+                self.cycling_index = -1
     #@+node:ekr.20140819050118.18318: *4* ga.reset_tab_cycling
-    def reset_tab_cycling(ga):
+    def reset_tab_cycling(self):
         '''Reset all tab cycling ivars.'''
-        ga.cycling_prefix = None
-        ga.cycling_index = -1
-        ga.cycling_tabList = []
+        self.cycling_prefix = None
+        self.cycling_index = -1
+        self.cycling_tabList = []
     #@+node:ekr.20140816165728.18958: *3* ga.extend/get/set_label
     # Not useful because k.entendLabel doesn't handle selected text.
     if 0:
 
-        def extend_label(ga, s):
+        def extend_label(self, s):
             '''Extend the label by s.'''
-            ga.c.k.extendLabel(s, select=False, protect=False)
+            self.c.k.extendLabel(s, select=False, protect=False)
 
-    def get_label(ga):
+    def get_label(self):
         '''Return the label, not including the prompt.'''
-        return ga.c.k.getLabel(ignorePrompt=True)
+        return self.c.k.getLabel(ignorePrompt=True)
 
-    def set_label(ga, s):
+    def set_label(self, s):
         '''Set the label after the prompt to s. The prompt never changes.'''
-        k = ga.c.k
+        k = self.c.k
         # Using k.mb_prefix is simplest.  No ga.ivars need be inited.
         k.setLabel(k.mb_prefix, protect=True)
         k.extendLabel(s or '', select=False, protect=False)
     #@+node:ekr.20140816165728.18941: *3* ga.get_arg (entry) & helpers
-    def get_arg(ga, event,
+    def get_arg(self, event,
         returnKind=None, returnState=None, handler=None,
         tabList=None, completion=True, oneCharacter=False,
         stroke=None, useMinibuffer=True
@@ -1437,10 +1436,8 @@ class GetArg(object):
 
         '''
         #@-<< ga.get_arg docstring >>
-        # pylint: disable=unpacking-non-sequence
-        trace = False and not g.app.unitTesting
         if tabList is None: tabList = []
-        c, k = ga.c, ga.k
+        c, k = self.c, self.k
         state = k.getState('getArg')
         c.check_event(event)
         c.minibufferWantsFocusNow()
@@ -1448,48 +1445,38 @@ class GetArg(object):
         if state > 0:
             k.setLossage(char, stroke)
         if state == 0:
-            ga.do_state_zero(completion, event, handler, oneCharacter,
+            self.do_state_zero(completion, event, handler, oneCharacter,
                 returnKind, returnState, tabList, useMinibuffer)
-            if trace: ga.trace_state(char, completion, handler, state, stroke)
+            return
+        if char == 'Escape':
+            k.keyboardQuit()
+        elif self.should_end(char, stroke):
+            self.do_end(event, char, stroke)
+        elif char in ('\t', 'Tab'):
+            self.do_tab(self.tabList, self.arg_completion)
+        elif char in ('\b', 'BackSpace'):
+            self.do_back_space(self.tabList, self.arg_completion)
+            c.minibufferWantsFocus()
+        elif k.isFKey(stroke):
+            # Ignore only F-keys. Ignoring all except plain keys would kill unicode searches.
+            pass
         else:
-            if trace: ga.trace_state(char, completion, handler, state, stroke)
-            if char == 'Escape':
-                k.keyboardQuit()
-            elif ga.should_end(char, stroke):
-                ga.do_end(event, char, stroke)
-            elif char in ('\t', 'Tab'):
-                if trace: g.trace('***tab*** len(ga.tabList)', len(ga.tabList))
-                ga.do_tab(ga.tabList, ga.arg_completion)
-            elif char in ('\b', 'BackSpace'):
-                ga.do_back_space(ga.tabList, ga.arg_completion)
-                c.minibufferWantsFocus()
-            elif k.isFKey(stroke):
-                # Ignore only F-keys. Ignoring all except plain keys would kill unicode searches.
-                pass
-            else:
-                ga.do_char(event, char)
+            self.do_char(event, char)
     #@+node:ekr.20161019060054.1: *4* ga.cancel_after_state
-    def cancel_after_state(ga):
+    def cancel_after_state(self):
 
-        ga.after_get_arg_state = None
+        self.after_get_arg_state = None
     #@+node:ekr.20140816165728.18955: *4* ga.do_char
-    def do_char(ga, event, char):
+    def do_char(self, event, char):
         '''Handle a non-special character.'''
-        k = ga.k
+        k = self.k
         k.updateLabel(event)
         # Any plain key resets tab cycling.
-        ga.reset_tab_cycling()
+        self.reset_tab_cycling()
     #@+node:ekr.20140817110228.18316: *4* ga.do_end
-    def do_end(ga, event, char, stroke):
+    def do_end(self, event, char, stroke):
         '''A return or escape has been seen.'''
-        trace = False and not g.unitTesting
-        k = ga.k
-        if trace:
-            g.trace('oneCharacterArg: %r' % k.oneCharacterArg)
-            g.trace('char: %r stroke: %r escapes: %s' % (char, stroke, k.getArgEscapes))
-            if ga.after_get_arg_state:
-                kind, n, handler = ga.after_get_arg_state
-                g.trace('after state', kind, n, handler and handler.__name__ or 'None')
+        k = self.k
         if char == '\t' and char in k.getArgEscapes:
             k.getArgEscapeFlag = True
         if stroke and stroke in k.getArgEscapes:
@@ -1500,39 +1487,35 @@ class GetArg(object):
             k.arg = char
         else:
             # A hack to support the curses gui.
-            k.arg = gui_arg or ga.get_label()
-        if trace:
-            g.trace('k.w: %r, prefix: %r, arg: %r gui_arg: %r' % (
-                k.w, k.mb_prefix, k.arg, gui_arg))
-        kind, n, handler = ga.after_get_arg_state
-        if trace: g.trace('handler: %s' % (handler and handler.__name__))
-        if kind: k.setState(kind, n, handler)
-        ga.log.deleteTab('Completion')
-        if trace: g.trace('kind', kind, 'n', n, 'handler', handler and handler.__name__)
-        # pylint: disable=not-callable
-        ga.reset_tab_cycling()
+            k.arg = gui_arg or self.get_label()
+        kind, n, handler = self.after_get_arg_state
+        if kind:
+            k.setState(kind, n, handler)
+        self.log.deleteTab('Completion')
+        self.reset_tab_cycling()
         if handler:
-            # g.trace(handler)
+            # pylint: disable=not-callable
             handler(event)
     #@+node:ekr.20140817110228.18317: *4* ga.do_state_zero
-    def do_state_zero(ga, completion, event, handler, oneCharacter,
+    def do_state_zero(self, completion, event, handler, oneCharacter,
         returnKind, returnState, tabList, useMinibuffer
     ):
         '''Do state 0 processing.'''
-        trace = False and not g.unitTesting
-        c, k = ga.c, ga.k
+        c, k = self.c, self.k
+        #
         # Set the ga globals...
         k.getArgEscapeFlag = False
-        ga.after_get_arg_state = returnKind, returnState, handler
-        ga.arg_completion = completion
-        ga.cycling_prefix = None
-        ga.handler = handler
-        ga.tabList = tabList[:] if tabList else []
-        if trace: g.trace('len(ga.tabList)', len(ga.tabList))
+        self.after_get_arg_state = returnKind, returnState, handler
+        self.arg_completion = completion
+        self.cycling_prefix = None
+        self.handler = handler
+        self.tabList = tabList[:] if tabList else []
+        #
         # Set the k globals...
         k.argSelectedText = c.frame.body.wrapper.getSelectedText()
         k.functionTail = None
         k.oneCharacterArg = oneCharacter
+        #
         # Do *not* change the label here!
         # Enter the next state.
         c.widgetWantsFocus(c.frame.body.wrapper)
@@ -1541,11 +1524,9 @@ class GetArg(object):
         k.afterArgWidget = event and event.widget or c.frame.body.wrapper
         if useMinibuffer: c.minibufferWantsFocus()
     #@+node:ekr.20140818103808.18234: *4* ga.should_end
-    def should_end(ga, char, stroke):
+    def should_end(self, char, stroke):
         '''Return True if ga.get_arg should return.'''
-        trace = False and not g.unitTesting
-        k = ga.k
-        if trace: g.trace('char', repr(char), 'stroke', repr(stroke))
+        k = self.k
         return (
             char in ('\n', 'Return',) or
             k.oneCharacterArg or
@@ -1554,19 +1535,19 @@ class GetArg(object):
                 # The Find Easter Egg.
         )
     #@+node:ekr.20140818103808.18235: *4* ga.trace_state
-    def trace_state(ga, char, completion, handler, state, stroke):
+    def trace_state(self, char, completion, handler, state, stroke):
         '''Trace the vars and ivars.'''
-        k = ga.c.k
+        k = self.c.k
         g.trace(
             'state', state, 'char', repr(char), 'stroke', repr(stroke),
             # 'isPlain',k.isPlainKey(stroke),
             '\n',
             'escapes', k.getArgEscapes,
-            'completion', ga.arg_completion,
-            'handler', ga.handler and ga.handler.__name__ or 'None',
+            'completion', self.arg_completion,
+            'handler', self.handler and self.handler.__name__ or 'None',
         )
     #@+node:ekr.20140818074502.18222: *3* ga.get_command
-    def get_command(ga, s):
+    def get_command(self, s):
         '''Return the command part of a minibuffer contents s.'''
         trace = False and not g.unitTesting
         if s.startswith(':'):
@@ -1598,15 +1579,15 @@ class GetArg(object):
             if trace: g.trace('normal', ''.join(command))
             return ''.join(command)
     #@+node:ekr.20140818085719.18227: *3* ga.get_minibuffer_command_name
-    def get_minibuffer_command_name(ga):
+    def get_minibuffer_command_name(self):
         '''Return the command name in the minibuffer.'''
-        s = ga.get_label()
-        command = ga.get_command(s)
+        s = self.get_label()
+        command = self.get_command(s)
         tail = s[len(command):]
         # g.trace('command:',command,'tail:',tail)
         return command, tail
     #@+node:ekr.20140818074502.18221: *3* ga.is_command
-    def is_command(ga, s):
+    def is_command(self, s):
         '''Return False if something, even a blank, follows a command.'''
         if s.startswith('@'):
             return True
@@ -1628,10 +1609,10 @@ class GetArg(object):
                     return False
             return True
     #@+node:ekr.20140816165728.18959: *3* ga.show_tab_list & helper
-    def show_tab_list(ga, tabList):
+    def show_tab_list(self, tabList):
         '''Show the tab list in the log tab.'''
-        k = ga.k
-        ga.log.clearTab(ga.tabName)
+        k = self.k
+        self.log.clearTab(self.tabName)
         d = k.computeInverseBindingDict()
         data, legend, n = [], False, 0
         for commandName in tabList:
@@ -1642,7 +1623,7 @@ class GetArg(object):
                     s1a = '' if pane in ('all:', 'button:') else '%s ' % (pane)
                     s1b = k.prettyPrintKey(key)
                     s1 = s1a + s1b
-                    s2 = ga.command_source(commandName)
+                    s2 = self.command_source(commandName)
                     if s2 != ' ': legend = True
                     s3 = commandName
                     data.append((s1, s2, s3),)
@@ -1659,9 +1640,9 @@ class GetArg(object):
                 'M myLeoSettings.leo',
                 'L local .leo File',
             ])
-        g.es('', '\n'.join(aList), tabName=ga.tabName)
+        g.es('', '\n'.join(aList), tabName=self.tabName)
     #@+node:ekr.20150402034643.1: *4* ga.command_source
-    def command_source(ga, commandName):
+    def command_source(self, commandName):
         '''
         Return the source legend of an @button/@command node.
         'G' leoSettings.leo
@@ -1669,7 +1650,7 @@ class GetArg(object):
         'L' local .leo File
         ' ' not an @command or @button node
         '''
-        c = ga.c
+        c = self.c
         if commandName.startswith('@'):
             d = c.commandsDict
             func = d.get(commandName)
