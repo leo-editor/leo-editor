@@ -3658,8 +3658,9 @@ def delete_trace_statements(event=None):
     
     **Warning**: Use this command at your own risk.
     
-    It can cause "if" and "else" clauses to become empty,
-    resulting in syntax errors.
+    It can cause "if" and "else" clauses to become empty, resulting in
+    syntax errors. Having said that, pyflakes & pylint will usually catch
+    the problems.
     '''
     c = event.get('c')
     if not c:
