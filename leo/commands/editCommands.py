@@ -3607,5 +3607,93 @@ def unmark_first_parents(event=None):
         c.setChanged()
         c.redraw()
     return changed
+#@+node:ekr.20180504180844.1: ** Top-level helper functions
+#@+node:ekr.20180504180247.2: *3* find_next_trace
+if_pat = re.compile(r'\n[ \t]*(if|elif)\s*trace\b.*:')
+    # Will not find in comments, which is fine.
+    
+skip_pat = re.compile(r'=.*in g.app.debug')
+
+def find_next_trace(ins, p):
+    while p:
+        ins = max(0, ins-1) # Back up over newline.
+        s = p.b[ins:]
+        m = re.search(skip_pat, s)
+        if m:
+            # Skip this node.
+            g.es_print('Skipping', p.h)
+        else:
+            m = re.search(if_pat, s)
+            if m:
+                i = m.start()+1
+                j = m.end()
+                k = find_trace_block(i, j, s)
+                i += ins
+                k += ins
+                return i, k, p
+        p.moveToThreadNext()
+        ins = 0
+    return None, None, p
+#@+node:ekr.20180504180247.3: *3* find_trace_block
+def find_trace_block(i, j, s):
+    '''Find the statement or block starting at i.'''
+    assert s[i] != '\n'
+    s = s[i:]
+    lws = len(s) - len(s.lstrip())
+    n = 1 # Number of lines to skip.
+    lines = g.splitLines(s)
+    for line in lines[1:]:
+        lws2 = len(line) - len(line.lstrip())
+        if lws2 <= lws:
+            break
+        n += 1
+    assert n >= 1
+    result_lines = lines[:n]
+    return i + len(''.join(result_lines))
+#@+node:ekr.20180504180134.1: ** @g.command('delete-trace-statements')
+@g.command('delete-trace-statements')
+def delete_trace_statements(event=None):
+    '''
+    Delete all trace statements/blocks from c.p to the end of the outline.
+    
+    **Warning**: Use this command at your own risk.
+    
+    It can cause "if" and "else" clauses to become empty,
+    resulting in syntax errors.
+    '''
+    c = event.get('c')
+    if not c:
+        return
+    p = c.p
+    ins = 0
+    seen = []
+    while True:
+        i, k, p = find_next_trace(ins, p)
+        if not p:
+            g.es_print('done')
+            return
+        s = p.b
+        if p.h not in seen:
+            seen.append(p.h)
+            g.es_print('Changed:', p.h)
+        ins = 0 # Rescanning is essential.
+        p.b = s[:i] + s[k:]
+#@+node:ekr.20180504180647.1: ** @g.command('select-next-trace-statement')
+@g.command('select-next-trace-statement')
+def select_next_trace_statement(event=None):
+    '''Select the next statement/block enabled by "if trace...:"'''
+    c = event.get('c')
+    if not c:
+        return
+    w = c.frame.body.wrapper
+    ins = w.getInsertPoint()
+    i, k, p = find_next_trace(ins, c.p)
+    if p:
+        c.selectPosition(p)
+        c.redraw()
+        w.setSelectionRange(i, k, insert=k)
+    else:
+        g.es_print('done')
+    c.bodyWantsFocus()
 #@-others
 #@-leo
