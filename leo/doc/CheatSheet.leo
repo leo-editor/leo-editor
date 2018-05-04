@@ -1602,11 +1602,11 @@ def i1_command(event):
     c = event.get('c')
     if not c: return
         
-    def callback(arg, c, event):
-        g.trace(arg)
+    def callback(args, c, event):
+        g.trace(args)
         c.bodyWantsFocus()
 
-    c.interactive(callback, event, prompt='Prompt: ')</t>
+    c.interactive(callback, event, prompts=['Prompt: '])</t>
 <t tx="ekr.20180503074530.1">@language python
 
 # To see this in action (from this file):
@@ -1618,12 +1618,12 @@ def i2_command(event):
     c = event.get('c')
     if not c: return
         
-    def callback(arg1, arg2, c, event):
-        g.trace(arg1, arg2)
+    def callback(args, c, event):
+        g.trace(args)
         c.bodyWantsFocus()
 
-    c.interactive2(callback, event,
-        prompt1='Find: ', prompt2=' Replace: ')
+    c.interactive(callback, event,
+        prompts=['Find: ', ' Replace: '])
 </t>
 <t tx="ekr.20180503132659.1">@language python
 
@@ -1636,12 +1636,12 @@ def i3_command(event):
     c = event.get('c')
     if not c: return
         
-    def callback(arg1, arg2, arg3, c, event):
-        g.trace(arg1, arg2, arg3)
+    def callback(args, c, event):
+        g.trace(args)
         c.bodyWantsFocus()
 
-    c.interactive3(callback, event,
-        prompt1='One: ', prompt2=' Two: ', prompt3=' Three: ')
+    c.interactive(callback, event,
+        prompts=['One: ', ' Two: ', ' Three: '])
 </t>
 </tnodes>
 </leo_file>
