@@ -1,0 +1,659 @@
+#@+leo-ver=5-thin
+#@+node:bob.20170311143430.3: * @file doc/doc.txt
+#@@language plain
+#@+others
+#@+node:bob.20170311143456.1: ** To Do
+#@+node:bob.20170508125827.1: ** Issues
+#@+node:bob.20170319141959.1: *3* uA's
+I don't understand Terry Brown's attrib_edit.py plugin.  I think it is inadequate anyway.
+
+I might look at it for help coding a Babel specific editing facility.
+
+Jacob Peck's nodetags.py may be useful for classifying nodes into possibly overlapping sets, but I doubt that Babel can use it.
+I have never felt a need for tags--unless I could have used them in my application lists.  A tag for each OS under which an application runs would have allowed me to list the applications in strictly alphabetical order.
+
+Peck's UI seems good to me.  I think it includes everything you need.
+
+----
+Babel's uA's:
+
+p.v.u['Babel'] = dictionary whose keys and values are strings.
+    The keys are the Babel parameter names:
+        Key                         Value
+        src                         Language name.  Examples:  bash, python
+                Currently EKR favors using @language directives for this.
+        output                      "function", "stdout", "stderr", "stdout-stderr", "stdout->stderr"
+        session                     Session name
+        name                        Name of block ???? -- i.e. function name
+        variable                    Name of function variable ??? There may be many variables
+
+How would this be implemented as a bash function?
+How is session implemented?
+
+#@+node:bob.20170320163045.1: *3* Sessions
+For a session start an interpreter (Python or BASH) taking its input from stdin.
+Then feed the interpreter code as it becomes available.
+Terminate the session with a Ctrl-D (or EOF) to stdin.
+
+
+Problem:  If the interpreter doesn't terminate after processing a batch of code, how do I tell that the interpreter has finished and is idle?
+
+Possible solution:  Send the interpreter a command that causes it to output a magic number to stdout when it finishes the batch of code.
+#@+node:bob.20170311143506.1: *3* Execute in terminal
+xfce4-terminal --hold  -e 'ls -la'
+
+Don't use -e or -x because after the command executes, keyboard input is ignored, but mouse input is not ignored.
+
+--working-directory=
+
+Forget this.
+#@+node:bob.20170318153557.1: *4* Notes
+root      2479  2479  2460  1 14:07 tty7     00:02:18 /usr/lib/xorg/Xorg -core :0 -seat seat0 -auth /var/run/lightdm/root/:0 -nolisten tcp vt7 -novtswitch
+root      2875  2875     1  0 14:07 tty1     00:00:00 /sbin/agetty --noclear tty1 linux
+bob       8811  8811     1  0 15:36 ?        00:00:01 xfce4-terminal
+bob       8816  8816  8811  0 15:36 pts/0    00:00:00 bash
+bob      14618 14618  8816  0 17:13 pts/0    00:00:00 ps -Te -f
+
+
+bob       4600  4600     1  0 14:26 ?        00:00:00 python /pri/bin/leomy /pri/git/leoMySettings/doc.leo
+
+So the Leo-Editor processes started by Thunar are not associated with any terminal.
+
+https://www.digitalocean.com/community/tutorials/how-to-use-bash-s-job-control-to-manage-foreground-and-background-processes
+
+Linux terminals are usually configured to send the "SIGINT" signal (typically signal number 2) to current foreground process when the CTRL-C key combination is pressed. The SIGINT signal tells the program that the user has requested termination using the keyboard.
+
+What is the crucial difference between starting a program from a terminal and starting it from Thunar?
+
+ ps -fe|grep pyqt
+bob      16228     1  0 17:40 ?        00:00:00 python3 /pri/git/leoMySettings/pyqtSIGINT.py
+bob      16357     1  0 17:42 ?        00:00:00 python3 /pri/git/leoMySettings/pyqtSIGINT.py
+bob      16486     1  0 17:43 ?        00:00:00 python3 /pri/git/leoMySettings/pyqtSIGINT.py
+bob      16795     1  0 17:49 ?        00:00:00 python3 /pri/git/leoMySettings/pyqtSIGINT.py
+All started from Thunar
+
+bob      17232  8816  0 17:54 pts/0    00:00:00 python3 pyqtSIGINT.py
+Started from a terminal
+
+
+XFCE Session acts the same as the i3wm session.
+
+The terminal window has to have focus in order for the grandchild process to see the SIGINT.
+
+terminal window process --> bash process --> Python pqtSIGIN.py process
+#@+node:bob.20170313153912.1: *4* Windows
+https://msdn.microsoft.com/en-us/library/windows/desktop/ms682541(v=vs.85).aspx
+
+CTRL+C and CTRL+BREAK Signals
+
+The CTRL+C and CTRL+BREAK key combinations receive special handling by console processes. By default, when a console window has the keyboard focus, CTRL+C or CTRL+BREAK is treated as a signal (SIGINT or SIGBREAK) and not as keyboard input. By default, these signals are passed to all console processes that are attached to the console. (Detached processes are not affected.) The system creates a new thread in each client process to handle the event. The thread raises an exception if the process is being debugged. The debugger can handle the exception or continue with the exception unhandled.
+
+CTRL+BREAK is always treated as a signal, but an application can change the default CTRL+C behavior in two ways that prevent the handler functions from being called:
+
+    The SetConsoleMode function can disable the ENABLE_PROCESSED_INPUT input mode for a console's input buffer, so CTRL+C is reported as keyboard input rather than as a signal.
+    When SetConsoleCtrlHandler is called with NULL and TRUE values for its parameters, the calling process ignores CTRL+C signals. Normal CTRL+C processing is restored by calling SetConsoleCtrlHandler with NULL and FALSE values. This attribute of ignoring or not ignoring CTRL+C signals is inherited by child processes, but it can be enabled or disabled by any process without affecting existing processes.
+
+#@+node:bob.20170313154400.1: *4* X-Windows
+https://groups.google.com/forum/#!topic/fj.mail-lists.x-window/Ln0l_9c98U0
+
+The SIGINT signal that you are referring to is generated by the shell
+on the receipt of a Control-C.  When you run your X program in the
+foreground, from a shell, this causes it to die.  When a Control-C is
+typed while the focus is in your X program's window it receives the
+keypress event for the Control-C key.  What it does is up to you.  You
+can check for it and exit your program if you wish.  But this is
+strictly up to you.
+#@+node:bob.20170314132904.1: *3* Current Leo-Editor & Ctrl-C to its terminal
+2017-03-14 13:26:33 /pri/git/leoMySettings
+$ leomy x.leo
+setting leoID from os.getenv('USER'): 'bob'
+reading settings in /pri/git/leo-editor/leo/config/leoSettings.leo
+reading settings in /pri/git/leoMySettings/myLeoSettings.leo
+Found /help
+
+** isPython3: True
+Leo 5.4-devel, build 20160722143100, Fri, Jul 22, 2016  2:31:00 PM
+Git repo info: branch = master, commit = 4ca08e65fde0
+Python 3.5.2, PyQt version 5.5.1
+linux
+^CTraceback (most recent call last):
+  File "/pri/git/leo-editor/leo/plugins/qt_idle_time.py", line 91, in at_idle_time
+    def at_idle_time(self):
+KeyboardInterrupt
+
+[Ctrl-C entered to the terminal window.  Bash generates the SIGINT. Leo-Editor outputs the trace and keeps running.]
+#@+node:bob.20170508114725.1: ** -- Abandoned --
+#@@language plain
+#@+node:bob.20180113152757.1: *3* Not used by Leo-Babel, but may be worth documenting
+Abandoned:  2018-01-13 16:34:49
+#@verbatim
+#@file%20doc/doc.txt-->To%20Do-->Not%20used%20by%20Leo-Babel,%20but%20may%20be%20worth%20documenting
+#@+node:bob.20180113152236.1: *4* leoG.handleUnl()
+handleUnl(unl, c)
+
+
+Returns:
+    cmdr:  Commander for UNL not equal to commander c
+        None --> unl is for commander c
+
+Side Effects:
+    If the UNL specifies another Leo-Editor file, it is opened and brought to the front.
+    If the UNL specifies an existing node, then all the ancestors of the node are expanded,
+        the node is expanded, and the node is selected.
+    If the UNL does not specify an existing node, 'Partial UNL match' may be printed to the Log pane?
+
+This handles the protocol prefix.
+This handles the pathname part.
+
+The interface to this function is both too complicated and too restrictive for my use.
+#@+node:bob.20180112173658.1: *3* leoG.recursiveUNLSearch()
+Abandoned:  2018-01-13 16:34:43
+#@verbatim
+#@file%20doc/doc.txt-->To%20Do-->leoG.recursiveUNLSearch()
+Maybe leoG.recursiveUNLSearch() should replace babel.unl2pos()?
+
+recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
+                       soft_idx=False, hard_idx=False)
+
+recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
+                     soft_idx=False, hard_idx=False):
+    """
+    Internal part of recursiveUNLSearch which doesn't change the
+    selected position or call c.frame.bringToFront()
+
+    returns found, depth, p, where:
+
+        - found is True if a full match was found
+        - depth is the depth of the best match
+        - p is the position of the best match
+
+    NOTE: maxdepth is max depth seen in recursion so far, not a limit on
+          how far we will recurse.  So it should default to 0 (zero).
+
+    - `unlList`: list of 'headline', 'headline:N', or 'headline:N,M'
+      elements, where N is the node's position index and M the zero based
+      count of like named nodes, eg. 'foo:2', 'foo:4,1', 'foo:12,3'
+    - `c`: outline
+    - `soft_idx`: use index when matching name not found
+    - `hard_idx`: use only indexes, ignore node names
+    - `depth`: part of recursion, don't set explicitly
+    - `p`: part of recursion, don't set explicitly
+    - `maxdepth`: part of recursion, don't set explicitly
+    - `maxp`: part of recursion, don't set explicitly
+    """
+
+Side Effects:
+    If the UNL specifies another Leo-Editor file, it is opened and brought to the front.
+    If the UNL specifies an existing node, then all the ancestors of the node are expanded,
+        the node is expanded, and the node is selected.
+    If the UNL does not specify an existing node, 'Partial UNL match' may be printed to the Log pane?
+
+This does not handle the protocol prefix.
+This does not handle the pathname part.
+
+The interface for this function is both too complicated and too restrictive for my use.
+#@+node:bob.20171023082456.1: *3* consider BackgroundProcessManager
+Abandoned:  2018-01-08 16:04:27
+#@verbatim
+#@file%20doc/doc.txt-->To%20Do-->consider%20BackgroundProcessManager
+#@+node:bob.20171209090826.1: *3* Leo-Editor process script before and script after
+Abandoned:  2018-01-05 12:20:46
+#@verbatim
+#@file%20doc/doc.txt-->To%20Do-->Leo-Editor%20process%20script%20before%20and%20script%20after
+What could the after script be used for?
+    Processing babel-script output and updating the Leo-Editor file.
+#@+node:bob.20170707141426.3: *3* Scripts as Functions ##
+Abandoned:  2018-01-04 15:46:24
+#@verbatim
+#@file%20doc/doc.txt-->Issues-->Needed%20Further%20Decisions%20#-->Scripts%20as%20Functions%20##
+Emacs-Babel allows a script to be used as a function. This makes sense because Emacs Babel is implemented in Emacs Lisp.
+
+Leo-Babel is implemented in Python. Is it worthwhile for Leo-Babel to allow a script to be used as a function?
+
+Treating scripts as functions requires implementing several options.
+
+* Tag: Function name
+* Value: function name
+
+* Tag: Variables
+* Value: List of variable names
+
+The above is just about all I know about Emacs-Babel scripts as functions. I suspect there are many problems with the idea, and I've no desire to use scripts as functions.
+
+#@+node:bob.20170910153501.1: *3* Scheme for "Interpeter Sessions"
+Abandoned:  2018-01-04 12:40:45
+#@verbatim
+#@file%20doc/doc.txt-->To%20Do-->Scheme%20for%20"Interpeter%20Sessions"
+Benefits:
+
+Bash:
+    One script can set environment variables that are used by a following script.
+
+Python:
+    One script can set global variables that are used by a following script.
+
+
+But I don't know how to achieve this.
+#@+node:bob.20170918103141.1: *3* Scheme for passing information between scripts
+Abandoned:  2018-01-04 12:39:58
+#@verbatim
+#@file%20doc/doc.txt-->To%20Do-->Scheme%20for%20passing%20information%20between%20scripts
+Python:
+Sending script:
+Write a file containing json or Python.
+Receiving script:
+Read the file as json or read the file and execute it as Python.
+
+Bash:
+Sending Script:
+Write a file containing Bash.
+Receiving script:
+dot include the script.
+#@+node:bob.20170910152805.1: *3* Scheme for "piping" scripts together
+Abandoned:  2018-01-04 12:39:24
+#@verbatim
+#@file%20doc/doc.txt-->To%20Do-->Scheme%20for%20"piping"%20scripts%20together
+If pipe_from is set to a UNL or cmdr, position, then this position must be a "Results root" and the most recent stdout node (that is, child 0 of the "Results root") body is sent to the stdin for the script.
+#@+node:bob.20171220144315.1: *3* Piping Facility
+Abandoned:  2018-01-04 12:38:03
+#@verbatim
+#@file%20doc/doc.txt-->To%20Do-->Piping%20Facility
+What piping facility?
+
+I'm not interested in this, so I won't do it.
+#@+node:bob.20170709115034.1: *3* Option to output to stdout each line before executing it.
+Abandoned:  2017-07-09 11:50:37
+#@verbatim
+#@file%20doc.txt-->To%20Do-->Option%20to%20output%20to%20stdout%20each%20line%20before%20executing%20it.
+This may not be practical.  The line may contain redirections.  The line may not be a complete executable.
+#@+node:bob.20170705161531.1: *3* Implement @babel-script and @babel-results
+Abandoned:  2017-07-06 09:41:39
+#@verbatim
+#@file%20doc.txt-->To%20Do-->Implement%20@babel-script%20and%20@babel-results
+'/pri/git/leo_lib/lib_leo01.py'
+    This library provides the UNL and GNX functions I need.
+
+This change is needed to allow source controlling the script.
+This change is needed to allow splitting a script into several nodes.
+This change is needed to allow source controlling the results.
+
+I could require at least two children with the first child the script and the second the results.
+#@+node:bob.20170508130041.1: *3* Terminals
+Abandoned:  2017-05-09 11:02:15
+#@verbatim
+#@file%20doc.txt-->To%20Do-->Terminals
+Just start a terminal to execute the script.
+
+http://stackoverflow.com/questions/19308415/execute-terminal-command-from-python-in-new-terminal-window
+
+My preferred terminal emulator is xfce4-terminal
+http://docs.xfce.org/apps/terminal/command-line
+    Can -e and -x be combined?  Doesn't matter if I can't figure out how to command the terminal to exit.
+
+Shift-Ctrl-Q makes xfce4-terminal terminate.
+
+Can I use subprocess to start xfce4-terminal and stdin to pass the terminal commands?  No.
+Or should I pass the terminal all the Bash script lines instead of putting them in a file?
+A Python script would have to be put in a file and the terminal told to execute the Python interpreter on the file?
+Could an interactive Python interpreter be started and then passed the Python code?
+#@+node:bob.20170508165122.1: *4* Terminal branch: Terminal
+#@+node:bob.20170509105110.1: *4* --disable-server
+Without the --disable-server command line option, Python thinks the subprocess terminates as soon as the terminal starts.
+With the --disable-server, Python thinks the subprocess terminates when the terminal terminates.
+Unfortuante, the terminal does NOT pass on the Bash/Python script's stdout and stderr output to the terminal's stdout and stderr, so my Python program never sees this output.
+
+The terminal takes keyboard input, but it does NOT take stdin input from my program that started it.  My program hangs in
+subPscript.communicate(input=pathScript) till the terminal terminates.  This means that Leo-Editor is so unresponsive that it can't even show its window when its window is brought to the top of the desktop.
+#@+node:bob.20170508165225.1: *4* How does a remote terminal work?
+I believe the only terminal involved is local.  I believe the program running on the remote CPU is a "remote terminal" program.  The "remote terminal" client running on the local CPU reads stdin and passes it to the remote terminal which uses a subprocess to execute it passing back stdout and stderr to the remote terminal client which passes them to its stdout and stderr which causes the terminal to display them.
+
+None of this suggests any scheme that would do what I want to do.
+#@+node:bob.20170508144319.1: *4* Problems
+['xfce4-terminal', '-e', '" {intp} -c {psc} ; exec {intp}"'.format(intp=interp, psc=pathScript)]
+
+Causes:
+
+Failed to connect to session manager: Failed to connect to the session manager: SESSION_MANAGER environment variable not defined
+----
+
+FileNotFoundError: [Errno 2] No such file or directory: 'xfce4-terminal -e "/bin/bash -c /sec/tmp/leoScript.py ; exec /bin/bash"'
+
+On POSIX, if args is a string, the string is interpreted as the name or path of the program to execute. However, this can only be done if not passing arguments to the program.
+----
+I can get an xfce4-terminal to execute a Bash script and a Python script.
+
+The xfce4-terminal tab started does NOT allow keyboard input, but it does respond to mouse input.
+If there is an error the xfce4-terminal may stay around when the script finishes.
+-H is required to make the xfce4-terminal terminal stay around when there is no error.
+#@+node:bob.20170429174552.1: *3* asyncio
+Abandoned:  2017-05-08 11:47:25
+#Root-->To%20Do-->Bob%20--%200%20Babel-->asyncio
+https://docs.python.org/3/library/asyncio.html
+
+SubprocessProtocol
+https://docs.python.org/3/library/asyncio-subprocess.html
+#@+node:bob.20170508114649.1: ** -- Done --
+#@@language plain
+#@+node:bob.20170528151922.1: *3* Problem:  All Leo-Editor processes seem to share stderr
+Done:  2018-03-24 11:50:50
+#@verbatim
+#@file%20doc/doc.txt-->To%20Do-->Problem:%20%20All%20Leo-Editor%20processes%20seem%20to%20share%20stderr
+2017-05-28 Sun
+I started Leo-Editor in workspace 2 on xubuntu.leo.
+I used Alt-B to execute a script to backup files.  This ran a long time.
+I started Leo-Editor in workspace 3 on /pri/gi/leoMySettings/code.leo.
+I used Ctrl-B to execute a script in workspace 3.  This generated some messages to stderr.
+These messages were echoed to the log pane in workspace 2.
+
+I can't believe this.
+I conjecture that what happened was I started Leo-Editor, I opened a second file in a second tab.  I split this tab off in a new window (right click, detach).  I moved the window to workspace 2.
+
+But I could not reproduce the error without involving Leo-Babel.
+
+Now I need to involve Leo-Babel.
+#@+node:bob.20180319163956.1: *3* Insure the stdout and stderr polls are done after the command finishes
+Done:  2018-03-20 12:18:28
+#@verbatim
+#@file%20doc/doc.txt-->To%20Do-->Insure%20the%20stdout%20and%20stderr%20polls%20are%20done%20after%20the%20command%20finishes
+Flags in babelCmdr
+    cmdDoneStdPolled
+    cmdDoneErrPolled
+    cmdDoneFlag
+#@+node:bob.20180128085205.1: *3* I could implement IdleTime() and monkey patch.
+Done:  2018-03-17 10:04:58
+#@verbatim
+#@file%20doc/doc.txt-->To%20Do-->I%20could%20implement%20IdleTime()%20and%20monkey%20patch.
+Just a loop using sleep.
+
+Can I monkey patch leoG before calling LeoBridge?
+Yes, see '/pri/git/leo_babel/experiments/monkeyPatchIdleTime.py'
+#@+node:bob.20180109135343.1: *3* Reconsider babel.unl2pos()
+Done:  2018-01-12 17:29:13
+#@verbatim
+#@file%20doc/doc.txt-->To%20Do-->Reconsider%20babel.unl2pos()
+If the UNL has no pathname part, then the commander is needed.
+If the UNL has a pathname part, then the commander is ignored.
+
+Maybe I should require that a UNL always has a pathname part?
+Maybe I should error out if the UNL has no pathname part, and the cmdr is None?
+Maybe I should error out if the UNL has a pathname part and the cmdr is not None?
+
+pathname part and cmdr --> Error
+no pathname part and no cmdr --> Error
+#@+node:bob.20180105121601.1: *3* Major Options Increase
+Done:  2018-01-08 16:03:20
+#@verbatim
+#@file%20doc/doc.txt-->To%20Do-->Major%20Options%20Increase
+#@+node:bob.20180105121645.1: *4* Settings
+Leo-Babel-Node-Creation-Default
+
+Leo-Babel-Python
+
+Leo-Babel-Shell
+#@+node:bob.20180105121835.1: *4* Babel Parameters Script
+babel_node_creation
+
+babel_python
+
+babel_shell
+
+babel_redirect_stdout
+#@+node:bob.20171220153056.1: *3* Make a table of contents again
+Done:  2017-12-28 14:05:17
+#@verbatim
+#@file%20doc.txt-->To%20Do-->Make%20a%20table%20of%20contents%20again
+https://github.com/jgm/pandoc/wiki/Pandoc-Tricks#toc-generation
+This is how I did it.  2017-12-28 Thu
+#@+node:bob.20170921103803.1: *3* is leo-babel pseudo-installed
+Done:  2017-09-21 10:38:48
+#@verbatim
+#@file%20doc.txt-->To%20Do-->is%20leo-babel%20pseudo-installed
+Yes, in that '/pri/git/leo-editor/leo/plugins/leo_babel' points to /pri/git/leo-editor/leo/plugins.
+
+But the includes
+
+    from leo_babel import babel_api
+    from leo_babel import babel_lib
+
+Do not work for installation:
+
+$ echo $PYTHONPATH
+/pri/git:/pri/git/leo-editor
+
+There is no __init__.py in leo-editor, there is in leo-editor/leo, and none in leo-editor/leo/plugins.
+
+But the __init__.py in leo-editor/leo is the only one needed.  It makes it's whole subtree a package.
+
+2017-09-21 Thu 10:38:17 fixed
+#@+node:bob.20170713153133.1: *3* UNL's
+Done:  2017-08-16 14:57:52
+#@verbatim
+#@file%20doc.txt-->To%20Do-->Next-->Separate%20files%20for%20scripts%20and%20for%20results?-->UNL%27s
+I need to go from a UNL to a position.  I think I must provide my own function.  The Leo-Editor code does not contain such a function.
+------
+Can you Ctrl-Right-Click on a UNL to go to the node?
+unl:///pri/git/leo_babel/doc.leo#@file doc.txt-->To Do-->What benefits do script-function parameters provide?
+Yes, the above UNL can be right clicked to go to the position.
+
+Can you copy a UNL to the clipboard?
+No.  But you can copy the UNL in the status line.  You need to add the protocol.
+I should make this available:
+p.get_UNL(with_file=False, with_proto=True, with_index=False)
+
+
+The UNL's of the script and result nodes can be parameters in the Python code in the Babel node.
+
+UNL commands:
+
+double-click-icon-box
+    goes to UNL in headline beginning with @url or the UNL in the first line of the body.
+    The UNL in the body takes priority.
+
+Ctrl-left-click on a URL including a UNL
+    Tries if the URL begins file:/.  Doesn't work if there are any spaces in the UNL.  Doesn't work if the spaces in the UNL are replaced with %20's.
+------
+
+p.get_UNL(with_proto=verbose, with_index=verbose)
+def get_UNL(self, with_file=True, with_proto=False, with_index=True):
+    """
+    with_file=True - include path to Leo file
+    with_proto=False - include 'file://'
+    """
+
+def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
+                       soft_idx=False, hard_idx=False):
+    """try and move to unl in the commander c
+
+    All parameters passed on to recursiveUNLFind(), see that for docs.
+
+    NOTE: maxdepth is max depth seen in recursion so far, not a limit on
+          how far we will recurse.  So it should default to 0 (zero).
+    """
+
+g.recursiveUNLFind()
+def recursiveUNLFind(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
+                     soft_idx=False, hard_idx=False):
+    """
+    Internal part of recursiveUNLSearch which doesn't change the
+    selected position or call c.frame.bringToFront()
+
+    returns found, depth, p, where:
+
+        - found is True if a full match was found
+        - depth is the depth of the best match
+        - p is the position of the best match
+
+    NOTE: maxdepth is max depth seen in recursion so far, not a limit on
+          how far we will recurse.  So it should default to 0 (zero).
+
+    - `unlList`: list of 'headline', 'headline:N', or 'headline:N,M'
+      elements, where N is the node's position index and M the zero based
+      count of like named nodes, eg. 'foo:2', 'foo:4,1', 'foo:12,3'
+    - `c`: outline
+    - `soft_idx`: use index when matching name not found
+    - `hard_idx`: use only indexes, ignore node names
+    - `depth`: part of recursion, don't set explicitly
+    - `p`: part of recursion, don't set explicitly
+    - `maxdepth`: part of recursion, don't set explicitly
+    - `maxp`: part of recursion, don't set explicitly
+    """
+
+url = g.getUrlFromNode(p)
+g.handleUrl(url, c=c, p=p)
+def handleUrl(url, c=None, p=None):
+    Reopens the Leo-Editor file
+def handleUnl(unl, c):
+    Just goes to the target node.
+def isValidUrl(url):
+def handleUrlHelper(url, c, p):
+    '''Open a url.  Most browsers should handle:
+        ftp://ftp.uu.net/public/whatever
+        http://localhost/MySiteUnderDevelopment/index.html
+        file:///home/me/todolist.html
+    '''
+#@+node:bob.20170706094149.1: *3* 1st child is script, 2nd child is results
+Done:  2017-07-06 10:41:53
+#@verbatim
+#@file%20doc.txt-->To%20Do-->1st%20child%20is%20script,%202nd%20child%20is%20results
+#@+node:bob.20170509113745.1: *3* Problem:  If the script doesn't flush() stdout and stderr, then output isn't seen till process termination.
+Done:  2017-05-09 14:24:36
+#@verbatim
+#@file%20doc.txt-->To%20Do-->Problem:%20%20If%20the%20script%20doesn%27t%20flush()%20stdout%20and%20stderr,%20then%20output%20isn%27t%20seen%20till%20process%20termination.
+Having Babel call flush() on its read and write file descriptors does NOT help.  Babel's file descriptors do not buffer.  But the target script's file descriptors do buffer.
+
+This is an issue only for Python scripts.  The Bash interpreter never buffers stdout or stderr.
+
+xfce-teminal gets around this problem.  How?
+
+https://unix.stackexchange.com/questions/25372/turn-off-buffering-in-pipe
+
+Note: On debian systems, this is called expect_unbuffer and is in the expect-dev package, not the expect package – bdonlan Jan 24 '11 at 11:14
+---
+unbuffer applied to the interpreter eliminates all buffering--but it redirects stderr to stdout.
+I can't find anything about the unbuffer problem.
+---
+
+https://www.turnkeylinux.org/blog/unix-buffering
+Fortunately, in most recent Linux distributions (including TKL 11 / Ubuntu Lucid / Debian Squeeze) there's a new command called stdbuf which allows you to configure the default Unix buffering for an arbitrary program.
+
+http://www.pixelbeat.org/programming/stdio_buffering/
+
+http://stackoverflow.com/questions/3465619/how-to-make-output-of-any-shell-command-unbuffered
+
+
+
+Try stdbuf, included in GNU coreutils and thus virtually any Linux distro. This sets the buffer length for input, output and error to zero:
+
+stdbuf -i0 -o0 -e0 command
+
+---
+stdbuf applied to the interpreter does nothing.
+stdbuf doesn't work for me.
+---
+
+http://stackoverflow.com/questions/107705/disable-output-buffering
+
+The Python interpreter command line option -u causes it to unbuffer.
+
+https://docs.python.org/3/using/cmdline.html
+-u
+
+    Force the binary layer of the stdout and stderr streams (which is available as their buffer attribute) to be unbuffered. The text I/O layer will still be line-buffered if writing to the console, or block-buffered if redirected to a non-interactive file.
+
+    See also PYTHONUNBUFFERED.
+----
+https://docs.python.org/3/library/subprocess.html
+
+ class subprocess.Popen(args, bufsize=-1, executable=None, stdin=None, stdout=None, stderr=None, preexec_fn=None, close_fds=True, shell=False, cwd=None, env=None, universal_newlines=False, startupinfo=None, creationflags=0, restore_signals=True, start_new_session=False, pass_fds=(), *, encoding=None, errors=None)
+
+
+
+Popen.stdout
+
+    If the stdout argument was PIPE, this attribute is a readable stream object as returned by open(). Reading from the stream provides output from the child process. If the encoding or errors arguments were specified or the universal_newlines argument was True, the stream is a text stream, otherwise it is a byte stream. If the stdout argument was not PIPE, this attribute is None.
+---
+So the default is binary.
+---
+
+
+Popen.stderr
+
+    If the stderr argument was PIPE, this attribute is a readable stream object as returned by open(). Reading from the stream provides error output from the child process. If the encoding or errors arguments were specified or the universal_newlines argument was True, the stream is a text stream, otherwise it is a byte stream. If the stderr argument was not PIPE, this attribute is None.
+---
+So the default is binary.
+---
+
+So I tried just using PIPE, and the first read hangs till the process terminates.
+#@+node:bob.20170428171335.1: *3* How do I get the current language from Leo-Editor?
+Done:  2017-05-08 11:48:02
+#Root-->To%20Do-->Bob%20--%200%20Babel-->How%20do%20I%20get%20the%20current%20language%20from%20Leo-Editor?
+    if g.scanForAtLanguage(c, c.p) == "python":
+        pp.prettyPrintNode(c.p)
+#@+node:bob.20170429091318.1: *3* Problem:  readline() hangs till it has a line.
+Done:  2017-05-08 11:47:15
+#Root-->To%20Do-->Bob%20--%200%20Babel-->Problem:%20%20readline()%20hangs%20till%20it%20has%20a%20line.
+Consequently, there needs to be 4 processes:
+    1) The Leo-Editor process
+    2) The Babel process executing shell or Python.
+    3) A process to call readline on the Babel process's stdout.
+    4) A process to call readline on the Babel process's stderr.
+
+I need a FIFO queue of lines for 3 to pass lines to 1.
+I need a FIFO queue of lines for 4 to pass lines to 1.
+
+http://semanchuk.com/philip/posix_ipc/
+
+https://docs.python.org/2/library/ipc.html
+
+https://docs.python.org/3.5/library/ipc.html
+
+http://stackoverflow.com/questions/6920858/interprocess-communication-in-python
+https://docs.python.org/3/library/multiprocessing.html
+
+https://docs.python.org/3/library/threading.html#module-threading
+
+http://rpyc.readthedocs.io/en/latest/
+
+https://kevinmccarthy.org/2016/07/25/streaming-subprocess-stdin-and-stdout-with-asyncio-in-python/
+
+http://stackoverflow.com/questions/18421757/live-output-from-subprocess-command
+1) creating an iterator from the read or readline functions
+or
+2) create a reader and a writer file. Pass the writer to the Popen and read from the reader.
+
+The only advantage of the file approach is that your code doesn't block. So you can do whatever you want in the meantime and read whenever you want from the reader in a non-blocking way. When you use PIPE, read and readline functions will block until either one character is written to the pipe or a line is written to the pipe respectively.
+
+http://stackoverflow.com/questions/25750468/displaying-subprocess-output-to-stdout-and-redirecting-it
+This looks somewhat promising StringIO  or asyncio offered.
+The StringIO "solution" is  bullshit.  It accomplishes nothing.
+#@+node:bob.20170502161625.1: *4* Solution: Redirect stdout and stderr to disk files.
+#@+node:bob.20170430140201.1: *4* StringIO
+You can't pass a StringIO buffer to Popen as stdout or stderr:
+
+io.UnsupportedOperation: fileno
+#@+node:bob.20170502161644.1: *3* Problem:  A shell script is not terminated by SIGTERM
+Done:  2017-05-08 11:46:49
+#Root-->To%20Do-->Bob%20--%200%20Babel-->Problem:%20%20A%20shell%20script%20is%20not%20terminated%20by%20SIGTERM
+Maybe a Python script with no exception handlers would not be terminated either?
+
+Bash signals
+
+Kill bash running in a subprocess
+
+https://www.gnu.org/software/bash/manual/html_node/Signals.html
+
+When Bash is interactive, in the absence of any traps, it ignores SIGTERM (so that ‘kill 0’ does not kill an interactive shell), and SIGINT is caught and handled (so that the wait builtin is interruptible). When Bash receives a SIGINT, it breaks out of any executing loops. In all cases, Bash ignores SIGQUIT. If job control is in effect (see Job Control), Bash ignores SIGTTIN, SIGTTOU, and SIGTSTP.
+
+Non-builtin commands started by Bash have signal handlers set to the values inherited by the shell from its parent. When job control is not in effect, asynchronous commands ignore SIGINT and SIGQUIT in addition to these inherited handlers. Commands run as a result of command substitution ignore the keyboard-generated job control signals SIGTTIN, SIGTTOU, and SIGTSTP.
+
+The shell exits by default upon receipt of a SIGHUP. Before exiting, an interactive shell resends the SIGHUP to all jobs, running or stopped. Stopped jobs are sent SIGCONT to ensure that they receive the SIGHUP. To prevent the shell from sending the SIGHUP signal to a particular job, it should be removed from the jobs table with the disown builtin (see Job Control Builtins) or marked to not receive SIGHUP using disown -h.
+
+If the huponexit shell option has been set with shopt (see The Shopt Builtin), Bash sends a SIGHUP to all jobs when an interactive login shell exits.
+
+---
+Solution:
+
+If the Bash script does not handle SIGHUP, then SIGHUP terminates the Bash interpreter.
+If the Python script does not handle SIGHUP, then SIGHUP terminates the Python interpreter.
+#@-others
+#@-leo
