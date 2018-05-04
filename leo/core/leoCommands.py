@@ -1772,35 +1772,56 @@ class Commands(object):
     #@+node:ekr.20031218072017.3000: *4* c.updateSyntaxColorer
     def updateSyntaxColorer(self, v):
         self.frame.body.updateSyntaxColorer(v)
-    #@+node:ekr.20180503110307.1: *4* c.interactive/2/3...
+    #@+node:ekr.20180503110307.1: *4* c.interactive*
 
         
-    #@+node:ekr.20180503111213.1: *5* c.interactive
-    def interactive(self, callback, event, prompt):
+    #@+node:ekr.20180504075937.1: *5* c.interactive
+    def interactive(self, callback, event, prompts):
         #@+<< c.interactive docstring >>
         #@+node:ekr.20180503131222.1: *6* << c.interactive docstring >>
         '''
-        c.interactive: Prompt for a single argument from the minibuffer.
+        c.interactive: Prompt for up to three arguments from the minibuffer.
 
-        Can optionally define commands. Example::
+        The number of prompts determines the number of arguments.
 
-            @g.command('i1')
-            def i1_command(event):
+        Use the @command decorator to define commands.  Examples:
+
+            @g.command('i3')
+            def i3_command(event):
                 c = event.get('c')
                 if not c: return
                     
-                def callback(arg, c, event):
-                    g.trace(arg)
+                def callback(args, c, event):
+                    g.trace(args)
                     c.bodyWantsFocus()
             
-                c.interactive(callback, event, prompt='Prompt: ')
+                c.interactive(callback, event,
+                    prompts=['Arg1: ', ' Arg2: ', ' Arg3: '])
         '''
         #@-<< c.interactive docstring >>
+        #
+        # This pathetic code should be generalized,
+        # but it's not as easy as one might imagine.
+        c = self
+        d = {
+            1: c.interactive1,
+            2: c.interactive2,
+            3: c.interactive3,
+        }
+        f = d.get(len(prompts))
+        if f:
+            f(callback, event, prompts)
+        else:
+            g.trace('At most 3 arguments are supported.')
+            
+    #@+node:ekr.20180503111213.1: *5* c.interactive1
+    def interactive1(self, callback, event, prompts):
         
         c, k = self, self.k
+        prompt = prompts[0]
         
         def state1(event):
-            callback(arg=k.arg, c=c, event=event)
+            callback(args=[k.arg], c=c, event=event)
             k.clearState()
             k.resetLabel()
             k.showStateAndMode()
@@ -1808,29 +1829,10 @@ class Commands(object):
         k.setLabelBlue(prompt)
         k.get1Arg(event, handler=state1)
     #@+node:ekr.20180503111249.1: *5* c.interactive2
-    def interactive2(self, callback, event, prompt1, prompt2):
-        #@+<< c.interactive2 docstring >>
-        #@+node:ekr.20180503131401.1: *6* << c.interactive2 docstring >>
-        '''
-        c.interactive2: Prompt for two arguments from the minibuffer.
-
-        Can optionally define commands. Example::
-
-            @g.command('i2')
-            def i2_command(event):
-                c = event.get('c')
-                if not c: return
-                    
-                def callback(arg1, arg2, c, event):
-                    g.trace(arg1, arg2)
-                    c.bodyWantsFocus()
-            
-                c.interactive2(callback, event,
-                    prompt1='Find: ', prompt2=' Replace: ')
-        '''
-        #@-<< c.interactive2 docstring >>
+    def interactive2(self, callback, event, prompts):
 
         c, d, k = self, {}, self.k
+        prompt1, prompt2 = prompts
 
         def state1(event):
             d['arg1'] = k.arg
@@ -1838,7 +1840,7 @@ class Commands(object):
             k.getNextArg(handler=state2)
         
         def state2(event):
-            callback(arg1=d.get('arg1'), arg2=k.arg, c=c, event=event)
+            callback(args=[d.get('arg1'), k.arg], c=c, event=event)
             k.clearState()
             k.resetLabel()
             k.showStateAndMode()
@@ -1846,29 +1848,10 @@ class Commands(object):
         k.setLabelBlue(prompt1)
         k.get1Arg(event, handler=state1)
     #@+node:ekr.20180503111249.2: *5* c.interactive3
-    def interactive3(self, callback, event, prompt1, prompt2, prompt3):
-        #@+<< c.interactive3 docstring >>
-        #@+node:ekr.20180503131653.1: *6* << c.interactive3 docstring >>
-        '''
-        c.interactive3: Prompt for three arguments from the minibuffer.
-
-        Can optionally define commands. Example::
-
-            @g.command('i3')
-            def i3_command(event):
-                c = event.get('c')
-                if not c: return
-                    
-                def callback(arg1, arg2, arg3, c, event):
-                    g.trace(arg1, arg2, arg3)
-                    c.bodyWantsFocus()
-
-                c.interactive3(callback, event,
-                    prompt1='One: ', prompt2=' Two: ', prompt3=' Three: ')
-        '''
-        #@-<< c.interactive3 docstring >>
+    def interactive3(self, callback, event, prompts):
 
         c, d, k = self, {}, self.k
+        prompt1, prompt2, prompt3 = prompts
 
         def state1(event):
             d ['arg1'] = k.arg
@@ -1882,12 +1865,8 @@ class Commands(object):
                 # Restart.
 
         def state3(event):
-            callback(
-                arg1=d.get('arg1'),
-                arg2=d.get('arg2'),
-                arg3=k.arg,
-                c=c,
-                event=event)
+            args=[d.get('arg1'), d.get('arg2'), k.arg]
+            callback(args=args, c=c, event=event)
             k.clearState()
             k.resetLabel()
             k.showStateAndMode()
