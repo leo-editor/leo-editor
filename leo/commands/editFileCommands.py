@@ -342,6 +342,24 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     def gitDiff(self, event):
 
         GitDiffController(self.c, 'HEAD').run()
+    #@+node:ekr.20180504182541.1: *3* efc.getDiffBranch
+    @cmd('git-diff-branch')
+    def gitDiffBranch(self, event):
+        '''Prompt for a branch name, then diff one file against it.'''
+        c = self.c
+        roots = g.findRootsWithPredicate(c, c.p)
+            # Looks up and down the tree.
+        if not roots:
+            g.es_print('no .py files found')
+            return
+        gdc = GitDiffController(self.c, 'HEAD')
+        
+        def callback(args, *extra, **kwargs):
+            if g._assert(len(args) == 1):
+                for p in roots:
+                    gdc.diff_branch(branch=args[0], fn=p.anyAtFileNodeName())
+                    
+        c.interactive(callback, event, prompts=['Branch name: '])
     #@+node:ekr.20170806094318.7: *3* efc.insertFile
     @cmd('file-insert')
     def insertFile(self, event):
@@ -530,6 +548,39 @@ class GitDiffController:
                 return path
             path = g.os_path_finalize_join(path, '..')
         return None
+    #@+node:ekr.20180504183033.1: *3* gdc.diff_branch (NEW)
+    def diff_branch(self, branch, fn):
+        '''Create an outline describing the git diffs for fn.'''
+        g.trace(branch, fn)
+        # c = self.c
+        # s1 = self.get_file_from_rev(self.rev1, fn)
+        # s2 = self.get_file_from_rev(self.rev2, fn)
+        # lines1 = g.splitLines(s1)
+        # lines2 = g.splitLines(s2)
+        # diff_list = list(difflib.unified_diff(
+            # lines1,
+            # lines2,
+            # self.rev1 or 'uncommitted',
+            # self.rev2 or 'uncommitted',
+        # ))
+        # diff_list.insert(0, '@language patch\n')
+        # self.file_node = self.create_file_node(diff_list, fn)
+        # if c.looksLikeDerivedFile(fn):
+            # c1 = self.make_at_file_outline(fn, s1, self.rev1)
+            # c2 = self.make_at_file_outline(fn, s2, self.rev2)
+        # else:
+            # root = self.find_file(fn)
+            # if root:
+                # c1 = self.make_at_clean_outline(fn, root, s1, self.rev1)
+                # c2 = self.make_at_clean_outline(fn, root, s2, self.rev2)
+            # else:
+                # # This warning is silly.
+                # # g.es_print('No outline for', fn)
+                # c1 = c2 = None
+        # if c1 and c2:
+            # self.make_diff_outlines(fn, c1, c2)
+            # self.file_node.b = '%s\n@language %s\n' % (
+                # self.file_node.b.rstrip(), c2.target_language)
     #@+node:ekr.20170806094320.6: *3* gdc.diff_file & helpers
     def diff_file(self, fn):
         '''Create an outline describing the git diffs for fn.'''
