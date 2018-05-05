@@ -1443,6 +1443,7 @@
 <v t="ekr.20060620094033"><vh>What's New...</vh>
 <v t="ekr.20101025080245.5791"><vh>@rst html/what-is-new.html</vh>
 <v t="ekr.20071116062917.2"><vh>@rst-no-head links</vh></v>
+<v t="ekr.20180427130312.1"><vh>What's new in 5.7.2</vh></v>
 <v t="ekr.20180404015558.1"><vh>What's new in 5.7.1</vh>
 <v t="ekr.20180411071648.1"><vh>Features</vh>
 <v t="ekr.20180411071654.1"><vh>#850: Optionally convert Meta to Alt on MacOs</vh></v>
@@ -1993,47 +1994,31 @@
 </v>
 </v>
 </v>
-<v t="ekr.20180404015558.1"></v>
-<v t="ekr.20180427130312.1"><vh>What's new in 5.7.2 (TO DO)</vh></v>
+<v t="ekr.20180427130312.1"></v>
 <v t="ekr.20180411070654.1"><vh>Leo 5.7.2 release notes</vh>
 <v t="ekr.20180411150947.1"><vh>Bugs</vh>
 <v t="ekr.20180411150950.1"><vh>#757: MacOS: replace-then-find does not work in headlines</vh></v>
-</v>
-<v t="ekr.20180427130017.1"><vh>Code</vh></v>
-<v t="ekr.20180411073507.1"><vh>Features</vh>
-<v t="ekr.20180501163005.1"><vh>insert-jupyter-toc and insert-markdown-toc commands</vh></v>
 <v t="ekr.20180411105215.1"><vh>#794: Clicking Find Tab should do exactly what pushing Ctrl-F does</vh></v>
-<v t="ekr.20180411102234.1"><vh>#838: Better .ipynb importer/exporters (REVISE)</vh></v>
-<v t="ekr.20180411073658.1"><vh>#848: Recent Files menu will break for foreign languages</vh></v>
-<v t="ekr.20180411073531.1"><vh>#850: Optionally convert Meta to Alt on MacOs</vh></v>
-<v t="ekr.20180427125919.1"><vh>New command-line arguments</vh></v>
-</v>
-<v t="ekr.20180427130028.1"><vh>Removed unused settings</vh></v>
-</v>
-<v t="ekr.20101121021109.5351"><vh>@slide Using iterators</vh>
-<v t="ekr.20101121125326.4968"><vh>@url built slide</vh></v>
-</v>
-<v t="ekr.20180411102234.1"></v>
-<v t="ekr.20180505114332.1"><vh>5.7.2 issues</vh>
-<v t="ekr.20180505114332.2"><vh>#423: Simplify key handling with a better KeyStroke class</vh></v>
-<v t="ekr.20180505114332.3"><vh>#757: MacOS: replace-then-find does not work in headlines</vh></v>
-<v t="ekr.20180505114332.4"><vh>#838: Better .ipynb importer/exporter</vh></v>
 <v t="ekr.20180505114332.5"><vh>#848: Recent Files menu will break for foreign languages</vh></v>
-<v t="ekr.20180505114332.6"><vh>#850: Optionally convert Meta to Alt on MacOs</vh></v>
-<v t="ekr.20180505114332.7"><vh>#855: quickstart.leo</vh></v>
+<v t="ekr.20180411073658.1"><vh>#848: Recent Files menu will break for foreign languages</vh></v>
 <v t="ekr.20180505114332.8"><vh>#862: paste-retaining-clones can corrupt the outline</vh></v>
 <v t="ekr.20180505114332.9"><vh>#863: Serious problems changing branches</vh></v>
-<v t="ekr.20180505114332.10"><vh>#869: Special design for Enter Key?</vh></v>
-<v t="ekr.20180505114332.11"><vh>#870: some commands can not exec in dev 56b83585bd1f</vh></v>
-<v t="ekr.20180505114332.12"><vh>#876: Remove useless --debug setting</vh></v>
 <v t="ekr.20180505114332.13"><vh>#877: Exception in the markdown importer</vh></v>
 <v t="ekr.20180505114332.14"><vh>#879: g.es can be too slow</vh></v>
 <v t="ekr.20180505114332.15"><vh>#880: Replace command does not set @&lt;file&gt; nodes dirty</vh></v>
-<v t="ekr.20180505114332.16"><vh>#882: Ctrl+( and Ctrl+) can not work for comments code</vh></v>
 <v t="ekr.20180505114332.17"><vh>#884: Log pane does not handle leading whitespace properly</vh></v>
-<v t="ekr.20180505114332.18"><vh>#886: Add c.interactive1/2/3 methods</vh></v>
 </v>
-<v t="ekr.20180505114327.1"></v>
+<v t="ekr.20180427130017.1"><vh>Code</vh>
+<v t="ekr.20180505114332.2"><vh>#423: Simplify key handling with a better KeyStroke class</vh></v>
+</v>
+<v t="ekr.20180411073507.1"><vh>Features</vh>
+<v t="ekr.20180411102234.1"><vh>#838: Better .ipynb importer/exporters</vh></v>
+<v t="ekr.20180505114332.18"><vh>#886: Add c.interactive1/2/3 methods</vh></v>
+<v t="ekr.20180501163005.1"><vh>Added insert-jupyter-toc and insert-markdown-toc commands</vh></v>
+<v t="ekr.20180427125919.1"><vh>Added new command-line arguments</vh></v>
+<v t="ekr.20180427130028.1"><vh>Removed unused settings</vh></v>
+</v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -11582,36 +11567,6 @@ Leo's scripting environment takes full advantage of outline structure:
 [[Category:Free text editors]]
 [[Category:Free software programmed in Python]]
 [[Category:Outliners]]
-</t>
-<t tx="ekr.20101121021109.5351">Using iterators, it is easy to gain access to all the data in a Leo outline. For example, the following script prints all headlines in an outline, indented to show outline level::
-
-    for p in c.all_positions():
-        print(' '*p.level(), p.h)
-
-The output of this script, when run from LeoDocs.leo,
-will look something like this::
-
-    Startup
-     @file doc-startup.txt
-      Buttons
-       Disabled buttons
-       ... and hundreds of other nodes.
-
-**Note**: p.level() is a method of the position class that returns the outline level of the node at position p: 0 for top-level nodes, 1 for their children, and so on.
-
-**Note**: There are performance problems when writing many strings to Leo's log pane. The following will hang Leo when run within large .leo files:
-
-    for p in c.all_positions():
-        g.es(' '*p.level(), p.h)
-        
-The workaround is to precompute a single string, and pass it to c.frame.log.put:
-
-    s = ''.join([
-        '%s%s\n' % (' '*p.level(), p.h) for p in c.all_positions()
-    ])
-    c.frame.log.put(s)
-</t>
-<t tx="ekr.20101121125326.4968">c:\leo.repo\leo-editor\leo\doc\html\slides\scripting-leo\_build\html\slide-007.html
 </t>
 <t tx="ekr.20101125062332.5090">**Python**: Leo will work on any platform that supports Python 2.6 or above, including Python 3.0 and above. To install Python, see http://python.org.
 
@@ -26409,6 +26364,10 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 **The highlights of Leo 5.7.2**
 
 - Much improved support for Jupyter (.ipynb) files.
+- Fixed a bug that prevented switching between git branches easily.
+- A rewrite of large parts of Leo's key-handling code.
+- New command-line arguments trace Leo's code without having to change it.
+- Removed almost 20 unused settings.
 - The usual minor bug fixes.
 
 **Links**
@@ -26433,53 +26392,22 @@ This feature is disabled by default. To enable, set @bool replace-meta-with-alt 
 <t tx="ekr.20180411071733.1">- @bool replace-meta-with-alt.
 </t>
 <t tx="ekr.20180411073507.1"></t>
-<t tx="ekr.20180411073531.1">https://github.com/leo-editor/leo-editor/issues/850
-
-This feature is disabled by default. To enable, set @bool replace-meta-with-alt = True.</t>
 <t tx="ekr.20180411073658.1">https://github.com/leo-editor/leo-editor/issues/848
 
 The first non-blank, non-comment line of the node `@menu Recent Files' can contain an alternate (translated) menu name.
 
 You should not just change the headline of the node: it should remain unchanged. Indeed, the point of this item is that Leo has to know which item is the Recent Files item, so some other way was needed to specify an alternate name.</t>
 <t tx="ekr.20180411102234.1">https://github.com/leo-editor/leo-editor/issues/838
-Leo's @auto whatever.ipynb allow close integration with Jupyter notebooks.
 
------
+@auto x.ipynb now "just works".
 
-Perhaps a lot of people don't know what I'm talking about.  Here is the script, j.bat, that I use. I execute it in a separate console:
+- I can change any cell in Jupyter and save the file.  If the corresponding .leo file is running the new code appears in the @auto tree.  Simple as that.
 
-cd c:\test
-jupyter notebook %*
+- I can also change the @auto tree.  The Jupyter web page will (I think) eventually reload automatically.  Or I can reload the page myself.  Simple as that.
 
-The test directory contains the .ipynb files.  I open a new console and just type "j".  This starts the Jupyter server, which then opens my web browser on a Jupyter "home" page.  This page shows the contents of the test folder.  I select my test .ipynb and it appears in another tab.  Simple as that.
+It now feels Leonine to author in Leo (with all of Leo's organizing capabilities) and then render or run code in Jupyter.
 
-I can change any cell in Jupyter and save the file.  If the corresponding .leo file is running the new code appears in the @auto tree.  Simple as that.  I can also change the @auto tree.  The Jupyter web page will (I think) eventually reload automatically.  Or I can reload the page myself.  Simple as that.
-
------
-
-Folks, this a remarkable level of integration.  It feels Leonine to author in Leo (with all of Leo's organizing capabilities) and then render or run code in Jupyter.
-
-A few more tweaks are coming, but the code should be usable right now.  For example, I test everything by alternating between:
-
-In Leo: Loading, changing and saving a .leo file with an @auto node based on this file.
-
-In Jupyter: Loading, changing and saving the resulting .ipynb file.
-
-===== Revise
-
-Jupyter integration just keeps getting better and better. Straightforward changes will:
-
-1. Generate markdown section markup automatically, based on outline level and headlines.
-
-2. Allow code nodes to be indented (in the Leo outline) wherever we like.
-
-These changes will bring Leo organization to Jupyter notebooks, and will make Leo a superior Jupyter authoring tool.
-
-=====
-
-Yesterday's work drastically simplified the code.  Today's work ensures that Leo writes .ipynb files that pass all Jupyter validation tests.  This involved writing the proper JSON attributes at all time, even when changing @language python to @language md.
-
-Today's testing involved opening a Jupyter server and changing an .ipynb both on the Jupyter web interface or in Leo.  Either way, @auto "just works".
+**Other features**:
 
 When writing, Leo uses @language directives to determine cell type.
 
@@ -26489,25 +26417,18 @@ When reading, Leo indents nodes based on body lines of the form:
 
 Such markup affects Jupyter rendering, but the Leo headline of the node can be anything you want.
 
-As I write this, I see that I should investigate whether markdown # headlines work in Jupyter.  If so, they should be supported.
+Leo now generates markdown section markup automatically, based on outline level and headlines.
 
-The integration between @auto whatever.ipynb and Jupyter's web interface is good enough that:
-
-    You can use Jupyter's web page to render markdown
-
-In some cases, math in particular, Jupyter's rendering is significantly better than the VR plugin's rendering.
-
-Summary
-
-@auto x.ipynb is much better than expected. Jupyter can render markdown in Leo nodes.
-
-As a result further markdown support becomes even more important.  See #767: Add markdown command similar to rst3 command.</t>
+Leo handles organizer nodes in the outline.
+</t>
 <t tx="ekr.20180411105215.1">https://github.com/leo-editor/leo-editor/issues/794
 </t>
 <t tx="ekr.20180411150947.1"></t>
 <t tx="ekr.20180411150950.1">https://github.com/leo-editor/leo-editor/issues/757
 </t>
-<t tx="ekr.20180427125919.1">Leo's --trace command-line arguments now allow users and devs to enable important traces without changing Leo's sources in any way::
+<t tx="ekr.20180427125919.1">https://github.com/leo-editor/leo-editor/issues/876
+
+Leo's --trace command-line arguments now allow users and devs to enable important traces without changing Leo's sources in any way::
 
     --trace-binding=KEY   trace commands bound to a key
     --trace-coloring      trace syntax coloring
@@ -26564,7 +26485,12 @@ They no longer appear in leoSettings.leo:
     @bool verbose_trace_color_parser = False
     @string trace_bindings_filter = 
     @string trace_bindings_pane_filter =</t>
-<t tx="ekr.20180427130312.1"></t>
+<t tx="ekr.20180427130312.1">- Much improved support for Jupyter (.ipynb) files.
+- Fixed a bug that prevented switching between git branches easily.
+- A rewrite of large parts of Leo's key-handling code.
+- New command-line arguments trace Leo's code without having to change it.
+- Removed almost 20 unused settings.
+</t>
 <t tx="ekr.20180501163005.1">The new insert-jupyter-toc and insert-markdown-toc commands produce a toc (table of contents) for in the selected node, at insert point of the body text.  They replace any selected text.
 
 These two commands are almost identical.  They very only in the details of how they generate the url part of markdown links.  See Note 2 below.
@@ -26860,250 +26786,35 @@ Here is how to use c.recursiveImport::
     )
 
 I like to import to `@`clean and set safe_at_file = False, but *before doing that* I create a git repo for the to-be-imported directory and check in all the .py files. That way I can track any changes that get made, and revert them if need be.</t>
-<t tx="ekr.20180505114332.1"># Found 17 marked nodes</t>
-<t tx="ekr.20180505114332.10">https://github.com/leo-editor/leo-editor/issues/869
-with @bool vim-mode = True in myLeoSettings.leo
-
-When focus is on outline, pressing **Enter** key can not enter body pane.
-When focus in **find-quick** input, after input some search text, then press **Enter**, log pane displayed with 
-```
-ignoring  # &lt;===== EKR: a return character.
- in normal mode after 
-```
-
-**EKR**: The problem was that vim mode was not recognizing the 'Return' character properly.</t>
-<t tx="ekr.20180505114332.11">https://github.com/leo-editor/leo-editor/issues/870
-in body pane: Ctrl + Shift + 0  can not comment code now
-in body pane: Shift + : can not exec vim command
-in log pane: Ctrl + Home can not go to 1st line
-
-***
-
-Leo Log Window
-Leo 5.7.2 devel, build 20180419082201, Thu Apr 19 08:22:01 CDT 2018
-Git repo info: branch = dev, commit = 56b83585bd1f
-Python 2.7.12, PyQt version 4.8.7
-linux2
-isPython3: False
-caching enabled
-redefining abbreviation ,, 
-from u"{|{x='__NEXT_PLACEHOLDER'}|}" to u'__NEXT_PLACEHOLDER'
-reading: /home/swot/pyenv/xservice36/code/XService.leo
-read 89 files in 1.16 seconds
-read outline in 1.47 seconds</t>
-<t tx="ekr.20180505114332.12">https://github.com/leo-editor/leo-editor/issues/876
-At present optparse.OptionParser crashes if no --debug option is given.
-
-Hehe.  One of my scripts invoked Leo with the --debug option.  After removing --debug from the script it was, of course, possible to remove support for --debug from Leo.</t>
 <t tx="ekr.20180505114332.13">https://github.com/leo-editor/leo-editor/issues/877
-From Rob Keeney: As usual, I update my Leo instance every few days or so (devel branch ). After today's update and opening my standard set of files, I get this error:
-```
-reading: @auto-md Software.md
-Exception running Markdown_Importer
-Traceback (most recent call last):
-  File "D:\Synced\github repos\leo\leo\core\leoApp.py", line 1468, in scanner_for_at_auto_cb
-    return scanner.run(s, parent)
-  File "D:\Synced\github repos\leo\leo\plugins\importers\linescanner.py", line 463, in run
-    self.generate_nodes(s, parent)
-  File "D:\Synced\github repos\leo\leo\plugins\importers\linescanner.py", line 530, in generate_nodes
-    self.gen_lines(s, parent)
-  File "D:\Synced\github repos\leo\leo\plugins\importers\markdown.py", line 48, in gen_lines
-    self.make_node(level, name)
-  File "D:\Synced\github repos\leo\leo\plugins\importers\markdown.py", line 146, in make_node
-    self.find_parent(level=level, h=name)
-  File "D:\Synced\github repos\leo\leo\plugins\importers\markdown.py", line 85, in find_parent
-    return self.stack[level]
-IndexError: list index out of range
-read 21 files in 1.10 seconds
-read outline in 1.14 seconds
-```
-
-Perhaps recent caching changes are the cause.</t>
+</t>
 <t tx="ekr.20180505114332.14">https://github.com/leo-editor/leo-editor/issues/879
-From [this entry on leo-editor](https://groups.google.com/d/msg/leo-editor/gHfuTvgzTG0/JC2XRySrAQAJ):
-
-I'm working through the slide tutorial scripting leo, and noticed 2 issues.
-```python
-for p in c.all_positions():
-    g.es(' '*p.level(),p.h)
-```
-
-1. Log output
-
-I ran the script above on LeoDocs.leo and a small test file. On both LeoDocs and the test file, the output is flat (suggesting all nodes are level 0) not indented position p: 0 for top-level nodes, 1 for their children, as the tutorial states.
-
-**EKR**: For me, the output is properly indented.
-
-2. Performance 'Not responding'
-
-Run the script on LeoDocs: after the log output completes, it hangs with a not responding for ~65seconds.
-
-**EKR** I see this behavior.</t>
+</t>
 <t tx="ekr.20180505114332.15">https://github.com/leo-editor/leo-editor/issues/880
-According to my tests, the dirty bit *is* set correctly.
-
-However, it's almost impossible to see this in the EKRDark theme.</t>
-<t tx="ekr.20180505114332.16">https://github.com/leo-editor/leo-editor/issues/882
-Ctrl+( and Ctrl+) can not work. After add @shortcuts in myLeoSettings.leo, still can not work.
-
-add-comments = Ctrl-Shift-9
-delete-comments = Ctrl-Shift-0
-
-***
-Python 3.6.5, PyQt version 5.10.1
-linux
-isPython3: True
-caching enabled
-import-jupyter-notebook requires nbformat package
-setting leoID from os.getenv('USER'): 'swot'
-current dir: /home/swot/leo-editor
-load dir: /home/swot/leo-editor/leo/core
-global config dir: /home/swot/leo-editor/leo/config
-home dir: /home/swot
-reading settings in /home/swot/leo-editor/leo/config/leoSettings.leo
-reading settings in /home/swot/.leo/myLeoSettings.leo
-http serving enabled at 127.0.0.1:8130
-reading settings in /home/swot/.leo/workbook.leo
-redefining abbreviation ,, 
-from "{|{x='__NEXT_PLACEHOLDER'}|}" to '__NEXT_PLACEHOLDER'
-reading: /home/swot/.leo/workbook.leo</t>
+</t>
 <t tx="ekr.20180505114332.17">https://github.com/leo-editor/leo-editor/issues/884
-First noticed at #879 
-Indentation does not show in log pane when @bool log_pane_wraps = True
-
-**EKR**: Actually, leading indentation did not show properly regardless of this setting.</t>
+</t>
 <t tx="ekr.20180505114332.18">https://github.com/leo-editor/leo-editor/issues/886
-By analogy with Emacs's interactive macro.
-
-CheatSheet.leo now contains examples of c.interactive, c.interactive2 and c.interactive3.
-
-The present code likely suffices, but surely it could be generalized to handle any number of arguments.  I'll do so only if there are requests.</t>
+</t>
 <t tx="ekr.20180505114332.2">https://github.com/leo-editor/leo-editor/issues/423
-​These are the first new ideas I've had about key handling in over 20 years. They were stimulated by [this discussion](https://groups.google.com/forum/#!msg/leo-editor/GVhSNoMEUcU/G6CWjcatCwAJ).
 
-**Status**
+Related issues:
 
-This project is now complete.  No further work is planned, except for bug fixes.
-
-Remarkably, the only major changes are to:
-
-- LeoQtEventFilter.eventFilter (and helpers).
-- The KeyStroke class.
-- k.masterKeyHandler.
-
-**Details**
-
-The crucial eventFilter method has collapsed in complexity. This is a huge step forward.
-
-The g.KeyStroke class now contains ks.finalize, which sets ks.s to **canonical form**.  ks.finalize contains the dicts that used to found throughout leoKeys.py. This clarifies the code significantly. **Non-canonical settings strings no longer exist**.
-
-ks.__hash__ and the KeyStroke rich comparison methods guarantee that all "equivalent" KeyStroke objects will hash to the same key in any dict.
-
-k.masterKeyHandler has been refactored using several new methods. The top-level code is now straightforward.  No real changes have been made to helpers, but new consistency checks are in place.</t>
-<t tx="ekr.20180505114332.3">https://github.com/leo-editor/leo-editor/issues/757
-On MacOS only, after finding an occurrence in a headline Leo switches to the log with "no text selected".
-
-This bug first appeared in the Leo 5.7b1 release.</t>
-<t tx="ekr.20180505114332.4">https://github.com/leo-editor/leo-editor/issues/838
-The output of the present importer is unpleasant to use.
-
-- [x] Importer should put all json attributes except "source" uA's.
-- [x] Writer should write json attributes from uA's.</t>
+- https://github.com/leo-editor/leo-editor/issues/850
+- https://github.com/leo-editor/leo-editor/issues/850
+- https://github.com/leo-editor/leo-editor/issues/869
+- https://github.com/leo-editor/leo-editor/issues/870
+- https://github.com/leo-editor/leo-editor/issues/882
+</t>
 <t tx="ekr.20180505114332.5">https://github.com/leo-editor/leo-editor/issues/848
-At present the cleaned name **must** be "Recent Files" to be recognized and populated by rf.createRecentFilesMenuItems.</t>
-<t tx="ekr.20180505114332.6">https://github.com/leo-editor/leo-editor/issues/850
-There is already an option to swap keys, but that's not the same thing.
 
-This should be straightforward to do, unless I am misunderstanding something.</t>
-<t tx="ekr.20180505114332.7">https://github.com/leo-editor/leo-editor/issues/855
-/leo-editor/leo/doc/quickstart.leo#Programming--&gt;External files
+The first non-blank, non-comment line of the node `@menu Recent Files' can contain an alternate (translated) menu name.
 
-A clear discussion of @thin, @auto and @shadow including exercises.
-
-No mention of @clean.
-
-My guess, and I could be wrong, is that this is a little dated.</t>
+You should not just change the headline of the node: it should remain unchanged. Indeed, the point of this item is that Leo has to know which item is the Recent Files item, so some other way was needed to specify an alternate name.</t>
 <t tx="ekr.20180505114332.8">https://github.com/leo-editor/leo-editor/issues/862
-### Overview
-
-If I try at one time to move several nodes while preserving their gnx's, I cause this traceback:
-
-```
-Traceback (most recent call last):
-
-  File "/pri/git/leo-editor/leo/core/leoCommands.py", line 2016, in executeAnyCommand
-    return command(event)
-
-  File "/pri/git/leo-editor/leo/core/leoGlobals.py", line 2445, in commander_command_wrapper
-    method(event=event)
-
-  File "/pri/git/leo-editor/leo/commands/commanderOutlineCommands.py", line 1390, in promote
-    p.promote()
-
-  File "/pri/git/leo-editor/leo/core/leoNodes.py", line 1596, in promote
-    child.parents.remove(p.v)
-
-ValueError: list.remove(x): x not in list
-
-```
-The Leo-Editor session is left corrupted.  That is, it continues to behave badly till the file is closed and reopened.
-
-## Detailed Procedure for Reproducing the Problem
-
-The same problem occurs when I only move one node with the procedure that would move any number of nodes.  So the following procedure reproduces the problem:
-
-1. Open a new Leo-Editor file.
-
-1. Ctrl-I (create a second root node)
-
-1. Ctrl-I (create a third root node)
-
-1. Ctrl-I (create a fourth root node)
-
-1. Alt-UpArrow (move the focus to the third root node)
-
-1. Ctrl-] (make the fourth root node a child of the third root node)
-
-1. Shift-Ctrl-X (Delete the subtree rooted by third root node)
-
-1. Alt-UpArrow (move the focus to the first root node)
-
-1. Shift-Alt-V (Paste retaining gnx's)
-
-1. Ctrl-[ (promote all the children of the just pasted node.  This causes the traceback.)
-
-### Important Observations
-
-There is no error if a Shift-Ctrl-V (paste with new gnx's) is used in the above procedure.
-
-The "paste retaining gnx's" applies to all the nodes pasted, not just the root of the subtree pasted.  So in order to do what I want to do (that is retain the gnx's of the children) I must use Shift-Alt-V (paste retaining gnx's).
-
-Perhaps the root of this problem is that Shift-Ctrl-X fails to clear the parent list of the deleted node?
-
-### Test System
-```
-Xubuntu 16.04
-Leo 5.7.1, build 20180402204423, Mon Apr  2 20:44:23 CDT 2018
-Git repo info: branch = Leo-Babel, commit = 0be201e4a762
-Python 3.5.2, PyQt version 5.5.1
-linux
-isPython3: True
-caching enabled
-```</t>
+</t>
 <t tx="ekr.20180505114332.9">https://github.com/leo-editor/leo-editor/issues/863
-When changing branches somehow the structure of the external file gets over-ridden by the .leo.
-
-Work will be done in the "switch-branches" branch.
-
-**Acid test**
-
-With rev 077587 (or descendants containing an organizer node in g.KeyStoke):
-
-- Select `@`file leoGlobals.leo.
-- Remove all children.
-- refresh-from-disk.
-
-Because of the organizer, unwanted clones are created.  These clones are the heart of the problem.</t>
+</t>
 <t tx="ekr.20180505141445.1">.. https://github.com/leo-editor/leo-editor/issues/890
 
 By the term architecture I mean the design of Leo's modules and classes.
