@@ -1313,6 +1313,19 @@
 <v t="ekr.20131019035402.17557"><vh>The Leonine world</vh>
 <v t="ekr.20131019035402.17573"><vh>@rst html\leonine-world.html</vh></v>
 </v>
+<v t="ekr.20180505114327.1"><vh>Leo University</vh>
+<v t="ekr.20180505114327.5"><vh>Lesson 1: Think process, not knowledge</vh></v>
+<v t="ekr.20180505114327.7"><vh>Lesson 2: Learn Leo's debugging tools</vh></v>
+<v t="ekr.20180505114327.8"><vh>Lesson 3: Running unit tests</vh></v>
+<v t="ekr.20180505114327.6"><vh>Lesson 4: Use issues as an programming notebook</vh></v>
+<v t="ekr.20180505114327.9"><vh>Lesson 5: c.recursiveImport imports files recursively</vh></v>
+<v t="ekr.20180505114327.10"><vh>Lesson 6: How devs should use git branches</vh></v>
+<v t="ekr.20180505114327.11"><vh>Lesson 7: How to make complex changes to a code base</vh></v>
+<v t="ekr.20180505114327.2"><vh>LeoU: Unit tests should not depend on settings</vh></v>
+<v t="ekr.20180505114327.3"><vh>LeoU: Suggestions for theme developers</vh></v>
+<v t="ekr.20180505141445.1"><vh>LeoU: About Leo's architecture</vh></v>
+<v t="ekr.20180505114327.12"><vh>LeoU: About Leo's Position and VNode classes</vh></v>
+</v>
 </v>
 <v t="ekr.20131008041326.16091"><vh>Cheat Sheet</vh>
 <v t="ekr.20131007143750.16070"><vh>@rst html\cheatsheet.html</vh>
@@ -2001,19 +2014,6 @@
 <v t="ekr.20101121125326.4968"><vh>@url built slide</vh></v>
 </v>
 <v t="ekr.20180411102234.1"></v>
-<v t="ekr.20180505114327.1"><vh>Leo University</vh>
-<v t="ekr.20180505114327.2"><vh>#527: LeoU: unit tests need not, and should not, depend on settings</vh></v>
-<v t="ekr.20180505114327.3"><vh>#786: LeoU: Suggestions for theme developers</vh></v>
-<v t="ekr.20180505114327.4"><vh>#816: Summary: Leo University</vh></v>
-<v t="ekr.20180505114327.5"><vh>#817: LeoU: Think process, not knowledge</vh></v>
-<v t="ekr.20180505114327.6"><vh>#818: LeoU: Use issues as an programming notebook</vh></v>
-<v t="ekr.20180505114327.7"><vh>#836: LeoU: Leo's debugging tools</vh></v>
-<v t="ekr.20180505114327.8"><vh>#837: LeoU: Running unit tests</vh></v>
-<v t="ekr.20180505114327.9"><vh>#846: LeoU: c.recursiveImport imports files recursively</vh></v>
-<v t="ekr.20180505114327.10"><vh>#857: LeoU: How devs should use git branches</vh></v>
-<v t="ekr.20180505114327.11"><vh>#859: LeoU: How to make complex changes to a code base</vh></v>
-<v t="ekr.20180505114327.12"><vh>#891: LeoU: About Leo's Position and VNode classes</vh></v>
-</v>
 <v t="ekr.20180505114332.1"><vh>5.7.2 issues</vh>
 <v t="ekr.20180505114332.2"><vh>#423: Simplify key handling with a better KeyStroke class</vh></v>
 <v t="ekr.20180505114332.3"><vh>#757: MacOS: replace-then-find does not work in headlines</vh></v>
@@ -2033,6 +2033,7 @@
 <v t="ekr.20180505114332.17"><vh>#884: Log pane does not handle leading whitespace properly</vh></v>
 <v t="ekr.20180505114332.18"><vh>#886: Add c.interactive1/2/3 methods</vh></v>
 </v>
+<v t="ekr.20180505114327.1"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -15206,6 +15207,7 @@ Advanced Topics
    theory
    vim-theory
    leonine-world
+   leo-university
 
 .. atShadow</t>
 <t tx="ekr.20131008041326.16100">######################
@@ -26591,9 +26593,19 @@ These two commands are important tools.  Please try them and report any problems
 I will be happy to allow more characters in markdown links, should you want them. Just let me know.
 
 The insert-markdown-toc is a component of #767: Add markdown command similar to rst3 command.</t>
-<t tx="ekr.20180505114327.1"></t>
-<t tx="ekr.20180505114327.10">https://api.github.com/repos/leo-editor/leo-editor/issues/857
-Marcel Franke [explained](https://groups.google.com/d/msg/leo-editor/p_6ljMQL660/57Z8lYuQAAAJ) to us the recommended way of using git branches. Here are his remarks, slightly edited:
+<t tx="ekr.20180505114327.1">##############
+Leo University
+##############
+
+.. `LeoU issues`: https://github.com/leo-editor/leo-editor/issues/816
+This is a backup of the online `LeoU issues`_.
+</t>
+<t tx="ekr.20180505114327.10">.. https://github.com/leo-editor/leo-editor/issues/857
+
+Marcel Franke showed how to use the recommended way of using git branches:
+https://groups.google.com/d/msg/leo-editor/p_6ljMQL660/57Z8lYuQAAAJ
+
+Here are his remarks, slightly edited:
 
 - **master** is stable.
 - **devel** is "mostly" stable.
@@ -26611,19 +26623,20 @@ Only the maintainer (EKR) is supposed to work on release or master, so nobody ne
 To prepare a new release,  the maintainer branches devel to a new branch, say 5.7.x.  The maintainer runs tests on it, and makes any last-minute fixes. To publish the release, the maintainer merges the release to master **and** to devel, then optionally deletes the release branch.
 
 This visualization made it all clear to me:
+https://blog.seibert-media.net/wp-content/uploads/2014/03/Gitflow-Workflow-3.png</t>
+<t tx="ekr.20180505114327.11">.. https://github.com/leo-editor/leo-editor/issues/859
 
-![git branches](https://blog.seibert-media.net/wp-content/uploads/2014/03/Gitflow-Workflow-3.png).</t>
-<t tx="ekr.20180505114327.11">https://api.github.com/repos/leo-editor/leo-editor/issues/859
-This lesson discusses the *process* of making arbitrarily complex changes throughout a code base.  It's an elaboration of [Lesson 1: Think process, not knowledge](https://github.com/leo-editor/leo-editor/issues/817), but it's worth reading because it contains helpful hints about tackling *any* big project.  I used this general method when making Leo's code base work with Python 3 as well as Python 2.
+This lesson discusses the *process* of making arbitrarily complex changes throughout a code base.
+  It's an elaboration of Lesson 1: Think process, not knowledge, but it's worth reading because it contains helpful hints about tackling *any* big project.  I used this general method when making Leo's code base work with Python 3 as well as Python 2.
 
 The grand summary:
 
 1. Study the code first with clone-find commands.
 2. Let python crashes &amp; failed unit tests guide you.
 
-For example, here is how I am doing [#858: Rewrite Leo's key handling &amp; key binding code](https://github.com/leo-editor/leo-editor/issues/858):
+In detail:
 
-1. Create a new git branch for the work, in this case, "keys".
+1. Create a new git branch for the work.
 
 2. Create a **global master switch**that separates and marks the old and new versions of the code. This is a boolean.  It selects the new code if True and the old code otherwise.  We say the switch is either in the "**new**" position or the "**legacy**" position.
 
@@ -26660,8 +26673,10 @@ Now you can commit the code with the switch in the "new" position.
 - Commit the branch to "devel" when all seems well.
 
 That's the process.  It's extremely effective.  You don't have to remember your changes because a cff on the switch should yield *all* changed code.  Naturally, you can make clones of nodes containing the most important changes.</t>
-<t tx="ekr.20180505114327.12">https://api.github.com/repos/leo-editor/leo-editor/issues/891
-From [this post](https://groups.google.com/forum/#!topic/leo-editor/SjHfXepxiTo). Not everyone agrees with everything I say here.
+<t tx="ekr.20180505114327.12">.. https://github.com/leo-editor/leo-editor/issues/891
+
+From this post: https://groups.google.com/forum/#!topic/leo-editor/SjHfXepxiTo
+Not everyone agrees with everything I say here.
 
 This LeoU discussion discusses the present code base only. #883 (a low priority item) discusses ways in which the tree of vnodes could be decoupled from c, the Commands instance. 
 
@@ -26689,67 +26704,69 @@ The VNode class is, in fact, an excellent example of information hiding.  The bo
 
 **Possible improvements**
 
-1. A new c.new_vnode method could help instantiate VNodes:
-```python
-def new_vnode(self, gnx=None):
-    c = self
-    return leoNodes.VNode(context=c, gnx=gnx)
-```
+1. A new c.new_vnode method could help instantiate VNodes::
+
+    def new_vnode(self, gnx=None):
+        c = self
+        return leoNodes.VNode(context=c, gnx=gnx)
+
 The (small) advantage is that clients of c.new_vnode(gnx) would no longer need to import leo.core.leoNodes.
 
 2. The  v.saveCursorAndScroll and v.restoreCursorAndScroll could be moved elsewhere. At present, these methods cause no problems, but moving them would be part of #883.</t>
-<t tx="ekr.20180505114327.2">https://api.github.com/repos/leo-editor/leo-editor/issues/527
-Relying on settings nodes in unitTest.leo risks creating hard-to-find dependencies between seemingly unrelated unit tests.  Instead, unit tests can follow the pattern for, say, `@test add python comments`:
+<t tx="ekr.20180505114327.2">.. https://github.com/leo-editor/leo-editor/issues/527
 
-```python
-w = c.frame.body.wrapper
-p = g.findNodeInTree(c,p,'python')
-assert p,'not found: python'
-# Save the initial value of the setting.
-old_indent = c.config.getBool('indent_added_comments',default=True)
-table = (
-    (
-        True,
-        '@language python\ndef spam():\n    pass\n\n# after',
-        '@language python\ndef spam():\n    # pass\n\n# after',
-    ),
-    (
-        False,
-        '@language python\ndef spam():\n    pass\n\n# after',
-        '@language python\ndef spam():\n#     pass\n\n# after',
-    ),
-)
-try:
-    for indent, s1, expected in table:
-        # Step 1: set the setting.
-        c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+Relying on settings nodes in unitTest.leo risks creating hard-to-find dependencies between seemingly unrelated unit tests.  Instead, unit tests can follow the pattern for, say, `@test add python comments`::
+
+
+    w = c.frame.body.wrapper
+    p = g.findNodeInTree(c,p,'python')
+    assert p,'not found: python'
+    # Save the initial value of the setting.
+    old_indent = c.config.getBool('indent_added_comments',default=True)
+    table = (
+        (
+            True,
+            '@language python\ndef spam():\n    pass\n\n# after',
+            '@language python\ndef spam():\n    # pass\n\n# after',
+        ),
+        (
+            False,
+            '@language python\ndef spam():\n    pass\n\n# after',
+            '@language python\ndef spam():\n#     pass\n\n# after',
+        ),
+    )
+    try:
+        for indent, s1, expected in table:
+            # Step 1: set the setting.
+            c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+            val = c.config.getBool('indent_added_comments')
+            assert indent == val, (repr(indent), repr(val))
+            # Step 2: set p.b and the insert point.
+            c.selectPosition(p)
+            p.b = s1
+            i = p.b.find('pass')
+            assert i &gt; -1,'fail1: %s' % (repr(p.b))
+            w.setSelectionRange(i,i+4)
+            # Step 3: test add-comments
+            c.addComments()
+            assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
+    finally:
+        # Restore the initial value of the setting.
+        c.config.set(p, 'bool', 'indent_added_comments', old_indent)
         val = c.config.getBool('indent_added_comments')
-        assert indent == val, (repr(indent), repr(val))
-        # Step 2: set p.b and the insert point.
-        c.selectPosition(p)
-        p.b = s1
-        i = p.b.find('pass')
-        assert i &gt; -1,'fail1: %s' % (repr(p.b))
-        w.setSelectionRange(i,i+4)
-        # Step 3: test add-comments
-        c.addComments()
-        assert p.b == expected, ('indent: %5s got:\n%r\nexpected:\n%r' % (indent, p.b, expected))
-finally:
-    # Restore the initial value of the setting.
-    c.config.set(p, 'bool', 'indent_added_comments', old_indent)
-    val = c.config.getBool('indent_added_comments')
-```
-This code saves and restores the actual value of the `@bool indent_added_comments` setting. It uses:
-```python
- c.config.set(c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
-```
+
+This code saves and restores the actual value of the `@bool indent_added_comments` setting. It uses::
+
+    c.config.set(c.config.set(None, 'bool', 'indent_added_comments', indent, warn=False)
+
 to set the setting to the value of 'indent'.  Note that c.config.set is seldom (never?) used in Leo's core.</t>
-<t tx="ekr.20180505114327.3">https://api.github.com/repos/leo-editor/leo-editor/issues/786
+<t tx="ekr.20180505114327.3">.. https://github.com/leo-editor/leo-editor/issues/786
+
 I recommend using the organization of leo/themes/EKRDark.leo as a guide. **Note**: Syntax coloring settings are required because they are *not* used in the css.
 
 To avoid confusion, it's best if theme .leo files contain no **unbound settings**. This will ensure that the appearance of a theme does not unwittingly depend on settings in myLeoSettings.leo.
 
-**Important**: Theme devs should set the following **theme description settings**:
+**Important**: Theme devs should set the following **theme description settings**::
 
     @string theme_name   # crucial
     @bool color_theme_is_dark
@@ -26758,36 +26775,18 @@ To avoid confusion, it's best if theme .leo files contain no **unbound settings*
 These settings ensure that relative urls (including ":/" syntax are resolved properly in css, and that icons are found in the proper directories.
 
 **Icons boxes should have constant width**.  Otherwise, the variable indentation of the rest of the headline appears to represent variable outline structure, which is highly confusing.
+</t>
+<t tx="ekr.20180505114327.5">.. https://github.com/leo-editor/leo-editor/issues/817
 
-**Obsolete**: The post [ENB: Simple design principles for style sheets](https://groups.google.com/d/msg/leo-editor/JyyuOscgmow/kAJcGU0xBQAJ) contained my original ideas.  In particular, the so-called "settings Aha" is dubious.</t>
-<t tx="ekr.20180505114327.4">https://api.github.com/repos/leo-editor/leo-editor/issues/816
-This the gateway to Leo University, a project devoted to help people become Leo devs.
+Programming is *much* easier than you might think.
 
-All lessons have the LeoU label. All comments welcome.
-
-- Lesson 1: [Think process, not memory](https://github.com/leo-editor/leo-editor/issues/817).
-    Programming is *much* easier than you might think.
-- Lesson 2: [Learn Leo's debugging tools](https://github.com/leo-editor/leo-editor/issues/836).
-- Lesson 3: [Running unit tests](https://github.com/leo-editor/leo-editor/issues/837).
-- Lesson 4: [Use issues as a programming notebook](https://github.com/leo-editor/leo-editor/issues/818).
-- Lesson 5: [c.recursiveImport imports files recursively](https://github.com/leo-editor/leo-editor/issues/846)
-- Lesson 6: [How devs should use git branches](https://github.com/leo-editor/leo-editor/issues/857).
-- Lesson 7: [How to make complex changes to a code base](https://github.com/leo-editor/leo-editor/issues/859).
-
-And here are some other items for devs:
-
-- #786: LeoU: Suggestions for theme developers
-- #527: LeoU: Unit tests need not, and should not, depend on settings
-- #890: LeoU: About Leo's Architecture
-- #891: LeoU: About Leo's Position and VNode classes</t>
-<t tx="ekr.20180505114327.5">https://api.github.com/repos/leo-editor/leo-editor/issues/817
 Many of Leo's most important devs made major contributions to Leo without asking me a single question.  Do they have super powers?  No, they don't.
 
 But they do know the secret of programming: **Simple processes, endlessly repeated, suffice to find, understand and change *any* software**.  And Leo simplifies these techniques even further.  Here they are...
 
 **Basic skill/process 1: Familiarize yourself with the code**
 
-For any project you want to know what files exist.  When studying other people's code I use a [recursive import script](https://github.com/leo-editor/leo-editor/issues/846) to create a tree of files. The goal is just to have a *vague* understanding of what files are involved. Don't even think about remember details.
+For any project you want to know what files exist.  When studying other people's code I use a recursive import script https://github.com/leo-editor/leo-editor/issues/846 to create a tree of files. The goal is just to have a *vague* understanding of what files are involved. Don't even think about remember details.
 
 It's even easier with Leo.  LeoPy.py contains Leo's sources.  Peruse this outline, seeing what `@file` nodes it contains.
 
@@ -26814,56 +26813,55 @@ When a project is done (or suspended), I move the project's organizer node so it
 The easy processes just described form the basis for programming workflow.
 
 *Expect to repeat these processes many times*.  Don't worry if not everything is clear at first.</t>
-<t tx="ekr.20180505114327.6">https://api.github.com/repos/leo-editor/leo-editor/issues/818
-For any programming project I recommend using github issues to track your work.  You'll be glad you did.
+<t tx="ekr.20180505114327.6">.. https://github.com/leo-editor/leo-editor/issues/818
 
-This is especially true for Leo devs.  You want other people to be able to follow and comment on your work.
+I recommend using github issues to track your work. This is especially true for Leo devs.  You want other people to be able to follow and comment on your work.
 
 The convention is to have the first comment for any issue contain an up-to-date summary of the status of the issue.  I have found that it is useful to continually edit the first comment.</t>
-<t tx="ekr.20180505114327.7">https://api.github.com/repos/leo-editor/leo-editor/issues/836
-Here are the basics:
+<t tx="ekr.20180505114327.7">.. https://github.com/leo-editor/leo-editor/issues/836
+
+Here are the basics of debugging with Leo:
 
 **g.trace**
 
-g.trace(*args, **kwargs) prints its arguments to the console.  I use g.trace all throughout Leo's code base. The usual pattern is:
-```python
-trace = True and not g.unitTesting
-if trace: g.trace(&lt;&lt;whatever you want to see&gt;&gt;
-```
+g.trace(*args, **kwargs) prints its arguments to the console.  I use g.trace all throughout Leo's code base.
 
 **g.pdb**
 
-g.pdb() invokes a version of [python's pdb debugger](https://docs.python.org/2/library/pdb.html), adapted to Leo's Qt gui.  I use g.pdb only rarely, when g.trace doesn't tell me enough.
+g.pdb() invokes a version of python's pdb debugger, https://docs.python.org/2/library/pdb.html, adapted to Leo's Qt gui.  I use g.pdb only rarely, when g.trace doesn't tell me enough.
 
 **Using `@`button/command nodes as a testing framework**
 
-This is the so-called [stupendous Aha](http://leoeditor.com/FAQ.html#what-is-the-stupendous-aha-and-why-does-it-matter). This can save you a lot of time.</t>
-<t tx="ekr.20180505114327.8">https://api.github.com/repos/leo-editor/leo-editor/issues/837
+This is the so-called stupendous Aha:
+http://leoeditor.com/FAQ.html#what-is-the-stupendous-aha-and-why-does-it-matter
+This can save you a lot of time.</t>
+<t tx="ekr.20180505114327.8">.. https://github.com/leo-editor/leo-editor/issues/837
+
 ​All devs must run all unit tests before commit anything. Here's how:
 
 - Open leo/test/unitTest.leo in a console.
 - The "Active Unit Tests" node should already be selected. If not, select it.
 - Do Alt-4. It is bound in the file to run-selected-unit-tests-locally.
 
-**Important**: Some unit tests may fail on your environment.  Don't worry about them.  You need only ensure that your new code causes no *other* unit tests to fail.  If in doubt, ask on [leo-editor](https://groups.google.com/forum/#!forum/leo-editor).</t>
-<t tx="ekr.20180505114327.9">https://api.github.com/repos/leo-editor/leo-editor/issues/846
+**Important**: Some unit tests may fail on your environment.  Don't worry about them.  You need only ensure that your new code causes no *other* unit tests to fail.  If in doubt, ask on leo-editor.</t>
+<t tx="ekr.20180505114327.9">.. https://github.com/leo-editor/leo-editor/issues/846
 c.recursiveImport is a wrapper on the RecursiveImportController class.​ ​You can find the related code by doing a regex cff (ignoring case) on ​ ​"recursive?import".
 
-Here is how to use c.recursiveImport:
-```python
-c.recursiveImport(
-    dir_ = &lt;&lt; path to root directory &gt;&gt;,
-        # You must expand ~ yourself
-    add_path=True,
-    kind = '@clean', # '@clean', @nosent','@auto','@file'
-    recursive = True,
-    safe_at_file = False,
-    theTypes = ['.py',],
-)
-```
+Here is how to use c.recursiveImport::
+
+    c.recursiveImport(
+        dir_ = &lt;&lt; path to root directory &gt;&gt;,
+            # You must expand ~ yourself
+        add_path=True,
+        kind = '@clean', # '@clean', @nosent','@auto','@file'
+        recursive = True,
+        safe_at_file = False,
+        theTypes = ['.py',],
+    )
+
 I like to import to `@`clean and set safe_at_file = False, but *before doing that* I create a git repo for the to-be-imported directory and check in all the .py files. That way I can track any changes that get made, and revert them if need be.</t>
 <t tx="ekr.20180505114332.1"># Found 17 marked nodes</t>
-<t tx="ekr.20180505114332.10">https://api.github.com/repos/leo-editor/leo-editor/issues/869
+<t tx="ekr.20180505114332.10">https://github.com/leo-editor/leo-editor/issues/869
 with @bool vim-mode = True in myLeoSettings.leo
 
 When focus is on outline, pressing **Enter** key can not enter body pane.
@@ -26874,7 +26872,7 @@ ignoring  # &lt;===== EKR: a return character.
 ```
 
 **EKR**: The problem was that vim mode was not recognizing the 'Return' character properly.</t>
-<t tx="ekr.20180505114332.11">https://api.github.com/repos/leo-editor/leo-editor/issues/870
+<t tx="ekr.20180505114332.11">https://github.com/leo-editor/leo-editor/issues/870
 in body pane: Ctrl + Shift + 0  can not comment code now
 in body pane: Shift + : can not exec vim command
 in log pane: Ctrl + Home can not go to 1st line
@@ -26893,11 +26891,11 @@ from u"{|{x='__NEXT_PLACEHOLDER'}|}" to u'__NEXT_PLACEHOLDER'
 reading: /home/swot/pyenv/xservice36/code/XService.leo
 read 89 files in 1.16 seconds
 read outline in 1.47 seconds</t>
-<t tx="ekr.20180505114332.12">https://api.github.com/repos/leo-editor/leo-editor/issues/876
+<t tx="ekr.20180505114332.12">https://github.com/leo-editor/leo-editor/issues/876
 At present optparse.OptionParser crashes if no --debug option is given.
 
 Hehe.  One of my scripts invoked Leo with the --debug option.  After removing --debug from the script it was, of course, possible to remove support for --debug from Leo.</t>
-<t tx="ekr.20180505114332.13">https://api.github.com/repos/leo-editor/leo-editor/issues/877
+<t tx="ekr.20180505114332.13">https://github.com/leo-editor/leo-editor/issues/877
 From Rob Keeney: As usual, I update my Leo instance every few days or so (devel branch ). After today's update and opening my standard set of files, I get this error:
 ```
 reading: @auto-md Software.md
@@ -26921,7 +26919,7 @@ read outline in 1.14 seconds
 ```
 
 Perhaps recent caching changes are the cause.</t>
-<t tx="ekr.20180505114332.14">https://api.github.com/repos/leo-editor/leo-editor/issues/879
+<t tx="ekr.20180505114332.14">https://github.com/leo-editor/leo-editor/issues/879
 From [this entry on leo-editor](https://groups.google.com/d/msg/leo-editor/gHfuTvgzTG0/JC2XRySrAQAJ):
 
 I'm working through the slide tutorial scripting leo, and noticed 2 issues.
@@ -26941,11 +26939,11 @@ I ran the script above on LeoDocs.leo and a small test file. On both LeoDocs and
 Run the script on LeoDocs: after the log output completes, it hangs with a not responding for ~65seconds.
 
 **EKR** I see this behavior.</t>
-<t tx="ekr.20180505114332.15">https://api.github.com/repos/leo-editor/leo-editor/issues/880
+<t tx="ekr.20180505114332.15">https://github.com/leo-editor/leo-editor/issues/880
 According to my tests, the dirty bit *is* set correctly.
 
 However, it's almost impossible to see this in the EKRDark theme.</t>
-<t tx="ekr.20180505114332.16">https://api.github.com/repos/leo-editor/leo-editor/issues/882
+<t tx="ekr.20180505114332.16">https://github.com/leo-editor/leo-editor/issues/882
 Ctrl+( and Ctrl+) can not work. After add @shortcuts in myLeoSettings.leo, still can not work.
 
 add-comments = Ctrl-Shift-9
@@ -26969,18 +26967,18 @@ reading settings in /home/swot/.leo/workbook.leo
 redefining abbreviation ,, 
 from "{|{x='__NEXT_PLACEHOLDER'}|}" to '__NEXT_PLACEHOLDER'
 reading: /home/swot/.leo/workbook.leo</t>
-<t tx="ekr.20180505114332.17">https://api.github.com/repos/leo-editor/leo-editor/issues/884
+<t tx="ekr.20180505114332.17">https://github.com/leo-editor/leo-editor/issues/884
 First noticed at #879 
 Indentation does not show in log pane when @bool log_pane_wraps = True
 
 **EKR**: Actually, leading indentation did not show properly regardless of this setting.</t>
-<t tx="ekr.20180505114332.18">https://api.github.com/repos/leo-editor/leo-editor/issues/886
+<t tx="ekr.20180505114332.18">https://github.com/leo-editor/leo-editor/issues/886
 By analogy with Emacs's interactive macro.
 
 CheatSheet.leo now contains examples of c.interactive, c.interactive2 and c.interactive3.
 
 The present code likely suffices, but surely it could be generalized to handle any number of arguments.  I'll do so only if there are requests.</t>
-<t tx="ekr.20180505114332.2">https://api.github.com/repos/leo-editor/leo-editor/issues/423
+<t tx="ekr.20180505114332.2">https://github.com/leo-editor/leo-editor/issues/423
 ​These are the first new ideas I've had about key handling in over 20 years. They were stimulated by [this discussion](https://groups.google.com/forum/#!msg/leo-editor/GVhSNoMEUcU/G6CWjcatCwAJ).
 
 **Status**
@@ -27002,22 +27000,22 @@ The g.KeyStroke class now contains ks.finalize, which sets ks.s to **canonical f
 ks.__hash__ and the KeyStroke rich comparison methods guarantee that all "equivalent" KeyStroke objects will hash to the same key in any dict.
 
 k.masterKeyHandler has been refactored using several new methods. The top-level code is now straightforward.  No real changes have been made to helpers, but new consistency checks are in place.</t>
-<t tx="ekr.20180505114332.3">https://api.github.com/repos/leo-editor/leo-editor/issues/757
+<t tx="ekr.20180505114332.3">https://github.com/leo-editor/leo-editor/issues/757
 On MacOS only, after finding an occurrence in a headline Leo switches to the log with "no text selected".
 
 This bug first appeared in the Leo 5.7b1 release.</t>
-<t tx="ekr.20180505114332.4">https://api.github.com/repos/leo-editor/leo-editor/issues/838
+<t tx="ekr.20180505114332.4">https://github.com/leo-editor/leo-editor/issues/838
 The output of the present importer is unpleasant to use.
 
 - [x] Importer should put all json attributes except "source" uA's.
 - [x] Writer should write json attributes from uA's.</t>
-<t tx="ekr.20180505114332.5">https://api.github.com/repos/leo-editor/leo-editor/issues/848
+<t tx="ekr.20180505114332.5">https://github.com/leo-editor/leo-editor/issues/848
 At present the cleaned name **must** be "Recent Files" to be recognized and populated by rf.createRecentFilesMenuItems.</t>
-<t tx="ekr.20180505114332.6">https://api.github.com/repos/leo-editor/leo-editor/issues/850
+<t tx="ekr.20180505114332.6">https://github.com/leo-editor/leo-editor/issues/850
 There is already an option to swap keys, but that's not the same thing.
 
 This should be straightforward to do, unless I am misunderstanding something.</t>
-<t tx="ekr.20180505114332.7">https://api.github.com/repos/leo-editor/leo-editor/issues/855
+<t tx="ekr.20180505114332.7">https://github.com/leo-editor/leo-editor/issues/855
 /leo-editor/leo/doc/quickstart.leo#Programming--&gt;External files
 
 A clear discussion of @thin, @auto and @shadow including exercises.
@@ -27025,7 +27023,7 @@ A clear discussion of @thin, @auto and @shadow including exercises.
 No mention of @clean.
 
 My guess, and I could be wrong, is that this is a little dated.</t>
-<t tx="ekr.20180505114332.8">https://api.github.com/repos/leo-editor/leo-editor/issues/862
+<t tx="ekr.20180505114332.8">https://github.com/leo-editor/leo-editor/issues/862
 ### Overview
 
 If I try at one time to move several nodes while preserving their gnx's, I cause this traceback:
@@ -27092,7 +27090,7 @@ linux
 isPython3: True
 caching enabled
 ```</t>
-<t tx="ekr.20180505114332.9">https://api.github.com/repos/leo-editor/leo-editor/issues/863
+<t tx="ekr.20180505114332.9">https://github.com/leo-editor/leo-editor/issues/863
 When changing branches somehow the structure of the external file gets over-ridden by the .leo.
 
 Work will be done in the "switch-branches" branch.
@@ -27106,6 +27104,33 @@ With rev 077587 (or descendants containing an organizer node in g.KeyStoke):
 - refresh-from-disk.
 
 Because of the organizer, unwanted clones are created.  These clones are the heart of the problem.</t>
+<t tx="ekr.20180505141445.1">.. https://github.com/leo-editor/leo-editor/issues/890
+
+By the term architecture I mean the design of Leo's modules and classes.
+
+**Information hiding**
+
+Leo's design is based on the thinking of Glenford Meyers. Let's use the word component to mean either a Python module or class.
+
+We devs must be able to change the implementation of a component without affecting any other code. This has been true throughout Leo's 20+ years of history. This is the foundation on which Leo is built.
+
+**Principle 1**: Each class should concern itself with one, easily defined "area of concern".
+
+Modules should contain related classes. All components should have short, simple descriptions, no matter how complex they are internally.
+
+**Principle 2**: Components should know as little as possible about the internal details of other components.
+
+Components have well-defined boundaries. The inside of a component contains the implementation. The outside of a component is its API.
+
+Changes to the API can break code. However, knowing about the existence of a component's high-level methods does not (usually) blur the boundaries of a component!
+
+In most cases, components should know nothing about the ivars and low-level methods. However, components can freely use the so-called official ivars of other classes. These official ivars are highly unlikely ever to change. And they are useful. We wouldn't want to require long-winded alternatives to, say, c.frame.body.wrapper.
+
+**Class design: inheritance vs instantiation**
+
+Leo uses the "has-a" pattern, rather than the "is-a" class pattern. That is, Leo gains access to the capabilities of other classes by instantiating the other classes rather than being subclasses of other classes. The "has-a" pattern is a personal preference of mine, and is now pretty much baked into Leo.
+
+The "has-a" pattern completely insulates classes from the internal details of other classes. There is no need to worry about clashing ivars, or _ ivars, etc. Otoh, the "has-a" pattern results in more complex startup code. Imo, that "extra" complexity is well worthwhile.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
