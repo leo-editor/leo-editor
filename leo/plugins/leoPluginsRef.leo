@@ -46,41 +46,7 @@
 <v t="ekr.20161031065339.1"><vh>clear</vh></v>
 </v>
 <v t="ekr.20160412101845.1"><vh>@button test-jup-export</vh></v>
-<v t="ekr.20160412101537.1"><vh>@button test-jup-import</vh>
-<v t="ekr.20160412101537.2"><vh>class Import_IPYNB</vh>
-<v t="ekr.20160412101537.3"><vh>ctor</vh></v>
-<v t="ekr.20160412115053.1"><vh>Entries</vh>
-<v t="ekr.20160412101537.14"><vh>import_file: import-jupyter-notebook entry</vh></v>
-<v t="ekr.20160412103110.1"><vh>ipynb.run</vh></v>
-</v>
-<v t="ekr.20160412115123.1"><vh>Scanners</vh>
-<v t="ekr.20160412101537.4"><vh>do_any &amp; helpers</vh>
-<v t="ekr.20160412101537.5"><vh>do_dict</vh></v>
-<v t="ekr.20160412101537.6"><vh>do_other</vh></v>
-<v t="ekr.20160412101537.7"><vh>do_string (test-jup-import)</vh></v>
-<v t="ekr.20160412101537.8"><vh>do_list</vh></v>
-<v t="ekr.20160412101537.9"><vh>do_source &amp; helpers</vh>
-<v t="ekr.20160412101537.10"><vh>check_header</vh></v>
-<v t="ekr.20160412101537.11"><vh>do_markdown_cell (test-jup-import)</vh></v>
-</v>
-</v>
-<v t="ekr.20160412101537.12"><vh>do_cell</vh></v>
-<v t="ekr.20160412101537.13"><vh>do_prefix</vh></v>
-<v t="ekr.20160412101537.15"><vh>indent_cells &amp; helpers</vh>
-<v t="ekr.20160412101537.16"><vh>move_node</vh></v>
-</v>
-</v>
-<v t="ekr.20160412101537.17"><vh>Utils</vh>
-<v t="ekr.20160412101537.18"><vh>error</vh></v>
-<v t="ekr.20160412101537.19"><vh>get_code_language</vh></v>
-<v t="ekr.20160412101537.20"><vh>get_file_name</vh></v>
-<v t="ekr.20160412101537.21"><vh>is_dict</vh></v>
-<v t="ekr.20160412101537.22"><vh>is_empty_code</vh></v>
-<v t="ekr.20160412101537.23"><vh>new_node</vh></v>
-<v t="ekr.20160412101537.24"><vh>parse</vh></v>
-</v>
-</v>
-</v>
+<v t="ekr.20160412101537.1"><vh>@button test-jup-import</vh></v>
 </v>
 <v t="ekr.20160122104400.1"><vh>@settings</vh>
 <v t="ekr.20170709095709.1"><vh>@@bool minibuffer_find_mode = True</vh></v>
@@ -88,6 +54,7 @@
 </v>
 <v t="ekr.20170420085814.1"><vh>Recursive import script</vh></v>
 </v>
+<v t="ekr.20170420085814.1"></v>
 <v t="ekr.20090430075506.4"><vh>Notes</vh>
 <v t="ekr.20090430075506.3"><vh>@file leoPluginNotes.txt</vh></v>
 </v>
@@ -145,12 +112,12 @@
 </v>
 <v t="ekr.20041030092101"><vh>Dyna plugins by e</vh></v>
 <v t="ekr.20040722141148"><vh>Examples</vh>
-<v t="ekr.20040828105233"><vh>@file examples/chinese_menu.py</vh></v>
-<v t="EKR.20040517080202.3"><vh>@file examples/french_fm.py</vh></v>
 <v t="edream.110203113231.916"><vh>@file examples/override_classes.py</vh></v>
 <v t="edream.110203113231.919"><vh>@file examples/override_commands.py</vh></v>
-<v t="ekr.20060621123339"><vh>@file examples/print_cp.py</vh></v>
 <v t="edream.110203113231.921"><vh>@file examples/redefine_put.py</vh></v>
+<v t="ekr.20060621123339"><vh>@file examples/print_cp.py</vh></v>
+<v t="ekr.20040828105233"><vh>@file examples/chinese_menu.py</vh></v>
+<v t="EKR.20040517080202.3"><vh>@file examples/french_fm.py</vh></v>
 <v t="ekr.20180119164431.1"><vh>@file patch_python_colorizer.py</vh></v>
 </v>
 <v t="ekr.20101110150056.9457"><vh>Experimental</vh>
@@ -231,8 +198,28 @@
 <v t="ekr.20140723122936.18148"><vh>@file importers/php.py</vh></v>
 <v t="ekr.20140723122936.18149"><vh>@file importers/python.py</vh></v>
 <v t="ekr.20170615153639.2"><vh>@file importers/tcl.py</vh></v>
+<v t="ekr.20180201203240.2"><vh>@file importers/treepad.py</vh></v>
 <v t="ekr.20140723122936.18152"><vh>@file importers/typescript.py</vh></v>
 <v t="ekr.20140723122936.18137"><vh>@file importers/xml.py</vh></v>
+</v>
+<v t="ekr.20180504192522.1"><vh>leo_babel</vh>
+<v t="ekr.20180504193756.1"><vh>Top-level</vh>
+<v t="ekr.20180504191650.17"><vh>@file babel_kill.py</vh></v>
+<v t="bob.20170716140541.1"><vh>@file babel_api.py</vh></v>
+<v t="bob.20170311140807.1"><vh>@file babel.py</vh></v>
+<v t="bob.20170726143458.1"><vh>@file babel_lib.py</vh></v>
+</v>
+<v t="ekr.20180504191650.34"><vh>@clean leo_babel/__init__.py</vh></v>
+<v t="ekr.20180504191650.36"><vh>examples</vh>
+<v t="bob.20170716135108.2"><vh>@file leo_babel/examples/slowOut.py</vh></v>
+<v t="bob.20170716135108.3"><vh>@file leo_babel/examples/slowOutNoFlush.py</vh></v>
+</v>
+<v t="ekr.20180504191650.42"><vh>tests</vh>
+<v t="ekr.20180504191650.68"><vh>@clean leo_babel/tests/__init__.py</vh></v>
+<v t="bob.20180206123613.1"><vh>@file leo_babel/tests/idle_time.py</vh></v>
+<v t="bob.20180205135005.1"><vh>@file leo_babel/tests/lib_test.py</vh></v>
+<v t="bob.20180125160225.1"><vh>@file leo_babel/tests/tests.py</vh></v>
+</v>
 </v>
 <v t="ekr.20130927050813.13031"><vh>Obsolete</vh>
 <v t="ajones.20070122160142"><vh>@file textnode.py</vh></v>
@@ -425,7 +412,6 @@
 <v t="tbrown.20090119215428.2"><vh>@file todo.py</vh></v>
 <v t="ville.20110403115003.10348"><vh>@file valuespace.py</vh></v>
 <v t="tbrown.20100318101414.5990"><vh>@file viewrendered.py</vh></v>
-<v t="ekr.20140225222704.16748"><vh>@file viewrendered2.py</vh></v>
 </v>
 <v t="ekr.20061023142737"><vh> UNL plugin</vh>
 <v t="ekr.20061023142737.1"><vh>Tests</vh>
@@ -456,6 +442,7 @@
 <v t="ekr.20141116100154.2"><vh>@file writers/dart.py</vh></v>
 <v t="ekr.20160412101901.1"><vh>@file writers/ipynb.py</vh></v>
 <v t="ekr.20160504083330.1"><vh>@file writers/json.py</vh></v>
+<v t="ekr.20180202053206.1"><vh>@file writers/treepad.py</vh></v>
 <v t="ekr.20140726091031.18080"><vh>@file writers/leo_rst.py</vh></v>
 <v t="ekr.20140726091031.18073"><vh>@file writers/markdown.py</vh></v>
 <v t="ekr.20140726091031.18079"><vh>@file writers/org.py</vh></v>
@@ -509,7 +496,7 @@ affect Leo's panes and windows in various ways.
 
 </t>
 <t tx="ekr.20041001210557"></t>
-<t tx="ekr.20041030092101">@Notes by EKR: The dyna plugin is a remarkable body of work by 'e'.Have fun with it.
+<t tx="ekr.20041030092101">@Notes by EKR: The dyna plugin is a remarkable body of work by 'e'. Have fun with it.
 
 You may download the latest version at: http: // rclick.netfirms.com / dyna_menu.py.html
 </t>
@@ -2620,357 +2607,6 @@ if not g.unitTesting:
     c.redraw() 
     g.es_print('done')
 </t>
-<t tx="ekr.20160412101537.10">def check_header(self, m):
-    '''Return (n, name) or (None, None) on error.'''
-    val = (None, None)
-    if m:
-        n1, name, n2 = m.group(1), m.group(2), m.group(3)
-        try:
-            if int(n1) == int(n2):
-                val = int(n1), name
-        except Exception:
-            pass
-        if val == (None, None):
-            g.trace('malformed header:', m.group(0))
-    return val
-</t>
-<t tx="ekr.20160412101537.11">def do_markdown_cell(self, p, s):
-    '''Split the markdown cell p if it contains one or more html headers.'''
-    trace = False and not g.unitTesting
-    SPLIT = False
-        # Perhaps this should be a user option,
-        # but splitting adds signifincant whitespace.
-        # The user can always split nodes manually if desired.
-    i0, last = 0, p.copy()
-    if not s.strip():
-        return
-    lines = g.splitLines(s)
-    if SPLIT:
-        for i, s in enumerate(lines):
-            m = self.re_header.search(s)
-            n, name = self.check_header(m)
-            if n is None: continue
-            h = '&lt;h%s&gt; %s &lt;/h%s&gt;' % (n, name.strip(), n)
-            prefix = ''.join(lines[i0: i])
-            suffix = ''.join(lines[i+1:]) # i+1: skip the heading.
-            if trace: g.trace('%2s %2s %s' % (i-i0, len(lines)-i, h))
-            if prefix.strip():
-                p2 = last.insertAfter()
-                p2.h = h
-                p2.b = suffix
-                last.b = '@language md\n\n' + prefix
-                last = p2
-                i0 = i
-            else:
-                last.h = h
-                last.b = '@language md\n\n' + suffix
-    else:
-        for i, s in enumerate(lines):
-            m = self.re_header.search(s)
-            n, name = self.check_header(m)
-            if n is not None:
-                h = '&lt;h%s&gt; %s &lt;/h%s&gt;' % (n, name.strip(), n)
-                p.h = h
-                break
-        p.b = '@language md\n\n' + ''.join(lines)
-</t>
-<t tx="ekr.20160412101537.12">def do_cell(self, cell, n):
-
-    trace = False and not g.unitTesting
-    self.cell_n = n
-    if self.is_empty_code(cell):
-        if trace: g.trace('skipping empty cell', n)
-    else:
-        # Careful: don't use self.new_node here.
-        self.parent = self.cell = self.root.insertAsLastChild()
-        self.parent.h = 'cell %s' % (n + 1)
-        # Pre-compute the cell_type.
-        self.cell_type = cell.get('cell_type')
-        for key in sorted(cell):
-            val = cell.get(key)
-            self.do_any(key, val)
-</t>
-<t tx="ekr.20160412101537.13">def do_prefix(self, d):
-    '''
-    Handle the top-level non-cell data:
-    metadata (dict)
-    nbformat (int)
-    nbformat_minor (int)
-    '''
-    if d:
-        self.parent = self.new_node('# {prefix}')
-        for key in sorted(d):
-            if key != 'cells':
-                val = d.get(key)
-                self.do_any(key, val)
-</t>
-<t tx="ekr.20160412101537.14">def import_file(self, fn, root):
-    '''
-    Import the given .ipynb file.
-    https://nbformat.readthedocs.org/en/latest/format_description.html
-    '''
-    c = self.c
-    self.fn = fn
-    self.parent = None
-    self.root = root.copy()
-    d = self.parse(fn)
-    self.do_prefix(d)
-    self.code_language = self.get_code_language(d)
-    cells = d.get('cells', [])
-    for n, cell in enumerate(cells):
-        self.do_cell(cell, n)
-    self.indent_cells()
-    c.selectPosition(self.root)
-    c.redraw()
-</t>
-<t tx="ekr.20160412101537.15">def indent_cells(self):
-    '''
-    Indent md nodes in self.root.children().
-    &lt;h1&gt; nodes and non-md nodes stay where they are,
-    &lt;h2&gt; nodes become children of &lt;h1&gt; nodes, etc.
-    '''
-    # Careful: links change during this loop.
-    p = self.root.firstChild()
-    stack = []
-    after = self.root.nodeAfterTree()
-    while p and p != self.root and p != after:
-        m = self.re_header.search(p.h)
-        n, name = self.check_header(m)
-        if n is None: n = 1
-        assert p.level() == 1, (p.level(), p.h)
-        # g.trace('n', n, 'stack', len(stack), p.h)
-        stack = self.move_node(n, p, stack)
-        p.moveToNodeAfterTree()
-        # g.trace('=====', p and p.h)
-</t>
-<t tx="ekr.20160412101537.16">def move_node(self, n, p, stack):
-    '''Move node to level n'''
-    # Cut back the stack so that p will be at level n (if possible).
-    if stack:
-        stack = stack[:n]
-        if len(stack) == n:
-            prev = stack.pop()
-            p.moveAfter(prev)
-        else:
-            # p will be under-indented if len(stack) &lt; n-1
-            # This depends on user markup, so it can't be helped.
-            parent = stack[-1]
-            n2 = parent.numberOfChildren()
-            p.moveToNthChildOf(parent, n2)
-    # Push p *after* moving p.
-    stack.append(p.copy())
-    # g.trace('   n', n, 'stack', len(stack), p.h)
-    return stack
-</t>
-<t tx="ekr.20160412101537.17"></t>
-<t tx="ekr.20160412101537.18">def error(self, s):
-
-    g.es_print('error: %s' % (s), color='red')
-</t>
-<t tx="ekr.20160412101537.19">def get_code_language(self, d):
-    '''Return the language specified by the top-level metadata.'''
-    name = None
-    m = d.get('metadata')
-    if m:
-        info = m.get('language_info')
-        if info:
-            name = info.get('name')
-    return name
-</t>
-<t tx="ekr.20160412101537.2">class Import_IPYNB(object):
-    '''A class to import .ipynb files.'''
-
-    @others
-</t>
-<t tx="ekr.20160412101537.20">def get_file_name(self):
-    '''Open a dialog to get a Jupyter (.ipynb) file.'''
-    c = self.c
-    fn = g.app.gui.runOpenFileDialog(
-        c,
-        title="Open Jupyter File",
-        filetypes=[
-            ("All files", "*"),
-            ("Jupyter files", "*.ipynb"),
-        ],
-        defaultextension=".ipynb",
-    )
-    c.bringToFront()
-    return fn
-</t>
-<t tx="ekr.20160412101537.21">def is_dict(self, obj):
-
-    return isinstance(obj, (dict, nbformat.NotebookNode))
-</t>
-<t tx="ekr.20160412101537.22">def is_empty_code(self, cell):
-    '''Return True if cell is an empty code cell.'''
-    if cell.get('cell_type') == 'code':
-        source = cell.get('source','')
-        metadata = cell.get('metadata')
-        keys = sorted(metadata.keys())
-        if 'collapsed' in metadata:
-            keys.remove('collapsed')
-        outputs = cell.get('outputs')
-        # g.trace(len(source), self.parent.h, sorted(cell))
-        return not source and not keys and not outputs
-    return False
-</t>
-<t tx="ekr.20160412101537.23">def new_node(self, h):
-
-    parent = self.parent or self.root
-    p = parent.insertAsLastChild()
-    p.h = h
-    return p
-</t>
-<t tx="ekr.20160412101537.24">def parse(self, fn):
-
-    if g.os_path_exists(fn):
-        with open(fn) as f:
-            # payload_source = f.name
-            payload = f.read()
-        nb = nbformat.reads(payload, as_version=4)
-            # nbformat.NO_CONVERT: no conversion
-            # as_version=4: Require IPython 4.
-        return nb
-    else:
-        g.es_print('not found', fn)
-        return None
-</t>
-<t tx="ekr.20160412101537.3">def __init__(self, c=None, importCommands=None, **kwargs):
-    '''Ctor for Import_IPYNB class.'''
-    self.c = importCommands.c if importCommands else c
-        # Commander of present outline.
-    # g.trace('(Import_IPYNB)', self.c)
-    self.cell = None
-        # The present cell node.
-    self.cell_n = None
-        # The number of the top-level node being scanned.
-    self.code_language = None
-        # The language in effect for code cells.
-    self.cell_type = None
-        # The pre-computed cell type of the node.
-    self.in_data = False
-        # True if in range of any dict.
-    self.parent = None
-        # The parent for the next created node.
-    self.re_header = re.compile(r'^.*&lt;[hH]([123456])&gt;(.*)&lt;/[hH]([123456])&gt;')
-        # A regex matching html headers.
-    self.root = None
-        # The root of the to-be-created outline.
-</t>
-<t tx="ekr.20160412101537.4">def do_any(self, key, val):
-
-    # if key == 'output_type': g.trace(val.__class__.__name__)
-    if key == 'source':
-        self.do_source(key, val)
-    elif g.isString(val):
-        self.do_string(key, val)
-    elif isinstance(val, (list, tuple)):
-        self.do_list(key, val)
-    elif self.is_dict(val):
-        self.do_dict(key, val)
-    else:
-        # Can be ints, None, etc.
-        self.do_other(key, val)
-</t>
-<t tx="ekr.20160412101537.5">def do_dict(self, key, d):
-
-    assert self.is_dict(d), d.__class__.__name__
-    keys = list(d.keys())
-    is_cell = self.parent == self.cell
-    if key == 'metadata' and is_cell:
-        if 'collapsed' in keys:
-            if d.get('collapsed') in (False, 'false'):
-                self.cell.expand()
-            keys.remove('collapsed')
-        if 'leo_headline' in keys:
-            h = d.get('leo_headline')
-            if h:
-                self.cell.h = h
-            keys.remove('leo_headline')
-    # g.trace(key, is_cell, keys)
-    if is_cell and key == 'metadata' and not keys:
-        return # experimental
-    old_parent = self.parent
-    self.parent = self.new_node('# dict:%s' % key)
-    old_in_dict = self.in_data
-    self.in_data = key == 'data'
-    for key2 in sorted(keys):
-        val2 = d.get(key2)
-        self.do_any(key2, val2)
-    self.in_data = old_in_dict
-    self.parent = old_parent
-</t>
-<t tx="ekr.20160412101537.6">def do_other(self, key, val):
-
-    if key == 'execution_count' and val is None:
-        pass # The exporter will create the proper value.
-    else:
-        name = 'null' if val is None else val.__class__.__name__
-        p = self.new_node('# %s:%s' % (name, key))
-        if val is None:
-            p.b = '' # Exporter will translate to 'null'
-        else:
-            p.b = repr(val)
-</t>
-<t tx="ekr.20160412101537.7">def do_string(self, key, val):
-
-    assert g.isString(val)
-    is_cell = self.parent == self.cell
-    if is_cell and key == 'cell_type':
-        # Do *not* create a cell_type child.
-        pass
-    else:
-        # Do create all other nodes.
-        if self.in_data or len(g.splitLines(val.strip())) &gt; 1:
-            key = 'list:' + key
-        else:
-            key = 'str:' + key
-        p = self.new_node('# ' + key)
-        if key.startswith('list:'):
-            if key.endswith('html'):
-                val = '@language html\n\n' + val
-            elif key.endswith('xml'):
-                val = '@language html\n\n' + val
-            else:
-                val = '@nocolor-node\n\n' + val
-        # g.trace(key, g.splitLines(val)[:5])
-        p.b = val
-</t>
-<t tx="ekr.20160412101537.8">def do_list(self, key, aList):
-
-    assert isinstance(aList, (list, tuple)), aList.__class__.__name__
-    is_cell = self.parent == self.cell
-    if is_cell and not aList:
-        return # Experimental.
-    old_parent = self.parent
-    self.parent = self.new_node('# list:%s' % key)
-    for z in aList:
-        if self.is_dict(z):
-            for key in sorted(z):
-                val = z.get(key)
-                self.do_any(key, val)
-        else:
-            self.error('unexpected item in list: %r' % z)
-    self.parent = old_parent
-</t>
-<t tx="ekr.20160412101537.9">def do_source(self, key, val):
-    '''Set the cell's body text, or create a 'source' node.'''
-    assert key == 'source', (key, val)
-    is_cell = self.parent == self.cell
-    if is_cell:
-        # Set the body's text, splitting markdown nodes as needed.
-        if self.cell_type == 'markdown':
-            self.do_markdown_cell(self.cell, val)
-        elif self.cell_type == 'raw':
-            self.cell.b = '@nocolor\n\n' + val
-        else:
-            ### Is this correct???
-            self.cell.b = '@language python\n\n' + val
-    else:
-        # Do create a new node.
-        p = self.new_node('# list:%s' % key)
-        p.b = val
-</t>
 <t tx="ekr.20160412101845.1"># g.cls()
 import re
 import sys
@@ -2985,37 +2621,7 @@ assert p, h
 @others
 Export_IPYNB(c).export_outline(p, fn=fn)
 </t>
-<t tx="ekr.20160412103110.1">def run(self, s, parent, parse_body=False):
-    '''
-    @auto entry point. Called by code in leoImport.py.
-    '''
-    c = self.c
-    fn = parent.atAutoNodeName()
-    if c and fn:
-        changed = c.isChanged()
-        self.import_file(fn, parent)
-        # Similar to Importer.run.
-        parent.b = (
-            '@nocolor-node\n\n' +
-            'Note: This node\'s body text is ignored when writing this file.\n\n' +
-            'The @others directive is not required\n'
-        )
-        for p in parent.self_and_subtree():
-            p.clearDirty()
-        c.setChanged(changed)
-    elif not c or not fn:
-        g.trace('can not happen', c, fn)
-</t>
-<t tx="ekr.20160412115053.1"></t>
-<t tx="ekr.20160412115123.1"></t>
-<t tx="ekr.20160510132151.1">@language python
-'''Save a copy of this file to the Backup directory.'''
-theDir,base = g.os_path_split(c.fileName())
-path = g.os_path_join('~/Dropbox/','backups','leoPlugins',base)
-branch = g.gitBranchName()
-c.backup(path, prefix=branch, useTimeStamp=True)
-    # Dropbox can show previous versions!
-    # But this depends on proxy/firewall settings.
+<t tx="ekr.20160510132151.1">c.backup_helper(sub_dir='leoPlugins')
 </t>
 <t tx="ekr.20161030154232.1">'''Converts the word at the cursor to pep8 style throughout a given tree.'''
 # aTestExample notFoundExample.
@@ -3321,13 +2927,13 @@ if 0: # A more complex example, for the C language.
 </t>
 <t tx="ekr.20170203054655.1"></t>
 <t tx="ekr.20170420085814.1">'''Recursively import all python files in a directory and clean the result.'''
-dir_ = r'C:\leo.repo\leo-editor\leo\external\npyscreen'
+dir_ = r'C:\leo.repo\leo-editor\leo\plugins\leo_babel'
 g.cls()
 c.recursiveImport(
     dir_ = dir_,
     kind = '@file', # '@clean', #'@nosent','@auto','@file',
     recursive = True,
-    safe_at_file = True,
+    safe_at_file = False,
     theTypes = ['.py',],
 )
 </t>
@@ -3358,6 +2964,14 @@ proc.wait()
 os.chdir(old_dir)
 print('done! wrote %s' % fn)
 </t>
+<t tx="ekr.20180504191650.34">@language python
+@tabwidth -4
+</t>
+<t tx="ekr.20180504191650.36"></t>
+<t tx="ekr.20180504191650.42"></t>
+<t tx="ekr.20180504191650.68"></t>
+<t tx="ekr.20180504192522.1"></t>
+<t tx="ekr.20180504193756.1"></t>
 <t tx="rogererens.20041130095659">@ It is possible to link to nodes within the same file.  However clones might be better.
 </t>
 </tnodes>
