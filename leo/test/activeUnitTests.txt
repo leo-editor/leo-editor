@@ -29204,6 +29204,9 @@ files.sort()
 
 exclude = [
     # These are not real plugins...
+    'babel_api.py',
+    'babel_kill.py',
+    'babel_lib.py',
     'baseNativeTree.py',
     'leocursor.py',
     'leo_cloud_server.py',

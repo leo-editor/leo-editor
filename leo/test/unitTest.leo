@@ -1229,6 +1229,7 @@
 <v t="ekr.20100204053330.5367"><vh>@test koi8-r encoding</vh></v>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
 <v t="ekr.20100131171342.5608"><vh>@test g.KeyStroke</vh></v>
+<v t="ekr.20111104214341.3835"><vh>@test all plugins have top-level init method</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -3823,6 +3824,52 @@ try:
     p.deleteAllChildren()
 finally:
     c.redraw()
+</t>
+<t tx="ekr.20111104214341.3835">'''Ensure all plugins have top-level init method *without* importing them.'''
+
+import glob
+import inspect
+
+# Get a list of all plugins.
+plugins = g.os_path_join(g.app.loadDir,'..','plugins','*.py')
+plugins = g.os_path_abspath(plugins)
+files = glob.glob(plugins)
+files = [g.os_path_abspath(z) for z in files]
+files = [z for z in files if not z.endswith('__init__.py')]
+files.sort()
+
+exclude = [
+    # These are not real plugins...
+    'babel_api.py',
+    'babel_kill.py',
+    'babel_lib.py',
+    'baseNativeTree.py',
+    'leocursor.py',
+    'leo_cloud_server.py',
+    'qtGui.py',
+    'qt_big_text.py',
+    'qt_commands.py',
+    'qt_events.py',
+    'qt_frame.py',
+    'qt_idle_time.py',
+    'qt_main.py',
+    'qt_quickheadlines.py',
+    'qt_quicksearch_sub.py',
+    'qt_text.py',
+    'qt_tree.py',
+    'qt_quicksearch.py',
+    'swing_gui.py',
+]
+
+for fn in files:
+    if not g.shortFileName(fn) in exclude:
+        f = open(fn,'r')
+        s = f.read()
+        f.close()
+        ok1 = s.find('def init():') &gt; -1
+        ok2 = s.find('def init ():') &gt; -1
+        assert ok1 or ok2,'fail: %s' % (fn)
+    
 </t>
 <t tx="ekr.20111107102431.3849"># A good test, but we don't want this large a file included in the distro.
 
