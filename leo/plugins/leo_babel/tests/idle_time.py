@@ -11,9 +11,10 @@
 #@+node:bob.20180206123613.2: ** << imports >>
 import os
 import time
-import traceback
+# import traceback
 
 import leo.core.leoGlobals as leoG
+assert leoG
 #@-<< imports >>
 #@+<< version >>
 #@+node:bob.20180206123613.3: ** << version >>

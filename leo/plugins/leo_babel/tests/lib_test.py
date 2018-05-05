@@ -10,7 +10,7 @@
 #@+<< imports >>
 #@+node:bob.20180205135704.1: ** << imports >>
 import datetime
-import time
+# import time
 
 import leo.core.leoGlobals as leoG
 #@-<< imports >>
