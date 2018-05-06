@@ -553,51 +553,6 @@ class GitDiffController:
                 break
             path = path2
         return None
-    #@+node:ekr.20180504183033.1: *3* gdc.diff_two_branches (NEW)
-    def diff_two_branches(self, branch1, branch2, fn):
-        '''Create an outline describing the git diffs for fn.'''
-        g.trace(branch1, branch2, fn)
-        c = self.c
-        self.root = p = c.lastTopLevel().insertAfter()
-        p.h = 'git-diff-branches %s %s' % (branch1, branch2)
-        s1 = self.get_file_from_branch(branch1, fn)
-        s2 = self.get_file_from_branch(branch2, fn)
-        lines1 = g.splitLines(s1)
-        lines2 = g.splitLines(s2)
-        diff_list = list(difflib.unified_diff(
-            lines1,
-            lines2,
-            branch1 ,
-            branch2,
-        ))
-        diff_list.insert(0, '@language patch\n')
-        self.file_node = self.create_file_node(diff_list, fn)
-        if c.looksLikeDerivedFile(fn):
-            c1 = self.make_at_file_outline(fn, s1, branch1)
-            c2 = self.make_at_file_outline(fn, s2, branch2)
-        else:
-            root = self.find_file(fn)
-            if root:
-                c1 = self.make_at_clean_outline(fn, root, s1, branch1)
-                c2 = self.make_at_clean_outline(fn, root, s2, branch2)
-            else:
-                c1 = c2 = None
-        if c1 and c2:
-            self.make_diff_outlines(fn, c1, c2)
-            self.file_node.b = '%s\n@language %s\n' % (
-                self.file_node.b.rstrip(), c2.target_language)
-        self.root.expand()
-        c.selectPosition(self.root)
-        c.redraw()
-    #@+node:ekr.20180504215306.1: *4* gdc.get_file_from_branch
-    def get_file_from_branch(self, branch, fn):
-        '''Get the file from the hed of the given branch.'''
-        # Get the file using git.
-        command = 'git show %s:%s' % (branch, fn)
-        directory = self.repo_dir
-        lines = g.execGitCommand(command, directory)
-        s = ''.join(lines)
-        return g.toUnicode(s).replace('\r','')
     #@+node:ekr.20170806094320.6: *3* gdc.diff_file & helpers
     def diff_file(self, fn):
         '''Create an outline describing the git diffs for fn.'''
@@ -826,6 +781,51 @@ class GitDiffController:
         if at.errors: g.trace(at.errors, 'errors!')
         if trace: g.trace(len(s), rev, fn, hidden_c)
         return None if at.errors else hidden_c
+    #@+node:ekr.20180506064102.10: *3* gdc.diff_two_branches & helper
+    def diff_two_branches(self, branch1, branch2, fn):
+        '''Create an outline describing the git diffs for fn.'''
+        g.trace(branch1, branch2, fn)
+        c = self.c
+        self.root = p = c.lastTopLevel().insertAfter()
+        p.h = 'git-diff-branches %s %s' % (branch1, branch2)
+        s1 = self.get_file_from_branch(branch1, fn)
+        s2 = self.get_file_from_branch(branch2, fn)
+        lines1 = g.splitLines(s1)
+        lines2 = g.splitLines(s2)
+        diff_list = list(difflib.unified_diff(
+            lines1,
+            lines2,
+            branch1 ,
+            branch2,
+        ))
+        diff_list.insert(0, '@language patch\n')
+        self.file_node = self.create_file_node(diff_list, fn)
+        if c.looksLikeDerivedFile(fn):
+            c1 = self.make_at_file_outline(fn, s1, branch1)
+            c2 = self.make_at_file_outline(fn, s2, branch2)
+        else:
+            root = self.find_file(fn)
+            if root:
+                c1 = self.make_at_clean_outline(fn, root, s1, branch1)
+                c2 = self.make_at_clean_outline(fn, root, s2, branch2)
+            else:
+                c1 = c2 = None
+        if c1 and c2:
+            self.make_diff_outlines(fn, c1, c2)
+            self.file_node.b = '%s\n@language %s\n' % (
+                self.file_node.b.rstrip(), c2.target_language)
+        self.root.expand()
+        c.selectPosition(self.root)
+        c.redraw()
+    #@+node:ekr.20180506064102.11: *4* gdc.get_file_from_branch
+    def get_file_from_branch(self, branch, fn):
+        '''Get the file from the hed of the given branch.'''
+        # Get the file using git.
+        command = 'git show %s:%s' % (branch, fn)
+        directory = self.repo_dir
+        lines = g.execGitCommand(command, directory)
+        s = ''.join(lines)
+        return g.toUnicode(s).replace('\r','')
     #@+node:ekr.20170806094320.12: *3* gdc.run & helpers
     def run(self):
         '''The main line of the git diff command.'''
