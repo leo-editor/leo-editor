@@ -200,6 +200,7 @@ class Cacher(object):
                 if i < len(child_v.children):
                     child_v.children[i] = v
                 elif i == len(child_v.children):
+                    g.trace('Warning: dubious cache: please check %s' % fileName)
                     child_v.children.append(v)
                 else:
                     g.trace('Corrupted cache. Use --no-cache')
