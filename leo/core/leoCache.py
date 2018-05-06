@@ -196,8 +196,15 @@ class Cacher(object):
             # sort children in the order from cache
             for i, grand_child in enumerate(grand_children):
                 gnx = grand_child[2]
-                child_v.children[i] = self.c.fileCommands.gnxDict.get(gnx)
-
+                v = self.c.fileCommands.gnxDict.get(gnx)
+                if i < len(child_v.children):
+                    child_v.children[i] = v
+                elif i == len(child_v.children):
+                    child_v.children.append(v)
+                else:
+                    g.trace('Corrupted cache. Use --no-cache')
+                    g.printObj(child_v.children)
+                    raise IndexError
         else:
             # If the outline is out of sync, there may be write errors later,
             # but the user should be handle them easily enough.
