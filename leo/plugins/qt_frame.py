@@ -1376,14 +1376,8 @@ class LeoQtBody(leoFrame.LeoBody):
     #@+node:ekr.20140901062324.18562: *5* LeoQtBody.reloadSettings
     def reloadSettings(self):
         c = self.c
-        self.trace_onBodyChanged = c.config.getBool('trace_onBodyChanged')
         self.useScintilla = c.config.getBool('qt-use-scintilla')
         self.use_chapters = c.config.getBool('use_chapters')
-        # These are no longer used.
-            # self.unselectedBackgroundColor = c.config.getColor(
-                # 'unselected_body_bg_color')
-            # self.unselectedForegroundColor = c.config.getColor(
-                # 'unselected_body_fg_color')
     #@+node:ekr.20160309074124.1: *5* LeoQtBody.set_invisibles
     def set_invisibles(self, c):
         '''Set the show-invisibles bit in the document.'''
@@ -1451,6 +1445,7 @@ class LeoQtBody(leoFrame.LeoBody):
             self.editorWidgets['1'] = wrapper
             # Pack the original body editor.
             self.packLabel(widget.parent(), n=1)
+            widget.leo_label = widget.parent().leo_label
         name = '%d' % self.totalNumberOfEditors
         f, wrapper = self.createEditor(name)
         assert g.isTextWrapper(wrapper), wrapper
@@ -2034,7 +2029,6 @@ class LeoQtFrame(leoFrame.LeoFrame):
     def reloadSettings(self):
         c = self.c
         self.cursorStay = c.config.getBool("cursor_stay_on_paste", default=True)
-        self.trace_status_line = c.config.getBool('trace_status_line')
         self.use_chapters = c.config.getBool('use_chapters')
         self.use_chapter_tabs = c.config.getBool('use_chapter_tabs')
     #@+node:ekr.20110605121601.18248: *5* qtFrame.setIvars
@@ -3296,13 +3290,8 @@ class LeoQtLog(leoFrame.LeoLog):
 
         The from_redirect keyword argument is no longer used.
         '''
-        trace = False and not g.unitTesting
-        trace_entry = True
-        trace_s = False
         c = self.c
         if g.app.quitting or not c or not c.exists:
-            if trace:
-                print('LeoQtLog.log.put fails: %r' % s)
             return
         # Note: g.actualColor does all color translation.
         if color:
@@ -3317,12 +3306,14 @@ class LeoQtLog(leoFrame.LeoLog):
         # Must be done after the call to selectTab.
         w = self.logCtrl.widget # w is a QTextBrowser
         if w:
-            if trace and trace_entry:
-                print('LeoQtLog.log.put: %r' % s)
             sb = w.horizontalScrollBar()
             s = s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+            # #884: Always convert leading blanks and tabs to &nbsp.
+            n = len(s) - len(s.lstrip())
+            if n > 0 and s.strip():
+                s = '&nbsp;' * (n+1) + s[n:]
             if not self.wrap:
-                # Use &nbsp; only when not wrapping!
+                # Convert all other blanks to &nbsp;
                 s = s.replace(' ', '&nbsp;')
             s = s.replace('\n', '<br>')
                 # The caller is responsible for newlines!
@@ -3334,22 +3325,15 @@ class LeoQtLog(leoFrame.LeoLog):
                     if url.startswith(scheme+'://') and not url.startswith(scheme+':///'):
                         url = url.replace('://', ':///', 1)
                 s = '<a href="%s" title="%s">%s</a>' % (url, nodeLink, s)
-            if trace and trace_s:
-                print('LeoQtLog.put: %r' % (s))
             w.insertHtml(s)
             w.moveCursor(QtGui.QTextCursor.End)
             sb.setSliderPosition(0) # Force the slider to the initial position.
             w.repaint() # Slow, but essential.
-        #
-        # else:
-            # # Does this ever happen?
-            # g.app.logWaiting.append((s, color, True),)
-            # g.pr(s, color=color, newline=True)
     #@+node:ekr.20110605121601.18323: *4* LeoQtLog.putnl
     def putnl(self, tabName='Log'):
         '''Put a newline to the Qt log.'''
+        # 
         # This is not called normally.
-        # print('LeoQtLog.put: %s' % g.callers())
         if g.app.quitting:
             return
         if tabName:
@@ -3475,16 +3459,18 @@ class LeoQtLog(leoFrame.LeoLog):
             self.selectHelper(tabName)
     #@+node:ekr.20110605121601.18332: *5* LeoQtLog.selectHelper
     def selectHelper(self, tabName):
-        trace = False and not g.unitTesting
+
         c, w = self.c, self.tabWidget
         for i in range(w.count()):
             if tabName == w.tabText(i):
                 w.setCurrentIndex(i)
                 widget = w.widget(i)
-                # 2011/11/21: Set the .widget ivar only if there is a wrapper.
+                #
+                # Set the .widget ivar only if there is a wrapper.
                 wrapper = hasattr(widget, 'leo_log_wrapper') and widget.leo_log_wrapper
-                if wrapper: self.logCtrl = wrapper
-                if trace: g.trace(tabName, 'widget', widget, 'wrapper', wrapper)
+                if wrapper:
+                    self.logCtrl = wrapper
+                #
                 # Do *not* set focus here!
                     # c.widgetWantsFocus(tab_widget)
                 if tabName == 'Find':
@@ -3497,14 +3483,14 @@ class LeoQtLog(leoFrame.LeoLog):
                         else:
                             findbox.setFocus()
                 elif tabName == 'Spell':
-                    # the base class uses this as a flag to see if
-                    # the spell system needs initing
+                    #
+                    # the base class uses this as a flag to see if the spell system needs initing
                     self.frameDict['Spell'] = widget
-                self.tabName = tabName # 2011/11/20
+                self.tabName = tabName
                 return True
+        #
         # General case.
-        self.tabName = None # 2011/11/20
-        if trace: g.trace('** not found', tabName)
+        self.tabName = None
         return False
     #@-others
 #@+node:ekr.20110605121601.18340: ** class LeoQtMenu (LeoMenu)

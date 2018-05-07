@@ -651,8 +651,7 @@ class LeoBody(object):
             changed = oldText != newText
         if not changed: return
         if trace:
-            # g.trace(repr(ch),'changed:',changed,'newText:',len(newText),'w',w)
-            g.trace('oldSel', oldSel, 'newSel', newSel)
+            g.trace('changed: p.isDirty():', p.isDirty())
         c.undoer.setUndoTypingParams(p, undoType,
             oldText=oldText, newText=newText, oldSel=oldSel, newSel=newSel, oldYview=oldYview)
         p.v.setBodyString(newText)
@@ -1297,7 +1296,6 @@ class LeoTree(object):
         self.use_chapters = False # May be overridden in subclasses.
         # Define these here to keep pylint happy.
         self.canvas = None
-        self.trace_select = None
     #@+node:ekr.20081005065934.8: *3* LeoTree.May be defined in subclasses
     # These are new in Leo 4.6.
 
@@ -1466,22 +1464,28 @@ class LeoTree(object):
         '''Update a headline from an event.
 
         The headline officially changes only when editing ends.'''
-        c = self.c; k = c.k
+        k = self.c.k
         ch = event.char if event else ''
         i, j = w.getSelectionRange()
         ins = w.getInsertPoint()
-        if i != j: ins = i
+        if i != j:
+            ins = i
         if ch in ('\b', 'BackSpace'):
             if i != j:
                 w.delete(i, j)
                 # Bug fix: 2018/04/19.
                 w.setSelectionRange(i, i, insert=i)
+            elif i > 0:
+                i -= 1
+                w.delete(i)
+                w.setSelectionRange(i, i, insert=i)
             else:
-                w.delete(ins - 1)
-                w.setSelectionRange(i - 1, i - 1, insert=i - 1)
+                w.setSelectionRange(0, 0, insert=0)
         elif ch and ch not in ('\n', '\r'):
-            if i != j: w.delete(i, j)
-            elif k.unboundKeyAction == 'overwrite': w.delete(i, i + 1)
+            if i != j:
+                w.delete(i, j)
+            elif k.unboundKeyAction == 'overwrite':
+                w.delete(i, i + 1)
             w.insert(ins, ch)
             w.setSelectionRange(ins + 1, ins + 1, insert=ins + 1)
         s = w.getAllText()
@@ -2066,8 +2070,6 @@ class NullTree(LeoTree):
         self.fontName = None
         self.canvas = None
         self.redrawCount = 0
-        self.trace_edit = False
-        self.trace_select = False
         self.updateCount = 0
     #@+node:ekr.20070228163350.2: *3* NullTree.edit_widget
     def edit_widget(self, p):

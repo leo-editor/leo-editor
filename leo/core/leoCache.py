@@ -192,6 +192,12 @@ class Cacher(object):
                 if v.gnx not in gnxes_in_cache]
             for i, v in reversed(for_removal):
                 v._cutLink(i, child_v)
+            #
+            # sort children in the order from cache
+            for i, grand_child in enumerate(grand_children):
+                gnx = grand_child[2]
+                child_v.children[i] = self.c.fileCommands.gnxDict.get(gnx)
+
         else:
             # If the outline is out of sync, there may be write errors later,
             # but the user should be handle them easily enough.
@@ -209,7 +215,7 @@ class Cacher(object):
         Create new VNode as last child of the receiver.
         If the gnx exists already, create a clone instead of new VNode.
         '''
-        trace = False and not g.unitTesting
+        trace = 'gnx' in g.app.debug
         c = self.c
         gnxString = g.toUnicode(gnxString)
         gnxDict = c.fileCommands.gnxDict
@@ -228,7 +234,8 @@ class Cacher(object):
             if gnxString:
                 assert g.isUnicode(gnxString)
                 v = leoNodes.VNode(context=c, gnx=gnxString)
-                if g.trace_gnxDict: g.trace(c.shortFileName(), gnxString, v)
+                if 'gnx' in g.app.debug:
+                    g.trace(c.shortFileName(), gnxString, v)
             else:
                 v = leoNodes.VNode(context=c)
                 # This is not an error: it can happen with @auto nodes.

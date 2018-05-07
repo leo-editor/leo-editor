@@ -65,17 +65,14 @@ class LeoQtEventFilter(QtCore.QObject):
         self.ctagscompleter_onKey = None
     #@+node:ekr.20110605121601.18540: *3* filter.eventFilter & helpers
     def eventFilter(self, obj, event):
-        trace = False and not g.unitTesting
-        traceEvent = False # True: call self.traceEvent.
-        traceKeys = True
         c, k = self.c, self.c.k
         #
         # Handle non-key events first.
         if not self.c.p:
             return False # Startup. Let Qt handle the key event
-        if trace and traceEvent:
-             self.traceEvent(obj, event)
-        self.traceWidget(event)
+        if 'events' in g.app.debug:
+            self.traceEvent(obj, event)
+            self.traceWidget(event)
         if self.doNonKeyEvent(event, obj):
             return False # Let Qt handle the non-key event.
         #
@@ -89,7 +86,7 @@ class LeoQtEventFilter(QtCore.QObject):
             if not binding:
                 return False # Allow Qt to handle the key event.
             stroke = g.KeyStroke(binding=binding)
-            if trace and traceKeys:
+            if 'keys' in g.app.debug:
                 g.trace('binding: %s, stroke: %s, char: %r' % (binding, stroke, ch))
             #
             # Pass the KeyStroke to masterKeyHandler.
@@ -452,12 +449,8 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20131121050226.16331: *4* filter.traceWidget
     def traceWidget(self, event):
         '''Show unexpected events in unusual widgets.'''
-        # py-lint: disable=E1101
-        # E1101:9240,0:Class 'QEvent' has no 'CloseSoftwareInputPanel' member
-        # E1101:9267,0:Class 'QEvent' has no 'RequestSoftwareInputPanel' member
-        if not g.app.debug_app: return
         verbose = False
-        c = self.c
+            # Not good for --trace-events
         e = QtCore.QEvent
         assert isinstance(event, QtCore.QEvent)
         et = event.type()
@@ -528,34 +521,37 @@ class LeoQtEventFilter(QtCore.QObject):
             e.FocusOut: 'focus-out', # 9
             e.WindowActivate: 'window-activate', # 24
         }
-        table = (
-            c.frame.miniBufferWidget and c.frame.miniBufferWidget.widget,
-            c.frame.body.wrapper and c.frame.body.wrapper.widget,
-            c.frame.tree and c.frame.tree.treeWidget,
-            c.frame.log and c.frame.log.logCtrl and c.frame.log.logCtrl.widget,
-        )
+        # c = self.c
+        # table = (
+            # c.frame.miniBufferWidget and c.frame.miniBufferWidget.widget,
+            # c.frame.body.wrapper and c.frame.body.wrapper.widget,
+            # c.frame.tree and c.frame.tree.treeWidget,
+            # c.frame.log and c.frame.log.logCtrl and c.frame.log.logCtrl.widget,
+        # )
+        if et in ignore_d:
+            return
         w = QtWidgets.QApplication.focusWidget()
-        if verbose or g.app.debug_widgets:
+        if verbose: # Too verbose for --trace-events.
             for d in (ignore_d, focus_d, line_edit_ignore_d, none_ignore_d):
                 t = d.get(et)
                 if t: break
             else:
                 t = et
             g.trace('%20s %s' % (t, w.__class__))
-        elif w is None:
-            if et not in none_ignore_d and et not in ignore_d:
+            return
+        if w is None:
+            if et not in none_ignore_d:
                 t = focus_d.get(et) or et
                 g.trace('None %s' % (t))
-        elif w not in table:
-            if isinstance(w, QtWidgets.QPushButton):
-                pass
-            elif isinstance(w, QtWidgets.QLineEdit):
-                if et not in ignore_d and et not in line_edit_ignore_d:
-                    t = focus_d.get(et) or et
-                    g.trace('%20s %s' % (t, w.__class__))
-            elif et not in ignore_d:
+        if isinstance(w, QtWidgets.QPushButton):
+            return
+        if isinstance(w, QtWidgets.QLineEdit):
+            if et not in line_edit_ignore_d:
                 t = focus_d.get(et) or et
                 g.trace('%20s %s' % (t, w.__class__))
+            return
+        t = focus_d.get(et) or et
+        g.trace('%20s %s' % (t, w.__class__))
     #@-others
 #@-others
 #@@language python

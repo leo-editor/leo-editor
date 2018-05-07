@@ -46,6 +46,11 @@
 <v t="ekr.20170311121717.1"><vh>Test driven development</vh></v>
 <v t="ekr.20170403190104.1"><vh>Performance gotchas</vh></v>
 <v t="ekr.20170403190120.1"><vh>About names</vh></v>
+<v t="ekr.20180503073939.1"><vh>Prompting for command arguments</vh>
+<v t="ekr.20180503073954.1"><vh>Example 1: Prompt for one arg</vh></v>
+<v t="ekr.20180503074530.1"><vh>Example 2: Prompt for 2 args</vh></v>
+<v t="ekr.20180503132659.1"><vh>Example 3: Prompt for 3 args</vh></v>
+</v>
 </v>
 <v t="ekr.20170311122518.1"><vh>Command line options</vh></v>
 </v>
@@ -1583,5 +1588,60 @@ https://github.com/leo-editor/leo-editor/issues/816
 </t>
 <t tx="ekr.20180405105451.1">These will work only if numpy and pyplot are installed.</t>
 <t tx="ekr.20180405105738.1"></t>
+<t tx="ekr.20180503073939.1">
+
+</t>
+<t tx="ekr.20180503073954.1">@language python
+
+# To see this in action (from this file):
+# - Ctrl-B to define the command.
+# - Execute the i1 command
+
+@g.command('i1')
+def i1_command(event):
+    c = event.get('c')
+    if not c: return
+        
+    def callback(args, c, event):
+        g.trace(args)
+        c.bodyWantsFocus()
+
+    c.interactive(callback, event, prompts=['Prompt: '])</t>
+<t tx="ekr.20180503074530.1">@language python
+
+# To see this in action (from this file):
+# - Ctrl-B to define the command.
+# - Execute the i2 command.
+
+@g.command('i2')
+def i2_command(event):
+    c = event.get('c')
+    if not c: return
+        
+    def callback(args, c, event):
+        g.trace(args)
+        c.bodyWantsFocus()
+
+    c.interactive(callback, event,
+        prompts=['Find: ', ' Replace: '])
+</t>
+<t tx="ekr.20180503132659.1">@language python
+
+# To see this in action (from this file):
+# - Ctrl-B to define the command.
+# - Execute the i3 command
+
+@g.command('i3')
+def i3_command(event):
+    c = event.get('c')
+    if not c: return
+        
+    def callback(args, c, event):
+        g.trace(args)
+        c.bodyWantsFocus()
+
+    c.interactive(callback, event,
+        prompts=['One: ', ' Two: ', ' Three: '])
+</t>
 </tnodes>
 </leo_file>

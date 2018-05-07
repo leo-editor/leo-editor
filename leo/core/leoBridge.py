@@ -119,7 +119,8 @@ class BridgeController(object):
         self.g = g = leoGlobals
         assert(g.app)
         g.app.leoID = None
-        g.app.trace_plugins = self.tracePlugins
+        if self.tracePlugins:
+            g.app.debug.append('plugins')
         g.app.silentMode = self.silentMode
         if trace:
             import sys

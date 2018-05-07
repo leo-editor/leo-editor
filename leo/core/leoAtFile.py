@@ -1639,12 +1639,7 @@ class AtFile(object):
         Find or create a new *vnode* whose parent (also a vnode)
         is at.lastThinNode. This is called only for @thin trees.
         """
-        trace = False and not g.unitTesting
-        trace_tree = False
         c = self.c
-        if trace and trace_tree:
-            g.trace(n, len(parent.children), parent.h, ' -> ', headline)
-            # at.thinChildIndexStack,[z.h for z in at.thinNodeStack],
         gnx = gnxString = g.toUnicode(gnxString)
         gnxDict = c.fileCommands.gnxDict
         v = gnxDict.get(gnxString)
@@ -1655,25 +1650,16 @@ class AtFile(object):
             # new-read: Always honor the healine.
             v.h = headline
             child = v
-                # The return value.
             if n >= len(parent.children):
                 child._linkAsNthChild(parent, n)
-                if trace and trace_tree:
-                    g.trace('OLD n: %s parent: %s -> %s' % (n, parent.h, child.h))
-            elif trace:
-                if trace_tree: g.trace('DUP n: %s parent: %s -> %s' % (
-                    n, parent.h, child.h))
-                else:
-                    g.trace('CLONE', id(v), v.gnx, v.h)
         else:
             v = leoNodes.VNode(context=c, gnx=gnx)
             v._headString = headline # Allowed use of v._headString.
             gnxDict[gnxString] = v
-            if g.trace_gnxDict: g.trace(c.shortFileName(), gnxString, v)
+            if 'gnx' in g.app.debug:
+                g.trace(c.shortFileName(), gnxString, v)
             child = v
             child._linkAsNthChild(parent, n)
-            if trace and v.h == 'clone-test':
-                g.trace('NEW n: %s parent: %s -> %s' % (n, parent.h, child.h))
         return child
     #@+node:ekr.20130121075058.10245: *9* at.old_createThinChild4
     def old_createThinChild4(self, gnxString, headline):
@@ -1727,7 +1713,8 @@ class AtFile(object):
                 v = leoNodes.VNode(context=c, gnx=gnx)
                 v._headString = headline # Allowed use of v._headString.
                 gnxDict[gnxString] = v
-                if g.trace_gnxDict: g.trace(c.shortFileName(), gnxString, v)
+                if 'gnx' in g.app.debug:
+                    g.trace(c.shortFileName(), gnxString, v)
             child = v
             child._linkAsNthChild(parent, parent.numberOfChildren())
         if trace: g.trace('new node: %s' % child.h)

@@ -4216,6 +4216,21 @@ def defineHelpMenuTables(self):
         '*pri&nt-bindings',
         '*print-c&ommands',
     ]
+#@+node:ekr.20150514063305.107: ** debug.enable/disableGcTrace
+@cmd('gc-trace-disable')
+def disableGcTrace(self, event=None):
+    '''Enable tracing of Python's Garbage Collector.'''
+    g.trace_gc = False
+
+@cmd('gc-trace-enable')
+def enableGcTrace(self, event=None):
+    '''Disable tracing of Python's Garbage Collector.'''
+    g.trace_gc = True
+    g.enable_gc_debug()
+    if g.trace_gc_verbose:
+        g.blue('enabled verbose gc stats')
+    else:
+        g.blue('enabled brief gc stats')
 #@-all
 #@@nosearch
 #@-leo

@@ -29,7 +29,7 @@ def cmd(name):
     return g.new_cmd_decorator(name, ['c',])
 
 #@+others
-#@+node:ekr.20160514120615.1: ** class Commands
+#@+node:ekr.20160514120615.1: ** class Commands (object)
 class Commands(object):
     """
     A per-outline class that implements most of Leo's commands. The
@@ -456,10 +456,9 @@ class Commands(object):
 
     def idle_focus_helper(self, tag, keys):
         '''An idle-tme handler that ensures that focus is *somewhere*.'''
-        trace = (False or g.app.trace_focus) and not g.unitTesting
-        # if trace: g.trace('active:', g.app.gui and g.app.gui.active)
-        trace_inactive_focus = True
-        trace_in_dialog = True
+        trace = 'focus' in g.app.debug
+        trace_inactive_focus = False # Too disruptive for --trace-focus
+        trace_in_dialog = False # Not useful enough for --trace-focus
         c = self
         assert tag == 'idle'
         if g.app.unitTesting:
@@ -517,7 +516,7 @@ class Commands(object):
         '''Trace the focus for w, minimizing chatter.'''
         from leo.core.leoQt import QtWidgets
         import leo.plugins.qt_frame as qt_frame
-        trace = (False or g.app.trace_focus) and not g.unitTesting
+        trace = 'focus' in g.app.debug
         trace_known = False
         c = self
         table = (
@@ -1773,6 +1772,107 @@ class Commands(object):
     #@+node:ekr.20031218072017.3000: *4* c.updateSyntaxColorer
     def updateSyntaxColorer(self, v):
         self.frame.body.updateSyntaxColorer(v)
+    #@+node:ekr.20180503110307.1: *4* c.interactive*
+
+        
+    #@+node:ekr.20180504075937.1: *5* c.interactive
+    def interactive(self, callback, event, prompts):
+        #@+<< c.interactive docstring >>
+        #@+node:ekr.20180503131222.1: *6* << c.interactive docstring >>
+        '''
+        c.interactive: Prompt for up to three arguments from the minibuffer.
+
+        The number of prompts determines the number of arguments.
+
+        Use the @command decorator to define commands.  Examples:
+
+            @g.command('i3')
+            def i3_command(event):
+                c = event.get('c')
+                if not c: return
+                    
+                def callback(args, c, event):
+                    g.trace(args)
+                    c.bodyWantsFocus()
+            
+                c.interactive(callback, event,
+                    prompts=['Arg1: ', ' Arg2: ', ' Arg3: '])
+        '''
+        #@-<< c.interactive docstring >>
+        #
+        # This pathetic code should be generalized,
+        # but it's not as easy as one might imagine.
+        c = self
+        d = {
+            1: c.interactive1,
+            2: c.interactive2,
+            3: c.interactive3,
+        }
+        f = d.get(len(prompts))
+        if f:
+            f(callback, event, prompts)
+        else:
+            g.trace('At most 3 arguments are supported.')
+            
+    #@+node:ekr.20180503111213.1: *5* c.interactive1
+    def interactive1(self, callback, event, prompts):
+        
+        c, k = self, self.k
+        prompt = prompts[0]
+        
+        def state1(event):
+            callback(args=[k.arg], c=c, event=event)
+            k.clearState()
+            k.resetLabel()
+            k.showStateAndMode()
+            
+        k.setLabelBlue(prompt)
+        k.get1Arg(event, handler=state1)
+    #@+node:ekr.20180503111249.1: *5* c.interactive2
+    def interactive2(self, callback, event, prompts):
+
+        c, d, k = self, {}, self.k
+        prompt1, prompt2 = prompts
+
+        def state1(event):
+            d['arg1'] = k.arg
+            k.extendLabel(prompt2, select=False, protect=True)
+            k.getNextArg(handler=state2)
+        
+        def state2(event):
+            callback(args=[d.get('arg1'), k.arg], c=c, event=event)
+            k.clearState()
+            k.resetLabel()
+            k.showStateAndMode()
+
+        k.setLabelBlue(prompt1)
+        k.get1Arg(event, handler=state1)
+    #@+node:ekr.20180503111249.2: *5* c.interactive3
+    def interactive3(self, callback, event, prompts):
+
+        c, d, k = self, {}, self.k
+        prompt1, prompt2, prompt3 = prompts
+
+        def state1(event):
+            d ['arg1'] = k.arg
+            k.extendLabel(prompt2, select=False, protect=True)
+            k.getNextArg(handler=state2)
+            
+        def state2(event):
+            d ['arg2'] = k.arg
+            k.extendLabel(prompt3, select=False, protect=True)
+            k.get1Arg(event, handler=state3)
+                # Restart.
+
+        def state3(event):
+            args=[d.get('arg1'), d.get('arg2'), k.arg]
+            callback(args=args, c=c, event=event)
+            k.clearState()
+            k.resetLabel()
+            k.showStateAndMode()
+
+        k.setLabelBlue(prompt1)
+        k.get1Arg(event, handler=state1)
     #@+node:ekr.20080901124540.1: *3* c.Directive scanning
     # These are all new in Leo 4.5.1.
     #@+node:ekr.20171123135625.33: *4* c.getLanguageAtCursor
@@ -2019,7 +2119,6 @@ class Commands(object):
         This provides a simple mechanism for overriding commands.
         """
         c, p = self, self.p
-        trace = (False or c.config.getBool('trace_doCommand')) and not g.unitTesting
         c.setLog()
         self.command_count += 1
         # The presence of this message disables all commands.
@@ -2027,7 +2126,6 @@ class Commands(object):
             g.blue(c.disableCommandsMessage)
             return
         if c.exists and c.inCommand and not g.unitTesting:
-            # g.trace('inCommand',c)
             g.app.commandInterruptFlag = True
             g.error('ignoring command: already executing a command.')
             return
@@ -2040,11 +2138,9 @@ class Commands(object):
             try:
                 c.inCommand = True
                 val = c.executeAnyCommand(command, event)
-                if trace: g.trace('end', command)
                 if c and c.exists: # Be careful: the command could destroy c.
                     c.inCommand = False
                     c.k.funcReturn = val
-                # else: g.pr('c no longer exists',c)
             except Exception:
                 c.inCommand = False
                 if g.app.unitTesting:
@@ -2054,11 +2150,9 @@ class Commands(object):
                     g.es_exception(c=c)
             if c and c.exists:
                 if c.requestCloseWindow:
-                    if trace: g.trace('closing window after command')
                     c.requestCloseWindow = False
                     g.app.closeLeoWindow(c.frame)
                 else:
-                    if trace: g.trace('calling outerUpdate')
                     c.outerUpdate()
         # Be careful: the command could destroy c.
         if c and c.exists:
@@ -2353,13 +2447,13 @@ class Commands(object):
     #@+node:ekr.20140717074441.17770: *4* c.recreateGnxDict
     def recreateGnxDict(self):
         '''Recreate the gnx dict prior to refreshing nodes from disk.'''
-        trace = False and not g.unitTesting
         c, d = self, {}
         for v in c.all_unique_nodes():
             gnxString = v.fileIndex
             assert g.isUnicode(gnxString)
             d[gnxString] = v
-            if trace or g.trace_gnxDict: g.trace(c.shortFileName(), gnxString, v)
+            if 'gnx' in g.app.debug:
+                g.trace(c.shortFileName(), gnxString, v)
         c.fileCommands.gnxDict = d
     #@+node:ekr.20171124100534.1: *3* c.Gui
     #@+node:ekr.20111217154130.10286: *4* c.Dialogs & messages
@@ -2872,9 +2966,8 @@ class Commands(object):
     #@+node:ekr.20080514131122.9: *5* c.get/request/set_focus
     def get_focus(self):
         c = self
-        trace = (False or g.app.trace_focus) and not g.unitTesting
         w = g.app.gui and g.app.gui.get_focus(c)
-        if trace:
+        if 'focus' in g.app.debug:
             g.trace('(c)', repr(w and g.app.gui.widget_name(w)), w)
             g.callers()
         return w
@@ -2884,16 +2977,15 @@ class Commands(object):
         return c.requestedFocusWidget
 
     def request_focus(self, w):
-        trace = (False or g.app.trace_focus) and not g.unitTesting
         c = self
         if w and g.app.gui:
-            if trace:
+            if 'focus' in g.app.debug:
                 g.trace('(c)', repr(g.app.gui.widget_name(w)), w)
                 g.callers()
             c.requestedFocusWidget = w
 
     def set_focus(self, w, force=False):
-        trace = (False or g.app.trace_focus) and not g.unitTesting
+        trace = 'focus' in g.app.debug
         c = self
         if w and g.app.gui:
             if trace:
@@ -2912,7 +3004,7 @@ class Commands(object):
     #@+node:ekr.20080514131122.16: *5* c.traceFocus (not used)
     def traceFocus(self, w):
         c = self
-        if False or (not g.app.unitTesting and c.config.getBool('trace_focus')):
+        if 'focus' in g.app.debug:
             c.trace_focus_count += 1
             g.pr('%4d' % (c.trace_focus_count), c.widget_name(w), g.callers(8))
     #@+node:ekr.20070226121510: *5* c.xFocusHelper & initialFocusHelper

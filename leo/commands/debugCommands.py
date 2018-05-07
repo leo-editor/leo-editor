@@ -29,10 +29,7 @@ class DebugCommandsClass(BaseEditCommandsClass):
     @cmd('gc-dump-all-objects')
     def dumpAllObjects(self, event=None):
         '''Print a summary of all existing Python objects.'''
-        old = g.trace_gc
-        g.trace_gc = True
         g.printGcAll()
-        g.trace_gc = old
 
     @cmd('gc-dump-new-objects')
     def dumpNewObjects(self, event=None):
@@ -40,18 +37,12 @@ class DebugCommandsClass(BaseEditCommandsClass):
         Print a summary of all Python objects created
         since the last time Python's Garbage collector was run.
         '''
-        old = g.trace_gc
-        g.trace_gc = True
         g.printGcObjects()
-        g.trace_gc = old
 
     @cmd('gc-dump-objects-verbose')
     def verboseDumpObjects(self, event=None):
         '''Print a more verbose listing of all existing Python objects.'''
-        old = g.trace_gc
-        g.trace_gc = True
         g.printGcVerbose()
-        g.trace_gc = old
     #@+node:ekr.20170713112849.1: *3* debug.dumpNode
     @cmd('dump-node')
     def dumpNode(self, event=None):
@@ -64,21 +55,6 @@ class DebugCommandsClass(BaseEditCommandsClass):
                 g.printDict(p.v.u)
             else:
                 g.es_print('no uAs')
-    #@+node:ekr.20150514063305.107: *3* debug.enable/disableGcTrace
-    @cmd('gc-trace-disable')
-    def disableGcTrace(self, event=None):
-        '''Enable tracing of Python's Garbage Collector.'''
-        g.trace_gc = False
-
-    @cmd('gc-trace-enable')
-    def enableGcTrace(self, event=None):
-        '''Disable tracing of Python's Garbage Collector.'''
-        g.trace_gc = True
-        g.enable_gc_debug()
-        if g.trace_gc_verbose:
-            g.blue('enabled verbose gc stats')
-        else:
-            g.blue('enabled brief gc stats')
     #@+node:ekr.20150514063305.108: *3* debug.freeTreeWidgets
     def freeTreeWidgets(self, event=None):
         '''Free all widgets used in Leo's outline pane.'''

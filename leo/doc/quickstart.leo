@@ -2,8 +2,8 @@
 <!-- Created by Leo: http://leoeditor.com/leo_toc.html -->
 <leo_file xmlns:leo="http://leoeditor.com/namespaces/leo-python-editor/1.1" >
 <leo_header file_format="2" tnodes="0" max_tnode_index="0" clone_windows="0"/>
-<globals body_outline_ratio="0.50" body_secondary_ratio="0.50">
-	<global_window_position top="80" left="862" height="894" width="949"/>
+<globals body_outline_ratio="0.5" body_secondary_ratio="0.5">
+	<global_window_position top="50" left="50" height="500" width="700"/>
 	<global_log_window_position top="0" left="0" height="0" width="0"/>
 </globals>
 <preferences/>
@@ -95,17 +95,10 @@
 <v t="ville.20090630234425.12395"><vh>Configuration (enabling plugins etc.)</vh>
 <v t="ville.20090630234425.14847"><vh>Find out your ~/.leo directory (script)</vh></v>
 <v t="ekr.20160429174727.1"><vh>Creating Windows file associations</vh></v>
-<v t="ville.20090630234425.12396"><vh>@@settings</vh>
+<v t="ville.20090630234425.12396"><vh>\@settings</vh>
 <v t="ville.20090728003644.3957"><vh>@enabled-plugins</vh></v>
 <v t="ville.20090708172716.16846"><vh>@@string initial_split_orientation = horizontal</vh></v>
-<v t="ville.20090806210322.1435"><vh>suggested style sheets</vh>
-<v t="ville.20090806210322.1436"><vh>default look (Linux)</vh>
-<v t="ville.20090806210322.1439"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
-</v>
-<v t="ville.20090806210322.1437"><vh>A mac look</vh>
-<v t="ville.20090806210322.1440"><vh>@@data qt-gui-plugin-style-sheet</vh></v>
-</v>
-</v>
+<v t="ville.20090806210322.1435"><vh>Themes</vh></v>
 <v t="ville.20090806182306.6324"><vh>@int qt_max_colorized_chars = 200000</vh></v>
 <v t="ville.20091008194838.3931"><vh>@data contextmenu_commands</vh></v>
 <v t="ville.20120303151721.3838"><vh>@bool use_body_focus_border = False</vh></v>
@@ -278,7 +271,7 @@ Do the same thing you did with @@file - i.e.,
   this document), you'll note that  the outline structure was lost, 
   and the "parsed" structure is created instead. This is the cost
   of using @auto nodes.</t>
-<t tx="ville.20090627211608.5782" str_leo_pos="7">This is a brief tutorial for getting familiar with basic Leo functionality. Click around and experiment.
+<t tx="ville.20090627211608.5782">This is a brief tutorial for getting familiar with basic Leo functionality. Click around and experiment.
 
 Note that you probably want to save your own "working copy" of this file before proceeding further. Do that by "File -&gt; Save as".
 
@@ -401,7 +394,7 @@ To limit the replace operations to particular external file, you can use your ex
 </t>
 <t tx="ville.20090701182804.1551">The minibuffer is the text input area at the bottom of the screen, familiar to users of emacs and vi.
 
-Press alt-x to enter a minibuffer command (e.g. alt-x fill-paragraph). Press ctrl+p (repeat-complex-command) folowed by Enter to re-run a previous minibuffer command.
+Press alt-x to enter a minibuffer command (e.g. alt-x fill-paragraph). Press ctrl+p (repeat-complex-command) followed by Enter to re-run a previous minibuffer command.
 </t>
 <t tx="ville.20090701184416.1554">reStructuredText (http://docutils.sourceforge.net/rst.html) is an efficient way of authoring documentation as plain text. Leo provides first-class support for RST authoring, including the unique feature of representing RST outline structure as Leo tree. You can find an example in the tree below - again, just remove the first @ character from @@auto-rst and save, opening the external file afterwards.
 </t>
@@ -420,7 +413,7 @@ Press alt-x to enter a minibuffer command (e.g. alt-x fill-paragraph). Press ctr
 </t>
 <t tx="ville.20090703222440.1472">More text in other chapter.</t>
 <t tx="ville.20090708172716.16846">horizontal: body pane to the left
-vertical: body pane on the botton
+vertical: body pane on the bottom.
 
 vertical is the default; you may prefer horizontal for small but wide screens (e.g. on laptops)</t>
 <t tx="ville.20090728003644.3957"># Leo loads plugins in the order they appear here.
@@ -563,284 +556,13 @@ viewrendered.py
 </t>
 <t tx="ville.20090806182306.6324">If zero, all nodes are colorized, regardless of length of body text.
 If &gt; 0, only nodes whose body text are smaller than this limit are colorized.</t>
-<t tx="ville.20090806210322.1435">This tree containt some suggested "looks" for Leo.
+<t tx="ville.20090806210322.1435">To enable a theme .leo file, put the following setting in myLeoSettings.leo::
 
-To experiment, you may want to use a @button that applies
-the stylesheet in current node; look for "@button set-style-sheet" 
-in scripts.leo.
+    @string theme-name &lt;theme file, without the .leo extension&gt;
 
-For information on stylesheets, see
+The leo/themes folder contains the actual themes files.
 
-http://doc.trolltech.com/stylesheet.html
-
-Style contributions are welcome.</t>
-<t tx="ville.20090806210322.1436">Classic Leo colors. This should look good on Linux.</t>
-<t tx="ville.20090806210322.1437">This is the classic Leo look, but with fonts that
-allegedly look better on Mac.</t>
-<t tx="ville.20090806210322.1439">/* Documentation of Qt stylesheets at http://doc.trolltech.com/stylesheet.html 
-
-To experiment, you may want to use a @button that applies
-the current stylesheet; look for "@button set-style-sheet" in
-scripts.leo.
-
-*/
-
-/* Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords */
-
-/* A QWidget: supports only background attributes.*/
-
-QSplitter::handle {
-    background-color: #CAE1FF; /* lightSteelBlue1 */
-}
-
-QStackedWidget {
-    /* background-color:lightpink; */
-    border-color: red;
-    padding: 0px;
-    /* border-width: 0px; */
-    /* background-color: yellow; */
-}
-
-QSplitter {
-    border-color: white;
-    background-color: white;
-    border-style: solid;
-}
-
-QTreeWidget {
-    /* These apply to the selected item, but not to editing items.*/
-    background-color: #ffffec; /* Leo's traditional tree color */
-    selection-color: black; /* was white */
-    selection-background-color: lightgrey;
-    /* font-family: SansSerif; */
-    font-family: DejaVu Sans Mono;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */
- }
-
-/* Headline edit widgets */
-QTreeWidget QLineEdit {
-    background-color: cornsilk;
-    selection-color: white;
-    selection-background-color: blue;
-    font-family: DejaVu Sans Mono;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */
-}
-
-/* The log panes */
-QTextEdit {
-    background-color: #f2fdff;
-    selection-color: white;
-    selection-background-color: blue;
-    /* font-family: Courier New; */
-    font-family: DejaVu Sans Mono;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */
-}
-
-/* The body pane */
-QTextEdit#richTextEdit {
-    background-color: #fdf5f5; /* A kind of pink. */
-    selection-color: white;
-    selection-background-color: lightgrey;
-    font-family: DejaVu Sans Mono;
-    /* font-family: Courier New; */
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-QLabel {
-    font-family: DejaVu Sans Mono;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-/* Editor labels */
-QLineEdit#editorLabel {
-    background-color: #ffffec;
-    font-family: DejaVu Sans Mono;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-    border: 2px;
-    margin: 2px;
-}
-
-/* The mini-buffer */
-QLineEdit#lineEdit {
-    selection-color: white;
-    selection-background-color: lightgrey;
-    font-family: DejaVu Sans Mono;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-QLineEdit#status1 {
-    background-color: lightgrey;
-    border-width: 1px;
-    border-style: solid;
-    border-color: darkgrey;
-}
-
-QLineEdit#status2 {
-    background-color: lightgrey;
-    border-width: 1px;
-    border-style: solid;
-    border-color: darkgrey;
-}
-
-XXQPushButton {
-    background-color: #fdf5f5; /* A kind of pink. */
-    margin: 2px;
-    padding; 4px;
-    border-width: 2px;
-    border-style: solid;
-    border-color: darkgrey;
-}
-
-/* QMenuBar works, but not QMenu... */
-XXQMenuBar {
-    font-family: DejaVu Sans Mono;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-</t>
-<t tx="ville.20090806210322.1440">/* Documentation of Qt stylesheets at http://doc.trolltech.com/4.2/stylesheet.html */
-
-/* Valid color names: http://www.w3.org/TR/SVG/types.html#ColorKeywords */
-
-/* A QWidget: supports only background attributes.*/
-
-QSplitter::handle {
-    background-color: #CAE1FF; /* lightSteelBlue1 */
-}
-
-QStackedWidget {
-    /* background-color:lightpink; */
-    border-color: red;
-    padding: 0px;
-    /* border-width: 0px; */
-    /* background-color: yellow; */
-}
-
-QSplitter {
-    border-color: white;
-    background-color: white;
-    border-style: solid;
-}
-
-QTreeWidget {
-    /* These apply to the selected item, but not to editing items.*/
-    background-color: #ffffec; /* Leo's traditional tree color */
-    selection-color: black; /* was white */
-    selection-background-color: lightgrey;
-    /* font-family: SansSerif; */
-    font-family: Lucida Grande;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */
- }
-
-/* Headline edit widgets */
-QTreeWidget QLineEdit {
-    background-color: cornsilk;
-    selection-color: white;
-    selection-background-color: blue;
-    font-family: Lucida Grande;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */
-}
-
-/* The log panes */
-QTextEdit {
-    background-color: #f2fdff;
-    selection-color: white;
-    selection-background-color: blue;
-    font-family: Monaco;
-    font-size: 10px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal, italic,oblique */
-}
-
-/* The body pane */
-QTextEdit#richTextEdit {
-    background-color: #fdf5f5; /* A kind of pink. */
-    selection-color: white;
-    selection-background-color: lightgrey;
-    font-family: Monaco;
-    /* font-family: Courier New; */
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-QLabel {
-    font-family: Lucida Grande;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-/* Editor labels */
-QLineEdit#editorLabel {
-    background-color: #ffffec;
-    font-family: Lucida Grande;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-    border: 2px;
-    margin: 2px;
-}
-
-/* The mini-buffer */
-QLineEdit#lineEdit {
-    selection-color: white;
-    selection-background-color: lightgrey;
-    font-family: Monaco;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}
-
-QLineEdit#status1 {
-    background-color: lightgrey;
-    border-width: 1px;
-    border-style: solid;
-    border-color: darkgrey;
-}
-
-QLineEdit#status2 {
-    background-color: lightgrey;
-    border-width: 1px;
-    border-style: solid;
-    border-color: darkgrey;
-}
-
-XXQPushButton {
-    background-color: #fdf5f5; /* A kind of pink. */
-    margin: 2px;
-    padding; 4px;
-    border-width: 2px;
-    border-style: solid;
-    border-color: darkgrey;
-}
-
-/* QMenuBar works, but not QMenu... */
-XXQMenuBar {
-    font-family: Lucida Grande;
-    font-size: 12px;
-    font-weight: normal; /* normal,bold,100,..,900 */
-    font-style: normal; /* normal,italic,oblique */
-}</t>
+Leo's open-theme-file command will prompt you for a theme file, then open that file in a separate process so you can see it in action.</t>
 <t tx="ville.20091008194838.3931"># Add commands to contextmenu
 # The format is &lt;command&gt; SPACE &lt;description&gt;
 

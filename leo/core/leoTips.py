@@ -520,6 +520,19 @@ See http://leoeditor.com/tutorial-pim.html#clones.
 
 """),
 
+#@+node:ekr.20180312101254.1: *4* How to find your @command nodes
+UserTip(
+    n=0,
+    tags=['Settings'],
+    title="How to find all your @command nodes",
+    text="""\
+    
+myLeoSettings.leo can define *common* @command nodes that apply to all outlines.
+
+Such nodes reside in the @commands subtree of the @settings tree in myLeoSettings.leo.
+
+<alt-x>@c<tab> shows all the @command nodes in effect for the present outline, no matter where defined.
+"""),
 #@+node:ekr.20180324072812.1: *4* Search for settings
 UserTip(
     n=0,
@@ -544,6 +557,20 @@ The easiest way to find information on a topic is to search LeoDocs.leo.
 
 """),
 
+#@+node:ekr.20180503082333.1: *4* Show all @command commands
+UserTip(
+    n=0,
+    tags=['Command', 'Tutorial'],
+    title="Show all @command commands",
+    text="""
+
+<alt-x>@c<tab>
+
+The tab completion above will show you all the @command nodes in effect for the present outline, no matter where defined.
+
+Note: myLeoSettings.leo can define common @command nodes that apply to all outlines.
+"""
+),
 #@+node:ekr.20180324072128.1: *4* Typing completion
 UserTip(
     n=614,
@@ -566,19 +593,6 @@ You can have a personal shortcut to run script while developing it. For example:
 
 If your script grows to several subnodes, you won't have to select top node every time you wish to run script. It would be enough to just press your universal shortcut.
 
-"""),
-#@+node:ekr.20180312101254.1: *4* How to find your @command nodes
-UserTip(
-    n=0,
-    tags=['Settings'],
-    title="How to find all your @command nodes",
-    text="""\
-    
-myLeoSettings.leo can define *common* @command nodes that apply to all outlines.
-
-Such nodes reside in the @commands subtree of the @settings tree in myLeoSettings.leo.
-
-<alt-x>@c<tab> shows all the @command nodes in effect for the present outline, no matter where defined.
 """),
 #@-others
 #@-<< define tips >>

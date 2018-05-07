@@ -273,7 +273,7 @@
 <v t="ekr.20161224111342.1"><vh>@test import all Leo's core files</vh></v>
 </v>
 <v t="ekr.20101220161557.6016"><vh>Active Unit Tests</vh>
-<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285808000000302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735808000000302e362e31362e3371057d71065808000000616e6e6f7461746571077d7108735808000000302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735809000000302e362e31392e3431710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735808000000302e362e32372e3771117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
+<v t="edward.20160314170027.56" descendentVnodeUnknownAttributes="7d7100285508302e362e31322e3971017d71025809000000756e69745f7465737471035804000000616263647104735508302e362e32372e3771057d71065808000000616e6e6f7461746571077d7108735508302e362e31382e3771097d710a5808000000616e6e6f74617465710b7d710c735509302e362e31392e3431710d7d710e58090000006d795f706c7567696e710f580300000076616c7110735508302e362e31362e3371117d71125808000000616e6e6f7461746571137d711473752e"><vh>@file activeUnitTests.txt</vh></v>
 </v>
 <v t="ekr.20161204040924.1"><vh>@ignore Failing unit tests</vh>
 <v t="ekr.20161130041921.1"></v>
@@ -1225,8 +1225,10 @@
 </v>
 <v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
 <v t="ekr.20180312050443.1"><vh>@test cwd</vh></v>
-</v>
 <v t="ekr.20100204053330.5367"><vh>@test koi8-r encoding</vh></v>
+<v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
+<v t="ekr.20100131171342.5608"><vh>@test g.KeyStroke</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -3418,6 +3420,40 @@ for tag,aList in table:
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
 </t>
+<t tx="ekr.20100131171342.5482">
+ivars = (
+    # Global managers.
+    'config','externalFilesController',
+    'loadManager','pluginsController','recentFilesManager',
+    # Official ivars.
+    'gui',
+    'initing','killed','quitting',
+    'leoID','log','logIsLocked','logWaiting',
+    'nodeIndices',
+    'unitTesting','unitTestDict',
+    'windowList',
+    # Less-official and might be removed...
+    'batchMode',
+    # 'debugSwitch',
+    'disableSave',
+    'hookError','hookFunction',
+    'numberOfUntitledWindows',
+    'realMenuNameDict',
+    'searchDict','scriptDict',
+    'use_psyco',
+)
+
+if g.app.isExternalUnitTest:
+    mayBeNone = ('hookFunction','idleTimeHook','log','openWithInstance')
+else:
+    mayBeNone = ('hookFunction','openWithInstance')
+
+for ivar in ivars:
+    assert hasattr(g.app,ivar), 'missing app ivar: %s %r' % (ivar,g.app)
+    if ivar not in mayBeNone:
+        val = getattr(g.app,ivar)
+        assert val is not None, 'null app ivar: %s %r'% (ivar,g.app)
+</t>
 <t tx="ekr.20100131171342.5485">import inspect
 
 d = c.commandsDict
@@ -3443,6 +3479,62 @@ for key in keys:
     expected = ('event',)
     message = '\nno event arg for command %s, func: %s\nargs: %s' % (key,name,data)
     assert arg0 in expected or arg1 in expected, message
+</t>
+<t tx="ekr.20100131171342.5608">table = [
+    # Gang of four, unmodified)
+    ('bksp', 'BackSpace'),
+    ('backspace', 'BackSpace'),
+    ('backtab', 'Tab'),
+    ('linefeed', '\n'),
+    ('\r', '\n'),
+    ('return', '\n'),
+    ('tab', 'Tab'),
+    # Gang of four, with shift mod.
+    ('Shift-bksp', 'Shift+BackSpace'),
+    ('Shift-backspace', 'Shift+BackSpace'),
+    ('Shift-backtab', 'Shift+Tab'),
+    ('Shift-linefeed', 'Shift+Return'),
+    ('Shift-\r', 'Shift+Return'),
+    ('Shift-return', 'Shift+Return'),
+    ('Shift-tab', 'Shift+Tab'),
+    # Gang of four, with Alt mod.
+    ('Alt-bksp', 'Alt+BackSpace'),
+    ('Alt-backspace', 'Alt+BackSpace'),
+    ('Alt-backtab', 'Alt+Tab'),
+    ('Alt-linefeed', 'Alt+Return'),
+    ('Alt-\r', 'Alt+Return'),
+    ('Alt-return', 'Alt+Return'),
+    ('Alt-tab', 'Alt+Tab'),
+    #
+    # Alpha
+    ('1', '1'),
+    ('a','a'),
+    ('A','A'),
+    ('Alt-a','Alt+a'),
+    ('Alt-A','Alt+a'),
+    ('Alt-Shift-a','Alt+Shift+a'),
+    # We can no longer ignore the shift.
+    # ('Alt-Shift++','Alt+plus'), # Ignore the shift.
+    ('Shift-a','A'),
+    ('Shift-A','A'),
+    ('RtArrow','Right'),
+    ('Shift-RtArrow','Shift+Right'),
+    ('PageUp','Prior'),
+    ('Prior','Prior'),
+    ('Shift-PageUp','Shift+Prior'),
+    ('PageDn','Next'),
+    ('Next','Next'),
+    ('Shift-Next','Shift+Next'),
+    ('Alt-=','Alt+='),
+    ('Alt-+','Alt++'),
+    ('Alt--','Alt+-'),
+    ('Ctrl-RtArrow','Ctrl+Right'),
+    ('Control-Right','Ctrl+Right'),
+]
+for setting, result in table:
+    stroke = g.KeyStroke(binding=setting)
+    val = stroke.s
+    assert val==result,'For %r, expected %r, Got %r' % (setting, result,val)
 </t>
 <t tx="ekr.20100204053330.5367">root = p.copy()
 while p.hasChildren():

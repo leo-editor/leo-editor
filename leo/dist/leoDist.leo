@@ -412,7 +412,7 @@ SOFTWARE.
 </t>
 <t tx="EKR.20040519090846.8">Metadata-Version: 1.0
 Name: leo
-Version: 5.7.1
+Version: 5.7.2
 Summary: An IDE, PIM and Outliner. See leoeditor.com/preface.html.
 Description: See users own descriptions of Leo at leoeditor.com/testimonials.html.
 Home-page: http://leoeditor.com/
@@ -432,23 +432,20 @@ Classifier: Topic :: Text Processing
 Download-URL: http://sourceforge.net/projects/leo/files/
 
 </t>
-<t tx="EKR.20040519090846.9">Leo 5.7.1 April 6, 2018
+<t tx="EKR.20040519090846.9">May 7, 2018
 
-Leo 5.7.1, http://leoeditor.com, is now available on
+Leo 5.7.2, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
 
-**The highlights of Leo 5.7.1**
+**The highlights of Leo 5.7.2**
 
-- Improved support for themes, including the open-theme-file command.
-    - Added --theme=&lt;name&gt; command-line option.
-    - Added @string theme-name setting.
-    - Leo warns if stylesheets contain undefined @-constants.
-- Replaced 5 vs-* commands by corresponding eval* commands.
-- Support @file x.md using html sentinels.
-- Allow @path in @&lt;file&gt; nodes, and optionally generate same in recursive imports.
-- Improved menus.
+- Much improved support for Jupyter (.ipynb) files.
+- Fixed bugs that prevented switching between git branches easily.
+- Rewrote large parts of Leo's key-handling code.
+- New command-line arguments to trace Leo's code.
+- Removed about 20 unused settings.
 - The usual minor bug fixes.
 
 **Links**
