@@ -2310,7 +2310,6 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20051126062243"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -6979,8 +6978,8 @@ gc-dump-all-objects                 = None
 gc-dump-new-objects                 = None
 gc-dump-objects-verbose             = None
 gc-print-summary                    = None
-gc-trace-disable                    = None
-gc-trace-enable                     = None
+# gc-trace-disable                  = None
+# gc-trace-enable                   = None
 get-ipython-results                 = None
 go-back                             = None
 go-forward                          = None
@@ -10977,7 +10976,7 @@ copy-text                           = Ctrl-c        # Conflicts with Emacs ctrl-
 cut-text                            = Ctrl-x
 delete-char                         = Shift-Delete
 delete-char                         !text = Delete
-delete-comments                     = Ctrl-Shift-#
+delete-comments                     = None # Ctrl-Shift-#
 # delete-comments                   = Shift-Ctrl-0 # Set elsewhere.
 delete-word                         = Ctrl-Delete
 delete-spaces                       = None
