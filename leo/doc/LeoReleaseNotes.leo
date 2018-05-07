@@ -3187,6 +3187,7 @@
 </v>
 <v t="ekr.20180406011314.33"><vh>Settings &amp; command-line arguments</vh></v>
 </v>
+<v t="ekr.20180507105516.1"><vh>Leo 5.7.2 New key code</vh></v>
 </vnodes>
 <tnodes>
 <t tx="ekr.20150313053238.1"></t>
@@ -24404,6 +24405,36 @@ Settings:
 <t tx="ekr.20180406011314.8">https://github.com/leo-editor/leo-editor/issues/802
 </t>
 <t tx="ekr.20180406011314.9">https://github.com/leo-editor/leo-editor/issues/808
+</t>
+<t tx="ekr.20180507105516.1">May 7, 2018
+
+Leo 5.7.2, http://leoeditor.com, is now available on
+[GitHub](https://github.com/leo-editor/leo-editor).
+
+Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
+
+**The highlights of Leo 5.7.2**
+
+- Much improved support for Jupyter (.ipynb) files.
+- Fixed bugs that prevented switching between git branches easily.
+- Rewrote large parts of Leo's key-handling code.
+- New command-line arguments to trace Leo's code.
+- Removed about 20 unused settings.
+- The usual minor bug fixes.
+
+**Links**
+
+- Leo's home page: http://leoeditor.com
+- [Documentation](http://leoeditor.com/leo_toc.html)
+- [Tutorials](http://leoeditor.com/tutorial.html)
+- [Video tutorials](http://leoeditor.com/screencasts.html)
+- [Forum](http://groups.google.com/group/leo-editor)
+- [Download](http://sourceforge.net/projects/leo/files/)
+- [Leo on GitHub](https://github.com/leo-editor/leo-editor)
+- [LeoVue](https://github.com/kaleguy/leovue#leo-vue)
+- [What people are saying about Leo](http://leoeditor.com/testimonials.html)
+- [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
+- [More links](http://leoeditor.com/leoLinks.html)
 </t>
 </tnodes>
 </leo_file>

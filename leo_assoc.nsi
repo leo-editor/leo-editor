@@ -3,7 +3,7 @@
 ;@@language nsi
 
 ;##version
-!define version         "5.7.1"
+!define version         "5.7.2"
 
 !include MUI2.nsh
 !include nsDialogs.nsh
