@@ -26356,7 +26356,9 @@ Theme files should contain three settings that describe the theme::
 <t tx="ekr.20180404070940.1"></t>
 <t tx="ekr.20180404172529.1">When True, adds @path directives to the root node of imported files.
 </t>
-<t tx="ekr.20180411070654.1">Leo 5.7.2, http://leoeditor.com, is now available on
+<t tx="ekr.20180411070654.1">May 7, 2018
+
+Leo 5.7.2, http://leoeditor.com, is now available on
 [GitHub](https://github.com/leo-editor/leo-editor).
 
 Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/preface.html).
@@ -26364,10 +26366,10 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 **The highlights of Leo 5.7.2**
 
 - Much improved support for Jupyter (.ipynb) files.
-- Fixed a bug that prevented switching between git branches easily.
-- A rewrite of large parts of Leo's key-handling code.
-- New command-line arguments trace Leo's code without having to change it.
-- Removed almost 20 unused settings.
+- Fixed bugs that prevented switching between git branches easily.
+- Rewrote large parts of Leo's key-handling code.
+- New command-line arguments to trace Leo's code.
+- Removed about 20 unused settings.
 - The usual minor bug fixes.
 
 **Links**
@@ -26486,10 +26488,10 @@ They no longer appear in leoSettings.leo:
     @string trace_bindings_filter = 
     @string trace_bindings_pane_filter =</t>
 <t tx="ekr.20180427130312.1">- Much improved support for Jupyter (.ipynb) files.
-- Fixed a bug that prevented switching between git branches easily.
-- A rewrite of large parts of Leo's key-handling code.
-- New command-line arguments trace Leo's code without having to change it.
-- Removed almost 20 unused settings.
+- Fixed bugs that prevented switching between git branches easily.
+- Rewrote large parts of Leo's key-handling code.
+- New command-line arguments to trace Leo's code.
+- Removed about 20 unused settings.
 </t>
 <t tx="ekr.20180501163005.1">The new insert-jupyter-toc and insert-markdown-toc commands produce a toc (table of contents) for in the selected node, at insert point of the body text.  They replace any selected text.
 
@@ -26503,7 +26505,7 @@ Notes
 
 2. Both commands clean both parts of markdown links, that is, the [*] part and the (*) part. It's not clear what characters can be allowed in general, but for now the rules are:
 
-A. Within [*] parts, all non alpha-nums are removed, except ":" and "-" and blanks.
+A. Within [*] parts, all non alphanums are removed, except ":" and "-" and blanks.
 B. Same for (*) parts, except that blanks are converted to "-".
 
 3. Similar logic is used in the exporter to clean section names.
