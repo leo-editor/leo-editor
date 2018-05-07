@@ -3,6 +3,7 @@
 #@+node:ekr.20150514154159.1: * @file leoHistory.py
 #@@first
 import leo.core.leoGlobals as g
+assert g
 #@+others
 #@+node:ekr.20160514120255.1: ** class NodeHistory
 class NodeHistory(object):
@@ -46,7 +47,6 @@ class NodeHistory(object):
         Update the history list when selecting p.
         Called only from self.goToNext/PrevHistory
         '''
-        trace = False and not g.unitTesting
         c, cc = self.c, self.c.chapterController
         if c.positionExists(p):
             self.skipBeadUpdate = True
@@ -65,7 +65,6 @@ class NodeHistory(object):
         Update the beadList while p is being selected.
         Called *only* from c.frame.tree.selectHelper.
         '''
-        trace = False and not g.unitTesting
         c, cc = self.c, self.c.chapterController
         if not p or not c.positionExists(p) or self.skipBeadUpdate:
             return

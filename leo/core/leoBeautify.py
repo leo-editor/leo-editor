@@ -817,7 +817,6 @@ class PythonTokenBeautifier(object):
     def prettyPrintNode(self, p):
         '''The driver for beautification: beautify a single node.'''
         # c = self.c
-        # trace = False and not g.unitTesting
         if not should_beautify(p):
             # @nobeautify is in effect.
             return

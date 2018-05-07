@@ -115,8 +115,6 @@ class ShadowController(object):
 
         Return True if theFile was changed.
         '''
-        trace = False and not g.unitTesting
-        verbose = False
         c = self.c
         x = self
         exists = g.os_path_exists(fn)
@@ -225,7 +223,6 @@ class ShadowController(object):
         '''
         #@-<< docstring >>
         x = self
-        trace = (False or x.trace) and g.unitTesting
         x.init_ivars(new_public_lines, old_private_lines, marker)
         sm = difflib.SequenceMatcher(None, x.a, x.b)
         # Ensure leading sentinels are put first.
@@ -390,7 +387,6 @@ class ShadowController(object):
         Propagate the changes from the public file (without_sentinels)
         to the private file (with_sentinels)
         '''
-        trace, verbose = False and not g.unitTesting, False
         x = self; at = self.c.atFileCommands
         at.errors = 0
         self.encoding = at.encoding
@@ -421,14 +417,13 @@ class ShadowController(object):
         # 2010/01/07: check at.errors also.
         if copy and x.errors == 0 and at.errors == 0:
             s = ''.join(new_private_lines)
-            ok = x.replaceFileWithString(fn, s)
+            x.replaceFileWithString(fn, s)
         return copy
     #@+node:bwmulder.20041231170726: *4* x.updatePublicAndPrivateFiles
     def updatePublicAndPrivateFiles(self, root, fn, shadow_fn):
         '''handle crucial @shadow read logic.
 
         This will be called only if the public and private files both exist.'''
-        trace = False and not g.unitTesting
         x = self
         if x.isSignificantPublicFile(fn):
             # Update the private shadow file from the public file.
@@ -462,8 +457,6 @@ class ShadowController(object):
     #@+node:ekr.20090529125512.6122: *4* x.markerFromFileLines & helper
     def markerFromFileLines(self, lines, fn):
         '''Return the sentinel delimiter comment to be used for filename.'''
-        trace = False and not g.unitTesting
-        # if trace: g.trace(''.join(lines))
         at, x = self.c.atFileCommands, self
         s = x.findLeoLine(lines)
         ok, junk, start, end, junk = at.parseLeoSentinel(s)

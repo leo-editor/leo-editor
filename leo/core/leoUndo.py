@@ -270,7 +270,7 @@ class Undoer(object):
     # These routines update both the ivar and the menu label.
 
     def setRedoType(self, theType):
-        trace = False and not g.unitTesting
+
         u = self; frame = u.c.frame
         if not g.isString(theType):
             g.trace('oops: expected string for command, got %s' % repr(theType))
@@ -291,7 +291,7 @@ class Undoer(object):
             u.realRedoMenuLabel = realLabel
     #@+node:ekr.20091221145433.6381: *4* u.setUndoType
     def setUndoType(self, theType):
-        trace = False and not g.unitTesting
+
         u = self; frame = u.c.frame
         if not g.isString(theType):
             g.trace('oops: expected string for command, got %s' % repr(theType))
@@ -313,7 +313,7 @@ class Undoer(object):
             u.realUndoMenuLabel = realLabel
     #@+node:ekr.20031218072017.3616: *4* u.setUndoTypes
     def setUndoTypes(self):
-        trace = False and not g.unitTesting
+
         u = self
         # Set the undo type and undo menu label.
         bunch = u.peekBead(u.bead)
@@ -904,7 +904,7 @@ class Undoer(object):
             frame.menu.enableMenu(menu, u.undoMenuLabel, u.canUndo())
     #@+node:ekr.20110519074734.6094: *4* u.onSelect & helpers
     def onSelect(self, old_p, p):
-        trace = False and not g.unitTesting
+
         u = self
         if u.per_node_undo:
             if old_p and u.beads:
@@ -913,7 +913,7 @@ class Undoer(object):
             u.setUndoTypes()
     #@+node:ekr.20110519074734.6096: *5* u.putIvarsToVnode
     def putIvarsToVnode(self, p):
-        trace = False and not g.unitTesting
+
         u = self; v = p.v
         assert self.per_node_undo
         bunch = g.bunch()
@@ -940,8 +940,6 @@ class Undoer(object):
         Do nothing when called from the undo/redo logic because the Undo
         and Redo commands merely reset the bead pointer.
         '''
-        trace = False and not g.unitTesting
-        verbose = False
         u = self; c = u.c
         #@+<< return if there is nothing to do >>
         #@+node:ekr.20040324061854: *5* << return if there is nothing to do >>
@@ -1188,7 +1186,6 @@ class Undoer(object):
     @cmd('redo')
     def redo(self, event=None):
         '''Redo the operation undone by the last undo.'''
-        trace = False and not g.unitTesting
         u = self; c = u.c
         w = c.frame.body.wrapper
         if not c.p:
@@ -1295,7 +1292,6 @@ class Undoer(object):
     #@+node:ekr.20050318085432.6: *4* u.redoGroup
     def redoGroup(self):
         '''Process beads until the matching 'afterGroup' bead is seen.'''
-        trace = False and not g.unitTesting
         u = self
         # Remember these values.
         c = u.c
@@ -1467,7 +1463,6 @@ class Undoer(object):
     @cmd('undo')
     def undo(self, event=None):
         """Undo the operation described by the undo parameters."""
-        trace = False and not g.unitTesting
         u = self; c = u.c
         w = c.frame.body.wrapper
         if not c.p:
@@ -1587,7 +1582,6 @@ class Undoer(object):
     #@+node:ekr.20050318085713: *4* u.undoGroup
     def undoGroup(self):
         '''Process beads until the matching 'beforeGroup' bead is seen.'''
-        trace = False and not g.unitTesting
         u = self
         # Remember these values.
         c = u.c
@@ -1657,7 +1651,7 @@ class Undoer(object):
             c.selectPosition(u.p)
     #@+node:ekr.20050411112033: *4* u.undoMove
     def undoMove(self):
-        trace = False and not g.unitTesting
+
         u = self; c = u.c; cc = c.chapterController
         if cc: cc.selectChapterByName('main')
         v = u.p.v
@@ -1680,7 +1674,6 @@ class Undoer(object):
         '''Undo all changes to the contents of a node,
         including headline and body text, and marked bits.
         '''
-        trace = False and not g.unitTesting
         u = self; c = u.c
         w = c.frame.body.wrapper
         u.p.b = u.oldBody
@@ -1727,7 +1720,6 @@ class Undoer(object):
     ):
         '''Handle text undo and redo: converts _new_ text into _old_ text.'''
         # newNewlines is unused, but it has symmetry.
-        trace = False and not g.unitTesting
         u = self; c = u.c; w = c.frame.body.wrapper
         #@+<< Compute the result using p's body text >>
         #@+node:ekr.20061106105812.1: *5* << Compute the result using p's body text >>

@@ -206,8 +206,6 @@ if sys.platform != 'cli':
         #@+node:ekr.20060919110638.32: *4* sax.endTnode
         def endTnode(self):
             '''Handle the end of a <tnode> element.'''
-            trace = (False or self.trace) and not g.unitTesting
-            # trace = trace and self.fileName.endswith('clone-test.leo')
             for sax_node in self.nodeList:
                 sax_node.bodyString = ''.join(self.content)
             self.content = []
@@ -238,7 +236,6 @@ if sys.platform != 'cli':
             sax: handle an xml processing instruction.
             We expect the target to be 'xml-stylesheet'.
             '''
-            trace = False and not g.unitTesting
             if target == 'xml-stylesheet':
                 # A strange hack.  Don't set this for settings files.
                 # This looks like a strange sax interaction.
@@ -266,7 +263,6 @@ if sys.platform != 'cli':
                     func(attrs)
         #@+node:ekr.20060919110638.36: *4* sax.getWindowPositionAttributes
         def getWindowPositionAttributes(self, attrs):
-            trace = False and not g.unitTesting
             c = self.c
             d = {}
             windowSize = g.app.loadManager.options.get('windowSize')
@@ -299,7 +295,6 @@ if sys.platform != 'cli':
             return d # Assigned to self.global_window_position
         #@+node:ekr.20060919110638.37: *4* sax.startGlobals
         def startGlobals(self, attrs):
-            trace = False and not g.unitTesting
             c = self.c
             if self.inClipboard:
                 return
@@ -360,8 +355,6 @@ if sys.platform != 'cli':
         def tnodeAttributes(self, attrs):
             # The VNode must have a tx attribute to associate content
             # with the proper node.
-            trace = False and not g.unitTesting
-            verbose = False
             node = self.node
             self.nodeList = []
             val = None
@@ -673,7 +666,6 @@ class FileCommands(object):
             Read a .leo file.
             The caller should follow this with a call to c.redraw().
         '''
-        trace = False and not g.unitTesting
         fc, c = self, self.c
         t1 = time.time()
         c.setChanged(False) # May be set when reading @file nodes.
@@ -1077,10 +1069,6 @@ class FileCommands(object):
     #@+node:EKR.20040627120120: *5* fc.restoreDescendentAttributes
     def restoreDescendentAttributes(self):
 
-        trace = False and not g.unitTesting
-        trace_dict = False
-        trace_expanded = False
-        trace_marks = False
         c = self.c
         for resultDict in self.descendentTnodeUaDictList:
             for gnx in resultDict:
@@ -1406,7 +1394,6 @@ class FileCommands(object):
         '''
         Called *before* reading external files.
         '''
-        trace = False and not g.unitTesting
         c = self.c
         for p in c.all_unique_positions():
             if hasattr(p.v, 'tempTnodeList'):
@@ -1431,7 +1418,6 @@ class FileCommands(object):
         Return a VNode corresponding to the archived position relative to root
         node root_v.
         '''
-        trace = False and not g.unitTesting
 
         def oops(message):
             '''Give an error only if no file errors have been seen.'''
@@ -1547,7 +1533,7 @@ class FileCommands(object):
         return geom
     #@+node:ekr.20060919110638.13: *5* fc.setPositionsFromVnodes & helper (sax read)
     def setPositionsFromVnodes(self):
-        trace = False and not g.unitTesting
+
         c, root = self.c, self.c.rootPosition()
         if c.sqlite_connection:
             # position is already selected
@@ -1564,7 +1550,7 @@ class FileCommands(object):
         c.setCurrentPosition(current or c.rootPosition())
     #@+node:ekr.20061006104837.1: *6* fc.archivedPositionToPosition
     def archivedPositionToPosition(self, s):
-        trace = False and not g.unitTesting
+
         c = self.c
         s = g.toUnicode(s) # 2011/02/25
         aList = s.split(',')
@@ -1802,7 +1788,7 @@ class FileCommands(object):
     # Changed for Leo 4.0.
 
     def putGlobals(self):
-        trace = False and not g.unitTesting
+
         c = self.c
         use_db = g.enableDB and c.mFileName
         if use_db:
@@ -1895,7 +1881,6 @@ class FileCommands(object):
 
         The old way made it almost impossible to delete stylesheet element.
         '''
-        trace = False and not g.unitTesting
         c = self.c
         sheet = (c.config.getString('stylesheet') or '').strip()
         # sheet2 = c.frame.stylesheet and c.frame.stylesheet.strip() or ''
@@ -2462,7 +2447,6 @@ class FileCommands(object):
     #@+node:ekr.20080805085257.2: *4* fc.pickle
     def pickle(self, torv, val, tag):
         '''Pickle val and return the hexlified result.'''
-        trace = False and g.unitTesting
         try:
             s = pickle.dumps(val, protocol=1)
             s2 = binascii.hexlify(s)
@@ -2500,9 +2484,11 @@ class FileCommands(object):
         return ''.join(result)
     #@+node:ekr.20080805071954.2: *4* fc.putDescendentVnodeUas
     def putDescendentVnodeUas(self, p):
-        '''Return the a uA field for descendent VNode attributes,
-        suitable for reconstituting uA's for anonymous vnodes.'''
-        trace = False
+        '''
+        Return the a uA field for descendent VNode attributes,
+        suitable for reconstituting uA's for anonymous vnodes.
+        '''
+        #
         # Create aList of tuples (p,v) having a valid unknownAttributes dict.
         # Create dictionary: keys are vnodes, values are corresonding archived positions.
         pDict = {}; aList = []

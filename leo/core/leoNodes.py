@@ -55,8 +55,6 @@ class NodeIndices(object):
     #@+node:ekr.20150302061758.14: *3* ni.compute_last_index
     def compute_last_index(self, c):
         '''Scan the entire leo outline to compute ni.last_index.'''
-        trace = False and not g.unitTesting
-        verbose = True # Report only if lastIndex was changed.
         ni = self
         old_lastIndex = self.lastIndex
         # Partial, experimental, fix for #658.
@@ -89,7 +87,6 @@ class NodeIndices(object):
         Create a new gnx for v or an empty string if the hold flag is set.
         **Important**: the method must allocate a new gnx even if v.fileIndex exists.
         '''
-        trace = False and not g.unitTesting
         if v is None:
             g.internalError('getNewIndex: v is None')
             return ''
@@ -165,7 +162,6 @@ class NodeIndices(object):
     #@+node:ekr.20141023110422.4: *3* ni.updateLastIndex
     def updateLastIndex(self, gnx):
         '''Update ni.lastIndex if the gnx affects it.'''
-        trace = False and not g.unitTesting
         id_, t, n = self.scanGnx(gnx)
         if not id_ or (n is not 0 and not n):
             return # the gnx is not well formed or n in ('',None)
@@ -852,7 +848,6 @@ class Position(object):
     #@+node:ekr.20080416161551.196: *4* p.isVisible (slow)
     def isVisible(self, c):
         '''Return True if p is visible in c's outline.'''
-        trace = False and not g.unitTesting
         p = self
 
         def visible(p, root=None):
@@ -963,7 +958,6 @@ class Position(object):
         '''Adjust position p before unlinking p2.'''
         # p will change if p2 is a previous sibling of p or
         # p2 is a previous sibling of any ancestor of p.
-        trace = False and not g.unitTesting
         p = self; sib = p.copy()
         # A special case for previous siblings.
         # Adjust p._childIndex, not the stack's childIndex.
@@ -1231,8 +1225,6 @@ class Position(object):
     #@+node:ekr.20080416161551.210: *4* p.moveToVisBack & helper
     def moveToVisBack(self, c):
         """Move a position to the position of the previous visible node."""
-        trace = False and not g.unitTesting
-        verbose = False
         p = self
         limit, limitIsVisible = c.visLimit()
         while p:
@@ -1255,7 +1247,6 @@ class Position(object):
     #@+node:ekr.20090715145956.6166: *5* checkVisBackLimit
     def checkVisBackLimit(self, limit, limitIsVisible, p):
         '''Return done, p or None'''
-        trace = False and not g.unitTesting
         c = p.v.context
         if limit == p:
             if limitIsVisible and p.isVisible(c):
@@ -1270,7 +1261,6 @@ class Position(object):
     #@+node:ekr.20080416161551.211: *4* p.moveToVisNext & helper
     def moveToVisNext(self, c):
         """Move a position to the position of the next visible node."""
-        trace = False and not g.unitTesting
         p = self
         limit, limitIsVisible = c.visLimit()
         while p:
@@ -1687,13 +1677,11 @@ class Position(object):
     #@+node:ekr.20131222112420.16371: *5* p.contract/expand/isExpanded
     def contract(self):
         '''Contract p.v and clear p.v.expandedPositions list.'''
-        trace = False and not g.unitTesting
         p, v = self, self.v
         v.expandedPositions = [z for z in v.expandedPositions if z != p]
         v.contract()
 
     def expand(self):
-        trace = False and not g.unitTesting
         p = self
         v = self.v
         v.expandedPositions = [z for z in v.expandedPositions if z != p]
@@ -1800,8 +1788,7 @@ class Position(object):
         return False
     #@+node:ekr.20040303214038: *5* p.setAllAncestorAtFileNodesDirty
     def setAllAncestorAtFileNodesDirty(self, setDescendentsDirty=False):
-        trace = False and not g.unitTesting
-        verbose = False
+
         p = self
         dirtyVnodeList = []
         # Calculate all nodes that are joined to p or parents of such nodes.
@@ -1831,7 +1818,6 @@ class Position(object):
         update's Leo's outline pane properly. Calling c.redraw() is *not*
         enough.
         '''
-        trace = False and not g.unitTesting
         p = self; dirtyVnodeList = []
         if not p.v.isDirty():
             p.v.setDirty()
@@ -2310,7 +2296,7 @@ class VNodeBase(object):
         v.statusBits &= ~v.dirtyBit
     #@+node:ekr.20090830051712.6153: *5* v.findAllPotentiallyDirtyNodes
     def findAllPotentiallyDirtyNodes(self):
-        trace = False and not g.unitTesting
+
         v = self; c = v.context
         # Set the starting nodes.
         nodes = []
@@ -2333,8 +2319,7 @@ class VNodeBase(object):
     # there is no setDescendentsDirty arg.
 
     def setAllAncestorAtFileNodesDirty(self):
-        trace = False and not g.unitTesting
-        verbose = False
+
         v = self
         dirtyVnodeList = []
         # Calculate all nodes that are joined to p or parents of such nodes.
@@ -2434,7 +2419,6 @@ class VNodeBase(object):
 
     def restoreCursorAndScroll(self):
         '''Restore the cursor position and scroll so it is visible.'''
-        trace = (False or g.trace_scroll) and not g.unitTesting
         traceTime = False and not g.unitTesting
         v = self
         ins = v.insertSpot
@@ -2459,10 +2443,11 @@ class VNodeBase(object):
         # Never call w.see here.
     #@+node:ekr.20100303074003.5638: *4* v.saveCursorAndScroll
     def saveCursorAndScroll(self):
-        trace = (False or g.trace_scroll) and not g.unitTesting
+
         v = self; c = v.context
         w = c.frame.body
-        if not w: return
+        if not w:
+            return
         try:
             v.scrollBarSpot = w.getYScrollPosition()
             v.insertSpot = w.getInsertPoint()
@@ -2543,7 +2528,6 @@ class VNodeBase(object):
     #@+node:ekr.20090706110836.6135: *4* v._addLink & helper
     def _addLink(self, childIndex, parent_v, adjust=True):
         '''Adjust links after adding a link to v.'''
-        trace = False and not g.unitTesting
         v = self
         # g.trace(v.context.frame.tree)
         v.context.frame.tree.generation += 1
@@ -2563,7 +2547,7 @@ class VNodeBase(object):
                     child._addParentLinks(parent=v)
     #@+node:ekr.20090804184658.6129: *5* v._addParentLinks
     def _addParentLinks(self, parent):
-        trace = False and not g.unitTesting
+
         v = self
         v.parents.append(parent)
         if len(v.parents) == 1:
@@ -2589,7 +2573,7 @@ class VNodeBase(object):
                 child._cutParentLinks(parent=v)
     #@+node:ekr.20090804190529.6133: *5* v._cutParentLinks
     def _cutParentLinks(self, parent):
-        trace = False and not g.unitTesting
+
         v = self
         v.parents.remove(parent)
         if not v.parents:

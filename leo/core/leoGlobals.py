@@ -336,7 +336,7 @@ class KeyStroke(object):
     #@+others
     #@+node:ekr.20180414195401.2: *4*  ks.__init__
     def __init__(self, binding):
-        trace = False and not g.unitTesting
+
         if binding:
             self.s = self.finalize_binding(binding)
         else:
@@ -866,7 +866,6 @@ class MatchBrackets(object):
     #@+node:ekr.20160119090634.1: *5* mb.scan_comment
     def scan_comment(self, s, i):
         '''Return the index of the character after a comment.'''
-        trace = False and not g.unitTesting
         i1 = i
         start = self.start_comment if self.forward else self.end_comment
         end = self.end_comment if self.forward else self.start_comment
@@ -906,7 +905,6 @@ class MatchBrackets(object):
     #@+node:ekr.20160119101851.1: *5* mb.starts_comment
     def starts_comment(self, s, i):
         '''Return True if s[i] starts a comment.'''
-        trace = False and not g.unitTesting
         assert 0 <= i < len(s)
         if self.forward:
             if self.single_comment and g.match(s, i, self.single_comment):
@@ -936,7 +934,6 @@ class MatchBrackets(object):
     #@+node:ekr.20160119230141.1: *4* mb.scan_back & helpers
     def scan_back(self, ch1, target, s, i):
         '''Scan backwards for delim.'''
-        trace = False and not g.unitTesting
         level = 0
         while 0 <= i:
             progress = i
@@ -1054,7 +1051,7 @@ class MatchBrackets(object):
         first time, move cursor back to other end of range.  The second time,
         select enclosing range.
         '''
-        trace = False and not g.unitTesting
+        #
         # A partial fix for bug 127: Bracket matching is buggy.
         w = self.c.frame.body.wrapper
         s = w.getAllText()
@@ -1265,7 +1262,7 @@ class RedirectClass(object):
                 sys.stderr, self.old = self.old, None
     #@+node:ekr.20041012082437.5: *5* write
     def write(self, s):
-        trace = False
+
         if self.old:
             if app.log:
                 app.log.put(s, from_redirect=True)
@@ -1670,7 +1667,7 @@ class BindingInfo(object):
     #@+others
     #@+node:ekr.20120129040823.10254: *4* bi.__init__
     def __init__(self, kind, commandName='', func=None, nextMode=None, pane=None, stroke=None):
-        trace = False and commandName == 'new' and not g.unitTesting
+
         if not g.isStrokeOrNone(stroke):
             g.trace('***** (BindingInfo) oops', repr(stroke))
         self.kind = kind
@@ -1833,7 +1830,7 @@ class TypedDict(object):
     #@+others
     #@+node:ekr.20120205022040.17769: *4* td.ctor
     def __init__(self, name, keyType, valType):
-        trace = False and not g.unitTesting and name == 'g.app.config.defaultsDict'
+
         self.d = {}
         self.isList = False
         self._name = name # name is a method.
@@ -2832,7 +2829,6 @@ g_language_pat = re.compile(r'(^@language)', re.MULTILINE)
 
 def findLanguageDirectives(c, p):
     '''Return the language in effect at position p.'''
-    trace = False and not g.unitTesting
     if c is None:
         return # c may be None for testing.
     if c.target_language:
@@ -2891,11 +2887,8 @@ def get_directives_dict(p, root=None):
     Returns a dict containing the stripped remainder of the line
     following the first occurrence of each recognized directive
     """
-    trace = False and not g.unitTesting
-        # This is called at idle time, so it's not very useful.
-    verbose = False
     if root: root_node = root[0]
-    c = p and p.v and p.v.context
+    # c = p and p.v and p.v.context
     d = {}
     # Do this every time so plugins can add directives.
     pat = g.compute_directives_re()
@@ -3033,7 +3026,6 @@ def scanAtCommentAndAtLanguageDirectives(aList):
 
     @comment should follow @language if both appear in the same node.
     '''
-    trace = False and not g.unitTesting
     lang = None
     for d in aList:
         comment = d.get('comment')
@@ -3223,12 +3215,12 @@ def scanForAtSettings(p):
             return True
     return False
 #@+node:ekr.20031218072017.1382: *3* g.set_delims_from_language
-# Returns a tuple (single,start,end) of comment delims
+
 
 def set_delims_from_language(language):
-    trace = False and not g.unitTesting
+    '''Return a tuple (single,start,end) of comment delims.'''
+
     val = g.app.language_delims_dict.get(language)
-    # if language.startswith('huh'): g.pdb()
     if val:
         delim1, delim2, delim3 = g.set_delims_from_string(val)
         if delim2 and not delim3:
@@ -3443,8 +3435,7 @@ def fullPath(c, p, simulate=False):
     Return the full path (including fileName) in effect at p. Neither the
     path nor the fileName will be created if it does not exist.
     '''
-    trace = False and not g.unitTesting
-    # 2016/03/30: search p and p's parents.
+    # Search p and p's parents.
     for p in p.self_and_parents():
         aList = g.get_directives_dict_list(p)
         path = c.scanAtPathDirectives(aList)
@@ -3516,7 +3507,6 @@ or do g.app.db['LEO_EDITOR'] = "gvim"''')
 #@+node:ekr.20160330204014.1: *3* g.init_dialog_folder
 def init_dialog_folder(c, p, use_at_path=True):
     '''Return the most convenient folder to open or save a file.'''
-    trace = False and not g.unitTesting
     if c and p and use_at_path:
         path = g.fullPath(c, p)
         if path:
@@ -3603,8 +3593,7 @@ def is_sentinel(line, delims):
 
 def makeAllNonExistentDirectories(theDir, c=None, force=False, verbose=True):
     """Attempt to make all non-existent directories"""
-    trace = False and not g.unitTesting
-    testing = trace # True: don't actually make the directories.
+    testing = False # True: don't actually make the directories.
     if force:
         create = True # Bug fix: g.app.config will not exist during startup.
     elif c:
@@ -3981,7 +3970,6 @@ def recursiveUNLSearch(unlList, c, depth=0, p=None, maxdepth=0, maxp=None,
     NOTE: maxdepth is max depth seen in recursion so far, not a limit on
           how far we will recurse.  So it should default to 0 (zero).
     """
-    trace = False and not g.unitTesting
     if g.unitTesting:
         g.app.unitTestDict['g.recursiveUNLSearch'] = True
         return True, maxdepth, maxp
@@ -4758,7 +4746,6 @@ class GitIssueController(object):
     #@+node:ekr.20180325024334.1: *5* git.get_all_issues
     def get_all_issues(self, root, state, limit=100):
         '''Get all issues for the base url.'''
-        trace = False
         import requests
         label = None
         assert state in ('open', 'closed')
@@ -4820,7 +4807,6 @@ class GitIssueController(object):
     #@+node:ekr.20180126043719.4: *5* git.get_one_page
     def get_one_page(self, label, page, r, root):
         
-        trace = True
         if self.milestone:
             aList = [
                 z for z in r.json()
@@ -4905,7 +4891,6 @@ def gitInfo(path=None):
 
     Return the branch and commit number or ('', '').
     '''
-    trace = False and not g.unitTesting
     branch, commit = '', '' # Set defaults.
     # Does path/../ref exist?
     path = g.gitHeadPath(path)
@@ -4948,7 +4933,6 @@ def jsonCommitInfo():
     return asctime and timestamp from leo/core/commit_timestamp.json.
     return ('', '') if the file does not exist or is not a valid .json file.
     '''
-    trace = False and not g.unitTesting
     import json
     leo_core_path = g.os_path_dirname(g.os_path_realpath(__file__))
     json_path = g.os_path_join(leo_core_path, 'commit_timestamp.json')
@@ -4989,7 +4973,6 @@ def doHook(tag, *args, **keywords):
     Set app.hookError on all exceptions.
     Scripts may reset app.hookError to try again.
     '''
-    trace = False; verbose = False
     if g.app.killed or g.app.hookError:
         return None
     if args:
@@ -5432,8 +5415,8 @@ def longestCommonPrefix(s1, s2):
 def itemsMatchingPrefixInList(s, aList, matchEmptyPrefix=False):
     '''This method returns a sorted list items of aList whose prefix is s.
 
-    It also returns the longest common prefix of all the matches.'''
-    trace = False and not g.unitTesting
+    It also returns the longest common prefix of all the matches.
+    '''
     if s:
         pmatches = [a for a in aList if a.startswith(s)]
     elif matchEmptyPrefix:
@@ -5636,14 +5619,13 @@ def toEncodedString(s, encoding='utf-8', reportErrors=False):
 #@+node:ekr.20050208093800.1: *4* g.toUnicode
 def toUnicode(s, encoding='utf-8', reportErrors=False):
     '''Connvert a non-unicode string with the given encoding to unicode.'''
-    trace = False and not g.unitTesting
     if g.isUnicode(s):
         return s
     if not encoding:
         encoding = 'utf-8'
+    #
     # These are the only significant calls to s.decode in Leo.
     # Tracing these calls directly yields thousands of calls.
-    # Never call g.trace here!
     try:
         s = s.decode(encoding, 'strict')
     except (UnicodeDecodeError, UnicodeError):
@@ -6007,8 +5989,6 @@ def es(*args, **keys):
     The first, third, fifth, etc. arg translated by g.translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
-    trace = False
-    verbose = False
     if not app or app.killed: return
     if app.gui and app.gui.consoleOnly: return
     log = app.log
@@ -6426,7 +6406,6 @@ tr = translateString
 #@+node:ekr.20120928142052.10116: *3* g.actualColor
 def actualColor(color):
     '''Return the actual color corresponding to the requested color.'''
-    trace = False and not g.unitTesting
     c = g.app.log and g.app.log.c
     # Careful: c.config may not yet exist.
     if not c or not c.config:
@@ -6682,7 +6661,6 @@ def os_path_exists(path):
 #@+node:ekr.20080922124033.6: *3* g.os_path_expandExpression & helper
 def os_path_expandExpression(s, **keys):
     '''Expand all {{anExpression}} in c's context.'''
-    trace = False and g.unitTesting
     c = keys.get('c')
     if not c:
         g.trace('can not happen: no c', g.callers())
@@ -6805,7 +6783,6 @@ def os_path_join(*args, **keys):
     The same as os.path.join, but safe for unicode.
     In addition, it supports the !! and . conventions.
     '''
-    trace = False and not g.unitTesting
     c = keys.get('c')
     expanduser = keys.get('expanduser', True)
         # 2014/09/17: Allow expanduser to be False.
@@ -7021,7 +6998,6 @@ def getDocString(s):
 #@+node:ekr.20111017211256.15905: *3* g.getDocStringForFunction
 def getDocStringForFunction(func):
     '''Return the docstring for a function that creates a Leo command.'''
-    trace = False and not g.unitTesting
 
     def name(func):
         return func.__name__ if hasattr(func, '__name__') else '<no __name__>'
@@ -7543,7 +7519,6 @@ def getUrlFromNode(p):
     1. Use the headline if it contains a valid url.
     2. Otherwise, look *only* at the first line of the body.
     '''
-    trace = False and not g.unitTesting
     if not p: return None
     c = p.v.context
     assert c
@@ -7599,7 +7574,6 @@ def handleUrlHelper(url, c, p):
         http://localhost/MySiteUnderDevelopment/index.html
         file:///home/me/todolist.html
     '''
-    trace = False and not g.unitTesting
     tag = 'file://'
     original_url = url
     if url.startswith(tag) and not url.startswith(tag + '#'):
@@ -7647,7 +7621,6 @@ def traceUrl(c, path, parsed, url):
 #@+node:ekr.20170221063527.1: *3* g.handleUnl
 def handleUnl(unl, c):
     '''Handle a Leo UNL. This must *never* open a browser.'''
-    trace = False and not g.unitTesting
     if not unl:
         return
     unll = unl.lower()
@@ -7760,7 +7733,6 @@ def openUrlOnClick(event, url=None):
 #@+node:ekr.20170216091704.1: *4* g.openUrlHelper
 def openUrlHelper(event, url=None):
     '''Open the UNL or URL under the cursor.  Return it for unit testing.'''
-    trace = False and not g.unitTesting
     c = getattr(event, 'c', None)
     if not c: return None
     w = getattr(event, 'w', c.frame.body.wrapper)

@@ -52,7 +52,6 @@ class PersistenceDataController(object):
     #@+node:ekr.20140718153519.17731: *4* pd.clean
     def clean(self):
         '''Remove all @data nodes that do not correspond to an existing foreign file.'''
-        trace = False and not g.unitTesting
         c = self.c
         at_persistence = self.has_at_persistence_node()
         if at_persistence:
@@ -80,7 +79,6 @@ class PersistenceDataController(object):
         Create @gnxs nodes and @uas trees as needed.
         '''
         # Delete all children of the @data node.
-        trace = False and not g.unitTesting
         self.at_persistence = self.find_at_persistence_node()
         if not self.at_persistence:
             return None
@@ -124,7 +122,6 @@ class PersistenceDataController(object):
     #@+node:ekr.20140711111623.17807: *4* pd.update_after_read_foreign_file & helpers
     def update_after_read_foreign_file(self, root):
         '''Restore gnx's, uAs and clone links using @gnxs nodes and @uas trees.'''
-        trace = False and not g.unitTesting
         self.at_persistence = self.find_at_persistence_node()
         if not self.at_persistence:
             return
@@ -180,7 +177,6 @@ class PersistenceDataController(object):
         - Set p1.v.fileIndex = gnx.
         - If p2 exists, relink p1 so it is a clone of p2.
         '''
-        trace = False and not g.unitTesting
         p1 = self.find_position_for_relative_unl(root, unl)
         fn = self.c.shortFileName()
         if p1:
@@ -200,7 +196,6 @@ class PersistenceDataController(object):
     #@+node:ekr.20140711111623.17892: *5* pd.create_uas
     def create_uas(self, at_uas, root):
         '''Recreate uA's from the @ua nodes in the @uas tree.'''
-        trace = False and not g.unitTesting
         # Create an *inner* gnx dict.
         # Keys are gnx's, values are positions *within* root's tree.
         d = {}
@@ -311,7 +306,6 @@ class PersistenceDataController(object):
         Given a unl relative to root, return the node whose
         unl matches the longest suffix of the given unl.
         '''
-        trace = False # and not g.unitTesting
         unl_list = unl.split('-->')
         if not unl_list or len(unl_list) == 1 and not unl_list[0]:
             return root
@@ -322,7 +316,6 @@ class PersistenceDataController(object):
     #@+node:ekr.20140716021139.17764: *6* pd.find_best_match
     def find_best_match(self, root, unl_list):
         '''Find the best partial matches of the tail in root's tree.'''
-        trace = False # and not g.unitTesting
         tail = unl_list[-1]
         matches = []
         for p in root.self_and_subtree():
@@ -356,7 +349,6 @@ class PersistenceDataController(object):
         Find an exact match of the unl_list in root's tree.
         The root does not appear in the unl_list.
         '''
-        trace = False # and not g.unitTesting
         full_unl = '-->'.join(unl_list)
         parent = root
         for unl in unl_list:
@@ -377,7 +369,6 @@ class PersistenceDataController(object):
         preferring nodes outside any @<file> tree.
         Never return any node in any @persistence tree.
         '''
-        trace = False and not g.unitTesting
         assert target
         assert root
         # Pass 1: accept only nodes outside any @file tree.
@@ -484,7 +475,6 @@ class PersistenceDataController(object):
     #@+node:ekr.20140713062552.17737: *5* pd.pickle
     def pickle(self, p):
         '''Pickle val and return the hexlified result.'''
-        trace = False and g.unitTesting
         try:
             ua = p.v.u
             s = pickle.dumps(ua, protocol=1)

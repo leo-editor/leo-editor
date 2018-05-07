@@ -210,8 +210,6 @@ class JSON_Import_Helper(object):
     #@+node:ekr.20160504144353.1: *3* json.create_nodes (generalize)
     def create_nodes(self, parent, parent_d):
         '''Create the tree of nodes rooted in parent.'''
-        import pprint
-        trace = False and not g.unitTesting
         d = self.gnx_dict
         for child_gnx in parent_d.get('children'):
             d2 = d.get(child_gnx)
@@ -249,7 +247,6 @@ class JSON_Import_Helper(object):
     #@+node:ekr.20160504144314.1: *3* json.scan (generalize)
     def scan(self, s, parent):
         '''Create an outline from a MindMap (.csv) file.'''
-        trace = False and not g.unitTesting
         c, d, self.gnx_dict = self.c, json.loads(s), {}
         for d2 in d.get('nodes', []):
             gnx = d2.get('gnx')
@@ -726,7 +723,6 @@ class LeoImportCommands(object):
         parent:     The parent position of the created outline.
         s:          A string or None. The file's contents.
         '''
-        trace = False and not g.unitTesting
         c = self.c
         p = parent.copy()
         self.treeType = '@file'
@@ -1389,7 +1385,6 @@ class LeoImportCommands(object):
         Run a unit test of an import scanner,
         i.e., create a tree from string s at location p.
         '''
-        trace = False
         c, h = self.c, p.h
         old_root = p.copy()
         self.treeType = '@file'
@@ -1878,7 +1873,7 @@ class MORE_Importer(object):
         return self.check_lines(strings)
 
     def check_lines(self, strings):
-        trace = False and not g.unitTesting
+
         if len(strings) < 1: return False
         level1, plusFlag = self.headlineLevel(strings[0])
         if level1 == -1: return False
@@ -1963,8 +1958,6 @@ class RecursiveImportController(object):
     #@+node:ekr.20130823083943.12597: *4* ric.import_dir
     def import_dir(self, dir_, parent):
         '''Import selected files from dir_, a directory.'''
-        trace = False and not g.unitTesting
-        limit = True # True: only one file per directory.
         if g.os_path_isfile(dir_):
             files = [dir_]
         else:
@@ -2032,7 +2025,6 @@ class RecursiveImportController(object):
         Traverse p's tree, replacing all nodes that start with prefix
         by the smallest equivalent @path or @file node.
         '''
-        trace = False and not g.unitTesting
         self.fix_back_slashes(p)
         prefix = prefix.replace('\\', '/')
         if self.kind not in ('@auto', '@edit'):
@@ -2191,7 +2183,6 @@ class TabImporter:
     #@+node:ekr.20161006071801.5: *3* tabbed.scan
     def scan(self, s1, fn=None, root=None):
         '''Create the outline corresponding to s1.'''
-        trace = False and not g.unitTesting
         c = self.c
         # Self.root can be None if we are called from a script or unit test.
         if not self.root:
@@ -2210,7 +2201,6 @@ class TabImporter:
     #@+node:ekr.20161006071801.6: *3* tabbed.scan_helper
     def scan_helper(self, s):
         '''Update the stack as necessary and return (level, parent, stack).'''
-        trace = False and not g.unitTesting
         root, separate, stack = self.root, self.separate, self.stack
         if stack:
             level, parent = stack[-1]

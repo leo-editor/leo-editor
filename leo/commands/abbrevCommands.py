@@ -161,11 +161,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.9: *6* abbrev.init_tree_abbrev
     def init_tree_abbrev(self):
         '''Init tree_abbrevs_d from @data tree-abbreviations nodes.'''
-        trace = False and not g.unitTesting
-        trace_dict = False
-        trace_return = False
         c = self.c
-        fn = c.shortFileName()
+        #
         # Careful. This happens early in startup.
         root = c.rootPosition()
         if not root:
@@ -178,10 +175,12 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         tree_s = c.config.getOutlineData('tree-abbreviations')
         if not tree_s:
             return
+        #
         # Expand the tree so we can traverse it.
         if not c.canPasteOutline(tree_s):
             return
         c.fileCommands.leo_file_encoding = 'utf-8'
+        #
         # As part of #427, disable all redraws.
         try:
             g.app.disable_redraw = True
@@ -193,7 +192,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20170227062001.1: *7* abbrev.init_tree_abbrev_helper
     def init_tree_abbrev_helper(self, d, tree_s):
 
-        trace = False and not g.unitTesting
         c = self.c
         p = c.fileCommands.getPosFromClipboard(tree_s)
         if not p: return g.trace('no pasted node')
@@ -216,8 +214,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
 
         Words start with '@'.
         '''
-        trace = False and not g.unitTesting
-        verbose = True
         c, p = self.c, self.c.p
         w = self.editWidget(event, forceFocus=False)
         w_name = g.app.gui.widget_name(w)
@@ -282,7 +278,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.12: *4* abbrev.expand_text
     def expand_text(self, w, i, j, val, word, expand_search=False):
         '''Make a text expansion at location i,j of widget w.'''
-        trace = False and not g.unitTesting
         c = self.c
         if word == c.config.getString("abbreviations-next-placeholder"):
             val = ''
@@ -306,7 +301,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         Paste tree_s as children of c.p.
         This happens *before* any substitutions are made.
         '''
-        trace = False and not g.unitTesting
         c, u = self.c, self.c.undoer
         if not c.canPasteOutline(tree_s):
             return g.trace('bad copied outline: %s' % tree_s)
@@ -347,7 +341,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         Search for the next place-holder.
         If found, select the place-holder (without the delims).
         '''
-        trace = False and not g.unitTesting
         c = self.c
         # Do #438: Search for placeholder in headline.
         s = p.h
@@ -394,7 +387,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.15: *4* abbrev.make_script_substitutions
     def make_script_substitutions(self, i, j, val):
         '''Make scripting substitutions in node p.'''
-        trace = False and not g.unitTesting
         c = self.c
         if not c.abbrev_subst_start:
             return val, False
@@ -439,7 +431,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20161121102113.1: *4* abbrev.make_script_substitutions_in_headline
     def make_script_substitutions_in_headline(self, p):
         '''Make scripting substitutions in p.h.'''
-        trace = False and not g.unitTesting
         c = self.c
         pattern = re.compile('^(.*)%s(.+)%s(.*)$' % (
             re.escape(c.abbrev_subst_start),
@@ -464,7 +455,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         return changed
     #@+node:ekr.20161121112837.1: *4* abbrev.match_prefix
     def match_prefix(self, ch, i, j, prefix, s):
-        trace = False and not g.unitTesting
+
         i = j - len(prefix)
         word = g.toUnicode(prefix) + g.toUnicode(ch)
         tag = 'tree'
@@ -492,7 +483,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         return (s2,start,end) where s2 is s without the <| and |>,
         and start, end are the positions of the beginning and end of block.
         """
-        trace = False and not g.unitTesting
         c = self.c
         new_pos = s.find(c.abbrev_place_start, offset)
         new_end = s.find(c.abbrev_place_end, offset)
@@ -513,7 +503,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20161121114504.1: *4* abbrev.post_pass
     def post_pass(self):
         '''The post pass: make script substitutions in all headlines.'''
-        trace = False and not g.unitTesting
         c = self.c
         if self.root:
             bunch = c.undoer.beforeChangeTree(c.p)
@@ -526,7 +515,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.18: *4* abbrev.replace_selection
     def replace_selection(self, w, i, j, s):
         '''Replace w[i:j] by s.'''
-        trace = False and not g.unitTesting
         w_name = g.app.gui.widget_name(w)
         c = self.c
         if i == j:
@@ -630,7 +618,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         Inserts the longest common prefix of the word at the cursor. Displays
         all possible completions if the prefix is the same as the word.
         '''
-        trace = False and not g.unitTesting
         w = self.editWidget(event)
         if not w:
             return
@@ -664,7 +651,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         k.get1Arg(event, handler=self.dynamicExpandHelper1, tabList=aList, prefix=prefix)
 
     def dynamicExpandHelper1(self, event):
-        trace = False and not g.unitTesting
+
         c, k = self.c, self.c.k
         p = c.p
         c.frame.log.deleteTab('Completion')
@@ -678,7 +665,7 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             ins = ins1 = w.getInsertPoint()
             if 0 < ins < len(s) and not g.isWordChar(s[ins]): ins1 -= 1
             i, j = g.getWord(s, ins1)
-            word = s[i: j]
+            # word = s[i: j]
             s = s[: i] + k.arg + s[j:]
             w.setAllText(s)
             w.setInsertPoint(i + len(k.arg))
@@ -703,7 +690,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514043850.25: *4* abbrev.addAbbrevHelper
     def addAbbrevHelper(self, s, tag=''):
         '''Enter the abbreviation 's' into the self.abbrevs dict.'''
-        trace = False and not g.unitTesting
         if not s.strip():
             return
         try:

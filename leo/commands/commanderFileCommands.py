@@ -234,7 +234,6 @@ def open(self, event=None):
 @g.commander_command('refresh-from-disk')
 def refreshFromDisk(self, event=None):
     '''Refresh an @<file> node from disk.'''
-    trace = False and not g.unitTesting
     c, p, u = self, self.p, self.undoer
     c.nodeConflictList = []
     fn = p.anyAtFileNodeName()

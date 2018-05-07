@@ -990,7 +990,6 @@ class VimCommands(object):
     def vim_d3(vc):
         '''Complete the d command after the cursor has moved.'''
         # d2w doesn't extend to line.  d2j does.
-        trace = False and not g.unitTesting
         w = vc.w
         if vc.is_text_wrapper(w):
             extend_to_line = vc.d_stroke in ('jk')
@@ -1046,8 +1045,6 @@ class VimCommands(object):
     #@+node:ekr.20131111105746.16544: *5* vc.vim_dot
     def vim_dot(vc):
         '''Repeat the last command.'''
-        trace = False and not g.unitTesting
-        verbose = True
         if vc.in_dot:
             return
         try:
@@ -1244,7 +1241,6 @@ class VimCommands(object):
     #@+node:ekr.20131111061547.16468: *5* vc.vim_h
     def vim_h(vc):
         '''Move the cursor left n chars, but not out of the present line.'''
-        trace = False and not g.unitTesting
         if vc.is_text_wrapper(vc.w):
             w = vc.w
             s = w.getAllText()
@@ -1313,7 +1309,6 @@ class VimCommands(object):
     #@+node:ekr.20140222064735.16627: *5* vc.vim_l
     def vim_l(vc):
         '''Move the cursor right vc.n chars, but not out of the present line.'''
-        trace = False and not g.unitTesting
         if vc.is_text_wrapper(vc.w):
             w = vc.w
             s = w.getAllText()
@@ -1638,7 +1633,6 @@ class VimCommands(object):
     #@+node:ekr.20140811110221.18250: *5* vc.vim_V
     def vim_V(vc):
         '''Visually select line.'''
-        trace = False and not g.unitTesting
         if vc.is_text_wrapper(vc.w):
             if vc.state == 'visual':
                 vc.visual_line_flag = not vc.visual_line_flag
@@ -1745,7 +1739,6 @@ class VimCommands(object):
         '''Complete the y command after the cursor has moved.'''
         # The motion is responsible for all repeat counts.
         # y2w doesn't extend to line.  y2j does.
-        trace = False and not g.unitTesting
         if vc.is_text_wrapper(vc.w):
             extend_to_line = vc.y_stroke in ('jk')
             # n = vc.n1 * vc.n
@@ -2048,9 +2041,8 @@ class VimCommands(object):
         #@+node:ekr.20140820063930.18321: *5* Substitution.__call__ (:%s & :s)
         def __call__(self, event=None):
             '''Handle the :s and :%s commands. Neither command affects the dot.'''
-            trace = False and not g.unitTesting
             vc = self.vc
-            c, k, w = vc.c, vc.k, vc.w
+            c, w = vc.c, vc.w
             w = vc.w if c.vim_mode else c.frame.body
             if vc.is_text_wrapper(w):
                 fc = vc.c.findCommands
@@ -2462,7 +2454,6 @@ class VimCommands(object):
     #@+node:ekr.20140802120757.18001: *4* vc.save_body (handles undo)
     def save_body(vc):
         '''Undoably preserve any changes to body text.'''
-        trace = False and not g.unitTesting
         c = vc.c
         w = vc.command_w or vc.w
         name = c.widget_name(w)
@@ -2499,7 +2490,6 @@ class VimCommands(object):
     #@+node:ekr.20140807070500.18161: *5* vc.set_property
     def set_property(vc, w, focus_flag):
         '''Set the property of w, depending on focus and state.'''
-        trace = False and not g.unitTesting
         selector = 'vim_%s' % (vc.state) if focus_flag else 'vim_unfocused'
         w.setProperty('vim_state', selector)
         w.style().unpolish(w)
@@ -2518,7 +2508,6 @@ class VimCommands(object):
     #@+node:ekr.20140222064735.16615: *4* vc.show_status
     def show_status(vc):
         '''Show vc.state and vc.command_list'''
-        trace = False and not g.unitTesting
         k = vc.k
         vc.set_border()
         if k.state.kind:

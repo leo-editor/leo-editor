@@ -130,7 +130,6 @@ class Flake8Command(object):
     #@+node:ekr.20160517133049.4: *3* flake8.get_flake8_config
     def get_flake8_config(self):
         '''Return the path to the pylint configuration file.'''
-        trace = False and not g.unitTesting
         join = g.os_path_finalize_join
         dir_table = (
             g.app.homeDir,
@@ -345,7 +344,6 @@ class PylintCommand(object):
     #@+node:ekr.20150514125218.10: *3* pylint.get_rc_file
     def get_rc_file(self):
         '''Return the path to the pylint configuration file.'''
-        trace = False and not g.unitTesting
         base = 'pylint-leo-rc.txt'
         table = (
             g.os_path_finalize_join(g.app.homeDir, '.leo', base),

@@ -281,7 +281,6 @@ class LeoPluginsController(object):
     #@+node:ekr.20161029060545.1: *4* plugins.on_idle
     def on_idle(self):
         '''Call all idle-time hooks.'''
-        trace = False and not g.unitTesting
         if g.app.idle_time_hooks_enabled:
             for frame in g.app.windowList:
                 c = frame.c
@@ -294,10 +293,9 @@ class LeoPluginsController(object):
         Execute all handlers for a given tag, in alphabetical order.
         The caller, doHook, catches all exceptions.
         """
-        trace = False and not g.unitTesting
-        traceIdle = True
         if g.app.killed:
             return None
+        #
         # Execute hooks in some random order.
         # Return if one of them returns a non-None result.
         for bunch in self.handlers.get(tag, []):
@@ -312,8 +310,6 @@ class LeoPluginsController(object):
     #@+node:ekr.20100908125007.6016: *5* plugins.callTagHandler
     def callTagHandler(self, bunch, tag, keywords):
         '''Call the event handler.'''
-        trace = False and not g.unitTesting
-        traceIdle = True
         handler, moduleName = bunch.fn, bunch.moduleName
         # Make sure the new commander exists.
         for key in ('c', 'new_c'):
@@ -336,8 +332,6 @@ class LeoPluginsController(object):
     #@+node:ekr.20100908125007.6018: *4* plugins.doPlugins (g.app.hookFunction)
     def doPlugins(self, tag, keywords):
         '''The default g.app.hookFunction.'''
-        trace = False and not g.unitTesting
-        trace_idle = True
         if g.app.killed:
             return
         if tag in ('start1', 'open0'):

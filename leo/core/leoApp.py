@@ -2357,7 +2357,6 @@ class LoadManager(object):
     #@+node:ekr.20120219154958.10477: *4* LM.doPrePluginsInit & helpers
     def doPrePluginsInit(self, fileName, pymacs):
         ''' Scan options, set directories and read settings.'''
-        # trace = False
         lm = self
         lm.computeStandardDirectories()
         lm.adjustSysPath()
@@ -2455,8 +2454,7 @@ class LoadManager(object):
     #@+node:ekr.20140728040812.17990: *6* LM.createWritersData & helper
     def createWritersData(self):
         '''Create the data structures describing writer plugins.'''
-        trace = False # and not g.unitTesting
-        trace = trace and 'createWritersData' not in g.app.debug_dict
+        trace = False and 'createWritersData' not in g.app.debug_dict
         if trace:
             # Suppress multiple traces.
             g.app.debug_dict['createWritersData'] = True

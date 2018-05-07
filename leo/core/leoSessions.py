@@ -62,7 +62,6 @@ class SessionManager(object):
     #@+node:ekr.20120420054855.14247: *3* load_session
     def load_session(self, c=None, unls=None):
         '''Open a tab for each item in UNLs & select the indicated node in each.'''
-        trace = False and not g.unitTesting
         if unls is None:
             unls = []
         for unl in unls:

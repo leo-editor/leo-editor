@@ -193,7 +193,6 @@ def contractNode(self, event=None):
 @g.commander_command('contract-or-go-left')
 def contractNodeOrGoToParent(self, event=None):
     """Simulate the left Arrow Key in folder of Windows Explorer."""
-    trace = False and not g.unitTesting
     c, cc, p = self, self.chapterController, self.p
     parent = p.parent()
     redraw = False
@@ -315,7 +314,6 @@ def expandNextLevel(self, event=None):
 @g.commander_command('expand-node')
 def expandNode(self, event=None):
     '''Expand the presently selected node.'''
-    trace = False and not g.unitTesting
     c = self; p = c.p
     p.expand()
     if p.isCloned():
@@ -350,7 +348,6 @@ def expandNodeOrGoToFirstChild(self, event=None):
 @g.commander_command('expand-ancestors-only')
 def expandOnlyAncestorsOfNode(self, event=None, p=None):
     '''Contract all nodes in the outline.'''
-    trace = False and not g.unitTesting
     c = self
     level = 1
     if p: c.selectPosition(p) # 2013/12/25

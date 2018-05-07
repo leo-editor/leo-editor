@@ -685,7 +685,6 @@ def find_bound_paragraph(c):
     Return the lines of a paragraph to be reformatted.
     This is a convenience method for the reformat-paragraph command.
     '''
-    trace = False and not g.unitTesting
     head, ins, tail = c.frame.body.getInsertLines()
     head_lines = g.splitLines(head)
     tail_lines = g.splitLines(tail)
@@ -837,7 +836,6 @@ def rp_wrap_all_lines(c, indents, leading_ws, lines, pageWidth):
 #@+node:ekr.20171123135625.44: *3* def startsParagraph
 def startsParagraph(s):
     '''Return True if line s starts a paragraph.'''
-    trace = False and not g.unitTesting
     if not s.strip():
         val = False
     elif s.strip() in ('"""', "'''"):

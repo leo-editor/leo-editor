@@ -295,7 +295,6 @@ class RstCommands(object):
     #@+node:ekr.20150320033317.10: *4* rst.updateD0FromSettings
     def updateD0FromSettings(self):
         '''Update entries in self.d0 from user seettings.'''
-        trace = False and not g.unitTesting
         c, d = self.c, self.d0
         table = (
             ('@bool', c.config.getBool),
@@ -351,7 +350,7 @@ class RstCommands(object):
                 writeIntermediateFile=writeIntermediateFile)
     #@+node:ekr.20100812082517.5963: *5* rst.write_code_body & helpers
     def write_code_body(self, p):
-        trace = False
+
         self.p = p.copy() # for traces.
         if not p.b.strip():
             return # No need to write any more newlines.
@@ -544,7 +543,6 @@ class RstCommands(object):
         Process all @rst nodes in a tree.
         ext is the docutils extention: it's useful for scripts and unit tests.
         '''
-        trace = False and not g.unitTesting
         self.stringOutput = ''
         p = p.copy()
         after = p.nodeAfterTree()
@@ -786,7 +784,6 @@ class RstCommands(object):
     #@+node:ekr.20090502071837.71: *6* rst.writeBody & helpers
     def writeBody(self, p):
         '''Write p.b as rST.'''
-        trace = False and not g.unitTesting
         if self.getOption(p, 'ignore_noweb_definitions'):
             # Ignore section definition nodes.
             name = self.isSectionDef(p)
@@ -847,7 +844,6 @@ class RstCommands(object):
     #@+node:ekr.20110610144305.6750: *7* rst.expandSectionRefs
     def expandSectionRefs(self, lines, p, seen):
         '''Expand section references in lines.'''
-        trace = False and not g.unitTesting
         result = []
         for s in lines:
             name = self.isSectionRef(s)
@@ -887,7 +883,6 @@ class RstCommands(object):
         - @ @rst-markup lines get copied as is.
         - Everything else gets put into a code-block directive.
         '''
-        trace = False and not g.unitTesting
         result = []; n = 0; code = []
         while n < len(lines):
             s = lines[n]; n += 1
@@ -1178,8 +1173,6 @@ class RstCommands(object):
         '''Return the value of the named option at node p.'''
         d = self.scriptSettingsDict
         name = self.munge(name)
-        trace = False and not g.unitTesting # and name == 'default_path' 
-        verbose = False
         assert p, g.callers()
             # We may as well fail here.
 
@@ -1213,7 +1206,6 @@ class RstCommands(object):
     #@+node:ekr.20090502071837.45: *4* rst.initCodeBlockString
     def initCodeBlockString(self, p):
         '''Init the string used to write code-block directives.'''
-        trace = False and not g.unitTesting
         c = self.c
         d = c.scanAllDirectives(p)
         language = d.get('language', 'python').lower()
@@ -1260,7 +1252,6 @@ class RstCommands(object):
         Such entries may arise from @rst-option or @rst-options in the headline,
         or from @ @rst-options doc parts.
         '''
-        trace = (False or self.debug) and not g.unitTesting
         # A fine point: body options over-ride headline options.
         d = self.scanHeadlineForOptions(p)
         d2 = self.scanForOptionDocParts(p, p.b)
@@ -1269,7 +1260,6 @@ class RstCommands(object):
     #@+node:ekr.20090502071837.50: *7* rst.scanHeadlineForOptions
     def scanHeadlineForOptions(self, p):
         '''Return a dictionary containing the options implied by p's headline.'''
-        trace = False and not g.unitTesting
         h = p.h.strip()
         if p == self.topNode:
             return {} # Don't mess with the root node.
@@ -1355,7 +1345,6 @@ class RstCommands(object):
         Return { name:val } if s is a line of the form name=val.
         Otherwise return {}
         '''
-        trace = False and not g.unitTesting
         if not s.strip() or s.strip().startswith('..'):
             return {}
         data = self.parseOptionLine(s)
@@ -1589,7 +1578,6 @@ class RstCommands(object):
     #@+node:ekr.20090502071837.65: *5* rst.writeToDocutils (sets argv) & helper
     def writeToDocutils(self, p, s, ext):
         '''Send s to docutils using the writer implied by ext and return the result.'''
-        trace = False and not g.unitTesting
         if not docutils:
             g.error('writeToDocutils: docutils not present')
             return None
@@ -1737,7 +1725,6 @@ class RstCommands(object):
     #@+node:ekr.20090502071837.89: *4* rst.computeOutputFileName
     def computeOutputFileName(self, fn):
         '''Return the full path to the output file.'''
-        trace = (False or self.debug) and not g.unitTesting
         c = self.c
         openDirectory = c.frame.openDirectory
         default_path = self.getOption(self.root or c.p, 'default_path')
@@ -1778,7 +1765,6 @@ class RstCommands(object):
         Return the underlining string to be used at the given level for string s.
         This includes the headline, and possibly a leading overlining line.
         '''
-        trace = False and not g.unitTesting
         if self.atAutoWrite:
             # We *might* generate overlines for top-level sections.
             u = self.atAutoWriteUnderlines
