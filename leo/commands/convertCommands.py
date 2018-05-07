@@ -287,7 +287,7 @@ class To_Python(object):
             i = j
     #@+node:ekr.20150514063305.148: *6* munge_block_comment
     def munge_block_comment(self, comment_lines):
-        trace = False
+
         n = len(comment_lines)
         assert n > 0
         s = comment_lines[0]
@@ -678,7 +678,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             to
                 def y (z1,..zn): {
             '''
-            trace = False
             assert(self.match(aList, i, "{"))
             prevSemi = self.skip_ws_and_nl(aList, prevSemi)
             close = self.prevNonWsOrNlChar(aList, i)
@@ -707,15 +706,9 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             args = aList[open_paren: close + 1]
             k = 1 + self.skip_to_matching_bracket(aList, i)
             body = aList[close + 1: k]
-            if True and trace:
-                g.trace('\nhead: %s\nargs: %s\nbody: %s' % (
-                    ''.join(head), ''.join(args), ''.join(body)))
             head = self.massageFunctionHead(head)
             args = self.massageFunctionArgs(args)
             body = self.massageFunctionBody(body)
-            if False and trace:
-                g.trace('\nhead2: %s\nargs2: %s\nbody2: %s' % (
-                    ''.join(head), ''.join(args), ''.join(body)))
             result = []
             if head: result.extend(head)
             if args: result.extend(args)
@@ -996,7 +989,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             #@+node:ekr.20160213070235.4: *6* msf.scan_d
             def scan_d(self, kind):
                 '''Return a dict created from an @data node of the given kind.'''
-                trace = False and not g.unitTesting
                 c = self.c
                 aList = c.config.getData(kind, strip_comments=True, strip_data=True)
                 d = {}
@@ -1010,7 +1002,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             #@+node:ekr.20160213070235.5: *6* msf.scan_patterns
             def scan_patterns(self, kind):
                 '''Parse the config section into a list of patterns, preserving order.'''
-                trace = False or self.trace_patterns
                 d = self.scan_d(kind)
                 aList = []
                 seen = set()
@@ -1457,7 +1448,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 to
                     def y (z1,..zn): { # (public|private|export)
                 '''
-                trace = False
                 assert(self.match(aList, i, "{"))
                 prevSemi = self.skip_ws_and_nl(aList, prevSemi)
                 close = self.prevNonWsOrNlChar(aList, i)
@@ -1489,9 +1479,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 head = self.massageFunctionHead(head)
                 args = self.massageFunctionArgs(args)
                 body = self.massageFunctionBody(body)
-                if False and trace:
-                    g.trace('\nhead2: %s\nargs2: %s\nbody2: %s' % (
-                        ''.join(head), ''.join(args), ''.join(body)))
                 result = []
                 if head: result.extend(head)
                 if args: result.extend(args)

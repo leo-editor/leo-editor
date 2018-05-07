@@ -161,7 +161,6 @@ class FreeLayoutController(object):
         Yes, the user could delete the secondary splitter but if so, there is
         not much we can do here.
         '''
-        trace = False and not g.unitTesting
         top = self.get_top_splitter()
         if top:
             w = top.find_child(QtWidgets.QWidget, "bodyFrame")
@@ -179,7 +178,6 @@ class FreeLayoutController(object):
         Yes, the user could delete the outline pane, but if so, there is not
         much we can do here.
         '''
-        trace = False and not g.unitTesting
         top = self.get_top_splitter()
         if top:
             w = top.find_child(QtWidgets.QWidget, 'outlineFrame')

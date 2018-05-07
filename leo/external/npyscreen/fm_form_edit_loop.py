@@ -73,7 +73,6 @@ class FormDefaultEditLoop(object):
         Edit the fields until the user selects the ok button added in the lower
         right corner. Button will be removed when editing finishes
         """
-        trace = False and not g.unitTesting
         # Add ok button. Will remove later
         tmp_rely, tmp_relx = self.nextrely, self.nextrelx
         my, mx = self.curses_pad.getmaxyx()

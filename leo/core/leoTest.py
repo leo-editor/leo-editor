@@ -172,8 +172,6 @@ class GeneralTestCase(unittest.TestCase):
     #@+node:ekr.20051104075904.10: *3* runTest (generalTestCase)
     def runTest(self, define_g=True):
         '''Run a Leo GeneralTestCase test.'''
-        trace = False
-        trace_script = False
         trace_time = False
         tm = self
         c = tm.c
@@ -253,7 +251,7 @@ class ImportExportTestCase(unittest.TestCase):
         self.importExport()
     #@+node:ekr.20051104075904.84: *3* setUp (ImportExportTestCase)
     def setUp(self):
-        trace = False
+
         c = self.c; temp_p = self.temp_p
         d = self.dialog
         assert(d)
@@ -482,10 +480,7 @@ class RunTestExternallyHelperClass(object):
         Create dynamicUnitTest.leo, then run all tests from dynamicUnitTest.leo
         in a separate process.
         '''
-        trace = False
-        import time
         c = self.c; p = c.p
-        t1 = time.time()
         old_silent_mode = g.app.silentMode
         g.app.silentMode = True
         c2 = c.new(gui=g.app.nullGui)
@@ -493,7 +488,6 @@ class RunTestExternallyHelperClass(object):
         found = self.createOutline(c2)
         if found:
             self.createFileFromOutline(c2)
-            t2 = time.time()
             # 2010/09/09: allow a way to specify the gui.
             gui = g.app.unitTestGui or 'nullGui'
             self.runUnitTestLeoFile(gui=gui, path='dynamicUnitTest.leo')
@@ -567,10 +561,6 @@ class RunTestExternallyHelperClass(object):
     ):
         '''Run all unit tests in path (a .leo file) in a pristine environment.'''
         # New in Leo 4.5: leoDynamicTest.py is in the leo/core folder.
-        trace = False
-        verbose = False
-            # The verbose trace is pretty much a duplicate of the trace in
-            # leoDynamicTest.py:main()
         path = g.os_path_finalize_join(g.app.loadDir, '..', 'test', path)
         leo = g.os_path_finalize_join(g.app.loadDir, '..', 'core', 'leoDynamicTest.py')
         if sys.platform.startswith('win'):
@@ -588,9 +578,6 @@ class RunTestExternallyHelperClass(object):
         leoDir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
         env = dict(os.environ)
         env['PYTHONPATH'] = env.get('PYTHONPATH', '') + os.pathsep + leoDir
-        if False and trace:
-            for z in sorted(os.environ.keys()):
-                print(z, os.environ.get(z))
         os.spawnve(os.P_NOWAIT, sys.executable, args, env)
     #@-others
 #@+node:ekr.20120220070422.10417: ** class TestManager
@@ -612,7 +599,6 @@ class TestManager(object):
         Important: this is also called from dynamicUnitTest.leo
         to run external tests "locally" from dynamicUnitTest.leo
         '''
-        trace = False
         c, tm = self.c, self
         # Clear the screen before running multiple unit tests locally.
         # if all or marked: g.cls()
@@ -1401,8 +1387,7 @@ class TestManager(object):
         return paths
     #@+node:ekr.20111104132424.9907: *4* TM.findAllUnitTestNodes
     def findAllUnitTestNodes(self, all, marked):
-        trace = False
-        verbose = False
+
         c, tm = self.c, self
         # Bug fix 2016/01/23: Scan entire file if marked.
         p = c.rootPosition() if all or marked else c.p
@@ -1491,7 +1476,6 @@ class TestManager(object):
     #@+node:ekr.20120221204110.10345: *4* TM.findMarkForUnitTestNodes
     def findMarkForUnitTestNodes(self):
         '''return the position of *all* non-ignored @mark-for-unit-test nodes.'''
-        trace = False and not g.unitTesting
         c = self.c
         p, result, seen = c.rootPosition(), [], []
         while p:

@@ -1307,7 +1307,6 @@ def moveOutlineRight(self, event=None):
 @g.commander_command('move-outline-up')
 def moveOutlineUp(self, event=None):
     '''Move the selected node up if possible.'''
-    trace = False and not g.unitTesting
     c = self; u = c.undoer; p = c.p
     if not p: return
     if not c.canMoveOutlineUp(): # Support for hoist.
@@ -1325,11 +1324,6 @@ def moveOutlineUp(self, event=None):
     moved = False
     #@+<< Move p up >>
     #@+node:ekr.20031218072017.1773: *4* << Move p up >>
-    if trace:
-        g.trace("visBack", back)
-        g.trace("visBack2", back2)
-        g.trace("back2.hasChildren", back2 and back2.hasChildren())
-        g.trace("back2.isExpanded", back2 and back2.isExpanded())
     parent = p.parent()
     if not back2:
         if c.hoistStack: # hoist or chapter.

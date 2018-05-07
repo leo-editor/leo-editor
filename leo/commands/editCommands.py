@@ -323,7 +323,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         Cycle the keyboard focus between Leo's outline,
         all body editors and all tabs in the log pane.
         '''
-        trace = False and not g.unitTesting
         c, k = self.c, self.c.k
         w = event and event.widget # Does **not** require a text widget.
         pane = None # The widget that will get the new focus.
@@ -835,7 +834,6 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.233: *5* ec.getIconList
     def getIconList(self, p):
         """Return list of icons for position p, call setIconList to apply changes"""
-        trace = False and not g.unitTesting
         fromVnode = []
         if hasattr(p.v, 'unknownAttributes'):
             fromVnode = [dict(i) for i in p.v.u.get('icons', [])]
@@ -844,7 +842,6 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.234: *5* ec.setIconList & helpers
     def setIconList(self, p, l, setDirty=True):
         """Set list of icons for position p to l"""
-        trace = False and not g.unitTesting
         current = self.getIconList(p)
         if not l and not current: return # nothing to do
         lHash = ''.join([self.dHash(i) for i in l])
@@ -863,7 +860,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         subl - list of icons for the v or t node
         uaLoc - the v or t node
         """
-        trace = False and not g.unitTesting
         if subl: # Update the uA.
             if not hasattr(uaLoc, 'unknownAttributes'):
                 uaLoc.unknownAttributes = {}
@@ -1503,8 +1499,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         This is the default binding for all keys in the body pane.
         It handles undo, bodykey events, tabs, back-spaces and bracket matching.
         '''
-        trace = False and not g.unitTesting
-        verbose = True
         c, p = self.c, self.c.p
         w = self.editWidget(event)
         if not w:
@@ -1634,14 +1628,13 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.273: *5* ec.initBracketMatcher
     def initBracketMatcher(self, c):
         '''Init the bracket matching code.'''
-        trace = False and not g.unitTesting
         if len(self.openBracketsList) != len(self.closeBracketsList):
             g.es_print('bad open/close_flash_brackets setting: using defaults')
             self.openBracketsList = '([{'
             self.closeBracketsList = ')]}'
     #@+node:ekr.20150514063305.274: *5* ec.insertNewlineHelper
     def insertNewlineHelper(self, w, oldSel, undoType):
-        trace = False and not g.unitTesting
+
         c, p = self.c, self.c.p
         i, j = oldSel
         ch = '\n'
@@ -1663,7 +1656,6 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.275: *5* ec.updateAutoIndent
     def updateAutoIndent(self, p, w):
         '''Handle auto indentation.'''
-        trace = False and not g.unitTesting
         c = self.c
         tab_width = c.getTabWidth(p)
         # Get the previous line.
@@ -1728,7 +1720,6 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.277: *5* ec.updateTab
     def updateTab(self, p, w, smartTab=True):
         '''Add spaces equivalent to a tab.'''
-        trace = False and not g.unitTesting
         c = self.c
         i, j = w.getSelectionRange()
             # Returns insert point if no selection, with i <= j.
@@ -1847,8 +1838,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         extend: Clear the selection unless this is True.
         spot:   The *new* insert point.
         '''
-        trace = False and not g.unitTesting
-        verbose = True
         c, p = self.c, self.c.p
         extend = extend or self.extendMode
         ins = w.getInsertPoint()
@@ -2155,7 +2144,7 @@ class EditCommandsClass(BaseEditCommandsClass):
         self.moveUpOrDownHelper(event, 'up', extend=True)
     #@+node:ekr.20150514063305.293: *5* ec.moveUpOrDownHelper
     def moveUpOrDownHelper(self, event, direction, extend):
-        trace = False and not g.unitTesting
+
         w = self.editWidget(event)
         if not w:
             return
@@ -2483,7 +2472,6 @@ class EditCommandsClass(BaseEditCommandsClass):
     #@+node:ekr.20150514063305.307: *5* ec.movePageHelper
     def movePageHelper(self, event, kind, extend): # kind in back/forward.
         '''Move the cursor up/down one page, possibly extending the selection.'''
-        trace = False and not g.unitTesting
         w = self.editWidget(event)
         if not w:
             return
@@ -3282,7 +3270,6 @@ class EditCommandsClass(BaseEditCommandsClass):
     @cmd('sort-lines')
     def sortLines(self, event, ignoreCase=False, reverse=False):
         '''Sort the selected lines.'''
-        trace = False and not g.unitTesting
         w = self.editWidget(event)
         if not self._chckSel(event):
             return
@@ -3424,7 +3411,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         Punctuation between words does not move. For example, ‘FOO, BAR’
         transposes into ‘BAR, FOO’.
         '''
-        trace = False and not g.unitTesting
         w = self.editWidget(event)
         if not w: return
         self.beginCommand(w, undoType='transpose-words')

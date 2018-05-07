@@ -81,9 +81,6 @@ class InputHandler(object):
 
         Return True if input has been completely handled.
         """
-        trace = False
-        trace_entry = True
-        trace_parent = False
         
         def tell(f):
             pattern = r'<bound method ([\w\.]*\.)?(\w+) of <([\w\.]*\.)?(\w+) object at (.+)>>'
@@ -315,7 +312,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         self.initialize_event_handling()
     #@+node:ekr.20170429213619.3: *3* Widget._edit_loop
     def _edit_loop(self):
-        trace = False and not g.unitTesting
+
         if not self.parent.editing:
             _i_set_parent_editing = True
             self.parent.editing   = True
@@ -478,7 +475,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
     #@+node:ekr.20170428084208.424: *3* Widget.display
     def display(self):
         """Do an update of the object AND refresh the screen"""
-        trace = False and not g.unitTesting
+
         if self.hidden:
             self.clear()
             self.parent.refresh()
@@ -503,7 +500,6 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
     #@+node:ekr.20170429213619.8: *3* Widget.get_and_use_key_press
     def get_and_use_key_press(self):
         global TEST_SETTINGS
-        trace = False
 
         if (TEST_SETTINGS['TEST_INPUT'] is None) and (TEST_SETTINGS['INPUT_GENERATOR'] is None):
             curses.raw()
@@ -808,7 +804,6 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         actually refresh the curses display, since this should be done as
         little as possible. This base widget puts nothing on screen.
         """
-        trace = False and not g.unitTesting
         if self.hidden:
             self.clear()
             return True

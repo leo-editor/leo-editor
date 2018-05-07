@@ -123,8 +123,6 @@ class MultiLine(widget.Widget):
     #@+node:ekr.20170428084208.77: *3* MultiLine.make_contained_widgets
     def make_contained_widgets(self):
         # The *only* make_contained_widgets (plural) in npyscreen.
-        trace = False
-        trace_widgets = True
         self._my_widgets = []
         height = self.height // self.__class__._contained_widget_height
         for h in range(height):
@@ -163,7 +161,7 @@ class MultiLine(widget.Widget):
         self._last_value  = False
     #@+node:ekr.20170428084208.82: *3* MultiLine.update (LeoMLTree overrides this)
     def update(self, clear=True):
-        trace = False # LeoMLTree.update overrides this.
+
         if self.hidden and clear:
             self.clear()
             return False
@@ -289,7 +287,6 @@ class MultiLine(widget.Widget):
     #@+node:ekr.20170428084208.84: *3* MultiLine._print_line
     def _print_line(self, line, value_indexer):
 
-        trace = False # LeoMLTree.update overrides this.
         if self.widgets_inherit_color and self.do_colors():
             line.color = self.color
         self._set_line_values(line, value_indexer)
@@ -592,7 +589,7 @@ class MultiLine(widget.Widget):
             self.how_exited=True
     #@+node:ekr.20170428084208.116: *4* MultiLine.edit
     def edit(self):
-        trace = False and not g.unitTesting
+
         self.editing = True
         self.how_exited = None
         #if self.value: self.cursor_line = self.value

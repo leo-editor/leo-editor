@@ -63,7 +63,7 @@ class BaseEditCommandsClass(object):
         '''Return the edit widget for the event. Also sets self.w'''
         c = self.c
         w = event and event.widget
-        wname = c.widget_name(w) if w else '<no widget>'
+        # wname = c.widget_name(w) if w else '<no widget>'
         if w and g.isTextWrapper(w):
             pass
         else:

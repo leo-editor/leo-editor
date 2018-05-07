@@ -188,12 +188,7 @@ class LProtoClient(object):
             self.recvbuf = None
     #@+node:ekr.20111012070545.7212: *3* connect
     def connect (self,fname):
-
         '''Connect to the server.  Return True if the connection was established.'''
-
-        trace = False and not g.unitTesting
-
-
         if hasattr(socket,'AF_UNIX'):
             try:
                 # pylint: disable=no-member

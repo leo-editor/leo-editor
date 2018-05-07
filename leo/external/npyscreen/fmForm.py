@@ -170,8 +170,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
 
     #@+node:ekr.20170428084207.186: *3* _FormBase.handle_exiting_widgets
     def handle_exiting_widgets(self, condition):
-        trace = False and not g.unitTesting
-        trace_handlers = False
+
         func = self.how_exited_handers[condition]
         func()
     #@+node:ekr.20170428084207.187: *3* do_nothing
@@ -181,7 +180,6 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
     #@+node:ekr.20170428084207.188: *3* _FormBase.exit_editing
     def exit_editing(self, *args, **keywords):
         
-        trace = False and not g.unitTesting
         self.editing = False
         try:
             self._widgets__[self.editw].entry_widget.editing = False
@@ -248,7 +246,7 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
 
     #@+node:ekr.20170428084207.193: *3* _FormBase.DISPLAY
     def DISPLAY(self):
-        trace = False and not g.unitTesting
+
         self.curses_pad.redrawwin()
         self.erase()
         self.display()
@@ -308,8 +306,6 @@ class _FormBase(proto_fm_screen_area.ScreenArea,
     #@+node:ekr.20170428084207.200: *3* _FormBase.find_next_editable
     def find_next_editable(self, *args):
         # This is the ONLY usable version of this method.
-        trace = False and not g.unitTesting
-        old_n = self.editw
         if not self.cycle_widgets:
             r = list(range(self.editw+1, len(self._widgets__)))
         else:

@@ -131,7 +131,6 @@ class DefaultDict(object):
     #@+node:ekr.20180207101513.1: *3* dict.add_words_from_dict
     def add_words_from_dict(self, kind, fn, words):
         '''For use by DefaultWrapper.'''
-        trace = False and not g.unitTesting
         for word in words or []:
             self.words.add(word)
             self.words.add(word.lower())
@@ -351,7 +350,6 @@ class EnchantWrapper(BaseSpellWrapper):
     #@+node:ekr.20180207102856.1: *3* enchant.open_dict_file
     def open_dict_file(self, fn):
         '''Open or create the dict with the given fn.'''
-        trace = False and not g.unitTesting
         language = self.language
         if not fn or not language:
             return None
@@ -763,9 +761,6 @@ class SpellTabHandler(object):
     #@+node:ekr.20150514063305.505: *4* find & helper
     def find(self, event=None):
         """Find the next unknown word."""
-        trace = False and not g.unitTesting
-        trace_lookup = False
-        trace_end_body = False
         if not self.loaded:
             return
         c, n, p = self.c, 0, self.c.p

@@ -57,7 +57,6 @@ def get_home():
 #@+node:ekr.20160517222236.1: *3* get_flake8_config
 def get_flake8_config():
     '''Return the path to the flake8 configuration file.'''
-    trace = False and not g.unitTesting
     join = g.os_path_finalize_join
     homeDir = get_home()
     loadDir = g.os_path_finalize_join(g.__file__, '..', '..')

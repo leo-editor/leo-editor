@@ -20,8 +20,6 @@ class GoToCommands(object):
         Place the cursor on the n'th line (one-based) of an external file.
         Return (p, offset, found) for unit testing.
         '''
-        trace = False and not g.unitTesting
-            # It's usually better to look at the file in scite.
         c = self.c
         if n < 0:
             return
@@ -56,7 +54,6 @@ class GoToCommands(object):
         if 1: # Not ready yet, and probably will never be ready.
             return None
         else: # Prototype code.
-            trace = False and not g.unitTesting
             root, fileName = self.find_root(p)
             has_sentinels = p.isAtFileNode()
             if root:
@@ -100,7 +97,6 @@ class GoToCommands(object):
         Go to line n (zero based) of the script with the given root.
         Return p, offset, found for unit testing.
         '''
-        trace = False and not g.unitTesting
         c = self.c
         if n < 0:
             return None, -1, False
@@ -129,8 +125,6 @@ class GoToCommands(object):
         h:      the headline of the #@+node
         offset: the offset of line n within the node.
         '''
-        trace = False and not g.unitTesting
-        trace_lines = True
         delim1, delim2 = self.get_delims(root)
         count, gnx, h, offset = 0, root.gnx, root.h, 0
         stack = [(gnx, h, offset),]
@@ -178,8 +172,6 @@ class GoToCommands(object):
         h:      the headline of the #@+node
         offset: the offset of line n within the node.
         '''
-        trace = False and not g.unitTesting
-        trace_lines = False
         delim1, delim2 = self.get_delims(root)
         gnx, h, offset = root.gnx, root.h, 0
         stack = [(gnx, h, offset),]
@@ -229,7 +221,6 @@ class GoToCommands(object):
         Scan root's tree for a node with the given gnx and vnodeName.
         return (p,found)
         '''
-        trace = False and not g.unitTesting
         if gnx:
             assert g.isString(gnx)
             gnx = g.toUnicode(gnx)
@@ -352,7 +343,6 @@ class GoToCommands(object):
     #@+node:ekr.20100216141722.5638: *4* goto.success
     def success(self, lines, n, n2, p):
         '''Place the cursor on line n2 of p.b.'''
-        trace = False and not g.unitTesting
         c = self.c
         w = c.frame.body.wrapper
         # Select p and make it visible.

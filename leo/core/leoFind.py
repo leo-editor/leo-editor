@@ -375,7 +375,6 @@ class LeoFind(object):
     #@+node:ekr.20150629084611.1: *6* initFindDef
     def initFindDef(self, event):
         '''Init the find-def command. Return the word to find or None.'''
-        trace = False and not g.unitTesting
         c = self.c
         w = c.frame.body.wrapper
         # First get the word.
@@ -536,7 +535,6 @@ class LeoFind(object):
     #@+node:ekr.20131119060731.22452: *4* find.startSearch
     @cmd('start-search')
     def startSearch(self, event):
-        trace = False and not g.unitTesting
         w = self.editWidget(event)
         if w:
             self.preloadFindPattern(w)
@@ -698,7 +696,6 @@ class LeoFind(object):
     #@+node:ekr.20131117164142.16950: *4* find.iSearchStateHandler
     def iSearchStateHandler(self, event):
         '''The state manager when the state is 'isearch'''
-        trace = False and not g.unitTesting
         # c = self.c
         k = self.k
         stroke = event.stroke if event else None
@@ -725,7 +722,7 @@ class LeoFind(object):
             self.iSearch()
     #@+node:ekr.20131117164142.16951: *4* find.iSearchBackspace
     def iSearchBackspace(self):
-        trace = False and not g.unitTesting
+
         c = self.c
         if len(self.stack) <= 1:
             self.abortSearch()
@@ -1107,7 +1104,6 @@ class LeoFind(object):
     changeAllFlag=False,
     ):
         '''Open the search pane and get the search string.'''
-        trace = False and not g.unitTesting
         # Remember the entry focus, just as when using the find pane.
         self.changeAllFlag = changeAllFlag
         self.findAllFlag = findAllFlag
@@ -1120,7 +1116,7 @@ class LeoFind(object):
             escapes=escapes) # The Tab Easter Egg.
 
     def searchWithPresentOptions1(self, event):
-        trace = False and not g.unitTesting
+
         c, k = self.c, self.k
         # g.trace(k.getArgEscapeFlag, repr(k.arg), g.callers())
         if k.getArgEscapeFlag:
@@ -1174,7 +1170,7 @@ class LeoFind(object):
         return None
     #@+node:ekr.20131117164142.17007: *4* find.stateZeroHelper
     def stateZeroHelper(self, event, prefix, handler, escapes=None):
-        trace = False and not g.unitTesting
+
         c, k = self.c, self.k
         self.w = self.editWidget(event)
         if not self.w:
@@ -1563,7 +1559,7 @@ class LeoFind(object):
         return found
     #@+node:ekr.20031218072017.3073: *4* find.findAll & helpers
     def findAll(self, clone_find_all=False, clone_find_all_flattened=False):
-        trace = False and not g.unitTesting
+
         c, flatten = self.c, clone_find_all_flattened
         clone_find = clone_find_all or flatten
         if flatten:
@@ -1658,8 +1654,6 @@ class LeoFind(object):
     #@+node:ekr.20160422071747.1: *6* find.doCloneFindAllHelper
     def doCloneFindAllHelper(self, clones, count, flatten, p, skip):
         '''Handle the cff or cfa at node p.'''
-        trace = False and not g.unitTesting
-        verbose = False
         if p.is_at_ignore() or re.search(r'(^@|\n@)nosearch\b', p.b):
             p.moveToNodeAfterTree()
             return count
@@ -1747,7 +1741,6 @@ class LeoFind(object):
     #@+node:ekr.20160224141710.1: *6* find.findNextBatchMatch
     def findNextBatchMatch(self, p):
         '''Find the next batch match at p.'''
-        trace = False and not g.unitTesting
         table = []
         if self.search_headline:
             table.append(p.h)
@@ -1810,8 +1803,6 @@ class LeoFind(object):
     #@+node:ekr.20031218072017.3075: *4* find.findNextMatch & helpers
     def findNextMatch(self):
         '''Resume the search where it left off.'''
-        trace = False and not g.unitTesting
-        verbose = False
         c, p = self.c, self.p
         if not self.search_headline and not self.search_body:
             return None, None
@@ -1884,7 +1875,6 @@ class LeoFind(object):
         - self.in_headline indicates what text to use.
         - self.reverse indicates how to set the insertion point.
         '''
-        trace = False and not g.unitTesting
         c = self.c
         p = self.p or c.p
         s = p.h if self.in_headline else p.b
@@ -1907,7 +1897,6 @@ class LeoFind(object):
     #@+node:ekr.20131123132043.16476: *5* find.nextNodeAfterFail & helper
     def nextNodeAfterFail(self, p):
         '''Return the next node after a failed search or None.'''
-        trace = False and not g.unitTesting
         c = self.c
         # Wrapping is disabled by any limitation of screen or search.
         wrap = (self.wrapping and not self.node_only and
@@ -1934,7 +1923,6 @@ class LeoFind(object):
         Return True if the search is about to go outside its range, assuming
         both the headline and body text of the present node have been searched.
         '''
-        trace = False and not g.unitTesting
         c = self.c
         if not p:
             return True
@@ -1957,7 +1945,6 @@ class LeoFind(object):
     #@+node:ekr.20131123071505.16467: *5* find.precompilePattern
     def precompilePattern(self):
         '''Precompile the regexp pattern if necessary.'''
-        trace = False and not g.unitTesting
         try: # Precompile the regexp.
             # pylint: disable=no-member
             flags = re.MULTILINE
@@ -1996,9 +1983,6 @@ class LeoFind(object):
         Search s_ctrl for self.find_text with present options.
         Returns (pos, newpos) or (None,None).
         """
-        trace = False and not g.unitTesting
-        trace_s = False
-        trace_fail = False
         c = self.c
         p = self.p or c.p
         if (self.ignore_dups or self.find_def_data) and p.v in self.find_seen:
@@ -2054,7 +2038,6 @@ class LeoFind(object):
     #@+node:ekr.20060526081931: *5* searchHelper & allies
     def searchHelper(self, s, i, j, pattern):
         '''Dispatch the proper search method based on settings.'''
-        trace = False and not g.unitTesting
         backwards = self.reverse
         nocase = self.ignore_case
         regexp = self.pattern_match or self.findAllUniqueFlag
@@ -2071,7 +2054,7 @@ class LeoFind(object):
         return pos, newpos
     #@+node:ekr.20060526092203: *6* regexHelper
     def regexHelper(self, s, i, j, pattern, backwards, nocase):
-        trace = False and not g.unitTesting
+
         re_obj = self.re_obj # Use the pre-compiled object
         if not re_obj:
             g.trace('can not happen: no re_obj')
@@ -2115,7 +2098,7 @@ class LeoFind(object):
     #@@c
 
     def backwardsHelper(self, s, i, j, pattern, nocase, word):
-        trace = False and not g.unitTesting
+
         if nocase:
             s = s.lower()
             pattern = pattern.lower()
@@ -2150,7 +2133,6 @@ class LeoFind(object):
     #@+node:ekr.20060526093531: *6* plainHelper
     def plainHelper(self, s, i, j, pattern, nocase, word):
         '''Do a plain search.'''
-        trace = False and not g.unitTesting
         if nocase:
             s = s.lower(); pattern = pattern.lower()
         pattern = self.replaceBackSlashes(pattern)
@@ -2173,7 +2155,6 @@ class LeoFind(object):
     #@+node:ekr.20060526140744.1: *6* matchWord
     def matchWord(self, s, i, pattern):
         '''Do a whole-word search.'''
-        trace = False and not g.unitTesting
         pattern = self.replaceBackSlashes(pattern)
         if not s or not pattern or not g.match(s, i, pattern):
             return False
@@ -2185,7 +2166,6 @@ class LeoFind(object):
         isWordPat2 = g.isWordChar(pat2)
         isWordCh1 = g.isWordChar(ch1)
         isWordCh2 = g.isWordChar(ch2)
-        # g.trace('i',i,'ch1,ch2,pat',repr(ch1),repr(ch2),repr(pattern))
         inWord = isWordPat1 and isWordCh1 or isWordPat2 and isWordCh2
         return not inWord
     #@+node:ekr.20070105165924: *6* replaceBackSlashes
@@ -2329,9 +2309,7 @@ class LeoFind(object):
         This is called only at the start of each search.
         This must not alter the current insertion point or selection range.
         '''
-        trace = False and not g.unitTesting
-        c = self.c
-        p = self.p or c.p
+        #
         # Fix bug 1228458: Inconsistency between Find-forward and Find-backward.
         if self.search_headline and self.search_body:
             # We have no choice: we *must* search the present widget!
@@ -2345,7 +2323,6 @@ class LeoFind(object):
 
         Note: the focus may be in the find pane.
         '''
-        trace = False and not g.unitTesting
         c = self.c
         ftm = self.ftm
         w = ftm.entry_focus or g.app.gui.get_focus(raw=True)
@@ -2373,7 +2350,6 @@ class LeoFind(object):
         insert point for the body pane. For headlines, start at beginning or
         end of the headline text.
         '''
-        trace = False and not g.unitTesting
         c = self.c
         p = self.p = c.p # *Always* start with the present node.
         wrapper = c.frame.body and c.frame.body.wrapper
@@ -2423,7 +2399,6 @@ class LeoFind(object):
     #@+node:ekr.20031218072017.3089: *4* find.restore (headline hack)
     def restore(self, data):
         '''Restore the screen and clear state after a search fails.'''
-        trace = False and not g.unitTesting
         c = self.c
         in_headline, editing, p, w, insert, start, end, junk = data
         self.was_in_headline = False # 2015/03/25
@@ -2493,7 +2468,6 @@ class LeoFind(object):
     #@+node:ekr.20031218072017.3091: *4* find.showSuccess (headline hack)
     def showSuccess(self, pos, newpos, showState=True):
         '''Display the result of a successful find operation.'''
-        trace = False and not g.unitTesting
         c = self.c
         self.p = p = self.p or c.p
         # Set state vars.
@@ -2541,7 +2515,6 @@ class LeoFind(object):
     #@+node:ekr.20031218072017.1460: *4* find.update_ivars
     def update_ivars(self):
         """Update ivars from the find panel."""
-        trace = False and not g.unitTesting
         c = self.c
         self.p = c.p
         ftm = self.ftm

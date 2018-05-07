@@ -26,7 +26,7 @@ if 1:
 #@+others
 #@+node:ekr.20110605121601.18134: ** init (qt_gui.py)
 def init():
-    trace = False and not g.unitTesting
+
     if g.app.unitTesting: # Not Ok for unit testing!
         return False
     if not QtCore:
@@ -147,7 +147,6 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20160917125946.1: *4* qt_gui.replaceClipboardWith
     def replaceClipboardWith(self, s):
         '''Replace the clipboard with the string s.'''
-        trace = False and not g.unitTesting
         cb = self.qtApp.clipboard()
         if cb:
             # cb.clear()  # unnecessary, breaks on some Qt versions
@@ -161,7 +160,6 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20160917125948.1: *4* qt_gui.getTextFromClipboard
     def getTextFromClipboard(self):
         '''Get a unicode string from the clipboard.'''
-        trace = False and not g.unitTesting
         cb = self.qtApp.clipboard()
         if cb:
             QtWidgets.QApplication.processEvents()
@@ -540,7 +538,6 @@ class LeoQtGui(leoGui.LeoGui):
         startpath=None,
     ):
         """Create and run an Qt open file dialog ."""
-        trace = False and not g.unitTesting
         if g.unitTesting:
             return ''
         parent = None
@@ -592,7 +589,6 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18502: *4* qt_gui.runSaveFileDialog
     def runSaveFileDialog(self, c, initialfile='', title='Save', filetypes=None, defaultextension=''):
         """Create and run an Qt save file dialog ."""
-        trace = False and not g.unitTesting
         if filetypes is None:
             filetypes = []
         if g.unitTesting:
@@ -832,8 +828,6 @@ class LeoQtGui(leoGui.LeoGui):
 
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
         '''Required to handle syntax coloring.'''
-        trace = False and not g.unitTesting
-        # g.trace(family,size,g.callers())
         if g.isString(size):
             if size.endswith('pt'):
                 size = size[: -2].strip()
@@ -890,9 +884,6 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18516: *4* qt_gui.getIconImage
     def getIconImage(self, name):
         '''Load the icon and return it.'''
-        trace = False and not g.unitTesting
-        trace_cached = True
-        trace_not_found = True
         # Return the image from the cache if possible.
         if name in self.iconimages:
             image = self.iconimages.get(name)
@@ -1089,7 +1080,6 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20170612065255.1: *3* qt_gui.put_help
     def put_help(self, c, s, short_title=''):
         '''Put the help command.'''
-        trace = False and not g.unitTesting
         s = g.adjustTripleString(s.rstrip(), c.tab_width)
         if s.startswith('<') and not s.startswith('<<'):
             pass # how to do selective replace??
@@ -1247,7 +1237,6 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18479: *4* qt_gui.createSplashScreen
     def createSplashScreen(self):
         '''Put up a splash screen with the Leo logo.'''
-        trace = False and not g.unitTesting
         from leo.core.leoQt import QtCore
         qt = QtCore.Qt
         splash = None
@@ -1524,8 +1513,6 @@ class StyleSheetManager(object):
         Recompute and apply the stylesheet.
         Called automatically by the reload-settings commands.
         '''
-        trace = False and not g.unitTesting
-        tag = '(StyleSheetManager)'
         if not sheet:
             sheet = self.get_style_sheet_from_settings()
         if sheet:
@@ -1574,7 +1561,6 @@ class StyleSheetManager(object):
     #@+node:ekr.20170307083738.1: *4* ssm.find_icon_path
     def find_icon_path(self, setting):
         '''Return the path to the open/close indicator icon.'''
-        trace = False and not g.unitTesting
         c = self.c
         s = c.config.getString(setting)
         if not s:
@@ -1636,7 +1622,6 @@ class StyleSheetManager(object):
     #@+node:ekr.20110605121601.18175: *4* ssm.set_style_sheets
     def set_style_sheets(self, all=True, top=None, w=None):
         '''Set the master style sheet for all widgets using config settings.'''
-        trace = False and not g.unitTesting
         if g.app.loadedThemes:
             return
         c = self.c
@@ -1673,10 +1658,7 @@ class StyleSheetManager(object):
 
     def expand_css_constants(self, sheet, font_size_delta=None, settingsDict=None):
         '''Expand @ settings into their corresponding constants.'''
-        trace = False and not g.unitTesting
         trace_dict = False
-        trace_loop = True
-        trace_result = False
         c = self.c
         # Warn once if the stylesheet uses old style style-sheet comment
         if settingsDict is None:
@@ -1705,7 +1687,6 @@ class StyleSheetManager(object):
     #@+node:ekr.20150617085045.1: *5* ssm.adjust_sizes
     def adjust_sizes(self, font_size_delta, settingsDict):
         '''Adjust constants to reflect c._style_deltas.'''
-        trace = False and not g.unitTesting
         c = self.c
         constants = {} # old: self.find_constants_defined(sheet)
         deltas = c._style_deltas
@@ -1732,8 +1713,6 @@ class StyleSheetManager(object):
     #@+node:ekr.20180316093159.1: *5* ssm.do_pass
     def do_pass(self, constants, deltas, settingsDict, sheet, to_do):
         
-        trace = False and not g.unitTesting
-        trace_found = True
         to_do.sort(key=len, reverse=True)
         for const in to_do:
             value = None
@@ -1860,7 +1839,6 @@ class StyleSheetManager(object):
 
         Return the updated stylesheet.
         '''
-        trace = False and not g.unitTesting
         close_path = self.find_icon_path('tree-image-closed')
         open_path = self.find_icon_path('tree-image-open')
         # Make all substitutions in the stylesheet.

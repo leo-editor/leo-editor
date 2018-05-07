@@ -142,8 +142,6 @@ class LeoMenu(object):
         The 'top' menu has already been created.
         '''
         # Called from createMenuBar.
-        trace = False and not g.unitTesting
-        trace_list = False
         c = self.c
         for z in aList:
             kind, val, val2 = z
@@ -281,7 +279,7 @@ class LeoMenu(object):
                 underline=amp_index)
     #@+node:ekr.20111102072143.10016: *5* LeoMenu.createMasterMenuCallback
     def createMasterMenuCallback(self, dynamicMenu, command, commandName):
-        trace = False and not g.unitTesting
+
         c = self.c
 
         def setWidget():
@@ -326,7 +324,6 @@ class LeoMenu(object):
     #@+node:ekr.20111028060955.16568: *5* LeoMenu.getMenuEntryBindings
     def getMenuEntryBindings(self, command, dynamicMenu, label):
         '''Compute commandName from command.'''
-        trace = False and not g.unitTesting
         c = self.c
         if g.isString(command):
             # Command is really a command name.
@@ -367,6 +364,7 @@ class LeoMenu(object):
         return label, command, done
     #@+node:ekr.20111028060955.16563: *5* LeoMenu.traceMenuTable
     def traceMenuTable(self, table):
+
         trace = False and not g.unitTesting
         if not trace: return
         format = '%40s %s'
@@ -383,7 +381,7 @@ class LeoMenu(object):
                 print(format % (data, ''))
     #@+node:ekr.20031218072017.3784: *4* LeoMenu.createMenuItemsFromTable
     def createMenuItemsFromTable(self, menuName, table, dynamicMenu=False):
-        trace = False
+
         if g.app.gui.isNullGui:
             return
         try:
@@ -439,7 +437,6 @@ class LeoMenu(object):
             'ext':      the file extension.
             'kind':     the method used to open the file, such as subprocess.Popen.
         '''
-        # trace = False and not g.unitTesting
         k = self.c.k
         if not table: return
         g.app.openWithTable = table # Override any previous table.
@@ -487,7 +484,6 @@ class LeoMenu(object):
         'name':     menu label.
         'shortcut': optional menu shortcut.
         '''
-        trace = False and not g.unitTesting
         c = self.c
         if g.app.unitTesting: return
         for d in table:

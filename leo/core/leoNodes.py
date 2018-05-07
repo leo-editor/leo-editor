@@ -56,7 +56,6 @@ class NodeIndices(object):
     def compute_last_index(self, c):
         '''Scan the entire leo outline to compute ni.last_index.'''
         ni = self
-        old_lastIndex = self.lastIndex
         # Partial, experimental, fix for #658.
         # Do not change self.lastIndex here!
             # self.lastIndex = 0

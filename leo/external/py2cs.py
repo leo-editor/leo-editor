@@ -1337,7 +1337,6 @@ class LeoGlobals(object):
 
     def toUnicode(self, s, encoding='utf-8', reportErrors=False):
         '''Connvert a non-unicode string with the given encoding to unicode.'''
-        trace = False
         if g.isUnicode(s):
             return s
         if not encoding:
@@ -1527,17 +1526,16 @@ class MakeCoffeeScriptController(object):
 
     def scan_options(self):
         '''Set all configuration-related ivars.'''
-        trace = False
         if not self.config_fn:
             return
         self.parser = parser = self.create_parser()
         s = self.get_config_string()
         self.init_parser(s)
         if self.files:
-            files_source = 'command-line'
+            # files_source = 'command-line'
             files = self.files
         elif parser.has_section('Global'):
-            files_source = 'config file'
+            # files_source = 'config file'
             files = parser.get('Global', 'files')
             files = [z.strip() for z in files.split('\n') if z.strip()]
         else:
@@ -1589,7 +1587,6 @@ class MakeCoffeeScriptController(object):
 
     def init_parser(self, s):
         '''Add double back-slashes to all patterns starting with '['.'''
-        trace = False
         if not s: return
         aList = []
         for s in s.split('\n'):
@@ -1697,7 +1694,6 @@ class TokenSync(object):
         Return a list of lists of tokens for each list in self.lines.
         The strings in self.lines may end in a backslash, so care is needed.
         '''
-        trace = False
         n, result = len(self.lines), []
         for i in range(0, n+1):
             result.append([])
@@ -1804,7 +1800,6 @@ class TokenSync(object):
     def leading_lines(self, node):
         '''Return a list of the preceding comment and blank lines'''
         # This can be called on arbitrary nodes.
-        trace = False
         leading = []
         if hasattr(node, 'lineno'):
             i, n = self.first_leading_line, node.lineno
@@ -1901,7 +1896,6 @@ class TokenSync(object):
 
     def trailing_comment_at_lineno(self, lineno):
         '''Return any trailing comment at the given node.lineno.'''
-        trace = False
         tokens = self.line_tokens[lineno-1]
         for token in tokens:
             if self.token_kind(token) == 'comment':
@@ -1915,7 +1909,6 @@ class TokenSync(object):
 
     def trailing_lines(self):
         '''return any remaining ignored lines.'''
-        trace = False
         trailing = []
         i = self.first_leading_line
         while i < len(self.ignored_lines):

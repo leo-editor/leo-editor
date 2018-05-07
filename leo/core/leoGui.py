@@ -262,7 +262,6 @@ class LeoKeyEvent(object):
         x=None, y=None, x_root=None, y_root=None
     ):
         '''Ctor for LeoKeyEvent class.'''
-        trace = False and not g.unitTesting
         if g.isStroke(binding):
             g.trace('***** (LeoKeyEvent) oops: already a stroke', binding, g.callers())
             stroke = binding
@@ -424,7 +423,6 @@ class NullGui(LeoGui):
     #@+node:ekr.20031218072017.2229: *3* NullGui.runMainLoop
     def runMainLoop(self):
         """Run the null gui's main loop."""
-        trace = False
         if self.script:
             frame = self.lastFrame
             g.app.log = frame.log

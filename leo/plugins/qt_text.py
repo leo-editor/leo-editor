@@ -70,8 +70,6 @@ class QTextMixin(object):
         '''
         # Important: usually w.changingText is True.
         # This method very seldom does anything.
-        trace = False and not g.unitTesting
-        verbose = False
         w = self
         c = self.c; p = c.p
         tree = c.frame.tree
@@ -231,7 +229,7 @@ class QTextMixin(object):
         return i, row, col
     #@+node:ekr.20140901062324.18729: *4* qtm.rememberSelectionAndScroll
     def rememberSelectionAndScroll(self):
-        trace = (False or g.trace_scroll) and not g.unitTesting
+
         w = self
         v = self.c.p.v # Always accurate.
         v.insertSpot = w.getInsertPoint()
@@ -240,10 +238,10 @@ class QTextMixin(object):
         assert(i <= j)
         v.selectionStart = i
         v.selectionLength = j - i
-        v.scrollBarSpot = spot = w.getYScrollPosition()
+        v.scrollBarSpot = w.getYScrollPosition()
     #@+node:ekr.20140901062324.18712: *4* qtm.tag_configure
     def tag_configure(self, *args, **keys):
-        trace = False and not g.unitTesting
+
         if len(args) == 1:
             key = args[0]
             self.tags[key] = keys
@@ -499,7 +497,6 @@ if QtWidgets:
             #@+node:ekr.20110605121601.18013: *5* lqlw.keyPressEvent
             def keyPressEvent(self, event):
                 '''Handle a key event from QListWidget.'''
-                trace = False and not g.unitTesting
                 c = self.leo_c
                 w = c.frame.body.wrapper
                 qt = QtCore.Qt
@@ -519,7 +516,6 @@ if QtWidgets:
             #@+node:ekr.20110605121601.18014: *5* lqlw.select_callback
             def select_callback(self):
                 '''Called when user selects an item in the QListWidget.'''
-                trace = False and not g.unitTesting
                 c = self.leo_c
                 w = c.k.autoCompleter.w or c.frame.body.wrapper # 2014/09/19
                 # Replace the tail of the prefix with the completion.
@@ -543,20 +539,20 @@ if QtWidgets:
             #@+node:tbrown.20111011094944.27031: *5* lqlw.tab_callback
             def tab_callback(self):
                 '''Called when user hits tab on an item in the QListWidget.'''
-                trace = False and not g.unitTesting
                 c = self.leo_c
                 w = c.k.autoCompleter.w or c.frame.body.wrapper # 2014/09/19
                 if w is None: return
                 # Replace the tail of the prefix with the completion.
-                completion = g.u(self.currentItem().text())
+                # completion = g.u(self.currentItem().text())
                 prefix = c.k.autoCompleter.get_autocompleter_prefix()
                 parts = prefix.split('.')
                 if len(parts) < 2:
                     return
-                if len(parts) > 1:
-                    tail = parts[-1]
-                else:
-                    tail = prefix
+                ### For tracing.
+                    # if len(parts) > 1:
+                        # tail = parts[-1]
+                    # else:
+                        # tail = prefix
                 i = j = w.getInsertPoint()
                 s = w.getAllText()
                 while(0 <= i < len(s) and s[i] != '.'):
@@ -569,7 +565,6 @@ if QtWidgets:
             #@+node:ekr.20110605121601.18015: *5* lqlw.set_position
             def set_position(self, c):
                 '''Set the position of the QListWidget.'''
-                trace = False and not g.unitTesting
 
                 def glob(obj, pt):
                     '''Convert pt from obj's local coordinates to global coordinates.'''
@@ -628,7 +623,6 @@ if QtWidgets:
         #@+node:ekr.20110605121601.18017: *4* lqtb.lqtb.init_completer
         def init_completer(self, options):
             '''Connect a QCompleter.'''
-            trace = False and not g.unitTesting
             c = self.leo_c
             self.leo_qc = qc = self.LeoQListWidget(c)
             # Move the window near the body pane's cursor.
@@ -651,7 +645,7 @@ if QtWidgets:
                 self.leo_qc.show_completions(aList)
         #@+node:ekr.20110605121601.18019: *3* lqtb.leo_dumpButton
         def leo_dumpButton(self, event, tag):
-            trace = False and not g.unitTesting
+
             button = event.button()
             table = (
                 (QtCore.Qt.NoButton, 'no button'),
@@ -662,12 +656,12 @@ if QtWidgets:
             for val, s in table:
                 if button == val:
                     kind = s; break
-            else: kind = 'unknown: %s' % repr(button)
+            else:
+                kind = 'unknown: %s' % repr(button)
             return kind
         #@+node:ekr.20141103061944.31: *3* lqtb.get/setXScrollPosition
         def getXScrollPosition(self):
             '''Get the horizontal scrollbar position.'''
-            trace = (False or g.trace_scroll) and not g.unitTesting
             w = self
             sb = w.horizontalScrollBar()
             pos = sb.sliderPosition()
@@ -675,7 +669,6 @@ if QtWidgets:
 
         def setXScrollPosition(self, pos):
             '''Set the position of the horizontal scrollbar.'''
-            trace = (False or g.trace_scroll) and not g.unitTesting
             if pos is not None:
                 w = self
                 sb = w.horizontalScrollBar()
@@ -683,7 +676,6 @@ if QtWidgets:
         #@+node:ekr.20111002125540.7021: *3* lqtb.get/setYScrollPosition
         def getYScrollPosition(self):
             '''Get the vertical scrollbar position.'''
-            trace = (False or g.trace_scroll) and not g.unitTesting
             w = self
             sb = w.verticalScrollBar()
             pos = sb.sliderPosition()
@@ -691,7 +683,6 @@ if QtWidgets:
 
         def setYScrollPosition(self, pos):
             '''Set the position of the vertical scrollbar.'''
-            trace = (False or g.trace_scroll) and not g.unitTesting
             w = self
             if pos is None: pos = 0
             sb = w.verticalScrollBar()
@@ -699,7 +690,6 @@ if QtWidgets:
         #@+node:ekr.20120925061642.13506: *3* lqtb.onSliderChanged
         def onSliderChanged(self, arg):
             '''Handle a Qt onSliderChanged event.'''
-            trace = False and not g.unitTesting
             c = self.leo_c
             p = c.p
             # Careful: changing nodes changes the scrollbars.
@@ -860,7 +850,6 @@ class QHeadlineWrapper(QLineEditWrapper):
     #@+node:ekr.20110605121601.18119: *3* qhw.check
     def check(self):
         '''Return True if the tree item exists and it's edit widget exists.'''
-        trace = False and not g.unitTesting
         tree = self.c.frame.tree
         try:
             e = tree.treeWidget.itemWidget(self.item, 0)
@@ -890,7 +879,6 @@ class QMinibufferWrapper(QLineEditWrapper):
 
             Simulate alt-x if we are not in an input state.
             '''
-            trace = False and not g.unitTesting
             assert isinstance(self, QMinibufferWrapper), self
             assert isinstance(self.widget, QtWidgets.QLineEdit), self.widget
             c, k = self.c, self.c.k
@@ -1208,7 +1196,6 @@ class QTextEditWrapper(QTextMixin):
                 '''
                 Monkey patch for self.widget (QTextEditWrapper) mouseReleaseEvent.
                 '''
-                trace = False and not g.unitTesting
                 assert isinstance(self, QTextEditWrapper), self
                 assert isinstance(self.widget, QtWidgets.QTextEdit), self.widget
                 QtWidgets.QTextEdit.mouseReleaseEvent(self.widget, event)
@@ -1231,7 +1218,6 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18079: *4* qtew.delete (avoid call to setAllText)
     def delete(self, i, j=None):
         '''QTextEditWrapper.'''
-        trace = False and not g.unitTesting
         w = self.widget
         i = self.toPythonIndex(i)
         if j is None: j = i + 1
@@ -1326,7 +1312,6 @@ class QTextEditWrapper(QTextMixin):
 
     def getXScrollPosition(self):
         '''QTextEditWrapper: Get the horizontal scrollbar position.'''
-        trace = (False or g.trace_scroll) and not g.unitTesting
         w = self.widget
         sb = w.horizontalScrollBar()
         pos = sb.sliderPosition()
@@ -1334,7 +1319,6 @@ class QTextEditWrapper(QTextMixin):
 
     def getYScrollPosition(self):
         '''QTextEditWrapper: Get the vertical scrollbar position.'''
-        trace = (False or g.trace_scroll) and not g.unitTesting
         w = self.widget
         sb = w.verticalScrollBar()
         pos = sb.sliderPosition()
@@ -1359,7 +1343,6 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18077: *4* qtew.leoMoveCursorHelper & helper
     def leoMoveCursorHelper(self, kind, extend=False, linesPerPage=15):
         '''QTextEditWrapper.'''
-        trace = False and not g.unitTesting
         w = self.widget
         tc = QtGui.QTextCursor
         d = {
@@ -1472,21 +1455,16 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18090: *4* qtew.see & seeInsertPoint
     def see(self, i):
         '''Make sure position i is visible.'''
-        trace = False and not g.unitTesting
         w = self.widget
         w.ensureCursorVisible()
 
     def seeInsertPoint(self):
         '''Make sure the insert point is visible.'''
-        trace = False and not g.unitTesting
         self.widget.ensureCursorVisible()
     #@+node:ekr.20110605121601.18092: *4* qtew.setAllText
     def setAllText(self, s):
         '''Set the text of body pane.'''
-        trace = False and not g.unitTesting
-        trace_time = True
-        c, w = self.c, self.widget
-        h = c.p.h if c.p else '<no p>'
+        w = self.widget
         try:
             self.changingText = True # Disable onTextChanged.
             w.setReadOnly(False)
@@ -1501,7 +1479,6 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18096: *4* qtew.setSelectionRange
     def setSelectionRange(self, i, j, insert=None, s=None):
         '''Set the selection range and the insert point.'''
-        trace = False and not g.unitTesting
         traceTime = False and not g.unitTesting
         # Part 1
         if traceTime: t1 = time.time()
@@ -1551,7 +1528,7 @@ class QTextEditWrapper(QTextMixin):
         assert(i <= j)
         v.selectionStart = i
         v.selectionLength = j - i
-        v.scrollBarSpot = spot = w.verticalScrollBar().value()
+        v.scrollBarSpot = w.verticalScrollBar().value()
         if traceTime:
             delta_t = time.time() - t2
             tot_t = time.time() - t1
@@ -1561,7 +1538,6 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20141103061944.40: *4* qtew.setXScrollPosition
     def setXScrollPosition(self, pos):
         '''Set the position of the horizonatl scrollbar.'''
-        trace = (False or g.trace_scroll) and not g.unitTesting
         if pos is not None:
             w = self.widget
             sb = w.horizontalScrollBar()
@@ -1569,7 +1545,6 @@ class QTextEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18098: *4* qtew.setYScrollPosition
     def setYScrollPosition(self, pos):
         '''Set the vertical scrollbar position.'''
-        trace = (False or g.trace_scroll) and not g.unitTesting
         if pos is not None:
             w = self.widget
             sb = w.verticalScrollBar()

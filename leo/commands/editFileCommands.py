@@ -88,7 +88,6 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     @cmd('compare-two-leo-files')
     def compareAnyTwoFiles(self, event):
         '''Compare two files.'''
-        trace = False and not g.unitTesting
         c = c1 = self.c
         w = c.frame.body.wrapper
         commanders = g.app.commanders()
@@ -748,7 +747,6 @@ class GitDiffController:
         s is the contents of the (public) file, without sentinels.
         '''
         # A specialized version of at.readOneAtCleanNode.
-        trace = False and not g.unitTesting
         hidden_c = leoCommands.Commands(fn, gui=g.app.nullGui)
         at = hidden_c.atFileCommands
         x = hidden_c.shadowController
@@ -869,9 +867,7 @@ class GitDiffController:
     #@+node:ekr.20170806094320.9: *4* gdc.get_files
     def get_files(self):
         '''Return a list of changed files.'''
-        
-        trace = False and not g.unitTesting
-            
+
         def readable(fn):
             for suffix in ('commit_timestamp.json', '.db', '.leo', '.zip', ):
                 if fn.strip().endswith(suffix):

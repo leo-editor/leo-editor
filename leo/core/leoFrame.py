@@ -427,7 +427,6 @@ class LeoBody(object):
     def selectEditorHelper(self, wrapper):
         '''Select the editor whose widget is given.'''
         c = self.c
-        trace = False and not g.unitTesting
         if not (hasattr(wrapper, 'leo_p') and wrapper.leo_p):
             g.trace('no wrapper.leo_p')
             return
@@ -440,7 +439,6 @@ class LeoBody(object):
         if not self.ensurePositionExists(wrapper):
             g.trace('***** no position editor!')
             return
-        # g.trace('expanding ancestors of ',wrapper.leo_p.h,g.callers())
         p = wrapper.leo_p
         c.redraw(p)
         c.recolor()
@@ -629,7 +627,6 @@ class LeoBody(object):
 
     def onBodyChanged(self, undoType, oldSel=None, oldText=None, oldYview=None):
         '''Update Leo after the body has been changed.'''
-        trace = False and not g.unitTesting
         c = self.c
         body, w = self, self.wrapper
         p = c.p
@@ -938,10 +935,9 @@ class LeoFrame(object):
     @cmd('copy-text')
     def copyText(self, event=None):
         '''Copy the selected text from the widget to the clipboard.'''
-        trace = False and not g.unitTesting
-        f = self; c = f.c
+        # f = self
         w = event and event.widget
-        wname = c.widget_name(w)
+        # wname = c.widget_name(w)
         if not w or not g.isTextWrapper(w):
             return
         # Set the clipboard text.
@@ -960,7 +956,6 @@ class LeoFrame(object):
     @cmd('cut-text')
     def cutText(self, event=None):
         '''Invoked from the mini-buffer and from shortcuts.'''
-        trace = False and not g.unitTesting
         f = self; c = f.c; w = event and event.widget
         if not w or not g.isTextWrapper(w):
             return
@@ -1000,7 +995,6 @@ class LeoFrame(object):
         Paste the clipboard into a widget.
         If middleButton is True, support x-windows middle-mouse-button easter-egg.
         '''
-        trace = False # and not g.unitTesting
         c = self.c
         w = event and event.widget
         wname = c.widget_name(w)
@@ -1315,7 +1309,6 @@ class LeoTree(object):
         Officially change a headline.
         Set the old undo text to the previous revert point.
         '''
-        trace = False and not g.unitTesting
         c = self.c; u = c.undoer
         w = self.edit_widget(p)
         if c.suppressHeadChanged:
@@ -1370,14 +1363,15 @@ class LeoTree(object):
     #@+node:ekr.20040803072955.126: *4* LeoTree.endEditLabel
     def endEditLabel(self):
         '''End editing of a headline and update p.h.'''
-        trace = False and not g.unitTesting
         c = self.c; k = c.k; p = c.p
         # Important: this will redraw if necessary.
         self.onHeadChanged(p)
-        if 0: # Can't call setDefaultUnboundKeyAction here: it might put us in ignore mode!
+        if 0:
+            # Can't call setDefaultUnboundKeyAction here: it might put us in ignore mode!
             k.setDefaultInputState()
             k.showStateAndMode()
-        if 0: # This interferes with the find command and interferes with focus generally!
+        if 0:
+            # This interferes with the find command and interferes with focus generally!
             c.bodyWantsFocus()
     #@+node:ekr.20031218072017.3716: *4* LeoTree.getEditTextDict
     def getEditTextDict(self, v):
@@ -1568,7 +1562,6 @@ class LeoTree(object):
     #@+node:ekr.20140829053801.18453: *5* 1. LeoTree.unselect_helper & helper
     def unselect_helper(self, old_p, p, traceTime):
         '''Unselect the old node, calling the unselect hooks.'''
-        trace = False and not g.unitTesting
         if traceTime:
             t1 = time.time()
         c = self.c
@@ -1612,10 +1605,6 @@ class LeoTree(object):
     #@+node:ekr.20090608081524.6109: *6* LeoTree.set_body_text_after_select
     def set_body_text_after_select(self, p, old_p, traceTime, force=False):
         '''Set the text after selecting a node.'''
-        trace = False and not g.unitTesting
-        trace_pass = False # Trace early return.
-        trace_time = (True or traceTime)
-        if trace_time: t1 = time.time()
         c = self.c
         w = c.frame.body.wrapper
         s = p.v.b # Guaranteed to be unicode.

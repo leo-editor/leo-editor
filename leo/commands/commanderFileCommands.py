@@ -5,7 +5,7 @@
 '''File commands that used to be defined in leoCommands.py'''
 import leo.core.leoGlobals as g
 import os
-import time
+# import time
 #@+others
 #@+node:ekr.20170221033738.1: ** c_file.reloadSettings & helper
 @g.commander_command('reload-settings')
@@ -279,9 +279,7 @@ def refreshFromDisk(self, event=None):
         u.afterChangeTree(p, command='refresh-from-disk', bunch=b)
         # Create the 'Recovered Nodes' tree.
         c.fileCommands.handleNodeConflicts()
-        t1 = time.clock()
         c.redraw()
-        t2 = time.clock()
 #@+node:ekr.20031218072017.2834: *3* c_file.save
 @g.commander_command('save-file')
 def save(self, event=None, fileName=None):

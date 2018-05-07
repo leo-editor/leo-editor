@@ -171,7 +171,7 @@ class BoxTitle(BoxBasic):
 
     #@+node:ekr.20170428084207.514: *3* BoxTitle.edit
     def edit(self):
-        trace = False and not g.unitTesting
+
         self.editing=True
         self.display()
         self.entry_widget.edit()

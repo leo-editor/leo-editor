@@ -178,21 +178,20 @@ class PersistenceDataController(object):
         - If p2 exists, relink p1 so it is a clone of p2.
         '''
         p1 = self.find_position_for_relative_unl(root, unl)
-        fn = self.c.shortFileName()
-        if p1:
-            p2 = d.get(gnx)
-            old_gnx = p1.v.gnx
-            if p2:
-                if p1.h == p2.h and p1.b == p2.b:
-                    p1._relinkAsCloneOf(p2)
-                    # Warning: p1 *no longer exists* here.
-                    # _relinkAsClone does *not* set p1.v = p2.v.
-                else:
-                    g.es_print('mismatch in cloned node', p1.h)
+        if not p1:
+            return
+        p2 = d.get(gnx)
+        if p2:
+            if p1.h == p2.h and p1.b == p2.b:
+                p1._relinkAsCloneOf(p2)
+                # Warning: p1 *no longer exists* here.
+                # _relinkAsClone does *not* set p1.v = p2.v.
             else:
-                # Fix #526: A major bug: this was not set!
-                p1.v.fileIndex = gnx
-            g.app.nodeIndices.updateLastIndex(g.toUnicode(gnx))
+                g.es_print('mismatch in cloned node', p1.h)
+        else:
+            # Fix #526: A major bug: this was not set!
+            p1.v.fileIndex = gnx
+        g.app.nodeIndices.updateLastIndex(g.toUnicode(gnx))
     #@+node:ekr.20140711111623.17892: *5* pd.create_uas
     def create_uas(self, at_uas, root):
         '''Recreate uA's from the @ua nodes in the @uas tree.'''
@@ -349,7 +348,7 @@ class PersistenceDataController(object):
         Find an exact match of the unl_list in root's tree.
         The root does not appear in the unl_list.
         '''
-        full_unl = '-->'.join(unl_list)
+        # full_unl = '-->'.join(unl_list)
         parent = root
         for unl in unl_list:
             for child in parent.children():

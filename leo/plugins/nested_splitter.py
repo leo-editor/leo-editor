@@ -417,8 +417,6 @@ if QtWidgets: # NOQA
             '''Ctor for NestedSplitter class.'''
             QtWidgets.QSplitter.__init__(self, orientation, parent)
                 # This creates a NestedSplitterHandle.
-            trace = False and g and not g.unitTesting
-                # The import of g will fail when run from main() function.
             if root is None:
                 root = self.top(local=True)
                 if root == self:
@@ -430,6 +428,7 @@ if QtWidgets: # NOQA
                     # list of top level NestedSplitter windows opened from 'Open Window'
                     # splitter handle context menu
                     root.zoomed = False
+                #
                 # NestedSplitter is a kind of meta-widget, in that it manages
                 # panes across multiple actual splitters, even windows.
                 # So to create a signal for a click on splitter handle, we
@@ -499,7 +498,6 @@ if QtWidgets: # NOQA
         def add(self, side, w=None):
             """wrap a horizontal splitter in a vertical splitter, or
             visa versa"""
-            trace = False and g and not g.unitTesting
             orientation = self.other_orientation[self.orientation()]
             layout = self.parent().layout()
             if isinstance(self.parent(), NestedSplitter):
@@ -530,7 +528,6 @@ if QtWidgets: # NOQA
         #@+node:tbrown.20110621120042.22675: *3* ns.add_adjacent
         def add_adjacent(self, what, widget_id, side='right-of'):
             """add a widget relative to another already present widget"""
-            trace = False and g and not g.unitTesting
             horizontal, vertical = QtCore.Qt.Horizontal, QtCore.Qt.Vertical
             layout = self.top().get_layout()
 
@@ -703,7 +700,6 @@ if QtWidgets: # NOQA
         #@+node:ekr.20110605121601.17975: *3* ns.insert (NestedSplitter)
         def insert(self, index, w=None):
             """insert a pane with a widget or, when w==None, Action button"""
-            trace = False and g and not g.unitTesting
             if w is None: # do NOT use 'not w', fails in PyQt 4.8
                 w = NestedSplitterChoice(self)
                 # A QWidget, with self as parent.
@@ -934,7 +930,6 @@ if QtWidgets: # NOQA
         def split(self, index, side, w=None, name=None):
             """replace the adjacent widget with a NestedSplitter containing
             the widget and an Action button"""
-            trace = False and g and not g.unitTesting
             sizes = self.sizes()
             old = self.widget(index + side - 1)
             #X old_name = old and old.objectName() or '<no name>'
@@ -1035,7 +1030,7 @@ if QtWidgets: # NOQA
             return None
         #@+node:tbrown.20110628083641.21154: *3* ns.load_layout
         def load_layout(self, layout, level=0):
-            trace = False and g and not g.unitTesting
+
             self.setOrientation(layout['orientation'])
             found = 0
             if level == 0:
