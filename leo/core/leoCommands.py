@@ -1243,10 +1243,9 @@ class Commands(object):
         else: # 2011/02/25:
             c._currentPosition = c.rootPosition()
             g.trace('Invalid position: %r, root: %r' % (
-                p and p.h,
-                c._currentPosition and c._currentPosition.h,
+                p and p.h, c._currentPosition and c._currentPosition.h),
                 g.callers(),
-            ))
+            )
             # Don't kill unit tests for this kind of problem.
 
     # For compatibiility with old scripts.
