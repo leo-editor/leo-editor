@@ -141,6 +141,42 @@ class Cacher(object):
         if trace: g.trace(m.hexdigest())
         return "fcache/" + m.hexdigest()
     #@+node:ekr.20100208082353.5925: *3* cacher.Reading
+    #@+node:vitalije.20180507112319.1: *4* cacher.collectChangedNodes
+    def collectChangedNodes(self, root_v, aList, fileName):
+        '''Populates c.nodeConflictList with data about nodes that
+           are going to change during recreation of outline from 
+           cached list.'''
+        c = self.c
+        #@+others
+        #@+node:vitalije.20180507113809.1: *5* vnodes helper iterator
+        gnxDict = c.fileCommands.gnxDict
+        def vnodes(_vlist):
+            h, b, gnx, c_vlist = _vlist
+            v = gnxDict.get(gnx)
+            if v:
+                yield v, h, b, gnx
+            for x in c_vlist:
+                for y in vnodes(x):
+                    yield y
+        #@-others
+        for v, h, b, gnx in vnodes(aList):
+            if v is root_v and len(v.parents) == 1: continue
+            same_h = v.h == h
+            same_b = (v.b == b or
+                (v.b[-1:] == '\n' and v.b[:-1] == b) or
+                (b[-1:] == '\n' and v.b == b[:-1]))
+            if same_h and same_b:
+                continue
+            c.nodeConflictList.append(g.bunch(
+                tag='(cached)',
+                fileName=fileName,
+                gnx=gnx,
+                b_old=v.b,
+                h_old=v.h,
+                b_new=b,
+                h_new=h,
+                root_v=root_v,
+            ))
     #@+node:ekr.20100208071151.5910: *4* cacher.createOutlineFromCacheList & helpers
     def createOutlineFromCacheList(self, parent_v, aList, fileName, top=True):
         '''
@@ -172,6 +208,7 @@ class Cacher(object):
                 self.checkForChangedNodes(child_tuple, fileName, parent_v)
             else:
                 self.createOutlineFromCacheList(child_v, child_tuple, fileName, top=False)
+        
     #@+node:ekr.20170622112151.1: *5* cacher.checkForChangedNodes
     # update_warning_given = False
 
@@ -314,6 +351,32 @@ class Cacher(object):
         child_v.h, child_v.b = h, b
         child_v.setDirty()
         c.changed = True # Tell getLeoFile to propegate dirty nodes.
+    #@+node:vitalije.20180507114013.1: *4* cacher.createOutlineFromCacheList2
+    def createOutlineFromCacheList2(self, parent_v, aList):
+        '''
+        Create outline structure from recursive aList built by makeCacheList.
+        '''
+        c = self.c
+        #@+others
+        #@+node:vitalije.20180507115741.1: *5* recreateV helper
+        gnxDict = c.fileCommands.gnxDict
+        def recreateV(_vlist):
+            h, b, gnx, c_vlist = _vlist
+            v = gnxDict.get(gnx)
+            if not v:
+                v = leoNodes.VNode(context=c, gnx=gnx)
+            else:
+                del v.children[:]
+            v.h = h
+            v.b = b
+            for x in c_vlist:
+                cv = recreateV(x)
+                v.children.append(cv)
+                if v not in cv.parents:
+                    cv.parents.append(v)
+            return v
+        #@-others
+        recreateV(aList)
     #@+node:ekr.20100208082353.5923: *4* cacher.getCachedGlobalFileRatios
     def getCachedGlobalFileRatios(self):
         trace = False and not g.unitTesting
@@ -398,7 +461,9 @@ class Cacher(object):
             aList = self.db.get(key)
             if trace and showList:
                 g.printList(list(g.flatten_list(aList)))
-            self.createOutlineFromCacheList(root.v, aList, fileName=fileName)
+            self.collectChangedNodes(root.v, aList, fileName)
+            self.createOutlineFromCacheList2(root.v, aList)
+            #self.createOutlineFromCacheList(root.v, aList, fileName=fileName)
         elif trace:
             g.trace('cache miss', key[-6:], sfn)
         return s, ok, key
