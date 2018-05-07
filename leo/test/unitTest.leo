@@ -1225,11 +1225,11 @@
 </v>
 <v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
 <v t="ekr.20180312050443.1"><vh>@test cwd</vh></v>
-</v>
 <v t="ekr.20100204053330.5367"><vh>@test koi8-r encoding</vh></v>
 <v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
 <v t="ekr.20100131171342.5608"><vh>@test g.KeyStroke</vh></v>
 <v t="ekr.20111104214341.3835"><vh>@test all plugins have top-level init method</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
