@@ -57,7 +57,6 @@ class NodeIndices(object):
         '''Scan the entire leo outline to compute ni.last_index.'''
         trace = False and not g.unitTesting
         verbose = True # Report only if lastIndex was changed.
-        if trace: t1 = time.time()
         ni = self
         old_lastIndex = self.lastIndex
         # Partial, experimental, fix for #658.
@@ -65,26 +64,15 @@ class NodeIndices(object):
             # self.lastIndex = 0
         for v in c.all_unique_nodes():
             gnx = v.fileIndex
-            if trace and verbose: g.trace(gnx)
             if gnx:
                 id_, t, n = self.scanGnx(gnx)
                 if t == ni.timeString and n is not None:
                     try:
                         n = int(n)
                         self.lastIndex = max(self.lastIndex, n)
-                        if trace and verbose: g.trace(n, gnx)
                     except Exception:
                         g.es_exception()
                         self.lastIndex += 1
-        if trace:
-            changed = self.lastIndex > old_lastIndex
-            t2 = time.time()
-            if verbose:
-                g.trace('========== time %4.2f changed: %5s lastIndex: old: %s new: %s' % (
-                    t2 - t1, changed, old_lastIndex, self.lastIndex))
-            elif changed:
-                g.trace('========== time %4.2f lastIndex: old: %s new: %s' % (
-                    t2 - t1, old_lastIndex, self.lastIndex))
     #@+node:ekr.20031218072017.1994: *3* ni.get/setDefaultId
     # These are used by the FileCommands read/write code.
 
@@ -110,9 +98,6 @@ class NodeIndices(object):
         t_s = self.update()
             # Updates self.lastTime and self.lastIndex.
         gnx = g.toUnicode("%s.%s.%d" % (self.userId, t_s, self.lastIndex))
-        if trace:
-            if g.unitTesting: g.pr('')
-            g.trace('%s v: %x gnx: %s ' % (c.shortFileName(), id(v), gnx))
         v.fileIndex = gnx
         self.check_gnx(c, gnx, v)
         fc.gnxDict[gnx] = v
@@ -182,7 +167,6 @@ class NodeIndices(object):
         '''Update ni.lastIndex if the gnx affects it.'''
         trace = False and not g.unitTesting
         id_, t, n = self.scanGnx(gnx)
-        if trace: g.trace('lastIndex', self.lastIndex, gnx)
         if not id_ or (n is not 0 and not n):
             return # the gnx is not well formed or n in ('',None)
         if id_ == self.userId and t == self.timeString:
@@ -877,7 +861,6 @@ class Position(object):
                     # Fix bug: https://github.com/leo-editor/leo-editor/issues/12
                     return True
                 if not c.shouldBeExpanded(parent):
-                    if trace: g.trace('fail', parent)
                     return False
             return True
 
@@ -887,13 +870,11 @@ class Position(object):
                 # Fix bug: https://github.com/leo-editor/leo-editor/issues/12
                 return True
             else:
-                if trace: g.trace('root', root.h, 'p', p.h)
                 return root.isAncestorOf(p) and visible(p, root=root)
         else:
             for root in c.rootPosition().self_and_siblings():
                 if root == p or root.isAncestorOf(p):
                     return visible(p)
-            if trace: g.trace('no ancestor', p)
             return False
     #@+node:ekr.20080416161551.197: *4* p.level & simpleLevel
     def level(self):
@@ -984,19 +965,12 @@ class Position(object):
         # p2 is a previous sibling of any ancestor of p.
         trace = False and not g.unitTesting
         p = self; sib = p.copy()
-        if trace:
-            g.trace('entry')
-            g.trace('p ', p)
-            g.trace('p2', p2)
-            g.trace('p.stack', p.stack)
         # A special case for previous siblings.
         # Adjust p._childIndex, not the stack's childIndex.
         while sib.hasBack():
             sib.moveToBack()
             if sib == p2:
                 p._childIndex -= 1
-                if trace: g.trace('***new index: %s\n%s' % (
-                    p.h, p.stack))
                 return
         # Adjust p's stack.
         stack = []; changed = False; i = 0
@@ -1015,8 +989,6 @@ class Position(object):
                 stack.append((v, childIndex),)
             i += 1
         if changed:
-            if trace: g.trace('***new stack: %s\n%s' % (
-                p.h, stack))
             p.stack = stack
     #@+node:ekr.20080416161551.214: *4* p._linkAfter
     def _linkAfter(self, p_after, adjust=True):
@@ -1263,34 +1235,22 @@ class Position(object):
         verbose = False
         p = self
         limit, limitIsVisible = c.visLimit()
-        if trace and verbose:
-            g.trace(p, 'limit', limit, 'limitIsVisible', limitIsVisible)
-        if trace: g.trace('***entry', 'parent', p.parent(), 'p', p)
         while p:
             # Short-circuit if possible.
             back = p.back()
-            if trace: g.trace(
-                'back', back, 'hasChildren', bool(back and back.hasChildren()),
-                'isExpanded', bool(back and back.isExpanded()))
             if back and back.hasChildren() and back.isExpanded():
                 p.moveToThreadBack()
             elif back:
                 p.moveToBack()
             else:
                 p.moveToParent() # Same as p.moveToThreadBack()
-            if trace: g.trace(p.parent(), p)
             if p:
                 if limit:
                     done, val = self.checkVisBackLimit(limit, limitIsVisible, p)
                     if done:
-                        if trace and verbose: g.trace('done', p)
                         return val # A position or None
                 if p.isVisible(c):
-                    if trace and verbose: g.trace('isVisible', p)
                     return p
-                else:
-                    if trace and verbose: g.trace('**** not visible', p)
-        if trace: g.trace('*** return None ***')
         return p
     #@+node:ekr.20090715145956.6166: *5* checkVisBackLimit
     def checkVisBackLimit(self, limit, limitIsVisible, p):
@@ -1298,7 +1258,6 @@ class Position(object):
         trace = False and not g.unitTesting
         c = p.v.context
         if limit == p:
-            if trace: g.trace('at limit', p)
             if limitIsVisible and p.isVisible(c):
                 return True, p
             else:
@@ -1306,7 +1265,6 @@ class Position(object):
         elif limit.isAncestorOf(p):
             return False, None
         else:
-            if trace: g.trace('outside limit tree', limit, p)
             return True, None
 
     #@+node:ekr.20080416161551.211: *4* p.moveToVisNext & helper
@@ -1316,7 +1274,6 @@ class Position(object):
         p = self
         limit, limitIsVisible = c.visLimit()
         while p:
-            if trace: g.trace('1', p.h)
             if p.hasChildren():
                 if p.isExpanded():
                     p.moveToFirstChild()
@@ -1326,7 +1283,6 @@ class Position(object):
                 p.moveToNext()
             else:
                 p.moveToThreadNext()
-            if trace: g.trace('2', p and p.h)
             if p:
                 if limit and self.checkVisNextLimit(limit,p):
                     return None
@@ -1734,8 +1690,6 @@ class Position(object):
         trace = False and not g.unitTesting
         p, v = self, self.v
         v.expandedPositions = [z for z in v.expandedPositions if z != p]
-        if trace: g.trace('-----', p.h, g.callers())
-            # 'len:', len(v.expandedPositions),)
         v.contract()
 
     def expand(self):
@@ -1748,8 +1702,6 @@ class Position(object):
                 break
         else:
             v.expandedPositions.append(p.copy())
-        if trace: g.trace('=====', p.h, g.callers())
-            # 'len:', len(v.expandedPositions))
         v.expand()
 
     def isExpanded(self):
@@ -1862,14 +1814,10 @@ class Position(object):
                 if p2.v not in nodes and p2.isAnyAtFileNode():
                         # Bug fix: 2011/07/05: was p2.isAtThinFileNode():
                     nodes.append(p2.v)
-        if trace and verbose:
-            for v in nodes:
-                print(v.isDirty(), v.isAnyAtFileNode(), v)
         dirtyVnodeList = [v for v in nodes
             if not v.isDirty() and v.isAnyAtFileNode()]
         for v in dirtyVnodeList:
             v.setDirty()
-        if trace: g.trace("position", dirtyVnodeList, g.callers(5))
         return dirtyVnodeList
     #@+node:ekr.20040303163330: *5* p.setDirty
     def setDirty(self, setDescendentsDirty=True):
@@ -1885,8 +1833,6 @@ class Position(object):
         '''
         trace = False and not g.unitTesting
         p = self; dirtyVnodeList = []
-        if trace and p.h.startswith('@auto'):
-            g.trace('(p) %5s %30s' % (p.isDirty(), p.h))
         if not p.v.isDirty():
             p.v.setDirty()
             dirtyVnodeList.append(p.v)
@@ -2380,9 +2326,7 @@ class VNodeBase(object):
             newNodes = addedNodes[:]
         # Remove the hidden VNode.
         if c.hiddenRootNode in nodes:
-            if trace: g.trace('removing hidden root', c.hiddenRootNode)
             nodes.remove(c.hiddenRootNode)
-        if trace: g.trace(nodes)
         return nodes
     #@+node:ekr.20090830051712.6157: *5* v.setAllAncestorAtFileNodesDirty
     # Unlike p.setAllAncestorAtFileNodesDirty,
@@ -2395,14 +2339,10 @@ class VNodeBase(object):
         dirtyVnodeList = []
         # Calculate all nodes that are joined to p or parents of such nodes.
         nodes = v.findAllPotentiallyDirtyNodes()
-        if trace and verbose:
-            for v in nodes:
-                print(v.isDirty(), v.isAnyAtFileNode(), v)
         dirtyVnodeList = [v for v in nodes
             if not v.isDirty() and v.isAnyAtFileNode()]
         for v in dirtyVnodeList:
             v.setDirty() # Do not call p.setDirty here!
-        if trace: g.trace(dirtyVnodeList)
         return dirtyVnodeList
     #@+node:ekr.20080429053831.12: *5* v.setDirty
     def setDirty(self):
@@ -2507,7 +2447,6 @@ class VNodeBase(object):
         # This is very expensive for large text.
         if traceTime: t1 = time.time()
         if hasattr(body.wrapper, 'setInsertPoint'):
-            if trace and ins: g.trace('ins', ins, 'spot', spot)
             w.setInsertPoint(ins)
         if traceTime:
             delta_t = time.time() - t1
@@ -2527,7 +2466,6 @@ class VNodeBase(object):
         try:
             v.scrollBarSpot = w.getYScrollPosition()
             v.insertSpot = w.getInsertPoint()
-            if trace: g.trace(v.scrollBarSpot, v.insertSpot)
         except AttributeError:
             # 2011/03/21: w may not support the high-level interface.
             pass
@@ -2613,9 +2551,6 @@ class VNodeBase(object):
         # Update parent_v.children & v.parents.
         parent_v.children.insert(childIndex, v)
         v.parents.append(parent_v)
-        if trace:
-            g.trace('*** added parent', parent_v, 'to', v,
-                    'len(parents)', len(v.parents))
         # Set zodb changed flags.
         v._p_changed = 1
         parent_v._p_changed = 1
@@ -2631,9 +2566,6 @@ class VNodeBase(object):
         trace = False and not g.unitTesting
         v = self
         v.parents.append(parent)
-        if trace:
-            g.trace('v', v.h, 'parent', parent.h, g.callers())
-            # '*** added parent', parent, 'to', v, 'len(parents)', len(v.parents))
         if len(v.parents) == 1:
             for child in v.children:
                 child._addParentLinks(parent=v)
@@ -2659,7 +2591,6 @@ class VNodeBase(object):
     def _cutParentLinks(self, parent):
         trace = False and not g.unitTesting
         v = self
-        if trace: g.trace('parent', parent, 'v', v)
         v.parents.remove(parent)
         if not v.parents:
             for child in v.children:

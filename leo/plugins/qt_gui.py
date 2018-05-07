@@ -27,7 +27,6 @@ if 1:
 #@+node:ekr.20110605121601.18134: ** init (qt_gui.py)
 def init():
     trace = False and not g.unitTesting
-    if trace: g.trace('(gt_gui.py)')
     if g.app.unitTesting: # Not Ok for unit testing!
         return False
     if not QtCore:
@@ -157,7 +156,6 @@ class LeoQtGui(leoGui.LeoGui):
             # Fix #241: QMimeData object error
             cb.setText(QString(s))
             QtWidgets.QApplication.processEvents()
-            if trace: g.trace(len(s), type(s), s[: 25])
         else:
             g.trace('no clipboard!')
     #@+node:ekr.20160917125948.1: *4* qt_gui.getTextFromClipboard
@@ -168,7 +166,6 @@ class LeoQtGui(leoGui.LeoGui):
         if cb:
             QtWidgets.QApplication.processEvents()
             s = cb.text()
-            if trace: g.trace(len(s), type(s), s[: 25])
             # Fix bug 147: Python 3 clipboard encoding
             s = g.u(s)
                 # Don't call g.toUnicode here!
@@ -574,13 +571,11 @@ class LeoQtGui(leoGui.LeoGui):
             files = [g.os_path_normslashes(g.u(s)) for s in val]
             if files:
                 c.last_dir = g.os_path_dirname(files[-1])
-                if trace: g.trace('c.last_dir', c.last_dir)
             return files
         else:
             s = g.os_path_normslashes(g.u(val))
             if s:
                 c.last_dir = g.os_path_dirname(s)
-                if trace: g.trace('c.last_dir', c.last_dir)
             return s
     #@+node:ekr.20110605121601.18501: *4* qt_gui.runPropertiesDialog
     def runPropertiesDialog(self,
@@ -621,7 +616,6 @@ class LeoQtGui(leoGui.LeoGui):
             s = g.u(s or '')
             if s:
                 c.last_dir = g.os_path_dirname(s)
-                if trace: g.trace('c.last_dir', c.last_dir)
             return s
     #@+node:ekr.20110605121601.18503: *4* qt_gui.runScrolledMessageDialog
     def runScrolledMessageDialog(self,
@@ -841,7 +835,6 @@ class LeoQtGui(leoGui.LeoGui):
         trace = False and not g.unitTesting
         # g.trace(family,size,g.callers())
         if g.isString(size):
-            if trace: g.trace(size)
             if size.endswith('pt'):
                 size = size[: -2].strip()
             elif size.endswith('px'):
@@ -872,7 +865,6 @@ class LeoQtGui(leoGui.LeoGui):
             if sys.platform.startswith('linux'):
                 font.setHintingPreference(font.PreferFullHinting)
             # g.es(font,font.hintingPreference())
-            if trace: g.trace(family, size, g.callers())
             return font
         except Exception:
             g.es("exception setting font", g.callers(4))
@@ -904,8 +896,6 @@ class LeoQtGui(leoGui.LeoGui):
         # Return the image from the cache if possible.
         if name in self.iconimages:
             image = self.iconimages.get(name)
-            if trace and trace_cached: # and not name.startswith('box'):
-                g.trace('cached', id(image), name, image)
             return image
         try:
             iconsDir = g.os_path_join(g.app.loadDir, "..", "Icons")
@@ -919,14 +909,10 @@ class LeoQtGui(leoGui.LeoGui):
                         image = QtGui.QIcon(pixmap)
                     else:
                         image = QtGui.QIcon(fullname)
-                        if trace: g.trace('found', fullname) # , 'image', image)
                     self.iconimages[name] = image
                     # if trace: g.trace('new', id(image), theDir, name)
                     return image
-                elif trace and trace_not_found:
-                    g.trace('Directory not found', theDir)
             # No image found.
-            if trace: g.trace('Icon not found', name)
             return None
         except Exception:
             g.es_print("exception loading:", fullname)
@@ -1115,11 +1101,9 @@ class LeoQtGui(leoGui.LeoGui):
         )
         for name in table:
             if pc.isLoaded(name):
-                if trace: g.trace('already loaded', name)
                 vr = pc.loadOnePlugin(name)
                 break
         else:
-            if trace: g.trace('auto-loading viewrendered.py')
             vr = pc.loadOnePlugin('viewrendered.py')
         if vr:
             kw = {
@@ -1276,7 +1260,6 @@ class LeoQtGui(leoGui.LeoGui):
             if g.os_path_exists(fn):
                 pm = QtGui.QPixmap(fn)
                 if not pm.isNull():
-                    if trace: g.trace(fn)
                     splash = QtWidgets.QSplashScreen(pm,
                         qt.WindowStaysOnTopHint)
                     splash.show()
@@ -1284,8 +1267,6 @@ class LeoQtGui(leoGui.LeoGui):
                     QtCore.QThread.msleep(10)
                     splash.repaint()
                     break
-            else:
-                if trace: g.trace('no splash screen icon')
         return splash
     #@+node:ekr.20110613103140.16424: *4* qt_gui.dismiss_splash_screen
     def dismiss_splash_screen(self):
@@ -1549,10 +1530,7 @@ class StyleSheetManager(object):
             sheet = self.get_style_sheet_from_settings()
         if sheet:
             w = self.get_master_widget()
-            if trace: g.trace(tag, 'Found', len(sheet))
             w.setStyleSheet(sheet)
-        elif trace:
-            g.trace(tag, 'Not Found')
         # self.c.redraw()
 
     reloadSettings = reload_settings
@@ -1602,10 +1580,8 @@ class StyleSheetManager(object):
         if not s:
             return None # Not an error.
         for directory in self.compute_icon_directories():
-            if trace: g.trace('directory', directory)
             path = g.os_path_finalize_join(directory, s)
             if g.os_path_exists(path):
-                if trace: g.trace('Found %20s %s' % (setting, path))
                 return path
         g.es_print('no icon found for:', setting)
         return None
@@ -1662,7 +1638,6 @@ class StyleSheetManager(object):
         '''Set the master style sheet for all widgets using config settings.'''
         trace = False and not g.unitTesting
         if g.app.loadedThemes:
-            if trace: g.trace('===== Return')
             return
         c = self.c
         if top is None: top = c.frame.top
@@ -1690,10 +1665,7 @@ class StyleSheetManager(object):
             if not sheet: sheet = self.default_style_sheet()
             if w is None:
                 w = self.get_master_widget(top)
-            if trace: g.trace(w, len(sheet))
             w.setStyleSheet(sheet)
-        else:
-            if trace: g.trace('no style sheet')
     #@+node:ekr.20180316091943.1: *3* ssm.Stylesheet
     # Computations on stylesheets themeselves.
     #@+node:ekr.20140915062551.19510: *4* ssm.expand_css_constants & helpers
@@ -1708,7 +1680,6 @@ class StyleSheetManager(object):
         c = self.c
         # Warn once if the stylesheet uses old style style-sheet comment
         if settingsDict is None:
-            if trace: g.trace('----- using c.config.settingsDict')
             settingsDict = c.config.settingsDict
         if trace_dict:
             g.trace('===== settingsDict.keys()...')
@@ -1719,9 +1690,6 @@ class StyleSheetManager(object):
             to_do = self.find_constants_referenced(sheet)
             if not to_do:
                 break
-            if trace and trace_loop:
-                g.trace('===== pass %s, to_do...' % (1+pass_n))
-                g.printList(to_do)
             old_sheet = sheet
             sheet = self.do_pass(constants, deltas, settingsDict, sheet, to_do)
             if sheet == old_sheet:
@@ -1733,8 +1701,6 @@ class StyleSheetManager(object):
             g.printObj(to_do)
         sheet = self.resolve_urls(sheet)
         sheet = sheet.replace('\\\n', '') # join lines ending in \
-        if trace and trace_result:
-            g.trace('returns...\n', sheet)
         return sheet
     #@+node:ekr.20150617085045.1: *5* ssm.adjust_sizes
     def adjust_sizes(self, font_size_delta, settingsDict):
@@ -1746,8 +1712,6 @@ class StyleSheetManager(object):
         # legacy
         if font_size_delta:
             deltas['font-size-body'] = font_size_delta
-        if trace:
-            g.trace('c._style_deltas', c._style_deltas)
         for delta in c._style_deltas:
             # adjust @font-size-body by font_size_delta
             # easily extendable to @font-size-*
@@ -1789,15 +1753,11 @@ class StyleSheetManager(object):
                     # They RUIN style sheets if they appear in a nested comment!
                         # value = '%s /* %s */' % (g.u(value.val), key)
                     value = g.u(value.val)
-                    if trace and trace_found:
-                       g.trace('found: %30s %s' % (key, g.truncate(repr(value), 30)))
                 elif key in self.color_db:
                     # New in Leo 5.5: Do NOT add comments here.
                     # They RUIN style sheets if they appear in a nested comment!
                     value = self.color_db.get(key)
                         # value = '%s /* %s */' % (value, key)
-                    if trace and trace_found:
-                        g.trace('found: %30s %s' % (key, g.truncate(repr(value), 30)))
             if value:
                 # Partial fix for #780.
                 try:
@@ -1910,14 +1870,10 @@ class StyleSheetManager(object):
             # (open_path,  re.compile(r'\bimage:\s*at-tree-image-open', re.IGNORECASE)),
             # (close_path, re.compile(r'\bimage:\s*at-tree-image-closed', re.IGNORECASE)),
         )
-        if trace:
-            g.trace('open path: ', repr(open_path))
-            g.trace('close_path:', repr(close_path))
         for path, pattern in table:
             for mo in pattern.finditer(sheet):
                 old = mo.group(0)
                 new = 'image: url(%s)' % path
-                if trace: g.trace('found', old)
                 sheet = sheet.replace(old, new)
         return sheet
     #@+node:ekr.20180320054305.1: *5* ssm.resolve_urls

@@ -66,7 +66,6 @@ class SessionManager(object):
         if unls is None:
             unls = []
         for unl in unls:
-            if trace: g.trace('1: unl', unl)
             if unl.strip():
                 i = unl.find("#")
                 if i > -1:
@@ -75,7 +74,6 @@ class SessionManager(object):
                     fn, unl = unl, ''
                 fn = fn.strip()
                 exists = fn and g.os_path_exists(fn)
-                if trace: g.trace('2: exists:', exists, 'fn', fn, 'unl', unl)
                 if exists:
                     c2 = g.app.loadManager.loadLocalFile(fn, gui=g.app.gui, old_c=c)
                     for p in c2.all_positions():

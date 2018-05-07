@@ -271,7 +271,6 @@ class Undoer(object):
 
     def setRedoType(self, theType):
         trace = False and not g.unitTesting
-        if trace: g.trace(theType, g.callers(4))
         u = self; frame = u.c.frame
         if not g.isString(theType):
             g.trace('oops: expected string for command, got %s' % repr(theType))
@@ -293,7 +292,6 @@ class Undoer(object):
     #@+node:ekr.20091221145433.6381: *4* u.setUndoType
     def setUndoType(self, theType):
         trace = False and not g.unitTesting
-        if trace: g.trace(theType, g.callers(4))
         u = self; frame = u.c.frame
         if not g.isString(theType):
             g.trace('oops: expected string for command, got %s' % repr(theType))
@@ -332,7 +330,6 @@ class Undoer(object):
         else:
             u.setRedoType("Can't Redo")
         u.cutStack()
-        if trace: g.trace(u.bead, u.undoMenuLabel, u.redoMenuLabel)
     #@+node:EKR.20040530121329: *4* u.restoreTree & helpers
     def restoreTree(self, treeInfo):
         """Use the tree info to restore all VNode data,
@@ -909,7 +906,6 @@ class Undoer(object):
     def onSelect(self, old_p, p):
         trace = False and not g.unitTesting
         u = self
-        if trace: g.trace(old_p and old_p.h, p.h)
         if u.per_node_undo:
             if old_p and u.beads:
                 u.putIvarsToVnode(old_p)
@@ -927,8 +923,6 @@ class Undoer(object):
         for key in ('bead', 'beads', 'undoType',):
             bunch[key] = getattr(u, key)
         v.undo_info = bunch
-        if trace: g.trace('****', v.h, getattr(bunch, 'bead'))
-            # Use getattr to keep pylint happy.
     #@+node:ekr.20110519074734.6095: *5* u.setIvarsFromVnode
     def setIvarsFromVnode(self, p):
         u = self; v = p.v
@@ -964,7 +958,6 @@ class Undoer(object):
             u.setUndoTypes() # Must still recalculate the menu labels.
             return None
         #@-<< return if there is nothing to do >>
-        if trace: g.trace(undo_type, 'oldSel', oldSel, 'newSel', newSel)
         #@+<< init the undo params >>
         #@+node:ekr.20040324061854.1: *5* << init the undo params >>
         # Clear all optional params.
@@ -1019,14 +1012,6 @@ class Undoer(object):
         while i >= 0 and newText[i] == '\n':
             new_newlines += 1
             i -= 1
-        if trace and verbose:
-            g.pr("lead,trail", leading, trailing)
-            g.pr("old mid,nls:", len(old_middle_lines), old_newlines, oldText)
-            g.pr("new mid,nls:", len(new_middle_lines), new_newlines, newText)
-            #g.pr("lead,trail:",leading,trailing)
-            #g.pr("old mid:",old_middle_lines)
-            #g.pr("new mid:",new_middle_lines)
-            g.pr("---------------------")
         #@-<< compute leading, middle & trailing  lines >>
         #@+<< save undo text info >>
         #@+node:ekr.20031218072017.1492: *5* << save undo text info >>
@@ -1120,13 +1105,8 @@ class Undoer(object):
                     if newSel:
                         new_start, new_end = newSel
                     prev_start, prev_end = u.prevSel
-                    if trace:
-                        g.trace('oldSel: %s newSel: %s' % (oldSel, newSel))
-                        g.trace('old_start: %s old_end: %s new_start: %s new_end: %s' % (
-                            old_start, old_end, new_start, new_end))
                     if old_start != old_end or new_start != new_end:
                         # The new and old characters are not contiguous.
-                        if trace: g.trace('not contiguous')
                         newBead = True
                     else:
                         # 2011/04/01: Patch by Sam Hartsfield
@@ -1156,7 +1136,6 @@ class Undoer(object):
                             if old_col - 1 >= len(old_s) or new_col - 1 >= len(new_s):
                                 newBead = True
                             else:
-                                if trace: g.trace(new_col,len(new_s),repr(new_s))
                                 old_ch = old_s[old_col - 1]
                                 new_ch = new_s[new_col - 1]
                                 # g.trace(repr(old_ch),repr(new_ch))
@@ -1213,17 +1192,13 @@ class Undoer(object):
         u = self; c = u.c
         w = c.frame.body.wrapper
         if not c.p:
-            if trace: g.trace('no current position')
             return
         # End editing *before* getting state.
         c.endEditing()
         if not u.canRedo():
-            if trace: g.trace('cant redo', u.undoMenuLabel, u.redoMenuLabel)
             return
         if not u.getBead(u.bead + 1):
-            if trace: g.trace('no bead')
             return
-        if trace: g.trace(u.dumpBead(u.bead))
         u.redoing = True
         u.groupCount = 0
         if u.redoHelper:
@@ -1336,7 +1311,6 @@ class Undoer(object):
             for z in bunch.items:
                 self.setIvarsFromBunch(z)
                 if z.redoHelper:
-                    if trace: g.trace(z.redoHelper.__name__, p.h)
                     z.redoHelper(); count += 1
                 else:
                     g.trace('oops: no redo helper for %s %s' % (u.undoType, p.h))
@@ -1503,12 +1477,9 @@ class Undoer(object):
         if u.per_node_undo: # 2011/05/19
             u.setIvarsFromVnode(c.p)
         if not u.canUndo():
-            if trace: g.trace('cant undo', u.undoMenuLabel, u.redoMenuLabel)
             return
         if not u.getBead(u.bead):
-            if trace: g.trace('no bead')
             return
-        if trace: g.trace(u.dumpBead(u.bead))
         u.undoing = True
         u.groupCount = 0
         if u.undoHelper:
@@ -1635,7 +1606,6 @@ class Undoer(object):
             for z in reversedItems:
                 self.setIvarsFromBunch(z)
                 if z.undoHelper:
-                    if trace: g.trace(z.undoHelper.__name__, p.v)
                     z.undoHelper(); count += 1
                 else:
                     g.trace('oops: no undo helper for %s %s' % (u.undoType, p.v))
@@ -1694,10 +1664,6 @@ class Undoer(object):
         assert(u.oldParent_v)
         assert(u.newParent_v)
         assert(v)
-        if trace:
-            print('v', v, 'newN', u.newN)
-            for z in u.newParent_v.children:
-                print(z)
         # Adjust the children arrays.
         assert u.newParent_v.children[u.newN] == v
         del u.newParent_v.children[u.newN]
@@ -1720,7 +1686,6 @@ class Undoer(object):
         u.p.b = u.oldBody
         w.setAllText(u.oldBody)
         c.frame.body.recolor(u.p)
-        if trace: g.trace(repr(u.oldHead))
         u.p.h = u.oldHead
         # This is required.  Otherwise c.redraw will revert the change!
         c.frame.tree.setHeadline(u.p, u.oldHead)
@@ -1792,7 +1757,6 @@ class Undoer(object):
         p.setBodyString(result)
         w.setAllText(result)
         sel = u.oldSel if tag == 'undo' else u.newSel
-        if trace: g.trace(sel)
         if sel:
             i, j = sel
             w.setSelectionRange(i, j, insert=j)

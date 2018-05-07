@@ -42,8 +42,7 @@ class Cacher(object):
     #@+node:ekr.20100208082353.5919: *3* cacher.Birth
     #@+node:ekr.20100208062523.5886: *4* cacher.ctor
     def __init__(self, c=None):
-        trace = False and not g.unitTesting
-        if trace: g.trace('(Cacher)', c and c.shortFileName() or '<no c>')
+        
         self.c = c
         # set by initFileDB and initGlobalDB...
         self.db = {}
@@ -54,8 +53,7 @@ class Cacher(object):
         self.inited = False
     #@+node:ekr.20100208082353.5918: *4* cacher.initFileDB
     def initFileDB(self, fn):
-        trace = False and not g.unitTesting
-        if trace: g.trace('inited', self.inited, repr(fn))
+
         if not fn: return
         pth, bname = split(fn)
         if pth and bname:
@@ -71,17 +69,15 @@ class Cacher(object):
             # Fixes bug 670108.
             self.c.db = self.db
             self.inited = True
-            if trace: g.trace('self.c.db', self.db)
     #@+node:ekr.20100208082353.5920: *4* cacher.initGlobalDb
     def initGlobalDB(self):
-        trace = False and not g.unitTesting
+
         # New in Leo 4.10.1.
         # We always create the global db, even if caching is disabled.
         try:
             dbdirname = g.app.homeLeoDir + "/db/global"
             db = SqlitePickleShare(dbdirname) if SQLITE else PickleShareDB(dbdirname)
             self.db = db
-            if trace: g.trace(db, dbdirname)
             self.inited = True
             return db
         except Exception:
@@ -122,7 +118,6 @@ class Cacher(object):
         Compute the hash of fileName and content. fileName may be unicode,
         content must be bytes (or plain string in Python 2.x).
         '''
-        trace = False and not g.unitTesting
         m = hashlib.md5()
         if g.isUnicode(fileName):
             fileName = g.toEncodedString(fileName)
@@ -138,7 +133,6 @@ class Cacher(object):
         m.update(branch)
         m.update(fileName)
         m.update(content)
-        if trace: g.trace(m.hexdigest())
         return "fcache/" + m.hexdigest()
     #@+node:ekr.20100208082353.5925: *3* cacher.Reading
     #@+node:vitalije.20180507112319.1: *4* cacher.collectChangedNodes
@@ -182,16 +176,13 @@ class Cacher(object):
         '''
         Create outline structure from recursive aList built by makeCacheList.
         '''
-        trace = False and not g.unitTesting # and fileName.endswith('leoFileCommands.py')
         c = self.c
         if not c:
             g.internalError('no c')
             return
         if top:
-            if trace: g.trace(g.shortFileName(fileName))
             c.cacheListFileName = fileName
         if not aList:
-            if trace: g.trace('no list')
             return
         h, b, gnx, children = aList
         if h is not None:
@@ -201,8 +192,6 @@ class Cacher(object):
             v._bodyString = g.toUnicode(b)
         for child_tuple in children:
             h, b, gnx, grandChildren = child_tuple
-            if trace:
-                g.trace('%30s %3s %s' % (gnx, len(grandChildren), h.strip()))
             isClone, child_v = self.fastAddLastChild(fileName, gnx, parent_v)
             if isClone:
                 self.checkForChangedNodes(child_tuple, fileName, parent_v)
@@ -216,7 +205,6 @@ class Cacher(object):
         '''
         Update the outline described by child_tuple, including all descendants.
         '''
-        trace = False and not g.unitTesting
         h, junk_b, gnx, grand_children = child_tuple
         child_v = self.c.fileCommands.gnxDict.get(gnx)
         if child_v:
@@ -248,7 +236,6 @@ class Cacher(object):
             # but the user should be handle them easily enough.
             isClone, child_v = self.fastAddLastChild(fileName, gnx, parent_v)
             self.createOutlineFromCacheList(child_v, child_tuple, fileName, top=False)
-            if trace: g.trace('vnode does not exist: %25s %s' % (gnx, h))
             # if not self.update_warning_given: # not needed.
                 # self.update_warning_given = True
                 # g.internalError('no vnode', child_tuple)
@@ -264,12 +251,15 @@ class Cacher(object):
         c = self.c
         gnxString = g.toUnicode(gnxString)
         gnxDict = c.fileCommands.gnxDict
-        if gnxString is None: v = None
-        else: v = gnxDict.get(gnxString)
+        if gnxString is None:
+            v = None
+        else:
+            v = gnxDict.get(gnxString)
         is_clone = v is not None
-        if trace: g.trace(
-            'clone', '%-5s' % (is_clone),
-            'parent_v', parent_v, 'gnx', gnxString, 'v', repr(v))
+        if trace:
+            g.trace(
+                'clone', '%-5s' % (is_clone),
+                'parent_v', parent_v, 'gnx', gnxString, 'v', repr(v))
         if is_clone:
             # new-read: update tempRoots.
             if not hasattr(v, 'tempRoots'):
@@ -300,7 +290,6 @@ class Cacher(object):
 
         Issue a (rare) warning if two different files are involved.
         '''
-        trace = False and not g.unitTesting
         always_warn = True # True always warn about changed nodes.
         c = self.c
         h, b, gnx, grandChildren = child_tuple
@@ -324,11 +313,6 @@ class Cacher(object):
         if not hasattr(child_v, 'tempRoots'):
             child_v.tempRoots = set()
         child_v.tempRoots.add(fileName)
-        if trace:
-            # g.trace('same h: %s, same b: %s same fn: %s' % (
-                # same_head, same_body, same_file))
-            g.trace('fileName', fileName)
-            g.trace('tempRoots', old_roots)
         if must_warn:
             # This is the so-called "rare" case:
             # The node differs  in two different external files.
@@ -379,7 +363,7 @@ class Cacher(object):
         recreateV(aList)
     #@+node:ekr.20100208082353.5923: *4* cacher.getCachedGlobalFileRatios
     def getCachedGlobalFileRatios(self):
-        trace = False and not g.unitTesting
+
         c = self.c
         if not c:
             return g.internalError('no commander')
@@ -392,29 +376,24 @@ class Cacher(object):
             ratio2 = float(self.db.get('body_secondary_ratio_%s' % (key), '0.5'))
         except TypeError:
             ratio2 = 0.5
-        if trace:
-            g.trace('  %s %1.2f %1.2f' % (c.shortFileName(), ratio, ratio2))
         return ratio, ratio2
     #@+node:ekr.20100208082353.5924: *4* cacher.getCachedStringPosition
     def getCachedStringPosition(self):
-        trace = False and not g.unitTesting
+
         c = self.c
         if not c:
             return g.internalError('no commander')
         key = self.fileKey(c.mFileName, self.globals_tag)
         str_pos = self.db.get('current_position_%s' % key)
-        if trace: g.trace(c.shortFileName(), str_pos)
         return str_pos
     #@+node:ekr.20100208082353.5922: *4* cacher.getCachedWindowPositionDict
     def getCachedWindowPositionDict(self, fn):
         '''Return a dict containing window positions.'''
-        trace = False and not g.unitTesting
         c = self.c
         if not c:
             g.internalError('no commander')
             return {}
         key = self.fileKey(c.mFileName, self.globals_tag)
-        if trace: g.trace(self.db.__class__.__name__)
         data = self.db.get('window_position_%s' % (key))
         # pylint: disable=unpacking-non-sequence
         if data:
@@ -423,7 +402,6 @@ class Cacher(object):
             d = {'top': top, 'left': left, 'height': height, 'width': width}
         else:
             d = {}
-        if trace: g.trace(c.shortFileName(), key[-10:], d)
         return d
     #@+node:ekr.20100208071151.5905: *4* cacher.readFile
     def readFile(self, fileName, root):
@@ -431,41 +409,26 @@ class Cacher(object):
         Read the file from the cache if possible.
         Return (s,ok,key)
         '''
-        trace = False and not g.unitTesting
-        showHits = False
-        showLines = False
-        showList = False
-        sfn = g.shortFileName(fileName)
+        # sfn = g.shortFileName(fileName)
         if not g.enableDB:
-            if trace: g.trace('g.enableDB is False', fileName)
             return '', False, None
-        if trace: g.trace('=====', root.v.gnx, 'children', root.numberOfChildren(), fileName)
         s = g.readFileIntoEncodedString(fileName, silent=True)
         if s is None:
-            if trace: g.trace('empty file contents', fileName)
             return s, False, None
         assert not g.isUnicode(s)
-        if trace and showLines:
-            for i, line in enumerate(g.splitLines(s)):
-                print('%3d %s' % (i, repr(line)))
         # There will be a bug if s is not already an encoded string.
         key = self.fileKey(fileName, s, requireEncodedString=True)
             # Fix bug #385: use the full fileName, not root.h.
         ok = self.db and key in self.db
         if ok:
-            if trace and showHits: g.trace('cache hit', key[-6:], sfn)
             # Delete the previous tree, regardless of the @<file> type.
             while root.hasChildren():
                 root.firstChild().doDelete()
             # Recreate the file from the cache.
             aList = self.db.get(key)
-            if trace and showList:
-                g.printList(list(g.flatten_list(aList)))
             self.collectChangedNodes(root.v, aList, fileName)
             self.createOutlineFromCacheList2(root.v, aList)
             #self.createOutlineFromCacheList(root.v, aList, fileName=fileName)
-        elif trace:
-            g.trace('cache miss', key[-6:], sfn)
         return s, ok, key
     #@+node:ekr.20100208082353.5927: *3* cacher.Writing
     #@+node:ekr.20100208071151.5901: *4* cacher.makeCacheList
@@ -479,45 +442,36 @@ class Cacher(object):
             [self.makeCacheList(p2) for p2 in p.children()]]
     #@+node:ekr.20100208082353.5929: *4* cacher.setCachedGlobalsElement
     def setCachedGlobalsElement(self, fn):
-        trace = False and not g.unitTesting
+
         c = self.c
         if not c:
             return g.internalError('no commander')
         key = self.fileKey(c.mFileName, self.globals_tag)
         self.db['body_outline_ratio_%s' % key] = str(c.frame.ratio)
         self.db['body_secondary_ratio_%s' % key] = str(c.frame.secondary_ratio)
-        if trace: g.trace('ratios: %1.2f %1.2f' % (
-            c.frame.ratio, c.frame.secondary_ratio))
         width, height, left, top = c.frame.get_window_info()
         self.db['window_position_%s' % key] = (
             str(top), str(left), str(height), str(width))
-        if trace:
-            g.trace(c.shortFileName(),
-                    'top', top, 'left', left,
-                    'height', height, 'width', width)
     #@+node:ekr.20100208082353.5928: *4* cacher.setCachedStringPosition
     def setCachedStringPosition(self, str_pos):
-        trace = False and not g.unitTesting
+
         c = self.c
         if not c:
             return g.internalError('no commander')
         key = self.fileKey(c.mFileName, self.globals_tag)
         self.db['current_position_%s' % key] = str_pos
-        if trace: g.trace(c.shortFileName(), str_pos)
     #@+node:ekr.20100208071151.5903: *4* cacher.writeFile
     def writeFile(self, p, fileKey):
         '''Update the cache after reading the file.'''
-        trace = False and not g.unitTesting
         # Check g.enableDB before giving internal error.
         if not g.enableDB:
-            if trace: g.trace('cache disabled')
+            pass
         elif not fileKey:
             g.trace(g.callers(5))
             g.internalError('empty fileKey')
         elif self.db.get(fileKey):
-            if trace: g.trace('already cached', fileKey)
+            pass
         else:
-            if trace: g.trace('caching ', p.h, fileKey)
             self.db[fileKey] = self.makeCacheList(p)
     #@+node:ekr.20100208065621.5890: *3* cacher.test
     def test(self):
@@ -568,9 +522,7 @@ class PickleShareDB(object):
         Init the PickleShareDB class.
         root: The directory that contains the data. Created if it doesn't exist.
         """
-        trace = False and not g.unitTesting
         self.root = abspath(expanduser(root))
-        if trace: g.trace('(PickleShareDB)', self.root)
         if not isdir(self.root) and not g.unitTesting:
             self._makedirs(self.root)
         self.cache = {}
@@ -604,16 +556,12 @@ class PickleShareDB(object):
         self.dumper = dumpz
     #@+node:ekr.20100208223942.5970: *4* __contains__(PickleShareDB)
     def __contains__(self, key):
-        trace = False and g.unitTesting
-        if trace: g.trace('(PickleShareDB)', key)
+
         return self.has_key(key) # NOQA
     #@+node:ekr.20100208223942.5971: *4* __delitem__
     def __delitem__(self, key):
         """ del db["key"] """
-        trace = False and not g.unitTesting
         fn = join(self.root, key)
-        if trace: g.trace('(PickleShareDB)',
-            g.shortFileName(fn))
         self.cache.pop(fn, None)
         try:
             os.remove(fn)
@@ -624,30 +572,24 @@ class PickleShareDB(object):
     #@+node:ekr.20100208223942.5972: *4* __getitem__
     def __getitem__(self, key):
         """ db['key'] reading """
-        trace = False and not g.unitTesting
         fn = join(self.root, key)
         try:
             mtime = (os.stat(fn)[stat.ST_MTIME])
         except OSError:
-            if trace: g.trace('***OSError', fn, key)
             raise KeyError(key)
         if fn in self.cache and mtime == self.cache[fn][1]:
             obj = self.cache[fn][0]
-            if trace: g.trace('(PickleShareDB: in cache)', key)
             return obj
         try:
             # The cached item has expired, need to read
             obj = self.loader(self._openFile(fn, 'rb'))
         except Exception:
-            if trace: g.trace('***Exception', key)
             raise KeyError(key)
         self.cache[fn] = (obj, mtime)
-        if trace: g.trace('(PickleShareDB: set cache)', key)
         return obj
     #@+node:ekr.20100208223942.5973: *4* __iter__
     def __iter__(self):
-        trace = False and g.unitTesting
-        if trace: g.trace('(PickleShareDB)', list(self.keys()))
+
         for k in list(self.keys()):
             yield k
     #@+node:ekr.20100208223942.5974: *4* __repr__
@@ -656,9 +598,7 @@ class PickleShareDB(object):
     #@+node:ekr.20100208223942.5975: *4* __setitem__
     def __setitem__(self, key, value):
         """ db['key'] = 5 """
-        trace = False and not g.unitTesting
         fn = join(self.root, key)
-        if trace: g.trace('(PickleShareDB)', key)
         parent, junk = split(fn)
         if parent and not isdir(parent):
             self._makedirs(parent)
@@ -667,13 +607,11 @@ class PickleShareDB(object):
             mtime = os.path.getmtime(fn)
             self.cache[fn] = (value, mtime)
         except OSError as e:
-            if trace: g.trace('***OSError')
             if e.errno != 2:
                 raise
     #@+node:ekr.20100208223942.10452: *3* _makedirs
     def _makedirs(self, fn, mode=0o777):
-        trace = False and not g.unitTesting
-        if trace: g.trace(self.root)
+
         os.makedirs(fn, mode)
     #@+node:ekr.20100208223942.10458: *3* _openFile
     def _openFile(self, fn, mode='r'):
@@ -737,18 +675,15 @@ class PickleShareDB(object):
             self.__delitem__(z)
     #@+node:ekr.20100208223942.5979: *3* get
     def get(self, key, default=None):
-        trace = False and not g.unitTesting
+
         try:
             val = self[key]
-            if trace: g.trace('(PickleShareDB) SUCCESS', key)
             return val
         except KeyError:
-            if trace: g.trace('(PickleShareDB) ERROR',  key)
             return default
     #@+node:ekr.20100208223942.5980: *3* has_key (PickleShareDB)
     def has_key(self, key):
-        trace = False and g.unitTesting
-        if trace: g.trace('(PickleShareDB)', key)
+
         try:
             self[key]
         except KeyError:
@@ -762,14 +697,12 @@ class PickleShareDB(object):
 
     def keys(self, globpat=None):
         """Return all keys in DB, or all keys matching a glob"""
-        trace = False and not g.unitTesting
         if globpat is None:
             files = self._walkfiles(self.root)
         else:
             # Do not call g.glob_glob here.
             files = [z for z in join(self.root, globpat)]
         result = [self._normalized(p) for p in files if isfile(p)]
-        if trace: g.trace('(PickleShareDB)', len(result), result)
         return result
     #@+node:ekr.20100208223942.5976: *4* _normalized
     def _normalized(self, p):
@@ -844,8 +777,6 @@ class PickleShareDB(object):
         for a while.
 
         """
-        trace = False and not g.unitTesting
-        if trace: g.trace()
         if not items:
             self.cache = {}
         for it in items:
@@ -867,9 +798,7 @@ class SqlitePickleShare(object):
         Init the SqlitePickleShare class.
         root: The directory that contains the data. Created if it doesn't exist.
         """
-        trace = False and not g.unitTesting
         self.root = abspath(expanduser(root))
-        if trace: g.trace('(SqlitePickleShare)', self.root)
         if not isdir(self.root) and not g.unitTesting:
             self._makedirs(self.root)
         dbfile = ':memory:' if g.unitTesting else join(root, 'cache.sqlite')
@@ -905,8 +834,7 @@ class SqlitePickleShare(object):
             self.reset_protocol_in_values()
     #@+node:vitalije.20170716201700.4: *4* __contains__(SqlitePickleShare)
     def __contains__(self, key):
-        trace = False and g.unitTesting
-        if trace: g.trace('(PickleShareDB)', key)
+
         return self.has_key(key) # NOQA
     #@+node:vitalije.20170716201700.5: *4* __delitem__
     def __delitem__(self, key):
@@ -933,8 +861,7 @@ class SqlitePickleShare(object):
         return obj
     #@+node:vitalije.20170716201700.7: *4* __iter__
     def __iter__(self):
-        trace = False and g.unitTesting
-        if trace: g.trace('(SqlitePickleShare)', list(self.keys()))
+
         for k in list(self.keys()):
             yield k
     #@+node:vitalije.20170716201700.8: *4* __repr__
@@ -943,7 +870,6 @@ class SqlitePickleShare(object):
     #@+node:vitalije.20170716201700.9: *4* __setitem__
     def __setitem__(self, key, value):
         """ db['key'] = 5 """
-        #trace = False and not g.unitTesting
         try:
             data = self.dumper(value)
             self.conn.execute('''replace into cachevalues(key, data)
@@ -953,8 +879,7 @@ class SqlitePickleShare(object):
 
     #@+node:vitalije.20170716201700.10: *3* _makedirs
     def _makedirs(self, fn, mode=0o777):
-        trace = False and not g.unitTesting
-        if trace: g.trace(self.root)
+
         os.makedirs(fn, mode)
     #@+node:vitalije.20170716201700.11: *3* _openFile
     def _openFile(self, fn, mode='r'):
@@ -1011,14 +936,12 @@ class SqlitePickleShare(object):
         self.conn.execute('delete from cachevalues;')
     #@+node:vitalije.20170716201700.16: *3* get
     def get(self, key, default=None):
-        trace = False and not g.unitTesting
+
         if not self.has_key(key):return default
         try:
             val = self[key]
-            if trace: g.trace('(SqlitePickleShare) SUCCESS', key)
             return val
         except KeyError:
-            if trace: g.trace('(SqlitePickleShare) ERROR',  key)
             return default
     #@+node:vitalije.20170716201700.17: *3* has_key (PickleShareDB)
     def has_key(self, key):

@@ -1110,7 +1110,6 @@ class LeoApp(object):
     #@+node:ekr.20031218072017.1980: *5* app.setIDFromFile
     def setIDFromFile(self, verbose):
         '''Attempt to set g.app.leoID from leoID.txt.'''
-        trace = False
         tag = ".leoID.txt"
         for theDir in (self.homeLeoDir, self.globalConfigDir, self.loadDir):
             if not theDir:
@@ -1123,10 +1122,6 @@ class LeoApp(object):
                     continue
                 # Careful: periods in gnx will corrupt the .leo file!
                 self.leoID = s.replace('.', '-')
-                if trace:
-                    g.es('leoID=%r (in %s)' % (self.leoID, theDir), color='red')
-                else:
-                    g.es('leoID=%r' % (self.leoID), color='red')
             except IOError:
                 pass
             except Exception:
@@ -1206,12 +1201,7 @@ class LeoApp(object):
     #@+node:ekr.20031218072017.2619: *4* app.writeWaitingLog
     def writeWaitingLog(self, c):
         '''Write all waiting lines to the log.'''
-        trace = False
         app = self
-        if trace:
-            # Do not call g.es, g.es_print, g.pr or g.trace here!
-            print('***** writeWaitingLog: silent: %s c: %s' % (
-                app.silentMode, c and c.shortFileName() or '<no c>'))
         if not c or not c.exists:
             return
         if g.unitTesting:
@@ -1416,7 +1406,6 @@ class LeoApp(object):
             if trace: g.pr('forgetOpenFile: did not remove: %s' % (fn))
     #@+node:ekr.20120427064024.10065: *4* app.rememberOpenFile
     def rememberOpenFile(self, fn):
-        trace = False and not g.unitTesting
         d, tag = g.app.db, 'open-leo-files'
         if d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting:
             pass
@@ -1426,11 +1415,6 @@ class LeoApp(object):
             aList = d.get(tag) or []
             # It's proper to add duplicates to this list.
             aList.append(fn)
-            if trace:
-                # Trace doesn't work well while initing.
-                print('rememberOpenFile:added: %s' % (fn))
-                for z in aList:
-                    print('  %s' % (z))
             d[tag] = aList
     #@+node:ekr.20150621062355.1: *4* app.runAlreadyOpenDialog
     def runAlreadyOpenDialog(self, c):
@@ -1452,14 +1436,11 @@ class LeoApp(object):
     #@+node:ekr.20140727180847.17985: *4* app.scanner_for_at_auto
     def scanner_for_at_auto(self, c, p, **kwargs):
         '''A factory returning a scanner function for p, an @auto node.'''
-        trace = False and not g.unitTesting
         d = g.app.atAutoDict
-        if trace: g.trace('\n'.join(sorted(d.keys())))
         for key in d.keys():
             # pylint: disable=cell-var-from-loop
             aClass = d.get(key)
             if aClass and g.match_word(p.h, 0, key):
-                if trace: g.trace('found', aClass.__name__)
 
                 def scanner_for_at_auto_cb(c, parent, s, **kwargs):
                     try:
@@ -1473,16 +1454,12 @@ class LeoApp(object):
 
                 scanner_for_at_auto_cb.scanner_name = aClass.__name__
                     # For traces in ic.createOutline.
-                if trace: g.trace('found', p.h)
                 return scanner_for_at_auto_cb
-        if trace: g.trace('not found', p.h, sorted(d.keys()))
         return None
     #@+node:ekr.20140130172810.15471: *4* app.scanner_for_ext
     def scanner_for_ext(self, c, ext, **kwargs):
         '''A factory returning a scanner function for the given file extension.'''
-        trace = False and not g.unitTesting
         aClass = g.app.classDispatchDict.get(ext)
-        if trace: g.trace(ext, aClass.__name__)
         if aClass:
 
             def scanner_for_ext_cb(c, parent, s, **kwargs):
@@ -1550,8 +1527,6 @@ class LeoApp(object):
         return leoCommands.Commands(fileName, relativeFileName, gui, previousSettings)
     #@+node:ekr.20120304065838.15588: *3* app.selectLeoWindow
     def selectLeoWindow(self, c):
-        trace = False and not g.unitTesting
-        if trace: g.trace(c.frame.title)
         frame = c.frame
         frame.deiconify()
         frame.lift()
@@ -1606,7 +1581,6 @@ class LoadManager(object):
     #@+node:ekr.20120209051836.10372: *4* LM.computeLeoSettingsPath
     def computeLeoSettingsPath(self):
         '''Return the full path to leoSettings.leo.'''
-        trace = False
         # lm = self
         join = g.os_path_finalize_join
         settings_fn = 'leoSettings.leo'
@@ -1618,7 +1592,6 @@ class LoadManager(object):
             join(g.app.globalConfigDir, settings_fn)
         )
         for path in table:
-            if trace: print('computeLeoSettingsPath', g.os_path_exists(path), repr(path))
             if g.os_path_exists(path):
                 break
         else:
@@ -1631,7 +1604,6 @@ class LoadManager(object):
 
         The "footnote": Get the local directory from lm.files[0]
         '''
-        trace = False
         lm = self
         join = g.os_path_finalize_join
         settings_fn = 'myLeoSettings.leo'
@@ -1654,7 +1626,6 @@ class LoadManager(object):
             join(g.app.globalConfigDir, settings_fn),
         )
         for path in table:
-            if trace: print('computeMyLeoSettingsPath', g.os_path_exists(path), repr(path))
             if g.os_path_exists(path):
                 break
         else:
@@ -1834,21 +1805,15 @@ class LoadManager(object):
     #@+node:ekr.20180321124503.1: *5* LM.resolve_theme_path
     def resolve_theme_path(self, fn, tag):
         '''Search theme directories for the given .leo file.'''
-        trace = False and not g.unitTesting
         if not fn:
             return None
         if not fn.endswith('.leo'):
             fn += '.leo'
-        if trace:
-            print('')
-            g.trace('%s: %s' % (tag, fn))
         for directory in self.computeThemeDirectories():
             path = g.os_path_join(directory, fn)
                 # Normalizes slashes, etc.
             if g.os_path_exists(path):
-                if trace: g.trace('%s is  in %s\n' % (fn, directory))
                 return path
-            elif trace: g.trace('%s not in %s' % (fn, directory))
         print('theme .leo file not found: %s' % fn)
         return None
     #@+node:ekr.20120211121736.10772: *4* LM.computeWorkbookFileName
@@ -1860,13 +1825,10 @@ class LoadManager(object):
         1. The workbook does not exist.
         2. We are unit testing or in batch mode.
         '''
-        trace = False and not g.unitTesting
         # lm = self
         fn = g.app.config.getString(setting='default_leo_file')
             # The default is ~/.leo/workbook.leo
         if not fn:
-            if trace:
-                g.es_debug("FAILED g.app.config.getString(setting='default_leo_file')")
             fn = g.os_path_finalize('~/.leo/workbook.leo')
         fn = g.os_path_finalize(fn)
         if not fn:
@@ -2003,17 +1965,9 @@ class LoadManager(object):
 
         Both old_d and new_d remain unchanged.
         '''
-        trace = False and not g.unitTesting
         lm = self
         if not old_d: return new_d
         if not new_d: return old_d
-        if trace:
-            new_n, old_n = len(list(new_d.keys())), len(list(old_d.keys()))
-            g.trace('new %4s %s' % (new_n, new_d.name()))
-            g.trace('old %4s %s' % (old_n, old_d.name()))
-            if localFlag:
-                g.trace('new_d.d')
-                g.printDict(new_d.d)
         bi_list = new_d.get(g.app.trace_setting)
         if bi_list:
             # This code executed only if g.app.trace_setting exists.
@@ -2024,10 +1978,6 @@ class LoadManager(object):
                     pane = ' in %s panes' % bi.pane
                 else:
                     pane = ''
-                if trace:
-                    g.trace(repr(bi))
-                    g.es_print('--trace-setting: %20s binds %s to %-20s%s' %  (
-                        fn, g.app.trace_setting, stroke, pane))
         inverted_old_d = lm.invert(old_d)
         inverted_new_d = lm.invert(new_d)
         # #510 & #327: always honor --trace-binding here.
@@ -2096,9 +2046,6 @@ class LoadManager(object):
         Invert a shortcut dict whose keys are command names,
         returning a dict whose keys are strokes.
         '''
-        trace = False and not g.unitTesting
-        verbose = True
-        if trace: g.trace('*' * 40, d.name())
         result = g.TypedDictOfLists(
             name='inverted %s' % d.name(),
             keyType=g.KeyStroke,
@@ -2108,11 +2055,7 @@ class LoadManager(object):
                 stroke = bi.stroke # This is canonicalized.
                 bi.commandName = commandName # Add info.
                 assert stroke
-                if trace and verbose:
-                    g.trace('%40s %s' % (commandName, stroke))
                 result.add(stroke, bi)
-        if trace: g.trace('returns  %4s %s %s' % (
-            len(list(result.keys())), id(d), result.name()))
         return result
     #@+node:ekr.20120214132927.10725: *5* LM.uninvert
     def uninvert(self, d):
@@ -2120,8 +2063,6 @@ class LoadManager(object):
         Uninvert an inverted shortcut dict whose keys are strokes,
         returning a dict whose keys are command names.
         '''
-        trace = False and not g.unitTesting; verbose = True
-        if trace and verbose: g.trace('*' * 40)
         assert d.keyType == g.KeyStroke, d.keyType
         result = g.TypedDictOfLists(
             name='uninverted %s' % d.name(),
@@ -2130,12 +2071,8 @@ class LoadManager(object):
         for stroke in d.keys():
             for bi in d.get(stroke, []):
                 commandName = bi.commandName
-                if trace and verbose:
-                    g.trace('uninvert %20s %s' % (stroke, commandName))
                 assert commandName
                 result.add(commandName, bi)
-        if trace: g.trace('returns %4s %s %s' % (
-            len(list(result.keys())), id(d), result.name()))
         return result
     #@+node:ekr.20120222103014.10312: *4* LM.openSettingsFile
     def openSettingsFile(self, fn):
@@ -2258,10 +2195,6 @@ class LoadManager(object):
     #@+node:ekr.20120219154958.10452: *3* LM.load & helpers
     def load(self, fileName=None, pymacs=None):
         '''Load the indicated file'''
-        trace = False and not g.unitTesting
-        if trace:
-            import time
-            t1 = time.clock()
         lm = self
         # Phase 1: before loading plugins.
         # Scan options, set directories and read settings.
@@ -2287,9 +2220,6 @@ class LoadManager(object):
             g.app.makeAllBindings()
             if ok and g.app.diff:
                 lm.doDiff()
-            if trace:
-                t2 = time.clock()
-                g.trace('load time: %5.2f sec.' % (t2-t1))
         if ok:
             g.es('') # Clears horizontal scrolling in the log pane.
             if g.app.listen_to_log_flag:
@@ -2473,8 +2403,6 @@ class LoadManager(object):
     #@+node:ekr.20140724064952.18037: *6* LM.createImporterData & helper
     def createImporterData(self):
         '''Create the data structures describing importer plugins.'''
-        trace = False and not g.unitTesting
-        trace_exception = False
         # Allow plugins to be defined in ~/.leo/plugins.
         plugins1 = g.os_path_finalize_join(g.app.homeDir, '.leo', 'plugins')
         plugins2 = g.os_path_finalize_join(g.app.loadDir, '..', 'plugins')
@@ -2492,30 +2420,20 @@ class LoadManager(object):
                             'leo.plugins.importers.%s' % module_name)
                         self.parse_importer_dict(sfn, m)
                     except Exception:
-                        if trace and trace_exception:
-                            g.es_exception()
                         g.warning('can not import leo.plugins.importers.%s' % (
                             module_name))
-        if trace:
-            g.trace('g.app.atAutoDict')
-            g.printDict(g.app.atAutoDict)
-            g.trace('g.app.classDispatchDict')
-            g.printDict(g.app.classDispatchDict)
     #@+node:ekr.20140723140445.18076: *7* LM.parse_importer_dict
     def parse_importer_dict(self, sfn, m):
         '''
         Set entries in g.app.classDispatchDict, g.app.atAutoDict and
         g.app.atAutoNames using entries in m.importer_dict.
         '''
-        trace = False and not g.unitTesting
         importer_d = getattr(m, 'importer_dict', None)
         if importer_d:
             at_auto = importer_d.get('@auto', [])
             scanner_class = importer_d.get('class', None)
-            scanner_name = scanner_class.__name__
+            # scanner_name = scanner_class.__name__
             extensions = importer_d.get('extensions', [])
-            if trace:
-                g.trace('%20s: %20s %s' % (sfn, scanner_name, ', '.join(extensions)))
             if at_auto:
                 # Make entries for each @auto type.
                 d = g.app.atAutoDict
@@ -2523,7 +2441,6 @@ class LoadManager(object):
                     d[s] = scanner_class
                     g.app.atAutoDict[s] = scanner_class
                     g.app.atAutoNames.add(s)
-                    if trace: g.trace(s)
             if extensions:
                 # Make entries for each extension.
                 d = g.app.classDispatchDict
@@ -2603,7 +2520,6 @@ class LoadManager(object):
             g.warning('leo/plugins/writers/%s has no writer_dict' % sfn)
     #@+node:ekr.20120219154958.10478: *5* LM.createGui
     def createGui(self, pymacs):
-        trace = False and not g.unitTesting
         lm = self
         gui_option = lm.options.get('gui')
         windowFlag = lm.options.get('windowFlag')
@@ -2613,9 +2529,9 @@ class LoadManager(object):
                 g.app.gui = None # Enable g.app.createDefaultGui
                 g.app.createDefaultGui(__file__)
             else:
+                pass
                 # This can happen when launching Leo from IPython.
                 # This can also happen when leoID does not exist.
-                if trace: g.trace('(LoadManager) g.app.gui:', g.app.gui)
         elif gui_option is None:
             if script and not windowFlag:
                 # Always use null gui for scripts.
@@ -2670,8 +2586,7 @@ class LoadManager(object):
             return None
     #@+node:ekr.20120219154958.10484: *5* LM.initApp
     def initApp(self, verbose):
-        trace = False and not g.unitTesting
-        if trace: g.es_debug()
+
         self.createAllImporetersData()
             # Can be done early. Uses only g.app.loadDir
         assert g.app.loadManager
@@ -2703,7 +2618,6 @@ class LoadManager(object):
     #@+node:ekr.20120219154958.10486: *5* LM.scanOptions & helpers
     def scanOptions(self, fileName, pymacs):
         '''Handle all options, remove them from sys.argv and set lm.options.'''
-        trace = False
         lm = self
         lm.old_argv = sys.argv[:]
         parser = optparse.OptionParser(
@@ -2715,11 +2629,6 @@ class LoadManager(object):
         options, args = parser.parse_args()
         sys.argv = [sys.argv[0]]
         sys.argv.extend(args)
-        if trace:
-            print('scanOptions: options...')
-            g.printDict({
-                key: value for key, value in options.__dict__.items() if value
-            })
         # Handle simple args...
         self.doSimpleOptions(options)
         # Compute the lm.files ivar.
@@ -2740,9 +2649,6 @@ class LoadManager(object):
             'windowFlag': script and options.script_window, 
             'windowSize': lm.doWindowSizeOption(options),
         }
-        if trace:
-            print('scanOptions: returns...')
-            g.printObj(d)
         return d
     #@+node:ekr.20180312150559.1: *6* LM.addOptionsToParser
     #@@nobeautify
@@ -2845,31 +2751,25 @@ class LoadManager(object):
     #@+node:ekr.20180312152609.1: *6* LM.doScreenShotOption
     def doScreenShotOption(self, options):
 
-        trace = False
         # --screen-shot=fn
         s = options.screen_shot
         if s:
             s = s.strip('"')
-        if trace: print('scanOptions: screen_shot', s)
         return s
     #@+node:ekr.20180312153008.1: *6* LM.doScriptOption
     def doScriptOption(self, options, parser):
 
-        trace = False
         # --script
         script = options.script
         if script:
             fn = g.os_path_finalize_join(g.app.loadDir, script)
             script, e = g.readFileIntoString(fn, kind='script:')
-            if trace: print('scanOptions: script path',repr(fn))
         else:
             script = None
-            if trace: print('scanOptions: no script')
         return script
     #@+node:ekr.20180312151544.1: *6* LM.doSimpleOptions
     def doSimpleOptions(self, options):
         '''These args just set g.app ivars.'''
-        trace = False
         # --fail-fast
         g.app.failFast = options.fail_fast
         # --fullscreen
@@ -2880,18 +2780,15 @@ class LoadManager(object):
         g.app.listen_to_log_flag = options.listen_to_log
         # --ipython
         g.app.useIpython = options.ipython
-        if trace: print('scanOptions: g.app.useIpython', g.app.useIpython)
         # --maximized
         g.app.start_maximized = options.maximized
         # --minimized
         g.app.start_minimized = options.minimized
         # --no-cache
         if options.no_cache:
-            if trace: print('scanOptions: disabling caching')
             g.enableDB = False
         # --no-plugins
         if options.no_plugins:
-            if trace: print('scanOptions: disabling plugins')
             g.app.enablePlugins = False
         # --no-splash: --minimized disables the splash screen
         g.app.use_splash_screen = (
@@ -2932,10 +2829,8 @@ class LoadManager(object):
     def doWindowSizeOption(self, options):
         
         # --window-size
-        trace = False
         windowSize = options.window_size
         if windowSize:
-            if trace: print('scanOptions: windowSize', repr(windowSize))
             try:
                 h, w = windowSize.split('x')
                 windowSize = int(h), int(w)
@@ -2972,14 +2867,9 @@ class LoadManager(object):
             #@+node:ekr.20160718102306.1: *7* LeoStdOut.write
             def write(self, *args, **keys):
                 '''Put all non-keyword args to the log pane, as in g.es.'''
-                trace = False
-                    # Tracing will lead to unbounded recursion unless
-                    # sys.stderr has been redirected on the command line.
-                if trace:
-                    for z in args:
-                        sys.stderr.write('arg: %r\n' % z)
-                    for z in keys:
-                        sys.stderr.write('key: %r\n' % z)
+                #
+                # Tracing will lead to unbounded recursion unless
+                # sys.stderr has been redirected on the command line.
                 app = g.app
                 if not app or app.killed: return
                 if app.gui and app.gui.consoleOnly: return
@@ -3140,15 +3030,12 @@ class LoadManager(object):
         get settings from the leoSettings.leo and myLeoSetting.leo or default settings,
         or open an empty outline.
         '''
-        trace = False and not g.unitTesting
-        if trace: g.trace(fn)
         lm = self
         # Step 0: Return if the file is already open.
         fn = g.os_path_finalize(fn)
         if fn:
             c = lm.findOpenFile(fn)
             if c:
-                if trace: g.trace('Already open: %s' % (fn))
                 return c
         # Step 1: get the previous settings.
         # For .leo files (and zipped .leo files) this pre-reads the file in a null gui.
@@ -3170,8 +3057,6 @@ class LoadManager(object):
         Creates an empty outline if fn is a non-existent Leo file.
         Creates an wrapper outline if fn is an external file, existing or not.
         '''
-        trace = False and not g.unitTesting
-        if trace: g.es_debug(g.shortFileName(fn))
         lm = self
         # Disable the log.
         g.app.setLog(None)
@@ -3620,11 +3505,10 @@ class RecentFilesManager(object):
                     g.es_exception()
     #@+node:ekr.20050424115658: *4* rf.readRecentFilesFile
     def readRecentFilesFile(self, path):
-        trace = False and not g.unitTesting
+
         fileName = g.os_path_join(path, '.leoRecentFiles.txt')
         if not g.os_path_exists(fileName):
             return False
-        if trace: g.trace(('reading %s' % fileName))
         try:
             with io.open(fileName, encoding='utf-8', mode='r') as f:
                 try: # Fix #471.
@@ -3761,7 +3645,7 @@ class RecentFilesManager(object):
     #@+node:ekr.20050424131051: *4* rf.writeRecentFilesFileHelper
     def writeRecentFilesFileHelper(self, fileName):
         # Don't update the file if it begins with read-only.
-        trace = False and not g.unitTesting
+        #
         # Part 1: Return False if the first line is "readonly".
         #         It's ok if the file doesn't exist.
         if g.os_path_exists(fileName):
@@ -3772,7 +3656,6 @@ class RecentFilesManager(object):
                 except Exception:
                     lines = None
                 if lines and self.sanitize(lines[0]) == 'readonly':
-                    if trace: g.trace('read-only: %s' % fileName)
                     return False
         # Part 2: write the files.
         try:

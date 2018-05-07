@@ -145,7 +145,6 @@ class Flake8Command(object):
             for path in dir_table:
                 fn = g.os_path_abspath(join(path, base))
                 if g.os_path_exists(fn):
-                    if trace: g.trace('found:', fn)
                     return fn
         if not g.unitTesting:
             g.es_print('no flake8 configuration file found in\n%s' % (
@@ -357,7 +356,6 @@ class PylintCommand(object):
         for fn in table:
             fn = g.os_path_abspath(fn)
             if g.os_path_exists(fn):
-                if trace: g.trace('found:', fn)
                 return fn
         g.es_print('no pylint configuration file found in\n%s' % (
             '\n'.join(table)))

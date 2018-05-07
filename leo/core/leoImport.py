@@ -213,11 +213,8 @@ class JSON_Import_Helper(object):
         import pprint
         trace = False and not g.unitTesting
         d = self.gnx_dict
-        if trace: g.trace(parent.h, pprint.pprint(parent_d))
         for child_gnx in parent_d.get('children'):
             d2 = d.get(child_gnx)
-            if trace:
-                g.trace('child', pprint.pprint(d2))
             if child_gnx in self.vnodes_dict:
                 # It's a clone.
                 v = self.vnodes_dict.get(child_gnx)
@@ -256,7 +253,6 @@ class JSON_Import_Helper(object):
         c, d, self.gnx_dict = self.c, json.loads(s), {}
         for d2 in d.get('nodes', []):
             gnx = d2.get('gnx')
-            if trace: print('%25s %s' % (d2.get('gnx'), d2.get('h')))
             self.gnx_dict[gnx] = d2
         top_d = d.get('top')
         if top_d:
@@ -745,15 +741,10 @@ class LeoImportCommands(object):
         )
         ext, s = self.init_import(atShadow, ext, fileName, s)
         if s is None:
-            if trace: g.trace('read failed', fileName)
             return
-        if trace and not s:
-            g.trace('empty file: but calling importer', fileName)
         # Get the so-called scanning func.
         func = self.dispatch(ext, p)
             # Func is a callback. It must have a c argument.
-        if trace: g.trace('%8s %20s %20s %s' % (
-            ext, func and func.__name__, func and func.scanner_name, p.h))
         # Call the scanning function.
         if g.unitTesting:
             assert func or ext in ('.txt', '.w', '.xxx'), (ext, p.h)
@@ -1431,9 +1422,6 @@ class LeoImportCommands(object):
         # Set ok.
         d = g.app.unitTestDict
         ok = d.get('result') is True
-        if trace:
-            g.trace('-'*10, ok, p.h)
-            g.printDict(d)
         # Clean up.
         if showTree:
             # 2016/11/17: Make sure saving the outline doesn't create any file.
@@ -1898,8 +1886,6 @@ class MORE_Importer(object):
         lastLevel = level1
         for s in strings:
             level, newFlag = self.headlineLevel(s)
-            if trace: g.trace('level1: %s level: %s lastLevel: %s %s' % (
-                level1, level, lastLevel, s.rstrip()))
             if level == -1:
                 return True # A body line.
             elif level < level1 or level > lastLevel + 1:
@@ -2006,7 +1992,6 @@ class RecursiveImportController(object):
             if files2:
                 for f in files2:
                     self.import_one_file(f, parent=parent)
-                    if trace and limit: break
             if dirs:
                 assert self.recursive
                 for dir_ in sorted(dirs):
@@ -2048,7 +2033,6 @@ class RecursiveImportController(object):
         by the smallest equivalent @path or @file node.
         '''
         trace = False and not g.unitTesting
-        if trace: t1 = time.time()
         self.fix_back_slashes(p)
         prefix = prefix.replace('\\', '/')
         if self.kind not in ('@auto', '@edit'):
@@ -2056,9 +2040,6 @@ class RecursiveImportController(object):
         if p.firstChild():
             self.minimize_headlines(p.firstChild(), prefix)
         self.clear_dirty_bits(p)
-        if trace:
-            t2 = time.time()
-            g.trace('%2.2f sec' % (t2-t1))
     #@+node:ekr.20130823083943.12608: *5* ric.clear_dirty_bits
     def clear_dirty_bits(self, p):
         c = self.c
@@ -2222,7 +2203,6 @@ class TabImporter:
         self.stack = []
         # Redo the checks in case we are called from a script.
         if s1.strip() and self.check(lines):
-            if trace: g.trace('importing to %s' % self.root.h)
             for s in lines:
                 if s.strip() or not self.separate:
                     self.scan_helper(s)
@@ -2237,8 +2217,6 @@ class TabImporter:
         else:
             level, parent = 0, None
         lws = len(self.lws(s))
-        if trace:
-            g.trace('----- level: %s lws: %s %s' % (level, lws, s.rstrip()))
         h = s.strip()
         if lws == level:
             if separate or not parent:
@@ -2259,7 +2237,6 @@ class TabImporter:
             stack.append((level, parent),)
         else:
             # Find the previous parent.
-            if trace: self.dump_stack()
             while stack:
                 level2, parent2 = stack.pop()
                 if level2 == lws:
@@ -2274,9 +2251,6 @@ class TabImporter:
                 parent = root.insertAsLastChild()
                 parent.h = h
                 stack = [(0, parent),]
-        if trace:
-            g.trace('DONE: lws: %s level: %s parent: %s' % (lws, level, parent.h))
-            self.dump_stack()
         assert parent and parent == stack[-1][1]
             # An important invariant.
         assert level == stack[-1][0], (level, stack[-1][0])

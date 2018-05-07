@@ -689,11 +689,6 @@ def find_bound_paragraph(c):
     head, ins, tail = c.frame.body.getInsertLines()
     head_lines = g.splitLines(head)
     tail_lines = g.splitLines(tail)
-    if trace:
-        g.trace("head_lines:\n%s" % ''.join(head_lines))
-        g.trace("ins: ", ins)
-        g.trace("tail_lines:\n%s" % ''.join(tail_lines))
-        g.trace('*****')
     result = []
     insert_lines = g.splitLines(ins)
     para_lines = insert_lines + tail_lines
@@ -713,12 +708,6 @@ def find_bound_paragraph(c):
             head_lines = head_lines[: -n]
     ended, started = False, False
     for i, s in enumerate(para_lines):
-        if trace: g.trace(
-            # 'i: %s started: %5s single: %5s starts: %5s: ends: %5s %s' % (
-            i, started,
-            single_line_paragraph(s),
-            startsParagraph(s),
-            ends_paragraph(s), repr(s))
         if started:
             if ends_paragraph(s) or startsParagraph(s):
                 ended = True
@@ -740,7 +729,6 @@ def find_bound_paragraph(c):
         tail = g.joinLines(tail_lines)
         return head, result, tail # string, list, string
     else:
-        if trace: g.trace('no paragraph')
         return None, None, None
 #@+node:ekr.20171123135625.45: *3* def rp_get_args
 def rp_get_args(c):
@@ -867,7 +855,6 @@ def startsParagraph(s):
             (len(s) < 2 or s[2] in (' \t\n')))
     else:
         val = s.startswith('@') or s.startswith('-')
-    if trace: g.trace(val, repr(s))
     return val
 #@+node:ekr.20171123135625.12: ** c_ec.show/hide/toggleInvisibles
 @g.commander_command('hide-invisibles')

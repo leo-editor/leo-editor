@@ -186,13 +186,6 @@ class InternalIPKernel(object):
             args = ['python', '--pylab']
                 # Fails
                 # args = ['python', '--pylab=%s' % (gui)]
-            if trace:
-                args.append('--log-level=20')
-                    # Higher is *quieter*
-                # args.append('--debug')
-                # Produces a verbose IPython log.
-                #'--log-level=10'
-                # '--pdb', # User-level debugging
             try:
                 # self.pdb()
                 kernelApp.initialize(args)

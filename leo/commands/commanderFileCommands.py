@@ -283,10 +283,6 @@ def refreshFromDisk(self, event=None):
         t1 = time.clock()
         c.redraw()
         t2 = time.clock()
-        if trace:
-            n = sum([1 for z in p.self_and_subtree()])
-            h = sum([hash(z.h) for z in p.self_and_subtree()])
-            g.trace('%s nodes, hash: %s in %5.2f sec. %r' % (n, h, (t2-t1), p.h))
 #@+node:ekr.20031218072017.2834: *3* c_file.save
 @g.commander_command('save-file')
 def save(self, event=None, fileName=None):

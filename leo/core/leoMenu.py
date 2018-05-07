@@ -144,9 +144,6 @@ class LeoMenu(object):
         # Called from createMenuBar.
         trace = False and not g.unitTesting
         trace_list = False
-        if trace and trace_list:
-            g.trace('=====')
-            g.printObj(aList)
         c = self.c
         for z in aList:
             kind, val, val2 = z
@@ -305,7 +302,6 @@ class LeoMenu(object):
                 def masterDynamicMenuCallback(c=c, command=command):
                     # 2012/01/07: set w here.
                     w = setWidget()
-                    if trace: g.trace(command.__name__, w)
                     event = g.app.gui.create_key_event(c, w=w)
                     return c.k.masterCommand(func=command, event=event)
 
@@ -323,7 +319,6 @@ class LeoMenu(object):
                 # 2011/10/28: Use only the command name to dispatch the command.
                 # 2012/01/07: Bug fix: set w here.
                 w = setWidget()
-                if trace: g.trace(commandName, w, c)
                 event = g.app.gui.create_key_event(c, w=w)
                 return c.k.masterCommand(commandName=commandName, event=event)
 
@@ -340,9 +335,6 @@ class LeoMenu(object):
             # First, get the old-style name.
             commandName = self.computeOldStyleShortcutKey(label)
         command = c.commandsDict.get(commandName)
-        if trace and not command and not dynamicMenu:
-            # This may come from a plugin that normally isn't enabled.
-            g.trace('No inverse for %s' % commandName)
         return commandName
     #@+node:ekr.20111028060955.16565: *5* LeoMenu.getMenuEntryInfo
     def getMenuEntryInfo(self, data, menu):
@@ -397,9 +389,6 @@ class LeoMenu(object):
         try:
             menu = self.getMenu(menuName)
             if menu is None:
-                if trace and not g.app.menuWarningsGiven:
-                    g.es_print(g.app.gui.guiName(), g.callers())
-                    g.es_print("menu does not exist: %s" % (menuName))
                 return
             self.createMenuEntries(menu, table, dynamicMenu=dynamicMenu)
         except Exception:
@@ -504,10 +493,6 @@ class LeoMenu(object):
         for d in table:
             label = d.get('name')
             args = d.get('args', [])
-            if trace:
-                print()
-                for key in sorted(list(d.keys())):
-                    print('%15s %s' % (key, d.get(key)))
             accel = d.get('shortcut') or ''
             if label and args:
                 realLabel = self.getRealMenuName(label)

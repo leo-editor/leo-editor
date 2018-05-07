@@ -303,9 +303,6 @@ class To_Python(object):
                 pass # Omit the line entirely.
             else:
                 result.append('') # Add a blank line
-        if trace:
-            g.trace()
-            for z in result: print(repr(z))
         return result
     #@+node:ekr.20150514063305.149: *5* replaceSectionDefs
     def replaceSectionDefs(self, aList):
@@ -1009,10 +1006,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     name, value = s.split(':',1)
                     # g.trace('name',name,'value',value)
                     d[name.strip()] = value.strip()
-                if trace:
-                    print('@data %s...' % kind)
-                    for key in sorted(d):
-                        print('  %s: %s' % (key, d.get(key)))
                 return d
             #@+node:ekr.20160213070235.5: *6* msf.scan_patterns
             def scan_patterns(self, kind):
@@ -1032,11 +1025,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     else:
                         seen.add(key)
                         aList.append(self.msf.Pattern(key, value))
-                if trace:
-                    g.trace('@data %s ...\n' % kind)
-                    for z in aList:
-                        print(z)
-                    print('')
                 return aList
             #@+node:ekr.20160213070235.6: *5* msf.finalize
             def finalize(self, fn):
@@ -1498,9 +1486,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 args = aList[open_paren: close + 1]
                 k = 1 + self.skip_to_matching_bracket(aList, i)
                 body = aList[close + 1: k]
-                if trace:
-                    g.trace('\nhead: %s\nargs: %s\nbody: %s' % (
-                        ''.join(head), ''.join(args), ''.join(body)))
                 head = self.massageFunctionHead(head)
                 args = self.massageFunctionArgs(args)
                 body = self.massageFunctionBody(body)

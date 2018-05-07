@@ -431,9 +431,6 @@ class LeoBody(object):
         if not (hasattr(wrapper, 'leo_p') and wrapper.leo_p):
             g.trace('no wrapper.leo_p')
             return
-        if trace: g.trace('==1', id(wrapper),
-            hasattr(wrapper, 'leo_chapter') and wrapper.leo_chapter and wrapper.leo_chapter.name,
-            hasattr(wrapper, 'leo_p') and wrapper.leo_p and wrapper.leo_p.h)
         self.deactivateActiveEditor(wrapper)
         # The actual switch.
         c.frame.body.wrapper = wrapper
@@ -443,10 +440,6 @@ class LeoBody(object):
         if not self.ensurePositionExists(wrapper):
             g.trace('***** no position editor!')
             return
-        if trace:
-            g.trace('==2', id(wrapper),
-                hasattr(wrapper, 'leo_chapter') and wrapper.leo_chapter and wrapper.leo_chapter.name,
-                hasattr(wrapper, 'leo_p') and wrapper.leo_p and wrapper.leo_p.h)
         # g.trace('expanding ancestors of ',wrapper.leo_p.h,g.callers())
         p = wrapper.leo_p
         c.redraw(p)
@@ -650,8 +643,6 @@ class LeoBody(object):
         else:
             changed = oldText != newText
         if not changed: return
-        if trace:
-            g.trace('changed: p.isDirty():', p.isDirty())
         c.undoer.setUndoTypingParams(p, undoType,
             oldText=oldText, newText=newText, oldSel=oldSel, newSel=newSel, oldYview=oldYview)
         p.v.setBodyString(newText)
@@ -951,7 +942,6 @@ class LeoFrame(object):
         f = self; c = f.c
         w = event and event.widget
         wname = c.widget_name(w)
-        if trace: g.trace(g.isTextWrapper(w), wname, w)
         if not w or not g.isTextWrapper(w):
             return
         # Set the clipboard text.
@@ -973,7 +963,6 @@ class LeoFrame(object):
         trace = False and not g.unitTesting
         f = self; c = f.c; w = event and event.widget
         if not w or not g.isTextWrapper(w):
-            if trace: g.trace('not wrapper', w, g.callers())
             return
         name = c.widget_name(w)
         oldSel = w.getSelectionRange()
@@ -1016,7 +1005,6 @@ class LeoFrame(object):
         w = event and event.widget
         wname = c.widget_name(w)
         if not w or not g.isTextWrapper(w):
-            if trace: g.trace('not a text widget', w)
             return
         if self.cursorStay and wname.startswith('body'):
             tCurPosition = w.getInsertPoint()
@@ -1031,7 +1019,6 @@ class LeoFrame(object):
         else:
             s = g.app.gui.getTextFromClipboard()
         s = g.toUnicode(s)
-        if trace: g.trace('pasteText','wname',wname)
         singleLine = wname.startswith('head') or wname.startswith('minibuffer')
         if singleLine:
             # Strip trailing newlines so the truncation doesn't cause confusion.
@@ -1332,16 +1319,11 @@ class LeoTree(object):
         c = self.c; u = c.undoer
         w = self.edit_widget(p)
         if c.suppressHeadChanged:
-            if trace: g.trace('c.suppressHeadChanged')
             return
         if not w:
-            if trace: g.trace('****** no w for p: %s', repr(p))
             return
         ch = '\n' # New in 4.4: we only report the final keystroke.
         if s is None: s = w.getAllText()
-        if trace:
-            g.trace('*** LeoTree', g.callers(5))
-            g.trace(p and p.h, 'w', repr(w), 's', repr(s))
         #@+<< truncate s if it has multiple lines >>
         #@+node:ekr.20040803072955.94: *5* << truncate s if it has multiple lines >>
         # Remove one or two trailing newlines before warning of truncation.
@@ -1368,7 +1350,6 @@ class LeoTree(object):
         changed = s != oldRevert
         self.revertHeadline = s
         p.initHeadString(s)
-        if trace: g.trace('changed', changed, 'new', repr(s))
         if g.doHook("headkey1", c=c, p=p, ch=ch, changed=changed):
             return # The hook claims to have handled the event.
         if changed:
@@ -1391,7 +1372,6 @@ class LeoTree(object):
         '''End editing of a headline and update p.h.'''
         trace = False and not g.unitTesting
         c = self.c; k = c.k; p = c.p
-        if trace: g.trace('LeoTree', p and p.h, g.callers(4))
         # Important: this will redraw if necessary.
         self.onHeadChanged(p)
         if 0: # Can't call setDefaultUnboundKeyAction here: it might put us in ignore mode!
@@ -1598,7 +1578,6 @@ class LeoTree(object):
         else:
             unselect = True
         if unselect and old_p != p:
-            if trace: g.trace(p.h)
             # Actually unselect the old node.
             self.endEditLabel()
         if call_event_handlers:
@@ -1642,30 +1621,13 @@ class LeoTree(object):
         s = p.v.b # Guaranteed to be unicode.
         # Part 1: get the old text.
         old_s = w.getAllText()
-        if trace and trace_time:
-            t2 = time.time()
-            if t2-t1 > 0.1:
-                print('  part1: getAllText %4.2f sec' % (t2-t1))
         if not force and p and p == old_p and s == old_s:
-            if trace and trace_pass:
-                g.trace('*pass: len(s)', len(s), p.h, old_p.h)
             return
         # Part 2: set the new text. This forces a recolor.
         c.setCurrentPosition(p)
             # Important: do this *before* setting text,
             # so that the colorizer will have the proper c.p.
         w.setAllText(s)
-        if trace and trace_time:
-            t3 = time.time()
-            if t3-t2 > 0.1:
-                print('  part2: setAllText %4.2f sec' % (t3-t2))
-        if trace and trace_time:
-            t4 = time.time()
-            if t4-t3 > 0.1:
-                print('  part3: colorize   %4.2f sec' % (t4-t3))
-                print('n_calls', c.frame.body.colorizer.highlighter.n_calls)
-            if t4-t1 > 0.1:
-                print('  total:            %4.2f sec' % (t4-t1))
         # This is now done after c.p has been changed.
             # p.restoreCursorAndScroll()
     #@+node:ekr.20140829053801.18458: *5* 3. LeoTree.change_current_position

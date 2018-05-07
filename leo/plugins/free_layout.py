@@ -167,10 +167,8 @@ class FreeLayoutController(object):
             w = top.find_child(QtWidgets.QWidget, "bodyFrame")
             while w:
                 if isinstance(w, NestedSplitter):
-                    if trace: g.trace('found splitter', id(w))
                     return w
                 w = w.parent()
-        if trace: g.trace('not found')
         return None
     #@+node:ekr.20160424035254.1: *3* flc.get_secondary_splitter & helper
     def get_secondary_splitter(self):
@@ -187,10 +185,8 @@ class FreeLayoutController(object):
             w = top.find_child(QtWidgets.QWidget, 'outlineFrame')
             while w:
                 if isinstance(w, NestedSplitter):
-                    if trace: g.trace('found splitter', id(w))
                     return w
                 w = w.parent()
-        if trace: g.trace('not found')
         return None
     #@+node:tbrown.20110621120042.22914: *3* flc.get_top_splitter
     def get_top_splitter(self):

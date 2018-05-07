@@ -48,7 +48,6 @@ class BaseEditCommandsClass(object):
         trace = False and not g.unitTesting
         c, k = self.c, self.c.k
         b = self.undoData
-        if trace: g.trace('changed', changed)
         if b and b.name.startswith('body') and changed:
             c.frame.body.onBodyChanged(undoType=b.undoType,
                 oldSel=b.oldSel, oldText=b.oldText, oldYview=None)
@@ -71,7 +70,6 @@ class BaseEditCommandsClass(object):
             pass
         else:
             w = c.frame.body and c.frame.body.wrapper
-        if trace: g.trace(g.isTextWrapper(w), wname, w)
         if w and forceFocus:
             c.widgetWantsFocusNow(w)
         self.w = w

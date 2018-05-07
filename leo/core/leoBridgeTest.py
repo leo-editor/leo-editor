@@ -32,7 +32,6 @@ def main():
         g = bridge.globals()
         path = g.os_path_finalize_join(g.app.loadDir, '..', 'test') #relative_path)
         c = bridge.openLeoFile(path)
-        if trace: g.es('%s %s' % (tag, c.shortFileName()))
         if c:
             runUnitTests(c, g)
     g.pr(tag, 'done')

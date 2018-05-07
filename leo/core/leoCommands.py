@@ -49,12 +49,9 @@ class Commands(object):
     #@+node:ekr.20031218072017.2811: *3*  c.Birth & death
     #@+node:ekr.20031218072017.2812: *4* c.__init__ & helpers
     def __init__(self, fileName, relativeFileName=None, gui=None, previousSettings=None):
-        trace = False and not g.unitTesting
-        tag = 'Commands.__init__ %s' % (g.shortFileName(fileName))
-        if trace: g.trace('(Commands)', g.shortFileName(fileName))
+
+        # tag = 'Commands.__init__ %s' % (g.shortFileName(fileName))
         c = self
-        if trace:
-            t1 = time.time()
         # Official ivars.
         self._currentPosition = None
         self._topPosition = None
@@ -76,12 +73,8 @@ class Commands(object):
         c.initObjects(self.gui)
         assert c.frame
         assert c.frame.c
-        if trace:
-            g.printDiffTime('%s: after controllers created' % (tag), t1)
         # Complete the init!
         c.finishCreate()
-        if trace:
-            g.printDiffTime('%s: after c.finishCreate' % (tag), t1)
     #@+node:ekr.20120217070122.10475: *5* c.computeWindowTitle
     def computeWindowTitle(self, fileName):
         '''Set the window title and fileName.'''
@@ -239,9 +232,8 @@ class Commands(object):
     #@@nobeautify
 
     def initObjects(self, gui):
-        trace = False
+
         c = self
-        if trace: g.trace(c.shortFileName(), g.app.gui)
         gnx = 'hidden-root-vnode-gnx'
         assert not hasattr(c, 'fileCommands'), c.fileCommands
 
@@ -548,9 +540,7 @@ class Commands(object):
     #@+node:ekr.20090213065933.6: *4* c.initConfigSettings
     def initConfigSettings(self):
         '''Init all cached commander config settings.'''
-        trace = False and not g.unitTesting
         c = self
-        if trace: g.es_debug(c.configInited, c.shortFileName())
         getBool = c.config.getBool
         getColor = c.config.getColor
         getData = c.config.getData
@@ -711,14 +701,12 @@ class Commands(object):
             g.redirectStderr() # Redirect stderr
     #@+node:ekr.20171123135625.7: *4* c.setCurrentDirectoryFromContext
     def setCurrentDirectoryFromContext(self, p):
-        trace = False and not g.unitTesting
         c = self
         aList = g.get_directives_dict_list(p)
         path = c.scanAtPathDirectives(aList)
         curDir = g.os_path_abspath(os.getcwd())
         # g.trace(p.h,'\npath  ',path,'\ncurDir',curDir)
         if path and path != curDir:
-            if trace: g.trace('calling os.chdir(%s)' % (path))
             try:
                 os.chdir(path)
             except Exception:
@@ -1012,12 +1000,8 @@ class Commands(object):
     def positionExists(self, p, root=None, trace=False):
         """Return True if a position exists in c's tree"""
         # Important: do not call p.isAncestorOf here.
-        trace = (False or trace) and not g.unitTesting
         c = self
         if not p or not p.v:
-            if trace:
-                g.trace('fail 1', p)
-                c.dumpPosition(p)
             return False
         if root and p == root:
             return True
@@ -1028,17 +1012,11 @@ class Commands(object):
             if root and p == root:
                 return True
             elif not old_v.isNthChildOf(old_n, p.v):
-                if trace:
-                    g.trace('fail 2', p, g.callers())
-                    c.dumpPosition(p)
                 return False
         if root:
             exists = p == root
         else:
             exists = p.v.isNthChildOf(p._childIndex, c.hiddenRootNode)
-        if trace and not exists:
-            g.trace('fail 3', p, g.callers())
-            c.dumpPosition(p)
         return exists
     #@+node:ekr.20160427153457.1: *6* c.dumpPosition
     def dumpPosition(self, p):
@@ -1071,32 +1049,19 @@ class Commands(object):
     #@+node:ekr.20131017174814.17480: *5* c.shouldBeExpanded
     def shouldBeExpanded(self, p):
         '''Return True if the node at position p should be expanded.'''
-        trace = False and not g.unitTesting
-        # if trace: g.trace('=====', p.h)
         c, v = self, p.v
         if not p.hasChildren():
-            if trace: g.trace('False: no children:', p.h)
             return False
         # Always clear non-existent positions.
-        if trace: g.trace([z.h for z in v.expandedPositions])
         v.expandedPositions = [z for z in v.expandedPositions if c.positionExists(z)]
         if not p.isCloned():
             # Do not call p.isExpanded here! It calls this method.
-            if trace: g.trace(p.v.isExpanded(), p.h, 'not cloned: p.v.isExpanded()')
             return p.v.isExpanded()
         if p.isAncestorOf(c.p):
-            if trace: g.trace('True:', p.h, 'ancestor of c.p', c.p.h, p._childIndex)
             return True
-        if trace:
-            g.trace('===== search v.expandedPositions', p.h,
-                'len', len(v.expandedPositions))
         for p2 in v.expandedPositions:
             if p == p2:
-                if trace:
-                    g.trace('True:', p.h, 'in v.expandedPositions')
                 return True
-        if trace:
-            g.trace('False:', p.h)
         return False
     #@+node:ekr.20070609122713: *5* c.visLimit
     def visLimit(self):
@@ -1225,8 +1190,6 @@ class Commands(object):
     #@+node:ekr.20031218072017.2989: *5* c.setChanged
     def setChanged(self, changedFlag=True, redrawFlag=True):
         '''Set or clear the marker that indicates that the .leo file has been changed.'''
-        trace = False and not g.unitTesting # and changedFlag
-        if trace: g.trace(changedFlag, redrawFlag, g.callers(2))
         c = self
         if not c.frame:
             return
@@ -1268,19 +1231,10 @@ class Commands(object):
         Set the presently selected position. For internal use only.
         Client code should use c.selectPosition instead.
         """
-        trace = False and not g.unitTesting
-        trace_no_p = True
-            # A serious error.
-        trace_entry = True
-        trace_invalid = False
         c = self
         if not p:
-            if trace_no_p: g.trace('===== no p', g.callers())
+            g.trace('===== no p', g.callers())
             return
-        if trace and trace_entry:
-            c._currentCount += 1
-            g.trace('-----------', c._currentCount, p and p.h)
-            # g.trace(g.callers(8))
         if c.positionExists(p):
             if c._currentPosition and p == c._currentPosition:
                 pass # We have already made a copy.
@@ -1288,10 +1242,11 @@ class Commands(object):
                 c._currentPosition = p.copy()
         else: # 2011/02/25:
             c._currentPosition = c.rootPosition()
-            if trace_invalid: g.trace('Invalid position: %s, root: %s' % (
-                repr(p and p.h),
-                repr(c._currentPosition and c._currentPosition.h)),
-                g.callers())
+            g.trace('Invalid position: %r, root: %r' % (
+                p and p.h,
+                c._currentPosition and c._currentPosition.h,
+                g.callers(),
+            ))
             # Don't kill unit tests for this kind of problem.
 
     # For compatibiility with old scripts.
@@ -1957,7 +1912,6 @@ class Commands(object):
 
         Returns a dict containing the results, including defaults.
         '''
-        trace = False and not g.unitTesting
         c = self
         p = p or c.p
         # Set defaults
@@ -1995,19 +1949,14 @@ class Commands(object):
             "pluginsList":  [], # No longer used.
             "wrap":         d.get('wrap'),
         }
-        if trace: g.trace(lang_dict.get('language'),g.callers())
         # g.trace(d.get('tabwidth'))
         return d
     #@+node:ekr.20080828103146.15: *4* c.scanAtPathDirectives
     def scanAtPathDirectives(self, aList):
         '''Scan aList for @path directives.
         Return a reasonable default if no @path directive is found.'''
-        trace = False and not g.unitTesting
-            # This is called at idle time, so it's not very useful.
-        verbose = True
         c = self
         c.scanAtPathDirectivesCount += 1 # An important statistic.
-        if trace and verbose: g.trace('**entry', g.callers(4))
         # Step 1: Compute the starting path.
         # The correct fallback directory is the absolute path to the base.
         if c.openDirectory: # Bug fix: 2008/9/18
@@ -2016,20 +1965,13 @@ class Commands(object):
             base = g.app.config.relative_path_base_directory
             if base and base == "!": base = g.app.loadDir
             elif base and base == ".": base = c.openDirectory
-        if trace and verbose:
-            g.trace('base   ', base)
-            g.trace('loadDir', g.app.loadDir)
         absbase = c.os_path_finalize_join(g.app.loadDir, base)
-        if trace and verbose: g.trace('absbase', absbase)
         # Step 2: look for @path directives.
         paths = []
         for d in aList:
             # Look for @path directives.
             path = d.get('path')
             warning = d.get('@path_in_body')
-            if trace and path:
-                g.trace('**** d', d)
-                g.trace('**** @path path', path)
             if path is not None: # retain empty paths for warnings.
                 # Convert "path" or <path> to path.
                 path = g.stripPathCruft(path)
@@ -2040,11 +1982,7 @@ class Commands(object):
         paths.append(absbase)
         paths.reverse()
         # Step 3: Compute the full, effective, absolute path.
-        if trace and verbose:
-            g.printList(paths, tag='c.scanAtPathDirectives: raw paths')
         path = c.os_path_finalize_join(*paths)
-        if trace and verbose: g.trace('joined path:', path)
-        if trace: g.trace('returns', path)
         return path or g.getBaseDirectory(c)
             # 2010/10/22: A useful default.
     #@+node:ekr.20080828103146.12: *4* c.scanAtRootDirectives (no longer used)
@@ -2069,44 +2007,29 @@ class Commands(object):
     #@+node:ekr.20110605040658.17005: *4* c.check_event
     def check_event(self, event):
         '''Check an event object.'''
-        trace = False and not g.unitTesting
         # c = self
-        k = self.k
         import leo.core.leoGui as leoGui
-
-        def test(val, message):
-            if trace:
-                if g.unitTesting:
-                    assert val, message
-                else:
-                    if not val: print('check_event', message)
 
         if not event:
             return
-        isLeoKeyEvent = isinstance(event, leoGui.LeoKeyEvent)
         stroke = event.stroke
         got = event.char
-        if trace: g.trace('plain: %s, stroke: %s, char: %s' % (
-            k.isPlainKey(stroke), repr(stroke), repr(event.char)))
         if g.unitTesting:
-            expected = k.stroke2char(stroke)
-                # Be strict for unit testing.
-        elif stroke and (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1):
+            return
+        if stroke and (stroke.find('Alt+') > -1 or stroke.find('Ctrl+') > -1):
             expected = event.char
                 # Alas, Alt and Ctrl bindings must *retain* the char field,
                 # so there is no way to know what char field to expect.
-        elif trace or k.isPlainKey(stroke):
-            expected = k.stroke2char(stroke)
-                # Perform the full test.
         else:
             expected = event.char
                 # disable the test.
                 # We will use the (weird) key value for, say, Ctrl-s,
                 # if there is no binding for Ctrl-s.
-        test(isLeoKeyEvent, 'not leo event: %s, callers: %s' % (
-            repr(event), g.callers()))
-        test(expected == got, 'stroke: %s, expected char: %s, got: %s' % (
-                repr(stroke), repr(expected), repr(got)))
+        if not isinstance(event, leoGui.LeoKeyEvent):
+            g.trace('not leo event: %r, callers: %s' % (event, g.callers()))
+        if expected != got:
+            g.trace('stroke: %r, expected char: %r, got: %r' % (
+                stroke, expected, got))
     #@+node:ekr.20031218072017.2817: *4* c.doCommand
     command_count = 0
 
@@ -2206,7 +2129,6 @@ class Commands(object):
         """
 
         def minibufferCallback(event, function=function):
-            trace = False and not g.unitTesting
             # Avoid a pylint complaint.
             if hasattr(self, 'theContextMenuController'):
                 cm = getattr(self, 'theContextMenuController')
@@ -2221,7 +2143,6 @@ class Commands(object):
             keywords['mb_event'] = event
             retval = None
             try:
-                if trace: g.trace(function, keywords)
                 retval = function(keywords)
             finally:
                 if cm:
@@ -2241,7 +2162,7 @@ class Commands(object):
     universallCallback = universalCallback
     #@+node:ekr.20070115135502: *4* c.writeScriptFile
     def writeScriptFile(self, script):
-        trace = False and not g.unitTesting
+
         # Get the path to the file.
         c = self
         path = c.config.getString('script_file_path')
@@ -2259,7 +2180,6 @@ class Commands(object):
         else:
             path = c.os_path_finalize_join(
                 g.app.homeLeoDir, 'scriptFile.py')
-        if trace: g.trace(path)
         # Write the file.
         try:
             if g.isPython3:
@@ -2661,20 +2581,15 @@ class Commands(object):
         Return a flag telling whether a redraw is needed.
         '''
         # c = self
-        trace = False and not g.unitTesting
-        # trace = trace and p.h.startswith(' Tests of @auto-md')
         redraw_flag = False
         for p in p.parents():
             if not p.v.isExpanded():
-                if trace: g.trace('call p.v.expand and p.expand', p.h, p._childIndex)
                 p.v.expand()
                 p.expand()
                 redraw_flag = True
             elif p.isExpanded():
-                if trace: g.trace('call p.v.expand', p.h, p._childIndex)
                 p.v.expand()
             else:
-                if trace: g.trace('call p.expand', p.h, p._childIndex)
                 p.expand()
                 redraw_flag = True
         # if trace: g.trace(redraw_flag, g.callers())
@@ -2682,7 +2597,6 @@ class Commands(object):
     #@+node:ekr.20080514131122.20: *5* c.outerUpdate
     def outerUpdate(self):
         '''Handle delayed focus requests and modified events.'''
-        trace = False and not g.unitTesting
         c = self
         if not c.exists or not c.k:
             return
@@ -2694,7 +2608,6 @@ class Commands(object):
         # Delayed focus requests will always be useful.
         if c.requestedFocusWidget:
             w = c.requestedFocusWidget
-            if trace: g.trace('focus: %s' % g.app.gui.widget_name(w))
             c.set_focus(w)
             c.requestedFocusWidget = None
         table = (
@@ -2731,7 +2644,6 @@ class Commands(object):
     #@+node:ekr.20090110073010.1: *6* c.redraw
     def redraw(self, p=None, setFocus=False):
         '''Redraw the screen immediately.'''
-        trace = False and not g.unitTesting
         c = self
         # New in Leo 5.6: clear the redraw request.
         c.requestLaterRedraw = False
@@ -2749,7 +2661,6 @@ class Commands(object):
         # Be careful.  NullTree.redraw returns None.
         # #503: NullTree.redraw(p) now returns p.
         c.selectPosition(p2 or p)
-        if trace: g.trace(p2 and p2.h, g.callers())
         if setFocus: c.treeFocusHelper()
         # New in Leo 5.6: clear the redraw request, again.
         c.requestLaterRedraw = False
@@ -2813,8 +2724,6 @@ class Commands(object):
     #@+node:ekr.20090110073010.4: *6* c.redraw_after_select
     def redraw_after_select(self, p):
         '''Redraw the screen after node p has been selected.'''
-        trace = False and not g.unitTesting
-        if trace: g.trace('(Commands)', p and p.h or '<No p>', g.callers(4))
         c = self
         if c.enableRedrawFlag:
             flag = c.expandAllAncestors(p)
@@ -2941,7 +2850,7 @@ class Commands(object):
         c.redraw()
     #@+node:ekr.20031218072017.2912: *5* c.expandToLevel
     def expandToLevel(self, level):
-        trace = False and not g.unitTesting
+
         c = self
         n = c.p.level()
         old_expansion_level = c.expansionLevel
@@ -2955,7 +2864,6 @@ class Commands(object):
         c.expansionNode = c.p.copy()
         c.expansionLevel = max_level + 1
         if c.expansionLevel != old_expansion_level:
-            if trace: g.trace('level', level, 'max_level', max_level+1)
             c.redraw()
         # It's always useful to announce the level.
         # c.k.setLabelBlue('level: %s' % (max_level+1))
@@ -3260,16 +3168,13 @@ class Commands(object):
             return current != c.rootPosition()
     #@+node:ekr.20031218072017.2974: *6* c.canPasteOutline
     def canPasteOutline(self, s=None):
-        trace = False and not g.unitTesting
         # c = self
         if not s:
             s = g.app.gui.getTextFromClipboard()
         if s:
             if g.match(s, 0, g.app.prolog_prefix_string):
-                if trace: g.trace('matches xml prolog')
                 return True
         else:
-            if trace: g.trace('no clipboard text')
             return False
     #@+node:ekr.20031218072017.2975: *6* c.canPromote
     def canPromote(self):
@@ -3355,11 +3260,9 @@ class Commands(object):
     # Ends the editing in the outline.
 
     def endEditing(self):
-        trace = False and not g.unitTesting
         c = self
         p = c.p
         if p:
-            if trace: g.trace(p.h, g.callers())
             c.frame.tree.endEditLabel()
         # The following code would be wrong; c.endEditing is a utility method.
         # k = c.k
@@ -3402,7 +3305,6 @@ class Commands(object):
         Select a new position, redrawing the screen *only* if we must
         change chapters.
         '''
-        trace = False and not g.unitTesting
         if kwargs:
             print('c.selectPosition: all keyword args are ignored', g.callers())
         c = self
@@ -3422,12 +3324,6 @@ class Commands(object):
                     break
                 else:
                     bunch = c.hoistStack.pop()
-                    if trace: g.trace('unhoist', bunch.p.h)
-        if trace:
-            if c.positionExists(p):
-                g.trace('****', p.h)
-            else:
-                g.trace('**** does not exist: %s' % (p and p.h))
         c.frame.tree.select(p)
         c.setCurrentPosition(p)
             # Do *not* test whether the position exists!
@@ -3812,7 +3708,6 @@ class Commands(object):
         # solid foundation. Moreover, the new algorithm should be considerably
         # faster than the old: there is no need to sort positions.
         #@-<< theory of operation >>
-        trace = False and not g.unitTesting
         c = self
         # Verify all positions *before* altering the tree.
         aList2 = []
@@ -3828,8 +3723,6 @@ class Commands(object):
             for p in reversed(sorted(aList2)):
                 if c.positionExists(p):
                     callback(p)
-                elif trace:
-                    g.trace('position does not exist', p and p.h)
         else:
             for p in reversed(sorted(aList2)):
                 if c.positionExists(p):
@@ -3837,17 +3730,11 @@ class Commands(object):
                     parent_v = p.stack[-1][0] if p.stack else c.hiddenRootNode
                     if v in parent_v.children:
                         childIndex = parent_v.children.index(v)
-                        if trace: g.trace('deleting', parent_v, childIndex, v)
                         v._cutLink(childIndex, parent_v)
-                    else:
-                        if trace: g.trace('already deleted', parent_v, v)
-                elif trace:
-                    g.trace('position does not exist', p and p.h)
         # Bug fix 2014/03/13: Make sure c.hiddenRootNode always has at least one child.
         if not c.hiddenRootNode.children:
             v = leoNodes.VNode(context=c)
             v._addLink(childIndex=0, parent_v=c.hiddenRootNode, adjust=False)
-            if trace: g.trace('new root', v)
         if redraw:
             c.selectPosition(c.rootPosition())
                 # Calls redraw()
@@ -3958,7 +3845,6 @@ class Commands(object):
     #@+node:ekr.20150410095543.1: *4* c.findNodeOutsideAnyAtFileTree
     def findNodeOutsideAnyAtFileTree(self, target):
         '''Select the first clone of target that is outside any @file node.'''
-        trace = False and not g.unitTesting
         c = self
         if target.isCloned():
             v = target.v
@@ -3968,9 +3854,7 @@ class Commands(object):
                         if parent.isAnyAtFileNode():
                             break
                     else:
-                        if trace: g.trace('found', p.h)
                         return p
-        if trace: g.trace('not found', target.h)
         return target
     #@+node:ekr.20171124155725.1: *3* c.Settings
     #@+node:ekr.20171114114908.1: *4* c.registerReloadSettings
@@ -3985,7 +3869,6 @@ class Commands(object):
         Call all reloadSettings method in c.subcommanders, c.configurables and
         other known classes.
         '''
-        trace = False and not g.unitTesting
         c = self
         table = [
             g.app.gui,
@@ -4005,7 +3888,6 @@ class Commands(object):
             func = getattr(obj, 'reloadSettings', None)
             if func:
                 # pylint: disable=not-callable
-                if trace: g.pr('reloading settings in', obj.__class__.__name__)
                 try:
                     func()
                 except Exception:

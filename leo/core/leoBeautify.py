@@ -521,7 +521,6 @@ class CPrettyPrinter(object):
     #@+node:ekr.20110918225821.6815: *4* add_statement_braces
     def add_statement_braces(self, s, giveWarnings=False):
         p = self.p
-        trace = False
 
         def oops(message, i, j):
             # This can be called from c-to-python, in which case warnings should be suppressed.
@@ -571,7 +570,6 @@ class CPrettyPrinter(object):
                 result.append(token_)
                 i += 1
             assert progress < i
-        if trace: g.trace(''.join(result))
         return result
     #@+node:ekr.20110919184022.6903: *5* skip_ws
     def skip_ws(self, s, i):

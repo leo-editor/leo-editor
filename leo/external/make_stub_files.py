@@ -1262,7 +1262,6 @@ class Pattern(object):
         '''Return the index of the end of the match found at s[i:] or None.'''
         i1 = i
         trace = False
-        if trace: g.trace(self.find_s, s[i:].rstrip())
         pattern = self.find_s
         j = 0 # index into pattern
         while i < len(s) and j < len(pattern) and pattern[j] in ('*', s[i]):
@@ -1281,8 +1280,6 @@ class Pattern(object):
                 j += 1
             assert progress < i
         found = i <= len(s) and j == len(pattern)
-        if trace and found:
-            g.trace('%s -> %s' % (pattern, s[i1:i]))
         return i if found else None
     #@+node:ekr.20160317054700.103: *4* pattern.match_balanced
 
@@ -1306,7 +1303,6 @@ class Pattern(object):
             elif ch == delim2:
                 level -= 1
                 if level == 0:
-                    if trace: g.trace('found: %s' % s[i1:i])
                     return i
             assert progress < i
         # Unmatched: a syntax error.
@@ -1330,15 +1326,11 @@ class Pattern(object):
             else:
                 start, end = 0, len(s)
                 s = self.replace_balanced(s, start, end)
-                if trace:
-                    g.trace('%-16s %30s %40s ==> %s' % (caller, self, s1, s))
                 return True, s
         else:
             m = self.regex.match(s)
             if m and m.group(0) == s:
                 s = self.replace_regex(m, s)
-                if trace:
-                    g.trace('%-16s %30s %30s ==> %s' % (caller, self, s1, s))
                 return True, s
             else:
                 return False, s
@@ -1382,14 +1374,10 @@ class Pattern(object):
         i = min([z for z in [i1, i2, i3] if z > -1])
         assert i > -1 # i is an index into f AND s
         delim = f[i]
-        if trace: g.trace('head', s[:i], f[:i])
         assert s[:i] == f[:i], (s[:i], f[:i])
-        if trace: g.trace('delim',delim)
         k = self.match_balanced(delim, s, i)
         s_star = s[i+1:k-1]
-        if trace: g.trace('s_star',s_star)
         repl = r[:j] + s_star + r[j+1:]
-        if trace: g.trace('repl',self.repl_s,'==>',repl)
         return s1[:start] + repl + s1[end:]
     #@+node:ekr.20160317054700.108: *4* pattern.replace_regex
 
@@ -1486,7 +1474,6 @@ class ReduceTypes:
                 pattern = Pattern(s2+'[*]', s)
                 if pattern.match_entire_string(s):
                     return True
-        if trace: g.trace('Fail:', s1)
         return False
 
     #@+node:ekr.20160519071605.4: *3* reduce_collection
@@ -1496,7 +1483,6 @@ class ReduceTypes:
         Return a list with only collections of the given kind reduced.
         '''
         trace = False
-        if trace: g.trace(kind, aList)
         assert isinstance(aList, list)
         assert None not in aList, aList
         pattern = Pattern('%s[*]' % kind)
@@ -1506,20 +1492,16 @@ class ReduceTypes:
                 r1.append(s)
             else:
                 others.append(s)
-        if trace: g.trace('1', others, r1)
         for s in sorted(set(r1)):
             parts = []
             s2 = s[len(kind)+1:-1]
             for s3 in s2.split(','):
                 s3 = s3.strip()
-                if trace: g.trace('*', self.is_known_type(s3), s3)
                 parts.append(s3 if self.is_known_type(s3) else 'Any')
             r2.append('%s[%s]' % (kind, ', '.join(parts)))
-        if trace: g.trace('2', r2)
         result = others
         result.extend(r2)
         result = sorted(set(result))
-        if trace: g.trace('3', result)
         return result
 
     #@+node:ekr.20160519071605.5: *3* reduce_numbers
@@ -1542,7 +1524,6 @@ class ReduceTypes:
             assert found in numbers, found
             aList = [z for z in aList if z not in numbers]
             aList.append(found)
-        if trace: g.trace(aList)
         return aList
 
     #@+node:ekr.20160519071605.6: *3* reduce_types
@@ -1556,7 +1537,6 @@ class ReduceTypes:
         never lists.
         '''
         trace = False
-        if trace: g.trace('=====', self.aList)
         r = [('None' if z in ('', None) else z) for z in self.aList]
         assert None not in r
         self.optional = 'None' in r
@@ -1593,20 +1573,6 @@ class ReduceTypes:
         s = s.strip()
         if self.optional:
             s = 'Optional[%s]' % s
-        if trace and (not known or len(aList) > 1):
-            if name:
-                if name.find('.') > -1:
-                    context = ''.join(name.split('.')[1:])
-                else:
-                    context = name
-            else:
-                context = g.callers(3).split(',')[0].strip()
-            context = truncate(context, 26)
-            known = '' if known else '? '
-            pattern = sorted(set([z.replace('\n',' ') for z in aList]))
-            pattern = '[%s]' % truncate(', '.join(pattern), 53-2)
-            print('reduce_types: %-26s %53s ==> %s%s' % (context, pattern, known, s))
-                # widths above match the corresponding indents in match_all and match.
         return s
 
     #@+node:ekr.20160519071605.9: *3* split_types
@@ -1806,11 +1772,6 @@ class StandAloneMakeStubFile(object):
         for z in files:
             files2.extend(glob.glob(self.finalize(z)))
         self.files = [z for z in files2 if z and os.path.exists(z)]
-        if trace:
-            print('Files (from %s)...\n' % files_source)
-            for z in self.files:
-                print(z)
-            print('')
         if 'output_directory' in parser.options('Global'):
             s = parser.get('Global', 'output_directory')
             output_dir = self.finalize(s)
@@ -1825,11 +1786,6 @@ class StandAloneMakeStubFile(object):
             prefix = parser.get('Global', 'prefix_lines')
             self.prefix_lines = prefix.split('\n')
                 # The parser does not preserve leading whitespace.
-            if trace:
-                print('Prefix lines...\n')
-                for z in self.prefix_lines:
-                    print(z)
-                print('')
         self.def_patterns = self.scan_patterns('Def Name Patterns')
         self.general_patterns = self.scan_patterns('General Patterns')
         self.make_patterns_dict()
@@ -1904,7 +1860,6 @@ class StandAloneMakeStubFile(object):
             if s.find(target) > -1:
                 ops.append(op)
                 break # Only one match allowed.
-        if trace and ops: g.trace(s1, ops)
         return ops
     #@+node:ekr.20160317054700.129: *4* msf.get_config_string
 
@@ -1934,11 +1889,9 @@ class StandAloneMakeStubFile(object):
                 aList.append(s)
             elif s.strip().startswith('['):
                 aList.append(r'\\'+s[1:])
-                if trace: g.trace('*** escaping:',s)
             else:
                 aList.append(s)
         s = '\n'.join(aList)+'\n'
-        if trace: g.trace(s)
         file_object = io.StringIO(s)
         # pylint: disable=deprecated-method
         self.parser.readfp(file_object)
@@ -1983,17 +1936,6 @@ class StandAloneMakeStubFile(object):
                     g.trace('duplicate pattern', pattern)
                 else:
                     self.names_dict [name] = pattern.repl_s
-        if trace:
-            g.trace('names_dict...')
-            for z in sorted(self.names_dict):
-                print('  %s: %s' % (z, self.names_dict.get(z)))
-        if trace:
-            g.trace('patterns_dict...')
-            for z in sorted(self.patterns_dict):
-                aList = self.patterns_dict.get(z)
-                print(z)
-                for pattern in sorted(aList):
-                    print('  '+repr(pattern))
         # Note: retain self.general_patterns for use in argument lists.
     #@+node:ekr.20160317054700.133: *4* msf.scan_patterns
 
@@ -2009,17 +1951,11 @@ class StandAloneMakeStubFile(object):
                 # A kludge: strip leading \\ from patterns.
                 if key.startswith(r'\\'):
                     key = '[' + key[2:]
-                    if trace: g.trace('removing escapes', key)
                 if key in seen:
                     g.trace('duplicate key', key)
                 else:
                     seen.add(key)
                     aList.append(Pattern(key, value))
-            if trace:
-                g.trace('%s...\n' % section_name)
-                for z in aList:
-                    print(z)
-                print('')
         # elif trace:
             # print('no section: %s' % section_name)
             # print(parser.sections())
@@ -2134,12 +2070,6 @@ class StubFormatter (AstFormatter):
         for pattern in patterns:
             found, s = pattern.match(s,trace=False)
             if found:
-                if trace:
-                    aList = d.get(name, [])
-                    if pattern not in aList:
-                        aList.append(pattern)
-                        d [name] = aList
-                        print('match_all:    %-12s %26s %40s ==> %s' % (caller, pattern, s1, s))
                 break
         return s
     #@+node:ekr.20160317054700.143: *3* sf.visit
@@ -2173,9 +2103,6 @@ class StubFormatter (AstFormatter):
             self.visit(node.value),
             node.attr) # Don't visit node.attr: it is always a string.
         s2 = self.names_dict.get(s)
-        if trace and s2 and s2 not in self.attrs_seen:
-            self.attrs_seen.append(s2)
-            g.trace(s, '==>', s2)
         return s2 or s
     #@+node:ekr.20160317054700.147: *4* sf.Constants: Bytes, Num, Str
 
@@ -2227,12 +2154,6 @@ class StubFormatter (AstFormatter):
         d = self.names_dict
         name = d.get(node.id, node.id)
         s = 'bool' if name in ('True', 'False') else name
-        if trace and node.id not in self.seen_names:
-            self.seen_names.append(node.id)
-            if d.get(node.id):
-                g.trace(node.id, '==>', d.get(node.id))
-            elif node.id == 'aList':
-                g.trace('**not found**', node.id)
         return s
     #@+node:ekr.20160317054700.151: *4* sf.Tuple
 
@@ -2272,8 +2193,6 @@ class StubFormatter (AstFormatter):
             # str + any implies any is a string.
             s = 'str'
         else:
-            if trace and verbose and lhs == 'str':
-                g.trace('***** unknown string op', lhs, op, rhs)
             # Fall back to the base-class behavior.
             s = '%s%s%s' % (
                 self.visit(node.left),
@@ -2455,11 +2374,6 @@ class StubTraverser (ast.NodeVisitor):
             g.trace('Ignoring duplicate entry for %s in %s' % (stub, caller))
         else:
             d [key] = stub
-            if trace and verbose:
-                caller = g.callers(2).split(',')[1]
-                g.trace('%17s %s' % (caller, stub.full_name))
-            elif trace:
-                g.trace(stub.full_name)
     #@+node:ekr.20160317054700.165: *3* st.indent & out
 
     def indent(self, s):
@@ -2548,13 +2462,8 @@ class StubTraverser (ast.NodeVisitor):
         old_d, old_root = self.parse_stub_file(s, root_name='<old-stubs>')
         if old_root:
             # Merge new stubs into the old tree.
-            if trace and verbose:
-                print(self.trace_stubs(old_root, header='old_root'))
-                print(self.trace_stubs(new_root, header='new_root'))
             print('***** updating stubs from %s *****' % fn)
             self.merge_stubs(self.stubs_dict.values(), old_root, new_root)
-            if trace:
-                print(self.trace_stubs(old_root, header='updated_root'))
             return old_root
         else:
             return new_root
@@ -2597,9 +2506,6 @@ class StubTraverser (ast.NodeVisitor):
                 # Terminate any previous lines.
                 old_stub = stub_stack[-1]
                 old_stub.out_list.extend(lines)
-                if trace:
-                    for s in lines:
-                        g.trace('  '+s.rstrip())
                 lines = [line]
                 # Adjust the stacks.
                 if indent == old_indent:
@@ -2623,17 +2529,12 @@ class StubTraverser (ast.NodeVisitor):
                 stub = Stub(kind, name, parent, stack)
                 self.add_stub(d, stub)
                 stub_stack.append(stub)
-                if trace:
-                    g.trace('%s%5s %s %s' % (' '*indent, kind, name, rest))
             else:
                 parent = stub_stack[-1]
                 lines.append(line)
         # Terminate the last stub.
         old_stub = stub_stack[-1]
         old_stub.out_list.extend(lines)
-        if trace:
-            for s in lines:
-                g.trace('  '+s.rstrip())
         return d, root
     #@+node:ekr.20160317054700.172: *5* st.merge_stubs & helpers
 
@@ -2653,10 +2554,7 @@ class StubTraverser (ast.NodeVisitor):
             # Checks that all ancestors of deleted nodes will be deleted.
         aList = list(reversed(self.sort_stubs_by_hierarchy(aList)))
             # Sort old stubs so that children are deleted before parents.
-        if trace and verbose:
-            dump_list('ordered delete list', aList)
         for stub in aList:
-            if trace: g.trace('deleting  %s' % stub)
             parent = self.find_parent_stub(stub, old_root) or old_root
             parent.children.remove(stub)
             assert not self.find_stub(stub, old_root), stub
@@ -2665,7 +2563,6 @@ class StubTraverser (ast.NodeVisitor):
         aList = self.sort_stubs_by_hierarchy(aList)
             # Sort new stubs so that parents are created before children.
         for stub in aList:
-            if trace: g.trace('inserting %s' % stub)
             parent = self.find_parent_stub(stub, old_root) or old_root
             parent.children.append(stub)
             assert self.find_stub(stub, old_root), stub
@@ -2676,10 +2573,6 @@ class StubTraverser (ast.NodeVisitor):
         old_stubs = self.flatten_stubs(old_root)
         old_stubs.remove(old_root)
         aList = [z for z in old_stubs if z not in new_stubs]
-        if trace:
-            dump_list('old_stubs', old_stubs)
-            dump_list('new_stubs', new_stubs)
-            dump_list('to-be-deleted stubs', aList)
         delete_list = []
         # Check that all parents of to-be-delete nodes will be deleted.
         for z in aList:
@@ -2698,8 +2591,6 @@ class StubTraverser (ast.NodeVisitor):
                     break
             else:
                 g.trace('can not happen: parent loop')
-        if trace:
-            dump_list('delete_list', delete_list)
         return delete_list
     #@+node:ekr.20160317054700.174: *6* st.flatten_stubs
 
@@ -2899,17 +2790,12 @@ class StubTraverser (ast.NodeVisitor):
         r = [self.format(z) for z in self.returns]
             # Allow StubFormatter.do_Return to do the hack.
         # Step 1: Return None if there are no return statements.
-        if trace and self.returns:
-            g.trace('name: %s r:\n%s' % (name, r))
         if not [z for z in self.returns if z.value is not None]:
             return 'None: ...'
         # Step 2: [Def Name Patterns] override all other patterns.
         for pattern in self.def_patterns:
             found, s = pattern.match(name)
             if found:
-                if trace:
-                    g.trace('*name pattern %s: %s -> %s' % (
-                        pattern.find_s, name, s))
                 return s + ': ...'
         # Step 3: remove recursive calls.
         raw, r = self.remove_recursive_calls(name, raw, r)
@@ -2976,8 +2862,7 @@ class StubTraverser (ast.NodeVisitor):
         raw_result, reduced_result = [], []
         for i in range(n):
             if pattern.match_entire_string(reduced[i]):
-                if trace:
-                    g.trace('****', name, pattern, reduced[i])
+                pass
             else:
                 raw_result.append(raw[i])
                 reduced_result.append(reduced[i])

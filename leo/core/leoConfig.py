@@ -129,7 +129,6 @@ class ParserBaseClass(object):
     #@+node:ekr.20070925144337: *4* doButtons (ParserBaseClass)
     def doButtons(self, p, kind, name, val):
         '''Create buttons for each @button node in an @buttons tree.'''
-        trace = False and not g.unitTesting
         c, tag = self.c, '@button'
         aList, seen = [], []
         after = p.nodeAfterTree()
@@ -158,7 +157,6 @@ class ParserBaseClass(object):
             g.app.config.atCommonButtonsList.extend(aList)
                 # Bug fix: 2011/11/24: Extend the list, don't replace it.
             g.app.config.buttonsFileName = c.shortFileName() if c else '<no settings file>'
-        if trace: g.trace(c.shortFileName(), '[%s]' % ','.join([z[0].h for z in aList]))
         d, key = g.app.config.unitTestDict, 'config.doButtons-file-names'
         aList = d.get(key, [])
         aList.append(c.shortFileName())
@@ -172,7 +170,6 @@ class ParserBaseClass(object):
     #@+node:ekr.20080312071248.6: *4* doCommands
     def doCommands(self, p, kind, name, val):
         '''Handle an @commands tree.'''
-        trace = False and not g.unitTesting
         aList = []; c = self.c; tag = '@command'
         seen = []
         after = p.nodeAfterTree()
@@ -197,7 +194,6 @@ class ParserBaseClass(object):
         if aList:
             g.app.config.atCommonCommandsList.extend(aList)
                 # Bug fix: 2011/11/24: Extend the list, don't replace it.
-        if trace: g.trace(len(aList), c.shortFileName())
         d, key = g.app.config.unitTestDict, 'config.doCommands-file-names'
         aList = d.get(key, [])
         aList.append(c.shortFileName())
@@ -268,8 +264,6 @@ class ParserBaseClass(object):
     #@+node:ekr.20041120094940.4: *4* doFont
     def doFont(self, p, kind, name, val):
         '''Handle an @font node. Such nodes affect syntax coloring *only*.'''
-        trace = False and not g.unitTesting
-        if trace: g.trace(p and p.h, kind, name, self.c.mFileName)
         d = self.parseFont(p)
         # Set individual settings.
         for key in ('family', 'size', 'slant', 'weight'):
@@ -278,7 +272,6 @@ class ParserBaseClass(object):
                 name, val = data
                 setKind = key
                 self.set(p, setKind, name, val)
-                if trace and val not in (None, 'none', 'None'): g.trace(key, val)
     #@+node:ekr.20150426034813.1: *4* doIfEnv
     def doIfEnv(self, p, kind, name, val):
         '''
@@ -286,19 +279,15 @@ class ParserBaseClass(object):
 
         Enable descendant settings if the value of os.getenv is in any of the names.
         '''
-        trace = False
         aList = name.split(',')
         if not aList:
-            if trace: g.trace('empty @ifenv')
             return 'skip'
         name = aList[0]
         env = os.getenv(name)
         env = env.lower().strip() if env else 'none'
         for s in aList[1:]:
             if s.lower().strip() == env:
-                if trace: g.trace('enabled', name, env, s)
                 return None
-        if trace: g.trace('disabled', name, env, aList[1:])
         return 'skip'
     #@+node:dan.20080410121257.2: *4* doIfHostname
     def doIfHostname(self, p, kind, name, val):
@@ -312,35 +301,23 @@ class ParserBaseClass(object):
         @ifhostname !harry
             Enable descendant settings if h != 'harry'
         '''
-        trace = False
         lm = g.app.loadManager
         h = lm.computeMachineName().strip()
         s = name.strip()
         if s.startswith('!'):
             if h == s[1:]:
-                if trace: g.trace('disable', name, val)
                 return 'skip'
         elif h != s:
-            if trace: g.trace('disable', name, val)
             return 'skip'
         else:
-            if trace: g.trace('enable', name, val)
             return None
     #@+node:ekr.20041120104215: *4* doIfPlatform
     def doIfPlatform(self, p, kind, name, val):
         '''Support @ifplatform in @settings trees.'''
-        trace = False and not g.unitTesting
         platform = sys.platform.lower()
-        if trace:
-            g.trace(g.callers(verbose=True))
-            child = p and p.firstChild()
-            child_h = child.h if child else 'No Child'
         for s in name.split(','):
             if platform == s.lower():
-                if trace:
-                    g.trace('===== enable', s, p.h, 'child', child_h)
                 return None
-        if trace: g.trace('===== disable', name, p.h, 'child', child_h)
         return "skip"
     #@+node:ekr.20041120104215.1: *4* doIgnore
     def doIgnore(self, p, kind, name, val):
@@ -387,17 +364,12 @@ class ParserBaseClass(object):
     #@+node:tbrown.20080514112857.124: *4* doMenuat
     def doMenuat(self, p, kind, name, val):
         '''Handle @menuat setting.'''
-        trace = False and not g.unitTesting
         if g.app.config.menusList:
-            if trace:
-                g.es_print("Patching menu tree: " + name)
-                g.es_print(self.c)
             # get the patch fragment
             patch = []
             if p.hasChildren():
                 # self.doMenus(p.copy().firstChild(),kind,name,val,storeIn=patch)
                 self.doItems(p.copy(), patch)
-                if trace: self.dumpMenuTree(patch)
             # setup
             parts = name.split()
             if len(parts) != 3:
@@ -407,9 +379,6 @@ class ParserBaseClass(object):
                 targetPath = '/' + targetPath
             ans = self.patchMenuTree(g.app.config.menusList, targetPath)
             if ans:
-                if trace:
-                    # g.es_print("Patching (" + mode + ' ' + source + ") at " + targetPath)
-                    g.es_print("Patching (%s %s) at %s" % (mode, source, targetPath))
                 # pylint: disable=unpacking-non-sequence
                 list_, idx = ans
                 if mode not in ('copy', 'cut'):
@@ -420,7 +389,6 @@ class ParserBaseClass(object):
                             use = self.clipBoard
                         else:
                             use = [self.clipBoard]
-                    if trace: g.es_print(str(use))
                 if mode == 'replace':
                     list_[idx] = use.pop(0)
                     while use:
@@ -437,7 +405,6 @@ class ParserBaseClass(object):
                     del list_[idx]
                 elif mode == 'copy':
                     self.clipBoard = list_[idx]
-                    if trace: g.es_print(str(self.clipBoard))
                 else: # append
                     list_.extend(use)
             else:
@@ -467,20 +434,18 @@ class ParserBaseClass(object):
                 self.dumpMenuTree(val, level + 1, path=path + '/' + name)
     #@+node:tbrown.20080514180046.8: *5* patchMenuTree
     def patchMenuTree(self, orig, targetPath, path=''):
-        trace = False and not g.unitTesting
+
         for n, z in enumerate(orig):
             kind, val, val2 = z
             if kind == '@item':
                 name = self.getName(val, val2)
                 curPath = path + '/' + name
                 if curPath == targetPath:
-                    if trace: g.es_print('Found ' + targetPath)
                     return orig, n
             else:
                 name = self.getName(kind.replace('@menu ', ''))
                 curPath = path + '/' + name
                 if curPath == targetPath:
-                    if trace: g.es_print('Found ' + targetPath)
                     return orig, n
                 ans = self.patchMenuTree(val, targetPath, path=path + '/' + name)
                 if ans:
@@ -488,7 +453,7 @@ class ParserBaseClass(object):
         return None
     #@+node:ekr.20070925144337.2: *4* doMenus & helper (ParserBaseClass)
     def doMenus(self, p, kind, name, val):
-        trace = False and not g.unitTesting
+
         c = self.c
         p = p.copy()
         aList = []
@@ -513,9 +478,6 @@ class ParserBaseClass(object):
                     p.moveToThreadNext()
             else:
                 p.moveToThreadNext()
-        if trace:
-            g.trace('=====', kind, repr(name), repr(val))
-            g.printObj(aList)
         if self.localFlag:
             self.set(p, kind='menus', name='menus', val=aList)
         else:
@@ -525,8 +487,7 @@ class ParserBaseClass(object):
        
     #@+node:ekr.20070926141716: *5* doItems
     def doItems(self, p, aList):
-        trace = False and not g.unitTesting
-        if trace: g.trace(p.h)
+
         p = p.copy()
         after = p.nodeAfterTree()
         p.moveToThreadNext()
@@ -561,7 +522,6 @@ class ParserBaseClass(object):
     #@+node:ekr.20060102103625.1: *4* doMode (ParserBaseClass)
     def doMode(self, p, kind, name, val):
         '''Parse an @mode node and create the enter-<name>-mode command.'''
-        trace = False and not g.unitTesting
         c = self.c
         name1 = name
         # g.trace('%20s' % (name),c.fileName())
@@ -591,22 +551,16 @@ class ParserBaseClass(object):
                     aList.append(bi)
                     d.replace(name, aList)
             # Restore the global shortcutsDict.
-            if trace: g.trace(d.dump())
             # Create the command, but not any bindings to it.
             self.createModeCommand(modeName, name1, d)
     #@+node:ekr.20070411101643.1: *4* doOpenWith (ParserBaseClass)
     def doOpenWith(self, p, kind, name, val):
-        trace = False and not g.unitTesting
-        # g.trace(self.c.shortFileName(),'kind',kind,'name',name,'val',val)
+
         d = self.parseOpenWith(p)
         d['name'] = name
         d['shortcut'] = val
-        # g.trace('command',d.get('command'))
         name = kind = 'openwithtable'
         self.openWithList.append(d)
-        if trace:
-            g.trace(p.h)
-            g.printList(self.openWithList)
         self.set(p, kind, name, self.openWithList)
     #@+node:bobjack.20080324141020.4: *4* doPopup & helper
     def doPopup(self, p, kind, name, val):
@@ -662,7 +616,6 @@ class ParserBaseClass(object):
     #@+node:ekr.20041120105609: *4* doShortcuts (ParserBaseClass)
     def doShortcuts(self, p, kind, junk_name, junk_val, s=None):
         '''Handle an @shortcut or @shortcuts node.'''
-        trace = False and not g.unitTesting
         c, d = self.c, self.shortcutsDict
         if s is None: s = p.b
         fn = d.name()
@@ -678,20 +631,14 @@ class ParserBaseClass(object):
                     else:
                         # New in Leo 5.7: Add local assignments to None to c.k.killedBindings.
                         if c.config.isLocalSettingsFile():
-                            if trace: g.trace('%s: killing binding to %s' % (
-                                c.shortFileName(), commandName))
                             c.k.killedBindings.append(commandName)
-        if trace: g.trace(
-            len(list(self.shortcutsDict.keys())), c.shortFileName(), p.h)
     #@+node:ekr.20111020144401.9585: *5* doOneShortcut (ParserBaseClass)
     def doOneShortcut(self, bi, commandName, p):
         '''Handle a regular shortcut.'''
-        trace = False and not g.unitTesting
         d = self.shortcutsDict
         aList = d.get(commandName, [])
         aList.append(bi)
         d[commandName] = aList
-        if trace: g.trace(commandName, bi)
     #@+node:ekr.20041217132028: *4* doString
     def doString(self, p, kind, name, val):
         # At present no checking is done.
@@ -805,11 +752,9 @@ class ParserBaseClass(object):
         return kind, name, val
     #@+node:ekr.20070411101643.2: *4* parseOpenWith & helper (ParserBaseClass)
     def parseOpenWith(self, p):
-        trace = False and not g.unitTesting
+
         d = {'command': None}
            # d contains args, kind, etc tags.
-        if trace:
-            g.trace(p.h)
         for line in g.splitLines(p.b):
             self.parseOpenWithLine(line, d)
         return d
@@ -857,7 +802,6 @@ class ParserBaseClass(object):
         command-name --> mode-name = binding
         command-name --> same = binding
         '''
-        trace = False and not g.unitTesting and kind == '*mode-setting*'
         # c = self.c
         name = val = nextMode = None; nextMode = 'none'
         i = g.skip_ws(s, 0)
@@ -865,7 +809,6 @@ class ParserBaseClass(object):
             j = g.skip_ws(s, i + 3)
             i = g.skip_id(s, j, '-')
             entryCommandName = s[j: i]
-            if trace: g.trace('-->', entryCommandName)
             return None, g.BindingInfo('*entry-command*', commandName=entryCommandName)
         j = i
         i = g.skip_id(s, j, '-@') # #718.
@@ -876,7 +819,6 @@ class ParserBaseClass(object):
                 name = name[len(tag):]
                 break
         if not name:
-            if trace: g.trace('no name', repr(s))
             return None, None
         # New in Leo 4.4b2.
         i = g.skip_ws(s, i)
@@ -913,8 +855,6 @@ class ParserBaseClass(object):
     #@+node:ekr.20041120094940.9: *3* set (ParserBaseClass)
     def set(self, p, kind, name, val):
         """Init the setting for name to val."""
-        trace = False and not g.unitTesting
-        if trace: g.trace(kind, name, val)
         c = self.c
         # Note: when kind is 'shortcut', name is a command name.
         key = self.munge(name)
@@ -939,7 +879,6 @@ class ParserBaseClass(object):
     #@+node:ekr.20041119204700.1: *3* traverse (ParserBaseClass)
     def traverse(self, theme=False):
         '''Traverse the entire settings tree.'''
-        trace = False and not g.unitTesting
         c = self.c
         self.settingsDict = g.TypedDict(
             name='settingsDict for %s' % (c.shortFileName()),
@@ -954,8 +893,6 @@ class ParserBaseClass(object):
         if not p:
             # c.rootPosition() doesn't exist yet.
             # This is not an error.
-            if trace:
-                g.es_debug('no settings tree for %s' % (c.shortFileName()))
             return self.shortcutsDict, self.settingsDict
         after = p.nodeAfterTree()
         while p and p != after:
@@ -1094,8 +1031,7 @@ class GlobalConfigManager(object):
     #@+node:ekr.20041117083202: *3* gcm.Birth...
     #@+node:ekr.20041117062717.2: *4* gcm.ctor
     def __init__(self):
-        trace = False and not g.unitTesting
-        if trace: g.trace('(g.app.config)')
+        #
         # Set later.  To keep pylint happy.
         if 0: # No longer needed, now that setIvarsFromSettings always sets gcm ivars.
             self.at_root_bodies_start_in_doc_mode = True
@@ -1165,13 +1101,9 @@ class GlobalConfigManager(object):
         This does NOT init the corresponding commander ivars.
 
         Such initing must be done in setIvarsFromSettings.'''
-        trace = False and not g.unitTesting # and key == 'outputnewline'
         # Important: the key is munged.
         d = self.ivarsDict
         gs = d.get(key)
-        if trace:
-            g.trace('g.app.config', gs.ivar, gs.val)
-            # print('initIvar',self,gs.ivar,gs.val)
         setattr(self, gs.ivar, gs.val)
     #@+node:ekr.20041117083202.2: *4* gcm.initRecentFiles
     def initRecentFiles(self):
@@ -1181,18 +1113,13 @@ class GlobalConfigManager(object):
         '''Init g.app.config ivars or c's ivars from settings.
 
         - Called from c.initSettings with c = None to init g.app.config ivars.
-        - Called from c.initSettings to init corresponding commmander ivars.'''
-        trace = False and not g.unitTesting
-        verbose = True
+        - Called from c.initSettings to init corresponding commmander ivars.
+        '''
         if g.app.loadedThemes:
-            if trace: g.trace('===== Return')
             return
         if not self.inited:
             return
         # Ignore temporary commanders created by readSettingsFiles.
-        if trace and verbose: g.trace('*' * 10)
-        if trace: g.trace(
-            'inited', self.inited, c and c.shortFileName() or '<no c>')
         d = self.ivarsDict
         keys = list(d.keys())
         keys.sort()
@@ -1207,12 +1134,8 @@ class GlobalConfigManager(object):
                 else:
                     val = self.get(key, kind) # Don't use bunch.val!
                 if c:
-                    if trace and verbose: g.trace("%20s %s = %s" % (
-                        g.shortFileName(c.mFileName), ivar, val))
                     setattr(c, ivar, val)
                 if True: # Always set the global ivars.
-                    if trace and verbose: g.trace("%20s %s = %s" % (
-                        'g.app.config', ivar, val))
                     setattr(self, ivar, val)
     #@+node:ekr.20041117081009: *3* gcm.Getters...
     #@+node:ekr.20041123070429: *4* gcm.canonicalizeSettingName (munge)
@@ -1238,22 +1161,15 @@ class GlobalConfigManager(object):
     #@+node:ekr.20041117083141: *4* gcm.get & allies
     def get(self, setting, kind):
         """Get the setting and make sure its type matches the expected type."""
-        trace = False and not g.unitTesting
         lm = g.app.loadManager
+        #
         # It *is* valid to call this method: it returns the global settings.
-        # if c:
-            # print('g.app.config.get ***** call c.config.getX when c is available')
-            # print('g.app.config.get',setting,kind,g.callers())
         d = lm.globalSettingsDict
         if d:
             assert g.isTypedDict(d), d
             val, junk = self.getValFromDict(d, setting, kind)
-            if trace:
-                print('g.app.config.get %30s %s' % (setting, val))
             return val
         else:
-            if trace:
-                print('g.app.config.get %30s **no d, returning None' % (setting))
             return None
     #@+node:ekr.20041121143823: *5* gcm.getValFromDict
     def getValFromDict(self, d, setting, requestedType, warn=True):
@@ -1449,7 +1365,6 @@ class GlobalConfigManager(object):
         M myLeoSettings.leo
         @ @button, @command, @mode.
         '''
-        trace = False and not g.unitTesting
         lm = g.app.loadManager
         d = c.config.settingsDict if c else lm.globalSettingsDict
         limit = c.config.getInt('print-settings-at-data-limit')
@@ -1466,10 +1381,6 @@ class GlobalConfigManager(object):
                     # #748: Remove comments
                     aList = [' '*8 + z.rstrip() for z in val
                         if z.strip() and not z.strip().startswith('#')]
-                    if trace:
-                        g.trace('@data =====', len(aList), key)
-                        if 0 < len(aList) < limit:
-                            g.printList(aList)
                     if not aList:
                         val = '[]'
                     elif limit == 0 or len(aList) < limit:
@@ -1502,10 +1413,10 @@ class LocalConfigManager(object):
     #@+node:ekr.20120215072959.12472: *3* c.config.Birth
     #@+node:ekr.20041118104831.2: *4* c.config.ctor
     def __init__(self, c, previousSettings=None):
-        trace = False and not g.unitTesting
-        if trace: g.es_debug('(c.config)', c and c.shortFileName())
+
         self.c = c
         lm = g.app.loadManager
+        #
         # c.__init__ and helpers set the shortcuts and settings dicts for local files.
         if previousSettings:
             self.settingsDict = previousSettings.settingsDict
@@ -1549,14 +1460,13 @@ class LocalConfigManager(object):
             g.es("bad", "%s: %s" % (encodingName, encoding))
     #@+node:ekr.20041118104240: *4* c.config.initIvar
     def initIvar(self, key):
-        trace = False and not g.unitTesting
+
         c = self.c
         # Important: the key is munged.
         gs = g.app.config.ivarsDict.get(key)
         ivarName = gs.ivar
         val = self.get(ivarName, kind=None)
         if val or not hasattr(self, ivarName):
-            if trace: g.trace('c.config', c.shortFileName(), ivarName, val)
             # Set *both* the commander ivar and the c.config ivar.
             setattr(self, ivarName, val)
             setattr(c, ivarName, val)
@@ -1615,21 +1525,12 @@ class LocalConfigManager(object):
     #@+node:ekr.20120215072959.12519: *5* c.config.get & allies
     def get(self, setting, kind):
         """Get the setting and make sure its type matches the expected type."""
-        trace = False and not g.unitTesting
-        verbose = True
         d = self.settingsDict
-        lm = g.app.loadManager
         if d:
             assert g.isTypedDict(d), d
             val, junk = self.getValFromDict(d, setting, kind)
-            if trace and verbose and val is not None:
-                # g.trace('%35s %20s %s' % (setting,val,g.callers(3)))
-                g.trace('%40s %s' % (setting, val))
             return val
         else:
-            if trace and lm.globalSettingsDict:
-                g.trace('ignore: %40s %s' % (
-                    setting, g.callers(2)))
             return None
     #@+node:ekr.20120215072959.12520: *6* getValFromDict
     def getValFromDict(self, d, setting, requestedType, warn=True):
@@ -1817,7 +1718,6 @@ class LocalConfigManager(object):
     #@+node:ekr.20120215072959.12539: *5* c.config.getShortcut
     def getShortcut(self, commandName):
         '''Return rawKey,accel for shortcutName'''
-        trace = False and not g.unitTesting and commandName == 'help'
         c = self.c
         d = self.shortcutsDict
         if not c.frame.menu:
@@ -1832,7 +1732,6 @@ class LocalConfigManager(object):
                 # It's important to filter empty strokes here.
                 aList = [z for z in aList
                     if z.stroke and z.stroke.lower() != 'none']
-            if trace: g.trace(d, '\n', aList)
             return key, aList
         else:
             # lm.readGlobalSettingsFiles is opening a settings file.
@@ -1928,8 +1827,6 @@ class LocalConfigManager(object):
     #@+node:ekr.20120215072959.12475: *3* c.config.set
     def set(self, p, kind, name, val, warn=True):
         """Init the setting for name to val."""
-        trace = False and not g.unitTesting
-        if trace: g.trace(kind, name, val)
         c = self.c
         # Note: when kind is 'shortcut', name is a command name.
         key = g.app.config.munge(name)

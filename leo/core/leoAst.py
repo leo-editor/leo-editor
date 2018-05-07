@@ -1512,7 +1512,6 @@ class AstFullTraverser(object):
     #@+node:ekr.20141012064706.18528: *3* ft.visit (supports before_* & after_*)
     def visit(self, node):
         '''Visit a *single* ast node.  Visitors are responsible for visiting children!'''
-        trace = False
         name = node.__class__.__name__
         assert isinstance(node, ast.AST), repr(node)
         # Visit the children with the new parent.
@@ -1523,11 +1522,7 @@ class AstFullTraverser(object):
             before_method(node)
         do_method = getattr(self, 'do_'+name, None)
         if do_method:
-            if trace: g.trace(g.truncate(repr(do_method), 80))
             val = do_method(node)
-        elif trace:
-            g.trace('no do_%s method' % name)
-            val = None
         after_method = getattr(self, 'after_'+name, None)
         if after_method:
             after_method(node)
@@ -2784,7 +2779,6 @@ class TokenSync(object):
         Return a list of lists of tokens for each list in self.lines.
         The strings in self.lines may end in a backslash, so care is needed.
         '''
-        trace = False
         n, result = len(self.lines), []
         for i in range(0, n + 1):
             result.append([])
@@ -2795,7 +2789,6 @@ class TokenSync(object):
             erow, ecol = t4
             line = erow - 1 if kind == 'string' else srow - 1
             result[line].append(token)
-            if trace: g.trace('%3s %s' % (line, self.dump_token(token)))
         assert len(self.lines) + 1 == len(result), len(result)
         return result
     #@+node:ekr.20160225102931.6: *4* ts.make_nl_token
@@ -2882,7 +2875,6 @@ class TokenSync(object):
     def leading_lines(self, node):
         '''Return a list of the preceding comment and blank lines'''
         # This can be called on arbitrary nodes.
-        trace = False
         leading = []
         if hasattr(node, 'lineno'):
             i, n = self.first_leading_line, node.lineno
@@ -2891,7 +2883,6 @@ class TokenSync(object):
                 if token:
                     s = self.token_raw_val(token).rstrip() + '\n'
                     leading.append(s)
-                    if trace: g.trace('%11s: %s' % (i, s.rstrip()))
                 i += 1
             self.first_leading_line = i
         return leading
@@ -2969,7 +2960,6 @@ class TokenSync(object):
     #@+node:ekr.20160225102931.20: *3* ts.trailing_comment_at_lineno
     def trailing_comment_at_lineno(self, lineno):
         '''Return any trailing comment at the given node.lineno.'''
-        trace = False
         tokens = self.line_tokens[lineno - 1]
         for token in tokens:
             if self.token_kind(token) == 'comment':
@@ -2977,13 +2967,11 @@ class TokenSync(object):
                 if not raw_val.strip().startswith('#'):
                     val = self.token_val(token).rstrip()
                     s = ' %s\n' % val
-                    if trace: g.trace(lineno, s.rstrip(), g.callers())
                     return s
         return '\n'
     #@+node:ekr.20160225102931.21: *3* ts.trailing_lines
     def trailing_lines(self):
         '''return any remaining ignored lines.'''
-        trace = False
         trailing = []
         i = self.first_leading_line
         while i < len(self.ignored_lines):
@@ -2991,7 +2979,6 @@ class TokenSync(object):
             if token:
                 s = self.token_raw_val(token).rstrip() + '\n'
                 trailing.append(s)
-                if trace: g.trace('%11s: %s' % (i, s.rstrip()))
             i += 1
         self.first_leading_line = i
         return trailing

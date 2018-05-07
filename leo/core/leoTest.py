@@ -193,12 +193,6 @@ class GeneralTestCase(unittest.TestCase):
         else:
             d = {'self': tm,}
         script = script + '\n'
-        if trace:
-            if trace_script:
-                g.trace('p: %s c: %s write script: %s script:\n%s' % (
-                p and p.h, c.shortFileName(), c.write_script_file, script))
-            else:
-                g.trace(p and p.h)
         # Execute the script. Let the unit test handle any errors!
         # 2011/11/02: pass the script sources to exec or execfile.
         if c.write_script_file:
@@ -283,7 +277,6 @@ class ImportExportTestCase(unittest.TestCase):
         except AttributeError:
             fileName = g.os_path_normpath(fileName)
         self.fileName = fileName = g.os_path_finalize_join(g.app.loadDir, "..", fileName)
-        if trace: g.trace('(ImportExportTestCase', fileName)
         # Set the dict for UnitTestGui, a subclass of NullGui.
         # NullGui.simulateDialog uses this dict to return values for dialogs.
         if self.doImport:
@@ -501,11 +494,6 @@ class RunTestExternallyHelperClass(object):
         if found:
             self.createFileFromOutline(c2)
             t2 = time.time()
-            if trace:
-                kind = 'all' if self.all else 'selected'
-                print('created %s unit tests in %0.2fsec in %s' % (
-                    kind, t2 - t1, self.fileName))
-                # g.blue('created %s unit tests' % (kind))
             # 2010/09/09: allow a way to specify the gui.
             gui = g.app.unitTestGui or 'nullGui'
             self.runUnitTestLeoFile(gui=gui, path='dynamicUnitTest.leo')
@@ -596,8 +584,6 @@ class RunTestExternallyHelperClass(object):
         if silent: args.append('--silent')
         if tracePlugins: args.append('--trace-plugins')
         if verbose: args.append('--verbose')
-        if trace and verbose:
-            g.trace('args...\n  %s' % '\n  '.join(args))
         # Set the current directory so that importing leo.core.whatever works.
         leoDir = g.os_path_finalize_join(g.app.loadDir, '..', '..')
         env = dict(os.environ)
@@ -605,7 +591,6 @@ class RunTestExternallyHelperClass(object):
         if False and trace:
             for z in sorted(os.environ.keys()):
                 print(z, os.environ.get(z))
-        if trace: print('\n\nrunUnitTestLeoFile: spawning separate process: %s\n\n' % path)
         os.spawnve(os.P_NOWAIT, sys.executable, args, env)
     #@-others
 #@+node:ekr.20120220070422.10417: ** class TestManager
@@ -636,7 +621,6 @@ class TestManager(object):
         if not c.fileName().endswith('unitTest.leo'):
             if c.isChanged():
                 c.save() # Eliminate the need for ctrl-s.
-        if trace: g.trace('marked', marked, 'c', c)
         try:
             g.unitTesting = g.app.unitTesting = True
             g.app.runningAllUnitTests = all and not marked # Bug fix: 2012/12/20
@@ -655,13 +639,10 @@ class TestManager(object):
                     setup_script = p.b
                     test = None
                 elif tm.isTestNode(p):
-                    if trace: g.trace('adding', p.h)
                     test = tm.makeTestCase(p, setup_script)
                 elif tm.isSuiteNode(p): # @suite
-                    if trace: g.trace('adding', p.h)
                     test = tm.makeTestSuite(p, setup_script)
                 elif tm.isTestClassNode(p):
-                    if trace: g.trace('adding', p.h)
                     test = tm.makeTestClass(p) # A suite of tests.
                 else:
                     test = None
@@ -671,7 +652,6 @@ class TestManager(object):
             # Verbosity: 1: print just dots.
             if not found:
                 # 2011/10/30: run the body of p as a unit test.
-                if trace: g.trace('not found: running raw body')
                 test = tm.makeTestCase(c.p, setup_script)
                 if test:
                     suite.addTest(test)
@@ -1428,38 +1408,29 @@ class TestManager(object):
         p = c.rootPosition() if all or marked else c.p
         limit = None if all or marked else p.nodeAfterTree()
         seen, result = [], []
-        if trace: g.trace('all: %s marked: %s p: %s limit: %s' % (
-            all, marked, p.h, limit and limit.h))
         # 2012/08/13: Add special cases only after this loop.
         while p and p != limit:
-            if trace and verbose: g.trace(p.h)
             if p.v in seen:
-                if trace and verbose: g.trace('already seen', p.h)
                 p.moveToNodeAfterTree()
                 continue
             seen.append(p.v)
             # pylint: disable=consider-using-ternary
             add = (marked and p.isMarked()) or not marked
             if g.match_word(p.h, 0, '@ignore'):
-                if trace and verbose: g.trace(p.h)
                 p.moveToNodeAfterTree()
             elif tm.isTestSetupNode(p): # @testsetup
-                if trace: g.trace('adding', p.h)
                 result.append(p.copy())
                 p.moveToNodeAfterTree()
             elif add and tm.isTestNode(p): # @test
-                if trace: g.trace('adding', p.h)
                 result.append(p.copy())
                 p.moveToNodeAfterTree()
             elif add and tm.isSuiteNode(p): # @suite
-                if trace: g.trace('adding', p.h)
                 result.append(p.copy())
                 p.moveToNodeAfterTree()
             elif add and tm.isTestClassNode(p): # @testclass
                 result.append(p.copy())
                 p.moveToNodeAfterTree()
             elif not marked or not p.isMarked() or not p.hasChildren():
-                if trace and verbose: g.trace('skipping:', p.h)
                 p.moveToThreadNext()
             else:
                 assert marked and p.isMarked() and p.hasChildren()
@@ -1467,26 +1438,21 @@ class TestManager(object):
                 assert not tm.isSuiteNode(p)
                 # Add all @test or @suite nodes in p's subtree,
                 # *regardless* of whether they are marked or not.
-                if trace: g.trace('adding subtree of marked', p.h)
                 after2 = p.nodeAfterTree()
                 p.moveToFirstChild()
                 while p and p != after2:
                     if p.v in seen:
-                        if trace: g.trace('already seen', p.h)
                         p.moveToNodeAfterTree()
                         continue
                     seen.append(p.v)
                     if g.match_word(p.h, 0, '@ignore'):
                         # Support @ignore here.
-                        if trace and verbose:
-                            g.trace(p.h)
                         p.moveToNodeAfterTree()
                     elif(tm.isTestNode(p) or # @test
                           tm.isSuiteNode(p) or # @suite
                           tm.isTestClassNode(p) or # @testclass
                           tm.isTestSetupNode(p) # @testsetup
                     ):
-                        if trace: g.trace(p.h)
                         result.append(p.copy())
                         p.moveToNodeAfterTree()
                     else:
@@ -1497,7 +1463,6 @@ class TestManager(object):
             p2 = p.threadBack()
             while p2:
                 if tm.isTestSetupNode(p2):
-                    if trace: g.trace('special case 0', p2.h)
                     result.insert(0, p2.copy())
                     break
                 else:
@@ -1507,7 +1472,6 @@ class TestManager(object):
         # Important: this may be used to run a test in an @ignore tree.
         if not result and (tm.isTestNode(c.p) or tm.isSuiteNode(c.p)):
             seen.append(p.v)
-            if trace: g.trace(p.h)
             result.append(c.p.copy())
         # Special case 2:
         # Look up the selected tree for @test & @suite nodes if none have been found so far.
@@ -1515,7 +1479,6 @@ class TestManager(object):
         if not result and not marked and not all:
             for p in c.p.parents():
                 if tm.isTestNode(p) or tm.isSuiteNode(p):
-                    if trace: g.trace(p.h)
                     result.append(p.copy())
                     break
         # Remove duplicates.
@@ -1524,8 +1487,6 @@ class TestManager(object):
             if p.v not in seen2:
                 seen2.append(p.v)
                 result2.append(p)
-        if trace:
-            g.trace([z.h for z in result2])
         return result2
     #@+node:ekr.20120221204110.10345: *4* TM.findMarkForUnitTestNodes
     def findMarkForUnitTestNodes(self):
@@ -1535,15 +1496,12 @@ class TestManager(object):
         p, result, seen = c.rootPosition(), [], []
         while p:
             if p.v in seen:
-                if trace: g.trace('seen', p.v)
                 p.moveToNodeAfterTree()
             else:
                 seen.append(p.v)
                 if g.match_word(p.h, 0, '@ignore'):
-                    if trace: g.trace(p.h)
                     p.moveToNodeAfterTree()
                 elif p.h.startswith('@mark-for-unit-tests'):
-                    if trace: g.trace(p.h)
                     result.append(p.copy())
                     p.moveToNodeAfterTree()
                 else:

@@ -44,40 +44,31 @@ class BaseColorizer(object):
         Return True unless an coloring is unambiguously disabled.
         Called from Leo's node-selection logic and from the colorizer.
         '''
-        trace = False and not g.unitTesting
         if p: # This guard is required.
             try:
                 self.enabled = self.useSyntaxColoring(p)
                 self.language = self.scanLanguageDirectives(p)
-                if trace: g.trace(self.enabled, self.language, p.h)
             except Exception:
                 g.es_print('unexpected exception in updateSyntaxColorer')
                 g.es_exception()
-        elif trace:
-            g.trace('no p')
     #@+node:ekr.20170127142001.2: *4* bc.scanLanguageDirectives & helpers
     def scanLanguageDirectives(self, p, use_default=True):
         '''Return language based on the directives in p's ancestors.'''
-        trace = False and not g.unitTesting
         c = self.c
         root = p.copy()
         # Look for the first @language directive only in p itself.
         language = self.findFirstValidAtLanguageDirective(p)
         if language:
-            if trace: g.trace(repr(language), 'found 1 -----', p.h)
             return language
         for p in root.parents():
-            if trace: g.trace('scan', p.h)
             languages = self.findAllValidLanguageDirectives(p)
             if len(languages) == 1: # An unambiguous language
                 language = languages[0]
-                if trace: g.trace(repr(language), 'found 2 -----', p.h)
                 return language
         #  Get the language from the nearest ancestor @<file> node.
         language = g.getLanguageFromAncestorAtFileNode(root)
         if not language and use_default:
             language = c.target_language
-        if trace: g.trace(repr(language), 'default -----', p.h)
         return language
 
     #@+node:ekr.20170201150505.1: *5* bc.findAllValidLanguageDirectives
@@ -93,13 +84,10 @@ class BaseColorizer(object):
     #@+node:ekr.20170127142001.5: *5* bc.findFirstAtLanguageDirective
     def findFirstValidAtLanguageDirective(self, p):
         '''Return the first *valid* @language directive in p.b.'''
-        trace = False and not g.unitTesting
         for m in self.at_language_pattern.finditer(p.b):
             language = m.group(1)
             if self.isValidLanguage(language):
-                if trace: g.trace(language, p.h)
                 return language
-            elif trace: g.trace('not a valid language', language, p.h)
         return None
 
     #@+node:ekr.20170127142001.6: *5* bc.isValidLanguage
@@ -465,7 +453,6 @@ class JEditColorizer(BaseColorizer):
         '''Set the width of a hard tab.
         The stated default is 40, but apparently it must be set explicitly.
         '''
-        trace = False and not g.unitTesting
         c, widget, wrapper = self.c, self.widget, self.wrapper
         # For some reason, the size is not accurate.
         if isinstance(widget, QtWidgets.QTextEdit):
@@ -474,10 +461,6 @@ class JEditColorizer(BaseColorizer):
             size = info.pointSizeF()
             pixels_per_point = 1.0 # 0.9
             hard_tab_width = abs(int(pixels_per_point * size * c.tab_width))
-            if trace: g.trace(
-                'family', font.family(), 'point size', size,
-                'tab_width', c.tab_width,
-                'hard_tab_width', hard_tab_width)
             wrapper.widget.setTabStopWidth(hard_tab_width)
         else:
             # To do: configure the QScintilla widget.
@@ -485,13 +468,9 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20110605121601.18578: *4* jedit.configure_tags
     def configure_tags(self):
         '''Configure all tags.'''
-        trace = False and not g.unitTesting
-        traceColors = True
-        traceFonts = False
         c = self.c
         wrapper = self.wrapper
         isQt = g.app.gui.guiName().startswith('qt')
-        if trace: g.trace(self.language)
         if wrapper and hasattr(wrapper, 'start_tag_configure'):
             wrapper.start_tag_configure()
         # Get the default body font.
@@ -503,17 +482,13 @@ class JEditColorizer(BaseColorizer):
                 c.config.defaultBodyFontSize)
             self.fonts['default_body_font'] = defaultBodyfont
         # Configure fonts.
-        if trace and traceFonts: g.trace('*' * 10, 'configuring fonts')
         keys = list(self.default_font_dict.keys()); keys.sort()
         for key in keys:
             option_name = self.default_font_dict[key]
             # First, look for the language-specific setting, then the general setting.
             for name in ('%s_%s' % (self.language, option_name), (option_name)):
-                if trace and traceFonts: g.trace(name)
                 font = self.fonts.get(name)
                 if font:
-                    if trace and traceFonts:
-                        g.trace('**found', name, id(font))
                     wrapper.tag_configure(key, font=font)
                     break
                 else:
@@ -529,19 +504,12 @@ class JEditColorizer(BaseColorizer):
                         font = g.app.gui.getFontFromParams(family, size, slant, weight)
                         # Save a reference to the font so it 'sticks'.
                         self.fonts[key] = font
-                        if trace and traceFonts:
-                            g.trace('**found', key, name, family, size, slant, weight, id(font))
                         wrapper.tag_configure(key, font=font)
                         break
             else: # Neither the general setting nor the language-specific setting exists.
                 if list(self.fonts.keys()): # Restore the default font.
-                    if trace and traceFonts:
-                        g.trace('default', key, font)
                     self.fonts[key] = font # Essential
                     wrapper.tag_configure(key, font=defaultBodyfont)
-                else:
-                    if trace and traceFonts:
-                        g.trace('no fonts')
             if isQt and key == 'url' and font:
                 font.setUnderline(True)
         keys = sorted(self.default_colors_dict.keys())
@@ -551,7 +519,6 @@ class JEditColorizer(BaseColorizer):
                 c.config.getColor('%s_%s' % (self.language, option_name)) or
                 c.config.getColor(option_name) or
                 default_color)
-            if trace and traceColors: g.trace(option_name, color)
             # Must use foreground, not fg.
             try:
                 wrapper.tag_configure(name, foreground=color)
@@ -597,11 +564,11 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20110605121601.18580: *4* jedit.init
     def init(self, p):
         '''Init the colorizer, but *not* state. p is for tracing only.'''
-        trace = False and not g.unitTesting
-        if trace: g.trace('(jEdit)', self.language, p and p.h)
+        #
         # These *must* be recomputed.
         self.initialStateNumber = self.setInitialStateNumber()
-        # 2017/01/31: fix #389. Do *not* change these.
+        #
+        # Fix #389. Do *not* change these.
             # self.nextState = 1 # Dont use 0.
             # self.stateDict = {}
             # self.stateNameDict = {}
@@ -611,7 +578,6 @@ class JEditColorizer(BaseColorizer):
         # Used by matchers.
         self.prev = None
         # Must be done to support per-language @font/@color settings.
-        if trace: g.trace('configure_tags ==>', self.language)
         self.configure_tags()
         self.configure_hard_tab_width() # 2011/10/04
     #@+node:ekr.20170201082248.1: *4* jedit.init_all_state
@@ -627,31 +593,23 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20110605121601.18581: *4* jedit.init_mode & helpers
     def init_mode(self, name):
         '''Name may be a language name or a delegate name.'''
-        trace = False and not g.unitTesting
-        if name:
-            if trace: g.trace(name)
-        else:
-            if trace: g.trace('no name')
+        if not name:
             return False
         language, rulesetName = self.nameToRulesetName(name)
         bunch = self.modes.get(rulesetName)
         if bunch:
             if bunch.language == 'unknown-language':
-                if trace: g.trace('found unknown language')
                 return False
             else:
-                if trace: g.trace('found', language, rulesetName)
                 self.initModeFromBunch(bunch)
                 self.language = language # 2011/05/30
                 return True
         else:
-            if trace: g.trace(language, rulesetName)
             # Bug fix: 2008/2/10: Don't try to import a non-existent language.
             path = g.os_path_join(g.app.loadDir, '..', 'modes')
             fn = g.os_path_join(path, '%s.py' % (language))
             if g.os_path_exists(fn):
                 mode = g.importFromPath(moduleName=language, path=path)
-                if trace: g.trace(mode)
             else:
                 mode = None
             return self.init_mode_from_module(name, mode)
@@ -661,8 +619,6 @@ class JEditColorizer(BaseColorizer):
            Mode is a python module or class containing all
            coloring rule attributes for the mode.
         '''
-        trace = False and not g.unitTesting
-        if trace: g.trace(g.callers())
         language, rulesetName = self.nameToRulesetName(name)
         if mode:
             # A hack to give modes/forth.py access to c.
@@ -681,7 +637,6 @@ class JEditColorizer(BaseColorizer):
                 rulesetName=rulesetName,
                 word_chars=self.word_chars, # 2011/05/21
             )
-            if trace: g.trace('***** No colorizer file: %s.py' % language)
             self.rulesetName = rulesetName
             self.language = 'unknown-language'
             return False
@@ -714,7 +669,6 @@ class JEditColorizer(BaseColorizer):
         self.updateDelimsTables()
         initialDelegate = self.properties.get('initialModeDelegate')
         if initialDelegate:
-            if trace: g.trace('initialDelegate', initialDelegate)
             # Replace the original mode by the delegate mode.
             self.init_mode(initialDelegate)
             language2, rulesetName2 = self.nameToRulesetName(initialDelegate)
@@ -967,8 +921,6 @@ class JEditColorizer(BaseColorizer):
     def match_at_wrap(self, s, i):
         '''Match Leo's @wrap directive.'''
         c = self.c
-        trace = (False or self.trace_leo_matches) and not g.unitTesting
-        if trace: g.trace(i, repr(s))
         # Only matches at start of line.
         seq = '@wrap'
         if i == 0 and g.match_word(s, i, seq):
@@ -1268,19 +1220,13 @@ class JEditColorizer(BaseColorizer):
         delegate='', exclude_match=False
     ):
         '''Succeed if seq matches s[i:]'''
-        # trace = s[i] in '+@'
-        # if trace: g.trace(g.callers(1), i, repr(s))
         if at_line_start and i != 0 and s[i - 1] != '\n':
-            # if trace: g.trace('not at line start', repr(s[i-1]))
             return 0
         if at_whitespace_end and i != g.skip_ws(s, 0):
-            # if trace: g.trace('not at whitespace end')
             return 0
         if at_word_start and i > 0 and s[i - 1] in self.word_chars:
-            # if trace: g.trace('word 1')
-            return 0 # 7/5/2008
+            return 0
         if at_word_start and i + len(seq) + 1 < len(s) and s[i + len(seq)] in self.word_chars:
-            # if trace: g.trace('word 2')
             return 0
         if g.match(s, i, seq):
             j = len(s)
@@ -1327,18 +1273,14 @@ class JEditColorizer(BaseColorizer):
         Returning -len(word) for failure greatly reduces the number of times this
         method is called.
         '''
-        trace = False and not g.unitTesting
-        traceFail = True
         self.totalKeywordsCalls += 1
-        # g.trace(i,repr(s[i:]))
         # We must be at the start of a word.
         if i > 0 and s[i - 1] in self.word_chars:
-            # if trace: g.trace('not at word start',s[i-1])
             return 0
         # Get the word as quickly as possible.
         j = i; n = len(s)
         chars = self.word_chars
-        # 2013/11/04: A kludge just for Haskell:
+        # A kludge just for Haskell:
         if self.language in ('haskell','clojure'):
             chars["'"] = "'"
         while j < n and s[j] in chars:
@@ -1357,11 +1299,9 @@ class JEditColorizer(BaseColorizer):
             self.colorRangeWithTag(s, i, j, kind)
             self.prev = (i, j, kind)
             result = j - i
-            if trace: g.trace('success', word, kind, result)
             self.trace_match(kind, s, i, j)
             return result
         else:
-            if trace and traceFail: g.trace('fail', word, kind)
             return -len(word) # An important new optimization.
     #@+node:ekr.20110605121601.18615: *4* jedit.match_line
     def match_line(self, s, i, kind=None, delegate='', exclude_match=False):
@@ -1434,8 +1374,6 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20110605121601.18619: *4* jedit.match_regexp_helper
     def match_regexp_helper(self, s, i, pattern):
         '''Return the length of the matching text if seq (a regular expression) matches the present position.'''
-        trace = False and not g.unitTesting
-        if trace: g.trace('%-10s %-20s %s' % (self.language, pattern, s))
         try:
             flags = re.MULTILINE
             if self.ignore_case: flags |= re.IGNORECASE
@@ -1452,10 +1390,6 @@ class JEditColorizer(BaseColorizer):
             start, end = mo.start(), mo.end()
             if start != i: # Bug fix 2007-12-18: no match at i
                 return 0
-            if trace:
-                g.trace('pattern', pattern)
-                g.trace('match: %d, %d, %s' % (start, end, repr(s[start: end])))
-                g.trace('groups', mo.groups())
             return end - start
     #@+node:ekr.20110605121601.18620: *4* jedit.match_seq
     def match_seq(self, s, i,
@@ -1508,10 +1442,9 @@ class JEditColorizer(BaseColorizer):
         no_escape=False, no_line_break=False, no_word_break=False
     ):
         '''Succeed if s[i:] starts with 'begin' and contains a following 'end'.'''
-        trace = False and not g.unitTesting
         dots = False # A flag that we are using dots as a continuation.
-        if i >= len(s): return 0
-        # g.trace(begin,end,no_escape,no_line_break,no_word_break)
+        if i >= len(s):
+            return 0
         if at_line_start and i != 0 and s[i - 1] != '\n':
             j = i
         elif at_whitespace_end and i != g.skip_ws(s, 0):
@@ -1536,7 +1469,6 @@ class JEditColorizer(BaseColorizer):
                 dots = dots and self.language not in ('lisp', 'elisp')
                 if dots:
                     kind = 'dots'+kind
-                    if trace: g.trace('underline', kind, repr(s[i:j]))
                 # A match
                 i2 = i + len(begin); j2 = j + len(end)
                 if delegate:
@@ -1567,9 +1499,6 @@ class JEditColorizer(BaseColorizer):
                 no_escape=no_escape,
                 no_line_break=no_line_break,
                 no_word_break=no_word_break)
-            if trace: g.trace('***Continuing', kind, i, j, len(s), s[i: j])
-        elif j != i:
-            if trace: g.trace('***Ending', kind, i, j, s[i: j])
         return j - i # Correct, whatever j is.
     #@+node:ekr.20110605121601.18623: *5* jedit.match_span_helper
     def match_span_helper(self, s, i, pattern, no_escape, no_line_break, no_word_break):
@@ -1609,7 +1538,6 @@ class JEditColorizer(BaseColorizer):
         no_escape, no_line_break, no_word_break
     ):
         '''Remain in this state until 'end' is seen.'''
-        trace = False and not g.unitTesting
         i = 0
         j = self.match_span_helper(s, i, end, no_escape, no_line_break, no_word_break)
         if j == -1:
@@ -1642,9 +1570,7 @@ class JEditColorizer(BaseColorizer):
                 no_escape=no_escape,
                 no_line_break=no_line_break,
                 no_word_break=no_word_break)
-            if trace: g.trace('***Re-continuing', i, j, len(s), s)
         else:
-            if trace: g.trace('***ending', i, j, len(s), s)
             self.clearState()
         return j # Return the new i, *not* the length of the match.
     #@+node:ekr.20110605121601.18625: *4* jedit.match_span_regexp
@@ -1957,30 +1883,23 @@ class JEditColorizer(BaseColorizer):
         jEdit.recolor: Recolor a *single* line, s.
         QSyntaxHighligher calls this method repeatedly and automatically.
         '''
-        trace = False and not g.unitTesting
-        trace_lines = True
         p = self.c.p
         self.recolorCount += 1
         block_n = self.currentBlockNumber()
         n = self.prevState()
-        if trace: g.trace('==========', repr(s))
         if p.v != self.old_v:
             self.updateSyntaxColorer(p) # Force a full recolor
             assert self.language
             self.init_all_state(p.v)
             self.init(p)
-            if trace: g.trace('New node ==>', self.language, p.h)
         else:
             new_language = self.n2languageDict.get(n)
             if new_language != self.language:
-                if trace: g.trace(self.language, '==>', new_language)
                 self.language = new_language
                 self.init(p)
         if block_n == 0:
             n = self.initBlock0()
         n = self.setState(n) # Required.
-        if trace and trace_lines: g.trace('%8s %25s %-3s %r' % (
-            self.language, self.showState(n), block_n, g.truncate(s, 20)))
         # Always color the line, even if colorizing is disabled.
         if s:
             self.mainLoop(n, s)
@@ -2051,25 +1970,18 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20110605121601.18641: *3* jedit.setTag
     def setTag(self, tag, s, i, j):
         '''Set the tag in the highlighter.'''
-        trace = False and not g.unitTesting
-        trace_all = True
         self.n_setTag += 1
         if i == j:
-            if trace: g.trace('empty range')
             return
-        if trace and trace_all:
-            g.trace('%7s %s' % (tag, s[i:j]))
         wrapper = self.wrapper # A QTextEditWrapper
         tag = tag.lower() # 2011/10/28
         # A hack to allow continuation dots on any tag.
         dots = tag.startswith('dots')
         if dots:
             tag = tag[len('dots'):]
-            if trace: g.trace('dotted tag:', tag)
         colorName = wrapper.configDict.get(tag)
         # Munge the color name.
         if not colorName:
-            if trace: g.trace('no color for %s' % tag)
             return
         if colorName[-1].isdigit() and colorName[0] != '#':
             colorName = colorName[: -1]
@@ -2086,11 +1998,6 @@ class JEditColorizer(BaseColorizer):
         font = self.fonts.get(tag)
         if font:
             format.setFont(font)
-        if trace:
-            g.trace(
-                '===== %3s %3s %3s %9s %7s' % (
-                    i, j, len(s), font and id(font) or '<no font>', colorName),
-                '%-10s %-25s' % (tag, s[i: j]))
         if tag in ('blank', 'tab'):
             if tag == 'tab' or colorName == 'black':
                 format.setFontUnderline(True)
@@ -2142,9 +2049,6 @@ if QtGui:
                 It appears that this method is seldom (never?) called!
                 '''
                 # pylint: disable=arguments-differ
-                trace = False # and not g.unitTesting
-                import time
-                if trace: g.trace('=====', p and p.h, g.callers())
                 if not hasattr(self, 'currentBlock'):
                     if self.no_method_message:
                         self.no_method_message = False
@@ -2152,13 +2056,10 @@ if QtGui:
                     return
                 c = self.c
                 if not p.b.strip():
-                    if trace: g.trace('no body', p and p.h)
                     return
                 self.n_calls = 0
                 tree = c.frame.tree
                 self.widget = c.frame.body.widget
-                if trace:
-                    t1 = time.clock()
                 # n = self.colorer.recolorCount
                 if self.colorizer.enabled:
                     # Lock out onTextChanged.
@@ -2170,9 +2071,6 @@ if QtGui:
                             # Execute the base class method.
                     finally:
                         tree.selecting = old_selecting
-                if trace:
-                    delta_t = time.clock()-t1
-                    g.trace('(leo_h) ----- %2.3f sec' % (delta_t), self.n_calls)
         #@+node:ekr.20170428054142.1: *3* leo_h.force_rehighlight
         if 0:
             # Part of the failed fix for #466.

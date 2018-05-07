@@ -997,14 +997,13 @@ class VimCommands(object):
             s = w.getAllText()
             i1, i2 = vc.motion_i, w.getInsertPoint()
             if i1 == i2:
-                if trace: g.trace('no change')
+                pass
             elif i1 < i2:
                 for z in range(vc.n1 * vc.n):
                     if extend_to_line:
                         i2 = vc.to_eol(s, i2)
                         if i2 < len(s) and s[i2] == '\n':
                             i2 += 1
-                        if trace: g.trace('extend i2 to eol', i1, i2)
                 g.app.gui.replaceClipboardWith(s[i1: i2])
                 w.delete(i1, i2)
             else: # i1 > i2
@@ -1012,7 +1011,6 @@ class VimCommands(object):
                 for z in range(vc.n1 * vc.n):
                     if extend_to_line:
                         i1 = vc.to_bol(s, i1)
-                        if trace: g.trace('extend i1 to bol', i1, i2)
                 g.app.gui.replaceClipboardWith(s[i1: i2])
                 w.delete(i1, i2)
             vc.done()
@@ -1051,10 +1049,7 @@ class VimCommands(object):
         trace = False and not g.unitTesting
         verbose = True
         if vc.in_dot:
-            if trace and verbose: g.trace('*** already in dot ***')
             return
-        if trace:
-            vc.print_dot()
         try:
             vc.in_dot = True
             # Save the dot list.
@@ -1255,7 +1250,7 @@ class VimCommands(object):
             s = w.getAllText()
             i = w.getInsertPoint()
             if i == 0 or (i > 0 and s[i - 1] == '\n'):
-                if trace: g.trace('at line start')
+                pass
             else:
                 for z in range(vc.n1 * vc.n):
                     if i > 0 and s[i - 1] != '\n':
@@ -1324,7 +1319,7 @@ class VimCommands(object):
             s = w.getAllText()
             i = w.getInsertPoint()
             if i >= len(s) or s[i] == '\n':
-                if trace: g.trace('at line end')
+                pass
             else:
                 for z in range(vc.n1 * vc.n):
                     if i < len(s) and s[i] != '\n':
@@ -1650,12 +1645,10 @@ class VimCommands(object):
                 if vc.visual_line_flag:
                     # Switch visual mode to visual-line mode.
                     # do_visual_mode extends the selection.
-                    if trace: g.trace('switch from visual to visual-line mode.')
                     # pylint: disable=unnecessary-pass
                     pass
                 else:
                     # End visual mode.
-                    if trace: g.trace('end visual-line mode.')
                     vc.quit()
             else:
                 # Enter visual line mode.
@@ -1663,13 +1656,11 @@ class VimCommands(object):
                 vc.vis_mode_i = w.getInsertPoint()
                 vc.state = 'visual'
                 vc.visual_line_flag = True
-                if trace: g.trace('enter visual-line mode.')
                 bx = 'beginning-of-line'
                 ex = 'end-of-line-extend-selection'
                 vc.do([bx, ex])
             vc.done()
         else:
-            if trace: g.trace('not a text widget.')
             vc.quit()
     #@+node:ekr.20140222064735.16624: *5* vc.vim_w
     def vim_w(vc):
@@ -1762,18 +1753,16 @@ class VimCommands(object):
             s = w.getAllText()
             i1, i2 = vc.motion_i, w.getInsertPoint()
             if i1 == i2:
-                if trace: g.trace('no change')
+                pass
             elif i1 < i2:
                 if extend_to_line:
                     i2 = vc.to_eol(s, i2)
                     if i2 < len(s) and s[i2] == '\n':
                         i2 += 1
-                    if trace: g.trace('extend i2 to eol', i1, i2)
             else: # i1 > i2
                 i1, i2 = i2, i1
                 if extend_to_line:
                     i1 = vc.to_bol(s, i1)
-                    if trace: g.trace('extend i1 to bol', i1, i2)
             if i1 != i2:
                 # g.trace(repr(s[i1:i2]))
                 w.setSelectionRange(i1, i2, insert=i2)
@@ -2062,9 +2051,6 @@ class VimCommands(object):
             trace = False and not g.unitTesting
             vc = self.vc
             c, k, w = vc.c, vc.k, vc.w
-            if trace: g.trace('(Substitution)',
-                # 'all_lines',self.all_lines,
-                'k.arg', k.arg, 'k.functionTail', k.functionTail)
             w = vc.w if c.vim_mode else c.frame.body
             if vc.is_text_wrapper(w):
                 fc = vc.c.findCommands
@@ -2480,7 +2466,6 @@ class VimCommands(object):
         c = vc.c
         w = vc.command_w or vc.w
         name = c.widget_name(w)
-        if trace: g.trace(name, g.callers())
         if w and name.startswith('body'):
             # Similar to selfInsertCommand.
             oldSel = vc.old_sel or w.getSelectionRange()
@@ -2488,7 +2473,6 @@ class VimCommands(object):
             newText = w.getAllText()
             # To do: set undoType to the command spelling?
             if newText != oldText:
-                if trace: g.trace('** changed **')
                 # undoType = ''.join(vc.command_list) or 'Typing'
                 c.frame.body.onBodyChanged(undoType='Typing',
                     oldSel=oldSel, oldText=oldText, oldYview=None)
@@ -2517,7 +2501,6 @@ class VimCommands(object):
         '''Set the property of w, depending on focus and state.'''
         trace = False and not g.unitTesting
         selector = 'vim_%s' % (vc.state) if focus_flag else 'vim_unfocused'
-        if trace: g.trace(vc.widget_name(w), selector)
         w.setProperty('vim_state', selector)
         w.style().unpolish(w)
         w.style().polish(w)
@@ -2539,10 +2522,9 @@ class VimCommands(object):
         k = vc.k
         vc.set_border()
         if k.state.kind:
-            if trace: g.trace('*** in k.state ***', k.state.kind)
+            pass
         # elif vc.state == 'visual':
             # s = '%8s:' % vc.state.capitalize()
-            # if trace: g.trace('(vimCommands)',s,g.callers())
             # k.setLabelBlue(s)
         else:
             if vc.visual_line_flag:
@@ -2556,7 +2538,6 @@ class VimCommands(object):
                 s = '%8s: %s' % (state_s, command_s)
             else:
                 s = '%8s: %-5s dot: %s' % (state_s, command_s, dot_s)
-            if trace: g.trace('(vimCommands)', s, g.callers(2))
             k.setLabelBlue(s)
     #@+node:ekr.20140801121720.18080: *4* vc.to_bol & vc.eol
     def to_bol(vc, s, i):

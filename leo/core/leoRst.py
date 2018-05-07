@@ -307,8 +307,6 @@ class RstCommands(object):
                 if val is not None:
                     old = d.get(key)
                     if val != old:
-                        if trace: g.trace('%-7s %30s old: %20s new: %s' % (
-                            kind, key, old, val))
                         d[key] = val
                     break
         # Special warning for mod_http plugin.
@@ -362,7 +360,6 @@ class RstCommands(object):
         parts = self.split_parts(lines, showDocsAsParagraphs)
         result = []
         for kind, lines in parts:
-            if trace: g.trace(kind, len(lines), p.h)
             if kind == '@rst-option': # Also handles '@rst-options'
                 pass # The prepass has already handled the options.
             elif kind == '@rst-markup':
@@ -548,7 +545,6 @@ class RstCommands(object):
         ext is the docutils extention: it's useful for scripts and unit tests.
         '''
         trace = False and not g.unitTesting
-        if trace: g.trace(p.h)
         self.stringOutput = ''
         p = p.copy()
         after = p.nodeAfterTree()
@@ -562,7 +558,6 @@ class RstCommands(object):
                 self.rst_nodes.append(p.copy())
                 fn = h[4:].strip()
                 if ((fn and fn[0] != '-') or (toString and not fn)):
-                    if trace: g.trace('found: %s', p.h)
                     self.write_rst_tree(p, ext, fn, toString=toString, justOneFile=justOneFile)
                     if toString:
                         return p.copy(), self.stringOutput
@@ -796,7 +791,6 @@ class RstCommands(object):
             # Ignore section definition nodes.
             name = self.isSectionDef(p)
             if name:
-                if trace: g.trace('section def: %s' % (repr(name)))
                 return
         # remove trailing cruft and split into lines.
         lines = g.splitLines(p.b)
@@ -854,7 +848,6 @@ class RstCommands(object):
     def expandSectionRefs(self, lines, p, seen):
         '''Expand section references in lines.'''
         trace = False and not g.unitTesting
-        if trace: g.trace(p.h, g.callers())
         result = []
         for s in lines:
             name = self.isSectionRef(s)
@@ -920,7 +913,6 @@ class RstCommands(object):
                 if not code: # Start the code block.
                     result.append('')
                     result.append(self.code_block_string)
-                if trace: g.trace('code line: %s' % repr(s))
                 code.append(s)
         if code:
             self.finishCodePart(code, p, result)
@@ -1192,10 +1184,7 @@ class RstCommands(object):
             # We may as well fail here.
 
         def dump(kind, p, val):
-            if trace:
-                # g.pr('getOption: %7s %30s %-15r %s' % (kind, name, val, p.h))
-                g.pr('getOption node: %s kind: %s name: %s val: %s' % (
-                    p.h, kind.upper(), name, val))
+            pass
 
         # 1. Search scriptSettingsDict.
         val = d.get(name)
@@ -1213,7 +1202,6 @@ class RstCommands(object):
             # Fix #362.
         for p2 in root.self_and_parents():
             d = self.dd.get(p2.v, {})
-            if trace and verbose: g.trace('=====', p2.h, d)
             val = d.get(name)
             if val is not None:
                 dump('node', p2, val)
@@ -1230,7 +1218,6 @@ class RstCommands(object):
         d = c.scanAllDirectives(p)
         language = d.get('language', 'python').lower()
         syntax = SilverCity is not None
-        if trace: g.trace('language', language, 'language.title()', language.title(), p.h)
         # Note: lines that end with '\n\n' are a signal to handleCodeMode.
         s = self.getOption(p, 'code_block_string')
         if s:
@@ -1276,11 +1263,7 @@ class RstCommands(object):
         trace = (False or self.debug) and not g.unitTesting
         # A fine point: body options over-ride headline options.
         d = self.scanHeadlineForOptions(p)
-        if trace and d:
-            self.dumpDict(d, 'headline options: %s' % (p.h))
         d2 = self.scanForOptionDocParts(p, p.b)
-        if trace and d2:
-            self.dumpDict(d2, 'option doc parts: %s' % (p.h))
         d.update(d2)
         return d
     #@+node:ekr.20090502071837.50: *7* rst.scanHeadlineForOptions
@@ -1293,11 +1276,9 @@ class RstCommands(object):
         elif g.match_word(h, 0, '@rst-option'):
             s = h[len('@rst-option'):]
             d = self.scanOption(p, s)
-            if trace: self.dumpDict(d, '@rst-option')
             return d
         elif g.match_word(h, 0, '@rst-options'):
             d = self.scanOptions(p, p.b)
-            if trace: self.dumpDict(d, '@rst-options')
             return d
         else:
             # Careful: can't use g.match_word because options may have '-' chars.
@@ -1327,8 +1308,6 @@ class RstCommands(object):
                     # Special case: Treat a bare @rst like @rst-no-head
                     if h == '@rst':
                         d['ignore_this_headline'] = True
-                    if trace and option != '@rst':
-                        self.dumpDict(d, p.h)
                     return d
             if h.startswith('@rst'):
                 g.trace('unknown kind of @rst headline', p.h, g.callers(4))
@@ -1378,7 +1357,6 @@ class RstCommands(object):
         '''
         trace = False and not g.unitTesting
         if not s.strip() or s.strip().startswith('..'):
-            if trace: g.trace('rst comment: {}')
             return {}
         data = self.parseOptionLine(s)
         if data:
@@ -1387,7 +1365,6 @@ class RstCommands(object):
                 if val.lower() == 'true': val = True
                 elif val.lower() == 'false': val = False
                 d = {self.munge(name): val}
-                if trace: g.trace('found', p.h)
                 return d
             else:
                 g.error('ignoring unknown option:', name)
@@ -1656,7 +1633,6 @@ class RstCommands(object):
             openDirectory, rel_stylesheet_path)
         stylesheet_name = self.getOption(p, 'stylesheet_name')
         assert stylesheet_name
-        if trace: g.trace('stylesheet_name', stylesheet_name)
         path = g.os_path_finalize_join(stylesheet_path, stylesheet_name)
         if self.getOption(p, 'stylesheet_embed') is False:
             rel_path = g.os_path_join(
@@ -1684,7 +1660,6 @@ class RstCommands(object):
                 g.es_print('relative path:', rel_stylesheet_path)
         try:
             # All paths now come through here.
-            if trace: g.trace('overrides', overrides)
             result = None # Ensure that result is defined.
             result = docutils.core.publish_string(source=s,
                     reader_name='standalone',
@@ -1775,11 +1750,6 @@ class RstCommands(object):
             path = g.os_path_finalize_join(self.path, openDirectory, fn)
         else:
             path = g.os_path_finalize_join(fn)
-        if trace:
-            g.trace('openDirectory:', repr(openDirectory))
-            g.trace('default_path: ', repr(default_path))
-            g.trace('self.path:    ', repr(self.path))
-            g.trace('path:         ', repr(path))
         return path
     #@+node:ekr.20090502071837.43: *4* rst.dumpDict
     def dumpDict(self, d, tag):
@@ -1813,8 +1783,6 @@ class RstCommands(object):
             # We *might* generate overlines for top-level sections.
             u = self.atAutoWriteUnderlines
             level = p.level() - self.topLevel
-            if trace: g.trace('level: %s under2: %r under1: %r %s' % (
-                level, self.underlines2, self.underlines1, p.h))
             # This is tricky. The index n depends on several factors.
             if self.underlines2:
                 level -= 1 # There *is* a double-underlined section.
@@ -1830,7 +1798,6 @@ class RstCommands(object):
                 ch = '#'
             # Write longer underlines for non-ascii characters.
             n = max(4, len(g.toEncodedString(s, encoding=self.encoding, reportErrors=False)))
-            if trace: g.trace(self.topLevel, p.level(), level, repr(ch), p.h)
             if level == 0 and self.underlines2:
                 return '%s\n%s\n%s\n\n' % (ch * n, p.h, ch * n)
             else:
@@ -1841,7 +1808,6 @@ class RstCommands(object):
             level = max(0, p.level() - self.topLevel)
             level = min(level + 1, len(u) - 1) # Reserve the first character for explicit titles.
             ch = u[level]
-            if trace: g.trace(self.topLevel, p.level(), level, repr(ch), p.h)
             n = max(4, len(g.toEncodedString(s, encoding=self.encoding, reportErrors=False)))
             return '%s\n%s\n\n' % (s.strip(), ch * n)
                 # Fixes bug 618570:

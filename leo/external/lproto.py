@@ -193,7 +193,6 @@ class LProtoClient(object):
 
         trace = False and not g.unitTesting
 
-        if trace: g.trace(fname,socket)
 
         if hasattr(socket,'AF_UNIX'):
             try:

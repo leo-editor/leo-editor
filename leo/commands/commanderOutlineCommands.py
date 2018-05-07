@@ -197,10 +197,6 @@ def contractNodeOrGoToParent(self, event=None):
     c, cc, p = self, self.chapterController, self.p
     parent = p.parent()
     redraw = False
-    if trace: g.trace(p.h,
-        'children:', p.hasChildren(),
-        'expanded:', p.isExpanded(),
-        'shouldBeExpanded:', c.shouldBeExpanded(p))
     # Bug fix: 2016/04/19: test p.v.isExpanded().
     if p.hasChildren() and (p.v.isExpanded() or p.isExpanded()):
         c.contractNode()
@@ -212,9 +208,8 @@ def contractNodeOrGoToParent(self, event=None):
                     child.contract()
                     redraw = True
         if cc and cc.inChapter and parent.h.startswith('@chapter '):
-            if trace: g.trace('root is selected chapter', parent.h)
+            pass
         else:
-            if trace: g.trace('not an @chapter node', parent.h)
             c.goToParent()
     # This is a bit off-putting.
     # elif not parent and not c.hoistStack:
@@ -324,7 +319,6 @@ def expandNode(self, event=None):
     c = self; p = c.p
     p.expand()
     if p.isCloned():
-        if trace: g.trace('***redraw')
         c.redraw() # Bug fix: 2009/10/03.
     else:
         c.redraw_after_expand(p, setFocus=True)
@@ -361,12 +355,10 @@ def expandOnlyAncestorsOfNode(self, event=None, p=None):
     level = 1
     if p: c.selectPosition(p) # 2013/12/25
     root = c.p
-    if trace: g.trace(root.h)
     for p in c.all_unique_positions():
         p.v.expandedPositions = []
         p.v.contract()
     for p in root.parents():
-        if trace: g.trace('call p.expand', p.h, p._childIndex)
         p.expand()
         level += 1
     c.redraw(setFocus=True)
@@ -1327,7 +1319,6 @@ def moveOutlineUp(self, event=None):
         return
     back = p.visBack(c)
     if not back:
-        if trace: g.trace('no visBack')
         return
     inAtIgnoreRange = p.inAtIgnoreRange()
     back2 = back.visBack(c)

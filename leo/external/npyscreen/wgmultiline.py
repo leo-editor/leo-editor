@@ -127,8 +127,6 @@ class MultiLine(widget.Widget):
         trace_widgets = True
         self._my_widgets = []
         height = self.height // self.__class__._contained_widget_height
-        if trace: g.trace(self.__class__.__name__, height) #, g.callers(2))
-            # Called from BoxTitle.make_contained_widget.
         for h in range(height):
             # EKR: it's LeoMLTree._contained_widgets that we have to emulate.
             self._my_widgets.append(
@@ -139,9 +137,6 @@ class MultiLine(widget.Widget):
                     max_width=self.width,
                     max_height=self.__class__._contained_widget_height
             ))
-        if trace and trace_widgets:
-            g.printList(self._my_widgets)
-            g.printList(['value: %r' % (z.value) for z in self._my_widgets])
     #@+node:ekr.20170428084208.78: *3* MultiLine.display_value
     def display_value(self, vl):
         """Overload this function to change how values are displayed.
@@ -169,8 +164,6 @@ class MultiLine(widget.Widget):
     #@+node:ekr.20170428084208.82: *3* MultiLine.update (LeoMLTree overrides this)
     def update(self, clear=True):
         trace = False # LeoMLTree.update overrides this.
-        if trace and self.hidden:
-            g.trace('hidden')
         if self.hidden and clear:
             self.clear()
             return False
@@ -218,15 +211,6 @@ class MultiLine(widget.Widget):
             no_change = False
         if clear:
             no_change = False
-        if trace:
-            from . import npysTree as npysTree
-            val = self.values[self.cursor_line]
-            # name = val.__class__.__name__
-            if isinstance(val, npysTree.TreeData):
-                val = val.get_content()
-            g.trace('changed: %5s, cursor_line: %s %s' % (
-                not no_change, self.cursor_line, val))
-                # self.start_display_at,
         if not no_change or clear or self.never_cache:
             if clear is True:
                 self.clear()
@@ -310,8 +294,6 @@ class MultiLine(widget.Widget):
             line.color = self.color
         self._set_line_values(line, value_indexer)
         # Sets line.value
-        if trace: g.trace(value_indexer, line.value.get_content())
-            # line.value is a weakref to a LeoTreeData.
         self._set_line_highlighting(line, value_indexer)
     #@+node:ekr.20170504211313.1: *3* MultiLine.setters
     #@+node:ekr.20170428084208.85: *4* MultiLine._set_line_values
@@ -611,15 +593,11 @@ class MultiLine(widget.Widget):
     #@+node:ekr.20170428084208.116: *4* MultiLine.edit
     def edit(self):
         trace = False and not g.unitTesting
-        if trace:
-            g.trace('===== (MultiLine:%s)' % self.__class__.__name__)
-            # g.trace('CALLERS', g.callers(verbose=True))
         self.editing = True
         self.how_exited = None
         #if self.value: self.cursor_line = self.value
         self.display()
         while self.editing:
-            if trace: g.trace('(MultiLine:%s) LOOP' % self.__class__.__name__)
             self.get_and_use_key_press()
             self.update(clear=None)
             ##  self.clear()
@@ -627,7 +605,6 @@ class MultiLine(widget.Widget):
             self.parent.refresh()
             ##  curses.napms(10)
             ##  curses.flushinp()
-        if trace: g.trace('(MultiLine:%s) DONE' % self.__class__.__name__)
     #@-others
 #@+node:ekr.20170428084208.117: ** class MultiLineAction
 class MultiLineAction(MultiLine):

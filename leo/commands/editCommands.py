@@ -329,7 +329,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         pane = None # The widget that will get the new focus.
         log = c.frame.log
         w_name = c.widget_name(w)
-        if trace: g.trace('**before', w_name, 'isLog', log.isLogWidget(w))
         # w may not be the present body widget, so test its name, not its id.
         if w_name.find('tree') > -1 or w_name.startswith('head'):
             pane = c.frame.body.wrapper
@@ -357,9 +356,7 @@ class EditCommandsClass(BaseEditCommandsClass):
             pane = c.frame.tree.canvas if log.tabName == 'Log' else None
         else:
             # A safe default: go to the body.
-            if trace: g.trace('* default to body')
             pane = c.frame.body.wrapper
-        if trace: g.trace('**after', c.widget_name(pane), pane)
         if pane:
             k.newMinibufferWidget = pane
             c.widgetWantsFocusNow(pane)
@@ -839,15 +836,10 @@ class EditCommandsClass(BaseEditCommandsClass):
     def getIconList(self, p):
         """Return list of icons for position p, call setIconList to apply changes"""
         trace = False and not g.unitTesting
-        if trace:
-            if p == self.c.rootPosition(): g.trace('=' * 40)
-            g.trace(p.h)
         fromVnode = []
         if hasattr(p.v, 'unknownAttributes'):
-            if trace: g.trace(p.v.u)
             fromVnode = [dict(i) for i in p.v.u.get('icons', [])]
             for i in fromVnode: i['on'] = 'VNode'
-        if trace and fromVnode: g.trace('fromVnode', fromVnode, p.h)
         return fromVnode
     #@+node:ekr.20150514063305.234: *5* ec.setIconList & helpers
     def setIconList(self, p, l, setDirty=True):
@@ -862,7 +854,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         if lHash == cHash:
             # no difference between original and current list of dictionaries
             return
-        if trace: g.trace(l, g.callers(6))
         self._setIconListHelper(p, l, p.v, setDirty)
     #@+node:ekr.20150514063305.235: *6* ec._setIconListHelper
     def _setIconListHelper(self, p, subl, uaLoc, setDirty):
@@ -881,7 +872,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             uaLoc._p_changed = 1
             if setDirty:
                 p.setDirty()
-            if trace: g.trace('uA', uaLoc.u, uaLoc)
         else: # delete the uA.
             if hasattr(uaLoc, 'unknownAttributes'):
                 if 'icons' in uaLoc.unknownAttributes:
@@ -889,7 +879,6 @@ class EditCommandsClass(BaseEditCommandsClass):
                     uaLoc._p_changed = 1
                     if setDirty:
                         p.setDirty()
-            if trace: g.trace('del uA[icons]', uaLoc)
     #@+node:ekr.20150514063305.236: *4* ec.deleteFirstIcon
     @cmd('delete-first-icon')
     def deleteFirstIcon(self, event=None):
@@ -1536,7 +1525,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         inBrackets = ch and g.toUnicode(ch) in brackets
         #@-<< set local vars >>
         assert g.isStrokeOrNone(stroke)
-        if trace: g.trace('ch', repr(ch), 'stroke', stroke)
         if g.doHook("bodykey1", c=c, p=p, ch=ch, oldSel=oldSel, undoType=undoType):
             return
         if ch == '\t':
@@ -1560,8 +1548,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         # Update the text and handle undo.
         newText = w.getAllText()
         changed = newText != oldText
-        if trace and verbose:
-            g.trace('ch', repr(ch), 'changed', changed, 'newText', repr(newText[-10:]))
         if changed:
             c.frame.body.onBodyChanged(undoType=undoType,
                 oldSel=oldSel, oldText=oldText, oldYview=None)
@@ -1653,18 +1639,12 @@ class EditCommandsClass(BaseEditCommandsClass):
             g.es_print('bad open/close_flash_brackets setting: using defaults')
             self.openBracketsList = '([{'
             self.closeBracketsList = ')]}'
-        if trace:
-            g.trace('self.openBrackets',self.openBracketsList)
-            g.trace('self.closeBrackets',self.closeBracketsList)
     #@+node:ekr.20150514063305.274: *5* ec.insertNewlineHelper
     def insertNewlineHelper(self, w, oldSel, undoType):
         trace = False and not g.unitTesting
         c, p = self.c, self.c.p
         i, j = oldSel
         ch = '\n'
-        if trace:
-            # s = w.widget.toPlainText()
-            g.trace('sel', i, j, g.callers())
         if i != j:
             # No auto-indent if there is selected text.
             w.delete(i, j)
@@ -1713,8 +1693,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             width = bracketWidths.pop()
         ws = g.computeLeadingWhitespace(width, tab_width)
         if ws:
-            if trace: g.trace('width: %s, tab_width: %s, ws: %s' % (
-                width, tab_width, repr(ws)))
             i = w.getInsertPoint()
             w.insert(i, ws)
             w.setInsertPoint(i + len(ws))
@@ -1768,10 +1746,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             doSmartTab = (smartTab and c.smart_tab and i == start)
                 # Truly at the start of the line.
                 # and not after # Nothing *at all* after the cursor.
-            if trace:
-                g.trace('smartTab: %s,tab_width: %s, c.tab_width: %s' % (
-                    doSmartTab, tab_width, c.tab_width))
-                    # 'i %s start %s after %s' % (i,start,repr(after)))
             if doSmartTab:
                 self.updateAutoIndent(p, w)
                 # Add a tab if otherwise nothing would happen.
@@ -1879,29 +1853,23 @@ class EditCommandsClass(BaseEditCommandsClass):
         extend = extend or self.extendMode
         ins = w.getInsertPoint()
         i, j = w.getSelectionRange()
-        if trace: g.trace(
-            'extend', extend, 'ins', ins, 'sel=', i, j,
-            'spot=', spot, 'moveSpot', self.moveSpot)
         # Reset the move spot if needed.
         if self.moveSpot is None or p.v != self.moveSpotNode:
             self.setMoveCol(w, ins if extend else spot) # sets self.moveSpot.
-            if trace: g.trace('no spot: new moveCol', self.moveCol)
         elif extend:
             # 2011/05/20: Fix bug 622819
             # Ctrl-Shift movement is incorrect when there is an unexpected selection.
             if i == j:
-                if trace: g.trace('extend and no sel')
                 self.setMoveCol(w, ins) # sets self.moveSpot.
             elif self.moveSpot in (i, j) and self.moveSpot != ins:
-                if trace and verbose: g.trace('extend and movespot matches')
                 # The bug fix, part 1.
+                pass
             else:
                 # The bug fix, part 2.
                 # Set the moveCol to the *not* insert point.
                 if ins == i: k = j
                 elif ins == j: k = i
                 else: k = ins
-                if trace: g.trace('extend and unexpected spot', k)
                 self.setMoveCol(w, k) # sets self.moveSpot.
         else:
             if upOrDown:
@@ -1919,13 +1887,11 @@ class EditCommandsClass(BaseEditCommandsClass):
                 # g.trace('plain forward/back move')
                 self.setMoveCol(w, spot) # sets self.moveSpot.
         if extend:
-            if trace: g.trace('range', 'spot:', spot, 'moveSpot', self.moveSpot)
             if spot < self.moveSpot:
                 w.setSelectionRange(spot, self.moveSpot, insert=spot)
             else:
                 w.setSelectionRange(self.moveSpot, spot, insert=spot)
         else:
-            if trace: g.trace('insert point', spot)
             w.setSelectionRange(spot, spot, insert=spot)
         w.seeInsertPoint()
         c.frame.updateStatusLine()
@@ -2202,17 +2168,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         else:
             # Find the start of the next/prev line.
             row, col = g.convertPythonIndexToRowCol(s, ins)
-            if trace:
-                gui_ins = w.toPythonIndex(ins)
-                bbox = w.bbox(gui_ins)
-                if bbox:
-                    x, y, width, height = bbox
-                    # bbox: x,y,width,height:  dlineinfo: x,y,width,height,offset
-                    g.trace('gui_ins', gui_ins, 'dlineinfo', w.dlineinfo(gui_ins), 'bbox', bbox)
-                    g.trace('ins', ins, 'row', row, 'col', col,
-                        'event.x', event and event.x, 'event.y', event and event.y)
-                    g.trace('subtracting line height', w.index('@%s,%s' % (x, y - height)))
-                    g.trace('adding      line height', w.index('@%s,%s' % (x, y + height)))
             i, j = g.getLine(s, ins)
             if direction == 'down':
                 i2, j2 = g.getLine(s, j)
@@ -2222,7 +2177,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             n = max(0, j2 - i2 - 1) # The length of the new line.
             col2 = min(col, n)
             spot = i2 + col2
-            if trace: g.trace('spot', spot, 'n', n, 'col', col, 'line', repr(s[i2: j2]))
             self.extendHelper(w, extend, spot, upOrDown=True)
     #@+node:ekr.20150514063305.294: *4* ec.buffers & helper
     @cmd('beginning-of-buffer')
@@ -2550,7 +2504,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             row2 = max(0, row - linesPerPage) if kind == 'back' else min(row + linesPerPage, len(lines) - 1)
             if row == row2: return
             spot = g.convertRowColToPythonIndex(s, row2, col, lines=lines)
-            if trace: g.trace('spot', spot, 'row2', row2)
             self.extendHelper(w, extend, spot, upOrDown=True)
     #@+node:ekr.20150514063305.308: *4* ec.paragraphs & helpers
     @cmd('back-paragraph')
@@ -3332,7 +3285,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         trace = False and not g.unitTesting
         w = self.editWidget(event)
         if not self._chckSel(event):
-            if trace: g.trace('early return')
             return
         undoType = 'reverse-sort-lines' if reverse else 'sort-lines'
         self.beginCommand(w, undoType=undoType)
@@ -3354,7 +3306,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             if reverse:
                 aList.reverse()
             s = g.joinLines(aList)
-            if trace: g.trace(s)
             w.delete(i, j)
             w.insert(i, s)
             w.setSelectionRange(sel1, sel2, insert=ins)
@@ -3481,7 +3432,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         i1, j1 = self.extendToWord(event, select=False)
         s1 = s[i1: j1]
         if i1 > j1: i1, j1 = j1, i1
-        if trace: g.trace('word1', s[i1:j1])
         # Search for the next word.
         k = j1 + 1
         while k < len(s) and s[k] != '\n' and not g.isWordChar1(s[k]):
@@ -3489,11 +3439,9 @@ class EditCommandsClass(BaseEditCommandsClass):
         changed = k < len(s)
         if changed:
             ws = s[j1: k]
-            if trace: g.trace('ws', repr(ws))
             w.setInsertPoint(k + 1)
             i2, j2 = self.extendToWord(event, select=False)
             s2 = s[i2: j2]
-            if trace: g.trace('word2', s2)
             s3 = s[: i1] + s2 + ws + s1 + s[j2:]
             w.setAllText(s3)
             w.setSelectionRange(j1, j1, insert=j1)

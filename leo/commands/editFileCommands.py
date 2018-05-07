@@ -116,7 +116,6 @@ class EditFileCommandsClass(BaseEditCommandsClass):
         d1 = self.createFileDict(c1)
         d2 = self.createFileDict(c2)
         inserted, deleted, changed = self.computeChangeDicts(d1, d2)
-        if trace: self.dumpCompareNodes(fileName, c1.mFileName, inserted, deleted, changed)
         # Create clones of all inserted, deleted and changed dicts.
         self.createAllCompareClones(c1, c2, inserted, deleted, changed)
         # Fix bug 1231656: File-Compare-Leo-Files leaves other file open-count incremented.
@@ -779,7 +778,6 @@ class GitDiffController:
         for p in hidden_root.self_and_subtree():
             p.b = ''.join(getattr(p.v, 'tempBodyList', []))
         if at.errors: g.trace(at.errors, 'errors!')
-        if trace: g.trace(len(s), rev, fn, hidden_c)
         return None if at.errors else hidden_c
     #@+node:ekr.20180506064102.10: *3* gdc.diff_two_branches & helper
     def diff_two_branches(self, branch1, branch2, fn):
@@ -885,9 +883,6 @@ class GitDiffController:
             z.strip() for z in g.execGitCommand(command, self.repo_dir)
                 if readable(z)
         ]
-        if trace:
-            g.trace(command)
-            g.printList(files)
         return files
     #@+node:ekr.20170820082125.1: *4* gdc.diff_revs
     def diff_revs(self):

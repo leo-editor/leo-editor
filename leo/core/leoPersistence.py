@@ -59,7 +59,6 @@ class PersistenceDataController(object):
             foreign_list = [
                 p.h.strip() for p in c.all_unique_positions()
                     if self.is_foreign_file(p)]
-            if trace: g.trace('foreign_list...\n%s' % ('\n'.join(foreign_list)))
             delete_list = []
             tag = '@data:'
             for child in at_persistence.children():
@@ -82,12 +81,8 @@ class PersistenceDataController(object):
         '''
         # Delete all children of the @data node.
         trace = False and not g.unitTesting
-        if trace:
-            g.trace(root and root.h)
-            g.printDict(root.v.u)
         self.at_persistence = self.find_at_persistence_node()
         if not self.at_persistence:
-            if trace: g.trace('no @persistence node')
             return None
             # was return at_data # for at-file-to-at-auto command.
         at_data = self.find_at_data_node(root)
@@ -116,7 +111,6 @@ class PersistenceDataController(object):
                 p2.h = '@ua:' + p.v.gnx
                 p2.b = 'unl:%s\nua:%s' % (
                     self.relative_unl(p, root), self.pickle(p))
-                if trace: g.trace('created:', p2.h)
         # This is no longer necessary because of at.saveOutlineIfPossible.
         if False and not g.app.initing and not g.unitTesting:
             # Explain why the .leo file has become dirty.
@@ -133,20 +127,16 @@ class PersistenceDataController(object):
         trace = False and not g.unitTesting
         self.at_persistence = self.find_at_persistence_node()
         if not self.at_persistence:
-            if trace: g.trace('no @persistence node')
             return
         if not self.is_foreign_file(root):
-            if trace: g.trace('not a foreign file', root and root.h)
             return
         # Create clone links from @gnxs node
         at_gnxs = self.has_at_gnxs_node(root)
         if at_gnxs:
-            if trace: g.trace('gnx node:', at_gnxs and at_gnxs.h)
             self.restore_gnxs(at_gnxs, root)
         # Create uas from @uas tree.
         at_uas = self.has_at_uas_node(root)
         if at_uas:
-            if trace: g.trace('uas node:', at_uas and at_uas.h)
             self.create_uas(at_uas, root)
     #@+node:ekr.20140711111623.17810: *5* pd.restore_gnxs & helpers
     def restore_gnxs(self, at_gnxs, root):
@@ -201,17 +191,12 @@ class PersistenceDataController(object):
                     p1._relinkAsCloneOf(p2)
                     # Warning: p1 *no longer exists* here.
                     # _relinkAsClone does *not* set p1.v = p2.v.
-                    if trace: g.trace(fn, 'clone:', old_gnx, '->', gnx, unl)
                 else:
                     g.es_print('mismatch in cloned node', p1.h)
             else:
-                if trace:
-                    g.trace(fn, ' node:', old_gnx, '->', gnx, unl)
                 # Fix #526: A major bug: this was not set!
                 p1.v.fileIndex = gnx
             g.app.nodeIndices.updateLastIndex(g.toUnicode(gnx))
-        else:
-            if trace: g.trace('unl not found: %s' % unl)
     #@+node:ekr.20140711111623.17892: *5* pd.create_uas
     def create_uas(self, at_uas, root):
         '''Recreate uA's from the @ua nodes in the @uas tree.'''
@@ -239,15 +224,10 @@ class PersistenceDataController(object):
                         ua = ua[3:]
                     if ua:
                         ua = self.unpickle(ua)
-                        if trace: g.trace('set', p.h, ua)
                         p.v.u = ua
                     else:
                         g.trace('Can not unpickle uA in',
                             p.h, repr(unl), type(ua), ua[: 40])
-                elif trace:
-                    g.trace('no match for gnx:', repr(gnx))
-            elif trace:
-                g.trace('unexpected child of @uas node', at_ua)
     #@+node:ekr.20140712105818.16750: *3* pd.Helpers
     #@+node:ekr.20140711111623.17845: *4* pd.at_data_body
     # Note: the unl of p relative to p is simply p.h,
@@ -334,7 +314,6 @@ class PersistenceDataController(object):
         trace = False # and not g.unitTesting
         unl_list = unl.split('-->')
         if not unl_list or len(unl_list) == 1 and not unl_list[0]:
-            if trace: g.trace('return root for empty unl:', root.h)
             return root
         if 1:
             return self.find_exact_match(root, unl_list)
@@ -368,12 +347,8 @@ class PersistenceDataController(object):
                 return aTuple[0]
 
             n, p = list(sorted(matches, key=key))[-1]
-            if trace:
-                g.trace('\n'.join(['%s: %s' % (z[0], z[1].h) for z in matches]))
-                g.trace('found:', 'n:', n, '-->'.join(unl_list[: -n]), p.h)
             return p
         else:
-            if trace: g.trace('tail not found', '-->'.join(unl_list), 'root', root.h)
             return None
     #@+node:ekr.20140716021139.17765: *6* pd.find_exact_match
     def find_exact_match(self, root, unl_list):
@@ -391,9 +366,7 @@ class PersistenceDataController(object):
                     parent = child
                     break
             else:
-                if trace: g.trace('match failed:', unl, 'in:', full_unl)
                 return None
-        if trace: g.trace('full match', full_unl, '=', parent.h)
         return parent
     #@+node:ekr.20140711111623.17862: *5* pd.find_representative_node
     def find_representative_node(self, root, target):
@@ -415,7 +388,6 @@ class PersistenceDataController(object):
             elif p.isAnyAtFileNode():
                 p.moveToNodeAfterTree()
             elif p.v == target.v:
-                if trace: g.trace('success 1:', p, p.parent())
                 return p
             else:
                 p.moveToThreadNext()
@@ -427,7 +399,6 @@ class PersistenceDataController(object):
             elif p == root:
                 p.moveToNodeAfterTree()
             elif p.v == target.v:
-                if trace: g.trace('success 2:', p, p.parent())
                 return p
             else:
                 p.moveToThreadNext()
@@ -519,9 +490,6 @@ class PersistenceDataController(object):
             s = pickle.dumps(ua, protocol=1)
             s2 = binascii.hexlify(s)
             s3 = g.ue(s2, 'utf-8')
-            if trace: g.trace('\n',
-                type(ua), ua, '\n', type(s), repr(s), '\n',
-                type(s2), s2, '\n', type(s3), s3)
             return s3
         except pickle.PicklingError:
             g.warning("ignoring non-pickleable value", ua, "in", p.h)

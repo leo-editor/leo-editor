@@ -141,11 +141,6 @@ class ShadowController(object):
             f = open(fn, 'wb')
             # 2011/09/09: Use self.encoding.
             f.write(g.toEncodedString(s, encoding=self.encoding))
-            if trace:
-                g.trace('encoding', self.encoding)
-                if verbose: g.trace('fn', fn,
-                    '\nlines...\n%s' % (g.listToString(g.splitLines(s))),
-                    '\ncallers', g.callers(4))
             f.close()
             if not g.unitTesting:
                 # g.trace('created:',fn,g.callers())
@@ -233,19 +228,16 @@ class ShadowController(object):
         trace = (False or x.trace) and g.unitTesting
         x.init_ivars(new_public_lines, old_private_lines, marker)
         sm = difflib.SequenceMatcher(None, x.a, x.b)
-        if trace: x.dump_args()
         # Ensure leading sentinels are put first.
         x.put_sentinels(0)
         x.sentinels[0] = []
         for tag, ai, aj, bi, bj in sm.get_opcodes():
-            if trace: g.trace('%3s %s' % (ai, tag))
             f = x.dispatch_dict.get(tag, x.op_bad)
             f(tag, ai, aj, bi, bj)
         # Put the trailing sentinels & check the result.
         x.results.extend(x.trailing_sentinels)
         # check_output is likely to be more buggy than the code under test.
         # x.check_output()
-        if trace: x.dump_lines(x.results, 'results')
         return x.results
     #@+node:ekr.20150207111757.180: *5* x.dump_args
     def dump_args(self):
@@ -401,7 +393,6 @@ class ShadowController(object):
         trace, verbose = False and not g.unitTesting, False
         x = self; at = self.c.atFileCommands
         at.errors = 0
-        if trace: g.trace('*** header scanned: encoding:', at.encoding)
         self.encoding = at.encoding
         s = at.readFileToUnicode(old_private_file)
             # Sets at.encoding and inits at.readLines.
@@ -420,13 +411,6 @@ class ShadowController(object):
             for s in old_public_lines:
                 g.trace(type(s), g.isUnicode(s), repr(s))
         marker = x.markerFromFileLines(old_private_lines, old_private_file)
-        if trace and verbose:
-            g.trace(
-                'marker', marker,
-                '\npublic_file', old_public_file,
-                '\npublic lines...\n%s' % g.listToString(old_public_lines),
-                '\nprivate_file', old_private_file,
-                '\nprivate lines...\n%s\n' % g.listToString(old_private_lines))
         new_private_lines = x.propagate_changed_lines(
             old_public_lines, old_private_lines, marker)
         # Important bug fix: Never create the private file here!
@@ -434,12 +418,10 @@ class ShadowController(object):
         exists = g.os_path_exists(fn)
         different = new_private_lines != old_private_lines
         copy = exists and different
-        if trace: g.trace('\nexists', exists, fn, 'different', different, 'errors', x.errors, at.errors)
         # 2010/01/07: check at.errors also.
         if copy and x.errors == 0 and at.errors == 0:
             s = ''.join(new_private_lines)
             ok = x.replaceFileWithString(fn, s)
-            if trace: g.trace('ok', ok, 'writing private file', fn, g.callers())
         return copy
     #@+node:bwmulder.20041231170726: *4* x.updatePublicAndPrivateFiles
     def updatePublicAndPrivateFiles(self, root, fn, shadow_fn):
@@ -451,10 +433,10 @@ class ShadowController(object):
         if x.isSignificantPublicFile(fn):
             # Update the private shadow file from the public file.
             written = x.propagate_changes(fn, shadow_fn)
-            if written: x.message("updated private %s from public %s" % (shadow_fn, fn))
-            elif trace: g.trace("\nno change to %s = %s" % (shadow_fn, fn))
+            if written:
+                x.message("updated private %s from public %s" % (shadow_fn, fn))
         else:
-            if trace: g.trace('not significant', fn)
+            pass
             # Don't write *anything*.
             # if 0: # This causes considerable problems.
                 # # Create the public file from the private shadow file.
@@ -489,8 +471,6 @@ class ShadowController(object):
             delims = '', start, end
         else:
             delims = start, '', ''
-        if trace: g.trace('delims %r, %r, %r, fn %s' % (
-            delims[0], delims[1], delims[2], fn))
         return x.Marker(delims)
     #@+node:ekr.20090529125512.6125: *5* x.findLeoLine
     def findLeoLine(self, lines):

@@ -1230,6 +1230,7 @@
 <v t="ekr.20100131171342.5608"><vh>@test g.KeyStroke</vh></v>
 <v t="ekr.20111104214341.3835"><vh>@test all plugins have top-level init method</vh></v>
 </v>
+<v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -3559,6 +3560,38 @@ finally:
          while root.hasChildren():
               root.firstChild().doDelete(newNode = None)
     c.redraw_now(p)
+</t>
+<t tx="ekr.20100205235740.5392">import glob
+trace = False
+failed,n = [],0
+skip_tuples3 = (
+    ('extensions','asciidoc.py'),
+)
+skip_tuples2 = (
+    ('test', 'python3_test.py'),
+)
+join = g.os_path_finalize_join
+skip_tuples = skip_tuples3 if g.isPython3 else skip_tuples2
+skip_list = [join(g.app.loadDir,'..',a,b) for a,b in skip_tuples]
+for theDir in ('core','external','extensions','plugins','scripts','test'):
+    if trace: print(theDir)
+    path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
+    assert g.os_path_exists(path),path
+    aList = glob.glob(g.os_path_join(path,'*.py'))
+    if g.isWindows:
+        aList = [z.replace('\\','/') for z in aList]
+    for z in aList:
+        if z in skip_list:
+            pass # print('%s: skipped: %s' % (p.h,z))
+        else:
+            n += 1
+            fn = g.shortFileName(z)
+            # if trace: print('%8s %s' % (theDir,fn))
+            s,e = g.readFileIntoString(z)
+            if not c.testManager.checkFileSyntax(fn,s,reraise=False,suppress=False):
+                failed.append(z)
+if trace: print('tested %s files' % n)
+assert not failed,'failed %s\n' % g.listToString(failed)
 </t>
 <t tx="ekr.20100219080213.5365"></t>
 <t tx="ekr.20100219080213.5366">s = '''\

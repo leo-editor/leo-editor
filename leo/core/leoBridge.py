@@ -97,8 +97,8 @@ class BridgeController(object):
         Init the Leo app to which this class gives access.
         This code is based on leo.run().
         '''
-        trace = False
-        if not self.isValidPython(): return
+        if not self.isValidPython():
+            return
         #@+<< initLeo imports >>
         #@+node:ekr.20070227093629.1: *4* << initLeo imports >> initLeo (leoBridge)
         # Import leoGlobals, but do NOT set g.
@@ -122,10 +122,6 @@ class BridgeController(object):
         if self.tracePlugins:
             g.app.debug.append('plugins')
         g.app.silentMode = self.silentMode
-        if trace:
-            import sys
-            g.trace(sys.argv)
-            g.trace('g.app.silentMode', g.app.silentMode)
         # Create the g.app.pluginsController here.
         import leo.core.leoPlugins as leoPlugins
         leoPlugins.init() # Necessary. Sets g.app.pluginsController.
@@ -290,17 +286,11 @@ class BridgeController(object):
     def createFrame(self, fileName):
         '''Create a commander and frame for the given file.
         Create a new frame if the fileName is empty or non-exisent.'''
-        trace = False
         g = self.g
         if fileName.strip():
             if g.os_path_exists(fileName):
-                if trace:
-                    import time; t1 = time.time()
                 # This takes a long time due to imports in c.__init__
                 c = g.openWithFileName(fileName)
-                if trace:
-                    t2 = time.time()
-                    g.trace('%s %0.2fsec' % (fileName, (t2 - t1)))
                 if c: return c
             elif not self.silentMode:
                 print('file not found: %s. creating new window' % (fileName))

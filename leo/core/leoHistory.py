@@ -48,7 +48,6 @@ class NodeHistory(object):
         '''
         trace = False and not g.unitTesting
         c, cc = self.c, self.c.chapterController
-        if trace: g.trace('(NodeHistory)', p and p.h, g.callers(2))
         if c.positionExists(p):
             self.skipBeadUpdate = True
             try:
@@ -96,9 +95,6 @@ class NodeHistory(object):
         else:
             self.beadPointer = found
         self.beadList = aList
-        if trace:
-            g.trace('(NodeHistory) change:', change, p.h)
-            self.dump()
     #@-others
 #@-others
 #@@language python

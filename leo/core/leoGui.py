@@ -270,7 +270,6 @@ class LeoKeyEvent(object):
             stroke = g.KeyStroke(binding) if binding else None
         assert g.isStrokeOrNone(stroke), '(LeoKeyEvent) %s %s' % (
             repr(stroke), g.callers())
-        if trace: g.trace('(LeoKeyEvent) stroke', stroke)
         self.c = c
         self.char = char or ''
         self.event = event # New in Leo 4.11.
@@ -429,9 +428,7 @@ class NullGui(LeoGui):
         if self.script:
             frame = self.lastFrame
             g.app.log = frame.log
-            if trace: g.trace("NullGui: start of batch script")
             self.lastFrame.c.executeScript(script=self.script)
-            if trace: g.trace("NullGui: end of batch script")
         else:
             print('**** NullGui.runMainLoop: terminating Leo.')
         # Getting here will terminate Leo.

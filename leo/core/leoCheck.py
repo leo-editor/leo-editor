@@ -166,9 +166,8 @@ class ConventionChecker (object):
     def check_file(self, fn=None, s=None, test_kind=None, trace_fn=False):
         '''Check the contents of fn or the string s.'''
         # Get the source.
-        trace = True
-        trace_time = False
-        if test_kind: self.test_kind = test_kind
+        if test_kind:
+            self.test_kind = test_kind
         if fn:
             sfn = g.shortFileName(fn)
             if g.os_path_exists(fn):
@@ -197,8 +196,6 @@ class ConventionChecker (object):
         if t_tot > self.max_time:
             self.max_time = t_tot
             self.slowest_file = self.file_name
-        if trace and trace_time and fn:
-            print('%4.2f sec. %s' % ((t2-t1), sfn))
     #@+node:ekr.20171214150828.1: *4* checker.check_helper
     def check_helper(self, fn, node, s):
 
@@ -250,15 +247,6 @@ class ConventionChecker (object):
     #@+node:ekr.20171208135642.1: *4* checker.end_file & helper
     def end_file(self,trace_classes=False, trace_unknowns=False):
         
-        trace = trace_classes or trace_unknowns
-        if trace:
-            print('----- END OF FILE: %s' % self.file_name)
-            if 1:
-                for key, val in sorted(self.classes.items()):
-                    print('class %s' % key)
-                    g.printDict(val)
-            if 1:
-                self.trace_unknowns()
         # Do *not* clear self.classes.
         self.unknowns = {}
     #@+node:ekr.20171212100005.1: *5* checker.trace_unknowns
@@ -346,9 +334,6 @@ class ConventionChecker (object):
     #@+node:ekr.20171208142646.1: *3* checker.resolve & helpers
     def resolve(self, node, name, context, trace=False):
         '''Resolve name in the given context to a Type.'''
-        trace = False and (trace or self.test_kind is 'test')
-        if trace:
-            g.trace('      ===== %s context: %r' % (name, context))
         self.stats.resolve += 1
         assert g.isString(name), (repr(name), g.callers())
         if context:
@@ -366,15 +351,12 @@ class ConventionChecker (object):
                 result = self.Type('error', 'unknown kind: %s' % context.kind)
         else:
             result = self.Type('error', 'unbound name: %s' % name)
-        if trace:
-            g.trace('      ----->', result)
         return result
     #@+node:ekr.20171208134737.1: *4* checker.resolve_call
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
     def resolve_call(self, node):
         '''Resolve the head of the call's chain to a Type.'''
-        trace = False and self.test_kind is 'test'
         assert self.pass_n == 2
         self.stats.resolve_call += 1
         chain = self.get_chain(node.func)
@@ -386,9 +368,8 @@ class ConventionChecker (object):
         if chain:
             assert isinstance(chain[0], ast.Name), repr(chain[0])
             chain[0] = chain[0].id
-            args = ','.join([self.format(z) for z in node.args])
+            # args = ','.join([self.format(z) for z in node.args])
             self.recursion_count = 0
-            if trace: g.trace(' ===== %s.%s(%s)' % (chain, func, args))
             if self.class_name:
                 context = self.Type('instance', self.class_name)
             else:
@@ -396,29 +377,22 @@ class ConventionChecker (object):
             result = self.resolve_chain(node, chain, context)
         else:
             result = self.Type('unknown', 'empty chain')
-        if trace: g.trace(' ----> %s.%s' % (result, func))
         assert isinstance(result, self.Type), repr(result)
         return result
     #@+node:ekr.20171209034244.1: *4* checker.resolve_chain
     def resolve_chain(self, node, chain, context, trace=False):
         '''Resolve the chain to a Type.'''
-        if trace:
-            g.trace('=====', chain, context)
         self.stats.resolve_chain += 1
         name = '<no name>'
         for obj in chain:
             name = obj.id if isinstance(obj, ast.Name) else obj
             assert g.isString(name), (repr(name), g.callers())
             context = self.resolve(node, name, context, trace=trace)
-            if trace: g.trace('%4s ==> %r' % (name, context))
-        if trace:
-            g.trace('%4s ----> %r' % (name, context))
         assert isinstance(context, self.Type), repr(context)
         return context
     #@+node:ekr.20171208173323.1: *4* checker.resolve_ivar & helpers
     def resolve_ivar(self, node, ivar, context):
         '''Resolve context.ivar to a Type.'''
-        trace = self.test_kind is 'test'
         assert self.pass_n == 2, repr(self.pass_n)
         self.stats.resolve_ivar += 1
         class_name = 'Commands' if context.name == 'c' else context.name
@@ -449,7 +423,6 @@ class ConventionChecker (object):
                     return special_obj
                 elif val.startswith(special_name) and tail.startswith('.'):
                     # Resovle the rest of the tail in the found context.
-                    if trace: g.trace('TAIL: %s => %s.%s' % (val, special_obj, tail))
                     return self.resolve_chain(node, tail[1:], special_obj)
             # Avoid recursion .
             head = val.split('.')
@@ -497,10 +470,6 @@ class ConventionChecker (object):
     #@+node:ekr.20171209065852.1: *4* checker_check_signature & helpers
     def check_signature(self, node, func, args, signature):
         
-        trace = self.test_kind is 'test'
-        if trace:
-            g.trace('%s(%s) ==> %s' % (func, args, signature))
-            g.trace(g.callers())
         self.stats.check_signature += 1
         if signature[0] == 'self':
             signature = signature[1:]
@@ -514,11 +483,6 @@ class ConventionChecker (object):
                         func, ','.join(signature),
                     ))
                     break
-            elif trace:
-                g.trace('possible extra arg', arg)
-        if len(args) > len(signature):
-            if trace:
-                g.trace('possible missing args', signature[len(args)-1:])
         if result == 'ok':
             self.stats.sig_ok += 1
         elif result == 'fail':
@@ -533,18 +497,14 @@ class ConventionChecker (object):
         
         To do: check keyword args.
         '''
-        trace = self.test_kind is 'test'
-        if trace: g.trace('===== args:', args, 'call:', call_arg, 'sig:', sig_arg)
         return self.check_arg_helper(node, func, call_arg, sig_arg)
 
     #@+node:ekr.20171212035137.1: *5* checker.check_arg_helper
     def check_arg_helper(self, node, func, call_arg, sig_arg):
-        trace = False and self.test_kind is 'test'
+
         special_names_dict = self.special_names_dict
         if call_arg == sig_arg or sig_arg in (None, 'None'):
             # Match anything against a default value of None.
-            if trace: g.trace(self.log_line(node, '%20s: %20r == %r' % (
-                func, call_arg, sig_arg)))
             return 'ok'
         # Resolve the call_arg if possible.
         chain = call_arg.split('.')
@@ -565,14 +525,11 @@ class ConventionChecker (object):
             call_class = special_names_dict.get(call_arg)
             return self.compare_classes(
                 node, call_arg, sig_arg, call_class, sig_class)
-        if trace: g.trace(self.log_line('%20s: %20r ?? %r' % (func, call_arg, sig_arg)))
         return 'unknown'
     #@+node:ekr.20171212044621.1: *5* checker.compare_classes
     def compare_classes(self, node, arg1, arg2, class1, class2):
 
-        trace = False
         if class1 == class2:
-            if trace: g.trace('infer ok', arg1, arg2, class1)
             self.stats.sig_infer_ok += 1
             return 'ok'
         else:
@@ -1126,7 +1083,6 @@ class Pass1 (leoAst.AstFullTraverser): # V2
     #@+node:ekr.20160108105958.27: *5* p1.Name (REWRITE)
     def do_Name(self,node):
 
-        trace = False
         cx  = self.context
         ctx = self.kind(node.ctx)
         name = node.id
@@ -1138,10 +1094,8 @@ class Pass1 (leoAst.AstFullTraverser): # V2
             self.stats.n_load_names += 1
         elif ctx == 'Store':
             # if name not in cx.global_names:
-            if trace: g.trace('Store: %s in %s' % (name,cx))
             self.stats.n_store_names += 1
         elif ctx == 'Param':
-            if trace: g.trace('Param: %s in %s' % (name,cx))
             self.stats.n_param_refs += 1
         else:
             assert ctx == 'Del',ctx
@@ -1234,9 +1188,7 @@ class Pass1 (leoAst.AstFullTraverser): # V2
     #@+node:ekr.20160108105958.10: *5* p1.resolve_import_name
     def resolve_import_name (self,spec):
         '''Return the full path name corresponding to the import spec.'''
-        trace = False ; verbose = False
         if not spec:
-            if trace: g.trace('no spec')
             return ''
         # This may not work for leading dots.
         aList,path,paths = spec.split('.'),None,None
@@ -1250,19 +1202,13 @@ class Pass1 (leoAst.AstFullTraverser): # V2
             except ImportError:
                 # Important: imports can fail due to Python version.
                 # Thus, such errors are not necessarily searious.
-                if trace: g.trace('failed: %s paths: %s cx: %s' % (
-                    name,paths,self.context))
                 path = None
                 break
-        if trace and verbose: g.trace(name,path)
         if not path:
-            if trace: g.trace('no path')
             return ''
         if path.endswith('.pyd'):
-            if trace: g.trace('pyd: %s' % path)
             return ''
         else:
-            if trace: g.trace('path: %s' % path)
             return path
     #@+node:ekr.20160108105958.29: *4* Operators... To be deleted???
     # operator = Add | BitAnd | BitOr | BitXor | Div
@@ -1469,7 +1415,6 @@ class ProjectUtils(object):
     #@+node:ekr.20171213071416.1: *3* pu.leo_core_files
     def leo_core_files(self):
         '''Return all the files in Leo's core.'''
-        trace = False
         loadDir = g.app.loadDir
         # Compute directories.
         commands_dir = g.os_path_finalize_join(loadDir, '..', 'commands')
@@ -1483,7 +1428,6 @@ class ProjectUtils(object):
         # Compute the result.
         files = core_files + command_files + plugins_files
         files = [z for z in files if not z.endswith('__init__.py')]
-        if trace: g.printList(files)
         return files
     #@+node:ekr.20150525123715.4: *3* pu.project_files
     #@@nobeautify
@@ -1705,7 +1649,6 @@ class ShowData(object):
     #@+node:ekr.20150605063318.1: *4* match
     def match(self, fn, i, m, s):
         '''Handle the next match.'''
-        trace = False
         self.n_matches += 1
         indent = g.skip_ws(s, 0)
         # Update the context and enter data.
@@ -1751,25 +1694,17 @@ class ShowData(object):
                         aList.append(call_tuple)
                         self.calls_d[name] = aList
                     break
-        if trace:
-            print('%4s %4s %3s %3s %s' % (
-                self.n_matches, i, len(self.context_stack), indent, s.rstrip()))
     #@+node:ekr.20150605074749.1: *4* update_context
     def update_context(self, fn, indent, kind, s):
         '''Update context info when a class or def is seen.'''
-        trace = False and self.n_matches < 100
         while self.context_stack:
             fn2, kind2, indent2, s2 = self.context_stack[-1]
             if indent <= indent2:
                 self.context_stack.pop()
-                if trace:
-                    g.trace('pop ', len(self.context_stack), indent, indent2, kind2)
             else:
                 break
         context_tuple = fn, kind, indent, s
         self.context_stack.append(context_tuple)
-        if trace:
-            g.trace('push', len(self.context_stack), s.rstrip())
         self.context_indent = indent
     #@+node:ekr.20150604164546.1: *3* show_results & helpers
     def show_results(self):

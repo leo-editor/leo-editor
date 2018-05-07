@@ -33,10 +33,6 @@ class GoToCommands(object):
             sentinels = root.isAtFileNode()
             s = self.get_external_file_with_sentinels(root)
             lines = g.splitLines(s)
-            if trace:
-                g.trace('sentinels', sentinels)
-                aList = ['%3s %s' % (i+1, s2) for i, s2 in enumerate(lines)]
-                g.trace('n: %s script: ...\n%s' % (n, ''.join(aList)))
             # Step 2: scan the lines for line n.
             if sentinels:
                 # All sentinels count as real lines.
@@ -69,16 +65,11 @@ class GoToCommands(object):
                 s = self.get_external_file_with_sentinels(root)
                     # s has sentinels, regardless of root's @<file> kind.
                 lines = g.splitLines(s)
-                if trace:
-                    g.trace('=====', p.h)
-                    for i, s in enumerate(lines):
-                        print('%3s %s' % (i,s.rstrip()))
                 delim1, delim2 = self.get_delims(root)
                 count = 0
                 for s in lines:
                     # g.trace(count, s.rstrip())
                     if self.is_sentinel(delim1, delim2, s):
-                        if trace: g.trace(s.rstrip())
                         s2 = s.strip()[len(delim1):]
                         if has_sentinels:
                             count += 1
@@ -90,7 +81,6 @@ class GoToCommands(object):
                                 break
                     else:
                         count += 1
-                if trace: g.trace(count, root.h)
                 return count
             else:
                 return None
@@ -116,9 +106,6 @@ class GoToCommands(object):
             return None, -1, False
         script = g.getScript(c, root, useSelectedText=False)
         lines = g.splitLines(script)
-        if trace:
-            aList = ['%3s %s' % (i, s) for i, s in enumerate(lines)]
-            g.trace('n: %s script: ...\n%s' % (n, ''.join(aList)))
         # Script lines now *do* have gnx's.
         gnx, h, offset = self.scan_sentinel_lines(lines, n, root)
         p, found = self.find_gnx(root, gnx, h)
@@ -147,7 +134,6 @@ class GoToCommands(object):
         delim1, delim2 = self.get_delims(root)
         count, gnx, h, offset = 0, root.gnx, root.h, 0
         stack = [(gnx, h, offset),]
-        if trace: g.trace('=====', delim1, delim2, n)
         for s in lines:
             is_sentinel = self.is_sentinel(delim1, delim2, s)
             # if trace and trace_lines: g.trace('%5s %s' % (is_sentinel, s.rstrip()))
@@ -157,7 +143,6 @@ class GoToCommands(object):
                     # Invisible, but resets the offset.
                     offset = 0
                     gnx, h = self.get_script_node_info(s, delim2)
-                    if trace: g.trace('@+node: %30s %5s %s' % (gnx, count+1, g.truncate(h,50)))
                 elif s2.startswith('@+others') or s2.startswith('@+<<'):
                     stack.append((gnx, h, offset),)
                     # @others is visible in the outline, but *not* in the file.
@@ -176,13 +161,11 @@ class GoToCommands(object):
                 # Non-sentinel lines are visible both in the outline and the file.
                 count += 1
                 offset += 1
-            if trace and trace_lines: g.trace(count, offset, s.rstrip())
             if count == n:
                 # Count is the real, one-based count.
                 break
         else:
             gnx, h, offset = None, None, -1
-        if trace: g.trace('----- gnx:', gnx, 'h:', h, 'offset:', offset)
         return gnx, h, offset
     #@+node:ekr.20150623175314.1: *3* goto.scan_sentinel_lines
     def scan_sentinel_lines(self, lines, n, root):
@@ -200,15 +183,12 @@ class GoToCommands(object):
         delim1, delim2 = self.get_delims(root)
         gnx, h, offset = root.gnx, root.h, 0
         stack = [(gnx, h, offset),]
-        if trace: g.trace('=====', delim1, delim2, n)
         for i, s in enumerate(lines):
-            if trace and trace_lines: g.trace(s.rstrip())
             if self.is_sentinel(delim1, delim2, s):
                 s2 = s.strip()[len(delim1):]
                 if s2.startswith('@+node'):
                     offset = 0
                     gnx, h = self.get_script_node_info(s, delim2)
-                    if trace: g.trace('node: %30s %5s %s' % (gnx, i+1, g.truncate(h,50)))
                 elif s2.startswith('@+others') or s2.startswith('@+<<'):
                     stack.append((gnx, h, offset),)
                     offset += 1
@@ -219,12 +199,10 @@ class GoToCommands(object):
                     offset += 1
             else:
                 offset += 1
-            if trace and trace_lines: g.trace(i+1, offset, s.rstrip())
             if i+1 == n: # Bug fix 2017/04/01: n is one based.
                 break
         else:
             gnx, h, offset = None, None, -1
-        if trace: g.trace('----- gnx', gnx, 'h', h, 'offset', offset)
         return gnx, h, offset
     #@+node:ekr.20150624142449.1: *3* goto.Utils
     #@+node:ekr.20150625133523.1: *4* goto.fail
@@ -259,7 +237,6 @@ class GoToCommands(object):
                 if p.matchHeadline(vnodeName):
                     if p.v.fileIndex == gnx:
                         return p.copy(), True
-            if trace: g.trace('not found! %s, %s' % (gnx, repr(vnodeName)))
             return None, False
         else:
             return root, False
@@ -385,9 +362,6 @@ class GoToCommands(object):
         # Put the cursor on line n2 of the body text.
         s = w.getAllText()
         ins = g.convertRowColToPythonIndex(s, n2 - 1, 0)
-        if trace:
-            i, j = g.getLine(s, ins)
-            g.trace('%2s %2s %15s %s' % (n, n2, p.h, repr(s[i: j])))
         c.frame.clearStatusLine()
         c.frame.putStatusLine('goto-global-line found: %s' % (n2))
         w.setInsertPoint(ins)

@@ -88,22 +88,14 @@ class BackgroundProcessManager(object):
     #@+node:ekr.20161026193609.2: *3* bpm.check_process & helpers
     def check_process(self):
         '''Check the running process, and switch if necessary.'''
-        trace = False and not g.unitTesting
-        trace_inactive = True
-        trace_running = False
         if self.pid:
             if self.pid.poll() is None:
-                if trace and trace_running:
-                    self.put_log('running: %s' % id(self.pid))
+                pass
             else:
-                if trace:
-                    self.put_log('ending: %s' % id(self.pid))
                 self.end() # End this process.
                 self.start_next() # Start the next process.
         elif self.process_queue:
             self.start_next() # Start the next process.
-        elif trace and trace_inactive:
-            self.put_log('%s inactive' % (self.data and self.data.kind or 'all'))
     #@+node:ekr.20161028063557.1: *4* bpm.end
     def end(self):
         '''End the present process.'''
@@ -167,11 +159,9 @@ class BackgroundProcessManager(object):
     #@+node:ekr.20161026193609.5: *3* bpm.start_process
     def start_process(self, c, command, kind, fn=None, shell=False):
         '''Start or queue a process described by command and fn.'''
-        trace = False and not g.unitTesting
         self.data = data = self.ProcessData(c, kind, fn, shell)
         if self.pid:
             # A process is already active.  Add a new callback.
-            if trace: self.put_log('===== Adding callback for %s' % g.shortFileName(fn))
 
             def callback(data=data):
                 fn = data.fn
@@ -183,8 +173,6 @@ class BackgroundProcessManager(object):
                     stdout=subprocess.PIPE,
                     universal_newlines=True,
                 )
-                if trace: self.put_log('===== Starting: %s for %s' % (
-                    id(self.pid), g.shortFileName(fn)))
 
             data.callback = callback
             self.process_queue.append(data)
@@ -198,8 +186,6 @@ class BackgroundProcessManager(object):
                 stdout=subprocess.PIPE,
                 universal_newlines=True,
             )
-            if trace: self.put_log('===== Starting: %s for %s' % (
-                id(self.pid), g.shortFileName(fn)))
     #@-others
 #@-others
 #@@language python
