@@ -515,8 +515,9 @@ class GitDiffController:
         self.c = c
         self.file_node = None
         self.old_dir = g.os_path_abspath('.')
-        if directory:
-            os.chdir(directory)
+        if not directory:
+            directory = g.app.loadDir
+        os.chdir(directory)
         self.repo_dir = self.find_git_working_directory()
         self.rev1 = rev1
         self.rev2 = rev2
