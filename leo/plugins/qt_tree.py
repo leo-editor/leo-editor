@@ -1371,8 +1371,8 @@ class LeoQtTree(leoFrame.LeoTree):
                     self.scrollToItem(item)
             finally:
                 self.selecting = False
-        # if trace: g.trace('item',repr(item))
-        if not item: g.trace('*** no item')
+        if not item:
+            g.trace('*** no item')
         return item
     #@-others
 #@-others
