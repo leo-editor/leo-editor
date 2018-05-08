@@ -804,7 +804,7 @@ class GitDiffController:
         lines = g.execGitCommand(command, directory)
         s = ''.join(lines)
         return g.toUnicode(s).replace('\r','')
-    #@+node:ekr.20180507212821.1: *3* gdc.diff_two_revs (New)
+    #@+node:ekr.20180507212821.1: *3* gdc.diff_two_revs
     def diff_two_revs(self, rev1, rev2):
         '''
         Create an outline describing the git diffs for all files changed
@@ -819,6 +819,7 @@ class GitDiffController:
         # Create the root node.
         self.root = c.lastTopLevel().insertAfter()
         self.root.h = 'git diff revs: %s %s' % (rev1, rev2)
+        self.root.b = '@nosearch\n'
         # Create diffs of all files.
         for fn in files:
             self.diff_file(fn)
