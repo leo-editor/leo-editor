@@ -21,14 +21,9 @@ in_bridge = False
     # Set to True in leoBridge.py just before importing leo.core.leoApp.
     # This tells leoApp to load a null Gui.
 #
-# Debugging options...
+# True unless --no-cache is in effect.
+# Don't even think about eliminating this constant.
 enableDB = True
-    # Don't even think about eliminating this constant:
-    # it is needed for debugging.
-#
-# Other tracing options...
-trace_scroll = False
-    # Trace calls to get/setYScrollPosition.
 #
 # These print statements have been moved to writeWaitingLog.
 # This allows for better --silent operation.
@@ -36,6 +31,8 @@ if 0:
     print('*** isPython3: %s' % isPython3)
     if not enableDB:
         print('** leoGlobals.py: caching disabled')
+#
+# True: Enable SQLite DB.
 SQLITE = True
 #@-<< global switches >>
 #@+<< imports >>
