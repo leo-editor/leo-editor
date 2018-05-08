@@ -822,6 +822,23 @@ class GitDiffController:
         lines = g.execGitCommand(command, directory)
         s = ''.join(lines)
         return g.toUnicode(s).replace('\r','')
+    #@+node:ekr.20180507212821.1: *3* gdc.diff_two_revs (New)
+    def diff_two_revs(self, rev1, rev2):
+        '''
+        Create an outline describing the git diffs for all files changed
+        between rev1 and rev2.
+        '''
+        self.rev1 = rev1
+        self.rev2 = rev2
+        # Get list of changed files.
+        files = self.get_files()
+        g.es_print('diffing %s files' % len(files))
+        # Create the root node.
+        self.root = self.create_root()
+        # Create diffs of all files.
+        for fn in files:
+            self.diff_file(fn)
+        self.finish()
     #@+node:ekr.20170806094320.12: *3* gdc.run & helpers
     def run(self):
         '''The main line of the git diff command.'''
