@@ -1201,6 +1201,8 @@ class LeoApp(object):
     #@+node:ekr.20031218072017.2619: *4* app.writeWaitingLog
     def writeWaitingLog(self, c):
         '''Write all waiting lines to the log.'''
+        #
+        # Do not call g.es, g.es_print, g.pr or g.trace here!
         app = self
         if not c or not c.exists:
             return
@@ -1406,6 +1408,9 @@ class LeoApp(object):
             if trace: g.pr('forgetOpenFile: did not remove: %s' % (fn))
     #@+node:ekr.20120427064024.10065: *4* app.rememberOpenFile
     def rememberOpenFile(self, fn):
+        
+        #
+        # Do not call g.trace, etc. here.
         d, tag = g.app.db, 'open-leo-files'
         if d is None or g.app.unitTesting or g.app.batchMode or g.app.reverting:
             pass
