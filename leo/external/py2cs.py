@@ -1348,6 +1348,10 @@ class LeoGlobals(object):
             s = s.decode(encoding, 'strict')
         except UnicodeError:
             s = s.decode(encoding, 'replace')
+            if reportErrors:
+                g.trace(g.callers())
+                print("toUnicode: Error converting %s... from %s encoding to unicode" % (
+                    s[: 200], encoding))
         except AttributeError:
             # May be a QString.
             s = g.u(s)

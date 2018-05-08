@@ -5628,6 +5628,10 @@ def toUnicode(s, encoding='utf-8', reportErrors=False):
     except (UnicodeDecodeError, UnicodeError):
         # https://wiki.python.org/moin/UnicodeDecodeError
         s = s.decode(encoding, 'replace')
+        if reportErrors:
+            g.trace(g.callers())
+            g.error("toUnicode: Error converting %s...from %s encoding to unicode" % (
+                s[: 200], encoding))
     except AttributeError:
         # May be a QString.
         s = g.u(s)
@@ -5986,8 +5990,10 @@ def es(*args, **keys):
     The first, third, fifth, etc. arg translated by g.translateString.
     Supports color, comma, newline, spaces and tabName keyword arguments.
     '''
-    if not app or app.killed: return
-    if app.gui and app.gui.consoleOnly: return
+    if not app or app.killed:
+        return
+    if app.gui and app.gui.consoleOnly:
+        return
     log = app.log
     # Compute the effective args.
     d = {
