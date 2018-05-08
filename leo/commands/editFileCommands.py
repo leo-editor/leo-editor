@@ -340,24 +340,6 @@ class EditFileCommandsClass(BaseEditCommandsClass):
     def gitDiff(self, event):
 
         GitDiffController(self.c, 'HEAD').run()
-    #@+node:ekr.20180504182541.1: *3* efc.getDiffBranch
-    @cmd('git-diff-branch')
-    def gitDiffBranch(self, event):
-        '''Prompt for a branch name, then diff one file against it.'''
-        c = self.c
-        roots = g.findRootsWithPredicate(c, c.p)
-            # Looks up and down the tree.
-        if not roots:
-            g.es_print('no .py files found')
-            return
-        gdc = GitDiffController(self.c, 'HEAD')
-        
-        def callback(args, *extra, **kwargs):
-            if g._assert(len(args) == 1):
-                for p in roots:
-                    gdc.diff_branch(branch=args[0], fn=p.anyAtFileNodeName())
-                    
-        c.interactive(callback, event, prompts=['Branch name: '])
     #@+node:ekr.20170806094318.7: *3* efc.insertFile
     @cmd('file-insert')
     def insertFile(self, event):

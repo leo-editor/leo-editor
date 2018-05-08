@@ -4227,7 +4227,7 @@ class TextMixin(object):
         return i
     #@+node:ekr.20170511053143.24: *5* tm.rememberSelectionAndScroll
     def rememberSelectionAndScroll(self):
-        trace = (False or g.trace_scroll) and not g.unitTesting
+        trace = False and not g.unitTesting
         v = self.c.p.v # Always accurate.
         v.insertSpot = self.getInsertPoint()
         i, j = self.getSelectionRange()
