@@ -828,13 +828,15 @@ class GitDiffController:
         Create an outline describing the git diffs for all files changed
         between rev1 and rev2.
         '''
+        c = self.c
         self.rev1 = rev1
         self.rev2 = rev2
         # Get list of changed files.
         files = self.get_files()
         g.es_print('diffing %s files. This may take awhile' % len(files))
         # Create the root node.
-        self.root = self.create_root()
+        self.root = c.lastTopLevel().insertAfter()
+        self.root.h = 'git diff revs: %s %s' % (rev1, rev2)
         # Create diffs of all files.
         for fn in files:
             self.diff_file(fn)
