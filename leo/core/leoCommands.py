@@ -2374,6 +2374,16 @@ class Commands(object):
             if 'gnx' in g.app.debug:
                 g.trace(c.shortFileName(), gnxString, v)
         c.fileCommands.gnxDict = d
+    #@+node:ekr.20180508111544.1: *3* c.Git
+    #@+node:ekr.20180508110755.1: *4* c.diff_two_revs
+    def diff_two_revs(self, directory=None, rev1=None, rev2=None):
+        '''
+        Create an outline describing the git diffs for all files changed
+        between rev1 and rev2.
+        '''
+        import leo.commands.editFileCommands as efc
+        efc.GitDiffController(c=self, directory=directory).diff_two_revs(
+            rev1=rev1, rev2=rev2)
     #@+node:ekr.20171124100534.1: *3* c.Gui
     #@+node:ekr.20111217154130.10286: *4* c.Dialogs & messages
     #@+node:ekr.20110510052422.14618: *5* c.alert
