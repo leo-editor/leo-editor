@@ -81,6 +81,9 @@ class InputHandler(object):
 
         Return True if input has been completely handled.
         """
+        trace = False
+        trace_entry = True
+        trace_parent = False
         
         def tell(f):
             pattern = r'<bound method ([\w\.]*\.)?(\w+) of <([\w\.]*\.)?(\w+) object at (.+)>>'
@@ -89,6 +92,16 @@ class InputHandler(object):
 
         parent_widget = getattr(self, 'parent_widget', None)
         parent = getattr(self, 'parent', None)
+        if trace and trace_entry:
+            # g.trace('self: %20s, parent: %8s, %3s = %r' % (
+            s = curses.ascii.unctrl(i)
+            if s == '^I': s = 'TAB'
+            if s == '^J': s = 'RETURN'
+            g.trace('========== %s, parent: %s, %s = %r' % (
+                self.__class__.__name__,
+                parent.__class__.__name__,
+                i, s,
+            ))
         # A special case for F4 so we can run unit tests.
         # myLeoSettings.leo binds F4.
         if i == 268:
@@ -96,6 +109,7 @@ class InputHandler(object):
             return True
         if i in self.handlers:
             f = self.handlers[i]
+            if trace: g.trace('handler: %s %s' % (i, tell(f)))
             f(i)
             return True
         try:
@@ -104,20 +118,27 @@ class InputHandler(object):
             _unctrl_input = None
         if _unctrl_input and (_unctrl_input in self.handlers):
             f = self.handlers[_unctrl_input]
+            if trace: g.trace('handler: %3s %s' % (_unctrl_input, tell(f)))
             f(i)
             return True
         for test, handler in getattr(self, 'complex_handlers', []):
             if test(i): # was is not False.
+                if trace: g.trace('complex: %3s %s' % (i, tell(handler)))
                 return handler(i)
         if parent_widget and hasattr(parent_widget, 'handle_input'):
+            if trace and trace_parent:
+                g.trace('parent_widget.handle_input', i, parent_widget)
             if parent_widget.handle_input(i):
                 return True
         if parent and hasattr(self.parent, 'handle_input'):
+            if trace and trace_parent:
+                g.trace('parent.handle_input', i, parent_widget)
             if parent.handle_input(i):
                 return True
         # Handle Leo bindings *last*.
         # g.app is a LeoApp instance, *not* a CursesApp.
         if g.app and g.app.gui and hasattr(g.app.gui, 'do_key'):
+            if trace: g.trace('    leo: %3s %s' % (i, tell(g.app.gui.do_key)))
             return g.app.gui.do_key(i)
         return False
     #@+node:ekr.20170428084208.406: *3* IH.set_up_handlers
@@ -312,17 +333,20 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         self.initialize_event_handling()
     #@+node:ekr.20170429213619.3: *3* Widget._edit_loop
     def _edit_loop(self):
-
+        trace = False and not g.unitTesting
+        if trace: g.trace('BEGIN')
         if not self.parent.editing:
             _i_set_parent_editing = True
             self.parent.editing   = True
         else:
             _i_set_parent_editing = False
         while self.editing and self.parent.editing:
+            if trace: g.trace('LOOP', self.__class__.__name__, g.callers(2))
             self.display()
             self.get_and_use_key_press()
         if _i_set_parent_editing:
             self.parent.editing = False
+        if trace: g.trace('END')
         if self.editing:
             self.editing    = False
             self.how_exited = True
@@ -475,7 +499,11 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
     #@+node:ekr.20170428084208.424: *3* Widget.display
     def display(self):
         """Do an update of the object AND refresh the screen"""
-
+        trace = False and not g.unitTesting
+        if trace:
+            name = self.__class__.__name__
+            if name.startswith('Leo'):
+                g.trace('(Widget)', name, g.callers())
         if self.hidden:
             self.clear()
             self.parent.refresh()
@@ -500,6 +528,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
     #@+node:ekr.20170429213619.8: *3* Widget.get_and_use_key_press
     def get_and_use_key_press(self):
         global TEST_SETTINGS
+        trace = False
 
         if (TEST_SETTINGS['TEST_INPUT'] is None) and (TEST_SETTINGS['INPUT_GENERATOR'] is None):
             curses.raw()
@@ -546,6 +575,7 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
                     raise ExhaustedTestInput
 
         # if trace: g.trace('Widget', self.__class__.__name__, ch, chr(ch))
+        if trace: g.pr('Widget', self.__class__.__name__, 'get_and_use_key_press', ch, chr(ch))
         self.handle_input(ch)
         if self.check_value_change:
             self.when_check_value_changed()
@@ -804,6 +834,8 @@ class Widget(InputHandler, wgwidget_proto._LinePrinter, EventHandler):
         actually refresh the curses display, since this should be done as
         little as possible. This base widget puts nothing on screen.
         """
+        trace = False and not g.unitTesting
+        if trace: g.trace('===== Widget', g.callers())
         if self.hidden:
             self.clear()
             return True
