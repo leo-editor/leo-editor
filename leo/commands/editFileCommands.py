@@ -832,7 +832,7 @@ class GitDiffController:
         self.rev2 = rev2
         # Get list of changed files.
         files = self.get_files()
-        g.es_print('diffing %s files' % len(files))
+        g.es_print('diffing %s files. This may take awhile' % len(files))
         # Create the root node.
         self.root = self.create_root()
         # Create diffs of all files.
