@@ -1314,6 +1314,7 @@
 <v t="ekr.20131019035402.17573"><vh>@rst html\leonine-world.html</vh></v>
 </v>
 <v t="ekr.20180505114327.1"><vh>Leo University</vh>
+<v t="ekr.20180509042555.1"><vh>@rst html\leo-university.html</vh>
 <v t="ekr.20180505114327.5"><vh>Lesson 1: Think process, not knowledge</vh></v>
 <v t="ekr.20180505114327.7"><vh>Lesson 2: Learn Leo's debugging tools</vh></v>
 <v t="ekr.20180505114327.8"><vh>Lesson 3: Running unit tests</vh></v>
@@ -1325,6 +1326,7 @@
 <v t="ekr.20180505114327.3"><vh>LeoU: Suggestions for theme developers</vh></v>
 <v t="ekr.20180505141445.1"><vh>LeoU: About Leo's architecture</vh></v>
 <v t="ekr.20180505114327.12"><vh>LeoU: About Leo's Position and VNode classes</vh></v>
+</v>
 </v>
 </v>
 <v t="ekr.20131008041326.16091"><vh>Cheat Sheet</vh>
@@ -2000,7 +2002,6 @@
 <v t="ekr.20180411150950.1"><vh>#757: MacOS: replace-then-find does not work in headlines</vh></v>
 <v t="ekr.20180411105215.1"><vh>#794: Clicking Find Tab should do exactly what pushing Ctrl-F does</vh></v>
 <v t="ekr.20180505114332.5"><vh>#848: Recent Files menu will break for foreign languages</vh></v>
-<v t="ekr.20180411073658.1"><vh>#848: Recent Files menu will break for foreign languages</vh></v>
 <v t="ekr.20180505114332.8"><vh>#862: paste-retaining-clones can corrupt the outline</vh></v>
 <v t="ekr.20180505114332.9"><vh>#863: Serious problems changing branches</vh></v>
 <v t="ekr.20180505114332.13"><vh>#877: Exception in the markdown importer</vh></v>
@@ -2019,6 +2020,7 @@
 <v t="ekr.20180427130028.1"><vh>Removed unused settings</vh></v>
 </v>
 </v>
+<v t="ekr.20111127144911.5544"></v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -12229,8 +12231,6 @@ There are four ways to download Leo:
 - We recommend installing Leo using `git`_, see `Installing Leo with git`_. Git gives you the latest, thoroughly tested code. All of Leo's developers use git.
 
 - If you prefer a new development version, or a version from from 1, 2, 5, 10, 30 or 90 days ago, download a `Nightly snapshot`_.
-
-- If you want a stable release download from `SourceForge`_. Remember that it *won't* have the latest features and bug fixes.
 </t>
 <t tx="ekr.20120130101219.10182">def computeBindingLetter(self, kind):
     # lm = self
@@ -26394,11 +26394,6 @@ This feature is disabled by default. To enable, set @bool replace-meta-with-alt 
 <t tx="ekr.20180411071733.1">- @bool replace-meta-with-alt.
 </t>
 <t tx="ekr.20180411073507.1"></t>
-<t tx="ekr.20180411073658.1">https://github.com/leo-editor/leo-editor/issues/848
-
-The first non-blank, non-comment line of the node `@menu Recent Files' can contain an alternate (translated) menu name.
-
-You should not just change the headline of the node: it should remain unchanged. Indeed, the point of this item is that Leo has to know which item is the Recent Files item, so some other way was needed to specify an alternate name.</t>
 <t tx="ekr.20180411102234.1">https://github.com/leo-editor/leo-editor/issues/838
 
 @auto x.ipynb now "just works".
@@ -26521,13 +26516,7 @@ These two commands are important tools.  Please try them and report any problems
 I will be happy to allow more characters in markdown links, should you want them. Just let me know.
 
 The insert-markdown-toc is a component of #767: Add markdown command similar to rst3 command.</t>
-<t tx="ekr.20180505114327.1">##############
-Leo University
-##############
-
-.. `LeoU issues`: https://github.com/leo-editor/leo-editor/issues/816
-This is a backup of the online `LeoU issues`_.
-</t>
+<t tx="ekr.20180505114327.1"></t>
 <t tx="ekr.20180505114327.10">.. https://github.com/leo-editor/leo-editor/issues/857
 
 Marcel Franke showed how to use the recommended way of using git branches:
@@ -26752,11 +26741,11 @@ Here are the basics of debugging with Leo:
 
 **g.trace**
 
-g.trace(*args, **kwargs) prints its arguments to the console.  I use g.trace all throughout Leo's code base.
+`g.trace(*args, **kwargs)` prints its arguments to the console.  I use g.trace all throughout Leo's code base.
 
 **g.pdb**
 
-g.pdb() invokes a version of python's pdb debugger, https://docs.python.org/2/library/pdb.html, adapted to Leo's Qt gui.  I use g.pdb only rarely, when g.trace doesn't tell me enough.
+`g.pdb()` invokes a version of python's pdb debugger, https://docs.python.org/2/library/pdb.html, adapted to Leo's Qt gui.  I use g.pdb only rarely, when g.trace doesn't tell me enough.
 
 **Using `@`button/command nodes as a testing framework**
 
@@ -26773,6 +26762,7 @@ This can save you a lot of time.</t>
 
 **Important**: Some unit tests may fail on your environment.  Don't worry about them.  You need only ensure that your new code causes no *other* unit tests to fail.  If in doubt, ask on leo-editor.</t>
 <t tx="ekr.20180505114327.9">.. https://github.com/leo-editor/leo-editor/issues/846
+
 c.recursiveImport is a wrapper on the RecursiveImportController class.​ ​You can find the related code by doing a regex cff (ignoring case) on ​ ​"recursive?import".
 
 Here is how to use c.recursiveImport::
@@ -26787,7 +26777,7 @@ Here is how to use c.recursiveImport::
         theTypes = ['.py',],
     )
 
-I like to import to `@`clean and set safe_at_file = False, but *before doing that* I create a git repo for the to-be-imported directory and check in all the .py files. That way I can track any changes that get made, and revert them if need be.</t>
+I like to import to @clean and set safe_at_file = False, but *before doing that* I create a git repo for the to-be-imported directory and check in all the .py files. That way I can track any changes that get made, and revert them if need be.</t>
 <t tx="ekr.20180505114332.13">https://github.com/leo-editor/leo-editor/issues/877
 </t>
 <t tx="ekr.20180505114332.14">https://github.com/leo-editor/leo-editor/issues/879
@@ -26844,6 +26834,14 @@ In most cases, components should know nothing about the ivars and low-level meth
 Leo uses the "has-a" pattern, rather than the "is-a" class pattern. That is, Leo gains access to the capabilities of other classes by instantiating the other classes rather than being subclasses of other classes. The "has-a" pattern is a personal preference of mine, and is now pretty much baked into Leo.
 
 The "has-a" pattern completely insulates classes from the internal details of other classes. There is no need to worry about clashing ivars, or _ ivars, etc. Otoh, the "has-a" pattern results in more complex startup code. Imo, that "extra" complexity is well worthwhile.</t>
+<t tx="ekr.20180509042555.1">##############
+Leo University
+##############
+
+.. _`LeoU issues`: https://github.com/leo-editor/leo-editor/issues/816
+
+This is a backup of the online `LeoU issues`_.
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
@@ -26894,15 +26892,26 @@ os.system('make LeoDoc.pdf')
 
 where the ``50c0...cad5`` part is the ID or fingerprint of the version you've downloaded.  Except "Latest", which is just ``leo-editor-master.zip``.
 
-Here are some direct download links:
+Here are direct download links for the "devel" branch, which changes frequently and contains all recent bug fixes:
 
-  - `Latest &lt;https://github.com/leo-editor/leo-editor/archive/master.zip&gt;`_
-  - `1 day ago &lt;https://github.com/leo-editor/leo-editor/archive/master@{1%20day%20ago}.zip&gt;`_
-  - `2 days ago &lt;https://github.com/leo-editor/leo-editor/archive/master@{2%20days%20ago}.zip&gt;`_
-  - `5 days ago &lt;https://github.com/leo-editor/leo-editor/archive/master@{5%20days%20ago}.zip&gt;`_
-  - `10 days ago &lt;https://github.com/leo-editor/leo-editor/archive/master@{10%20days%20ago}.zip&gt;`_
-  - `30 days ago &lt;https://github.com/leo-editor/leo-editor/archive/master@{30%20days%20ago}.zip&gt;`_
-  - `90 days ago &lt;https://github.com/leo-editor/leo-editor/archive/master@{90%20days%20ago}.zip&gt;`_
+  - `Latest devel &lt;https://github.com/leo-editor/leo-editor/archive/devel.zip&gt;`_
+  - `devel: 1 day ago &lt;https://github.com/leo-editor/leo-editor/archive/devel@{1%20day%20ago}.zip&gt;`_
+  - `devel: 2 days ago &lt;https://github.com/leo-editor/leo-editor/archive/devel@{2%20days%20ago}.zip&gt;`_
+  - `devel: 5 days ago &lt;https://github.com/leo-editor/leo-editor/archive/devel@{5%20days%20ago}.zip&gt;`_
+  - `devel: 10 days ago &lt;https://github.com/leo-editor/leo-editor/archive/devel@{10%20days%20ago}.zip&gt;`_
+  - `devel: 30 days ago &lt;https://github.com/leo-editor/leo-editor/archive/devel@{30%20days%20ago}.zip&gt;`_
+  - `devel: 90 days ago &lt;https://github.com/leo-editor/leo-editor/archive/devel@{90%20days%20ago}.zip&gt;`_
+
+
+Here are direct download links for the "master" branch, which rarely changes and contains the most stable code:
+
+  - `Latest master &lt;https://github.com/leo-editor/leo-editor/archive/master.zip&gt;`_
+  - `master: 1 day ago &lt;https://github.com/leo-editor/leo-editor/archive/master@{1%20day%20ago}.zip&gt;`_
+  - `master: 2 days ago &lt;https://github.com/leo-editor/leo-editor/archive/master@{2%20days%20ago}.zip&gt;`_
+  - `master: 5 days ago &lt;https://github.com/leo-editor/leo-editor/archive/master@{5%20days%20ago}.zip&gt;`_
+  - `master: 10 days ago &lt;https://github.com/leo-editor/leo-editor/archive/master@{10%20days%20ago}.zip&gt;`_
+  - `master: 30 days ago &lt;https://github.com/leo-editor/leo-editor/archive/master@{30%20days%20ago}.zip&gt;`_
+  - `master: 90 days ago &lt;https://github.com/leo-editor/leo-editor/archive/master@{90%20days%20ago}.zip&gt;`_
 </t>
 <t tx="ville.20090602181814.6219">def commanders(self):
     """ Return list of currently active controllers """
