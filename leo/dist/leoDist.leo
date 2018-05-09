@@ -3670,9 +3670,11 @@ LeoPyRef.leo and LeoPluginsRef.leo:
 - Run ll -a with *both* Python 2 and 3.</t>
 <t tx="ekr.20180405171433.7">Create a git tag **last**
 
-- Create a full (annotated) tag: do not use the -f option.
+- Create a full (annotated) tag:
+  - Do not use the -f option.
+  - Use rel-5.xxx to distinguish between the release and the branch.
 
-    git tag -a 5.xxx -m "Added 5.xxx tag"
+    git tag -a rel-5.xxx -m "Added 5.xxx tag"
     git push --follow-tags
 </t>
 <t tx="ekr.20180405171433.8">- Update the *GitHub* release at https://github.com/leo-editor/leo-editor/releases
