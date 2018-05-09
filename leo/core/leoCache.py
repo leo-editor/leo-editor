@@ -154,7 +154,12 @@ class Cacher(object):
                     yield y
         #@-others
         for v, h, b, gnx in vnodes(aList):
-            if v is root_v and len(v.parents) == 1: continue
+            if v is root_v and not (v.b or v.children):
+                #
+                # no children and an empty body of root node most probably means
+                # we are reading external file for the first time. In this case
+                # there is no point in counting this as nodeConflict
+                continue
             same_h = v.h == h
             same_b = (v.b == b or
                 (v.b[-1:] == '\n' and v.b[:-1] == b) or
