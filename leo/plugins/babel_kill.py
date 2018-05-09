@@ -17,6 +17,7 @@ try:
     import sys
 
 except ImportError as err:
+    # pylint: disable=no-member
     signal.signal(signal.SIGHUP, signal.SIG_IGN)
     errMsg = ('Python Package required by Leo-Babel is missing.\n'
         'Importing Python module {0} failed.'.format(err.name))
@@ -28,5 +29,7 @@ msg = 'Kill Leo-Babel process {0}?'.format(pidTarg)
 reply = QtWidgets.QMessageBox.question(None, msg, msg,
          QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No)
 if reply == QtWidgets.QMessageBox.Yes:
-    os.kill(pidTarg, signal.SIGHUP) # This kills most Bash scripts and most Python scripts
+    # pylint: disable=no-member
+    os.kill(pidTarg, signal.SIGHUP)
+        # This kills most Bash scripts and most Python scripts
 #@-leo

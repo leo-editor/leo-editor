@@ -696,6 +696,7 @@ def babelExec(event):
                 babelCmdr.cmdDoneFlag = True
                 if subPbabKill.poll() is None:
                     # Kill subprocess has not terminated
+                    # pylint: disable=no-member
                     os.kill(subPbabKill.pid, signal.SIGHUP)
                 babelCmdr.termMsg = '{0} Subprocess Termination Code'.format(rc)
                 et = int(round(end - start))
