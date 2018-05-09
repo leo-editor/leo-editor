@@ -4975,8 +4975,9 @@ date;;={|{x=time.asctime()}|}
 #    name=definition
 
 # Definitions in @data abbreviation nodes override definitions in @data
-# global-abbreviation nodes. Typically you would define @data abbreviation nodes
-# in myLeoSettings.leo
+# global-abbreviation nodes.
+# Typically you would define @data abbreviation nodes in myLeoSettings.leo
+# and @data abbreviation nodes in local files.
 </t>
 <t tx="ekr.20100904134301.11006">True: enable abbreviations
 False disable abbreviations
