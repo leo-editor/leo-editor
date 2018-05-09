@@ -366,7 +366,6 @@ class ShadowController(object):
     def put_plain_line(self, line):
         '''Put a plain line to x.results, inserting verbatim lines if necessary.'''
         x = self
-        # if x.trace: g.trace(repr(line),g.callers(1))
         if x.marker.isSentinel(line):
             x.results.append(x.verbatim_line)
             if x.trace: print('put %s' % repr(x.verbatim_line))

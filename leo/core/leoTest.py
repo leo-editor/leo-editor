@@ -1607,7 +1607,6 @@ class TestManager(object):
                     g.unitTesting = oldUnitTesting
                     g.app.unitTesting = oldUnitTesting
             except Exception:
-                # g.trace('can not import',moduleName,fileName)
                 # leoScriptModule.py, for example, can throw other exceptions.
                 return None
         else:

@@ -242,9 +242,7 @@ class DefNode(object):
     #@@c
 
     def __init__(self, name, indent, part, of, nl_flag, code):
-        if 0:
-            g.trace("DefNode.__init__:",
-                "name:", name, " part:", part, " of:", of, " indent:", indent)
+
         self.name = name
         self.indent = indent
         self.code = code
@@ -270,24 +268,7 @@ class RootAttributes(object):
     #@@c
 
     def __init__(self, tangle_state):
-        if 0:
-            #@+<< trace the state >>
-            #@+node:ekr.20031218072017.3463: *5* << trace the state >>
-            try:
-                if tangle_state.path: pass
-            except AttributeError:
-                tangle_state.path = None
-            if 0:
-                g.trace("def_root_attribute.__init__",
-                    "language:" + tangle_state.language +
-                    ", use_header_flag: " + repr(tangle_state.use_header_flag) +
-                    ", print_mode: " + tangle_state.print_mode +
-                    ", path: " + repr(tangle_state.path) +
-                    ", page_width: " + repr(tangle_state.page_width) +
-                    ", tab_width: " + repr(tangle_state.tab_width) +
-                    # Stephen P. Schaefer 9/13/2002
-                    ", first_lines: " + tangle_state.first_lines)
-            #@-<< trace the state >>
+
         self.language = tangle_state.language
         self.use_header_flag = tangle_state.use_header_flag
         self.print_mode = tangle_state.print_mode
@@ -538,7 +519,6 @@ class BaseTangleCommands(object):
     def tanglePass1(self, p_in, delims):
         """The main routine of tangle pass 1"""
         p = self.p = p_in.copy() # self.p used by update_def in untangle
-    #    g.trace(p)
         self.setRootFromHeadline(p)
         theDict = g.get_directives_dict(p, [self.head_root])
         if ('ignore' in theDict):
@@ -948,7 +928,6 @@ class BaseTangleCommands(object):
                 #@-<< Define a section containing only an @doc part >>
         while i < len(s):
             progress = i # progress indicator
-            # line = g.get_line(s,i) ; g.trace(line)
             kind, end = self.token_type(s, i, report_errors=True)
             # if g.is_nl(s,i): i = g.skip_nl(s,i)
             i = g.skip_ws(s, i)
@@ -967,8 +946,6 @@ class BaseTangleCommands(object):
                 # Tangle code.
                 j = g.skip_blank_lines(s, i)
                 i, code, new_delims, reflist = self.skip_code(s, j, delims)
-                if False: #debug
-                    g.trace('=======\n%s======' % code)
                 part = self.st_enter_section_name(section_name, code, doc, delims, new_delims)
                 delims = new_delims
                 # Untangle code
@@ -1004,8 +981,6 @@ class BaseTangleCommands(object):
                     # Tangle code.
                     j = g.skip_blank_lines(s, i)
                     i, code, new_delims, reflist = self.skip_code(s, j, delims)
-                    if False: #debug
-                        g.trace('=======\n%s======' % code)
                     part = self.st_enter_section_name(section_name, code, doc, delims, new_delims)
                     delims = new_delims
                     # Untangle code
@@ -1529,10 +1504,7 @@ class BaseTangleCommands(object):
     # This method outputs one part of a section definition.
 
     def put_PartNode(self, part, no_first_lws_flag):
-        if 0:
-            if part: name = part.name # can't use choose.
-            else: name = "<NULL part>"
-            g.trace(name)
+
         if part.doc and self.output_doc_flag and self.print_mode != "silent":
             self.put_doc(part.doc, part.delims)
         if part.code:
@@ -1742,13 +1714,6 @@ class BaseTangleCommands(object):
 
     def st_enter(self, name, code, doc, delims_begin, delims_end, is_root_flag=False):
         """Enters names and their associated code and doc parts into the given symbol table."""
-        if 0: # debug
-            import sys
-            g.trace("name: %s ======code\n%s======doc\n%s" % (name, code, doc))
-            f = sys._getframe(1)
-            g.trace("caller: " + f.f_code.co_name)
-            f = sys._getframe(2)
-            g.trace("caller's caller: " + f.f_code.co_name)
         section = self.st_lookup(name, is_root_flag)
         assert(section)
         if doc:
@@ -1933,10 +1898,7 @@ class BaseTangleCommands(object):
     #@@c
 
     def forgiving_compare(self, name, part, s1, s2):
-        if 0:
-            g.trace(name, part,
-                "\n1:", g.get_line(s1, 0),
-                "\n2:", g.get_line(s2, 0))
+
         s1 = g.toUnicode(s1, self.encoding)
         s2 = g.toUnicode(s2, self.encoding)
         #@+<< Define forgiving_compare vars >>
@@ -2184,15 +2146,6 @@ class BaseTangleCommands(object):
                 p2 = len(s2)
                 self.mismatch("One part ends before the other.")
         #@-<< Make sure both parts have ended >>
-        if not result:
-            #@+<< trace the mismatch >>
-            #@+node:ekr.20031218072017.3561: *5* << Trace the mismatch >>
-            if 0:
-                g.trace(self.message +
-                    "\nPart ", part, " section ", name,
-                    "\n1:", g.get_line(s1, p1),
-                    "\n2:", g.get_line(s2, p2))
-            #@-<< trace the mismatch >>
         return result
     #@+node:ekr.20031218072017.3562: *4* mismatch
     def mismatch(self, message):
@@ -2241,13 +2194,7 @@ class BaseTangleCommands(object):
             self.string1 = self.string2 = None # This is debatable.
         if self.language == "html":
             self.string1 = '"'; self.string2 = None # 12/3/03
-        if 0:
-            g.trace("sentinel,line_comment,comment,string1,string2:",
-                repr(self.sentinel),
-                repr(self.line_comment),
-                repr(self.comment),
-                repr(self.string1),
-                repr(self.string2))
+
         #@-<< set the private global matching vars >>
         line_indent = 0 # The indentation to use if we see a section reference.
         # indent is the leading whitespace to be deleted.
@@ -2263,9 +2210,6 @@ class BaseTangleCommands(object):
         # The top level of the stack represents the root.
         self.push_new_DefNode(self.root_name, indent, 1, 1, True)
         while i < len(s):
-            if 0:
-                eol = g.skip_to_end_of_line(s, i)
-                g.trace("i: %s sentinel: %s" % (s[i: eol], self.sentinel))
             ch = s[i]
             if ch == '\r':
                 i += 1 # ignore

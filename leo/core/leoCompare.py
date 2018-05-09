@@ -449,7 +449,6 @@ class CompareLeoOutlines(object):
     #@+node:ekr.20180211170333.3: *3* loc.diff_two_files
     def diff_two_files(self, fn1, fn2):
         '''Create an outline describing the git diffs for fn.'''
-        g.trace('\n%s\n%s' % (fn1, fn2))
         self.path1, self.path2 = fn1, fn2
         s1 = self.get_file(fn1)
         s2 = self.get_file(fn2)

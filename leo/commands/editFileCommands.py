@@ -758,12 +758,12 @@ class GitDiffController:
         # Complete the read.
         for p in hidden_root.self_and_subtree():
             p.b = ''.join(getattr(p.v, 'tempBodyList', []))
-        if at.errors: g.trace(at.errors, 'errors!')
+        if at.errors:
+            g.trace(at.errors, 'errors!')
         return None if at.errors else hidden_c
     #@+node:ekr.20180506064102.10: *3* gdc.diff_two_branches & helper
     def diff_two_branches(self, branch1, branch2, fn):
         '''Create an outline describing the git diffs for fn.'''
-        g.trace(branch1, branch2, fn)
         c = self.c
         self.root = p = c.lastTopLevel().insertAfter()
         p.h = 'git-diff-branches %s %s' % (branch1, branch2)

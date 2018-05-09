@@ -1260,9 +1260,6 @@ class Pattern(object):
 
     def full_balanced_match(self, s, i):
         '''Return the index of the end of the match found at s[i:] or None.'''
-        i1 = i
-        trace = False
-        if trace: g.trace(self.find_s, s[i:].rstrip())
         pattern = self.find_s
         j = 0 # index into pattern
         while i < len(s) and j < len(pattern) and pattern[j] in ('*', s[i]):
@@ -1281,8 +1278,6 @@ class Pattern(object):
                 j += 1
             assert progress < i
         found = i <= len(s) and j == len(pattern)
-        if trace and found:
-            g.trace('%s -> %s' % (pattern, s[i1:i]))
         return i if found else None
     #@+node:ekr.20160317054700.103: *4* pattern.match_balanced
 
@@ -1494,8 +1489,6 @@ class ReduceTypes:
         Reduce the inner parts of a collection for the given kind.
         Return a list with only collections of the given kind reduced.
         '''
-        trace = False
-        if trace: g.trace(kind, aList)
         assert isinstance(aList, list)
         assert None not in aList, aList
         pattern = Pattern('%s[*]' % kind)
@@ -1505,20 +1498,16 @@ class ReduceTypes:
                 r1.append(s)
             else:
                 others.append(s)
-        if trace: g.trace('1', others, r1)
         for s in sorted(set(r1)):
             parts = []
             s2 = s[len(kind)+1:-1]
             for s3 in s2.split(','):
                 s3 = s3.strip()
-                if trace: g.trace('*', self.is_known_type(s3), s3)
                 parts.append(s3 if self.is_known_type(s3) else 'Any')
             r2.append('%s[%s]' % (kind, ', '.join(parts)))
-        if trace: g.trace('2', r2)
         result = others
         result.extend(r2)
         result = sorted(set(result))
-        if trace: g.trace('3', result)
         return result
 
     #@+node:ekr.20160519071605.5: *3* reduce_numbers
@@ -1527,7 +1516,6 @@ class ReduceTypes:
         Return aList with all number types in aList replaced by the most
         general numeric type in aList.
         '''
-        trace = False
         found = None
         numbers = ('number', 'complex', 'float', 'long', 'int')
         for kind in numbers:
@@ -1541,7 +1529,6 @@ class ReduceTypes:
             assert found in numbers, found
             aList = [z for z in aList if z not in numbers]
             aList.append(found)
-        if trace: g.trace(aList)
         return aList
 
     #@+node:ekr.20160519071605.6: *3* reduce_types
@@ -1554,8 +1541,6 @@ class ReduceTypes:
         Returning a string means that all traversers always return strings,
         never lists.
         '''
-        trace = False
-        if trace: g.trace('=====', self.aList)
         r = [('None' if z in ('', None) else z) for z in self.aList]
         assert None not in r
         self.optional = 'None' in r
@@ -1871,7 +1856,6 @@ class StandAloneMakeStubFile(object):
         trace = False or self.trace_patterns
         if pattern.is_regex():
             # Add the pattern to the regex patterns list.
-            g.trace(pattern)
             self.regex_patterns.append(pattern)
             return []
         d = self.op_name_dict
@@ -1925,7 +1909,6 @@ class StandAloneMakeStubFile(object):
 
     def init_parser(self, s):
         '''Add double back-slashes to all patterns starting with '['.'''
-        trace = False
         if not s: return
         aList = []
         for s in s.split('\n'):
@@ -1933,11 +1916,9 @@ class StandAloneMakeStubFile(object):
                 aList.append(s)
             elif s.strip().startswith('['):
                 aList.append(r'\\'+s[1:])
-                if trace: g.trace('*** escaping:',s)
             else:
                 aList.append(s)
         s = '\n'.join(aList)+'\n'
-        if trace: g.trace(s)
         file_object = io.StringIO(s)
         # pylint: disable=deprecated-method
         self.parser.readfp(file_object)
@@ -1959,7 +1940,7 @@ class StandAloneMakeStubFile(object):
 
     def make_patterns_dict(self):
         '''Assign all patterns to the appropriate ast.Node.'''
-        trace = False or self.trace_patterns
+        trace = self.trace_patterns
         for pattern in self.general_patterns:
             ops = self.find_pattern_ops(pattern)
             if ops:
@@ -1998,7 +1979,7 @@ class StandAloneMakeStubFile(object):
 
     def scan_patterns(self, section_name):
         '''Parse the config section into a list of patterns, preserving order.'''
-        trace = False or self.trace_patterns
+        trace = self.trace_patterns
         parser = self.parser
         aList = []
         if parser.has_section(section_name):
@@ -2019,10 +2000,6 @@ class StandAloneMakeStubFile(object):
                 for z in aList:
                     print(z)
                 print('')
-        # elif trace:
-            # print('no section: %s' % section_name)
-            # print(parser.sections())
-            # print('')
         return aList
     #@-others
 #@+node:ekr.20160317054700.134: ** class Stub(object)
@@ -2444,7 +2421,6 @@ class StubTraverser (ast.NodeVisitor):
 
     def add_stub(self, d, stub):
         '''Add the stub to d, checking that it does not exist.'''
-        trace = False ; verbose = False
         key = stub.full_name
         assert key
         if key in d:
@@ -2452,11 +2428,6 @@ class StubTraverser (ast.NodeVisitor):
             g.trace('Ignoring duplicate entry for %s in %s' % (stub, caller))
         else:
             d [key] = stub
-            if trace and verbose:
-                caller = g.callers(2).split(',')[1]
-                g.trace('%17s %s' % (caller, stub.full_name))
-            elif trace:
-                g.trace(stub.full_name)
     #@+node:ekr.20160317054700.165: *3* st.indent & out
 
     def indent(self, s):
@@ -2687,7 +2658,6 @@ class StubTraverser (ast.NodeVisitor):
                     g.trace('can not append: new root not found', z)
                     break
                 elif z == old_root:
-                    # if trace: g.trace('can delete', z1)
                     delete_list.append(z1)
                     break
                 elif z not in aList:

@@ -166,7 +166,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
         # Careful. This happens early in startup.
         root = c.rootPosition()
         if not root:
-            # if trace and trace_return: g.trace('no root',fn)
             return
         if not c.p:
             c.selectPosition(root)
@@ -194,7 +193,8 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
 
         c = self.c
         p = c.fileCommands.getPosFromClipboard(tree_s)
-        if not p: return g.trace('no pasted node')
+        if not p:
+            return g.trace('no pasted node')
         for s in g.splitLines(p.b):
             if s.strip() and not s.startswith('#'):
                 abbrev_name = s.strip()

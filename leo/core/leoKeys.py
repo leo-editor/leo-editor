@@ -1145,7 +1145,6 @@ class GetArg(object):
         # Support vim-mode commands.
         command = self.get_label()
         if self.is_command(command):
-            # if trace: g.trace('\n'.join(tabList))
             tabList, common_prefix = g.itemsMatchingPrefixInList(command, tabList)
             return common_prefix, tabList
                 # note order.
@@ -1859,6 +1858,7 @@ class KeyHandlerClass(object):
         k.resetLabel()
     #@+node:ekr.20061101071425: *4* k.oops
     def oops(self):
+
         g.trace('Should be defined in subclass:', g.callers(4))
     #@+node:ekr.20120217070122.10479: *4* k.reloadSettings
     def reloadSettings(self):
@@ -2284,7 +2284,6 @@ class KeyHandlerClass(object):
             c.check_event(event)
             ch = char = event.char if event else ''
             stroke = event.stroke if event else ''
-            ### g.trace('char', repr(char), 'stroke', repr(stroke))
             if state > 0:
                 k.setLossage(char, stroke)
             if state == 0:
@@ -3032,11 +3031,13 @@ class KeyHandlerClass(object):
         #
         # Shortcut everything so that demo-next or demo-prev won't alter of our ivars.
         if k.demoNextKey and stroke == k.demoNextKey:
-            if demo.trace: g.trace('demo-next', stroke)
+            if demo.trace:
+                g.trace('demo-next', stroke)
             demo.next_command()
             return True
         if k.demoPrevKey and stroke == k.demoPrevKey:
-            if demo.trace: g.trace('demo-prev', stroke)
+            if demo.trace:
+                g.trace('demo-prev', stroke)
             demo.prev_command()
             return True
         return False
@@ -4369,7 +4370,7 @@ class ModeInfo(object):
     #@+others
     #@+node:ekr.20120208064440.10193: *3* mode_i. ctor
     def __init__(self, c, name, aList):
-        g.trace(name, aList)
+
         self.c = c
         self.d = {} # The bindings in effect for this mode.
             # Keys are names of (valid) command names, values are BindingInfo objects.
@@ -4446,7 +4447,7 @@ class ModeInfo(object):
             'len(c.commandsDict.keys())', len(list(c.commandsDict.keys())))
     #@+node:ekr.20120208064440.10180: *3* mode_i.enterMode
     def enterMode(self):
-        g.trace('(ModeInfo)')
+
         c, k = self.c, self.k
         c.inCommand = False
             # Allow inner commands in the mode.

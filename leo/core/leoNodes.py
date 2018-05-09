@@ -1003,10 +1003,6 @@ class Position(object):
         p.stack = parent.stack[:]
         p.stack.append((parent_v, parent._childIndex),)
         p._childIndex = n
-        # New in Leo 5.1: ensure that p.gnx is unique in p's ancestors.
-        if 0:
-            for parent_v, junk in p.stack:
-                g.trace(parent_v.gnx, parent_v.h)
         child = p.v
         child._addLink(n, parent_v, adjust=adjust)
     #@+node:ekr.20080416161551.216: *4* p._linkAsRoot
@@ -1076,6 +1072,7 @@ class Position(object):
             self.badUnlink(parent_v, n, child)
     #@+node:ekr.20090706171333.6226: *5* p.badUnlink
     def badUnlink(self, parent_v, n, child):
+        
         if 0 <= n < len(parent_v.children):
             g.trace('**can not happen: children[%s] != p.v' % (n))
             g.trace('parent_v.children...\n',
@@ -1155,7 +1152,8 @@ class Position(object):
         p = self; n = p._childIndex
         parent_v = p._parentVnode()
             # Returns None if p.v is None.
-        if not p.v: g.trace('no p.v:', p, g.callers())
+        if not p.v:
+            g.trace('no p.v:', p, g.callers())
         if p.v and parent_v and len(parent_v.children) > n + 1:
             p._childIndex = n + 1
             p.v = parent_v.children[n + 1]

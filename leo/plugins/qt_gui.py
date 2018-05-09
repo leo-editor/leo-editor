@@ -715,7 +715,6 @@ class LeoQtGui(leoGui.LeoGui):
         w = self.get_focus() or self.deactivated_widget
         self.deactivated_widget = None
         w_name = w and w.objectName()
-        # if trace: g.trace(repr(w_name))
         # Fix #270: Vim keys don't always work after double Alt+Tab.
         # Fix #359: Leo hangs in LeoQtEventFilter.eventFilter
         if c.exists and c.vimCommands and not self.active and not g.app.killed:
@@ -756,14 +755,6 @@ class LeoQtGui(leoGui.LeoGui):
         w is a wrapper object, not necessarily a QWidget.
         '''
         # gui = self
-        if 0:
-            g.trace(isinstance(w, QtWidgets.QWidget),
-                hasattr(w, 'getName') and w.getName() or None,
-                w.__class__.__name__)
-        if 0:
-            g.trace('obj: %4s %20s w: %5s %s' % (
-                isinstance(obj, QtWidgets.QWidget), obj.__class__.__name__,
-                isinstance(w, QtWidgets.QWidget), w.__class__.__name__))
         assert isinstance(obj, QtWidgets.QWidget), obj
         theFilter = qt_events.LeoQtEventFilter(c, w=w, tag=tag)
         obj.installEventFilter(theFilter)
@@ -900,7 +891,6 @@ class LeoQtGui(leoGui.LeoGui):
                     else:
                         image = QtGui.QIcon(fullname)
                     self.iconimages[name] = image
-                    # if trace: g.trace('new', id(image), theDir, name)
                     return image
             # No image found.
             return None

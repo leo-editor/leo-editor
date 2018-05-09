@@ -390,7 +390,6 @@ class Undoer(object):
         while child:
             self.saveTree(child, treeInfo)
             child = child.next()
-        # if topLevel: g.trace(treeInfo)
         return treeInfo
     #@+node:ekr.20050415170737.1: *5* u.createVnodeUndoInfo
     def createVnodeUndoInfo(self, v):
@@ -1125,9 +1124,6 @@ class Undoer(object):
                                     prev_row, prev_col)
                     #@-<< set newBead if the change does not continue a word >>
                 except Exception:
-                    if 0:
-                        g.trace('old_lines', old_lines)
-                        g.trace('new_lines', new_lines)
                     g.error('Unexpected exception...')
                     g.es_exception()
                     newBead = True

@@ -845,8 +845,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         if not l and not current: return # nothing to do
         lHash = ''.join([self.dHash(i) for i in l])
         cHash = ''.join([self.dHash(i) for i in current])
-        # if trace: g.trace('lHash:',lHash)
-        # if trace: g.trace('cHash:',cHash)
         if lHash == cHash:
             # no difference between original and current list of dictionaries
             return

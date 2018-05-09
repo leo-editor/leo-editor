@@ -245,7 +245,6 @@ class LeoQtTree(leoFrame.LeoTree):
             for func in (pattern.match, pattern.search):
                 m = func(text)
                 if m:
-                    # if trace: g.trace(func.__name__, text)
                     for cmd, arg in cmds:
                         if self.declutter_replace(arg, cmd, item, m, pattern, text):
                             pass
@@ -664,7 +663,6 @@ class LeoQtTree(leoFrame.LeoTree):
         if self.busy():
             return
         c = self.c
-        # if trace: g.trace(self.traceItem(item),g.callers(4))
         try:
             self.selecting = True
             p = self.item2position(item)
@@ -855,11 +853,10 @@ class LeoQtTree(leoFrame.LeoTree):
     def getCompositeIconImage(self, p, val):
         '''Get the icon at position p.'''
         userIcons = self.c.editCommands.getIconList(p)
-        # don't take this shortcut - not theme aware, see getImageImage()
+        # Don't take this shortcut - not theme aware, see getImageImage()
         # which is called below - TNB 20130313
-        # if not userIcons:
-        #     # if trace: g.trace('no userIcons')
-        #     return self.getStatusIconImage(p)
+            # if not userIcons:
+            #     return self.getStatusIconImage(p)
         hash = [i['file'] for i in userIcons if i['where'] == 'beforeIcon']
         hash.append(str(val))
         hash.extend([i['file'] for i in userIcons if i['where'] == 'beforeHeadline'])
@@ -1216,7 +1213,8 @@ class LeoQtTree(leoFrame.LeoTree):
             elif kind == 'up-line': delta = -1
             elif kind == 'up-page': delta = -n
             else:
-                delta = 0; g.trace('bad kind:', kind)
+                delta = 0
+                g.trace('bad kind:', kind)
             val = vScroll.value()
             vScroll.setValue(val + delta)
         c.treeWantsFocus()
@@ -1245,7 +1243,6 @@ class LeoQtTree(leoFrame.LeoTree):
                 return self.error('no p')
             if p != c.p:
                 p = c.p
-            # if trace: g.trace(c.p.h,g.callers())
             # We don't redraw during unit testing: an important speedup.
             if c.expandAllAncestors(p) and not g.unitTesting:
                 self.full_redraw(p)

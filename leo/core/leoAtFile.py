@@ -498,7 +498,6 @@ class AtFile(object):
         # Never read an external file with file-like sentinels from the cache.
         isFileLike = loaded and at.isFileLike(s)
         if not loaded or isFileLike:
-            # if trace: g.trace('file-like file',fileName)
             force = True # Disable caching.
         if loaded and not force:
             at.inputFile.close()
@@ -1090,9 +1089,6 @@ class AtFile(object):
         tnodeLists compensate for not having gnx's in derived files!
         """
         at = self; v = at.root.v
-        # if not g.unitTesting:
-            # if headline.startswith('@file'):
-                # g.es_print('Warning: @file logic',headline)
         if not hasattr(v, "tnodeList"):
             at.readError("no tnodeList for " + repr(v))
             g.es("write the @file node or use the Import Derived File command")
@@ -3113,7 +3109,6 @@ class AtFile(object):
         '''A factory returning a writer function for the given kind of @auto directive.'''
         at = self
         d = g.app.atAutoWritersDict
-        # if trace: g.trace(g.shortFileName(root.h), '\n'+','.join(sorted(d)))
         for key in d.keys():
             aClass = d.get(key)
             if aClass and g.match_word(root.h, 0, key):
@@ -3136,7 +3131,6 @@ class AtFile(object):
         at = self
         d = g.app.writersDispatchDict
         aClass = d.get(ext)
-        # if trace: g.trace('ext', ext, 'aClass', repr(aClass), '\n'+','.join(sorted(d)))
         if aClass:
 
             def writer_for_ext_cb(root):

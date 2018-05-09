@@ -640,10 +640,8 @@ class JEditColorizer(BaseColorizer):
         self.keywordsDict = mode.keywordsDictDict.get(rulesetName, {}) if hasattr(mode, 'keywordsDictDict') else {}
         self.setKeywords()
         self.attributesDict = mode.attributesDictDict.get(rulesetName) if hasattr(mode, 'attributesDictDict') else {}
-        # if trace: g.trace(rulesetName,self.attributesDict)
         self.setModeAttributes()
         self.rulesDict = mode.rulesDictDict.get(rulesetName) if hasattr(mode, 'rulesDictDict') else {}
-        # if trace: g.trace(self.rulesDict)
         self.addLeoRules(self.rulesDict)
         self.defaultColor = 'null'
         self.mode = mode
@@ -810,7 +808,8 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20110605121601.18592: *4* jedit.Leo rule functions
     #@+node:ekr.20110605121601.18593: *5* jedit.match_at_color
     def match_at_color(self, s, i):
-        if self.trace_leo_matches: g.trace()
+        if self.trace_leo_matches:
+            g.trace()
         # Only matches at start of line.
         if i == 0 and g.match_word(s, 0, '@color'):
             n = self.setRestart(self.restartColor)
@@ -823,7 +822,6 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20170125140113.1: *6* restartColor
     def restartColor(self, s):
         '''Change all lines up to the next color directive.'''
-        # if self.trace_leo_matches: g.trace(repr(s))
         if g.match_word(s, 0, '@killcolor'):
             self.colorRangeWithTag(s, 0, len('@color'), 'leokeyword')
             self.setRestart(self.restartKillColor)
@@ -840,7 +838,7 @@ class JEditColorizer(BaseColorizer):
             return 0 # Allow colorizing!
     #@+node:ekr.20110605121601.18597: *5* jedit.match_at_killcolor & restarter
     def match_at_killcolor(self, s, i):
-        # if self.trace_leo_matches: g.trace(i, repr(s))
+
         # Only matches at start of line.
         if i == 0 and g.match_word(s, i, '@killcolor'):
             self.setRestart(self.restartKillColor)
@@ -873,7 +871,9 @@ class JEditColorizer(BaseColorizer):
             return 0
     #@+node:ekr.20110605121601.18595: *5* jedit.match_at_nocolor & restarter
     def match_at_nocolor(self, s, i):
-        if self.trace_leo_matches: g.trace(i, repr(s))
+
+        if self.trace_leo_matches:
+            g.trace(i, repr(s))
         # Only matches at start of line.
         if i == 0 and not g.match(s, i, '@nocolor-') and g.match_word(s, i, '@nocolor'):
             self.setRestart(self.restartNoColor)
@@ -882,7 +882,8 @@ class JEditColorizer(BaseColorizer):
             return 0
     #@+node:ekr.20110605121601.18596: *6* jedit.restartNoColor
     def restartNoColor(self, s):
-        if self.trace_leo_matches: g.trace(repr(s))
+        if self.trace_leo_matches:
+            g.trace(repr(s))
         if g.match_word(s, 0, '@color'):
             n = self.setRestart(self.restartColor)
             self.setState(n) # Enables coloring of *this* line.
@@ -893,7 +894,7 @@ class JEditColorizer(BaseColorizer):
             return len(s) # Match everything.
     #@+node:ekr.20110605121601.18599: *5* jedit.match_at_nocolor_node & restarter
     def match_at_nocolor_node(self, s, i):
-        # if self.trace_leo_matches: g.trace()
+
         # Only matches at start of line.
         if i == 0 and g.match_word(s, i, '@nocolor-node'):
             self.setRestart(self.restartNoColorNode)
@@ -1062,7 +1063,8 @@ class JEditColorizer(BaseColorizer):
                 # Wrong: return -(j - i + 1)
     #@+node:ekr.20110605121601.18605: *5* jedit.match_section_ref
     def match_section_ref(self, s, i):
-        if self.trace_leo_matches: g.trace()
+        if self.trace_leo_matches:
+            g.trace()
         p = self.c.p
         if not g.match(s, i, '<<'):
             return 0
@@ -1206,10 +1208,8 @@ class JEditColorizer(BaseColorizer):
             self.colorRangeWithTag(s, i, j, kind, delegate=delegate, exclude_match=exclude_match)
             self.prev = (i, j, kind)
             self.trace_match(kind, s, i, j)
-            # if trace: g.trace('match') # , s[i:j])
             return j # (was j-1) With a delegate, this could clear state.
         else:
-            # if trace: g.trace('no match')
             return 0
     #@+node:ekr.20110605121601.18612: *4* jedit.match_eol_span_regexp
     def match_eol_span_regexp(self, s, i,
@@ -1634,6 +1634,7 @@ class JEditColorizer(BaseColorizer):
                 # Include the newline so we don't get a flash at the end of the line.
     #@+node:ekr.20110605121601.18628: *4* jedit.trace_match
     def trace_match(self, kind, s, i, j):
+
         if j != i and self.trace_match_flag:
             g.trace(kind, i, j, g.callers(2), self.dump(s[i: j]))
     #@+node:ekr.20110605121601.18629: *3*  jedit.State methods
@@ -1779,7 +1780,6 @@ class JEditColorizer(BaseColorizer):
                     if n is None:
                         g.trace('Can not happen: delegate matcher returns None')
                     elif n > 0:
-                        # if trace: g.trace('delegate',delegate,i,n,f.__name__,repr(s[i:i+n]))
                         i += n; break
                 else:
                     # Use the default chars for everything else.
@@ -1803,11 +1803,9 @@ class JEditColorizer(BaseColorizer):
                 ch = s[i].lower()
                 if ch == 'u':
                     n = self.match_unl(s, i)
-                    # if n > 0: g.trace('found unl', s[i:i+n])
                     i += max(1, n)
                 elif ch in 'fh': # file|ftp|http|https
                     n = self.match_any_url(s, i)
-                    # if n > 0: g.trace('found url', s[i:i+n])
                     i += max(1, n)
                 else:
                     i += 1

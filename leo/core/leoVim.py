@@ -1123,7 +1123,6 @@ class VimCommands(object):
                         break
                     i -= 1
                 if match_i is not None:
-                    g.trace(i1 - match_i - 1)
                     for z in range(i1 - match_i):
                         if vc.state == 'visual':
                             vc.do('back-char-extend-selection')
@@ -2253,7 +2252,6 @@ class VimCommands(object):
             assert vc.in_motion
             if restart:
                 vc.next_func = None
-            g.trace(vc.stroke)
             func = vc.next_func or vc.motion_dispatch_d.get(vc.stroke)
             if func:
                 func()

@@ -258,9 +258,6 @@ class extendForth(object):
         name2 = '%s2' % ivar
         setattr(self, name1, result1)
         setattr(self, name2, result2)
-        if 0:
-            g.trace(name1, getattr(self, name1))
-            g.trace(name2, getattr(self, name2))
     def createBracketRules(self):
         for z in self.brackets1:
             func = self.createBracketRule(z)

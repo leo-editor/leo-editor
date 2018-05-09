@@ -929,7 +929,6 @@ class MatchBrackets(object):
         while 0 <= i:
             progress = i
             ch = s[i]
-            # if trace: g.trace(repr(ch),'i',i)
             if self.ends_comment(s, i):
                 i = self.back_scan_comment(s, i)
             elif ch in '"\'':
@@ -2547,7 +2546,7 @@ def printGcVerbose(tag=''):
 #@+node:ekr.20031218072017.3133: *3* g.Statistics
 #@+node:ekr.20031218072017.3134: *4* g.clearStats
 def clearStats():
-    g.trace()
+
     g.app.statsDict = {}
 #@+node:ekr.20031218072017.3135: *4* g.printStats
 def printStats(name=None):
@@ -3075,7 +3074,6 @@ def scanAtRootDirectives(aList):
         s = d.get('root')
         if s is not None:
             i, mode = g.scanAtRootOptions(s, 0)
-            g.trace(mode)
             return mode
     return None
 #@+node:ekr.20031218072017.3154: *3* g.scanAtRootOptions
@@ -4349,9 +4347,6 @@ def skip_pp_part(s, i):
     delta = 0
     while i < len(s):
         c = s[i]
-        if 0:
-            if c == '\n':
-                g.trace(delta, g.get_line(s, i))
         if g.match_word(s, i, "#if") or g.match_word(s, i, "#ifdef") or g.match_word(s, i, "#ifndef"):
             i, delta1 = g.skip_pp_if(s, i)
             delta += delta1
@@ -4454,9 +4449,8 @@ def is_nl(s, i):
 
 def is_special(s, i, directive):
     '''Return True if the body text contains the @ directive.'''
-    # j = g.skip_line(s,i) ; g.trace(s[i:j],':',directive)
     assert(directive and directive[0] == '@')
-    # 10/23/02: all directives except @others must start the line.
+    # All directives except @others must start the line.
     skip_flag = directive in ("@others", "@all")
     while i < len(s):
         if g.match_word(s, i, directive):
@@ -5103,11 +5097,13 @@ def importModule(moduleName, pluginName=None, verbose=False):
                     findPath2 = g.os_path_finalize_join(g.app.loadDir, '..', findPath)
                     findPath3 = g.os_path_finalize_join(findPath2, moduleName)
                     findPath = [findPath2, findPath3]
-                if trace and verbose: g.trace('findPath', findPath)
+                if trace and verbose:
+                    g.trace('findPath', findPath)
                 try:
                     data = imp.find_module(moduleName, findPath) # This can open the file.
                     theFile, pathname, description = data
-                    if trace and verbose: g.trace(theFile, moduleName, pathname)
+                    if trace and verbose:
+                        g.trace(theFile, moduleName, pathname)
                     module = imp.load_module(moduleName, theFile, pathname, description)
                     if module:
                         # This trace is usually annoying.
@@ -5117,7 +5113,8 @@ def importModule(moduleName, pluginName=None, verbose=False):
                     t, v, tb = sys.exc_info()
                     del tb # don't need the traceback
                     v = v or str(t) # in case v is empty, we'll at least have the execption type
-                    if trace and verbose: g.trace(v, moduleName, findPath)
+                    if trace and verbose:
+                        g.trace(v, moduleName, findPath)
                     if v not in exceptions:
                         exceptions.append(v)
             else:
@@ -5703,10 +5700,6 @@ def removeExtraLws(s, tab_width):
     # Remove the leading whitespace.
     result = [g.removeLeadingWhitespace(line, w, tab_width) for line in lines]
     result = ''.join(result)
-    if 0:
-        g.trace('lines...')
-        for line in g.splitLines(result):
-            g.pr(repr(line))
     return result
 #@+node:ekr.20110727091744.15083: *4* g.wrap_lines (newer)
 #@+at
@@ -6132,10 +6125,8 @@ def goto_last_exception(c):
         else:
             for p in c.all_nodes():
                 if p.isAnyAtFileNode() and p.h.endswith(file_name):
-                    g.trace('found', file_name)
                     c.goToLineNumber(line_number, p)
                     return
-            g.trace('not found:', file_name)
     else:
         g.trace('No previous exception')
 #@+node:ekr.20100126062623.6240: *3* g.internalError
@@ -6296,8 +6287,6 @@ def trace(*args, **keys):
         if align > 0: name = name + pad
         else: name = pad + name
     # Munge *args into s.
-    # print ('g.trace:args...')
-    # for z in args: print (g.isString(z),repr(z))
     result = [name] if name else []
     for arg in args:
         if isString(arg):
@@ -7601,7 +7590,6 @@ def handleUnl(unl, c):
         return c
     else:
         path, unl = unl.split('#', 1)
-    # if trace: g.trace('\nPATH: %r\nUNL: %r' % (path, unl))
     if not path:
         # Move to the unl in *this* commander.
         g.recursiveUNLSearch(unl.split("-->"), c, soft_idx=True)
@@ -7625,7 +7613,6 @@ def handleUnl(unl, c):
         g.app.homeDir,
     )
     for path2 in table:
-        # if trace: g.trace('searching', repr(path2))
         if path2 and path2.lower().endswith('.leo') and os.path.exists(path2):
             path = path2
             break

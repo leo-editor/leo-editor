@@ -493,16 +493,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 self.ivars_dict = self.parse_ivars_data(aList)
             else:
                 self.ivars_dict = {}
-            if 0:
-                #g.trace('class_list',self.class_list)
-                #g.trace('type_list',self.type_list)
-                g.trace('ivars_dict...')
-                d = self.ivars_dict
-                keys = list(d.keys())
-                for key in sorted(keys):
-                    print('%s:' % (key))
-                    for val in d.get(key):
-                        print('  %s' % (val))
         #@+node:ekr.20150514063305.163: *6* parse_ivars_data
         def parse_ivars_data(self, aList):
             d, key = {}, None
@@ -1003,10 +993,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 seen = set()
                 for key in d:
                     value = d.get(key)
-                    # A kludge: strip leading \\ from patterns.
-                    # if key.startswith(r'\\'):
-                        # key = '[' + key[2:]
-                        # if trace: g.trace('removing escapes', key)
                     if key in seen:
                         g.trace('duplicate key', key)
                     else:

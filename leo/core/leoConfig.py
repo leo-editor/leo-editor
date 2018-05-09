@@ -1633,14 +1633,17 @@ class LocalConfigManager(object):
         Return None if there is no family setting so we can use system default fonts.
         """
         family = self.get(family, "family")
-        if family in (None, ""): family = g.app.config.defaultFontFamily
-        # if size.startswith('gutter'): g.trace('c.config', size, self.get(size, 'size'))
+        if family in (None, ""):
+            family = g.app.config.defaultFontFamily
         size = self.get(size, "size")
-        if size in (None, 0): size = defaultSize
+        if size in (None, 0):
+            size = defaultSize
         slant = self.get(slant, "slant")
-        if slant in (None, ""): slant = "roman"
+        if slant in (None, ""):
+            slant = "roman"
         weight = self.get(weight, "weight")
-        if weight in (None, ""): weight = "normal"
+        if weight in (None, ""):
+            weight = "normal"
         return g.app.gui.getFontFromParams(family, size, slant, weight)
     #@+node:ekr.20120215072959.12532: *5* c.config.getInt
     def getInt(self, setting):

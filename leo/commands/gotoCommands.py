@@ -129,7 +129,6 @@ class GoToCommands(object):
         stack = [(gnx, h, offset),]
         for s in lines:
             is_sentinel = self.is_sentinel(delim1, delim2, s)
-            # if trace and trace_lines: g.trace('%5s %s' % (is_sentinel, s.rstrip()))
             if is_sentinel:
                 s2 = s.strip()[len(delim1):]
                 if s2.startswith('@+node'):

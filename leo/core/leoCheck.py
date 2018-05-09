@@ -530,7 +530,6 @@ class ConventionChecker (object):
             # The caller reports the failure.
             # self.error(node, 'FAIL', arg1, arg2, class1, class2)
             self.stats.sig_infer_fail += 1
-            if 0: g.trace(repr(class1), repr(class2))
             return 'fail'
     #@+node:ekr.20171215074959.1: *3* checker.Visitors & helpers
     #@+node:ekr.20171215074959.2: *4* checker.Assign & helpers
@@ -569,9 +568,6 @@ class ConventionChecker (object):
         ivars = d.get('ivars')
         ivars[var2] = self.format(node.value)
         d['ivars'] = ivars
-        if 0:
-            g.trace('dict for class', class_name)
-            g.printDict(d)
     #@+node:ekr.20171215074959.3: *5* checker.do_assn_to_special
     def do_assn_to_special(self, node, var1, var2):
 
@@ -598,16 +594,10 @@ class ConventionChecker (object):
         if 0: self.note(node, 'context %s : %s ==> %s' % (context, value_s, resolved_type))
         # Update var1's dict, not class_name's dict.
         d = self.classes.get(t.name)
-        if 0:
-            g.trace('BEFORE: class %s...' % t.name)
-            g.printDict(d)
         ivars = d.get('ivars')
         # tag:setter ivar1.ivar2 = Type
         ivars[var2] = resolved_type
         d['ivars'] = ivars
-        if 0:
-            g.trace('AFTER: class %s...' % t.name)
-            g.printDict(d)
     #@+node:ekr.20171215074959.5: *4* checker.Call
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
@@ -1118,20 +1108,16 @@ class Pass1 (leoAst.AstFullTraverser): # V2
                 # if g.shortFileName(fn2) in self.u.files_list:
                     # if mname not in self.u.module_names:
                         # self.u.module_names.append(mname)
-                # # if trace: g.trace('%s as %s' % (mname,asname))
                 # def_name = asname or mname
                 # names.append(def_name)
                 # e = cx.st.define_name(def_name) # sets e.defined.
                 # cx.imported_symbols_list.append(def_name)
-                # if trace: g.trace('define: (Import) %10s in %s' % (def_name,cx))
                 # e_list.append(e)
 
                 # # Add the constant type to the list of types for the *variable*.
                 # mod_cx = self.u.modules_dict.get(fn2) or LibraryModuleContext(self.u,fn2)
                 # e.types_cache[''] = mod_cx.module_type
                 # # self.u.stats.n_imports += 1
-            # else:
-                # if trace: g.trace('can not resolve %s in %s' % (fn,cx))
 
         # for e in e_list:
             # e.defs_list.append(node)

@@ -180,9 +180,7 @@ if sys.platform != 'cli':
             if not content:
                 return
             elementName = self.elementStack[-1].lower() if self.elementStack else '<no element name>'
-            # if self.trace: g.trace(elementName,content.strip())
             if elementName in ('t', 'vh'):
-                # if elementName == 'vh': g.trace(elementName,repr(content))
                 self.content.append(content)
             elif content.strip():
                 g.pr('unexpected content:', elementName, repr(content))
@@ -195,14 +193,14 @@ if sys.platform != 'cli':
                 g.pr('%s</%s>' % (indent, self.clean(name).strip()))
             data = self.dispatchDict.get(name)
             if data is None:
-                if 1: g.trace('unknown end element', name)
+                g.trace('unknown end element', name)
             else:
                 junk, func = data
                 if func:
                     func()
             name2 = self.elementStack.pop()
             assert name == name2
-            # if self.trace: g.trace('** pop',name2)
+
         #@+node:ekr.20060919110638.32: *4* sax.endTnode
         def endTnode(self):
             '''Handle the end of a <tnode> element.'''
@@ -214,18 +212,16 @@ if sys.platform != 'cli':
             '''Handle the end of a <vnode> element.'''
             self.level -= 1
             self.node = self.nodeStack.pop()
-            # if self.trace: g.trace(repr(self.node))
+
         #@+node:ekr.20060919110638.34: *4* sax.endVH
         def endVH(self):
             '''Handle the end of a <vh> element.'''
             if self.node:
                 self.node.headString = ''.join(self.content)
-                # if self.trace: g.trace(repr(self.node))
             self.content = []
         #@+node:ekr.20060919110638.45: *3* sax.getRootNode
         def getRootNode(self):
             if self.trace:
-                g.trace()
                 self.rootNode.dump()
                 for child in self.rootNode.children:
                     child.dump()
@@ -253,7 +249,6 @@ if sys.platform != 'cli':
             if name in self.printElements or 'all' in self.printElements:
                 self.printStartElement(name, attrs)
             self.elementStack.append(name)
-            # if self.trace: g.trace('**push',name)
             data = self.dispatchDict.get(name)
             if data is None:
                 if 1: g.trace('unknown start element', name)
@@ -1087,7 +1082,6 @@ class FileCommands(object):
             v = self.gnxDict.get(gnx)
             if v:
                 expanded[v] = v
-                # if trace: g.trace('expanded',v)
         for gnx in self.descendentMarksList:
             tref = self.canonicalTnodeIndex(gnx)
             v = self.gnxDict.get(gnx)
@@ -1100,7 +1094,6 @@ class FileCommands(object):
                         # There was a big performance bug in the mark hook in the Node Navigator plugin.
                 if expanded.get(p.v):
                     p.expand()
-                    # if trace: g.trace('expand',p.h)
     #@+node:ekr.20060919104530: *4* fc.Reading Sax
     #@+node:ekr.20090525144314.6526: *5* fc.cleanSaxInputString
     def cleanSaxInputString(self, s):
@@ -1718,7 +1711,6 @@ class FileCommands(object):
         '''Put string s to self.outputFile. All output eventually comes here.'''
         # Improved code: self.outputFile (a cStringIO object) always exists.
         if s:
-            # if g.unitTesting: g.trace(g.callers(1),repr(s))
             self.putCount += 1
             if not g.isPython3:
                 s = g.toEncodedString(s, self.leo_file_encoding, reportErrors=True)

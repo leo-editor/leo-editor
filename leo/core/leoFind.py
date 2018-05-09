@@ -681,8 +681,8 @@ class LeoFind(object):
         if pos is not None: # success.
             w = self.showSuccess(pos, newpos, showState=False)
             if w: i, j = w.getSelectionRange(sort=False)
-            # else: g.trace('****')
-            if not again: self.push(c.p, i, j, self.in_headline)
+            if not again:
+                self.push(c.p, i, j, self.in_headline)
         elif self.wrapping:
             # g.es("end of wrapped search")
             k.setLabelRed('end of wrapped search')
@@ -1994,7 +1994,6 @@ class LeoFind(object):
             return None, None
         stopindex = 0 if self.reverse else len(s)
         pos, newpos = self.searchHelper(s, index, stopindex, self.find_text)
-        # if trace: g.trace('pos,newpos', pos, newpos)
         if self.in_headline and not self.search_headline:
             return None, None
         if not self.in_headline and not self.search_body:
@@ -2463,7 +2462,6 @@ class LeoFind(object):
         insert = min(pos, newpos) if self.reverse else max(pos, newpos)
         if self.wrap and not self.wrapPosition:
             self.wrapPosition = self.p
-        # if trace: g.trace('in_headline',self.in_headline,p.h)
         if c.sparse_find:
             c.expandOnlyAncestorsOfNode(p=p)
         if self.in_headline:

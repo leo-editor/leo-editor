@@ -484,6 +484,7 @@ class StringGui(LeoGui):
         # self.isNullGui = True
     #@+node:ekr.20170613095422.7: *3* StringGui.oops
     def oops(self):
+
         g.trace("StringGui", g.callers(4))
     #@+node:ekr.20170613114120.1: *3* StringGui.runMainLoop
     def runMainLoop(self):

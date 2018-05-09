@@ -223,7 +223,6 @@ class LeoQtEventFilter(QtCore.QObject):
     #@+node:ekr.20180419160958.1: *5* filter.doMacTweaks
     def doMacTweaks(self, actual_ch, ch, mods):
         '''Replace MacOS Alt characters.'''
-        ### g.trace(mods, repr(actual_ch), repr(ch)
         if g.isMac and len(mods) == 1 and mods[0] == 'Alt':
             # Patch provided by resi147.
             # See the thread: special characters in MacOSX, like '@'.
@@ -520,13 +519,6 @@ class LeoQtEventFilter(QtCore.QObject):
             e.FocusOut: 'focus-out', # 9
             e.WindowActivate: 'window-activate', # 24
         }
-        # c = self.c
-        # table = (
-            # c.frame.miniBufferWidget and c.frame.miniBufferWidget.widget,
-            # c.frame.body.wrapper and c.frame.body.wrapper.widget,
-            # c.frame.tree and c.frame.tree.treeWidget,
-            # c.frame.log and c.frame.log.logCtrl and c.frame.log.logCtrl.widget,
-        # )
         if et in ignore_d:
             return
         w = QtWidgets.QApplication.focusWidget()

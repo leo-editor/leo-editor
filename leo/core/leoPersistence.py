@@ -352,7 +352,6 @@ class PersistenceDataController(object):
         for unl in unl_list:
             for child in parent.children():
                 if child.h.strip() == unl.strip():
-                    # if trace: g.trace('match unl',unl,'in:',full_unl,'=',child.h)
                     parent = child
                     break
             else:

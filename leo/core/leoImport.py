@@ -1052,7 +1052,6 @@ class LeoImportCommands(object):
             i = 0
             while i < len(s):
                 i = g.skip_ws_and_nl(s, i)
-                # line = g.get_line(s,i) ; g.trace(line)
                 # Allow constructs such as @ @c, or @ @<.
                 if self.isDocStart(s, i):
                     i += 2; i = g.skip_ws(s, i)
@@ -1081,7 +1080,6 @@ class LeoImportCommands(object):
             i = 0
             while i < len(s):
                 i = g.skip_ws_and_nl(s, i)
-                # line = g.get_line(s,i) ; g.trace(line)
                 if g.match(s, i, "<<"):
                     k = g.find_on_line(s, i, ">>=")
                     if k > -1:
@@ -1109,7 +1107,6 @@ class LeoImportCommands(object):
         while i < len(s):
             progress = i
             i = g.skip_ws_and_nl(s, i)
-            # line = g.get_line(s,i) ; g.trace(line)
             if self.isDocStart(s, i):
                 if theType == "cweb": i += 2
                 else: i = g.skip_line(s, i)

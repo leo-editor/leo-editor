@@ -442,7 +442,6 @@ class LeoMenu(object):
         g.app.openWithTable = table # Override any previous table.
         # Delete the previous entry.
         parent = self.getMenu("File")
-        # if trace: g.trace('parent',parent)
         if not parent:
             if not g.app.batchMode:
                 g.error('', 'createOpenWithMenuFromTable:', 'no File menu')

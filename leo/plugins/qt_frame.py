@@ -700,7 +700,8 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 fc = c.findCommands
                 func = getattr(fc, func_name, None)
                 if func: func()
-                else: g.trace('* does not exist:', func_name)
+                else:
+                    g.trace('* does not exist:', func_name)
 
             name = mungeName(label)
             # Prepend the shortcut if it exists:
@@ -799,7 +800,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 )
                 for cmd_name in table:
                     stroke = c.k.getStrokeForCommandName(cmd_name)
-                    # if not stroke: g.trace('missing',cmd_name)
                     if stroke:
                         d[stroke.s] = cmd_name
                 return d
@@ -3813,7 +3813,7 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 c.redraw(p1)
             else:
                 c.redraw(p2)
-        # elif trace: g.trace('** move failed')
+
     #@+node:ekr.20110605121601.18383: *6* LeoQTreeWidget.parseText
     def parseText(self, md):
         '''Parse md.text() into (fn,s)'''
@@ -3846,7 +3846,6 @@ class LeoQTreeWidget(QtWidgets.QTreeWidget):
                 changed |= self.doFileUrl(p, url)
             elif scheme in ('http',): # 'ftp','mailto',
                 changed |= self.doHttpUrl(p, url)
-            # else: g.trace(url.scheme(),url)
         if changed:
             c.setChanged(True)
             u.afterChangeGroup(c.p, undoType, reportFlag=False, dirtyVnodeList=[])
@@ -4506,7 +4505,6 @@ class TabbedFrameFactory(object):
     #@+node:ekr.20110605121601.18468: *3* createMaster (TabbedFrameFactory)
     def createMaster(self):
         mf = self.masterFrame = LeoTabbedTopLevel(factory=self)
-        #g.trace('(TabbedFrameFactory) (sets tabbed geom)')
         g.app.gui.attachLeoIcon(mf)
         tabbar = mf.tabBar()
         try:

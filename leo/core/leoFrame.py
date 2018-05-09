@@ -503,7 +503,6 @@ class LeoBody(object):
         c = self.c
         colorizer = c.frame.body.colorizer
         if p and colorizer and hasattr(colorizer, 'colorize'):
-            g.trace(p.h)
             old_wrapper = c.frame.body.wrapper
             c.frame.body.wrapper = w
             try:
@@ -1411,7 +1410,7 @@ class LeoTree(object):
         g.openUrl(p)
     #@+node:ekr.20031218072017.2312: *4* LeoTree.OnIconDoubleClick (do nothing)
     def OnIconDoubleClick(self, p):
-        if 0: g.trace(p and p.h)
+        pass
     #@+node:ekr.20051026083544.2: *4* LeoTree.updateHead
     def updateHead(self, event, w):
         '''Update a headline from an event.
@@ -1536,7 +1535,6 @@ class LeoTree(object):
             val = isinstance(w, qt_text.LeoQTextBrowser)
                 # c.frame.body.wrapper.widget is a LeoQTextBrowser.
                 # c.frame.body.wrapper is a QTextEditWrapper or QScintillaWrapper.
-            # if not val: g.trace(val,w,g.callers())
             return val
     #@+node:ekr.20140829053801.18453: *5* 1. LeoTree.unselect_helper & helper
     def unselect_helper(self, old_p, p, traceTime):
@@ -2220,7 +2218,8 @@ class StringTextWrapper(object):
         i, j = self.toPythonIndex(i), self.toPythonIndex(j)
         self.sel = i, j
         self.ins = j if insert is None else self.toPythonIndex(insert)
-        if self.trace: g.trace('i', i, 'j', j, 'insert', repr(insert))
+        if self.trace:
+            g.trace('i', i, 'j', j, 'insert', repr(insert))
     #@+node:ekr.20140903172510.18581: *4* stw.toPythonIndex
     def toPythonIndex(self, index):
         '''StringTextWrapper.'''

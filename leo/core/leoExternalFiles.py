@@ -508,19 +508,8 @@ class ExternalFilesController(object):
                     except OSError:
                         g.es_print('c_arg', repr(c_arg))
                         g.es_exception()
-                # Legacy code.
-                    # command = 'os.startfile(%s)' % self.join(arg, fn)
-                    # if trace: g.trace(command)
-                    # # pylint: disable=no-member
-                    # # trust the user not to use this option on Linux.
-                    # if not testing:
-                        # os.startfile(arg, fn)
             elif kind == 'exec':
                 g.es_print('open-with exec no longer valid.')
-                # command = 'exec(%s)' % self.join(arg,fn)
-                # if trace: g.trace(command)
-                # if not testing:
-                    # exec(self.join(arg,fn),{},{})
             elif kind == 'os.spawnl':
                 filename = g.os_path_basename(arg)
                 command = 'os.spawnl(%s,%s,%s)' % (arg, filename, fn)
@@ -603,7 +592,6 @@ class ExternalFilesController(object):
         while len(ancestors) > 1:
             td = os.path.join(td, ancestors.pop())
             if not os.path.exists(td):
-                # if trace: g.trace('creating',td)
                 os.mkdir(td)
         # Compute the full path.
         name = ancestors.pop() + ext

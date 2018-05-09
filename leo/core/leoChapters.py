@@ -348,7 +348,6 @@ class Chapter(object):
         self.p = c.p
         self.root = self.findRootNode()
         if cc.tt:
-            #g.trace('(chapter) calling cc.tt.createTab(%s)' % (name))
             cc.tt.createTab(name)
     #@+node:ekr.20070317085708.2: *3* chapter.__str__ and __repr__
     def __str__(self):

@@ -530,7 +530,6 @@ class Commands(object):
                 elif trace:
                     g.trace('%s unknown focus: %s' % (count, w_class))
         else:
-            # c.last_no_focus = True
             if trace:
                 g.trace('%3s no focus' % (count))
     #@+node:ekr.20081005065934.1: *4* c.initAfterLoad
@@ -986,11 +985,8 @@ class Commands(object):
 
         In fact, there are no longer any calls to this method in Leo's core.
         '''
-        # c = self
         g.trace('This method is deprecated. Instead, just use None.')
         return None
-        # return leoNodes.Position(None)
-
     #@+node:ekr.20040307104131.3: *5* c.positionExists
     def positionExists(self, p, root=None, trace=False):
         """Return True if a position exists in c's tree"""
@@ -1207,16 +1203,13 @@ class Commands(object):
                 # Call LeoTabbedTopLevel.setChanged.
                 master.setChanged(c, changedFlag)
             s = c.frame.getTitle()
-            # if trace: g.trace(changedFlag,repr(s))
             if len(s) > 2:
                 if changedFlag:
                     if s[0] != '*':
                         c.frame.setTitle("* " + s)
-                        # if trace: g.trace('(c)',"* " + s)
                 else:
                     if s[0: 2] == "* ":
                         c.frame.setTitle(s[2:])
-                        # if trace: g.trace('(c)',s[2:])
     #@+node:ekr.20040803140033.1: *5* c.setCurrentPosition
     _currentCount = 0
 
@@ -2588,7 +2581,6 @@ class Commands(object):
             else:
                 p.expand()
                 redraw_flag = True
-        # if trace: g.trace(redraw_flag, g.callers())
         return redraw_flag
     #@+node:ekr.20080514131122.20: *5* c.outerUpdate
     def outerUpdate(self):
@@ -3742,11 +3734,6 @@ class Commands(object):
             aList2 = d.get(v, [])
             if aList2:
                 aList.sort()
-                for n, op in aList2:
-                    if op == 'insert':
-                        g.trace('insert:', v.h, n)
-                    else:
-                        g.trace('delete:', v.h, n)
     #@+node:ekr.20091211111443.6266: *5* c.checkBatchOperationsList
     def checkBatchOperationsList(self, aList):
         ok = True; d = {}

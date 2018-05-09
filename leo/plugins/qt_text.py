@@ -245,7 +245,6 @@ class QTextMixin(object):
             val = keys.get('foreground')
             underline = keys.get('underline')
             if val:
-                # if trace: g.trace(key,val)
                 self.configDict[key] = val
             if underline:
                 self.configUnderlineDict[key] = True
@@ -1077,7 +1076,8 @@ class QScintillaWrapper(QTextMixin):
             elif kind == 'up-line': delta = -1
             elif kind == 'up-page': delta = -n
             else:
-                delta = 0; g.trace('bad kind:', kind)
+                delta = 0
+                g.trace('bad kind:', kind)
             val = vScroll.value()
             vScroll.setValue(val + (delta * lineSpacing))
             c.bodyWantsFocus()
@@ -1428,7 +1428,8 @@ class QTextEditWrapper(QTextMixin):
         elif kind == 'up-line': delta = -1
         elif kind == 'up-page': delta = -n
         else:
-            delta = 0; g.trace('bad kind:', kind)
+            delta = 0
+            g.trace('bad kind:', kind)
         val = vScroll.value()
         vScroll.setValue(val + (delta * lineSpacing))
         c.bodyWantsFocus()
