@@ -22,7 +22,6 @@ class TipManager(object):
         seen = db.get(self.key, [])
         unseen = [i for i in range(len(tips)) if i not in seen]
         if not unseen:
-            # g.trace('===== reinit tips')
             db [self.key] = []
             unseen = list(range(len(tips)))
             seen = []
@@ -153,7 +152,7 @@ UserTip(
 Become familiar with Leo's most important plugins:
     
 - bookmarks.py manages bookmarks.
-- contextmenu.py shows a menu when when righ-clicking.
+- contextmenu.py shows a menu when when right-clicking.
 - mod_scripting.py supports @button and @command nodes.
   The eval* command support persistent evaluation.
 - quicksearch.py adds a Nav tab for searching.
@@ -523,7 +522,7 @@ See http://leoeditor.com/tutorial-pim.html#clones.
 #@+node:ekr.20180312101254.1: *4* How to find your @command nodes
 UserTip(
     n=0,
-    tags=['Settings'],
+    tags=['Settings',],
     title="How to find all your @command nodes",
     text="""\
     
@@ -532,6 +531,18 @@ myLeoSettings.leo can define *common* @command nodes that apply to all outlines.
 Such nodes reside in the @commands subtree of the @settings tree in myLeoSettings.leo.
 
 <alt-x>@c<tab> shows all the @command nodes in effect for the present outline, no matter where defined.
+"""),
+#@+node:ekr.20180509070202.1: *4* How to minimize panes
+UserTip(
+    n=0,
+    tags=['Tutorial',],
+    title="How to minimize panes",
+    text="""\
+
+Middle mouse click on the window divider (splitter) to minimize all windows to the left of vertical splitters and below horizontal splitters.
+
+Using this with "Toggle Split Direction" allows a maximized body, tree or even log window.
+
 """),
 #@+node:ekr.20180324072812.1: *4* Search for settings
 UserTip(
