@@ -102,8 +102,9 @@ class IdleTime(object):
         #leoG.trace('Trace: {0}'.format(traceStk[-2]))
         itoLast = 0
         while True:
-            if len(cls.list_active) == 0:
+            if not cls.list_active:
                 break
+            # pylint: disable=no-member
             os.sched_yield()
             timeCur = time.clock()
             idleTimeObj = cls.list_active.pop(0)

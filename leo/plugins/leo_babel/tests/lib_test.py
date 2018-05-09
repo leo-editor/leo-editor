@@ -34,7 +34,7 @@ def findTests(cmdrT):
         StopIteration:  No more Leo-Babel test nodes
     """
 
-    rootParentList = cmdrT.find_h('.*\|Tests\|$')
+    rootParentList = cmdrT.find_h(r'.*\|Tests\|$')
     for rpx in rootParentList:
         for lbr in rpx.children_iter():
             yield lbr
