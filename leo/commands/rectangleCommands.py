@@ -197,7 +197,6 @@ class RectangleCommandsClass(BaseEditCommandsClass):
         r1, r2, r3, r4 = self.getRectanglePoints(w)
         n = 0
         for r in range(r1, r3 + 1):
-            # g.trace(n,r,killRect[n])
             if n >= len(killRect): break
             w.delete('%s.%s' % (r, r2), '%s.%s' % (r, r4))
             w.insert('%s.%s' % (r, r2), killRect[n])

@@ -92,7 +92,6 @@ class LeoApp(object):
 
         leoGlobals.py contains global switches to be set by hand.
         '''
-        # g.trace('LeoApp')
         #@+<< LeoApp: command-line arguments >>
         #@+node:ekr.20161028035755.1: *5* << LeoApp: command-line arguments >>
         self.batchMode = False
@@ -1424,7 +1423,6 @@ class LeoApp(object):
     #@+node:ekr.20150621062355.1: *4* app.runAlreadyOpenDialog
     def runAlreadyOpenDialog(self, c):
         '''Warn about possibly already-open files.'''
-        # g.trace(g.app.already_open_files)
         if g.app.already_open_files:
             aList = sorted(set(g.app.already_open_files))
             g.app.already_open_files = []
@@ -1521,7 +1519,6 @@ class LeoApp(object):
         '''
         app = self
         for c in app.commanders():
-            # g.trace(c.shortFileName())
             c.k.makeAllBindings()
     #@+node:ekr.20031218072017.2188: *3* app.newCommander
     def newCommander(self, fileName, relativeFileName=None, gui=None, previousSettings=None):
@@ -1552,7 +1549,7 @@ class LoadManager(object):
     #@+others
     #@+node:ekr.20120214060149.15851: *3*  LM.ctor
     def __init__(self):
-        # g.trace('(LoadManager)')
+
         #
         # Global settings & shortcuts dicts...
         # The are the defaults for computing settings and shortcuts for all loaded files.
@@ -1682,7 +1679,6 @@ class LoadManager(object):
                 not g.os_path_isdir(home)
             ):
                 home = None
-        # g.trace(home)
         return home
     #@+node:ekr.20120209051836.10260: *5* LM.computeHomeLeoDir
     def computeHomeLeoDir(self):
@@ -1706,7 +1702,6 @@ class LoadManager(object):
             # __file__ is randomly upper or lower case!
             # The made for an ugly recent files list.
             path = g.__file__ # was leo.__file__
-            # g.trace(repr(path))
             if path:
                 # Possible fix for bug 735938:
                 # Do the following only if path exists.
@@ -1736,7 +1731,6 @@ class LoadManager(object):
                 else:
                     g.pr("Exception getting load directory")
             loadDir = g.os_path_finalize(loadDir)
-            # g.trace(loadDir)
             return loadDir
         except Exception:
             print("Exception getting load directory")
@@ -1757,7 +1751,6 @@ class LoadManager(object):
                 name = socket.gethostname()
         except Exception:
             name = ''
-        # g.trace(name)
         return name
     #@+node:ekr.20180318120148.1: *4* LM.computeThemeDirectories
     def computeThemeDirectories(self):
@@ -1896,7 +1889,6 @@ class LoadManager(object):
         Merge the settings dicts from c's outline into *new copies of*
         settings_d and bindings_d.
         '''
-        # g.trace('%s\n%s\n%s' % (c.shortFileName(), settings_d, bindings_d))
         lm = self
         shortcuts_d2, settings_d2 = lm.createSettingsDicts(c, localFlag)
         assert bindings_d
@@ -2142,7 +2134,6 @@ class LoadManager(object):
                 c, settings_d, bindings_d, localFlag=False)
         # Adjust the name.
         bindings_d.setName('lm.globalBindingsDict')
-        # g.trace('===== settings 1 keys:', len(settings_d.d.keys()))
         lm.globalSettingsDict = settings_d
         lm.globalBindingsDict = bindings_d
         # Add settings from --theme or @string theme-name files.
@@ -2323,7 +2314,6 @@ class LoadManager(object):
     #@+node:ekr.20120219154958.10489: *5* LM.make_screen_shot
     def make_screen_shot(self, fn):
         '''Create a screenshot of the present Leo outline and save it to path.'''
-        # g.trace('runLeo.py',fn)
         if g.app.gui.guiName() == 'qt':
             m = g.loadOnePlugin('screenshots')
             m.make_screen_shot(fn)
@@ -2577,7 +2567,6 @@ class LoadManager(object):
         fn = g.app.config.getString('default_leo_file')
         fn = g.os_path_finalize(fn)
         if not fn: return
-        # g.trace(g.os_path_exists(fn),fn)
         if g.os_path_exists(fn):
             return fn
         elif g.os_path_isabs(fn):
@@ -3386,7 +3375,6 @@ class RecentFilesManager(object):
         menu = c.frame.menu
         recentFilesMenu = menu.getMenu(self.recentFilesMenuName)
         if not recentFilesMenu and not g.unitTesting:
-            # g.trace('Recent Files Menu does not exist')
             return
         # Delete all previous entries.
         menu.deleteRecentFilesMenuItems(recentFilesMenu)
@@ -3460,7 +3448,6 @@ class RecentFilesManager(object):
         # Fix #299: Leo loads a deleted file.
         self.recentFiles = [z for z in self.recentFiles
             if g.os_path_exists(z)]
-        # g.trace('\n'.join([z for z in self.recentFiles]))
         return self.recentFiles
     #@+node:ekr.20120225072226.10304: *3* rf.getRecentFilesTable
     def getRecentFilesTable(self):

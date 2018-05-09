@@ -65,7 +65,6 @@ class GoToCommands(object):
                 delim1, delim2 = self.get_delims(root)
                 count = 0
                 for s in lines:
-                    # g.trace(count, s.rstrip())
                     if self.is_sentinel(delim1, delim2, s):
                         s2 = s.strip()[len(delim1):]
                         if has_sentinels:
@@ -265,7 +264,6 @@ class GoToCommands(object):
         finally:
             c.target_language = old_target_language
         delims1, delims2, delims3 = d.get('delims')
-        # g.trace(root.h, d.get('language'), d.get('delims'))
         if delims1:
             return delims1, None
         else:
@@ -312,7 +310,6 @@ class GoToCommands(object):
             h = self.remove_level_stars(h).strip()
             if delim2:
                 h = h.rstrip(delim2)
-            # g.trace(gnx, h, s.rstrip())
             return gnx, h
     #@+node:ekr.20150625124027.1: *4* goto.is_sentinel
     def is_sentinel(self, delim1, delim2, s):

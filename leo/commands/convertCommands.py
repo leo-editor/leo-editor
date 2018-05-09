@@ -661,7 +661,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     j = self.handlePossibleFunctionHeader(aList, i, prevSemi, firstOpen)
                     prevSemi = j
                     firstOpen = None # restart the scan
-                    # g.trace(repr(''.join(aList[prevSemi:prevSemi+20])))
                 else:
                     j = i + 1
                 # Handle unusual cases.
@@ -751,7 +750,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
             prevWord = []
             self.class_name = ''
             i = 0
-            # g.trace(repr(''.join(head)))
             while i < len(head):
                 i = self.skip_ws_and_nl(head, i)
                 if i < len(head) and head[i].isalpha():
@@ -813,7 +811,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     if self.match(body, j, '{'):
                         k = j
                         j = self.skip_to_matching_bracket(body, j)
-                        # g.trace('found block\n',''.join(body[k:j+1]))
                         m = '# <Start dedented block>...'
                         body[k: k + 1] = list(m)
                         j += len(m)
@@ -996,7 +993,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                     g.trace('warning: no @data %s node' % kind)
                 for s in aList or []:
                     name, value = s.split(':',1)
-                    # g.trace('name',name,'value',value)
                     d[name.strip()] = value.strip()
                 return d
             #@+node:ekr.20160213070235.5: *6* msf.scan_patterns
@@ -1318,7 +1314,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 # Change the list in place.
                 aList[i1: i3] = aList[i2: i3] + comment
                 i = i1 + (i3 - i2) + len(comment)
-                # g.trace(''.join(aList[i1:i]))
                 return i
             #@+node:ekr.20150514063305.181: *6* handle_all_keywords
             def handle_all_keywords(self, aList):
@@ -1430,7 +1425,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         j = self.handlePossibleFunctionHeader(aList, i, prevSemi, firstOpen)
                         prevSemi = j
                         firstOpen = None # restart the scan
-                        # g.trace(repr(''.join(aList[prevSemi:prevSemi+20])))
                     else:
                         j = i + 1
                     # Handle unusual cases.
@@ -1520,7 +1514,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                 prevWord = []
                 self.class_name = ''
                 i = 0
-                # g.trace(repr(''.join(head)))
                 while i < len(head):
                     i = self.skip_ws_and_nl(head, i)
                     if i < len(head) and head[i].isalpha():
@@ -1583,7 +1576,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         if self.match(body, j, '{'):
                             k = j
                             j = self.skip_to_matching_bracket(body, j)
-                            # g.trace('found block\n',''.join(body[k:j+1]))
                             m = '# <Start dedented block>...'
                             body[k: k + 1] = list(m)
                             j += len(m)

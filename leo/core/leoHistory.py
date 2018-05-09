@@ -39,7 +39,6 @@ class NodeHistory(object):
         if self.beadPointer > 0:
             self.beadPointer -= 1
             p, chapter = self.beadList[self.beadPointer]
-            # g.trace(self.beadPointer,p.h)
             self.select(p, chapter)
     #@+node:ekr.20130915111638.11294: *3* NodeHistory.select
     def select(self, p, chapter):

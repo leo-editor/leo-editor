@@ -47,7 +47,7 @@ class PersistenceDataController(object):
         self.c = c
         self.at_persistence = None
             # The position of the @position node.
-        # g.trace('(PersistenceDataController)',c.shortFileName())
+
     #@+node:ekr.20140711111623.17793: *3* pd.Entry points
     #@+node:ekr.20140718153519.17731: *4* pd.clean
     def clean(self):
@@ -322,7 +322,6 @@ class PersistenceDataController(object):
                 # Compute the partial unl.
                 parents = 0
                 for parent2 in p.parents():
-                    # g.trace('parent2',parent2.h,unl,unl_list[-2-parents:-1-parents])
                     if parent2 == root:
                         break
                     elif parents + 2 > len(unl_list):

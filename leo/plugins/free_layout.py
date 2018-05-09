@@ -68,7 +68,7 @@ class FreeLayoutController(object):
     #@+node:ekr.20110318080425.14390: *3*  flc.ctor
     def __init__(self, c):
         '''Ctor for FreeLayoutController class.'''
-        # g.trace('(FreeLayoutController)',c) # ,g.callers(files=True))
+
         # if hasattr(c,'free_layout'):
             # return
         self.c = c
@@ -98,11 +98,10 @@ class FreeLayoutController(object):
         c = self.c
         if c != keys.get('c'):
             return
-        # g.trace(c.frame.title)
+
         # Careful: we could be unit testing.
         splitter = self.get_top_splitter() # A NestedSplitter.
         if not splitter:
-            # g.trace('no splitter!')
             return None
         # by default NestedSplitter's context menus are disabled, needed
         # once to globally enable them
@@ -216,13 +215,11 @@ class FreeLayoutController(object):
         d = g.app.db.get('ns_layouts') or {}
         if c != keys.get('c'):
             return
-        # g.trace(c.frame.title)
         layout = c.config.getData("free-layout-layout")
         if layout:
             layout = json.loads('\n'.join(layout))
         name = c.db.get('_ns_layout')
         if name:
-            # g.trace('Layout:',name,'reloading',reloading)
             if reloading:
                 name = c.free_layout.original_layout
                 c.db['_ns_layout'] = name

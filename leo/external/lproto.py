@@ -112,10 +112,7 @@ class LProtoServer(object):
     #@+node:ekr.20111012070545.7255: *3* listen
     def listen(self,name):
 
-        # g.trace(name,g.callers())
-
         self.srv.listen(name)
-
         lprint("lproto.py: listen on",self.srv.fullServerName())
 
     #@+node:ekr.20111012070545.7256: *3* msg_received

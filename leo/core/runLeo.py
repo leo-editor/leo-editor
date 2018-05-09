@@ -69,7 +69,6 @@ def run(fileName=None, pymacs=None, *args, **keywords):
     # pylint: disable=keyword-arg-before-vararg
         # putting *args first is invalid in Python 2.x.
     assert g.app
-    # g.trace('runLeo.py', fileName, args, keywords)
     g.app.loadManager = leoApp.LoadManager()
     g.app.loadManager.load(fileName, pymacs)
 #@+node:maphew.20180110221247.1: ** run console (runLeo.py)

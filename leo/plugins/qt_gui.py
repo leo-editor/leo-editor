@@ -45,7 +45,6 @@ class LeoQtGui(leoGui.LeoGui):
     #@+node:ekr.20110605121601.18477: *3*  qt_gui.__init__ & reloadSettings
     def __init__(self):
         '''Ctor for LeoQtGui class.'''
-        # g.trace('(LeoQtGui)',g.callers())
         leoGui.LeoGui.__init__(self, 'qt')
              # Initialize the base class.
         self.active = True
@@ -997,7 +996,6 @@ class LeoQtGui(leoGui.LeoGui):
         assert isinstance(qevent, QtGui.QKeyEvent)
         qw = getattr(event.w, 'widget', None)
         if qw and isinstance(qw, QtWidgets.QTextEdit):
-            # g.trace(i, qevent.modifiers(), g.u(qevent.text()))
             if 1:
                 # Assume that qevent.text() *is* the desired text.
                 # This means we don't have to hack eventFilter.
@@ -1259,7 +1257,7 @@ class LeoQtGui(leoGui.LeoGui):
         return splash
     #@+node:ekr.20110613103140.16424: *4* qt_gui.dismiss_splash_screen
     def dismiss_splash_screen(self):
-        # g.trace(g.callers())
+
         gui = self
         # Warning: closing the splash screen must be done in the main thread!
         if g.unitTesting:
@@ -1302,7 +1300,6 @@ class LeoQtGui(leoGui.LeoGui):
             name = w._name
         else:
             name = repr(w)
-        # g.trace(id(w),name)
         return name
     #@+node:ekr.20111027083744.16532: *4* qt_gui.enableSignalDebugging
     # enableSignalDebugging(emitCall=foo) and spy your signals until you're sick to your stomach.

@@ -411,15 +411,12 @@ class ConventionChecker (object):
             return self.Type('func', ivar)
         elif ivars.get(ivar):
             val = ivars.get(ivar)
-            # g.trace('IVAR:', ivar, 'CONTEXT', context, 'VAL', val)
             if isinstance(val, self.Type):
-                # g.trace('KNOWN: %s.%s %r ==> %r' % (class_name, ivar, context, val))
                 return val
             # Check for pre-defined special names.
             for special_name, special_obj in self.special_names_dict.items():
                 tail = val[len(special_name):]
                 if val == special_name:
-                    # g.trace('SPECIAL: %s ==> %s' % (val, special_obj))
                     return special_obj
                 elif val.startswith(special_name) and tail.startswith('.'):
                     # Resovle the rest of the tail in the found context.
@@ -427,9 +424,7 @@ class ConventionChecker (object):
             # Avoid recursion .
             head = val.split('.')
             if ivar in (val, head[0]):
-                # g.trace('AVOID RECURSION: self.%s=%s' % (ivar, val))
                 return self.Type('unknown', ivar)
-            # g.trace('RECURSIVE', head)
             for name2 in head:
                 old_context = context
                 context = self.resolve(node, name2, context)
@@ -438,7 +433,6 @@ class ConventionChecker (object):
             return context
         elif ivar in self.special_names_dict:
             val = self.special_names_dict.get(ivar)
-            # g.trace('FOUND SPECIAL', ivar, val)
             return val
         else:
             # Remember the unknown.
@@ -672,7 +666,6 @@ class ConventionChecker (object):
         self.class_name = None
         for node2 in reversed(self.context_stack):
             if isinstance(node2, ast.ClassDef):
-                # g.trace('class_name:', node2.name)
                 self.class_name = node2.name
                 break
     #@+node:ekr.20171215074959.9: *4* checker.FunctionDef
@@ -933,7 +926,6 @@ class Pass1 (leoAst.AstFullTraverser): # V2
         self.parent = node
         method_name = 'do_' + node.__class__.__name__
         method = getattr(self, method_name)
-        # g.trace(method_name)
         method(node)
         self.parent = old_parent
     #@+node:ekr.20160108105958.11: *3* p1.visitors
@@ -1406,7 +1398,6 @@ class ProjectUtils(object):
             'test': g.os_path_finalize_join(g.app.loadDir, '..', 'test-proj'),
         }
         dir_ = d.get(name.lower())
-        # g.trace(name,dir_)
         if not dir_:
             g.trace('bad project name: %s' % (name))
         if not g.os_path_exists(dir_):
@@ -1802,7 +1793,6 @@ class ShowData(object):
     #@+node:ekr.20150606092147.1: *4* show_undefined_calls
     def show_undefined_calls(self, result):
         '''Show all calls to undefined functions.'''
-        # g.trace(sorted(self.defs_d.keys()))
         call_tuples = []
         for s in self.calls_d:
             i = 0
@@ -1919,7 +1909,6 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
             else:
                 result.append('')
                 break
-        # g.trace(list(reversed(result)))
         return reversed(result)
     #@+node:ekr.20150609053010.1: *4* sd.format
     def format(self, node, level, *args, **kwargs):

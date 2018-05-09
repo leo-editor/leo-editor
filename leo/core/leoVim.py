@@ -28,7 +28,6 @@ def show_stroke(stroke):
         'period':       '.',
         'space':        ' ',
     }
-    # g.trace(stroke,d.get(s, s))
     return d.get(s, s)
 #@+node:ekr.20140802183521.17996: ** class VimEvent
 class VimEvent(object):
@@ -602,7 +601,7 @@ class VimCommands(object):
         g.es_print('ignoring %s in %s mode after %s' % (
             vc.stroke, vc.state, ''.join(aList)), color='blue')
         # This is a surprisingly helpful trace.
-        # g.trace(g.callers())
+            # g.trace(g.callers())
         vc.show_status()
         vc.return_value = True
     #@+node:ekr.20140806204042.18115: *5* vc.not_ready
@@ -626,7 +625,6 @@ class VimCommands(object):
         '''
         vc.do_trace()
         # Undoably preserve any changes to the body.
-        # g.trace('no change! old vc.state:',vc.state)
         vc.save_body()
         vc.init_state_ivars()
         vc.state = 'normal'
@@ -689,7 +687,6 @@ class VimCommands(object):
         s2 = s[i1: i2]
         if vc.n1 > 1:
             s3 = s2 * (vc.n1 - 1)
-            # g.trace(vc.in_dot,vc.n1,vc.n,s3)
             w.insert(i2, s3)
         for stroke in s2:
             vc.add_to_dot(stroke)
@@ -784,7 +781,7 @@ class VimCommands(object):
         '''
         vc.command_list = []
         if 0: # Don't do anything else!
-            # g.trace(vc.search_stroke,find_pattern,change_pattern)
+
             # Don't use vc.add_to_dot: it updates vc.command_list.
 
             def add(stroke):
@@ -1119,14 +1116,12 @@ class VimCommands(object):
                 match_i, n = None, vc.n1 * vc.n
                 i -= 1 # Ensure progress
                 while i >= 0:
-                    # g.trace(s[i],vc.ch,n)
                     if s[i] == vc.ch:
                         match_i, n = i, n - 1
                         if n == 0: break
                     elif s[i] == '\n' and not vc.cross_lines:
                         break
                     i -= 1
-                # g.trace(match_i,i)
                 if match_i is not None:
                     g.trace(i1 - match_i - 1)
                     for z in range(i1 - match_i):
@@ -1590,7 +1585,6 @@ class VimCommands(object):
                 if i >= 0 and s[i] == vc.ch:
                     i -= 1
                 while i >= 0:
-                    # g.trace(i,s[i])
                     if s[i] == vc.ch:
                         match_i, n = i, n - 1
                         if n == 0: break
@@ -1598,7 +1592,6 @@ class VimCommands(object):
                         break
                     i -= 1
                 if match_i is not None:
-                    # g.trace(i1-match_i,vc.ch)
                     for z in range(i1 - match_i - 1):
                         if vc.state == 'visual':
                             vc.do('back-char-extend-selection')
@@ -1757,7 +1750,6 @@ class VimCommands(object):
                 if extend_to_line:
                     i1 = vc.to_bol(s, i1)
             if i1 != i2:
-                # g.trace(repr(s[i1:i2]))
                 w.setSelectionRange(i1, i2, insert=i2)
                 vc.c.frame.copyText(event=vc.event)
                 w.setInsertPoint(vc.motion_i)
@@ -2071,7 +2063,6 @@ class VimCommands(object):
                 This never ends the command: only return does that.
                 '''
                 k = self.vc.k
-                # g.trace('(Substitution)','k.arg',k.arg,'k.functionTail',k.functionTail)
                 tail = k.functionTail
                 tail = tail[1:] if tail.startswith(' ') else tail
                 if not tail.startswith('/'):
@@ -2258,7 +2249,6 @@ class VimCommands(object):
     #@+node:ekr.20140803220119.18089: *4* vc.do_inner_motion
     def do_inner_motion(vc, restart=False):
         '''Handle strokes in motions.'''
-        # g.trace(vc.command_list)
         try:
             assert vc.in_motion
             if restart:
@@ -2308,7 +2298,6 @@ class VimCommands(object):
         i2, j = w.getSelectionRange()
         if i2 == j and vc.stroke == 'j':
             if i > 0 and s[i - 1] == 'j':
-                # g.trace(i,i2,j,s[i-1:i+1])
                 w.delete(i - 1, i)
                 w.setInsertPoint(i - 1)
                 # A benign hack: simulate an Escape for the dot.
@@ -2367,7 +2356,6 @@ class VimCommands(object):
             s = stroke or vc.stroke
             # Never add '.' to the dot list.
             if s and s != 'period':
-                # g.trace(s)
                 event = VimEvent(c=vc.c, char=s, stroke=s, w=vc.w)
                 vc.command_list.append(event)
     #@+node:ekr.20140802120757.18002: *4* vc.compute_dot

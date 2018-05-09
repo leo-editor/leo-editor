@@ -252,7 +252,7 @@ class LeoPluginsController(object):
     #@+node:ekr.20100909065501.5954: *3* plugins.Birth
     #@+node:ekr.20100908125007.6034: *4* plugins.ctor & reloadSettings
     def __init__(self):
-        # g.trace('LeoPluginsController',g.callers())
+
         self.handlers = {}
         self.loadedModulesFilesDict = {}
             # Keys are regularized module names, values are the names of .leo files

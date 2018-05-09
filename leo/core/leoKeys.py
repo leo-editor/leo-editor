@@ -787,7 +787,6 @@ class AutoCompleterClass(object):
             w.setSelectionRange(i, j, insert=j)
         c.frame.body.onBodyChanged('Typing')
         if self.use_qcompleter:
-            # g.trace(self.qw.leo_qc)
             if self.qw:
                 c.widgetWantsFocusNow(self.qw.leo_qc)
     #@+node:ekr.20110314115639.14269: *4* ac.is_leo_source_file
@@ -819,7 +818,6 @@ class AutoCompleterClass(object):
         c = self.c
         aList = common_prefix.split('.')
         header = '.'.join(aList[: -1])
-        # g.trace(self.use_qcompleter,len(tabList))
         if self.verbose or self.use_qcompleter or len(tabList) < 20:
             tabList = self.clean_completion_list(header, tabList,)
         else:
@@ -923,7 +921,6 @@ class FileNameChooser(object):
     #@+node:ekr.20140813052702.18195: *3* fnc.__init__
     def __init__(self, c):
         '''Ctor for FileNameChooser class.'''
-        # g.trace('(FileNameChooser)',c.shortFileName(),g.callers())
         self.c = c
         self.k = c.k
         assert c and c.k
@@ -1147,7 +1144,6 @@ class GetArg(object):
         '''Compute and show the available completions.'''
         # Support vim-mode commands.
         command = self.get_label()
-        # g.trace(len(tabList), self.is_command(command),command)
         if self.is_command(command):
             # if trace: g.trace('\n'.join(tabList))
             tabList, common_prefix = g.itemsMatchingPrefixInList(command, tabList)
@@ -1461,7 +1457,6 @@ class GetArg(object):
         s = self.get_label()
         command = self.get_command(s)
         tail = s[len(command):]
-        # g.trace('command:',command,'tail:',tail)
         return command, tail
     #@+node:ekr.20140818074502.18221: *3* ga.is_command
     def is_command(self, s):
@@ -1895,7 +1890,6 @@ class KeyHandlerClass(object):
         self.overwrite_mode_fg_color = getColor('overwrite_mode_fg_color') or fg
         self.unselected_body_bg_color = getColor('unselected_body_bg_color') or bg
         self.unselected_body_fg_color = getColor('unselected_body_fg_color') or bg
-        # g.trace(self.c.shortFileName())
     #@+node:ekr.20110209093958.15413: *4* k.setDefaultEditingKeyAction (New)
     def setDefaultEditingAction(self):
         k = self; c = k.c
@@ -1908,7 +1902,6 @@ class KeyHandlerClass(object):
     #@+node:ekr.20061031131434.82: *4* k.setDefaultUnboundKeyAction
     def setDefaultUnboundKeyAction(self, allowCommandState=True):
         k = self; c = k.c
-        # g.trace(g.callers())
         defaultAction = c.config.getString('top_level_unbound_key_action') or 'insert'
         defaultAction.lower()
         if defaultAction == 'command' and not allowCommandState:
@@ -1918,7 +1911,6 @@ class KeyHandlerClass(object):
         else:
             g.trace('ignoring top_level_unbound_key_action setting: %s' % (defaultAction))
             self.unboundKeyAction = 'insert'
-        # g.trace(self.unboundKeyAction)
         self.defaultUnboundKeyAction = self.unboundKeyAction
         k.setInputState(self.defaultUnboundKeyAction)
     #@+node:ekr.20061031131434.88: *3* k.Binding
@@ -2019,11 +2011,8 @@ class KeyHandlerClass(object):
                 keyType=type('commandName'),
                 valType=g.BindingInfo)
         inv_d = lm.invert(d)
-        # g.trace('1', stroke, stroke in c.config.shortcutsDict.d)
         inv_d[stroke] = []
         c.config.shortcutsDict = lm.uninvert(inv_d)
-        # g.trace('2', stroke, stroke in c.config.shortcutsDict.d)
-        # g.trace('3', c.config.shortcutsDict.d.get('help'))
     #@+node:ekr.20061031131434.92: *5* k.remove_conflicting_definitions
     def remove_conflicting_definitions(self, aList, commandName, pane, shortcut):
 
@@ -2087,7 +2076,6 @@ class KeyHandlerClass(object):
 
         The event will go to k.masterKeyHandler as always, so nothing really changes.
         except that k.masterKeyHandler will know the proper stroke.'''
-        # g.trace(w)
         k = self
         for stroke in k.bindingsDict:
             assert g.isStroke(stroke), repr(stroke)
@@ -2227,7 +2215,7 @@ class KeyHandlerClass(object):
             h.remove(commandName)
         h.append(commandName)
         k.commandIndex = None
-        # g.trace(commandName,h)
+
     #@+node:ekr.20150402165918.1: *4* k.commandHistoryDown
     def commandHistoryFwd(self):
         '''
@@ -2245,8 +2233,6 @@ class KeyHandlerClass(object):
                 # move to next down in list
                 i += 1
                 commandName = h[i]
-            # (else i == None; no change to index, command == '')
-            # g.trace(i,h)
             k.commandIndex = i
             k.setLabel(k.mb_prefix + commandName)
     #@+node:ekr.20150402171131.1: *4* k.commandHistoryUp
@@ -2265,7 +2251,6 @@ class KeyHandlerClass(object):
                 i -= 1
             commandName = h[i]
             k.commandIndex = i
-            # g.trace(i,h)
             k.setLabel(k.mb_prefix + commandName)
     #@+node:ekr.20150425143043.1: *4* k.initCommandHistory
     def initCommandHistory(self):
@@ -2319,9 +2304,6 @@ class KeyHandlerClass(object):
             elif char == 'Up':
                 k.commandHistoryBackwd()
             elif char in ('\n', 'Return'):
-                # if trace and trace_event:
-                    # g.trace('hasSelection %r' % (
-                        # k.mb_event and k.mb_event.w and k.mb_event.w.hasSelection()))
                 # Fix bug 157: save and restore the selection.
                 w = k.mb_event and k.mb_event.w
                 if w and hasattr(w, 'hasSelection') and w.hasSelection():
@@ -2351,7 +2333,6 @@ class KeyHandlerClass(object):
                 k.doBackSpace(list(c.commandsDict.keys()))
                 c.minibufferWantsFocus()
             elif k.ignore_unbound_non_ascii_keys and len(ch) > 1:
-                # g.trace('non-ascii')
                 if specialStroke:
                     g.trace(specialStroke)
                     specialFunc()
@@ -2362,7 +2343,6 @@ class KeyHandlerClass(object):
                 k.updateLabel(event)
                 k.mb_tabListPrefix = k.getLabel()
                 c.minibufferWantsFocus()
-                # g.trace('new prefix',k.mb_tabListPrefix)
         except Exception:
             g.es_exception()
             self.keyboardQuit()
@@ -2380,7 +2360,6 @@ class KeyHandlerClass(object):
         else:
             func = c.commandsDict.get(commandName)
         k.newMinibufferWidget = None
-        # g.trace(func and func.__name__,'mb_event',event and event.widget.widgetName)
         if func:
             # These must be done *after* getting the command.
             k.clearState()
@@ -2500,7 +2479,6 @@ class KeyHandlerClass(object):
         data2, n = [], 0
         for pane, key, commandName, kind in data:
             key = key.replace('+Key', '')
-            # g.trace('%10s %s' % (key, repr(kind)))
             letter = lm.computeBindingLetter(kind)
             pane = '%4s: ' % (pane if pane else 'all')
             left = pane + key # pane and shortcut fields
@@ -2582,37 +2560,33 @@ class KeyHandlerClass(object):
             k.clearState() # Bug fix.
             c.commandsDict[last](event)
         else:
-            # g.trace('oops')
             return k.keyboardQuit()
     #@+node:ekr.20061031131434.123: *4* k.set-xxx-State
     @cmd('set-command-state')
     def setCommandState(self, event):
         '''Enter the 'command' editing state.'''
-        # g.trace(g.callers())
         k = self
         k.setInputState('command', set_border=True)
         # This command is also valid in headlines.
-        # k.c.bodyWantsFocus()
+            # k.c.bodyWantsFocus()
         k.showStateAndMode()
 
     @cmd('set-insert-state')
     def setInsertState(self, event):
         '''Enter the 'insert' editing state.'''
-        # g.trace(g.callers())
         k = self
         k.setInputState('insert', set_border=True)
         # This command is also valid in headlines.
-        # k.c.bodyWantsFocus()
+            # k.c.bodyWantsFocus()
         k.showStateAndMode()
 
     @cmd('set-overwrite-state')
     def setOverwriteState(self, event):
         '''Enter the 'overwrite' editing state.'''
-        # g.trace(g.callers())
         k = self
         k.setInputState('overwrite', set_border=True)
         # This command is also valid in headlines.
-        # k.c.bodyWantsFocus()
+            # k.c.bodyWantsFocus()
         k.showStateAndMode()
     #@+node:ekr.20061031131434.124: *4* k.toggle-input-state
     @cmd('toggle-input-state')
@@ -2950,7 +2924,6 @@ class KeyHandlerClass(object):
             else:
                 commandName = aList[0]
                 k.givenArgs = aList[1:]
-            # g.trace(commandName,k.givenArgs)
             func = c.commandsDict.get(commandName)
             return func
         else:
@@ -3792,7 +3765,6 @@ class KeyHandlerClass(object):
             c.widgetWantsFocusNow(w)
             i, j = w.getSelectionRange()
             ins = w.getInsertPoint()
-            # g.trace(i,j,ins)
             if i != j:
                 w.delete(i, j)
             if ch == '\b':
@@ -3890,7 +3862,6 @@ class KeyHandlerClass(object):
         by analogy with tab completion.'''
         k = self; c = k.c
         c.endEditing()
-        # g.trace(k.inputModeName)
         if k.inputModeName:
             d = g.app.config.modeCommandsDict.get('enter-' + k.inputModeName)
             k.modeHelpHelper(d)
@@ -4122,7 +4093,6 @@ class KeyHandlerClass(object):
             return False
         if not g.isStroke(stroke):
             # Happens during unit tests.
-            # g.trace('=====', repr(stroke), g.callers())
             stroke = g.KeyStroke(stroke)
         #
         # altgr combos (Alt+Ctrl) are always plain keys
@@ -4172,7 +4142,6 @@ class KeyHandlerClass(object):
     def getState(self, kind):
         k = self
         val = k.state.n if k.state.kind == kind else 0
-        # g.trace(state,'returns',val)
         return val
     #@+node:ekr.20061031131434.195: *4* k.getStateHandler
     def getStateHandler(self):
@@ -4190,12 +4159,10 @@ class KeyHandlerClass(object):
     #@+node:ekr.20080511122507.4: *4* k.setDefaultInputState
     def setDefaultInputState(self):
         k = self; state = k.defaultUnboundKeyAction
-        # g.trace(state)
         k.setInputState(state)
     #@+node:ekr.20110209093958.15411: *4* k.setEditingState
     def setEditingState(self):
         k = self; state = k.defaultEditingAction
-        # g.trace(state)
         k.setInputState(state)
     #@+node:ekr.20061031131434.133: *4* k.setInputState
     def setInputState(self, state, set_border=False):
@@ -4267,7 +4234,6 @@ class KeyHandlerClass(object):
             c.frame.tree.set_status_line(c.p)
     #@+node:ekr.20110202111105.15439: *4* k.showStateCursor
     def showStateCursor(self, state, w):
-        # g.trace(state,w)
         pass
     #@+node:ekr.20061031131434.200: *3* k.universalDispatcher & helpers
     def universalDispatcher(self, event):

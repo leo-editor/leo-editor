@@ -176,7 +176,6 @@ class BridgeController(object):
         '''Adjust sys.path to enable imports as usual with Leo.'''
         import sys
         g = self.g
-        # g.trace('loadDir',g.app.loadDir)
         leoDirs = ('config', 'doc', 'extensions', 'modes', 'plugins', 'core', 'test') # 2008/7/30
         for theDir in leoDirs:
             path = g.os_path_finalize_join(g.app.loadDir, '..', theDir)

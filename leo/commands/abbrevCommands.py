@@ -684,7 +684,6 @@ class AbbrevCommandsClass(BaseEditCommandsClass):
             # Just look in this node.
             items = self.dynaregex.findall(w.getAllText())
         items = sorted(set([z for z in items if z.startswith(s)]))
-        # g.trace(repr(s),repr(sorted(items)))
         return items
     #@+node:ekr.20150514043850.24: *3* abbrev.static abbrevs
     #@+node:ekr.20150514043850.25: *4* abbrev.addAbbrevHelper

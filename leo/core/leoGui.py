@@ -195,7 +195,7 @@ class LeoGui(object):
         self.oops()
     #@+node:ekr.20031218072017.3736: *5* LeoGui.Font
     def getFontFromParams(self, family, size, slant, weight, defaultSize=12):
-        # g.trace('g.app.gui',g.callers()) # 'family',family,'size',size,'defaultSize',defaultSize,
+
         self.oops()
     #@+node:ekr.20070212145124: *5* LeoGui.getFullVersion
     def getFullVersion(self, c=None):

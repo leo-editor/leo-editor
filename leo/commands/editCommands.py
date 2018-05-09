@@ -302,7 +302,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         if hasattr(w, 'logCtrl'):
             w = w.logCtrl
         panes = [body, log, tree]
-        # g.trace(w in panes,event.widget,panes)
         if w in panes:
             i = panes.index(w) + 1
             if i >= len(panes): i = 0
@@ -310,7 +309,8 @@ class EditCommandsClass(BaseEditCommandsClass):
         else:
             pane = body
         # Warning: traces mess up the focus
-        # g.pr(g.app.gui.widget_name(w),g.app.gui.widget_name(pane))
+            # g.pr(g.app.gui.widget_name(w),g.app.gui.widget_name(pane))
+        #
         # This works from the minibuffer *only* if there is no typing completion.
         c.widgetWantsFocusNow(pane)
         k.newMinibufferWidget = pane
@@ -575,7 +575,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             s = w.getAllText()
             i, j = g.getLine(s, ind)
             line = s[i: j].strip()
-            # g.trace(len(line),repr(line))
             if len(line) >= fillColumn:
                 ind = j
             else:
@@ -900,7 +899,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             name2 = d.get('file')
             name2 = c.os_path_finalize(name2)
             name2rel = d.get('relPath')
-            # g.trace('name',name,'\nrelPath',relPath,'\nabsRelPath',absRelPath,'\nname2',name2,'\nname2rel',name2rel)
             if not (name == name2 or absRelPath == name2 or relPath == name2rel):
                 newList.append(d)
         if len(newList) != len(aList):
@@ -1112,7 +1110,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         else:
             result = [line[len(ch):] if line.startswith(ch) else line for line in lines]
         result = ''.join(result)
-        # g.trace('add',add,'hasSelection',w.hasSelection(),'result',repr(result))
         if w.hasSelection():
             i, j = w.getSelectionRange()
             w.delete(i, j)
@@ -1666,7 +1663,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         s = s[i: j - 1]
         # Add the leading whitespace to the present line.
         junk, width = g.skip_leading_ws_with_indent(s, 0, tab_width)
-        # g.trace('width',width,'tab_width',tab_width)
         if s and s[-1] == ':':
             # For Python: increase auto-indent after colons.
             if g.findLanguageDirectives(c, p) == 'python':
@@ -1870,10 +1866,8 @@ class EditCommandsClass(BaseEditCommandsClass):
                     n = min(self.moveCol, max(0, len(line) - 1))
                 else:
                     n = min(self.moveCol, max(0, len(line))) # A tricky boundary.
-                # g.trace('using moveCol',self.moveCol,'line',repr(line),'n',n)
                 spot = g.convertRowColToPythonIndex(s, row, n)
             else: # Plain move forward or back.
-                # g.trace('plain forward/back move')
                 self.setMoveCol(w, spot) # sets self.moveSpot.
         if extend:
             if spot < self.moveSpot:
@@ -1993,7 +1987,6 @@ class EditCommandsClass(BaseEditCommandsClass):
         def seek_special_start(i):
             return seek_until_changed(i, is_special, -1)
         #@-others
-        # g.trace('smart',smart,'forward',forward,'end',end)
         if smart:
             if forward:
                 if 0 <= i < n:
@@ -3046,7 +3039,6 @@ class EditCommandsClass(BaseEditCommandsClass):
             assert way == 'toggle'
             sel = s2.swapcase()
         s2 = s[: i] + sel + s[j:]
-        # g.trace('sel',repr(sel),'s2',repr(s2))
         changed = s2 != s
         if changed:
             w.setAllText(s2)

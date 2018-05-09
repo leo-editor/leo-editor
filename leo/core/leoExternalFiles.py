@@ -493,7 +493,6 @@ class ExternalFilesController(object):
         # This doesn't handle %ProgramFiles%
             # if kind in ('os.spawnl', 'subprocess.Popen'):
                 # if not g.os_path_exists(arg):
-                    # g.trace('Executable not found', arg, arg_tuple)
                     # return
         try:
             # All of these must be supported because they

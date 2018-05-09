@@ -56,7 +56,6 @@ class FreeMindImporter(object):
         tag = element.tag if g.isString(element.tag) else ''
         text = element.text or ''
         if not tag: text = text.strip()
-        # g.trace('tag: %5r text: %10r attrib.text: %r' % (tag, text, attrib_text))
         p.h = attrib_text or tag or 'Comment'
         p.b = text if text.strip() else ''
         for child in element:
@@ -298,7 +297,6 @@ class LeoImportCommands(object):
         # Headlines not containing a section reference are ignored in noweb
         and generate index index in cweb.
         '''
-        # g.trace(g.get_line(s,i))
         ic = self
         nl = ic.output_newline
         head_ref = ic.getHeadRef(p)
@@ -393,7 +391,6 @@ class LeoImportCommands(object):
     #@+node:ekr.20031218072017.3296: *4* ic.convertDocPartToWeb (handle @ %def)
     def convertDocPartToWeb(self, s, i, result):
         nl = self.output_newline
-        # g.trace(g.get_line(s,i))
         if g.match_word(s, i, "@doc"):
             i = g.skip_line(s, i)
         elif g.match(s, i, "@ ") or g.match(s, i, "@\t") or g.match(s, i, "@*"):
@@ -432,7 +429,6 @@ class LeoImportCommands(object):
         i, result, docSeen = 0, "", False
         while i < len(s):
             progress = i
-            # g.trace(g.get_line(s,i))
             i = g.skip_ws_and_nl(s, i)
             if self.isDocStart(s, i) or g.match_word(s, i, "@doc"):
                 i, result = self.convertDocPartToWeb(s, i, result)
@@ -464,7 +460,7 @@ class LeoImportCommands(object):
     # Copies characters to result until the end of the present section is seen.
 
     def copyPart(self, s, i, result):
-        # g.trace(g.get_line(s,i))
+
         lb = "@<" if self.webType == "cweb" else "<<"
         rb = "@>" if self.webType == "cweb" else ">>"
         theType = self.webType
@@ -608,7 +604,6 @@ class LeoImportCommands(object):
             else:
                 line_delim, start_delim = start_delim, None
             #@-<< set delims from the header line >>
-            # g.trace("line: '%s', start: '%s', end: '%s'" % (line_delim,start_delim,end_delim))
             s = self.removeSentinelLines(s, line_delim, start_delim, end_delim)
             ext = c.config.remove_sentinels_extension
             if not ext:
@@ -848,7 +843,6 @@ class LeoImportCommands(object):
                 language = unknown
         else:
             language = unknown
-        # g.trace(ext,repr(language))
         # Return the language even if there is no colorizer mode for it.
         return language
     #@+node:ekr.20070806111212: *4* ic.readAtAutoNodes
@@ -890,7 +884,6 @@ class LeoImportCommands(object):
             fileName = fileName.replace('\\', '/') # 2011/10/09.
             g.setGlobalOpenDir(fileName)
             isThin = at.scanHeaderForThin(fileName)
-            # g.trace('isThin',isThin,fileName)
             if command: undoData = u.beforeInsertNode(parent)
             p = parent.insertAfter()
             if isThin:
@@ -1127,7 +1120,6 @@ class LeoImportCommands(object):
                 if k > -1: self.cstEnter(s[j: k])
             else: i += 1
             assert(i > progress)
-        # g.trace(self.cstDump())
         #@-<< Create a symbol table of all section names >>
         #@+<< Create nodes for limbo text and the root section >>
         #@+node:ekr.20031218072017.3233: *6* << Create nodes for limbo text and the root section >>
@@ -1152,7 +1144,7 @@ class LeoImportCommands(object):
                 else: i = g.skip_line(s, i)
                 assert(i > progress)
             self.createHeadline(parent, s[j: i], g.angleBrackets(" @ "))
-        # g.trace(g.get_line(s,i))
+
         #@-<< Create nodes for limbo text and the root section >>
         while i < len(s):
             outer_progress = i
@@ -1284,7 +1276,6 @@ class LeoImportCommands(object):
             d = g.app.language_extension_dict
             fileType = d.get(language, 'py')
             ic.methodName, ic.fileType = p.h, fileType
-        # g.trace(language, ext, parser and parser.__name__ or '<NO PARSER>')
         if parser:
             bunch = c.undoer.beforeChangeTree(p)
             s = p.b
@@ -1445,7 +1436,6 @@ class LeoImportCommands(object):
                 d2 = g.app.atAutoDict
                 for z in d2:
                     if d2.get(z) == aClass:
-                        # g.trace('found',z,'for',ext,aClass.__name__)
                         return z
         return '@file'
     #@+node:ekr.20031218072017.3305: *3* ic.Utilities
@@ -1487,7 +1477,6 @@ class LeoImportCommands(object):
         p.initHeadString(headline)
         if body:
             self.setBodyString(p, body)
-        # g.trace(p.v.gnx,p.h)
         return p
     #@+node:ekr.20031218072017.3307: *4* ic.error
     def error(self, s):
@@ -1550,7 +1539,6 @@ class LeoImportCommands(object):
                         doc = "@ " if self.webType == "cweb" else "@\n"
                     else:
                         doc += "\n\n"
-                    # g.trace("new doc:",doc)
                     s = s[: start] + doc + s[end:]
                     i = start + len(doc)
             else: i = g.skip_line(s, i)
@@ -1561,7 +1549,6 @@ class LeoImportCommands(object):
         i = 0
         while i < len(s):
             progress = i
-            # g.trace(g.get_line(s,i))
             if g.match(s, i, lb):
                 i += 2; j = i; k = g.find_on_line(s, j, rb)
                 if k > -1:
@@ -1569,7 +1556,6 @@ class LeoImportCommands(object):
                     name2 = self.cstLookup(name)
                     if name != name2:
                         # Replace name by name2 in s.
-                        # g.trace("replacing %s by %s" % (name,name2))
                         s = s[: j] + name2 + s[k:]
                         i = j + len(name2)
             i = g.skip_line(s, i)
@@ -2250,7 +2236,6 @@ class TabImporter:
     #@+node:ekr.20161006071801.7: *3* tabbed.undent
     def undent(self, level, s):
         '''Unindent all lines of p.b by level.'''
-        # g.trace(level, s.rstrip())
         if level <= 0:
             return s
         if s.strip():

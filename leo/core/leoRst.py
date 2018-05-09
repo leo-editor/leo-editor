@@ -640,7 +640,7 @@ class RstCommands(object):
     #@+node:ekr.20090502071837.58: *5* rst.write methods
     #@+node:ekr.20090502071837.68: *6* rst.getDocPart
     def getDocPart(self, lines, n):
-        # g.trace('n',n,repr(''.join(lines)))
+
         result = []
         #@+<< Append whatever follows @doc or @space to result >>
         #@+node:ekr.20090502071837.69: *7* << Append whatever follows @doc or @space to result >>
@@ -667,7 +667,7 @@ class RstCommands(object):
         return n, result
     #@+node:ekr.20090502071837.81: *6* rst.handleSpecialDocParts
     def handleSpecialDocParts(self, lines, kind, retainContents, asClass=None):
-        # g.trace(kind,g.listToString(lines))
+
         result = []; n = 0
         while n < len(lines):
             s = lines[n]; n += 1
@@ -722,8 +722,6 @@ class RstCommands(object):
             result = g.match_word(s, 0, '@doc') or g.match_word(s, 0, '@')
         else:
             result = False
-        # g.trace('kind %s, result %s, s %s' % (
-            # repr(kind),result,repr(s)))
         return result
     #@+node:ekr.20090502071837.80: *6* rst.removeLeoDirectives
     def removeLeoDirectives(self, lines):
@@ -737,7 +735,6 @@ class RstCommands(object):
             elif s.startswith('@') and not self.isAnySpecialDocPart(s):
                 for key in self.leoDirectivesList:
                     if g.match_word(s, 1, key):
-                        # g.trace('removing %s' % s)
                         break
                 else:
                     result.append(s)
@@ -899,8 +896,6 @@ class RstCommands(object):
                 n, lines2 = self.getDocPart(lines, n)
                 # A fix, perhaps dubious, to a bug discussed at
                 # http://groups.google.com/group/leo-editor/browse_thread/thread/c212814815c92aac
-                # lines2 = [z.lstrip() for z in lines2]
-                # g.trace('lines2',lines2)
                 result.extend(lines2)
             elif not s.strip() and not code:
                 pass # Ignore blank lines before the first code block.
@@ -1067,7 +1062,6 @@ class RstCommands(object):
             line 1
             line 2 etc.
         '''
-        # g.trace(p.h,g.callers())
         lines = p.b.split('\n')
         lines = [' ' * 4 + z for z in lines]
         lines.insert(0, '::\n')
@@ -1715,7 +1709,6 @@ class RstCommands(object):
                     else:
                         val = s[: cm].strip()
                         s = s[cm + 1:].strip()
-            # g.trace('key',repr(key),'val',repr(val),'s',repr(s))
             if not key:
                 break
             if not val.strip(): val = '1'
@@ -1910,13 +1903,11 @@ class HtmlParserClass(LinkAnchorParserClass):
         is_node_marker = False
         if self.is_anchor(tag, attrs) and self.is_node_marker(attrs):
             is_node_marker = self.is_node_marker(attrs)
-            # g.trace(tag,attrs)
             line, column = self.getpos()
             if self.last_position:
                 lines = self.node_code[:]
                 lines[0] = lines[0][self.startpos:]
                 del lines[line - self.deleted_lines - 1:]
-                # g.trace('Storing in %s...\n%s' % self.last_position, lines)
                 mod_http.get_http_attribute(self.last_position).extend(lines)
                 #@+<< trace the unknownAttribute >>
                 #@+node:ekr.20120219194520.10453: *5* << trace the unknownAttribute >>
@@ -1929,7 +1920,6 @@ class HtmlParserClass(LinkAnchorParserClass):
                 del self.node_code[: line - 1 - self.deleted_lines]
                 self.deleted_lines = line - 1
                 self.endpos_pending = True
-        # g.trace("rst2: handle_starttag:", tag, attrs, is_node_marker)
         starttag = self.get_starttag_text()
         self.stack = [starttag, None, self.stack]
         self.node_marker_stack.append(is_node_marker)
@@ -1941,7 +1931,6 @@ class HtmlParserClass(LinkAnchorParserClass):
            store the current stack for that node.
         '''
         self.stack[1] = "</" + tag + ">"
-        # g.trace(tag,g.listToString(self.stack))
         if self.endpos_pending:
             line, column = self.getpos()
             self.startpos = self.node_code[0].find(">", column) + 1
@@ -1958,7 +1947,6 @@ class HtmlParserClass(LinkAnchorParserClass):
     #@+node:ekr.20120219194520.10455: *4* feed
     def feed(self, line):
         # pylint: disable=arguments-differ
-        # g.trace(repr(line))
         self.node_code.append(line)
         HTMLParser.HTMLParser.feed(self, line) # Call the base class's feed().
     #@-others

@@ -138,7 +138,6 @@ class BackgroundProcessManager(object):
     #@+node:ekr.20161026193609.4: *3* bpm.on_idle
     def on_idle(self):
         '''The idle-time callback for leo.commands.checkerCommands.'''
-        # g.trace('(BPM)', 'pid:', self.pid, 'queue:', len(self.process_queue))
         if self.process_queue or self.pid:
             self.check_process()
     #@+node:ekr.20161028095553.1: *3* bpm.put_log

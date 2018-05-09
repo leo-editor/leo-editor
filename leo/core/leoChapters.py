@@ -297,7 +297,6 @@ class ChapterController(object):
             return
         # First, try the presently selected chapter.
         firstName = theChapter.name
-        # g.trace('===== firstName', firstName)
         if firstName == 'main':
             return
         if theChapter.positionIsInChapter(p):
@@ -452,7 +451,6 @@ class Chapter(object):
     #@+node:ekr.20070615065222: *4* chapter.positionIsInChapter
     def positionIsInChapter(self, p):
         p2 = self.findPositionInChapter(p, strict=True)
-        # g.trace(self.name,'returns',p2)
         return p2
     #@+node:ekr.20070320091806.1: *3* chapter.unselect
     def unselect(self):

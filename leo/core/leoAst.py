@@ -353,7 +353,7 @@ class AstFormatter(object):
     # Call(expr func, expr* args, keyword* keywords, expr? starargs, expr? kwargs)
 
     def do_Call(self, node):
-        # g.trace(node,Utils().dump_ast(node))
+
         func = self.visit(node.func)
         args = [self.visit(z) for z in node.args]
         for z in node.keywords:
@@ -1322,7 +1322,7 @@ class AstFullTraverser(object):
     # AugAssign(expr target, operator op, expr value)
 
     def do_AugAssign(self, node):
-        # g.trace('FT',Utils().format(node),g.callers())
+
         self.visit(node.target)
         self.visit(node.value)
     #@+node:ekr.20141012064706.18509: *4* ft.Break
@@ -2641,7 +2641,6 @@ class HTMLReportTraverser(object):
         # rt.span('tuple')
         rt.gen('(')
         for z in node.elts or []:
-            # g.trace(z)
             rt.visit(z)
             rt.comma()
         rt.clean_comma()
@@ -2811,7 +2810,6 @@ class TokenSync(object):
     #@+node:ekr.20160225102931.8: *3* ts.check_strings
     def check_strings(self):
         '''Check that all strings have been consumed.'''
-        # g.trace(len(self.string_tokens))
         for i, aList in enumerate(self.string_tokens):
             if aList:
                 g.trace('warning: line %s. unused strings: %s' % (i, aList))
@@ -2912,7 +2910,6 @@ class TokenSync(object):
     #@+node:ekr.20160225102931.16: *3* ts.sync_string
     def sync_string(self, node):
         '''Return the spelling of the string at the given node.'''
-        # g.trace('%-10s %2s: %s' % (' ', node.lineno, self.line_at(node)))
         n = node.lineno
         tokens = self.string_tokens[n - 1]
         if tokens:

@@ -339,7 +339,6 @@ class AtFile(object):
             encoding = g.getPythonEncodingFromString(root.b)
             if encoding:
                 at.encoding = encoding
-                # g.trace('scanned encoding',encoding)
         if toString:
             at.outputFile = g.FileLikeObject()
             if g.app.unitTesting:
@@ -888,11 +887,9 @@ class AtFile(object):
         # The following is like at.read() w/o caching logic.
         root.clearVisitedInTree()
         # Init the input stream used by read-open file.
-        # g.trace('\nnew_private_lines...\n',''.join(new_private_lines))
         at.read_lines = new_private_lines
         at.read_ptr = 0
         # Read the file using the @file read logic.
-        # g.trace('***',repr(at.startSentinelComment),repr(at.endSentinelComment))
         thinFile = at.readOpenFile(root, fileName, deleteNodes=True)
         root.clearDirty()
         if at.errors == 0:
@@ -1004,7 +1001,6 @@ class AtFile(object):
                 at.error('can not read 3.x derived file', fileName)
                 # g.es('you may upgrade these file using Leo 4.0 through 4.4.x')
                 g.es("Please use Leo's import command to read the file")
-                # g.trace('root',root and root.h,fileName)
         if root:
             root.v.setVisited() # Disable warning about set nodes.
         at.completeRootNode(firstLines, lastLines, root)
@@ -1134,7 +1130,6 @@ class AtFile(object):
         Previously only at.scanHeaderForThin (import code) called this method.
         '''
         at = self
-        # g.trace('=====', at.errors)
         s = at.openFileHelper(fn)
         if s is not None:
             e, s = g.stripBOM(s)
@@ -1145,7 +1140,6 @@ class AtFile(object):
                 # Get the encoding from the header, or the default encoding.
                 s_temp = g.toUnicode(s, 'ascii', reportErrors=False)
                 e = at.getEncodingFromHeader(fn, s_temp)
-                # g.trace(e,g.shortFileName(fn))
                 s = g.toUnicode(s, encoding=e)
             s = s.replace('\r\n', '\n')
             at.encoding = e
@@ -1401,13 +1395,11 @@ class AtFile(object):
     #@+node:ekr.20041005105605.77: *6* at.readNormalLine & appendToDocPart
     def readNormalLine(self, s, i=0): # i not used.
         at = self
-        # g.trace('inCode',at.inCode,repr(s))
         if at.inCode:
             if not at.raw:
                 # 2012/06/05: Major bug fix: insert \\-n. for underindented lines.
                 n = g.computeLeadingWhitespaceWidth(s, at.tab_width)
                 if n < at.indent:
-                    # g.trace('n: %s at.indent: %s\n%s' % (n,at.indent,repr(s)))
                     if s.strip():
                         s = r'\\-%s.%s' % (at.indent - n, s.lstrip())
                     else:
@@ -1475,7 +1467,6 @@ class AtFile(object):
         if at.v1:
             # Fix bug 169: https://github.com/leo-editor/leo-editor/issues/169
             # import-file does not preserve gnx of root @file node
-            # g.trace(at.v1.fileIndex,'-->',gnx,at.v1.h)
             at.v1.fileIndex = gnx
             at.v1 = None
         if not ok: return
@@ -1745,7 +1736,6 @@ class AtFile(object):
             line = line.replace('@@', '@')
         at.appendToOut(line)
         if at.readVersion5:
-            # g.trace(at.indent,repr(line))
             at.endSentinelLevelStack.append(len(at.thinNodeStack))
             at.endSentinelIndentStack.append(at.indent)
             at.endSentinelStack.append(at.endRef)
@@ -1853,7 +1843,6 @@ class AtFile(object):
             newLevel = at.endSentinelLevelStack.pop()
             at.v = at.endSentinelNodeStack.pop() # Bug fix: 2011/06/13.
             at.changeLevel(oldLevel, newLevel)
-            # g.trace('oldLevel',oldLevel,'newLevel',newLevel,'at.v',at.v)
     #@+node:ekr.20041005105605.92: *7* at.readEndAt & readEndDoc
     def readEndAt(self, unused_s, unused_i):
         """Read an @-at sentinel."""
@@ -1911,7 +1900,6 @@ class AtFile(object):
         at = self
         at.popSentinelStack(at.endOthers)
         if at.readVersion5:
-            # g.trace(at.readVersion5,repr(at.docOut))
             # Terminate the *previous* doc part if it exists.
             if at.docOut:
                 s = ''.join(at.docOut)
@@ -2007,7 +1995,6 @@ class AtFile(object):
         s = at.readLine()
         v = at.lastRefNode
         hasList = hasattr(v, 'tempBodyList')
-        # g.trace('hasList',hasList,'v',v and v.h)
         if at.readVersion5:
             if hasList and at.v.tempBodyList:
                 # Remove the trailing newline.
@@ -2181,10 +2168,7 @@ class AtFile(object):
         if newLevel > oldLevel:
             # A possible fix for bug #289.
             if newLevel != oldLevel + 1:
-                # g.trace('expected level %s got level %s' % (
-                #    oldLevel + 1, newLevel), g.callers())
                 newLevel = oldLevel + 1
-            # assert newLevel == oldLevel + 1, 'newLevel == oldLevel + 1'
         else:
             while oldLevel > newLevel:
                 oldLevel -= 1
@@ -2210,7 +2194,6 @@ class AtFile(object):
                 s = s[n1 + 1: -(n2 + 1)]
             else:
                 at.error('invalid @doc part...\n%s' % repr(s))
-        # g.trace(repr(s))
         return s
     #@+node:ekr.20041005105605.114: *5* at.sentinelKind4 & helper (read logic)
     def sentinelKind4(self, s):
@@ -2477,7 +2460,6 @@ class AtFile(object):
                         i = j + 1 # 6/8/04
                     else:
                         encoding = None
-                # g.trace("encoding:",encoding)
                 if encoding:
                     if g.isValidEncoding(encoding):
                         at.encoding = encoding
@@ -2501,7 +2483,6 @@ class AtFile(object):
         if self.errors == 0:
             self.printError("----- read error. line: %s, file: %s" % (
                 self.lineNumber, self.targetFileName,))
-        # g.trace(self.root,g.callers())
         self.error(message)
         # Delete all of root's tree.
         self.root.v.children = []
@@ -2543,12 +2524,9 @@ class AtFile(object):
         if valid:
             at.startSentinelComment = start
             at.endSentinelComment = end
-            # g.trace('start',repr(start),'end',repr(end))
         elif giveErrors:
             at.error("No @+leo sentinel in: %s" % fileName)
             g.trace(g.callers())
-        # g.trace("start,end",repr(at.startSentinelComment),repr(at.endSentinelComment))
-        # g.trace(fileName,firstLines)
         return firstLines, new_df, isThinDerivedFile
     #@+node:ekr.20041005105605.130: *6* at.scanFirstLines
     def scanFirstLines(self, firstLines):
@@ -2905,7 +2883,6 @@ class AtFile(object):
         for p2 in p.self_and_subtree():
             if p2.isOrphan():
                 if p2.isAnyAtFileNode():
-                    # g.trace('*** retaining orphan bit',p2.h)
                     pass
                 else:
                     p2.clearOrphan()
@@ -2994,7 +2971,6 @@ class AtFile(object):
             if leoBeautify.should_kill_beautify(p):
                 return
             if c.config.getBool('tidy-autobeautify'):
-                # g.trace(p.h)
                 leoBeautify.beautifyPythonTree(event={'c': c, 'p0': p.copy()})
         except Exception:
             g.es('unexpected exception')
@@ -3114,7 +3090,6 @@ class AtFile(object):
             at.closeWriteFile()
                 # Sets stringOutput if toString is True.
             if at.errors == 0:
-                # g.trace('toString',toString,'force',force,'isAtAutoRst',isAtAutoRst)
                 isAtAutoRst = root.isAtAutoRstNode()
                 at.replaceTargetFileIfDifferent(root, ignoreBlankLines=isAtAutoRst)
                     # Sets/clears dirty and orphan bits.
@@ -3516,7 +3491,6 @@ class AtFile(object):
             trailingNewlineFlag = s[-1] == '\n'
             if not trailingNewlineFlag:
                 if at.sentinels or at.force_newlines_in_at_nosent_bodies:
-                    # g.trace('Added newline',repr(s))
                     s = s + '\n'
         else:
             trailingNewlineFlag = True # don't need to generate an @nonl
@@ -3731,7 +3705,6 @@ class AtFile(object):
             if not at.raw:
                 at.putIndent(at.indent, line)
             if line[-1:] == '\n':
-                # g.trace(repr(line))
                 at.os(line[: -1])
                 at.onl()
             else:
@@ -3896,8 +3869,8 @@ class AtFile(object):
         """Write the pending part of a doc part.
 
         We retain trailing whitespace iff the split flag is True."""
-        at = self; s = ''.join(at.pending); at.pending = []
-        # g.trace("split",s)
+        at = self
+        s = ''.join(at.pending); at.pending = []
         # Remove trailing newline temporarily.  We'll add it back later.
         if s and s[-1] == '\n':
             s = s[: -1]
@@ -4176,7 +4149,6 @@ class AtFile(object):
     def closeWriteFile(self):
         at = self
         if at.outputFile:
-            # g.trace('**closing',at.outputFileName,at.outputFile)
             at.outputFile.flush()
             at.outputContents = at.outputFile.get()
             if at.toString:
@@ -4878,7 +4850,6 @@ class AtFile(object):
         Remember the files that have been read *and*
         the full headline (@<file> type) that caused the read.
         '''
-        # g.trace(p.h,id(p.v),fn,g.callers())
         v = p.v
         # Fix bug #50: body text lost switching @file to @auto-rst
         if not hasattr(v, 'at_read'):
@@ -4973,7 +4944,6 @@ class AtFile(object):
                     g.es_print("c.target_language:", c.target_language)
                 at.startSentinelComment = "#" # This should never happen!
                 at.endSentinelComment = ""
-            # g.trace(repr(self.startSentinelComment),repr(self.endSentinelComment))
             #@-<< set comment strings from delims >>
         # For unit testing.
         d = {

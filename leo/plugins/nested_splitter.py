@@ -135,10 +135,9 @@ if QtWidgets:
         #@+node:ekr.20110605121601.17962: *3* nsh.__init__
         def __init__(self, owner):
             '''Ctor for NestedSplitterHandle class.'''
-            # g.trace('NestedSplitterHandle')
             QtWidgets.QSplitterHandle.__init__(self, owner.orientation(), owner)
-            # self.setStyleSheet("background-color: green;")
-                # Confusing!
+            # Confusing!
+                # self.setStyleSheet("background-color: green;")
             self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
             self.customContextMenuRequested.connect(self.splitter_menu)
         #@+node:ekr.20110605121601.17963: *3* nsh.__repr__

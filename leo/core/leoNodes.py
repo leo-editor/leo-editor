@@ -131,7 +131,6 @@ class NodeIndices(object):
         self.timeString = time.strftime(
             "%Y%m%d%H%M%S", # Help comparisons; avoid y2k problems.
             time.localtime())
-        # g.trace(self.timeString,self.lastIndex,g.callers(4))
 
     setTimeStamp = setTimestamp
     #@+node:ekr.20141015035853.18304: *3* ni.tupleToString
@@ -317,7 +316,6 @@ class Position(object):
                     break
                 else:
                     aList.append(z._childIndex)
-            # g.trace(aList)
         aList.reverse()
         return aList
     #@+node:ekr.20040310153624: *4* p.dump
@@ -1483,11 +1481,9 @@ class Position(object):
     def moveAfter(self, a):
         """Move a position after position a."""
         p = self # Do NOT copy the position!
-        # g.trace('before','p',p,p.stack,'\na',a,a.stack)
         a._adjustPositionBeforeUnlink(p)
         p._unlink()
         p._linkAfter(a)
-        # g.trace('before','p',p,p.stack,'\na',a,a.stack)
         return p
     #@+node:ekr.20040306060312: *4* p.moveToFirst/LastChildOf
     def moveToFirstChildOf(self, parent):
@@ -1548,7 +1544,6 @@ class Position(object):
         result = True # optimists get only unpleasant surprises.
         parent = p.getParent()
         childIndex = p._childIndex
-        # g.trace(p,parent,pv)
         #@+<< validate parent ivar >>
         #@+node:ekr.20040303175026.14: *5* << validate parent ivar >>
         if parent != pv:
@@ -1771,7 +1766,6 @@ class Position(object):
     def clearDirty(self):
         '''(p) Set p.v dirty.'''
         p = self
-        # g.trace(p.h)
         p.v.clearDirty()
     #@+node:ekr.20040318125934: *5* p.findAllPotentiallyDirtyNodes
     def findAllPotentiallyDirtyNodes(self):
@@ -2007,15 +2001,14 @@ class VNodeBase(object):
     def findAtFileName(self, names, h=''):
         '''Return the name following one of the names in nameList or ""'''
         # Allow h argument for unit testing.
-        if not h: h = self.headString()
-        # if h.startswith('@auto-test'): g.trace(h,'@auto-test' in names)
+        if not h:
+            h = self.headString()
         if not g.match(h, 0, '@'):
             return ""
         i = g.skip_id(h, 1, '-')
         word = h[: i]
         if word in names and g.match_word(h, 0, word):
             name = h[i:].strip()
-            # g.trace(repr(word),repr(name))
             return name
         else:
             return ""
@@ -2291,7 +2284,6 @@ class VNodeBase(object):
     def clearDirty(self):
         '''Clear the vnode dirty bit.'''
         v = self
-        # g.trace(v.h,g.callers())
         v.statusBits &= ~v.dirtyBit
     #@+node:ekr.20090830051712.6153: *5* v.findAllPotentiallyDirtyNodes
     def findAllPotentiallyDirtyNodes(self):
@@ -2331,8 +2323,6 @@ class VNodeBase(object):
     #@+node:ekr.20080429053831.12: *5* v.setDirty
     def setDirty(self):
         '''Set the vnode dirty bit.'''
-        # if self.h.startswith('@auto'):
-        # g.trace('(v) %5s %30s' % (self.isDirty(),self.h),g.callers())
         self.statusBits |= self.dirtyBit
     #@+node:ekr.20031218072017.3386: *4*  v.Status bits
     #@+node:ekr.20031218072017.3389: *5* v.clearClonedBit
@@ -2528,7 +2518,6 @@ class VNodeBase(object):
     def _addLink(self, childIndex, parent_v, adjust=True):
         '''Adjust links after adding a link to v.'''
         v = self
-        # g.trace(v.context.frame.tree)
         v.context.frame.tree.generation += 1
         parent_v.childrenModified()
         # Update parent_v.children & v.parents.

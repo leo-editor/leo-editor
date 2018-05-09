@@ -390,7 +390,6 @@ class LeoQtTree(leoFrame.LeoTree):
         self.drawChildren(p, parent_item=item)
     #@+node:ekr.20110605121601.17878: *5* qtree.initData
     def initData(self):
-        # g.trace('*****')
         self.item2positionDict = {}
         self.item2vnodeDict = {}
         self.position2itemDict = {}
@@ -907,7 +906,6 @@ class LeoQtTree(leoFrame.LeoTree):
         val = p.v.computeIcon()
         r = g.app.gui.getIconImage(
             "box%02d.png" % val)
-        # g.trace(r)
         return r
     #@+node:ekr.20110605121601.17949: *4* qtree.getVnodeIcon
     def getVnodeIcon(self, p):
@@ -925,7 +923,6 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.18413: *4* qtree.setItemIconHelper
     def setItemIconHelper(self, item, icon):
         # Generates an item-changed event.
-        # g.trace(id(icon))
         if item:
             item.setIcon(0, icon)
     #@+node:ekr.20110605121601.17951: *4* qtree.updateIcon
@@ -958,7 +955,6 @@ class LeoQtTree(leoFrame.LeoTree):
     def item2position(self, item):
         itemHash = self.itemHash(item)
         p = self.item2positionDict.get(itemHash) # was item
-        # g.trace(item,p.h)
         return p
 
     def item2vnode(self, item):
@@ -1022,7 +1018,6 @@ class LeoQtTree(leoFrame.LeoTree):
         wrapper = self.getWrapper(e, item)
 
         def editingFinishedCallback(e=e, item=item, self=self, wrapper=wrapper):
-            # g.trace(wrapper,g.callers(5))
             c = self.c
             w = self.treeWidget
             self.onHeadChanged(p=c.p, e=e)
@@ -1032,11 +1027,9 @@ class LeoQtTree(leoFrame.LeoTree):
         return wrapper # 2011/02/12
     #@+node:ekr.20110605121601.18419: *4* qtree.contractItem & expandItem
     def contractItem(self, item):
-        # g.trace(g.callers(4))
         self.treeWidget.collapseItem(item)
 
     def expandItem(self, item):
-        # g.trace(g.callers(4))
         self.treeWidget.expandItem(item)
     #@+node:ekr.20110605121601.18420: *4* qtree.createTreeEditorForItem
     def createTreeEditorForItem(self, item):
@@ -1092,7 +1085,6 @@ class LeoQtTree(leoFrame.LeoTree):
                     start, n = i, j - i
                 else:
                     start = start, n = j, i - j
-                # g.trace('i',i,'j',j,'ins',ins,'-->start',start,'n',n)
             elif selectAll: start, n, ins = 0, len_s, len_s
             else: start, n, ins = len_s, 0, len_s
             e.setObjectName('headline')
@@ -1163,7 +1155,6 @@ class LeoQtTree(leoFrame.LeoTree):
     #@+node:ekr.20110605121601.18430: *4* qtree.scrollToItem
     def scrollToItem(self, item):
         w = self.treeWidget
-        # g.trace(self.traceItem(item))
         hPos, vPos = self.getScroll()
         w.scrollToItem(item, w.EnsureVisible)
             # Fix #265: Erratic scrolling bug.
@@ -1227,17 +1218,17 @@ class LeoQtTree(leoFrame.LeoTree):
             else:
                 delta = 0; g.trace('bad kind:', kind)
             val = vScroll.value()
-            # g.trace(kind,n,h,lineSpacing,delta,val)
             vScroll.setValue(val + delta)
         c.treeWantsFocus()
     #@+node:ekr.20110605121601.18435: *4* qtree.setH/VScroll
     def setHScroll(self, hPos):
+
         w = self.treeWidget
         hScroll = w.horizontalScrollBar()
         hScroll.setValue(hPos)
 
     def setVScroll(self, vPos):
-        # g.trace(vPos)
+
         w = self.treeWidget
         vScroll = w.verticalScrollBar()
         vScroll.setValue(vPos)

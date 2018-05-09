@@ -172,12 +172,10 @@ class Flake8Command(object):
         # If still not found, expand the search if root is a clone.
         if not found:
             isCloned = any([p.isCloned() for p in root.self_and_parents()])
-            # g.trace(isCloned,root.h)
             if isCloned:
                 for p in c.all_positions():
                     if p.isAnyAtFileNode():
                         isAncestor = any([z.v == root.v for z in p.self_and_subtree()])
-                        # g.trace(isAncestor,p.h)
                         if isAncestor and self.find(p):
                             break
         paths = list(set(self.seen))

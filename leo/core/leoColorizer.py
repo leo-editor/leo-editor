@@ -79,7 +79,6 @@ class BaseColorizer(object):
             language = m.group(1)
             if self.isValidLanguage(language):
                 languages.add(language)
-        # g.trace(list(languages))
         return list(sorted(languages))
     #@+node:ekr.20170127142001.5: *5* bc.findFirstAtLanguageDirective
     def findFirstValidAtLanguageDirective(self, p):
@@ -145,7 +144,6 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20110605121601.18572: *4* jedit.__init & helpers
     def __init__(self, c, widget, wrapper):
         '''Ctor for JEditColorizer class.'''
-        # g.trace('(JEditColorizer) widget', widget)
         BaseColorizer.__init__(self,c)
         assert self.c, g.callers()
         self.widget = widget
@@ -392,10 +390,8 @@ class JEditColorizer(BaseColorizer):
                         # Don't add the standard rules again.
                         rules = [z for z in aList2 if z not in aList]
                         if rules:
-                            # g.trace([z.__name__ for z in rules])
                             aList.extend(rules)
                             self.rulesDict[key] = aList
-            # g.trace('***** added rules for %s from %s' % (name,rulesetName))
             self.initModeFromBunch(savedBunch)
     #@+node:ekr.20110605121601.18577: *4* jedit.addLeoRules
     def addLeoRules(self, theDict):
@@ -439,7 +435,6 @@ class JEditColorizer(BaseColorizer):
                 rule = rule.__func__
             else:
                 rule = rule.im_func
-            # g.trace(rule)
             theList = theDict.get(ch, [])
             if rule not in theList:
                 if atFront:
@@ -447,7 +442,6 @@ class JEditColorizer(BaseColorizer):
                 else:
                     theList.append(rule)
                 theDict[ch] = theList
-        # g.trace(g.listToString(theDict.get('@')))
     #@+node:ekr.20111024091133.16702: *4* jedit.configure_hard_tab_width
     def configure_hard_tab_width(self):
         '''Set the width of a hard tab.
@@ -695,8 +689,6 @@ class JEditColorizer(BaseColorizer):
             language = name[: i]
             delegate = name[i + 2:]
             rulesetName = self.munge('%s_%s' % (language, delegate))
-        # if rulesetName == 'php_main': rulesetName = 'php_php'
-        # g.trace(name,language,rulesetName)
         return language, rulesetName
     #@+node:ekr.20110605121601.18583: *5* jedit.setKeywords
     def setKeywords(self):
@@ -728,7 +720,6 @@ class JEditColorizer(BaseColorizer):
         self.word_chars = {}
         for z in chars:
             self.word_chars[z] = z
-        # g.trace(sorted(self.word_chars.keys()))
     #@+node:ekr.20110605121601.18584: *5* jedit.setModeAttributes
     def setModeAttributes(self):
         '''Set the ivars from self.attributesDict,
@@ -742,13 +733,11 @@ class JEditColorizer(BaseColorizer):
             ('ignore_case', True),
             ('no_word_sep', ''),
         )
-        # g.trace(d)
         for key, default in aList:
             val = d.get(key, default)
             if val in ('true', 'True'): val = True
             if val in ('false', 'False'): val = False
             setattr(self, key, val)
-            # g.trace(key,val)
     #@+node:ekr.20110605121601.18585: *5* jedit.initModeFromBunch
     def initModeFromBunch(self, bunch):
         self.modeBunch = bunch
@@ -781,7 +770,6 @@ class JEditColorizer(BaseColorizer):
             d = g.app.language_delims_dict
             if not d.get(self.language):
                 d[self.language] = delims
-                # g.trace(self.language,'delims:',repr(delims))
     #@+node:ekr.20110605121601.18587: *4* jedit.munge
     def munge(self, s):
         '''Munge a mode name so that it is a valid python id.'''
@@ -874,7 +862,6 @@ class JEditColorizer(BaseColorizer):
             k = g.skip_c_id(s, j)
             name = s[j: k]
             ok = self.init_mode(name)
-            # g.trace(ok, name)
             if ok:
                 self.colorRangeWithTag(s, i, k, 'leokeyword')
                 if name != old_name:
@@ -1030,7 +1017,6 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20110605121601.18604: *5* jedit.match_leo_keywords
     def match_leo_keywords(self, s, i):
         '''Succeed if s[i:] is a Leo keyword.'''
-        # g.trace(i,g.get_line(s,i))
         self.totalLeoKeywordsCalls += 1
         if s[i] != '@':
             return 0
@@ -1043,7 +1029,6 @@ class JEditColorizer(BaseColorizer):
             elif ch in (' ', '\t'):
                 i2 -= 1
             else:
-                # g.trace('not a word 1',repr(ch))
                 return 0
         # Get the word as quickly as possible.
         j = i + 1
@@ -1051,7 +1036,6 @@ class JEditColorizer(BaseColorizer):
             j += 1
         word = s[i + 1: j] # entries in leoKeywordsDict do not start with '@'.
         if j < len(s) and s[j] not in (' ', '\t', '\n'):
-            # g.trace('not a word 2',repr(word))
             return 0 # Fail, but allow a rescan, as in objective_c.
         if self.leoKeywordsDict.get(word):
             kind = 'leokeyword'
@@ -1059,7 +1043,6 @@ class JEditColorizer(BaseColorizer):
             self.prev = (i, j, kind)
             result = j - i + 1 # Bug fix: skip the last character.
             self.trace_match(kind, s, i, j)
-            # g.trace('*** match',repr(s))
             return result
         else:
             # 2010/10/20: also check the keywords dict here.
@@ -1072,10 +1055,8 @@ class JEditColorizer(BaseColorizer):
                 self.colorRangeWithTag(s, i, j, kind)
                 self.prev = (i, j, kind)
                 self.trace_match(kind, s, i, j)
-                # g.trace('found',word)
                 return j - i
             else:
-                # g.trace('fail',repr(word),repr(self.word_chars))
                 # Bug fix: allow rescan.  Affects @language patch.
                 return 0
                 # Wrong: return -(j - i + 1)
@@ -1091,8 +1072,6 @@ class JEditColorizer(BaseColorizer):
         else:
             j = k + 2
             self.colorRangeWithTag(s, i, i + 2, 'namebrackets')
-            # g.trace('ref %r %s' % (s[i: j], p.h))
-            # g.trace(g.callers(6))
             ref = g.findReference(s[i: j], p)
             if ref:
                 if self.use_hyperlinks:
@@ -1140,7 +1119,6 @@ class JEditColorizer(BaseColorizer):
     def match_unl(self, s, i):
         if g.match(s.lower(), i, 'unl://'):
             j = len(s)
-            # g.trace(repr(s[i:j]))
             self.colorRangeWithTag(s, i, j, 'url')
             return j
         else:
@@ -1188,7 +1166,6 @@ class JEditColorizer(BaseColorizer):
     #@+node:ekr.20110605121601.18609: *4* jedit.match_compiled_regexp
     def match_compiled_regexp(self, s, i, kind, regexp, delegate=''):
         '''Succeed if the compiled regular expression regexp matches at s[i:].'''
-        # g.trace(g.callers(1), i, repr(s[i: i + 20]), 'regexp', regexp)
         n = self.match_compiled_regexp_helper(s, i, regexp)
         if n > 0:
             j = i + n
@@ -1208,10 +1185,6 @@ class JEditColorizer(BaseColorizer):
         start, end = mo.start(), mo.end()
         if start != i:
             return 0
-        # if trace:
-            # g.trace('pattern',pattern)
-            # g.trace('match: %d, %d, %s' % (start,end,repr(s[start: end])))
-            # g.trace('groups',mo.groups())
         return end - start
     #@+node:ekr.20110605121601.18611: *4* jedit.match_eol_span
     def match_eol_span(self, s, i,
@@ -1245,7 +1218,6 @@ class JEditColorizer(BaseColorizer):
         delegate='', exclude_match=False
     ):
         '''Succeed if the regular expression regex matches s[i:].'''
-        # g.trace(g.callers(1), i, repr(s[i: i + 20]))
         if at_line_start and i != 0 and s[i - 1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s, 0): return 0
         if at_word_start and i > 0 and s[i - 1] in self.word_chars: return 0 # 7/5/2008
@@ -1317,7 +1289,6 @@ class JEditColorizer(BaseColorizer):
     ):
         '''Succeed if s[i:] matches pattern.'''
         if not self.allow_mark_prev: return 0
-        # g.trace(g.callers(1),i,repr(s[i:i+20]))
         if at_line_start and i != 0 and s[i - 1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s, 0): return 0
         if at_word_start and i > 0 and s[i - 1] in self.word_chars: return 0 # 7/5/2008
@@ -1423,7 +1394,6 @@ class JEditColorizer(BaseColorizer):
         delegate=''
     ):
         '''Succeed if the regular expression regexp matches at s[i:].'''
-        # g.trace(g.callers(1), i, repr(s[i: i + 20]), 'regexp', regexp)
         if at_line_start and i != 0 and s[i - 1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s, 0): return 0
         if at_word_start and i > 0 and s[i - 1] in self.word_chars: return 0
@@ -1459,7 +1429,6 @@ class JEditColorizer(BaseColorizer):
             # We have matched the start of the span.
             j = self.match_span_helper(s, i + len(begin), end,
                 no_escape, no_line_break, no_word_break=no_word_break)
-            # g.trace('** helper returns',j,len(s))
             if j == -1:
                 j = i # A real failure.
             else:
@@ -1508,7 +1477,6 @@ class JEditColorizer(BaseColorizer):
         esc = self.escape
         while 1:
             j = s.find(pattern, i)
-            # g.trace(no_line_break,j,len(s))
             if j == -1:
                 # Match to end of text if not found and no_line_break is False
                 if no_line_break:
@@ -1527,7 +1495,6 @@ class JEditColorizer(BaseColorizer):
                 if (escapes % 2) == 1:
                     assert s[j - 1] == esc
                     i += 1 # 2013/08/26: just advance past the *one* escaped character.
-                    # g.trace('escapes',escapes,repr(s[i:]))
                 else:
                     return j
             else:
@@ -1583,7 +1550,6 @@ class JEditColorizer(BaseColorizer):
         '''Succeed if s[i:] starts with 'begin' (a regular expression) and
         contains a following 'end'.
         '''
-        # g.trace('begin', repr(begin), 'end', repr(end), self.dump(s[i:]))
         if at_line_start and i != 0 and s[i - 1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s, 0): return 0
         if at_word_start and i > 0 and s[i - 1] in self.word_chars: return 0 # 7/5/2008
@@ -1634,7 +1600,6 @@ class JEditColorizer(BaseColorizer):
     ):
         '''Succeed if s[i:] matches pattern.'''
         if not self.allow_mark_prev: return 0
-        # g.trace(i, repr(s[i: i + 20]))
         if at_line_start and i != 0 and s[i - 1] != '\n': return 0
         if at_whitespace_end and i != g.skip_ws(s, 0): return 0
         if at_word_start and i > 0 and s[i - 1] in self.word_chars: return 0
@@ -1662,7 +1627,6 @@ class JEditColorizer(BaseColorizer):
                 j = g.skip_line(s, i)
                 if not g.match(s, j - n, escape):
                     return j
-                # g.trace('escape',s[i:j])
                 i = j
             return i
         else:
@@ -1772,9 +1736,11 @@ class JEditColorizer(BaseColorizer):
         return self.showState(n)
     #@+node:ekr.20110605121601.18636: *4* jedit.stateNameToStateNumber
     def stateNameToStateNumber(self, f, stateName):
-        # stateDict:     Keys are state numbers, values state names.
-        # stateNameDict: Keys are state names, values are state numbers.
-        # restartDict:   Keys are state numbers, values are restart functions
+        '''
+        stateDict:     Keys are state numbers, values state names.
+        stateNameDict: Keys are state names, values are state numbers.
+        restartDict:   Keys are state numbers, values are restart functions
+        '''
         n = self.stateNameDict.get(stateName)
         if n is None:
             n = self.nextState
@@ -1782,9 +1748,7 @@ class JEditColorizer(BaseColorizer):
             self.stateDict[n] = stateName
             self.restartDict[n] = f
             self.nextState += 1
-            # assert not n in self.n2languageDict, (n, stateName, g.callers())
             self.n2languageDict [n] = self.language
-            # g.trace('========',n,stateName)
         return n
     #@+node:ekr.20110605121601.18637: *3* jedit.colorRangeWithTag
     def colorRangeWithTag(self, s, i, j, tag, delegate='', exclude_match=False):
@@ -1852,8 +1816,6 @@ class JEditColorizer(BaseColorizer):
         '''Colorize a *single* line s, starting in state n.'''
         f = self.restartDict.get(n)
         i = f(s) if f else 0
-        # g.trace(i, n, repr(s), f)
-        # if trace: g.trace('===== %30s %r' % (self.showCurrentState(), s))
         while i < len(s):
             progress = i
             functions = self.rulesDict.get(s[i], [])
@@ -1864,11 +1826,9 @@ class JEditColorizer(BaseColorizer):
                     g.trace('Can not happen: n is None', repr(f))
                     break
                 elif n > 0: # Success. The match has already been colored.
-                    # g.trace(n, i, f)
                     i += n
                     break
                 elif n < 0: # Total failure.
-                    # g.trace(n, i, f)
                     i += -n
                     break
                 else: # Partial failure: Do not break or change i!
@@ -1952,7 +1912,6 @@ class JEditColorizer(BaseColorizer):
         '''
         d = self.rulesDict
         for leadins_list, pattern in zip(leadins, patterns):
-            # g.trace('%3s %s' % (leadins_list, pattern))
             for ch in leadins_list:
 
                 def wiki_rule(self, s, i, pattern=pattern):
@@ -1964,9 +1923,6 @@ class JEditColorizer(BaseColorizer):
                     aList.insert(0, wiki_rule)
                     d [ch] = aList
         self.rulesDict = d
-        # g.trace('===== f') ; g.printList(d.get('f'))
-        # g.trace('===== h') ; g.printList(d.get('h'))
-        # g.trace('===== `') ; g.printList(d.get('`'))
     #@+node:ekr.20110605121601.18641: *3* jedit.setTag
     def setTag(self, tag, s, i, j):
         '''Set the tag in the highlighter.'''
@@ -2107,7 +2063,6 @@ if Qsci:
 
         def styleText(self, start, end):
             '''Style the text from start to end.'''
-            # g.trace('(NullScintillaLexer)',start,end)
 
         def configure_lexer(self):
             '''Configure the QScintilla lexer.'''
@@ -2125,7 +2080,6 @@ class QScintillaColorizer(BaseColorizer):
     #@+node:ekr.20140906081909.18709: *3* qsc.__init__ & reloadSettings
     def __init__(self, c, widget, wrapper):
         '''Ctor for QScintillaColorizer. widget is a '''
-        # g.trace('QScintillaColorizer)',widget)
         BaseColorizer.__init__(self, c)
             # init the base class.
         self.count = 0 # For unit testing.
@@ -2181,7 +2135,7 @@ class QScintillaColorizer(BaseColorizer):
         w = wrapper.widget # A Qsci.QsciSintilla object.
         self.lexer = self.lexersDict.get(language, self.nullLexer)
         w.setLexer(self.lexer)
-        # g.trace(bool(self.lexer), language)
+
     #@+node:ekr.20140906081909.18707: *3* qsc.colorize
     def colorize(self, p):
         '''The main Scintilla colorizer entry point.'''
@@ -2242,9 +2196,10 @@ class QScintillaColorizer(BaseColorizer):
                     lexer.setColor(qcolor(color), style_number)
                 except Exception:
                     g.trace('bad color', color)
-            else: pass
+            else:
+                pass
                 # Not an error. Not all lexers have all styles.
-                # g.trace('bad style: %s.%s' % (lexer.__class__.__name__, style))
+                    # g.trace('bad style: %s.%s' % (lexer.__class__.__name__, style))
     #@+node:ekr.20170128031840.1: *3* qsc.init (new)
     def init(self, p):
         '''QScintillaColorizer.init'''

@@ -141,7 +141,6 @@ class ShadowController(object):
             f.write(g.toEncodedString(s, encoding=self.encoding))
             f.close()
             if not g.unitTesting:
-                # g.trace('created:',fn,g.callers())
                 if exists: g.es('wrote:', fn)
                 else: g.es('created:', fn)
             return True

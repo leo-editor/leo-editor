@@ -121,7 +121,6 @@ def run_script(c, script, p=None):
         define_name='__main__',
         silent=True, # Don't write to the log.
     )
-    # g.trace('script returns: ',repr(g.app.scriptResult))
     return g.app.scriptResult
 #@-others
 #@@language python

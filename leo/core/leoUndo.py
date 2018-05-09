@@ -60,7 +60,6 @@ class Undoer(object):
         self.debug_Undoer = False # True: enable debugging code in new undo scheme.
         self.debug_print = False # True: enable print statements in debug code.
         self.granularity = None # Set in reloadSettings.
-        # g.trace('Undoer',self.granularity)
         self.max_undo_stack_size = c.config.getInt('max_undo_stack_size') or 0
         # Statistics comparing old and new ways (only if self.debug_Undoer is on).
         self.new_mem = 0
@@ -159,10 +158,9 @@ class Undoer(object):
                     return
                 i -= 1
             # This work regardless of how many items appear after bead n.
-            # g.trace('Cutting undo stack to %d entries' % (n))
+                # g.trace('Cutting undo stack to %d entries' % (n))
             u.beads = u.beads[-n:]
             u.bead = n - 1
-            # g.trace('bead:',u.bead,'len(u.beads)',len(u.beads),g.callers())
     #@+node:ekr.20080623083646.10: *4* u.dumpBead
     def dumpBead(self, n):
         u = self
@@ -194,7 +192,7 @@ class Undoer(object):
         return bunch
     #@+node:EKR.20040526150818.1: *4* u.peekBead
     def peekBead(self, n):
-        # g.trace(repr(n),g.callers())
+
         u = self
         if n < 0 or n >= len(u.beads):
             return None
@@ -212,7 +210,6 @@ class Undoer(object):
             # Push the bunch.
             u.bead += 1
             u.beads[u.bead:] = [bunch]
-            # g.trace('u.bead',u.bead,'len u.beads',len(u.beads),g.callers())
             # Recalculate the menu labels.
             u.setUndoTypes()
     #@+node:ekr.20050126081529: *4* u.recognizeStartOfTypingWord
@@ -318,10 +315,8 @@ class Undoer(object):
         # Set the undo type and undo menu label.
         bunch = u.peekBead(u.bead)
         if bunch:
-            # g.trace(u.bead,len(u.beads),bunch.undoType)
             u.setUndoType(bunch.undoType)
         else:
-            # g.trace(u.bead,len(u.beads))
             u.setUndoType("Can't Undo")
         # Set only the redo menu label.
         bunch = u.peekBead(u.bead + 1)
@@ -452,7 +447,6 @@ class Undoer(object):
         if u.redoing or u.undoing:
             return
         if dirtyVnodeList is None: dirtyVnodeList = []
-        # g.trace('u.bead',u.bead,'len u.beads',len(u.beads))
         bunch = u.beads[u.bead]
         if not u.beads:
             g.trace('oops: empty undo stack.')
@@ -479,7 +473,6 @@ class Undoer(object):
             u.beads[u.bead:] = [bunch]
         # Recalculate the menu labels.
         u.setUndoTypes()
-        # g.trace(u.undoMenuLabel,u.redoMenuLabel)
     #@+node:ekr.20050315134017.2: *5* u.afterChangeNodeContents
     def afterChangeNodeContents(self, p, command, bunch, dirtyVnodeList=None, inHead=False):
         '''Create an undo node using d created by beforeChangeNode.'''
@@ -681,7 +674,6 @@ class Undoer(object):
         # Set types & helpers
         bunch.kind = 'insert'
         bunch.undoType = command
-        # g.trace(repr(command),g.callers())
         # Set helpers
         bunch.undoHelper = u.undoInsertNode
         bunch.redoHelper = u.redoInsertNode
@@ -700,7 +692,6 @@ class Undoer(object):
                 afterTree.append(
                     g.Bunch(v=v, head=v.h[:], body=v.b[:]))
             bunch.afterTree = afterTree
-            # g.trace(afterTree)
         u.pushBead(bunch)
     #@+node:ekr.20050526124257: *5* u.afterMark
     def afterMark(self, p, command, bunch, dirtyVnodeList=None):
@@ -722,7 +713,6 @@ class Undoer(object):
         u = self; c = u.c
         if u.redoing or u.undoing: return
         if dirtyVnodeList is None: dirtyVnodeList = []
-        # g.trace(p.v,p.childIndex(),g.callers())
         # Set the types & helpers.
         bunch.kind = 'move'
         bunch.undoType = command
@@ -763,7 +753,7 @@ class Undoer(object):
         bunch.dirtyVnodeList = dirtyVnodeList
         # Recalculate the menu labels.
         u.setUndoTypes()
-        # g.trace(u.undoMenuLabel,u.redoMenuLabel)
+
     #@+node:ekr.20050318085432.3: *4* u.beforeX...
     #@+node:ekr.20050315134017.7: *5* u.beforeChangeGroup
     def beforeChangeGroup(self, p, command, verboseUndoGroup=True):
@@ -787,7 +777,6 @@ class Undoer(object):
         '''Return data that gets passed to afterChangeNode'''
         u = self
         bunch = u.createCommonBunch(p)
-        # g.trace('oldHead',oldHead,'p.h',p.h,p.v,g.callers())
         bunch.oldBody = oldBody or p.b
         bunch.oldHead = oldHead or p.h
         bunch.oldYScroll = oldYScroll
@@ -828,7 +817,6 @@ class Undoer(object):
         if pasteAsClone:
             # Save the list of bunched.
             bunch.beforeTree = copiedBunchList
-            # g.trace(bunch.beforeTree)
         return bunch
     #@+node:ekr.20050526131252: *5* u.beforeMark
     def beforeMark(self, p, command):
@@ -840,7 +828,6 @@ class Undoer(object):
     #@+node:ekr.20050410110215: *5* u.beforeMoveNode
     def beforeMoveNode(self, p):
         u = self
-        # g.trace(p.v,p.childIndex(),g.callers())
         bunch = u.createCommonBunch(p)
         bunch.oldN = p.childIndex()
         bunch.oldParent_v = p._parentVnode()
@@ -952,7 +939,6 @@ class Undoer(object):
             u.setUndoTypes() # Must still recalculate the menu labels.
             return None
         if oldText == newText:
-            # g.trace("no change")
             u.setUndoTypes() # Must still recalculate the menu labels.
             return None
         #@-<< return if there is nothing to do >>
@@ -1090,7 +1076,6 @@ class Undoer(object):
                 old_d.get('leading', 0) != u.leading or
                 old_d.get('trailing', 0) != u.trailing
             )
-            # g.trace('granularity', granularity, 'newBead', newBead)
             if granularity == 'word' and not newBead:
                 # Protect the method that may be changed by the user
                 try:
@@ -1113,8 +1098,6 @@ class Undoer(object):
                         prev_row, prev_col = g.convertPythonIndexToRowCol(oldText, prev_start)
                         old_lines = g.splitLines(oldText)
                         new_lines = g.splitLines(newText)
-                        # g.trace('old',old_row,old_col,len(old_lines))
-                        # g.trace('new',new_row,new_col,len(new_lines))
                         # Recognize backspace, del, etc. as contiguous.
                         if old_row != new_row or abs(old_col - new_col) != 1:
                             # The new and old characters are not contiguous.
@@ -1136,7 +1119,6 @@ class Undoer(object):
                             else:
                                 old_ch = old_s[old_col - 1]
                                 new_ch = new_s[new_col - 1]
-                                # g.trace(repr(old_ch),repr(new_ch))
                                 newBead = self.recognizeStartOfTypingWord(
                                     old_lines, old_row, old_col, old_ch,
                                     new_lines, new_row, new_col, new_ch,
@@ -1333,8 +1315,8 @@ class Undoer(object):
     #@+node:ekr.20050412084532: *4* u.redoInsertNode
     def redoInsertNode(self):
         u = self; c = u.c; cc = c.chapterController
-        if cc: cc.selectChapterByName('main')
-        # g.trace('newP',u.newP.v,'back',u.newBack,'parent',u.newParent.v)
+        if cc:
+            cc.selectChapterByName('main')
         if u.newBack:
             u.newP._linkAfter(u.newBack)
         elif u.newParent:
@@ -1351,7 +1333,6 @@ class Undoer(object):
                 else:
                     v.setBodyString(bunch.body)
                     v.setHeadString(bunch.head)
-                # g.trace(v,bunch.head,bunch.body)
         c.selectPosition(u.newP)
     #@+node:ekr.20050526125801: *4* u.redoMark
     def redoMark(self):
@@ -1391,7 +1372,6 @@ class Undoer(object):
         u.p.initHeadString(u.newHead)
         # This is required so.  Otherwise redraw will revert the change!
         c.frame.tree.setHeadline(u.p, u.newHead) # New in 4.4b2.
-        # g.trace('newHead',u.newHead,'revert',c.frame.tree.revertHeadline)
         if u.groupCount == 0 and u.newSel:
             i, j = u.newSel
             w.setSelectionRange(i, j)

@@ -91,7 +91,7 @@ def check_all(files, style):
         # if g.os_path_exists(fn):
             # # Make *sure* that we check files only once.
             # if fn in seen:
-                # g.trace('already seen:', fn)
+                # pass
             # else:
                 # seen.add(fn)
                 # paths.append(fn)

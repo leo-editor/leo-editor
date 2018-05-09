@@ -118,7 +118,6 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         #@+node:ekr.20150514063305.417: *4* __init__ & __iter__ (iterateKillBuffer)
         def __init__(self, c):
             '''Ctor for KillBufferIterClass class.'''
-            # g.trace('iterateKillBuffer.__init')
             self.c = c
             self.index = 0 # The index of the next item to be returned.
 
@@ -128,7 +127,6 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         def next(self):
             commands = self.c.killBufferCommands
             aList = g.app.globalKillBuffer # commands.killBuffer
-            # g.trace(g.listToString([repr(z) for z in aList]))
             if not aList:
                 self.index = 0
                 return None
@@ -138,7 +136,6 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
                 i = commands.reset
                 commands.reset = None
             if i < 0 or i >= len(aList): i = 0
-            # g.trace(i)
             val = aList[i]
             self.index = i + 1
             return val
@@ -178,7 +175,6 @@ class KillBufferCommandsClass(BaseEditCommandsClass):
         s = w.getAllText()
         ins = w.getInsertPoint()
         i, j = g.getLine(s, ins)
-        # g.trace(ins,j,repr(s[i:j]))
         if ins >= len(s) and g.match(s, j - 1, '\n'):
             # Kill the trailing newline of the body text.
             i = max(0, len(s) - 1)

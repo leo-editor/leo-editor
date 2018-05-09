@@ -66,7 +66,6 @@ class SearchWidget(object):
     # This could be a StringTextWrapper, but this code is simple and good.
 
     def __init__(self, *args, **keys):
-        # g.trace ('SearchWidget',g.callers())
         self.s = '' # The widget text
         self.i = 0 # The insert point
         self.sel = 0, 0 # The selection range
@@ -123,7 +122,6 @@ class LeoFind(object):
 
     def __init__(self, c):
         '''Ctor for LeoFind class.'''
-        # g.trace('(LeoFind)',c.shortFileName(),id(self),g.callers())
         self.c = c
         self.errors = 0
         self.expert_mode = False
@@ -1118,7 +1116,6 @@ class LeoFind(object):
     def searchWithPresentOptions1(self, event):
 
         c, k = self.c, self.k
-        # g.trace(k.getArgEscapeFlag, repr(k.arg), g.callers())
         if k.getArgEscapeFlag:
             # 2015/06/30: Special cases for F2/F3 to the escapes
             if event.stroke in self.findEscapes():
@@ -1185,7 +1182,6 @@ class LeoFind(object):
         else:
             c.frame.log.selectTab('Find')
         self.addFindStringToLabel(protect=False)
-        # g.trace(escapes,g.callers())
         if escapes is None: escapes = []
         k.getArgEscapes = escapes
         k.getArgEscapeFlag = False # k.getArg may set this.
@@ -1457,7 +1453,6 @@ class LeoFind(object):
         if start > end: start, end = end, start
         if start == end:
             g.es("no text selected"); return False
-        # g.trace(start,end)
         # Replace the selection in _both_ controls.
         start, end = oldSel
         change_text = self.change_text
@@ -1881,7 +1876,6 @@ class LeoFind(object):
         w = self.s_ctrl
         tree = c.frame and c.frame.tree
         if tree and hasattr(tree, 'killEditing'):
-            # g.trace('kill editing before find')
             tree.killEditing()
         if self.reverse:
             i, j = w.sel
@@ -2105,14 +2099,10 @@ class LeoFind(object):
                 # Bug fix: 10/5/06: At last the bug is found!
         pattern = self.replaceBackSlashes(pattern)
         n = len(pattern)
-        # 2014/09/18: Put the indices in range.  Indices can get out of range
+        # Put the indices in range.  Indices can get out of range
         # because the search code strips '\r' characters when searching @edit nodes.
         i = max(0, i)
         j = min(len(s), j)
-        # Old code:
-            # if i < 0 or i > len(s) or j < 0 or j > len(s):
-                # g.trace('bad index: i = %s, j = %s' % (i,j))
-                # i = 0 ; j = len(s)
         # short circuit the search: helps debugging.
         if s.find(pattern) == -1:
             return -1, -1
@@ -2140,7 +2130,6 @@ class LeoFind(object):
         if word:
             while 1:
                 k = s.find(pattern, i, j)
-                # g.trace(k,n)
                 if k == -1:
                     return -1, -1
                 elif self.matchWord(s, k, pattern):
@@ -2459,7 +2448,6 @@ class LeoFind(object):
             else:
                 start, end = None, None
         editing = e is not None
-        # g.trace('wrapping', self.wrapping, 'wrap', self.wrap)
         expanded = set(gnx for gnx, v in c.fileCommands.gnxDict.items() if v.isExpanded())
         # TODO: this is naive solution that treat all clones the same way if one is expanded
         #       then every other clone is expanded too. A proper way would be to remember

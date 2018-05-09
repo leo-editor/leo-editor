@@ -53,9 +53,6 @@ class EditBodyTestCase(unittest.TestCase):
         self.ins = ins and ins.copy()
             # One line giving the insert point in tk coordinate.
         self.tempNode = tempNode.copy()
-        # g.trace('parent',parent.h)
-        # g.trace('before',before.h)
-        # g.trace('after',after.h)
     #@+node:ekr.20051104075904.72: *3*  fail (EditBodyTestCase)
     def fail(self, msg=None):
         """Mark a unit test as having failed."""
@@ -71,7 +68,6 @@ class EditBodyTestCase(unittest.TestCase):
         i = commandName.find(' ')
         if i > -1:
             commandName = commandName[: i]
-        # g.trace(commandName)
         # Compute the result in tempNode.b
         command = getattr(c, commandName)
         command()
@@ -210,7 +206,6 @@ class GeneralTestCase(unittest.TestCase):
     #@+node:ekr.20051104075904.11: *3* shortDescription
     def shortDescription(self):
         s = self.p.h
-        # g.trace(s)
         return s + '\n'
     #@-others
 #@+node:ekr.20051104075904.79: ** class ImportExportTestCase
@@ -312,7 +307,6 @@ class LinterTable():
         '''Ctor for LinterTable class.'''
         # Define self. relative to leo.core.leoGlobals
         self.loadDir = g.os_path_finalize_join(g.__file__, '..', '..')
-        # g.trace('LinterTable', self.loadDir)
 
     #@+others
     #@+node:ekr.20160518074545.2: *3* commands
@@ -413,11 +407,6 @@ class LinterTable():
         ]
         remove = [g.os_path_finalize_join(self.loadDir, 'plugins', fn) for fn in remove]
         aList = sorted([z for z in aList if z not in remove])
-        # Remove all gui related items.
-        # for z in sorted(aList):
-            # if z.startswith('qt_'):
-                # aList.remove(z)
-        # g.trace('\n'.join(aList))
         return sorted(set(aList))
     #@+node:ekr.20160520093506.1: *3* get_files (LinterTable)
     def get_files(self, pattern):
@@ -453,7 +442,6 @@ class LinterTable():
                     else:
                         print('does not exist: %s' % fn)
             paths = sorted(set(paths))
-            # g.trace('\n'+'\n'.join('%2s %s' % (i+1,z) for i,z in enumerate(paths)))
             return paths
         else:
             print('LinterTable.get_table: bad scope', scope)
@@ -537,7 +525,6 @@ class RunTestExternallyHelperClass(object):
             if aList2:
                 for p in aList: last = self.addNode(p, last)
                 for p in aList2: last = self.addNode(p, last)
-            # g.trace('aList',len(aList),'aList2',len(aList2))
             return bool(aList2)
     #@+node:ekr.20070705065154.1: *5* addNode
     def addNode(self, p, last):
@@ -860,7 +847,6 @@ class TestManager(object):
         c = self.c
         if c.isChanged():
             c.save() # Eliminate the need for ctrl-s.
-        # g.trace('all',all,'marked',marked)
         runner = RunTestExternallyHelperClass(c, all, marked)
         runner.runTests()
         c.bodyWantsFocusNow()
@@ -1017,7 +1003,6 @@ class TestManager(object):
     def runEditCommandTest(self, p):
         tm = self
         c = self.c
-        # g.trace(c.config.getInt('page_width'), c.config.getInt('tab_width'), p.h)
         atTest = p.copy()
         w = c.frame.body.wrapper
         h = atTest.h
@@ -1555,7 +1540,6 @@ class TestManager(object):
             module = tm.safeImportModule(theFile)
             if module:
                 modules.append(module)
-        # g.trace(modules)
         return modules
     #@+node:ekr.20051104075904.101: *4* TM.importAllModulesInPathList
     def importAllModulesInPathList(self, paths):
@@ -1608,7 +1592,6 @@ class TestManager(object):
         oldUnitTesting = g.unitTesting
         if ext == ".py":
             try:
-                # g.trace(moduleName)
                 g.unitTesting = False # Disable @test nodes!
                 g.app.unitTesting = False
                 try:

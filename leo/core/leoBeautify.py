@@ -294,7 +294,6 @@ def comment_leo_lines(p):
             result.append(s)
         if i == progress:
             i += 1
-    # g.trace(''.join(result))
     return comment, ''.join(result)
 #@+node:ekr.20150531042830.1: *4* starts_doc_part & ends_doc_part
 def starts_doc_part(s):
@@ -315,7 +314,6 @@ def uncomment_leo_lines(comment, p, s0):
     '''Reverse the effect of comment_leo_lines.'''
     lines = g.splitLines(s0)
     i, result = 0, []
-    # g.trace(s0)
     while i < len(lines):
         progress = i
         s = lines[i]
@@ -509,11 +507,7 @@ class CPrettyPrinter(object):
         self.parens = 0
         self.result = []
         for s in aList:
-            # g.trace(repr(s))
             self.put_token(s)
-        if 0:
-            for z in self.result:
-                print(repr(z))
         if toList:
             return self.result
         else:
@@ -900,7 +894,6 @@ class PythonTokenBeautifier(object):
                 # Start a new row.
                 raw_val = self.raw_val.rstrip()
                 self.backslash_seen = raw_val.endswith('\\')
-                # g.trace('backslash_seen',self.backslash_seen)
                 if self.paren_level > 0:
                     s = self.raw_val.rstrip()
                     n = g.computeLeadingWhitespaceWidth(s, self.tab_width)
@@ -910,7 +903,6 @@ class PythonTokenBeautifier(object):
                     self.line_indent(ws=' ' * n)
                         # Do not set self.lws here!
                 self.last_line_number = srow
-            # g.trace('%10s %r'% (self.kind,self.val))
             func = getattr(self, 'do_' + self.kind, oops)
             func()
         self.file_end()
@@ -1050,8 +1042,6 @@ class PythonTokenBeautifier(object):
     #@+node:ekr.20150526195542.1: *4* ptb.add_token
     def add_token(self, kind, value=''):
         '''Add a token to the code list.'''
-        # if kind in ('line-indent','line-start','line-end'):
-            # g.trace(kind,repr(value),g.callers())
         tok = self.OutputToken(kind, value)
         self.code_list.append(tok)
     #@+node:ekr.20150526201701.3: *4* ptb.arg_start & arg_end (not used)

@@ -667,7 +667,6 @@ class NullMenu(LeoMenu):
         self.isNull = True
     #@+node:ekr.20050104094029: *3* oops
     def oops(self):
-        # g.trace("LeoMenu", g.callers())
         pass
     #@-others
 #@-others

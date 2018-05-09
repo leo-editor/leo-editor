@@ -577,7 +577,6 @@ class Commands(object):
     #@+node:ekr.20090213065933.7: *4* c.setWindowPosition
     def setWindowPosition(self):
         c = self
-        # g.trace(c.fixed,c.fixedWindowPosition)
         if c.fixedWindowPositionData:
             try:
                 aList = [z.strip() for z in c.fixedWindowPositionData if z.strip()]
@@ -695,7 +694,6 @@ class Commands(object):
     #@+node:ekr.20171123135625.6: *4* c.redirectScriptOutput
     def redirectScriptOutput(self):
         c = self
-        # g.trace('original')
         if c.config.redirect_execute_script_output_to_log_pane:
             g.redirectStdout() # Redirect stdout
             g.redirectStderr() # Redirect stderr
@@ -705,7 +703,6 @@ class Commands(object):
         aList = g.get_directives_dict_list(p)
         path = c.scanAtPathDirectives(aList)
         curDir = g.os_path_abspath(os.getcwd())
-        # g.trace(p.h,'\npath  ',path,'\ncurDir',curDir)
         if path and path != curDir:
             try:
                 os.chdir(path)
@@ -714,7 +711,6 @@ class Commands(object):
     #@+node:ekr.20171123135625.8: *4* c.unredirectScriptOutput
     def unredirectScriptOutput(self):
         c = self
-        # g.trace('original')
         if c.exists and c.config.redirect_execute_script_output_to_log_pane:
             g.restoreStderr()
             g.restoreStdout()
@@ -978,7 +974,6 @@ class Commands(object):
         c = self; p = c.p
         while 1:
             next = p.visNext(c)
-            # g.trace('next',next)
             if next and next.isVisible(c):
                 p = next
             else: break
@@ -1035,7 +1030,6 @@ class Commands(object):
         top level positions are siblings of this node.
         """
         c = self
-        # g.trace(self._rootCount) ; self._rootCount += 1
         # 2011/02/25: Compute the position directly.
         if c.hiddenRootNode.children:
             v = c.hiddenRootNode.children[0]
@@ -1323,7 +1317,6 @@ class Commands(object):
             else: break
         if changed:
             body = ''.join(body) + '\n' # Add back one last newline.
-            # g.trace(body)
             c.setBodyString(p, body)
             # Don't set the dirty bit: it would just be annoying.
     #@+node:ekr.20171124081419.1: *3* c.Check Outline...
@@ -1498,7 +1491,6 @@ class Commands(object):
         parent or any of parents ancestors."""
         c = self
         message = "Illegal move or drag: no clone may contain a clone of itself"
-        # g.trace("root",root,"parent",parent)
         clonedVnodes = {}
         for ancestor in parent.self_and_parents():
             if ancestor.isCloned():
@@ -1841,7 +1833,6 @@ class Commands(object):
         ins = w.getInsertPoint()
         n = 0
         for s in g.splitLines(p.b):
-            # g.trace(ins,n,repr(s))
             if g.match_word(s, 0, tag):
                 i = g.skip_ws(s, len(tag))
                 j = g.skip_id(s, i)
@@ -1850,7 +1841,6 @@ class Commands(object):
                 break
             else:
                 n += len(s)
-        # g.trace(ins,n,language)
         return language
     #@+node:ekr.20081006100835.1: *4* c.getNodePath & c.getNodeFileName
     # Not used in Leo's core.
@@ -1948,7 +1938,6 @@ class Commands(object):
             "pluginsList":  [], # No longer used.
             "wrap":         d.get('wrap'),
         }
-        # g.trace(d.get('tabwidth'))
         return d
     #@+node:ekr.20080828103146.15: *4* c.scanAtPathDirectives
     def scanAtPathDirectives(self, aList):
@@ -2420,7 +2409,7 @@ class Commands(object):
             tag = 'raise_error_dialogs'
             d[tag] = 1 + d.get(tag, 0)
             # This trace catches all too-many-calls failures.
-            # g.trace(g.callers())
+                # g.trace(g.callers())
         else:
             # Issue one or two dialogs or messages.
             if c.import_error_nodes or c.ignored_at_file_nodes:
@@ -2509,7 +2498,6 @@ class Commands(object):
         c = self; u = c.undoer; undoType = 'Clone Drag'
         current = c.p
         inAtIgnoreRange = p.inAtIgnoreRange()
-        # g.trace("p,parent,n:",p.h,parent.h,n)
         clone = p.clone() # Creates clone & dependents, does not set undo.
         if (
             not c.checkDrag(p, parent) or
@@ -2555,7 +2543,6 @@ class Commands(object):
             u.afterInsertNode(clone, undoType, undoData, dirtyVnodeList=dirtyVnodeList)
             p = clone
         else:
-            # g.trace("invalid clone drag")
             clone.doDelete(newNode=p)
         c.redraw(p)
         c.updateSyntaxColorer(clone) # Dragging can change syntax coloring.
@@ -2759,7 +2746,6 @@ class Commands(object):
         '''Navigate to the next headline starting with ch = event.char.
         If ch is uppercase, search all headlines; otherwise search only visible headlines.
         This is modelled on Windows explorer.'''
-        # g.trace(event and event.char)
         if not event or not event.char or not event.char.isalnum():
             return
         c = self; p = c.p; p1 = p.copy()
@@ -2780,7 +2766,6 @@ class Commands(object):
                 if not p:
                     p = c.rootPosition()
                 if p == p1: # Never try to match the same position.
-                    # g.trace('failed',extend2)
                     found = False; break
                 newPrefix = c.navHelper(p, ch, extend2)
                 if newPrefix:
@@ -2791,7 +2776,6 @@ class Commands(object):
             c.redraw_after_select(p)
             c.navTime = time.time()
             c.navPrefix = newPrefix
-            # g.trace('extend',extend,'extend2',extend2,'navPrefix',c.navPrefix,'p',p.h)
         else:
             c.navTime = None
             c.navPrefix = ''
@@ -2993,7 +2977,6 @@ class Commands(object):
             # recentFilesCallback, defined in createRecentFilesMenuItems.
 
             def add_commandCallback(c=c, command=command):
-                # g.trace(command)
                 val = command()
                 # Careful: func may destroy c.
                 if c.exists: c.outerUpdate()

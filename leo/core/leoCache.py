@@ -127,7 +127,6 @@ class Cacher(object):
             content = g.toEncodedString(content)
         # New in Leo 5.6: Use the git branch name in the key.
         branch = g.gitBranchName()
-        # g.trace(type(branch), repr(branch))
         branch = g.toEncodedString(branch)
             # Fix #475.
         m.update(branch)
@@ -279,7 +278,7 @@ class Cacher(object):
             else:
                 v = leoNodes.VNode(context=c)
                 # This is not an error: it can happen with @auto nodes.
-                # g.trace('**** no gnx for',v,parent_v)
+                    # g.trace('**** no gnx for',v,parent_v)
             # Indicate that this node came from an external file.
             v.tempRoots = set()
             v.tempRoots.add(fileName)

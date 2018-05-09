@@ -253,7 +253,6 @@ class ParserBaseClass(object):
         # Set the global config ivars.
         g.app.config.enabledPluginsString = s
         g.app.config.enabledPluginsFileName = c.shortFileName() if c else '<no settings file>'
-        # g.trace('\n%s' % (s),g.app.config.enabledPluginsFileName)
     #@+node:ekr.20041120094940.6: *4* doFloat
     def doFloat(self, p, kind, name, val):
         try:
@@ -337,12 +336,10 @@ class ParserBaseClass(object):
         name = name.strip() # The name indicates the valid values.
         i = name.find('[')
         j = name.find(']')
-        # g.trace(kind,name,val)
         if -1 < i < j:
             items = name[i + 1: j]
             items = items.split(',')
             name = name[: i] + name[j + 1:].strip()
-            # g.trace(name,items)
             try:
                 items = [int(item.strip()) for item in items]
             except ValueError:
@@ -358,7 +355,6 @@ class ParserBaseClass(object):
             if val not in items:
                 self.error("%d is not in %s in %s" % (val, kind, name))
                 return
-            # g.trace(repr(kind),repr(name),val)
             # At present no checking is done.
             self.set(p, kind, name, val)
     #@+node:tbrown.20080514112857.124: *4* doMenuat
@@ -524,7 +520,6 @@ class ParserBaseClass(object):
         '''Parse an @mode node and create the enter-<name>-mode command.'''
         c = self.c
         name1 = name
-        # g.trace('%20s' % (name),c.fileName())
         modeName = self.computeModeName(name)
         d = g.TypedDictOfLists(
             name='modeDict for %s' % (modeName),
@@ -546,7 +541,6 @@ class ParserBaseClass(object):
                     key2, aList2 = c.config.getShortcut(name)
                     aList3 = [z for z in aList2 if z.pane != modeName]
                     if aList3:
-                        # g.trace('inheriting',[b.val for b in aList3])
                         aList.extend(aList3)
                     aList.append(bi)
                     d.replace(name, aList)
@@ -601,7 +595,6 @@ class ParserBaseClass(object):
                             p.moveToThreadNext()
                             break
             else:
-                # g.trace('***skipping***',p.h)
                 p.moveToThreadNext()
     #@+node:ekr.20041121125741: *4* doRatio
     def doRatio(self, p, kind, name, val):
@@ -657,7 +650,6 @@ class ParserBaseClass(object):
             items = [item.strip() for item in items]
             name = name[: i] + name[j + 1:].strip()
             kind = "strings[%s]" % (','.join(items))
-            # g.trace(repr(kind),repr(name),val)
             # At present no checking is done.
             self.set(p, kind, name, val)
     #@+node:ekr.20041124063257: *3* munge (ParserBaseClass)
@@ -748,7 +740,6 @@ class ParserBaseClass(object):
                         name = s[i: j].strip()
                         # val is everything after the '='
                         val = s[j + 1:].strip()
-        # g.trace("%50s %10s %s" %(name,kind,val))
         return kind, name, val
     #@+node:ekr.20070411101643.2: *4* parseOpenWith & helper (ParserBaseClass)
     def parseOpenWith(self, p):
@@ -860,7 +851,6 @@ class ParserBaseClass(object):
         key = self.munge(name)
         if key is None:
             g.es_print('Empty setting name in', p.h in c.fileName())
-            # g.trace("(ParserBaseClass): %r %r %r %s" % (kind,val,name,p.h))
             parent = p.parent()
             while parent:
                 g.trace('parent', parent.h)
@@ -1091,7 +1081,6 @@ class GlobalConfigManager(object):
         # Important: The key is munged.
         gs = self.encodingIvarsDict.get(key)
         setattr(self, gs.ivar, gs.encoding)
-        # g.trace(gs.ivar,gs.encoding)
         if gs.encoding and not g.isValidEncoding(gs.encoding):
             g.es("g.app.config: bad encoding:", "%s: %s" % (gs.ivar, gs.encoding))
     #@+node:ekr.20041117065611: *5* initIvar
@@ -1179,7 +1168,6 @@ class GlobalConfigManager(object):
         gs = d.get(self.munge(setting))
         if not gs: return None, False
         assert isinstance(gs, g.GeneralSetting)
-        # g.trace(setting,requestedType,gs.toString())
         val = gs.val
         # 2011/10/24: test for an explicit None.
         if g.isPython3:
@@ -1202,7 +1190,6 @@ class GlobalConfigManager(object):
             return '', True
                 # 2011/10/24: Exists, a *user-defined* empty value.
         else:
-            # g.trace(setting,val)
             return val, True
     #@+node:ekr.20051015093141: *5* gcm.typesMatch
     def typesMatch(self, type1, type2):
@@ -1307,7 +1294,6 @@ class GlobalConfigManager(object):
         if slant in (None, ""): slant = "roman"
         weight = self.get(weight, "weight")
         if weight in (None, ""): weight = "normal"
-        # g.trace(g.callers(3),family,size,slant,weight)
         return g.app.gui.getFontFromParams(family, size, slant, weight)
     #@+node:ekr.20041117081513: *4* gcm.getInt
     def getInt(self, setting):
@@ -1450,11 +1436,9 @@ class LocalConfigManager(object):
         encoding = self.get(encodingName, kind='string')
         # Use the global setting as a last resort.
         if encoding:
-            # g.trace('c.config',c.shortFileName(),encodingName,encoding)
             setattr(self, encodingName, encoding)
         else:
             encoding = getattr(g.app.config, encodingName)
-            # g.trace('g.app.config',c.shortFileName(),encodingName,encoding)
             setattr(self, encodingName, encoding)
         if encoding and not g.isValidEncoding(encoding):
             g.es("bad", "%s: %s" % (encodingName, encoding))
@@ -1657,7 +1641,6 @@ class LocalConfigManager(object):
         if slant in (None, ""): slant = "roman"
         weight = self.get(weight, "weight")
         if weight in (None, ""): weight = "normal"
-        # g.trace(family,size,slant,weight,g.shortFileName(self.c.mFileName))
         return g.app.gui.getFontFromParams(family, size, slant, weight)
     #@+node:ekr.20120215072959.12532: *5* c.config.getInt
     def getInt(self, setting):
@@ -1672,7 +1655,6 @@ class LocalConfigManager(object):
     def getLanguage(self, setting):
         '''Return the setting whose value should be a language known to Leo.'''
         language = self.getString(setting)
-        # g.trace(setting,language)
         return language
     #@+node:ekr.20120215072959.12534: *5* c.config.getMenusList
     def getMenusList(self):
@@ -1760,7 +1742,6 @@ class LocalConfigManager(object):
     #@+node:ekr.20140114145953.16691: *4* c.config.isLocalSetting
     def isLocalSetting(self, setting, kind):
         '''Return True if the indicated setting comes from a local .leo file.'''
-        # g.trace('setting',setting,'kind',kind)
         if not kind or kind in ('shortcut', 'shortcuts', 'openwithtable'):
             return False
         key = g.app.config.munge(setting)
@@ -1889,7 +1870,6 @@ class SettingsTreeParser(ParserBaseClass):
     #@+node:ekr.20041119204714: *3* visitNode (SettingsTreeParser)
     def visitNode(self, p):
         """Init any settings found in node p."""
-        # g.trace(p.h)
         p = p.copy()
             # Bug fix 2011/11/24
             # Ensure inner traversals don't change callers's p.

@@ -60,7 +60,7 @@ class InternalIPKernel(object):
     #@+node:ekr.20130930062914.15994: *3* ileo.__init__
     def __init__(self, backend='qt'):
         '''Ctor for InternalIPKernal class.'''
-        # g.trace('(InternalIPKernel)', g.callers())
+        #
         # Part 1: create the ivars.
         self.consoles = []
             # List of Qt consoles.
@@ -72,6 +72,7 @@ class InternalIPKernel(object):
         self._init_keys = None
             # Keys present at startup so we don't print the entire pylab/numpy
             # namespace when the user clicks the 'namespace' button
+        #
         # Part 2: Init the kernel and init the ivars.
         kernelApp = self.pylab_kernel(backend)
         assert kernelApp == self.kernelApp
@@ -214,7 +215,6 @@ class InternalIPKernel(object):
         shell = self.kernelApp.shell # ZMQInteractiveShell
         old_show = getattr(shell, '_showtraceback', None)
         code = compile(script, file_name, 'exec')
-        # g.trace(old_show.__name__)
         #@+<< define show_traceback >>
         #@+node:ekr.20160402124159.1: *4* << define show_traceback >>
         def show_traceback(etype, evalue, stb, shell=shell):

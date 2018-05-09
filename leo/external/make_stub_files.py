@@ -1399,7 +1399,6 @@ class Pattern(object):
         for i in range(9):
             group = '\\%s' % i
             if s.find(group) > -1:
-                # g.trace(i, m.group(i))
                 s = s.replace(group, m.group(i))
         return s
     #@-others
@@ -2147,7 +2146,6 @@ class StubFormatter (AstFormatter):
     def visit(self, node):
         '''StubFormatter.visit: supports --verbose tracing.'''
         s = AstFormatter.visit(self, node)
-        # g.trace('%12s %s' % (node.__class__.__name__,s))
         return s
     #@+node:ekr.20160317054700.144: *3* sf.trace_visitor
 
@@ -2376,7 +2374,6 @@ class StubFormatter (AstFormatter):
     def do_UnaryOp(self, node):
         '''StubFormatter.UnaryOp for unary +, -, ~ and 'not' operators.'''
         op = self.op_name(node.op)
-        # g.trace(op.strip(), self.raw_format(node.operand))
         if op.strip() == 'not':
             return 'bool'
         else:
@@ -2929,7 +2926,6 @@ class StubTraverser (ast.NodeVisitor):
         lws =  '\n' + ' '*4
         n = len(raw_returns)
         known = all([is_known_type(e) for e in reduced_returns])
-        # g.trace(reduced_returns)
         if not known or self.verbose:
             # First, generate the return lines.
             aList = []

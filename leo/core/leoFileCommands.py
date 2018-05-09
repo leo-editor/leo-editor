@@ -330,7 +330,7 @@ if sys.platform != 'cli':
             h = d.get('height', 500)
             x = d.get('left', 50)
             y = d.get('top', 50)
-            # g.trace(d,w,h,x,y)
+            #
             # Redraw the window before writing into it.
             # Honor --minimized, --maximized or --fullscreen.
             # 2013/10/25: do set the geometry for minimized windows.
@@ -452,7 +452,6 @@ class FileCommands(object):
     #@+node:ekr.20031218072017.3019: *4* fc.ctor
     def __init__(self, c):
         '''Ctor for FileCommands class.'''
-        # g.trace("__init__", "FileCommands.__init__")
         self.c = c
         self.frame = c.frame
         self.nativeTnodeAttributes = ('tx',)
@@ -1036,7 +1035,6 @@ class FileCommands(object):
         '''
         gnxs = s.split(',')
         result = [gnx for gnx in gnxs if len(gnx) > 0]
-        # g.trace(tag,result)
         return result
     #@+node:EKR.20040627114602: *5* fc.getDescendentUnknownAttributes
     # Pre Leo 4.5 Only @thin vnodes had the descendentTnodeUnknownAttributes field.
@@ -1063,7 +1061,6 @@ class FileCommands(object):
         self.descendentMarksList = []
             # 2011/12/10: never re-init this dict.
             # self.gnxDict = {}
-            # g.trace('*** clearing gnxDict',g.callers())
         self.c.nodeConflictList = [] # 2010/01/05
         self.c.nodeConflictFileName = None # 2010/01/05
     #@+node:EKR.20040627120120: *5* fc.restoreDescendentAttributes
@@ -1096,7 +1093,6 @@ class FileCommands(object):
             v = self.gnxDict.get(gnx)
             if v: marks[v] = v
         if marks or expanded:
-            # g.trace('marks',len(marks),'expanded',len(expanded))
             for p in c.all_unique_positions():
                 if marks.get(p.v):
                     p.v.initMarkedBit()
@@ -1313,7 +1309,6 @@ class FileCommands(object):
         try:
             # No change needed to support protocols.
             val2 = pickle.loads(binString)
-            # g.trace('v.3 val:',val2)
             return val2
         except(pickle.UnpicklingError, ImportError, AttributeError, ValueError, TypeError):
             try:
@@ -1357,7 +1352,6 @@ class FileCommands(object):
             handler = SaxContentHandler(c, inputFileName, silent, inClipboard)
             parser.setContentHandler(handler)
             parser.parse(theFile) # expat does not support parseString
-            # g.trace('parsing done')
             sax_node = handler.getRootNode()
         except Exception:
             g.error('error parsing', inputFileName)
@@ -1397,7 +1391,6 @@ class FileCommands(object):
         c = self.c
         for p in c.all_unique_positions():
             if hasattr(p.v, 'tempTnodeList'):
-                # g.trace(p.v.headString())
                 result = []
                 for tnx in p.v.tempTnodeList:
                     index = self.canonicalTnodeIndex(tnx)
@@ -1410,7 +1403,6 @@ class FileCommands(object):
                         g.trace('*** No VNode for %s' % tnx)
                 if result:
                     p.v.tnodeList = result
-                    # g.trace('*** tnodeList for',p.h,result)
                 delattr(p.v, 'tempTnodeList')
     #@+node:ekr.20080805132422.3: *5* fc.resolveArchivedPosition
     def resolveArchivedPosition(self, archivedPosition, root_v):
@@ -1567,12 +1559,10 @@ class FileCommands(object):
                     p.moveToNext()
                     i -= 1
                 else:
-                    # g.trace('oops: bad archived position. no sibling:',aList,p.h,c)
                     return None
             level += 1
             if level < len(aList):
                 p.moveToFirstChild()
-                # g.trace('level',level,'index',aList[level],p.h)
         return p
     #@+node:ekr.20031218072017.3032: *3* fc.Writing
     #@+node:ekr.20070413045221.2: *4*  fc.Top-level
@@ -1817,7 +1807,6 @@ class FileCommands(object):
                 # of Leo that do not support fixed .leo files.
         else:
             width, height, left, top = c.frame.get_window_info()
-        # g.trace(width,height,left,top)
         self.put_tab()
         self.put("<global_window_position")
         self.put(" top="); self.put_in_dquotes(str(top))
@@ -1921,7 +1910,6 @@ class FileCommands(object):
             tnodes[index] = p.v
         # Put all tnodes in index order.
         for index in sorted(tnodes):
-            # g.trace(index)
             v = tnodes.get(index)
             if v:
                 # Write only those tnodes whose vnodes were written.
@@ -2012,7 +2000,6 @@ class FileCommands(object):
         elif hasattr(v, "unknownAttributes"):
             d = v.unknownAttributes
             if d and not c.fixed and d.get('str_leo_pos'):
-                # g.trace("clearing str_leo_pos",v)
                 del d['str_leo_pos']
                 v.unknownAttributes = d
         # Append unKnownAttributes to attrs
@@ -2479,7 +2466,6 @@ class FileCommands(object):
                 for v in theList:
                     sList.append("%s," % v.fileIndex)
                 s = ''.join(sList)
-                # g.trace(tag,[str(p.h) for p in theList])
                 result.append('\n%s="%s"' % (tag, s))
         return ''.join(result)
     #@+node:ekr.20080805071954.2: *4* fc.putDescendentVnodeUas
@@ -2503,7 +2489,6 @@ class FileCommands(object):
         d = {}
         for v, d2 in aList:
             aList2 = [str(z) for z in pDict.get(v)]
-            # g.trace(aList2)
             key = '.'.join(aList2)
             d[key] = d2
         # Pickle and hexlify d
@@ -2558,7 +2543,6 @@ class FileCommands(object):
             else:
                 val = False
             c.fixed = val
-        # g.trace('c.fixed',c.fixed)
     #@-others
 #@-others
 #@@language python

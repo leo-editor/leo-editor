@@ -158,7 +158,6 @@ class DefaultDict(object):
             known(self.edits2(word))
             # [word] # Fall back to the unknown word itself.
         )
-        # g.trace(word, suggestions)
         return suggestions
     #@+node:ekr.20180207085717.1: *4* dict.edits1 & edits2
     def edits1(self, word):
@@ -742,7 +741,6 @@ class SpellTabHandler(object):
                 start = getattr(self.tab, 'change_i')
                 end = getattr(self.tab, 'change_j')
                 oldSel = start, end
-                # g.trace('using',start,end)
             else:
                 start, end = oldSel = w.getSelectionRange()
             if start is not None:

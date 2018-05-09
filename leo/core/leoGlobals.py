@@ -248,7 +248,7 @@ class FileLikeObject(object):
     #@+others
     #@+node:ekr.20050404151753: *4*  ctor (g.FileLikeObject)
     def __init__(self, encoding='utf-8', fromString=None):
-        # g.trace('g.FileLikeObject:__init__','fromString',fromString)
+
         # New in 4.2.1: allow the file to be inited from string s.
         self.encoding = encoding or 'utf-8'
         if fromString:
@@ -698,7 +698,6 @@ class MatchBrackets(object):
         # Language dependent.
         d1, d2, d3 = g.set_delims_from_language(language)
         self.single_comment, self.start_comment, self.end_comment = d1, d2, d3
-        # g.trace(repr(d1), repr(d2), repr(d3))
         # to track expanding selection
         c.user_dict.setdefault('_match_brackets', {'count': 0, 'range': (0, 0)})
     #@+node:ekr.20160121164723.1: *4* mb.bi-directional helpers
@@ -735,8 +734,6 @@ class MatchBrackets(object):
                     n += 1
                     i2 -= 1
                 if (n % 2) == 0:
-                    # i9 = i if self.forward else i+1
-                    # g.trace(i, s[min(i1,i9):max(i1,i9)].strip())
                     if self.language == 'perl' and found is None:
                         found = i
                     else:
@@ -769,11 +766,9 @@ class MatchBrackets(object):
                     n += 1
                     i2 -= 1
                 if (n % 2) == 0:
-                    # i9 = i if self.forward else i + 1
-                    # g.trace(i, s[min(i1, i9): max(i1, i9)].strip())
                     return i
         # Annoying when matching brackets on the fly.
-        # self.oops('unmatched string')
+            # self.oops('unmatched string')
         return i + offset
     #@+node:tbrown.20180226113621.1: *4* mb.expand_range
     def expand_range(self, s, left, right, max_right, expand=False):
@@ -839,7 +834,6 @@ class MatchBrackets(object):
         while 0 <= i < len(s):
             progress = i
             ch = s[i]
-            # g.trace('forward' if self.forward else 'backward',repr(ch),'i',i)
             if ch in '"\'':
                 # Scan to the end/beginning of the string.
                 i = self.scan_string(s, i)
@@ -946,12 +940,8 @@ class MatchBrackets(object):
             elif ch == ch1:
                 level += 1
                 i -= 1
-                # n1, n2 = g.getLine(s, i)
-                # g.trace(ch, level, n1, n2, s[n1:n2].rstrip())
             elif ch == target:
                 level -= 1
-                # n1, n2 = g.getLine(s, i)
-                # g.trace(ch, level, n1, n2, s[n1:n2].rstrip())
                 if level <= 0:
                     return i
                 i -= 1
@@ -1212,7 +1202,6 @@ class ReadLinesClass(object):
             self.i += 1
         else:
             line = ''
-        # g.trace(repr(line))
         return line
 
     __next__ = next
@@ -2295,12 +2284,10 @@ def run_pylint(fn, rc,
         return g.trace('does not exist:', fn)
     if not g.os_path_exists(rc):
         return g.trace('does not exist', rc)
-    # g.trace(rc)
     args = ['--rcfile=%s' % (rc)]
     # Prints error number.
-    # args.append('--msg-template={path}:{line}: [{msg_id}({symbol}), {obj}] {msg}')
+        # args.append('--msg-template={path}:{line}: [{msg_id}({symbol}), {obj}] {msg}')
     args.append(fn)
-    # g.trace('args:', args)
     if sherlock:
         sherlock = g.SherlockTracer(
                 dots=dots,
@@ -2941,9 +2928,6 @@ def get_directives_dict_list(p):
     for p in p1.self_and_parents():
         root = None if p.hasParent() else [p.copy()]
         result.append(g.get_directives_dict(p, root=root))
-    # if trace:
-        # n = len(p1.h) + len(p1.b)
-        # g.trace('%4d %s' % (n,g.timeSince(time1)))
     return result
 #@+node:ekr.20111010082822.15545: *3* g.getLanguageFromAncestorAtFileNode
 def getLanguageFromAncestorAtFileNode(p):
@@ -2957,7 +2941,6 @@ def getLanguageFromAncestorAtFileNode(p):
             junk, ext = g.os_path_splitext(name)
             ext = ext[1:] # strip the leading .
             language = g.app.extension_dict.get(ext)
-            # g.trace('found extension',p.h,ext,language)
             return language
     return None
 #@+node:ekr.20150325075144.1: *3* g.getLanguageFromPosition
@@ -2995,7 +2978,6 @@ def getOutputNewline(c=None, name=None):
     elif s == "platform": s = os.linesep # 12/2/03: emakital
     elif s == "crlf": s = "\r\n"
     else: s = '\n' # Default for erroneous values.
-    # g.trace(c,name,c.config.output_newline,'returns',repr(s))
     if g.isPython3:
         s = str(s)
     return s
@@ -3043,7 +3025,6 @@ def scanAtEncodingDirectives(aList):
     for d in aList:
         encoding = d.get('encoding')
         if encoding and g.isValidEncoding(encoding):
-            # g.trace(encoding)
             return encoding
         elif encoding and not g.app.unitTesting:
             g.error("invalid @encoding:", encoding)
@@ -3073,7 +3054,6 @@ def scanAtPagewidthDirectives(aList, issue_error_flag=False):
         if s is not None:
             i, val = g.skip_long(s, 0)
             if val is not None and val > 0:
-                # g.trace(val)
                 return val
             else:
                 if issue_error_flag and not g.app.unitTesting:
@@ -3128,7 +3108,6 @@ def scanAtRootOptions(s, i, err_flag=False):
     if mode is None:
         doc = app.config.at_root_bodies_start_in_doc_mode
         mode = "doc" if doc else "code"
-    # g.trace(mode,g.callers(3))
     return i, mode
 #@+node:ekr.20080827175609.37: *3* g.scanAtTabwidthDirectives & scanAllTabWidthDirectives
 def scanAtTabwidthDirectives(aList, issue_error_flag=False):
@@ -3152,7 +3131,6 @@ def scanAllAtTabWidthDirectives(c, p):
         ret = c.tab_width if val is None else val
     else:
         ret = None
-    # g.trace(ret,p and p.h,ret)
     return ret
 #@+node:ekr.20080831084419.4: *3* g.scanAtWrapDirectives & scanAllAtWrapDirectives
 def scanAtWrapDirectives(aList, issue_error_flag=False):
@@ -3173,7 +3151,6 @@ def scanAllAtWrapDirectives(c, p):
         ret = default if val is None else val
     else:
         ret = None
-    # g.trace(ret,p.h)
     return ret
 #@+node:ekr.20080901195858.4: *3* g.scanDirectives  (for compatibility only)
 def scanDirectives(c, p=None):
@@ -3282,7 +3259,6 @@ def set_language(s, i, issue_errors_flag=False):
     Returns (language, delim1, delim2, delim3)
     """
     tag = "@language"
-    # g.trace(g.get_line(s,i))
     assert(i is not None)
     # assert(g.match_word(s,i,tag))
     if g.match_word(s, i, tag):
@@ -3459,7 +3435,6 @@ def getBaseDirectory(c):
         # Call os.chdir if requested.
         if c.chdir_to_relative_path:
             os.chdir(base)
-        # g.trace(base)
         return base # base need not exist yet.
     else:
         return "" # No relative base given.
@@ -3741,7 +3716,6 @@ def readFileIntoUnicodeString(fn, encoding=None, silent=False):
 def readlineForceUnixNewline(f, fileName=None):
     try:
         s = f.readline()
-        # g.trace(repr(s))
     except UnicodeDecodeError:
         g.trace('UnicodeDecodeError: %s' % (fileName), f, g.callers())
         s = g.u('')
@@ -4166,11 +4140,7 @@ def scanf(s, pat):
     for part in parts:
         if part and len(result) < count:
             result.append(part)
-    # g.trace("scanf returns:",result)
     return result
-
-if 0: # testing
-    g.scanf("1.0", "%d.%d",)
 #@+node:ekr.20031218072017.3195: *3* g.splitLines & g.joinLines
 def splitLines(s):
     '''Split s into lines, preserving the number of lines and
@@ -4352,7 +4322,6 @@ def skip_pp_directive(s, i):
 
 def skip_pp_if(s, i):
     start_line = g.get_line(s, i) # used for error messages.
-    # g.trace(start_line)
     assert(
         g.match_word(s, i, "#if") or
         g.match_word(s, i, "#ifdef") or
@@ -4371,13 +4340,12 @@ def skip_pp_if(s, i):
         i = g.skip_line(s, i)
     else:
         g.es("no matching #endif:", start_line)
-    # g.trace(delta1,start_line)
     return i, delta1
 #@+node:ekr.20031218072017.3169: *4* skip_pp_part
 # Skip to an #else or #endif.  The caller has eaten the #if, #ifdef, #ifndef or #else
 
 def skip_pp_part(s, i):
-    # g.trace(g.get_line(s,i))
+
     delta = 0
     while i < len(s):
         c = s[i]
@@ -4425,7 +4393,6 @@ def skip_string(s, i, verbose=True):
             g.scanError("Run on string: " + s[j: i])
     elif s[i] == delim:
         i += 1
-    # g.trace(s[j:i])
     return i
 #@+node:ekr.20031218072017.3171: *4* skip_to_semicolon
 # Skips to the next semicolon that is not in a comment or a string.
@@ -4879,7 +4846,6 @@ def gitHeadPath(path=None):
         path = g.os_path_dirname(__file__)
     head = g.os_path_finalize_join(path, '..', '..', '.git', 'HEAD')
     exists = g.os_path_exists(head)
-    # g.trace('exists: %s path: %s' % (exists, head))
     return head if exists else None
 #@+node:ekr.20170414034616.3: *3* g.gitInfo
 def gitInfo(path=None):
@@ -5234,7 +5200,6 @@ def convertPythonIndexToRowCol(s, i):
         return row, i
     else:
         prevNL = s.rfind('\n', 0, i) # Don't include i
-        # g.trace('prevNL',prevNL,'i',i,g.callers())
         return row, i - prevNL - 1
 #@+node:ekr.20050315071727: *4* g.convertRowColToPythonIndex
 def convertRowColToPythonIndex(s, row, col, lines=None):
@@ -5278,7 +5243,6 @@ def getLine(s, i):
     k = s.find('\n', i)
     if k == -1: k = len(s)
     else: k = k + 1
-    # g.trace('i,j,k',i,j,k,repr(s[j:k]))
     return j, k
 #@+node:ekr.20111114151846.9847: *4* g.toPythonIndex
 def toPythonIndex(s, index):
@@ -5300,7 +5264,6 @@ def toPythonIndex(s, index):
             row, col = data
             row, col = int(row), int(col)
             i = g.convertRowColToPythonIndex(s, row - 1, col)
-            # g.trace(data,row,col,i)
             return i
         else:
             g.trace('bad string index: %s' % index)
@@ -5347,7 +5310,6 @@ def join_list(aList, indent='', leading='', sep='', trailing=''):
     See the HTMLReportTraverser class for many examples.
     '''
     if not aList:
-        # g.trace('None: indent:%s' % repr(indent))
         return None
     if 1: # These asserts are reasonable.
         assert g.isString(indent), indent
@@ -5490,7 +5452,6 @@ def getPythonEncodingFromString(s):
             line1 = line1[len('@first'):].strip()
             if line1.startswith(tag) and line1.endswith(tag2):
                 e = line1[n1: -n2].strip()
-                # g.trace(e,g.isValidEncoding(e),g.callers())
                 if e and g.isValidEncoding(e):
                     encoding = e
     return encoding
@@ -5771,7 +5732,6 @@ def wrap_lines(lines, pageWidth, firstLineWidth=None):
     # This should be determined by some setting, and can only be either 1 or 2
     sentenceSpacingWidth = 1
     assert(0 < sentenceSpacingWidth < 3)
-    # g.trace(lines)
     result = [] # The lines of the result.
     line = "" # The line being formed.  It never ends in whitespace.
     for s in lines:
@@ -5820,7 +5780,6 @@ def wrap_lines(lines, pageWidth, firstLineWidth=None):
                 #@-<< place word on a new line >>
     if line:
         result.append(line)
-    # g.trace(result)
     return result
 #@+node:ekr.20031218072017.3200: *4* g.get_leading_ws
 def get_leading_ws(s):
@@ -6191,7 +6150,6 @@ def internalError(*args):
 #@+node:ekr.20150127060254.5: *3* g.log_to_file
 def log_to_file(s, fn=None):
     '''Write a message to ~/test/leo_log.txt.'''
-    # g.trace(s)
     if fn is None:
         fn = g.os_path_expanduser('~/test/leo_log.txt')
     if not s.endswith('\n'):
@@ -6797,7 +6755,6 @@ def os_path_join(*args, **keys):
         c = keys.get('c')
         if c and c.openDirectory:
             uargs[0] = c.openDirectory
-            # g.trace(c.openDirectory)
     if expanduser:
         uargs = [g.os_path_expanduser(z) for z in uargs if z]
     if uargs:
@@ -7169,8 +7126,7 @@ def executeFile(filename, options=''):
     # New in Leo 4.10: alway use subprocess.
 
     def subprocess_wrapper(cmdlst):
-        # g.trace(cmdlst, fdir)
-        # g.trace(subprocess.list2cmdline([cmdlst]))
+
         p = subprocess.Popen(cmdlst, cwd=fdir,
             universal_newlines=True,
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -7539,7 +7495,6 @@ def getUrlFromNode(p):
         if url.startswith(tag):
             fn = url[len(tag):].lstrip()
             fn = fn.split('#', 1)[0]
-            # g.trace('fn',fn)
             if g.os_path_isfile(fn):
                 # Return the *original* url, with a file:// scheme.
                 # g.handleUrl will call computeFileUrl again.

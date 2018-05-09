@@ -723,13 +723,11 @@ def getColor(name, default=None):
     """
     if not g.isString(name):
         return name
-    #g.trace(name, default)
     if name[0] == '#':
         return name
     name = name.replace(' ', '').lower().strip()
     if name in leo_color_database:
         name2 = leo_color_database[name]
-        # g.trace(name,name2)
         return name2
     if default:
         return getColor(default, default=None)

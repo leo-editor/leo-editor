@@ -1214,7 +1214,6 @@ class LeoGlobals(object):
                 self.i += 1
             else:
                 line = ''
-            # g.trace(repr(line))
             return line
 
         __next__ = next
@@ -1844,7 +1843,6 @@ class TokenSync(object):
 
     def sync_string(self, node):
         '''Return the spelling of the string at the given node.'''
-        # g.trace('%-10s %2s: %s' % (' ', node.lineno, self.line_at(node)))
         n = node.lineno
         tokens = self.string_tokens[n-1]
         if tokens:
@@ -1894,7 +1892,6 @@ class TokenSync(object):
         if hasattr(node, 'lineno'):
             return self.trailing_comment_at_lineno(node.lineno)
         else:
-            # g.trace('no lineno', node.__class__.__name__, g.callers())
             return '\n'
     #@+node:ekr.20160316091132.128: *3* ts.trailing_comment_at_lineno
 

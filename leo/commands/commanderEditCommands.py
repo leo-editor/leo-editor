@@ -39,7 +39,6 @@ def addComments(self, event=None):
     language = c.frame.body.colorizer.scanLanguageDirectives(p)
     if c.hasAmbiguousLanguage(p):
         language = c.getLanguageAtCursor(p, language)
-    # g.trace(language,p.h)
     d1, d2, d3 = g.set_delims_from_language(language)
     d2 = d2 or ''; d3 = d3 or ''
     if d1:
@@ -82,7 +81,6 @@ def convertAllBlanks(self, event=None):
     count = 0; dirtyVnodeList = []
     u.beforeChangeGroup(current, undoType)
     for p in current.self_and_subtree():
-        # g.trace(p.h,tabWidth)
         innerUndoData = u.beforeChangeNodeContents(p)
         if p == current:
             changed, dirtyVnodeList2 = c.convertBlanks(event)

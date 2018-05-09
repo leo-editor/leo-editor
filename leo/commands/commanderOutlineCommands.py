@@ -308,7 +308,6 @@ def expandNextLevel(self, event=None):
     if c.expansionNode != c.p:
         c.expansionLevel = 1
         c.expansionNode = c.p.copy()
-    # g.trace(c.expansionLevel)
     self.expandToLevel(c.expansionLevel + 1)
 #@+node:ekr.20031218072017.2907: *3* c_oc.expandNode
 @g.commander_command('expand-node')
@@ -1167,7 +1166,6 @@ def demote(self, event=None):
     parent_v = p._parentVnode()
     n = p.childIndex()
     followingSibs = parent_v.children[n + 1:]
-    # g.trace('sibs2\n',g.listToString(followingSibs2))
     # Remove the moved nodes from the parent's children.
     parent_v.children = parent_v.children[: n + 1]
     # Add the moved nodes to p's children
@@ -1300,7 +1298,6 @@ def moveOutlineRight(self, event=None):
     dirtyVnodeList.extend(dirtyVnodeList2)
     c.setChanged(True)
     u.afterMoveNode(p, 'Move Right', undoData, dirtyVnodeList)
-    # g.trace(p)
     c.redraw(p, setFocus=True)
     c.recolor()
 #@+node:ekr.20031218072017.1772: *3* c_oc.moveOutlineUp
@@ -1333,7 +1330,6 @@ def moveOutlineUp(self, event=None):
                 # canMoveOutlineUp should have caught this.
                 g.trace('can not happen. In hoist')
             else:
-                # g.trace('chapter first child')
                 moved = True
                 p.moveToFirstChildOf(limit)
         else:
@@ -1435,7 +1431,6 @@ def sortSiblings(self, event=None,
         return
     # 2010/01/20. Fix bug 510148.
     c.setChanged(True)
-    # g.trace(g.listToString(newChildren))
     bunch = u.beforeSort(p, undoType, oldChildren, newChildren, sortChildren)
     parent_v.children = newChildren
     if parent:

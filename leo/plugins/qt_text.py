@@ -92,8 +92,6 @@ class QTextMixin(object):
             # This can happen as the result of undo.
             # g.error('*** unexpected non-change')
             return
-        # g.trace('**',len(newText),p.h,'\n',g.callers(8))
-        # oldIns  = p.v.insertSpot
         i, j = p.v.selectionStart, p.v.selectionLength
         oldSel = (i, i + j)
         oldYview = None
@@ -218,7 +216,6 @@ class QTextMixin(object):
         if s is None:
             s = self.getAllText()
         i = g.toPythonIndex(s, index)
-        # g.trace(index,len(s),i,s[i:i+10])
         return i
     #@+node:ekr.20140901141402.18704: *5* qtm.toPythonIndexRowCol
     def toPythonIndexRowCol(self, index):
@@ -269,7 +266,6 @@ class QLineEditWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18060: *3* qlew.Birth
     def __init__(self, widget, name, c=None):
         '''Ctor for QLineEditWrapper class.'''
-        # g.trace('(QLineEditWrapper):widget',name,self.widget)
         QTextMixin.__init__(self, c)
             # Init the base class.
         self.widget = widget
@@ -429,7 +425,6 @@ if QtWidgets:
         #@+node:ekr.20110605121601.18006: *3*  lqtb.ctor (** no longer instantiates leo_h)
         def __init__(self, parent, c, wrapper):
             '''ctor for LeoQTextBrowser class.'''
-            # g.trace('(LeoQTextBrowser)',c.shortFileName(),parent,wrapper)
             for attr in ('leo_c', 'leo_wrapper',):
                 assert not hasattr(QtWidgets.QTextBrowser, attr), attr
             self.leo_c = c
@@ -479,7 +474,6 @@ if QtWidgets:
             #@+node:ekr.20110605121601.18012: *5* lqlw.end_completer
             def end_completer(self):
                 '''End completion.'''
-                # g.trace('(LeoQListWidget)')
                 c = self.leo_c
                 c.in_qt_dialog = False
                 # This is important: it clears the autocompletion state.
@@ -613,7 +607,6 @@ if QtWidgets:
             #@+node:ekr.20110605121601.18016: *5* lqlw.show_completions
             def show_completions(self, aList):
                 '''Set the QListView contents to aList.'''
-                # g.trace('(qc) len(aList)',len(aList))
                 self.clear()
                 self.addItems(aList)
                 self.setCurrentRow(0)
@@ -725,7 +718,6 @@ class NumberBar(QtWidgets.QFrame):
     #@+node:ekr.20150403094706.3: *3* NumberBar.__init__& reloadSettings
     def __init__(self, c, e, *args):
         '''Ctor for NumberBar class.'''
-        # g.trace('(NumberBar)')
         QtWidgets.QFrame.__init__(self, *args)
             # Init the base class.
         self.c = c
@@ -832,7 +824,6 @@ class QHeadlineWrapper(QLineEditWrapper):
     #@+node:ekr.20110605121601.18117: *3* qhw.Birth
     def __init__(self, c, item, name, widget):
         '''The ctor for the QHeadlineWrapper class.'''
-        # g.trace('(QHeadlineWrapper)',item,widget)
         assert isinstance(widget, QtWidgets.QLineEdit), widget
         QLineEditWrapper.__init__(self, widget, name, c)
             # Init the base class.
@@ -866,7 +857,6 @@ class QMinibufferWrapper(QLineEditWrapper):
         '''Ctor for QMinibufferWrapper class.'''
         self.c = c
         w = c.frame.top.leo_ui.lineEdit # QLineEdit
-        # g.trace('(QMinibufferWrapper)',w)
         QLineEditWrapper.__init__(self, widget=w, name='minibuffer', c=c)
             # Init the base class.
         assert self.widget
@@ -918,7 +908,6 @@ class QScintillaWrapper(QTextMixin):
     #@+node:ekr.20110605121601.18105: *3* qsciw.ctor
     def __init__(self, widget, c, name=None):
         '''Ctor for the QScintillaWrapper class.'''
-        # g.trace('(QScintillaWrapper)',c.shortFileName(),name,g.callers())
         QTextMixin.__init__(self, c)
             # init the base class.
         self.baseClassName = 'QScintillaWrapper'
@@ -937,7 +926,6 @@ class QScintillaWrapper(QTextMixin):
         n = c.config.getInt('qt-scintilla-zoom-in')
         if n not in (None, 1, 0):
             w.zoomIn(n)
-        # g.trace(dir(w.BraceMatch))
         w.setUtf8(True) # Important.
         if 1:
             w.setBraceMatching(2) # Sloppy
@@ -1008,7 +996,6 @@ class QScintillaWrapper(QTextMixin):
             self.flashIndex = self.toPythonIndex(i)
             self.flashBg = None if bg.lower() == 'same' else bg
             self.flashFg = None if fg.lower() == 'same' else fg
-            # g.trace(self.flashBg,self.flashFg)
             addFlashCallback()
     #@+node:ekr.20140901062324.18595: *4* qsciw.get
     def get(self, i, j=None):
@@ -1092,7 +1079,6 @@ class QScintillaWrapper(QTextMixin):
             else:
                 delta = 0; g.trace('bad kind:', kind)
             val = vScroll.value()
-            # g.trace(kind,n,h,lineSpacing,delta,val,g.callers())
             vScroll.setValue(val + (delta * lineSpacing))
             c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18112: *4* qsciw.see
@@ -1129,7 +1115,6 @@ class QScintillaWrapper(QTextMixin):
         i = self.toPythonIndex(i)
         j = self.toPythonIndex(j)
         insert = j if insert is None else self.toPythonIndex(insert)
-        # g.trace('i',i,'j',j,'insert',insert,g.callers())
         if insert >= i:
             w.SendScintilla(w.SCI_SETSEL, i, j)
         else:
@@ -1137,11 +1122,9 @@ class QScintillaWrapper(QTextMixin):
     #@+node:ekr.20140901062324.18609: *4* qsciw.setX/YScrollPosition (to do)
     def setXScrollPosition(self, pos):
         '''Set the position of the horizontal scrollbar.'''
-        # g.trace(pos)
 
     def setYScrollPosition(self, pos):
         '''Set the position of the vertical scrollbar.'''
-        # g.trace(pos)
     #@-others
 #@+node:ekr.20110605121601.18071: ** class QTextEditWrapper(QTextMixin)
 class QTextEditWrapper(QTextMixin):
@@ -1181,7 +1164,6 @@ class QTextEditWrapper(QTextMixin):
         '''Set up signals.'''
         c, name = self.c, self.name
         if name in ('body', 'rendering-pane-wrapper') or name.startswith('head'):
-            # g.trace('hooking up qt events',name)
             # Hook up qt events.
             g.app.gui.setFilter(c, self.widget, self, tag=name)
         if name == 'body':
@@ -1235,7 +1217,6 @@ class QTextEditWrapper(QTextMixin):
             elif i == j:
                 pass
             else:
-                # g.trace('*** using dubious code')
                 cursor.setPosition(i)
                 moveCount = abs(j - i)
                 cursor.movePosition(cursor.Right, cursor.KeepAnchor, moveCount)
@@ -1449,7 +1430,6 @@ class QTextEditWrapper(QTextMixin):
         else:
             delta = 0; g.trace('bad kind:', kind)
         val = vScroll.value()
-        # g.trace(kind,n,h,lineSpacing,delta,val,g.callers())
         vScroll.setValue(val + (delta * lineSpacing))
         c.bodyWantsFocus()
     #@+node:ekr.20110605121601.18090: *4* qtew.see & seeInsertPoint
@@ -1561,10 +1541,8 @@ class QTextEditWrapper(QTextMixin):
         elif index == '1.0':
             return 0
         elif index == 'end':
-            # g.trace('===== slow =====',repr(index))
             return w.getLastPosition()
         else:
-            # g.trace('===== slow =====',repr(index))
             doc = te.document()
             data = index.split('.')
             if len(data) == 2:
