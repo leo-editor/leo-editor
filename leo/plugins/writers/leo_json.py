@@ -1,9 +1,8 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20160504083330.1: * @file writers/json.py
+#@+node:ekr.20160504083330.1: * @file writers/leo_json.py
 '''The @auto write code for .json files.'''
-# pylint: disable=unused-import
-# pylint: disable=import-self
-# json is not the same as leo.plugins.json
+#
+# This module must **not** be named json, to avoid conflicts with the json standard library.
 import copy
 import json
 # import leo.core.leoGlobals as g

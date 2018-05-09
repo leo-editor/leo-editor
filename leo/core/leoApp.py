@@ -2450,6 +2450,7 @@ class LoadManager(object):
     def createWritersData(self):
         '''Create the data structures describing writer plugins.'''
         trace = False and 'createWritersData' not in g.app.debug_dict
+            # Do *not* remove this trace.
         if trace:
             # Suppress multiple traces.
             g.app.debug_dict['createWritersData'] = True
@@ -2476,7 +2477,6 @@ class LoadManager(object):
             g.trace('LM.atAutoWritersDict')
             g.printDict(g.app.atAutoWritersDict)
         # Creates problems: https://github.com/leo-editor/leo-editor/issues/40
-
     #@+node:ekr.20140728040812.17991: *7* LM.parse_writer_dict
     def parse_writer_dict(self, sfn, m):
         '''

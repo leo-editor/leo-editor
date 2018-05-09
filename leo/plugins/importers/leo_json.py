@@ -1,8 +1,8 @@
 #@+leo-ver=5-thin
-#@+node:ekr.20160504080826.1: * @file importers/json.py
+#@+node:ekr.20160504080826.1: * @file importers/leo_json.py
 '''The @auto importer for .json files.'''
-# pylint: disable=import-self
-# json is not the same as leo.plugins.json
+#
+# This module must **not** be named json, to avoid conflicts with the json standard library.
 import json
 import leo.core.leoGlobals as g
 import leo.core.leoNodes as leoNodes
