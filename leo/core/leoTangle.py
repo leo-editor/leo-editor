@@ -224,7 +224,6 @@ class UstNode(object):
     def dump(self):
         s = "name: %s" % repr(self.name)
         for part in self.parts.values():
-            # assert(part.of == self.of)
             s += "\n----- part %s of %s -----\n" % (repr(part.part), repr(part.of))
             s += repr(g.get_line(part.code, 0))
             s += "\nupdate_flag: %s" % repr(part.update_flag)
@@ -1752,7 +1751,7 @@ class BaseTangleCommands(object):
     # Enters a root name into the given symbol table.
 
     def st_enter_root_name(self, name, code, doc, delims_begin, delims_end):
-        # assert(code)
+
         if name: # User errors can result in an empty @root name.
             self.st_enter(name, code, doc, delims_begin, delims_end, is_root_flag=True)
     #@+node:ekr.20031218072017.3536: *4* st_enter_section_name

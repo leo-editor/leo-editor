@@ -2546,7 +2546,6 @@ class LoadManager(object):
             else:
                 g.app.createNullGuiWithScript(script=script)
         else:
-            # assert g.app.guiArgName
             g.app.createDefaultGui()
     #@+node:ekr.20120219154958.10480: *5* LM.adjustSysPath
     def adjustSysPath(self):

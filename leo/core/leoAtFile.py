@@ -582,7 +582,6 @@ class AtFile(object):
         if aList:
             # new-read: Never create resurrected nodes.
                 # r = at.createResurrectedNodesNode()
-                # assert r not in aList
                 # callback = at.defineResurrectedNodeCallback(r, root)
                 # # Move the nodes using the callback.
                 # at.c.deletePositionsInList(aList, callback)
@@ -4400,7 +4399,6 @@ class AtFile(object):
         follows the @first & @last directives.
         '''
         at = self
-        # assert(i < len(s) and s[i] == '@')
         k = i
         j = g.skip_to_end_of_line(s, i)
         directive = s[i: j]
@@ -4929,8 +4927,8 @@ class AtFile(object):
                 at.startSentinelComment = delim2
                 at.endSentinelComment = delim3
             else: # Emergency!
-                # assert(0)
-                # 2016/11/25: Issue an error only if at.language has been set.
+                #
+                # Issue an error only if at.language has been set.
                 # This suppresses a message from the markdown importer.
                 if not g.app.unitTesting and at.language:
                     g.trace(repr(at.language), g.callers())

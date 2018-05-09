@@ -1485,7 +1485,7 @@ class LeoQtBody(leoFrame.LeoBody):
         wrapper = c.frame.body.wrapper
         w = wrapper.widget
         # This seems not to be a valid assertion.
-        # assert wrapper == d.get(name),'wrong wrapper'
+            # assert wrapper == d.get(name),'wrong wrapper'
         assert g.isTextWrapper(wrapper), wrapper
         assert g.isTextWidget(w), w
         if len(list(d.keys())) <= 1: return

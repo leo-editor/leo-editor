@@ -188,7 +188,6 @@ class AstFormatter(object):
             method_name = 'do_' + node.__class__.__name__
             method = getattr(self, method_name)
             s = method(node)
-            # assert type(s) == type('abc'), (node, type(s))
             assert g.isString(s), type(s)
             return s
     #@+node:ekr.20160317055215.6: *3* f.Contexts

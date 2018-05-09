@@ -252,7 +252,6 @@ class CoffeeScriptTraverser(object):
 
     def indent(self, s):
         '''Return s, properly indented.'''
-        # assert not s.startswith('\n'), (g.callers(), repr(s))
         n = 0
         while s and s.startswith('\n'):
             n += 1

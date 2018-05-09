@@ -1686,7 +1686,7 @@ class EditCommandsClass(BaseEditCommandsClass):
                 # 2011/10/02: Fix cursor-movement bug.
     #@+node:ekr.20150514063305.276: *5* ec.updateAutomatchBracket
     def updateAutomatchBracket(self, p, w, ch, oldSel):
-        # assert ch in ('(',')','[',']','{','}')
+
         c = self.c
         d = c.scanAllDirectives(p)
         i, j = oldSel

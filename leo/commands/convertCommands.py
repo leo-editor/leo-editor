@@ -1290,7 +1290,6 @@ class ConvertCommandsClass(BaseEditCommandsClass):
                         break
                 else:
                     return
-                    # assert False, 'not a scope id: %s' % word
                 # Skip any following spaces.
                 i2 = self.skip_ws(aList, i)
                 # Scan to the next newline:

@@ -1831,7 +1831,6 @@ class TypedDict(object):
     def _checkKeyType(self, key):
         # These fail on Python 2.x for strings.
         if g.isPython3:
-            # assert key.__class__ == self.keyType,self._reportTypeError(key,self.keyType)
             if key and key.__class__ != self.keyType:
                 self._reportTypeError(key, self.keyType)
 
@@ -3258,7 +3257,6 @@ def set_language(s, i, issue_errors_flag=False):
     """
     tag = "@language"
     assert(i is not None)
-    # assert(g.match_word(s,i,tag))
     if g.match_word(s, i, tag):
         i += len(tag)
     # Get the argument.
@@ -5292,7 +5290,6 @@ def flatten_list(obj):
             for s in flatten_list(obj2):
                 yield s
     elif obj:
-        # assert g.isString(obj),obj.__class__.__name__
         if g.isString(obj):
             yield obj
         else:
@@ -5458,7 +5455,6 @@ def getPythonEncodingFromString(s):
 def isBytes(s):
     '''Return True if s is Python3k bytes type.'''
     if g.isPython3:
-        # assert type(b'0') == type(bytes('a', 'utf-8'))
         return isinstance(s, bytes)
     else:
         return False

@@ -2481,7 +2481,6 @@ class LeoFind(object):
             if showState:
                 c.k.showStateAndMode(w)
             c.bodyWantsFocusNow()
-            # assert w.getAllText() == p.b.replace('\r','')
             w.setSelectionRange(pos, newpos, insert=insert)
             w.see(insert)
             # Fix bug 78: find-next match not always scrolled into view.

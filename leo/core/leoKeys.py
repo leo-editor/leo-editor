@@ -1471,7 +1471,6 @@ class GetArg(object):
                         return False
                 return True
             else:
-                # assert not s[1].isalpha()
                 # Special case for :! and :% etc.
                 return len(s) == 2
         else:
