@@ -645,7 +645,6 @@
 </v>
 <v t="ekr.20051126062243"><vh>Debugging</vh>
 <v t="ekr.20060408090018"><vh>@bool added_setting = True</vh></v>
-<v t="ekr.20070729101310"><vh>@bool trace_import = False</vh></v>
 <v t="ekr.20060323131801"><vh>@bool warn_about_missing_settings = False</vh></v>
 <v t="ekr.20060521134125"><vh>@string debugger_default_target = None</vh></v>
 <v t="ekr.20060521134125.1"><vh>@string debugger_force_target = None</vh></v>
@@ -772,7 +771,6 @@
 <v t="ekr.20131007055150.13034"><vh>@bool ignore_unbound_non_ascii_keys = False</vh></v>
 <v t="ekr.20060122105527.8"><vh>@bool showHelpWhenEnteringModes = False</vh></v>
 <v t="ekr.20120205022040.15411"><vh>@bool swap_mac_keys = False</vh></v>
-<v t="ekr.20060627065953"><vh>@bool trace_bind_key_exceptions = True</vh></v>
 <v t="ekr.20131112161153.4420"><vh>@bool vim-mode = False</vh></v>
 <v t="ekr.20060926161207.1"><vh>@bool warn_about_redefined_shortcuts = True</vh></v>
 <v t="ekr.20060926161207.2"><vh>@strings  [command,insert, overwrite] top_level_unbound_key_action = insert</vh></v>
@@ -3617,7 +3615,6 @@ aquamarine1</t>
 <t tx="ekr.20060606085536.1">Overrides body_text_foreground_color.</t>
 <t tx="ekr.20060620085654">vertical:   pack body-pane editors vertically.
 horizontal: pack body-pane editors horizontally.</t>
-<t tx="ekr.20060627065953"></t>
 <t tx="ekr.20060627084739">True: flash matching bracket when typing (, ), [, ], { or }.</t>
 <t tx="ekr.20060627121646"></t>
 <t tx="ekr.20060627121646.1"></t>
@@ -4189,7 +4186,6 @@ menu-shortcut = Alt-W # Window menu.
 Please don't change this node and its descendants; they are for Leo's
 developers.
 </t>
-<t tx="ekr.20070729101310">True: trace import commands and @auto imports.</t>
 <t tx="ekr.20070803082435">True: import commands (including @auto nodes) do full checks.</t>
 <t tx="ekr.20070925144552">Leo creates its menus using @menus trees. Within @menus trees,
 @menu nodes create menus and @item nodes create menu items.
