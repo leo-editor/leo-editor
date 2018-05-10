@@ -2026,6 +2026,7 @@
 </v>
 <v t="ekr.20180509125836.1"><vh>Code</vh>
 <v t="ekr.20180509125839.1"><vh>#875: Rename json reader/writer plugins</vh></v>
+<v t="ekr.20180510120621.1"><vh>Added diff-related wrappers</vh></v>
 </v>
 <v t="ekr.20180509123018.1"><vh>Features</vh>
 <v t="ekr.20180509122603.1"><vh>Added c.diff_two_revs</vh></v>
@@ -26908,6 +26909,7 @@ https://github.com/leo-editor/leo-editor/issues/892
 <t tx="ekr.20180509125839.1">https://github.com/leo-editor/leo-editor/issues/875</t>
 <t tx="ekr.20180510093733.1">- Removed @bool trace_import.
 - Removed @bool trace_bind_key_exceptions.</t>
+<t tx="ekr.20180510120621.1">c.diff_file, c.diff_two_branches and c.git_diff.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
