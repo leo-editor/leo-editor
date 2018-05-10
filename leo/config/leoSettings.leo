@@ -1493,8 +1493,6 @@
 <v t="ekr.20131213135427.22134"><vh>@item gc-dump-&amp;new-objects</vh></v>
 <v t="ekr.20131213135427.22135"><vh>@item gc-dump-objects-&amp;verbose</vh></v>
 <v t="ekr.20131213135427.22136"><vh>@item gc-print-&amp;summary</vh></v>
-<v t="ekr.20131213135427.22137"><vh>@item gc-&amp;trace-disable</vh></v>
-<v t="ekr.20131213135427.22138"><vh>@item gc-&amp;trace-enable</vh></v>
 </v>
 <v t="ekr.20131213135427.22194"><vh>@menu &amp;Execute Shell Commands</vh>
 <v t="ekr.20131213135427.22130"><vh>@item &amp;open-python-window</vh></v>
@@ -2308,6 +2306,7 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
+<v t="ekr.20070925144552"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -6259,8 +6258,6 @@ False: start-find commands puts focus in Find panel.</t>
 <t tx="ekr.20131213135427.22134"></t>
 <t tx="ekr.20131213135427.22135"></t>
 <t tx="ekr.20131213135427.22136"></t>
-<t tx="ekr.20131213135427.22137"></t>
-<t tx="ekr.20131213135427.22138"></t>
 <t tx="ekr.20131213135427.22139"></t>
 <t tx="ekr.20131213135427.22140"></t>
 <t tx="ekr.20131213135427.22141"></t>
