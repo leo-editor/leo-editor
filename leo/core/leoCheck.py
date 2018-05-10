@@ -1871,7 +1871,6 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         self.fn = g.shortFileName(fn)
         self.formatter = leoAst.AstFormatter()
             # leoAst.AstPatternFormatter()
-        self.trace = False
     #@+others
     #@+node:ekr.20150609053332.1: *3* sd.Helpers
     #@+node:ekr.20150606035006.1: *4* sd.context_names
@@ -1977,7 +1976,6 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
             s = 'class %s(%s):' % (node.name, ','.join(bases))
         else:
             s = 'class %s:' % node.name
-        if self.trace: g.trace(s)
         # Enter the new context.
         context_tuple = self.fn, 'class', s
         self.context_stack.append(context_tuple)
@@ -2005,7 +2003,6 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         # Format.
         args = self.format(node.args) if node.args else ''
         s = 'def %s(%s):' % (node.name, args)
-        if self.trace: g.trace(s)
         # Enter the new context.
         context_tuple = self.fn, 'def', s
         self.context_stack.append(context_tuple)
@@ -2027,7 +2024,6 @@ class ShowDataTraverser(leoAst.AstFullTraverser):
         '''Handle a 'return' statement: Return(expr? value)'''
         # Update data.
         s = self.format(node)
-        if self.trace: g.trace(s)
         context, name = self.context_names()
         aList = self.controller.returns_d.get(name, [])
         return_tuple = context, s

@@ -2024,6 +2024,9 @@
 <v t="ekr.20180509123013.1"><vh>Bugs</vh>
 <v t="ekr.20180509123007.1"><vh>#892: Crash in checkForChangedNodes</vh></v>
 </v>
+<v t="ekr.20180509125836.1"><vh>Code</vh>
+<v t="ekr.20180509125839.1"><vh>#875: Rename json reader/writer plugins</vh></v>
+</v>
 <v t="ekr.20180509123018.1"><vh>Features</vh>
 <v t="ekr.20180509122603.1"><vh>Added c.diff_two_revs</vh></v>
 <v t="ekr.20180509122901.1"><vh>Added leo_babel plugin</vh></v>
@@ -26900,6 +26903,8 @@ https://github.com/leo-editor/leo-editor/issues/892
 </t>
 <t tx="ekr.20180509123013.1"></t>
 <t tx="ekr.20180509123018.1"></t>
+<t tx="ekr.20180509125836.1"></t>
+<t tx="ekr.20180509125839.1">https://github.com/leo-editor/leo-editor/issues/875</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.

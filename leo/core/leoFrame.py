@@ -1132,7 +1132,7 @@ class LeoLog(object):
         self.logNumber = 0 # To create unique name fields for text widgets.
         self.newTabCount = 0 # Number of new tabs created.
         self.textDict = {} # Keys are page names. Values are logCtrl's (text widgets).
-    #@+node:ekr.20150509054428.1: *4* LeoLog.cmd
+    #@+node:ekr.20150509054428.1: *4* LeoLog.cmd (decorator)
     def cmd(name):
         '''Command decorator for the LeoLog class.'''
         # pylint: disable=no-self-argument
@@ -2079,7 +2079,6 @@ class StringTextWrapper(object):
         self.s = ''
         self.supportsHighLevelInterface = True
         self.widget = None # This ivar must exist, and be None.
-        self.trace = False
 
     def __repr__(self):
         return '<StringTextWrapper: %s %s>' % (id(self), self.name)
@@ -2218,8 +2217,6 @@ class StringTextWrapper(object):
         i, j = self.toPythonIndex(i), self.toPythonIndex(j)
         self.sel = i, j
         self.ins = j if insert is None else self.toPythonIndex(insert)
-        if self.trace:
-            g.trace('i', i, 'j', j, 'insert', repr(insert))
     #@+node:ekr.20140903172510.18581: *4* stw.toPythonIndex
     def toPythonIndex(self, index):
         '''StringTextWrapper.'''

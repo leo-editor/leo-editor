@@ -191,7 +191,6 @@ class JEditColorizer(BaseColorizer):
         self.allow_mark_prev = True
         self.n_setTag = 0
         self.tagCount = 0
-        self.trace = False
         self.trace_leo_matches = False
         self.trace_match_flag = False
         # Profiling...

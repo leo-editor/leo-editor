@@ -104,7 +104,6 @@ if sys.platform != 'cli':
             self.nodeStack = []
             self.ratio = self.secondary_ratio = 0.5
             self.rootNode = None # a sax node.
-            self.trace = False # True and g.unitTesting
         #@+node:ekr.20060919110638.29: *3*  sax.Do nothing
         def endElementNS(self, unused_name, unused_qname):
             g.trace(unused_name)
@@ -221,7 +220,8 @@ if sys.platform != 'cli':
             self.content = []
         #@+node:ekr.20060919110638.45: *3* sax.getRootNode
         def getRootNode(self):
-            if self.trace:
+
+            if False:
                 self.rootNode.dump()
                 for child in self.rootNode.children:
                     child.dump()

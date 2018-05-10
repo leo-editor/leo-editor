@@ -44,7 +44,6 @@ class LeoGui(object):
         self.root = None
         self.script = None
         self.splashScreen = None
-        self.trace = False
         self.utils = None
         # To keep pylint happy.
         self.ScriptingControllerClass = NullScriptingControllerClass
@@ -542,13 +541,12 @@ class UnitTestGui(NullGui):
     # Presently used only by the import/export unit tests.
     #@+others
     #@+node:ekr.20031218072017.3743: *3* UnitTestGui.__init__
-    def __init__(self, theDict=None, trace=False):
+    def __init__(self, theDict=None):
         '''ctor for the UnitTestGui class.'''
         self.oldGui = g.app.gui
         NullGui.__init__(self, "UnitTestGui")
             # Init the base class
         self.theDict = {} if theDict is None else theDict
-        self.trace = trace
         g.app.gui = self
 
     def destroySelf(self):

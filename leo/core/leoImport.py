@@ -214,14 +214,14 @@ class LeoImportCommands(object):
         self.output_newline = g.getOutputNewline(c=c) # Value of @bool output_newline
         self.rootLine = "" # Empty or @root + self.fileName
         self.tab_width = c.tab_width
-        self.trace = False # set below.
+        ### self.trace = False # set below.
         self.treeType = "@file" # None or "@file"
         self.webType = "@noweb" # "cweb" or "noweb"
         self.web_st = [] # noweb symbol table.
         self.reload_settings()
         
     def reload_settings(self):
-        self.trace = self.c.config.getBool('trace_import')
+        pass
         
     reloadSettings = reload_settings
     #@+node:ekr.20031218072017.3289: *3* ic.Export

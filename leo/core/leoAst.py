@@ -910,7 +910,7 @@ class AstFullTraverser(object):
         self.context = None
         self.level = 0 # The context level only.
         self.parent = None
-        self.trace = False
+
     #@+others
     #@+node:ekr.20141012064706.18472: *3* ft.contexts
     #@+node:ekr.20141012064706.18473: *4* ft.ClassDef

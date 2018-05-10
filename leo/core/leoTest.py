@@ -277,7 +277,7 @@ class ImportExportTestCase(unittest.TestCase):
         else:
             theDict = {name: fileName}
         self.oldGui = g.app.gui
-        self.gui = leoGui.UnitTestGui(theDict, trace=False)
+        self.gui = leoGui.UnitTestGui(theDict)
     #@+node:ekr.20051104075904.85: *3* shortDescription (ImportExportTestCase)
     def shortDescription(self):
         try:
