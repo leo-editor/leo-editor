@@ -344,9 +344,9 @@
 <v t="ekr.20150425135153.2"><vh>brew install formula</vh></v>
 </v>
 </v>
-<v t="ekr.20141118074110.4"><vh>How to...</vh>
+<v t="ekr.20141118074110.4" a="E"><vh>How to...</vh>
 <v t="ekr.20141118074110.3"><vh>How to Install Leo on Linux</vh></v>
-<v t="maphew.20180128212042.1"><vh>How to build Leo's PyPi Package</vh>
+<v t="maphew.20180128212042.1" a="E"><vh>How to build Leo's PyPi Package</vh>
 <v t="maphew.20180128212042.3"><vh>Create an PyPi.org account</vh></v>
 <v t="maphew.20180128212042.2"><vh>Build requirements</vh></v>
 <v t="maphew.20180128212042.4"><vh>Build &amp; publish a release</vh></v>
@@ -3872,9 +3872,10 @@ nb: Optional `--depth=500` fetches the last 3-4 months of activity and is
  - Wheel: for building cross platform binaries (might be installed already)
  - Setuptools: because ...setup!
  - Twine: for secure upload to pypi.org
- - PyPandoc: to convert markdown to rst for Readme.
+ - PyPandoc: to convert markdown to rst for Readme
+ - Semantic_version: make version number compatible with Pypi.org
 
-    pip install pypandoc setuptools twine wheel
+    pip install pypandoc setuptools twine wheel semantic_version
 
 Pandoc executable must be in PATH. If not installed already one these should
 work (or use your own preferred method):
@@ -3915,19 +3916,22 @@ Windows syntax. 'Activate/deactivate' assume using virtual environments; skip th
     leo-console --version
     pip uninstall leo
     
-    twine upload https://pypi.org/legacy/ dist\*.whl
+    twine upload dist\*.whl
     
     :: Optional, inspect public page for problems
     start https://pypi.python.org/pypi/leo
     
     deactivate
+    
+    :: For fuller test `conda create --name py3-clean` first instead of re-using
     activate py3-clean
     
     pip install leo
     leo-console --version
 
 Twine upload will use username and password stored in `.pypirc`, or will prompt
-if that doesn't exist.</t>
+if that doesn't exist.
+</t>
 <t tx="maphew.20180128212042.5">`pip install leo` only installs the contents of `leo` folder.
 So links to files in the project root or other folders will be broken. (Background https://github.com/leo-editor/leo-editor/issues/573)
 
