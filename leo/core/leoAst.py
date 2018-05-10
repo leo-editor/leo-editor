@@ -1593,7 +1593,6 @@ class HTMLReportTraverser(object):
     The TokenSync class is probably the best way to do this.
     '''
     # To do: revise report-traverser-debug.css.
-    # pylint: disable=no-self-argument
     #@+others
     #@+node:ekr.20150722204300.2: *3* rt.__init__
     def __init__(self, debug=False):
