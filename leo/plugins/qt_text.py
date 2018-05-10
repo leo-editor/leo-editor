@@ -541,11 +541,6 @@ if QtWidgets:
                 parts = prefix.split('.')
                 if len(parts) < 2:
                     return
-                ### For tracing.
-                    # if len(parts) > 1:
-                        # tail = parts[-1]
-                    # else:
-                        # tail = prefix
                 i = j = w.getInsertPoint()
                 s = w.getAllText()
                 while(0 <= i < len(s) and s[i] != '.'):

@@ -733,7 +733,7 @@ class LeoQtGui(leoGui.LeoGui):
             else:
                 if trace: g.trace(repr(w_name), '==> BODY')
                 c.bodyWantsFocusNow()
-        ### Cause problems elsewhere.
+        # Cause problems elsewhere.
             # if c.exists and self.deactivated_name:
                 # self.active = True
                 # w_name = self.deactivated_name
@@ -1049,7 +1049,6 @@ class LeoQtGui(leoGui.LeoGui):
             #@+node:ekr.20110605121601.18531: *4* << bind the shortcut to executeScriptCallback >>
             # In qt_gui.makeScriptButton.
             func = executeScriptCallback
-            ### shortcut = k.canonicalizeBinding(shortcut)
             if shortcut:
                 shortcut = g.KeyStroke(shortcut)
             ok = k.bindKey('button', shortcut, func, buttonText)

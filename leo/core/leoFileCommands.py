@@ -895,7 +895,6 @@ class FileCommands(object):
                 tnx = sax_child.tnx
                 v = fc.gnxDict.get(tnx)
                 if v: # A clone.
-                    ### v = fc.createSaxVnode(sax_child, parent_v, v=v)
                     fc.updateSaxClone(sax_child, parent_v, v)
                 else:
                     v = fc.createSaxVnode(sax_child, parent_v)

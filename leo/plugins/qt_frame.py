@@ -763,7 +763,6 @@ class DynamicWindow(QtWidgets.QMainWindow):
                 self.c = c
                 self.d = self.create_d()
                     # Keys: stroke.s; values: command-names.
-                    ### To do: use stroke as the key, not stroke.s.
                 self.w = w
                 self.next_w = next_w
                 self.eventFilter = qt_events.LeoQtEventFilter(c, w, 'EventWrapper')

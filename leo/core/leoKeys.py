@@ -1572,8 +1572,6 @@ class KeyHandlerClass(object):
         self.defineExternallyVisibleIvars()
         self.defineInternalIvars()
         self.reloadSettings()
-        ### self.defineTkNames()
-        ### self.defineSpecialKeys()
         self.defineSingleLineCommands()
         self.defineMultiLineCommands()
         self.autoCompleter = AutoCompleterClass(self)
@@ -3490,7 +3488,7 @@ class KeyHandlerClass(object):
         if (
             k.ignore_unbound_non_ascii_keys and
             (len(char) > 1 or char not in string.printable)
-                ### k.isPlainKey (same as stroke.isPlainKey) should be better.
+                # k.isPlainKey (same as stroke.isPlainKey) should be better.
         ):
             return
         #
