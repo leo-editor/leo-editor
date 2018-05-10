@@ -2026,10 +2026,9 @@
 </v>
 <v t="ekr.20180509125836.1"><vh>Code</vh>
 <v t="ekr.20180509125839.1"><vh>#875: Rename json reader/writer plugins</vh></v>
-<v t="ekr.20180510120621.1"><vh>Added diff-related wrappers</vh></v>
 </v>
 <v t="ekr.20180509123018.1"><vh>Features</vh>
-<v t="ekr.20180509122603.1"><vh>Added c.diff_two_revs</vh></v>
+<v t="ekr.20180509122603.1"><vh>Added diff-related wrappers</vh></v>
 <v t="ekr.20180509122901.1"><vh>Added leo_babel plugin</vh></v>
 <v t="ekr.20180510093733.1"><vh>Removed settings</vh></v>
 </v>
@@ -26862,7 +26861,7 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 
 **The highlights of Leo 5.7.3**
 
-- Added c.diff_two_revs. A very powerful script.
+- Added easy-to-use diff-related wrappers for scripts.
 - Added leo_babel plugin.
 - A mass cleanup of Leo's code, removing many unused tracing statements.
 - The usual minor bug fixes.
@@ -26881,18 +26880,29 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 - [A web page that displays .leo files](http://leoeditor.com/load-leo.html)
 - [More links](http://leoeditor.com/leoLinks.html)
 </t>
-<t tx="ekr.20180509122603.1">The script creates outline-oriented diffs between all changed files between any two revs.
+<t tx="ekr.20180509122603.1">@language rest
 
-In this case, rev1 is the last rev in devel not affected by removing trace statements.
+Added c.diff_file, c.diff_two_branches and c.git_diff. Examples:
 
 @language python
+
+# creates outline-oriented diffs between all changed files between any two revs.
+# In this case, rev1 is the last rev in devel not affected by removing trace statements.
 
 c.diff_two_revs(
  rev1="24abd822b", # devel
  rev2="HEAD", # will work in *any* branch
 )
 
+# Leo's git-diff command:
+c.git_diff()
 
+# Compares a file in two different branches:
+c.diff_two_branches(
+    branch1='master',
+    branch2='devel',
+    fn='leo/core/leoCommands.py',
+)
 </t>
 <t tx="ekr.20180509122901.1">For documentation, see the leo/plugins/leo_babel/doc folder.</t>
 <t tx="ekr.20180509123007.1">@language rest
@@ -26909,7 +26919,6 @@ https://github.com/leo-editor/leo-editor/issues/892
 <t tx="ekr.20180509125839.1">https://github.com/leo-editor/leo-editor/issues/875</t>
 <t tx="ekr.20180510093733.1">- Removed @bool trace_import.
 - Removed @bool trace_bind_key_exceptions.</t>
-<t tx="ekr.20180510120621.1">c.diff_file, c.diff_two_branches and c.git_diff.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
