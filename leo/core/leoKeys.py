@@ -2956,7 +2956,7 @@ class KeyHandlerClass(object):
         if k.doUnboundPlainKey(event):
             return
         k.doBinding(event)
-        
+            # Calls handleUnboundKeys if no binding.
     #@+node:ekr.20180418040158.1: *5* k.checkKeyEvent
     def checkKeyEvent(self, event):
         '''Perform sanity checks on the incoming event.'''
@@ -3476,7 +3476,10 @@ class KeyHandlerClass(object):
         #
         #  Handle a normal character in insert/overwrite.
         # <Return> is *not* a normal character.
-        if stroke and k.isPlainKey(stroke) and k.unboundKeyAction in ('insert', 'overwrite'):
+        if (
+            stroke and k.isPlainKey(stroke) and
+            k.unboundKeyAction in ('insert', 'overwrite')
+        ):
             k.masterCommand(event=event, stroke=stroke)
             return
         #
@@ -3486,6 +3489,12 @@ class KeyHandlerClass(object):
         # #868
         if stroke.isPlainNumPad():
             stroke.removeNumPadModifier()
+            k.masterCommand(event=event, stroke=stroke)
+            return
+        # #868
+        if stroke.isNumPadKey():
+            # To have effect, these must be bound.
+            return
         #
         # Ignore unbound non-ascii character.
         if (

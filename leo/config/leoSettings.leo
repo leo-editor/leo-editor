@@ -2306,6 +2306,11 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
+<v t="ekr.20180511123426.1"><vh>Found:home</vh>
+<v t="ekr.20080512082834.1"></v>
+<v t="ekr.20080510072134.2"></v>
+</v>
+<v t="ekr.20060603215208"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -4341,17 +4346,25 @@ pascal,perl,perlpod,php,plain,plsql,python,rapidq,rebol,shell,tcltk.</t>
 back-word                           = Ctrl-LtArrow
 back-word-extend-selection          = Ctrl-Shift-LtArrow
 beginning-of-buffer                 = Ctrl-Home
+beginning-of-buffer                 = Ctrl-Keypad-Home
 beginning-of-buffer-extend-selection= Ctrl-Shift-Home
+beginning-of-buffer-extend-selection= Ctrl-Shift-Keypad-Home
 end-of-buffer                       = Ctrl-End
+end-of-buffer                       = Ctrl-Keypad-End
 end-of-buffer-extend-selection      = Ctrl-Shift-End
+end-of-buffer-extend-selection      = Ctrl-Shift-Keypad-End
 forward-word                        = Ctrl-RtArrow
 forward-word-extend-selection       = Ctrl-Shift-RtArrow
 
 # beginning-of-line                   = Home
 back-to-home                        = Home
+back-to-home                        = Keypad-Home
 beginning-of-line-extend-selection  = Shift-Home
+beginning-of-line-extend-selection  = Shift-Keypad-Home
 end-of-line                         = End
+end-of-line                         = Keypad-End
 end-of-line-extend-selection        = Shift-End
+end-of-line-extend-selection        = Shift-Keypad-End
 
 </t>
 <t tx="ekr.20080510121331.16"># Must keep all these bindings for basic vim compatibility.
@@ -4518,14 +4531,22 @@ goto-first-visible-node     = Alt-Home
 goto-last-sibling           = Alt-End
 
 back-page                       ! text = PageUp
+back-page                       ! text = Keypad-PageUp
 back-page-extend-selection      ! text = Shift-PageUp
+back-page-extend-selection      ! text = Shift-Keypad-PageUp
 forward-page                    ! text = PageDn
+forward-page                    ! text = Keypad-PageDn
 forward-page-extend-selection   ! text = Shift-PageDn
+forward-page-extend-selection   ! text = Shift-Keypad-PageDn
 
 scroll-down-half-page   ! tree = Shift-PageDn
+scroll-down-half-page   ! tree = Shift-Keypad-PageDn
 scroll-down-page        ! tree = PageDn
+scroll-down-page        ! tree = Keypad-PageDn
 scroll-up-half-page     ! tree = Shift-PageUp
-scroll-up-page          ! tree = PageUp         
+scroll-up-half-page     ! tree = Shift-Keypad-PageUp
+scroll-up-page          ! tree = PageUp
+scroll-up-page          ! tree = Keypad-PageUp
 </t>
 <t tx="ekr.20080513095644.1"># q in vim bindings.
 # The mode prompt is everything following the ::
@@ -11696,6 +11717,9 @@ True:  Replace the Meta key with the Alt Key.
        This allows Windows Keyboards to be used without changing key bindings.
 </t>
 <t tx="ekr.20180511075115.1"></t>
+<t tx="ekr.20180511123426.1"># flattened, ignore-case, head, body
+
+# found 2 nodes</t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
