@@ -119,6 +119,8 @@ class LeoQtGui(leoGui.LeoGui):
                 # These should only work if bound.
             'Menu',
                 # #901.
+            'PgUp', 'PgDn',
+                # #868.
         ]
         #@-<< define specialChars >>
         # Put up the splash screen()

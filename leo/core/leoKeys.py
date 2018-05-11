@@ -3459,7 +3459,7 @@ class KeyHandlerClass(object):
     def handleUnboundKeys(self, event):
        
         c, k = self.c, self
-        char, stroke = event.char, event.stroke
+        stroke = event.stroke
         if not g.assert_is(stroke, g.KeyStroke):
             return
         #
@@ -3483,12 +3483,14 @@ class KeyHandlerClass(object):
         # Always ignore unbound Alt/Ctrl keys.
         if stroke.isAltCtrl() and not self.enable_alt_ctrl_bindings:
             return
+        # #868
+        if stroke.isPlainNumPad():
+            stroke.removeNumPadModifier()
         #
         # Ignore unbound non-ascii character.
         if (
             k.ignore_unbound_non_ascii_keys and
-            (len(char) > 1 or char not in string.printable)
-                # k.isPlainKey (same as stroke.isPlainKey) should be better.
+            not stroke.isPlainKey()
         ):
             return
         #

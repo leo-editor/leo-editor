@@ -386,6 +386,7 @@ class KeyStroke(object):
     def finalize_binding(self, binding):
 
         trace = False and 'keys' in g.app.debug
+            # This trace is good for devs only.
         self.mods = self.find_mods(binding)
         s = self.strip_mods(binding)
         s = self.finalize_char(s)
@@ -489,8 +490,9 @@ class KeyStroke(object):
             "space": " ",
             "underscore": "_",
         }
+        #
         # pylint: disable=undefined-loop-variable
-        # Looks like a pylint bug.
+            # Looks like a pylint bug.
         if s in (None, 'none'):
             return ''
         if s.lower() in translate_d:
@@ -579,6 +581,7 @@ class KeyStroke(object):
             ['ctrl', 'control',], # Use ctrl, not control.
             ['meta',],
             ['shift', 'shft',],
+            # ['keypad',], # 868.
         )
         result = []
         for aList in table:
@@ -612,6 +615,10 @@ class KeyStroke(object):
         if s in g.app.gui.ignoreChars:
             # For unit tests.
             return False
+        # #868:
+        if s.find('KeyPad+') > -1:
+            # Enable bindings.
+            return False
         if self.find_mods(s) or self.isFKey():
             return False
         if s in g.app.gui.specialChars:
@@ -619,6 +626,18 @@ class KeyStroke(object):
         if s == 'BackSpace':
             return False
         return True
+    #@+node:ekr.20180511092713.1: *4* ks.isPlainNumPad & ks.removeNumPadModier
+    def isPlainNumPad(self):
+
+        g.trace(self.s.find('KeyPad+') > -1)
+        if self.s.find('KeyPad+') > -1:
+            return len(self.s.replace('KeyPad+', '')) == 1
+        return False
+
+    def removeNumPadModifier(self):
+        
+        g.trace(self.s.replace('KeyPad+', ''))
+        self.s = self.s.replace('KeyPad+', '')
     #@+node:ekr.20180419170934.1: *4* ks.prettyPrint
     def prettyPrint(self):
         

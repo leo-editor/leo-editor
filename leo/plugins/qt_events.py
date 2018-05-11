@@ -84,9 +84,6 @@ class LeoQtEventFilter(QtCore.QObject):
             binding, ch = self.toBinding(event)
             if not binding:
                 return False # Allow Qt to handle the key event.
-            stroke = g.KeyStroke(binding=binding)
-            if 'keys' in g.app.debug:
-                g.trace('binding: %s, stroke: %s, char: %r' % (binding, stroke, ch))
             #
             # Pass the KeyStroke to masterKeyHandler.
             key_event = self.createKeyEvent(event, c, self.w, ch, binding)
@@ -266,8 +263,11 @@ class LeoQtEventFilter(QtCore.QObject):
                 # On Windows, when the KeyDown event for this key is sent,
                 # the Ctrl+Alt modifiers are also set.
             qt.Key_Control: 'Key_Control', # MacOS: Command key
-            qt.Key_Meta: 'Key_Meta', # MacOS: Control key, Alt-Key on Microsoft keyboard on MacOs.
+            qt.Key_Meta: 'Key_Meta',
+                # MacOS: Control key, Alt-Key on Microsoft keyboard on MacOs.
             qt.Key_Shift: 'Key_Shift',
+            qt.Key_NumLock: 'Num_Lock',
+                # 868.
         }
         if d.get(keynum):
             if 0: # Allow bare modifier key.
@@ -306,6 +306,7 @@ class LeoQtEventFilter(QtCore.QObject):
             (qt.ControlModifier, 'Control'),
             (qt.MetaModifier, 'Meta'),
             (qt.ShiftModifier, 'Shift'),
+            (qt.KeypadModifier, 'KeyPad'),
         )
         mods = [b for a, b in table if (modifiers & a)]
         #
