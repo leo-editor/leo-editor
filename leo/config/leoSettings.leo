@@ -1527,9 +1527,10 @@
 <v t="tbrown.20160130095933.2"><vh>@item free-layout-load</vh></v>
 <v t="tbrown.20160130095933.3"><vh>@item free-layout-restore</vh></v>
 <v t="tbrown.20160130095933.4"><vh>@item free-layout-zoom</vh></v>
+<v t="ekr.20180511075115.1"><vh>@item -</vh></v>
+<v t="ekr.20131213135427.22323"><vh>@item toggle-&amp;split-direction</vh></v>
 </v>
 <v t="ekr.20170509103101.1"><vh>@menu &amp;Expand/Contract Panes</vh>
-<v t="ekr.20131213135427.22323"><vh>@item toggle-&amp;split-direction</vh></v>
 <v t="ekr.20131213135427.22321"><vh>@item &amp;equal-sized-panes</vh></v>
 <v t="ekr.20180403110757.1"><vh>@item -</vh></v>
 <v t="ekr.20131213135427.22325"><vh>@item contract-&amp;body-pane</vh></v>
@@ -2305,8 +2306,6 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20140912075503.19355"></v>
-<v t="ekr.20111006212449.11850"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -11696,6 +11695,7 @@ False: Legacy operation.
 True:  Replace the Meta key with the Alt Key.
        This allows Windows Keyboards to be used without changing key bindings.
 </t>
+<t tx="ekr.20180511075115.1"></t>
 <t tx="jlunz.20150821113251.1">def html_tag():
     """expand &lt;tag&gt; to 
        &lt;tag&gt;\n&lt;/tag&gt; with proper indendation"""
