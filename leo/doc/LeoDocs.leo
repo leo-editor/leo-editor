@@ -2028,6 +2028,7 @@
 <v t="ekr.20180509125839.1"><vh>#875: Rename json reader/writer plugins</vh></v>
 </v>
 <v t="ekr.20180509123018.1"><vh>Features</vh>
+<v t="ekr.20180511061629.1"><vh>Smart searches for functions and methods</vh></v>
 <v t="ekr.20180509122603.1"><vh>Added diff-related wrappers</vh></v>
 <v t="ekr.20180509122901.1"><vh>Added leo_babel plugin</vh></v>
 <v t="ekr.20180510093733.1"><vh>Removed settings</vh></v>
@@ -26861,6 +26862,7 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 
 **The highlights of Leo 5.7.3**
 
+- Smart searches for functions and methods.
 - Added easy-to-use diff-related wrappers for scripts.
 - Added leo_babel plugin.
 - A mass cleanup of Leo's code, removing many unused tracing statements.
@@ -26919,6 +26921,15 @@ https://github.com/leo-editor/leo-editor/issues/892
 <t tx="ekr.20180509125839.1">https://github.com/leo-editor/leo-editor/issues/875</t>
 <t tx="ekr.20180510093733.1">- Removed @bool trace_import.
 - Removed @bool trace_bind_key_exceptions.</t>
+<t tx="ekr.20180511061629.1">The find-def command is typically invoked by control-clicking a function name. This command now will search for possible *alternative spellings* of the name if no match is found initially:
+
+- If the original name contains an underscore, say x_y, the second search will be for the camelCase version, xY.
+
+- Otherwise, we assume the name may be camelCase, say xY, and we attempt to convert it to x_y.
+
+A second search is attempted only if the converted name is different from the original.  In particular, names starting with a leading underscore are never converted.
+
+The new setting: @bool find-def-creates-clones (default False) controls whether a clone-find-flattened command is used to show all matching definitions. This setting has no effect when only one definition is found.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
