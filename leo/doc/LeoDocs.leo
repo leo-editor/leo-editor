@@ -26936,7 +26936,12 @@ The new setting: @bool find-def-creates-clones (default False) controls whether 
 <t tx="ekr.20180511062809.1">https://github.com/leo-editor/leo-editor/issues/901
 </t>
 <t tx="ekr.20180511101509.1">https://github.com/leo-editor/leo-editor/issues/868
-</t>
+
+As usual, spellings are not significant. For example:
+
+clone-find-all-flattened = Key_Pad+9
+clone-find-all = keypad-PageUp
+    # Same as keypad+pageup, etc. etc.</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
