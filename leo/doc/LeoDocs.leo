@@ -2023,6 +2023,7 @@
 <v t="ekr.20180509122406.1"><vh>Leo 5.7.3 release notes</vh>
 <v t="ekr.20180509123013.1"><vh>Bugs</vh>
 <v t="ekr.20180509123007.1"><vh>#892: Crash in checkForChangedNodes</vh></v>
+<v t="ekr.20180511062809.1"><vh>#901: The Windows Right-Menu key insert "Menu" into text</vh></v>
 </v>
 <v t="ekr.20180509125836.1"><vh>Code</vh>
 <v t="ekr.20180509125839.1"><vh>#875: Rename json reader/writer plugins</vh></v>
@@ -26930,6 +26931,8 @@ https://github.com/leo-editor/leo-editor/issues/892
 A second search is attempted only if the converted name is different from the original.  In particular, names starting with a leading underscore are never converted.
 
 The new setting: @bool find-def-creates-clones (default False) controls whether a clone-find-flattened command is used to show all matching definitions. This setting has no effect when only one definition is found.</t>
+<t tx="ekr.20180511062809.1">https://github.com/leo-editor/leo-editor/issues/901
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
