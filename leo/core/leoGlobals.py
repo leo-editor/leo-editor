@@ -581,7 +581,7 @@ class KeyStroke(object):
             ['ctrl', 'control',], # Use ctrl, not control.
             ['meta',],
             ['shift', 'shft',],
-            # ['keypad',], # 868.
+            ['keypad', 'key_pad',], # 868: Allow alternative spellings.
         )
         result = []
         for aList in table:
@@ -616,7 +616,7 @@ class KeyStroke(object):
             # For unit tests.
             return False
         # #868:
-        if s.find('KeyPad+') > -1:
+        if s.find('Keypad+') > -1:
             # Enable bindings.
             return False
         if self.find_mods(s) or self.isFKey():
@@ -629,15 +629,13 @@ class KeyStroke(object):
     #@+node:ekr.20180511092713.1: *4* ks.isPlainNumPad & ks.removeNumPadModier
     def isPlainNumPad(self):
 
-        g.trace(self.s.find('KeyPad+') > -1)
-        if self.s.find('KeyPad+') > -1:
-            return len(self.s.replace('KeyPad+', '')) == 1
+        if self.s.find('Keypad+') > -1:
+            return len(self.s.replace('Keypad+', '')) == 1
         return False
 
     def removeNumPadModifier(self):
-        
-        g.trace(self.s.replace('KeyPad+', ''))
-        self.s = self.s.replace('KeyPad+', '')
+
+        self.s = self.s.replace('Keypad+', '')
     #@+node:ekr.20180419170934.1: *4* ks.prettyPrint
     def prettyPrint(self):
         
@@ -650,7 +648,14 @@ class KeyStroke(object):
     #@+node:ekr.20180415124853.1: *4* ks.strip_mods
     def strip_mods(self, s):
         '''Remove all modifiers from s, without changing the case of s.'''
-        table = ('alt', 'cmd', 'command', 'control', 'ctrl', 'meta', 'shift', 'shft')
+        table = (
+            'alt',
+            'cmd', 'command',
+            'control', 'ctrl',
+            'keypad', 'key_pad', # 868:
+            'meta',
+            'shift', 'shft',
+        )
         for mod in table:
             for suffix in '+-':
                 target = mod+suffix
