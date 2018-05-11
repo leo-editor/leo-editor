@@ -117,6 +117,8 @@ class LeoQtGui(leoGui.LeoGui):
                 # Others.
             'Enter', 'Insert', 'Ins',
                 # These should only work if bound.
+            'Menu',
+                # #901.
         ]
         #@-<< define specialChars >>
         # Put up the splash screen()
