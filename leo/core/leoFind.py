@@ -338,6 +338,8 @@ class LeoFind(object):
         word = self.initFindDef(event)
         if not word:
             return
+        save_sel = w.getSelectionRange()
+        ins = w.getInsertPoint()
         # For the command, always start in the root position.
         old_p = c.p
         p = c.rootPosition()
@@ -356,20 +358,75 @@ class LeoFind(object):
         # Save previous settings.
         find.saveBeforeFindDef(p)
         find.setFindDefOptions(p)
-        save_sel = w.getSelectionRange()
         self.find_seen = set()
-        found = find.findNext(initFlag=False)
+        use_cff = c.config.getBool('find-def-creates-clones', default=False)
+        count = 0
+        if use_cff:
+            count = find.findAll(clone_find_all=True, clone_find_all_flattened=True)
+            found = count > 0
+        else:
+            found = find.findNext(initFlag=False)
+        if not found and defFlag:
+            # Leo 5.7.3: Look for an alternative defintion of function/methods.
+            word2 = self.switchStyle(word)
+            if word2:
+                find_pattern = prefix + ' ' + word2
+                find.find_text = find_pattern
+                ftm.setFindText(find_pattern)
+                if use_cff:
+                    count = find.findAll(clone_find_all=True, clone_find_all_flattened=True)
+                    found = count > 0
+                else:
+                    found = find.findNext(initFlag=False)
+        if found and use_cff:
+            last = c.lastTopLevel()
+            if count == 1:
+                # It's annoying to create a clone in this case.
+                # Undo the clone find and just select the proper node.
+                last.doDelete()
+                find.findNext(initFlag=False)
+            else:
+                c.selectPosition(last)
         if found:
             self.find_seen.add(c.p.v)
             self.restoreAfterFindDef()
-                # 2016/04/08: failing to do this causes massive confusion!
+                # Failing to do this causes massive confusion!
         else:
             c.selectPosition(old_p)
             self.restoreAfterFindDef() # 2016/03/24
             i, j = save_sel
-            w.setSelectionRange(i, j)
             c.redraw()
+            w.setSelectionRange(i, j, insert=ins)
             c.bodyWantsFocusNow()
+    #@+node:ekr.20180511045458.1: *6* switchStyle
+    def switchStyle(self, word):
+        '''
+        Switch between camelCase and underscore_style function defintiions.
+        Return None if there would be no change.
+        '''
+        s = word
+        if s.find('_') > -1:
+            if s.startswith('_'):
+                # Don't return something that looks like a class.
+                return None
+            #
+            # Convert to CamelCase
+            s = s.lower()
+            while s:
+                i = s.find('_')
+                if i == -1:
+                    break
+                s = s[:i] + s[i+1:].capitalize()
+            return s
+        #
+        # Convert to underscore_style.
+        result = []
+        for i, ch in enumerate(s):
+            if i > 0 and ch.isupper():
+                result.append('_')
+            result.append(ch.lower())
+        s = ''.join(result)
+        return None if s == word else s
     #@+node:ekr.20150629084611.1: *6* initFindDef
     def initFindDef(self, event):
         '''Init the find-def command. Return the word to find or None.'''
@@ -1596,6 +1653,7 @@ class LeoFind(object):
         if count:
             c.redraw()
         g.es("found", count, "matches for", self.find_text)
+        return count
     #@+node:ekr.20160422072841.1: *5* find.doCloneFindAll & helpers
     def doCloneFindAll(self, after, data, flatten, p, undoType):
         '''Handle the clone-find-all command, from p to after.'''
