@@ -2033,6 +2033,7 @@
 <v t="ekr.20180509122603.1"><vh>Added diff-related wrappers</vh></v>
 <v t="ekr.20180509122901.1"><vh>Added leo_babel plugin</vh></v>
 <v t="ekr.20180510093733.1"><vh>Removed settings</vh></v>
+<v t="ekr.20180511101509.1"><vh>#868: Allow separate bindings for numeric keypad keys</vh></v>
 </v>
 </v>
 </vnodes>
@@ -26864,6 +26865,7 @@ Leo is an IDE, outliner and PIM, as described [here](http://leoeditor.com/prefac
 **The highlights of Leo 5.7.3**
 
 - Smart searches for functions and methods.
+- Allow separate bindings for numeric keypad keys
 - Added easy-to-use diff-related wrappers for scripts.
 - Added leo_babel plugin.
 - A mass cleanup of Leo's code, removing many unused tracing statements.
@@ -26932,6 +26934,8 @@ A second search is attempted only if the converted name is different from the or
 
 The new setting: @bool find-def-creates-clones (default False) controls whether a clone-find-flattened command is used to show all matching definitions. This setting has no effect when only one definition is found.</t>
 <t tx="ekr.20180511062809.1">https://github.com/leo-editor/leo-editor/issues/901
+</t>
+<t tx="ekr.20180511101509.1">https://github.com/leo-editor/leo-editor/issues/868
 </t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
