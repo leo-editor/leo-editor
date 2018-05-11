@@ -544,7 +544,7 @@ class Commands(object):
         getColor = c.config.getColor
         getData = c.config.getData
         getInt = c.config.getInt
-        c.allow_at_in_paragraphs = getBool('allow-at-in-paragraphs', default=False)
+        ### c.allow_at_in_paragraphs = getBool('allow-at-in-paragraphs', default=False)
         c.autoindent_in_nocolor = getBool('autoindent_in_nocolor_mode')
         c.collapse_nodes_after_move = getBool('collapse_nodes_after_move')
         c.collapse_on_lt_arrow = getBool('collapse_on_lt_arrow', default=True)

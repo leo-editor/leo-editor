@@ -214,7 +214,6 @@
 <v t="ekr.20140912075503.19320"><vh>@color body-fg = black</vh></v>
 <v t="ekr.20140912075503.19321"><vh>@color body-sel-fg = white</vh></v>
 <v t="ekr.20140912075503.19322"><vh>@color body-sel-bg = lightgray</vh></v>
-<v t="ekr.20141020061642.19855"><vh>@color big-text-warning-bg = pink</vh></v>
 </v>
 <v t="ekr.20140915194122.23439"><vh>Border colors</vh>
 <v t="tbrown.20140514191846.42171"><vh>@color focused-border-focus-color = blue</vh></v>
@@ -2306,7 +2305,8 @@
 <v t="tbrown.20140505094209.37266"><vh>@bool outline_tabs_show_close = True</vh></v>
 </v>
 </v>
-<v t="ekr.20070925144552"></v>
+<v t="ekr.20140912075503.19355"></v>
+<v t="ekr.20111006212449.11850"></v>
 </vnodes>
 <tnodes>
 <t tx="TL.20080702085131.2">If True: Save the Leo file and all modified derived files every time the external editor saves a modified file.
@@ -5396,7 +5396,7 @@ Controller(c).run()</t>
     and add items to d.
     '''
 
-    trace = True
+    trace = False
     for p in c.all_positions():
         self.scan_for_configs(p,d)
     if trace:
@@ -9940,7 +9940,6 @@ c.k.simulateCommand('show-color-wheel')
 <t tx="ekr.20140922124047.20313"></t>
 <t tx="ekr.20141010095448.19776"></t>
 <t tx="ekr.20141010095448.19779"></t>
-<t tx="ekr.20141020061642.19855">Background color for big-text warning area.</t>
 <t tx="ekr.20141024165714.1">True:  Scroll the find tab ensure find input field visible. (fixes bug 1254861)
 False: Never scroll the find tab automatically.</t>
 <t tx="ekr.20141112072219.1"></t>
