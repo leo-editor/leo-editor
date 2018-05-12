@@ -2037,7 +2037,7 @@
 </v>
 </v>
 <v t="ekr.20180512150125.1"><vh>@button to-md</vh>
-<v t="ekr.20180512150256.1"><vh>mdw.main &amp; helpers</vh>
+<v t="ekr.20180512150256.1"><vh>main &amp; helpers</vh>
 <v t="ekr.20180512150125.2"><vh>clean_headline</vh></v>
 <v t="ekr.20180512150125.3"><vh>get_level</vh></v>
 <v t="ekr.20180512150125.4"><vh>get_link</vh></v>
@@ -26959,10 +26959,14 @@ clone-find-all = keypad-PageUp
 @language python
 import markdown
 
-class MarkDownWriter (object):
-    @others
-    
-MarkDownWriter().main(c)
+root = g.findNodeAnywhere(c, 'Leo 5.7.3 release notes')
+assert root
+@others
+main(c, root)
+
+# class MarkDownWriter (object):
+    # @others
+# MarkDownWriter().main(c)
 </t>
 <t tx="ekr.20180512150125.10">def to_markdown(p):
     '''Create markdown for node p.'''
@@ -26980,31 +26984,41 @@ MarkDownWriter().main(c)
     )
 </t>
 <t tx="ekr.20180512150125.3">def get_level(p):
-    '''Return the markdown level for p.'''
-    return 1 + p.level() - c.p.level()
+    '''Return the markdown level for p, relative to root.'''
+    return 1 + p.level() - root.level()
 </t>
-<t tx="ekr.20180512150125.4">def get_link(p):
-    '''Return a unique int associated with p.v.'''
-    if not hasattr(self, 'd'):
-        self.d = {}
-        self.n = 1
-    d = self.d
-    if p.v not in d:
-        d [p.v] = self.n
-        self.n += 1
-    return d.get(p.v)
+<t tx="ekr.20180512150125.4">link_d = {}
+    # Can't use either global or nonlocal to access this.
+    # It's not global, and Python 2 doesn't have nonlocal.
 
-links = { 'd': {}, 'n': 1, }
-    # nonlocal does not exist in Python 2,
-    # so we must create a helper dict.
-
-def OLD_get_link(p):
+def get_link(p):
     '''Return a unique int associated with p.v.'''
-    d = links.get('d')
-    if p.v not in d:
-        d [p.v] = links.get('n')
-        links ['n'] += 1
-    return d.get(p.v)
+    if p.v not in link_d:
+        link_d [p.v] = 1 + len(link_d.keys())
+    return link_d.get(p.v)
+
+# def get_link(p):
+    # '''Return a unique int associated with p.v.'''
+    # if not hasattr(self, 'd'):
+        # self.d = {}
+        # self.n = 1
+    # d = self.d
+    # if p.v not in d:
+        # d [p.v] = self.n
+        # self.n += 1
+    # return d.get(p.v)
+
+# links = { 'd': {}, 'n': 1, }
+    # # nonlocal does not exist in Python 2,
+    # # so we must create a helper dict.
+
+# def OLD_get_link(p):
+    # '''Return a unique int associated with p.v.'''
+    # d = links.get('d')
+    # if p.v not in d:
+        # d [p.v] = links.get('n')
+        # links ['n'] += 1
+    # return d.get(p.v)
 </t>
 <t tx="ekr.20180512150125.5">def make_body(p):
     '''Return the cleaned body text for p.'''
@@ -27024,7 +27038,7 @@ def OLD_get_link(p):
     s = s.replace('\n\n\n', '\n\n')
     return s.rstrip() +'\n'</t>
 <t tx="ekr.20180512150125.6">def make_head(p):
-    '''Return an &lt;h1...6&gt; element with the proper id.'''
+    '''Return an &lt;h1..h6&gt; element with the proper id.'''
     level = min(6, get_level(p))
     return'&lt;h%s id="%s"&gt;%s&lt;/h%s&gt;\n' % (
         level,
@@ -27051,14 +27065,13 @@ def OLD_get_link(p):
         for p in root.self_and_subtree()
     ])
 </t>
-<t tx="ekr.20180512150256.1">def main(self, c):
+<t tx="ekr.20180512150256.1">def main(c, root):
 
-    root = c.p
-    # Heh. All inner functions have access to 'c', 'root' and 'self'
+    # Quasi read-only ivars: 'c' and 'root'.
     @others
     source = '\n'.join(
         [make_toc()] +
-        [to_markdown(p) for p in c.p.self_and_subtree()]
+        [to_markdown(p) for p in root.self_and_subtree()]
     )
     html = markdown.markdown(source)
     make_markdown_node(source)
