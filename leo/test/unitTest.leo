@@ -386,6 +386,7 @@
 <v t="ekr.20140822063016.4474"><vh>@test zzz force a quit</vh></v>
 <v t="ekr.20090306091634.1"><vh>@test print redraw count</vh></v>
 </v>
+</v>
 <v t="ekr.20090529141856.4682"><vh>leoImport</vh>
 <v t="ekr.20090529141856.4684"><vh>Export tests</vh>
 <v t="ekr.20090529141856.4685"><vh>@suite Export tests</vh></v>
@@ -1218,19 +1219,6 @@
 </v>
 <v t="ekr.20140724164600.4590"><vh>@test zz end of leoImport tests</vh></v>
 </v>
-<v t="ekr.20080501121449.3"><vh>@test insert node</vh>
-<v t="ekr.20171112182742.3"><vh>A</vh></v>
-<v t="ekr.20171112182742.5"><vh>newHeadline</vh></v>
-<v t="ekr.20171112182742.4"><vh>B</vh></v>
-</v>
-<v t="ekr.20080503082625.3"><vh>@test delete node</vh></v>
-<v t="ekr.20180312050443.1"><vh>@test cwd</vh></v>
-<v t="ekr.20100204053330.5367"><vh>@test koi8-r encoding</vh></v>
-<v t="ekr.20100131171342.5482"><vh>@test official g.app ivars</vh></v>
-<v t="ekr.20100131171342.5608"><vh>@test g.KeyStroke</vh></v>
-<v t="ekr.20111104214341.3835"><vh>@test all plugins have top-level init method</vh></v>
-</v>
-<v t="ekr.20100205235740.5392"><vh>@test syntax of all files</vh></v>
 </vnodes>
 <tnodes>
 <t tx="bwmulder.20050108100437.1">@killcolor
@@ -1715,103 +1703,6 @@ for h in sorted(d2.keys()):
 <t tx="ekr.20080324133327.2">True: allow linux-like pastes using a mouse's middle button.
 
 Important: this may cause crashes on some platforms.
-</t>
-<t tx="ekr.20080501121449.3"># This test requires @bool select-next-after-delete = False
-assert p.h == '@test insert node',repr(p.h)
-root = p.copy()
-while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-try:
-    assert p.h == '@test insert node',repr(p.h)
-    p2 = p.insertAsNthChild(0)
-    p2.setHeadString('A')
-    p3 = p.insertAsNthChild(1)
-    p3.setHeadString('B')
-    p.expand()
-    c.setCurrentPosition(p2)
-    p4 = c.insertHeadline()
-    assert p4 == c.p
-    p = c.p
-    assert p,'no p'
-    p.setHeadString('inserted')
-    assert p.back(),'no p.back(): %s' % (p)
-    assert p.back().h == 'A', 'fail 1'
-    assert p.next().h == 'B', 'fail 2'
-    c.undoer.undo()
-    # With the new undo logic, it takes 2 undoes.
-    # The first undo undoes the headline changes,
-    # the second undo undoes the insert node.
-    if g.app.isExternalUnitTest or g.app.gui.guiName() == 'nullGui':
-        # The situation is different in a null Gui.
-        pass
-    else:
-        c.undoer.undo() 
-    p = c.p
-    assert p == p2,         'fail 3:\n p: %s\np2: %s' % (p,p2)
-    assert p.next() == p3,  'fail 4'
-    c.undoer.redo()
-    p = c.p
-    assert p.back(),          'fail 0-2'
-    assert p.back().h == 'A', 'fail 1-2'
-    assert p.next().h == 'B', 'fail 2-2'
-    c.undoer.undo()
-    p = c.p
-    assert p == p2,         'fail 3-2'
-    assert p.next() == p3,  'fail 3-2'
-    c.undoer.redo()
-    p = c.p
-    assert p.back().h == 'A', 'fail 1-3'
-    assert p.next().h == 'B', 'fail 2-3'
-finally:
-    if 0:
-        while root.hasChildren():
-            root.firstChild().doDelete(newNode=None)
-    c.redraw_now(root)
-</t>
-<t tx="ekr.20080503082625.3"># This test requires @bool select-next-after-delete = False
-root = p.copy()
-while p.hasChildren():
-    p.firstChild().doDelete(newNode=None)
-try:
-    p2 = p.insertAsNthChild(0)
-    p2.setHeadString('A')
-    p3 = p.insertAsNthChild(1)
-    p3.setHeadString('B')
-    p4 = p.insertAsNthChild(2)
-    p4.setHeadString('C')
-    p.expand()
-    c.selectPosition(p3)
-    c.deleteOutline()
-    c.redraw_now()
-    p = c.p
-    assert p.h == 'A', 'fail 1: got %s' % p.h
-    assert p.next().h == 'C', 'fail 2'
-    c.undoer.undo()
-    c.outerUpdate()
-    p = c.p
-    assert p.back() == p2, 'fail 4 %s' % p.back()
-    assert p.next() == p4, 'fail 5'
-    c.undoer.redo()
-    c.outerUpdate()
-    p = c.p
-    assert p.h == 'A',          'fail 1-2'
-    assert p.next().h == 'C',   'fail 2-2'
-    c.undoer.undo()
-    c.outerUpdate()
-    p = c.p
-    assert p.back() == p2,  'fail 4-2'
-    assert p.next() == p4,  'fail 5-2'
-    c.undoer.redo()
-    c.outerUpdate()
-    p = c.p
-    assert p.h == 'A',          'fail 1-3'
-    assert p.next().h == 'C',   'fail 2-3'
-
-finally:
-    if 1:
-        while root.hasChildren():
-            root.firstChild().doDelete(newNode=None)
-    c.redraw_now(root)
 </t>
 <t tx="ekr.20080904084223.1"># changed.
 @others
@@ -3422,40 +3313,6 @@ for tag,aList in table:
         d2 = inspect.getargspec(func2)
         assert d1==d2,'\n%s\n\nd1 %s\n\nd2 %s' % (z,d1,d2)
 </t>
-<t tx="ekr.20100131171342.5482">
-ivars = (
-    # Global managers.
-    'config','externalFilesController',
-    'loadManager','pluginsController','recentFilesManager',
-    # Official ivars.
-    'gui',
-    'initing','killed','quitting',
-    'leoID','log','logIsLocked','logWaiting',
-    'nodeIndices',
-    'unitTesting','unitTestDict',
-    'windowList',
-    # Less-official and might be removed...
-    'batchMode',
-    # 'debugSwitch',
-    'disableSave',
-    'hookError','hookFunction',
-    'numberOfUntitledWindows',
-    'realMenuNameDict',
-    'searchDict','scriptDict',
-    'use_psyco',
-)
-
-if g.app.isExternalUnitTest:
-    mayBeNone = ('hookFunction','idleTimeHook','log','openWithInstance')
-else:
-    mayBeNone = ('hookFunction','openWithInstance')
-
-for ivar in ivars:
-    assert hasattr(g.app,ivar), 'missing app ivar: %s %r' % (ivar,g.app)
-    if ivar not in mayBeNone:
-        val = getattr(g.app,ivar)
-        assert val is not None, 'null app ivar: %s %r'% (ivar,g.app)
-</t>
 <t tx="ekr.20100131171342.5485">import inspect
 
 d = c.commandsDict
@@ -3481,117 +3338,6 @@ for key in keys:
     expected = ('event',)
     message = '\nno event arg for command %s, func: %s\nargs: %s' % (key,name,data)
     assert arg0 in expected or arg1 in expected, message
-</t>
-<t tx="ekr.20100131171342.5608">table = [
-    # Gang of four, unmodified)
-    ('bksp', 'BackSpace'),
-    ('backspace', 'BackSpace'),
-    ('backtab', 'Tab'),
-    ('linefeed', '\n'),
-    ('\r', '\n'),
-    ('return', '\n'),
-    ('tab', 'Tab'),
-    # Gang of four, with shift mod.
-    ('Shift-bksp', 'Shift+BackSpace'),
-    ('Shift-backspace', 'Shift+BackSpace'),
-    ('Shift-backtab', 'Shift+Tab'),
-    ('Shift-linefeed', 'Shift+Return'),
-    ('Shift-\r', 'Shift+Return'),
-    ('Shift-return', 'Shift+Return'),
-    ('Shift-tab', 'Shift+Tab'),
-    # Gang of four, with Alt mod.
-    ('Alt-bksp', 'Alt+BackSpace'),
-    ('Alt-backspace', 'Alt+BackSpace'),
-    ('Alt-backtab', 'Alt+Tab'),
-    ('Alt-linefeed', 'Alt+Return'),
-    ('Alt-\r', 'Alt+Return'),
-    ('Alt-return', 'Alt+Return'),
-    ('Alt-tab', 'Alt+Tab'),
-    #
-    # Alpha
-    ('1', '1'),
-    ('a','a'),
-    ('A','A'),
-    ('Alt-a','Alt+a'),
-    ('Alt-A','Alt+a'),
-    ('Alt-Shift-a','Alt+Shift+a'),
-    # We can no longer ignore the shift.
-    # ('Alt-Shift++','Alt+plus'), # Ignore the shift.
-    ('Shift-a','A'),
-    ('Shift-A','A'),
-    ('RtArrow','Right'),
-    ('Shift-RtArrow','Shift+Right'),
-    ('PageUp','Prior'),
-    ('Prior','Prior'),
-    ('Shift-PageUp','Shift+Prior'),
-    ('PageDn','Next'),
-    ('Next','Next'),
-    ('Shift-Next','Shift+Next'),
-    ('Alt-=','Alt+='),
-    ('Alt-+','Alt++'),
-    ('Alt--','Alt+-'),
-    ('Ctrl-RtArrow','Ctrl+Right'),
-    ('Control-Right','Ctrl+Right'),
-]
-for setting, result in table:
-    stroke = g.KeyStroke(binding=setting)
-    val = stroke.s
-    assert val==result,'For %r, expected %r, Got %r' % (setting, result,val)
-</t>
-<t tx="ekr.20100204053330.5367">root = p.copy()
-while p.hasChildren():
-    p.firstChild().doDelete(newNode = None)
-try:
-    p1 = p.insertAsLastChild()
-    s = '\xd4\xc5\xd3\xd4' # the word 'test' in Russian, koi8-r
-    if g.isPython3:
-        assert g.isUnicode(s)
-    else:
-        s = unicode(s,'koi8-r')
-    p1.setBodyString(s)
-    c.selectPosition(p1)
-    c.copyOutline()
-    c.pasteOutline()
-    p2 = p1.next()
-    # self.assertEqual(p1.b, p2.b) # 'self' defined only when unit-testing.
-    assert p1.b == p2.b
-finally:
-    if 1:
-         while root.hasChildren():
-              root.firstChild().doDelete(newNode = None)
-    c.redraw_now(p)
-</t>
-<t tx="ekr.20100205235740.5392">import glob
-trace = False
-failed,n = [],0
-skip_tuples3 = (
-    ('extensions','asciidoc.py'),
-)
-skip_tuples2 = (
-    ('test', 'python3_test.py'),
-)
-join = g.os_path_finalize_join
-skip_tuples = skip_tuples3 if g.isPython3 else skip_tuples2
-skip_list = [join(g.app.loadDir,'..',a,b) for a,b in skip_tuples]
-for theDir in ('core','external','extensions','plugins','scripts','test'):
-    if trace: print(theDir)
-    path = g.os_path_finalize_join(g.app.loadDir,'..',theDir)
-    assert g.os_path_exists(path),path
-    aList = glob.glob(g.os_path_join(path,'*.py'))
-    if g.isWindows:
-        aList = [z.replace('\\','/') for z in aList]
-    for z in aList:
-        if z in skip_list:
-            pass # print('%s: skipped: %s' % (p.h,z))
-        else:
-            n += 1
-            fn = g.shortFileName(z)
-            # if trace: print('%8s %s' % (theDir,fn))
-            s,e = g.readFileIntoString(z)
-            if not c.testManager.checkFileSyntax(fn,s,reraise=False,suppress=False):
-                failed.append(z)
-if trace: print('tested %s files' % n)
-assert not failed,'failed %s\n' % g.listToString(failed)
 </t>
 <t tx="ekr.20100219080213.5365"></t>
 <t tx="ekr.20100219080213.5366">s = '''\
@@ -3857,52 +3603,6 @@ try:
     p.deleteAllChildren()
 finally:
     c.redraw()
-</t>
-<t tx="ekr.20111104214341.3835">'''Ensure all plugins have top-level init method *without* importing them.'''
-
-import glob
-import inspect
-
-# Get a list of all plugins.
-plugins = g.os_path_join(g.app.loadDir,'..','plugins','*.py')
-plugins = g.os_path_abspath(plugins)
-files = glob.glob(plugins)
-files = [g.os_path_abspath(z) for z in files]
-files = [z for z in files if not z.endswith('__init__.py')]
-files.sort()
-
-exclude = [
-    # These are not real plugins...
-    'babel_api.py',
-    'babel_kill.py',
-    'babel_lib.py',
-    'baseNativeTree.py',
-    'leocursor.py',
-    'leo_cloud_server.py',
-    'qtGui.py',
-    'qt_big_text.py',
-    'qt_commands.py',
-    'qt_events.py',
-    'qt_frame.py',
-    'qt_idle_time.py',
-    'qt_main.py',
-    'qt_quickheadlines.py',
-    'qt_quicksearch_sub.py',
-    'qt_text.py',
-    'qt_tree.py',
-    'qt_quicksearch.py',
-    'swing_gui.py',
-]
-
-for fn in files:
-    if not g.shortFileName(fn) in exclude:
-        f = open(fn,'r')
-        s = f.read()
-        f.close()
-        ok1 = s.find('def init():') &gt; -1
-        ok2 = s.find('def init ():') &gt; -1
-        assert ok1 or ok2,'fail: %s' % (fn)
-    
 </t>
 <t tx="ekr.20111107102431.3849"># A good test, but we don't want this large a file included in the distro.
 
@@ -15893,9 +15593,6 @@ unl: spam
 gnx: ekr.20100801125533.5790
 unl: cheese
 </t>
-<t tx="ekr.20171112182742.3"></t>
-<t tx="ekr.20171112182742.4"></t>
-<t tx="ekr.20171112182742.5"></t>
 <t tx="ekr.20171120113732.1">s = '''\
 * Section 1 :tag1:
 * Section 2 :tag2:
@@ -16184,10 +15881,5 @@ EOT;
 ?&gt;
 </t>
 <t tx="ekr.20180214042153.1">False is the legacy value.</t>
-<t tx="ekr.20180312050443.1">import os
-cwd = g.os_path_abspath(os.curdir)
-test_dir = g.os_path_finalize_join(g.app.loadDir, '..', 'test')
-assert cwd == test_dir, (cwd, test_dir)
-</t>
 </tnodes>
 </leo_file>

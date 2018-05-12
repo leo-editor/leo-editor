@@ -913,17 +913,10 @@ class Importer(object):
     #@+node:ekr.20161108131153.3: *4* Stage 4: i.check & helpers
     def check(self, unused_s, parent):
         '''True if perfect import checks pass.'''
-        trace = False # and g.unitTesting
-        trace_all = False # Trace all lines, always.
-        trace_lines = True # Trace all lines on failure.
-        trace_status = True
         if g.app.suppressImportChecks:
-            if trace and trace_status:
-                g.trace('===== skipping all checks', parent.h)
             g.app.suppressImportChecks = False
             return True
         c = self.c
-        # t1 = time.clock()
         sfn = g.shortFileName(self.root.h)
         s1 = g.toUnicode(self.file_s, self.encoding)
         s2 = self.trial_write()
@@ -943,13 +936,9 @@ class Importer(object):
         if lines1 and lines2 and lines1 != lines2:
             lines1[-1] = lines1[-1].rstrip()+'\n'
             lines2[-1] = lines2[-1].rstrip()+'\n'
-        if trace and trace_all:
-            g.trace('===== entry')
-            self.trace_lines(lines1, lines2, parent)
+        # self.trace_lines(lines1, lines2, parent)
         ok = lines1 == lines2
         if not ok and not self.strict:
-            if trace and trace_status:
-                g.trace('===== %s NOT OK cleaning LWS' % self.name)
             # Issue an error only if something *other than* lws is amiss.
             lines1, lines2 = self.strip_lws(lines1), self.strip_lws(lines2)
             ok = lines1 == lines2
@@ -957,8 +946,7 @@ class Importer(object):
                 print('warning: leading whitespace changed in:', self.root.h)
         if not ok:
             self.show_failure(lines1, lines2, sfn)
-            if trace and trace_lines:
-                self.trace_lines(lines1, lines2, parent)
+            # self.trace_lines(lines1, lines2, parent)
         # Ensure that the unit tests fail when they should.
         # Unit tests do not generate errors unless the mismatch line does not match.
         if g.app.unitTesting:
@@ -968,12 +956,6 @@ class Importer(object):
                 d['fail'] = g.callers()
                 # Used in a unit test.
                 c.importCommands.errors += 1
-        # t2 = time.clock()
-        # if ok and t2 - t1 > 2.0:
-            # print('')
-            # g.trace('Excessive i.check time: %5.2f sec. in %s' % (t2-t1, sfn))
-        if trace and trace_status:
-            g.trace('Ok:', ok, g.shortFileName(parent.h))
         return ok
     #@+node:ekr.20161108131153.4: *5* i.clean_blank_lines
     def clean_blank_lines(self, lines):
