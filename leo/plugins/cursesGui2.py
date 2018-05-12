@@ -4416,5 +4416,4 @@ class StatusLineWrapper(leoFrame.StringTextWrapper):
 #@-others
 #@@language python
 #@@tabwidth -4
-#@@nosearch
 #@-leo
