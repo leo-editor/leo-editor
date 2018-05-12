@@ -2036,6 +2036,15 @@
 <v t="ekr.20180511101509.1"><vh>#868: Allow separate bindings for numeric keypad keys</vh></v>
 </v>
 </v>
+<v t="ekr.20180512074012.1"><vh>@button to-md</vh>
+<v t="ekr.20180512081559.1"><vh>clean_headline</vh></v>
+<v t="ekr.20180512085916.1"><vh>get_level</vh></v>
+<v t="ekr.20180512092138.1"><vh>get_link</vh></v>
+<v t="ekr.20180512080505.1"><vh>make_body</vh></v>
+<v t="ekr.20180512081702.1"><vh>make_head</vh></v>
+<v t="ekr.20180512081043.1"><vh>make_toc</vh></v>
+<v t="ekr.20180512074234.1"><vh>to_markdown</vh></v>
+</v>
 </vnodes>
 <tnodes>
 <t tx="EKR.20040524104904.140">Leo stores options in **@settings trees**, outlines whose headline is @settings. When opening a .leo file, Leo looks for @settings trees not only in the outline being opened but also in various leoSettings.leo files. This scheme allows for the following kinds of settings:
@@ -26942,6 +26951,91 @@ As usual, spellings are not significant. For example:
 clone-find-all-flattened = Key_Pad+9
 clone-find-all = keypad-PageUp
     # Same as keypad+pageup, etc. etc.</t>
+<t tx="ekr.20180512074012.1">@language python
+import markdown
+@others
+root = c.p
+aList = [make_toc(c.p)]
+aList.extend([to_markdown(p) for p in c.p.self_and_subtree()])
+source = '\n'.join(aList)
+html = markdown.markdown(source)
+# Create source node
+p = c.lastTopLevel().insertAfter()
+p.h = 'Markdown: %s' % root.h
+p.b = source
+# Create markdown node
+p = c.lastTopLevel().insertAfter()
+p.h = 'HTML: %s' % root.h
+p.b = html
+c.redraw()
+</t>
+<t tx="ekr.20180512074234.1">def to_markdown(p):
+    '''Create markdown for node p.'''
+    return make_head(p) + make_body(p)
+</t>
+<t tx="ekr.20180512080505.1">def make_body(p):
+    '''Return the cleaned body text for p.'''
+    if not p.b.strip():
+        return ''
+    aList = []
+    for s in g.splitLines(p.b.strip()):
+        if s.startswith('#'):
+            aList.append(' ' + s)
+        elif s.startswith('@language'):
+            pass
+        elif s.startswith('@wrap'):
+            pass
+        else:
+            aList.append(s.rstrip() + '\n')
+    s = ''.join(aList)
+    s = s.replace('\n\n\n', '\n\n')
+    return s.rstrip() +'\n'</t>
+<t tx="ekr.20180512081043.1">def make_toc(root):
+    '''Return the table of contents for root.'''
+    return ''.join([
+        '%s- [%s](#%s)\n' % (
+            ' '*4*( get_level(p)-1), p.h.strip(), get_link(p))
+        for p in root.self_and_subtree()
+    ])
+</t>
+<t tx="ekr.20180512081559.1">def clean_headline(p):
+    '''Clean a headline so it can be used in a an &lt;h1..6&gt; element.'''
+    return (
+        p.h.strip()
+        .replace('&amp;','&amp;amp;')
+        .replace('&lt;','&amp;lt')
+        .replace('&gt;','&amp;gt')
+        # .replace('"', '&amp;quote)
+        # .replace("'", '&amp;#39;')
+    )
+</t>
+<t tx="ekr.20180512081702.1">def make_head(p):
+    '''Return an &lt;h1...6&gt; element with the proper id.'''
+    level = min(6, get_level(p))
+    return'&lt;h%s id="%s"&gt;%s&lt;/h%s&gt;\n' % (
+        level,
+        get_link(p),
+        clean_headline(p),
+        level,
+    )
+</t>
+<t tx="ekr.20180512085916.1">def get_level(p):
+    '''Return the markdown level for p.'''
+    return 1 + p.level() - c.p.level()
+</t>
+<t tx="ekr.20180512092138.1">link_n = 1
+    # The next int to be returned.
+links = {}
+    # Keys are vnodes, values are ints.
+
+def get_link(p):
+    '''Return a unique int associated with p.v.'''
+    global link_n, links
+    if p.v not in links:
+        links [p.v] = link_n
+        link_n += 1
+    return links.get(p.v)
+</t>
 <t tx="peckj.20130813123907.6841" str_ctime="1376412039.0" str_mtime="1376412039.0" str_atime="1376414164.0">Documenting new plugins is important for users to be able understand and use the features they add. To that effect, there are a few documentation steps that should not be overlooked.
 
 - Document the plugin thoroughly in the plugin's docstring. This allows the documentation to be accessed from the Plugins menu.
