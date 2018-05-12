@@ -193,8 +193,6 @@ class Demo(object):
     #@+node:ekr.20170128213103.30: *4* demo.next
     def next(self, chain=True, wait=None):
         '''Execute the next demo script, or call end().'''
-        trace = False
-        # g.trace(chain, g.callers(2), self.c.p.h)
         if wait is not None:
             self.wait(wait)
         if self.script_i < len(self.script_list):
