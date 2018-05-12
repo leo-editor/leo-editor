@@ -56,11 +56,9 @@ class Xml_Importer(Importer):
     #@+node:ekr.20161122073505.1: *3* xml_i.scan_line & helpers
     def scan_line(self, s, prev_state):
         '''Update the xml scan state by scanning line s.'''
-        trace = False
         context, tag_level = prev_state.context, prev_state.tag_level
         i = 0
         while i < len(s):
-            if i == 0 and trace: g.trace('context: %3r line: %r' % (context, s))
             progress = i
             if context:
                 context, i = self.scan_in_context(context, i, s)

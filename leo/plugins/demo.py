@@ -96,8 +96,6 @@ class Demo(object):
         self.script_list = []
             # A list of strings (scripts).
             # Scripts are removed when executed.
-        self.trace = trace
-            # True: enable traces in k.masterKeyWidget.
         self.user_dict = {}
             # For use by scripts.
         self.widgets = []
@@ -112,8 +110,6 @@ class Demo(object):
         old_demo = getattr(g.app, 'demo', None)
         if old_demo:
             old_demo.delete_all_widgets()
-            if self.trace: g.trace('deleting old demo:',
-                old_demo.__class__.__name__)
         g.app.demo = self
     #@+node:ekr.20170208124125.1: *4* demo.init_namespace
     def init_namespace(self):
@@ -221,13 +217,8 @@ class Demo(object):
             self.script_i += 1
                 # Restore invariant, and make net change = -1.
             self.teardown_script()
-        elif self.trace:
-            g.trace('no previous script')
 
     prev_command = prev
-
-    # def prev_command(self):
-        # self.prev()
     #@+node:ekr.20170208094834.1: *4* demo.retain
     def retain (self, w):
         '''Retain widet w so that dele_widgets does not delete it.'''
