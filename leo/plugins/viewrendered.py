@@ -845,7 +845,6 @@ if QtWidgets: # NOQA
             pc = self
             c = pc.c
             if pc.must_change_widget(QtWebKitWidgets.QWebView):
-                # g.trace('===== instantiating QWebView')
                 w = QtWebKitWidgets.QWebView()
                 n = c.config.getInt('qweb_view_font_size')
                 if n:
@@ -893,7 +892,6 @@ if QtWidgets: # NOQA
             pc = self
             c = pc.c
             if pc.must_change_widget(QtWebKitWidgets.QWebView):
-                # g.trace('===== instantiating QWebView')
                 w = QtWebKitWidgets.QWebView()
                 n = c.config.getInt('qweb_view_font_size')
                 if n:
@@ -906,7 +904,6 @@ if QtWidgets: # NOQA
             s = self.get_jupyter_source(c)
             if isQt5:
                 w.hide() # This forces a proper update.
-            # g.trace(len(g.splitLines(s)))
             w.setHtml(s)
             w.show()
             c.bodyWantsFocusNow()
@@ -1349,10 +1346,7 @@ if QtWidgets: # NOQA
             c = self.c
             splitter = self.splitter
             deflo = c.db.get('viewrendered_default_layouts', (None, None))
-            # if trace:
-                # g.trace()
-                # g.printObj(deflo)
-            (loc, loo) = layouts.get(c.hash(), deflo)
+            loc, loo = layouts.get(c.hash(), deflo)
             if which == 'closed' and loc and splitter:
                 splitter.load_layout(loc)
             elif which == 'open' and loo and splitter:

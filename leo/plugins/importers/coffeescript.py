@@ -139,7 +139,6 @@ class CS_Importer(Importer):
         line = lines[i]
         for pattern in self.pattern_table:
             if pattern.match(line):
-                # g.trace('='*10, repr(line))
                 return True
         return False
 
@@ -172,7 +171,6 @@ class CS_Importer(Importer):
         for p in parent.subtree():
             trailing_lines = self.delete_trailing_lines(p)
             if prev_lines:
-                # g.trace('moving lines from', last.h, 'to', p.h)
                 self.prepend_lines(p, prev_lines)
             prev_lines = trailing_lines
             last = p.copy()

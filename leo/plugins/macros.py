@@ -107,9 +107,7 @@ class ParamClass(object):
     def __init__ (self,c):
         '''Ctor for ParamClass.'''
         self.c = c
-        # self.pattern = g.angleBrackets(r'\w*?\(([^,]*?,)*?([^,])+?\)') + '$'
         self.pattern = g.angleBrackets(r'\s*\w*?\s*\(\s*([^,]*?,)\s*?(\w+)\s*\)\s*') + '$'
-        # g.trace("self.pattern: %s" % self.pattern)
         self.regex = re.compile(self.pattern)
         self.addMenu() # Now gui-independent.
     #@+node:ekr.20040916084945.1: *3* parameterize

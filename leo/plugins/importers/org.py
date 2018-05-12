@@ -70,7 +70,6 @@ class Org_Importer(Importer):
         place-holder nodes as necessary.
         '''
         assert level >= 0
-        # g.trace('=====', level, h)
         n = level - len(self.parents)
         while level >= len(self.parents):
             headline = h if n == 0  else 'placeholder'

@@ -254,7 +254,6 @@ def build_rclick_tree(command_p, rclicks=None, top_level=False):
     RClick = namedtuple('RClick', 'position,children')
 
     # Called from QtIconBarClass.setCommandForButton.
-    # g.trace('=====', command_p and command_p.h or 'no command_p')
     if rclicks is None:
         rclicks = list()
     if top_level:
@@ -308,7 +307,6 @@ def onCreate(tag, keys):
     """Handle the onCreate event in the mod_scripting plugin."""
     c = keys.get('c')
     if c:
-        # g.trace('mod_scripting',c)
         sc = g.app.gui.ScriptingControllerClass(c)
         c.theScriptingController = sc
         sc.createAllButtons()
@@ -356,7 +354,6 @@ class AtButtonCallback(object):
     #@+node:ekr.20170203043042.1: *3* AtButtonCallback.execute_script & helper
     def execute_script(self):
         '''Execute the script associated with this button.'''
-        # g.trace('(AtButtonCallback) =====', self.gnx)
         script = self.find_script()
         if script:
             self.controller.executeScriptFromButton(
@@ -854,7 +851,6 @@ class ScriptingController(object):
         if shortcut:
             statusLine = '%s = %s' % (statusLine, shortcut)
         g.app.config.atLocalButtonsList.append(p.copy())
-        # g.trace(c.config,p.h)
         # This helper is also called by the script-button callback.
         self.createLocalAtButtonHelper(p, h, statusLine, verbose=False)
     #@+node:ekr.20060328125248.10: *4* sc.handleAtCommandNode @command
@@ -1186,7 +1182,6 @@ class EvalController(object):
         self.globals_d = {'c':c, 'g':g, 'p':c.p}
         self.locals_d = {}
         self.legacy = c.config.getBool('legacy-eval', default=True)
-        # g.trace('(EvalController) legacy: ', self.legacy)
         if g.app.ipk:
             # Use the IPython namespace.
             self.c.vs = g.app.ipk.namespace

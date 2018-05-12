@@ -32,7 +32,6 @@ class TS_Importer(Importer):
             while i < len(s):
                 progress = i
                 ch = s[i]
-                # g.trace(repr(ch))
                 if ch == '\\':
                     i += 2
                 elif ch == '/':
@@ -87,7 +86,6 @@ class TS_ScanState:
 
     def is_ws_line(self, s):
         '''Return True if s is nothing but whitespace and single-line comments.'''
-        # g.trace('(TS_State)', bool(self.ws_pattern.match(s)), repr(s))
         return bool(self.ws_pattern.match(s))
     #@+node:ekr.20161118072957.1: *3* ts_state.update
     def update(self, data):

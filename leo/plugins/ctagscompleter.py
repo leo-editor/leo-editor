@@ -130,8 +130,6 @@ class CtagsController(object):
         # Init.
         w = c.frame.body.wrapper # A LeoQTextBrowser.
         self.ev_filter = w.ev_filter
-
-        # g.trace('CtagsController',c.shortFileName(),self.body)
     #@+node:ekr.20091015185801.5243: *3* complete
     def complete(self,event):
 
@@ -156,7 +154,6 @@ class CtagsController(object):
             cmpl = g.u(completion).split(None,1)[0]
             cmpl = g.u(cmpl)
             prefix = g.u(cpl.completionPrefix())
-            # g.trace(completion,prefix)
             tc = body.textCursor()
             extra = len(cmpl) - len(prefix)
             tc.movePosition(tc.Left)
@@ -168,8 +165,6 @@ class CtagsController(object):
     def kill (self):
 
         # Delete the completer.
-        # g.trace()
-
         self.completer.deleteLater()
         self.completer = None
         self.active = False
@@ -204,8 +199,6 @@ class CtagsController(object):
         return aList
     #@+node:ekr.20110307092028.14159: *3* onKey
     def onKey (self,event,stroke):
-
-        # g.trace(stroke)
 
         stroke = stroke.lower()
 

@@ -291,7 +291,7 @@ class Importer(object):
         '''
         found = False
         delta_c = delta_p = delta_s = 0
-        ch = s[i] # For traces.
+        ch = s[i]
         aList = d.get(ch)
         if aList and context:
             # In context.
@@ -312,11 +312,6 @@ class Importer(object):
             # Not in context.
             for data in aList:
                 kind, pattern, new_context, deltas = data
-                # try:
-                    # kind, pattern, new_context, deltas = data
-                # except ValueError:
-                    # g.trace(data)
-                    # break
                 if self.match(s, i, pattern):
                     found = True
                     if deltas:
@@ -685,7 +680,6 @@ class Importer(object):
         substages use the API for setting body text. Changing p.b directly will
         cause asserts to fail later in i.finish().
         '''
-        # g.trace('='*40)
         self.clean_all_headlines(parent)
         self.clean_all_nodes(parent)
         self.unindent_all_nodes(parent)
@@ -1083,7 +1077,6 @@ class Importer(object):
     #@+node:ekr.20161109052011.1: *4* i.is_ws_line
     def is_ws_line(self, s):
         '''Return True if s is nothing but whitespace and single-line comments.'''
-        # g.trace('(Importer)', bool(self.ws_pattern.match(s)), repr(s))
         return bool(self.ws_pattern.match(s))
     #@+node:ekr.20161108131153.19: *4* i.undent & helper
     def undent(self, p):

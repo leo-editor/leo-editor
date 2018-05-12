@@ -98,7 +98,6 @@ def open_in_emacs_helper(c, p):
     # Search the open-files list for a file corresponding to v.
     efc = g.app.externalFilesController
     path = efc and efc.find_path_for_node(p)
-    # g.trace('config',c.config.getString('xemacs_exe'))
     emacs_cmd = c.config.getString('xemacs_exe') or _emacs_cmd
         # 2010/01/18: found by pylint.
     if (

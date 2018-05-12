@@ -474,7 +474,6 @@ class ScreenCastController(object):
             # Menu is a qtMenuWrapper, a subclass of both QMenu and leoQtMenu.
         if menu:
             c.frame.menu.activateMenu(menu_name)
-            # g.trace(menu.signalsBlocked())
             if 0: # None of this works.
                 g.trace('repaint', c.frame.top)
                 c.frame.top.repaint()
@@ -721,14 +720,12 @@ class ScreenCastController(object):
     #@+node:ekr.20120916062255.10596: *4* sc.set_state & clear_state
     def set_state(self, state):
         m = self
-        # g.trace('**** setting m.k_state: %s' % (state.kind))
         m.k_state.kind = state.kind
         m.k_state.n = state.n
         m.k_state.handler = state.handler
 
     def clear_state(self):
         m = self
-        # g.trace('**** clearing m.k_state')
         m.k_state.kind = None
         m.k_state.n = None
         m.k_state.handler = None
@@ -742,7 +739,6 @@ class ScreenCastController(object):
             stroke = k.strokeFromSetting(ch).s
         else:
             stroke = key = ch
-        # g.trace(ch,key,stroke)
         return leoGui.LeoKeyEvent(c, key, stroke,
             binding=None,
             w=w,
@@ -789,7 +785,6 @@ class ScreenCastController(object):
             n = n1
         if n > 0:
             n = n * m.speed
-            # g.trace(n)
             g.sleep(n)
     #@-others
 #@-others

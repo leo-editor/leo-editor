@@ -138,7 +138,6 @@ class WikiView(object):
         for s in data:
             leadin = self.get_leadin(s)
             if leadin:
-                # g.trace(repr(leadin), repr(s))
                 leadins.append(leadin)
                 patterns.append(re.compile(s, re.IGNORECASE))
             else:

@@ -294,7 +294,6 @@ def openwith_rclick(c,p,menu):
         return
     path = g.scanAllAtPathDirectives(c,p)
     editor = g.guessExternalEditor()
-    # g.trace(repr(path),repr(fname))
     absp = g.os_path_finalize_join(path, fname)
     exists = os.path.exists(absp)
     if not exists and head == "@path":

@@ -15,7 +15,6 @@ class TreePad_Scanner():
     #@+node:ekr.20180201204402.2: *3* treepad.add_node
     def add_node(self, article, level, title):
         
-        # g.trace(level, title)
         assert level >= 0, level
         if level == 0:
             # Special case: use the @auto node.

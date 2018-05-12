@@ -165,7 +165,6 @@ class Export_IPYNB(object):
         # Write the expansion status of the root.
         meta = nb.get('metadata') or {}
         meta ['collapsed'] = not root.isExpanded()
-        # g.trace(meta.get('collapsed'), root.h)
         nb ['metadata'] = meta
         # Put all the cells.
         nb ['cells'] = [self.put_body(p) for p in root.subtree()]

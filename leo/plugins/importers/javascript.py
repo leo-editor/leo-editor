@@ -268,7 +268,6 @@ class JS_Importer(Importer):
         line = lines[i]
         for pattern in self.func_patterns:
             if pattern.search(line) is not None:
-                # g.trace('FOUND:', line.strip())
                 return True
         return False
     #@+node:ekr.20161101183354.1: *3* js_i.clean_headline

@@ -179,7 +179,6 @@ def scanForMultiPath (c):
         root = files[fileName]
         at.scanDefaultDirectory(root) # Using root here may be dubious.
         fileName = g.os_path_join(at.default_directory,fileName)
-        # g.trace(fileName,at.default_directory)
         positions = [p.copy() for p in root.self_and_parents()]
         positions.reverse()
         prefix = ''
@@ -201,7 +200,6 @@ def scanForMultiPath (c):
                         paths = [g.os_path_join(at.default_directory,z) for z in paths]
                     aList = d.get(fileName,[])
                     aList.extend(paths)
-                    # g.trace(fileName,aList)
                     d[fileName] = aList
     return d
 #@-others

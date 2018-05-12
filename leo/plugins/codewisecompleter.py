@@ -104,8 +104,6 @@ class ContextSniffer(object):
     #@+node:ekr.20110309051057.14284: *4* declare
     def declare(self, var, klass):
 
-        # g.trace(var,klass) # Very large trace.
-
         vars = self.vars.get(var, [])
         if not vars:
             self.vars[var] = vars
@@ -209,8 +207,6 @@ class CodewiseController(object):
 
         # Init.
         self.ev_filter = self.w.ev_filter
-
-        # g.trace('CodewiseController',c.shortFileName(),self.body)
     #@+node:ville.20091204224145.5363: *3* complete
     def complete(self,event):
 

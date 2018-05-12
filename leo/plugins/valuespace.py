@@ -221,7 +221,7 @@ class ValueSpaceController(object):
     #@+others
     #@+node:ekr.20110408065137.14223: *3*  ctor
     def __init__(self, c=None, ns=None):
-        # g.trace('(ValueSpaceController)',c)
+
         self.c = c
         self.d = {} if ns is None else ns
         self.reset()
@@ -359,7 +359,6 @@ class ValueSpaceController(object):
                 except Exception:
                     g.es_exception()
                     g.es("Error parsing " + parent.h)
-        # g.trace(self.d)
     #@+node:ekr.20110407174428.5777: *5* let & let_body
     def let(self,var,val):
 
@@ -377,7 +376,6 @@ class ValueSpaceController(object):
 
     def let_cl(self, var, body):
         """ handle @cl node """
-        # g.trace()
         lend = body.find('\n')
         firstline = body[0:lend]
         rest = firstline[4:].strip()

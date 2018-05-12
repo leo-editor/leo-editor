@@ -139,7 +139,6 @@ class Demo(object):
         # Add most ivars.
         for key, value in self.namespace.items():
             if not hasattr(self, key) and key not in 'cgp':
-                # g.trace('SET', key, value)
                 setattr(self, key, value)
     #@+node:ekr.20170128222411.1: *3* demo.Control
     #@+node:ekr.20170207090715.1: *4* demo.bind
@@ -149,7 +148,6 @@ class Demo(object):
             g.trace('redefining', name)
             g.printDict(self.namespace)
         self.namespace [name] = object_
-        # g.trace(name, object_, object_.__init__)
         return object_
     #@+node:ekr.20170129174251.1: *4* demo.end
     def end(self):
@@ -334,7 +332,6 @@ class Demo(object):
                     # Experimental: allow escapes.
         if lines:
             aList.append(''.join(lines))
-        # g.trace('===== delim', delim) ; g.printList(aList)
         return aList
     #@+node:ekr.20170128213103.43: *4* demo.wait & key_wait
     def key_wait(self, speed=None, n1=None, n2=None):
@@ -473,7 +470,6 @@ class Demo(object):
             tkKey=None,
             shortcut=shortcut,
         )
-        # g.trace('%10r %r' % (shortcut, event))
         return event
     #@+node:ekr.20170130090124.1: *3* demo.Menus
     #@+node:ekr.20170128213103.15: *4* demo.dismiss_menu_bar
